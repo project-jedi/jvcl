@@ -48,8 +48,8 @@ type
     procedure DoMessage(const Msg: string); overload;
     procedure DoMessage(Strings: TStrings); overload;
     procedure WriteDtx(ATypeList: TTypeList);
-    procedure FillWithHeaders(ATypeList: TTypeList; Optional, NotOptional: TStrings);
-    procedure CompareDtxFile(const AFileName: string;
+    procedure FillWithHeaders(const UnitName: string; ATypeList: TTypeList; Optional, NotOptional: TStrings);
+    procedure CompareDtxFile(const AUnitName: string;
       DtxHeaders: TList; NotInDtx, NotInPas: TStrings; ATypeList: TTypeList);
     procedure CompareParameters(ATypeList: TTypeList; DtxHeaders: TList;
       NotInDtx, NotInPas: TStrings);
@@ -1118,7 +1118,7 @@ begin
 end;
 
 procedure TMainCtrl.CompareDtxFile(
-  const AFileName: string;
+  const AUnitName: string;
   DtxHeaders: TList; NotInDtx, NotInPas: TStrings;
   ATypeList: TTypeList);
 var
@@ -1132,11 +1132,11 @@ begin
   LNotInPas := TStringList.Create;
   LNotInDtx := TStringList.Create;
   try
-    FillWithHeaders(ATypeList, Optional, NotOptional);
+    FillWithHeaders(AUnitName, ATypeList, Optional, NotOptional);
 
     NotOptional.Add('@@' + GetRealFileName(
       TSettings.Instance.RunTimePasDir,
-      ChangeFileExt(AFileName, '.pas')));
+      ChangeFileExt(AUnitName, '.pas')));
     FillWithDtxHeaders(DtxHeaders, LDtxHeaders);
     //LDtxHeaders.Assign(DtxHeaders);
 
@@ -1167,19 +1167,19 @@ begin
   end;
 end;
 
-procedure TMainCtrl.FillWithHeaders(ATypeList: TTypeList;
+procedure TMainCtrl.FillWithHeaders(const UnitName: string; ATypeList: TTypeList;
   Optional, NotOptional: TStrings);
 var
-  I: Integer;
+  I, J: Integer;
   ATypeItem: TAbstractItem;
-  S: string;
+  ReferenceName, S: string;
   IsOptional: Boolean;
 begin
   for I := 0 to ATypeList.Count - 1 do
   begin
     ATypeItem := ATypeList[I];
 
-    S := '@@' + ATypeItem.ReferenceName;
+    ReferenceName := '@@' + ATypeItem.ReferenceName;
 
     if TSettings.Instance.OutputTypeEnabled[CConvert[ATypeItem.DelphiType]] then
     begin
@@ -1207,13 +1207,29 @@ begin
       ((ATypeItem is TParamClassMethod) and
         (SameText(ATypeItem.SimpleName, 'create') or SameText(ATypeItem.SimpleName, 'destroy')));
 
-      if IsOptional then
-        Optional.Add(S)
-      else
-        NotOptional.Add(S);
+      IsOptional := IsOptional or
+        TSettings.Instance.OnIgnoreTokenList(UnitName, ReferenceName);
 
-      if ATypeItem is TListItem then
-        TListItem(ATypeItem).AddToList(NotOptional);
+      if IsOptional then
+      begin
+        Optional.Add(ReferenceName);
+        if ATypeItem is TListItem then
+          TListItem(ATypeItem).AddToList(Optional);
+      end
+      else
+      begin
+        NotOptional.Add(ReferenceName);
+        if ATypeItem is TListItem then
+          with ATypeItem as TListItem do
+            for J := 0 to Items.Count - 1 do
+            begin
+              S := '@@' + ReferenceName + '.' + Items[J];
+              if TSettings.Instance.OnIgnoreTokenList(UnitName, S) then
+                Optional.Add(S)
+              else
+                NotOptional.Add(S);
+            end;
+      end;
     end;
   end;
 end;

@@ -98,7 +98,7 @@ object frmMain: TfrmMain
       Top = 240
       Width = 97
       Height = 25
-      Action = actAddToIgnoreList
+      Action = actAddToIgnoreUnitList
       ParentShowHint = False
       ShowHint = True
       TabOrder = 8
@@ -195,6 +195,7 @@ object frmMain: TfrmMain
       Height = 101
       Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
+      MultiSelect = True
       TabOrder = 0
     end
     object Button4: TButton
@@ -227,6 +228,17 @@ object frmMain: TfrmMain
       Action = actCopyToClipboard
       Anchors = [akLeft, akBottom]
       TabOrder = 3
+    end
+    object Button6: TButton
+      Left = 301
+      Top = 135
+      Width = 105
+      Height = 25
+      Action = actAddToIgnoreTokenList
+      Anchors = [akLeft, akBottom]
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 4
     end
   end
   object ActionList1: TActionList
@@ -272,11 +284,11 @@ object frmMain: TfrmMain
       OnExecute = actGenerateDtxFilesExecute
       OnUpdate = actGenerateDtxFilesUpdate
     end
-    object actAddToIgnoreList: TAction
+    object actAddToIgnoreUnitList: TAction
       Category = 'Listboxes'
       Caption = 'Add to Ignore List'
       Hint = 'Marks the selected files in the right list box as '#39'ignored'#39
-      OnExecute = actAddToIgnoreListExecute
+      OnExecute = actAddToIgnoreUnitListExecute
       OnUpdate = SelectedProcessFilesAvailable
     end
     object actAddToCompletedList: TAction
@@ -418,6 +430,13 @@ object frmMain: TfrmMain
       Category = 'Messages'
       Caption = 'Copy to Clipboard'
       OnExecute = actCopyToClipboardExecute
+    end
+    object actAddToIgnoreTokenList: TAction
+      Category = 'Messages'
+      Caption = 'Add to Ignore List'
+      Hint = 'Marks the selected tokens in the message list box as '#39'ignored'#39
+      OnExecute = actAddToIgnoreTokenListExecute
+      OnUpdate = actAddToIgnoreTokenListUpdate
     end
   end
   object MainMenu1: TMainMenu

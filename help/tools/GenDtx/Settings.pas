@@ -47,6 +47,7 @@ type
 const
   CRegisteredClassesFileName = 'RegisteredClasses.txt';
   CFilesInPackagesFileName = 'Files in packages.txt';
+  CIgnoredTokensFileName = 'Ignored tokens.txt';
   CUnitStatusFileName: array[TUnitStatus] of string = (
     'Completed units.txt', 'Ignored units.txt', 'Generated units.txt',
     'Other units.txt');
@@ -74,6 +75,7 @@ type
     FAcceptCompilerDirectives: TStrings;
     FUnitsStatus: array[TUnitStatus] of TStrings;
     FFilesInPackages: TStrings;
+    FIgnoredTokens: TStrings;
     FRealDtxDir: string;
     FPackageDir: string;
     FDesignTimePasDir: string;
@@ -122,12 +124,14 @@ type
     procedure LoadUnitStatus(const AUnitStatus: TUnitStatus);
     procedure LoadUnitStatusAll;
     procedure LoadFilesInPackages;
+    procedure LoadIgnoredTokens;
     procedure SaveAll;
     procedure SaveSettings;
     procedure SaveRegisteredClasses;
     procedure SaveUnitStatus(const AUnitStatus: TUnitStatus);
     procedure SaveUnitStatusAll;
     procedure SaveFilesInPackages;
+    procedure SaveIgnoredTokens;
 
     procedure RegisterObserver(Observer: TObject; Event: TSettingsChangeEvent = nil); virtual;
     procedure UnRegisterObserver(Observer: TObject); virtual;
@@ -138,7 +142,9 @@ type
     function FileNameToPackage(const AFileName: string): string;
     function IsRegisteredClass(const S: string): Boolean;
     procedure AddToUnitStatus(const AUnitStatus: TUnitStatus; const AFileName: string);
+    procedure AddToIgnoreTokenList(const AUnit, AToken: string);
     function IsUnitFrom(const AUnitStatus: TUnitStatus; const AFileName: string): Boolean;
+    function OnIgnoreTokenList(const AUnit, AToken: string): Boolean;
 
     property RegisteredClasses: TStrings read FRegisteredClasses write SetRegisteredClasses;
     property FilesInPackages: TStrings read FFilesInPackages write SetFilesInPackages;
@@ -180,6 +186,53 @@ uses
   SysUtils, Forms, IniFiles;
 
 { TSettings }
+
+procedure TSettings.AddToIgnoreTokenList(const AUnit, AToken: string);
+const
+  COk = ['a'..'z', 'A'..'Z', '_', '0'..'9', '.', '@'];
+var
+  DotPos: Integer;
+  S: string;
+  I: Integer;
+  LToken: string;
+begin
+  if (Length(AToken) < 3) or (AToken[1] <> '@') or (AToken[2] <> '@') then
+    Exit;
+
+  if AUnit = '' then
+    Exit;
+
+  I := 1;
+  DotPos := -1;
+  while (I < Length(AToken)) and (AToken[I] in COk) do
+  begin
+    if (AToken[I] = '.') and (DotPos < 0) then
+      DotPos := I;
+    Inc(I);
+  end;
+
+  LToken := Copy(AToken, 1, I);
+
+  if DotPos < 0 then
+  begin
+    S := Format('%s=%s', [AUnit, LToken]);
+    I := FIgnoredTokens.Add(S) + 1;
+    while (I < FIgnoredTokens.Count - 1) and
+      (StrLIComp(PChar(S), PChar(FIgnoredTokens[I]), Length(S)) = 0) do
+
+      FIgnoredTokens.Delete(I);
+  end
+  else
+  begin
+    S := Copy(LToken, 1, DotPos - 1);
+    if FIgnoredTokens.IndexOf(Format('%s=%s', [AUnit, S])) >= 0 then
+      Exit;
+
+    FIgnoredTokens.Add(Format('%s=%s', [AUnit, LToken]));
+  end;
+
+  SaveIgnoredTokens;
+end;
 
 procedure TSettings.AddToUnitStatus(const AUnitStatus: TUnitStatus; const AFileName: string);
 var
@@ -306,6 +359,13 @@ begin
     Sorted := True;
     Duplicates := dupIgnore;
   end;
+
+  FIgnoredTokens := TStringList.Create;
+  with FIgnoredTokens as TStringList do
+  begin
+    Sorted := True;
+    Duplicates := dupIgnore;
+  end;
 end;
 
 destructor TSettings.Destroy;
@@ -327,6 +387,7 @@ begin
   FRegisteredClasses.Free;
   FAcceptCompilerDirectives.Free;
   FFilesInPackages.Free;
+  FIgnoredTokens.Free;
   inherited Destroy;
 end;
 
@@ -519,6 +580,7 @@ begin
   LoadRegisteredClasses;
   LoadUnitStatusAll;
   LoadFilesInPackages;
+  LoadIgnoredTokens;
 end;
 
 procedure TSettings.LoadFilesInPackages;
@@ -528,6 +590,15 @@ begin
   LFileName := ExtractFilePath(Application.ExeName) + CFilesInPackagesFileName;
   if FileExists(LFileName) then
     FFilesInPackages.LoadFromFile(LFileName);
+end;
+
+procedure TSettings.LoadIgnoredTokens;
+var
+  LFileName: string;
+begin
+  LFileName := ExtractFilePath(Application.ExeName) + CIgnoredTokensFileName;
+  if FileExists(LFileName) then
+    FIgnoredTokens.LoadFromFile(LFileName);
 end;
 
 procedure TSettings.LoadRegisteredClasses;
@@ -557,6 +628,21 @@ var
 begin
   for UnitStatus := Low(TUnitStatus) to High(TUnitStatus) do
     LoadUnitStatus(UnitStatus);
+end;
+
+function TSettings.OnIgnoreTokenList(const AUnit, AToken: string): Boolean;
+var
+  P: Integer;
+begin
+  Result := FIgnoredTokens.IndexOf(Format('%s=%s', [AUnit, AToken])) >= 0;
+  if Result then
+    Exit;
+
+  P := Pos('.', AToken);
+  if P < 0 then
+    Exit;
+
+  Result := FIgnoredTokens.IndexOf(Format('%s=%s', [AUnit, Copy(AToken, 1, P - 1)])) >= 0;
 end;
 
 procedure TSettings.RegisterObserver(Observer: TObject;
@@ -599,6 +685,7 @@ begin
     FAcceptCompilerDirectives.Clear;
     FDefaultNiceName := '<xxx>';
     FFilesInPackages.Clear;
+    FIgnoredTokens.Clear;
   finally
     EndUpdate;
   end;
@@ -615,6 +702,12 @@ procedure TSettings.SaveFilesInPackages;
 begin
   FFilesInPackages.SaveToFile(
     ExtractFilePath(Application.ExeName) + CFilesInPackagesFileName);
+end;
+
+procedure TSettings.SaveIgnoredTokens;
+begin
+  FIgnoredTokens.SaveToFile(
+    ExtractFilePath(Application.ExeName) + CIgnoredTokensFileName);
 end;
 
 procedure TSettings.SaveRegisteredClasses;

@@ -21,7 +21,7 @@ type
     actExclude: TAction;
     actSettings: TAction;
     actGenerateDtxFiles: TAction;
-    actAddToIgnoreList: TAction;
+    actAddToIgnoreUnitList: TAction;
     actAddToCompletedList: TAction;
     actUnitStatus: TAction;
     Panel1: TPanel;
@@ -92,8 +92,10 @@ type
     GenerateList1: TMenuItem;
     Button1: TButton;
     actCopyToClipboard: TAction;
+    Button6: TButton;
+    actAddToIgnoreTokenList: TAction;
     procedure actAddToCompletedListExecute(Sender: TObject);
-    procedure actAddToIgnoreListExecute(Sender: TObject);
+    procedure actAddToIgnoreUnitListExecute(Sender: TObject);
     procedure actCheckCasePasFilesExecute(Sender: TObject);
     procedure actCheckCasePasFilesUpdate(Sender: TObject);
     procedure actCheckDtxFilesExecute(Sender: TObject);
@@ -139,6 +141,8 @@ type
     procedure actGenerateListExecute(Sender: TObject);
     procedure actGenerateListUpdate(Sender: TObject);
     procedure actCopyToClipboardExecute(Sender: TObject);
+    procedure actAddToIgnoreTokenListUpdate(Sender: TObject);
+    procedure actAddToIgnoreTokenListExecute(Sender: TObject);
   private
     FMainCtrl: TMainCtrl;
     function ProcessFilesAvailable: Boolean;
@@ -356,7 +360,7 @@ begin
   FMainCtrl.RefreshFiles;
 end;
 
-procedure TfrmMain.actAddToIgnoreListExecute(Sender: TObject);
+procedure TfrmMain.actAddToIgnoreUnitListExecute(Sender: TObject);
 var
   Index: Integer;
 begin
@@ -643,6 +647,33 @@ end;
 procedure TfrmMain.actCopyToClipboardExecute(Sender: TObject);
 begin
   Clipboard.AsText := lsbMessages.Items.Text;
+end;
+
+procedure TfrmMain.actAddToIgnoreTokenListUpdate(Sender: TObject);
+begin
+  if Sender is TAction then
+    TAction(Sender).Enabled := lsbMessages.SelCount > 0;
+end;
+
+procedure TfrmMain.actAddToIgnoreTokenListExecute(Sender: TObject);
+const
+  CComparing = '------------Comparing ';
+var
+  I: Integer;
+  UnitName: string;
+begin
+  UnitName := '';
+  with lsbMessages, TSettings.Instance do
+    for I := 0 to Items.Count - 1 do
+    begin
+      if SameText(Copy(Items[I], 1, Length(CComparing)), CComparing) then
+      begin
+        UnitName := Copy(Items[I], Length(CComparing) + 1, MaxInt);
+        UnitName := Copy(UnitName, 1, Pos(' ', UnitName) - 1);
+      end;
+      if Selected[I] then
+        AddToIgnoreTokenList(UnitName, Items[I]);
+    end;
 end;
 
 end.
