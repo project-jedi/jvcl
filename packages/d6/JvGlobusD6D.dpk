@@ -23,8 +23,8 @@ package JvGlobusD6D;
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL - Globus VCL Extension Library'}
-{$IMPLICITBUILD OFF}
 {$DESIGNONLY}
+{$IMPLICITBUILD OFF}
 
 requires
   vcl,
@@ -52,7 +52,6 @@ contains
   JvgReportParamsForm in '..\..\design\JvgReportParamsForm.pas' {JvgReportParamsForm},
   JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas' {ReportParamEditor},
   JvgShadowEditor in '..\..\design\JvgShadowEditor.pas',
-  JvgCompDescription in '..\..\design\JvgCompDescription.pas',
   JvgComponentListEditorForm in '..\..\design\JvgComponentListEditorForm.pas' {JvgCompListEditor},
   JvgPropertyCenter in '..\..\design\JvgPropertyCenter.pas',
   JvgHelpPanelEditor in '..\..\design\JvgHelpPanelEditor.pas',
@@ -60,7 +59,7 @@ contains
   JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas' {JvgLogicsEditor},
   JvgLogicItemEditorForm in '..\..\design\JvgLogicItemEditorForm.pas' {JvgLogicItemEditor},
   JvgMultiResourceEditorForm in '..\..\design\JvgMultiResourceEditorForm.pas' {JvgMultipleResourceEdit},
-  JvgMultiResources in '..\..\design\JvgMultiResources.pas';
-
+  JvgMultiResources in '..\..\design\JvgMultiResources.pas',
+  JvgCompDescription in '..\..\design\JvgCompDescription.pas';
 
 end.
