@@ -83,7 +83,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteGlobusComponents1, [
     {$IFNDEF DelphiPersonalEdition}
-    TJvgExportDBETable, TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
+    TJvgExportDataset, TJvgDBNavigator, TJvgPrintCrossTable, TJvgDBGrid,
     TJvgVertDBSGrid,
     {$ENDIF DelphiPersonalEdition}
     TJvgGridHeaderControl,
