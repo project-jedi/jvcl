@@ -40,14 +40,14 @@ implementation
 
 uses
   Classes,
-  QControls, QImgList, QActnList, 
-  DesignEditors, DesignIntf, 
-  JvQDsgnConsts, 
+  QControls, QImgList, QActnList,
+  DesignEditors, DesignIntf,
+  JvQDsgnConsts,
   {$IFDEF USEWINDOWS}
   JvQUninstallControls, JvQCharMap,
   {$ENDIF USEWINDOWS}
-  JvQDsgnIntf, 
-  QTypes, 
+  JvQDsgnIntf,
+  QTypes,
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
@@ -68,11 +68,11 @@ uses
 {$ENDIF LINUX}
 
 procedure Register;
-begin 
-  GroupDescendentsWith(TJvHint, TControl); 
+begin
+  GroupDescendentsWith(TJvHint, TControl);
 
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
-    TJvTransparentButton2, TJvArrowButton, 
+    TJvTransparentButton2, TJvArrowButton,
     TJvColorButton,  TJvOfficeColorButton, TJvOfficeColorPanel,
     TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
@@ -84,14 +84,18 @@ begin
 
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
-  {$ENDIF USEWINDOWS} 
+  {$ENDIF USEWINDOWS}
 
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
-    TJvContentScroller, 
+    TJvContentScroller,
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice
+  {$IFDEF USEWINDOWS}
+  , TJvCharMap
+  {$ENDIF USEWINDOWS}
+  ]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);

@@ -40,9 +40,9 @@ implementation
 
 uses
   Classes,
-  JvQZlibMultiple,
+
   {$IFDEF USEWINDOWS}
-  JvQCabFile,
+  JvQCabFile, JvQZlibMultiple,
   {$ENDIF USEWINDOWS}
   JvQDsgnConsts,
   JvQCipher, JvQGenetic, JvQSerialMaker;
@@ -59,9 +59,8 @@ begin
   RegisterComponents(RsPaletteEncryptCompress, [TJvVigenereCipher,
     TJvXORCipher, TJvCaesarCipher, TJvGenetic,
     {$IFDEF USEWINDOWS}
-    TJvCABFile,
+    TJvCABFile, TJvZlibMultiple,
     {$ENDIF USEWINDOWS}
-    TJvZlibMultiple,
     TJvSerialMaker]);
 end;
 
