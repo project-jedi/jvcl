@@ -193,7 +193,7 @@ end;
 
 procedure TJvXPBarItemEditor.ExecuteVerb(Index: Integer);
 const
- cFontColor = $00E75100;
+ cFontColor = $00840000;
  cHotTrackColor = $00FF7C35;
 begin
   case Index of
