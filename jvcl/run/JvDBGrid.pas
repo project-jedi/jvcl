@@ -1578,7 +1578,7 @@ procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
   begin
     Result := True;
     for I := 0 to FixedCols - 1 do
-      if Columns.Items[I].FieldName = Field.FieldName then
+      if Assigned(Field) and (Columns.Items[I].FieldName = Field.FieldName) then
       begin
         Result := False;
         Break;
