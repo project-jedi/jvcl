@@ -49,11 +49,11 @@ uses
   JvTypes, JvDsgnConsts, JvJCLUtils, JVCLVer, JvComponent,
   JvActions, JvActnResForm, JvJVCLAboutForm, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor,
-  JvAppIniStorage,
+  JvAppIniStorage, JvBackgrounds,
   {$IFDEF MSWINDOWS}
   JvAppRegistryStorage, JvContextProvider,
   JvColorProviderEditors, JvDataProviderEditors, JvDataProvider,
-  JvDataProviderIntf,
+  JvDataProviderIntf, JvBackgroundEditors,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   JvColorProvider,
@@ -73,7 +73,7 @@ const
 begin
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent
     {$IFDEF MSWINDOWS}
-    , TJvContextProvider, TJvColorProvider, TJvColorMappingProvider
+    , TJvContextProvider, TJvColorProvider, TJvColorMappingProvider, TJvBackground
     {$ENDIF MSWINDOWS}
     ]);
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
@@ -143,6 +143,9 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
+
+  RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
+    'Clients', TJvClientsProperty);
 
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS}TJvSendMailAction,{$ENDIF}TJvWebAction], TJvStandardActions);
   RegisterZoom;
