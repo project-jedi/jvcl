@@ -72,7 +72,7 @@
     <File Name="..\..\run\JvCheckListBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCheckTreeView.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorCombo.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvComboBox.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCombobox.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvComCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlPanelButton.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -94,7 +94,7 @@
     <File Name="..\..\run\JvLinkedControls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQTimeEdit.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQGauges.pas" Targets="allclx" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQComboBox.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCombobox.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQColorCombo.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>
