@@ -70,7 +70,7 @@ uses
   Graphics, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QStdCtrls, QGraphics, QClipbrd, QWindows, Types, DateUtils,
+  Qt, QStdCtrls, QGraphics, QClipbrd, QWindows, Types,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -455,9 +455,7 @@ procedure RleDecompress(Stream: TStream);
 { end JvRLE }
 
 { begin JvDateUtil }
-{$IFDEF MSWINDOWS}
 function CurrentYear: Word;
-{$ENDIF}
 function IsLeapYear(AYear: Integer): Boolean;
 function DaysPerMonth(AYear, AMonth: Integer): Integer;
 function FirstDayOfPrevMonth: TDateTime;
@@ -496,10 +494,8 @@ function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDate
 function DefDateFormat(AFourDigitYear: Boolean): string;
 function DefDateMask(BlanksChar: Char; AFourDigitYear: Boolean): string;
 
-{$IFDEF MSWINDOWS}
 function FormatLongDate(Value: TDateTime): string;
 function FormatLongDateTime(Value: TDateTime): string;
-{$ENDIF}
 { end JvDateUtil }
 
 { begin JvStrUtils }
@@ -559,14 +555,12 @@ function RightStr(const S: string; N: Integer): string;
 function CenterStr(const S: string; Len: Integer): string;
 { CenterStr centers the characters in the string based upon the
   Len specified. }
-{$IFDEF MSWINDOWS}
 function CompStr(const S1, S2: string): Integer;
 { CompStr compares S1 to S2, with case-sensitivity. The return value is
   -1 if S1 < S2, 0 if S1 = S2, or 1 if S1 > S2. }
 function CompText(const S1, S2: string): Integer;
 { CompText compares S1 to S2, without case-sensitivity. The return value
   is the same as for CompStr. }
-{$ENDIF}
 function Copy2Symb(const S: string; Symb: Char): string;
 { Copy2Symb returns a substring of a string S from begining to first
   character Symb. }
@@ -721,7 +715,7 @@ function OpenObject(const Value: string): Boolean; overload;
 
 //Raise the last Exception
 procedure RaiseLastWin32; overload;
-procedure RaiseLastWin32(Text: string); overload;
+procedure RaiseLastWin32(const Text: string); overload;
 //Raise the last Exception with a small comment from your part
 
 { GetFileVersion returns the most significant 32 bits of a file's binary
@@ -958,20 +952,21 @@ function PixelsToDialogUnitsY(PixUnits: Word): Word;
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
 {$IFDEF VCL}
-{$IFDEF BCB}
+ {$IFDEF BCB}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
-{$ELSE}
+ {$ELSE}
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
-{$ENDIF BCB}
+ {$ENDIF BCB}
 {$ENDIF VCL}
+
 {$IFDEF MSWINDOWS}
 { BrowseForFolder displays Browse For Folder dialog }
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 procedure AntiAlias(Clip: TBitmap);
 procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
@@ -3755,7 +3750,7 @@ begin
   end;
 end;
 
-{$IFDEF WINDOWS}
+{$IFDEF MSWINDOWS}
 procedure ReadIcon(Stream: TStream; var Icon: HICON; ImageCount: Integer;
   StartOffset: Integer);
 type
@@ -3861,7 +3856,7 @@ begin
     FreeMem(List, HeaderLen);
   end;
 end;
-{$ENDIF WINDOWS}
+{$ENDIF MSWINDOWS}
 
 {$IFDEF VCL}
 procedure GetIconSize(Icon: HIcon; var W, H: Integer);
@@ -4303,15 +4298,10 @@ begin
   Result := Trunc(ADate);
 end;
 
-{$IFDEF MSWINDOWS}
 function CurrentYear: Word;
-var
-  SystemTime: TSystemTime;
 begin
-  GetLocalTime(SystemTime);
-  Result := SystemTime.wYear;
+  Result := ExtractYear(Date);
 end;
-{$ENDIF}
 
 { String to date conversions. Copied from SYSUTILS.PAS unit. }
 
@@ -4397,19 +4387,9 @@ begin
 end;
 
 function CurrentMonth: Word;
-{$IFDEF WINDOWS}
-var
-  SystemTime: TSystemTime;
 begin
-  GetLocalTime(SystemTime);
-  Result := SystemTime.wMonth;
+  Result := ExtractMonth(Date);
 end;
-{$ENDIF}
-{$IFDEF LINUX}
-begin
-  Result := MonthOfTheYear(Now);
-end;
-{$ENDIF}
 
 
 {Modified}
@@ -4676,8 +4656,8 @@ begin
     Result := Result + BlanksChar;
 end;
 
-{$IFDEF MSWINDOWS}
 function FormatLongDate(Value: TDateTime): string;
+{$IFDEF MSWINDOWS}
 var
   Buffer: array[0..1023] of Char;
   SystemTime: TSystemTime;
@@ -4687,6 +4667,12 @@ begin
     @SystemTime, nil, Buffer, SizeOf(Buffer) - 1));
   Result := TrimRight(Result);
 end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+begin
+  Result := TrimRight(FormatDateTime(LongDateFormat, Value));
+end;
+{$ENDIF LINUX}
 
 function FormatLongDateTime(Value: TDateTime): string;
 begin
@@ -4695,7 +4681,6 @@ begin
   else
     Result := '';
 end;
-{$ENDIF}
 
 function FourDigitYear: Boolean;
 begin
@@ -4888,7 +4873,7 @@ begin
   end;
 end;
 
-function MakeStr(C: Char; N: Integer): string;
+function MakeStr(C: Char; N: Integer): string; overload;
 begin
   if N < 1 then
     Result := ''
@@ -4899,7 +4884,7 @@ begin
   end;
 end;
 
-function MakeStr(C: WideChar; N: Integer): WideString;
+function MakeStr(C: WideChar; N: Integer): WideString; overload;
 begin
   if N < 1 then
     Result := ''
@@ -4976,6 +4961,17 @@ begin
     PChar(S1), Length(S1), PChar(S2), Length(S2)) - 2;
 end;
 {$ENDIF}
+{$IFDEF LINUX}
+function CompStr(const S1, S2: string): Integer;
+begin
+  Result := AnsiCompareStr(S1, S2);
+end;
+
+function CompText(const S1, S2: string): Integer;
+begin
+  Result := AnsiCompareText(S1, S2);
+end;
+{$ENDIF LINUX}
 
 function Copy2Symb(const S: string; Symb: Char): string;
 var
@@ -5832,10 +5828,10 @@ var
   TempDir: string;
   {$IFDEF MSWINDOWS}
   TempFile: array [0..MAX_PATH] of Char;
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   TempFile: string;
-  {$ENDIF}
+  {$ENDIF LINUX}
   STempDir: TFileName;
   Res: Integer;
 begin
@@ -5860,7 +5856,8 @@ begin
     TempFile); { address of buffer that receives the new filename}
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-//  TempFile := GetTempFileName('~JV');
+  TempFile := GetTempFileName('~JV');
+  Result := 1;
   {$ENDIF LINUX}
   if Res <> 0 then
     Result := TempFile
@@ -6101,7 +6098,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer;
+function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
 begin
   if LockFile(Handle, Offset, 0, LockSize, 0) then
     Result := 0
@@ -6109,7 +6106,7 @@ begin
     Result := GetLastError;
 end;
 
-function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer;
+function FileUnlock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
 begin
   if UnlockFile(Handle, Offset, 0, LockSize, 0) then
     Result := 0
@@ -6117,7 +6114,7 @@ begin
     Result := GetLastError;
 end;
 
-function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer;
+function FileLock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
 begin
   if LockFile(Handle, Int64Rec(Offset).Lo, Int64Rec(Offset).Hi,
     Int64Rec(LockSize).Lo, Int64Rec(LockSize).Hi) then
@@ -6126,7 +6123,7 @@ begin
     Result := GetLastError;
 end;
 
-function FileUnlock(Handle: Integer; Offset, LockSize: Int64): Integer;
+function FileUnlock(Handle: Integer; Offset, LockSize: Int64): Integer; overload;
 begin
   if UnlockFile(Handle, Int64Rec(Offset).Lo, Int64Rec(Offset).Hi,
     Int64Rec(LockSize).Lo, Int64Rec(LockSize).Hi) then
@@ -6378,12 +6375,12 @@ begin
   Result := ShellExecute(0, 'open', Value, nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
 end;
 
-procedure RaiseLastWin32;
+procedure RaiseLastWin32; overload;
 begin
   PError('');
 end;
 
-procedure RaiseLastWin32(Text: string);
+procedure RaiseLastWin32(const Text: string); overload;
 begin
   PError(Text);
 end;
@@ -7469,77 +7466,39 @@ end;
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
-    {$IFDEF MSWINDOWS}
-     {$WARNINGS OFF}
+    {$WARNINGS OFF} // HeapAllocFlags is platform
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-     {$WARNINGS ON}
-    {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  begin
-    Result := Libc.malloc(Size + 4);
-    if Result <> nil then
-    begin
-      PInteger(Result)^ := Size;
-      Result := Pointer(Integer(Result) + SizeOf(Integer));
-    end;
-  end
-  {$ENDIF LINUX}
+    {$WARNINGS ON}
   else
     Result := nil;
 end;
 
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 begin
-  {$IFDEF MSWINDOWS}
-   {$WARNINGS OFF}
-  Result := GlobalReallocPtr(fpBlock, Size,
-    HeapAllocFlags or GMEM_ZEROINIT);
-   {$WARNINGS ON}
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  fpBlock := Pointer(Integer(fpBlock) - SizeOf(Integer));
-  Result := Libc.realloc(fpBlock, Size);
-  if Result <> nil then
-  begin
-    PInteger(Result)^ := Size;
-    Result := Pointer(Integer(Result) + SizeOf(Integer));
-  end;
-  {$ENDIF LINUX}
+  {$WARNINGS OFF} // HeapAllocFlags is platform
+  Result := GlobalReallocPtr(fpBlock, Size, HeapAllocFlags or GMEM_ZEROINIT);
+  {$WARNINGS ON}
 end;
 
 procedure FreeMemo(var fpBlock: Pointer);
 begin
   if fpBlock <> nil then
   begin
-    {$IFDEF MSWINDOWS}
     GlobalFreePtr(fpBlock);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    fpBlock := Pointer(Integer(fpBlock) - SizeOf(Integer));
-    Libc.free(fpBlock);
-    {$ENDIF LINUX}
     fpBlock := nil;
   end;
 end;
 
 function GetMemoSize(fpBlock: Pointer): Longint;
-{$IFDEF MSWINDOWS}
 var
   hMem: THandle;
-{$ENDIF}
 begin
   Result := 0;
   if fpBlock <> nil then
   begin
-    {$IFDEF MSWINDOWS}
     hMem := GlobalHandle(fpBlock);
     if hMem <> 0 then
       Result := GlobalSize(hMem);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    fpBlock := Pointer(Integer(fpBlock) - SizeOf(Integer));
-    Result := PInteger(fpBlock)^;
-    {$ENDIF LINUX}
   end;
 end;
 
@@ -7894,10 +7853,10 @@ begin
   begin
     {$IFDEF VCL}
     hwndOwner := Handle;
-    {$ENDIF}
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     hwndOwner := QWidget_WinID(handle);
-    {$ENDIF}
+    {$ENDIF VisualCLX}
     pidlRoot := nil;
     pszDisplayName := FN;
     lpszTitle := PChar(Title);
