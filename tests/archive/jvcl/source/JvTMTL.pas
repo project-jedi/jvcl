@@ -127,6 +127,8 @@ type
       Shift: TShiftState; X, Y: Integer);
     // this is needed so we receive the arrow keys
     procedure WMGetDlgCode(var Msg: TWmGetDlgCode); message WM_GETDLGCODE;
+    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+
     procedure DrawFrame(ACanvas: TCanvas; AColor: TColor;
       ALineWidth: Integer; ARect: TRect);
     procedure SetTodayColor(const Value: TColor);
@@ -146,9 +148,8 @@ type
     function ReadMagic(Stream: TStream): Boolean;
     procedure StartTimer;
     procedure StopTimer;
+
   protected
-    function GetEnabled: Boolean; override;
-    procedure SetEnabled(Value: Boolean); override;
     procedure Paint; override;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -168,7 +169,6 @@ type
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 12;
     property Cursor: TCursor read GetCursor write SetCursor;
     property DayWidth: Integer read FDayWidth write SetDayWidth default 19;
-    property Enabled: Boolean read GetEnabled write SetEnabled;
     property ObjectsFontStyle: TFontStyles read FObjectsFontStyle write SetObjectsFontStyle default [fsUnderline];
     property ImageCursor: TCursor read FImageCursor write SetImageCursor default crHandPoint;
     property Images: TImageList read FImages write SetImages;
@@ -1005,6 +1005,14 @@ begin
   Msg.Result := Msg.Result or DLGC_WANTARROWS;
 end;
 
+procedure TJvCustomTMTimeline.CMEnabledChanged(var Message: TMessage);
+begin
+  inherited;
+  FLeftBtn.Enabled := Enabled;
+  FRightBtn.Enabled := Enabled;
+  Invalidate;
+end;
+
 procedure TJvCustomTMTimeline.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
@@ -1272,19 +1280,6 @@ begin
     ScrollDate(Self, 1);
 end;
 
-function TJvCustomTMTimeline.GetEnabled: Boolean;
-begin
-  Result := inherited GetEnabled;
-end;
-
-procedure TJvCustomTMTimeline.SetEnabled(Value: Boolean);
-begin
-  inherited SetEnabled(Value);
-  FLeftBtn.Enabled := Value;
-  FRightBtn.Enabled := Value;
-  Invalidate;
-end;
-
 function TJvCustomTMTimeline.GetVisibleDays: Integer;
 begin
   Result := Trunc(GetLastVisibleDate - Self.Date) + 1;
@@ -1325,6 +1320,7 @@ begin
     Invalidate;
   end;
 end;
+
 
 end.
 
