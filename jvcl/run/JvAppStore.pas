@@ -69,6 +69,8 @@ type
     const Index: Integer) of object;
   TAppStoreListDelete = procedure(Sender: TJvCustomAppStore; const Path: string;
     const First, Last: Integer) of object;
+  TAppStorePropTranslate = procedure(Sender: TJvCustomAppStore; Instance: TPersistent;
+    var Name: string; const Reading: Boolean) of object;
 
   TJvAppStoreOptions = class(TPersistent)
   private
@@ -290,10 +292,10 @@ type
     procedure WriteEnumeration(const Path: string; const TypeInfo: PTypeInfo;
       const Value); virtual;
     { Retrieves a set. If the value is not found, the Default will be returned. }
-    procedure ReadSet(const Path: string; const TypeInfo: PTypeInfo; const Default;
+    procedure ReadSet(const Path: string; const ATypeInfo: PTypeInfo; const Default;
       out Value); virtual;
     { Stores a set. }
-    procedure WriteSet(const Path: string; const TypeInfo: PTypeInfo; const Value); virtual;
+    procedure WriteSet(const Path: string; const ATypeInfo: PTypeInfo; const Value); virtual;
     { Retrieves the specified Boolean value. If the value is not found, the Default will be
       returned. If the value is not an Boolean (or can't be converted to a Boolean an EConvertError
       exception will be raised. }
@@ -302,11 +304,13 @@ type
       The value is stored as String TRUE/FALSE. }
     procedure WriteBoolean(const Path: string; Value: Boolean); virtual;
     { Retrieves a TPersistent-Object with all of its published properties }
-    function ReadPersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: Boolean = True; const ClearFirst: Boolean = True): PTypeInfo;
+    procedure ReadPersistent(const Path: string; const PersObj: TPersistent;
+      const Recursive: Boolean = True; const ClearFirst: Boolean = True;
+      const PropNameTranslator: TAppStorePropTranslate = nil);
     { Stores a TPersistent-Object with all of its published properties}
     procedure WritePersistent(const Path: string; const PersObj: TPersistent;
-      const Recursive: Boolean = True);
+      const Recursive: Boolean = True; const IgnoreProperties: TStrings = nil;
+      const PropNameTranslator: TAppStorePropTranslate = nil);
 
     { Translates a Char value to a (valid) key name. Used by the set storage methods. }
     function GetCharName(Ch: Char): string; virtual;
@@ -980,7 +984,7 @@ begin
     WriteInteger(Path, OrdOfEnum(Value, GetTypeData(TypeInfo).OrdType));
 end;
 
-procedure TJvCustomAppStore.ReadSet(const Path: string; const TypeInfo: PTypeInfo; const Default;
+procedure TJvCustomAppStore.ReadSet(const Path: string; const ATypeInfo: PTypeInfo; const Default;
   out Value);
 var
   Lst: TStrings;
@@ -990,21 +994,21 @@ begin
   begin
     Lst := TStringList.Create;
     try
-      with (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
+      with (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
       begin
         case GetTypeKind of
           tkEnumeration:
             begin
-              with ((JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as
+              with ((JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as
                   IJclEnumerationTypeInfo) do
                 for I := GetMinValue to GetMaxValue do
                   if ReadBoolean(ConcatPaths([Path, GetNames(I)]), False) then
                     Lst.Add(GetNames(I));
-              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
+              (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
             end;
           tkChar:
             begin
-              JclStrToSet(TypeInfo, Value, ''); // empty out value
+              JclStrToSet(ATypeInfo, Value, ''); // empty out value
               for I := GetMinValue to GetMaxValue do
                 if ReadBoolean(ConcatPaths([Path, GetCharName(Chr(I))]), False) then
                   Include(TIntegerSet(Value), I);
@@ -1014,7 +1018,7 @@ begin
               for I := GetMinValue to GetMaxValue do
                 if ReadBoolean(ConcatPaths([Path, GetIntName(I)]), False) then
                   Lst.Add(IntToStr(I));
-              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
+              (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).SetAsList(Value, Lst);
             end;
           else
             raise EJVCLException.Create('Unknown base type for given set.');
@@ -1025,27 +1029,27 @@ begin
     end;
   end
   else // It's stored as a string value or not stored at all
-    JclStrToSet(TypeInfo, Value, ReadString(Path, JclSetToStr(TypeInfo, Default, True)));
+    JclStrToSet(ATypeInfo, Value, ReadString(Path, JclSetToStr(ATypeInfo, Default, True)));
 end;
 
-procedure TJvCustomAppStore.WriteSet(const Path: string; const TypeInfo: PTypeInfo; const Value);
+procedure TJvCustomAppStore.WriteSet(const Path: string; const ATypeInfo: PTypeInfo; const Value);
 var
   Lst: TStrings;
   I: Integer;
 begin
   if StoreOptions.SetAsString then
-    WriteString(Path, JclSetToStr(TypeInfo, Value, True))
+    WriteString(Path, JclSetToStr(ATypeInfo, Value, True))
   else
   begin
     Lst := TStringList.Create;
     try
-      with (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
+      with (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as IJclOrdinalRangeTypeInfo do
       begin
         case GetTypeKind of
           tkEnumeration:
             begin
-              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
-              with ((JclTypeInfo(TypeInfo) as IJclSetTypeInfo).BaseType as
+              (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
+              with ((JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).BaseType as
                   IJclEnumerationTypeInfo) do
                 for I := GetMinValue to GetMaxValue do
                   WriteBoolean(ConcatPaths([Path, GetNames(I)]),
@@ -1058,7 +1062,7 @@ begin
             end;
           tkInteger:
             begin
-              (JclTypeInfo(TypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
+              (JclTypeInfo(ATypeInfo) as IJclSetTypeInfo).GetAsList(Value, False, Lst);
               for I := GetMinValue to GetMaxValue do
                 WriteBoolean(ConcatPaths([Path, GetIntName(I)]),
                   Lst.IndexOf(IntToStr(I)) > - 1);
@@ -1071,7 +1075,7 @@ begin
       FreeAndNil(Lst);
     end;
   end;
-  WriteString(Path, JclSetToStr(TypeInfo, Value, true));
+  WriteString(Path, JclSetToStr(ATypeInfo, Value, True));
 end;
 
 function TJvCustomAppStore.GetPropCount(Instance: TPersistent): Integer;
@@ -1100,21 +1104,24 @@ begin
   end;
 end;
 
-function TJvCustomAppStore.ReadPersistent(const Path: string; const PersObj: TPersistent;
-  const Recursive, ClearFirst: Boolean): PTypeInfo;
+procedure TJvCustomAppStore.ReadPersistent(const Path: string; const PersObj: TPersistent;
+  const Recursive, ClearFirst: Boolean; const PropNameTranslator: TAppStorePropTranslate);
 var
   Index: Integer;
   PropName: string;
+  KeyName: string;
   PropPath: string;
   TmpValue: Integer;
 begin
-  Result := nil;
   if not Assigned(PersObj) then
     Exit;
   for Index := 0 to GetPropCount(PersObj) - 1 do
   begin
     PropName := GetPropName(PersObj, Index);
-    PropPath := Path + '\' + PropName;
+    KeyName := PropName;
+    if @PropNameTranslator <> nil then
+      PropNameTranslator(Self, PersObj, KeyName, True);
+    PropPath := ConcatPaths([Path, KeyName]);
     case PropType(PersObj, PropName) of
       tkLString,
       tkWString,
@@ -1151,10 +1158,12 @@ begin
 end;
 
 procedure TJvCustomAppStore.WritePersistent(const Path: string; const PersObj: TPersistent;
-  const Recursive: Boolean);
+  const Recursive: Boolean; const IgnoreProperties: TStrings;
+  const PropNameTranslator: TAppStorePropTranslate);
 var
   Index: Integer;
   PropName: string;
+  KeyName: string;
   PropPath: string;
   TmpValue: Integer;
 begin
@@ -1163,37 +1172,41 @@ begin
   for Index := 0 to GetPropCount(PersObj) - 1 do
   begin
     PropName := GetPropName(PersObj, Index);
-    PropPath := Path + '\' + PropName;
-    case PropType(PersObj, PropName) of
-      tkLString,
-      tkWString,
-      tkString:
-        WriteString(PropPath, GetStrProp(PersObj, PropName));
-      tkEnumeration:
+    KeyName := PropName;
+    if @PropNameTranslator <> nil then
+      PropNameTranslator(Self, PersObj, KeyName, False);
+    PropPath := ConcatPaths([Path, KeyName]);
+    if (IgnoreProperties = nil) or (IgnoreProperties.IndexOf(PropName) = -1) then
+      case PropType(PersObj, PropName) of
+        tkLString,
+        tkWString,
+        tkString:
+          WriteString(PropPath, GetStrProp(PersObj, PropName));
+        tkEnumeration:
+          begin
+            TmpValue := GetOrdProp(PersObj, PropName);
+            WriteEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+          end;
+        tkSet:
+          begin
+            TmpValue := GetOrdProp(PersObj, PropName);
+            WriteSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+          end;
+        tkChar,
+        tkInteger:
+          WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
+        tkInt64:
+          WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
+        tkFloat:
+          WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
+        tkClass:
         begin
-          TmpValue := GetOrdProp(PersObj, PropName);
-          WriteEnumeration(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
+          if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
+            WriteStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)))
+          else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
+            WritePersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True);
         end;
-      tkSet:
-        begin
-          TmpValue := GetOrdProp(PersObj, PropName);
-          WriteSet(PropPath, GetPropInfo(PersObj, PropName).PropType^, TmpValue);
-        end;
-      tkChar,
-      tkInteger:
-        WriteInteger(PropPath, GetOrdProp(PersObj, PropName));
-      tkInt64:
-        WriteString(PropPath, IntToStr(GetInt64Prop(PersObj, PropName)));
-      tkFloat:
-        WriteFloat(PropPath, GetFloatProp(PersObj, PropName));
-      tkClass:
-      begin
-        if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
-          WriteStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)))
-        else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
-          WritePersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True);
       end;
-    end;  
   end;
 end;
 
