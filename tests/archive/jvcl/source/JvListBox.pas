@@ -97,7 +97,7 @@ type
     function GetItems: TStrings;
     procedure SetAlignment(const Value: TAlignment);
   protected
-    
+
     procedure LBAddString(var Msg: TMessage); message LB_ADDSTRING;
     procedure LBDeleteString(var Msg: TMessage); message LB_DELETEstring;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -451,7 +451,9 @@ begin
     for i := 0 to Items.Count - 1 do
       Selected[i] := False;
     Items.EndUpdate;
-  end;
+  end
+  else
+    ItemIndex := -1;
 end;
 {**************************************************}
 
