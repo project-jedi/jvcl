@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvComponent, JvClipboardViewer, ExtCtrls, ExtDlgs,
-  ComCtrls, Menus, JvComboListBox, JvListBox;
+  ComCtrls, Menus, JvComboListBox, JvColorBox, JvColorButton;
 
 type
 
@@ -43,6 +43,10 @@ type
     Label5: TLabel;
     udColumns: TUpDown;
     chkInsert: TCheckBox;
+    cbPopupAlign: TComboBox;
+    Label6: TLabel;
+    chkCustomDrop: TCheckBox;
+    JvColorButton1: TJvColorButton;
     procedure JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
     procedure JvClipboardViewer1Text(Sender: TObject; Text: string);
     procedure btnCopyTextClick(Sender: TObject);
@@ -59,9 +63,13 @@ type
     procedure btnLoadTextClick(Sender: TObject);
     procedure chkHotTrackComboClick(Sender: TObject);
     procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
+    procedure cbPopupAlignChange(Sender: TObject);
   private
     { Private declarations }
     LB: TJvComboListBox;
+    procedure DoDropDown(Sender: TObject; Index, X, Y: integer; var AllowDrop:boolean);
+    procedure DoAccept(Sender: TObject; Index: integer;
+      const Value: string);
   public
     { Public declarations }
   end;
@@ -71,7 +79,7 @@ var
 
 implementation
 uses
-  Math, Clipbrd;
+  Math, Clipbrd, DropFrm;
 
 {$R *.dfm}
 
@@ -153,6 +161,40 @@ begin
   LB.ItemHeight := udItemHeight.Position;
 end;
 
+procedure TForm1.DoAccept(Sender:TObject;Index:integer; const Value:string);
+begin
+  if Index < 0 then Index := LB.ItemIndex;
+  if Index >= 0 then
+  begin
+    LB.Items.Objects[Index].Free;
+    LB.Items.Objects[Index] := nil;
+    LB.Items[Index] := Value;
+  end;
+end;
+
+procedure TForm1.DoDropDown(Sender: TObject;Index, X,Y:integer; var AllowDrop:boolean);
+var
+  R:TRect;
+  P:TPoint;
+begin
+  AllowDrop := not chkCustomDrop.Checked;
+  if not AllowDrop then
+  begin
+    R := LB.ItemRect(Index);
+    P := LB.ClientToScreen(Point(R.Right, R.Top));
+    if frmDrop = nil then
+      frmDrop := TfrmDrop.Create(Application);
+    with frmDrop do
+    begin
+      Top := P.Y + LB.ItemHeight;
+      Left := P.X - Width;
+      // notify dialog when the user clicks outside the form
+      OnAccept := DoAccept;
+      Show;
+    end;
+  end;
+end;
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   LB := TJvComboListBox.Create(Self);
@@ -160,10 +202,12 @@ begin
   LB.Width := 200;
   LB.Parent := Self;
   LB.DropDownMenu := PopupMenu1;
+  LB.OnDropDown := DoDropDown;
 //  LB.ScrollBars := ssBoth;
 //  LB.HotTrack := true;
   Splitter1.Left := LB.Left - 10;
   cbDrawStyle.ItemIndex := Ord(LB.DrawStyle);
+  cbPopupAlign.ItemIndex := Ord(PopupMenu1.Alignment);
   LB.ItemHeight := udItemHeight.Position;
   udButtonWidth.Position := LB.ButtonWidth;
   udColumns.Position := LB.Columns;
@@ -231,6 +275,11 @@ begin
     LB.ScrollBars := ssHorizontal
   else
     LB.ScrollBars := ssVertical;
+end;
+
+procedure TForm1.cbPopupAlignChange(Sender: TObject);
+begin
+  PopupMenu1.Alignment := TPopupAlignment(cbPopupAlign.ItemIndex);
 end;
 
 end.
