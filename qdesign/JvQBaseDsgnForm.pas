@@ -36,8 +36,8 @@ unit JvQBaseDsgnForm;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, QControls, QForms, QDialogs, 
+  SysUtils, Classes, 
+  Types, QGraphics, QControls, QForms, QDialogs,
   JvQComponent;
 
 type
@@ -83,14 +83,11 @@ uses
   Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  IniFiles,
+  JvQRegistryIniFile,
   {$ENDIF LINUX}
   JvQBaseDsgnFrame, JvQConsts, JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 const
   cHeight = 'Height';
@@ -154,15 +151,13 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
+  with TJvRegistryIniFile.Create do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
   {$ENDIF MSWINDOWS}
     try
-      {$IFDEF MSWINDOWS}
       LazyWrite := False;
-      {$ENDIF MSWINDOWS}
       if OpenKey(GetRegKey, True) then
         try
           WriteInteger(cLeft, Left);
@@ -185,7 +180,7 @@ var
   I: Integer;
 begin
   {$IFDEF LINUX}
-  with TIniFile.Create(GetEnvironmentVariable('HOME') + PathDelim + SDelphiKey) do
+  with TJvRegistryIniFile.Create do
   {$ENDIF LINUX}
   {$IFDEF MSWINDOWS}
   with TRegistry.Create do
