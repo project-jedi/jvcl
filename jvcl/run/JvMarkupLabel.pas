@@ -35,7 +35,13 @@ unit JvMarkupLabel;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Messages,
+  {$IFdEF VCL}
+  Windows, Messages, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QWindows, 
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvComponent, JvMarkupCommon;
 
 type
@@ -45,9 +51,9 @@ type
     TagStack: TJvHTMLElementStack;
     FText: string;
     FBackColor: TColor;
-    FMarginLeft: integer;
-    FMarginRight: integer;
-    FMarginTop: integer;
+    FMarginLeft: Integer;
+    FMarginRight: Integer;
+    FMarginTop: Integer;
     FAlignment: TAlignment;
     procedure Refresh;
     procedure ParseHTML(s: string);
@@ -55,14 +61,16 @@ type
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
     procedure SetBackColor(const Value: TColor);
-    procedure SetText(const Value: string);
-    procedure SetMarginLeft(const Value: integer);
-    procedure SetMarginRight(const Value: integer);
-    procedure SetMarginTop(const Value: integer);
+    procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
+    procedure SetMarginLeft(const Value: Integer);
+    procedure SetMarginRight(const Value: Integer);
+    procedure SetMarginTop(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
   protected
     procedure FontChanged; override;
+    {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
+    {$ENDIF VCL}
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -72,12 +80,14 @@ type
     property BackColor: TColor read FBackColor write SetBackColor default clWhite;
     property Height default 100;
     property Width default 200;
-    property MarginLeft: integer read FMarginLeft write SetMarginLeft default 5;
-    property MarginRight: integer read FMarginRight write SetMarginRight default 5;
-    property MarginTop: integer read FMarginTop write SetMarginTop default 5;
+    property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
+    property MarginRight: Integer read FMarginRight write SetMarginRight default 5;
+    property MarginTop: Integer read FMarginTop write SetMarginTop default 5;
     property Text: string read FText write SetText;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
+    {$IFDEF VCL}
     property AutoSize;
+    {$ENDIF VCL}
     property Align;
     property Font;
 
@@ -121,7 +131,6 @@ implementation
 uses
   JvConsts, JvThemes;
 
-
 { TJvMarkupLabel }
 
 constructor TJvMarkupLabel.Create(AOwner: TComponent);
@@ -148,7 +157,7 @@ end;
 
 procedure TJvMarkupLabel.HTMLClearBreaks;
 var
-  I, C: integer;
+  I, C: Integer;
   El: TJvHTMLElement;
 begin
   C := ElementStack.Count;
@@ -163,10 +172,10 @@ end;
 
 procedure TJvMarkupLabel.HTMLElementDimensions;
 var
-  I, C: integer;
+  I, C: Integer;
   El: TJvHTMLElement;
-  H, A, W: integer;
-  Tm: TextMetric;
+  H, A, W: Integer;
+  Tm: TTextMetric;  
   S: string;
 begin
   C := ElementStack.Count;
@@ -209,17 +218,17 @@ end;
 
 procedure TJvMarkupLabel.ParseHTML(S: string);
 var
-  P: integer;
+  P: Integer;
   SE, ST: string;
   FText: string;
   FStyle: TFontStyles;
   FName: string;
-  FSize: integer;
-  FBreakLine: boolean;
+  FSize: Integer;
+  FBreakLine: Boolean;
   AColor, FColor: TColor;
   Element: TJvHTMLElement;
 
-  function HTMLStringToColor(V: string; var Col: TColor): boolean;
+  function HTMLStringToColor(V: string; var Col: TColor): Boolean;
   var
     VV: string;
   begin
@@ -283,9 +292,9 @@ var
 
   procedure ParseTag(SS: string);
   var
-    PP: integer;
+    PP: Integer;
     ATag, APar, AVal: string;
-    HaveParams: boolean;
+    HaveParams: Boolean;
   begin
     SS := Trim(SS);
     HaveParams := False;
@@ -416,11 +425,11 @@ var
   I, C, X, Y,
   ATotalWidth, AClientWidth, ATextWidth,
   BaseLine,
-  iSol, iEol, PendingCount, 
-  MaxHeight, MaxWidth, MaxAscent : integer;
+  iSol, iEol, PendingCount,
+  MaxHeight, {$IFDEF VCL} MaxWidth, {$ENDIF} MaxAscent: Integer;
   El: TJvHTMLElement;
-  Eol: boolean;
-  PendingBreak: boolean;
+  Eol: Boolean;
+  PendingBreak: Boolean;
   lSolText:string;
 
   procedure SetFont(EE: TJvHTMLElement);
@@ -434,10 +443,10 @@ var
     end;
   end;
 
-  procedure RenderString(EE: TJvHTMLElement; Test: boolean);
+  procedure RenderString(EE: TJvHTMLElement; Test: Boolean);
   var
     SS: string;
-    WW: integer;
+    WW: Integer;
   begin
     SetFont(EE);
     if EE.SolText <> '' then
@@ -458,9 +467,11 @@ begin
   C := ElementStack.Count;
   if C = 0 then Exit;
   HTMLClearBreaks;
+  {$IFDEF VCL}
   if AutoSize then
-    AClientWidth := 10000  // On se donne de la marge !
+    AClientWidth := 10000
   else
+  {$ENDIF VCL}
     AClientWidth := ClientWidth - MarginLeft - MarginRight;
 
   Canvas.Brush.Style := bsClear;
@@ -468,7 +479,9 @@ begin
   iSol := 0;
   PendingBreak := False;
   PendingCount := -1;
+  {$IFDEF VCL}
   MaxWidth := 0;
+  {$ENDIF VCL}
   repeat
     I := iSol;
     ATotalWidth := AClientWidth;
@@ -483,7 +496,7 @@ begin
         if not PendingBreak and (PendingCount <> i) then
         begin
           PendingBreak := True;
-          pendingCount := i;
+          PendingCount := i;
           iEol := I;
           Break;
         end
@@ -530,10 +543,11 @@ begin
         iEol := I;
       end;
     until Eol;
-    
+
     // render line
     BaseLine := MaxAscent;
 
+    {$IFDEF VCL}
     if AutoSize then
     begin
       X := MarginLeft;
@@ -541,7 +555,8 @@ begin
         MaxWidth := (ATextWidth + MarginLeft + MarginRight);
     end
     else
-    case FAlignment of
+    {$ENDIF VCL}
+    case Alignment of
       taLeftJustify  : X := MarginLeft;
       taRightJustify : X := Width - MarginRight - ATextWidth;
       taCenter       : X := MarginLeft + (Width - MarginLeft - MarginRight - ATextWidth) div 2;
@@ -556,11 +571,13 @@ begin
     Y := Y + MaxHeight;
     iSol := iEol;
   until (iEol >= C - 1) and (El.EolText = '');
+  {$IFDEF VCL}
   if AutoSize then
   begin
     Width := MaxWidth;
     Height := y + 5;
   end;
+  {$ENDIF VCL}
 end;
 
 procedure TJvMarkupLabel.SetAlignment(const Value: TAlignment);
@@ -581,25 +598,27 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvMarkupLabel.SetAutoSize(Value: Boolean);
 begin
   inherited SetAutoSize(Value);
   Invalidate;
 end;
+{$ENDIF VCL}
 
-procedure TJvMarkupLabel.SetMarginLeft(const Value: integer);
+procedure TJvMarkupLabel.SetMarginLeft(const Value: Integer);
 begin
   FMarginLeft := Value;
   Invalidate;
 end;
 
-procedure TJvMarkupLabel.SetMarginRight(const Value: integer);
+procedure TJvMarkupLabel.SetMarginRight(const Value: Integer);
 begin
   FMarginRight := Value;
   Invalidate;
 end;
 
-procedure TJvMarkupLabel.SetMarginTop(const Value: integer);
+procedure TJvMarkupLabel.SetMarginTop(const Value: Integer);
 begin
   FMarginTop := Value;
   Invalidate;
