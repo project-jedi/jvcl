@@ -5,7 +5,7 @@
                           Andreas Hausladen (Andreas.Hausladen@gmx.de)
  All rights reserved.
 
- Version 0.7
+ Version 1.0
  Description: Qt based wrappers for common MS Windows API's
  Purpose: Reduce coding effort for porting VCL based components to VisualCLX
           compatible components
@@ -247,6 +247,8 @@ function DrawTextBiDiModeFlagsReadingOnly: Longint;
 function DrawTextBiDiModeFlags(Flags: Longint): Longint;
 procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 function UseRightToLeftAlignment: Boolean;
+var
+  NewStyleControls: boolean;
 { colors }
 function GetSysColor(SysColor: Integer): TColorRef;
 function SetSysColor(RefColor: TColor; TrueColor: TColorRef): boolean;
@@ -1271,6 +1273,7 @@ function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Longword): LongBool;
 function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
+procedure FlushInstructionCache;
 
 { Limitations:
     - GetKeyState calls GetAsyncKeyState
@@ -1285,7 +1288,7 @@ const
 type
   PSecurityAttributes = Pointer;
 
-// events are limited to the process   
+// events are limited to the process
 function CreateEvent(EventAttributes: PSecurityAttributes;
   ManualReset, InitialState: LongBool; Name: PChar): THandle;
 function OpenEvent(DesiredAccess: Longword; InheritHandle: LongBool;
@@ -5851,14 +5854,14 @@ end;
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 var
   S: string;
-  pwdRec: PPasswordRecord;
+  psswrd: PPasswordRecord;
 begin
   Result := False;
   try
-    pwdRec :=  getpwuid(getuid); // static no need to free
-    if pwdRec <> nil then
+    psswrd :=  getpwuid(getuid); // static no need to free
+    if psswrd <> nil then
     begin
-      S := pwdRec.pw_gecos; //  user's real name? or pwd.pw_name
+      S := psswrd.pw_gecos; //  user's real name? or pwd.pw_name
       Size := Length(S) + 1;
       Result := S <> '';
       if Result and (Buffer <> nil) then
