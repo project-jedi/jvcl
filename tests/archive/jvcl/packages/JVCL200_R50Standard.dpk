@@ -411,6 +411,7 @@ contains
   JvFooter in '..\source\JvFooter.pas',
   JvPlugin in '..\source\JvPlugin.pas',
   JvPluginMan in '..\source\JvPluginMan.pas',
-  JvPlugCommon in '..\source\JvPlugCommon.pas';
-
+  JvPlugCommon in '..\source\JvPlugCommon.pas',
+  JvScheduledEvents in '..\source\JvScheduledEvents.pas',
+  JvWndProcHook in '..\source\JvWndProcHook.pas';
 end.

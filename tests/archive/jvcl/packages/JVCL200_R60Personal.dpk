@@ -413,6 +413,6 @@ contains
   JvPlugin in '..\source\JvPlugin.pas',
   JvPluginMan in '..\source\JvPluginMan.pas',
   JvPlugCommon in '..\source\JvPlugCommon.pas',
-  JvScheduledEvents in '..\source\JvScheduledEvents.pas';
-
+  JvScheduledEvents in '..\source\JvScheduledEvents.pas',
+  JvWndProcHook in '..\source\JvWndProcHook.pas';
 end.
