@@ -212,8 +212,8 @@ type
     FHideAllTabs: Boolean;
     FColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
+//    FOnMouseEnter: TNotifyEvent;
+//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FDrawTabShadow: Boolean;
     FHandleGlobalTab: Boolean;
@@ -251,8 +251,8 @@ type
     property DrawTabShadow: Boolean read FDrawTabShadow write SetDrawTabShadow default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property Color;
   end;
@@ -268,8 +268,8 @@ type
     FOnToolTip: TJvTrackToolTipEvent;
     FColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
+//    FOnMouseEnter: TNotifyEvent;
+//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOnChanged: TNotifyEvent;
     FShowRange: Boolean;
@@ -294,8 +294,8 @@ type
     property ToolTips: Boolean read FToolTips write SetToolTips default False;
     property ToolTipSide: TJvTrackToolTipSide read FToolTipSide write SetToolTipSide default tsLeft;
     property HintColor: TColor read FColor write FColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
     property Color;
@@ -339,8 +339,8 @@ type
     FOnSelectionChange: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
+//    FOnMouseEnter: TNotifyEvent;
+//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FCheckBoxes: Boolean;
@@ -436,8 +436,8 @@ type
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
     {$ENDIF COMPILER6_UP}
     property OnComparePage: TJvTreeViewComparePageEvent read FOnComparePage write FOnComparePage;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnCustomDrawItem: TTVCustomDrawItemEvent read FOnCustomDrawItem write FOnCustomDrawItem;
     property OnEditCancelled: TNotifyEvent read FOnEditCancelled write FOnEditCancelled;

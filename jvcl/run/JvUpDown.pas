@@ -51,8 +51,8 @@ type
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
+//    FOnMouseEnter: TNotifyEvent;
+//    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FIncrement: Integer;
     FMin: Integer;
@@ -94,8 +94,8 @@ type
     property Max: Integer read FMax write SetMax default 100;
     property Min: Integer read FMin write SetMin default 0;
     property Position: Integer read GetPosition write SetPosition default 0;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
