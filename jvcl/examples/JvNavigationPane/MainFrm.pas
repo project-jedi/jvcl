@@ -7,7 +7,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvExControls, JvComponent, JvXPBar, JvNavigationPane,
   ComCtrls, ExtCtrls, Menus, ImgList, StdCtrls, JvPageList, JvButton,
-  CheckLst;
+  CheckLst, StdActns, ActnList, JvDialogActns, JvRollOut, JvActions;
 
 type
   TForm1 = class(TForm)
@@ -18,14 +18,19 @@ type
     N1: TMenuItem;
     Dontallowresize1: TMenuItem;
     ChangeFont1: TMenuItem;
-    Destroy1: TMenuItem;
     SmallImages: TImageList;
+    Colors1: TMenuItem;
+    Standard1: TMenuItem;
+    Blue1: TMenuItem;
+    Silver1: TMenuItem;
+    Olive1: TMenuItem;
+    JvNavPaneStyleManager1: TJvNavPaneStyleManager;
     procedure FormCreate(Sender: TObject);
     procedure Dontallowresize1Click(Sender: TObject);
     procedure HideAll1Click(Sender: TObject);
     procedure ShowAll1Click(Sender: TObject);
     procedure ChangeFont1Click(Sender: TObject);
-    procedure Destroy1Click(Sender: TObject);
+    procedure SchemaClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,6 +54,7 @@ var
   N:TTreeNode;
   R:TRect;
 begin
+  JvNavPaneStyleManager1.Theme := nptCustom;
   // this is how to create a NavPane at run-time
   // also shows how to create and insert pages as well as controls on pages
   NP := TJvNavigationPane.Create(Self);
@@ -61,6 +67,7 @@ begin
   NP.DropDownMenu := PopupMenu1;
   NP.SmallImages := SmallImages;
   NP.LargeImages := LargeImages;
+  NP.StyleManager := JvNavPaneStyleManager1;
 
   Page := TJvNavPanelPage.Create(Self);
   Page.Caption := 'Mail';
@@ -70,8 +77,24 @@ begin
   GH.Parent := Page;
   GH.Align := alTop;
   GH.Images := SmallImages;
-  GH.ImageIndex := Page.ImageIndex;
+  GH.ImageIndex := -1;
   GH.Caption := Page.Caption;
+  GH.StyleManager := JvNavPaneStyleManager1;
+  // use a button here instad of the icon:
+  with TJvNavIconButton.Create(Self) do
+  begin
+    Parent := GH;
+    Align := alRight;
+    ButtonType := nibImage;
+//    Colors.SelectedColorFrom := clNone;
+//    Colors.SelectedColorTo := clNone;
+    Colors.ButtonHotColorFrom := clNone;
+    Colors.ButtonHotColorTo := clNone;
+    Images := SmallImages;
+    DropDownMenu := PopupMenu1;
+    ImageIndex := 0;
+    StyleManager := JvNavPaneStyleManager1;
+  end;
 
   with TJvNavPanelDivider.Create(Self) do
   begin
@@ -81,6 +104,7 @@ begin
     Align := alTop;
     Enabled := false;
     Cursor := crDefault;
+    StyleManager := JvNavPaneStyleManager1;
   end;
 
   with TTreeView.Create(Self) do
@@ -104,6 +128,7 @@ begin
     Top := 100;
     Align := alTop;
     Cursor := crSizeNS;
+    StyleManager := JvNavPaneStyleManager1;
   end;
 
   with TTreeView.Create(Self) do
@@ -136,6 +161,7 @@ begin
   GH.Caption := Page.Caption;
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
+  GH.StyleManager := JvNavPaneStyleManager1;
   // NB! TMonthCalendar messes up the form when you size the form smaller than one calendar width
   with TMonthCalendar.Create(Self) do
   begin
@@ -158,6 +184,7 @@ begin
     Align := alTop;
     Cursor := crDefault;
     Enabled := false;
+    StyleManager := JvNavPaneStyleManager1;
   end;
   with TCheckListBox.Create(Self) do
   begin
@@ -175,6 +202,7 @@ begin
     Top := 1500;
     Align := alTop;
     Cursor := crSizeNS;
+    StyleManager := JvNavPaneStyleManager1;
   end;
   with TCheckListBox.Create(Self) do
   begin
@@ -218,6 +246,7 @@ begin
   GH.Caption := Page.Caption;
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
+  GH.StyleManager := JvNavPaneStyleManager1;
   with TListBox.Create(Self) do
   begin
     Parent := Page;
@@ -260,6 +289,7 @@ begin
   GH.Caption := Page.Caption;
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
+  GH.StyleManager := JvNavPaneStyleManager1;
 
   Page := TJvNavPanelPage.Create(Self);
   Page.Caption := 'Notes';
@@ -271,6 +301,7 @@ begin
   GH.Caption := Page.Caption;
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
+  GH.StyleManager := JvNavPaneStyleManager1;
 
 
   Page := TJvNavPanelPage.Create(Self);
@@ -283,6 +314,7 @@ begin
   GH.Caption := Page.Caption;
   GH.Images := SmallImages;
   GH.ImageIndex := Page.ImageIndex;
+  GH.StyleManager := JvNavPaneStyleManager1;
 
 {  with TJvOutlookSplitter.Create(Self) do
   begin
@@ -295,6 +327,8 @@ begin
   end;
   }
   NP.ActivePageIndex := 0;
+  // now, set the real start theme:
+  JvNavPaneStyleManager1.Theme := nptStandard;
 end;
 
 procedure TForm1.Dontallowresize1Click(Sender: TObject);
@@ -321,9 +355,10 @@ begin
    NP.NavPanelFont.Style := [fsBold];
 end;
 
-procedure TForm1.Destroy1Click(Sender: TObject);
+procedure TForm1.SchemaClick(Sender: TObject);
 begin
-  NP.Free;
+  JvNavPaneStyleManager1.Theme := TJvNavPanelTheme((Sender as TMenuItem).Tag);
+  (Sender as TMenuItem).Checked := true;
 end;
 
 end.
