@@ -339,9 +339,9 @@ uses
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
-  {$IFDEF USEJVCL}
+  {.$IFDEF USEJVCL}
   JvComponent, JvThemes,
-  {$ENDIF USEJVCL}
+  {.$ENDIF USEJVCL}
   JvWizardCommon;
 
 type
@@ -2395,6 +2395,9 @@ begin
     inherited;
   {$ENDIF JVCLThemesEnabledD56}
   Msg.Result := 1;
+  {$IFDEF COMPILER9_UP}
+  inherited;
+  {$ENDIF COMPILER9_UP}
 end;
 {$ENDIF VCL}
 
