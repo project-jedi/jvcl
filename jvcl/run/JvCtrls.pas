@@ -204,7 +204,7 @@ type
 implementation
 
 uses
-  Consts, SysUtils, Forms, ActnList, 
+  Consts, SysUtils, Forms, ActnList,
   JvJCLUtils, JvThemes, JvFinalize;
 
 {$IFDEF MSWINDOWS}
@@ -329,6 +329,11 @@ begin
   begin
     SetRect(RectImage, 0, 0, 0, 0);
     InternalSpacing := 0;
+  end;
+  if FAlignment <> taCenter then
+  begin
+    if RectText.Right < Width - RectImage.Right - 18 then
+      RectText.Right := Width - RectImage.Right - 18;
   end;
   BlockWidth := RectImage.Right + InternalSpacing + RectText.Right;
   ButtonWidth := ButtonRect.Right - ButtonRect.Left;
