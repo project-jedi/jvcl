@@ -1,0 +1,30 @@
+  The Provider property is used to link a <LINK TJvCustomDataProvider, data provider> to the
+  control.
+
+  The Provider property refers to a <LINK TJvDataConsumer, consumer service> which provides methods
+  and properties to select a provider and optionally a context. In addition it will support a number
+  of consumer service extentions as determined by the both the provider as well as the attributes
+  used when the consumer service was created (which happened internally for the control).
+
+  To be able to set other properties and/or invoke methods of these consumer service extensions, one
+  should query the consumer service (this Provider property) for the interface needed:
+  <CODE>
+  <AUTOLINK OFF>
+  <B>if</B> Supports(Provider <B>as</B> IJvDataConsumer, <I><interface GUID or type></I>, <I><variable></I>) <B>then</B>
+  <B>begin</B>
+    ...
+  <B>end</B>;
+  <AUTOLINK ON>
+  </CODE>
+  or:
+  <CODE>
+  <AUTOLINK OFF>
+  <B>if</B> Provider.GetInterface(<I><interface GUID or type></I>, <I><variable></I>) <B>then</B>
+  <B>begin</B>
+    ...
+  <B>end</B>;
+  <AUTOLINK ON>
+  </CODE>
+  You should first declare a variable of the type of interface you will request. Within the
+  begin/end block you can then use that variable which will contain a reference to the interface
+  requested.
