@@ -44,7 +44,7 @@ type
     ScrollBarAxis2: TScrollBar;
     SpinEditAxis0: TJvSpinEdit;
     SpinEditAxis1: TJvSpinEdit;
-    SpinEditAxis2: TJVSpinEdit;
+    SpinEditAxis2: TJvSpinEdit;
     LabelAxis0: TLabel;
     LabelAxis1: TLabel;
     LabelAxis2: TLabel;

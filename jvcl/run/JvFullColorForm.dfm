@@ -1,6 +1,7 @@
 object JvFullColorFrm: TJvFullColorFrm
   Left = 350
   Top = 319
+  ActiveControl = ColorBox
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Color Spaces Editor, Choose your color'
@@ -138,7 +139,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Top = 40
       Width = 65
       Height = 22
-      MaxValue = 255.000000000000000000
+      MaxValue = 255
       TabOrder = 1
       OnChange = SpinEditChange
     end
@@ -148,7 +149,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Top = 96
       Width = 65
       Height = 22
-      MaxValue = 255.000000000000000000
+      MaxValue = 255
       TabOrder = 3
       OnChange = SpinEditChange
     end
@@ -158,7 +159,7 @@ object JvFullColorFrm: TJvFullColorFrm
       Top = 152
       Width = 65
       Height = 22
-      MaxValue = 255.000000000000000000
+      MaxValue = 255
       TabOrder = 5
       OnChange = SpinEditChange
     end

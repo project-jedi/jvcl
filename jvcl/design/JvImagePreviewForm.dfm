@@ -5,7 +5,7 @@ object ImageForm: TImageForm
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Select Image'
-  ClientHeight = 262
+  ClientHeight = 265
   ClientWidth = 485
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -51,7 +51,7 @@ object ImageForm: TImageForm
     Width = 146
     Height = 15
     AutoSize = False
-    Caption = 'E:\Daten\dev\JVCL3\design'
+    Caption = 'E:\...\JVCL3\packages\d6'
   end
   object ImageName: TLabel
     Left = 319
@@ -62,7 +62,7 @@ object ImageForm: TImageForm
   end
   object Label2: TLabel
     Left = 4
-    Top = 216
+    Top = 224
     Width = 81
     Height = 13
     Caption = 'List files of &type:  '
@@ -70,7 +70,7 @@ object ImageForm: TImageForm
   end
   object Label3: TLabel
     Left = 158
-    Top = 216
+    Top = 224
     Width = 36
     Height = 13
     Caption = 'Dri&ves: '
@@ -119,16 +119,17 @@ object ImageForm: TImageForm
     Left = 158
     Top = 51
     Width = 148
-    Height = 162
+    Height = 164
     DirLabel = PathLabel
     FileList = FileListBox
+    IntegralHeight = True
     ItemHeight = 16
     TabOrder = 2
     OnChange = FileListBoxClick
   end
   object DriveCombo: TDriveComboBox
     Left = 158
-    Top = 233
+    Top = 241
     Width = 148
     Height = 19
     DirList = DirectoryList
@@ -163,7 +164,7 @@ object ImageForm: TImageForm
     Left = 4
     Top = 51
     Width = 146
-    Height = 148
+    Height = 164
     FileEdit = FileEdit
     FileType = [ftReadOnly, ftHidden, ftNormal]
     IntegralHeight = True
@@ -177,7 +178,7 @@ object ImageForm: TImageForm
   end
   object FilterCombo: TFilterComboBox
     Left = 4
-    Top = 233
+    Top = 241
     Width = 146
     Height = 21
     FileList = FileListBox
@@ -189,7 +190,7 @@ object ImageForm: TImageForm
     OnChange = FileListBoxClick
   end
   object StretchCheck: TCheckBox
-    Left = 321
+    Left = 318
     Top = 198
     Width = 116
     Height = 15
@@ -199,7 +200,7 @@ object ImageForm: TImageForm
   end
   object OkBtn: TButton
     Left = 318
-    Top = 228
+    Top = 236
     Width = 77
     Height = 25
     Caption = 'OK'
@@ -209,7 +210,7 @@ object ImageForm: TImageForm
   end
   object CancelBtn: TButton
     Left = 401
-    Top = 228
+    Top = 236
     Width = 77
     Height = 25
     Cancel = True
@@ -266,8 +267,7 @@ object ImageForm: TImageForm
       DDDDDDDDDDDDDDDDDDDDD8888888888DDDDDD8888888888DDDDDD88888888888
       DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD888DDDDDDDDDDDDDDDD
       DDDDDDDDDDDDDDDDDDDD}
-    Left = 244
-    Top = 6
+    Left = 240
   end
   object FormStorage: TJvFormStorage
     AppStorage = AppStorage
@@ -276,13 +276,12 @@ object ImageForm: TImageForm
       'StretchCheck.Checked')
     StoredValues = <>
     Left = 272
-    Top = 6
   end
   object AppStorage: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = '%NONE%'
     SubStorages = <>
-    Left = 215
-    Top = 5
+    Left = 208
   end
 end

@@ -195,12 +195,12 @@ object GradCaptionsEditor: TGradCaptionsEditor
     MinFontSize = 0
     MaxFontSize = 0
     Left = 24
-    Top = 76
+    Top = 80
   end
   object ColorDialog: TColorDialog
     Ctl3D = True
-    Left = 84
-    Top = 76
+    Left = 64
+    Top = 80
   end
   object GradientCaption: TJvGradientCaption
     Captions = <>
@@ -210,11 +210,11 @@ object GradCaptionsEditor: TGradCaptionsEditor
   end
   object FormStorage: TJvFormStorage
     AppStorage = AppStorage
-    AppStoragePath = '%FORM_NAME%'
+    AppStoragePath = '%FORM_NAME%\'
     StoredValues = <
       item
       end>
-    Left = 80
+    Left = 64
     Top = 24
   end
   object AppStorage: TJvAppRegistryStorage
@@ -222,7 +222,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     Root = '%NONE%'
     SubStorages = <>
-    Left = 133
+    Left = 104
     Top = 24
   end
 end
