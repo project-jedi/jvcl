@@ -36,6 +36,7 @@ dc.exe \
 MakePNG.exe \
 Res2BMP.exe \
 ErrLook.exe \
+stripCmtPO.exe \
 
 #---------------------------------------------------------------------------------------------------
 
@@ -76,6 +77,11 @@ jtouch.exe: JTouch\jtouch.dpr
 
 crlf.exe: JvAdjustLineBreaks\crlf.dpr
   cd JvAdjustLineBreaks
+  $(DCC) $&.dpr
+  cd ..
+
+stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
+  cd stripCmtPO
   $(DCC) $&.dpr
   cd ..
 

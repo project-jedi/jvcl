@@ -10,7 +10,7 @@ DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = crlf.exe MakePNG.exe MakeRC.exe Res2Bmp.exe jconvert.exe dc.exe MakeDOF.exe \
-  MakeCFG.exe jtouch.exe isu.exe ErrLook.exe
+  MakeCFG.exe jtouch.exe isu.exe ErrLook.exe stripCmtPO.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -51,4 +51,6 @@ isu.exe: ITEStrip\isu.dpr
 crlf.exe: JvAdjustLineBreaks\crlf.dpr
   $(DCC)
 
+stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
+  $(DCC)
 
