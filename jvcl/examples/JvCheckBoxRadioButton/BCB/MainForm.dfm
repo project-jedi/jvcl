@@ -160,9 +160,6 @@ object frmMain: TfrmMain
     Caption = ' '
     Color = clWindow
     TabOrder = 3
-    DesignSize = (
-      476
-      63)
     object lblInfo: TJvLabel
       Left = 14
       Top = 16

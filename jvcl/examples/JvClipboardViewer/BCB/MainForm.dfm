@@ -14,9 +14,6 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
-  DesignSize = (
-    705
-    453)
   PixelsPerInch = 96
   TextHeight = 13
   object Label3: TLabel
