@@ -86,6 +86,9 @@ type
 
 implementation
 
+uses
+  JvResources;
+
 //=== TElementEnumerator =====================================================
 
 type
@@ -171,8 +174,7 @@ function TElementEnumerator.GetNextElement(const IncrementPos: Boolean): TElemen
 
 begin
   if IsEndReached then
-    raise EParserError.Create('TElementEnumerator.GetNextElement: ' +
-      'No more elements to return');
+    raise EParserError.Create(SNoMoreElementsToReturn);
 
   if FOldPosInText = FPosInText then // Use cached element
     Result := FCachedElement
@@ -256,14 +258,14 @@ var
   function GetTagFromString: TTag;
   const
     TagStrings: array [TTag] of PChar =
-                                        ( 'B',
-                                          'I',
-                                          'U',
-                                          'COLOR=',            // Bianconi
-                                          'LINK',
-                                          'BR',
-                                          'P',
-                                          'DYNAMIC');
+      ('B',
+       'I',
+       'U',
+       'COLOR=',            // Bianconi
+       'LINK',
+       'BR',
+       'P',
+       'DYNAMIC');
     DontCare = 0;
   begin
     UnknownTag := False;
@@ -386,7 +388,7 @@ begin
       ekBeginTag:
         NewNode := GetNodeFromTag(Element.Text);
     else
-      raise EParserError.Create('TDefaultParser.ParseNode: Unsupported state');
+      raise EParserError.Create(SUnsupportedState);
     end;
 
     if( Node.GetNodeType = ntRootNode ) then

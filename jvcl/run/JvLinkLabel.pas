@@ -704,7 +704,7 @@ begin
     end;
   end;
 
-  raise ELinkLabelError.Create('TJvCustomLinkLabel.UpdateDynamicTag: ' + sTagNotFound);
+  raise ELinkLabelError.Create(sTagNotFound);
 end;
 
 end.

@@ -399,7 +399,7 @@ begin
   with DigitClassList.LockList do
   try
     if IndexOf(DigitClass) > -1 then
-      raise EJVCLSegmentedLEDException.Create('Duplicate DigitClass registered.');
+      raise EJVCLSegmentedLEDException.Create(sDuplicateDigitClass);
     Add(DigitClass);
     Classes.RegisterClass(DigitClass);
   finally

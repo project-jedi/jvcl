@@ -23,14 +23,16 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvJanTreeView;
 
 interface
 
 uses
-  Windows, shellapi, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, Menus;
+  Windows, ShellAPI, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, ComCtrls, Menus;
 
 type
   TGetVarEvent = procedure(Sender: TObject; VarName: string; var
@@ -951,7 +953,7 @@ begin
           end; { else }
         end; { case of }
       17: Reduce(9);
-      18: raise Exception.Create('Bad token state');
+      18: raise Exception.Create(sBadTokenState);
       19:
         begin
           if TokenType = PLUS then

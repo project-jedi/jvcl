@@ -164,6 +164,9 @@ uses
   Math,
   JvJCLUtils, JvTypes;
 
+resourcestring
+  sSourceBitmapTooSmall = 'Source bitmap too small';
+
 function TrimInt(N, Min, Max: Integer): Integer;
 begin
   if N > Max then
@@ -1733,7 +1736,7 @@ begin
   SrcWidth := Src.Width;
   SrcHeight := Src.Height;
   if (SrcWidth < 1) or (SrcHeight < 1) then
-    raise EJVCLException.Create('Source bitmap too small');
+    raise Exception.Create(sSourceBitmapTooSmall);
 
   // Create intermediate image to hold horizontal zoom
   Work := TBitmap.Create;

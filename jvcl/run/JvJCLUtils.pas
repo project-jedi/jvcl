@@ -980,8 +980,10 @@ const
 
 resourcestring
   // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
-  SPropertyNotExists    = 'Property "%s" does not exist';
-  SInvalidPropertyType  = 'Property "%s" has invalid type';
+  SPropertyNotExists  = 'Property "%s" does not exist';
+  SInvalidPropertyType = 'Property "%s" has invalid type';
+
+  SPivotLessThanZero = 'JvFunctions.MakeYear4Digit: Pivot < 0';
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var
@@ -6900,7 +6902,7 @@ var
   Century: Integer;
 begin
   if Pivot < 0 then
-    raise Exception.Create('JvFunctions.MakeYear4Digit: Pivot < 0');
+    raise Exception.Create(SPivotLessThanZero);
 
   { map 100 to zero }
   if Year = 100 then

@@ -395,7 +395,7 @@ uses
   {$IFDEF JVCLThemesEnabled}
   UxTheme, {$IFNDEF COMPILER7_UP}TmSchema,{$ENDIF}
   {$ENDIF}
-  JvJCLUtils, JvTypes;
+  JvJCLUtils, JvTypes, JvResources;
 
 {$R ..\resources\JvSpin.Res}
 
@@ -1447,8 +1447,7 @@ begin
   Result := CheckValue(NewValue);
   if (FCheckMinValue or FCheckMaxValue) and
     RaiseOnError and (Result <> NewValue) then
-    raise ERangeError.CreateFmt(ReplaceStr(SOutOfRange, '%d', '%g'),
-      [FMinValue, FMaxValue]);
+    raise ERangeError.CreateFmt(SOutOfRangeFloat, [FMinValue, FMaxValue]);
 end;
 
 procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);

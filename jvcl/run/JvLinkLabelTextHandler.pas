@@ -233,7 +233,7 @@ var
   EndPos: Integer;
 begin
   if not HasNext then
-    raise ETextHandlerError.Create('TWordEnumerator.GetNext: ' + sNoMoreWords);
+    raise ETextHandlerError.Create(sNoMoreWords);
 
   StartPos := FPos;
   EndPos := FPos;
@@ -632,7 +632,7 @@ begin
         Inc(FPosX, TextWidth(Buffer));
       end
     else
-      raise ETextHandlerError.Create('TTextHandler.EmptyBuffer: ' + sUnsupported);
+      raise ETextHandlerError.Create(sUnsupported);
 
   FList.Clear;
 end;
