@@ -2566,14 +2566,9 @@ begin
     Result := inherited DoPaintBackground(Canvas, Param)
   else
   begin
-    SaveDC(Canvas.Handle);
-    try
-      Canvas.Brush.Color := FDisabledColor;
-      Canvas.Brush.Style := bsSolid;
-      Canvas.FillRect(ClientRect);
-    finally
-      RestoreDC(Canvas.Handle, -1);
-    end;
+    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
   end;
 end;
 

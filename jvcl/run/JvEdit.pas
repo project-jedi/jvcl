@@ -455,21 +455,16 @@ begin
     Result := inherited DoPaintBackground(Canvas, Param)
   else
   begin
-    SaveDC(Canvas.Handle);
-    try
-      Canvas.Brush.Color := FDisabledColor;
-      Canvas.Brush.Style := bsSolid;
-      R := ClientRect;
-      Canvas.FillRect(R);
-      Result := True;
-      {$IFDEF VisualCLX}
-     // paint Border
-      if (BorderStyle = bsSingle) then
-        QGraphics.DrawEdge(Canvas, R, esLowered, esLowered, ebRect);
-      {$ENDIF VisualCLX}
-    finally
-      RestoreDC(Canvas.Handle, -1);
-    end;
+    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Style := bsSolid;
+    R := ClientRect;
+    Canvas.FillRect(R);
+    Result := True;
+    {$IFDEF VisualCLX}
+   // paint Border
+    if (BorderStyle = bsSingle) then
+      QGraphics.DrawEdge(Canvas, R, esLowered, esLowered, ebRect);
+    {$ENDIF VisualCLX}
   end;
 end;
 
