@@ -369,16 +369,10 @@ end;
 
 procedure TJvOutlookbarButton.Change;
 begin
-// PRY 2002.06.04
-  //if (Collection <> nil) and (Collection.Owner <> nil) and
-  //  (TCollectionItem(Collection.Owner).Collection <> nil)
-  //   and (TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner) <> nil) then
-  //     TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner).Invalidate;
   if (Collection <> nil) and (TJvOutlookbarButtons(Collection).GetOwner <> nil) and
     (TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection <> nil)
      and (TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection).GetOwner) <> nil) then
        TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection).GetOwner).Invalidate;
-// PRY END
 end;
 
 constructor TJvOutlookbarButton.Create(Collection: TCollection);
@@ -388,8 +382,6 @@ end;
 
 procedure TJvOutlookbarButton.EditCaption;
 begin
-  // PRY 2002.06.04
-  //SendMessage(TCustomControl(TCollectionItem(Collection.Owner).Collection.Owner).Handle,
   SendMessage(TCustomControl(TJvOutlookBarPages(TCollectionItem(TJvOutlookbarButtons(Collection).GetOwner).Collection).GetOwner).Handle,
      CM_CAPTION_EDITING,integer(self),0);
 end;
@@ -509,22 +501,13 @@ begin
   FFont := TFont.Create;
   FFont.OnChange := DoFontChange;
   FParentColor := true;
-  FParentFont := true;
   FImage := TBitmap.Create;
   FAlignment := taCenter;
   FImageIndex := -1;
-  //PRY 2002.06.04
-  //if (Collection <> nil) and (Collection.Owner <> nil) then
   if (Collection <> nil) and (TJvOutlookBarPages(Collection).GetOwner <> nil) then
   begin
-    //PRY 2002.06.04
-    //FButtonSize := TJvCustomOutlookBar(Collection.Owner).ButtonSize;
     FButtonSize := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).ButtonSize;
-    //PRY 2002.06.04
-    //FColor      := TJvCustomOutlookBar(Collection.Owner).Color;
     FColor      := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).Color;
-    //PRY 2002.06.04
-    //Font        := TJvCustomOutlookBar(Collection.Owner).Font;
     Font        := TJvCustomOutlookBar(TJvOutlookBarPages(Collection).GetOwner).Font;
   end
   else
@@ -546,7 +529,7 @@ end;
 
 procedure TJvOutlookBarPage.SetTopButtonIndex(const Value: integer);
 begin
-  if (FTopButtonIndex <> Value) and (FTopButtonIndex >= 0) and (FTopButtonIndex < Buttons.Count) then
+  if (FTopButtonIndex <> Value) and (Value >= 0) and (Value < Buttons.Count) then
   begin
     FTopButtonIndex := Value;
     Change;
@@ -573,8 +556,6 @@ begin
   if FButtonSize <> Value then
   begin
     FButtonSize := Value;
-    //PRY 2002.06.04
-    //if not (csReading in TComponent(Collection.Owner).ComponentState) then
     if not (csReading in TComponent(TJvOutlookBarPages(Collection).GetOwner).ComponentState) then
       FParentButtonSize := false;
     Change;
@@ -595,7 +576,6 @@ procedure TJvOutlookBarPage.SetFont(const Value: TFont);
 begin
   FFont.Assign(Value);
   FParentFont := false;
-//  Change;
 end;
 
 procedure TJvOutlookBarPage.SetImage(const Value: TBitmap);
@@ -611,8 +591,6 @@ begin
     FParentButtonSize := Value;
     if Value then
     begin
-      //PRY 2002.06.04
-      //FButtonSize := (Collection.Owner as TJvCustomOutlookBar).ButtonSize;
       FButtonSize := (TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).ButtonSize;
       Change;
     end;
@@ -626,8 +604,6 @@ begin
     FParentColor := Value;
     if Value then
     begin
-      //PRY 2002.06.04
-      //FColor := (Collection.Owner as TJvCustomOutlookBar).Color;
       FColor := (TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).Color;
       Change;
     end;
@@ -638,20 +614,14 @@ procedure TJvOutlookBarPage.SetParentFont(const Value: boolean);
 begin
   if FParentFont <> Value then
   begin
-    FParentFont := Value;
     if Value then
-    begin
-      //PRY 2002.06.04
-      //FFont.Assign((Collection.Owner as TJvCustomOutlookBar).Font);
       Font := (TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).Font;
-    end;
+    FParentFont := Value;
   end;
 end;
 
 procedure TJvOutlookBarPage.EditCaption;
 begin
-  //PRY 2002.06.04
-  //SendMessage(TCustomControl(Collection.Owner).Handle, CM_CAPTION_EDITING,integer(self),1);
   SendMessage(TCustomControl(TJvOutlookBarPages(Collection).GetOwner).Handle, CM_CAPTION_EDITING,integer(self),1);
 end;
 
@@ -684,6 +654,7 @@ end;
 procedure TJvOutlookBarPage.DoFontChange(Sender: TObject);
 begin
   Change;
+  FParentFont := false;
 end;
 
 { TJvOutlookBarPages }
@@ -735,13 +706,7 @@ end;
 procedure TJvOutlookBarPages.Update(Item: TCollectionItem);
 begin
   inherited;
-  //PRY 2002.06.04
-  //if (Owner <> nil) then
   if (GetOwner <> nil) then
-  //PRY END
-//    TJvCustomOutlookBar(Owner).RedrawPage(TJvOutlookBarPage(Item));
-  //PRY 2002.06.04
-    //TJvCustomOutlookBar(Owner).Repaint;
     TJvCustomOutlookBar(GetOwner).Repaint;
 end;
 
@@ -749,14 +714,16 @@ end;
 
 procedure TJvCustomOutlookBar.DoDwnClick(Sender:TObject);
 begin
-  if Pages[ActivePageIndex].TopButtonIndex < Pages[ActivePageIndex].Buttons.Count then
-    Pages[ActivePageIndex].TopButtonIndex := Pages[ActivePageIndex].TopButtonIndex + 1;
+  with Pages[ActivePageIndex] do
+  if TopButtonIndex < Buttons.Count then
+    TopButtonIndex := TopButtonIndex + 1;
 end;
 
 procedure TJvCustomOutlookBar.DoUpClick(Sender:TObject);
 begin
-  if Pages[ActivePageIndex].TopButtonIndex > 0 then
-    Pages[ActivePageIndex].TopButtonIndex := Pages[ActivePageIndex].TopButtonIndex - 1;
+  with Pages[ActivePageIndex] do
+    if TopButtonIndex > 0 then
+      TopButtonIndex := TopButtonIndex - 1;
 end;
 
 constructor TJvCustomOutlookBar.Create(AOwner: TComponent);
@@ -967,11 +934,16 @@ procedure TJvCustomOutlookBar.DrawArrowButtons(Index:integer);
 var R:TRect;H:integer;
 begin
   if (Index < 0) or (Index >= Pages.Count) or (Pages[Index].Buttons = nil) or
-   (Pages[Index].Buttons.Count <= 0)  then Exit;
+   (Pages[Index].Buttons.Count <= 0)  then
+   begin
+     TopButton.Visible := false;
+     BtmButton.Visible := false;
+     Exit;
+   end;
   R := getPageRect(Index);
   H := getButtonHeight(Index);
   TopButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].TopButtonIndex > 0);
-  BtmButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].Buttons.Count > 0) and
+  BtmButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and
     (R.Bottom - R.Top < (Pages[Index].Buttons.Count - Pages[Index].TopButtonIndex) * H); // remove the last - H to show arrow
                                                                                              // button when the bottom of the last button is beneath the edge
   if TopButton.Visible then
