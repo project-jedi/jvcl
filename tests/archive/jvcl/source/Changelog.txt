@@ -1,3 +1,11 @@
+2002-07-13
+- Fixed CRLF corruption - couldn't open files in D5 (is this due to D6 or CVS?)
+- Added new component, JvAnalogClock, from Frenk Vrtariè
+- Added Michael Beck's converted RxLib files to the source
+- Modified D6 packages to include new RxLib components
+- Modified D5 packages to include new RxLib components
+- Extracted and added images from RxLib to \images and updated rc script
+
 2002-07-11
 - Added Robert Marquardt's HID component to the JV System tab and a couple of demos to \examples
 - JvRecentMenuBtn: fixed bug where folders were included
@@ -27,10 +35,9 @@
 - Added changes and bug fixes to JvTrayIcon, JvStatusBar, JvTranslator and JvListView from Sebastien Buysse
 
 2002-07-05
-- Added JvInspector and support units (JvInspDB and JvINspXVCL) from Marcel Bestebroer
-
+- Added JvInspector and support units (JvInspDB and JvInspXVCL) from Marcel Bestebroer
 - JvInspector bug fixes by Deepak Shenoy:
-
+=========================================
 -- InspectorItem.SelectValue() 
    Added "If SL.Count>0" check to ensure no infinite loop occurs when no items are in the list
 -- InspectorItem.SetEditCtrl()
@@ -38,7 +45,7 @@
 Note: have to consider reusing? Or somehow allowing custom call in at this point.
 -- InspectorItem.DrawValue()
    Added the "If Data=nil" check at the beginning because sometimes we were getting data=nil (??)
-
+=========================================
 
 2002-07-01 (2.00)
 - New restructured version released: for more details on changes, see restruct_changelog.txt; for more info on demo changes, see restruct_demochanges.txt

@@ -265,6 +265,7 @@ function RunDLL32(const ModuleName,FuncName,CmdLine:string;WaitForCompletion:boo
 
 {$IFNDEF DELPHI6_UP}
 procedure RaiseLastOSError;
+function IncludeTrailingPathDelimiter(const APath:string):string;
 {$ENDIF}
 
 implementation
@@ -296,6 +297,13 @@ var
 procedure RaiseLastOSError;
 begin
   RaiseLastWin32Error;
+end;
+function IncludeTrailingPathDelimiter(const APath:string):string;
+begin
+  if (Length(APath) > 0) and (APath[Length(APath)] <> '\') then
+    Result := APath + '\'
+  else
+    Result := APath;
 end;
 {$ENDIF}
   
