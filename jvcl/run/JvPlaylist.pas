@@ -32,7 +32,7 @@ interface
 
 uses
   Messages, SysUtils, Classes, Controls, StdCtrls,
-  JvCtrls;
+  JvCtrls, JvListBox;
 
 type
   TJvPlaylist = class(TJvListBox)

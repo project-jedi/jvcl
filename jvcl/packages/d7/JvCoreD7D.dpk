@@ -43,6 +43,7 @@ contains
   JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas',
   JvDesignerUtils in '..\..\design\JvDesignerUtils.pas',
   JvDsgnConsts in '..\..\design\JvDsgnConsts.pas',
+  JvDsgnTypes in '..\..\design\JvDsgnTypes.pas',
   JvDataProviderEditors in '..\..\design\JvDataProviderEditors.pas',
   JvDataProviderItemDesign in '..\..\design\JvDataProviderItemDesign.pas',
   JvBaseDsgnForm in '..\..\design\JvBaseDsgnForm.pas' {JvBaseDesign},
