@@ -191,10 +191,12 @@ type
     FClient: TJvImageSpeedButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
+    {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
+    procedure SetGroupIndex(Value: Integer); override;
+    {$ENDIF COMPILER6_UP}
     function IsImageIndexLinked: Boolean; override;
     procedure SetChecked(Value: Boolean); override;
-    procedure SetGroupIndex(Value: Integer); override;
     procedure SetImageIndex(Value: Integer); override;
   end;
 
@@ -203,8 +205,10 @@ type
     FClient: TJvSpeedButton;
     procedure AssignClient(AClient: TObject); override;
     function IsCheckedLinked: Boolean; override;
+    {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
+    {$ENDIF COMPILER6_UP}
     procedure SetChecked(Value: Boolean); override;
   end;
 
@@ -1764,12 +1768,20 @@ begin
     FClient.AllowAllUp and (FClient.Down = (Action as TCustomAction).Checked);
 end;
 
+{$IFDEF COMPILER6_UP}
 function TJvImageSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   { (rb) This will fail in D7 due to a bug in TCustomAction.SetGroupIndex }
   Result := (FClient is TJvCustomSpeedButton) and
     (FClient.GroupIndex = (Action as TCustomAction).GroupIndex);
 end;
+
+procedure TJvImageSpeedButtonActionLink.SetGroupIndex(Value: Integer);
+begin
+  if IsGroupIndexLinked then
+    FClient.GroupIndex := Value;
+end;
+{$ENDIF COMPILER6_UP}
 
 function TJvImageSpeedButtonActionLink.IsImageIndexLinked: Boolean;
 begin
@@ -1781,12 +1793,6 @@ procedure TJvImageSpeedButtonActionLink.SetChecked(Value: Boolean);
 begin
   if IsCheckedLinked then
     FClient.Down := Value;
-end;
-
-procedure TJvImageSpeedButtonActionLink.SetGroupIndex(Value: Integer);
-begin
-  if IsGroupIndexLinked then
-    FClient.GroupIndex := Value;
 end;
 
 procedure TJvImageSpeedButtonActionLink.SetImageIndex(Value: Integer);
@@ -1945,22 +1951,24 @@ begin
     FClient.AllowAllUp and (FClient.Down = (Action as TCustomAction).Checked);
 end;
 
+{$IFDEF COMPILER6_UP}
 function TJvSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
   Result := (FClient is TJvSpeedButton) and
     (TJvSpeedButton(FClient).GroupIndex = (Action as TCustomAction).GroupIndex);
 end;
 
-procedure TJvSpeedButtonActionLink.SetChecked(Value: Boolean);
-begin
-  if IsCheckedLinked then
-    TJvSpeedButton(FClient).Down := Value;
-end;
-
 procedure TJvSpeedButtonActionLink.SetGroupIndex(Value: Integer);
 begin
   if IsGroupIndexLinked then
     TJvSpeedButton(FClient).GroupIndex := Value;
+end;
+{$ENDIF COMPILER6_UP}
+
+procedure TJvSpeedButtonActionLink.SetChecked(Value: Boolean);
+begin
+  if IsCheckedLinked then
+    TJvSpeedButton(FClient).Down := Value;
 end;
 
 //=== TJvxButtonGlyph ========================================================
