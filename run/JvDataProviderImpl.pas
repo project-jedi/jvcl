@@ -794,7 +794,7 @@ type
     procedure IJvDataConsumerClientNotify.ItemSelected = ServerItemChanged;
     procedure ServerItemChanged(Server: IJvDataConsumerServerNotify; Value: IJvDataItem); virtual;
     procedure LinkAdded(Server: IJvDataConsumerServerNotify);
-    procedure LinkRemoved(Server: IJvDataConsumerServerNotify); 
+    procedure LinkRemoved(Server: IJvDataConsumerServerNotify);
     { States }
     property NeedExtensionFixups: Boolean read GetNeedExtensionFixups;
     property NeedContextFixup: Boolean read GetNeedContextFixup;
@@ -817,6 +817,7 @@ type
       IJvDataItemExecute interface if one is assigned to the item and notifies all service
       extensions of the selection change. }
     procedure ItemSelected(Value: IJvDataItem);
+    function IsLoading: Boolean;
 
     property OnChanged: TJvDataConsumerChangeEvent read FOnChanged write FOnChanged;
     property OnProviderChanging: TProviderNotifyEvent read FOnProviderChanging
@@ -3936,8 +3937,9 @@ procedure TJvDataConsumer.NotifyServerProviderChanged;
 var
   I: Integer;
 begin
-  for I := 0 to ServerCount - 1 do
-    Servers[I].NotifyProviderChanged(Self);
+  if not IsLoading then
+    for I := 0 to ServerCount - 1 do
+      Servers[I].NotifyProviderChanged(Self);
 end;
 
 function TJvDataConsumer.ExtensionCount: Integer;
@@ -3959,9 +3961,20 @@ begin
 end;
 
 function TJvDataConsumer.GetNeedExtensionFixups: Boolean;
+var
+  I: Integer;
 begin
   Result := FNeedFixups and ((VCLComponent = nil) or
     not (csLoading in VCLComponent.ComponentState));
+  if not Result then
+  begin
+    I := ExtensionCount - 1;
+    while not Result and (I >= 0) do
+    begin
+      Result := Extension(I).StreamedInWithoutProvider;
+      Dec(I);
+    end;
+  end;
 end;
 
 function TJvDataConsumer.GetNeedContextFixup: Boolean;
@@ -4159,6 +4172,11 @@ begin
   NotifyItemSelected(Value);
   if Supports(Value, IJvDataItemBasicAction, ItemAct) then
     ItemAct.Execute(VCLComponent);
+end;
+
+function TJvDataConsumer.IsLoading: Boolean;
+begin
+  Result := NeedExtensionFixups or NeedContextFixup;
 end;
 
 { TJvDataConsumerAggregatedObject }
