@@ -121,7 +121,7 @@ type
     FProperties: THashedStringList;
     FParent: TJvSimpleXMLElem;
     function GetCount: Integer;
-    function GetItemNamedDefault(const Name: string): TJvSimpleXMLProp;
+    function GetItemNamedDefault(const Name, Default: string): TJvSimpleXMLProp;
     function GetItemNamed(const Name: string): TJvSimpleXMLProp;
   protected
     function GetSimpleXML: TJvSimpleXML;
@@ -1854,8 +1854,7 @@ begin
     Result := nil;
 end;
 
-function TJvSimpleXMLProps.GetItemNamedDefault(
-  const Name: string): TJvSimpleXMLProp;
+function TJvSimpleXMLProps.GetItemNamedDefault(const Name, Default: string): TJvSimpleXMLProp;
 var
   I: Integer;
 begin
