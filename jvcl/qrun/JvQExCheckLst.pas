@@ -55,7 +55,7 @@ uses
 
 
 type
-  TJvExCheckListBox = class(TCheckListBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)  
+  TJvExCheckListBox = class(TCheckListBox, IJvStdControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -68,16 +68,10 @@ type
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;	
-  private
-    FDoubleBuffered: Boolean;
-    function GetDoubleBuffered: Boolean;
-    procedure SetDoubleBuffered(Value: Boolean);
-  protected
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure ColorChanged; override;
-  published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
+      const KeyText: WideString): Boolean; override;
+    procedure RecreateWnd;
+    procedure CreateWnd; dynamic;
+    procedure CreateWidget; override; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
@@ -105,12 +99,8 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual; 
-  private
-    FCanvas: TCanvas;
-  protected
-    procedure Paint; virtual;
-    property Canvas: TCanvas read FCanvas; 
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -186,33 +176,20 @@ begin
   inherited BoundsChanged;
   DoBoundsChanged;
 end;
-procedure TJvExCheckListBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
+
+procedure TJvExCheckListBox.RecreateWnd;
 begin
-  WidgetControl_Painting(Self, Canvas, EventRegion);
+  RecreateWidget;
 end;
 
-procedure TJvExCheckListBox.ColorChanged;
+procedure TJvExCheckListBox.CreateWidget;
 begin
-  TWidgetControl_ColorChanged(Self);
+  CreateWnd;
 end;
 
-function TJvExCheckListBox.GetDoubleBuffered: Boolean;
+procedure TJvExCheckListBox.CreateWnd;
 begin
-  Result := FDoubleBuffered;
-end;
-
-procedure TJvExCheckListBox.SetDoubleBuffered(Value: Boolean);
-begin
-  if Value <> FDoubleBuffered then
-  begin
-    if Value then
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_NoBackground)
-    else
-      QWidget_setBackgroundMode(Handle, QWidgetBackgroundMode_PaletteBackground);
-    FDoubleBuffered := Value;
-    if not (csCreating in ControlState) then
-      Invalidate;
-  end;
+  inherited CreateWidget;
 end;
 
 procedure TJvExCheckListBox.CMFocusChanged(var Msg: TCMFocusChanged);
@@ -244,32 +221,19 @@ function TJvExCheckListBox.DoPaintBackground(Canvas: TCanvas; Param: Integer): B
 asm
   JMP   DefaultDoPaintBackground
 end;
-
-
 constructor TJvExCheckListBox.Create(AOwner: TComponent);
-begin
+begin 
   WindowProc := WndProc;
   {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
   SetCopyRectMode(Self, cmVCL);
-  {$IFEND}
+  {$IFEND} 
   inherited Create(AOwner);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  
+  FHintColor := clInfoBk;
 end;
 
 destructor TJvExCheckListBox.Destroy;
 begin
-  
-  FCanvas.Free;
   inherited Destroy;
 end;
-
-procedure TJvExCheckListBox.Paint;
-begin
-  WidgetControl_DefaultPaint(Self, Canvas);
-end;
-
-
 
 end.
