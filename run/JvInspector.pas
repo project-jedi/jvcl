@@ -202,6 +202,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle;
   end;
+  TCustomEditAccessProtected = Class(TOpenEdit);
 {$ENDIF VisualCLX}
 
 type
