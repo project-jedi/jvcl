@@ -2098,37 +2098,36 @@ end;
 procedure TJvDBLookupList.UpdateScrollBar;
 var
   Pos, Max: Integer;
-  CurPos, MaxPos: Integer;
+  ScrollInfo: TScrollInfo;
 begin
-  if FLookupLink.Active then
+  Pos := 0;
+  Max := 0;
+
+  { Note: If used by JvDBLookupCombo:
+
+    FRowCount    = JvDBLookupCombo.DropDownCount
+    FRecordCount = #records in link buffer (<> #records in table)
+  }
+  { Check whether the list is completely filled.. }
+  if FRecordCount >= (FRowCount - Ord(EmptyRowVisible)) then
   begin
-    Pos := 0;
-    Max := 0;
-    if FRecordCount = (FRowCount - Ord(EmptyRowVisible)) then
-    begin
-      Max := FRecordCount + Ord(EmptyRowVisible);
-      Pos := FRecordIndex;
-{      if not FLookupLink.DataSet.Bof then
-      begin
-        if not FLookupLink.DataSet.Eof then
-          Pos := 2
-        else
-          Pos := 4;
-      end;}
-    end;
-    GetScrollRange(Handle, SB_VERT, CurPos, MaxPos);
-    if MaxPos = 0 then
-      MaxPos := FRecordCount + Ord(EmptyRowVisible);
-    CurPos := GetScrollPos(Handle, SB_VERT);
-    if Max <> MaxPos then
-      SetScrollRange(Handle, SB_VERT, 0, Max, False);
-    if CurPos <> Pos then
-      SetScrollPos(Handle, SB_VERT, Pos, True);
-  end
-  else
+    { ..if so, display a scrollbar }
+    Max := 4;
+    if not FLookupLink.DataSet.Bof then
+      if not FLookupLink.DataSet.Eof then
+        Pos := 2
+      else
+        Pos := 4;
+  end;
+  ScrollInfo.cbSize := SizeOf(TScrollInfo);
+  ScrollInfo.fMask := SIF_POS or SIF_RANGE;
+  if not GetScrollInfo(Handle, SB_VERT, ScrollInfo) or
+    (ScrollInfo.nPos <> Pos) or (ScrollInfo.nMax <> Max) then
   begin
-    SetScrollRange(Handle, SB_VERT, 0, 0, False);
-    SetScrollPos(Handle, SB_VERT, 0, True);
+    ScrollInfo.nMin := 0;
+    ScrollInfo.nMax := Max;
+    ScrollInfo.nPos := Pos;
+    SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
   end;
 end;
 
@@ -2340,6 +2339,14 @@ begin
       Style := Style or WS_BORDER;
 end;
 
+function ParentFormVisible(AControl: TControl): Boolean;
+var
+  Form: TCustomForm;
+begin
+  Form := GetParentForm(AControl);
+  Result := Assigned(Form) and Form.Visible;
+end;
+
 procedure TJvDBLookupCombo.CloseUp(Accept: Boolean);
 var
   ListValue: string;
@@ -2358,7 +2365,11 @@ begin
     FDataList.FSearchText := '';
     if Accept and CanModify and (Value <> ListValue) then
       SelectKeyValue(ListValue);
-    if CanFocus then
+    { (rb) Need to check ParentFormVisible always before SetFocus? Delphi doesn't.
+           Not checking whether the parent form is visible typically gives errors
+           when closing forms with non-focusable buttons (eg speed/toolbuttons)
+    }
+    if ParentFormVisible(Self) and CanFocus then
       SetFocus;
     if Assigned(FOnCloseUp) then
       FOnCloseUp(Self);
