@@ -529,7 +529,7 @@ begin
     Result.Caption.Enabled := false;
     Result.Caption.Tag := integer(Result);
     Result.Caption.Text := ChangeFileExt(ExtractFilename(AFilename), '');
-    Result.Caption.AlignCaption(taLeftJustify);
+    Result.AlignCaption(taLeftJustify);
     Result.BringToFront;
     i := FFileShapes.AddObject(AFilename, Result);
   end;
@@ -1106,7 +1106,7 @@ begin
     sb.HorzScrollBar.Position := 0;
     sb.VertScrollBar.Position := 0;
     CopyObjects(FFileShapes, AList);
-    SortItems((Sender as TAction).Tag, Alist, acInvertSort.Checked);
+    SortItems((Sender as TAction).Tag, AList, acInvertSort.Checked);
     Arrange(AList);
   finally
     SuspendRedraw(sb, false);

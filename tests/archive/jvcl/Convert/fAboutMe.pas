@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, jpeg, ExtCtrls, JvLabel, JvHotLink;
+  Dialogs, StdCtrls, jpeg, ExtCtrls, JvLabel, JvComponent, JvxCtrls;
 
 type
   TfrmAboutMe = class(TForm)
@@ -18,8 +18,8 @@ type
     Memo1: TMemo;
     OKButton: TButton;
     Label4: TLabel;
-    JvHotLink1: TJvHotLink;
-    JvHotLink2: TJvHotLink;
+    JvHotLink1: TJvLabel;
+    JvHotLink2: TJvLabel;
   private
     { Private declarations }
   public

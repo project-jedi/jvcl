@@ -126,7 +126,7 @@ type
     IterateSubdirectories1: TMenuItem;
     mnuSimulate: TMenuItem;
     SortArrows: TImageList;
-    JvBrowseFolder1: TJvBrowseFolder;
+    JvBrowseFolder1: TJvBrowseForFolderDialog;
     N3: TMenuItem;
     mnuFileMask: TMenuItem;
     btnNewRepository: TToolButton;

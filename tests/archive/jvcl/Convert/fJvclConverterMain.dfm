@@ -2581,11 +2581,7 @@ object frmMain: TfrmMain
       000000000000}
   end
   object JvSearchFiles1: TJvSearchFiles
-    DirParams.LastChangeAfter = 29221
-    DirParams.LastChangeBefore = 29221
     FileParams.SearchTypes = [stFileMask]
-    FileParams.LastChangeAfter = 29221
-    FileParams.LastChangeBefore = 29221
     OnFindFile = JvSearchFiles1FindFile
     Left = 48
     Top = 88
@@ -2669,7 +2665,7 @@ object frmMain: TfrmMain
       FFFFFFFFFFFF0000FFFFFFFFFFFF000000000000000000000000000000000000
       000000000000}
   end
-  object JvBrowseFolder1: TJvBrowseFolder
+  object JvBrowseFolder1: TJvBrowseForFolderDialog
     Position = fpFormCenter
     RootDirectory = fdMyComputer
     Title = 'Select folder:'
