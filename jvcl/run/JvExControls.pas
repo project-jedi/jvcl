@@ -616,6 +616,53 @@ begin
 end;
 
 type
+  PInterface = ^IInterface;
+
+  TFreeNotificationHelper = class(TComponent)
+  private
+    FInstance: TComponent;
+    FIntfPtr: PInterface;
+  protected
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
+  public
+    constructor Create(AInstance: TComponent; AIntfPtr: PInterface); reintroduce;
+    destructor Destroy; override;
+    function IsValid: Boolean;
+  end;
+
+constructor TFreeNotificationHelper.Create(AInstance: TComponent; AIntfPtr: PInterface);
+begin
+  inherited Create(nil);
+  FInstance := AInstance;
+  FIntfPtr := AIntfPtr;
+  FInstance.FreeNotification(Self);
+end;
+
+destructor TFreeNotificationHelper.Destroy;
+begin
+  if Assigned(FInstance) then
+    FInstance.RemoveFreeNotification(Self);
+  inherited Destroy;
+end;
+
+function TFreeNotificationHelper.IsValid: Boolean;
+begin
+  Result := FIntfPtr <> nil;
+end;
+
+procedure TFreeNotificationHelper.Notification(Component: TComponent; Operation: TOperation);
+begin
+  if (Operation = opRemove) and (Component = FInstance) then
+  begin
+    FInstance.RemoveFreeNotification(Self);
+    FInstance := nil;
+    FIntfPtr^ := nil;
+    FIntfPtr := nil;
+  end;
+end;
+
+
+type
   TDisptachMethod = procedure(Self: TObject; var Msg: TMessage);
 
 function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
@@ -648,6 +695,7 @@ var
   Canvas: TCanvas;
   DlgCodes: TDlgCodes;
   IdSaveDC: Integer;
+  Helper: TFreeNotificationHelper;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -730,52 +778,73 @@ begin
 
             WM_GETDLGCODE:
               begin
-                PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
+                Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
+                try
+                  PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
 
-                DlgCodes := [dcNative];
-                if PMsg^.Result and DLGC_WANTARROWS <> 0 then
-                  Include(DlgCodes, dcWantArrows);
-                if PMsg^.Result and DLGC_WANTTAB <> 0 then
-                  Include(DlgCodes, dcWantTab);
-                if PMsg^.Result and DLGC_WANTALLKEYS <> 0 then
-                  Include(DlgCodes, dcWantAllKeys);
-                if PMsg^.Result and DLGC_WANTCHARS <> 0 then
-                  Include(DlgCodes, dcWantChars);
-                if PMsg^.Result and DLGC_BUTTON <> 0 then
-                  Include(DlgCodes, dcButton);
+                  DlgCodes := [dcNative];
+                  if PMsg^.Result and DLGC_WANTARROWS <> 0 then
+                    Include(DlgCodes, dcWantArrows);
+                  if PMsg^.Result and DLGC_WANTTAB <> 0 then
+                    Include(DlgCodes, dcWantTab);
+                  if PMsg^.Result and DLGC_WANTALLKEYS <> 0 then
+                    Include(DlgCodes, dcWantAllKeys);
+                  if PMsg^.Result and DLGC_WANTCHARS <> 0 then
+                    Include(DlgCodes, dcWantChars);
+                  if PMsg^.Result and DLGC_BUTTON <> 0 then
+                    Include(DlgCodes, dcButton);
 
-                DoGetDlgCode(DlgCodes);
+                  if Helper.IsValid then
+                  begin
+                    DoGetDlgCode(DlgCodes);
 
-                if not (dcNative in DlgCodes) then
-                begin
-                  PMsg^.Result := 0;
-                  if dcWantAllKeys in DlgCodes then
-                    PMsg^.Result := PMsg^.Result or DLGC_WANTALLKEYS;
-                  if dcWantArrows in DlgCodes then
-                    PMsg^.Result := PMsg^.Result or DLGC_WANTARROWS;
-                  if dcWantTab in DlgCodes then
-                    PMsg^.Result := PMsg^.Result or DLGC_WANTTAB;
-                  if dcWantChars in DlgCodes then
-                    PMsg^.Result := PMsg^.Result or DLGC_WANTCHARS;
-                  if dcButton in DlgCodes then
-                    PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
+                    if not (dcNative in DlgCodes) then
+                    begin
+                      PMsg^.Result := 0;
+                      if dcWantAllKeys in DlgCodes then
+                        PMsg^.Result := PMsg^.Result or DLGC_WANTALLKEYS;
+                      if dcWantArrows in DlgCodes then
+                        PMsg^.Result := PMsg^.Result or DLGC_WANTARROWS;
+                      if dcWantTab in DlgCodes then
+                        PMsg^.Result := PMsg^.Result or DLGC_WANTTAB;
+                      if dcWantChars in DlgCodes then
+                        PMsg^.Result := PMsg^.Result or DLGC_WANTCHARS;
+                      if dcButton in DlgCodes then
+                        PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
+                    end;
+                  end;
+                finally
+                  Helper.Free;
                 end;
               end;
             WM_SETFOCUS:
               begin
-                with PMsg^ do
-                  Result := InheritMsg(Instance, Msg, WParam, LParam);
-                DoSetFocus(HWND(PMsg^.WParam));
+                Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
+                try
+                  with PMsg^ do
+                    Result := InheritMsg(Instance, Msg, WParam, LParam);
+                  if Helper.IsValid then
+                    DoSetFocus(HWND(PMsg^.WParam));
+                finally
+                  Helper.Free;
+                end;
               end;
             WM_KILLFOCUS:
               begin
-                with PMsg^ do
-                  Result := InheritMsg(Instance, Msg, WParam, LParam);
-                DoKillFocus(HWND(PMsg^.WParam));
+                Helper := TFreeNotificationHelper.Create(Instance, @IntfWinControl);
+                try
+                  with PMsg^ do
+                    Result := InheritMsg(Instance, Msg, WParam, LParam);
+                  if Helper.IsValid then
+                    DoKillFocus(HWND(PMsg^.WParam));
+                finally
+                  Helper.Free;
+                end;
               end;
             WM_SIZE:
               begin
                 DoBoundsChanged;
+                IntfWinControl := nil;
                 with PMsg^ do
                   Result := InheritMsg(Instance, Msg, WParam, LParam);
               end;
