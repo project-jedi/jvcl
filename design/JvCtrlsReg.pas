@@ -136,8 +136,8 @@ begin
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);
-  RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
-  RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
+  RegisterComponentEditor(TJvImageListBox, TJvItemsEditor);
+  RegisterComponentEditor(TJvImageComboBox, TJvItemsEditor);
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);

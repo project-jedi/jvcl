@@ -266,6 +266,7 @@ resourcestring
   RsExecutableFilesExeExeAllFiles = 'Executable files (*)|*';
   {$ENDIF LINUX}
   RsItems = 'Items';
+  RsStrings = 'Strings';
   RsFmtEditEllipsis = '%s Editor...';
   RsSaveImageList = 'Save to bitmap...';
 
