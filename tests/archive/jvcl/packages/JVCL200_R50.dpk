@@ -119,7 +119,6 @@ contains
   JvGradient in '..\Source\JvGradient.pas',
   JvGradientCaption in '..\Source\JvGradientCaption.pas',
   JvHeaderControl in '..\Source\JvHeaderControl.pas',
-  JvHMru in '..\Source\JvHMru.pas',
   JvHotKey in '..\Source\JvHotKey.pas',
   JvHotLink in '..\Source\JvHotLink.pas',
   JvHRas32 in '..\Source\JvHRas32.pas',
