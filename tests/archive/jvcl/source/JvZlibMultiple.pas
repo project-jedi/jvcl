@@ -200,7 +200,7 @@ procedure TJvZlibMultiple.CompressDirectory(Directory: string;
   Recursive: Boolean; FileName: string);
 var
   MemStream: TMemoryStream;
-  tmpStream:TStream;
+  TmpStream: TStream;
 begin
   // don't create file until we save it so we don't accidentally
   // try to compress ourselves!
@@ -209,14 +209,13 @@ begin
   MemStream := TMemoryStream.Create;
   try
     { (RB) This causes a memory leak }
-    // (rom) still in effect?
     // (p3) should be fixed now...
-    tmpStream := CompressDirectory(Directory, Recursive);
+    TmpStream := CompressDirectory(Directory, Recursive);
     try
-      MemStream.CopyFrom(tmpStream, 0);
+      MemStream.CopyFrom(TmpStream, 0);
       MemStream.SaveToFile(FileName);
     finally
-      tmpStream.Free;
+      TmpStream.Free;
     end;
   finally
     MemStream.Free;
@@ -260,19 +259,18 @@ end;
 procedure TJvZlibMultiple.CompressFiles(Files: TStrings; FileName: string);
 var
   MemStream: TMemoryStream;
-  tmpStream:TStream;
+  TmpStream: TStream;
 begin
   MemStream := TMemoryStream.Create;
   try
     { (RB) This causes a memory leak }
-    // (rom) still in effect?
     // (p3) should be fixed now...
-    tmpStream := CompressFiles(Files);
+    TmpStream := CompressFiles(Files);
     try
-      MemStream.CopyFrom(tmpStream, 0);
+      MemStream.CopyFrom(TmpStream, 0);
       MemStream.SaveToFile(FileName);
     finally
-      tmpStream.Free;
+      TmpStream.Free;
     end;
   finally
     MemStream.Free;

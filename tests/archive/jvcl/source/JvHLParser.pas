@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: JvHLParser.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -29,20 +29,19 @@ Known Issues:
   with [translated]
 -----------------------------------------------------------------------------}
 
-
-{$I JVCL.INC}
+{$I JVCL.Inc}
 
 unit JvHLParser;
 
 interface
 
-uses SysUtils, Classes;
+uses
+  SysUtils, Classes;
 
 const
   ieBadRemark = 1;
 
 type
-
   TIParserStyle = (psNone, psPascal, psCpp, psPython, psVB, psHtml, psPerl, psCocoR, psPhp);
 
   TJvIParser = class
@@ -50,17 +49,16 @@ type
     FpcProgram: PChar;
     FpcPos: PChar; // Current position [translated]
     FHistory: TStringList;
-    FHistorySize: integer;
-    FHistoryPtr: integer;
+    FHistorySize: Integer;
+    FHistoryPtr: Integer;
     FStyle: TIParserStyle;
     FReturnComments: Boolean;
-
-    function HistoryInd(index: integer): integer;
-    function GetHistory(index: integer): string;
-    function GetPosBeg(index: integer): integer;
-    function GetPosEnd(index: integer): integer;
-    procedure SetHistorySize(Size: integer);
-    function GetPos: integer;
+    function HistoryInd(Index: Integer): Integer;
+    function GetHistory(Index: Integer): string;
+    function GetPosBeg(Index: Integer): Integer;
+    function GetPosEnd(Index: Integer): Integer;
+    procedure SetHistorySize(Size: Integer);
+    function GetPos: Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -70,63 +68,62 @@ type
       a current position to the left [translated]
     function TokenL : string; - It is devilishly difficult to make it *;-( [translated] }
     { Rollback back on the indicated quantity of tokens [translated] }
-    procedure RollBack(index: integer);
-    property History[index: integer]: string read GetHistory;
-    property PosBeg[index: integer]: integer read GetPosBeg;
-    property PosEnd[index: integer]: integer read GetPosEnd;
-    property HistorySize: integer read FHistorySize write SetHistorySize;
-    property Pos: integer read GetPos;
+    procedure RollBack(Index: Integer);
+    property History[Index: Integer]: string read GetHistory;
+    property PosBeg[Index: Integer]: Integer read GetPosBeg;
+    property PosEnd[Index: Integer]: Integer read GetPosEnd;
+    property HistorySize: Integer read FHistorySize write SetHistorySize;
+    property Pos: Integer read GetPos;
+    // (rom) name change needed
     property pcPos: PChar read FpcPos write FpcPos;
     property pcProgram: PChar read FpcProgram write FpcProgram;
     property Style: TIParserStyle read FStyle write FStyle;
     property ReturnComments: Boolean read FReturnComments write FReturnComments;
   end;
 
-  EJvIParserError  = class(Exception)
+  EJvIParserError = class(Exception)
   public
-    ErrCode: integer;
-    Pos: integer;
-    constructor Create(AErrCode: integer; APos: integer);
+    ErrCode: Integer;
+    Pos: Integer;
+    constructor Create(AErrCode: Integer; APos: Integer);
   end;
 
-  function IsStringConstant(const St: string): boolean;
-  function IsIntConstant(const St: string): boolean;
-  function IsRealConstant(const St: string): boolean;
-  function IsIdentifer(const ID: string): boolean;
-  function GetStringValue(const St: string): string;
-  procedure ParseString(const S: string; Ss: TStrings);
+function IsStringConstant(const St: string): Boolean;
+function IsIntConstant(const St: string): Boolean;
+function IsRealConstant(const St: string): Boolean;
+function IsIdentifer(const ID: string): Boolean;
+function GetStringValue(const St: string): string;
+procedure ParseString(const S: string; Ss: TStrings);
 
 implementation
 
-uses JvCtlConst;
+uses
+  JvCtlConst;
 
 {$IFDEF Delphi}
 type
-  TSetOfChar = set of char;
+  TSetOfChar = set of Char;
 {$ENDIF Delphi}
 {$IFDEF BCB}
 type
   TSetOfChar = string;
 {$ENDIF BCB}
 
-function CharInSet(const Ch : Char; const SetOfChar : TSetOfChar) : boolean;
+function CharInSet(const Ch: Char; const SetOfChar: TSetOfChar): Boolean;
 begin
-{$IFDEF Delphi}
+  {$IFDEF Delphi}
   Result := Ch in SetOfChar;
-{$ENDIF Delphi}
-{$IFDEF BCB}
+  {$ENDIF Delphi}
+  {$IFDEF BCB}
   Result := Pos(Ch, SetOfChar) > 0;
-{$ENDIF BCB}
+  {$ENDIF BCB}
 end;
 
-constructor EJvIParserError .Create(AErrCode: integer; APos: integer);
+constructor EJvIParserError.Create(AErrCode: Integer; APos: Integer);
 begin
   ErrCode := AErrCode;
   Pos := APos;
 end;
-
-
-{*************************** TJvIParser ****************************}
 
 constructor TJvIParser.Create;
 begin
@@ -143,8 +140,6 @@ begin
 end;
 
 function TJvIParser.Token: string;
-var
-  P, F: PChar;
 const
   {$IFDEF Delphi}
   StSkip = [' ', #10, #13];
@@ -152,37 +147,41 @@ const
   {$IFDEF BCB}
   StSkip = ' '#10#13;
   {$ENDIF BCB}
+var
+  P, F: PChar;
+  F1: PChar;
+  i: Integer;
 
-  Function SkipComments:Boolean;
+  function SkipComments: Boolean;
   begin
-    SkipComments:=True;
+    SkipComments := True;
     case P[0] of
       '{':
         if FStyle = psPascal then
         begin
           F := StrScan(P + 1, '}');
           if F = nil then //IParserError(ieBadRemark, P - FpcProgram);
-             Exit;
+            Exit;
           P := F + 1;
         end;
       '}':
         if FStyle = psPascal then //IParserError(ieBadRemark, P - FpcProgram);
-           Exit;
+          Exit;
       '(':
         if (FStyle in [psPascal, psCocoR]) and (P[1] = '*') then
         begin
           F := P + 2;
-          while true do
+          while True do
           begin
             F := StrScan(F, '*');
             if F = nil then //IParserError(ieBadRemark, P - FpcProgram);
-               Exit;
+              Exit;
             if F[1] = ')' then
             begin
-              inc(F);
-              break;
+              Inc(F);
+              Break;
             end;
-            inc(F);
+            Inc(F);
           end;
           P := F + 1;
         end;
@@ -193,50 +192,55 @@ const
             //IParserError(ieBadRemark, P - FpcProgram)
             Exit;
         end
-        else if FStyle in [psCpp, psPhp] then
-          if P[1]='/' then //IParserError(ieBadRemark, P - FpcProgram);
-             Exit;
+        else
+        if FStyle in [psCpp, psPhp] then
+          if P[1] = '/' then //IParserError(ieBadRemark, P - FpcProgram);
+            Exit;
       '/':
         if (FStyle in [psPascal, psCpp, psCocoR, psPhp]) and (P[1] = '/') then
         begin
           F := StrScan(P + 1, #13);
-          if F = nil then F := StrEnd(P + 1);
+          if F = nil then
+            F := StrEnd(P + 1);
           P := F;
         end
-        else if (FStyle in [psCpp, psCocoR, psPhp]) and (P[1] = '*') then
+        else
+        if (FStyle in [psCpp, psCocoR, psPhp]) and (P[1] = '*') then
         begin
           F := P + 2;
-          while true do
+          while True do
           begin
             F := StrScan(F, '*');
             if F = nil then //IParserError(ieBadRemark, P - FpcProgram);
-               Exit;
+              Exit;
             if F[1] = '/' then
             begin
-              inc(F);
-              break;
+              Inc(F);
+              Break;
             end;
-            inc(F);
+            Inc(F);
           end;
           P := F + 1;
         end;
       '#':
         if (FStyle in [psPython, psPerl]) { and
-           ((P = FpcProgram) or (P[-1] in [#10, #13])) } then
+           ((P = FpcProgram) or (P[-1] in [#10, #13])) }then
         begin
           F := StrScan(P + 1, #13);
-          if F = nil then F := StrEnd(P + 1);
+          if F = nil then
+            F := StrEnd(P + 1);
           P := F;
         end;
       '''':
         if FStyle = psVB then
         begin
           F := StrScan(P + 1, #13);
-          if F = nil then F := StrEnd(P + 1);
+          if F = nil then
+            F := StrEnd(P + 1);
           P := F;
         end;
     end;
-    SkipComments:=False;
+    SkipComments := False;
   end;
 
   procedure Return;
@@ -244,13 +248,11 @@ const
     FpcPos := P;
     FHistory[FHistoryPtr] := Result;
     FHistory.Objects[FHistoryPtr] := TObject(Pos - 1);
-    inc(FHistoryPtr);
-    if FHistoryPtr > FHistorySize - 1 then FHistoryPtr := 0;
-  end; { Return }
+    Inc(FHistoryPtr);
+    if FHistoryPtr > FHistorySize - 1 then
+      FHistoryPtr := 0;
+  end;
 
-var
-  F1: PChar;
-  i: integer;
 begin
   { New Token - To begin reading a new token [translated] }
   F := FpcPos;
@@ -258,13 +260,13 @@ begin
   { Firstly skip spaces and remarks }
   repeat
     while CharInSet(P[0], StSkip) do
-      inc(P);
+      Inc(P);
     F1 := P;
     try
-      If SkipComments Then
-         P:=StrEnd(F1);
+      if SkipComments then
+        P := StrEnd(F1);
     except
-      on E: EJvIParserError  do
+      on E: EJvIParserError do
         if (E.ErrCode = ieBadRemark) and ReturnComments then
           P := StrEnd(F1)
         else
@@ -277,180 +279,193 @@ begin
       Exit;
     end;
     while CharInSet(P[0], StSkip) do
-      inc(P);
+      Inc(P);
   until F1 = P;
 
   F := P;
   if FStyle <> psHtml then
   begin
     if CharInSet(P[0], StIdFirstSymbols) then
-      { token }
+    { token }
     begin
       while CharInSet(P[0], StIdSymbols) do
-        inc(P);
+        Inc(P);
       SetString(Result, F, P - F);
     end
-    else if CharInSet(P[0], StConstSymbols10) then
-      { number }
+    else
+    if CharInSet(P[0], StConstSymbols10) then
+    { number }
     begin
       while CharInSet(P[0], StConstSymbols10) or (P[0] = '.') do
-        inc(P);
+        Inc(P);
       SetString(Result, F, P - F);
     end
-    else if (Style = psPascal) and (P[0] = '$') and
+    else
+    if (Style = psPascal) and (P[0] = '$') and
       CharInSet(P[1], StConstSymbols) then
-      { pascal hex number }
+    { pascal hex number }
     begin
-      inc(P);
+      Inc(P);
       while CharInSet(P[0], StConstSymbols) do
-        inc(P);
+        Inc(P);
       SetString(Result, F, P - F);
     end
-    else if (Style = psPerl) and (P[0] in ['$', '@', '%', '&']) then
-      { perl identifer }
+    else
+    if (Style = psPerl) and (P[0] in ['$', '@', '%', '&']) then
+    { perl identifer }
     begin
-      inc(P);
+      Inc(P);
       while CharInSet(P[0], StIdSymbols) do
-        inc(P);
+        Inc(P);
       SetString(Result, F, P - F);
     end
-    else if P[0] = '''' then
-      { pascal string constant }
+    else
+    if P[0] = '''' then
+    { pascal string constant }
     begin
-      inc(P);
+      Inc(P);
       while P[0] <> #0 do
       begin
         if P[0] = '''' then
           if P[1] = '''' then
-            inc(P)
+            Inc(P)
           else
-            break;
-        inc(P);
+            Break;
+        Inc(P);
       end;
-      if P[0] <> #0 then inc(P);
+      if P[0] <> #0 then
+        Inc(P);
       SetString(Result, F, P - F);
       i := 2;
       while i < Length(Result) - 1 do
       begin
         if Result[i] = '''' then
           Delete(Result, i, 1);
-        inc(i);
+        Inc(i);
       end;
     end
-    else if (FStyle in [psCpp, psCocoR]) and (P[0] = '"') then
-      { C++ string constant }
+    else
+    if (FStyle in [psCpp, psCocoR]) and (P[0] = '"') then
+    { C++ string constant }
     begin
-      inc(P);
+      Inc(P);
       while P[0] <> #0 do
       begin
         if (P[0] = '"') and (P[-1] <> '\') then
-          break;
-        inc(P);
+          Break;
+        Inc(P);
       end;
-      if P[0] <> #0 then inc(P);
+      if P[0] <> #0 then
+        Inc(P);
       SetString(Result, F, P - F);
     end
-    else if ((FStyle in [psPython, psVB, psHtml]) and (P[0] = '"')) or
-            ((FStyle in [psPerl, psPhp]) and (P[0] = '"') and ((P = FpcPos) or (P[-1] <> '/'))) then
-      { Python, VB, Html, Perl string constant }
+    else
+    if ((FStyle in [psPython, psVB, psHtml]) and (P[0] = '"')) or
+      ((FStyle in [psPerl, psPhp]) and (P[0] = '"') and ((P = FpcPos) or (P[-1] <> '/'))) then
+    { Python, VB, Html, Perl string constant }
     begin
-      inc(P);
+      Inc(P);
       while P[0] <> #0 do
       begin
         if P[0] = '"' then
-          break;
-        inc(P);
+          Break;
+        Inc(P);
       end;
-      if P[0] <> #0 then inc(P);
+      if P[0] <> #0 then
+        Inc(P);
       SetString(Result, F, P - F);
     end
-    else if P[0] = #0 then
+    else
+    if P[0] = #0 then
       Result := ''
     else
     begin
       Result := P[0];
-      inc(P);
+      Inc(P);
     end;
   end
   else { html }
   begin
     if (P[0] in ['=', '<', '>']) or
-       ((P <> pcProgram) and (P[0] = '/') and (P[-1] = '<')) then
+      ((P <> pcProgram) and (P[0] = '/') and (P[-1] = '<')) then
     begin
       Result := P[0];
-      inc(P);
+      Inc(P);
     end
-    else if P[0] = '"' then
-      { Html string constant }
+    else
+    if P[0] = '"' then
+    { Html string constant }
     begin
-      inc(P);
+      Inc(P);
       while P[0] <> #0 do
       begin
         if P[0] = '"' then
-          break;
-        inc(P);
+          Break;
+        Inc(P);
       end;
-      if P[0] <> #0 then inc(P);
+      if P[0] <> #0 then
+        Inc(P);
       SetString(Result, F, P - F);
     end
     else
     begin
       while not (P[0] in [#0, ' ', '=', '<', '>']) do
-        inc(P);
+        Inc(P);
       SetString(Result, F, P - F);
     end;
   end;
   Return;
 end;
 
-function TJvIParser.HistoryInd(index: integer): integer;
+function TJvIParser.HistoryInd(Index: Integer): Integer;
 begin
-  Result := FHistoryPtr - 1 - index;
-  if Result < 0 then Result := Result + FHistorySize;
+  Result := FHistoryPtr - 1 - Index;
+  if Result < 0 then
+    Result := Result + FHistorySize;
 end;
 
-function TJvIParser.GetHistory(index: integer): string;
+function TJvIParser.GetHistory(Index: Integer): string;
 begin
-  Result := FHistory[HistoryInd(index)];
+  Result := FHistory[HistoryInd(Index)];
 end;
 
-function TJvIParser.GetPosEnd(index: integer): integer;
+function TJvIParser.GetPosEnd(Index: Integer): Integer;
 begin
-  Result := integer(FHistory.Objects[HistoryInd(index)]) + 1;
+  Result := Integer(FHistory.Objects[HistoryInd(Index)]) + 1;
 end;
 
-function TJvIParser.GetPosBeg(index: integer): integer;
+function TJvIParser.GetPosBeg(Index: Integer): Integer;
 var
-  i: integer;
+  i: Integer;
   S: string;
 begin
-  i := HistoryInd(index);
+  i := HistoryInd(Index);
   S := FHistory[i];
-  Result := integer(FHistory.Objects[i]) - Length(S) + 1;
+  Result := Integer(FHistory.Objects[i]) - Length(S) + 1;
   case FStyle of
     psPascal:
       if S[1] = '''' then
         for i := 2 to Length(S) - 1 do
           if S[i] = '''' then
-            dec(Result);
+            Dec(Result);
   end;
 end;
 
-procedure TJvIParser.SetHistorySize(Size: integer);
+procedure TJvIParser.SetHistorySize(Size: Integer);
 {$IFDEF DEBUG}
 var
-  i: integer;
-  {$ENDIF}
+  i: Integer;
+{$ENDIF}
 begin
   while Size > FHistorySize do
   begin
     FHistory.Add('');
-    inc(FHistorySize);
+    Inc(FHistorySize);
   end;
   while Size < FHistorySize do
   begin
     FHistory.Delete(0);
-    dec(FHistorySize);
+    Dec(FHistorySize);
   end;
   {$IFDEF DEBUG}
   for i := 0 to FHistorySize - 1 do
@@ -459,20 +474,18 @@ begin
   FHistoryPtr := 0;
 end;
 
-function TJvIParser.GetPos: integer;
+function TJvIParser.GetPos: Integer;
 begin
   Result := pcPos - FpcProgram;
 end;
 
-procedure TJvIParser.RollBack(index: integer);
+procedure TJvIParser.RollBack(Index: Integer);
 begin
-  FpcPos := PosEnd[index] + FpcProgram;
-  dec(FHistoryPtr, index);
+  FpcPos := PosEnd[Index] + FpcProgram;
+  Dec(FHistoryPtr, Index);
   if FHistoryPtr < 0 then
     FHistoryPtr := FHistorySize + FHistoryPtr;
 end;
-
-{########################### TJvIParser ###########################}
 
 procedure ParseString(const S: string; Ss: TStrings);
 var
@@ -495,81 +508,85 @@ begin
   end;
 end;
 
-
-function IsStringConstant(const St: string): boolean;
+function IsStringConstant(const St: string): Boolean;
 var
-  LS: integer;
+  LS: Integer;
 begin
   LS := Length(St);
-  if (LS >= 2) and (((St[1] = '''') and (St[LS] = '''')) or
-    ((St[1] = '"') and (St[LS] = '"'))) then
-    Result := true
-  else
-    Result := false
+  Result := (LS >= 2) and (((St[1] = '''') and (St[LS] = '''')) or
+    ((St[1] = '"') and (St[LS] = '"')));
 end;
 
-function IsRealConstant(const St: string): boolean;
+function IsRealConstant(const St: string): Boolean;
 var
-  i, j: integer;
-  Point: boolean;
+  i, j: Integer;
+  Point: Boolean;
 begin
-  Result := false;
-  if (St = '.') or (St = '') then exit;
+  Result := False;
+  if (St = '.') or (St = '') then
+    Exit;
   if St[1] = '-' then
     if Length(St) = 1 then
-      exit
+      Exit
     else
       j := 2
   else
     j := 1;
-  Point := false;
+  Point := False;
   for i := j to Length(St) do
     if St[i] = '.' then
       if Point then
-        exit
+        Exit
       else
-        Point := true
-    else if (St[i] < '0') or (St[i] > '9') then
-      exit;
-  Result := true;
+        Point := True
+    else
+    if (St[i] < '0') or (St[i] > '9') then
+      Exit;
+  Result := True;
 end;
 
-function IsIntConstant(const St: string): boolean;
+function IsIntConstant(const St: string): Boolean;
 var
-  i, j: integer;
+  i, j: Integer;
   Sym: TSetOfChar;
 begin
-  Result := false;
-  if (Length(St) = 0) or ((Length(St) = 1) and (St[1] = '$')) then exit;
+  Result := False;
+  if (Length(St) = 0) or ((Length(St) = 1) and (St[1] = '$')) then
+    Exit;
   Sym := StConstSymbols10;
   if (St[1] = '-') or (St[1] = '$') then
   begin
     if Length(St) = 1 then
-      exit
+      Exit
     else
       j := 2;
-    if St[1] = '$' then Sym := StConstSymbols;
+    if St[1] = '$' then
+      Sym := StConstSymbols;
   end
   else
     j := 1;
   for i := j to Length(St) do
-    if not CharInSet(St[i], Sym) then exit;
-  Result := true;
+    if not CharInSet(St[i], Sym) then
+      Exit;
+  Result := True;
 end;
 
-function IsIdentifer(const ID: string): boolean;
+function IsIdentifer(const ID: string): Boolean;
 var
-  i, L: integer;
+  i, L: Integer;
 begin
-  Result := false;
+  Result := False;
   L := Length(ID);
-  if L = 0 then exit;
-  if not CharInSet(ID[1], StIdFirstSymbols) then exit;
+  if L = 0 then
+    Exit;
+  if not CharInSet(ID[1], StIdFirstSymbols) then
+    Exit;
   for i := 1 to L do
   begin
-    if not CharInSet(ID[1], StIdSymbols) then exit;
+    if not CharInSet(ID[1], StIdSymbols) then
+      Exit;
   end;
-  Result := true;
+  Result := True;
 end;
 
 function GetStringValue(const St: string): string;

@@ -28,26 +28,24 @@ Known Issues:
 
 unit JvCombobox;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  Windows, Dialogs, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvMaxPixel, JvPropAutoSave, JvItemsSearchs, JVCLVer;
 
 type
-  TJvCustomCombobox = class(TCustomComboBox)
+  TJvCustomComboBox = class(TCustomComboBox)
   private
     FKey: Word;
     FAutoComplete: Boolean;
     {$IFNDEF COMPILER6_UP}
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
-    FFilter: String;          // SPM - ditto
+    FFilter: string;          // SPM - ditto
     {$ENDIF}
     FSearching: Boolean;
     FOnMouseEnter: TNotifyEvent;
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
@@ -58,9 +56,12 @@ type
     FAutoSave: TJvAutoSave;
     FItemSearchs: TJvItemsSearchs;
     FAboutJVCL: TJVCLAboutInfo;
+    FReadOnly: Boolean; // ain
     procedure MaxPixelChanged(Sender: TObject);
+    procedure SetReadOnly(const Value: Boolean); // ain
   protected
     procedure Change; override;
+    procedure CreateWnd; override; // ain
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFNDEF COMPILER6_UP}
     procedure KeyPress(var Key: Char); override;  // SPM - Ported backward from D7
@@ -69,13 +70,16 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
+    procedure WMLButtonDblClk(var Msg: TWMLButtonDown); message WM_LBUTTONDBLCLK; // ain
     {$IFNDEF COMPILER6_UP}
-    function SelectItem(const AnItem: String): Boolean;  // SPM - Ported from D7
+    function SelectItem(const AItem: string): Boolean;  // SPM - Ported from D7
     {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
+    procedure WndProc(var Msg: TMessage); override; // ain
     function SearchExactString(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchPrefix(Value: string; CaseSensitive: Boolean = True): Integer;
     function SearchSubString(Value: string; CaseSensitive: Boolean = True): Integer;
@@ -89,8 +93,9 @@ type
 
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
     property AutoSave: TJvAutoSave read FAutoSave write FAutoSave;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
 
     property OnRestored: TNotifyEvent read FOnRestored write FOnRestored;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -142,6 +147,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
+    property ReadOnly; // ain
     property ShowHint;
     property Sorted;
     property TabOrder;
@@ -181,19 +187,18 @@ type
     property OnParentColorChange;
   end;
 
-
 implementation
 
 {**************************************************}
 
-constructor TJvCustomCombobox.Create(AOwner: TComponent);
+constructor TJvCustomComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
+  FAutoComplete := True;
   {$IFNDEF COMPILER6_UP}
   FLastTime := 0;           // SPM - Ported backward from Delphi 7
   {$ENDIF}
-  FAutoComplete := True;
   FSearching := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := False;
@@ -201,11 +206,12 @@ begin
   FMaxPixel.OnChanged := MaxPixelChanged;
   FAutoSave := TJvAutoSave.Create(Self);
   FItemSearchs := TJvItemsSearchs.Create;
+  FReadOnly := False; // ain
 end;
 
 {**************************************************}
 
-destructor TJvCustomCombobox.Destroy;
+destructor TJvCustomComboBox.Destroy;
 begin
   FMaxPixel.Free;
   FAutoSave.Free;
@@ -215,26 +221,26 @@ end;
 
 {**************************************************}
 
-procedure TJvCustomCombobox.Loaded;
+procedure TJvCustomComboBox.Loaded;
 var
-  st: string;
-  i: Integer;
+  St: string;
+  I: Integer;
 begin
   inherited;
   if Style = csDropDownList then
   begin
-    if FAutoSave.LoadValue(i) then
+    if FAutoSave.LoadValue(I) then
     begin
-      ItemIndex := i;
+      ItemIndex := I;
       if Assigned(FOnRestored) then
         FOnRestored(Self);
     end;
   end
   else
   begin
-    if FAutoSave.LoadValue(st) then
+    if FAutoSave.LoadValue(St) then
     begin
-      Text := st;
+      Text := St;
       if Assigned(FOnRestored) then
         FOnRestored(Self);
     end;
@@ -243,35 +249,35 @@ end;
 
 {**************************************************}
 
-procedure TJvCustomCombobox.Change;
+procedure TJvCustomComboBox.Change;
 var
-  res: Integer;
-  st: string;
-  start, finish: Integer;
+  Res: Integer;
+  St: string;
+  Start, Finish: Integer;
 begin
   inherited;
   if not FSearching and FAutoComplete then
   begin
-    st := Text;
-    FMaxPixel.Test(st, Font);
-    if Text <> st then
+    St := Text;
+    FMaxPixel.Test(St, Font);
+    if Text <> St then
     begin
-      Text := st;
+      Text := St;
       Exit;
     end;
-    if (FKey <> 8) and (FKey <> 46) and (FKey <> 13) then
+    if (FKey <> VK_BACK) and (FKey <> VK_DELETE) and (FKey <> VK_RETURN) then
     begin
       FSearching := True;
-      st := Text;
-      res := SendMessage(Handle, CB_FINDSTRING, -1, Longint(PChar(st)));
-      if res <> CB_ERR then
+      St := Text;
+      Res := SendMessage(Handle, CB_FINDSTRING, -1, Longint(PChar(St)));
+      if Res <> CB_ERR then
       try
-        ItemIndex := res;
-        start := Length(st);
-        finish := Length(Items[res]) - start;
-        Text := Items[res];
-        SelStart := start;
-        SelLength := finish;
+        ItemIndex := Res;
+        Start := Length(St);
+        Finish := Length(Items[Res]) - Start;
+        Text := Items[Res];
+        SelStart := Start;
+        SelLength := Finish;
       except
       end;
       FSearching := False;
@@ -285,7 +291,7 @@ end;
 
 {**************************************************}
 
-function TJvCustomCombobox.SearchExactString(Value: string;
+function TJvCustomComboBox.SearchExactString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchExactString(Items, Value, CaseSensitive);
@@ -293,7 +299,7 @@ end;
 
 {**************************************************}
 
-function TJvCustomCombobox.SearchPrefix(Value: string;
+function TJvCustomComboBox.SearchPrefix(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchPrefix(Items, Value, CaseSensitive);
@@ -301,15 +307,16 @@ end;
 
 {**************************************************}
 
-procedure TJvCustomCombobox.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvCustomComboBox.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
   FKey := Key;
 end;
 
 {$IFNDEF COMPILER6_UP}
-{**************************************************}
+
 // SPM - Ported backward from Delphi 7 and modified:
+
 procedure TJvCustomComboBox.KeyPress(var Key: Char);
 
   function HasSelectedText(var StartPos, EndPos: DWORD): Boolean;
@@ -334,13 +341,14 @@ procedure TJvCustomComboBox.KeyPress(var Key: Char);
 var
   StartPos: DWORD;
   EndPos: DWORD;
-  OldText: String;
-  SaveText: String;
-  Msg : TMSG;
+  OldText: string;
+  SaveText: string;
+  Msg: TMsg;
   LastByte: Integer;
 begin
   inherited KeyPress(Key);
-  if not AutoComplete then exit;
+  if not AutoComplete then
+    Exit;
   if Style in [csDropDown, csSimple] then
     FFilter := Text
   else
@@ -350,33 +358,35 @@ begin
     FLastTime := GetTickCount;
   end;
   case Ord(Key) of
-    VK_ESCAPE: exit;
+    VK_ESCAPE:
+      Exit;
     VK_BACK:
       begin
         if HasSelectedText(StartPos, EndPos) then
           DeleteSelectedText
         else
-          if (Style in [csDropDown, csSimple]) and (Length(Text) > 0) then
-          begin
-            SaveText := Text;
-            LastByte := StartPos;
-            while ByteType(SaveText, LastByte) = mbTrailByte do Dec(LastByte);
-            OldText := Copy(SaveText, 1, LastByte - 1);
-            SendMessage(Handle, CB_SETCURSEL, -1, 0);
-            Text := OldText + Copy(SaveText, EndPos + 1, MaxInt);
-            SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(LastByte - 1, LastByte - 1));
-            FFilter := Text;
-          end
-          else
-          begin
-            while ByteType(FFilter, Length(FFilter)) = mbTrailByte do
-              Delete(FFilter, Length(FFilter), 1);
+        if (Style in [csDropDown, csSimple]) and (Length(Text) > 0) then
+        begin
+          SaveText := Text;
+          LastByte := StartPos;
+          while ByteType(SaveText, LastByte) = mbTrailByte do
+            Dec(LastByte);
+          OldText := Copy(SaveText, 1, LastByte - 1);
+          SendMessage(Handle, CB_SETCURSEL, -1, 0);
+          Text := OldText + Copy(SaveText, EndPos + 1, MaxInt);
+          SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(LastByte - 1, LastByte - 1));
+          FFilter := Text;
+        end
+        else
+        begin
+          while ByteType(FFilter, Length(FFilter)) = mbTrailByte do
             Delete(FFilter, Length(FFilter), 1);
-          end;
+          Delete(FFilter, Length(FFilter), 1);
+        end;
         Key := #0;
         Change;
       end;
-  else // case
+  else
     if HasSelectedText(StartPos, EndPos) then
       SaveText := Copy(FFilter, 1, StartPos) + Key
     else
@@ -386,7 +396,7 @@ begin
     begin
       if PeekMessage(Msg, Handle, 0, 0, PM_NOREMOVE) and (Msg.Message = WM_CHAR) then
       begin
-        if SelectItem(SaveText + Char(Msg.wParam)) then
+        if SelectItem(SaveText + Char(Msg.WParam)) then
         begin
           PeekMessage(Msg, Handle, 0, 0, PM_REMOVE);
           Key := #0
@@ -396,11 +406,11 @@ begin
     else
       if SelectItem(SaveText) then
         Key := #0
-  end; // case
+  end;
 end;
 
-{**************************************************}
 // SPM - Ported backward from Delphi 7 and modified:
+
 function TJvCustomComboBox.SelectItem(const AnItem: String): Boolean;
 var
   Idx: Integer;
@@ -434,11 +444,12 @@ begin
     Change;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF COMPILER6_UP}
 
 {**************************************************}
 
-procedure TJvCustomCombobox.CMCtl3DChanged(var Msg: TMessage);
+procedure TJvCustomComboBox.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnCtl3DChanged) then
@@ -447,7 +458,7 @@ end;
 
 {**************************************************}
 
-procedure TJvCustomCombobox.CMParentColorChanged(var Msg: TMessage);
+procedure TJvCustomComboBox.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnParentColorChanged) then
@@ -456,14 +467,15 @@ end;
 
 {**************************************************}
 
-procedure TJvCustomCombobox.CMMouseEnter(var Msg: TMessage);
+procedure TJvCustomComboBox.CMMouseEnter(var Msg: TMessage);
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
     // for D7...
-    if csDesigning in ComponentState then Exit;
-    Application.HintColor := FColor;
+    if csDesigning in ComponentState then
+      Exit;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
@@ -472,7 +484,7 @@ end;
 
 {**************************************************}
 
-procedure TJvCustomCombobox.CMMouseLeave(var Msg: TMessage);
+procedure TJvCustomComboBox.CMMouseLeave(var Msg: TMessage);
 begin
   if FOver then
   begin
@@ -485,7 +497,7 @@ end;
 
 {**************************************************}
 
-function TJvCustomCombobox.SearchSubString(Value: string;
+function TJvCustomComboBox.SearchSubString(Value: string;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.SearchSubString(Items, Value, CaseSensitive);
@@ -493,7 +505,7 @@ end;
 
 {**************************************************}
 
-function TJvCustomCombobox.DeleteExactString(Value: string; All: Boolean;
+function TJvCustomComboBox.DeleteExactString(Value: string; All: Boolean;
   CaseSensitive: Boolean): Integer;
 begin
   Result := FItemSearchs.DeleteExactString(Items, Value, CaseSensitive);
@@ -501,18 +513,109 @@ end;
 
 {**************************************************}
 
-procedure TJvCustomCombobox.MaxPixelChanged(Sender: TObject);
+procedure TJvCustomComboBox.MaxPixelChanged(Sender: TObject);
 var
-  st: string;
+  St: string;
 begin
   if Style <> csDropDownList then
   begin
-    st := Text;
-    FMaxPixel.Test(st, Font);
-    if Text <> st then
-      Text := st;
+    St := Text;
+    FMaxPixel.Test(St, Font);
+    if Text <> St then
+      Text := St;
     SelStart := Length(Text);
   end;
 end;
 
+procedure TJvCustomComboBox.SetReadOnly(const Value: Boolean);
+begin
+  if FReadOnly <> Value then
+  begin
+    FReadOnly := Value;
+    SendMessage(EditHandle, EM_SETREADONLY, Ord(Value), 0);
+  end;
+end;
+
+procedure TJvCustomComboBox.WndProc(var Msg: TMessage);
+begin
+  if ReadOnly and not (csDesigning in ComponentState) then
+  begin
+    case Msg.Msg of
+      WM_KEYDOWN:
+        begin
+          if Msg.WParam in [VK_DOWN, VK_UP, VK_RIGHT, VK_LEFT, VK_F4] then
+          begin
+            // see keelab aktiivse itemi vahetamise nooleklahvidega DDL kui CB on aktiivne
+            Msg.Result := 0;
+            Exit;
+          end;
+        end;
+      WM_CHAR:
+        begin
+          // DDL trykkides ei aktiveeriks selle tahega algavat itemit
+          Msg.Result := 0;
+          Exit;
+        end;
+      WM_SYSKEYDOWN:
+        begin
+          if (Msg.WParam = VK_DOWN) or (Msg.WParam = VK_UP) then
+          begin
+            // see keelab Ald+Down listi avamise fookuses DDL CB-l
+            Msg.Result := 0;
+            Exit;
+          end;
+        end;
+      WM_COMMAND:
+        begin
+          // DD editis nooleklahviga vahetamise valtimiseks kui fookuses
+          if HiWord(Msg.WParam) = CBN_SELCHANGE then
+          begin
+            Msg.Result := 0;
+            Exit;
+          end;
+        end;
+      WM_USER + $B900:
+        begin
+          if Msg.WParam = VK_F4 then
+          begin
+            // DD F4 ei avaks
+            Msg.Result := 1;
+            Exit;
+          end;
+        end;
+      WM_USER + $B904:
+        begin
+          if (Msg.WParam = VK_DOWN) or (Msg.WParam = VK_UP) then
+          begin
+            // DD Alt+ down ei avaks
+            Msg.Result := 1;
+            Exit;
+          end;
+        end;
+    end;
+  end;
+  inherited WndProc(Msg);
+end;
+
+procedure TJvCustomComboBox.WMLButtonDown(var Msg: TWMLButtonDown);
+begin
+  if ReadOnly then
+    SetFocus
+  else
+    inherited;
+end;
+
+procedure TJvCustomComboBox.WMLButtonDblClk(var Msg: TWMLButtonDown);
+begin
+  if not ReadOnly then
+    inherited;
+end;
+
+procedure TJvCustomComboBox.CreateWnd;
+begin
+  inherited CreateWnd;
+  SendMessage(EditHandle, EM_SETREADONLY, Ord(ReadOnly), 0);
+end;
+
 end.
+

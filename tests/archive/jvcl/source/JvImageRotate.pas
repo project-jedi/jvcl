@@ -28,17 +28,16 @@ Known Issues:
 
 unit JvImageRotate;
 
-
-
 interface
 
 uses
-  Windows, Forms, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls, JvTypes,
-  JvImageDrawThread, JVCLVer;
+  Windows, Forms, Messages, SysUtils, Classes, Graphics, Controls, ExtCtrls,
+  JvTypes, JvImageDrawThread, JVCLVer;
 
 type
   TJvImageRotate = class(TImage)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FRotated: TBitmap;
     FOriginal: TBitmap;
     FTimer: TJvImageDrawThread;
@@ -46,12 +45,10 @@ type
     FInterval: Cardinal;
     FColor: TColor;
     FRotating: Boolean;
-    FAboutJVCL: TJVCLAboutInfo;
     procedure SetPicture(Value: TBItmap);
     procedure SetRotating(Value: Boolean);
     procedure Rotate(Sender: TObject);
     procedure SetInterval(Value: Cardinal);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -66,12 +63,9 @@ type
 
 implementation
 
-///////////////////////////////////////////////////////////
-// TJvImageRotate
-///////////////////////////////////////////////////////////
-
 constructor TJvImageRotate.Create(AOwner: TComponent);
 begin
+  inherited Create(AOwner);
   FOriginal := TBitmap.Create;
   FRotated := TBItmap.Create;
   FTimer := TJvImageDrawThread.Create(True);
@@ -81,24 +75,19 @@ begin
   FPosition := 0;
   FInterval := 20;
   FRotating := False;
-  inherited;
   FOriginal.Assign(Picture.Bitmap);
 end;
-
-{************************************************************}
 
 destructor TJvImageRotate.Destroy;
 begin
   FOriginal.Free;
   FRotated.Free;
   FTimer.OnDraw := nil;
-  FTimer.Terminate;
-//  FTimer.WaitFor;
+//  FTimer.Terminate;
+  FTimer.WaitFor;
   FreeAndNil(FTimer);
-  inherited;
+  inherited Destroy;
 end;
-
-{************************************************************}
 
 procedure TJvImageRotate.SetPicture(Value: TBitmap);
 begin
@@ -108,8 +97,6 @@ begin
   Picture.Assign(Value);
   FOriginal.Assign(Value);
 end;
-
-{************************************************************}
 
 procedure TJvImageRotate.SetRotating(Value: Boolean);
 begin
@@ -122,8 +109,6 @@ begin
       FTimer.Suspend;
   end;
 end;
-
-{************************************************************}
 
 procedure TJvImageRotate.Rotate(Sender: TObject);
 begin
@@ -151,12 +136,10 @@ begin
   end;
 end;
 
-{************************************************************}
-
 procedure TJvImageRotate.SetAngle(Value: Integer);
 var
-  i, j, iRotationAxis, iOriginal, iPrime, iPrimeRotated,
-    jRotationAxis, jOriginal, jPrime, jPrimeRotated: Integer;
+  i, j, iRotationAxis, iOriginal, iPrime, iPrimeRotated: Integer;
+  jRotationAxis, jOriginal, jPrime, jPrimeRotated: Integer;
   RowOriginal: PRGBArray;
   RowRotated: PRGBArray;
   Theta, sinTheta, cosTheta: Double;
@@ -201,13 +184,11 @@ begin
   Picture.Assign(FRotated);
 end;
 
-{************************************************************}
-
 procedure TJvImageRotate.SetInterval(Value: Cardinal);
 begin
   FInterval := Value;
   FTimer.Delay := Value;
 end;
 
-
 end.
+

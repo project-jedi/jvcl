@@ -32,58 +32,47 @@ Known Issues:
 
 unit JvFunctions;
 
-
 interface
 uses
   Windows, Graphics, Classes, Messages, Controls,
-  ComCtrls, SysUtils, ShellApi, JvTypes, ImgList;
+  ComCtrls, SysUtils, ShellApi, ImgList,
+  JvTypes;
 
 {$IFNDEF COMPILER6_UP}
 type
   EOSError = class(EWin32Error);
 {$ENDIF}
 
-  //Transform an icon to a bitmap
-function IconToBitmap(ico: HIcon): TBitmap;
-{$EXTERNALSYM IconToBitmap}
+// Transform an icon to a bitmap
+function IconToBitmap(Ico: HICON): TBitmap;
 // Transform an icon to a bitmap using an image list
-function IconToBitmap2(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
-{$EXTERNALSYM IconToBitmap2}
-function IconToBitmap3(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
-{$EXTERNALSYM IconToBitmap3}
+function IconToBitmap2(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
+function IconToBitmap3(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
 
 //Open an object with the shell (url or something like that)
 procedure OpenObject(Value: PChar); overload;
-{$EXTERNALSYM OpenObject}
 procedure OpenObject(Value: string); overload;
-{$EXTERNALSYM OpenObject}
 
 //Raise the last Exception
 procedure RaiseLastWin32; overload;
-{$EXTERNALSYM RaiseLastWin32}
 procedure RaiseLastWin32(Text: string); overload;
-{$EXTERNALSYM RaiseLastWin32}
 //Raise the last Exception with a small comment from your part
 
 //Same as linux function ;)
 procedure PError(Text: string);
-{$EXTERNALSYM PError}
 
 //Return the maximum of three integers
-function GetMax(i, j, k: Integer): Integer;
-{$EXTERNALSYM GetMax}
+function GetMax(I, J, K: Integer): Integer;
 
 //Return the minimum of three integers
-function GetMin(i, j, k: Integer): Integer;
-{$EXTERNALSYM GetMin}
+function GetMin(I, J, K: Integer): Integer;
 
 //Convert RGB Values to HSV
-procedure RgbToHSV(r, g, b: Integer; var h, s, v: Integer);
-{$EXTERNALSYM RgbToHSV}
+procedure RGBToHSV(r, g, b: Integer; var h, s, v: Integer);
 
 { GetFileVersion returns the most significant 32 bits of a file's binary
   version number. Typically, this includes the major and minor version placed
-  together in one 32-bit integer. It generally does not include the release
+  together in one 32-bit Integer. It generally does not include the release
   or build numbers. It returns 0 if it failed. }
 function GetFileVersion(const AFilename: string): Cardinal;
 {$EXTERNALSYM GetFileVersion}
@@ -121,47 +110,49 @@ function GetSaturationBitmap(Value: TBitmap): TBitmap;
 // get value bbitmap (v part of hsv)
 function GetValueBitmap(Value: TBitmap): TBitmap;
 // hides / shows the a forms caption area
-procedure HideFormCaption(FormHandle: THandle; Hide: boolean);
+procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
 // where @n = zero-based index of the applet to start (if there is more than one
 // m is the zero-based index of the tab to display
 procedure LaunchCpl(FileName: string);
 
+{$IFNDEF DelphiPersonalEdition}
 {
   GetControlPanelApplets retrieves information about all control panel applets in a specified folder.
-  APath is the path to the folder to search and AMask is the filename mask (containing wildcards if necessary) to use.
+  APath is the Path to the folder to search and AMask is the filename mask (containing wildcards if necessary) to use.
 
   The information is returned in the Strings and Images lists according to the following rules:
    The Display Name and Path to the CPL file is returned in Strings with the following format:
-     '<displayname>=<path>'
+     '<displayname>=<Path>'
    You can access the DisplayName by using the Strings.Names array and the Path by accessing the Strings.Values array
    Strings.Objects can contain either of two values depending on if Images is nil or not:
      * If Images is nil then Strings.Objects contains the image for the applet as a TBitmap. Note that the caller (you)
      is responsible for freeing the bitmaps in this case
      * If Images <> nil, then the Strings.Objects array contains the index of the image in the Images array for the selected item.
        To access and use the ImageIndex, typecast Strings.Objects to an int:
-         tmp.Name := Strings.Name[i];
-         tmp.ImageIndex := integer(Strings.Objects[i]);
-  The function returns true if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
+         Tmp.Name := Strings.Name[I];
+         Tmp.ImageIndex := Integer(Strings.Objects[I]);
+  The function returns True if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
 }
 
 function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 { GetControlPanelApplet works like GetControlPanelApplets, with the difference that it only loads and searches one cpl file (according to AFilename).
   Note though, that some CPL's contains multiple applets, so the Strings and Images lists can contain multiple return values.
-  The function returns true if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
+  The function returns True if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
 }
 function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
 
+{$ENDIF}
 
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
 procedure ExecuteAndWait(FileName: string; Visibility: Integer);
-// returns true if Drive is accessible
+// returns True if Drive is accessible
 function DiskInDrive(Drive: Char): Boolean;
-// returns true if this is the first instance of the program that is running
-function FirstInstance(const ATitle: string): boolean;
+// returns True if this is the first instance of the program that is running
+function FirstInstance(const ATitle: string): Boolean;
 // restores a window based on it's classname and Caption. Either can be left empty
 // to widen the search
 procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
@@ -206,48 +197,48 @@ Comments:
   I have tried to group related functions together
 }
 
-function CharIsMoney(const ch: char): boolean;
+function CharIsMoney(const Ch: Char): Boolean;
 
 { there is a STrToIntDef provided by Delphi, but no "safe" versions of
   StrToFloat or StrToCurr }
-function StrToFloatDef(const str: string; def: extended): extended;
-function StrToCurrDef(const str: string; cDef: currency): currency;
+function StrToFloatDef(const Str: string; Def: Extended): Extended;
+function StrToCurrDef(const Str: string; Def: Currency): Currency;
 
 { GetChangedText works out the new text given the current cursor pos & the key pressed
   It is not very useful in other contexts,
   but it is in this unit as it is needed in both MemoEx and TypedEdit }
-function GetChangedText(const Text: string; SelStart, SelLength: integer; Key: char): string;
+function GetChangedText(const Text: string; SelStart, SelLength: Integer; Key: Char): string;
 
-function MakeYear4Digit(Year, Pivot: integer): integer;
+function MakeYear4Digit(Year, Pivot: Integer): Integer;
 
-function StrIsInteger(const S: AnsiString): boolean;
-function StrIsFloatMoney(const ps: string): boolean;
-function StrIsDateTime(const ps: string): boolean;
+function StrIsInteger(const S: string): Boolean;
+function StrIsFloatMoney(const Ps: string): Boolean;
+function StrIsDateTime(const Ps: string): Boolean;
 
-function PreformatDateString(ps: string): string;
+function PreformatDateString(Ps: string): string;
 
-function BooleanToInteger(const pb: boolean): integer;
-function StringToBoolean(const ps: AnsiString): boolean;
+function BooleanToInteger(const Pb: Boolean): Integer;
+function StringToBoolean(const Ps: string): Boolean;
 
-function SafeStrToDateTime(const ps: string): TDateTime;
-function SafeStrToDate(const ps: string): TDateTime;
-function SafeStrToTime(const ps: string): TDateTime;
+function SafeStrToDateTime(const Ps: string): TDateTime;
+function SafeStrToDate(const Ps: string): TDateTime;
+function SafeStrToTime(const Ps: string): TDateTime;
 
 function StrDelete(const psSub, psMain: string): string;
 
 { listview functions }
-function ConvertStates(const State: integer): TItemStates;
+function ConvertStates(const State: Integer): TItemStates;
 
-function ChangeHasDeselect(const peOld, peNew: TItemStates): boolean;
-function ChangeHasSelect(const peOld, peNew: TItemStates): boolean;
+function ChangeHasDeselect(const peOld, peNew: TItemStates): Boolean;
+function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
 
-function ChangeHasDefocus(const peOld, peNew: TItemStates): boolean;
-function ChangeHasFocus(const peOld, peNew: TItemStates): boolean;
+function ChangeHasDefocus(const peOld, peNew: TItemStates): Boolean;
+function ChangeHasFocus(const peOld, peNew: TItemStates): Boolean;
 
-function GetListItemColumn(const pcItem: TListItem; piIndex: integer): string;
+function GetListItemColumn(const pcItem: TListItem; piIndex: Integer): string;
 
 { returns the sum of pc.Left, pc.Width and piSpace}
-function ToRightOf(const pc: TControl; piSpace: integer = 0): integer;
+function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
 { sets the top of pc to be in the middle of pcParent }
 procedure CenterHeight(const pc, pcParent: TControl);
 { returns the fractional value of pcValue}
@@ -264,43 +255,44 @@ const
 
 function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
 // Replacement for Win32Check to avoid platform specific warnings in D6
-function OSCheck(RetVal: boolean): boolean;
+function OSCheck(RetVal: Boolean): Boolean;
 
-{ Shortens a fully qualified path name so that it can be drawn with a specified length limit.
+{ Shortens a fully qualified Path name so that it can be drawn with a specified length limit.
   Same as FileCtrl.MinimizeName in functionality (but not implementation). Included here to
   not be forced to use FileCtrl unnecessarily }
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
 
 { RunDLL32 runs a function in a DLL using the utility rundll32.exe (on NT) or rundll.exe (on Win95/98)
  ModuleName is the name of the DLL to load, FuncName is the function to call and CmdLine is
- the command-line parameters (if any) to send to the function. Set WaitForCompletion to false to
+ the command-line parameters (if any) to send to the function. Set WaitForCompletion to False to
  return immediately after the call.
  CmdShow should be one of the SW_SHOWXXXX constants and defaults SW_SHOWDEFAULT
  Return value:
- if WaitForCompletion is true, returns true if the wait didn't return WAIT_FAILED
- if WaitForCompletion is false, returns true if the process could be created
+ if WaitForCompletion is True, returns True if the wait didn't return WAIT_FAILED
+ if WaitForCompletion is False, returns True if the process could be created
  To get information on why RunDLL32 might have failed, call GetLastError
  To get more info on what can actually be called using rundll32.exe, take a look at
  http://www.dx21.com/SCRIPTING/RUNDLL32/REFGUIDE.ASP?NTI=4&SI=6
 }
-function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: boolean; CmdShow: integer = SW_SHOWDEFAULT): boolean;
+function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
+  SW_SHOWDEFAULT): Boolean;
 { RunDll32Internal does the same as RunDLL32 but does not use the RunDLL32.exe application to do it.
  Rather it loads the DLL, gets a pointer to the function in FuncName and calls it with the given parameters.
  Because of this behaviour, RunDll32Internal works slightly different from RunDLL32:
  * It doesn't return any value indicating success/failure
  * There is no WaitForCompletion parameter (but see comment below on how to circumvent this)
  * You must pass in a valid windows handle in Wnd. Note that if you pass 0, the call might fail, with no indication of why.
- * To simulate WaitForCompletion = false, pass the return value of GetDesktopWindow as the Wnd parameter,
- * To simulate WaitForCompletion = true, pass the handle of the calling window (f ex the form you are calling the procedure from)
+ * To simulate WaitForCompletion = False, pass the return value of GetDesktopWindow as the Wnd parameter,
+ * To simulate WaitForCompletion = True, pass the handle of the calling window (f ex the form you are calling the procedure from)
  * If you try to call a function in a DLL that doesn't use the TRunDLL32Proc signature (declared in JvTypes), your program
    might crash. Using the RunDLL32 function protects you from any problems with calling the wrong functions
    (a dialog is displayed if do something wrong)
  * RunDll32Internal is slightly faster but RunDLL32 is safer
 }
-procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: integer = SW_SHOWDEFAULT);
+procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
 { GetDLLVersion loads DLLName, gets a pointer to the DLLVersion function and calls it, returning the major and minor version values
-from the function. Returns false if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
-function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
+from the function. Returns False if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
+function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
 
 {$IFNDEF COMPILER6_UP}
 { D5 compatibility functions }
@@ -310,12 +302,19 @@ function ExcludeTrailingPathDelimiter(const APath: string): string;
 {$ENDIF}
 
 implementation
+
 uses
   Forms, Registry, ExtCtrls,
-{$IFDEF COMPILER6_UP}Types, {$ENDIF}MMSystem,
+  {$IFNDEF DelphiPersonalEdition}
+  Cpl,
+  {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF}
+  MMSystem,
   ShlObj, CommCtrl,
-  { jvcl} JvDirectories,
-  { jcl } JCLStrings;
+  JvDirectories,
+  JclStrings;
 
 resourcestring
   SWin32Error = 'Win32 Error.  Code: %d.'#10'%s';
@@ -358,29 +357,27 @@ end;
 
 {$ENDIF}
 
-{*****************************************************}
-
-function IconToBitmap(ico: HIcon): TBitmap;
+function IconToBitmap(Ico: HICON): TBitmap;
 var
-  i: TPicture;
+  Pic: TPicture;
 begin
-  i := TPicture.Create;
-  i.Icon.Handle := ico;
+  Pic := TPicture.Create;
+  Pic.Icon.Handle := Ico;
   Result := TBitmap.Create;
-  Result.Height := i.Icon.Height;
-  Result.Width := i.Icon.Width;
-  Result.Canvas.Draw(0, 0, i.icon);
-  i.Free;
+  Result.Height := Pic.Icon.Height;
+  Result.Width := Pic.Icon.Width;
+  Result.Canvas.Draw(0, 0, Pic.Icon);
+  Pic.Free;
 end;
 
-function IconToBitmap2(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
+function IconToBitmap2(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
 begin
   // (p3) this seems to generate "better" bitmaps...
   with TImageList.CreateSize(Size, Size) do
   try
-    Masked := true;
+    Masked := True;
     BkColor := TransparentColor;
-    ImageList_AddIcon(Handle, ico);
+    ImageList_AddIcon(Handle, Ico);
     Result := TBitmap.Create;
     Result.PixelFormat := pf24bit;
     if TransparentColor <> clNone then
@@ -392,14 +389,15 @@ begin
   end;
 end;
 
-function IconToBitmap3(ico: HIcon; Size: integer = 32; TransparentColor: TColor = clNone): TBitmap;
+function IconToBitmap3(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
 var
-  Icon: TIcon; tmp: TBitmap;
+  Icon: TIcon;
+  Tmp: TBitmap;
 begin
   Icon := TIcon.Create;
-  tmp := TBitmap.Create;
+  Tmp := TBitmap.Create;
   try
-    Icon.Handle := CopyIcon(ico);
+    Icon.Handle := CopyIcon(Ico);
     Result := TBitmap.Create;
     Result.Width := Icon.Width;
     Result.Height := Icon.Height;
@@ -409,87 +407,71 @@ begin
     Result.Canvas.FillRect(Rect(0, 0, Result.Width, Result.Height));
     Result.Canvas.Draw(0, 0, Icon);
     Result.TransparentColor := TransparentColor;
-    tmp.Assign(Result);
+    Tmp.Assign(Result);
     //    Result.Width := Size;
     //    Result.Height := Size;
-    Result.Canvas.StretchDraw(Rect(0, 0, Result.Width, Result.Height), tmp);
+    Result.Canvas.StretchDraw(Rect(0, 0, Result.Width, Result.Height), Tmp);
     Result.Transparent := True;
   finally
     Icon.Free;
-    tmp.Free;
+    Tmp.Free;
   end;
 end;
-
-{*****************************************************}
 
 procedure OpenObject(Value: string);
 begin
   OpenObject(PChar(Value));
 end;
 
-{*****************************************************}
-
 procedure OpenObject(Value: PChar);
 begin
   ShellExecute(0, nil, Value, nil, nil, SW_NORMAL);
 end;
-
-{**************************************************}
 
 procedure RaiseLastWin32;
 begin
   PError('');
 end;
 
-{**************************************************}
-
 procedure RaiseLastWin32(Text: string);
 begin
   PError(Text);
 end;
 
-{**************************************************}
-
 procedure PError(Text: string);
 var
-  lastError: Integer;
-  st: string;
+  LastError: Integer;
+  St: string;
 begin
-  lastError := GetLastError;
-  if lastError <> 0 then
+  LastError := GetLastError;
+  if LastError <> 0 then
   begin
-    st := Format(SWin32Error, [LastError, SysErrorMessage(LastError)]);
-    if (Text <> '') then
-      st := Text + ':' + st;
-    raise EOSError.Create(st);
+    St := Format(SWin32Error, [LastError, SysErrorMessage(LastError)]);
+    if Text <> '' then
+      St := Text + ':' + St;
+    raise EOSError.Create(St);
   end;
 end;
 
-{**************************************************}
-
-function GetMax(i, j, k: Integer): Integer;
+function GetMax(I, J, K: Integer): Integer;
 begin
-  if j > i then
-    i := j;
-  if k > i then
-    i := k;
-  Result := i;
+  if J > I then
+    I := J;
+  if K > I then
+    I := K;
+  Result := I;
 end;
 
-{**************************************************}
-
-function GetMin(i, j, k: Integer): Integer;
+function GetMin(I, J, K: Integer): Integer;
 begin
-  if j < i then
-    i := j;
-  if k < i then
-    i := k;
-  Result := i;
+  if J < I then
+    I := J;
+  if K < I then
+    I := K;
+  Result := I;
 end;
 
-{**************************************************}
-
-procedure RgbToHSV(r, g, b: Integer; var h, s, v: Integer);
+procedure RGBToHSV(r, g, b: Integer; var h, s, v: Integer);
 var
   Delta: Integer;
   Min, Max: Integer;
@@ -508,7 +490,8 @@ begin
   begin
     if r = Max then
       h := (60 * (g - b)) div Delta
-    else if g = Max then
+    else
+    if g = Max then
       h := 120 + (60 * (b - r)) div Delta
     else
       h := 240 + (60 * (r - g)) div Delta;
@@ -516,8 +499,6 @@ begin
       h := h + 360;
   end;
 end;
-
-{**************************************************}
 
 function GetFileVersion(const AFileName: string): Cardinal;
 var
@@ -539,14 +520,12 @@ begin
     try
       if GetFileVersionInfo(PChar(FileName), Wnd, InfoSize, VerBuf) then
         if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
-          Result:= FI.dwFileVersionMS;
+          Result := FI.dwFileVersionMS;
     finally
       FreeMem(VerBuf);
     end;
   end;
 end;
-
-{**************************************************}
 
 function GetShellVersion: Cardinal;
 begin
@@ -559,8 +538,6 @@ procedure SetWallpaper(Path: string);
 begin
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
 end;
-
-{************************************************************}
 
 procedure SetWallpaper(Path: string; Style: TWallpaperStyle);
 begin
@@ -597,14 +574,14 @@ var
   R: TRect;
   C: TCanvas;
   LP: PLogPalette;
-  tmpPalette: HPalette;
+  TmpPalette: HPalette;
   Size: Integer;
-  img: TImage; // (p3) change to bmp?
+  Img: TImage; // (p3) change to Bmp?
 begin
-  img := TImage.Create(nil);
+  Img := TImage.Create(nil);
   try
-    img.Width := rec.Right - rec.Left;
-    img.Height := rec.Bottom - rec.Top;
+    Img.Width := Rec.Right - Rec.Left;
+    Img.Height := Rec.Bottom - Rec.Top;
     R := Rec;
     C := TCanvas.Create;
     try
@@ -616,9 +593,9 @@ begin
         LP^.palVersion := $300;
         LP^.palNumEntries := NumColors;
         GetSystemPaletteEntries(C.Handle, 0, NumColors, LP^.palPalEntry);
-        tmpPalette := CreatePalette(LP^);
-        Img.Picture.Bitmap.Palette := tmpPalette;
-        DeleteObject(tmpPalette);
+        TmpPalette := CreatePalette(LP^);
+        Img.Picture.Bitmap.Palette := TmpPalette;
+        DeleteObject(TmpPalette);
       finally
         FreeMem(LP, Size);
       end
@@ -627,13 +604,11 @@ begin
       C.Free;
     end;
     Result := TBitmap.Create;
-    Result.Assign(img.Picture.Bitmap);
+    Result.Assign(Img.Picture.Bitmap);
   finally
-    img.Free;
+    Img.Free;
   end;
 end;
-
-{*********************************************************}
 
 function CaptureScreen: TBitmap;
 begin
@@ -645,8 +620,6 @@ begin
   mciSendString(PChar(RC_OpenCDDrive), nil, 0, Application.Handle);
 end;
 
-{*********************************************************}
-
 procedure CloseCdDrive;
 begin
   mciSendString(PChar(RC_CloseCDDrive), nil, 0, Application.Handle);
@@ -654,7 +627,7 @@ end;
 
 function GetRBitmap(Value: TBitmap): TBitmap;
 var
-  i, j: Integer;
+  I, J: Integer;
   rowRGB, rowB: PRGBArray;
 begin
   Value.PixelFormat := pf24bit;
@@ -662,24 +635,22 @@ begin
   Result.PixelFormat := pf24bit;
   Result.Width := Value.Width;
   Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  for J := Value.Height - 1 downto 0 do
   begin
-    rowRGB := Value.Scanline[j];
-    rowB := Result.Scanline[j];
-    for i := Value.Width - 1 downto 0 do
+    rowRGB := Value.Scanline[J];
+    rowB := Result.Scanline[J];
+    for I := Value.Width - 1 downto 0 do
     begin
-      TRGBArray(rowB^)[i].rgbtRed := rowRGB[i].rgbtRed;
-      TRGBArray(rowB^)[i].rgbtGreen := 0;
-      TRGBArray(rowB^)[i].rgbtBlue := 0;
+      TRGBArray(rowB^)[I].rgbtRed := rowRGB[I].rgbtRed;
+      TRGBArray(rowB^)[I].rgbtGreen := 0;
+      TRGBArray(rowB^)[I].rgbtBlue := 0;
     end;
   end;
 end;
-
-{************************************************************}
 
 function GetBBitmap(Value: TBitmap): TBitmap;
 var
-  i, j: Integer;
+  I, J: Integer;
   rowRGB, rowB: PRGBArray;
 begin
   Value.PixelFormat := pf24bit;
@@ -687,24 +658,22 @@ begin
   Result.PixelFormat := pf24bit;
   Result.Width := Value.Width;
   Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  for J := Value.Height - 1 downto 0 do
   begin
-    rowRGB := Value.Scanline[j];
-    rowB := Result.Scanline[j];
-    for i := Value.Width - 1 downto 0 do
+    rowRGB := Value.Scanline[J];
+    rowB := Result.Scanline[J];
+    for I := Value.Width - 1 downto 0 do
     begin
-      TRGBArray(rowB^)[i].rgbtRed := 0;
-      TRGBArray(rowB^)[i].rgbtGreen := 0;
-      TRGBArray(rowB^)[i].rgbtBlue := rowRGB[i].rgbtBlue;
+      TRGBArray(rowB^)[I].rgbtRed := 0;
+      TRGBArray(rowB^)[I].rgbtGreen := 0;
+      TRGBArray(rowB^)[I].rgbtBlue := rowRGB[I].rgbtBlue;
     end;
   end;
 end;
-
-{************************************************************}
 
 function GetGBitmap(Value: TBitmap): TBitmap;
 var
-  i, j: Integer;
+  I, J: Integer;
   rowRGB, rowB: PRGBArray;
 begin
   Value.PixelFormat := pf24bit;
@@ -712,24 +681,22 @@ begin
   Result.PixelFormat := pf24bit;
   Result.Width := Value.Width;
   Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  for J := Value.Height - 1 downto 0 do
   begin
-    rowRGB := Value.Scanline[j];
-    rowB := Result.Scanline[j];
-    for i := Value.Width - 1 downto 0 do
+    rowRGB := Value.Scanline[J];
+    rowB := Result.Scanline[J];
+    for I := Value.Width - 1 downto 0 do
     begin
-      TRGBArray(rowB^)[i].rgbtRed := 0;
-      TRGBArray(rowB^)[i].rgbtGreen := rowRGB[i].rgbtGreen;
-      TRGBArray(rowB^)[i].rgbtBlue := 0;
+      TRGBArray(rowB^)[I].rgbtRed := 0;
+      TRGBArray(rowB^)[I].rgbtGreen := rowRGB[I].rgbtGreen;
+      TRGBArray(rowB^)[I].rgbtBlue := 0;
     end;
   end;
 end;
 
-{************************************************************}
-
 function GetHueBitmap(Value: TBitmap): TBitmap;
 var
-  h, s, v, i, j: Integer;
+  h, s, v, I, J: Integer;
   rowRGB, rowS: PRGBArray;
 begin
   Value.PixelFormat := pf24bit;
@@ -737,22 +704,20 @@ begin
   Result.PixelFormat := pf24bit;
   Result.Width := Value.Width;
   Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  for J := Value.Height - 1 downto 0 do
   begin
-    rowRGB := Value.Scanline[j];
-    rowS := Result.Scanline[j];
-    for i := Value.Width - 1 downto 0 do
+    rowRGB := Value.Scanline[J];
+    rowS := Result.Scanline[J];
+    for I := Value.Width - 1 downto 0 do
     begin
-      with rowRGB[i] do
-        RgbToHsv(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
-      rowS[i].rgbtBlue := h;
-      rowS[i].rgbtGreen := h;
-      rowS[i].rgbtRed := h;
+      with rowRGB[I] do
+        RGBToHSV(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
+      rowS[I].rgbtBlue := h;
+      rowS[I].rgbtGreen := h;
+      rowS[I].rgbtRed := h;
     end;
   end;
 end;
-
-{************************************************************}
 
 function GetMonochromeBitmap(Value: TBitmap): TBitmap;
 begin
@@ -761,11 +726,9 @@ begin
   Result.Monochrome := True;
 end;
 
-{************************************************************}
-
 function GetSaturationBitmap(Value: TBitmap): TBitmap;
 var
-  h, s, v, i, j: Integer;
+  h, s, v, I, J: Integer;
   rowRGB, rowS: PRGBArray;
 begin
   Value.PixelFormat := pf24bit;
@@ -773,26 +736,24 @@ begin
   Result.PixelFormat := pf24bit;
   Result.Width := Value.Width;
   Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  for J := Value.Height - 1 downto 0 do
   begin
-    rowRGB := Value.Scanline[j];
-    rowS := Result.Scanline[j];
-    for i := Value.Width - 1 downto 0 do
+    rowRGB := Value.Scanline[J];
+    rowS := Result.Scanline[J];
+    for I := Value.Width - 1 downto 0 do
     begin
-      with rowRGB[i] do
-        RgbToHsv(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
-      rowS[i].rgbtBlue := s;
-      rowS[i].rgbtGreen := s;
-      rowS[i].rgbtRed := s;
+      with rowRGB[I] do
+        RGBToHSV(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
+      rowS[I].rgbtBlue := s;
+      rowS[I].rgbtGreen := s;
+      rowS[I].rgbtRed := s;
     end;
   end;
 end;
-
-{************************************************************}
 
 function GetValueBitmap(Value: TBitmap): TBitmap;
 var
-  h, s, v, i, j: Integer;
+  h, s, v, I, J: Integer;
   rowRGB, rowS: PRGBArray;
 begin
   Value.PixelFormat := pf24bit;
@@ -800,22 +761,22 @@ begin
   Result.PixelFormat := pf24bit;
   Result.Width := Value.Width;
   Result.Height := Value.Height;
-  for j := Value.Height - 1 downto 0 do
+  for J := Value.Height - 1 downto 0 do
   begin
-    rowRGB := Value.Scanline[j];
-    rowS := Result.Scanline[j];
-    for i := Value.Width - 1 downto 0 do
+    rowRGB := Value.Scanline[J];
+    rowS := Result.Scanline[J];
+    for I := Value.Width - 1 downto 0 do
     begin
-      with rowRGB[i] do
-        RgbToHsv(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
-      rowS[i].rgbtBlue := v;
-      rowS[i].rgbtGreen := v;
-      rowS[i].rgbtRed := v;
+      with rowRGB[I] do
+        RGBToHSV(rgbtRed, rgbtGreen, rgbtBlue, h, s, v);
+      rowS[I].rgbtBlue := v;
+      rowS[I].rgbtGreen := v;
+      rowS[I].rgbtRed := v;
     end;
   end;
 end;
 
-procedure HideFormCaption(FormHandle: THandle; Hide: boolean);
+procedure HideFormCaption(FormHandle: THandle; Hide: Boolean);
 begin
   if Hide then
     SetWindowLong(FormHandle, GWL_STYLE, GetWindowLong(FormHandle, GWL_STYLE) and not WS_CAPTION)
@@ -826,46 +787,11 @@ end;
 procedure LaunchCpl(FileName: string);
 begin
   // rundll32.exe shell32,Control_RunDLL ';
-  RunDLL32('shell32.dll', 'Control_RunDLL', Filename, true);
+  RunDLL32('shell32.dll', 'Control_RunDLL', Filename, True);
   //  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
-// just enough to make our code tick without the cpl unit
-
-type
-  TCPLInfo = packed record
-     idIcon: Integer;  // icon resource id, provided by CPlApplet()
-     idName: Integer;  // name string res. id, provided by CPlApplet()
-     idInfo: Integer;  // info string res. id, provided by CPlApplet()
-     lData : Longint;  // user defined data
-  end;
-
-  TNewCPLInfoW = packed record
-    dwSize:        DWORD;   // similar to the commdlg
-    dwFlags:       DWORD;
-    dwHelpContext: DWORD;   // help context to use
-    lData:         Longint; // user defined data
-    hIcon:         HICON;   // icon to use, this is owned by CONTROL.EXE (may be deleted)
-    szName:        array[0..31] of WideChar;    // short name
-    szInfo:        array[0..63] of WideChar;    // long name (status line)
-    szHelpFile:    array[0..127] of WideChar;   // path to help file to use
-  end;
-  TNewCPLInfoA = packed record
-    dwSize:        DWORD;   // similar to the commdlg
-    dwFlags:       DWORD;
-    dwHelpContext: DWORD;   // help context to use
-    lData:         Longint; // user defined data
-    hIcon:         HICON;   // icon to use, this is owned by CONTROL.EXE (may be deleted)
-    szName:        array[0..31] of AnsiChar;    // short name
-    szInfo:        array[0..63] of AnsiChar;    // long name (status line)
-    szHelpFile:    array[0..127] of AnsiChar;   // path to help file to use
-  end;
-const
-  CPL_INIT = 1;
-  CPL_GETCOUNT = 2;
-  CPL_INQUIRE = 3;
-  CPL_EXIT = 7;
-  CPL_NEWINQUIRE = 8;
+{$IFNDEF DelphiPersonalEdition}
 
 resourcestring
   RC_CplAddress = 'CPlApplet';
@@ -875,8 +801,8 @@ var
   hLib: HMODULE; // Library Handle to *.cpl file
   hIco: HICON;
   CplCall: TCPLApplet; // Pointer to CPlApplet() function
-  i: LongInt;
-  tmpCount, Count: LongInt;
+  I: Longint;
+  TmpCount, Count: Longint;
   S: WideString;
   // the three types of information that can be returned
   CPLInfo: TCPLInfo;
@@ -887,7 +813,7 @@ begin
   hLib := SafeLoadLibrary(AFilename);
   if hLib = 0 then
     Exit;
-  tmpCount := Strings.Count;
+  TmpCount := Strings.Count;
   try
     @CplCall := GetProcAddress(hLib, PChar(RC_CplAddress));
     if @CplCall = nil then
@@ -895,37 +821,37 @@ begin
     CplCall(GetFocus, CPL_INIT, 0, 0); // Init the *.cpl file
     try
       Count := CplCall(GetFocus, CPL_GETCOUNT, 0, 0);
-      for i := 0 to Count - 1 do
+      for I := 0 to Count - 1 do
       begin
-        FillChar(InfoW, sizeof(InfoW), 0);
-        FillChar(InfoA, sizeof(InfoA), 0);
-        FillChar(CPLInfo, sizeof(CPLInfo), 0);
+        FillChar(InfoW, SizeOf(InfoW), 0);
+        FillChar(InfoA, SizeOf(InfoA), 0);
+        FillChar(CPLInfo, SizeOf(CPLInfo), 0);
         S := '';
-        CplCall(GetFocus, CPL_NEWINQUIRE, i, LongInt(@InfoW));
-        if InfoW.dwSize = sizeof(InfoW) then
+        CplCall(GetFocus, CPL_NEWINQUIRE, I, Longint(@InfoW));
+        if InfoW.dwSize = SizeOf(InfoW) then
         begin
-          hIco := InfoW.hIcon;
+          hIco := InfoW.HICON;
           S := WideString(InfoW.szName);
         end
         else
         begin
-          if InfoW.dwSize = sizeof(InfoA) then
+          if InfoW.dwSize = SizeOf(InfoA) then
           begin
-            Move(InfoW, InfoA, sizeof(InfoA));
-            hIco := CopyIcon(InfoA.hIcon);
+            Move(InfoW, InfoA, SizeOf(InfoA));
+            hIco := CopyIcon(InfoA.HICON);
             S := string(InfoA.szName);
           end
           else
           begin
-            CplCall(GetFocus, CPL_INQUIRE, i, LongInt(@CPLInfo));
-            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, sizeof(InfoA.szName));
+            CplCall(GetFocus, CPL_INQUIRE, I, Longint(@CPLInfo));
+            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, SizeOf(InfoA.szName));
             hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
             S := string(InfoA.szName);
           end;
         end;
         if S <> '' then
         begin
-          S := Format('%s=%s,@%d', [S, AFilename, i]);
+          S := Format('%s=%s,@%d', [S, AFilename, I]);
           if Images <> nil then
           begin
             hIco := CopyIcon(hIco);
@@ -938,7 +864,7 @@ begin
           // DestroyIcon(hIco);
         end;
       end;
-      Result := tmpCount < Strings.Count;
+      Result := TmpCount < Strings.Count;
     finally
       CplCall(GetFocus, CPL_EXIT, 0, 0);
     end;
@@ -948,7 +874,9 @@ begin
 end;
 
 function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
-var H: THandle; F: TSearchRec;
+var
+  H: THandle;
+  F: TSearchRec;
 begin
   H := FindFirst(IncludeTrailingPathDelimiter(APath) + AMask, faAnyFile, F);
   if Images <> nil then
@@ -969,6 +897,7 @@ begin
   Result := Strings.Count > 0;
 end;
 
+{$ENDIF}
 
 procedure Exec(FileName, Parameters, Directory: string);
 var
@@ -979,12 +908,10 @@ begin
     SW_SHOWNORMAL);
 end;
 
-{**************************************************}
-
 procedure ExecuteAndWait(FileName: string; Visibility: Integer);
 var
-  zAppName: array[0..512] of Char;
-  zCurDir: array[0..255] of Char;
+  zAppName: array [0..512] of Char;
+  zCurDir: array [0..255] of Char;
   WorkDir: string;
   StartupInfo: TStartupInfo;
   ProcessInfo: TProcessInformation;
@@ -1017,23 +944,21 @@ begin
   end;
 end;
 
-function FirstInstance(const ATitle: string): boolean;
+function FirstInstance(const ATitle: string): Boolean;
 var
-  FHMutex: Thandle;
+  Mutex: THandle;
 begin
-  FHMutex := CreateMutex(nil, False, PChar(ATitle));
+  Mutex := CreateMutex(nil, False, PChar(ATitle));
   try
-    Result := (FHMutex <> 0) and (GetLastError <> ERROR_ALREADY_EXISTS);
+    Result := (Mutex <> 0) and (GetLastError <> ERROR_ALREADY_EXISTS);
   finally
-    ReleaseMutex(FHMutex);
+    ReleaseMutex(Mutex);
   end;
 end;
 
-{***************************************************}
-
 procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
 var
-  OtherWnd, OwnerWnd: HWnd;
+  OtherWnd, OwnerWnd: HWND;
 begin
   OtherWnd := FindWindow(PChar(MainFormClassName), PChar(MainFormCaption));
   ShowWindow(OtherWnd, SW_SHOW); //in case the window was not visible before
@@ -1042,7 +967,8 @@ begin
   if OtherWnd <> 0 then
     OwnerWnd := GetWindow(OtherWnd, GW_OWNER);
 
-  if OwnerWnd <> 0 then OtherWnd := OwnerWnd;
+  if OwnerWnd <> 0 then
+    OtherWnd := OwnerWnd;
 
   if OtherWnd <> 0 then
   begin
@@ -1052,30 +978,27 @@ begin
     SetForegroundWindow(OtherWnd);
   end;
 end;
-{***************************************************}
 
 procedure HideTraybar;
-var FHwnd: THandle;
+var
+  Wnd: HWND;
 begin
-  FHWnd := FindWindow(PChar(RC_ShellName), nil);
-  ShowWindow(FHWnd, SW_HIDE);
+  Wnd := FindWindow(PChar(RC_ShellName), nil);
+  ShowWindow(Wnd, SW_HIDE);
 end;
-
-{***************************************************}
 
 procedure ShowTraybar;
-var FHwnd: THandle;
+var
+  Wnd: HWND;
 begin
-  FHWnd := FindWindow(PChar(RC_ShellName), nil);
-  ShowWindow(FHWnd, SW_SHOW);
+  Wnd := FindWindow(PChar(RC_ShellName), nil);
+  ShowWindow(Wnd, SW_SHOW);
 end;
-
-{***************************************************}
 
 procedure HideStartBtn(Visible: Boolean);
 var
   Tray, Child: HWND;
-  C: array[0..127] of Char;
+  C: array [0..127] of Char;
   S: string;
 begin
   Tray := FindWindow(PChar(RC_ShellName), nil);
@@ -1095,28 +1018,20 @@ begin
   end;
 end;
 
-{***************************************************}
-
 procedure ShowStartButton;
 begin
   HideStartBtn(True);
 end;
-
-{***************************************************}
 
 procedure HideStartButton;
 begin
   HideStartBtn(False);
 end;
 
-{*********************************************************}
-
 procedure MonitorOn;
 begin
   SendMessage(GetFocus, WM_SYSCOMMAND, SC_MONITORPOWER, -1);
 end;
-
-{*********************************************************}
 
 procedure MonitorOff;
 begin
@@ -1129,8 +1044,6 @@ begin
 end;
 
 {$WARNINGS OFF}
-
-{****************************************************}
 
 procedure SendShift(H: HWND; Down: Boolean);
 var
@@ -1145,8 +1058,6 @@ begin
   SendMessage(H, WM_KEYDOWN, vKey, lParam);
 end;
 
-{****************************************************}
-
 procedure SendCtrl(H: HWND; Down: Boolean);
 var
   vKey, ScanCode: Word;
@@ -1160,12 +1071,10 @@ begin
   SendMessage(H, WM_KEYDOWN, vKey, lParam);
 end;
 
-{****************************************************}
-
 function SendKey(AppName: string; Key: Char): Boolean;
 var
   vKey, ScanCode: Word;
-  lParam, ConvKey: longint;
+  lParam, ConvKey: Longint;
   Shift, Ctrl: Boolean;
   H: HWND;
 begin
@@ -1200,13 +1109,11 @@ end;
 
 procedure RebuildIconCache;
 var
-  bidon: DWord;
+  Dummy: DWORD;
 begin
   SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS,
-    Longint(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, bidon);
+    Longint(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, Dummy);
 end;
-
-{*****************************************************}
 
 procedure AssociateFileExtension(IconPath, ProgramName, Path, Extension: string);
 begin
@@ -1238,8 +1145,6 @@ begin
   RebuildIconCache;
 end;
 
-{*****************************************************}
-
 procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
 begin
   AssociateFileExtension(IconPath, ProgramName, Path, Extension);
@@ -1247,30 +1152,30 @@ end;
 
 function GetRecentDocs: TStringList;
 var
-  path: string;
+  Path: string;
   t: TSearchRec;
-  res: Integer;
-  FDirs: TJvDirectories;
+  Res: Integer;
+  Dirs: TJvDirectories;
 begin
   Result := TStringList.Create;
   Result.Clear;
-  FDirs := TJvDirectories.Create(nil);
+  Dirs := TJvDirectories.Create(nil);
   try
-    path := FDirs.Recent + '\';
+    Path := Dirs.Recent + '\';
     //search for all files
-    res := FindFirst(path + '*.*', faAnyFile, t);
+    Res := FindFirst(Path + '*.*', faAnyFile, t);
     try
-      while res = 0 do
+      while Res = 0 do
       begin
         if (t.Name <> '.') and (t.Name <> '..') then
           Result.Add(Path + T.Name);
-        res := FindNext(t);
+        Res := FindNext(t);
       end;
     finally
       FindClose(t);
     end;
   finally
-    FDirs.Free;
+    Dirs.Free;
   end;
 end;
 
@@ -1284,36 +1189,36 @@ var
   rgn1, rgn2: HRGN;
   startx, endx, x, y: Integer;
   TransparentColor: TRGBTriple;
-  bmp: TBitmap;
+  Bmp: TBitmap;
   p: PRGBArray;
 begin
   rgn1 := 0;
 
-  bmp := TBitmap.Create;
-  bmp.Assign(Image);
-  bmp.PixelFormat := pf24Bit;
+  Bmp := TBitmap.Create;
+  Bmp.Assign(Image);
+  Bmp.PixelFormat := pf24Bit;
 
-  if (bmp.Height > 0) and (bmp.Width > 0) then
+  if (Bmp.Height > 0) and (Bmp.Width > 0) then
   begin
-    p := bmp.ScanLine[0];
+    p := Bmp.ScanLine[0];
     TransparentColor := p[0];
   end;
 
-  for y := 0 to bmp.Height - 1 do
+  for y := 0 to Bmp.Height - 1 do
   begin
     x := 0;
-    p := bmp.ScanLine[y];
+    p := Bmp.ScanLine[y];
     repeat
-      while (x < bmp.Width) and (CompareMem(@p[x], @TransparentColor, 3)) do
+      while (x < Bmp.Width) and (CompareMem(@p[x], @TransparentColor, 3)) do
         Inc(x);
       Inc(x);
       startx := x;
-      while (x < bmp.Width) and (not (CompareMem(@p[x], @TransparentColor, 3))) do
+      while (x < Bmp.Width) and (not (CompareMem(@p[x], @TransparentColor, 3))) do
         Inc(x);
       endx := x;
 
       // do we have some pixels?
-      if startx < bmp.Width then
+      if startx < Bmp.Width then
       begin
         if rgn1 = 0 then
           // Create a region to start with
@@ -1329,22 +1234,22 @@ begin
     until x >= Image.Width;
   end;
 
-  bmp.Free;
+  Bmp.Free;
   Result := rgn1;
 end;
 
 function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;
 var
-  st: array[0..256] of Char;
-  st2: string;
+  St: array [0..256] of Char;
+  St2: string;
 begin
   if IsWindowVisible(Handle) then
   begin
-    GetWindowText(Handle, st, SizeOf(st));
-    st2 := st;
-    if (st2 <> '') then
+    GetWindowText(Handle, St, SizeOf(St));
+    St2 := St;
+    if St2 <> '' then
       with TStrings(lParam) do
-        AddObject(st2, TObject(Handle));
+        AddObject(St2, TObject(Handle));
   end;
   Result := True;
 end;
@@ -1354,7 +1259,7 @@ begin
   List.BeginUpdate;
   try
     List.Clear;
-    EnumWindows(@EnumWindowsProc, integer(List));
+    EnumWindows(@EnumWindowsProc, Integer(List));
   finally
     List.EndUpdate;
   end;
@@ -1362,38 +1267,35 @@ end;
 
 // from JvComponentFunctions
 
-{-------------------------------------------------------------------------------
-  internals }
-
-function StrPosNoCase(const psSub, psMain: AnsiString): integer;
+function StrPosNoCase(const psSub, psMain: string): Integer;
 begin
   Result := Pos(AnsiUpperCase(psSub), AnsiUpperCase(psMain));
 end;
 
-function StrRestOf(const ps: AnsiString; const n: integer): AnsiString;
+function StrRestOf(const Ps: string; const n: Integer): string;
 begin
-  Result := Copy(ps, n, (Length(ps) - n + 1));
+  Result := Copy(Ps, n, (Length(Ps) - n + 1));
 end;
 
 {!!!!!!!! use these cos the JCL one is badly broken }
 
 { Am using this one purely as an itnernal for StrReplace
 
- Replace part of a AnsiString with new text. iUpdatePos is the last update position
- i.e. the position the substr was found + the length of the replacement AnsiString + 1.
+ Replace part of a string with new text. iUpdatePos is the last update position
+ i.e. the position the substr was found + the length of the replacement string + 1.
  Use 0 first time in }
 
-function StrReplaceInstance(const psSource, psSearch, psReplace: AnsiString;
-  var piUpdatePos: integer; const pbCaseSens: boolean): AnsiString;
+function StrReplaceInstance(const psSource, psSearch, psReplace: string;
+  var piUpdatePos: Integer; const pbCaseSens: Boolean): string;
 var
-  liIndex: integer;
-  lsCopy: AnsiString;
+  liIndex: Integer;
+  lsCopy: string;
 begin
   Result := psSource;
   if piUpdatePos >= Length(psSource) then
-    exit;
+    Exit;
   if psSearch = '' then
-    exit;
+    Exit;
 
   Result := StrLeft(psSource, piUpdatePos - 1);
   lsCopy := StrRestOf(psSource, piUpdatePos);
@@ -1406,7 +1308,7 @@ begin
   begin
     Result := psSource;
     piUpdatePos := Length(psSource) + 1;
-    exit;
+    Exit;
   end;
 
   Result := Result + StrLeft(lsCopy, liIndex - 1);
@@ -1415,10 +1317,10 @@ begin
   Result := Result + StrRestOf(lsCopy, liIndex + Length(psSearch));
 end;
 
-function LStrReplace(const psSource, psSearch, psReplace: AnsiString;
-  const pbCaseSens: boolean): AnsiString;
+function LStrReplace(const psSource, psSearch, psReplace: string;
+  const pbCaseSens: Boolean): string;
 var
-  liUpdatePos: integer;
+  liUpdatePos: Integer;
 begin
   liUpdatePos := 0;
   Result := psSource;
@@ -1426,60 +1328,57 @@ begin
     Result := StrReplaceInstance(Result, psSearch, psReplace, liUpdatePos, pbCaseSens);
 end;
 
-{-------------------------------------------------------------------------------
-  exported }
-
-{ if it's not a decimal point then it must be a digit, space or currency symbol
+{ if it's not a decimal point then it must be a digit, space or Currency symbol
   also always use $ for money }
 
-function CharIsMoney(const ch: char): boolean;
+function CharIsMoney(const Ch: Char): Boolean;
 begin
-  Result := CharIsDigit(ch) or (ch = AnsiSpace) or (ch = '$') or (ch = '-') or
-    (Pos(ch, CurrencyString) > 0);
+  Result := CharIsDigit(Ch) or (Ch = AnsiSpace) or (Ch = '$') or (Ch = '-') or
+    (Pos(Ch, CurrencyString) > 0);
 end;
 
-function StrToCurrDef(const str: string; cDef: currency): currency;
+function StrToCurrDef(const Str: string; Def: Currency): Currency;
 var
   lStr: string;
 begin
   try
-    lStr := StrStripNonNumberChars(str);
+    lStr := StrStripNonNumberChars(Str);
 
     if lStr = '' then
-      Result := cDef
+      Result := Def
     else
       Result := StrToCurr(lstr);
-  except
-    Result := cDef;
-  end;
-end;
-
-function StrToFloatDef(const str: string; def: extended): extended;
-var
-  lStr: string;
-begin
-  lStr := StrStripNonNumberChars(str);
-
-  if lStr = '' then
-    Result := Def
-  else
-  try
-    { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-    if StrRight(lStr, 1) = '-' then
-      lStr := lStr + '0';
-
-    { a string that ends in a '.' such as '12.' fails StrToFloat,
-     but as far as I am concerned, it may as well be interpreted as 12.0 }
-    if StrRight(lStr, 1) = '.' then
-      lStr := lStr + '0';
-
-    Result := StrToFloat(lStr);
   except
     Result := Def;
   end;
 end;
 
-function GetChangedText(const Text: string; SelStart, SelLength: integer; Key: char): string;
+function StrToFloatDef(const Str: string; Def: Extended): Extended;
+var
+  lStr: string;
+begin
+  lStr := StrStripNonNumberChars(Str);
+
+  if lStr = '' then
+    Result := Def
+  else
+    try
+      { the string '-' fails StrToFloat, but it can be interpreted as 0  }
+      if StrRight(lStr, 1) = '-' then
+        lStr := lStr + '0';
+
+      { a string that ends in a '.' such as '12.' fails StrToFloat,
+       but as far as I am concerned, it may as well be interpreted as 12.0 }
+      if StrRight(lStr, 1) = '.' then
+        lStr := lStr + '0';
+
+      Result := StrToFloat(lStr);
+    except
+      Result := Def;
+    end;
+end;
+
+function GetChangedText(const Text: string; SelStart, SelLength: Integer; Key: Char): string;
 begin
   { take the original text, replace what will be overwritten with new value }
   Result := Text;
@@ -1514,9 +1413,9 @@ end;
  not fail an assertion.
 }
 
-function MakeYear4Digit(Year, Pivot: integer): integer;
+function MakeYear4Digit(Year, Pivot: Integer): Integer;
 var
-  Century: integer;
+  Century: Integer;
 begin
   Assert(Pivot >= 0);
 
@@ -1544,16 +1443,16 @@ begin
     Result := Year;
 end;
 
-function StrIsInteger(const S: AnsiString): boolean;
+function StrIsInteger(const S: string): Boolean;
 var
-  I: integer;
-  ch: char;
+  I: Integer;
+  Ch: Char;
 begin
   Result := S <> '';
   for I := 1 to Length(S) do
   begin
-    ch := S[I];
-    if (not CharIsNumber(ch)) or (ch = DecimalSeparator) then //Az
+    Ch := S[I];
+    if (not CharIsNumber(Ch)) or (Ch = DecimalSeparator) then //Az
     begin
       Result := False;
       Exit;
@@ -1561,56 +1460,57 @@ begin
   end;
 end;
 
-function StrIsFloatMoney(const ps: string): boolean;
+function StrIsFloatMoney(const Ps: string): Boolean;
 var
-  liLoop, liDots: integer;
-  ch: char;
+  liLoop, liDots: Integer;
+  Ch: Char;
 begin
   Result := True;
   liDots := 0;
 
-  for liLoop := 1 to Length(ps) do
+  for liLoop := 1 to Length(Ps) do
   begin
-    { allow digits, space, currency symbol and one decimal dot }
-    ch := ps[liLoop];
+    { allow digits, space, Currency symbol and one decimal dot }
+    Ch := Ps[liLoop];
 
-    if (ch = DecimalSeparator) then
+    if Ch = DecimalSeparator then
     begin
-      inc(liDots);
+      Inc(liDots);
       if liDots > 1 then
       begin
         Result := False;
-        break;
+        Break;
       end;
     end
-    else if not CharIsMoney(ch) then
+    else
+    if not CharIsMoney(Ch) then
     begin
       Result := False;
-      break;
+      Break;
     end;
   end;
 end;
 
-function StrIsDateTime(const ps: string): boolean;
+function StrIsDateTime(const Ps: string): Boolean;
 const
   MIN_DATE_TIME_LEN = 6; {2Jan02 }
   MAX_DATE_TIME_LEN = 30; { 30 chars or so in '12 December 1999 12:23:23:00' }
 var
-  liLoop: integer;
-  ch: char;
-  liColons, liSlashes, liSpaces, liDigits, liAlpha: integer;
-  lbDisqualify: boolean;
+  liLoop: Integer;
+  Ch: Char;
+  liColons, liSlashes, liSpaces, liDigits, liAlpha: Integer;
+  lbDisqualify: Boolean;
 begin
-  if Length(ps) < MIN_DATE_TIME_LEN then
+  if Length(Ps) < MIN_DATE_TIME_LEN then
   begin
     Result := False;
-    exit;
+    Exit;
   end;
 
-  if Length(ps) > MAX_DATE_TIME_LEN then
+  if Length(Ps) > MAX_DATE_TIME_LEN then
   begin
     Result := False;
-    exit;
+    Exit;
   end;
 
   lbDisqualify := False;
@@ -1620,25 +1520,29 @@ begin
   liDigits := 0;
   liAlpha := 0;
 
-  for liLoop := 1 to Length(ps) do
+  for liLoop := 1 to Length(Ps) do
   begin
-    ch := ps[liLoop];
+    Ch := Ps[liLoop];
 
-    if (ch = ':') then
-      inc(liColons)
-    else if (ch = AnsiForwardSlash) then
-      inc(liSlashes)
-    else if (ch = AnsiSpace) then
-      inc(liSpaces)
-    else if CharIsDigit(ch) then
-      inc(liDigits)
-    else if CharIsAlpha(ch) then
-      inc(liAlpha)
+    if Ch = ':' then
+      Inc(liColons)
+    else
+    if Ch = AnsiForwardSlash then
+      Inc(liSlashes)
+    else
+    if Ch = AnsiSpace then
+      Inc(liSpaces)
+    else
+    if CharIsDigit(Ch) then
+      Inc(liDigits)
+    else
+    if CharIsAlpha(Ch) then
+      Inc(liAlpha)
     else
     begin
       // no wierd punctuation in dates!
       lbDisqualify := True;
-      break;
+      Break;
     end;
   end;
 
@@ -1655,12 +1559,12 @@ begin
 
   { define in terms of results - if I can interpret it as a date, then I can }
   if Result then
-    Result := (SafeStrToDateTime(PreformatDateString(ps)) <> 0);
+    Result := (SafeStrToDateTime(PreformatDateString(Ps)) <> 0);
 end;
 
-function PreformatDateString(ps: string): string;
+function PreformatDateString(Ps: string): string;
 var
-  liLoop: integer;
+  liLoop: Integer;
 begin
   { turn any month names to numbers }
 
@@ -1668,23 +1572,23 @@ begin
   the one in JclStrings is badly broken and brings down the app }
 
   for liLoop := Low(LongMonthNames) to High(LongMonthNames) do
-    ps := LStrReplace(ps, LongMonthNames[liLoop], IntToStr(liLoop), False);
+    Ps := LStrReplace(Ps, LongMonthNames[liLoop], IntToStr(liLoop), False);
 
   { now that 'January' is gone, catch 'Jan' }
   for liLoop := Low(ShortMonthNames) to High(ShortMonthNames) do
-    ps := LStrReplace(ps, ShortMonthNames[liLoop], IntToStr(liLoop), False);
+    Ps := LStrReplace(Ps, ShortMonthNames[liLoop], IntToStr(liLoop), False);
 
   { remove redundant spaces }
-  ps := LStrReplace(ps, AnsiSpace + AnsiSpace, AnsiSpace, False);
+  Ps := LStrReplace(Ps, AnsiSpace + AnsiSpace, AnsiSpace, False);
 
-  Result := ps;
+  Result := Ps;
 end;
 
-function BooleanToInteger(const pb: boolean): integer;
+function BooleanToInteger(const Pb: Boolean): Integer;
 begin
   // (p3) this works as well:
-  // Result := Ord(pb);
-  if pb then
+  // Result := Ord(Pb);
+  if Pb then
     Result := 1
   else
     Result := 0;
@@ -1692,26 +1596,26 @@ end;
 
 { from my ConvertFunctions unit }
 
-function StringToBoolean(const ps: AnsiString): boolean;
+function StringToBoolean(const Ps: string): Boolean;
 const
-  TRUE_STRINGS: array[1..5] of string = ('true', 't', 'y', 'yes', '1');
+  TRUE_STRINGS: array [1..5] of string = ('True', 't', 'y', 'yes', '1');
 var
-  liLoop: integer;
+  liLoop: Integer;
 begin
   Result := False;
 
   for liLoop := Low(TRUE_STRINGS) to High(TRUE_STRINGS) do
-    if AnsiSameText(ps, TRUE_STRINGS[liLoop]) then
+    if AnsiSameText(Ps, TRUE_STRINGS[liLoop]) then
     begin
       Result := True;
-      break;
+      Break;
     end;
 end;
 
-function SafeStrToDateTime(const ps: string): TDateTime;
+function SafeStrToDateTime(const Ps: string): TDateTime;
 begin
   try
-    Result := StrToDateTime(PreformatDateString(ps));
+    Result := StrToDateTime(PreformatDateString(Ps));
   except
     on E: EConvertError do
       Result := 0.0
@@ -1720,10 +1624,10 @@ begin
   end;
 end;
 
-function SafeStrToDate(const ps: string): TDateTime;
+function SafeStrToDate(const Ps: string): TDateTime;
 begin
   try
-    Result := StrToDate(PreformatDateString(ps));
+    Result := StrToDate(PreformatDateString(Ps));
   except
     on E: EConvertError do
       Result := 0.0
@@ -1732,10 +1636,10 @@ begin
   end;
 end;
 
-function SafeStrToTime(const ps: string): TDateTime;
+function SafeStrToTime(const Ps: string): TDateTime;
 begin
   try
-    Result := StrToTime(ps)
+    Result := StrToTime(Ps)
   except
     on E: EConvertError do
       Result := 0.0
@@ -1752,7 +1656,7 @@ begin
     ((pcParent.Height - pc.Height) div 2);
 end;
 
-function ToRightOf(const pc: TControl; piSpace: integer): integer;
+function ToRightOf(const pc: TControl; piSpace: Integer): Integer;
 begin
   if pc <> nil then
     Result := pc.Left + pc.Width + piSpace
@@ -1764,7 +1668,7 @@ end;
 
 function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
 begin
-  Result := false;
+  Result := False;
   case pdtKind of
     dtkDateOnly: Result := pdtValue < 1; //if date only then anything less than 1 is considered null
     dtkTimeOnly: Result := frac(pdtValue) = NullEquivalentDate; //if time only then anything without a remainder is null
@@ -1772,7 +1676,7 @@ begin
   end;
 end;
 
-function OSCheck(RetVal: boolean): boolean;
+function OSCheck(RetVal: Boolean): Boolean;
 begin
   if not RetVal then
     RaiseLastOSError;
@@ -1780,7 +1684,9 @@ begin
 end;
 
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
-var b: array[0..MAX_PATH] of char; R: TRect;
+var
+  b: array [0..MAX_PATH] of Char;
+  R: TRect;
 begin
   StrCopy(b, PChar(Filename));
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
@@ -1791,17 +1697,18 @@ begin
     Result := Filename;
 end;
 
-function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: boolean; CmdShow: integer = SW_SHOWDEFAULT): boolean;
+function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
+  SW_SHOWDEFAULT): Boolean;
 var
   SI: TStartUpInfo;
   PI: TProcessInformation;
   S: string;
 begin
-  SI.cb := sizeof(SI);
+  SI.cb := SizeOf(SI);
   GetStartupInfo(SI);
   SI.wShowWindow := CmdShow;
   S := Format('rundll32.exe %s,%s %s', [ModuleName, FuncName, CmdLine]);
-  Result := CreateProcess(nil, PChar(S), nil, nil, false, 0, nil, nil, SI, PI);
+  Result := CreateProcess(nil, PChar(S), nil, nil, False, 0, nil, nil, SI, PI);
   try
     if WaitForCompletion then
       Result := WaitForSingleObject(PI.hProcess, INFINITE) <> WAIT_FAILED;
@@ -1811,7 +1718,7 @@ begin
   end;
 end;
 
-procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: integer = SW_SHOWDEFAULT);
+procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
 var
   H: THandle;
   ErrMode: Cardinal;
@@ -1843,20 +1750,14 @@ begin
   Result := trunc(pcValue);
 end;
 
-{-------------------------------------------------------------------------------
-  internals used below }
-
-function HasFlag(a, b: integer): boolean;
+function HasFlag(a, b: Integer): Boolean;
 begin
   Result := (a and b) <> 0;
 end;
 
-{-------------------------------------------------------------------------------
-  listview specific stuff }
-
 { compiled from ComCtrls.pas's implmentation section }
 
-function ConvertStates(const State: integer): TItemStates;
+function ConvertStates(const State: Integer): TItemStates;
 begin
   Result := [];
   if HasFlag(State, LVIS_ACTIVATING) then
@@ -1871,38 +1772,38 @@ begin
     Include(Result, isSelected);
 end;
 
-function ChangeHasSelect(const peOld, peNew: TItemStates): boolean;
+function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
 begin
   Result := (not (isSelected in peOld)) and (isSelected in peNew);
 end;
 
-function ChangeHasDeselect(const peOld, peNew: TItemStates): boolean;
+function ChangeHasDeselect(const peOld, peNew: TItemStates): Boolean;
 begin
   Result := (isSelected in peOld) and (not (isSelected in peNew));
 end;
 
-function ChangeHasFocus(const peOld, peNew: TItemStates): boolean;
+function ChangeHasFocus(const peOld, peNew: TItemStates): Boolean;
 begin
   Result := (not (isFocused in peOld)) and (isFocused in peNew);
 end;
 
-function ChangeHasDefocus(const peOld, peNew: TItemStates): boolean;
+function ChangeHasDefocus(const peOld, peNew: TItemStates): Boolean;
 begin
   Result := (isFocused in peOld) and (not (isFocused in peNew));
 end;
 
-function GetListItemColumn(const pcItem: TListItem; piIndex: integer): string;
+function GetListItemColumn(const pcItem: TListItem; piIndex: Integer): string;
 begin
   if pcItem = nil then
   begin
     Result := '';
-    exit;
+    Exit;
   end;
 
   if (piIndex < 0) or (piIndex > pcItem.SubItems.Count) then
   begin
     Result := '';
-    exit;
+    Exit;
   end;
 
   if piIndex = 0 then
@@ -1913,18 +1814,18 @@ end;
 
 {!! from strFunctions }
 
-function StrDeleteChars(const ps: string; const piPos: integer; const piCount: integer): string;
+function StrDeleteChars(const Ps: string; const piPos: Integer; const piCount: Integer): string;
 begin
-  Result := StrLeft(ps, piPos - 1) + StrRestOf(ps, piPos + piCount);
+  Result := StrLeft(Ps, piPos - 1) + StrRestOf(Ps, piPos + piCount);
 end;
 
 function StrDelete(const psSub, psMain: string): string;
 var
-  liPos: integer;
+  liPos: Integer;
 begin
   Result := psMain;
   if psSub = '' then
-    exit;
+    Exit;
 
   liPos := StrIPos(psSub, psMain);
 
@@ -1938,24 +1839,25 @@ end;
 type
   // (p3) from ShLwAPI
   TDLLVersionInfo = packed record
-    cbSize: DWord;
-    dwMajorVersion: DWord;
-    dwMinorVersion: DWord;
-    dwBuildNumber: DWord;
-    dwPlatformID: DWord;
+    cbSize: DWORD;
+    dwMajorVersion: DWORD;
+    dwMinorVersion: DWORD;
+    dwBuildNumber: DWORD;
+    dwPlatformID: DWORD;
   end;
 
-function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: integer): boolean;
-var hDLL, hr: THandle;
-  pDllGetVersion: function(var dvi: TDLLVersionInfo): integer; stdcall;
-  dvi: TDLLVersionInfo;
+function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
+var
+  hDLL, hr: THandle;
+  pDllGetVersion: function(var Dvi: TDLLVersionInfo): Integer; stdcall;
+  Dvi: TDLLVersionInfo;
 begin
   hDLL := LoadLibrary(PChar(DLLName));
-  if (hDLL < 32) then
+  if hDLL < 32 then
     hDLL := 0;
-  if (hDLL <> 0) then
+  if hDLL <> 0 then
   begin
-    Result := true;
+    Result := True;
     (*  You must get this function explicitly
         because earlier versions of the DLL's
         don't implement this function.
@@ -1964,13 +1866,13 @@ begin
     @pDllGetVersion := GetProcAddress(hDLL, PChar('DllGetVersion'));
     if Assigned(pDllGetVersion) then
     begin
-      ZeroMemory(@dvi, sizeof(dvi));
-      dvi.cbSize := sizeof(dvi);
-      hr := pDllGetVersion(dvi);
-      if (hr = 0) then
+      FillChar(Dvi, SizeOf(Dvi), #0);
+      Dvi.cbSize := SizeOf(Dvi);
+      hr := pDllGetVersion(Dvi);
+      if hr = 0 then
       begin
-        pdwMajor := dvi.dwMajorVersion;
-        pdwMinor := dvi.dwMinorVersion;
+        pdwMajor := Dvi.dwMajorVersion;
+        pdwMinor := Dvi.dwMinorVersion;
       end;
     end
     else (*   If GetProcAddress failed, the DLL is a version previous to the one  shipped with IE 3.x. *)
@@ -1981,7 +1883,7 @@ begin
     FreeLibrary(hDLL);
     Exit;
   end;
-  Result := false;
+  Result := False;
 end;
 
 end.
