@@ -14,6 +14,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13

@@ -13,6 +13,7 @@ object JvID3DefineDlg: TJvID3DefineDlg
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object lblFrames: TLabel

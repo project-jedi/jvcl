@@ -11,6 +11,7 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -49,14 +50,14 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
     Left = 0
     Top = 33
     Width = 504
-    Height = 325
+    Height = 322
     Align = alClient
     TabOrder = 0
     object pgMain: TJvgPageControl
       Left = 1
       Top = 1
       Width = 502
-      Height = 323
+      Height = 320
       ActivePage = tabMain
       Align = alClient
       Font.Charset = DEFAULT_CHARSET
@@ -101,7 +102,7 @@ object JvgCompEditorTemplate: TJvgCompEditorTemplate
   end
   object pnBottom: TPanel
     Left = 0
-    Top = 358
+    Top = 355
     Width = 504
     Height = 53
     Align = alBottom

@@ -13,6 +13,7 @@ object QuickPreviewForm: TQuickPreviewForm
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object ScrollBox1: TScrollBox

@@ -25,6 +25,7 @@ object FormParsers: TFormParsers
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   ShowHint = True
   PixelsPerInch = 96
   TextHeight = 13

@@ -24,6 +24,7 @@ object JvID3FramesEditor: TJvID3FramesEditor
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   PopupMenu = LocalMenu
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -32,7 +33,7 @@ object JvID3FramesEditor: TJvID3FramesEditor
     Left = 0
     Top = 0
     Width = 173
-    Height = 239
+    Height = 236
     Align = alClient
     DragMode = dmAutomatic
     ItemHeight = 13

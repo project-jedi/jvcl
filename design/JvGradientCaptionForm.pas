@@ -37,7 +37,7 @@ uses
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvFormPlacement, JvGradientCaption, JvListBox, JvCtrls,
-  JvComponent, JvToolEdit, JvAppStorage, JvAppRegistryStorage;
+  JvComponent, JvToolEdit, JvAppStorage, JvAppRegistryStorage, JvExMask;
 
 type
   TGradCaptionsEditor = class(TJvForm)

@@ -13,6 +13,7 @@ object YearGridEditForm: TYearGridEditForm
   Font.Style = []
   OldCreateOrder = True
   Position = poDesktopCenter
+  Scaled = False
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13

@@ -39,6 +39,7 @@ object ProfReport: TProfReport
     03FFFF8003FFFFC007FFFFC007FFFFE00FFFFFE01FFFFFF07FFFFFF8FFFF}
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   ShowHint = True
   OnShow = FormShow
   PixelsPerInch = 96

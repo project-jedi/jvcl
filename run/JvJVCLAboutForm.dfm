@@ -26,6 +26,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = False
   Position = poScreenCenter
+  Scaled = False
   OnDestroy = FormDestroy
   OnShow = FormShow
   PixelsPerInch = 96
@@ -174,7 +175,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
     object lblCopyRight: TLabel
       Left = 7
       Top = 278
-      Width = 122
+      Width = 125
       Height = 13
       Caption = 'Copyright (c) Project JEDI'
     end

@@ -13,6 +13,7 @@ object JvgReportParamsForm: TJvgReportParamsForm
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object SB: TScrollBox

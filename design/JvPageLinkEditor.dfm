@@ -14,6 +14,7 @@ object frmJvTreeViewLinksEditor: TfrmJvTreeViewLinksEditor
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = popTree
+  Scaled = False
   OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 13

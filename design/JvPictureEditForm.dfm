@@ -25,6 +25,7 @@ object PictureEditDialog: TPictureEditDialog
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
+  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -199,7 +200,9 @@ object PictureEditDialog: TPictureEditDialog
     Top = 30
   end
   object AppStorage: TJvAppRegistryStorage
-    RegRoot = hkCurrentUser
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    SubStorages = <>
     Left = 29
     Top = 81
   end

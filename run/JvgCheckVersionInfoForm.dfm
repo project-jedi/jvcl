@@ -284,8 +284,7 @@ object JvgfCheckVersionInfo: TJvgfCheckVersionInfo
     ScrollBars = ssVertical
     TabOrder = 4
   end
-  object glSmallFontsDefence1: TJvgSmallFontsDefence
-    Options = []
+  object glSmallFontsDefence1: TJvgSmallFontsDefense
     Left = 328
     Top = 16
   end
