@@ -334,11 +334,7 @@ end;
 procedure TfrmMain.jsgDependenciesSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: String);
 begin
-<<<<<<< MainForm.pas
-  Changed := Changed or (Value <> (Sender as TStringGrid).Cells[ACol, ARow]);
-=======
   FOrgValueDep := jsgDependencies.Cells[ACol, ARow];
->>>>>>> 1.12
 end;
 
 procedure TfrmMain.ledDescriptionChange(Sender: TObject);
