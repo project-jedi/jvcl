@@ -1,9 +1,9 @@
 ##Package: MM
-##Status: Locked (Remko Bonte)
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvId3v2Types.pas
 Summary
-  Contains the TJvID3v2Types component.
+  Contains functions and types to read ID3 tags.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
@@ -27,15 +27,19 @@ See Also
 @@ID3_Genres
 <TITLE ID3_Genres procedure>
 Summary
-  Provides a list of genres.
+  Populates a string list with genre names.
 Description
-  GetActionsList is called at design time to get a list containing names and objects. Each name
-  identifies an action name to insert and each object identifies a class of adapter action component.
-  When editing the adapter, these action names are displayed in the dialog box that is used to add new
-  actions. For example, when editing a TDataSetAdapter a list of all of the dataset commands are
-  displayed such as NextRow, PrevRow, DeleteRow, etc.
+  Call ID3_Genres to get a list containing ID3 genre names. For example, you can use it to fill
+  a combobox that the user can use to select a specific genre:
+
+  <AUTOLINK OFF>
+  <CODE>
+    ID3_Genres(ComboBox1.Items);
+  </CODE>
+  <AUTOLINK ON>
 Parameters
-  Strings          - \Description for this parameter
+  Strings          - A TStrings descendant that receives the genre names. Any existing strings are
+                      deleted from the list before ID3_Genres adds the genre names.
   InclWinampGenres - Specifies whether to include the genres introduced by Winamp.
 See Also
   <LINK ID3_GenreToID>, <LINK ID3_IDToGenre>, <LINK ID3_LongGenreToID>
@@ -84,6 +88,7 @@ Description
   ID3_LongGenreToID('Rock')                   17        Rock
   ID3_LongGenreToID('Rocks')                  255       ??
   ID3_LongGenreToID('Rock & Roll')            78        Rock & Roll
+  ID3_LongGenreToID('Rock & Rolls')           17        Rock
   </TABLE>
 Parameters
   ALongGenre       - The genre string to convert.
@@ -179,6 +184,7 @@ Summary
   Represents different kind of string encodings in a ID3 frame.
 Description
   Use the TJvID3Encoding type to represent a string encoding in a ID3 frame.
+
   TJvID3Encodings is a set of TJvID3Encoding values.
 @@TJvID3Encoding.ienISO_8859_1
   An ISO-8859-1 encoding.
@@ -219,7 +225,7 @@ Description
   Use the TJvID3ForceVersion type to represent a specific enforcement of an ID3 version for an ID3
   tag.
 @@TJvID3ForceVersion.ifvDontCare
-  Does not enforce an specific version for an ID3 tag.
+  Does not enforce an specific version for the ID3 tag.
 @@TJvID3ForceVersion.ifv2_2
   Enforces a 2.2 version for the ID3 tag.
 @@TJvID3ForceVersion.ifv2_3
@@ -230,9 +236,10 @@ Description
 @@TJvID3FrameHeaderFlag
 <TITLE TJvID3FrameHeaderFlag type>
 Summary
-  Write here a summary (1 line)
+  Enumerates options for the tag.
 Description
-  Use the TJvID3FrameHeaderFlag type to
+  Use the TJvID3FrameHeaderFlag type to specify options for the tag.
+
   TJvID3FrameHeaderFlags is a set of TJvID3FrameHeaderFlag values.
 @@TJvID3FrameHeaderFlag.fhfOnTagAlterDiscardFrame
   Tells the tag parser to discard the frame if it is unknown and the tag is altered in any way.
@@ -600,16 +607,17 @@ Description
 @@TJvID3HeaderExtendedFlag
 <TITLE TJvID3HeaderExtendedFlag type>
 Summary
-  Write here a summary (1 line)
+  Enumerates extended options for the tag.
 Description
-  Use the TJvID3HeaderExtendedFlag type to
+  Use the TJvID3HeaderExtendedFlag type to specify extended options for the tag.
+
   TJvID3HeaderExtendedFlags is a set of TJvID3HeaderExtendedFlag values.
 @@TJvID3HeaderExtendedFlag.hefTagIsAnUpdate
-  Description for hefTagIsAnUpdate
+  The present tag is an update of a tag found earlier in the present file or stream.
 @@TJvID3HeaderExtendedFlag.hefCRCDataPresent
-  Description for hefCRCDataPresent
+  A CRC-32 data is included in the extended header.
 @@TJvID3HeaderExtendedFlag.hefTagRestrictions
-  Description for hefTagRestrictions
+  The extended header includes tag restrictions. <TODO>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3HeaderExtendedFlags
 <TITLE TJvID3HeaderExtendedFlags type>
@@ -618,17 +626,20 @@ Description
 @@TJvID3HeaderFlag
 <TITLE TJvID3HeaderFlag type>
 Summary
-  Write here a summary (1 line)
+  Enumerates options for a tag.
 Description
-  Use the TJvID3HeaderFlag type to
+  Use the TJvID3HeaderFlag to specify options for a tag.
+
+  TJvID3HeaderFlags is a set of TJvID3HeaderFlag values.
 @@TJvID3HeaderFlag.hfUnsynchronisation
-  Description for hfUnsynchronisation
+  Applies unsynchronisation on all frames.
 @@TJvID3HeaderFlag.hfExtendedHeader
-  Description for hfExtendedHeader
+  Includes an extended header in the tag.
 @@TJvID3HeaderFlag.hfExperimentalIndicator
-  Description for hfExperimentalIndicator
+  Indicates that the tag is in experimental state.
 @@TJvID3HeaderFlag.hfFooterPresent
-  Description for hfFooterPresent
+  Includes a footer in the tag.
+  <TODO : not implemented>
 ----------------------------------------------------------------------------------------------------
 @@TJvID3HeaderFlags
 <TITLE TJvID3HeaderFlags type>
@@ -713,7 +724,7 @@ Description
 Summary
   Contains tag restrictions.
 Description
-  For some applications it might be desired to restrict a tag in more
+  <TODO> For some applications it might be desired to restrict a tag in more
   ways than imposed by the ID3 v2 specification. Note that the
   presence of these restrictions does not affect how the tag is
   decoded, merely how it was restricted before encoding.
@@ -760,7 +771,7 @@ Summary
 Description
   The TJvID3TextEncodingRestriction type is used to specify a specific text encoding restriction.
 @@TJvID3TextEncodingRestriction.terNoRestrictions
-  No restrictions
+  No restrictions.
 @@TJvID3TextEncodingRestriction.terOnlyISO_8859_1orUTF8
   Strings are only encoded with ISO-8859-1 or UTF-8.
 ----------------------------------------------------------------------------------------------------
@@ -771,7 +782,7 @@ Summary
 Description
   The TJvID3TextFieldsSizeRestriction type is used to specify a specific text fields size restriction.
 @@TJvID3TextFieldsSizeRestriction.tfszNoRestrictions
-  No restrictions
+  No restrictions.
 @@TJvID3TextFieldsSizeRestriction.tfszMax1024Char
   No string is longer than 1024 characters.
 @@TJvID3TextFieldsSizeRestriction.tfszMax128Char
@@ -798,6 +809,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvID3FrameID_Table
 <TITLE TJvID3FrameID Table>
+<HASTOCENTRY OFF>
 JVCLInfo
   GROUP=TJvID3FrameID
 Description
@@ -1082,4 +1094,6 @@ Description
   fiWWWUser             WXXX  WXX   TJvID3URLUserFrame          X       X       X
   fiUserText            TXXX  TXX   TJvID3UserFrame             X       X       X
   </TABLE>
+
+  d = deprecated; X = Includes; - = Excludes;
 ----------------------------------------------------------------------------------------------------
