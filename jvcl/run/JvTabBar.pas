@@ -1785,6 +1785,14 @@ begin
       end;
     end;
 
+    if Tab.Enabled and not Tab.Selected and Tab.Hot then
+    begin
+      // hot
+      Pen.Color := DividerColor;
+      MoveTo(R.Left, R.Top);
+      LineTo(R.Right - 1 - 1, R.Top);
+    end;
+
     if Tab.TabBar.CloseButton then
     begin
       // close button color
@@ -1792,14 +1800,6 @@ begin
         Brush.Color := CloseColorSelected
       else
         Brush.Color := CloseColor;
-
-      if Tab.Enabled and not Tab.Selected and Tab.Hot then
-      begin
-        // hot
-        Pen.Color := DividerColor;
-        MoveTo(R.Left, R.Top);
-        LineTo(R.Right - 1 - 1, R.Top);
-      end;
 
       CloseR := GetCloseRect(Canvas, Tab, Tab.DisplayRect);
       Pen.Color := CloseRectColor;
