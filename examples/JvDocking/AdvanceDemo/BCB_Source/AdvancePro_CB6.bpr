@@ -25,20 +25,20 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="AdvancePro_CB6.cpp"/>
-    <INCLUDEPATH value="..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\common"/>
-    <LIBPATH value="..\..\..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib"/>
+    <INCLUDEPATH value="..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\common;$(INCLUDE)"/>
+    <LIBPATH value="..\..\..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(RESOURCES)"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
     <IDLCFLAGS value="-I..\..\..\..\run -I$(BCB)\include -I$(BCB)\include\vcl 
-      -I..\..\..\..\common -src_suffix cpp -D_DEBUG -boa"/>
+      -I..\..\..\..\common -I$(INCLUDE) -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tW -tWM"/>
     <PFLAGS value="-N2..\Bin -N0..\Bin -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\Bin -L..\..\..\..\run -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
+    <LFLAGS value="-I..\Bin -D&quot;&quot; -aa -Tpe -x -Gn -v -L..\..\..\..\run"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -86,65 +86,5 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-
-[HistoryLists\hlIncludePath]
-Count=5
-Item0=..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\..\common
-Item1=..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\common
-Item2=..\..\..\..\run;$(BCB)\include;$(BCB)\include\vcl;..\..\..\Source
-Item3=$(BCB)\include;$(BCB)\include\vcl;..\..\..\Source
-Item4=E:\Program Files\Borland\CBuilder6\Projects;F:\zhou\????\DockManager\Demo\AdvanceDemo\BCB_Source\?????;$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=3
-Item0=..\..\..\..\run;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Source
-Item1=$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\Source
-Item2=$(BCB)\Projects\Lib;E:\Program Files\Borland\CBuilder6\Projects;F:\zhou\????\DockManager\Demo\AdvanceDemo\BCB_Source\?????;$(BCB)\lib\obj;$(BCB)\lib
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\Bin
-
-[HistoryLists\hlFinalOutputDir]
-Count=1
-Item0=..\Bin\
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-Launcher=
-UseLauncher=0
-DebugCWD=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>
