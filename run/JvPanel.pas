@@ -80,6 +80,7 @@ type
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure Paint; override;
+    procedure AdjustSize; override;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
   public
@@ -160,12 +161,7 @@ var
 begin
   Canvas.Brush.Color := Color;
   if not Transparent then
-  begin
-  {$IFDEF JVCLThemesEnabled}
-    if not ParentBackground then
-  {$ENDIF}
-      DrawThemedBackground(Self, Canvas, ClientRect)
-  end
+    DrawThemedBackground(Self, Canvas, ClientRect)
   else
     Canvas.Brush.Style := bsClear;
 
@@ -179,6 +175,16 @@ begin
     DrawBorders;
   Self.DrawCaption;
   if Sizeable then
+  {$IFDEF JVCLThemesEnabled}
+    if ThemeServices.ThemesEnabled then
+    begin
+      ThemeServices.DrawElement(Canvas.Handle, ThemeServices.GetElementDetails(tsGripper),
+        Rect(ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2,
+             ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2,
+             ClientWidth - BevelWidth - 2, ClientHeight - BevelWidth - 2));
+    end
+    else
+  {$ENDIF}
     with Canvas do
     begin
       Font.Name := 'Marlett';
@@ -193,6 +199,17 @@ begin
         SetBkMode(Handle, Windows.TRANSPARENT);
       TextOut(X, Y, 'o');
     end;
+end;
+
+procedure TJvPanel.AdjustSize;
+begin
+  inherited AdjustSize;
+  if Transparent then
+  begin
+   // (andreas) That is the only way to draw the border of the contained control.
+    Width := Width + 1;
+    Width := Width - 1;
+  end;
 end;
 
 procedure TJvPanel.DrawBorders;
@@ -327,6 +344,7 @@ begin
 end;
 
 procedure TJvPanel.SetTransparent(const Value: Boolean);
+var R: TRect;
 begin
   if Value <> FTransparent then
   begin
@@ -416,7 +434,7 @@ begin
     FDragging := True;
     FLastPos := Point(X, Y);
     MouseCapture := True;
-    Screen.cursor := crSizeNWSE;
+    Screen.Cursor := crSizeNWSE;
   end
   else
     inherited MouseDown(Button, Shift, X, Y);
@@ -425,19 +443,22 @@ end;
 procedure TJvPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   R: TRect;
-  X1,Y1:integer;
+  X1, Y1: Integer;
 begin
   if FDragging and Sizeable then
   begin
     R := BoundsRect;
     X1 := R.Right - R.Left + X - FLastPos.X;
     Y1 := R.Bottom - R.Top + Y - FLastPos.Y;
-    if (X1 >= 0) then
-      FLastPos.X := X;
-    if (Y1 >= 0) then
-      FLastPos.Y := Y;
-    SetBounds(Left,Top,X1,Y1);
-    Refresh;
+    if (X1 > 1) and (Y1 > 1) then
+    begin
+      if (X1 >= 0) then
+        FLastPos.X := X;
+      if (Y1 >= 0) then
+        FLastPos.Y := Y;
+      SetBounds(Left, Top, X1, Y1);
+      Refresh;
+    end;
   end
   else
   begin
