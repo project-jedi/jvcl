@@ -184,7 +184,7 @@ JvDockingD6R.bpl: d6\JvDockingD6R.dpk
 JvDockingD6D.bpl: d6\JvDockingD6D.dpk
   $(DCC)
 
-JvDotNetCtrlsD6R.bpl: d6\JvDotNetCtrlsD6R.dpk
+JvDotNetCtrlsD6R.bpl: d6per\JvDotNetCtrlsD6R.dpk
   $(DCC)
 
 JvDotNetCtrlsD6D.bpl: d6\JvDotNetCtrlsD6D.dpk
