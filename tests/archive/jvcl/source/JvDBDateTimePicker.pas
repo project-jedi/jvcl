@@ -83,8 +83,10 @@ type
   end;
 
 implementation
-uses
-  Variants;
+{$IFDEF COMPILER6_UP} 
+uses 
+  Variants; 
+{$ENDIF} 
 
 { TJvDBDateTimePicker }
 ///////////////////////////////////////////////////////////////////////////
