@@ -6,13 +6,140 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2004-10-14 21:23\n"
-"PO-Revision-Date: 2004-10-14 21:23\n"
+"POT-Creation-Date: 2004-12-13 23:59\n"
+"PO-Revision-Date: 2004-12-13 23:59\n"
 "Last-Translator: Somebody <your.email@address.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: dxgettext 1.2 beta 3\n"
+"X-Generator: dxgettext 1.2 beta 5\n"
+
+#. FormCompile..Caption
+#: FrmCompile.dfm:6
+#. Programmer's name for it: RsCompiling
+#: FrmCompile.pas:75
+msgid "Compiling"
+msgstr ""
+
+#. FormCompile..Font.Name
+#: FrmCompile.dfm:13
+#. FormCompile..PanelClient..LblStatusCaption..Font.Name
+#: FrmCompile.dfm:69
+#. FormCompile..PanelClient..LblStatus..Font.Name
+#: FrmCompile.dfm:182
+#. FormCompile..PanelClient..LblErrorReason..Font.Name
+#: FrmCompile.dfm:195
+#. FormCompileMessages..Font.Name
+#: FrmCompileMessages.dfm:13
+#. FormMain..Font.Name
+#: Main.dfm:13
+#. FormMain..JvWizard..JvWizardRouteMapList..ActiveFont.Name
+#: Main.dfm:86
+#. FormMain..JvWizard..JvWizardRouteMapList..Font.Name
+#: Main.dfm:94
+#. FormMain..JvWizard..JvWizardRouteMapList..HotTrackFont.Name
+#: Main.dfm:99
+#. FrameConfigPage..LblBCBGuide..Font.Name
+#: Frames/FrmConfigPage.dfm:20
+#. FrameConfigPage..GroupBoxJvclInc..LblDxgettextHomepage..Font.Name
+#: Frames/FrmConfigPage.dfm:50
+#. FrameDirEditBrowse..EditDirectory..Font.Name
+#: Frames/FrmDirEditBrowse.dfm:31
+#. FrameInstall..LblTarget..Font.Name
+#: Frames/FrmInstall.dfm:16
+#. FrameInstall..LblOpenFile..Font.Name
+#: Frames/FrmInstall.dfm:38
+#. FramePackageSelection..LblTarget..Font.Name
+#: Frames/FrmPackageSelection.dfm:16
+#. FrameUninstall..LblTarget..Font.Name
+#: Frames/FrmUninstall.dfm:16
+#. FrameUninstall..LblFilename..Font.Name
+#: Frames/FrmUninstall.dfm:29
+#. FormJvclIncConfig..Font.Name
+#: Helpers/MainConfig.dfm:12
+#. FormJvclIncConfig..Label1..Font.Name
+#: Helpers/MainConfig.dfm:40
+msgid "MS Sans Serif"
+msgstr ""
+
+#. FormCompile..PanelClient..LblProject..Caption
+#: FrmCompile.dfm:57
+msgid "Project filename"
+msgstr ""
+
+#. FormCompile..PanelClient..LblStatusCaption..Caption
+#: FrmCompile.dfm:65
+msgid "Done:"
+msgstr ""
+
+#. FormCompile..PanelClient..LblCurrentLineCaption..Caption
+#: FrmCompile.dfm:84
+msgid "Current line:"
+msgstr ""
+
+#. FormCompile..PanelClient..LblTotalLinesCaption..Caption
+#: FrmCompile.dfm:99
+msgid "Total lines:"
+msgstr ""
+
+#. FormCompile..PanelClient..LblHintsCaption..Caption
+#: FrmCompile.dfm:126
+msgid "Hints:"
+msgstr ""
+
+#. FormCompile..PanelClient..LblWarningsCaption..Caption
+#: FrmCompile.dfm:141
+msgid "Warnings:"
+msgstr ""
+
+#. FormCompile..PanelClient..LblErrorsCaption..Caption
+#: FrmCompile.dfm:156
+msgid "Errors:"
+msgstr ""
+
+#. FormCompile..PanelClient..LblProjectCaption..Caption
+#: FrmCompile.dfm:171
+msgid "Project:"
+msgstr ""
+
+#. FormCompile..PanelClient..LblStatus..Caption
+#: FrmCompile.dfm:178
+#. Programmer's name for it: RsThereAreErrors
+#: FrmCompile.pas:78
+msgid "There are errors."
+msgstr ""
+
+#. FormCompile..PanelClient..LblErrorReason..Caption
+#: FrmCompile.dfm:191
+msgid "LblErrorReason"
+msgstr ""
+
+#. FormCompile..BtnOk..Caption
+#: FrmCompile.dfm:206
+msgid "OK"
+msgstr ""
+
+#. FormCompileMessages..Caption
+#: FrmCompileMessages.dfm:8
+msgid "Compiler Messages"
+msgstr ""
+
+#. FormCompileMessages..PanelTop..LabelHelp....Height
+#: FrmCompileMessages.dfm:52
+msgid "Many error messages appear because the JCL version and the JVCL "
+"version are not compatible. Please keep in mind that you need the "
+"correct JCL version."
+msgstr ""
+
+#. FormCompileMessages..PopupMenu..Open1..Caption
+#: FrmCompileMessages.dfm:59
+msgid "&Open"
+msgstr ""
+
+#. FormCompileMessages..PopupMenu..MenuNotepad..Caption
+#: FrmCompileMessages.dfm:63
+msgid "Open in &Notepad"
+msgstr ""
 
 #. FormMain..Caption
 #: Main.dfm:6
@@ -21,19 +148,56 @@ msgstr ""
 msgid "JVCL 3  Installation"
 msgstr ""
 
+#. FormMain..JvWizard..ButtonStart.Caption
+#: Main.dfm:30
+msgid "To &Start Page"
+msgstr ""
+
+#. FormMain..JvWizard..ButtonLast.Caption
+#: Main.dfm:33
+msgid "To &Last Page"
+msgstr ""
+
+#. FormMain..JvWizard..ButtonBack.Caption
+#: Main.dfm:36
+msgid "< &Back"
+msgstr ""
+
+#. FormMain..JvWizard..ButtonNext.Caption
+#: Main.dfm:39
+msgid "&Next >"
+msgstr ""
+
+#. FormMain..JvWizard..ButtonFinish.Caption
+#: Main.dfm:42
+msgid "&Finish"
+msgstr ""
+
 #. FormMain..JvWizard..ButtonCancel.Caption
-#: Main.dfm:40
+#: Main.dfm:45
 msgid "Cancel"
 msgstr ""
 
+#. FormMain..JvWizard..ButtonHelp.Caption
+#: Main.dfm:49
+msgid "&Hilfe"
+msgstr ""
+
 #. FormMain..JvWizard..LblHomepage..Hint
-#: Main.dfm:57
+#: Main.dfm:66
 msgid "<c:blue>http://jvcl.sourceforge.net"
 msgstr ""
 
 #. FormMain..JvWizard..LblHomepage..Caption
-#: Main.dfm:58
+#: Main.dfm:67
 msgid "Jedi Visual Component Library Homepage"
+msgstr ""
+
+#. FormMain..JvWizard..LblHomepage..Font.Name
+#: Main.dfm:71
+#. FrameInstall..RichEditLog..Font.Name
+#: Frames/FrmInstall.dfm:68
+msgid "Arial"
 msgstr ""
 
 #. FrameConfigPage..LblBCBGuide....Cursor
@@ -209,13 +373,13 @@ msgstr ""
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly....Height
 #: Frames/FrmConfigPage.dfm:246
-msgid "Check this option if you do not want to register\n"
-"the designtime package into the IDE."
+msgid "Check this option if you want to register\n"
+"the designtime packages into the IDE."
 msgstr ""
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
 #: Frames/FrmConfigPage.dfm:248
-msgid "No &IDE registration"
+msgid "&IDE registration"
 msgstr ""
 
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
@@ -420,6 +584,11 @@ msgid "Project JEDI   JVCL 3 Installer - jvcl.inc "
 "Editor"
 msgstr ""
 
+#. FormJvclIncConfig..TitlePanel..Label4..Font.Name
+#: Helpers/MainConfig.dfm:108
+msgid "Verdana"
+msgstr ""
+
 #. FormJvclIncConfig..BtnCancel..Caption
 #: Helpers/MainConfig.dfm:135
 msgid "&Cancel"
@@ -524,7 +693,37 @@ msgstr ""
 #: Compile.pas:175
 msgid "Command could not be executed.\n"
 "\n\nCmdline: %s\n"
-"Start directory: %s"
+msgid_plural "Start directory: %s"
+msgstr[0] ""
+
+#. Programmer's name for it: RsPreparing
+#: FrmCompile.pas:74
+msgid "Preparing..."
+msgstr ""
+
+#. Programmer's name for it: RsLinking
+#: FrmCompile.pas:76
+msgid "Linking"
+msgstr ""
+
+#. Programmer's name for it: RsDone
+#: FrmCompile.pas:77
+msgid "Done"
+msgstr ""
+
+#. Programmer's name for it: RsThereAreWarnings
+#: FrmCompile.pas:79
+msgid "There are warnings."
+msgstr ""
+
+#. Programmer's name for it: RsThereAreHints
+#: FrmCompile.pas:80
+msgid "There are hints."
+msgstr ""
+
+#. Programmer's name for it: RsCompiled
+#: FrmCompile.pas:81
+msgid "compiled."
 msgstr ""
 
 #. JVCL3Install.pas
@@ -637,7 +836,7 @@ msgstr ""
 #. Programmer's name for it: RsComplete
 #: InstallerConsts.pas:85
 #. Programmer's name for it: RsComplete
-#: JVCLData.pas:284
+#: JVCLData.pas:295
 msgid "Complete."
 msgstr ""
 
@@ -651,347 +850,368 @@ msgstr ""
 msgid "Compiling: %s"
 msgstr ""
 
+#. FrmCompileMessages.pas
+#. Programmer's name for it: RsCompilerHint
+#: InstallerConsts.pas:91
+msgid "Hint"
+msgstr ""
+
+#. Programmer's name for it: RsCompilerWarning
+#: InstallerConsts.pas:92
+msgid "Warning"
+msgstr ""
+
+#. Programmer's name for it: RsCompilerError
+#: InstallerConsts.pas:93
+msgid "Error"
+msgstr ""
+
+#. Programmer's name for it: RsCompilerFatal
+#: InstallerConsts.pas:94
+msgid "Fatal"
+msgstr ""
+
 #. FrmPackageSelection.pas
 #. Programmer's name for it: RsSelectTargetIDE
-#: InstallerConsts.pas:91
+#: InstallerConsts.pas:98
 msgid "Select an IDE"
 msgstr ""
 
 #. Programmer's name for it: RsPkgInfoRequires
-#: InstallerConsts.pas:92
+#: InstallerConsts.pas:99
 msgid "Requires:"
 msgstr ""
 
 #. Programmer's name for it: RsPkgInfoContains
-#: InstallerConsts.pas:93
+#: InstallerConsts.pas:100
 msgid "Contains:"
 msgstr ""
 
 #. FrmUninstall.pas
 #. Programmer's name for it: RsDeletingFile
-#: InstallerConsts.pas:97
+#: InstallerConsts.pas:104
 msgid "Deleting %s"
 msgstr ""
 
 #. PgInstall.pas
 #. Programmer's name for it: RsInstallPageTitle
-#: InstallerConsts.pas:101
+#: InstallerConsts.pas:108
 msgid "Compiling packages"
 msgstr ""
 
 #. Programmer's name for it: RsInstallPageSubTitle
-#: InstallerConsts.pas:102
+#: InstallerConsts.pas:109
 msgid "The selected packages are compiling for the selected Delphi and "
 "C++Builder versions"
 msgstr ""
 
 #. PgPackageSelection.pas
 #. Programmer's name for it: RsPackageSelectionPageTitle
-#: InstallerConsts.pas:106
+#: InstallerConsts.pas:113
 msgid "Select packages"
 msgstr ""
 
 #. Programmer's name for it: RsPackageSelectionPageSubTitle
-#: InstallerConsts.pas:107
+#: InstallerConsts.pas:114
 msgid "Select all packages for the target IDEs which should be "
 "installed"
 msgstr ""
 
 #. PgSummary.pas
 #. Programmer's name for it: RsSummaryPageTitle
-#: InstallerConsts.pas:111
+#: InstallerConsts.pas:118
 msgid "Summary"
 msgstr ""
 
 #. Programmer's name for it: RsSummaryPageSubTitleInstall
-#: InstallerConsts.pas:112
+#: InstallerConsts.pas:119
 msgid "The following actions will be done through "
 "installation"
 msgstr ""
 
 #. Programmer's name for it: RsSummaryPageSubTitleUpdate
-#: InstallerConsts.pas:113
+#: InstallerConsts.pas:120
 msgid "The following actions will be done through the "
 "update"
 msgstr ""
 
 #. Programmer's name for it: RsSummaryPageSubTitleUninstall
-#: InstallerConsts.pas:114
+#: InstallerConsts.pas:121
 msgid "The following actions will be done through "
 "uninstallation"
 msgstr ""
 
 #. Programmer's name for it: RsInstallForTarget
-#: InstallerConsts.pas:116
+#: InstallerConsts.pas:123
 msgid "Install JVCL 3 for"
 msgstr ""
 
 #. Programmer's name for it: RsInstallForFrameworks
-#: InstallerConsts.pas:117
+#: InstallerConsts.pas:124
 msgid "Install for frameworks:"
 msgstr ""
 
 #. Programmer's name for it: RsBplOutputDirectory
-#: InstallerConsts.pas:118
+#: InstallerConsts.pas:125
 msgid "BPL output directory:"
 msgstr ""
 
 #. Programmer's name for it: RsDcpOutputDirectory
-#: InstallerConsts.pas:119
+#: InstallerConsts.pas:126
 msgid "DCP output directory:"
 msgstr ""
 
 #. Programmer's name for it: RsLibOutputDirectory
-#: InstallerConsts.pas:120
+#: InstallerConsts.pas:127
 msgid "LIB output directory:"
 msgstr ""
 
 #. Programmer's name for it: RsHppOutputDirectory
-#: InstallerConsts.pas:121
+#: InstallerConsts.pas:128
 msgid "HPP output directory:"
 msgstr ""
 
 #. Programmer's name for it: RsBuildPackages
-#: InstallerConsts.pas:122
+#: InstallerConsts.pas:129
 msgid "Build packages"
 msgstr ""
 
 #. Programmer's name for it: RsCompilePackages
-#: InstallerConsts.pas:123
+#: InstallerConsts.pas:130
 msgid "Compile packages"
 msgstr ""
 
 #. Programmer's name for it: RsCleanComponentPalettes
-#: InstallerConsts.pas:124
+#: InstallerConsts.pas:131
 msgid "Clean component palettes"
 msgstr ""
 
 #. Programmer's name for it: RsAddToBrowsePath
-#: InstallerConsts.pas:125
+#: InstallerConsts.pas:132
 msgid "Add to browse path:"
 msgstr ""
 
 #. Programmer's name for it: RsAddToSearchPath
-#: InstallerConsts.pas:126
+#: InstallerConsts.pas:133
 msgid "Add to search path:"
 msgstr ""
 
 #. Programmer's name for it: RsAddToLibraryPath
-#: InstallerConsts.pas:127
+#: InstallerConsts.pas:134
 msgid "Add to library path:"
 msgstr ""
 
 #. Programmer's name for it: RsAddToIncludePath
-#: InstallerConsts.pas:128
+#: InstallerConsts.pas:135
 msgid "Add to include path:"
 msgstr ""
 
 #. Programmer's name for it: RsUninstallFromTarget
-#: InstallerConsts.pas:130
+#: InstallerConsts.pas:137
 msgid "Uninstall from"
 msgstr ""
 
 #. Programmer's name for it: RsRemove
-#: InstallerConsts.pas:131
+#: InstallerConsts.pas:138
 msgid "Remove"
 msgstr ""
 
 #. Programmer's name for it: RsUnregister
-#: InstallerConsts.pas:132
+#: InstallerConsts.pas:139
 msgid "Unregister"
 msgstr ""
 
 #. Programmer's name for it: RsJVCLPalettes
-#: InstallerConsts.pas:133
+#: InstallerConsts.pas:140
 msgid "JVCL palettes"
 msgstr ""
 
 #. Programmer's name for it: RsJVCLDirsFromPathLists
-#: InstallerConsts.pas:134
+#: InstallerConsts.pas:141
 msgid "JVCL directories from path lists"
 msgstr ""
 
 #. Programmer's name for it: RsJVCLPackages
-#: InstallerConsts.pas:135
+#: InstallerConsts.pas:142
 msgid "JVCL 3 packages"
 msgstr ""
 
 #. Programmer's name for it: RsJVCLFiles
-#: InstallerConsts.pas:136
+#: InstallerConsts.pas:143
 msgid "JVCL 3 files"
 msgstr ""
 
 #. PgConfig.pas
 #. Programmer's name for it: RsConfigPageTitle
-#: InstallerConsts.pas:147
+#: InstallerConsts.pas:154
 msgid "Configuration"
 msgstr ""
 
 #. Programmer's name for it: RsConfigPageSubTitle
-#: InstallerConsts.pas:148
+#: InstallerConsts.pas:155
 msgid "Choose the compilation options and global options for all "
 "targets"
 msgstr ""
 
 #. FrmConfigPage.pas
 #. Programmer's name for it: RsAllTargets
-#: InstallerConsts.pas:152
+#: InstallerConsts.pas:159
 msgid "All versions"
 msgstr ""
 
 #. Programmer's name for it: RsCannotOpen
-#: InstallerConsts.pas:153
+#: InstallerConsts.pas:160
 msgid "Cannot open %s"
 msgstr ""
 
 #. Programmer's name for it: RsReadReadmeForXPThemingInfo
-#: InstallerConsts.pas:155
+#: InstallerConsts.pas:162
 msgid "Please read the readme.htm for details about XP theming with "
 "Delphi/C++Builder 5 and 6.\n"
 "Do you want to open readme.htm ?"
 msgstr ""
 
 #. Programmer's name for it: RsErrorOpeningReadmeHTM
-#: InstallerConsts.pas:156
+#: InstallerConsts.pas:163
 msgid "Cannot open file readme.htm"
 msgstr ""
 
 #. PgIDESelection.pas
 #. Programmer's name for it: RsSelectionPageTitle
-#: InstallerConsts.pas:165
+#: InstallerConsts.pas:172
 msgid "Choose IDE targets"
 msgstr ""
 
 #. Programmer's name for it: RsSelectionPageSubTitleInstall
-#: InstallerConsts.pas:166
+#: InstallerConsts.pas:173
 msgid "Select all target IDEs where the JVCL should be "
 "installed"
 msgstr ""
 
 #. Programmer's name for it: RsSelectionPageSubTitleUpdate
-#: InstallerConsts.pas:167
+#: InstallerConsts.pas:174
 msgid "Select all target IDEs where the JVCL should be "
 "updated"
 msgstr ""
 
 #. Programmer's name for it: RsSelectionPageSubTitleUninstall
-#: InstallerConsts.pas:168
+#: InstallerConsts.pas:175
 msgid "Select all target IDEs from which the JVCL should be "
 "uninstalled"
 msgstr ""
 
 #. Programmer's name for it: RsErrorInstallingJCL
-#: InstallerConsts.pas:170
+#: InstallerConsts.pas:177
 msgid "Cannot start the JCL Installer."
 msgstr ""
 
 #. Programmer's name for it: RsDelphiBCBUpdateRequired
-#: InstallerConsts.pas:171
+#: InstallerConsts.pas:178
 msgid "Delphi/C++Builder update required"
 msgstr ""
 
 #. Programmer's name for it: RsDownloadUpdatesFrom
-#: InstallerConsts.pas:172
+#: InstallerConsts.pas:179
 msgid "Download from"
 msgstr ""
 
 #. Programmer's name for it: RsJCLVersionRequired
-#: InstallerConsts.pas:173
-msgid "JCL 1.9 or higher required"
+#: InstallerConsts.pas:180
+msgid "JCL %s or higher required"
 msgstr ""
 
 #. http://jcl.sourceforge.net
 #. Programmer's name for it: RsDownloadOrSelectJclDir
-#: InstallerConsts.pas:175
+#: InstallerConsts.pas:182
 msgid "Download or select a JCL directory.|http://homepages.borland.com/jedi/"
 "jcl/"
 msgstr ""
 
 #. Programmer's name for it: RsInstalledJVCLVersion
-#: InstallerConsts.pas:176
+#: InstallerConsts.pas:183
 msgid "installed JVCL version: %d"
 msgstr ""
 
 #. Programmer's name for it: RsInstallJCL
-#: InstallerConsts.pas:177
+#: InstallerConsts.pas:184
 msgid "Install JCL"
 msgstr ""
 
 #. Programmer's name for it: RsNoJclVersionFound
-#: InstallerConsts.pas:178
-msgid "No JCL 1.9 found."
+#: InstallerConsts.pas:185
+msgid "No JCL %s found."
 msgstr ""
 
 #. Programmer's name for it: RsJCLDirectoryCaption
-#: InstallerConsts.pas:180
+#: InstallerConsts.pas:187
 msgid "&JCL directory:"
 msgstr ""
 
 #. Programmer's name for it: RsDeleteJVCLFilesCaption
-#: InstallerConsts.pas:181
+#: InstallerConsts.pas:188
 msgid "&Delete JVCL files (dcu,bpl,dcp, obj,bpi,lib,tds)"
 msgstr ""
 
 #. Programmer's name for it: RsJCLDirectorySelectionBtnHint
-#: InstallerConsts.pas:182
-msgid "Select JCL 1.90 installation directory..."
+#: InstallerConsts.pas:189
+msgid "Select JCL %s installation directory..."
 msgstr ""
 
 #. Main.pas
 #. Programmer's name for it: RsBtnInstall
-#: InstallerConsts.pas:186
+#: InstallerConsts.pas:193
 msgid "&Install"
 msgstr ""
 
 #. Programmer's name for it: RsBtnUninstall
-#: InstallerConsts.pas:187
+#: InstallerConsts.pas:194
 msgid "&Uninstall"
 msgstr ""
 
 #. Programmer's name for it: RsNoPackageInstaller
-#: InstallerConsts.pas:188
+#: InstallerConsts.pas:195
 msgid "Application error. No PackageInstaller "
 "created."
 msgstr ""
 
 #. Programmer's name for it: RsCancelInstallation
-#: InstallerConsts.pas:189
+#: InstallerConsts.pas:196
 msgid "Do you really want to cancel the installation?"
 msgstr ""
 
 #. Programmer's name for it: RsComponentPalettePrefix
-#: JVCLData.pas:276
+#: JVCLData.pas:287
 msgid "TJv"
 msgstr ""
 
 #. Programmer's name for it: RsNoJVCLFound
-#: JVCLData.pas:277
+#: JVCLData.pas:288
 msgid "No JVCL directory found. Application "
 "terminated."
 msgstr ""
 
 #. Programmer's name for it: RsJVCLInstaller
-#: JVCLData.pas:278
+#: JVCLData.pas:289
 msgid "JVCL Installer"
 msgstr ""
 
 #. Programmer's name for it: RsCleaningPalette
-#: JVCLData.pas:280
+#: JVCLData.pas:291
 msgid "Cleaning Palette..."
 msgstr ""
 
 #. Programmer's name for it: RsCleaningPathLists
-#: JVCLData.pas:281
+#: JVCLData.pas:292
 msgid "Cleaning Path lists..."
 msgstr ""
 
 #. Programmer's name for it: RsUnregisteringPackages
-#: JVCLData.pas:282
+#: JVCLData.pas:293
 msgid "Unregistering packages..."
 msgstr ""
 
 #. Programmer's name for it: RsDeletingFiles
-#: JVCLData.pas:283
+#: JVCLData.pas:294
 msgid "Deleting files..."
 msgstr ""
 
