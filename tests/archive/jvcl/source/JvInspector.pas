@@ -1087,17 +1087,6 @@ type
   published
   end;
 
-  {
-  /------------------------------------------------------------------------------------------------\
-  | TMethod item editor.                                                                           |
-  |                                                                                                |
-  | WARNING: This item editor is currently not usable because you can't provide a list of valid    |
-  |          methods. Unfortunately, I can't figure out how to provide it. There are two AddMethod |
-  |          methods declared that should add methods to the list, but I can't use them, as the    |
-  |          compiler complains about invalid typecasts and/or requiring a variable (which doesn't |
-  |          help, as the @ operator seems to be unallowed on methods.                             |
-  \------------------------------------------------------------------------------------------------/
-  }
   TJvInspectorTMethodItem = class(TJvCustomInspectorItem)
   private
     FList: TStrings; // list of object instances with list of methods attached.
@@ -1495,9 +1484,13 @@ type
     constructor Create(const ADataClass: TJvInspectorDataClass);
     destructor Destroy; override;
     procedure Add(const RegItem: TJvCustomInspectorRegItem);
-    procedure Delete(const RegItem: TJvCustomInspectorRegItem);
+    procedure Delete(const RegItem: TJvCustomInspectorRegItem); overload;
+    procedure Delete(const ItemClass: TJvInspectorItemClass); overload;
+    procedure Delete(const Index: Integer); overload;
     function FindMatch(
       const ADataObj: TJvCustomInspectorData): TJvCustomInspectorRegItem;
+    function IndexOf(const RegItem: TJvCustomInspectorRegItem): Integer; overload;
+    function IndexOf(const ItemClass: TJvInspectorItemClass): Integer; overload;
 
     property Count: Integer read GetCount;
     property DataClass: TJvInspectorDataClass read FDataClass;
@@ -4359,7 +4352,7 @@ var
 begin
   if not DroppedDown then
   begin
-    ListBox.Width := WidthOf(Rects[iprValue]);
+    ListBox.Width := WidthOf(Rects[iprValueArea]);
     TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
     if TListBox(ListBox).IntegralHeight then
     begin
@@ -4389,7 +4382,7 @@ begin
     if ListBox.Items.Count > ListCount then
       Inc(J, GetSystemMetrics(SM_CXVSCROLL));
     ListBox.ClientWidth := J;
-    P := Inspector.ClientToScreen(Point(EditCtrl.Left, EditCtrl.Top));
+    P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
     Y := P.Y + HeightOf(Rects[iprValueArea]);
     if Y + ListBox.Height > Screen.Height then
       Y := P.Y - TListBox(ListBox).Height;
@@ -7703,7 +7696,7 @@ begin
       I := Item.FList.IndexOfObject(Self) + 1;
       while I < Item.InstanceCount do
       begin
-        Inc(TInstanceItem(Item.FList[I]).MethodStartIdx);
+        Inc(TInstanceItem(Item.FList.Objects[I]).MethodStartIdx);
         Inc(I);
       end;
     end
@@ -7893,6 +7886,7 @@ begin
   begin
     IdxInst := FList.AddObject(InstanceName, TInstanceItem.Create);
     TInstanceItem(FList.Objects[IdxInst]).Instance := Instance;
+    TInstanceItem(FList.Objects[IdxInst]).Item := Self;
   end;
 end;
 
@@ -7977,7 +7971,7 @@ begin
   Result := '';
   if (InstanceIdx <> -1) and (MethodIdx <> -1) then
   begin
-    if ShowInstanceNames and ((InstanceIdx > 0) or NoShowFirstInstanceName) then
+    if ShowInstanceNames and ((InstanceIdx > 0) or not NoShowFirstInstanceName) then
       Result := InstanceNames[InstanceIdx] + '.';
     Result := Result + MethodNames[Instance, MethodIdx];
   end;
@@ -8023,31 +8017,28 @@ begin
     InstanceList := TStringList.Create;
     try
       for I := 0 to InstanceCount - 1 do
-        InstanceList.AddObject(InstanceNames[I], Instances[I]);
+        InstanceList.AddObject(InstanceNames[I], FList.Objects[I]);
       if SortInstances then
         InstanceList.Sort;
       if (InstanceCount > 0) and KeepFirstInstanceAsFirst then
       begin
-        I := InstanceList.IndexOfObject(Instances[0]);
+        I := InstanceList.IndexOfObject(FList.Objects[0]);
         if I > 0 then
         begin
           InstanceList.Delete(I);
-          InstanceList.InsertObject(0, InstanceNames[0], Instances[0]);
+          InstanceList.InsertObject(0, InstanceNames[0], FList.Objects[0]);
         end;
       end;
       for I := 0 to InstanceCount - 1 do
       begin
         SL.Clear;
-        CurInstance := TInstanceItem(FList.Objects[I]);
-        if ShowInstanceNames then
-        begin
-          if (I > 0) or not NoShowFirstInstanceName then
-            PrefixWithInstance := InstanceList[I] + '.';
-        end
+        CurInstance := TInstanceItem(InstanceList.Objects[I]);
+        if ShowInstanceNames and ((I > 0) or not NoShowFirstInstanceName) then
+          PrefixWithInstance := InstanceList[I] + '.'
         else
           PrefixWithInstance := '';
         for J := 0 to CurInstance.Methods.Count - 1 do
-          SL.AddObject(PrefixWithInstance + MethodNames[CurInstance, J], TObject(CurInstance.MethodStartIdx + J));
+          SL.AddObject(PrefixWithInstance + CurInstance.Methods[J], TObject(CurInstance.MethodStartIdx + J));
         if SL.Count > 0 then
         begin
           if SortMethods then
@@ -8089,6 +8080,8 @@ procedure TJvInspectorTMethodItem.AfterConstruction;
 begin
   inherited AfterConstruction;
   FList := TStringList.Create;
+  ItemTMethodFlags := [imfShowInstanceNames, imfNoShowFirstInstanceName,
+    imfKeepFirstInstanceAsFirst, imfSortInstances, imfSortMethods];
 end;
 
 procedure TJvInspectorTMethodItem.BeforeDestruction;
@@ -8105,7 +8098,7 @@ end;
 
 procedure TJvInspectorTMethodItem.AddMethod(const Method: TMethod; const MethodName: string);
 begin
-  AddMethodPrim(Tobject(Method.Data), Method.Code, MethodName);
+  AddMethodPrim(TObject(Method.Data), Method.Code, MethodName);
 end;
 
 procedure TJvInspectorTMethodItem.AddMethod(const Instance: TObject; MethodAddr: Pointer;
@@ -9063,10 +9056,10 @@ var
   PropList: PPropList;
 begin
   SetLength(Result, 0);
-  PropCount := GetPropList(AInstance.ClassInfo, tkAny, nil);
+  PropCount := GetPropList(AInstance.ClassInfo, TypeKinds, nil);
   GetMem(PropList, PropCount * SizeOf(PPropInfo));
   try
-    GetPropList(AInstance.ClassInfo, tkAny, PropList);
+    GetPropList(AInstance.ClassInfo, TypeKinds, PropList);
     Result := New(AParent, AInstance, PropList, PropCount);
   finally
     FreeMem(PropList);
@@ -9085,10 +9078,10 @@ var
   NameIdx: Integer;
 begin
   SetLength(Result, 0);
-  PropCount := GetPropList(AInstance.ClassInfo, tkAny, nil);
+  PropCount := GetPropList(AInstance.ClassInfo, TypeKinds, nil);
   GetMem(PropList, PropCount * SizeOf(PPropInfo));
   try
-    GetPropList(AInstance.ClassInfo, tkAny, PropList);
+    GetPropList(AInstance.ClassInfo, TypeKinds, PropList);
     for I := 0 to Pred(PropCount) do
     begin
       PropInfo := PropList[I];
@@ -9973,6 +9966,20 @@ begin
   FItems.Remove(RegItem);
 end;
 
+procedure TJvInspectorRegister.Delete(const ItemClass: TJvInspectorItemClass);
+var
+  Idx: Integer;
+begin
+  Idx := IndexOf(ItemClass);
+  if Idx > -1 then
+    Delete(Idx);
+end;
+
+procedure TJvInspectorRegister.Delete(const Index: Integer);
+begin
+  FItems.Delete(Index);
+end;
+
 function TJvInspectorRegister.FindMatch(
   const ADataObj: TJvCustomInspectorData): TJvCustomInspectorRegItem;
 var
@@ -10008,6 +10015,18 @@ begin
         Result := ParResult;
     end;
   end;
+end;
+
+function TJvInspectorRegister.IndexOf(const RegItem: TJvCustomInspectorRegItem): Integer;
+begin
+  Result := FItems.IndexOf(RegItem);
+end;
+
+function TJvInspectorRegister.IndexOf(const ItemClass: TJvInspectorItemClass): Integer;
+begin
+  Result := FItems.Count - 1;
+  while (Result > -1) and (Items[Result].ItemClass <> ItemClass) do
+    Dec(Result);
 end;
 
 { TJvCustomInspectorRegItem }
@@ -10326,7 +10345,7 @@ begin
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorInt64Item, tkInt64));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorClassItem, tkClass));
     // TMethodEditor is disabled because it doesn't work
-//    Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorTMethodItem, tkMethod));
+    Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorTMethodItem, tkMethod));
     Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(TCaption)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorFontItem, TypeInfo(TFont)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(Boolean)));

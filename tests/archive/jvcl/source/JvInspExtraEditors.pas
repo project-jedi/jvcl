@@ -1,0 +1,540 @@
+{-----------------------------------------------------------------------------
+
+ Project JEDI Visible Component Library (J-VCL)
+
+ The contents of this file are subject to the Mozilla Public License Version
+ 1.1 (the "License"); you may not use this file except in compliance with the
+ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/
+
+ Software distributed under the License is distributed on an "AS IS" basis,
+ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for
+ the specific language governing rights and limitations under the License.
+
+ The Initial Developer of the Original Code is Marcel Bestebroer
+  <marcelb@zeelandnet.nl>.
+ Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2002 mbeSoft.
+ All Rights Reserved.
+
+ ******************************************************************************
+
+ Additional editors for JvInspector.
+
+ You may retrieve the latest version of this file at the Project JEDI home
+ page, located at http://www.delphi-jedi.org
+-----------------------------------------------------------------------------}
+
+unit JvInspExtraEditors;
+
+interface
+
+uses
+  SysUtils, Windows, Classes, Controls, Graphics,
+  JvInspector;
+
+{$A+,B-,C+,E-,F-,G+,H+,I+,J+,K-,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Z1}
+{$I JVCL.INC}
+
+type
+  { TAlign item editor. Descents from the enumeration item to keep DisplayValue available }
+  TJvInspectorAlignItem = class(TJvInspectorEnumItem)
+  private
+    FUnassignedColor: TColor;
+    FNormalColor: TColor;
+    FActiveColor: TColor;
+  protected
+    procedure EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure PaintAlignBox(const Align: TAlign; const ACanvas: TCanvas; const ARect: TRect;
+      const UseUnassigned: Boolean);
+  public
+    procedure AfterConstruction; override;
+    procedure DoneEdit(const CancelEdits: Boolean = False); override;
+    procedure DrawValue(const ACanvas: TCanvas); override;
+    procedure InitEdit; override;
+
+    class procedure RegisterAsDefaultItem;
+    class procedure UnregisterAsDefaultItem;
+
+    property UnassignedColor: TColor read FUnassignedColor;
+    property NormalColor: TColor read FNormalColor;
+    property ActiveColor: TColor read FActiveColor;
+  end;
+
+  { TColor item editor. Will render the color in a box, together with the name/value }
+  TJvInspectorColorItem = class(TJvCustomInspectorItem)
+  private
+    FColors: TStrings;
+    FStdColors: TStrings;
+    FIncludeStdColors: Boolean;
+  protected
+    procedure AddStdColor(const S: string);
+    function BorderColor(const ABackgroundColor, AInternalColor: TColor): TColor;
+    function NameForColor(const Color: TColor): string;
+    procedure PaintValue(const Color: TColor; const ColorName: string; const ACanvas: TCanvas;
+      const ARect: TRect);
+
+    procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState); override;
+    procedure DoMeasureListItem(Control: TWinControl; Index: Integer; var Height: Integer); override;
+    procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer; var Width: Integer); override;
+    function GetDisplayValue: string; override;
+    procedure GetValueList(const Strings: TStrings); override;
+    procedure SetDisplayValue(const Value: string); override;
+    procedure SetFlags(const Value: TInspectorItemFlags); override;
+    procedure SetRects(const RectKind: TInspectorPaintRect; Value: TRect); override;
+  public
+    procedure AfterConstruction; override;
+    procedure BeforeDestruction; override;
+    procedure DrawValue(const ACanvas: TCanvas); override;
+    class procedure RegisterAsDefaultItem;
+    class procedure UnregisterAsDefaultItem;
+
+    property IncludeStdColors: Boolean read FIncludeStdColors write FIncludeStdColors;
+  end;
+
+implementation
+
+uses
+  StdCtrls,
+  JclRTTI;
+
+type
+  TOpenInspector = class(TJvCustomInspector);
+  TOpenPainter = class(TJvInspectorPainter);
+
+  TColorQuad = packed record
+    Red,
+    Green,
+    Blue,
+    Alpha: Byte;
+  end;
+
+{ TJvInspectorAlignItem }
+
+procedure TJvInspectorAlignItem.EditKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+var
+  NewAlign: TAlign;
+begin
+  if Editing and (Shift = [ssCtrl]) then
+  begin
+    if Data.IsAssigned then
+      NewAlign := TAlign(Data.AsOrdinal)
+    else
+      NewAlign := alNone;
+    if Key in [VK_UP, VK_NUMPAD8] then
+    begin
+      if NewAlign = alTop then
+        NewAlign := alNone
+      else
+        NewAlign := alTop;
+    end
+    else if Key in [VK_RIGHT, VK_NUMPAD6] then
+    begin
+      if NewAlign = alRight then
+        NewAlign := alNone
+      else
+        NewAlign := alRight;
+    end
+    else if Key in [VK_DOWN, VK_NUMPAD2] then
+    begin
+      if NewAlign = alBottom then
+        NewAlign := alNone
+      else
+        NewAlign := alBottom;
+    end
+    else if Key in [VK_LEFT, VK_NUMPAD4] then
+    begin
+      if NewAlign = alLeft then
+        NewAlign := alNone
+      else
+        NewAlign := alLeft;
+    end
+    else if Key in [VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    begin
+      if NewAlign = alClient then
+        NewAlign := alNone
+      else
+        NewAlign := alClient;
+    end;
+    if Key in [VK_UP, VK_NUMPAD8, VK_RIGHT, VK_NUMPAD6, VK_DOWN, VK_NUMPAD2, VK_LEFT, VK_NUMPAD4, VK_NUMPAD5, VK_HOME, VK_NUMPAD7] then
+    begin
+      Data.AsOrdinal := Ord(NewAlign);
+      Key := 0;
+    end
+    else
+      inherited EditKeyDown(Sender, Key, Shift);
+  end;
+end;
+
+procedure TJvInspectorAlignItem.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  NewAlign: TAlign;
+  ValueRect: TRect;
+begin
+  if Editing and (Shift = [ssLeft]) then
+  begin
+    if Data.IsAssigned then
+      NewAlign := TAlign(Data.AsOrdinal)
+    else
+      NewAlign := alNone;
+    ValueRect := Rects[iprValueArea];
+    with ValueRect do
+    begin
+      if PtInRect(Rect(Left + 5, Top, Right - 5, Top + 5), Point(X, Y)) then
+      begin
+        if NewAlign = alTop then
+          NewAlign := alNone
+        else
+          NewAlign := alTop;
+      end
+      else if PtInRect(Rect(Right - 5, Top + 5, Right, Bottom - 5), Point(X, Y)) then
+      begin
+        if NewAlign = alRight then
+          NewAlign := alNone
+        else
+          NewAlign := alRight;
+      end
+      else if PtInRect(Rect(Left + 5, Bottom - 5, Right - 5, Bottom), Point(X, Y)) then
+      begin
+        if NewAlign = alBottom then
+          NewAlign := alNone
+        else
+          NewAlign := alBottom;
+      end
+      else if PtInRect(Rect(Left, Top + 5, Left + 5, Bottom - 5), Point(X, Y)) then
+      begin
+        if NewAlign = alLeft then
+          NewAlign := alNone
+        else
+          NewAlign := alLeft;
+      end
+      else if PtInRect(ValueRect, Point(X, Y)) then
+      begin
+        if NewAlign = alClient then
+          NewAlign := alNone
+        else
+          NewAlign := alClient;
+      end;
+    end;
+    Data.AsOrdinal := Ord(NewAlign);
+  end;
+end;
+
+procedure TJvInspectorAlignItem.PaintAlignBox(const Align: TAlign; const ACanvas: TCanvas;
+  const ARect: TRect; const UseUnassigned: Boolean);
+var
+  NoAlignColor: TColor;
+
+  procedure RenderAlign(const Check: TAlign; const X, Y : Integer);
+  begin
+    if (Align = alClient) or (Align = Check) then
+      ACanvas.Pen.Color := ActiveColor
+    else
+      ACanvas.Pen.Color := NoAlignColor;
+    ACanvas.LineTo(X, Y);
+  end;
+
+begin
+  if UseUnassigned then
+    NoAlignColor := UnassignedColor
+  else
+    NoAlignColor := NormalColor;
+  ACanvas.Pen.Width := 2;
+
+  ACanvas.MoveTo(ARect.Left + 2, ARect.Top + 2);
+  RenderAlign(alTop, ARect.Right - 3, ARect.Top + 2);
+  RenderAlign(alRight, ARect.Right - 3, ARect.Bottom - 3);
+  RenderAlign(alBottom, ARect.Left + 2, ARect.Bottom - 3);
+  RenderAlign(alLeft, ARect.Left + 2, ARect.Top + 1);
+end;
+
+procedure TJvInspectorAlignItem.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FUnassignedColor := clGrayText;
+  FNormalColor := clWindowText;
+  FActiveColor := clBlue;
+end;
+
+procedure TJvInspectorAlignItem.DoneEdit(const CancelEdits: Boolean = False);
+begin
+  SetEditing(False);
+end;
+
+procedure TJvInspectorAlignItem.DrawValue(const ACanvas: TCanvas);
+var
+  IsValid: Boolean;
+  Align: TAlign;
+  ARect: TRect;
+
+begin
+  IsValid := Data.IsInitialized and Data.IsAssigned and Data.HasValue;
+  if IsValid then
+    Align := TAlign(Data.AsOrdinal)
+  else
+    Align := alNone;
+
+  if Editing and Data.IsAssigned then
+    ACanvas.Brush.Color := clWindow;
+
+  ARect := Rects[iprValueArea];
+  ACanvas.FillRect(ARect);
+  PaintAlignBox(Align, ACanvas, ARect, not IsValid);
+end;
+
+procedure TJvInspectorAlignItem.InitEdit;
+begin
+  SetEditing(CanEdit);
+end;
+
+class procedure TJvInspectorAlignItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TAlign)));
+  end;
+end;
+
+class procedure TJvInspectorAlignItem.UnregisterAsDefaultItem;
+begin
+  TJvCustomInspectorData.ItemRegister.Delete(Self);
+end;
+
+{ TJvInspectorColorItem }
+
+procedure TJvInspectorColorItem.AddStdColor(const S: string);
+begin
+  FStdColors.AddObject(S, TObject(JclStrToTypedInt(S, TypeInfo(TColor))));
+end;
+
+function TJvInspectorColorItem.BorderColor(const ABackgroundColor, AInternalColor: TColor): TColor;
+var
+  BckRGB: TColor;
+  ColRGB: TColor;
+
+  function IsLightColor(const RGB: TColor): Boolean;
+  begin
+    with TColorQuad(RGB) do
+      Result := (Red > 192) or (Green > 192) or (Blue > 192);
+  end;
+
+begin
+  BckRGB := ColorToRGB(ABackgroundColor);
+  ColRGB := ColorToRGB(AInternalColor);
+  if IsLightColor(BckRGB) and IsLightColor(ColRGB) then
+    Result := clBlack
+  else if not IsLightColor(BckRGB) and not IsLightColor(ColRGB) then
+    Result := clWhite
+  else
+    Result := AInternalColor;
+end;
+
+function TJvInspectorColorItem.NameForColor(const Color: TColor): string;
+begin
+  Result := JclTypedIntToStr(Color, TypeInfo(TColor));
+end;
+
+procedure TJvInspectorColorItem.PaintValue(const Color: TColor; const ColorName: string;
+  const ACanvas: TCanvas; const ARect: TRect);
+var
+  TH: Integer;
+  BoxRect: TRect;
+  bc: TColor;
+  pc: TColor;
+begin
+  TH := Rects[iprValue].Bottom - Rects[iprValue].Top - 2;
+  BoxRect.Left := ARect.Left + (ARect.Bottom - ARect.Top - TH) div 2;
+  BoxRect.Top := ARect.Top + BoxRect.Left - ARect.Left;
+  BoxRect.Right := BoxRect.Left + TH;
+  BoxRect.Bottom := BoxRect.Top + TH;
+  with ACanvas do
+  begin
+    if Color <> clNone then
+    begin
+      bc := Brush.Color;
+      pc := Pen.Color;
+      try
+        Brush.Color := Color;
+        Pen.Color := BorderColor(bc, Color);
+        Rectangle(BoxRect);
+      finally
+        Pen.Color := pc;
+        Brush.Color := bc;
+      end;
+    end;
+    TextOut(ARect.Left + (ARect.Bottom - ARect.Top) + 1, BoxRect.Top, ColorName);
+  end;
+end;
+
+procedure TJvInspectorColorItem.DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState);
+begin
+  with TListBox(Control) do
+  begin
+    if odSelected in State then
+      Canvas.Brush.Color := clHighlight;
+    Canvas.FillRect(Rect);
+    Rect.Top := Rect.Top + 1;
+    Rect.Bottom := Rect.Bottom - 1;
+    PaintValue(TColor(Items.Objects[Index]), Items[Index], Canvas, Rect);
+  end;
+end;
+
+procedure TJvInspectorColorItem.DoMeasureListItem(Control: TWinControl; Index: Integer;
+  var Height: Integer);
+begin
+  with Rects[iprValueArea] do
+    Height := Bottom - Top + 2;
+end;
+
+procedure TJvInspectorColorItem.DoMeasureListItemWidth(Control: TWinControl; Index: Integer;
+  var Width: Integer);
+begin
+  with Rects[iprValueArea] do
+    Width := Width + Bottom - Top + 2;
+end;
+
+function TJvInspectorColorItem.GetDisplayValue: string;
+var
+  TempSL: TStrings;
+  I: Integer;
+begin
+  TempSL := TStringList.Create;
+  try
+    GetValueList(TempSL);
+    I := TempSL.IndexOfObject(TObject(Data.AsOrdinal));
+    if I = -1 then
+      Result := JclTypedIntToStr(Data.AsOrdinal, TypeInfo(TColor))
+    else
+      Result := TempSL[I];
+  finally
+    TempSL.Free;
+  end;
+end;
+
+procedure TJvInspectorColorItem.GetValueList(const Strings: TStrings);
+var
+  TempSL: TStringList;
+begin
+  TempSL := TStringList.Create;
+  try
+    if IncludeStdColors then
+      TempSL.AddStrings(FStdColors);
+    TempSL.AddStrings(FColors);
+    DoGetValueList(Strings);
+    TempSL.AddStrings(Strings);
+    TempSL.Sort;
+    Strings.Assign(TempSL);
+  finally
+    TempSL.Free;
+  end;
+end;
+
+procedure TJvInspectorColorItem.SetDisplayValue(const Value: string);
+var
+  SL: TStrings;
+  I: Integer;
+begin
+  SL := TStringList.Create;
+  try
+    GetValueList(SL);
+    I := SL.IndexOf(Value);
+    if I > -1 then
+      I := Integer(SL.Objects[I])
+    else
+      I := JclStrToTypedInt(Value, TypeInfo(TColor));
+    Data.AsOrdinal := I;
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TJvInspectorColorItem.SetFlags(const Value: TInspectorItemFlags);
+begin
+  inherited SetFlags(Value + [iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable] -
+    [iifOwnerDrawListFixed]);
+end;
+
+procedure TJvInspectorColorItem.SetRects(const RectKind: TInspectorPaintRect; Value: TRect);
+begin
+  if RectKind = iprValue then
+    Value.Left := Value.Left + (Value.Bottom  -Value.Top) + 1;
+  inherited SetRects(RectKind, Value);
+end;
+
+procedure TJvInspectorColorItem.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  FColors := TStringList.Create;
+  FStdColors := TStringList.Create;
+  GetColorValues(AddStdColor);
+  TStringList(FStdColors).Sort;
+  IncludeStdColors := True;
+  Flags := [iifValueList, iifAllowNonListValues, iifOwnerDrawListVariable];
+end;
+
+procedure TJvInspectorColorItem.BeforeDestruction;
+begin
+  FStdColors.Free;
+  FColors.Free;
+  inherited BeforeDestruction;
+end;
+
+procedure TJvInspectorColorItem.DrawValue(const ACanvas: TCanvas);
+var
+  Color: TColor;
+  S: string;
+  ARect: TRect;
+  SafeColor: TColor;
+begin
+  Color := clNone;
+  if Data = nil then
+    S := sJvInspItemUnInitialized
+  else
+  try
+    if not Data.IsInitialized then
+      S := sJvInspItemUnInitialized
+    else if not Data.HasValue then
+      S := sJvInspItemNoValue
+    else if not Data.IsAssigned then
+      S := sJvInspItemUnassigned
+    else
+    begin
+      S := DisplayValue;
+      Color := Data.AsOrdinal;
+    end;
+  except
+      S := sJvInspItemValueException + ExceptObject.ClassName + ': ' +
+        Exception(ExceptObject).Message;
+  end;
+  ARect := Rects[iprValueArea];
+  SafeColor := ACanvas.Brush.Color;
+  if Editing then
+    ACanvas.Brush.Color := clWindow;
+  try
+    ACanvas.FillRect(ARect);
+    PaintValue(Color, S, ACanvas, ARect);
+    if Editing then
+      DrawEditor(ACanvas);
+  finally
+    if Editing then
+      ACanvas.Brush.Color := SafeColor;
+  end;
+end;
+
+class procedure TJvInspectorColorItem.RegisterAsDefaultItem;
+begin
+  with TJvCustomInspectorData.ItemRegister do
+  begin
+    if IndexOf(Self) = -1 then
+      Add(TJvInspectorTypeInfoRegItem.Create(Self, TypeInfo(TColor)));
+  end;
+end;
+
+class procedure TJvInspectorColorItem.UnregisterAsDefaultItem;
+begin
+  TJvCustomInspectorData.ItemRegister.Delete(Self);
+end;
+
+end.
