@@ -287,8 +287,8 @@ begin
   FDropButton := TJvDropDownButton.Create(Self);
   with FDropButton do
   begin
-    Parent := FButtonHolder;
     Align := alClient;
+    Parent := FButtonHolder;
     Cursor := crArrow;
     Flat := True;
 //    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
@@ -393,7 +393,7 @@ end;
 procedure TJvCustomDatePickerEdit.GetInternalMargins(var ALeft, ARight: Integer);
 begin
   inherited GetInternalMargins(ALeft, ARight);
-  ARight := ARight + FDropButton.Width;
+  ARight := ARight + FButtonHolder.Width;
 end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
@@ -432,8 +432,14 @@ function TJvCustomDatePickerEdit.ValidateDate(const ADate: TDateTime): Boolean;
 begin
   if (not AllowNoDate) and (ADate = 0) then
     RaiseNoDate;
-  // 1752-09-14 - 1752-09-19 are the only valid days in october 1752.
   if (ADate < EncodeDate(1752, 09, 14)) or ((ADate > EncodeDate(1752, 09, 19)) and (ADate < EncodeDate(1752, 10, 1))) then
+    { For historical/political reasons the days 1752-09-03 - 1752-09-13 do not
+      exist in the Gregorian calendar - for some unknown reason the Microsoft
+      calendar treats the period between 1752-09-20 and 1752-09-30 as missing
+      instead, even though dates before 1752-09-14 are considered invalid as
+      well (MS' offical explanation saying they only support the Gregorian
+      calendar as of British adoption of it is not accurate: Britain adopted the
+      Gregorian calendar starting 1752-01-01).}
     Result := False
   else
     Result := True;
