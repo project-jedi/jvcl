@@ -1,3 +1,4 @@
+@echo off
 brc32 JvAppFrmReg.rc -r -fo..\Resources\JvAppFrmReg.dcr
 brc32 JvBDEReg.rc -r -fo..\Resources\JvBDEReg.dcr
 brc32 JvCmpReg.rc -r -fo..\Resources\JvCmpReg.dcr
@@ -23,3 +24,5 @@ brc32 JvValidatorsReg.rc -r -fo..\Resources\JvValidatorsReg.dcr
 brc32 JvWizardReg.rc -r -fo..\Resources\JvWizardReg.dcr
 brc32 JvTimeFrameWorkReg.rc -r -fo..\Resources\JvTimeFrameWorkReg.dcr
 brc32 JvManagedThreadsReg.rc -r -fo..\Resources\JvManagedThreadsReg.dcr
+brc32 JvXPCtrlsReg.rc -r -fo..\Resources\JvXPCtrlsReg.dcr
+brc32 JvDotNetCtrlsReg.rc -r -fo..\Resources\JvDotNetCtrlsReg.dcr
