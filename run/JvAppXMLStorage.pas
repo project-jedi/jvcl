@@ -135,7 +135,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, TypInfo,
-  JclStrings,
+  JclStrings, JvJCLUtils,
   JvTypes, JvConsts, JvResources;
 
 const
@@ -143,42 +143,6 @@ const
   cCount = 'Count';
   cEmptyPath = 'EmptyPath';
 
-function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
-var
-  P: PChar;
-begin
-  if Odd(Length(Value)) then
-    Value := cNullDigit + Value;
-  if (Length(Value) div 2) < BufSize then
-    BufSize := Length(Value) div 2;
-  Result := 0;
-  P := PChar(Value);
-  while (BufSize > 0) do
-  begin
-    PChar(Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
-    Inc(Result);
-    Dec(BufSize);
-    Inc(P, 2);
-  end;
-end;
-
-function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
-var
-  P: PChar;
-  S: string;
-begin
-  SetLength(Result, BufSize * 2);
-  P := PChar(Result);
-  Inc(P, (BufSize - 1) * 2); // Point to end of string ^
-  while BufSize > 0 do
-  begin
-    S := IntToHex(Ord(PChar(Buf)[BufSize]), 2);
-    P[0] := S[1];
-    P[1] := S[2];
-    Dec(P, 2);
-    Dec(BufSize);
-  end;
-end;
 
 //=== { TJvAppXMLStorageOptions } ===================================================
 

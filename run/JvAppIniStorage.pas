@@ -52,7 +52,7 @@ type
     property PreserveLeadingTrailingBlanks: Boolean
       read FPreserveLeadingTrailingBlanks
       write SetPreserveLeadingTrailingBlanks default false;
-    property FloatAsString default true;
+    property FloatAsString default false;
   end;
 
   // Storage to INI file, all in memory. This is the base class
@@ -136,6 +136,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils,
+  JvJCLUtils, // BinStrToBuf & BufToBinStr
   JvTypes, JvConsts, JvResources; // JvConsts or PathDelim under D5 and BCB5
 
 const
@@ -145,45 +146,6 @@ const
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
 
-function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
-var
-  P: PChar;
-begin
-  if Odd(Length(Value)) then
-    Value := cNullDigit + Value;
-  if (Length(Value) div 2) < BufSize then
-    BufSize := Length(Value) div 2;
-  Result := 0;
-  Dec(BufSize); // adjust for PChar
-  P := PChar(Value);
-  while BufSize >= 0 do
-  begin
-    PChar(@Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
-    Inc(Result);
-    Dec(BufSize);
-    Inc(P, 2);
-  end;
-end;
-
-function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
-var
-  P: PChar;
-  S: string;
-begin
-  SetLength(Result, BufSize * 2);
-  P := PChar(Result);
-  Dec(BufSize); // adjust for PChar
-  Inc(P, BufSize * 2); // Point to end of string ^
-  while BufSize >= 0 do
-  begin
-    S := IntToHex(Ord(PChar(@Buf)[BufSize]), 2);
-    P[0] := S[1];
-    P[1] := S[2];
-    Dec(P, 2);
-    Dec(BufSize);
-  end;
-end;
-
 
 //=== { TJvAppIniStorageOptions } =========================================
 
@@ -192,7 +154,7 @@ begin
   inherited Create;
   FReplaceCRLF := False;
   FPreserveLeadingTrailingBlanks := False;
-  FloatAsString := true;
+  FloatAsString := False;
 end;
 
 procedure TJvAppIniStorageOptions.SetReplaceCRLF(Value: Boolean);
@@ -351,19 +313,13 @@ var
   Section: string;
   Key: string;
   Value: string;
-//  Value: Extended;
 begin
   SplitKeyPath(Path, Section, Key);
   if ValueExists(Section, Key) then
   begin
-// Temporary Removed until bug is fixed
-//    Value := 0.0;
-//    ReadBinary(Path, @Value, Sizeof(Value));
-//    Result := Value;
     Value := ReadValue(Section, Key);
-    if Value = '' then
-      Value := cNullDigit;
-    Result := StrToFloat(Value);
+    if BinStrToBuf(Value, @Result, SizeOf(Result)) <> SizeOf(Result) then
+      Result := Default;
   end
   else
     Result := Default;
@@ -375,9 +331,7 @@ var
   Key: string;
 begin
   SplitKeyPath(Path, Section, Key);
-  WriteValue(Section, Key, FloatToStr(Value));
-// Temporary Removed until bug is fixed
-//  WriteBinary(Path, @Value, SizeOf(Value));
+  WriteValue(Section, Key, BufToBinStr(@Value, SizeOf(Value)));
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
