@@ -59,9 +59,8 @@ uses
   {$IFDEF USE_JV_GIF}
   JvGIF, JvGIFCtrl,
   {$ENDIF USE_JV_GIF}
-  JvSlider, JvAnimatedImage, JvSpecialImage,
-  JvPictureEditors, JvAnimatedEditor, JvPictureEditForm,
-  JvIconListForm,
+  JvSlider, JvAnimatedImage, JvSpecialImage, JvPictureEditors,
+  JvAnimatedEditor, JvPictureEditForm, JvIconListForm,
   JvFullColorDialogs, JvFullColorCtrls, JvFullColorEditors,
   JvFullColorSpacesEditors, JvFullColorSpaces;
 
@@ -124,7 +123,6 @@ begin
   RegisterSelectionEditor(TJvFullColorAxisCombo, TJvFullColorSelection);
   {$ENDIF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TJvFullColorSpaceID), nil, '', TJvColorIDEditor);
-
 end;
 
 end.

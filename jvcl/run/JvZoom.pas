@@ -79,7 +79,6 @@ type
     property Color;
     property Enabled;
     property Visible;
-
     property Active: Boolean read FActive write SetActive default True;
     property ZoomLevel: Integer read FZoomLevel write SetZoomLevel default 100;
     property ZoomPercentage:integer read GetZoomPercentage write SetZoomPercentage stored false;
@@ -101,7 +100,6 @@ type
     property OnMouseWheel;
     property OnMouseWheelUp;
     property OnMouseWheelDown;
-
   end;
 
 implementation
@@ -329,7 +327,8 @@ begin
     else
       Invalidate;
   end
-  else if not Enabled then
+  else
+  if not Enabled then
     FLastPoint := Point(MaxLongInt, MaxLongInt);
   Invalidate;
 end;
@@ -390,7 +389,7 @@ end;
 function TJvZoom.GetZoomPercentage: integer;
 begin
   if ZoomLevel <> 0 then
-    Result := trunc((100 / ZoomLevel) * 100)
+    Result := Trunc((100.0 / ZoomLevel) * 100.0)
   else
     Result := 0;
 end;
@@ -398,7 +397,7 @@ end;
 procedure TJvZoom.SetZoomPercentage(const Value: integer);
 begin
   if Value <> 0 then
-    ZoomLevel := trunc((100/Value) * 100);
+    ZoomLevel := Trunc((100.0 / Value) * 100.0);
 end;
 
 procedure TJvZoom.SetCrossHairPicture(const Value: TPicture);
@@ -443,8 +442,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-
-
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

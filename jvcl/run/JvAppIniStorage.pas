@@ -67,19 +67,17 @@ type
     class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
 
     // Replaces all CRLF through "\n"
-    function ReplaceCRLFToSlashN (const Value : string): string;
+    function ReplaceCRLFToSlashN(const Value: string): string;
     // Replaces all "\n" through CRLF
-    function ReplaceSlashNToCRLF (const Value : string): string;
+    function ReplaceSlashNToCRLF(const Value: string): string;
     // Adds " at the beginning and the end
-    function SaveLeadingTrailingBlanks (const Value : string): string;
+    function SaveLeadingTrailingBlanks(const Value: string): string;
     // Removes " at the beginning and the end
-    function RestoreLeadingTrailingBlanks (const Value : string): string;
-
-
+    function RestoreLeadingTrailingBlanks(const Value: string): string;
 
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
-    function DefaultExtension : string; override;
+    function DefaultExtension: string; override;
 
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
@@ -129,13 +127,10 @@ type
     property OnGetFileName;
   end;
 
-
-procedure StorePropertyStoreToIniFile (iPropertyStore : TJvCustomPropertyStore;
-                                       const iFileName : string;
-                                       const iAppStoragePath : string = '');
-procedure LoadPropertyStoreFromIniFile (iPropertyStore : TJvCustomPropertyStore;
-                                        const iFileName : string;
-                                        const iAppStoragePath : string = '');
+procedure StorePropertyStoreToIniFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
+procedure LoadPropertyStoreFromIniFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
 
 implementation
 
@@ -175,7 +170,6 @@ begin
   FPreserveLeadingTrailingBlanks := Value;
 end;
 
-
 //=== { TJvCustomAppIniStorage } =============================================
 
 constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
@@ -193,73 +187,77 @@ begin
 end;
 
 // Replaces all CRLF through "\n"
-function TJvCustomAppIniStorage.ReplaceCRLFToSlashN (const Value : string): string;
+function TJvCustomAppIniStorage.ReplaceCRLFToSlashN(const Value: string): string;
 begin
-  Result := StringReplace (Value, '\', '\\', [rfReplaceAll]);
-  Result := StringReplace (Result , #13#10, '\n', [rfReplaceAll]);
-  Result := StringReplace (Result , #10, '\n', [rfReplaceAll]);
-  Result := StringReplace (Result , #13, '\n', [rfReplaceAll]);
+  Result := StringReplace(Value, '\', '\\', [rfReplaceAll]);
+  Result := StringReplace(Result , #13#10, '\n', [rfReplaceAll]);
+  Result := StringReplace(Result , #10, '\n', [rfReplaceAll]);
+  Result := StringReplace(Result , #13, '\n', [rfReplaceAll]);
 end;
 
 // Replaces all "\n" through CRLF
-function TJvCustomAppIniStorage.ReplaceSlashNToCRLF (const Value : string): string;
+function TJvCustomAppIniStorage.ReplaceSlashNToCRLF(const Value: string): string;
 var
-  p : Integer;
-  c1,c2 : String;
+  P: Integer;
+  C1, C2: Char;
 
-  function GetNext : Boolean;
+  function GetNext: Boolean;
   begin
-    c1 := Copy(Value, p, 1);
-    c2 := Copy(Value, p+1, 1);
-    Inc(p);
-    Result := c1 <> '';
+    Result := Length(Value) >= P;
+    if Result then
+    begin
+      C1 := Value[P];
+      C2 := Value[P + 1];
+    end;
+    Inc(P);
   end;
 
 begin
-  p := 1;
-  c1 := '';
-  c2 := '';
+  P := 1;
+  C1 := #0;
+  C2 := #0;
   while GetNext do
   begin
-    if (c1 = '\') and (c2 = '\') then
+    if (C1 = '\') and (C2 = '\') then
     begin
-      Result := Result + c1;
-      Inc(p);
-    end
-    else if (c1 = '\') and (c2 = 'n') then
-    begin
-      Result := Result + #13#10;
-      Inc(p);
+      Result := Result + C1;
+      Inc(P);
     end
     else
-      Result := Result + c1;
+    if (C1 = '\') and (C2 = 'n') then
+    begin
+      Result := Result + #13#10;
+      Inc(P);
+    end
+    else
+      Result := Result + C1;
   end;
 end;
 
 // Adds " at the beginning and the end
-function TJvCustomAppIniStorage.SaveLeadingTrailingBlanks (const Value : string): string;
+function TJvCustomAppIniStorage.SaveLeadingTrailingBlanks(const Value: string): string;
 var
-  c1, cl : ShortString;
+  C1, C2: Char;
 begin
   if Value = '' then
     Result := ''
   else
   begin
-    c1 := Copy (Value, 1, 1);
-    cl := Copy (Value, Length(Value) ,1);
-    if (c1 = ' ') or (cl = ' ') or
-       ((c1 = '"') and (cl = '"')) then
-      Result := '"'+Value+'"'
+    C1 := Value[1];
+    C2 := Value[Length(Value)];
+    if (C1 = ' ') or (C2 = ' ') or
+      ((C1 = '"') and (C2 = '"')) then
+      Result := '"' + Value + '"'
     else
       Result := Value;
   end;
 end;
 
 // Removes " at the beginning and the end
-function TJvCustomAppIniStorage.RestoreLeadingTrailingBlanks (const Value : string): string;
+function TJvCustomAppIniStorage.RestoreLeadingTrailingBlanks(const Value: string): string;
 begin
-  if (Copy(Value, 1,1) = '"') and (Copy(Value, Length(Value),1) = '"') then
-    Result := Copy (Value, 2, Length(Value)-2)
+  if (Value[1] = '"') and (Value[Length(Value)] = '"') then
+    Result := Copy(Value, 2, Length(Value) - 2)
   else
     Result := Value;
 end;
@@ -617,7 +615,7 @@ end;
 
 function TJvCustomAppIniStorage.GetAsString: string;
 var
-  TmpList : TStringList;
+  TmpList: TStringList;
 begin
   TmpList := TStringList.Create;
   try
@@ -641,7 +639,7 @@ begin
   end;
 end;
 
-function TJvCustomAppIniStorage.DefaultExtension : string;
+function TJvCustomAppIniStorage.DefaultExtension: string;
 begin
   Result := 'ini';
 end;
@@ -665,64 +663,61 @@ end;
 
 //=== { Common procedures } ===============================================
 
-procedure StorePropertyStoreToIniFile (iPropertyStore : TJvCustomPropertyStore;
-                                       const iFileName : string;
-                                       const iAppStoragePath : string = '');
-Var
-  AppStorage : TJvAppIniFileStorage;
-  SaveAppStorage : TJvCustomAppStorage;
-  SaveAppStoragePath : string;
+procedure StorePropertyStoreToIniFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
+var
+  AppStorage: TJvAppIniFileStorage;
+  SaveAppStorage: TJvCustomAppStorage;
+  SaveAppStoragePath: string;
 begin
-  if not Assigned(iPropertyStore) then
-    exit;
-  AppStorage := TJvAppIniFileStorage.Create(Nil);
+  if not Assigned(APropertyStore) then
+    Exit;
+  AppStorage := TJvAppIniFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
-    AppStorage.FileName := iFileName;
-    SaveAppStorage := iPropertyStore.AppStorage;
-    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    AppStorage.FileName := AFileName;
+    SaveAppStorage := APropertyStore.AppStorage;
+    SaveAppStoragePath := APropertyStore.AppStoragePath;
     try
-      iPropertyStore.AppStoragePath := iAppStoragePath;
-      iPropertyStore.AppStorage := AppStorage;
-      iPropertyStore.StoreProperties;
+      APropertyStore.AppStoragePath := AAppStoragePath;
+      APropertyStore.AppStorage := AppStorage;
+      APropertyStore.StoreProperties;
     finally
-      iPropertyStore.AppStoragePath := SaveAppStoragePath;
-      iPropertyStore.AppStorage := SaveAppStorage;
+      APropertyStore.AppStoragePath := SaveAppStoragePath;
+      APropertyStore.AppStorage := SaveAppStorage;
     end;
   finally
     AppStorage.Free;
   end;
 end;
 
-procedure LoadPropertyStoreFromIniFile (iPropertyStore : TJvCustomPropertyStore;
-                                        const iFileName : string;
-                                        const iAppStoragePath : string = '');
-Var
-  AppStorage : TJvAppIniFileStorage;
-  SaveAppStorage : TJvCustomAppStorage;
-  SaveAppStoragePath : string;
+procedure LoadPropertyStoreFromIniFile(APropertyStore: TJvCustomPropertyStore;
+  const AFileName: string; const AAppStoragePath: string = '');
+var
+  AppStorage: TJvAppIniFileStorage;
+  SaveAppStorage: TJvCustomAppStorage;
+  SaveAppStoragePath: string;
 begin
-  if not Assigned(iPropertyStore) then
-    exit;
-  AppStorage := TJvAppIniFileStorage.Create(Nil);
+  if not Assigned(APropertyStore) then
+    Exit;
+  AppStorage := TJvAppIniFileStorage.Create(nil);
   try
     AppStorage.Location := flCustom;
-    AppStorage.FileName := iFileName;
-    SaveAppStorage := iPropertyStore.AppStorage;
-    SaveAppStoragePath := iPropertyStore.AppStoragePath;
+    AppStorage.FileName := AFileName;
+    SaveAppStorage := APropertyStore.AppStorage;
+    SaveAppStoragePath := APropertyStore.AppStoragePath;
     try
-      iPropertyStore.AppStoragePath := iAppStoragePath;
-      iPropertyStore.AppStorage := AppStorage;
-      iPropertyStore.LoadProperties;
+      APropertyStore.AppStoragePath := AAppStoragePath;
+      APropertyStore.AppStorage := AppStorage;
+      APropertyStore.LoadProperties;
     finally
-      iPropertyStore.AppStoragePath := SaveAppStoragePath;
-      iPropertyStore.AppStorage := SaveAppStorage;
+      APropertyStore.AppStoragePath := SaveAppStoragePath;
+      APropertyStore.AppStorage := SaveAppStorage;
     end;
   finally
     AppStorage.Free;
   end;
 end;
-
 
 {$IFDEF UNITVERSIONING}
 const

@@ -41,11 +41,11 @@ unit CfgMgr32;
 
 interface
 
-{$WEAKPACKAGEUNIT ON}
-
 uses
   Windows,
   Cfg, WinConvTypes, SetupApi;
+
+{$WEAKPACKAGEUNIT ON}
 
 // (rom) this is the switch to change between static and dynamic linking.
 // (rom) it is enabled by default here.

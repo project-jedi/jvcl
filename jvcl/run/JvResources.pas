@@ -387,7 +387,6 @@ resourcestring
   RsRefreshHint = 'Refresh';
   RsENoFieldsDefined = 'No fields defined';
 
-  
 //=== JvCsvData.pas ==========================================================
 resourcestring
   RsErrorRowItem = '<ERROR>';
@@ -1305,7 +1304,6 @@ resourcestring
 //=== JvMemoryDataset.pas ====================================================
 resourcestring
   RsEMemNoRecords = 'No data found';
-  //----------------- Added by CFZ ------------------
   // 'Registro ya existente.';
   RsERecordDuplicate = 'Record already exists.';
   // 'Registro no encontrado.';
@@ -1316,7 +1314,6 @@ resourcestring
   RsEUpdateError = 'Unable to modify the record.';
   // 'No se pudo eliminar el registro.';
   RsEDeleteError = 'Unable to erase the record.';
-  //-------------------------------------------------
 
 //=== JvMouseGesture.pas =====================================================
 resourcestring
@@ -2128,16 +2125,16 @@ resourcestring
 
 //=== JvFullColorSpaces.pas =========================================================
 resourcestring
-  RsErr_NoTypeInfo         = 'The class %s contains no run time type info'+sLineBreak+
-                             '"Class in module" test cannot be executed';
-  RsErr_UnnamedAxis        = 'Unnamed Color Axis';
-  RsErr_UnnamedSpace       = 'Unnamed Color Space';
-  RsErr_UCS                = 'UCS';
-  RsErr_NoName             = 'No Name';
-  RsErr_CSNotFound         = 'Color Space not found: %d';
-  RsErr_IllegalID          = 'Color Space ID %d is illegal';
-  RsErr_CSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
-  RsErr_InconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
+  RsENoTypeInfo         = 'The class %s contains no run time type info' + sLineBreak +
+    '"Class in module" test cannot be executed';
+  RsEUnnamedAxis        = 'Unnamed Color Axis';
+  RsEUnnamedSpace       = 'Unnamed Color Space';
+  RsEUCS                = 'UCS';
+  RsENoName             = 'No Name';
+  RsECSNotFound         = 'Color Space not found: %d';
+  RsEIllegalID          = 'Color Space ID %d is illegal';
+  RsECSAlreadyExists    = 'Color Space Already exists [ID: %d, Name: %s]';
+  RsEInconvertibleColor = 'TColor value $%.8X cannot be converted to TJvFullColor';
 
   RsRGB_Red       = 'Red';
   RsRGB_Green     = 'Green';
@@ -2221,11 +2218,11 @@ resourcestring
   SExprBadCompare = 'Relational operators require a field and a constant';
 }
 
+implementation
+
 {$IFNDEF USEJVCL}
   {$UNDEF UNITVERSIONING}
 {$ENDIF ~USEJVCL}
-
-implementation
 
 {$IFDEF UNITVERSIONING}
 uses

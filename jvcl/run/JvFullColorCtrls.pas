@@ -268,7 +268,7 @@ type
     property OnColorSpaceChange: TNotifyEvent read FOnColorSpaceChange write FOnColorSpaceChange;
   end;
 
-  TJvCursorPoints = array [0..2] of TPoint;
+  TJvCursorPoints = array[0..2] of TPoint;
 
   TJvFullColorTrackBar = class(TJvFullColorComponent)
   private
@@ -320,7 +320,8 @@ type
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 9;
     property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition default apNormal;
-    property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation default coNormal;
+    property ColorOrientation: TJvFullColorOrientation read FColorOrientation write SetColorOrientation default
+      coNormal;
     property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
     property BarWidth: Integer read FBarWidth write SetBarWidth default 10;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
@@ -361,7 +362,9 @@ type
   protected
     procedure Paint; override;
     procedure CalcSize;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean);
+    {$IFDEF COMPILER6_UP} override;
+    {$ENDIF COMPILER6_UP}
     procedure GraphicChange(Sender: TObject);
     procedure SetName(const Value: TComponentName); override;
   public
@@ -584,7 +587,7 @@ type
     property OnStartDrag;
   end;
 
-  TJvFullColorArray = array [0..MaxListSize - 1] of TJvFullColor;
+  TJvFullColorArray = array[0..MaxListSize - 1] of TJvFullColor;
   PJvFullColorArray = ^TJvFullColorArray;
 
   TJvFullColorListOperation = (foAllChanged, foDeleted, foAdded, foChanged);
@@ -637,7 +640,7 @@ type
   end;
 
   TJvFullColorEdge = (feRaised, feLowered, feFlat);
-  TJvFormatHintEvent = procedure (Sender: TObject; HintColor: TJvFullColor;
+  TJvFormatHintEvent = procedure(Sender: TObject; HintColor: TJvFullColor;
     var HintText: string) of object;
 
   TJvFullColorGroup = class(TCustomControl)
@@ -665,7 +668,7 @@ type
     procedure SetSelectedIndex(const Value: Integer);
     procedure SetBrush(const Value: TBrush);
     procedure MouseLeave(var Msg: TWMMouse); message WM_MOUSELEAVE;
-    procedure CMHintShow(var Message: TMessage); message CM_HINTSHOW;
+    procedure CMHintShow(var Msg: TMessage); message CM_HINTSHOW;
   protected
     procedure Paint; override;
     procedure ItemsChange(Sender: TObject; Index: Integer;
@@ -872,8 +875,8 @@ begin
   begin
     OldColor := FFullColor;
     NewColorID := ColorSpaceManager.GetColorSpaceID(Value);
-    if (NewColorID=csDEF) then
-      raise EJvFullColorError.CreateFmt(Rs_EUnsupportedColorSpace,[NewColorID]);
+    if (NewColorID = csDEF) then
+      raise EJvFullColorError.CreateFmt(Rs_EUnsupportedColorSpace, [NewColorID]);
     OldColorID := ColorSpaceManager.GetColorSpaceID(OldColor);
     FFullColor := Value;
     if OldColorID <> ColorSpaceManager.GetColorSpaceID(FFullColor) then
@@ -1915,56 +1918,56 @@ procedure TJvFullColorCircle.InvalidateColors(AColor1, AColor2: TJvFullColor);
 var
   AxisX, AxisY: TJvAxisIndex;
   APosition1,
-  APosition2:TPoint;
-  ARect:TRect;
-  CenterX, CenterY:Integer;
+    APosition2: TPoint;
+  ARect: TRect;
+  CenterX, CenterY: Integer;
 begin
   AxisX := GetIndexAxisX(AxisConfig);
   AxisY := GetIndexAxisY(AxisConfig);
 
   if (GetAxisValue(AColor1, AxisX) <> GetAxisValue(AColor2, AxisX)) or
-     (GetAxisValue(AColor1, AxisY) <> GetAxisValue(AColor2, AxisY)) then
+    (GetAxisValue(AColor1, AxisY) <> GetAxisValue(AColor2, AxisY)) then
   begin
-    APosition1:=FullColorToPosition(AColor1);
-    APosition2:=FullColorToPosition(AColor2);
-    if APosition1.X<APosition2.X then
+    APosition1 := FullColorToPosition(AColor1);
+    APosition2 := FullColorToPosition(AColor2);
+    if APosition1.X < APosition2.X then
     begin
-      ARect.Left:=APosition1.X;
-      ARect.Right:=APosition2.X;
+      ARect.Left := APosition1.X;
+      ARect.Right := APosition2.X;
     end
     else
     begin
-      ARect.Left:=APosition2.X;
-      ARect.Right:=APosition1.X;
+      ARect.Left := APosition2.X;
+      ARect.Right := APosition1.X;
     end;
-    if APosition1.Y<APosition2.Y then
+    if APosition1.Y < APosition2.Y then
     begin
-      ARect.Top:=APosition1.Y;
-      ARect.Bottom:=APosition2.Y;
+      ARect.Top := APosition1.Y;
+      ARect.Bottom := APosition2.Y;
     end
     else
     begin
-      ARect.Top:=APosition2.Y;
-      ARect.Bottom:=APosition1.Y;
+      ARect.Top := APosition2.Y;
+      ARect.Bottom := APosition1.Y;
     end;
 
-    CenterX:=Width div 2;
-    CenterY:=Height div 2;
-    if (ARect.Left>CenterX) then
-      ARect.Left:=CenterX;
-    if (ARect.Top>CenterY) then
-      ARect.Top:=CenterY;
-    if (ARect.Right<CenterX) then
-      ARect.Right:=CenterX;
-    if (ARect.Bottom<CenterY) then
-      ARect.Bottom:=CenterY;
+    CenterX := Width div 2;
+    CenterY := Height div 2;
+    if (ARect.Left > CenterX) then
+      ARect.Left := CenterX;
+    if (ARect.Top > CenterY) then
+      ARect.Top := CenterY;
+    if (ARect.Right < CenterX) then
+      ARect.Right := CenterX;
+    if (ARect.Bottom < CenterY) then
+      ARect.Bottom := CenterY;
 
-    ARect.Left:=ARect.Left-CrossStyle.Width;
-    ARect.Top:=ARect.Top-CrossStyle.Width;
-    ARect.Right:=ARect.Right+CrossStyle.Width+(2*CrossSize);
-    ARect.Bottom:=ARect.Bottom+CrossStyle.Width+(2*CrossSize);
+    ARect.Left := ARect.Left - CrossStyle.Width;
+    ARect.Top := ARect.Top - CrossStyle.Width;
+    ARect.Right := ARect.Right + CrossStyle.Width + (2 * CrossSize);
+    ARect.Bottom := ARect.Bottom + CrossStyle.Width + (2 * CrossSize);
 
-    InvalidateRect(Handle,@ARect,False);
+    InvalidateRect(Handle, @ARect, False);
   end;
 end;
 
@@ -1984,7 +1987,7 @@ begin
     FColorChanging := False;
   end;
 
-  InvalidateColors(OldColor,FullColor);
+  InvalidateColors(OldColor, FullColor);
 
   if ColorSpaceManager.GetColorSpaceID(OldColor) <> ColorSpaceManager.GetColorSpaceID(FullColor) then
     CalcSize;
@@ -2006,7 +2009,7 @@ begin
     FColorChanging := False;
   end;
 
-  InvalidateColors(OldColor,BlueColor);
+  InvalidateColors(OldColor, BlueColor);
 
   if Assigned(FOnBlueColorChange) then
     FOnBlueColorChange(Self);
@@ -2050,7 +2053,7 @@ begin
     FColorChanging := False;
   end;
 
-  InvalidateColors(OldColor,RedColor);
+  InvalidateColors(OldColor, RedColor);
 
   if Assigned(FOnRedColorChange) then
     FOnRedColorChange(Self);
@@ -2489,7 +2492,8 @@ begin
       if Orientation = trVertical then
         PosZ := FBuffer.Height - PosZ - 1 + AxisMin[AxisZ];
     end
-    else PosZ := PosZ - AxisMin[AxisZ];
+    else
+      PosZ := PosZ - AxisMin[AxisZ];
     Inc(PosZ, ArrowWidth);
   end;
 
@@ -2750,8 +2754,8 @@ begin
   if Value <> FullColor then
   begin
     AxisZ := GetIndexAxisZ(AxisConfig);
-    OldValueZ := GetAxisValue(FullColor,AxisZ);
-    NewValueZ := GetAxisValue(Value,AxisZ);
+    OldValueZ := GetAxisValue(FullColor, AxisZ);
+    NewValueZ := GetAxisValue(Value, AxisZ);
     if NewValueZ <> OldValueZ then
       InvalidateCursor;
     if FullColorDrawing then
@@ -2763,10 +2767,11 @@ begin
         UpdateDefaultValueX;
       if ValueYAuto then
         UpdateDefaultValueY;
-      if (ValueX<>OldValueX) or (ValueY<>OldValueY) then
+      if (ValueX <> OldValueX) or (ValueY <> OldValueY) then
         WantDrawBuffer := True;
     end
-    else inherited SetFullColor(Value);
+    else
+      inherited SetFullColor(Value);
     if NewValueZ <> OldValueZ then
       InvalidateCursor;
   end;
@@ -2881,7 +2886,8 @@ begin
     end;
     AdjustSize;
   end
-  else Invalidate;
+  else
+    Invalidate;
 end;
 
 procedure TJvFullColorLabel.GraphicChange(Sender: TObject);
@@ -2935,13 +2941,11 @@ begin
           TextLeft := (Width - TextWidth(FCaption)) div 2;
           TextTop := 0;
         end;
-      else
-        begin
-          ShapeLeft := 0;
-          ShapeTop := 0;
-          TextLeft := 0;
-          TextTop := 0;
-        end;
+    else
+      ShapeLeft := 0;
+      ShapeTop := 0;
+      TextLeft := 0;
+      TextTop := 0;
     end;
     case FShapeType of
       stRectangle..stSquare:
@@ -3130,7 +3134,7 @@ var
   Index: Integer;
   LColorSpace: TJvColorSpace;
   OldColorID: TJvFullColorSpaceID;
-  ACaption:string;
+  ACaption: string;
 begin
   OldColorID := ColorSpaceID;
   with ColorSpaceManager, Items do
@@ -3205,7 +3209,7 @@ end;
 
 function TJvFullColorAxisCombo.GetSelected: TJvFullColorAxisConfig;
 begin
-  if ItemIndex=-1 then
+  if ItemIndex = -1 then
     Result := acXYZ
   else
     Result := TJvFullColorAxisConfig(ItemIndex);
@@ -3462,7 +3466,7 @@ begin
   Writer.WriteListEnd;
 end;
 
-//=== { TFullColorGroup } ===================================================
+//=== { TFullColorGroup } ====================================================
 
 constructor TJvFullColorGroup.Create(AOwner: TComponent);
 begin
@@ -3557,7 +3561,7 @@ begin
   Refresh;
 end;
 
-procedure TJvFullColorGroup.CMHintShow(var Message: TMessage);
+procedure TJvFullColorGroup.CMHintShow(var Msg: TMessage);
 var
   AHintInfo: PHintInfo;
   Sum, XPos, YPos, XInc, YInc, Index: Integer;
@@ -3567,95 +3571,97 @@ var
   AColorID: TJvFullColorSpaceID;
   AColorSpace: TJvColorSpace;
 begin
-  AHintInfo:=PHintInfo(Message.LParam);
+  AHintInfo := PHintInfo(Msg.LParam);
   ColorIndex := -1;
 
-  CalcRects(XPos,YPos,XInc,YInc);
+  CalcRects(XPos, YPos, XInc, YInc);
 
   Sum := YPos;
   with AHintInfo^, CursorPos, CursorRect do
     for Index := 0 to RowCount - 1 do
-  begin
-    if Y < Sum then
     begin
-      Top := Max(0,Sum-YInc);
-      Bottom := Sum;
-      Break;
-    end
-    else if (Y >= Sum) and (Y < (Sum+FSquareSize)) then
-    begin
-      Top := Sum;
-      Bottom := Sum+FSquareSize;
-      ColorIndex := Index * ColCount;
-      Break;
+      if Y < Sum then
+      begin
+        Top := Max(0, Sum - YInc);
+        Bottom := Sum;
+        Break;
+      end
+      else
+      if (Y >= Sum) and (Y < (Sum + FSquareSize)) then
+      begin
+        Top := Sum;
+        Bottom := Sum + FSquareSize;
+        ColorIndex := Index * ColCount;
+        Break;
+      end;
+      Inc(Sum, FSquareSize + YInc);
     end;
-    Inc(Sum, FSquareSize + YInc);
-  end;
 
   Sum := XPos;
   with AHintInfo^, CursorPos, CursorRect do
     for Index := 0 to ColCount do
-           // not -1 because of last space after the colcount - 1 
-  begin
-    if X < Sum then
+      // not -1 because of last space after the colcount - 1
     begin
-      Left := Max(0,Sum-XInc);
-      Right := Sum;
-      ColorIndex := -1;
-      Break;
-    end
-    else if (X >= Sum) and (X < (Sum+FSquareSize)) then
-    begin
-      Left := Sum;
-      Right := Sum+FSquareSize;
-      if (ColorIndex<>-1) then
-        ColorIndex := ColorIndex + Index;
-      Break;
-    end;
-    Inc(Sum, FSquareSize + XInc);
-  end;
-
-  if (ColorIndex >= Items.Count) then
-    ColorIndex := -1;
-
-  if (ColorIndex>-1) then
-    with ColorSpaceManager do
-  begin
-    AFullColor := Items.Items[ColorIndex];
-    AColorID := GetColorSpaceID(AFullColor);
-    AColorSpace := ColorSpace[AColorID];
-
-    if AColorSpace.ID = csDEF then
-      with TJvDEFColorSpace(AColorSpace) do
-    begin
-      AColor := ConvertToColor(AFullColor);
-      for Index := 0 to ColorCount-1 do
-        if AColor = ColorValue[Index] then
+      if X < Sum then
       begin
-        AHintInfo.HintStr := Format('FullColor : %.8x'+sLineBreak+
-                                    'ColorSpace : %s (%d)'+sLineBreak+
-                                    'Name : %s'+sLineBreak+
-                                    'Pretty name : %s',[AFullColor, AColorSpace.Name,
-                                    AColorID,ColorName[Index],ColorPrettyName[Index]]);
+        Left := Max(0, Sum - XInc);
+        Right := Sum;
+        ColorIndex := -1;
+        Break;
+      end
+      else
+      if (X >= Sum) and (X < Sum + FSquareSize) then
+      begin
+        Left := Sum;
+        Right := Sum + FSquareSize;
+        if (ColorIndex <> -1) then
+          ColorIndex := ColorIndex + Index;
         Break;
       end;
-    end
-    else
-      AHintInfo.HintStr := Format('FullColor : %.8x, ColorSpace : %s (%d)'+sLineBreak+
-                                  'Axis %s = %d'+sLineBreak+
-                                  'Axis %s = %d'+sLineBreak+
-                                  'Axis %s = %d',[AFullColor,AColorSpace.Name,AColorID,
-                                  AColorSpace.AxisName[axIndex0],GetAxisValue(AFullColor,axIndex0),
-                                  AColorSpace.AxisName[axIndex1],GetAxisValue(AFullColor,axIndex1),
-                                  AColorSpace.AxisName[axIndex2],GetAxisValue(AFullColor,axIndex2)]);
+      Inc(Sum, FSquareSize + XInc);
+    end;
 
-    if Assigned(FOnFormatHint) then
-      FOnFormatHint(Self,AFullColor,AHintInfo.HintStr);
-  end
+  if ColorIndex >= Items.Count then
+    ColorIndex := -1;
+
+  if ColorIndex > -1 then
+    with ColorSpaceManager do
+    begin
+      AFullColor := Items.Items[ColorIndex];
+      AColorID := GetColorSpaceID(AFullColor);
+      AColorSpace := ColorSpace[AColorID];
+
+      if AColorSpace.ID = csDEF then
+        with TJvDEFColorSpace(AColorSpace) do
+        begin
+          AColor := ConvertToColor(AFullColor);
+          for Index := 0 to ColorCount - 1 do
+            if AColor = ColorValue[Index] then
+            begin
+              AHintInfo.HintStr := Format('FullColor : %.8x' + sLineBreak +
+                'ColorSpace : %s (%d)' + sLineBreak +
+                'Name : %s' + sLineBreak +
+                'Pretty name : %s', [AFullColor, AColorSpace.Name,
+                AColorID, ColorName[Index], ColorPrettyName[Index]]);
+              Break;
+            end;
+        end
+      else
+        AHintInfo.HintStr := Format('FullColor : %.8x, ColorSpace : %s (%d)' + sLineBreak +
+          'Axis %s = %d' + sLineBreak +
+          'Axis %s = %d' + sLineBreak +
+          'Axis %s = %d', [AFullColor, AColorSpace.Name, AColorID,
+          AColorSpace.AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
+            AColorSpace.AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
+            AColorSpace.AxisName[axIndex2], GetAxisValue(AFullColor, axIndex2)]);
+
+      if Assigned(FOnFormatHint) then
+        FOnFormatHint(Self, AFullColor, AHintInfo.HintStr);
+    end
   else
     AHintInfo.HintStr := Hint;
 
-  Message.Result:=0;
+  Msg.Result := 0;
 end;
 
 procedure TJvFullColorGroup.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -3942,7 +3948,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 

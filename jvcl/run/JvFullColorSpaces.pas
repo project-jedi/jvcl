@@ -462,14 +462,15 @@ begin
   AIndex := PrettyNameStrings.IndexOf(Value);
   if AIndex <> -1 then
     Result := TColor(PrettyNameStrings.Objects[AIndex])
-  else if IdentToColor(Value,TempResult) then
+  else
+  if IdentToColor(Value,TempResult) then
     Result := TempResult
   else
     Result := clNone;
 end;
 {$ELSE COMPILER6_UP}
 var
-  TempResult: LongInt;
+  TempResult: Longint;
 begin
   if IdentToColor(Value,TempResult) then
     Result := TempResult
@@ -540,7 +541,7 @@ begin
   if (ColorID >= csMIN) and (ColorID <= csMAX) then
     FID := ColorID
   else
-    raise EJvColorSpaceError.CreateResFmt(@RsErr_IllegalID, [Ord(ColorID)]);
+    raise EJvColorSpaceError.CreateResFmt(@RsEIllegalID, [Ord(ColorID)]);
 end;
 
 function TJvColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
@@ -578,17 +579,17 @@ end;
 
 function TJvColorSpace.GetAxisName(Index: TJvAxisIndex): string;
 begin
-  Result := RsErr_UnnamedAxis;
+  Result := RsEUnnamedAxis;
 end;
 
 function TJvColorSpace.GetName: string;
 begin
-  Result := RsErr_UnnamedSpace;
+  Result := RsEUnnamedSpace;
 end;
 
 function TJvColorSpace.GetShortName: string;
 begin
-  Result := RsErr_UCS;
+  Result := RsEUCS;
 end;
 
 //=== { TJvRGBColorSpace } ===================================================
@@ -1543,36 +1544,41 @@ begin
   if NewColor = clNone then
     // mark it as clNone
     Result := Result or JvSpecialFullColorMask
-  else if NewColor = clDefault then
+  else
+  if NewColor = clDefault then
     // mark it as clDefault
     Result := Result or JvSpecialFullColorMask
-  else if ((NewColor and JvSystemColorMask)=JvSystemColorMask) then
+  else
+  if (NewColor and JvSystemColorMask) = JvSystemColorMask then
     // mark it as predefined color
     Result := Result or JvSystemFullColorMask
 
-  else if ((NewColor and JvSystemColorMask)=0) then
+  else
+  if (NewColor and JvSystemColorMask) = 0 then
     Result := ColorSpaceManager.ColorSpace[csRGB].ConvertFromColor(NewColor)
     // should never happend because there should be no way ...
-  else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
-                                              [Cardinal(NewColor)]);
+  else
+    raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(NewColor)]);
 end;
 
 function TJvDEFColorSpace.ConvertToColor(AColor: TJvFullColor): TColor;
 begin
   Result := inherited ConvertToColor(AColor);
-  case (AColor and JvSubFullColorMask) of
+  case AColor and JvSubFullColorMask of
     JvSystemFullColorMask:
       Result := Cardinal(Result) or JvSystemColorMask;
-    JvSpecialFullColorMask: begin
-         if Result = (clNone and $FFFFFF) then
-           Result := clNone
-         else if Result = (clDefault and $FFFFFF) then
-           Result := clDefault
-         else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
-                                                    [Cardinal(AColor)]);
+    JvSpecialFullColorMask:
+      begin
+       if Result = (clNone and $FFFFFF) then
+         Result := clNone
+       else
+       if Result = (clDefault and $FFFFFF) then
+         Result := clDefault
+       else
+         raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);
        end;
-    else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
-                                               [Cardinal(AColor)]);
+    else
+      raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);
   end;
 end;
 
@@ -1656,13 +1662,14 @@ var
   MaskedColor:Cardinal;
 begin
   MaskedColor := Cardinal(AColor) and JvSystemColorMask;
-  if   (AColor = clNone) or (AColor = clDefault)
-    or (MaskedColor=JvSystemColorMask) then
+  if (AColor = clNone) or (AColor = clDefault) or
+    (MaskedColor = JvSystemColorMask) then
     Result := ColorSpace[csDEF].ConvertFromColor(AColor)
-  else if (MaskedColor=0) then
+  else
+  if MaskedColor = 0 then
     Result := ColorSpace[csRGB].ConvertFromColor(AColor)
-  else raise EJvColorSpaceError.CreateResFmt(@RsErr_InconvertibleColor,
-                                              [Cardinal(AColor)]);
+  else
+    raise EJvColorSpaceError.CreateResFmt(@RsEInconvertibleColor, [Cardinal(AColor)]);
 end;
 
 function TJvColorSpaceManager.GetColorSpaceID(AColor: TJvFullColor): TJvFullColorSpaceID;
@@ -1673,7 +1680,7 @@ begin
   for I := 0 to Count - 1 do
     if ColorSpaceByIndex[I].ID = Result then
       Exit;
-  raise EJvColorSpaceError.CreateResFmt(@RsErr_IllegalID, [Ord(Result)]);
+  raise EJvColorSpaceError.CreateResFmt(@RsEIllegalID, [Ord(Result)]);
 end;
 
 function TJvColorSpaceManager.GetColorSpace(ID: TJvFullColorSpaceID): TJvColorSpace;
@@ -1688,7 +1695,7 @@ begin
       Break;
   end;
   if Result = nil then
-    raise EJvColorSpaceError.CreateResFmt(@RsErr_CSNotFound, [Ord(ID)]);
+    raise EJvColorSpaceError.CreateResFmt(@RsECSNotFound, [Ord(ID)]);
 end;
 
 function TJvColorSpaceManager.GetCount: Integer;
@@ -1710,11 +1717,7 @@ begin
   begin
     CS := TJvColorSpace(FColorSpaceList.Items[Index]);
     if CS.ID = NewColorSpace.ID then
-      with CS do
-      begin
-        EJvColorSpaceError.CreateFmt(RsErr_CSAlreadyExists, [ID, Name]);
-        Exit;
-      end;
+      raise EJvColorSpaceError.CreateFmt(RsECSAlreadyExists, [CS.ID, CS.Name]);
   end;
   FColorSpaceList.Add(Pointer(NewColorSpace));
 end;
@@ -1722,7 +1725,8 @@ end;
 procedure TJvColorSpaceManager.UnRegisterColorSpace(AColorSpace: TJvColorSpace);
 begin
   // maybe more than one instance of one class
-  while (FColorSpaceList.Remove(AColorSpace)>=0) do ;
+  while FColorSpaceList.Remove(AColorSpace) >= 0 do
+    ;
 end;
 
 {$IFDEF UNITVERSIONING}
@@ -1747,19 +1751,19 @@ initialization
   ColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
   ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
 
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 finalization
   FreeAndNil(GlobalColorSpaceManager);
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   FreeAndNil(GlobalPrettyNameStrings);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
 end.
 

@@ -37,14 +37,12 @@
 
 unit Cfg;
 
-{$WEAKPACKAGEUNIT ON}
-
 interface
-
-{$WEAKPACKAGEUNIT ON}
 
 uses
   Windows;
+
+{$WEAKPACKAGEUNIT ON}
 
 {$HPPEMIT '#include "cfg.h"'}
 
