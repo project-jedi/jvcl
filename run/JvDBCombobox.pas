@@ -44,6 +44,7 @@ type
   private
     FDataLink: TFieldDataLink;
     FPaintControl: TPaintControl;
+    FBeepOnError: Boolean;
     procedure DataChange(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     function GetDataField: string;
@@ -81,6 +82,7 @@ type
     procedure SetItems(const Value: TStrings); override;
     {$ENDIF COMPILER6_UP}
     procedure WndProc(var Msg: TMessage); override;
+    property BeepOnError: Boolean read FBeepOnError write FBeepOnError default False;
     property ComboText: string read GetComboText write SetComboText;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
@@ -116,6 +118,7 @@ type
     property Align; // Polaris
     property Style { must be published before Items }
       default csDropDownList; // Polaris
+    property BeepOnError;
     property Color;
     property DataField;
     property DataSource;
@@ -183,6 +186,7 @@ begin
   FDataLink.OnUpdateData := UpdateData;
   FDataLink.OnEditingChange := EditingChange;
   FPaintControl := TPaintControl.Create(Self, 'COMBOBOX');
+  FBeepOnError := False;
 end;
 
 destructor TJvCustomDBComboBox.Destroy;
@@ -355,7 +359,8 @@ begin
   if (Key in [#32..#255]) and (FDataLink.Field <> nil) and
     not FDataLink.Field.IsValidChar(Key) then
   begin
-    MessageBeep(0);
+    if BeepOnError then
+      MessageBeep(0);
     Key := #0;
   end;
   case Key of

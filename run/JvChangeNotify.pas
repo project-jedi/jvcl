@@ -21,6 +21,9 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A wrapper for the Find[First/Next]ChangeNotification API calls.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
@@ -28,8 +31,6 @@ Known Issues:
 {$I windowsonly.inc}
 
 unit JvChangeNotify;
-
-{A wrapper for the Find[First/Next]ChangeNotification API calls. }
 
 interface
 
@@ -255,7 +256,7 @@ begin
       Add.Assign(TJvChangeItems(Source)[I]);
     Exit;
   end;
-  inherited;
+  inherited Assign(Source);
 end;
 
 //=== TJvChangeNotify ========================================================
@@ -413,11 +414,11 @@ procedure TJvChangeThread.Execute;
 var
   I: Integer;
 begin
-  // (rom) secure thread against exceptions
+  // (rom) secure thread against exceptions (Delphi 5 needs it)
   try
     while not Terminated do
     begin
-      I := WaitForMultipleObjects(FCount, PWOHandleArray(@FNotifyArray), False, FInterval);
+      I := WaitForMultipleObjects(FCount, @FNotifyArray[0], False, FInterval);
       if (I >= 0) and (I < FCount) then
       begin
         try

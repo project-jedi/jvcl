@@ -30,8 +30,7 @@ unit JvHints;
 interface
 
 uses
-  Windows,
-  Messages,
+  Windows, Messages,
   Graphics, Classes, Controls, Forms;
 
 type
@@ -135,6 +134,7 @@ begin
   AFont.Color := clInfoText;
 end;
 
+//=== TJvHintWindow ==========================================================
 
 constructor TJvHintWindow.Create(AOwner: TComponent);
 begin
@@ -174,11 +174,8 @@ var
   P: TPoint;
 
   function CreatePolyRgn(const Points: array of TPoint): HRGN;
-  type
-    PPoints = ^TPoints;
-    TPoints = array [0..0] of TPoint;
   begin
-    Result := CreatePolygonRgn(PPoints(@Points)^, High(Points) + 1, WINDING);
+    Result := CreatePolygonRgn(Points[0], High(Points) + 1, WINDING);
   end;
 
 begin
@@ -256,9 +253,7 @@ begin
     begin
       FImage.Canvas.Brush.Color := Font.Color;
       if (HintStyle = hsRectangle) and not HintTail then
-      begin
-        DrawEdge(FImage.Canvas.Handle, FRect, BDR_RAISEDOUTER, BF_RECT);
-      end
+        DrawEdge(FImage.Canvas.Handle, FRect, BDR_RAISEDOUTER, BF_RECT)
       else
         FrameRgn(FImage.Canvas.Handle, Rgn, FImage.Canvas.Brush.Handle, 1, 1);
     end;
@@ -281,9 +276,8 @@ var
   const
     Flag: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
   begin
-    DrawText(FImage.Canvas.Handle, PChar(Caption),
-      - 1, R, DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment]
-      or DrawTextBiDiModeFlagsReadingOnly);
+    DrawText(FImage.Canvas.Handle, PChar(Caption), -1, R,
+      DT_NOPREFIX or DT_WORDBREAK or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
   end;
 
 begin
@@ -390,8 +384,8 @@ begin
     end;
     if HandleAllocated then
     begin
-      SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0, SWP_HIDEWINDOW or
-        SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOMOVE);
+      SetWindowPos(Handle, HWND_BOTTOM, 0, 0, 0, 0,
+        SWP_HIDEWINDOW or SWP_NOACTIVATE or SWP_NOSIZE or SWP_NOMOVE);
       if Screen.ActiveForm <> nil then
         UpdateWindow(Screen.ActiveForm.Handle);
     end;
@@ -401,15 +395,15 @@ begin
       begin
         Width := RectWidth(BoundsRect);
         Height := RectHeight(BoundsRect);
-        BitBlt(Canvas.Handle, 0, 0, Width, Height, ScreenDC, Rect.Left,
-          Rect.Top, SRCCOPY);
+        BitBlt(Canvas.Handle, 0, 0, Width, Height, ScreenDC,
+          Rect.Left, Rect.Top, SRCCOPY);
       end;
     finally
       ReleaseDC(0, ScreenDC);
     end;
   end;
-  SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, 0,
-    0, SWP_SHOWWINDOW or SWP_NOACTIVATE or SWP_NOSIZE);
+  SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, 0, 0,
+    SWP_SHOWWINDOW or SWP_NOACTIVATE or SWP_NOSIZE);
 end;
 
 function TJvHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
@@ -421,18 +415,18 @@ var
   X, Y, Factor: Double;
 begin
   Result := Rect(0, 0, MaxWidth, 0);
-  DrawText(Canvas.Handle,
-    PChar(AHint),
-    - 1, Result, DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment]
-    or DrawTextBiDiModeFlagsReadingOnly);
+  DrawText(Canvas.Handle, PChar(AHint), -1, Result,
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or DrawTextBiDiModeFlagsReadingOnly);
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;
   FTextRect := Result;
   InflateRect(FTextRect, -1, -1);
   case HintAlignment of
-    taCenter: OffsetRect(FTextRect, -1, 0);
-    taRightJustify: OffsetRect(FTextRect, -4, 0);
+    taCenter:
+      OffsetRect(FTextRect, -1, 0);
+    taRightJustify:
+      OffsetRect(FTextRect, -4, 0);
   end;
   FRoundFactor := Max(6, Min(RectWidth(Result), RectHeight(Result)) div 4);
   if HintStyle = hsRoundRect then

@@ -41,8 +41,7 @@ procedure JvXPCreateGradientRect(const AWidth, AHeight: Integer; const StartColo
   EndColor: TColor; const Colors: TJvXPGradientColors; const Style: TJvXPGradientStyle;
   const Dithered: Boolean; var Bitmap: TBitmap);
 procedure JvXPAdjustBoundRect(const BorderWidth: Byte;
-  const ShowBoundLines: Boolean; const BoundLines: TJvXPBoundLines;
-  var Rect: TRect);
+  const ShowBoundLines: Boolean; const BoundLines: TJvXPBoundLines; var Rect: TRect);
 procedure JvXPDrawBoundLines(const ACanvas: TCanvas; const BoundLines: TJvXPBoundLines;
   const AColor: TColor; const Rect: TRect);
 
@@ -73,7 +72,7 @@ implementation
   Result:    Boolean
 -----------------------------------------------------------------------------}
 
-function JvXPMethodsEqual (const Method1, Method2: TMethod): Boolean;
+function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
   Result := (Method1.Code = Method2.Code) and (Method1.Data = Method2.Data);
 end;

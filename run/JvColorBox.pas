@@ -445,7 +445,7 @@ begin
   if not Enabled then
     Canvas.Pen.Color := clBtnShadow
   else
-    Canvas.Pen.Color := {cl3DDkShadow}clWindowText;
+    Canvas.Pen.Color := clWindowText; // cl3DDkShadow
 
   Rec.Bottom := (Height div 2) + Increment - 1;
   InflateRect(Rec, -4, 0);
@@ -473,13 +473,20 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomDropButton.WMSize(var Msg: TWMSize);
-{$ELSE}
-procedure TJvCustomDropButton.BoundsChanged;
-{$ENDIF VCL}
 begin
   inherited;
   Invalidate;
 end;
+{$ENDIF VCL}
+
+
+{$IFDEF VisualCLX}
+procedure TJvCustomDropButton.BoundsChanged;
+begin
+  inherited BoundsChanged;
+  Invalidate;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvColorSquare.ColorChanged;
 begin

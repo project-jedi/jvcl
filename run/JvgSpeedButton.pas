@@ -188,8 +188,8 @@ begin
 
   if FIsDown then
     OffsetRect(R, 1, 1);
-  DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or
-    DT_CENTER or DT_VCENTER);
+  DrawText(FCanvas.Handle, PChar(Caption), Length(Caption), R,
+    DT_SINGLELINE or DT_CENTER or DT_VCENTER);
 
   R := ClientRect;
   FCanvas.Brush.Color := clBlack;
@@ -205,7 +205,6 @@ begin
       (Height - Glyph.Height) div 2 + Integer(FIsDown),
       fwoNone, fdsDefault,
       True, GetTransparentColor(Glyph, ftcLeftBottomPixel), 0);
-
 end;
 
 procedure TJvgSpeedButton.CMMouseEnter(var Msg: TMessage);
@@ -296,15 +295,18 @@ end;
 
 procedure TJvgSpeedButton.SetDefaultStyle(const Value: Boolean);
 begin
-  FDefaultStyle := Value;
-  Invalidate;
+  if FDefaultStyle <> Value then
+  begin
+    FDefaultStyle := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgSpeedButton.SetEnabled(Value: Boolean);
 begin
   inherited SetEnabled(Value);
   if Assigned(FControl) then
-    FControl.Enabled := Value
+    FControl.Enabled := Value;
 end;
 
 function TJvgSpeedButton.GetEnabled: Boolean;

@@ -85,6 +85,10 @@ uses
   BDEConst, DBConsts, Math,
   JvDBUtils, JvBdeUtils;
 
+const
+ InternalMemTableName1 = '$InMem$';
+ InternalMemTableName2 = '$JvInMem$';
+
 { Memory tables are created in RAM and deleted when you close them. They
   are much faster and are very useful when you need fast operations on
   small tables. Memory tables do not support certain features (like
@@ -193,7 +197,7 @@ begin
   FieldDescs := AllocMem(iFldCount * SizeOf(FLDDesc));
   try
     Check(DbiGetFieldDescs(Handle, FieldDescs));
-    Check(DbiCreateInMemTable(DBHandle, '$InMem$', iFldCount, FieldDescs,
+    Check(DbiCreateInMemTable(DBHandle, InternalMemTableName1, iFldCount, FieldDescs,
       FMoveHandle));
     try
       DisableControls;
@@ -365,7 +369,7 @@ begin
   SetDBFlag(dbfTable, True);
   try
     if TableName = '' then
-      AnsiToNative(Locale, '$JvInMem$', szTblName, SizeOf(szTblName) - 1)
+      AnsiToNative(Locale, InternalMemTableName1, szTblName, SizeOf(szTblName) - 1)
     else
       AnsiToNative(Locale, TableName, szTblName, SizeOf(szTblName) - 1);
     SetLength(FldDescList, iFldCount);

@@ -191,8 +191,7 @@ end;
 procedure TJvDBRichEdit.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (FDataLink <> nil) and
-    (AComponent = DataSource) then
+  if (Operation = opRemove) and (FDataLink <> nil) and (AComponent = DataSource) then
     DataSource := nil;
 end;
 
@@ -305,8 +304,7 @@ end;
 
 procedure TJvDBRichEdit.LoadMemo;
 begin
-  if FMemoLoaded or (FDataLink.Field = nil) or not
-    FDataLink.Field.IsBlob then
+  if FMemoLoaded or (FDataLink.Field = nil) or not FDataLink.Field.IsBlob then
     Exit;
   FUpdating := True;
   try
@@ -395,8 +393,7 @@ begin
   if FFocused <> Value then
   begin
     FFocused := Value;
-    if not Assigned(FDataLink.Field) or not
-      FDataLink.Field.IsBlob then
+    if not Assigned(FDataLink.Field) or not FDataLink.Field.IsBlob then
       FDataLink.Reset;
   end;
 end;
