@@ -9,7 +9,7 @@ Copyright=Copyright (c) 2002 project JEDI. All rights reserved.
 Type=1
 
 [Source Files]
-Count=27
+Count=37
 File0=..\..\jvcl\source\JvAlarms.pas
 File1=..\..\jvcl\source\JvAlignedEdit.pas
 File2=..\..\jvcl\source\JvAlignListbox.pas
@@ -31,18 +31,28 @@ File17=..\..\jvcl\source\JvComponent.pas
 File18=..\..\jvcl\source\JvCustomBox.pas
 File19=..\..\jvcl\source\JvSafeMode.pas
 File20=..\..\jvcl\source\JvScreenCanvas.pas
-File21=..\..\jvcl\source\JvScrollBar.pas
-File22=..\..\jvcl\source\JvScrollBox.pas
-File23=..\..\jvcl\source\JvScrollEvStringGrid.pas
-File24=..\..\jvcl\source\JvScrollingLabel.pas
-File25=..\..\jvcl\source\JvSearchFile.pas
-File26=..\..\jvcl\source\JvShape.pas
+File21=..\..\jvcl\source\JvScreenResolution.pas
+File22=..\..\jvcl\source\JvScrollBar.pas
+File23=..\..\jvcl\source\JvScrollBox.pas
+File24=..\..\jvcl\source\JvScrollEvStringGrid.pas
+File25=..\..\jvcl\source\JvScrollingLabel.pas
+File26=..\..\jvcl\source\JvScrollText.pas
+File27=..\..\jvcl\source\JvSearchFile.pas
+File28=..\..\jvcl\source\JvShape.pas
+File29=..\..\jvcl\source\JvSizeablePanel.pas
+File30=..\..\jvcl\source\JvSlider.pas
+File31=..\..\jvcl\source\JvSoundControl.pas
+File32=..\..\jvcl\source\JvSpacer.pas
+File33=..\..\jvcl\source\JvSpecialImage.pas
+File34=..\..\jvcl\source\JvSpecialProgress.pas
+File35=..\..\jvcl\source\JvSplitter.pas
+File36=..\..\jvcl\source\JvStarfield.pas
 
 [Source Include Directories]
 Count=0
 
 [Description Files]
-Count=42
+Count=52
 File0=JvAlarms.dtx
 File1=JvAlignedEdit.dtx
 File2=JvAlignListbox.dtx
@@ -79,12 +89,22 @@ File32=JvComponent.dtx
 File33=JvCustomBox.dtx
 File34=JvSafeMode.dtx
 File35=JvScreenCanvas.dtx
-File36=JvScrollBar.dtx
-File37=JvScrollBox.dtx
-File38=JvScrollEvStringGrid.dtx
-File39=JvScrollingLabel.dtx
-File40=JvSearchFile.dtx
-File41=JvShape.dtx
+File36=JvScreenResolution.dtx
+File37=JvScrollBar.dtx
+File38=JvScrollBox.dtx
+File39=JvScrollEvStringGrid.dtx
+File40=JvScrollingLabel.dtx
+File41=JvScrollText.dtx
+File42=JvSearchFile.dtx
+File43=JvShape.dtx
+File44=JvSizeablePanel.dtx
+File45=JvSlider.dtx
+File46=JvSoundControl.dtx
+File47=JvSpacer.dtx
+File48=JvSpecialImage.dtx
+File49=JvSpecialProgress.dtx
+File50=JvSplitter.dtx
+File51=JvStarfield.dtx
 
 [Description Include Directories]
 Count=2
