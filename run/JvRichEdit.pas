@@ -418,6 +418,17 @@ type
     procedure Clear; override;
 
     procedure InsertBitmap(ABitmap: TBitmap; const Sizeable: Boolean);
+    // InsertFormatText inserts formatted text at the cursor position given by Index.
+    // If Index < 0, the text is inserted at the current SelStart position.
+    // S is the string to insert
+    // AFont is the font to use. If AFont = nil, then the current attributes at the insertion point are used.
+    // NOTE: this procedure does not reset the attributes after the call, i.e if you change the text color
+    // it will remain that color until you change it again.
+    procedure InsertFormatText(Index: integer; const S: string; const AFont: TFont = nil);
+    // AddFormatText works just like InsertFormatText but always moves the insertion
+    // point to the end of the available text
+    procedure AddFormatText(const S: string; const AFont: TFont = nil);
+
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
     function GetTextRange(StartPos, EndPos: Longint): string;
@@ -586,9 +597,9 @@ uses
 
 const
   RTFConversionFormat: TRichConversionFormat =
-    (ConversionClass: TConversion; Extension: 'rtf'; PlainText: False; Next: nil);
+  (ConversionClass: TConversion; Extension: 'rtf'; PlainText: False; Next: nil);
   TextConversionFormat: TRichConversionFormat =
-    (ConversionClass: TConversion; Extension: 'txt'; PlainText: True; Next: @RTFConversionFormat);
+  (ConversionClass: TConversion; Extension: 'txt'; PlainText: True; Next: @RTFConversionFormat);
 
 var
   ConversionFormatList: PRichConversionFormat = @TextConversionFormat;
@@ -601,13 +612,13 @@ const
   FT_DOWN = 1;
 
   // PARAFORMAT2 wNumberingStyle options
-  PFNS_PAREN     = $0000; // default, e.g., 1)
-  PFNS_PARENS    = $0100; // tomListParentheses/256, e.g., (1)
-  PFNS_PERIOD    = $0200; // tomListPeriod/256, e.g., 1.
-  PFNS_PLAIN     = $0300; // tomListPlain/256, e.g., 1
-  PFNS_NONUMBER  = $0400; // Used for continuation w/o number
+  PFNS_PAREN = $0000; // default, e.g., 1)
+  PFNS_PARENS = $0100; // tomListParentheses/256, e.g., (1)
+  PFNS_PERIOD = $0200; // tomListPeriod/256, e.g., 1.
+  PFNS_PLAIN = $0300; // tomListPlain/256, e.g., 1
+  PFNS_NONUMBER = $0400; // Used for continuation w/o number
   PFNS_NEWNUMBER = $8000; // Start new number with wNumberingStart
-                          // (can be combined with other PFNS_xxx)
+  // (can be combined with other PFNS_xxx)
 
   EM_SETTYPOGRAPHYOPTIONS = (WM_USER + 202);
   EM_GETTYPOGRAPHYOPTIONS = (WM_USER + 203);
@@ -619,27 +630,27 @@ const
   TO_ADVANCEDLAYOUT = 8;
 
   // Underline types. RE 1.0 displays only CFU_UNDERLINE
-  CFU_CF1UNDERLINE             = $FF; // Map charformat's bit underline to CF2
-  CFU_INVERT                   = $FE; // For IME composition fake a selection
-  CFU_UNDERLINETHICKLONGDASH   = 18; // (*) display as dash
-  CFU_UNDERLINETHICKDOTTED     = 17; // (*) display as dot
+  CFU_CF1UNDERLINE = $FF; // Map charformat's bit underline to CF2
+  CFU_INVERT = $FE; // For IME composition fake a selection
+  CFU_UNDERLINETHICKLONGDASH = 18; // (*) display as dash
+  CFU_UNDERLINETHICKDOTTED = 17; // (*) display as dot
   CFU_UNDERLINETHICKDASHDOTDOT = 16; // (*) display as dash dot dot
-  CFU_UNDERLINETHICKDASHDOT    = 15; // (*) display as dash dot
-  CFU_UNDERLINETHICKDASH       = 14; // (*) display as dash
-  CFU_UNDERLINELONGDASH        = 13; // (*) display as dash
-  CFU_UNDERLINEHEAVYWAVE       = 12; // (*) display as wave
-  CFU_UNDERLINEDOUBLEWAVE      = 11; // (*) display as wave
-  CFU_UNDERLINEHAIRLINE        = 10; // (*) display as single
-  CFU_UNDERLINETHICK           = 9;
-  CFU_UNDERLINEWAVE            = 8;
-  CFU_UNDERLINEDASHDOTDOT      = 7;
-  CFU_UNDERLINEDASHDOT         = 6;
-  CFU_UNDERLINEDASH            = 5;
-  CFU_UNDERLINEDOTTED          = 4;
-  CFU_UNDERLINEDOUBLE          = 3; // (*) display as single
-  CFU_UNDERLINEWORD            = 2; // (*) display as single
-  CFU_UNDERLINE                = 1;
-  CFU_UNDERLINENONE            = 0;
+  CFU_UNDERLINETHICKDASHDOT = 15; // (*) display as dash dot
+  CFU_UNDERLINETHICKDASH = 14; // (*) display as dash
+  CFU_UNDERLINELONGDASH = 13; // (*) display as dash
+  CFU_UNDERLINEHEAVYWAVE = 12; // (*) display as wave
+  CFU_UNDERLINEDOUBLEWAVE = 11; // (*) display as wave
+  CFU_UNDERLINEHAIRLINE = 10; // (*) display as single
+  CFU_UNDERLINETHICK = 9;
+  CFU_UNDERLINEWAVE = 8;
+  CFU_UNDERLINEDASHDOTDOT = 7;
+  CFU_UNDERLINEDASHDOT = 6;
+  CFU_UNDERLINEDASH = 5;
+  CFU_UNDERLINEDOTTED = 4;
+  CFU_UNDERLINEDOUBLE = 3; // (*) display as single
+  CFU_UNDERLINEWORD = 2; // (*) display as single
+  CFU_UNDERLINE = 1;
+  CFU_UNDERLINENONE = 0;
 
 type
   PENLink = ^TENLink;
@@ -662,10 +673,10 @@ begin
 end;
 
 const
-  AttrFlags: array [TJvAttributeType] of Word =
-    (0, SCF_SELECTION, SCF_WORD or SCF_SELECTION);
+  AttrFlags: array[TJvAttributeType] of Word =
+  (0, SCF_SELECTION, SCF_WORD or SCF_SELECTION);
 
-//=== TJvTextAttributes ======================================================
+  //=== TJvTextAttributes ======================================================
 
 constructor TJvTextAttributes.Create(AOwner: TJvCustomRichEdit;
   AttributeType: TJvAttributeType);
@@ -1197,8 +1208,7 @@ begin
   begin
     if (dwEffects and CFE_SUBSCRIPT) <> 0 then
       Result := ssSubscript
-    else
-    if (dwEffects and CFE_SUPERSCRIPT) <> 0 then
+    else if (dwEffects and CFE_SUPERSCRIPT) <> 0 then
       Result := ssSuperscript;
   end;
 end;
@@ -1272,8 +1282,7 @@ var
 begin
   if Source is TFont then
     AssignFont(TFont(Source))
-  else
-  if Source is TTextAttributes then
+  else if Source is TTextAttributes then
   begin
     Name := TTextAttributes(Source).Name;
     Charset := TTextAttributes(Source).Charset;
@@ -1281,8 +1290,7 @@ begin
     Pitch := TTextAttributes(Source).Pitch;
     Color := TTextAttributes(Source).Color;
   end
-  else
-  if Source is TJvTextAttributes then
+  else if Source is TJvTextAttributes then
   begin
     TJvTextAttributes(Source).GetAttributes(Format);
     SetAttributes(Format);
@@ -1302,8 +1310,7 @@ begin
     TFont(Dest).Size := Size;
     TFont(Dest).Pitch := Pitch;
   end
-  else
-  if Dest is TTextAttributes then
+  else if Dest is TTextAttributes then
   begin
     TTextAttributes(Dest).Color := Color;
     TTextAttributes(Dest).Name := Name;
@@ -1347,8 +1354,7 @@ begin
     if FRichEdit.UseRightToLeftAlignment then
       if Paragraph.wAlignment = PFA_LEFT then
         Paragraph.wAlignment := PFA_RIGHT
-      else
-      if Paragraph.wAlignment = PFA_RIGHT then
+      else if Paragraph.wAlignment = PFA_RIGHT then
         Paragraph.wAlignment := PFA_LEFT;
     SendMessage(FRichEdit.Handle, EM_SETPARAFORMAT, 0, LParam(@Paragraph));
   end;
@@ -1461,7 +1467,7 @@ end;
 
 procedure TJvParaAttributes.SetNumberingStyle(Value: TJvNumberingStyle);
 const
-  CNumberingStyle: array [TJvNumberingStyle] of Word = (PFNS_PAREN, PFNS_PERIOD, PFNS_PARENS, PFNS_PLAIN);
+  CNumberingStyle: array[TJvNumberingStyle] of Word = (PFNS_PAREN, PFNS_PERIOD, PFNS_PARENS, PFNS_PLAIN);
 var
   Paragraph: TParaFormat2;
 begin
@@ -1751,11 +1757,9 @@ begin
   begin
     if (wReserved and PFE_TABLEROW) <> 0 then
       Result := tsTableRow
-    else
-    if (wReserved and PFE_TABLECELLEND) <> 0 then
+    else if (wReserved and PFE_TABLECELLEND) <> 0 then
       Result := tsTableCellEnd
-    else
-    if (wReserved and PFE_TABLECELL) <> 0 then
+    else if (wReserved and PFE_TABLECELL) <> 0 then
       Result := tsTableCell;
   end;
 end;
@@ -1824,8 +1828,7 @@ begin
     for I := 0 to MAX_TAB_STOPS - 1 do
       Tab[I] := TParaAttributes(Source).Tab[I];
   end
-  else
-  if Source is TJvParaAttributes then
+  else if Source is TJvParaAttributes then
   begin
     TJvParaAttributes(Source).GetAttributes(Paragraph);
     SetAttributes(Paragraph);
@@ -2117,16 +2120,16 @@ const
 
 type
   _ReObject = record
-    cbStruct: DWORD;          { Size of structure                }
-    cp: ULONG;                { Character position of object     }
-    clsid: TCLSID;            { Class ID of object               }
-    poleobj: IOleObject;      { OLE object interface             }
-    pstg: IStorage;           { Associated storage interface     }
+    cbStruct: DWORD; { Size of structure                }
+    cp: ULONG; { Character position of object     }
+    clsid: TCLSID; { Class ID of object               }
+    poleobj: IOleObject; { OLE object interface             }
+    pstg: IStorage; { Associated storage interface     }
     polesite: IOleClientSite; { Associated client site interface }
-    sizel: TSize;             { Size of object (may be 0,0)      }
-    dvAspect: Longint;        { Display aspect to use            }
-    dwFlags: DWORD;           { Object status flags              }
-    dwUser: DWORD;            { DWORD for user's use             }
+    sizel: TSize; { Size of object (may be 0,0)      }
+    dvAspect: Longint; { Display aspect to use            }
+    dwFlags: DWORD; { Object status flags              }
+    dwUser: DWORD; { DWORD for user's use             }
   end;
   TReObject = _ReObject;
 
@@ -2146,31 +2149,31 @@ const
   REO_IOB_USE_CP = ULONG(-2);
 
   { Object flags }
-  REO_NULL = $00000000;            { No flags                         }
-  REO_READWRITEMASK = $0000003F;   { Mask out RO bits                 }
+  REO_NULL = $00000000; { No flags                         }
+  REO_READWRITEMASK = $0000003F; { Mask out RO bits                 }
   REO_DONTNEEDPALETTE = $00000020; { Object doesn't need palette      }
-  REO_BLANK = $00000010;           { Object is blank                  }
-  REO_DYNAMICSIZE = $00000008;     { Object defines size always       }
-  REO_INVERTEDSELECT = $00000004;  { Object drawn all inverted if sel }
-  REO_BELOWBASELINE = $00000002;   { Object sits below the baseline   }
-  REO_RESIZABLE = $00000001;       { Object may be resized            }
-  REO_LINK = $80000000;            { Object is a link (RO)            }
-  REO_STATIC = $40000000;          { Object is static (RO)            }
-  REO_SELECTED = $08000000;        { Object selected (RO)             }
-  REO_OPEN = $04000000;            { Object open in its server (RO)   }
-  REO_INPLACEACTIVE = $02000000;   { Object in place active (RO)      }
-  REO_HILITED = $01000000;         { Object is to be hilited (RO)     }
-  REO_LINKAVAILABLE = $00800000;   { Link believed available (RO)     }
-  REO_GETMETAFILE = $00400000;     { Object requires metafile (RO)    }
+  REO_BLANK = $00000010; { Object is blank                  }
+  REO_DYNAMICSIZE = $00000008; { Object defines size always       }
+  REO_INVERTEDSELECT = $00000004; { Object drawn all inverted if sel }
+  REO_BELOWBASELINE = $00000002; { Object sits below the baseline   }
+  REO_RESIZABLE = $00000001; { Object may be resized            }
+  REO_LINK = $80000000; { Object is a link (RO)            }
+  REO_STATIC = $40000000; { Object is static (RO)            }
+  REO_SELECTED = $08000000; { Object selected (RO)             }
+  REO_OPEN = $04000000; { Object open in its server (RO)   }
+  REO_INPLACEACTIVE = $02000000; { Object in place active (RO)      }
+  REO_HILITED = $01000000; { Object is to be hilited (RO)     }
+  REO_LINKAVAILABLE = $00800000; { Link believed available (RO)     }
+  REO_GETMETAFILE = $00400000; { Object requires metafile (RO)    }
 
   { Flags for IRichEditOle.GetClipboardData,   }
   { IRichEditOleCallback.GetClipboardData and  }
   { IRichEditOleCallback.QueryAcceptData       }
   RECO_PASTE = $00000000; { paste from clipboard  }
-  RECO_DROP = $00000001;  { drop                  }
-  RECO_COPY = $00000002;  { copy to the clipboard }
-  RECO_CUT = $00000003;   { cut to the clipboard  }
-  RECO_DRAG = $00000004;  { drag                  }
+  RECO_DROP = $00000001; { drop                  }
+  RECO_COPY = $00000002; { copy to the clipboard }
+  RECO_CUT = $00000003; { cut to the clipboard  }
+  RECO_DRAG = $00000004; { drag                  }
 
   { RichEdit GUIDs }
   IID_IRichEditOle: TGUID = (
@@ -2178,7 +2181,7 @@ const
   IID_IRichEditOleCallback: TGUID = (
     D1: $00020D03; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
 
-//=== TRichEditOleCallback ===================================================
+  //=== TRichEditOleCallback ===================================================
 
 type
   {
@@ -2480,7 +2483,7 @@ type
       var dvAspect: Longint; var nCurrentScale: Integer): HRESULT; stdcall;
     function SetViewInfo(dwObject: Longint; hMetaPict: HGLOBAL;
       dvAspect: Longint; nCurrentScale: Integer;
-      bRelativeToOrig: BOOL): HRESULT;stdcall;
+      bRelativeToOrig: BOOL): HRESULT; stdcall;
   end;
 
 constructor TOleUIObjInfo.Create(ARichEdit: TJvCustomRichEdit;
@@ -2580,24 +2583,24 @@ type
     FOleLink: IOleLink;
   public
     constructor Create(ARichEdit: TJvCustomRichEdit; ReObject: TReObject);
-    function GetNextLink(dwLink: Longint): Longint;stdcall;
+    function GetNextLink(dwLink: Longint): Longint; stdcall;
     function SetLinkUpdateOptions(dwLink: Longint;
-      dwUpdateOpt: Longint): HRESULT;stdcall;
+      dwUpdateOpt: Longint): HRESULT; stdcall;
     function GetLinkUpdateOptions(dwLink: Longint;
-      var dwUpdateOpt: Longint): HRESULT;stdcall;
+      var dwUpdateOpt: Longint): HRESULT; stdcall;
     function SetLinkSource(dwLink: Longint; pszDisplayName: PChar;
       lenFileName: Longint; var chEaten: Longint;
-      fValidateSource: BOOL): HRESULT;stdcall;
+      fValidateSource: BOOL): HRESULT; stdcall;
     function GetLinkSource(dwLink: Longint; var pszDisplayName: PChar;
       var lenFileName: Longint; var pszFullLinkType: PChar;
       var pszShortLinkType: PChar; var fSourceAvailable: BOOL;
-      var fIsSelected: BOOL): HRESULT;stdcall;
-    function OpenLinkSource(dwLink: Longint): HRESULT;stdcall;
+      var fIsSelected: BOOL): HRESULT; stdcall;
+    function OpenLinkSource(dwLink: Longint): HRESULT; stdcall;
     function UpdateLink(dwLink: Longint; fErrorMessage: BOOL;
-      fErrorAction: BOOL): HRESULT;stdcall;
-    function CancelLink(dwLink: Longint): HRESULT;stdcall;
+      fErrorAction: BOOL): HRESULT; stdcall;
+    function CancelLink(dwLink: Longint): HRESULT; stdcall;
     function GetLastUpdate(dwLink: Longint;
-      var LastUpdate: TFileTime): HRESULT;stdcall;
+      var LastUpdate: TFileTime): HRESULT; stdcall;
   end;
 
 procedure LinkError(const Ident: string);
@@ -2642,7 +2645,7 @@ function TOleUILinkInfo.SetLinkSource(dwLink: Longint; pszDisplayName: PChar;
   fValidateSource: BOOL): HRESULT;
 var
   DisplayName: string;
-  Buffer: array [0..255] of WideChar;
+  Buffer: array[0..255] of WideChar;
 begin
   Result := E_FAIL;
   if fValidateSource then
@@ -2797,7 +2800,7 @@ end;
 
 function TJvRichEditStrings.Get(Index: Integer): string;
 var
-  Text: array [0..4095] of Char;
+  Text: array[0..4095] of Char;
   L: Integer;
   W: Word;
 begin
@@ -2807,8 +2810,7 @@ begin
   L := SendMessage(FRichEdit.Handle, EM_GETLINE, Index, Longint(@Text));
   if (Text[L - 2] = #13) and (Text[L - 1] = #10) then
     Dec(L, 2)
-  else
-  if (RichEditVersion >= 2) and (Text[L - 1] = #13) then
+  else if (RichEditVersion >= 2) and (Text[L - 1] = #13) then
     Dec(L);
   SetString(Result, Text, L);
 end;
@@ -3147,8 +3149,7 @@ begin
       if smPlainRtf in Mode then
         TextType := TextType or SFF_PLAINRTF;
     end
-    else
-    if TextType = SF_TEXT then
+    else if TextType = SF_TEXT then
     begin
       if (smUnicode in Mode) and (RichEditVersion > 1) then
         TextType := TextType or SF_UNICODE;
@@ -3347,10 +3348,10 @@ end;
 
 procedure TJvCustomRichEdit.CreateParams(var Params: TCreateParams);
 const
-  HideScrollBars: array [Boolean] of DWORD = (ES_DISABLENOSCROLL, 0);
-  HideSelections: array [Boolean] of DWORD = (ES_NOHIDESEL, 0);
-  WordWraps: array [Boolean] of DWORD = (0, ES_AUTOHSCROLL);
-  SelectionBars: array [Boolean] of DWORD = (0, ES_SELECTIONBAR);
+  HideScrollBars: array[Boolean] of DWORD = (ES_DISABLENOSCROLL, 0);
+  HideSelections: array[Boolean] of DWORD = (ES_NOHIDESEL, 0);
+  WordWraps: array[Boolean] of DWORD = (0, ES_AUTOHSCROLL);
+  SelectionBars: array[Boolean] of DWORD = (0, ES_SELECTIONBAR);
 begin
   inherited CreateParams(Params);
   case RichEditVersion of
@@ -3547,8 +3548,7 @@ begin
             Result.Items.Add(FPopupVerbMenu.Items);
           end;
         end
-        else
-        if FPopupVerbMenu.Items.Count > 0 then
+        else if FPopupVerbMenu.Items.Count > 0 then
         begin
           Item := TMenuItem.Create(FPopupVerbMenu);
           Item.Caption := Format(ResStr(SPropDlgCaption),
@@ -3743,7 +3743,7 @@ begin
 end;
 
 const
-  RichLangOptions: array [TRichLangOption] of DWORD = (IMF_AUTOKEYBOARD,
+  RichLangOptions: array[TRichLangOption] of DWORD = (IMF_AUTOKEYBOARD,
     IMF_AUTOFONT, IMF_IMECANCELCOMPLETE, IMF_IMEALWAYSSENDNOTIFY);
 
 function TJvCustomRichEdit.GetLangOptions: TRichLangOptions;
@@ -3814,8 +3814,8 @@ end;
 
 function TJvCustomRichEdit.GetSelectionType: TRichSelectionType;
 const
-  SelTypes: array [TRichSelection] of Integer =
-    (SEL_TEXT, SEL_OBJECT, SEL_MULTICHAR, SEL_MULTIOBJECT);
+  SelTypes: array[TRichSelection] of Integer =
+  (SEL_TEXT, SEL_OBJECT, SEL_MULTICHAR, SEL_MULTIOBJECT);
 var
   Selection: Integer;
   I: TRichSelection;
@@ -3902,8 +3902,7 @@ begin
     Range.cpMax := SelStart;
     if Range.cpMax = 0 then
       Range.cpMin := 0
-    else
-    if SendMessage(Handle, EM_FINDWORDBREAK, WB_ISDELIMITER, Range.cpMax) <> 0 then
+    else if SendMessage(Handle, EM_FINDWORDBREAK, WB_ISDELIMITER, Range.cpMax) <> 0 then
       Range.cpMin := SendMessage(Handle, EM_FINDWORDBREAK, WB_MOVEWORDLEFT, Range.cpMax)
     else
       Range.cpMin := SendMessage(Handle, EM_FINDWORDBREAK, WB_LEFT, Range.cpMax);
@@ -4014,8 +4013,8 @@ end;
 
 procedure TJvCustomRichEdit.UpdateTextModes(Plain: Boolean);
 const
-  TextModes: array [Boolean] of DWORD = (TM_RICHTEXT, TM_PLAINTEXT);
-  UndoModes: array [Boolean] of DWORD = (TM_SINGLELEVELUNDO, TM_MULTILEVELUNDO);
+  TextModes: array[Boolean] of DWORD = (TM_RICHTEXT, TM_PLAINTEXT);
+  UndoModes: array[Boolean] of DWORD = (TM_SINGLELEVELUNDO, TM_MULTILEVELUNDO);
 begin
   if (RichEditVersion >= 2) and HandleAllocated then
   begin
@@ -4101,7 +4100,7 @@ const
   PasteFormatCount = 6;
 var
   Data: TOleUIPasteSpecial;
-  PasteFormats: array [0..PasteFormatCount - 1] of TOleUIPasteEntry;
+  PasteFormats: array[0..PasteFormatCount - 1] of TOleUIPasteEntry;
   Format: Integer;
   OleClientSite: IOleClientSite;
   Storage: IStorage;
@@ -4202,7 +4201,7 @@ end;
 function TJvCustomRichEdit.InsertObjectDialog: Boolean;
 var
   Data: TOleUIInsertObject;
-  NameBuffer: array [0..255] of Char;
+  NameBuffer: array[0..255] of Char;
   OleClientSite: IOleClientSite;
   Storage: IStorage;
   OleObject: IOleObject;
@@ -4524,6 +4523,7 @@ begin
 end;
 
 // From JvRichEdit.pas by Sébastien Buysse
+
 procedure TJvCustomRichEdit.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
@@ -4583,8 +4583,7 @@ begin
   Result := False;
   if Assigned(OnProtectChangeEx) then
     OnProtectChangeEx(Self, Msg, StartPos, EndPos, Result)
-  else
-  if Assigned(OnProtectChange) then
+  else if Assigned(OnProtectChange) then
     OnProtectChange(Self, StartPos, EndPos, Result);
 end;
 
@@ -4834,8 +4833,7 @@ begin
       if AdjustPos then
         AdjustFindDialogPosition(Dialog);
     end
-    else
-    if Events then
+    else if Events then
       TextNotFound(Dialog);
   end;
 end;
@@ -4885,8 +4883,7 @@ begin
         end;
       end;
     end
-    else
-    if frReplace in Options then
+    else if frReplace in Options then
     begin
       if FindEditText(TFindDialog(Sender), True, True) then
         SelText := ReplaceText;
@@ -5131,8 +5128,8 @@ end;
 
 const
   CHex: array[0..$F] of Char =
-    ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-     'A', 'B', 'C', 'D', 'E', 'F');
+  ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'A', 'B', 'C', 'D', 'E', 'F');
 
 procedure BitmapToRTF(ABitmap: TBitmap; AStream: TStream);
 const
@@ -5180,21 +5177,21 @@ end;
 
 function BitmapToRTF2(ABitmap: TBitmap; AStream: TStream): Boolean;
 
-  {
+{
 
-    \wmetafileN	 - Source of the picture is a Windows metafile. The N argument
-                   identifies the metafile type (the default type is 1).
-    \picwN       - xExt field if the picture is a Windows metafile; picture
-                   width in pixels if the picture is a bitmap or from QuickDraw.
-                   The N argument is a long integer.
-    \pichN	     - yExt field if the picture is a Windows metafile; picture
-                   height in pixels if the picture is a bitmap or from QuickDraw.
-                   The N argument is a long integer.
-    \picwgoalN   - Desired width of the picture in twips. The N argument is a
-                   long integer.
-    \pichgoalN   - Desired height of the picture in twips. The N argument is a
-                   long integer.
-  }
+  \wmetafileN	 - Source of the picture is a Windows metafile. The N argument
+                 identifies the metafile type (the default type is 1).
+  \picwN       - xExt field if the picture is a Windows metafile; picture
+                 width in pixels if the picture is a bitmap or from QuickDraw.
+                 The N argument is a long integer.
+  \pichN	     - yExt field if the picture is a Windows metafile; picture
+                 height in pixels if the picture is a bitmap or from QuickDraw.
+                 The N argument is a long integer.
+  \picwgoalN   - Desired width of the picture in twips. The N argument is a
+                 long integer.
+  \pichgoalN   - Desired height of the picture in twips. The N argument is a
+                 long integer.
+}
 
 const
   CPrefix = '{\rtf1 {\pict\wmetafile8\picw%d\pich%d\picwgoal%d\pichgoal%d ';
@@ -5250,7 +5247,7 @@ begin
 
       S := Format(CPrefix, [Size.X, Size.Y,
         MulDiv(ABitmap.Width, 1440, Screen.PixelsPerInch),
-        MulDiv(ABitmap.Height, 1440, Screen.PixelsPerInch)]);
+          MulDiv(ABitmap.Height, 1440, Screen.PixelsPerInch)]);
       AStream.Write(PChar(S)^, Length(S));
       AStream.Write(Bits^, BitsLength * 2);
       AStream.Write(CPostfix, Length(CPostfix));
@@ -5294,6 +5291,30 @@ var
   OldError: Longint;
   FLibHandle: THandle;
   Ver: TOsVersionInfo;
+
+procedure TJvCustomRichEdit.InsertFormatText(Index: integer; const S: string; const AFont: TFont = nil);
+var
+  ASelStart, ASelLength: integer;
+begin
+  ASelStart := SelStart;
+  ASelLength := SelLength;
+  try
+    if Index > -1 then
+      SelStart := Index;
+    SelLength := 0;
+    if AFont <> nil then
+      SelAttributes.Assign(AFont);
+    SelText := S;
+  finally
+    SelStart := ASelStart;
+    SelLength := ASelLength;
+  end;
+end;
+
+procedure TJvCustomRichEdit.AddFormatText(const S: string; const AFont: TFont);
+begin
+  InsertFormatText(GetTextLen,S,AFont);
+end;
 
 initialization
   RichEditVersion := 1;
