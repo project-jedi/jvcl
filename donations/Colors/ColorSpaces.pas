@@ -625,14 +625,16 @@ end;
 
 function TJvYUVColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 var
-  Y, U, V: Cardinal;
-  Red, Green, Blue: Cardinal;
+  Y, U, V: Integer;
+  Red, Green, Blue: Integer;
 begin
-  SplitColorParts(AColor, Red, Green, Blue);
+  Red := AColor and $000000FF;
+  Green := (AColor shr 8) and $000000FF;
+  Blue := (AColor shr 16) and $000000FF;
 
-  Y := Round((0.257 * Red) + (0.504 * Green) + (0.098 * Blue)) + 16;
-  V := Round((0.439 * Red) - (0.368 * Green) - (0.071 * Blue)) + 128;
-  U := Round(-(0.148 * Red) - (0.291 * Green) + (0.439 * Blue)) + 128;
+  Y := Round(0.257*Red + 0.504*Green + 0.098*Blue) + 16;
+  V := Round(0.439*Red - 0.368*Green - 0.071*Blue) + 128;
+  U := Round(-0.148*Red - 0.291*Green + 0.439*Blue) + 128;
 
   Y := EnsureRange(Y, YUV_MIN, YUV_MAX);
   U := EnsureRange(U, YUV_MIN, YUV_MAX);
@@ -643,22 +645,24 @@ end;
 
 function TJvYUVColorSpace.ConvertToRGB(AColor: TJvFullColor): TJvFullColor;
 var
-  Red, Green, Blue: Cardinal;
-  Y, U, V: Cardinal;
+  Red, Green, Blue: Integer;
+  Y, U, V: Integer;
 begin
-  SplitColorParts(AColor, Y, U, V);
+  Y := (AColor)        and $000000FF;
+  U := (AColor shr 8)  and $000000FF;
+  V := (AColor shr 16) and $000000FF;
 
   Y := Y - 16;
   U := U - 128;
   V := V - 128;
 
-  Red := Round((1.164 * Y) - (0.002 * U) + (1.596 * V));
-  Green := Round((1.164 * Y) - (0.391 * U) - (0.813 * V));
-  Blue := Round((1.164 * Y) + (2.018 * U) - (0.001 * V));
+  Red := Round(1.164*Y - 0.002*U + 1.596*V);
+  Green := Round(1.164*Y - 0.391*U - 0.813*V);
+  Blue := Round(1.164*Y + 2.018*U - 0.001*V);
 
-  Red := EnsureRange(Red, RGB_MIN, RGB_MAX);
-  Green := EnsureRange(Green, RGB_MIN, RGB_MAX);
-  Blue := EnsureRange(Blue, RGB_MIN, RGB_MAX);
+  Red := EnsureRange(Red , 0, RGB_MAX);
+  Green := EnsureRange(Green, 0, RGB_MAX);
+  Blue := EnsureRange(Blue, 0, RGB_MAX);
 
   Result := inherited ConvertToRGB(JoinColorParts(Red, Green, Blue));
 end;
