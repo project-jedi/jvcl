@@ -1,9 +1,9 @@
-## Needs review (peter3)
+## Completed by Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
 @@JvErrProvider.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvErrProvider component.
+  Contains all code for the TJvErrorProvider and TJvErrorControl components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -11,9 +11,10 @@ Author
 @@TJvErrorBlinkStyle
 <TITLE TJvErrorBlinkStyle type>
 Summary
-  The type used for the BlinkStyle property in an error provider component.
+  The type used for the <LINK TJvErrorProvider.BlinkStyle,BlinkStyle> property in an error provider component.
 Description
-  TJvErrorBlinkStyle defines the allowable values for the BlinkStyle property in TJvErrorProvider. 
+  TJvErrorBlinkStyle defines the allowable values for the <LINK TJvErrorProvider.BlinkStyle,BlinkStyle>
+  property in TJvErrorProvider.
 @@TJvErrorBlinkStyle.ebsAlwaysBlink
   The error icon is always blinked on and off.
 @@TJvErrorBlinkStyle.ebsBlinkIfDifferentError
@@ -27,6 +28,8 @@ Summary
 Description
   TJvErrorControl is the class used for the error icons created by an error provider. Do not create instances of
   TJvErrorControl yourself. TJvErrorControl instances are created and maintained by TJvErrorProvider as needed.
+See Also
+  TJvErrorProvider
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.BlinkCount
 Summary
@@ -36,7 +39,7 @@ Description
   set the number of times the icon should be blinked. While a blink is in progress, this value is automatically
   decremented.
 
-  The BlinkCount property is handled by the owning TJVErrorProvider and should not normally be altered unless
+  The BlinkCount property is handled by the owning TJvErrorProvider and should not normally be altered unless
   you are writing your own error provider.
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorControl.CalcBoundsRect
@@ -121,28 +124,30 @@ See Also
 @@TJvErrorImageAlignment
 <TITLE TJvErrorImageAlignment type>
 Summary
-  Controls where an error icon is displayed.
+  \Controls where an error icon is displayed.
 Description
-  TJvErrorImageAlignment is the type used by the ImageAlignment porperty of error providers and
-  indicates where an error image should be placed in relation to the control it is assoicated with.
+  TJvErrorImageAlignment is the type used by the <LINK TJvErrorControl.ImageAlignment,ImageAlignment>
+  property of error providers and indicates where an error image should be placed in relation to
+  the control it is associated with.
+
   Possible values for this type are:
 @@TJvErrorImageAlignment.eiaBottomLeft
-  display the error image on the controls left side aligned to the bottom edge of the control
+  Displays the error image on the controls left side aligned to the bottom edge of the control.
 @@TJvErrorImageAlignment.eiaBottomRight
-  display the error image on the controls right side aligned to the bottom edge of the control
+  Displays the error image on the controls right side aligned to the bottom edge of the control.
 @@TJvErrorImageAlignment.eiaMiddleLeft
-  display the error image on the controls left side aligned to the middle of the control
+  Displays the error image on the controls left side aligned to the middle of the control.
 @@TJvErrorImageAlignment.eiaMiddleRight
-  display the error image on the controls right side aligned to the middle of the control
+  Displays the error image on the controls right side aligned to the middle of the control.
 @@TJvErrorImageAlignment.eiaTopLeft
-  display the error image on the controlsleft side aligned to the top edge of the control
+  Displays the error image on the controlsleft side aligned to the top edge of the control.
 @@TJvErrorImageAlignment.eiaTopRight
-  display the error image on the controls right side aligned to the top edge of the control
+  Displays the error image on the controls right side aligned to the top edge of the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider
 <TITLEIMG TJvErrorProvider>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.FormsAndApp.Forms.DecoratingAndEffects,JVCL.Graphics.Animations
   FLAG=Component
 Summary
   Provides a user interface for indicating that a control on a form has an error associated with it.
@@ -150,7 +155,7 @@ Description
   Use an error provider when you need to notify the user about an erroneous input value in a non-intrusive
   way. The error provider uses the real estate of the form or dialog to display icons next to each control that
   has been determined to have an error. The icons Hint is also assigned the specific error message so when the user
-  moves the mouse over the icon, the reasn for the error is displayed.
+  moves the mouse over the icon, the reason for the error is displayed.
 
   Although mainly used to display erroneous user input, this component can be used whenever you want to draw
   the users attention to a specific control or set of controls without having to show a dialog or similar.
@@ -195,9 +200,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorProvider.Controls
 Summary
-Provides indexed access to the internal, protected list of TJvErrorControl instances.
+  Provides indexed access to the internal, protected list of TJvErrorControl instances.
 Description
-  Use Controls to get direct access to the TJvErrorControls that are maintained by the component.
+  Use \Controls to get direct access to the TJvErrorControl's that are maintained by the component.
 See Also
   Count, TJvErrorControl
 ----------------------------------------------------------------------------------------------------
@@ -232,7 +237,7 @@ See Also
 Summary
   Specifies where the error icon should be located.
 Description
-  Use ImageAlignment along with ACotnrol parameter to specify where the error icon should be located relative to AControl.
+  Use ImageAlignment along with AControl parameter to specify where the error icon should be located relative to AControl.
   If AControl is nil, ImageAlignment is set for all controls.
 See Also
   ImageIndex, Error
@@ -241,7 +246,7 @@ See Also
 Summary
   Soecifies the image to display.
 Description
-  Use ImageIndex along with the AControl parameter to set the image to display for ACotnrol. If AControl is nil,
+  Use ImageIndex along with the AControl parameter to set the image to display for AControl. If AControl is nil,
   the ImageIndex is set for all controls.
 See Also
   Error, ImageAlignment
@@ -266,6 +271,6 @@ Summary
 Description
   Use ImagePadding along with AControl to make minor adjustments to the location of the image within the
   control. If AControl is nil, ImagePadding affects all controls. If ImagePadding
-  is 0 or less, the image is centered within the control. 
+  is 0 or less, the image is centered within the control.
 See Also
   ImageAlignment
