@@ -2332,6 +2332,9 @@ var
 
     with ABitmap.Canvas do
     begin
+      {$IFDEF VisualCLX}
+      Start;
+      {$ENDIF VisualCLX}
       LColors := CColors;
       if ADownState = sbTopDown then
       begin
@@ -2370,6 +2373,9 @@ var
         DownArrow.Transparent := True;
         JvDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
       end;
+      {$IFDEF VisualCLX}
+      Stop;
+      {$ENDIF VisualCLX}
     end;
   end;
 
@@ -2385,6 +2391,9 @@ var
 
     with ABitmap.Canvas do
     begin
+      {$IFDEF VisualCLX}
+      Start;
+      {$ENDIF VisualCLX}
       { top glyph }
       H := Height div 2;
       R := Bounds(0, 0, Width, H);
@@ -2399,7 +2408,6 @@ var
       R1 := Bounds(0, H, Width, Height);
       R1.Bottom := Height;
       DrawEdge(Handle, R1, BottomFlags, BF_RECT or BF_SOFT or BF_ADJUST);
-
       if not CustomGlyphs then
       begin
         UpArrow.LoadFromResourceName(HInstance, sSpinUpBtnPole);
@@ -2408,6 +2416,9 @@ var
         DownArrow.Transparent := True;
         PoleDrawArrows(ABitmap.Canvas, ADownState, Enabled, UpArrow, DownArrow);
       end;
+      {$IFDEF VisualCLX}
+      Stop;
+      {$ENDIF VisualCLX}
     end;
   end;
 
