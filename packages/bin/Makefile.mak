@@ -72,7 +72,7 @@ DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT)
 JCLSOURCEDIRS=$(JCLROOT)\source\common;$(JCLROOT)\source\windows;$(JCLROOT)\source\vcl;$(JCLROOT)\source\visclx
 JCLINCLUDEDIRS=$(JCLROOT)\source;$(JCLROOT)\source\common
 
-JVCLSOURCEDIRS=$(JVCLROOT)\common;(JVCLROOT)\run;$(JVCLROOT)\design;
+JVCLSOURCEDIRS=$(JVCLROOT)\common;$(JVCLROOT)\run;$(JVCLROOT)\design;
 JVCLINCLUDEDIRS=$(JVCLROOT)\common
 JVCLRESDIRS=$(JVCLROOT)\Resources
 
@@ -192,10 +192,10 @@ Installer:
 	@cd ..\..\install\JVCLInstall
 	@$(MAKE) -f makefile.mak "-DCFG=JVCLInstall.cfg" configfile >NUL
 	#
-	@echo -E"$(JVCLROOT)\packages\bin">>JVCLInstall.cfg
+	@echo -E"$(JVCLROOT)\bin">>JVCLInstall.cfg
 	#
 	#
 	@$(DCC) -DNO_JCL JVCLInstall.dpr
-	@start JVCLInstall.exe "--jcl-path=$(JCLROOT)"
+	@start ..\..\bin\JVCLInstall.exe "--jcl-path=$(JCLROOT)"
 
 
