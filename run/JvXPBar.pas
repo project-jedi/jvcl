@@ -32,7 +32,7 @@ interface
 
 uses
   Forms, Windows, Classes, Controls, Graphics, SysUtils, ImgList, ActnList,
-  JvXPCore, JvXPCoreUtils;
+  Messages, JvXPCore, JvXPCoreUtils;
 
 {$R ..\Resources\JvXPBar.res}
 
@@ -62,6 +62,18 @@ type
     htRollButton        // mouse is inside rollbutton
   );
 
+{ TJvXPBarRollDelay }
+
+  TJvXPBarRollDelay = 1..200;
+
+{ TJvXPBarRollStep }
+
+  TJvXPBarRollStep = 1..50;
+
+const
+  WM_XPBARAFTERCOLLAPSE = WM_USER + 303; // Ord('J') + Ord('V') + Ord('C') + Ord('L')
+
+type
 { forward declarations }
 
   TJvXPBarItem = class;
@@ -72,6 +84,10 @@ type
 
   TJvXPBarOnCanChangeEvent = procedure(Sender: TObject; Item: TJvXPBarItem;
     var AllowChange: Boolean) of object;
+
+{ TJvXPBarOnCollapsedChangeEvent }
+
+  TJvXPBarOnCollapsedChangeEvent = procedure(Sender: TObject) of object;
 
 { TJvXPBarOnDrawItemEvent }
 
@@ -244,13 +260,18 @@ type
     FImageList: TCustomImageList;
     FItemHeight: Integer;
     FItems: TJvXPBarItems;
+    FRollDelay: TJvXPBarRollDelay;
     FRolling: Boolean;
     FRollMode: TJvXPBarRollMode;
     FRollOffset: Integer;
+    FRollStep: TJvXPBarRollStep;
     FSeperatorLine: TColor;
     FShowLinkCursor: Boolean;
     FShowRollButton: Boolean;
     FVisibleItems: TJvXPBarVisibleItems;
+    FAfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent;
+    FBeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent;
+    FOnCollapsedChange: TJvXPBarOnCollapsedChangeEvent;
     FOnCanChange: TJvXPBarOnCanChangeEvent;
     FOnDrawItem: TJvXPBarOnDrawItemEvent;
     FOnItemClick: TJvXPBarOnItemClickEvent;
@@ -280,6 +301,8 @@ type
     procedure SortVisibleItems(const Redraw: Boolean);
     procedure DoDrawItem(const Index: Integer; State: TJvXPDrawState); virtual;
     procedure Paint; override;
+    procedure WMAfterXPBarCollapse(var Msg: TMessage);
+      message WM_XPBARAFTERCOLLAPSE;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
@@ -289,11 +312,19 @@ type
     property ImageList: TCustomImageList read FImageList write SetImageList;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 20;
     property Items: TJvXPBarItems read FItems write SetItems;
+    property RollDelay: TJvXPBarRollDelay read FRollDelay write FRollDelay default 25;
     property Rolling: Boolean read FRolling default False;
     property RollMode: TJvXPBarRollMode read FRollMode write FRollMode default rmShrink;
     property RollOffset: Integer read FRollOffset write SetRollOffset;
+    property RollStep: TJvXPBarRollStep read FRollStep write FRollStep default 3;
     property ShowLinkCursor: Boolean read FShowLinkCursor write FShowLinkCursor default True;
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
+    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange
+      write FAfterCollapsedChange;
+    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange
+      write FBeforeCollapsedChange;
+    property OnCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FOnCollapsedChange
+      write FOnCollapsedChange;
     property OnCanChange: TJvXPBarOnCanChangeEvent read FOnCanChange write FOnCanChange;
     property OnDrawItem: TJvXPBarOnDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
@@ -322,9 +353,14 @@ type
     property ImageList;
     property ItemHeight;
     property Items;
+    property RollDelay;
     property RollMode;
+    property RollStep;
     property ShowLinkCursor;
     property ShowRollButton;
+    property AfterCollapsedChange;
+    property BeforeCollapsedChange;
+    property OnCollapsedChange;
     property OnCanChange;
     property OnDrawItem;
     property OnItemClick;
@@ -1303,8 +1339,6 @@ end;
 -----------------------------------------------------------------------------}
 
 procedure TJvXPFadeThread.Execute;
-const
-  RollSteps = 3;
 var
   NewOffset: Integer;
 begin
@@ -1314,9 +1348,9 @@ begin
 
     { calculate new roll offset }
     if FRollDirection = rdCollapse then
-      NewOffset := FWinXPBar.RollOffset - RollSteps
+      NewOffset := FWinXPBar.RollOffset - FWinXPBar.FRollStep
     else
-      NewOffset := FWinXPBar.RollOffset + RollSteps;
+      NewOffset := FWinXPBar.RollOffset + FWinXPBar.FRollStep;
 
     { validate offset ranges }
     if NewOffset < 0 then
@@ -1331,7 +1365,7 @@ begin
       Terminate;
 
     { idle process }
-    Sleep(25);
+    Sleep(FWinXPBar.FRollDelay);
   finally
     FWinXPBar.FRolling := False;
   end;
@@ -1343,7 +1377,9 @@ begin
 
   { update inspector }
   if csDesigning in FWinXPBar.ComponentState then
-    TCustomForm(FWinXPBar.Owner).Designer.Modified;
+    TCustomForm(FWinXPBar.Owner).Designer.Modified
+  else
+    PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE, 0, 0);
 end;
 
 { TJvXPCustomWinXPBar }
@@ -1386,9 +1422,11 @@ begin
   FIcon := TIcon.Create;
   FItemHeight := 20;
   FItems := TJvXPBarItems.Create(Self);
+  FRollDelay := 25;
   FRolling := False;
   FRollMode := rmShrink;
   FRollOffset := FItemHeight;
+  FRollStep := 3;
   FSeperatorLine := $00F7D7C6;
   FShowLinkCursor := True;
   FShowRollButton := True;
@@ -1713,7 +1751,24 @@ end;
 procedure TJvXPCustomWinXPBar.SetCollapsed(Value: Boolean);
 begin
   if Value <> FCollapsed then
-    FFadeThread := TJvXPFadeThread.Create(Self, TJvXPBarRollDirection(Value));
+    if not (csLoading in ComponentState) then
+    begin
+      if Assigned(FBeforeCollapsedChange) then
+        FBeforeCollapsedChange(Self);
+      FFadeThread := TJvXPFadeThread.Create(Self, TJvXPBarRollDirection(Value));
+      if Assigned(FOnCollapsedChange) then
+        FOnCollapsedChange(Self);
+    end
+    else
+    begin
+      FCollapsed:=Value;
+      FRolling := True;
+      if Value then
+        RollOffset := 0
+      else
+        RollOffset := FItemHeight;
+      FRolling := False;
+    end;
 end;
 
 {-----------------------------------------------------------------------------
@@ -2084,6 +2139,20 @@ begin
         DoDrawItem(i, [dsHighlight]);
     end;
   end;
+end;
+
+{-----------------------------------------------------------------------------
+  Procedure: TJvXPCustomWinXPBar.WMAfterXPBarCollapse
+  Author:    iv
+  Date:      07-Jan-2004
+  Arguments: Msg: TMessage
+  Result:    None
+-----------------------------------------------------------------------------}
+
+procedure TJvXPCustomWinXPBar.WMAfterXPBarCollapse(var Msg: TMessage);
+begin
+  if Assigned(FAfterCollapsedChange) then
+    FAfterCollapsedChange(Self);
 end;
 
 end.
