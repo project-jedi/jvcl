@@ -244,7 +244,6 @@ type
     procedure DoUnSelectItems(ExcludeIndex: Integer);
     procedure ToggleSelection(Index: Integer; SetSelection: Boolean);
     procedure ShiftSelection(Index: Integer; SetSelection: Boolean);
-    procedure ScrollIntoView(Index: Integer);
     function FindFirstSelected: Integer;
     function FindLastSelected: Integer;
     procedure UpdateAll;
@@ -305,6 +304,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ScrollBy(DeltaX, DeltaY:integer);
+    procedure ScrollIntoView(Index: Integer);
     procedure BeginUpdate;
     procedure EndUpdate;
     procedure SelectAll;
@@ -1919,6 +1920,15 @@ begin
   Result := false;
   if Assigned(FOnItemHint) then
     FOnItemHint(Self, Index, HintInfo, Result);
+end;
+
+procedure TJvCustomItemViewer.ScrollBy(DeltaX, DeltaY: integer);
+begin
+  if DeltaX <> 0 then
+    HorzScrollBar.Position := HorzScrollBar.Position + DeltaX;
+  if DeltaY <> 0 then
+    VertScrollBar.Position := VertScrollBar.Position + DeltaY;
+  UpdateAll;
 end;
 
 { TViewerDrawImageList }
