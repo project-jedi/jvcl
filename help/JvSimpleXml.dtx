@@ -1,519 +1,514 @@
 ##Package: System
-##Status: Locked to Olivier
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvSimpleXml.pas
 Summary
   Contains the TJvSimpleXml component.
-<INCLUDE JVCL.UnitText.dtx>
+  <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
+
+
 ----------------------------------------------------------------------------------------------------
 @@PJvHashElem
 <TITLE PJvHashElem type>
 <COMBINE TJvHashElem>
+
+
 ----------------------------------------------------------------------------------------------------
 @@PJvHashList
 <TITLE PJvHashList type>
 <COMBINE TJvHashList>
+
+
 ----------------------------------------------------------------------------------------------------
 @@PJvHashRecord
 <TITLE PJvHashRecord type>
 <COMBINE TJvHashRecord>
+
+
 ----------------------------------------------------------------------------------------------------
 @@SimpleXMLDecode
 <TITLE SimpleXMLDecode procedure>
 Summary
-  Write here a summary (1 line)
+  Converts special XML characters to their representation
 Description
-  Write here a description
+  Special characters are those:
+  
+  &amp;
+  &lt;
+  &gt;
+  &apos;
+  &quot;
+  &#???
 Parameters
-  S          - Description for this parameter
-  TrimBlanks - Description for this parameter
+  S          - The string to decode
+  TrimBlanks - If true, the blanks will also be removed from the string
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SimpleXMLEncode
+
+
 ----------------------------------------------------------------------------------------------------
 @@SimpleXmlEncode
 <TITLE SimpleXmlEncode function>
 Summary
-  Write here a summary (1 line)
+  Encodes the special characters to their XML representation
 Description
-  Write here a description
+  All characters outside #0-#127 will be converted along with '"','&',#39,'<' and '>'
 Parameters
-  S - Description for this parameter
+  S - The string to encode
+Return value
+  The encoded string
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SimpleXMLDecode
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvHashElem
 <TITLE TJvHashElem type>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is not being used at the moment
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHashElem.Next
-  Description for Next
+Next HashElem
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHashElem.Obj
-  Description for Obj
+Associated object
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvHashKind
 <TITLE TJvHashKind type>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is not being used at the moment
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHashKind.hkList
-  Description for hkList
+List hash
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHashKind.hkDirect
-  Description for hkDirect
+Direct hash
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvHashList
 <TITLE TJvHashList type>
 Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = array [0..25] of PJvHashRecord; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is not used at the moment
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvHashRecord
 <TITLE TJvHashRecord type>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is not being used at the moment
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHashRecord.Count
-  Description for Count
+Count
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHashRecord.List
-  Description for List
+The List
+
+
+----------------------------------------------------------------------------------------------------
 @@TJvHashRecord.FirstElem
-  Description for FirstElem
+The First Element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnSimpleProgress
 <TITLE TJvOnSimpleProgress type>
 Summary
-  Write here a summary (1 line)
-Description
-  This type is used by (for reference):
-    TJvSimpleXML.OnLoadProgress
-    TJvSimpleXML.OnSaveProgress
+  Event triggered while reading and saving the xml file
 Parameters
-  Sender   - Description for this parameter
-  Position - Description for this parameter
-  Total    - Description for this parameter
+  Sender   - The TJvSimpleXml object that has done some progress
+  Position - The position of the progress
+  Total    - The total possible steps
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXML.OnLoadProgress, TJvSimpleXML.OnSaveProgress
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnSimpleXmlParsed
 <TITLE TJvOnSimpleXmlParsed type>
 <COMBINE TJvSimpleXML.OnTagParsed>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvOnValueParsed
 <TITLE TJvOnValueParsed type>
 <COMBINE TJvSimpleXML.OnValueParsed>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleHashTable
 Summary
-  Write here a summary (1 line)
+  A hash table
 Description
-  Write here a description
+  This is not used at the moment
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleHashTable.AddObject
 Summary
-  Write here a summary (1 line)
+  This is not used at the moment
 Description
-  Write here a description
+  ....
 Parameters
-  AName   - Description for this parameter
-  AObject - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AName   - The name to add
+  AObject - The object to link to this name
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleHashTable.Clear
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Clears the table
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML
 <TITLEIMG TJvSimpleXML>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.???
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  The component to manipulate a XML file
 Description
-  Write here a description
+  Use this object to manipulate an XML file
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.FileName
 Summary
-  Write here a summary (1 line)
+  Indicates the name of the file loaded by the object
 Description
-  Write here a description
+  Setting this property will call LoadFromFile
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromFile, SaveToFile
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.IndentString
 Summary
-  Write here a summary (1 line)
+  The string to perform indentation in the file
 Description
-  Write here a description
+  This string must be made of only spaces or tabs, and if not, will be refused leaving the current
+  value unchanged.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Options 
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.LoadFromFile
 Summary
-  Write here a summary (1 line)
+  Loads the indicated file into the object
 Description
-  Write here a description
+  This doesn't set the value of the FileName property
 Parameters
-  FileName - Description for this parameter
+  FileName - The file to load
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FileName
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.LoadFromResourceName
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Loads xml data from a named resource
 Parameters
-  Instance - Description for this parameter
-  ResName  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Instance - The handle of the processus where the resource is stored
+  ResName  - The name of the resource to load
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.LoadFromStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Loads the xml data from an existing stream
 Parameters
-  Stream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Stream - The stream to load the data from
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.LoadFromString
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Load the xml data from a string
 Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Value - The string to load the value from
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnLoadProgress
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Event triggered while loading xml data
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnSaveProgress
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Event triggered while saving xml data
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnTagParsed
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Event triggered when an XML tag has been parsed
 Parameters
-  Sender - Description for this parameter
-  Name   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The TJvSimpleXml object that has parsed the tag
+  Name   - The name of the parsed tag
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnValueParsed
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Event triggered when a value has been parsed
 Parameters
-  Sender - Description for this parameter
-  Name   - Description for this parameter
-  Value  - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The TJvSimpleXML object that has parsed the value
+  Name   - The name of the value
+  Value  - The value that has been parsed
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.Options
 Summary
-  Write here a summary (1 line)
+  The options to use when using xml data
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  sxoAutoCreate - If a node is accessed and it does not exist, create it instead of returning nil
+  sxoAutoIndent - Automatically indent xml data when output to a character stream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.Prolog
 Summary
-  Write here a summary (1 line)
+  The prolog in the xml file
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Usually indicates the DTD to be used with the XML file. For instance:
+  <?xml version="1.0"?> 
+  <!DOCTYPE greeting SYSTEM "hello.dtd"> 
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.Root
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The root element in the xml file
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.SaveToFile
 Summary
-  Write here a summary (1 line)
+  Saves the xml data into the given file
 Description
-  Write here a description
+  The file will be emptied first if it exists
 Parameters
-  FileName - Description for this parameter
+  FileName - The file to save to
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromFile, SaveToStream, SaveToString
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.SaveToStream
 Summary
-  Write here a summary (1 line)
+  Saves the xml data to a stream
 Description
-  Write here a description
+  The stream must be created before the call to the function
 Parameters
-  Stream - Description for this parameter
+  Stream - The stream to write to
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromStream, SaveToFile, SaveToString
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.SaveToString
 Summary
-  Write here a summary (1 line)
+  Saves the xml data in a string
 Description
-  Write here a description
+  Saves the xml data in a string and returns it
 Return value
-  Describe here what the function returns
+  The xml data as a string
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromString, SaveToFile, SaveToStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This is the base class for every type of element xml data can contain
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Assign
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Assign the values of the given element to the current one
 Parameters
-  Value - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Value - The element source of the assignment
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.BoolValue
 Summary
-  Write here a summary (1 line)
+  The value of the element as a Boolean
 Description
-  Write here a description
+  This is False if the Value is not a boolean
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IntValue, Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.ChildsCount
 Summary
-  Write here a summary (1 line)
+  The number of childs of that element
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is recursive and as such may be different from Items.Count
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Clear
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Deletes all childs and properties from the element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Data
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pointer to the internal data of the element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.GetBinaryValue
 Summary
-  Write here a summary (1 line)
+  Fills the given stream with the binary value
 Description
-  Write here a description
+  A binary value is a series of numbers and letters characters that can be intepreted as hexadecimal
+  numbers when put in pairs. For instance, the following is a binary value:
+  F302004D
 Parameters
-  Stream - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Stream - The stream to fill, must be created before the call
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.GetChildIndex
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the index of the given child
 Parameters
-  AChild - Description for this parameter
+  AChild - The child to find
 Return value
-  Describe here what the function returns
+  The index of the child in the Items list, or nil if the child is not in the list
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Childs
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.IntValue
 Summary
-  Write here a summary (1 line)
+  The item value as an Integer
 Description
-  Write here a description
+  If the value is not an Integer, returns -1
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BoolValue, Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Items
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The direct childs of the element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.LoadFromStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Loads the element data from the given stream
 Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
+  Stream - The stream containing the data
+  Parent - The parent TJvSimpleXml component, if any
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromString
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.LoadFromString
 Summary
-  Write here a summary (1 line)
+  Loads the element data from the given string
 Description
-  Write here a description
+  Calls LoadFromStream internally
 Parameters
-  Value - Description for this parameter
+  Value - The string containing the data
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Name
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The name of the element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Parent
 Summary
-  Write here a summary (1 line)
+  The element parent of this one
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Unless the element is the root, there is always a parent
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Pointer
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This needs to be investigated
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Properties
 Summary
-  Write here a summary (1 line)
+  The properties of the element
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This is ever nil, but may not contain elements.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.SaveToStream
 Summary
-  Write here a summary (1 line)
+  Saves the element data in the given stream
 Description
-  Write here a description
+  The level string will be put before the element, this is used with the sxoAutoIncrement
 Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
+  Stream - The stream to write to
+  Level  - The level of indentation
+  Parent - The TJvSimpleXml parent, if any
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToString
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.SaveToString
 Summary
-  Write here a summary (1 line)
+  Saves the element data to a string
 Description
-  Write here a description
+  Calls SaveToStream internally
 Return value
-  Describe here what the function returns
+  The element data as a string
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.SimpleXml
 Summary
-  Write here a summary (1 line)
+  The TJvSimpleXml component containing this element
 Description
-  Write here a description
+  This is set through calls to SaveToStream and LoadToStream
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXml
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem.Value
 Summary
@@ -523,1193 +518,881 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXmlElemCData
 Summary
-  Write here a summary (1 line)
+  A CDATA XML element
 Description
-  Write here a description
+  Example:
+  <![CDATA[value]]>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXmlElemCData.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXmlElemCData.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemClassic
 Summary
-  Write here a summary (1 line)
+  A classic XML element
 Description
-  Write here a description
+  Example:
+  <element property="propvalue">value</element>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemClassic.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemClassic.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemComment
 Summary
-  Write here a summary (1 line)
+  A comment XML element
 Description
-  Write here a description
+  Example:
+  <!-- This is a comment -->
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemComment.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemComment.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemCompare
 <TITLE TJvSimpleXMLElemCompare type>
 Summary
-  Write here a summary (1 line)
+  A comparing function
 Description
-    Nothing in this unit.
+  Compares two elements from the given collection of elements
 Parameters
-  Elems  - Description for this parameter
-  Index1 - Description for this parameter
-  Index2 - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Elems  - The collection of elements
+  Index1 - Index of the first element to compare
+  Index2 - Index of the second element to compare
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXmlElemDocType
 Summary
-  Write here a summary (1 line)
+  A DOCTYPE XML element
 Description
-  Write here a description
+  Example:
+  <!DOCTYPE Value>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXmlElemDocType.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXmlElemDocType.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader
 Summary
-  Write here a summary (1 line)
+  A header XML element
 Description
-  Write here a description
+  Example:
+  <?xml version="Version" standalone="yes" encoding="Encoding"?>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader.Encoding
 Summary
-  Write here a summary (1 line)
+  The encoding the elements may use
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Note: The element will not encode the values.
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader.Standalone
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if the XML document is to be standalone
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemHeader.Version
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The version of the XML standard
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems
 Summary
-  Write here a summary (1 line)
+  A collection of XML elements
 Description
-  Write here a description
+  This is not implemented as a TCollection but rather with the help of a HashedStringList
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Add@string
 Summary
-  Write here a summary (1 line)
+  Add an element with the given name in the collection
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  No value is given to the element
 Parameters
-  Name - Description for this parameter
+  Name - The name of the element to add
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Add@string@boolean
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Adds a new element with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The boolean value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Add@string@Int64
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Adds a new element with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The Int64 value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Add@string@string
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Adds a new element with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The string value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Add@string@TStream
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Adds a new element with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The stream containing the binary value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Add@TJvSimpleXMLElem
 Summary
-  Write here a summary (1 line)
+  Adds the indicated element to the list of elements
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  No new element is created, the passed one is simply added to the list.
 Parameters
-  Value - Description for this parameter
+  Value - The element to add to the collection
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.AddCData
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Adds a new CDATA element with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.AddComment
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Adds a new Comment element with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.AddFirst@string
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Add a new element with the given name as the first in the list
 Parameters
-  Name - Description for this parameter
+  Name - The name of the element to be added
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.AddFirst@TJvSimpleXMLElem
 Summary
-  Write here a summary (1 line)
+  Add the element as the first in the list
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  No new element is created.
 Parameters
-  Value - Description for this parameter
+  Value - The element to be added
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.AddText
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Adds a Text element in the list
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added element
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.BinaryValue
 Summary
-  Write here a summary (1 line)
+  Fills the given stream with the binary value of the given element
 Description
-  Write here a description
+  If no element named Name is in the list, the stream is left untouched.
 Parameters
-  Name   - Description for this parameter
-  Stream - Description for this parameter
+  Name   - The name of the element to get the value from
+  Stream - The stream to be filled
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXmlElem.BinaryValue
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.BoolValue
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the boolean value of the given element
 Parameters
-  Name    - Description for this parameter
-  Default - Description for this parameter
+  Name    - The name of the element to get the value for
+  Default - The value to return if an element named Name doesn't exist
 Return value
-  Describe here what the function returns
+  The boolean value of the indicated element or Default if it cannot be found
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXMLElem.BoolValue
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Clear
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Clears the list of elements
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Count
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns the number of elements in the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.CustomSort
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Indicates the function to use for sorting
 Parameters
-  AFunction - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AFunction - The function to be used to sort the elements in the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Delete@integer
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Deletes the indicated element from the list
 Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Index - The index of the element to delete from the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Delete@string
 Summary
-  Write here a summary (1 line)
+  Deletes the indicated element from the list
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  If no elements named Name exists in the list, no element is removed
 Parameters
-  Name - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Name - The name of the element to remove
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.IntValue
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the Integer value of the given element
 Parameters
-  Name    - Description for this parameter
-  Default - Description for this parameter
+  Name    - The name of the element to get the value for
+  Default - The value to return if an element named Name doesn't exist
 Return value
-  Describe here what the function returns
+  The Integer value of the indicated element or Default if it cannot be found
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXMLElem.IntValue
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Item
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Array property to access the list items by index
 Parameters
-  Index - Description for this parameter
+  Index - The index of the element to retrieve
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemNamed
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.ItemNamed
 Summary
-  Write here a summary (1 line)
+  Array property to access the list items by name
 Description
-  Write here a description
+  If no element Named is in the list and sxoAutoCreate is in the owner's parent's Options property, a
+  new element by that name is added to the list
 Parameters
-  Name - Description for this parameter
+  Name - The name of the element to retrieve
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Item, Owner, TJvSimpleXml.Options
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.LoadFromStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Load the list of elements from the given stream
 Parameters
-  Stream  - Description for this parameter
-  AParent - Description for this parameter
+  Stream  - The stream to load the list from
+  AParent - The TJvSimpleXML parent component, if any
 Return value
-  Describe here what the function returns
+  Returns the portion of the stream that was read
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Parent
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The XML element parent of the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.SaveToStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Saves the list into the given stream
 Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
+  Stream - The stream to save into
+  Level  - The level of indentation to use for the list
+  Parent - The TJvSimpleXML component that contains the list, if any
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Sort
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sorts the list of elements
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElems.Value
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the value of the given element
 Parameters
-  Name    - Description for this parameter
-  Default - Description for this parameter
+  Name    - The name of the element to get the value for
+  Default - The value to return if an element named Name doesn't exist
 Return value
-  Describe here what the function returns
+  The value of the indicated element or Default if it cannot be found
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXMLElem.Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemSheet
 Summary
-  Write here a summary (1 line)
+  A stylesheet XML element
 Description
-  Write here a description
+  Example:
+  <?xml-stylesheet href="styles.css" type="text/css"?>
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemSheet.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemSheet.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  A list of Prolog elements
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.Clear
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Clears the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.Count
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The number of elements in the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.Encoding
 Summary
-  Write here a summary (1 line)
+  The encoding that the elements use
 Description
-  Write here a description
+  The list will not do any encoding, this is an indicative value
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXmlElemHeader.Encoding
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.Item
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Array property to access the items in the list
 Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Index - The index of the item to retrieve
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.LoadFromStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Load the list of elements from the given stream
 Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
+  Stream  - The stream to load the list from
+  AParent - The TJvSimpleXML parent component, if any
 Return value
-  Describe here what the function returns
+  Returns the portion of the stream that was read
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.SaveToStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Saves the list into the given stream
 Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
+  Stream - The stream to save into
+  Parent - The TJvSimpleXML component that contains the list, if any
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.StandAlone
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Wether the xml data is standalone or not
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXmlElemHeader.StandAlone
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemsProlog.Version
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The version of the xml used
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXmlElemHeader.Version
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemText
 Summary
-  Write here a summary (1 line)
+  A text xml element
 Description
-  Write here a description
+  Example:
+  This is some text
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemText.LoadFromStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElemText.SaveToStream
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Stream - Description for this parameter
-  Level  - Description for this parameter
-  Parent - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLInvalid
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The exception triggered when an invalid xml element is encountered
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLOptions
 <TITLE TJvSimpleXMLOptions type>
 Summary
-  Write here a summary (1 line)
+  The options to apply when using the TJvSimpleXml component
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = set of (sxoAutoCreate, sxoAutoIndent); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  sxoAutoCreate - If an element is accessed by name and it doesn't  exist, it will be created
+  sxoAutoIndent - Automatically adds indentation string when outputing the xml data in character form
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  An XML property
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.BoolValue
 Summary
-  Write here a summary (1 line)
+  The value of the property as a Boolean
 Description
-  Write here a description
+  If the property is not a boolean, returns False
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IntValue, Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.Data
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The internal Data of the property
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.IntValue
 Summary
-  Write here a summary (1 line)
+  The value of the property as an Int64
 Description
-  Write here a description
+  If the value is not an integer, returns -1
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BoolValue, Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.Name
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The name of the property
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.Parent
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The list of properties containing this property
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.Pointer
 Summary
-  Write here a summary (1 line)
+  ????
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  A string that does something
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.SaveToString
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Save the property in a string
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The property as a string
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp.Value
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  The value of the property
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IntValue, BoolValue
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  A list of properties
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Add@string@boolean
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Adds a new property with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The Boolean value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added property
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Add@string@Int64
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Adds a new property with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The Int64 value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added property
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Add@string@string
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Adds a new property with the given name and value in the collection
 Parameters
-  Name  - Description for this parameter
-  Value - Description for this parameter
+  Name  - The name of the element
+  Value - The string value of the element
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The newly added property
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.BoolValue
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the boolean value of the given property
 Parameters
-  Name    - Description for this parameter
-  Default - Description for this parameter
+  Name    - The name of the property to get the value for
+  Default - The value to return if an property named Name doesn't exist
 Return value
-  Describe here what the function returns
+  The boolean value of the indicated property or Default if it cannot be found
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXMLProp.BoolValue, IntValue, Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Clear
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Clears the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Count
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns the number of elements in the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Delete@integer
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Deletes the indicated property from the list
 Parameters
-  Index - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Index - The index of the element to delete from the list
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Delete@string
 Summary
-  Write here a summary (1 line)
+  Deletes the indicated property from the list
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  If no property named Name exists in the list, no property is removed
 Parameters
-  Name - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Name - The name of the property to remove
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.IntValue
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the Int64 value of the given property
 Parameters
-  Name    - Description for this parameter
-  Default - Description for this parameter
+  Name    - The name of the property to get the value for
+  Default - The value to return if an property named Name doesn't exist
 Return value
-  Describe here what the function returns
+  The Int64 value of the indicated property or Default if it cannot be found
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXMLProp.IntValue, BoolValue, Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Item
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Array property to access the list items by index
 Parameters
-  Index - Description for this parameter
+  Index - The index of the element to retrieve
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ItemNamed
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.ItemNamed
 Summary
-  Write here a summary (1 line)
+  Array property to access the list items by name
 Description
-  Write here a description
+  If no element Named is in the list and sxoAutoCreate is in the owner's parent's Options property, a
+  new element by that name is added to the list
 Parameters
-  Name - Description for this parameter
+  Name - The name of the element to retrieve
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Item, Owner, TJvSimpleXml.Options
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.LoadFromStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Load the list of properties from the given stream
 Parameters
-  Stream - Description for this parameter
+  Stream  - The stream to load the list from
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveToStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.SaveToStream
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Saves the list into the given stream
 Parameters
-  Stream - Description for this parameter
+  Stream - The stream to save into
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromStream
+
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProps.Value
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the value of the given property
 Parameters
-  Name    - Description for this parameter
-  Default - Description for this parameter
+  Name    - The name of the property to get the value for
+  Default - The value to return if an property named Name doesn't exist
 Return value
-  Describe here what the function returns
+  The value of the indicated property or Default if it cannot be found
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvSimpleXMLProp.Value
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVarData
 <TITLE TXmlVarData type>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  A record to hold Variant data information
+
+
+----------------------------------------------------------------------------------------------------
 @@TXmlVarData.vType
-  Description for vType
+Type of variant
+
+
+----------------------------------------------------------------------------------------------------
 @@TXmlVarData.Reserved1
-  Description for Reserved1
+Reserved1
+
+
+----------------------------------------------------------------------------------------------------
 @@TXmlVarData.Reserved2
-  Description for Reserved2
+Reserved2
+
+
+----------------------------------------------------------------------------------------------------
 @@TXmlVarData.Reserved3
-  Description for Reserved3
+Reserved3
+
+
+----------------------------------------------------------------------------------------------------
 @@TXmlVarData.Xml
-  Description for Xml
+An TJvSimpleXMLElem object
+
+
+----------------------------------------------------------------------------------------------------
 @@TXmlVarData.Reserved4
-  Description for Reserved4
+Reserved4
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  An XML Variant
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant.CastTo
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Dest     - Description for this parameter
-  Source   - Description for this parameter
-  AVarType - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant.Clear
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  V - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant.Copy
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Dest     - Description for this parameter
-  Source   - Description for this parameter
-  Indirect - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant.DoFunction
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Dest      - Description for this parameter
-  V         - Description for this parameter
-  Name      - Description for this parameter
-  Arguments - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant.GetProperty
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Dest - Description for this parameter
-  V    - Description for this parameter
-  Name - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant.IsClear
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  V - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@TXmlVariant.SetProperty
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  V     - Description for this parameter
-  Name  - Description for this parameter
-  Value - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
+
 ----------------------------------------------------------------------------------------------------
 @@VarXml
 <TITLE VarXml function>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Returns the type of variant used for XML variants
+
+
 ----------------------------------------------------------------------------------------------------
 @@XmlCreate
 <TITLE XmlCreate function>
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Creates a TJvSimpleXmlElemClassic and returns it as a variant
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  XmlCreateInto
+
+
 ----------------------------------------------------------------------------------------------------
 @@XmlCreate@TJvSimpleXMLElem
 <TITLE XmlCreate function>
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  Teturns a variant containing the given XML element
 Parameters
-  AXml - Description for this parameter
+  AXml - The XML element to put in the variant
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  XmlCreateInto
+
+
 ----------------------------------------------------------------------------------------------------
 @@XmlCreateInto
 <TITLE XmlCreateInto procedure>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Puts the given XML element in the given variant
 Parameters
-  ADest - Description for this parameter
-  AXml  - Description for this parameter
+  ADest - The destination variant
+  AXml  - The XML element to put in the variant
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  XmlCreate
+
+
 ----------------------------------------------------------------------------------------------------
 @@XMLDecode
 <TITLE XMLDecode function>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Decodes the given string
 Parameters
-  S - Description for this parameter
+  S - The string to decode
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SimpleXMLDecode
+
+
 ----------------------------------------------------------------------------------------------------
 @@XMLEncode
 <TITLE XMLEncode function>
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Encodes the given string
 Parameters
-  S - Description for this parameter
+  S - The string to encode
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SimpleXmlEncode
+
+
