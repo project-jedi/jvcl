@@ -25,7 +25,6 @@ Known Issues:
 
 {$I jvcl.inc}
 
-
 unit JvFooterEditor;
 
 interface
