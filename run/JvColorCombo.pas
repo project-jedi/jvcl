@@ -1089,7 +1089,6 @@ end;
 procedure TJvColorComboBox.Loaded;
 begin
   inherited;
-  inherited;
   HandleNeeded;
   if HandleAllocated then
     GetColors;
