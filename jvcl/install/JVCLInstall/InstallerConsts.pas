@@ -144,7 +144,6 @@ resourcestring
 
   RsMissingJCLForDelphi =
     'JCL is not installed for %s. Please install the JCL before installing the JVCL.'#10 +
-    #10 +
     'DJCL%d0.bpl not found in %s';
 
 const
