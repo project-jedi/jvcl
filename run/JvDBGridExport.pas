@@ -1230,9 +1230,7 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   RegisterIntegerConsts(TypeInfo(TJvWordGridFormat), WordGridFormatIdentToInt, IntToWordGridFormatIdent);
-
 
 {$IFDEF UNITVERSIONING}
 finalization

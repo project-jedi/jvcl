@@ -1422,6 +1422,7 @@ begin
   for I := Count - 1 downto 0 do
   begin
     TJvDatabaseActionBaseEngine(Items[I]).Free;
+    Items[I] := nil;
     Delete(I);
   end;
   inherited Destroy;
