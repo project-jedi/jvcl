@@ -32,12 +32,7 @@ unit JvAlarms;
 interface
 
 uses
-  {$IFDEF VCL}
   ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QExtCtrls,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvComponent;
 
