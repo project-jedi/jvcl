@@ -39,9 +39,7 @@ unit JvQBmpAnimator;
 interface
 
 uses
-  Classes,  
-  QWindows, 
-  QGraphics, QControls, QExtCtrls, QImgList,
+  Classes, QWindows, QMessages, QGraphics, QControls, QExtCtrls, QImgList,
   JvQComponent;
 
 type
@@ -404,8 +402,8 @@ begin
   if csDesigning in ComponentState then
     with Canvas do
     begin
-      Brush.Color := clBlack;  
-      FrameRect(Canvas, GetClientRect); 
+      Brush.Color := clBlack;
+      FrameRect(Canvas, GetClientRect);
     end;
 end;
 

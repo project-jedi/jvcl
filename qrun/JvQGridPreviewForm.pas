@@ -108,10 +108,7 @@ uses
   {$ENDIF UNITVERSIONING}
   JvQPaintFX, JvQConsts, JvQResources;
 
-
-
 {$R *.xfm}
-
 
 var
   RowHeights: array of Integer;

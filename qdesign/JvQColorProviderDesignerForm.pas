@@ -89,10 +89,7 @@ implementation
 uses
   JvQConsts, JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 function IsColorProviderDesingForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

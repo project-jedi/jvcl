@@ -114,10 +114,7 @@ uses
   TypInfo,
   JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 //=== { TJvFormStorageEditor } ===============================================
 

@@ -54,10 +54,7 @@ type
 
 implementation
 
-
-
 {$R *.xfm}
-
 
 procedure TfmeJvProviderToolbar.ResizeContextsComboBox;
 begin

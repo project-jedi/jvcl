@@ -51,7 +51,7 @@ interface
 
 uses
   QWindows, QMessages, 
-  qt, QTypes, 
+  Qt, 
   Classes, QGraphics, QControls, QMenus,
   JvQCaret, JvQMaxPixel, JvQTypes, JvQExStdCtrls;
 

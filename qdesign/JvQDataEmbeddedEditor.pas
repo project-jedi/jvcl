@@ -37,7 +37,7 @@ interface
 uses
   SysUtils, Classes, QDialogs, 
   DesignEditors, DesignIntf, DesignMenus,   
-  QWindows, JvQJCLUtils,
+  QWindows, 
   JvQDataEmbedded;
 
 type
@@ -130,13 +130,13 @@ var
   F:TFileStream;
   S:string;
 begin
-  S := GenTempFileName('JVCL');
+  S := FileGetTempName('JVCL');
   F := TFileStream.Create(S,fmCreate);
   try
     (Component as TJvDataEmbedded).DataSaveToStream(F);
   finally
     F.Free;
-  end;  
+  end;
   {$IFDEF MSWINDOWS}
   ShellExecute(GetActiveWindow, 'open','notepad.exe',PChar(S),PChar(ExtractFilePath(S)),SW_SHOWNORMAL);
   // (p3) not 100% kosher, but seems to work most of the time

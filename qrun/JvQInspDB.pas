@@ -36,8 +36,7 @@ unit JvQInspDB;
 interface
 
 uses
-  SysUtils, Classes, DB, TypInfo,   
-  QDBCtrls, 
+  SysUtils, Classes, DB, TypInfo, QDBCtrls,
   JvQInspector, JvQFinalize;
 
 type
@@ -112,8 +111,8 @@ implementation
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}  
-  QConsts, 
+  {$ENDIF UNITVERSIONING}
+  QConsts,
   JvQResources;
 
 const

@@ -384,8 +384,8 @@ begin
 end;
 
 class procedure TJvPaintFX.AntiAlias(const Dst: TBitmap);
-begin  
-  JvQJCLUtils.AntiAlias(Dst); 
+begin
+  JvQJCLUtils.AntiAlias(Dst);
 end;
 
 class procedure TJvPaintFX.AntiAliasRect(const Dst: TBitmap;

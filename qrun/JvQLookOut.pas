@@ -1290,8 +1290,9 @@ begin
 
   if csDesigning in ComponentState then
   begin
-    Canvas.Brush.Color := clBlack;  
-    FrameRect(Canvas, R); 
+    Canvas.Brush.Color := clBlack;
+    with Canvas do
+      FrameRect(Canvas, R);
     Canvas.Brush.Color := Color;
   end;
 
@@ -2631,8 +2632,9 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin
-      QWindows.DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
+    begin  
+      QWindows. 
+      DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
     begin
@@ -2837,8 +2839,9 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin 
-      QWindows.DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
+    begin  
+      QWindows. 
+      DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT);
     end
     else
     begin

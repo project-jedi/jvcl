@@ -251,8 +251,8 @@ begin
     Include(FUserBitmaps, Index <> 0);
   end
   else
-  begin  
-    FBitmaps[Index <> 0].LoadFromResourceName(HInstance, ResName[Index <> 0]); 
+  begin
+    FBitmaps[Index <> 0].LoadFromResourceName(HInstance, ResName[Index <> 0]);
     Exclude(FUserBitmaps, Index <> 0);
   end;
 end;
@@ -430,8 +430,8 @@ procedure TJvSwitch.SetBorderStyle(Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
   begin
-    FBorderStyle := Value;  
-    RecreateWidget; 
+    FBorderStyle := Value;
+    RecreateWnd;
   end;
 end;
 

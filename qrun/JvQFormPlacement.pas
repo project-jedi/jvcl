@@ -41,10 +41,8 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  SysUtils, Classes,
-  QWindows, QMessages,
-  QControls, QForms, 
-  JvQAppStorage, JvQComponent, JvQJVCLUtils, JvQTypes;
+  SysUtils, Classes, QWindows, QMessages, QControls, QForms, 
+  JvQAppStorage, JvQComponent, JvQJVCLUtils, JvQTypes, JvQConsts;
 
 type
   TJvIniLink = class;
@@ -250,8 +248,8 @@ implementation
 uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}  
-  QConsts, 
+  {$ENDIF UNITVERSIONING}
+  QConsts,
   JvQJCLUtils, JvQPropertyStorage;
 
 const
@@ -483,8 +481,8 @@ begin
       Placement.Length := SizeOf(TWindowPlacement);
       GetWindowPlacement(Form.Handle, @Placement);
       if not IsWindowVisible(Form.Handle) then
-        Placement.ShowCmd := SW_HIDE;  
-      if Form.BorderStyle <> fbsNone then 
+        Placement.ShowCmd := SW_HIDE;
+      if Form.BorderStyle <> fbsNone then
       begin
         Placement.ptMaxPosition.X := -GetSystemMetrics(Metrics[Form.BorderStyle]);
         Placement.ptMaxPosition.Y := -GetSystemMetrics(Succ(Metrics[Form.BorderStyle]));
@@ -506,8 +504,8 @@ begin
     IsActive := Active;
     Active := False;
     try
-      if (not FPreventResize) and FDefMaximize and  
-        (Form.BorderStyle <> fbsDialog) then 
+      if (not FPreventResize) and FDefMaximize and
+        (Form.BorderStyle <> fbsDialog) then
         Form.BorderIcons := Form.BorderIcons + [biMaximize]
       else
         Form.BorderIcons := Form.BorderIcons - [biMaximize];

@@ -38,11 +38,8 @@ unit JvQMaskEdit;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  SysUtils, Classes, QGraphics, QControls, QMask, QForms, 
-  QWindows, QTypes, 
+  QWindows, QMessages,
+  SysUtils, Classes, QGraphics, QControls, QMask, QForms,
   JvQComponent, JvQTypes, JvQCaret, JvQToolEdit, JvQExMask;
 
 type

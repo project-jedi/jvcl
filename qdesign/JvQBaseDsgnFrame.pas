@@ -61,10 +61,7 @@ type
 
 implementation
 
-
-
 {$R *.xfm}
-
 
 uses
   JvQBaseDsgnForm;

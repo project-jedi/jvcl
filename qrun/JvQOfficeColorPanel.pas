@@ -39,9 +39,9 @@ unit JvQOfficeColorPanel;
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, QWindows, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls,
-  QDialogs, 
+  SysUtils, Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs, 
+  Qt, 
   JvQComponent, JvQSpeedButton;
 
 const

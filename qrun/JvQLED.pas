@@ -174,10 +174,13 @@ begin
   SrcRect := Rect(0, 0, FImgPict.Width, FImgPict.Height);  
   DestRect := Bounds(Left, Top, Width, Height); 
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
-  Canvas.CopyMode := cmSrcAnd;  
-  CopyRect(Canvas, DestRect, FImgMask.Canvas, SrcRect); 
-  Canvas.CopyMode := cmSrcPaint;  
-  CopyRect(Canvas, DestRect, FImgPict.Canvas, SrcRect); 
+  Canvas.CopyMode := cmSrcAnd;
+  with Canvas do
+  begin
+    CopyRect(Canvas, DestRect, FImgMask.Canvas, SrcRect);
+    CopyMode := cmSrcPaint;
+    CopyRect(Canvas,DestRect, FImgPict.Canvas, SrcRect);
+  end;
 end;
 
 procedure TJvCustomLED.SetColorOn(Value: TColor);

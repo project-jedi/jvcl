@@ -127,10 +127,7 @@ uses
   SysUtils, 
   JvQConsts, JvQTypes, JvQResources;
 
-
-
 {$R *.xfm}
-
 
 const
   EmptyLine = '0.00';

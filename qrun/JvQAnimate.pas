@@ -41,12 +41,6 @@ uses
   Classes, QControls,
   JvQThemes, JvQExComCtrls;
 
-
- {$IF not declared(TJvExAnimate)}
-  {$MESSAGE Fatal 'This unit needs at least Delphi 7 or Kylix 3.'}
- {$IFEND}
-
-
 type
   TJvAnimate = class(TJvExAnimate)
   public

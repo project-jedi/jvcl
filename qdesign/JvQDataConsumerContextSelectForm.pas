@@ -60,10 +60,7 @@ implementation
 uses
   JvQContextProvider, JvQTypes, JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 function ConsumerSelectContext(AConsumer: IJvDataConsumer): Boolean;
 var

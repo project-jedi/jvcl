@@ -38,8 +38,8 @@ unit JvQTipOfDay;
 interface
 
 uses
-  Classes, QGraphics, QControls, QMessages, QForms, QStdCtrls,
-  JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes;
+  Classes, QWindows, QGraphics, QControls, QMessages, QForms, QStdCtrls,
+  JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes, JvQConsts;
   
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -78,7 +78,7 @@ type
     FTipLabel: TControl;
     FNextTipButton: TControl;
     FCheckBox: TButtonControl;  
-    procedure FormHide(Sender : TObject); 
+    procedure FormHide(Sender : TObject);
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
     function GetTips: TStrings;
@@ -157,8 +157,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils,  
-  QExtCtrls, QDialogs, 
+  SysUtils, QExtCtrls, QDialogs,
   JvQButton, JvQResources;
 
 {$IFDEF MSWINDOWS}
@@ -351,8 +350,8 @@ end;
 procedure TJvTipOfDay.InitStandard(AForm: TForm);
 begin
   with AForm do
-  begin  
-    BorderStyle := fbsDialog; 
+  begin
+    BorderStyle := fbsDialog;
     { Title }
     Caption := Self.Title;
     ClientHeight := 267;
@@ -458,9 +457,8 @@ end;
 procedure TJvTipOfDay.InitVC(AForm: TForm);
 begin
   with AForm do
-  begin  
-    BorderStyle := fbsDialog; 
-
+  begin
+    BorderStyle := fbsDialog;
     { Title }
     Caption := Self.Title;
     ClientHeight := 258;

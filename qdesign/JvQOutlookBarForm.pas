@@ -41,7 +41,7 @@ uses
   {$ENDIF MSWINDOWS}
   QControls, QForms, QToolWin, QMenus, QActnList, QComCtrls, QImgList, 
   DesignEditors, DesignIntf, DesignMenus, QDesignWindows, 
-  JvQOutlookBar, QTypes, QExtCtrls;
+  JvQOutlookBar;
 
 type
   TFrmOLBEditor = class(TDesignWindow)
@@ -469,7 +469,7 @@ end;
 
 procedure TFrmOLBEditor.tvItemsChange(Sender: TObject; Node: TTreeNode);
 begin
-  SelectItem(Node);    
+  SelectItem(Node);
 end;
 
 procedure TFrmOLBEditor.tvItemsCollapsing(Sender: TObject; Node: TTreeNode;

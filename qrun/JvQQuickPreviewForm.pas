@@ -58,10 +58,7 @@ uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
 
-
-
 {$R *.xfm}
-
 
 procedure TQuickPreviewForm.BtnUseClick(Sender: TObject);
 

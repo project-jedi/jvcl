@@ -37,7 +37,7 @@ interface
 
 uses
   SysUtils, Classes, QWindows, QMessages, QGraphics, QControls, 
-  Qt,
+  Qt, 
   JvQComponent, JvQThemes;
 
 type

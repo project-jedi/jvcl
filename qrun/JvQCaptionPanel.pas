@@ -463,8 +463,8 @@ procedure TJvCaptionPanel.SetCaptionPosition(Value: TJvDrawPosition);
 begin
   if FCaptionPosition <> Value then
   begin
-    FCaptionPosition := Value;  
-    RecreateWidget; 
+    FCaptionPosition := Value;
+    RecreateWnd;
   end;
 end;
 
@@ -612,6 +612,7 @@ begin
               Inc(Y);  
           end;
       end;  
+      // ToDo: replace with DrawText(Canvas, .... , Rotation)
       TextOutAngle(Canvas, Rotation, X, Y, Caption); 
     end; 
   finally

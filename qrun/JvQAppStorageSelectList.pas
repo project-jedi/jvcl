@@ -220,8 +220,8 @@ begin
 
   with SelectDialog do
   begin
-    BorderIcons := [];  
-    BorderStyle := fbsDialog; 
+    BorderIcons := []; 
+    BorderStyle := fbsDialog;
     FormStyle := fsNormal;
     Position := poScreenCenter;
     OnDestroy := SelectFormDestroying;

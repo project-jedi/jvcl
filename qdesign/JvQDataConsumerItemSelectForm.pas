@@ -79,10 +79,7 @@ implementation
 uses
   JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 function IsConsumerItemSelectForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

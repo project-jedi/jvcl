@@ -101,10 +101,7 @@ uses
   {$ENDIF UNITVERSIONING}
   JvQConsts, JvQResources, JvQTypes;
 
-
-
 {$R *.xfm}
-
 
 function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm

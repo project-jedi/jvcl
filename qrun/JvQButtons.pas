@@ -137,7 +137,7 @@ type
 
   TJvaColorButton = class(TJvExBitBtn)
   private 
-    FCanvas: TCanvas; 
+    FCanvas: TCanvas;    // asn: never created 
     FGlyphDrawer: TJvButtonGlyph;
     FOnPaint: TPaintButtonEvent; 
   protected

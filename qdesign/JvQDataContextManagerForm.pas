@@ -63,10 +63,7 @@ implementation
 uses
   JvQContextProvider, JvQBaseDsgnForm, JvQDataProvider, JvQDsgnConsts;
 
-
-
 {$R *.xfm}
-
 
 function IsContextDesignForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

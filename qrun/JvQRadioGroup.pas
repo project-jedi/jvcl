@@ -36,8 +36,7 @@ interface
 
 uses
   QWindows, QMessages,
-  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin, 
-  QTypes, 
+  SysUtils, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QToolWin,
   JvQJCLUtils, JvQThemes, JvQExControls, JvQExExtCtrls;
 
 type

@@ -446,6 +446,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math, 
   DateUtils, 
   JvQJVCLUtils, JvQConsts, JvQThemes;
@@ -453,9 +456,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTimeLine.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvTimeLine.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   FDayLineLength = 4;
@@ -2529,6 +2532,22 @@ end;
 // initialization
 //  SystemParametersInfo(SPI_GETKEYBOARDDELAY, 0, @FInitRepeatPause, 0);
 //  SystemParametersInfo(SPI_GETKEYBOARDSPEED, 0, @FRepeatPause, 0);
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -35,12 +35,8 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
-  {$IFDEF MSWINDOWS}
-  Windows, Messages,
-  {$ENDIF MSWINDOWS}
-  QMenus, QButtons, QControls,
-  QGraphics, QForms, QImgList, QActnList, QExtCtrls, QGrids, 
-  QWindows, 
+  QWindows, QMessages, QMenus, QButtons, QControls,
+  QGraphics, QForms, QImgList, QActnList, QExtCtrls, QGrids,
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}

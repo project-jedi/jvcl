@@ -173,8 +173,8 @@ type
     FOnScroll: TNotifyEvent;
     procedure SetParam(Index, Value: Integer);
     procedure SetInclusive(Value: Boolean);
-  protected  
-    procedure CreateWidget; override; 
+  protected
+    procedure CreateWnd; override;
     procedure SetTrackBar;
     procedure Loaded; override;
     procedure Resize; override;
@@ -298,7 +298,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvQDsgnIntf, JvQJVCLUtils, JvQConsts, JvQThemes, JvQResources;
+  JvQDsgnIntf, JvQJCLUtils, JvQJVCLUtils, JvQConsts, JvQThemes, JvQResources;
 
 { Cursors resources }
 {$IFDEF MSWINDOWS}
@@ -487,15 +487,11 @@ begin
   SetTrackBar;
 end;
 
-
-
-
-procedure TJvPanelScrollBar.CreateWidget;
+procedure TJvPanelScrollBar.CreateWnd;
 begin
-  inherited CreateWidget;
+  inherited CreateWnd;
   SetTrackBar;
 end;
-
 
 //=== { TJvBandBtn } =========================================================
 
@@ -1022,14 +1018,13 @@ var
   S1: string;
 begin
   if (csDesigning in ComponentState) and
-    (ControlCount = 0) and  
-    (Canvas.Handle <> nil) then 
+    (ControlCount = 0) and
+    (Canvas.Handle <> NullHandle) then
   begin
     R := ClientRect;
     Canvas.Font.Color := clAppWorkSpace;
-    S1 := RsRightClickAndChooseAddBand;  
-    DrawText(Canvas, S1,
-      -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER}); 
+    S1 := RsRightClickAndChooseAddBand;
+    DrawText(Canvas.Handle, S1, -1, R, DT_WORDBREAK {or DT_CENTER or DT_VCENTER});
   end;
 end;
 

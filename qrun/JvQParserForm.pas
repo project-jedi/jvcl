@@ -79,10 +79,7 @@ uses
   {$ENDIF UNITVERSIONING}
   QDialogs, JvQHTMLParser, JvQResources;
 
-
-
 {$R *.xfm}
-
 
 procedure TJvHTMLParserForm.edKeywordChange(Sender: TObject);
 begin

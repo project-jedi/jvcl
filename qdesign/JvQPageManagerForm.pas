@@ -98,14 +98,11 @@ type
 
 implementation
 
-uses  
-  QConsts, QButtons, 
+uses
+  QConsts, QButtons,
   JvQDsgnConsts, JvQDsgnTypes;
 
-
-
 {$R *.xfm}
-
 
 function FindEditor(Manager: TJvPageManager): TJvProxyEditor;
 var

@@ -63,10 +63,7 @@ type
 
 implementation
 
-
-
 {$R *.xfm}
-
 
 //=== { TJvHintProperty } ====================================================
 

@@ -1720,8 +1720,8 @@ begin
   AForm.Hide;
   TCustomControlAccessProtected(AForm).DestroyHandle;
   with AForm do
-  begin  
-    BorderStyle := fbsNone; 
+  begin
+    BorderStyle := fbsNone;
     BorderIcons := [];
     Parent := AControl;
   end;
@@ -3127,8 +3127,8 @@ begin
       DataFound := DataFound and (Screen.PixelsPerInch = AppStorage.ReadInteger(
         StorePath + '\' + siPixels, Screen.PixelsPerInch));
       if DataFound then
-      begin  
-          if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then 
+      begin
+        if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
             rcNormalPosition := Rect(rcNormalPosition.Left,
               rcNormalPosition.Top, rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
         if rcNormalPosition.Right > rcNormalPosition.Left then

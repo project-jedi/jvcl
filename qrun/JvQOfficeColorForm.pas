@@ -40,9 +40,9 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, QGraphics, QControls, QForms, 
-  Qt, QStdCtrls, QExtCtrls, 
-  JvQComponent, JvQLabel, JvQOfficeColorPanel;
+  QWindows, QMessages, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
+  Qt, 
+  JvQConsts, JvQComponent, JvQLabel, JvQOfficeColorPanel;
 
 {------------------------------------------------------------------------------}
 const
@@ -141,12 +141,9 @@ begin
   FInited := False;
   FShowDragBar := True;
 //  Scaled := False;
-  AutoScroll := False;  
+  AutoScroll := False;
   BorderIcons := [];
-  BorderStyle := fbsDialog;
-  {$IFDEF MSWINDOWS}
-//  Font.Name := 'MS Shell Dlg 2';
-  {$ENDIF MSWINDOWS} 
+  BorderStyle := fbsDialog; 
   FormStyle := fsStayOnTop;
   Caption := RsColorWindow;
 
@@ -295,7 +292,7 @@ procedure TJvOfficeColorForm.SetToolWindowStyle(const Value: Boolean);
 begin
   if ShowDragBar then
   begin
-    FToolWindowStyle := Value;  
+    FToolWindowStyle := Value;
     if Value then
     begin
       BorderIcons := [biSystemMenu];
@@ -307,7 +304,7 @@ begin
       BorderIcons := [];
       BorderStyle := fbsDialog;
       FDragBar.Visible := True;
-    end; 
+    end;
     if not DropDownMoving then
       AdjustColorForm;
     if Assigned(FOnWindowStyleChanged) then
@@ -316,8 +313,8 @@ begin
   else
   begin
     FToolWindowStyle := False;
-    BorderIcons := [];  
-    BorderStyle := fbsDialog; 
+    BorderIcons := [];
+    BorderStyle := fbsDialog;
     FDragBar.Visible := False;
   end;
 end;

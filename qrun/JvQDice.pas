@@ -147,9 +147,10 @@ begin
   FValue := Low(TJvDiceValue);
   for I := Low(TJvDiceValue) to High(TJvDiceValue) do
   begin
-    FBitmap[I] := TBitmap.Create;  
-    FBitmap[I].LoadFromResourceName(HInstance, Format('JV_DICE%d', [Ord(I)])); 
-  end; 
+    FBitmap[I] := TBitmap.Create;
+    FBitmap[I].LoadFromResourceName(HInstance, Format('JV_DICE%d', [Ord(I)]));
+  end;
+  AutoSize := True;
   Width := FBitmap[Value].Width + 2;
   Height := FBitmap[Value].Height + 2;
 end;

@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, QWindows, QMessages, QGraphics, QControls, QExtCtrls,
-  JvQComponent, JvQTypes;
+  JvQJCLUtils, JvQComponent, JvQTypes;
 
 type
   TJvGroupHeaderOptions = class(TPersistent)
@@ -78,15 +78,15 @@ type
     procedure SetLayout(Value: TJvLayout);
     procedure SetBevelOptions(Value: TJvGroupHeaderOptions);
     procedure SetBevelSpace(Value: Integer);
-    procedure SetLabelOptions(Value: TJvGroupHeaderOptions); 
+    procedure SetLabelOptions(Value: TJvGroupHeaderOptions);
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
     function GetLabelText: string;
   protected
-    procedure Paint; override; 
+    procedure Paint; override;
     procedure TextChanged; override;
-    procedure FontChanged; override; 
+    procedure FontChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -238,14 +238,14 @@ begin
   if not Enabled then
   begin
     OffsetRect(Rect, 1, 1);
-    Canvas.Font.Color := clBtnHighlight;  
+    Canvas.Font.Color := clBtnHighlight;
     DrawText(Canvas, Text, Length(Text), Rect, Flags);
     OffsetRect(Rect, -1, -1);
     Canvas.Font.Color := clBtnShadow;
-    DrawText(Canvas, Text, Length(Text), Rect, Flags); 
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
   end
-  else  
-    DrawText(Canvas, Text, Length(Text), Rect, Flags); 
+  else
+    DrawText(Canvas, Text, Length(Text), Rect, Flags);
 end;
 
 procedure TJvGroupHeader.Paint;
@@ -443,22 +443,17 @@ begin
   end;
 end;
 
-
-
-
-
 procedure TJvGroupHeader.TextChanged;
 begin
   inherited TextChanged;
   Invalidate;
 end;
+
 procedure TJvGroupHeader.FontChanged;
 begin
   inherited FontChanged;
   Invalidate;
 end;
-
-
 
 procedure TJvGroupHeader.SetBevelSpace(Value: Integer);
 begin
