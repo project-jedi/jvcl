@@ -610,9 +610,7 @@ begin
   begin
     case Msg.Msg of
       WM_NCACTIVATE:
-        begin
-          FWindowActive := (Msg.WParam <> 0);
-        end;
+        FWindowActive := (Msg.WParam <> 0);
       WM_NCRBUTTONDOWN:
         if Assigned(FPopupMenu) and FPopupMenu.AutoPopup then
         begin
@@ -689,15 +687,13 @@ begin
         { Delphi doesn't send WM_SETTEXT to form's window procedure,
           so we need to handle WM_GETTEXT to redraw non-client area
           when form's caption changed }
+        if csDesigning in ComponentState then
         begin
-          if csDesigning in ComponentState then
+          SetString(S, PChar(Msg.LParam), Msg.Result);
+          if AnsiCompareStr(S, FFormCaption) <> 0 then
           begin
-            SetString(S, PChar(Msg.LParam), Msg.Result);
-            if AnsiCompareStr(S, FFormCaption) <> 0 then
-            begin
-              FormCaption := S;
-              PostMessage(Form.Handle, WM_NCPAINT, 0, 0);
-            end;
+            FormCaption := S;
+            PostMessage(Form.Handle, WM_NCPAINT, 0, 0);
           end;
         end;
     end;
@@ -767,10 +763,7 @@ begin
     if (Form <> nil) and Form.HandleAllocated and Form.Visible then
     begin
       if Active then
-      begin
-        FWindowActive := (GetActiveWindow = Form.Handle) and
-          IsForegroundTask;
-      end;
+        FWindowActive := (GetActiveWindow = Form.Handle) and IsForegroundTask;
       with Form do
         Rgn := CreateRectRgn(Left, Top, Left + Width, Top + Height);
       try

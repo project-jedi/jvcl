@@ -108,8 +108,8 @@ type
 
   TJvHookInfos = class(TObject)
   private
-    FFirst: array[TJvHookOrder] of PJvHookInfo;
-    FLast: array[TJvHookOrder] of PJvHookInfo;
+    FFirst: array [TJvHookOrder] of PJvHookInfo;
+    FLast: array [TJvHookOrder] of PJvHookInfo;
     { FStack is filled with HookInfos that are being processed in WindowProc
       procedures. On entrance of the WindowProc the size increases, on exit it
       decreases. Thus when a message is send inside a hook handler, the stack
@@ -119,12 +119,11 @@ type
       handlers, see \dev\DUnit for some examples.
 
       The odd members in the stack are hoBeforeMsg hooks, the even members in
-      the list are hoAftermsg hooks
+      the list are hoAfterMsg hooks
     }
     FStack: PHookInfoList;
     FStackCapacity: Integer;
     FStackCount: Integer;
-
     FHandle: HWND;
     FControl: TControl;
     FControlDestroyed: Boolean;
@@ -136,7 +135,6 @@ type
     procedure WindowProc(var Msg: TMessage);
     procedure HookControl;
     procedure UnHookControl;
-
     procedure IncDepth;
     procedure DecDepth;
   public
@@ -177,7 +175,7 @@ type
       const Order: TJvHookOrder): Boolean; overload;
   end;
 
-  TJvReleaser = class
+  TJvReleaser = class(TObject)
   private
     FHandle: HWND;
     FReleasing: TList;
