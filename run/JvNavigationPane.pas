@@ -692,21 +692,24 @@ type
 
   TJvNavPaneToolButton = class(TCollectionItem)
   private
-    FImageIndex: TImageIndex;
-    FEnabled: Boolean;
-    FAction: TBasicAction;
-    FHint: string;
+    FRealButton:TJvNavPanelToolButton;
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetEnabled(const Value: Boolean);
     procedure SetAction(const Value: TBasicAction);
     procedure SetHint(const Value: string);
+    function GetAction: TBasicAction;
+    function GetEnabled: Boolean;
+    function GetHint: string;
+    function GetImageIndex: TImageIndex;
   public
     constructor Create(Collection: TCollection); override;
+    destructor Destroy; override;
+    property Button:TJvNavPanelToolButton read FRealButton;
   published
-    property Action: TBasicAction read FAction write SetAction;
-    property Hint: string read FHint write SetHint;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
-    property Enabled: Boolean read FEnabled write SetEnabled default True;
+    property Action: TBasicAction read GetAction write SetAction;
+    property Hint: string read GetHint write SetHint;
+    property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
+    property Enabled: Boolean read GetEnabled write SetEnabled default True;
   end;
 
   TJvNavPaneToolButtons = class(TOwnedCollection)
@@ -737,7 +740,6 @@ type
     FButtonHeight: Integer;
     FImages: TCustomImageList;
     FButtons: TJvNavPaneToolButtons;
-    FRealButtons: TList;
     FOnButtonClick: TJvNavPaneToolButtonClick;
     FDropDown: TJvNavPanelToolButton;
     FCloseButton: TJvNavPanelToolButton;
@@ -1109,6 +1111,9 @@ uses
 
 const
   cNavPanelButtonGroupIndex = 113;
+  cToolButtonHeight = 18;
+  cToolButtonOffset = 14;
+  cToolButtonWidth = 18;
 
 procedure InternalStyleManagerChanged(AControl: TWinControl; AStyleManager: TJvNavPaneStyleManager);
 var
@@ -1191,6 +1196,7 @@ destructor TJvIconPanel.Destroy;
 begin
   FStyleLink.Free;
   FColors.Free;
+  // Don't free FDropButton: it is freed automatically
   inherited Destroy;
 end;
 
@@ -3955,7 +3961,6 @@ begin
   ControlStyle := [csAcceptsControls, {$IFDEF VCL}csCaptureMouse, {$ENDIF VCL}csClickEvents,
   csOpaque, csDoubleClicks, csReplicatable];
 
-  FRealButtons := TObjectList.Create;
   FButtons := TJvNavPaneToolButtons.Create(Self);
   FStyleLink := TJvNavStyleLink.Create;
   FStyleLink.OnChange := DoStyleChange;
@@ -4001,7 +4006,6 @@ begin
   FStyleLink.Free;
   FChangeLink.Free;
   FButtons.Free;
-  FRealButtons.Free;
   FBackground.Free;
   FColors.Free;
   inherited Destroy;
@@ -4012,24 +4016,18 @@ var
   I: Integer;
   B: TJvNavPanelToolButton;
 begin
-  FRealButtons.Clear;
   if HeaderVisible then
-  for I := 0 to Buttons.Count - 1 do
-  begin
-    B := TJvNavPanelToolButton.Create(nil);
-    B.Visible := False;
-    B.SetBounds(0, 0, ButtonWidth - 3, ButtonHeight - 2);
-    B.ButtonType := nibImage;
-    B.Images := Images;
-    B.ImageIndex := Buttons[I].ImageIndex;
-    B.Enabled := Buttons[I].Enabled;
-    B.Hint := Buttons[I].Hint;
-    B.OnClick := InternalButtonClick;
-    B.Tag := I;
-    B.Action := Buttons[I].Action;
-    B.Parent := Self;
-    FRealButtons.Add(B);
-  end;
+    for I := 0 to Buttons.Count - 1 do
+    begin
+      B := Buttons[I].Button;
+      B.Visible := False;
+      B.SetBounds(0, 0, ButtonWidth - 3, ButtonHeight - 2);
+      B.Images := Images;
+      if B.Action = nil then
+        B.OnClick := InternalButtonClick;
+      B.Tag := I;
+      B.Parent := Self;
+    end;
   Invalidate;
 end;
 
@@ -4127,6 +4125,7 @@ begin
   end;
 end;
 
+
 procedure TJvNavPaneToolPanel.Paint;
 var
   R, R2: TRect;
@@ -4153,7 +4152,7 @@ begin
       R.Bottom := R.Top + HeaderHeight;
       GradientFillRect(Canvas, R, Colors.ToolPanelHeaderColorFrom, Colors.ToolPanelHeaderColorTo, fdTopToBottom, 255);
       // draw the drag dots
-      R2 := Rect(R.Left, R.Top + HeaderHeight div 4, R.Left + 2, R.Top + HeaderHeight div 4 + 2);
+      R2 := Rect(R.Left, R.Top + (HeaderHeight - cToolButtonHeight) div 2 + 2, R.Left + 2, R.Top + (HeaderHeight - cToolButtonHeight) div 2 + 4);
       OffsetRect(R2, 6, 0);
       if ShowGrabber then
       begin
@@ -4234,7 +4233,7 @@ begin
         for I := 0 to Buttons.Count - 1 do
         begin
           X := R2.Left + ButtonWidth * I;
-          B := TJvNavPanelToolButton(FRealButtons[I]);
+          B := Buttons[I].Button;
           B.SetBounds(X + 3, Y + 2, ButtonWidth - 6, ButtonHeight - 4);
           B.Visible := True;
           if I > 0 then
@@ -4263,29 +4262,26 @@ begin
 end;
 
 procedure TJvNavPaneToolPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
-const
-  cOffset = 14;
-  cWidth = 18;
-  cHeight = 18;
-var AOffset:Integer;
+var
+  AOffset: Integer;
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if HeaderVisible and ShowGrabber then
-    AOffset := cOffset
+    AOffset := cToolButtonOffset
   else
     AOffset := 4;
-  if (Parent <> nil) {and HeaderVisible} then
+  if (Parent <> nil) and (HeaderHeight > cToolButtonHeight) then
   begin
-    FCloseButton.SetBounds(ClientWidth - cWidth - 2, (HeaderHeight - cHeight) div 2, cWidth, cHeight);
+    FCloseButton.SetBounds(ClientWidth - cToolButtonWidth - 2, (HeaderHeight - cToolButtonHeight) div 2, cToolButtonWidth, cToolButtonHeight);
     if FCloseButton.Visible or (csDesigning in ComponentState) then
-      FDropDown.SetBounds(AOffset, (HeaderHeight - cHeight) div 2, ClientWidth - cWidth - AOffset - 2, cHeight)
+      FDropDown.SetBounds(AOffset, (HeaderHeight - cToolButtonHeight) div 2, ClientWidth - cToolButtonWidth - AOffset - 2, cToolButtonHeight)
     else
-      FDropDown.SetBounds(AOffset, (HeaderHeight - cHeight) div 2, ClientWidth - AOffset - 4, cHeight);
-//  end
-//  else
-//  begin
-//    FCloseButton.SetBounds(0,0,0,0);
-//    FDropDown.SetBounds(0,0,0,0);
+      FDropDown.SetBounds(AOffset, (HeaderHeight - cToolButtonHeight) div 2, ClientWidth - AOffset - 4, cToolButtonHeight);
+  end
+  else
+  begin
+    FCloseButton.SetBounds(0,0,0,0);
+    FDropDown.SetBounds(0,0,0,0);
   end;
 end;
 
@@ -4365,7 +4361,7 @@ begin
       FImages.FreeNotification(Self);
     end;
     for I := 0 to Buttons.Count - 1 do
-      TJvNavPanelToolButton(FRealButtons[I]).Images := FImages;
+      Buttons[I].Button.Images := FImages;
     Invalidate;
   end;
 end;
@@ -4506,41 +4502,54 @@ end;
 constructor TJvNavPaneToolButton.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
-  FImageIndex := -1;
-  FEnabled := True;
+  FRealButton := TJvNavPanelToolButton.Create(nil);
+  FRealButton.ButtonType := nibImage;
+end;
+
+destructor TJvNavPaneToolButton.Destroy;
+begin
+  FRealButton.Free;
+  inherited;
+end;
+
+function TJvNavPaneToolButton.GetAction: TBasicAction;
+begin
+  Result := FRealButton.Action;
+end;
+
+function TJvNavPaneToolButton.GetEnabled: Boolean;
+begin
+  Result := FRealButton.Enabled;
+end;
+
+function TJvNavPaneToolButton.GetHint: string;
+begin
+  Result := FRealButton.Hint;
+end;
+
+function TJvNavPaneToolButton.GetImageIndex: TImageIndex;
+begin
+  Result := FRealButton.ImageIndex;
 end;
 
 procedure TJvNavPaneToolButton.SetAction(const Value: TBasicAction);
 begin
-  if FAction <> Value then
-  begin
-    FAction := Value;
-    Changed(False);
-  end;
+  FRealButton.Action := Value;
 end;
 
 procedure TJvNavPaneToolButton.SetEnabled(const Value: Boolean);
 begin
-  if FEnabled <> Value then
-  begin
-    FEnabled := Value;
-    Changed(False);
-  end;
+  FRealButton.Enabled := Value;
 end;
 
 procedure TJvNavPaneToolButton.SetHint(const Value: string);
 begin
-  FHint := Value;
-  Changed(False);
+  FRealButton.Hint := Value;
 end;
 
 procedure TJvNavPaneToolButton.SetImageIndex(const Value: TImageIndex);
 begin
-  if FImageIndex <> Value then
-  begin
-    FImageIndex := Value;
-    Changed(False);
-  end;
+  FRealButton.ImageIndex := Value;
 end;
 
 //=== TJvNavPaneToolButtons ==================================================

@@ -122,6 +122,7 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
+    FHiddenPages:TList;
     {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     {$ENDIF VCL}
@@ -150,6 +151,7 @@ type
     procedure InsertPage(APage: TJvCustomPage);virtual;
     procedure RemovePage(APage: TJvCustomPage);virtual;
     property PageList: TList read FPages;
+    property HiddenPageList:TList read FHiddenPages;
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable;
     property ShowDesignCaption: TJvShowDesignCaption read FShowDesignCaption write SetShowDesignCaption default sdcCenter;
 
@@ -169,7 +171,7 @@ type
 
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property ActivePage: TJvCustomPage read FActivePage write SetActivePage;
-    property Pages[Index:Integer]:TJvCustomPage read GetPage;
+    property Pages[Index:Integer]:TJvCustomPage read GetPage;default;
     property PageCount: Integer read GetPageCount;
   end;
 
@@ -528,6 +530,7 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
   IncludeThemeStyle(Self, [csParentBackground]);
   FPages := TList.Create;
+  FHiddenPages := TList.Create;
   Height := 200;
   Width := 300;
   FShowDesignCaption := sdcCenter;
@@ -541,6 +544,7 @@ begin
   for I := FPages.Count - 1 downto 0 do
     TJvCustomPage(FPages[I]).FPageList := nil;
   FPages.Free;
+  FHiddenPages.Free;
   inherited Destroy;
 end;
 
@@ -698,6 +702,7 @@ begin
     Page.PageList := nil;
     Page.PageIndex := I;
     Result := Page;
+    FHiddenPages.Add(Result);
   end
   else
     Result := nil;
@@ -709,13 +714,14 @@ begin
   if (Page <> nil) and (Page.PageList = nil) then
   begin
     I := Page.PageIndex;
-    Result := Page;
     Page.PageList := Self;
     Page.Parent := Self;
     if PageIndex > -1 then
       Page.PageIndex := PageIndex
     else if I > -1 then
       Page.PageIndex := I;
+    Result := Page;
+    FHiddenPages.Remove(Result);
   end
   else
     Result := nil;
