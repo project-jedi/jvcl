@@ -10,13 +10,14 @@ object Form1: TForm1
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 448
+    Top = 429
     Width = 775
     Height = 65
     Align = alBottom
@@ -187,5 +188,17 @@ object Form1: TForm1
   object PrinterSetupDialog1: TPrinterSetupDialog
     Left = 672
     Top = 368
+  end
+  object MainMenu1: TMainMenu
+    Left = 96
+    Top = 64
+    object File1: TMenuItem
+      Caption = 'File'
+      object Open1: TMenuItem
+        Caption = 'Open...'
+        ShortCut = 16463
+        OnClick = Open1Click
+      end
+    end
   end
 end

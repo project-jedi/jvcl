@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvPrvwDoc, ComCtrls, StdCtrls, ExtCtrls;
+  Dialogs, JvPrvwDoc, ComCtrls, StdCtrls, ExtCtrls, Menus;
 
 type
   TForm1 = class(TForm)
@@ -27,6 +27,9 @@ type
     chkMargins: TCheckBox;
     cbPreview: TComboBox;
     Label5: TLabel;
+    MainMenu1: TMainMenu;
+    File1: TMenuItem;
+    Open1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure chkAutoScrollClick(Sender: TObject);
     procedure udColumnsClick(Sender: TObject; Button: TUDBtnType);
@@ -36,12 +39,29 @@ type
     procedure Button1Click(Sender: TObject);
     procedure chkMarginsClick(Sender: TObject);
     procedure cbPreviewChange(Sender: TObject);
+    procedure Open1Click(Sender: TObject);
   private
     { Private declarations }
   public
     { Public declarations }
     pd:TJvPreviewDoc;
   end;
+  // NB! Doesn't wordwrap!
+  TJvStringsPreviewRenderer = class(TObject)
+  private
+    FStrings:TStringlist;
+    FPreview:TJvPreviewDoc;
+    FFinished:boolean;
+    FCurrentRow:integer;
+    procedure CreatePreview;
+    procedure DoAddPage(Sender: TObject; PageIndex: integer;
+      Canvas: TCanvas; PageRect, PrintRect: TRect);
+  public
+    constructor Create(Preview:TJvPreviewDoc;Strings:TStrings);
+    destructor Destroy;override;
+    property Finished:boolean read FFinished;
+  end;
+
 
 var
   Form1: TForm1;
@@ -50,6 +70,64 @@ implementation
 uses
   Printers;
 {$R *.dfm}
+
+{ TJvStringsPreviewRenderer }
+
+constructor TJvStringsPreviewRenderer.Create(Preview: TJvPreviewDoc;
+  Strings: TStrings);
+begin
+  inherited Create;
+  FPreview := Preview;
+  FStrings := TStringlist.Create;
+  FStrings.Assign(Strings);
+  CreatePreview;
+end;
+
+procedure TJvStringsPreviewRenderer.DoAddPage(Sender: TObject; PageIndex: integer; Canvas: TCanvas;
+    PageRect, PrintRect: TRect);
+var i,X,Y,IncValue:integer;ARect:TRect;tm:TTextMetric;
+begin
+  if not FFinished then
+  begin
+    Canvas.Font.Name := 'Courier New';
+    Canvas.Font.Size := 10;
+    GetTextMetrics(Canvas.Handle,tm);
+    IncValue := Canvas.TextHeight('Wq') + tm.tmInternalLeading + tm.tmExternalLeading;
+    ARect := PrintRect;
+    OffsetRect(ARect,1,1);
+    ARect.Bottom := ARect.Top + IncValue + 1;
+    for i := FCurrentRow to FStrings.Count - 1 do
+    begin
+      DrawText(Canvas.Handle,PChar(FStrings[i]),-1, ARect, DT_NOPREFIX or DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT);
+      OffsetRect(ARect,0,IncValue);
+      if ARect.Bottom > PrintRect.Bottom then
+      begin
+        FPreview.Add;
+        FCurrentRow := i + 1;
+        Exit;
+      end;
+    end;
+    FFinished := true;
+  end;
+end;
+
+procedure TJvStringsPreviewRenderer.CreatePreview;
+begin
+  FPreview.Clear;
+  FPreview.OnAddPage := DoAddPage;
+  FFinished := false;
+  FCurrentRow := 0;
+  if FStrings.Count > 0 then
+    FPreview.Add
+  else
+  FFinished := true;
+end;
+
+destructor TJvStringsPreviewRenderer.Destroy;
+begin
+  FStrings.Free;
+  inherited;
+end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
@@ -61,7 +139,7 @@ begin
   pd.Options.Columns := udColumns.Position;
   pd.Options.Shadow.Offset := udShadowWidth.Position;
   pd.Options.Zoom := udZoom.Position;
-  cbPreview.ItemIndex := 2;
+  cbPreview.ItemIndex := 0;
   cbPreviewChange(nil);
 end;
 
@@ -105,11 +183,36 @@ procedure TForm1.cbPreviewChange(Sender: TObject);
 begin
   case cbPreview.ItemIndex of
   0:
-    pd.DeviceInfo.ReferenceHandle := 0;
+    pd.DeviceInfo.ReferenceHandle := 0;  // reset to default (screen)
   1:
     pd.DeviceInfo.ReferenceHandle := Canvas.Handle; // should give same result as Screen
   2:
     pd.DeviceInfo.ReferenceHandle := Printer.Handle;
+  end;
+end;
+
+procedure TForm1.Open1Click(Sender: TObject);
+var S:TStringlist;
+begin
+  with TOpenDialog.Create(nil) do
+  try
+    if Execute then
+    begin
+      S := TStringlist.Create;
+      try
+        S.LoadFromFile(Filename);
+        with TJvStringsPreviewRenderer.Create(pd,S) do
+        try
+          while not Finished do Application.ProcessMessages;
+        finally
+          Free;
+        end;
+      finally
+        S.Free;
+      end;
+    end;
+  finally
+    Free;
   end;
 end;
 
