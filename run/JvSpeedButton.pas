@@ -263,6 +263,7 @@ type
     destructor Destroy; override;
   published
     property Action;
+    property Align;
     property Alignment;
     property AllowAllUp;
     property AllowTimer;
@@ -355,6 +356,7 @@ type
     destructor Destroy; override;
   published
     property Action;
+    property Align;
     property Alignment;
     property AllowAllUp;
     property AllowTimer;
@@ -1391,21 +1393,28 @@ begin
       { .. do not paint gray image }
       LState := FState;
 
-    if (MouseOver or FDragging) and HotTrack then
+    if ((HotTrackOptions.Enabled and Down) or (MouseOver or FDragging)) and HotTrack then
     begin
       Canvas.Font := Self.HotTrackFont;
       {Inserted by (ag) 2004-09-04}
       if HotTrackOptions.Enabled then
         begin
-          Canvas.Brush.Color := HotTrackOptions.Color;
-          Canvas.Brush.Style := bsSolid;
+          if Down then
+            Canvas.Brush.Bitmap := CreateTwoColorsBrushPattern(HotTrackOptions.Color, clWindow)
+          else
+          begin
+            Canvas.Brush.Color := HotTrackOptions.Color;
+            Canvas.Brush.Style := bsSolid;
+          end;
           Canvas.Pen.Color := HotTrackOptions.FrameColor;
           Canvas.Rectangle(0, 0, Width, Height);
+          if Down then
+            Canvas.Brush.Bitmap := nil; // release bitmap
         end;
       {Insert End}
     end else
       Canvas.Font := Self.Font;
-  PaintImage(Canvas, PaintRect, Offset, LState,
+    PaintImage(Canvas, PaintRect, Offset, LState,
       FMarkDropDown and Assigned(FDropDownMenu));
   end;
 end;
