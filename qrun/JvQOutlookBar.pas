@@ -35,10 +35,10 @@ unit JvQOutlookBar;
 { Outlook style control. Simpler than TJvLookout)
    Hierarchy:
     TJvCustomOutlookBar
-      Pages:TJvOutlookBarPages
-        Page:TJvOutlookBarPage
-          Buttons:TJvOutlookBarButtons
-            Button:TJvOutlookBarButton
+      Pages: TJvOutlookBarPages
+        Page: TJvOutlookBarPage
+          Buttons: TJvOutlookBarButtons
+            Button: TJvOutlookBarButton
 }
 
 interface
@@ -2110,7 +2110,7 @@ end;
 function TJvCustomOutlookBar.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 var
-  I:Integer;
+  I: Integer;
 begin
   if CanFocus and (ActivePage <> nil) then
   begin

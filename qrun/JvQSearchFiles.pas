@@ -979,7 +979,7 @@ begin
   DosFileTime := DateTimeToDosDateTime(Value);
   if not Windows.DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
     LongRec(DosFileTime).Lo, LocalFileTime) or
-    not LocalFileTimeToFileTime(LocalFileTime, FLastChangeAfterFT) then
+    not Windows.LocalFileTimeToFileTime(LocalFileTime, FLastChangeAfterFT) then
     RaiseLastOSError;
 
   FLastChangeAfter := Value;
@@ -994,7 +994,7 @@ begin
   DosFileTime := DateTimeToDosDateTime(Value);
   if not Windows.DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
     LongRec(DosFileTime).Lo, LocalFileTime) or
-    not LocalFileTimeToFileTime(LocalFileTime, FLastChangeBeforeFT) then
+    not Windows.LocalFileTimeToFileTime(LocalFileTime, FLastChangeBeforeFT) then
     RaiseLastOSError;
 
   FLastChangeBefore := Value;

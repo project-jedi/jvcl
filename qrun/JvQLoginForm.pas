@@ -37,8 +37,8 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows, // GetCurrentThreadID => Linux: System.pas
-  {$ENDIF MSWINDOWS}  
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, 
+  {$ENDIF MSWINDOWS}
+  QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
   JvQComponent, JvQBaseDlg, JvQAppStorage;
 
 type
@@ -162,15 +162,12 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 
 implementation
 
-uses  
-  QConsts, 
+uses
+  QConsts,
   IniFiles,
   JvQJCLUtils, JvQJVCLUtils, JvQResources, JvQConsts;
 
-
-
 {$R *.xfm}
-
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
   FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;

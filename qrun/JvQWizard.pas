@@ -33,12 +33,12 @@ Known Issues:
 {+---------------------------------------------------------------------------+
  | CONTRIBUTORS:                                                             |
  +---------------------------------------------------------------------------+
- |   Steve Forbes          <ozmosys att mira dott net>                                |
- |   Chris Macksey         <c_macksey att hotmail dott com>                           |
- |   Wayne Niddery         <waynen att logicfundamentals dott com>                    |
- |   Raymond J. Schappe    <rschappe att isthmus-ts dott com>                         |
- |   Theodore              <thpana att otenet dott gr>                                |
- |   Max Evans             <max att codecraft dott com dott au>                            |
+ |   Steve Forbes          <ozmosys att mira dott net>                       |
+ |   Chris Macksey         <c_macksey att hotmail dott com>                  |
+ |   Wayne Niddery         <waynen att logicfundamentals dott com>           |
+ |   Raymond J. Schappe    <rschappe att isthmus-ts dott com>                |
+ |   Theodore              <thpana att otenet dott gr>                       |
+ |   Max Evans             <max att codecraft dott com dott au>              |              |
  +---------------------------------------------------------------------------+
  | HISTORY      COMMENTS                                                     |
  +---------------------------------------------------------------------------+
@@ -452,14 +452,14 @@ type
     FAlignment: TJvWizardImageAlignment;
     FLayout: TJvWizardImageLayout;
     FOnChange: TNotifyEvent;
-    FTransparent:boolean;
+    FTransparent: Boolean;
     procedure SetPicture(Value: TPicture);
     procedure SetAlignment(Value: TJvWizardImageAlignment);
     procedure SetLayout(Value: TJvWizardImageLayout);
     function GetTransparent: Boolean;
     procedure SetTransparent(Value: Boolean);
     procedure DoChange;
-    procedure DoPictureChange(Sender:TObject);
+    procedure DoPictureChange(Sender: TObject);
   protected
     procedure PaintTo(const ACanvas: TCanvas; ARect: TRect);
   public
@@ -503,7 +503,7 @@ type
     FAnchors: TAnchors;
     FIndent: Integer;
     FFont: TFont;
-    procedure SetText(Value: string);
+    procedure SetText(const Value: string);
     procedure SetAlignment(Value: TAlignment);
     procedure SetAnchors(Value: TAnchors);
     procedure SetAnchorPlacement(Value: Integer);
@@ -653,7 +653,7 @@ type
     FOnBackButtonClick: TJvWizardPageClickEvent;
     FOnCancelButtonClick: TJvWizardPageClickEvent;
     FOnFinishButtonClick: TJvWizardPageClickEvent;
-    FOnHelpButtonClick:TJvWizardPageClickEvent;
+    FOnHelpButtonClick: TJvWizardPageClickEvent;
     function GetPageIndex: Integer;
     procedure SetPageIndex(const Value: Integer);
     procedure SetWizard(AWizard: TJvWizard);
@@ -684,7 +684,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure EnableButton(AButton: TJvWizardButtonKind; AEnabled: boolean); virtual;
+    procedure EnableButton(AButton: TJvWizardButtonKind; AEnabled: Boolean); virtual;
     property Wizard: TJvWizard read FWizard write SetWizard;
     property PageIndex: Integer read GetPageIndex write SetPageIndex stored False;
   published
@@ -716,7 +716,7 @@ type
     property OnBackButtonClick: TJvWizardPageClickEvent read FOnBackButtonClick write FOnBackButtonClick;
     property OnCancelButtonClick: TJvWizardPageClickEvent read FOnCancelButtonClick write FOnCancelButtonClick;
     property OnFinishButtonClick: TJvWizardPageClickEvent read FOnFinishButtonClick write FOnFinishButtonClick;
-    property OnHelpButtonClick:TJvWizardPageClickEvent read FOnHelpButtonClick write FOnHelpButtonClick;
+    property OnHelpButtonClick: TJvWizardPageClickEvent read FOnHelpButtonClick write FOnHelpButtonClick;
   end;
 
   { YW - Wizard Welcome Page }
@@ -773,7 +773,7 @@ type
     FOnActivePageChanging: TJvWizardChangingPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
-    FAutoHideButtonBar: boolean; 
+    FAutoHideButtonBar: Boolean; 
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -793,8 +793,8 @@ type
     procedure UpdateButtonsStatus; 
     function FindNextEnabledPage(PageIndex: Integer; const Step: Integer = 1;
       CheckDisable: Boolean = True): TJvWizardCustomPage;
-    procedure SetAutoHideButtonBar(const Value: boolean);
-    function GetWizardPages(Index: integer): TJvWizardCustomPage;
+    procedure SetAutoHideButtonBar(const Value: Boolean);
+    function GetWizardPages(Index: Integer): TJvWizardCustomPage;
   protected
     procedure Loaded; override;
     procedure AdjustClientRect(var Rect: TRect); override;
@@ -824,11 +824,11 @@ type
     function IsForward(const FromPage, ToPage: TJvWizardCustomPage): Boolean;
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property PageCount: Integer read GetPageCount;
-    property WizardPages[Index:integer]: TJvWizardCustomPage read GetWizardPages;
+    property WizardPages[Index: Integer]: TJvWizardCustomPage read GetWizardPages;
   published
     property Pages: TJvWizardPageList read FPages; 
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
-    property AutoHideButtonBar:boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
+    property AutoHideButtonBar: Boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
     property ButtonStart: TJvWizardNavigateButton read FNavigateButtons[bkStart] write FNavigateButtons[bkStart];
     property ButtonLast: TJvWizardNavigateButton read FNavigateButtons[bkLast] write FNavigateButtons[bkLast];
@@ -1728,7 +1728,8 @@ end;
 
 procedure TJvWizardPageTitle.PaintTo(ACanvas: TCanvas; var ARect: TRect);
 const
-  Alignments: array[TAlignment] of Integer = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Alignments: array [TAlignment] of Integer = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  cOutlineColor = TColor($00FFD8CE);
 var
   ATextRect: TRect;
 begin
@@ -1753,7 +1754,7 @@ begin
       begin
         Pen.Style := psDot;
         Pen.Mode := pmXor;
-        Pen.Color := $00FFD8CE;
+        Pen.Color := cOutlineColor;
         Brush.Style := bsClear;
         Rectangle(ATextRect.Left, ATextRect.Top, ATextRect.Right,
           ATextRect.Bottom);
@@ -1799,7 +1800,7 @@ begin
   end;
 end;
 
-procedure TJvWizardPageTitle.SetText(Value: string);
+procedure TJvWizardPageTitle.SetText(const Value: string);
 begin
   if FText <> Value then
   begin
@@ -2209,9 +2210,9 @@ begin
     Rect.Top := Rect.Top + FHeader.Height;
 end;
 
-procedure TJvWizardCustomPage.EnableButton(AButton: TJvWizardButtonKind; AEnabled: boolean); // Arioch
+procedure TJvWizardCustomPage.EnableButton(AButton: TJvWizardButtonKind; AEnabled: Boolean); // Arioch
 var
-  IsEnabled: boolean;
+  IsEnabled: Boolean;
   tmpSet: TJvWizardButtonSet;
 begin
   tmpSet := [AButton];
@@ -3117,7 +3118,7 @@ begin
     (FromPage.PageIndex < ToPage.PageIndex));
 end;
 
-procedure TJvWizard.SetAutoHideButtonBar(const Value: boolean);
+procedure TJvWizard.SetAutoHideButtonBar(const Value: Boolean);
 begin
   if FAutoHideButtonBar <> Value then
   begin
@@ -3127,7 +3128,7 @@ begin
   end;
 end;
 
-function TJvWizard.GetWizardPages(Index: integer): TJvWizardCustomPage;
+function TJvWizard.GetWizardPages(Index: Integer): TJvWizardCustomPage;
 begin
   Result := TJvWizardCustomPage(Pages[Index]);
 end;

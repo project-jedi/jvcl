@@ -191,17 +191,17 @@ resourcestring
   RsPasswordNotChanged = 'Password has not been changed';
   RsPasswordsMismatch = 'The new and confirmed passwords do not match';
 
-//=== JvBDEFilter.pas ========================================================
-resourcestring
-  RsECaptureFilter = 'Cannot perform this operation when controls are captured';
-  RsENotCaptureFilter = 'Cannot perform this operation when controls are not captured';
-
 //=== JvBDEExceptionForm.pas =================================================
 resourcestring
   RsDBExceptCaption = 'Database Engine Error';
   RsBDEErrorLabel = 'BDE Error';
   RsServerErrorLabel = 'Server Error';
   RsErrorMsgLabel = 'Error message';
+
+//=== JvBDEFilter.pas ========================================================
+resourcestring
+  RsECaptureFilter = 'Cannot perform this operation when controls are captured';
+  RsENotCaptureFilter = 'Cannot perform this operation when controls are not captured';
 
 //=== JvBDELoginDialog.pas ===================================================
 resourcestring
@@ -379,6 +379,7 @@ resourcestring
   RsECsvInvalidSeparatorFmt = 'Invalid separator character (%s)'; 
   RsEProblemReadingRow = 'Problem reading row %d';
   RsENoRecord = 'No records';
+  RsENoFieldNamesMatch = 'No field names match in these datasets. CopyFromDataset failed.';
   RsETimeTConvError = 'SetFieldData Error - TimeT-to-DateTime conversion error';
   RsEFieldTypeNotHandled = 'SetFieldData Error - Field type not handled';
   RsEUnableToLocateCSVFileInfo = 'Unable to locate CSV file information for field %s';
@@ -884,10 +885,6 @@ resourcestring
   RsUnknownProperty = 'Unknown property: %s';
 
 
-//=== JvHint.pas =============================================================
-resourcestring
-  RsHintCaption = 'Hint';
-
 //=== JvHidControllerClass.pas ===============================================
 
 resourcestring
@@ -920,6 +917,10 @@ resourcestring
   RsEOnlyOneControllerPerProgram = 'Only one TJvHidDeviceController allowed per program';
   RsEHIDBooleanError = 'HID Error: a boolean function failed';
 
+
+//=== JvHint.pas =============================================================
+resourcestring
+  RsHintCaption = 'Hint';
 
 //=== JvHLEditorPropertyForm.pas =============================================
 resourcestring

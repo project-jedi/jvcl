@@ -310,8 +310,8 @@ type
   TOnJvInspectorMouseDown = procedure(Sender: TJvCustomInspector; Item: TJvCustomInspectorItem;
     Button: TMouseButton; Shift: TShiftState; X, Y: Integer) of object;
 
-  TOnJvInspectorItemEdit = procedure(Sender:TJvCustomINspector; Item: TJvCustomInspectorItem;
-     var DisplayStr: string) of object;
+  TOnJvInspectorItemEdit = procedure(Sender: TJvCustomInspector;
+    Item: TJvCustomInspectorItem; var DisplayStr: string) of object;
   
   TJvCustomInspector = class(TJvExCustomPanel) 
   private
@@ -920,7 +920,7 @@ type
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
-    //promoted:property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
+    //promoted: property OnGetValueList: TInspectorItemGetValueListEvent read FOnGetValueList write FOnGetValueList;
     property Pressed: Boolean read FPressed write FPressed;
     property Tracking: Boolean read FTracking write FTracking;
   public
@@ -3163,8 +3163,7 @@ begin
       Key := 0;
   end;
   inherited KeyDown(Key, Shift);
-  if (SelectedIndex >= 0) and
-    (SelectedIndex < VisibleCount) then
+  if (SelectedIndex >= 0) and (SelectedIndex < VisibleCount) then
   begin
     Item := Selected;
     if (Item <> nil) and Item.Editing then
@@ -3223,7 +3222,7 @@ begin
       DraggingDivider := True;
       DividerDragBandX := BandIdx * BWidth;
     end
-        // Check row sizing
+    // Check row sizing
     else
     if (ItemIndex < VisibleCount) and (Y >= Pred(ItemRect.Bottom)) and
       (Y <= Succ(ItemRect.Bottom)) and (Item.RowSizing.SizingFactor <> irsNoReSize) and
@@ -3232,7 +3231,7 @@ begin
       RowSizing := True;
       RowSizingItem := Item;
     end
-      // Check band sizing
+    // Check band sizing
     else
     if (UseBands and (XB >= BWidth - 3)) and (not UseBands or
       (BandIdx < BandStarts.Count)) then
@@ -3240,7 +3239,7 @@ begin
       BandSizing := True;
       BandSizingBand := BandIdx - BandStarts.IndexOf(Pointer(TopIndex));
     end
-      // Check selecting
+    // Check selecting
     else
     if (ItemIndex < VisibleCount) and (ItemIndex <> SelectedIndex) then
     begin
@@ -3321,8 +3320,7 @@ begin
     else
     if Selecting then
     begin
-      if (ItemIndex < VisibleCount) and
-        (ItemIndex <> SelectedIndex) then
+      if (ItemIndex < VisibleCount) and (ItemIndex <> SelectedIndex) then
       begin
         if ItemIndex < 0 then
           ItemIndex := SelectedIndex;
@@ -3676,13 +3674,11 @@ end;
 
 procedure TJvCustomInspector.SetPainter(const Value: TJvInspectorPainter);
 begin
-  if (Value <> Painter) then
+  if Value <> Painter then
   begin
     if Value <> nil then
-    begin
       if (Value.Inspector <> nil) and (Value.Inspector <> Self) then
         raise EJvInspector.CreateRes(@RsEJvInspPaintOnlyUsedOnce);
-    end;
     if Painter <> nil then
     begin
       Painter.RemoveFreeNotification(Self);
@@ -4899,7 +4895,8 @@ end;
 procedure TJvInspectorDotNETPainter.ApplyNameFont;
 begin
   inherited ApplyNameFont;
-  if (Item = Inspector.Selected) and not (Item is TJvInspectorCustomCompoundItem) then
+  if (Item = Inspector.Selected) and
+    not (Item is TJvInspectorCustomCompoundItem) then
   begin
     if Inspector.Focused then
     begin
@@ -4913,7 +4910,7 @@ begin
     end;
   end
   else
-  if (Item.IsCategory) and (Item.Level = 0) then
+  if Item.IsCategory and (Item.Level = 0) then
     Canvas.Brush.Color := CategoryColor
   else
     Canvas.Brush.Color := BackgroundColor;
@@ -4967,7 +4964,7 @@ begin
   CatRect := Rects[iprItem];
   CatRect.Right := CatRect.Left + RealButtonAreaWidth;
   Inc(CatRect.Bottom);
-  if (Item.BaseCategory <> nil) then
+  if Item.BaseCategory <> nil then
   begin
     Canvas.Brush.Color := CategoryColor;
     Canvas.FillRect(CatRect);
@@ -5185,6 +5182,60 @@ begin
   end;
 end;
 
+//=== TJvInspectorMemo =======================================================
+
+type
+  TJvInspectorMemo = class(TMemo)  
+  private
+    function GetOnKillFocus: TNotifyEvent;
+    procedure SetOnKillFocus(value: TNotifyEvent);
+  public
+    property OnKillFocus: TNotifyEvent read GetOnKillFocus write SetOnKillFocus; 
+  end;
+
+
+
+
+
+procedure TJvInspectorMemo.SetOnKillFocus(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+function TJvInspectorMemo.GetOnKillFocus: TNotifyEvent;
+begin
+  Result := OnExit;
+end;
+
+
+
+//=== TJvInspectorEdit =======================================================
+
+type
+  TJvInspectorEdit = class(TEdit)  
+  private
+    function GetOnKillFocus: TNotifyEvent;
+    procedure SetOnKillFocus(value: TNotifyEvent);
+  public
+    property OnKillFocus: TNotifyEvent read GetOnKillFocus write SetOnKillFocus; 
+  end;
+
+
+
+
+
+procedure TJvInspectorEdit.SetOnKillFocus(Value: TNotifyEvent);
+begin
+  OnExit := Value;
+end;
+
+function TJvInspectorEdit.GetOnKillFocus: TNotifyEvent;
+begin
+  Result := OnExit;
+end;
+
+
+
 //=== TJvCustomInspectorItem =================================================
 
 constructor TJvCustomInspectorItem.Create(const AParent: TJvCustomInspectorItem;
@@ -5310,8 +5361,8 @@ var
 begin
   if DroppedDown then
   begin
-    if (GetCaptureControl = ListBox) then
-        SetCaptureControl(nil);
+    if GetCaptureControl = ListBox then
+      SetCaptureControl(nil);
     if Inspector.HandleAllocated then
       Inspector.ShowScrollBars(SB_BOTH, False);  
     Mouse.Capture := nil; 
@@ -5443,11 +5494,11 @@ begin
     TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
     ListBox.Items.Clear;
     GetValueList(ListBox.Items);
-    if ([iifOwnerDrawListFixed, iifOwnerDrawListVariable, iifOwnerDrawListMaxHeight] * Flags <> []) then
+    if [iifOwnerDrawListFixed, iifOwnerDrawListVariable, iifOwnerDrawListMaxHeight] * Flags <> [] then
     begin
       ListBox.Canvas.Font := TListBox(ListBox).Font;
       IH := CanvasMaxTextHeight(ListBox.Canvas);
-      if (iifOwnerDrawListFixed in Flags) then
+      if iifOwnerDrawListFixed in Flags then
       begin
         DoMeasureListItem(ListBox, -1, IH);
         MH := IH;
@@ -5459,13 +5510,12 @@ begin
         for I := 0 to (ListBox.Items.Count-1) do
         begin
           DoMeasureListItem(ListBox, i, IH);
-          if (MH < IH) then
+          if MH < IH then
             MH := IH;
         end;
       end
-      else begin
+      else
         MH := IH;
-      end;
       TListBox(ListBox).ItemHeight := MH;
     end;
     if ListBox.Items.Count < DropDownCount then
@@ -5515,7 +5565,7 @@ begin
     FDroppedDown := True;
     InvalidateItem;  
     EditCtrl.SetFocus; 
-    Inspector.Selecting := FALSE;
+    Inspector.Selecting := False;
   end;
 end;
 
@@ -5556,9 +5606,10 @@ end;
 
 procedure TJvCustomInspectorItem.EditKillFocus(Sender: TObject);
 begin
-  if (DroppedDown) then
-    CloseUp(FALSE);
+  if DroppedDown then
+    CloseUp(False);
 end;
+
 procedure TJvCustomInspectorItem.EditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -5963,13 +6014,14 @@ end;
 
 procedure TJvCustomInspectorItem.ListValueSelect(Sender: TObject);
 begin
-    CloseUp(TRUE);
+  CloseUp(True);
 end;
 
 procedure TJvCustomInspectorItem.ListDeactivate(Sender: TObject);
 begin
-    CloseUp(FALSE);
+  CloseUp(False);
 end;
+
 procedure TJvCustomInspectorItem.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
@@ -5981,11 +6033,10 @@ begin
     begin
       Tracking := True;
       TrackButton(X, Y);
-      if (iifValueList in Flags) then
+      if iifValueList in Flags then
         DropDown
-      else begin
+      else
         Inspector.MouseCapture := True;
-        end;
     end;
   end
   else
@@ -6658,9 +6709,9 @@ end;
 
 {.$IFDEF VCL}
 { marcelb: removed:
-procedure TJvCustomInspectorItem.OnInternalEditControlExiting(Sender:TObject);
+procedure TJvCustomInspectorItem.OnInternalEditControlExiting(Sender: TObject);
 var
- Edit:TCustomEdit;
+ Edit: TCustomEdit;
  Msg: TMessage;
 begin
  Edit := GetEditCtrl;
@@ -6679,113 +6730,74 @@ begin
 end; }
 {.$ENDIF VCL}
 
-type
-    TJvInspectorListBox = class(TJvPopupListBox)
-      private
-        FOnValueSelect: TNotifyEvent;
-        FOnDeactivate: TNotifyEvent;
-        FNCClick: BOOLEAN;
-        FClicking: BOOLEAN;
-        FItem: TJvCustomInspectorItem;
-      protected
-        procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-        procedure Mouseup(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-      public
-        property OnValueSelect: TNotifyEvent read FOnValueSelect write FOnValueSelect;
-        property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
-        property Item: TJvCustomInspectorItem read FItem write FItem;
-        end;
-
-procedure TJvInspectorListBox.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var r: TRect;
-    pt: TPoint;
-begin
-    r := Rect(0, 0, Width, Height);
-    pt := Point(X,Y);
-
-    if (PtInRect(r, pt)) then begin
-        if (not PtInRect(ClientRect, pt)) then
-            FNCClick := TRUE;
-        FClicking := TRUE;
-        inherited MouseDown(Button, Shift, X, Y);
-        end
-    else begin
-        FOnDeactivate(Self);
-        end;
-end;
-
-procedure TJvInspectorListBox.Mouseup(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var r: TRect;
-    pt: TPoint;
-begin
-    r := Rect(0, 0, Width, Height);
-    pt := Point(X,Y);
-
-    if (FNCClick) then
-        inherited MouseUp(Button, Shift, X, Y)
-    else if (FClicking) then begin
-        if (PtInRect(ClientRect, pt)) then
-            FOnValueSelect(Self)
-        else
-            FOnDeactivate(Self)
-        end
-    else begin
-        // MouseUps where FClicking is FALSE
-        // have originated in the item that
-        // opened the list, let it know that
-        // the mouse has gone up again.
-        FItem.MouseUp(Button, Shift, X, Y);
-        end;
-
-    FClicking := FALSE;
-    FNCClick := FALSE;
-end;
-
+//=== TJvInspectorListBox ====================================================
 
 type
-  TJvInspectorMemo = class(TMemo)  
+  TJvInspectorListBox = class(TJvPopupListBox)
   private
-    function GetOnKillFocus: TNotifyEvent;
-    procedure SetOnKillFocus(value: TNotifyEvent);
+    FOnValueSelect: TNotifyEvent;
+    FOnDeactivate: TNotifyEvent;
+    FNCClick: BOOLEAN;
+    FClicking: BOOLEAN;
+    FItem: TJvCustomInspectorItem;
+  protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
-    property OnKillFocus: TNotifyEvent read GetOnKillFocus write SetOnKillFocus; 
+    property OnValueSelect: TNotifyEvent read FOnValueSelect write FOnValueSelect;
+    property OnDeactivate: TNotifyEvent read FOnDeactivate write FOnDeactivate;
+    property Item: TJvCustomInspectorItem read FItem write FItem;
   end;
 
-  TJvInspectorEdit = class(TEdit)  
-  private
-    function GetOnKillFocus: TNotifyEvent;
-    procedure SetOnKillFocus(value: TNotifyEvent);
-  public
-    property OnKillFocus: TNotifyEvent read GetOnKillFocus write SetOnKillFocus; 
-  end;
-
-
-
-
-procedure TJvInspectorMemo.SetOnKillFocus(Value: TNotifyEvent);
+procedure TJvInspectorListBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  R: TRect;
+  Pt: TPoint;
 begin
-  OnExit := Value;
+  R := Rect(0, 0, Width, Height);
+  Pt := Point(X, Y);
+
+  if PtInRect(R, Pt) then
+  begin
+    if not PtInRect(ClientRect, pt) then
+      FNCClick := True;
+    FClicking := True;
+    inherited MouseDown(Button, Shift, X, Y);
+  end
+  else
+    FOnDeactivate(Self);
 end;
 
-function TJvInspectorMemo.GetOnKillFocus: TNotifyEvent;
+procedure TJvInspectorListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  R: TRect;
+  Pt: TPoint;
 begin
-  Result := OnExit;
+  R := Rect(0, 0, Width, Height);
+  Pt := Point(X, Y);
+
+  if FNCClick then
+    inherited MouseUp(Button, Shift, X, Y)
+  else
+  if FClicking then
+  begin
+    if PtInRect(ClientRect, Pt) then
+      FOnValueSelect(Self)
+    else
+      FOnDeactivate(Self);
+  end
+  else
+    // MouseUps where FClicking is False
+    // have originated in the item that
+    // opened the list, let it know that
+    // the mouse has gone up again.
+    FItem.MouseUp(Button, Shift, X, Y);
+
+  FClicking := False;
+  FNCClick := False;
 end;
-
-
-
-
-
-procedure TJvInspectorEdit.SetOnKillFocus(Value: TNotifyEvent);
-begin
-  OnExit := Value;
-end;
-
-function TJvInspectorEdit.GetOnKillFocus: TNotifyEvent;
-begin
-  Result := OnExit;
-end;
-
 
 procedure TJvCustomInspectorItem.InitEdit;
 var
@@ -6844,9 +6856,7 @@ begin
       TOpenEdit(EditCtrl).Color := Inspector.Canvas.Brush.Color;
     end
     else
-    begin
-      TOpenEdit(EditCtrl).Color := clWindow;
-    end; 
+      TOpenEdit(EditCtrl).Color := clWindow; 
     if iifValueList in Flags then
     begin  
       FListBox := TListBox.Create(Inspector);
@@ -6932,7 +6942,7 @@ begin
     Exit; // bugfix attempt. WAP.Self
 
   {$IFDEF MSWINDOWS}
-  //  OutputDebugString(PChar('ScrollIntoView:FDisplayName'));
+  //  OutputDebugString(PChar('ScrollIntoView: FDisplayName'));
   {$ENDIF MSWINDOWS}
   ViewIdx := Inspector.VisibleIndex(Self);
   if ViewIdx < 0 then
@@ -7237,7 +7247,7 @@ end;
 function TJvInspectorCustomCompoundItem.GetEditCtrl: TOpenEdit;
 
 begin
-  if (SelectedColumn <> nil) then
+  if SelectedColumn <> nil then
     Result := SelectedColumn.Item.EditCtrl
   else
     Result := nil;

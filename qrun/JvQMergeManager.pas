@@ -74,8 +74,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Merge(AForm: TCustomForm; Show: Boolean);
-    procedure UnmergeMainMenu(AForm:TCustomForm);
-    procedure MergeMainMenu(AForm:TCustomForm;Force:boolean);
+    procedure UnmergeMainMenu(AForm: TCustomForm);
+    procedure MergeMainMenu(AForm: TCustomForm; Force: Boolean);
     function GotoForm(AForm: TCustomForm): Boolean;
     function GotoFormClass(AFormClass: TFormClass): Boolean;
     procedure GoBack;
@@ -406,7 +406,7 @@ begin
   Current := -1;
 end;
 
-procedure TJvMergeManager.MergeMainMenu(AForm: TCustomForm;Force:boolean);
+procedure TJvMergeManager.MergeMainMenu(AForm: TCustomForm; Force: Boolean);
 var
   F: TCustomForm;
 begin

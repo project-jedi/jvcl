@@ -35,8 +35,8 @@ unit JvQFavoritesButton;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls,
-  StdCtrls, Menus, ShellAPI, ImgList,
+  Windows, SysUtils, Classes, QGraphics, QControls,
+  QStdCtrls, QMenus, ShellAPI, QImgList,
   JvQTypes, JvQButton, JvQComputerInfoEx, JvQJVCLUtils;
 
 type

@@ -20,6 +20,7 @@ Portions created by Peter Thörnqvist are Copyright (c) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
+  Ralf Kaiser - ScreenPosition property
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -42,11 +43,11 @@ a class that can handle the OnProgress event, there are times when you can't use
 has methods and properties you can call directly (ProgressStepIt is the most important) to update the dialog.
 
 Methods:
-Execute:boolean - shows the dialog modally and returns true if the user did not cancel it. The user
-                  can cancel the dialog only when the Cancel button is visible by clicking it or hitting Esc key
-ShowModal:integer - same as Execute but returns mrCancel on cancel and mrOK otherwise
-Show              - shows the dialog non-modally
-Hide              - hides (closes) the dialog if it is visible
+Execute: boolean - shows the dialog modally and returns true if the user did not cancel it. The user
+                   can cancel the dialog only when the Cancel button is visible by clicking it or hitting Esc key
+ShowModal: integer - same as Execute but returns mrCancel on cancel and mrOK otherwise
+Show               - shows the dialog non-modally
+Hide               - hides (closes) the dialog if it is visible
 
 Properties:
 Cancelled  - returns true if the user has cancelled the dialog. Only used in non-modal mode
@@ -63,6 +64,7 @@ Image - (optional) image to display in dialog. The image can be any size as the 
         auto-adjusts to it's size but you should keep them fairly small (say, less than 160x100 something)
         as large images doesn't look too good (IMO)
 Transparent - set to true if Image should be rendered transparently (this value cannot be changed in OnProgress)
+ScreenPosition - Position of the dialog form (initially set to poDesktopCenter), added 28/05/2004, RK
 
 Events:
 OnProgress: TJvProgressDialogEvent = procedure(Sender: TObject; var AContinue: Boolean) of object;
@@ -123,6 +125,7 @@ type
     FOnShow: TNotifyEvent;
     FCancelled: Boolean;
     FSmooth: boolean;
+    FScreenPosition: TPosition;
     procedure SetPicture(const Value: TPicture);
     procedure SetCaption(const Value: string);
     procedure SetInterval(const Value: Integer);
@@ -158,13 +161,14 @@ type
     property Max: Integer read FMax write SetMax default 100;
     property Position: Integer read FPosition write SetPosition default 0;
     property ShowCancel: Boolean read FShowCancel write SetShowCancel default True;
-    property Smooth:boolean read FSmooth write FSmooth default False; 
+    property Smooth: Boolean read FSmooth write FSmooth default False;
     property Text: string read FText write SetText;
     property Transparent: Boolean read FTransparent write FTransparent default False;
+    property ScreenPosition: TPosition read FScreenPosition write FScreenPosition; // added 28/05/2004, RK
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnProgress: TJvProgressDialogEvent read FOnProgress write FOnProgress;
-    property OnShow: TNotifyEvent read FOnShow write FOnShow;
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;  
   end;
 
 implementation
@@ -183,6 +187,7 @@ begin
   FInterval := 200;
   FTransparent := False;
   FShowCancel := True;
+  FScreenPosition := poDesktopCenter;   // added 28/05/2004, RK
 end;
 
 destructor TJvProgressDialog.Destroy;
@@ -259,6 +264,7 @@ begin
   DoShow;
   StoreValues;
   try
+    FForm.Position := FScreenPosition; // added 28/05/2004, RK
     if TfrmProgress.Execute(TfrmProgress(FForm), Caption, Text, Image, Transparent, Min, Max, Position, Interval,
       ShowCancel or (csDesigning in ComponentState), Smooth, InternalDoProgress, InternalDoCancel) then
       Result := mrOK;
@@ -286,6 +292,7 @@ begin
   end;
   FForm := TfrmProgress.Create(Application);
   FForm.OnClose := InternalDoClose;
+  FForm.Position := FScreenPosition;   // added 28/05/2004, RK
   FCancelled := False;
   DoShow;
   StoreValues;

@@ -40,7 +40,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}  
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types, QWindows, 
+  QWindows, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types,
   JvQLabel, JvQComponent, JvQExControls;
 
 type
@@ -126,7 +126,8 @@ begin
       if NewStyleControls then
         Application.ShowException(E)
       else
-        Application.MessageBox(E.Message + '.', Application.MainForm.Caption, [smbOk], smsCritical);
+    if MessageDlg(RsReplaceExistingDatabase, mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+        MessageDlg(E.Message + '.', mtError, [mbOK], 0);
     end;
   except
     { ignore any exceptions }

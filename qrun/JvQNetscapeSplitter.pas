@@ -43,7 +43,7 @@ uses
 
 const
   MOVEMENT_TOLERANCE = 5; // See WMLButtonUp message handler.
-  DEF_BUTTON_HIGHLIGHT_COLOR = $00FFCFCF; // RGB(207,207,255)
+  JvDefaultButtonHighlightColor = TColor($00FFCFCF); // RGB(207,207,255)
 
 type
   TJvButtonWidthKind = (btwPixels, btwPercentage);
@@ -140,7 +140,7 @@ type
     property ButtonColor: TColor read FButtonColor write SetButtonColor default clBtnFace;
     property ArrowColor: TColor read FArrowColor write SetArrowColor default clNavy;
     property ButtonHighlightColor: TColor read FButtonHighlightColor write SetButtonHighlightColor
-      default DEF_BUTTON_HIGHLIGHT_COLOR;
+      default JvDefaultButtonHighlightColor;
     property AutoHighlightColor: Boolean read FAutoHighlightColor write SetAutoHighlightColor
       default False;
     property TextureColor1: TColor read FTextureColor1 write SetTextureColor1 default clWhite;
@@ -222,7 +222,7 @@ begin
   Width := 10;
   FButtonColor := clBtnFace;
   FArrowColor := clNavy;
-  FButtonHighlightColor := DEF_BUTTON_HIGHLIGHT_COLOR;
+  FButtonHighlightColor := JvDefaultButtonHighlightColor;
   FAutoHighLightColor := False;
   FTextureColor1 := clWhite;
   FTextureColor2 := clNavy;
@@ -788,7 +788,7 @@ begin
     if FAutoHighLightColor then
       FButtonHighLightColor := GrabBarColor
     else
-      FButtonHighLightColor := DEF_BUTTON_HIGHLIGHT_COLOR;
+      FButtonHighLightColor := JvDefaultButtonHighlightColor;
     if (ButtonStyle = bsNetscape) and ShowButton then
       Invalidate;
   end;

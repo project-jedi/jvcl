@@ -287,7 +287,7 @@ type
 type
   // from JvListView.pas
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
-  TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
+  TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod: TJvSortMethod) of object;
 
   // from JvColorProvider.pas
   TColorType = (ctStandard, ctSystem, ctCustom);
@@ -431,6 +431,10 @@ type
     procedure SetBottomRight(Value: TJvPoint);
     procedure SetTopLeft(Value: TJvPoint);
     procedure PointChange(Sender: TObject);
+    function GetHeight: Integer;
+    function GetWidth: Integer;
+    procedure SetHeight(Value: Integer);
+    procedure SetWidth(Value: Integer);
   protected
     procedure DoChange;
   public
@@ -439,6 +443,8 @@ type
     procedure Assign(Source: TPersistent); override;
     property TopLeft: TJvPoint read FTopLeft write SetTopLeft;
     property BottomRight: TJvPoint read FBottomRight write SetBottomRight;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property Left: Integer read GetLeft write SetLeft;
@@ -483,8 +489,8 @@ procedure TJvRect.Assign(Source: TPersistent);
 begin
   if Source is TJvRect then
   begin
-    TopLeft := (Source as TJvRect).TopLeft;
-    BottomRight := (Source as TJvRect).BottomRight;
+    TopLeft.Assign(TJvRect(Source).TopLeft);
+    BottomRight.Assign(TJvRect(Source).BottomRight);
     DoChange;
   end
   else
@@ -552,14 +558,34 @@ begin
   FTopLeft.Assign(Value);
 end;
 
+function TJvRect.GetHeight: Integer;
+begin
+  Result := FBottomRight.Y - FTopLeft.Y;
+end;
+
+function TJvRect.GetWidth: Integer;
+begin
+  Result := FBottomRight.X - FTopLeft.X;
+end;
+
+procedure TJvRect.SetHeight(Value: Integer);
+begin
+  FBottomRight.Y := FTopLeft.Y + Value;
+end;
+
+procedure TJvRect.SetWidth(Value: Integer);
+begin
+  FBottomRight.X := FTopLeft.X + Value;
+end;
+
 //=== TJvPoint ===============================================================
 
 procedure TJvPoint.Assign(Source: TPersistent);
 begin
   if Source is TJvPoint then
   begin
-    FX := (Source as TJvPoint).X;
-    FY := (Source as TJvPoint).Y;
+    FX := TJvPoint(Source).X;
+    FY := TJvPoint(Source).Y;
     DoChange;
   end
   else

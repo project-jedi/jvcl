@@ -51,6 +51,9 @@ const
 
   Tag_DragBarHeight = 9;
   Tag_DragBarSpace = 10;
+  
+  JvDefaultSubDragBarActiveColor = TColor($999999);
+  JvDefaultSubDragBarInactiveColor = TColor($996666); 
 
 type  
   TJvSubDragBar = class(TLabel) 
@@ -134,7 +137,7 @@ begin
   HintColor := Application.HintColor;
   FInited := False;
   FShowDragBar := True;
-
+//  Scaled := False;
   AutoScroll := False;  
   BorderIcons := [];
   BorderStyle := fbsDialog;
@@ -155,8 +158,8 @@ begin
     Parent := ParentControl;
     FOwnerForm := Self;
     AutoSize := False;
-    Caption := '';  
-    Color := $999999; 
+    Caption := '';
+    Color := JvDefaultSubDragBarActiveColor;
     Height := MinDragBarHeight;
     ShowHint := True;
     Hint := FDragBarHint;
@@ -374,15 +377,15 @@ end;
 
 procedure TJvSubDragBar.MouseEnter(Control: TControl);
 begin
-  inherited MouseEnter(Control);  
-  Color := $996666; 
+  inherited MouseEnter(Control);
+  Color := JvDefaultSubDragBarActiveColor;
   Cursor := crSizeAll;
 end;
 
 procedure TJvSubDragBar.MouseLeave(Control: TControl);
 begin
-  inherited MouseLeave(Control);  
-  Color := $999999; 
+  inherited MouseLeave(Control);
+  Color := JvDefaultSubDragBarInactiveColor;
   Cursor := crDefault;
 end;
 

@@ -38,7 +38,8 @@ interface
 uses
   SysUtils, Classes,
   QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls, 
-  Qt, JvQConsts, 
+  Qt,
+  JvQConsts, 
   JvQComponent;
 
 type
@@ -105,7 +106,7 @@ begin
       Exit;
 
     if ((QKeyEvent_key(QKeyEventH(Event)) = Key_Enter) or
-        (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
+      (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
     begin
       ws := Tab;
 

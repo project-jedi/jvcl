@@ -49,30 +49,30 @@ const
     syntax: JvXPColor_[Control]_[Enabled: Enb, Dis]_[Type]_[Theme: WXP, OXP]     }
 
   { button colors - WindowsXP }
-  dxColor_Btn_Enb_Border_WXP   = $00733800; // border line
-  dxColor_Btn_Dis_Border_WXP   = $00BDC7CE; // border line (disabled)
-  dxColor_Btn_Enb_Edges_WXP    = $00AD9E7B; // border edges
-  dxColor_Btn_Dis_Edges_WXP    = $00BDC7CE; // border edges (disabled)
-  dxColor_Btn_Enb_BgFrom_WXP   = $00FFFFFF; // background from
-  dxColor_Btn_Enb_BgTo_WXP     = $00E7EBEF; // background to
-  dxColor_Btn_Enb_CkFrom_WXP   = $00C6CFD6; // clicked from
-  dxColor_Btn_Enb_CkTo_WXP     = $00EBF3F7; // clicked to
-  dxColor_Btn_Enb_FcFrom_WXP   = $00FFE7CE; // focused from
-  dxColor_Btn_Enb_FcTo_WXP     = $00EF846D; // focused to
-  dxColor_Btn_Enb_HlFrom_WXP   = $00CEF3FF; // highlight from
-  dxColor_Btn_Enb_HlTo_WXP     = $000096E7; // highlight to
+  dxColor_Btn_Enb_Border_WXP   = TColor($00733800); // border line
+  dxColor_Btn_Dis_Border_WXP   = TColor($00BDC7CE); // border line (disabled)
+  dxColor_Btn_Enb_Edges_WXP    = TColor($00AD9E7B); // border edges
+  dxColor_Btn_Dis_Edges_WXP    = TColor($00BDC7CE); // border edges (disabled)
+  dxColor_Btn_Enb_BgFrom_WXP   = TColor($00FFFFFF); // background from
+  dxColor_Btn_Enb_BgTo_WXP     = TColor($00E7EBEF); // background to
+  dxColor_Btn_Enb_CkFrom_WXP   = TColor($00C6CFD6); // clicked from
+  dxColor_Btn_Enb_CkTo_WXP     = TColor($00EBF3F7); // clicked to
+  dxColor_Btn_Enb_FcFrom_WXP   = TColor($00FFE7CE); // focused from
+  dxColor_Btn_Enb_FcTo_WXP     = TColor($00EF846D); // focused to
+  dxColor_Btn_Enb_HlFrom_WXP   = TColor($00CEF3FF); // highlight from
+  dxColor_Btn_Enb_HlTo_WXP     = TColor($000096E7); // highlight to
 
   { checkbox colors - WindowsXP }
-  dxColor_Chk_Enb_Border_WXP   = $00845118; // border line
-  dxColor_Chk_Enb_NmSymb_WXP   = $0021A621; // symbol normal
+  dxColor_Chk_Enb_Border_WXP   = TColor($00845118); // border line
+  dxColor_Chk_Enb_NmSymb_WXP   = TColor($0021A621); // symbol normal
 
   { misc colors - WindowsXP }
-  dxColor_Msc_Dis_Caption_WXP  = $0094A6A5; // caption color (disabled)
+  dxColor_Msc_Dis_Caption_WXP  = TColor($0094A6A5); // caption color (disabled)
 
-  dxColor_DotNetFrame          = $00F7FBFF; // $00E7EBEF;
-  dxColor_BorderLineOXP        = $00663300;
-  dxColor_BgOXP                = $00D6BEB5;
-  dxColor_BgCkOXP              = $00CC9999;
+  dxColor_DotNetFrame          = TColor($00F7FBFF); // $00E7EBEF;
+  dxColor_BorderLineOXP        = TColor($00663300);
+  dxColor_BgOXP                = TColor($00D6BEB5);
+  dxColor_BgCkOXP              = TColor($00CC9999);
 
 type
   TJvXPCustomStyleControl = class;
@@ -175,8 +175,8 @@ type
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure Loaded; override; 
-    procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Click; override;
     property ModalResult: TModalResult read FModalResult write FModalResult default 0;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -425,7 +425,7 @@ end;
 procedure TJvXPCustomControl.FocusChanged;
 begin
   // delegate message "FocusChanged" to hook.
-//  inherited FocusChanged;
+  //inherited FocusChanged;
   HookFocusedChanged;
 end;
 

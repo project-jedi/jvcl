@@ -63,7 +63,7 @@ type
     FMargin: Integer;
     FFlat: Boolean;
     FMouseInControl: Boolean;
-    FPopup: TPopupMenu;
+    FDropDown: TPopupMenu;
     FOnDrop: TNotifyEvent;
     procedure GlyphChanged(Sender: TObject);
     procedure UpdateExclusive;
@@ -110,7 +110,7 @@ type
     property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 13;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property Down: Boolean read FDown write SetDown default False;
-    property DropDown: TPopupMenu read FPopup write FPopup;
+    property DropDown: TPopupMenu read FDropDown write FDropDown;
     property Caption;
     property Enabled;
     property Flat: Boolean read FFlat write SetFlat default False;
@@ -775,21 +775,21 @@ begin
   else
   if FState = bsDisabled then
   begin
-    if FDown and (GroupIndex <> 0) then
+    if Down and (GroupIndex <> 0) then
       FState := bsExclusive
     else
       FState := bsUp;
   end;
   if FMouseInControl then
-    Canvas.Font := FFillFont
+    Canvas.Font := FillFont
   else
     Canvas.Font := Self.Font;
-  PaintRect := Rect(0, 0, Width - FArrowWidth, Height);
+  PaintRect := Rect(0, 0, Width - ArrowWidth, Height);
 
-  if FArrowClick and not FDown then
+  if FArrowClick and not Down then
     FState := bsUp;
 
-  if not FFlat then
+  if not Flat then
   begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if (FState in [bsDown, bsExclusive]) then
@@ -804,13 +804,13 @@ begin
       (FMouseInControl and (FState <> bsDisabled)) or
       (csDesigning in ComponentState) then
       DrawEdge(Canvas.Handle, PaintRect, DownStyles[FState in [bsDown, bsExclusive]],
-        FillStyles[FFlat] or BF_RECT);
+        FillStyles[Flat] or BF_RECT);
     InflateRect(PaintRect, -1, -1);
   end;
 
   if FState in [bsDown, bsExclusive] then
   begin
-    if (FState = bsExclusive) and (not FFlat or not FMouseInControl) then
+    if (FState = bsExclusive) and (not Flat or not FMouseInControl) then
     begin
       if Pattern = nil then
         CreateBrushPattern;
@@ -826,12 +826,12 @@ begin
     Offset.Y := 0;
   end;
   { draw image: }
-  TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, FLayout, FMargin,
-    FSpacing, FState, FFlat);
+  TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, Layout, Margin,
+    Spacing, FState, Flat);
 
   { calculate were to put arrow part }
-  PaintRect := Rect(Width - FArrowWidth, 0, Width, Height); 
-  Push := FArrowClick or (FPressBoth and (FState in [bsDown, bsExclusive]));
+  PaintRect := Rect(Width - ArrowWidth, 0, Width, Height); 
+  Push := FArrowClick or (PressBoth and (FState in [bsDown, bsExclusive]));
   if Push then
   begin
     Offset.X := 1;
@@ -843,7 +843,7 @@ begin
     Offset.Y := 0;
   end;
 
-  if not FFlat then
+  if not Flat then
   begin
     DrawFlags := DFCS_BUTTONPUSH; // or DFCS_ADJUSTRECT;
     if Push then
@@ -855,7 +855,7 @@ begin
   else
   if FMouseInControl and Enabled or (csDesigning in ComponentState) then
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
-      FillStyles[FFlat] or BF_RECT);
+      FillStyles[Flat] or BF_RECT);
   { find middle pixel }
   with PaintRect do
   begin
@@ -869,7 +869,7 @@ begin
     Right := (Right - DivX div 2);
   end;
 
-  if not FFlat then
+  if not Flat then
     Dec(Offset.X);
   OffsetRect(PaintRect, Offset.X, Offset.Y);
 
@@ -890,7 +890,7 @@ procedure TJvArrowButton.UpdateTracking;
 var
   P: TPoint;
 begin
-  if FFlat then
+  if Flat then
     if Enabled then
     begin
       GetCursorPos(P);
@@ -922,24 +922,24 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   if not Enabled then
     Exit;
-  FArrowClick := (X >= Width - FArrowWidth) and (X <= Width) and (Y >= 0) and (Y <= Height);
+  FArrowClick := (X >= Width - ArrowWidth) and (X <= Width) and (Y >= 0) and (Y <= Height);
 
   if Button = mbLeft then
   begin
-    if not FDown then
+    if not Down then
       FState := bsDown
     else
       FState := bsExclusive;
     Repaint; // Invalidate;
   end;
 
-  if Assigned(FPopup) and FArrowClick then
+  if Assigned(FDropDown) and FArrowClick then
   begin
     Pnt := ClientToScreen(Point(0, Height));
-    FPopup.Popup(Pnt.X, Pnt.Y);  
+    DropDown.Popup(Pnt.X, Pnt.Y);  
     repeat
       Application.ProcessMessages;
-    until IsWindowVisible(FPopup.Handle) = False; 
+    until IsWindowVisible(DropDown.Handle) = False; 
   end;
 
   if FArrowClick then
@@ -962,9 +962,9 @@ begin
     Repaint;
   end;
 
-  DoClick := (X >= 0) and (X <= Width - FArrowWidth) and (Y >= 0) and (Y <= Height);
+  DoClick := (X >= 0) and (X <= Width - ArrowWidth) and (Y >= 0) and (Y <= Height);
 
-  if FGroupIndex = 0 then
+  if GroupIndex = 0 then
   begin
     { Redraw face in case mouse is captured }
     FState := bsUp;
@@ -975,13 +975,13 @@ begin
   else
   if DoClick then
   begin
-    SetDown(not FDown);
-    if FDown then
+    SetDown(not Down);
+    if Down then
       Repaint;
   end
   else
   begin
-    if FDown then
+    if Down then
       FState := bsExclusive;
     Repaint;
   end;
@@ -1037,10 +1037,10 @@ procedure TJvArrowButton.UpdateExclusive;
 var
   Msg: TJvCMButtonPressed;
 begin
-  if (FGroupIndex <> 0) and (Parent <> nil) then
+  if (GroupIndex <> 0) and (Parent <> nil) then
   begin
     Msg.Msg := CM_BUTTONPRESSED;
-    Msg.Index := FGroupIndex;
+    Msg.Index := GroupIndex;
     Msg.Control := Self;
     Msg.Result := 0;
     Parent.Broadcast(Msg);
@@ -1049,11 +1049,11 @@ end;
 
 procedure TJvArrowButton.SetDown(Value: Boolean);
 begin
-  if (FGroupIndex = 0) then
+  if GroupIndex = 0 then
     Value := False;
   if Value <> FDown then
   begin
-    if FDown and (not FAllowAllUp) then
+    if FDown and (not AllowAllUp) then
       Exit;
     FDown := Value;
     if Value then
@@ -1159,12 +1159,12 @@ procedure TJvArrowButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
 var
   Sender: TJvArrowButton;
 begin
-  if Msg.Index = FGroupIndex then
+  if Msg.Index = GroupIndex then
   begin
     Sender := TJvArrowButton(Msg.Control);
     if Sender <> Self then
     begin
-      if Sender.Down and FDown then
+      if Sender.Down and Down then
       begin
         FDown := False;
         FState := bsUp;
@@ -1202,7 +1202,7 @@ end;
 procedure TJvArrowButton.MouseEnter(Control: TControl);
 begin
   inherited MouseEnter(Control);
-  if FFlat and not FMouseInControl and Enabled then
+  if Flat and not FMouseInControl and Enabled then
   begin
     FMouseInControl := True;
     Repaint;
@@ -1212,7 +1212,7 @@ end;
 procedure TJvArrowButton.MouseLeave(Control: TControl);
 begin
   inherited MouseLeave(Control);
-  if FFlat and FMouseInControl and Enabled then
+  if Flat and FMouseInControl and Enabled then
   begin
     FMouseInControl := False;
     Invalidate;

@@ -267,7 +267,7 @@ end;
 procedure TJvSALCore.xEndCase;
 // Removed Hint
 //var
-//  c:Integer;
+//  c: Integer;
 begin
   //  c:=FSal.Atoms.Count;
   while FSal.PC < FSal.Atoms.Count do

@@ -58,8 +58,7 @@ type
     procedure Click; override;
     procedure Paint; override;
     procedure HookResized; override;
-    property BoundLines: TJvXPBoundLines read FBoundLines write SetBoundLines
-      default [];
+    property BoundLines: TJvXPBoundLines read FBoundLines write SetBoundLines default [];
     property Checked: Boolean read FChecked write SetChecked default False;
     property Spacing: Byte read FSpacing write SetSpacing default 3;
   public
@@ -82,8 +81,6 @@ type
     property Spacing;
     property ParentColor;
     property Color;
-
-
     //property BevelInner;
     //property BevelOuter;
     //property BevelWidth;
@@ -170,7 +167,8 @@ end;
 
 procedure TJvXPCustomCheckControl.Click;
 begin
-  FChecked := not FChecked;
+  // (rom) using FChecked here seemed wrong (no painting)
+  Checked := not Checked;
   inherited Click;
 end;
 
@@ -236,13 +234,13 @@ begin
       DrawFocusRect(Rect);
 
     // draw boundlines.
-    if FBoundLines <> [] then
+    if BoundLines <> [] then
     begin
       if Style.GetTheme = WindowsXP then
         BoundColor := dxColor_Btn_Enb_Border_WXP
       else
         BoundColor := dxColor_DotNetFrame;
-      JvXPDrawBoundLines(Self.Canvas, FBoundLines, BoundColor, Rect);
+      JvXPDrawBoundLines(Self.Canvas, BoundLines, BoundColor, Rect);
     end;
 
     // draw focusrect.
@@ -259,7 +257,7 @@ begin
     SetBkMode(Handle, Transparent);
     Font.Assign(Self.Font); 
     begin
-      Inc(Rect.Left, FCheckSize + 4 + FSpacing);
+      Inc(Rect.Left, FCheckSize + 4 + Spacing);
       JvXPPlaceText(Self, Canvas, Caption, Font, Enabled, True, taLeftJustify, True, Rect);
     end;
    end;
@@ -325,7 +323,7 @@ begin
     end;
 
     // draw checked.
-    if FChecked then
+    if Checked then
     begin
       Brush.Color := clSilver;
       Pen.Color := dxColor_Btn_Enb_Border_WXP;

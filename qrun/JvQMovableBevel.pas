@@ -261,17 +261,17 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
-//Procedure TJvMovableBevel.SelectCursor(X,Y:longint);
+//Procedure TJvMovableBevel.SelectCursor(X, Y: Longint);
 //begin
-//  if Y in[0..FBorderSize] then
+//  if Y in [0..FBorderSize] then
 //  begin
-//    If X in[0..FBorderSize] then
+//    If X in [0..FBorderSize] then
 //    begin
 //      Screen.Cursor:= crsizenwse;
 //      FDirection := tdTopLeftToBottomRight;
 //    end
 //    else
-//      if X in[Width-FBorderSize..Width] then
+//      if X in [Width-FBorderSize..Width] then
 //      begin
 //        Screen.Cursor := crsizenesw;
 //        FDirection := tdTopRightToBottomLeft;
@@ -285,20 +285,20 @@ end;
 //  else
 //    if Y in [Height-FBorderSize..Height] then
 //    begin
-//      If X in[0..FBorderSize] then
+//      If X in [0..FBorderSize] then
 //      begin
 //        Screen.Cursor:= crsizenesw;
 //        FDirection := tdBottomLeftToTopRight;
 //      end
 //      else
-//        if X in[Width-FBorderSize..Width] then
+//        if X in [Width-FBorderSize..Width] then
 //        begin
 //          Screen.Cursor := crsizenwse;
 //          FDirection := tdBottomRightToTopLeft;
 //        end
 //        else
 //        begin
-//          Screen.Cursor := crsizens;
+//          Screen.Cursor := crSizeNS;
 //          FDirection := tdDownToUp;
 //        end;
 //  end

@@ -229,7 +229,7 @@ type
     property AutoSizeHeight: Boolean read FAutoSizeHeight write SetAutoSizeHeight default False;
     // The number of columns in the grid. Rows are adjusted automatically. Min. value is 1
     property Columns: Integer read GetColumns write SetColumns default 20;
-    property HighlightInvalid:Boolean read FHighlightInvalid write SetHighlightInvalid default True;
+    property HighlightInvalid: Boolean read FHighlightInvalid write SetHighlightInvalid default True;
     // Event that is called every time the grid needs to check if a character is valid.
     // If the character is invalid, it won't be drawn
     property OnValidateChar: TJvCharMapValidateEvent read FOnValidateChar write FOnValidateChar;
@@ -248,8 +248,8 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     function DoMouseWheelDown(Shift: TShiftState;  const  MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState;  const  MousePos: TPoint): Boolean; override;
-    function InGridRange(ACol, ARow:Integer):Boolean;virtual;
-    function InCharRange(AChar:WideChar):Boolean;virtual;
+    function InCharRange(AChar: WideChar): Boolean; virtual;
+    function InGridRange(ACol, ARow: Integer): Boolean; virtual;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
 
     function GetChar(ACol, ARow: Integer): WideChar; virtual;
@@ -584,7 +584,7 @@ procedure TJvCustomCharMap.DrawCell(ACol, ARow: Integer; ARect: TRect;
   AState: TGridDrawState);
 var
   AChar: WideChar;
-  LineColor:TColor;
+  LineColor: TColor;
 begin
   if FDrawing then
     Exit;
@@ -890,7 +890,7 @@ end;
 
 procedure TJvCustomCharMap.SetColumns(Value: Integer);
 var
-  CurCell:integer;
+  CurCell: Integer;
 begin
   if Value > 0 then
   begin

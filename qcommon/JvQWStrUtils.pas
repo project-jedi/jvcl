@@ -49,7 +49,7 @@ type
     foUnicodeLB  // reads/writes BOM_LSB_FIRST/BOM_MSB_FIRST
    );
   TWideFileOptions = set of TWideFileOptionsType;
- 
+
   TSearchFlag = (
     sfCaseSensitive,    // match letter case
     sfIgnoreNonSpacing, // ignore non-spacing characters in search
@@ -57,9 +57,24 @@ type
                         // (this applies to the pattern as well as the search text)
     sfWholeWordOnly     // match only text at end/start and/or surrounded by white spaces
   );
-  TSearchFlags = set of TSearchFlag; 
+  TSearchFlags = set of TSearchFlag;
 
+  // UTF conversion schemes (UCS) data types
+  PUCS4 = ^UCS4;
+  UCS4 = Cardinal;
+  PUCS2 = PWideChar;
+  UCS2 = WideChar;
 
+  TUCS2Array = array of UCS2;
+  TUCS4Array = array of UCS4;
+
+const
+  ReplacementCharacter: UCS4 = $0000FFFD;
+  MaximumUCS2: UCS4 = $0000FFFF;
+  MaximumUTF16: UCS4 = $0010FFFF;
+  MaximumUCS4: UCS4 = $7FFFFFFF;
+
+type
   TWStrings = class;
   TWStringList = class;
 
@@ -265,6 +280,86 @@ begin
     Dec(Len);
   end;
 end;
+
+const
+  HalfShift: Integer = 10;
+
+  HalfBase: UCS4 = $0010000;
+  HalfMask: UCS4 = $3FF;
+
+  OffsetsFromUTF8: array[0..5] of UCS4 = ($00000000, $00003080, $000E2080,
+                                          $03C82080, $FA082080, $82082080);
+
+  BytesFromUTF8: array[0..255] of Byte = (
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+    2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 3,3,3,3,3,3,3,3,4,4,4,4,5,5,5,5);
+
+  FirstByteMark: array[0..6] of Byte = ($00, $00, $C0, $E0, $F0, $F8, $FC);
+
+function WideStringToUTF8(S: WideString): AnsiString;
+
+var
+  Ch: UCS4;
+  L, J, T,
+  BytesToWrite: Cardinal;
+  ByteMask: UCS4;
+  ByteMark: UCS4;
+
+begin
+  if Length(S) = 0 then
+    Result := ''
+  else
+  begin
+    SetLength(Result, Length(S) * 6); // assume worst case
+    T := 1;
+    ByteMask := $BF;
+    ByteMark := $80;
+
+    for J := 1 to Length(S) do
+    begin
+      Ch := UCS4(S[J]);
+
+      if Ch < $80 then
+        BytesToWrite := 1
+      else
+        if Ch < $800 then
+          BytesToWrite := 2
+        else
+          if Ch < $10000 then
+            BytesToWrite := 3
+          else
+            if Ch < $200000 then
+              BytesToWrite := 4
+            else
+              if Ch < $4000000 then
+                BytesToWrite := 5
+              else
+                if Ch <= MaximumUCS4 then
+                  BytesToWrite := 6
+                else
+                begin
+                  BytesToWrite := 2;
+                  Ch := ReplacementCharacter;
+                end;
+
+      for L := BytesToWrite downto 2 do
+      begin
+        Result[T + L - 1] := Char((Ch or ByteMark) and ByteMask);
+        Ch := Ch shr 6;
+      end;
+      Result[T] := Char(Ch or FirstByteMark[BytesToWrite]);
+      Inc(T, BytesToWrite);
+    end;
+    SetLength(Result, T - 1); // set to actual length
+  end;
+end;
+
 
 // WideChar functions
 

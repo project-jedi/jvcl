@@ -763,10 +763,10 @@ var
   s: string;
   i, p, p2: Integer;
   atom: TAtom;
-  //  atomoperation:TToken;
+  //  atomoperation: TToken;
   atomsymbol: string;
   atomValue: Variant;
-  //  atomproc:TProcVar;
+  //  atomproc: TProcVar;
   token: string;
   vinteger: Integer;
   vfloat: double;
@@ -780,7 +780,7 @@ var
   deltaTicks: Cardinal;
 
   function pushatom(aToken: TToken): Integer;
-    //    var cc:Integer;
+    //    var cc: Integer;
   begin
     atom := TAtom.Create;
     atom.Token := atoken;
@@ -790,7 +790,7 @@ var
   end;
 
   procedure opush(aToken: TToken);
-    //    var cc:Integer;
+    //    var cc: Integer;
   begin
     atom := TAtom.Create;
     atom.Token := atoken;
@@ -800,7 +800,7 @@ var
   end;
 
   procedure brcpush(proc: TProcVar);
-    //    var cc:Integer;
+    //    var cc: Integer;
   begin
     atom := TAtom.Create;
     atom.Proc := proc;
@@ -1211,10 +1211,10 @@ begin
     dfoIntVar: ProcIntVar;
     dfoExtVar: ProcExtVar;
     dfoSystem: procSystem;
-    //    dfoVarGet:ProcVarGet;
-    //    dfoVarset:ProcVarSet;
-    //    dfoSysGet:procSysGet;
-    //    dfoSysSet:procSysSet;
+    //    dfoVarGet: ProcVarGet;
+    //    dfoVarset: ProcVarSet;
+    //    dfoSysGet: procSysGet;
+    //    dfoSysSet: procSysSet;
     dfoSub: procSub;
     dfoEndSub: procEndSub;
     dfoCall: procCall;

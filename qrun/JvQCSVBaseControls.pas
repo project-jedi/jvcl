@@ -77,7 +77,7 @@ type
     function RecordFirst: Boolean;
     function RecordLast: Boolean;
     procedure RecordPost;
-    function RecordFind(AText: string): Boolean;
+    function RecordFind(const AText: string): Boolean;
     procedure Display;
   published
     property CSVFileName: string read FCSVFileName write SetCSVFileName;
@@ -333,7 +333,7 @@ begin
   end;
 end;
 
-function TJvCSVBase.RecordFind(AText: string): Boolean;
+function TJvCSVBase.RecordFind(const AText: string): Boolean;
 var
   I, from: Integer;
   fs: string;

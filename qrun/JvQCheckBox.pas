@@ -81,7 +81,7 @@ type
     procedure UpdateProperties;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
-    procedure LinkedControlsChange(Sender:TObject);
+    procedure LinkedControlsChange(Sender: TObject);
     procedure CheckLinkedControls; virtual;
     procedure DefineProperties(Filer: TFiler); override;  
     procedure StateChanged(State: TToggleState); override; 

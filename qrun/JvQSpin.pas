@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -40,13 +41,10 @@ unit JvQSpin;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QComCtrls, QControls, QExtCtrls, QGraphics, QForms, Types, QWindows,
-  QComCtrlsEx,
-  
-  JvQEdit, JvQMaskEdit, JvQComponent;
+  SysUtils, Classes, 
+  QComCtrls, QControls, QExtCtrls, Types, QGraphics, QForms,
+  QComboEdits, QWindows, JvQExComboEdits, QComCtrlsEx,
+  JvQEdit, JvQExMask, JvQMaskEdit, JvQComponent;
 
 type
   TSpinButtonState = (sbNotDown, sbTopDown, sbBottomDown);
@@ -59,8 +57,7 @@ type
     FDragging: Boolean;
     FUpBitmap: TBitmap; // Custom up arrow
     FDownBitmap: TBitmap; // Custom down arrow
-    FButtonBitmaps: Pointer;
-    
+    FButtonBitmaps: Pointer; 
     FRepeatTimer: TTimer;
     FLastDown: TSpinButtonState;
     FFocusControl: TWinControl;
@@ -77,8 +74,7 @@ type
     procedure SetDownGlyph(Value: TBitmap);
     procedure SetFocusControl(Value: TWinControl);
     procedure SetUpGlyph(Value: TBitmap);
-    procedure TimerExpired(Sender: TObject);
-    
+    procedure TimerExpired(Sender: TObject); 
   protected
     procedure CheckButtonBitmaps;
     procedure RemoveButtonBitmaps;
@@ -91,15 +87,13 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
 
-    function MouseInBottomBtn(const P: TPoint): Boolean;
-    
+    function MouseInBottomBtn(const P: TPoint): Boolean; 
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Down: TSpinButtonState read FDown write SetDown default sbNotDown;
   published
-    property ButtonStyle: TJvSpinButtonStyle read FButtonStyle write SetButtonStyle default sbsDefault;
-    
+    property ButtonStyle: TJvSpinButtonStyle read FButtonStyle write SetButtonStyle default sbsDefault; 
     property DragMode;
     property Enabled;
     property Visible;
@@ -117,19 +111,15 @@ type
     property OnEndDrag;
     property OnStartDrag;
   end;
-
-  {$IFDEF BCB}
-  TValueType = (vtInt, vtFloat, vtHex);
-  {$ELSE}
-  TValueType = (vtInteger, vtFloat, vtHex);
-  {$ENDIF BCB}
+ 
+  TValueType = (vtInteger, vtFloat, vtHex); 
 
   TSpinButtonKind = (bkStandard, bkDiagonal, bkClassic);
 
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
-
-  TJvCustomSpinEdit = class(TJvCustomMaskEdit)
+  
+  TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit)
   private
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
@@ -188,15 +178,13 @@ type
     procedure SetDecimal(NewValue: Byte);
     procedure SetEditRect;
     procedure SetThousands(Value: Boolean);
-    procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
-    
+    procedure UpDownClick(Sender: TObject; Button: TUDBtnType); 
   protected
     FButtonKind: TSpinButtonKind;
     procedure DoClipboardPaste; override;
     procedure DoClipboardCut; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
-    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-       const  MousePos: TPoint): Boolean; override;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  const  MousePos: TPoint): Boolean; override;
     procedure DoBoundsChanged; override;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
@@ -210,20 +198,19 @@ type
     procedure SetValue(NewValue: Extended); virtual; abstract;
     procedure SetValueType(NewType: TValueType); virtual;
 
-    procedure Loaded; override;
     function DefaultDisplayFormat: string; virtual;
     property DisplayFormat: string read FDisplayFormat write SetDisplayFormat stored IsFormatStored;
     //    procedure DefinePropertyes(Filer: TFiler); override;
 
     function IsValidChar(Key: Char): Boolean; virtual;
-    procedure Change; override;
-    
+    procedure Change; override; 
     procedure DownClick(Sender: TObject); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     procedure UpClick(Sender: TObject); virtual;
     property ButtonWidth: Integer read GetButtonWidth;
   public
+    procedure Loaded; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -242,7 +229,7 @@ type
     property CheckMinValue: Boolean read FCheckMinValue write SetCheckMinValue stored StoreCheckMinValue;
     property CheckMaxValue: Boolean read FCheckMaxValue write SetCheckMaxValue stored StoreCheckMaxValue;
     property ValueType: TValueType read FValueType write SetValueType
-      default {$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF};
+      default  vtInteger ;
     property Value: Extended read GetValue write SetValue stored IsValueStored;
     property Thousands: Boolean read FThousands write SetThousands default False;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
@@ -283,8 +270,7 @@ type
     property AutoSelect;
     property AutoSize;
     property BorderStyle;
-    property Color;
-    
+    property Color; 
     property DragMode;
     property Enabled;
     property Font;
@@ -318,24 +304,16 @@ type
     property OnContextPopup;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    property HideSelection;
-    property HotTrack;
-    
+    property HideSelection; 
     property ClipboardCommands;
-    property DisabledTextColor;
-    property DisabledColor;
   end;
 
 implementation
 
 uses
-  
-  
   QConsts,
-  
-  JvThemes,
-  
-  JvQJCLUtils, JvQJVCLUtils, JvQConsts, JvQResources;
+  JvQThemes, 
+  JvQJCLUtils, JvQJVCLUtils, JvQConsts, JvQResources, JvQToolEdit;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSpin.Res}
@@ -449,19 +427,14 @@ end;
 *)
 
 type
-  TColorArray = array [0..2] of TColor;
-  
-  TCustomFormAccess = class(TCustomForm);
-  
+  TColorArray = array [0..2] of TColor; 
+  TCustomFormAccess = class(TCustomForm); 
 
   TJvUpDown = class(TCustomUpDown)
   private
-    FChanging: Boolean;
-  
-  
+    FChanging: Boolean;  
   protected
-    procedure Click(Button: TUDBtnType); override;
-  
+    procedure Click(Button: TUDBtnType); override; 
   public
     procedure Resize; override;
   public
@@ -497,16 +470,14 @@ type
     FNotDownBtn: TBitmap;
     FDisabledBtn: TBitmap;
     FCustomGlyphs: Boolean;
-    FResetOnDraw: Boolean;
-    
+    FResetOnDraw: Boolean; 
   protected
     procedure DrawAllBitmap;
     procedure DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState; const Enabled: Boolean);
     procedure PoleDrawArrows(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
       AUpArrow, ADownArrow: TBitmap);
     procedure JvDrawArrows(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
-      AUpArrow, ADownArrow: TBitmap);
-    
+      AUpArrow, ADownArrow: TBitmap); 
     procedure Reset;
 
     function CompareWith(const AWidth, AHeight: Integer; const AStyle: TJvSpinButtonStyle;
@@ -682,7 +653,7 @@ var
   EditFormat: string;
   WasModified: Boolean;
 begin
-  if (ValueType = vtFloat) and FFocused and (FDisplayFormat <> EmptyStr) then
+  if (ValueType = vtFloat) and FFocused and (FDisplayFormat <> '') then
   begin
     EditFormat := '0';
     if FDecimal > 0 then
@@ -690,7 +661,7 @@ begin
     { Changing EditText sets Modified to false }
     WasModified := Modified;
     try
-      EditText := FormatFloat(EditFormat, Value);
+      Text := FormatFloat(EditFormat, Value);
     finally
       Modified := WasModified;
     end;
@@ -797,8 +768,7 @@ begin
   inherited DoKillFocus(FocusedWnd);
 end;
 
-function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-   const  MousePos: TPoint): Boolean;
+function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;  const  MousePos: TPoint): Boolean;
 begin
   if WheelDelta > 0 then
     UpClick(nil)
@@ -1029,11 +999,8 @@ begin
     inherited KeyPress(Key);
     if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
     begin
-      { must catch and remove this, since is actually multi-line }
-      
-      
-      TCustomFormAccess(GetParentForm(Self)).WantKey(Integer(Key), [], Key);
-      
+      { must catch and remove this, since is actually multi-line }  
+      TCustomFormAccess(GetParentForm(Self)).WantKey(Integer(Key), [], Key); 
       if Key = Char(VK_RETURN) then
         Key := #0;
     end;
@@ -1070,7 +1037,7 @@ begin
         Align := alLeft
       else
         Align := alRight;
-      Parent := Self;
+      Parent := Self .ClientArea;
       OnClick := UpDownClick;
     end;
   end
@@ -1078,12 +1045,12 @@ begin
   begin
     FBtnWindow := TWinControl.Create(Self);
     FBtnWindow.Visible := True;
-    FBtnWindow.Parent := Self;
+    FBtnWindow.Parent := Self .ClientArea;
     if FButtonKind <> bkClassic then
       FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
     else
       FBtnWindow.SetBounds(0, 0, Height, Height);
-
+    FBtnWindow.Align := alRight;
     FButton := TJvSpinButton.Create(Self);
     FButton.Visible := True;
     if FButtonKind = bkClassic then
@@ -1136,7 +1103,11 @@ begin
       end;
     end;
     with R do
-      FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
+      FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top); 
+    if BiDiMode = bdRightToLeft then
+      FBtnWindow.Align := alLeft
+    else
+      FBtnWindow.Align := alRight; 
     //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
   end;
@@ -1146,11 +1117,8 @@ procedure TJvCustomSpinEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
   begin
-    FAlignment := Value;
-    
-    
-    Invalidate;
-    
+    FAlignment := Value;  
+    Invalidate; 
   end;
 end;
 
@@ -1225,18 +1193,13 @@ begin
   if BiDiMode = bdRightToLeft then
   begin
     SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1,
-      ClientHeight + 1);
-    
+      ClientHeight + 1); 
   end
   else
   begin
-    SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
-    
-  end;
-  
-  
-  SetEditorRect(@Loc);
-  
+    SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1); 
+  end;  
+  SetEditorRect(@Loc); 
 end;
 
 procedure TJvCustomSpinEdit.SetFocused(Value: Boolean);
@@ -1301,7 +1264,7 @@ begin
   begin
     FValueType := NewType;
     Value := GetValue;
-    if FValueType in [{$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF}, vtHex] then
+    if FValueType in [ vtInteger , vtHex] then
     begin
       FIncrement := Round(FIncrement);
       if FIncrement = 0 then
@@ -1526,8 +1489,7 @@ begin
       FDown := sbNotDown;
       Repaint;
     end;
-  end
-  
+  end 
 end;
 
 procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1560,10 +1522,8 @@ begin
 
   if not Enabled and not (csDesigning in ComponentState) then
     FDragging := False;
-
-  
-  TSpinButtonBitmaps(FButtonBitmaps).Draw(Canvas, FDown, Enabled, False, False);
-  
+ 
+  TSpinButtonBitmaps(FButtonBitmaps).Draw(Canvas, FDown, Enabled, False, False); 
   if not FUpBitmap.Empty or not FDownBitmap.Empty then
     TSpinButtonBitmaps(FButtonBitmaps).DrawGlyphs(Canvas, FDown, Enabled, FUpBitmap, FDownBitmap);
 end;
@@ -1662,7 +1622,7 @@ begin
     case ValueType of
       vtFloat:
         begin
-          if FDisplayFormat <> EmptyStr then
+          if FDisplayFormat <> '' then
           try
             Result := StrToFloat(TextToValText(Text));
           except
@@ -1700,8 +1660,7 @@ begin
   try
     case ValueType of
       vtFloat:
-        { (rb) EmptyStr is for backwards compatibility, remove }
-        if FDisplayFormat <> EmptyStr then
+        if FDisplayFormat <> '' then
           Text := FormatFloat(FDisplayFormat, CheckValue(NewValue))
         else
           Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);
@@ -1804,8 +1763,7 @@ begin
   FTopDownBtn := TBitmap.Create;
   FBottomDownBtn := TBitmap.Create;
   FNotDownBtn := TBitmap.Create;
-  FDisabledBtn := TBitmap.Create;
-  
+  FDisabledBtn := TBitmap.Create; 
 
   DrawAllBitmap;
 end;
@@ -1817,8 +1775,7 @@ begin
   FTopDownBtn.Free;
   FBottomDownBtn.Free;
   FNotDownBtn.Free;
-  FDisabledBtn.Free;
-  
+  FDisabledBtn.Free; 
 
   inherited Destroy;
 end;
@@ -1837,8 +1794,7 @@ begin
       Draw(0, 0, FDisabledBtn)
     else
       case ADown of
-        sbNotDown:
-          
+        sbNotDown: 
             Draw(0, 0, FNotDownBtn);
         sbTopDown:
           Draw(0, 0, FTopDownBtn);
@@ -1848,8 +1804,7 @@ begin
 end;
 
 procedure TSpinButtonBitmaps.DrawAllBitmap;
-begin
-  
+begin 
 
   DrawBitmap(FTopDownBtn, sbTopDown, True);
   DrawBitmap(FBottomDownBtn, sbBottomDown, True);
@@ -1993,8 +1948,7 @@ end;
 
 procedure TSpinButtonBitmaps.DrawGlyphs(ACanvas: TCanvas; const AState: TSpinButtonState; const Enabled: Boolean;
   AUpArrow, ADownArrow: TBitmap);
-begin
-  
+begin 
   if FStyle = sbsClassic then
     PoleDrawArrows(ACanvas, AState, Enabled, AUpArrow, ADownArrow)
   else
@@ -2021,19 +1975,13 @@ begin
       AUpArrow.Height);
     Source := Bounds(0, 0, AUpArrow.Width, AUpArrow.Height);
 
-    if Enabled then
-      
-      
-      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor)
-      
+    if Enabled then  
+      BrushCopy(ACanvas, Dest, AUpArrow, Source, AUpArrow.TransparentColor) 
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
-      try
-        
-        
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
-        
+      try  
+        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor); 
       finally
         DisabledBitmap.Free;
       end;
@@ -2045,19 +1993,13 @@ begin
       ADownArrow.Width, ADownArrow.Height);
     Source := Bounds(0, 0, ADownArrow.Width, ADownArrow.Height);
 
-    if Enabled then
-      
-      
-      BrushCopy(ACanvas, Dest, ADownArrow, Source, ADownArrow.TransparentColor)
-      
+    if Enabled then  
+      BrushCopy(ACanvas, Dest, ADownArrow, Source, ADownArrow.TransparentColor) 
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
-      try
-        
-        
-        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
-        
+      try  
+        BrushCopy(ACanvas, Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor); 
       finally
         DisabledBitmap.Free;
       end;

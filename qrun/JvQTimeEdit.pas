@@ -29,69 +29,12 @@ interface
 uses
   SysUtils, Classes, DateUtils,
   Types, QButtons, QControls, QStdCtrls, QExtCtrls, QGraphics, QMask, Qt,
-  JvQSpinButton, JvQJCLUtils, JvQExMask;
+  JvQSpin, JvQJCLUtils, JvQExMask;
 
 type
 
   TTimeField = ( teHours, teMinutes, teSeconds);
 
-  TJvCustomSpinEdit = class(TJvExCustomMaskEdit)
-  private
-    { Private declarations }
-    FButton: TJvSpinButton;
-    function getFlatBtn : boolean;
-    procedure setFlatBtn(value :boolean);
-    function GetBorderStyle :TBorderStyle;
-    procedure SetBorderStyle(value: TBorderStyle);
-  protected
-    { Protected declarations }
-    procedure KeyDown(var Key: word; Shift: TShiftState); override;
-    procedure AdjustSize; override;
-    procedure Loaded; override;
-    procedure IncrementValue ; virtual;
-    procedure DecrementValue ; virtual;
-    procedure DownClick (Sender: TObject);
-    procedure UpClick (Sender: TObject);
-  public
-    { Public declarations }
-    Constructor create( AOwner: TComponent);override;
-  published
-    { Published declarations }
-    property Anchors;
-    property AutoSelect;
-    property AutoSize;
-    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle;
-    property FlatButtons: boolean read GetFlatBtn write SetFlatBtn;
-    property Color;
-    property Constraints;
-    property DragMode;
-    property Enabled;
-    property Font;
-    property ParentColor;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
-    property OnChange;
-    property OnClick;
-    property OnDblClick;
-    property OnDragDrop;
-    property OnDragOver;
-    property OnEndDrag;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnMouseDown;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnStartDrag;
-  end;
 
   TJvTimeSpin = class(TJvCustomSpinEdit)
   private
@@ -101,8 +44,8 @@ type
     function GetTimeField : TTimeField;
     function GetDelta(value: TTimeField) : TDateTime;
   protected
-    procedure IncrementValue ; override;
-    procedure DecrementValue ; override;
+    procedure IncrementValue ; //override;
+    procedure DecrementValue ; //override;
   public
     Constructor Create( AOwner: TComponent); override;
   published
@@ -111,7 +54,7 @@ type
     property AutoSelect;
     property AutoSize;
     property BorderStyle;
-    property FlatButtons;
+//    property FlatButtons;
     property Color;
     property Constraints;
     property DragMode;
@@ -153,8 +96,8 @@ type
 //  function getDate : TDate;
     procedure setDate(value :TDate);
   protected
-    procedure IncrementValue ; override;
-    procedure DecrementValue ; override;
+    procedure IncrementValue ; //override;
+    procedure DecrementValue ; //override;
   public
     Constructor Create( AOwner: TComponent); override;
   published
@@ -163,7 +106,7 @@ type
     property AutoSelect;
     property AutoSize;
     property BorderStyle;
-    property FlatButtons;
+//    property FlatButtons;
     property Color;
     property Constraints;
     property DragMode;
@@ -198,111 +141,6 @@ type
 
 implementation
 
-Constructor TJvCustomSpinEdit.create( AOwner: TComponent);
-begin
-  inherited;
-  ControlStyle := ControlStyle - [csSetCaption];
-  InputKeys := [ikArrows];
-  Height := 23 ;
-  FButton := TJvSpinButton.Create(Self);
-  with FButton do
-  begin
-    Width := 15;
-    Visible := True;
-    ParentColor := false;
-    Parent := Self;
-    FocusControl := Self;
-    OnUpClick := UpClick;
-    OnDownClick := DownClick;
-    Left := self.ClientWidth - FButton.Width - 2;
-    Top := 2;
-    Height := ClientHeight-4;
-    Anchors := [akTop, akRight, akBottom];
-  end;
-end;
-
-procedure TJvCustomSpinEdit.AdjustSize;
-begin
-  if BorderStyle = bsSingle then
-  begin
-    FButton.Top := 2;
-    FButton.Height := Height - 4;
-    FButton.Left := Width - FButton.Width -2
-  end
-  else
-  begin
-    FButton.Top := 0;
-    FButton.Height := Height;
-    FButton.Left := Width - FButton.Width;
-  end;
-end;
-
-function TJvCustomSpinEdit.getFlatBtn : boolean;
-begin
-  Result := FButton.Flat ;
-end;
-
-procedure TJvCustomSpinEdit.setFlatBtn(value :boolean);
-begin
-  FButton.Flat := value;
-  Invalidate;
-end;
-
-function TJvCustomSpinEdit.GetBorderStyle :TBorderStyle;
-begin
-  Result := inherited BorderStyle;
-end;
-
-procedure TJvCustomSpinEdit.SetBorderStyle(value: TBorderStyle);
-begin
-  if not Assigned(FButton) then exit;
-  if value <> BorderStyle then
-  inherited BorderStyle := value;
-  AdjustSize;
-end;
-
-procedure TJvCustomSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
-begin
-  if (Shift = []) and not ReadOnly then
-  begin
-    if Key = Key_up
-    then
-      IncrementValue
-    else if Key = Key_down
-    then
-      DecrementValue
-    else
-      inherited;
-  end
-  else
-    inherited;
-end;
-
-procedure TJvCustomSpinEdit.Loaded;
-begin
-  AdjustSize;
-  inherited;
-end;
-
-procedure TJvCustomSpinEdit.IncrementValue ;
-begin
-
-end;
-
-procedure TJvCustomSpinEdit.DecrementValue ;
-begin
-
-end;
-
-procedure TJvCustomSpinEdit.DownClick (Sender: TObject);
-begin
-  DecrementValue;
-end;
-
-procedure TJvCustomSpinEdit.UpClick (Sender: TObject);
-begin
-  IncrementValue;
-end;
 
 Constructor TJvTimeSpin.create( AOwner: TComponent);
 begin

@@ -40,6 +40,13 @@ uses
   QWindows, QControls, Types, QGraphics, QForms, QMenus, QImgList,
   JvQComponent, JvQBaseDlg, JvQDesktopAlertForm, JvQTypes;
 
+const
+  JvDefaultFrameColor = TColor($00943000);
+  JvDefaultWindowFromColor = TColor($00FFE7CE);
+  JvDefaultWindowToColor = TColor($00E7A67B);
+  JvDefaultCaptionFromColor = TColor($00D68652);
+  JvDefaultCaptionToColor = TColor($00944110);
+
 type
   TJvDesktopAlertStack = class;
   TJvDesktopAlertChangePersistent = class(TPersistent)
@@ -67,11 +74,11 @@ type
     constructor Create;
     procedure Assign(Source: TPersistent); override;
   published
-    property Frame: TColor read FFrame write SetFrame default $00943000;
-    property WindowFrom: TColor read FWindowFrom write SetWindowFrom default $00FFE7CE;
-    property WindowTo: TColor read FWindowTo write SetWindowTo default $00E7A67B;
-    property CaptionFrom: TColor read FCaptionFrom write SetCaptionFrom default $00D68652;
-    property CaptionTo: TColor read FCaptionTo write SetCaptionTo default $00944110;
+    property Frame: TColor read FFrame write SetFrame default JvDefaultFrameColor;
+    property WindowFrom: TColor read FWindowFrom write SetWindowFrom default JvDefaultWindowFromColor;
+    property WindowTo: TColor read FWindowTo write SetWindowTo default JvDefaultWindowToColor;
+    property CaptionFrom: TColor read FCaptionFrom write SetCaptionFrom default JvDefaultCaptionFromColor;
+    property CaptionTo: TColor read FCaptionTo write SetCaptionTo default JvDefaultCaptionToColor;
   end;
 
   TJvDesktopAlertPosition =
@@ -258,7 +265,10 @@ type
 implementation
 
 uses
-  JvQJVCLUtils;
+  JvQJVCLUtils, JvQFinalize;
+
+const
+  sUnitName = 'JvDesktopAlert';
 
 var
   FGlobalStacker: TJvDesktopAlertStack = nil;
@@ -266,7 +276,10 @@ var
 function GlobalStacker: TJvDesktopAlertStack;
 begin
   if FGlobalStacker = nil then
+  begin
     FGlobalStacker := TJvDesktopAlertStack.Create(nil);
+    AddFinalizeObjectNil(sUnitName, TObject(FGlobalStacker));
+  end;
   Result := FGlobalStacker;
 end;
 
@@ -283,11 +296,11 @@ end;
 constructor TJvDesktopAlertColors.Create;
 begin
   inherited Create;
-  FFrame := $00943000;
-  FWindowFrom := $00FFE7CE;
-  FWindowTo := $00E7A67B;
-  FCaptionFrom := $00D68652;
-  FCaptionTo := $00944110;
+  FFrame := JvDefaultFrameColor;
+  FWindowFrom := JvDefaultWindowFromColor;
+  FWindowTo := JvDefaultWindowToColor;
+  FCaptionFrom := JvDefaultCaptionFromColor;
+  FCaptionTo := JvDefaultCaptionToColor;
 end;
 
 procedure TJvDesktopAlertColors.Assign(Source: TPersistent);
@@ -1084,7 +1097,7 @@ end;
 initialization
 
 finalization
-  FGlobalStacker.Free;
+  FinalizeUnit(sUnitName);
 
 end.
 

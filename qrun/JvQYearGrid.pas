@@ -40,18 +40,16 @@ uses
   {$IFDEF MSWINDOWS}
   ShellAPI,
   {$ENDIF MSWINDOWS}
-  QWindows, QMessages, Types, QGraphics, QControls, QForms,
-  QDialogs, QGrids, QMenus, QClipbrd, 
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QDialogs, QGrids, QMenus, QClipbrd, 
   JvQTypes, 
   SysUtils, QStdCtrls, Classes;
 
 
 
+const
+  JvDefaultBorderColor = TColor($EEF5FF);
 
-type
-
-
-
+type 
 
   TYearData = record
     DisplayText : string;
@@ -229,7 +227,7 @@ type
   published
     property HTMLBorder    : Boolean                read FHTMLBorder     write SetHTMLBorder;
     property HTMLFontName  : string                 read FHTMLFontName   write SetHTMLFontName;
-    property BorderColor   : TColor                 read FBorderColor    write SetBorderColor    default $EEF5FF;
+    property BorderColor   : TColor                 read FBorderColor    write SetBorderColor    default JvDefaultBorderColor;
     property BookMarkColor : TColor                 read FBookMarkColor  write SetBookMarkColor  default clYellow;
     property Orientation   : TJvYearGridOrientation read FOrientation    write SetOrientation    default yoHorizontal;
     property FirstDayOfWeek: TJvWeekDay             read FFirstDayOfWeek write SetFirstDayOfWeek default wdMonday;
@@ -309,7 +307,7 @@ begin
 
   FAutoSizeOptions := [aoGrid, aoFirstColumn, aoFirstRow, aoColumns, aoRows];
 
-  FBorderColor := $EEF5FF;
+  FBorderColor := JvDefaultBorderColor;
   FBookMarkColor := clYellow;
   ShowHint := True;
   CreatePopup;

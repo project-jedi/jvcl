@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,11 +38,8 @@ unit JvQCtrls;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QStdCtrls, QImgList, QActnList, Types, QWindows,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QStdCtrls, QImgList, QActnList, Types, QWindows, 
   JvQButton, JvQFinalize;
 
 
@@ -110,18 +108,14 @@ type
     procedure SetLayout(const Value: TJvImgBtnLayout);
     procedure SetOwnerDraw(const Value: Boolean);
     procedure SetMargin(const Value: Integer);
-    procedure SetSpacing(const Value: Integer);
-    
+    procedure SetSpacing(const Value: Integer); 
     procedure WMTimer(var Msg: TWMTimer); message WM_TIMER;
-  protected
-    
+  protected 
     procedure DestroyWidget; override;
-    procedure Paint; override;
-    
+    procedure Paint; override; 
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect);
-    
+    procedure CalcButtonParts(ButtonRect: TRect; var RectText, RectImage: TRect); 
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); dynamic;
     function GetActionLinkClass: TControlActionLinkClass; override;
     function GetCustomCaption: string; dynamic;
@@ -194,18 +188,14 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
-    property OwnerDraw;
-    
+    property OwnerDraw; 
     property OnGetAnimateIndex;
   end;
 
 implementation
 
 uses
-  
-  
   QConsts,
-  
   JvQThemes, JvQJCLUtils;
 
 {$IFDEF MSWINDOWS}
@@ -359,11 +349,8 @@ begin
         Control := Self;
         while (Control <> nil) and (Control.HelpContext = 0) do
           Control := Control.Parent;
-        if Control <> nil then
-          
-          
-          Application.HelpSystem.ShowContextHelp(Control.HelpContext, Application.HelpFile)
-          
+        if Control <> nil then  
+          Application.HelpSystem.ShowContextHelp(Control.HelpContext, Application.HelpFile) 
         else
           inherited Click;
       end;
@@ -391,8 +378,7 @@ begin
   if not FMouseInControl and Enabled and (GetCapture = NullHandle) then
   begin
     FMouseInControl := True;
-    inherited MouseEnter(Control);
-    
+    inherited MouseEnter(Control); 
   end;
 end;
 
@@ -403,8 +389,7 @@ begin
   if FMouseInControl and Enabled and not Dragging then
   begin
     FMouseInControl := False;
-    inherited MouseLeave(Control);
-    
+    inherited MouseLeave(Control); 
   end;
 end;
 
@@ -457,8 +442,7 @@ procedure TJvCustomImageButton.DrawButtonFrame(const DrawItemStruct: TDrawItemSt
 var
   IsDown, IsEnabled, IsDefault: Boolean;
   R: TRect;
-  Flags: DWORD;
-  
+  Flags: DWORD; 
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -468,8 +452,7 @@ begin
     IsDown := (itemState and ODS_SELECTED <> 0) and IsEnabled;
     IsDefault := itemState and ODS_FOCUS <> 0;
   end;
-
-  
+ 
   begin
     R := ClientRect;
 
@@ -508,18 +491,25 @@ begin
 end;
 
 procedure TJvCustomImageButton.DrawButtonImage(ImageBounds: TRect);
+
+var
+  glyph: TBitmap;
+
 begin
   if csDestroying in ComponentState then
     Exit;
   with ImageBounds do
-    if IsImageVisible then
-      
-      
+    if IsImageVisible then  
       if Assigned(FImages) then
         FImages.Draw(FCanvas, Left, Top, GetImageIndex, itImage, Enabled)
       else
-        DefaultImgBtnImagesList.Draw(FCanvas, Left, Top, GetKindImageIndex, itImage, Enabled);
-      
+      begin
+        Glyph := TBitmap.Create;
+        DefaultImgBtnImagesList.GetBitmap(GetKindImageIndex, Glyph);
+        Glyph.TransparentColor := clOlive;
+        FCanvas.draw(Left, Top, Glyph);
+        Glyph.Free;
+      end; 
 end;
 
 procedure TJvCustomImageButton.DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
@@ -556,8 +546,7 @@ begin
   //InflateRect(R, -4, -4);
   R := RectContent;
   if (DrawItemStruct.itemState and ODS_SELECTED <> 0) and Enabled then
-  begin
-    
+  begin 
       OffsetRect(R, 1, 1);
   end;
 
@@ -632,17 +621,14 @@ begin
   if not Assigned(DefaultImgBtnImagesList) then
   begin
     DefaultImgBtnImagesList := TImageList.CreateSize(18, 18);
-    AddFinalizeObjectNil(sUnitName, TObject(DefaultImgBtnImagesList));
-    
-    
+    AddFinalizeObjectNil(sUnitName, TObject(DefaultImgBtnImagesList));  
     ResBmp := TBitmap.Create;
     try
-      ResBmp.LoadFromResourceName(0, 'JVIMGBTNDEFAULT');
-      DefaultImgBtnImagesList.AddMasked(ResBmp, clOlive);
+      ResBmp.LoadFromResourceName(HInstance, 'JVIMGBTNDEFAULT');
+      DefaultImgBtnImagesList.Add(ResBmp, nil);
     finally
       ResBmp.Free;
-    end;
-    
+    end; 
   end;
 end;
 

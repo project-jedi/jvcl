@@ -253,6 +253,8 @@ type
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
   public
+    procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
+      AHeight: Integer); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure DoClick;
@@ -563,7 +565,8 @@ const
 type
   TExecDateDialog = procedure(Sender: TObject; var ADate: TDateTime;
     var Action: Boolean) of object;
-  TJvInvalidDateEvent = procedure(Sender: TObject; const DateString:string; var NewDate:TDateTime; var Accept:boolean) of object; 
+  TJvInvalidDateEvent = procedure(Sender: TObject; const DateString: string;
+    var NewDate: TDateTime; var Accept: Boolean) of object;
 
   TJvCustomDateEdit = class(TJvCustomComboEdit)
   private
@@ -616,7 +619,7 @@ type
     // Polaris
     FDateAutoBetween: Boolean;
     procedure SetDate(Value: TDateTime); virtual;
-    function DoInvalidDate(const DateString:string; var ANewDate:TDateTime):boolean;virtual;
+    function DoInvalidDate(const DateString: string; var ANewDate: TDateTime): Boolean; virtual;
     procedure SetDateAutoBetween(Value: Boolean); virtual;
     procedure TestDateBetween(var Value: TDateTime); virtual;
     // Polaris
@@ -1860,6 +1863,14 @@ begin
   end;
 end;
 
+procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth,
+  AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight); 
+  if HandleAllocated then
+    SetEditRect;
+end;
+
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
   FButton.Flat := Value; 
@@ -2284,7 +2295,8 @@ end;
 // Polaris
 
 procedure TJvCustomDateEdit.CheckValidDate;
-var ADate:TDateTime;
+var
+  ADate: TDateTime;
 begin
   if TextStored then
   try
@@ -2393,7 +2405,7 @@ begin
 end;
 
 function TJvCustomDateEdit.DoInvalidDate(const DateString: string;
-  var ANewDate: TDateTime): boolean;
+  var ANewDate: TDateTime): Boolean;
 begin
   Result := False;
   if Assigned(FOnInvalidDate) then
@@ -3412,4 +3424,5 @@ initialization
 
 finalization
   FinalizeUnit(sUnitName);
+
 end.

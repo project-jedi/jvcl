@@ -58,7 +58,7 @@ type
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
 
-    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
+    function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
     function PathExistsInt(const Path: string): boolean; override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
@@ -70,8 +70,8 @@ type
     procedure DoWriteInteger(const Path: string; Value: Integer); override;
     function DoReadFloat(const Path: string; Default: Extended): Extended; override;
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
-    function DoReadString(const Path: string; Default: string): string; override;
-    procedure DoWriteString(const Path: string; Value: string); override;
+    function DoReadString(const Path: string; const Default: string): string; override;
+    procedure DoWriteString(const Path: string; const Value: string); override;
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
   public
@@ -206,7 +206,7 @@ begin
     end;
 end;
 
-function TJvAppRegistryStorage.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
+function TJvAppRegistryStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;
 var
   RefPath: string;
   PathHKEY: HKEY;
@@ -370,7 +370,7 @@ begin
   RegWriteBinary(FRegHKEY, SubKey, ValueName, Value, SizeOf(Value));
 end;
 
-function TJvAppRegistryStorage.DoReadString(const Path: string; Default: string): string;
+function TJvAppRegistryStorage.DoReadString(const Path: string; const Default: string): string;
 var
   SubKey: string;
   ValueName: string;
@@ -387,7 +387,7 @@ begin
   end;
 end;
 
-procedure TJvAppRegistryStorage.DoWriteString(const Path: string; Value: string);
+procedure TJvAppRegistryStorage.DoWriteString(const Path: string; const Value: string);
 var
   SubKey: string;
   ValueName: string;
