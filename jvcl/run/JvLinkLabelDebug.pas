@@ -28,6 +28,8 @@ Description:
   LinkDebug.pas provides utility routines designed to aid debugging.
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvLinkLabelDebug;
 
 interface
@@ -65,10 +67,10 @@ class procedure TDebugLinkLabelTools.NodeTreeToTreeNodes(const LinkLabel: TJvLin
       ntActionNode:
         Result := Result + ' (' +
           GetEnumName(TypeInfo(TActionType), Integer((Node as TActionNode).Action)) + ')';
-// Bianconi
-      ntColorNode :
+      // Bianconi
+      ntColorNode:
         Result := Result + ' ( ' + ColorToString(TColorNode(Node).Color) + ' )';
-// Enfd of Bianconi        
+      // End of Bianconi
       ntUnknownNode:
         Result := Result + ' ("' + (Node as TUnknownNode).Tag + '")';
     end;

@@ -394,7 +394,7 @@ type
     procedure InternalInitFieldDefs; override;
     procedure InternalOpen; override;
 
-    function GetFileName:String; // used by InternalOpen, and Flush.
+    function GetFileName: string; // used by InternalOpen, and Flush.
 
     function IsCursorOpen: boolean; override;
     { Optional overrides }
@@ -511,23 +511,20 @@ function Locate(const KeyFields: string; const KeyValues: Variant;
 
   // TJvCsvDataSet is just a TJvCsvCustomInMemoryDataSet with all properties and events exposed:
   TJvCsvDataSet = class(TJvCsvCustomInMemoryDataSet)
-
   public
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
-
       // Per-Record user-data fields:
       //    Each record can have a pointer (for associating each row with an object)
     property UserData: Pointer read GetRowUserData write SetRowUserData;
       //    Each record can have a tag (integer) (for help in marking rows as Selected/Unselected or some other
       //    end user task)
     property UserTag: integer read GetRowTag write SetRowTag;
-
   published
     property FieldDefs stored FieldDefsStored;
     property Active;
     property FileName: string read FTableName write SetTableName;
     property BufferCount;
-    property ReadOnly: boolean read FReadOnly write FReadOnly default false;
+    property ReadOnly: boolean read FReadOnly write FReadOnly default False;
     property BeforeOpen;
     property AfterOpen;
     property BeforeClose;

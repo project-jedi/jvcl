@@ -233,12 +233,12 @@ type
   TJvChangeIconDialog = class(TJvCommonDialogF)
   private
     FIconIndex: Integer;
-    FFileName: string;
+    FFileName: TFileName;
   public
     function Execute: Boolean; override;
   published
     property IconIndex: Integer read FIconIndex write FIconIndex;
-    property FileName: string read FFileName write FFileName;
+    property FileName: TFileName read FFileName write FFileName;
   end;
 
   TJvShellAboutDialog = class(TJvCommonDialog)
@@ -309,11 +309,11 @@ type
 
   TJvOpenWithDialog = class(TJvCommonDialogP)
   private
-    FFileName: string;
+    FFileName: TFileName;
   public
     procedure Execute; override;
   published
-    property FileName: string read FFileName write FFileName;
+    property FileName: TFileName read FFileName write FFileName;
   end;
 
   TJvDiskFullDialog = class(TJvCommonDialogF)
@@ -352,7 +352,7 @@ type
   private
     FURL: string;
     FAssociatedApp: string;
-    FFilename: string;
+    FFileName: TFileName;
     FOptions: TJvURLAssociationDialogOptions;
     FDefaultProtocol: string;
     FReturnValue: HResult;
@@ -373,9 +373,9 @@ type
     property ReturnValue: HResult read FReturnValue;
   published
     // The file (type) to associate with the Protocol
-    // NB! Filename *must* contain an extension!
-    property Filename: string read FFilename write FFilename;
-    // The URL with the protocol to assoiacte with Filename
+    // NB! FileName *must* contain an extension!
+    property FileName: TFileName read FFileName write FFileName;
+    // The URL with the protocol to assoiacte with FileName
     // NB! if URL has no protocol (i.e "http://", "mailto:", "home-made:", etc),
     // the function fails even before the dialog is displayed!
     property URL: string read FURL write FURL;
@@ -392,7 +392,7 @@ type
   private
     FContentType: string;
     FAssociatedApp: string;
-    FFilename: string;
+    FFileName: TFileName;
     FOptions: TJvMIMEAssociationOptions;
     FReturnValue: HResult;
     function GetParentHandle: THandle;
@@ -411,9 +411,9 @@ type
     property ReturnValue: HResult read FReturnValue;
   published
     // The file (type) to associate with the Protocol
-    // NB! Filename *must* contain an extension!
-    property Filename: string read FFilename write FFilename;
-    // The MIME contentype of Filename
+    // NB! FileName *must* contain an extension!
+    property FileName: TFileName read FFileName write FFileName;
+    // The MIME contentype of FileName
     property ContentType: string read FContentType write FContentType;
     property Options: TJvMIMEAssociationOptions read FOptions write FOptions default [];
   end;
@@ -500,7 +500,7 @@ type
 
   // Tools routines
 function GetSpecialFolderPath(const FolderName: string; CanCreate: Boolean): string;
-procedure AddToRecentDocs(const Filename: string);
+procedure AddToRecentDocs(const FileName: string);
 procedure ClearRecentDocs;
 function ExtractIconFromFile(FileName: string; Index: Integer): HICON;
 function CreateShellLink(const AppName, Desc: string; Dest: string): string;
@@ -540,7 +540,7 @@ type
     cmdShow: Integer); stdcall;
   SHOpenWithProc = procedure(HWND: THandle; HInstance: THandle; cmdLine: PChar;
     cmdShow: Integer); stdcall;
-  GetOpenFileNameExProc = function(var OpenFile: TOpenFilenameEx): BOOL; stdcall;
+  GetOpenFileNameExProc = function(var OpenFile: TOpenFileNameEx): BOOL; stdcall;
   GetSaveFileNameExProc = function(var SaveFile: TOpenFileNameEx): BOOL; stdcall;
   URLAssociationDialogProcA = function(hwndParent: HWND; dwInFlags: DWORD; const pcszFile: PChar; const pcszURL: PChar;
     pszBuff: PChar; ucAppBufLen: UINT): HRESULT; stdcall;
@@ -1093,9 +1093,9 @@ begin
   {JPR}
 end;
 
-procedure AddToRecentDocs(const Filename: string);
+procedure AddToRecentDocs(const FileName: string);
 begin
-  SHAddToRecentDocs(SHARD_PATH, PChar(Filename));
+  SHAddToRecentDocs(SHARD_PATH, PChar(FileName));
 end;
 
 procedure ClearRecentDocs;
@@ -1516,7 +1516,7 @@ end;
 
 procedure TJvOpenWithDialog.Execute;
 begin
-  SHOpenWith(0, 0, PChar(FFileName), SW_SHOW);
+  SHOpenWith(0, 0, PChar(FileName), SW_SHOW);
 end;
 
 //=== TJvDiskFullDialog ======================================================
@@ -1657,7 +1657,7 @@ begin
       dwFlags := dwFlags or URLASSOCDLG_FL_USE_DEFAULT_NAME;
     if uaRegisterAssoc in Options then
       dwFlags := dwFlags or URLASSOCDLG_FL_REGISTER_ASSOC;
-    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags, PChar(Filename), PChar(URL), buf, sizeof(buf));
+    FReturnValue := URLAssociationDialogA(GetParentHandle, dwFlags, PChar(FileName), PChar(URL), buf, sizeof(buf));
     Result := ReturnValue = S_OK;
     FAssociatedApp := string(buf);
   end;
@@ -1697,7 +1697,7 @@ begin
       dwFlags := MIMEASSOCDLG_FL_REGISTER_ASSOC
     else
       dwFlags := 0;
-    FReturnValue := MIMEAssociationDialogA(GetParentHandle, dwFlags, PChar(Filename), PChar(ContentType), buf,
+    FReturnValue := MIMEAssociationDialogA(GetParentHandle, dwFlags, PChar(FileName), PChar(ContentType), buf,
       sizeof(buf));
     Result := ReturnValue = 0;
     FAssociatedApp := string(buf);

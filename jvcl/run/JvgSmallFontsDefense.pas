@@ -23,66 +23,65 @@ Last Modified:  2003-01-15
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Prevents your apps from BIG fonts.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-// Component prevents your apps from BIG fonts.
 
 unit JvgSmallFontsDefense;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Grids, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics,
+  Controls, Forms, Dialogs, Grids,
+  JvComponent;
 
 type
-  TglSmallFontsDefenceOption = (fdoExcludeGrids);
-  TglSmallFontsDefenceOptions = set of TglSmallFontsDefenceOption;
+  TglSmallFontsDefenseOption = (fdoExcludeGrids);
+  TglSmallFontsDefenseOptions = set of TglSmallFontsDefenseOption;
 
-  TJvgSmallFontsDefence = class(TJvComponent)
+  TJvgSmallFontsDefense = class(TJvComponent)
   private
-    FOptions: TglSmallFontsDefenceOptions;
+    FOptions: TglSmallFontsDefenseOptions;
     procedure UpdateFonts(Control: TWinControl);
-    procedure SetOptions(const Value: TglSmallFontsDefenceOptions);
+    procedure SetOptions(const Value: TglSmallFontsDefenseOptions);
   protected
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property Options: TglSmallFontsDefenceOptions read FOptions write SetOptions;
+    property Options: TglSmallFontsDefenseOptions read FOptions write SetOptions default [];
   end;
-
-
-resourcestring
-  sTJvgSmallFontsDefenceCannotBeUsedWi = 'TJvgSmallFontsDefence cannot be used with large fonts.';
 
 implementation
 
 uses
   JvConsts, JvgUtils;
 
-constructor TJvgSmallFontsDefence.Create(AOwner: TComponent);
+resourcestring
+  sTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
+
+constructor TJvgSmallFontsDefense.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FOptions := [];
 end;
 
-procedure TJvgSmallFontsDefence.Loaded;
+procedure TJvgSmallFontsDefense.Loaded;
 begin
   inherited Loaded;
   if Owner is TForm then
     (Owner as TForm).Scaled := False;
   if csDesigning in ComponentState then
-  begin
     if not IsSmallFonts then
-      ShowMessage(sTJvgSmallFontsDefenceCannotBeUsedWi);
-  end
-  else
+      ShowMessage(sTJvgSmallFontsDefenseCannotBeUsedWi);
 end;
 
-procedure TJvgSmallFontsDefence.SetOptions(const Value: TglSmallFontsDefenceOptions);
+procedure TJvgSmallFontsDefense.SetOptions(const Value: TglSmallFontsDefenseOptions);
 begin
   FOptions := Value;
   if Owner is TCustomForm then
@@ -92,7 +91,7 @@ end;
 type
   THackControl = class(TControl);
 
-procedure TJvgSmallFontsDefence.UpdateFonts(Control: TWinControl);
+procedure TJvgSmallFontsDefense.UpdateFonts(Control: TWinControl);
 var
   I: Integer;
 

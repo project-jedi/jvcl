@@ -43,18 +43,18 @@ type
     FParent: TControl;
     procedure SetFont(const Value: TFont);
     procedure SetLength(const Value: Integer);
-    procedure SetUseControl(const Value: Boolean);
+    procedure SetUseControlFont(const Value: Boolean);
   protected
     procedure FontChanged(Sender: TObject);
     procedure Changed;
   public
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
-    procedure Test(var Value: string; ParentFont: TFont);
+    function Test(var Value: string; ParentFont: TFont): Boolean;
     constructor Create(AOwner: TControl);
     destructor Destroy; override;
   published
     property Length: Integer read FLength write SetLength default 0;
-    property UseControlFont: Boolean read FUseControlFont write SetUseControl default True;
+    property UseControlFont: Boolean read FUseControlFont write SetUseControlFont default True;
     property Font: TFont read FFont write SetFont;
   end;
 
@@ -99,32 +99,36 @@ begin
   Changed;
 end;
 
-procedure TJvMaxPixel.SetUseControl(const Value: Boolean);
+procedure TJvMaxPixel.SetUseControlFont(const Value: Boolean);
 begin
-  FUseControlFont := Value;
-  Changed;
+  if Value <> FUseControlFont then
+  begin
+    FUseControlFont := Value;
+    Changed;
+  end;
 end;
 
-procedure TJvMaxPixel.Test(var Value: string; ParentFont: TFont);
+function TJvMaxPixel.Test(var Value: string; ParentFont: TFont): Boolean;
 begin
+  Result := True;
   if FLength = 0 then
     Exit;
 
   with TControlCanvas.Create do
-  begin
-    Control := FParent;
-    if FUseControlFont then
-      Font.Assign(ParentFont)
-    else
-      Font.Assign(FFont);
+    try
+      Result := False;
+      Control := FParent;
+      if FUseControlFont then
+        Font.Assign(ParentFont)
+      else
+        Font.Assign(FFont);
 
-    // (rom) possible improvement property to switch off Beep
-    if TextWidth(Value) > FLength then
-      Beep;
-    while (TextWidth(Value) > FLength) and (Value <> '') do
-      Value := Copy(Value, 1, System.Length(Value) - 1);
-    Free;
-  end;
+      Result := TextWidth(Value) > FLength;
+      while (TextWidth(Value) > FLength) and (Value <> '') do
+        Value := Copy(Value, 1, System.Length(Value) - 1);
+    finally
+      Free;
+    end;
 end;
 
 end.

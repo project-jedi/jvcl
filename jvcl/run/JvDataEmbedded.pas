@@ -51,7 +51,7 @@ type
     destructor Destroy; override;
     procedure SaveToFile(FileName: TFileName);
     procedure SaveToStream(Stream: TStream);
-  published
+    // (rom) These properties were published. Silly.
     property Size: Integer read GetSize write SetSize;
     property Data: TStream read GetStream write SetStream;
   end;
@@ -89,6 +89,13 @@ begin
   Result.Position := 0;
 end;
 
+procedure TJvDataEmbedded.SetStream(const Value: TStream);
+begin
+  FStream.Clear;
+  if Value <> nil then
+    FStream.CopyFrom(Value, Value.Size - Value.Position);
+end;
+
 procedure TJvDataEmbedded.ReadData(Stream: TStream);
 var
   I: Integer;
@@ -97,6 +104,15 @@ begin
   FStream.Clear;
   FStream.Size := I;
   Stream.Read(FStream.Memory^, I);
+end;
+
+procedure TJvDataEmbedded.WriteData(Stream: TStream);
+var
+  I: Integer;
+begin
+  I := FStream.Size;
+  Stream.Write(I, SizeOf(I));
+  Stream.Write(FStream.Memory^, I);
 end;
 
 procedure TJvDataEmbedded.SaveToFile(FileName: TFileName);
@@ -112,22 +128,6 @@ end;
 procedure TJvDataEmbedded.SetSize(const Value: Integer);
 begin
   FStream.SetSize(Value);
-end;
-
-procedure TJvDataEmbedded.SetStream(const Value: TStream);
-begin
-  FStream.Clear;
-  if Value <> nil then
-    FStream.CopyFrom(Value, Value.Size - Value.Position);
-end;
-
-procedure TJvDataEmbedded.WriteData(Stream: TStream);
-var
-  I: Integer;
-begin
-  I := FStream.Size;
-  Stream.Write(I, SizeOf(I));
-  Stream.Write(FStream.Memory^, I);
 end;
 
 end.

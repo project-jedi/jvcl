@@ -34,6 +34,8 @@ interface
 uses
   Classes, Controls, ExtCtrls, Windows, SysUtils, Messages, Forms;
 
+// (rom) TFileName is already declared in SysUtils
+
 type
   { The TFileName object has been created to handle the first field of a Thumb
     Which is the Thumbs actual FileName complete with the Path because no

@@ -38,7 +38,7 @@ unit JvPlugin;
 interface
 
 uses
-  Forms, Classes, Graphics;
+  SysUtils, Forms, Classes, Graphics;
 
 type
   TPluginMessageEvent = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string) of object;
@@ -52,7 +52,7 @@ type
     FAuthor: string;
     FCopyright: string;
     FDescription: string;
-    FFileName: string;
+    FFileName: TFileName;
     FCommands: TJvPluginCommands;
     FHostApplication: TApplication;
     FManager: TComponent;
@@ -77,7 +77,7 @@ type
     procedure SendPluginMessage(APluginMessage: Longint; AMessageText: string);
     property HostApplication: TApplication read FHostApplication;
     property Manager: TComponent read FManager;
-    property FileName: string read FFileName;
+    property FileName: TFileName read FFileName;
   published
     property Author: string read FAuthor write FAuthor;
     property Commands: TJvPluginCommands read FCommands write SetCommands;
@@ -129,9 +129,6 @@ resourcestring
   SFmtResNotFound = 'Resource Not Found: %s';
 
 implementation
-
-uses
-  SysUtils;
 
 //=== TJvPlugin ==============================================================
 

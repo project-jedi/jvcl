@@ -49,7 +49,6 @@ type
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
   published

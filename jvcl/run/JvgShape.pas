@@ -32,7 +32,8 @@ unit JvgShape;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Graphics, extctrls, JvgTypes, JvgUtils;
+  Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
+  JvgTypes, JvgUtils;
 type
 
   TJvgShape = class(TShape)
@@ -40,8 +41,8 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FWallpaper: TBitmap;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     function GetWallpaper: TBitmap;
   protected
     procedure Paint; override;
@@ -59,34 +60,34 @@ type
 
 implementation
 
-//________________________________________________________ Methods _
-
-procedure TJvgShape.CMMouseEnter(var Message: TMessage);
+procedure TJvgShape.CMMouseEnter(var Msg: TMessage);
 begin
-  if Assigned(OnMouseEnter) then OnMouseEnter(self);
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
 end;
 
-procedure TJvgShape.CMMouseLeave(var Message: TMessage);
+procedure TJvgShape.CMMouseLeave(var Msg: TMessage);
 begin
-  if Assigned(OnMouseLeave) then OnMouseLeave(self);
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
 end;
 
 constructor TJvgShape.Create(AOwner: TComponent);
 begin
-  inherited;
-  //  FWallpaper := TBitmap.Create;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle + [csClickEvents, csDoubleClicks];
 end;
 
 destructor TJvgShape.Destroy;
 begin
-  if FWallpaper <> nil then FWallpaper.Free;
-  inherited;
+  FWallpaper.Free;
+  inherited Destroy;
 end;
 
 function TJvgShape.GetWallpaper: TBitmap;
 begin
-  if FWallpaper = nil then FWallpaper := TBitmap.Create;
+  if FWallpaper = nil then
+    FWallpaper := TBitmap.Create;
   Result := FWallpaper;
 end;
 
@@ -96,7 +97,7 @@ var
   OldBrush: TBrushStyle;
 begin
   if not Assigned(FWallpaper) or FWallpaper.Empty then
-    inherited
+    inherited Paint
   else
   begin
     R := ClientRect;
@@ -106,7 +107,7 @@ begin
     Canvas.Rectangle(R);
     Canvas.Brush.Style := OldBrush;
     InflateRect(R, -1, -1);
-    DrawBitmapExt(Canvas.Handle, FWallpaper, R, 0, 0, fwoTile, fdsDefault, false, 0, 0);
+    DrawBitmapExt(Canvas.Handle, FWallpaper, R, 0, 0, fwoTile, fdsDefault, False, 0, 0);
   end;
 end;
 

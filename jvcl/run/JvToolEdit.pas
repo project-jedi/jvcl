@@ -367,7 +367,7 @@ type
     FDialog: TOpenDialog;
     FDialogKind: TFileDialogKind;
     procedure CreateEditDialog;
-    function GetFileName: string;
+    function GetFileName: TFileName;
     function GetDefaultExt: TFileExt;
     function GetFileEditStyle: TFileEditStyle;
     function GetFilter: string;
@@ -378,7 +378,7 @@ type
     function GetDialogTitle: string;
     function GetDialogFiles: TStrings;
     procedure SetDialogKind(Value: TFileDialogKind);
-    procedure SetFileName(const Value: string);
+    procedure SetFileName(const Value: TFileName);
     procedure SetDefaultExt(Value: TFileExt);
     procedure SetFileEditStyle(Value: TFileEditStyle);
     procedure SetFilter(const Value: string);
@@ -408,7 +408,7 @@ type
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle
       default fsEdit;
-    property FileName: string read GetFileName write SetFileName stored False;
+    property FileName: TFileName read GetFileName write SetFileName stored False;
     property Filter: string read GetFilter write SetFilter stored IsCustomFilter;
     property FilterIndex: Integer read GetFilterIndex write SetFilterIndex default 1;
     property InitialDir: string read GetInitialDir write SetInitialDir;
@@ -2302,12 +2302,12 @@ begin
   end;
 end;
 
-function TJvFilenameEdit.GetFileName: string;
+function TJvFilenameEdit.GetFileName: TFileName;
 begin
   Result := ClipFilename(inherited Text);
 end;
 
-procedure TJvFilenameEdit.SetFileName(const Value: string);
+procedure TJvFilenameEdit.SetFileName(const Value: TFileName);
 begin
   if (Value = '') or ValidFileName(ClipFilename(Value)) then
   begin

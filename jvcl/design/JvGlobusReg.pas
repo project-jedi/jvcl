@@ -101,7 +101,7 @@ begin
     TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
     TJvgJumpingComponent, TJvgStringContainer, TJvgSysRequirements,
     TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
-    TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefence,
+    TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefense,
     {$IFNDEF DelphiPersonalEdition}
     TJvgExportExcel, TJvgExportHTML, TJvgExportXML, TJvgQRLabel, TJvgQRDBText,
     TJvgMyQRPreview,

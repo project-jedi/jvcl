@@ -38,13 +38,13 @@ type
   TJvDeleteError = class(TJvCommonDialogD)
   private
     FWin32ErrorCode: Integer;
-    FFileName: string;
+    FFileName: TFileName;
     FStyle: TJvDeleteStyles;
   protected
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property FileName: string read FFileName write FFileName;
+    property FileName: TFileName read FFileName write FFileName;
     property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
     property Style: TJvDeleteStyles read FStyle write FStyle;
     function Execute: TJvDiskRes; override;
@@ -73,7 +73,7 @@ const
   DPROMPT_OUTOFMEMORY    = 4;
 
 type
-  TSetupDeleteError = function(hwndParent: HWND; const DialogTitle, File_: PAnsiChar;
+  TSetupDeleteError = function(hwndParent: HWND; const DialogTitle, File_: PChar;
     Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
 
 constructor TJvDeleteError.Create(AOwner: TComponent);
@@ -96,16 +96,19 @@ begin
     Sty := Sty or IDF_NOFOREGROUND;
 
   SetupDeleteError := GetProcAddress(SetupApiDllHandle, 'SetupDeleteErrorA');
-  case SetupDeleteError(OwnerWindow, PCharOrNil(Title), PChar(FileName), FWin32ErrorCode, Sty) of
-    DPROMPT_SUCCESS:
-      Result := dsSuccess;
-    DPROMPT_CANCEL:
-      Result := dsCancel;
-    DPROMPT_SKIPFILE:
-      Result := dsSkipfile;
+  if Assigned(SetupDeleteError) then
+    case SetupDeleteError(OwnerWindow, PCharOrNil(Title), PChar(FileName), FWin32ErrorCode, Sty) of
+      DPROMPT_SUCCESS:
+        Result := dsSuccess;
+      DPROMPT_CANCEL:
+        Result := dsCancel;
+      DPROMPT_SKIPFILE:
+        Result := dsSkipfile;
+    else
+      Result := dsError;
+    end
   else
     Result := dsError;
-  end;
 end;
 
 end.
