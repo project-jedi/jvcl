@@ -207,7 +207,7 @@ type
   published
     property Highlighter: THighlighter read FHighlighter write SetHighlighter default hlPascal;
     property Colors: TJvColors read FColors write FColors;
-    property DelphiColors: Boolean read GetDelphiColors write SetDelphiColors;
+    property DelphiColors: Boolean read GetDelphiColors write SetDelphiColors stored False;
     property LongTokens: Boolean read FLongTokens write FLongTokens default True;
     property OnReservedWord: TOnReservedWord read FOnReservedWord write FOnReservedWord;
     property SyntaxHighlighting: Boolean read FSyntaxHighlighting write FSyntaxHighlighting stored False;
