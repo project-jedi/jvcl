@@ -1380,7 +1380,7 @@ begin
       Parent := Self;
       Visible := False;
       Transparent := False;
-      Bmp.LoadFromResourceName(hInstance, 'UPARROW');
+      Bmp.LoadFromResourceName(HInstance, 'UPARROW');
       Glyph := Bmp;
       OnClick := DoUpClick;
       if csDesigning in ComponentState then
@@ -1398,7 +1398,7 @@ begin
       Parent := Self;
       Visible := False;
       Transparent := False;
-      Bmp.LoadFromResourceName(hInstance, 'DWNARROW');
+      Bmp.LoadFromResourceName(HInstance, 'DWNARROW');
       Glyph := Bmp;
       OnClick := DoDwnClick;
       if csDesigning in ComponentState then
@@ -1487,7 +1487,8 @@ end;
 
 procedure TJvCustomOutlookBar.Notification(AComponent: TComponent;
   Operation: TOperation);
-var I, J:Integer;
+var
+  I, J: Integer;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then

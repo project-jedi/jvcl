@@ -41,7 +41,7 @@ uses
 type
   TJvOpenDialogAC = (acEdit, acListView);
   TJvOpenDialogAS = (asSmallIcon, asReport);
-  TDialogErrorEvent = procedure (Sender:TObject; ErrorCode:Cardinal) of object;
+  TDialogErrorEvent = procedure(Sender: TObject; ErrorCode:Cardinal) of object;
   TJvOpenDialog = class(TOpenDialog)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -101,7 +101,7 @@ type
     {$ENDIF COMPILER5}
     property UseUserSize: Boolean read FUseUserSize write FUseUserSize default False;
     property Width: Integer read FWidth write FWidth;
-    property OnError:TDialogErrorEvent read FOnError write FOnError;
+    property OnError: TDialogErrorEvent read FOnError write FOnError;
     property OnShareViolation: TCloseQueryEvent read FOnShareViolation write FOnShareViolation;
   end;
 

@@ -551,14 +551,15 @@ end;
 
 procedure TJvgTwainColors.Assign(Source: TPersistent);
 var
-  src: TJvgTwainColors;
+  Src: TJvgTwainColors;
 begin
   if Source is TJvgTwainColors then
   begin
-    if Source = Self then Exit;
-    src := TJvgTwainColors(Source);
-    FromColor := src.FromColor;
-    ToColor := src.ToColor;
+    if Source = Self then
+      Exit;
+    Src := TJvgTwainColors(Source);
+    FromColor := Src.FromColor;
+    ToColor := Src.ToColor;
   end
   else
     inherited Assign(Source);
@@ -612,7 +613,8 @@ begin
   inherited Assign(Source);
   if Source is TJvgCustomGradient then
   begin
-    if Source = Self then Exit;
+    if Source = Self then
+      Exit;
     sourceGradient := TJvgCustomGradient(Source);
     FActive := sourceGradient.Active;
     FBufferedDraw := sourceGradient.BufferedDraw;
@@ -768,15 +770,16 @@ end;
 
 procedure TJvg3DGradient.Assign(Source: TPersistent);
 var
-  src: TJvg3DGradient;
+  Src: TJvg3DGradient;
 begin
   inherited Assign(Source);
   if Source is TJvg3DGradient then
   begin
-    if Source = Self then Exit;
-    src := TJvg3DGradient(Source);
-    FDepth := src.Depth;
-    FGType := src.GType;
+    if Source = Self then
+      Exit;
+    Src := TJvg3DGradient(Source);
+    FDepth := Src.Depth;
+    FGType := Src.GType;
     Changed;
   end;
 end;
@@ -811,14 +814,15 @@ end;
 
 procedure TJvg2DAlign.Assign(Source: TPersistent);
 var
-  src: TJvg2DAlign;
+  Src: TJvg2DAlign;
 begin
   if Source is TJvg2DAlign then
   begin
-    if Source = Self then Exit;
-    src := TJvg2DAlign(Source);
-    FHorizontal := src.Horizontal;
-    FVertical := src.Vertical;
+    if Source = Self then
+      Exit;
+    Src := TJvg2DAlign(Source);
+    FHorizontal := Src.Horizontal;
+    FVertical := Src.Vertical;
     Changed;
   end
   else
@@ -853,14 +857,15 @@ end;
 
 procedure TJvgPointClass.Assign(Source: TPersistent);
 var
-  src: TJvgPointClass;
+  Src: TJvgPointClass;
 begin
   if Source is TJvgPointClass then
   begin
-    if Source = Self then Exit;
-    src := TJvgPointClass(Source);
-    FX := src.X;
-    FY := src.Y;
+    if Source = Self then
+      Exit;
+    Src := TJvgPointClass(Source);
+    FX := Src.X;
+    FY := Src.Y;
     Changed;
   end
   else
@@ -901,16 +906,17 @@ end;
 
 procedure TJvgBevelOptions.Assign(Source: TPersistent);
 var
-  src: TJvgBevelOptions;
+  Src: TJvgBevelOptions;
 begin
   if Source is TJvgBevelOptions then
   begin
-    if Source = Self then Exit;
-    src := TJvgBevelOptions(Source);
-    FInner := src.Inner;
-    FOuter := src.Outer;
-    FSides := src.Sides;
-    FBold := src.Bold;
+    if Source = Self then
+      Exit;
+    Src := TJvgBevelOptions(Source);
+    FInner := Src.Inner;
+    FOuter := Src.Outer;
+    FSides := Src.Sides;
+    FBold := Src.Bold;
     Changed;
   end
   else
@@ -1019,14 +1025,15 @@ end;
 
 procedure TJvgIllumination.Assign(Source: TPersistent);
 var
-  src: TJvgIllumination;
+  Src: TJvgIllumination;
 begin
   inherited Assign(Source);
   if Source is TJvgIllumination then
   begin
-    if Source = Self then Exit;
-    src := TJvgIllumination(Source);
-    FShadowDepth := src.ShadowDepth;
+    if Source = Self then
+      Exit;
+    Src := TJvgIllumination(Source);
+    FShadowDepth := Src.ShadowDepth;
     Changed;
   end;
 end;
@@ -1054,15 +1061,16 @@ end;
 
 procedure TJvgLabelTextStyles.Assign(Source: TPersistent);
 var
-  src: TJvgLabelTextStyles;
+  Src: TJvgLabelTextStyles;
 begin
   if Source is TJvgLabelTextStyles then
   begin
-    if Source = self then Exit;
-    src := TJvgLabelTextStyles(Source);
-    FPassive := src.Passive;
-    FActive := src.Active;
-    FDisabled := src.Disabled;
+    if Source = Self then
+      Exit;
+    Src := TJvgLabelTextStyles(Source);
+    FPassive := Src.Passive;
+    FActive := Src.Active;
+    FDisabled := Src.Disabled;
     Changed;
   end
   else
@@ -1117,18 +1125,19 @@ end;
 
 procedure TJvgCustomTextColors.Assign(Source: TPersistent);
 var
-  src: TJvgCustomTextColors;
+  Src: TJvgCustomTextColors;
 begin
   if Source is TJvgCustomTextColors then
   begin
-    if Source = Self then Exit;
-    src := TJvgCustomTextColors(Source);
-    FText := src.Text;
-    FTextDisabled := src.TextDisabled;
-    FDelineate := src.Delineate;
-    FShadow := src.Shadow;
-    FHighlight := src.Highlight;
-    FBackground := src.Background;
+    if Source = Self then
+      Exit;
+    Src := TJvgCustomTextColors(Source);
+    FText := Src.Text;
+    FTextDisabled := Src.TextDisabled;
+    FDelineate := Src.Delineate;
+    FShadow := Src.Shadow;
+    FHighlight := Src.Highlight;
+    FBackground := Src.Background;
     Changed;
   end
   else
@@ -1211,20 +1220,21 @@ end;
 
 procedure TJvgCustomLabelColors.Assign(Source: TPersistent);
 var
-  src: TJvgCustomLabelColors;
+  Src: TJvgCustomLabelColors;
 begin
   inherited Assign(Source);
   if Source is TJvgCustomLabelColors then
   begin
-    if Source = Self then Exit;
-    src := TJvgCustomLabelColors(Source);
-    FTextActive := src.TextActive;
-    FDelineateActive := src.DelineateActive;
-    FAutoHighlight := src.AutoHighlight;
-    FAutoShadow := src.AutoShadow;
-    FColorHighlightShift := src.ColorHighlightShift;
-    FColorShadowShift := src.ColorShadowShift;
-    FBackgroundActive := src.BackgroundActive;
+    if Source = Self then
+      Exit;
+    Src := TJvgCustomLabelColors(Source);
+    FTextActive := Src.TextActive;
+    FDelineateActive := Src.DelineateActive;
+    FAutoHighlight := Src.AutoHighlight;
+    FAutoShadow := Src.AutoShadow;
+    FColorHighlightShift := Src.ColorHighlightShift;
+    FColorShadowShift := Src.ColorShadowShift;
+    FBackgroundActive := Src.BackgroundActive;
     Changed;
   end;
 end;
@@ -1305,17 +1315,18 @@ end;
 
 procedure TJvgGroupBoxColors.Assign(Source: TPersistent);
 var
-  src: TJvgGroupBoxColors;
+  Src: TJvgGroupBoxColors;
 begin
   inherited Assign(Source);
   if Source is TJvgGroupBoxColors then
   begin
-    if Source = Self then Exit;
-    src := TJvgGroupBoxColors(Source);
-    FCaption := src.Caption;
-    FCaptionActive := src.CaptionActive;
-    FClient := src.Client;
-    FClientActive := src.ClientActive;
+    if Source = Self then
+      Exit;
+    Src := TJvgGroupBoxColors(Source);
+    FCaption := Src.Caption;
+    FCaptionActive := Src.CaptionActive;
+    FClient := Src.Client;
+    FClientActive := Src.ClientActive;
     Changed;
   end;
 end;
@@ -1368,17 +1379,18 @@ end;
 
 procedure TJvgExtBevelOptions.Assign(Source: TPersistent);
 var
-  src: TJvgExtBevelOptions;
+  Src: TJvgExtBevelOptions;
 begin
   inherited Assign(Source);
   if Source is TJvgExtBevelOptions then
   begin
-    if Source = Self then Exit;
-    src := TJvgExtBevelOptions(Source);
-    FActive := src.Active;
-    FBevelPenStyle := src.BevelPenStyle;
-    FBevelPenWidth := src.BevelPenWidth;
-    FInteriorOffset := src.InteriorOffset;
+    if Source = Self then
+      Exit;
+    Src := TJvgExtBevelOptions(Source);
+    FActive := Src.Active;
+    FBevelPenStyle := Src.BevelPenStyle;
+    FBevelPenWidth := Src.BevelPenWidth;
+    FInteriorOffset := Src.InteriorOffset;
     Changed;
   end;
 end;
@@ -1437,17 +1449,18 @@ end;
 
 procedure TJvgCustomListBoxItemStyle.Assign(Source: TPersistent);
 var
-  src: TJvgCustomListBoxItemStyle;
+  Src: TJvgCustomListBoxItemStyle;
 begin
   if Source is TJvgCustomListBoxItemStyle then
   begin
-    if Source = Self then Exit;
-    src := TJvgCustomListBoxItemStyle(Source);
-    FColor := src.Color;
-    FDelineateColor := src.DelineateColor;
-    FTextStyle := src.TextStyle;
-    Font := src.Font;
-    Bevel := src.Bevel; // invokes OnChanged
+    if Source = Self then
+      Exit;
+    Src := TJvgCustomListBoxItemStyle(Source);
+    FColor := Src.Color;
+    FDelineateColor := Src.DelineateColor;
+    FTextStyle := Src.TextStyle;
+    Font := Src.Font;
+    Bevel := Src.Bevel; // invokes OnChanged
   end
   else
     inherited Assign(Source);
@@ -1534,15 +1547,16 @@ end;
 
 procedure TJvgListBoxItemStyle.Assign(Source: TPersistent);
 var
-  src: TJvgListBoxItemStyle;
+  Src: TJvgListBoxItemStyle;
 begin
   inherited Assign(Source);
   if Source is TJvgListBoxItemStyle then
   begin
-    if Source = Self then Exit;
-    src := TJvgListBoxItemStyle(Source);
-    TextGradient := src.TextGradient;
-    Gradient := src.Gradient;
+    if Source = Self then
+      Exit;
+    Src := TJvgListBoxItemStyle(Source);
+    TextGradient := Src.TextGradient;
+    Gradient := Src.Gradient;
   end
 end;
 
@@ -1579,16 +1593,17 @@ end;
 
 procedure TJvgAskListBoxItemStyle.Assign(Source: TPersistent);
 var
-  src: TJvgAskListBoxItemStyle;
+  Src: TJvgAskListBoxItemStyle;
 begin
   inherited Assign(Source);
   if Source is TJvgAskListBoxItemStyle then
   begin
-    if Source = Self then Exit;
-    src := TJvgAskListBoxItemStyle(Source);
-    FBtnColor := src.BtnColor;
-    FBtnTextStyle := src.BtnTextStyle;
-    BtnFont := src.BtnFont; // calls Changed
+    if Source = Self then
+      Exit;
+    Src := TJvgAskListBoxItemStyle(Source);
+    FBtnColor := Src.BtnColor;
+    FBtnTextStyle := Src.BtnTextStyle;
+    BtnFont := Src.BtnFont; // calls Changed
   end;
 end;
 
@@ -1631,16 +1646,17 @@ end;
 
 procedure TJvgCustomBoxStyle.Assign(Source: TPersistent);
 var
-  src: TJvgCustomBoxStyle;
+  Src: TJvgCustomBoxStyle;
 begin
   inherited Assign(Source);
   if Source is TJvgCustomBoxStyle then
   begin
-    if Source = Self then Exit;
-    src := TJvgCustomBoxStyle(Source);
-    FPenStyle := src.PenStyle;
-    FHighlightColor := src.HighlightColor;
-    FShadowColor := src.ShadowColor;
+    if Source = Self then
+      Exit;
+    Src := TJvgCustomBoxStyle(Source);
+    FPenStyle := Src.PenStyle;
+    FHighlightColor := Src.HighlightColor;
+    FShadowColor := Src.ShadowColor;
     Changed;
   end;
 end;
@@ -1683,15 +1699,16 @@ end;
 
 procedure TJvgCustomTextBoxStyle.Assign(Source: TPersistent);
 var
-  src: TJvgCustomTextBoxStyle;
+  Src: TJvgCustomTextBoxStyle;
 begin
   inherited Assign(Source);
   if Source is TJvgCustomTextBoxStyle then
   begin
-    if Source = Self then Exit;
-    src := TJvgCustomTextBoxStyle(Source);
-    FTextColor := src.TextColor;
-    FBackgroundColor := src.BackgroundColor;
+    if Source = Self then
+      Exit;
+    Src := TJvgCustomTextBoxStyle(Source);
+    FTextColor := Src.TextColor;
+    FBackgroundColor := Src.BackgroundColor;
     Changed;
   end;
 end;
@@ -1725,19 +1742,20 @@ end;
 
 procedure TJvgBevelLines.Assign(Source: TPersistent);
 var
-  src: TJvgBevelLines;
+  Src: TJvgBevelLines;
 begin
   if Source is TJvgBevelLines then
   begin
-    if Source = Self then Exit;
-    src := TJvgBevelLines(Source);
-    FCount := src.Count;
-    FStep := src.Step;
-    FOrigin := src.Origin;
-    FStyle := src.Style;
-    FBold := src.Bold;
-    FThickness := src.Thickness;
-    FIgnoreBorder := src.IgnoreBorder;
+    if Source = Self then
+      Exit;
+    Src := TJvgBevelLines(Source);
+    FCount := Src.Count;
+    FStep := Src.Step;
+    FOrigin := Src.Origin;
+    FStyle := Src.Style;
+    FBold := Src.Bold;
+    FThickness := Src.Thickness;
+    FIgnoreBorder := Src.IgnoreBorder;
     Changed;
   end
   else
@@ -2068,7 +2086,7 @@ initialization
 
 finalization
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 

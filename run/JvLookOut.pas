@@ -1289,7 +1289,7 @@ end;
 
 procedure TJvCustomLookOutButton.DrawSmallImages;
 var
-  Icon:TIcon;
+  Icon: TIcon;
 begin
   if FDown then
     OffsetRect(FImageRect, FOffset, FOffset);
@@ -1304,7 +1304,7 @@ end;
 
 procedure TJvCustomLookOutButton.DrawLargeImages;
 var
-  Icon:TIcon;
+  Icon: TIcon;
 begin
   if FDown then
     OffsetRect(FImageRect, FOffset, FOffset);

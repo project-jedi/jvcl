@@ -1382,7 +1382,8 @@ begin
       if FJvEditor.FUpdateLock = 0 then
         if not IsOnlyCaret then
           FJvEditor.Changed
-        else if WasModified then
+        else
+        if WasModified then
           FJvEditor.StatusChanged;
     end;
   finally
@@ -2635,17 +2636,17 @@ end;
 
 function TJvCustomEditorBase.ExpandTabsAnsi(const S: AnsiString): AnsiString;
 var
-  ps, I: Integer;
+  Ps, I: Integer;
   Sp: AnsiString;
   Tabs, LenSp: Integer;
   P: PChar;
 begin
-  ps := Pos(Tab, S);
-  if ps > 0 then
+  Ps := Pos(Tab, S);
+  if Ps > 0 then
   begin
    // How may Tab chars?
     Tabs := 1;
-    for I := ps + 1 to Length(S) do
+    for I := Ps + 1 to Length(S) do
       if S[I] = Tab then
         Inc(Tabs);
 
@@ -2657,13 +2658,13 @@ begin
     P := PChar(Result);
 
    // copy the chars before the Tab
-    if ps > 1 then
+    if Ps > 1 then
     begin
-      Move(S[1], P[0], ps - 1);
-      Inc(P, ps - 1);
+      Move(S[1], P[0], Ps - 1);
+      Inc(P, Ps - 1);
     end;
 
-    for I := ps to Length(S) do
+    for I := Ps to Length(S) do
       if S[I] <> Tab then
       begin
         P[0] := S[I];
@@ -4041,17 +4042,17 @@ procedure TJvCustomEditorBase.GetBracketHighlightAttr(Line: Integer; var Attrs: 
 
   procedure GetHighlightBeginEnd(const R: TRect);
   var
-    i: Integer;
+    I: Integer;
   begin
     if (R.Left >= 0) and // R valid
        (Line >= R.Top) and (Line <= R.Bottom) and (R.Left >= 0) and (R.Right <= Max_X) then
-      for i := R.Left to R.Right do
+      for I := R.Left to R.Right do
       begin
         if BracketHighlighting.FontColor <> clNone then
-          Attrs[i].FC := BracketHighlighting.FontColor;
+          Attrs[I].FC := BracketHighlighting.FontColor;
         if BracketHighlighting.Color <> clNone then
-          Attrs[i].BC := BracketHighlighting.Color;
-        Attrs[i].Border := BracketHighlighting.BorderColor;
+          Attrs[I].BC := BracketHighlighting.Color;
+        Attrs[I].Border := BracketHighlighting.BorderColor;
       end;
   end;
 

@@ -313,7 +313,7 @@ uses
 function LoadInternalBitmap(ResName: string): TBitmap;
 begin
   Result := TBitmap.Create;
-  Result.Handle := LoadBitmap(hInstance, PChar(ResName));
+  Result.Handle := LoadBitmap(HInstance, PChar(ResName));
 end;
 
 function GetItemHeight(Font: TFont): Integer;

@@ -2113,7 +2113,7 @@ begin
       Result := Byte(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
         JvInterpreterArrayRec^.ElementSize))^);
     varSmallint:
-      Result := SmallInt(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
+      Result := Smallint(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
         JvInterpreterArrayRec^.ElementSize))^);
     varDate:
       Result := TDateTime(Pointer(Integer(JvInterpreterArrayRec^.Memory) + ((Offset) *
@@ -3868,7 +3868,7 @@ var
             varInteger:
               Value := PInteger(Rec + Offset)^;
             varSmallint:
-              Value := SmallInt(PWord(Rec + Offset)^);
+              Value := Smallint(PWord(Rec + Offset)^);
             varBoolean:
               Value := PBool(Rec + Offset)^;
             varString:
@@ -4937,7 +4937,7 @@ end;
 
 procedure TJvInterpreterExpression.ReadToken;
 begin
-  FTTyp := SmallInt(WordLoadFromStream(FPStream));
+  FTTyp := Smallint(WordLoadFromStream(FPStream));
   case FTTyp of
     ttInteger:
       FToken := IntLoadFromStream(FPStream);

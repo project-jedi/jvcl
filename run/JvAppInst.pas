@@ -183,7 +183,8 @@ begin
           begin
             if Owner is TForm then
               TForm(Owner).OnDestroy := nil
-            else if Owner is TDataModule then
+            else
+            if Owner is TDataModule then
               TDataModule(Owner).OnDestroy := nil;
           end;
           AppInstances.KillInstance;

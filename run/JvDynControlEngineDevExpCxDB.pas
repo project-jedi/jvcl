@@ -34,8 +34,7 @@ uses
   Forms, DBCtrls, DB, DBGrids, StdCtrls,
   cxDBEdit, cxDBNavigator,
   JvDynControlEngine, JvDynControlEngineDB, JvDynControlEngineIntf,
-  JvDynControlEngineDevExpCx,
-  JvDynControlEngineDBIntf;
+  JvDynControlEngineDevExpCx, JvDynControlEngineDBIntf;
 
 type
   TJvDynControlCxDBEdit = class(TcxDBTextEdit, IUnknown,
@@ -169,8 +168,8 @@ type
   end;
 
   TJvDynControlCxDBDirectoryEdit = class(TcxDBButtonEdit, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlDirectory,
-    IJvDynControlReadOnly, IJvDynControlDatabase)
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData,
+    IJvDynControlDirectory, IJvDynControlReadOnly, IJvDynControlDatabase)
   private
     FInitialDir: string;
     {$IFDEF VCL}
@@ -241,8 +240,8 @@ type
   end;
 
   TJvDynControlCxDBMemo = class(TcxDBMemo, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems, IJvDynControlMemo,
-    IJvDynControlReadOnly, IJvDynControlDatabase)
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+    IJvDynControlMemo, IJvDynControlReadOnly, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetReadOnly(Value: Boolean);
@@ -281,10 +280,10 @@ type
     IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
     IJvDynControlRadioGroup, IJvDynControlDatabase)
   private
-    FItems : TStrings;
+    FItems: TStrings;
   public
-    constructor create(AOwner : TComponent); override;
-    destructor destroy; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
@@ -315,8 +314,8 @@ type
   end;
 
   TJvDynControlCxDBListBox = class(TcxDBListBox, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick,
-    IJvDynControlDatabase)
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+    IJvDynControlDblClick, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -348,8 +347,8 @@ type
   end;
 
   TJvDynControlCxDBComboBox = class(TcxDBComboBox, IUnknown,
-    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox,
-    IJvDynControlDatabase)
+    IJvDynControl, IJvDynControlDevExpCx, IJvDynControlData, IJvDynControlItems,
+    IJvDynControlComboBox, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(const Value: string);
@@ -463,9 +462,9 @@ type
     IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -473,8 +472,8 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlDate
     procedure ControlSetMinDate(Value: TDateTime);
@@ -491,13 +490,13 @@ type
   end;
 
   TJvDynControlCxDBDateEdit = class (TcxDBDateEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate, IJvDynControlReadOnly,
-    IJvDynControlDatabase)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlDate,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -505,8 +504,8 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlDate
     procedure ControlSetMinDate(Value: TDateTime);
@@ -522,13 +521,13 @@ type
   end;
 
   TJvDynControlCxDBTimeEdit = class (TcxDBTimeEdit, IUnknown, IJvDynControl,
-    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlTime, IJvDynControlReadOnly,
-    IJvDynControlDatabase)
+    IJvDynControlData, IJvDynControlDevExpCx, IJvDynControlTime,
+    IJvDynControlReadOnly, IJvDynControlDatabase)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(const Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -536,8 +535,8 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
     procedure ControlSetHint(const Value: string);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
 
@@ -548,8 +547,6 @@ type
     procedure ControlSetDataField(const Value: string);
     function ControlGetDataField: string;
   end;
-
-
 
 function DynControlEngineCxDB: TJvDynControlEngineDB;
 procedure SetDefaultDynControlEngineDBDevExp;
@@ -568,16 +565,16 @@ uses
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
   SysUtils,
-  JvDynControlEngineTools, JvConsts, JvJCLUtils,
   cxTextEdit, cxMaskEdit, cxRadioGroup, cxDropDownEdit, cxDBRichEdit,
   cxEdit, cxTimeEdit, cxDBLookupComboBox, cxMemo, cxCheckbox,
   cxGridTableView,cxGridCustomView,
-  cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions;
+  cxGrid, cxGridCustomTableView, cxGridDBDataDefinitions,
+  JvDynControlEngineTools, JvConsts, JvJCLUtils;
 
 var
   IntDynControlEngineCxDB: TJvDynControlEngineDB = nil;
 
-//=== { TJvDynControlCxDBEdit } =============================================
+//=== { TJvDynControlCxDBEdit } ==============================================
 
 procedure TJvDynControlCxDBEdit.ControlSetDefaultProperties;
 begin
@@ -670,7 +667,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-//=== { TJvDynControlCxDBButtonEdit } =======================================
+//=== { TJvDynControlCxDBButtonEdit } ========================================
 
 constructor TJvDynControlCxDBButtonEdit.Create(AOwner: TComponent);
 begin
@@ -688,7 +685,6 @@ begin
   if Assigned(FIntOnButtonClick) then
     FIntOnButtonClick(Sender);
 end;
-
 
 procedure TJvDynControlCxDBButtonEdit.ControlSetDefaultProperties;
 begin
@@ -760,7 +756,7 @@ end;
 
 procedure TJvDynControlCxDBButtonEdit.ControlSetOnButtonClick(Value: TNotifyEvent);
 begin
-  FIntOnButtonClick:= Value;;
+  FIntOnButtonClick := Value;;
 end;
 
 procedure TJvDynControlCxDBButtonEdit.ControlSetButtonCaption(const Value: string);
@@ -807,8 +803,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-//=== { TJvDynControlCxDBFileNameEdit } =====================================
+//=== { TJvDynControlCxDBFileNameEdit } ======================================
 
 constructor TJvDynControlCxDBFileNameEdit.Create(AOwner: TComponent);
 begin
@@ -1003,8 +998,6 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-
 //=== { TJvDynControlCxDBDirectoryEdit } ====================================
 
 constructor TJvDynControlCxDBDirectoryEdit.Create(AOwner: TComponent);
@@ -1147,8 +1140,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-//=== { TJvDynControlCxDBCheckBox } =========================================
+//=== { TJvDynControlCxDBCheckBox } ==========================================
 
 procedure TJvDynControlCxDBCheckBox.ControlSetDefaultProperties;
 begin
@@ -1225,8 +1217,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-//=== { TJvDynControlCxDBMemo } =============================================
+//=== { TJvDynControlCxDBMemo } ==============================================
 
 procedure TJvDynControlCxDBMemo.ControlSetDefaultProperties;
 begin
@@ -1341,19 +1332,18 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
+//=== { TJvDynControlCxDBRadioGroup } ========================================
 
-//=== { TJvDynControlCxDBRadioGroup } =======================================
-
-constructor TJvDynControlCxDBRadioGroup.create(AOwner : TComponent);
+constructor TJvDynControlCxDBRadioGroup.Create(AOwner: TComponent);
 begin
-  inherited create (AOwner);
+  inherited Create(AOwner);
   FItems := TStrings.Create;
 end;
 
-destructor TJvDynControlCxDBRadioGroup.destroy;
+destructor TJvDynControlCxDBRadioGroup.Destroy;
 begin
   FItems.Free;
-  inherited destroy;
+  inherited Destroy;
 end;
 
 procedure TJvDynControlCxDBRadioGroup.ControlSetDefaultProperties;
@@ -1397,7 +1387,7 @@ end;
 
 procedure TJvDynControlCxDBRadioGroup.ControlSetValue(Value: Variant);
 var
-  I:    integer;
+  I: Integer;
 begin
   if VarIsInt(Value) then
     ItemIndex := Value
@@ -1408,7 +1398,7 @@ begin
       if TcxRadioGroupItem(Properties.Items[I]).Caption = Value then
       begin
         ItemIndex := I;
-        break;
+        Break;
       end;
   end;
 end;
@@ -1424,10 +1414,10 @@ end;
 
 procedure TJvDynControlCxDBRadioGroup.ControlSetItems(Value: TStrings);
 var
-  I:    integer;
+  I: Integer;
   Item: TcxRadioGroupItem;
 begin
-  FItems.Assign (Value);
+  FItems.Assign(Value);
   Properties.Items.Clear;
   for I := 0 to Value.Count - 1 do
   begin
@@ -1472,8 +1462,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-//=== { TJvDynControlCxDBListBox } ==========================================
+//=== { TJvDynControlCxDBListBox } ===========================================
 
 procedure TJvDynControlCxDBListBox.ControlSetDefaultProperties;
 begin
@@ -1572,8 +1561,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-//=== { TJvDynControlCxDBComboBox } =========================================
+//=== { TJvDynControlCxDBComboBox } ==========================================
 
 procedure TJvDynControlCxDBComboBox.ControlSetDefaultProperties;
 begin
@@ -1672,8 +1660,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-//=== { TJvDynControlCxDBImage } ============================================
+//=== { TJvDynControlCxDBImage } =============================================
 
 procedure TJvDynControlCxDBImage.ControlSetDefaultProperties;
 begin
@@ -1784,8 +1771,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-//=== { TJvDynControlCxDBText } =============================================
+//=== { TJvDynControlCxDBText } ==============================================
 
 procedure TJvDynControlCxDBText.ControlSetDefaultProperties;
 begin
@@ -1842,9 +1828,7 @@ begin
   Style.StyleController := Value.StyleController;
 end;
 
-
-
-//=== { TJvDynControlCxDBNavigator } ========================================
+//=== { TJvDynControlCxDBNavigator } =========================================
 
 procedure TJvDynControlCxDBNavigator.ControlSetDefaultProperties;
 begin
@@ -1903,16 +1887,16 @@ begin
   //Style.StyleController := Value.StyleController;
 end;
 
-//=== TJvDynControlCxDBDateTimeEdit ============================================
+//=== { TJvDynControlCxDBDateTimeEdit } ======================================
 
 procedure TJvDynControlCxDBDateTimeEdit.ControlSetDefaultProperties;
 begin
-  Properties.ShowTime  := true;
-  Properties.SaveTime  := false;
+  Properties.ShowTime := True;
+  Properties.SaveTime := False;
 //  Properties.InputKind := ikStandard;
 end;
 
-procedure TJvDynControlCxDBDateTimeEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetReadOnly(Value: Boolean);
 begin
   Properties.ReadOnly := Value;
 end;
@@ -1921,7 +1905,7 @@ procedure TJvDynControlCxDBDateTimeEdit.ControlSetCaption(const Value: string);
 begin
 end;
 
-procedure TJvDynControlCxDBDateTimeEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1950,13 +1934,12 @@ begin
   Hint := Value;
 end;
 
-
-procedure TJvDynControlCxDBDateTimeEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlCxDBDateTimeEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlCxDBDateTimeEdit.ControlGetValue: variant;
+function TJvDynControlCxDBDateTimeEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -2003,17 +1986,16 @@ begin
   Result := Databinding.DataField;
 end;
 
-
-//=== TJvDynControlCxDBDateEdit ============================================
+//=== { TJvDynControlCxDBDateEdit } ==========================================
 
 procedure TJvDynControlCxDBDateEdit.ControlSetDefaultProperties;
 begin
-  Properties.ShowTime  := false;
-  Properties.SaveTime  := false;
+  Properties.ShowTime := False;
+  Properties.SaveTime := False;
 //  Properties.InputKind := ikStandard;
 end;
 
-procedure TJvDynControlCxDBDateEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlCxDBDateEdit.ControlSetReadOnly(Value: Boolean);
 begin
   Properties.ReadOnly := Value;
 end;
@@ -2022,7 +2004,7 @@ procedure TJvDynControlCxDBDateEdit.ControlSetCaption(const Value: string);
 begin
 end;
 
-procedure TJvDynControlCxDBDateEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlCxDBDateEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -2051,13 +2033,12 @@ begin
   Hint := Value;
 end;
 
-
-procedure TJvDynControlCxDBDateEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlCxDBDateEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlCxDBDateEdit.ControlGetValue: variant;
+function TJvDynControlCxDBDateEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -2104,16 +2085,15 @@ begin
   Result := Databinding.DataField;
 end;
 
-
-//=== TJvDynControlCxDBTimeEdit ============================================
+//=== { TJvDynControlCxDBTimeEdit } ==========================================
 
 procedure TJvDynControlCxDBTimeEdit.ControlSetDefaultProperties;
 begin
-  Properties.ShowDate := false;
-  Properties.UseCtrlIncrement := true;
+  Properties.ShowDate := False;
+  Properties.UseCtrlIncrement := True;
 end;
 
-procedure TJvDynControlCxDBTimeEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlCxDBTimeEdit.ControlSetReadOnly(Value: Boolean);
 begin
   Properties.ReadOnly := Value;
 end;
@@ -2122,7 +2102,7 @@ procedure TJvDynControlCxDBTimeEdit.ControlSetCaption(const Value: string);
 begin
 end;
 
-procedure TJvDynControlCxDBTimeEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlCxDBTimeEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -2151,13 +2131,12 @@ begin
   Hint := Value;
 end;
 
-
-procedure TJvDynControlCxDBTimeEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlCxDBTimeEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlCxDBTimeEdit.ControlGetValue: variant;
+function TJvDynControlCxDBTimeEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -2172,9 +2151,10 @@ procedure TJvDynControlCxDBTimeEdit.ControlSetFormat(const Value: string);
 begin
 //  Properties.Format := Value;
   Properties.Use24HourFormat := (Pos('H', Value) > 0);
-  if (Pos('s', Value) > 0) then
+  if Pos('s', Value) > 0 then
     Properties.TimeFormat := tfHourMinSec
-  else if (Pos('m', Value) > 0) then
+  else
+  if Pos('m', Value) > 0 then
     Properties.TimeFormat := tfHourMin
   else
     Properties.TimeFormat := tfHour;
@@ -2200,8 +2180,7 @@ begin
   Result := Databinding.DataField;
 end;
 
-
-//=== { TJvDynControlEngineDevExpCxDB } ===========================================
+//=== { TJvDynControlEngineDevExpCxDB } ======================================
 
 function DynControlEngineCxDB: TJvDynControlEngineDB;
 begin
@@ -2210,7 +2189,7 @@ end;
 
 procedure SetDefaultDynControlEngineDBDevExp;
 begin
-  SetDefaultDynControlEngineDB (DynControlEngineCxDB);
+  SetDefaultDynControlEngineDB(DynControlEngineCxDB);
 end;
 
 type
@@ -2220,20 +2199,17 @@ type
   protected
     procedure SetcxProperties(Value: TCxDynControlWrapper);
     procedure RegisterControls; override;
-    procedure TransferGridItemToControl(
-                                        aGridItem : TcxCustomGridTableItem;
-                                        aDataSource : TDatasource;
-                                        aControl : TWinControl;
-                                        aOptions: TJvCreateDBFieldsOnControlOptions);
+    procedure TransferGridItemToControl(AGridItem: TcxCustomGridTableItem;
+      ADataSource: TDataSource; AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
   public
     constructor Create; override;
     destructor Destroy; override;
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl; override;
-    function CreateControlsFromCxGridViewOnControl(AGridView : TcxCustomGridTableView;
-      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+    function CreateControlsFromCxGridViewOnControl(AGridView: TcxCustomGridTableView;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean;
     function CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
-      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean; override;
-    function GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource; override;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean; override;
+    function GetDataSourceFromDataComponent(ADataComponent: TComponent): TDataSource; override;
   published
     property CxProperties: TCxDynControlWrapper read FCxProperties write FCxProperties;
   end;
@@ -2289,98 +2265,109 @@ begin
   RegisterControlType(jctDBNavigator, TJvDynControlCxDBNavigator);
 end;
 
-function TJvDynControlEngineDevExpCxDB.GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource;
+function TJvDynControlEngineDevExpCxDB.GetDataSourceFromDataComponent(ADataComponent: TComponent): TDataSource;
 begin
-  if not Assigned(ADatacomponent) then
+  if not Assigned(ADataComponent) then
     Result := nil
-  else if ADatacomponent is TcxCustomGridTableView then
-    if TcxCustomGridTableView(ADatacomponent).DataController IS TcxGridDBDataController THEN
-      Result := TcxGridDBDataController(TcxCustomGridTableView(ADatacomponent).DataController).Datasource
-    else
-      Result := nil
-  else if (ADatacomponent is TcxCustomGrid) and
-     (TcxCustomGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
-    if TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController IS TcxGridDBDataController THEN
-      Result := TcxGridDBDataController(TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController).Datasource
-    else
-      Result := nil
-  else if ADatacomponent is TcxDBTextEdit then
-    Result := TcxDBTextEdit(ADataComponent).Databinding.Datasource
-  else if ADatacomponent is TcxDBNavigator then
-    Result := TcxDBNavigator(ADataComponent).Datasource
-  else if ADatacomponent is TcxDBListbox then
-    Result := TcxDBListbox(ADataComponent).Databinding.Datasource
-  else if ADatacomponent is TcxDBLookupComboBox then
-    Result := TcxDBLookupComboBox(ADataComponent).Databinding.Datasource
-  else if ADatacomponent is TcxDBImage then
-    Result := TcxDBImage   (ADataComponent).Databinding.Datasource
-  else if ADatacomponent is TcxDBMemo then
-    Result := TcxDBMemo(ADataComponent).Databinding.Datasource
-  else if ADatacomponent is TcxDBRadioGroup then
-    Result := TcxDBRadioGroup(ADataComponent).Databinding.Datasource
-  else if ADatacomponent is TcxDBRichEdit then
-    Result := TcxDBRichEdit(ADataComponent).Databinding.Datasource
-  else if ADatacomponent is TcxDBCheckBox then
-    Result := TcxDBCheckBox(ADataComponent).Databinding.Datasource
   else
-    Result := Inherited GetDatasourceFromDataComponent (ADataComponent);
+  if ADataComponent is TcxCustomGridTableView then
+    if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
+      Result := TcxGridDBDataController(TcxCustomGridTableView(ADataComponent).DataController).DataSource
+    else
+      Result := nil
+  else
+  if (ADataComponent is TcxCustomGrid) and
+     (TcxCustomGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
+    if TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController then
+      Result := TcxGridDBDataController(TcxCustomGridTableView(TcxCustomGrid(ADataComponent).ActiveView).DataController).DataSource
+    else
+      Result := nil
+  else
+  if ADataComponent is TcxDBTextEdit then
+    Result := TcxDBTextEdit(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBNavigator then
+    Result := TcxDBNavigator(ADataComponent).DataSource
+  else
+  if ADataComponent is TcxDBListbox then
+    Result := TcxDBListbox(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBLookupComboBox then
+    Result := TcxDBLookupComboBox(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBImage then
+    Result := TcxDBImage   (ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBMemo then
+    Result := TcxDBMemo(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBRadioGroup then
+    Result := TcxDBRadioGroup(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBRichEdit then
+    Result := TcxDBRichEdit(ADataComponent).Databinding.DataSource
+  else
+  if ADataComponent is TcxDBCheckBox then
+    Result := TcxDBCheckBox(ADataComponent).Databinding.DataSource
+  else
+    Result := inherited GetDataSourceFromDataComponent(ADataComponent);
 end;
 
-type TAccesscxCustomGridTableItem = class(TcxCustomGridTableItem);
-     TAccesscxCustomEdit = Class(TcxCustomEdit);
+type
+  TAccesscxCustomGridTableItem = class(TcxCustomGridTableItem);
+  TAccesscxCustomEdit = class(TcxCustomEdit);
 
-procedure TJvDynControlEngineDevExpCxDB.TransferGridItemToControl(
-                                        aGridItem : TcxCustomGridTableItem;
-                                        aDataSource : TDatasource;
-                                        aControl : TWinControl;
-                                        aOptions: TJvCreateDBFieldsOnControlOptions);
-Var
-  j : Integer;
+procedure TJvDynControlEngineDevExpCxDB.TransferGridItemToControl(AGridItem: TcxCustomGridTableItem;
+  ADataSource: TDataSource; AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
+var
+  J: Integer;
   Control: TWinControl;
   LabelControl: TWinControl;
-  GridDataBinding : TcxGridItemDBDataBinding;
-  ControlType : TJvDynControlType;
+  GridDataBinding: TcxGridItemDBDataBinding;
+  ControlType: TJvDynControlType;
 begin
-  if not (aGridItem IS TcxGridColumn) or
-     not (aGridItem.DataBinding IS TcxGridItemDBDataBinding) then
+  if not (AGridItem is TcxGridColumn) or
+    not (AGridItem.DataBinding is TcxGridItemDBDataBinding) then
     Exit;
-  GridDataBinding := TcxGridItemDBDataBinding(aGridItem.DataBinding);
+  GridDataBinding := TcxGridItemDBDataBinding(AGridItem.DataBinding);
   if not Assigned(GridDataBinding.Field) then
     Exit;
   with AOptions do
   begin
-    if TcxGridColumn(aGridItem).Visible or
-       (TcxGridColumn(aGridItem).GroupIndex >= 0) or
-       ShowInvisibleFields then
+    if TcxGridColumn(AGridItem).Visible or
+      (TcxGridColumn(AGridItem).GroupIndex >= 0) or
+      ShowInvisibleFields then
     begin
-      if aGridItem.PropertiesClass = TcxMemoProperties then
-        Control := TWinControl(CreateDBControl(jctDBMemo, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName))
-      else if aGridItem.PropertiesClass = TcxCheckBoxProperties then
-        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', aDataSource, GridDataBinding.Field.FieldName))
+      if AGridItem.PropertiesClass = TcxMemoProperties then
+        Control := TWinControl(CreateDBControl(jctDBMemo, AControl, AControl, '', ADataSource, GridDataBinding.Field.FieldName))
       else
-        Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', aDataSource);
+      if AGridItem.PropertiesClass = TcxCheckBoxProperties then
+        Control := TWinControl(CreateDBControl(jctDBCheckBox, AControl, AControl, '', ADataSource, GridDataBinding.Field.FieldName))
+      else
+        Control := CreateDBFieldControl(GridDataBinding.Field, AControl, AControl, '', ADataSource);
       if FieldDefaultWidth > 0 then
         Control.Width := FieldDefaultWidth
       else
       begin
-        if TAccesscxCustomGridTableItem(aGridItem).Width > 0 then
-          Control.Width := TAccesscxCustomGridTableItem(aGridItem).Width;
+        if TAccesscxCustomGridTableItem(AGridItem).Width > 0 then
+          Control.Width := TAccesscxCustomGridTableItem(AGridItem).Width;
         if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
           Control.Width := FieldMaxWidth
-        else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+        else
+        if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
           Control.Width := FieldMinWidth
       end;
       if Supports(Control, IJvDynControlReadOnly) then
         with Control as IJvDynControlReadOnly do
-          ControlSetReadOnly(TcxGridColumn(aGridItem).Properties.ReadOnly);
+          ControlSetReadOnly(TcxGridColumn(AGridItem).Properties.ReadOnly);
 
       if Control is TcxCustomEdit then
       begin
-//        TAccesscxCustomEdit(Control).Properties.ReadOnly :=TcxGridColumn(aGridItem).Properties.ReadOnly;
-//        TAccesscxCustomEdit(Control).Properties := TcxGridColumn(aGridItem).Properties;
+//        TAccesscxCustomEdit(Control).Properties.ReadOnly :=TcxGridColumn(AGridItem).Properties.ReadOnly;
+//        TAccesscxCustomEdit(Control).Properties := TcxGridColumn(AGridItem).Properties;
       end;
       LabelControl := GetDynControlEngine.CreateLabelControlPanel(AControl, AControl,
-        '', '&' + aGridItem.Caption, Control, LabelOnTop, LabelDefaultWidth);
+        '', '&' + AGridItem.Caption, Control, LabelOnTop, LabelDefaultWidth);
       if FieldWidthStep > 0 then
         if (LabelControl.Width mod FieldWidthStep) <> 0 then
           LabelControl.Width := ((LabelControl.Width div FieldWidthStep) + 1) * FieldWidthStep;
@@ -2388,12 +2375,12 @@ begin
   end;
 end;
 
-function TJvDynControlEngineDevExpCxDB.CreateControlsFromCxGridViewOnControl(AGridView : TcxCustomGridTableView;
-      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+function TJvDynControlEngineDevExpCxDB.CreateControlsFromCxGridViewOnControl(AGridView: TcxCustomGridTableView;
+  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean;
 var
   I: Integer;
-  CreateOptions : TJvCreateDBFieldsOnControlOptions;
-  GridDataController : TcxGridDBDataController;
+  CreateOptions: TJvCreateDBFieldsOnControlOptions;
+  GridDataController: TcxGridDBDataController;
 begin
   Result := False;
   if not Assigned(AOptions) then
@@ -2401,14 +2388,14 @@ begin
   else
     CreateOptions := AOptions;
   try
-    IF tcxCustomGridView(aGridView).DataController IS TcxGridDBDataController THEN
+    if tcxCustomGridView(aGridView).DataController is TcxGridDBDataController then
       GridDataController := TcxGridDBDataController(aGridView.DataController)
     else
       Exit;
-    for i := 0 to AGridView.GroupedItemCount - 1 do
-      TransferGridItemToControl (aGridView.GroupedItems[i], GridDataController.Datasource, AControl, CreateOptions);
-    for i := 0 to AGridView.VisibleItemCount - 1 do
-      TransferGridItemToControl (aGridView.VisibleItems[i], GridDataController.Datasource, AControl, CreateOptions);
+    for I := 0 to AGridView.GroupedItemCount - 1 do
+      TransferGridItemToControl (aGridView.GroupedItems[I], GridDataController.DataSource, AControl, CreateOptions);
+    for I := 0 to AGridView.VisibleItemCount - 1 do
+      TransferGridItemToControl (aGridView.VisibleItems[I], GridDataController.DataSource, AControl, CreateOptions);
   finally
     if not Assigned(AOptions) then
       CreateOptions.Free;
@@ -2417,18 +2404,19 @@ begin
 end;
 
 function TJvDynControlEngineDevExpCxDB.CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
-      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean;
 var
   I: Integer;
   Control: TWinControl;
   LabelControl: TWinControl;
-  CreateOptions : TJvCreateDBFieldsOnControlOptions;
+  CreateOptions: TJvCreateDBFieldsOnControlOptions;
 begin
   if Assigned(ADataComponent) then
     if (ADataComponent is TcxGrid) and
-       (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
+      (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) then
       Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView), AControl, AOptions)
-    else if ADataComponent is TcxCustomGridTableView then
+    else
+    if ADataComponent is TcxCustomGridTableView then
       Result := CreateControlsFromcxGridViewOnControl(TcxCustomGridTableView(ADataComponent), AControl, AOptions)
     else
       Result := inherited CreateControlsFromDataComponentOnControl(ADataComponent, AControl, AOptions)
@@ -2436,6 +2424,7 @@ begin
     Result := False;
 end;
 
+{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2451,16 +2440,17 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   IntDynControlEngineCxDB := TJvDynControlEngineDevExpCxDB.Create;
   SetDefaultDynControlEngineDB(IntDynControlEngineCxDB);
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 finalization
+  {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
+  FreeAndNil(IntDynControlEngineCxDB);
+  {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FreeAndNil(IntDynControlEngineCxDB);
-
-{$ENDIF USE_3RDPARTY_DEVEXPRESS_CXEDITOR}
 
 end.

@@ -83,7 +83,7 @@ type
     FIsEmptyValue: Boolean;
     FEmptyFontColor: TColor;
     FOldFontColor: TColor;
-    FIsLoaded:boolean;
+    FIsLoaded: Boolean;
     {$IFDEF JVCLThemesEnabled}
     FThemedPassword: Boolean;
     FThemedFont: TFont;
@@ -420,6 +420,7 @@ begin
     DoEmptyValueExit;
 end;
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
 procedure TJvCustomEdit.InitWidget;
 begin
@@ -471,7 +472,7 @@ begin
   Tmp := ProtectPassword;
   try
     // TWinControl.DestroyWnd sends WM_GETTEXTLENGTH & WM_GETTEXT messages,
-    // thus we have to temporarely set ProtectPassword to False.
+    // thus we have to temporarily set ProtectPassword to False.
     ProtectPassword := False;
     inherited DestroyWnd;
   finally
@@ -517,8 +518,8 @@ begin
     end;
   end
   else
-    if not (csDesigning in ComponentState) then
-      Font.Color := FOldFontColor;
+  if not (csDesigning in ComponentState) then
+    Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEmptyValueExit;
@@ -539,8 +540,8 @@ begin
     end;
   end
   else
-    if not (csDesigning in ComponentState) then
-      Font.Color := FOldFontColor;
+  if not (csDesigning in ComponentState) then
+    Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEnter;
@@ -687,7 +688,7 @@ begin
          FIsLoaded is set a bit later to true than csLoading but that
          does not matter AFAICS
   }
-  FIsLoaded := true;
+  FIsLoaded := True;
   FOldFontColor := Font.Color;
   SelStart := FStreamedSelStart;
   SelLength := FStreamedSelLength;
@@ -746,7 +747,6 @@ begin
 end;
 
 {$IFDEF VisualCLX}
-
 procedure TJvCustomEdit.Paint;
 var
   S: TCaption;
@@ -766,7 +766,6 @@ begin
       inherited Paint;
   end;
 end;
-
 {$ENDIF VisualCLX}
 
 procedure TJvCustomEdit.SetAlignment(Value: TAlignment);
@@ -822,12 +821,10 @@ procedure TJvCustomEdit.SetEmptyValue(const Value: string);
 begin
   FEmptyValue := Value;
   if HandleAllocated then
-  begin
     if Focused then
       DoEmptyValueEnter
     else
       DoEmptyValueExit;
-  end;
 end;
 
 procedure TJvCustomEdit.SetFlat(Value: Boolean);

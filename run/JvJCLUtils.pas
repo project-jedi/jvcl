@@ -7765,9 +7765,9 @@ end;
 
 function RegisterServer(const ModuleName: string): Boolean;
 type
-  TCOMFunc = function:HResult;
+  TCOMFunc = function: HRESULT;
 const
-  S_OK    = $00000000;
+  S_OK = $00000000;
 var
   Handle: THandle;
   DllRegServ: TCOMFunc;
@@ -8219,7 +8219,7 @@ begin
     hwndOwner := Handle;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    hwndOwner := QWidget_WinID(Handle);
+    hwndOwner := QWidget_winId(Handle);
     {$ENDIF VisualCLX}
     pidlRoot := nil;
     pszDisplayName := FN;
@@ -8673,7 +8673,7 @@ procedure ScreenShot(Bmp: TBitmap; Left, Top, Width, Height: Integer; Window: QW
 begin
   if not Assigned(Bmp.Handle) then
     Bmp.Handle := QPixmap_create;
-  QPixmap_grabWindow(Bmp.Handle, QWidget_winID(Window), Left, Top, Width, Height);
+  QPixmap_grabWindow(Bmp.Handle, QWidget_winId(Window), Left, Top, Width, Height);
 end;
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;

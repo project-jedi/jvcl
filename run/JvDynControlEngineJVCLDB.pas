@@ -749,7 +749,7 @@ end;
 
 function TJvDynControlJVCLDBButtonEdit.ControlGetDataField: string;
 begin
-  Result := FEditControl.Datafield;
+  Result := FEditControl.DataField;
 end;
 
 //=== { TJvDynControlJVCLDBFileNameEdit } ====================================

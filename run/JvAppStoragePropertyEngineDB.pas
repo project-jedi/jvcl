@@ -90,38 +90,36 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  Classes, DBGrids, JvAppStorage;
+  Classes, DBGrids,
+  JvAppStorage;
 
 type
   TJvAppStoragePropertyDBGridColumnsEngine = class(TJvAppStoragePropertyBaseEngine)
   public
-    function Supports (AObject : TObject; AProperty : TObject) : Boolean; override;
-    procedure ReadProperty (AStorage : TJvCustomAppStorage; const APath : string;
-        AObject : TObject; AProperty : TObject; const Recursive, ClearFirst: Boolean); override;
-    procedure WriteProperty (AStorage : TJvCustomAppStorage; const APath : string;
-        AObject : TObject; AProperty : TObject; const Recursive: Boolean); override;
+    function Supports(AObject: TObject; AProperty: TObject): Boolean; override;
+    procedure ReadProperty(AStorage: TJvCustomAppStorage; const APath: string;
+      AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean); override;
+    procedure WriteProperty(AStorage: TJvCustomAppStorage; const APath: string;
+      AObject: TObject; AProperty: TObject; const Recursive: Boolean); override;
   end;
 
+//=== { TJvAppStoragePropertyDBGridColumnsEngine } ===========================
 
-//=== { TJvAppStoragePropertyDBGridColumnsEngine } =========================================
-
-function TJvAppStoragePropertyDBGridColumnsEngine.Supports (AObject : TObject; AProperty : TObject) : Boolean;
+function TJvAppStoragePropertyDBGridColumnsEngine.Supports(AObject: TObject; AProperty: TObject): Boolean;
 begin
-  if Assigned(AProperty) and (AProperty IS TDBGridColumns) then
-    Result := true
-  else
-    Result := False;
+  Result := Assigned(AProperty) and (AProperty is TDBGridColumns);
 end;
 
-type TAccessCustomDBGrid = class(TCustomDBGrid);
+type
+  TAccessCustomDBGrid = class(TCustomDBGrid);
 
-procedure TJvAppStoragePropertyDBGridColumnsEngine.ReadProperty (AStorage : TJvCustomAppStorage; const APath : string;
-        AObject : TObject; AProperty : TObject; const Recursive, ClearFirst: Boolean);
+procedure TJvAppStoragePropertyDBGridColumnsEngine.ReadProperty(AStorage: TJvCustomAppStorage;
+  const APath: string; AObject: TObject; AProperty: TObject; const Recursive, ClearFirst: Boolean);
 begin
   if Assigned(AObject) and (AObject is TCustomDBGrid) then
     TAccessCustomDBGrid(AObject).BeginLayout;
   try
-    if Assigned(AProperty) and (AProperty IS TDBGridColumns) then
+    if Assigned(AProperty) and (AProperty is TDBGridColumns) then
       AStorage.ReadCollection(APath, TCollection(AProperty), ClearFirst);
   finally
     if Assigned(AObject) and (AObject is TDBGrid) then
@@ -129,14 +127,14 @@ begin
   end;
 end;
 
-procedure TJvAppStoragePropertyDBGridColumnsEngine.WriteProperty (AStorage : TJvCustomAppStorage; const APath : string;
-        AObject : TObject; AProperty : TObject; const Recursive : Boolean);
+procedure TJvAppStoragePropertyDBGridColumnsEngine.WriteProperty(AStorage: TJvCustomAppStorage;
+  const APath: string; AObject: TObject; AProperty: TObject; const Recursive: Boolean);
 begin
-  if Assigned(AProperty) and (AProperty IS TCustomDBGrid) then
+  if Assigned(AProperty) and (AProperty is TCustomDBGrid) then
     AStorage.WriteCollection(APath, TCollection(AProperty));
 end;
 
-//=== { Global } =========================================
+//=== Global =================================================================
 
 procedure RegisterAppStoragePropertyEngines;
 begin
@@ -150,13 +148,13 @@ const
     Revision: '$Revision$';
     Date: '$Date$';
     LogPath: 'JVCL\run'
-  );
+    );
 {$ENDIF UNITVERSIONING}
 
 initialization
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
 
   RegisterAppStoragePropertyEngines;
 
@@ -165,5 +163,5 @@ finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
 
-
 end.
+

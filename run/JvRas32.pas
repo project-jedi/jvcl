@@ -96,7 +96,7 @@ type
     FRasCreatePhonebookEntry: TRasCreatePhonebookEntry;
     FRasEditPhonebookEntry: TRasEditPhonebookEntry;
     FKeepConnected: Boolean;
-    FAvailable: boolean;
+    FAvailable: Boolean;
     //    function GetPhoneBook: TStringList;
     procedure WndProc(var Msg: TMessage);
     procedure SetEntryIndex(const Value: Integer);
@@ -117,7 +117,7 @@ type
     property PhoneNumber: string read FPhoneNumber write FPhoneNumber;
     property Domain: string read FDomain write FDomain;
     property PhoneBook: TStrings read GetPhoneBook;
-    property RasAvailable:boolean read FAvailable;
+    property RasAvailable: Boolean read FAvailable;
   published
     property KeepConnected: Boolean read FKeepConnected write FKeepConnected default False;
     //    property PhoneBook: TStringList read GetPhoneBook;
@@ -207,7 +207,7 @@ begin
     if RASEvent = 0 then
       RASEvent := WM_RASDialEvent;
   end;
-  FAvailable := (FDLL <> 0) and Assigned(FRasDial);
+  FAvailable := (FDll <> 0) and Assigned(FRasDial);
 end;
 
 destructor TJvRas32.Destroy;

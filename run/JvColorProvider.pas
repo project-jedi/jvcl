@@ -3816,10 +3816,10 @@ initialization
   MasterColorConsumer := TJvColorConsumer.Create;
 
 finalization
+  MasterColorConsumer := nil;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  MasterColorConsumer := nil;
 
 end.
 

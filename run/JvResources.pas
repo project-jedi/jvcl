@@ -129,6 +129,10 @@ resourcestring
 
 //=== JvAppRegistryStorage.pas ===============================================
 resourcestring
+  RsRootValueReplaceFmt =
+    'The Default Root Value "%s" has been replaced with "%s".' + #13#10 +
+    'Please change the value in the FileVersionInfo Project Properties.';
+
   RsEUnableToCreateKey = 'Unable to create key ''%s''';
   RsEEnumeratingRegistry = 'Error enumerating registry';
 

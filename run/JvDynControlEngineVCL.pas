@@ -2397,9 +2397,9 @@ initialization
   SetDefaultDynControlEngine(IntDynControlEngineVCL);
 
 finalization
+  FreeAndNil(IntDynControlEngineVCL);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FreeAndNil(IntDynControlEngineVCL);
 
 end.

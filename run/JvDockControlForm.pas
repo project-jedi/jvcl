@@ -909,9 +909,11 @@ procedure ReshowAllVisibleWindow;
 implementation
 
 uses
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
   SysUtils,
   {$IFDEF USEJVCL}
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
@@ -5099,6 +5101,7 @@ begin
   JvGlobalDockManager := nil;
 end;
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -5108,19 +5111,23 @@ const
     LogPath: 'JVCL\run'
   );
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 initialization
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
+  {$ENDIF USEJVCL}
   InitDockManager;
 
 finalization
+  DoneDockManager;
+  {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  DoneDockManager;
+  {$ENDIF USEJVCL}
 
 end.
 

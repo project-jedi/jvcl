@@ -153,8 +153,8 @@ begin
   FChanged := False;
   FHorizontal := True;
   FChanging := False;
-  FImageThumb.LoadFromResourceName(hInstance, 'THUMB');
-  FImageRuler.LoadFromResourceName(hInstance, 'RULER');
+  FImageThumb.LoadFromResourceName(HInstance, 'THUMB');
+  FImageRuler.LoadFromResourceName(HInstance, 'RULER');
   Calculate;
   FImageThumb.OnChange := ThumbChanged;
   Self.OnResize := ReCalcule;

@@ -153,7 +153,7 @@ procedure TJvgfPrintPreview.tbFirstClick(Sender: TObject);
 begin
   QRPreview1.PageNumber := 1;
   QRPreview1.UpdateZoom;
-  tbPrior.Enabled := false;
+  tbPrior.Enabled := False;
   tbNext.Enabled := QRPreview1.PageNumber < QRPreview1.QRPrinter.PageCount;
   UpdateStatus;
 end;

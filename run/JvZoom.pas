@@ -49,14 +49,14 @@ type
     FOnContentsChanged: TNotifyEvent;
     FCacheOnDeactivate: Boolean;
     FCacheBitmap: TBitmap;
-    FCrossHairPicture:TPicture;
+    FCrossHairPicture: TPicture;
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
     procedure SetZoomLevel(const Value: Integer);
     procedure SetCacheOnDeactivate(const Value: Boolean);
-    procedure SetCrossHairPicture(const Value:TPicture);
-    function GetZoomPercentage: integer;
-    procedure SetZoomPercentage(const Value: integer);
+    procedure SetCrossHairPicture(const Value: TPicture);
+    function GetZoomPercentage: Integer;
+    procedure SetZoomPercentage(const Value: Integer);
     procedure PaintMe(Sender: TObject);
     procedure SetCrossHair(const Value: Boolean);
   protected
@@ -71,7 +71,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ForceUpdate;
-    procedure ZoomInAt(X,Y:integer);
+    procedure ZoomInAt(X, Y: Integer);
   published
     property Anchors;
     property Align;
@@ -81,7 +81,7 @@ type
     property Visible;
     property Active: Boolean read FActive write SetActive default True;
     property ZoomLevel: Integer read FZoomLevel write SetZoomLevel default 100;
-    property ZoomPercentage:integer read GetZoomPercentage write SetZoomPercentage stored false;
+    property ZoomPercentage: Integer read GetZoomPercentage write SetZoomPercentage stored False;
     property Delay: Cardinal read FDelay write SetDelay default 100;
     property Crosshair: Boolean read FCrossHair write SetCrossHair default False;
     property CrossHairPicture: TPicture read FCrossHairPicture write SetCrossHairPicture;
@@ -291,7 +291,7 @@ begin
   begin
     if (FCrossHairPicture.Graphic <> nil) and not FCrossHairPicture.Graphic.Empty then
     begin
-      FCrossHairPicture.Graphic.Transparent := true;
+      FCrossHairPicture.Graphic.Transparent := True;
       Canvas.Draw((Width - FCrossHairPicture.Graphic.Width) div 2 + Dx,
         (Height - FCrossHairPicture.Graphic.Height) div 2 + Dy,FCrossHairPicture.Graphic);
     end
@@ -329,7 +329,7 @@ begin
   end
   else
   if not Enabled then
-    FLastPoint := Point(MaxLongInt, MaxLongInt);
+    FLastPoint := Point(MaxLongint, MaxLongint);
   Invalidate;
 end;
 
@@ -386,7 +386,7 @@ begin
   PaintMe(Self);
 end;
 
-function TJvZoom.GetZoomPercentage: integer;
+function TJvZoom.GetZoomPercentage: Integer;
 begin
   if ZoomLevel <> 0 then
     Result := Trunc((100.0 / ZoomLevel) * 100.0)
@@ -394,7 +394,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvZoom.SetZoomPercentage(const Value: integer);
+procedure TJvZoom.SetZoomPercentage(const Value: Integer);
 begin
   if Value <> 0 then
     ZoomLevel := Trunc((100.0 / Value) * 100.0);
@@ -405,7 +405,7 @@ begin
   FCrossHairPicture.Assign(Value);
 end;
 
-procedure TJvZoom.ZoomInAt(X, Y: integer);
+procedure TJvZoom.ZoomInAt(X, Y: Integer);
 begin
   if Enabled then
     SetCursorPos(X,Y)

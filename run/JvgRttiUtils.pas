@@ -83,7 +83,7 @@ begin
       else
       if CompareText(PropName, PropertyName) = 0 then
       begin
-        Result := GetPropValue(Component, PropName, true);
+        Result := GetPropValue(Component, PropName, True);
         Break;
       end;
 

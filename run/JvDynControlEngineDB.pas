@@ -62,9 +62,9 @@ type
     FFieldMaxWidth: Integer ;
     FFieldWidthStep: Integer;
   protected
-    procedure SetFieldWidthStep (Value : Integer);
+    procedure SetFieldWidthStep(Value: Integer);
   public
-    constructor create;
+    constructor Create;
     procedure Assign (Source: TPersistent); override;
   published
     property ShowInvisibleFields: Boolean read FShowInvisibleFields write FShowInvisibleFields default False;
@@ -130,12 +130,12 @@ type
       const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
     function CreateDBNavigatorControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
-    function CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
-      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean; virtual;
+    function CreateControlsFromDataSourceOnControl(ADataSource: TDataSource;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean; virtual;
     function CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
-      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean; virtual;
-    function GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource; virtual;
-    function SupportsDataComponent (ADataComponent : TComponent) : Boolean;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean; virtual;
+    function GetDataSourceFromDataComponent(ADataComponent: TComponent): TDataSource; virtual;
+    function SupportsDataComponent(ADataComponent: TComponent): Boolean;
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   end;
 
@@ -157,37 +157,37 @@ uses
 var
   GlobalDefaultDynControlEngineDB: TJvDynControlEngineDB = nil;
 
+//=== { TJvCreateDBFieldsOnControlOptions } ==================================
 
-//=== { TJvCreateDBFieldsOnControlOptions } ==============================================
-constructor TJvCreateDBFieldsOnControlOptions.create;
+constructor TJvCreateDBFieldsOnControlOptions.Create;
 begin
-  inherited create;
-  FShowInvisibleFields:= False;
-  FLabelOnTop:= True;
-  FLabelDefaultWidth:= 0;
-  FFieldDefaultWidth:= 0;
-  FFieldMinWidth:= 20;
-  FFieldMaxWidth:= 300;
-  FFieldWidthStep:= 50;
+  inherited Create;
+  FShowInvisibleFields := False;
+  FLabelOnTop := True;
+  FLabelDefaultWidth := 0;
+  FFieldDefaultWidth := 0;
+  FFieldMinWidth := 20;
+  FFieldMaxWidth := 300;
+  FFieldWidthStep := 50;
 end;
 
-procedure TJvCreateDBFieldsOnControlOptions.Assign (Source: TPersistent);
+procedure TJvCreateDBFieldsOnControlOptions.Assign(Source: TPersistent);
 begin
   if Assigned(Source) and (Source is TJvCreateDBFieldsOnControlOptions) then
   begin
-    FShowInvisibleFields:= TJvCreateDBFieldsOnControlOptions(Source).ShowInvisibleFields;
-    FLabelOnTop:= TJvCreateDBFieldsOnControlOptions(Source).LabelOnTop;
-    FLabelDefaultWidth:= TJvCreateDBFieldsOnControlOptions(Source).LabelDefaultWidth;
-    FFieldDefaultWidth:= TJvCreateDBFieldsOnControlOptions(Source).FieldDefaultWidth;
-    FFieldMinWidth:= TJvCreateDBFieldsOnControlOptions(Source).FieldMinWidth;
-    FFieldMaxWidth:= TJvCreateDBFieldsOnControlOptions(Source).FieldMaxWidth;
-    FFieldWidthStep:= TJvCreateDBFieldsOnControlOptions(Source).FieldWidthStep;
+    ShowInvisibleFields := TJvCreateDBFieldsOnControlOptions(Source).ShowInvisibleFields;
+    LabelOnTop := TJvCreateDBFieldsOnControlOptions(Source).LabelOnTop;
+    LabelDefaultWidth := TJvCreateDBFieldsOnControlOptions(Source).LabelDefaultWidth;
+    FieldDefaultWidth := TJvCreateDBFieldsOnControlOptions(Source).FieldDefaultWidth;
+    FieldMinWidth := TJvCreateDBFieldsOnControlOptions(Source).FieldMinWidth;
+    FieldMaxWidth := TJvCreateDBFieldsOnControlOptions(Source).FieldMaxWidth;
+    FieldWidthStep := TJvCreateDBFieldsOnControlOptions(Source).FieldWidthStep;
   end
   else
     inherited Assign(Source);
 end;
 
-procedure TJvCreateDBFieldsOnControlOptions.SetFieldWidthStep (Value : Integer);
+procedure TJvCreateDBFieldsOnControlOptions.SetFieldWidthStep(Value: Integer);
 begin
   if Value < 1 then
     FFieldWidthStep := 1
@@ -269,9 +269,8 @@ function TJvDynControlEngineDB.GetFieldControlType(AField: TField): TJvDynContro
 begin
   if not Assigned(AField) then
     raise EJVCLException.CreateRes(@RsEUnassignedField);
-  case AField.Datatype of
-    ftOraClob,
-    ftMemo:
+  case AField.DataType of
+    ftOraClob, ftMemo:
       Result := jctDBMemo;
     ftGraphic:
       Result := jctDBImage;
@@ -476,15 +475,15 @@ end;
 type
   TAccessCustomControl = class(TCustomControl);
 
-function TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
-  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+function TJvDynControlEngineDB.CreateControlsFromDataSourceOnControl(ADataSource: TDataSource;
+  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean;
 var
   I: Integer;
   Control: TWinControl;
   LabelControl: TWinControl;
-  CreateOptions : TJvCreateDBFieldsOnControlOptions;
+  CreateOptions: TJvCreateDBFieldsOnControlOptions;
 begin
-  Result := False;
+  //Result := False;
   if not Assigned(ADataSource) or not Assigned(ADataSource.DataSet) or not Assigned(AControl) then
     raise EJVCLException.CreateRes(@RsEUnassignedMultiple);
   if not ADataSource.DataSet.Active then
@@ -524,28 +523,27 @@ begin
   Result := True;
 end;
 
-function TJvDynControlEngineDB.GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource;
+function TJvDynControlEngineDB.GetDataSourceFromDataComponent(ADataComponent: TComponent): TDataSource;
 begin
-  if ADatacomponent is TDatasource then
-    Result := TDatasource(ADataComponent)
+  if ADatacomponent is TDataSource then
+    Result := TDataSource(ADataComponent)
   else
     Result := nil;
 end;
 
-function TJvDynControlEngineDB.SupportsDataComponent (ADataComponent : TComponent) : Boolean;
+function TJvDynControlEngineDB.SupportsDataComponent(ADataComponent: TComponent): Boolean;
 begin
-  Result := Assigned(ADataComponent) and
-            Assigned(GetDatasourceFromDataComponent(ADataComponent));
+  Result := Assigned(ADataComponent) and Assigned(GetDataSourceFromDataComponent(ADataComponent));
 end;
 
 function TJvDynControlEngineDB.CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
-  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions): Boolean;
 var
-  ds : TDatasource;
+  DS: TDataSource;
 begin
-  ds:= GetDataSourceFromDataComponent(ADataComponent);
-  if Assigned(ds) THEN
-    Result := CreateControlsFromDataSourceOnControl (ds, AControl, AOptions)
+  DS := GetDataSourceFromDataComponent(ADataComponent);
+  if Assigned(DS) then
+    Result := CreateControlsFromDataSourceOnControl(DS, AControl, AOptions)
   else
     Result := False;
 end;

@@ -102,7 +102,7 @@ type
   end;
 
   PHookInfoList = ^THookInfoList;
-  THookInfoList = array[0..MaxInt div 4 - 1] of PJvHookInfo;
+  THookInfoList = array [0..MaxInt div 4 - 1] of PJvHookInfo;
 
   TJvWndProcHook = class;
 

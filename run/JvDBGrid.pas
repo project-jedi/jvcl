@@ -207,7 +207,7 @@ type
     FPostOnEnter: Boolean;
     FSelectColumn: TSelectColumn;
     FTitleArrow: Boolean;
-    FTitlePopUp: TPopupMenu;
+    FTitlePopup: TPopupMenu;
     FOnShowTitleHint: TJvTitleHintEvent;
     FOnTitleArrowMenuEvent: TNotifyEvent;
     FAlternateRowColor: TColor;
@@ -2393,7 +2393,7 @@ begin
     begin
       Bmp := GetGridBitmap(gpPopup);
       DrawBitmapTransparent(Canvas, (ARect.Left + ARect.Right - Bmp.Width) div 2,
-        (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clwhite);
+        (ARect.Top + ARect.Bottom - Bmp.Height) div 2, Bmp, clWhite);
     end;
 
   InBiDiMode := Canvas.CanvasOrientation = coRightToLeft;

@@ -1171,28 +1171,29 @@ begin
     Result.X := 0;
     Result.Y := 0;
   end
-  else with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
-  begin
-    AxisX := GetIndexAxisX(AxisConfig);
-    MinAxis := AxisMin[AxisX];
-    MaxAxis := AxisMax[AxisX];
-    X := GetAxisValue(FullColor, AxisX);
-    if ReverseAxisX then
-      X := MaxAxis - X
-    else
-      X := X - MinAxis;
-    X := ((X * (FBuffer.Width - 1)) div (MaxAxis-MinAxis)) + CrossSize;
+  else
+    with ColorSpaceManager, ColorSpace[GetColorSpaceID(FullColor)], Result do
+    begin
+      AxisX := GetIndexAxisX(AxisConfig);
+      MinAxis := AxisMin[AxisX];
+      MaxAxis := AxisMax[AxisX];
+      X := GetAxisValue(FullColor, AxisX);
+      if ReverseAxisX then
+        X := MaxAxis - X
+      else
+        X := X - MinAxis;
+      X := ((X * (FBuffer.Width - 1)) div (MaxAxis-MinAxis)) + CrossSize;
 
-    AxisY := GetIndexAxisY(AxisConfig);
-    MinAxis := AxisMin[AxisY];
-    MaxAxis := AxisMax[AxisY];
-    Y := GetAxisValue(FullColor, AxisY);
-    if ReverseAxisY then
-      Y := MaxAxis - Y
-    else
-      Y := Y - MinAxis;
-    Y := ((Y * (FBuffer.Height - 1)) div (MaxAxis-MinAxis)) + CrossSize;
-  end;
+      AxisY := GetIndexAxisY(AxisConfig);
+      MinAxis := AxisMin[AxisY];
+      MaxAxis := AxisMax[AxisY];
+      Y := GetAxisValue(FullColor, AxisY);
+      if ReverseAxisY then
+        Y := MaxAxis - Y
+      else
+        Y := Y - MinAxis;
+      Y := ((Y * (FBuffer.Height - 1)) div (MaxAxis-MinAxis)) + CrossSize;
+    end;
 end;
 
 procedure TJvFullColorPanel.InvalidateCursor;
@@ -1566,7 +1567,9 @@ begin
           // (outchy) don't remove, Bitmap colors are stocked as (MSB) 00RRGGBB (LSB)
           // Delphi TColor is (MSB) 00BBGGRR (LSB)
           Line[X] := RGBToBGR(ConvertToColor(Magic1 or (Magic2 shl 8) or (Magic3 shl 16)));
-        end else if (XRelative >= 0.0) then
+        end
+        else
+        if XRelative >= 0.0 then
           Break;         // end of a line
       end;
     end;
@@ -1575,6 +1578,7 @@ begin
 end;
 
 procedure TJvFullColorCircle.Paint;
+
   procedure DrawCross(AFullColor: TJvFullColor; ACrossColor: TColor);
   var
     Point: TPoint;
@@ -1605,6 +1609,7 @@ procedure TJvFullColorCircle.Paint;
       LineTo(Point.X, Point.Y);
     end;
   end;
+
 begin
   inherited Paint;
   with Canvas do
@@ -3276,7 +3281,7 @@ end;
 procedure TJvFullColorList.Insert(Index: Integer; AColor: TJvFullColor);
 begin
   if (Index > Count) or (Index < 0) then
-    EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
+    EJvFullColorListError.CreateFmt(SListIndexError, [Index]);
 
   if Count = Capacity then
     Grow;
@@ -3343,7 +3348,7 @@ end;
 procedure TJvFullColorList.SetItem(Index: Integer; const Value: TJvFullColor);
 begin
   if (Index >= Count) or (Index < 0) then
-    EJvFullColorListError.CreateFmt(sListIndexError, [Index]);
+    EJvFullColorListError.CreateFmt(SListIndexError, [Index]);
 
   FList^[Index] := Value;
   Change(Index, foChanged);

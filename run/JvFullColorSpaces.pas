@@ -264,7 +264,7 @@ type
     FDelphiColors: TStringList;
     procedure GetColorValuesCallBack(const S: String);
   protected
-    function GetName:string; override;
+    function GetName: string; override;
     function GetShortName: string; override;
     function GetNumberOfColors: Cardinal; override;
     function GetColorName(Index: Integer): string;
@@ -275,12 +275,12 @@ type
     destructor Destroy; override;
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
-    procedure AddCustomColor(AColor:TColor; ShortName:string; PrettyName:string);
-    procedure AddDelphiColor(Value:TColor);
-    property ColorCount:Cardinal read GetNumberOfColors;
-    property ColorName[Index:Integer]:string read GetColorName;
-    property ColorPrettyName[Index:Integer]:string read GetPrettyName;
-    property ColorValue[Index:Integer]:TColor read GetColorValue; default;
+    procedure AddCustomColor(AColor: TColor; ShortName: string; PrettyName: string);
+    procedure AddDelphiColor(Value: TColor);
+    property ColorCount: Cardinal read GetNumberOfColors;
+    property ColorName[Index: Integer]: string read GetColorName;
+    property ColorPrettyName[Index: Integer]: string read GetPrettyName;
+    property ColorValue[Index: Integer]: TColor read GetColorValue; default;
   end;
 
   TJvColorSpaceManager = class(TPersistent)

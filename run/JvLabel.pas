@@ -766,8 +766,10 @@ begin
     begin
       CalcRect := Rect;
       DoDrawText(CalcRect, DrawStyle or DT_CALCRECT);
-      if FLayout = tlBottom then OffsetRect(Rect, 0, Height - CalcRect.Bottom)
-      else OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
+      if FLayout = tlBottom then
+        OffsetRect(Rect, 0, Height - CalcRect.Bottom)
+      else
+        OffsetRect(Rect, 0, (Height - CalcRect.Bottom) div 2);
     end;
     Rect.Left := MarginLeft;
     Rect.Right := Rect.Right - MarginRight;

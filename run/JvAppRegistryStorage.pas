@@ -118,9 +118,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  SysUtils,
+  SysUtils, Dialogs,
   JclRegistry, JclResources, JclStrings, JclFileUtils,
-  JvConsts, JvResources, Dialogs;
+  JvConsts, JvResources;
 
 const
   cCount = 'Count';
@@ -178,12 +178,13 @@ var
         begin
           if not FAppNameErrorHandled then
           begin
-            MessageDlg(Format('The Default Root Value "%s" has been replaced with "%s".'+#13+#10+'Please change the value in the FileVersionInfo Project Properties.', [cAppNameMask, cDefaultAppName]), mtInformation, [mbOK], 0);
-            FAppNameErrorHandled := true;
+            MessageDlg(Format(RsRootValueReplaceFmt, [cAppNameMask, cDefaultAppName]), mtInformation, [mbOK], 0);
+            FAppNameErrorHandled := True;
           end;
           Result := cDefaultAppName;
         end
-      else raise;
+      else
+        raise;
     end;
   end;
 
@@ -203,12 +204,13 @@ var
         begin
           if not FCompanyNameErrorHandled then
           begin
-            MessageDlg(Format('The Default Root Value "%s" has been replaced with "%s".'+#13+#10+'Please change the value in the FileVersionInfo Project Properties.', [cCompanyNameMask, cDefaultCompanyName]), mtInformation, [mbOK], 0);
-            FCompanyNameErrorHandled := true;
+            MessageDlg(Format(RsRootValueReplaceFmt, [cCompanyNameMask, cDefaultCompanyName]), mtInformation, [mbOK], 0);
+            FCompanyNameErrorHandled := True;
           end;
           Result := cDefaultCompanyName;
         end
-      else raise;
+      else
+        raise;
     end;
   end;
 

@@ -130,18 +130,13 @@ var
   JvGlobalDockIsLoading: Boolean = False;
   JvGlobalDockClient: TJvDockClient = nil;
 
-{$IFNDEF USEJVCL}
-  {$UNDEF UNITVERSIONING}
-{$ENDIF ~USEJVCL}
-
 implementation
 
+{$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
 
-{$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
     RCSfile: '$RCSfile$';
@@ -156,6 +151,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

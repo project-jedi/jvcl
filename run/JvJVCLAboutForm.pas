@@ -93,7 +93,7 @@ type
   public
     procedure Execute; override;
   published
-    property StoreSettings: Boolean read FStoreSettings write FStoreSettings default false;
+    property StoreSettings: Boolean read FStoreSettings write FStoreSettings default False;
   end;
 
 implementation
@@ -104,9 +104,7 @@ uses
   {$ENDIF UNITVERSIONING}
   JvJVCLUtils, JvJCLUtils;
 
-
 {$R *.dfm}
-
 
 const
   cOptions = 'Options';

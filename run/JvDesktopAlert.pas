@@ -209,7 +209,7 @@ type
     function Showing: Boolean;
     procedure Close(Immediate: Boolean);
     procedure Execute; override;
-    property Form:TJvFormDesktopAlert read FDesktopForm;
+    property Form: TJvFormDesktopAlert read FDesktopForm;
     property Data: TObject read FData write FData;
     property StyleHandler: TJvCustomDesktopAlertStyleHandler read FStyleHandler write SetStyleHandler;
   published
@@ -217,7 +217,7 @@ type
     property AlertStyle: TJvAlertStyle read FAlertStyle write SetAlertStyle default asFade;
     property AutoFocus: Boolean read FAutoFocus write FAutoFocus default False;
     property AutoFree: Boolean read FAutoFree write FAutoFree default False;
-    property BidiMode:TBidiMode read GetBiDiMode write SetBiDiMode default bdLeftToRight;
+    property BiDiMode: TBidiMode read GetBiDiMode write SetBiDiMode default bdLeftToRight;
     property HeaderText: string read GetHeaderText write SetHeaderText;
     property MessageText: string read GetMessageText write SetMessageText;
 
@@ -961,7 +961,7 @@ begin
     FDesktopForm.OnClose := nil;
     // post a message to the form so we have time to finish off all event handlers and
     // timers before the form and component are freed
-    PostMessage(FDesktopForm.Handle, JVDESKTOPALERT_AUTOFREE, integer(FDesktopForm), integer(Self));
+    PostMessage(FDesktopForm.Handle, JVDESKTOPALERT_AUTOFREE, WPARAM(FDesktopForm), LPARAM(Self));
     FDesktopForm := nil;
   end;
 end;
@@ -1422,7 +1422,8 @@ const
   LWA_ALPHA = $00000002;
 
 type
-  TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
+  TDynamicSetLayeredWindowAttributes =
+    function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
 
 constructor TJvFadeAlertStyleHandler.Create(OwnerForm: TJvFormDesktopAlert);
 begin
@@ -1470,7 +1471,8 @@ begin
     begin
       CurrentStyle := GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE);
       if (CurrentStyle and WS_EX_LAYERED) = 0 then
-        SetWindowLong(OwnerForm.Handle, GWL_EXSTYLE, GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
+        SetWindowLong(OwnerForm.Handle, GWL_EXSTYLE,
+          GetWindowLong(OwnerForm.Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
       DynamicSetLayeredWindowAttributes(OwnerForm.Handle, 0, Value, LWA_ALPHA);
     end;
   end;
@@ -1479,7 +1481,8 @@ end;
 procedure TJvFadeAlertStyleHandler.EndAnimTimer(Sender: TObject);
 begin
   inherited EndAnimTimer(Sender);
-  DoAlphaBlend(MaxAlphaBlendValue - ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div EndSteps);
+  DoAlphaBlend(MaxAlphaBlendValue -
+    ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div EndSteps);
 end;
 
 procedure TJvFadeAlertStyleHandler.FinalizeEndAnimation;
@@ -1516,7 +1519,8 @@ end;
 
 procedure TJvFadeAlertStyleHandler.StartAnimTimer(Sender: TObject);
 begin
-  DoAlphaBlend(MinAlphaBlendValue + ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div StartSteps);
+  DoAlphaBlend(MinAlphaBlendValue +
+    ((Cardinal(MaxAlphaBlendValue) - MinAlphaBlendValue) * CurrentStep) div StartSteps);
   inherited StartAnimTimer(Sender);
 end;
 
@@ -1572,14 +1576,16 @@ end;
 
 procedure TJvCenterGrowAlertStyleHandler.StartAnimTimer(Sender: TObject);
 begin
-  DoGrowRegion(MinGrowthPercentage + ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
+  DoGrowRegion(MinGrowthPercentage +
+    ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / StartSteps);
   inherited StartAnimTimer(Sender);
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.EndAnimTimer(Sender: TObject);
 begin
   inherited EndAnimTimer(Sender);
-  DoGrowRegion(MaxGrowthPercentage - ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / EndSteps);
+  DoGrowRegion(MaxGrowthPercentage -
+    ((MaxGrowthPercentage - MinGrowthPercentage) * CurrentStep) / EndSteps);
 end;
 
 procedure TJvCenterGrowAlertStyleHandler.FinalizeEndAnimation;

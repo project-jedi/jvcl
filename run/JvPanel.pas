@@ -653,7 +653,7 @@ end;
 
 procedure TJvPanel.DrawCaption;
 begin
-  DrawCaptionTo(self.Canvas);
+  DrawCaptionTo(Self.Canvas);
 end;
 
 procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas {$IFDEF VisualCLX}; DrawingMask: Boolean = False {$ENDIF});

@@ -4466,22 +4466,25 @@ begin
         begin
           if not (csDesigning in ComponentState) then
           begin
-            if (fpSize in Options) and (fpLocation in Options)  then
+            if (fpSize in Options) and (fpLocation in Options) then
               ChangePosition(poDesigned)
-            else if (fpSize in Options) then
-            {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
+            else
+            if fpSize in Options then
+            begin
+              {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
               if Position = poDefault then
-                ChangePosition(poDefaultPosOnly)
-              else
-            {.ENDIF}
-            else if (fpLocation in Options) then // obsolete but better to read
-            {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
+                ChangePosition(poDefaultPosOnly);
+              {.ENDIF}
+            end
+            else
+            if fpLocation in Options then // obsolete but better to read
+              {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
               if Position = poDefault then
                 ChangePosition(poDefaultSizeOnly)
               else
-            {.ENDIF}
-                if Position <> poDesigned then
-                  ChangePosition(poDesigned);
+              {.ENDIF}
+              if Position <> poDesigned then
+                ChangePosition(poDesigned);
           end;
           SetWindowPlacement(Handle, @Placement);
         end;
@@ -6737,6 +6740,7 @@ begin
   finally
   end;
 end;
+
 {$ENDIF VCL}
 
 function RectToStr(Rect: TRect): string;
@@ -7231,7 +7235,7 @@ var
     end;
   end;
 
-  procedure NewLine(Always: Boolean= false);
+  procedure NewLine(Always: Boolean = False);
   begin
     if Assigned(Canvas) then
       if Always or (vCount < vStr.Count - 1) then

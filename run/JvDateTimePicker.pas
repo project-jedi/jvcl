@@ -106,15 +106,17 @@ uses
   {$ENDIF COMPILER5}
   JvResources;
 
-procedure SetCalendarStyle(AHandle:THandle; Value: Integer; UseStyle: Boolean);
+procedure SetCalendarStyle(AHandle: THandle; Value: Integer; UseStyle: Boolean);
 var
   Style: Integer;
 begin
   if AHandle <> 0 then
   begin
     Style := GetWindowLong(AHandle, GWL_STYLE);
-    if not UseStyle then Style := Style and not Value
-    else Style := Style or Value;
+    if UseStyle then
+      Style := Style or Value
+    else
+      Style := Style and not Value;
     SetWindowLong(AHandle, GWL_STYLE, Style);
   end;
 end;

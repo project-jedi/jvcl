@@ -55,13 +55,13 @@ type
     FLeft: Integer;
     FWidth: Integer;
     FHeight: Integer;
-    FArrangeConstraints : TSizeConstraints;
-    FArrangeSettings : TJvArrangeSettings;
-    FFieldCreateOptions : TJvCreateDBFieldsOnControlOptions;
+    FArrangeConstraints: TSizeConstraints;
+    FArrangeSettings: TJvArrangeSettings;
+    FFieldCreateOptions: TJvCreateDBFieldsOnControlOptions;
   protected
-    procedure SetArrangeSettings (Value : TJvArrangeSettings);
-    procedure SetArrangeConstraints (Value : TSizeConstraints);
-    procedure SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
+    procedure SetArrangeSettings(Value: TJvArrangeSettings);
+    procedure SetArrangeConstraints(Value: TSizeConstraints);
+    procedure SetFieldCreateOptions(Value: TJvCreateDBFieldsOnControlOptions);
   public
     constructor Create;
     destructor Destroy; override;
@@ -77,9 +77,9 @@ type
     property Left: Integer read FLeft write FLeft default 0;
     property Width: Integer read FWidth write FWidth default 640;
     property Height: Integer read FHeight write FHeight default 480;
-    property ArrangeConstraints : TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
-    property ArrangeSettings : TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
-    property FieldCreateOptions : TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
+    property ArrangeConstraints: TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
+    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
+    property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
   end;
 
   TJvDatabaseActionList = class(TActionList)
@@ -126,7 +126,7 @@ type
   protected
     function GetDataSource(ADataComponent: TComponent): TDataSource; override;
     procedure OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
-      AParentControl: TWinControl; AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions);
+      AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions);
   public
     function Supports(ADataComponent: TComponent): Boolean; override;
     procedure ShowSingleRecordWindow(AOptions: TJvShowSingleRecordWindowOptions;
@@ -135,7 +135,6 @@ type
 
   {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
   TJvDatabaseActionDevExpCxGridEngine = class(TJvDatabaseActionBaseEngine)
-  private
   protected
     function GetDataSource(ADataComponent: TComponent): TDataSource; override;
   public
@@ -358,12 +357,12 @@ type
     destructor Destroy; override;
     procedure RegisterEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
     function GetEngine(AComponent: TComponent): TJvDatabaseActionBaseEngine;
-    function Supports (AComponent: TComponent) : Boolean;
+    function Supports(AComponent: TComponent): Boolean;
   end;
 
 procedure RegisterActionEngine(AEngineClass: TJvDatabaseActionBaseEngineClass);
 
-function RegisteredDatabaseActionEngineList : TJvDatabaseActionEngineList;
+function RegisteredDatabaseActionEngineList: TJvDatabaseActionEngineList;
 
 implementation
 
@@ -426,7 +425,7 @@ begin
     DistanceVertical := 3;
     BorderLeft := 3;
     BorderTop := 3;
-    WrapControls := true;
+    WrapControls := True;
   end;
   FArrangeConstraints := TSizeConstraints.Create(nil);
   FArrangeConstraints.MaxHeight := 480;
@@ -442,17 +441,17 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvShowSingleRecordWindowOptions.SetArrangeSettings (Value : TJvArrangeSettings);
+procedure TJvShowSingleRecordWindowOptions.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   FArrangeSettings.Assign(Value);
 end;
 
-procedure TJvShowSingleRecordWindowOptions.SetArrangeConstraints (Value : TSizeConstraints);
+procedure TJvShowSingleRecordWindowOptions.SetArrangeConstraints(Value: TSizeConstraints);
 begin
   FArrangeConstraints.Assign(Value);
 end;
 
-procedure TJvShowSingleRecordWindowOptions.SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
+procedure TJvShowSingleRecordWindowOptions.SetFieldCreateOptions(Value: TJvCreateDBFieldsOnControlOptions);
 begin
   FFieldCreateOptions.Assign(Value);
 end;
@@ -688,12 +687,12 @@ type
   TAccessCustomControl = class(TCustomControl);
 
 procedure TJvDatabaseActionDBGridEngine.OnCreateDataControls(ADynControlEngineDB: TJvDynControlEngineDB;
-  AParentControl: TWinControl; AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions);
+  AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions);
 var
   I: Integer;
   ds: TDataSource;
   Field: TField;
-  LabelControl : TControl;
+  LabelControl: TControl;
   Control: TWinControl;
   Column: TColumn;
 begin
@@ -717,7 +716,8 @@ begin
             TAccessCustomControl(AParentControl).Canvas.TextWidth(' ') * Field.Size;
           if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
             Control.Width := FieldMaxWidth
-          else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
+          else
+          if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
             Control.Width := FieldMinWidth;
         end;
         LabelControl := ADynControlEngineDB.DynControlEngine.CreateLabelControlPanel(AParentControl, AParentControl,
@@ -755,25 +755,27 @@ begin
   end;
 end;
 
+//=== { TJvDatabaseActionDevExpCxGridEngine } ================================
+
 {$IFDEF USE_3RDPARTY_DEVEXPRESS_CXGRID}
-//=== { TJvDatabaseActionDevExpCxGridEngine } ======================================
 
 function TJvDatabaseActionDevExpCxGridEngine.GetDataSource(ADataComponent: TComponent): TDataSource;
 begin
   if Assigned(ADataComponent) then
-    if (ADataComponent is TcxGrid) then
+    if ADataComponent is TcxGrid then
       if (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) and
-         (TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController) then
-        Result := TcxGridDBDataController(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController).Datasource
-      else
-        Result := nil
-    else if ADataComponent is TcxCustomGridTableView then
-      if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
-        Result := TcxGridDBDataController(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController).Datasource
+        (TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController) then
+        Result := TcxGridDBDataController(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController).DataSource
       else
         Result := nil
     else
-      Result := Inherited GetDataSource(ADataComponent)
+    if ADataComponent is TcxCustomGridTableView then
+      if TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController then
+        Result := TcxGridDBDataController(TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController).DataSource
+      else
+        Result := nil
+    else
+      Result := inherited GetDataSource(ADataComponent)
   else
     Result := nil;
 end;
@@ -783,14 +785,16 @@ begin
   if Assigned(ADataComponent) then
     if ADataComponent is TcxGrid then
       Result := (TcxGrid(ADataComponent).ActiveView is TcxCustomGridTableView) and
-                (TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController)
-    else if ADataComponent is TcxCustomGridTableView then
+        (TcxCustomGridTableView(TcxGrid(ADataComponent).ActiveView).DataController is TcxGridDBDataController)
+    else
+    if ADataComponent is TcxCustomGridTableView then
       Result := TcxCustomGridTableView(ADataComponent).DataController is TcxGridDBDataController
     else
       Result := False
   else
     Result := False;
 end;
+
 {$ENDIF USE_3RDPARTY_DEVEXPRESS_CXGRID}
 
 //=== { TJvDatabaseBaseAction } ==============================================
@@ -1109,7 +1113,7 @@ begin
   begin
     MyBookmark := nil;
     if RefreshLastPosition then
-      MyBookmark := GetBookMark;
+      MyBookmark := GetBookmark;
 
     try
       if RefreshAsOpenClose then
@@ -1122,10 +1126,10 @@ begin
 
       if RefreshLastPosition then
         if Active then
-          if Assigned(MyBookMark) then
-            if BookMarkValid(MyBookMark) then
+          if Assigned(MyBookmark) then
+            if BookmarkValid(MyBookmark) then
               try
-                GotoBookMark(MyBookMark);
+                GotoBookmark(MyBookmark);
               except
               end;
     finally
@@ -1175,7 +1179,7 @@ begin
     Exit;
   ParameterList := TJvParameterList.Create(Self);
   try
-    Parameter := TJvBaseParameter(tJvEditParameter.Create(ParameterList));
+    Parameter := TJvBaseParameter(TJvEditParameter.Create(ParameterList));
     with TJvEditParameter(Parameter) do
     begin
       SearchName := cCurrentPosition;
@@ -1415,7 +1419,7 @@ destructor TJvDatabaseActionEngineList.Destroy;
 var
   I: Integer;
 begin
-  for i := Count-1 Downto 0 do
+  for I := Count - 1 downto 0 do
   begin
     TJvDatabaseActionBaseEngine(Items[I]).Free;
     Delete(I);
@@ -1441,14 +1445,14 @@ begin
     end;
 end;
 
-function TJvDatabaseActionEngineList.Supports (AComponent: TComponent) : Boolean;
+function TJvDatabaseActionEngineList.Supports(AComponent: TComponent): Boolean;
 begin
   Result := Assigned(GetEngine(AComponent));
 end;
 
-//=== { Global } =============================================================
+//=== Global =================================================================
 
-function RegisteredDatabaseActionEngineList : TJvDatabaseActionEngineList;
+function RegisteredDatabaseActionEngineList: TJvDatabaseActionEngineList;
 begin
   Result := IntRegisteredActionEngineList;
 end;
@@ -1466,8 +1470,8 @@ end;
 
 procedure DestroyActionEngineList;
 begin
-  if Assigned(IntRegisteredActionEngineList) then
-    IntRegisteredActionEngineList.Free;
+  IntRegisteredActionEngineList.Free;
+  IntRegisteredActionEngineList := nil;
 end;
 
 {$IFDEF UNITVERSIONING}
@@ -1493,10 +1497,10 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  DestroyActionEngineList;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  DestroyActionEngineList;
 
 end.
 

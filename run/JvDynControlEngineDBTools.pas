@@ -28,18 +28,18 @@ unit JvDynControlEngineDBTools;
 interface
 
 uses
-
   Controls, DB, Forms, Classes,
   JvPanel, JvDynControlEngineTools, JvDynControlEngine, JvDynControlEngineDB;
 
 type
-  TJvCreateDataControlsEvent = procedure(ADynControlEngineDB: TJvDynControlEngineDB; AParentControl: TWinControl; AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions) of
-    object;
+  TJvCreateDataControlsEvent = procedure(ADynControlEngineDB: TJvDynControlEngineDB;
+    AParentControl: TWinControl; AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions) of object;
+
   TJvDynControlDataSourceEditDialog = class(TObject)
   private
     FForm: TCustomForm;
     FDynControlEngineDB: TJvDynControlEngineDB;
-    FDataSource: TDatasource;
+    FDataSource: TDataSource;
     FDataComponent: TComponent;
     FDialogCaption: string;
     FPostButtonCaption: string;
@@ -53,25 +53,25 @@ type
     FWidth: Integer;
     FHeight: Integer;
     FOnCreateDataControlsEvent: TJvCreateDataControlsEvent;
-    FArrangeConstraints : TSizeConstraints;
-    FArrangeSettings : TJvArrangeSettings;
-    FFieldCreateOptions : TJvCreateDBFieldsOnControlOptions;
-    FScrollBox: TScrollbox;
+    FArrangeConstraints: TSizeConstraints;
+    FArrangeSettings: TJvArrangeSettings;
+    FFieldCreateOptions: TJvCreateDBFieldsOnControlOptions;
+    FScrollBox: TScrollBox;
     FNavigatorPanel: TJvPanel;
     FButtonPanel: TWinControl;
   protected
-    function GetDynControlEngineDB : TJvDynControlEngineDB;
-    procedure SetDataComponent(Value : TComponent);
+    function GetDynControlEngineDB: TJvDynControlEngineDB;
+    procedure SetDataComponent(Value: TComponent);
     procedure OnPostButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
     procedure OnCloseButtonClick(Sender: TObject);
     function CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
-    procedure SetArrangeSettings (Value : TJvArrangeSettings);
-    procedure SetArrangeConstraints (Value : TSizeConstraints);
-    procedure SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
-    procedure ArrangePanelChangedWidth (Sender: TObject; ChangedSize : Integer);
-    procedure ArrangePanelChangedHeight (Sender: TObject; ChangedSize : Integer);
-    property Datasource : TDatasource read FDatasource;
+    procedure SetArrangeSettings(Value: TJvArrangeSettings);
+    procedure SetArrangeConstraints(Value: TSizeConstraints);
+    procedure SetFieldCreateOptions(Value: TJvCreateDBFieldsOnControlOptions);
+    procedure ArrangePanelChangedWidth(Sender: TObject; ChangedSize: Integer);
+    procedure ArrangePanelChangedHeight(Sender: TObject; ChangedSize: Integer);
+    property DataSource: TDataSource read FDataSource;
   public
     constructor Create;
     destructor Destroy; override;
@@ -92,17 +92,17 @@ type
     property Height: Integer read FHeight write FHeight default 0;
     property OnCreateDataControlsEvent: TJvCreateDataControlsEvent read FOnCreateDataControlsEvent write
       FOnCreateDataControlsEvent;
-    property ArrangeConstraints : TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
-    property ArrangeSettings : TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
-    property FieldCreateOptions : TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
+    property ArrangeConstraints: TSizeConstraints read FArrangeConstraints write SetArrangeConstraints;
+    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
+    property FieldCreateOptions: TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
   end;
 
-function ShowDatasourceEditDialog(ADataComponent: TComponent;
+function ShowDataSourceEditDialog(ADataComponent: TComponent;
   const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
   AIncludeNavigator: Boolean;
-  AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions = nil;
-  AArrangeConstraints : TSizeConstraints = nil;
-  AArrangeSettings : TJvArrangeSettings = nil;
+  AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
+  AArrangeConstraints: TSizeConstraints = nil;
+  AArrangeSettings: TJvArrangeSettings = nil;
   ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
 
 implementation
@@ -114,13 +114,13 @@ uses
   StdCtrls, SysUtils,
   JvResources;
 
-procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value : TComponent);
+procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value: TComponent);
 begin
   FDataComponent := Value;
-  FDataSource := DynControlengineDB.GetDatasourceFromDataComponent(Value);
+  FDataSource := DynControlengineDB.GeTDataSourceFromDataComponent(Value);
 end;
 
-function TJvDynControlDataSourceEditDialog.GetDynControlEngineDB : TJvDynControlEngineDB;
+function TJvDynControlDataSourceEditDialog.GetDynControlEngineDB: TJvDynControlEngineDB;
 begin
   if Assigned(FDynControlEngineDB) then
     Result := DynControlEngineDB
@@ -165,7 +165,7 @@ begin
   FHeight := 0;
   FPosition := poScreenCenter;
   FDynControlEngineDB := nil;
-  FDatasource := nil;
+  FDataSource := nil;
   FArrangeSettings := TJvArrangeSettings.Create(nil);
   with FArrangeSettings do
   begin
@@ -174,7 +174,7 @@ begin
     DistanceVertical := 3;
     BorderLeft := 3;
     BorderTop := 3;
-    WrapControls := true;
+    WrapControls := True;
   end;
   FArrangeConstraints := TSizeConstraints.Create(nil);
   with FArrangeConstraints do
@@ -193,27 +193,27 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDynControlDataSourceEditDialog.SetArrangeSettings (Value : TJvArrangeSettings);
+procedure TJvDynControlDataSourceEditDialog.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   FArrangeSettings.Assign(Value);
 end;
 
-procedure TJvDynControlDataSourceEditDialog.SetArrangeConstraints (Value : TSizeConstraints);
+procedure TJvDynControlDataSourceEditDialog.SetArrangeConstraints(Value: TSizeConstraints);
 begin
   FArrangeConstraints.Assign(Value);
 end;
 
-procedure TJvDynControlDataSourceEditDialog.SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
+procedure TJvDynControlDataSourceEditDialog.SetFieldCreateOptions(Value: TJvCreateDBFieldsOnControlOptions);
 begin
   FFieldCreateOptions.Assign(Value);
 end;
 
-procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedWidth (Sender: TObject; ChangedSize : Integer);
+procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedWidth(Sender: TObject; ChangedSize: Integer);
 begin
   FForm.ClientWidth := ChangedSize;
 end;
     
-procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedHeight (Sender: TObject; ChangedSize : Integer);
+procedure TJvDynControlDataSourceEditDialog.ArrangePanelChangedHeight(Sender: TObject; ChangedSize: Integer);
 begin
   if Assigned(FNavigatorPanel) then
     FForm.ClientHeight := ChangedSize + FButtonPanel.Height + FNavigatorPanel.Height + 35
@@ -338,12 +338,12 @@ begin
   end;
 end;
 
-function ShowDatasourceEditDialog(ADataComponent: TComponent;
+function ShowDataSourceEditDialog(ADataComponent: TComponent;
   const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
   AIncludeNavigator: Boolean;
-  AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions = nil;
-  AArrangeConstraints : TSizeConstraints = nil;
-  AArrangeSettings : TJvArrangeSettings = nil;
+  AFieldCreateOptions: TJvCreateDBFieldsOnControlOptions = nil;
+  AArrangeConstraints: TSizeConstraints = nil;
+  AArrangeSettings: TJvArrangeSettings = nil;
   ADynControlEngineDB: TJvDynControlEngineDB = nil): TModalResult;
 var
   Dialog: TJvDynControlDataSourceEditDialog;

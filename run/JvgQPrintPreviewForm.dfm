@@ -217,7 +217,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
   end
   object SB: TStatusBar
     Left = 0
-    Top = 428
+    Top = 431
     Width = 495
     Height = 19
     Panels = <
@@ -241,7 +241,7 @@ object JvgfPrintPreview: TJvgfPrintPreview
     Left = 0
     Top = 26
     Width = 495
-    Height = 402
+    Height = 405
     HorzScrollBar.Tracking = True
     VertScrollBar.Tracking = True
     Align = alClient

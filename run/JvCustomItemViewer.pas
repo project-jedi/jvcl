@@ -1779,7 +1779,7 @@ end;
 procedure TJvCustomItemViewer.DoScrollTimer(Sender: TObject);
 var
   DoInvalidate: Boolean;
-  P:TPoint;
+  P: TPoint;
 begin
   FScrollTimer.Enabled := False;
   FScrollTimer.Interval := cScrollIntervall;

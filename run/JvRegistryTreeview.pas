@@ -311,11 +311,11 @@ begin
     FInternalImages := TImageList.CreateSize(16, 16);
   if FInternalImages.Count = 0 then
   begin
-    FInternalImages.GetInstRes(hInstance, rtBitmap, 'REGTV_MYCOMPUTER', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(hInstance, rtBitmap, 'REGTV_CLOSEDFOLDER', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(hInstance, rtBitmap, 'REGTV_OPENFOLDER', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(hInstance, rtBitmap, 'REGTV_TEXTIMAGE', 16, [], clFuchsia);
-    FInternalImages.GetInstRes(hInstance, rtBitmap, 'REGTV_BINIMAGE', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_MYCOMPUTER', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_CLOSEDFOLDER', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_OPENFOLDER', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_TEXTIMAGE', 16, [], clFuchsia);
+    FInternalImages.GetInstRes(HInstance, rtBitmap, 'REGTV_BINIMAGE', 16, [], clFuchsia);
   end;
   Images := FInternalImages;
 end;
@@ -339,8 +339,8 @@ begin
         FReg.GetKeyNames(AStrings);
         for I := 0 to AStrings.Count - 1 do
         begin
-          if AStrings[i] = '' then
-            AStrings[i] := Format('%.04d',[i]);
+          if AStrings[I] = '' then
+            AStrings[I] := Format('%.04d', [I]);
           NewNode := Items.AddChild(ANode, AStrings[I]);
           NewNode.ImageIndex := imClosed;
           NewNode.SelectedIndex := imOpen;
@@ -378,7 +378,7 @@ var
   Buffer: array [0..4095] of Byte;
   S: string;
   DefaultSet: Boolean;
-  AListView:TListViewAccessProtected;
+  AListView: TListViewAccessProtected;
 begin
   Result := False;
   if not Assigned(FListView) then
