@@ -47,6 +47,20 @@ begin
   else if target = 'K3' then Result := 'K3';
 end;
 
+function suffixToTarget(suffix : string) : string;
+var
+  tmpSuffix : string;
+begin
+  tmpSuffix := StrUpper(suffix);
+  if tmpSuffix = 'C6' then Result := 'bcb6'
+  else if tmpSuffix = 'C6P' then Result := 'bcb6'
+  else if tmpSuffix = 'C5' then Result := 'bcb5'
+  else if tmpSuffix = 'D5S' then Result := 'd5'
+  else if tmpSuffix = 'D6P' then Result := 'd6'
+  else if tmpSuffix = 'D7P' then Result := 'd7'
+  else Result := suffix;
+end;
+
 function ShortTarget(target : string) : string;
 begin
   target := StrUpper(target);
@@ -93,6 +107,31 @@ begin
   else if target = 'D7PER' then Result := 'd7'
   else if target = 'K2' then Result := 'k2'
   else if target = 'K3' then Result := 'k3';
+end;
+
+procedure EnsureTargets(targets : TStrings);
+var
+  validTargets : TStringList;
+  i : Integer;
+begin
+  validTargets := TStringList.Create;
+  try
+    // ensure uniqueness in expanded list
+    validTargets.Sorted := True;
+    validTargets.CaseSensitive := False;
+    validTargets.Duplicates := dupIgnore;
+
+    for i := 0 to targets.Count - 1 do
+    begin
+      validTargets.Add(suffixToTarget(targets[i]));
+    end;
+
+    // assign the values back into the caller
+    targets.Clear;
+    targets.Assign(validTargets);
+  finally
+    validTargets.Free;
+  end;
 end;
 
 function ExpandPackageName(Name, target, prefix, format : string) : string;
@@ -367,13 +406,14 @@ var
   bcblibs : string;
   bcblibsList : TStringList;
   containsSomething : Boolean; // true if package will contain something
-
+  repeatSectionUsed : Boolean; // true if at least one repeat section was used
 begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
   bcblibsList := TStringList.Create;
   Result := '';
   containsSomething := False;
+  repeatSectionUsed := False;
 
   try
     // read the xml file
@@ -409,6 +449,7 @@ begin
         if Trim(curLine) = '<%%% START REQUIRES %%%>' then
         begin
           Inc(i);
+          repeatSectionUsed := True;
           repeatLines := '';
           while(Trim(template[i]) <> '<%%% END REQUIRES %%%>') do
           begin
@@ -448,6 +489,7 @@ begin
         else if Trim(curLine) = '<%%% START FILES %%%>' then
         begin
           Inc(i);
+          repeatSectionUsed := True;
           repeatLines := '';
           while(Trim(template[i]) <> '<%%% END FILES %%%>') do
           begin
@@ -488,6 +530,7 @@ begin
         else if Trim(curLine) = '<%%% START FORMS %%%>' then
         begin
           Inc(i);
+          repeatSectionUsed := True;
           repeatLines := '';
           while(Trim(template[i]) <> '<%%% END FORMS %%%>') do
           begin
@@ -566,6 +609,22 @@ begin
         Inc(i);
       end;
 
+      if not repeatSectionUsed then
+      begin
+        // if no repeat section was used, we must check manually
+        // that at least one file or package is to be used by
+        // the given target. This will then force the generation
+        // of the output file (Useful for cfg templates for instance).
+
+        for j := 0 to requiredNode.Items.Count -1 do
+          if IsIncluded(requiredNode.Items[j], target) then
+            containsSomething := True;
+
+        for j := 0 to containsNode.Items.Count -1 do
+          if IsIncluded(containsNode.Items[j], target) then
+            containsSomething := True;
+      end;
+
       if containsSomething then
         outFile.SaveToFile(OutFileName);
     end;
@@ -585,16 +644,19 @@ var
   xmlName : string;
   template : TStringList;
   persoTarget : string;
+  target : string;
 begin
   GCallBack := CallBack;
   path := StrEnsureSuffix('\', path);
   // for all targets
+  EnsureTargets(targets);
   i := 0;
   while i < targets.Count do
   begin
-    SendMsg('Generating packages for ' + targets[i]);
+    target := targets[i];
+    SendMsg('Generating packages for ' + target);
     // find all template files for that target
-    if FindFirst(path+targets[i]+'\template.*', 0, rec) = 0 then
+    if FindFirst(path+target+'\template.*', 0, rec) = 0 then
     begin
       repeat
         template := TStringList.Create;
@@ -603,7 +665,7 @@ begin
           // apply the template for all packages
           for j := 0 to packages.Count-1 do
           begin
-            templateFileName := path+targets[i]+'\'+rec.Name;
+            templateFileName := path+target+'\'+rec.Name;
             template.LoadFromFile(templateFileName);
             xml := TJvSimpleXml.Create(nil);
             try
@@ -612,7 +674,7 @@ begin
               xml.LoadFromFile(xmlName);
               persoTarget := ApplyTemplateAndSave(
                                    path,
-                                   targets[i],
+                                   target,
                                    packages[j],
                                    ExtractFileExt(rec.Name),
                                    prefix,
@@ -657,7 +719,9 @@ begin
           template.Free;
         end;
       until FindNext(rec) <> 0;
-    end;
+    end
+    else
+      SendMsg(#9'No template found for '+target);
     FindClose(rec);
     Inc(i);
   end;

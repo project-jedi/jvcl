@@ -7,7 +7,7 @@ procedure Help;
 
 implementation
 
-uses Classes, SysUtils, GenerateUtils, JclStrings;
+uses Classes, SysUtils, GenerateUtils, JclStrings, JclFileUtils, FileUtils;
 
 procedure Help;
 begin
@@ -85,6 +85,11 @@ begin
     begin
       StrToStrings(targetList, ',', targets, False);
       ExpandTargets(targets);
+
+      if PathIsAbsolute(packagesPath) then
+        packagesPath := packagesPath
+      else
+        packagesPath := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + packagesPath);
 
       packages := TStringList.Create;
       try
