@@ -317,7 +317,7 @@ Description
     the process finishes executing.
 
   TJvCreateProcess enables you to redirect the standard input and output of console processes it
-  creates. Do this by including coRedirect in ConsoleOptions. After a console process is succesfully
+  creates. Do this by including coRedirect in ConsoleOptions. After a console process is successfully
   created, the component will wait for the process to end whether you set WaitForTerminate
   to True or not.
 
@@ -333,7 +333,7 @@ Description
   * Set Priority to specify another priority class for the new process than the default ppNormal.
 
   After setting these properties you can call Run to start the application or process. After
-  succesfully creating the new process, you can call <LINK TJvCreateProcess.CloseApplication,CloseApplication> or Terminate to stop the
+  successfully creating the new process, you can call <LINK TJvCreateProcess.CloseApplication,CloseApplication> or Terminate to stop the
   application.
 
   If WaitForTerminate is set to True, or coRedirect is included in ConsoleOptions, the component
@@ -540,7 +540,7 @@ Summary
   Occurs when a console process created with TJvCreateProcess outputs some data.
 Description
   \Write an OnRawRead event handler to respond when a console process outputs some data. The data isn't
-  pre-processed thus it may contain back space (#8), tab (#9), line feed (#10) or cariage return (#13)
+  pre-processed; thus, it may contain back space (#8), tab (#9), line feed (#10) or cariage return (#13)
   chars.
 
   It may be necessairy to respond to OnRawRead events, when the console process updates the current
@@ -556,7 +556,7 @@ Summary
   Occurs when a console process created with TJvCreateProcess outputs a line feed (#10) char.
 Description
   \Write an OnRead event handler to respond when a console process outputs a new line. The data is
-  pre-processed thus it won't contain back space (#8), tab (#9), line feed (#10) or cariage return (#13)
+  pre-processed; thus, it won't contain back space (#8), tab (#9), line feed (#10) or cariage return (#13)
   chars.
 
   If the console process updates the current line only and doesn't output a line feed char, no OnRead event
@@ -620,7 +620,7 @@ Summary
 Description
   Use StartupInfo to specify the window station, desktop, and appearance of the main window for
   a new process created with TJvCreateProcess.
-  Access StartupInfo at runtime to view and set it's properties dynamically (at design time use the
+  Access StartupInfo at runtime to view and set its properties dynamically (at design time use the
   object inspector to set the properties of StartupInfo).
 See Also
   TJvCPSStartupInfo
@@ -633,16 +633,17 @@ Description
   determines what can be done with the component, such as starting a new process or closing a started
   process.
 
-  Initially the state of the component is psReady; it means that you can call Run to start an
+  Initially the state of the component is psReady: it means that you can call Run to start an
   application, but you can't call <LINK TJvCreateProcess.CloseApplication,CloseApplication> or Terminate to stop a running application.
 
-  Starting an application with Run changes the state to psWaiting, if WaitForTerminate is set to True;
-  \or to psRunning, if WaitForTerminate is False.
+  Starting an application with Run changes the state to psWaiting (if WaitForTerminate is set to True)
+  \or to psRunning (if WaitForTerminate is False).
 
   If the state is psWaiting, it means that the component is waiting for a process to end. If the
   process ends an OnTerminate event is fired, and the state changes to psReady. You can call
   StopWaiting to stop waiting for the process to end, it will change the state from psWaiting to
-  psReady; also you can call <LINK TJvCreateProcess.CloseApplication,CloseApplication> or Terminate to stop the running application, but you can
+  psReady. You can also call <LINK TJvCreateProcess.CloseApplication,CloseApplication> or Terminate to 
+  stop the running application, but you can
   not call Run to start a new application.
 
   If the state is psRunning, it means that the component has started an application. You can call
@@ -702,11 +703,11 @@ Description
   Set WaitForTerminate to False to specify that the component must not wait for the process to
   terminate. After calling Run, property State will be set to psRunning.
 
-  Setting WaitForTerminate to True is usefull if you want to take action when the process ends, or
+  Setting WaitForTerminate to True is useful if you want to take action when the process ends, or
   if you want to prevent the user to call Run if a process started by TJvCreateProcess is still running.
   Otherwise set WaitForTerminate to False.
 
-  Note that you cannot change WaitForTerminate if State is psWaiting.
+  \Note that you cannot change WaitForTerminate if State is psWaiting.
 Note
   If coRedirect is included in ConsoleOptions, the value of WaitForTerminate is ignored. The component
   will then always wait for the process to terminate.
@@ -826,7 +827,7 @@ Summary
   Returns the process ID of the process associated with the TJvProcessEntry object.
 Description
   \Read ProcessID to determine the process ID of the process associated with the TJvProcessEntry object.
-  The returned value is equal to the AProcessID parameter specified when creating th eobject by calling
+  The returned value is equal to the AProcessID parameter specified when creating the object by calling
   Create.
 See Also
   FileName, ProcessName
@@ -836,7 +837,7 @@ Summary
   Returns the name of the process associated with the TJvProcessEntry object.
 Description
   \Read ProcessName to determine the name of the process associated with the TJvProcessEntry object.
-  The returned value is equal to the AProcessName parameter specified when creating th eobject by
+  The returned value is equal to the AProcessName parameter specified when creating the object by
   calling Create.
 See Also
   FileName, ProcessID

@@ -13,7 +13,7 @@ Summary
   Exception class for errors relating to the IJvDataConsumer interface.
 Description
   EJVCLDataConsumer is the exception class used for errors relating to the IJvDataConsumer interface
-  or it's support interfaces.
+  or its support interfaces.
 ----------------------------------------------------------------------------------------------------
 @@EJVCLDataContexts
 Summary
@@ -61,7 +61,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumer.AttributeApplies
 Summary
-  Determines if a attribute applies to the consumer.
+  Determines if an attribute applies to the consumer.
 Description
   AttributeApplies determines if the specified attribute applies to the consumer. The method is
   primarily used by the <LINK IJvDataProvider, data provider>'s
@@ -111,9 +111,9 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerClientNotify.LinkAdded
 Summary
-  Called when the server consumer has added the client to it's list of clients.
+  Called when the server consumer has added the client to its list of clients.
 Description
-  LinkAdded is called when the specified server consumer has added the client to it's list of
+  LinkAdded is called when the specified server consumer has added the client to its list of
   clients. The provided reference to the server consumer should be stored so you can use it later
   to notify the server consumer if a different provider is being selected or to manually remove the
   link (i.e. when the consumer is being disposed).
@@ -124,9 +124,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerClientNotify.LinkRemoved
 Summary
-  Called when the server consumer has removed the client from it's list of clients.
+  Called when the server consumer has removed the client from its list of clients.
 Description
-  LinkRemoved is called when the specified server consumer has removed the client from it's list of
+  LinkRemoved is called when the specified server consumer has removed the client from its list of
   clients. This usually happens when the server consumer selects another provider or is being
   disposed. The provided reference to the server consumer should be removed from whereever it was
   stored during the LinkAdded call.
@@ -147,7 +147,7 @@ Description
 	context for this consumer.
 
 	Providers rarely need to access this interface, since most of the time when a consumer is selected
-	as the current one, it's context is automatically selected as well. With
+	as the current one, its context is automatically selected as well. With
 	<LINK IJvDataConsumerServerNotify, Server>/<LINK IJvDataConsumerClientNotify, Client> consumers,
 	access to the this interface might be useful. The interface is also used by the design time
 	editors.
@@ -245,7 +245,7 @@ Description
 
   Each of the states can be one of "False", "True", "Indetermined" or "Not used". The consumer is
   responsible of setting the appropiate rendering options based on these settings but is not
-  required to handle them. In addition a consumer may override the setting of the item at it's
+  required to handle them. In addition a consumer may override the setting of the item at its
   discretion.
 See Also
 	IJvDataConsumer, IJvDataItem, IJvDataItemStates
@@ -327,7 +327,7 @@ Description
   (supporting the IJvDataConsumerClientNotify interface) to be linked and notified if the current
   item of this consumer changed.
 
-  The implementer of this interface is notified when a client consumer changed it's provider. You
+  The implementer of this interface is notified when a client consumer changed its provider. You
   are responsible for checking if the client consumer is still valid and optionally break the link
   to the client if this is no longer the case. In addition you must keep a record of linked clients
   and notify them when the selected item changed or the client is removed (either because the client
@@ -433,10 +433,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ChildIndexOfID
 Summary
-  Locates an item by ID and return it's index within it's parents list in the view list.
+  Locates an item by ID and return its index within its parents list in the view list.
 Description
-  ChildIndexOfID will locate an item given it's ID. The value returned is the 0-based index of the
-  item in it's parents list according to the view list.
+  ChildIndexOfID will locate an item given its ID. The value returned is the 0-based index of the
+  item in its parents list according to the view list.
 
   If the item is not found the method will return -1.
 Parameters
@@ -446,10 +446,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.ChildIndexOfItem
 Summary
-  Locates an item and return it's index within it's parents list in the view list.
+  Locates an item and return its index within its parents list in the view list.
 Description
   ChildIndexOfItem will locate the given item in the view list. The value returned is the 0-based
-  index of the item in it's parent list according to the view list.
+  index of the item in its parents list according to the view list.
 
   If the item is not found the method will return -1.
 Parameters
@@ -476,7 +476,7 @@ Description
   new item visible.
 
   Set ExpandOnNewItem to False if adding items should not neccessarily make them visible when one
-  of it's parents is still collapsed.
+  of its parents is still collapsed.
 See Also
   ToggleItem, ExpandTreeTo
 ----------------------------------------------------------------------------------------------------
@@ -520,9 +520,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.IndexOfID
 Summary
-  Locates an item by ID and return it's index in the view list.
+  Locates an item by ID and return its index in the view list.
 Description
-  IndexOfID will locate an item given it's ID. The value returned is the 0-based index of the item
+  IndexOfID will locate an item given its ID. The value returned is the 0-based index of the item
   in the view list.
 
   If the item is not found the method will return -1.
@@ -533,7 +533,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataConsumerViewList.IndexOfItem
 Summary
-  Locates an item and return it's index in the view list.
+  Locates an item and return its index in the view list.
 Description
   IndexOfItem will locate the given item in the view list. The value returned is the 0-based index
   of the item in the view list.
@@ -783,9 +783,9 @@ See Also
 Summary
   Toggles the expanded state of an item.
 Description
-  ToggleItem expands or collapses the specified item, depending on it's current state.
+  ToggleItem expands or collapses the specified item, depending on its current state.
 
-  If the specified item is expanded it's sub items will be hidden, collapsing the item.
+  If the specified item is expanded its sub items will be hidden, collapsing the item.
 
   If the specified item is collapsed and has sub items, the sub items will be added, expanding the
   item. Note that upon expanding, the AutoExpandLevel property is taken into account.
@@ -889,7 +889,7 @@ Description
 
   The IJvDataContexts interface provides methods that:
   * Allow retrieval of the number of contexts
-  * All retrieval of an context based on it's index, it's name or name path.
+  * All retrieval of a context based on its index, its name or name path.
   * Determine the ancestor context that owns this list.
   * Determine the provider to which the context list belongs.
   * Retrieve a reference to the TObject instance that implements this object.
@@ -907,7 +907,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataContexts.GetContext
 Summary
-  Retrieve the context specified by it's index.
+  Retrieve the context specified by its index.
 Description
   GetContext retrieves the context specified by the given index. Depending on the implementation,
   the method either returns nil or raises an exception if an invalid index is given.
@@ -1003,7 +1003,7 @@ Description
   * Add a specific context to the list.
   * Create and add a new context to the list.
   * Empty the list of contexts.
-  * Delete a context given it's index or given the context instance.
+  * Delete a context given its index or given the context instance.
 
   This interface is needed if the design time provider context manager should be able to add/delete
   contexts to/from the list.
@@ -1056,10 +1056,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataIDSearch
 Summary
-  Find an item using it's ID.
+  Find an item using its ID.
 Description
   IJvDataIDSearch is a <LINK IJvDataItems, data item list> support interface to locate an item using
-  it's unique ID.
+  its unique ID.
 
   The interface provides in a single Find method to locate an item in the data tree by comparing the
   requested ID value with each item in the list, optionally scanning sub trees.
@@ -1167,7 +1167,7 @@ Summary
   Determines if the item is an ancestor of another item.
 Description
   IsParentOf determines if the item is an ancestor of the specified item. If the item specified by
-  AnItem has this item as it's parent the function will return True.
+  AnItem has this item as its parent the function will return True.
 
   If this is not the case but DirectParent is set to False, the entire parent chain is scanned. If
   during this iterating process this item is indeed found, the function will return True.
@@ -1283,7 +1283,7 @@ Description
   IJvDataItemImage is a supporting interface for IJvDataItem that adds image support to an item. For
   this interface to be useful, some things have to be taken care of:
   * The IJvDataItems owner of the item (or any of the IJvDataItems owners in the parent chain) must
-    support the IJvDataItemsImages interface and atleast have a valid image list assigned to it's
+    support the IJvDataItemsImages interface and atleast have a valid image list assigned to its
     <LINK IJvDataItemsImages.Images, Images> property.
   * The rendering code must be able to handle images. Rendering may be handled at the item itself
     (IJvDataItemRenderer supported by this item), by the item list owner of this item of any item in
@@ -1416,7 +1416,7 @@ Description
   * Check if the item supports the IJvDataItemRenderer interface. If it does use it to perform the
     rendering/measuring.
   * Check for the closest IJvDataItemsRenderer interface (the direct owning IJvDataItems list or
-    any of the lists in it's parent chain). If it finds one use it to perform the
+    any of the lists in its parent chain). If it finds one use it to perform the
     rendering/measuring.
   * Handle the rendering at the consumer side. This means all items are considered equal and usually
     only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages)
@@ -1467,7 +1467,7 @@ Description
 
   The IJvDataItems interface provides methods that:
   * Allow retrieval of the number of items
-  * All retrieval of an item based on it's index, it's ID (or ID-path) or an index path.
+  * All retrieval of an item based on its index, its ID (or ID-path) or an index path.
   * Determine the parent item that owns this list.
   * Determine the provider to which the item belongs.
   * Retrieve a reference to the TObject instance that implements this object.
@@ -1481,10 +1481,10 @@ Summary
   Called when a context is about to be destroyed.
 Description
   ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
-  notify all items a specific context (and all of it's child contexts) will be no longer available
+  notify all items a specific context (and all of its child contexts) will be no longer available
   so context specific data for these items can be destroyed.
 
-  The implementation of this method should simply iterate over it's item list and call each
+  The implementation of this method should simply iterate over its item list and call each
   IJvDataItem instance's <LINK IJvDataItem.ContextDestroying, ContextDestroying> method.
 Parameters
   Context - Context about to be destroyed,
@@ -1518,7 +1518,7 @@ Description
 Summary
   Retrieve an item from the list.
 Description
-  GetItem retrieves a Data Item from the list given it's index. The first item in the list has an
+  GetItem retrieves a Data Item from the list given its index. The first item in the list has an
   Index value of 0.
 Parameters
   Index - 0-based index of the item to retrieve. The possible values range from 0 .. Count-1.
@@ -1527,9 +1527,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetItemByID
 Summary
-  Retrieve an item from the list given it's ID (or ID path).
+  Retrieve an item from the list given its ID (or ID path).
 Description
-  GetItemByID retrieves a Data Item from the list given it's ID or ID-path. Each item will be
+  GetItemByID retrieves a Data Item from the list given its ID or ID-path. Each item will be
   initiated with an ID value which should be unique throughout the tree - although this is not
   enforced - and this method allows to retrieve an item given that ID.
 
@@ -1548,14 +1548,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItems.GetItemByIndexPath
 Summary
-  Retrieve an item from the list given it's index path.
+  Retrieve an item from the list given its index path.
 Description
-  GetItemByIndexPath retrieves a Data Item from the list given it's index path. If the specified
+  GetItemByIndexPath retrieves a Data Item from the list given its index path. If the specified
   item could not be found the method returns nil.
 
   Each integer in the array is considered to be an index into a list of items. The first integer
   refers to the IJvDataItems instance on which this method is called. If more index values follow,
-  the item is queried for a IJvDataItems interface. If one is not found the end result will be nil,
+  the item is queried for an IJvDataItems interface. If one is not found the end result will be nil,
   otherwise the next index is applied to the new found item list.
 
   This process will be repeated until the entire path has been completed, or a specified index
@@ -1680,7 +1680,7 @@ Description
   IJvDataItemsImages is an optional supporting interface for IJvDataItems that allows to specify
   which image list is to be used for an item.
 
-  The support interface is used whenever an Data Item supports IJvDataItemImage. Depending on the
+  The support interface is used whenever a Data Item supports IJvDataItemImage. Depending on the
   implementation of the rendering code, the IJvDataItemsImages must be supported in the direct list
   owner of an item or can be supported anywhere up the item tree.
 
@@ -1806,7 +1806,7 @@ Description
   * Add a specific item to the list.
   * Create and add a new item to the list.
   * Empty the list of items.
-  * Delete an item given it's index or given the item instance.
+  * Delete an item given its index or given the item instance.
 
   This interface is needed if the provider tree designer should be able to add/delete items to/from
   the list.
@@ -1839,7 +1839,7 @@ Description
 
   If the item list is a static list (i.e. IJvDataItems.IsDynamic returns False) there is a chance
   the item being deleted is still referenced outside the provider. Using that reference might then
-  lead to Acces Violations.
+  lead to Access Violations.
 
   If the item list is a dynamic list (i.e. IJvDataItems.IsDynamic returns True) the deletion will
   normally be performed (i.e. the reference is removed from the list) but the item might still be
@@ -1862,7 +1862,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsManagement.Remove
 Summary
-  Delete an item given it's reference.
+  Delete an item given its reference.
 Description
   Remove deletes the item specified by the Item parameter. Upon entry the parameter will be nilled
   (to dereference the item). This will avoid Access Violations when the caller's reference to the
@@ -1870,7 +1870,7 @@ Description
 
   If the item list is a static list (i.e. IJvDataItems.IsDynamic returns False) there is still a
   chance the item being deleted is still referenced outside the provider. Using that reference might
-  then lead to Acces Violations.
+  then lead to Access Violations.
 
   If the item list is a dynamic list (i.e. IJvDataItems.IsDynamic returns True) the deletion will
   normally be performed (i.e. the reference is removed from the list) but the item might still be
@@ -1884,15 +1884,15 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer
 Summary
-  Support interface for IJvDataItems that handles rendering and measuring of it's items and their
+  Support interface for IJvDataItems that handles rendering and measuring of its items and their
   sub items.
 Description
   IJvDataItemsRenderer is an optional supporting interface for IJvDataItems that can handle the
   rendering and measuring of the items in the list.
 
   The interface provides methods to:
-  * Draw an item given it's index.
-  * Measure an item given it's index.
+  * Draw an item given its index.
+  * Measure an item given its index.
   * Draw the specified IJvDataItem instance.
   * Measure the specified IJvDataItem instance.
   * Determine the average item size.
@@ -1905,7 +1905,7 @@ Description
   * Check if the item supports the IJvDataItemRenderer interface. If it does use it to perform the
     rendering/measuring.
   * Check for the closest IJvDataItemsRenderer interface (the direct owning IJvDataItems list or
-    any of the lists in it's parent chain). If it finds one use it to perform the
+    any of the lists in its parent chain). If it finds one use it to perform the
     rendering/measuring.
   * Handle the rendering at the consumer side. This means all items are considered equal and usually
     only IJvDataItemText and optionally IJvDataItemImage (and the corresponding IJvDataItemsImages)
@@ -1956,7 +1956,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer.DrawItemByIndex
 Summary
-  Draw an item given it's index.
+  Draw an item given its index.
 Description
   DrawItemByIndex draws the item specified by the Index parameter. Depending on the implementation
   the method might first check if the item to draw supports the IJvDataItemRenderer interface; if it
@@ -1994,7 +1994,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataItemsRenderer.MeasureItemByIndex
 Summary
-  Measure an item given it's index.
+  Measure an item given its index.
 Description
   MeasureItemByIndex measures the item specified by the Index parameter. Depending on the
   implementation the method might first check if the item to measure supports the
@@ -2022,7 +2022,7 @@ Description
 
   Each of the states can be one of "False", "True", "Indetermined" or "Not used". The consumer is
   responsible of setting the appropiate rendering options based on these settings but is not
-  required to handle them. In addition a consumer may override the setting of the item at it's
+  required to handle them. In addition a consumer may override the setting of the item at its
   discretion.
 See Also
   IJvDataItem, IJvDataConsumerItemState
@@ -2136,7 +2136,7 @@ Description
   IJvDataItemText is a supporting interface for IJvDataItem that adds the capability of linking a
   caption for an item.
 
-	Almost every provider support the IJvDataItemText interface for it's items. Besides access to the
+	Almost every provider support the IJvDataItemText interface for its items. Besides access to the
 	caption, the interface also keeps track of the editability of the caption from the user interface.
 See Also
   IJvDataItem
@@ -2203,18 +2203,18 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.AllowContextManager
 Summary
-  Specifies if the provider allows it's contexts to be managed at design time.
+  Specifies if the provider allows its contexts to be managed at design time.
 Description
-  AllowContextManager signals if the provider allows it's context tree to be designed at design
+  AllowContextManager signals if the provider allows its context tree to be designed at design
   time. It's used by the component editor to enable/disable the 'Context manager...' menu item.
 See Also
   AllowProviderDesigner
 ----------------------------------------------------------------------------------------------------
 @@IJvDataProvider.AllowProviderDesigner
 Summary
-  Specifies if the provider allows it's tree to be designed at design time.
+  Specifies if the provider allows its tree to be designed at design time.
 Description
-  AllowProviderDesigner signals if the provider allows it's tree to be designed at design time. It's
+  AllowProviderDesigner signals if the provider allows its tree to be designed at design time. It's
   used by the component editor to enable/disable the 'Tree designer...' menu item.
 See Also
   AllowContextManager
@@ -2272,10 +2272,10 @@ Summary
   Called when a context is about to be destroyed.
 Description
   ContextDestroying is called whenever a context is about to be destroyed. It's generally used to
-  notify all items a specific context (and all of it's child contexts) will be no longer available
+  notify all items a specific context (and all of its child contexts) will be no longer available
   so context specific data for these items can be destroyed. Usually this will be done by
   redirecting the call to the root items list (GetItems). In addition ContextDestroying will clean
-  up the selected context stack and nilling any reference to the context and/or any of it's child
+  up the selected context stack and nilling any reference to the context and/or any of its child
   contexts (they are not removed from the stack as a ReleaseContext may follow later).
 Parameters
   Context - Context about to be destroyed.
@@ -2313,7 +2313,7 @@ See Also
 Summary
 	Retrieves a reference to a registered notifier.
 Description
-	GetNotifier retrieves a reference to the notifier indicated by it's index.
+	GetNotifier retrieves a reference to the notifier indicated by its index.
 Parameters
 	Index - Zero-based index of the notifier to retrieve. Allowable values range from 0 to
 					 GetNotifierCount-1 inclusive.
@@ -2332,9 +2332,9 @@ See Also
 Summary
   Register a change notification callback interface.
 Description
-  RegisterChangeNotify is used to register a IJvDataProviderNotify interface. The methods of this
+  RegisterChangeNotify is used to register an IJvDataProviderNotify interface. The methods of this
   interface are called in response to changes at the provider. Usually the IJvDataProviderNotify
-  interface is handled by the consumer to update it's control as needed.
+  interface is handled by the consumer to update its control as needed.
 Parameters
   ANotify - Notification interface to register. If the specified reference is already registered,
             nothing will happen.
@@ -2405,7 +2405,7 @@ See Also
 Summary
   Unregister a change notification callback interface.
 Description
-  UnregisterChangeNotify is used to unregister a IJvDataProviderNotify interface.
+  UnregisterChangeNotify is used to unregister an IJvDataProviderNotify interface.
 Parameters
   ANotify - Notification interface to unregister. If the specified reference is not registered,
             nothing will happen.
@@ -2474,10 +2474,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@IJvDataTextSearch
 Summary
-  Find an item using it's associated caption.
+  Find an item using its associated caption.
 Description
   IJvDataTextSearch is a <LINK IJvDataItems, data item list> support interface to locate an item
-  using it's associated caption (from an item's IJvDataItemText support interface).
+  using its associated caption (from an item's IJvDataItemText support interface).
 
   The interface provides in a single Find method to locate an item in the data tree by comparing the
   requested text value with each item in the list, optionally scanning sub trees.

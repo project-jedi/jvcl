@@ -127,7 +127,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer
 Summary
-  Base class for visual components that can display it's content in a grid like fashion.
+  Base class for visual components that can display its content in a grid like fashion.
 Description
   Use TJvCustomItemViewer as a base class when defining components that represent information in
   a grid like format. TJvCustomItemViewer introduces properties and methods to control the
@@ -263,7 +263,7 @@ Summary
 Description
   You don't have to call DoReduceMemory since TJvCustomItemViewer calls this method as needed.
   DoReduceMemory calls each item's ReduceMemoryUsage procedure if Options.ReduceMemoryUsage is true.
-  The base item class does nothing in it's ReduceMemoryUsage procedure but descendant classes might
+  The base item class does nothing in its ReduceMemoryUsage procedure but descendant classes might
   implement this differently.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.DrawItem
@@ -272,7 +272,7 @@ Summary
 Description
   DrawItem is called for each item when it needs to be redrawn. Override this method
   in a descendant class to change the way items are drawn. Depending on the value of Options.LazyRead, DrawItem
-  is called differently. If LazyRead is true, DrawItem is called fo each visible item. If LazyRead is false,
+  is called differently. If LazyRead is true, DrawItem is called for each visible item. If LazyRead is false,
   DrawItem is called for all items.
 Parameters
   Index    - The index of the item in the Items array.
@@ -331,11 +331,11 @@ Summary
 Description
   Call GetItemState to return the current state of an item in the Items array. Calling GetItemState is safer
   than accessing the State property of an item in the Items array directly since GetItemState first checks that
-  Index is valid. If Index is out fo bounds, this methd returns an emtpy set.
+  Index is valid. If Index is out of bounds, this method returns an emtpy set.
 Parameters
   Index - The index of the item in the Items array to return the state for.
 Return value
-  The state of the specified item or an empty set if Index is out of bounds..
+  The state of the specified item or an empty set if Index is out of bounds.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomItemViewer.GetOptionsClass
 Summary
@@ -903,7 +903,7 @@ Description
 Summary
   Deletes the item.
 Description
-  Call Delete to delete the item from the list and free it's memory.
+  Call Delete to delete the item from the list and free its memory.
 See Also
   Deleting
 ----------------------------------------------------------------------------------------------------

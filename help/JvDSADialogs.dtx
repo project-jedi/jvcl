@@ -60,8 +60,8 @@ Description
   DSAMessageDlg is a replacement for Delphi's \MessageDlg function and an extension to MessageDlg
   that allow the user to optionally disable the dialog in the future.
 
-  In it's simplest form, it does exactly the same as the \MessageDlg function in Delphi's Dialogs
-  unit, but has an dialog ID parameter and three optional parameters that allow you to choose
+  In its simplest form, it does exactly the same as the \MessageDlg function in Delphi's Dialogs
+  unit, but has a dialog ID parameter and three optional parameters that allow you to choose
   different default, cancel and/or help buttons.
 
   The second form allows you to provide a different caption of the dialog, but otherwise does the
@@ -160,7 +160,7 @@ Summary
   Retrieves a reference to the default registry storage.
 Description
   DSARegStore retrieves a reference to internally create registry storage. The storage is
-  initialized to use <B>HKCU\\Software\\<I>Application.Title</I>\\DSA</B> as it's storage.
+  initialized to use <B>HKCU\\Software\\<I>Application.Title</I>\\DSA</B> as its storage.
 See Also
   TDSARegStorage
 ----------------------------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ JVCLInfo
 Summary
   Locates and returns the DSA registration info for a given dialog.
 Description
-  LocateDSAReg will search the DSA registration database for the given dialog and return it's
+  LocateDSAReg will search the DSA registration database for the given dialog and return its
   registration info record. If the specified dialog is not registered, EmptyItem will be returned.
 Parameters
   DlgID - Description for this parameter
@@ -296,7 +296,7 @@ Description
   \MessageDlg is a replacement for the MessageDlg function in Delphi's Dialog unit. It gives you more
   control over the appearance of the dialog.
 
-  In it's simplest form, it does exactly the same as the MessageDlg function in Delphi's Dialogs
+  In its simplest form, it does exactly the same as the MessageDlg function in Delphi's Dialogs
   unit, but has three optional parameters that allow you to choose different default, cancel and/or
   help buttons.
 
@@ -351,7 +351,7 @@ Description
   MessageDlg that gives you more control over the appearance of the dialog.
 
   MessageDlgEx allows to specify custom button captions and result codes for the dialog. Just as 
-  JvDSADialog's MessageDlg, MessageDlgEx has three forms that allow you to customize it's
+  JvDSADialog's MessageDlg, MessageDlgEx has three forms that allow you to customize its
   appearance.
 Parameters
   Msg -           Contains the message to display.
@@ -590,7 +590,7 @@ Summary
   Abstract storage device for DSA state and values.
 Description
   TDSAStorage is the abstract base class used for storing DSA states and dialog values in. Do not
-  create an instance of this class directly but rather use one of it's descendants.
+  create an instance of this class directly but rather use one of its descendants.
 
   When deriving a new class from TDSAStorage, always override all methods.
 ----------------------------------------------------------------------------------------------------
@@ -916,7 +916,7 @@ JVCLInfo
 Summary
   Converts a form into a "Don't Show Again" dialog.
 Description
-  The TJvDSADialog component converts the form it's placed on into a DSA ("Don't Show Again")
+  The TJvDSADialog component converts the form its placed on into a DSA ("Don't Show Again")
   dialog. The component is basically a link between a VCL form and the included DSA backend.
 
   Converting a dialog into a DSA dialog involves the following tasks:
@@ -932,7 +932,7 @@ Description
     suppressed.
 
   TJvDSADialog will hook the ShowModal virtual method of the form it is on. This allows the
-  component to check the DSA state and either call the original ShowModal method or just return it's
+  component to check the DSA state and either call the original ShowModal method or just return its
   result. Note that because the ShowModal method of the form the component is on is being hooked, it
   doesn't matter if a custom form is used that happens to override the ShowModal method. This
   overriden method will be called if the dialog is to be displayed.
@@ -1189,7 +1189,7 @@ Description
   the procedure does nothing.
 
   Removing the DSA dialog does not remove it from the storage device, but the specified ID can not
-  be used to invoke an DSA dialog and will result in an exception.
+  be used to invoke a DSA dialog and will result in an exception.
 Parameters
   DlgID - ID of the dialog in the DSA system.
 See Also

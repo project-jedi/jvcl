@@ -731,7 +731,7 @@ Description
   Field Types:
 
    $ = string (ftString) - also used if no character is given. May be followed by the length,
-        a length of 80 is assumed if "$" is used without a specific length (ie ABC:$100 is a field named
+        a length of 80 is assumed if "$" is used without a specific length (For example, ABC:$100 is a field named
        ABC, type string, string length 100).
 
    % = whole integer value (ftInteger)
@@ -911,7 +911,7 @@ Description
   Does the same thing as GetCsvHeader. The only difference is that GetColumnsAsString uses the order of the
   columns as we are using them in memory, and GetCsvHeader gets the columns in the order that they appear in the file.
 Return value
-  Returns a string with all the columns names in a comma separated list. (ie 'ABC,DEF,GHI,JKL,...')
+  \Returns a string with all the columns names in a comma separated list. (For example, 'ABC,DEF,GHI,JKL,...')
 See Also
   TJvCustomCsvDataSet.GetCsvHeader
 ----------------------------------------------------------------------------------------------------
@@ -922,7 +922,7 @@ Description
   Does the same thing as GetColumnsAsString. The only difference is that GetColumnsAsString uses the order of the
   columns as we are using them in memory, and GetCsvHeader gets the columns in the order that they appear in the file.
 Return value
-  Returns a string with all the columns names in a comma separated list. (ie 'ABC,DEF,GHI,JKL,...')
+  Returns a string with all the columns names in a comma separated list. (For example, 'ABC,DEF,GHI,JKL,...')
 See Also
   TJvCustomCsvDataSet.GetColumnsAsString
 ----------------------------------------------------------------------------------------------------
