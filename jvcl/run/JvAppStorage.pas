@@ -93,6 +93,7 @@ type
   TJvCustomAppStorageOptions = class;
   TJvAppSubStorages = class;
   TJvAppSubStorage = class;
+  TJvAppStorageFileName = class;
 
   EJVCLAppStorageError = class(EJVCLException);
 
@@ -112,6 +113,12 @@ type
     aeoReportRelative,    // report all found folders and values relative to the requested path (otherwise relative to the Root path)
     aeoRecursive);        // scan sub folders as well
   TJvAppStorageEnumOptions = set of TJvAppStorageEnumOption;
+
+  TFileLocation = (
+    flCustom,       // FileName property will contain full path
+    flWindows,      // Store in %WINDOWS%; only use file name part of FileName property.
+    flExeFile,      // Store in same folder as application's exe file; only use file name part of FileName property.
+    flUserFolder);  // Store in %USER%\Application Data. Use the FileName property if it's a relative path or only the file name part of FileName property.
 
   TJvCustomAppStorage = class(TJvComponent)
   private
@@ -555,6 +562,24 @@ type
     property AppStorage: TJvCustomAppStorage read FAppStorage write SeTJvAppStorage;
   end;
 
+  TJvAppStorageFileName = class(TPersistent)
+  private
+    FLocation: TFileLocation;
+    FFileName: TFileName;
+    FOnChange: TNotifyEvent;
+  public
+    procedure SetLocation(Value: TFileLocation);
+    procedure SetFileName(Value: TFileName);
+    procedure DoChange;
+    function GetFileName: TFileName;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    constructor Create(ADefaultExtension: string);
+
+    property Location: TFileLocation read FLocation write SetLocation default flExeFile;
+    property FileName: TFileName read FFileName write SetFileName;
+  end;
+
 // (marcelb) moved back; the constants are useful to the outside world after a call to GetStoredValues
 // (rom) give it better names and delete these comments :-)
 const
@@ -564,7 +589,8 @@ const
 implementation
 
 uses
-  JclStrings, JclRTTI,
+  Forms,
+  JclFileUtils, JclStrings, JclSysInfo, JclRTTI,
   JvPropertyStore, JvConsts, JvResources;
 
 const
@@ -2062,6 +2088,66 @@ begin
     if AppStorage <> nil then
       AppStorage.FreeNotification(OwnerStore);
   end;
+end;
+
+// === TJvAppStorageFileName ===================================================
+
+procedure TJvAppStorageFileName.SetLocation(Value: TFileLocation);
+begin
+  if Location <> Value then
+  begin
+    FLocation := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvAppStorageFileName.SetFileName(Value: TFileName);
+begin
+  if FileName <> Value then
+  begin
+    FFileName := Value;
+    DoChange;
+  end;
+end;
+
+procedure TJvAppStorageFileName.DoChange;
+begin
+  if Assigned(FOnChange) then
+    OnChange(Self);
+end;
+
+function TJvAppStorageFileName.GetFileName: TFileName;
+var
+  NameOnly: string;
+  RelPathName: string;
+begin
+  if FileName = '' then
+    Result := ''
+  else
+  begin
+    NameOnly := ExtractFileName(FileName);
+    if PathIsAbsolute(FileName) then
+      RelPathName := NameOnly
+    else
+      RelPathName := FileName;
+    case Location of
+      flCustom:
+        Result := FileName;
+      flWindows:
+        Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
+      flExeFile:
+        Result := ExtractFilePath(Application.ExeName) + NameOnly;
+      flUserFolder:
+        Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
+    end;
+  end;
+end;
+
+constructor TJvAppStorageFileName.Create(ADefaultExtension: string);
+begin
+  inherited Create;
+  FLocation := flExeFile;
+  FFileName := ChangeFileExt(ExtractFileName(Application.ExeName), '.' + ADefaultExtension);
 end;
 
 end.
