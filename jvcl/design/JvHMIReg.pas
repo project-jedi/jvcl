@@ -54,8 +54,8 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteHMIIndicator, [TJvSegmentedLEDDisplay, TJvLED]);
-  RegisterComponents(RsPaletteHMIControls, [TJvDialButton]);
+  RegisterComponents(RsPaletteHMIComponents, [TJvSegmentedLEDDisplay, TJvLED,
+    TJvDialButton]);
   RegisterPropertyEditor(TypeInfo(TJvSegmentedLEDDigitClassName), TPersistent, '', TJvSegmentedLEDDigitClassProperty);
   RegisterPropertyEditor(TypeInfo(TUnlitColor), TPersistent, '', TUnlitColorProperty);
   RegisterComponentEditor(TJvCustomSegmentedLEDDisplay, TJvSegmentedLEDDisplayEditor);

@@ -77,9 +77,7 @@ resourcestring
   RsPaletteEncryptCompress = 'Jv Encrypt and Compress';
   RsPaletteDBVisual = 'Jv Data Controls';
   RsPaletteDBNonVisual = 'Jv Data Access';
-  RsPaletteHMIIndicator = 'Jv HMI Indicators';
-  RsPaletteHMINonVisual = 'Jv HMI Non-Visual';
-  RsPaletteHMIControls = 'Jv HMI Controls';
+  RsPaletteHMIComponents = 'Jv HMI Components';
   RsPaletteBDE = 'Jv BDE Components';
   RsPalettePrintPreview = 'Jv Print Preview';
   RsPaletteInterpreter = 'Jv Interpreter';
