@@ -67,7 +67,8 @@ type
   private
     FCaptionTextAlignment: TAlignment;
     FCaptionFont: TFont;
-    FBitmap, bmp: TBitmap;
+    FBitmap: TBitmap;
+    FBmp: TBitmap;
     FImage: TImage;
     FCaptions: TStringList;
     FHottrackThrought: Boolean;
@@ -109,9 +110,9 @@ type
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState:
       TGridDrawState); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-    procedure CMChildKey(var Message: TMessage); message CM_CHILDKEY;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMChildKey(var Msg: TMessage); message CM_CHILDKEY;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -213,7 +214,7 @@ procedure TJvgStringGrid.Loaded;
 begin
   inherited Loaded;
   if Assigned(FBitmap) and (not FBitmap.Empty) then
-    Bmp := FBitmap;
+    FBmp := FBitmap;
   VertCaptions := fsgVertCaptions in FExtOptions;
 end;
 
@@ -226,7 +227,7 @@ const
 var
   R: TRect;
   doHottracking, isFixedCell: Boolean;
-  x, x_, y, y_, IHeight, IWidth, l, t, I, Interspace: Integer;
+  X, X1, Y, Y1, IHeight, IWidth, l, t, I, Interspace: Integer;
   Style: TglGridCellStyle;
   CellTextAlignment: TAlignment;
 begin
@@ -244,30 +245,30 @@ begin
   R := ARect;
 
   if isFixedCell then
-    if IsItAFilledBitmap(bmp) then
+    if IsItAFilledBitmap(FBmp) then
     begin
-      x := r.Left;
-      y := r.top;
-      IHeight := r.bottom - r.top;
-      IWidth := r.Right - r.Left - 4;
-      x_ := x;
-      y_ := y;
+      X := R.Left;
+      Y := R.Top;
+      IHeight := R.Bottom - R.Top;
+      IWidth := R.Right - R.Left - 4;
+      X1 := X;
+      Y1 := Y;
       l := 0;
-      t := DefaultRowHeight * ARow mod bmp.Height;
-      while x_ < r.right do
+      t := DefaultRowHeight * ARow mod FBmp.Height;
+      while X1 < R.Right do
       begin
-        if x_ + IWidth > r.right then
-          IWidth := r.right - x_;
-        while y_ < r.bottom do
+        if X1 + IWidth > R.Right then
+          IWidth := R.Right - X1;
+        while Y1 < R.Bottom do
         begin
-          if y_ + IHeight > r.bottom then
-            IHeight := r.bottom - y_;
-          BitBlt(Canvas.Handle, x_, y_, min(IWidth, bmp.Width - l),
-            min(IHeight, bmp.Height - t), bmp.Canvas.Handle, l, t, SRCCOPY);
-          Inc(y_, min(IHeight, bmp.Height));
+          if Y1 + IHeight > R.Bottom then
+            IHeight := R.Bottom - Y1;
+          BitBlt(Canvas.Handle, X1, Y1, Min(IWidth, FBmp.Width - l),
+            Min(IHeight, FBmp.Height - t), FBmp.Canvas.Handle, l, t, SRCCOPY);
+          Inc(Y1, Min(IHeight, FBmp.Height));
         end;
-        Inc(x_, min(IWidth, bmp.Width));
-        y_ := y;
+        Inc(X1, Min(IWidth, FBmp.Width));
+        Y1 := Y;
       end;
     end;
 
@@ -339,7 +340,7 @@ begin
       Style.BackgrColor, {(BackgrColor = clBtnFace)or}
       Style.GradientFilling);
     ARect := R;
-    inc(ARect.Left, Style.Interspace);
+    Inc(ARect.Left, Style.Interspace);
     SetTextColor(Canvas.Handle, ColorToRGB(Style.FontColor));
     SetBkMode(Canvas.Handle, TRANSPARENT);
     DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
@@ -356,7 +357,7 @@ begin
       end;
     end;
 
-    ARect.Top := ARect.Top + max(0, (ARect.Bottom - R.Bottom) div 2);
+    ARect.Top := ARect.Top + Max(0, (ARect.Bottom - R.Bottom) div 2);
     DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
       ARow]), ARect, aAlignments[CellTextAlignment] or aWordWrap[fsgWordWrap in
         FExtOptions]);
@@ -366,11 +367,11 @@ begin
   begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(ARect);
-    inc(ARect.Left, 2);
+    Inc(ARect.Left, 2);
     R := ARect;
     DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
       ARow]), R, DT_LEFT or DT_WORDBREAK or DT_CALCRECT);
-    ARect.Top := ARect.Top + max(0, (ARect.Bottom - R.Bottom) div 2);
+    ARect.Top := ARect.Top + Max(0, (ARect.Bottom - R.Bottom) div 2);
     DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
       ARow]), ARect, DT_LEFT or DT_WORDBREAK)
   end; //  else inherited;
@@ -403,13 +404,13 @@ begin
   FBitmap := TBitmap.Create;
   FBitmap.Assign(Value);
   if Assigned(Value) then
-    Bmp := FBitmap
+    FBmp := FBitmap
   else
   if Assigned(FImage) and Assigned(FImage.Picture) and
     Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
+    FBmp := FImage.Picture.Bitmap
   else
-    Bmp := nil;
+    FBmp := nil;
   Invalidate;
 end;
 
@@ -418,12 +419,12 @@ begin
   FImage := Value;
   if Assigned(FImage) and Assigned(FImage.Picture) and
     Assigned(FImage.Picture.Bitmap) then
-    Bmp := FImage.Picture.Bitmap
+    FBmp := FImage.Picture.Bitmap
   else
   if Assigned(FBitmap) then
-    Bmp := FBitmap
+    FBmp := FBitmap
   else
-    Bmp := nil;
+    FBmp := nil;
   Invalidate;
 end;
 
@@ -448,7 +449,7 @@ begin
   inherited MouseMove(Shift, X, Y);
   if not (fsgHottrack in FExtOptions) then
     Exit;
-  MouseToCell(x, y, ACol, ARow);
+  MouseToCell(X, Y, ACol, ARow);
   if (ACol >= FixedCols) and (ARow >= FixedRows) then
   begin
     SetCursor(Screen.Cursors[crCross]);
@@ -502,7 +503,7 @@ begin
   end;
 end;
 
-procedure TJvgStringGrid.CMMouseLeave(var Message: TMessage);
+procedure TJvgStringGrid.CMMouseLeave(var Msg: TMessage);
 var
   R: TRect;
 begin
@@ -556,7 +557,7 @@ begin
     end;
     Application.ProcessMessages;
     R := CellRect(X, Y);
-    Memo.SetBounds(R.left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
+    Memo.SetBounds(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
     MemoCell.X := X;
     MemoCell.Y := Y;
     Memo.Text := Cells[MemoCell.X, MemoCell.Y];
@@ -618,9 +619,9 @@ begin
   Selection := GR;
 end;
 
-procedure TJvgStringGrid.CMChildKey(var Message: TMessage);
+procedure TJvgStringGrid.CMChildKey(var Msg: TMessage);
 begin
-  if Message.WParam = VK_TAB then
+  if Msg.WParam = VK_TAB then
   begin
     if fsgTabThroughCells in ExtOptions then
     begin
@@ -628,7 +629,7 @@ begin
         Cells[MemoCell.X, MemoCell.Y] := Memo.Text;
       GetNextCell(MemoCell.X, MemoCell.Y);
       ShowEditorAtCell(MemoCell.X, MemoCell.Y);
-      Message.Result := 1;
+      Msg.Result := 1;
     end
     else
       inherited;
@@ -637,7 +638,7 @@ begin
   begin
     inherited;
     Application.ProcessMessages;
-    if Message.WParam > VK_ESCAPE then
+    if Msg.WParam > VK_ESCAPE then
     begin
       if not (goEditing in Options) then
         Exit;
@@ -653,12 +654,12 @@ end;
 procedure TJvgStringGrid.GetNextCell(var X, Y: Longint);
 begin
   if X < ColCount - 1 then
-    inc(X)
+    Inc(X)
   else
   begin
     X := FixedCols;
     if Y < RowCount - 1 then
-      inc(Y)
+      Inc(Y)
     else
       Y := FixedRows;
   end;
@@ -678,15 +679,15 @@ begin
   end;
 end;
 
-procedure TJvgStringGrid.WMSize(var Message: TWMSize);
+procedure TJvgStringGrid.WMSize(var Msg: TWMSize);
 var
-  I, w: Integer;
+  I, W: Integer;
 begin
   inherited;
-  w := 0;
+  W := 0;
   for I := 0 to ColCount - 2 do
-    inc(w, ColWidths[I]);
-  ColWidths[ColCount - 1] := Width - w;
+    Inc(W, ColWidths[I]);
+  ColWidths[ColCount - 1] := Width - W;
 end;
 
 procedure TJvgStringGrid.GetCellGradientParams(Sender: TObject; ACol,

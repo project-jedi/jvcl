@@ -386,7 +386,7 @@ function ItemHTPlain(const Text: string): string;
 
 function ItemHTHeight(Canvas: TCanvas; const Text: string): Integer;
 
-function PrepareText(a: string): string;
+function PrepareText(A: string): string;
 
 implementation
 
@@ -406,7 +406,7 @@ const
   cRIGHT = 'RIGHT';
   cHREF = 'HREF';
   cIND = 'IND';
-  cColor = 'COLOR';
+  cCOLOR = 'COLOR';
   cBGCOLOR = 'BGCOLOR';
   cMAILTO = 'MAILTO:';
   cURLTYPE = '://';
@@ -415,19 +415,19 @@ const
 function PrepareText(A: string): string;
 type
   THtmlCode = packed record
-    HTML: PChar;
-    TEXT: Char;
+    Html: PChar;
+    Text: Char;
   end;
 const
   Conversions: array [0..6] of THtmlCode =
    (
-    (HTML: '&amp;';   TEXT: '&'),
-    (HTML: '&quot;';  TEXT: '"'),
-    (HTML: '&reg;';   TEXT: '®'),
-    (HTML: '&copy;';  TEXT: '©'),
-    (HTML: '&trade;'; TEXT: '™'),
-    (HTML: '&euro;';  TEXT: '€'),
-    (HTML: '&nbsp;';  TEXT: ' ')
+    (Html: '&amp;';   Text: '&'),
+    (Html: '&quot;';  Text: '"'),
+    (Html: '&reg;';   Text: '®'),
+    (Html: '&copy;';  Text: '©'),
+    (Html: '&trade;'; Text: '™'),
+    (Html: '&euro;';  Text: '€'),
+    (Html: '&nbsp;';  Text: ' ')
    );
 var
   I: Integer;
@@ -435,7 +435,7 @@ begin
   Result := A;
   for I := Low(Conversions) to High(Conversions) do
     with Conversions[I] do
-      Result := StringReplace(Result, HTML, TEXT, [rfReplaceAll, rfIgnoreCase]);
+      Result := StringReplace(Result, Html, Text, [rfReplaceAll, rfIgnoreCase]);
   Result := StringReplace(Result, sLineBreak, '', [rfReplaceAll, rfIgnoreCase]); // only <BR> can be new line
   Result := StringReplace(Result, cBR, sLineBreak, [rfReplaceAll, rfIgnoreCase]);
   Result := StringReplace(Result, cHR, cHR + sLineBreak, [rfReplaceAll, rfIgnoreCase]); // fixed <HR><BR>
@@ -483,7 +483,7 @@ const
 var
   vText, vM, TagPrp, Prp, TempLink: string;
   vCount: Integer;
-  vStr:   TStringList;
+  vStr: TStringList;
   Selected: Boolean;
   Alignment: TAlignment;
   Trans, IsLink: Boolean;
@@ -546,7 +546,7 @@ var
       Height := CanvasMaxTextHeight(Canvas);
       if IsLink and not MouseOnLink then
         if (MouseY in [R.Top..R.Top + Height]) and
-           (MouseX in [R.Left..R.Left + Width]) then
+          (MouseX in [R.Left..R.Left + Width]) then
         begin
           MouseOnLink := True;
           Canvas.Font.Color := clRed; // hover link
@@ -641,7 +641,7 @@ begin
               'I':
                 Style(fsItalic, False);
               'U':
-                Style(fsUnderLine, False);
+                Style(fsUnderline, False);
               'S':
                 Style(fsStrikeOut, False);
               'F':
@@ -663,7 +663,7 @@ begin
                   if GetChar(vText, 3, True) = 'L' then // ALIGN
                   begin
                     TagPrp := UpperCase(Copy(vText, 2, Pos(cTagEnd, vText)-2));
-                    if Pos(cCenter, TagPrp) > 0 then
+                    if Pos(cCENTER, TagPrp) > 0 then
                       Alignment := taCenter
                     else
                     if Pos(cRIGHT, TagPrp) > 0 then
@@ -698,7 +698,7 @@ begin
                 else
                   Style(fsItalic, True); // ITALIC
               'U':
-                Style(fsUnderLine, True);
+                Style(fsUnderline, True);
               'S':
                 Style(fsStrikeOut, True);
               'H':
@@ -706,8 +706,8 @@ begin
                 begin
                   if odDisabled in State then // only when disabled
                      Canvas.Pen.Color := Canvas.Font.Color;
-                  Canvas.MoveTo(0,rect.top+CanvasMaxTextHeight(Canvas));
-                  Canvas.Lineto(rect.Right,rect.top+CanvasMaxTextHeight(Canvas));
+                  Canvas.MoveTo(0,Rect.Top + CanvasMaxTextHeight(Canvas));
+                  Canvas.LineTo(Rect.Right,Rect.Top + CanvasMaxTextHeight(Canvas));
                 end;
               'F':
                 if (Pos(cTagEnd, vText) > 0) and (not Selected) and Assigned(Canvas) and not CalcWidth then // F from FONT
@@ -718,12 +718,12 @@ begin
                   if Pos(cCOLOR, TagPrp) > 0 then
                   begin
                     Prp := ExtractPropertyValue(TagPrp, cCOLOR);
-                    Canvas.Font.Color := stringToColor(Prp);
+                    Canvas.Font.Color := StringToColor(Prp);
                   end;
                   if Pos(cBGCOLOR, TagPrp) > 0 then
                   begin
                     Prp := ExtractPropertyValue(TagPrp, cBGCOLOR);
-                    Canvas.Brush.Color := stringToColor(Prp);
+                    Canvas.Brush.Color := StringToColor(Prp);
                     Trans := False;
                   end;
                 end;
@@ -770,15 +770,15 @@ var
 begin
   Result := '';
   S := PrepareText(Text);
-  while Pos(cTagBegin, s) > 0 do
+  while Pos(cTagBegin, S) > 0 do
   begin
-    Result := Result + Copy(s, 1, Pos(cTagBegin, s)-1);
-    if Pos(cTagEnd, s) > 0 then
-      Delete(s, 1, Pos(cTagEnd, s))
+    Result := Result + Copy(S, 1, Pos(cTagBegin, S)-1);
+    if Pos(cTagEnd, S) > 0 then
+      Delete(S, 1, Pos(cTagEnd, S))
     else
-      Delete(s, 1, Pos(cTagBegin, s));
+      Delete(S, 1, Pos(cTagBegin, S));
   end;
-  Result := Result + s;
+  Result := Result + S;
 end;
 
 function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
@@ -912,7 +912,7 @@ begin
     Exit;
   R := Self.ItemRect(I);
   State := [];
-  if Self.Selected[i] then
+  if Self.Selected[I] then
   begin
     State := [odSelected];
     Canvas.Font.Color := FSelectedTextColor
@@ -939,7 +939,7 @@ begin
   begin
     R := Self.ItemRect(I);
     State := [];
-    if Self.Selected[i] then
+    if Self.Selected[I] then
     begin
       State := [odSelected];
       Canvas.Font.Color := FSelectedTextColor
@@ -1066,8 +1066,8 @@ procedure TJvCustomHTLabel.TextChanged;
 begin
   if AutoSize then
   begin
-    Height := ItemHtHeight(Canvas, Caption);
-    Width := ItemHtWidth(Canvas, ClientRect, [], Caption)+ 2;
+    Height := ItemHTHeight(Canvas, Caption);
+    Width := ItemHTWidth(Canvas, ClientRect, [], Caption) + 2;
   end;
   Invalidate;
 end;

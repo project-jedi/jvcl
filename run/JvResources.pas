@@ -1283,8 +1283,8 @@ resourcestring
 
 //=== JvMRUList.pas ==========================================================
 resourcestring
-  RsEErrorMRUCreating = 'Unable to create MRU';
-  RsEErrorMRUUnicode = 'Windows NT required for Unicode in MRU';
+  RsEErrorMruCreating = 'Unable to create MRU';
+  RsEErrorMruUnicode = 'Windows NT required for Unicode in MRU';
 
 //=== JvMRUManager.pas =======================================================
 resourcestring
