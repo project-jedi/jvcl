@@ -174,8 +174,8 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     {$IFDEF VCL}
-    property OnBeforeMove:TJvPanelMoveEvent read FOnBeforeMove write FOnBeforeMove;
-    property OnAfterMove:TNotifyEvent Read FOnAfterMove write FOnAfterMove;
+    property OnBeforeMove: TJvPanelMoveEvent read FOnBeforeMove write FOnBeforeMove;
+    property OnAfterMove: TNotifyEvent Read FOnAfterMove write FOnAfterMove;
     {$ENDIF VCL}
     property OnParentColorChange;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
@@ -329,7 +329,8 @@ begin
 end;
 
 procedure TJvArrangeSettings.Assign(Source: TPersistent);
-var A: TJvArrangeSettings;
+var
+  A: TJvArrangeSettings;
 begin
   if Source is TJvArrangeSettings then
   begin
@@ -398,7 +399,8 @@ begin
 end;
 
 procedure TJvPanel.WMNCHitTest(var Msg: TWMNCHitTest);
-var P:TPoint;
+var
+  P: TPoint;
 begin
   inherited;
   if Movable then
@@ -535,8 +537,8 @@ end;
 
 procedure TJvPanel.DrawCaption;
 const
-  Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  WordWrap: array[Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
+  Alignments: array [TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWrap: array [Boolean] of Longint = (DT_SINGLELINE, DT_WORDBREAK);
 var
   ATextRect: TRect;
   BevelSize: Integer;
@@ -706,8 +708,8 @@ begin
   end;
 end;
 
-procedure TJvPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvPanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   if Sizeable and (Button = mbLeft) and ((Width - X) < 12) and ((Height - Y) < 12) then
   begin
@@ -820,7 +822,7 @@ var
   LastTabOrder: Integer;
   LastControlCount, CurrControlCount: Integer;
   CurrControl: TWinControl;
-  i: Integer;
+  I: Integer;
   OldHeight: Integer;
 begin
   if (not ArrangeEnabled) or FArrangeControlActive or (ControlCount = 0) then
@@ -847,22 +849,22 @@ begin
     else
       ControlMaxY := -1;
 
-    for i := 0 to ControlCount - 1 do
-      if Controls[i] is TWinControl then
+    for I := 0 to ControlCount - 1 do
+      if Controls[I] is TWinControl then
       begin
-        if Controls[i] is TJvPanel then
-          TJvPanel(Controls[i]).ArrangeSettings.Rearrange;
-        if Controls[i].Width + 2 * FArrangeSettings.BorderLeft > Width then
-          Width := Controls[i].Width + 2 * FArrangeSettings.BorderLeft;
-      end;    {*** if Controls[i] is TWinControl then ***}
+        if Controls[I] is TJvPanel then
+          TJvPanel(Controls[I]).ArrangeSettings.Rearrange;
+        if Controls[I].Width + 2 * FArrangeSettings.BorderLeft > Width then
+          Width := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
+      end;    {*** if Controls[I] is TWinControl then ***}
 
     while CurrControlCount < ControlCount do
     begin
-      for i := 0 to ControlCount - 1 do
+      for I := 0 to ControlCount - 1 do
       begin
-        if Controls[i] is TWinControl then
+        if Controls[I] is TWinControl then
         begin
-          CurrControl := TWinControl(Controls[i]);
+          CurrControl := TWinControl(Controls[I]);
           if CurrControl.TabOrder = (LastTabOrder + 1) then
           begin
             LastTabOrder := CurrControl.TabOrder;

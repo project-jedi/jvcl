@@ -423,7 +423,6 @@ begin
   SetLabels;
 end;
 
-
 {$IFDEF VCL}
 procedure TPainterQBForm.qbpresetsDrawItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
@@ -484,7 +483,6 @@ begin
     qbpresets.Items.Delete(qbpresets.ItemIndex);
     qbpresets.Items.SaveToFile(QBFile);
   end;
-
 end;
 
 procedure TPainterQBForm.FormCreate(Sender: TObject);

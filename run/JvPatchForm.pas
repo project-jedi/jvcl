@@ -31,12 +31,12 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Controls, Forms, StdCtrls, Mask,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QMask,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvToolEdit, JvComponent, JvExMask;
 
 type
@@ -112,7 +112,7 @@ end;
 procedure TPatchFrm.OkBtnClick(Sender: TObject);
 var
   Src, Dest: TFileStream;
-  buf1, buf2: array[0..1023] of Byte;
+  buf1, buf2: array [0..1023] of Byte;
   i, j: Integer;
   res1, res2: Integer;
   iCount, LastCount: Integer;

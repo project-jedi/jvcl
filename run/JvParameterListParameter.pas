@@ -80,8 +80,6 @@ type
     procedure OnButtonClickInt(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
-    constructor Create(AParameterList: TJvParameterList); override;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   published
@@ -107,7 +105,6 @@ type
     procedure CreateLabelControl(AParameterParent: TWinControl); virtual;
     procedure CreateFramePanel(AParameterParent: TWinControl); virtual;
     procedure CreateWinControl(AParameterParent: TWinControl); virtual; abstract;
-    procedure SetWinControlProperties; override;
     property LabelControl: TControl read FLabelControl write FLabelControl;
     property FramePanel: TWinControl read FFramePanel write FFramePanel;
   public
@@ -167,7 +164,6 @@ type
     FGroupBox: TWinControl;
   protected
     function GetParameterNameExt: string; override;
-    procedure SetWinControlProperties; override;
     procedure SetEnabled(Value: Boolean); override;
     procedure SetVisible(Value: Boolean); override;
     procedure SetHeight(Value: Integer); override;
@@ -210,8 +206,6 @@ type
   end;
 
   TJvCheckboxParameter = class(TJvBaseParameter)
-  protected
-    procedure SetWinControlProperties; override;
   public
     procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
   end;
@@ -412,8 +406,6 @@ type
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
-    constructor Create(AParameterList: TJvParameterList); override;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
     property Sorted: Boolean read FSorted write FSorted;
@@ -479,7 +471,6 @@ type
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
-    destructor Destroy; override;
     procedure GetData; override;
     procedure SetData; override;
     procedure Assign(Source: TPersistent); override;
@@ -533,16 +524,6 @@ begin
 end;
 
 //=== TJvButtonParameter =====================================================
-
-constructor TJvButtonParameter.Create(AParameterList: TJvParameterList);
-begin
-  inherited Create(AParameterList);
-end;
-
-destructor TJvButtonParameter.Destroy;
-begin
-  inherited Destroy;
-end;
 
 function TJvButtonParameter.GetParameterNameExt: string;
 begin
@@ -614,11 +595,6 @@ begin
     FFramePanel := nil;
   if (AComponent = FLabelControl) and (Operation = opRemove) then
     FLabelControl := nil;
-end;
-
-procedure TJvBasePanelEditParameter.SetWinControlProperties;
-begin
-  inherited SetWinControlProperties;
 end;
 
 procedure TJvBasePanelEditParameter.CreateFramePanel(AParameterParent: TWinControl);
@@ -968,11 +944,6 @@ begin
   Panel.Color := Color;
 end;
 
-procedure TJvGroupBoxParameter.SetWinControlProperties;
-begin
-  inherited SetWinControlProperties;
-end;
-
 procedure TJvGroupBoxParameter.SetEnabled(Value: Boolean);
 begin
   inherited SetEnabled(Value);
@@ -1198,11 +1169,6 @@ begin
     GetParameterName, Caption);
 end;
 
-procedure TJvCheckBoxParameter.SetWinControlProperties;
-begin
-  inherited SetWinControlProperties;
-end;
-
 //=== TJvComboBoxParameter ===================================================
 
 procedure TJvComboBoxParameter.Assign(Source: TPersistent);
@@ -1249,16 +1215,6 @@ begin
 end;
 
 //=== TJvListBoxParameter ====================================================
-
-constructor TJvListBoxParameter.Create(AParameterList: TJvParameterList);
-begin
-  inherited Create(AParameterList);
-end;
-
-destructor TJvListBoxParameter.Destroy;
-begin
-  inherited Destroy;
-end;
 
 procedure TJvListBoxParameter.Assign(Source: TPersistent);
 begin
@@ -1454,7 +1410,6 @@ begin
     DynCtrlEdit.ControlSetEditMask(EditMask);
   end;
 end;
-
 
 procedure TJvButtonEditParameter.Assign(Source: TPersistent);
 begin
@@ -1791,11 +1746,6 @@ begin
   WantTabs := False;
   WantReturns := True;
   WordWrap := False;
-end;
-
-destructor TJvMemoParameter.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvMemoParameter.Assign(Source: TPersistent);

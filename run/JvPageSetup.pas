@@ -52,9 +52,9 @@ type
 
   // Areas of drawing
   TJvPSPaintWhat =
-    (pwFullPage, pwMinimumMargins,
-     pwMargins, pwGreekText,
-     pwEnvStamp, pwYAFullPage);
+   (pwFullPage, pwMinimumMargins,
+    pwMargins, pwGreekText,
+    pwEnvStamp, pwYAFullPage);
 
   TJvMarginSize = class(TPersistent)
   private
@@ -267,7 +267,7 @@ begin
     WM_PSD_PAGESETUPDLG:
       Result := SendMessage(PageSetupControl.Handle, CM_PAINTINIT, AWParam, ALParam);
     WM_PSD_FULLPAGERECT, WM_PSD_MINMARGINRECT, WM_PSD_MARGINRECT,
-      WM_PSD_GREEKTEXTRECT, WM_PSD_ENVSTAMPRECT, WM_PSD_YAFULLPAGERECT:
+    WM_PSD_GREEKTEXTRECT, WM_PSD_ENVSTAMPRECT, WM_PSD_YAFULLPAGERECT:
       begin
         PageSetupControl.FPaintWhat := PagePaintWhat[Msg];
         Result := SendMessage(PageSetupControl.Handle, CM_PAINTPAGE, AWParam, ALParam);
@@ -518,7 +518,7 @@ end;
 
 function TJvPageSetupDialog.TaskModalDialog(DialogFunc: Pointer; var DialogData): Bool;
 type
-  TDialogFunc = function(var aDialogData): Bool; stdcall;
+  TDialogFunc = function(var ADialogData): Bool; stdcall;
 var
   ActiveWindow: HWND;
   WindowList: Pointer;
@@ -575,9 +575,7 @@ begin
       hDevMode := CopyData(DevHandle);
     end
     else
-    begin
       Flags := Flags or PSD_RETURNDEFAULT;
-    end;
     if Template <> nil then
     begin
       Flags := Flags or PSD_ENABLEPAGESETUPTEMPLATE;

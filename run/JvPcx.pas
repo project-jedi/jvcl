@@ -105,14 +105,16 @@ end;
 type
   PPcxPalette = ^TPcxPalette;
   TPcxPalette = packed record
-    Red, Green, Blue: Byte;
+    Red: Byte;
+    Green: Byte;
+    Blue: Byte;
   end;
   PPcxPaletteArray = ^TPcxPaletteArray;
-  TPcxPaletteArray = array[0..255] of TPcxPalette;
+  TPcxPaletteArray = array [0..255] of TPcxPalette;
 
   TPcxPalette256 = packed record
     Id: Byte; // $0C
-    Items: array[0..255] of TPcxPalette;
+    Items: array [0..255] of TPcxPalette;
   end;
 
   TPcxHeader = packed record
@@ -124,22 +126,23 @@ type
     x1, y1: Word;
     dpiX: Word;
     dpiY: Word;
-    Palette16: array[0..15] of TPcxPalette;
+    Palette16: array [0..15] of TPcxPalette;
     Reserved1: Byte;
     Planes: Byte;
     BytesPerLine: Word;
     PaletteType: Word; // 1: color or s/w   2: grayscaled
     ScreenWidth: Word; // 0
     ScreenHeight: Word; // 0
-    Reserved2: array[0..53] of Byte;
+    Reserved2: array [0..53] of Byte;
   end;
 
 {$IFDEF VisualCLX}
+
 const
   pf4bit = pf8bit;
   pf24bit = pf32bit;
 
-  PixelFormatMap: array[pf1bit..pf32bit] of Integer = (1, 8, 16, 32);
+  PixelFormatMap: array [pf1bit..pf32bit] of Integer = (1, 8, 16, 32);
 
 type
   TPrivateBitmap = class(TGraphic)
@@ -158,11 +161,12 @@ begin
   else
     Result := nil;
 end;
+
 {$ENDIF VisualCLX}
 
 procedure ReadPalette(Bitmap: TJvPcx; ColorNum: Integer; PcxPalette: PPcxPalette);
 var
-  i: Integer;
+  I: Integer;
   P: PPcxPaletteArray;
   {$IFDEF VCL}
   RPal: TMaxLogPalette;
@@ -175,12 +179,12 @@ begin
   {$IFDEF VCL}
   RPal.palVersion := $300;
   RPal.palNumEntries := ColorNum;
-  for i := 0 to ColorNum - 1 do
+  for I := 0 to ColorNum - 1 do
   begin
-    RPal.palPalEntry[i].peRed := P[i].Red;
-    RPal.palPalEntry[i].peGreen := P[i].Green;
-    RPal.palPalEntry[i].peBlue := P[i].Blue;
-    RPal.palPalEntry[i].peFlags := 0;
+    RPal.palPalEntry[I].peRed := P[I].Red;
+    RPal.palPalEntry[I].peGreen := P[I].Green;
+    RPal.palPalEntry[I].peBlue := P[I].Blue;
+    RPal.palPalEntry[I].peFlags := 0;
   end;
   Bitmap.Palette := CreatePalette(PLogPalette(@RPal)^);
   Bitmap.PaletteModified := True;
@@ -189,13 +193,13 @@ begin
   Bitmap.ImageNeeded;
   QImage_setNumColors(GetBitmapImage(Bitmap), ColorNum);
   ColorTbl := Bitmap.ColorTable;
-  for i := 0 to ColorNum - 1 do
+  for I := 0 to ColorNum - 1 do
   begin
-    with ColorTbl[i] do
+    with ColorTbl[I] do
     begin
-      rgbRed := P[i].Red;
-      rgbGreen := P[i].Green;
-      rgbBlue := P[i].Blue;
+      rgbRed := P[I].Red;
+      rgbGreen := P[I].Green;
+      rgbBlue := P[I].Blue;
       rgbReserved := 0;
     end;
   end;
@@ -204,10 +208,10 @@ end;
 
 procedure WritePalette(Bitmap: TJvPcx; ColorNum: Integer; PcxPalette: PPcxPalette);
 var
-  i: Integer;
+  I: Integer;
   P: PPcxPaletteArray;
   {$IFDEF VCL}
-  RPal: array[0..256] of TPaletteEntry;
+  RPal: array [0..256] of TPaletteEntry;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   ColorTbl: PRGBQuadArray;
@@ -219,11 +223,11 @@ begin
   if Bitmap.Palette <> 0 then
   begin
     GetPaletteEntries(Bitmap.Palette, 0, ColorNum, RPal);
-    for i := 0 to ColorNum - 1 do
+    for I := 0 to ColorNum - 1 do
     begin
-      P[i].Red := RPal[i].peRed;
-      P[i].Green := RPal[i].peGreen;
-      P[i].Blue := RPal[i].peBlue;
+      P[I].Red := RPal[I].peRed;
+      P[I].Green := RPal[I].peGreen;
+      P[I].Blue := RPal[I].peBlue;
     end;
   end;
   {$ENDIF VCL}
@@ -232,15 +236,13 @@ begin
   if ColorNum > QImage_numColors(GetBitmapImage(Bitmap)) then
     ColorNum := QImage_numColors(GetBitmapImage(Bitmap));
   ColorTbl := Bitmap.ColorTable;
-  for i := 0 to ColorNum - 1 do
-  begin
-    with ColorTbl[i] do
+  for I := 0 to ColorNum - 1 do
+    with ColorTbl[I] do
     begin
-      P[i].Red := rgbRed;
-      P[i].Green := rgbGreen;
-      P[i].Blue := rgbBlue;
+      P[I].Red := rgbRed;
+      P[I].Green := rgbGreen;
+      P[I].Blue := rgbBlue;
     end;
-  end;
   {$ENDIF VisualCLX}
 end;
 
@@ -252,11 +254,11 @@ var
   ByteLine: PByteArray;
   Line: PJvRGBArray;
   Palette256: TPcxPalette256;
-  Buffer: array[0..MaxPixelCount - 1] of Byte;
+  Buffer: array [0..MaxPixelCount - 1] of Byte;
   Buffer2, Buffer3, Buffer4: PByteArray; // position in Buffer
   b: Byte;
   ByteNum, BitNum: Integer;
-  x, y: Integer;
+  X, Y: Integer;
 begin
   Width := 0;
   Height := 0;
@@ -365,34 +367,30 @@ begin
     Decompressed.Position := 0;
 
    // read data
-    for y := 0 to Height - 1 do
+    for Y := 0 to Height - 1 do
     begin
-      ByteLine := ScanLine[y];
+      ByteLine := ScanLine[Y];
       if Decompressed.Read(Buffer, BytesPerRasterLine) <> BytesPerRasterLine then
         raise EPcxError.CreateRes(@RsEPcxUnknownFormat);
 
       // write data to the ScanLine
       if ((Header.Bpp = 1) and (Header.Planes = 1)) or // 1bit
-         ((Header.Bpp = 8) and (Header.Planes = 1)) then // 8bit
-      begin
-       // just copy the data
-        Move(Buffer[0], ByteLine[0], Header.BytesPerLine);
-      end
+        ((Header.Bpp = 8) and (Header.Planes = 1)) then // 8bit
+        // just copy the data
+        Move(Buffer[0], ByteLine[0], Header.BytesPerLine)
       else
       if (Header.Bpp = 8) and (Header.Planes = 3) then // 24bit
       begin
         Line := Pointer(ByteLine);
         Buffer2 := @Buffer[Header.BytesPerLine];
         Buffer3 := @Buffer[Header.BytesPerLine * 2];
-        for x := 0 to Width - 1 do
-        begin
-          with Line[x] do
+        for X := 0 to Width - 1 do
+          with Line[X] do
           begin
-            rgbRed := Buffer[x];
-            rgbGreen := Buffer2[x];
-            rgbBlue := Buffer3[x];
+            rgbRed := Buffer[X];
+            rgbGreen := Buffer2[X];
+            rgbBlue := Buffer3[X];
           end;
-        end;
       end
       else
       if (Header.Bpp = 1) and (Header.Planes = 4) then // 4bit
@@ -406,11 +404,11 @@ begin
         {$IFDEF VisualCLX}
         FillChar(ByteLine[0], Width, 0); // VisualCLX uses pf8bit
         {$ENDIF VisualCLX}
-        for x := 0 to Width - 1 do
+        for X := 0 to Width - 1 do
         begin
           b := 0;
-          ByteNum := x div 8;
-          BitNum := 7 - (x mod 8);
+          ByteNum := X div 8;
+          BitNum := 7 - (X mod 8);
           if (Buffer[ByteNum] shr BitNum) and $1 <> 0 then
             b := b or $01;
           if (Buffer2[ByteNum] shr BitNum) and $1 <> 0 then
@@ -421,13 +419,13 @@ begin
             b := b or $08;
 
           {$IFDEF VCL}
-          if x mod 2 = 0 then // BIG ENDIAN
+          if X mod 2 = 0 then // BIG ENDIAN
             b := b shl 4;
-          ByteLine[x div 2] := ByteLine[x div 2] or b;
+          ByteLine[X div 2] := ByteLine[X div 2] or b;
           {$ENDIF VCL}
           {$IFDEF VisualCLX}
           // VisualCLX does not support pf4bit
-          ByteLine[x] := ByteLine[x] or b;
+          ByteLine[X] := ByteLine[X] or b;
           {$ENDIF VisualCLX}
         end;
       end;
@@ -445,10 +443,10 @@ procedure TJvPcx.SaveToStream(Stream: TStream);
 var
   CompressStream: TMemoryStream;
   Header: TPcxHeader;
-  x, y: Integer;
+  X, Y: Integer;
   ByteLine: PByteArray;
   Line: PJvRGBArray;
-  Buffer: array[0..MaxPixelCount - 1] of Byte;
+  Buffer: array [0..MaxPixelCount - 1] of Byte;
   Buffer2, Buffer3, Buffer4: PByteArray; // position in Buffer
   Palette256: TPcxPalette256;
   BytesPerRasterLine: Integer;
@@ -475,7 +473,7 @@ begin
 
   CompressStream := TMemoryStream.Create;
   try
-   // complete header
+    // complete header
     case PixelFormat of
       pf1bit:
         begin
@@ -519,23 +517,21 @@ begin
         end;
     end;
 
-   // round BytesPerPixel to even
+    // round BytesPerPixel to even
     BytesPerRasterLine := Header.BytesPerLine; // save it
     if Header.BytesPerLine mod 2 = 1 then
       Inc(Header.BytesPerLine);
 
     if (PixelFormat = pf8bit) or (PixelFormat = pf4bit) then
-    begin
       // copy first 16 palette entries into the header (also for pf8bit)
       WritePalette(Self, 16, @Header.Palette16[0]);
-    end;
-   // write header
+    // write header
     Stream.Write(Header, SizeOf(Header));
 
     // compress data
-    for y := 0 to Height - 1 do
+    for Y := 0 to Height - 1 do
     begin
-      ByteLine := ScanLine[y];
+      ByteLine := ScanLine[Y];
 
       case Header.Planes * Header.Bpp of // reduces VisualCLX IFDEFs
         1, 8:
@@ -555,21 +551,21 @@ begin
             Buffer3 := @Buffer[Header.BytesPerLine * 2];
             Buffer4 := @Buffer[Header.BytesPerLine * 3];
             FillChar(Buffer[0], BytesPerRasterLine, 0);
-            for x := 0 to Width - 1 do
+            for X := 0 to Width - 1 do
             begin
               {$IFDEF VCL}
-              b := ByteLine[x div 2];
-              if x mod 2 = 0 then // BIG ENDIAN
+              b := ByteLine[X div 2];
+              if X mod 2 = 0 then // BIG ENDIAN
                 b := b shr 4
               else
                 b := b and $0F;
               {$ENDIF VCL}
               {$IFDEF VisualCLX}
-              b := ByteLine[x];
+              b := ByteLine[X];
               {$ENDIF VisualCLX}
 
-              ByteNum := x div 8;
-              BitNum := 7 - (x mod 8);
+              ByteNum := X div 8;
+              BitNum := 7 - (X mod 8);
               if b and $01 <> 0 then
                 Buffer[ByteNum] := Buffer[ByteNum] or (1 shl BitNum);
               if b and $02 <> 0 then
@@ -583,16 +579,16 @@ begin
           end;
         24:
           begin
-            Line := ScanLine[y];
+            Line := ScanLine[Y];
             Buffer2 := @Buffer[Header.BytesPerLine];
             Buffer3 := @Buffer[Header.BytesPerLine * 2];
-            for x := 0 to Width - 1 do
+            for X := 0 to Width - 1 do
             begin
-              with Line[x] do
+              with Line[X] do
               begin
-                Buffer[x] := rgbRed;
-                Buffer2[x] := rgbGreen;
-                Buffer3[x] := rgbBlue;
+                Buffer[X] := rgbRed;
+                Buffer2[X] := rgbGreen;
+                Buffer3[X] := rgbBlue;
               end;
             end;
             CompressStream.Write(Buffer, Header.BytesPerLine * 3);
@@ -602,7 +598,7 @@ begin
       CompressStream.Size := 0;
     end;
 
-   // write palette
+    // write palette
     if PixelFormat = pf8bit then
     begin
       Palette256.Id := $0C;
