@@ -204,13 +204,6 @@ begin
   end;
 end;
 
-procedure TFormMain.DoTranslate(Sender: TObject);
-begin
-  {$IFDEF USE_DXGETTEXT}
-  TranslateComponent(TComponent(Sender), 'JVCLInstall');
-  {$ENDIF USE_DXGETTEXT}
-end;
-
 procedure TFormMain.DoFinished(Sender: TObject);
 begin
   Finished := True;
@@ -420,6 +413,13 @@ begin
       ARect.Top + (ACanvas.TextHeight('Ag') - ImageListCheckMark.Height) div 2 + 4,
       0);
   end;
+end;
+
+procedure TFormMain.DoTranslate(Sender: TObject);
+begin
+  {$IFDEF USE_DXGETTEXT}
+  TranslateComponent(TComponent(Sender), 'JVCLInstall');
+  {$ENDIF USE_DXGETTEXT}
 end;
 
 {$IFDEF USE_DXGETTEXT}
