@@ -264,6 +264,8 @@ type
     property UserData[Index: integer]: Pointer read GetUserData write SetUserData;
   end;
 
+  TArrayOfPCsvColumn = array of PCsvColumn;
+
   // Easily Customizeable Dataset descendant our CSV handler and
   // any other variants we create:
   TJvCsvCustomInMemoryDataSet = class(TDataSet)
@@ -280,7 +282,7 @@ type
     FCsvFieldDef: string; // Our own "Csv Field Definition String"
     FCsvKeyDef: string; // CSV Key Definition String. Required if FCsvUniqueKeys is true
     FCsvKeyCount: integer; // Set by parsing FCsvKeyDef
-    FCsvKeyFields: array of PCsvColumn;
+    FCsvKeyFields: TArrayOfPCsvColumn;
 
     FCsvUniqueKeys: boolean;
       // CSV Key Uniqueness option.  Also requires that all fields that are part of the Unique Key be Non Null.
@@ -333,7 +335,7 @@ type
     function InternalLoadFileStrings: boolean;
     // Internal methods used by sorting:
     function InternalFieldCompare(Column: PCsvColumn; Left, Right: PCsvRow): integer;
-    function InternalCompare(SortColumns: array of PCsvColumn; SortColumnCount: integer; Left, Right: PCsvRow): integer;
+    function InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: integer; Left, Right: PCsvRow): integer;
 
     // key uniqueness needs this:
     function InternalFindByKey(row: PCsvRow): integer;
@@ -2557,7 +2559,7 @@ end;
 // Record comparison between two PCsvRows:
 // Returns 0 if Left=Right, 1 if Left>Right, -1 if Left<Right
 
-function TJvCsvCustomInMemoryDataSet.InternalCompare(SortColumns: array of PCsvColumn; SortColumnCount: integer; Left,
+function TJvCsvCustomInMemoryDataSet.InternalCompare(SortColumns: TArrayOfPCsvColumn; SortColumnCount: integer; Left,
   Right: PCsvRow): integer;
 var
   t: integer;
@@ -2589,7 +2591,7 @@ var
   Index: array of Pointer;
   swap: Pointer;
   SortFieldNames: array of string;
-  SortColumns: array of PCsvColumn;
+  SortColumns: TArrayOfPCsvColumn;
   SortColumnCount: integer;
   comparison, t, u, l: integer;
 begin
