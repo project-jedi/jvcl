@@ -171,17 +171,6 @@ type
   //  TOnOpened = procedure(Sender: TObject; Value: string) of object; // archive
   //  TOnOpenCanceled = procedure(Sender: TObject) of object; // archive
 
-  TJvKeyFoundEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
-  TJvParserInfoList = TStringList;
-  // (rom) definitely needs improvement
-  TJvParserInfo = class(TObject)
-  public
-    StartTag: string;
-    EndTag: string;
-    MustBe: Integer;
-    TakeText: Integer;
-  end;
-
   {$IFNDEF COMPILER6_UP}
   { TStream seek origins }
   TSeekOrigin = (soBeginning, soCurrent, soEnd);
