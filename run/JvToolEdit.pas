@@ -231,6 +231,7 @@ type
       NewHeight: Integer; var AlignRect: TRect; AlignInfo: TAlignInfo); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer); override;
     procedure CustomAlignPosition(Control: TControl; var NewLeft,
       NewTop, NewWidth, NewHeight: Integer; var AlignRect: TRect); override;
     {$ENDIF VisualCLX}
@@ -1766,6 +1767,15 @@ begin
     Height := Metrics.tmHeight + I;
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvCustomComboEdit.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
+begin
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
+  UpdateControls;
+  UpdateMargins;
+end;
+{$ENDIF VisualCLX}
+
 procedure TJvCustomComboEdit.AdjustSize;
 var
   MinHeight: Integer;
@@ -1787,6 +1797,7 @@ begin
     if (FPopup <> nil) and (csDesigning in ComponentState) then
       FPopup.SetBounds(0, Height + 1, 10, 10);
   end;
+  UpdateControls;
   UpdateMargins;
 end;
 
