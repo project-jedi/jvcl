@@ -129,6 +129,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ColClick(Column: TListColumn); override;
+    procedure SaveToStrings(Strings: TStrings; Separator: Char);
+    procedure LoadFromStrings(Strings: TStrings; Separator: Char);
     procedure SaveToFile(FileName: string; ForceOldStyle: Boolean = False);
     procedure LoadFromFile(FileName: string);
     procedure SaveToStream(Stream: TStream; ForceOldStyle: Boolean = False);
@@ -635,7 +637,7 @@ var
     LV_HASCHECKBOXES = $80;
     // hs-    LV_CHECKED = $8000;
   var
-    Count, I, J: Word;
+    Count, I, J: SmallInt;
     Options: Byte;
     st: string;
     t: TListItem;
@@ -784,19 +786,19 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
     Buf: array [0..100] of Char;
     // hs-    I, J: Word;
     I: Integer;
-    J: Word;
+    J: SmallInt;
+
     // hs    Options : Byte;
     Options, IsChecked: Byte;
 
-    procedure WriteString(Txt: string);
+    procedure WriteString(const Txt: string);
     var
       I: Word;
-      Buf: array [1..2056] of Char;
     begin
       I := Length(Txt);
-      Move(Text[1], Buf, I);
       Stream.Write(I, SizeOf(I));
-      Stream.Write(Buf, I);
+      if I > 0 then
+        Stream.Write(Txt[1], I);
     end;
 
   begin
@@ -816,8 +818,8 @@ procedure TJvListView.SaveToStream(Stream: TStream; ForceOldStyle: Boolean);
         IsChecked := Options or (Byte(Ord(Checked)));
         Stream.Write(IsChecked, SizeOf(IsChecked));
         // -hs
-        WriteString(Caption);
-        for J := 0 to SubItems.Count - 1 do
+        WriteString(Items[I].Caption);
+        for J := 0 to Items[i].SubItems.Count - 1 do
           WriteString(SubItems[J]);
       end;
   end;
@@ -829,134 +831,113 @@ begin
     SaveNewStyle(Stream);
 end;
 
-// (rom) better reimplement with streams or TStringList
+procedure TJvListView.SaveToStrings(Strings: TStrings; Separator: Char);
+var
+  i, j: integer;
+  tmpStr: string;
+begin
+  if Assigned(FOnSaveProgress) then
+    FOnSaveProgress(Self, 0, Items.Count);
+  for i := 0 to Items.Count - 1 do
+  begin
+    if Assigned(FOnSaveProgress) then
+      FOnSaveProgress(Self, i + 1, Items.Count);
+    tmpStr := AnsiQuotedStr(Items[i].Caption, '"');
+    for j := 0 to Items[i].SubItems.Count - 1 do
+      tmpStr := tmpStr + Separator + AnsiQuotedStr(Items[i].SubItems[j], '"');
+    Strings.Add(tmpStr);
+  end;
+end;
+
+procedure TJvListView.LoadFromStrings(Strings: TStrings; Separator: Char);
+var
+  i: integer;
+  Start, _End, tmpStart: PChar;
+  tmpStr: string;
+  li: TlistItem;
+begin
+  for i := 0 to Strings.Count - 1 do
+  begin
+    li := nil;
+    Start := PChar(Strings[i]);
+    _End := Start + Length(Strings[i]);
+    if (Start <> _End) and (Start <> nil) and (Start^ <> #0) then
+    begin
+      if Start^ = '"' then
+      begin
+        li := Items.Add;
+        tmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
+        li.Caption := tmpStr;
+      end
+      else
+      begin
+        tmpStart := Start;
+        while Start^ <> Separator do
+        begin
+          if Start = _End then Break;
+          Inc(Start);
+        end;
+        SetString(tmpStr, Start, Start - tmpStart);
+        li := Items.Add;
+        li.Caption := tmpStr;
+      end;
+    end;
+    if li <> nil then
+    begin
+      while (Start <> _End) and (Start <> nil) and (Start^ <> #0) do
+      begin
+        while Start^ = Separator do
+          Inc(Start);
+        if Start^ = '"' then
+        begin
+          tmpStr := AnsiExtractQuotedStr(Start, '"'); // this moves the PChar pointer
+          li.SubItems.Add(tmpStr);
+        end
+        else
+        begin
+          tmpStart := Start;
+          while Start^ <> Separator do
+          begin
+            if Start = _End then Break;
+            Inc(Start);
+          end;
+          SetString(tmpStr, Start, Start - tmpStart);
+          li.SubItems.Add(tmpStr);
+        end;
+      end;
+    end;
+  end;
+end;
 
 procedure TJvListView.LoadFromCSV(FileName: string; Separator: Char);
 var
-  st, st2: string;
-  fich: TextFile;
-  Size, Current: Integer;
-  t: TListItem;
-  f: file of Byte;
-  I, J, K, l: Integer;
+  S: TStringlist;
 begin
-  Items.Clear;
-
-  AssignFile(f, FileName);
-  Reset(f);
-  Size := FileSize(f);
-  CloseFile(f);
-
-  AssignFile(fich, FileName);
-  Reset(fich);
-  if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(Self, 0, Size);
-  Current := 0;
-  while not Eof(fich) do
-  begin
-    Readln(fich, st);
-    Current := Current + Length(st) + 2;
-    if Assigned(FOnLoadProgress) then
-      FOnLoadProgress(Self, Current, Size);
-    t := Items.Add;
-
-    J := 0;
-    K := 1;
-    for I := 1 to Length(st) do
-      if st[I] = '"' then
-        J := (J + 1) mod 2
-      else
-      if st[I] = Separator then
-        if J = 0 then
-          Inc(K);
-    if K <> 1 then
-    begin
-      I := Pos(Separator, st);
-      J := Pos('"', st);
-      l := 0;
-
-      while I <> 0 do
-      begin
-        if (J = 0) or (J > I) then
-        begin
-          st2 := Copy(st, 1, I - 1);
-          st := Copy(st, I + 1, Length(st));
-        end
-        else
-        begin
-          st := Copy(st, J + 1, Length(st));
-          J := Pos('"', st);
-          if J = 0 then
-          begin
-            st2 := st;
-            st := '';
-          end
-          else
-          begin
-            st2 := Copy(st, 1, J - 1);
-            st := Copy(st, J + 1, Length(st));
-            J := Pos(Separator, st);
-            st := Copy(st, J + 1, Length(st));
-          end;
-        end;
-        if l = 0 then
-        begin
-          t.Caption := st2;
-          Inc(l);
-        end
-        else
-          t.SubItems.Add(st2);
-        Dec(K);
-
-        I := Pos(Separator, st);
-        J := Pos('"', st);
-      end;
-
-      if K = 1 then
-        t.SubItems.Add(st);
-    end
-    else
-    begin
-      if Pos('"', st) = 0 then
-        t.Caption := st
-      else
-        st := Copy(st, Pos('"', st) + 1, Length(st));
-      if Pos('"', st) = 0 then
-        t.Caption := st
-      else
-        t.Caption := Copy(st, 1, Pos('"', st) - 1);
-    end;
+  S := TStringlist.Create;
+  Items.BeginUpdate;
+  try
+    Items.Clear;
+    S.LoadFromFile(Filename);
+    LoadFromStrings(S, Separator);
+  finally
+    Items.EndUpdate;
+    S.Free;
   end;
-  CloseFile(fich);
 end;
 
 procedure TJvListView.SaveToCSV(FileName: string; Separator: Char);
 var
-  st: string;
-  fich: TextFile;
-  I, J: Integer;
+  S: TStringlist;
 begin
-  AssignFile(fich, FileName);
-  Rewrite(fich);
-  if Assigned(FOnLoadProgress) then
-    FOnLoadProgress(Self, 0, Items.Count);
-  for I := 0 to Items.Count - 1 do
-  begin
-    if Assigned(FOnLoadProgress) then
-      FOnLoadProgress(Self, I + 1, Items.Count);
-    st := Items[I].Caption;
-    if Pos(Separator, st) <> 0 then
-      st := '"' + st + '"';
-    for J := 0 to Items[I].SubItems.Count - 1 do
-    begin
-      if Pos(Separator, Items[I].SubItems[J]) = 0 then
-        st := st + Separator + Items[I].SubItems[J]
-      else
-        st := st + Separator + '"' + Items[I].SubItems[J] + '"';
-    end;
-    Writeln(fich, st);
+  S := TStringlist.Create;
+  Items.BeginUpdate;
+  try
+    SaveToStrings(S, Separator);
+    S.SaveToFile(Filename);
+  finally
+    Items.EndUpdate;
+    S.Free;
   end;
-  CloseFile(fich);
 end;
 
 procedure TJvListView.InvertSelection;
