@@ -52,7 +52,8 @@ type
     FList: TList;
 {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
+  protected
+    procedure SetParentBackground(Value: Boolean); virtual;
 {$ENDIF}
   protected
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
@@ -92,7 +93,7 @@ begin
   Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvControlBar.SetParentBackground(const Value: Boolean);
+procedure TJvControlBar.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;

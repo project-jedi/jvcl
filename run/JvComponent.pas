@@ -72,9 +72,10 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
+  private
+    function GetParentBackground: Boolean; virtual;
   protected
+    procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
   published
@@ -85,9 +86,10 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
+  private
+    function GetParentBackground: Boolean; virtual;
   protected
+    procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
   published
@@ -98,9 +100,10 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
+  private
+    function GetParentBackground: Boolean; virtual;
   protected
+    procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
   published
@@ -111,9 +114,10 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
-    function GetParentBackground: Boolean;
-    procedure SetParentBackground(const Value: Boolean);
+  private
+    function GetParentBackground: Boolean; virtual;
   protected
+    procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
   {$ENDIF JVCLThemesEnabledD56}
   // (rom) this has to be removed if gettext is GPL
@@ -137,7 +141,7 @@ begin
   Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvCustomPanel.SetParentBackground(const Value: Boolean);
+procedure TJvCustomPanel.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
@@ -147,7 +151,7 @@ begin
   Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvCustomControl.SetParentBackground(const Value: Boolean);
+procedure TJvCustomControl.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
@@ -157,7 +161,7 @@ begin
   Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvWinControl.SetParentBackground(const Value: Boolean);
+procedure TJvWinControl.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;
@@ -167,7 +171,7 @@ begin
   Result := JvThemes.GetParentBackground(Self);
 end;
 
-procedure TJvForm.SetParentBackground(const Value: Boolean);
+procedure TJvForm.SetParentBackground(Value: Boolean);
 begin
   JvThemes.SetParentBackground(Self, Value);
 end;

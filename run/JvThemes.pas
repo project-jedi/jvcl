@@ -755,7 +755,7 @@ procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True); overload;
 {$IFDEF VCL}
 procedure DrawThemedBackground(Control: TControl; DC: HDC; const R: TRect;
-  Brush: HBRUSH; NeedsParentBackground: Boolean = True);  overload;
+  Brush: HBRUSH; NeedsParentBackground: Boolean = True); overload;
 
 { DrawThemesFrameControl draws a themed frame control when theming is enabled. }
 function DrawThemedFrameControl(Control: TControl; DC: HDC; const Rect: TRect;
@@ -929,9 +929,6 @@ begin
      (ThemeServices.ThemesEnabled) then
   begin
     R := Rect;
-{    if uState and DFCS_ADJUSTRECT <> 0 then
-      InflateRect(R, 1, 1);}
-
     case uType of
       DFC_BUTTON:
         begin
@@ -1567,7 +1564,7 @@ var
 begin
   if WinControlHookInstalled then
     Exit;
-    
+
   P := GetDynamicMethod(TWinControl, WM_ERASEBKGND);
   if Assigned(P) then
   begin
