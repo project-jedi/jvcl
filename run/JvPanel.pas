@@ -18,8 +18,9 @@ Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 pongtawat
 Peter Thornqvist [peter3@peter3.com]
+Jens Fudickar [jens.fudickar@oratool.de]
 
-Last Modified: 2003-11-02
+Last Modified: 2003-11-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,7 +39,7 @@ uses
   JVCLVer, JvThemes;
 
 type
-  TJvResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
+  TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
   TJvAutoSizePanel = (asNone, asWidth, asHeight, asBoth);
 
   TJvPanel = class;
@@ -103,7 +104,7 @@ type
     FArrangeControlActive: Boolean;
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
-    FOnResizeParent: TJvResizeParentEvent;
+    FOnResizeParent: TJvPanelResizeParentEvent;
 
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -171,7 +172,7 @@ type
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
-    property OnResizeParent: TJvResizeParentEvent read FOnResizeParent write FOnResizeParent;
+    property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
 
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 {$IFDEF JVCLThemesEnabledD56}
@@ -774,8 +775,6 @@ begin
           CurrControl := TWinControl(Controls[i]);
           if CurrControl.TabOrder = (LastTabOrder + 1) then
           begin
-//            if CurrControl is TJvPanel then
-//              TJvPanel(Controls[i]).ArrangeSettings.Rearrange;
             LastTabOrder := CurrControl.TabOrder;
             Inc(CurrControlCount);
             if CurrControl.Visible or
@@ -802,29 +801,27 @@ begin
               if CurrControl.Height > MaxY then
                 MaxY := CurrControl.Height;
               ControlMaxY := AktY + MaxY;
-            end;   {*** if CurrControl.Visible then ***}
-          end;   {*** if CurrControl.TabOrder > LastTabOrder then ***}
-        end;   {*** if Controls[i] is TWinControl then ***}
-      end;   {*** for i := 0 to ControlCount do ***}
+            end;
+          end;
+        end;
+      end;
       if CurrControlCount = LastControlCOunt then
         Break;
       LastControlCount := CurrControlCount;
-    end;  // while
+    end; 
 
     if not (csLoading in ComponentState) then
     begin
       if FArrangeSettings.AutoSize in [asWidth, asBoth] then
-//        if not (Align in [alTop, alBottom, alClient]) then
-          if ControlMaxX >= 0 then
-            Width := ControlMaxX + FArrangeSettings.BorderLeft
-          else
-            Width := 0;
+        if ControlMaxX >= 0 then
+          Width := ControlMaxX + FArrangeSettings.BorderLeft
+        else
+          Width := 0;
       if FArrangeSettings.AutoSize in [asHeight, asBoth] then
-//        if not (Align in [alLeft, alRight, alClient]) then
-          if ControlMaxY >=0  then
-            Height := ControlMaxY + FArrangeSettings.BorderTop
-          else
-            Height := 0;
+        if ControlMaxY >=0  then
+          Height := ControlMaxY + FArrangeSettings.BorderTop
+        else
+          Height := 0;
     end;
     FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
     FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
