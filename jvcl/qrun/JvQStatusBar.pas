@@ -104,8 +104,11 @@ end;
 procedure TJvStatusBar.BoundsChanged;
 begin
   inherited BoundsChanged;
-  Realign; 
-  MovePanelControls; 
+  if Assigned(Parent) then
+  begin
+    Realign;
+    MovePanelControls;
+  end;   
 end;
 
 
