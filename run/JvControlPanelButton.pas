@@ -136,7 +136,7 @@ begin
   if Parent <> nil then
   begin
     P := Parent.ClientToScreen(Point(Left, Top + Height));
-    FPopup.Popup(P.x, P.y);
+    FPopup.Popup(P.X, P.Y);
   end;
 end;
 

@@ -391,14 +391,14 @@ end;
 
 function DayStatesToString(Days: TMonthDayState): string;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := '';
   if Days = 0 then
     Exit;
-  for i := 0 to 30 do
-    if (Days and (1 shl (i))) <> 0 then
-      Result := Result + Format('%d,', [i + 1]);
+  for I := 0 to 30 do
+    if (Days and (1 shl (I))) <> 0 then
+      Result := Result + Format('%d,', [I + 1]);
   if AnsiLastChar(Result) = ',' then
     SetLength(Result, Length(Result) - 1);
 end;

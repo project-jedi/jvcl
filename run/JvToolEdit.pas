@@ -2634,9 +2634,11 @@ begin
     FStreamedButtonWidth := Value;
     FStreamedFixedWidth := False;
   end
-  else if not ShowButton then
+  else
+  if not ShowButton then
     FSavedButtonWidth := Value
-  else if (ButtonWidth <> Value) {or ((Value > 0) <> ShowButton)} then
+  else
+  if (ButtonWidth <> Value) {or ((Value > 0) <> ShowButton)} then
   begin
     if Value > 1 then
       FBtnControl.Visible := True

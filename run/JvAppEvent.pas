@@ -236,7 +236,7 @@ type
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     function DoHelp(HelpType: THelpType; HelpContext: THelpContext;
-      const HelpKeyword: String; const HelpFile: String;
+      const HelpKeyword: string; const HelpFile: string;
       var Handled: Boolean): Boolean;
     procedure DoShortCut(Key: Integer; Shift: TShiftState; var Handled: Boolean);
     procedure DoEvent(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
@@ -454,7 +454,7 @@ end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 function TJvAppEventList.DoHelp(HelpType: THelpType; HelpContext: THelpContext;
-  const HelpKeyword: String; const HelpFile: String;
+  const HelpKeyword: string; const HelpFile: string;
   var Handled: Boolean): Boolean;
 var
   I: Integer;

@@ -937,7 +937,7 @@ end;
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
 var
-  cap: String;
+  cap: string;
 begin
   cap := '<ALIGN CENTER>' + Caption; // Kaczkowski
   with Canvas do
@@ -1050,13 +1050,13 @@ var
 
   function FirstButtonPos: Integer;
   var
-    i: Integer;
+    I: Integer;
     B: TComponent;
   begin
     Result := FBPos;
-    for i := 0 to Owner.ComponentCount - 1 do
+    for I := 0 to Owner.ComponentCount - 1 do
     begin
-      B := Owner.Components[i];
+      B := Owner.Components[I];
       if B is TJvaCaptionButton then
         Result := Min(Result, (B as TJvaCaptionButton).FBPos);
     end;

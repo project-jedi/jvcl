@@ -438,7 +438,7 @@ begin
 
               //{ Индивидуальный подход к некоторым классам }
               { Specific handlers for some certain classes  [translated] }
-              if (PropObject is TStrings) then
+              if PropObject is TStrings then
               //{ Текстовые списки }
               { text lists  [translated] }
               begin
@@ -446,7 +446,8 @@ begin
                 WriteOutStream(TStrings(PropObject).CommaText);
                 addCloseTag(PropName, true);
               end
-              else if (PropObject is TCollection) then
+              else
+              if PropObject is TCollection then
               //{ Коллекции }
               { collections  [translated] }
               begin
@@ -467,7 +468,8 @@ begin
                 if WrapCollections then
                   addCloseTag(PropName, true);
               end
-              else if (PropObject is TPersistent) then
+              else
+              if PropObject is TPersistent then
               begin
                 addOpenTag(PropName);
                 SerializeInternal(PropObject, Level);
@@ -832,7 +834,7 @@ begin
         begin
           //{ Индивидуальный подход к некоторым классам }
           { Specific(individual) handling of some specific classes  [translated] }
-          if (PropObject is TStrings) then
+          if PropObject is TStrings then
           //{ Текстовые списки }
           { text lists  [translated] }
           begin
@@ -842,7 +844,8 @@ begin
             ValueEnd[0] := charTmp;
             TStrings(PropObject).CommaText := sValue;
           end
-          else if (PropObject is TCollection) then
+          else
+          if PropObject is TCollection then
           //{ Коллекции }
           { collections  [translated] }
           begin
@@ -1012,7 +1015,7 @@ begin
             begin
               //{ Для дочерних свойств-классов - рекурсивный вызов }
               { Specific(individual) handling of some specific classes [translated] }
-              if (PropObject is TPersistent) then
+              if PropObject is TPersistent then
                 GenerateDTDInternal(PropObject, DTDList, Stream,
                   PropName);
             end;
@@ -1024,7 +1027,7 @@ begin
     //{ Для коллекций необходимо включить в модель содержания тип элемента }
     { Collections require item("element") type(class) to be included into
       content model [translated] }
-    if (Component is TCollection) then
+    if Component is TCollection then
     begin
       if TagContent <> '' then
         TagContent := TagContent + '|';
