@@ -2576,7 +2576,7 @@ begin
   FValueY := ColorSpace.AxisDefault[GetIndexAxisY(AxisConfig)];
 end;
 
-//=== { TJvColorLabel } ========================================================
+//=== { TJvColorLabel } ======================================================
 
 constructor TJvColorLabel.Create(AOwner: TComponent);
 begin

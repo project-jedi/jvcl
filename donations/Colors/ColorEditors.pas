@@ -30,7 +30,7 @@ unit ColorEditors;
 interface
 
 uses
-  Windows, Classes, Forms, DesignIntf, DesignEditors, VCLEditors, Graphics,
+  Windows, Classes, DesignIntf, DesignEditors, VCLEditors,
   ComCtrls,
   ColorCtrls;
 
@@ -67,8 +67,19 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  TypInfo, Math, GraphUtil, SysUtils,
+  TypInfo,
   ColorSpaces;
+
+const
+  cPropapTop = 'apTop';
+  cPropapBottom = 'apBottom';
+  cPropapLeft = 'apLeft';
+  cPropapRight = 'apRight';
+
+  cPropcoLeftToRight = 'coLeftToRight';
+  cPropcoRightToLeft = 'coRightToLeft';
+  cPropcoTopToBottom = 'coTopToBottom';
+  cPropcoBottomToTop = 'coBottomToTop';
 
 //=== { TJvArrowPositionEditor } =============================================
 
@@ -83,18 +94,18 @@ begin
   if GetComponent(0) is TJvFullColorTrackBar then
     case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
       trHorizontal:
-        case GetOrdValue of
-          0:
-            Result := 'apTop';
-          1:
-            Result := 'apBottom';
+        case TJvArrowPosition(GetOrdValue) of
+          apTop:
+            Result := cPropapTop;
+          apBottom:
+            Result := cPropapBottom;
         end;
       trVertical:
-        case GetOrdValue of
-          0:
-            Result := 'apLeft';
-          1:
-            Result := 'apRight';
+        case TJvArrowPosition(GetOrdValue) of
+          apLeft:
+            Result := cPropapLeft;
+          apRight:
+            Result := cPropapRight;
         end;
     end;
 end;
@@ -105,30 +116,30 @@ begin
     case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
       trHorizontal:
         begin
-          Proc('apTop');
-          Proc('apBottom');
+          Proc(cPropapTop);
+          Proc(cPropapBottom);
         end;
       trVertical:
         begin
-          Proc('apLeft');
-          Proc('apRight');
+          Proc(cPropapLeft);
+          Proc(cPropapRight);
         end;
     end;
 end;
 
 procedure TJvArrowPositionEditor.SetValue(const Value: string);
 begin
-  if Value = 'apLeft' then
-    SetOrdValue(0)
+  if Value = cPropapLeft then
+    SetOrdValue(Ord(apLeft))
   else
-  if Value = 'apRight' then
-    SetOrdValue(1)
+  if Value = cPropapRight then
+    SetOrdValue(Ord(apRight))
   else
-  if Value = 'apTop' then
-    SetOrdValue(0)
+  if Value = cPropapTop then
+    SetOrdValue(Ord(apTop))
   else
-  if Value = 'apBottom' then
-    SetOrdValue(1);
+  if Value = cPropapBottom then
+    SetOrdValue(Ord(apBottom));
 end;
 
 //=== { TJvColorOrientationEditor } ==========================================
@@ -144,18 +155,18 @@ begin
   if GetComponent(0) is TJvFullColorTrackBar then
     case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
       trHorizontal:
-        case GetOrdValue of
-          0:
-            Result := 'coLeftToRight';
-          1:
-            Result := 'coRightToLeft';
+        case TJvColorOrientation(GetOrdValue) of
+          coLeftToRight:
+            Result := cPropcoLeftToRight;
+          coRightToLeft:
+            Result := cPropcoRightToLeft;
         end;
       trVertical:
-        case GetOrdValue of
-          0:
-            Result := 'coTopToBottom';
-          1:
-            Result := 'coBottomToTop';
+        case TJvColorOrientation(GetOrdValue) of
+          coTopToBottom:
+            Result := cPropcoTopToBottom;
+          coBottomToTop:
+            Result := cPropcoBottomToTop;
         end;
     end;
 end;
@@ -166,30 +177,30 @@ begin
     case (GetComponent(0) as TJvFullColorTrackBar).Orientation of
       trHorizontal:
         begin
-          Proc('coLeftToRight');
-          Proc('coRightToLeft');
+          Proc(cPropcoLeftToRight);
+          Proc(cPropcoRightToLeft);
         end;
       trVertical:
         begin
-          Proc('coTopToBottom');
-          Proc('coBottomToTop');
+          Proc(cPropcoTopToBottom);
+          Proc(cPropcoBottomToTop);
         end;
     end;
 end;
 
 procedure TJvColorOrientationEditor.SetValue(const Value: string);
 begin
-  if Value = 'coLeftToRight' then
-    SetOrdValue(0)
+  if Value = cPropcoLeftToRight then
+    SetOrdValue(Ord(coLeftToRight))
   else
-  if Value = 'coRightToLeft' then
-    SetOrdValue(1)
+  if Value = cPropcoRightToLeft then
+    SetOrdValue(Ord(coRightToLeft))
   else
-  if Value = 'coTopToBottom' then
-    SetOrdValue(0)
+  if Value = cPropcoTopToBottom then
+    SetOrdValue(Ord(coTopToBottom))
   else
-  if Value = 'coBottomToTop' then
-    SetOrdValue(1);
+  if Value = cPropcoBottomToTop then
+    SetOrdValue(Ord(coBottomToTop));
 end;
 
 //=== { TJvColorIDEditor } ===================================================
@@ -224,7 +235,7 @@ begin
       LColorSpace := ColorSpaceIndex[Index];
       if LColorSpace.ShortName = Value then
       begin
-        SetOrdValue(LColorSpace.ID);
+        SetOrdValue(Ord(LColorSpace.ID));
         Exit;
       end;
     end;

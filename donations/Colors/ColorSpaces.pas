@@ -37,7 +37,6 @@ type
   TJvAxisIndex = (axIndex0, axIndex1, axIndex2);
   TJvColorID = type Byte;
   TJvFullColor = type Cardinal;
-  TJvShortNameString = string[3];
 
 const
   csRGB = TJvColorID(0);
@@ -68,16 +67,16 @@ type
     function GetAxisName(Index: TJvAxisIndex): string; virtual;
     function GetAxisMin(Index: TJvAxisIndex): Byte; virtual;
     function GetAxisMax(Index: TJvAxisIndex): Byte; virtual;
-    function GetName: string; virtual;
-    function GetShortName: TJvShortNameString; virtual;
     function GetAxisDefault(Index: TJvAxisIndex): Byte; virtual;
+    function GetName: string; virtual;
+    function GetShortName: string; virtual;
   public
-    constructor Create(ColorID: TJvColorID); reintroduce;
+    constructor Create(ColorID: TJvColorID); virtual;
     function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; virtual;
     function ConvertToRGB(AColor: TJvFullColor): TJvFullColor; virtual;
     property ID: TJvColorID read FID;
     property Name: string read GetName;
-    property ShortName: TJvShortNameString read GetShortName;
+    property ShortName: string read GetShortName;
     property AxisName[Index: TJvAxisIndex]: string read GetAxisName;
     property AxisMin[Index: TJvAxisIndex]: Byte read GetAxisMin;
     property AxisMax[Index: TJvAxisIndex]: Byte read GetAxisMax;
@@ -90,7 +89,7 @@ type
     function GetAxisMin(Index: TJvAxisIndex): Byte; override;
     function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: TJvShortNameString; override;
+    function GetShortName: string; override;
     function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
     function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
@@ -103,7 +102,7 @@ type
     function GetAxisMin(Index: TJvAxisIndex): Byte; override;
     function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: TJvShortNameString; override;
+    function GetShortName: string; override;
     function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
     function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
@@ -116,7 +115,7 @@ type
     function GetAxisMin(Index: TJvAxisIndex): Byte; override;
     function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: TJvShortNameString; override;
+    function GetShortName: string; override;
     function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
     function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
@@ -129,7 +128,7 @@ type
     function GetAxisMin(Index: TJvAxisIndex): Byte; override;
     function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: TJvShortNameString; override;
+    function GetShortName: string; override;
     function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
     function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
@@ -142,7 +141,7 @@ type
     function GetAxisMin(Index: TJvAxisIndex): Byte; override;
     function GetAxisMax(Index: TJvAxisIndex): Byte; override;
     function GetName: string; override;
-    function GetShortName: TJvShortNameString; override;
+    function GetShortName: string; override;
     function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
     function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
@@ -153,7 +152,7 @@ type
   protected
     function GetAxisName(Index: TJvAxisIndex): string; override;
     function GetName: string; override;
-    function GetShortName: TJvShortNameString; override;
+    function GetShortName: string; override;
     function GetAxisDefault(Index: TJvAxisIndex): Byte; override;
   public
     function ConvertFromRGB(AColor: TJvFullColor): TJvFullColor; override;
@@ -173,7 +172,7 @@ type
     function GetColorSpace(ID: TJvColorID): TJvColorSpace; virtual;
   public
     procedure RegisterColorSpace(NewColorSpace: TJvColorSpace);
-    constructor Create; reintroduce;
+    constructor Create;
     destructor Destroy; override;
     function ConvertToID(AColor: TJvFullColor; NewID: TJvColorID): TJvFullColor;
     function GetColorID(AColor: TJvFullColor): TJvColorID;
@@ -303,7 +302,7 @@ begin
     ((Part3 and $000000FF) shl 16);
 end;
 
-//=== { TJvColorSpace } ========================================================
+//=== { TJvColorSpace } ======================================================
 
 function TJvColorSpace.ConvertFromRGB(AColor: TJvFullColor): TJvFullColor;
 begin
@@ -346,7 +345,7 @@ begin
   Result := RsUnnamedColorSpace;
 end;
 
-function TJvColorSpace.GetShortName: TJvShortNameString;
+function TJvColorSpace.GetShortName: string;
 begin
   Result := RsUCS;
 end;
@@ -397,7 +396,7 @@ begin
   Result := RsTrueColor;
 end;
 
-function TJvRGBColorSpace.GetShortName: TJvShortNameString;
+function TJvRGBColorSpace.GetShortName: string;
 begin
   Result := RsRGB;
 end;
@@ -559,7 +558,7 @@ begin
   Result := RsChromaticVision;
 end;
 
-function TJvHLSColorSpace.GetShortName: TJvShortNameString;
+function TJvHLSColorSpace.GetShortName: string;
 begin
   Result := RsHLS;
 end;
@@ -617,7 +616,7 @@ begin
   Result := RsSubstractiveVision;
 end;
 
-function TJvCMYColorSpace.GetShortName: TJvShortNameString;
+function TJvCMYColorSpace.GetShortName: string;
 begin
   Result := RsCMY;
 end;
@@ -698,7 +697,7 @@ begin
   Result := RsPCVideo;
 end;
 
-function TJvYUVColorSpace.GetShortName: TJvShortNameString;
+function TJvYUVColorSpace.GetShortName: string;
 begin
   Result := RsYUV;
 end;
@@ -872,7 +871,7 @@ begin
   Result := RsRotationVision;
 end;
 
-function TJvHSVColorSpace.GetShortName: TJvShortNameString;
+function TJvHSVColorSpace.GetShortName: string;
 begin
   Result := RsHSV;
 end;
@@ -920,12 +919,12 @@ begin
   Result := RsPredefinedColors;
 end;
 
-function TJvDEFColorSpace.GetShortName: TJvShortNameString;
+function TJvDEFColorSpace.GetShortName: string;
 begin
   Result := RsDEF;
 end;
 
-//=== { TJvColorSpaceManager } =================================================
+//=== { TJvColorSpaceManager } ===============================================
 
 constructor TJvColorSpaceManager.Create;
 begin
