@@ -263,7 +263,7 @@ type
     property EditStyle: TInplaceEditStyle read FEditStyle write SetEditStyle;
   end;
 
-  TJvPopupListBox = class(TCustomListbox)
+  TJvPopupListBox = class(TCustomListBox)
   private
     FSearchText: string;
     FSearchTickCount: Longint;
@@ -274,7 +274,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   end;
 
-  //=== TJvPopupListBox ========================================================
+//=== TJvPopupListBox ========================================================
 
 procedure TJvPopupListBox.CreateParams(var Params: TCreateParams);
 begin
