@@ -290,6 +290,9 @@ begin
   FUseHistory := False;
   if not Registered then
   begin
+    {$IFDEF VisualCLX}
+    GroupDescendentsWith(TJvPageProxy, TControl);
+    {$ENDIF VisualCLX}
     RegisterClasses([TJvPageProxy]);
     Registered := True;
   end;

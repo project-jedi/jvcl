@@ -2082,6 +2082,9 @@ end;
 
 procedure RegisterStorageClasses;
 begin
+  {$IFDEF VisualCLX}
+  GroupDescendentsWith(TJvConnection, TControl);
+  {$ENDIF VisualCLX}
   RegisterClasses([TJvCustomDiagramShape, TJvMoveableShape,
     TJvSizeableShape, TJvConnection, TJvConnector, TJvSingleHeadArrow,
       TJvBluntSingleHeadArrow, TJvDoubleHeadArrow, TJvBitmapShape,
@@ -2094,7 +2097,6 @@ class procedure TJvCustomDiagramShape.SetMultiSelected(ParentControl: TWinContro
 var
   I: Integer;
 begin
-  // (rom) added Assigned for security
   if Assigned(ParentControl) then
     for I := 0 to ParentControl.ControlCount - 1 do
       if ParentControl.Controls[I] is TJvCustomDiagramShape then

@@ -45,7 +45,6 @@ type
   TJvGridFilter = class(TComponent)
   private
     FGrid: TStringGrid;
-    // (rom) lifted the stupid limit of 10 filters
     FGridRowFilter: TList;
     procedure ApplyFilter;
     function ParseFilter(const AFilter: string): Boolean;

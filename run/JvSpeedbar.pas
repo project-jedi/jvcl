@@ -1519,6 +1519,10 @@ begin
   FImageChangeLink.OnChange := ImageListChange;
   if not Registered then
   begin
+    {$IFDEF VisualCLX}
+    GroupDescendentsWith(TJvSpeedItem, TControl);
+    GroupDescendentsWith(TJvSpeedBarSection, TControl);
+    {$ENDIF VisualCLX}
     RegisterClasses([TJvSpeedItem, TJvSpeedBarSection, TJvSpeedBarButton]);
     Registered := True;
   end;

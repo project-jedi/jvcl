@@ -27,6 +27,7 @@ Description:
 // $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvCursor;
 
