@@ -82,7 +82,10 @@ object frmMain: TfrmMain
       PopupMenu = popDiagram
       TabOrder = 1
       TabStop = True
+      OnExit = sbExit
       OnMouseDown = sbMouseDown
+      OnMouseMove = sbMouseMove
+      OnMouseUp = sbMouseUp
       OnMouseWheel = sbMouseWheel
     end
   end

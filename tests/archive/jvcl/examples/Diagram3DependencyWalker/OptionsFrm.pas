@@ -210,6 +210,7 @@ procedure TfrmOptions.acAddExecute(Sender: TObject);
 begin
   with lvPaths.Items.Add do
   begin
+
     Caption := edLibPath.Text;
     MakeVisible(true);
     Selected := true;

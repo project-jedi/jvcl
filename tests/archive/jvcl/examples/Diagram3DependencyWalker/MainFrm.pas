@@ -159,11 +159,20 @@ type
     procedure acOpenDiagramExecute(Sender: TObject);
     procedure sbMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure sbMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure sbMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure acParseUnitExecute(Sender: TObject);
     procedure acOptionsExecute(Sender: TObject);
     procedure acUnitViewExecute(Sender: TObject);
+    procedure sbExit(Sender: TObject);
   private
     { Private declarations }
+    FFocusRectAnchor: TPoint;
+    FFocusRect: TRect;
+    FDrawing: boolean;
+
     FPrintFormat: TPrintFormat;
     FFileShapes, FSearchPaths: TStringlist;
     FInitialDir: string;
@@ -172,14 +181,14 @@ type
     FOffsetX, FOffsetY: integer;
     FReload: boolean;
     FIntfLineColor, FImplLineColor, FIntfSelColor, FImplSelColor: TColor;
-    function GetPersistStorage:TPersistStorage;
+    function GetPersistStorage: TPersistStorage;
     procedure LoadSettings;
     procedure SaveSettings;
     function FindUnit(const Filename: string; const DefaultExt: string = '.pas'): string;
     procedure GetSearchPaths;
     procedure Clear;
     procedure CreatePrintOut(Strings: TStrings; AFormat: TPrintFormat = pfText);
-    function GetFileShape(const Filename: string;var IsNew:boolean): TJvBitmapShape;
+    function GetFileShape(const Filename: string; var IsNew: boolean): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
     procedure ParseUnit(const Filename: string; Errors: TStrings);
     function GetUses(const Filename: string; AUsesIntf, AUsesImpl: TStrings; var ErrorMessage: string): boolean;
@@ -195,9 +204,12 @@ type
     procedure HighlightConnectors(AShape: TJvCustomDiagramShape);
     procedure DoShapeMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure DoBeginFocusRect(Sender: TObject; ARect: TRect; Button:TMouseButton;Shift: TShiftState;var Allow:boolean);
+    procedure DoEndFocusRect(Sender: TObject; ARect: TRect;Button:TMouseButton;Shift: TShiftState);
+    procedure DoFocusingRect(Sender: TObject; ARect: TRect;Shift: TShiftState;var Continue:boolean);
   protected
-    procedure Load(Storage: TPersistStorage);override;
-    procedure Save(Storage: TPersistStorage);override;
+    procedure Load(Storage: TPersistStorage); override;
+    procedure Save(Storage: TPersistStorage); override;
   public
     { Public declarations }
   end;
@@ -378,7 +390,7 @@ end;
 
 function SortImplCompare(Item1, Item2: Pointer): integer;
 begin
-  Result := -SortIntfCompare(Item1,Item2);
+  Result := -SortIntfCompare(Item1, Item2);
 end;
 
 
@@ -468,7 +480,7 @@ end;
 // (p3) returns an existing or new shape
 // Filename is checked against unique list
 
-function TfrmMain.GetFileShape(const Filename: string;var IsNew:boolean): TJvBitmapShape;
+function TfrmMain.GetFileShape(const Filename: string; var IsNew: boolean): TJvBitmapShape;
 var
   i: integer;
   AFilename: string;
@@ -589,7 +601,7 @@ var
   FS: TJvBitmapShape;
   i: integer;
   AFilename, ErrMsg: string;
-  b,IsNew: boolean;
+  b, IsNew: boolean;
 begin
   AFilename := FindUnit(Filename);
   if InSkipList(AFilename) then
@@ -608,14 +620,14 @@ begin
     for i := 0 to AUsesIntf.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(AUsesIntf[i],IsNew), true);
+      Connect(FS, GetFileShape(AUsesIntf[i], IsNew), true);
       if IsNew then
         Inc(FTop, FOffsetY);
     end;
     for i := 0 to AUsesImpl.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(AUsesImpl[i],IsNew), false);
+      Connect(FS, GetFileShape(AUsesImpl[i], IsNew), false);
       if IsNew then
         Inc(FTop, FOffsetY);
     end;
@@ -643,7 +655,7 @@ begin
       FTop := cStartY;
       ParseUnit(Files[i], Errors);
       if aCount < FFileShapes.Count then
-        Inc(FLeft,FOffsetX);
+        Inc(FLeft, FOffsetX);
     end;
   finally
     SuspendRedraw(sb, false);
@@ -976,6 +988,7 @@ end;
 // main form event handlers (normal, run-time assigned) and actions
 
 // (p3) bring the Shape to the front so we can see it
+
 procedure TfrmMain.DoShapeClick(Sender: TObject);
 begin
   TJvBitmapShape(Sender).BringToFront;
@@ -1046,6 +1059,8 @@ var
 begin
   WaitCursor;
   SuspendRedraw(sb, true);
+  TJvCustomDiagramShape.UnselectAllShapes(sb);
+  FSelected := nil;
   AList := TList.Create;
   try
     FLeft := cStartX;
@@ -1114,9 +1129,9 @@ begin
   acNew.Enabled := sb.ControlCount > 0;
   acFind.Enabled := acNew.Enabled;
   acReport.Enabled := acNew.Enabled;
-  acCopy.Enabled   := acNew.Enabled;
+  acCopy.Enabled := acNew.Enabled;
   acSaveBMP.Enabled := acCopy.Enabled;
-  mnuSort.Enabled   := sb.ControlCount > 1;
+  mnuSort.Enabled := sb.ControlCount > 1;
 
   acDelShape.Enabled := FSelected <> nil;
   acUnitStats.Enabled := acDelShape.Enabled;
@@ -1331,17 +1346,143 @@ end;
 procedure TfrmMain.sbMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+  inherited;
 // (p3) unselect any selected shape
   if FSelected <> nil then
     FSelected.Selected := false;
   FSelected := nil;
   if sb.CanFocus then sb.SetFocus;
+  FDrawing := Button = mbLeft;
+  if FDrawing then
+  begin
+    // initiate a focus rect
+    FFocusRectAnchor.X := X;
+    FFocusRectAnchor.Y := Y;
+    FFocusRect := Rect(FFocusRectAnchor.X, FFocusRectAnchor.Y, 0, 0);
+    DoBeginFocusRect(sb,FFocusRect,Button,Shift,FDrawing);
+  end;
+end;
+
+procedure Swap(var Val1, Val2: integer);
+var tmp: integer;
+begin
+  tmp := Val1;
+  Val1 := Val2;
+  Val2 := tmp;
+end;
+
+function NormalizedRect(ALeft, ATop, ARight, ABottom: integer): TRect;
+begin
+  if ALeft > ARight then
+    Swap(ALeft, ARight);
+  if ATop > ABottom then
+    Swap(ATop, ABottom);
+  Result := Rect(ALeft, ATop, ARight, ABottom);
+end;
+
+procedure TfrmMain.sbMouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+var DC: HDC;
+begin
+  inherited;
+  if not FDrawing then Exit;
+  DC := GetDC(sb.Handle);
+  try
+    // erase previous rect
+    DrawFocusRect(DC, FFocusRect);
+    FFocusRect := NormalizedRect(FFocusRectAnchor.X, FFocusRectAnchor.Y, X, Y);
+    // draw new rect
+    DoFocusingRect(sb, FFocusRect,Shift,FDrawing);
+    if FDrawing then
+      DrawFocusRect(DC, FFocusRect);
+  finally
+    ReleaseDC(sb.Handle, DC);
+  end;
+end;
+
+procedure TfrmMain.sbMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+var DC: HDC;
+begin
+  inherited;
+  if FDrawing then
+  begin
+    DC := GetDC(sb.Handle);
+    try
+      // erase last focus rect
+      DrawFocusRect(DC, FFocusRect);
+      DoEndFocusRect(sb, FFocusRect,Button,Shift);
+    finally
+      ReleaseDC(sb.Handle, DC);
+    end;
+  end;
+  FDrawing := false;
+end;
+
+procedure TfrmMain.DoBeginFocusRect(Sender: TObject; ARect: TRect;
+  Button: TMouseButton; Shift: TShiftState;var Allow:boolean);
+begin
+  Allow := sb.ControlCOunt > 0;
+end;
+
+procedure GetControlsInRect(AParent: TWinControl; ARect: TRect; PartialOK: boolean; AList: TList);
+var i: integer;
+begin
+  for i := 0 to AParent.ControlCount - 1 do
+    with AParent.Controls[i] do
+      if PtInRect(ARect, Point(Left, Top)) then
+      begin
+        if PartialOK or PtInRect(ARect, Point(Left + Width, Top + Height)) then
+          AList.Add(AParent.Controls[i]);
+      end
+      else if PartialOK and PtInRect(ARect, Point(Left + Width, Top + Height)) then
+        AList.Add(AParent.Controls[i])
+end;
+
+procedure TfrmMain.DoFocusingRect(Sender: TObject; ARect: TRect;Shift: TShiftState;var Continue:boolean);
+var AList: TList; i: integer;
+begin
+  AList := TList.Create;
+  if not (ssShift in Shift) then
+    TJvCustomDiagramShape.UnselectAllShapes(sb);
+  try
+    GetControlsInRect(sb, ARect, true, AList);
+    for i := 0 to AList.Count - 1 do
+      if TObject(AList[i]) is TJvBitmapShape then
+        TJvBitmapShape(TObject(AList[i])).Selected := true;
+    TJvBitmapShape.SetMultiSelected(sb,AList.Count > 1);
+  finally
+    AList.Free;
+  end;
+end;
+
+procedure TfrmMain.DoEndFocusRect(Sender: TObject; ARect: TRect;Button:TMouseButton;Shift: TShiftState);
+var AList: TList; i: integer;
+begin
+  AList := TList.Create;
+  if not (ssShift in Shift) then
+    TJvCustomDiagramShape.UnselectAllShapes(sb);
+  try
+    GetControlsInRect(sb, ARect, true, AList);
+    for i := 0 to AList.Count - 1 do
+      if TObject(AList[i]) is TJvBitmapShape then
+        TJvBitmapShape(TObject(AList[i])).Selected := true;
+    TJvBitmapShape.SetMultiSelected(sb,AList.Count > 1);
+  finally
+    AList.Free;
+  end;
+end;
+
+procedure TfrmMain.sbExit(Sender: TObject);
+begin
+  inherited;
+  FDrawing := false;
 end;
 
 // (p3) do a recursive parse of a unit
 
 procedure TfrmMain.acParseUnitExecute(Sender: TObject);
-var Errors: TStringList; i,aCount: integer;
+var Errors: TStringList; i, aCount: integer;
 begin
   WaitCursor;
   i := FFileShapes.IndexOfObject(FSelected);
@@ -1366,7 +1507,7 @@ begin
       Clipboard.SetTextBuf(PChar(Errors.Text));
     end;
     if aCount = FFileShapes.Count then // nothing happended, so reset FLeft
-      Dec(FLeft, FOffsetX); 
+      Dec(FLeft, FOffsetX);
   finally
     Errors.Free;
   end;
@@ -1401,6 +1542,8 @@ begin
   // ...could just as well have been:
 //  Result := TPersistStorage(TRegistryIniFile.Create('\Software\JEDI\JVCL\Demos\Dependency Walker'));
 end;
+
+
 
 end.
 

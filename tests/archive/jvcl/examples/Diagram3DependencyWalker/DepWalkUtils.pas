@@ -153,5 +153,20 @@ begin
   SetWindowLong(EditHandle, GWL_STYLE, GetWindowLong(EditHandle, GWL_STYLE) or ES_NUMBER);
 end;
 
+function GetFullNamePath(AComponent:TComponent):string;
+begin
+  Result := AComponent.GetNamePath;
+  while AComponent.Owner <> nil do
+  begin
+    AComponent := AComponent.Owner;
+    Result := AComponent.GetNamePath + '.' + Result;
+  end;
+  if (Length(Result) > 1) and (Result[1] = '.') then
+  begin
+    Move(Result[2],Result[1],Length(Result));
+    SetLength(Result,Length(Result)-1);
+  end;
+end;
+
 end.
 
