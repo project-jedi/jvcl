@@ -6877,14 +6877,11 @@ begin
       else
       // (rom) fix added begin end
       begin
-        {$IFDEF VCL}
-        DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
-          DT_WORDBREAK, nil);
-        {$ENDIF VCL}
         {$IFDEF VisualCLX}
         ACanvas.Start;
-        DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
-          DT_WORDBREAK, nil);
+        {$ENDIF VisualCLX}
+        DrawTextEx(ACanvas, S, Length(S), ARect, DT_EDITCONTROL or DT_WORDBREAK, nil);
+        {$IFDEF VisualCLX}
         ACanvas.Stop;
         {$ENDIF VisualCLX}
       end;

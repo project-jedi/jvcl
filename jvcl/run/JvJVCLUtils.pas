@@ -1439,7 +1439,7 @@ begin
       try
         QPixmap_grabWidget(Pixmap, Control.Parent.Handle, Control.Left,
           Control.Top, Control.Width, Control.Height);
-        Qt.bitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
+        BitBlt(DestDev, 0, 0, Pixmap, 0, 0, Control.Width,
           Control.Height, RasterOp_CopyROP, True);
       finally
         TPrivateControl(Control).FVisible := OrigVisible;

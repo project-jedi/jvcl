@@ -29,10 +29,14 @@ unit JvxSlider;
 interface
 
 uses
-  Windows, Forms, Controls, ExtCtrls, Graphics, Messages, Menus,
   SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Forms, Controls, ExtCtrls, Graphics, Messages, Menus,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QForms, QControls, QExtCtrls, QGraphics, QMenus,
+  {$ENDIF}
   JvComponent, JvExControls;
-
 type
   TNumThumbStates = 1..2;
   TSliderOrientation = (soHorizontal, soVertical);
@@ -109,9 +113,14 @@ type
     function GetValueByOffset(Offset: Integer): Longint;
     function GetOffsetByValue(Value: Longint): Integer;
     function GetRulerLength: Integer;
+    {$IFDEF VCL}
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
+    {$ENDIF}
+    {$IFDEF VisualCLX}
+    { TODO -cVisuaCLX : implement message handler substitutions }
+    {$ENDIF VisualCLX}
   protected
     procedure DoBoundsChanged; override;
     procedure DoFocusChanged(Control: TWinControl); override;
@@ -350,6 +359,7 @@ begin
   inherited AlignControls(AControl, Rect);
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomSlider.WMPaint(var Msg: TWMPaint);
 var
   DC, MemDC: HDC;
@@ -394,6 +404,26 @@ begin
   end;
 end;
 
+procedure TJvCustomSlider.WMSetCursor(var Msg: TWMSetCursor);
+var
+  P: TPoint;
+begin
+  GetCursorPos(P);
+  if not (csDesigning in ComponentState) and PtInRect(FThumbRect,
+    ScreenToClient(P)) then
+  begin
+    Windows.SetCursor(Screen.Cursors[crHand]);
+  end
+  else
+    inherited;
+end;
+
+procedure TJvCustomSlider.WMTimer(var Msg: TMessage);
+begin
+  TimerTrack;
+end;
+
+{$ENDIF VCL}
 procedure TJvCustomSlider.Paint;
 var
   R: TRect;
@@ -1068,10 +1098,6 @@ begin
   end;
 end;
 
-procedure TJvCustomSlider.WMTimer(var Msg: TMessage);
-begin
-  TimerTrack;
-end;
 
 procedure TJvCustomSlider.EnabledChanged;
 begin
@@ -1105,19 +1131,6 @@ begin
     Sized;
 end;
 
-procedure TJvCustomSlider.WMSetCursor(var Msg: TWMSetCursor);
-var
-  P: TPoint;
-begin
-  GetCursorPos(P);
-  if not (csDesigning in ComponentState) and PtInRect(FThumbRect,
-    ScreenToClient(P)) then
-  begin
-    Windows.SetCursor(Screen.Cursors[crHand]);
-  end
-  else
-    inherited;
-end;
 
 procedure TJvCustomSlider.StopTracking;
 begin

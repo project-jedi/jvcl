@@ -74,8 +74,9 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd);
-      message WM_ERASEBKGND;
+    {$IFDEF VCL}
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
+    {$ENDIF VCL}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -387,11 +388,11 @@ begin
   Calculate;
   FTimer.Free;
 end;
-
+{$IFDEF VCL}
 procedure TJvSlider.WMEraseBkgnd(var Message: TWMEraseBkgnd);
 begin
   Message.Result := 1;
-end;
+end;{$ENDIF VCL}
 
 function TJvSlider.CanAutoSize(var NewWidth, NewHeight: Integer): Boolean;
 begin
