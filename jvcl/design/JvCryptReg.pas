@@ -40,8 +40,7 @@ uses
   JvCabFile,
   {$ENDIF MSWINDOWS}
   JvDsgnConsts,
-  JvVigenereCipher, JvCaesarCipher, JvGenetic,
-  JvSerialMaker, JvXorCipher;
+  JvCipher, JvGenetic, JvSerialMaker;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCryptReg.dcr}

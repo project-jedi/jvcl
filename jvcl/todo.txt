@@ -1,9 +1,9 @@
 TODO for JVCL 3.0
 ======================
 - Add TJvAppStorage support to TJvMRUList // obones
-- Give some default values to TJvAviCapture properties // obones, suggested by (rom)
 
-- Separate out a TJvRecentPopupMenu from JvRecentMenuButton.pas // (rom)
+- Separate out a TJvDynamicPopupMenu from JvRecentMenuButton.pas // (rom)
+- Unify JvRecentMenuButton.pas and JvStartMenuButton.pas // (rom)
 
 - get rid of JvgCheckVersionInfoForm.pas // (rom)
 - move JvTransparentPanel.pas to Archive. TJvPanel has Transparent property. // (rom)
@@ -11,11 +11,7 @@ TODO for JVCL 3.0
 - JvgProcessUtils.pas definitely goes to JCL. // (rom)
 - TJvgStringContainer should be downgraded to a TStringList and moved to JCL. // (rom)
 
-- JvgStepLabel.pas goes to Archive. It is already excluded from JVCL. // (rom)
-
 - JvBaseEdits.pas, JvToolEdit.pas relies on property order. // (rom)
-
-- JvBandForms.pas, JvBandObject.pas contain T2H IFDEFs. Remove or explain. // (rom)
 
 - JvArrowButton.pas move GrayedBitmap function to JCL and file to Archive // (rom)
 - JvaScrollText change crude Delay function // (rom)
