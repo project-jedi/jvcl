@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvCtrls.PAS, released Oct 10, 1999.
+The Original Code is: JvComCtrls.PAS, released Oct 10, 1999.
 
 The Initial Developer of the Original Code is Petr Vones (petr.v@mujmail.cz)
 Portions created by Petr Vones are Copyright (C) 1999 Petr Vones.
@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
 Peter Below [100113.1101@compuserve.com] - alternate TJvPageControl.OwnerDraw routine
-Peter Thörnqvist [peter3@peter3.com] added AddressValues property to TJvIPAddress
+Peter Thörnqvist [peter3@peter3.com] added TJvIPAddress.AddressValues and TJvPageControl.ReduceMemoryUse
 Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
 Rudy Velthuis - ShowRange in TJvTrackBar
 
@@ -219,6 +219,7 @@ type
     FDrawTabShadow: Boolean;
     FHandleGlobalTab: Boolean;
     FHintSource: TJvHintSource;
+    FReduceMemoryUse: boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Msg: TMessage); message TCM_ADJUSTRECT;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -230,12 +231,15 @@ type
     procedure SetDrawTabShadow(const Value: Boolean);
     procedure SetHideAllTabs(const Value: Boolean);
     function FormKeyPreview: Boolean;
+    procedure SetReduceMemoryUse(const Value: boolean);
 
   protected
+
     procedure Loaded; override;
     procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
     procedure DrawShadowTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: Boolean);
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
+    function CanChange: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure UpdateTabImages;
@@ -245,6 +249,7 @@ type
     property HandleGlobalTab: Boolean read FHandleGlobalTab write FHandleGlobalTab default False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
       JvDefPageControlBorder;
+    property ReduceMemoryUse:boolean read FReduceMemoryUse write SetReduceMemoryUse default false;
     property DrawTabShadow: Boolean read FDrawTabShadow write SetDrawTabShadow default False;
     property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
@@ -1893,6 +1898,21 @@ begin
     else if (Tab <> nil) and ((FHintSource = hsForceChildren) or ((FHintSource = hsPreferChildren) and (GetShortHint(Tab.Hint) <> ''))) then
       HintInfo^.HintStr := GetShortHint(Tab.Hint)
   end;
+end;
+
+type
+  TAccessTabSheet = class(TTabSheet);
+
+function TJvPageControl.CanChange: Boolean;
+begin
+  Result := inherited CanChange;
+  if Result and (ActivePage <> nil) and ReduceMemoryUse then
+    TAccessTabSheet(ActivePage).DestroyHandle;
+end;
+
+procedure TJvPageControl.SetReduceMemoryUse(const Value: boolean);
+begin
+  FReduceMemoryUse := Value;
 end;
 
 end.
