@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvApplication, JvComponent, StdCtrls, JvDirectories, JvChrono, JvKeyboardStates,
+  JvComponent, StdCtrls, JvDirectories, JvChrono, JvKeyboardStates,
   MPlayer, JvFunctions, JvButton, JvRecentMenuBtn, JvStartMenuBtn, JvScreenSaver,
   JvControlPanel, JvFavoritesButton;
 

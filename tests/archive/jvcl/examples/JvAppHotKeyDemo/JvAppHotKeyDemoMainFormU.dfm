@@ -1,8 +1,8 @@
 object JvAppHotKeyDemoMainForm: TJvAppHotKeyDemoMainForm
   Left = 360
   Top = 165
-  Width = 352
-  Height = 422
+  Width = 348
+  Height = 333
   Caption = 'JvAppHotKey demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -12,6 +12,9 @@ object JvAppHotKeyDemoMainForm: TJvAppHotKeyDemoMainForm
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  DesignSize = (
+    340
+    306)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -24,30 +27,33 @@ object JvAppHotKeyDemoMainForm: TJvAppHotKeyDemoMainForm
   object Label2: TLabel
     Left = 8
     Top = 16
-    Width = 333
-    Height = 32
+    Width = 323
+    Height = 26
+    Anchors = [akLeft, akTop, akRight, akBottom]
     Caption = 
-      'Define a hot key and switch to another application '#13#10'and press t' +
-      'he hotkey to see the effect of THotKey!'
+      'Define a hot key and switch to another application. Press the ho' +
+      'tkey to see the effect of TJvApplicationHotKey.'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
-    Font.Height = -13
+    Font.Height = -11
     Font.Name = 'Tahoma'
     Font.Style = [fsBold]
     ParentFont = False
+    WordWrap = True
   end
   object HotKey1: THotKey
     Left = 8
     Top = 72
-    Width = 245
+    Width = 241
     Height = 19
     Anchors = [akLeft, akTop, akRight]
     HotKey = 49217
+    InvalidKeys = [hcNone, hcShift]
     Modifiers = [hkCtrl, hkAlt]
     TabOrder = 0
   end
   object btnAdd: TButton
-    Left = 260
+    Left = 256
     Top = 70
     Width = 75
     Height = 24
@@ -60,8 +66,8 @@ object JvAppHotKeyDemoMainForm: TJvAppHotKeyDemoMainForm
   object lbHotKeys: TListBox
     Left = 8
     Top = 104
-    Width = 328
-    Height = 275
+    Width = 324
+    Height = 186
     Anchors = [akLeft, akTop, akRight, akBottom]
     ItemHeight = 13
     TabOrder = 2

@@ -160,7 +160,7 @@ object JvUtilsFrm: TJvUtilsFrm
   end
   object JvKeyboardStates1: TJvKeyboardStates
     Animation = anLeftRight
-    NumLock = False
+    NumLock = True
     ScrollLock = False
     CapsLock = False
     SystemKeysEnabled = True

@@ -68,7 +68,6 @@ contains
   JvAnimate in '..\source\JvAnimate.pas',
   JvAnimTitle in '..\source\JvAnimTitle.pas',
   JvAppAnimatedIcon in '..\source\JvAppAnimatedIcon.pas',
-  JvApplication in '..\source\JvApplication.pas',
   JvAutoSizeCompo in '..\source\JvAutoSizeCompo.pas',
   JvBalloonHint in '..\source\JvBalloonHint.pas',
   JvBaseDlg in '..\source\JvBaseDlg.pas',

@@ -1,6 +1,8 @@
 2003-03-25
 - Merged TJvDrawGrid and TJvButtonDrawGrid into TJvxDrawGrid (added DrawButtons property to TJvxDrawGrid for TJvButtonDrawGrid functionality). Renamed TJvxDrawGrid to TJvDrawGrid. Moved JvDrawGrid.pas and JvButtonDrawGrid.pas to \archive. // peter3
 - Merged TJvxLabel into TJvLabel. Removed registration of TJvxLabel. NOTE: default for ShadowSize has changed to 0 (was 1). // peter3
+- Moved JvApplication.pas to \archive: TJvApplication has only some of the functionality in TJvAppEvents (in JvAppEvent.pas) // peter3
+
 2003-03-24
 - Merged JvMultilineListBox, JvReorderListBox, JvTextListBox, JvBMPListBox into JvListBox, updated examples, moved JvBmpListBox.pas, JvReorderListBox.pas and JvMultiLineListbox.pas to \archive // peter3
 - Merged JvHotLink and JvAngelLabel into JvLabel

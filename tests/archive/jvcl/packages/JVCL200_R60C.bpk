@@ -7,8 +7,7 @@
     <OBJFILES value="..\lib6\JVCL200_R60C.obj ..\lib6\JvAddPrinter.obj ..\lib6\JvAlarms.obj 
       ..\lib6\JvAni.obj ..\lib6\JvAnimate.obj
       ..\lib6\JvAnimTitle.obj ..\lib6\JvAppAnimatedIcon.obj 
-      ..\lib6\JvApplication.obj
-      ..\lib6\JvAutoSizeCompo.obj ..\lib6\JvBalloonHint.obj 
+      ..\lib6\JvAutoSizeCompo.obj ..\lib6\JvBalloonHint.obj
       ..\lib6\JvBaseDlg.obj ..\lib6\JvBevel.obj ..\lib6\JvBitBtn.obj 
       ..\lib6\JvBreatheSkin.obj ..\lib6\JvBrowseFolder.obj ..\lib6\JvButton.obj
       ..\lib6\JvButtonPersistent.obj
@@ -234,7 +233,6 @@
       <FILE FILENAME="..\source\JvAnimate.pas" FORMNAME="" UNITNAME="JvAnimate" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAnimTitle.pas" FORMNAME="" UNITNAME="JvAnimTitle" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAppAnimatedIcon.pas" FORMNAME="" UNITNAME="JvAppAnimatedIcon" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvApplication.pas" FORMNAME="" UNITNAME="JvApplication" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAutoSizeCompo.pas" FORMNAME="" UNITNAME="JvAutoSizeCompo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBalloonHint.pas" FORMNAME="" UNITNAME="JvBalloonHint" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBaseDlg.pas" FORMNAME="" UNITNAME="JvBaseDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

@@ -105,7 +105,7 @@ uses
 
   // Utils
   JvDirectories, JvMemoryInfos, JvSerialMaker, JvThread, JvRegistry,
-  JvApplication, JvAlarms, JvKeyboardStates, JvDragDrop, 
+  JvAlarms, JvKeyboardStates, JvDragDrop,
 
   // Utils 2
   JvMru, JvRas32, JvSystemPopup, JvMousePositionner,
@@ -398,7 +398,7 @@ begin
      TJvCaesarCipher, TJvVigenereCipher, TJvXorCipher, TJvGenetic,
 
      TJvSearchFiles, TJvLogFile, TJvCabFile, TJvProfiler,
-     TJvApplication, TJvEnterAsTab, TJvKeyboardStates ]);
+     TJvEnterAsTab, TJvKeyboardStates ]);
 
   // Jv Convert
 //  RegisterComponents(srJvConvertPalette,

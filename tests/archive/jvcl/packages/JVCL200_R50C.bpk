@@ -6,8 +6,7 @@
     <PROJECT value="JVCL200_R50C.bpl"/>
     <OBJFILES value="..\lib5\JvAddPrinter.obj ..\lib5\JvAlarms.obj
       ..\lib5\JvAni.obj ..\lib5\JvAnimate.obj ..\lib5\JvAnimTitle.obj 
-      ..\lib5\JvAppAnimatedIcon.obj
-      ..\lib5\JvApplication.obj ..\lib5\JvAutoSizeCompo.obj 
+      ..\lib5\JvAppAnimatedIcon.obj ..\lib5\JvAutoSizeCompo.obj
       ..\lib5\JvBaseDlg.obj ..\lib5\JvBevel.obj ..\lib5\JvBitBtn.obj 
       ..\lib5\JvBreatheSkin.obj ..\lib5\JvBrowseFolder.obj ..\lib5\JvButton.obj
       ..\lib5\JvButtonPersistent.obj

@@ -11,7 +11,6 @@ USEUNIT("..\source\JvAni.pas");
 USEUNIT("..\source\JvAnimate.pas");
 USEUNIT("..\source\JvAnimTitle.pas");
 USEUNIT("..\source\JvAppAnimatedIcon.pas");
-USEUNIT("..\source\JvApplication.pas");
 USEUNIT("..\source\JvAutoSizeCompo.pas");
 USEUNIT("..\source\JvBaseDlg.pas");
 USEUNIT("..\source\JvBevel.pas");
