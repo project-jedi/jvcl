@@ -36,7 +36,7 @@ unit JvWndProcHook;
 interface
 
 uses
-  Windows, Messages, SysUtils, Controls, Forms, Classes, 
+  Windows, Messages, SysUtils, Controls, Forms, Classes,
   JvComponent, JvFinalize;
 
 type
@@ -93,7 +93,6 @@ const
   sUnitName = 'JvWndProcHook';
 
 type
-  PPJvHookInfo = ^PJvHookInfo;
   PJvHookInfo = ^TJvHookInfo;
   TJvHookInfo = record
     Hook: TJvControlHook;
@@ -360,7 +359,6 @@ begin
   begin
     HookInfos := TJvHookInfos.Create(AControl);
     HookInfos.Controller := Self;
-    {FHookInfos.Add(HookInfos);}
     AControl.FreeNotification(Self);
   end;
   HookInfos.Add(Order, Hook);
@@ -385,7 +383,6 @@ begin
   begin
     HookInfos := TJvHookInfos.Create(AHandle);
     HookInfos.Controller := Self;
-    {FHookInfos.Add(HookInfos);}
   end;
   HookInfos.Add(Order, Hook);
 
@@ -498,9 +495,9 @@ begin
   FControl := AControl;
   FillChar(FFirst, SizeOf(FFirst), 0);
   FillChar(FLast, SizeOf(FLast), 0);
-  FillChar(FStack, SizeOf(FStack), 0);
-  FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
-  FillChar(FStackCount, SizeOf(FStackCount), 0);
+  //FillChar(FStack, SizeOf(FStack), 0);
+  //FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
+  //FillChar(FStackCount, SizeOf(FStackCount), 0);
 end;
 
 constructor TJvHookInfos.Create(AHandle: HWND);
@@ -509,9 +506,9 @@ begin
   FHandle := AHandle;
   FillChar(FFirst, SizeOf(FFirst), 0);
   FillChar(FLast, SizeOf(FLast), 0);
-  FillChar(FStack, SizeOf(FStack), 0);
-  FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
-  FillChar(FStackCount, SizeOf(FStackCount), 0);
+  //FillChar(FStack, SizeOf(FStack), 0);
+  //FillChar(FStackCapacity, SizeOf(FStackCapacity), 0);
+  //FillChar(FStackCount, SizeOf(FStackCount), 0);
 end;
 
 procedure TJvHookInfos.DecDepth;
@@ -663,9 +660,12 @@ end;
 procedure TJvHookInfos.WindowProc(var Msg: TMessage);
 var
   TmpHookInfo: PJvHookInfo;
-  { Current is used to travel through the hook infos; Current^ points to the
-    current hook info (and might be nil) }
-  CurrentHookInfo: PPJvHookInfo; // (rb) I think this var could be eliminated with code optimalization
+  { FStack[Index] is used to travel through the hook infos;
+    FStack[Index] points to the current hook info (and might be nil)
+    Note that the address of FStack may change due to ReallocMem calls in
+    IncDepth; thus we can't assign FStack[Index] to a local var.
+  }
+  Index: Integer;
 begin
   { An object can now report for every possible message that he has
     handled that message, thus preventing the original control from
@@ -679,17 +679,17 @@ begin
   // (rb) Don't know what the performance impact of a try..finally is.
   try
     { The even members in the stack are hoBeforeMsg hooks }
-    CurrentHookInfo := @FStack[2 * (FStackCount - 1)];
-    CurrentHookInfo^ := FFirst[hoBeforeMsg];
-    while Assigned(CurrentHookInfo^) do
+    Index := 2 * (FStackCount - 1);
+    FStack[Index] := FFirst[hoBeforeMsg];
+    while Assigned(FStack[Index]) do
     begin
-      TmpHookInfo := CurrentHookInfo^;
       { We retrieve the next hook info *before* the call to Hook(), because,
         see (I) }
-      CurrentHookInfo^ := CurrentHookInfo^.Next;
+      TmpHookInfo := FStack[Index];
+      FStack[Index] := FStack[Index].Next;
       if TmpHookInfo.Hook(Msg) or FControlDestroyed then
         Exit;
-      { CurrentHookInfo^ may now be changed because of register/unregister calls
+      { FStack[Index] may now be changed because of register/unregister calls
         inside HookInfo.Hook(Msg). }
     end;
 
@@ -701,7 +701,7 @@ begin
     if TMethod(FOldWndProc).Data <> nil then
       FOldWndProc(Msg)
     else
-      if TMethod(FOldWndProc).Code <> nil then
+    if TMethod(FOldWndProc).Code <> nil then
       Msg.Result := CallWindowProc(TMethod(FOldWndProc).Code, Handle, Msg.Msg,
         Msg.WParam, Msg.LParam);
 
@@ -709,12 +709,12 @@ begin
       Exit;
 
     { The odd members in the list are hoAftermsg hooks }
-    CurrentHookInfo := @FStack[2 * FStackCount - 1];
-    CurrentHookInfo^ := FFirst[hoAfterMsg];
-    while Assigned(CurrentHookInfo^) do
+    Index := 2 * FStackCount - 1;
+    FStack[Index] := FFirst[hoAfterMsg];
+    while Assigned(FStack[Index]) do
     begin
-      TmpHookInfo := CurrentHookInfo^;
-      CurrentHookInfo^ := CurrentHookInfo^.Next;
+      TmpHookInfo := FStack[Index];
+      FStack[Index] := FStack[Index].Next;
       if TmpHookInfo.Hook(Msg) or FControlDestroyed then
         Exit;
     end;
@@ -729,11 +729,11 @@ begin
          HookInfos before                                HookInfos after
          call to Hook()                                  call to Hook()
 
-        |----------|  If CurrentHookInfo^ point to A     |----------|
+        |----------|  If FStack[Index] point to A        |----------|
      -->| hook A   |  (arrow) and hook A deletes itself  | hook B   |<--
         |----------|  then after the call to Hook,       |----------|
-        | hook B   |  CurrentHookInfo^ point to B. If we | hook C   |
-        |----------|  then call Next, CurrentHookInfo^   |----------|
+        | hook B   |  FStack[Index] points to B. If we   | hook C   |
+        |----------|  then call Next, FStack[Index]      |----------|
         | hook C   |  points to C (should be B)
         |----------|
       }
