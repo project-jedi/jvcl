@@ -48,7 +48,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TWelcomeForm.FormShow(Sender: TObject);
 begin

@@ -1,3 +1,27 @@
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2002 Project JEDI
+
+ Original author:
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may
+ not use this file except in compliance with the License. You may
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+
 unit MainFrm;
 
 interface
@@ -136,7 +160,6 @@ type
     FFilename: string;
     procedure SetModified(const Value: boolean);
   private
-    { Private declarations }
     FSurvey: IJvSurvey;
     FLastNode: TTreeNode;
     procedure SaveData(Node: TTreeNode);
@@ -159,7 +182,6 @@ type
     property Filename: string read FFilename write FFilename;
     property Modified: boolean read FModified write SetModified;
   public
-    { Public declarations }
   end;
 
 var
@@ -185,14 +207,14 @@ implementation
 uses
   JvSurveyUtils, JclMiscel;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   CreateEverything;
   LoadSettings;
   // set Modified to false after all updates are finished
-  PostMessage(Handle,WM_USER + 1,0,0);
+  PostMessage(Handle,WM_USER + 1, 0, 0);
 end;
 
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -297,7 +319,7 @@ end;
 
 function TfrmMain.SaveFile: boolean;
 const
-  aFormat:array [1..3] of TJvSurveyFileFormat = (ffBinary,ffText,ffText);
+  aFormat: array [1..3] of TJvSurveyFileFormat = (ffBinary,ffText,ffText);
 begin
   Result := true;
   if (Filename = '') then
@@ -613,7 +635,7 @@ begin
     Exit;
   end;
   if SaveFile then
-    WinExec32AndWait(S + ' ' + Filename,SW_SHOWNORMAL);
+    WinExec32AndWait(S + ' ' + Filename, SW_SHOWNORMAL);
 end;
 
 procedure TfrmMain.WMUser1(var Msg: TMessage);

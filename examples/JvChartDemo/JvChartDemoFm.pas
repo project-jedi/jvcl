@@ -81,10 +81,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure SpeedButton13Click(Sender: TObject);
   private
-    { Private declarations }
   public
-    { Public declarations }
-
   end;
 
 var
@@ -92,7 +89,7 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvChartDemoForm.ButtonNewValuesClick(Sender: TObject);
 var

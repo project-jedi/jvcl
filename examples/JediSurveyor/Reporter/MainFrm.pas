@@ -1,4 +1,29 @@
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2002 Project JEDI
+
+ Original author:
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may
+ not use this file except in compliance with the License. You may
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+
 {$I jvcl.inc}
+
 unit MainFrm;
 
 interface
@@ -77,7 +102,6 @@ type
     procedure acCommentsExecute(Sender: TObject);
     procedure acDupeWarningExecute(Sender: TObject);
   private
-    { Private declarations }
     FFilename: string;
     FResponses: TStringlist;
     FCurrentItem: IJvSurveyItem;
@@ -95,7 +119,6 @@ type
     function GetReportHTMLSummary: string;
     procedure UpdateStatusBar;
   public
-    { Public declarations }
   end;
 
 var
@@ -105,10 +128,12 @@ resourcestring
   SAddUserResponseTitle = 'Add User Response File(s)';
 
 implementation
+
 uses
   JvSurveyUtils, JclStrings, Math, JvSimpleXML, JvJCLUtils, CommentsFrm;
 
-{$R *.DFM}
+{$R *.dfm}
+
 resourcestring
   SFmtInvalidResponseFile =
     'The file "%s" is not compatible with the currently loaded survey: please select another response file.';

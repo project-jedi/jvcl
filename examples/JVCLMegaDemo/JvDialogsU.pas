@@ -167,8 +167,10 @@ type
 
 implementation
 
-uses FindReplaceMainFormU;
-{$R *.DFM}
+uses
+  FindReplaceMainFormU;
+
+{$R *.dfm}
 
 procedure TJvDialogs.Button17Click(Sender: TObject);
 begin

@@ -80,7 +80,7 @@ uses
   jvMagnetformdemo,
   jvGradientformdemo;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvFormsFrm.BitBtn1Click(Sender: TObject);
 begin

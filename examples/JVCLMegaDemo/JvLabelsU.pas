@@ -54,7 +54,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvLabelsFrm.JvBouncingLabel1Click(Sender: TObject);
 begin
