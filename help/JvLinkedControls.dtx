@@ -29,7 +29,7 @@ Description
 Summary
   Specifies how the linked control is affected by changes to the owning control.
 Description
-  Use options to specify how Control is modified when the owning control's Enabled and/Or checked state changes.
+  Use options to specify how Control is modified when the owning control's enabled and/Or checked state changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControls
 Summary
@@ -71,6 +71,12 @@ Description
   Link the Checked state of the owning control to the Enabled state of the linked control.
 @@TJvLinkedControlsOption.loLinkEnabled
   Link the Enabled state of the owning control to the Enabled state of the linked control.
+@@TJvLinkedControlsOption.loInvertChecked
+  Changes the result of the loLinkChecked test, that is, when the owning controls
+  Checked state is false, the linked control is enabled and vice versa.
+@@TJvLinkedControlsOption.loLinkEnabled
+  Changes the result of the loLinkEnabled test, that is, when the owning controls
+  Enabled state is false, the linked control is enabled and vice versa.
 ----------------------------------------------------------------------------------------------------
 @@TJvLinkedControlsOptions
 <TITLE TJvLinkedControlsOptions type>

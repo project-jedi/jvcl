@@ -390,10 +390,8 @@ begin
     for I := 0 to LinkedControls.Count - 1 do
       with LinkedControls[I] do
         if Control <> nil then
-          Control.Enabled :=
-            ((Options = [loLinkChecked, loLinkEnabled]) and Self.Checked and Self.Enabled) or
-            ((Options = [loLinkChecked]) and Self.Checked) or
-            ((Options = [loLinkEnabled]) and Self.Enabled);
+          Control.Enabled := CheckLinkControlEnabled(Self.Enabled, Self.Checked, Options);
+
 end;
 
 procedure TJvCheckBox.LinkedControlsChange(Sender: TObject);
