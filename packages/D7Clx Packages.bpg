@@ -9,16 +9,17 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = JvQ3rdD7R.bpl JvQCoreD7R.bpl JvQCoreD7D.bpl JvQSystemD7R.bpl JvQSystemD7D.bpl \
-  JvQStdCtrlsD7R.bpl JvQStdCtrlsD7D.bpl JvQCtrlsD7R.bpl JvQCtrlsD7D.bpl \
-  JvQCmpD7R.bpl JvQCmpD7D.bpl JvQCustomD7R.bpl JvQCustomD7D.bpl JvQDlgsD7R.bpl \
-  JvQDlgsD7D.bpl JvQCryptD7R.bpl JvQCryptD7D.bpl JvQValidatorsD7R.bpl \
-  JvQValidatorsD7D.bpl JvQManagedThreadsD7R.bpl JvQManagedThreadsD7D.bpl \
-  JvQMMD7R.bpl JvQMMD7D.bpl JvQJansD7R.bpl JvQJansD7D.bpl JvQNetD7R.bpl \
-  JvQNetD7D.bpl JvQUIBD7R.bpl JvQUIBD7D.bpl JvQWizardD7R.bpl JvQWizardD7D.bpl \
-  JvQAppFrmD7R.bpl JvQAppFrmD7D.bpl JvQHMID7R.bpl JvQHMID7D.bpl JvQEDID7R.bpl \
-  JvQEDID7D.bpl JvQPageCompsD7R.bpl JvQPageCompsD7D.bpl JvQXPCtrlsD7R.bpl \
-  JvQXPCtrlsD7D.bpl JvQInspectorD7R.bpl JvQInspectorD7D.bpl
+PROJECTS = JvQ3rdD7R.bpl JvQCoreD7R.bpl JvQCoreD7D.bpl JvQSystemD7R.bpl \
+  JvQSystemD7D.bpl JvQStdCtrlsD7R.bpl JvQStdCtrlsD7D.bpl JvQCtrlsD7R.bpl \
+  JvQCtrlsD7D.bpl JvQCmpD7R.bpl JvQCmpD7D.bpl JvQCustomD7R.bpl JvQCustomD7D.bpl \
+  JvQDlgsD7R.bpl JvQDlgsD7D.bpl JvQCryptD7R.bpl JvQCryptD7D.bpl \
+  JvQValidatorsD7R.bpl JvQValidatorsD7D.bpl JvQManagedThreadsD7R.bpl \
+  JvQManagedThreadsD7D.bpl JvQMMD7R.bpl JvQMMD7D.bpl JvQJansD7R.bpl \
+  JvQJansD7D.bpl JvQNetD7R.bpl JvQNetD7D.bpl JvQUIBD7R.bpl JvQUIBD7D.bpl \
+  JvQWizardD7R.bpl JvQWizardD7D.bpl JvQAppFrmD7R.bpl JvQAppFrmD7D.bpl \
+  JvQHMID7R.bpl JvQHMID7D.bpl JvQEDID7R.bpl JvQEDID7D.bpl JvQPageCompsD7R.bpl \
+  JvQPageCompsD7D.bpl JvQXPCtrlsD7R.bpl JvQXPCtrlsD7D.bpl JvQInspectorD7R.bpl \
+  JvQInspectorD7D.bpl JvQDBD7R.bpl JvQDBD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -151,4 +152,11 @@ JvQInspectorD7R.bpl: d7clx\JvQInspectorD7R.dpk
 
 JvQInspectorD7D.bpl: d7clx\JvQInspectorD7D.dpk
   $(DCC)
+
+JvQDBD7R.bpl: d7clx\JvQDBD7R.dpk
+  $(DCC)
+
+JvQDBD7D.bpl: d7clx\JvQDBD7D.dpk
+  $(DCC)
+
 
