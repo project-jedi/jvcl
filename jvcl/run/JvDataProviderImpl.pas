@@ -4459,6 +4459,7 @@ end;
 procedure TJvCustomDataConsumerViewList.DataProviderChanged(ADataProvider: IJvDataProvider;
   AReason: TDataProviderChangeReason; Source: IUnknown);
 var
+  Item: IJvDataItem;
   ParItem: IJvDataItem;
   ParIdx: Integer;
 begin
@@ -4468,35 +4469,45 @@ begin
         // Source is a reference to the new item
         if (Source <> nil) then
         begin
-          ParItem := IJvDataItem(Source).GetItems.GetParent;
-          if ParItem <> nil then
-          begin
-            ParIdx := IndexOfItem(ParItem);
-            if (ParIdx < 0) and ExpandOnNewItem then
+          ConsumerImpl.Enter;
+          try
+            Item := (ConsumerImpl.ProviderIntf.GetItems as IJvDataIDSearch).Find(
+              IJvDataItem(Source).GetID, True);
+            if (Item <> nil) then
             begin
-              // Make sure the tree is expanded up to the parent item
-              ExpandTreeTo(ParItem);
-              ParIdx := IndexOfItem(ParItem);
-            end;
-            if ParIdx >= 0 then
-            begin
-              if not ItemIsExpanded(ParIdx) and ExpandOnNewItem then
+              ParItem := Item.GetItems.GetParent;
+              if ParItem <> nil then
               begin
-                // Expand parent item; will retrieve all sub items, including the newly added item
-                if not ItemHasChildren(ParIdx) then
-                  UpdateItemFlags(ParIdx, vifHasChildren + vifCanHaveChildren, vifHasChildren + vifCanHaveChildren);
-                ToggleItem(ParIdx);
+                ParIdx := IndexOfItem(ParItem);
+                if (ParIdx < 0) and ExpandOnNewItem then
+                begin
+                  // Make sure the tree is expanded up to the parent item
+                  ExpandTreeTo(ParItem);
+                  ParIdx := IndexOfItem(ParItem);
+                end;
+                if ParIdx >= 0 then
+                begin
+                  if not ItemIsExpanded(ParIdx) and ExpandOnNewItem then
+                  begin
+                    // Expand parent item; will retrieve all sub items, including the newly added item
+                    if not ItemHasChildren(ParIdx) then
+                      UpdateItemFlags(ParIdx, vifHasChildren + vifCanHaveChildren, vifHasChildren + vifCanHaveChildren);
+                    ToggleItem(ParIdx);
+                  end
+                  else if ItemIsExpanded(ParIdx) then
+                    // parent is expanded, add the new item to the view.
+                    AddChildItem(ParIdx, Item);
+                end;
               end
-              else if ItemIsExpanded(ParIdx) then
-                // parent is expanded, add the new item to the view.
-                AddChildItem(ParIdx, IJvDataItem(Source));
+              else
+              begin
+                // Item at the root; always add it
+                AddChildItem(-1, IJvDataItem(Item));
+                NotifyViewChanged;
+              end;
             end;
-          end
-          else
-          begin
-            // Item at the root; always add it
-            AddChildItem(-1, IJvDataItem(Source));
-            NotifyViewChanged;
+          finally
+            ConsumerImpl.Leave;
           end;
         end;
       end;
