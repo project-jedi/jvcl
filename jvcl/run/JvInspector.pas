@@ -4433,7 +4433,9 @@ function TJvCustomInspector.EventFilter(Sender: QObjectH; Event: QEventH): Boole
 begin
   Result := False;
   if (Sender <> Handle) and Assigned(Selected) {and (Selected.EditCtrl.Handle = Sender)} then
-    Result := Selected.EventFilter(Sender, Event);
+    Result := Selected.EventFilter(Sender, Event)
+  else if Sender = Handle then
+    Result := inherited EventFilter(Sender, Event);
 end;
 {$ENDIF VisualCLX}
 
