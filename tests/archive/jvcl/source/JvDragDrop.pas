@@ -38,18 +38,26 @@ type
   TJvDragDrop = class(TJvComponent)
   private
     FAcceptDrag: Boolean;
-    FHandle: THandle;
+    { (rb) Don't remember FHandle, it may be changed, for instance by
+      setting FormStyle }
+    //FHandle: THandle;
     FFiles: TStringList;
     FOnDrop: TDropEvent;
-    procedure DropFiles(Handle: HDrop);
-    procedure SetAccept(Value: Boolean);
+    FIsHooked: Boolean;
+    procedure DropFiles(Handle: HDROP);
+    procedure SetAcceptDrag(Value: Boolean);
     function WndProc(var Msg: TMessage): Boolean;
+  protected
+    procedure HookControl;
+    procedure UnHookControl;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    { (rb) Should be changed to TStrings }
     property Files: TStringList read FFiles;
   published
-    property AcceptDrag: Boolean read FAcceptDrag write SetAccept default True;
+    property AcceptDrag: Boolean read FAcceptDrag write SetAcceptDrag default True;
     property OnDrop: TDropEvent read FOnDrop write FOnDrop;
   end;
 
@@ -63,33 +71,32 @@ begin
   inherited Create(AOwner);
   FAcceptDrag := True;
   FFiles := TStringList.Create;
-  if not (csDesigning in ComponentState) then
-  begin
-    if Owner is TWinControl then
-    begin
-      FHandle := TWinControl(Owner).Handle;
-      RegisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
-    end
-    else
-      // (rom) to Loaded? 
-      FAcceptDrag := False;
-  end;
-  SetAccept(FAcceptDrag);
+  FIsHooked := False;
 end;
 
 destructor TJvDragDrop.Destroy;
 begin
   FFiles.Free;
-  if (Owner is TWinControl) and not (csDesigning in ComponentState) then
-    UnregisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
+  { (rb) Actually Owner now = nil, thus the unhooking is already done, in the
+    function TJvWndProcHook.Notification }
+  UnHookControl;
   inherited Destroy;
 end;
 
-procedure TJvDragDrop.SetAccept(Value: Boolean);
+procedure TJvDragDrop.SetAcceptDrag(Value: Boolean);
 begin
   FAcceptDrag := Value;
-  if not (csDesigning in ComponentState) then
-    DragAcceptFiles(FHandle, FAcceptDrag);
+  if [csDesigning, csLoading] * ComponentState <> [] then
+    Exit;
+
+  if Owner is TWinControl then
+  begin
+    DragAcceptFiles(TWinControl(Owner).Handle, FAcceptDrag);
+    if FAcceptDrag then
+      HookControl
+    else
+      UnHookControl;
+  end;
 end;
 
 function TJvDragDrop.WndProc(var Msg: TMessage): boolean;
@@ -99,7 +106,7 @@ begin
     DropFiles(HDrop(Msg.wParam))
 end;
 
-procedure TJvDragDrop.DropFiles(Handle: HDrop);
+procedure TJvDragDrop.DropFiles(Handle: HDROP);
 var
   pszFileWithPath, pszFile: PChar;
   iFile, iStrLen, iTempLen: Integer;
@@ -132,6 +139,30 @@ begin
     FOnDrop(Self, MousePt, FFiles);
   end;
   DragFinish(Handle);
+end;
+
+procedure TJvDragDrop.Loaded;
+begin
+  inherited Loaded;
+  SetAcceptDrag(FAcceptDrag);
+end;
+
+procedure TJvDragDrop.HookControl;
+begin
+  if FIsHooked then Exit;
+
+  if (Owner is TWinControl) and not (csDesigning in ComponentState) then
+    FIsHooked := RegisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
+end;
+
+procedure TJvDragDrop.UnHookControl;
+begin
+  if not FIsHooked then Exit;
+
+  FIsHooked := False;
+
+  if (Owner is TWinControl) and not (csDesigning in ComponentState) then
+    UnRegisterWndProcHook(TWinControl(Owner), WndProc, hoBeforeMsg);
 end;
 
 end.
