@@ -38,12 +38,12 @@ interface
 uses
   Messages, SysUtils, Classes, Graphics, Controls,
   ExtCtrls, Buttons,
-  JvButtons;
+  JvButtons, JvComponent, JvTypes;
 
 type
   TButtonClick = procedure(Sender: TObject; Button: Integer) of object;
 
-  TJvComponentPanel = class(TCustomPanel)
+  TJvComponentPanel = class(TJvCustomPanel)
   private
     FButtonWidth: Integer;
     FButtonHeight: Integer;
@@ -108,10 +108,12 @@ type
 
 implementation
 
-uses
-  JvTypes;
-
-{$R ..\resources\JvComponentPanel.res}
+{$IFDEF MSWINDOWS}
+ {$R ..\Resources\JvComponentPanel.res}
+{$ENDIF}
+{$IFDEF LINUX}
+ {$R ../Resources/JvComponentPanel.res}
+{$ENDIF}
 
 constructor TJvComponentPanel.Create(AOwner: TComponent);
 begin
