@@ -33,9 +33,10 @@ object FrameDirEditBrowse: TFrameDirEditBrowse
     ParentFont = False
     ReadOnly = True
     TabOrder = 0
+    OnClick = EditDirectoryClick
     OnEnter = EditDirectoryEnter
   end
-  object BtnJCLDirBrowse: TButton
+  object BtnDirBrowse: TButton
     Left = 288
     Top = 24
     Width = 21
@@ -45,6 +46,6 @@ object FrameDirEditBrowse: TFrameDirEditBrowse
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
-    OnClick = BtnJCLDirBrowseClick
+    OnClick = BtnDirBrowseClick
   end
 end

@@ -255,7 +255,7 @@ object FrameConfigPage: TFrameConfigPage
         Left = 7
         Width = 208
       end
-      inherited BtnJCLDirBrowse: TButton
+      inherited BtnDirBrowse: TButton
         Left = 216
       end
     end
@@ -279,7 +279,7 @@ object FrameConfigPage: TFrameConfigPage
         Left = 7
         Width = 208
       end
-      inherited BtnJCLDirBrowse: TButton
+      inherited BtnDirBrowse: TButton
         Left = 216
       end
     end
@@ -310,8 +310,9 @@ object FrameConfigPage: TFrameConfigPage
         ParentShowHint = False
         ShowHint = True
       end
-      inherited BtnJCLDirBrowse: TButton
+      inherited BtnDirBrowse: TButton
         Left = 216
+        OnClick = FrameDirEditBrowseHPPBtnJCLDirBrowseClick
       end
     end
     object CheckBoxGenerateMapFiles: TCheckBox
