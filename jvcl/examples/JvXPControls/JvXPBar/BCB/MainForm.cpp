@@ -76,7 +76,7 @@ void __fastcall TfrmMain::DoEnableToggle(TControl *Control)
   if (dynamic_cast<TJvXPBar*>(Control))
     for(int i = 0; i < dynamic_cast<TJvXPBar*>(Control)->Items->Count; i++)
       if ((i % 2) == 1)
-        (*dynamic_cast<TJvXPBar*>(Control)->Items)[i]->Enabled = !(*dynamic_cast<TJvXPBar*>(Control)->Items)[i]->Enabled;
+        dynamic_cast<TJvXPBar*>(Control)->Items->Items[i]->Enabled = !dynamic_cast<TJvXPBar*>(Control)->Items->Items[i]->Enabled;
 }
 
 void __fastcall TfrmMain::DoVisibleToggle(TControl *Control)
@@ -84,7 +84,7 @@ void __fastcall TfrmMain::DoVisibleToggle(TControl *Control)
   if (dynamic_cast<TJvXPBar*>(Control))
     for (int i = 0; i < dynamic_cast<TJvXPBar*>(Control)->Items->Count; i++)
       if ((i % 2) == 1)
-        (*dynamic_cast<TJvXPBar*>(Control)->Items)[i]->Visible = !(*dynamic_cast<TJvXPBar*>(Control)->Items)[i]->Visible;
+        dynamic_cast<TJvXPBar*>(Control)->Items->Items[i]->Visible = !dynamic_cast<TJvXPBar*>(Control)->Items->Items[i]->Visible;
 }
 
 void __fastcall TfrmMain::BuildStructure()
@@ -98,8 +98,8 @@ void __fastcall TfrmMain::BuildStructure()
       if (ABar->ControlCount == 0)
       for(int j = 0; j < ABar->Items->Count; j++)
       {
-        TTreeNode* Child = tvSelfView->Items->AddChild(Parent,(*ABar->Items)[j]->Caption);
-        Child->ImageIndex = (*ABar->Items)[j]->ImageIndex;
+        TTreeNode* Child = tvSelfView->Items->AddChild(Parent,ABar->Items->Items[j]->Caption);
+        Child->ImageIndex = ABar->Items->Items[j]->ImageIndex;
         Child->SelectedIndex = Child->ImageIndex;
       }
     }

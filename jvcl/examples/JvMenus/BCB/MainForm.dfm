@@ -15,9 +15,6 @@ object frmMain: TfrmMain
   Menu = jmnMain
   OldCreateOrder = False
   Position = poScreenCenter
-  DesignSize = (
-    453
-    273)
   PixelsPerInch = 96
   TextHeight = 13
   object pnlPopup: TPanel
@@ -39,7 +36,6 @@ object frmMain: TfrmMain
     ButtonWidth = 39
     Caption = 'JvToolBar'
     Flat = True
-    Menu = jmnMain
     ShowCaptions = True
     TabOrder = 1
   end

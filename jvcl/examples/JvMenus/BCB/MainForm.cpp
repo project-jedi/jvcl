@@ -60,7 +60,7 @@ void __fastcall TfrmMain::btnAddItemsClick(TObject *Sender)
   jmnMain->Items->Add(item);
   item = new TMenuItem(this);
   item->Caption = "Below Add";
-  jmnMain->Items->operator [](3)->Add(item);
+  jmnMain->Items->Items[3]->Add(item);
 }
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::btnChangeCaptionClick(TObject *Sender)

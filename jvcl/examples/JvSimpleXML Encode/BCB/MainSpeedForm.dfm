@@ -14,9 +14,6 @@ object frmSpeedTest: TfrmSpeedTest
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnResize = FormResize
-  DesignSize = (
-    672
-    361)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

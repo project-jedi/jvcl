@@ -14,9 +14,6 @@ object frmMain: TfrmMain
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  DesignSize = (
-    456
-    191)
   PixelsPerInch = 96
   TextHeight = 13
   object cntHeader: TJvXPContainer

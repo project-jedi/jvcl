@@ -47,7 +47,7 @@ void __fastcall TfrmMain::btnLoadClick(TObject *Sender)
 //---------------------------------------------------------------------------
 void __fastcall TfrmMain::btnValidateClick(TObject *Sender)
 {
-  (*sbResults->Panels)[0]->Text = "Validating...";
+  sbResults->Panels->Items[0]->Text = "Validating...";
   sbResults->Update();
   Screen->Cursor = crHourGlass;
   try
@@ -55,11 +55,11 @@ void __fastcall TfrmMain::btnValidateClick(TObject *Sender)
     try
     {
       JvSimpleXml1->LoadFromString(reXML->Lines->Text);
-      (*sbResults->Panels)[0]->Text = "No errors encountered in XML";
+      sbResults->Panels->Items[0]->Text = "No errors encountered in XML";
     }
     catch (Exception &E)
     {
-        (*sbResults->Panels)[0]->Text = E.Message;
+        sbResults->Panels->Items[0]->Text = E.Message;
     }
   }
   __finally

@@ -128,6 +128,8 @@ object frmMain: TfrmMain
             FFFFFFC003FFFF8001FFFF8001FFFF8001FFFF8001FFFFC001FFFFC003FFFFC0
             03FFFFC003FFFFC003FFFFC003FFFFC003FFFFC003FFFFC003FFFFE007FF}
           RollStep = 5
+          ShowItemFrame = False
+          RoundedItemFrame = 0
           Align = alTop
           ParentFont = False
           object tvSelfView: TTreeView
@@ -250,6 +252,8 @@ object frmMain: TfrmMain
             0000000000000000000080000000F8000000F8000000F8000000F8000000F800
             0000F8000001C000000FE007E00FF00FE01FF81C001FFC3E003FFE7F00FF}
           RollStep = 5
+          ShowItemFrame = False
+          RoundedItemFrame = 0
           Align = alTop
           ParentFont = False
         end
@@ -316,6 +320,8 @@ object frmMain: TfrmMain
             0000000000000000000000000000000000000000000100000001800000038000
             0007C000000FE000001FF000003FF800007FFC0000FFFF0003FFFFE01FFF}
           RollStep = 5
+          ShowItemFrame = False
+          RoundedItemFrame = 0
           Align = alTop
           ParentFont = False
         end
@@ -326,7 +332,6 @@ object frmMain: TfrmMain
           Height = 35
           Caption = 'Settings'
           Collapsed = True
-          Colors.GradientFrom = clCream
           Items = <
             item
               Action = acSettingsDatabase
@@ -412,6 +417,8 @@ object frmMain: TfrmMain
             E000001F800100000001800000018000000180000001C0000003C0000007E000
             000FFC00009FFC0000FFFC0000FFFC0100FFFE0303FFFFC38FFFFFFFFFFF}
           RollStep = 5
+          ShowItemFrame = False
+          RoundedItemFrame = 0
           Align = alTop
         end
         object dxWinXPBar1: TJvXPBar
@@ -506,6 +513,8 @@ object frmMain: TfrmMain
             01FFF00000FFF80000FFF80001FFFC0003FFFC0001FFFC0000FFFE00007FFE00
             003FFE00001FFF00000FFF00000FFF00001FFF80003FFFFC007FFFFFE0FF}
           RollStep = 5
+          ShowItemFrame = False
+          RoundedItemFrame = 0
           Align = alTop
         end
       end
