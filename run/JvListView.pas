@@ -67,7 +67,6 @@ type
     FOnVerticalScroll: TNotifyEvent;
   protected
     function CreateListItem: TListItem; override;
-    procedure ColClick(Column: TListColumn); override;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMNotify(var Msg: TWMNotify); message CN_NOTIFY;
@@ -82,6 +81,7 @@ type
     procedure SetItemPopup(Node: TListItem; Value: TPopupMenu);
     function GetItemPopup(Node: TListItem): TPopupMenu;
   public
+    procedure ColClick(Column: TListColumn); override;
     constructor Create(AOwner: TComponent); override;
     procedure SaveToFile(FileName: string; ForceOldStyle: Boolean = False);
     procedure LoadFromFile(FileName: string);
