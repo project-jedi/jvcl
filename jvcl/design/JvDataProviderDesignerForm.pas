@@ -91,12 +91,7 @@ procedure DesignProvider(AProvider: IJvDataProvider;
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 uses
   CommCtrl,

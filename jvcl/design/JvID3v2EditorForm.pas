@@ -137,21 +137,12 @@ procedure ShowFileInfo(AController: TJvID3Controller);
 implementation
 
 uses
-  {$IFDEF VCL}
   Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs,
-  {$ENDIF VisualCLX}
   Math, SysUtils,
   JvID3v2DefineForm, JvTypes, JvDsgnConsts;
 
-{$IFDEF VCL}
+
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 type
   TJvID3ControllerAccess = class(TJvID3Controller);

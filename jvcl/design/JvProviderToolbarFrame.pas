@@ -49,12 +49,7 @@ type
 
 implementation
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure TfmeJvProviderToolbar.ResizeContextsComboBox;
 begin

@@ -96,12 +96,7 @@ uses
   {$ENDIF UNITVERSIONING}
   JvConsts, JvResources, JvTypes;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm

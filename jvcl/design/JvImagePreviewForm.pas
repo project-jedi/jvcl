@@ -88,12 +88,7 @@ uses
   JclStrings, 
   JvConsts, JvJVCLUtils, JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function SelectImage(var AFileName: string; const Extensions, Filter: string): Boolean;
 var

@@ -78,12 +78,7 @@ implementation
 uses
   JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function IsConsumerItemSelectForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

@@ -107,20 +107,10 @@ type
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts, Buttons,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts, QButtons,
-  {$ENDIF VisualCLX}
   JvDsgnConsts, JvDsgnTypes;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function FindEditor(Manager: TJvPageManager): TJvProxyEditor;
 var

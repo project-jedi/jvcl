@@ -137,12 +137,7 @@ uses
   TypInfo,
   JvErrorIndicator, JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure ShowEditor(Designer: IDesigner; AValidator: TJvValidators);
 var

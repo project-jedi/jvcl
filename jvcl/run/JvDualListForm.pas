@@ -90,12 +90,7 @@ uses
   Consts,  
   JvBoxProcs;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 procedure TJvDualListForm.CreateParams(var Params: TCreateParams);
