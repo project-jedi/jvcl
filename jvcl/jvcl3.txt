@@ -1,1 +1,65 @@
 Dev folders for moving JVCL to 3.0
+
+TODO:
+* Split packages into several smaller packages
+  Naming convention:
+    Jv<name><compiler>(D|R).dpk/.bpk
+    where 
+    <name> - the descriptive name of the package, i.e "Core" for the core package
+    <compiler> - a short name for the compiler. The following names should be used: D5, D6, D7, B5, B6, K2 and K3
+    (D|R) - signifies if it's a design- (D) or run-time (R) package
+  Example:
+    JvCoreB5R.bpk - core run-time package for BCB 5
+    JvCoreD7D.dpk - core design-time package for Delphi 7
+
+  Probable packages (base name only):
+    JvCore - core units, support units
+    JvCmp - non-visual components
+    JvSystem - system related components
+    JvCtrls - visual controls
+    JvStdCtrls - enhanced standard controls
+    JvCustom - custom components
+    JvNet - network (modem WAN, LAN etc) related components
+    JvMM - multimedia and images
+    JvCrypt - encryption and compression
+    JvDlgs - dialog components
+    JvInterpreter - JvInterpreter components
+    JvAppFrm - Application and Form components
+    JvDB - non-db specific DB components
+    JvBDE - bde specific DB components
+    JvOther - deprecated, duplicated or non-conformant
+
+* Each design package has it's own reg file named from the package (i.e reg unit for JvCoreD7D.dpk is named JvCoreReg.pas). 
+  Design editors may have a register procedure in it's own unit, 
+  but this is discouraged, especially for new units
+* Put packages for each compiler version in it's own folder
+  Package folder names hould be d5, d6, d7,bcb5,bcb6,k2 and k3
+* Put sources for design and run-time in separate folders
+* Put resources in a common folder. This folder is \resources
+* Put INC and common files (like API translations) in a common folder. This folder is \common.
+* Merge/remove remaining duplicates
+* Change palette layout
+* Create one DCR file for each design package
+* Implement IFiller
+* Implement XP theming
+* Add remaining donations:
+
+  Globus (Andrey Chudin)
+  Jans (Jan Verhoeven)
+  UIB (Henri Gourvest)(?)   
+
+  ManagedThreads (Erwin Molendijk)(?) 
+  Print Preview (peter3)
+  Validators (peter3)
+  Error Provider (peter3)
+  TreeView w. Checkbox and RadioButton support (peter3)
+  VS.NET style TreeView and JvPageList (peter3)
+  LED control (marcelb)
+  XML Database (sebastien)
+  JvAviCAP (obones)
+  JvStructStorage (peter3) (?)
+  TreeViewCombo and DirPathCombo (mbeck)
+  ExpressionEdit (rbarre) (?)
+  GoogleSearcher (Basri Kanca)(?)
+  TDBRadioGroup based on TPanel (anonymous)
+  
