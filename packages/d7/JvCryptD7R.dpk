@@ -44,11 +44,9 @@ requires
 contains
   JvZlibMultiple in '..\..\run\JvZlibMultiple.pas' ,
   JvCabFile in '..\..\run\JvCabFile.pas' ,
-  JvCaesarCipher in '..\..\run\JvCaesarCipher.pas' ,
+  JvCipher in '..\..\run\JvCipher.pas' ,
   JvGenetic in '..\..\run\JvGenetic.pas' ,
-  JvSerialMaker in '..\..\run\JvSerialMaker.pas' ,
-  JvVigenereCipher in '..\..\run\JvVigenereCipher.pas' ,
-  JvXorCipher in '..\..\run\JvXorCipher.pas' 
+  JvSerialMaker in '..\..\run\JvSerialMaker.pas'
   ;
 
 end.
