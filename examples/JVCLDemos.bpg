@@ -33,7 +33,11 @@ PROJECTS = EditorDemo.exe MessengerDemo.exe Philosophers.exe Balls.exe \
   InspExample.exe ImageWindowDemo.exe JvID3v2Demo.exe JvID3v1Demo.exe \
   JvHtmlParserProj.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe \
   RxGIFAnm.exe prjControls.exe FindReplaceDemo.exe FileDirDemo.exe JvEdits.exe \
-  DSAExamples.exe MessageDlgEditor.exe JvDomainUpDownDemo.exe JvDialogsDemo.exe
+  DSAExamples.exe MessageDlgEditor.exe JvDomainUpDownDemo.exe JvDialogsDemo.exe \
+  StoredProc.exe Script.exe MetaData.exe Query.exe QueryStream.exe \
+  Restore.exe QuickScript.exe BlobStream.exe api1.exe api10.exe api2.exe api3.exe \
+  api4.exe api5.exe api6.exe api7.exe api8.exe StartBackup.exe StartRestore.exe \
+  DataPump.exe cursor.exe BlobSample.exe Backup.exe Server.exe Client.exe UIB.dll
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -315,6 +319,84 @@ JvDomainUpDownDemo.exe: JvDomainUpDown\JvDomainUpDownDemo.dpr
   $(DCC)
 
 JvDialogsDemo.exe: JvDialogs\JvDialogsDemo.dpr
+  $(DCC)
+
+StoredProc.exe: JvUIB\Component\StoredProc\StoredProc.dpr
+  $(DCC)
+
+Script.exe: JvUIB\Component\Script\Script.dpr
+  $(DCC)
+
+MetaData.exe: JvUIB\Component\Metadata\MetaData.dpr
+  $(DCC)
+
+Query.exe: JvUIB\Component\ThreadedQueries\Query.dpr
+  $(DCC)
+
+QueryStream.exe: JvUIB\Component\Stream\QueryStream.dpr
+  $(DCC)
+
+Restore.exe: JvUIB\Component\Restore\Restore.dpr
+  $(DCC)
+
+QuickScript.exe: JvUIB\Component\QuickScript\QuickScript.dpr
+  $(DCC)
+
+BlobStream.exe: JvUIB\Component\Blob\AsStream\BlobStream.dpr
+  $(DCC)
+
+api1.exe: JvUIB\API\api1.dpr
+  $(DCC)
+
+api10.exe: JvUIB\API\api10.dpr
+  $(DCC)
+
+api2.exe: JvUIB\API\api2.dpr
+  $(DCC)
+
+api3.exe: JvUIB\API\api3.dpr
+  $(DCC)
+
+api4.exe: JvUIB\API\api4.dpr
+  $(DCC)
+
+api5.exe: JvUIB\API\api5.dpr
+  $(DCC)
+
+api6.exe: JvUIB\API\api6.dpr
+  $(DCC)
+
+api7.exe: JvUIB\API\api7.dpr
+  $(DCC)
+
+api8.exe: JvUIB\API\api8.dpr
+  $(DCC)
+
+StartBackup.exe: JvUIB\API\StartBackup.dpr
+  $(DCC)
+
+StartRestore.exe: JvUIB\API\StartRestore.dpr
+  $(DCC)
+
+DataPump.exe: JvUIB\Component\DataPump\DataPump.dpr
+  $(DCC)
+
+cursor.exe: JvUIB\Component\Cursor\cursor.dpr
+  $(DCC)
+
+BlobSample.exe: JvUIB\Component\Blob\AsString\BlobSample.dpr
+  $(DCC)
+
+Backup.exe: JvUIB\Component\Backup\Backup.dpr
+  $(DCC)
+
+Server.exe: JvUIB\ClientServer\Server\Server.dpr
+  $(DCC)
+
+Client.exe: JvUIB\ClientServer\Client\Client.dpr
+  $(DCC)
+
+UIB.dll: JvUIB\Automation\UIB.dpr
   $(DCC)
 
 

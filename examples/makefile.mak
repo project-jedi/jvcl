@@ -18,11 +18,14 @@ JCL = ..\..\..\..\JCL\source
 DRC = $&.drc
 SRCP = $(RUN);$(DSGN);$(COM);$(JCL);$(ARCH);$(DCU)
 SRCH = ..\$(RUN);..\$(DSGN);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
+SRCHH = ..\..\$(RUN);..\..\$(DSGN);..\..\$(COM);..\..\$(JCL);..\..\$(ARCH);..\..\$(DCU)
+SRCHHH = ..\..\..\$(RUN);..\..\..\$(DSGN);..\..\..\$(COM);..\..\..\$(JCL);..\..\..\$(ARCH);..\..\..\$(DCU)
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
 DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m
 DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -m
-DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i..\$(SRCH) -n..\..\$(DCU) -r..\$(SRCH) -u..\$(SRCH) -q -w -m
+DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -m
+DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -m
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
@@ -37,19 +40,6 @@ JvChartDemo.exe \
 JvErrorIndicatorDemo.exe \
 JvSpellCheckerDemo.exe \
 JvUrlListGrabberDemo.exe \
-RAControls.exe \
-DBMove.exe \
-DBTree.exe \
-LineNumbers.exe \
-RAEditorTest.exe \
-RAHLEdPropDlgTest.exe \
-ColorHintsTest.exe \
-#SampleProject1.exe \
-JvInterpreterTest.exe \
-DynamicLoad.exe \
-JvInterpreterEndUser.exe \
-MDIapp.exe \
-RANotepad.exe \
 JvZoomProj.exe \
 JvZLibMultipleDemo.exe \
 WndProcHookDemo.exe \
@@ -74,21 +64,9 @@ JvShellHookDemo.exe \
 JvSearchFileProj.exe \
 ScrollWinDemo.exe \
 JvScreenCaptureProj.exe \
-Rxdemo.exe \
 RunDLL32Demo.exe \
 RegEditDemo.exe \
 JvProgressDialogDemo.exe \
-PlugInDemo.exe \
-SamplePluginOne.dll \
-MDIPlugin.dll \
-MDISample.exe \
-ChangePropertiesPlugin.dll \
-PropertiesPlugInDemo.exe \
-ExceptionPlugin.dll \
-ExceptionPlugInDemo.exe \
-DataPlugin.dll \
-DataPlugInDemo.exe \
-JvPlgMainApp.exe \
 JvPlayListProj.exe \
 JvPanelDemo.exe \
 OLBarDemo.exe \
@@ -111,7 +89,6 @@ JvHtmlParserProj.exe \
 BasicDemo.exe \
 CollectionDemo.exe \
 SimpleHIDWrite.exe \
-RxGIFAnm.exe \
 prjControls.exe \
 FindReplaceDemo.exe \
 FileDirDemo.exe \
@@ -119,7 +96,63 @@ JvEdits.exe \
 DSAExamples.exe \
 MessageDlgEditor.exe \
 JvDomainUpDownDemo.exe \
-JvDialogsDemo.exe
+JvDialogsDemo.exe \
+StoredProc.exe \
+Script.exe \
+MetaData.exe \
+Query.exe \
+QueryStream.exe \
+Restore.exe \
+QuickScript.exe \
+BlobStream.exe \
+api1.exe \
+api2.exe \
+api3.exe \
+api4.exe \
+api5.exe \
+api6.exe \
+api7.exe \
+api8.exe \
+api10.exe \
+StartBackup.exe \
+StartRestore.exe \
+DataPump.exe \
+cursor.exe \
+BlobSample.exe \
+Backup.exe \
+Server.exe \
+Client.exe \
+UIB.dll \
+PlugInDemo.exe \
+SamplePluginOne.dll \
+MDIPlugin.dll \
+MDISample.exe \
+ChangePropertiesPlugin.dll \
+PropertiesPlugInDemo.exe \
+ExceptionPlugin.dll \
+ExceptionPlugInDemo.exe \
+DataPlugin.dll \
+DataPlugInDemo.exe \
+plgTest.bpl \
+JvPlgMainApp.exe \
+ 
+# -- These doesn't compile at the moment --
+#Rxdemo.exe \
+#RxGIFAnm.exe \
+#RAControls.exe \
+#DBMove.exe \
+#DBTree.exe \
+#LineNumbers.exe \
+#RAEditorTest.exe \
+#RAHLEdPropDlgTest.exe \
+#ColorHintsTest.exe \
+#SampleProject1.exe \
+#JvInterpreterTest.exe \
+#DynamicLoad.exe \
+#JvInterpreterEndUser.exe \
+#MDIapp.exe \
+#RANotepad.exe 
+
 #---------------------------------------------------------------------------------------------------
 EditorDemo.exe: JvRichEdit\EditorDemo.dpr
   cd JvRichEdit
@@ -211,10 +244,10 @@ ColorHintsTest.exe: RaLib\RaHtHints\ColorHintsTest.dpr
   $(DCCH) $&.dpr
   cd ..\..
 
-#SampleProject1.exe: RaLib\RaInterpreter\samples\project1\SampleProject1.dpr
-#  cd RaLib\RaInterpreter\samples\project1
-#  $(DCCHH) $&.dpr
-#  cd ..\..\..\..
+SampleProject1.exe: RaLib\RaInterpreter\samples\project1\SampleProject1.dpr
+  cd RaLib\RaInterpreter\samples\project1
+  $(DCCHH) $&.dpr
+  cd ..\..\..\..
 
 JvInterpreterTest.exe: RaLib\RaInterpreter\JvInterpreterTest.dpr
   cd RaLib\RaInterpreter
@@ -436,6 +469,11 @@ JvPlgMainApp.exe: JvPlugin\6PluginPackage\PlgMainApp\JvPlgMainApp.dpr
   $(DCCHH) $&.dpr
   cd ..\..\..
 
+plgTest.bpl: JvPlugin\6PluginPackage\PlgPlugin\plgTest.dpk
+  cd JvPlugin\6PluginPackage\PlgPlugin
+  $(DCCHH) $&.dpk
+  cd ..\..\..
+
 JvPlayListProj.exe: JvPlayList\JvPlayListProj.dpr
   cd JvPlayList
   $(DCC) $&.dpr
@@ -591,4 +629,133 @@ JvDialogsDemo.exe: JvDialogs\JvDialogsDemo.dpr
   $(DCC) $&.dpr
   cd ..
 
+StoredProc.exe: JvUIB\Component\StoredProc\StoredProc.dpr
+  cd JvUIB\Component\StoredProc
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+Script.exe: JvUIB\Component\Script\Script.dpr
+  cd JvUIB\Component\Script
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+MetaData.exe: JvUIB\Component\Metadata\MetaData.dpr
+  cd JvUIB\Component\Metadata
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+Query.exe: JvUIB\Component\ThreadedQueries\Query.dpr
+  cd JvUIB\Component\ThreadedQueries
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+QueryStream.exe: JvUIB\Component\Stream\QueryStream.dpr
+  cd JvUIB\Component\Stream
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+Restore.exe: JvUIB\Component\Restore\Restore.dpr
+  cd JvUIB\Component\Restore
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+QuickScript.exe: JvUIB\Component\QuickScript\QuickScript.dpr
+  cd JvUIB\Component\QuickScript
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+BlobStream.exe: JvUIB\Component\Blob\AsStream\BlobStream.dpr
+  cd JvUIB\Component\Blob\AsStream
+  $(DCCHHH) $&.dpr
+  cd ..\..\..\..
+
+api1.exe: JvUIB\API\api1.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api10.exe: JvUIB\API\api10.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api2.exe: JvUIB\API\api2.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api3.exe: JvUIB\API\api3.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api4.exe: JvUIB\API\api4.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api5.exe: JvUIB\API\api5.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api6.exe: JvUIB\API\api6.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api7.exe: JvUIB\API\api7.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+api8.exe: JvUIB\API\api8.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+StartBackup.exe: JvUIB\API\StartBackup.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+StartRestore.exe: JvUIB\API\StartRestore.dpr
+  cd JvUIB\API
+  $(DCCH) $&.dpr
+  cd ..\..
+
+DataPump.exe: JvUIB\Component\DataPump\DataPump.dpr
+  cd JvUIB\Component\DataPump
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+cursor.exe: JvUIB\Component\Cursor\cursor.dpr
+  cd JvUIB\Component\Cursor
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+BlobSample.exe: JvUIB\Component\Blob\AsString\BlobSample.dpr
+  cd JvUIB\Component\Blob\AsString
+  $(DCCHHH) $&.dpr
+  cd ..\..\..\..
+
+Backup.exe: JvUIB\Component\Backup\Backup.dpr
+  cd JvUIB\Component\Backup
+  $(DCCHH) $&.dpr
+  cd ..\..\..
+
+Server.exe: JvUIB\ClientServer\Server\Server.dpr
+  cd JvUIB\ClientServer
+  $(DCCH) $&.dpr
+  cd ..\..
+
+Client.exe: JvUIB\ClientServer\Client\Client.dpr
+  cd JvUIB\ClientServer
+  $(DCCH) $&.dpr
+  cd ..\..
+
+UIB.dll: JvUIB\Automation\UIB.dpr
+  cd JvUIB\Automation
+  $(DCCH) $&.dpr
+  cd ..\..
 

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvPluginMan, StdCtrls, Buttons, Menus, ExtCtrls, ImgList, Grids, DBGrids,
+  JvPluginManager, StdCtrls, Buttons, Menus, ExtCtrls, ImgList, Grids, DBGrids,
   JvComponent;
 
 type
