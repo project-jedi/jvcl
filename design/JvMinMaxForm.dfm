@@ -6,7 +6,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   BorderStyle = bsSingle
   Caption = 'MinMaxInfo'
   ClientHeight = 163
-  ClientWidth = 313
+  ClientWidth = 333
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -26,7 +26,6 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
   OldCreateOrder = True
   Position = poScreenCenter
-  Scaled = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -34,7 +33,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   object Bevel1: TBevel
     Left = 3
     Top = 2
-    Width = 306
+    Width = 326
     Height = 127
     Shape = bsFrame
   end
@@ -48,7 +47,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Caption = 'Left: '
   end
   object Label2: TLabel
-    Left = 192
+    Left = 202
     Top = 15
     Width = 37
     Height = 13
@@ -73,7 +72,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Caption = 'Width: '
   end
   object Label5: TLabel
-    Left = 192
+    Left = 202
     Top = 44
     Width = 37
     Height = 13
@@ -98,7 +97,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Caption = 'Width: '
   end
   object Label8: TLabel
-    Left = 192
+    Left = 202
     Top = 73
     Width = 37
     Height = 13
@@ -123,7 +122,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     Caption = 'Width: '
   end
   object Label11: TLabel
-    Left = 192
+    Left = 202
     Top = 102
     Width = 37
     Height = 13
@@ -140,7 +139,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   end
   object MaxPosBtn: TSpeedButton
     Tag = 1
-    Left = 276
+    Left = 296
     Top = 9
     Width = 25
     Height = 24
@@ -159,7 +158,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   end
   object MaxSizeBtn: TSpeedButton
     Tag = 2
-    Left = 276
+    Left = 296
     Top = 38
     Width = 25
     Height = 24
@@ -178,7 +177,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   end
   object MaxTrackBtn: TSpeedButton
     Tag = 3
-    Left = 276
+    Left = 296
     Top = 67
     Width = 25
     Height = 24
@@ -197,7 +196,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   end
   object MinTrackBtn: TSpeedButton
     Tag = 4
-    Left = 276
+    Left = 296
     Top = 96
     Width = 25
     Height = 24
@@ -217,16 +216,16 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   object MaxPosLeftEdit: TEdit
     Left = 162
     Top = 10
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 3
     Text = '0'
   end
   object MaxPosTopEdit: TEdit
-    Left = 242
+    Left = 252
     Top = 10
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 4
@@ -235,16 +234,16 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   object MaxSizeWidthEdit: TEdit
     Left = 162
     Top = 39
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 5
     Text = '0'
   end
   object MaxSizeHeightEdit: TEdit
-    Left = 242
+    Left = 252
     Top = 39
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 6
@@ -253,16 +252,16 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   object MaxTrackWidthEdit: TEdit
     Left = 162
     Top = 68
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 7
     Text = '0'
   end
   object MaxTrackHeightEdit: TEdit
-    Left = 242
+    Left = 252
     Top = 68
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 8
@@ -271,23 +270,23 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
   object MinTrackWidthEdit: TEdit
     Left = 162
     Top = 98
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 9
     Text = '0'
   end
   object MinTrackHeightEdit: TEdit
-    Left = 242
+    Left = 252
     Top = 98
-    Width = 23
+    Width = 33
     Height = 21
     AutoSize = False
     TabOrder = 10
     Text = '0'
   end
   object OkBtn: TButton
-    Left = 163
+    Left = 183
     Top = 135
     Width = 70
     Height = 23
@@ -298,7 +297,7 @@ object MinMaxInfoEditDialog: TMinMaxInfoEditDialog
     OnClick = OkBtnClick
   end
   object CancelBtn: TButton
-    Left = 239
+    Left = 259
     Top = 135
     Width = 70
     Height = 23

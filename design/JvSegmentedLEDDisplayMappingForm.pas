@@ -30,7 +30,7 @@ unit JvSegmentedLEDDisplayMappingForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, 
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -236,6 +236,11 @@ end;
 procedure TfrmJvSLDMappingEditor.Loaded;
 begin
   inherited Loaded;
+  
+  Constraints.MinHeight := Height;
+  Constraints.MaxHeight := Height;
+  Constraints.MinWidth := Width;
+  
   if fmeMapper <> nil then
   begin
     fmeMapper.OnMappingChanged := MappingChanged;

@@ -2,11 +2,9 @@ inherited frmJvSLDMappingEditor: TfrmJvSLDMappingEditor
   Caption = 'Segmented LED Display Mapping Editor...'
   ClientHeight = 175
   ClientWidth = 410
-  Constraints.MaxHeight = 221
-  Constraints.MinHeight = 221
-  Constraints.MinWidth = 348
   Menu = fmeMapper.mnuCharMapEdit
   OldCreateOrder = True
+  Scaled = True
   OnCloseQuery = FormCloseQuery
   PixelsPerInch = 96
   TextHeight = 13

@@ -1,9 +1,10 @@
 object fmGridProp: TfmGridProp
   Left = 201
   Top = 176
-  Width = 537
-  Height = 294
+  BorderStyle = bsDialog
   Caption = 'Set Grid Edit Controls'
+  ClientHeight = 260
+  ClientWidth = 529
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +12,7 @@ object fmGridProp: TfmGridProp
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
@@ -122,7 +124,7 @@ object fmGridProp: TfmGridProp
     Top = 230
     Width = 75
     Height = 25
-    Caption = '&OK'
+    Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 2
@@ -133,7 +135,7 @@ object fmGridProp: TfmGridProp
     Width = 75
     Height = 25
     Cancel = True
-    Caption = '&Cancel'
+    Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
   end
