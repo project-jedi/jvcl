@@ -989,7 +989,9 @@ end;
 function TJvgCheckListBox.GetState(Index: integer): TCheckBoxState;
 begin
   if Index > -1 then
-    Result := TCheckBoxState(Items.Objects[Index]);
+    Result := TCheckBoxState(Items.Objects[Index])
+  else
+    Result := cbUnchecked;
 end;
 
 procedure TJvgCheckListBox.DrawCheck(R: TRect; AState: TCheckBoxState);
