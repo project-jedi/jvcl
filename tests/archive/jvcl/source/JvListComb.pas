@@ -638,9 +638,10 @@ begin
     InflateRect(R, 2, -1);
     if Length(Items[Index].Text) > 0 then
     begin
+      Inc(R.Right,2);
       FillRect(R);
       Inc(R.Left, 2);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), -1, R, DT_SINGLELINE or DT_NOPREFIX
+      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
         or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -958,7 +959,7 @@ begin
     if Length(Items[Index].Text) > 0 then
     begin
       FillRect(R);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), -1, R,
+      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R,
         DT_SINGLELINE or DT_NOPREFIX or DT_CENTER or DT_BOTTOM);
       if (odSelected in State) and (Color <> FColorHighlight) then
         DrawFocusRect(R);
@@ -1012,9 +1013,10 @@ begin
     InflateRect(R, 2, -1);
     if Length(Items[Index].Text) > 0 then
     begin
-      Inc(R.Left, 2);
+      Inc(R.Right, 2);
       FillRect(R);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), -1, R, DT_SINGLELINE or DT_NOPREFIX
+      Inc(R.Left, 2);
+      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
         or DT_VCENTER);
       Dec(R.Left, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
@@ -1074,7 +1076,7 @@ begin
     begin
       Dec(R.Right, 2);
       FillRect(R);
-      DrawText(Canvas.Handle, PChar(Items[Index].Text), -1, R, DT_SINGLELINE or DT_NOPREFIX
+      DrawText(Canvas.Handle, PChar(Items[Index].Text), Length(Items[Index].Text), R, DT_SINGLELINE or DT_NOPREFIX
         or DT_VCENTER or DT_RIGHT);
       Inc(R.Right, 2);
       if (odSelected in State) and (Color <> FColorHighlight) then
