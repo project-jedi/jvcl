@@ -38,8 +38,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, ExtCtrls, ImgList,
-  JvComponent;
+  StdCtrls, ExtCtrls, ImgList, JvComponent;
 
 const
   CM_MOVEDRAGLINE = WM_USER + 1;
@@ -128,14 +127,13 @@ type
   TJvTimeLineStyle = (tlDefault, tlOwnerDrawFixed, tlOwnerDrawVariable);
   TJvScrollArrow = (scrollLeft, scrollRight, scrollUp, scrollDown);
   TJvScrollArrows = set of TJvScrollArrow;
+  TJvTimeItemClickEvent = procedure (Sender:TObject; Item:TJvTimeItem) of object;
   TJvDrawTimeItemEvent = procedure(Sender: TObject; Canvas: TCanvas; Item:
     TJvTimeItem; var R: TRect) of object;
   TJvMeasureTimeItemEvent = procedure(Sender: TObject; Item: TJvTimeItem; var
     ItemHeight: Integer) of object;
   TJvStreamItemEvent = procedure(Sender: TObject; Item: TJvTimeItem; Stream:
     TStream) of object;
-  TJvTimeItemClickEvent = procedure(Sender: TObject; Item: TJvTimeItem) of
-    object;
   TJvItemMovedEvent = procedure(Sender: TObject; Item: TJvTimeItem;
     var NewStartDate: TDateTime; var NewLevel: Integer) of object;
   TJvItemMovingEvent = procedure(Sender: TObject; Item: TJvTimeItem; var
@@ -205,7 +203,7 @@ type
     //--FMouseDown: Boolean;
     FNewHeight: Integer;
     FOldX: Integer;
-//    FOldHint: string;
+    FOldHint: string;
     FStyle: TJvTimeLineStyle;
     FScrollArrows: TJvScrollArrows;
     FTimeItems: TJvTimeItems;
@@ -296,6 +294,8 @@ type
     procedure HandleClickSelection(LastFocused, NewItem: TJvTimeItem;
       Shift: TShiftState);
     function HasMoved(P: TPoint): Boolean;
+    function GetHint: string;
+    procedure SetHint(const Value: string);
   protected
     // Some helper functions for selection
     procedure AddToSelection(AItem: TJvTimeItem); overload;
@@ -334,6 +334,7 @@ type
     procedure DrawItem(Item: TJvTimeItem; ACanvas: TCanvas; var R: TRect); virtual;
     procedure UpdateItem(Index: Integer; ACanvas: TCanvas); virtual;
     procedure UpdateItems; virtual;
+    procedure UpdateItemHint(X,Y:integer);
     procedure CreateWnd; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation);
       override;
@@ -357,6 +358,7 @@ type
     property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default
       False;
     property Flat: Boolean read FFlat write SetFlat default False;
+    property Hint:string read GetHint write SetHint; 
     property YearFont: TFont read FYearFont write SetYearFont;
     property YearWidth: TJvYearWidth read FYearWidth write SetYearWidth default
       140;
@@ -456,15 +458,16 @@ type
     property OnDragDrop;
     { new properties }
     property BorderStyle;
-    property ShowItemHint;
     property AutoSize;
     property MultiSelect;
     property Flat;
     property YearFont;
     property YearWidth;
     property TopOffset;
-    property ShowMonthNames;
     property ShowDays;
+    property ShowHiddenItemHints;
+    property ShowItemHint;
+    property ShowMonthNames;
     property FirstVisibleDate;
     property Images;
     property Items;
@@ -510,8 +513,8 @@ const
   FScrollEdgeOffset = 8;
 
 var
-  FInitRepeatPause: Cardinal = 400;
-  FRepeatPause: Cardinal = 100;
+  FInitRepeatPause: Cardinal = 140;
+  FRepeatPause: Cardinal = 30;
 
 function MonthCount(Date1, Date2: TDateTime): Integer;
 var
@@ -1531,6 +1534,7 @@ begin
     //OutputDebugString('Move MouseDown');
     MoveDragLine(X);
   end;
+  UpdateItemHint(X,Y);
   inherited MouseMove(Shift, X, Y);
 end;
 
@@ -2837,8 +2841,35 @@ begin
   Result := FDragImages;
 end;
 
-//initialization
-  //  SystemParametersInfo(SPI_GETKEYBOARDDELAY,0,@FInitRepeatPause,0);
-  //  SystemParametersInfo(SPI_GETKEYBOARDSPEED,0,@FRepeatPause,0);
+procedure TJvCustomTimeLine.UpdateItemHint(X,Y:integer);
+var ti:TJvTimeItem;
+begin
+  if ShowHint and ShowItemHint then
+  begin
+    ti := ItemAtPos(X,Y);
+    if (ti <> nil) and (ti.Hint <> '') then
+      inherited Hint := ti.Hint
+    else
+      inherited Hint := FOldHint;
+//    if Application <> nil then // (p3) "tracking" hint
+//      Application.ActivateHint(ClientToScreen(Point(X,Y)));
+  end;
+end;
+
+function TJvCustomTimeLine.GetHint: string;
+begin
+  Result := inherited Hint;
+end;
+
+procedure TJvCustomTimeLine.SetHint(const Value: string);
+begin
+  inherited Hint := Value;
+  FOldHint := Value;
+end;
+
+// initialization
+//  SystemParametersInfo(SPI_GETKEYBOARDDELAY,0,@FInitRepeatPause,0);
+//  SystemParametersInfo(SPI_GETKEYBOARDSPEED,0,@FRepeatPause,0);
+
 end.
 
