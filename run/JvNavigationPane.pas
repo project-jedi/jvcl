@@ -608,7 +608,6 @@ type
     procedure SetBackground(const Value: TJvNavPaneBackgroundImage);
     procedure DoBackgroundChange(Sender:TObject);
   protected
-
     procedure UpdatePageList;
     function GetAction: TBasicAction;
     {$IFDEF COMPILER6_UP} override;
@@ -913,6 +912,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function HidePage(Page:TJvCustomPage):TJvCustomPage; override;
+    function ShowPage(Page:TJvCustomPage; PageIndex:integer = -1):TJvCustomPage;override;
     procedure UpdatePositions;
   protected
     {$IFDEF VCL}
@@ -1401,6 +1402,21 @@ begin
   for I := 0 to PageCount - 1 do
     if not NavPages[I].Iconic then
       Inc(Result);
+end;
+
+function TJvCustomNavigationPane.HidePage(Page: TJvCustomPage):TJvCustomPage;
+begin
+  Result := inherited HidePage(Page);
+  if Result <> nil then
+    UpdatePositions;
+end;
+
+
+function TJvCustomNavigationPane.ShowPage(Page: TJvCustomPage; PageIndex:integer):TJvCustomPage;
+begin
+  Result := inherited ShowPage(Page, PageIndex);
+  if Result <> nil then
+    UpdatePositions;
 end;
 
 procedure TJvCustomNavigationPane.Notification(AComponent: TComponent;
@@ -3538,9 +3554,10 @@ begin
   FClients := TList.Create;
   FColors := TJvNavPanelColors.Create;
   FFonts := TJvNavPanelFonts.Create;
-  Theme := nptStandard;
   FColors.OnChange := DoThemeChange;
   FFonts.OnChange := DoThemeChange;
+  FTheme := nptCustom; // (p3) required to trigger the change method
+  Theme := nptStandard;
 end;
 
 destructor TJvNavPaneStyleManager.Destroy;
@@ -3664,7 +3681,6 @@ end;
 
 procedure TJvNavPaneStyleManager.SetTheme(const Value: TJvNavPanelTheme);
 begin
-  // TODO: also set the fonts
   if FTheme <> Value then
   begin
     FColors.OnChange := nil;
@@ -4051,7 +4067,7 @@ begin
     // left corner
     Y := HeaderHeight;
     X := 0;
-    for I := 0 to 4 do
+    for I := 0 to 3 do
       Canvas.Pixels[X, Y + I] := ColorTo;
     Inc(X);
     for I := 0 to 2 do
@@ -4061,13 +4077,13 @@ begin
       Canvas.Pixels[X, Y + I] := ColorTo;
     Inc(X);
     Canvas.Pixels[X, Y] := ColorTo;
-    Inc(X);
-    Canvas.Pixels[X, Y] := ColorTo;
+//    Inc(X);
+//    Canvas.Pixels[X, Y] := ColorTo;
 
     // right corner
     Y := HeaderHeight;
     X := ClientWidth - 1;
-    for I := 0 to 4 do
+    for I := 0 to 3 do
       Canvas.Pixels[X, Y + I] := ColorTo;
     Dec(X);
     for I := 0 to 2 do
@@ -4077,8 +4093,8 @@ begin
       Canvas.Pixels[X, Y + I] := ColorTo;
     Dec(X);
     Canvas.Pixels[X, Y] := ColorTo;
-    Dec(X);
-    Canvas.Pixels[X, Y] := ColorTo;
+//    Dec(X);
+//    Canvas.Pixels[X, Y] := ColorTo;
 
     // draw the button area
     R := ClientRect;
@@ -4795,7 +4811,6 @@ begin
     PictureChanged(Self)
   end;
 end;
-
 
 initialization
   RegisterClasses([TJvNavPanelPage]);
