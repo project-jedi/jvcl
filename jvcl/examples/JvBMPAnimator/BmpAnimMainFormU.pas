@@ -42,9 +42,11 @@ type
     Label1: TLabel;
     Label2: TLabel;
     ImageList1: TImageList;
+    Transparent: TCheckBox;
     procedure OnOffClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure Edit2Change(Sender: TObject);
+    procedure TransparentClick(Sender: TObject);
   end;
 
 var
@@ -59,7 +61,8 @@ begin
   with BmpAnimator1 do
   begin
     Active := not Active;
-    if not Active then Position := 0;
+    if not Active then
+      Position := 0;
   end;
 end;
 
@@ -75,8 +78,12 @@ begin
     BmpAnimator1.Speed := StrToInt(Edit2.Text);
   except
     BmpAnimator1.Speed := 15;
+  end;
 end;
 
+procedure TBmpAnimMainForm.TransparentClick(Sender: TObject);
+begin
+  BmpAnimator1.Transparent := Transparent.Checked;
 end;
 
 end.

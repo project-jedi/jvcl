@@ -55,7 +55,7 @@ type
     Label5: TLabel;
     ComboBox1: TComboBox;
     procedure Button1Click(Sender: TObject);
-    procedure JvBrowseFolder1Change(Sender: TObject; Directory: String);
+    procedure JvBrowseFolder1Change(Sender: TObject; Directory: string);
   end;
 
 var
@@ -71,31 +71,31 @@ begin
   JvBrowseFolder1.Title := Edit4.Text;
   JvBrowseFolder1.Options := [];
   if CheckBox1.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odNewDialogStyle];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odNewDialogStyle];
   if CheckBox2.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odBrowseForComputer];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odBrowseForComputer];
   if CheckBox3.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odOnlyDirectory];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odOnlyDirectory];
   if CheckBox4.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odOnlyPrinters];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odOnlyPrinters];
   if CheckBox5.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odIncludeFiles];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odIncludeFiles];
   if CheckBox6.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odIncludeUrls];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odIncludeUrls];
   if CheckBox7.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odEditBox];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odEditBox];
   if CheckBox8.Checked then
-    JvBrowseFolder1.Options := JvBrowseFolder1.Options+[odShareable];
+    JvBrowseFolder1.Options := JvBrowseFolder1.Options + [odShareable];
   case ComboBox1.ItemIndex of
-    1: JvBrowseFolder1.Rootdirectory := fdControlPanel;
-    2: JvBrowseFolder1.Rootdirectory := fdRecycleBin;
-    3: JvBrowseFolder1.Rootdirectory := fdDesktop;
-    4: JvBrowseFolder1.Rootdirectory := fdDesktopDirectory;
-    5: JvBrowseFolder1.Rootdirectory := fdMyComputer;
-    6: JvBrowseFolder1.Rootdirectory := fdFonts;
-    7: JvBrowseFolder1.Rootdirectory := fdNetHood;
-    8: JvBrowseFolder1.Rootdirectory := fdNetwork;
-    9: JvBrowseFolder1.Rootdirectory := fdPersonal;
+    1:  JvBrowseFolder1.Rootdirectory := fdControlPanel;
+    2:  JvBrowseFolder1.Rootdirectory := fdRecycleBin;
+    3:  JvBrowseFolder1.Rootdirectory := fdDesktop;
+    4:  JvBrowseFolder1.Rootdirectory := fdDesktopDirectory;
+    5:  JvBrowseFolder1.Rootdirectory := fdMyComputer;
+    6:  JvBrowseFolder1.Rootdirectory := fdFonts;
+    7:  JvBrowseFolder1.Rootdirectory := fdNetHood;
+    8:  JvBrowseFolder1.Rootdirectory := fdNetwork;
+    9:  JvBrowseFolder1.Rootdirectory := fdPersonal;
     10: JvBrowseFolder1.Rootdirectory := fdPrinters;
     11: JvBrowseFolder1.Rootdirectory := fdPrograms;
     12: JvBrowseFolder1.Rootdirectory := fdRecent;
@@ -103,9 +103,9 @@ begin
     14: JvBrowseFolder1.Rootdirectory := fdStartMenu;
     15: JvBrowseFolder1.Rootdirectory := fdStartup;
     16: JvBrowseFolder1.Rootdirectory := fdTemplates;
-    else JvBrowseFolder1.Rootdirectory := fdRootFolder;
+  else
+    JvBrowseFolder1.Rootdirectory := fdRootFolder;
   end;
-
 
   //Execute and get back the directory
   if JvBrowseFolder1.Execute then
@@ -118,9 +118,10 @@ begin
   end;
 end;
 
-procedure TJvBrowseFolderMainForm.JvBrowseFolder1Change(Sender: TObject; Directory: String);
+procedure TJvBrowseFolderMainForm.JvBrowseFolder1Change(Sender: TObject; Directory: string);
 begin
   Edit3.Text := Directory;
 end;
 
 end.
+

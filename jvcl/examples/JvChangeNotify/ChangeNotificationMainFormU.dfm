@@ -123,10 +123,12 @@ object ChangeNotificationMainForm: TChangeNotificationMainForm
       Width = 15
       Height = 21
       Associate = Edit1
+      Min = 0
       Max = 1000
       Increment = 50
       Position = 100
       TabOrder = 3
+      Wrap = False
     end
     object btnClear: TButton
       Left = 14
@@ -138,9 +140,9 @@ object ChangeNotificationMainForm: TChangeNotificationMainForm
       OnClick = btnClearClick
     end
   end
-  object CN1: TJvChangeNotify
+  object JvChangeNotify1: TJvChangeNotify
     Notifications = <>
-    OnChangeNotify = CN1ChangeNotify
+    OnChangeNotify = JvChangeNotify1ChangeNotify
     Left = 192
     Top = 256
   end

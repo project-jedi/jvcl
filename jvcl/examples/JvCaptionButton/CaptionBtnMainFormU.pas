@@ -158,7 +158,7 @@ procedure TCaptionBtnMainForm.FormCreate(Sender: TObject);
 begin
   udPosition.Position := JvCaptionButton1.Position;
   udPositionClick(Sender, btNext);
-  cbStandard.ItemIndex := integer(JvCaptionButton1.Standard);
+  cbStandard.ItemIndex := Ord(JvCaptionButton1.Standard);
   cbStandardChange(Sender);
   chkToggle.Checked := JvCaptionButton1.Toggle;
   chkVisible.Checked := JvCaptionButton1.Visible;

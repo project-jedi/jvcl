@@ -1,7 +1,8 @@
 object JvBrowseFolderMainForm: TJvBrowseFolderMainForm
   Left = 450
   Top = 179
-  BorderStyle = bsDialog
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
   Caption = 'JvBrowseFolder Test'
   ClientHeight = 289
   ClientWidth = 439
@@ -32,25 +33,25 @@ object JvBrowseFolderMainForm: TJvBrowseFolderMainForm
     Caption = '[ Results ]'
     TabOrder = 1
     object Label1: TLabel
-      Left = 20
+      Left = 34
       Top = 20
-      Width = 42
+      Width = 45
       Height = 13
-      Caption = 'Directory'
+      Caption = 'Directory:'
     end
     object Label2: TLabel
       Left = 10
       Top = 74
-      Width = 66
+      Width = 69
       Height = 13
-      Caption = 'Current Folder'
+      Caption = 'Current Folder:'
     end
     object Label3: TLabel
-      Left = 12
+      Left = 11
       Top = 46
-      Width = 65
+      Width = 68
       Height = 13
-      Caption = 'Display Name'
+      Caption = 'Display Name:'
     end
     object Edit1: TEdit
       Left = 92
@@ -85,18 +86,18 @@ object JvBrowseFolderMainForm: TJvBrowseFolderMainForm
     Caption = '[ Options ]'
     TabOrder = 2
     object Label4: TLabel
-      Left = 38
+      Left = 62
       Top = 20
-      Width = 20
+      Width = 23
       Height = 13
-      Caption = 'Title'
+      Caption = 'Title:'
     end
     object Label5: TLabel
       Left = 14
       Top = 46
-      Width = 68
+      Width = 71
       Height = 13
-      Caption = 'Root Directory'
+      Caption = 'Root Directory:'
     end
     object Edit4: TEdit
       Left = 92
@@ -104,7 +105,7 @@ object JvBrowseFolderMainForm: TJvBrowseFolderMainForm
       Width = 327
       Height = 21
       TabOrder = 0
-      Text = 'JVCL - JvBrowseFolder Test'
+      Text = 'JVCL - TJvBrowseForFolderDialog Test'
     end
     object CheckBox1: TCheckBox
       Left = 10
@@ -171,7 +172,7 @@ object JvBrowseFolderMainForm: TJvBrowseFolderMainForm
       Top = 92
       Width = 97
       Height = 17
-      Caption = 'ShareAble'
+      Caption = 'Shareable'
       TabOrder = 8
     end
     object ComboBox1: TComboBox
@@ -207,7 +208,7 @@ object JvBrowseFolderMainForm: TJvBrowseFolderMainForm
     RootDirectory = fdRootFolder
     Title = 'Titre de mes deux'
     OnChange = JvBrowseFolder1Change
-    Left = 70
-    Top = 158
+    Left = 326
+    Top = 134
   end
 end
