@@ -371,6 +371,10 @@ procedure Launch(Afile: string);
 
 implementation
 
+{$IFDEF BCB}
+uses Variants;
+{$ENDIF}
+
 const
 
   cr = chr(13) + chr(10);
