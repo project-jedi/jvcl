@@ -44,9 +44,8 @@ unit JvQErrorIndicator;
 
 interface
 
-uses  
-  Types, 
-  Classes, QGraphics, QControls, QImgList,
+uses 
+  Classes, Types, QGraphics, QControls, QImgList, QComCtrlsEx, 
   JvQComponent;
 
 type
@@ -198,7 +197,7 @@ type
     // string has been set for the control.
     // This property is used in conjunction with ImageIndex to select the image to display
     // If either is nil, invalid or out of range, no error image is displayed
-    property Images: TCustomImageList read FImagelist write SetImageList;
+    property Images: TCustomImageList read FImageList write SetImageList;
     // Gets or sets the ImageIndex in ImageList to use when displaying an image next to a control
     property ImageIndex: Integer read FImageIndex write SetImageIndex;
   end;
@@ -240,15 +239,14 @@ type
 constructor TJvErrorIndicator.Create(AComponent: TComponent);
 
 var
-  Ico: TIcon;
-
+  Bmp: TBitmap;
 begin
   inherited Create(AComponent);
-  FDefaultImage := TImageList.CreateSize(16, 16);  
-  Ico := TIcon.Create;
-  Ico.LoadFromResourceName(hInstance, 'TJVERRORINDICATORICON');
-  FDefaultImage.Assign(Ico);
-  Ico.Free; 
+  FDefaultImage := TImageList.CreateSize(16, 16);
+  Bmp := TBitmap.Create;
+  Bmp.LoadFromResourceName(hInstance, 'TJVERRORINDICATOR');
+  FDefaultImage.AddMasked(Bmp, clBlack);
+  Bmp.Free;
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
   FControls := TList.Create;
@@ -590,7 +588,7 @@ end;
 procedure TJvErrorIndicator.SetClientError(const AClient: IJvErrorIndicatorClient);
 begin
   if AClient <> nil then
-    SetError(AClient.getControl, AClient.ErrorMessage);
+    SetError(AClient.GetControl, AClient.ErrorMessage);
 end;
 
 procedure TJvErrorIndicator.IndicatorSetError(AControl: TControl;
