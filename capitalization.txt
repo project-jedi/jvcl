@@ -12,6 +12,7 @@ JvCabFile.pas -CAB
 JvCpuUsage.pas -CPU
 JvCsvData.pas -CSV
 JvCsvParse.pas -CSV
+JvDbMaskEdit.pas -DB
 JvDdeCmd.pas -DDE
 JvFormToHtml.pas -HTML
 JvFtpGrabber.pas -FTP

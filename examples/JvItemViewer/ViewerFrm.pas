@@ -94,7 +94,7 @@ begin
   frmImageViewer := Self.Create(Application);
   try
     frmImageViewer.Image1.Picture.Assign(Picture);
-    frmImageViewer.Image1.Picture.Graphic.Transparent := Transparent;
+    frmImageViewer.Image1.Transparent := Transparent;
     frmImageViewer.Caption := Picture.Graphic.ClassName;
     frmImageViewer.ScrollBox1.Color := BackColor;
     frmImageViewer.StatusBar1.Panels[0].Text := Format(' (%s) - %d x %d',
