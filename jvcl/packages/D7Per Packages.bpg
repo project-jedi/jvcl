@@ -20,131 +20,132 @@ PROJECTS = JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
   JvPageCompsD7R.bpl JvPageCompsD7D.bpl JvValidatorsD7R.bpl JvValidatorsD7D.bpl \
   JvUIBD7R.bpl JvUIBD7D.bpl JvWizardD7R.bpl JvWizardD7D.bpl \
   JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl \
-  JvHMID7R.bpl JvHMID7D.bpl JvManagedThreadsD7R.bpl JvManagedThreadsD7D.bpl
-  $(DCC)
+  JvHMID7R.bpl JvHMID7D.bpl JvManagedThreadsD7R.bpl \
+  JvManagedThreadsD7D.bpl JvXPCtrlsD6R.bpl JvXPCtrlsD6D.bpl \
+  JvDockingD6R.bpl JvDockingD6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 
-JvCoreD7D.bpl: D7\JvCoreD7D.dpk
+JvCoreD7D.bpl: d7\JvCoreD7D.dpk
   $(DCC)
 
-JvCoreD7R.bpl: D7\JvCoreD7R.dpk
+JvCoreD7R.bpl: d7\JvCoreD7R.dpk
   $(DCC)
 
-JvAppFrmD7R.bpl: D7\JvAppFrmD7R.dpk
+JvAppFrmD7R.bpl: d7\JvAppFrmD7R.dpk
   $(DCC)
 
-JvCmpD7R.bpl: D7\JvCmpD7R.dpk
+JvCmpD7R.bpl: d7\JvCmpD7R.dpk
   $(DCC)
 
-JvCryptD7R.bpl: D7\JvCryptD7R.dpk
+JvCryptD7R.bpl: d7\JvCryptD7R.dpk
   $(DCC)
 
-JvCtrlsD7R.bpl: D7\JvCtrlsD7R.dpk
+JvCtrlsD7R.bpl: d7\JvCtrlsD7R.dpk
   $(DCC)
 
-JvCustomD7R.bpl: D7\JvCustomD7R.dpk
+JvCustomD7R.bpl: d7\JvCustomD7R.dpk
   $(DCC)
 
-JvDlgsD7R.bpl: D7\JvDlgsD7R.dpk
+JvDlgsD7R.bpl: d7\JvDlgsD7R.dpk
   $(DCC)
 
-JvInterpreterD7R.bpl: D7Per\JvInterpreterD7R.dpk
+JvInterpreterD7R.bpl: d7per\JvInterpreterD7R.dpk
   $(DCC)
 
-JvMMD7R.bpl: D7\JvMMD7R.dpk
+JvInterpreterD7D.bpl: d7\JvInterpreterD7D.dpk
   $(DCC)
 
-JvNetD7R.bpl: D7\JvNetD7R.dpk
+JvMMD7R.bpl: d7\JvMMD7R.dpk
   $(DCC)
 
-JvStdCtrlsD7R.bpl: D7\JvStdCtrlsD7R.dpk
+JvNetD7R.bpl: d7\JvNetD7R.dpk
   $(DCC)
 
-JvSystemD7R.bpl: D7\JvSystemD7R.dpk
+JvStdCtrlsD7R.bpl: d7\JvStdCtrlsD7R.dpk
   $(DCC)
 
-JvSystemD7D.bpl: D7\JvSystemD7D.dpk
+JvSystemD7R.bpl: d7\JvSystemD7R.dpk
   $(DCC)
 
-JvAppFrmD7D.bpl: D7\JvAppFrmD7D.dpk
+JvSystemD7D.bpl: d7\JvSystemD7D.dpk
   $(DCC)
 
-JvStdCtrlsD7D.bpl: D7\JvStdCtrlsD7D.dpk
+JvAppFrmD7D.bpl: d7\JvAppFrmD7D.dpk
   $(DCC)
 
-JvNetD7D.bpl: D7\JvNetD7D.dpk
+JvStdCtrlsD7D.bpl: d7\JvStdCtrlsD7D.dpk
   $(DCC)
 
-JvMMD7D.bpl: D7\JvMMD7D.dpk
+JvNetD7D.bpl: d7\JvNetD7D.dpk
   $(DCC)
 
-JvInterpreterD7D.bpl: D7\JvInterpreterD7D.dpk
+JvMMD7D.bpl: d7\JvMMD7D.dpk
   $(DCC)
 
-JvDlgsD7D.bpl: D7\JvDlgsD7D.dpk
+JvDlgsD7D.bpl: d7\JvDlgsD7D.dpk
   $(DCC)
 
-JvCustomD7D.bpl: D7\JvCustomD7D.dpk
+JvCustomD7D.bpl: d7\JvCustomD7D.dpk
   $(DCC)
 
-JvCtrlsD7D.bpl: D7\JvCtrlsD7D.dpk
+JvCtrlsD7D.bpl: d7\JvCtrlsD7D.dpk
   $(DCC)
 
-JvCryptD7D.bpl: D7\JvCryptD7D.dpk
+JvCryptD7D.bpl: d7\JvCryptD7D.dpk
   $(DCC)
 
-JvCmpD7D.bpl: D7\JvCmpD7D.dpk
+JvCmpD7D.bpl: d7\JvCmpD7D.dpk
   $(DCC)
 
-JvBandsD7D.bpl: D7\JvBandsD7D.dpk
+JvBandsD7D.bpl: d7\JvBandsD7D.dpk
   $(DCC)
 
-JvPluginD7D.bpl: D7\JvPluginD7D.dpk
+JvPluginD7D.bpl: d7\JvPluginD7D.dpk
   $(DCC)
 
-JvPluginD7R.bpl: D7\JvPluginD7R.dpk
+JvPluginD7R.bpl: d7\JvPluginD7R.dpk
   $(DCC)
 
-JvBandsD7R.bpl: D7\JvBandsD7R.dpk
+JvBandsD7R.bpl: d7\JvBandsD7R.dpk
   $(DCC)
 
-JvJansD7D.bpl: D7\JvJansD7D.dpk
+JvJansD7D.bpl: d7\JvJansD7D.dpk
   $(DCC)
 
-JvJansD7R.bpl: D7\JvJansD7R.dpk
+JvJansD7R.bpl: d7\JvJansD7R.dpk
   $(DCC)
 
-JvGlobusD7D.bpl: D7Per\JvGlobusD7D.dpk
+JvGlobusD7D.bpl: d7per\JvGlobusD7D.dpk
   $(DCC)
 
-JvGlobusD7R.bpl: D7Per\JvGlobusD7R.dpk
+JvGlobusD7R.bpl: d7per\JvGlobusD7R.dpk
   $(DCC)
 
-JvPrintPreviewD7D.bpl: D7\JvPrintPreviewD7D.dpk
+JvPrintPreviewD7D.bpl: d7\JvPrintPreviewD7D.dpk
   $(DCC)
 
-JvPageCompsD7R.bpl: D7\JvPageCompsD7R.dpk
+JvPageCompsD7R.bpl: d7\JvPageCompsD7R.dpk
   $(DCC)
 
-JvPageCompsD7D.bpl: D7\JvPageCompsD7D.dpk
+JvPageCompsD7D.bpl: d7\JvPageCompsD7D.dpk
   $(DCC)
 
-JvPrintPreviewD7R.bpl: D7\JvPrintPreviewD7R.dpk
+JvPrintPreviewD7R.bpl: d7\JvPrintPreviewD7R.dpk
   $(DCC)
 
-JvValidatorsD7D.bpl: D7\JvValidatorsD7D.dpk
+JvValidatorsD7D.bpl: d7\JvValidatorsD7D.dpk
   $(DCC)
 
-JvValidatorsD7R.bpl: D7\JvValidatorsD7R.dpk
+JvValidatorsD7R.bpl: d7\JvValidatorsD7R.dpk
   $(DCC)
 
 JvUIBD7D.bpl: d7\JvUIBD7D.dpk
   $(DCC)
 
-JvUIBD7R.bpl: D7Per\JvUIBD7R.dpk
+JvUIBD7R.bpl: d7per\JvUIBD7R.dpk
   $(DCC)
 
 JvWizardD7R.bpl: d7\JvWizardD7R.dpk
@@ -169,4 +170,16 @@ JvManagedThreadsD7R.bpl: d7\JvManagedThreadsD7R.dpk
   $(DCC)
 
 JvManagedThreadsD7D.bpl: d7\JvManagedThreadsD7D.dpk
+  $(DCC)
+
+JvXPCtrlsD7R.bpl: d7\JvXPCtrlsD7R.dpk
+  $(DCC)
+
+JvXPCtrlsD7D.bpl: d7\JvXPCtrlsD7D.dpk
+  $(DCC)
+
+JvDockingD7R.bpl: d7\JvDockingD7R.dpk
+  $(DCC)
+
+JvDockingD7D.bpl: d7\JvDockingD7D.dpk
   $(DCC)
