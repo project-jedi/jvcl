@@ -14,10 +14,7 @@ type
     Label3: TLabel;
     procedure RegAuto1AfterLoad(Sender: TObject);
     procedure RegAuto1AfterSave(Sender: TObject);
-  private
-    { Private declarations }
   public
-    { Public declarations }
   end;
 
 var

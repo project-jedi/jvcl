@@ -21,7 +21,7 @@ object JvRegClasses: TJvRegClasses
     Width = 105
     Height = 49
     AutoSize = False
-    Caption = 'This list used to automatically converts variants to objects'
+    Caption = 'This list used to automatically convert variants to objects'
     WordWrap = True
   end
   object Label2: TLabel
