@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- C++Builder XML Project -->
+<PROJECT>
+  <MACROS>
+    <VERSION value="BCB.06.00"/>
+    <PROJECT value="JVCL200_D60C.bpl"/>
+    <OBJFILES value="..\lib6\JvCommonDialogDEditor.obj ..\lib6\JvDataEmbeddedEditor.obj 
+      ..\lib6\JVCLReg.obj ..\lib6\JvAlarmsEditor.obj ..\lib6\JvBaseDlgEditor.obj 
+      ..\lib6\JvExchListboxes.obj ..\lib6\JvFormLists.obj ..\lib6\JvFormLog.obj 
+      ..\lib6\JvHtmlParserEditor.obj ..\lib6\JvLogFile.obj 
+      ..\lib6\JvLoginDlg.obj ..\lib6\JvPatcherEditor.obj ..\lib6\JVCLMiscal.obj 
+      ..\lib6\JvOutlookEdit.obj ..\lib6\JvDateTimeDlg.obj 
+      ..\lib6\JvDsgnEditors.obj ..\lib6\JvTimeLineEdit.obj ..\lib6\JvOutEdit.obj 
+      ..\lib6\JvStrLEdit.obj ..\lib6\JvOLBarEditor.obj ..\lib6\JvOBEdFrm.obj 
+      ..\lib6\JvChNtfyProperty.obj ..\lib6\JvTipProperty.obj 
+      ..\lib6\JvAppletProperty.obj ..\lib6\JvHintProp.obj 
+      ..\lib6\JvColors.obj ..\lib6\JvDsgn.obj ..\lib6\JvCtlReg.obj 
+      ..\lib6\JvTooReg.obj ..\lib6\JvDBReg.obj ..\lib6\JvBDEReg.obj 
+      ..\lib6\JvImagPrvw.obj ..\lib6\JvCheckItm.obj ..\lib6\JvDirFrm.obj 
+      ..\lib6\JvFormWallpaperEditor.obj ..\lib6\JvIColEdit.obj 
+      ..\lib6\JvGradedit.obj ..\lib6\JvJVCLAbout.obj ..\lib6\JvMinMaxEd.obj 
+      ..\lib6\JvPgMngrEd.obj ..\lib6\JvPictEdit.obj ..\lib6\JvPresrDsn.obj 
+      ..\lib6\JvQBndDlg.obj ..\lib6\JvSbEdit.obj ..\lib6\JvSelDSFrm.obj 
+      ..\lib6\JvTimLstEd.obj ..\lib6\JVCL200_D60C.obj"/>
+    <RESFILES value="JVCL200_D60C.res"/>
+    <IDLFILES value=""/>
+    <IDLGENFILES value=""/>
+    <DEFFILE value=""/>
+    <RESDEPEN value="$(RESFILES)"/>
+    <LIBFILES value=""/>
+    <LIBRARIES value=""/>
+    <SPARELIBS value="Vcl.lib vcljpg.lib dclstd.lib"/>
+    <PACKAGES value="vcl.bpi vcljpg.bpi CJCL60.bpi vclx.bpi vclsmp.bpi vcldb.bpi 
+      vclbde.bpi JVCL200_R60C.bpi dclstd.bpi"/>
+    <PATHCPP value=".;"/>
+    <PATHPAS value=".;..\source"/>
+    <PATHRC value=".;"/>
+    <PATHASM value=".;"/>
+    <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
+    <RELEASELIBPATH value="$(BCB)\lib\release"/>
+    <LINKER value="tlink32"/>
+    <USERDEFINES value=""/>
+    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JVCL200_D60C.cpp"/>
+    <INCLUDEPATH value="..\Source;$(BCB)\include;$(BCB)\include\vcl;..\Common"/>
+    <LIBPATH value="$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\lib6"/>
+    <WARNINGS value="-w-par"/>
+  </MACROS>
+  <OPTIONS>
+    <IDLCFLAGS value="-I..\Source -I$(BCB)\include -I$(BCB)\include\vcl -I..\Common -src_suffix 
+      cpp -boa"/>
+    <PFLAGS value="-N2..\lib6 -N0..\lib6 -$Y- -$L- -$D- -v -JPHNE -M -LUvcl -LUdclstd"/>
+    <RFLAGS value=""/>
+    <AFLAGS value="/mx /w2 /zn"/>
+    <LFLAGS value="-I..\lib6 -D&quot;Designtime package for JEDI VCL&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi"/>
+  </OPTIONS>
+  <LINKER>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
+    <ALLRES value="$(RESFILES)"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+  </LINKER>
+  <IDEOPTIONS>
+[Version Info]
+IncludeVerInfo=1
+AutoIncBuild=0
+MajorVer=1
+MinorVer=0
+Release=0
+Build=0
+Debug=0
+PreRelease=0
+Special=0
+Private=0
+DLL=0
+Locale=2052
+CodePage=936
+
+[Version Info Keys]
+CompanyName=
+FileDescription=
+FileVersion=1.0.0.0
+InternalName=
+LegalCopyright=
+LegalTrademarks=
+OriginalFilename=
+ProductName=
+ProductVersion=1.0.0.0
+Comments=
+
+[HistoryLists\hlIncludePath]
+Count=3
+Item0=..\Source;$(BCB)\include;$(BCB)\include\vcl;..\Common
+Item1=..\Source;$(BCB)\include;$(BCB)\include\vcl
+Item2=$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=11
+Item0=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu;..\lib6
+Item1=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu
+Item2=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\lib6
+Item3=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;..\..\Jcl\dcu
+Item4=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item5=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item6=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item7=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item8=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib;
+Item9=$(BCB)\projects\lib;..\Source;$(BCB)\lib\obj;$(BCB)\lib
+Item10=$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=2
+Item0=$(BCB)\source\vcl;
+Item1=$(BCB)\source\vcl
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\lib6
+
+[Debugging]
+DebugSourceDirs=$(BCB)\source\vcl;
+
+[Parameters]
+RunParams=
+HostApplication=
+RemoteHost=
+RemotePath=
+RemoteDebug=0
+
+[Compiler]
+ShowInfoMsgs=0
+LinkDebugVcl=0
+LinkCGLIB=0
+
+[CORBA]
+AddServerUnit=1
+AddClientUnit=1
+PrecompiledHeaders=1
+  </IDEOPTIONS>
+</PROJECT>
