@@ -475,7 +475,7 @@ begin
     end;
   end
   else
-    DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
+    Msg.Result := DefWindowProc(FHandle, Msg.Msg, Msg.wParam, Msg.lParam);
 end;
 
 function TJvRas32.GetPhoneBook: TStrings;
