@@ -513,7 +513,10 @@ begin
         Font.Color := FEmptyFontColor;
       end;
     end;
-  end;
+  end
+  else
+    if not (csDesigning in ComponentState) then
+      Font.Color := FOldFontColor;
 end;
 
 procedure TJvCustomEdit.DoEnter;
