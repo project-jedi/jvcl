@@ -1631,7 +1631,7 @@ procedure TJvDockVSChannel.ShowPopupPanel(Pane: TJvDockVSPane);
 var
   LShowControl: TWinControl;
 begin
-  if (Pane <> nil) and (ActiveDockForm <> Pane.FDockForm) then
+  if Pane <> nil then
   begin
     JvDockLockWindow(nil);
     Parent.DisableAlign;
@@ -1917,13 +1917,20 @@ end;
 
 procedure TJvDockVSNETPanel.DoHideControl(Control: TWinControl);
 begin
-  VSChannel.AddDockControl(Control);
-  ShowDockPanel(VisibleDockClientCount > 1, Control, sdfDockPanel);
-  Control.Dock(VSChannel.VSPopupPanel, Rect(0, 0, 0, 0));
-  VSChannel.VSPopupPanel.JvDockManager.InsertControl(Control, alNone, nil);
-  VSChannel.VSPopupPanel.JvDockManager.ShowSingleControl(Control);
-  JvDockManager.HideControl(Control);
-  ResetChannelBlockStartOffset(VSChannel);
+  JvDockLockWindow(nil);
+  DisableAlign;
+  try
+    VSChannel.AddDockControl(Control);
+    ShowDockPanel(VisibleDockClientCount > 1, Control, sdfDockPanel);
+    Control.Dock(VSChannel.VSPopupPanel, Rect(0, 0, 0, 0));
+    VSChannel.VSPopupPanel.JvDockManager.InsertControl(Control, alNone, nil);
+    VSChannel.VSPopupPanel.JvDockManager.ShowSingleControl(Control);
+    JvDockManager.HideControl(Control);
+    ResetChannelBlockStartOffset(VSChannel);
+  finally
+    EnableAlign;
+    JvDockUnLockWindow;
+  end;
 end;
 
 procedure TJvDockVSNETPanel.DoShowControl(Control: TWinControl);
@@ -1948,16 +1955,24 @@ begin
   if Self is TJvDockVSPopupPanel then
   begin
     Panel := TJvDockVSPopupPanel(Self).FVSNETDockPanel;
-    Control.Dock(Panel, Rect(0, 0, 0, 0));
-    Panel.JvDockManager.ShowControl(Control);
-    JvDockManager.RemoveControl(Control);
-    Panel.VSChannel.RemoveDockControl(Control);
-    Panel.ShowDockPanel(Panel.VisibleDockClientCount > 0, Control, sdfDockPanel);
-    if (Panel.VSChannel.ActiveDockForm <> nil) and Panel.VSChannel.ActiveDockForm.CanFocus then
-      Panel.VSChannel.ActiveDockForm.SetFocus;
-    Panel.VSChannel.HidePopupPanel(Panel.VSChannel.FActivePane);
-    ResetDockFormVisible;
-    ResetChannelBlockStartOffset(Panel.VSChannel);
+
+    JvDockLockWindow(nil);
+    Panel.DisableAlign;
+    try
+      Control.Dock(Panel, Rect(0, 0, 0, 0));
+      Panel.JvDockManager.ShowControl(Control);
+      JvDockManager.RemoveControl(Control);
+      Panel.VSChannel.RemoveDockControl(Control);
+      Panel.ShowDockPanel(Panel.VisibleDockClientCount > 0, Control, sdfDockPanel);
+      if (Panel.VSChannel.ActiveDockForm <> nil) and Panel.VSChannel.ActiveDockForm.CanFocus then
+        Panel.VSChannel.ActiveDockForm.SetFocus;
+      Panel.VSChannel.HidePopupPanel(Panel.VSChannel.FActivePane);
+      ResetDockFormVisible;
+      ResetChannelBlockStartOffset(Panel.VSChannel);
+    finally
+      Panel.EnableAlign;
+      JvDockUnLockWindow;
+    end;
   end;
 end;
 

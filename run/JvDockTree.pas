@@ -79,6 +79,33 @@ type
     property MinSize: Integer read GetMinSize;
   end;
 
+  { Left dock panel with 3 zones; zone 1 contains zone 2 & 3; zone 2 contains
+    control A; zone 3 contains control B.
+    Right dock panel with 3 zones; zone 4 contains zone 5 & 6; zone 5 contains
+    control C; zone 6 contains control D.
+
+                   Zone 1    Zone 2     Zone 3     Zone 4    Zone 5     Zone 6
+    -----------------------------------------------------------------------------
+    Contains       Zone 2+3  Control A  Control B  Zone 5+6  Control C  Control D
+    Orientation    Vertical  No         No         Horiz.    No         No
+    ZoneLimit      x2-x0     x1         x2         x4-x3     y1         y2
+    LimitBegin     x0        x0         x1         y0        y0         y1
+    LimitSize      x2-x0     x1-x0      x2-x0      y2-y0     y1-y0      y2-y1
+
+                                 y0
+     --------------------------/
+     |   |   |         |     |
+     |   |   |         |  C  |
+     |   |   |         |     |   y1
+     | A | B |         |-----|-/
+     |   |   |         |     |
+     |   |   |         |  D  |
+     |   |   |         |     |   y2
+     |---|---|---------|-----|-/
+     \   \   \         \     \
+      x0  x1  x2        x3    x4
+  }
+  
   TJvDockZone = class(TObject)
   private
     FChildControl: TWinControl;

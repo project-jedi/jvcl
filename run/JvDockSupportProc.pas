@@ -302,20 +302,27 @@ begin
   Result.Handle := CreateFontIndirect(NoNCM.lfCaptionFont);
 end;
 
-procedure JvDockLockWindow(Control: TWinControl);
 var
-  Handle: HWND;
+  GLockCount: Integer;
+  GWindowLocked: Boolean;
+
+procedure JvDockLockWindow(Control: TWinControl);
 begin
-  if Control = nil then
-    Handle := GetDesktopWindow
-  else
-    Handle := Control.Handle;
-  LockWindowUpdate(Handle);
+  { Ignore Control parameter; otherwise nested JvDockLockWindow calls are not possible }
+  if GLockCount = 0 then
+    GWindowLocked := LockWindowUpdate(GetDesktopWindow);
+  Inc(GLockCount);
 end;
 
 procedure JvDockUnLockWindow;
 begin
-  LockWindowUpdate(0);
+  Dec(GLockCount);
+  if GLockCount = 0 then
+  begin
+    if GWindowLocked then
+      LockWindowUpdate(0);
+    GWindowLocked := False;
+  end;
 end;
 
 function JvDockCreateNCMessage(Control: TControl; Msg: Cardinal; HTFlag: Integer;
