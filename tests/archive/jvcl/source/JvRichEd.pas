@@ -3709,8 +3709,12 @@ var
   DC: HDC;
 begin
   inherited Create(AOwner);
-  FHintColor := clInfoBk;
+  {$IFDEF JVCLThemesEnabled}
+  ControlStyle := ControlStyle + [csAcceptsControls, csNeedsBorderPaint] - [csSetCaption];
+  {$ELSE}
   ControlStyle := ControlStyle + [csAcceptsControls] - [csSetCaption];
+  {$ENDIF}
+  FHintColor := clInfoBk;
   FSelAttributes := TJvTextAttributes.Create(Self, atSelected);
   FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
   FWordAttributes := TJvTextAttributes.Create(Self, atWord);
