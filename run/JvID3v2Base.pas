@@ -1192,7 +1192,7 @@ uses
   Graphics, Windows,
   {$IFNDEF COMPILER6_UP}
   Forms,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvConsts;
 
@@ -1219,6 +1219,7 @@ resourcestring
   SNotWritingFrame = 'Not writing frame';
   STagTooBig = 'Tag is too big';
   SValueTooBig = 'Can''t write value in v2.2; too big';
+  SNotReading = 'Not reading';
 
 type
   TJvID3StringList = class(TStringList)
@@ -1227,40 +1228,51 @@ type
   end;
 
 const
-  CMapBitrate: array [Boolean, TJvMPEGLayer] of Byte = (
+  CMapBitrate: array [Boolean, TJvMPEGLayer] of Byte =
+   (
     { ?? - III - II -  I }
     ( $00, $02, $01, $00), // V1
     ( $00, $04, $04, $03) // V2/V3
-    );
+   );
 
   CFreeBitrate = -2;
 
   CBadBitrate = -1;
 
-  CBitrate: array [$00..$04, $00..$0F] of Integer = (
+  CBitrate: array [$00..$04, $00..$0F] of Integer =
+   (
     (CFreeBitrate, 32, 64, 96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, CBadBitrate),
     (CFreeBitrate, 32, 48, 56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, 384, CBadBitrate),
     (CFreeBitrate, 32, 40, 48,  56,  64,  80,  96, 112, 128, 160, 192, 224, 256, 320, CBadBitrate),
     (CFreeBitrate, 32, 48, 56,  64,  80,  96, 112, 128, 144, 160, 176, 192, 224, 256, CBadBitrate),
     (CFreeBitrate,  8, 16, 24,  32,  40,  48,  56,  64,  80,  96, 112, 128, 144, 160, CBadBitrate)
-    );
+   );
 
-  CSamplingFrequency: array [TJvMPEGVersion, $00..$03] of Integer = (
+  CSamplingFrequency: array [TJvMPEGVersion, $00..$03] of Integer =
+   (
     (11025, 12000,  8000, -1), // mvVersion25,
     (    0,     0,     0,  0), // mvReserved,
     (22050, 24000, 16000, -1), // mvVersion2,
     (44100, 48000, 32000, -1)  // mvVersion1
-    );
+   );
 
-  CLayerArray: array [TJvMPEGLayer] of Integer = (
+  CLayerArray: array [TJvMPEGLayer] of Integer =
+   (
     1,           // mlNotDefined,
     144000,      // mlLayerIII,
     144000,      // mlLayerII,
     48000        // mlLayerI
-    );
+   );
+
+  cUnknownLanguage = 'XXX';
+  cID3HeaderId = 'ID3';  // do not change case
+  cChangeTagSizeFileNameTemplate = 'ChangeTagSize';
+  cPictureFrameFileNameTemplate = 'TJvID3PictureFrame';
+  cURLArrow = '-->';
 
 var
-  DefaultFrameClasses: array [TJvID3FrameID] of TJvID3FrameClass = (
+  DefaultFrameClasses: array [TJvID3FrameID] of TJvID3FrameClass =
+   (
     nil, { fiErrorFrame (special frame) }
     nil, { fiPaddingFrame (special frame) }
     TJvID3SkipFrame, { fiNoFrame (special frame) }
@@ -1358,7 +1370,7 @@ var
     TJvID3URLUserFrame, { fiWWWUser }
     nil, { fiMetaCrypto (only in 2.2) }
     nil { fiMetaCompressio (only in 2.2) }
-    );
+   );
 
 //=== Local procedures =======================================================
 
@@ -1406,9 +1418,7 @@ begin
     this must be done with case sensitivity or not. }
 
   if (Enc1 = Enc2) and (Enc1 = ienISO_8859_1) then
-  begin
-    Result := AnsiSameStr(S1.SA, S2.SA);
-  end
+    Result := AnsiSameStr(S1.SA, S2.SA)
   else
   begin
     if Enc1 = ienISO_8859_1 then
@@ -1577,8 +1587,10 @@ begin
   { Returns True when the string pair SP contains an empty string, otherwise False }
 
   case Encoding of
-    ienISO_8859_1: Result := SP.SA = '';
-    ienUTF_16, ienUTF_16BE, ienUTF_8: Result := SP.SW = '';
+    ienISO_8859_1:
+      Result := SP.SA = '';
+    ienUTF_16, ienUTF_16BE, ienUTF_8:
+      Result := SP.SW = '';
   else
     Result := False;
     ID3Error(SID3UnknownEncoding);
@@ -1599,13 +1611,13 @@ begin
     language is not known the string "XXX" should be used.
   }
 
-  Result := (S = 'XXX') or ISO_639_2IsCode(S);
+  Result := (S = cUnknownLanguage) or ISO_639_2IsCode(S);
 
   if not Result then
     case HandleError of
       heAutoCorrect:
         { Note, don't set Result to True }
-        S := 'XXX';
+        S := cUnknownLanguage;
       heRaise:
         Frame.ErrorFmt(SID3InvalidLanguageValue, [S]);
     else
@@ -1743,7 +1755,7 @@ begin
   end;
 
   try
-    Result := EncodeDate(Year, Month, Day)
+    Result := EncodeDate(Year, Month, Day);
   except
     on EConvertError do
       Result := 0;
@@ -1764,12 +1776,10 @@ begin
     Ok := CheckIsLanguageA(Frame, S, HandleError);
     Result := Result and Ok;
     if not Ok then
-    begin
       if HandleError = heAutoCorrect then
         Strings[I] := S
       else
-        Exit;
-    end;
+        Break;
   end;
 end;
 
@@ -1787,12 +1797,10 @@ begin
     Ok := CheckIsLanguageW(Frame, S, HandleError);
     Result := Result and Ok;
     if not Ok then
-    begin
       if HandleError = heAutoCorrect then
         Strings[I] := S
       else
-        Exit;
-    end;
+        Break;
   end;
 end;
 
@@ -1826,7 +1834,7 @@ begin
         heRaise:
           Frame.ErrorFmt(SID3InvalidCharInList, [ASeparator, S]);
       else
-        Exit;
+        Break;
       end;
   end;
 end;
@@ -1861,7 +1869,7 @@ begin
         heRaise:
           Frame.ErrorFmt(SID3InvalidCharInList, [ASeparator, S]);
       else
-        Exit;
+        Break;
       end;
   end;
 end;
@@ -2093,7 +2101,7 @@ begin
       end;
 
       if P^ = #0 then
-        Exit;
+        Break;
 
       Inc(Content, ALength);
     end;
@@ -2128,7 +2136,7 @@ begin
       end;
 
       if P^ = #0 then
-        Exit;
+        Break;
 
       Inc(Content, ALength);
     end;
@@ -2201,8 +2209,8 @@ function GetTagSizeInclHeader(Stream: TStream): Cardinal;
 var
   Header: TID3v2HeaderRec;
 begin
-  if (Stream.Read(Header, SizeOf(Header)) = SizeOf(Header))
-    and (Header.Identifier = 'ID3') then { Do not change case }
+  if (Stream.Read(Header, SizeOf(Header)) = SizeOf(Header)) and
+    (Header.Identifier = cID3HeaderId) then
   begin
     UnSyncSafe(Header.Size, 4, Result);
     Inc(Result, 10);
@@ -2229,7 +2237,7 @@ begin
     if SourceTagSizeInclHeader = DestTagSizeInclHeader then
       Exit;
 
-    DestFileName := JclFileUtils.FileGetTempName('ChangeTagSize');
+    DestFileName := JclFileUtils.FileGetTempName(cChangeTagSizeFileNameTemplate);
     Dest := TFileStream.Create(DestFileName, fmCreate);
     try
       SourceFileSize := Source.Size;
@@ -2277,7 +2285,7 @@ begin
       if BytesRead = 0 then
       begin
         Result := -1;
-        Exit;
+        Break;
       end;
 
       for I := 0 to BytesRead - 1 do
@@ -2463,7 +2471,7 @@ begin
   begin
     Result := GenerateName(AController, FrameName, FrameClass, I);
     if IsUnique(Result) then
-      Exit;
+      Break;
   end;
 end;
 
@@ -2506,7 +2514,7 @@ var
   Start: Integer;
   I: Integer;
 
-  procedure GotoState0;
+  procedure GoState0;
   begin
     State := 0;
     Start := I + 1;
@@ -2523,7 +2531,7 @@ var
     end
     else
       Result := S;
-    GotoState0;
+    GoState0;
   end;
 
   procedure AddReference(const AReference: string);
@@ -2546,7 +2554,7 @@ var
     end;
 
     AddString(ID3_IDToGenre(iReference));
-    GotoState0;
+    GoState0;
   end;
 
 begin
@@ -2577,7 +2585,7 @@ begin
           'C':
             State := 5; // expect 'CR' = 'Cover'
           ')':
-            GotoState0;
+            GoState0;
         else
           State := -1;
         end;
@@ -2626,7 +2634,7 @@ begin
   with TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite) do
   try
     HasTag := (Read(Header, SizeOf(Header)) = SizeOf(Header)) and
-      (Header.Identifier = 'ID3'); { Do not change case }
+      (Header.Identifier = cID3HeaderId);
     if not HasTag then
       Exit;
 
@@ -2694,8 +2702,8 @@ var
     C: Integer;
   begin
     C := Length(APrefix);
-    Result := ((C = Length(S)) or ((C < Length(S)) and (S[C + 1] = ' ')))
-      and (AnsiStrLIComp(PChar(S), PChar(APrefix), C) = 0);
+    Result := ((C = Length(S)) or ((C < Length(S)) and (S[C + 1] = ' '))) and
+      (AnsiStrLIComp(PChar(S), PChar(APrefix), C) = 0);
   end;
 
   procedure AddAndDelete(const Add: string; const DelCount: Integer);
@@ -2780,8 +2788,7 @@ begin
   inherited Clear;
 end;
 
-class function TJvID3AudioEncryptionFrame.Find(
-  AController: TJvID3Controller;
+class function TJvID3AudioEncryptionFrame.Find(AController: TJvID3Controller;
   const AOwnerID: string): TJvID3AudioEncryptionFrame;
 var
   Frame: TJvID3Frame;
@@ -2801,8 +2808,7 @@ begin
     Result := TJvID3AudioEncryptionFrame(Frame)
 end;
 
-class function TJvID3AudioEncryptionFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3AudioEncryptionFrame.FindOrCreate(AController: TJvID3Controller;
   const AOwnerID: string): TJvID3AudioEncryptionFrame;
 begin
   if not Assigned(AController) then
@@ -2923,6 +2929,12 @@ end;
 
 //=== TJvID3Base =============================================================
 
+constructor TJvID3Base.Create(AController: TJvID3Controller);
+begin
+  inherited Create;
+  FController := AController;
+end;
+
 procedure TJvID3Base.AfterConstruction;
 begin
   inherited AfterConstruction;
@@ -2935,12 +2947,6 @@ begin
     Reset
   else
     inherited Assign(Source);
-end;
-
-constructor TJvID3Base.Create(AController: TJvID3Controller);
-begin
-  inherited Create;
-  FController := AController;
 end;
 
 function TJvID3Base.GetStream: TJvID3Stream;
@@ -2985,8 +2991,7 @@ begin
     inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3BinaryFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3BinaryFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := True;
 end;
@@ -3011,8 +3016,7 @@ begin
     Result := TJvID3BinaryFrame(Frame);
 end;
 
-class function TJvID3BinaryFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3BinaryFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3BinaryFrame;
 begin
   if not Assigned(AController) then
@@ -3092,8 +3096,8 @@ end;
 function TJvID3BinaryFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   { There may only be one 'MCDI' frame in each tag. }
-  Result := (Assigned(Frame) and (Frame.FrameID = FrameID) and (FrameID = fiCDID))
-    or inherited SameUniqueIDAs(Frame);
+  Result := (Assigned(Frame) and (Frame.FrameID = FrameID) and
+    (FrameID = fiCDID)) or inherited SameUniqueIDAs(Frame);
 end;
 
 procedure TJvID3BinaryFrame.SaveToFile(const FileName: string);
@@ -3231,7 +3235,7 @@ end;
 
 function TJvID3ContentFrame.GetIsEmpty: Boolean;
 begin
-  Result := ((Length(FLanguage) = 0) or (FLanguage = 'XXX')) and
+  Result := ((Length(FLanguage) = 0) or (FLanguage = cUnknownLanguage)) and
     CheckIsEmpty(FText, Encoding) and CheckIsEmpty(FDescription, Encoding);
 end;
 
@@ -3336,6 +3340,46 @@ end;
 
 //=== TJvID3Controller =======================================================
 
+constructor TJvID3Controller.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+
+  FFrames := TJvID3Frames.Create(Self);
+  FHeader := TJvID3Header.Create(Self);
+  FExtendedHeader := TJvID3ExtendedHeader.Create(Self);
+  FFileInfo := TJvID3FileInfo.Create;
+
+  FActivateEvents := TList.Create;
+  FClients := TList.Create;
+  FState := [];
+
+  { Defaults }
+  FReadEncodingAs := ifeDontCare;
+  FWriteEncodingAs := ifeDontCare;
+  FReadVersionAs := ifvDontCare;
+  FWriteVersionAs := ifvDontCare;
+  FOptions := [coAutoCorrect, coRemoveEmptyFrames];
+end;
+
+destructor TJvID3Controller.Destroy;
+begin
+  SetActive(False);
+
+  inherited Destroy;
+
+  FreeAndNil(FActivateEvents);
+  FreeAndNil(FClients);
+
+  FDesigner.Free;
+  FDesigner := nil;
+
+  FreeAndNil(FFrames);
+  FHeader.Free;
+  FExtendedHeader.Free;
+  FFileInfo.Free;
+  FStream.Free;
+end;
+
 function TJvID3Controller.AddFrame(const AFrameID: TJvID3FrameID): TJvID3Frame;
 var
   FrameClass: TJvID3FrameClass;
@@ -3434,8 +3478,7 @@ begin
   BeginUpdate;
 end;
 
-function TJvID3Controller.CanAddFrame(
-  const AFrameID: TJvID3FrameID): Boolean;
+function TJvID3Controller.CanAddFrame(const AFrameID: TJvID3FrameID): Boolean;
 var
   FrameClass: TJvID3FrameClass;
 begin
@@ -3454,8 +3497,7 @@ begin
     Result := False;
 end;
 
-procedure TJvID3Controller.ChangeToVersion(
-  const ANewVersion: TJvID3Version);
+procedure TJvID3Controller.ChangeToVersion(const ANewVersion: TJvID3Version);
 begin
   Frames.ChangeToVersion(ANewVersion);
   Header.ChangeToVersion(ANewVersion);
@@ -3507,12 +3549,11 @@ begin
       raise;
     {$ELSE}
     Application.HandleException(ExceptObject)
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
-function TJvID3Controller.CopyFromID3v1(
-  const DoOverwrite: Boolean): Boolean;
+function TJvID3Controller.CopyFromID3v1(const DoOverwrite: Boolean): Boolean;
 var
   ID3v1Ctrl: TJvID3v1;
 begin
@@ -3717,46 +3758,6 @@ begin
   end;
 end;
 
-constructor TJvID3Controller.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-
-  FFrames := TJvID3Frames.Create(Self);
-  FHeader := TJvID3Header.Create(Self);
-  FExtendedHeader := TJvID3ExtendedHeader.Create(Self);
-  FFileInfo := TJvID3FileInfo.Create;
-
-  FActivateEvents := TList.Create;
-  FClients := TList.Create;
-  FState := [];
-
-  { Defaults }
-  FReadEncodingAs := ifeDontCare;
-  FWriteEncodingAs := ifeDontCare;
-  FReadVersionAs := ifvDontCare;
-  FWriteVersionAs := ifvDontCare;
-  FOptions := [coAutoCorrect, coRemoveEmptyFrames];
-end;
-
-destructor TJvID3Controller.Destroy;
-begin
-  SetActive(False);
-
-  inherited Destroy;
-
-  FreeAndNil(FActivateEvents);
-  FreeAndNil(FClients);
-
-  FDesigner.Free;
-  FDesigner := nil;
-
-  FreeAndNil(FFrames);
-  FHeader.Free;
-  FExtendedHeader.Free;
-  FFileInfo.Free;
-  FStream.Free;
-end;
-
 procedure TJvID3Controller.DoClose;
 begin
   { Note: this will set Modified to True.. }
@@ -3787,7 +3788,7 @@ end;
 procedure TJvID3Controller.EndReading;
 begin
   if not (icsReading in FState) then
-    ID3Error('Not reading', Self);
+    ID3Error(SNotReading, Self);
 
   Exclude(FState, icsReading);
   FreeAndNil(FStream);
@@ -3835,12 +3836,10 @@ begin
   IDs := FrameIDs - FFrames.GetFrameIDs;
   { IDs represents a set of frames we have to construct }
 
-  if IDs = [] then
-    Exit;
-
-  for FrameID := Low(TJvID3FrameID) to High(TJvID3FrameID) do
-    if (FrameID in IDs) and not (GetFrameClass(FrameID) = TJvID3SkipFrame) then
-      AddFrame(FrameID);
+  if IDs <> [] then
+    for FrameID := Low(TJvID3FrameID) to High(TJvID3FrameID) do
+      if (FrameID in IDs) and not (GetFrameClass(FrameID) = TJvID3SkipFrame) then
+        AddFrame(FrameID);
 end;
 
 procedure TJvID3Controller.Erase;
@@ -3894,8 +3893,7 @@ begin
   end;
 end;
 
-class function TJvID3Controller.GetFrameClass(
-  const FrameID: TJvID3FrameID): TJvID3FrameClass;
+class function TJvID3Controller.GetFrameClass(const FrameID: TJvID3FrameID): TJvID3FrameClass;
 begin
   Result := DefaultFrameClasses[FrameID];
   if not Assigned(Result) then
@@ -3908,8 +3906,7 @@ begin
   Result := Frames.Count;
 end;
 
-function TJvID3Controller.GetFrameCountFor(
-  const AFrameID: TJvID3FrameID): Cardinal;
+function TJvID3Controller.GetFrameCountFor(const AFrameID: TJvID3FrameID): Cardinal;
 var
   I: Integer;
 begin
@@ -4003,7 +4000,8 @@ end;
 
 procedure TJvID3Controller.ID3Event(Event: TJvID3Event; Info: Integer);
 begin
-  if (Event in [ideFrameChange, ideFrameListChange]) and (FState * [icsReading, icsWriting] = []) then
+  if (Event in [ideFrameChange, ideFrameListChange]) and
+    (FState * [icsReading, icsWriting] = []) then
     SetModified(True);
 
   if (FUpdateCount = 0) and Assigned(FDesigner) then
@@ -4027,7 +4025,7 @@ begin
       raise;
     {$ELSE}
     Application.HandleException(ExceptObject)
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
 end;
 
@@ -4121,8 +4119,7 @@ procedure TJvID3Controller.SaveToFile(const AFileName: string);
                                   = 0                   (if tag doesn't exists)
 }
 
-  function CalcNewPadding(
-    const AOldTagSizeInclHeader: Cardinal;
+  function CalcNewPadding(const AOldTagSizeInclHeader: Cardinal;
     const ANewTagSizeInclHeaderExclPadding: Cardinal): Cardinal;
   const
     CMinPadding = $800; // = 2048
@@ -4156,7 +4153,6 @@ var
   PaddingSize: Integer;
   OldTagSizeInclHeader: Cardinal;
   NewTagSizeInclHeader: Cardinal;
-
   FileStream: TFileStream;
 begin
   BeginWriting;
@@ -4278,8 +4274,7 @@ begin
   end;
 end;
 
-procedure TJvID3Controller.SetExtendedHeader(
-  const Value: TJvID3ExtendedHeader);
+procedure TJvID3Controller.SetExtendedHeader(const Value: TJvID3ExtendedHeader);
 begin
   FExtendedHeader.Assign(Value);
 end;
@@ -4310,8 +4305,7 @@ begin
   FModified := Value;
 end;
 
-procedure TJvID3Controller.SetReadEncodingAs(
-  const Value: TJvID3ForceEncoding);
+procedure TJvID3Controller.SetReadEncodingAs(const Value: TJvID3ForceEncoding);
 begin
   if (FReadVersionAs in [ifv2_2, ifv2_3]) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
     ID3Error(SID3EncodingNotSupported, Self);
@@ -4319,8 +4313,7 @@ begin
   FReadEncodingAs := Value;
 end;
 
-procedure TJvID3Controller.SetReadVersionAs(
-  const Value: TJvID3ForceVersion);
+procedure TJvID3Controller.SetReadVersionAs(const Value: TJvID3ForceVersion);
 begin
   FReadVersionAs := Value;
   if (FReadVersionAs in [ifv2_2, ifv2_3]) and (FReadEncodingAs in [ifeUTF_16BE, ifeUTF_8]) then
@@ -4341,8 +4334,7 @@ begin
   ChangeToVersion(NewVersion);
 end;
 
-procedure TJvID3Controller.SetWriteEncodingAs(
-  const Value: TJvID3ForceEncoding);
+procedure TJvID3Controller.SetWriteEncodingAs(const Value: TJvID3ForceEncoding);
 begin
   if (FWriteVersionAs in [ifv2_2, ifv2_3]) and (Value in [ifeUTF_16BE, ifeUTF_8]) then
     ID3Error(SID3EncodingNotSupported, Self);
@@ -4350,8 +4342,7 @@ begin
   FWriteEncodingAs := Value;
 end;
 
-procedure TJvID3Controller.SetWriteVersionAs(
-  const Value: TJvID3ForceVersion);
+procedure TJvID3Controller.SetWriteVersionAs(const Value: TJvID3ForceVersion);
 begin
   FWriteVersionAs := Value;
   if (FWriteVersionAs in [ifv2_2, ifv2_3]) and (FWriteEncodingAs in [ifeUTF_16BE, ifeUTF_8]) then
@@ -4385,11 +4376,6 @@ end;
 
 //=== TJvID3ControllerDesigner ===============================================
 
-procedure TJvID3ControllerDesigner.BeginDesign;
-begin
-  Controller.BeginUpdate;
-end;
-
 constructor TJvID3ControllerDesigner.Create(Controller: TJvID3Controller);
 begin
   inherited Create;
@@ -4403,13 +4389,17 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvID3ControllerDesigner.BeginDesign;
+begin
+  Controller.BeginUpdate;
+end;
+
 procedure TJvID3ControllerDesigner.EndDesign;
 begin
   Controller.EndUpdate;
 end;
 
-procedure TJvID3ControllerDesigner.ID3Event(Event: TJvID3Event;
-  Info: Integer);
+procedure TJvID3ControllerDesigner.ID3Event(Event: TJvID3Event; Info: Integer);
 begin
 end;
 
@@ -4473,19 +4463,15 @@ end;
 function TJvID3CustomTextFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   {  There may only be one text information frame of its kind in an tag }
-  Result := (Assigned(Frame) and (Frame.FrameID = FrameID))
-    or inherited SameUniqueIDAs(Frame);
+  Result := (Assigned(Frame) and (Frame.FrameID = FrameID)) or inherited SameUniqueIDAs(Frame);
 end;
 
-function TJvID3CustomTextFrame.SupportsVersion(
-  const AVersion: TJvID3Version): Boolean;
+function TJvID3CustomTextFrame.SupportsVersion(const AVersion: TJvID3Version): Boolean;
 begin
   case FrameID of
     { ** Not supported in 2.2 ** }
 
-    fiFileOwner,
-      fiEncoderSettings:
-
+    fiFileOwner, fiEncoderSettings:
       Result := AVersion in [ive2_3, ive2_4];
 
     { ** Deprecated in 2.4 ** }
@@ -4499,13 +4485,12 @@ begin
       { [TRDA] Replaced by the TDRC frame, 'Recording time' }
     fiRecordingDates,
       { [TSIZ] The information contained in this frame is in the general case
-either trivial to calculate for the player or impossible for the
-tagger to calculate. There is however no good use for such
-information. The frame is therefore completely deprecated. }
+        either trivial to calculate for the player or impossible for the
+        tagger to calculate. There is however no good use for such
+        information. The frame is therefore completely deprecated. }
     fiSize,
       { [TYER] This frame is replaced by the TDRC frame, 'Recording time' }
     fiYear:
-
       Result := AVersion in [ive2_2, ive2_3];
 
     { ** New frames in 2.4 ** }
@@ -4523,7 +4508,6 @@ information. The frame is therefore completely deprecated. }
     fiPerformerSortOrder, { [TSOP] Performer sort order }
     fiTitleSortOrder, { [TSOT] Title sort order }
     fiSetSubTitle: { [TSST] Set subtitle }
-
       Result := AVersion = ive2_4;
   else
     Result := True;
@@ -4584,8 +4568,7 @@ begin
     or inherited CanAddFrame(AController, AFrameID);
 end;
 
-procedure TJvID3DoubleListFrame.ChangeToVersion(
-  const ANewVersion: TJvID3Version);
+procedure TJvID3DoubleListFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
   Frame: TJvID3DoubleListFrame;
 begin
@@ -4610,8 +4593,7 @@ begin
   end;
 end;
 
-function TJvID3DoubleListFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3DoubleListFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := True;
 end;
@@ -4637,8 +4619,7 @@ begin
     Result := TJvID3DoubleListFrame(Frame)
 end;
 
-class function TJvID3DoubleListFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3DoubleListFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3DoubleListFrame;
 begin
   if not Assigned(AController) then
@@ -4782,8 +4763,7 @@ end;
 
 function TJvID3DoubleListFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
-  Result := (Assigned(Frame) and (Frame.FrameID = FrameID))
-    or inherited SameUniqueIDAs(Frame);
+  Result := (Assigned(Frame) and (Frame.FrameID = FrameID)) or inherited SameUniqueIDAs(Frame);
 end;
 
 procedure TJvID3DoubleListFrame.SetList(const Value: TStrings);
@@ -4798,8 +4778,7 @@ begin
   Changed;
 end;
 
-function TJvID3DoubleListFrame.SupportsVersion(
-  const AVersion: TJvID3Version): Boolean;
+function TJvID3DoubleListFrame.SupportsVersion(const AVersion: TJvID3Version): Boolean;
 begin
   case FrameID of
     { Deprecated in 2.4 }
@@ -4809,14 +4788,12 @@ begin
       and TIPL, 'Involved people list' }
 
     fiInvolvedPeople:
-
       Result := AVersion in [ive2_2, ive2_3];
 
     { New frames in 2.4 }
 
     fiInvolvedPeople2, { [TIPL] Involved people list }
     fiMusicianCreditList: { [TMCL] Musician credits list }
-
       Result := AVersion = ive2_4;
   else
     Result := True;
@@ -4894,8 +4871,7 @@ begin
     inherited Assign(Source);
 end;
 
-procedure TJvID3ExtendedHeader.ChangeToVersion(
-  const ANewVersion: TJvID3Version);
+procedure TJvID3ExtendedHeader.ChangeToVersion(const ANewVersion: TJvID3Version);
 begin
   case ANewVersion of
     ive2_2:
@@ -4914,8 +4890,7 @@ begin
   Result := GetSizeForVersion(Controller.Version);
 end;
 
-function TJvID3ExtendedHeader.GetSizeForVersion(
-  const AVersion: TJvID3Version): Cardinal;
+function TJvID3ExtendedHeader.GetSizeForVersion(const AVersion: TJvID3Version): Cardinal;
 begin
   case AVersion of
     ive2_2:
@@ -5063,8 +5038,7 @@ begin
   FFlags := [];
 end;
 
-procedure TJvID3ExtendedHeader.SetFlags(
-  const Value: TJvID3HeaderExtendedFlags);
+procedure TJvID3ExtendedHeader.SetFlags(const Value: TJvID3HeaderExtendedFlags);
 var
   ChangedFlags: TJvID3HeaderExtendedFlags;
 begin
@@ -5425,7 +5399,8 @@ begin
   end;
 
   if (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Xing)^) and
-     (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Info)^) then Exit;
+    (PInteger(AMPEGTag)^ <> PInteger(VBRTag_Info)^) then
+    Exit;
   Inc(AMPegTag, 4);
 
   { (rb) Now always true?? }
@@ -5498,6 +5473,29 @@ begin
 end;
 
 //=== TJvID3Frame ============================================================
+
+constructor TJvID3Frame.Create(AOwner: TComponent; const AFrameID: TJvID3FrameID;
+  const AFrameIDStr: string);
+begin
+  inherited Create(AOwner);
+
+  CheckFrameID(AFrameID);
+
+  FFrameID := AFrameID;
+  FrameName := AFrameIDStr;
+
+  FEncoding := ienISO_8859_1;
+end;
+
+destructor TJvID3Frame.Destroy;
+begin
+  if FController <> nil then
+  begin
+    if FFrames <> nil then
+      FFrames.Remove(Self);
+  end;
+  inherited Destroy;
+end;
 
 procedure TJvID3Frame.Assign(Source: TPersistent);
 begin
@@ -5573,33 +5571,10 @@ begin
   Changed;
 end;
 
-constructor TJvID3Frame.Create(AOwner: TComponent; const AFrameID: TJvID3FrameID;
-  const AFrameIDStr: string);
-begin
-  inherited Create(AOwner);
-
-  CheckFrameID(AFrameID);
-
-  FFrameID := AFrameID;
-  FrameName := AFrameIDStr;
-
-  FEncoding := ienISO_8859_1;
-end;
-
 procedure TJvID3Frame.DataChanged;
 begin
   if Assigned(FController) then
     FController.ID3Event(ideFrameChange, Longint(Self));
-end;
-
-destructor TJvID3Frame.Destroy;
-begin
-  if FController <> nil then
-  begin
-    if FFrames <> nil then
-      FFrames.Remove(Self);
-  end;
-  inherited Destroy;
 end;
 
 procedure TJvID3Frame.Error(const Msg: string);
@@ -5759,18 +5734,18 @@ begin
         Read(Flag0, 1);
         Read(Flag1, 1);
 
-        if Flag0 and $80 > 0 then
+        if (Flag0 and $80) > 0 then
           Include(FFlags, fhfOnTagAlterDiscardFrame);
-        if Flag0 and $40 > 0 then
+        if (Flag0 and $40) > 0 then
           Include(FFlags, fhfOnFileAlterDiscardFrame);
-        if Flag0 and $20 > 0 then
+        if (Flag0 and $20) > 0 then
           Include(FFlags, fhfReadOnly);
 
-        if Flag1 and $80 > 0 then
+        if (Flag1 and $80) > 0 then
           Include(FFlags, fhfIsCompressed);
-        if Flag1 and $40 > 0 then
+        if (Flag1 and $40) > 0 then
           Include(FFlags, fhfIsEncrypted);
-        if Flag1 and $20 > 0 then
+        if (Flag1 and $20) > 0 then
           Include(FFlags, fhfContainsGroupInformation);
 
         if fhfIsCompressed in Flags then
@@ -5803,22 +5778,22 @@ begin
         Read(Flag0, 1);
         Read(Flag1, 1);
 
-        if Flag0 and $40 > 0 then
+        if (Flag0 and $40) > 0 then
           Include(FFlags, fhfOnTagAlterDiscardFrame);
-        if Flag0 and $20 > 0 then
+        if (Flag0 and $20) > 0 then
           Include(FFlags, fhfOnFileAlterDiscardFrame);
-        if Flag0 and $10 > 0 then
+        if (Flag0 and $10) > 0 then
           Include(FFlags, fhfReadOnly);
 
-        if Flag1 and $40 > 0 then
+        if (Flag1 and $40) > 0 then
           Include(FFlags, fhfContainsGroupInformation);
-        if Flag1 and $08 > 0 then
+        if (Flag1 and $08) > 0 then
           Include(FFlags, fhfIsCompressed);
-        if Flag1 and $04 > 0 then
+        if (Flag1 and $04) > 0 then
           Include(FFlags, fhfIsEncrypted);
-        if Flag1 and $02 > 0 then
+        if (Flag1 and $02) > 0 then
           Include(FFlags, fhfUnsynchronisationApplied);
-        if Flag1 and $01 > 0 then
+        if (Flag1 and $01) > 0 then
           Include(FFlags, fhfDataLengthIndicator);
 
         if fhfContainsGroupInformation in Flags then
@@ -5916,8 +5891,7 @@ begin
     FFrames.SetFrameIndex(Self, Value)
 end;
 
-function TJvID3Frame.SupportsVersion(
-  const AVersion: TJvID3Version): Boolean;
+function TJvID3Frame.SupportsVersion(const AVersion: TJvID3Version): Boolean;
 begin
   Result := AVersion in CSupportedVersions;
 end;
@@ -5945,7 +5919,8 @@ begin
   { Get the frame size, with the encoding as the stream }
   LFrameSize := GetFrameSize(Stream.DestEncoding);
 
-  if (Controller.WriteVersion = ive2_4) and (fhfUnsynchronisationApplied in FFlags) then
+  if (Controller.WriteVersion = ive2_4) and
+    (fhfUnsynchronisationApplied in FFlags) then
   begin
     { Write the frame to the temporary stream }
     Controller.BeginUseTempStream;
@@ -6213,10 +6188,8 @@ function TJvID3Frames.CheckFrames(
 var
   I: Integer;
 begin
-  { Check whether the frames have correct parameters }
-
   Result := False;
-
+  { Check whether the frames have correct parameters }
   for I := 0 to Count - 1 do
     if not Frames[I].CheckFrame(HandleError) then
       Exit;
@@ -6252,11 +6225,11 @@ begin
     if FoundFrame.SameUniqueIDAs(Frame) then
     begin
       Result := False;
-      Exit;
+      Break;
     end;
 
     if not Controller.FindNextFrame(Frame.FrameID, FoundFrame) then
-      Exit;
+      Break;
   end;
 end;
 
@@ -6329,7 +6302,6 @@ end;
 
 function TJvID3Frames.GetFrameIDs: TJvID3FrameIDs;
 begin
-
 end;
 
 procedure TJvID3Frames.GetFrameNames(List: TStrings);
@@ -6456,8 +6428,8 @@ begin
   inherited Assign(Source);
 end;
 
-class function TJvID3GeneralObjFrame.CanAddFrame(
-  AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean;
+class function TJvID3GeneralObjFrame.CanAddFrame(AController: TJvID3Controller;
+  AFrameID: TJvID3FrameID): Boolean;
 begin
   { There may be more than one "GEOB" frame in each tag, but only one with the
     same content descriptor. }
@@ -6465,8 +6437,7 @@ begin
     inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3GeneralObjFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3GeneralObjFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := True;
 end;
@@ -6497,7 +6468,7 @@ begin
 
   while (Frame is TJvID3GeneralObjFrame) and
     not SameStringPair(SP, TJvID3GeneralObjFrame(Frame).FContentDescription,
-    ienISO_8859_1, Frame.Encoding) do
+      ienISO_8859_1, Frame.Encoding) do
 
     AController.FindNextFrame(fiGeneralObject, Frame);
 
@@ -6505,8 +6476,7 @@ begin
     Result := TJvID3GeneralObjFrame(Frame);
 end;
 
-class function TJvID3GeneralObjFrame.Find(
-  AController: TJvID3Controller): TJvID3GeneralObjFrame;
+class function TJvID3GeneralObjFrame.Find(AController: TJvID3Controller): TJvID3GeneralObjFrame;
 var
   Frame: TJvID3Frame;
 begin
@@ -6519,8 +6489,7 @@ begin
     Result := TJvID3GeneralObjFrame(Frame);
 end;
 
-class function TJvID3GeneralObjFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3GeneralObjFrame.FindOrCreate(AController: TJvID3Controller;
   const AContentDescription: string): TJvID3GeneralObjFrame;
 begin
   if not Assigned(AController) then
@@ -6534,8 +6503,7 @@ begin
   end;
 end;
 
-class function TJvID3GeneralObjFrame.FindOrCreate(
-  AController: TJvID3Controller): TJvID3GeneralObjFrame;
+class function TJvID3GeneralObjFrame.FindOrCreate(AController: TJvID3Controller): TJvID3GeneralObjFrame;
 begin
   if not Assigned(AController) then
     ID3Error(SID3NoController);
@@ -6545,8 +6513,7 @@ begin
     Result := TJvID3GeneralObjFrame(AController.AddFrame(fiGeneralObject));
 end;
 
-class function TJvID3GeneralObjFrame.FindOrCreateW(
-  AController: TJvID3Controller;
+class function TJvID3GeneralObjFrame.FindOrCreateW(AController: TJvID3Controller;
   const AContentDescription: WideString): TJvID3GeneralObjFrame;
 begin
   if not Assigned(AController) then
@@ -6577,7 +6544,7 @@ begin
 
   while (Frame is TJvID3GeneralObjFrame) and
     not SameStringPair(SP, TJvID3GeneralObjFrame(Frame).FContentDescription,
-    ienUTF_16, Frame.Encoding) do
+      ienUTF_16, Frame.Encoding) do
 
     AController.FindNextFrame(fiGeneralObject, Frame);
 
@@ -6636,13 +6603,12 @@ begin
   if Result then
     Result :=
       SameStringPair(TJvID3GeneralObjFrame(Frame).FContentDescription, FContentDescription,
-      TJvID3GeneralObjFrame(Frame).Encoding, Encoding)
+        TJvID3GeneralObjFrame(Frame).Encoding, Encoding)
   else
     Result := inherited SameUniqueIDAs(Frame);
 end;
 
-procedure TJvID3GeneralObjFrame.SetContentDescription(
-  const Value: string);
+procedure TJvID3GeneralObjFrame.SetContentDescription(const Value: string);
 begin
   if FContentDescription.SA <> Value then
   begin
@@ -6651,8 +6617,7 @@ begin
   end;
 end;
 
-procedure TJvID3GeneralObjFrame.SetContentDescriptionW(
-  const Value: WideString);
+procedure TJvID3GeneralObjFrame.SetContentDescriptionW(const Value: WideString);
 begin
   if FContentDescription.SW <> Value then
   begin
@@ -6764,7 +6729,7 @@ begin
       if Read(Header, 10) <> 10 then
         Exit;
 
-      FHasTag := Header.Identifier = 'ID3'; { Do not change case }
+      FHasTag := Header.Identifier = cID3HeaderId;
       if not FHasTag then
         Exit;
 
@@ -6842,7 +6807,7 @@ begin
   begin
     BeginWriteFrame(10);
     try
-      Header.Identifier := 'ID3'; { Do not change case }
+      Header.Identifier := cID3HeaderId;
       Header.MajorVersion := CMajorVersion[Controller.WriteVersion];
       Header.RevisionNumber := CRevisionNumber[Controller.WriteVersion];
 
@@ -6876,8 +6841,7 @@ end;
 
 //=== TJvID3NumberFrame ======================================================
 
-procedure TJvID3NumberFrame.ChangeToVersion(
-  const ANewVersion: TJvID3Version);
+procedure TJvID3NumberFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
   Year: Word;
   LDate: TDateTime;
@@ -6905,13 +6869,13 @@ begin
       with TJvID3TextFrame(Frame) do
         LDate := GetID3Date(FText, Encoding, Year)
     else
-    try
-      { hm, no date frame , just assume it's 1 jan }
-      LDate := EncodeDate(Year, 1, 1);
-    except
-      on EConvertError do
-        LDate := 0;
-    end;
+      try
+        { hm, no date frame , just assume it's 1 jan }
+        LDate := EncodeDate(Year, 1, 1);
+      except
+        on EConvertError do
+          LDate := 0;
+      end;
 
     { 3. Determine hour + min from a fiTime frame}
     Frame := TJvID3TextFrame.Find(FController, fiTime);
@@ -6940,8 +6904,7 @@ begin
   end;
 end;
 
-function TJvID3NumberFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3NumberFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   if FrameID in [fiOrigYear, fiYear] then
   begin
@@ -6978,8 +6941,7 @@ begin
     Result := TJvID3NumberFrame(Frame)
 end;
 
-class function TJvID3NumberFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3NumberFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3NumberFrame;
 begin
   if not Assigned(AController) then
@@ -7048,16 +7010,15 @@ begin
   inherited Assign(Source);
 end;
 
-class function TJvID3OwnershipFrame.CanAddFrame(
-  AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean;
+class function TJvID3OwnershipFrame.CanAddFrame(AController: TJvID3Controller;
+  AFrameID: TJvID3FrameID): Boolean;
 begin
   { There may only be one 'OWNE' frame in a tag }
   Result := ((AFrameID = fiOwnership) and not AController.HasFrame(fiOwnership)) or
     inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3OwnershipFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3OwnershipFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := True;
 end;
@@ -7070,8 +7031,7 @@ begin
   inherited Clear;
 end;
 
-class function TJvID3OwnershipFrame.Find(
-  AController: TJvID3Controller): TJvID3OwnershipFrame;
+class function TJvID3OwnershipFrame.Find(AController: TJvID3Controller): TJvID3OwnershipFrame;
 var
   Frame: TJvID3Frame;
 begin
@@ -7084,8 +7044,7 @@ begin
     Result := TJvID3OwnershipFrame(Frame)
 end;
 
-class function TJvID3OwnershipFrame.FindOrCreate(
-  AController: TJvID3Controller): TJvID3OwnershipFrame;
+class function TJvID3OwnershipFrame.FindOrCreate(AController: TJvID3Controller): TJvID3OwnershipFrame;
 begin
   if not Assigned(AController) then
     ID3Error(SID3NoController);
@@ -7131,8 +7090,8 @@ end;
 function TJvID3OwnershipFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   { There may only be one 'OWNE' frame in a tag }
-  Result := (Assigned(Frame) and (Frame.FrameID = FrameID) and (FrameID = fiOwnership))
-    or inherited SameUniqueIDAs(Frame);
+  Result := (Assigned(Frame) and (Frame.FrameID = FrameID) and (FrameID = fiOwnership)) or
+    inherited SameUniqueIDAs(Frame);
 end;
 
 procedure TJvID3OwnershipFrame.SetDateOfPurch(const Value: TDateTime);
@@ -7171,8 +7130,7 @@ begin
   end;
 end;
 
-function TJvID3OwnershipFrame.SupportsVersion(
-  const AVersion: TJvID3Version): Boolean;
+function TJvID3OwnershipFrame.SupportsVersion(const AVersion: TJvID3Version): Boolean;
 begin
   case FrameID of
     { ** Not supported in 2.2 ** }
@@ -7239,9 +7197,9 @@ var
 begin
   if (Dest is TPicture) or (Dest is TGraphic) then
   begin
-    if (DataSize > 0) and (MIMEType <> '-->') then
+    if (DataSize > 0) and (MIMEType <> cURLArrow) then
     begin
-      TmpFileName := JclFileUtils.FileGetTempName('TJvID3PictureFrame');
+      TmpFileName := JclFileUtils.FileGetTempName(cPictureFrameFileNameTemplate);
       TmpFileName := ChangeFileExt(TmpFileName, MIMETypeToExt(MIMEType));
 
       SaveToFile(TmpFileName);
@@ -7275,12 +7233,10 @@ begin
     There may only be one picture with the picture type declared as picture
     type $01 and $02 respectively.
   }
-  Result := (AFrameID = fiPicture) or
-    inherited CanAddFrame(AController, AFrameID);
+  Result := (AFrameID = fiPicture) or inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3PictureFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3PictureFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   { The description has a maximum length of 64 characters, but may be empty. }
 
@@ -7322,8 +7278,7 @@ begin
     Result := TJvID3PictureFrame(Frame)
 end;
 
-class function TJvID3PictureFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3PictureFrame.FindOrCreate(AController: TJvID3Controller;
   const AType: TJvID3PictureType): TJvID3PictureFrame;
 begin
   if not Assigned(AController) then
@@ -7354,9 +7309,8 @@ function TJvID3PictureFrame.GetIsEmpty: Boolean;
 begin
   { Don't care about FPictureType }
   Result := inherited GetIsEmpty and
-    ((Length(FMIMEType) = 0) or (FMIMEType = '-->')) and
-    (Length(URL) = 0) and
-    CheckIsEmpty(FDescription, Encoding);
+    ((Length(FMIMEType) = 0) or (FMIMEType = cURLArrow)) and
+    (Length(URL) = 0) and CheckIsEmpty(FDescription, Encoding);
 end;
 
 procedure TJvID3PictureFrame.ReadFrame;
@@ -7384,7 +7338,7 @@ begin
 
     ReadStringEnc(FDescription);
 
-    if FMIMEType = '-->' then
+    if FMIMEType = cURLArrow then
       { There is the possibility to put only a link to the image file by using
         the 'MIME type' "-->" and having a complete URL instead of picture data.
       }
@@ -7407,11 +7361,9 @@ begin
   if Result then
     Result :=
       (TJvID3PictureFrame(Frame).PictureType = PictureType) and
-
-    ((PictureType in [ptFileIcon, ptOtherFileIcon]) or
-      SameStringPair(FDescription, TJvID3PictureFrame(Frame).FDescription,
-      Encoding, TJvID3PictureFrame(Frame).Encoding)
-      )
+      ((PictureType in [ptFileIcon, ptOtherFileIcon]) or
+       SameStringPair(FDescription, TJvID3PictureFrame(Frame).FDescription,
+         Encoding, TJvID3PictureFrame(Frame).Encoding))
   else
     Result := inherited SameUniqueIDAs(Frame);
 end;
@@ -7471,7 +7423,7 @@ begin
   begin
     WriteEncoding;
     if DoWriteURL then
-      WriteStringA('-->')
+      WriteStringA(cURLArrow)
     else
       WriteStringA(MIMEType);
     WriteTerminatorA;
@@ -7497,16 +7449,15 @@ begin
   inherited Assign(Source);
 end;
 
-class function TJvID3PlayCounterFrame.CanAddFrame(
-  AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean;
+class function TJvID3PlayCounterFrame.CanAddFrame(AController: TJvID3Controller;
+  AFrameID: TJvID3FrameID): Boolean;
 begin
   { There may only be one "PCNT" frame in each tag. }
   Result := not AController.HasFrame(AFrameID) or
     inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3PlayCounterFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3PlayCounterFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := True;
 end;
@@ -7517,8 +7468,7 @@ begin
   inherited Clear;
 end;
 
-class function TJvID3PlayCounterFrame.Find(
-  AController: TJvID3Controller): TJvID3PlayCounterFrame;
+class function TJvID3PlayCounterFrame.Find(AController: TJvID3Controller): TJvID3PlayCounterFrame;
 var
   Frame: TJvID3Frame;
 begin
@@ -7531,8 +7481,7 @@ begin
     Result := TJvID3PlayCounterFrame(Frame)
 end;
 
-class function TJvID3PlayCounterFrame.FindOrCreate(
-  AController: TJvID3Controller): TJvID3PlayCounterFrame;
+class function TJvID3PlayCounterFrame.FindOrCreate(AController: TJvID3Controller): TJvID3PlayCounterFrame;
 begin
   if not Assigned(AController) then
     ID3Error(SID3NoController);
@@ -7542,8 +7491,7 @@ begin
     Result := TJvID3PlayCounterFrame(AController.AddFrame(fiPlayCounter));
 end;
 
-function TJvID3PlayCounterFrame.GetFrameSize(
-  const ToEncoding: TJvID3Encoding): Cardinal;
+function TJvID3PlayCounterFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
 begin
   Result := 4;
 end;
@@ -7558,8 +7506,7 @@ begin
   Stream.ReadNumber(FCounter);
 end;
 
-function TJvID3PlayCounterFrame.SameUniqueIDAs(
-  const Frame: TJvID3Frame): Boolean;
+function TJvID3PlayCounterFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   { There may only be one "PCNT" frame in each tag. }
   Result := ((Frame.FrameID = FrameID) and (FrameID = fiPlayCounter))
@@ -7594,13 +7541,12 @@ begin
   inherited Assign(Source);
 end;
 
-class function TJvID3PopularimeterFrame.CanAddFrame(
-  AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean;
+class function TJvID3PopularimeterFrame.CanAddFrame(AController: TJvID3Controller;
+  AFrameID: TJvID3FrameID): Boolean;
 begin
   { There may be more than one "POPM" frame in each tag, but only one with the
     same email address. }
-  Result := (AFrameID = fiPopularimeter) or
-    inherited CanAddFrame(AController, AFrameID);
+  Result := (AFrameID = fiPopularimeter) or inherited CanAddFrame(AController, AFrameID);
 end;
 
 function TJvID3PopularimeterFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
@@ -7617,8 +7563,7 @@ begin
   inherited Clear;
 end;
 
-class function TJvID3PopularimeterFrame.Find(
-  AController: TJvID3Controller): TJvID3PopularimeterFrame;
+class function TJvID3PopularimeterFrame.Find(AController: TJvID3Controller): TJvID3PopularimeterFrame;
 var
   Frame: TJvID3Frame;
 begin
@@ -7631,8 +7576,8 @@ begin
     Result := TJvID3PopularimeterFrame(Frame)
 end;
 
-class function TJvID3PopularimeterFrame.Find(
-  AController: TJvID3Controller; const AEmailAddress: string): TJvID3PopularimeterFrame;
+class function TJvID3PopularimeterFrame.Find(AController: TJvID3Controller;
+  const AEmailAddress: string): TJvID3PopularimeterFrame;
 var
   Frame: TJvID3Frame;
 begin
@@ -7645,15 +7590,13 @@ begin
 
   while (Frame is TJvID3PopularimeterFrame) and
     not AnsiSameStr(AEmailAddress, TJvID3PopularimeterFrame(Frame).EMailAddress) do
-
     AController.FindNextFrame(fiPopularimeter, Frame);
 
   if Frame is TJvID3PopularimeterFrame then
     Result := TJvID3PopularimeterFrame(Frame);
 end;
 
-class function TJvID3PopularimeterFrame.FindOrCreate(
-  AController: TJvID3Controller): TJvID3PopularimeterFrame;
+class function TJvID3PopularimeterFrame.FindOrCreate(AController: TJvID3Controller): TJvID3PopularimeterFrame;
 begin
   if not Assigned(AController) then
     ID3Error(SID3NoController);
@@ -7663,8 +7606,8 @@ begin
     Result := TJvID3PopularimeterFrame(AController.AddFrame(fiPopularimeter));
 end;
 
-class function TJvID3PopularimeterFrame.FindOrCreate(
-  AController: TJvID3Controller; const AEmailAddress: string): TJvID3PopularimeterFrame;
+class function TJvID3PopularimeterFrame.FindOrCreate(AController: TJvID3Controller;
+  const AEmailAddress: string): TJvID3PopularimeterFrame;
 begin
   if not Assigned(AController) then
     ID3Error(SID3NoController);
@@ -7688,8 +7631,7 @@ end;
 
 function TJvID3PopularimeterFrame.GetIsEmpty: Boolean;
 begin
-  Result := (FRating = 0) and (FCounter = 0) and
-    (Length(FEMailAddress) = 0);
+  Result := (FRating = 0) and (FCounter = 0) and (Length(FEMailAddress) = 0);
 end;
 
 procedure TJvID3PopularimeterFrame.ReadFrame;
@@ -7706,8 +7648,7 @@ begin
   end;
 end;
 
-function TJvID3PopularimeterFrame.SameUniqueIDAs(
-  const Frame: TJvID3Frame): Boolean;
+function TJvID3PopularimeterFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   { There may be more than one "POPM" frame in each tag, but only one with the
     same email address. }
@@ -7783,8 +7724,7 @@ begin
   FListW.Free;
 end;
 
-function TJvID3SimpleListFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3SimpleListFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := False;
   case FrameID of
@@ -7829,8 +7769,7 @@ begin
     Result := TJvID3SimpleListFrame(Frame)
 end;
 
-class function TJvID3SimpleListFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3SimpleListFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3SimpleListFrame;
 begin
   if not Assigned(AController) then
@@ -7854,8 +7793,7 @@ begin
   end;
 end;
 
-function TJvID3SimpleListFrame.GetFrameSize(
-  const ToEncoding: TJvID3Encoding): Cardinal;
+function TJvID3SimpleListFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
 var
   I: Integer;
   SP: TJvID3StringPair;
@@ -8007,8 +7945,7 @@ end;
 
 //=== TJvID3SkipFrame ========================================================
 
-procedure TJvID3SkipFrame.ChangeToVersion(
-  const ANewVersion: TJvID3Version);
+procedure TJvID3SkipFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
   LFrameID: TJvID3FrameID;
 begin
@@ -8105,12 +8042,10 @@ begin
   { This function is used to check _when_ we're reading a frame, that we don't
     read beyond the end marker }
 
-  Result := not FReadingFrame or
-    (P < PChar(Memory) + FStartPosition + FCurrentFrameSize);
+  Result := not FReadingFrame or (P < PChar(Memory) + FStartPosition + FCurrentFrameSize);
 end;
 
-procedure TJvID3Stream.InitAllowedEncodings(
-  const AVersion: TJvID3Version;
+procedure TJvID3Stream.InitAllowedEncodings(const AVersion: TJvID3Version;
   const AEncoding: TJvID3ForceEncoding);
 begin
   if AEncoding = ifeDontCare then
@@ -8437,8 +8372,7 @@ begin
     SA2 := '';
 end;
 
-function TJvID3Stream.ReadUserStringUTF8(var SW1,
-  SW2: WideString): Longint;
+function TJvID3Stream.ReadUserStringUTF8(var SW1, SW2: WideString): Longint;
 var
   SA1, SA2: string;
 begin
@@ -8447,8 +8381,7 @@ begin
   SW2 := UTF8ToWideString(SA2);
 end;
 
-function TJvID3Stream.ReadUserStringW(var SW1,
-  SW2: WideString): Longint;
+function TJvID3Stream.ReadUserStringW(var SW1, SW2: WideString): Longint;
 begin
   Result := ReadStringW(SW1);
 
@@ -8700,8 +8633,7 @@ begin
   Result := WriteStringA(SA1) + WriteTerminatorA + WriteStringA(SA2);
 end;
 
-function TJvID3Stream.WriteUserStringUTF8(const SW1,
-  SW2: WideString): Longint;
+function TJvID3Stream.WriteUserStringUTF8(const SW1, SW2: WideString): Longint;
 var
   SA1, SA2: string;
 begin
@@ -8776,16 +8708,15 @@ begin
   inherited Assign(Source);
 end;
 
-class function TJvID3TermsOfUseFrame.CanAddFrame(
-  AController: TJvID3Controller; AFrameID: TJvID3FrameID): Boolean;
+class function TJvID3TermsOfUseFrame.CanAddFrame(AController: TJvID3Controller;
+  AFrameID: TJvID3FrameID): Boolean;
 begin
   { There may only be one 'USER' frame in a tag}
-  Result := ((AFrameID = fiTermsOfUse) and not AController.HasFrame(fiTermsOfUse))
-    or inherited CanAddFrame(AController, AFrameID);
+  Result := ((AFrameID = fiTermsOfUse) and not AController.HasFrame(fiTermsOfUse)) or
+    inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3TermsOfUseFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3TermsOfUseFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := CheckIsLanguageA(Self, FLanguage, HandleError);
 
@@ -8804,8 +8735,7 @@ begin
   inherited Clear;
 end;
 
-class function TJvID3TermsOfUseFrame.Find(
-  AController: TJvID3Controller): TJvID3TermsOfUseFrame;
+class function TJvID3TermsOfUseFrame.Find(AController: TJvID3Controller): TJvID3TermsOfUseFrame;
 var
   Frame: TJvID3Frame;
 begin
@@ -8818,8 +8748,7 @@ begin
     Result := TJvID3TermsOfUseFrame(Frame);
 end;
 
-class function TJvID3TermsOfUseFrame.FindOrCreate(
-  AController: TJvID3Controller): TJvID3TermsOfUseFrame;
+class function TJvID3TermsOfUseFrame.FindOrCreate(AController: TJvID3Controller): TJvID3TermsOfUseFrame;
 begin
   if not Assigned(AController) then
     ID3Error(SID3NoController);
@@ -8840,8 +8769,7 @@ end;
 
 function TJvID3TermsOfUseFrame.GetIsEmpty: Boolean;
 begin
-  Result := CheckIsEmpty(FText, Encoding) and
-    (Length(FLanguage) = 0);
+  Result := CheckIsEmpty(FText, Encoding) and (Length(FLanguage) = 0);
 end;
 
 procedure TJvID3TermsOfUseFrame.ReadFrame;
@@ -8861,8 +8789,8 @@ end;
 function TJvID3TermsOfUseFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   { There may only be one 'USER' frame in a tag}
-  Result := (Assigned(Frame) and (Frame.FrameID = FrameID) and (FrameID = fiTermsOfUse))
-    or inherited SameUniqueIDAs(Frame);
+  Result := (Assigned(Frame) and (Frame.FrameID = FrameID) and (FrameID = fiTermsOfUse)) or
+    inherited SameUniqueIDAs(Frame);
 end;
 
 procedure TJvID3TermsOfUseFrame.SetLanguage(const Value: string);
@@ -8892,8 +8820,7 @@ begin
   end;
 end;
 
-function TJvID3TermsOfUseFrame.SupportsVersion(
-  const AVersion: TJvID3Version): Boolean;
+function TJvID3TermsOfUseFrame.SupportsVersion(const AVersion: TJvID3Version): Boolean;
 begin
   case FrameID of
     { ** Not supported in 2.2 ** }
@@ -8921,8 +8848,7 @@ end;
 
 //=== TJvID3TextFrame ========================================================
 
-procedure TJvID3TextFrame.ChangeToVersion(
-  const ANewVersion: TJvID3Version);
+procedure TJvID3TextFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
   Year: Word;
   LDate: TDateTime;
@@ -8973,8 +8899,7 @@ begin
   end;
 end;
 
-function TJvID3TextFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3TextFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   case FrameID of
     fiTime:
@@ -9056,8 +8981,7 @@ end;
 
 //=== TJvID3TimestampFrame ===================================================
 
-procedure TJvID3TimestampFrame.ChangeToVersion(
-  const ANewVersion: TJvID3Version);
+procedure TJvID3TimestampFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
 var
   Year, Month, Day: Word;
   Hour, Min: Word;
@@ -9100,15 +9024,14 @@ begin
     begin
       DecodeDate(Value, Year, Dummy1, Dummy2);
 
-      { We can only store the year in a fiOrigyear frame, ie no other frames
+      { We can only store the year in a fiOrigYear frame, ie no other frames
         are supported in v2.3 }
       TJvID3NumberFrame.FindOrCreate(FController, fiOrigYear).Value := Year;
     end;
   end;
 end;
 
-function TJvID3TimestampFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3TimestampFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := True;
 end;
@@ -9127,8 +9050,7 @@ begin
     Result := TJvID3TimestampFrame(Frame);
 end;
 
-class function TJvID3TimestampFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3TimestampFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3TimestampFrame;
 begin
   if not Assigned(AController) then
@@ -9377,12 +9299,10 @@ class function TJvID3URLUserFrame.CanAddFrame(AController: TJvID3Controller;
 begin
   { There may be more than one "WXXX" frame in each tag, but only one
     with the same description. }
-  Result := (AFrameID = fiWWWUser) or
-    inherited CanAddFrame(AController, AFrameID);
+  Result := (AFrameID = fiWWWUser) or inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3URLUserFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3URLUserFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := CheckIsURL(Self, FURL, HandleError);
 
@@ -9426,8 +9346,8 @@ begin
     Result := TJvID3URLUserFrame(Frame);
 end;
 
-class function TJvID3URLUserFrame.FindOrCreate(
-  AController: TJvID3Controller; const Index: Integer): TJvID3URLUserFrame;
+class function TJvID3URLUserFrame.FindOrCreate(AController: TJvID3Controller;
+  const Index: Integer): TJvID3URLUserFrame;
 begin
   if not Assigned(AController) then
     ID3Error(SID3NoController);
@@ -9437,14 +9357,12 @@ begin
     Result := TJvID3URLUserFrame(AController.AddFrame(fiWWWUser));
 end;
 
-function TJvID3URLUserFrame.GetFrameSize(
-  const ToEncoding: TJvID3Encoding): Cardinal;
+function TJvID3URLUserFrame.GetFrameSize(const ToEncoding: TJvID3Encoding): Cardinal;
 begin
   { Text encoding           $xx
     Description             <text string according to encoding> $00 (00)
     Value                   <text string according to encoding>
   }
-
   Result := 1 +
     LengthEnc(FDescription, Encoding, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
@@ -9526,8 +9444,7 @@ begin
     inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3UserFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3UserFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := True;
 end;
@@ -9582,7 +9499,6 @@ begin
     Description             <text string according to encoding> $00 (00)
     Value                   <text string according to encoding>
   }
-
   Result := 1 +
     LengthEnc(FDescription, Encoding, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
