@@ -38,10 +38,10 @@ uses
   StdCtrls, JvRegAuto, ExtCtrls, ComCtrls, Grids,
   Buttons,
   {$IFDEF COMPILER6_UP}
-   DesignIntf, DesignEditors
+   DesignIntf, DesignEditors, 
   {$ELSE}
-   DsgnIntf
-  {$ENDIF COMPILER6_UP},
+   DsgnIntf,
+  {$ENDIF COMPILER6_UP}
   {$IFDEF COMPILER4_UP} ImgList, {$ENDIF COMPILER4_UP}
   Menus;
 

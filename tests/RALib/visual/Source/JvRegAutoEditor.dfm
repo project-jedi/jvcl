@@ -1,4 +1,4 @@
-object RegEditor: TJvRegEditor 
+object JvRegEditor: TJvRegEditor
   Left = 211
   Top = 120
   Width = 460
@@ -48,7 +48,7 @@ object RegEditor: TJvRegEditor
         Top = 4
         Width = 73
         Height = 24
-        Caption = 'Отмена'
+        Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 1
         OnClick = btnCancelClick
@@ -84,7 +84,7 @@ object RegEditor: TJvRegEditor
         Top = 3
         Width = 25
         Height = 25
-        Hint = 'Добавить/Удалить свойство'
+        Hint = #196#238#225#224#226#232#242#252'/'#211#228#224#235#232#242#252' '#241#226#238#233#241#242#226#238
         Glyph.Data = {
           36060000424D3606000000000000360400002800000020000000100000000100
           0800000000000002000000000000000000000001000000010000000000000000
@@ -145,7 +145,7 @@ object RegEditor: TJvRegEditor
       Top = 7
       Width = 312
       Height = 21
-      Hint = 'Имя свойства можно ввести прямо здесь'
+      Hint = #200#236#255' '#241#226#238#233#241#242#226#224' '#236#238#230#237#238' '#226#226#229#241#242#232' '#239#240#255#236#238' '#231#228#229#241#252
       TabOrder = 1
       OnChange = edtPropChange
       OnEnter = ListEnter
@@ -157,7 +157,7 @@ object RegEditor: TJvRegEditor
     Top = 36
     Width = 201
     Height = 266
-    Hint = 'Доступные свойства'
+    Hint = #196#238#241#242#243#239#237#251#229' '#241#226#238#233#241#242#226#224
     Align = alLeft
     Ctl3D = True
     DragMode = dmAutomatic
@@ -181,7 +181,7 @@ object RegEditor: TJvRegEditor
     Top = 36
     Width = 251
     Height = 266
-    Hint = 'Список сохраняемых свойств'
+    Hint = #209#239#232#241#238#234' '#241#238#245#240#224#237#255#229#236#251#245' '#241#226#238#233#241#242#226
     Align = alClient
     Ctl3D = True
     DragMode = dmAutomatic
