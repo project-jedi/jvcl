@@ -44,11 +44,11 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FHotTrack: Boolean;
+    FHotTrack: boolean;
     FHotFont: TFont;
     FFontSave: TFont;
-    FOver: Boolean;
-    FAutoSize: Boolean;
+    FOver: boolean;
+    FAutoSize: boolean;
     FAssociated: TControl;
     FControlCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFOntOptions;
@@ -60,7 +60,9 @@ type
     procedure SetWordWrap(const Value: boolean);
   protected
     property Canvas: TCanvas read GetCanvas;
-    procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP} override;{$ENDIF}
+    procedure SetAutoSize(Value: boolean);
+{$IFDEF COMPILER6_UP} override;
+{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -71,49 +73,50 @@ type
       override;
     procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMFontchanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CalcAutoSize;virtual;
+    procedure CalcAutoSize; virtual;
   public
     procedure Loaded; override;
     procedure Toggle; override;
     procedure Click; override;
-    procedure SetChecked(Value: Boolean); override;
+    procedure SetChecked(Value: boolean); override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
     property Associated: TControl read FAssociated write SetAssociated;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
-    property HotTrack: Boolean read FHotTrack write FHotTrack default False;
+    property AutoSize: boolean read FAutoSize write SetAutoSize default true;
+    property HotTrack: boolean read FHotTrack write FHotTrack default false;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default
+      DefaultTrackFontOptions;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
-    property WordWrap:boolean read FWordWrap write SetWordWrap default true;
+    property WordWrap: boolean read FWordWrap write SetWordWrap default false;
 
-    property OnMouseEnter: TNotifyEvent read FonMouseEnter write FonMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FonMouseLeave write FonMouseLeave;
-    property OnCtl3DChanged: TNotifyEvent read FonCtl3DChanged write FonCtl3DChanged;
-    property OnParentColorChange: TNotifyEvent read FonParentColorChanged write FonParentColorChanged;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
 uses
   JvJVCLUtils;
-  
+
 {**************************************************}
 
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FHotTrack := False;
+  FHotTrack := false;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
   FColor := clInfoBk;
-  FOver := False;
+  FOver := false;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := true;
-  FWordWrap := true;
+  FWordWrap := false;
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -166,7 +169,7 @@ begin
       FFontSave.Assign(Font);
       Font.Assign(FHotFont);
     end;
-    FOver := True;
+    FOver := true;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -182,7 +185,7 @@ begin
     Application.HintColor := FSaved;
     if FHotTrack then
       Font.Assign(FFontSave);
-    FOver := False;
+    FOver := false;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
@@ -201,13 +204,13 @@ begin
   CalcAutoSize;
 end;
 
-procedure TJvCheckBox.SetAutoSize(Value: Boolean);
+procedure TJvCheckBox.SetAutoSize(Value: boolean);
 begin
   if FAutoSize <> Value then
   begin
-    {$IFDEF COMPILER6_UP}
-    inherited SetAutoSize(Value);
-    {$ENDIF}
+{$IFDEF COMPILER6_UP}
+//    inherited SetAutoSize(Value);
+{$ENDIF}
     FAutoSize := Value;
     if Value then WordWrap := false;
     CalcAutoSize;
@@ -216,7 +219,7 @@ end;
 
 procedure TJvCheckBox.SetAssociated(const Value: TControl);
 begin
-  if FAssociated <> self then
+  if FAssociated <> Self then
   begin
     FAssociated := Value;
     if Assigned(FAssociated) then
@@ -224,7 +227,7 @@ begin
   end;
 end;
 
-procedure TJvCheckBox.SetChecked(Value: Boolean);
+procedure TJvCheckBox.SetChecked(Value: boolean);
 begin
   inherited SetChecked(Value);
   if Assigned(FAssociated) then
@@ -251,7 +254,7 @@ begin
   if FControlCanvas = nil then
   begin
     FControlCanvas := TControlCanvas.Create;
-    FControlCanvas.Control := self;
+    FControlCanvas.Control := Self;
   end;
   Result := FControlCanvas;
 end;
@@ -269,7 +272,6 @@ begin
   UpdateTrackFont(HotTrackFont, Font, HotTrackFontOptions);
 end;
 
-
 procedure TJvCheckBox.CalcAutoSize;
 const
   Flags: array[boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
@@ -278,41 +280,38 @@ var
   ASize: TSize;
   R: TRect;
 begin
-  if Parent = nil then Exit;
-  if AutoSize then
-  begin
-    ASize := GetDefaultCheckBoxSize;
+  if (Parent = nil) or not AutoSize or (csLoading in ComponentState) then Exit;
+  ASize := GetDefaultCheckBoxSize;
     // add some spacing
-    Inc(ASize.cy, 4);
-    Canvas.Font := Font;
-    R := Rect(0, 0, ClientWidth, ClientHeight);
+  Inc(ASize.cy, 4);
+  Canvas.Font := Font;
+  R := Rect(0, 0, ClientWidth, ClientHeight);
     // This is slower than GetTextExtentPoint but it does consider hotkeys
-    if Caption <> '' then
-    begin
-      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
-      AWidth := (R.Right - R.Left) + ASize.cx + 8;
-      AHeight := R.Bottom - R.Top;
-    end
-    else
-    begin
-      AWidth := ASize.cx;
-      AHeight := ASize.cy;
-    end;
-    if AWidth < ASize.cx then
-      AWidth := ASize.cx;
-    if AHeight < ASize.cy then
-      AHeight := ASize.cy;
-    ClientWidth := AWidth;
-    ClientHeight := AHeight;
+  if Caption <> '' then
+  begin
+    DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, Flags[WordWrap] or DT_LEFT or DT_NOCLIP or DT_CALCRECT);
+    AWidth := (R.Right - R.Left) + ASize.cx + 8;
+    AHeight := R.Bottom - R.Top;
+  end
+  else
+  begin
+    AWidth := ASize.cx;
+    AHeight := ASize.cy;
   end;
+  if AWidth < ASize.cx then
+    AWidth := ASize.cx;
+  if AHeight < ASize.cy then
+    AHeight := ASize.cy;
+  ClientWidth := AWidth;
+  ClientHeight := AHeight;
 end;
 
-procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
+procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin
     FHotTrackFontOptions := Value;
-    UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+    UpdateTrackFont(HotTrackFont, Font, FHotTrackFontOptions);
   end;
 end;
 
