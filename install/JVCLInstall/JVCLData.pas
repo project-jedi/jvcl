@@ -646,6 +646,17 @@ begin
       FJCLDir := FindJCL(Target.SearchPaths);
   end;
 
+  // Check for the JCL bpl file, that's the most reliable way to find
+  // if the JCL is actually installed because users may not have put the
+  // JCL directory in their browsing and/or search paths, especially
+  // BCB users.
+  if (Target.IsBCB and
+      FileExists(Format('%s\CJcl%d0.bpl', [BplDir, Target.Version]))) or
+     (not Target.IsBCB and
+      FileExists(Format('%s\DJcl%d0.bpl', [BplDir, Target.Version]))) then
+    FMissingJCL := False;
+
+
   // are C/DJcl.dcp and C/DJclVcl.dcp available
   if Target.Version = 5 then S := '50' else S := '';
 
@@ -660,6 +671,9 @@ begin
     FCompiledJCL := True;
 
     { (ahuser) Removed because some files require JCL source }
+    // (obones) More exactly, this is required for the compilation
+    // of the JCL DCP file for BCB targets.
+
     {if FJCLDir = '' then // replace JCL directory
       FJCLDir := BplDir;
 
