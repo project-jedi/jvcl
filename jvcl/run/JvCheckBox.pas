@@ -52,10 +52,12 @@ type
     FAssociated: TControl;
     FControlCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFOntOptions;
+    FWordWrap: boolean;
     procedure SetHotFont(const Value: TFont);
     procedure SetAssociated(const Value: TControl);
     function GetCanvas: TCanvas;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+    procedure SetWordWrap(const Value: boolean);
   protected
     property Canvas: TCanvas read GetCanvas;
     procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP} override;{$ENDIF}
@@ -83,9 +85,10 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
+    property HotTrackFontOptions: TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
+    property WordWrap:boolean read FWordWrap write SetWordWrap default true;
 
     property OnMouseEnter: TNotifyEvent read FonMouseEnter write FonMouseEnter;
     property OnMouseLeave: TNotifyEvent read FonMouseLeave write FonMouseLeave;
@@ -110,6 +113,7 @@ begin
   ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
   FAutoSize := true;
+  FWordWrap := true;
 end;
 
 destructor TJvCheckBox.Destroy;
@@ -130,7 +134,8 @@ end;
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
+  if WordWrap then
+    Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
 end;
 
 procedure TJvCheckBox.CMCtl3DChanged(var Msg: TMessage);
@@ -203,6 +208,7 @@ begin
     inherited SetAutoSize(Value);
     {$ENDIF}
     FAutoSize := Value;
+    if Value then WordWrap := false;
     CalcAutoSize;
   end;
 end;
@@ -283,12 +289,22 @@ begin
   end;
 end;
 
-procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+procedure TJvCheckBox.SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
 begin
   if FHotTrackFontOptions <> Value then
   begin
     FHotTrackFontOptions := Value;
     UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+  end;
+end;
+
+procedure TJvCheckBox.SetWordWrap(const Value: boolean);
+begin
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
+    if Value then AutoSize := false;
+    RecreateWnd;
   end;
 end;
 

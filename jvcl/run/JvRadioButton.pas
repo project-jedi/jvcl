@@ -51,9 +51,11 @@ type
     FAutoSize: boolean;
     FControlCanvas: TControlCanvas;
     FHotTrackFontOptions: TJvTrackFOntOptions;
+    FWordWrap: boolean;
     procedure SetHotFont(const Value: TFont);
     function GetCanvas: TCanvas;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFOntOptions);
+    procedure SetWordWrap(const Value: boolean);
   protected
     procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
@@ -70,12 +72,13 @@ type
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property AutoSize:boolean read FAutoSize write SetAutoSize;
+    property AutoSize:boolean read FAutoSize write SetAutoSize default true;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
     property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
 
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property WordWrap:boolean read FWordWrap write SetWordWrap default true;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
@@ -96,6 +99,8 @@ begin
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FHotTrackFontOptions := DefaultTrackFontOptions;
+  FAutoSize := true;
+  FWordWrap := true;
 end;
 
 destructor TJvRadioButton.Destroy;
@@ -108,7 +113,8 @@ end;
 procedure TJvRadioButton.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
+  if WordWrap then
+    Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
 end;
 
 procedure TJvRadioButton.CMCtl3DChanged(var Msg: TMessage);
@@ -171,6 +177,7 @@ begin
     inherited SetAutoSize(Value);
     {$ENDIF}
     FAutoSize := Value;
+    if Value then WordWrap := false;
     CalcAutoSize;
   end;
 end;
@@ -199,6 +206,8 @@ begin
         AWidth := 14;
       AHeight := cy + 4;
       if AHeight < 14 then AHeight := 14;
+      if Caption <> '' then
+        Inc(AWidth, 4);
       ClientWidth := AWidth;
       ClientHeight := AHeight;
     end;
@@ -224,6 +233,16 @@ begin
   begin
     FHotTrackFontOptions := Value;
     UpdateTrackFont(HotTrackFont, Font,FHotTrackFontOptions);
+  end;
+end;
+
+procedure TJvRadioButton.SetWordWrap(const Value: boolean);
+begin
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
+    if Value then AutoSize := false;
+    RecreateWnd;
   end;
 end;
 
