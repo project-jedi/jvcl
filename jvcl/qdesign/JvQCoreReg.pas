@@ -71,7 +71,7 @@ begin
   GroupDescendentsWith(TJvComponent, TControl); 
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
-   TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]); 
+    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]); 
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);

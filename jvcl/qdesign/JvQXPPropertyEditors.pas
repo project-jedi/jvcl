@@ -91,8 +91,7 @@ end;
 
 //=== { TJvXPItemImageIndexPropertyEditor } ==================================
 
-function TJvXPItemImageIndexPropertyEditor.GetImageListAt(Index: Integer):
-  TCustomImageList;
+function TJvXPItemImageIndexPropertyEditor.GetImageListAt(Index: Integer): TCustomImageList;
 var
   Item: TPersistent;
 begin

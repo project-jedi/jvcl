@@ -34,29 +34,27 @@ unit JvQColorEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  Types, QWindows, QGraphics, 
-  RTLConsts, DesignIntf, DesignEditors,
-  CLXEditors, 
-
+  SysUtils, Classes, Types, QWindows, QGraphics, 
+  RTLConsts, DesignIntf, DesignEditors, CLXEditors,  
   QDialogs,
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX}
-
+  {$ENDIF LINUX} 
   JvQConsts, JvQJVCLUtils;
 
 
 const
+  // registry/ini keys
   {$IFDEF MSWINDOWS}
-  SCustomColors = 'JVCLX\Custom Colors';
+  SCustomColors = '\JVCLX\Custom Colors';
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  SCustomColors = '.JVCLX/Custom Colors';
+  SCustomColors = '/.JVCLX/Custom Colors';
   {$ENDIF LINUX}
+
 
 type
   TJvColorProperty = class(TColorProperty) 
@@ -192,17 +190,17 @@ end;
 
 //
 // Edit uses TColorDialog, but that does not store the
-// customcolors. For design time non volatile customcolors are
+// custom colors. For design time non-volatile custom colors are
 // implemented stored in the Registry under windows and in
 // Linux in an IniFile.
 //
-function TJvColorProperty.GetRegKey: String;
+function TJvColorProperty.GetRegKey: string;
 begin
-  Result := SDelphiKey + PathDelim + SCustomColors;
+  Result := SDelphiKey + SCustomColors;
 end;
 
 const
-  DefaultColors: array['A'..'P'] of string = (
+  DefaultColors: array ['A'..'P'] of string = (
     'F0FBFF',  // clCream
     'C0DCC0',  // clMoneyGreen
 
@@ -286,7 +284,7 @@ var
             KeyName := 'Color' + Suffix;
             KeyValue := StringReplace(Strings[I], Keyname + '=', '', []);
             WriteString(KeyName, KeyValue);
-            inc(I);
+            Inc(I);
           end;
       finally
         CloseKey;
@@ -310,6 +308,8 @@ begin
     ColorDialog.Free;
   end;
 end;
+
+
 
 end.
 

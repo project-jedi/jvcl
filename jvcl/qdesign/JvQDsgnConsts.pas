@@ -237,6 +237,12 @@ resourcestring
   RsFileName = '(Filename)';
   RsDirectory = '(Directory)';
 
+//=== JvDBGridProp.pas =======================================================
+resourcestring
+  RsEJvDBGridDataSourceNeeded = 'DataSource property must be set before selecting controls.';
+  RsEJvDBGridDataSetNeeded = 'A dataset must be linked to the grid datasource before selecting controls.';
+  RsJvDBGridAlreadyAdded = 'The field "%s" has already been added.';
+
 //=== JvDBMemDatasetEditor.pas ===============================================
 resourcestring
   RsBorrowStructure = 'Borrow structure...';

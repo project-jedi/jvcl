@@ -31,6 +31,7 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+{$I crossplatform.inc}
 
 unit JvQDsgnEditors;
 
@@ -44,9 +45,7 @@ uses
   ClxImgEdit, DsnConst, 
   RTLConsts, DesignIntf, DesignEditors, DesignMenus, CLXEditors,   
   JvQImageIndexEdit, 
-
   Classes, SysUtils;
-
 
 type
   // Special TClassProperty, that show events along with all other properties
@@ -155,10 +154,6 @@ type
   end;
 
 implementation
-
-
-{$WARN UNIT_PLATFORM OFF}
-
 
 uses
   TypInfo, Math, QFileCtrls, QConsts,
@@ -304,7 +299,6 @@ procedure TJvHintProperty.Edit;
 var
   Temp: string;
   Comp: TPersistent;
-//  I, Cnt: Integer;
 begin
   with TJvStrEditDlg.Create(Application) do
   try
@@ -334,7 +328,6 @@ procedure TJvStringsProperty.Edit;
 var
   Temp: string;
   Comp: TPersistent;
-//  I, Cnt: Integer;
 begin
   with TJvStrEditDlg.Create(Application) do
   try
@@ -407,7 +400,6 @@ end;
 
 
 
-
 //=== { TJvDefaultImageIndexProperty } =======================================
 
 
@@ -440,23 +432,22 @@ end;
 
 procedure TJvDefaultImageIndexProperty.Edit;
 var
-  SelectedIndex: integer;
-  tmp: TImageList;
+  SelectedIndex: Integer;
+  Tmp: TImageList;
 begin
   if ImageList <> nil then
   begin
-    tmp := TImageList.Create(application);
-    tmp.Assign(ImageList);
-    SelectedIndex := strtoint(GetValue);
-    if EditImageIndex(tmp, SelectedIndex) then
+    Tmp := TImageList.Create(Application);
+    Tmp.Assign(ImageList);
+    SelectedIndex := StrToInt(GetValue);
+    if EditImageIndex(Tmp, SelectedIndex) then
     begin
-      SetValue(inttostr(SelectedIndex));
-      ImageList.assign(tmp);
+      SetValue(IntToStr(SelectedIndex));
+      ImageList.Assign(Tmp);
     end;
-    tmp.Free;
+    Tmp.Free;
   end;
 end;
-
 
 
 //=== { TJvShortCutProperty } ==================================================
