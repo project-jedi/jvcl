@@ -1218,7 +1218,8 @@ begin
           if (TPersistent(GetOrdProp(PersObj, PropName)) is TStrings) then
             WriteStringList(PropPath, TStrings(GetOrdProp(PersObj, PropName)))
           else if (TPersistent(GetOrdProp(PersObj, PropName)) is TPersistent) and Recursive then
-            WritePersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True);
+            WritePersistent(PropPath, TPersistent(GetOrdProp(PersObj, PropName)), True,
+              IgnoreProperties, PropNameTranslator);
         end;
       end;
   end;
