@@ -26,10 +26,19 @@ Known Issues:
 unit JvTabBar;
 
 {$I jvcl.inc}
+{.$DEFINE WINFORMS}
 
 interface
 
 uses
+ {$IFDEF WINFORMS}
+  System.Windows.Forms, System.Drawing, 
+  Borland.Vcl.Windows, Borland.Vcl.Messages, Borland.VCL.SysUtils,
+  Borland.Vcl.Classes, Borland.Vcl.Types,
+  Jedi.WinForms.VCL.Graphics, Jedi.WinForms.VCL.Controls,
+  Jedi.WinForms.VCL.Forms, Jedi.WinForms.VCL.ImgList, Jedi.WinForms.VCL.Menus,
+  Jedi.WinForms.VCL.Buttons;
+ {$ELSE}
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ImgList, Menus, Buttons,
   {$IFDEF CLR}
@@ -40,6 +49,7 @@ uses
   Types, Qt, QTypes, QGraphics, QControls, QForms, QImgList, QMenus, QButtons,
   {$ENDIF VisualCLX}
   SysUtils, Classes;
+ {$ENDIF WINFORMS}
 
 type
   TJvCustomTabBar = class;
@@ -389,19 +399,20 @@ type
     property OnEndDrag;
 
     {$IFDEF VCL}
+    {$IFNDEF WINFORMS}
     property OnStartDock;
     property OnEndDock;
+    {$ENDIF ~WINFORMS}
     {$ENDIF VCL}
   end;
 
 implementation
 
-{$IFDEF VCL}
 type
+{$IFDEF VCL}
   TCanvasX = TCanvas;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
-type
   TCanvasX = class(TCanvas)
     // LineTo under CLX draws the last point, Windows doesn't. This wrapper
     // restores the last point.
@@ -805,7 +816,7 @@ begin
     FMouseDownClosingTab := nil;
     SetClosingTab(nil);
   end;
-  inherited MouseDown(Button, Shift, X, Y);
+  inherited MouseUp(Button, Shift, X, Y);
 end;
 
 procedure TJvCustomTabBar.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -874,7 +885,7 @@ begin
     Exit;
 
   Offset := 0;
-  X := 0;  // adjust for scrolled area
+  X := Margin;  // adjust for scrolled area
   Index := 0;
   for I := 0 to Tabs.Count - 1 do
   begin
@@ -1049,7 +1060,7 @@ const
   BtnSize = 12;
 begin
   CalcTabsRects;
-  if FRequiredWidth < ClientWidth then
+  if (FRequiredWidth < ClientWidth) or ((FLeftIndex = 0) and (FLastTabRight <= ClientWidth)) then
   begin
     FreeAndNil(FBtnLeftScroll);
     FreeAndNil(FBtnRightScroll);
@@ -1218,16 +1229,12 @@ begin
 
     case TabBar.Align of
       alBottom:
-        begin
-          Result := Rect(TabBar.Margin + FLeft, 0,
-              TabBar.Margin + FLeft + TabBar.GetTabWidth(Self),
-              0 + TabBar.GetTabHeight(Self));
-        end;
+          Result := Rect(FLeft, 0,
+            FLeft + TabBar.GetTabWidth(Self), 0 + TabBar.GetTabHeight(Self));
     else
       // Top
-      Result := Rect(TabBar.Margin + FLeft, TabBar.ClientHeight - TabBar.GetTabHeight(Self),
-          TabBar.Margin + FLeft + TabBar.GetTabWidth(Self),
-          TabBar.ClientHeight);
+      Result := Rect(FLeft, TabBar.ClientHeight - TabBar.GetTabHeight(Self),
+          FLeft + TabBar.GetTabWidth(Self), TabBar.ClientHeight);
     end;
   end;
 end;
