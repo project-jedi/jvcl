@@ -275,6 +275,7 @@ end;
 
 function TJvTurtle.DoCom: string;
 const
+  // sorted for binary search
   Mapper: array [0..101] of PChar =
    (
     '-',
@@ -382,21 +383,25 @@ const
    );
 var
   Com: string;
-  I, N: Integer;
+  Lo, Mid, Hi: Integer;
 begin
   Result := 'ready';
   if not GetToken(Com) then
     Exit;
 
-  N := -1;
-  for I := Low(Mapper) to High(Mapper) do
-    if Com = Mapper[I] then
-    begin
-      N := I;
-      Break;
-    end;
+  Lo := Low(Mapper);
+  Hi := High(Mapper)+1;
+  repeat
+    Mid := Lo + (Hi - Lo) div 2;
+    if Com > Mapper[Mid] then
+      Lo := Mid+1
+    else
+      Hi := Mid;
+  until Lo >= Hi;
+  if (Hi > High(Mapper)) or (Com <> Mapper[Hi]) then
+    Hi := -1;
 
-  case N of
+  case Hi of
     0:
       Result := txSub;
     1:
@@ -728,6 +733,7 @@ begin
   Result := sErrorCanvasNotAssigned;
   if not Assigned(FCanvas) then
     Exit;
+  txDefault;
   S := StringReplace(S, Tab, ' ', [rfReplaceAll]);
   S := StringReplace(S, Cr,  ' ', [rfReplaceAll]);
   S := StringReplace(S, Lf,  ' ', [rfReplaceAll]);
@@ -863,108 +869,90 @@ begin
 end;
 
 function TJvTurtle.StrToCopyMode(var Cm: TCopyMode; S: string): Boolean;
+type
+  TMapper = record
+    Name: PChar;
+    Val: TCopyMode;
+  end;
+const
+  // sorted for binary search
+  Mapper: array [0..14] of TMapper =
+   (
+    (Name: 'cmblackness';   Val: cmBlackness),
+    (Name: 'cmdstinvert';   Val: cmDstInvert),
+    (Name: 'cmmergecopy';   Val: cmMergeCopy),
+    (Name: 'cmmergepaint';  Val: cmMergePaint),
+    (Name: 'cmnotsrccopy';  Val: cmNotSrcCopy),
+    (Name: 'cmnotsrcerase'; Val: cmNotSrcErase),
+    (Name: 'cmpatcopy';     Val: cmPatCopy),
+    (Name: 'cmpatinvert';   Val: cmPatInvert),
+    (Name: 'cmpatpaint';    Val: cmPatPaint),
+    (Name: 'cmscrpaint';    Val: cmSrcPaint),
+    (Name: 'cmsrcand';      Val: cmSrcAnd),
+    (Name: 'cmsrccopy';     Val: cmSrcCopy),
+    (Name: 'cmsrcerase';    Val: cmSrcErase),
+    (Name: 'cmsrcinvert';   Val: cmSrcInvert),
+    (Name: 'cmwhiteness';   Val: cmWhiteness)
+   );
+var
+  Lo, Mid, Hi: Integer;
 begin
-  Result := True;
-  if S = 'cmblackness' then
-    Cm := cmBlackness
-  else
-  if S = 'cmdstinvert' then
-    Cm := cmDstInvert
-  else
-  if S = 'cmmergecopy' then
-    Cm := cmMergeCopy
-  else
-  if S = 'cmmergepaint' then
-    Cm := cmMergePaint
-  else
-  if S = 'cmnotsrccopy' then
-    Cm := cmNotSrcCopy
-  else
-  if S = 'cmnotsrcerase' then
-    Cm := cmNotSrcErase
-  else
-  if S = 'cmpatcopy' then
-    Cm := cmPatCopy
-  else
-  if S = 'cmpatinvert' then
-    Cm := cmPatInvert
-  else
-  if S = 'cmpatpaint' then
-    Cm := cmPatPaint
-  else
-  if S = 'cmsrcand' then
-    Cm := cmSrcAnd
-  else
-  if S = 'cmsrccopy' then
-    Cm := cmSrcCopy
-  else
-  if S = 'cmsrcerase' then
-    Cm := cmSrcErase
-  else
-  if S = 'cmsrcinvert' then
-    Cm := cmSrcInvert
-  else
-  if S = 'cmscrpaint' then
-    Cm := cmSrcPaint
-  else
-  if S = 'cmwhiteness' then
-    Cm := cmWhiteness
-  else
-    Result := False;
+  Lo := Low(Mapper);
+  Hi := High(Mapper)+1;
+  repeat
+    Mid := Lo + (Hi - Lo) div 2;
+    if S > Mapper[Mid].Name then
+      Lo := Mid+1
+    else
+      Hi := Mid;
+  until Lo >= Hi;
+  Result := (Hi <= High(Mapper)) and (S = Mapper[Hi].Name);
+  if Result then
+    Cm := Mapper[Mid].Val;
 end;
 
 function TJvTurtle.StrToPenMode(var Pm: TPenMode; S: string): Boolean;
+type
+  TMapper = record
+    Name: PChar;
+    Val: TPenMode;
+  end;
+const
+  // sorted for binary search
+  Mapper: array [0..15] of TMapper =
+   (
+    (Name: 'pmblack';       Val: pmBlack),
+    (Name: 'pmcopy';        Val: pmCopy),
+    (Name: 'pmmask';        Val: pmMask),
+    (Name: 'pmmasknotpen';  Val: pmMaskNotPen),
+    (Name: 'pmmaskpennot';  Val: pmMaskPenNot),
+    (Name: 'pmmerge';       Val: pmMerge),
+    (Name: 'pmmergenotpen'; Val: pmMergeNotPen),
+    (Name: 'pmmergepennot'; Val: pmMergePenNot),
+    (Name: 'pmnop';         Val: pmNop),
+    (Name: 'pmnot';         Val: pmNot),
+    (Name: 'pmnotcopy';     Val: pmNotCopy),
+    (Name: 'pmnotmask';     Val: pmNotMask),
+    (Name: 'pmnotmerge';    Val: pmNotMerge),
+    (Name: 'pmnotxor';      Val: pmNotXor),
+    (Name: 'pmwhite';       Val: pmWhite),
+    (Name: 'pmxor';         Val: pmXor)
+   );
+var
+  Lo, Mid, Hi: Integer;
 begin
-  Result := True;
-  if S = 'pmBlack' then
-    Pm := pmBlack
-  else
-  if S = 'pmwhite' then
-    Pm := pmWhite
-  else
-  if S = 'pmnop' then
-    Pm := pmNop
-  else
-  if S = 'pmnot' then
-    Pm := pmNot
-  else
-  if S = 'pmcopy' then
-    Pm := pmCopy
-  else
-  if S = 'pmnotcopy' then
-    Pm := pmNotCopy
-  else
-  if S = 'pmmergepennot' then
-    Pm := pmMergePenNot
-  else
-  if S = 'pmmaskpennot' then
-    Pm := pmMaskPenNot
-  else
-  if S = 'pmmergenotpen' then
-    Pm := pmMergeNotPen
-  else
-  if S = 'pmmasknotpen' then
-    Pm := pmMaskNotPen
-  else
-  if S = 'pmmerge' then
-    Pm := pmMerge
-  else
-  if S = 'pmnotmerge' then
-    Pm := pmNotMerge
-  else
-  if S = 'pmmask' then
-    Pm := pmMask
-  else
-  if S = 'pmnotmask' then
-    Pm := pmNotMask
-  else
-  if S = 'pmxor' then
-    Pm := pmXor
-  else
-  if S = 'pmnotxor' then
-    Pm := pmNotXor
-  else
-    Result := False;
+  Lo := Low(Mapper);
+  Hi := High(Mapper)+1;
+  repeat
+    Mid := Lo + (Hi - Lo) div 2;
+    if S > Mapper[Mid].Name then
+      Lo := Mid+1
+    else
+      Hi := Mid;
+  until Lo >= Hi;
+  Result := (Hi <= High(Mapper)) and (S = Mapper[Hi].Name);
+  if Result then
+    Pm := Mapper[Mid].Val;
 end;
 
 procedure TJvTurtle.TextRotate(X, Y, Angle: Integer; AText: string;
@@ -2095,7 +2083,7 @@ end;
 
 function TJvTurtle.txStar: string;
 var
-  I, S, am, N: Integer;
+  I, S, N: Integer;
   OldDown: Boolean;
   A, OldHeading: Real;
   Pt: TPoint;
@@ -2112,23 +2100,11 @@ begin
   Result := Format(sMaximumSidesExceededIns, ['star']);
   if N > 12 then
     Exit;
-  case N of
-    5:
-      am := 2;
-    7:
-      am := 3;
-    9:
-      am := 4;
-    11:
-      am := 5;
-  else
-    am := 1;
-  end;
   OldHeading := Heading;
   Pt := Position;
   OldDown := PenDown;
   PenDown := True;
-  A := am * 360 / N;
+  A := (N div 2) * 360 / N;
   for I := 1 to N - 1 do
   begin
     MoveForward(S);
@@ -2177,10 +2153,13 @@ begin
   Heading := 0;
   Position := Point(0, 0);
   PenDown := False;
-  Canvas.Pen.Color := clWindowText;  // (rom) from clBlack
-  Canvas.Brush.Color := clWindow;    // (rom) from clWhite
-  Canvas.Font.Color := clWindowText; // (rom) added
-  Canvas.CopyMode := cmSrcCopy;
+  if Assigned(Canvas) then
+  begin
+    Canvas.Pen.Color := clWindowText;  // (rom) from clBlack
+    Canvas.Brush.Color := clWindow;    // (rom) from clWhite
+    Canvas.Font.Color := clWindowText; // (rom) added
+    Canvas.CopyMode := cmSrcCopy;
+  end;
   Mark := Position;
   Area := Rect(0, 0, 0, 0);
 end;
