@@ -33,13 +33,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   Menus, Buttons, Controls,
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QMenus, QButtons, QControls, QWindows, QGraphics, Types,
-  QForms, QImgList, QActnList, QExtCtrls, QGrids, QTypes,
+  QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
@@ -512,13 +509,7 @@ function NewSpeedItem(AOwner: TComponent; ASpeedBar: TJvSpeedBar; Section: Integ
 implementation
 
 uses
-  Math,
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
+  Math, Consts,
   JvJVCLUtils, JvJCLUtils, JvSpeedbarSetupForm, JvResources;
 
 const
@@ -1679,16 +1670,13 @@ begin
 end;
 
 procedure TJvSpeedBar.SetFontDefault;
-{$IFDEF MSWINDOWS}
 {$IFDEF VCL}
 var
   NCMetrics: TNonClientMetrics;
-{$ENDIF VCL}
 begin
   ParentFont := False;
   with Font do
   begin
-    {$IFDEF VCL}
     NCMetrics.cbSize := SizeOf(TNonClientMetrics);
     if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
     begin
@@ -1696,7 +1684,6 @@ begin
       Charset := DEFAULT_CHARSET;
     end
     else
-    {$ENDIF VCL}
     begin
       Name := 'MS Sans Serif';
       Size := 8;
@@ -1705,8 +1692,8 @@ begin
     end;
   end;
 end;
-{$ENDIF MSWINDOWS }
-{$IFDEF UNIX}
+{$ENDIF VCL }
+{$IFDEF VisualCLX}
 begin
   ParentFont := False;
   with Font do
@@ -1717,7 +1704,7 @@ begin
     Color := clBtnText;
   end;
 end;
-{$ENDIF UNIX}
+{$ENDIF VisualCLX}
 
 procedure TJvSpeedBar.VisibleChanged;
 begin
