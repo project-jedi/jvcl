@@ -47,6 +47,7 @@ USEUNIT("..\..\run\JvTransparentButton.pas");
 USEUNIT("..\..\run\JvUninstallControls.pas");
 USEUNIT("..\..\run\JvWinampLabel.pas");
 USEUNIT("..\..\run\JvxClock.pas");
+USEUNIT("..\..\run\JvCharMap.pas");
 USEPACKAGE("vclx50.bpi");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("bcbsmp50.bpi");

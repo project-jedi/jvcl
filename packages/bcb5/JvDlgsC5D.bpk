@@ -4,8 +4,9 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvDlgsC5D.bpl"/>
-    <OBJFILES value="..\..\dcu\JvDlgsC5D.obj"/>
-    <RESFILES value=""/>
+    <OBJFILES value="..\..\dcu\JvTipOfDayEditor.obj ..\..\dcu\JvCommonDialogDEditor.obj 
+      ..\..\dcu\JvAppletEditor.obj ..\..\dcu\JvDlgsReg.obj ..\..\dcu\JvDlgsC5D.obj"/>
+    <RESFILES value="JvDlgsC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -13,9 +14,9 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="Vcl50.bpi"/>
+    <PACKAGES value="Vcl50.bpi dsnide50.bpi JvDlgsC5R.bpi JvCoreC5D.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;"/>
+    <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -33,12 +34,11 @@
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value=" -U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
-      -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu 
+      -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Dialog Components&quot; -aa -Tpp 
-      -Gpd -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Dialog Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>

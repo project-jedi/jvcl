@@ -53,7 +53,7 @@ USEUNIT("..\..\run\JvProgressForm.pas");
 USEUNIT("..\..\run\JvRenameError.pas");
 USEUNIT("..\..\run\JvSelectDirectory.pas");
 USEUNIT("..\..\run\JvTipOfDay.pas");
-USEUNIT("..\..\common\ObjSel.pas");
+// not included in D7 package??? USEUNIT("..\..\common\ObjSel.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("vcljpg50.bpi");
 USEPACKAGE("vclx50.bpi");

@@ -24,7 +24,7 @@
       ..\..\dcu\JvSplitter.obj ..\..\dcu\JvSwitch.obj 
       ..\..\dcu\JvSyncSplitter.obj ..\..\dcu\JvTransparentButton.obj 
       ..\..\dcu\JvUninstallControls.obj ..\..\dcu\JvWinampLabel.obj 
-      ..\..\dcu\JvxClock.obj ..\..\dcu\JvCtrlsC5R.obj"/>
+      ..\..\dcu\JvxClock.obj ..\..\dcu\JvCharMap.obj ..\..\dcu\JvCtrlsC5R.obj"/>
     <RESFILES value="JvCtrlsC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -54,12 +54,12 @@
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value=" -U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
-      -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu 
+      -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Controls Runtime Package&quot; -aa 
-      -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Controls Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi 
+      -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>

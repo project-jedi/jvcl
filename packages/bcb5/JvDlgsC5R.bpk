@@ -17,7 +17,7 @@
       ..\..\dcu\JvPageSetupTitled.obj ..\..\dcu\JvProgressComponent.obj 
       ..\..\dcu\JvProgressDialog.obj ..\..\dcu\JvProgressForm.obj 
       ..\..\dcu\JvRenameError.obj ..\..\dcu\JvSelectDirectory.obj 
-      ..\..\dcu\JvTipOfDay.obj ..\..\dcu\ObjSel.obj ..\..\dcu\JvDlgsC5R.obj"/>
+      ..\..\dcu\JvTipOfDay.obj ..\..\dcu\JvDlgsC5R.obj"/>
     <RESFILES value="JvDlgsC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -29,7 +29,7 @@
     <PACKAGES value="vcl50.bpi vcljpg50.bpi vclx50.bpi CJCL50.bpi JvCoreC5R.bpi JvSystemC5R.bpi 
       JvStdCtrlsC5R.bpi bcbsmp50.bpi bcbie50.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\run;..\..\common"/>
+    <PATHPAS value=".;..\..\run"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -47,8 +47,8 @@
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value=" -U&quot;$(PATH)&quot; -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -LUvcl50 -LUvclx50 -LUdclstd50 
-      -LUdsnide50 -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-U&quot;$(PATH)&quot; -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -LUvcl50 -LUvclx50 
+      -LUdclstd50 -LUdsnide50 -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\dcu -D&quot;JVCL Dialog Controls Runtime Package&quot; -aa -Tpp -Gpr -x -Gn 

@@ -3,12 +3,13 @@
 #include <vcl.h>
 #pragma hdrstop
 USERES("JvCtrlsC5D.res");
-USEUNIT("..\..\design\JvSpeedbarForm.pas");
 USEUNIT("..\..\design\JvBehaviorLabelEditor.pas");
 USEUNIT("..\..\design\JvCtrlsReg.pas");
 USEUNIT("..\..\design\JvFooterEditor.pas");
+USEUNIT("..\..\design\JvGroupHeaderEditor.pas");
 USEUNIT("..\..\design\JvHTHintForm.pas");
 USEUNIT("..\..\design\JvScrollMaxEditor.pas");
+USEUNIT("..\..\design\JvSpeedbarForm.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("JvCtrlsC5R.bpi");
 USEPACKAGE("dclstd50.bpi");

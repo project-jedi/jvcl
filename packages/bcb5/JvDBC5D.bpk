@@ -5,8 +5,8 @@
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvDBC5D.bpl"/>
     <OBJFILES value="..\..\dcu\JvSelectDataSetForm.obj ..\..\dcu\JvCsvDataEditor.obj 
-      ..\..\dcu\JvCsvDataForm.obj ..\..\dcu\JvDBEditors.obj 
-      ..\..\dcu\JvDBReg.obj ..\..\dcu\JvDBC5D.obj"/>
+      ..\..\dcu\JvCsvDataForm.obj ..\..\dcu\JvDBMemDatasetEditor.obj 
+      ..\..\dcu\JvDBEditors.obj ..\..\dcu\JvDBReg.obj ..\..\dcu\JvDBC5D.obj"/>
     <RESFILES value="JvDBC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -36,12 +36,11 @@
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value=" -U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
-      -$A8 -v -JPHNE -M -LUdcldb50"/>
+    <PFLAGS value="-U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu 
+      -$YD -$W -$O- -$A8 -v -JPHNE -M -LUdcldb50"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Database Components&quot; -aa -Tpp 
-      -Gpd -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Database Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>

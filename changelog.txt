@@ -1,6 +1,8 @@
 Changelog for JVCL 3.0
 ======================
 2003-11-04: 
+- Updated BCB 5 packages to match the Delphi 7 packages. Some units were previously omitted from the BCB5 packages and JvCaret was still in the System package. It has been moved to the Core package.
+- Modified JvDlgsReg.pas for BCB5 compatability enclosing JvDialogActns in {$IFNDEF BCB5} in the uses clause and omitting the RegisterActions call for BCB5. This is necessary because BCB5 cannot build/link JvDialogActns. // lcc
 - Added functionality to JvRichEdit.pas to use the MS Text converters. // remkobonte
 - Added image for JvCharMap. Added JvCharMap to JvCtrls. Changes for D5. Updated demo. // peter3
 2003-11-03: Added JvCharMap - a control similar to the character map grid in the charmap.exe utility in Windows // peter3
