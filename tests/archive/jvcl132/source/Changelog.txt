@@ -3,6 +3,7 @@
 - Added following components from Sebastien Buysse:
   - JvSpinEdit 
   - JvTranslator
+  - JvTranslatorStrings
   - JvSimpleXml
   - JvHotkeyEx 
 - Added JvTranslator demo
@@ -17,4 +18,20 @@
 - TJvCheckBox: Added Associated control property (Checked//Enabled) //Sebastien Buysse
 - TJvUpdown: merged vith JvUpdown2   //Sebastien Buysse
 - TJvStatusBar: merged vith JvStatusBar2  //Sebastien Buysse
+
+2002-05-30 (JVCL 1.30)
+
+- moved GradientForm to Forms
+- removed remaining Install components
+- added DiagramShapes classes from Jim Cooper
+- added over 50 components from Peter Thörnqvist (currently located at JVCL P3 Tab)
+- added demo programs for Peter's components
+- added components from Anthony Steele
+- removed reference to DJCL from packages (if JCL is installed properly, there is no need for DJCL)
+- added improved TjvHTMLParser and a Demo donated by Alexander Samusenko
+- modified Install.txt (advised owners of D6 Personal edition to use the correct package)
+- removed JVRegisterEditor.pas from packages
+- fixed Default value for TTimeStamp in unit JvWinampApi (reported/solution provided by Kay Wolf)
+- merged WinDialogs donated by Serhiy Perevoznyk (as a consequence, I removed several duplicated components)
+- added Help button to "About JVCL" property Editor form (you can specify where JVCL Help is, and launch it from there)
 
