@@ -70,6 +70,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ForceUpdate;
     procedure ZoomInAt(X,Y:integer);
   published
     property Anchors;
@@ -372,9 +373,7 @@ begin
   begin
     FCrossHair := Value;
     { Forget the old point; thus force repaint }
-    if Enabled then
-      FLastPoint := Point(MaxLongint, MaxLongint);
-    Invalidate;
+    ForceUpdate;
   end;
 end;
 
@@ -423,6 +422,13 @@ begin
   Invalidate;
 end;
 
+procedure TJvZoom.ForceUpdate;
+begin
+  if Enabled then
+    FLastPoint := Point(MaxLongint, MaxLongint);
+  Invalidate;
+end;
+
 procedure TJvZoom.DoContentsChanged;
 begin
   if Assigned(FOnContentsChanged) then
@@ -437,6 +443,7 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
 
 
 initialization
