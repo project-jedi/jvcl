@@ -78,6 +78,7 @@ type
     FText: string;
   protected
     procedure Loaded; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Paint; override;
     function GetText: string;
     procedure SetText(Value: string);
@@ -439,6 +440,14 @@ begin
   PrimSetText(Text);
 end;
 
+procedure TJvCustomSegmentedLEDDisplay.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  if (AComponent = CharacterMapper) and (Operation = opRemove) then
+    CharacterMapper := nil
+  else
+    inherited Notification(AComponent, Operation);
+end;
+
 procedure TJvCustomSegmentedLEDDisplay.Paint;
 var
   I: Integer;
@@ -469,9 +478,15 @@ begin
     if (csLoading in ComponentState) or (
       (Value = nil) or ((DigitClass <> nil) and Value.InheritsFrom(DigitClass.MapperClass))) then
     begin
+      if CharacterMapper <> nil then
+        CharacterMapper.RemoveFreeNotification(Self);
       FCharacterMapper := Value;
-      if not (csLoading in ComponentState) and (Value <> nil) then
-        PrimSetText(Text);
+      if CharacterMapper <> nil then
+      begin
+        CharacterMapper.FreeNotification(Self);
+        if not (csLoading in ComponentState) then
+          PrimSetText(Text);
+      end;
     end
     else
     if DigitClass = nil then
