@@ -27,6 +27,9 @@
     <File Name="..\..\run\JvContextProvider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataProvider.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataProviderImpl.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineVCL.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDsgnIntf.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJCLUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="all" Formname="JvJVCLAboutForm" Condition=""/>
@@ -34,6 +37,7 @@
     <File Name="..\..\run\JvMaxPixel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMouseTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropsStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThemes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionInfo.pas" Targets="all" Formname="" Condition=""/>
@@ -41,6 +45,7 @@
     <File Name="..\..\run\JvAppIniStore.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppRegistryStore.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppStore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppStoreSelectList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvBaseDlg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCaret.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JVCLVer.pas" Targets="all" Formname="" Condition=""/>

@@ -34,6 +34,7 @@
     <File Name="..\..\run\JvDirectories.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDragDrop.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvFormPlacement.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormPlacementSelectList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHidControllerClass.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJoystick.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvKeyboardStates.pas" Targets="all" Formname="" Condition=""/>
@@ -41,7 +42,6 @@
     <File Name="..\..\run\JvMRUManager.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvNTEventLog.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPerfMon95.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPropsStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvRas32.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvScreenResolution.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvScreenSaver.pas" Targets="all" Formname="" Condition=""/>
