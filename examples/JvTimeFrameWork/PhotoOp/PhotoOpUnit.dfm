@@ -34,7 +34,6 @@ object PhotoOpMain: TPhotoOpMain
         Width = 464
         Height = 454
         ScheduleManager = utfScheduleManager1
-        Version = '2.0'
         ColHdrHeight = 30
         Cols = <
           item
@@ -137,9 +136,6 @@ object PhotoOpMain: TPhotoOpMain
         Color = clWhite
         TabOrder = 0
         OnDblClick = JvTFDays1DblClick
-        DesignSize = (
-          460
-          450)
       end
     end
     object TabSheet2: TTabSheet
@@ -151,7 +147,6 @@ object PhotoOpMain: TPhotoOpMain
         Width = 464
         Height = 454
         ScheduleManager = utfScheduleManager1
-        Version = '2.0'
         Cells = <
           item
             Color = clBlack
@@ -256,7 +251,6 @@ object PhotoOpMain: TPhotoOpMain
         Width = 464
         Height = 454
         ScheduleManager = utfScheduleManager1
-        Version = '2.0'
         Cells = <
           item
             Color = clBlack
@@ -940,7 +934,6 @@ object PhotoOpMain: TPhotoOpMain
     StateImageMap.Modified = 2
     OnLoadBatch = utfScheduleManager1LoadBatch
     SchedLoadMode = slmBatch
-    Version = '2.0'
     Left = 72
     Top = 112
   end
@@ -1189,7 +1182,7 @@ object PhotoOpMain: TPhotoOpMain
     PageLayout.MarginLeft = 25
     PageLayout.MarginTop = 17
     PageLayout.MarginRight = 25
-    PageLayout.MarginBottom = 50
+    PageLayout.MarginBottom = 63
     PageLayout.ColsPerPage = 0
     PageLayout.RowsPerPage = 0
     PageLayout.AlwaysShowColHdr = False
