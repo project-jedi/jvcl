@@ -266,7 +266,7 @@ type
 
   TJvCHBQuoteStyle = (qsNone, qsSingle, qsDouble);
 
-  TJvCheckedComboBox = class(TJvCustomComboEdit)
+  TJvCustomCheckedComboBox = class(TJvCustomComboEdit)
   private
     FCapSelAll: string;
     FCapDeselAll: string;
@@ -305,6 +305,7 @@ type
     procedure DoExit; override;
     procedure AdjustSize; override;
     procedure CreatePopup; override;
+    procedure Change; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -317,7 +318,7 @@ type
     property CheckedCount: Integer read FCheckedCount;
     property ItemEnabled[Index: Integer]: Boolean read GetItemEnabled write SetItemEnabled; //dejoy added
     property State[Index: Integer]: TCheckBoxState read GetState write SetState;
-  published
+
     property Items: TStrings read FItems write SetItems;
     property CapSelectAll: string read FCapSelAll write FCapSelAll stored IsStoredCapSelAll;
     property CapDeSelectAll: string read FCapDeselAll write FCapDeselAll stored IsStoredCapDeselAll;
@@ -327,6 +328,20 @@ type
     property Columns: Integer read FColumns write SetColumns default 0;
     property DropDownLines: Integer read FDropDownLines write SetDropDownLines default 6;
     property Delimiter: Char read FDelimiter write SetDelimiter default ',';
+
+  end;
+
+  TJvCheckedComboBox = class(TJvCustomCheckedComboBox)
+  published
+    property Items;
+    property CapSelectAll;
+    property CapDeSelectAll;
+    property NoFocusColor;
+    property Sorted;
+    property QuoteStyle;
+    property Columns;
+    property DropDownLines;
+    property Delimiter;
 
     property Ctl3D;
     property Cursor;
@@ -342,12 +357,15 @@ type
     property TabOrder;
     property TabStop;
     property Visible;
+	property OnChange;
     property OnClick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
     property OnStartDrag;
+	property OnEnter;
+	property OnExit;
   end;
 
 implementation
@@ -484,9 +502,9 @@ begin
   end;
 end;
 
-//=== { TJvCheckedComboBox } =================================================
+//=== { TJvCustomCheckedComboBox } =================================================
 
-constructor TJvCheckedComboBox.Create(AOwner: TComponent);
+constructor TJvCustomCheckedComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FDropDownLines := MINDROPLINES;
@@ -543,7 +561,7 @@ begin
   FListBox.PopupMenu.Items.Insert(1, FDeselectAll);
 end;
 
-destructor TJvCheckedComboBox.Destroy;
+destructor TJvCustomCheckedComboBox.Destroy;
 begin
   FItems.Free;
   FPopup.Free;
@@ -551,7 +569,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCheckedComboBox.AdjustHeight;
+procedure TJvCustomCheckedComboBox.AdjustHeight;
 var
   DC: HDC;
   SaveFont: HFont;
@@ -582,20 +600,20 @@ begin
   Height := Metrics.tmHeight + I;
 end;
 
-procedure TJvCheckedComboBox.AdjustSize;
+procedure TJvCustomCheckedComboBox.AdjustSize;
 begin
   inherited AdjustSize;
   AdjustHeight;
 end;
 
-procedure TJvCheckedComboBox.Clear;
+procedure TJvCustomCheckedComboBox.Clear;
 begin
   FItems.Clear;
   FListBox.Clear;
   inherited Clear;
 end;
 
-procedure TJvCheckedComboBox.ContextListBox(Sender: TObject;
+procedure TJvCustomCheckedComboBox.ContextListBox(Sender: TObject;
   MousePos: TPoint; var Handled: Boolean);
 var
   PopupMenu: TPopupMenu;
@@ -625,7 +643,7 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.CreatePopup;
+procedure TJvCustomCheckedComboBox.CreatePopup;
 begin
   //Click;
   if FColumns > 1 then
@@ -645,19 +663,24 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.DoEnter;
+procedure TJvCustomCheckedComboBox.Change;
+begin
+  DoChange;
+end;
+
+procedure TJvCustomCheckedComboBox.DoEnter;
 begin
   Color := clWindow;
   inherited DoEnter;
 end;
 
-procedure TJvCheckedComboBox.DoExit;
+procedure TJvCustomCheckedComboBox.DoExit;
 begin
   Color := FNoFocusColor;
   inherited DoExit;
 end;
 
-function TJvCheckedComboBox.GetChecked(Index: Integer): Boolean;
+function TJvCustomCheckedComboBox.GetChecked(Index: Integer): Boolean;
 begin
   if Index < FListBox.Items.Count then
     Result := FListBox.Checked[Index]
@@ -665,17 +688,17 @@ begin
     Result := False;
 end;
 
-function TJvCheckedComboBox.GetItemEnabled(Index: Integer): Boolean;
+function TJvCustomCheckedComboBox.GetItemEnabled(Index: Integer): Boolean;
 begin
   Result := FListBox.ItemEnabled[Index];
 end;
 
-function TJvCheckedComboBox.GetState(Index: Integer): TCheckBoxState;
+function TJvCustomCheckedComboBox.GetState(Index: Integer): TCheckBoxState;
 begin
   Result := FListBox.State[Index];
 end;
 
-function TJvCheckedComboBox.GetText: string;
+function TJvCustomCheckedComboBox.GetText: string;
 begin
   if FQuoteStyle = qsNone then
     Result := Text
@@ -683,29 +706,29 @@ begin
     Result := GetFormatedText(FQuoteStyle, Text, Delimiter);
 end;
 
-function TJvCheckedComboBox.IsChecked(Index: Integer): Boolean;
+function TJvCustomCheckedComboBox.IsChecked(Index: Integer): Boolean;
 begin
   Result := FListBox.Checked[Index];
 end;
 
-function TJvCheckedComboBox.IsStoredCapDeselAll: Boolean;
+function TJvCustomCheckedComboBox.IsStoredCapDeselAll: Boolean;
 begin
   Result := FCapSelAll <> RsCapSelAll;
 end;
 
-function TJvCheckedComboBox.IsStoredCapSelAll: Boolean;
+function TJvCustomCheckedComboBox.IsStoredCapSelAll: Boolean;
 begin
   Result := FCapDeselAll <> RsCapDeselAll;
 end;
 
-procedure TJvCheckedComboBox.ItemsChange(Sender: TObject);
+procedure TJvCustomCheckedComboBox.ItemsChange(Sender: TObject);
 begin
   FListBox.Clear;
   Text := '';
   FListBox.Items.Assign(FItems);
 end;
 
-procedure TJvCheckedComboBox.KeyListBox(Sender: TObject; var Key: Word;
+procedure TJvCustomCheckedComboBox.KeyListBox(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_ESCAPE) and (Shift * KeyboardShiftStates = []) then
@@ -715,7 +738,7 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.SetChecked(Index: Integer; Checked: Boolean);
+procedure TJvCustomCheckedComboBox.SetChecked(Index: Integer; Checked: Boolean);
 var
   S: string;
   ChangeData: Boolean;
@@ -748,7 +771,7 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.SetCheckedAll(Sender: TObject);
+procedure TJvCustomCheckedComboBox.SetCheckedAll(Sender: TObject);
 var
   I: Integer;
   S: string;
@@ -770,7 +793,7 @@ begin
   Change;
 end;
 
-procedure TJvCheckedComboBox.SetColumns(Value: Integer);
+procedure TJvCustomCheckedComboBox.SetColumns(Value: Integer);
 begin
   if FColumns <> Value then
   begin
@@ -779,7 +802,7 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.SetDelimiter(const Value: Char);
+procedure TJvCustomCheckedComboBox.SetDelimiter(const Value: Char);
 var
   I: Integer;
   S: string;
@@ -803,24 +826,24 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.SetDropDownLines(Value: Integer);
+procedure TJvCustomCheckedComboBox.SetDropDownLines(Value: Integer);
 begin
   if FDropDownLines <> Value then
     if (Value >= MINDROPLINES) and (Value <= MAXDROPLINES) then
       FDropDownLines := Value;
 end;
 
-procedure TJvCheckedComboBox.SetItemEnabled(Index: Integer; const Value: Boolean);
+procedure TJvCustomCheckedComboBox.SetItemEnabled(Index: Integer; const Value: Boolean);
 begin
   FListBox.ItemEnabled[Index] := Value;
 end;
 
-procedure TJvCheckedComboBox.SetItems(AItems: TStrings);
+procedure TJvCustomCheckedComboBox.SetItems(AItems: TStrings);
 begin
   FItems.Assign(AItems);
 end;
 
-procedure TJvCheckedComboBox.SetNoFocusColor(Value: TColor);
+procedure TJvCustomCheckedComboBox.SetNoFocusColor(Value: TColor);
 begin
   if FNoFocusColor <> Value then
   begin
@@ -829,7 +852,7 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.SetSorted(Value: Boolean);
+procedure TJvCustomCheckedComboBox.SetSorted(Value: Boolean);
 begin
   if FSorted <> Value then
   begin
@@ -838,13 +861,13 @@ begin
   end;
 end;
 
-procedure TJvCheckedComboBox.SetState(Index: Integer;
+procedure TJvCustomCheckedComboBox.SetState(Index: Integer;
   const Value: TCheckBoxState);
 begin
   FListBox.State[Index] := Value;
 end;
 
-procedure TJvCheckedComboBox.SetUnCheckedAll(Sender: TObject);
+procedure TJvCustomCheckedComboBox.SetUnCheckedAll(Sender: TObject);
 var
   I: Integer;
 begin
@@ -859,7 +882,7 @@ begin
   Change;
 end;
 
-procedure TJvCheckedComboBox.ToggleOnOff(Sender: TObject);
+procedure TJvCustomCheckedComboBox.ToggleOnOff(Sender: TObject);
 var
   S: string;
 begin
@@ -1908,6 +1931,7 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
