@@ -1,5 +1,5 @@
 ##Package: PageComps
-##Status: Completed but needs review (p3)
+##Status: Completed (p3) <Weird code in TJvCustomPageListTreeView.PageLinks (rb)>
 ----------------------------------------------------------------------------------------------------
 @@JvPageListTreeView.pas
 Summary
@@ -12,9 +12,9 @@ Author
 Summary
   EPageListError is the exception class used by page list components.
 Description
-  EPageListError is raised by the components TJvPageListTreeView, TJvPageList and the TJvSettingsTreeView 
-  when an error occurs, f ex when you try to assign a component to the PageList property of the TJvPageListTreeview
-  that doesn't implement the IPageList interface.
+  EPageListError is raised by the components TJvPageListTreeView, TJvPageList and the TJvSettingsTreeView
+  when an error occurs. For example, when you try to assign a component to the PageList property of the
+  TJvPageListTreeview that doesn't implement the IPageList interface.
 ----------------------------------------------------------------------------------------------------
 @@IPageList
 Summary
@@ -22,14 +22,14 @@ Summary
   of other controls.
 Description
   IPageList should be implemented by controls that should be assignment compatible with the PageList property of
-  other controls. F ex, the TJvPageList control implements this interface making it possible to use it in combination
-  with the TJvSettingsTreeview and TJvPageListTreeView controls.
+  other controls. For example, the TJvPageList control implements this interface making it possible to
+  use it in combination with the TJvSettingsTreeview and TJvPageListTreeView controls.
 
   The methods of IPageList is called by the IPageList consumer (any component that have an writeable
-  IPageList property). F ex, TJvPageListTreeView calls the methods of the IPageList assigned to it's
+  IPageList property). For example, TJvPageListTreeView calls the methods of the IPageList assigned to it's
   PageList property when the selected node is changed.
 ----------------------------------------------------------------------------------------------------
-@@IPageList.CanChange@integer
+@@IPageList.CanChange
 Summary
   Used do determine if a page can be activated.
 Description
@@ -38,9 +38,10 @@ Description
 Parameters
   AIndex - the 0-based index of the page to check if it can be activated.
 Return Value
-  Should return true if the page at AIndex can be activated or false otherwise. If AIndex is outside the allowable range for the page list, return false.
+  Should return true if the page at AIndex can be activated or false otherwise. If AIndex is outside
+  the allowable range for the page list, return false.
 ----------------------------------------------------------------------------------------------------
-@@IPageList.SetActivePageIndex@integer
+@@IPageList.SetActivePageIndex
 Summary
   Changes the currently active page.
 Description
@@ -58,7 +59,7 @@ Description
 Return Value
   Returns the number of pages in the IPageList implementation or 0 if it is empty.
 ----------------------------------------------------------------------------------------------------
-@@IPageList.getPageCaption@integer
+@@IPageList.getPageCaption
 Summary
   Returns the caption for a page.
 Description
@@ -126,7 +127,8 @@ Parameters
   Sender      - The control that is calling this event.
   ACanvas     - The canvas to draw on
   ARect       - The rect area to draw within
-  DefaultDraw - Variable that determines if the default drawing is to be performed after the event returns. Set this to false to suppress normal drawing of the page.
+  DefaultDraw - Variable that determines if the default drawing is to be performed after the event
+                 returns. Set this to false to suppress normal drawing of the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnCtl3DChanged
 Summary
@@ -223,7 +225,7 @@ Summary
   The class type of TJvCustomPage classes
 Description
   TJvCustomPageClass is the class type for TJvCustomPage and descendants.
-  This type is returned by the <LINK TJvCustomPageList.GetPageClass, GetPageClass> function. 
+  This type is returned by the <LINK TJvCustomPageList.GetPageClass, GetPageClass> function.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList
 Summary
@@ -322,14 +324,15 @@ See Also
 Summary
   Occurs immediately before a new page is selected.
 Description
-  Write an OnChanging event handler to take specific action immediately before the selected page changes.
+  Write an \OnChanging event handler to take specific action immediately before the selected page changes.
   Set the AllowChange parameter to false to prevent the change.
 
-  Use an OnChanging event handler to prevent the user from leaving a page until certain conditions have been met.
-  An OnChanging event handler can also be used to save information about the current state of the page before it is changed
+  Use an \OnChanging event handler to prevent the user from leaving a page until certain conditions have been met.
+  An \OnChanging event handler can also be used to save information about the current state of the page before it is changed
   by a new page selection.
 
-  To access the currently active page, access either the <LINK ActivePage,ActivePage> or <LINK ActivePageIndex,ActivePageIndex> properties.
+  To access the currently active page, access either the <LINK ActivePage,ActivePage> or
+  <LINK ActivePageIndex,ActivePageIndex> properties.
 
 Parameters
   Sender      - The page list that triggered the event
@@ -547,6 +550,7 @@ Description
   Example:
   <CODE>
     TJvPageIndexNode(Jv
+  </CODE>
   The linking will only have effect if the PageList property has been assigned.
 See Also
   PageList, TJvPageIndexNode.PageIndex
@@ -558,10 +562,6 @@ Description
   Use the PageList property to associate an IPageList implementation with the treeview. If a PageList is assigned,
   the active page of the page list will change autmatically when the user selects a new node in the treeview. The page
   that is activated is determined by the value of the selected nodes PageIndex property.
-
-See Also
-  List here other properties, methods (comma separated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSettingsTreeView
 Summary
@@ -585,15 +585,15 @@ Description
   in mind but should work with AutoExpand = false
 
   To get the VS look , Images should contain:
-    Image 0: Closed Folder
-    Image 1: Open Folder
-    Image 2: Right-pointing teal-colored arrow
+  * Image 0: Closed Folder
+  * Image 1: Open Folder
+  * Image 2: Right-pointing teal-colored arrow
 
-    PageNodeImages should then be set to (the defaults):
-      ClosedFolder = 0;
-      ImageIndex = -1; (no image)
-      OpenFolder = 1;
-      SelectedIndex = 2;
+  PageNodeImages should then be set to (the defaults):
+  * ClosedFolder = 0;
+  * ImageIndex = -1; (no image)
+  * \OpenFolder = 1;
+  * SelectedIndex = 2;
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSettingsTreeView.OnGetImageIndex
 Summary
@@ -617,10 +617,10 @@ See Also
 Summary
   Specifies the images to use for the different states of the nodes.
 Description
-  use PageNodeImages to specify what images to use for the different states a node can be in. The recognized
+  Use PageNodeImages to specify what images to use for the different states a node can be in. The recognized
   states are normal, selected, expanded and collapsed.
 See Also
-  TJvSettingsTreeImages, Images  
+  TJvSettingsTreeImages, Images
 ----------------------------------------------------------------------------------------------------
 @@TJvPageCanPaintEvent
 <TITLE TJvPageCanPaintEvent type>
@@ -662,7 +662,7 @@ Summary
 Description
   The Items property of the TJvCustomPageListTreeView is a TJvPageIndexNodes object and maintains the collection of
   nodes in the tree view. Nodes can be added, deleted, inserted, and moved within the tree view.
-  Access the nodes in the tree view through the Items property of the tree view. 
+  Access the nodes in the tree view through the Items property of the tree view.
 ----------------------------------------------------------------------------------------------------
 @@TJvPageLinks
 Summary
@@ -700,9 +700,8 @@ Description
 Summary
   TJvPagePaintEvent is used for events that allows you to paint in a specific area on a canvas
 Description
-  The TJvPagePaintEvent type is the type for events that allows custom painting on a specified area of a canvas. For example, the
-  OnAfterPaint and OnPaint events of TJvCustomPage is of this type.
-  TNotifyEvent
+  The TJvPagePaintEvent type is the type for events that allows custom painting on a specified area
+  of a canvas. For example, the OnAfterPaint and OnPaint events of TJvCustomPage are of this type.
 Parameters
   Sender  - The class that triggered the event
   ACanvas - The canvas to draw on
@@ -769,12 +768,13 @@ Summary
   TJvSettingsTreeView is a treeview that behaves like the treeview in the Options Dialog in VS.Net.
 Description
   TJvSettingsTreeView is derived from TJvCustomSettingsTreeView and publishes it's properties but it
-  does not add any new functionality. 
+  does not add any new functionality.
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption
 <TITLE TJvShowDesignCaption type>
 Summary
-  TJvShowDesignCaption is the type of the ShowDesignCaption property of the TJvCustomPageList component
+  TJvShowDesignCaption is the type of the <LINK TJvCustomPageList.ShowDesignCaption,ShowDesignCaption>
+  property of the TJvCustomPageList component
 Description
   TJvShowDesignCaption can have one of the following values:
 @@TJvShowDesignCaption.sdcNone

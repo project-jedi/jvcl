@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvSplitter.pas
 Summary
@@ -16,7 +16,7 @@ JVCLInfo
 Summary
   Adds events that can be used for hot tracking.
 Description
-  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user 
+  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user
   moves the mouse pointer over the control.
 
   Use property HintColor to change the color of the hint boxes for the scroll box.
@@ -26,9 +26,9 @@ Summary
   Creates and initializes a new TJvSplitter object.
 Description
   Use \Create to create and initialize a new TJvSplitter object.
-  
+
   \Create calls the inherited \Create method, then sets the initial values for the splitter control
-  as follows: 
+  as follows:
 
   * HintColor is set to clInfoBk.
 Parameters
@@ -44,7 +44,7 @@ Summary
   Responds when the mouse pointer moves over the splitter control.
 Description
   CMMouseEnter is called automatically when the mouse pointer moves over the splitter control. It sets
-  the hint color for the application to the property specified by HintColor, and triggers the 
+  the hint color for the application to the property specified by HintColor, and triggers the
   OnMouseEnter event.
 Parameters
   Msg - Represents the parameters of the Windows message that informs the splitter control of the event.
@@ -90,7 +90,7 @@ Description
   splitter control. For example, you can use this event to change the font color when the mouse is over the
   splitter control, and then use the OnMouseLeave event to change it back when the mouse moves off the splitter control.
 See Also
-  OnMouseLeave 
+  OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvSplitter.OnMouseLeave
 Summary

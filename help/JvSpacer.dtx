@@ -1,5 +1,5 @@
-##Package: ??
-##Status: Needs review
+##Package: Ctrls
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvSpacer.pas
 Summary
@@ -18,21 +18,21 @@ Summary
 Description
   TJvSpacer can be used as a spacer on a window. Use this component if you need to create a gap
   between two controls.
-  
-  Set property Align to position the spacing object on the screen; and set property Spacing to 
+
+  Set property Align to position the spacing object on the screen; and set property Spacing to
   determine the size of the control.
-  
+
   Note that you can't place components on a TJvSpacer, and that it has no caption.
 ----------------------------------------------------------------------------------------------------
 @@TJvSpacer.Create
 Summary
   Creates and initializes an instance of JvSpacer.
 Description
-  Call \Create to create an instance of JvSpacer at runtime. A JvSpacer component placed on a 
+  Call \Create to create an instance of JvSpacer at runtime. A JvSpacer component placed on a
   form at design time is created automatically.
 
-  \Create calls the inherited \Create method, then sets the initial values for the spacing object as 
-  follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the spacing object as
+  follows:
 
   * Spacing is set 4.
   * csAcceptsControls and csSetCaption are removed from ControlStyle.
@@ -46,8 +46,8 @@ Description
   Use SetBounds to change all of the control’s boundary properties at once. SetBounds uses the Spacing
   property to determine the actual new height or width of the spacing object.
 Parameters
-  ALeft   - Specifies the horizontal coordinate of the left edge of the spacing object relative to 
-            its parent. 
+  ALeft   - Specifies the horizontal coordinate of the left edge of the spacing object relative to
+            its parent.
   ATop    - Specifies the vertical coordinate of the top left edge of the spacing object relative to
             its parent.
   AWidth  - Specifies the horizontal size of the spacing object or form in pixels.

@@ -1,5 +1,5 @@
-##Package: ??
-##Status: Needs review
+##Package: MM
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvSpecialProgress.pas
 Summary
@@ -16,34 +16,34 @@ JVCLInfo
 Summary
   Two-color gradient filled progress bar.
 Description
-  TJvSpecialProgress is a progress bar, filled using a two-color gradient fill. That is, the color 
+  TJvSpecialProgress is a progress bar, filled using a two-color gradient fill. That is, the color
   of the progress bar turns from left to right gradually from StartColor into EndColor.
-  
-  Use TextOption, to display the current progress percentage of the process tracked by the 
-  progress bar, or display a custom string. \Read PercentDone to get this value. Use TextCentered 
-  and Font to alter the appearance of the percentage text. 
-  
-  Use Color to change the background color of the control, or set Transparant to True to set the 
+
+  Use TextOption, to display the current progress percentage of the process tracked by the
+  progress bar, or display a custom string. \Read PercentDone to get this value. Use TextCentered
+  and Font to alter the appearance of the percentage text.
+
+  Use Color to change the background color of the control, or set Transparant to true to set the
   background color to transparant.
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialProgress.Create
 Summary
   Creates and initializes an instance of TJvSpecialProgress.
 Description
-  Call \Create to create an instance of TJvSpecialProgress at runtime. A TJvSpecialProgress placed on a 
+  Call \Create to create an instance of TJvSpecialProgress at runtime. A TJvSpecialProgress placed on a
   form at design time is created automatically.
 
   Pass a single Component as a parameter to provide the progress bar with an Owner that is responsible
   for freeing it.
 
-  \Create calls the inherited \Create method, creates a timer, and then sets the initial values for the 
-  progress bar as follows: 
-  
+  \Create calls the inherited \Create method, creates a timer, and then sets the initial values for the
+  progress bar as follows:
+
   * Minimum is set to 0.
   * Maximum is set to 100.
   * StartColor is set to clWhite, EndColor is set to clBlack.
   * Position is set to 0.
-  * Solid, TextCentered, GradientBlocks and Transparent are set to False.
+  * Solid, TextCentered, GradientBlocks and Transparent are set to false.
 Parameters
   AOwner - The owner for the instance of TJvSpecialProgress.
 See Also
@@ -54,7 +54,7 @@ See Also
 Summary
   Destroys an instance of TJvSpecialProgress.
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
   TJvSpecialProgress object is not nil and only then calls Destroy.
 See Also
   Create
@@ -66,7 +66,7 @@ See Also
 Summary
   Determines whether the progress bar has a border.
 Description
-  Use BorderStyle to change the appearance of the outer boundary of the progress bar control. A 
+  Use BorderStyle to change the appearance of the outer boundary of the progress bar control. A
   progress bar can have a single border (bsSingle) or no visible border (bsNone).
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialProgress.Color
@@ -81,8 +81,8 @@ See Also
 Summary
   Determines the end color for the gradient fill used to fill the progress bar.
 Description
-  Use EndColor to specify the end color for the gradient fill. The progress bar is filled using a 
-  two-color gradient fill. That is, the color of the progress bar turns from left to right gradually 
+  Use EndColor to specify the end color for the gradient fill. The progress bar is filled using a
+  two-color gradient fill. That is, the color of the progress bar turns from left to right gradually
   from StartColor into EndColor.
 See Also
   StartColor
@@ -91,10 +91,10 @@ See Also
 Summary
   \Controls the attributes of text written on the progress bar.
 Description
-  To change to a new font, specify a new TFont object. To modify a font, change the value of the 
+  To change to a new font, specify a new TFont object. To modify a font, change the value of the
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
-  
-  TextOption must not be set to True to display the text on the progress bar.
+
+  TextOption must not be set to true to display the text on the progress bar.
 See Also
   TextCentered, TextOption
 ----------------------------------------------------------------------------------------------------
@@ -102,12 +102,12 @@ See Also
 Summary
   Specifies the fill method of the progress blocks.
 Description
-  Set GradientBlocks to False to let TJvSpecialProgress fill each progress block using a one color fill.
-  From left to right, the fill color turns gradually from StartColor into EndColor. Set GradientBlocks 
-  to True to let TJvSpecialProgress fill each progress blocks using a two-color gradient fill. From left
+  Set GradientBlocks to false to let the progress control fill each progress block using a one color fill.
+  From left to right, the fill color turns gradually from StartColor into EndColor. Set GradientBlocks
+  to true to let the control fill each progress blocks using a two-color gradient fill. From left
   to right, the begin color and end color of each block turns gradually from StartColor to EndColor.
 Note
-  Property Solid must be set to False, otherwise property GradientBlocks is ignored.
+  Property Solid must be set to false, otherwise property GradientBlocks is ignored.
 See Also
   Solid
 ----------------------------------------------------------------------------------------------------
@@ -126,14 +126,14 @@ Description
   Do not call the protected Loaded method. The component streaming system calls this method after it
   loads the progress bar’s form from a stream.
 
-  TJvSpecialProgress overrides the inherited method to paint the in-memory bitmap.
+  TJvSpecialProgress overrides the inherited method to \paint the in-memory bitmap.
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialProgress.Maximum
 Summary
   Specifies the upper limit of the range of possible positions.
 Description
   Use Maximum along with the Minimum property to establish the range of possible positions for a progress
-  bar. When the process tracked by the progress bar is complete, the value of Position should equal 
+  bar. When the process tracked by the progress bar is complete, the value of Position should equal
   Maximum.
 See Also
   Minimum, Position
@@ -142,7 +142,7 @@ See Also
 Summary
   Specifies the lower limit of the range of possible positions.
 Description
-  Use Minimum along with the Maximum property to establish the range of possible positions for a progress 
+  Use Minimum along with the Maximum property to establish the range of possible positions for a progress
   bar. When the process tracked by the progress bar begins, the value of Position should equal Minimum.
 See Also
   Maximum, Position
@@ -153,10 +153,10 @@ Summary
 Description
   \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   progress bar. For example, you can use this event to change the font color when the mouse is over the
-  progress bar, and then use the OnMouseLeave event to change it back when the mouse moves off the 
+  progress bar, and then use the OnMouseLeave event to change it back when the mouse moves off the
   scroll box.
 See Also
-  OnMouseLeave 
+  OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvSpecialProgress.OnMouseLeave
 Summary
@@ -194,13 +194,13 @@ See Also
 Summary
   Specifies the current position of the progress bar.
 Description
-  You can read Position to determine how far the process tracked by the progress bar has advanced 
-  from Minimum toward Maximum. Set Position to cause the progress bar to display a position between 
-  Minimum and Maximum. For example, when the process tracked by the progress bar completes, set 
+  You can read Position to determine how far the process tracked by the progress bar has advanced
+  from Minimum toward Maximum. Set Position to cause the progress bar to display a position between
+  Minimum and Maximum. For example, when the process tracked by the progress bar completes, set
   Position to Maximum so that it appears completely filled.
 
-  When a progress bar is created, Minimum and Maximum represent percentages, where Minimum is 0 
-  (0% complete) and Maximum is 100 (100% complete). If these values are not changed, Position is 
+  When a progress bar is created, Minimum and Maximum represent percentages, where Minimum is 0
+  (0% complete) and Maximum is 100 (100% complete). If these values are not changed, Position is
   the percentage of the process that has already been completed.
 See Also
   Maximum, Minimum
@@ -209,9 +209,9 @@ See Also
 Summary
   Specifies whether the progress bar is solid or segmented.
 Description
-  Use Solid to specify whether the progress bar is solid or segmented. If Solid is set to True, the
-  progres bar is solid and the GradientBlocks property is ignored. If Solid is set to False, the progress
-  bar is segmented; GradientBlocks then indicates whether the progress blocks are filled using a 
+  Use Solid to specify whether the progress bar is solid or segmented. If Solid is set to true, the
+  progres bar is solid and the GradientBlocks property is ignored. If Solid is set to false, the progress
+  bar is segmented; GradientBlocks then indicates whether the progress blocks are filled using a
   two-color gradient fill or using one color.
 See Also
   GradientBlocks
@@ -220,8 +220,8 @@ See Also
 Summary
   Determines the start color for the gradient fill used to fill the progress bar.
 Description
-  Use StartColor to specify the start color for the gradient fill. The progress bar is filled using a 
-  two-color gradient fill. That is, the color of the progress bar turns from left to right gradually 
+  Use StartColor to specify the start color for the gradient fill. The progress bar is filled using a
+  two-color gradient fill. That is, the color of the progress bar turns from left to right gradually
   from StartColor into EndColor.
 See Also
   EndColor
@@ -231,11 +231,11 @@ Summary
   Specifies the amount that Position increases when the StepIt method is called.
 Description
   Set Step to specify the granularity of the progress bar. Step should reflect the size of each step
-  in the process tracked by the progress bar, in the logical units used by the Maximum and Minimum 
-  properties. 
+  in the process tracked by the progress bar, in the logical units used by the Maximum and Minimum
+  properties.
 
-  When a progress bar is created, Minimum and Maximum represent percentages, where Minimum is 0 
-  (0% complete) and Maximum is 100 (100% complete). If these values are not changed, Step is the 
+  When a progress bar is created, Minimum and Maximum represent percentages, where Minimum is 0
+  (0% complete) and Maximum is 100 (100% complete). If these values are not changed, Step is the
   percentage of the process completed before the user is provided with additional visual feedback.
 
   When the StepIt method is called, the value of Position increases by Step.
@@ -246,8 +246,8 @@ See Also
 Summary
   Advances Position by the amount specified in the Step property.
 Description
-  Call the StepIt method to increase the value of Position by the value of the Step property. If Step 
-  represents the size of one logical step in the process tracked by the progress bar, call Step after 
+  Call the StepIt method to increase the value of Position by the value of the Step property. If Step
+  represents the size of one logical step in the process tracked by the progress bar, call Step after
   each logical step is completed.
 See Also
   Step
@@ -256,11 +256,11 @@ See Also
 Summary
   Determines the placement of the text on the progress bar.
 Description
-  Set TextCentered to True to keep the position of the text unchanged while changing property Position.
-  That is, centered on the control. Set TextCentered to False to position the text centered on the
-  filled part of the progress bar. If property Position changes, then the progress bar size will 
-  change and thus, so will the position of the text. 
-  
+  Set TextCentered to true to keep the position of the text unchanged - that is, centered on the
+  control - while changing property Position. Set TextCentered to false to position the text centered on the
+  filled part of the progress bar. If property Position changes, then the progress bar size will
+  change and thus, so will the position of the text.
+Note
   TextOption must be set to a value other than toNoText, to display the text on the progress bar.
 See Also
    Font, TextOption
@@ -270,10 +270,10 @@ Summary
   Determines whether or which text is displayed on the progress bar.
 Description
   Use TextOption to specify to:
-  
+
   * Not display text on the progress bar, or
   * Display a percentage, or
-  * Display the caption, or
+  * Display the text specified by the Caption property, or
   * Display a formatted text.
 See Also
   PercentDone, Position, TextCentered, Font, TJvTextOption
@@ -283,7 +283,7 @@ Summary
   Updates the in-memory bitmap of the progress bar.
 Description
   TJvSpecialProgress uses double buffering to reduces the amount of flicker when the control repaints;
-  TJvSpecialProgress paints itself to an in-memory bitmap that is then used to paint the window. 
+  The control paints itself to an in-memory bitmap that is then used to \paint the window.
   UpdateBuffer is called automatically when the in-memory bitmap needs to be updated.
 See Also
   UpdateTaille
@@ -292,8 +292,8 @@ See Also
 Summary
   Recalculates the position of the progress bar.
 Description
-  UpdateTaille is called automatically when a property of TJvSpecialProgress changes. It determines if
-  the position of the progress bar has changed; if so, it calls UpdateBuffer.
+  UpdateTaille is called automatically when a property of the progress control changes. UpdateTaille
+  determines whether the position of the progress bar has changed; if so, it calls UpdateBuffer.
 See Also
   UpdateBuffer
 ----------------------------------------------------------------------------------------------------
@@ -304,13 +304,13 @@ Summary
 Description
   Use TJvTextOption values to specify what text to display on a progress bar.
 @@TJvTextOption.toCaption
-  Displays the caption of the progressbar.
+  Displays the text specified by the Caption property on the progressbar.
 @@TJvTextOption.toFormat
-  Displays a formatted text on the progressbar. Ensure that the Caption property of the progress bar 
-  contains a '\%s', for example set Caption to 'Progress is \%s%%'. When 
-  <LINK TJvSpecialProgress.PercentDone,PercentDone> equals 10 the 
+  Displays a formatted text on the progressbar. Ensure that the Caption property of the progress bar
+  contains a '\%s', for example set Caption to 'Progress is \%s%%'. When
+  <LINK TJvSpecialProgress.PercentDone,PercentDone> equals 10 the
   displayed text will be 'Progress is 10\%'.
 @@TJvTextOption.toNoText
-  Display no text on the progressbar.
+  Displays no text on the progressbar.
 @@TJvTextOption.toPercent
   Displays the percentage done on the progressbar.

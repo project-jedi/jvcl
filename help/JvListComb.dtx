@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Completed but needs review (p3)
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvListComb.pas
 Summary
@@ -14,7 +14,7 @@ Summary
   Describes available button frame styles.
 Description
   TJvButtonColors is used to specify the available color schemes for button frames in TJvImageComboBox
-  and TJvImageListBox components. 
+  and TJvImageListBox components.
 @@TJvButtonColors.fsLighter
   A lighter frame with clBtnHighlight on top and clBtnFace on bottom.
 @@TJvButtonColors.fsLight
@@ -100,7 +100,6 @@ Summary
 Description
   Use DroppedWidth to specify the width of the drop-down listbox of the combobox. By default, the width
   is set to the same width as the combobox.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox.ImageList
 Summary
@@ -127,14 +126,12 @@ Summary
   Provides indexed access to the individual items in the list.
 Description
   Use Items to access the individual items in the list using an index.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox.OnChange
 Summary
   Occurs when the selection in the combobox changes.
 Description
-  Write a handler for the OnChange event to take specific action when the selected item in the control changes.
-See Also
+  Write a handler for the \OnChange event to take specific action when the selected item in the control changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListBox
 <TITLEIMG TJvImageListBox>
@@ -161,7 +158,6 @@ Description
   is either taLeftJustify or taRightJustify, images are displayed on either side of the text.
 
   The height of items are automatically adjusted to make sure that the entire item is visible.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvImageListBox.ButtonFrame
 Summary
@@ -222,7 +218,6 @@ Summary
   Provides indexed access to the individual items in the list.
 Description
   Use Items to access the individual items in the list using an index.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListItem
 Summary
@@ -237,7 +232,6 @@ Summary
 Description
   Set ImageIndex to associate the item with one of the images in the imagelist
   of the owning control.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListItem.Indent
 Summary
@@ -245,7 +239,6 @@ Summary
 Description
   Set Indent to specify the indentation of the item. Indentation is used by the owning control
   (a TJvImageListBox or TJvImageComboBox) to determine where to draw the item on it's canvas.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListItem.Text
 Summary
@@ -253,7 +246,6 @@ Summary
 Description
   Use the Text property to read the Text of the item or specify a new string for the Text value.
   By default, Text is empty.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListItems
 Summary
@@ -272,7 +264,7 @@ Description
 Return value
   The newly created TJvListItem.
 See Also
-  Assign, Insert, Delete
+  <LINK Assign>, Insert, Delete
 ----------------------------------------------------------------------------------------------------
 @@TJvListItems.Assign
 Summary
@@ -283,7 +275,6 @@ Description
   of each item is assigned from the TStrings.
 Parameters
   Source - The object to copy from. This can be a TJvListItems or descendant or a TStrings or descendant.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListItems.Items
 Summary
@@ -292,15 +283,14 @@ Description
   Use Items to access the items in the list using an index. Since Items is the default property of TJvListItems, you
   can access the items without the Items specifier.
 
-  Example:
-  <CODE>
+  \Example:
   <AUTOLINK OFF>
+  <CODE>
     JvImageComboBox.Items.Items[i].Text := 'Hello';
-
-    Equivalent:
-
-    JvImageComboBox.Items[i].Text := 'Hello';
-  <AUTOLINK ON>
   </CODE>
-See Also
+  Equivalent:
+  <CODE>
+    JvImageComboBox.Items[i].Text := 'Hello';
+  </CODE>
+  <AUTOLINK ON>
 

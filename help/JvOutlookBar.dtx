@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Completed but needs review (p3)
+##Status: Completed (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvOutlookBar.pas
 Summary
@@ -31,7 +31,7 @@ Description
   in turn has buttons in a list in the style of Microsoft Outlook.
 
   Do not create instances of TJvCustomOutlookBar. To put an outlook bar on a form,
-  use a descendant of TJvCustomOutlookBar, such as <LINK TJvOutlookBar,TJvOutlookBar>.
+  use a descendant of TJvCustomOutlookBar, such as <LINK TJvOutlookBar>.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.ActivePage
 Summary
@@ -54,7 +54,7 @@ Description
 
   If there is no active page, reading ActivePageIndex gives a value of –1.
 
-  Setting ActivePageIndex to a value that is out of bounds (less than 0 or greater than PageCount - 1)
+  Setting ActivePageIndex to a value that is out of bounds (less than 0 or greater than Pages.Count - 1)
   results in the control not changing the active page.
 See Also
   ActivePage
@@ -67,17 +67,16 @@ Description
   BorderStyle can have a value of either bsSingle or bsNone.
   If BorderStyle is bsSingle, the control has a single-line border around the client area.
   If BorderStyle is bsNone, there will be a flat style border.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.ButtonSize
 Summary
   Specifies the size and look of the buttons on the pages.
 Description
   Use ButtonSize to determine the current default size of buttons on a page. Change ButtonSize to
-  change the button sizes of all pages in the outlook bar. Only pages having their ParentButtonSize
-  property set to true will be affected.
+  change the button sizes of all pages in the outlook bar. Only pages having their
+  <LINK TJvOutlookBarPage.ParentButtonSize,ParentButtonSize> property set to true will be affected.
 See Also
-  TJvOutlookbarPage.ParentButtonSize
+  TJvOutlookBarPage.ParentButtonSize
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.Color
 Summary
@@ -94,7 +93,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.Font
 Summary
-  Controls the attributes of text written on or in the control.
+  \Controls the attributes of text written on or in the control.
 Description
   To change to a new font, specify a new TFont object.
   To modify a font, change the value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
@@ -116,7 +115,7 @@ Parameters
 Return value
   The button at P or nil if no button is located at P.
 See Also
-  GetPageButtonAtPos
+  <LINK GetPageButtonAtPos>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.GetPageButtonAtPos
 Summary
@@ -130,7 +129,7 @@ Parameters
 Return value
   The page button at P or nil if no page button is located at P
 See Also
-  GetButtonAtPos
+  <LINK GetButtonAtPos>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomOutlookBar.LargeImages
 Summary
@@ -156,7 +155,8 @@ Parameters
 Summary
   Occurs when the user has changed the text of a button.
 Description
-  Write a handler for the OnEditButton event to take specific action when the user has changed the caption of a button.
+  Write a handler for the OnEditButton event to take specific action when the user has changed the
+  caption of a button.
 See Also
   EditCaption, OnEditPage
 ----------------------------------------------------------------------------------------------------
@@ -164,7 +164,8 @@ See Also
 Summary
   Occurs when the user has changed the text of a page button.
 Description
-  Write a handler for the OnEditPage event to take specific action when the user has changed the caption of a page button.
+  Write a handler for the OnEditPage event to take specific action when the user has changed the
+  caption of a page button.
 See Also
   OnEditButton
 ----------------------------------------------------------------------------------------------------
@@ -213,10 +214,11 @@ Summary
   Indicates the component that last displayed the popup menu in response to a right mouse click.
 Description
   Read PopUpObject to determine which control is currently
-  using the popup menu. Since the pages and button sin the outlook bar isn't real components, reading
+  using the popup menu. Since the pages and button in the outlook bar isn't real components, reading
   PopupMenu.PopupComponent always returns the outlook bar control. To access the real object that activated the
-  popup menu, use PopupObject instead. To determine what object displayed the popup, you should check it against the
-  three possible values:
+  popup menu, use PopupObject instead.
+
+  To determine what object displayed the popup, you should check it against the three possible values:
   <CODE>
     if (JvOutlookBar1.PopupObject is TJvOutlookBar) then
       HandleBarPopup
@@ -224,7 +226,7 @@ Description
       HandlePagePopup
     else if (JvOutlookBar1.PopupObject is TJvOutlookBarButton) then
       HandleBarButton;
-    </CODE>
+  </CODE>
 See Also
   PopupMenu
 ----------------------------------------------------------------------------------------------------
@@ -237,6 +239,15 @@ Description
   can be associated with a bitmap in this image list by setting its ImageIndex property.
 See Also
   LargeImages, ButtonSize
+----------------------------------------------------------------------------------------------------
+@@TJvCustomOutlookBar.ThemedBackground
+Summary
+  Specifies whether to paint the background of the outlook bar themed.
+Description
+  Use ThemedBackground to specify whether to paint the background of the outlook bar themed or
+  non themed. This only applies to themed applications on windows XP systems.
+Note
+  Only for delphi 7.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBar
 <TITLEIMG TJvOutlookBar>
@@ -287,9 +298,9 @@ Description
   the text is not changed.
 
   To be notified when the user has finished editing the caption, assign an event handler to the
-  OnEditButton event
+  <LINK TJvOutlookBar.OnEditButton,OnEditButton> event.
 See Also
-  OnEditButton
+  TJvOutlookBar.OnEditButton
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButton.ImageIndex
 Summary
@@ -305,7 +316,7 @@ See Also
 Summary
   Collection class that maintains a list of buttons.
 Description
-  TJvOutlookBarButtons is the class type of the <LINK TJvOutlookBar.Buttons, Buttons> property and
+  TJvOutlookBarButtons is the class type of the <LINK TJvOutlookBarPage.Buttons,Buttons> property and
   maintains a list of buttons. Use the methods of the class to Add, Delete and Exchange buttons.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarButtons.Add
@@ -322,7 +333,7 @@ See Also
 Summary
   Adds a new button and places it at the specified index in the list.
 Description
-  Call Insert to add a new button to the list of buttons at a specific index.
+  Call \Insert to \add a new button to the list of buttons at a specific index.
 Parameters
   Index - The index where the button should be inserted.
 Return value
@@ -337,23 +348,24 @@ Description
   Use Items to get indexed access to the buttons in the list. To iterate over the buttons, use
   Items along with the Count property to determine the number of items. Since Items is the default
   property for TJvOutlookBarButtons, you can leave it out in code when you want to access the items.
-  <CODE>
   <AUTOLINK OFF>
+  <CODE>
   JvOutlookBar1.Pages[0].Buttons.Items[0].Caption := 'OK';
-
-  Equivalent:
-  JvOutlookBar1.Pages[0].Buttons[0].Caption := 'OK';
-  <AUTOLINK ON>
   </CODE>
+  Equivalent:
+  <CODE>
+  JvOutlookBar1.Pages[0].Buttons[0].Caption := 'OK';
+  </CODE>
+  <AUTOLINK ON>
 See Also
   Add, Delete, Count
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage
 Summary
-  Represents a page on a TJvOutlook control.
+  Represents a page on an outlook bar control.
 Description
-  TJvOutlookBarPage represents a page on a TJvOutlook. Do not create instances of this class yourself.
-  Instances are created and maintained by TJvOutlookBarPages as needed.  
+  TJvOutlookBarPage represents a page on a TJvOutlookBar control. Do not create instances of this class yourself.
+  Instances are created and maintained by TJvOutlookBarPages as needed.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.Alignment
 Summary
@@ -368,8 +380,7 @@ Summary
   Provides indexed access to the buttons in the list.
 Description
   Use Buttons to access the buttons on a page using an index. Valid indices are between 0 and
-    Buttons.Count - 1.
-See Also
+  Buttons.Count - 1.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.ButtonSize
 Summary
@@ -378,7 +389,6 @@ Description
   Use ButtonSize to specify how buttons are displayed and where they retrieve their images from.
   If ButtonSize is olbsSmall, images are displayed to the left of the button's Caption, if
   ButtonSize is olbsLarge, images are displayed above the text, centered on the button.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.Caption
 Summary
@@ -386,7 +396,6 @@ Summary
 Description
   Set Caption to change the text on the page button. \Read Caption to determine the current text on the
   page button.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.Color
 Summary
@@ -423,8 +432,7 @@ Summary
   Specifies a background image for the page
 Description
   Use Image to specify an image to use as a background for the page. If an image is assigned, it
-  is autmatically tiled to fill the entire ClientRect of the page.
-See Also
+  is automatically tiled to fill the entire ClientRect of the page.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.ImageIndex
 Summary
@@ -434,7 +442,6 @@ Description
   To remove an image, set ImageIndex to -1.
 Note
   This property is not yet implemented.
-See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPage.ParentButtonSize
 Summary
@@ -483,7 +490,7 @@ Description
 Summary
   Maintains a list of outlook pages.
 Description
-  TJvOutlookBarPages is the type of the Items property of <LINK TJvOutlookbar, TJvOutlookbar>. TJvOutlookBarPages is derived
+  TJvOutlookBarPages is the type of the Items property of <LINK TJvOutlookbar>. TJvOutlookBarPages is derived
   from TCollection and maintains a list of TJvOutlookBarPage objects.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookBarPages.Add
@@ -536,19 +543,16 @@ See Also
 @@TOutlookBarEditCaption
 <TITLE TOutlookBarEditCaption type>
 Summary
-  The event type for events dealing with runtime editing of captions on outlook bar pages and buttons.
+  The type for event handlers dealing with runtime editing of captions on outlook bar pages and buttons.
 Description
-  Write here a description
-  This type is used by (for reference):
-    TJvCustomOutlookBar.OnEditButton
-    TJvCustomOutlookBar.OnEditPage
+  Use TOutlookBarEditCaption to respond when the user has changed the caption of a button or page.
 Parameters
   Sender  - The class that triggered the event.
   NewText - The text the user typed. This can be changed in the event handler.
   Index   - The index of the page or button that has been edited.
   Allow   - Set to false to cancel the changes, set to true to accept the new text.
 See Also
-  TJvCustomOutlookBar.OnEditButton, TJvCustomOutlookBar.OnEditPage
+  TJvOutlookBar.OnEditButton, TJvOutlookBar.OnEditPage
 ----------------------------------------------------------------------------------------------------
 @@TOutlookBarPageChange
 <TITLE TOutlookBarPageChange type>

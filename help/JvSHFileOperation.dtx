@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Needs review
+##Status: Completed
 ----------------------------------------------------------------------------------------------------
 @@JvSHFileOperation.pas
 Summary
@@ -25,6 +25,9 @@ Description
   This Windows API function provides the ability to perform a copy, move, rename, or delete operation
   on files, while displaying a dialog box with an animation and an animated progress bar that
   indicates the progress of the operation.
+
+  Use TJvSHFileOperation to get access to the functionality of the SHFileOperation API function in an
+  easier to use way. TJvSHFileOperation implements all the functionality of SHFileOperation.
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOperation.DestFiles
 Summary
@@ -81,7 +84,7 @@ See Also
 Summary
   Specifies the file operation to perform.
 Description
-  Set Operation to specify what kind of file operation the TJvSHFileOperation component must perform.
+  Set Operation to specify what kind of file operation the component must perform.
 See Also
   Execute
 ----------------------------------------------------------------------------------------------------
@@ -205,11 +208,3 @@ Description
   Renames the file specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles>. This operation
   cannot rename multiple files with a single function call. Use foMove instead.
 
-@@TJvSHFileOperation
-Summary
-Wrapper for the SHFileOperation API function.
-
-Description
-Use TJvSHFileOperation to get access to the functionality of the SHFileOperation API function in an
-easier to use way. TJvSHFileOperation implements all the functionality of SHFileOperation , like
-copying, moving, renaming and deleting files and folders.
