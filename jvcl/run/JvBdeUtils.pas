@@ -1267,9 +1267,8 @@ procedure ExportDataSetEx(Source: TBDEDataSet; DestTable: TTable;
 
   function ExportAsciiField(Field: TField): Boolean;
   begin
-    Result := Field.Visible and not (Field.Calculated
-      or Field.Lookup) and not (Field.DataType in
-      ftNonTextTypes + [ftUnknown]);
+    Result := Field.Visible and not (Field.Calculated or Field.Lookup) and
+      not (Field.DataType in ftNonTextTypes + [ftUnknown]);
   end;
 
 const

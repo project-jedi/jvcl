@@ -3659,8 +3659,7 @@ var
   F: Text;
   FirstLine: string;
 begin
-  if (not FLoadsFromFile) or (not FHasHeaderRow)
-     or (not FileExists(FTableName)) then
+  if (not FLoadsFromFile) or (not FHasHeaderRow) or (not FileExists(FTableName)) then
   begin
     Result := '';
     Exit;

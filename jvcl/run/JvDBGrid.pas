@@ -380,8 +380,6 @@ type
     property AutoSizeColumnIndex: Integer read FAutoSizeColumnIndex write SetAutoSizeColumnIndex default -1;
     property SelectColumnsDialogStrings: TJvSelectDialogColumnStrings read FSelectColumnsDialogStrings write
       SetSelectColumnsDialogStrings;
-
-
     { EditControls: list of controls used to edit data }
     property EditControls: TJvDBGridControls read FControls write SetControls;
     { AutoSizeRows: are rows resized automatically ? }
@@ -392,8 +390,7 @@ type
     property RowsHeight: Integer read FRowsHeight write SetRowsHeight;
     { WordWrap: are memo and string fields displayed on many lines ? }
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
-
-    property OnKeyPress; // Expose TWinControl event.    
+    property OnKeyPress; // Expose TWinControl event.
   end;
 
 implementation
@@ -403,9 +400,8 @@ uses
   Variants,
   {$ENDIF COMPILER6_UP}
   SysUtils, Math, TypInfo, Forms, StdCtrls, Dialogs, DBConsts,
-  JvConsts, JvResources,
-  JvDBLookup, JvDBUtils, JvJCLUtils, JvJVCLUtils, JvDBGridSelectColumnForm,
-  JvFinalize;
+  JvConsts, JvResources, JvDBLookup, JvDBUtils, JvJCLUtils,
+  JvJVCLUtils, JvDBGridSelectColumnForm, JvFinalize;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBGrid.res}
@@ -1119,7 +1115,7 @@ begin
   if not DataLink.Active or not CanGridAcceptKey(Key, Shift) then
     Exit;
   with DataLink.DataSet do
-    if (Shift * KeyboardShiftStates = [ssCtrl]) then
+    if Shift * KeyboardShiftStates = [ssCtrl] then
     begin
       if Key in [VK_UP, VK_PRIOR, VK_DOWN, VK_NEXT, VK_HOME, VK_END] then
         ClearSelections;
@@ -1364,8 +1360,8 @@ var
 begin
   FBooleanEditor := nil;
 
-  Result := Assigned(DataLink) and DataLink.Active
-            and (SelectedIndex >= 0) and (SelectedIndex < Columns.Count);
+  Result := Assigned(DataLink) and DataLink.Active and
+    (SelectedIndex >= 0) and (SelectedIndex < Columns.Count);
 
   if not Result then
   begin
@@ -1416,7 +1412,7 @@ begin
       Result := False;
     end
     else
-    if (F.DataType = ftBoolean) then
+    if F.DataType = ftBoolean then
     begin
       FBooleanEditor := F;
       Result := False;
@@ -1505,8 +1501,8 @@ var
 begin
   IndexFound := False;
 
-  if AutoSort and IsPublishedProp(DataSource.DataSet, cIndexDefs)
-    and IsPublishedProp(DataSource.DataSet, cIndexName) then
+  if AutoSort and IsPublishedProp(DataSource.DataSet, cIndexDefs) and
+    IsPublishedProp(DataSource.DataSet, cIndexName) then
     IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, cIndexDefs))
   else
     IndexDefs := nil;
@@ -1886,9 +1882,8 @@ begin
   end;
   // Polaris
   if (Button = mbLeft) and (FGridState = gsColSizing) and
-    (FSizingIndex + Byte(not (dgIndicator in Options)) <= FixedCols)
+    (FSizingIndex + Byte(not (dgIndicator in Options)) <= FixedCols) then
 //    and not AutoSizeColumns
-  then
   begin
     ColWidths[FSizingIndex] := GetMinColWidth(X - FSizingOfs - CellRect(FSizingIndex, 0).Left);
     FGridState := gsNormal;
@@ -1953,8 +1948,8 @@ end;
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 
 begin
-  if (dgEditing in Options) and (Char(Msg.CharCode) in [Backspace, #32..#255])
-    and Assigned(SelectedField) and (SelectedField is TBooleanField) then
+  if (dgEditing in Options) and (Char(Msg.CharCode) in [Backspace, #32..#255]) and
+    Assigned(SelectedField) and (SelectedField is TBooleanField) then
   begin
     if not DoKeyPress(Msg) then
     begin
@@ -2486,8 +2481,8 @@ begin
               SetBkMode(Handle, TRANSPARENT);
               if (Canvas.CanvasOrientation = coRightToLeft) then
                 ChangeBiDiModeAlignment(Alignment);
-              DrawOptions := AlignFlags[Alignment]
-                          or RTL[UseRightToLeftAlignmentForField(Field, Alignment)];
+              DrawOptions := AlignFlags[Alignment] or
+                RTL[UseRightToLeftAlignmentForField(Field, Alignment)];
               if WordWrap then
                 DrawOptions := DrawOptions or DT_WORDBREAK;
               Windows.DrawText(Handle, PChar(MemoText), Length(MemoText), R, DrawOptions);
@@ -2738,8 +2733,8 @@ procedure TJvDBGrid.ChangeBoolean(const FieldValueChange: Shortint);
 begin
   if not Assigned(FBooleanEditor) then
     Exit;
-  if (inherited CanEditShow) and Assigned(DataLink) and DataLink.Active
-    and FBooleanEditor.CanModify and not ReadOnly then
+  if (inherited CanEditShow) and Assigned(DataLink) and DataLink.Active and
+    FBooleanEditor.CanModify and not ReadOnly then
   begin
     DataLink.Edit;
     // FieldValueChange = 0 -> invert, 1 -> check, -1 -> uncheck
@@ -3100,7 +3095,7 @@ end;
 procedure TJvDBGrid.DblClick;
 begin
   if not DoTitleBtnDblClick then
-    inherited;
+    inherited DblClick;
   FTitleColumn := nil;
 end;
 
@@ -3114,7 +3109,7 @@ end;
 procedure TJvDBGrid.TitleClick(Column: TColumn);
 begin
   FTitleColumn := Column;
-  inherited;
+  inherited TitleClick(Column);
 end;
 
 //=== { TJvSelectDialogColumnStrings } =======================================
@@ -3206,8 +3201,8 @@ begin
       HintStr := Hint;
       SaveRow := DataLink.ActiveRecord;
       try
-        CalcOptions := DT_CALCRECT // Only calculation, no drawing
-                    or DT_LEFT or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly;
+        // Only calculation, no drawing
+        CalcOptions := DT_CALCRECT or DT_LEFT or DT_NOPREFIX or DrawTextBiDiModeFlagsReadingOnly;
         if (ARow = -1) then
         begin
           Canvas.Font.Assign(Columns[ACol].Title.Font);
@@ -3230,7 +3225,8 @@ begin
                 if WordWrap then
                   CalcOptions := CalcOptions or DT_WORDBREAK;
               end
-              else if not (Field is TBlobField) then
+              else
+              if not (Field is TBlobField) then
                 HintStr := Field.DisplayText
               else
                 HintStr := '';
@@ -3240,8 +3236,8 @@ begin
 
         HintRect := Rect(0, 0, Columns[ACol].Width - 4, 0);
         Windows.DrawText(Canvas.Handle, PChar(HintStr), -1, HintRect, CalcOptions);
-        if ((HintRect.Bottom - HintRect.Top + 2) < RowHeights[ARow + 1])
-        and ((HintRect.Right - HintRect.Left) < Columns[ACol].Width - 2) then
+        if ((HintRect.Bottom - HintRect.Top + 2) < RowHeights[ARow + 1]) and
+         ((HintRect.Right - HintRect.Left) < Columns[ACol].Width - 2) then
           HintStr := '';
 
         ATimeOut := Max(ATimeOut, Length(HintStr) * C_TIMEOUT);
@@ -3343,6 +3339,8 @@ begin
 end;
 
 procedure TJvDBGrid.ControlWndProc(var Message: TMessage);
+var
+  EscapeKey: Boolean;
 
   procedure BackToGrid;
   begin
@@ -3351,8 +3349,6 @@ procedure TJvDBGrid.ControlWndProc(var Message: TMessage);
       Self.SetFocus;
   end;
 
-var
-  EscapeKey: Boolean;
 begin
   if Message.Msg = WM_CHAR then
   begin
@@ -3364,7 +3360,8 @@ begin
           BackToGrid;
           DataSource.DataSet.CheckBrowseMode;
         end
-        else if CharCode = VK_TAB then
+        else
+        if CharCode = VK_TAB then
         begin
           BackToGrid;
           PostMessage(Handle, WM_KEYDOWN, CharCode, KeyData);
@@ -3381,7 +3378,7 @@ begin
   else
   begin
     FOldControlWndProc(Message);
-    Case Message.Msg Of
+    case Message.Msg of
       WM_GETDLGCODE:
         Message.Result := Message.Result or DLGC_WANTTAB;
       CM_EXIT:

@@ -647,8 +647,8 @@ begin
     doExcludeInvalidDirs    |   False        |  True   | False     | True
     doExcludeCompleteInvalidDirs |   False   |  True   | No Search | True
     }
-    SearchInRootDir := not (soExcludeFilesInRootDir in Options)
-      and (not (soCheckRootDirValid in Options) or IsRootDirValid);
+    SearchInRootDir := not (soExcludeFilesInRootDir in Options) and
+      (not (soCheckRootDirValid in Options) or IsRootDirValid);
 
     if not SearchInRootDir and ((DirOption = doExcludeSubDirs) or
       ((DirOption = doExcludeCompleteInvalidDirs) and

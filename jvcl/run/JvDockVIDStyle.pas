@@ -4389,8 +4389,8 @@ end;
 procedure TJvDockVIDConjoinServerOption.ResetDockControlOption;
 begin
   inherited ResetDockControlOption;
-  FSystemInfo := FSystemInfo and (GrabbersSize = VIDDefaultDockGrabbersSize)
-    and (SplitterWidth = VIDDefaultDockSplitterWidth);
+  FSystemInfo := FSystemInfo and (GrabbersSize = VIDDefaultDockGrabbersSize) and
+    (SplitterWidth = VIDDefaultDockSplitterWidth);
   TJvDockVIDStyle(DockStyle).DoSystemInfoChange(FSystemInfo);
 end;
 

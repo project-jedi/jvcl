@@ -2908,8 +2908,8 @@ begin
         myskew[4] := Point(X, Y);
         DrawCube;
       end;
-    if (Shape = 'rectangle') or (Shape = 'cube') or (Shape = 'maze')
-      or (Shape = 'Interprect') or (Shape = 'interColumn') then
+    if (Shape = 'rectangle') or (Shape = 'cube') or (Shape = 'maze') or
+      (Shape = 'Interprect') or (Shape = 'interColumn') then
       with Canvas do
       begin
         Pen.Mode := pmNotXor;
@@ -2929,10 +2929,10 @@ begin
     if Shape = 'Blocks' then
       Canvas.FillRect(PointToBlock(X, Y));
 
-    if (Shape = 'ellipse') or (Shape = 'globe') or (Shape = 'interSphere')
-      or (Shape = 'MultiSphere') or (Shape = 'DropletSphere')
-      or (Shape = 'WaveSphere') or (Shape = 'RisingWaveSphere')
-      or (Shape = 'decooval') then
+    if (Shape = 'ellipse') or (Shape = 'globe') or (Shape = 'interSphere') or
+      (Shape = 'MultiSphere') or (Shape = 'DropletSphere') or
+      (Shape = 'WaveSphere') or (Shape = 'RisingWaveSphere') or
+      (Shape = 'decooval') then
       with Canvas do
       begin
         Pen.Mode := pmNotXor;
@@ -3020,10 +3020,9 @@ begin
         PolyBezier(mybezier);
         myprevpoint := Point(X, Y);
       end;
-    if (Shape = 'line') or (Shape = 'rotateText') or (Shape = 'Star')
-      or (Shape = 'spiral') or (Shape = 'skewrect') or (Shape = 'triangle')
-      or (Shape = 'cone') or (Shape = 'Spiro') or
-      (Shape = 'decobar') then
+    if (Shape = 'line') or (Shape = 'rotateText') or (Shape = 'Star') or
+      (Shape = 'spiral') or (Shape = 'skewrect') or (Shape = 'triangle') or
+      (Shape = 'cone') or (Shape = 'Spiro') or (Shape = 'decobar') then
       with Canvas do
       begin
         Pen.Mode := pmNotXor;
@@ -3071,8 +3070,8 @@ begin
         Canvas.Pixels[X + xp, Y + yp] := Canvas.Brush.Color;
       end;
 
-    if (Shape = 'Waveline') or (Shape = 'fastWaveline')
-      or (Shape = 'colorWaveline') then
+    if (Shape = 'Waveline') or (Shape = 'fastWaveline') or
+      (Shape = 'colorWaveline') then
       with Canvas do
       begin
         Canvas.LineTo(X, Y);

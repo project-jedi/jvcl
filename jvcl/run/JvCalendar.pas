@@ -709,13 +709,14 @@ begin
   with Params do
   begin
     if GetComCtlVersion >= ComCtlVersionIE4 then
-      Style := Style or BorderStyles[FBorderStyle] or MultiSelects[FMultiSelect] or NoTodays[FAppearance.ShowToday]
-        or NoCircles[FAppearance.CircleToday] or Weeks[FAppearance.WeekNumbers] or MCS_DAYSTATE
+      Style := Style or BorderStyles[FBorderStyle] or MultiSelects[FMultiSelect] or
+        NoTodays[FAppearance.ShowToday] or NoCircles[FAppearance.CircleToday] or
+        Weeks[FAppearance.WeekNumbers] or MCS_DAYSTATE
     else
       // IE3 doesn't implement the NoTodayCircle style, instead it uses
       // the same constant for MCS_NOTODAY as IE4 does for MCS_NOTODAYCIRCLE ...
-      Style := Style or BorderStyles[FBorderStyle] or MultiSelects[FMultiSelect] or NoCircles[FAppearance.ShowToday]
-        or Weeks[FAppearance.WeekNumbers] or MCS_DAYSTATE;
+      Style := Style or BorderStyles[FBorderStyle] or MultiSelects[FMultiSelect] or
+        NoCircles[FAppearance.ShowToday] or Weeks[FAppearance.WeekNumbers] or MCS_DAYSTATE;
     if NewStyleControls and (FBorderStyle = bsSingle) then
     begin
       Style := Style and not WS_BORDER;

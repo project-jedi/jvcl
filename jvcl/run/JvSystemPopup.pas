@@ -295,8 +295,7 @@ begin
       ISeparators[AMenuItem.Caption = cLineCaption] or IRTL[ARightToLeft] or
       IOwnerDraw[IsOwnerDraw];
     MenuItemInfo.fState := IChecks[AMenuItem.Checked] or
-      IEnables[AMenuItem.Enabled]
-      or IDefaults[AMenuItem.Default];
+      IEnables[AMenuItem.Enabled] or IDefaults[AMenuItem.Default];
     MenuItemInfo.wID := AMenuItem.Command;
     MenuItemInfo.hSubMenu := 0;
     MenuItemInfo.hbmpChecked := 0;
@@ -376,8 +375,8 @@ begin
     { Add a seperator }
     FillChar(MenuItemInfo, SizeOf(MenuItemInfo), #0);
     MenuItemInfo.cbSize := 44; //SizeOf(MenuItemInfo);
-    MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or MIIM_ID or MIIM_STATE
-      or MIIM_SUBMENU or MIIM_TYPE;
+    MenuItemInfo.fMask := MIIM_CHECKMARKS or MIIM_DATA or
+      MIIM_ID or MIIM_STATE or MIIM_SUBMENU or MIIM_TYPE;
     MenuItemInfo.fType := MFT_SEPARATOR;
     { Give the seperator menu id $EFFF so we can seperate these from the
       normal seperators (with id=0), that we don't want to remove in procedure

@@ -309,8 +309,7 @@ begin
   begin
     if fcoEnabledFocusControlWhileChecked in Options then
       FocusControl.Enabled := FChecked;
-    if (FocusControlMethod = fcmOnMouseUp)
-      and FocusControl.CanFocus then
+    if (FocusControlMethod = fcmOnMouseUp) and FocusControl.CanFocus then
       FocusControl.SetFocus;
   end;
   inherited;
@@ -322,9 +321,7 @@ begin
   if not Enabled or (fcoIgnoreMouse in Options) then
     Exit;
   inherited;
-  if (FocusControlMethod = fcmOnMouseDown)
-    and Assigned(FocusControl)
-    and FocusControl.CanFocus then
+  if (FocusControlMethod = fcmOnMouseDown) and Assigned(FocusControl) and FocusControl.CanFocus then
     FocusControl.SetFocus;
 end;
 //______________________________________________________________
@@ -559,9 +556,8 @@ end;
 procedure TJvgCheckBox.UnhookFocusControlWndProc;
 begin
   //  if not(csDesigning in ComponentState) then Exit;
-  if (FNewWndProc <> nil) and (FPrevWndProc <> nil)
-    and (Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC)) =
-    FNewWndProc) then
+  if (FNewWndProc <> nil) and (FPrevWndProc <> nil) and
+    (Pointer(GetWindowLong(FocusControl.Handle, GWL_WNDPROC)) = FNewWndProc) then
   begin
     SetWindowLong(FocusControl.Handle, GWL_WNDPROC, LongInt(FPrevWndProc));
     // (rom) JvFreeObjectInstance call added
@@ -626,7 +622,7 @@ end;
 
 function TJvgCheckBox.GetCheckedItemInGroup: TJvgCheckBox;
 var
-  i: Integer;
+  I: Integer;
 begin
   if FChecked then
   begin
@@ -636,30 +632,30 @@ begin
   Result := nil;
   if GroupIndex <> 0 then
   begin
-    for i := 0 to Owner.ComponentCount - 1 do
-      if (Owner.Components[i] is TJvgCheckBox)
-        and (TJvgCheckBox(Owner.Components[i]).GroupIndex = GroupIndex)
-        and (TJvgCheckBox(Owner.Components[i]).Checked) then
+    for I := 0 to Owner.ComponentCount - 1 do
+      if (Owner.Components[I] is TJvgCheckBox) and
+        (TJvgCheckBox(Owner.Components[I]).GroupIndex = GroupIndex) and
+        (TJvgCheckBox(Owner.Components[I]).Checked) then
       begin
-        Result := TJvgCheckBox(Owner.Components[i]);
-        break;
+        Result := TJvgCheckBox(Owner.Components[I]);
+        Break;
       end;
   end;
 end;
 
 procedure TJvgCheckBox.SetCheckedItemInGroup(TagNo: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   if GroupIndex <> 0 then
   begin
-    for i := 0 to Owner.ComponentCount - 1 do
-      if (Owner.Components[i] is TJvgCheckBox)
-        and (TJvgCheckBox(Owner.Components[i]).GroupIndex = GroupIndex)
-        and (TJvgCheckBox(Owner.Components[i]).Tag = TagNo) then
+    for I := 0 to Owner.ComponentCount - 1 do
+      if (Owner.Components[I] is TJvgCheckBox) and
+        (TJvgCheckBox(Owner.Components[I]).GroupIndex = GroupIndex) and
+        (TJvgCheckBox(Owner.Components[I]).Tag = TagNo) then
       begin
-        TJvgCheckBox(Owner.Components[i]).Checked := True;
-        break;
+        TJvgCheckBox(Owner.Components[I]).Checked := True;
+        Break;
       end;
   end;
 end;
@@ -667,7 +663,7 @@ end;
 
 procedure TJvgCheckBox.SetChecked(Value: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
   if FChecked = Value then
     Exit;
@@ -676,15 +672,15 @@ begin
   begin
     if not FChecked then
     begin
-      for i := 0 to Owner.ComponentCount - 1 do
-        if (Owner.Components[i] is TJvgCheckBox)
-          and (TJvgCheckBox(Owner.Components[i]).GroupIndex = GroupIndex)
-          and (TJvgCheckBox(Owner.Components[i]).Checked)
-          and (Owner.Components[i] <> Self) then
+      for I := 0 to Owner.ComponentCount - 1 do
+        if (Owner.Components[I] is TJvgCheckBox) and
+          (TJvgCheckBox(Owner.Components[I]).GroupIndex = GroupIndex) and
+          (TJvgCheckBox(Owner.Components[I]).Checked) and
+          (Owner.Components[I] <> Self) then
         begin
-          TJvgCheckBox(Owner.Components[i]).FChecked := False;
-          TJvgCheckBox(Owner.Components[i]).FNeedRebuildBackground := True;
-          TJvgCheckBox(Owner.Components[i]).Invalidate;
+          TJvgCheckBox(Owner.Components[I]).FChecked := False;
+          TJvgCheckBox(Owner.Components[I]).FNeedRebuildBackground := True;
+          TJvgCheckBox(Owner.Components[I]).Invalidate;
         end;
       FChecked := True;
     end;

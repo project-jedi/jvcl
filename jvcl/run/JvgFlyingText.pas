@@ -436,10 +436,10 @@ begin
     FScaledHeight := (FScaledHeight / FStepScaleFactor);
   end;
 
-  if (FScaledWidth < (FTxtBitmap.Width * FScalePercent / 100))
-    or (FScaledWidth > FTxtBitmap.Width)
-    or (FScaledHeight < (FTxtBitmap.Height * FScalePercent / 100))
-    or (FScaledHeight > FTxtBitmap.Height) then
+  if (FScaledWidth < (FTxtBitmap.Width * FScalePercent / 100)) or
+    (FScaledWidth > FTxtBitmap.Width) or
+    (FScaledHeight < (FTxtBitmap.Height * FScalePercent / 100)) or
+    (FScaledHeight > FTxtBitmap.Height) then
   begin
     if Assigned(FOnTextLineChanging) then
       FOnTextLineChanging(Self, FCurTextLine);

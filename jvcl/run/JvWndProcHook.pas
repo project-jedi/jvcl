@@ -346,8 +346,8 @@ var
   HookInfos: TJvHookInfos;
 begin
   Result := False;
-  if not Assigned(AControl) or (csDestroying in AControl.ComponentState)
-    or not Assigned(Hook) then
+  if not Assigned(AControl) or
+    (csDestroying in AControl.ComponentState) or not Assigned(Hook) then
     Exit;
 
   if FHookInfos = nil then

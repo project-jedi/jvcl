@@ -158,8 +158,8 @@ end;
 
 function TJvMarginSize.MarginsEqu(AMargin: TJvMarginSize): Boolean;
 begin
-  Result := (FMargin.Left = AMargin.Left) and (FMargin.Top = AMargin.Top)
-    and (FMargin.Right = AMargin.Right) and (FMargin.Bottom = AMargin.Bottom);
+  Result := (FMargin.Left = AMargin.Left) and (FMargin.Top = AMargin.Top) and
+    (FMargin.Right = AMargin.Right) and (FMargin.Bottom = AMargin.Bottom);
 end;
 
 function TJvMarginSize.GetValue(Index: Integer): Integer;

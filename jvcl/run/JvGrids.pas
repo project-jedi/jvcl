@@ -1003,8 +1003,8 @@ var
   NewPressed: Boolean;
 begin
   Cell := MouseCoord(X, Y);
-  NewPressed := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), Point(X, Y))
-    and (FPressedCell.X = Cell.X) and (FPressedCell.Y = Cell.Y);
+  NewPressed := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), Point(X, Y)) and
+    (FPressedCell.X = Cell.X) and (FPressedCell.Y = Cell.Y);
   if FPressed <> NewPressed then
   begin
     FPressed := NewPressed;
@@ -1173,8 +1173,8 @@ begin
   if FTracking and (FPressedCell.Y >= 0) and (FPressedCell.X >= 0) then
   begin
     Cell := MouseCoord(X, Y);
-    DoClick := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), Point(X, Y))
-      and (Cell.Y = FPressedCell.Y) and (Cell.X = FPressedCell.X);
+    DoClick := PtInRect(Rect(0, 0, ClientWidth, ClientHeight), Point(X, Y)) and
+      (Cell.Y = FPressedCell.Y) and (Cell.X = FPressedCell.X);
     StopTracking;
     if DoClick then
     begin

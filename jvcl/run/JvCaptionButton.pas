@@ -1424,8 +1424,8 @@ begin
           Inc(FDefaultButtonLeft, 2 * FDefaultButtonWidth + CSpaceBetweenButtons);
 
           { 4c. If it have CONTEXTHELP button, avoid it. }
-          if ((Style and WS_MAXIMIZEBOX = 0) or (Style and WS_MINIMIZEBOX = 0))
-            and (ExStyle and WS_EX_CONTEXTHELP = WS_EX_CONTEXTHELP) then
+          if ((Style and WS_MAXIMIZEBOX = 0) or (Style and WS_MINIMIZEBOX = 0)) and
+            (ExStyle and WS_EX_CONTEXTHELP = WS_EX_CONTEXTHELP) then
             Inc(FDefaultButtonLeft, FDefaultButtonWidth + 2 * CSpaceBetweenButtons);
         end;
       end

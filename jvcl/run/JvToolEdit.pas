@@ -2109,9 +2109,10 @@ const
   Alignments: array [TAlignment] of LongWord = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
-  Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN
-    or Alignments[FAlignment];
+  Params.Style := Params.Style or
+    ES_MULTILINE or WS_CLIPCHILDREN or Alignments[FAlignment];
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomComboEdit.CreatePopup;

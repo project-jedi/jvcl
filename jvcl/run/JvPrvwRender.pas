@@ -832,11 +832,10 @@ var
   Img: TImageList;
 begin
   with Images[PageIndex] do
-    if (PageIndex < Images.Count) and (Picture.Height > 0) and (Picture.Width > 0)
-      and (Picture.Graphic <> nil)
-      and not Picture.Graphic.Empty then
+    if (PageIndex < Images.Count) and (Picture.Height > 0) and (Picture.Width > 0) and
+      (Picture.Graphic <> nil) and not Picture.Graphic.Empty then
     begin
-      if (Picture.Graphic is TIcon) then
+      if Picture.Graphic is TIcon then
       begin
         Img := TImageList.CreateSize(Picture.Width, Picture.Height);
         try

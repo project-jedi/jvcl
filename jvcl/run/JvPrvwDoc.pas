@@ -447,10 +447,10 @@ end;
 function RectInRect(Inner, Outer: TRect): Boolean;
 begin
   Result :=
-    InRange(Inner.Left, Outer.Left, Outer.Right)
-    and InRange(Inner.Top, Outer.Top, Outer.Bottom)
-    and InRange(Inner.Right, Outer.Left, Outer.Right)
-    and InRange(Inner.Bottom, Outer.Top, Outer.Bottom);
+    InRange(Inner.Left, Outer.Left, Outer.Right) and
+    InRange(Inner.Top, Outer.Top, Outer.Bottom) and
+    InRange(Inner.Right, Outer.Left, Outer.Right) and
+    InRange(Inner.Bottom, Outer.Top, Outer.Bottom);
 end;
 
 // returns True if any part of Inner is "visible" inside Outer
@@ -459,10 +459,10 @@ end;
 function PartialInRect(Inner, Outer: TRect): Boolean;
 begin
   Result :=
-    (Inner.Left < Outer.Right)
-    and (Inner.Top < Outer.Bottom)
-    and (Inner.Right > Outer.Left)
-    and (Inner.Bottom > Outer.Top);
+    (Inner.Left < Outer.Right) and
+    (Inner.Top < Outer.Bottom) and
+    (Inner.Right > Outer.Left) and
+    (Inner.Bottom > Outer.Top);
 end;
 
 // use our own EnsureRange since D5 doesn't have it
@@ -1557,9 +1557,9 @@ begin
       Dec(Bottom, FOffsetBottom);
     end;
 
-    if (Options.ScaleMode in [smFullPage, smPageWidth]) or (FPageWidth >= ClientWidth) or (FPageHeight >= ClientHeight)
-      and not
-      (Options.ScaleMode in [smScale, smAutoScale]) then
+    if (Options.ScaleMode in [smFullPage, smPageWidth]) or
+      (FPageWidth >= ClientWidth) or (FPageHeight >= ClientHeight) and
+      not (Options.ScaleMode in [smScale, smAutoScale]) then
     begin
       FTotalCols := 1;
       FVisibleRows := 1;
@@ -1686,8 +1686,8 @@ end;
 
 function TJvCustomPreviewControl.IsPageMode: Boolean;
 begin
-  Result := (Options.ScaleMode in [smFullPage, smAutoScale, smColsRows])
-    or ((Options.ScaleMode = smScale) and (FPageHeight + Integer(Options.VertSpacing) * 2 <= ClientHeight));
+  Result := (Options.ScaleMode in [smFullPage, smAutoScale, smColsRows]) or
+    ((Options.ScaleMode = smScale) and (FPageHeight + Integer(Options.VertSpacing) * 2 <= ClientHeight));
 end;
 
 procedure TJvCustomPreviewControl.UpdateScale;
@@ -1771,8 +1771,8 @@ begin
     if (Options.Shadow.Offset <> 0) then
     begin
       // draw full background shadow if necessary
-      if (Abs(Options.Shadow.Offset) >= (APageRect.Left - APageRect.Right))
-        or (Abs(Options.Shadow.Offset) >= (APageRect.Bottom - APageRect.Top)) then
+      if (Abs(Options.Shadow.Offset) >= (APageRect.Left - APageRect.Right)) or
+        (Abs(Options.Shadow.Offset) >= (APageRect.Bottom - APageRect.Top)) then
       begin
         tmpRect := APageRect;
         OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);

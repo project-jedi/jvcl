@@ -385,10 +385,10 @@ var
 begin
   Result := False;
   Tmp := FGraphic;
-  if Visible and (not (csLoading in ComponentState)) and (Tmp <> nil)
-    and Tmp.PaletteModified then
+  if Visible and (not (csLoading in ComponentState)) and
+    (Tmp <> nil) and Tmp.PaletteModified then
   begin
-    if (GetPalette <> 0) then
+    if GetPalette <> 0 then
     begin
       ParentForm := GetParentForm(Self);
       if Assigned(ParentForm) and ParentForm.Active and ParentForm.HandleAllocated then

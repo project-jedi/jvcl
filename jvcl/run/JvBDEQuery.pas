@@ -848,8 +848,7 @@ var
   IsTrans, SQLFilled, StmtFound: Boolean;
   I, P, CurrStatement: Integer;
 begin
-  IsTrans := FTransaction
-    and not TransActive(Database) and (StatementNo < 0);
+  IsTrans := FTransaction and not TransActive(Database) and (StatementNo < 0);
   LastStr := '';
   try
     if IsTrans then
