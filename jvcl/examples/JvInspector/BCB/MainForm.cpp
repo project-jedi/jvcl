@@ -250,7 +250,7 @@ void __fastcall TfrmMain::AddVarious()
 void __fastcall TfrmMain::ChangeChkState(TJvCustomInspectorItem* Item)
 {
   if (dynamic_cast<TJvInspectorBooleanItem*>(Item))
-    dynamic_cast<TJvInspectorBooleanItem*>(Item)->ShowAsCheckbox = BoolsAsChecks;
+    dynamic_cast<TJvInspectorBooleanItem*>(Item)->ShowAsCheckBox = BoolsAsChecks;
   for(int I = 0; I < Item->Count; I++)
     ChangeChkState(Item->Items[I]); // Do not use Item[I], as Item is a pointer itself
 }
@@ -422,7 +422,7 @@ void __fastcall TfrmMain::JvInspector1AfterItemCreate(TObject *Sender,
       TJvCustomInspectorItem *Item)
 {
   if (dynamic_cast<TJvInspectorBooleanItem*>(Item))
-    dynamic_cast<TJvInspectorBooleanItem*>(Item)->ShowAsCheckbox = True;
+    dynamic_cast<TJvInspectorBooleanItem*>(Item)->ShowAsCheckBox = True;
   if ((Item->Data != NULL) && (CompareText(Item->Data->Name, "AboutJVCL") == 0))
     Item->ReadOnly = true;
   if ((Item->Data != NULL) && (CompareText(Item->Data->Name, "Painter") == 0))
