@@ -30,6 +30,11 @@ unit JvDsgnConsts;
 
 interface
 
+{$IFNDEF COMPLILER6_UP}
+const
+  sLineBreak = #10#13;
+{$ENDIF}
+
 resourcestring
   //=== strings used by several editors ======================================
   SPreviewEllipsis = 'Preview...';
