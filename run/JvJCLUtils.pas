@@ -668,6 +668,15 @@ procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 
 { end JvFileUtil }
 
+{$IFNDEF COMPILER6_UP}
+{ begin JvXMLDatabase D5 compatiblility functions }
+function StrToDateTimeDef(const S:string;Default:TDateTime):TDateTime;
+function CompareDateTime(const A, B:TDateTime):integer;
+function StrToFloatDef(const S:String;Default:Extended):Extended;
+{ end JvXMLDatabase D5 compatiblility functions }
+{$ENDIF}
+
+
 implementation
 
 uses
@@ -3967,11 +3976,20 @@ begin
     Result := 0;
 end;
 
+{ // wrong implementation (ahuser)
 function DaysBetween(Date1, Date2: TDateTime): Longint;
 begin
   Result := Trunc(Date2) - Trunc(Date1) + 1;
   if Result < 0 then
     Result := 0;
+end;}
+
+function DaysBetween(Date1, Date2: TDateTime): Longint;
+begin
+  if Date1 < Date2 then
+    Result := Trunc(Date2 - Date1)
+  else
+    Result := Trunc(Date1 - Date2);
 end;
 
 function IncTime(ATime: TDateTime; Hours, Minutes, Seconds,
@@ -5755,6 +5773,47 @@ end;
 {$ENDIF}
 
 { end JvFileUtil }
+
+
+{$IFNDEF COMPILER6_UP}
+{ begin JvXMLDatabase D5 compatiblility functions }
+
+{ TODO -oJVCL -cTODO : Implement these better for D5! }
+function StrToDateTimeDef(const S:string;Default:TDateTime):TDateTime;
+begin
+  // stupid and slow but at least simple
+  try
+    Result := StrToDateTime(S);
+  except
+    Result := Default;
+  end;
+end;
+
+const
+  OneMillisecond = 1/24/60/60/1000;
+
+function CompareDateTime(const A, B:TDateTime):integer;
+begin
+  if Abs(A - B) < OneMillisecond then
+    Result := 0
+  else if A < B then
+    Result := -1
+  else
+    Result := 1;
+end;
+
+function StrToFloatDef(const S:String;Default:Extended):Extended;
+begin
+  // stupid and slow but at least simple
+  try
+    Result := StrToFloat(S);
+  except
+    Result := Default;
+  end;
+end;
+
+{ end JvXMLDatabase D5 compatiblility functions }
+{$ENDIF}
 
 
 { TAnsiToWideStrings }
