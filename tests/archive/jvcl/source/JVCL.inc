@@ -1,4 +1,4 @@
-                                 {-----------------------------------------------------------------------------
+{-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
 with the License. You may obtain a copy of the License at
@@ -25,9 +25,17 @@ Known Issues:
   {$ObjExportAll ON}
 {$ENDIF}
 
-{.$DEFINE DCS}
-{ Client/Server or Enterprise version. Deactivate this define if you
-  have Delphi Desktop, Standard or Professional Edition }
+{ Activate this define if you are using Delphi 5 Standard or one of the D6/D7 Personal Editions}
+{.$DEFINE DelphiPersonalEdition}
+
+{ Activate this define if you have Mike Lischke's Theme Manager
+  (http:// www.lischke-online.de) installed and available and
+  you are using D6/BCB6 or below }
+{.$DEFINE JVCLThemesEnabled}
+{ D7 has theme support built in...}
+{$IFDEF COMPILER7_UP}
+{$DEFINE JVCLThemesEnabled}
+{$ENDIF}
 
 {.$DEFINE Jv_MIDAS}
 { Jv MIDAS components }
@@ -38,7 +46,7 @@ Known Issues:
   for the legal aspects }
 
 {$IFDEF WIN32}
-{.$DEFINE USE_PROGRESSBAR}
+{$DEFINE USE_PROGRESSBAR}
 { Activate this define if you do not want to use TGauge Borland sample
   component in TDBProgress component and FileUtil routines. In this case
   TProgressBar component will be used }
