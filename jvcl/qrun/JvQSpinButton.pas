@@ -43,7 +43,7 @@ type
     FOnDownClick: TNotifyEvent;
     procedure SetFlat(value:boolean);
     function GetFlat: boolean;
-    function CreateButton: TTimerSpeedButton;
+    function CreateButton: TJvSpeedButton;
     function GetUpGlyph: TBitmap;
     function GetDownGlyph: TBitmap;
     procedure SetUpGlyph(Value: TBitmap);
@@ -55,7 +55,7 @@ type
     procedure BtnClick(Sender: TObject);
     procedure BtnMouseDown (Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure SetFocusBtn (Btn: TTimerSpeedButton);
+    procedure SetFocusBtn(Btn: TJvSpeedButton);
     procedure AdjustToSize (var W, H: Integer);
   protected
     procedure AdjustSize ; override ;
@@ -102,7 +102,7 @@ implementation
 
 {$R spin.res}
 
-{ TSpinButton }
+{ TJvSpinButton }
 
 constructor TJvSpinButton.Create(AOwner: TComponent);
 begin
@@ -225,7 +225,7 @@ begin
     if Assigned(FOnDownClick) then FOnDownClick(Self);
 end;
 
-procedure TJvSpinButton.SetFocusBtn(Btn: TTimerSpeedButton);
+procedure TJvSpinButton.SetFocusBtn(Btn: TJvSpeedButton);
 begin
   if TabStop and CanFocus and  (Btn <> FFocusedButton) then
   begin

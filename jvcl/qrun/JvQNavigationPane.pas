@@ -670,7 +670,7 @@ type
     property Colors;
     property StyleManager;
     property Constraints;
-    property DoubleBuffered;
+
     property DragMode;
     property DropDownMenu;
     property Enabled;
@@ -1576,7 +1576,8 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
-    Canvas.TextRect(R, R.Left, R.Top, Caption, AlignVCenter + SingleLine);
+    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER);
+//    Canvas.TextRect(R, R.Left, R.Top, Caption, AlignVCenter + SingleLine);
     
   end;
   Canvas.Pen.Color := clGray;
@@ -2455,6 +2456,7 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
+    SetPainterFont(Canvas.Handle, Font);
     DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
       DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
     
@@ -2969,6 +2971,7 @@ begin
     SetBkMode(Canvas.Handle, TRANSPARENT);
     
     
+    SetPainterFont(Canvas.Handle, Self.Font);
     DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
     
     // draw the client areas top rounding

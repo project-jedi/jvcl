@@ -30,7 +30,7 @@ interface
 uses
   SysUtils, Classes, DateUtils,
   Types, QButtons, QControls, QStdCtrls, QExtCtrls, QGraphics, QMask, Qt,
-  JvQSpinButton, JvQExMask;
+  JvQSpinButton, JvQJCLUtils, JvQExMask;
 
 type
 
@@ -39,7 +39,7 @@ type
   TJvCustomSpinEdit = class(TJvExCustomMaskEdit)
   private
     { Private declarations }
-    FButton: TSpinButton;
+    FButton: TJvSpinButton;
     function getFlatBtn : boolean;
     procedure setFlatBtn(value :boolean);
     function GetBorderStyle :TBorderStyle;
@@ -204,7 +204,7 @@ begin
   ControlStyle := ControlStyle - [csSetCaption];
   InputKeys := [ikArrows];
   Height := 23 ;
-  FButton := TSpinButton.Create(Self);
+  FButton := TJvSpinButton.Create(Self);
   with FButton do
   begin
     Width := 15;
@@ -413,7 +413,7 @@ end;
 
 procedure TJvDateSpin.IncrementValue ;
 begin
-  Date := IncDay(Date);
+  Date := IncDay(Date, 1);
 end;
 
 procedure TJvDateSpin.DecrementValue ;
