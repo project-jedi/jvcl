@@ -98,7 +98,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Click; override;
   published
     property Align;
     property Anchors;
@@ -134,6 +133,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, QConsts, QForms,
   JvQConsts, JvQThemes, JvQJCLUtils;
 
@@ -990,11 +992,6 @@ begin
   Repaint;
 end;
 
-procedure TJvArrowButton.Click;
-begin
-  inherited Click;
-end;
-
 
 
 function TJvArrowButton.GetGlyph: TBitmap;
@@ -1156,7 +1153,7 @@ end;
 
 procedure TJvArrowButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
 var
-  Sender: TJvArrowButton;
+  Sender: TJvArrowButton; 
 begin
   if Msg.Index = GroupIndex then
   begin
@@ -1166,8 +1163,8 @@ begin
       if Sender.Down and Down then
       begin
         FDown := False;
-        FState := bsUp;
-        Invalidate;
+        FState := bsUp; 
+          Invalidate;
       end;
       FAllowAllUp := Sender.AllowAllUp;
     end;
@@ -1199,6 +1196,7 @@ end;
 
 
 procedure TJvArrowButton.MouseEnter(Control: TControl);
+
 begin
   inherited MouseEnter(Control);
   if Flat and not FMouseInControl and Enabled then
@@ -1209,6 +1207,7 @@ begin
 end;
 
 procedure TJvArrowButton.MouseLeave(Control: TControl);
+
 begin
   inherited MouseLeave(Control);
   if Flat and FMouseInControl and Enabled then
@@ -1217,6 +1216,22 @@ begin
     Invalidate;
   end; 
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

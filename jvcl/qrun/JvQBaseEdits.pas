@@ -284,15 +284,18 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, QConsts, Math, QGraphics,
   JvQJCLUtils, JvQCalc, JvQConsts, JvQResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvBaseEdits.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvBaseEdits.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }
@@ -970,8 +973,6 @@ end;
 
 //=== { TJvCustomCalcEdit } ==================================================
 
-
-
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1000,14 +1001,33 @@ begin
   if GCalcImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
-    //Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
-    Bmp.LoadFromResourceName(HInstance, sCalcBmp);
-    GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
-    Bmp.Free;
+    try
+      //Bmp.Handle := LoadBitmap(HInstance, sCalcBmp);
+      Bmp.LoadFromResourceName(HInstance, sCalcBmp);
+      GCalcImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
   end;
 
   Result := GCalcImageIndex;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

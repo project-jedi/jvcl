@@ -317,7 +317,10 @@ type
 
 implementation
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   QForms;
 
 (* (ahuser) make Delphi 5 compiler happy
@@ -715,6 +718,22 @@ procedure TJvCustomSettingsTreeView.SetPreviousNode(NewNode: TTreeNode);
 begin
   FLastSelected := NewNode;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

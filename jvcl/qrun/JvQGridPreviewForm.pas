@@ -103,6 +103,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQPaintFX, JvQConsts, JvQResources;
 
 
@@ -489,8 +492,12 @@ var
   end;
 
 begin
+  // Do not set the Printer's orientation after BeginDoc because this might lead
+  // to a blank page.
+  if Mode = pmPreview then
+    Printer.Orientation := GridPrinter.PrintOptions.Orientation;
+
   //page size
-  Printer.Orientation := GridPrinter.PrintOptions.Orientation;
   PageWidth := Printer.PageWidth;
   PageHeight := Printer.PageHeight;
   if Mode = pmPreview then
@@ -650,6 +657,7 @@ begin
   end;
   Printer.Title := GridPrinter.PrintOptions.JobTitle;
   Printer.Copies := GridPrinter.PrintOptions.Copies;
+  Printer.Orientation := GridPrinter.PrintOptions.Orientation;
   Printer.BeginDoc;
   DrawToCanvas(Printer.Canvas, pmPrint, 1, Grid.ColCount - 1);
   Printer.EndDoc;
@@ -693,6 +701,22 @@ begin
   if cklive.Checked then
     btnshow.Click;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

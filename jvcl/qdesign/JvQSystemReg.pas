@@ -39,15 +39,9 @@ implementation
 
 uses
   Classes,
-
-
   QControls,
-
-
   DesignEditors, DesignIntf,
-
   JvQDsgnConsts,
-
   {$IFDEF USEWINDOWS}
   JvQMRUList, JvQMRUManager,
   JvQCommStatus, {JvComputerInfo,}

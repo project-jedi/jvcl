@@ -50,7 +50,7 @@ type
   TScrollDirection = (sdVertical, sdHorizontal);
   TPanelDrawEvent = procedure(Sender: TObject; Canvas: TCanvas; Rect: TRect) of object;
 
-  TJvSecretPanel = class(TJvCustomPanel)
+  TJvSecretPanel = class(TJvPubCustomPanel)
   private
     FActive: Boolean;
     FAlignment: TAlignment;
@@ -121,7 +121,7 @@ type
     property ScrollDirection: TScrollDirection read FDirection write SetDirection
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
-    property Anchors; 
+    property Anchors;
     property Constraints;
     property Align;
     property BevelInner;
@@ -129,7 +129,6 @@ type
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
-    property DragMode;
     property Color;
     property Font;
     property ParentColor;
@@ -160,7 +159,10 @@ type
 
 implementation
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   QConsts, SysUtils, Math, QActnList,
   JvQJCLUtils, JvQJVCLUtils, JvQThemes, JvQConsts;
 
@@ -385,11 +387,13 @@ begin
     with FMemoryImage.Canvas do
     begin
       I := SaveDC(Handle);
-      try
+      try 
+        Start;
         with FTxtRect do
           MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
         PaintClient(FMemoryImage.Canvas, FPaintRect);
+        Stop; 
       finally
         RestoreDC(Handle, I);
         SetBkMode(Handle, Transparent);
@@ -736,6 +740,22 @@ procedure TJvSecretPanel.SetLines(Value: TStrings);
 begin
   FLines.Assign(Value);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

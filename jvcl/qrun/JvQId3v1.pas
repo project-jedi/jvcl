@@ -104,6 +104,9 @@ function WriteID3v1Tag(const AFileName: string; const ATag: TID3v1Tag): Boolean;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math,
   JvQID3v2Types, JvQTypes, JvQResources;
 
@@ -391,5 +394,21 @@ procedure TJvID3v1.SetGenreAsString(const Value: string);
 begin
   Genre := ID3_GenreToID(Value);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

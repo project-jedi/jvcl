@@ -388,6 +388,9 @@ procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QControls, SysUtils,
   JclQGraphUtils,
   JvQThemes, JvQConsts, JvQResources;
@@ -395,9 +398,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSegmentedLEDDisplay.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSegmentedLEDDisplay.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 var
   GDigitClassList: TThreadList = nil;
@@ -446,11 +449,11 @@ begin
 end;
 
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   // ?
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
   I: Integer;
@@ -1938,13 +1941,30 @@ begin
     Result := Format('%s%.8x', [HexDisplayPrefix, Color]);
 end;
 
-initialization 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+ 
   GroupDescendentsWith(TJvCustomSegmentedLEDDigit, TControl); 
   AddModuleUnloadProc(ModuleUnload);
   RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit]);
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
 
-finalization 
+finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING} 
   UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent); 
   UnregisterModuleSegmentedLEDDigitClasses(HInstance);
   FreeAndNil(GDigitClassList);

@@ -80,7 +80,6 @@ begin
 //  RegisterComponents(RsPaletteNonVisual, [TJvScheduledEvents]);
 
 
-
   RegisterPropertyEditor(TypeInfo(Integer), TJvCustomOutlookBar,
     cActivePageIndex, TJvOutlookBarActivePageEditor);
   RegisterPropertyEditor(TypeInfo(TJvOutlookBarPages), TJvCustomOutlookBar,

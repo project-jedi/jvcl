@@ -42,9 +42,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX} 
+  {$ENDIF UNIX} 
   JvQMTConsts, JvQMTSync;
 
 type
@@ -139,6 +139,9 @@ implementation
 
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQResources, JvQFinalize;
 
 
@@ -175,10 +178,8 @@ begin
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-    {$IFDEF MSWINDOWS}
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(Longword),
       @ThreadNameInfo);
-    {$ENDIF MSWINDOWS}  
   except
   end; 
 end;
@@ -440,7 +441,7 @@ begin
   TerminateThreads;
   // wait for them to finish
   WaitThreads;
-  
+
   FThreadsChange.Acquire;
   try
     for I := 0 to FThreads.Count-1 do
@@ -640,5 +641,26 @@ begin
 end;
 
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+ 
+
+finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING} 
 
 end.

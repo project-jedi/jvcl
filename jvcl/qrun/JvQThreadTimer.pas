@@ -51,9 +51,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   SysUtils, Classes,
   JvQTypes, JvQComponent;
 
@@ -208,9 +208,9 @@ begin
   {$IFDEF MSWINDOWS}
   FPriority := tpNormal;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FPriority := 0;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 destructor TJvThreadTimer.Destroy;
@@ -332,6 +332,22 @@ begin
     TJvTimerThread(FThread).FInterval := FInterval;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

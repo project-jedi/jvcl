@@ -67,6 +67,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 constructor TJvAnimTitle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -130,11 +135,11 @@ begin
       FSens := True
     else
       SetLength(FCurrentTitle, Length(FCurrentTitle) - 1);
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     if FCurrentTitle = '' then
       FForm.Caption := ' '   // else caption becomes <1>
     else
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     FForm.Caption := FCurrentTitle;
   end;
 end;
@@ -157,6 +162,22 @@ begin
   FDelay := NewDelay;
   FTimer.Interval := FDelay;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

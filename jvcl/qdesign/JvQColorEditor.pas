@@ -40,9 +40,9 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX} 
+  {$ENDIF UNIX} 
   JvQConsts, JvQJVCLUtils;
 
 
@@ -51,9 +51,9 @@ const
   {$IFDEF MSWINDOWS}
   SCustomColors = '\JVCLX\Custom Colors';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   SCustomColors = '/.JVCLX/Custom Colors';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
 
 type

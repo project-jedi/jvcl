@@ -86,14 +86,17 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvGammaPanel.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvGammaPanel.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 constructor TJvGammaPanel.Create(AOwner: TComponent);
 begin
@@ -164,10 +167,10 @@ begin
     Font.Size := 8;
     Font.Name := 'Arial';
     {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     Font.Height := 13;
     Font.Name := 'Helvetica';
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     Caption := RsDefaultR;
     Transparent := True;
     Parent := FPanel4;
@@ -336,7 +339,7 @@ var
   Col: TColor;
 begin
   if not PtInRect(Bounds(0, 0, FGamma.Picture.Width, FGamma.Picture.Height), Point(X,Y)) then
-    Exit; // asn for LINUX/X11
+    Exit; // asn for Linux/X11
   Col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
   LastCol := Col;
   FRLabel.Caption := Format(RsRedFormat, [GetRValue(Col)]);
@@ -401,6 +404,22 @@ begin
   if Assigned(FOnChangeColor) then
     FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

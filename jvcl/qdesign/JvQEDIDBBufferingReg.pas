@@ -47,9 +47,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEDIDBBufferingReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvEDIDBBufferingReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin

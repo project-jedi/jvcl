@@ -84,6 +84,7 @@ resourcestring
   }
 
   RsEmptyItem = '<Empty>';
+  RsNoName = '(unnamed)';
 
   RsDatabaseName = 'Database name: %s';
   RsDataItemRenderHasNoText = '(item does not support the IJvDataItemText interface)';
@@ -160,7 +161,10 @@ resourcestring
 resourcestring
   RsENodeCannotBeEmpty = 'The node must be given a name';
   RsEPathDoesntExists = 'Path ''%s'' does not exists';
-  RsENotABooleanValue = '''%s'' is not a valid boolean value'; 
+  RsENotABooleanValue = '''%s'' is not a valid boolean value';
+  RsENodeNameCannotContainSpaces = 'XML Node names cannot contain white space and the WhiteSpaceReplacement property is empty. Please set the WhiteSpaceReplacementProperty to a non empty value.';
+  RsEWhiteSpaceReplacementCannotContainSpaces =
+    'The WhiteSpaceReplacement property cannot contain any white spaces.';
 
 //=== JvAVICapture.pas =======================================================
 resourcestring
@@ -1198,6 +1202,7 @@ resourcestring
   RsEInterpreter309 = 'Statement';
 
   RsEInterpreter401 = 'Implementation of unit not found';
+  RsEInterpreter402 = 'Array and Record types are not allowed as procedure/function parameter';
 
   RsEXOrX = ''' or ''';
 
@@ -1658,6 +1663,10 @@ resourcestring
 resourcestring
   RsEditStickerCaption = 'Edit sticker';
 
+//=== JvStringHolder.pas =====================================================
+resourcestring
+  RsNoItemFoundWithName = 'No item found with name "%s"';
+
 //=== JvStrings.pas ==========================================================
 resourcestring
   RsECannotLoadResource = 'Cannot load resource: %s';
@@ -1822,9 +1831,9 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsDefaultFilter = 'All files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsDefaultFilter = 'All files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   { Polaris patch }
   RsEDateMinLimit = 'Enter a date before "%s"';
@@ -2081,6 +2090,29 @@ resourcestring
   SExprBadCompare = 'Relational operators require a field and a constant';
 }
 
+
+
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

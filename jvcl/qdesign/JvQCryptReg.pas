@@ -53,9 +53,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCryptReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCryptReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin

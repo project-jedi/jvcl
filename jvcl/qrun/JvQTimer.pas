@@ -76,7 +76,10 @@ type
 
 implementation
 
-uses  
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}  
   QForms, QConsts, 
   JvQJVCLUtils;
 
@@ -116,13 +119,13 @@ procedure TJvTimerThread.Execute;
     Result := Terminated or Application.Terminated or (FOwner = nil);
   end;
 
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   function SleepEx(Ms: Cardinal; Alertable: Boolean): Cardinal;
   begin
     Sleep(Ms);
     Result := 0;
   end;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
 begin
   repeat
@@ -266,6 +269,22 @@ begin
     Assigned(FOnTimer) then
     FOnTimer(Self);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

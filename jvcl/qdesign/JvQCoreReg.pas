@@ -55,20 +55,22 @@ uses
   {$IFDEF USEWINDOWS}
   JvQAppRegistryStorage,
   {$ENDIF USEWINDOWS}
-  JvQAppIniStorage, JvQAppStorage, JvQAppStorageSelectList;
+  JvQAppIniStorage, JvQAppStorage, JvQAppStorageSelectList,
+  JvQAutoComplete;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCoreReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCoreReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin 
-  GroupDescendentsWith(TJvComponent, TControl); 
+  GroupDescendentsWith(TJvComponent, TControl);
+  GroupDescendentsWith(TJvLookupAutoComplete, TControl); 
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
     TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]); 
@@ -78,6 +80,8 @@ begin
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF USEWINDOWS}
+
+  RegisterComponents(RsPaletteNonVisual, [TJvLookupAutoComplete]);
   
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty); 
 

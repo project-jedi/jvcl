@@ -45,14 +45,14 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvInspectorReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvInspectorReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteVisual, [TJvInspector, TJvInspectorBorlandPainter,
-    TJvInspectorDotNETPainter]);
+  RegisterComponents(RsPaletteVisual,
+    [TJvInspector, TJvInspectorBorlandPainter, TJvInspectorDotNETPainter]);
 end;
 
 end.

@@ -42,9 +42,9 @@ uses
   {$IFDEF HAS_UNIT_LIBC}
   Libc,
   {$ENDIF HAS_UNIT_LIBC}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvQMTConsts;
 
 type
@@ -106,7 +106,10 @@ type
 
 implementation
 
-uses 
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
   JvQResources, 
   JvQMTThreading;
 
@@ -322,9 +325,9 @@ begin
   {$IFDEF MSWINDOWS}
   Windows.ResetEvent(FHandle);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows.ResetEvent(FHandle);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 procedure TMTSimpleEvent.SetEvent;
@@ -332,9 +335,25 @@ begin
   {$IFDEF MSWINDOWS}
   Windows.SetEvent(FHandle);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows.SetEvent(FHandle);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

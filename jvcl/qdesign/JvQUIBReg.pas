@@ -57,9 +57,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvUIBReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvUIBReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 

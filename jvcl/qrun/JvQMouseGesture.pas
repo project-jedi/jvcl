@@ -30,7 +30,7 @@ Description:
   and can be used to enhance special components like a grid. In
   this case the programmer is responsible to fill matching
   OnMouseDown, OnMouseUp and OnMouseMove events of component.
-  This works fine with MSWINDOWS and LINUX. The second component
+  This works fine with MSWINDOWS and UNIX. The second component
   installs a hook for a specific application and fires an event
   after detecting a mouse gesture (Windows only in this version
   \:-( ).
@@ -410,6 +410,9 @@ function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boo
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQResources, JvQTypes;
 
 const
@@ -916,6 +919,22 @@ begin
   end;
 end;
 
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -168,9 +168,9 @@ uses
   {$IFDEF MSWINDOWS}
   Registry,
   {$ENDIF MSWINDOWS} 
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   JvQRegistryIniFile,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   JvQTypes, JvQStringsForm, JvQDsgnConsts, JvQConsts;
 
 function ValueName(E: Extended): string;

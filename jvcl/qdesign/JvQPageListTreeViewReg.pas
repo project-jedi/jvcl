@@ -45,9 +45,9 @@ procedure Register;
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPageListTreeViewReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvPageListTreeViewReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 implementation
 

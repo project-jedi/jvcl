@@ -248,6 +248,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQConsts;
 
 
@@ -1396,8 +1399,8 @@ begin
   begin
     SetTextColor(DC, ColorToRGB(clBtnHighlight));
     OffsetRect(TmpRect, 1, 1);
-
-    DrawText(DC, Caption, Length(Caption), TmpRect, Flags);
+  
+    DrawText(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags); 
     OffsetRect(TmpRect, -1, -1);
     SetTextColor(DC, ColorToRGB(clBtnShadow));
   end
@@ -1407,7 +1410,7 @@ begin
   else
     SetTextColor(DC, ColorToRGB(Self.Font.Color));
   
-  DrawText(DC, Caption, Length(Caption), TmpRect, Flags);
+  DrawText(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags); 
 end;
 
 procedure TJvTransparentButton2.DrawTheBitmap(ARect: TRect; Canvas: TCanvas);
@@ -1486,6 +1489,22 @@ function TJvTransparentButton2.GetActionLinkClass: TControlActionLinkClass;
 begin
   Result := TJvTransparentButtonActionLink;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -35,9 +35,9 @@ unit JvQNavigationPane;
 interface
 
 uses
-  SysUtils, Classes, 
-  QControls, Types, QGraphics, QMenus, QExtCtrls, QImgList, 
-  Qt, QTypes, QWindows, QMessages, 
+  SysUtils, Classes,
+  QWindows, QMessages, QControls, QGraphics, QMenus, QExtCtrls, QImgList, 
+  Qt, 
   JvQTypes, JvQButton, JvQPageList, JvQComponent, JvQExExtCtrls;
 
 const
@@ -145,8 +145,8 @@ type
   protected
     procedure Paint; override;
     procedure TextChanged; override;
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure RequestAlign; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -189,6 +189,7 @@ type
     procedure Paint; override;
     procedure EnabledChanged; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override; 
+    procedure RequestAlign; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1083,6 +1084,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math, 
   QForms, QActnList,
   JvQJVCLUtils, JvQJCLUtils, JvQResources;
@@ -1279,9 +1283,18 @@ end;
 
 //=== { TJvCustomNavigationPane } ============================================
 
+var
+  GlobalNavPanelPageRegistered: Boolean = False;
+
 constructor TJvCustomNavigationPane.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  if not GlobalNavPanelPageRegistered then
+  begin
+    GlobalNavPanelPageRegistered := True;
+    RegisterClasses([TJvNavPanelPage]);
+  end;
+
   FBackground := TJvNavPaneBackgroundImage.Create;
   FBackground.OnChange := DoColorsChange;
   ControlStyle := ControlStyle - [csAcceptsControls];
@@ -1533,7 +1546,7 @@ begin
   if APage <> nil then
   begin
     TJvNavPanelPage(APage).Top := FIconPanel.Top;
-    if ActivePage = nil then
+    if (ActivePage = nil) and not (csLoading in ComponentState) then
       ActivePage := APage;
   end;
   UpdatePositions;
@@ -1762,7 +1775,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -1932,7 +1945,7 @@ begin
     FSplitter.OnMouseUp := Value;
 end;
 
-//=== { TJvNavIconButton } ==================================================
+//=== { TJvNavIconButton } ===================================================
 
 constructor TJvNavIconButton.Create(AOwner: TComponent);
 begin
@@ -2171,7 +2184,7 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
@@ -3084,7 +3097,7 @@ end;
 
 procedure TJvNavPanelPage.Paint;
 begin
-  inherited;
+  inherited Paint;
   if FBackground.HasImage then
     FBackground.DrawImage(Canvas, ClientRect)
   else
@@ -3274,11 +3287,22 @@ begin
   begin
     FParentStyleManager := Value;
     if FParentStyleManager and (Parent <> nil) then  
-      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0);
+      QWindows.Perform(Parent, CM_PARENTSTYLEMANAGERCHANGE, 0, 0); 
   end;
 end;
 
 
+
+procedure TJvOutlookSplitter.RequestAlign;
+begin
+  if (Cursor = crSizeWE) or (Cursor = crSizeNS) then
+  begin
+    if Align in [alLeft, alRight] then
+      Cursor := crSizeWE
+    else
+      Cursor := crSizeNS;
+  end;
+end;
 
 //=== { TJvNavPanelHeader } ==================================================
 
@@ -3683,6 +3707,17 @@ begin
   end;
 end;
 
+procedure TJvNavPanelDivider.RequestAlign;
+begin
+  if (Cursor = crSizeWE) or (Cursor = crSizeNS) then
+  begin
+    if Align in [alLeft, alRight] then
+      Cursor := crSizeWE
+    else
+      Cursor := crSizeNS;
+  end;
+end;
+
 //=== { TJvNavPaneStyleManager } =============================================
 
 constructor TJvNavPaneStyleManager.Create(AOwner: TComponent);
@@ -3992,7 +4027,7 @@ begin
     FOnChange(Sender);
 end;
 
-//=== { TJvCustomNavPaneToolPanel } ================================================
+//=== { TJvCustomNavPaneToolPanel } ==========================================
 
 constructor TJvCustomNavPaneToolPanel.Create(AOwner: TComponent);
 begin
@@ -4005,7 +4040,7 @@ begin
   FBackground.OnChange := DoImagesChange;
 
   ControlStyle := [csAcceptsControls,  csClickEvents,
-  csOpaque, csDoubleClicks, csReplicatable];
+    csOpaque, csDoubleClicks, csReplicatable];
 
   FButtons := TJvNavPaneToolButtons.Create(Self);
   FStyleLink := TJvNavStyleLink.Create;
@@ -4216,7 +4251,9 @@ begin
       begin
         OffsetRect(R, 2, -1); // line up with where button caption should have been
         SetBkMode(Canvas.Handle, TRANSPARENT);
-        DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT);
+        if CloseButton then
+          R := Rect(R.Left, R.Top, FCloseButton.Left, R.Bottom);
+        DrawText(Canvas, Caption, Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_LEFT or DT_END_ELLIPSIS);
       end;
 
       // draw the client areas top rounding, set pixels directly to avoid messing up any background image
@@ -4543,7 +4580,7 @@ end;
 destructor TJvNavPaneToolButton.Destroy;
 begin
   FRealButton.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvNavPaneToolButton.GetAction: TBasicAction;
@@ -4713,7 +4750,9 @@ DrawButton:
           Canvas.Font := Font;
           SetBkMode(Canvas.Handle, TRANSPARENT);
           InflateRect(R, -2, 0);
-          DrawText(Canvas, Caption, Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX);
+          Dec(R.Right, 3 + 7);
+          DrawText(Canvas, Caption, Length(Caption), R, DT_LEFT or DT_VCENTER or DT_NOPREFIX or DT_END_ELLIPSIS);
+          Inc(R.Right, 3 + 7);
           InflateRect(R, 2, 0);
         end;
         R.Left := R.Right - 11;
@@ -4976,8 +5015,6 @@ begin
   end;
 end;
 
-
-
 procedure TJvCustomNavPaneToolPanel.AdjustClientRect(var Rect: TRect);
 begin
   if HeaderVisible then
@@ -4990,8 +5027,24 @@ begin
   inherited AdjustClientRect(Rect);
 end;
 
+{initialization
+  RegisterClasses([TJvNavPanelPage]);} // ahuser: moved to TJvCustomNavigationPane.Create
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
 initialization
-  RegisterClasses([TJvNavPanelPage]);
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

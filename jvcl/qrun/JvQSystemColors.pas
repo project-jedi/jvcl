@@ -36,15 +36,26 @@ interface
 
 uses
   SysUtils, Classes,
-  QGraphics, QForms,
+  QGraphics, QForms, Qt,
   JvQTypes, JvQComponent;
 
 type
   TJvSystemColors = class(TJvComponent)
   private
+    FBaseColor: TColor;
+    FSavedColors: array[0..41] of TColor;
     procedure SetColor(Index: Integer; Value: TColor);
     function GetColor(Index: Integer): TColor;
+    procedure SetBaseColor(Value: TColor);
+    function GetBaseColor: TColor;
+    procedure UpdateWidgets;
+  protected
+    procedure Loaded; override;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
+    property BaseColor: TColor read GetBaseColor write SetBaseColor stored False;
     property NormalForeground: TColor index 0 read GetColor write SetColor stored True;
     property NormalButton: TColor index 1 read GetColor write SetColor stored True;
     property NormalLight: TColor index 2 read GetColor write SetColor stored True;
@@ -89,7 +100,7 @@ type
     property ActiveHighlightedText: TColor index 41 read GetColor write SetColor stored True;
 //    property HintColor: TColor index 42 read GetColor write SetColor stored True;
 //    property DeskTopBackgroundColor:  TColor index 43 read GetColor write SetColor stored True;
-    
+
   end;
 
 implementation
@@ -98,30 +109,117 @@ const
   ColorArray: array[0..41] of TColor = (
     clNormalForeground, clNormalButton, clNormalLight, clNormalMidlight, clNormalDark, clNormalMid,
     clNormalText, clNormalBrightText, clNormalButtonText, clNormalBase, clNormalBackground,
-    clNormalShadow, clNormalHighlight, clNormalHighlightedText,
+    clNormalShadow, clNormalHighlight, clNormalHighlightedText, {clNormalColorTo,}
 
     clDisabledForeground, clDisabledButton, clDisabledLight, clDisabledMidlight, clDisabledDark, clDisabledMid,
     clDisabledText, clDisabledBrightText, clDisabledButtonText, clDisabledBase, clDisabledBackground,
-    clDisabledShadow, clDisabledHighlight, clDisabledHighlightedText,
+    clDisabledShadow, clDisabledHighlight, clDisabledHighlightedText, {clDisabledColorTo,}
 
     clActiveForeground, clActiveButton, clActiveLight, clActiveMidlight, clActiveDark, clActiveMid,
     clActiveText, clActiveBrightText, clActiveButtonText, clActiveBase, clActiveBackground,
-    clActiveShadow, clActiveHighlight, clActiveHighlightedText
+    clActiveShadow, clActiveHighlight, clActiveHighlightedText {,clNormalColorTo}
     {, clInfoBk, clDesktop} );
 
   ColorRoles: array[1..15] of TColorRole =(
     crForeground, crButton, crLight, crMidlight, crDark, crMid,
     crText, crBrightText, crButtonText, crBase, crBackground, crShadow,
     crHighlight, crHighlightText, crNoRole);
+  //
+  // Qt Palette on Windows
+  //
+  WindowsColors: array[0..41] of TColor = (
+    // Normal
+    clBlack,  // Foreground
+    $C8D0D4,  // Button
+    clWhite,  // Light
+    $DCE5E9,  // MidLight
+    clGray,   // Dark
+    $858AD5,  // Mid
+    clBlack,  // Text
+    clWhite,  // BrightText
+    clBlack,  // ButtonText
+    clWhite,  // Base
+    $C8D0D4,  // Background
+    $404040,  // Shadow
+    $C8D0D4,  // HighLight
+    clBlack,  // HighLightedText
+    // Disabled
+    $64686A,  // Foreground
+    $C8D0D4,  // Button
+    clWhite,  // Light
+    $E3E7E9,  // MidLight
+    clGray,   // Dark
+    $858A8D,  // Mid
+    $64686A,  // Text
+    clWhite,  // BrightText
+    $64686A,  // ButtonText
+    clWhite,  // Base
+    $C8D0D4,  // Background
+    clBlack,  // Shadow
+    $6A686A,  // HighLight
+    clWhite,  // HighLightedText
+    // Active
+    clBlack,  // Foreground
+    $C8D0D4,  // Button
+    clWhite,  // Light
+    $DCE5E9,  // MidLight
+    clGray,   // Dark
+    $858A8D,  // Mid
+    clBlack,  // Text
+    clWhite,  // BrightText
+    clBlack,  // ButtonText
+    clWhite,  // Base
+    $C8D0D4,  // Background
+    $404040,  // Shadow
+    $6A240A,  // HighLight
+    clWhite   // HighLightedText
+    );
+
+constructor TJvSystemColors.Create(AOwner: TComponent);
+var
+  I: integer;
+begin
+  inherited Create(AOwner);
+  for I := 0 to Length(ColorArray) - 1 do
+  begin
+    FSavedColors[I] := GetColor(I);
+//    SetColor(I, WindowsColors[I]);
+  end;
+end;
+
+destructor TJvSystemColors.Destroy;
+var
+  I: integer;
+begin
+//  for I := 0 to Length(ColorArray) - 1 do
+//    SetColor(I, FSavedColors[I]);
+  inherited Destroy;
+end;
+
+procedure TJvSystemColors.Loaded;
+begin
+  inherited Loaded;
+  UpdateWidgets;
+end;
+
+procedure TJvSystemColors.UpdateWidgets;
+var
+  PalChangedEvent: QEventH;
+begin
+  PalChangedEvent := QEvent_create(QEventType_ApplicationPaletteChange);
+  if PalChangedEvent <> nil then
+    QApplication_sendEvent(Application.Handle, PalChangedEvent);
+  QEvent_destroy(PalChangedEvent);
+end;
 
 procedure TJvSystemColors.SetColor(Index: Integer; Value: TColor);
 var
   Tmp: Integer;
 begin
   Tmp := ColorArray[Index];
-  with Application.Palette do
-    if tmp < TColor(0)
-    then
+  if Value <> GetColor(Index) then
+  begin
+    with Application.Palette do
       case tmp of
       clNormalHighlightedText..clNormalForeground:
         SetColor(cgInactive, ColorRoles[-(tmp+cloNormal)], value);
@@ -129,7 +227,10 @@ begin
         SetColor(cgDisabled, ColorRoles[-(tmp+cloDisabled)], value);
       clActiveHighlightedText..clActiveForeground:
         SetColor(cgActive, ColorRoles[-(tmp+cloActive)], value);
-    end;
+      end;
+//    if (csLoading in ComponentState) then
+//      UpdateWidgets;
+  end;
 end;
 
 function TJvSystemColors.GetColor(Index: Integer): TColor;
@@ -138,6 +239,17 @@ begin
     Result:=  GetColor(ColorArray[Index]);
 end;
 
+procedure TJvSystemColors.SetBaseColor(Value: TColor);
+begin
+  FBaseColor := Value;
+  Application.Palette.BaseColor := Value;
+end;
+
+function TJvSystemColors.GetBaseColor : TColor;
+begin
+  Result := Application.Palette.BaseColor;
+//  Result := FBaseColor;
+end;
 
 end.
 

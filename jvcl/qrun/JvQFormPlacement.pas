@@ -117,6 +117,7 @@ type
     procedure RestorePlacement; virtual;
     property Form: TForm read GetForm;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    function ConcatPaths(const Paths: array of string): string;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -246,13 +247,18 @@ type
 
 implementation
 
-uses  
+uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}  
   QConsts, 
   JvQJCLUtils, JvQPropertyStorage;
 
 const
   siActiveCtrl = 'ActiveControl'; // do not localize
   siVersion = 'FormVersion'; // do not localize
+  siStoredValues = 'StoredValues'; // do not localize
+  siStoredProps = 'StoredProps'; // do not localize
 
 //=== { TJvFormPlacement } ===================================================
 
@@ -554,6 +560,13 @@ begin
   NotifyLinks(poRestore);
 end;
 
+function TJvFormPlacement.ConcatPaths(const Paths: array of string): string;
+begin
+  if Assigned(AppStorage) then
+    Result := AppStorage.ConcatPaths(Paths)
+  else
+    Result := '';
+end;
 
 function TJvFormPlacement.ReadString(const Ident: string; const Default: string = '') : string;
 begin
@@ -861,7 +874,7 @@ procedure TJvFormStorage.SaveProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    AppStoragePath := Self.AppStoragePath;
+    AppStoragePath := ConcatPaths ([Self.AppStoragePath, siStoredProps]);
     AppStorage := Self.AppStorage;
     StoreObjectsProps(Owner, FStoredProps);
   finally
@@ -873,7 +886,7 @@ procedure TJvFormStorage.RestoreProperties;
 begin
   with TJvPropertyStorage.Create do
   try
-    AppStoragePath := Self.AppStoragePath;
+    AppStoragePath := ConcatPaths ([Self.AppStoragePath, siStoredProps]);
     AppStorage := Self.AppStorage;
     try
       LoadObjectsProps(Owner, FStoredProps);
@@ -1003,7 +1016,9 @@ procedure TJvStoredValue.Save;
 var
   SaveValue: Variant;
   SaveStrValue: string;
+  PathName: string;
 begin
+  PathName := StoredValues.Storage.ConcatPaths([siStoredValues, Name]);
   SaveValue := Value;
   if Assigned(FOnSave) then
     FOnSave(Self, SaveValue);
@@ -1011,51 +1026,53 @@ begin
   begin
     SaveStrValue := VarToStr(SaveValue);
     SaveStrValue := XorEncode(KeyString, SaveStrValue);
-    StoredValues.Storage.WriteString(Name, SaveStrValue);
+    StoredValues.Storage.WriteString(PathName, SaveStrValue);
   end
   else
     if VarIsInt (SaveValue) then
-      StoredValues.Storage.WriteInteger(Name, SaveValue)
+      StoredValues.Storage.WriteInteger(PathName, SaveValue)
     else
     if VarType (SaveValue) in [varSingle, varDouble, varCurrency] then
-      StoredValues.Storage.WriteFloat(Name, SaveValue)
+      StoredValues.Storage.WriteFloat(PathName, SaveValue)
     else
     if VarType (SaveValue) in [varDate] then
-      StoredValues.Storage.WriteDateTime(Name, SaveValue)
+      StoredValues.Storage.WriteDateTime(PathName, SaveValue)
     else
     if VarType (SaveValue) in [varBoolean] then
-      StoredValues.Storage.WriteBoolean(Name, SaveValue)
+      StoredValues.Storage.WriteBoolean(PathName, SaveValue)
     else
-      StoredValues.Storage.WriteString(Name, SaveValue);
+      StoredValues.Storage.WriteString(PathName, SaveValue);
 end;
 
 procedure TJvStoredValue.Restore;
 var
   RestoreValue: Variant;
   RestoreStrValue, DefaultStrValue: string;
+  PathName: string;
 begin
+  PathName := StoredValues.Storage.ConcatPaths([siStoredValues, Name]);
   if KeyString <> '' then
   begin
     DefaultStrValue := VarToStr(Value);
     DefaultStrValue := XorEncode(KeyString, DefaultStrValue);
-    RestoreStrValue := StoredValues.Storage.ReadString(Name, DefaultStrValue);
+    RestoreStrValue := StoredValues.Storage.ReadString(PathName, DefaultStrValue);
     RestoreStrValue := XorDecode(KeyString, RestoreStrValue);
     RestoreValue := RestoreStrValue;
   end
   else
     if VarIsInt(Value) then
-      RestoreValue := StoredValues.Storage.ReadInteger(Name, Value)
+      RestoreValue := StoredValues.Storage.ReadInteger(PathName, Value)
     else
     if VarType(Value) in [varSingle, varDouble, varCurrency] then
-      RestoreValue := StoredValues.Storage.ReadFloat(Name, Value)
+      RestoreValue := StoredValues.Storage.ReadFloat(PathName, Value)
     else
     if VarType(Value) in [varDate] then
-      RestoreValue := StoredValues.Storage.ReadDateTime(Name, Value)
+      RestoreValue := StoredValues.Storage.ReadDateTime(PathName, Value)
     else
     if VarType(Value) in [varBoolean] then
-      RestoreValue := StoredValues.Storage.ReadBoolean(Name, Value)
+      RestoreValue := StoredValues.Storage.ReadBoolean(PathName, Value)
     else
-      RestoreValue := StoredValues.Storage.ReadString(Name, Value);
+      RestoreValue := StoredValues.Storage.ReadString(PathName, Value);
   if Assigned(FOnRestore) then
     FOnRestore(Self, RestoreValue);
   Value := RestoreValue;
@@ -1163,6 +1180,22 @@ begin
   else
     StoredValue[Name] := Value;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

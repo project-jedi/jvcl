@@ -206,6 +206,9 @@ function LoadImageListFromBitmap(ImgList: TCustomImageList; const Bitmap: TBitma
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QConsts, TypInfo,  
   JvQJVCLUtils, JvQResources, JvQFinalize;
 
@@ -217,10 +220,10 @@ resourcestring
   //       hopefully ikMappedResourceBitmap will be supported soon
   RsNotSupportedItemKind = 'The item kind %s is not supported so far.';
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 const
   RT_RCDATA = PChar(10);
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 
 
@@ -639,7 +642,7 @@ begin
     Exit;
 
   if (FFileName <> '') and FileExists(FFileName)
-    {$IFDEF LINUX} and not DirectoryExists(FFileName) {$ENDIF} then
+    {$IFDEF UNIX} and not DirectoryExists(FFileName) {$ENDIF} then
   try
     FPicture.LoadFromFile(FFileName);
   except
@@ -936,7 +939,26 @@ begin
   raise EJvImageListError.CreateResFmt(@RsEWrongImageListMode, ['imItemList']);
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
+initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
+
+finalization
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING} 
 
 end.
 

@@ -111,6 +111,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 //=== { TJvMergeManager } ====================================================
 
 constructor TJvMergeManager.Create(AOwner: TComponent);
@@ -423,6 +428,22 @@ begin
   if (F <> nil) and (F.Menu <> nil) and (AForm <> nil) and (AForm.Menu <> nil) then
     F.Menu.Unmerge(AForm.Menu);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -342,6 +342,9 @@ procedure Launch(const AFile: string);
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math,
   JvQConsts, JvQResources;
 
@@ -1922,7 +1925,7 @@ var
   Dir: WideString;
 begin
   Dir := FDSOBase;
-  if SelectDirectory('Select Directory', PathDelim, Dir {$IFDEF LINUX}, True {$ENDIF}) then
+  if SelectDirectory('Select Directory', PathDelim, Dir {$IFDEF UNIX}, True {$ENDIF}) then
     FDSOBase := Dir;
 end;
 
@@ -2722,5 +2725,21 @@ begin
   else
     Result := TJvXMLTree(Objects[Index]);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -151,15 +151,18 @@ const
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Math, QConsts,
   JvQThemes, JvQConsts, JvQResources, JvQJCLUtils, JvQToolEdit, JvQSpeedButton;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPickDate.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvPickDate.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   SBtnGlyphs: array [0..3] of PChar =
@@ -170,15 +173,9 @@ procedure FontSetDefault(AFont: TFont);
 begin 
     with AFont do
     begin
-      Color := clWindowText;
-      {$IFDEF MSWINDOWS}
-      Name := 'MS Sans Serif';
-      Size := 8;
-      {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
-      Name := 'Verdana'; // asn: or Helvetica ?
-      Height := 11;
-      {$ENDIF LINUX}
+      Color := clWindowText;  
+      Name := 'Helvetica';
+      Height := 11; 
       Style := [];
     end;
 end;
@@ -903,12 +900,12 @@ begin
   FFourDigitYear := IsFourDigitYear;
   Height := Max(PopupCalendarSize.Y, 120);
   Width := Max(PopupCalendarSize.X, 180);
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Constraints.MaxWidth := Width;
   Constraints.MaxHeight := Height;
   Constraints.MinWidth := Constraints.MaxWidth;
   Constraints.MinHeight := Constraints.MaxHeight;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   Color := clBtnFace;
   FontSetDefault(Font);
@@ -1629,6 +1626,22 @@ begin
   if Result then
     StrDate := FormatDateTime(ShortDateFormat, DateValue);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

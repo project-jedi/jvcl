@@ -221,6 +221,9 @@ function ParseDate(const S: string): Integer;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JvQConsts, JvQResources, JvQTypes;
 
 const
@@ -997,9 +1000,9 @@ var
   SR: TSearchRec;
   FileAttrs: Integer;
   E: string;
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   ST: TStatBuf;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 begin
   FileAttrs := faAnyFile or faDirectory;
   if FindFirst(ADir + PathDelim + AllFilePattern, FileAttrs, SR) = 0 then
@@ -1018,7 +1021,7 @@ begin
           AFileList.Add(ADir + PathDelim + SR.Name);
       end;
       {$ENDIF MSWINDOWS}
-      {$IFDEF LINUX}
+      {$IFDEF UNIX}
       else
       begin
         if stat(PChar(ADir + PathDelim + SR.Name), ST) = 0 then
@@ -1027,7 +1030,7 @@ begin
             AFileList.Add(ADir + PathDelim + SR.Name);
         end;
       end;
-      {$ENDIF LINUX}
+      {$ENDIF UNIX}
     end;
   FindClose(SR);
 end;
@@ -2207,5 +2210,21 @@ begin
       Result := 0;
     end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

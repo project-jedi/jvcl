@@ -258,7 +258,6 @@ begin
     ACanvas.Brush.Color := AColor;
     BrushCopy(ACanvas, ClientRect, Bmp, ClientRect, clFuchsia);
   finally
-    Bmp.SaveToFile('XPProgressBar.bmp');
     Bmp.Free;
   end;
 end;

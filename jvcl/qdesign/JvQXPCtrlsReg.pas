@@ -38,9 +38,9 @@ interface
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPCtrlsReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvXPCtrlsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 
@@ -49,7 +49,7 @@ implementation
 uses
   Classes, QImgList, 
   DesignIntf, DesignEditors, CLXEditors,  
-  JvQDsgnConsts, 
+  JvQDsgnConsts, JvQXPProgressBar, 
   JvQXPCore, JvQXPPropertyEditors, JvQXPBar, JvQXPContainer,
   JvQXPButtons, JvQXPCheckCtrls;
 
@@ -58,7 +58,8 @@ uses
 procedure Register;
 begin
   RegisterComponents(RsPaletteXPControls, [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
-    TJvXPButton, TJvXPToolButton, TJvXPCheckBox]);
+    TJvXPButton, TJvXPToolButton, TJvXPCheckBox]); 
+  RegisterComponents(RsPaletteXPControls, [TJvXPProgressBar]); 
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
     TJvXPItemImageIndexPropertyEditor);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);

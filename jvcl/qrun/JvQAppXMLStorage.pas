@@ -54,9 +54,13 @@ type
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   protected
+    FWhiteSpaceReplacement: string;
     FXml: TJvSimpleXml;
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
+
+    procedure SetWhiteSpaceReplacement(const Value: string);
+    function EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
 
     function DefaultExtension : string; override;
 
@@ -87,11 +91,12 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
 
     property Xml: TJvSimpleXml read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
+    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -114,11 +119,15 @@ type
     property RootNodeName;
     property SubStorages;
     property OnGetFileName;
+    property WhiteSpaceReplacement;
   end;
 
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, TypInfo,
   JclStrings,
   JvQTypes, JvQConsts, JvQResources;
@@ -128,7 +137,7 @@ const
   cCount = 'Count';
   cEmptyPath = 'EmptyPath';
 
-function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
+function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   P: PChar;
 begin
@@ -147,7 +156,7 @@ begin
   end;
 end;
 
-function BufToBinStr(const Buf; BufSize: Integer): string;
+function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 var
   P: PChar;
   S: string;
@@ -165,13 +174,14 @@ begin
   end;
 end;
 
-//=== { TJvAppXMLStorage } ===================================================
+//=== { TJvCustomAppXMLStorage } ===================================================
 
 constructor TJvCustomAppXMLStorage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
+  WhiteSpaceReplacement := '';  // to keep the original behaviour
 end;
 
 destructor TJvCustomAppXMLStorage.Destroy;
@@ -182,14 +192,60 @@ begin
   FXml.Free;
 end;
 
+function TJvCustomAppXMLStorage.EnsureNoWhiteSpaceInNodeName(
+  NodeName: string): string;
+var
+  J, K: Integer;
+  WSRLength: Integer;
+  InsertIndex: Integer;
+  WhiteSpaceCount: Integer;
+  FixedNodeName: string;
+begin
+  if StrContainsChars(NodeName, AnsiWhiteSpace, False) then
+  begin
+    WSRLength := Length(WhiteSpaceReplacement);
+    case WSRLength of
+      0:
+        raise EJVCLException.CreateRes(@RsENodeNameCannotContainSpaces);
+      1:
+        NodeName := StrReplaceChars(NodeName, AnsiWhiteSpace, WhiteSpaceReplacement[1]);
+      else
+        begin
+          WhiteSpaceCount := StrCharsCount(NodeName, AnsiWhiteSpace);
+          SetLength(FixedNodeName, Length(NodeName)+WhiteSpaceCount*(WSRLength - 1));
+          InsertIndex := 1;
+          for J := 1 to Length(NodeName) do
+          begin
+            if NodeName[J] in AnsiWhiteSpace then
+            begin
+              // if we have a white space then we replace it with the WSR string
+              for K := 1 to WSRLength do
+              begin
+                FixedNodeName[InsertIndex] := WhiteSpaceReplacement[K];
+                Inc(InsertIndex);
+              end;
+            end
+            else
+            begin
+              // else we simply copy the character
+              FixedNodeName[InsertIndex] := NodeName[J];
+              Inc(InsertIndex);
+            end;
+          end;
+          NodeName := FixedNodeName;
+        end;
+    end;
+  end;
+  Result := NodeName;
+end;
+
 procedure TJvCustomAppXMLStorage.SetRootNodeName(const Value: string);
 begin
   if Value = '' then
     raise EPropertyError.CreateRes(@RsENodeCannotBeEmpty)
   else
   begin
-    StringReplace(Value, ' ', '_', [rfReplaceAll]);
-    Xml.Root.Name := Value;
+    Xml.Root.Name := EnsureNoWhiteSpaceInNodeName(Value);
     Root := Value;
   end;
 end;
@@ -197,6 +253,7 @@ end;
 procedure TJvCustomAppXMLStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
 begin
   inherited SplitKeyPath(Path, Key, ValueName);
+  ValueName := EnsureNoWhiteSpaceInNodeName(ValueName);
   if Key = '' then
     Key := Path;
 end;
@@ -343,7 +400,7 @@ var
   ParentPath: string;
   ValueName: string;
   ANode: TJvSimpleXmlElem;
-  Buffer: Extended;
+  //Buffer: Extended;
 begin
   if AutoReload and not IsUpdating then
     Reload;
@@ -403,7 +460,7 @@ begin
     Flush;
 end;
 
-function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvCustomAppXMLStorage.DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   Value: string;
 begin
@@ -413,7 +470,7 @@ begin
   Result := BinStrToBuf(Value, Buf, BufSize);
 end;
 
-procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvCustomAppXMLStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
 begin
   if AutoReload and not IsUpdating then
     Reload;
@@ -542,6 +599,7 @@ var
   NodeList: TStringList;
   I: Integer;
   Node: TJvSimpleXmlElem;
+  NodeName: string;
 begin
   Result := nil;
 
@@ -558,10 +616,20 @@ begin
       StrToStrings(Path, '\', NodeList, False);
       for I := 0 to NodeList.Count - 1 do
       begin
-        if Assigned(Node.Items.ItemNamed[NodeList[I]]) then
-          Node := Node.Items.ItemNamed[NodeList[I]]
-        else
-          Exit;
+        // Node names cannot have spaces in them so we replace
+        // those spaces by the replacement string. If there is
+        // no such string, we trigger an exception as the XML
+        // standard doesn't allow spaces in node names
+        NodeName := EnsureNoWhiteSpaceInNodeName(NodeList[I]);
+
+        // If the name is the same as the root AND the first in 
+        if not ((I = 0) and (NodeName = Xml.Root.Name)) then
+        begin
+          if Assigned(Node.Items.ItemNamed[NodeName]) then
+            Node := Node.Items.ItemNamed[NodeName]
+          else
+            Exit;
+        end;
       end;
     finally
       NodeList.Free;
@@ -644,6 +712,18 @@ begin
   Xml.LoadFromString(Value);
 end;
 
+procedure TJvCustomAppXMLStorage.SetWhiteSpaceReplacement(
+  const Value: string);
+begin
+  if Value <> FWhiteSpaceReplacement then
+  begin
+    if StrContainsChars(Value, AnsiWhiteSpace, True) then
+      raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
+    else
+      FWhiteSpaceReplacement := Value;
+  end
+end;
+
 function TJvCustomAppXMLStorage.DefaultExtension : string;
 begin
   Result := 'xml';
@@ -662,6 +742,22 @@ begin
   if FileExists(FullFileName) and not IsUpdating then
     Xml.LoadFromFile(FullFileName);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

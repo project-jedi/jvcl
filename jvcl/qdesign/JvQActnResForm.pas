@@ -35,8 +35,8 @@ unit JvQActnResForm;
 
 interface
 
-uses  
-  QActnList, QImgList, QControls, QForms, 
+uses
+  QActnList, QImgList, QControls, 
   SysUtils, Classes, QStdActns,
   JvQActions;
 
@@ -44,6 +44,8 @@ type
   TJvStandardActions = class(TDataModule)
     ImageList1: TImageList;
     ActionList1: TActionList;
+//    JvSendMailAction1: TJvSendMailAction;
+    JvWebAction1: TJvWebAction;
   public
   end;
 

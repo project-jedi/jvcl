@@ -64,9 +64,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvStdCtrlsReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvStdCtrlsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 const
@@ -77,29 +77,27 @@ begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
   RegisterComponents(RsPaletteNonVisual, [ 
     TJvCalculator]);
-  {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
-  {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
-    TJvCheckBox, TJvRadioButton, TJvRadioGroup,
-    TUpDown,
+    TJvCheckBox, TJvRadioButton, TJvRadioGroup,  
+    TUpDown, 
     TJvSpinButton]);
-  RegisterComponents(RsPaletteEdit, [TJvEdit,
+  RegisterComponents(RsPaletteEdit, [TJvEdit, 
     TJvMaskEdit, TJvCheckedMaskEdit, TJvComboEdit, TJvCalcEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit,
+    TJvFilenameEdit, TJvDirectoryEdit, TJvSpinEdit, 
     TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvPageControl,
-    TJvTabControl, TJvTabDefaultPainter,
-    TGauge,
-    TJvProgressBar, TJvStatusBar,
-    TJvControlBar,
-    TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
-    TJvSecretPanel {, TJvTransparentPanel}]);
-  RegisterComponents(RsPaletteLabel, [TJvStaticText, TJvLabel]);
-  RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox,
-    TJvCheckListBox,
-    TJvColorComboBox,
+    TJvTabControl, TJvTabDefaultPainter, 
+    TGauge, 
+    TJvProgressBar, TJvGradientProgressBar, TJvStatusBar, 
+    TJvControlBar, TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
+    TJvSecretPanel]);
+  RegisterComponents(RsPaletteLabel, [ 
+    TJvLabel]);
+  RegisterComponents(RsPaletteListComboTree, [TJvComboBox, TJvCheckedComboBox, 
+    TJvCheckListBox, 
+    TJvColorComboBox, 
     TJvDrawGrid, TJvStringGrid]);
   RegisterComponents(RsPaletteScrollerTracker, [ 
     TJvScrollBar]);

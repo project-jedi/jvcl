@@ -299,6 +299,9 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   JclStrings, JclDateTime;
 
 { Maybe TJvSearchFiles should be implemented with FindFirst, FindNext.
@@ -1037,6 +1040,22 @@ begin
     for I := 0 to FCaseFileMasks.Count - 1 do
       FCaseFileMasks[I] := AnsiUpperCase(FCaseFileMasks[I]);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

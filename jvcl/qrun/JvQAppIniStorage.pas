@@ -46,9 +46,11 @@ type
   // for INI type storage, descendents will actually implement
   // the writing to a file or anything else
   TJvCustomAppIniStorage = class(TJvCustomAppMemoryFileStorage)
-  protected
+  private
     FIniFile: TMemIniFile;
     FDefaultSection: string;
+    function CalcDefaultSection(Section: string): string;
+  protected
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
     function DefaultExtension : string; override;
@@ -73,8 +75,8 @@ type
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
     function DoReadString(const Path: string; const Default: string): string; override;
     procedure DoWriteString(const Path: string; const Value: string); override;
-    function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
-    procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+    function DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer; override;
+    procedure DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer); override;
     property DefaultSection: string read FDefaultSection write FDefaultSection;
     property IniFile: TMemIniFile read FIniFile;
   public
@@ -104,8 +106,11 @@ type
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils,
-  JvQTypes, JvQResources;
+  JvQTypes, JvQConsts, JvQResources; // JvConsts or PathDelim under D5 and BCB5
 
 const
   cNullDigit = '0';
@@ -114,19 +119,7 @@ const
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
 
-{ (ahsuer) make Delphi 5 compiler happy
-function AnsiSameTextShortest(S1, S2: string): Boolean;
-begin
-  if Length(S1) > Length(S2) then
-    SetLength(S1, Length(S2))
-  else
-  if Length(S2) > Length(S1) then
-    SetLength(S2, Length(S1));
-  Result := AnsiSameText(S1, S2);
-end;
-}
-
-function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
+function BinStrToBuf(Value: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   P: PChar;
 begin
@@ -135,27 +128,29 @@ begin
   if (Length(Value) div 2) < BufSize then
     BufSize := Length(Value) div 2;
   Result := 0;
+  Dec(BufSize); // adjust for PChar
   P := PChar(Value);
-  while BufSize > 0 do
+  while BufSize >= 0 do
   begin
-    PChar(Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
+    PChar(@Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
     Inc(Result);
     Dec(BufSize);
     Inc(P, 2);
   end;
 end;
 
-function BufToBinStr(const Buf; BufSize: Integer): string;
+function BufToBinStr(Buf: Pointer; BufSize: Integer): string;
 var
   P: PChar;
   S: string;
 begin
   SetLength(Result, BufSize * 2);
   P := PChar(Result);
-  Inc(P, (BufSize - 1) * 2); // Point to end of string ^
-  while BufSize > 0 do
+  Dec(BufSize); // adjust for PChar
+  Inc(P, BufSize * 2); // Point to end of string ^
+  while BufSize >= 0 do
   begin
-    S := IntToHex(Ord(PChar(Buf)[BufSize]), 2);
+    S := IntToHex(Ord(PChar(@Buf)[BufSize]), 2);
     P[0] := S[1];
     P[1] := S[2];
     Dec(P, 2);
@@ -242,7 +237,7 @@ begin
   if ValueExists(Section, Key) then
   begin
     Value := 0.0;
-    ReadBinary(Path, Value, Sizeof(Value));
+    ReadBinary(Path, @Value, Sizeof(Value));
     Result := Value;
 //    Value := ReadValue(Section, Key);
 //    if Value = '' then
@@ -255,7 +250,7 @@ end;
 
 procedure TJvCustomAppIniStorage.DoWriteFloat(const Path: string; Value: Extended);
 begin
-  WriteBinary(Path, Value, SizeOf(Value));
+  WriteBinary(Path, @Value, SizeOf(Value));
 end;
 
 function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
@@ -279,7 +274,7 @@ begin
   WriteValue(Section, Key, Value);
 end;
 
-function TJvCustomAppIniStorage.DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+function TJvCustomAppIniStorage.DoReadBinary(const Path: string; Buf: Pointer; BufSize: Integer): Integer;
 var
   Section: string;
   Key: string;
@@ -295,7 +290,7 @@ begin
     Result := 0;
 end;
 
-procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; const Buf; BufSize: Integer);
+procedure TJvCustomAppIniStorage.DoWriteBinary(const Path: string; Buf: Pointer; BufSize: Integer);
 var
   Section: string;
   Key: string;
@@ -367,61 +362,47 @@ begin
 end;
 
 
+function TJvCustomAppIniStorage.CalcDefaultSection(Section: string): string;
+begin
+  // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
+  // (rom) made it a private method
+  if (Section = '') or (Section[1] = '.') then
+    Result := DefaultSection + Section
+  else
+    Result := Section;
+  if (Result = '') or (Result[1] = '.') then
+    raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
+end;
+
 function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean;
-var
-  ASection: string;
 begin
   if IniFile <> nil then
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
-    // End of Change
-    Result := IniFile.ValueExists(ASection, Key);
+    Result := IniFile.ValueExists(CalcDefaultSection(Section), Key);
   end
   else
     Result := False;
 end;
 
 function TJvCustomAppIniStorage.ReadValue(const Section, Key: string): string;
-var
-  ASection: string;
 begin
   if IniFile <> nil then
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
-    Result := IniFile.ReadString(ASection, Key, '');
+    Result := IniFile.ReadString(CalcDefaultSection(Section), Key, '');
   end
   else
     Result := '';
 end;
 
 procedure TJvCustomAppIniStorage.WriteValue(const Section, Key, Value: string);
-var
-  ASection: string;
 begin
   if IniFile <> nil then
   begin
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEWriteValueFailed);
-    IniFile.WriteString(ASection, Key, Value);
+    IniFile.WriteString(CalcDefaultSection(Section), Key, Value);
     if AutoFlush and not IsUpdating then
       Flush;
   end;
@@ -458,30 +439,23 @@ end;
 
 procedure TJvCustomAppIniStorage.RemoveValue(const Section, Key: string);
 var
-  ASection: string;
+  LSection: string;
 begin
   if IniFile <> nil then
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
-    if (Section = '') or (Section[1] = '.') then
-      ASection := DefaultSection + Section
-    else
-      ASection := Section;
-    if (ASection = '') or (ASection[1] = '.') then
-      raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
-    // End of Change
-    if IniFile.ValueExists(ASection, Key) then
+    LSection := CalcDefaultSection(Section);
+    if IniFile.ValueExists(LSection, Key) then
     begin
-      IniFile.DeleteKey(ASection, Key);
+      IniFile.DeleteKey(LSection, Key);
       if AutoFlush and not IsUpdating then
         Flush;
     end
     else
-    if IniFile.SectionExists(ASection + '\' + Key) then
+    if IniFile.SectionExists(LSection + '\' + Key) then
     begin
-      IniFile.EraseSection(ASection + '\' + Key);
+      IniFile.EraseSection(LSection + '\' + Key);
       if AutoFlush and not IsUpdating then
         Flush;
     end;
@@ -560,7 +534,6 @@ begin
   Result := 'ini';
 end;
 
-
 //=== { TJvAppIniFileStorage } ===============================================
 
 procedure TJvAppIniFileStorage.Flush;
@@ -578,6 +551,21 @@ begin
     IniFile.Rename(FullFileName, True);
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

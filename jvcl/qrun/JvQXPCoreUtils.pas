@@ -133,7 +133,7 @@ begin
   with Bitmap.Canvas do
   begin
     {$IFDEF LINUX}
-    Start;
+    Start;  // required for Linux, but causes AV under windows
     {$ENDIF LINUX}
     Brush.Color := StartColor;
     FillRect(Bounds(0, 0, AWidth, AHeight));
@@ -155,11 +155,11 @@ begin
                   XX := iBndS + Random(xLoop);
                   if (XX < AWidth) and (XX > -1) then
                     with Row[XX] do
-                    begin  
+                    begin
                       rgbRed := GetRValue(GBand[iLoop - 1]);
                       rgbGreen := GetGValue(GBand[iLoop - 1]);
                       rgbBlue := GetBValue(GBand[iLoop - 1]);
-                      rgbReserved := 0; 
+                      rgbReserved := 0;
                     end;
                 end;
             end;
@@ -186,11 +186,11 @@ begin
               for xLoop := 0 to DitherDepth - 1 do
               if xLoop < AWidth  then
                 with Row[xLoop] do
-                begin  
+                begin
                   rgbRed := GetRValue(GBand[iLoop - 1]);
                   rgbGreen := GetGValue(GBand[iLoop - 1]);
                   rgbBlue := GetBValue(GBand[iLoop - 1]);
-                  rgbReserved := 0; 
+                  rgbReserved := 0;
                 end;
               end;
           end;
@@ -200,7 +200,7 @@ begin
           Bitmap.Canvas, Bounds(0, 0, DitherDepth, AHeight));
     end;
     {$IFDEF LINUX}
-    Stop;
+    Stop;  // required for Linux, but causes AV under windows
     {$ENDIF LINUX}
   end;
 end;
