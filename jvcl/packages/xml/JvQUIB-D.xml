@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQUIB" Design="-1">
+  <Description>JVCLX Unified Interbase Components</Description>
+  <Requires>
+    <Package Name="JvQUIB-R" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQCore-R" Targets="D7,K3" Condition="USEJVCL"/>
+    <Package Name="JvQCore-D" Targets="D7,K3" Condition="USEJVCL"/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="designide" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="vclx" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qdesign\JvQUIBReg.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>
