@@ -48,7 +48,7 @@ uses
   JvRichEditToHTML, JvMail, JvMailEditor,
   {$ENDIF VCL}
   {$IFDEF USEWINDOWS}
-  JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
+  JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,JvProgramVersionCheck,
   {$ENDIF USEWINDOWS}
   JvHtmlParser, JvHtmlParserEditor,
   JvTypes, JvDsgnConsts,
@@ -67,7 +67,16 @@ begin
     {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
     TJvLocalFileURLGrabber, TJvUrlListGrabber,
+    TJvProgramVersionCheck, TJvProgramVersionNetworkLocation,
+    TJvProgramVersionHTTPLocation, TJvProgramVersionFTPLocation,
+    TJvProgramVersionDatabaseLocation,
     {$ENDIF MSWINDOWS}
+    {$IFDEF USE_3RDPARTY_INDY}
+    TJvProgramVersionHTTPLocationIndy, //TJvProgramVersionFTPLocationIndy,
+    {$ENDIF USE_3RDPARTY_INDY}
+    {$IFDEF USE_3RDPARTY_ICS}
+    TJvProgramVersionHTTPLocationIcs, //TJvProgramVersionFTPLocationIcs,
+    {$ENDIF USE_3RDPARTY_ICS}
     {$IFDEF VCL}
     TJvMail, TJvRichEditToHTML,
     {$ENDIF VCL}
