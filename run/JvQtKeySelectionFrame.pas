@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Olivier Sannier <obones@meloo.com>
 Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
 All Rights Reserved.
 
-Contributor(s): André Snepvangers [asn@xs4all.nl]: JvQtKeySelectionFrame
+Contributor(s): André Snepvangers [asn att xs4all dott nl]: JvQtKeySelectionFrame
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

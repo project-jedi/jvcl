@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvGroupHeader.PAS, released on 2002-09-02.
 
-The Initial Developer of the Original Code is Fernando Silva [fernando.silva@myrealbox.com]
+The Initial Developer of the Original Code is Fernando Silva [fernando dott silva att myrealbox dott com]
 Portions created by Fernando Silva are Copyright (C) 2002 Fernando Silva.
 All Rights Reserved.
 

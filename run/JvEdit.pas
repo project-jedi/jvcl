@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvNewEdit.PAS, released on 2002-mm-dd.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
@@ -24,12 +24,12 @@ Merging done 2002-06-05 by Peter Thornqvist [peter3 at sourceforge dot net]
     * Added ClipboardCommands
 
 Contributor(s):
-  Anthony Steele [asteele@iafrica.com]
-  Peter Below [100113.1101@compuserve.com]
-  Rob den Braasem [rbraasem@xs4all.nl] (GroupIndex property - using several TJvEdits with the same GroupIndex
+  Anthony Steele [asteele att iafrica dott com]
+  Peter Below [100113 dott 1101 att compuserve dott com]
+  Rob den Braasem [rbraasem att xs4all dott nl] (GroupIndex property - using several TJvEdits with the same GroupIndex
     will clear the text from the other edits when something is typed into one of them.
     To disable GroupIndex, set it to -1)
-  André Snepvangers [asn@xs4all.nl] ( clx compatible version )
+  André Snepvangers [asn att xs4all dott nl] ( clx compatible version )
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

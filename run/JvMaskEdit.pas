@@ -10,13 +10,13 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvMaskEdit.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com],
-                Rob den Braasem [rbraasem@xs4all.nl],
-                Oliver Giesen [ogware@gmx.net],
+Contributor(s): Michael Beck [mbeck att bigfoot dott com],
+                Rob den Braasem [rbraasem att xs4all dott nl],
+                Oliver Giesen [ogware att gmx dott net],
                 Peter Thornqvist [peter3 at sourceforge dot net].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,

@@ -15,7 +15,7 @@ Portions created by Tim Sullivan are Copyright (C) 1999 Tim Sullivan.
 All Rights Reserved.
 
 Contributor(s):
-Ralf Steinhaeusser [ralfiii@gmx.net].
+Ralf Steinhaeusser [ralfiii att gmx dott net].
 Gustavo Bianconi
 Steefan Lesage - converted to use new OTA
 

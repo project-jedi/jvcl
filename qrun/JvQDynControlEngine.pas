@@ -12,11 +12,11 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Initial Developer of the Original Code is Jens Fudickar [jens.fudickar@oratool.de]
+The Initial Developer of the Original Code is Jens Fudickar [jens dott fudickar att oratool dott de]
 All Rights Reserved.
 
 Contributor(s):
-Jens Fudickar [jens.fudickar@oratool.de]
+Jens Fudickar [jens dott fudickar att oratool dott de]
 
 Last Modified: 2003-12-17
 

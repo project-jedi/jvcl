@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvCompEditorTemplate.PAS, released on 2003-01-15.
 
-The Initial Developer of the Original Code is Michael Beck [mbeck@bigfoot.com]
+The Initial Developer of the Original Code is Michael Beck [mbeck att bigfoot dott com]
 Portions created by Michael Beck are Copyright (C) 2003 Michael Beck
 All Rights Reserved.
 

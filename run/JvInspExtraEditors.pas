@@ -15,7 +15,7 @@ The Initial Developer of the Original Code is Marcel Bestebroer
 Portions created by Marcel Bestebroer are Copyright (C) 2000 - 2001 mbeSoft.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

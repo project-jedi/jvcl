@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvID3v2Base.PAS, released on 2003-04-16.
 
-The Initial Developer of the Original Code is Remko Bonte [remkobonte@myrealbox.com]
+The Initial Developer of the Original Code is Remko Bonte [remkobonte att myrealbox dott com]
 Portions created by Remko Bonte are Copyright (C) 2003 Remko Bonte.
 All Rights Reserved.
 

@@ -326,7 +326,7 @@ begin
     'Available (free) at JVCL Library home page:'#13 +
     '   http://jvcl.sourceforge.net'#13#13 +
     'programming - Andrei Prygounkov:'#13 +
-    '   a.prygounkov@gmx.de'#13,
+    '   a dott prygounkov att gmx dott de'#13,
     'About', MB_ICONINFORMATION);
 end;
 

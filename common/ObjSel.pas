@@ -7,7 +7,7 @@
 
  The original file is: objsel.h, released June 2000. The original Pascal
  code is: ObjSel.pas, released December 2000. The initial developer of the
- Pascal code is Marcel van Brakel (brakelm@chello.nl).
+ Pascal code is Marcel van Brakel (brakelm att chello dott nl).
 
  Portions created by Marcel van Brakel are Copyright (C) 1999-2001
  Marcel van Brakel. All Rights Reserved.

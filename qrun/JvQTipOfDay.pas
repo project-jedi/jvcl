@@ -14,14 +14,14 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvTipsOfDay.PAS, released on 2001-02-28.
 
-The Initial Developers of the Original Code are Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developers of the Original Code are Sébastien Buysse [sbuysse att buypin dott com]
 and Peter Thörnqvist [peter3 at sourceforge dot net]. Portions created by Sébastien Buysse
 are Copyright (C) 2001 Sébastien Buysse. Portions created by Peter Thörnqvist
 are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
-                Remko Bonte [remkobonte@myrealbox.com]
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
+                Remko Bonte [remkobonte att myrealbox dott com]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

@@ -1,8 +1,8 @@
 {-------------------------------------------------------------------------------
  QWindows.pas
 
- Copyright (c) 2003,2004, Andre Snepvangers (asn@xs4all.nl),
-                          Andreas Hausladen (Andreas.Hausladen@gmx.de)
+ Copyright (c) 2003,2004, Andre Snepvangers (asn att xs4all dott nl),
+                          Andreas Hausladen (Andreas dott Hausladen att gmx dott de)
  All rights reserved.
 
  Version 1.0

@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvObjPickerComp.PAS, released on 2002-06-24.
 
-The Initial Developer of the Original Code is  Marcel van Brakel [brakelm@chello.nl]
+The Initial Developer of the Original Code is  Marcel van Brakel [brakelm att chello dott nl]
 Portions created by Marcel van Brakel are Copyright (C) 2002 Marcel van Brakel.
 All Rights Reserved.
 

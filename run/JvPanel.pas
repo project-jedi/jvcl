@@ -10,15 +10,15 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvPanel.pas, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
-Michael Beck [mbeck@bigfoot.com].
+Michael Beck [mbeck att bigfoot dott com].
 pongtawat
 Peter Thornqvist [peter3 at sourceforge dot net]
-Jens Fudickar [jens.fudickar@oratool.de]
+Jens Fudickar [jens dott fudickar att oratool dott de]
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

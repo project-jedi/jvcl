@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvOLBEditor.PAS, released on 2002-12-10.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 att users dott sourceforge dott net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 

@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvAlignListbox.PAS, released on 2000-11-22.
 
-The Initial Developer of the Original Code is Peter Below <100113.1101@compuserve.com>
+The Initial Developer of the Original Code is Peter Below <100113 dott 1101 att compuserve dott com>
 Portions created by Peter Below are Copyright (C) 2000 Peter Below.
 All Rights Reserved.
 

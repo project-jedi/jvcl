@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvBalloonHint.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Remko Bonte <remkobonte@myrealbox.com>
+The Initial Developer of the Original Code is Remko Bonte <remkobonte att myrealbox dott com>
 Portions created by Remko Bonte are Copyright (C) 2002 Remko Bonte.
 All Rights Reserved.
 

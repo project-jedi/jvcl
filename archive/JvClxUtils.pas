@@ -12,7 +12,7 @@ The Original Code is: JvClxUtils.pas released on 2003-10-25.
 
 The Initial Developer of the Original Code is Marcel Bestebroer
 Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen,
-[Andreas.Hausladen@gmx.de] and André Snepvangers
+[Andreas dott Hausladen att gmx dott de] and André Snepvangers
 All Rights Reserved.
 
 Contributor(s):

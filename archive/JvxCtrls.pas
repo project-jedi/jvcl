@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
-  Peter Thornqvist [peter3@peter3.com]
+  Peter Thornqvist [peter3 att users dott sourceforge dott net]
 
 Last Modified: 2003-09-30
 

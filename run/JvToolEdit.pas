@@ -16,7 +16,7 @@ Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Contributers:
-  Rob den Braasem [rbraasem@xs4all.nl]
+  Rob den Braasem [rbraasem att xs4all dott nl]
   Polaris Software
   rblaurindo
 

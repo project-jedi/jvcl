@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: LastModifyReplUtil.PAS, released on 2004-03-26
 
-The Initial Developers of the Original Code are: Andreas Hausladen <ahuser@users.sourceforge.net>
+The Initial Developers of the Original Code are: Andreas Hausladen <ahuser att users dott sourceforge dott net>
 All Rights Reserved.
 
 Last Modified: 2004-03-26

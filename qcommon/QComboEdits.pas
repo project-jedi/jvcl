@@ -11,7 +11,7 @@ the specific language governing rights and limitations under the License.
 The Original Code is: QComboEdits.pas, released on 2004-01-19
 
 The Initial Developer of the Original Code is Andreas Hausladen
-                                              [Andreas.Hausladen@gmx.de]
+                                              [Andreas dott Hausladen att gmx dott de]
 Copyright (C) 2004 Andreas Hausladen
 All Rights Reserved.
 

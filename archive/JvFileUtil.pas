@@ -18,7 +18,7 @@ All Rights Reserved.
 Portions Copyright (c) 1998 Ritting Information Systems
 
 Contributor(s):
-  Roman Kovbasiouk [roko@users.sourceforge.net] (TJvBrowseFolderDlg removal)
+  Roman Kovbasiouk [roko att users dott sourceforge dott net] (TJvBrowseFolderDlg removal)
 
 Last Modified: 2003-03-17
 

@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvMemo.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
@@ -18,9 +18,9 @@ This unit is a merging of the original TJvMemo, JvDisplayMemo, JvCaretMemo,JvMem
 Merging done 2002-06-11 by Peter Thornqvist [peter3 at sourceforge dot net]
 
 Contributor(s):
-  Michael Beck [mbeck@bigfoot.com]
-  Anthony Steele [asteele@iafrica.com]
-  Peter Below [100113.1101@compuserve.com]
+  Michael Beck [mbeck att bigfoot dott com]
+  Anthony Steele [asteele att iafrica dott com]
+  Peter Below [100113 dott 1101 att compuserve dott com]
 
   MERGE NOTES:
     * TjvCustomMemo has been removed from JvComponent and put here instead.

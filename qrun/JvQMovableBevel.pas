@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvMovableBevel.PAS, released on 2002-07-03.
 
-The Initial Developer of the Original Code is John Kozikopulos [Stdreamer@Excite.com]
+The Initial Developer of the Original Code is John Kozikopulos [Stdreamer att Excite dott com]
 Portions created by John Kozikopulos are Copyright (C) 2002 John Kozikopulos.
 All Rights Reserved.
 

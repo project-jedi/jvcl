@@ -38,7 +38,7 @@
         users to get Type Information
       - Corrected heaps of C++ Builder compatibility problems, especially
         with parameters that are const pointers
-    Oct 10, 2003, Andreas Hausladen andreas.hausladen@gmx.de
+    Oct 10, 2003, Andreas Hausladen Andreas dott Hausladen att gmx dott de
       - implemented Theming and MouseWheel
     Oct 1, 2003, Warren Postma warrenpstma@hotmail.com
       - New Name, UserData properties in TJvInspectorCustomCategoryItem

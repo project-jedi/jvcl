@@ -14,13 +14,13 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvID3v2Types.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
 Contributor(s):
-  Michael Beck [mbeck@bigfoot.com].
-  Remko Bonte [remkobonte@myrealbox.com].
+  Michael Beck [mbeck att bigfoot dott com].
+  Remko Bonte [remkobonte att myrealbox dott com].
 
 Last Modified: 2003-04-15
 

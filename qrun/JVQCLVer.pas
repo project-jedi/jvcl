@@ -19,7 +19,7 @@ Portions created by Joe Doe are Copyright (C) 1999 Joe Doe.
 Portions created by XXXX Corp. are Copyright (C) 1998, 1999 XXXX Corp.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
 Last Modified: 2000-02-28
 

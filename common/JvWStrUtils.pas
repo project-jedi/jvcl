@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: WStrUtils.PAS, released on 2004-01-25
 
-The Initial Developers of the Original Code are: Andreas Hausladen <Andreas.Hausladen@gmx.de>
+The Initial Developers of the Original Code are: Andreas Hausladen <Andreas dott Hausladen att gmx dott de>
 All Rights Reserved.
 
 Contributers:

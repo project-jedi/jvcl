@@ -10,11 +10,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvStrings.PAS, released on 2002-06-15.
 
-The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
+The Initial Developer of the Original Code is Jan Verhoeven [jan1 dott verhoeven att wxs dott nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
 All Rights Reserved.
 
-Contributor(s): Robert Love [rlove@slcdug.org].
+Contributor(s): Robert Love [rlove att slcdug dott org].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -166,7 +166,7 @@ function HasStrValue(aText, aName: string; var aValue: string): Boolean;
 // checks if a name="value" pair exists and returns any value
 function GetStrValue(aText, aName, aDefault: string): string;
 // retrieves string value from a line like:
-//  name="jan verhoeven" email="jan1.verhoeven@wxs.nl"
+//  name="jan verhoeven" email="jan1 dott verhoeven att wxs dott nl"
 // returns aDefault when not found
 function GetHTMLColorValue(aText, aName: string; aDefault: TColor): TColor;
 // same for a color
@@ -178,7 +178,7 @@ function GetBoolValue(aText, aName: string): Boolean;
 // same for Boolean but without default
 function GetValue(aText, aName: string): string;
 // retrieves string value from a line like:
-//  name="jan verhoeven" email="jan1.verhoeven@wxs.nl"
+//  name="jan verhoeven" email="jan1 dott verhoeven att wxs dott nl"
 procedure SetValue(var aText: string; aName, aValue: string);
 // sets a string value in a line
 procedure DeleteValue(var aText: string; aName: string);

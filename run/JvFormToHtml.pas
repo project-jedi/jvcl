@@ -10,11 +10,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvFormToHtml.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

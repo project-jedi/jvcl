@@ -14,7 +14,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvJVCLAboutProperty.PAS, released on 2003-01-07.
 
-The Initial Developer of the Original Code is Michael Beck [mbeck@bigfoot.com]
+The Initial Developer of the Original Code is Michael Beck [mbeck att bigfoot dott com]
 Portions created by Michael Beck are Copyright (C) 2002 Michael Beck
 All Rights Reserved.
 

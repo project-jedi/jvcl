@@ -14,11 +14,11 @@ the specific language governing Rights and limitations under the License.
 
 The Original Code is: JvGradient.PAS, released on 2001-02-28.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
+The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
 Portions created by Sébastien Buysse are CopyRight (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
 Last Modified: 2000-02-28
 

@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvMouseGesture.PAS, released on 2003-07-10.
 
-The Initial Developers of the Original Code are: Christian Vogt (christian@fam-vogt.de)
+The Initial Developers of the Original Code are: Christian Vogt (christian att fam-vogt dott de)
 Copyright (c) 2003 by Christian Vogt
 All Rights Reserved.
 

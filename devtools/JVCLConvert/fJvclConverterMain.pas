@@ -19,7 +19,7 @@ Igor Komar (the original Replace routines)
 Dave Jewell (new GUI for Igor's code)
 Martin Waldenburg (FastTime)
 
-Contributor(s): Peter Thörnqvist <peter3@peter3.com>
+Contributor(s): Peter Thörnqvist <peter3 at sourceforge dot net>
                 Arioch <the_Arioch@chat.ru>
 
 Last Modified: 2002-07-18

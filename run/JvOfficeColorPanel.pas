@@ -15,7 +15,7 @@ Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-dejoy(dejoy@ynl.gov.cn)
+dejoy(dejoy att ynl dott gov dott cn)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

@@ -10,7 +10,7 @@
 { The original file is: hidtoken.h, released March 1999.           }
 { The original Pascal code is: HidToken.pas, released 31 Jan 2000. }
 { The initial developer of the Pascal code is Robert Marquardt     }
-{ (robert_marquardt@gmx.de)                                        }
+{ (robert_marquardt att gmx dott de)                                        }
 {                                                                  }
 { Portions created by Robert Marquardt are                         }
 { Copyright (c) 1999, 2000 Robert Marquardt.                       }

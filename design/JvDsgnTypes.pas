@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDsgnTypes.PAS, released on 2003-10-12.
 
-The Initial Developer of the Original Code is Robert Marquardt [robert_marquardt@gmx.de]
+The Initial Developer of the Original Code is Robert Marquardt [robert_marquardt att gmx dott de]
 Portions created by Robert Marquardt are Copyright (C) 2003 Robert Marquardt .
 All Rights Reserved.
 

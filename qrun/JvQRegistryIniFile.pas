@@ -10,7 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvRegIni.PAS, released on 2004-03-16.
 
-The Initial Developer of the Original Code is: André Snepvangers [asn@xs4all.nl]
+The Initial Developer of the Original Code is: André Snepvangers [asn att xs4all dott nl]
 Copyright (c) 2004 André Snepvangers
 All Rights Reserved.
 
