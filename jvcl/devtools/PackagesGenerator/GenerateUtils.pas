@@ -7,7 +7,7 @@ uses Classes;
 type
   TGenerateCallback = procedure (msg : string);
 
-procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback);
+procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback; makeDof : Boolean = False);
 
 procedure EnumerateTargets(Path : string; targets : TStrings);
 
@@ -18,7 +18,8 @@ var
 
 implementation
 
-uses SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml;
+uses Windows, SysUtils, JclSysUtils, JclStrings, JclFileUtils, JvSimpleXml,
+    ShellApi;
 
 var GCallBack : TGenerateCallBack;
 
@@ -181,6 +182,12 @@ begin
     formType := Copy(formNameAndType, Pos(':', formNameAndType)+2, Length(formNameAndType));
   end;
 
+  StrReplace(Lines, '%FILENAME%', incFileName, [rfReplaceAll]);
+  StrReplace(Lines, '%UNITNAME%', GetUnitName(incFileName), [rfReplaceAll]);
+  StrReplace(Lines, '%Unitname%',
+             StrProper(GetUnitName(incFileName)),
+             [rfReplaceAll]);
+
   if formName = '' then
   begin
     StrReplace(Lines, '{', '', [rfReplaceAll]);
@@ -191,9 +198,6 @@ begin
     StrReplace(Lines, '%FORMTYPE%', '', [rfReplaceAll]);
     StrReplace(Lines, '%FORMNAMEANDTYPE%', '', [rfReplaceAll]);
     StrReplace(Lines, '%FORMPATHNAME%', '', [rfReplaceAll]);
-    StrReplace(Lines, '%Unitname%',
-               StrProper(GetUnitName(incFileName)),
-               [rfReplaceAll]);
   end
   else
   begin
@@ -201,10 +205,7 @@ begin
     StrReplace(Lines, '%FORMTYPE%', formType, [rfReplaceAll]);
     StrReplace(Lines, '%FORMNAMEANDTYPE%', formNameAndType, [rfReplaceAll]);
     StrReplace(Lines, '%FORMPATHNAME%',
-               StrEnsureSuffix('\', ExtractFilePath(incFileName))+formName,
-               [rfReplaceAll]);
-    StrReplace(Lines, '%Unitname%',
-               StrProper(GetUnitName(incFileName)),
+               StrEnsureSuffix('\', ExtractFilePath(incFileName))+GetUnitName(incFileName),
                [rfReplaceAll]);
   end;
 end;
@@ -324,8 +325,6 @@ begin
           begin
             tmpStr := repeatLines;
             incFileName := fileNode.Properties.ItemNamed['Name'].Value;
-            StrReplace(tmpStr, '%FILENAME%', incFileName, [rfReplaceAll]);
-            StrReplace(tmpStr, '%UNITNAME%', GetUnitName(incFileName), [rfReplaceAll]);
             ApplyFormName(fileNode, tmpStr);
             outFile.Text := outFile.Text +
                             EnsureCondition(tmpStr, fileNode, target);
@@ -409,7 +408,7 @@ begin
   end;
 end;
 
-procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback);
+procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback; makeDof : Boolean);
 var
   rec : TSearchRec;
   i : Integer;
@@ -457,6 +456,17 @@ begin
       until FindNext(rec) <> 0;
     end;
     FindClose(rec);
+  end;
+
+  if makeDof then
+  begin
+    SendMsg('Calling MakeDofs.bat');
+    ShellExecute(0,
+                '',
+                PChar(StrEnsureSuffix('\', ExtractFilePath(ParamStr(0))) + 'MakeDofs.bat'),
+                '',
+                PChar(ExtractFilePath(ParamStr(0))),
+                SW_SHOW);
   end;
 end;
 

@@ -16,7 +16,6 @@ type
     mnuFile: TMenuItem;
     jsbStatus: TJvStatusBar;
     jtbMenus: TJvToolBar;
-    mnuExit: TMenuItem;
     mnuNavigation: TMenuItem;
     pnlList: TPanel;
     jspLeft: TJvSplitter;
@@ -37,7 +36,7 @@ type
     ToolButton4: TToolButton;
     tbtPrevPackage: TToolButton;
     tbtNextPackage: TToolButton;
-    N1: TMenuItem;
+    mnuGenPackages: TMenuItem;
     mnuOpen: TMenuItem;
     mnuSave: TMenuItem;
     mnuPreviousPackage: TMenuItem;
@@ -66,8 +65,6 @@ type
     tbtGenerate: TToolButton;
     jpmGridPopup: TJvPopupMenu;
     mnuView: TMenuItem;
-    mnuKnown: TMenuItem;
-    N2: TMenuItem;
     actMainToolbar: TAction;
     actLocation: TAction;
     actKnown: TAction;
@@ -83,6 +80,13 @@ type
     lblC6PFlags: TLabel;
     jfsStore: TJvFormStorage;
     jaiIniStore: TJvAppINIFileStore;
+    mnuHelp: TMenuItem;
+    Knownreplacementtags1: TMenuItem;
+    mnuAbout: TMenuItem;
+    N2: TMenuItem;
+    mnuAddFiles: TMenuItem;
+    N3: TMenuItem;
+    Exit1: TMenuItem;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -121,6 +125,7 @@ type
     procedure jlbListMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure sptDepAndFilesMoved(Sender: TObject);
+    procedure mnuAboutClick(Sender: TObject);
     procedure jsgFilesGetEditText(Sender: TObject; ACol, ARow: Integer;
       var Value: String);
   private
@@ -147,7 +152,7 @@ implementation
 
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
-  GenerateUtils, KnownTagsForm, FormTypeDialog;
+  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -329,7 +334,11 @@ end;
 procedure TfrmMain.jsgDependenciesSetEditText(Sender: TObject; ACol,
   ARow: Integer; const Value: String);
 begin
+<<<<<<< MainForm.pas
+  Changed := Changed or (Value <> (Sender as TStringGrid).Cells[ACol, ARow]);
+=======
   FOrgValueDep := jsgDependencies.Cells[ACol, ARow];
+>>>>>>> 1.12
 end;
 
 procedure TfrmMain.ledDescriptionChange(Sender: TObject);
@@ -500,12 +509,13 @@ begin
       ledC6PFlags.Text    := rootNode.Items.ItemNamed['C6PFlags'].Value;
 
       // read required packages
-      jsgDependencies.RowCount := 2;
-      jsgDependencies.Rows[1].Text := '';
       requiredNode := rootNode.Items.ItemNamed['Requires'];
+      jsgDependencies.RowCount := requiredNode.Items.Count + 2;
+      jsgDependencies.Rows[jsgDependencies.RowCount-1].Text := '';
+      jsgDependencies.FixedRows := 1;
       for i := 0 to requiredNode.Items.Count - 1 do
       begin
-        row := jsgDependencies.InsertRow(jsgDependencies.RowCount-1);
+        row := jsgDependencies.Rows[i+1];
         packageNode := requiredNode.Items[i];
         for j := 0 to row.Count - 1 do
         begin
@@ -514,12 +524,13 @@ begin
       end;
 
       // read files
-      jsgFiles.RowCount := 2;
-      jsgFiles.Rows[1].Text := '';
       filesNode := rootNode.Items.ItemNamed['Contains'];
+      jsgFiles.RowCount := filesNode.Items.Count + 2;
+      jsgFiles.FixedRows := 1;
+      jsgFiles.Rows[jsgFiles.RowCount-1].Text := '';
       for i := 0 to filesNode.Items.Count - 1 do
       begin
-        row := jsgFiles.InsertRow(jsgFiles.RowCount-1);
+        row := jsgFiles.Rows[i+1];
         fileNode := filesNode.Items[i];
         for j := 0 to row.Count - 1 do
         begin
@@ -567,7 +578,7 @@ begin
           end;
         end;
 
-        Generate(jlbList.Items, targets, path, nil);
+        Generate(jlbList.Items, targets, path, nil, frmTargets.chkGenDof.Checked);
       finally
         targets.Free;
       end;
@@ -715,6 +726,14 @@ begin
   lblFiles.Top := pnlDepAndFiles.Top +
                   pnlDepAndFiles.Height - jsgFiles.Height +
                         (jsgFiles.Height - lblFiles.Height) div 2;
+end;
+
+procedure TfrmMain.mnuAboutClick(Sender: TObject);
+begin
+  ShowMessage(
+    'JVCL Package Generator'#13#10+
+    #13#10+
+    '(c) 2003 Olivier Sannier for the JVCL group');
 end;
 
 procedure TfrmMain.jsgFilesGetEditText(Sender: TObject; ACol,

@@ -35,7 +35,7 @@ object frmTargets: TfrmTargets
     WordWrap = True
   end
   object bbtOk: TBitBtn
-    Left = 60
+    Left = 62
     Top = 284
     Width = 83
     Height = 29
@@ -98,7 +98,7 @@ object frmTargets: TfrmTargets
     NumGlyphs = 2
   end
   object bbtCancel: TBitBtn
-    Left = 156
+    Left = 158
     Top = 284
     Width = 85
     Height = 29
@@ -163,8 +163,16 @@ object frmTargets: TfrmTargets
     Left = 20
     Top = 44
     Width = 265
-    Height = 225
+    Height = 201
     ItemHeight = 13
     TabOrder = 2
+  end
+  object chkGenDof: TCheckBox
+    Left = 54
+    Top = 256
+    Width = 197
+    Height = 17
+    Caption = 'Generate DOF files where applicable'
+    TabOrder = 3
   end
 end

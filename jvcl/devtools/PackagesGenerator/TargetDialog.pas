@@ -15,6 +15,7 @@ type
     clbBuilds: TCheckListBox;
     lblPleaseIndicate: TLabel;
     lblOnlyChanged: TLabel;
+    chkGenDof: TCheckBox;
     procedure FormShow(Sender: TObject);
   private
     { Private declarations }
