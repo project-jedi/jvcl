@@ -31,14 +31,12 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, 
-  {$ENDIF VCL}
+  Windows, Messages,  
   Graphics, Controls, Forms, StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
   {$IFDEF VisualCLX}
-  QTypes, Qt, QWindows,
+  Qt,	
   {$ENDIF VisualCLX}
-  JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
+  JvJCLUtils, JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
 
 const
   CM_IMAGESIZECHANGED = CM_BASE + 100;
@@ -334,12 +332,7 @@ type
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
     procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
-    {$ENDIF VisualCLX}
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -480,14 +473,11 @@ type
     procedure ScrollChildren(Start: Word); override;
     procedure DrawTopButton; override;
     procedure Paint; override;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
+    {$IFDEF VCL}
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
     {$ENDIF VCL}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
@@ -1276,12 +1266,7 @@ begin
     if FDown then
       OffsetRect(R, FOffset, FOffset);
     FTextRect := R;
-    {$IFDEF VCL}
-    H := DrawText(Canvas.Handle, PChar(Caption), -1, FTextRect, Flags or DT_CALCRECT);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     H := DrawText(Canvas, Caption, -1, FTextRect, Flags or DT_CALCRECT);
-    {$ENDIF VisualCLX}
     if ImageSize = isLarge then
     begin
       FTextRect.Top := R.Top;
@@ -1294,12 +1279,7 @@ begin
       FTextRect.Bottom := FTextRect.Top + Canvas.TextHeight(Caption);
       FTextRect.Right := R.Left + Canvas.TextWidth(Caption);
     end;
-    {$IFDEF VCL}
-    DrawText(Canvas.Handle, PChar(Caption), -1, R, Flags);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(Canvas, Caption, -1, R, Flags);
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1959,21 +1939,11 @@ begin
   FInScroll := False;
 end;
 
-{$IFDEF VCL}
 procedure TJvLookOutPage.CreateWnd;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvLookOutPage.CreateWidget;
-{$ENDIF VisualCLX}
 var
   R: TRect;
 begin
-  {$IFDEF VCL}
   inherited CreateWnd;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  inherited CreateWidget;
-  {$ENDIF VisualCLX}
   R := GetClientRect;
   if not Assigned(FUpArrow) then
   begin
@@ -2301,12 +2271,7 @@ begin
       { draw disabled text }
       SetTextColor(DC, ColorToRGB(clBtnHighlight));
       OffsetRect(R, 1, 1);
-      {$IFDEF VCL}
-      DrawText(DC, PChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-      {$ENDIF VisualCLX}
+      DrawText(DC, FCaption, Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
       OffsetRect(R, -1, -1);
       SetTextColor(DC, ColorToRGB(clBtnShadow));
     end
@@ -2314,12 +2279,7 @@ begin
       SetTextColor(DC, ColorToRGB(Canvas.Font.Color));
     if FShowPressed and FDown then
       OffsetRect(R, 1, 1);
-    {$IFDEF VCL}
-    DrawText(DC, PChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    DrawTextW(DC, PWideChar(FCaption), Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
-    {$ENDIF VisualCLX}
+    DrawText(DC, FCaption, Length(FCaption), R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 end;
 
@@ -2460,12 +2420,7 @@ begin
     FFlatButtons := Value;
     //    for I := 0 to PageCount - 1 do
     //      Pages[I].DrawTopButton;
-    {$IFDEF VCL}
     RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    RecreateWidget;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2573,12 +2528,7 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
-    {$IFDEF VCL}
     RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    RecreateWidget;
-    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -2787,7 +2737,7 @@ end;
 procedure TJvExpress.Paint;
 begin
   {$IFDEF VisualCLX}
-  Perform(WM_NCPAINT, 0, 0);
+  Perform(WM_NCPAINT, 0, 0); // paint the borders
   {$ENDIF VisualCLX}
   if not FBitmap.Empty then
   begin
@@ -2916,16 +2866,9 @@ begin
 end;
 {$ENDIF VCL}
 
-{$IFDEF VCL}
 procedure TJvExpress.CreateWnd;
 begin
   inherited CreateWnd;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvExpress.CreateWidget;
-begin
-  inherited CreateWidget;
-{$ENDIF VisualCLX}
   if not Assigned(FUpArrow) then
     FUpArrow := TJvUpArrowBtn.Create(nil);
 
