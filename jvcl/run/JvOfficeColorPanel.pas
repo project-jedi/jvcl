@@ -641,7 +641,7 @@ begin
   FColorDialog.Options := FColorDialogOptions;
   {$ENDIF VCL}
 
-  Font.Name := 'MS Shell Dlg 2';
+//  Font.Name := 'MS Shell Dlg 2';
   FAutoButton.Flat := True;
   FOtherButton.Flat := True;
   Flat := True;

@@ -355,7 +355,7 @@ begin
   FProperties.OnPropertiesChanged := PropertiesChanged;
   FColorsForm.ColorPanel.Properties.OnPropertiesChanged := nil;
 
-  Font.Name := 'MS Shell Dlg 2';
+//  Font.Name := 'MS Shell Dlg 2';
   Flat := True;
   {$IFDEF VisualCLX}
   // in CLX and a bug not fix when drag the colors form

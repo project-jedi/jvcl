@@ -170,14 +170,14 @@ begin
   BorderIcons := [];
   BorderStyle := fbsDialog;
   {$IFDEF MSWINDOWS}
-  Font.Name := 'MS Shell Dlg 2';
+//  Font.Name := 'MS Shell Dlg 2';
   {$ENDIF MSWINDOWS}
   {$ENDIF VisualCLX}
   FormStyle := fsStayOnTop;
   Caption := 'Color Window';
 
   FToolWindowStyle := False;
-  FDragBarHint := 'Drag to floating';
+  FDragBarHint := 'Drag to float';
 
   ParentControl := Self;
 
