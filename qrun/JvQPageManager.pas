@@ -197,7 +197,7 @@ var
 constructor TJvPageProxy.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FPageName := EmptyStr;
+  FPageName := '';
 end;
 
 destructor TJvPageProxy.Destroy;

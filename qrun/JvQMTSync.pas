@@ -103,18 +103,11 @@ type
 
 implementation
 
-uses
-  {$IFDEF USEJVCL}
-  JvQResources,
-  {$ENDIF USEJVCL}
+uses 
+  JvQResources, 
   JvQMTThreading;
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsESemaphoreFailure = 'Semaphore failure (%d)';
-  RsESemaphoreAbandoned = 'Semaphore was abandoned';
-  RsEThreadAbandoned = 'Thread was abandoned';
-{$ENDIF USEJVCL}
+
 
 //=== TMTSemaphore ===========================================================
 

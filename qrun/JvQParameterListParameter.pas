@@ -329,9 +329,10 @@ type
     FItemIndex: Integer;
     FSorted: Boolean;
     FVariantAsItemIndex: Boolean;
-  protected
-    procedure SetItemList(Value: TStringList);
+    function GetItemList: TStrings;
+    procedure SetItemList(Value: TStrings);
     procedure SetItemIndex(Value: Integer);
+  protected
     procedure SetAsString(Value: string); override;
     function GetAsString: string; override;
     procedure SetAsInteger(Value: Integer); override;
@@ -348,7 +349,7 @@ type
     procedure GetData; override;
     procedure SetData; override;
   published
-    property ItemList: TStringList read FItemList write SetItemList;
+    property ItemList: TStrings read GetItemList write SetItemList;
     property ItemIndex: Integer read FItemIndex write SetItemIndex;
     property Sorted: Boolean read FSorted write FSorted;
     property VariantAsItemIndex: Boolean read FVariantAsItemIndex write FVariantAsItemIndex default False;
@@ -1034,7 +1035,12 @@ begin
     Result := NULL;
 end;
 
-procedure TJvListParameter.SetItemList(Value: TStringList);
+function TJvListParameter.GetItemList: TStrings;
+begin
+  Result := FItemList;
+end;
+
+procedure TJvListParameter.SetItemList(Value: TStrings);
 begin
   FItemList.Assign(Value);
   if Assigned(Value) then

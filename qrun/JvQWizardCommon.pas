@@ -72,15 +72,12 @@ procedure JvWizardDrawImage(ACanvas: TCanvas; AGraphic: TGraphic; ARect: TRect;
 
 implementation
 
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsETilingError = 'Tiling only works on images with dimensions > 0';
-{$ENDIF USEJVCL}
+
+
 
 const
   { Frame Style Color constant arrays }

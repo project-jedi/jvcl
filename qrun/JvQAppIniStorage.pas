@@ -375,6 +375,8 @@ var ASection:string;
 begin
   if IniFile <> nil then
   begin
+    if AutoReload and not IsUpdating then
+      Reload;
     // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
     if (Section = '') or (Section[1] = '.') then
       ASection := DefaultSection + Section
@@ -395,6 +397,8 @@ var
 begin
   if IniFile <> nil then
   begin
+    if AutoReload and not IsUpdating then
+      Reload;
     if (Section = '') or (Section[1] = '.') then
       ASection := DefaultSection + Section
     else

@@ -164,7 +164,8 @@ type
   private
     FLines: TStringList;
     FNodeCount: Integer;
-    procedure SetLines(const Value: TStringList);
+    function GetLines: TStrings;
+    procedure SetLines(const Value: TStrings);
     function getText: string;
     procedure setText(const Value: string);
   public
@@ -176,19 +177,19 @@ type
     procedure SaveToFile(aFile: string);
     procedure SaveToStream(Stream: TStream);
     function asText: string;
-    property Lines: TStringList read FLines write SetLines;
+    property Lines: TStrings read GetLines write SetLines;
     property NodeCount: Integer read FNodeCount;
     property Text: string read getText write setText;
   end;
 
-procedure PreProcessXML(aList: TStringList);
+procedure PreProcessXML(aList: TStrings);
 
 implementation
 
 uses 
   JvQConsts;
 
-procedure PreProcessXML(aList: TStringList);
+procedure PreProcessXML(aList: TStrings);
 var
   oList: TStringList;
   s, xTag, xText, xData: string;
@@ -215,6 +216,7 @@ var
     else
       Result := stringofchar(' ', 2 * aLevel);
   end;
+
 begin
   oList := TStringList.Create;
   s := aList.text;
@@ -1319,11 +1321,16 @@ end;
 
 procedure TJvXMLTree.SaveToFile(aFile: string);
 begin
-  Lines.text := Text;
-  Lines.SaveToFile(aFile)
+  Lines.Text := Text;
+  Lines.SaveToFile(aFile);
 end;
 
-procedure TJvXMLTree.SetLines(const Value: TStringList);
+function TJvXMLTree.GetLines: TStrings;
+begin
+  Result := FLines;
+end;
+
+procedure TJvXMLTree.SetLines(const Value: TStrings);
 begin
   FLines.Assign(Value);
 end;
@@ -1333,7 +1340,7 @@ begin
   ClearNodes;
   ClearAttributes;
   Lines.LoadFromStream(Stream);
-  PreProcessXML(FLines);
+  PreProcessXML(Lines);
   ParseXML;
 end;
 
@@ -1365,7 +1372,7 @@ begin
   ClearNodes;
   ClearAttributes;
   Lines.text := Value;
-  PreProcessXML(FLines);
+  PreProcessXML(Lines);
   ParseXML;
 end;
 
@@ -1456,7 +1463,7 @@ begin
   ClearNodes;
   ClearAttributes;
   Lines.LoadFromFile(fn);
-  PreProcessXML(FLines);
+  PreProcessXML(Lines);
   ParseXML;
 end;
 

@@ -199,7 +199,7 @@ type
     { Application specific root. Path is prepended to any specified path and serves as an absolute
       root for any reading/writing. Not all implementation will use it. Generally it's used for
       storages not specific to an application (such as the registry). }
-    property Root: string Read GetRoot Write SetRoot;
+    property Root: string read GetRoot write SetRoot;
     { Set the StorageOptions Property }
     procedure SetStorageOptions(Value: TJvCustomAppStorageOptions);
     { Invokes the OnTranslatePropertyName event if one is assigned. }
@@ -308,9 +308,8 @@ type
     { Stores a set (ignores sub stores). }
     procedure WriteSetInt(const Path: string;  ATypeInfo: PTypeInfo; const Value); virtual;
 
-
-    function EncryptPropertyValue (Value : String) : String;
-    function DecryptPropertyValue (Value : String) : String;
+    function EncryptPropertyValue(Value: string): string;
+    function DecryptPropertyValue(Value: string): string;
     
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
     procedure Loaded; override;
@@ -1138,7 +1137,7 @@ begin
     try
       if StorageOptions.FloatAsString then
         try
-          Result := StrToFloat(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (FloatToStr(Default)))));
+          Result := StrToFloat(DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(FloatToStr(Default)))));
         except
           on E: EConvertError do
             Result := DoReadFloat(Path, Default);
@@ -1148,7 +1147,7 @@ begin
           Result := DoReadFloat(Path, Default);
         except
           on E: EConvertError do
-            Result := StrToFloat(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (FloatToStr(Default)))));
+            Result := StrToFloat(DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(FloatToStr(Default)))));
         end
     except
       on E: EConvertError do
@@ -1162,7 +1161,7 @@ end;
 procedure TJvCustomAppStorage.WriteFloatInt(const Path: string; Value: Extended);
 begin
   if StorageOptions.FloatAsString then
-    DoWriteString(Path, EncryptPropertyValue (FloatToStr(Value)))
+    DoWriteString(Path, EncryptPropertyValue(FloatToStr(Value)))
   else
     DoWriteFloat(Path, Value);
 end;
@@ -1173,7 +1172,7 @@ begin
     Result := Default
   else
     try
-      Result := DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (Default)));
+      Result := DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(Default)));
     except
       on E: EConvertError do
         if StorageOptions.DefaultIfReadConvertError then
@@ -1185,7 +1184,7 @@ end;
 
 procedure TJvCustomAppStorage.WriteStringInt(const Path: string; Value: string);
 begin
-  DoWriteString(Path, EncryptPropertyValue (Value));
+  DoWriteString(Path, EncryptPropertyValue(Value));
 end;
 
 function TJvCustomAppStorage.ReadBinaryInt(const Path: string; var Buf; BufSize: Integer): Integer;
@@ -1206,7 +1205,7 @@ begin
     try
       if StorageOptions.DateTimeAsString then
         try
-          Result := StrToDateTime(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (DateTimeToStr(Default)))));
+          Result := StrToDateTime(DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(DateTimeToStr(Default)))));
         except
           on E: EConvertError do
             Result := DoReadDateTime(Path, Default);
@@ -1216,7 +1215,7 @@ begin
           Result := DoReadDateTime(Path, Default);
         except
           on E: EConvertError do
-            Result := StrToDateTime(DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (DateTimeToStr(Default)))));
+            Result := StrToDateTime(DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(DateTimeToStr(Default)))));
         end
     except
       on E: EConvertError do
@@ -1230,7 +1229,7 @@ end;
 procedure TJvCustomAppStorage.WriteDateTimeInt(const Path: string; Value: TDateTime);
 begin
   if StorageOptions.DateTimeAsString then
-    DoWriteString(Path, EncryptPropertyValue (DateTimeToStr(Value)))
+    DoWriteString(Path, EncryptPropertyValue(DateTimeToStr(Value)))
   else
     DoWriteFloat(Path, Value);
 end;
@@ -1245,9 +1244,9 @@ begin
     try
       try
         if Default then
-          Value := DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (StorageOptions.DefaultTrueString)))
+          Value := DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(StorageOptions.DefaultTrueString)))
         else
-          Value := DecryptPropertyValue (DoReadString(Path, EncryptPropertyValue (StorageOptions.DefaultFalseString)));
+          Value := DecryptPropertyValue(DoReadString(Path, EncryptPropertyValue(StorageOptions.DefaultFalseString)));
         if StorageOptions.IsValueTrueString(Value) then
           Result := True
         else
@@ -1272,9 +1271,9 @@ procedure TJvCustomAppStorage.WriteBooleanInt(const Path: string; Value: Boolean
 begin
   if StorageOptions.BooleanAsString then
     if Value then
-      DoWriteString(Path, EncryptPropertyValue (StorageOptions.DefaultTrueString))
+      DoWriteString(Path, EncryptPropertyValue(StorageOptions.DefaultTrueString))
     else
-      DoWriteString(Path, EncryptPropertyValue (StorageOptions.DefaultFalseString))
+      DoWriteString(Path, EncryptPropertyValue(StorageOptions.DefaultFalseString))
   else
     DoWriteBoolean(Path, Value);
 end;
@@ -1900,22 +1899,22 @@ begin
   Result := 'Int_' + IntToStr(Value);
 end;
 
-function TJvCustomAppStorage.EncryptPropertyValue (Value : String) : String;
+function TJvCustomAppStorage.EncryptPropertyValue(Value: string): string;
 begin
-  if Assigned (FOnEncryptPropertyValue) and IsPropertyValueCryptEnabled then
+  if Assigned(FOnEncryptPropertyValue) and IsPropertyValueCryptEnabled then
   begin
-    FOnEncryptPropertyValue (Value);
+    FOnEncryptPropertyValue(Value);
     Value := MimeEncodeString(Value);
   end;
   Result := Value;
 end;
 
-function TJvCustomAppStorage.DecryptPropertyValue (Value : String) : String;
+function TJvCustomAppStorage.DecryptPropertyValue(Value: string): string;
 begin
-  if Assigned (FOnDecryptPropertyValue) and IsPropertyValueCryptEnabled then
+  if Assigned(FOnDecryptPropertyValue) and IsPropertyValueCryptEnabled then
   begin
     Value := MimeDecodeString(Value);
-    FOnDecryptPropertyValue (Value);
+    FOnDecryptPropertyValue(Value);
   end;
   Result := Value;
 end;

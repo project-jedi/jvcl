@@ -484,7 +484,13 @@ function GetAppHandle: HWND;
 // pointing to the left
 procedure DrawArrow(Canvas: TCanvas; Rect: TRect; Color: TColor = clBlack; Direction: TAnchorKind = akBottom);
 
+function IsPositiveResult(Value: TModalResult): Boolean;
+function IsNegativeResult(Value: TModalResult): Boolean;
+function IsAbortResult(const Value: TModalResult): Boolean;
+function StripAllFromResult(const Value: TModalResult): TModalResult;
+
 implementation
+
 uses
   SysConst, 
   {$IFDEF MSWINDOWS}
@@ -863,7 +869,8 @@ end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 begin
-  if WorkingDirectory = '' then WorkingDirectory := GetCurrentDir;
+  if WorkingDirectory = '' then
+    WorkingDirectory := GetCurrentDir;
   Result := Libc.system(PChar(Format('cd "%s" ; %s',
     [WorkingDirectory, CommandLine])));
 end;
@@ -2710,7 +2717,7 @@ var
 begin
   Result := Str;
   repeat
-    N := Pos(CRLF, Result);
+    N := Pos(CrLf, Result);
     if N > 0 then
       Result := Copy(Result, 1, N - 1) + '\n' + Copy(Result, N + 2, Length(Result));
   until N = 0;
@@ -4926,6 +4933,35 @@ begin
           Canvas.LineTo(Rect.Right - I, Rect.Top + I);
         end;
       end;
+  end;
+end;
+
+function IsPositiveResult(Value: TModalResult): Boolean;
+begin
+  Result := Value in [mrOk, mrYes, mrAll, mrYesToAll];
+end;
+
+function IsNegativeResult(Value: TModalResult): Boolean;
+begin
+  Result := Value in [mrNo, mrNoToAll];
+end;
+
+function IsAbortResult(const Value: TModalResult): Boolean;
+begin
+  Result := Value in [mrCancel, mrAbort];
+end;
+
+function StripAllFromResult(const Value: TModalResult): TModalResult;
+begin
+  case Value of
+    mrAll:
+      Result := mrOk;
+    mrNoToAll:
+      Result := mrNo;
+    mrYesToAll:
+      Result := mrYes;
+  else
+    Result := Value;
   end;
 end;
 

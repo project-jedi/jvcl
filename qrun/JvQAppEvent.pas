@@ -36,8 +36,9 @@ unit JvQAppEvent;
 
 interface
 
-uses  
-  Qt, QTypes, Types, QGraphics, QControls, QForms, QActnList, 
+uses 
+  Qt, QTypes, 
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QActnList,
   SysUtils, Classes,
   JvQTypes, JvQComponent, JvQFinalize;
 

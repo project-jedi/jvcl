@@ -87,17 +87,12 @@ type
 
 implementation
 
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsActiveStepFormat = 'Step %d of %d';
-  RsBackTo = 'Back to';
-  RsNextStep = 'Next Step';
-{$ENDIF USEJVCL}
+
+
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin

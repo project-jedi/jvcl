@@ -73,8 +73,8 @@ type
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
     {$IFDEF LINUX}
-    function GetPolicy(Thread: THandle): integer;
-    procedure SetPolicy(Thread: THandle; Policy: integer);
+    function GetPolicy(Thread: THandle): Integer;
+    procedure SetPolicy(Thread: THandle; Policy: Integer);
     {$ENDIF LINUX}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
@@ -152,8 +152,8 @@ begin
   while OneThreadIsRunning do
   begin
     Sleep(1); 
-     // Delphi 5 uses SendMessage -> no need for this code
-     // Delphi 6+ uses an event and CheckSynchronize
+    // Delphi 5 uses SendMessage -> no need for this code
+    // Delphi 6+ uses an event and CheckSynchronize
     CheckSynchronize; // TThread.OnTerminate is synchronized 
   end;
   FThreads.Free;
@@ -206,14 +206,14 @@ end;
 
 {$IFDEF LINUX}
 
-function TJvThread.GetPolicy(Thread: THandle): integer;
+function TJvThread.GetPolicy(Thread: THandle): Integer;
 begin
   Result := 0;
   if Thread <> 0 then
-    Result := GetThreadPolicy(Handle);
+    Result := GetThreadPolicy(Thread);
 end;
 
-procedure TJvThread.SetPolicy(Thread: THandle; Policy: integer);
+procedure TJvThread.SetPolicy(Thread: THandle; Policy: Integer);
 begin
   if Thread <> 0 then
     SetThreadPriority(Thread, Policy);

@@ -36,8 +36,12 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}  
-  Qt, Types, QGraphics, QControls, QForms, QWindows, 
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
+  Types, QGraphics, QControls, QForms, 
+  Qt, QWindows, 
   SysUtils, Classes,
   JvQTimer, JvQComponent;
 
@@ -260,8 +264,8 @@ end;
 
 procedure TJvImageControl.Paint;
 var
-  Bmp: TBitmap;  
-  DC: QPainterH; 
+  Bmp: TBitmap;
+  DC: HDC;
 begin
   Bmp := TJvLockedBitmap.Create;
   try
@@ -306,8 +310,8 @@ type
 
 
 procedure TJvImageControl.DoPaintControl;
-var  
-  DC: QPainterH;
+var
+  DC: HDC; 
   OrgDC: QPainterH; 
 begin
   if GetCurrentThreadID = MainThreadID then

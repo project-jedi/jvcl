@@ -387,6 +387,8 @@ function PointL(const X, Y: Longint): TPointL;
 // (rom) from JvBandUtils to make it obsolete
 function iif(const Test: Boolean; const ATrue, AFalse: Variant): Variant;
 
+procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
+function CreateIconFromClipboard: TIcon;
 
 
 { begin JvRLE }
@@ -3202,6 +3204,51 @@ begin
   else
     Result := AFalse;
 end;
+
+
+
+
+
+type
+  TOpenIcon = class(TIcon);
+
+function Bmp2Icon(bmp: TBitmap): TIcon;
+begin
+  Result := TIcon.Create;
+  Result.Assign(bmp);
+end;
+
+function Icon2Bmp(Ico: TIcon): TBitmap;
+begin
+  Result := TBitmap.Create;
+  TOpenIcon(Ico).AssignTo(Result);
+end;
+
+procedure CopyIconToClipboard(Ico: TIcon; TransparentColor: TColor);
+var
+  bmp: TBitmap;
+begin
+  bmp := Icon2Bmp(Ico);
+  Clipboard.Assign(Bmp);
+end;
+
+function CreateIconFromClipboard: TIcon;
+var
+  bmp: TBitmap;
+begin
+  Result := nil;
+  if not Clipboard.Provides('image/delphi.bitmap') then
+    Exit;
+  bmp := TBitmap.create;
+  try
+    bmp.Assign(Clipboard);
+    Result := Bmp2Icon(bmp);
+  except
+    bmp.Free;
+  end;
+end;
+
+
 
 
 

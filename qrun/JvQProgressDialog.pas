@@ -171,7 +171,7 @@ implementation
 
 uses  
   QControls, 
-  JvQProgressForm;
+  JvQProgressForm, JvQJVCLUtils;
 
 constructor TJvProgressDialog.Create(AOwner: TComponent);
 begin
@@ -230,7 +230,7 @@ end;
 
 function TJvProgressDialog.Execute: Boolean;
 begin
-  Result := ShowModal = mrOK; //IsPositiveResult(ShowModal);
+  Result := JvQJVCLUtils.IsPositiveResult(ShowModal);
 end;
 
 procedure TJvProgressDialog.SetPicture(const Value: TPicture);

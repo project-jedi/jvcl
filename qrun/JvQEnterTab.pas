@@ -36,8 +36,10 @@ unit JvQEnterTab;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, QGraphics, QControls, QForms, QWindows, 
+  SysUtils, Classes,
+  QWindows, QMessages, Types, QGraphics, QControls, QForms, QStdCtrls,
+  {$ENDIF VCL} 
+  Qt, JvQConsts, 
   JvQComponent;
 
 type
@@ -106,12 +108,12 @@ begin
     if ((QKeyEvent_key(QKeyEventH(Event)) = Key_Enter) or
         (QKeyEvent_key(QKeyEventH(Event)) = Key_Return) ) and EnterAsTab then
     begin
-      ws := #9;
+      ws := Tab;
 
       QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyPress, Key_Tab, 9, 0, @ws, False, 1));
+        QKeyEvent_create(QEventType_KeyPress, Key_Tab, Ord(Tab), 0, @ws, False, 1));
       QApplication_postEvent(GetParentForm(Self).Handle,
-        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, 9, 0, @ws, False, 1));
+        QKeyEvent_create(QEventType_KeyRelease, Key_Tab, Ord(Tab), 0, @ws, False, 1));
 
       Result := True;
     end;

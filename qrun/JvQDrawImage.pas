@@ -59,6 +59,7 @@ type
     FStars: Integer;
     FStarPoints: Integer;
     FSpirals: Integer;
+    function GetShapes: TStrings;
     procedure EscapePaint(X, Y: Integer; Shift: TShiftState);
     procedure CopyClip;
     procedure SetClip(AColor: TColor);
@@ -223,7 +224,7 @@ type
     procedure Trace;
     property AirBrush: TJvAirBrush read FAirBrush write SetAirBrush;
     property Transformer: TJvPaintFX read FX write SetTransformer;
-    property Shapes: TStringList read FShapes;
+    property Shapes: TStrings read GetShapes;
   published
     property Shape: string read FShape write SetShape;
     property PolygonChecked: Boolean read FPolygonChecked write SetPolygonChecked;
@@ -379,6 +380,11 @@ begin
   inherited Destroy;
 end;
 
+function TJvDrawImage.GetShapes: TStrings;
+begin
+  Result := FShapes;
+end;
+
 // Start of filter procedures
 
 procedure TJvDrawImage.FillGonio;
@@ -490,8 +496,8 @@ begin
     showmessage(RsImageMustBeSquare);
     exit;
   end;
-  r0 := variant(sqrt(sqr(center.X - xs) + sqr(center.Y - ys)));
-  R1 := variant(sqrt(sqr(Radius.X - center.X) + sqr(Radius.Y - center.Y)));
+  r0 := Variant(sqrt(sqr(center.X - xs) + sqr(center.Y - ys)));
+  R1 := Variant(sqrt(sqr(Radius.X - center.X) + sqr(Radius.Y - center.Y)));
   if (r0 + R1) > xs then
   begin
     showmessage(RsSumOfRadiTolarge);
@@ -515,8 +521,8 @@ begin
     X0 := r0 * cos(a0);
     Y0 := r0 * sin(a0);
     a0 := a0 + da0;
-    X := variant(xs + X0 + X1);
-    Y := variant(ys + Y0 + Y1);
+    X := Variant(xs + X0 + X1);
+    Y := Variant(ys + Y0 + Y1);
     Canvas.lineto(X, Y)
   end;
 end;
@@ -572,8 +578,8 @@ begin
     d := -0.001;
   a := arctan2((Endpoint.Y - Origin.Y), d);
   r := r * Factor;
-  result.X := Origin.X + variant(r * cos(a));
-  result.Y := Origin.Y + variant(r * sin(a));
+  result.X := Origin.X + Variant(r * cos(a));
+  result.Y := Origin.Y + Variant(r * sin(a));
 end;
 (*)
 procedure TJvDrawImage.TextRotate(X, Y, Angle: Integer; aText: string;
@@ -631,7 +637,7 @@ begin
     d := -0.001;
   a := arctan2((Endpoint.Y - Origin.Y), d);
   a := a * 360 / (2 * pi);
-  result := variant(-a);
+  result := Variant(-a);
 end;
 (*)
 procedure TJvDrawImage.DrawRisingWaveSphere(Color1, Color2: TColor; X1, Y1, X2, Y2: Integer);
@@ -2272,8 +2278,8 @@ begin
     d := -0.001;
   a := arctan2((Endpoint.Y - Origin.Y), d);
   a := a + Angle;
-  result.X := Origin.X + variant(r * cos(a));
-  result.Y := Origin.Y + variant(r * sin(a));
+  result.X := Origin.X + Variant(r * cos(a));
+  result.Y := Origin.Y + Variant(r * sin(a));
 end;
 
 procedure TJvDrawImage.SetSyms(X, Y: Integer);
@@ -3495,7 +3501,7 @@ begin
     apoint := point(100 * X, 100 * Y);
     myorigin.X := 100 * myorigin.X;
     myorigin.Y := 100 * myorigin.Y;
-    for i := 1 to variant(Spirals * 36) do
+    for i := 1 to Variant(Spirals * 36) do
     begin
       apoint := Rotate(myorigin, apoint, spiraldir * pi / 18);
       apoint := ReduceVector(myorigin, apoint, spiralfactor);
@@ -4031,7 +4037,7 @@ var
   I: Integer;
 begin
   for I := Low(Names) to High(Names) do
-    FShapes.Append(Names[I]);
+    Shapes.Append(Names[I]);
 end;
 
 procedure TJvDrawImage.SetPolygonChecked(const Value: Boolean);

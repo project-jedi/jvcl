@@ -49,10 +49,16 @@ uses
 const
   { Taken from WinNT.h }
   FILE_ATTRIBUTE_SPARSE_FILE = $200;
+  {$EXTERNALSYM FILE_ATTRIBUTE_SPARSE_FILE}
+
   FILE_ATTRIBUTE_REPARSE_POINT = $400;
+  {$EXTERNALSYM FILE_ATTRIBUTE_REPARSE_POINT}
+
   FILE_ATTRIBUTE_NOT_CONTENT_INDEXED = $2000;
+  {$EXTERNALSYM FILE_ATTRIBUTE_NOT_CONTENT_INDEXED}
+
   FILE_ATTRIBUTE_ENCRYPTED = $4000;
- 
+  {$EXTERNALSYM FILE_ATTRIBUTE_ENCRYPTED}
 
 type
   TJvAttrFlagKind = (tsMustBeSet, tsDontCare, tsMustBeUnSet);
@@ -439,7 +445,7 @@ begin
 
   { Always scan the full directory - ie use * as mask - this seems faster
     then first using a mask, and then scanning the directory for subdirs }
-  Handle := Windows.FindFirstFile(PChar(ADirectoryName + '*'), FFindData);
+  Handle := FindFirstFile(PChar(ADirectoryName + '*'), FFindData);
   Result := Handle <> INVALID_HANDLE_VALUE;
   if not Result then
   begin
@@ -509,14 +515,14 @@ begin
           if Search and (soSearchFiles in Options) and DoCheckFile then
           DoFindFile(ADirectoryName);
 
-      if not Windows.FindNextFile(Handle, FFindData) then
+      if not FindNextFile(Handle, FFindData) then
       begin
         Finished := True;
         Result := GetLastError = ERROR_NO_MORE_FILES;
       end;
     end;
   finally
-    Result := Windows.FindClose(Handle) and Result;
+    Result := FindClose(Handle) and Result;
   end;
 end;
 
@@ -524,8 +530,7 @@ function TJvSearchFiles.GetIsRootDirValid: Boolean;
 var
   Handle: THandle;
 begin
-  Handle :=
-    Windows.FindFirstFile(PChar(ExcludeTrailingPathDelimiter(FRootDirectory)),
+  Handle := FindFirstFile(PChar(ExcludeTrailingPathDelimiter(FRootDirectory)),
     FFindData);
   Result := Handle <> INVALID_HANDLE_VALUE;
   if not Result then
@@ -536,7 +541,7 @@ begin
       Result := (dwFileAttributes and FILE_ATTRIBUTE_DIRECTORY > 0) and
         (cFileName[0] <> '.') and DoCheckDir;
   finally
-    Windows.FindClose(Handle);
+    FindClose(Handle);
   end;
 end;
 
@@ -879,10 +884,10 @@ begin
         ((nFileSizeHigh = FMaxSizeHigh) and (nFileSizeLow > FMaxSizeLow)) then
         Exit;
     if stLastChangeAfter in FSearchTypes then
-      if Windows.CompareFileTime(ftLastWriteTime, FLastChangeAfterFT) < 0 then
+      if CompareFileTime(ftLastWriteTime, FLastChangeAfterFT) < 0 then
         Exit;
     if stLastChangeBefore in FSearchTypes then
-      if Windows.CompareFileTime(ftLastWriteTime, FLastChangeBeforeFT) > 0 then
+      if CompareFileTime(ftLastWriteTime, FLastChangeBeforeFT) > 0 then
         Exit;
     if (stFileMask in FSearchTypes) and (FFileMasks.Count > 0) then
     begin
@@ -972,9 +977,9 @@ var
 begin
   { Value must be >= 1-1-1980 }
   DosFileTime := DateTimeToDosDateTime(Value);
-  if not Windows.DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
+  if not DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
     LongRec(DosFileTime).Lo, LocalFileTime) or
-    not Windows.LocalFileTimeToFileTime(LocalFileTime, FLastChangeAfterFT) then
+    not LocalFileTimeToFileTime(LocalFileTime, FLastChangeAfterFT) then
     RaiseLastOSError;
 
   FLastChangeAfter := Value;
@@ -987,9 +992,9 @@ var
 begin
   { Value must be >= 1-1-1980 }
   DosFileTime := DateTimeToDosDateTime(Value);
-  if not Windows.DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
+  if not DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
     LongRec(DosFileTime).Lo, LocalFileTime) or
-    not Windows.LocalFileTimeToFileTime(LocalFileTime, FLastChangeBeforeFT) then
+    not LocalFileTimeToFileTime(LocalFileTime, FLastChangeBeforeFT) then
     RaiseLastOSError;
 
   FLastChangeBefore := Value;

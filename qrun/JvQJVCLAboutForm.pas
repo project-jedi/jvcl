@@ -44,7 +44,7 @@ uses
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QDialogs, QButtons, QWindows,
   
   JclSysInfo,
-  JVQCLVer, JvQBaseDlg, JvQComponent;
+  JVCLXVer, JvQBaseDlg, JvQComponent;
 
 type
   TJvJVCLAboutForm = class(TJvForm)

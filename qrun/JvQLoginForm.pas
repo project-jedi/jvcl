@@ -197,7 +197,7 @@ end;
 constructor TJvCustomLogin.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FLoggedUser := EmptyStr;
+  FLoggedUser := '';
   FActive := True;
   FAttemptNumber := 3; 
   FAllowEmptyPassword := True;
@@ -268,7 +268,7 @@ function TJvCustomLogin.Login: Boolean;
 var
   LoginName: string;
 begin
-  LoginName := EmptyStr;
+  LoginName := '';
   DoBeforeLogin;
   Result := DoLogin(LoginName);
   if Result then
@@ -512,7 +512,7 @@ begin
     HintLabel.Caption := RsUnlockHint;
     Caption := RsUnlockCaption;
   end;
-  if (UserNameEdit.Text = EmptyStr) and not FUnlockMode then
+  if (UserNameEdit.Text = '') and not FUnlockMode then
     ActiveControl := UserNameEdit
   else
     ActiveControl := PasswordEdit;

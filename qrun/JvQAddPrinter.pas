@@ -37,7 +37,7 @@ unit JvQAddPrinter;
 interface
 
 uses
-  Windows, ActiveX, ShlObj, ShellApi, SysUtils, Classes,
+  Windows, ActiveX, ShlObj, ShellAPI, SysUtils, Classes,
   JvQBaseDlg;
 
 type

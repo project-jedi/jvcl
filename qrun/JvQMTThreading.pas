@@ -134,19 +134,12 @@ function CurrentMTThread: TMTThread;
 
 implementation
 
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsECurThreadIsPartOfManager = 'Current MTThread is part of the MTManager';
-  RsECheckTerminateCalledByWrongThread = 'CheckTerminate can only be called by the same thread';
-  RsEThreadNotInitializedOrWaiting = 'Cannot run: thread is not Initializing or Waiting';
-  RsECannotChangeNameOfOtherActiveThread = 'Cannot change name of other active thread';
-  RsEReleaseOfUnusedTicket = 'Release of unused ticket';
-{$ENDIF USEJVCL}
+
+
 
 threadvar
   _CurrentMTThread: TMTThread;

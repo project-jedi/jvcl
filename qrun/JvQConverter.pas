@@ -295,7 +295,7 @@ end;
 constructor TJvConverter.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FData := EmptyStr;
+  FData := '';
   FDataType := dtString;
   FPrecision := 15;
   FDigits := 2;

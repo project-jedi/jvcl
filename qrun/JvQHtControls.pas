@@ -105,13 +105,17 @@ Maciej Kaczkowski:
 
 {$I jvcl.inc}
 
-unit JvQHTControls;
+unit JvQHtControls;
 
 interface
 
 uses
-  SysUtils, Classes,  
-  Types, Qt, QGraphics, QControls, QStdCtrls, QWindows, 
+  SysUtils, Classes,
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF MSWINDOWS} 
+  Qt, 
+  QWindows, QMessages, Types, QGraphics, QControls, QStdCtrls, QDialogs,
   JvQExStdCtrls;
 
 type

@@ -41,7 +41,7 @@ uses
   Classes,  
   QGraphics, QControls, QForms, QStdCtrls, 
   JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes;
-
+  
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
   TJvTipOfDayOption = (toShowOnStartUp, toUseAppStorage, toShowWhenFormShown);
@@ -92,7 +92,7 @@ type
     procedure SetTips(const Value: TStrings);
     procedure SetStyle(const Value: TJvTipOfDayStyle);
   protected
-    procedure SeTJvAppStorage(Value: TJvCustomAppStorage);
+    procedure SetAppStorage(Value: TJvCustomAppStorage);
     { Called after the dialog has been shown. Fires the OnAfterExecute
       event, thus enabling the user to update the appstorage or other
       persistent data: }
@@ -134,7 +134,7 @@ type
     procedure SaveToFile(const AFileName: string);
     property IsAutoExecute: Boolean read FIsAutoExecute;
   published
-    property AppStorage: TJvCustomAppStorage read FAppStorage write SeTJvAppStorage;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property AppStoragePath: string read FAppStoragePath write FAppStoragePath;
     property ButtonNext: TJvButtonPersistent read FButtonNext write SetButtonNext;
     property ButtonClose: TJvButtonPersistent read FButtonClose write SetButtonClose;
@@ -220,7 +220,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvTipOfDay.SeTJvAppStorage(Value: TJvCustomAppStorage);
+procedure TJvTipOfDay.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   FAppStorage := Value;
 end;

@@ -37,9 +37,10 @@ unit JvQPickDate;
 interface
 
 uses 
-  Variants,   
-  QTypes, QControls, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls,
-  Types, QWindows, 
+  Variants, 
+  QWindows, QMessages,
+  QControls, Types, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls, 
+  QTypes, 
   SysUtils, Classes,
   JvQTypes, JvQExGrids;
 
@@ -147,17 +148,15 @@ const
 
 implementation
 
-uses  
-  QConsts, 
-  Math,
-  JvQThemes, JvQConsts, JvQResources, JvQJCLUtils,
-  JvQToolEdit, JvQSpeedButton;
+uses
+  Math, QConsts,
+  JvQThemes, JvQConsts, JvQResources, JvQJCLUtils, JvQToolEdit, JvQSpeedButton;
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvPickDate.res}
+{$R ..\Resources\JvPickDate.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvPickDate.res}
+{$R ../Resources/JvPickDate.Res}
 {$ENDIF LINUX}
 
 const
@@ -258,7 +257,7 @@ var
   //>Polaris
   procedure DefaultDraw;
   begin
-    if TheText <> EmptySTr then
+    if TheText <> '' then
       with ARect, Canvas do
       begin
         Brush.Style := bsClear;
@@ -273,7 +272,7 @@ var
     begin
       if (ARow > 0) and ((FMinDate <> NulLDate) or (FMaxDate <> NulLDate)) then
         if not CellInRange(ACol, ARow) then
-          if TheText <> EmptyStr then
+          if TheText <> '' then
           begin
             Font.Color := clBtnFace;
             if Color = clBtnFace then
@@ -353,7 +352,7 @@ var
   DayNum: Integer;
 begin
   Result := NullDate;
-  if (ARow > 0) and (GetCellText(ACol, ARow) <> EmptyStr) then
+  if (ARow > 0) and (GetCellText(ACol, ARow) <> '') then
   begin
     DayNum := FMonthOffset + ACol + (ARow - 1) * 7;
     if (DayNum < 1) or (DayNum > DaysThisMonth) then

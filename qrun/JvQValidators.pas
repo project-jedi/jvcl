@@ -27,6 +27,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
 {$I jvcl.inc}
 
 unit JvQValidators;
@@ -34,8 +35,8 @@ unit JvQValidators;
 interface
 
 uses
-  SysUtils, Classes,  
-  QControls, QForms, 
+  SysUtils, Classes,
+  QWindows, QControls, QForms,
   JvQComponent, JvQErrorIndicator, JvQFinalize;
 
 type
@@ -246,10 +247,10 @@ type
 implementation
 
 uses
-  Masks,
+  Masks, 
   Variants, 
-  TypInfo,
-  JvQWStrUtils,
+  TypInfo,  
+  JvQWStrUtils, 
   JvQTypes, JvQResources;
 
 const

@@ -36,18 +36,12 @@ interface
 
 uses
   SysUtils, Classes, SyncObjs,  
-  QConsts, 
-  {$IFDEF USEJVCL}
-  JvQComponent,
-  {$ENDIF USEJVCL}
+  QConsts,  
+  JvQComponent, 
   JvQMTThreading, JvQMTConsts, JvQMTData, JvQMTSync, JvQMTSyncMon;
 
-type
-  {$IFDEF USEJVCL}
-  TJvMTComponent = class(TJvComponent);
-  {$ELSE}
-  TJvMTComponent = class(TComponent);
-  {$ENDIF USEJVCL}
+type 
+  TJvMTComponent = class(TJvComponent); 
   TJvMTSingleThread = class(TMTThread);
   TJvMTThread = class;
 
@@ -247,18 +241,12 @@ type
 
 implementation
 
-{$IFDEF USEJVCL}
+
 uses
   JvQResources;
-{$ENDIF USEJVCL}
 
-{$IFNDEF USEJVCL}
-resourcestring
-  RsENoThreadManager = 'No ThreadManager specified';
-  RsEOperatorNotAvailable = 'Operation not available while thread is active';
-  RsECannotChangePropertySection = 'Cannot change property of active section';
-  RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
-{$ENDIF USEJVCL}
+
+
 
 constructor TJvMTManager.Create(AOwner: TComponent);
 begin
