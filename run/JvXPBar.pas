@@ -58,7 +58,7 @@ uses
   Classes, SysUtils,
   Windows, Messages, Controls, Graphics, Forms, ImgList, ActnList, ExtCtrls,
   {$IFDEF VisualCLX}
-  Qt, JvQTypes,
+  Qt, JvQTypes, QTypes,
   {$ENDIF VisualCLX}
   JvConsts, JvXPCore, JvXPCoreUtils;
 
