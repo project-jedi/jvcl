@@ -36,13 +36,13 @@ implementation
 
 uses
   Classes,
-  QControls, QImgList, QTypes,
+  QControls, QImgList, QTypes, QComCtrlsEx,
 
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts, JvQTypes, JvQWStrUtils,
   JvQEdit, JvQProgressBar, JvQTransparentPanel,
-  
+
   JvQMaskEdit, JvQBaseEdits, JvQCalc, JvQToolEdit,
   JvQBevel, JvQCheckBox, JvQSpeedButton,
   JvQCtrls, JvQGroupBox, JvQHeaderControl,
@@ -53,12 +53,12 @@ uses
   JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvStdCtrlsReg.dcr}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvStdCtrlsReg.dcr}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 procedure Register;
 const
@@ -69,7 +69,7 @@ begin
   RegisterComponents(RsPaletteVisual, [TJvShape, TJvCalendar]);
   RegisterComponents(RsPaletteNonVisual, [TJvCalculator]);
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
-    TJvCheckBox, TJvRadioButton, TJvRadioGroup, {TJvUpDown,} TJvSpinButton]);
+    TJvCheckBox, TJvRadioButton, TJvRadioGroup, TUpDown, TJvSpinButton]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
     TJvMaskEdit, TJvCheckedMaskEdit, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit, TJvTimeSpin]);
