@@ -13,9 +13,6 @@ object FormMain: TFormMain
   OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  DesignSize = (
-    647
-    384)
   PixelsPerInch = 96
   TextHeight = 13
   object pcMain: TPageControl
@@ -176,11 +173,11 @@ object FormMain: TFormMain
       end
     end
   end
-  object JvEDIDBSpecProfilier: TJvEDIDBSpecProfilier
+  object JvEDIDBSpecProfiler: TJvEDIDBSpecProfiler
     ElementProfiles = ADS70_Data.EProfile
     SegmentProfiles = ADS70_Data.SProfile
     LoopProfiles = ADS70_Data.LProfile
-    OnAfterProfiledSegment = JvEDIDBSpecProfilierAfterProfiledSegment
+    OnAfterProfiledSegment = JvEDIDBSpecProfilerAfterProfiledSegment
     Left = 280
     Top = 152
   end
@@ -194,11 +191,11 @@ object FormMain: TFormMain
     Left = 484
     Top = 312
   end
-  object JvEDIDBSEFProfilier: TJvEDIDBSEFProfilier
+  object JvEDIDBSEFProfiler: TJvEDIDBSEFProfiler
     ElementProfiles = ADS70_Data.EProfile
     SegmentProfiles = ADS70_Data.SProfile
     LoopProfiles = ADS70_Data.LProfile
-    OnAfterProfiledSegment = JvEDIDBSEFProfilierAfterProfiledSegment
+    OnAfterProfiledSegment = JvEDIDBSEFProfilerAfterProfiledSegment
     Left = 308
     Top = 152
   end

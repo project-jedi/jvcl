@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvEDIDBBuffering.PAS, released on 2004-03-05.
+The Original Code is: JvEDIDBBuffering.PAS, released on 2004-04-05.
 
 The Initial Developer of the Original Code is Raymond Alexander .
 Portions created by Joe Doe are Copyright (C) 2004 Raymond Alexander.
@@ -53,7 +53,7 @@ type
   TJvOnAfterProfiledSegment = procedure(Segment: TEDIObject) of object;
 
   //Base Class EDI Specification Profiler (TDataSet Compatible)
-  TJvEDIDBProfilier = class(TJvComponent)
+  TJvEDIDBProfiler = class(TJvComponent)
   private
     FElementProfiles: TDataSet;
     FSegmentProfiles: TDataSet;
@@ -88,13 +88,13 @@ type
   end;
 
   //EDI Specification Profiler (JclEDI_ANSIX12.pas)
-  TJvEDIDBSpecProfilier = class(TJvEDIDBProfilier)
+  TJvEDIDBSpecProfiler = class(TJvEDIDBProfiler)
   public
     procedure BuildProfile(EDIFileSpec: TEDIFileSpec); reintroduce;
   end;
 
   //Standard Exchange Format (SEF) EDI Specification Profiler (JclEDISEF.pas)
-  TJvEDIDBSEFProfilier = class(TJvEDIDBProfilier)
+  TJvEDIDBSEFProfiler = class(TJvEDIDBProfiler)
   public
     procedure BuildProfile(EDISEFFile: TEDISEFFile); reintroduce;
   end;
@@ -224,9 +224,9 @@ const
   Default_SegmentKeyPrefix = '';
   Default_ElementNonKeyPrefix = 'E';
 
-{ TJvEDIDBProfilier }
+{ TJvEDIDBProfiler }
 
-procedure TJvEDIDBProfilier.AddElement(SegmentId, ElementId, ElementType: string;
+procedure TJvEDIDBProfiler.AddElement(SegmentId, ElementId, ElementType: string;
   MaximumLength: Integer);
 begin
   with FElementProfiles do
@@ -241,7 +241,7 @@ begin
   end;
 end;
 
-procedure TJvEDIDBProfilier.AddLoop(OwnerLoopId, ParentLoopId: string);
+procedure TJvEDIDBProfiler.AddLoop(OwnerLoopId, ParentLoopId: string);
 begin
   with FLoopProfiles do
   begin
@@ -252,7 +252,7 @@ begin
   end;
 end;
 
-procedure TJvEDIDBProfilier.AddSegment(SegmentId, OwnerLoopId, ParentLoopId: string);
+procedure TJvEDIDBProfiler.AddSegment(SegmentId, OwnerLoopId, ParentLoopId: string);
 begin
   with FSegmentProfiles do
   begin
@@ -264,7 +264,7 @@ begin
   end;
 end;
 
-procedure TJvEDIDBProfilier.ClearProfile;
+procedure TJvEDIDBProfiler.ClearProfile;
 begin
   FElementProfiles.First;
   while not FElementProfiles.Eof do
@@ -283,7 +283,7 @@ begin
   end;
 end;
 
-constructor TJvEDIDBProfilier.Create(AOwner: TComponent);
+constructor TJvEDIDBProfiler.Create(AOwner: TComponent);
 begin
   FElementProfiles := nil;
   FSegmentProfiles := nil;
@@ -291,7 +291,7 @@ begin
   inherited;
 end;
 
-destructor TJvEDIDBProfilier.Destroy;
+destructor TJvEDIDBProfiler.Destroy;
 begin
   FElementProfiles := nil;
   FSegmentProfiles := nil;
@@ -299,7 +299,7 @@ begin
   inherited;
 end;
 
-procedure TJvEDIDBProfilier.DoAfterProfiledSegment(Segment: TEDIObject);
+procedure TJvEDIDBProfiler.DoAfterProfiledSegment(Segment: TEDIObject);
 begin
   if Assigned(FOnAfterProfiledSegment) then
   begin
@@ -307,7 +307,7 @@ begin
   end;
 end;
 
-procedure TJvEDIDBProfilier.DoAfterProfiledTransactionSet(TransactionSet: TEDIObject);
+procedure TJvEDIDBProfiler.DoAfterProfiledTransactionSet(TransactionSet: TEDIObject);
 begin
   if Assigned(FOnAfterProfiledTransactionSet) then
   begin
@@ -315,21 +315,21 @@ begin
   end;
 end;
 
-function TJvEDIDBProfilier.ElementExist(SegmentId, ElementId: string): Boolean;
+function TJvEDIDBProfiler.ElementExist(SegmentId, ElementId: string): Boolean;
 begin
   FElementProfiles.First;
   Result := FElementProfiles.Locate(Field_SegmentId + ';' + Field_ElementId,
                                     VarArrayOf([SegmentId, ElementId]), [loCaseInsensitive]);
 end;
 
-function TJvEDIDBProfilier.LoopExist(OwnerLoopId, ParentLoopId: string): Boolean;
+function TJvEDIDBProfiler.LoopExist(OwnerLoopId, ParentLoopId: string): Boolean;
 begin
   FLoopProfiles.First;
   Result := FLoopProfiles.Locate(Field_OwnerLoopId + ';' + Field_ParentLoopId,
                                  VarArrayOf([OwnerLoopId, ParentLoopId]), [loCaseInsensitive]);
 end;
 
-function TJvEDIDBProfilier.SegmentExist(SegmentId, OwnerLoopId, ParentLoopId: string): Boolean;
+function TJvEDIDBProfiler.SegmentExist(SegmentId, OwnerLoopId, ParentLoopId: string): Boolean;
 begin
   FSegmentProfiles.First;
   Result := FSegmentProfiles.Locate(Field_SegmentId + ';' + Field_OwnerLoopId + ';' +
@@ -337,7 +337,7 @@ begin
               [loCaseInsensitive]);
 end;
 
-procedure TJvEDIDBProfilier.UpdateElement(SegmentId, ElementId, ElementType: string; MaximumLength,
+procedure TJvEDIDBProfiler.UpdateElement(SegmentId, ElementId, ElementType: string; MaximumLength,
   Count: Integer);
 begin
   with FElementProfiles do
@@ -356,9 +356,9 @@ begin
   end;
 end;
 
-{ TJvEDIDBSpecProfilier }
+{ TJvEDIDBSpecProfiler }
 
-procedure TJvEDIDBSpecProfilier.BuildProfile(EDIFileSpec: TEDIFileSpec);
+procedure TJvEDIDBSpecProfiler.BuildProfile(EDIFileSpec: TEDIFileSpec);
 var
   I, F, T, S, E: Integer;
   TransactionSet: TEDITransactionSetSpec;
@@ -427,9 +427,9 @@ begin
   ElementList.Free;
 end;
 
-{ TJvEDIDBSEFProfilier }
+{ TJvEDIDBSEFProfiler }
 
-procedure TJvEDIDBSEFProfilier.BuildProfile(EDISEFFile: TEDISEFFile);
+procedure TJvEDIDBSEFProfiler.BuildProfile(EDISEFFile: TEDISEFFile);
 var
   E, I, J: Integer;
   RecordExists: Boolean;
