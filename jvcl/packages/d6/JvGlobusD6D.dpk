@@ -1,4 +1,4 @@
-package JvGlobusD6R;
+package JvGlobusD6D;
 
 {$R *.res}
 {$R '..\resources\JvGlobusReg.dcr'}
@@ -35,24 +35,32 @@ requires
   vcljpg,
   vclie,
   designide,
-  DJCL60,
-  JVCL200_R60,
-  GlobusR6;
+  JvGlobusD6R,
+  JvCustomD6R,
+  JvCtrlsD6R,
+  JvMMD6R,
+  JvDlgsD6R,
+  rtl,
+  vclactnband,
+  JvCoreD6R,
+  DJCL70;
 
 contains
-  JvgRegLibDelphi in '..\design\JvgRegLibDelphi.pas',
-  JvCompEditorTemplate in '..\design\JvCompEditorTemplate.pas' {JvgCompEditorTemplate},
-  JvgLabelEditor in '..\design\JvgLabelEditor.pas' {JvgLabelEditorDlg},
-  JvgReportEditor in '..\design\JvgReportEditor.pas' ,
-  JvgReportParamEditor in '..\design\JvgReportParamEditor.pas' ,  
-  JvgReportParamEditorForm in '..\design\JvgReportParamEditorForm.pas' ,
-  JvgShadowEditor in '..\design\JvgShadowEditor.pas' ,
-  JvgCompDescription in '..\design\JvgCompDescription.pas' ,
-  JvgComponentListEditor in '..\design\JvgComponentListEditor.pas' ,
-  JvgPropertyCenter in '..\design\JvgPropertyCenter.pas' ,
-  JvgHelpPanelEditor in '..\design\JvgHelpPanelEditor.pas' ,
-  JvgRTFPreviewEditor in '..\design\JvgRTFPreviewEditor.pas' ,
-  JvgLogicsEditor in '..\design\JvgLogicsEditor.pas' ,
-  JvgLogicItemEditor in '..\design\JvgLogicItemEditor.pas' ;
+  JvgRegLibDelphi in '..\..\design\JvgRegLibDelphi.pas',
+  JvCompEditorTemplateForm in '..\..\design\JvCompEditorTemplateForm.pas' {JvgCompEditorTemplate},
+  JvgLabelEditor in '..\..\design\JvgLabelEditor.pas' {JvgLabelEditorDlg},
+  JvgReportEditor in '..\..\design\JvgReportEditor.pas',
+  JvgReportParamEditor in '..\..\design\JvgReportParamEditor.pas',
+  JvgReportParamEditorForm in '..\..\design\JvgReportParamEditorForm.pas',
+  JvgShadowEditor in '..\..\design\JvgShadowEditor.pas',
+  JvgCompDescription in '..\..\design\JvgCompDescription.pas',
+  JvgComponentListEditorForm in '..\..\design\JvgComponentListEditorForm.pas',
+  JvgPropertyCenter in '..\..\design\JvgPropertyCenter.pas',
+  JvgHelpPanelEditor in '..\..\design\JvgHelpPanelEditor.pas',
+  JvgRTFPreviewEditor in '..\..\design\JvgRTFPreviewEditor.pas',
+  JvgLogicsEditorForm in '..\..\design\JvgLogicsEditorForm.pas',
+  JvgLogicItemEditorForm in '..\..\design\JvgLogicItemEditorForm.pas',
+  JvgMultiResourceEditorForm in '..\..\design\JvgMultiResourceEditorForm.pas' {JvgMultipleResourceEdit},
+  JvgMultiResources in '..\..\design\JvgMultiResources.pas';
 
 end.

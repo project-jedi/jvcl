@@ -1,4 +1,4 @@
-package JvValidatorsD6R;
+package JvValidatorsD5R;
 
 {$R *.res}
 {$ALIGN 8}
@@ -30,7 +30,7 @@ requires
   rtl,
   vcl,
   vclx,
-  JvCoreD6R,
+  JvCoreD5R,
   DJCL70;
 
 contains

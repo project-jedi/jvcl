@@ -29,7 +29,9 @@ package JvPageCompsD6D;
 requires
   rtl,
   designide,
-  JvPageCompsD6R;
+  JvPageCompsD6R,
+  dclstd,
+  JvCoreD6D;
 
 contains
   JvTreeItemsEditor in '..\..\design\JvTreeItemsEditor.pas' {frmTreeViewItems},

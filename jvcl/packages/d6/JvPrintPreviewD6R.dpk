@@ -29,7 +29,8 @@ package JvPrintPreviewD6R;
 requires
   rtl,
   vcl,
-  vclx;
+  vclx,
+  JvCoreD6R;
 
 contains
   JvPrvwRender in '..\..\run\JvPrvwRender.pas',

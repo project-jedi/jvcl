@@ -1,0 +1,51 @@
+package JvCmpD5R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Components Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  JvCoreD5R,
+  DJCL70,
+  JvSystemD5R;
+
+contains
+  JvAlarms in '..\..\run\JvAlarms.pas',
+  JvConverter in '..\..\run\JvConverter.pas',
+  JvDataEmbedded in '..\..\run\JvDataEmbedded.pas',
+  JvEnterTab in '..\..\run\JvEnterTab.pas',
+  JvMergeManager in '..\..\run\JvMergeManager.pas',
+  JvPageManager in '..\..\run\JvPageManager.pas',
+  JvPatchFile in '..\..\run\JvPatchFile.pas',
+  JvStringHolder in '..\..\run\JvStringHolder.pas',
+  JvTimeLimit in '..\..\run\JvTimeLimit.pas',
+  JvWinHelp in '..\..\run\JvWinHelp.pas',
+  JvTranslator in '..\..\run\JvTranslator.pas',
+  JvPrint in '..\..\run\JvPrint.pas',
+  JvCreateProcess in '..\..\run\JvCreateProcess.pas',
+  JvEasterEgg in '..\..\run\JvEasterEgg.pas',
+  JvProfiler32 in '..\..\run\JvProfiler32.pas' {ProfReport};
+
+end.

@@ -1,4 +1,4 @@
-package JvValidatorsD6R;
+package JvPageCompsD5R;
 
 {$R *.res}
 {$ALIGN 8}
@@ -22,7 +22,7 @@ package JvValidatorsD6R;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Validators and Error Provider Components'}
+{$DESCRIPTION 'JVCL Page Style Components Run Package for Delphi 6'}
 {$RUNONLY}
 {$IMPLICITBUILD ON}
 
@@ -30,11 +30,10 @@ requires
   rtl,
   vcl,
   vclx,
-  JvCoreD6R,
-  DJCL70;
+  vcljpg,
+  JvCoreD5R;
 
 contains
-  JvValidators in '..\..\run\JvValidators.pas',
-  JvErrProvider in '..\..\run\JvErrProvider.pas';
+  JvPageListTreeView in '..\..\run\JvPageListTreeView.pas';
 
 end.

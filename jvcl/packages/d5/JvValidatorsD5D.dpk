@@ -1,4 +1,4 @@
-package JvValidatorsD6R;
+package JvValidatorsD5D;
 
 {$R *.res}
 {$ALIGN 8}
@@ -22,19 +22,19 @@ package JvValidatorsD6R;
 {$WRITEABLECONST OFF}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Validators and Error Provider Components'}
-{$RUNONLY}
+{$DESCRIPTION 'JVCL Validators and Error Provider Components Design-Time Package'}
+{$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
   rtl,
-  vcl,
-  vclx,
-  JvCoreD6R,
-  DJCL70;
+  JvValidatorsD5R,
+  designide,
+  dclstd,
+  JvCoreD5D;
 
 contains
-  JvValidators in '..\..\run\JvValidators.pas',
-  JvErrProvider in '..\..\run\JvErrProvider.pas';
+  JvValidatorsEditor in '..\..\design\JvValidatorsEditor.pas' {frmValidatorsEditor},
+  JvValidatorsReg in '..\..\design\JvValidatorsReg.pas';
 
 end.

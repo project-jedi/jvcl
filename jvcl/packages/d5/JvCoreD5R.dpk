@@ -1,0 +1,51 @@
+package JvCoreD5R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Core Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  DJCL70,
+  vclx;
+
+contains
+  JvConsts in '..\..\common\JvConsts.pas',
+  JVCLVer in '..\..\run\JVCLVer.pas',
+  JvComponent in '..\..\run\JvComponent.pas',
+  JvVersionInfo in '..\..\run\JvVersionInfo.pas',
+  JvTypes in '..\..\run\JvTypes.pas',
+  JvJVCLUtils in '..\..\run\JvJVCLUtils.pas',
+  JvJCLUtils in '..\..\run\JvJCLUtils.pas',
+  JvMaxPixel in '..\..\run\JvMaxPixel.pas',
+  JvProgressUtils in '..\..\run\JvProgressUtils.pas',
+  JvAutoSave in '..\..\run\JvAutoSave.pas',
+  JvBaseDlg in '..\..\run\JvBaseDlg.pas',
+  JvJVCLAbout in '..\..\run\JvJVCLAbout.pas' {JvJVCLAboutForm},
+  JvActions in '..\..\run\JvActions.pas',
+  JvMouseTimer in '..\..\run\JvMouseTimer.pas',
+  JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
+  JvActnRes in '..\..\design\JvActnRes.pas' {JvStandardActions: TDataModule};
+
+end.

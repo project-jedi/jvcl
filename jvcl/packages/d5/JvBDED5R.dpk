@@ -1,0 +1,51 @@
+package JvBDED5R;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL BDE Components Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  JvCoreD5R,
+  JvDBD5R,
+  JvDlgsD5R,
+  bdertl;
+
+contains
+  JvBdeUtils in '..\..\run\JvBdeUtils.pas',
+  JvBDECheckPasswordForm in '..\..\run\JvBDECheckPasswordForm.pas' {JvChPswdForm},
+  JvBDEExceptionForm in '..\..\run\JvBDEExceptionForm.pas' {JvBdeErrorDlg},
+  JvBDEFilter in '..\..\run\JvBDEFilter.pas',
+  JvBDEIndex in '..\..\run\JvBDEIndex.pas',
+  JvBDELists in '..\..\run\JvBDELists.pas',
+  JvBDEMove in '..\..\run\JvBDEMove.pas',
+  JvBDEProgress in '..\..\run\JvBDEProgress.pas',
+  JvBDEQBE in '..\..\run\JvBDEQBE.pas',
+  JvBDESecurity in '..\..\run\JvBDESecurity.pas',
+  JvBDEMemTable in '..\..\run\JvBDEMemTable.pas',
+  JvBDEQuery in '..\..\run\JvBDEQuery.pas',
+  JvBDESQLScript in '..\..\run\JvBDESQLScript.pas',
+  JvBDELoginDialog in '..\..\run\JvBDELoginDialog.pas';
+
+end.

@@ -1,0 +1,45 @@
+package JvCmpD6D;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Components Designtime Package'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  JvCmpD6R,
+  designide,
+  dclstd,
+  JvCoreD6D,
+  JvStdCtrlsD6R;
+
+contains
+  JvCmpReg in '..\..\design\JvCmpReg.pas',
+  JvDataEmbeddedEditor in '..\..\design\JvDataEmbeddedEditor.pas',
+  JvAlarmsEditor in '..\..\design\JvAlarmsEditor.pas',
+  JvFormAlarms in '..\..\run\JvFormAlarms.pas' {FormAlarm},
+  JvPatcherEditor in '..\..\design\JvPatcherEditor.pas',
+  JvFormPatch in '..\..\run\JvFormPatch.pas',
+  JvPageManagerForm in '..\..\design\JvPageManagerForm.pas';
+
+end.

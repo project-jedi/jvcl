@@ -28,8 +28,10 @@ package JvValidatorsD6D;
 
 requires
   rtl,
-  JvValidatorD6R,
-  designide;
+  JvValidatorsD6R,
+  designide,
+  dclstd,
+  JvCoreD6D;
 
 contains
   JvValidatorsEditor in '..\..\design\JvValidatorsEditor.pas' {frmValidatorsEditor},

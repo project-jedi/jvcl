@@ -1,0 +1,46 @@
+package JvCoreD5D;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCL Core Designtime Package'}
+{$DESIGNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  JvCoreD5R,
+  designide,
+  dclstd;
+
+contains
+  JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
+  JvCoreReg in '..\..\design\JvCoreReg.pas',
+  JvDsgnEditors in '..\..\design\JvDsgnEditors.pas',
+  JvDateTimeForm in '..\..\design\JvDateTimeForm.pas' {frmSelectDateTimeDlg},
+  JvStringsForm in '..\..\design\JvStringsForm.pas' {JvStrEditDlg},
+  JvColorEditor in '..\..\design\JvColorEditor.pas',
+  JvIDEZoom in '..\..\design\JvIDEZoom.pas',
+  JvPaintBoxEditor in '..\..\design\JvPaintBoxEditor.pas',
+  JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas',
+  JvDesignerUtils in '..\..\design\JvDesignerUtils.pas';
+
+end.
