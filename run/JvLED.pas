@@ -34,12 +34,7 @@ unit JvLED;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Controls, Graphics, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QControls, QGraphics, Types, QExtCtrls,
-  {$ENDIF VisualCLX}
   Classes,
   JvComponent;
 
@@ -189,9 +184,19 @@ begin
   {$ENDIF VisualCLX}
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
+  {$IFDEF VCL}
   Canvas.CopyRect(DestRect, FImgMask.Canvas, SrcRect);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  CopyRect(Canvas, DestRect, FImgMask.Canvas, SrcRect);
+  {$ENDIF VisualCLX}
   Canvas.CopyMode := cmSrcPaint;
+  {$IFDEF VCL}
   Canvas.CopyRect(DestRect, FImgPict.Canvas, SrcRect);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  CopyRect(Canvas, DestRect, FImgPict.Canvas, SrcRect);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvCustomLED.SetColorOn(Value: TColor);
@@ -240,6 +245,9 @@ begin
     Color := ColorOff;
   if Assigned(FOnChange) then
     FOnChange(Self);
+  {$IFDEF VisualCLX}
+  WakeUpGUIThread;
+  {$ENDIF VisualCLX}
 end;
 
 function TJvCustomLED.GetStatus: Boolean;

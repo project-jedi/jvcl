@@ -29,13 +29,7 @@ unit JvProgressUtils;
 interface
 
 uses
-  {$IFDEF VCL}
-  Controls, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QComCtrls,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Controls, ComCtrls, SysUtils, Classes,
   JvFinalize;
 
 {$IFDEF VisualCLX}

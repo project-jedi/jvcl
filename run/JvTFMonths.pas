@@ -31,16 +31,7 @@ unit JvTFMonths;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, Types,
-  {$ENDIF VisualCLX}
-  {$IFDEF USEJVCL}
-  JvTypes,
-  {$ENDIF USEJVCL}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
   JvTFGlance, JvTFUtils, JvTFManager;
 
 type

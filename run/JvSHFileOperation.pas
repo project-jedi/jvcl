@@ -38,12 +38,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, ShellAPI,
   {$ENDIF MSWINDOWS}
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls,
-  {$ENDIF VCL}
+  SysUtils, Classes, Controls,
   {$IFDEF VisualCLX}
-  Qt, QControls,
+  Qt,
   {$ENDIF VisualCLX}
   JvBaseDlg;
 

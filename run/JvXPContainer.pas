@@ -32,11 +32,9 @@ interface
 
 uses
   TypInfo, Classes,
-  {$IFDEF VCL}
   Windows, Controls, Graphics, StdCtrls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QGraphics, QStdCtrls, QExtCtrls, Types, QTypes, QWindows,
+  QExtCtrls,
   {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 

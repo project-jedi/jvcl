@@ -30,13 +30,7 @@ unit JvSpecialImage;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Graphics, Controls, ExtCtrls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QExtCtrls, QForms, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Graphics, Controls, ExtCtrls, Forms,
   JvTypes, JvExExtCtrls;
 
 type

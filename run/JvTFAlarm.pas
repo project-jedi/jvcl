@@ -31,13 +31,7 @@ unit JvTFAlarm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QExtCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Controls, ExtCtrls,
   {$IFDEF BCB}
   JvTypes,
   {$ENDIF BCB}

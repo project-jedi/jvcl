@@ -30,13 +30,7 @@ unit JvTimeLimit;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls, Dialogs, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QDialogs, QForms, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Controls, Dialogs, Forms,
   JvComponent, JvTypes;
 
 type

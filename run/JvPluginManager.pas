@@ -79,11 +79,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, // (ahuser) do not move to VCL
   {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
   Graphics, Forms,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics, QForms,
+  QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent, JvPlugin; // reduced to the min

@@ -30,12 +30,7 @@ unit JvStarfield;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, Types, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvImageDrawThread, JvComponent;
 

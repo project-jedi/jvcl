@@ -52,12 +52,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, ImgList, Controls, ExtCtrls, ACtnList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QImgList, QControls, QExtCtrls,  QActnList, Types, QWindows,
-  {$ENDIF VisualCLX}
+  Controls,    // clx: QWindows.TMsg is required
+  Windows, Messages, Graphics, ImgList, ExtCtrls, ACtnList,
   JvComponent, JvThemes;
 
 const
@@ -193,12 +189,7 @@ type
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure ParentColorChanged; override;
-    {$IFDEF VCL}
     procedure CreateWnd; override;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    procedure CreateWidget; override;
-    {$ENDIF VisualCLX}
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -567,23 +558,12 @@ begin
   RedrawControl(False);
 end;
 
-{$IFDEF VCL}
 procedure TJvCustomRollOut.CreateWnd;
 begin
   inherited CreateWnd;
   if not Collapsed then
     UpdateGroup;
 end;
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-procedure TJvCustomRollOut.CreateWidget;
-begin
-  inherited CreateWidget;
-  if not Collapsed then
-    UpdateGroup;
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvCustomRollOut.AlignControls(AControl: TControl; var Rect: TRect);
 begin
@@ -980,9 +960,9 @@ begin
     WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, WS, -1, FButtonHeight , BevelWidth + 2, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 270)
+      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 270)
     else
-      DrawText(Canvas.Handle, WS, -1, BevelWidth + 2, 0, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 0)
+      DrawText(Canvas.Handle, WS, -1, R, DT_VCENTER, 0)
     {$ENDIF VisualCLX}
   end;
   if ShowFocus and Focused then

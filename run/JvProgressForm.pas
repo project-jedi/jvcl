@@ -34,13 +34,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QActnList,
-  QComCtrls, QTypes,
-  {$ENDIF VisualCLX}
   JvComponent;
 
 type

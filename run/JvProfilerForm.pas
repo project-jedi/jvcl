@@ -31,16 +31,7 @@ unit JvProfilerForm;
 interface
 
 uses
-  Classes,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF VCL}
-  Dialogs, ComCtrls, StdCtrls, Controls, ExtCtrls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDialogs, QComCtrls, QStdCtrls, QControls, QExtCtrls, QForms, QWindows,
-  {$ENDIF VisualCLX}
+  Classes, Windows, Dialogs, ComCtrls, StdCtrls, Controls, ExtCtrls, Forms,
   JvComponent;
 
 const

@@ -29,13 +29,7 @@ unit JvSplit;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Controls, ExtCtrls, Forms, Graphics,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QExtCtrls, QForms, QGraphics, Types, QWindows,
-  {$ENDIF VisualCLX}
-  SysUtils, Classes,
+  Windows, Controls, ExtCtrls, Forms, Graphics, SysUtils, Classes,
   JvComponent;
 
 type

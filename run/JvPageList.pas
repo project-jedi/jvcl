@@ -31,13 +31,7 @@ unit JvPageList;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, Qt, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls,
   JvComponent, JvThemes;
 
 type
@@ -281,17 +275,11 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
   {$IFNDEF COMPILER6_UP}
   JvResources,
   {$ENDIF COMPLER6_UP}
   Forms;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-uses
-  QForms;
-{$ENDIF VisualCLX}
 
 //=== { TJvCustomPage } ======================================================
 

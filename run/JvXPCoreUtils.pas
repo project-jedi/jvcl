@@ -31,13 +31,7 @@ unit JvXPCoreUtils;
 interface
 
 uses
-  SysUtils, Classes, TypInfo,
-  {$IFDEF VCL}
-  Windows, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QTypes, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, TypInfo, Windows, Graphics, Controls,
   JvXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;

@@ -37,12 +37,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, Dialogs, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QWindows, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
-  {$ENDIF VisualCLX}
   JvComponent, JvSpeedButton, JvOfficeColorForm, JvOfficeColorPanel;
 
 const
@@ -280,6 +275,9 @@ begin
   end
   else
   if MouseOver and Enabled or (csDesigning in ComponentState) then
+    {$IFDEF VisualCLX}
+    QWindows.
+    {$ENDIF VisualCLX}
     DrawEdge(Canvas.Handle, PaintRect, DownStyles[Push],
       FillStyles[Flat] or BF_RECT);
 

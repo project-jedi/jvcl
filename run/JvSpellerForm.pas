@@ -30,15 +30,8 @@ unit JvSpellerForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QExtCtrls,
-  {$ENDIF VisualCLX}
   JvComponent;
 
 type

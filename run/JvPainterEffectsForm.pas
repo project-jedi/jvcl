@@ -30,15 +30,8 @@ unit JvPainterEffectsForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ComCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QExtCtrls, QComCtrls,
-  {$ENDIF VisualCLX}
   JvDrawImage, JvComponent;
 
 type

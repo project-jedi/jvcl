@@ -44,12 +44,7 @@ unit JvSimLogic;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, Extctrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QExtCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes;
 

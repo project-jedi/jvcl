@@ -2113,7 +2113,7 @@ begin
     Inc(Rect.Left, 22);
     if not FIcon.Empty then
     begin
-      Draw(2, 0, FIcon);
+      Draw(2, 1, FIcon);
       Inc(Rect.Left, 16);
     end;
 

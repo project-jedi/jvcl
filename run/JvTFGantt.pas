@@ -35,14 +35,8 @@ unit JvTFGantt;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  Menus, StdCtrls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QMenus, QStdCtrls, QExtCtrls, Types,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls,
+  Forms, Dialogs, Menus, StdCtrls, ExtCtrls,
   JvTFUtils, JvTFManager;
 
 type

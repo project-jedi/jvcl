@@ -29,11 +29,9 @@ unit JvPageManager;
 interface
 
 uses
-  {$IFDEF VCL}
   Controls, Forms, StdCtrls, ExtCtrls, ActnList,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QExtCtrls, QActnList, QNotebook,
+  QNotebook,
   {$ENDIF VisualCLX}
   SysUtils, Classes;
 

@@ -30,13 +30,7 @@ unit JvSALCore;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}

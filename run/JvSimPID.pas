@@ -30,13 +30,7 @@ unit JvSimPID;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls,
   JvComponent;
 
 type

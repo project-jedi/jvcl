@@ -33,11 +33,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Forms, ExtCtrls, Controls,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, Qt, QGraphics, QForms, QExtCtrls, QControls, Types,
+  Qt,
   {$ENDIF VisualCLX}
   JvExExtCtrls;
 
@@ -346,17 +344,31 @@ begin
   begin
     if (not AllowDrag) or ((Y >= FLastKnownButtonRect.Top) and
       (Y <= FLastKnownButtonRect.Bottom)) then
+    {$IFDEF VCL}
       Windows.SetCursor(Screen.Cursors[ButtonCursor])
     else
       Windows.SetCursor(Screen.Cursors[Cursor]);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+      QWindows.SetCursor(Screen.Cursors[ButtonCursor])
+    else
+      QWindows.SetCursor(Screen.Cursors[Cursor]);
+    {$ENDIF VisualCLX}
   end
   else
   begin
     if (not AllowDrag) or ((X >= FLastKnownButtonRect.Left) and
       (X <= FLastKnownButtonRect.Right)) then
+    {$IFDEF VCL}
       Windows.SetCursor(Screen.Cursors[ButtonCursor])
     else
       Windows.SetCursor(Screen.Cursors[Cursor]);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+      QWindows.SetCursor(Screen.Cursors[ButtonCursor])
+    else
+      QWindows.SetCursor(Screen.Cursors[Cursor]);
+    {$ENDIF VisualCLX}
   end;
 end;
 

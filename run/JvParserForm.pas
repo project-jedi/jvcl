@@ -30,13 +30,7 @@ unit JvParserForm;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Controls, Forms, StdCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Controls, Forms, StdCtrls,
   JvTypes, JvComponent;
 
 type

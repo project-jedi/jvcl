@@ -30,12 +30,7 @@ unit JvPaintFX;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows, QGraphics, QControls, QForms,
-  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type

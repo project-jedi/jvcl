@@ -29,12 +29,9 @@ unit JvSplashWindow;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  {$ENDIF VCL}
+  SysUtils, Classes, Windows, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QWindows,
+  Qt,
   {$ENDIF VisualCLX}
   JvAnimatedImage;
 
@@ -98,18 +95,18 @@ begin
     ClientHeight := defSplashHeight;
     ClientWidth := defImageLeft + defTextRight + 32;
     Enabled := False;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF VCL}
     Font.Height := -11;
     Font.Name := 'MS Sans Serif';
     PixelsPerInch := 96;
     Scaled := True;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     Font.Height := 11;
     Font.Name := 'Helvetica';
     PixelsPerInch := 96;
     Scaled := False;
-    {$ENDIF LINUX}
+    {$ENDIF VisualCLX}
     Font.Style := [];
     Font.Color := clWindowText;
 

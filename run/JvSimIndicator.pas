@@ -30,13 +30,7 @@ unit JvSimIndicator;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Graphics, Controls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QExtCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Graphics, Controls, ExtCtrls,
   JvComponent;
 
 type
