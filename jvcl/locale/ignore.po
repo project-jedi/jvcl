@@ -183,6 +183,30 @@ msgstr ""
 msgid "lblpages"
 msgstr ""
 
+msgid "LblCaption"
+msgstr ""
+
+msgid "LblTarget"
+msgstr ""
+
+msgid "LblInfo"
+msgstr ""
+
+msgid "LblOpenFile"
+msgstr ""
+
+msgid "LblFilename"
+msgstr ""
+
+msgid "LblComment"
+msgstr ""
+
+msgid "http://projectjedi.sourceforge.net"
+msgstr ""
+
+msgid "TJv"
+msgstr ""
+
 msgid "LblErrorReason"
 msgstr ""
 
