@@ -117,7 +117,7 @@ function CreateHexDump(AOwner: TWinControl): THexDump;
 
 implementation
 
-uses JvJVCLUtils;
+uses JvJCLUtils;
 
 { Create THexDump control }
 

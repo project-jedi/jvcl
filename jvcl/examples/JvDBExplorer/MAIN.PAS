@@ -183,9 +183,9 @@ implementation
 
 {$R *.DFM}
 
-uses DBInpReq, DBCbRest, SQLMon, Bde, JvJVCLUtils, JvBDELoginDialog,
+uses DBInpReq, DBCbRest, SQLMon, Bde, JvJCLUtils, JvBDELoginDialog,
   ChildWin2, OpenDlg, JvDBUtils, IniFiles, RenDlg, About, Options, OptDlg,
-  JvBdeUtils, BdeProp, UserHelp, JvHints, ShellAPI;
+  JvBdeUtils, BdeProp, UserHelp, JvHints, ShellAPI, JvJVCLUtils;
 
 const
   SEmptyWarning = 'Table %s will be emptied. All data will be lost. Continue?';

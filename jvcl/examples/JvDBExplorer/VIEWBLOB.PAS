@@ -48,7 +48,7 @@ implementation
 
 uses
   Messages, SysUtils, DBConsts, Math,
-  JvJVCLUtils;
+  JvJCLUtils;
 
 const
   SBlobSize = 'Blob size: %s byte(s)';
