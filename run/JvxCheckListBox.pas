@@ -1257,7 +1257,7 @@ begin
   if GCheckBitmap = nil then
   begin
     GCheckBitmap := TBitmap.Create;
-    GCheckBitmap.Handle := LoadBitmap(HInstance, 'JV_CHECK_IMAGES');
+    GCheckBitmap.Handle := LoadBitmap(HInstance, 'JvxCheckListBoxIMAGES');
   end;
   Result := GCheckBitmap;
 end;

@@ -2189,9 +2189,9 @@ begin
     Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
     { begin RxLib }
     crHand := GetNextFreeCursorIndex(crJVCLFirst, False);
-    Screen.Cursors[crHand] := LoadCursor(HInstance, 'JV_HANDCUR');
+    Screen.Cursors[crHand] := LoadCursor(HInstance, 'JvHANDCURSOR');
     crDragHand := GetNextFreeCursorIndex(crJVCLFirst, False);
-    Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+    Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JvDRAGCURSOR');
     { end RxLib }
   end;
 end;
@@ -4845,18 +4845,6 @@ end;
 
 procedure InitScreenCursors;
 begin
-  try
-    if Screen <> nil then
-    begin
-      { begin RxLib }
-      { (rom) deactivated  can cause problems
-      Screen.Cursors[crHand] := LoadCursor(HInstance, 'JV_HANDCUR');
-      Screen.Cursors[crDragHand] := LoadCursor(HInstance, 'JV_DRAGCUR');
-      }
-      { end RxLib } 
-    end;
-  except
-  end;
 end;
 
 const

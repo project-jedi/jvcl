@@ -34,7 +34,7 @@ default: Display ResGenerate DcrGenerate
 ResGenerate: \
 JvBaseEdits.res \
 JvCalc.res \
-JvCheckmarks.res \
+# JvCheckmarks.res \
 JvColorCombo.res \
 JvComponentPanel.res \
 JvConsts.res \
@@ -111,7 +111,7 @@ Display:
 #--- RES ---------------------------------------
 JvBaseEdits.res: JvBaseEdits.rc
 JvCalc.res: JvCalc.rc
-JvCheckmarks.res: JvCheckmarks.rc
+# JvCheckmarks.res: JvCheckmarks.rc
 JvColorCombo.res: JvColorCombo.rc
 JvComponentPanel.res: JvComponentPanel.rc
 JvConsts.res: JvConsts.rc

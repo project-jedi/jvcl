@@ -3034,9 +3034,9 @@ begin
     Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
     { begin RxLib }
     crHand := GetNextFreeCursorIndex(crJVCLFirst, False);
-    Screen.Cursors[crHand] := LoadCursor(HInstance, 'JV_HANDCUR');
+    Screen.Cursors[crHand] := LoadCursor(HInstance, 'JvHANDCURSOR');
     crDragHand := GetNextFreeCursorIndex(crJVCLFirst, False);
-    Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+    Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JvDRAGCURSOR');
     { end RxLib }
   end;
 end;
@@ -6644,25 +6644,22 @@ end;
 
 procedure InitScreenCursors;
 begin
+  {$IFDEF VCL}
   try
     if Screen <> nil then
     begin
       { begin RxLib }
-      { (rom) deactivated  can cause problems
-      Screen.Cursors[crHand] := LoadCursor(HInstance, 'JV_HANDCUR');
-      Screen.Cursors[crDragHand] := LoadCursor(HInstance, 'JV_DRAGCUR');
-      }
+      // now only available through SetDefaultJVCLCursors
       { end RxLib }
-      {$IFDEF VCL}
       { (ahuser) if used in VisualCLX mode Application.Destroy crashes }
       Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
       Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
       Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
       Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
-      {$ENDIF VCL}
     end;
   except
   end;
+  {$ENDIF VCL}
 end;
 
 const

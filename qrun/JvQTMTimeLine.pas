@@ -459,7 +459,7 @@ begin
     Parent := Self;
     Transparent := False;
     Layout := blGlyphTop;
-    Glyph.LoadFromResourceName(HInstance, 'SCROLL_LEFT');
+    Glyph.LoadFromResourceName(HInstance, 'JvCustomTMTimelineSCROLLLEFT');
 
     OnMouseDown := DoLMouseDown;
     OnMouseUp := DoMouseUp;
@@ -474,7 +474,7 @@ begin
     Parent := Self;
     Transparent := False;
     Layout := blGlyphTop;
-    Glyph.LoadFromResourceName(HInstance, 'SCROLL_RIGHT');
+    Glyph.LoadFromResourceName(HInstance, 'JvCustomTMTimelineSCROLLRIGHT');
 
     OnMouseDown := DoRMouseDown;
     OnMouseUp := DoMouseUp;
@@ -626,7 +626,7 @@ begin
   Tmp := ACanvas.Brush.Color;
   try
     if ShowTodayIcon then
-      Bmp.LoadFromResourceName(HInstance, 'MILESTONE_LARGE');
+      Bmp.LoadFromResourceName(HInstance, 'JvCustomTMTimelineMILESTONELARGE');
     if ShowToday then
     begin
       ACanvas.Brush.Color := FTodayColor;
