@@ -166,6 +166,11 @@ type
     FLookupMode: Boolean;
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
+    {added by zelen}
+    {$IFDEF JVCLThemesEnabled}
+    FOver: Boolean;
+    {$ENDIF JVCLThemesEnabled}
+    {/added by zelen}
     FMasterField: string;      {new}
     FDetailField: string;      {new}
     FIconField: string;        {new}
@@ -190,6 +195,7 @@ type
     FOnCustomDraw: TTVCustomDrawEvent;
     FOnCustomDrawItem: TTVCustomDrawItemEvent;
     FOnGetImageIndex: TTVExpandedEvent;
+    FExpanded: Boolean;  { added by zelen }
   protected
     procedure FontChanged; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -202,6 +208,12 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    {added by zelen}
+    {$IFDEF JVCLThemesEnabled}
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    {$ENDIF JVCLThemesEnabled}
+    {/added by zelen}
   public
     constructor Create(AOwner: TComponent); override;
     procedure CloseUp(Accept: Boolean);
@@ -270,6 +282,7 @@ type
     property OnEndDock;
     property OnStartDock;
     property AutoExpand: Boolean read FAutoExpand write FAutoExpand;
+    property Expanded: Boolean read FExpanded write FExpanded default false;     { added by zelen }
     property ChangeDelay: Integer read FChangeDelay write FChangeDelay;
     property HotTrack: Boolean read FHotTrack write FHotTrack;
     property RowSelect: Boolean read FRowSelect write FRowSelect;
@@ -426,7 +439,7 @@ type
 
 implementation
 
-uses DBConsts;
+uses JvThemes, JvJCLUtils, Math, DBConsts;
 
 //=== TJvLookupDataSourceLink ======================================================
 
@@ -487,6 +500,8 @@ begin
     ControlStyle := [csOpaque]
   else
     ControlStyle := [csOpaque, csFramed];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
+
   ParentColor := False;
   TabStop := True;
   FLookupSource := TDataSource.Create(Self);
@@ -852,16 +867,34 @@ var
   Alignment: TAlignment;
   Selected: Boolean;
   R: TRect;
+
+  {added by zelen}
+  {$IFDEF JVCLThemesEnabled}
+  State: TThemedComboBox;
+  Details: TThemedElementDetails;
+  {$ENDIF JVCLThemesEnabled}
+  {/added by zelen}
+
 begin
   Canvas.Font := Font;
   Canvas.Brush.Color := Color;
-  Selected := FFocused and not FListVisible and
-    not (csPaintCopy in ControlState);
+  Selected := FFocused and not FListVisible and not (csPaintCopy in ControlState);
+
   if Selected then
   begin
     Canvas.Font.Color := clHighlightText;
     Canvas.Brush.Color := clHighlight;
-  end;
+
+
+
+
+
+  end
+  {added by zelen}
+  else
+  if not Enabled and NewStyleControls then
+    Canvas.Font.Color := clGrayText;
+  {/added by zelen}
   if (csPaintCopy in ControlState) and (FDataField <> nil) then
   begin
     Text := FDataField.DisplayText;
@@ -882,20 +915,48 @@ begin
   Canvas.TextRect(R, X, 2, Text);
   if Selected then
     Canvas.DrawFocusRect(R);
+
   SetRect(R, W, 0, ClientWidth, ClientHeight);
-  if not FListActive then
-    Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
-  else
+  {added by zelen}
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+    if (not FListActive) or (not Enabled) or ReadOnly then
+      State := tcDropDownButtonDisabled
+    else
     if FPressed then
-    Flags := DFCS_SCROLLCOMBOBOX or DFCS_FLAT or DFCS_PUSHED
+      State := tcDropDownButtonPressed
+    else
+    if FOver and not FListVisible then
+      State := tcDropDownButtonHot
+    else
+      State := tcDropDownButtonNormal;
+    Details := ThemeServices.GetElementDetails(State);
+    ThemeServices.DrawElement(Canvas.Handle, Details, R);
+
+
+
+
+  end
   else
-    Flags := DFCS_SCROLLCOMBOBOX;
-  DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags);
+  {$ENDIF JVCLThemesEnabled}
+  {/added by zelen}  
+  begin
+    if not FListActive or not Enabled or ReadOnly then
+      Flags := DFCS_SCROLLCOMBOBOX or DFCS_INACTIVE
+    else
+      if FPressed then
+      Flags := DFCS_SCROLLCOMBOBOX or DFCS_FLAT or DFCS_PUSHED
+    else
+      Flags := DFCS_SCROLLCOMBOBOX;
+    DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, Flags);
+  end;
 end;
 
 procedure TJvDBLookupTreeViewCombo.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited SetBounds(ALeft, ATop, AWidth, GetTextHeight + GetBorderSize + 4);
+
 end;
 
 procedure TJvDBLookupTreeViewCombo.KeyValueChanged;
@@ -917,6 +978,12 @@ begin
     FAlignment := taLeftJustify;
   end;
   Invalidate;
+
+
+
+
+
+
 end;
 
 procedure TJvDBLookupTreeViewCombo.ListLinkActiveChanged;
@@ -1012,7 +1079,11 @@ begin
     FDataList.FTree.FullCollapse;
     FDataList.FTree.DataChanged; }
     FDataList.SetValue(FListLink.DataSet.Lookup(FKeyFieldName, FKeyValue, FMasterField));
-     
+
+    { added by zelen }
+    if FExpanded then
+      FDataList.FTree.FullExpand;
+    { added by zelen }
 
    // FDataList.KeyValue := KeyValue;
 
@@ -1638,6 +1709,39 @@ begin
      (FDataList.FTree.Handle <> FocusedWnd) then
     CloseUp(false);
 end;
+
+
+{added by zelen}
+{$IFDEF JVCLThemesEnabled}
+
+procedure TJvDBLookupTreeViewCombo.MouseEnter(Control: TControl);
+begin
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseEnter(Control);
+  {Windows XP themes use hot track states, hence we have to update the drop down button.}
+  if ThemeServices.ThemesEnabled and not FOver and not (csDesigning in ComponentState) then
+  begin
+    FOver := True;
+    Invalidate;
+  end;
+end;
+
+procedure TJvDBLookupTreeViewCombo.MouseLeave(Control: TControl);
+begin
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
+  if ThemeServices.ThemesEnabled and FOver then
+  begin
+    FOver := False;
+    Invalidate;
+  end;
+end;
+
+{$ENDIF JVCLThemesEnabled}
+
+{/added by zelen}
 
 end.
 
