@@ -45,10 +45,10 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QStdCtrls, QExtCtrls, QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -90,10 +90,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 //=== TJvWizardAboutDialogProperty ===========================================
 
@@ -136,7 +136,7 @@ begin
   inherited CreateParams(Params);
   Params.Style := (Params.Style or WS_POPUP) and (not WS_DLGFRAME);
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 procedure TJvWizardAboutDialog.Panel1MouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);

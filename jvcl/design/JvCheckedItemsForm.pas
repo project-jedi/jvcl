@@ -34,18 +34,19 @@ uses
   {$IFDEF VCL}
   Windows, Controls, Forms, Menus, Graphics,
   StdCtrls, CheckLst,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QMenus, QGraphics,
   QStdCtrls, QCheckLst, QWindows, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
   {$IFDEF VCL}
   VCLEditors,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   CLXEditors,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -112,28 +113,26 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
-
-// (rom) needs explanation
-{$D-}
+{$ENDIF VisualCLX}
 
 uses
   {$IFDEF VCL}
   Consts,
   {$ELSE}
   QConsts,
-  {$ENDIF}
+  {$ENDIF VCL}
   JvStringsForm, JvConsts, JvDsgnConsts, JvJVCLUtils, JvBoxProcs;
 
 const
-{$IFDEF VCL}
+  {$IFDEF VCL}
   cFontMSSansSerif = 'MS Sans Serif';
-{$ELSE}
+  {$ELSE}
   cFontMSSansSerif = 'Helvetica';
-{$ENDIF}
+  {$ENDIF VCL}
+
 //=== TJvCheckItemsProperty ==================================================
 
 function TJvCheckItemsProperty.GetAttributes: TPropertyAttributes;

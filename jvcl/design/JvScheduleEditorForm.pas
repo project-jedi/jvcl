@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Controls, Forms, StdCtrls, ComCtrls, ExtCtrls, AppEvnts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QComCtrls, QExtCtrls, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JclSchedule;
 
 type
@@ -169,10 +169,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure DecodeTimeStampTime(const Stamp: TTimeStamp;
   var ADays, AHour, AMinute, ASecond, AMSec: Word);

@@ -44,11 +44,11 @@ uses
   JvSerialMaker, JvXorCipher;
 
 {$IFDEF MSWINDOWS}
-{$R ..\resources\JvCryptReg.dcr}
-{$ENDIF}
+{$R ..\Resources\JvCryptReg.dcr}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../resources/JvCryptReg.dcr}
-{$ENDIF}
+{$R ../Resources/JvCryptReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

@@ -50,11 +50,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ActnList, ImgList, ComCtrls, StdCtrls, ToolWin, Menus,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, Types, QTypes,
   QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignWindows,
   {$ELSE}
@@ -159,10 +159,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 {$IFNDEF USEJVCL}
 resourcestring

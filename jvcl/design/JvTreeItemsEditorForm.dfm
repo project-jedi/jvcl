@@ -34,6 +34,9 @@ object frmTreeViewItems: TfrmTreeViewItems
     BorderWidth = 1
     Caption = ' '
     TabOrder = 0
+    DesignSize = (
+      443
+      40)
     object Bevel1: TBevel
       Left = 1
       Top = 1
@@ -91,6 +94,9 @@ object frmTreeViewItems: TfrmTreeViewItems
     BevelOuter = bvNone
     Caption = ' '
     TabOrder = 2
+    DesignSize = (
+      311
+      164)
     object btnNew: TButton
       Left = 16
       Top = 63
@@ -126,6 +132,9 @@ object frmTreeViewItems: TfrmTreeViewItems
       Anchors = [akLeft, akTop, akRight, akBottom]
       Caption = ' Properties: '
       TabOrder = 3
+      DesignSize = (
+        195
+        160)
       object Label1: TLabel
         Left = 16
         Top = 24

@@ -39,11 +39,11 @@ uses
   {$IFDEF VCL}
   Windows, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls,
   ActnList, Menus,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
   QActnList, QMenus,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, Variants, DesignIntf,
   {$ELSE}
@@ -100,10 +100,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 type
   THackTreeView = class(TJvCustomPageListTreeView);

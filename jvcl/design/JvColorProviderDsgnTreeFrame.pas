@@ -36,18 +36,15 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ImgList, Menus, ActnList, ComCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QImgList, QMenus, QActnList, QComCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvProviderTreeListDsgnFrame;
 
 type
   TfmeJvColorProviderDsgnTree = class(TfmeJvProviderTreeListDsgn)
-  private
-    { Private declarations }
   public
-    { Public declarations }
     procedure UpdateActionStates; override;
   published
     procedure aiAddItemExecute(Sender: TObject); override;
@@ -59,10 +56,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 uses
   JclStrings,

@@ -36,10 +36,10 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   Buttons, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvColorProvider, JvDataProvider, JvDataProviderIntf, JvTypes;
 
 type
@@ -86,10 +86,10 @@ uses
   
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 function DoAddDsgnColor(AColorType: TColorType; AProvider: IJvDataProvider;
   out NewColor: TColor): Boolean;

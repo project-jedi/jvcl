@@ -37,10 +37,10 @@ uses
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF COMPILER6_UP}
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QActnList, QImgList, QControls, QForms,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type
@@ -58,9 +58,9 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 end.

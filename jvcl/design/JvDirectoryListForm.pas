@@ -33,9 +33,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Controls, Forms, StdCtrls, ComCtrls,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QComCtrls, QStdCtrls
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -67,10 +68,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 function EditFolderList(Folders: TStrings): Boolean;
 var

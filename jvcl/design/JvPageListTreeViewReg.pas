@@ -34,15 +34,15 @@ uses
   Classes,
   {$IFDEF VCL}
   Windows, ImgList, Graphics,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QImgList, QGraphics,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus,
   {$IFDEF VCL}
   VCLEditors,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$ELSE}
   DsgnIntf, Menus,
   {$ENDIF COMPILER6_UP}
@@ -118,10 +118,10 @@ procedure Register;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPageListTreeViewReg.dcr}
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvPageListTreeViewReg.dcr}
-{$ENDIF}
+{$ENDIF LINUX}
 
 implementation
 
@@ -129,10 +129,10 @@ uses
   SysUtils, TypInfo,
   {$IFDEF VCL}
   Forms, ComCtrls, Controls,  Consts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QComCtrls, QControls,  QConsts, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvDsgnConsts, JvPageLinkEditorForm, JvTreeItemsEditorForm;
 
 type

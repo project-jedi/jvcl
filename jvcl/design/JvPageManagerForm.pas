@@ -34,17 +34,18 @@ uses
   {$IFDEF VCL}
   Windows, Graphics, Controls, Forms, Grids,
   StdCtrls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, DesignWindows,
   {$IFDEF VCL}
   VCLEditors,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   CLXEditors,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
@@ -122,19 +123,18 @@ implementation
 uses
   {$IFDEF VCL}
   Consts, Buttons,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QConsts, QButtons,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvDsgnConsts, JvDsgnTypes;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
-
-{$D-}
+{$ENDIF VisualCLX}
 
 function FindEditor(Manager: TJvPageManager): TJvProxyEditor;
 var

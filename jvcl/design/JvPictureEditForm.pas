@@ -34,12 +34,12 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Forms, Controls, Dialogs, Menus,
   StdCtrls, ExtCtrls, ExtDlgs, Buttons,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types,
   QGraphics, QForms, QControls, QDialogs, QMenus,
   QStdCtrls, QExtCtrls, QExtDlgs, QButtons, QTypes,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
   JvAppStorage, JvAppRegistryStorage, JvMRUList;
 
@@ -111,21 +111,21 @@ uses
   TypInfo, SysUtils,
   {$IFDEF VCL}
   Clipbrd, Consts,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QClipbrd, QConsts,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF MSWINDOWS}
   ShellAPI, LibHelp,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure CopyPicture(Pict: TPicture; BackColor: TColor);
 begin

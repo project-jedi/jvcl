@@ -34,19 +34,19 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Forms, Controls, Dialogs,
   StdCtrls, ExtCtrls, ExtDlgs, ImgList, ComCtrls, ToolWin,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QControls, QDialogs,
   QStdCtrls, QExtCtrls, QExtDlgs, QImgList, QComCtrls, QToolWin,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
   {$IFDEF VCL}
   VCLEditors,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   CLXEditors,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF COMPILER6_UP}
@@ -128,18 +128,16 @@ uses
   Clipbrd, Consts,
   {$ELSE}
   QClipbrd, QConsts,
-  {$ENDIF}
+  {$ENDIF VCL}
   Math,
   JvJVCLUtils, JvJCLUtils, JvDsgnConsts, JvAniFile;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
-
-{$D-}
+{$ENDIF VisualCLX}
 
 const
   sSlot = 'Slot%d';

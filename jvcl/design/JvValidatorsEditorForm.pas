@@ -35,11 +35,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, StdCtrls, Menus, ActnList, ImgList,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QTypes, QExtCtrls,
   QDialogs, QComCtrls, QToolWin, QStdCtrls, QMenus, QActnList, QImgList,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignWindows,
   {$ELSE}
@@ -150,10 +150,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure ShowEditor(Designer: IDesigner; AValidator: TJvValidators);
 var

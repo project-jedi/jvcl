@@ -36,10 +36,10 @@ uses
   Classes,
   {$IFDEF VCL}
   Windows, Forms, Controls, Dialogs, StdCtrls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QDialogs, QStdCtrls, QControls, QExtCtrls, QWindows,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -77,15 +77,15 @@ uses
   SysUtils,
   {$IFDEF VCL}
   LibHelp,
-  {$ENDIF}
+  {$ENDIF VCL}
   JvDsgnConsts;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TJvStrEditDlg.FileOpen(Sender: TObject);
 begin

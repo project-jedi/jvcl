@@ -35,11 +35,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
   QExtCtrls, QStdCtrls, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProviderIntf, Classes;
 
 type
@@ -64,10 +64,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 function ConsumerSelectContext(AConsumer: IJvDataConsumer): Boolean;
 var
