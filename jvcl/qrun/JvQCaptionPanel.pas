@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -383,7 +383,7 @@ begin
   FIcon := TIcon.Create;
   {$IFDEF MSWINDOWS}
   // (rom) Warning! This seems no standard Windows font
-  FCaptionFont.Name := 'MS Shell Dlg 2';
+//  FCaptionFont.Name := 'MS Shell Dlg 2';
   FCaptionFont.Size := 10;
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
@@ -615,7 +615,7 @@ begin
             if not FIcon.Empty then
               Dec(Y, FIcon.Height + 3)
             else
-              Dec(Y,3)
+              Dec(Y)
             
           end;
         dpTop, dpBottom:
@@ -626,7 +626,7 @@ begin
             if not FIcon.Empty then
               Inc(X, FIcon.Width + 3)
             else
-              Inc(X, 3)
+              Inc(X)
             
             
           end;
@@ -638,7 +638,7 @@ begin
             if not FIcon.Empty then
               Inc(Y, FIcon.Height + 3)
             else
-              Inc(Y,3 );
+              Inc(Y);
             
             
           end;

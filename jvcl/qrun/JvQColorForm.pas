@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -109,7 +109,7 @@ begin
   BorderStyle := fbsDialog;
   
   // (rom) this is not a standard Windows font
-  Font.Name := 'MS Shell Dlg 2';
+//  Font.Name := 'MS Shell Dlg 2';
   FormStyle := fsStayOnTop;
   KeyPreview := True;
   OnActivate := FormActivate;
