@@ -147,6 +147,9 @@ begin
   inherited;
   EditMask := '!90:00:00;1; ';
   Text := FormatDateTime(LongTimeFormat, 0.5);
+  ValueType := vtFloat;
+  MinValue := 0.0;
+  MaxValue := 1.0;
 end;
 
 procedure TJvTimeSpin.setTime(value :TTime);
@@ -210,6 +213,7 @@ begin
   else
     Result := EncodeTime(1,0,0,0)
   end;
+  Increment := Result;
 end;
 
 procedure TJvTimeSpin.SetSelection(value: TTimeField);

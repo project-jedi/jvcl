@@ -40,7 +40,10 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, Types, QGraphics, 
+  {$IFDEF LINUX}
+  Qt,
+  {$ENDIF LINUX}
+  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, Types, QGraphics,
   QWindows, QClipbrd, 
   JclBase,
   JvQConsts, JvQComponent, JvQTypes, JvQDynControlEngine, JvQFinalize;
@@ -1542,7 +1545,7 @@ begin
   if IconIDs[DlgType] <> nil then
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  if IconIDs[DlgType] <> nil then
+  if IconIDs[DlgType] <> QMessageBoxIcon_NoIcon then
   {$ENDIF LINUX}
   begin
     Result := TIcon.Create;

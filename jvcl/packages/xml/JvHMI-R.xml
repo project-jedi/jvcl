@@ -17,7 +17,7 @@
     <Package Name="CJCLVCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
-    <Package Name="DJclVclx" Targets="allclx" Condition=""/>
+    <Package Name="DJclVClx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvSLDMappingEditorDialog.pas" Targets="all" Formname="frmSLDMappingEditorDialog" Condition=""/>

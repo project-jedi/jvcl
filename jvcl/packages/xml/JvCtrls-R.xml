@@ -23,7 +23,7 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvCharMap.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCharMap.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvClock.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorBox.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorButton.pas" Targets="all" Formname="" Condition=""/>

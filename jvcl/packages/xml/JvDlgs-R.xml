@@ -30,7 +30,7 @@
     <File Name="..\..\run\JvFindFiles.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvFindReplace.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvImageDlg.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvLoginForm.pas" Targets="windows" Formname="JvLoginForm" Condition=""/>
+    <File Name="..\..\run\JvLoginForm.pas" Targets="all" Formname="JvLoginForm" Condition=""/>
     <File Name="..\..\run\JvObjectPickerDialog.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetup.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvPageSetupTitled.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -47,8 +47,8 @@
     <File Name="..\..\run\JvCommonDialogD.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvCommonExecDlg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvConnectNetwork.pas" Targets="windows" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCopyError.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDeleteError.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCopyError.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDeleteError.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvDialogs.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDiskPrompt.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvDSADialogs.pas" Targets="all" Formname="" Condition=""/>

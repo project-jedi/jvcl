@@ -77,6 +77,7 @@ type
     function DeleteKey(const Key: String): boolean;
 
     procedure GetValueNames(Strings: TStrings);
+    procedure ReadSectionValues(Strings: TStrings);
 
     function ReadBool(const Ident: string): Boolean;
     function ReadBinaryStream(const Ident: string; Value: TStream): Integer;
@@ -250,10 +251,16 @@ begin
     end;
 end;
 
-procedure TJvRegistryIniFile.GetValueNames(strings :TStrings);
+procedure TJvRegistryIniFile.GetValueNames(Strings :TStrings);
 begin
-  FIniFile.ReadSectionValues(FSection, strings);
+  FIniFile.ReadSection(FSection, strings);
 end;
+
+procedure TJvRegistryIniFile.ReadSectionValues(Strings: TStrings);
+begin
+  FIniFile.ReadSectionValues(FSection, Strings);
+end;
+
 
 function TJvRegistryIniFile.KeyExists(const Key: string): boolean;
 begin
