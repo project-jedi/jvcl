@@ -6,9 +6,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="C5,C6,C6p" Condition=""/>
-    <Package Name="JvCustom-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCustom-R" Targets="all" Condition=""/>
     <Package Name="JvSystem-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C5,C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -24,13 +24,14 @@
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvLookoutEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvOutlookBarEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvOutlookBarForm.pas" Targets="allbutclx" Formname="FrmOLBEditor" Condition=""/>
+    <File Name="..\..\design\JvLookoutEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvOutlookBarEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvOutlookBarForm.pas" Targets="all" Formname="FrmOLBEditor" Condition=""/>
     <File Name="..\..\design\JvScheduleEditorForm.pas" Targets="allbutclx" Formname="FrmScheduleEditor" Condition=""/>
     <File Name="..\..\design\JvScheduleEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvTimeLineEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvCustomReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQCustomReg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvHLEditEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

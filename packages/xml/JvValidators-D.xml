@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvValidators" Design="-1">
   <Description>JVCL Validators and Error Provider Components</Description>
+  <ClxDescription>JVCLX Validators and Error Provider Components</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvValidators-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvValidators-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="C6,C6p" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
@@ -20,7 +21,7 @@
     <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvValidatorsReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvValidatorsEditorForm.pas" Targets="allbutclx" Formname="frmValidatorsEditor" Condition=""/>
+    <File Name="..\..\design\JvValidatorsReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvValidatorsEditorForm.pas" Targets="all" Formname="frmValidatorsEditor" Condition=""/>
   </Contains>
 </Package>

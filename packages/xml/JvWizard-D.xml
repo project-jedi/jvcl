@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvWizard" Design="-1">
   <Description>JVCL Wizard Design Time Package</Description>
+  <ClxDescription>JVCLX Wizard Design Time Package</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>

@@ -31,7 +31,7 @@
     <File Name="..\..\design\JvBaseDsgnForm.pas" Targets="all" Formname="JvBaseDesign" Condition=""/>
     <File Name="..\..\design\JvBaseDsgnFrame.pas" Targets="all" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
     <File Name="..\..\design\JvBaseDsgnToolbarFrame.pas" Targets="all" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvColorEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvColorEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvColorProviderDesignerForm.pas" Targets="all" Formname="frmJvColorProviderDesigner" Condition=""/>
     <File Name="..\..\design\JvColorProviderEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvCoreReg.pas" Targets="all" Formname="" Condition=""/>
@@ -41,7 +41,7 @@
     <File Name="..\..\design\JvDataProviderDesignerForm.pas" Targets="all" Formname="frmDataProviderDesigner" Condition=""/>
     <File Name="..\..\design\JvDataProviderEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDataProviderItemDesign.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDateTimeForm.pas" Targets="all" Formname="frmSelectDateTimeDlg" Condition=""/>
+    <File Name="..\..\design\JvDateTimeForm.pas" Targets="allbutclx" Formname="frmSelectDateTimeDlg" Condition=""/>
     <File Name="..\..\design\JvDesignerUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDsgnEditors.pas" Targets="all" Formname="" Condition=""/>

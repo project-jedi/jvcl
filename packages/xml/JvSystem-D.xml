@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvSystem" Design="-1">
   <Description>JVCL System Components</Description>
+  <ClxDescription>JVCLX System Components</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
@@ -24,8 +25,9 @@
     <File Name="..\..\design\JvMinMaxForm.pas" Targets="allbutclx" Formname="MinMaxInfoEditDialog" Condition=""/>
     <File Name="..\..\design\JvPerfStatEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvSystemReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQSystemReg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvTimerListEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvChangeNotifyEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvFormPropertiesForm.pas" Targets="allbutclx" Formname="JvFormPropsDlg" Condition=""/>
+    <File Name="..\..\design\JvChangeNotifyEditor.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\design\JvFormPropertiesForm.pas" Targets="all" Formname="JvFormPropsDlg" Condition=""/>
   </Contains>
 </Package>
