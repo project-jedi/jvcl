@@ -34,59 +34,48 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls,
-  JvColorBox, JvColorButton, JvComponent;
+  Buttons, ExtCtrls, JvColorBox;
+
+const
+  cButtonWidth = 22;
 
 type
-  TJvClrFrm = class(TJvForm)
+  TJvClrFrm = class(TForm)
     Bevel1: TBevel;
     OtherBtn: TSpeedButton;
-    ColorSquare1: TJvColorSquare;
-    ColorSquare2: TJvColorSquare;
-    ColorSquare3: TJvColorSquare;
-    ColorSquare4: TJvColorSquare;
-    ColorSquare5: TJvColorSquare;
-    ColorSquare6: TJvColorSquare;
-    ColorSquare7: TJvColorSquare;
-    ColorSquare8: TJvColorSquare;
-    ColorSquare9: TJvColorSquare;
-    ColorSquare10: TJvColorSquare;
-    ColorSquare11: TJvColorSquare;
-    ColorSquare12: TJvColorSquare;
-    ColorSquare13: TJvColorSquare;
-    ColorSquare14: TJvColorSquare;
-    ColorSquare15: TJvColorSquare;
-    ColorSquare16: TJvColorSquare;
-    ColorSquare17: TJvColorSquare;
-    ColorSquare18: TJvColorSquare;
-    ColorSquare19: TJvColorSquare;
-    ColorSquare20: TJvColorSquare;
-    ColorSquare21: TJvColorSquare;
     procedure OtherBtnClick(Sender: TObject);
-    procedure ColorSquare1Click(Sender: TObject);
-    procedure ColorSquare21Change(Sender: TObject);
+    procedure DoColorClick(Sender: TObject);
+    procedure DoColorChange(Sender: TObject);
     procedure FormKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormActivate(Sender: TObject);
   private
     FOwner: TControl;
     FCDVisible: Boolean;
+    CS:TJvColorSquare;
+    FButtonSize: integer;
     procedure ShowCD(Sender: TObject);
     procedure HideCD(Sender: TObject);
     procedure WMActivate(var Msg: TWMActivate); message WM_ACTIVATE;
+    procedure SetButtonSize(const Value: integer);
   protected
     procedure CreateWnd; override;
   public
     SelectedColor: TColor;
     CD: TColorDialog;
+    property ButtonSize:integer read FButtonSize write SetButtonSize default cButtonWidth;
+    procedure MakeColorButtons;
     procedure SetButton(Button: TControl);
+    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0);
+      override;
   end;
 
 implementation
+uses
+ JvColorButton;
 
-{$R *.DFM}
+{.$R *.DFM}
 
 procedure TJvClrFrm.SetButton(Button: TControl);
 begin
@@ -110,7 +99,7 @@ begin
   CD.Color := SelectedColor;
   if CD.Execute then
   begin
-    ColorSquare21.Color := CD.Color;
+    CS.Color := CD.Color;
     if FOwner is TJvColorButton then
     begin
       TJvColorButton(FOwner).CustomColors.Assign(CD.CustomColors);
@@ -133,7 +122,7 @@ begin
   end;
 end;
 
-procedure TJvClrFrm.ColorSquare1Click(Sender: TObject);
+procedure TJvClrFrm.DoColorClick(Sender: TObject);
 begin
   if Sender is TJvColorSquare then
     SelectedColor := (Sender as TJvColorSquare).Color;
@@ -143,9 +132,9 @@ begin
   ModalResult := mrOK;
 end;
 
-procedure TJvClrFrm.ColorSquare21Change(Sender: TObject);
+procedure TJvClrFrm.DoColorChange(Sender: TObject);
 begin
-  SelectedColor := ColorSquare21.Color;
+  SelectedColor := CS.Color;
   if Assigned(FOwner) and (FOwner is TJvColorButton) then
     TJvColorButton(FOwner).Color := SelectedColor;
 end;
@@ -158,14 +147,6 @@ begin
     Hide;
     ModalResult := mrCancel;
   end;
-end;
-
-procedure TJvClrFrm.FormCreate(Sender: TObject);
-begin
-  CD := TColorDialog.Create(Self);
-  FCDVisible := False;
-  CD.OnShow := ShowCD;
-  CD.OnClose := HideCD;
 end;
 
 procedure TJvClrFrm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -199,8 +180,95 @@ begin
     if FOwner is TJvColorButton then
       SelectedColor := TJvColorButton(FOwner).Color;
   end;
-  ClientWidth := ColorSquare4.Left + ColorSquare4.Width;
+  ClientWidth := CS.Left + CS.Width;
   Height := OtherBtn.Top + OtherBtn.Height + 8;
+end;
+
+constructor TJvClrFrm.CreateNew(AOwner: TComponent; Dummy: Integer);
+begin
+  inherited;
+  FButtonSize := cButtonWidth;
+  BorderIcons := [];
+  BorderStyle := bsDialog;
+  Font.Name := 'MS Shell Dlg 2';
+  FormStyle := fsStayOnTop;
+  KeyPreview := true;
+  OnActivate := FormActivate;
+  OnClose := FormClose;
+  OnKeyUp := FormKeyUp;
+
+  CD := TColorDialog.Create(self);
+  FCDVisible := False;
+  CD.OnShow := ShowCD;
+  CD.OnClose := HideCD;
+  MakeColorButtons;
+end;
+
+procedure TJvClrFrm.MakeColorButtons;
+const
+  cColorArray: array [0..19] of TColor =
+  (clWhite, clBlack, clSilver, clGray,
+   clRed, clMaroon, clYellow, clOlive,
+   clLime, clGreen, clAqua, clTeal,
+   clBlue, clNavy, clFuchsia, clPurple,
+   13554646, 16239525, 16251903, 10855077);
+var
+  i,X,Y:integer;
+begin
+  for i := ControlCount - 1 downto 0 do
+    if (Controls[i] is TJvColorSquare) or (Controls[i] is TBevel) then
+      Controls[i].Free;
+  X := 0;
+  Y := 0;
+  for i := 0 to 19 do
+  begin
+    CS := TJvColorSquare.Create(self);
+    CS.SetBounds(X, Y, FButtonSize,FButtonSize);
+    CS.Color := cColorArray[i];
+    CS.OnClick := DoColorClick;
+    CS.Parent := self;
+    CS.BorderStyle := bsSingle;
+    Inc(X, FButtonSize);
+    if (i + 1) mod 4 = 0 then
+    begin
+      Inc(Y,FButtonSize);
+      X := 0;
+    end;
+  end;
+  if OtherBtn = nil then
+    OtherBtn := TSpeedButton.Create(self);
+  with OtherBtn do
+  begin
+    SetBounds(0, Y + 6,FButtonSize * 3,FButtonSize);
+    Parent := self;
+//    Caption := SOtherCaption;
+    OnClick := OtherBtnClick;
+  end;
+  CS := TJvColorSquare.Create(self);
+  CS.Color := cColorArray[0];
+  CS.OnClick := DoColorClick;
+  CS.OnChange := DoColorChange;
+  CS.Parent := self;
+  CS.BorderStyle := bsSingle;
+  CS.SetBounds(FButtonSize * 3, Y + 6, FButtonSize,FButtonSize);
+  self.ClientWidth := CS.Left + CS.Width;
+  self.ClientHeight := OtherBtn.Top + OtherBtn.Height;
+  with TBevel.Create(self) do
+  begin
+    Parent := self;
+    Shape := bsTopLine;
+    SetBounds(2,Y, self.Width - 4,4);
+    Anchors := [akLeft, akBottom, akRight];
+  end;
+end;
+
+procedure TJvClrFrm.SetButtonSize(const Value: integer);
+begin
+  if FButtonSize <> Value then
+  begin
+    FButtonSize := Value;
+    MakeColorButtons;
+  end;
 end;
 
 end.
