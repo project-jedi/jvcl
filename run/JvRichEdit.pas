@@ -61,7 +61,11 @@ type
     caBackColor, caDisabled, caWeight, caSubscript, caRevAuthor);
   TJvConsistentAttributes = set of TJvConsistentAttribute;
   TSubscriptStyle = (ssNone, ssSubscript, ssSuperscript);
-  TUnderlineType = (utNone, utSolid, utWord, utDouble, utDotted, utWave);
+  TUnderlineType = (utNone, utSolid, utWord, utDouble, utDotted, utDash,
+    utDashDot, utDashDotDot, utWave, utThick);
+  TUnderlineColor = (ucBlack, ucBlue, ucAqua, ucLime, ucFuchsia, ucRed,
+    ucYellow, ucWhite, ucNavy, ucTeal, ucGreen, ucPurple, ucMaroon, ucOlive,
+    ucGray, ucSilver);
 
   TJvTextAttributes = class(TPersistent)
   private
@@ -69,16 +73,14 @@ type
     FType: TJvAttributeType;
     procedure AssignFont(Font: TFont);
     procedure GetAttributes(var Format: TCharFormat2);
-    function GetCharset: TFontCharset;
-    procedure SetCharset(Value: TFontCharset);
-    function GetSubscriptStyle: TSubscriptStyle;
-    procedure SetSubscriptStyle(Value: TSubscriptStyle);
+    procedure SetAttributes(var Format: TCharFormat2);
     function GetBackColor: TColor;
+    function GetCharset: TFontCharset;
     function GetColor: TColor;
     function GetConsistentAttributes: TJvConsistentAttributes;
+    function GetDisabled: Boolean;
     function GetHeight: Integer;
     function GetHidden: Boolean;
-    function GetDisabled: Boolean;
     function GetLink: Boolean;
     function GetName: TFontName;
     function GetOffset: Integer;
@@ -87,9 +89,11 @@ type
     function GetRevAuthorIndex: Byte;
     function GetSize: Integer;
     function GetStyle: TFontStyles;
+    function GetSubscriptStyle: TSubscriptStyle;
+    function GetUnderlineColor: TUnderlineColor;
     function GetUnderlineType: TUnderlineType;
-    procedure SetAttributes(var Format: TCharFormat2);
     procedure SetBackColor(Value: TColor);
+    procedure SetCharset(Value: TFontCharset);
     procedure SetColor(Value: TColor);
     procedure SetDisabled(Value: Boolean);
     procedure SetHeight(Value: Integer);
@@ -102,6 +106,8 @@ type
     procedure SetRevAuthorIndex(Value: Byte);
     procedure SetSize(Value: Integer);
     procedure SetStyle(Value: TFontStyles);
+    procedure SetSubscriptStyle(Value: TSubscriptStyle);
+    procedure SetUnderlineColor(const Value: TUnderlineColor);
     procedure SetUnderlineType(Value: TUnderlineType);
   protected
     procedure InitFormat(var Format: TCharFormat2);
@@ -109,11 +115,12 @@ type
   public
     constructor Create(AOwner: TJvCustomRichEdit; AttributeType: TJvAttributeType);
     procedure Assign(Source: TPersistent); override;
-    property Charset: TFontCharset read GetCharset write SetCharset;
     property BackColor: TColor read GetBackColor write SetBackColor;
+    property Charset: TFontCharset read GetCharset write SetCharset;
     property Color: TColor read GetColor write SetColor;
     property ConsistentAttributes: TJvConsistentAttributes read GetConsistentAttributes;
     property Disabled: Boolean read GetDisabled write SetDisabled;
+    property Height: Integer read GetHeight write SetHeight;
     property Hidden: Boolean read GetHidden write SetHidden;
     property Link: Boolean read GetLink write SetLink;
     property Name: TFontName read GetName write SetName;
@@ -121,10 +128,10 @@ type
     property Pitch: TFontPitch read GetPitch write SetPitch;
     property Protected: Boolean read GetProtected write SetProtected;
     property RevAuthorIndex: Byte read GetRevAuthorIndex write SetRevAuthorIndex;
-    property SubscriptStyle: TSubscriptStyle read GetSubscriptStyle write SetSubscriptStyle;
     property Size: Integer read GetSize write SetSize;
     property Style: TFontStyles read GetStyle write SetStyle;
-    property Height: Integer read GetHeight write SetHeight;
+    property SubscriptStyle: TSubscriptStyle read GetSubscriptStyle write SetSubscriptStyle;
+    property UnderlineColor: TUnderlineColor read GetUnderlineColor write SetUnderlineColor;
     property UnderlineType: TUnderlineType read GetUnderlineType write SetUnderlineType;
   end;
 
@@ -145,14 +152,15 @@ type
     function GetFirstIndent: Longint;
     function GetHeadingStyle: THeadingStyle;
     function GetLeftIndent: Longint;
-    function GetRightIndent: Longint;
-    function GetSpaceAfter: Longint;
-    function GetSpaceBefore: Longint;
     function GetLineSpacing: Longint;
     function GetLineSpacingRule: TLineSpacingRule;
     function GetNumbering: TJvNumbering;
+    function GetNumberingStart: Integer;
     function GetNumberingStyle: TJvNumberingStyle;
     function GetNumberingTab: Word;
+    function GetRightIndent: Longint;
+    function GetSpaceAfter: Longint;
+    function GetSpaceBefore: Longint;
     function GetTab(Index: Byte): Longint;
     function GetTabCount: Integer;
     function GetTableStyle: TParaTableStyle;
@@ -161,19 +169,18 @@ type
     procedure SetFirstIndent(Value: Longint);
     procedure SetHeadingStyle(Value: THeadingStyle);
     procedure SetLeftIndent(Value: Longint);
-    procedure SetRightIndent(Value: Longint);
-    procedure SetSpaceAfter(Value: Longint);
-    procedure SetSpaceBefore(Value: Longint);
     procedure SetLineSpacing(Value: Longint);
     procedure SetLineSpacingRule(Value: TLineSpacingRule);
     procedure SetNumbering(Value: TJvNumbering);
+    procedure SetNumberingStart(const Value: Integer);
     procedure SetNumberingStyle(Value: TJvNumberingStyle);
     procedure SetNumberingTab(Value: Word);
+    procedure SetRightIndent(Value: Longint);
+    procedure SetSpaceAfter(Value: Longint);
+    procedure SetSpaceBefore(Value: Longint);
     procedure SetTab(Index: Byte; Value: Longint);
     procedure SetTabCount(Value: Integer);
     procedure SetTableStyle(Value: TParaTableStyle);
-    function GetNumberingStart: Integer;
-    procedure SetNumberingStart(const Value: Integer);
   protected
     procedure InitPara(var Paragraph: TParaFormat2);
     procedure AssignTo(Dest: TPersistent); override;
@@ -322,19 +329,19 @@ type
     procedure SetSelText(const Value: string);
     procedure FindDialogClose(Sender: TObject);
     procedure SetUIActive(Active: Boolean);
-    procedure CMDocWindowActivate(var Msg: TMessage); message CM_DOCWINDOWACTIVATE;
-    procedure CMUIDeactivate(var Msg: TMessage); message CM_UIDEACTIVATE;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
+    procedure CMDocWindowActivate(var Msg: TMessage); message CM_DOCWINDOWACTIVATE;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
+    procedure CMUIDeactivate(var Msg: TMessage); message CM_UIDEACTIVATE;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure EMReplaceSel(var Msg: TMessage); message EM_REPLACESEL;
     procedure WMDestroy(var Msg: TWMDestroy); message WM_DESTROY;
     procedure WMMouseMove(var Msg: TMessage); message WM_MOUSEMOVE;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMRButtonUp(var Msg: TMessage); message WM_RBUTTONUP;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure WMSetFont(var Msg: TWMSetFont); message WM_SETFONT;
-    procedure WMRButtonUp(var Msg: TMessage); message WM_RBUTTONUP;
     // From JvRichEdit.pas by Sébastien Buysse
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
@@ -417,7 +424,7 @@ type
     function WordAtCursor: string;
     function FindText(const SearchStr: string;
       StartPos, Length: Integer; Options: TRichSearchTypes): Integer;
-    function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer;override;
+    function GetSelTextBuf(Buffer: PChar; BufSize: Integer): Integer; override;
     function GetCaretPos: TPoint; override;
     function GetCharPos(CharIndex: Integer): TPoint;
     function InsertObjectDialog: Boolean;
@@ -437,7 +444,7 @@ type
     property CanPaste: Boolean read GetCanPaste;
     property RedoName: TUndoName read GetRedoName;
     property UndoName: TUndoName read GetUndoName;
-    property DefaulTJvConverter: TConversionClass read FDefaultJvConverter
+    property DefaultJvConverter: TConversionClass read FDefaultJvConverter
       write FDefaultJvConverter;
     property DefAttributes: TJvTextAttributes read FDefAttributes write SetDefAttributes;
     property SelAttributes: TJvTextAttributes read FSelAttributes write SetSelAttributes;
@@ -558,7 +565,6 @@ const
   RichEdit10ModuleName = 'RICHED32.DLL';
   RichEdit20ModuleName = 'RICHED20.DLL';
 
-
 const
   FT_DOWN = 1;
 
@@ -570,6 +576,38 @@ const
   PFNS_NONUMBER  = $0400; // Used for continuation w/o number
   PFNS_NEWNUMBER = $8000; // Start new number with wNumberingStart
                           // (can be combined with other PFNS_xxx)
+
+  EM_SETTYPOGRAPHYOPTIONS = (WM_USER + 202);
+  EM_GETTYPOGRAPHYOPTIONS = (WM_USER + 203);
+
+  // Options for EM_SETTYPOGRAPHYOPTIONS
+  TO_ADVANCEDTYPOGRAPHY = 1;
+  TO_SIMPLELINEBREAK = 2;
+  TO_DISABLECUSTOMTEXTOUT = 4;
+  TO_ADVANCEDLAYOUT = 8;
+
+  // Underline types. RE 1.0 displays only CFU_UNDERLINE
+  CFU_CF1UNDERLINE             = $FF; // Map charformat's bit underline to CF2
+  CFU_INVERT                   = $FE; // For IME composition fake a selection
+  CFU_UNDERLINETHICKLONGDASH   = 18; // (*) display as dash
+  CFU_UNDERLINETHICKDOTTED     = 17; // (*) display as dot
+  CFU_UNDERLINETHICKDASHDOTDOT = 16; // (*) display as dash dot dot
+  CFU_UNDERLINETHICKDASHDOT    = 15; // (*) display as dash dot
+  CFU_UNDERLINETHICKDASH       = 14; // (*) display as dash
+  CFU_UNDERLINELONGDASH        = 13; // (*) display as dash
+  CFU_UNDERLINEHEAVYWAVE       = 12; // (*) display as wave
+  CFU_UNDERLINEDOUBLEWAVE      = 11; // (*) display as wave
+  CFU_UNDERLINEHAIRLINE        = 10; // (*) display as single
+  CFU_UNDERLINETHICK           = 9;
+  CFU_UNDERLINEWAVE            = 8;
+  CFU_UNDERLINEDASHDOTDOT      = 7;
+  CFU_UNDERLINEDASHDOT         = 6;
+  CFU_UNDERLINEDASH            = 5;
+  CFU_UNDERLINEDOTTED          = 4;
+  CFU_UNDERLINEDOUBLE          = 3; // (*) display as single
+  CFU_UNDERLINEWORD            = 2; // (*) display as single
+  CFU_UNDERLINE                = 1;
+  CFU_UNDERLINENONE            = 0;
 
 type
   PENLink = ^TENLink;
@@ -952,6 +990,22 @@ begin
   SetAttributes(Format);
 end;
 
+function TJvTextAttributes.GetUnderlineColor: TUnderlineColor;
+var
+  Format: TCharFormat2;
+begin
+  Result := ucBlack;
+  if RichEditVersion < 3 then
+    Exit;
+  GetAttributes(Format);
+  with Format do
+  begin
+    if (dwEffects and CFE_UNDERLINE <> 0) and
+      (dwMask and CFM_UNDERLINETYPE = CFM_UNDERLINETYPE) then
+      Result := TUnderlineColor(bUnderlineType div $10);
+  end;
+end;
+
 function TJvTextAttributes.GetUnderlineType: TUnderlineType;
 var
   Format: TCharFormat2;
@@ -964,8 +1018,31 @@ begin
   begin
     if (dwEffects and CFE_UNDERLINE <> 0) and
       (dwMask and CFM_UNDERLINETYPE = CFM_UNDERLINETYPE) then
-      Result := TUnderlineType(bUnderlineType);
+      Result := TUnderlineType(bUnderlineType mod $10);
   end;
+end;
+
+procedure TJvTextAttributes.SetUnderlineColor(
+  const Value: TUnderlineColor);
+var
+  Format: TCharFormat2;
+  LUnderlineType: TUnderlineType;
+begin
+  if RichEditVersion < 3 then
+    Exit;
+
+  LUnderlineType := UnderlineType;
+  if LUnderlineType = utNone then
+    Exit;
+
+  InitFormat(Format);
+  with Format do
+  begin
+    dwMask := CFM_UNDERLINETYPE or CFM_UNDERLINE;
+    bUnderlineType := Ord(LUnderlineType) + $10 * Ord(Value);
+    dwEffects := dwEffects or CFE_UNDERLINE;
+  end;
+  SetAttributes(Format);
 end;
 
 procedure TJvTextAttributes.SetUnderlineType(Value: TUnderlineType);
@@ -980,7 +1057,10 @@ begin
     dwMask := CFM_UNDERLINETYPE or CFM_UNDERLINE;
     bUnderlineType := Ord(Value);
     if Value <> utNone then
+    begin
+      Inc(bUnderlineType, $10 * Ord(UnderlineColor));
       dwEffects := dwEffects or CFE_UNDERLINE;
+    end;
   end;
   SetAttributes(Format);
 end;
@@ -1255,6 +1335,16 @@ var
   Paragraph: TParaFormat2;
 begin
   InitPara(Paragraph);
+  if (Value = paJustify) and (RichEditVersion >= 3) then
+  begin
+    { -> function }
+    FRichEdit.HandleNeeded;
+    if FRichEdit.HandleAllocated then
+      { MSDN: Advanced and normal line breaking may also be turned on automatically
+        by the rich edit control if it is needed for certain languages }
+      SendMessage(FRichEdit.Handle, EM_SETTYPOGRAPHYOPTIONS, TO_ADVANCEDTYPOGRAPHY,
+        TO_ADVANCEDTYPOGRAPHY);
+  end;
   with Paragraph do
   begin
     dwMask := PFM_ALIGNMENT;
@@ -1319,8 +1409,6 @@ begin
 end;
 
 function TJvParaAttributes.GetNumberingStyle: TJvNumberingStyle;
-const
-  CNumberingStyle: array [0..3] of TJvNumberingStyle = (nsParenthesis, nsEnclosed, nsPeriod, nsSimple);
 var
   Paragraph: TParaFormat2;
 begin
@@ -1408,8 +1496,21 @@ begin
     Result := 0
   else
   begin
+    { See MSDN, ITextPara.GetStyle documentation:
+
+      -1  : StyleNormal
+      -2  : StyleHeading1
+      -3  : StyleHeading2
+      ..
+      -10 : StyleHeading9
+
+    }
     GetAttributes(Paragraph);
-    Result := Paragraph.sStyle;
+    Paragraph.sStyle := -Paragraph.sStyle + 1;
+    if (Paragraph.sStyle >= Low(THeadingStyle)) and (Paragraph.sStyle <= Low(THeadingStyle)) then
+      Result := THeadingStyle(Paragraph.sStyle)
+    else
+      Result := 0;
   end;
 end;
 
@@ -1423,7 +1524,7 @@ begin
   with Paragraph do
   begin
     dwMask := PFM_STYLE;
-    sStyle := Value;
+    sStyle := -Value - 1;
   end;
   SetAttributes(Paragraph);
 end;
@@ -2726,9 +2827,11 @@ begin
       begin
         Selection.cpMin :=
           SendMessage(FRichEdit.Handle, EM_LINEINDEX, Index - 1, 0);
-        if Selection.cpMin < 0 then Exit;
+        if Selection.cpMin < 0 then
+          Exit;
         L := SendMessage(FRichEdit.Handle, EM_LINELENGTH, Selection.cpMin, 0);
-        if L = 0 then Exit;
+        if L = 0 then
+          Exit;
         Inc(Selection.cpMin, L);
         if RichEditVersion = 1 then
           Fmt := CrLf + '%s'
@@ -2922,7 +3025,7 @@ begin
   if FConverter <> nil then
     Converter := FConverter
   else
-    Converter := FRichEdit.DefaulTJvConverter.Create;
+    Converter := FRichEdit.DefaultJvConverter.Create;
   StreamInfo.Converter := Converter;
   try
     with EditStream do
@@ -2984,7 +3087,7 @@ begin
   if FConverter <> nil then
     Converter := FConverter
   else
-    Converter := FRichEdit.DefaulTJvConverter.Create;
+    Converter := FRichEdit.DefaultJvConverter.Create;
   StreamInfo.Stream := Stream;
   StreamInfo.Converter := Converter;
   try
@@ -3172,7 +3275,7 @@ begin
   DC := GetDC(0);
   FScreenLogPixels := GetDeviceCaps(DC, LOGPIXELSY);
   ReleaseDC(0, DC);
-  DefaulTJvConverter := TConversion;
+  DefaultJvConverter := TConversion;
   FOldParaAlignment := TParaAlignment(Alignment);
   FUndoLimit := 100;
   FAutoURLDetect := True;
@@ -4018,7 +4121,7 @@ begin
               OleCheck(OleCreateFromData(Data.lpSrcDataObj, IOleObject,
                 OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
             1:
-              OleCheck(OleCreateLinkFromData(Data.lpSrcDataObj,IOleObject,
+              OleCheck(OleCreateLinkFromData(Data.lpSrcDataObj, IOleObject,
                 OLERENDER_DRAW, nil, OleClientSite, Storage, OleObject));
           end;
           try
@@ -4761,9 +4864,9 @@ end;
 
 procedure TJvCustomRichEdit.SetSelText(const Value: string);
 begin
-  FLinesUpdating := true;
+  FLinesUpdating := True;
   inherited SelText := Value;
-  FLinesUpdating := false;
+  FLinesUpdating := False;
 end;
 
 procedure TJvCustomRichEdit.FindDialogClose(Sender: TObject);
