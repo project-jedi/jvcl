@@ -1,3 +1,8 @@
+2002-07-26
+- Added updated JvCoupler from Rob den Braseem - set label position
+- Added TAnchorKind declaration to JvTypes for D4 and below
+- Added Action support to TJvCustomLookoutButton
+
 2002-07-25
 - Changed JvFunctions and JvWinDialogs to conditionally exclude cpl.pas for D6Pe
 - Changed D6Pe packages to remove units not supported
