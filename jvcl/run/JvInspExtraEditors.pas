@@ -181,9 +181,6 @@ uses
   JvResources;
 
 type
-  TOpenInspector = class(TJvCustomInspector);
-  TOpenPainter = class(TJvInspectorPainter);
-
   TColorQuad = packed record
     Red: Byte;
     Green: Byte;

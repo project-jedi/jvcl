@@ -327,7 +327,7 @@ end;
 
 {$IFDEF VisualCLX}
 type
-  TWidgetControlAccess = class(TWidgetControl);
+  TWidgetControlAccessProtected = class(TWidgetControl);
 {$ENDIF VisualCLX}
 
 procedure TJvImageControl.DoPaintControl;
@@ -355,7 +355,7 @@ begin
   {$IFDEF VisualCLX}
   DC := QPainter_create;
   try
-    QPainter_begin(DC, TWidgetControlAccess(Parent).GetPaintDevice);
+    QPainter_begin(DC, TWidgetControlAccessProtected(Parent).GetPaintDevice);
     try
       QPainter_setClipRect(DC, Left, Top, Width, Height);
       QPainter_translate(DC, Left, Top);

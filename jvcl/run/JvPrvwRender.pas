@@ -268,7 +268,7 @@ begin
 end;
 
 type
-  TOpenPrvwDoc = class(TJvCustomPreviewControl);
+  TJvCustomPreviewAccessProtected = class(TJvCustomPreviewControl);
 
 function CalcDestRect(AWidth, AHeight: Integer; DstRect: TRect; Stretch, Proportional, Center: Boolean): TRect;
 var
@@ -334,12 +334,12 @@ begin
     raise EPrintPreviewError.CreateRes(@RsEAPrintPreviewComponentMustBeAssigne);
   if not Append then
     PrintPreview.Clear;
-  FOldAddPage := TOpenPrvwDoc(PrintPreview).OnAddPage;
+  FOldAddPage := TJvCustomPreviewAccessProtected(PrintPreview).OnAddPage;
   try
-    TOpenPrvwDoc(PrintPreview).OnAddPage := InternalDoAddPage;
+    TJvCustomPreviewAccessProtected(PrintPreview).OnAddPage := InternalDoAddPage;
     PrintPreview.Add;
   finally
-    TOpenPrvwDoc(PrintPreview).OnAddPage := FOldAddPage;
+    TJvCustomPreviewAccessProtected(PrintPreview).OnAddPage := FOldAddPage;
   end;
 end;
 

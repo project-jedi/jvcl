@@ -893,8 +893,8 @@ var
   IsWinXP: Boolean;
 
 type
-  TlbControlAccess = class(TControl);
-  TlbWinControlAccess = class(TWinControl);
+  TControlAccessProtected = class(TControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 function FindDockBaseControl(Client: TControl): TJvDockBaseControl;
 var
@@ -1642,7 +1642,7 @@ end;
 
 procedure SetDockSite(Control: TWinControl; SiteValue: Boolean);
 begin
-  TlbWinControlAccess(Control).DockSite := SiteValue;
+  TWinControlAccessProtected(Control).DockSite := SiteValue;
   if (not (csDesigning in Control.ComponentState)) and (JvGlobalDockManager <> nil) then
     JvGlobalDockManager.RegisterDockSite(Control, SiteValue);
 end;
@@ -4141,7 +4141,7 @@ var
 begin
   with Source do
   begin
-    if (DragTarget = nil) or (not TlbWinControlAccess(DragTarget).UseDockManager) then
+    if (DragTarget = nil) or (not TWinControlAccessProtected(DragTarget).UseDockManager) then
     begin
       NewWidth := Control.UndockWidth;
       NewHeight := Control.UndockHeight;
@@ -4162,7 +4162,7 @@ begin
     begin
       GetWindowRect(TargetControl.Handle, R);
       DockRect := R;
-      if TlbWinControlAccess(DragTarget).UseDockManager then
+      if TWinControlAccessProtected(DragTarget).UseDockManager then
         if TargetControl is TJvDockCustomPanel then
           if (TJvDockCustomPanel(DragTarget).JvDockManager <> nil) then
           begin
@@ -4203,7 +4203,7 @@ end;
 procedure TJvDockBasicStyle.FormGetDockEdge(DockClient: TJvDockClient;
   Source: TJvDockDragDockObject; MousePos: TPoint; var DropAlign: TAlign);
 begin
-  DropAlign := TlbControlAccess(DockClient.ParentForm).GetDockEdge(MousePos);
+  DropAlign := TControlAccessProtected(DockClient.ParentForm).GetDockEdge(MousePos);
 end;
 
 procedure TJvDockBasicStyle.SetConjoinServerOption(const Value: TJvDockBasicConjoinServerOption);

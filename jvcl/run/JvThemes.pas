@@ -1264,23 +1264,23 @@ end;
 { Delphi 7 handles these styles itself. }
 
 type
-  TControlAccess = class(TControl);
+  TControlAccessProtected = class(TControl);
 
 procedure IncludeThemeStyle(Control: TControl; Style: TThemeStyle);
 begin
-  with TControlAccess(Control) do
+  with TControlAccessProtected(Control) do
     ControlStyle := ControlStyle + (Style * [csNeedsBorderPaint, csParentBackground]);
 end;
 
 procedure ExcludeThemeStyle(Control: TControl; Style: TThemeStyle);
 begin
-  with TControlAccess(Control) do
+  with TControlAccessProtected(Control) do
     ControlStyle := ControlStyle - (Style * [csNeedsBorderPaint, csParentBackground]);
 end;
 
 function GetThemeStyle(Control: TControl): TThemeStyle;
 begin
-  with TControlAccess(Control) do
+  with TControlAccessProtected(Control) do
     Result := ControlStyle * [csNeedsBorderPaint, csParentBackground];
 end;
 

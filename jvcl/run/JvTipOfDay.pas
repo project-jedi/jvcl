@@ -189,8 +189,8 @@ const
 
 
 type
-  TControlAccess = class(TControl);
-  TButtonControlAccess = class(TButtonControl);
+  TControlAccessProtected = class(TControl);
+  TButtonControlAccessProtected = class(TButtonControl);
 
 constructor TJvTipOfDay.Create(AOwner: TComponent);
 begin
@@ -308,7 +308,7 @@ begin
   {$IFDEF VCL}
       ShowModal;
 
-      if TButtonControlAccess(FCheckBox).Checked then
+      if TButtonControlAccessProtected(FCheckBox).Checked then
         Include(FOptions, toShowOnStartUp)
       else
         Exclude(FOptions, toShowOnStartUp)
@@ -341,7 +341,7 @@ procedure TJvTipOfDay.FormHide(Sender: TObject);
 begin
   with Sender as TForm do
   begin
-    if TButtonControlAccess(FCheckBox).Checked then
+    if TButtonControlAccessProtected(FCheckBox).Checked then
       Include(FOptions, toShowOnStartUp)
     else
       Exclude(FOptions, toShowOnStartUp);
@@ -497,7 +497,7 @@ begin
       { ..so create a TJvButton unless Flat is set to True }
       FNextTipButton := TJvCustomButton.Create(AForm);
 
-    with TControlAccess(FNextTipButton) do
+    with TControlAccessProtected(FNextTipButton) do
     begin
       Parent := AForm;
       SetBounds(164, 232, 75, 25);
@@ -605,7 +605,7 @@ begin
       { ..so create a TJvButton unless Flat is set to True }
       FNextTipButton := TJvCustomButton.Create(AForm);
 
-    with TControlAccess(FNextTipButton) do
+    with TControlAccessProtected(FNextTipButton) do
     begin
       Parent := AForm;
       SetBounds(227, 225, 77, 25);
@@ -804,9 +804,9 @@ end;
 procedure TJvTipOfDay.UpdateTip;
 begin
   if Tips.Count > 0 then
-    TControlAccess(FTipLabel).Caption := Tips[FCurrentTip];
+    TControlAccessProtected(FTipLabel).Caption := Tips[FCurrentTip];
   if Tips.Count <= 1 then
-    TControlAccess(FNextTipButton).Enabled := False;
+    TControlAccessProtected(FNextTipButton).Enabled := False;
 end;
 
 procedure TJvTipOfDay.WriteToAppStorage(DoShowOnStartUp: Boolean);

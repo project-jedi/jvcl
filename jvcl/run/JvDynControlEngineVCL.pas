@@ -629,7 +629,7 @@ end;
 
 {$IFDEF VisualCLX}
 type
-  TOpenMaskEdit = class(TMaskEdit);
+  TMaskEditAccessProtected = class(TMaskEdit);
 {$ENDIF VisualCLX}
 
 procedure TJvDynControlVCLButtonEdit.ControlSetPasswordChar(Value: Char);
@@ -639,9 +639,9 @@ begin
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   if Value = #0 then
-    TOpenMaskEdit(FEditControl).EchoMode := emNormal
+    TMaskEditAccessProtected(FEditControl).EchoMode := emNormal
   else
-    TOpenMaskEdit(FEditControl).EchoMode := emPassword;
+    TMaskEditAccessProtected(FEditControl).EchoMode := emPassword;
   {$ENDIF VisualCLX}
 end;
 

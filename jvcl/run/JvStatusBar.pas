@@ -268,8 +268,7 @@ end;
 {$IFDEF COMPILER6_UP}
 
 type
-  // access protected properties and methods
-  THackStatusPanels = class(TStatusPanels);
+  TStatusPanelsAccessProtected = class(TStatusPanels);
 
 constructor TJvStatusPanel.Create(Collection: TCollection);
 begin
@@ -287,14 +286,14 @@ end;
 procedure TJvStatusPanel.Changed(AllItems: Boolean);
 begin
   inherited Changed(AllItems);
-  (THackStatusPanels(Collection).GetOwner as TJvStatusBar).MovePanelControls;
+  (TStatusPanelsAccessProtected(Collection).GetOwner as TJvStatusBar).MovePanelControls;
 end;
 
 procedure TJvStatusPanel.SetControl(const Value: TControl);
 var
   S: TJvStatusBar;
 begin
-  S := THackStatusPanels(Collection).Owner as TJvStatusBar;
+  S := TStatusPanelsAccessProtected(Collection).Owner as TJvStatusBar;
   if FControl <> nil then
     FControl.RemoveFreeNotification(S);
   FControl := Value;

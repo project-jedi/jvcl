@@ -1686,7 +1686,7 @@ begin
   while IsWindow(H) and (H <> FormHandle) do
     H := GetParent(H);
   Result := H = FormHandle;
-end;            
+end;
 
 procedure TJvBalloonWindowEx.EnsureTopMost;
 begin

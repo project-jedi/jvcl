@@ -1218,9 +1218,6 @@ begin
   end;
 end;
 
-type
-  THackDataset = class(TDataset);
-
 procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
   var Background: TColor; Highlight: Boolean);
 
@@ -1365,7 +1362,7 @@ begin
 end;
 
 type
-  THackLink = class(TGridDataLink);
+  TGridDataLinkAccessProtected = class(TGridDataLink);
 
 procedure TJvDBGrid.EnableScroll;
 begin
@@ -1373,7 +1370,7 @@ begin
   begin
     Dec(FDisableCount);
     if FDisableCount = 0 then
-      THackLink(DataLink).DataSetScrolled(0);
+      TGridDataLinkAccessProtected(DataLink).DataSetScrolled(0);
   end;
 end;
 
@@ -1712,7 +1709,7 @@ begin
 end;
 
 type
-  TJvHack = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 procedure TJvDBGrid.WMChar(var Msg: TWMChar);
 
@@ -1724,7 +1721,7 @@ procedure TJvDBGrid.WMChar(var Msg: TWMChar);
     Result := True;
     Form := GetParentForm(Self);
     if (Form <> nil) and TForm(Form).KeyPreview and
-      TJvHack(Form).DoKeyPress(Msg) then
+      TWinControlAccessProtected(Form).DoKeyPress(Msg) then
       Exit;
     with Msg do
     begin

@@ -751,12 +751,12 @@ end;
 
 {$IFDEF VisualCLX}
 type
-  TOpenIcon = class(TIcon);
+  TIconAccessProtected = class(TIcon);
 
 function Icon2Bitmap(Ico: TIcon): TBitmap;
 begin
   Result := TBitmap.Create;
-  TOpenIcon(Ico).AssignTo(Result);
+  TIconAccessProtected(Ico).AssignTo(Result);
 end;
 
 function Bitmap2Icon(bmp: TBitmap): TIcon;
@@ -2251,7 +2251,7 @@ begin
 end;
 
 type
-  TCustomControlHack = class(TCustomControl);
+  TCustomControlAccessProtected = class(TCustomControl);
 
 {$IFDEF MSWINDOWS}
 
@@ -2416,7 +2416,7 @@ var
 begin
   AutoScroll := AForm.AutoScroll;
   AForm.Hide;
-  TCustomControlHack(AForm).DestroyHandle;
+  TCustomControlAccessProtected(AForm).DestroyHandle;
   with AForm do
   begin
     {$IFDEF VCL}
@@ -3047,17 +3047,17 @@ begin
     vaTopJustify:
       h := MinOffs;
     vaCenterJustify:
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TCustomControlHack(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap,
+  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap,
     ARightToLeft);
 end;
 
@@ -3081,17 +3081,17 @@ begin
     vaTopJustify:
       h := MinOffs;
     vaCenterJustify:
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(1, (ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
-      with TCustomControlHack(Control) do
+      with TCustomControlAccessProtected(Control) do
         h := Max(MinOffs, ARect.Bottom - ARect.Top -
           Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TCustomControlHack(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap);
+  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap);
 end;
 
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
@@ -3107,7 +3107,7 @@ procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
 begin
   Rect.Top := (Rect.Bottom + Rect.Top - Bmp.Height) div 2;
   Rect.Left := (Rect.Right + Rect.Left - Bmp.Width) div 2;
-  TCustomControlHack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
+  TCustomControlAccessProtected(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
 { TJvDesktopCanvas }
@@ -4162,7 +4162,7 @@ type
   {                                                       }
   {*******************************************************}
 
-  TJvNastyForm = class(TScrollingWinControl)
+  TJvHackForm = class(TScrollingWinControl)
   private
     FActiveControl: TWinControl;
     FFocusedControl: TWinControl;
@@ -4172,7 +4172,7 @@ type
     FWindowState: TWindowState; { !! }
   end;
 
-  TOpenComponent = class(TComponent);
+  TComponentAccessProtected = class(TComponent);
   {$HINTS ON}
 
 function CrtResString: string;
@@ -4359,11 +4359,11 @@ begin
           if (Position in [poScreenCenter, poDesktopCenter]) and
             not (csDesigning in ComponentState) then
           begin
-            TOpenComponent(Form).SetDesigning(True);
+            TComponentAccessProtected(Form).SetDesigning(True);
             try
               Position := poDesigned;
             finally
-              TOpenComponent(Form).SetDesigning(False);
+              TComponentAccessProtected(Form).SetDesigning(False);
             end;
           end;
           SetWindowPlacement(Handle, @Placement);
@@ -4391,12 +4391,12 @@ begin
       if (WinState = wsMinimized) and ((Form = Application.MainForm)
         or (Application.MainForm = nil)) then
       begin
-        TJvNastyForm(Form).FWindowState := wsNormal;
+        TJvHackForm(Form).FWindowState := wsNormal;
         PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
         Exit;
       end;
       if FormStyle in [fsMDIChild, fsMDIForm] then
-        TJvNastyForm(Form).FWindowState := WinState
+        TJvHackForm(Form).FWindowState := WinState
       else
       {$ENDIF VCL}
         WindowState := WinState;

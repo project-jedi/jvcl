@@ -147,7 +147,7 @@ begin
 end;
 
 type
-  THackImageList = class(TImageList);
+  TImageListAccessProtected = class(TImageList);
 
 procedure TJvPicClip.AssignTo(Dest: TPersistent);
 var
@@ -180,7 +180,7 @@ begin
       finally
         OnChange := SaveChange;
       end;
-      THackImageList(Dest).Change;
+      TImageListAccessProtected(Dest).Change;
     end;
   end
   else

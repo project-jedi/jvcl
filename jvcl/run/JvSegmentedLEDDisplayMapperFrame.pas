@@ -150,8 +150,8 @@ uses
 {$R *.dfm}
 
 type
-  TOpenDisplay = class(TJvCustomSegmentedLEDDisplay);
-  TOpenDigit = class(TJvCustomSegmentedLEDDigit);
+  TJvCustomSegmentedLEDDisplayAccessProtected = class(TJvCustomSegmentedLEDDisplay);
+  TJvCustomSegmentedLEDDigitAccessProtected = class(TJvCustomSegmentedLEDDigit);
 
 function Mask(SegCount: Integer): Int64;
 begin
@@ -224,12 +224,12 @@ end;
 
 function TfmeJvSegmentedLEDDisplayMapper.GetMapper: TJvSegmentedLEDCharacterMapper;
 begin
-  Result := TOpenDisplay(Display).CharacterMapper;
+  Result := TJvCustomSegmentedLEDDisplayAccessProtected(Display).CharacterMapper;
 end;
 
 function TfmeJvSegmentedLEDDisplayMapper.GetDigitClass: TJvSegmentedLEDDigitClass;
 begin
-  Result := TOpenDisplay(Display).DigitClass;
+  Result := TJvCustomSegmentedLEDDisplayAccessProtected(Display).DigitClass;
 end;
 
 function TfmeJvSegmentedLEDDisplayMapper.GetDisplay: TJvCustomSegmentedLEDDisplay;
@@ -244,10 +244,10 @@ begin
     FDisplay := Value;
     if Value <> nil then
     begin
-      sldEdit.DigitClass := TOpenDisplay(Value).DigitClass;
+      sldEdit.DigitClass := TJvCustomSegmentedLEDDisplayAccessProtected(Value).DigitClass;
       if sldEdit.Digits.Count = 0 then
         sldEdit.Digits.Add;
-      TOpenDigit(sldEdit.Digits[0]).EnableAllSegs;
+      TJvCustomSegmentedLEDDigitAccessProtected(sldEdit.Digits[0]).EnableAllSegs;
       DisplayChanged;
     end;
   end;
@@ -299,7 +299,7 @@ begin
   if aiEditClear.Enabled and
     (sldEdit.GetHitInfo(FMouseDownX, FMouseDownY, Digit, SegIdx) = shiDigitSegment) then
   begin
-    TOpenDigit(Digit).SetSegmentStates(Digit.GetSegmentStates xor 1 shl SegIdx);
+    TJvCustomSegmentedLEDDigitAccessProtected(Digit).SetSegmentStates(Digit.GetSegmentStates xor 1 shl SegIdx);
     FCharModified := True;
   end;
 end;
@@ -386,13 +386,13 @@ end;
 
 procedure TfmeJvSegmentedLEDDisplayMapper.aiEditPasteExecute(Sender: TObject);
 begin
-  TOpenDigit(sldEdit.Digits[0]).SetSegmentStates(FCopiedValue);
+  TJvCustomSegmentedLEDDigitAccessProtected(sldEdit.Digits[0]).SetSegmentStates(FCopiedValue);
   FCharModified := True;
 end;
 
 procedure TfmeJvSegmentedLEDDisplayMapper.aiEditClearExecute(Sender: TObject);
 begin
-  TOpenDigit(sldEdit.Digits[0]).SetSegmentStates(0);
+  TJvCustomSegmentedLEDDigitAccessProtected(sldEdit.Digits[0]).SetSegmentStates(0);
   FCharModified := True;
 end;
 
@@ -401,7 +401,7 @@ var
   Digit: TJvCustomSegmentedLEDDigit;
 begin
   Digit := sldEdit.Digits[0];
-  TOpenDigit(Digit).SetSegmentStates(Digit.GetSegmentStates or Mask(Digit.SegmentCount));
+  TJvCustomSegmentedLEDDigitAccessProtected(Digit).SetSegmentStates(Digit.GetSegmentStates or Mask(Digit.SegmentCount));
   FCharModified := True;
 end;
 
@@ -410,7 +410,7 @@ var
   Digit: TJvCustomSegmentedLEDDigit;
 begin
   Digit := sldEdit.Digits[0];
-  TOpenDigit(Digit).SetSegmentStates(Digit.GetSegmentStates xor Mask(Digit.SegmentCount));
+  TJvCustomSegmentedLEDDigitAccessProtected(Digit).SetSegmentStates(Digit.GetSegmentStates xor Mask(Digit.SegmentCount));
   FCharModified := True;
 end;
 
@@ -444,7 +444,7 @@ end;
 
 procedure TfmeJvSegmentedLEDDisplayMapper.aiEditRevertExecute(Sender: TObject);
 begin
-  TOpenDigit(sldEdit.Digits[0]).SetSegmentStates(
+  TJvCustomSegmentedLEDDigitAccessProtected(sldEdit.Digits[0]).SetSegmentStates(
     Mapper.CharMapping[FCurChar]);
   FCharModified := False;
 end;

@@ -560,8 +560,8 @@ begin
 end;
 
 type
-  THackControl = class(TControl);
-  THackWinControl = class(TWinControl);
+  TControlAccessProtected = class(TControl);
+  TWinControlAccessProtected = class(TWinControl);
 
   PCheckTargetInfo = ^TCheckTargetInfo;
   TCheckTargetInfo = record
@@ -789,8 +789,8 @@ var
 
   function GetDockClientsIndex: Integer;
   begin
-    for Result := 0 to THackWinControl(TargetCtl).DockClientCount - 1 do
-      if THackWinControl(TargetCtl).DockClients[Result] = NextCtl then
+    for Result := 0 to TWinControlAccessProtected(TargetCtl).DockClientCount - 1 do
+      if TWinControlAccessProtected(TargetCtl).DockClients[Result] = NextCtl then
         Exit;
     Result := -1;
   end;
@@ -798,10 +798,10 @@ var
 begin
   Result := nil;
   TargetCtl := DragTarget;
-  if (TargetCtl = nil) or not THackWinControl(TargetCtl).UseDockManager or
+  if (TargetCtl = nil) or not TWinControlAccessProtected(TargetCtl).UseDockManager or
     (TargetCtl.DockClientCount = 0) or
     ((TargetCtl.DockClientCount = 1) and
-    (THackWinControl(TargetCtl).DockClients[0] = Control)) then
+    (TWinControlAccessProtected(TargetCtl).DockClients[0] = Control)) then
     Exit;
   NextCtl := FindDragTarget(DragPos, False);
   while (NextCtl <> nil) and (NextCtl <> TargetCtl) do
@@ -1000,7 +1000,7 @@ var
 begin
   with Source do
   begin
-    if (DragTarget = nil) or (not THackWinControl(DragTarget).UseDockManager) then
+    if (DragTarget = nil) or (not TWinControlAccessProtected(DragTarget).UseDockManager) then
     begin
       NewWidth := Control.UndockWidth;
       NewHeight := Control.UndockHeight;
@@ -1019,7 +1019,7 @@ begin
     begin
       GetWindowRect(TargetControl.Handle, R);
       DockRect := R;
-      if THackWinControl(DragTarget).UseDockManager then
+      if TWinControlAccessProtected(DragTarget).UseDockManager then
         if TargetControl is TJvDockCustomPanel then
           if TJvDockCustomPanel(DragTarget).JvDockManager <> nil then
           begin
@@ -2694,7 +2694,7 @@ procedure TJvDockManager.BeginDrag(Control: TControl; Immediate: Boolean; Thresh
 var
   P: TPoint;
 begin
-  if THackControl(Control).DragKind <> dkDock then
+  if TControlAccessProtected(Control).DragKind <> dkDock then
     Exit;
 
   CalcDockSizes(Control);
@@ -2810,7 +2810,7 @@ begin
   if (Abs(FDragStartPos.X - Pos.X) >= FDragThreshold) or
     (Abs(FDragStartPos.Y - Pos.Y) >= FDragThreshold) then
   begin
-    Target := DragFindTarget(Pos, TargetHandle, THackControl(FDragControl).DragKind, FDragControl);
+    Target := DragFindTarget(Pos, TargetHandle, TControlAccessProtected(FDragControl).DragKind, FDragControl);
     if (FActiveDrag = dopNone) and (FDragImageList <> nil) then
       with FDragStartPos do
         FDragImageList.BeginDrag(GetDeskTopWindow, X, Y);
@@ -3529,8 +3529,8 @@ begin
         if ActiveControl <> nil then
         begin
           FActiveControl := ActiveControl;
-          FOldKeyDown := THackWinControl(FActiveControl).OnKeyDown;
-          THackWinControl(FActiveControl).OnKeyDown := FocusKeyDown;
+          FOldKeyDown := TWinControlAccessProtected(FActiveControl).OnKeyDown;
+          TWinControlAccessProtected(FActiveControl).OnKeyDown := FocusKeyDown;
         end;
       if ResizeStyle in [rsLine, rsPattern] then
         DrawLine;
@@ -3568,7 +3568,7 @@ begin
           end;
         end;
     end;
-    THackControl(FControl).Resize;
+    TControlAccessProtected(FControl).Resize;
     Update;
     if Assigned(FOnMoved) then
       FOnMoved(Self);
@@ -3677,7 +3677,7 @@ begin
     ReleaseLineDC;
     if Assigned(FActiveControl) then
     begin
-      THackWinControl(FActiveControl).OnKeyDown := FOldKeyDown;
+      TWinControlAccessProtected(FActiveControl).OnKeyDown := FOldKeyDown;
       FActiveControl := nil;
     end;
   end;

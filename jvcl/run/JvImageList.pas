@@ -271,7 +271,7 @@ const
   TCustomImageList.HandleNeeded method. }
 
 type
-  TCustomImageListHack = class(TCustomImageList);
+  TCustomImageListAccessProtected = class(TCustomImageList);
 
   // we need direct access to the FHandle field because the Handle property
   // calls the Changed method that calls HandleNeeded that calls SetHandle, ...
@@ -317,7 +317,7 @@ var
 begin
   if HandleNeededHookInstalled then
   begin
-    OrgProc := @TCustomImageListHack.HandleNeeded;
+    OrgProc := @TCustomImageListAccessProtected.HandleNeeded;
 
     if WriteProcessMemory(GetCurrentProcess, OrgProc, @SavedNeededHookCode, SizeOf(SavedNeededHookCode), n) then
     begin
@@ -336,7 +336,7 @@ var
 begin
   if not HandleNeededHookInstalled then
   begin
-    OrgProc := @TCustomImageListHack.HandleNeeded;
+    OrgProc := @TCustomImageListAccessProtected.HandleNeeded;
     NewProc := @HandleNeededHook;
 
     Code.Jump := $E9;
@@ -959,7 +959,7 @@ begin
 end;
 
 type
-  TOpenComponent = class(TComponent);
+  TComponentAccessProtected = class(TComponent);
   TDefineProperties = procedure(Self: TComponent; Filer: TFiler);
 
 procedure TJvImageList.DefineProperties(Filer: TFiler);
@@ -973,7 +973,7 @@ begin
       (((FMode = imPicture) and (FPicture.Graphic <> nil) and (not FPicture.Graphic.Empty)) or
       ((FMode = imResourceIds) and (FResourceIds.Count > 0)) or
       ((FMode = imItemList) and (FItems.Count > 0))) then
-      TDefineProperties(@TOpenComponent.DefineProperties)(Self, Filer)
+      TDefineProperties(@TComponentAccessProtected.DefineProperties)(Self, Filer)
     else
       inherited DefineProperties(Filer);
   finally

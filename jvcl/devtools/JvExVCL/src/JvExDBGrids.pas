@@ -50,7 +50,7 @@ uses
   {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
 {$ENDIF VisualCLX}
-  
+
 type
   JV_CUSTOMCONTROL_EVENTS(CustomDBGrid)
   JV_CUSTOMCONTROL_EVENTS(DBGrid)

@@ -211,7 +211,7 @@ const
     ((alNone, alNone), (alTop, alBottom), (alLeft, alRight));
 
 type
-  THackWinControl = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 //=== TJvDockVCStyle =========================================================
 
@@ -803,7 +803,7 @@ var
 begin
   lbVCDockZone := TJvDockVCZone(FindControlZone(Control));
   DrawRect := ARect;
-  Canvas.Brush.Color := THackWinControl(DockSite).Color;
+  Canvas.Brush.Color := TWinControlAccessProtected(DockSite).Color;
   Canvas.FillRect(DrawRect);
   with ARect do
     case GrabbersPosition of

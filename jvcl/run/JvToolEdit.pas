@@ -961,9 +961,9 @@ const
 {$ENDIF LINUX}
 
 type
-  TCustomEditHack = class(TCustomEdit);
-  TCustomFormHack = class(TCustomForm);    
-  TWinControlHack = class(TWinControl);
+  TCustomEditAccessProtected = class(TCustomEdit);
+  TCustomFormAccessProtected = class(TCustomForm);    
+  TWinControlAccessProtected = class(TWinControl);
 
 const
   sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
@@ -1208,9 +1208,9 @@ end;
 function EditorTextMargins(Editor: TCustomEdit): TPoint;
 var
   I: Integer;
-  ed: TCustomEditHack;
+  ed: TCustomEditAccessProtected;
 begin
-  ed := TCustomEditHack(Editor);
+  ed := TCustomEditAccessProtected(Editor);
   if ed.BorderStyle = bsNone then
     I := 0
   else
@@ -1238,9 +1238,9 @@ var
   I: Integer;
   SaveFont: HFONT;
   SysMetrics, Metrics: TTextMetric;
-  ed: TCustomEditHack;
+  ed: TCustomEditAccessProtected;
 begin
-  ed := TCustomEditHack(Editor);
+  ed := TCustomEditAccessProtected(Editor);
   if NewStyleControls then
   begin
     if ed.BorderStyle = bsNone then
@@ -1367,12 +1367,12 @@ var
   PS: TPaintStruct;
   S: string;
   ExStyle: DWORD;
-  ed: TCustomEditHack;
+  ed: TCustomEditAccessProtected;
 begin
   Result := True;
   if csDestroying in Editor.ComponentState then
     Exit;
-  ed := TCustomEditHack(Editor);
+  ed := TCustomEditAccessProtected(Editor);
   if ed.UseRightToLeftAlignment then
     ChangeBiDiModeAlignment(AAlignment);
   if StandardPaint and not (csPaintCopy in ed.ControlState) then
@@ -1476,7 +1476,7 @@ var
   LTextWidth, X: Integer;
   EditRect: TRect;
   S: WideString;
-  ed: TCustomEditHack;
+  ed: TCustomEditAccessProtected;
   SavedFont: TFontRecall;
   SavedBrush: TBrushRecall;
   Offset: Integer;
@@ -1486,7 +1486,7 @@ begin
   Result := True;
   if csDestroying in Editor.ComponentState then
     Exit;
-  ed := TCustomEditHack(Editor);
+  ed := TCustomEditAccessProtected(Editor);
   if StandardPaint and not (csPaintCopy in ed.ControlState) then
   begin
     Result := False;
@@ -2120,13 +2120,13 @@ begin
       VK_RETURN:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TWinControlHack(Form).KeyDown(Key, Shift);
+          TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
       VK_TAB:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TWinControlHack(Form).KeyDown(Key, Shift);
+          TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
     end;
@@ -2162,7 +2162,7 @@ begin
       GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
+      TCustomFormAccessProtected(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key));
       {$ENDIF VisualCLX}
       if Key = Cr then
       begin
@@ -2177,7 +2177,7 @@ begin
   begin
     Key := #0;
     if (Form <> nil) {and Form.KeyPreview} then
-      TWinControlHack(Form).KeyPress(Key);
+      TWinControlAccessProtected(Form).KeyPress(Key);
   end;
   //Polaris
   inherited KeyPress(Key);

@@ -3765,7 +3765,7 @@ end;
 {$IFDEF VisualCLX}
 
 type
-  TOpenIcon = class(TIcon);
+  TIconAccessProtected = class(TIcon);
 
 function Bmp2Icon(bmp: TBitmap): TIcon;
 begin
@@ -3776,7 +3776,7 @@ end;
 function Icon2Bmp(Ico: TIcon): TBitmap;
 begin
   Result := TBitmap.Create;
-  TOpenIcon(Ico).AssignTo(Result);
+  TIconAccessProtected(Ico).AssignTo(Result);
 end;
 
 procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);

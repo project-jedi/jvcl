@@ -2219,7 +2219,7 @@ end;
 
 initialization
   JvDBUtils.CreateLocateObject := CreateDbLocate;
-  
+
 finalization
   ReleaseSaveIndices;
   // (rom) i tried deleting the elements created by CreateDbLocate

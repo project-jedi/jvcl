@@ -134,13 +134,13 @@ const
   InverseThickness = 2;
   DefWidth = 3;
 
+type
+  TWinControlAccessProtected = class(TWinControl);
+
 function CToC(C1, C2: TControl; P: TPoint): TPoint;
 begin
   Result := C1.ScreenToClient(C2.ClientToScreen(P));
 end;
-
-type
-  TJvHack = class(TWinControl);
 
 constructor TJvxSplitter.Create(AOwner: TComponent);
 begin
@@ -603,7 +603,7 @@ begin
     Application.ShowHint := FAppShowHint;
     if Assigned(FActiveControl) then
     begin
-      TJvHack(FActiveControl).OnKeyDown := FOldKeyDown;
+      TWinControlAccessProtected(FActiveControl).OnKeyDown := FOldKeyDown;
       FActiveControl := nil;
     end;
     if Apply then
@@ -637,8 +637,8 @@ begin
           FActiveControl := ActiveControl
         else
           FActiveControl := GetParentForm(Self);
-        FOldKeyDown := TJvHack(FActiveControl).OnKeyDown;
-        TJvHack(FActiveControl).OnKeyDown := ControlKeyDown;
+        FOldKeyDown := TWinControlAccessProtected(FActiveControl).OnKeyDown;
+        TWinControlAccessProtected(FActiveControl).OnKeyDown := ControlKeyDown;
       end;
       Application.ShowHint := False;
       FOffset := Point(X, Y);

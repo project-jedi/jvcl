@@ -258,7 +258,7 @@ const
   sUnitName = 'JvBackgrounds';
 
 type
-  TWinControlAccess = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
   {$IFDEF USE_JvGIF}
   // make TJvGIFImage's Bitmap property visible
@@ -532,7 +532,7 @@ begin
   if Result then
   begin
     if not IsIconic(AClient.Handle) then
-      if not TWinControlAccess(AClient).FDoubleBuffered or (Msg.wParam = Msg.lParam) then
+      if not TWinControlAccessProtected(AClient).FDoubleBuffered or (Msg.wParam = Msg.lParam) then
         PaintBackground(AClient,
           TWMEraseBkgnd(Msg).DC);
     Msg.Result := 1;
@@ -548,7 +548,7 @@ var
 begin
   Result := False;
   if FEnabled and FPictureValid then
-    if TWinControlAccess(AClient).FDoubleBuffered and (TWMPaint(Msg).DC = 0) then
+    if TWinControlAccessProtected(AClient).FDoubleBuffered and (TWMPaint(Msg).DC = 0) then
     begin
       DC := GetDC(0);
       ClientRect := AClient.ClientRect;
@@ -1543,7 +1543,7 @@ end;
 
 function TJvBackgroundClientLink.GetClientColor: TColor;
 begin
-  Result := TWinControlAccess(FClient).Color;
+  Result := TWinControlAccessProtected(FClient).Color;
 end;
 
 function TJvBackgroundClientLink.GetClientHandle: HWND;

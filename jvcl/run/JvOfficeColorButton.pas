@@ -210,9 +210,9 @@ uses
   JvJCLUtils, JvExExtCtrls, JvThemes, JvResources;
 
 type
-  THackColorSpeedButton = class(TJvColorSpeedButton);
-  THackJvColorForm = class(TJvOfficeColorForm);
-  THackColorPanel = class(TJvOfficeColorPanel);
+  TColorSpeedButtonAccessProtected = class(TJvColorSpeedButton);
+  TJvOfficeColorFormAccessProtected = class(TJvOfficeColorForm);
+  TJvOfficeColorPanelAccessProtected = class(TJvOfficeColorPanel);
 
 //=== TJvColorArrowButton ====================================================
 
@@ -339,7 +339,7 @@ begin
   end;
 
   FColorsForm := TJvOfficeColorForm.CreateNew(Self);
-  with THackJvColorForm(FColorsForm) do
+  with TJvOfficeColorFormAccessProtected(FColorsForm) do
   begin
     FormStyle := fsStayOnTop;
     ToolWindowStyle := False;
@@ -375,7 +375,7 @@ destructor TJvCustomOfficeColorButton.Destroy;
 begin
   if FColorsForm.Visible then
   begin
-    with THackJvColorForm(FColorsForm) do
+    with TJvOfficeColorFormAccessProtected(FColorsForm) do
     begin
       OnShowingChanged := nil;
       OnKillFocus := nil;
@@ -561,8 +561,8 @@ begin
   if not FColorsForm.Visible then
   begin
     FArrowButton.Down := False;
-    THackColorSpeedButton(FArrowButton).MouseLeave(FArrowButton);
-    THackColorSpeedButton(FMainButton).MouseLeave(FMainButton);
+    TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
+    TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
   end
 end;
 
@@ -599,8 +599,8 @@ begin
   if FColorsForm.ToolWindowStyle then
   begin
     FArrowButton.Down := False;
-    THackColorSpeedButton(FArrowButton).MouseLeave(FArrowButton);
-    THackColorSpeedButton(FMainButton).MouseLeave(FMainButton);
+    TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
+    TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton);
   end;
 end;
 
@@ -608,8 +608,8 @@ procedure TJvCustomOfficeColorButton.DoButtonMouseEnter(Sender: TObject);
 begin
   if FFlat and Enabled then
   begin
-    THackColorSpeedButton(FMainButton).MouseEnter(FMainButton);
-    THackColorSpeedButton(FArrowButton).MouseEnter(FArrowButton);
+    TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton);
+    TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton);
   end;
 end;
 
@@ -620,17 +620,17 @@ begin
     if Sender = FMainButton then
     begin
       if FColorsForm.Visible then
-        THackColorSpeedButton(FMainButton).MouseEnter(FMainButton)
+        TColorSpeedButtonAccessProtected(FMainButton).MouseEnter(FMainButton)
       else
-        THackColorSpeedButton(FArrowButton).MouseLeave(FArrowButton);
+        TColorSpeedButtonAccessProtected(FArrowButton).MouseLeave(FArrowButton);
     end
     else
     if Sender = FArrowButton then
     begin
       if not FColorsForm.Visible then
-        THackColorSpeedButton(FMainButton).MouseLeave(FMainButton)
+        TColorSpeedButtonAccessProtected(FMainButton).MouseLeave(FMainButton)
       else
-        THackColorSpeedButton(FArrowButton).MouseEnter(FArrowButton);
+        TColorSpeedButtonAccessProtected(FArrowButton).MouseEnter(FArrowButton);
     end;
   end;
 end;
@@ -681,7 +681,7 @@ begin
     if FColorsForm.ShowDragBar <> Properties.ShowDragBar then
       FColorsForm.ShowDragBar := Properties.ShowDragBar;
     if not Properties.ShowDragBar and
-      THackJvColorForm(FColorsForm).DropDownMoved then
+      TJvOfficeColorFormAccessProtected(FColorsForm).DropDownMoved then
       AdjustColorForm;
   end
   else
@@ -711,8 +711,8 @@ begin
   else
   begin
     FColorsForm.ColorPanel.Properties.Assign(Properties);
-    THackColorPanel(FColorsForm.ColorPanel).PropertiesChanged(Properties, PropName);
-    THackJvColorForm(FColorsForm).AdjustColorForm;
+    TJvOfficeColorPanelAccessProtected(FColorsForm.ColorPanel).PropertiesChanged(Properties, PropName);
+    TJvOfficeColorFormAccessProtected(FColorsForm).AdjustColorForm;
   end;
 end;
 

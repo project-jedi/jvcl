@@ -135,7 +135,7 @@ type
     destructor Destroy; override;
     function DebugStr(ValueIndex: Integer): string; // dump all pens for particular valueindex, as string.
     procedure Clear; // Resets All Data to zero.
-    procedure ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc. 
+    procedure ClearPenValues; // Clears all pen values to NaN but does not reset pen definitions etc.
     procedure Scroll;
     property Value[Pen, ValueIndex: Integer]: Double read GetValue write SetValue; default;
     property Timestamp[ValueIndex: Integer]: TDateTime read GetTimestamp write SetTimestamp;

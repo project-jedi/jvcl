@@ -1698,10 +1698,11 @@ begin
 end;
 
 type
-  TOpenReader = class(TReader);
+  TReaderAccessProtected = class(TReader);
 
   {$TYPEINFO ON}
-  TOpenWriter = class(TWriter)
+  THackWriter = class(TWriter)
+    // (rom) public or protected missing
     function GetPropPath: string;
     function PropPathField: PString;
     procedure SetPropPath(const NewPath: string);
@@ -1713,22 +1714,22 @@ type
   {$TYPEINFO OFF}
   {$ENDIF TYPEINFO_ON}
 
-function TOpenWriter.GetPropPath: string;
+function THackWriter.GetPropPath: string;
 begin
   Result := PropPathField^;
 end;
 
-function TOpenWriter.PropPathField: PString;
+function THackWriter.PropPathField: PString;
 var
   RAPI: PPropInfo;
 begin
-  RAPI := GetPropInfo(TOpenWriter, 'RootAncestor');
+  RAPI := GetPropInfo(THackWriter, 'RootAncestor');
   if RAPI = nil then // Should never happen
     raise EJVCLException.CreateRes(@RsEInternalError);
   Result := Pointer(Cardinal(RAPI.GetProc) and $00FFFFFF + Cardinal(Self) + 4);
 end;
 
-procedure TOpenWriter.SetPropPath(const NewPath: string);
+procedure THackWriter.SetPropPath(const NewPath: string);
 begin
   if NewPath <> PropPath then
     PropPathField^ := NewPath;
@@ -2097,16 +2098,16 @@ var
   I: Integer;
   SavePropPath: string;
 begin
-  TOpenWriter(Writer).WriteValue(vaCollection);
-  SavePropPath := TOpenWriter(Writer).PropPath;
-  TOpenWriter(Writer).PropPath := '';
+  THackWriter(Writer).WriteValue(vaCollection);
+  SavePropPath := THackWriter(Writer).PropPath;
+  THackWriter(Writer).PropPath := '';
   try
     for I := 0 to FAdditionalIntfImpl.Count - 1 do
       if IsStreamableExtension(TAggregatedPersistentEx(FAdditionalIntfImpl[I])) then
         WriteImplementer(Writer, TAggregatedPersistentEx(FAdditionalIntfImpl[I]));
     Writer.WriteListEnd;
   finally
-    TOpenWriter(Writer).PropPath := SavePropPath;
+    THackWriter(Writer).PropPath := SavePropPath;
   end;
 end;
 
@@ -2131,7 +2132,7 @@ begin
   else
     Impl := TAggregatedPersistentExClass(ClassType).Create(Self);
   while not Reader.EndOfList do
-    TOpenReader(Reader).ReadProperty(Impl);
+    TReaderAccessProtected(Reader).ReadProperty(Impl);
   Reader.ReadListEnd;
 end;
 
@@ -2139,9 +2140,9 @@ procedure TExtensibleInterfacedPersistent.WriteImplementer(Writer: TWriter;
   Instance: TAggregatedPersistentEx);
 begin
   Writer.WriteListBegin;
-  TOpenWriter(Writer).WritePropName(cClassName);
+  THackWriter(Writer).WritePropName(cClassName);
   Writer.WriteString(Instance.ClassName);
-  TOpenWriter(Writer).WriteProperties(Instance);
+  THackWriter(Writer).WriteProperties(Instance);
   Writer.WriteListEnd;
 end;
 
@@ -2402,9 +2403,9 @@ var
   I: Integer;
   SavePropPath: string;
 begin
-  TOpenWriter(Writer).WriteValue(vaCollection);
-  SavePropPath := TOpenWriter(Writer).PropPath;
-  TOpenWriter(Writer).PropPath := '';
+  THackWriter(Writer).WriteValue(vaCollection);
+  SavePropPath := THackWriter(Writer).PropPath;
+  THackWriter(Writer).PropPath := '';
   try
     for I := 0 to getCount - 1 do
     begin
@@ -2413,7 +2414,7 @@ begin
     end;
     Writer.WriteListEnd;
   finally
-    TOpenWriter(Writer).PropPath := SavePropPath;
+    THackWriter(Writer).PropPath := SavePropPath;
   end;
 end;
 
@@ -2442,7 +2443,7 @@ begin
     raise;
   end;
   while not Reader.EndOfList do
-    TOpenReader(Reader).ReadProperty(ItemInstance);
+    TReaderAccessProtected(Reader).ReadProperty(ItemInstance);
   Reader.ReadListEnd;
 end;
 
@@ -2454,7 +2455,7 @@ begin
   Inst := TPersistent(Item.GetImplementer);
   Writer.WriteStr(cClassName);
   Writer.WriteString(Inst.ClassName);
-  TOpenWriter(Writer).WriteProperties(Inst);
+  THackWriter(Writer).WriteProperties(Inst);
   Writer.WriteListEnd;
 end;
 
@@ -2983,7 +2984,7 @@ begin
       I := IndexOfImplClass(TJvBaseDataItemSubItems);
     end;
     while not Reader.EndOfList do
-      TOpenReader(Reader).ReadProperty(
+      TReaderAccessProtected(Reader).ReadProperty(
         TJvBaseDataItems(TJvBaseDataItemSubItems(FAdditionalIntfImpl[I]).Items.GetImplementer));
     Reader.ReadListEnd;
     Reader.ReadListEnd;
@@ -2998,18 +2999,18 @@ var
   SavePropPath: string;
 begin
   QueryInterface(IJvDataItems, Items);
-  TOpenWriter(Writer).WriteValue(vaCollection);
-  SavePropPath := TOpenWriter(Writer).PropPath;
-  TOpenWriter(Writer).PropPath := '';
+  THackWriter(Writer).WriteValue(vaCollection);
+  SavePropPath := THackWriter(Writer).PropPath;
+  THackWriter(Writer).PropPath := '';
   try
     Writer.WriteListBegin;
     Writer.WriteStr(cClassName);
     Writer.WriteString(Items.GetImplementer.ClassName);
-    TOpenWriter(Writer).WriteProperties(Items.GetImplementer as TPersistent);
+    THackWriter(Writer).WriteProperties(Items.GetImplementer as TPersistent);
     Writer.WriteListEnd;
     Writer.WriteListEnd;
   finally
-    TOpenWriter(Writer).PropPath := SavePropPath;
+    THackWriter(Writer).PropPath := SavePropPath;
   end;
 end;
 
@@ -3196,7 +3197,7 @@ begin
   Reader.ReadListBegin;
   // We don't really have a root item; just stream in the DataItemsImpl instance.
   while not Reader.EndOfList do
-    TOpenReader(Reader).ReadProperty(DataItemsImpl);
+    TReaderAccessProtected(Reader).ReadProperty(DataItemsImpl);
   // (rom) why twice? Please comment.
   Reader.ReadListEnd;
   Reader.ReadListEnd;
@@ -3204,10 +3205,10 @@ end;
 
 procedure TJvCustomDataProvider.WriteRoot(Writer: TWriter);
 begin
-  TOpenWriter(Writer).WriteValue(vaCollection);
+  THackWriter(Writer).WriteValue(vaCollection);
   Writer.WriteListBegin;
   // We don't really have a root item; just stream out the DataItemsImpl instance.
-  TOpenWriter(Writer).WriteProperties(DataItemsImpl);
+  THackWriter(Writer).WriteProperties(DataItemsImpl);
   // (rom) why twice? Please comment.
   Writer.WriteListEnd;
   Writer.WriteListEnd;
@@ -3235,7 +3236,7 @@ procedure TJvCustomDataProvider.WriteContexts(Writer: TWriter);
 var
   I: Integer;
 begin
-  TOpenWriter(Writer).WriteValue(vaCollection);
+  THackWriter(Writer).WriteValue(vaCollection);
   for I := 0 to FDataContextsImpl.GetCount - 1 do
     if not FDataContextsImpl.GetContext(I).IsDeletable and
         TJvBaseDataContext(FDataContextsImpl.GetContext(I).GetImplementer).IsStreamable then
@@ -3282,7 +3283,7 @@ begin
   else
     CtxInst := TJvBaseDataContext(DataContextsImpl.GetContextByName(CtxName).GetImplementer);
   while not Reader.EndOfList do
-    TOpenReader(Reader).ReadProperty(CtxInst);
+    TReaderAccessProtected(Reader).ReadProperty(CtxInst);
   Reader.ReadListEnd;
 end;
 
@@ -3296,7 +3297,7 @@ begin
   end;
   Writer.WriteStr(cName);
   Writer.WriteString(AContext.Name);
-  TOpenWriter(Writer).WriteProperties(TPersistent(AContext.GetImplementer));
+  THackWriter(Writer).WriteProperties(TPersistent(AContext.GetImplementer));
   Writer.WriteListEnd;
 end;
 

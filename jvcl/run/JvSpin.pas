@@ -488,7 +488,7 @@ end;
 type
   TColorArray = array [0..2] of TColor;
   {$IFDEF VisualCLX}
-  TCustomFormAccess = class(TCustomForm);
+  TCustomFormAccessProtected = class(TCustomForm);
   {$ENDIF VisualCLX}
 
   TJvUpDown = class(TCustomUpDown)
@@ -1118,7 +1118,7 @@ begin
       GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
-      TCustomFormAccess(GetParentForm(Self)).WantKey(Integer(Key), [], Key);
+      TCustomFormAccessProtected(GetParentForm(Self)).WantKey(Integer(Key), [], Key);
       {$ENDIF VisualCLX}
       if Key = Char(VK_RETURN) then
         Key := #0;

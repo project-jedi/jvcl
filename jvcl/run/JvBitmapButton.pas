@@ -435,10 +435,11 @@ begin
         p2^ := p1^
       else
         Transform(p2, p1);
-      Inc(p1); Inc(p2);
+      Inc(p1);
+      Inc(p2);
     end;
   end;
 end;
-  
+
 end.
 

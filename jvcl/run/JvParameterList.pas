@@ -818,11 +818,8 @@ begin
     Result := ParameterList.DynControlEngine;
 end;
 
-type
-  THackWinControl = class(TWinControl)
-  public
-    property OnExit;
-  end;
+//type
+//  TWinControlAccessProtected = class(TWinControl);
 
 procedure TJvBaseParameter.SetWinControl(Value: TWinControl);
 begin
@@ -1181,10 +1178,7 @@ begin
 end;
 
 type
-  THackPanel = class(TCustomControl)
-  public
-    property Canvas;
-  end;
+  TCustomControlAccessProtected = class(TCustomControl);
 
 procedure TJvParameterList.CreateParameterDialog;
 var
@@ -1280,7 +1274,7 @@ begin
       Left := 6;
       Top := 5;
       Height := 20;
-      Width := THackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
+      Width := TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryLoadButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
     SaveButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'SaveButton', Messages.HistorySaveButton, '',
@@ -1290,7 +1284,7 @@ begin
       Left := ButtonLeft;
       Top := 5;
       Height := 20;
-      Width := THackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
+      Width := TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistorySaveButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
     ClearButton := DynControlEngine.CreateButton(Self, HistoryPanel, 'ClearButton', Messages.HistoryClearButton, '',
@@ -1300,7 +1294,7 @@ begin
       Left := ButtonLeft;
       Top := 5;
       Height := 20;
-      Width := THackPanel(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) + 5;
+      Width := TCustomControlAccessProtected(HistoryPanel).Canvas.TextWidth(Messages.HistoryClearButton) + 5;
       ButtonLeft := Left + Width + 5;
     end;
     HistoryPanel.Width := ButtonLeft;
@@ -1565,8 +1559,8 @@ begin
     //    for I := 0 to Count - 1 do
     //      if Parameters[I].Visible then
     //        if Assigned(Parameters[I].WinControl) then
-    //          if Assigned(THackWinControl(Parameters[I].WinControl).OnExit) then
-    //            THackWinControl(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
+    //          if Assigned(TWinControlAccessProtected(Parameters[I].WinControl).OnExit) then
+    //            TWinControlAccessProtected(Parameters[I].WinControl).OnExit(Parameters[I].WinControl);
   finally
     ArrangePanel.EnableArrange;
   end;

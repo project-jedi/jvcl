@@ -42,7 +42,7 @@ uses
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, Graphics, Controls, ExtCtrls, Dialogs, 
+  Windows, Graphics, Controls, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls, QDialogs, Types, QTypes, QWindows,

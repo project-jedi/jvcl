@@ -580,7 +580,7 @@ uses
   JvDockSupportProc, JvDockGlobals;
 
 type
-  THackWinControl = class(TWinControl);
+  TWinControlAccessProtected = class(TWinControl);
 
 // (rom) such global variables are problematic
 var
@@ -767,7 +767,7 @@ begin
           TabControl.FTempSheet := TJvDockVIDVCTabSheet.Create(TabControl);
           TabControl.FTempSheet.PageControl := TabControl;
 
-          TabControl.FTempSheet.Caption := THackWinControl(VIDSource.SourceDockClients[I]).Caption;
+          TabControl.FTempSheet.Caption := TWinControlAccessProtected(VIDSource.SourceDockClients[I]).Caption;
           Index := TabControl.FTabImageList.AddIcon(TForm(VIDSource.SourceDockClients[I]).Icon);
           if Index <> -1 then
             TabControl.FTempSheet.ImageIndex := Index;
@@ -1365,7 +1365,7 @@ begin
       else
       if Control is TJvDockConjoinHostForm then
       begin
-        THackWinControl(TJvDockableForm(Control).DockableControl).DockManager.ResetBounds(True);
+        TWinControlAccessProtected(TJvDockableForm(Control).DockableControl).DockManager.ResetBounds(True);
         InsertControlFromConjoinHost(Control, InsertAt, DropCtl);
       end
       else
@@ -1716,7 +1716,7 @@ var
 begin
   lbVCDockZone := TJvDockVIDVCZone(FindControlZone(Control));
   DrawRect := ARect;
-  Canvas.Brush.Color := THackWinControl(DockSite).Color;
+  Canvas.Brush.Color := TWinControlAccessProtected(DockSite).Color;
   Canvas.FillRect(DrawRect);
   with ARect do
     case GrabbersPosition of
