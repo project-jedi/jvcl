@@ -238,7 +238,7 @@ type
     procedure Resize; override;
   {$IFDEF JVCLThemesEnabled}
     function GetParentBackground: Boolean;
-    procedure SetParentBackground(Value: Boolean);
+    procedure SetParentBackground(Value: Boolean);override;
   {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
