@@ -2,13 +2,13 @@ program JvPanelDemo;
 
 uses
   Forms,
-  JvPanelDemoFrm in 'JvPanelDemoFrm.pas' {Form1};
+  JvPanelDemoFrm in 'JvPanelDemoFrm.pas' {JvPanelDemoMainFrm};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvPanelDemoMainFrm, JvPanelDemoMainFrm);
   Application.Run;
 end.
 
