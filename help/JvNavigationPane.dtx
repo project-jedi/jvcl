@@ -10,346 +10,318 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane
 Summary
-  Write here a summary (1 line)
+  Base class for navigation pane components.
 Description
-  Write here a description
+  TJvCustomNavigationPane is the base class for navigationpane style components. Do not create
+  instances of TJvCustomNavigationPane. Instead, drop a component, like TJvNavigationPane, on the form.
+
+  A navigation pane has one or more pages, just like a page control, but to display a page, the user clicks on the
+  buttons at the bottom of the control instead of on tabs. To add a page at design-time, right-click the
+  control and select "New page" from the menu. To create a page at run-time, create an instance of TJvNavPage and
+  assign the TJvCustomNavigationPane to the PageList property.
+
+  Buttons can be either maximized or minimized (iconic). When a button is iconic, it appears on an
+  icon panel at the bottom of the control. This panel is always visible. The icon panel can also have a
+  dropdown menu. If it does, the dropdown menu button appears at the far right of the icon panel.
+
+  To minimize and maximize the page bbuttons, the user can drag a splitter located above the topmost button.
+  You can programmatically control the number of maximized buttons with the MaximizedCount propery or, if yoou need more
+  detailed control, with each page's Iconic property.
+
+  The navigation pane (and all other Nav Pane related visual controls), has a StyleManager property. You can assign a
+  TJvNavPaneStyleManager to this property and then control the color themes used from one single point.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.Colors
 Summary
-  Write here a summary (1 line)
+  Contains the color settings of the control.
 Description
-  Write here a description
+  Use the subproperties of Colors to specify the visual appearance of the control. Colors has several different
+  sub colors. Since Colors is a general color class, it may contain colors not used by the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvNavPaneStyleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.DropDownMenu
 Summary
-  Write here a summary (1 line)
+  Specifies the menu to display when the user clicks the menu button.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Assign a TPopupMenu to the DropDownMenu property to show a menu button on the icon panel (at the bottom of the control)
+  that, when clicked by the user, shows the menu. If no menu is assigned, the menu button is hidden.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.LargeImages
 Summary
-  Write here a summary (1 line)
+  Provides a list of images to display for each maximized button.
 Description
-  Write here a description
+  Assign a TCustomImageList or descendant to this property to use as the images for maximized buttons
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SmallImages
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.MaximizedCount
 Summary
-  Write here a summary (1 line)
+  Specifies the number of buttons that are maximized.
 Description
-  Write here a description
+  Use MaximizedCount to programmatically set the number of pages that have a maximized button. Pages that are
+  minimized (or iconic), displays a smaller button in the icon panel at the bottom of the control.
+
+  Users can change the number of maximized buttons at run-time by adjusting the splitter (provided
+  Resizable is true). When they do, the value of MaximizedCount is updated as well.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Resizeable, TJvNavPage.Iconic
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.NavPages
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the pages in the control.
 Description
-  Write here a description
+  Use NavPages to access the pages in the control as an array.
 Parameters
-  Index - Description for this parameter
+  Index - The index of the page in the control. The first page has the index 0 and the last page has the index PageCount - 1
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PageCount
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.NavPanelFont
 Summary
-  Write here a summary (1 line)
+  Specifies the font used on the buttons.
 Description
-  Write here a description
+  Use NavPanelFont to set the font used on the buttons in the control. The button font is separate from the
+  normal font. The normal font is used to specify the font settings for the page itself.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Font, NavPages
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.Resizable
 Summary
-  Write here a summary (1 line)
+  Specifies whether the user can change the number of maximized buttons by dragging the splitter.
 Description
-  Write here a description
+  Use Resizable to control whether the user can change the number of visible buttons by dragging the splitter bar. If
+  Resizable is false, the user cannot drag the splitter. This is indicated visually by the splitter not having any dots
+  in its client area.
+
+  To resize programmatically, use the MaximizedCount property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaximizedCount
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.SmallImages
 Summary
-  Write here a summary (1 line)
+  Provides a list of images to display for each iconic button.
 Description
-  Write here a description
+  Assign a TCustomImageList or descendant to this property to use as the images for iconic buttons
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LargeImages
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.UpdatePositions
 Summary
-  Write here a summary (1 line)
+  Iterates the pages and buttons and updates their appearance.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvIconPanel
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvIconPanel.Colors
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvIconPanel.DropDownMenu
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UpdatePositions iterates the buttons in the control and updates their appearance. Normally, there
+  is no need to call this method.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavIconButton
 Summary
-  Write here a summary (1 line)
+  Button used as the small button in a TJvCustomNavigationPane.
 Description
-  Write here a description
+  TJvNavIconButton is the type of the button used in the icon panel on a TJvCustomNavigationPane. This
+  button supports showing either an image from an image list or a drop down menu indicator consisting of
+  a chevron and a drop down arrow.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavIconButton.ButtonType
 Summary
-  Write here a summary (1 line)
+  Specifies the visual appearance of the button.
 Description
-  Write here a description
+  Use ButtonType to specify the visual appearance of the button. If ButtonType is nibDropDown, the button
+  displays a chevron and a drop down arrow. If ButtonType is nibImgae, the button displays an image
+  from the Images image list.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images, ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvNavIconButton.Colors
 Summary
-  Write here a summary (1 line)
+  Contains the color settings of the control.
 Description
-  Write here a description
+  Use the subproperties of Colors to specify the visual appearance of the control. Colors has several different
+  sub colors. Since Colors is a general color class, it may contain colors not used by the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvNavPaneStyleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvNavIconButton.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the image to display.
 Description
-  Write here a description
+  Set ImageIndex to a value between 0 and Images.Count - 1 to display an image in the control.
+
+  You will also need to assign an image list to the Images property and set ButtonType to nibImage for
+  the button to display the image.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonType, Images
 ----------------------------------------------------------------------------------------------------
 @@TJvNavIconButton.Images
 Summary
-  Write here a summary (1 line)
+  Specifies the images to use when displaying an image in the control.
 Description
-  Write here a description
+  Assign an image list to Images to specify the images to use when displaying an image in the button. The actual image
+  to display is determined by the ImageIndex property. An image is only displayed when ButtonType is set to nibImage.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex, ButtonType
 ----------------------------------------------------------------------------------------------------
 @@TJvNavIconButtonType
 <TITLE TJvNavIconButtonType type>
 Summary
-  Write here a summary (1 line)
+  Defines the visual appearance of a TJvNavIconButton.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvNavIconButtonType is the type of the ButtonType property of a TJvNavIconButton and defines
+  the visual appearance of the button.
+  
 @@TJvNavIconButtonType.nibDropDown
-  Description for nibDropDown
+  The button displays a chevron and a drop down menu arrow.
 @@TJvNavIconButtonType.nibImage
-  Description for nibImage
+  The button displays an image from an image list.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavigationPane
 Summary
-  Write here a summary (1 line)
+  Navigation Pane style control.
 Description
-  Write here a description
+  TJvNavigationPane is derived from TJvCustomNavigationPane and publishes many of it's properties and
+  events but doesn't introduce any new behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelButton
 Summary
-  Write here a summary (1 line)
+  Class used as the maximized button on a TJvCustomNavigationPane
 Description
-  Write here a description
+  TJvNavPanelButton is the type of the maximized button on a TJvCustomNavigationPane but can also be used stand-alone.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelButton.Colors
 Summary
-  Write here a summary (1 line)
+  Contains the color settings of the control.
 Description
-  Write here a description
+  Use the subproperties of Colors to specify the visual appearance of the control. Colors has several different
+  sub colors. Since Colors is a general color class, it may contain colors not used by the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvNavPaneStyleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelButton.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the image to display.
 Description
-  Write here a description
+  Set ImageIndex to a value between 0 and Images.Count - 1 to display an image in the control.
+
+  You will also need to assign an image list to the Images property for the button to display the image.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelButton.Images
 Summary
-  Write here a summary (1 line)
+  Specifies the images to use when displaying an image in the control.
 Description
-  Write here a description
+  Assign an image list to Images to specify the images to use when displaying an image in the button. The actual image
+  to display is determined by the ImageIndex property. An image is only displayed when ButtonType is set to nibImage.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors
 Summary
-  Write here a summary (1 line)
+  Class that manages the color setting of a nav pane component or style manager.
 Description
-  Write here a description
+  TJvNavPanelColors is the type of the Colors property of most of the nav pane controls. It contains several
+  color properties that defines the appearance of a nav pane control.
+
+  In conjunction with a TJvNavPaneStyleManager, you can control the visual appearance of all the Nav Pane
+  controls on a form from a single control.
 ----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.Assign
+@@TJvNavPanelColors.ButtonColorFrom
 Summary
-  Write here a summary (1 line)
-Description
-  This is an overridden method, you don't have to describe these  if it does the same as the inherited method
-Parameters
-  Source - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.ColorFrom
-Summary
-  Write here a summary (1 line)
+  Specifies the starting color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonColorTo
 ----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.ColorTo
+@@TJvNavPanelColors.ButtonColorTo
 Summary
-  Write here a summary (1 line)
+  Specifies the ending color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonColorFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors.FrameColor
 Summary
-  Write here a summary (1 line)
+  Specifies the color of the control's frame.
 Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.HotColorFrom
+@@TJvNavPanelColors.ButtonHotColorFrom
 Summary
-  Write here a summary (1 line)
+  Specifies the starting color of the control's background gradient when the mouse hovers over it.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonHotColorTo
 ----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.HotColorTo
+@@TJvNavPanelColors.ButtonHotColorTo
 Summary
-  Write here a summary (1 line)
+  Specifies the ending color of the control's background gradient when the mouse hovers over it.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+ButtonHotColorFrom
 ----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.OnChange
+@@TJvNavPanelColors.ButtonSelectedColorFrom
 Summary
-  Write here a summary (1 line)
+  Specifies the starting color of the control's background gradient when the control is in its Down state.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonSelectedColorTo
 ----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.SelectedColorFrom
+@@TJvNavPanelColors.ButtonSelectedColorTo
 Summary
-  Write here a summary (1 line)
+  Specifies the ending color of the control's background gradient when the control is in its Down state.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvNavPanelColors.SelectedColorTo
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonSelectedColorFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors.SplitterColorFrom
 Summary
-  Write here a summary (1 line)
+  Specifies the starting color of the control's background gradient when the control is a splitter.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SplitterColorTo
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors.SplitterColorTo
 Summary
-  Write here a summary (1 line)
+  Specifies the ending color of the control's background gradient when the control is a splitter.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SplitterColorFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelDivider
 Summary
-  Write here a summary (1 line)
+  Panel used as a group splitter in a TJvCustomNavigationPane.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelDivider.ColorFrom
 Summary
-  Write here a summary (1 line)
+  Specifies the starting color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorTo
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelDivider.ColorTo
 Summary
-  Write here a summary (1 line)
+  Specifies the ending color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelDivider.FrameColor
 Summary
-  Write here a summary (1 line)
+  Specifies the color of the control's frame.
 Description
   Write here a description
 See Also
@@ -358,27 +330,25 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader
 Summary
-  Write here a summary (1 line)
+  Panel used as a header panel in conjunction with other Nav Pane components.
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.ColorFrom
 Summary
-  Write here a summary (1 line)
+  Specifies the starting color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorTo
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.ColorTo
 Summary
-  Write here a summary (1 line)
+  Specifies the ending color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorFrom
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.ImageIndex
 Summary
@@ -391,120 +361,134 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.Images
 Summary
-  Write here a summary (1 line)
+  Specifies the images to use when displaying an image in the control.
 Description
-  Write here a description
+  Assign an image list to Images to specify the images to use when displaying an image in the button. The actual image
+  to display is determined by the ImageIndex property. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage
 Summary
-  Write here a summary (1 line)
+  Class used for the pages in a TJvCustomNavigationPane or descendant.
 Description
   Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvNavPanelPage.Caption
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.Colors
 Summary
-  Write here a summary (1 line)
+  Contains the color settings of the control.
 Description
-  Write here a description
+  Use the subproperties of Colors to specify the visual appearance of the control. Colors has several different
+  sub colors. Since Colors is a general color class, it may contain colors not used by the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvNavPanelPage.Hint
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvNavPaneStyleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.IconButton
 Summary
-  Write here a summary (1 line)
+  Reference to the button used as the iconic button for the control.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Iconic, NavPanel, IconPanel
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.Iconic
 Summary
-  Write here a summary (1 line)
+  Indicates whether the page is currently displaying a maximized or iconic button.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IconButton
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.IconPanel
 Summary
-  Write here a summary (1 line)
+  Reference to the icon panel containing the IconButton.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  NavPanel, IconButton
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the image to display.
 Description
-  Write here a description
+  Set ImageIndex to a valid value to display an image in the control.
+Note
+  The TJvNavPanelPage doesn't have its own image list property. Instead, it accesses the LargeImages
+  and LargeImages properties of its parent TJvCustomNavigationPane control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Images
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.NavPanel
 Summary
-  Write here a summary (1 line)
+  Refrerence to the maximzed button of the page.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvNavPanelPage.OnClick
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IconButton
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookSplitter
 Summary
-  Write here a summary (1 line)
+  A splitter drawn in the style of the splitter used in Outlook 2003.
 Description
-  Write here a description
+  TJvOutlookSplitter is a normal splitter with additional properties and events to make it appear visually
+  like the splitter introduced in Outlook 2003.
+Note
+  The Color property is not used by TJvOutlookSplitter. TSplitter publishes the Color property and
+  TJvOutlookSplitter inherits it. To modify the colors of a TJvOutlookSplitter, use ColorFrom and ColorTo instead.
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookSplitter.ColorFrom
 Summary
-  Write here a summary (1 line)
+  Specifies the starting color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorTo
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookSplitter.ColorTo
 Summary
-  Write here a summary (1 line)
+  Specifies the ending color of the control's background gradient.
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ColorFrom
+----------------------------------------------------------------------------------------------------
+@@TJvNavPaneStyleManager
+Summary
+Description
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvNavPaneStyleManager.Theme
+Summary
+  Indicates the current color theme in the style manager.
+Description
+  Use Theme to specify the theme to use in the style manager. When Theme changes, any control using the
+  StyleManager will have its theme settings updated.
+See Also
+  Colors
+----------------------------------------------------------------------------------------------------
+@@TJvNavPaneStyleManager.Colors
+Summary
+  Contains the color settings of the style manager.
+Description
+  Use the subproperties of Colors to specify the visual appearance of the control or use the Theme property
+  to access several standard color schemes.
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelTheme
+Summary
+  Specifies the themes supported by a TJvNavPaneStyleManager.
+Description
+  TJvNavPanelTheme is the type of the Theme property of a TJvNavPanelTheme and specifies the themes supporte by
+  the style manager.
+@@TJvNavPanelTheme.nptStandard
+  The current color theme is the default color theme used on non-XP system.
+@@TJvNavPanelTheme.nptXPBlue
+  The current color theme is the default blue XP color theme.
+@@TJvNavPanelTheme.nptXPSilver
+  The current color theme is the default silver XP color theme.
+@@TJvNavPanelTheme.nptXPOlive
+  The current color theme is the default olive XP color theme.
+@@TJvNavPanelTheme.nptCustom
+  The current color theme is a custom theme.
+
+
+
