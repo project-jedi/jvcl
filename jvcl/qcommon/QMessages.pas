@@ -5,7 +5,6 @@
                     André Snepvangers (asn att xs4all dott nl)
  All rights reserved.
 
- Version 0.1
  Description: Wrappers for common VCL control Messages
  Purpose: Reduce coding effort for porting VCL based components to VisualCLX
           compatible components
@@ -30,10 +29,8 @@
 --------------------------------------------------------------------------------
 The Original Code is: QMessages.pas, released on 2004-05-21.
 
-
 Known Issues:
-  - Under development. It contains all message related stuff, taken from QWindows.
-    No new functionality has been added yet.
+
 {-----------------------------------------------------------------------------}
 // $Id$
 
@@ -41,15 +38,11 @@ unit QMessages;
 
 interface
 
+{$I jvcl.inc}
+
 uses
-  SysUtils, Classes, Types, SyncObjs,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
-  {$IFDEF HAS_UNIT_LIBC}
-  Libc,
-  {$ENDIF HAS_UNIT_LIBC}
-  Qt, QTypes, QForms, QControls, QWindows;
+  Classes,
+  Qt, QControls, QWindows;
 
 const
 
@@ -152,12 +145,17 @@ const
   WM_NCPAINT          = $0085;
 
 type
+(*
   IPerformControl = interface
     ['{B11AA73D-D7C2-43E5-BED8-8F82DE6152AB}']
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
   end;
-//
-
+*)
+  PMessage = QWindows.PMessage;
+  {$NODEFINE PMessage}
+  TMessage = QWindows.TMessage;
+  {$NODEFINE TMessage}
+(*
   PMessage = ^TMessage;
   TMessage = packed record
     Msg: Integer;
@@ -165,7 +163,10 @@ type
     LParam: Longint;
     Result: Integer;
   end;
-
+*)
+  TMsg = QWindows.TMsg;
+  {$NODEFINE TMsg}
+(*
   TMsg = packed record
     hwnd: QWidgetH;
     message: cardinal;
@@ -174,6 +175,7 @@ type
     time: cardinal;
     pt: TPoint;
   end;
+*)
 
   TWMScroll = packed record
     Msg: Integer;
@@ -218,7 +220,17 @@ type
     Result: Longint;
   end;
 
+  TWMTimer = record
+    Msg: Cardinal;
+    TimerID: Longint;
+//    TimerProc: T;
+    Ignored: LongBool;
+    Result: Longint;
+  end;
 
+
+(*
+asn: currently defined in QWindows.
 { Message }
 function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Longint;
 { Limitation: Handle must be a TWidgetControl derived class handle }
@@ -226,15 +238,14 @@ function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): L
 { SendMsg synchronizes with the main thread }
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 //function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-
 type
   TApplicationHook = function(Sender: QObjectH; Event: QEventH): Boolean of object;
 
 procedure InstallApplicationHook(Hook: TApplicationHook); // not threadsafe
 procedure UninstallApplicationHook(Hook: TApplicationHook); // not threadsafe
-
+*)
 implementation
-
+(*
 const
   QEventType_CMDispatchMessagePost = QEventType(Integer(QEventType_ClxUser) - 1);
   QEventType_CMDispatchMessageSend = QEventType(Integer(QEventType_ClxUser) - 2);
@@ -370,12 +381,12 @@ begin
   end;
 end;
 
-(*)
+{
 function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
 begin
   Result := SendMessage(AControl.Handle, Msg, WParam, LParam);
 end;
-(*)
+}
 
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
 var
@@ -482,5 +493,5 @@ finalization
     QObject_hook_destroy(AppEventFilterHook);
   if Assigned(AppHookList) then
     FinalizeAppHookList;
-
+*)
 end.
