@@ -415,6 +415,9 @@ type
     procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
     procedure UpdateAutoComplete;
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
+    {$IFDEF JVCLThemesEnabled}
+    procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
+    {$ENDIF JVCLThemesEnabled}
     {$ENDIF VCL}
   protected
     {$IFDEF VCL}
@@ -961,8 +964,11 @@ const
   sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
 
+  {$IFDEF JVCLThemesEnabled}
+  // (rb) should/can these be put in a seperate resource file?
   sDirXPBmp = 'JV_SEDITXPBMP';
   sFileXPBmp = 'JV_FEDITXPBMP';
+  {$ENDIF}
 
 
   { TDateHook is used to only have 1 hook per application for monitoring
@@ -1033,6 +1039,10 @@ var
   GDefaultComboEditImagesList: TImageList = nil;
   GDirImageIndex: TImageIndex = -1;
   GFileImageIndex: TImageIndex = -1;
+  {$IFDEF JVCLThemesEnabled}
+  GDirImageIndexXP: TImageIndex = -1;
+  GFileImageIndexXP: TImageIndex = -1;
+  {$ENDIF JVCLThemesEnabled}
 
 //=== Local procedures =======================================================
 
@@ -3548,19 +3558,30 @@ end;
 class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
-  ResName: string;
 begin
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+    if GDirImageIndexXP < 0 then
+    begin
+      Bmp := TBitmap.Create;
+      try
+        Bmp.LoadFromResourceName(HInstance, sDirXPBmp);
+        GDirImageIndexXP := DefaultImages.AddMasked(Bmp, clFuchsia);
+      finally
+        Bmp.Free;
+      end;
+    end;
+    Result := GDirImageIndexXP;
+    Exit;
+  end;
+  {$ENDIF}
+
   if GDirImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.ThemesEnabled then
-        ResName := sDirXPBmp
-      else
-      {$ENDIF JVCLThemesEnabled}
-        ResName := sDirBmp;
-      Bmp.LoadFromResourceName(HInstance, ResName);
+      Bmp.LoadFromResourceName(HInstance, sDirBmp);
       GDirImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;
@@ -3771,6 +3792,19 @@ end;
 procedure TJvFileDirEdit.ClearFileList;
 begin
 end;
+
+{$IFDEF JVCLThemesEnabled}
+procedure TJvFileDirEdit.CMSysColorChange(var Msg: TMessage);
+begin
+  inherited;
+  // We use this event to respond to theme changes (no WM_THEMECHANGED are broadcasted
+  // to the components)
+  // Note that there is a bug in TApplication.WndProc, so the application will not
+  // change from non-themed to themed.
+  if ImageKind = ikDefault then
+    Button.ImageIndex := DefaultImageIndex;
+end;
+{$ENDIF JVCLThemesEnabled}
 
 constructor TJvFileDirEdit.Create(AOwner: TComponent);
 begin
@@ -4074,19 +4108,30 @@ end;
 class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
-  ResName: string;
 begin
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
+  begin
+    if GFileImageIndexXP < 0 then
+    begin
+      Bmp := TBitmap.Create;
+      try
+        Bmp.LoadFromResourceName(HInstance, sFileXPBmp);
+        GFileImageIndexXP := DefaultImages.AddMasked(Bmp, clFuchsia);
+      finally
+        Bmp.Free;
+      end;
+    end;
+    Result := GFileImageIndexXP;
+    Exit;
+  end;
+  {$ENDIF}
+
   if GFileImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      {$IFDEF JVCLThemesEnabled}
-      if ThemeServices.ThemesEnabled then
-        ResName := sFileXPBmp
-      else
-      {$ENDIF JVCLThemesEnabled}
-        ResName := sFileBmp;
-      Bmp.LoadFromResourceName(HInstance, ResName);
+      Bmp.LoadFromResourceName(HInstance, sFileBmp);
       GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;
