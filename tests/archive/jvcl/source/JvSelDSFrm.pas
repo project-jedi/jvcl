@@ -12,7 +12,7 @@ The Original Code is: JvSelDSFrm.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2002-07-04
@@ -30,10 +30,10 @@ unit JvSelDSFrm;
 
 interface
 
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
 
 uses Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs, DB, StdCtrls,
-  RTLConsts, DesignIntf, DesignEditors, VCLEditors, JvDsgn;
+  {$IFDEF COMPILER6_UP}RTLConsts, DesignIntf, DesignEditors, VCLEditors,{$else}DsgnIntf, {$ENDIF}JvDsgn;
 
 type
 
@@ -70,13 +70,17 @@ type
     function GetVerbCount: Integer; override;
   end;
 
+{$IFDEF COMPILER6_UP}
 function SelectDataSet(ADesigner: IDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
+{$ELSE}
+function SelectDataSet(ADesigner: IFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
+{$ENDIF}
 
-{$ENDIF DCS}
+{$ENDIF DelphiPersonalEdition}
 
 implementation
 
-{$IFDEF DCS}
+{$IFNDEF DelphiPersonalEdition}
 
 uses DbConsts, TypInfo, JvVCLUtils, JvStrUtils, JvxConst,
   {$IFDEF COMPILER3_UP}{$IFDEF COMPILER5_UP} DsnDbCst, {$ELSE} BdeConst, {$ENDIF}{$ENDIF}
@@ -84,8 +88,11 @@ uses DbConsts, TypInfo, JvVCLUtils, JvStrUtils, JvxConst,
 
 {$R *.DFM}
 
-function SelectDataSet(ADesigner: IDesigner; const ACaption: string;
-  ExcludeDataSet: TDataSet): TDataSet;
+{$IFDEF COMPILER6_UP}
+function SelectDataSet(ADesigner: IDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
+{$ELSE}
+function SelectDataSet(ADesigner: IFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
+{$ENDIF}
 begin
   Result := nil;
   with TJvSelectDataSetForm.Create(Application) do
@@ -96,7 +103,7 @@ begin
     if ShowModal = mrOk then
       if DataSetList.ItemIndex >= 0 then begin
         with DataSetList do  
-{$IFDEF WIN32}
+{$IFDEF COMPILER6_UP}
           Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet;
 {$ELSE}
           Result := FDesigner.Form.FindComponent(Items[ItemIndex]) as TDataSet;
@@ -157,7 +164,7 @@ begin
   end
   else Exit;
   Temp := Component.Name + Temp;
-{$IFDEF WIN32}
+{$IFDEF COMPILER6_UP}
   Comp := Designer.GetComponent(Temp);
   if (Comp = nil) or (Comp = Field) then Result := Temp
   else Result := Designer.UniqueName(Temp);
@@ -188,7 +195,7 @@ function TJvMemDataSetEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0: Result := ResStr(SDatasetDesigner);
-    1: Result := LoadStr(srBorrowStructure);
+    1: Result := srBorrowStructure;
   end;
 end;
 
@@ -205,7 +212,7 @@ begin
 end;
 
 procedure TJvSelectDataSetForm.FillDataSetList(ExcludeDataSet: TDataSet);
-{$IFNDEF WIN32}
+{$IFNDEF COMPILER6_UP}
 var
   I: Integer;
   Component: TComponent;
@@ -216,7 +223,7 @@ begin
     DataSetList.Clear;
     FExclude := '';
     if ExcludeDataSet <> nil then FExclude := ExcludeDataSet.Name;
-{$IFDEF WIN32}
+{$IFDEF COMPILER6_UP}
     FDesigner.GetComponentNames(GetTypeData(TypeInfo(TDataSet)), AddDataSet);
 {$ELSE}
     for I := 0 to FDesigner.Form.ComponentCount - 1 do begin
@@ -247,6 +254,9 @@ begin
     ModalResult := mrOk;
 end;
 
-{$ENDIF DCS}
+{$ENDIF}
 
 end.
+
+
+
