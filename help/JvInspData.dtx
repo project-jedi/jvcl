@@ -360,9 +360,8 @@ Description
     array.
   * Specifying a parent, an instance and property type(s) to add all properties of (a) certain type(s)
     at once. For each property a new item is generated, which is returned in the dynamic array.
-  * Specifying a parent, an instance, property type(s), list of names and wether or not the list
-    represents a list of names to be included or excluded to add the requested properties at once. For
-    each property a new item is generated which is returned in the dynamic array.
+
+  If you want to specify a list of names to include or exclude, use the NewByNames method.
 
   It is possible that with some parameters no items are generated, which will result in an empty
   dynamic array.
@@ -371,14 +370,34 @@ Parameters
   AInstance -     TObject instance that provides the property values.
   PropInfo -      Property Info record, obtained by a call to GetPropInfo.
   TypeKinds -     Type of properties to add.
+  PropInfos -     Pointer to a property list. Such a list can be obtained by
+                  calling GetPropList.
+  PropCount -     Number of properties in the list at PropInfos.
+See Also
+  NewByNames
+--------------------------------------------------------------------------------
+@@TJvInspectorPropData.NewByNames
+Summary
+  Instantiate one or more data instances and attaches (an) item(s) to it.
+Description
+  NewByNames instantiates one or more new data instance with the given parameters. If the data
+  referred to by the given parameters already exists, the item will be attached to that data
+  instance, instead of creating a new data instance.
+  
+  NewByNames works much like the <LINK TJvInspectorPropData.New, New> method but specifically
+  generates instances based on a list of property names to include/exclude.
+
+  It is possible that with some parameter values no items are generated, which will result in
+  an empty dynamic array.
+Parameters
+  AParent -       The parent to which this data should be added.
+  AInstance -     TObject instance that provides the property values.
+  TypeKinds -     Type of properties to add.
   NameList -      List of property names (case insensitive). The ExludeList
                   parameter determines if this is a list of properties to allow
                   or disallow.
   ExcludeList -   When set to True, NameList is a list of properties to ignore.
                   Otherwise, NameList is the list of properties to add.
-  PropInfos -     Pointer to a property list. Such a list can be obtained by
-                  calling GetPropList.
-  PropCount -     Number of properties in the list at PropInfos.
 --------------------------------------------------------------------------------
 @@TJvInspectorPropData.Instance
 Summary
