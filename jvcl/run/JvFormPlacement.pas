@@ -826,16 +826,13 @@ begin
   begin
     FSaved := False;
     readVersion := ReadInteger(siVersion, 0);
-    if AppStorage.PathExists(AppStoragePath) then
-      Case VersionCheck of
-        fpvcNocheck : ContinueRestore := True;
-        fpvcCheckGreaterEqual : ContinueRestore := readVersion >= FVersion;
-        fpvcCheckEqual : ContinueRestore := readVersion = FVersion;
-      else
-        ContinueRestore := False;
-      end
+    Case VersionCheck of
+      fpvcNocheck : ContinueRestore := True;
+      fpvcCheckGreaterEqual : ContinueRestore := readVersion >= FVersion;
+      fpvcCheckEqual : ContinueRestore := readVersion = FVersion;
     else
       ContinueRestore := False;
+    end;
     if ContinueRestore then
     begin
       RestorePlacement;             
