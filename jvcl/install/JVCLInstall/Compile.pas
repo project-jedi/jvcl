@@ -54,7 +54,7 @@ type
   TProgressEvent = procedure(Sender: TObject; const Text: string;
     Position, Max: Integer; Kind: TProgressKind) of object;
 
-  TJVCLCompiler = class(TObject)
+  TCompiler = class(TObject)
   private
     FData: TJVCLData;
     FCurrentProjectGroup: TProjectGroup;
@@ -143,7 +143,7 @@ const
   ProjectMax = 7;
 
 var
-  Compiler: TJVCLCompiler = nil;
+  Compiler: TCompiler = nil;
   StartupEnvVarPath: string;
 
 resourcestring
@@ -183,22 +183,22 @@ const
     'jvcl.inc', 'jvclbase.inc', 'jvcl%t.inc', 'jedi.inc', 'linuxonly.inc', 'windowsonly.inc'
   );
 
-{ TJVCLCompiler }
+{ TCompiler }
 
-constructor TJVCLCompiler.Create(AData: TJVCLData);
+constructor TCompiler.Create(AData: TJVCLData);
 begin
   inherited Create;
   FData := AData;
   FOutput := TStringList.Create;
 end;
 
-destructor TJVCLCompiler.Destroy;
+destructor TCompiler.Destroy;
 begin
   FOutput.Free;
   inherited Destroy;
 end;
 
-procedure TJVCLCompiler.DoTargetProgress(Current: TTargetConfig; Position,
+procedure TCompiler.DoTargetProgress(Current: TTargetConfig; Position,
   Max: Integer);
 begin
   if Assigned(FOnTargetProgress) then
@@ -206,21 +206,21 @@ begin
   DoProgress(Current.Target.DisplayName, Position, Max, pkTarget);
 end;
 
-procedure TJVCLCompiler.DoProjectProgress(const Text: string; Position, Max: Integer);
+procedure TCompiler.DoProjectProgress(const Text: string; Position, Max: Integer);
 begin
   if Assigned(FOnProjectProgress) then
     FOnProjectProgress(Self, Text, Position, Max);
   DoProgress(Text, Position, Max, pkProject);
 end;
 
-procedure TJVCLCompiler.DoResourceProgress(const Text: string; Position, Max: Integer);
+procedure TCompiler.DoResourceProgress(const Text: string; Position, Max: Integer);
 begin
   if Assigned(FOnResourceProgress) then
     FOnResourceProgress(Self, Text, Position, Max);
   DoProgress(Text, Position, Max, pkResource);
 end;
 
-procedure TJVCLCompiler.DoPackageProgress(Current: TPackageTarget;
+procedure TCompiler.DoPackageProgress(Current: TPackageTarget;
   const Text: string; Position, Max: Integer);
 begin
   if Assigned(FOnPackageProgress) then
@@ -228,14 +228,14 @@ begin
   DoProgress(Text, Position, Max, pkPackage);
 end;
 
-procedure TJVCLCompiler.DoProgress(const Text: string; Position, Max: Integer;
+procedure TCompiler.DoProgress(const Text: string; Position, Max: Integer;
   Kind: TProgressKind);
 begin
   if Assigned(FOnProgress) then
     FOnProgress(Self, Text, Position, Max, Kind);
 end;
 
-procedure TJVCLCompiler.CaptureLine(const Line: string; var Aborted: Boolean);
+procedure TCompiler.CaptureLine(const Line: string; var Aborted: Boolean);
 begin
   FOutput.Add(Line);
   if Assigned(FOnCaptureLine) then
@@ -243,13 +243,13 @@ begin
   Aborted := FAborted;
 end;
 
-procedure TJVCLCompiler.CaptureLineClean(const Line: string; var Aborted: Boolean);
+procedure TCompiler.CaptureLineClean(const Line: string; var Aborted: Boolean);
 begin
   if StartsWith('[', Line) then
     CaptureLine(Line, Aborted);
 end;
 
-procedure TJVCLCompiler.CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
+procedure TCompiler.CaptureLineGetCompileCount(const Line: string; var Aborted: Boolean);
 begin
   if StartsWith(Trim(Line), 'echo [Compiling: ', True) then
     Inc(FCount)
@@ -258,7 +258,7 @@ begin
   Aborted := FAborted;
 end;
 
-procedure TJVCLCompiler.CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
+procedure TCompiler.CaptureLinePackageCompilation(const Line: string; var Aborted: Boolean);
 var
   S: string;
   i: Integer;
@@ -283,7 +283,7 @@ begin
   end;
 end;
 
-procedure TJVCLCompiler.CaptureLineResourceCompilation(const Line: string;
+procedure TCompiler.CaptureLineResourceCompilation(const Line: string;
   var Aborted: Boolean);
 var
   S: string;
@@ -300,12 +300,12 @@ begin
   end;
 end;
 
-procedure TJVCLCompiler.Abort;
+procedure TCompiler.Abort;
 begin
   FAborted := True;
 end;
 
-procedure WriteMsg(const Text: string); // used by TJVCLCompiler.GeneratePackages
+procedure WriteMsg(const Text: string); // used by TCompiler.GeneratePackages
 begin
   Compiler.CaptureLine(Text, Compiler.FAborted);
 end;
@@ -315,7 +315,7 @@ end;
 /// the JVCLPackageDir\bin directory is used. If the command could not be
 /// executed a message dialog is shown with the complete command line.
 /// </summary>
-function TJVCLCompiler.Make(TargetConfig: ITargetConfig; Args: string;
+function TCompiler.Make(TargetConfig: ITargetConfig; Args: string;
   CaptureLine: TCaptureLine; StartDir: string): Integer;
 begin
   if StartDir = '' then
@@ -339,7 +339,7 @@ begin
                'JVCL Installer', MB_OK or MB_ICONERROR);
 end;
 
-procedure TJVCLCompiler.DoIdle(Sender: TObject);
+procedure TCompiler.DoIdle(Sender: TObject);
 begin
   if Assigned(FOnIdle) then
     FOnIdle(Self);
@@ -350,7 +350,7 @@ end;
 /// PackagesPath for the Group (JVCL, JCL) for the Targets (comma separated
 /// pg.exe target list).
 /// </summary>
-function TJVCLCompiler.GeneratePackages(const Group, Targets, PackagesPath: string): Boolean;
+function TCompiler.GeneratePackages(const Group, Targets, PackagesPath: string): Boolean;
 var
   ErrMsg: string;
   List, TargetList: TStrings;
@@ -404,7 +404,7 @@ end;
 /// PrepareJCL compiles the .dcp files for C++Builder targets where the JVCL
 /// should be installed.
 /// </summary>
-function TJVCLCompiler.PrepareJCL(TargetConfig: ITargetConfig; Force: Boolean): Boolean;
+function TCompiler.PrepareJCL(TargetConfig: ITargetConfig; Force: Boolean): Boolean;
 var
   Args: string;
   TargetPkgDir, TargetXmlDir, S: string;
@@ -490,12 +490,12 @@ end;
 /// <summary>
 /// GenerateAllPackages generates all JVCL packages
 /// </summary>
-function TJVCLCompiler.GenerateAllPackages: Boolean;
+function TCompiler.GenerateAllPackages: Boolean;
 begin
   Result := GeneratePackages('JVCL', 'all', Data.JVCLPackagesDir);
 end;
 
-function TJVCLCompiler.Compile(Force: Boolean = False): Boolean;
+function TCompiler.Compile(Force: Boolean = False): Boolean;
 var
   i, Index: Integer;
   Frameworks, Count: Integer;
@@ -599,7 +599,7 @@ end;
 /// CompileTarget starts CompileProjectGroup for all sub targets of the
 /// given target IDE.
 /// </summary>
-function TJVCLCompiler.CompileTarget(TargetConfig: TTargetConfig;
+function TCompiler.CompileTarget(TargetConfig: TTargetConfig;
   ForceJclDcp: Boolean; DoClx: Boolean): Boolean;
 var
   ObjFiles: TStrings;
@@ -685,7 +685,7 @@ end;
 /// <summary>
 /// GenerateResources starts the make file for the resource file compilation.
 /// </summary>
-function TJVCLCompiler.GenerateResources(TargetConfig: ITargetConfig): Boolean;
+function TCompiler.GenerateResources(TargetConfig: ITargetConfig): Boolean;
 begin
   Result := False;
 
@@ -717,7 +717,7 @@ end;
 /// <summary>
 /// DeleteFormDataFiles deletes the .dfm, .xfm files from the lib-path.
 /// </summary>
-function TJVCLCompiler.DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
+function TCompiler.DeleteFormDataFiles(ProjectGroup: TProjectGroup): Boolean;
 var
   Files: TStrings;
   i: Integer;
@@ -739,7 +739,7 @@ end;
 /// CopyFormDataFiles copies the .dfm, .xfm files to the lib-path.
 /// This function is only called for non developer installations.
 /// </summary>
-function TJVCLCompiler.CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
+function TCompiler.CopyFormDataFiles(ProjectGroup: TProjectGroup; DebugUnits: Boolean): Boolean;
 var
   Files: TStrings;
   i: Integer;
@@ -803,7 +803,7 @@ end;
 /// packages generator, calls the GenerateResource method and compiles all
 /// selected packages of the project group.
 /// </summary>
-function TJVCLCompiler.CompileProjectGroup(ProjectGroup: TProjectGroup;
+function TCompiler.CompileProjectGroup(ProjectGroup: TProjectGroup;
   DebugUnits, ForceJclDcp: Boolean): Boolean;
 var
   AProjectIndex, i: Integer;
@@ -1108,7 +1108,7 @@ end;
 /// If AutoDepend is true, this function will add dependency information into
 /// the make file for a faster compilation process.
 /// </summary>
-procedure TJVCLCompiler.CreateProjectGroupMakefile(ProjectGroup: TProjectGroup;
+procedure TCompiler.CreateProjectGroupMakefile(ProjectGroup: TProjectGroup;
   AutoDepend: Boolean);
 var
   Lines: TStrings;
@@ -1138,12 +1138,14 @@ begin
 
     // for JCL .dcp files
     Lines.Add(Format('.path.dcp = "%s";"%s";"%s";"%s"',
-      [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir,
-       ProjectGroup.Target.BplDir, ProjectGroup.Target.DcpDir]));
+      [ExtractShortPathName(ProjectGroup.TargetConfig.BplDir),
+       ExtractShortPathName(ProjectGroup.TargetConfig.DcpDir),
+       ExtractShortPathName(ProjectGroup.Target.BplDir),
+       ExtractShortPathName(ProjectGroup.Target.DcpDir)]));
 
     if AutoDepend then
     begin
-      S := ProjectGroup.TargetConfig.JVCLDir;
+      S := ExtractShortPathName(ProjectGroup.TargetConfig.JVCLDir);
       PasFileSearchDirs :=
         Format('"%s\common";"%s\run";"%s\design";"%s\qcommon";"%s\qrun";"%s\qdesign"',//;"%s"',
                [S, S, S, S, S, S{, ProjectGroup.TargetConfig.DxgettextDir}]);
@@ -1337,14 +1339,14 @@ begin
   end;
 end;
 
-function TJVCLCompiler.IsFileUsed(ProjectGroup: TProjectGroup;
+function TCompiler.IsFileUsed(ProjectGroup: TProjectGroup;
   ContainedFile: TContainedFile): Boolean;
 begin
   Result := ContainedFile.IsUsedByTarget(ProjectGroup.TargetConfig.TargetSymbol) and
             IsCondition(ContainedFile.Condition, ProjectGroup.TargetConfig);
 end;
 
-function TJVCLCompiler.IsPackageUsed(ProjectGroup: TProjectGroup;
+function TCompiler.IsPackageUsed(ProjectGroup: TProjectGroup;
   RequiredPackage: TRequiredPackage): Boolean;
 begin
   Result := RequiredPackage.IsRequiredByTarget(ProjectGroup.TargetConfig.TargetSymbol) and
@@ -1365,7 +1367,7 @@ type
   end;
 
 
-function TJVCLCompiler.IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
+function TCompiler.IsCondition(const Condition: string; TargetConfig: ITargetConfig): Boolean;
 var
   Parser: TListConditionParser;
 begin

@@ -42,10 +42,10 @@ type
   TPackageGroupArray = array[{Personal:}Boolean, {Kind:}TPackageGroupKind] of TProjectGroup;
 
   /// <summary>
-  /// TJVCLFrameworks contains all possible package lists for the target. If
+  /// TFrameworks contains all possible package lists for the target. If
   /// Items[x] is nil then there is no .bpg file for this target kind.
   /// </summary>
-  TJVCLFrameworks = class(TObject)
+  TFrameworks = class(TObject)
   private
     FItems: TPackageGroupArray;
     FTargetConfig: ITargetConfig;
@@ -140,9 +140,9 @@ begin
     Delete(Result, 3, 1);
 end;
 
-{ TJVCLFrameworks }
+{ TFrameworks }
 
-constructor TJVCLFrameworks.Create(ATargetConfig: ITargetConfig);
+constructor TFrameworks.Create(ATargetConfig: ITargetConfig);
 var
   Kind: TPackageGroupKind;
 begin
@@ -162,7 +162,7 @@ begin
   end;
 end;
 
-destructor TJVCLFrameworks.Destroy;
+destructor TFrameworks.Destroy;
 var
   Kind: TPackageGroupKind;
 begin
@@ -174,7 +174,7 @@ begin
   inherited Destroy;
 end;
 
-function TJVCLFrameworks.GetCount: Integer;
+function TFrameworks.GetCount: Integer;
 begin
   Result := Length(FItems);
 end;

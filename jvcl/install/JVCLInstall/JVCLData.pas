@@ -73,7 +73,7 @@ type
     FAutoDependencies: Boolean;
 
     FInstallMode: TInstallMode;
-    FFrameworks: TJVCLFrameworks;
+    FFrameworks: TFrameworks;
     FDcpDir: string;
     FBplDir: string;
     FGenerateMapFiles: Boolean;
@@ -177,7 +177,7 @@ type
       // CompiledJCL is True if D/CJcl.dcp and D/CJclVcl.dcp exist for this
       // target.
 
-    property Frameworks: TJVCLFrameworks read FFrameworks;
+    property Frameworks: TFrameworks read FFrameworks;
       // Frameworks contains all possible package groups.
 
     property FrameworkCount: Integer read GetFrameworkCount;
@@ -617,7 +617,7 @@ begin
   Init;
   FInstallJVCL := CanInstallJVCL;
 
-  FFrameworks := TJVCLFrameworks.Create(Self);
+  FFrameworks := TFrameworks.Create(Self);
   FJVCLConfig := TJVCLConfig.Create;
   Load;
 end;
