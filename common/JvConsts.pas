@@ -15,7 +15,7 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
+Last Modified: 2004-03-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -44,9 +44,6 @@ const
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
-
-const
-  NewStyleControls = True;
 {$ENDIF VisualCLX}
 
 const
@@ -77,7 +74,7 @@ const
   // (rom) now in JvJCLUtils.pas
 
   { RALib 1.55 }
-
+  {$IFDEF MSWINDOWS}
   {$IFDEF DELPHI2}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
   {$ENDIF DELPHI2}
@@ -117,7 +114,10 @@ const
   {$IFDEF DELPHI8}
   SDelphiKey = 'Software\Borland\Delphi\8.0';
   {$ENDIF DELPHI8}
-
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  SDelphiKey = '.borland/.Jvcl3';
+  {$ENDIF}
   { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;
@@ -197,6 +197,7 @@ const
   AllFilePattern = '*.*';
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
+  RegPathDelim = '_';
   PathDelim = '/';
   AllFilePattern = '*';
   {$ENDIF LINUX}
