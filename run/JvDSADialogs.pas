@@ -437,7 +437,10 @@ uses
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
-  JclRegistry, JclSysUtils,
+  {$IFDEF MSWINDOWS}
+  JclRegistry,
+  {$ENDIF MSWINDOWS}
+  JclSysUtils,
   JvResources, JvDynControlEngineIntf;
 
 const
