@@ -145,7 +145,7 @@ type
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure GetInternalMargins(var ALeft, ARight: Integer); override;
     procedure DoCtl3DChanged; override;
-    procedure DoEnabledChanged; override;
+    procedure EnabledChanged; override;
     function GetChecked: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
     procedure SetShowCheckbox(const AValue: Boolean); override;
@@ -791,9 +791,9 @@ begin
   FBut.Flat := not Self.Ctl3D;
 end;
 
-procedure TJvCustomDatePickerEdit.DoEnabledChanged;
+procedure TJvCustomDatePickerEdit.EnabledChanged;
 begin
-  inherited DoEnabledChanged;
+  inherited;
   if not (Self.Enabled) and Dropped then
     CloseUp;
   FBut.Enabled := Self.Enabled;

@@ -49,8 +49,8 @@ type
     MemoText: TMemo;
     BtnLoad: TButton;
     BtnSave: TButton;
-    OpenDialog1: TOpenDialog;
-    SaveDialog1: TSaveDialog;
+    OpenDialog: TOpenDialog;
+    SaveDialog: TSaveDialog;
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -68,15 +68,15 @@ implementation
 
 procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
 begin
-  if OpenDialog1.Execute then
-    Memo1.Lines.LoadFromFile(OpenDialog1.FileName);
+  if OpenDialog.Execute then
+    MemoText.Lines.LoadFromFile(OpenDialog.FileName);
   MemoText.SetFocus;
 end;
 
 procedure TYearGridEditForm.BtnSaveClick(Sender: TObject);
 begin
-  if SaveDialog1.Execute then
-    MemoText.Lines.SaveToFile(SaveDialog1.FileName);
+  if SaveDialog.Execute then
+    MemoText.Lines.SaveToFile(SaveDialog.FileName);
   MemoText.SetFocus;
 end;
 

@@ -39,42 +39,42 @@ type
   TYearData = record
     DisPlaytext: string;
     InfoText: string;
-    DefaultColor: Tcolor;
-    CustomColor: Tcolor;
-    Custom: boolean;
-    BookMark: boolean; //this is not saved
+    DefaultColor: TColor;
+    CustomColor: TColor;
+    Custom: Boolean;
+    BookMark: Boolean; //this is not saved
   end;
 
-  TOnYearChanged = procedure(sender: Tobject; AYear: integer) of object;
-  TOnSelectDate = procedure(sender: Tobject; Adate: TDate; InfoText: string; InfoColor: Tcolor) of object;
-  TOnInfoChanging = procedure(sender: Tobject; var InfoText: string; var CanChange: boolean) of object;
+  TOnYearChanged = procedure(Sender: TObject; AYear: Integer) of Object;
+  TOnSelectDate = procedure(Sender: TObject; Adate: TDate; InfoText: string; InfoColor: TColor) of Object;
+  TOnInfoChanging = procedure(Sender: TObject; var InfoText: string; var CanChange: Boolean) of Object;
   TJvYearGrid = class(TDrawGrid)
   private
     GridPop: TPopupMenu;
-    thisyear, thismonth, thisday: word;
-    FHTMLBorder: boolean;
-    FGridYear: integer;
+    thisyear, thismonth, thisday: Word;
+    FHTMLBorder: Boolean;
+    FGridYear: Integer;
     FonYearChanged: TOnYearChanged;
     FHTMLFontName: string;
     FonSelectDate: TOnSelectDate;
     FBorderColor: TColor;
     FonInfoChanging: TOnInfoChanging;
-    FBookMarkColor: Tcolor;
+    FBookMarkColor: TColor;
     { Private declarations }
 
     procedure DoShowHint(var HintStr: string; var CanShow: Boolean;
       var HintInfo: THintInfo);
-    procedure MakeHTML(alist: tstringlist; border, filter: boolean);
-    procedure SetHTMLBorder(const Value: boolean);
-    procedure SetGridYear(const Value: integer);
+    procedure MakeHTML(alist: tstringlist; border, filter: Boolean);
+    procedure SetHTMLBorder(const Value: Boolean);
+    procedure SetGridYear(const Value: Integer);
     procedure SeTOnYearChanged(const Value: TOnYearChanged);
-    procedure setYear(AYear: word);
+    procedure setYear(AYear: Word);
     procedure LoadYear;
     procedure SaveYear;
     procedure SetupYearData;
     procedure setupmonths;
-    function GetCellData(var s: string): boolean;
-    function SetCellData(s: string): boolean;
+    function GetCellData(var s: string): Boolean;
+    function SetCellData(s: string): Boolean;
     procedure Copy1Click(Sender: TObject);
     procedure Cut1Click(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
@@ -82,28 +82,28 @@ type
     procedure CreatePopup;
     procedure Edit1Click(Sender: TObject);
     procedure year1Click(Sender: TObject);
-    procedure color1click(sender: TObject);
-    procedure nocolor1click(sender: TObject);
-    procedure SetupGridPop(sender: TObject);
-    procedure SaveAsHTML(sender: TObject);
+    procedure Color1click(Sender: TObject);
+    procedure noColor1click(Sender: TObject);
+    procedure SetupGridPop(Sender: TObject);
+    procedure SaveAsHTML(Sender: TObject);
     procedure Launch(Afile: string);
     procedure SetHTMLFontName(const Value: string);
     procedure SeTOnSelectDate(const Value: TOnSelectDate);
     procedure SetBorderColor(const Value: TColor);
-    procedure BorderColor1click(sender: TObject);
+    procedure BorderColor1click(Sender: TObject);
     procedure SeTOnInfoChanging(const Value: TOnInfoChanging);
-    function DateToCell(ADate: TDate; var Acol, aRow: integer): boolean;
+    function DateToCell(ADate: TDate; var Acol, aRow: Integer): Boolean;
     procedure ClearBookMarks;
-    procedure SetBookMarkColor(const Value: Tcolor);
-    procedure BookMarkColor1click(sender: TObject);
-    procedure Find1click(sender: Tobject);
-    procedure ClearFind1click(sender: Tobject);
-    procedure SaveFound(sender: Tobject);
+    procedure SetBookMarkColor(const Value: TColor);
+    procedure BookMarkColor1click(Sender: TObject);
+    procedure Find1click(Sender: TObject);
+    procedure ClearFind1click(Sender: TObject);
+    procedure SaveFound(Sender: TObject);
 
   protected
     { Protected declarations }
     procedure DrawCell(ACol, ARow: Integer; Rect: TRect; State: TGridDrawState); override;
-    function SelectCell(ACol, ARow: Integer): boolean; override;
+    function SelectCell(ACol, ARow: Integer): Boolean; override;
     procedure DblClick; override;
   public
     { Public declarations }
@@ -111,16 +111,16 @@ type
     destructor Destroy; override;
     function GetSelDateText: string;
     procedure SetSelDateText(Atext: string);
-    function GetDateInfo(aDate: TDate; var aText: string): boolean;
-    function SetDateInfo(aDate: TDate; aText: string): boolean;
+    function GetDateInfo(aDate: TDate; var aText: string): Boolean;
+    function SetDateInfo(aDate: TDate; aText: string): Boolean;
     procedure Find;
   published
     { Published declarations }
-    property HTMLBorder: boolean read FHTMLBorder write SetHTMLBorder;
+    property HTMLBorder: Boolean read FHTMLBorder write SetHTMLBorder;
     property HTMLFontName: string read FHTMLFontName write SetHTMLFontName;
-    property GridYear: integer read FGridYear write SetGridYear;
+    property GridYear: Integer read FGridYear write SetGridYear;
     property BorderColor: TColor read FBorderColor write SetBorderColor;
-    property BookMarkColor: Tcolor read FBookMarkColor write SetBookMarkColor;
+    property BookMarkColor: TColor read FBookMarkColor write SetBookMarkColor;
     property onYearChanged: TOnYearChanged read FonYearChanged write SeTOnYearChanged;
     property onSelectDate: TOnSelectDate read FonSelectDate write SeTOnSelectDate;
     property onInfoChanging: TOnInfoChanging read FonInfoChanging write SeTOnInfoChanging;
@@ -134,16 +134,16 @@ uses
   JvConsts, JvTypes, JvResources, JvYearGridEditForm;
 
 const
-  todayfontcolor = clwhite;
-  todaybrushcolor = clred;
+  todayfontColor = clWhite;
+  todaybrushColor = clRed;
 
 var
   appldir: string;
-  daysinmonth: array[1..12] of integer;
-  startdays: array[1..12] of integer;
-  theyear: word;
+  daysinmonth: array[1..12] of Integer;
+  startdays: array[1..12] of Integer;
+  theyear: Word;
   thisdaystr: string;
-  isthisyear: boolean;
+  isthisyear: Boolean;
   YearData: array[0..37, 0..12] of TYearData;
   YearFile: string;
 
@@ -158,7 +158,7 @@ begin
   defaultrowheight := 24;
   colcount := 38;
   rowcount := 13;
-  FBordercolor := $EEF5FF;
+  FBorderColor := $EEF5FF;
   FBookMarkColor := clyellow;
   CreatePopup;
   popupmenu := GridPop;
@@ -186,27 +186,27 @@ procedure TJvYearGrid.DrawCell(ACol, ARow: Integer;
 var
   s: string;
 begin
-  if assigned(onDrawCell) then
-    onDrawCell(self, acol, arow, rect, state);
+  if Assigned(onDrawCell) then
+    onDrawCell(Self, acol, arow, rect, state);
   s := YearData[acol, arow].DisplayText;
   with canvas do
   begin
-    font.color := clblack;
+    font.Color := clblack;
     font.style := font.style - [fsbold];
-    if ((acol = 0) or ((arow = 0) and (YearData[acol, arow].defaultcolor = clwhite))) then
-      brush.color := bordercolor
+    if ((acol = 0) or ((arow = 0) and (YearData[acol, arow].defaultColor = clwhite))) then
+      brush.Color := borderColor
     else if (isthisyear and (arow = thismonth) and (s = thisdaystr)) then
     begin
-      font.color := todayfontcolor;
-      brush.color := todaybrushcolor;
+      font.Color := todayfontColor;
+      brush.Color := todaybrushColor;
       font.style := font.style + [fsbold];
     end
     else if YearData[acol, arow].custom then
-      brush.color := YearData[acol, arow].customcolor
+      brush.Color := YearData[acol, arow].customColor
     else
-      brush.color := YearData[acol, arow].defaultcolor;
+      brush.Color := YearData[acol, arow].defaultColor;
     if yearData[acol, arow].bookmark then
-      brush.color := BookMarkColor;
+      brush.Color := BookMarkColor;
     textrect(rect, rect.left, rect.top, s);
   end;
 end;
@@ -214,15 +214,15 @@ end;
 procedure TJvYearGrid.DoShowHint(var HintStr: string; var CanShow: Boolean;
   var HintInfo: THintInfo);
 var
-  acol, arow, x, y: integer;
+  acol, arow, x, y: Integer;
   s, ds: string;
 begin
-  if HintInfo.HintControl = self then
+  if HintInfo.HintControl = Self then
   begin
     x := HintInfo.CursorPos.x;
     y := HintInfo.cursorPos.y;
     MouseToCell(x, y, acol, arow);
-    if ((acol < 0) or (arow < 0)) then exit;
+    if ((acol < 0) or (arow < 0)) then Exit;
     ds := YearData[acol, arow].displaytext;
     if (isthisyear and (arow = thismonth) and (ds = thisdaystr)) then
       s := 'Today ';
@@ -240,13 +240,13 @@ begin
   end;
 end;
 
-procedure TJvYearGrid.MakeHTML(alist: tstringlist; border, Filter: boolean);
+procedure TJvYearGrid.MakeHTML(alist: tstringlist; border, Filter: Boolean);
 var
-  acol, arow, w: integer;
+  acol, arow, w: Integer;
   ds, tbs, infs: string;
-  month, day: word;
+  month, day: Word;
   ADate: tdate;
-  CanAdd: boolean;
+  CanAdd: Boolean;
 begin
   alist.clear;
   if border then
@@ -286,7 +286,7 @@ begin
   alist.append('</font></body></html>');
 end;
 
-procedure TJvYearGrid.SaveAsHTML(sender: Tobject);
+procedure TJvYearGrid.SaveAsHTML(Sender: TObject);
 var
   alist: Tstringlist;
   afile: string;
@@ -299,7 +299,7 @@ begin
   launch(afile);
 end;
 
-procedure TJvYearGrid.SetHTMLBorder(const Value: boolean);
+procedure TJvYearGrid.SetHTMLBorder(const Value: Boolean);
 begin
   FHTMLBorder := Value;
 end;
@@ -309,20 +309,20 @@ begin
   FonYearChanged := Value;
 end;
 
-procedure TJvYearGrid.SetGridYear(const Value: integer);
+procedure TJvYearGrid.SetGridYear(const Value: Integer);
 begin
   if value <> FGridYear then
   begin
     FGridYear := Value;
     setYear(FGridYear);
-    if assigned(onYearChanged) then
-      onYearChanged(self, FGridYear);
+    if Assigned(onYearChanged) then
+      onYearChanged(Self, FGridYear);
   end;
 end;
 
-procedure TJvYearGrid.setYear(AYear: word);
+procedure TJvYearGrid.setYear(AYear: Word);
 var
-  year, month, day: word;
+  year, month, day: Word;
 begin
   if Ayear = 0 then
   begin
@@ -345,7 +345,7 @@ end;
 
 procedure TJvYearGrid.SaveYear;
 var
-  arow, acol: integer;
+  arow, acol: Integer;
   YList, DList: tstringlist;
   s: string;
 begin
@@ -360,8 +360,8 @@ begin
       s := YearData[acol, arow].InfoText;
       s := stringreplace(s, cr, '||', [rfreplaceall]);
       Dlist.append(s);
-      Dlist.append(colortostring(YearData[acol, arow].DefaultColor));
-      Dlist.append(colortostring(YearData[acol, arow].CustomColor));
+      Dlist.append(Colortostring(YearData[acol, arow].DefaultColor));
+      Dlist.append(Colortostring(YearData[acol, arow].CustomColor));
       if YearData[acol, arow].Custom then
         s := 'true'
       else
@@ -377,7 +377,7 @@ end;
 
 procedure TJvYearGrid.LoadYear;
 var
-  arow, acol, index: integer;
+  arow, acol, index: Integer;
   YList, DList: tstringlist;
   s: string;
 begin
@@ -395,8 +395,8 @@ begin
       s := Dlist[1];
       s := stringreplace(s, '||', cr, [rfreplaceall]);
       YearData[acol, arow].InfoText := s;
-      YearData[acol, arow].DefaultColor := stringtocolor(DList[2]);
-      YearData[acol, arow].CustomColor := stringtocolor(DList[3]);
+      YearData[acol, arow].DefaultColor := stringtoColor(DList[2]);
+      YearData[acol, arow].CustomColor := stringtoColor(DList[3]);
       YearData[acol, arow].Custom := (Dlist[4] = 'true');
     end;
   end;
@@ -408,8 +408,8 @@ end;
 procedure TJvYearGrid.SetupYearData;
 var
   s, d: string;
-  i, acol, arow: integer;
-  Acolor: Tcolor;
+  i, acol, arow: Integer;
+  AColor: TColor;
 begin
   setupmonths;
   for arow := 0 to 12 do
@@ -435,9 +435,9 @@ begin
 
       // AColor might have not been initialized with the following code.
       //if ((acol>0)and (d='S')) then
-      //  Acolor:=clsilver;
+      //  AColor:=clsilver;
       //if ((acol>0)and (d<>'S')) then
-      //  Acolor:=clwhite;
+      //  AColor:=clwhite;
       //  Change to:
       if (acol > 0) and (d = 'S') then
         AColor := clSilver
@@ -445,8 +445,8 @@ begin
         AColor := clWhite;
       YearData[acol, arow].DisPlayText := s;
       YearData[acol, arow].InfoText := '';
-      YearData[acol, arow].DefaultColor := Acolor;
-      YearData[acol, arow].CustomColor := Acolor;
+      YearData[acol, arow].DefaultColor := AColor;
+      YearData[acol, arow].CustomColor := AColor;
       YearData[acol, arow].Custom := false;
       YearData[acol, arow].bookmark := false;
     end;
@@ -455,7 +455,7 @@ end;
 
 procedure TJvYearGrid.ClearBookMarks;
 var
-  acol, arow: integer;
+  acol, arow: Integer;
 begin
   for arow := 0 to 12 do
     for acol := 0 to 37 do
@@ -466,9 +466,9 @@ end;
 
 procedure TJvYearGrid.setupmonths;
 var
-  year, month, day: word;
+  year, month, day: Word;
   Adate: tdate;
-  i: integer;
+  i: Integer;
 begin
   for i := 1 to 12 do
   begin
@@ -492,9 +492,9 @@ begin
   end;
 end;
 
-function TJvYearGrid.GetCellData(var s: string): boolean;
+function TJvYearGrid.GetCellData(var s: string): Boolean;
 var
-  acol, arow: integer;
+  acol, arow: Integer;
 begin
   acol := col;
   arow := row;
@@ -507,9 +507,9 @@ begin
     end;
 end;
 
-function TJvYearGrid.SetCellData(s: string): boolean;
+function TJvYearGrid.SetCellData(s: string): Boolean;
 var
-  acol, arow: integer;
+  acol, arow: Integer;
 begin
   acol := col;
   arow := row;
@@ -546,13 +546,13 @@ end;
 procedure TJvYearGrid.year1Click(Sender: TObject);
 var
   s: string;
-  Ayear: word;
+  Ayear: Word;
 begin
   s := inputbox(RsYearGrid, RsEnterYear, inttostr(GridYear));
   try
-    if s = '' then exit;
+    if s = '' then Exit;
     ayear := strtoint(s);
-    if ((ayear < 1999) or (ayear > 2050)) then exit;
+    if ((ayear < 1999) or (ayear > 2050)) then Exit;
     GridYear := ayear;
   except
     showmessage(RsInvalidYear);
@@ -584,7 +584,7 @@ var
   g: Tpopupmenu;
   m: tmenuitem;
 begin
-  GridPop := Tpopupmenu.create(self);
+  GridPop := Tpopupmenu.create(Self);
   g := GridPop;
   m := tmenuitem.Create(g);
   m.Caption := RsYear;
@@ -600,11 +600,11 @@ begin
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := RsColor;
-  m.OnClick := color1click;
+  m.OnClick := Color1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := RsNoColor;
-  m.OnClick := nocolor1click;
+  m.OnClick := noColor1click;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := cMenuBreakCaption;
@@ -643,12 +643,12 @@ begin
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := RsBorderColor;
-  m.OnClick := bordercolor1click;
+  m.OnClick := borderColor1click;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
   m.Caption := RsBookMarkColor;
-  m.OnClick := bookmarkcolor1click;
+  m.OnClick := bookmarkColor1click;
   m.tag := 1;
   g.Items.Add(m);
   m := tmenuitem.Create(g);
@@ -669,25 +669,25 @@ end;
 procedure TJvYearGrid.Edit1Click(Sender: TObject);
 var
   ds: string;
-  acol, arow: integer;
+  acol, arow: Integer;
   f: TYearGridEditForm;
-  CanChange: boolean;
+  CanChange: Boolean;
   InfoText: string;
 begin
   acol := col;
   arow := row;
-  if ((acol < 1) or (arow < 1)) then exit;
+  if ((acol < 1) or (arow < 1)) then Exit;
   ds := YearData[col, row].displaytext;
-  if (ds = '') then exit;
+  if (ds = '') then Exit;
   f := TYearGridEditForm.Create(application);
   InfoText := YearData[acol, arow].infotext;
-  f.Memo1.Text := Infotext;
+  f.MemoText.Text := Infotext;
   if f.ShowModal = mrOK then
   begin
-    InfoText := f.memo1.text;
+    InfoText := f.MemoText.Text;
     Canchange := true;
-    if assigned(onInfoChanging) then
-      onInfoChanging(self, InfoText, Canchange);
+    if Assigned(onInfoChanging) then
+      OnInfoChanging(Self, InfoText, Canchange);
     if CanChange then
     begin
       YearData[col, row].infotext := Infotext;
@@ -696,23 +696,23 @@ begin
       else if not YearData[col, row].custom then
       begin
         YearData[col, row].custom := true;
-        YearData[col, row].customcolor := rgb(206, 250, 253);
+        YearData[col, row].customColor := rgb(206, 250, 253);
       end;
     end;
   end;
   f.free;
 end;
 
-procedure TJvYearGrid.color1click(sender: TObject);
+procedure TJvYearGrid.Color1click(Sender: TObject);
 var
-  cd: TcolorDialog;
+  cd: TColorDialog;
 begin
-  if (col < 1) or (row < 1) or (YearData[col, row].Displaytext = '') then exit;
+  if (col < 1) or (row < 1) or (YearData[col, row].Displaytext = '') then Exit;
   cd := TColordialog.Create(application);
-  cd.Options := [cdfullopen, cdanycolor];
+  cd.Options := [cdfullopen, cdanyColor];
   if cd.Execute then
   begin
-    YearData[col, row].customcolor := cd.Color;
+    YearData[col, row].customColor := cd.Color;
     YearData[col, row].custom := true;
   end;
   cd.free;
@@ -720,16 +720,16 @@ begin
 
 end;
 
-procedure TJvYearGrid.nocolor1click(sender: TObject);
+procedure TJvYearGrid.noColor1click(Sender: TObject);
 begin
-  if (col < 1) or (row < 1) or (YearData[col, row].Displaytext = '') then exit;
+  if (col < 1) or (row < 1) or (YearData[col, row].Displaytext = '') then Exit;
   YearData[col, row].custom := false;
   invalidate;
 end;
 
-procedure TJvYearGrid.SetupGridPop(sender: TObject);
+procedure TJvYearGrid.SetupGridPop(Sender: TObject);
 var
-  i, c: integer;
+  i, c: Integer;
 begin
   c := GridPop.items.count;
   if (col > 0) and (row > 0) and (YearData[col, row].Displaytext <> '') then
@@ -772,9 +772,9 @@ var
   ds: string;
 
 begin
-  if (col < 1) or (row < 1) then exit;
+  if (col < 1) or (row < 1) then Exit;
   ds := YearData[col, row].displaytext;
-  if ds = '' then exit;
+  if ds = '' then Exit;
   result := YearData[col, row].infotext;
 end;
 
@@ -782,9 +782,9 @@ procedure TJvYearGrid.SetSelDateText(Atext: string);
 var
   ds, s: string;
 begin
-  if (col < 1) or (row < 1) then exit;
+  if (col < 1) or (row < 1) then Exit;
   ds := YearData[col, row].displaytext;
-  if ds = '' then exit;
+  if ds = '' then Exit;
   YearData[col, row].infotext := s;
 end;
 
@@ -793,44 +793,44 @@ begin
   FonSelectDate := Value;
 end;
 
-function TJvYearGrid.SelectCell(ACol, ARow: Longint): boolean;
+function TJvYearGrid.SelectCell(ACol, ARow: Longint): Boolean;
 var
   ds: string;
   Adate: tdate;
   Infotext: string;
-  Infocolor: TColor;
-  month, day: word;
-  Canselect: boolean;
+  InfoColor: TColor;
+  month, day: Word;
+  Canselect: Boolean;
 begin
   CanSelect := true;
-  if assigned(onselectcell) then
-    onselectcell(self, acol, arow, canselect);
+  if Assigned(onselectcell) then
+    onselectcell(Self, acol, arow, canselect);
   if not CanSelect then
   begin
     result := false;
-    exit;
+    Exit;
   end;
   Result := False;
-  if (Acol < 1) or (Arow < 1) then exit;
+  if (Acol < 1) or (Arow < 1) then Exit;
   ds := YearData[acol, arow].displaytext;
-  if ds = '' then exit;
+  if ds = '' then Exit;
   month := arow;
   day := strtoint(YearData[acol, arow].displaytext);
   adate := encodedate(theyear, month, day);
   infotext := YearData[acol, arow].infotext;
   if YearData[acol, arow].custom = true then
-    infocolor := YearData[acol, arow].customcolor
+    infoColor := YearData[acol, arow].customColor
   else
-    infocolor := YearData[acol, arow].defaultcolor;
-  if assigned(onselectDate) then
-    onselectdate(self, Adate, Infotext, infocolor);
+    infoColor := YearData[acol, arow].defaultColor;
+  if Assigned(onselectDate) then
+    onselectdate(Self, Adate, Infotext, infoColor);
   result := true;
 end;
 
 procedure TJvYearGrid.DblClick;
 begin
-  if assigned(ondblclick) then
-    ondblclick(self);
+  if Assigned(ondblclick) then
+    ondblclick(Self);
   if (col > 0) and (row > 0) and (YearData[col, row].Displaytext <> '') then
     edit1click(nil);
 end;
@@ -844,23 +844,23 @@ begin
   end;
 end;
 
-procedure TJvYearGrid.BorderColor1click(sender: TObject);
+procedure TJvYearGrid.BorderColor1click(Sender: TObject);
 var
-  cd: TcolorDialog;
+  cd: TColorDialog;
 begin
   cd := TColordialog.Create(application);
-  cd.Options := [cdfullopen, cdanycolor];
+  cd.Options := [cdfullopen, cdanyColor];
   if cd.Execute then
     BorderColor := cd.Color;
   cd.free;
 end;
 
-procedure TJvYearGrid.BookMarkColor1click(sender: TObject);
+procedure TJvYearGrid.BookMarkColor1click(Sender: TObject);
 var
-  cd: TcolorDialog;
+  cd: TColorDialog;
 begin
   cd := TColordialog.Create(application);
-  cd.Options := [cdfullopen, cdanycolor];
+  cd.Options := [cdfullopen, cdanyColor];
   if cd.Execute then
     BookMarkColor := cd.Color;
   cd.free;
@@ -871,23 +871,23 @@ begin
   FonInfoChanging := Value;
 end;
 
-function TJvYearGrid.DateToCell(ADate: TDate; var Acol, aRow: integer): boolean;
+function TJvYearGrid.DateToCell(ADate: TDate; var Acol, aRow: Integer): Boolean;
 var
-  ayear, amonth, aday: word;
-  wd: integer;
+  ayear, amonth, aday: Word;
+  wd: Integer;
 begin
   result := false;
   decodedate(Adate, ayear, amonth, aday);
-  if ayear <> GridYear then exit;
+  if ayear <> GridYear then Exit;
   arow := Amonth;
   wd := dayofweek(encodeDate(ayear, amonth, 1));
   acol := wd + aday - 1;
   result := true;
 end;
 
-function TJvYearGrid.GetDateInfo(aDate: TDate; var aText: string): boolean;
+function TJvYearGrid.GetDateInfo(aDate: TDate; var aText: string): Boolean;
 var
-  acol, arow: integer;
+  acol, arow: Integer;
 begin
   if DateToCell(aDate, acol, arow) then
   begin
@@ -898,9 +898,9 @@ begin
     result := false;
 end;
 
-function TJvYearGrid.SetDateInfo(aDate: TDate; aText: string): boolean;
+function TJvYearGrid.SetDateInfo(aDate: TDate; aText: string): Boolean;
 var
-  acol, arow: integer;
+  acol, arow: Integer;
 begin
   if DateToCell(aDate, acol, arow) then
   begin
@@ -911,7 +911,7 @@ begin
     result := false;
 end;
 
-procedure TJvYearGrid.SetBookMarkColor(const Value: Tcolor);
+procedure TJvYearGrid.SetBookMarkColor(const Value: TColor);
 begin
   if value <> FBookMarkColor then
   begin
@@ -920,14 +920,14 @@ begin
   end;
 end;
 
-procedure TJvYearGrid.Find1click(sender: Tobject);
+procedure TJvYearGrid.Find1click(Sender: TObject);
 var
   s: string;
-  acol, arow: integer;
+  acol, arow: Integer;
 begin
   ClearBookMarks;
   s := inputbox(RsYearGridFind, RsEnterSeachText, '');
-  if s = '' then exit;
+  if s = '' then Exit;
   s := lowercase(s);
   for arow := 0 to 12 do
     for acol := 0 to 37 do
@@ -937,7 +937,7 @@ begin
 
 end;
 
-procedure TJvYearGrid.ClearFind1click(sender: Tobject);
+procedure TJvYearGrid.ClearFind1click(Sender: TObject);
 begin
   ClearBookMarks;
 end;
@@ -947,7 +947,7 @@ begin
   Find1click(nil);
 end;
 
-procedure TJvYearGrid.SaveFound(sender: Tobject);
+procedure TJvYearGrid.SaveFound(Sender: TObject);
 var
   alist: Tstringlist;
   afile: string;
