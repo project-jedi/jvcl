@@ -94,6 +94,7 @@ type
   LONG  = longint;
   PLONG = ^LONG;
   int   = integer;
+  {$EXTERNALSYM int}
 
 (****************************************************************************
  *
@@ -142,6 +143,7 @@ const
   BI_1632                     = $32333631;    // '1632'
 
 function mmioFOURCC(ch0, ch1, ch2, ch3: Char): FOURCC;
+{$EXTERNALSYM mmioFOURCC}
 
 type
   TWOCC                       = word;
