@@ -23,7 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-program buildtarget;
+{$I jvcl.inc}
+
+program build;
 {$APPTYPE CONSOLE}
 uses
   Windows;
@@ -42,7 +44,8 @@ var
   JVCLRoot: string;
   PkgDir: string;
   UnitOutDir: string;
-  MakeOptions: string;
+  MakeOptions: string = '';
+  Verbose: Boolean = False;
 
   Editions: array of string = nil;
   Targets: array of TTarget = nil;
@@ -492,6 +495,7 @@ begin
   WriteLn('                    files will be compiled.');
   WriteLn('                    (Example:');
   WriteLn('                      buildtarget "--targets=JvCoreD7R.bpl JvCoreD7R.bpl" )');
+  WriteLn('    --verbose       Show all commands that are executed.');
   WriteLn;
 end;
 
@@ -537,6 +541,10 @@ begin
       begin
         Delete(S, 1, 10);
         SetEnvironmentVariable('TARGETS', Pointer(S));
+      end
+      else if SameText('--verbose', S) then
+      begin
+        Verbose := True;
       end;
     end
     else
@@ -576,6 +584,8 @@ begin
     Help;
     Halt(1);
   end;
+  if not Verbose then
+    MakeOptions := ' -s' + MakeOptions;
 
   for i := 0 to High(Editions) do
   begin
