@@ -227,7 +227,6 @@ contains
   JvPopupMemo in '..\source\JvPopupMemo.pas',
   JvSizeablePanel in '..\source\JvSizeablePanel.pas',
   JvSpacer in '..\source\JvSpacer.pas',
-  JvTextcontainer in '..\source\JvTextcontainer.pas',
   JvTransparentPanel in '..\source\JvTransparentPanel.pas',
   JvMousePanel in '..\source\JvMousePanel.pas',
   JvObserverLabel in '..\source\JvObserverLabel.pas',

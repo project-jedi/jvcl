@@ -138,7 +138,7 @@ uses
   JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvMultilineListbox, JvMultiselectChecklistbox, JvObserverLabel,
   JvObservibleCheckBox, JvOneSizeFitsAllButton, JvGroupBox,
   JvReorderListBox, JvPopupMemo,
-  JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTextcontainer, JvTransparentPanel,
+  JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
 
   //Petr Vones Components
   JVCLMiscal,
@@ -560,7 +560,6 @@ begin
   RegisterComponents('Jv Utils', [
     TJvTranslator,
       TJvTranslatorStrings,
-      TJvTextContainer,
 
     TJvFavoritesButton,
       TJvStartMenuBtn,
