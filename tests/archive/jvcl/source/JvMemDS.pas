@@ -151,8 +151,8 @@ type
     procedure EmptyTable;
     procedure CopyStructure(Source: TDataSet; UseAutoIncAsInteger: boolean = false);
     function LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
-      Mode: TLoadMode): Integer;
-    function SaveToDataSet(Dest: TDataSet; RecordCount: Integer): Integer;
+      Mode: TLoadMode;DisableAllControls:boolean=true): Integer;
+    function SaveToDataSet(Dest: TDataSet; RecordCount: Integer;DisableAllControls:boolean=true): Integer;
     property SaveLoadState: TSaveLoadState read FSaveLoadState;
   published
     property Capacity: Integer read GetCapacity write SetCapacity default 0;
@@ -1397,7 +1397,7 @@ begin
 end;
 
 function TJvMemoryData.LoadFromDataSet(Source: TDataSet; RecordCount: Integer;
-  Mode: TLoadMode): Integer;
+  Mode: TLoadMode;DisableAllControls:boolean=true): Integer;
 var
   SourceActive: Boolean;
   MovedCount, i: Integer;
@@ -1408,10 +1408,12 @@ begin
     Exit;
   FSaveLoadState := slsLoading;
   SourceActive := Source.Active;
-  Source.DisableControls;
+  if DisableAllControls then
+    Source.DisableControls;
   SB := Source.GetBookmark;
   try
-    DisableControls;
+    if DisableAllControls then
+      self.DisableControls;
     DB := GetBookMark;
     try
       Filtered := False;
@@ -1476,7 +1478,8 @@ begin
         FreeBookMark(DB);
       end;
     finally
-      EnableControls;
+      if DisableAllControls then
+        EnableControls;
     end;
   finally
     // move back to where we started from
@@ -1487,12 +1490,13 @@ begin
     end;
     if not SourceActive then
       Source.Close;
-    Source.EnableControls;
+    if DisableAllControls then
+      Source.EnableControls;
     FSaveLoadState := slsNone;
   end;
 end;
 
-function TJvMemoryData.SaveToDataSet(Dest: TDataSet; RecordCount: Integer): Integer;
+function TJvMemoryData.SaveToDataSet(Dest: TDataSet; RecordCount: Integer;DisableAllControls:boolean=true): Integer;
 var
   MovedCount: Integer;
   SB, DB: TBookmark;
@@ -1502,8 +1506,11 @@ begin
     Exit;
   CheckBrowseMode;
   UpdateCursorPos;
-  DisableControls;
-  Dest.DisableControls;
+  if DisableAllControls then
+  begin
+    DisableControls;
+    Dest.DisableControls;
+  end;
   FSaveLoadState := slsSaving;
   try
     SB := GetBookmark;
@@ -1547,8 +1554,11 @@ begin
       end;
     end;
   finally
-    EnableControls;
-    Dest.EnableControls;
+    if DisableAllControls then
+    begin
+      EnableControls;
+      Dest.EnableControls;
+    end;
     FSaveLoadState := slsNone;
   end;
 end;
