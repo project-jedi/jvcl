@@ -1164,6 +1164,8 @@ var
   Count: Integer;
   containsSomething : Boolean; // true if package will contain something
   repeatSectionUsed : Boolean; // true if at least one repeat section was used
+  AddedLines: Integer;
+  IgnoreNextSemicolon: Boolean;
 begin
   outFile := TStringList.Create;
   bcblibsList := TStringList.Create;
@@ -1202,6 +1204,7 @@ begin
     // read the lines of the templates and do some replacements
     i := 0;
     Count := template.Count;
+    IgnoreNextSemicolon := False;
     while i < Count do
     begin
       curLine := template[i];
@@ -1219,6 +1222,8 @@ begin
             repeatLines.Add(template[i]);
             Inc(i);
           end;
+
+          AddedLines := 0;
           for j := 0 to requiredNode.Items.Count -1 do
           begin
             packageNode := requiredNode.Items[j];
@@ -1234,14 +1239,28 @@ begin
               // containsSomething := True;
               EnsureCondition(tmpLines, packageNode, target);
               outFile.AddStrings(tmpLines);
+              Inc(AddedLines);
             end;
           end;
 
-          // if the last character in the output file is
-          // a comma, then remove it. This possible comma will
-          // be followed by a carriage return so we look
-          // at the third character starting from the end
-          AdjustEndingSemicolon(outFile);
+          if (outFile.Count > 0) and (AddedLines = 0) then
+          begin
+            // delete "requires" clause.
+            j := outFile.Count - 1;
+            while (j > 0) and (Trim(outFile[j]) = '') do
+              Dec(j);
+            if CompareText(Trim(outFile[j]), 'requires') = 0 then
+            begin
+              outFile.Delete(j);
+              IgnoreNextSemicolon := True;
+            end;
+          end
+          else
+            // if the last character in the output file is
+            // a comma, then remove it. This possible comma will
+            // be followed by a carriage return so we look
+            // at the third character starting from the end
+            AdjustEndingSemicolon(outFile);
         end
         else if curLineTrim = '<%%% START FILES %%%>' then
         begin
@@ -1255,6 +1274,7 @@ begin
             Inc(i);
           end;
 
+          AddedLines := 0;
           for j := 0 to containsNode.Items.Count -1 do
           begin
             fileNode := containsNode.Items[j];
@@ -1267,6 +1287,7 @@ begin
               containsSomething := True;
               EnsureCondition(tmpLines, fileNode, target);
               outFile.AddStrings(tmpLines);
+              Inc(AddedLines);
 
               // if this included file is not in the associated 'perso'
               // target or only in the 'perso' target then return the
@@ -1277,11 +1298,24 @@ begin
             end;
           end;
 
-          // if the last character in the output file is
-          // a comma, then remove it. This possible comma will
-          // be followed by a carriage return so we look
-          // at the third character starting from the end
-          AdjustEndingSemicolon(outFile);
+          if (outFile.Count > 0) and (AddedLines = 0) then
+          begin
+            // delete "requires" clause.
+            j := outFile.Count - 1;
+            while (j > 0) and (Trim(outFile[j]) = '') do
+              Dec(j);
+            if CompareText(Trim(outFile[j]), 'contains') = 0 then
+            begin
+              outFile.Delete(j);
+              IgnoreNextSemicolon := True;
+            end;
+          end
+          else
+            // if the last character in the output file is
+            // a comma, then remove it. This possible comma will
+            // be followed by a carriage return so we look
+            // at the third character starting from the end
+            AdjustEndingSemicolon(outFile);
         end
         else if curLine = '<%%% START FORMS %%%>' then
         begin
@@ -1372,7 +1406,15 @@ begin
                TimeStampLine := I;
            end;
         end;
-        outFile.Add(curLine);
+        if IgnoreNextSemicolon then
+        begin
+          if (Trim(curLine) <> '') and (Trim(curLine) = ';') then
+            IgnoreNextSemicolon := False
+          else
+            outFile.Add(curLine);
+        end
+        else
+          outFile.Add(curLine);
       end;
       Inc(i);
     end;
