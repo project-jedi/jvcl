@@ -794,7 +794,7 @@ begin
 
     if not Items[Index].Glyph.Empty then
     begin
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
 
       Canvas.Draw(R.Left + 2, R.Top + Offset, Items[Index].Glyph);
 
@@ -1411,7 +1411,7 @@ begin
 
     if not Items[Index].Glyph.Empty then
     begin
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
 
       Draw(R.Right - (GetImageWidth(Index) + 2), R.Top + Offset, Items[Index].Glyph);
 
@@ -1429,7 +1429,7 @@ begin
     begin
       Tmp := Items[Index].ImageIndex;
 
-      Offset := ((R.Bottom - R.Top) - GetImageWidth(Index)) div 2;
+      Offset := ((R.Bottom - R.Top) - GetImageHeight(Index)) div 2;
       {$IFDEF VCL}
       // PRY 2002.06.04
       //FImageList.Draw(FCanvas, R.Right - (FWidth + 2), R.Top + Offset, Tmp, dsTransparent, itImage);
