@@ -49,7 +49,7 @@ uses
 
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent,
   JvQActions, JvQActnResForm, JvQJVCLAboutForm, JvQDsgnEditors, JvQIDEZoom,
-  JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQPaintBoxEditor,
+  JvQJVCLAboutEditor, JvQBaseDlg, JvQBaseDlgEditor, JvQPaintBoxEditor,
   JvQAppIniStorage,
   {$IFDEF MSWINDOWS}
   JvQAppRegistryStorage,

@@ -11,7 +11,7 @@
     <Package Name="CJCL50" Targets="C5" Condition="USEJVCL"/>
     <Package Name="CJCL" Targets="C6,C6p" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
-    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p,d7clx" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>

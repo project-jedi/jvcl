@@ -170,12 +170,16 @@ begin
     try
       if ViewList.Count = 0 then
         ViewList.RebuildView;
-      {$IFDEF VCL}
-      fmeTreeList.lvProvider.Items.Count := ViewList.Count;
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      // TODO
-      {$ENDIF VisualCLX}
+      fmeTreeList.lvProvider.Items.BeginUpdate;
+      try
+       // (ahuser) Is this the same as the VCL line?
+        while fmeTreeList.lvProvider.Items.Count > ViewList.Count do
+          fmeTreeList.lvProvider.Items.Delete(fmeTreeList.lvProvider.Items.Count - 1);
+        while fmeTreeList.lvProvider.Items.Count < ViewList.Count do
+          fmeTreeList.lvProvider.Items.Add;
+      finally
+        fmeTreeList.lvProvider.Items.EndUpdate;
+      end;
       if Supports(Consumer as IJvDataConsumer, IJvDataConsumerItemSelect, ItemSelect) then
         if ItemSelect.GetItem <> nil then
         begin

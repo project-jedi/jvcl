@@ -51,12 +51,12 @@ uses
   JvQCaesarCipher, JvQGenetic,
   JvQSerialMaker, JvQXorCipher;
 
-{$IFDEF VCL}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCryptReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCryptReg.dcr}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R ../Resources/JvCryptReg.dcr}
-{$ENDIF VisualCLX}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

@@ -36,19 +36,19 @@ interface
 
 uses
   SysUtils, Classes,
-  
-  
+
+
   QGraphics, QControls, QForms, QTypes, QExtCtrls, QDialogs, QComCtrls,
   QToolWin, QStdCtrls, QMenus, QActnList, QImgList, QWindows,
-  
-  
+
+
   DesignEditors, DesignIntf,
-  
-  
+  QDesignWindows,
+
   JvQValidators;
 
 type
-  TfrmValidatorsEditor = class(TForm)
+  TfrmValidatorsEditor = class(TDesignWindow)
     ToolBar1: TToolBar;
     btnNew: TToolButton;
     btnDelete: TToolButton;
@@ -100,11 +100,11 @@ type
     procedure AddValidatorClasses;
   public
     procedure Activated; override;
-    
+
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
     procedure ItemsModified(const Designer: IDesigner); override;
-    
+
     function GetEditState: TEditState; override;
     property Validator: TJvValidators read FValidator write SetValidator;
   end;
@@ -458,7 +458,6 @@ begin
     M.Action := A;
     if I = 0 then
     begin
-      M.Default := True;
       btnNew.Action := A;
     end;
     popNew.Items.Add(M);
