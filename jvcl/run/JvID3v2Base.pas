@@ -1552,7 +1552,6 @@ begin
 
   case SourceEnc of
     ienISO_8859_1:
-
       case DestEnc of
         ienISO_8859_1:
           for I := 0 to SourceA.Count - 1 do
@@ -1563,9 +1562,7 @@ begin
       else
         ID3Error(SID3UnknownEncoding);
       end;
-
     ienUTF_16, ienUTF_16BE, ienUTF_8:
-
       case DestEnc of
         ienISO_8859_1:
           for I := 0 to SourceW.Count - 1 do
@@ -1839,8 +1836,8 @@ begin
   end;
 end;
 
-function CheckListW(Frame: TJvID3Frame; Strings: TWideStrings; const ASeparator: WideChar;
-  const HandleError: TJvID3HandleError): Boolean;
+function CheckListW(Frame: TJvID3Frame; Strings: TWideStrings;
+  const ASeparator: WideChar; const HandleError: TJvID3HandleError): Boolean;
 var
   I: Integer;
   S: WideString;
@@ -2494,7 +2491,6 @@ begin
     Result := 'image/' + Copy(Ext, 2, MaxInt);
 end;
 
-function GenreToNiceGenre(const AGenre: string): string;
 { References to the ID3v1 genres can be made by, as first byte, enter "("
   followed by a number from the genres list (appendix A) and ended with a ")"
   character. This is optionally followed by a refinement, e.g. "(21)" or
@@ -2509,6 +2505,7 @@ function GenreToNiceGenre(const AGenre: string): string;
     RX        Remix
     CR        Cover
 }
+function GenreToNiceGenre(const AGenre: string): string;
 var
   State: Integer;
   Start: Integer;
@@ -2867,8 +2864,8 @@ function TJvID3AudioEncryptionFrame.SameUniqueIDAs(
 begin
   { There may be more than one "AENC" frames in a tag, but only one with the
     same 'Owner identifier' }
-  Result := (Frame is TJvID3AudioEncryptionFrame)
-    and (Frame.FrameID = FrameID) and (FrameID = fiAudioCrypto);
+  Result := (Frame is TJvID3AudioEncryptionFrame) and
+    (Frame.FrameID = FrameID) and (FrameID = fiAudioCrypto);
 
   if Result then
     Result := AnsiSameStr(TJvID3AudioEncryptionFrame(Frame).OwnerID, OwnerID)
@@ -2972,7 +2969,7 @@ end;
 procedure TJvID3BinaryFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3BinaryFrame then
-    SetData(TJvID3BinaryFrame(Source).FData, TJvID3BinaryFrame(Source).FDataSize);
+    SetData(TJvID3BinaryFrame(Source).FData, TJvID3BinaryFrame(Source).DataSize);
 
   inherited Assign(Source);
 end;
@@ -3038,7 +3035,7 @@ begin
   if not Result then
     Exit;
 
-  CopySize := Min(Size, FDataSize);
+  CopySize := Min(Size, DataSize);
   if (CopySize > 0) and Assigned(FData) then
     Move(FData^, P^, CopySize);
 end;
@@ -3050,7 +3047,7 @@ end;
 
 function TJvID3BinaryFrame.GetIsEmpty: Boolean;
 begin
-  Result := FDataSize = 0;
+  Result := DataSize = 0;
 end;
 
 procedure TJvID3BinaryFrame.LoadFromFile(const FileName: string);
@@ -3114,8 +3111,8 @@ end;
 
 procedure TJvID3BinaryFrame.SaveToStream(Stream: TStream);
 begin
-  if (FDataSize > 0) and Assigned(FData) then
-    Stream.Write(FData^, FDataSize)
+  if (DataSize > 0) and Assigned(FData) then
+    Stream.Write(FData^, DataSize)
 end;
 
 function TJvID3BinaryFrame.SetData(P: Pointer; const Size: Cardinal): Boolean;
@@ -3135,7 +3132,7 @@ procedure TJvID3BinaryFrame.WriteData;
 begin
   if Assigned(FData) then
     with Stream do
-      Write(FData^, FDataSize);
+      Write(FData^, DataSize);
 end;
 
 procedure TJvID3BinaryFrame.WriteFrame;
@@ -3169,8 +3166,7 @@ begin
     inherited CanAddFrame(AController, AFrameID);
 end;
 
-function TJvID3ContentFrame.CheckFrame(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3ContentFrame.CheckFrame(const HandleError: TJvID3HandleError): Boolean;
 begin
   Result := CheckIsLanguageA(Self, FLanguage, HandleError);
 
@@ -3205,8 +3201,7 @@ begin
     Result := TJvID3ContentFrame(Frame);
 end;
 
-class function TJvID3ContentFrame.FindOrCreate(
-  AController: TJvID3Controller;
+class function TJvID3ContentFrame.FindOrCreate(AController: TJvID3Controller;
   const AFrameID: TJvID3FrameID): TJvID3ContentFrame;
 begin
   if not Assigned(AController) then
@@ -3574,6 +3569,10 @@ end;
 
 procedure TJvID3Controller.CopyFromID3v1Ctrl(AID3v1: TJvID3v1;
   const DoOverwrite: Boolean);
+var
+  Frame: TJvID3Frame;
+  SP: TJvID3StringPair;
+  Year: Word;
 
   function GetFrame(AFrameID: TJvID3FrameID): TJvID3Frame;
   begin
@@ -3587,10 +3586,6 @@ procedure TJvID3Controller.CopyFromID3v1Ctrl(AID3v1: TJvID3v1;
       Result := AddFrame(AFrameID);
   end;
 
-var
-  Frame: TJvID3Frame;
-  SP: TJvID3StringPair;
-  Year: Word;
 begin
   { There is a lot of extra code, because it may be possible that some frame
     is not encoded in ISO-8859-1 }
@@ -3847,15 +3842,12 @@ var
   SavedActive: Boolean;
 begin
   SavedActive := Active;
-
   Close;
-
   ChangeTagSize(FileName, 0);
 
   if SavedActive then
   begin
     Open;
-
     { Force Modified to be True }
     SetModified(True);
   end;
@@ -3868,7 +3860,8 @@ begin
   Result := FindNextFrame(AFrameID, Frame);
 end;
 
-function TJvID3Controller.FindNextFrame(const AFrameID: TJvID3FrameID; var From: TJvID3Frame): Boolean;
+function TJvID3Controller.FindNextFrame(const AFrameID: TJvID3FrameID;
+  var From: TJvID3Frame): Boolean;
 var
   I: Integer;
 begin
@@ -4109,16 +4102,20 @@ begin
 end;
 
 procedure TJvID3Controller.SaveToFile(const AFileName: string);
+var
+  PaddingSize: Integer;
+  OldTagSizeInclHeader: Cardinal;
+  NewTagSizeInclHeader: Cardinal;
+  FileStream: TFileStream;
 
-{ Normally Tagsize is the size of the tag including padding excluding header, so
-  we have vars
+  { Normally Tagsize is the size of the tag including padding excluding header, so
+    we have vars
 
-  xxxTagSizeInclHeader            = normal Tagsize + 10 (if tag exists)
-                                  = 0                   (if tag doesn't exists)
-  xxxTagSizeInclHeaderExclPadding = normal Tagsize + 10 - size of the padding (if tag exists)
-                                  = 0                   (if tag doesn't exists)
-}
-
+    xxxTagSizeInclHeader            = normal Tagsize + 10 (if tag exists)
+                                    = 0                   (if tag doesn't exists)
+    xxxTagSizeInclHeaderExclPadding = normal Tagsize + 10 - size of the padding (if tag exists)
+                                    = 0                   (if tag doesn't exists)
+  }
   function CalcNewPadding(const AOldTagSizeInclHeader: Cardinal;
     const ANewTagSizeInclHeaderExclPadding: Cardinal): Cardinal;
   const
@@ -4149,11 +4146,6 @@ procedure TJvID3Controller.SaveToFile(const AFileName: string);
     Result := NewTagSizeInclHeader - ANewTagSizeInclHeaderExclPadding;
   end;
 
-var
-  PaddingSize: Integer;
-  OldTagSizeInclHeader: Cardinal;
-  NewTagSizeInclHeader: Cardinal;
-  FileStream: TFileStream;
 begin
   BeginWriting;
   try
@@ -4563,9 +4555,9 @@ class function TJvID3DoubleListFrame.CanAddFrame(AController: TJvID3Controller;
 begin
   { There may only be one "IPLS" frame in each tag. }
   Result :=
-    ((AFrameID in [fiInvolvedPeople, fiInvolvedPeople2, fiMusicianCreditList])
-    and not AController.HasFrame(AFrameID))
-    or inherited CanAddFrame(AController, AFrameID);
+    ((AFrameID in [fiInvolvedPeople, fiInvolvedPeople2, fiMusicianCreditList]) and
+    not AController.HasFrame(AFrameID)) or
+    inherited CanAddFrame(AController, AFrameID);
 end;
 
 procedure TJvID3DoubleListFrame.ChangeToVersion(const ANewVersion: TJvID3Version);
@@ -6183,8 +6175,7 @@ begin
     ID3ErrorFmt(SID3AlreadyContainsFrame, [ID3_FrameIDToString(FrameID)]);
 end;
 
-function TJvID3Frames.CheckFrames(
-  const HandleError: TJvID3HandleError): Boolean;
+function TJvID3Frames.CheckFrames(const HandleError: TJvID3HandleError): Boolean;
 var
   I: Integer;
 begin
@@ -6560,12 +6551,12 @@ begin
     Content description        <text string according to encoding> $00 (00)
     Encapsulated object        <binary data>
   }
-  Result := 1 + Cardinal(Length(FMIMEType)) + 1 +
+  Result := 1 + Cardinal(Length(MIMEType)) + 1 +
     LengthEnc(FFileName, Encoding, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
     LengthEnc(FContentDescription, Encoding, ToEncoding) +
     LengthTerminatorEnc(ToEncoding) +
-    FDataSize;
+    DataSize;
 end;
 
 function TJvID3GeneralObjFrame.GetIsEmpty: Boolean;
@@ -6664,7 +6655,7 @@ begin
   with Stream do
   begin
     WriteEncoding;
-    WriteStringA(FMimeType);
+    WriteStringA(MimeType);
     WriteTerminatorA;
     WriteStringEnc(FFileName);
     WriteTerminatorEnc;
@@ -6680,11 +6671,11 @@ procedure TJvID3Header.Assign(Source: TPersistent);
 begin
   if Source is TJvID3Header then
   begin
-    FHasTag := TJvID3Header(Source).FHasTag;
-    FRevisionNumber := TJvID3Header(Source).FRevisionNumber;
-    FMajorVersion := TJvID3Header(Source).FMajorVersion;
-    FSize := TJvID3Header(Source).FSize;
-    FFlags := TJvID3Header(Source).FFlags;
+    FHasTag := TJvID3Header(Source).HasTag;
+    FRevisionNumber := TJvID3Header(Source).RevisionNumber;
+    FMajorVersion := TJvID3Header(Source).MajorVersion;
+    FSize := TJvID3Header(Source).Size;
+    FFlags := TJvID3Header(Source).Flags;
   end
   else
     inherited Assign(Source);
@@ -7002,9 +6993,9 @@ procedure TJvID3OwnershipFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3OwnershipFrame then
   begin
-    FPricePayed := TJvID3OwnershipFrame(Source).FPricePayed;
+    FPricePayed := TJvID3OwnershipFrame(Source).PricePayed;
     CopyStringPair(TJvID3OwnershipFrame(Source).FSeller, FSeller);
-    FDateOfPurch := TJvID3OwnershipFrame(Source).FDateOfPurch;
+    FDateOfPurch := TJvID3OwnershipFrame(Source).DateOfPurch;
   end;
 
   inherited Assign(Source);
@@ -7152,9 +7143,9 @@ begin
   with Stream do
   begin
     WriteEncoding;
-    WriteStringA(FPricePayed);
+    WriteStringA(PricePayed);
     WriteTerminatorA;
-    WriteDate(FDateOfPurch);
+    WriteDate(DateOfPurch);
     WriteStringEnc(FSeller);
   end;
 end;
@@ -7182,8 +7173,8 @@ begin
   else
   if Source is TJvID3PictureFrame then
   begin
-    FMIMEType := TJvID3PictureFrame(Source).FMIMEType;
-    FPictureType := TJvID3PictureFrame(Source).FPictureType;
+    FMIMEType := TJvID3PictureFrame(Source).MIMEType;
+    FPictureType := TJvID3PictureFrame(Source).PictureType;
     CopyStringPair(TJvID3PictureFrame(Source).FDescription, FDescription);
     FURL := TJvID3PictureFrame(Source).URL;
   end
@@ -7300,16 +7291,16 @@ begin
     Description:      <text string according to encoding> $00 (00)
     Picture data:     <binary data>
   }
-  Result := 1 + Cardinal(Length(FMIMEType)) + 1 + 1 +
+  Result := 1 + Cardinal(Length(MIMEType)) + 1 + 1 +
     LengthEnc(FDescription, Encoding, ToEncoding) +
-    LengthTerminatorEnc(ToEncoding) + FDataSize;
+    LengthTerminatorEnc(ToEncoding) + DataSize;
 end;
 
 function TJvID3PictureFrame.GetIsEmpty: Boolean;
 begin
   { Don't care about FPictureType }
   Result := inherited GetIsEmpty and
-    ((Length(FMIMEType) = 0) or (FMIMEType = cURLArrow)) and
+    ((Length(MIMEType) = 0) or (MIMEType = cURLArrow)) and
     (Length(URL) = 0) and CheckIsEmpty(FDescription, Encoding);
 end;
 
@@ -7338,7 +7329,7 @@ begin
 
     ReadStringEnc(FDescription);
 
-    if FMIMEType = cURLArrow then
+    if MIMEType = cURLArrow then
       { There is the possibility to put only a link to the image file by using
         the 'MIME type' "-->" and having a complete URL instead of picture data.
       }
@@ -7417,7 +7408,7 @@ begin
      There is the possibility to put only a link to the image file by using
      the 'MIME type' "-->" and having a complete URL instead of picture data. }
 
-  DoWriteURL := (FDataSize = 0) and (FURL > '');
+  DoWriteURL := (DataSize = 0) and (URL > '');
 
   with Stream do
   begin
@@ -7433,7 +7424,7 @@ begin
     WriteStringEnc(FDescription);
     WriteTerminatorEnc;
     if DoWriteURL then
-      WriteStringA(FURL)
+      WriteStringA(URL)
     else
       WriteData;
   end;
@@ -7509,8 +7500,8 @@ end;
 function TJvID3PlayCounterFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Boolean;
 begin
   { There may only be one "PCNT" frame in each tag. }
-  Result := ((Frame.FrameID = FrameID) and (FrameID = fiPlayCounter))
-    or inherited SameUniqueIDAs(Frame);
+  Result := ((Frame.FrameID = FrameID) and (FrameID = fiPlayCounter)) or
+    inherited SameUniqueIDAs(Frame);
 end;
 
 procedure TJvID3PlayCounterFrame.SetCounter(const Value: Cardinal);
@@ -7533,9 +7524,9 @@ procedure TJvID3PopularimeterFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3PopularimeterFrame then
   begin
-    FRating := TJvID3PopularimeterFrame(Source).FRating;
-    FCounter := TJvID3PopularimeterFrame(Source).FCounter;
-    FEMailAddress := TJvID3PopularimeterFrame(Source).FEMailAddress;
+    FRating := TJvID3PopularimeterFrame(Source).Rating;
+    FCounter := TJvID3PopularimeterFrame(Source).Counter;
+    FEMailAddress := TJvID3PopularimeterFrame(Source).EMailAddress;
   end;
 
   inherited Assign(Source);
@@ -7573,7 +7564,7 @@ begin
 
   Frame := AController.Frames.FindFrame(fiPopularimeter);
   if Frame is TJvID3PopularimeterFrame then
-    Result := TJvID3PopularimeterFrame(Frame)
+    Result := TJvID3PopularimeterFrame(Frame);
 end;
 
 class function TJvID3PopularimeterFrame.Find(AController: TJvID3Controller;
@@ -7652,8 +7643,8 @@ function TJvID3PopularimeterFrame.SameUniqueIDAs(const Frame: TJvID3Frame): Bool
 begin
   { There may be more than one "POPM" frame in each tag, but only one with the
     same email address. }
-  Result := (Frame is TJvID3PopularimeterFrame)
-    and (Frame.FrameID = FrameID) and (FrameID = fiPopularimeter);
+  Result := (Frame is TJvID3PopularimeterFrame) and
+    (Frame.FrameID = FrameID) and (FrameID = fiPopularimeter);
 
   if Result then
     Result := AnsiSameStr(TJvID3PopularimeterFrame(Frame).EMailAddress, EMailAddress)
@@ -7696,10 +7687,10 @@ begin
   }
   with Stream do
   begin
-    WriteStringA(FEMailAddress);
+    WriteStringA(EMailAddress);
     WriteTerminatorA;
-    Write(FRating, 1);
-    WriteNumber(FCounter);
+    Write(Rating, 1);
+    WriteNumber(Counter);
   end;
 end;
 
@@ -7766,7 +7757,7 @@ begin
 
   Frame := AController.Frames.FindFrame(AFrameID);
   if Frame is TJvID3SimpleListFrame then
-    Result := TJvID3SimpleListFrame(Frame)
+    Result := TJvID3SimpleListFrame(Frame);
 end;
 
 class function TJvID3SimpleListFrame.FindOrCreate(AController: TJvID3Controller;
@@ -8642,8 +8633,7 @@ begin
   Result := WriteUserStringA(SA1, SA2);
 end;
 
-function TJvID3Stream.WriteUserStringW(const SW1,
-  SW2: WideString): Longint;
+function TJvID3Stream.WriteUserStringW(const SW1, SW2: WideString): Longint;
 begin
   Result := WriteStringW(SW1) + WriteTerminatorW + WriteStringW(SW2);
 end;
@@ -9164,7 +9154,7 @@ end;
 procedure TJvID3URLFrame.Assign(Source: TPersistent);
 begin
   if Source is TJvID3URLFrame then
-    FURL := TJvID3URLFrame(Source).FURL;
+    FURL := TJvID3URLFrame(Source).URL;
 
   inherited Assign(Source);
 end;
@@ -9240,7 +9230,7 @@ end;
 
 function TJvID3URLFrame.GetIsEmpty: Boolean;
 begin
-  Result := Length(FURL) = 0;
+  Result := Length(URL) = 0;
 end;
 
 procedure TJvID3URLFrame.ReadFrame;
@@ -9278,7 +9268,7 @@ end;
 procedure TJvID3URLFrame.WriteFrame;
 begin
   with Stream do
-    WriteStringA(FURL);
+    WriteStringA(URL);
 end;
 
 //=== TJvID3URLUserFrame =====================================================
@@ -9288,7 +9278,7 @@ begin
   if Source is TJvID3URLUserFrame then
   begin
     CopyStringPair(TJvID3URLUserFrame(Source).FDescription, FDescription);
-    FURL := TJvID3URLUserFrame(Source).FURL;
+    FURL := TJvID3URLUserFrame(Source).URL;
   end;
 
   inherited Assign(Source);
@@ -9418,7 +9408,7 @@ begin
     WriteEncoding;
     WriteStringEnc(FDescription);
     WriteTerminatorEnc;
-    WriteStringA(FURL);
+    WriteStringA(URL);
   end;
 end;
 
