@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvTFGlance, JvTFUtils, JvTFManager{$IFDEF UseJVCL}, JvTypes{$ENDIF};
+  JvTFGlance, JvTFUtils, JvTFManager{$IFDEF USEJVCL}, JvTypes{$ENDIF};
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 type

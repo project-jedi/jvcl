@@ -54,12 +54,17 @@ uses
   {$ENDIF COMPILER6_UP}
   {$IFNDEF USEJVCL}
   JvWizardAboutInfoForm,
-  {$ENDIF USEJVCL}
+  {$ELSE}
   JvDsgnConsts,
+  {$ENDIF USEJVCL}
   JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardEditorForm;
 
 {$R ..\resources\JvWizardReg.dcr}
-
+{$IFNDEF USEJVCL}
+resourcestring
+  RsPaletteWizard = 'Jv Wizard';
+  
+{$ENDIF}
 procedure Register;
 const
   cActivePage = 'ActivePage';

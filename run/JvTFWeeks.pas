@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvTFManager, JvTFGlance, JvTFUtils{$IFDEF UseJVCL}, JvTypes{$ENDIF};
+  JvTFManager, JvTFGlance, JvTFUtils{$IFDEF USEJVCL}, JvTypes{$ENDIF};
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 type
@@ -107,9 +107,15 @@ type
 {$HPPEMIT '#undef TDate'}
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvResources;
+{$ENDIF}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsWeekOf = 'Week of %s';
+{$ENDIF}  
 
 procedure TJvTFWeeks.ConfigCells;
 var

@@ -103,9 +103,17 @@ function IsClassByName(Obj: TObject; ClassName: ShortString): Boolean;
 
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvResources;
+{$ENDIF}  
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEResultDoesNotFallInMonth = 'Result does not fall in given month';
+  RsEInvalidMonthValue = 'Invalid Month Value (%d)';
+  RsEInvalidDayOfWeekValue = 'Invalid value for day of week (%d)';
+{$ENDIF}
 
 function ExtractYear(aDate : TDateTime) : Word;
 var

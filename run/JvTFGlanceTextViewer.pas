@@ -34,7 +34,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls,
-  JvTFManager, JvTFGlance, JvTFUtils, JvComponent;
+  JvTFManager, JvTFGlance, JvTFUtils
+  {$IFDEF USEJVCL}, JvComponent{$ENDIF};
 
 type
   TJvTFGlanceTextViewer = class;
@@ -66,7 +67,11 @@ type
     property LinkedAppt: TJvTFAppt read FLinkedAppt write FLinkedAppt;
   end;
 
+  {$IFDEF USE JVCL}
   TJvTFGVTextControl = class(TJvCustomControl)
+  {$ELSE}
+  TJvTFGVTextControl = class(TCustomControl)
+  {$ENDIF}
   private
     FViewer: TJvTFGlanceTextViewer;
     FReplicating: Boolean;
@@ -81,9 +86,10 @@ type
     FScrollUpBtnBMP: TBitmap;
     FScrollDnBtnBMP: TBitmap;
     FEditor: TJvTFGVTxtEditor;
-
+    {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    {$ENDIF}
 
     procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
     procedure DoEnter; override;
@@ -235,9 +241,15 @@ type
   end;
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvJVCLUtils, JvResources;
+{$ENDIF}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEGlanceControlNotAssigned = 'GlanceControl not assigned';
+{$ENDIF}
 
 function TJvTFGVTextControl.CalcAbsLineNum(Y: Integer): Integer;
 begin
@@ -309,7 +321,7 @@ end;
 
 function TJvTFGVTextControl.CalcLineHeight: Integer;
 begin
-  Result := CanvasMaxTextHeight(Canvas) + Viewer.LineSpacing;
+  Result := Canvas.TextHeight('Wq') + Viewer.LineSpacing;
 end;
 
 function TJvTFGVTextControl.LineRect(AbsLineNum: Integer): TRect;
@@ -693,6 +705,7 @@ begin
     End;
 end;
 
+{$IFDEF USEJVCL}
 procedure TJvTFGVTextControl.MouseEnter(Control: TControl);
 begin
   FMouseInControl := True;
@@ -706,6 +719,7 @@ begin
   inherited;
   Invalidate;
 end;
+{$ENDIF}
 
 procedure TJvTFGVTextControl.Scroll(ScrollBy: Integer);
 var

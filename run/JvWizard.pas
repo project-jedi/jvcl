@@ -905,14 +905,32 @@ type
 implementation
 
 uses
-  Consts,
-  JvResources;
+  Consts
+  {$IFDEF USEJVCL}
+  ,JvResources
+  {$ENDIF};
 
 const
   ciButtonWidth = 75;
   ciButtonHeight = 25;
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsBackButtonCaption = '< &Back';
+  RsNextButtonCaption = '&Next >';
+
+  RsFirstButtonCaption = 'To &Start Page';
+  RsLastButtonCaption = 'To &Last Page';
+  RsFinishButtonCaption = '&Finish';
+  RsWelcome = 'Welcome';
+  RsTitle = 'Title';
+  RsSubtitle = 'Subtitle';
+
+  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
+  RsEInvalidWizardPage = 'The pages belong to another wizard';
+{$ENDIF}
 
 type
   { YW - First Button }

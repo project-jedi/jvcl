@@ -51,7 +51,7 @@ uses
    Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
    StdCtrls, ImgList,
    JvTFManager, JvTFSparseMatrix,
-   {$IFDEF UseJVCL}JvTypes, {$ENDIF}
+   {$IFDEF USEJVCL}JvTypes, {$ENDIF}
    JvTFUtils;
 
 const
@@ -1763,9 +1763,37 @@ type
 implementation
 
 uses
-  Consts, TypInfo, Printers,
-  JvJVCLUtils, JvConsts, JvResources;
+  Consts, TypInfo, Printers
+  {$IFDEF USEJVCL}
+  ,JvJVCLUtils, JvConsts, JvResources
+  {$ENDIF};
 
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEInvalidPrimeTimeStartTime = 'Invalid PrimeTime StartTime';
+  RsEInvalidPrimeTimeEndTime = 'Invalid PrimeTime EndTime';
+  RsEColumnIndexOutOfBounds = 'Column index out of bounds';
+  RsERowIndexOutOfBounds = 'Row index out of bounds';
+  RsEMapColNotFoundForAppointment = 'Map column not found for appointment';
+  RsECorruptAppointmentMap = 'Corrupt appointment map';
+  RsEGridGranularityCannotBeGreater = 'Grid granularity cannot be greater ' +
+    'than the time block granularity';
+  RsETimeBlockGranularityMustBeEvenly = 'Time block granularity must be evenly ' +
+    'divisible by the grid granularity';
+  RsETimeBlocksMustBeginExactlyOn = 'Time blocks must begin exactly on ' +
+    'a grid time division';
+  RsEGridEndTimeCannotBePriorToGridStart = 'GridEndTime cannot be prior to GridStartTime';
+  RsEGridStartTimeCannotBeAfterGridEndTi = 'GridStartTime cannot be after GridEndTime';
+  RsEInvalidRowd = 'Invalid row (%d)';
+  RsEThereIsNoDataToPrint = 'There is no data to print';
+  RsENoPageInfoExists = 'No page info exists.  ' +
+    'Document must be prepared';
+  RsEATimeBlockNameCannotBeNull = 'A time block name cannot be null';
+  RsEAnotherTimeBlockWithTheName = 'Another time block with the name ' +
+    '"%s" already exists';
+  RsEATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
+{$ENDIF}
+  
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)
   // removed as part of TimeBlock integration
@@ -1814,7 +1842,7 @@ begin
    TxtLeft := 0;
    TxtTop := 0;
    TxtWidth := aCanvas.TextWidth(Txt);
-   TxtHeight := CanvasMaxTextHeight(aCanvas);
+   TxtHeight := aCanvas.TextHeight('Wq');
 
    case HAlign of
       taLeftJustify : TxtLeft := aRect.Left;
@@ -12119,7 +12147,7 @@ var
    TextHeightThreshold,
       TextWidthThreshold : Integer;
 begin
-   TextHeightThreshold := CanvasMaxTextHeight(aCanvas) * Thresholds.TextHeight;
+   TextHeightThreshold := aCanvas.TextHeight('Wq') * Thresholds.TextHeight;
    TextWidthThreshold := aCanvas.TextWidth('Bi') div 2 * Thresholds.TextWidth;
 
    if TextHeightThreshold + PicsHeight < RectHeight(ApptRect) then

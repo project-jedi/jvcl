@@ -81,9 +81,17 @@ type
   end;
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvClxUtils, JvJVCLUtils, JvResources;
+{$ENDIF}  
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsActiveStepFormat = 'Step %d of %d';
+  RsBackTo = 'Back to';
+  RsNextStep = 'Next Step';
+{$ENDIF}
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
@@ -111,7 +119,7 @@ end;
 
 function TJvWizardRouteMapSteps.GetActiveStepRect: TRect;
 begin
-  Result := Rect(Left + FIndent,(ClientHeight div 2 - CanvasMaxTextHeight(Canvas)),
+  Result := Rect(Left + FIndent,(ClientHeight div 2 - Canvas.TextHeight('Wq')),
     Width, ClientHeight div 2);
 end;
 
@@ -124,7 +132,7 @@ end;
 function TJvWizardRouteMapSteps.GetNextStepRect: TRect;
 begin
   Result := Rect(Left + FIndent, Height - FIndent - 32, Width,
-    Height - FIndent - 32  +  CanvasMaxTextHeight(Canvas));
+    Height - FIndent - 32  +  Canvas.TextHeight('Wq'));
 end;
 
 function TJvWizardRouteMapSteps.DetectPageCount(var ActivePageIndex: Integer): Integer;
@@ -154,7 +162,7 @@ end;
 function TJvWizardRouteMapSteps.GetPreviousStepRect: TRect;
 begin
   Result := Rect(Left + FIndent, Top + FIndent, Width,
-    Top + FIndent + CanvasMaxTextHeight(Canvas));
+    Top + FIndent + Canvas.TextHeight('Wq'));
 end;
 
 procedure TJvWizardRouteMapSteps.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -196,15 +204,25 @@ begin
   Canvas.Brush.Style:= bsClear;
 
   S := Format(RsActiveStepFormat, [ActivePageIndex, TotalPageCount]);
+  {$IFDEF USEJVCL}
   StepHeight := ClxDrawText(Canvas, S, TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+  {$ELSE}
+  StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+  {$ENDIF}
 
   // Display Active Page Description
   Canvas.Font.Style:= [];
   OffsetRect(TextRect, 0, StepHeight);
   S := Pages[PageIndex].Caption;
+  {$IFDEF USEJVCL}
   ClxDrawText(Canvas, S, TextRect,
     DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+  {$ELSE}
+  DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+    DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+  {$ENDIF}
   Canvas.Font.Style:= [];
   if FShowDivider then
   begin
@@ -230,12 +248,22 @@ begin
         DFCS_SCROLLLEFT or DFCS_FLAT);
     end;
     S := FPreviousStepText;
+    {$IFDEF USEJVCL}
     StepHeight := ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ELSE}
+    StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ENDIF}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
+    {$IFDEF USEJVCL}
     ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ELSE}
+    DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ENDIF}
   end;
 
   { do the next step }
@@ -254,12 +282,22 @@ begin
         DFCS_SCROLLRIGHT or DFCS_FLAT);
     end;
     S := FNextStepText;
+    {$IFDEF USEJVCL}
     StepHeight := ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ELSE}
+    StepHeight := DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ENDIF}
     OffsetRect(TextRect, 0, StepHeight);
     S := APage.Caption;
+    {$IFDEF USEJVCL}
     ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ELSE}
+    DrawText(Canvas.Handle, PChar(S), Length(S), TextRect,
+      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+    {$ENDIF}
   end;
 end;
 

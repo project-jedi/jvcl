@@ -100,7 +100,17 @@ type
 implementation
 
 uses
-  JvMTThreading, JvResources;
+  JvMTThreading
+  {$IFDEF USEJVCL}
+  , JvResources
+  {$ENDIF};
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsESemaphoreFailure = 'Semaphore failure (%d)';
+  RsESemaphoreAbandoned = 'Semaphore was abandoned';
+  RsEThreadAbandoned = 'Thread was abandoned';
+{$ENDIF}
 
 //=== TMTSemaphore ===========================================================
 

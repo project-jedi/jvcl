@@ -30,11 +30,18 @@ unit JvMTComponents;
 interface
 
 uses
-  JvComponent, SysUtils, Classes, SyncObjs, Consts,
+  SysUtils, Classes, SyncObjs, Consts,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF}
   JvMTThreading, JvMTConsts, JvMTData, JvMTSync, JvMTSyncMon;
 
 type
+  {$IFDEF USEJVCL}
   TJvMTComponent = class(TJvComponent);
+  {$ELSE}
+  TJvMTComponent = class(TComponent);
+  {$ENDIF}
   TJvMTSingleThread = class(TMTThread);
   TJvMTThread = class;
 
@@ -235,9 +242,18 @@ type
   end;
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvResources;
+{$ENDIF}  
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsENoThreadManager = 'No ThreadManager specified';
+  RsEOperatorNotAvailable = 'Operation not available while thread is active';
+  RsECannotChangePropertySection = 'Cannot change property of active section';
+  RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
+{$ENDIF}
 
 constructor TJvMTManager.Create(aOwner: TComponent);
 begin

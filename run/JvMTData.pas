@@ -106,9 +106,15 @@ type
   end;
 
 implementation
-
+{$IFDEF USEJVCL}
 uses
   JvResources;
+{$ENDIF}
+
+{$IFNDEF USEJVCL}
+resourcestring
+  RsEMethodOnlyForMainThread = '%s method can only be used by the main VCL thread';
+{$ENDIF}
 
 var
   DataThreadsMan: TMTManager = nil;
