@@ -69,7 +69,8 @@
   <FILELIST>
       <FILE FILENAME="JvCoreC6D.res" FORMNAME="" UNITNAME="JvCoreC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6D.cpp" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvStringsForm.pas" FORMNAME="JvStrEditDlg" UNITNAME="JvStringsForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDlgEditor.pas" FORMNAME="" UNITNAME="JvBaseDlgEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvColorEditor.pas" FORMNAME="" UNITNAME="JvColorEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -85,10 +86,6 @@
       <FILE FILENAME="..\..\design\JvPaintBoxEditor.pas" FORMNAME="" UNITNAME="JvPaintBoxEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvProviderToolbarFrame.pas" FORMNAME="" UNITNAME="JvProviderToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvProviderTreeListFrame.pas" FORMNAME="fmeJvProviderTreeList" UNITNAME="JvProviderTreeListFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDsgnForm.pas" FORMNAME="JvBaseDesign" UNITNAME="JvBaseDsgnForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDsgnFrame.pas" FORMNAME="fmeJvBaseDesign" UNITNAME="JvBaseDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDsgnToolbarFrame.pas" FORMNAME="fmeJvBaseToolbarDesign" UNITNAME="JvBaseDsgnToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
@@ -97,8 +94,11 @@
       <FILE FILENAME="..\..\design\JvDataProviderDesignerForm.pas" FORMNAME="frmDataProviderDesigner" UNITNAME="JvDataProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvDateTimeForm.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvStdToolbarDsgnFrame.pas" FORMNAME="fmeJvStdToolbarDesign" UNITNAME="JvStdToolbarDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
