@@ -53,6 +53,15 @@ type
 {$IFNDEF FPC}
   PPointer = ^Pointer;
   PPChar   = ^PChar;
+
+  PWord = ^Word;
+  PCardinal = ^Cardinal;
+  PSmallInt = ^SmallInt;
+  PInteger = ^Integer;
+  PDouble = ^Double;
+  PSingle = ^Single;
+  PInt64 = ^Int64;
+
 {$ENDIF}
 {$ENDIF}
 

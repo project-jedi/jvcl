@@ -698,16 +698,7 @@ end;
 //******************************************************************************
 
 {$IFNDEF DELPHI6_UP}
-{$IFNDEF FPC}
-type
-  PWord = ^Word;
-  PCardinal = ^Cardinal;
-  PSmallInt = ^SmallInt;
-  PInteger = ^Integer;
-  PDouble = ^Double;
-  PSingle = ^Single;
-  PInt64 = ^Int64;
-{$ENDIF}
+
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 var
   E: Integer;

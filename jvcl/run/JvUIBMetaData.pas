@@ -237,7 +237,7 @@ type
     FSegmentLength: Smallint;
     FSubType: Smallint;
     FBytesPerCharacter: Smallint;
-    procedure LoadFromQuery(QField, QCharset: TJvUIBQuery); virtual;
+    procedure LoadFromQuery(QField, QCharset: TJvUIBStatement); virtual;
     procedure LoadFromStream(Stream: TStream); override;
     property SegmentLength: Smallint read FSegmentLength;
   public
@@ -255,7 +255,7 @@ type
 
   TMetaField = class(TMetaBaseField)
   private
-    procedure LoadFromQuery(Q, C: TJvUIBQuery); override;
+    procedure LoadFromQuery(Q, C: TJvUIBStatement); override;
   public
     procedure SaveToDDL(Stream: TStringStream); override;
     property SegmentLength;
@@ -275,7 +275,7 @@ type
   private
     FDefaultValue: string;
     FNotNull: boolean;
-    procedure LoadFromQuery(Q, C: TJvUIBQuery); override;
+    procedure LoadFromQuery(Q, C: TJvUIBStatement); override;
     procedure LoadFromStream(Stream: TStream); override;
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
@@ -307,7 +307,7 @@ type
 
   TMetaPrimary = class(TMetaConstraint)
   private
-    procedure LoadFromQuery(Q: TJvUIBQuery);
+    procedure LoadFromQuery(Q: TJvUIBStatement);
   public
     class function NodeClass: string; override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
@@ -374,7 +374,7 @@ type
     FSource: string;
     class function DecodePrefix(value: Integer): TTriggerPrefix;
     class function DecodeSuffixes(value: Integer): TTriggerSuffixes;
-    procedure LoadFromQuery(Q: TJvUIBQuery);
+    procedure LoadFromQuery(Q: TJvUIBStatement);
     procedure LoadFromStream(Stream: TStream); override;
   public
     class function NodeClass: string; override;
@@ -392,7 +392,7 @@ type
     function GetFields(const Index: Integer): TMetaTableField;
     function GetFieldsCount: Integer;
     procedure LoadFromDataBase(QNames, QFields, QCharset, QPrimary,
-      QIndex, QForeign, QCheck, QTrigger: TJvUIBQuery);
+      QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement);
     function FindFieldIndex(const name: String): Integer;
     function GetUniques(const Index: Integer): TMetaUnique;
     function GetUniquesCount: Integer;
@@ -444,7 +444,7 @@ type
     function GetFieldsCount: Integer;
     function GetTriggers(const Index: Integer): TMetaTrigger;
     function GetTriggersCount: Integer;
-    procedure LoadFromDataBase(QName, QFields, QTriggers, QCharset: TJvUIBQuery);
+    procedure LoadFromDataBase(QName, QFields, QTriggers, QCharset: TJvUIBStatement);
     procedure LoadFromStream(Stream: TStream); override;
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
@@ -466,7 +466,7 @@ type
   TMetaProcedure = class(TMetaNode)
   private
     FSource: string;
-    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBQuery);
+    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement);
     function GetInputFields(const Index: Integer): TMetaProcInField;
     function GetInputFieldsCount: Integer;
     function GetOutputFields(const Index: Integer): TMetaProcOutField;
@@ -494,7 +494,7 @@ type
   private
     FMessage: string;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromQuery(QName: TJvUIBQuery);
+    procedure LoadFromQuery(QName: TJvUIBStatement);
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
     class function NodeClass: string; override;
@@ -506,7 +506,7 @@ type
   private
     FPosition: Smallint;
     FMechanism: Smallint;
-    procedure LoadFromQuery(QField, QCharset: TJvUIBQuery); override;
+    procedure LoadFromQuery(QField, QCharset: TJvUIBStatement); override;
     procedure LoadFromStream(Stream: TStream); override;
   public
     procedure SaveToDDLNode(Stream: TStringStream); override;
@@ -521,7 +521,7 @@ type
     FEntry: string;
     FReturn: Smallint;
     procedure LoadFromStream(Stream: TStream); override;
-    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBQuery);
+    procedure LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement);
     function GetFields(const Index: Integer): TMetaUDFField;
     function GetFieldsCount: Integer;
   public
@@ -769,10 +769,10 @@ end;
 
 procedure TMetaGenerator.LoadFromDataBase(Transaction: TJvUIBTransaction;
   const Name: string);
-var Query: TJvUIBQuery;
+var Query: TJvUIBStatement;
 begin
   CheckTransaction(Transaction);
-  Query := TJvUIBQuery.Create(nil);
+  Query := TJvUIBStatement.Create(nil);
   Query.Transaction := Transaction;
   Query.CachedFetch := False;
   try
@@ -868,7 +868,7 @@ begin
 end;
 
 procedure TMetaTable.LoadFromDataBase(QNames, QFields, QCharset, QPrimary,
-  QIndex, QForeign, QCheck, QTrigger: TJvUIBQuery);
+  QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement);
 var
   unk: string;
 begin
@@ -1111,7 +1111,7 @@ begin
   end;
 end;
 
-procedure TMetaBaseField.LoadFromQuery(QField, QCharset: TJvUIBQuery);
+procedure TMetaBaseField.LoadFromQuery(QField, QCharset: TJvUIBStatement);
   procedure FindCharset(const id: single; var Charset: string; var count: Smallint);
   var i: Integer;
   begin
@@ -1220,12 +1220,12 @@ var
   cforupdate: boolean;
 
   QNames, QFields, QCharset, QPrimary,
-  QIndex, QForeign, QCheck, QTrigger: TJvUIBQuery;
+  QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement;
 
-  procedure Configure(var Q: TJvUIBQuery; const QRY: string;
+  procedure Configure(var Q: TJvUIBStatement; const QRY: string;
     CachedFetch: boolean = False);
   begin
-    Q := TJvUIBQuery.Create(nil);
+    Q := TJvUIBStatement.Create(nil);
     Q.Transaction := Transaction;
     Q.CachedFetch := CachedFetch;
     Q.SQL.Text := QRY;
@@ -1644,7 +1644,7 @@ begin
   Result := 'Primary key';
 end;
 
-procedure TMetaPrimary.LoadFromQuery(Q: TJvUIBQuery);
+procedure TMetaPrimary.LoadFromQuery(Q: TJvUIBStatement);
 var i: Integer;
 begin
   FName := trim(Q.Fields.AsString[0]);
@@ -1855,7 +1855,7 @@ begin
   Result := 'Triggers';
 end;
 
-procedure TMetaTrigger.LoadFromQuery(Q: TJvUIBQuery);
+procedure TMetaTrigger.LoadFromQuery(Q: TJvUIBStatement);
 begin
   FName := Trim(Q.Fields.AsString[0]);
   Q.ReadBlob(1, FSource);
@@ -1943,7 +1943,7 @@ begin
 end;
 
 procedure TMetaView.LoadFromDataBase(QName, QFields, QTriggers,
-  QCharset: TJvUIBQuery);
+  QCharset: TJvUIBStatement);
 begin
   FName := Trim(QName.Fields.AsString[0]);
   QName.ReadBlob(1, FSource);
@@ -2087,7 +2087,7 @@ begin
 end;
 
 procedure TMetaProcedure.LoadFromQuery(QNames, QFields,
-  QCharset: TJvUIBQuery);
+  QCharset: TJvUIBStatement);
 begin
   FName := Trim(QNames.Fields.AsString[0]);
   QNames.ReadBlob(1, FSource);
@@ -2153,7 +2153,7 @@ begin
   Result := 'Exceptions';
 end;
 
-procedure TMetaException.LoadFromQuery(QName: TJvUIBQuery);
+procedure TMetaException.LoadFromQuery(QName: TJvUIBStatement);
 begin
   FName := Trim(QName.Fields.AsString[0]);
   FMessage := QName.Fields.AsString[1];
@@ -2241,7 +2241,7 @@ begin
   inherited;
 end;
 
-procedure TMetaUDF.LoadFromQuery(QNames, QFields, QCharset: TJvUIBQuery);
+procedure TMetaUDF.LoadFromQuery(QNames, QFields, QCharset: TJvUIBStatement);
 begin
   FName := Trim(QNames.Fields.AsString[0]);
   FModule := QNames.Fields.AsString[1];
@@ -2275,7 +2275,7 @@ end;
 
 { TMetaTableField }
 
-procedure TMetaTableField.LoadFromQuery(Q, C: TJvUIBQuery);
+procedure TMetaTableField.LoadFromQuery(Q, C: TJvUIBStatement);
 begin
   inherited;
   FNotNull := (Q.Fields.AsSmallint[8] = 1);
@@ -2328,7 +2328,7 @@ end;
 
 { TMetaField }
 
-procedure TMetaField.LoadFromQuery(Q, C: TJvUIBQuery);
+procedure TMetaField.LoadFromQuery(Q, C: TJvUIBStatement);
 begin
   inherited;
   FName := Trim(Q.Fields.AsString[6]);
@@ -2343,7 +2343,7 @@ end;
 
 { TMetaUDFField }
 
-procedure TMetaUDFField.LoadFromQuery(QField, QCharset: TJvUIBQuery);
+procedure TMetaUDFField.LoadFromQuery(QField, QCharset: TJvUIBStatement);
 begin
   inherited;
   FPosition := QField.Fields.AsSmallint[6];
