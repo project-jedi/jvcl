@@ -404,22 +404,22 @@ end;
 {$IFDEF VCL}
 procedure TJvCheckBox.BmSetCheck(var Msg: TMessage);
 begin
-  if not ReadOnly then
-  begin
+//  if not ReadOnly then
+//  begin
     inherited;
     CheckLinkedControls;
-  end;
+//  end;
 end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 procedure TJvCheckBox.StateChanged(State: TToggleState);
 begin
-  if not ReadOnly then
-  begin
+//  if not ReadOnly then
+//  begin
     inherited StateChanged(State);
     CheckLinkedControls;
-  end;
+//  end;
 end;
 {$ENDIF VisualCLX}
 
