@@ -1115,7 +1115,7 @@ begin
             Caption := 'Info';
             Width := 80;
             Tag := Ord(prt);
-            OnButtonClick := VersionInfoButtonClick;
+            OnClick := VersionInfoButtonClick;
           end;
           ParameterList.AddParameter(Parameter);
           GroupParameter.Height := GroupParameter.Height + 25;
