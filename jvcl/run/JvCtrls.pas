@@ -483,11 +483,11 @@ begin
   with DrawItemStruct do
   begin
     itemState := 0;
-    if Focused then
+    if Focused or Default then
       itemState := ODS_FOCUS;
     if not Enabled then
       itemState := ODS_DISABLED;
-    if Default then
+    if Down then
       itemState := ODS_SELECTED;
   end;
 
@@ -590,7 +590,12 @@ begin
         if not IsEnabled then
           FCanvas.Pen.Color := clInactiveCaption
         else
+          {$IFDEF VCL}
           FCanvas.Pen.Color := clWindowFrame;
+          {$ENDIF VCL}
+          {$IFDEF VisualCLX}
+          FCanvas.Pen.Color := clActiveShadow;
+          {$ENDIF VisualCLX}
         FCanvas.Pen.Width := 1;
         FCanvas.Brush.Style := bsClear;
         FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
@@ -606,7 +611,18 @@ begin
         InflateRect(R, -1, -1);
       end
       else
-        DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
+      begin
+        {$IFDEF VisualCLX}
+        FCanvas.Start;
+        try
+        {$ENDIF VisualCLX}
+          DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
+        {$IFDEF VisualCLX}
+        finally
+          FCanvas.Stop;
+        end;
+        {$ENDIF VisualCLX}
+      end;
       FCanvas.Brush.Color := Color;
       FCanvas.FillRect(R);
     end;
