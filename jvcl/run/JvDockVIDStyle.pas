@@ -573,6 +573,7 @@ type
 var
   gi_DockRect: TRect;
 
+{ (rb) Compare to PaintGradientBackground in JvDockVIDVCStyle.pas }
 procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect;
   StartColor, EndColor: TColor; Vertical: Boolean = False);
 const
@@ -598,11 +599,13 @@ begin
     try
       Brush.Style := bsSolid;
 
-      if StartColor <> EndColor then
-      begin
-        C1 := StartColor;
-        C2 := EndColor;
+      { !! GetRValue etc. assume that the input param is a RGB value thus
+           NO system color, such as clWindowText etc. }
+      C1 := ColorToRGB(StartColor);
+      C2 := ColorToRGB(EndColor);
 
+      if C1 <> C2 then
+      begin
         InitRGBValues(C1, C2);
 
         if not Vertical then
