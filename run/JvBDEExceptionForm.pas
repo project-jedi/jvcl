@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, DBTables,
-  JvLabel, JvComponent;
+  JvComponent;
 
 type
   TDBErrorEvent = procedure(Error: TDBError; var Msg: string) of object;
@@ -57,8 +57,8 @@ type
     ButtonPanel: TPanel;
     DetailsBtn: TButton;
     OKBtn: TButton;
-    BDELabel: TJvLabel;
-    NativeLabel: TJvLabel;
+    BDELabel: TLabel;
+    NativeLabel: TLabel;
     BottomPanel: TPanel;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -67,10 +67,10 @@ type
     procedure BackClick(Sender: TObject);
     procedure NextClick(Sender: TObject);
   private
-    CurItem: Integer;
-    Details: Boolean;
-    DetailsHeight: Integer;
-    DbException: EDbEngineError;
+    FCurItem: Integer;
+    FDetails: Boolean;
+    FDetailsHeight: Integer;
+    FDbException: EDbEngineError;
     FPrevOnException: TExceptionEvent;
     FOnErrorMsg: TDBErrorEvent;
     procedure GetErrorMsg(Error: TDBError; var Msg: string);
@@ -84,9 +84,6 @@ type
 const
   DbErrorHelpCtx: THelpContext = 0;
 
-var
-  DbEngineErrorDlg: TJvBdeErrorDlg;
-
 procedure DbErrorIntercept;
 
 implementation
@@ -96,10 +93,12 @@ uses
 
 {$R *.DFM}
 
+var
+  DbEngineErrorDlg: TJvBdeErrorDlg = nil;
+
 procedure DbErrorIntercept;
 begin
-  if DbEngineErrorDlg <> nil then
-    DbEngineErrorDlg.Free;
+  DbEngineErrorDlg.Free;
   DbEngineErrorDlg := TJvBdeErrorDlg.Create(Application);
 end;
 
@@ -108,14 +107,14 @@ begin
   Screen.Cursor := crDefault;
   Application.NormalizeTopMosts;
   try
-    if (E is EDbEngineError) and (DbException = nil) and
+    if (E is EDbEngineError) and (FDbException = nil) and
       not Application.Terminated then
     begin
-      DbException := EDbEngineError(E);
+      FDbException := EDbEngineError(E);
       try
         ShowModal;
       finally
-        DbException := nil;
+        FDbException := nil;
       end;
     end
     else
@@ -140,9 +139,9 @@ var
   S: string;
   I: Integer;
 begin
-  Back.Enabled := (CurItem > 0);
-  Next.Enabled := (CurItem < DbException.ErrorCount - 1);
-  BDEError := DbException.Errors[CurItem];
+  Back.Enabled := (FCurItem > 0);
+  Next.Enabled := (FCurItem < FDbException.ErrorCount - 1);
+  BDEError := FDbException.Errors[FCurItem];
   { Fill BDE error information }
   BDELabel.Enabled := True;
   DbResult.Text := IntToStr(BDEError.ErrorCode);
@@ -169,10 +168,10 @@ begin
   try
     if Value then
     begin
-      DetailsPanel.Height := DetailsHeight;
+      DetailsPanel.Height := FDetailsHeight;
       ClientHeight := DetailsPanel.Height + BasicPanel.Height;
       DetailsBtn.Caption := '<< &' + SDetails;
-      CurItem := 0;
+      FCurItem := 0;
       ShowError;
     end
     else
@@ -182,7 +181,7 @@ begin
       DetailsBtn.Caption := '&' + SDetails + ' >>';
     end;
     DetailsPanel.Enabled := Value;
-    Details := Value;
+    FDetails := Value;
   finally
     EnableAlign;
   end;
@@ -199,7 +198,7 @@ end;
 
 procedure TJvBdeErrorDlg.FormCreate(Sender: TObject);
 begin
-  DetailsHeight := DetailsPanel.Height;
+  FDetailsHeight := DetailsPanel.Height;
   Icon.Handle := LoadIcon(0, IDI_EXCLAMATION);
   IconImage.Picture.Icon := Icon;
   { Load string resources }
@@ -224,46 +223,43 @@ var
   S: string;
   ErrNo: Integer;
 begin
-  if DbException.HelpContext <> 0 then
-    HelpContext := DbException.HelpContext
+  if FDbException.HelpContext <> 0 then
+    HelpContext := FDbException.HelpContext
   else
     HelpContext := DbErrorHelpCtx;
-  CurItem := 0;
-  if (DbException.ErrorCount > 1) and
-    (DbException.Errors[1].NativeError <> 0) and
-    ((DbException.Errors[0].ErrorCode = DBIERR_UNKNOWNSQL) or
+  FCurItem := 0;
+  if (FDbException.ErrorCount > 1) and
+    (FDbException.Errors[1].NativeError <> 0) and
+    ((FDbException.Errors[0].ErrorCode = DBIERR_UNKNOWNSQL) or
     { General SQL error }
-    (DbException.Errors[0].ErrorCode = DBIERR_INVALIDUSRPASS)) then
+    (FDbException.Errors[0].ErrorCode = DBIERR_INVALIDUSRPASS)) then
     { Unknown username or password }
     ErrNo := 1
   else
     ErrNo := 0;
-  S := Trim(DbException.Errors[ErrNo].Message);
-  GetErrorMsg(DbException.Errors[ErrNo], S);
+  S := Trim(FDbException.Errors[ErrNo].Message);
+  GetErrorMsg(FDbException.Errors[ErrNo], S);
   ErrorText.Caption := S;
   SetShowDetails(False);
-  DetailsBtn.Enabled := DbException.ErrorCount > 0;
+  DetailsBtn.Enabled := FDbException.ErrorCount > 0;
 end;
 
 procedure TJvBdeErrorDlg.DetailsBtnClick(Sender: TObject);
 begin
-  SetShowDetails(not Details);
+  SetShowDetails(not FDetails);
 end;
 
 procedure TJvBdeErrorDlg.BackClick(Sender: TObject);
 begin
-  Dec(CurItem);
+  Dec(FCurItem);
   ShowError;
 end;
 
 procedure TJvBdeErrorDlg.NextClick(Sender: TObject);
 begin
-  Inc(CurItem);
+  Inc(FCurItem);
   ShowError;
 end;
-
-initialization
-  DbEngineErrorDlg := nil;
 
 end.
 

@@ -83,7 +83,7 @@ type
     procedure SetOnFiltering(const Value: TFilterEvent);
     procedure SetPriority(Value: Word);
     procedure SetLogicCond(Value: TFilterLogicCond);
-    function GetFilterText: PChar;
+    function GetFilterText: string;
     procedure FilterChanged(Sender: TObject);
     function CreateExprFilter: hDBIFilter;
     function CreateFuncFilter: hDBIFilter;
@@ -132,7 +132,7 @@ type
     property OnReleaseCapture: TNotifyEvent read FOnReleaseCapture write FOnReleaseCapture;
   end;
 
-  EFilterError = class(EJVCLException);
+  EJVCLFilterError = class(EJVCLException);
 
 procedure DropAllFilters(DataSet: TDataSet);
 
@@ -147,23 +147,11 @@ begin
   if (DataSet <> nil) and DataSet.Active then
   begin
     DataSet.Filtered := False;
-    DbiDropFilter((DataSet as TBDEDataSet).Handle, nil);
+    DbiDropFilter(TBDEDataSet(DataSet).Handle, nil);
     DataSet.CursorPosChanged;
     DataSet.Resync([]);
   end;
 end;
-
-procedure FilterError(const Ident: string);
-begin
-  raise EFilterError.Create(Ident);
-end;
-
-(* make Delphi 5 compiler happy // andreas
-procedure FilterErrorFmt(const Ident: string; const Args: array of const);
-begin
-  raise EFilterError.CreateFmt(Ident, Args);
-end;
-*)
 
 const
   SExprNothing = '""'; { nothing token name }
@@ -175,8 +163,6 @@ const
 
 type
   THackDataSet = class(TDataSet);
-
-{ TNastyDataSet }
 
 {*******************************************************}
 { !! ATTENTION Nasty implementation                     }
@@ -251,67 +237,64 @@ type
 
 {$HINTS ON}
 
-procedure dsSetState(DataSet: TDataSet; Value: TDataSetState);
+procedure DsSetState(DataSet: TDataSet; Value: TDataSetState);
 begin
   TNastyDataSet(DataSet).FState := Value;
 end;
 
-procedure dsSetBOF(DataSet: TDataSet; Value: Boolean);
+procedure DsSetBOF(DataSet: TDataSet; Value: Boolean);
 begin
   TNastyDataSet(DataSet).FBOF := Value;
 end;
 
-procedure dsSetEOF(DataSet: TDataSet; Value: Boolean);
+procedure DsSetEOF(DataSet: TDataSet; Value: Boolean);
 begin
   TNastyDataSet(DataSet).FEOF := Value;
 end;
 
 procedure AssignBuffers(const Source: TBufferList; var Dest: TBufferList);
-var
-  Len: Integer;
 begin
-  Len := High(Source) + 1;
-  SetLength(Dest, Len);
-  Move(Pointer(Source)^, Pointer(Dest)^, Len * SizeOf(PChar));
+  SetLength(Dest, Length(Source));
+  Move(Pointer(Source)^, Pointer(Dest)^, Length(Source) * SizeOf(PChar));
 end;
 
-procedure dsGetBuffers(DataSet: TDataSet; var ABuf: TBufferList);
+procedure DsGetBuffers(DataSet: TDataSet; var ABuf: TBufferList);
 begin
   with TNastyDataSet(DataSet) do
     AssignBuffers(FBuffers, ABuf);
 end;
 
-procedure dsSetBuffers(DataSet: TDataSet; const Value: TBufferList);
+procedure DsSetBuffers(DataSet: TDataSet; const Value: TBufferList);
 begin
   AssignBuffers(Value, TNastyDataSet(DataSet).FBuffers);
 end;
 
-function dsGetRecordCount(DataSet: TDataSet): Integer;
+function DsGetRecordCount(DataSet: TDataSet): Integer;
 begin
   Result := TNastyDataSet(DataSet).FRecordCount;
 end;
 
-procedure dsSetRecordCount(DataSet: TDataSet; Value: Integer);
+procedure DsSetRecordCount(DataSet: TDataSet; Value: Integer);
 begin
   TNastyDataSet(DataSet).FRecordCount := Value;
 end;
 
-function dsGetActiveRecord(DataSet: TDataSet): Integer;
+function DsGetActiveRecord(DataSet: TDataSet): Integer;
 begin
   Result := TNastyDataSet(DataSet).FActiveRecord;
 end;
 
-procedure dsSetActiveRecord(DataSet: TDataSet; Value: Integer);
+procedure DsSetActiveRecord(DataSet: TDataSet; Value: Integer);
 begin
   TNastyDataSet(DataSet).FActiveRecord := Value;
 end;
 
-function dsGetCanModify(DataSet: TBDEDataSet): Boolean;
+function DsGetCanModify(DataSet: TBDEDataSet): Boolean;
 begin
   Result := TBDENastyDataSet(DataSet).FCanModify;
 end;
 
-procedure dsSetCanModify(DataSet: TBDEDataSet; Value: Boolean);
+procedure DsSetCanModify(DataSet: TBDEDataSet; Value: Boolean);
 begin
   TBDENastyDataSet(DataSet).FCanModify := Value;
 end;
@@ -414,10 +397,8 @@ procedure TJvDBFilter.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (FDataLink <> nil) then
-  begin
     if AComponent = DataSource then
       DataSource := nil;
-  end;
 end;
 
 function TJvDBFilter.CreateExprFilter: hDBIFilter;
@@ -425,14 +406,14 @@ begin
   Result := nil;
   if FFilter.Count > 0 then
     if BuildTree then
-    try
-      Check(DbiAddFilter((FDatalink.DataSet as TBDEDataSet).Handle,
-        Longint(Self), FPriority, False, pCANExpr(TExprParser(FParser).FilterData), nil,
-        Result));
-      FDataHandle := TBDEDataSet(FDatalink.DataSet).Handle;
-    finally
-      DestroyTree;
-    end;
+      try
+        Check(DbiAddFilter((FDatalink.DataSet as TBDEDataSet).Handle,
+          Longint(Self), FPriority, False,
+            pCANExpr(TExprParser(FParser).FilterData), nil, Result));
+        FDataHandle := TBDEDataSet(FDatalink.DataSet).Handle;
+      finally
+        DestroyTree;
+      end;
 end;
 
 function TJvDBFilter.CreateFuncFilter: hDBIFilter;
@@ -473,9 +454,7 @@ begin
     Filter := Value;
   end
   else
-  begin
     Filter := Value;
-  end;
 end;
 
 procedure TJvDBFilter.DropFilters;
@@ -516,28 +495,28 @@ begin
   try
     DS := FDatalink.DataSet as TBDEDataSet;
     { save current DataSet's private fields values }
-    dsGetBuffers(DS, Buffers);
-    ActiveRecord := dsGetActiveRecord(DS);
-    RecCount := dsGetRecordCount(DS);
-    ACanModify := dsGetCanModify(DS);
+    DsGetBuffers(DS, Buffers);
+    ActiveRecord := DsGetActiveRecord(DS);
+    RecCount := DsGetRecordCount(DS);
+    ACanModify := DsGetCanModify(DS);
     try
-      dsSetActiveRecord(DS, 0);
-      dsSetRecordCount(DS, 1); { FActiveRecord + 1 }
-      dsSetCanModify(DS, False);
+      DsSetActiveRecord(DS, 0);
+      DsSetRecordCount(DS, 1); { FActiveRecord + 1 }
+      DsSetCanModify(DS, False);
       SetLength(BufPtr, 1);
       BufPtr[0] := PChar(RecBuf);
-      dsSetBuffers(DS, BufPtr);
+      DsSetBuffers(DS, BufPtr);
       { call user defined function }
       Result := Ord(FOnFiltering(Self, DS));
     finally
-      dsSetCanModify(DS, ACanModify);
-      dsSetActiveRecord(DS, ActiveRecord);
-      dsSetRecordCount(DS, RecCount);
-      dsSetBuffers(DS, Buffers);
+      DsSetCanModify(DS, ACanModify);
+      DsSetActiveRecord(DS, ActiveRecord);
+      DsSetRecordCount(DS, RecCount);
+      DsSetBuffers(DS, Buffers);
     end;
   except
     Application.HandleException(Self);
-    Result := ABORT; { BDE constant, not SysUtils.pas procedure }
+    Result := BDE.ABORT; { BDE constant, not SysUtils.pas procedure }
   end;
 end;
 
@@ -584,14 +563,14 @@ begin
     if not FCaptured then
       FDataLink.DataSet.CheckBrowseMode;
     if FFilter.Count > 0 then
-    try
-      Filter := CreateExprFilter;
-    except
-      if Active or FActivating then
-        raise
-      else
-        Filter := nil;
-    end
+      try
+        Filter := CreateExprFilter;
+      except
+        if Active or FActivating then
+          raise
+        else
+          Filter := nil;
+      end
     else
       Filter := nil;
     SetFilterHandle(FExprHandle, Filter);
@@ -628,41 +607,34 @@ begin
   end;
 end;
 
-function TJvDBFilter.GetFilterText: PChar;
+function TJvDBFilter.GetFilterText: string;
 var
   BufLen: Word;
   I: Integer;
   StrEnd: PChar;
   StrBuf: array [0..255] of Char;
 begin
-  BufLen := 1;
+  BufLen := 0;
   for I := 0 to FFilter.Count - 1 do
-    Inc(BufLen, Length(Filter.Strings[I]) + 1);
-  Result := StrAlloc(BufLen);
-  try
-    StrEnd := Result;
+    if Filter.Strings[I] <> '' then
+      Inc(BufLen, Length(Filter.Strings[I]) + 1);
+  SetLength(Result, BufLen);
+  if BufLen > 0 then
+  begin
+    StrEnd := @Result[1];
     for I := 0 to Filter.Count - 1 do
-    begin
       if Filter.Strings[I] <> '' then
       begin
         StrPCopy(StrBuf, Filter.Strings[I]);
         StrEnd := StrECopy(StrEnd, StrBuf);
         StrEnd := StrECopy(StrEnd, ' ');
       end;
-    end;
-  except
-    StrDispose(Result);
-    raise;
   end;
 end;
 
 procedure TJvDBFilter.DestroyTree;
 begin
-  if FParser <> nil then
-  begin
-    FParser.Free;
-    FParser := nil;
-  end;
+  FreeAndNil(FParser);
 end;
 
 procedure TJvDBFilter.BeforeDataPost(DataSet: TDataSet);
@@ -675,7 +647,7 @@ end;
 
 procedure TJvDBFilter.BeforeDataChange(DataSet: TDataSet);
 begin
-  FilterError(SCaptureFilter);
+  raise EJVCLFilterError.Create(SCaptureFilter);
 end;
 
 procedure TJvDBFilter.BeforeDataCancel(DataSet: TDataSet);
@@ -685,7 +657,7 @@ end;
 
 function TJvDBFilter.BuildTree: Boolean;
 var
-  Expr: PChar;
+  Expr: string;
   I: Integer;
 begin
   Result := True;
@@ -699,23 +671,12 @@ begin
   finally
     TStringList(FFilter).OnChange := FilterChanged;
   end;
-  if FFilter.Count = 0 then
-  begin
-    Result := False;
-    Exit;
-  end;
   Expr := GetFilterText;
-  try
-    if StrLen(Expr) = 0 then
-    begin
-      Result := False;
-      Exit;
-    end;
+  if (FFilter.Count <> 0) and (Expr <> '') then
     FParser := TExprParser.Create(FDataLink.DataSet, Expr,
-      TFilterOptions(FOptions), [], '', nil, FldTypeMap);
-  finally
-    StrDispose(Expr);
-  end;
+      TFilterOptions(FOptions), [], '', nil, FldTypeMap)
+  else
+    Result := False;
 end;
 
 procedure TJvDBFilter.DoActivate;
@@ -747,7 +708,7 @@ begin
         FActivating := True;
         try
           if FCaptured then
-            FilterError(SCaptureFilter);
+            raise EJVCLFilterError.Create(SCaptureFilter);
           DbiSetToBegin((FDatalink.DataSet as TBDEDataSet).Handle);
           if FExprHandle = nil then
             RecreateExprFilter;
@@ -810,7 +771,7 @@ begin
       FBof := DataSource.DataSet.Bof;
       FEof := DataSource.DataSet.Eof;
       State := DataSource.DataSet.State;
-      CanModify := dsGetCanModify(FDatalink.DataSet as TBDEDataSet);
+      CanModify := DsGetCanModify(FDatalink.DataSet as TBDEDataSet);
       BeforePost := DataSource.DataSet.BeforePost;
       BeforeCancel := DataSource.DataSet.BeforeCancel;
       BeforeInsert := DataSource.DataSet.BeforeInsert;
@@ -818,10 +779,10 @@ begin
     end;
     DbiInitRecord((DataSource.DataSet as TBDEDataSet).Handle,
       DataSource.DataSet.ActiveBuffer);
-    dsSetBOF(DataSource.DataSet, True);
-    dsSetEOF(DataSource.DataSet, True);
-    dsSetState(DataSource.DataSet, dsEdit);
-    dsSetCanModify(DataSource.DataSet as TBDEDataSet, True);
+    DsSetBOF(DataSource.DataSet, True);
+    DsSetEOF(DataSource.DataSet, True);
+    DsSetState(DataSource.DataSet, dsEdit);
+    DsSetCanModify(DataSource.DataSet as TBDEDataSet, True);
     DataSource.DataSet.BeforeCancel := BeforeDataCancel;
     DataSource.DataSet.BeforePost := BeforeDataPost;
     DataSource.DataSet.BeforeInsert := BeforeDataChange;
@@ -842,10 +803,10 @@ begin
     { restore private fields values stored in SetCapture }
     with FStorage do
     begin
-      dsSetBOF(DataSource.DataSet, FBof);
-      dsSetEOF(DataSource.DataSet, FEof);
-      dsSetState(DataSource.DataSet, State);
-      dsSetCanModify(DataSource.DataSet as TBDEDataSet, CanModify);
+      DsSetBOF(DataSource.DataSet, FBof);
+      DsSetEOF(DataSource.DataSet, FEof);
+      DsSetState(DataSource.DataSet, State);
+      DsSetCanModify(DataSource.DataSet as TBDEDataSet, CanModify);
       DataSource.DataSet.BeforePost := BeforePost;
       DataSource.DataSet.BeforeCancel := BeforeCancel;
       DataSource.DataSet.BeforeInsert := BeforeInsert;
@@ -865,7 +826,7 @@ end;
 
 procedure TJvDBFilter.ReadCaptureControls;
 const
-  LogicStr: array [TFilterLogicCond] of string[4] = (' AND', ' OR');
+  LogicStr: array [TFilterLogicCond] of PChar = (' AND', ' OR');
 var
   I: Integer;
   Field: TField;
@@ -882,8 +843,7 @@ begin
         for I := 0 to FieldCount - 1 do
         begin
           Field := Fields[I];
-          if not (Field.IsNull or Field.Calculated
-            or Field.Lookup) then
+          if not (Field.IsNull or Field.Calculated or Field.Lookup) then
           begin
             S := '(' + cFldQuotaLeft + Field.FieldName + cFldQuotaRight +
               '=' + cQuota + Field.AsString + cQuota + ')';
@@ -898,7 +858,7 @@ begin
     end;
   end
   else
-    FilterError(SNotCaptureFilter);
+    raise EJVCLFilterError.Create(SNotCaptureFilter);
 end;
 
 procedure TJvDBFilter.UpdateFuncFilter;

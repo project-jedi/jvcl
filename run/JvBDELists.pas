@@ -30,27 +30,27 @@ unit JvBDELists;
 interface
 
 uses
-  SysUtils, Classes, DB, DBTables,
-  Bde,
+  SysUtils, Classes,
+  BDE, DB, DBTables,
   JvDBUtils;
 
 type
-  TBDEItemType = (bdDatabases, bdDrivers, bdLangDrivers, bdUsers, bdRepositories);
+  TJvBDEItemType = (bdDatabases, bdDrivers, bdLangDrivers, bdUsers, bdRepositories);
 
   TJvCustomBDEItems = class(TBDEDataSet)
   private
-    FItemType: TBDEItemType;
+    FItemType: TJvBDEItemType;
     FSessionName: string;
     FSessionLink: TDatabase;
     function GetDBSession: TSession;
     procedure SetSessionName(const Value: string);
-    procedure SetItemType(Value: TBDEItemType);
+    procedure SetItemType(Value: TJvBDEItemType);
   protected
     function GetRecordCount: Integer; override;
     procedure OpenCursor (InfoQuery: Boolean); override;
     procedure CloseCursor; override;
     function CreateHandle: HDBICur; override;
-    property ItemType: TBDEItemType read FItemType write SetItemType
+    property ItemType: TJvBDEItemType read FItemType write SetItemType
       default bdDatabases;
   public
     function Locate(const KeyFields: string; const KeyValues: Variant;
@@ -188,9 +188,10 @@ type
 implementation
 
 uses
-  DBConsts, BDEConst, JvConsts;
+  BDEConst, DBConsts,
+  JvConsts;
 
-{ Utility routines }
+//=== Utility routines =======================================================
 
 function dsGetRecordCount(DataSet: TBDEDataSet): Longint;
 begin
@@ -200,7 +201,6 @@ begin
 end;
 
 //=== TJvSessionLink =========================================================
-
 
 type
   TJvSessionLink = class(TDatabase)
@@ -233,7 +233,7 @@ end;
 
 //=== TJvCustomBDEItems ======================================================
 
-procedure TJvCustomBDEItems.SetItemType(Value: TBDEItemType);
+procedure TJvCustomBDEItems.SetItemType(Value: TJvBDEItemType);
 begin
   if ItemType <> Value then
   begin
@@ -285,8 +285,7 @@ begin
     TJvSessionLink(FSessionLink).FList := Self;
     inherited OpenCursor(InfoQuery);
   except
-    FSessionLink.Free;
-    FSessionLink := nil;
+    FreeAndNil(FSessionLink);
     raise;
   end;
 end;
@@ -297,8 +296,7 @@ begin
   if FSessionLink <> nil then
   begin
     TJvSessionLink(FSessionLink).FList := nil;
-    FSessionLink.Free;
-    FSessionLink := nil;
+    FreeAndNil(FSessionLink);
   end;
 end;
 

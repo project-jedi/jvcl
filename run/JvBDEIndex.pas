@@ -30,12 +30,11 @@ unit JvBDEIndex;
 interface
 
 uses
-  SysUtils, Messages, Classes, Controls,
-  Graphics, Menus, StdCtrls, DB, DBTables;
+  SysUtils, Messages, Classes, Controls, Graphics, Menus, StdCtrls,
+  DB, DBTables;
 
 type
-  // (rom) needs Jv prefix
-  TIdxDisplayMode = (dmFieldLabels, dmFieldNames, dmIndexName);
+  TJvIdxDisplayMode = (dmFieldLabels, dmFieldNames, dmIndexName);
 
   TJvDBIndexCombo = class(TCustomComboBox)
   private
@@ -44,20 +43,19 @@ type
     FNoIndexItem: string;
     FEnableNoIndex: Boolean;
     FChanging: Boolean;
-    FDisplayMode: TIdxDisplayMode;
+    FDisplayMode: TJvIdxDisplayMode;
     function GetDataSource: TDataSource;
     procedure SetDataSource(Value: TDataSource);
     function GetIndexFieldName(var AName: string): Boolean;
     procedure SetNoIndexItem(const Value: string);
     function GetNoIndexItem: string;
     procedure SetEnableNoIndex(Value: Boolean);
-    procedure SetDisplayMode(Value: TIdxDisplayMode);
+    procedure SetDisplayMode(Value: TJvIdxDisplayMode);
     procedure ActiveChanged;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent;
-      Operation: TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure FillIndexList(List: TStrings);
     procedure Change; override;
     procedure UpdateList; virtual;
@@ -68,7 +66,7 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property NoIndexItem: string read GetNoIndexItem write SetNoIndexItem;
     property EnableNoIndex: Boolean read FEnableNoIndex write SetEnableNoIndex default False;
-    property DisplayMode: TIdxDisplayMode read FDisplayMode write SetDisplayMode default dmFieldLabels;
+    property DisplayMode: TJvIdxDisplayMode read FDisplayMode write SetDisplayMode default dmFieldLabels;
     property DragCursor;
     property DragMode;
     property Enabled;
@@ -111,6 +109,7 @@ type
   end;
 
 implementation
+
 uses
   JvBdeUtils;
 
@@ -166,16 +165,14 @@ begin
   FDataLink := TJvKeyDataLink.Create(Self);
   Style := csDropDownList;
   FUpdate := False;
-  FNoIndexItem := EmptyStr;
+  FNoIndexItem := '';
   FEnableNoIndex := False;
+  FDisplayMode := dmFieldLabels;
 end;
 
 destructor TJvDBIndexCombo.Destroy;
 begin
-  FDataLink.Free;
-  FDataLink := nil;
-  //DisposeStr(FNoIndexItem);
-  FNoIndexItem := EmptyStr;
+  FreeAndNil(FDataLink);
   inherited Destroy;
 end;
 
@@ -199,7 +196,7 @@ begin
   end;
 end;
 
-procedure TJvDBIndexCombo.SetDisplayMode(Value: TIdxDisplayMode);
+procedure TJvDBIndexCombo.SetDisplayMode(Value: TJvIdxDisplayMode);
 begin
   if Value <> FDisplayMode then
   begin

@@ -31,8 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Bde,
-  DB, DBTables;
+  Bde, DB, DBTables;
 
 type
   TJvBDEMemoryTable = class(TDBDataSet)
@@ -83,8 +82,7 @@ type
 implementation
 
 uses
-  DBConsts, Math,
-  BDEConst,
+  BDEConst, DBConsts, Math,
   JvDBUtils, JvBdeUtils;
 
 { Memory tables are created in RAM and deleted when you close them. They
@@ -92,8 +90,6 @@ uses
   small tables. Memory tables do not support certain features (like
   deleting records, referntial integrity, indexes, autoincrement fields
   and BLOBs) }
-
-{ TJvBDEMemoryTable }
 
 constructor TJvBDEMemoryTable.Create(AOwner: TComponent);
 begin
@@ -171,12 +167,11 @@ begin
   CheckInactive;
   for I := FieldCount - 1 downto 0 do
     Fields[I].Free;
-  if (ASource = nil) then
+  if ASource = nil then
     Exit;
   ASource.FieldDefs.Update;
   FieldDefs := ASource.FieldDefs;
   for I := 0 to FieldDefs.Count - 1 do
-  begin
     if SupportedFieldType(FieldDefs.Items[I].DataType) then
     begin
       if (csDesigning in ComponentState) and (Owner <> nil) then
@@ -184,7 +179,6 @@ begin
       else
         CreateField(FieldDefs.Items[I], Self);
     end;
-  end;
 end;
 
 procedure TJvBDEMemoryTable.DeleteCurrentRecord;
@@ -293,8 +287,8 @@ begin
   end;
 end;
 
-function TJvBDEMemoryTable.Lookup(const KeyFields: string; const KeyValues: Variant;
-  const ResultFields: string): Variant;
+function TJvBDEMemoryTable.Lookup(const KeyFields: string;
+  const KeyValues: Variant; const ResultFields: string): Variant;
 begin
   Result := False;
 end;
@@ -377,10 +371,8 @@ begin
     SetLength(FldDescList, iFldCount);
     FieldDescs := BDE.PFLDDesc(FldDescList);
     for I := 0 to FieldDefs.Count - 1 do
-    begin
       with FieldDefs[I] do
         EncodeFieldDesc(FldDescList[I], Name, DataType, Size, Precision);
-    end;
     Check(DbiTranslateRecordStructure(nil, iFldCount, FieldDescs, nil, nil,
       FieldDescs, False));
     Check(DbiCreateInMemTable(DBHandle, szTblName, iFldCount, FieldDescs,
@@ -481,9 +473,7 @@ begin
   begin
     UpdateCursorPos;
     Rslt := DbiGetSeqNo(Handle, Result);
-    if (Rslt = DBIERR_EOF) or (Rslt = DBIERR_BOF) then
-      Exit
-    else
+    if (Rslt <> DBIERR_EOF) and (Rslt <> DBIERR_BOF) then
       Check(Rslt);
   end;
 end;
