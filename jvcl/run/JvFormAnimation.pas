@@ -31,12 +31,7 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Controls, Forms,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QControls, QForms,
-  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -88,17 +83,12 @@ begin
   for I := 0 to N do
   begin
     if SetWindowRgn(FForm.Handle, FRegions[I], True) <> 0 then
-      FRegions[I] := 0;
+      FRegions[I] := NullHandle;
     FForm.Repaint;
     Sleep(10);
   end;
   FForm.Visible := False;
-  {$IFDEF VCL}
-  SetWindowRgn(FForm.Handle, 0, True);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetWindowRgn(FForm.Handle, nil, True);
-  {$ENDIF VisualCLX}
+  SetWindowRgn(FForm.Handle, NullHandle, True);
   DeleteRegions;
 end;
 
@@ -114,16 +104,11 @@ begin
   for I := N downto 0 do
   begin
     if SetWindowRgn(FForm.Handle, FRegions[I], True) <> 0 then
-      FRegions[I] := 0;
+      FRegions[I] := NullHandle;
     FForm.Repaint;
     Sleep(10);
   end;
-  {$IFDEF VCL}
-  SetWindowRgn(FForm.Handle, 0, True);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  SetWindowRgn(FForm.Handle, nil, True);
-  {$ENDIF VisualCLX}
+  SetWindowRgn(FForm.Handle, NullHandle, True);
   DeleteObject(Rgn);
   DeleteRegions;
 end;
@@ -133,7 +118,7 @@ var
   I: Integer;
 begin
   for I := Low(FRegions) to High(FRegions) do
-    if FRegions[I] <> 0 then
+    if FRegions[I] <> NullHandle then
       DeleteObject(FRegions[I]);
   SetLength(FRegions, 0);
 end;
