@@ -39,7 +39,7 @@ implementation
 {$R JVCLReg.dcr}
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, FileCtrl,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Dlgs, 
 
   //About JVCL
   JvJVCLAbout, JVCLVer,

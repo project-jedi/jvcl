@@ -33,7 +33,8 @@ unit JvClipboardViewer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ClipBrd, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ClipBrd, JvTypes, JvComponent;
 
 type
   TJvClipboardViewer = class(TJvComponent)
@@ -60,7 +61,7 @@ implementation
 constructor TJvClipboardViewer.Create(AOwner: TComponent);
 begin
   inherited;
-  FHandle := AllocateHWND(WndProc);
+  FHandle := Classes.AllocateHWND(WndProc);
   FNextCB := SetClipboardViewer(FHandle);
   // (rom) removed a SetClipboardViewer line her
 end;
@@ -69,7 +70,7 @@ end;
 
 destructor TJvClipboardViewer.Destroy;
 begin
-  DeallocateHWnd(FHandle);
+  Classes.DeallocateHWnd(FHandle);
   ChangeClipboardChain(FHandle, FNextCB);
   inherited;
 end;

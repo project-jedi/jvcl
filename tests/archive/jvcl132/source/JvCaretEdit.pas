@@ -25,6 +25,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 {== unit CaretEdit ====================================================}
 {: Implements a TEdit and TMemo derivative that has a configurable caret.
@@ -49,7 +55,7 @@ type
     bitmap is not used. A change to the caret at runtime will only have an
     immediate effect if the control has focus. }
 
-  TJvCaret = class(Tpersistent)
+  TJvCaret = class(TPersistent)
   private
     FCaretBitmap: TBitmap;
     FCaretWidth: Integer;
@@ -87,7 +93,7 @@ type
     property Gray: Boolean read FGrayCaret write SetGrayCaret default false;
   end;
 
-  TJvCaretEdit = class(Tedit)
+  TJvCaretEdit = class(TEdit)
   private
     { Private declarations }
     FCaret: TJvCaret;
@@ -122,6 +128,8 @@ type
   end;
 
 implementation
+uses
+  JvComponentFunctions;
 
 { TJvCaret }
 
@@ -181,7 +189,7 @@ begin
     and not IsDefaultCaret then
   begin
     if UsingBitmap then
-      Win32Check(Windows.CreateCaret(FCaretOwner.handle, Bitmap.Handle, 0, 0))
+      OSCheck(Windows.CreateCaret(FCaretOwner.handle, Bitmap.Handle, 0, 0))
     else if not Windows.CreateCaret(FCaretOwner.handle, GrayHandles[Gray],
       Width, Height) then
       Windows.CreateCaret(FCaretOwner.handle, 0, Width, Height);

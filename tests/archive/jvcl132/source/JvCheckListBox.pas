@@ -77,7 +77,7 @@ type
     function DeleteExactString(Value: string; All: Boolean;
       CaseSensitive: Boolean = True): Integer;
 
-    procedure SelectAll;
+    procedure SelectAll;override;
     procedure UnselectAll;
     procedure InvertSelection;
     procedure CheckAll;
@@ -85,7 +85,7 @@ type
     procedure InvertCheck;
     function GetChecked: TStringList;
     function GetUnChecked: TStringList;
-    procedure DeleteSelected;
+    procedure DeleteSelected;override;
     procedure SaveToFile(FileName: TFileName);
     procedure LoadFromFile(FileName: TFileName);
     procedure LoadFromStream(Stream: TStream);

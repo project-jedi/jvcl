@@ -380,7 +380,7 @@ begin
   if Owner is TForm then
   begin
     FHandle := TForm(Owner).Handle;
-    FWndProc := MakeObjectInstance(WndProc);
+    FWndProc := Classes.MakeObjectInstance(WndProc);
     FDefProc := Pointer(GetWindowLong(FHandle,GWL_WNDPROC ));
     SetWindowLong(FHandle,GWL_WNDPROC,longint(FWndProc));
   end;
@@ -391,7 +391,7 @@ begin
   if FHandle <> 0 then
   begin
     SetWindowLong(FHandle,GWL_WNDPROC,longint(FDefProc));
-    FreeObjectInstance(FWndProc);
+    Classes.FreeObjectInstance(FWndProc);
   end
 end;
 

@@ -560,11 +560,11 @@ end;
 
 procedure TJvCustomMonthCalendar.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array[TBorderStyle] of Integer = (0, WS_BORDER);
-  MultiSelects: array[boolean] of Integer = (0, MCS_MULTISELECT);
-  NoTodays: array[boolean] of integer = (MCS_NOTODAY, 0);
-  NoCircles: array[boolean] of integer = (MCS_NOTODAYCIRCLE, 0);
-  Weeks: array[boolean] of Integer = (0, MCS_WEEKNUMBERS);
+  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
+  MultiSelects: array[boolean] of DWORD = (0, MCS_MULTISELECT);
+  NoTodays: array[boolean] of DWORD = (MCS_NOTODAY, 0);
+  NoCircles: array[boolean] of DWORD = (MCS_NOTODAYCIRCLE, 0);
+  Weeks: array[boolean] of DWORD = (0, MCS_WEEKNUMBERS);
 begin
   InitCommonControl(ICC_DATE_CLASSES);
   inherited CreateParams(Params);

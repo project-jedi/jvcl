@@ -25,6 +25,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 {A wrapper for the Find[First/Next]ChangeNotification API calls. }
 
@@ -33,7 +39,7 @@ unit JvChangeNotify;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvComponent,FileCtrl;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvComponent;
 
 type
   TJvNotifyArray = array [0..MAXIMUM_WAIT_OBJECTS - 1] of integer;

@@ -56,10 +56,10 @@ type
     FAssociated: TControl;
     procedure SetHotFont(const Value: TFont);
     function GetCaption: TCaption;
-    procedure SetAutoSize(const Value: Boolean);
     procedure SetCaption(const Value: TCaption);
     procedure SetAssociated(const Value: TControl);
   protected
+    procedure SetAutoSize(Value: Boolean);override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -217,7 +217,7 @@ end;
 
 {**************************************************}
 
-procedure TJvCheckBox.SetAutoSize(const Value: Boolean);
+procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
   SetCaption(Caption);
