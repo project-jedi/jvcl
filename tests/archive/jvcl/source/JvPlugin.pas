@@ -14,9 +14,11 @@ The Initial Developer of the Original Code is Tim Sullivan [tim@uil.net]
 Portions created by Tim Sullivan are Copyright (C) 1999 Tim Sullivan.
 All Rights Reserved.
 
-Contributor(s): Ralf Steinhaeusser [ralfiii@gmx.net].
+Contributor(s):
+Ralf Steinhaeusser [ralfiii@gmx.net].
+Gustavo Bianconi
 
-Last Modified: 2002-09-02
+Last Modified: 2003-05-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -95,6 +97,7 @@ type
     FCaption: string;
     FHint: string;
     FData: string;
+    FShortCut : TShortCut;
     FBitmap: TBitmap;
     FOnExecute: TNotifyEvent;
     procedure SetBitmap(Value: TBitmap);
@@ -108,6 +111,7 @@ type
     property Hint: string read FHint write FHint;
     property Data: string read FData write FData;
     property Name: string read FName write FName;
+    property ShortCut : TShortCut read FShortCut write FShortCut;
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
   end;
 
@@ -231,7 +235,7 @@ end;
 constructor TJvPluginCommand.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
-  FBitmap := TBitmap.Create;
+  FShortCut := 0;
 end;
 
 destructor TJvPluginCommand.Destroy;
@@ -249,7 +253,12 @@ end;
 
 procedure TJvPluginCommand.SetBitmap(Value: TBitmap);
 begin
-  FBitmap.Assign(Value);
+  FreeAndNil(FBitmap);
+  if Assigned(Value) then
+  begin
+    FBitmap := TBitmap.Create;
+    FBitmap.Assign(Value);
+  end;
 end;
 
 //=== TJvPluginCommands ======================================================

@@ -14,9 +14,11 @@ The Initial Developer of the Original Code is Tim Sullivan [tim@uil.net]
 Portions created by Tim Sullivan are Copyright (C) 1999 Tim Sullivan.
 All Rights Reserved.
 
-Contributor(s): Ralf Steinhaeusser [ralfiii@gmx.net].
+Contributor(s):
+Ralf Steinhaeusser [ralfiii@gmx.net].
+Gustavo Bianconi
 
-Last Modified: 2002-09-02
+Last Modified: 2003-05-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -81,14 +83,29 @@ const
 
 type
   TNewCommandEvent = procedure(Sender: TObject; ACaption, AHint, AData: string;
-    ABitmap: TBitmap; AEvent: TNotifyEvent) of object;
+    AShortCut: TShortCut; ABitmap: TBitmap;
+    AEvent: TNotifyEvent) of object;
+  // Bianconi
+  // Removed
+  // TJvNotifyStrEvent = procedure(Sender: TObject; S: string) of object;
+  // End of Removed
+
+  TJvBeforeLoadEvent = procedure(Sender: TObject; Filename: string; var AllowLoad: boolean) of object;
+  TJvAfterLoadEvent = procedure(Sender: TObject; Filename: string;
+    const ALibHandle: Thandle; var AllowLoad: Boolean) of object;
+  TJvBeforeCommandsEvent = procedure(Sender: TObject; APlugIn: TJvPlugIn) of object;
+  TJvAfterCommandsEvent = procedure(Sender: TObject; APlugIn: TJvPlugIn) of object;
+  TJvPlgInErrorEvent = procedure(Sender: TObject; AError: Exception) of object;
+  // End of Bianconi
 
   EJvPluginError = class(Exception);
   EJvLoadPluginError = class(EJvPluginError);
-
-  TJvBeforeLoadEvent = procedure(Sender: TObject; FileName: string; var AllowLoad: Boolean) of object;
-  //  TJvAfterLoadEvent = procedure(Sender: TObject; Filename: string) of object;
-  TJvNotifyStrEvent = procedure(Sender: TObject; S: string) of object;
+  // Bianconi
+  EJvExtensionPlugInError = class(EJvPlugInError);
+  EJvInitializationPlugInError = class(EJvPlugInError);
+  EJvInitializationCustomPlugInError = class(EJvPlugInError);
+  EJvCantRegisterPlugInError = class(EJvPlugInError);
+  // End of Bianconi
 
   TPluginKind = (plgDLL, plgPackage, plgCustom);
 
@@ -106,9 +123,18 @@ type
     FPluginKind: TPluginKind;
     FPluginInfos: TList;
     FOnBeforeLoad: TJvBeforeLoadEvent;
-    FOnAfterLoad: TJvNotifyStrEvent;
+    FOnAfterLoad: TJvAfterLoadEvent;
     FOnNewCommand: TNewCommandEvent;
-    FOnErrorLoading: TJvNotifyStrEvent;
+
+// Bianconi
+    // Removed
+    // FOnErrorLoading: TJvNotifyStrEvent;
+    // End of removed
+    fOnBeforeNewCommand: TJvBeforeCommandsEvent;
+    fOnAfterNewCommand: TJvAfterCommandsEvent;
+    FOnPlugInError: TJvPlgInErrorEvent;
+// End of Bianconi
+
     procedure SetPluginKind(const Value: TPluginKind);
   protected
     procedure SetExtension(NewValue: string);
@@ -133,27 +159,46 @@ type
     property PluginKind: TPluginKind read FPluginKind write SetPluginKind;
     //    property Version: string read GetVersion write SetVersion;
     property OnBeforeLoad: TJvBeforeLoadEvent read FOnBeforeLoad write FOnBeforeLoad;
-    property OnAfterLoad: TJvNotifyStrEvent read FOnAfterLoad write FOnAfterLoad;
     property OnNewCommand: TNewCommandEvent read FOnNewCommand write FOnNewCommand;
-    property OnErrorLoading: TJvNotifyStrEvent read FOnErrorLoading write FOnErrorLoading;
+// Bianconi
+    // Removed
+    // property OnErrorLoading: TJvNotifyStrEvent read FOnErrorLoading write FOnErrorLoading;
+    // End of removed
+    property OnAfterLoad: TJvAfterLoadEvent read fOnAfterLoad write fOnAfterLoad;
+    property OnBeforeNewCommand: TJvBeforeCommandsEvent read fOnBeforeNewCommand write fOnBeforeNewCommand;
+    property OnAfterNewCommand: TJvAfterCommandsEvent read fOnAfterNewCommand write fOnAfterNewCommand;
+    property OnPlugInError: TJvPlgInErrorEvent read FOnPlugInError write FOnPlugInError;
+// End of Bianconi
   end;
 
 implementation
 
 uses
-  Forms,
-  JvFunctions; // for IncludeTrailingPathDelimiter (only <D6)
+  {$IFNDEF COMPILER6_UP}
+  JvFunctions, // for IncludeTrailingPathDelimiter (only <D6)
+  {$ENDIF}
+  Forms;
 
 const
   C_REGISTER_PLUGIN = 'RegisterPlugin';
-  C_Extensions: array [plgDLL..plgPackage] of PChar = ('dll', 'bpl');
+  C_Extensions: array[plgDLL..plgPackage] of PChar = ('dll', 'bpl');
 
 constructor TJvPluginManager.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  FPluginInfos := TList.Create;
-  FPluginKind := plgDLL;
-  FExtension := C_Extensions[FPluginKind];
+  try
+    inherited Create(AOwner);
+    FPluginInfos := TList.Create;
+    FPluginKind := plgDLL;
+    FExtension := C_Extensions[FPluginKind];
+  except
+    on E: Exception do
+    begin
+      if not (csDesigning in ComponentState) and Assigned(FOnPluginError) then
+        FOnPlugInError(Self, E)
+      else
+        raise;
+    end; // on E : Exception
+  end; // try .. except
 end;
 
 destructor TJvPluginManager.Destroy;
@@ -167,13 +212,23 @@ end;
 
 procedure TJvPluginManager.SetExtension(NewValue: string);
 begin
-  if (FExtension <> NewValue) then
-  begin
-    // (rb) No reason to block this
-    if {(Length(newValue) > 3) or} Length(NewValue) < 1 then
-      raise Exception.Create('Extension may not be empty')
-    else
-      FExtension := NewValue;
+  try
+    if (FExtension <> NewValue) then
+    begin
+      // (rb) No reason to block this
+      if {(Length(newValue) > 3) or} Length(NewValue) < 1 then
+        raise Exception.Create('Extension may not be empty')
+      else
+        FExtension := NewValue;
+    end;
+  except
+    on E: Exception do
+    begin
+      if not (csDesigning in ComponentState) and Assigned(FOnPluginError) then
+       FOnPlugInError(Self, E)
+      else
+        raise;
+    end;
   end;
 end;
 
@@ -225,24 +280,42 @@ var
   PlgInfo: TPluginInfo;
   Counter: Integer;
 begin
-  Result := Plugin.Initialize(Self, Application, 'CustomPlugin');
-  if not Result then
-    Exit;
+  try
+    Result := Plugin.Initialize(Self, Application, 'CustomPlugin');
+    if not Result then Exit;
 
-  PlgInfo := TPluginInfo.Create;
-  PlgInfo.PluginKind := PlgCustom;
-  PlgInfo.Plugin := Plugin;
+    PlgInfo := TPluginInfo.create;
+    PlgInfo.PluginKind := PlgCustom;
+    PlgInfo.Plugin := Plugin;
 
-  FPluginInfos.Add(PlgInfo);
+    fPluginInfos.Add(PlgInfo);
 
-  // Events for all new commands
-  if Assigned(FOnNewCommand) then
-    for Counter := 0 to Plugin.Commands.Count - 1 do
-      with TJvPluginCommand(Plugin.Commands.Items[Counter]) do
-      try
-        FOnNewCommand(Self, Caption, Hint, Data, Bitmap, OnExecute);
-      except
+    try
+      if (Assigned(fOnBeforeNewCommand)) then
+      begin
+        fOnBeforeNewCommand(Self, PlugIn);
       end;
+
+      // Events for all new commands
+      if Assigned(fOnNewCommand) then
+      begin
+        for counter := 0 to Plugin.Commands.Count - 1 do
+          with TJvPluginCommand(Plugin.Commands.Items[counter]) do
+            fOnNewCommand(Self, Caption, Hint, Data, ShortCut, Bitmap, OnExecute);
+      end;
+    finally
+      if (Assigned(fOnAfterNewCommand)) then
+        fOnAfterNewCommand(Self, PlugIn);
+    end;
+  except
+    on E: Exception do
+    begin
+      if not (csDesigning in ComponentState) and Assigned(FOnPluginError) then
+        FOnPlugInError(Self, E)
+      else
+        raise;
+    end; // On E : Exception
+  end; // try .. except
 end;
 
 // Load a Plugin - either DLL or package
@@ -257,67 +330,94 @@ var
   Plugin: TJvPlugin;
   NumCopies: Integer;
   PlgInfo: TPluginInfo;
+  AllowLoad: Boolean;
 begin
-  LibHandle := 0;
-  Plugin := nil;
-  case PlgKind of
-    plgDLL:
-      LibHandle := LoadLibrary(PChar(FileName));
-    plgPackage:
-      LibHandle := LoadPackage(FileName);
-  end;
+  AllowLoad := true;
+  if (assigned(fOnBeforeLoad)) then
+    fOnBeforeLoad(Self, Filename, AllowLoad);
 
-  if LibHandle = 0 then
-    raise EJvLoadPluginError.Create('Error loading Plug-in "' + FileName + '"');
-
-  try
-    // Load the registration procedure
-    RegisterProc := GetProcAddress(LibHandle, C_REGISTER_PLUGIN);
-    if not Assigned(RegisterProc) then
-      raise EJvLoadPluginError.Create('"' + FileName + '" is not a valid Plug-in. Export-function not found');
-
-    // get the plugin
-    Plugin := RegisterProc;
-    if Plugin = nil then
-      raise Exception.Create('No Plugin returned!');
-
-    // make sure we don't load more copies of the plugin than allowed
-    if Plugin.InstanceCount > 0 then // 0 = unlimited
-    begin
-      NumCopies := 0;
-      for Counter := 0 to FPluginInfos.Count - 1 do
-      begin
-        if Plugins[Counter].PluginID = Plugin.PluginID then
-          Inc(NumCopies);
+  if AllowLoad then
+  begin
+    try
+      LibHandle := 0;
+      Plugin := nil;
+      case PlgKind of
+        plgDLL: LibHandle := LoadLibrary(PChar(FileName));
+        plgPackage: LibHandle := LoadPackage(FileName);
       end;
 
-      if NumCopies >= Plugin.InstanceCount then
+      if LibHandle = 0 then
+        raise EJvLoadPluginError.Create(FileName);
+
+      AllowLoad := True;
+      if (Assigned(FOnAfterLoad)) then
       begin
-        Plugin.Free;
-        Exit; // Todo : Don't know what Skipload does here
+        FOnAfterLoad(Self, FileName, LibHandle, AllowLoad);
       end;
-    end;
 
-    // initialize the plugin and add to list
-    if AddCustomPlugin(Plugin) then
-    begin
-      PlgInfo := FPluginInfos.Last;
-      PlgInfo.PluginKind := PlgKind;
-      PlgInfo.Handle := LibHandle;
-    end;
+      if not AllowLoad then
+      begin
+        case PluginKind of
+          plgDLL: FreeLibrary(LibHandle);
+          plgPackage: UnloadPackage(LibHandle);
+        end;
+        Exit;
+      end; // if NOT AllowLoad
 
-  except //!11    if - for whatever reason - an exception has occurred
-    //            free Plugin and library
-    // (rom) statements used twice could be wrapped in method
-    Plugin.Free;
-    case PlgKind of
-      plgDLL:
-        FreeLibrary(LibHandle);
-      plgPackage:
-        UnloadPackage(LibHandle);
-    end;
-    raise;
-  end;
+      // Load the registration procedure
+      RegisterProc := GetProcAddress(LibHandle, C_REGISTER_PLUGIN);
+      if not Assigned(RegisterProc) then
+        raise EJvLoadPluginError.Create(FileName);
+
+      // register the plugin
+      Plugin := RegisterProc;
+      if Plugin = nil then
+        raise EJvCantRegisterPlugInError.Create(FileName);
+
+      // make sure we don't load more copies of the plugin than allowed
+      if Plugin.InstanceCount > 0 then // 0 = unlimited
+      begin
+        NumCopies := 0;
+        for Counter := 0 to FPluginInfos.Count - 1 do
+        begin
+          if Plugins[Counter].PluginID = Plugin.PluginID then
+            Inc(NumCopies);
+        end;
+
+        if NumCopies >= Plugin.InstanceCount then
+        begin
+          Plugin.Free;
+          Exit; // Todo : Don't know what Skipload does here
+        end;
+      end; // if Plugin.InstanceCount > 0
+
+      // initialize the plugin and add to list
+      if AddCustomPlugin(Plugin) then
+      begin
+        PlgInfo := FPluginInfos.Last;
+        PlgInfo.PluginKind := PlgKind;
+        PlgInfo.Handle := LibHandle;
+      end;
+    except //!11    if - for whatever reason - an exception has occurred
+      //            free Plugin and library
+      // (rom) statements used twice could be wrapped in method
+      on E: Exception do
+      begin
+        FreeAndNil(Plugin);
+        if (LibHandle <> 0) then
+        begin
+          case PlgKind of
+            plgDLL: FreeLibrary(LibHandle);
+            plgPackage: UnloadPackage(LibHandle);
+          end;
+        end; // if( LibHandle <> 0 )
+        if not (csDesigning in ComponentState) and Assigned(FOnPluginError) then
+          FOnPlugInError(Self, E)
+        else
+          raise;
+      end; // On E : Exception
+    end; // try .. except
+  end; // if AllowLoad
 end;
 
 // Load all plugins in the plugin-folder
@@ -325,7 +425,6 @@ end;
 
 procedure TJvPluginManager.LoadPlugins;
 var
-  AllowLoad: Boolean;
   FileName: string;
   Found: Integer;
   Path: string;
@@ -340,35 +439,31 @@ begin
   Path := IncludeTrailingPathDelimiter(Path);
 
   try
-    Found := FindFirst(Path + '*.' + FExtension, 0, Sr);
-    while Found = 0 do
-    begin
-      FileName := Sr.Name;
-      AllowLoad := True;
-
-      if (Assigned(FOnBeforeLoad)) then
-        FOnBeforeLoad(Self, FileName, AllowLoad);
-
-      if AllowLoad then
+    try
+      Found := FindFirst(Path + '*.' + FExtension, 0, Sr);
+      while Found = 0 do
       begin
+        FileName := Sr.Name;
         try
-          //! If one plugin made problems -> no other plugins where loaded
-          //! To avoid that the try-except block was wrapped around here...
+        //! If one plugin made problems -> no other plugins where loaded
+        //! To avoid that the try-except block was wrapped around here...
           LoadPlugin(Path + FileName, PluginKind);
-
-          if (Assigned(FOnAfterLoad)) then
-            FOnAfterLoad(Self, FileName);
         except
-          on E: Exception do
-            if Assigned(FOnErrorLoading) then
-              FOnErrorLoading(Self, E.Message);
         end;
+        Found := FindNext(Sr);
       end;
-      Found := FindNext(Sr);
-    end;
+    except
+      on E: Exception do
+      begin
+        if not (csDesigning in ComponentState) and Assigned(FOnPluginError) then
+          FOnPlugInError(Self, E)
+        else
+          raise;
+      end; // On E : Exception
+    end; // try .. except
   finally
     FindClose(Sr);
-  end;
+  end; // try .. finally
 end;
 
 procedure TJvPluginManager.UnloadPlugin(Index: Integer);
@@ -378,10 +473,8 @@ begin
   PlgI := FPluginInfos.Items[Index];
   PlgI.Plugin.Free;
   case PlgI.PluginKind of
-    plgDLL:
-      FreeLibrary(PlgI.Handle);
-    plgPackage:
-      UnloadPackage(PlgI.Handle);
+    plgDLL: FreeLibrary(PlgI.Handle);
+    plgPackage: UnloadPackage(PlgI.Handle);
   end;
 
   PlgI.Free;
