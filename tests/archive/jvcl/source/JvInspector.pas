@@ -4058,7 +4058,7 @@ begin
 
   if (Item is TJvInspectorCustomCategoryItem) and (Item.Level = 0) then
     Canvas.Brush.Color := CategoryColor;
-  if (Item = Inspector.Selected) and (not (Item is TJvInspectorCustomCompoundItem) or (TJvInspectorCustomCompoundItem(Item).SelectedColumnIndex = 0)) and ((Item.Level > 0) or
+  if (Item = Inspector.Selected) and (not (Item is TJvInspectorCustomCompoundItem) or TJvInspectorCustomCompoundItem(Item).SingleName or (TJvInspectorCustomCompoundItem(Item).SelectedColumnIndex = 0)) and ((Item.Level > 0) or
       not (Item is TJvInspectorCustomCategoryItem)) then
     Canvas.Brush.Color := SelectedColor;
   Canvas.FillRect(PreNameRect);
@@ -6260,7 +6260,21 @@ var
   Col: TJvInspectorCompoundColumn;
 begin
   if SingleName then
-    inherited DrawName(ACanvas)
+  begin
+    if (Inspector.Selected = Self) then
+    begin
+      ACanvas.Brush.Color := Inspector.Painter.SelectedColor;
+      ACanvas.Font.Color := Inspector.Painter.SelectedTextColor;
+      with Rects[iprNameArea] do
+        ACanvas.FillRect(Rect(Left, Top, Right, Bottom));
+    end
+    else
+    begin
+      ACanvas.Brush.Color := Inspector.Painter.BackgroundColor;
+      ACanvas.Font.Color := Inspector.Painter.NameColor;
+    end;
+    inherited DrawName(ACanvas);
+  end
   else
   begin
     with Rects[iprNameArea] do
