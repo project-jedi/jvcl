@@ -11,6 +11,5 @@ begin
   Application.Initialize;
   Application.Title := 'TChangeNotification Demo';
   Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm2, Form2);
   Application.Run;
 end.

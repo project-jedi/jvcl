@@ -57,6 +57,7 @@ object Form1: TForm1
     RowSelect = True
     TabOrder = 1
     ViewStyle = vsReport
+    OnDblClick = ListView1DblClick
   end
   object Panel1: TPanel
     Left = 0
@@ -66,7 +67,7 @@ object Form1: TForm1
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    object SpeedButton1: TSpeedButton
+    object btnStart: TSpeedButton
       Left = 294
       Top = 46
       Width = 75
@@ -74,7 +75,7 @@ object Form1: TForm1
       AllowAllUp = True
       GroupIndex = 1
       Caption = 'Start'
-      OnClick = SpeedButton1Click
+      OnClick = btnStartClick
     end
     object Label2: TLabel
       Left = 10
@@ -90,23 +91,23 @@ object Form1: TForm1
       Height = 13
       Caption = 'msecs'
     end
-    object Button1: TButton
+    object btnAdd: TButton
       Left = 110
       Top = 46
       Width = 75
       Height = 25
       Caption = 'Add...'
       TabOrder = 0
-      OnClick = Button1Click
+      OnClick = btnAddClick
     end
-    object Button2: TButton
+    object btnDelete: TButton
       Left = 190
       Top = 46
       Width = 75
       Height = 25
       Caption = 'Delete'
       TabOrder = 1
-      OnClick = Button2Click
+      OnClick = btnDeleteClick
     end
     object Edit1: TEdit
       Left = 96
@@ -129,14 +130,14 @@ object Form1: TForm1
       TabOrder = 3
       Wrap = False
     end
-    object Button3: TButton
+    object btnClear: TButton
       Left = 14
       Top = 46
       Width = 75
       Height = 25
       Caption = 'Clear'
       TabOrder = 4
-      OnClick = Button3Click
+      OnClick = btnClearClick
     end
   end
   object CN1: TJvChangeNotify
