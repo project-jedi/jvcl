@@ -26,28 +26,26 @@ type
     JvValidators1: TJvValidators;
     JvErrorProvider1: TJvErrorProvider;
     JvValidationSummary1: TJvValidationSummary;
+    JvRequiredFieldValidator1: TJvRequiredFieldValidator;
+    JvCustomValidator1: TJvCustomValidator;
+    JvRegularExpressionValidator1: TJvRegularExpressionValidator;
+    JvRangeValidator1: TJvRangeValidator;
     procedure FormCreate(Sender: TObject);
     procedure btnCheckClick(Sender: TObject);
     procedure btnProviderCheckClick(Sender: TObject);
     procedure btnValSumClick(Sender: TObject);
     procedure reResultsEnter(Sender: TObject);
+    procedure JvCustomValidator1Validate(Sender: TObject;
+      ValueToValidate: Variant; var Valid: Boolean);
+    procedure JvValidators1ValidateFailed(Sender: TObject;
+      BaseValidator: TJvBaseValidator; var Continue: Boolean);
+    procedure JvValidationSummary1Change(Sender: TObject);
   private
     { Private declarations }
-    // custom validation event
-    procedure Do10CharValidate(Sender: TObject; ValueToValidate: Variant;
-      var IsValid: boolean);
-    // validation fail event
-    procedure DoValidateFailed(Sender: TObject;
-      Validator: TJvBaseValidator; var Continue: boolean);
-    // validation fail event
-    procedure DoErrProviderValidateFailed(Sender: TObject;
-      Validator: TJvBaseValidator; var Continue: boolean);
-    procedure SetUpValidators;
-    procedure DoSummaryChange(Sender: TObject);
+    procedure ProviderErrorValidateFailed(Sender: TObject;
+      BaseValidator: TJvBaseValidator; var Continue: Boolean);
   public
     { Public declarations }
-    JvValidator:TJvValidators;
-    JvErrProv:TJvErrorProvider;
   end;
 
 var
@@ -61,73 +59,8 @@ uses
 
 {$R *.DFM}
 
-procedure TfrmMain.Do10CharValidate(Sender: TObject; ValueToValidate: Variant;
-  var IsValid: boolean);
-begin
-  IsValid := not VarIsNull(ValueToValidate) and (Length(string(ValueToValidate)) >= 10);
-end;
-
-procedure TfrmMain.DoErrProviderValidateFailed(Sender:TObject; Validator:TJvBaseValidator;var Continue:boolean);
-begin
-  JvErrProv.Error[Validator.ControlToValidate] := Validator.ErrorMessage;
-  reResults.Lines.Add(Format('%d: %s',[reResults.Lines.Count+1,Validator.ErrorMessage]));
-end;
-
-procedure TfrmMain.DoValidateFailed(Sender:TObject; Validator:TJvBaseValidator;var Continue:boolean);
-begin
-  reResults.Lines.Add(Format('%s: %s',[Char(Ord('A') + reResults.Lines.Count),Validator.ErrorMessage]));
-end;
-
-procedure TfrmMain.SetUpValidators;
-var Jv:TJvBaseValidator;
-begin
-  Jv := TJvRequiredFieldValidator.Create(self);
-  with Jv do
-  begin
-    ErrorMessage := 'Value in edRequired cannot be empty';
-    ControlToValidate := edRequired;
-    PropertyToValidate := 'Text';
-  end;
-  JvValidator.Insert(Jv);
-
-  Jv := TJvCustomValidator.Create(self);
-  with Jv do
-  begin
-    ErrorMessage := 'Value in "edRequired10Chars" requires at least 10 characters';
-    ControlToValidate := edRequired10Chars;
-    PropertyToValidate := 'Text';
-    TJvCustomValidator(Jv).OnValidate := Do10CharValidate;
-  end;
-  JvValidator.Insert(Jv);
-
-  Jv := TJvRegularExpressionValidator.Create(self);
-  with Jv do
-  begin
-    ErrorMessage := 'Value in "edRegExpr" does not match "A.B.C."';
-    ControlToValidate := edRegExpr;
-    PropertyToValidate := 'Text';
-    TJvRegularExpressionValidator(Jv).ValidationExpression := '^A.B.C.*';
-  end;
-  JvValidator.Insert(Jv);
-
-  Jv := TJvRangeValidator.Create(self);
-  with Jv do
-  begin
-    ErrorMessage := 'Value in "udRange0to100" must be between 0 and 100';
-    ControlToValidate := udRange0to100;
-    PropertyToValidate := 'Position';
-    TJvRangeValidator(Jv).MinimumValue := 0;
-    TJvRangeValidator(Jv).MaximumValue := 100;
-  end;
-  JvValidator.Insert(Jv);
-end;
-
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
-  JvValidator := TJvValidators.Create(self);
-  JvErrProv   := TJvErrorProvider.Create(self);
-//  JvErrProv.ImageList := il16;
-  SetUpValidators;
   reResults.WordWrap := true;
 end;
 
@@ -135,54 +68,76 @@ procedure TfrmMain.btnCheckClick(Sender: TObject);
 begin
   reResults.Lines.Clear;
   reResults.WordWrap := false;
-  JvErrProv.ClearErrors;
-  JvValidator.ErrorProvider := nil;
-  JvValidator.OnValidateFailed := DoValidateFailed;
-  JvValidator.Validate;
+  JvErrorProvider1.ClearErrors;
+  JvValidators1.ValidationSummary := nil;
+  JvValidators1.ErrorProvider := nil;
+  JvValidators1.OnValidateFailed := JvValidators1ValidateFailed;
+  JvValidators1.Validate;
 end;
 
 procedure TfrmMain.btnProviderCheckClick(Sender: TObject);
 begin
   reResults.Lines.Clear;
   reResults.WordWrap := false;
-  JvErrProv.BeginUpdate;
+  // calling BeginUpdate/EndUpdate delays the error reporting until all controls have been validated
+  JvErrorProvider1.BeginUpdate;
   try
-    JvErrProv.ClearErrors;
-    JvValidator.OnValidateFailed := DoErrProviderValidateFailed;
-    JvValidator.Validate;
+    JvErrorProvider1.ClearErrors;
+    JvValidators1.ValidationSummary := nil;
+    // custom error messages for this type of check
+    JvValidators1.OnValidateFailed := ProviderErrorValidateFailed;
+    JvValidators1.Validate;
   finally
-    JvErrProv.EndUpdate;
+    JvErrorProvider1.EndUpdate;
   end;
-end;
-
-procedure TfrmMain.DoSummaryChange(Sender: TObject);
-begin
-  reResults.Lines.Text := AnsiUpperCase(TJvValidationSummary(Sender).Summaries.Text);
 end;
 
 procedure TfrmMain.btnValSumClick(Sender: TObject);
-var V:TJvValidationSummary;
 begin
   reResults.Lines.Clear;
   reResults.WordWrap := false;
-  JvErrProv.ClearErrors;
-  JvValidator.OnValidateFailed := nil;
-  V := TJvValidationSummary.Create(nil);
-  try
-    // Setting the ValidationSummary for TJvValidators will delay
-    // triggering the OnChange event until after Validate has completed:
-    JvValidator.ValidationSummary := V;
-    JvValidator.ErrorProvider := JvErrProv;
-    V.OnChange := DoSummaryChange;
-    JvValidator.Validate;
-  finally
-    V.Free;
-  end;
+  JvErrorProvider1.ClearErrors;
+  JvValidators1.OnValidateFailed := nil;
+  JvValidators1.ErrorProvider := nil;
+  // Setting the ValidationSummary for TJvValidators will delay
+  // triggering the OnChange event until after Validate has completed
+  JvValidationSummary1.Summaries.Clear;
+  JvValidators1.ValidationSummary := JvValidationSummary1;
+  JvValidators1.Validate;
 end;
 
 procedure TfrmMain.reResultsEnter(Sender: TObject);
 begin
   SelectNext(reResults,true,true);
+end;
+
+procedure TfrmMain.JvCustomValidator1Validate(Sender: TObject;
+  ValueToValidate: Variant; var Valid: Boolean);
+begin
+  // custom validation
+  Valid := not VarIsNull(ValueToValidate) and (Length(string(ValueToValidate)) >= 10);
+end;
+
+procedure TfrmMain.JvValidators1ValidateFailed(Sender: TObject;
+  BaseValidator: TJvBaseValidator; var Continue: Boolean);
+begin
+  // using the OnValidateFailed event
+  reResults.Lines.Add(Format('FAILED: %s',[BaseValidator.ErrorMessage]));
+end;
+
+procedure TfrmMain.ProviderErrorValidateFailed(Sender: TObject;
+  BaseValidator: TJvBaseValidator; var Continue: Boolean);
+begin
+  JvErrorProvider1.Error[BaseValidator.ControlToValidate] := BaseValidator.ErrorMessage;
+  reResults.Lines.Add(Format('PROVIDER: %s',[BaseValidator.ErrorMessage]));
+end;
+procedure TfrmMain.JvValidationSummary1Change(Sender: TObject);
+var i:integer;
+begin
+  // update all at once
+  reResults.Lines.Text := TJvValidationSummary(Sender).Summaries.Text;
+  for i := 0 to reResults.Lines.Count - 1 do
+    reResults.Lines[i] := 'SUMMARY: ' + reResults.Lines[i];
 end;
 
 end.
