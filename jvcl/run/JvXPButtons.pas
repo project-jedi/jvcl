@@ -777,8 +777,15 @@ begin
     if ToolType = ttImage then
     begin
       if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then Exit;
-      Images.Draw(Canvas, (Width - Images.Width) div 2 + Integer(Shifted), (Height - Images.Height) div 2 +
-        Integer(Shifted), ImageIndex, dsTransparent, itImage, Enabled);
+      Images.Draw(Canvas,
+        (Width - Images.Width) div 2 + Integer(Shifted),
+        (Height - Images.Height) div 2 + Integer(Shifted),
+        ImageIndex,
+        {$IFDEF COMPILER6_UP}
+        dsTransparent,
+        itImage,
+        {$ENDIF COMPILER6_UP}
+        Enabled);
     end
     else
     begin
