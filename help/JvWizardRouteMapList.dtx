@@ -1,4 +1,4 @@
-##Package: JvWizard.dtx
+##Package: Wizard
 ##Status: Completed (peter3), Review
 ----------------------------------------------------------------------------------------------------
 @@JvWizardRouteMapList.pas
@@ -36,18 +36,6 @@ Description
   Use ActiveFont to specify how the item corresponding to the active page is displayed in the control.
 See Also
   ActiveFontOptions
-----------------------------------------------------------------------------------------------------
-@@TJvWizardRouteMapList.ActiveFontOptions
-Summary
-  Specifies the font properties to change in ActiveFont when the normal Font changes.
-Description
-  Use ActiveFontOptions to specify how ActiveFont is changed when Font changes. For
-  example, if hoPreserveName is the only value set in ActiveFontOptions, only the font name of
-  ActiveFont is preserved when the Font changes. All other properties are changed to match those in Font.
-Note
-  This property is only available when USEJVCL is defined.
-See Also
-  Font, HotTrackFont
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapList.Alignment
 Summary
@@ -132,16 +120,6 @@ Note
   This property is only available when USEJVCL is defined.
 See Also
   HotGlyph, HotTrack, HotTrackFontOptions
-----------------------------------------------------------------------------------------------------
-@@TJvWizardRouteMapList.HotTrackFontOptions
-Summary
-  Specifies the font properties to change in HotTrackFont when the normal Font changes.
-Description
-  Use HotTrackFontOptions to specify how HotTrackFont is changed when Font changes. For
-  example, if hoPreserveName is the only value set in HotTrackFontOptions, only the font name of
-  HotTrackFont is preserved when the Font changes. All other properties are changed to match those in Font.
-See Also
-  Font, ActiveFont
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapList.IncludeDisabled
 Summary
@@ -246,4 +224,3 @@ See Also
   Display the text of Page.Header.Title.Text.
 @@TRouteMapListItemText.itSubtitle
   Display the text of Page.Header.SubTitle.Text.
-

@@ -13,9 +13,69 @@ Author
 <TITLE TJvAutoDragStartEvent type>
 <COMBINE TJvCaptionPanel.OnStartAutoDrag>
 ----------------------------------------------------------------------------------------------------
+@@TJvCapBtn
+JVCLInfo
+  GROUP=TJvCaptionPanel
+Summary
+  Graphic control that represents a button for a caption panel.
+Description
+  TJvCapBtn is an internally used graphic control that represents a button for a caption panel.
+See Also
+  TJvCaptionPanel
+----------------------------------------------------------------------------------------------------
+@@TJvCapBtn.Flat
+Summary
+  Indicates if the caption button should rendered in a flat style.
+Description
+  Flat indicates if the caption button should be rendered in a flat style. When set to True the
+  button is rendered in a flat look, when set to False it is rendered in a non flat look.
+See Also
+  TJvCaptionPanel
+----------------------------------------------------------------------------------------------------
+@@TJvCapBtn.Style
+Summary
+  Indicates the type of button.
+Description
+  Style indicates what type of button is to be rendered. The type determines which glyph is
+  rendered. It has no influence on the panel it is on (For example, a close button will not close the panel).
+See Also
+  TJvCaptionPanel
+----------------------------------------------------------------------------------------------------
+@@TJvCapBtn.Visible
+Summary
+  Indicates if the button is visible.
+Description
+  Visible indicates whether or not the button is rendered. When set to True the button will be shown,
+  otherwise it will not.
+See Also
+  TJvCaptionPanel
+----------------------------------------------------------------------------------------------------
 @@TJvCapBtnEvent
 <TITLE TJvCapBtnEvent type>
 <COMBINE TJvCaptionPanel.OnButtonClick>
+----------------------------------------------------------------------------------------------------
+@@TJvCapBtnStyle
+<TITLE TJvCapBtnStyle type>
+Summary
+  Type used to define the button kind of a TJvCaptionPanel button.
+Description
+  TJvCapBtnStyle is the type used to indicate the style of a TJvCapBtn, a button of a
+  TJvCaptionPanel. The style determines the icon shown in the button, but does not influence the
+  panel in anyway (For example, capClose will not close the panel when the button is clicked).
+@@TJvCapBtnStyle.capClose
+  The caption panel button is a close button.
+@@TJvCapBtnStyle.capMax
+  The caption panel button is a maximize button.
+@@TJvCapBtnStyle.capMin
+  The caption panel button is a minimize button.
+@@TJvCapBtnStyle.capRestore
+  The caption panel button is a restore button.
+@@TJvCapBtnStyle.capHelp
+  The caption panel button is a help button.
+----------------------------------------------------------------------------------------------------
+@@TJvCapBtnStyles
+<TITLE TJvCapBtnStyles type>
+<COMBINE TJvCapBtnStyle>
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel
 <TITLEIMG TJvCaptionPanel>
@@ -130,6 +190,15 @@ Description
   FlatButtons indicates if the panel buttons should be rendered in a flat look. When set to True
   the buttons are rendered in a flat look, when set to False they are rendered in a non flat look.
 ----------------------------------------------------------------------------------------------------
+@@TJvCaptionPanel.Icon
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel.OnButtonClick
 <COMBINEWITH TJvCapBtnEvent>
 Summary
@@ -139,6 +208,14 @@ Description
 Parameters
   Sender - Reference to the control generating the event. Usually this will be the caption panel.
   Button - Indicates which button was clicked.
+----------------------------------------------------------------------------------------------------
+@@TJvCaptionPanel.OnEndAutoDrag
+Summary
+  Responds to the user ending an auto drag process.
+Description
+  \Write an OnEndAutoDrag handler to take action when the user ends an auto drag process.
+See Also
+  AutoDrag
 ----------------------------------------------------------------------------------------------------
 @@TJvCaptionPanel.OnStartAutoDrag
 Summary
@@ -155,74 +232,6 @@ Summary
   Specifies the visual appearance of the panel.
 Description
   Set OutlookLook to true to have the panel mimic the way similar panels appear in MS Outlook(R)
-----------------------------------------------------------------------------------------------------
-@@TJvCaptionPanel.OnEndAutoDrag
-Summary
-  Responds to the user ending an auto drag process.
-Description
-  \Write an OnEndAutoDrag handler to take action when the user ends an auto drag process.
-See Also
-  AutoDrag
-----------------------------------------------------------------------------------------------------
-@@TJvCapBtn
-JVCLInfo
-  GROUP=TJvCaptionPanel
-Summary
-  Graphic control that represents a button for a caption panel.
-Description
-  TJvCapBtn is an internally used graphic control that represents a button for a caption panel.
-See Also
-  TJvCaptionPanel
-----------------------------------------------------------------------------------------------------
-@@TJvCapBtn.Flat
-Summary
-  Indicates if the caption button should rendered in a flat style.
-Description
-  Flat indicates if the caption button should be rendered in a flat style. When set to True the
-  button is rendered in a flat look, when set to False it is rendered in a non flat look.
-See Also
-  TJvCaptionPanel
-----------------------------------------------------------------------------------------------------
-@@TJvCapBtn.Style
-Summary
-  Indicates the type of button.
-Description
-  Style indicates what type of button is to be rendered. The type determines which glyph is
-  rendered. It has no influence on the panel it is on (For example, a close button will not close the panel).
-See Also
-  TJvCaptionPanel
-----------------------------------------------------------------------------------------------------
-@@TJvCapBtn.Visible
-Summary
-  Indicates if the button is visible.
-Description
-  Visible indicates whether or not the button is rendered. When set to True the button will be shown,
-  otherwise it will not.
-See Also
-  TJvCaptionPanel
-----------------------------------------------------------------------------------------------------
-@@TJvCapBtnStyle
-<TITLE TJvCapBtnStyle type>
-Summary
-  Type used to define the button kind of a TJvCaptionPanel button.
-Description
-  TJvCapBtnStyle is the type used to indicate the style of a TJvCapBtn, a button of a
-  TJvCaptionPanel. The style determines the icon shown in the button, but does not influence the
-  panel in anyway (For example, capClose will not close the panel when the button is clicked).
-@@TJvCapBtnStyle.capClose
-  The caption panel button is a close button.
-@@TJvCapBtnStyle.capMax
-  The caption panel button is a maximize button.
-@@TJvCapBtnStyle.capMin
-  The caption panel button is a minimize button.
-@@TJvCapBtnStyle.capRestore
-  The caption panel button is a restore button.
-@@TJvCapBtnStyle.capHelp
-  The caption panel button is a help button.
-----------------------------------------------------------------------------------------------------
-@@TJvCapBtnStyles
-<TITLE TJvCapBtnStyles type>
-<COMBINE TJvCapBtnStyle>
 ----------------------------------------------------------------------------------------------------
 @@TJvDrawPosition
 <TITLE TJvDrawPosition type>

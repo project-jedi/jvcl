@@ -7,8 +7,6 @@ Summary
   <INCLUDE JVCL.UnitText.dtx>
 Author
   Olivier Sannier
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpDownloadMode
 <TITLE TJvFtpDownloadMode type>
@@ -20,26 +18,20 @@ Description
   Either ASCII or Binary
 See Also
   TJvFtpUrlGrabber.Mode
-
-
-----------------------------------------------------------------------------------------------------
 @@TJvFtpDownloadMode.hmBinary
-FTP transfer in Binary mode
-
-
-----------------------------------------------------------------------------------------------------
+  FTP transfer in Binary mode
 @@TJvFtpDownloadMode.hmAscii
-FTP transfer in ASCII mode
-
-
+  FTP transfer in ASCII mode
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabber
+<TITLEIMG TJvFtpUrlGrabber>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   This is the grabber for FTP URLs
 Description
   This grabber handles FTP URLs, that is URLs that start with 'ftp://'
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabber.CanGrab
 Summary
@@ -48,16 +40,12 @@ Parameters
   Url - The URL to test
 Return value
   True if the URL is a FTP URL, that is it starts with 'ftp://'
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabber.GetDefaultPropertiesClass
 Summary
   Returns the class to use to display default properties for this type of grabber
 Return value
   Returns TJvFtpUrlGrabberDefaultProperties
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabber.Mode
 Summary
@@ -66,8 +54,6 @@ Description
   Either Binary or ASCII
 See Also
   Passive
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabber.Passive
 Summary
@@ -77,8 +63,6 @@ Description
   to use
 See Also
   Mode
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties
 Summary
@@ -86,38 +70,30 @@ Summary
 Description
   This class is used by TJvUrlGrabber to display the default properties of the TJvFtpUrlGrabber
   objects it may create
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties.Mode
 <COMBINE TJvFtpUrlGrabber.Mode>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties.Passive
 <COMBINE TJvFtpUrlGrabber.Passive>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberThread
 Summary
   The thread used to grab FTP URLs
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberThread.Grabber
 Summary
   Provides an easy access to the grabber associated with the thread
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber
+<TITLEIMG TJvHttpUrlGrabber>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   This a grabber for HTPP URLs
 Description
   This grabber handles HTTP URLs, that is URLs that start with 'http://'
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber.CanGrab
 Summary
@@ -126,16 +102,12 @@ Parameters
   Url - The URL to test
 Return value
   True if the URL is a HTTP URL, that is it starts with 'http://'
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber.GetDefaultPropertiesClass
 Summary
   Returns the class to use to display default properties for this type of grabber
 Return value
   Returns TJvHttpUrlGrabberDefaultProperties
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber.Referer
 Summary
@@ -145,8 +117,6 @@ Description
   This is known as the Referer. Some web sites check that the Referer is set to a correct value and
   if it is not a value they expect, they refuse to serve the page.
   By using this property, you can emulate the correct behavior and get the page.
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberDefaultProperties
 Summary
@@ -154,42 +124,29 @@ Summary
 Description
   This class is used by TJvUrlGrabber to display the default properties of the TJvHttpUrlGrabber
   objects it may create
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberDefaultProperties.Referer
 <COMBINE TJvHttpUrlGrabber.Referer>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberThread
 Summary
   The thread used to grad HTTP URLs
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberThread.Grabber
 Summary
   Provides an easy access to the grabber associated with the thread
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber
+<TITLEIMG TJvLocalFileUrlGrabber>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   This a grabber for Local File URLs
 Description
   This grabber handles Local File URLs, that is URLs that start with 'file://', '?:\' or '\\'
   Local is in opposition to Internet and refers to files on a computer as well as to files on
   the local network.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabber.PreserveAttributes
-Summary
-  If True, the attributes of the source file will be copied to the destination file. Attributes are
-  the date, the read-only and hidden properties.
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.CanGrab
 Summary
@@ -199,39 +156,32 @@ Parameters
 Return value
   True if the URL is a Local File URL, that is it starts with 'file://', '?:\', '\\' or the URL
   indicates an existing file
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.GetDefaultPropertiesClass
 Summary
   Returns the class to use to display default properties for this type of grabber
 Return value
   Returns TJvLocalFileUrlGrabberDefaultProperties
-
-
 ----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabberDefaultProperties
+@@TJvLocalFileUrlGrabber.PreserveAttributes
+Summary
+  If True, the attributes of the source file will be copied to the destination file. Attributes are
+  the date, the read-only and hidden properties.
+----------------------------------------------------------------------------------------------------
+@@TJvLocalFileUrlGrabberProperties
 Summary
   A class that holds default properties for TJvLocalFileUrlGrabber
 Description
   This class is used by TJvUrlGrabber to display the default properties of the TJvLocalFileUrlGrabber
   objects it may create
-
-
 ----------------------------------------------------------------------------------------------------
-@@TJvLocalFileUrlGrabberDefaultProperties.PreserveAttributes
+@@TJvLocalFileUrlGrabberProperties.PreserveAttributes
 <COMBINE TJvLocalFileUrlGrabber.PreserveAttributes>
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabberThread
 Summary
   The thread used to grad Local File URLs
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabberThread.Grabber
 Summary
   Provides an easy access to the grabber associated with the thread
-
-

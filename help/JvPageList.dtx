@@ -140,12 +140,6 @@ Summary
 Description
   Write an OnPaint event handler to take specific action when the control is painted.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomPage.OnParentColorChange
-Summary
-  Occurs when the Parents color changes.
-Description
-  Write an OnParentColorChange event handler to take specific action when the Parents color changes.
-----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnShow
 Summary
   Occurs when the page is shown.
@@ -272,6 +266,28 @@ Description
 Return value
   The class type of pages created by the page list.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomPageList.HiddenPageList
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPageList.HidePage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Page - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.NextPage
 Summary
   Activates the page after the active page.
@@ -309,12 +325,6 @@ Parameters
   AllowChange - Set to false to disallow the change. This parameter is true by default.
 See Also
   OnChange, ActivePage, ActivePageIndex
-----------------------------------------------------------------------------------------------------
-@@TJvCustomPageList.OnParentColorChange
-Summary
-  Occurs when the Parents color changes.
-Description
-  Write an OnParentColorChange event handler to take specific action when the Parents color changes.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.PageCount
 Summary
@@ -391,7 +401,38 @@ Description
   Object Inspector.
 
   Page captions are always hidden at run-time.
-
+----------------------------------------------------------------------------------------------------
+@@TJvCustomPageList.ShowPage
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Page      - Description for this parameter
+  PageIndex - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvPageCanPaintEvent
+<TITLE TJvPageCanPaintEvent type>
+<COMBINE TJvCustomPage.OnBeforePaint>
+----------------------------------------------------------------------------------------------------
+@@TJvPageChangingEvent
+<TITLE TJvPageChangingEvent type>
+<COMBINE TJvCustomPageList.OnChanging>
+----------------------------------------------------------------------------------------------------
+@@TJvPageList
+<TITLEIMG TJvPageList>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvPagePaintEvent
 <TITLE TJvPagePaintEvent type>
@@ -434,6 +475,8 @@ Description
   Show the caption in the bottom center of the page.
 @@TJvShowDesignCaption.sdcBottomRight
   Show the caption in the bottom right corner of the page.
+@@TJvShowDesignCaption.sdcRunTime
+    Description for sdcRunTime
 ----------------------------------------------------------------------------------------------------
 @@TJvStandardPage
 Summary

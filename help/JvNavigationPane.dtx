@@ -2,6 +2,7 @@
 ##Status: Updated, Completed (peter3), needs review
 ##Skip: TCustomImageListEx
 ##Skip: TJvIconPanel
+##Skip: TJvNavPaneBackgroundImage.OnChange
 ##Skip: TJvNavPanelColors.OnChange
 ##Skip: TJvNavPanelFonts.OnChange
 ##Skip: TJvNavPanelPage.Action
@@ -17,12 +18,10 @@
 ##Skip: TJvNavPanelToolButton.Images
 ##Skip: TJvNavPanelToolButton.TransparentDown
 ##Skip: TJvNavPaneStyleManager.RegisterChanges
-##Skip: TJvNavPaneStyleManager.UnRegisterChanges
 ##Skip: TJvNavPaneToolButtons.Add
 ##Skip: TJvNavPaneToolButtons.Items
 ##Skip: TJvNavStyleLink
 ##Skip: TMsgStyleManagerChange
-##Skip: TJvNavPaneBackgroundImage.OnChange
 ----------------------------------------------------------------------------------------------------
 @@JvNavigationPane.pas
 Summary
@@ -110,6 +109,15 @@ Description
   Assign a TPopupMenu to the DropDownMenu property to show a menu button on the icon panel (at the bottom of the control)
   that, when clicked by the user, shows the menu. If no menu is assigned, the menu button is hidden.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.IconPanel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.LargeImages
 Summary
   Provides a list of images to display for each maximized button.
@@ -181,6 +189,96 @@ Description
 See Also
   DropDownMenu, OnContextPopup
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterCanResize
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterDblClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterMouseDown
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterMouseEnter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterMouseLeave
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterMouseMove
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterMouseUp
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterMoved
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.OnSplitterPaint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.ParentStyleManager
 Summary
   Determines where a control looks for its style information.
@@ -210,6 +308,15 @@ Description
 See Also
   LargeImages
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.Splitter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvCustomNavigationPane.SplitterHeight
 Summary
   Specifies the hieght of the splitter.
@@ -220,7 +327,7 @@ Description
 Summary
   Specifies the component responsible for handling the control's styles.
 Description
-  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When
   the Theme property of the style manager changes, the corresponding properties in the control changes as well.
 See Also
   ParentStyleManager
@@ -232,7 +339,209 @@ Description
   UpdatePositions iterates the buttons in the control and updates their appearance. Normally, there
   is no need to call this method.
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomNavigationPane.WordWrap
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.Background
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.ButtonHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.Buttons
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.ButtonWidth
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.CloseButton
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.Colors
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.DrawPartialMenuFrame
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.DropDownMenu
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.EdgeRounding
+Summary
+  Specifies the rounding of various edges.
+Description
+  Use EdgeRounding to specify the rounding of the toolbar buttons background as well as the rounding
+  below the caption area. This value is directly compatible with the curve value specified in a call
+  to TCanvas.RoundRect.
+See Also
+  TCanvas.RoundRect
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.GetHitTestInfoAt
+Summary
+  Returns information about the location of a point relative to the client area of the control.
+Description
+  Call GetHitTestInfoAt to determine what portion of the control, if any, sits under the point
+  specified by the X and Y parameters. For example, use GetHitTestInfoAt to provide feedback about whether
+  the panel can be drag and docked or not when the mouse is over the relevant portions of the control.
+
+Parameters
+  X - Horizontal location of mouse in client coordinates.
+  Y - Vertical location of mouse in client coordinates.
+Return value
+  GetHitTestInfoAt returns a TJvToolPanelHitTestInfos. This set describes the possible elements under
+  the mouse.
+See Also
+  TJvToolPanelHitTestInfo, TJvToolPanelHitTestInfos
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.HeaderHeight
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.HeaderVisible
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.Images
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.OnButtonClick
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Sender - Description for this parameter
+  Index  - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.OnClose
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.OnDropDownMenu
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.ParentStyleManager
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.ShowGrabber
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvCustomNavPaneToolPanel.StyleManager
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvNavIconButton
+<TITLEIMG TJvNavIconButton>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Button used as the small button in a TJvCustomNavigationPane.
 Description
@@ -304,7 +613,7 @@ Summary
 Description
   TJvNavIconButtonType is the type of the ButtonType property of a TJvNavIconButton and defines
   the visual appearance of the button.
-  
+
 @@TJvNavIconButtonType.nibDropDown
   The button displays a chevron and a drop down menu arrow.
 @@TJvNavIconButtonType.nibImage
@@ -315,6 +624,10 @@ Description
   Description for nibClose
 ----------------------------------------------------------------------------------------------------
 @@TJvNavigationPane
+<TITLEIMG TJvNavigationPane>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Navigation Pane style control.
 Description
@@ -445,10 +758,23 @@ See Also
   Picture, Propoportional, Stretch, Tile
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelButton
+<TITLEIMG TJvNavPanelButton>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Class used as the maximized button on a TJvCustomNavigationPane
 Description
   TJvNavPanelButton is the type of the maximized button on a TJvCustomNavigationPane but can also be used stand-alone.
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelButton.Alignment
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelButton.Colors
 Summary
@@ -491,10 +817,19 @@ See Also
 Summary
   Specifies the component responsible for handling the control's styles.
 Description
-  Assign a style manager to this property to make the style manager handle the control's theme settings. When 
+  Assign a style manager to this property to make the style manager handle the control's theme settings. When
   the Theme property of the style manager changes, the corresponding properties in the control changes as well.
 See Also
   ParentStyleManager
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelButton.WordWrap
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelColors
 Summary
@@ -619,11 +954,49 @@ Description
 See Also
   SplitterColorFrom
 ----------------------------------------------------------------------------------------------------
+@@TJvNavPanelColors.ToolPanelColorFrom
+Summary
+  Specifies the top color of the panel's caption area.
+Description
+  Use ColorFrom to set the start color of the background gradient on the control's caption area.
+See Also
+  ColorTo
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelColors.ToolPanelColorTo
+Summary
+  Specifies the bottom color of the panel's caption area.
+Description
+  Use ColorTo to set the end color of the background gradient on the control's caption area.
+See Also
+  ColorFrom
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelColors.ToolPanelHeaderColorFrom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvNavPanelColors.ToolPanelHeaderColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvNavPanelDivider
+<TITLEIMG TJvNavPanelDivider>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Panel used as a group splitter in a TJvCustomNavigationPane.
 Description
-  Use a TJvNavPanelDivider when you need a divider in the styl eof the Nav Pane components that can 
+  Use a TJvNavPanelDivider when you need a divider in the styl eof the Nav Pane components that can
   also act as a splitter.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelDivider.Alignment
@@ -713,11 +1086,15 @@ See Also
   NavPanelFont, NavPanelHotTrackFont
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader
+<TITLEIMG TJvNavPanelHeader>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Panel used as a header panel in conjunction with other Nav Pane components.
 Description
-  Use a TJvNavPanelHeader when you need a panel that is compatible with other Nav Pane components. 
-  TJvNavPanelHeader supports 
+  Use a TJvNavPanelHeader when you need a panel that is compatible with other Nav Pane components.
+  TJvNavPanelHeader supports
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelHeader.Alignment
 Summary
@@ -757,7 +1134,7 @@ Summary
   Specifies the images to use when displaying an image in the control.
 Description
   Assign an image list to Images to specify the images to use when displaying an image in the button. The actual image
-  to display is determined by the ImageIndex property. 
+  to display is determined by the ImageIndex property.
 See Also
   ImageIndex
 ----------------------------------------------------------------------------------------------------
@@ -794,7 +1171,7 @@ Description
 Summary
   Class used for the pages in a TJvCustomNavigationPane or descendant.
 Description
-  TJvNavPanelPage is the type of the Pages and NavPages property of a TJvCustomNavigationPane. 
+  TJvNavPanelPage is the type of the Pages and NavPages property of a TJvCustomNavigationPane.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPanelPage.AutoHeader
 Summary
@@ -912,11 +1289,15 @@ Description
   need to create buttons of this class.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneStyleManager
+<TITLEIMG TJvNavPaneStyleManager>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Handles themes for multiple components.
 Description
-  Use a TJvNavPaneStyleManager to handle the color and font settings for several components from one 
-  central point. Components that supports TJvNavPaneStyleManager has a StyleManager property that 
+  Use a TJvNavPaneStyleManager to handle the color and font settings for several components from one
+  central point. Components that supports TJvNavPaneStyleManager has a StyleManager property that
   can be assigned a TJvNavPaneStyleManager instance. When you change the settings of the style manager,
   the corresponding settings in th ecomponent is changed as well
 ----------------------------------------------------------------------------------------------------
@@ -956,6 +1337,17 @@ Description
 See Also
   Colors
 ----------------------------------------------------------------------------------------------------
+@@TJvNavPaneStyleManager.UnregisterChanges
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolButton
 Summary
   PSeudo-class used to access a tool panel button at design-time.
@@ -966,10 +1358,37 @@ Description
 See Also
   TJvNavPaneToolButtons, TJvNavPanelToolButton
 ----------------------------------------------------------------------------------------------------
+@@TJvNavPaneToolButton.Action
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvNavPaneToolButton.Button
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolButton.Enabled
 Summary
   Specifies whether the button is enabled or not.
 Description
+----------------------------------------------------------------------------------------------------
+@@TJvNavPaneToolButton.Hint
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolButton.ImageIndex
 Summary
@@ -988,11 +1407,15 @@ Description
   on the too panel's tool bar.
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel
+<TITLEIMG TJvNavPaneToolPanel>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   Control that visually resembles the action or tool panel in recent versions of Microsoft Office application.
 Description
   Use a TJvNavPaneToolPanel when you need to display a panel with built-in support for:
-    * A caption area 
+    * A caption area
     * A drop-down menu built into the caption (the DropDownMenu property)
     * A close button (the CloseButton property)
     * One or more tool buttons (the Buttons property)
@@ -1003,14 +1426,6 @@ Summary
   Manages the properties of the background image of the control.
 Description
   Use the properties of Background to set and modify the background image shown in the control.
-----------------------------------------------------------------------------------------------------
-@@TJvNavPaneToolPanel.ButtonColor
-Summary
-  Sets the background color of the tool buttons.
-Description
-  Use ButtonColor to specify the background color of the tool buttons.
-See Also
-  Buttons
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.ButtonHeight
 Summary
@@ -1045,22 +1460,6 @@ Description
 See Also
   DropDownMenu, OnClose
 ----------------------------------------------------------------------------------------------------
-@@TJvNavPaneToolPanel.ColorFrom
-Summary
-  Specifies the top color of the panel's caption area.
-Description
-  Use ColorFrom to set the start color of the background gradient on the control's caption area.
-See Also
-  ColorTo
-----------------------------------------------------------------------------------------------------
-@@TJvNavPaneToolPanel.ColorTo
-Summary
-  Specifies the bottom color of the panel's caption area.
-Description
-  Use ColorTo to set the end color of the background gradient on the control's caption area.
-See Also
-  ColorFrom
-----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.DrawPartialMenuFrame
 Summary
   Specifies how to draw the drop-down menu button.
@@ -1069,7 +1468,7 @@ Description
   If DrawPartialMenuFrame is true, the bottom line of the frame is not drawn when the drop-down is visible.
   If DrawPartialMenuFrame is false, the bottom ine of the frame is always drawn.
 See Also
-  DropDownMenu  
+  DropDownMenu
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.DropDownMenu
 Summary
@@ -1086,33 +1485,6 @@ Note
   You can adjust the location of the menu with the TPopupMenu.Alignment property.
 See Also
   OnDropDownMenu, TPopupMenu
-----------------------------------------------------------------------------------------------------
-@@TJvNavPaneToolPanel.EdgeRounding
-Summary
-  Specifies the rounding of various edges.
-Description
-  Use EdgeRounding to specify the rounding of the toolbar buttons background as well as the rounding
-  below the caption area. This value is directly compatible with the curve value specified in a call
-  to TCanvas.RoundRect.
-See Also
-  TCanvas.RoundRect
-----------------------------------------------------------------------------------------------------
-@@TJvNavPaneToolPanel.GetHitTestInfoAt
-Summary
-  Returns information about the location of a point relative to the client area of the control.
-Description
-  Call GetHitTestInfoAt to determine what portion of the control, if any, sits under the point
-  specified by the X and Y parameters. For example, use GetHitTestInfoAt to provide feedback about whether
-  the panel can be drag and docked or not when the mouse is over the relevant portions of the control.
-
-Parameters
-  X - Horizontal location of mouse in client coordinates.
-  Y - Vertical location of mouse in client coordinates.
-Return value
-  GetHitTestInfoAt returns a TJvToolPanelHitTestInfos. This set describes the possible elements under
-  the mouse.
-See Also
-  TJvToolPanelHitTestInfo, TJvToolPanelHitTestInfos
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.HeaderHeight
 Summary
@@ -1181,7 +1553,7 @@ Note
   The panel does not have any built in docking or sizing support. You will have to implement this yourself.
   For an example on how this could be done, see the demo.
 See Also
-  GetHitTestInfoAt  
+  GetHitTestInfoAt
 ----------------------------------------------------------------------------------------------------
 @@TJvNavPaneToolPanel.StyleManager
 Summary
@@ -1193,6 +1565,10 @@ See Also
   ParentStyleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookSplitter
+<TITLEIMG TJvOutlookSplitter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
 Summary
   A splitter drawn in the style of the splitter used in Outlook 2003.
 Description
@@ -1217,6 +1593,24 @@ Description
   Use ColorFrom to specify the starting color of the gradient drawn on the control.
 See Also
   ColorFrom
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookSplitter.Cursor
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvOutlookSplitter.DragZone
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvOutlookSplitter.ParentStyleManager
 Summary

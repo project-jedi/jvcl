@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Partial
+##Status: Partial documented
 ----------------------------------------------------------------------------------------------------
 @@JvComCtrls.pas
 Summary
@@ -8,45 +8,6 @@ Summary
 Author
   Petr Vones (petr dott v att mujmail dott cz)
   Sebastien Buysse (TJvTabControl)
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl
-<TITLEIMG TJvTabControl>
-JVCLInfo
-  GROUP=JVCL.PagesAndTabs
-  FLAG=Component
-Summary
-  Adds events that can be used for hot tracking as well as support for custom painters.
-Description
-  TJvTabControl is a tab control that supports extended features.
-
-  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user
-  moves the mouse pointer over the control.
-
-  Use property HintColor to change the color of the hint boxes for the tab control.
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl.HintColor
-Summary
-  Determines the color of the hint boxes for the Help Hints for the tab control.
-Description
-  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
-  HintColor property in the constructor when the application is created. To change the HintColor
-  assign it a new TColor value.
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl.OnParentColorChange
-Summary
-  Occurs when the color property for the parent of the scroll bar changes.
-Description
-  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-----------------------------------------------------------------------------------------------------
-@@TJvTabControl.TabPainter
-Summary
-  Supports custom drawing.
-Description
-  Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of the control.
-  Use the properties of the specific painter to adjust the appearance of the tabs. To enable custom drawing, 
-  you must also set the OwnerDraw property to true.
-See Also
-  OwnerDraw
 ----------------------------------------------------------------------------------------------------
 @@TJvHintSource
 <TITLE TJvHintSource type>
@@ -329,6 +290,41 @@ See Also
 <TITLE TJvIpAddrFieldChangeEvent type>
 <COMBINE TJvIPAddress.OnFieldChange>
 ----------------------------------------------------------------------------------------------------
+@@TJvIPEditControlHelper
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvIPEditControlHelper.Focused
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvIPEditControlHelper.Handle
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvIPEditControlHelper.SetFocus
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvPageControl
 <TITLEIMG TJvPageControl>
 JVCLInfo
@@ -347,14 +343,6 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPageControl.DrawTabShadow
-Summary
-  This property has been removed
-Description
-  This property has been removed, Use a custom painter instead.
-See Also
-  TabPainter
 ----------------------------------------------------------------------------------------------------
 @@TJvPageControl.HandleGlobalTab
 Summary
@@ -408,17 +396,225 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvPageControl.RightClickSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvPageControl.TabPainter
 Summary
   Supports custom drawing.
 Description
   Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of the control.
-  Use the properties of the specific painter to adjust the appearance of the tabs. To enable custom drawing, 
+  Use the properties of the specific painter to adjust the appearance of the tabs. To enable custom drawing,
   you must also set the OwnerDraw property to true.
 See Also
   OwnerDraw
 ----------------------------------------------------------------------------------------------------
 @@TJvPageControl.UpdateTabImages
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl
+<TITLEIMG TJvTabControl>
+JVCLInfo
+  GROUP=JVCL.PagesAndTabs
+  FLAG=Component
+Summary
+  Adds events that can be used for hot tracking as well as support for custom painters.
+Description
+  TJvTabControl is a tab control that supports extended features.
+
+  You can use OnMouseEnter and OnMouseLeave to alter the controls look or behavoir, when the user
+  moves the mouse pointer over the control.
+
+  Use property HintColor to change the color of the hint boxes for the tab control.
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.HintColor
+Summary
+  Determines the color of the hint boxes for the Help Hints for the tab control.
+Description
+  Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
+  HintColor property in the constructor when the application is created. To change the HintColor
+  assign it a new TColor value.
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the scroll bar changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.RightClickSelect
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabControl.TabPainter
+Summary
+  Supports custom drawing.
+Description
+  Assign a TJvTabControlPainter or descendant to this property to apply custom drawing to the tabs of the control.
+  Use the properties of the specific painter to adjust the appearance of the tabs. To enable custom drawing,
+  you must also set the OwnerDraw property to true.
+See Also
+  OwnerDraw
+----------------------------------------------------------------------------------------------------
+@@TJvTabControlPainter
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter
+<TITLEIMG TJvTabDefaultPainter>
+JVCLInfo
+  GROUP=JVCL.??
+  FLAG=Component
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveColorFrom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ActiveGradientDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledColorFrom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.DisabledGradientDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.Divider
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.GlyphLayout
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveColorFrom
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveColorTo
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveFont
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.InactiveGradientDirection
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvTabDefaultPainter.ShowFocus
 Summary
   Write here a summary (1 line)
 Description
@@ -726,6 +922,15 @@ Summary
 Description
   Use ItemHeight to specify the height of the node in the treeview.
 ----------------------------------------------------------------------------------------------------
+@@TJvTreeView.ItemIndex
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TJvTreeView.LineColor
 Summary
   Specifies the color to use for the node connection line.
@@ -752,7 +957,7 @@ Description
   make the treeview use the menu's items for its structure.
 
   When a menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
-  item itself (see MenuDblClick for details).  
+  item itself (see MenuDblClick for details).
 
   Only menu items with valid captions (all captions except '-' and '') are added to the treeview.
 Note

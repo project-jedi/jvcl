@@ -187,19 +187,6 @@ Parameters
   Value - The string to encode
 See Also
   DecodeString
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomCipher.Key
-Summary
-  The key used for encoding/decoding via the Encoded/Decoded properties
-Description
-  This key will only be used by the Decoded and Encoded properties. It is stored in the DFM
-  file only if IsStored is True.
-See Also
-  Encoded, Decoded, IsStored
-  
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomCipher.IsStored
 Summary
@@ -211,37 +198,46 @@ Description
   property is True by default.
 See Also
   Encoded, Decoded, Key
-  
+
+----------------------------------------------------------------------------------------------------
+@@TJvCustomCipher.Key
+Summary
+  The key used for encoding/decoding via the Encoded/Decoded properties
+Description
+  This key will only be used by the Decoded and Encoded properties. It is stored in the DFM
+  file only if IsStored is True.
+See Also
+  Encoded, Decoded, IsStored
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVigenereCipher
 <TITLEIMG TJvVigenereCipher>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.System.Encryption
   FLAG=Component
 Summary
   A component that encodes and decodes according to the Vigenere cipher method
 Description
-  Here is a short explanation of the vigenere cipher, inspired by the much more complete description 
+  Here is a short explanation of the vigenere cipher, inspired by the much more complete description
   available at this address:
   http://www.trincoll.edu/depts/cpsc/cryptography/vigenere.html
 
   For each letter of the Key, a new alphabet is created by shifting the usual alphabet to start at
   the same letter as in the key. For instance, if the key is CUP then three alphabets are created:
-  
+
    CDEFGHIJKLMNOPQRSTUVWXYZAB
    UVWXYZABCDEFGHIJKLMNOPQRST
    PQRSTUVWXYZABCDEFGHIJKLMNO
-  
+
   When encoding a string, each alphabet is used in turn as a lookup table. For instance, if we
   encode HELLO, then we have this:
-  
+
   H --> J
   E --> Y
   L --> A
   L --> N
   O --> I
-  
+
   As you can see, the same letter is not always encoded by the same letter, thus making statistical
   analysis a bit harder. The implementation in this component considers an alphabet of 255
   characters, thus encoding every single character no matter what its value is.
@@ -251,23 +247,23 @@ Description
 @@TJvXORCipher
 <TITLEIMG TJvXORCipher>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.System.Encryption
   FLAG=Component
 Summary
   A component that can encode and decode using the XOR algorithm
 Description
   The XOR algorithm is really simple and as such really easy to crack. However it is fast and uses a
   symetrical algorithm:
-  
+
   Encoded[I] = Decoded[I] XOR Key[J]
   Decoded[I] = Encoded[I] XOR Key[J]
 
   Set the Encoded property to get the \decoded value in Decoded.
   Set the Decoded property to get the \encoded value in Encoded.
 
-  Note: As the algorithm is symetrical, there is virtually no difference between setting Encoded 
+  Note: As the algorithm is symetrical, there is virtually no difference between setting Encoded
   or Decoded to get the resulting value.
-  
+
   Each element of the string will be \encoded by its corresponding element in the Key. If the
   Key is too short, it is reused from the start.
 

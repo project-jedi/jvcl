@@ -1,6 +1,5 @@
 ##Package: System
 ##Status: Incomplete (III)
-##Skip: TPlacementOperation
 ----------------------------------------------------------------------------------------------------
 @@JvFormPlacement.pas
 Summary
@@ -119,7 +118,7 @@ Description
   retrieved and restored. For example you can read other values from the storage that are not managed
   by the component - using the <LINK ReadInteger> and <LINK ReadString> methods.
 
-  This event is fired before the control that has focus on the form is retrieved and restored; thus, 
+  This event is fired before the control that has focus on the form is retrieved and restored; thus,
   you can alter this restoring behaviour in an event handler by modifying property Options.
 See Also
   OnSavePlacement
@@ -155,6 +154,48 @@ Description
   Set PreventResize to true, to prevent the form from being resized. For example, you can drop an
   TJvFormPlacement component on a MDI child form, and set PreventResize to true, to prevent the
   user from resizing the child form.
+----------------------------------------------------------------------------------------------------
+@@TJvFormPlacement.ReadBoolean
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ident   - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFormPlacement.ReadDateTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ident   - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFormPlacement.ReadFloat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ident   - Description for this parameter
+  Default - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.ReadInteger
 Summary
@@ -216,6 +257,42 @@ Description
   Thus increase Version each time stored placement information becomes out-of-date.
 See Also
   EraseSections
+----------------------------------------------------------------------------------------------------
+@@TJvFormPlacement.WriteBoolean
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ident - Description for this parameter
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFormPlacement.WriteDateTime
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ident - Description for this parameter
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
+@@TJvFormPlacement.WriteFloat
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Ident - Description for this parameter
+  Value - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormPlacement.WriteInteger
 Summary
@@ -287,8 +364,8 @@ Description
   returns the value represented by the Default parameter. If you try to <i>set</i> the value of a
   stored value object to NULL, then it is actually set to the value represented by the Default parameter.
 Parameters
-  Name    - Identifies the name of the stored value.
-  Default - Specifies a value to use if the stored value is not in the storage.
+  Name     - Identifies the name of the stored value.
+  DefValue - Specifies a value to use if the stored value is not in the storage.
 See Also
   StoredValue
 ----------------------------------------------------------------------------------------------------
@@ -361,17 +438,6 @@ Note
   value’s name.
 See Also
   StoredValue, TJvStoredValues, TJvStoredValues.Items
-----------------------------------------------------------------------------------------------------
-@@TJvFormStorage.StrippedPath
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvFormStorage_StoredProps_Editor
 <TITLE StoredProps editor>
@@ -782,24 +848,3 @@ Note
   MinTrackWidth does <i>not</i> override the system-defined default value, if you set it to 0.
 See Also
   MaxTrackHeight, MaxTrackWidth, MinTrackHeight
-----------------------------------------------------------------------------------------------------
-@@TPlacementOption
-<TITLE TPlacementOption type>
-Summary
-  Defines values that represents information about a form that a TJvFormPlacement component can store.
-Description
-  Use the TPlacementOption type to specify information about a form that a TJvFormPlacement component
-  can store.
-
-  TPlacementOptions is a set of TPlacementOption values.
-@@TPlacementOption.fpState
-  How the form appears on the screen: minimized, maximized, or in a normal state.
-@@TPlacementOption.fpPosition
-  The placement of the form: the form's normal, minimized and maximized size and position and its
-  minimum and maximum tracking size.
-@@TPlacementOption.fpActiveControl
-  The control that has focus on the form. (Specified by the ActiveControl property of the form).
-----------------------------------------------------------------------------------------------------
-@@TPlacementOptions
-<TITLE TPlacementOptions type>
-<COMBINE TPlacementOption>

@@ -4,8 +4,8 @@
 @@JvCsvParse.pas
 Summary
   The Unit JvCsvParse is a library of Pascal PChar buffer, and Pascal String handling functions.
-  They are used by TJvCsvDataSet. 
-  They are also generally useful to any component which needs to parse semantic information in a file, and are useful for parsing CSV, XML, or any 
+  They are used by TJvCsvDataSet.
+  They are also generally useful to any component which needs to parse semantic information in a file, and are useful for parsing CSV, XML, or any
   other structured textual file format which you may encounter.
 
  See also TJvCsvDataSet.
@@ -20,12 +20,12 @@ Summary
   Create a hex encoded dump of a string.  Useful for displaying a string containing non printable characters.
 Description
   If the input is the string 'A'+Chr(13), the result returned is '41 0D'.  41 is the hex value for the ascii Character A,
-  and 0D is Hexadecimal code for a Carriage return.  
+  and 0D is Hexadecimal code for a Carriage return.
 Parameters
-  s - (String) The incoming String object to be encoded as a set of Hexadecimal bytes.
+  S - (String) The incoming String object to be encoded as a set of Hexadecimal bytes.
 See Also
   HexToAscii
-  
+
 ----------------------------------------------------------------------------------------------------
 @@BuildPathName
 <TITLE BuildPathName function>
@@ -46,7 +46,7 @@ Summary
 Description
   Returns true if the param (x) is one of these: ',;:[]()#<>=*/+'
 Parameters
-  x - Character to be tested
+  X - Character to be tested
 ----------------------------------------------------------------------------------------------------
 @@GetIntValueFromResultString
 <TITLE GetIntValueFromResultString function>
@@ -76,8 +76,8 @@ Summary
 Description
   Pascal Low Level PChar Functions for TJvCsvDataSet. Checks if string contains proper number of open/close parenthesis pairs.
 Parameters
-  s1 - Input string.
-  s2 - Output string without parenthesis.
+  S1 - Input string.
+  S2 - Output string without parenthesis.
 ----------------------------------------------------------------------------------------------------
 @@GetString
 <TITLE GetString function>
@@ -87,7 +87,7 @@ Description
   Pass in a source string (For example, 'abc:def') and the separator (':'), returns the portion of the string after the separator.
 Parameters
   Source    - Description for this parameter
-  seperator - Description for this parameter
+  Separator - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -100,8 +100,8 @@ Description
   Pass in buffer in s1, and returns one token into s2, deletes that token from s1.  Call repeatedly to
   parse a large string buffer.  The buffer s1 is modified (the token is removed from the buffer).
 Parameters
-  s1 - Source buffer (modified by this function!)
-  s2 - Destination buffer (result returned here)
+  S1 - Source buffer (modified by this function!)
+  S2 - Destination buffer (result returned here)
 See Also
   EndChar
 ----------------------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ See Also
 Summary
   Debugging helper function for parsers.
 Description
-  Returns a count of the number of times GetToken has returned a token. 
+  Returns a count of the number of times GetToken has returned a token.
 See Also
   ResetTokenCount,GetToken
 ----------------------------------------------------------------------------------------------------
@@ -141,18 +141,18 @@ Summary
 Description
   Gets a single token like ABC, or gets ABC[X] type reference if present
 Parameters
-  s1   - Source String.
-  s2   - Contains a variable name part of the string
-  sidx - Contains an array index or null if the variable is not an array reference
+  S1   - Source String.
+  S2   - Contains a variable name part of the string
+  SIdx - Contains an array index or null if the variable is not an array reference
 ----------------------------------------------------------------------------------------------------
-@@HexPcharToInt
-<TITLE HexPcharToInt function>
+@@HexPCharToInt
+<TITLE HexPCharToInt function>
 Summary
   Convert a hexadecimal string value to a Pascal Integer type.
 Description
   Call HexPcharToInt('FFFF') and it will return 65535.
 Parameters
-  s1 - The hexadecimal string.
+  S1 - The hexadecimal string.
 ----------------------------------------------------------------------------------------------------
 @@HexToAscii
 <TITLE HexToAscii function>
@@ -162,7 +162,7 @@ Description
   The reverse of the AsciiToHex function. Pass it a string in the form 'AA BB CC DD 00 11' that contains only hex digits,
   and the decoded string is returned.
 Parameters
-  s - The hex encoded source.
+  S - The hex encoded source.
 See Also
   AsciiToHex
 ----------------------------------------------------------------------------------------------------
@@ -173,7 +173,7 @@ Summary
 Description
   Return True if valid expression.
 Parameters
-  s1 - String to check
+  S1 - String to check
 ----------------------------------------------------------------------------------------------------
 @@IsKeyword
 <TITLE IsKeyword function>
@@ -182,7 +182,7 @@ Summary
 Description
   Checks against valid keywords
 Parameters
-  s1 - Description for this parameter
+  S1 - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@PadString
 <TITLE PadString function>
@@ -191,12 +191,12 @@ Summary
 Description
   Adds padchar until buffer 's' is of length 'len'
 Parameters
-  s       - The buffer.
-  len     - The length desired.
-  padchar - The character to pad with (usually a space)
+  S       - The buffer.
+  Len     - The length desired.
+  PadChar - The character to pad with (usually a space)
 ----------------------------------------------------------------------------------------------------
-@@PcharEatWs
-<TITLE PcharEatWs procedure>
+@@PCharEatWhiteChars
+<TITLE PCharEatWhiteChars procedure>
 Summary
   Eat whitespace from a pchar buffer.
 Description
@@ -204,7 +204,7 @@ Description
   until a non whitespace character is reached. Whitespace is either a Space or a Tab.
   Does NOT disturb any trailing whitespace.
 Parameters
-  s1 - The buffer to be stripped of whitespace
+  S1 - The buffer to be stripped of whitespace
 ----------------------------------------------------------------------------------------------------
 @@ResetTokenCount
 <TITLE ResetTokenCount procedure>
@@ -223,7 +223,7 @@ Description
   Reads source string s, and returns a new string that does not have any leading whitespace.
   Does NOT disturb any trailing whitespace.
 Parameters
-  s - original string. not modified. new string is Returned as a new object.
+  S - original string. not modified. new string is Returned as a new object.
 See Also
   StrStrip
 ----------------------------------------------------------------------------------------------------
@@ -234,7 +234,7 @@ Summary
 Description
   Write here a description
 Parameters
-  s1 - Description for this parameter
+  S1 - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -249,7 +249,7 @@ Description
   all leading and trailing whitespace, and the quote characters themselves, are gone.   Escaped quote
   characters (\") within the string have been replaced with their literal equivalents (").
 Parameters
-  s1 - Buffer to strip quotes from.
+  S1 - Buffer to strip quotes from.
 ----------------------------------------------------------------------------------------------------
 @@StrSplit
 <TITLE StrSplit function>
@@ -258,11 +258,26 @@ Summary
 Description
   Split a string into an array of strings.
 Parameters
-  inString   - Original string.
-  splitChar  - What character to split using. Usually a Tab or a Comma.
-  quoteChar  - Description for this parameter
+  InString   - Original string.
+  SplitChar  - What character to split using. Usually a Tab or a Comma.
+  QuoteChar  - Description for this parameter
   OutStrings - Array of String. Results.
   MaxSplit   - Set MaxSplit to no larger than the maximum size of your OutStrings array.
+----------------------------------------------------------------------------------------------------
+@@StrSplitStrings
+<TITLE StrSplitStrings function>
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  InString   - Description for this parameter
+  SplitChar  - Description for this parameter
+  QuoteChar  - Description for this parameter
+  OutStrings - Description for this parameter
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@StrStrip
 <TITLE StrStrip function>
@@ -271,7 +286,7 @@ Summary
 Description
   Strip leading and trailing whitespace, carriage returns and linefeeds from a string.
 Parameters
-  s - The string to strip.
+  S - The string to strip.
 See Also
   StrEatWhiteSpace
 ----------------------------------------------------------------------------------------------------
@@ -280,10 +295,10 @@ See Also
 Summary
   Check if the string presented is a valid hexadecimal literal string.
 Description
-  Returns true if string is valid hex literal. We expect hex literals to be preceded 
+  Returns true if string is valid hex literal. We expect hex literals to be preceded
   by a $ and contain digits 0-9 and A-F.
 Parameters
-  s1 - buffer to be checked.
+  S1 - buffer to be checked.
 See Also
   ValidIntLiteral,ValidNumericLiteral
 ----------------------------------------------------------------------------------------------------
@@ -294,7 +309,7 @@ Summary
 Description
   Write here a description
 Parameters
-  s1 - Description for this parameter
+  S1 - Description for this parameter
 See Also
   ValidStringLiteral,ValidIntLiteral,ValidNumericLiteral
 ----------------------------------------------------------------------------------------------------
@@ -305,7 +320,7 @@ Summary
 Description
   Check if the provided string is an integer literal.
 Parameters
-  s1 - buffer to be checked
+  S1 - buffer to be checked
 See Also
   ValidHexLiteral,ValidNumericLiteral,ValidStringLiteral,ValidIdentifier
 ----------------------------------------------------------------------------------------------------
@@ -316,21 +331,21 @@ Summary
 Description
   Check if provided string is integer or float literal.
 Parameters
-  s1 - buffer to be checked.
+  S1 - buffer to be checked.
 See Also
   ValidHexLiteral,ValidIntLiteral,ValidStringLiteral,ValidIdentifier
 ----------------------------------------------------------------------------------------------------
 @@ValidStringLiteral
 <TITLE ValidStringLiteral function>
 Summary
-  Check if valid quoted string literal is provided. For example, '"ABC123"' 
+  Check if valid quoted string literal is provided. For example, '"ABC123"'
 Description
   Check for valid string literal
 Parameters
-  s1 - buffer to be checked.
+  S1 - buffer to be checked.
 See Also
   ValidHexLiteral,ValidIntLiteral,ValidNumericLiteral,ValidIdentifier
- 
+
 ----------------------------------------------------------------------------------------------------
 @@ValidVarReference
 <TITLE ValidVarReference function>
@@ -339,6 +354,6 @@ Summary
 Description
   Valid variable reference?
 Parameters
-  s1 - buffer to be checked.
+  S1 - buffer to be checked.
 See Also
   ValidHexLiteral,ValidIntLiteral,ValidNumericLiteral,ValidIdentifier

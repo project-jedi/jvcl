@@ -3,16 +3,48 @@
 ----------------------------------------------------------------------------------------------------
 @@JvEDIDBBuffering.pas
 Summary
-  Contains the TJvEDIDBBuffering component.
+  This unit contains components used in creating and maintaining a SQL database buffer for EDI data.
   <INCLUDE JVCL.UnitText.dtx>
 Author
   Raymond Alexander.
-Description
-  This unit contains components used in creating and maintaining a SQL database buffer for EDI data.
 
 
 ----------------------------------------------------------------------------------------------------
+@@TJvAfterProfiledSegmentEvent
+<TITLE TJvAfterProfiledSegmentEvent type>
+<COMBINE TJvEDIDBProfiler.OnAfterProfiledSegment>
+----------------------------------------------------------------------------------------------------
+@@TJvAfterProfiledTransactionSetEvent
+<TITLE TJvAfterProfiledTransactionSetEvent type>
+<COMBINE TJvEDIDBProfiler.OnAfterProfiledTransactionSet>
+----------------------------------------------------------------------------------------------------
+@@TJvAlterTableEvent
+<TITLE TJvOnAlterTableEvent type>
+Summary
+  A TJvEDIDBBuffer event.
+Description
+  None.
+----------------------------------------------------------------------------------------------------
+@@TJvBeforeApplyElementFilterEvent
+<TITLE TJvBeforeApplyElementFilterEvent type>
+<COMBINE TJvEDIDBBuffer.OnBeforeApplyElementFilter>
+----------------------------------------------------------------------------------------------------
+@@TJvCheckForFieldChangesEvent
+<TITLE TJvCheckForFieldChangesEvent type>
+Summary
+  A TJvEDIDBBuffer event.
+Description
+  None.
+----------------------------------------------------------------------------------------------------
+@@TJvCreateTableEvent
+<TITLE TJvCreateTableEvent type>
+Summary
+  A TJvEDIDBBuffer event.
+Description
+  None.
+----------------------------------------------------------------------------------------------------
 @@TJvEDIDBBuffer
+<TITLEIMG TJvEDIDBBuffer>
 JVCLInfo
   GROUP=JVCL.EDI
   FLAG=Component
@@ -21,7 +53,7 @@ Summary
 Description
   This is the generic TDataSet compatible EDI Database buffer component.  For best results create a
   descendent component for TDataSet compatible third party components.
-  
+
   Element , Loop, and Segment profile datasets are needed.
 
 
@@ -31,7 +63,7 @@ Summary
   Element non-key field name prefix.
 Description
   The default prefix for element field names is "E".
-  
+
   Examples:
       Element 0143 is assigned the field name "E143_1".
       Element 0329 is assigned the field name "E329_1".
@@ -52,7 +84,7 @@ Summary
   Key field name suffix.
 Description
   The default suffix for key field names is "_Id".
-  
+
   Examples:
       Key field for segment table "ST" is assigned "ST_Id"
       Key field for loop table "0100" is assigned "Loop_0100_Id"
@@ -64,7 +96,7 @@ Summary
   Loop key field name prefix.
 Description
   The default loop key field name prefix is ""Loop_".
-  
+
   Examples:
       Key field for loop table "0100" is assigned "Loop_0100_Id"
       Key field for loop table "0200" is assigned "Loop_0200_Id"
@@ -101,7 +133,7 @@ Summary
   Occurs when a table needs to be altered.
 Description
   Write the code here to alter a table based on the field definitions in the FieldDefs parameter.
-  
+
   Each field definition status should be examined for the following values:
       usModified - Indicates the field was altered.
       usInserted - Indicates the field is new.
@@ -150,7 +182,7 @@ Description
   the field definitions given in the FieldDefs parameter.  Update the field definitions in the
   FieldsDefs parameter as necessary.  Usually this involves changing the status of the field
   definitions of the FieldsDefs parameter to one of the following values:
-  
+
       usUnmodified - Default value
       usModified - Indicates the field was altered.
       usInserted - Indicates the field is new.
@@ -177,7 +209,7 @@ Summary
   Resolve field types in this event.
 Description
   Change field definition properties using this event.  Using this event is optional.
-  
+
   By default the following EDI Types map to the following TFieldTypes:
       EDIDataType_Numeric    -> ftInteger
       EDIDataType_Decimal    -> ftFloat
@@ -230,18 +262,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBProfiler
-JVCLInfo
-  GROUP=JVCL.EDI
-  FLAG=Component
 Summary
   The base EDI database profiler component.
 Description
   The pupose of a TJvEDIDBProfiler decendent component is to build the ElementProfiles,
   SegmentProfiles, and LoopProfiles datasets for use with a TJvEDIDBBuffering type component.
-  
+
   Create descendents of this component and override the abstract method BuildProfile in order to
   enable building profiles for different EDI specification file formats.
-  
+
   The profiles become a sum of all EDI specification files that are profiled.
 
 
@@ -404,6 +433,7 @@ Parameters
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBSEFProfiler
+<TITLEIMG TJvEDIDBSEFProfiler>
 JVCLInfo
   GROUP=JVCL.EDI
   FLAG=Component
@@ -425,6 +455,7 @@ Parameters
 
 ----------------------------------------------------------------------------------------------------
 @@TJvEDIDBSpecProfiler
+<TITLEIMG TJvEDIDBSpecProfiler>
 JVCLInfo
   GROUP=JVCL.EDI
   FLAG=Component
@@ -521,67 +552,8 @@ Description
   None.
 Parameters
   Index - Index of field definition to get.
-
-
 ----------------------------------------------------------------------------------------------------
-@@TJvOnAfterProfiledSegment
-<TITLE TJvOnAfterProfiledSegment type>
-<COMBINE TJvEDIDBProfiler.OnAfterProfiledSegment>
-Summary
-  A TJvEDIDBProfiler event.
-Description
-  None.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvOnAfterProfiledTransactionSet
-<TITLE TJvOnAfterProfiledTransactionSet type>
-<COMBINE TJvEDIDBProfiler.OnAfterProfiledTransactionSet>
-Summary
-  A TJvEDIDBProfiler event.
-Description
-  None.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvOnAlterTableEvent
-<TITLE TJvOnAlterTableEvent type>
-Summary
-  A TJvEDIDBBuffer event.
-Description
-  None.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvOnBeforeApplyElementFilterEvent
-<TITLE TJvOnBeforeApplyElementFilterEvent type>
-<COMBINE TJvEDIDBBuffer.OnBeforeApplyElementFilter>
-Summary
-  A TJvEDIDBBuffer event.
-Description
-  None.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvOnCheckForFieldChangesEvent
-<TITLE TJvOnCheckForFieldChangesEvent type>
-Summary
-  A TJvEDIDBBuffer event.
-Description
-  None.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvOnCreateTableEvent
-<TITLE TJvOnCreateTableEvent type>
-Summary
-  A TJvEDIDBBuffer event.
-Description
-  None.
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvOnResolveFieldDefTypeEvent
+@@TJvResolveFieldDefTypeEvent
 <TITLE TJvOnResolveFieldDefTypeEvent type>
 <COMBINE TJvEDIDBBuffer.OnResolveFieldDefType>
 Summary
@@ -591,17 +563,11 @@ Description
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvOnTableExistsEvent
-<TITLE TJvOnTableExistsEvent type>
+@@TJvTableExistsEvent
+<TITLE TJvTableExistsEvent type>
 <COMBINE TJvEDIDBBuffer.OnTableExists>
-Summary
-  A TJvEDIDBBuffer event.
-Description
-  None.
-
-
 ----------------------------------------------------------------------------------------------------
-@@TJvOnTableProfileEvent
+@@TJvTableProfileEvent
 <TITLE TJvOnTableProfileEvent type>
 Summary
   A TJvEDIDBBuffer event.

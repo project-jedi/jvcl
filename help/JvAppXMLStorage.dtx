@@ -19,7 +19,7 @@ Summary
   Storage component based on a XML file.
 Description
   TJvAppXMLFileStorage is a data storage backend that stores the data in an XML file.
-  
+
   As a descendant of TJvCustomAppXMLStorage it provides the standard interface for storing data (such
   as settings, form positions and sizes, etc) in a XML file format. This data will be stored in an
   actual file, represented in memory through the use of a TJvSimpleXML object.
@@ -56,15 +56,6 @@ See Also
 
 
 ----------------------------------------------------------------------------------------------------
-@@TJvAppIniFileStorage.OnGetFileName
-Summary
-  Occurs when Location is set to flCustom.
-Description
-  Write an OnGetFileName event handler to change the fully qualified file name that is used to store
-  the xml file.
-
-
-----------------------------------------------------------------------------------------------------
 @@TJvAppXMLFileStorage.Reload
 Summary
   Reloads the xml in memory file from the file indicated by FileName
@@ -93,16 +84,6 @@ Parameters
   Key - The key to create
 See Also
   FCurrentNode
-
-
-----------------------------------------------------------------------------------------------------
-@@TJvCustomAppXMLStorage.FCurrentNode
-Summary
-  This contains the current XML node
-See Also
-  CreateAndSetNode
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomAppXMLStorage.FXml
 Summary
