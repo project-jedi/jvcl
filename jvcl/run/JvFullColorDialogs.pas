@@ -325,10 +325,7 @@ begin
     if Title <> '' then
       Caption := Title;
     Options := Self.Options;
-    ColorID := Self.ColorID;
-    RedDelta.Assign(Self.RedDelta);
-    GreenDelta.Assign(Self.GreenDelta);
-    BlueDelta.Assign(Self.BlueDelta);
+    Delta := Self.Delta;
     OnApply := FormApply;
     OnClose := FormClose;
     OnShow := FormShow;

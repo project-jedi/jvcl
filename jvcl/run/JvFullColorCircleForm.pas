@@ -713,8 +713,11 @@ begin
   FDelta.Assign(Value);
   if not FUpdating then
   begin
-    if ChangeColorSpace
-      then UpdateColorSpace;
+    if ChangeColorSpace then
+    begin
+      JvColorSpaceCombo.ColorSpaceID := Value.ColorID;
+      UpdateColorSpace;
+    end;
     UpdateDeltaValue;
     UpdateCheckBoxStates;
   end;

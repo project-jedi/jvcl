@@ -45,6 +45,7 @@ type
     FValue: TJvRotateValueType;
     FSaturationMethod: TJvSaturationMethod;
   public
+    constructor Create; reintroduce;
     property Value: TJvRotateValueType read FValue write FValue default 0;
     property SaturationMethod: TJvSaturationMethod read FSaturationMethod write FSaturationMethod default smRange;
 
@@ -377,6 +378,12 @@ begin
 end;
 
 { TJvRotateValue }
+
+constructor TJvRotateValue.Create;
+begin
+  FValue := 0;
+  FSaturationMethod := smLoop;
+end;
 
 procedure TJvRotateValue.Assign(Value: TJvRotateValue);
 begin
