@@ -434,7 +434,7 @@ function GetPropStr(Obj: TObject; const PropName: string): string;
 function GetPropOrd(Obj: TObject; const PropName: string): Integer;
 function GetPropMethod(Obj: TObject; const PropName: string): TMethod;
 
-procedure PrepareIniSection(SS: TStrings);
+procedure PrepareIniSection(Ss: TStrings);
 { following functions are not documented because
   they are don't work properly, so don't use them }
 
@@ -2837,15 +2837,20 @@ begin
     Result := F > -1;
     if Result then
     begin
-      Ss.Clear;
-      Inc(F);
-      while F < Count do
-      begin
-        S := Strings[F];
-        if (Length(S) > 0) and (Trim(S[1]) = '[') then
-          Break;
-        Ss.Add(S);
+      Ss.BeginUpdate;
+      try
+        Ss.Clear;
         Inc(F);
+        while F < Count do
+        begin
+          S := Strings[F];
+          if (Length(S) > 0) and (Trim(S[1]) = '[') then
+            Break;
+          Ss.Add(S);
+          Inc(F);
+        end;
+      finally
+        Ss.EndUpdate;
       end;
     end;
   finally
@@ -2880,16 +2885,21 @@ var
   SearchRec: TSearchRec;
   DosError: Integer;
 begin
-  FileList.Clear;
-  Result := FindFirst(AddSlash2(Folder) + Mask, faAnyFile, SearchRec);
-  DosError := Result;
-  while DosError = 0 do
-  begin
-    if not ((SearchRec.Attr and faDirectory) = faDirectory) then
-      FileList.Add(SearchRec.Name);
-    DosError := FindNext(SearchRec);
+  FileList.BeginUpdate;
+  try
+    FileList.Clear;
+    Result := FindFirst(AddSlash2(Folder) + Mask, faAnyFile, SearchRec);
+    DosError := Result;
+    while DosError = 0 do
+    begin
+      if not ((SearchRec.Attr and faDirectory) = faDirectory) then
+        FileList.Add(SearchRec.Name);
+      DosError := FindNext(SearchRec);
+    end;
+    FindClose(SearchRec);
+  finally
+    FileList.EndUpdate;
   end;
-  FindClose(SearchRec);
 end;
 
 function ReadFolders(const Folder: TFileName; FolderList: TStrings): Integer;
@@ -2897,17 +2907,22 @@ var
   SearchRec: TSearchRec;
   DosError: Integer;
 begin
-  FolderList.Clear;
-  Result := FindFirst(AddSlash2(Folder) + AllFilesMask, faAnyFile, SearchRec);
-  DosError := Result;
-  while DosError = 0 do
-  begin
-    if ((SearchRec.Attr and faDirectory) = faDirectory) and
-      (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-      FolderList.Add(SearchRec.Name);
-    DosError := FindNext(SearchRec);
+  FolderList.BeginUpdate;
+  try
+    FolderList.Clear;
+    Result := FindFirst(AddSlash2(Folder) + AllFilesMask, faAnyFile, SearchRec);
+    DosError := Result;
+    while DosError = 0 do
+    begin
+      if ((SearchRec.Attr and faDirectory) = faDirectory) and
+        (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+        FolderList.Add(SearchRec.Name);
+      DosError := FindNext(SearchRec);
+    end;
+    FindClose(SearchRec);
+  finally
+    FolderList.EndUpdate;
   end;
-  FindClose(SearchRec);
 end;
 
 { example for ReplaceStrings:
@@ -2999,9 +3014,14 @@ procedure DeleteEmptyLines(Ss: TStrings);
 var
   I: Integer;
 begin
-  for I := Ss.Count - 1 downto 0 do
-    if Trim(Ss[I]) = '' then
-      Ss.Delete(I);
+  Ss.BeginUpdate;
+  try
+    for I := Ss.Count - 1 downto 0 do
+      if Trim(Ss[I]) = '' then
+        Ss.Delete(I);
+  finally
+    Ss.EndUpdate;
+  end;
 end;
 
 procedure SQLAddWhere(SQL: TStrings; const Where: string);
@@ -3576,19 +3596,21 @@ begin
   Result := GetMethodProp(Obj, PropInf);
 end;
 
-procedure PrepareIniSection(SS: TStrings);
+procedure PrepareIniSection(Ss: TStrings);
 var
   I: Integer;
   S: string;
 begin
-  I := 0;
-  while I < Ss.Count do
-  begin
-    S := Trim(Ss[I]);
-    if (Length(S) = 0) or (S[1] in [';', '#']) then
-      Ss.Delete(I)
-    else
-      Inc(I);
+  Ss.BeginUpdate;
+  try
+    for I := Ss.Count-1 downto 0 do
+    begin
+      S := Trim(Ss[I]);
+      if (S = '') or (S[1] in [';', '#']) then
+        Ss.Delete(I);
+    end;
+  finally
+    Ss.EndUpdate;
   end;
 end;
 
@@ -6956,7 +6978,7 @@ end;
 
 function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;
 var
-  St: array[0..256] of Char;
+  St: array [0..256] of Char;
   St2: string;
 begin
   if Windows.IsWindowVisible(Handle) then

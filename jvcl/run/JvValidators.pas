@@ -207,8 +207,9 @@ type
 
   TJvValidationSummary = class(TJvComponent, IUnknown, IJvValidationSummary)
   private
-    FUpdateCount,FPendingUpdates: integer;
-    FSummaries: TStrings;
+    FUpdateCount: Integer;
+    FPendingUpdates: Integer;
+    FSummaries: TStringList;
     FOnChange: TNotifyEvent;
     FOnRemoveError: TNotifyEvent;
     FOnAddError: TNotifyEvent;
@@ -774,7 +775,7 @@ end;
 function TJvValidationSummary.GetSummaries: TStrings;
 begin
   if FSummaries = nil then
-    FSummaries := TStringlist.Create;
+    FSummaries := TStringList.Create;
   Result := FSummaries;
 end;
 

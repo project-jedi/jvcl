@@ -907,13 +907,13 @@ end;
 
 procedure TJvSimpleXML.LoadFromString(const Value: string);
 var
-  lStream: TStringStream;
+  Stream: TStringStream;
 begin
-  lStream := TStringStream.Create(Value);
+  Stream := TStringStream.Create(Value);
   try
-    LoadFromStream(lStream);
+    LoadFromStream(Stream);
   finally
-    lStream.Free;
+    Stream.Free;
   end;
 end;
 
@@ -958,14 +958,14 @@ end;
 
 function TJvSimpleXML.SaveToString: string;
 var
-  lStream: TStringStream;
+  Stream: TStringStream;
 begin
-  lStream := TStringStream.Create('');
+  Stream := TStringStream.Create('');
   try
-    SaveToStream(lStream);
-    Result := lStream.DataString;
+    SaveToStream(Stream);
+    Result := Stream.DataString;
   finally
-    lStream.Free;
+    Stream.Free;
   end;
 end;
 
@@ -1110,26 +1110,26 @@ end;
 
 procedure TJvSimpleXMLElem.LoadFromString(Value: string);
 var
-  lStream: TStringStream;
+  Stream: TStringStream;
 begin
-  lStream := TStringStream.Create(Value);
+  Stream := TStringStream.Create(Value);
   try
-    LoadFromStream(lStream);
+    LoadFromStream(Stream);
   finally
-    lStream.Free;
+    Stream.Free;
   end;
 end;
 
 function TJvSimpleXMLElem.SaveToString: string;
 var
-  lStream: TStringStream;
+  Stream: TStringStream;
 begin
-  lStream := TStringStream.Create('');
+  Stream := TStringStream.Create('');
   try
-    SaveToStream(lStream);
-    Result := lStream.DataString;
+    SaveToStream(Stream);
+    Result := Stream.DataString;
   finally
-    lStream.Free;
+    Stream.Free;
   end;
 end;
 
@@ -1192,7 +1192,7 @@ function TJvSimpleXMLElems.Add(const Name: string;
   const Value: TStream): TJvSimpleXMLElemClassic;
 var
   Stream: TStringStream;
-  Buf: array[0..cBufferSize - 1] of byte;
+  Buf: array [0..cBufferSize - 1] of Byte;
   St: string;
   i, Count: integer;
 begin

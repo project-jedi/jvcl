@@ -268,6 +268,7 @@ begin
   FItems := TStringList.Create;
   Reg := TRegIniFile.Create('');
 //  FFolders.Sorted := True;
+  Strings.BeginUpdate;
   with Reg do
   try
     for Dm := Low(FKey) to High(FKey) do
@@ -301,6 +302,7 @@ begin
     Free;
     FFolders.Free;
     FITems.Free;
+    Strings.EndUpdate;
   end;
 end;
 

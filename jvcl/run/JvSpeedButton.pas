@@ -2689,7 +2689,7 @@ procedure TJvxButtonGlyph.MinimizeCaption(Canvas: TCanvas; const Caption: string
   Buffer: PChar; MaxLen, Width: Integer);
 var
   I: Integer;
-  Lines: TStrings;
+  Lines: TStringList;
 begin
   StrPLCopy(Buffer, Caption, MaxLen);
   if FWordWrap then

@@ -359,7 +359,7 @@ end;
 
 function TJvRegistryTreeView.FillListView(Node: TTreeNode): Boolean;
 var
-  AStrings: TStrings;
+  Strings: TStringList;
   I: Integer;
   TmpItem: TListItem;
   Buffer: array [0..4095] of Byte;
@@ -381,13 +381,13 @@ begin
     DefaultSet := False;
     if FReg.OpenKeyReadOnly(GetKeyPath(Node)) then
     begin
-      AStrings := TStringList.Create;
-      FReg.GetValueNames(AStrings);
+      Strings := TStringList.Create;
+      FReg.GetValueNames(Strings);
 
-      for I := 0 to AStrings.Count - 1 do
+      for I := 0 to Strings.Count - 1 do
       begin
         { set default item }
-        if (AStrings[I] = '') and not DefaultSet then
+        if (Strings[I] = '') and not DefaultSet then
         begin
           TmpItem := FListView.Items.Insert(0);
           TmpItem.Caption := FDefaultCaption;
@@ -396,10 +396,10 @@ begin
         else
         begin
           TmpItem := FListView.Items.Add;
-          TmpItem.Caption := AStrings[I];
+          TmpItem.Caption := Strings[I];
         end;
 
-        case FReg.GetDataType(AStrings[I]) of
+        case FReg.GetDataType(Strings[I]) of
           rdUnknown:
             begin
               TmpItem.ImageIndex := imText;
@@ -407,7 +407,7 @@ begin
             end;
           rdString, rdExpandString:
             begin
-              S := FReg.ReadString(AStrings[I]);
+              S := FReg.ReadString(Strings[I]);
               if (S = '') and AnsiSameText(TmpItem.Caption, FDefaultCaption) then
                 S := FDefaultNoValue
               else
@@ -418,17 +418,17 @@ begin
           rdInteger:
             begin
               TmpItem.ImageIndex := imBin;
-              TmpItem.SubItems.Add(Format('0x%.8x (%d)', [FReg.ReadInteger(AStrings[I]),
-                FReg.ReadInteger(AStrings[I])]));
+              TmpItem.SubItems.Add(Format('0x%.8x (%d)', [FReg.ReadInteger(Strings[I]),
+                FReg.ReadInteger(Strings[I])]));
             end;
           rdBinary:
             begin
               TmpItem.ImageIndex := imBin;
-              FReg.ReadBinaryData(AStrings[I], Buffer, SizeOf(Buffer));
-              TmpItem.SubItems.Add(BufToStr(Buffer, FReg.GetDataSize(AStrings[I])));
+              FReg.ReadBinaryData(Strings[I], Buffer, SizeOf(Buffer));
+              TmpItem.SubItems.Add(BufToStr(Buffer, FReg.GetDataSize(Strings[I])));
             end;
         end;
-        TmpItem.SubItems.Add(RegDataTypeToString(FReg.GetDataType(AStrings[I])));
+        TmpItem.SubItems.Add(RegDataTypeToString(FReg.GetDataType(Strings[I])));
       end;
       Result := True;
     end;

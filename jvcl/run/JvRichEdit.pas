@@ -519,7 +519,7 @@ type
     FOldParaAlignment: TParaAlignment;
     FScreenLogPixels: Integer;
     FUndoLimit: Integer;
-    FRichEditStrings: TStrings;
+    FLines: TStrings;
     FMemStream: TMemoryStream;
     FHideSelection: Boolean;
     FLangOptions: TRichLangOptions;
@@ -661,7 +661,7 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Title: string read FTitle write SetTitle;
     property LangOptions: TRichLangOptions read GetLangOptions write SetLangOptions default [rlAutoFont];
-    property Lines: TStrings read FRichEditStrings write SetRichEditStrings;
+    property Lines: TStrings read FLines write SetRichEditStrings;
     property OLEDragDrop: Boolean read FOLEDragDrop write SetOLEDragDrop default True;
     property PlainText: Boolean read FPlainText write SetPlainText default False;
     property SelectionBar: Boolean read FSelectionBar write SetSelectionBar default True;
@@ -2438,8 +2438,8 @@ begin
   FDefAttributes := TJvTextAttributes.Create(Self, atDefaultText);
   FWordAttributes := TJvTextAttributes.Create(Self, atWord);
   FParagraph := TJvParaAttributes.Create(Self);
-  FRichEditStrings := TJvRichEditStrings.Create;
-  TJvRichEditStrings(FRichEditStrings).FRichEdit := Self;
+  FLines := TJvRichEditStrings.Create;
+  TJvRichEditStrings(FLines).FRichEdit := Self;
   TabStop := True;
   Width := 185;
   Height := 89;
@@ -2581,7 +2581,7 @@ begin
   FDefAttributes.Free;
   FWordAttributes.Free;
   FParagraph.Free;
-  FRichEditStrings.Free;
+  FLines.Free;
   FMemStream.Free;
   FPopupVerbMenu.Free;
   FFindDialog.Free;
@@ -3804,7 +3804,7 @@ end;
 
 procedure TJvCustomRichEdit.SetRichEditStrings(Value: TStrings);
 begin
-  FRichEditStrings.Assign(Value);
+  FLines.Assign(Value);
 end;
 
 procedure TJvCustomRichEdit.SetSelAttributes(Value: TJvTextAttributes);

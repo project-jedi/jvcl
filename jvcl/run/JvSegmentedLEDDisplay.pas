@@ -1590,14 +1590,14 @@ end;
 procedure TJvSegmentedLEDCharacterMapper.MapSegNamesToSegments(var Text: Pchar;
   var Segments: Int64);
 var
-  SortedSegNames: TStrings;
+  SortedSegNames: TStringList;
   I: Integer;
 begin
   SortedSegNames := TStringList.Create;
-   try
+  try
     for I := 0 to CurDigit.SegmentCount - 1 do
       SortedSegNames.Add(CurDigit.GetSegmentName(I));
-    TStringList(SortedSegNames).Sort;
+    SortedSegNames.Sort;
 
     while not (Text[0] in [#0, ']', ';']) do
     begin

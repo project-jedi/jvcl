@@ -278,9 +278,14 @@ procedure TJvPluginManager.GetLoadedPlugins(PlugInList: TStrings);
 var
   I: Integer;
 begin
-  PlugInList.Clear;
-  for I := 0 to FPluginInfos.Count - 1 do
-    PlugInList.Add(Plugins[I].Name);
+  PlugInList.BeginUpdate;
+  try
+    PlugInList.Clear;
+    for I := 0 to FPluginInfos.Count - 1 do
+      PlugInList.Add(Plugins[I].Name);
+  finally
+    PlugInList.EndUpdate;
+  end;
 end;
 
 // Create and add plugin - if error occurs, the Plugin is not added to list

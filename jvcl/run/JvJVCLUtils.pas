@@ -1161,6 +1161,7 @@ begin
     Exit;
   HWND := GetForegroundWindow;
   TmpCount := Strings.Count;
+  Strings.BeginUpdate;
   try
     @CplCall := GetProcAddress(hLib, PChar(cCplAddress));
     if @CplCall = nil then
@@ -1219,32 +1220,40 @@ begin
     end;
   finally
     FreeLibrary(hLib);
+    Strings.EndUpdate;
   end;
 end;
 
 function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings;
   Images: TCustomImageList = nil): Boolean;
 var
-  h: THandle;
+  H: THandle;
   F: TSearchRec;
 begin
-  h := FindFirst(IncludeTrailingPathDelimiter(APath) + AMask, faAnyFile, F);
+  Result := False;
+  if Strings = nil then
+    Exit;
+  H := FindFirst(IncludeTrailingPathDelimiter(APath) + AMask, faAnyFile, F);
   if Images <> nil then
   begin
     Images.Clear;
     Images.BkColor := clMenu;
   end;
-  if Strings <> nil then
+  Strings.BeginUpdate;
+  try
     Strings.Clear;
-  while h = 0 do
-  begin
-    if F.Attr and faDirectory = 0 then
-      //    if (F.Name <> '.') and (F.Name <> '..') then
-      GetControlPanelApplet(APath + F.Name, Strings, Images);
-    h := FindNext(F);
+    while H = 0 do
+    begin
+      if F.Attr and faDirectory = 0 then
+        //    if (F.Name <> '.') and (F.Name <> '..') then
+        GetControlPanelApplet(APath + F.Name, Strings, Images);
+      H := FindNext(F);
+    end;
+    SysUtils.FindClose(F);
+    Result := Strings.Count > 0;
+  finally
+    Strings.EndUpdate;
   end;
-  SysUtils.FindClose(F);
-  Result := Strings.Count > 0;
 end;
 {$ENDIF VCL}
 

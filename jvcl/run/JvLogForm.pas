@@ -89,7 +89,7 @@ begin
   end;
 end;
 
-procedure TFoLog.MakeLogLines(S:TStrings);
+procedure TFoLog.MakeLogLines(S: TStrings);
 var
   I: Integer;
 begin

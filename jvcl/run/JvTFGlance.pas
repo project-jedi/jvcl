@@ -1825,7 +1825,7 @@ procedure TJvTFCustomGlance.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   //S: string;
   Info: TJvTFGlanceCoord;
-  Hints: Tstrings;
+  Hints: TStrings;
 begin
   inherited;
 
