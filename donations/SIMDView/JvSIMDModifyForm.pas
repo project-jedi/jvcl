@@ -46,6 +46,7 @@ type
     PanelModify: TPanel;
     ButtonOK: TButton;
     ButtonCancel: TButton;
+    MemoTip: TMemo;
     procedure ComboBoxDisplayChange(Sender: TObject);
     procedure ComboBoxFormatChange(Sender: TObject);
     procedure ButtonOKClick(Sender: TObject);
