@@ -40,13 +40,13 @@ uses
   JvQCSVBaseControls;
 
 type
-  TCSVFileNameProperty = class(TStringProperty)
+  TJvCSVFileNameProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
 
-  TCSVFieldProperty = class(TStringProperty)
+  TJvCSVFieldProperty = class(TStringProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
@@ -57,9 +57,9 @@ implementation
 uses
   QForms, QDialogs;
 
-//=== { TCSVFileNameProperty } ===============================================
+//=== { TJvCSVFileNameProperty } =============================================
 
-procedure TCSVFileNameProperty.Edit;
+procedure TJvCSVFileNameProperty.Edit;
 begin
   with TOpenDialog.Create(Application) do
     try
@@ -71,19 +71,19 @@ begin
     end;
 end;
 
-function TCSVFileNameProperty.GetAttributes: TPropertyAttributes;
+function TJvCSVFileNameProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog];
 end;
 
-//=== { TCSVFieldProperty } ==================================================
+//=== { TJvCSVFieldProperty } ================================================
 
-function TCSVFieldProperty.GetAttributes: TPropertyAttributes;
+function TJvCSVFieldProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList];
 end;
 
-procedure TCSVFieldProperty.GetValues(Proc: TGetStrProc);
+procedure TJvCSVFieldProperty.GetValues(Proc: TGetStrProc);
 var
   I, C: Integer;
   DbEdit: TJvCSVEdit;

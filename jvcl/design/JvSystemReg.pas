@@ -107,7 +107,7 @@ begin
     TJvThread, TJvThreadSimpleDialog, TJvThreadAnimateDialog, TJvThreadTimer]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
-    'MinMaxInfo', TMinMaxProperty);
+    'MinMaxInfo', TJvMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
     'StoredProps', TJvStoredPropsProperty);
   {$IFDEF VCL}

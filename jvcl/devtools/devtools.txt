@@ -112,3 +112,8 @@ where <options> can be:
 -S - include sub directory
 -Q - silent mode (non-interactive mode)
 -1 - generate one single resourcestring include file.
+
+ReadPalettes (Florent, rom):
+============================
+Will extract various informations about installed components etc to be put int CSV files
+for pickup by the help etc.

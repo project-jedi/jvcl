@@ -40,7 +40,7 @@ type
   TWordOrientation = (woPortrait, woLandscape);
 
   EJvExportDBGridException = class(EJVCLException);
-  TWordGridFormat = $10..$17;
+  TJvWordGridFormat = $10..$17;
 
   TOleServerClose = (scNever, scNewInstance, scAlways);
 
@@ -56,14 +56,14 @@ type
 const
   wdDoNotSaveChanges = 0;
 
-  wdTableFormatGrid1 = TWordGridFormat($10);
-  wdTableFormatGrid2 = TWordGridFormat($11);
-  wdTableFormatGrid3 = TWordGridFormat($12);
-  wdTableFormatGrid4 = TWordGridFormat($13);
-  wdTableFormatGrid5 = TWordGridFormat($14);
-  wdTableFormatGrid6 = TWordGridFormat($15);
-  wdTableFormatGrid7 = TWordGridFormat($16);
-  wdTableFormatGrid8 = TWordGridFormat($17);
+  wdTableFormatGrid1 = TJvWordGridFormat($10);
+  wdTableFormatGrid2 = TJvWordGridFormat($11);
+  wdTableFormatGrid3 = TJvWordGridFormat($12);
+  wdTableFormatGrid4 = TJvWordGridFormat($13);
+  wdTableFormatGrid5 = TJvWordGridFormat($14);
+  wdTableFormatGrid6 = TJvWordGridFormat($15);
+  wdTableFormatGrid7 = TJvWordGridFormat($16);
+  wdTableFormatGrid8 = TJvWordGridFormat($17);
 
   xlPortrait = $01;
   xlLandscape = $02;
@@ -113,7 +113,7 @@ type
     FWord: OleVariant;
     FVisible: Boolean;
     FOrientation: TWordOrientation;
-    FWordFormat: TWordGridFormat;
+    FWordFormat: TJvWordGridFormat;
     FClose: TOleServerClose;
     FRunningInstance: Boolean;
   protected
@@ -129,7 +129,7 @@ type
     property Grid;
     property OnProgress;
     property Close: TOleServerClose read FClose write FClose default scNewInstance;
-    property WordFormat: TWordGridFormat read FWordFormat write FWordFormat default wdTableFormatGrid3;
+    property WordFormat: TJvWordGridFormat read FWordFormat write FWordFormat default wdTableFormatGrid3;
     property Visible: Boolean read FVisible write FVisible default False;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
   end;
@@ -1231,7 +1231,7 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-  RegisterIntegerConsts(TypeInfo(TWordGridFormat), WordGridFormatIdentToInt, IntToWordGridFormatIdent);
+  RegisterIntegerConsts(TypeInfo(TJvWordGridFormat), WordGridFormatIdentToInt, IntToWordGridFormatIdent);
 
 
 {$IFDEF UNITVERSIONING}

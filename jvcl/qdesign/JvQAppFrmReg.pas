@@ -60,7 +60,7 @@ begin
     [TJvAppEvents, TJvSystemColors, TJvAppAnimatedIcon, TJvAnimTitle,
     TJvFormAnimatedIcon, TJvFormAutoSize, TJvFormAnimation, TJvFormWallpaper,
     TJvEmbeddedFormPanel, TJvEmbeddedInstanceFormPanel, TJvEmbeddedFormLink]);
-//  RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
+//  RegisterComponentEditor(TJvGradientCaption, TJvGradientCaptionEditor);
 //  RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
 end;
 

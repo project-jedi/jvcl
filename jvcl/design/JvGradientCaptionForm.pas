@@ -94,7 +94,7 @@ type
     property ActiveCaption: TJvCaption read GetActiveCaption;
   end;
 
-  TGradientCaptionEditor = class(TComponentEditor)
+  TJvGradientCaptionEditor = class(TComponentEditor)
   public
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -124,20 +124,20 @@ begin
     end;
 end;
 
-//=== { TGradientCaptionEditor } =============================================
+//=== { TJvGradientCaptionEditor } ===========================================
 
-procedure TGradientCaptionEditor.Edit;
+procedure TJvGradientCaptionEditor.Edit;
 begin
   EditGradientCaption(TJvGradientCaption(Component), Designer);
 end;
 
-procedure TGradientCaptionEditor.ExecuteVerb(Index: Integer);
+procedure TJvGradientCaptionEditor.ExecuteVerb(Index: Integer);
 begin
   if Index = 0 then
     Edit;
 end;
 
-function TGradientCaptionEditor.GetVerb(Index: Integer): string;
+function TJvGradientCaptionEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
     Result := RsCaptionDesigner
@@ -145,7 +145,7 @@ begin
     Result := '';
 end;
 
-function TGradientCaptionEditor.GetVerbCount: Integer;
+function TJvGradientCaptionEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;

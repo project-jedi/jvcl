@@ -79,7 +79,7 @@ type
     property WinMinMaxInfo: TJvWinMinMaxInfo read FWinMinMaxInfo write SetWinMinMaxInfo;
   end;
 
-  TMinMaxProperty = class(TClassProperty)
+  TJvMinMaxProperty = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
@@ -112,9 +112,9 @@ begin
   end;
 end;
 
-//=== TMinMaxProperty ========================================================
+//=== TJvMinMaxProperty ======================================================
 
-function TMinMaxProperty.GetValue: string;
+function TJvMinMaxProperty.GetValue: string;
 var
   WinMinMaxInfo: TJvWinMinMaxInfo;
 begin
@@ -130,12 +130,12 @@ begin
   end;
 end;
 
-function TMinMaxProperty.GetAttributes: TPropertyAttributes;
+function TJvMinMaxProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paSubProperties, paDialog, paReadOnly];
 end;
 
-procedure TMinMaxProperty.Edit;
+procedure TJvMinMaxProperty.Edit;
 begin
   if EditMinMaxInfo(GetComponent(0) as TJvFormPlacement) then
     Modified;

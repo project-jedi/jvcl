@@ -116,7 +116,7 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cMasterField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cDetailField, TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeView, cIconField, TJvListFieldProperty);
-  RegisterPropertyEditor(TypeInfo(TWordGridFormat), TJvDBGridWordExport, '', TDBGridExportWordFormatProperty);
+  RegisterPropertyEditor(TypeInfo(TJvWordGridFormat), TJvDBGridWordExport, '', TJvDBGridExportWordFormatProperty);
   *)
 //  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cSectionField, TJvDataFieldProperty);
 //  RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cKeyField, TJvDataFieldProperty);
