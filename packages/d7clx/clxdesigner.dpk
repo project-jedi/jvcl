@@ -1,0 +1,46 @@
+package clxdesigner;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $51000000}
+{$DESCRIPTION 'Borland CLX Component Editors'}
+{$LIBSUFFIX '70'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  rtl,
+  designide,
+  visualclx;
+
+contains
+  ClxStrEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxStrEdit.pas' {ClxStrEditDlg},
+  ClxImgEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxImgEdit.pas' {ClxImageListEditor},
+  ClxItemEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxItemEdit.pas' {ClxListViewItems},
+  ClxNodeEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxNodeEdit.pas' {ClxTreeViewItems},
+  ClxPicEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxPicEdit.pas' {ClxPictureEditorDlg},
+  ClxIconEdit in 'C:\Program Files\Borland\Delphi7\Source\Property Editors\ClxIconEdit.pas' {ClxIconViewItemsEditor},
+  ClxSprigs in 'C:\Program Files\Borland\Delphi7\Source\ToolsAPI\ClxSprigs.pas',
+  ClxEditors in 'C:\Program Files\Borland\Delphi7\Source\ToolsAPI\ClxEditors.pas',
+  ClxDesignWindows in 'C:\Program Files\Borland\Delphi7\Source\ToolsAPI\ClxDesignWindows.pas';
+
+end.
