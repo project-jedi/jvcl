@@ -1,7 +1,7 @@
 package JvAppFrmD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -27,8 +27,7 @@ package JvAppFrmD5D;
 {$IMPLICITBUILD ON}
 
 requires
-  JvAppFrmD5R,
-  designide;
+  JvAppFrmD5R;
 
 contains
   JvAppFrmReg in '..\..\design\JvAppFrmReg.pas',

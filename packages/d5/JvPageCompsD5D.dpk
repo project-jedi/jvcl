@@ -1,7 +1,7 @@
 package JvPageCompsD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -27,10 +27,10 @@ package JvPageCompsD5D;
 {$IMPLICITBUILD ON}
 
 requires
-  rtl,
-  designide,
+  
+  
   JvPageCompsD5R,
-  dclstd,
+  dclstd50,
   JvCoreD5D;
 
 contains

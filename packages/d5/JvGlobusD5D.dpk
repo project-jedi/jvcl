@@ -1,8 +1,8 @@
 package JvGlobusD5D;
 
-{$R *.res}
+{$R *.RES}
 {$R '..\resources\JvGlobusReg.dcr'}
-{$ALIGN 8}
+{$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -23,25 +23,23 @@ package JvGlobusD5D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL - Globus VCL Extension Library'}
+{$DESCRIPTION 'JVCL - Globus Extension Library'}
+{$DESIGNONLY}
 {$IMPLICITBUILD ON}
 
 requires
-  vcl,
-  Vclx,
-  Vcldb,
-  VclSmp,
-  Qrpt,
-  vcljpg,
-  vclie,
-  designide,
+  vcl50,
+  vclx50,
+  vcldb50,
+  VclSmp50,
+  qrpt50,
+  vcljpg50,
+  vclie50,
   JvGlobusD5R,
   JvCustomD5R,
   JvCtrlsD5R,
   JvMMD5R,
   JvDlgsD5R,
-  rtl,
-  vclactnband,
   JvCoreD5R,
   DJCL50;
 

@@ -1,7 +1,7 @@
 package JvSystemD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
 {$DEBUGINFO ON}
@@ -28,9 +28,8 @@ package JvSystemD5D;
 
 requires
   JvSystemD5R,
-  designide,
   JvStdCtrlsD5R,
-  dclstd,
+  dclstd50,
   JvCoreD5D,
   JvCustomD5D;
 

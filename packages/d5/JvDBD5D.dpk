@@ -1,7 +1,7 @@
 package JvDBD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,9 +28,8 @@ package JvDBD5D;
 
 requires
   JvDBD5R,
-  designide,
-  dclstd,
-  dcldb;
+  dcldb50,
+  dclstd50;
 
 contains
   JvCsvDataForm in '..\..\design\JvCsvDataForm.pas' {JvCsvDefStrDialog},

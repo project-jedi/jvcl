@@ -1,7 +1,7 @@
 package JvNetD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,7 +28,7 @@ package JvNetD5D;
 
 requires
   JvNetD5R,
-  designide,
+  
   JvStdCtrlsD5D;
 
 contains

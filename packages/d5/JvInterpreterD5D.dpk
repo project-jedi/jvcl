@@ -1,7 +1,7 @@
 package JvInterpreterD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -29,8 +29,8 @@ package JvInterpreterD5D;
 requires
   JvInterpreterD5R,
   JvCoreD5D,
-  designide,
-  dclstd;
+  
+  dclstd50;
 
 contains
   JvInterpreterReg in '..\..\design\JvInterpreterReg.pas';

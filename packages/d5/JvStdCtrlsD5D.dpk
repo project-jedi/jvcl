@@ -1,7 +1,7 @@
 package JvStdCtrlsD5D;
 
 {$R *.res}
-{$ALIGN 8}
+
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,9 +28,8 @@ package JvStdCtrlsD5D;
 
 requires
   JvStdCtrlsD5R,
-  designide,
   JvCoreD5D,
-  dclstd;
+  dclstd50;
 
 contains
   JvStdCtrlsReg in '..\..\design\JvStdCtrlsReg.pas',
