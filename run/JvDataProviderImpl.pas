@@ -1470,7 +1470,7 @@ var
 begin
   RAPI := GetPropInfo(TOpenWriter, 'RootAncestor');
   if RAPI = nil then // Should never happen
-    raise Exception.Create('Internal error.');
+    raise Exception.Create(_('Internal error.'));
   Result := Pointer(Cardinal(RAPI.GetProc) and $00FFFFFF + Cardinal(Self) + 4);
 end;
 
@@ -2059,10 +2059,10 @@ begin
         GetProvider.Changed(pcrUpdateItems, Self);
       end
       else
-        raise EJVCLDataItems.Create('Items may not be moved in the main tree.');
+        raise EJVCLDataItems.Create(_('Items may not be moved in the main tree.'));
     end
     else
-      raise EJVCLDataItems.Create('Invalid index');
+      raise EJVCLDataItems.Create(_('Invalid index'));
   end;
 end;
 
@@ -2532,7 +2532,7 @@ begin
     Items.Provider.Changed(pcrDelete, nil);
   end
   else if Items.GetItem(Index) <> nil then
-    raise EJVCLDataItems.Create('Item can not be deleted.');
+    raise EJVCLDataItems.Create(_('Item can not be deleted.'));
 end;
 
 procedure TJvBaseDataItemsListManagement.Remove(var Item: IJvDataItem);
@@ -2562,7 +2562,7 @@ begin
     end;
   end
   else if Item <> nil then
-    raise EJVCLDataItems.Create('Item can not be deleted.');
+    raise EJVCLDataItems.Create(_('Item can not be deleted.'));
 end;
 
 { TJvCustomDataItemsImages }
@@ -2950,7 +2950,7 @@ begin
     raise EReadError.Create(SExtensibleIntObjInvalidClass);
   CtxName := Reader.ReadStr;
   if not AnsiSameText(CtxName, 'Name') then
-    raise EReadError.Create('Context name expected.');
+    raise EReadError.Create(_('Context name expected.'));
   CtxName := Reader.ReadString;
   CtxInst := TJvDataContextClass(ClassType).Create(FDataContextsImpl, CtxName);
   try
@@ -3089,7 +3089,7 @@ begin
   if (FConsumerStack <> nil) and (FConsumerStack.Count > 0) then
     FConsumerStack.Delete(0)
   else if FConsumerStack <> nil then
-    raise EJVCLDataProvider.Create('Consumer stack is empty.');
+    raise EJVCLDataProvider.Create(_('Consumer stack is empty.'));
 end;
 
 procedure TJvCustomDataProvider.SelectContext(Context: IJvDataContext);
@@ -3111,7 +3111,7 @@ begin
   if (FContextStack <> nil) and (FContextStack.Count > 0) then
     FContextStack.Delete(0)
   else if FContextStack <> nil then
-    raise EJVCLDataProvider.Create('Context stack is empty.');
+    raise EJVCLDataProvider.Create(_('Context stack is empty.'));
 end;
 
 procedure TJvCustomDataProvider.ContextAdded(Context: IJvDataContext);
@@ -3293,7 +3293,7 @@ begin
     if (ExistingContext = nil) or (ExistingContext = (Self as IJvDataContext)) then
       DoSetName(Value)
     else
-      raise EJVCLDataContexts.Create('A context with that name already exists.');
+      raise EJVCLDataContexts.Create(_('A context with that name already exists.'));
   end;
 end;
 
@@ -3326,7 +3326,7 @@ begin
     SetName(AName);
   end
   else
-    raise EJVCLDataContexts.Create('Cannot create a context without a context list owner.');
+    raise EJVCLDataContexts.Create(_('Cannot create a context without a context list owner.'));
 end;
 
 //===TJvBaseFixedDataContext========================================================================
@@ -3352,7 +3352,7 @@ begin
   else
   begin
     if Tmp <> Context then
-      raise EJVCLDataContexts.Create('A context with that name already exists.');
+      raise EJVCLDataContexts.Create(_('A context with that name already exists.'));
   end;
 end;
 
@@ -3498,10 +3498,10 @@ begin
       if Value.GetInterface(IJvDataProvider, ProviderRef) then
         SetProvider(ProviderRef)
       else
-        raise EJVCLDataConsumer.Create('Component does not support the IJvDataProvider interface.');
+        raise EJVCLDataConsumer.Create(_('Component does not support the IJvDataProvider interface.'));
     end
     else
-      raise EJVCLDataConsumer.Create('Component does not support the IInterfaceComponentReference interface.');
+      raise EJVCLDataConsumer.Create(_('Component does not support the IInterfaceComponentReference interface.'));
   end;
 end;
 {$ENDIF COMPILER6_UP}
@@ -3747,7 +3747,7 @@ begin
       if (VCLComponent <> nil) and (csLoading in VCLComponent.ComponentState) then
         FFixupContext := Value
       else
-        raise EJVCLDataConsumer.Create('You must specify a provider before setting the context.');
+        raise EJVCLDataConsumer.Create(_('You must specify a provider before setting the context.'));
     end
     else
     begin
@@ -3759,10 +3759,10 @@ begin
           if ContextIntf <> nil then
             SetContextIntf(ContextIntf)
           else
-            raise EJVCLDataConsumer.CreateFmt('Provider has no context named "%s"', [Value]);
+            raise EJVCLDataConsumer.CreateFmt(_('Provider has no context named "%s"'), [Value]);
         end
         else
-          raise EJVCLDataConsumer.Create('Provider does not support contexts.');
+          raise EJVCLDataConsumer.Create(_('Provider does not support contexts.'));
       end
       else
         SetContextIntf(nil);
@@ -3845,7 +3845,7 @@ begin
   if Value <> ContextIntf then
   begin
     if (Value <> nil) and (Value.Contexts.Provider <> ProviderIntf) then
-      raise EJVCLDataConsumer.Create('The specified context is not part of the same provider.');
+      raise EJVCLDataConsumer.Create(_('The specified context is not part of the same provider.'));
     ContextChanging;
     FContext := Value;
     ContextChanged;
@@ -4019,7 +4019,7 @@ begin
           Exit;
         end
         else
-          raise EJVCLDataConsumer.Create('You must specify a provider before setting the item.');
+          raise EJVCLDataConsumer.Create(_('You must specify a provider before setting the item.'));
       end
       else
       begin
@@ -4029,7 +4029,7 @@ begin
           if TmpItem <> nil then
             SetItemIntf(TmpItem)
           else
-            raise EJVCLDataConsumer.Create('Item not found in the selected context.');
+            raise EJVCLDataConsumer.Create(_('Item not found in the selected context.'));
         finally
           ConsumerImpl.Leave;
         end;
@@ -4300,7 +4300,7 @@ begin
       if ParIdx >= 0 then
       begin
         if ItemIsExpanded(ParIdx) then // we have a big problem <g>
-          raise EJVCLDataConsumer.Create('ViewList out of sync');
+          raise EJVCLDataConsumer.Create(_('ViewList out of sync'));
         ToggleItem(ParIdx);
       end;
     end;
