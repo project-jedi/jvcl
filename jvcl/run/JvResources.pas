@@ -2059,6 +2059,8 @@ resourcestring
 {$IFDEF USEJVCL}
 resourcestring
   RsUntitled = 'untitled';
+  RsUntitledFmt = '(%s %d)';
+  RsHintShortcutFmt = '%s (%s)';
 {$ENDIF USEJVCL}
 
 //=== JvXPCore.pas ===========================================================

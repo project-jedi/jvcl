@@ -55,7 +55,7 @@ uses
 {$IFDEF VisualCLX}
 const
 //  clGrayText = clDark; // (ahuser) This is wrong in QGraphics.
-                       //          Since when is clGrayText = clLight = clWhite?
+                         //          Since when is clGrayText = clLight = clWhite?
   clGrayText = clDisabledText;
 {$ENDIF VisualCLX}
 
@@ -292,12 +292,7 @@ uses
 
 //=== Local procedures =======================================================
 
-function StrFillChar(Ch: Char; Length: Cardinal): string;
-begin
-  SetLength(Result, Length);
-  if Length > 0 then
-    FillChar(Result[1], Length, Ch);
-end;
+// (rom) StrFillChar replaced by StringOfChar
 
 function TextFitsInCtrl(Control: TControl; const Text: string): Boolean;
 var
@@ -322,7 +317,40 @@ begin
   end;
 end;
 
-//=== TJvCustomEdit ==========================================================
+//=== { TJvCustomEdit } ======================================================
+
+constructor TJvCustomEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  {$IFDEF VisualCLX}
+  FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim);
+  {$ENDIF VisualCLX}
+  FAlignment := taLeftJustify;
+  // ControlStyle := ControlStyle + [csAcceptsControls];
+  ClipboardCommands := [caCopy..caUndo];
+  FDisabledColor := clWindow;
+  FDisabledTextColor := clGrayText;
+  FHotTrack := False;
+  FCaret := TJvCaret.Create(Self);
+  FCaret.OnChanged := CaretChanged;
+  FStreamedSelLength := 0;
+  FStreamedSelStart := 0;
+  FUseFixedPopup := True; // asn: clx not implemented yet
+  FMaxPixel := TJvMaxPixel.Create(Self);
+  FMaxPixel.OnChanged := MaxPixelChanged;
+  FGroupIndex := -1;
+  FEmptyFontColor := clGrayText;
+end;
+
+destructor TJvCustomEdit.Destroy;
+begin
+  FMaxPixel.Free;
+  FCaret.Free;
+  {$IFDEF VisualCLX}
+  QPixmap_destroy(FNullPixmap);
+  {$ENDIF VisualCLX}
+  inherited Destroy;
+end;
 
 procedure TJvCustomEdit.CaretChanged(Sender: TObject);
 begin
@@ -372,42 +400,26 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-constructor TJvCustomEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  FNullPixmap := QPixmap_create(1, 1, 1, QPixmapOptimization_DefaultOptim);
-  {$ENDIF VisualCLX}
-  FAlignment := taLeftJustify;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
-  ClipboardCommands := [caCopy..caUndo];
-  FDisabledColor := clWindow;
-  FDisabledTextColor := clGrayText;
-  FHotTrack := False;
-  FCaret := TJvCaret.Create(Self);
-  FCaret.OnChanged := CaretChanged;
-  FStreamedSelLength := 0;
-  FStreamedSelStart := 0;
-  FUseFixedPopup := True; // asn: clx not implemented yet
-  FMaxPixel := TJvMaxPixel.Create(Self);
-  FMaxPixel.OnChanged := MaxPixelChanged;
-  FGroupIndex := -1;
-  FEmptyFontColor := clGrayText;
-end;
-
 {$IFDEF VCL}
 procedure TJvCustomEdit.CreateHandle;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomEdit.InitWidget;
-{$ENDIF VisualCLX}
 begin
-  inherited;
+  inherited CreateHandle;
   if Focused then
     DoEmptyValueEnter
   else
     DoEmptyValueExit;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomEdit.InitWidget;
+begin
+  inherited InitWidget;
+  if Focused then
+    DoEmptyValueEnter
+  else
+    DoEmptyValueExit;
+end;
+{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 
@@ -444,16 +456,6 @@ end;
 
 {$ENDIF VCL}
 
-destructor TJvCustomEdit.Destroy;
-begin
-  FMaxPixel.Free;
-  FCaret.Free;
-  {$IFDEF VisualCLX}
-  QPixmap_destroy(FNullPixmap);
-  {$ENDIF VisualCLX}
-  inherited Destroy;
-end;
-
 procedure TJvCustomEdit.DoClearText;
 begin
   if not ReadOnly then
@@ -479,7 +481,7 @@ procedure TJvCustomEdit.DoEmptyValueEnter;
 begin
   if EmptyValue <> '' then
   begin
-    if (inherited Text = EmptyValue) then
+    if (inherited Text) = EmptyValue then
     begin
       inherited Text := '';
       FIsEmptyValue := False;
@@ -611,7 +613,6 @@ begin
     {$IFDEF VisualCLX}
     Result := inherited GetText;
     {$ENDIF VisualCLX}
-
   finally
     ProtectPassword := Tmp;
   end;
@@ -712,7 +713,7 @@ begin
     if PasswordChar = #0 then
       S := Text
     else
-      S := StrFillChar(PasswordChar, Length(Text));
+      S := StringOfChar(PasswordChar, Length(Text));
     if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
       Focused, Flat, Canvas) then
       inherited Paint;
@@ -858,7 +859,7 @@ end;
 
 procedure TJvCustomEdit.SetText(const Value: TCaption);
 begin
-  if (csLoading in ComponentState) then
+  if csLoading in ComponentState then
   begin
     inherited Text := Value;
     Exit;
@@ -918,7 +919,7 @@ begin
     if PasswordChar = #0 then
       S := Text
     else
-      S := StrFillChar(PasswordChar, Length(Text));
+      S := StringOfChar(PasswordChar, Length(Text));
     Canvas := nil;
     try
       if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
