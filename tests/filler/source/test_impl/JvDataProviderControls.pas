@@ -163,7 +163,7 @@ implementation
 uses
   Math, SysUtils,
   JclStrings,
-  JvDataProviderConsts, JvTypes;
+  JvConsts, JvTypes;
 
 { TJvFillListBox }
 

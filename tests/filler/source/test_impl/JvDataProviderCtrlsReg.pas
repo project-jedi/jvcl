@@ -38,12 +38,11 @@ implementation
 
 uses
   Classes,
-  JvDataProviderControls, JvDataProviderEditors;
+  JvDataProviderControls;
 
 procedure Register;
 begin
   RegisterComponents('Jv DataProvider Controls', [TJvProvidedListBox, TJvProvidedLabel]);
-  RegDataProviderPropEdits;
 end;
 
 end.
