@@ -57,8 +57,8 @@ type
     procedure MagnetScreen(OldRect: TRect; var FormRect: TRect; ScreenRect: TRect);
     procedure GlueForms(var FormRect: TRect);
     procedure MagnetToMain(OldRect: TRect; var FormRect: TRect; MainRect: TRect);
-  protected
   public
+    procedure MoveTo(var SrcRect,Rect: TRect);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -560,7 +560,7 @@ end;
 
 procedure TJvFormMagnet.NewWndProc(var Msg: TMessage);
 var
-  r, r2, r3: TRect;
+  r,r3: TRect;
 begin
   with Msg do
   begin
@@ -570,37 +570,46 @@ begin
         WM_MOVING:
           begin
             r := PRect(lParam)^;
-
             r3.Left := FForm.Left;
             r3.Top := FForm.Top;
             r3.Right := r3.Left + FForm.Width;
             r3.Bottom := r3.Top + FForm.Height;
-
-            //Move to an extremity of the desktop ?
-            if FScreen then
-            begin
-              SystemParametersInfo(SPI_GETWORKAREA, 0, @r2, 0);
-              MagnetScreen(r3, r, r2);
-            end;
-
-            //Move another form too ?
-            if FGlue then
-              GlueForms(r);
-
-            //Magnet to main form ?
-            if FFormMagnet and (Application.MainForm <> nil) then
-            begin
-              r2.Left := Application.MainForm.Left;
-              r2.Top := Application.MainForm.Top;
-              r2.Right := Application.MainForm.Left + Application.MainForm.Width;
-              r2.Bottom := Application.MainForm.Top + Application.MainForm.Height;
-              MagnetToMain(r3, r, r2);
-            end;
+            MoveTo(r3,r);
             PRect(lparam)^ := r;
           end;
       end;
     end;
     Result := CallWindowProc(FOldWndProc, FForm.Handle, Msg, WParam, LParam);
+  end;
+end;
+
+{****************************************************}
+
+procedure TJvFormMagnet.MoveTo(var SrcRect,Rect: TRect);
+var
+  r2, r3: TRect;
+begin
+  r3 := SrcRect;
+
+  //Move to an extremity of the desktop ?
+  if FScreen then
+  begin
+    SystemParametersInfo(SPI_GETWORKAREA, 0, @r2, 0);
+    MagnetScreen(r3, Rect, r2);
+  end;
+
+  //Move another form too ?
+  if FGlue then
+    GlueForms(Rect);
+
+  //Magnet to main form ?
+  if FFormMagnet and (Application.MainForm <> nil) then
+  begin
+    r2.Left := Application.MainForm.Left;
+    r2.Top := Application.MainForm.Top;
+    r2.Right := Application.MainForm.Left + Application.MainForm.Width;
+    r2.Bottom := Application.MainForm.Top + Application.MainForm.Height;
+    MagnetToMain(r3, Rect, r2);
   end;
 end;
 
