@@ -44,7 +44,7 @@ uses
   Types, QWindows,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
-  JvTypes, JvSpeedButton, JvJCLUtils, JvExGrids;
+  JvTypes, JvExGrids;
 
 type
   TDayOfWeek = 0..6;
@@ -161,7 +161,8 @@ uses
   QConsts,
   {$ENDIF VisualCLX}
   Math,
-  JvThemes, JvConsts, JvResources, JvToolEdit, JvJVCLUtils;
+  JvThemes, JvConsts, JvResources, JvJCLUtils,
+  JvToolEdit, JvSpeedButton;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvPickDate.res}
@@ -947,7 +948,7 @@ var
   Control, BackPanel: TWinControl;
 begin
   inherited Create(AOwner);
-  FFourDigitYear := FourDigitYear;
+  FFourDigitYear := IsFourDigitYear;
   Height := Max(PopupCalendarSize.Y, 120);
   Width := Max(PopupCalendarSize.X, 180);
   {$IFDEF LINUX}

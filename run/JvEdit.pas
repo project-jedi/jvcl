@@ -53,8 +53,7 @@ uses
   Qt, QTypes, QGraphics, QControls, QStdCtrls, QDialogs, QForms, QMenus, Types,
   QWindows,
   {$ENDIF VisualCLX}
-  JvCaret, JvMaxPixel, JvTypes, JvComponent, JvToolEdit,
-  JvExControls, JvExStdCtrls;
+  JvCaret, JvMaxPixel, JvTypes, JvToolEdit, JvExStdCtrls;
 
 {$IFDEF VisualCLX}
 const

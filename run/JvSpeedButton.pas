@@ -838,7 +838,7 @@ begin
       {$IFDEF JVCLThemesEnabled}
       ThemeServices.ThemesEnabled or
       {$ENDIF JVCLThemesEnabled}
-      FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = 0));
+      FHotTrack or (FFlat and Enabled and (DragMode <> dmAutomatic) and (GetCapture = NullHandle));
 
     inherited MouseEnter(Control); // set MouseOver
 

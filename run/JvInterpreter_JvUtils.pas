@@ -723,12 +723,12 @@ begin
   Value := AddPath(Args.Values[0], Args.Values[1]);
 end;
 
-{ function BrowseForFolder(const Handle: HWnd; const Title: string; var Folder: string): Boolean; }
+{ function BrowseForFolderNative(const Handle: HWnd; const Title: string; var Folder: string): Boolean; }
 
 {$IFNDEF BCB1}
-procedure JvInterpreter_BrowseForFolder(var Value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_BrowseForFolderNative(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := BrowseForFolder(Args.Values[0], Args.Values[1], string(TVarData(Args.Values[2]).vString));
+  Value := BrowseForFolderNative(Args.Values[0], Args.Values[1], string(TVarData(Args.Values[2]).vString));
 end;
 {$ENDIF BCB1}
 
@@ -1063,7 +1063,7 @@ begin
     AddFunction(cJvUtils, 'ParentPath', JvInterpreter_ParentPath, 1, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'FindInPath', JvInterpreter_FindInPath, 2, [varString, varString], varEmpty);
     {$IFNDEF BCB1}
-    AddFunction(cJvUtils, 'BrowseForFolder', JvInterpreter_BrowseForFolder, 3, [varEmpty, varString, varString or
+    AddFunction(cJvUtils, 'BrowseForFolderNative', JvInterpreter_BrowseForFolderNative, 3, [varEmpty, varString, varString or
       varByRef], varEmpty);
     {$ENDIF BCB1}
     AddFunction(cJvUtils, 'DeleteReadOnlyFile', JvInterpreter_DeleteReadOnlyFile, 1, [varEmpty], varEmpty);
