@@ -54,7 +54,6 @@ type
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
     function ValueStoredInt(const Path: string): Boolean; override;
     procedure DeleteValueInt(const Path: string); override;
-    procedure DeleteSubTreeInt(const Path: string); override;
     function DoReadInteger(const Path: string; Default: Integer): Integer; override;
     procedure DoWriteInteger(const Path: string; Value: Integer); override;
     function DoReadFloat(const Path: string; Default: Extended): Extended; override;
@@ -95,6 +94,7 @@ type
     function ReadValue(const Section, Key: string): string; override;
     procedure WriteValue(const Section, Key, Value: string); override;
     procedure RemoveValue(const Section, Key: string); override;
+    procedure DeleteSubTreeInt(const Path: string); override;
 
     property HasWritten: Boolean read FHasWritten;
     property IniFile: TCustomIniFile read FIniFile;
@@ -289,16 +289,6 @@ var
 begin
   SplitKeyPath(Path, Section, Key);
   RemoveValue(Section, Key);
-end;
-
-procedure TJvAppIniStorage.DeleteSubTreeInt(const Path: string);
-var
-  TopSection: string;
-begin
-  TopSection := GetAbsPath(Path);
-  if TopSection = '' then
-    TopSection := DefaultSection;
-  raise EJVCLAppStorageError.Create(RsEDelSubTreeNotImplemented);
 end;
 
 function TJvAppIniStorage.DoReadInteger(const Path: string; Default: Integer): Integer;
@@ -553,6 +543,31 @@ begin
     IniFile.WriteString(Section, Key, Value);
     FLastUserAct := GetTickCount;
     FHasWritten := True;
+  end;
+end;
+
+procedure TJvAppIniFileStorage.DeleteSubTreeInt(const Path: string);
+var
+  TopSection: string;
+  Sections: TStringList;
+  I: Integer;
+begin
+  if IniFile <> nil then
+  begin
+    TopSection := GetAbsPath(Path);
+    Sections := TStringList.Create;
+    try
+      IniFile.ReadSections(Sections);
+      if TopSection = '' then
+        for I := 0 to Sections.Count - 1 do
+          IniFile.EraseSection(Sections[I])
+      else
+        for I := 0 to Sections.Count - 1 do
+          if Pos(TopSection, Sections[I]) = 1 then
+            IniFile.EraseSection(Sections[I]);
+    finally
+      Sections.Free;
+    end;
   end;
 end;
 
