@@ -955,8 +955,8 @@ begin
           UpdateTextFlags;
         if not Enabled then
         begin
-          if PS.fErase then
-            Perform(WM_ERASEBKGND, ACanvas.Handle, 0);
+          // if PS.fErase then // (p3) fErase is not set to true when control is disabled
+          Perform(WM_ERASEBKGND, ACanvas.Handle, 0);
 
           SaveDC(ACanvas.Handle);
           try

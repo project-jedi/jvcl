@@ -180,17 +180,22 @@ type
     property Alignment default taRightJustify;
     property Anchors;
     property AutoAlignment default True;
+
     property AutoSelect;
     property AutoSize;
     property BiDiMode;
     property BorderStyle;
+    property Caret;
     property CheckChars;
     property CharCase;
+    property ClipboardCommands;
     property Color;
     property Constraints;
     property CriticalPoints;
     property Ctl3D;
     property DecimalPlaces default 0;
+    property DisabledColor;
+    property DisabledTextColor;
     property DisplayFormat default dfInteger;
     property DisplayPrefix;
     property DisplaySuffix;
