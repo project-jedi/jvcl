@@ -13,10 +13,20 @@ type
     JvAppIniFileStorageVersionCheck: TJvAppIniFileStorage;
     Label1: TLabel;
     Label2: TLabel;
-    JvHttpUrlGrabber1: TJvHttpUrlGrabber;
-    IdHTTP1: TIdHTTP;
+    JvHttpUrlGrabber: TJvHttpUrlGrabber;
+    IdHTTP: TIdHTTP;
     ProgramVersionCheck: TJvProgramVersionCheck;
-    ImageList1: TImageList;
+    JvProgramVersionNetworkLocation1: TJvProgramVersionNetworkLocation;
+    JvProgramVersionHTTPLocation1: TJvProgramVersionHTTPLocation;
+    JvProgramVersionFTPLocation1: TJvProgramVersionFTPLocation;
+    JvProgramVersionDatabaseLocation1: TJvProgramVersionDatabaseLocation;
+    JvFtpUrlGrabber: TJvFtpUrlGrabber;
+    function JvProgramVersionFTPLocation1LoadFileFromRemote(
+      iProgramVersionLocation: TJvProgramVersionFTPLocation; const iRemotePath,
+      iRemoteFileName, iLocalPath, iLocalFileName: string): string;
+    function JvProgramVersionHTTPLocation1LoadFileFromRemote(
+      iProgramVersionLocation: TJvProgramVersionHTTPLocation; const iRemotePath,
+      iRemoteFileName, iLocalPath, iLocalFileName: string): string;
     procedure FormShow(Sender: TObject);
   private
     { Private-Deklarationen }
@@ -32,15 +42,12 @@ implementation
 
 {$R *.dfm}
 
+Uses JclFileUtils, JvTypes;
+
 procedure TForm1.VersionCheck;
 begin
   with ProgramVersionCheck do
   begin
-//    ProgramVersionCheckOptions.SupportedLocationTypes := [pvltNetwork, pvltHTTP, pvltFTP, pvltDatabase];
-//    ProgramVersionCheckOptions.NetworkLocation.LocationPathVersion := GetCurrentDir+'\Version Check\Remote';
-//    ProgramVersionCheckOptions.HTTPLocation.LocationPathVersion := 'www.oratool.de/test/ProjektVersions_http.ini';
-//    ProgramVersionCheckOptions.LocalVersionInfoFileName := 'ProjektVersions.ini';
-//    ProgramVersionCheckOptions.LocalDirectory := GetCurrentDir+'\Version Check';
     Execute ;
   end;
 end;
@@ -49,6 +56,41 @@ end;
 procedure TForm1.FormShow(Sender: TObject);
 begin
   VersionCheck;
+end;
+
+function TForm1.JvProgramVersionHTTPLocation1LoadFileFromRemote(
+  iProgramVersionLocation: TJvProgramVersionHTTPLocation; const iRemotePath,
+  iRemoteFileName, iLocalPath, iLocalFileName: string): string;
+begin
+  With JvHttpUrlGrabber do
+  begin
+    FileName := PathAppend(iLocalPath, iLocalFileName);
+    url := iRemotePath + iRemoteFilename;
+    OutputMode := omFile;
+    Start;
+    sleep (1000);
+    while Status <> gsStopped do
+      Application.HandleMessage;
+    Result := FileName;
+  end;
+end;
+
+function TForm1.JvProgramVersionFTPLocation1LoadFileFromRemote(
+  iProgramVersionLocation: TJvProgramVersionFTPLocation; const iRemotePath,
+  iRemoteFileName, iLocalPath, iLocalFileName: string): string;
+begin
+  With JvFtpUrlGrabber do
+  begin
+    FileName := PathAppend(iLocalPath, iLocalFileName);
+    url := iRemotePath + iRemoteFilename;
+    OutputMode := omFile;
+    Mode := hmBinary;
+
+    Start;
+    while Status <> gsStopped do
+      Application.HandleMessage;
+    Result := FileName;
+  end;
 end;
 
 end.

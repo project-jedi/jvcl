@@ -54,14 +54,14 @@ object Form1: TForm1
     Left = 80
     Top = 15
   end
-  object JvHttpUrlGrabber1: TJvHttpUrlGrabber
+  object JvHttpUrlGrabber: TJvHttpUrlGrabber
     FileName = 'output.txt'
     Agent = 'JEDI-VCL'
     Port = 0
-    Left = 225
-    Top = 190
+    Left = 75
+    Top = 150
   end
-  object IdHTTP1: TIdHTTP
+  object IdHTTP: TIdHTTP
     AuthRetries = 0
     AuthProxyRetries = 0
     AllowCookies = True
@@ -74,35 +74,52 @@ object Form1: TForm1
     Request.BasicAuthentication = False
     Request.UserAgent = 'Mozilla/3.0 (compatible; Indy Library)'
     HTTPOptions = [hoForceEncodeParams]
-    Left = 255
-    Top = 310
+    Left = 350
+    Top = 260
   end
   object ProgramVersionCheck: TJvProgramVersionCheck
-    SupportedLocationTypes = [pvltNetwork, pvltDatabase, pvltFTP, pvltHTTP]
     AllowedReleaseType = prtBeta
     CheckFrequency = 0
-    LocationType = pvltNetwork
     LocalDirectory = 'Version Check'
     LocalVersionInfoFileName = 'ProgramVersionCheckLocal.Ini'
-    Locations.Network.DownloadThreaded = False
-    Locations.Network.VersionInfoLocationPath = 'Version Check\Remote'
-    Locations.Network.VersionInfoFilename = 'ProjektVersions.ini'
-    Locations.HTTP.DownloadThreaded = False
-    Locations.HTTP.VersionInfoLocationPath = 'http://www.oratool.de/test'
-    Locations.HTTP.VersionInfoFilename = 'ProjektVersions_http.ini'
-    Locations.HTTP.ProxySettings.Port = 0
-    Locations.HTTP.PasswordRequired = False
-    Locations.FTP.DownloadThreaded = False
-    Locations.FTP.ProxySettings.Port = 0
-    Locations.FTP.PasswordRequired = False
-    Locations.Database.DownloadThreaded = False
+    LocationTypeSelected = pvltNetwork
+    LocationNetwork = JvProgramVersionNetworkLocation1
+    LocationHTTP = JvProgramVersionHTTPLocation1
+    LocationFTP = JvProgramVersionFTPLocation1
+    LocationDatabase = JvProgramVersionDatabaseLocation1
     AppStorage = JvAppIniFileStorageVersionCheck
     AppStoragePath = 'Local'
     Left = 355
     Top = 205
   end
-  object ImageList1: TImageList
-    Left = 385
-    Top = 330
+  object JvProgramVersionNetworkLocation1: TJvProgramVersionNetworkLocation
+    VersionInfoLocationPath = 'Version Check\Remote'
+    VersionInfoFilename = 'ProjektVersions.ini'
+    Left = 105
+    Top = 200
+  end
+  object JvProgramVersionHTTPLocation1: TJvProgramVersionHTTPLocation
+    VersionInfoLocationPath = 'www.oratool.de/test'
+    VersionInfoFilename = 'ProjektVersions_http.ini'
+    PasswordRequired = False
+    OnLoadFileFromRemote = JvProgramVersionHTTPLocation1LoadFileFromRemote
+    Left = 105
+    Top = 240
+  end
+  object JvProgramVersionFTPLocation1: TJvProgramVersionFTPLocation
+    PasswordRequired = False
+    OnLoadFileFromRemote = JvProgramVersionFTPLocation1LoadFileFromRemote
+    Left = 105
+    Top = 280
+  end
+  object JvProgramVersionDatabaseLocation1: TJvProgramVersionDatabaseLocation
+    Left = 105
+    Top = 320
+  end
+  object JvFtpUrlGrabber: TJvFtpUrlGrabber
+    FileName = 'output.txt'
+    Agent = 'JEDI-VCL'
+    Left = 225
+    Top = 190
   end
 end

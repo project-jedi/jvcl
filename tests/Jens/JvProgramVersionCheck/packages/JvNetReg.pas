@@ -32,6 +32,16 @@ unit JvNetReg;
 {$ENDIF MSWINDOWS}
 
 interface
+  {$IFDEF COMPILER5}
+
+  TJvLocationCategory = class(TLayoutCategory)
+  public
+    class function Name: string; override;
+  end;
+
+
+  {$ENDIF COMPILER5}
+
 
 procedure Register;
 
@@ -61,13 +71,28 @@ uses
 {$R ../Resources/JvNetReg.dcr}
 {$ENDIF UNIX}
 
+resourcestring
+  RsLocation = 'Location';
+
+//=== { TJvTFGridLayoutCategory } ============================================
+
+{$IFDEF COMPILER5}
+class function TJvLocationCategory.Name: string;
+begin
+  Result := RsLocation;
+end;
+{$ENDIF COMPILER5}
+
+
 procedure Register;
 begin
   RegisterComponents(RsPaletteInterNetWork, [TJvHTMLParser,
     {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
     TJvLocalFileURLGrabber, TJvUrlListGrabber,
-    TJvProgramVersionCheck,
+    TJvProgramVersionCheck, TJvProgramVersionNetworkLocation,
+    TJvProgramVersionHTTPLocation, TJvProgramVersionFTPLocation,
+    TJvProgramVersionDatabaseLocation,
     {$ENDIF MSWINDOWS}
     {$IFDEF VCL}
     TJvMail, TJvRichEditToHTML,
@@ -86,6 +111,11 @@ begin
   RegisterComponentEditor(TJvMail, TJvMailEditor);
   {$ENDIF VCL}
   {$ENDIF MSWINDOWS}
+
+   {$IFDEF COMPILER5}
+  RegisterPropertiesInCategory(TJvLocationCategory, ['Location*',]);
+  {$ENDIF COMPILER5}
+
 end;
 
 end.
