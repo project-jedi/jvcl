@@ -57,9 +57,12 @@ type
   protected
     { Protected declarations }
     procedure DoHotkey; dynamic;
+    procedure Paint; override;
+
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
+    property Canvas;
   published
     { Published declarations }
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
@@ -99,6 +102,7 @@ begin
   if PropagateEnable then
     for i := 0 to ControlCount - 1 do
       Controls[i].Enabled := Enabled;
+  Invalidate;
 end;
 
 procedure TJvGroupBox.CMMouseEnter(var Msg: TMsg);
@@ -146,6 +150,54 @@ procedure TJvGroupBox.DoHotkey;
 begin
   if Assigned(FOnHotkey) then
     FOnHotkey(self);
+end;
+
+procedure TJvGroupBox.Paint;
+var
+  H: Integer;
+  R: TRect;
+  Flags: Longint;
+begin
+  with Canvas do
+  begin
+    Font := Self.Font;
+    H := TextHeight('0');
+    R := Rect(0, H div 2 - 1, Width, Height);
+    if Ctl3D then
+    begin
+      Inc(R.Left);
+      Inc(R.Top);
+      Brush.Color := clBtnHighlight;
+      FrameRect(R);
+      OffsetRect(R, -1, -1);
+      Brush.Color := clBtnShadow;
+    end else
+      Brush.Color := clWindowFrame;
+    FrameRect(R);
+    if Text <> '' then
+    begin
+      if not UseRightToLeftAlignment then
+        R := Rect(8, 0, 0, H)
+      else
+        R := Rect(R.Right - Canvas.TextWidth(Text) - 8, 0, 0, H);
+      Flags := DrawTextBiDiModeFlags(DT_SINGLELINE);
+      // calculate text rect
+      DrawText(Handle, PChar(Text), Length(Text), R, Flags or DT_CALCRECT);
+      Brush.Color := Color;
+      if not Enabled then
+      begin
+        OffsetRect(R, 1, 1);
+        Font.Color := clBtnHighlight;
+        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+        OffsetRect(R, -1, -1);
+        Font.Color := clBtnShadow;
+        SetBkMode(Handle,Windows.TRANSPARENT);
+        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+      end
+      else
+        DrawText(Handle, PChar(Text), Length(Text), R, Flags);
+    end;
+  end;
 end;
 
 procedure TJvGroupBox.SetPropagate(const Value: Boolean);
