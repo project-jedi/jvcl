@@ -45,7 +45,7 @@ uses
   JvAppRegistryStorage, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
   JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits, JvGroupBox, JvExStdCtrls,
-  JvExExtCtrls, JvAppXMLStorage, JvCaesarCipher, JvVigenereCipher, JvCipher;
+  JvExExtCtrls, JvAppXMLStorage, JvCipher;
 
 type
   TForm1 = class (TForm)
