@@ -21,15 +21,16 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A component that allows the user to register an application wide hotkey combination.
+  Set the HotKey property to a *unique* combination of Ctrl,Alt,Shift and a character.
+  Set active to True to receive notifications when the hotkey is pressed. The OnHotKey
+  event is called when the user presses the hotkey combination.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ A component that allows the user to register an application wide hotkey combination.
-    Set the HotKey property to a *unique* combination of Ctrl,Alt,Shift and a character.
-    Set active to True to receive notifications when the hotkey is pressed. The OnHotKey
-    event is called when the user presses the hotkey combination.}
 
 unit JvAppHotKey;
 
@@ -66,7 +67,8 @@ type
     property Active: Boolean read FActive write SetActive default False;
     property HotKey: TShortCut read FShortCut write SetShortCut;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
-    property OnHotKeyRegisterFailed:TJvHotKeyRegisterFailed read FOnHotKeyRegisterFailed write FOnHotKeyRegisterFailed;
+    property OnHotKeyRegisterFailed: TJvHotKeyRegisterFailed
+      read FOnHotKeyRegisterFailed write FOnHotKeyRegisterFailed;
   end;
 
 implementation
@@ -208,6 +210,8 @@ begin
   end;
   FHandle := 0;
 end;
+
+// (rom) better do it with Application.HookMainWindow?
 
 function TJvApplicationHotKey.WndProc(var Msg: TMessage): Boolean;
 begin

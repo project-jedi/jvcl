@@ -31,12 +31,12 @@ unit JvAnimTitle;
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Controls, ExtCtrls, Forms,
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   QControls, QExtCtrls, QForms,
-{$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvComponent;
 
@@ -57,7 +57,6 @@ type
     procedure EnableChange(NewEnable: Boolean);
     procedure ChangeDelay(NewDelay: Integer);
     procedure AnimateTitle(Sender: TObject);
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -94,13 +93,15 @@ begin
   FTimer.Free;
   if not (csDestroying in FForm.ComponentState) then
     FForm.Caption := FInitialTitle;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvAnimTitle.AnimateTitle(Sender: TObject);
 begin
   if FBlinking then
   begin
+    // (rom) this is a bad implementation better try to manipulate
+    // (rom) the WM_GETTEXT and WM_SETTEXT to the Form window
     if FForm.Caption = FInitialTitle then
       FForm.Caption := ''
     else
@@ -132,11 +133,11 @@ begin
       FSens := True
     else
       SetLength(FTitle, Length(FTitle) - 1);
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     if FTitle = '' then
       FForm.Caption := ' '   // else caption becomes <1>
     else
-    {$ENDIF}
+    {$ENDIF UNIX}
     FForm.Caption := FTitle;
   end;
 end;

@@ -32,10 +32,10 @@ interface
 uses
   {$IFDEF COMPLIB_VCL}
   Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   {$IFDEF COMPLIB_CLX}
   Qt, Types, QGraphics, QControls, QForms,
-  {$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvTimer, JvComponent;
 
@@ -60,6 +60,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  published
+    property Height default 105;
+    property Width default 105;
   end;
 
   TGlyphOrientation = (goHorizontal, goVertical);
@@ -264,12 +267,12 @@ end;
 procedure TJvImageControl.Paint;
 var
   Bmp: TBitmap;
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   DC: HDC;
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   DC: QPainterH;
-{$ENDIF}
+  {$ENDIF COMPLIB_CLX}
 begin
   Bmp := TBitmap.Create;
   try
@@ -308,6 +311,8 @@ begin
     end;
 end;
 
+// (rom) this method is obviously not yet CLX compatible
+
 procedure TJvImageControl.DoPaintControl;
 var
   DC: HDC;
@@ -334,8 +339,8 @@ var
 begin
   Result := False;
   Tmp := FGraphic;
-  if Visible and (not (csLoading in ComponentState)) and (Tmp <> nil)
-    and Tmp.PaletteModified then
+  if Visible and (not (csLoading in ComponentState)) and (Tmp <> nil) and
+    Tmp.PaletteModified then
   begin
     if (GetPalette <> 0) then
     begin
@@ -374,11 +379,8 @@ constructor TJvAnimatedImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FTimer := TJvTimer.Create(Self);
-  with FTimer do
-  begin
-    Enabled := False;
-    Interval := 100;
-  end;
+  FTimer.Enabled := False;
+  FTimer.Interval := 100;
   AutoSize := True;
   FGlyph := TBitmap.Create;
   FGraphic := FGlyph;
@@ -445,8 +447,7 @@ end;
 function TJvAnimatedImage.TransparentStored: Boolean;
 begin
   Result := (FGlyph.Empty and (FTransparentColor <> clNone)) or
-    ((FGlyph.TransparentColor and not PaletteMask) <>
-    FTransparentColor);
+    ((FGlyph.TransparentColor and not PaletteMask) <> FTransparentColor);
 end;
 
 procedure TJvAnimatedImage.SetOpaque(Value: Boolean);
@@ -623,7 +624,8 @@ begin
     FImageHeight := FGlyph.Height;
     FImageWidth := FGlyph.Width div FNumGlyphs;
   end
-  else {if Orientation = goVertical then}
+  else
+  {if Orientation = goVertical then}
   begin
     FImageWidth := FGlyph.Width;
     FImageHeight := FGlyph.Height div FNumGlyphs;
@@ -633,10 +635,8 @@ end;
 procedure TJvAnimatedImage.AdjustSize;
 begin
   if not (csReading in ComponentState) then
-  begin
     if AutoSize and (FImageWidth > 0) and (FImageHeight > 0) then
       SetBounds(Left, Top, FImageWidth, FImageHeight);
-  end;
 end;
 
 procedure TJvAnimatedImage.DoPaintImage;
@@ -657,7 +657,8 @@ begin
   begin
     if Orientation = goHorizontal then
       SrcRect := Bounds(BmpIndex * FImageWidth, 0, FImageWidth, FImageHeight)
-    else {if Orientation = goVertical then}
+    else
+    {if Orientation = goVertical then}
       SrcRect := Bounds(0, BmpIndex * FImageHeight, FImageWidth, FImageHeight);
     if Stretch then
       DstRect := ClientRect

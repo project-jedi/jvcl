@@ -21,22 +21,23 @@ Last Modified: 2003-10-24
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A class that functions as a base class for saving / loading arbitrary application
+  data to the registry or an inifile.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
-{ A class that functions as a base class for saving / loading arbitrary application
-  data to the registry or an inifile. }
 
 unit JvAppInfo;
 
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Windows, Registry,
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
   Classes, SysUtils;
 
 type
@@ -45,7 +46,7 @@ type
     {$IFDEF COMPLIB_VCL}
     FUseRegistry: Boolean;
     FRegKey: DWORD;
-    {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
     FSavePath: string;
     FSection: string;
     FUnAssigned: string;
@@ -55,7 +56,7 @@ type
     {$IFDEF COMPLIB_VCL}
     function LoadRegistry: Boolean;
     function SaveRegistry: Boolean;
-    {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
@@ -66,7 +67,7 @@ type
     {$IFDEF COMPLIB_VCL}
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry;
     property RegRootKey: DWORD read FRegKey write FRegKey;
-    {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
     property Section: string read FSection write FSection;
     property UnAssignedValue: string read FUnAssigned write FUnAssigned;
   end;
@@ -149,6 +150,7 @@ begin
 end;
 
 {$IFDEF COMPLIB_VCL}
+
 function TJvAppInfo.LoadRegistry: Boolean;
 var
   I: Integer;
@@ -220,27 +222,28 @@ begin
   end;
   Result := True;
 end;
+
 {$ENDIF COMPLIB_VCL}
 
 function TJvAppInfo.Load: Boolean;
 begin
   CheckPath;
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   if UseRegistry then
     Result := LoadRegistry
   else
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
     Result := LoadIni;
 end;
 
 function TJvAppInfo.Save: Boolean;
 begin
   CheckPath;
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   if UseRegistry then
     Result := SaveRegistry
   else
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
     Result := SaveIni;
 end;
 
@@ -253,9 +256,9 @@ end;
 constructor TJvAppInfo.Create;
 begin
   inherited Create;
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   FRegKey := HKEY_CURRENT_USER;
-{$ENDIF}  
+  {$ENDIF COMPLIB_VCL}
   FUnAssigned := '';
 end;
 
@@ -264,14 +267,15 @@ begin
   if Source is TJvAppInfo then
   begin
     SavePath := TJvAppInfo(Source).SavePath;
-  {$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     UseRegistry := TJvAppInfo(Source).UseRegistry;
     RegRootKey := TJvAppInfo(Source).RegRootKey;
-  {$ENDIF}
+    {$ENDIF COMPLIB_VCL}
     Section := TJvAppInfo(Source).Section;
     UnAssignedValue := TJvAppInfo(Source).UnAssignedValue;
     Exit;
   end;
+  // (rom) better an else here?
   inherited Assign(Source);
 end;
 

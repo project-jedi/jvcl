@@ -26,19 +26,19 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
+{$I JVCL.INC}
 
 unit JvAnimate;
 
 interface
 
 uses
-{$IFDEF COMPLIB_VCL}
+  {$IFDEF COMPLIB_VCL}
   Messages, Graphics, Controls, Forms, ComCtrls,
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
   QGraphics, QControls, QForms, QComCtrls,
-{$ENDIF}
+  {$ENDIF COMPLIB_CLX}
   SysUtils, Classes,
   JvThemes, JVCLVer;
 
@@ -51,25 +51,25 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FAboutJVCL: TJVCLAboutInfo;
-{$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-{$ENDIF}
+    {$ENDIF COMPLIB_VCL}
   protected
-{$IFDEF COMPLIB_VCL}
+    {$IFDEF COMPLIB_VCL}
     procedure DoMouseEnter(var Msg: TMessage);
     procedure DoMouseLeave(var Msg: TMessage);
     procedure DoParentColorChange(var Msg: TMessage);
-{$ENDIF}
-{$IFDEF COMPLIB_CLX}
+    {$ENDIF COMPLIB_VCL}
+    {$IFDEF COMPLIB_CLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure DoMouseEnter;
     procedure DoMouseLeave;
     procedure DoParentColorChange;
-{$ENDIF}
+    {$ENDIF COMPLIB_CLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -107,7 +107,7 @@ end;
 procedure TJvAnimate.DoParentColorChange(var Msg: TMessage);
 {$ELSE}
 procedure TJvAnimate.DoParentColorChange;
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
@@ -115,78 +115,77 @@ end;
 
 {**************************************************}
 
-{$IFNDEF COMPLIB_CLX}
+{$IFDEF COMPLIB_VCL}
 procedure TJvAnimate.DoMouseEnter(var Msg: TMessage);
-begin
 {$ELSE}
 procedure TJvAnimate.DoMouseEnter;
+{$ENDIF COMPLIB_VCL}
 begin
-{$ENDIF}
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
 {**************************************************}
 
-{$IFNDEF COMPLIB_CLX}
+{$IFDEF COMPLIB_VCL}
 procedure TJvAnimate.DoMouseLeave(var Msg: TMessage);
 begin
 {$ELSE}
 procedure TJvAnimate.DoMouseLeave;
 begin
 //  inherited;
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
 
 {**************************************************}
 
-{$IFNDEF COMPLIB_CLX}
+{$IFDEF COMPLIB_VCL}
 procedure TJvAnimate.CMParentColorChanged(var Msg: TMessage);
 {$ELSE}
 procedure TJvAnimate.ParentColorChanged;
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 begin
   inherited;
-{$IFNDEF COMPLIB_CLX}
+  {$IFDEF COMPLIB_VCL}
   DoParentColorChange(Msg);
-{$ELSE}
+  {$ELSE}
   DoParentColorChange;
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
 end;
 
 {**************************************************}
 
-{$IFNDEF COMPLIB_CLX}
+{$IFDEF COMPLIB_VCL}
 procedure TJvAnimate.MouseEnter(var Msg: TMessage);
 {$ELSE}
 procedure TJvAnimate.MouseEnter(AControl: TControl);
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 begin
   FSaved := Application.HintColor;
   Application.HintColor := FColor;
-{$IFNDEF COMPLIB_CLX}
+  {$IFDEF COMPLIB_VCL}
   DoMouseEnter(Msg);
-{$ELSE}
+  {$ELSE}
   DoMouseEnter;
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
 end;
 
 {**************************************************}
 
-{$IFNDEF COMPLIB_CLX}
+{$IFDEF COMPLIB_VCL}
 procedure TJvAnimate.MouseLeave(var Msg: TMessage);
 {$ELSE}
 procedure TJvAnimate.MouseLeave(AControl: TControl);
-{$ENDIF}
+{$ENDIF COMPLIB_VCL}
 begin
   Application.HintColor := FSaved;
-{$IFNDEF COMPLIB_CLX}
+  {$IFDEF COMPLIB_VCL}
   DoMouseLeave(Msg);
-{$ELSE}
+  {$ELSE}
   DoMouseLeave;
-{$ENDIF}
+  {$ENDIF COMPLIB_VCL}
 end;
 
 end.
