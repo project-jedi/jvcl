@@ -416,13 +416,18 @@ begin
   FXML.Root.Clear;
   if AComponent = nil then Exit;
   if AComponent is TApplication then
+  begin
     AName := TApplication(AComponent).Title
+    FXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
+    AElem := FXML.Root.Items.Add(AName);
+  end
   else
     AName := TComponent(AComponent).Name;
-  FXML.Root.Name := 'Translation'; // DO NOT LOCALIZE
+    AElem := FXML.Root;
+    FXML.Root.Name := AName;
+  end;
   if AName <> '' then
   begin
-    AElem := FXML.Root.Items.Add(AName);
     InnerComponentToXML(AComponent, AElem, Recurse);
     Result := FXML.Root.SaveToString;
   end;
@@ -929,8 +934,7 @@ begin
     RegisterClass(TPersistentClass(AClass));
 end;
 
-procedure TJvTranslator.UnskipProperty(AClass: TClass;
-  const PropName: string);
+procedure TJvTranslator.UnskipProperty(AClass: TClass; const PropName: string);
 var
   i, j: integer;
   P: PSkipPropRec;
@@ -941,17 +945,23 @@ begin
       if PSkipPropRec(FSkipList[i])^.AClass = AClass then
       begin
         P := PSkipPropRec(FSkipList[i]);
-        j := P^.AProps.IndexOf(PropName);
+        if PropName <> '' then
+          j := P^.AProps.IndexOf(PropName)
+        else
+        begin
+          j := -1;
+          P^.AProps.Clear;
+        end;
         if j > -1 then P^.AProps.Delete(j);
-        if P^.AProps.Count = 0 then // remove the entry when there are no properties skipped
+        if P^.AProps.Count = 0 then // remove the entry when there are no properties skipped or if this is a UnskipClass call
         begin
           P^.AProps.Free;
           FSkipList.Delete(i);
           Dispose(P);
         end;
-        Exit;
         if FSkipList.Count = 0 then
           FreeAndnil(FSkipList);
+        Break;
       end;
   end;
 end;
