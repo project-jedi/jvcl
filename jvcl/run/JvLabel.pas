@@ -94,6 +94,7 @@ type
     FConsumerSvc: TJvDataConsumer;
     FNeedsResize: boolean;
     FTextEllipsis: TJvTextEllipsis;
+    FFrameColor: TColor;
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
@@ -118,6 +119,7 @@ type
     procedure SetSpacing(Value: Integer);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
     procedure SetTextEllipsis(Value: TJvTextEllipsis);
+    procedure SetFrameColor(const Value: TColor);
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     procedure TextChanged; override;
@@ -165,6 +167,7 @@ type
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
+    property FrameColor:TColor read FFrameColor write SetFrameColor default clNone;
     property Images: TCustomImageList read FImages write SetImages;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
     property TextEllipsis: TJvTextEllipsis read FTextEllipsis write SetTextEllipsis default teNone;
@@ -207,6 +210,7 @@ type
     property DragMode;
     property Enabled;
     property FocusControl;
+    property FrameColor;
     property Font;
     property Anchors;
     property Constraints;
@@ -304,6 +308,7 @@ end;
 constructor TJvCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FFrameColor := clNone;
   FImageIndex := -1;
   FConsumerSvc := TJvDataConsumer.Create(Self, [DPA_RendersSingleItem]);
   FConsumerSvc.OnChanged := ConsumerServiceChanged;
@@ -693,6 +698,11 @@ begin
     if not Transparent then
       // only FillRect mode because Transparent is always True on JVCLThemesEnabled
       DrawThemedBackground(Self, Canvas, ClientRect, Self.Color);
+    if FrameColor <> clNone then
+    begin
+      Brush.Color := FrameColor;
+      FrameRect(ClientRect);
+    end;
     Brush.Style := bsClear;
     Rect := ClientRect;
 //    if Angle <> 0 then
@@ -1220,6 +1230,15 @@ begin
   if Value <> FTextEllipsis then
   begin
     FTextEllipsis := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvCustomLabel.SetFrameColor(const Value: TColor);
+begin
+  if FFrameColor <> Value then
+  begin
+    FFrameColor := Value;
     Invalidate;
   end;
 end;
