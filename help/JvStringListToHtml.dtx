@@ -1,5 +1,5 @@
-##Package: ??
-##Status: Completed by peter3
+##Package: Net
+##Status: Completed and spell-checked (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvStringListToHtml.pas
 Summary
@@ -24,34 +24,38 @@ Description
 
   The structure of the generated \HTML looks like this:
 <CODE>
-<AUTOLINK OFF>
-  <HTML>
-    <HEAD>
-      <TITLE>HTMLTitle</TITLE>
-    </HEAD>
-    <BODY>
-     Strings[0] + HTMLLineBreak
-     Strings[1] + HTMLLineBreak
-     Strings[2] + HTMLLineBreak
+  \<HTML\>
+    \<HEAD\>
+      \<TITLE\>HTMLTitle\</TITLE\>
+    \</HEAD\>
+    \<BODY\>
+     Strings[0] + \HTMLLineBreak
+     Strings[1] + \HTMLLineBreak
+     Strings[2] + \HTMLLineBreak
      ...
-     Strings[n] + HTMLLineBreak
-    </BODY>
-  </HTML>
+     Strings[n] + \HTMLLineBreak
+    \</BODY\>
+  \</HTML\>
 </CODE>
   If IncludeHeader is false, only the Strings[] + HTMLLineBreak lines are included in the result.
-<AUTOLINK OFF>
 ----------------------------------------------------------------------------------------------------
 @@TJvStringListToHtml.ConvertToHtml
 Summary
-  Inserts HTML formatted text into a string list and saves the result to a file.
+  Inserts HTML formatted text into a string list and saves the
+  result to a file.
+
 Description
-  Call ConvertToHTML to format a string list with HTMl codes and save the resul to a file. 
+  Call ConvertToHTML to format a string list with HTML codes
+  and save the result to a file.
+
 Parameters
-  Source    - The string list to read from. This list is unaffected by the conversion.
-  Filename - The name of the file to save to. If the file already exists, it will be overwritten.
+Source :    The string list to read from. This list is unaffected
+            by the conversion.
+Filename :  The name of the file to save to. If the file already
+            exists, it will be overwritten.
 See Also
   ConvertToHTMLStrings
-----------------------------------------------------------------------------------------------------
+
 @@TJvStringListToHtml.ConvertToHTMLStrings
 Summary
   Converts the strings in one list to \HTML formatted text in another.
