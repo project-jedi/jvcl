@@ -10,8 +10,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvThreadDialog.PAS, released on 2004-12-06.
 
-The Initial Developer of the Original Code is Sébastien Buysse [sbuysse att buypin dott com]
-Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
+The Initial Developer of the Original Code is Jens Fudickar [jens dott fudickar att oratool dott de]
 All Rights Reserved.
 
 Contributor(s): Jens Fudickar [jens dott fudickar att oratool dott de].
