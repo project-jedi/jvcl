@@ -158,13 +158,6 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-{$IFDEF COMPILER5}
-function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
-begin
-  Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
-end;
-{$ENDIF COMPILER5}
-
 //=== { TMasterConsumer } ====================================================
 
 constructor TMasterConsumer.Create(AOwner: TComponent);

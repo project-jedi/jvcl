@@ -34,7 +34,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, ImgList, ToolsAPI,
+  Classes, ToolsAPI,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -43,15 +43,12 @@ uses
   {$IFNDEF COMPILER7_UP}
   ExptIntf,
   {$ENDIF !COMPILER7_UP}
-  JclSchedule,
-  JvBandForms, JvBandObject, JvBandObjectDLLWizard,
-  JvBandObjectDLLWizardForm;
+  JvBandForms, JvBandObjectDLLWizard;
 
 procedure Register;
 begin
   RegisterCustomModule(TJvBandForm, TCustomModule);
   RegisterPackageWizard(TJvBandObjectDLLWizard.Create);
 end;
-
 
 end.

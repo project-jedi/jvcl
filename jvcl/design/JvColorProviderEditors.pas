@@ -120,10 +120,8 @@ var
   I: Integer;
 begin
   with GetConsumerImpl.ProviderIntf as IJvColorProvider do
-  begin
     for I := 0 to Get_MappingCount - 1 do
       Proc(Get_Mapping(I).Name);
-  end;
 end;
 
 //=== { TJvColorProviderAddColorStyleEditor } ================================

@@ -83,29 +83,25 @@ end;
 
 function DoCsvDefDialog(OldValue: string; ASeparator: Char): string;
 var
-  Dialog: TJvCsvDefStrDialog;
-  DlgResult: Integer;
   WindowList: Pointer;
 begin
   {$IFDEF MSWINDOWS}
   WindowList := DisableTaskWindows(0);
   {$ENDIF MSWINDOWS}
-  Dialog := TJvCsvDefStrDialog.Create(nil); // no owner!
-//  DlgResult := idCancel;
-  try
-    Dialog.Separator := ASeparator;
-    Dialog.CsvStr := OldValue;
-    DlgResult := Dialog.ShowModal;
-    if DlgResult = idOk then
-      Result := Dialog.CsvStr
-    else
-      Result := OldValue;
-  finally
-    Dialog.Free;
-    {$IFDEF MSWINDOWS}
-    EnableTaskWindows(WindowList);
-    {$ENDIF MSWINDOWS}
-  end;
+  with TJvCsvDefStrDialog.Create(nil) do // no owner!
+    try
+      Separator := ASeparator;
+      CsvStr := OldValue;
+      if ShowModal = idOk then
+        Result := CsvStr
+      else
+        Result := OldValue;
+    finally
+      Free;
+      {$IFDEF MSWINDOWS}
+      EnableTaskWindows(WindowList);
+      {$ENDIF MSWINDOWS}
+    end;
 end;
 
 procedure TJvCsvDefStrProperty.Edit;
@@ -177,39 +173,22 @@ end;
 procedure TJvFilenameProperty.Edit;
 begin
   with TOpenDialog.Create(Application) do
-  begin
-    Title := RsJvCsvDataSetSelectCSVFileToOpen;
-    FileName := GetValue;
-    Filter := RsCsvFilter + '|' +  RsAllFilesFilter;
-    Options := Options + [ofPathMustExist];
     try
+      Title := RsJvCsvDataSetSelectCSVFileToOpen;
+      FileName := GetValue;
+      Filter := RsCsvFilter + '|' + RsAllFilesFilter;
+      Options := Options + [ofPathMustExist];
       if Execute then
         SetValue(FileName);
     finally
       Free;
     end;
-  end;
 end;
 
 function TJvFilenameProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paRevertable];
 end;
-
-{ (rom) moved to JvDBReg.pas
-procedure Register;
-begin
-  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
-  // RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'TableName', TFileNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'FileName', TJvFilenameProperty);
-
-  // Component Editor - Verbs for the Right-Clicky-on-ye-component thing
-  //  Requires a working DSDESIGN.pas source that will compile.
-  // RegisterComponentEditor(TCSVDataSet, TCSVDataSetComponentEditor);
-
-  RegisterComponents(RsPaletteDBNonVisual, [TJvCsvDataSet]);
-end;
-}
 
 end.
 

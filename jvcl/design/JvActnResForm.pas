@@ -32,9 +32,9 @@ interface
 
 uses
   ActnList, ImgList, Controls,
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   Forms,
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   SysUtils, Classes, StdActns,
   JvActions;
 

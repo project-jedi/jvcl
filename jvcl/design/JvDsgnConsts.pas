@@ -267,8 +267,6 @@ resourcestring
   {$IFDEF UNIX}
   RsExecutableFilesExeExeAllFiles = 'Executable files (*)|*';
   {$ENDIF UNIX}
-  RsItems = 'Items';
-  RsStrings = 'Strings';
   RsFmtEditEllipsis = '%s Editor...';
   RsSaveImageList = 'Save to bitmap...';
 

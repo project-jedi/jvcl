@@ -122,6 +122,13 @@ end;
 
 //=== { TfrmJvColorProviderDesigner } ========================================
 
+destructor TfrmJvColorProviderDesigner.Destroy;
+begin
+  FreeAndNil(FCtxConsumer);
+  FreeAndNil(FMappingConsumer);
+  inherited Destroy;
+end;
+
 function TfrmJvColorProviderDesigner.GetProvider: IJvDataProvider;
 begin
   if not (csDestroying in ComponentState) then
@@ -294,13 +301,6 @@ end;
 procedure TfrmJvColorProviderDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-end;
-
-destructor TfrmJvColorProviderDesigner.Destroy;
-begin
-  FreeAndNil(FCtxConsumer);
-  FreeAndNil(FMappingConsumer);
-  inherited Destroy;
 end;
 
 procedure TfrmJvColorProviderDesigner.BeforeDestruction;

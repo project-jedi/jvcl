@@ -34,8 +34,7 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  ImgList,
+  Classes, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -46,19 +45,17 @@ uses
   ExptIntf,
   {$ENDIF !COMPILER7_UP}
   ToolsAPI,
-  JvDsgnConsts,
   JclSchedule,
+  JvDsgnConsts,
   {$IFDEF VCL}
   JvTrayIcon, JvThumbImage, JvThumbnails, JvThumbViews, JvBalloonHint,
   JvEditor, JvHLEditor, JvHLEditorPropertyForm, JvHLParser, JvEditorCommon,
   JvUnicodeEditor, JvUnicodeHLEditor, JvImagesViewer, JvImageListViewer,
-  JvOwnerDrawViewer,
-  JvHLEditEditor, JvScheduleEditors,
+  JvOwnerDrawViewer, JvHLEditEditor, JvScheduleEditors,
   {$ENDIF VCL}
   JvGammaPanel, JvLinkLabel, JvLookOut, JvOutlookBar, JvScheduledEvents,
-  JvTimeLine, JvTMTimeLine, JvValidateEdit, JvChart,
-  JvTimeLineEditor, JvOutlookBarEditors, JvLookoutEditor,
-  JvTabBar;
+  JvTimeLine, JvTMTimeLine, JvValidateEdit, JvChart, JvTimeLineEditor,
+  JvOutlookBarEditors, JvLookoutEditor, JvTabBar;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCustomReg.dcr}

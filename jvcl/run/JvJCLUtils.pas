@@ -1084,6 +1084,8 @@ function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC;
 
 {$ENDIF VCL}
 
+function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -8784,6 +8786,14 @@ end;
 
 {$ENDIF VisualCLX}
 
+function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
+begin
+  {$IFDEF COMPILER5}
+  Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
+  {$ELSE}
+  Result := SysUtils.IsEqualGUID(IID1, IID2);
+  {$ENDIF COMPILER5}
+end;
 
 {$IFDEF UNITVERSIONING}
 initialization

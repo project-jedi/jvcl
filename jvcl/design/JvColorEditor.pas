@@ -180,8 +180,8 @@ begin
   if Color = clNone16 then
     Color := clNone
   else
-    if Color = clInfoBk16 then
-      Color := clInfoBk;
+  if Color = clInfoBk16 then
+    Color := clInfoBk;
   Result := JvColorToString(Color);
 end;
 

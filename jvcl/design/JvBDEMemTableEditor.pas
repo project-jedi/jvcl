@@ -46,10 +46,6 @@ type
 
 implementation
 
-uses
-  DsnDBCst, DSDesign, DBReg,
-  JvJVCLUtils, JvSelectDataSetForm, JvConsts;
-
 function TJvBDEMemoryTableEditor.CopyStructure(Source, Dest: TDataSet): Boolean;
 begin
   Result := Dest is TJvBDEMemoryTable;

@@ -55,7 +55,6 @@ type
     function CopyStructure(Source, Dest: TDataSet): Boolean; override;
   end;
 
-
 implementation
 
 uses
@@ -172,7 +171,7 @@ function TJvMemDataSetEditor.CopyStructure(Source, Dest: TDataSet): Boolean;
 begin
   Result := Dest is TJvMemoryData;
   if Result then                           //------ Added by CFZ 2004/10/25 ------
-    TJvMemoryData(Dest).CopyStructure(Source,TJvMemoryData(Dest).AutoIncAsInteger);
+    TJvMemoryData(Dest).CopyStructure(Source, TJvMemoryData(Dest).AutoIncAsInteger);
 end;
 
 end.

@@ -55,14 +55,14 @@ uses
 type
   // Special TClassProperty, that show events along with all other properties
   // This is only useful with version 5 and before
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   TJvPersistentProperty = class(TClassProperty)
   public
     procedure GetProperties(Proc: TGetPropEditProc); override;
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
   end;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
   TJvHintProperty = class(TStringProperty)
   public
@@ -1098,18 +1098,14 @@ end;
 
 function TJvStringsEditor.GetEditPropertyName: string;
 begin
-  { (rb) Probably should not be a resource string, because its value should be the
-         same as the property name }
-  Result := RsStrings;
+  Result := 'Strings';
 end;
 
 //=== { TJvItemsEditor } =====================================================
 
 function TJvItemsEditor.GetEditPropertyName: string;
 begin
-  { (rb) Probably should not be a resource string, because its value should be the
-         same as the property name }
-  Result := RsItems;
+  Result := 'Items';
 end;
 
 end.

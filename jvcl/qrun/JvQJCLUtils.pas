@@ -7482,6 +7482,10 @@ begin
   Result := True;
 end;
 
+function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
+begin
+  Result := SysUtils.IsEqualGUID(IID1, IID2);
+end;
 
 {$IFDEF UNITVERSIONING}
 const
