@@ -94,6 +94,7 @@ type
     property LastThread: TJvBaseThread read GetLastThread;
   published
     function Execute(P: Pointer): THandle;
+    procedure ExecuteAndWait(P: Pointer);
     function OneThreadIsRunning: Boolean;
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
@@ -195,7 +196,7 @@ function TJvThread.Execute(P: Pointer): THandle;
 var
   BaseThread: TJvBaseThread;
 begin
-  Result := 0;
+  Result := 0;      
   if Exclusive and OneThreadIsRunning then
     Exit;
 
@@ -219,6 +220,13 @@ begin
     end;
     Result := BaseThread.ThreadID;
   end;
+end;
+
+procedure TJvThread.ExecuteAndWait(P: Pointer);
+begin
+  Execute(P);
+  while OneThreadIsRunning do
+    Sleep(1);
 end;
 
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
