@@ -180,7 +180,7 @@ type
     property Color;
     property Ctl3D;
     property FontName:string read GetFontName write SetFontName;
-    property Device: TFontDialogDevice read FDevice write SetDevice default fdBoth;
+    property Device: TFontDialogDevice read FDevice write SetDevice default fdScreen;
     property DragMode;
     property DragCursor;
     property Enabled;
@@ -563,7 +563,7 @@ begin
   DeviceBMP := LoadInternalBitmap('PRN_FONT');
   FHiliteColor := clHighLight;
   FHiLiteText := clHighLightText;
-  FDevice := fdBoth;
+  FDevice := fdScreen;
   FUseImages := true;
   Style := csOwnerDrawFixed;
 //  Sorted := True;
