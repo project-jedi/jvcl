@@ -302,7 +302,7 @@ function ColorToPrettyName(Value: TColor): string;
 function PrettyNameToColor(Value: string): TColor;
 
 // (outchy) move to another unit
-function IsClassInModule(Module:HMODULE; ObjectClass:TClass): Boolean;
+//function IsClassInModule(Module:HMODULE; ObjectClass:TClass): Boolean;
 
 function RGBToBGR(Value: Cardinal): Cardinal;
 
@@ -1728,7 +1728,7 @@ begin
   while (FColorSpaceList.Remove(AColorSpace)>=0) do ;
 end;
 
-var
+{var
   CurrentModule : HMODULE = 0;
   UnitNames : TStringList = nil;
 
@@ -1777,7 +1777,7 @@ begin
     if IsClassInModule(HInstance,CS.ClassType)
       then ColorSpaceManager.UnRegisterColorSpace(CS);
   end;
-end;
+end;  }
 
 {$IFDEF UNITVERSIONING}
 const
@@ -1790,8 +1790,8 @@ const
 {$ENDIF UNITVERSIONING}
 
 initialization
-  UnitNames:=TStringList.Create;
-  AddModuleUnloadProc(ModuleUnloadProc);
+//  UnitNames:=TStringList.Create;
+//  AddModuleUnloadProc(ModuleUnloadProc);
 
   ColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
   ColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
@@ -1809,13 +1809,13 @@ initialization
 {$ENDIF UNITVERSIONING}
 
 finalization
-  RemoveModuleUnloadProc(ModuleUnloadProc);
+//  RemoveModuleUnloadProc(ModuleUnloadProc);
   FreeAndNil(GlobalColorSpaceManager);
 {$IFDEF COMPILER6_UP}
   FreeAndNil(GlobalPrettyNameStrings);
 {$ENDIF COMPILER6_UP}
-  CurrentModule:=0;
-  FreeAndNil(UnitNames);
+//  CurrentModule:=0;
+//  FreeAndNil(UnitNames);
 {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
