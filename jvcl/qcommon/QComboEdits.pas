@@ -335,23 +335,23 @@ end;
 
 procedure TCustomComboEdit.CursorChanged;
 begin
+  inherited CursorChanged;
   FBorder.Cursor := Cursor;
   FClientArea.Cursor := Cursor;
-  inherited CursorChanged;
 end;
 
 procedure TCustomComboEdit.EnabledChanged;
 begin
+  inherited EnabledChanged;
   FBorder.Enabled := Enabled;
   FClientArea.Enabled := Enabled;
-  inherited EnabledChanged;
 end;
 
 procedure TCustomComboEdit.VisibleChanged;
 begin
+  inherited VisibleChanged;
   FBorder.Visible := Visible;
   FClientArea.Visible := Visible;
-  inherited VisibleChanged;
 end;
 
 procedure TCustomComboEdit.ColorChanged;
@@ -673,23 +673,23 @@ end;
 
 procedure TCustomComboMaskEdit.CursorChanged;
 begin
+  inherited CursorChanged;
   FBorder.Cursor := Cursor;
   FClientArea.Cursor := Cursor;
-  inherited CursorChanged;
 end;
 
 procedure TCustomComboMaskEdit.EnabledChanged;
 begin
+  inherited EnabledChanged;
   FBorder.Enabled := Enabled;
   FClientArea.Enabled := Enabled;
-  inherited EnabledChanged;
 end;
 
 procedure TCustomComboMaskEdit.VisibleChanged;
 begin
+  inherited VisibleChanged;
   FBorder.Visible := Visible;
   FClientArea.Visible := Visible;
-  inherited VisibleChanged;
 end;
 
 procedure TCustomComboMaskEdit.ColorChanged;
