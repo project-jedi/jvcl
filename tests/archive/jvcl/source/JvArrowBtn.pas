@@ -858,7 +858,7 @@ begin
   OffsetRect(PaintRect, Offset.X, Offset.Y);
 
   if Enabled then
-    Canvas.Pen.Color := cl3DDkShadow
+    Canvas.Pen.Color := clBlack
   else
     Canvas.Pen.Color := clBtnShadow;
 
