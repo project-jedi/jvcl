@@ -33,7 +33,7 @@ unit JvDBConsts;
 interface
 
 const
-  {TJvDBTreeView}
+  { TJvDBTreeView }
   SDeleteNode             = 'Delete %s ?';
   SDeleteNode2            = 'Delete %s (with all children) ?';
   SMasterFieldEmpty       = '"MasterField" property must be filled';

@@ -33,17 +33,17 @@ uses
   SysUtils;
 
 const
-  {RegAutoEditor} // designtime
+  { RegAutoEditor } // designtime
   sRegAutoEditorEdtPropHint    = 'You can type property name here';
   sRegAutoEditorTreeHint       = 'Available properties';
   sRegAutoEditorListHint       = 'Stored properties';
   sRegAutoEditorBtnAddPropHint = 'Add/Remove property';
   sRegAutoEditorSort           = 'Sort';
 
-  {JvEditor}
+  { JvEditor }
   JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
-  {IParser}
+  { IParser }
   StIdSymbols      = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
   StIdFirstSymbols = ['_', 'A'..'Z', 'a'..'z'];
   StConstSymbols   = ['0'..'9', 'A'..'F', 'a'..'f'];
@@ -56,7 +56,7 @@ const
   RAIIdFirstSymbols = ['A'..'Z', 'a'..'z', '_'];
   {$ENDIF RAINTER}
 
-  {JvDlg}
+  { JvDlg }
   SOk = 'OK';
   SCancel = 'Cancel';
 
@@ -75,7 +75,7 @@ const
   { RALib 1.55 }
 
 resourcestring
-  {JvHLEdPropDlg}
+  { JvHLEdPropDlg }
   SHLEdPropDlg_Caption = 'Editor Properties';
   SHLEdPropDlg_tsEditor = 'Editor';
   SHLEdPropDlg_tsColors = 'Colors';
@@ -151,12 +151,12 @@ const
 resourcestring
   { JvToolEdit }
   SBrowse                = 'Browse';
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   SDefaultFilter         = 'All files (*.*)|*.*';
-{$ENDIF}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   SDefaultFilter         = 'All files (*)|*';
-{$ENDIF}
+  {$ENDIF LINUX}
 
   { JvPickDate }
   SDateDlgTitle          = 'Select a Date';
@@ -388,12 +388,12 @@ resourcestring
   SID3Err_NoFileSpecified = 'No file specified';
   SID3Err_NoValidMPEGTag = 'This file has not a valid MPEG tag';
 
-  { JvDataProvider constants }
 const
+  { JvDataProvider constants }
   { Consumer attributes }
   DPA_RenderDisabledAsGrayed = 1;
-  DPA_RendersSingleItem = 2;
-  DPA_ConsumerDisplaysList = 3;
+  DPA_RendersSingleItem      = 2;
+  DPA_ConsumerDisplaysList   = 3;
 
 resourcestring
   SExtensibleIntObjDuplicateClass = 'Implementation of that class already exists.';
@@ -404,7 +404,6 @@ resourcestring
   SDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
 
   { JvUrlListGrabber }
-resourcestring
   sENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
 
 implementation
