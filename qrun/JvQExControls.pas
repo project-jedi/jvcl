@@ -51,7 +51,7 @@ uses
   Qt, QTypes, QGraphics, QControls, QForms, QStdCtrls, QMask, QClipbrd,
   Types, QWindows,  
   Classes, SysUtils,
-  JvQTypes, JvQThemes, JVQCLVer;
+  JvQTypes, JvQThemes, JVCLXVer;
 
 
 

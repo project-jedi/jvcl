@@ -977,7 +977,7 @@ var
 begin
   { Value must be >= 1-1-1980 }
   DosFileTime := DateTimeToDosDateTime(Value);
-  if not DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
+  if not Windows.DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
     LongRec(DosFileTime).Lo, LocalFileTime) or
     not LocalFileTimeToFileTime(LocalFileTime, FLastChangeAfterFT) then
     RaiseLastOSError;
@@ -992,7 +992,7 @@ var
 begin
   { Value must be >= 1-1-1980 }
   DosFileTime := DateTimeToDosDateTime(Value);
-  if not DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
+  if not Windows.DosDateTimeToFileTime(LongRec(DosFileTime).Hi,
     LongRec(DosFileTime).Lo, LocalFileTime) or
     not LocalFileTimeToFileTime(LocalFileTime, FLastChangeBeforeFT) then
     RaiseLastOSError;

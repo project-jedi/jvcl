@@ -37,7 +37,7 @@ interface
 uses
   SysUtils, Classes, Contnrs, 
   Types, QGraphics, QControls, QForms, QComCtrls, CommCtrl, QStdActns,
-  JVQCLVer, JvQExComCtrls;
+  JVCLXVer, JvQExComCtrls;
 
 type  
   TStatusPanelClass = class of TStatusPanel; 

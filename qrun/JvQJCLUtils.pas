@@ -52,8 +52,9 @@ uses
   {$IFDEF LINUX}
   Libc, Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
-  SysUtils, Classes,  
-  Qt, QGraphics, QClipbrd, Types, QWindows,  
+  SysUtils, Classes,
+  Types, QGraphics, QClipbrd, 
+  Qt, QWindows,  
   Variants, 
   TypInfo;
 
@@ -3224,11 +3225,11 @@ begin
   TOpenIcon(Ico).AssignTo(Result);
 end;
 
-procedure CopyIconToClipboard(Ico: TIcon; TransparentColor: TColor);
+procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 var
   bmp: TBitmap;
 begin
-  bmp := Icon2Bmp(Ico);
+  bmp := Icon2Bmp(Icon);
   Clipboard.Assign(Bmp);
 end;
 

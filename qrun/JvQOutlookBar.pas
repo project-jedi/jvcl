@@ -774,7 +774,7 @@ begin
     ParentButtonSize := TJvOutlookBarPage(Source).ParentButtonSize;
     ParentColor := TJvOutlookBarPage(Source).ParentColor;
     Enabled := TJvOutlookBarPage(Source).Enabled;
-    QButtons.Clear;
+    Buttons.Clear;
     for I := 0 to TJvOutlookBarPage(Source).Buttons.Count - 1 do
       Buttons.Add.Assign(TJvOutlookBarPage(Source).Buttons[I]);
     Change;
@@ -791,7 +791,7 @@ end;
 
 procedure TJvOutlookBarPage.SetTopButtonIndex(const Value: Integer);
 begin
-  if (FTopButtonIndex <> Value) and (Value >= 0) and (Value < QButtons.Count) then
+  if (FTopButtonIndex <> Value) and (Value >= 0) and (Value < Buttons.Count) then
   begin
     FTopButtonIndex := Value;
     Change;
@@ -963,7 +963,7 @@ end;
 
 procedure TJvOutlookBarPage.SetDownIndex(Value: Integer);
 begin
-  if (Value >= 0) and (Value < QButtons.Count) then
+  if (Value >= 0) and (Value < Buttons.Count) then
     Buttons[Value].Down := True;
 end;
 
@@ -1106,7 +1106,7 @@ procedure TJvCustomOutlookBar.DoDwnClick(Sender: TObject);
 begin
   if FBtmButton.Visible then
     with Pages[ActivePageIndex] do
-      if TopButtonIndex < QButtons.Count then
+      if TopButtonIndex < Buttons.Count then
         TopButtonIndex := TopButtonIndex + 1;
 end;
 
