@@ -315,6 +315,9 @@ contains
   JvHotkeyEx in '..\Source\JvHotkeyEx.pas',
   JvObjSel in '..\source\JvObjSel.pas',
   JvObjPickerComp in '..\source\JvObjPickerComp.pas',
-  JvImageDrawThread in '..\source\JvImageDrawThread.pas';
+  JvImageDrawThread in '..\source\JvImageDrawThread.pas',
+  JvInspXVCL in '..\source\JvInspXVCL.pas',
+  JvInspector in '..\source\JvInspector.pas',
+  JvInspDB in '..\source\JvInspDB.pas';
 
 end.
