@@ -316,7 +316,7 @@ type
     { Returns the margins of the edit box }
     procedure GetInternalMargins(var ALeft, ARight: Integer); virtual;
     procedure CreatePopup; virtual;
-    procedure HidePopup; virtual;
+    procedure HidePopup; virtual; // (ahuser): WARNING: Do not release or free the component in HidePopup -> else AV in MouseUp
     procedure ShowPopup(Origin: TPoint); virtual;
     {$IFDEF VisualCLX}
     procedure DoFlatChanged; override;
@@ -1974,7 +1974,7 @@ begin
     Text := Value;
     Modified := True;
     UpdatePopupVisible;
-    //DoChange; (ahuser) Text := Value trifferes Change;
+    //DoChange; (ahuser) Text := Value triggers Change;
   end;
 end;
 
