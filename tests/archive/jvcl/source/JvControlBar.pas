@@ -172,7 +172,7 @@ procedure TJvControlBar.PopupMenuClick(Sender: TObject);
 begin
   with Sender as TMenuItem do
   begin
-    {$IFDEF COMPILER6_UP}
+    {$IFNDEF COMPILER6_UP}
     Checked := not Checked;
     {$ENDIF}
     if (Tag>=0) and (Tag<ControlCount) then
