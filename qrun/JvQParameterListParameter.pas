@@ -592,6 +592,13 @@ begin
     end;
 end;
 
+{$IFDEF LINUX}
+procedure CreateWinControl(AParameterParent: TWinControl);
+begin
+
+end;
+{$ENDIF LINUX}
+
 procedure TJvBasePanelEditParameter.CreateLabelControl(AParameterParent: TWinControl);
 begin
   if Caption = '' then

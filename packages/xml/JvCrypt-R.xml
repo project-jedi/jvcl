@@ -18,7 +18,7 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvZlibMultiple.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvZlibMultiple.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvCabFile.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvCipher.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvGenetic.pas" Targets="all" Formname="" Condition=""/>
