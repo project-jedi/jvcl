@@ -760,22 +760,22 @@ msgstr "Gerät nicht eingesteckt"
 #  Programmer's name for it: RsHIDP_STATUS_INVALID_PREPARSED_DATA
 #: JvHidControllerClass.pas:454
 msgid "invalid preparsed data"
-msgstr ""
+msgstr "Ungültige parsierte Daten"
 
 #  Programmer's name for it: RsHIDP_STATUS_INVALID_REPORT_TYPE
 #: JvHidControllerClass.pas:455
 msgid "invalid report type"
-msgstr "Ungültiger Berichtstyp"
+msgstr "Ungültiger Report"
 
 #  Programmer's name for it: RsHIDP_STATUS_INVALID_REPORT_LENGTH
 #: JvHidControllerClass.pas:456
 msgid "invalid report length"
-msgstr "Ungüktige Berichtslänge"
+msgstr "Ungültige Reportlänge"
 
 #  Programmer's name for it: RsHIDP_STATUS_USAGE_NOT_FOUND
 #: JvHidControllerClass.pas:457
 msgid "usage not found"
-msgstr ""
+msgstr "Usage nicht gefunden"
 
 #  Programmer's name for it: RsHIDP_STATUS_VALUE_OUT_OF_RANGE
 #  Programmer's name for it: RsHIDP_STATUS_VALUE_OUT_OF_RANGE
@@ -806,22 +806,22 @@ msgstr "Interner Fehler"
 #: JvHidControllerClass.pas:462
 #: JvResources.pas:849
 msgid "8042 key translation impossible"
-msgstr ""
+msgstr "8042 Tastenübersetzung unmöglich"
 
 #  Programmer's name for it: RsHIDP_STATUS_INCOMPATIBLE_REPORT_ID
 #: JvHidControllerClass.pas:463
 msgid "incompatible report ID"
-msgstr ""
+msgstr "inkompatible Report ID"
 
 #  Programmer's name for it: RsHIDP_STATUS_NOT_VALUE_ARRAY
 #: JvHidControllerClass.pas:464
 msgid "not a value array"
-msgstr "Kein gültiges Array"
+msgstr "Keine Werteliste"
 
 #  Programmer's name for it: RsHIDP_STATUS_IS_VALUE_ARRAY
 #: JvHidControllerClass.pas:465
 msgid "is a value array"
-msgstr ""
+msgstr "Werteliste"
 
 #  Programmer's name for it: RsHIDP_STATUS_DATA_INDEX_NOT_FOUND
 #: JvHidControllerClass.pas:466
@@ -843,7 +843,7 @@ msgstr "Button nicht gedrückt"
 #  Programmer's name for it: RsHIDP_STATUS_REPORT_DOES_NOT_EXIST
 #: JvHidControllerClass.pas:469
 msgid "report does not exist"
-msgstr "Bericht ist nicht vorhanden"
+msgstr "Report existiert nicht"
 
 #  Programmer's name for it: RsHIDP_STATUS_NOT_IMPLEMENTED
 #  Programmer's name for it: RsENotImplemented
@@ -857,7 +857,7 @@ msgstr "Nicht implementiert"
 #  Programmer's name for it: RsUnknownHIDFmt
 #: JvHidControllerClass.pas:471
 msgid "unknown HID error %x"
-msgstr ""
+msgstr "unbekannter HID-Fehler %x"
 
 #  Programmer's name for it: RsHIDErrorPrefix
 #  Programmer's name for it: RsHIDErrorPrefix
@@ -866,26 +866,26 @@ msgstr ""
 #: JvHidControllerClass.pas:472
 #: JvResources.pas:859
 msgid "HID Error: "
-msgstr "HID Fehler:"
+msgstr "HID-Fehler:"
 
 #  Programmer's name for it: RsEDirectThreadCreationNotAllowed
 #  Programmer's name for it: RsEDirectThreadCreationNotAllowed
 #: JvHidControllerClass.pas:474
 #: JvResources.pas:861
 msgid "Direct creation of a TJvDeviceReadThread object is not allowed"
-msgstr ""
+msgstr "Ein TJvDeviceReadThread-Objekt zu instanziieren ist verboten"
 
 #  Programmer's name for it: RsEDirectHidDeviceCreationNotAllowed
 #  Programmer's name for it: RsEDirectHidDeviceCreationNotAllowed
 #: JvHidControllerClass.pas:475
 #: JvResources.pas:862
 msgid "Direct creation of a TJvHidDevice object is not allowed"
-msgstr ""
+msgstr "Ein TJvHidDevice-Objekt zu instanziieren ist verboten"
 
 #  Programmer's name for it: RsEDeviceCannotBeIdentified
 #: JvHidControllerClass.pas:476
 msgid "device cannot be identified"
-msgstr "Gerät konnte nicht erkannt werden"
+msgstr "Gerät konnte nicht identifiziert werden"
 
 #  Programmer's name for it: RsEDeviceCannotBeOpened
 #: JvHidControllerClass.pas:477
@@ -906,7 +906,7 @@ msgstr "Es ist nur ein TJvHidDeviceController pro Programm erlaubt"
 #: JvHidControllerClass.pas:479
 #: JvResources.pas:866
 msgid "HID Error: a boolean function failed"
-msgstr "HID Fehler: Eine boolsche Funktion schlug fehl"
+msgstr "HID-Fehler: Eine boolesche Funktion schlug fehl"
 
 #  (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
 #  Programmer's name for it: RsPropertyNotExists
@@ -1001,7 +1001,7 @@ msgstr "Hilfedateien|*.chm;*.hlp"
 #  JvJVCLAboutForm..Caption
 #: JvJVCLAboutForm.xfm:9
 msgid "About JEDI-VisualCLX"
-msgstr "Über JEDU-VisualCLX"
+msgstr "Über JEDI-VisualCLX"
 
 #  JvJVCLAboutForm..MainPanel..Label1..Caption
 #  JvJVCLAboutForm..MainPanel..Label2..Caption
@@ -1134,14 +1134,14 @@ msgstr "Semaphore schlug fehl (%d)"
 #: JvMTSync.pas:111
 #: JvResources.pas:1225
 msgid "Semaphore was abandoned"
-msgstr "Semaphore wurde zurückgewiesen"
+msgstr "Semaphore wurde aufgegeben"
 
 #  Programmer's name for it: RsEThreadAbandoned
 #  Programmer's name for it: RsEThreadAbandoned
 #: JvMTSync.pas:112
 #: JvResources.pas:1226
 msgid "Thread was abandoned"
-msgstr "Thread wurde zurückgewiesen"
+msgstr "Thread wurde aufgegeben"
 
 #  Programmer's name for it: RsECurThreadIsPartOfManager
 #  === JvMTThreading.pas ======================================================
