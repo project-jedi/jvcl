@@ -10,6 +10,7 @@ type
   TfrmGrpOverviewGen = class(TForm)
     btnBuild: TButton;
     mmLog: TMemo;
+    cxIncludeIcons: TCheckBox;
     procedure btnBuildClick(Sender: TObject);
   private
     { Private declarations }
@@ -154,6 +155,44 @@ var
   I: Integer;
   TopicID: string;
   S: string;
+
+  function GetSummary: string;
+  var
+    J: Integer;
+  begin
+    J := I;
+    while (J < TopicFile.Count) and not AnsiSameText(Trim(TopicFile[J]), 'Summary') and (Copy(TopicFile[J], 1, 2) <> '@@') do
+      Inc(J);
+    Result := '';
+    if (J < TopicFile.Count) and AnsiSameText(Trim(TopicFile[J]), 'Summary') then
+    begin
+      Inc(J);
+      while (J < TopicFile.Count) and ((Length(TopicFile[J]) = 0) or (TopicFile[J][1] = ' ')) do
+      begin
+        Result := Result + ' ' + Trim(TopicFile[J]);
+        Inc(J);
+      end;
+      Result := Trim(Result);
+    end;
+    if Result = '' then
+      Result := '(no summary)';
+  end;
+
+  function GetTitleImage: string;
+  var
+    J: Integer;
+  begin
+    J := I;
+    while (J < TopicFile.Count) and not AnsiSameText(Copy(Trim(TopicFile[J]), 1, 10), '<TITLEIMG ') and (Copy(TopicFile[J], 1, 2) <> '@@') do
+      Inc(J);
+    Result := '';
+    if (J < TopicFile.Count) and AnsiSameText(Copy(Trim(TopicFile[J]), 1, 10), '<TITLEIMG ') then
+      Result := Copy(Trim(TopicFile[J]), 11, Length(Trim(TopicFile[J])) - 11);
+    Result := Trim(Result);
+    if Result = '' then
+      Result := 'NO_ICON';
+  end;
+
 begin
   TopicFile := TStringList.Create;
   try
@@ -165,20 +204,15 @@ begin
     I := TopicFile.IndexOf('@@' + TopicID);
     Assert(I > -1);
     Inc(I);
-    while (I < TopicFile.Count) and not AnsiSameText(Trim(TopicFile[I]), 'Summary') and (Copy(TopicFile[I], 1, 2) <> '@@') do
-      Inc(I);
-    S := '';
-    Inc(I);
-    while (I < TopicFile.Count) and ((Length(TopicFile[I]) = 0) or (TopicFile[I][1] = ' ')) do
-    begin
-      S := S + ' ' + Trim(TopicFile[I]);
-      Inc(I);
-    end;
-    S := Trim(S);
-    if S = '' then
-      S := '(no summary)';
+    S := GetSummary;
     DoWrap(MaxNameLen + Indent + 2, S);
-    S := StringOfChar(' ', Indent) + TopicID + StringOfChar(' ', MaxNameLen - Length(TopicID)) + Copy(S, MaxNameLen + Indent + 1, Length(S));
+    if cxIncludeIcons.Checked then
+      S := StringOfChar(' ', Indent) + '<IMAGE ' + GetTitleImage + '> ' + TopicID +
+        StringOfChar(' ', MaxNameLen - Length(TopicID) - 9 -Length(GetTitleImage)) +
+        Copy(S, MaxNameLen + Indent + 1, Length(S))
+    else
+      S := StringOfChar(' ', Indent) + TopicID + StringOfChar(' ', MaxNameLen - Length(TopicID)) +
+        Copy(S, MaxNameLen + Indent + 1, Length(S));
     List.Add(S);
   finally
     TopicFile.Free;
@@ -197,14 +231,14 @@ begin
     AddLog(Format('Building overview for "%s"...', [Grp]));
     IndentLog;
     try
-(*      SL.Add(StringOfChar('#', 100));
+      SL.Add(StringOfChar('#', 100));
       S := '## Overview for ' + Copy(Grp, 10, Length(Grp) - 10);
       S := S + StringOfChar(' ', 100 - 2 - Length(S)) + '##';
       SL.Add(S);
       S := '## Generated ' + FormatDateTime('mm-dd-yyyy, hh:nn:ss', Now);
       S := S + StringOfChar(' ', 100 - 2 - Length(S)) + '##';
       SL.Add(S);
-      SL.Add(StringOfChar('-', 100)); *)
+      SL.Add(StringOfChar('#', 100));
       MaxNameLen := Length('Component');
       for I := 0 to TopicList.Count - 1 do
       begin
@@ -212,6 +246,8 @@ begin
           MaxNameLen := Length(TopicList.Names[I]);
       end;
       SL.Add('  <TABLE>');
+      if cxIncludeIcons.Checked then
+        MaxNameLen := MaxNameLen * 2 + 16;
       SL.Add('    Component' + StringOfChar(' ', MaxNameLen - Length('Component')) + '  Description');
       SL.Add('    ' + StringOfChar('-', MaxNameLen) + '  ' + StringOfChar('-', 94 - MaxNameLen));
       for I := 0 to TopicList.Count - 1 do

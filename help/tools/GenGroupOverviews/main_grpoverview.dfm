@@ -37,6 +37,14 @@ object frmGrpOverviewGen: TfrmGrpOverviewGen
     Font.Style = []
     ParentFont = False
     ScrollBars = ssVertical
+    TabOrder = 2
+  end
+  object cxIncludeIcons: TCheckBox
+    Left = 95
+    Top = 10
+    Width = 126
+    Height = 17
+    Caption = 'Include palette icons'
     TabOrder = 1
   end
 end
