@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-10-09
+Last Modified: 2003-11-29
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -142,7 +142,7 @@ type
     property ResourceIds: TStrings read FResourceIds write SetResourceIds;
       // ResourceIds contains the resource ids of the bitmaps to load. Allowed
       // are RCDATA (a bitmap file) and BITMAP. ResourceIds property is only
-      // loaded into the image list if the Mode is imResourceIds.
+      // loaded into the image list if Mode is imResourceIds.
 
     property Mode: TJvImageListMode read FMode write SetMode default imPicture;
       // Mode specifies which property the component should use.
@@ -188,7 +188,7 @@ type
   TOpenCustomImageList = class(TCustomImageList);
 
  // we need direct access to the FHandle field because the Handle property
- // calls the Changed method that calls HandleNeeded to calls SetHandle, ...
+ // calls the Changed method that calls HandleNeeded that calls SetHandle, ...
   TImageListPrivate = class(TComponent)
   protected
     FHeight: Integer;
@@ -687,52 +687,6 @@ begin
     EndUpdate;
   end;
 end;
-
-(*
-procedure TJvImageList.DefineProperties(Filer: TFiler);
-{$IFDEF VCL}
-var
-  bShare: Boolean;
-  hHandle: THandle;
-{$ENDIF}
-begin
-  Inc(FUpdateLock); // no BeginUpdate/EndUpdate here
-  try
-    if (Filer is TWriter) then
-      DoLoadFromFile; // update Picture.Graphic if a filename is specified
-
-    if (Filer is TWriter) and (FPicture.Graphic <> nil) and
-       (not FPicture.Graphic.Empty) and
-       (FMode <> imClassic) then
-    begin
-    {$IFDEF VCL}
-      bShare := ShareImages;
-      hHandle := Handle;
-      try
-        ShareImages := True;
-        Handle := 0;
-        inherited DefineProperties(Filer);
-      finally
-        Handle := hHandle;
-        ShareImages := bShare;
-      end;
-    {$ENDIF}
-    {$IFDEF VisualCLX}
-      Clear;
-      try
-        inherited DefineProperties(Filer);
-      finally
-        UpdateImageList;
-      end;
-    {$ENDIF}
-    end
-    else
-      inherited DefineProperties(Filer);
-  finally
-    Dec(FUpdateLock);
-  end;
-end;
-*)
 
 type
   TOpenComponent = class(TComponent);
