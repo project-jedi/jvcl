@@ -37,7 +37,9 @@ procedure Register;
 implementation
 {$R JvP3Reg.dcr}
 uses
-  JvArrowBtn, JvBmpAnim, JvCaptionButton, JvColorCombo, JvProgBarEx,
+  JvArrowBtn, JvBmpAnim, JvCaptionButton,
+  JvColorCombo,
+  {$IFNDEF D6PersonalEdition}  JvProgBarEx,  {$ENDIF}
   JvDriveCtrls, JvFindReplace, JvInstallLabel, JvLineEdit, JvRollOut, JvScrollPanel,
   JvTransBtn2, JvTimeLine, JvTimeLineEdit, JvShFileOp, JvAppHotKey,
 
@@ -57,7 +59,8 @@ procedure Register;
 begin
   RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
   RegisterComponents(cPage, [TJvArrowButton, TJvBmpAnimator, TJvCaptionButton,
-    TJvColorComboBox, TJvFontComboBox2, TJvProgressBar2,
+    TJvColorComboBox, TJvFontComboBox2,
+{$IFNDEF D6PersonalEdition} TJvProgressBar2,{$ENDIF}
       TJvDriveCombo, TJvDriveList, TJvFindReplace, TJvInstallLabel, TJvLineCombo, TJvLineEdit,
       TJvRollOut, TJvScrollingWindow, TJvDivider,TJvSHFileOperation, TJvTransparentButton2,
       TJvTimeline, TJvDirectoryListBox, TJvFileListBox,TJvApplicationHotKey,TJvFindFilesDialog2,
