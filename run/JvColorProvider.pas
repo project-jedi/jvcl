@@ -303,8 +303,6 @@ type
     property TextSettings: TJvColorProviderTextSettings read Get_TextSettings;
   end;
 
-procedure Register;
-
 implementation
 
 uses
@@ -1924,11 +1922,6 @@ begin
   FreeAndNil(FStandardColorSettings);
   FreeAndNil(FSystemColorSettings);
   inherited Destroy;
-end;
-
-procedure Register;
-begin
-  RegisterComponents('Jv DataProviders', [TJvColorProvider]);
 end;
 
 initialization
