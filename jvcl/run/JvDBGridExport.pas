@@ -141,6 +141,7 @@ type
   private
     FExcel: OleVariant;
     FVisible: boolean;
+    FAutoFit:Boolean;
     FOrientation: TWordOrientation;
     FClose: TOleServerClose;
     FRunningInstance: boolean;
@@ -160,6 +161,7 @@ type
     property Close: TOleServerClose read FClose write FClose default scNewInstance;
     property Visible: boolean read FVisible write FVisible default false;
     property Orientation: TWordOrientation read FOrientation write FOrientation default woPortrait;
+    property AutoFit:Boolean read FAutoFit write FAutoFit;
   end;
 
   TJvDBGridHTMLExport = class(TJvCustomDBGridExport)
@@ -570,10 +572,13 @@ begin
   if VarIsEmpty(FExcel) then
     Exit;
   try
+
     FExcel.WorkBooks.Add;
     FExcel.Visible := Visible;
 
+
     lTable := FExcel.ActiveWorkbook.ActiveSheet;
+
     if Orientation = woPortrait then
       lTable.PageSetup.Orientation := xlPortrait
     else
@@ -623,6 +628,15 @@ begin
           if not DoProgress(0, lRecCount, ARecNo, Caption) then
             Last;
         end;
+        if FAutoFit then begin
+           try
+             lTable.Columns.AutoFit; // NEW! Autofit!
+           except
+              on E:Exception do begin
+                OutputDebugString(PChar('lTable.Columns.AutoFit failed. '+E.Message));
+              end;
+           end;
+        end;
         DoProgress(0, lRecCount, lRecCount, Caption);
       finally
         try
@@ -657,6 +671,11 @@ end;
 
 procedure TJvDBGridExcelExport.DoClose;
 begin
+  if not VarIsEmpty(FExcel) and (FClose = scNever) then begin
+    FExcel.Visible := true;
+    exit;
+  end;
+
   if not VarIsEmpty(FExcel) and (FClose <> scNever) then
   try
     FExcel.ActiveWorkbook.Saved := true; // Avoid Excel's save prompt
