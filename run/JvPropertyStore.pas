@@ -138,6 +138,9 @@ type
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
+  RTLConsts,
+  {$ENDIF}
   Consts, SysUtils, Typinfo;
 
 const
