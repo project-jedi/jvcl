@@ -32,7 +32,7 @@ interface
 
 uses
   SysUtils, Classes, TypInfo, Windows, Graphics, Controls,
-  JvXPCore;
+  JvJCLUtils, JvXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
@@ -284,13 +284,7 @@ procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
 
   procedure DoDrawText;
   begin
-    {$IFDEF VCL}
-    DrawText(ACanvas.Handle, PChar(AText), -1, Rect, Flags);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    SetPenColor(ACanvas.Handle, ACanvas.Font.Color);
-    DrawText(ACanvas.Handle, WideString(AText), -1, Rect, Flags);
-    {$ENDIF VisualCLX}
+    DrawText(ACanvas, AText, -1, Rect, Flags);
   end;
 
 begin

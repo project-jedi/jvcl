@@ -36,7 +36,7 @@ uses
   {$IFDEF VisualCLX}
   QExtCtrls,
   {$ENDIF VisualCLX}
-  JvXPCore, JvXPCoreUtils;
+  JvJCLUtils, JvXPCore, JvXPCoreUtils;
 
 type
   TJvXPPaintEvent = procedure(Sender: TObject; Rect: TRect; ACanvas: TCanvas;
@@ -385,21 +385,11 @@ var
   DrawStyle: LongInt;
   CalcRect: TRect;
 
-  {$IFDEF VCL}
-  procedure DoDrawText(Handle: HDC; const ACaption: string; var ARect: TRect;
+  procedure DoDrawText(Canvas: TCanvas; const ACaption: TCaption; var ARect: TRect;
     Flags: Integer);
   begin
-    DrawText(Handle, PChar(ACaption), -1, ARect, Flags);
+    DrawText(Canvas, ACaption, -1, ARect, Flags);
   end;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  procedure DoDrawText(Handle: HDC; const ACaption: TCaption; var ARect: TRect;
-    Flags: Integer);
-  begin
-    SetPainterFont(Handle, AFont);
-    DrawTextW(Handle, PWideChar(ACaption), -1, ARect, Flags);
-  end;
-  {$ENDIF VisualCLX}
 
 begin
   with AParent, Canvas do
@@ -411,13 +401,13 @@ begin
     if ALayout <> tlTop then
     begin
       CalcRect := ARect;
-      DoDrawText(Handle, ACaption, CalcRect, DrawStyle or DT_CALCRECT);
+      DoDrawText(Canvas, ACaption, CalcRect, DrawStyle or DT_CALCRECT);
       if ALayout = tlBottom then
         OffsetRect(ARect, 0, ARect.Bottom - CalcRect.Bottom)
       else
         OffsetRect(ARect, 0, (ARect.Bottom - CalcRect.Bottom) div 2);
     end;
-    DoDrawText(Handle, ACaption, ARect, DrawStyle);
+    DoDrawText(Canvas, ACaption, ARect, DrawStyle);
   end;
 end;
 
