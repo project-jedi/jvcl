@@ -111,7 +111,7 @@ const
   {$IFDEF DELPHI7}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
   {$ENDIF DELPHI7}
-  {$IFDEF BCB7} // will it ever be released?
+  {$IFDEF BCB7} // will it ever be released? No.
   SDelphiKey = 'Software\Borland\C++Builder\7.0';
   {$ENDIF BCB7}
   {$IFDEF DELPHI8}
