@@ -429,14 +429,14 @@ begin
   Frame3D(Canvas, FDownRect, clBtnHighLight, clBtnShadow, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
-    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
+    DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, False)
   else
-    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, True);
+    DrawItemText(GetItemAt(FDownRect.Left + 1, 1), FDownRect, False);
 end;
 
 procedure TJvItemsPanel.PaintHi;
 begin
-  Frame3D(Canvas, FDownRect, clWhite, clBlack, 1);
+  Frame3D(Canvas, FDownRect, HotTrackColor, HotTrackColor, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
     DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
