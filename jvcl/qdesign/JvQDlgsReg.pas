@@ -48,9 +48,9 @@ uses
   DesignEditors, DesignIntf,
 
   JvQDsgnConsts,
-  JvQBaseDlg, JvQCommonExecDlg, JvQTipOfDay,
+  JvQBaseDlg, JvQFindReplace, JvQCommonExecDlg, JvQTipOfDay,
   JvQActnResForm, JvQProgressComponent,
-  JvQImageDlg, JvQDualList, {JvQDSADialogs,}
+  JvQImageDlg, JvQDualList, JvQDSADialogs,
   JvQProgressDialog, JvQBaseDlgEditor, JvQTipOfDayEditor;
 
 {$R ../Resources/JvDlgsReg.dcr}
@@ -59,7 +59,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteDialog, [
     TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog,
-    TJvDualListDialog, TJvImageDialog, {TJvDSADialog,}
+    TJvDualListDialog, TJvImageDialog, TJvFindReplace, TJvDSADialog,
     TJvProgressDialog, TJvProgressComponent, TJvTipOfDay]);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
 
