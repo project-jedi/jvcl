@@ -296,10 +296,17 @@ encounter an error when using one of the JVCL components. The below
 list
 contains the known errors and their solutions.<br>
 <br>
-<h5>E2238 Multiple declaration for '_fastcall TJvClass::TJvClass'<br>
+<h5>E2238 Multiple declaration for '_fastcall TJvClass::SomeFunction'<br>
 </h5>
 <p>This one is coupled with an E2344 error. This problems comes from
-the fact that in C++, constructors are named after the class name and
+the fact that C++ Builder puts all the inherited functions in the
+declaration of a class in a header file and the VCL may already define
+a method with the same name and the same parameters. If your method is
+not a constructor, the easiest solution is to rename it so that it is
+different from the inherited one. However, if the error occurs on a
+constructor (TJvClass::TJvClass), you must follow the guidelines
+hereafter. This problem comes from the fact that in C++, constructors
+are named after the class name and
 there is no way to change that. So to avoid confusion, avoid calling
 your constructors anything else than Create. If you need additionnal
 parameters, use the overload directive and adapt your code to take this
