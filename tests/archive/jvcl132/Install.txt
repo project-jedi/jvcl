@@ -11,9 +11,9 @@ Install notes for JEDI-VCL (JVCL) Version 1.31 for Delphi 5/Delphi 6
     c) for Delphi 5 it's "JVCL100_D50.dpk" 
 
 
-4) Click on the "Install" button
+4) Click on the "Compile" button, and then on "Install" button
 
- If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that in your packages following paths:
+If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that in your packages following paths:
 
 $(DELPHI)\source\extras\zlib\
 $(DELPHI)\source\extras\zlib\obj
@@ -21,6 +21,8 @@ $(DELPHI)\source\extras\zlib\obj
 are in your Search path ( click on package Options, and then on "Directories" tab)
 
 Of course, you need to install those files from Delphi first. If the EXTRAS subdirectory doesn't exist, please install the files from your Delphi CD.
+
+
 
 5) The window showing all the components that have been installed will be very big, and most probably you won't see the "OK" button, so just close the window. You should have JVCL installed on your PC.
 
