@@ -232,7 +232,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvCustomLogin.SetAppStorage(Value : TJvCustomAppStorage);
+procedure TJvCustomLogin.SetAppStorage(Value: TJvCustomAppStorage);
 begin
   FAppStorage := Value;
 end;

@@ -41,7 +41,7 @@ uses
   SysUtils, Classes,
   QWindows, QControls, QForms, QExtCtrls, 
   QGraphics, Qt, 
-  JvQHTControls, JvQTypes;
+  JvQHtControls, JvQTypes;
 
 type
   TJvHintWindow = class(THintWindow)
@@ -271,7 +271,7 @@ const
     RCSfile: '$RCSfile$';
     Revision: '$Revision$';
     Date: '$Date$';
-    LogPath: 'JVCL\run'
+    LogPath: 'JVCL\qrun'
   );
 
 initialization

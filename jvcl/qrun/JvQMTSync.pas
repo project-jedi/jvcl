@@ -319,11 +319,13 @@ end;
 
 procedure TMTSimpleEvent.ResetEvent;
 begin
+  OutputDebugString('TMTSimpleEvent ResetEvent');
   QWindows.ResetEvent(FHandle);
 end;
 
 procedure TMTSimpleEvent.SetEvent;
 begin
+  OutputDebugString('TMTSimpleEvent SetEvent');
   QWindows.SetEvent(FHandle);
 end;
 

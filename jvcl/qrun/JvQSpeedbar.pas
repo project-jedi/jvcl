@@ -1985,7 +1985,9 @@ begin
     if BevelInner <> bvNone then
       Inc(BevelSize, BevelWidth);
     InflateRect(Rect, -BevelSize, -BevelSize);
-    inherited Paint;     
+    inherited Paint;
+    Canvas.Brush.Color := Color; 
+      Canvas.FillRect(Rect);
     if (FWallpaper.Graphic <> nil) and (FWallpaper.Width > 0) and
       (FWallpaper.Height > 0) then
     begin

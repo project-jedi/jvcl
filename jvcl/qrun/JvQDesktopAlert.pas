@@ -661,7 +661,7 @@ begin
   FLocation := TJvDesktopAlertLocation.Create;
   FLocation.OnChange := DoLocationChange;
 
-  FDesktopForm := TJvFormDesktopAlert.CreateNew(Self, 0);
+  FDesktopForm := TJvFormDesktopAlert.Create(Self);
   AlertStyle := asFade;
 
   FOptions := [daoCanClick..daoCanClose];
@@ -706,7 +706,7 @@ procedure TJvDesktopAlert.Execute;
 var
   ARect: TRect;
   I, X, Y: Integer;
-  FActiveWindow: HWND;
+  FActiveWindow, FActiveFocus: HWND;
 
   procedure CenterForm(AForm: TForm; ARect: TRect);
   begin
@@ -816,12 +816,24 @@ begin
   end;
   Location.Position := GetStacker.Position;
   if not AutoFocus then
-    FActiveWindow := GetActiveWindow
+  begin
+    FActiveFocus := GetFocus;
+    FActiveWindow := GetActiveWindow;
+  end
   else
+  begin
     FActiveWindow := NullHandle;
+    FActiveFocus := NullHandle;
+  end;
+  FDesktopForm.AllowFocus := AutoFocus;
   FDesktopForm.Show;
-  if not AutoFocus and (FActiveWindow <> NullHandle) then
-    SetActiveWindow(FActiveWindow);
+  if not AutoFocus and (FActiveFocus <> GetFocus) then
+  begin
+    if (FActiveWindow <> NullHandle) then
+      SetActiveWindow(FActiveWindow);
+    if (FActiveFocus <> NullHandle) then
+      SetFocus(FActiveFocus);
+  end;
   GetStacker.Add(FDesktopForm);
 end;
 
@@ -1422,7 +1434,7 @@ begin
     DynamicSetLayeredWindowAttributes(OwnerForm.Handle, 0, Value, LWA_ALPHA);
   end;
 end;
-  *)
+*)
 
 procedure TJvFadeAlertStyleHandler.EndAnimTimer(Sender: TObject);
 begin
@@ -1502,10 +1514,10 @@ var
   RegionRect: TRect;
   Region: HRGN;
   RegionHeight: Integer;
-  RegionWidth : Integer;
+  RegionWidth: Integer;
 begin
-  RegionHeight := Round(Percentage*OwnerForm.Height/100);
-  RegionWidth := Round(Percentage*OwnerForm.Width/100);
+  RegionHeight := Round(Percentage * OwnerForm.Height / 100.0);
+  RegionWidth := Round(Percentage * OwnerForm.Width / 100.0);
 
   RegionRect.Left := (OwnerForm.Width - RegionWidth) div 2;
   RegionRect.Right := RegionRect.Left + RegionWidth;

@@ -112,8 +112,10 @@ type
     procedure InitWidget; override;
     procedure Paint; override;
 //    procedure TextChanged; override;
-//    procedure KeyPress(var Key: Char); override; 
-    function HintShow(var HintInfo : THintInfo): Boolean; override;
+//    procedure KeyPress(var Key: Char); override;
+    function HintShow(var HintInfo: THintInfo): Boolean; override; 
+//    procedure DoSetFocus(FocusedWnd: HWND); override;
+//    procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
@@ -152,7 +154,7 @@ type
     property HotTrack;
     property PasswordChar;
     property PopupMenu;
-    property ProtectPassword; 
+    property ProtectPassword;
     property EchoMode; 
     property Align;
     property Alignment;
@@ -295,6 +297,7 @@ begin
 end;
 *)
 
+
 function TJvCustomEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
   if AutoHint and not TextFitsInCtrl(Self, Self.Text) then
@@ -304,6 +307,8 @@ begin
   end;
   Result := inherited HintShow(HintInfo);
 end;
+
+
 
 
 
@@ -535,7 +540,6 @@ begin
       S := Text
     else
       S := StringOfChar(PasswordChar, Length(Text));
-    Canvas.Font := Font;  
     if not PaintEdit(Self, S, FAlignment, False, {0,} FDisabledTextColor,
       Focused, Flat, Canvas) then
       inherited Paint;

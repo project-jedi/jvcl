@@ -5284,19 +5284,19 @@ var
   CurLeft: Integer;
   // for begin and end
   OldFontStyles: TFontStyles;
-  OldFontColor : TColor;
+  OldFontColor: TColor;
   OldBrushColor: TColor;
-  OldAlignment : TAlignment;
+  OldAlignment: TAlignment;
   OldFont: TFont;
-  OldWidth : iNTEGER;
+  OldWidth: Integer;
   // for font style
   RemFontColor,
   RemBrushColor: TColor;
-  RemFontSize  :Integer;
+  RemFontSize: Integer;
 
   function ExtractPropertyValue(const Tag: string; PropName: string): string;
   var
-    I : Integer;
+    I: Integer;
   begin
     Result := '';
     PropName := UpperCase(PropName);
@@ -5382,7 +5382,7 @@ var
   procedure NewLine(Always: Boolean= false);
   begin
     if Assigned(Canvas) then
-      if Always or (vCount < vStr.Count-1) then
+      if Always or (vCount < vStr.Count - 1) then
       begin
         Width := Max(Width, CurLeft);
         CurLeft := DefaultLeft;
@@ -5594,7 +5594,6 @@ begin
     Width := Max(Width, CurLeft - DefaultLeft);
 end;
 
-
 function HTMLDrawText(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string; Scale: Integer = 100): string;
 var
@@ -5631,16 +5630,16 @@ begin
   HTMLDrawTextEx(Canvas, Rect, State, Text, Result, htmlCalcWidth, 0, 0, S, St);
 end;
 
-
 function HTMLTextHeight(Canvas: TCanvas; const Text: string; Scale: Integer = 100): Integer;
-var S: Boolean;
-    St: String;
-    R : TRECT;
+var
+  S: Boolean;
+  St: string;
+  R: TRect;
 begin
-  R := Rect(0,0,0,0);
+  R := Rect(0, 0, 0, 0);
   HTMLDrawTextEx(Canvas, R, [], Text, Result, htmlCalcHeight, 0, 0, S, St, Scale);
   if Result = 0 then
-    Result := CanvasMaxTextHeight(Canvas); 
+    Result := CanvasMaxTextHeight(Canvas);
   Inc(Result);
 end;
 

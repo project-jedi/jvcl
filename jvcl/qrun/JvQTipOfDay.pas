@@ -39,8 +39,7 @@ interface
 
 uses
   Classes, QGraphics, QControls, QMessages, QForms, QStdCtrls,
-  JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton,
-  JvQTypes, JvQConsts;
+  JvQAppStorage, JvQBaseDlg, JvQButtonPersistent, JvQSpeedButton, JvQTypes, JvQConsts;
   
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -79,7 +78,7 @@ type
     FTipLabel: TControl;
     FNextTipButton: TControl;
     FCheckBox: TButtonControl;  
-    procedure FormHide(Sender : TObject); 
+    procedure FormHide(Sender: TObject); 
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
     function GetTips: TStrings;

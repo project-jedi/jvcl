@@ -40,6 +40,7 @@ type
   TJvDynControlType =
     (jctLabel, jctStaticText, jctPanel, jctScrollBox,
     jctEdit, jctCheckBox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
+    jctRadioButton,
     jctMemo, jctListBox, jctCheckListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
     jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
     jctButton, jctButtonEdit, jctForm,
@@ -66,7 +67,7 @@ type
     procedure NeedRegisterControls;
     procedure RegisterControls; virtual;
   public
-    constructor create; virtual;
+    constructor Create; virtual;
     function CreateControl(AControlType: TJvDynControlType; AOwner: TComponent;
       AParentControl: TWinControl; AControlName: string): TControl; virtual;
     function CreateControlClass(AControlClass: TControlClass; AOwner: TComponent;
@@ -75,7 +76,7 @@ type
     function IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
 
     function IsControlTypeValid (const ADynControlType: TJvDynControlType;
-      AControlClass: TControlClass) : Boolean; virtual;
+      AControlClass: TControlClass): Boolean; virtual;
     procedure RegisterControlType(const ADynControlType: TJvDynControlType;
       AControlClass: TControlClass); virtual;
 
@@ -90,8 +91,6 @@ type
   end;
 
   TJvDynControlEngine = class(TJvCustomDynControlEngine)
-  private
-  protected
   public
     function CreateLabelControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AFocusControl: TWinControl): TControl; virtual;
@@ -138,17 +137,16 @@ type
       const AButtonName, ACaption, AHint: string;
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
       ACancel: Boolean = False): TButton; virtual;
+    function CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
+      const ARadioButtonName, ACaption: string): TWinControl; virtual;
     function CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
     function CreateForm(const ACaption, AHint: string): TCustomForm; virtual;
 
     function CreateLabelControlPanel (AOwner: TComponent; AParentControl: TWinControl;
       const AControlName, ACaption: string; AFocusControl: TWinControl;
-      ALabelOnTop : Boolean = True; ALabelDefaultWidth : Integer = 0): TWinControl; virtual;
-
-  published
+      ALabelOnTop: Boolean = True; ALabelDefaultWidth: Integer = 0): TWinControl; virtual;
   end;
-
 
 
 
@@ -180,11 +178,12 @@ begin
     raise EIntfCastError.CreateRes(@RsEIntfCastError);
 end;
 
-constructor TJvCustomDynControlEngine.create;
-begin
-  inherited create;
-end;
+//=== { TJvCustomDynControlEngine } ==========================================
 
+constructor TJvCustomDynControlEngine.Create;
+begin
+  inherited Create;
+end;
 
 function TJvCustomDynControlEngine.IsControlTypeRegistered(const ADynControlType: TJvDynControlType): Boolean;
 begin
@@ -192,10 +191,8 @@ begin
   Result := Assigned(FRegisteredControlTypes[ADynControlType]);
 end;
 
-
-
-function TJvCustomDynControlEngine.IsControlTypeValid (const ADynControlType: TJvDynControlType;
-      AControlClass: TControlClass) : Boolean;
+function TJvCustomDynControlEngine.IsControlTypeValid(const ADynControlType: TJvDynControlType;
+  AControlClass: TControlClass): Boolean;
 var
   Valid: Boolean;
 begin
@@ -204,8 +201,8 @@ begin
     jctButton:
       Valid := Valid and Supports(AControlClass, IJvDynControlButton);
     jctButtonEdit:
-      Valid := Valid and Supports(AControlClass, IJvDynControlButton)
-                     and Supports(AControlClass, IJvDynControlData);
+      Valid := Valid and Supports(AControlClass, IJvDynControlButton) and
+        Supports(AControlClass, IJvDynControlData);
     jctPanel:
       Valid := Valid and Supports(AControlClass, IJvDynControlPanel);
     jctLabel:
@@ -429,7 +426,7 @@ begin
   // no registration
 end;
 
-
+//=== { TJvDynControlEngine } ================================================
 
 function TJvDynControlEngine.CreateLabelControl(AOwner: TComponent;
   AParentControl: TWinControl; const AControlName, ACaption: string;
@@ -628,6 +625,17 @@ begin
   Result.OnClick := AOnClick;
 end;
 
+function TJvDynControlEngine.CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
+      const ARadioButtonName, ACaption: string): TWinControl;
+var
+  DynCtrl: IJvDynControl;
+begin
+  Result := TWinControl(CreateControl(jctRadioButton, AOwner, AParentControl, ARadioButtonName));
+  if not Supports(Result, IJvDynControl, DynCtrl) then
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  DynCtrl.ControlSetCaption(ACaption);
+end;
+
 function TJvDynControlEngine.CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
   const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl;
 var
@@ -646,47 +654,47 @@ begin
   Result.Hint := AHint;
 end;
 
-function TJvDynControlEngine.CreateLabelControlPanel (AOwner: TComponent; AParentControl: TWinControl;
-      const AControlName, ACaption: string; AFocusControl: TWinControl; ALabelOnTop : Boolean = True; ALabelDefaultWidth : Integer = 0): TWinControl;
-Var
-  Panel : TWinControl;
-  LabelControl : TControl;
+function TJvDynControlEngine.CreateLabelControlPanel(AOwner: TComponent;
+  AParentControl: TWinControl; const AControlName, ACaption: string; AFocusControl: TWinControl;
+  ALabelOnTop: Boolean = True; ALabelDefaultWidth: Integer = 0): TWinControl;
+var
+  Panel: TWinControl;
+  LabelControl: TControl;
 begin
   if not Assigned(AFocusControl) then
-    raise Exception.Create('TJvDynControlEngine.CreateLabelControlPanel : AFocusControl must be assigned');
-  Panel := CreatePanelControl (AOwner, AParentControl, '', '', alNone);
-  LabelControl := CreateLabelControl (AOwner, Panel, '', ACaption, AFocusControl);
+    raise EJVCLException.CreateRes(@RsENoFocusControl);
+  Panel := CreatePanelControl(AOwner, AParentControl, '', '', alNone);
+  LabelControl := CreateLabelControl(AOwner, Panel, '', ACaption, AFocusControl);
 //  LabelControl.Width := panel.Canvas.
   AFocusControl.Parent := Panel;
   LabelControl.Top := 1;
   LabelControl.Left := 1;
   if ALabelOnTop then
   begin
-    AFocusControl.Top := LabelControl.Height+1;
+    AFocusControl.Top := LabelControl.Height + 1;
     AFocusControl.Left := 1;
     if LabelControl.Width > AFocusControl.Width then
       Panel.Width := LabelControl.Width
     else
       Panel.Width := AFocusControl.Width;
-    Panel.Height := AFocusControl.Height+LabelControl.Height;
+    Panel.Height := AFocusControl.Height + LabelControl.Height;
   end
   else
   begin
     if ALabelDefaultWidth > 0 then
      LabelControl.Width := ALabelDefaultWidth;
-    AFocusControl.Left := LabelControl.Width+1;
+    AFocusControl.Left := LabelControl.Width + 1;
     AFocusControl.Top := 1;
     if LabelControl.Height > AFocusControl.Height then
       Panel.Height := LabelControl.Height
     else
       Panel.Height := AFocusControl.Height;
-    Panel.Width := AFocusControl.Width+LabelControl.Width;
+    Panel.Width := AFocusControl.Width + LabelControl.Width;
   end;
   Panel.Width := Panel.Width + 1;
   Panel.Height := Panel.Height + 1;
   Result := Panel;
 end;
-
 
 procedure SetDefaultDynControlEngine(AEngine: TJvDynControlEngine);
 begin
@@ -698,8 +706,6 @@ function DefaultDynControlEngine: TJvDynControlEngine;
 begin
   Result := GlobalDefaultDynControlEngine;
 end;
-
-
 
 {$IFDEF UNITVERSIONING}
 const

@@ -249,7 +249,7 @@ type
     procedure SetGroupIndex(const Value: Integer); // RDB
     procedure SetPopupValue(const Value: Variant); virtual;
 //    procedure SetReadOnly(Value: Boolean); virtual;
-    procedure SetShowCaret; // Polaris
+//    procedure SetShowCaret; // Polaris
     procedure UpdatePopupVisible;
     property Alignment;
     property AlwaysEnableButton: Boolean read FAlwaysEnableButton write FAlwaysEnableButton default False;
@@ -1527,7 +1527,7 @@ procedure TJvCustomComboEdit.DoSetFocus(FocusedWnd: HWND);
 begin
   inherited DoSetFocus(FocusedWnd);
   FFocused := True;
-  SetShowCaret;
+//  SetShowCaret;
 end;
 
 procedure TJvCustomComboEdit.EditButtonClick(Sender: TObject);
@@ -1848,7 +1848,7 @@ begin
         begin
           SetFocus;
           if GetFocus = Handle then
-            SetShowCaret;
+//            SetShowCaret;
         end;
       except
         { ignore exceptions }
@@ -1914,7 +1914,7 @@ begin
     if DisableEdit then
     begin
       inherited ReadOnly := True;
-      HideCaret(Handle);
+//      HideCaret(Handle);
     end;
   end;
 end;
@@ -2243,6 +2243,7 @@ begin
   end;
 end;
 
+(*
 procedure TJvCustomComboEdit.SetShowCaret;
 const
   CaretWidth: array [Boolean] of Byte = (1, 2);
@@ -2250,6 +2251,7 @@ begin
   CreateCaret(Handle, 0, CaretWidth[fsBold in Font.Style], GetTextHeight);
   ShowCaret(Handle);
 end;
+*)
 
 procedure TJvCustomComboEdit.ShowPopup(Origin: TPoint);
 begin

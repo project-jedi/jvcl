@@ -34,6 +34,9 @@ unit JvQMTThreading;
 
 interface
 
+
+
+
 uses
   SysUtils, Classes, SyncObjs, Contnrs,
   {$IFDEF MSWINDOWS}

@@ -21,28 +21,27 @@ All Rights Reserved.
 
 Contributor(s):
 Hans-Eric Grönlund (stack logic)
+Olivier Sannier (animation styles logic)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-* This form is used by the TJvDeskTop component
+* This form is used by the TJvDesktopAlert component
 
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQDesktopAlertForm;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  QWindows,  
-  Types, 
-  Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
+  QWindows, QMessages, Classes, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
   QImgList, QActnList,
-  JvQButton, JvQLabel, JvQComponent;
+  JvQButton, JvQLabel, JvQComponent, JvQConsts;
 
 const
   cDefaultAlertFormWidth = 329;
@@ -84,24 +83,18 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnUserMove: TNotifyEvent;
     acClose: TAction;
-    FadeTimer: TTimer;
-    MouseTimer: TTimer;  
-
-    procedure FadeInTimer(Sender: TObject);
-    procedure FadeOutTimer(Sender: TObject);
-    procedure WaitTimer(Sender: TObject);
+    MouseTimer: TTimer;
+ 
 
     procedure DoMouseTimer(Sender: TObject);
-//    procedure FormPaint(Sender: TObject);
+    procedure FormPaint(Sender: TObject);
   protected
-    procedure FadeIn;
-    procedure FadeOut;
-    procedure Wait;
+    procedure BoundsChanged; override;
     procedure DoShow; override;
     procedure DoClose(var Action: TCloseAction); override;
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
-    procedure BoundsChanged; override;
+ 
   public
     imIcon: TImage;
     lblText: TJvLabel;
@@ -114,17 +107,13 @@ type
     Closeable: Boolean;
     ClickableMessage: Boolean;
     MouseInControl: Boolean;
-    MaxAlphaBlendValue: Byte;
-    FadeInTime: Integer;
-    FadeOutTime: Integer;
-    WaitTime: Integer;
     WindowColorFrom: TColor;
     WindowColorTo: TColor;
     CaptionColorFrom: TColor;
     CaptionColorTo: TColor;
     FrameColor: TColor;
-    procedure FadeClose; 
-    constructor CreateNew(AOwner: TComponent; Dummy: Integer = 0); override;
+    AllowFocus:boolean;
+    constructor Create(AOwner: TComponent); override;
     procedure acCloseExecute(Sender: TObject);
     procedure SetNewTop(const Value: Integer);
     procedure SetNewLeft(const Value: Integer);
@@ -132,13 +121,19 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnUserMove: TNotifyEvent read FOnUserMove write FOnUserMove;
+
   end;
 
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   QMenus,
-  JvQJVCLUtils;
+  SysUtils,
+  JvQJVCLUtils,
+  JvQDesktopAlert;
 
 {.$R *.dfm}// not needed
 
@@ -203,23 +198,24 @@ end;
 
 //=== { TJvFormDesktopAlert } ================================================
 
-constructor TJvFormDesktopAlert.CreateNew(AOwner: TComponent; Dummy: Integer);
+constructor TJvFormDesktopAlert.Create(AOwner: TComponent);
 begin
-  inherited CreateNew(AOwner, Dummy);  
+  inherited CreateNew(AOwner, 1);
+
   Font.Assign(Application.Font); 
   MouseTimer := TTimer.Create(Self);
   MouseTimer.Enabled := False;
   MouseTimer.Interval := 200;
   MouseTimer.OnTimer := DoMouseTimer;
   MouseTimer.Enabled := True;
-  
-  BorderStyle := fbsNone; 
+
+  BorderStyle := fbsNone;
   BorderIcons := [];
   FormStyle := fsStayOnTop;
   Scaled := False;
   Height := cDefaultAlertFormHeight;
   Width := cDefaultAlertFormWidth;
-//  OnPaint := FormPaint;
+  OnPaint := FormPaint;
 
   imIcon := TImage.Create(Self);
   imIcon.Parent := Self;
@@ -246,9 +242,6 @@ begin
   acClose.ShortCut := ShortCut(VK_F4, [ssAlt]); // 32883
   acClose.OnExecute := acCloseExecute;
 
-  FadeTimer := TTimer.Create(Self);
-  FadeTimer.Enabled := False;
-
   tbClose := TJvDesktopAlertButton.Create(Self);
   tbClose.ToolType := abtClose;
   tbClose.Parent := Self;
@@ -263,7 +256,11 @@ begin
   tbDropDown.Anchors := [akRight, akTop];
 end;
 
-//procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
+procedure TJvFormDesktopAlert.FormPaint(Sender: TObject);
+begin
+//  DrawDesktopAlertWindow(Canvas, ClientRect, FrameColor, WindowColorFrom, WindowColorTo, CaptionColorFrom, CaptionColorTo, Moveable or MoveAnywhere);
+end;
+
 procedure TJvFormDesktopAlert.BoundsChanged;
 var
   Bmp: TBitmap;
@@ -280,6 +277,8 @@ begin
   Bmp.Destroy;
 end;
 
+
+
 procedure TJvFormDesktopAlert.acCloseExecute(Sender: TObject);
 begin
   if Closeable then
@@ -291,7 +290,7 @@ begin
   inherited MouseEnter(AControl);
   MouseInControl := True;
   //  SetFocus;
-  FadeTimer.Enabled := False; 
+  TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -307,33 +306,16 @@ begin
   begin
     if Assigned(FOnMouseLeave) then
       FOnMouseLeave(Self);
-    if WaitTime > 0 then
-      FadeOut;
+    if TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0 then
+      TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
     MouseInControl := False;
   end;
 end;
 
-procedure TJvFormDesktopAlert.FadeInTimer(Sender: TObject);
-begin
-  FadeTimer.Enabled := False; 
-end;
-
-procedure TJvFormDesktopAlert.FadeOutTimer(Sender: TObject);
-begin
-  FadeTimer.Enabled := False; 
-    Close;
-end;
-
-procedure TJvFormDesktopAlert.WaitTimer(Sender: TObject);
-begin
-  Update;
-  FadeOut;
-end;
-
 procedure TJvFormDesktopAlert.DoShow;
 begin
-  inherited DoShow; 
-  FadeTimer.Enabled := False;
+  inherited DoShow;
+  TJvDesktopAlert(Owner).StyleHandler.AbortAnimation;
   lblText.HotTrackFont.Style := [fsUnderLine];
   lblText.HotTrackFont.Color := clNavy;
   if ClickableMessage then
@@ -350,7 +332,7 @@ begin
   if tbDropDown.DropDownMenu = nil then
     tbDropDown.Visible := False;
 
-  if not Closeable and (WaitTime > 0) then // must have either WaitTime or close button
+  if not Closeable and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then // must have either WaitTime or close button
   begin
     tbClose.Visible := False;
     tbDropDown.Left := tbClose.Left;
@@ -362,7 +344,7 @@ begin
   lblText.Left := lblHeader.Left + 8;
   lblText.Width := tbDropDown.Left - lblText.Left;
   lblText.Top := lblHeader.Top + lblHeader.Height;
-  FadeIn;
+  TJvDesktopAlert(Owner).StyleHandler.DoStartAnimation;
   MouseTimer.Enabled := True;
 end;
 
@@ -402,43 +384,8 @@ begin
   GetCursorPos(P);
   MouseInControl := PtInRect(BoundsRect, P) and (FindVCLWindow(P) = Self);
   MouseTimer.Enabled := True;
-  if not FadeTimer.Enabled and not MouseInControl and (WaitTime > 0) then
-    FadeOut;
-end;
-
-procedure TJvFormDesktopAlert.FadeIn;
-begin 
-  Update;
-  FadeTimer.Enabled := False;
-  FadeTimer.Interval := FadeInTime;
-  FadeTimer.OnTimer := FadeInTimer;
-  FadeTimer.Enabled := FadeInTime > 0;
-  if not FadeTimer.Enabled then
-    Wait;
-end;
-
-procedure TJvFormDesktopAlert.FadeOut;
-begin 
-  Update;
-  FadeTimer.Enabled := False;
-  FadeTimer.Interval := FadeOutTime;
-  FadeTimer.OnTimer := FadeOutTimer;
-  FadeTimer.Enabled := FadeOutTime > 0;
-  MouseTimer.Enabled := False;
-  if not FadeTimer.Enabled and (WaitTime > 0) then
-    Close;
-end;
-
-procedure TJvFormDesktopAlert.Wait;
-begin 
-  Update;
-  FadeTimer.Enabled := False;
-  FadeTimer.Interval := WaitTime;
-  FadeTimer.OnTimer := WaitTimer;
-  FadeTimer.Enabled := WaitTime > 0;
-  // NB! If waittime = 0 then we never close - user has to do that manually
-  if not FadeTimer.Enabled then
-    FadeOut;
+  if not TJvDesktopAlert(Owner).StyleHandler.Active and not MouseInControl and (TJvDesktopAlert(Owner).StyleHandler.DisplayDuration > 0) then
+    TJvDesktopAlert(Owner).StyleHandler.DoEndAnimation;
 end;
 
 procedure TJvFormDesktopAlert.DoClose(var Action: TCloseAction);
@@ -448,13 +395,6 @@ begin
 end;
 
 
-
-
-
-procedure TJvFormDesktopAlert.FadeClose;
-begin
-  FadeOut;
-end;
 
 //=== { TJvDesktopAlertButton } ==============================================
 
@@ -650,8 +590,29 @@ begin
   end;
 end;
 
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
+
   RegisterClasses([TLabel, TImage, TAction, TJvDesktopAlertButton, TJvLabel]);
+
+
+{$IFDEF UNITVERSIONING}
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

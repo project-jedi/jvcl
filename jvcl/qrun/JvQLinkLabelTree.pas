@@ -66,33 +66,23 @@ type
   }
 
   TNodeClass = class of TNode;
-  TNodeType = ( ntNode,
-                ntParentNode,
-                ntAreaNode,
-                ntStyleNode,
-                ntColorNode,      // Bianconi
-                ntLinkNode,
-                ntDynamicNode,
-                ntRootNode,
-                ntStringNode,
-                ntActionNode,
-                ntUnknownNode);
+  TNodeType = (ntNode, ntParentNode, ntAreaNode, ntStyleNode, ntColorNode,      // Bianconi
+    ntLinkNode, ntDynamicNode, ntRootNode, ntStringNode, ntActionNode, ntUnknownNode);
   TParentNode = class;
   TRootNode = class;
 
   TNode = class(TObject)
   private
     FParent: TParentNode;
-    FRootNode : TRootNode;
-
+    FRootNode: TRootNode;
   public
     // Bianconi #2
     constructor Create;
-    destructor Destroy;override;
+    destructor Destroy; override;
     // End of Bianconi #2
     function GetNodeType: TNodeType;
     property Parent: TParentNode read FParent write FParent;
-    property Root : TRootNode read FRootNode write FRootNode;
+    property Root: TRootNode read FRootNode write FRootNode;
   end;
 
   INodeEnumerator = interface
@@ -109,7 +99,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure AddChild(const ANode: TNode; const ARoot : TRootNode);
+    procedure AddChild(const ANode: TNode; const ARoot: TRootNode);
     procedure DestroyChildren;
     function IndexOfChild(const Node: TNode): Integer;
     function GetTopLevelNodeEnumerator(const NodeClass: TNodeClass): INodeEnumerator;
@@ -120,6 +110,7 @@ type
   end;
 
   IRectEnumerator = interface;
+
   TAreaNode = class(TParentNode)
   private
     FStartingPoint: TPoint;
@@ -149,7 +140,7 @@ type
     property Style: TFontStyle read FStyle write FStyle;
   end;
 
-// Bianconi
+  // Bianconi
   TColorNode = class(TAreaNode)
   private
     FColor: TColor;
@@ -157,8 +148,7 @@ type
     constructor Create(const AColor: TColor);
     property Color: TColor read FColor write FColor;
   end;
-// End of Bianconi
-
+  // End of Bianconi
 
   TLinkState = (lsNormal, lsClicked, lsHot);
   TLinkNode = class(TAreaNode)
@@ -172,12 +162,12 @@ type
     function GetColor: TColor; override;
 
     //Cetkovsky -->
-    function GetParam : string; virtual;
-    procedure SetParam(Value : string); virtual;
+    function GetParam: string; virtual;
+    procedure SetParam(Value: string); virtual;
     //<-- Cetkovsky
   public
     //Cetkovsky -->
-    constructor Create(const AParam : string);
+    constructor Create(const AParam: string);
     //<-- Cetkovsky
     //constructor Create;
     class procedure ResetCount;
@@ -185,9 +175,8 @@ type
     property Number: Integer read FNumber;
 
     //Cetkovsky -->
-    property Param : string read GetParam write SetParam;
+    property Param: string read GetParam write SetParam;
     //<-- Cetkovsky
-
   end;
 
   TDynamicNode = class(TAreaNode)
@@ -200,6 +189,7 @@ type
   end;
 
   TRectArray = array of TRect;
+
   TRootNode = class(TAreaNode)
   private
     FRectArray: TRectArray;
@@ -213,10 +203,12 @@ type
     LastWordEndsWithSpace: Boolean;
     SpaceWidth: Integer;
   end;
+
   TWordInfo = record
     SpaceInfo: TSpaceInfo;
     Width: Integer;
   end;
+
   TWordInfoArray = array of TWordInfo;
 
   TStringNode = class(TNode)
@@ -245,6 +237,7 @@ type
   end;
 
   TActionType = (atLineBreak, atParagraphBreak);
+
   TActionNode = class(TNode)
   private
     FAction: TActionType;
@@ -421,7 +414,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TParentNode.AddChild(const ANode: TNode; const ARoot : TRootNode);
+procedure TParentNode.AddChild(const ANode: TNode; const ARoot: TRootNode);
 begin
   FChildren.Add(ANode);
   ANode.Parent := Self;
@@ -559,7 +552,6 @@ end;
 //Cetkovsky -->
 class function TStringNode.ConvertEntities(Text: string): string;
 //<-- Cetkovsky
-//function TStringNode.ConvertEntities(Text: string): string;
 type
   TEntity = record
     Entity: PChar;
@@ -622,17 +614,13 @@ end;
 // Bianconi
 //=== { TColorNode } =========================================================
 
-constructor TColorNode.Create(const AColor : TColor);
+constructor TColorNode.Create(const AColor: TColor);
 begin
   inherited Create;
-  if( AColor <> clNone ) then
-  begin
-    FColor := AColor;
-  end
+  if AColor <> clNone then
+    FColor := AColor
   else
-  begin
     FColor := inherited GetColor;
-  end;
 end;
 // End of Bianconi
 
@@ -789,17 +777,8 @@ var
   NodeClass: TClass;
 const
   NodeClasses: array [TNodeType] of TClass =
-    ( TNode,
-      TParentNode,
-      TAreaNode,
-      TStyleNode,
-      TColorNode,     // Bianconi
-      TLinkNode,
-      TDynamicNode,
-      TRootNode,
-      TStringNode,
-      TActionNode,
-      TUnknownNode);
+    (TNode, TParentNode, TAreaNode, TStyleNode, TColorNode,     // Bianconi
+     TLinkNode, TDynamicNode, TRootNode, TStringNode, TActionNode, TUnknownNode);
 begin
   { We get the dynamic type using TObject.ClassType, which returns a pointer to
     the class' virtual memory table, instead of testing using the "is" reserved
@@ -944,9 +923,8 @@ end;
 //=== { TLinkNode } ==========================================================
 
 //Cetkovsky -->
-constructor TLinkNode.Create(const AParam : string);
+constructor TLinkNode.Create(const AParam: string);
 //<-- Cetkovsky
-//constructor TLinkNode.Create;
 begin
   inherited Create;
   FNumber := LinkNodeCount;
@@ -976,12 +954,12 @@ begin
 end;
 
 //Cetkovsky -->
-function TLinkNode.GetParam : string;
+function TLinkNode.GetParam: string;
 begin
   Result := FParam;
 end;
 
-procedure TLinkNode.SetParam(Value : string);
+procedure TLinkNode.SetParam(Value: string);
 begin
   FParam := Value;
 end;
@@ -995,8 +973,7 @@ begin
   FRectArray[High(FRectArray)] := Rect;
 end;
 
-function TRootNode.IsPointInNodeClass(const P: TPoint;
-  NodeClass: TNodeClass): Boolean;
+function TRootNode.IsPointInNodeClass(const P: TPoint; NodeClass: TNodeClass): Boolean;
 var
   I: Integer;
 begin
@@ -1030,7 +1007,7 @@ begin
   NodeEnum := Self.GetTopLevelNodeEnumerator(TLinkNode);
   while NodeEnum.HasNext do
   begin
-    RectEnum := ((NodeEnum.GetNext) as TLinkNode).GetRectEnumerator;
+    RectEnum := (NodeEnum.GetNext as TLinkNode).GetRectEnumerator;
     while RectEnum.HasNext do
       AddRect(RectEnum.GetNext);
   end;

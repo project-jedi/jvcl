@@ -73,35 +73,29 @@ type
     procedure LoadData; virtual;
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function  GetCombinedIgnoreProperties: TStrings;
+    function GetCombinedIgnoreProperties: TStrings;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     procedure StoreProperties; virtual;
     procedure LoadProperties; virtual;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
     function TranslatePropertyName(AName: string): string; virtual;
+    property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
     property CombinedIgnoreProperties: TStrings read GetCombinedIgnoreProperties;
-  published
+    property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
     property AutoLoad: Boolean read FAutoLoad write SetAutoLoad;
     property AppStoragePath: string read FAppStoragePath write SetPath;
     property Enabled: Boolean read FEnabled write FEnabled default True;
-    property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore
-      default False;
+    property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore default False;
     property ClearBeforeLoad: Boolean read FClearBeforeLoad write FClearBeforeLoad default False;
-    property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write FIgnoreLastLoadTime
-      default False;
-    property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
-    property OnBeforeLoadProperties: TNotifyEvent read FOnBeforeLoadProperties
-      write FOnBeforeLoadProperties;
-    property OnAfterLoadProperties: TNotifyEvent read FOnAfterLoadProperties
-      write FOnAfterLoadProperties;
-    property OnBeforeStoreProperties: TNotifyEvent read FOnBeforeStoreProperties
-      write FOnBeforeStoreProperties;
-    property OnAfterStoreProperties: TNotifyEvent read FOnAfterStoreProperties
-      write FOnAfterStoreProperties;
+    property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write FIgnoreLastLoadTime default False;
+    property OnBeforeLoadProperties: TNotifyEvent read FOnBeforeLoadProperties write FOnBeforeLoadProperties;
+    property OnAfterLoadProperties: TNotifyEvent read FOnAfterLoadProperties write FOnAfterLoadProperties;
+    property OnBeforeStoreProperties: TNotifyEvent read FOnBeforeStoreProperties write FOnBeforeStoreProperties;
+    property OnAfterStoreProperties: TNotifyEvent read FOnAfterStoreProperties write FOnAfterStoreProperties;
+    property Tag;
   end;
 
   TJvCustomPropertyListStore = class(TJvCustomPropertyStore)
@@ -110,7 +104,7 @@ type
     FFreeObjects: Boolean;
     FCreateListEntries: Boolean;
     FItemName: string;
-    function GetItems: TStrings;
+    function GetItems: TStringList;
   protected
     function GetString(Index: Integer): string;
     function GetObject(Index: Integer): TObject;
@@ -121,31 +115,29 @@ type
     procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
     procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
       const First, Last: Integer; const ItemName: string);
+    function CreateItemList: TStringList; virtual;
     function CreateObject: TObject; virtual;
     function GetSorted: Boolean;
-    procedure SetSorted (Value: Boolean);
-    function GetDuplicates: tDuplicates;
-    procedure SetDuplicates (Value: tDuplicates);
+    procedure SetSorted(Value: Boolean);
+    function GetDuplicates: TDuplicates;
+    procedure SetDuplicates(Value: TDuplicates);
+    procedure StoreData; override;
+    procedure LoadData; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure StoreData; override;
-    procedure LoadData; override;
     procedure Clear; override;
-    property Strings [Index: Integer]: string read GetString write SetString;
+    property Strings[Index: Integer]: string read GetString write SetString;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
-    property Items: TStrings read GetItems;
+    property Items: TStringList read GetItems;
     property Count: Integer read GetCount;
-  published
     { Defines if the Items.Objects- Objects will be freed inside the clear procedure }
-    property FreeObjects: Boolean read FFreeObjects Write FFreeObjects default True;
+    property FreeObjects: Boolean read FFreeObjects write FFreeObjects default True;
     { Defines if new List entries will be created if there are stored entries, which
       are not in the current object }
-    property CreateListEntries: Boolean read FCreateListEntries write FCreateListEntries
-      default True;
-    property ItemName: string read fItemName write fItemName ;
+    property CreateListEntries: Boolean read FCreateListEntries write FCreateListEntries default True;
+    property ItemName: string read FItemName write FItemName;
     property Sorted: Boolean read GetSorted write SetSorted;
-    property Duplicates: TDuplicates read GetDuplicates write SetDuplicates;
   end;
 
 implementation
@@ -274,9 +266,10 @@ end;
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
 const
-  IgnorePropertyList: array [1..14] of PChar =
+  IgnorePropertyList: array [1..15] of PChar =
    (
     'AboutJVCL',
+    'AppStorage',
     'AppStoragePath',
     'AutoLoad',
     'ClearBeforeLoad',
@@ -383,8 +376,7 @@ begin
           tkVariant:
             SetVariantProp(Dest, DestPropInfo, GetVariantProp(Src, SrcPropInfo));
           tkClass:
-            TPersistent(GetOrdProp(Dest, DestPropInfo)).Assign(
-              TPersistent(GetOrdProp(Src, SrcPropInfo)));
+            TPersistent(GetOrdProp(Dest, DestPropInfo)).Assign(TPersistent(GetOrdProp(Src, SrcPropInfo)));
           tkMethod:
             SetMethodProp(Dest, DestPropInfo, GetMethodProp(Src, SrcPropInfo));
         end;
@@ -467,7 +459,7 @@ begin
         begin
           PropertyStore := TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName)));
           if (PropertyStore.AppStoragePath = AppStorage.ConcatPaths([OldPath, VisPropName])) or
-             (PropertyStore.AppStoragePath = '') then
+            (PropertyStore.AppStoragePath = '') then
             PropertyStore.AppStoragePath := AppStorage.ConcatPaths([AppStoragePath, VisPropName]);
         end;
     end;
@@ -487,12 +479,21 @@ end;
 procedure TJvCustomPropertyStore.SetAppStorage(Value: TJvCustomAppStorage);
 var
   Index: Integer;
+  PropName: string;
 begin
   if Value <> FAppStorage then
   begin
-    for Index := 0 to ComponentCount - 1 do
-      if Components[Index] is TJvCustomPropertyStore then
-        TJvCustomPropertyStore(Components[Index]).AppStorage := Value;
+    for Index := 0 to GetPropCount(Self) - 1 do
+    begin
+      PropName := GetPropName(Self, Index);
+      if IgnoreProperties.IndexOf(PropName) >= 0 then
+        Continue;
+      if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
+        Continue;
+      if PropType(Self, PropName) = tkClass then
+        if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
+          TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStorage := Value;
+    end;
     FAppStorage := Value;
     UpdateChildPaths;
   end;
@@ -519,8 +520,7 @@ begin
     if AppStorage.ValueStored(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime])) then
       Result := AppStorage.ReadDateTime(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]));
   except
-    on e:Exception do
-      Result := 0;
+    Result := 0;
   end;
 end;
 
@@ -550,20 +550,25 @@ begin
     Exit;
   if not Assigned(AppStorage) then
     Exit;
-  UpdateChildPaths;
-  DisableAutoLoadDown;
-  SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
-  if DeleteBeforeStore then
-    AppStorage.DeleteSubTree(AppStoragePath);
-  if not IgnoreLastLoadTime then
-    AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
-  if Assigned(FOnBeforeStoreProperties) then
-    FOnBeforeStoreProperties(Self);
-  if SaveProperties then
-    StoreData;
-  AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
-  if Assigned(FOnAfterStoreProperties) then
-    FOnAfterStoreProperties(Self);
+  AppStorage.BeginUpdate;
+  try
+    UpdateChildPaths;
+    DisableAutoLoadDown;
+    SaveProperties := IgnoreLastLoadTime or (GetLastSaveTime < FLastLoadTime);
+    if DeleteBeforeStore then
+      AppStorage.DeleteSubTree(AppStoragePath);
+    if not IgnoreLastLoadTime then
+      AppStorage.WriteString(AppStorage.ConcatPaths([AppStoragePath, cLastSaveTime]), DateTimeToStr(Now));
+    if Assigned(FOnBeforeStoreProperties) then
+      FOnBeforeStoreProperties(Self);
+    if SaveProperties then
+      StoreData;
+    AppStorage.WritePersistent(AppStoragePath, Self, True, CombinedIgnoreProperties);
+    if Assigned(FOnAfterStoreProperties) then
+      FOnAfterStoreProperties(Self);
+  finally
+    AppStorage.EndUpdate;
+  end;
 end;
 
 procedure TJvCustomPropertyStore.LoadData;
@@ -579,7 +584,7 @@ end;
 constructor TJvCustomPropertyListStore.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FItems := TStringList.Create;
+  FItems := CreateItemList;
   CreateListEntries := True;
   FreeObjects := True;
   FItemName := cItem;
@@ -595,7 +600,7 @@ begin
   inherited Destroy;
 end;
 
-function TJvCustomPropertyListStore.GetItems: TStrings;
+function TJvCustomPropertyListStore.GetItems: TStringList;
 begin
   Result := FItems;
 end;
@@ -618,11 +623,18 @@ var
 begin
   if FreeObjects then
     for I := 0 to Count - 1 do
-      if Assigned(Objects[I]) then
-        Objects[I].Free;
+    begin
+      Objects[I].Free;
+      Objects[I] := nil;
+    end;
   if Assigned(Items) then
     Items.Clear;
   inherited Clear;
+end;
+
+function TJvCustomPropertyListStore.CreateItemList: TStringList;
+begin
+  Result := TStringList.Create;
 end;
 
 function TJvCustomPropertyListStore.CreateObject: TObject;
@@ -660,28 +672,28 @@ end;
 
 function TJvCustomPropertyListStore.GetSorted: Boolean;
 begin
-  Result := fItems.Sorted;
+  Result := FItems.Sorted;
 end;
 
 procedure TJvCustomPropertyListStore.SetSorted (Value: Boolean);
 begin
-  fItems.Sorted := Value;
+  FItems.Sorted := Value;
 end;
 
-function TJvCustomPropertyListStore.GetDuplicates: tDuplicates;
+function TJvCustomPropertyListStore.GetDuplicates: TDuplicates;
 begin
-  Result := fItems.Duplicates;
+  Result := FItems.Duplicates;
 end;
 
-procedure TJvCustomPropertyListStore.SetDuplicates (Value: tDuplicates);
+procedure TJvCustomPropertyListStore.SetDuplicates (Value: TDuplicates);
 begin
-  fItems.Duplicates := Value;
+  FItems.Duplicates := Value;
 end;
 
-procedure TJvCustomPropertyListStore.ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string;
-  const List: TObject; const Index: Integer; const ItemName: string);
+procedure TJvCustomPropertyListStore.ReadSLOItem(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
 var
-  NewObject:  TObject;
+  NewObject: TObject;
   NewObjectName: string;
 begin
   if Index >= Count then
@@ -693,8 +705,8 @@ begin
     begin
       if NewObject is TJvCustomPropertyStore then
       begin
-        TJvCustomPropertyStore(NewObject).AppStoragePath := Sender.ConcatPaths([Path, ItemName +
-          IntToStr(Index)]);
+        TJvCustomPropertyStore(NewObject).AppStoragePath :=
+          Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]);
         TJvCustomPropertyStore(NewObject).AppStorage := AppStorage;
         TJvCustomPropertyStore(NewObject).LoadProperties;
       end
@@ -716,8 +728,8 @@ begin
     begin
       if Objects[Index] is TJvCustomPropertyStore then
       begin
-        TJvCustomPropertyStore(Objects[Index]).AppStoragePath := Sender.ConcatPaths([Path, ItemName +
-          IntToStr(Index)]);
+        TJvCustomPropertyStore(Objects[Index]).AppStoragePath :=
+          Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]);
         TJvCustomPropertyStore(Objects[Index]).LoadProperties;
       end
       else
@@ -740,8 +752,8 @@ begin
   begin
     if Objects[Index] is TJvCustomPropertyStore then
     begin
-      TJvCustomPropertyStore(Objects[Index]).AppStoragePath := Sender.ConcatPaths([Path, ItemName +
-        IntToStr(Index)]);
+      TJvCustomPropertyStore(Objects[Index]).AppStoragePath :=
+        Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]);
       TJvCustomPropertyStore(Objects[Index]).AppStorage := AppStorage;
       TJvCustomPropertyStore(Objects[Index]).StoreProperties;
     end
@@ -756,15 +768,13 @@ begin
     Sender.WriteString(Sender.ConcatPaths([Path, ItemName + IntToStr(Index)]), Strings[Index]);
 end;
 
-procedure TJvCustomPropertyListStore.DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string;
-  const List: TObject; const First, Last: Integer; const ItemName: string);
+procedure TJvCustomPropertyListStore.DeleteSLOItems(Sender: TJvCustomAppStorage;
+  const Path: string; const List: TObject; const First, Last: Integer; const ItemName: string);
 var
   I: Integer;
 begin
   for I := First to Last do
-  begin
     Sender.DeleteValue(Sender.ConcatPaths([Path, ItemName + IntToStr(I)]));
-  end;
 end;
 
 {$IFDEF UNITVERSIONING}
