@@ -130,7 +130,7 @@ implementation
 
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
-  GenerateUtils, KnownTagsForm;
+  GenerateUtils, KnownTagsForm, FormTypeDialog;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -316,10 +316,13 @@ begin
         end;
         CloseFile(pas);
 
+        frmFormType.EnsureCorrectType(FormType, ChangeFileExt(row[0], '.dfm'), line);
+
         // if the form type is TForm or TJvForm then ignore it
         // else include it in the row
         if (FormType = 'TForm') or
-           (FormType = 'TJvForm') then
+           (FormType = 'TJvForm') or
+           (FormType = '') then
           row[12] := FormName
         else
           row[12] := FormName + ': ' + FormType;
