@@ -65,6 +65,8 @@ contains
   JvQRadioGroup in '../../qrun/JvQRadioGroup.pas',
   JvQLinkedControls in '../../qrun/JvQLinkedControls.pas',
   JvQTimeEdit in '../../qrun/JvQTimeEdit.pas',
-  JvQSpinButton in '../../qrun/JvQSpinButton.pas';
+  JvQSpinButton in '../../qrun/JvQSpinButton.pas',
+  JvQGauges in '../../qrun/JvQGauges.pas',
+  JvQTabControl in '../../qrun/JvQTabControl.pas';
 
 end.
