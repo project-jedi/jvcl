@@ -13,9 +13,6 @@ object frmUnitStatus: TfrmUnitStatus
   OldCreateOrder = False
   Position = poMainFormCenter
   OnActivate = FormActivate
-  DesignSize = (
-    526
-    388)
   PixelsPerInch = 96
   TextHeight = 13
   object ListView1: TListView

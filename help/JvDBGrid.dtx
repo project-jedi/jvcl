@@ -1,5 +1,5 @@
 ##Package: DB
-##Status: Locked by peter3
+##Status: Completed (peter3), Review
 ----------------------------------------------------------------------------------------------------
 @@JvDBGrid.pas
 Summary
@@ -38,10 +38,11 @@ JVCLInfo
   GROUP=JVCL.DBAware.Grid
   FLAG=Component
 Summary
-  Descendant of the standard TDBGrid with additional properties and events.
+  Descendant of the standard TDBGrid with additional methods, properties and events.
 Description
   Use TJvDBGrid as a replacement for TDBGrid when you need additional control over how the grid component 
-  works. TJvDBGrid introduces new properties to control the appearance and functionality of the grid.
+  works. TJvDBGrid introduces new methods, properties an devents to control the appearance and functionality
+  of the grid.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.AlternateRowColor
 Summary
@@ -70,10 +71,11 @@ Description
   -2    Indicates that the right-most visible column should be auto sized. If the number of visible columns changes
         so might the column that is sized. 
   -1    Auto size all visible columns proportionally.
-  0..n  Auto size the column with the specified index. If the column is hidden, autosizing is disabled.
+  0..n  Auto size the column with the specified index. If n >= Columns.Count, autosizing is disabled.
 
-  Auto sizing only works when all visible columns in the grid can be shown at once in the control. The 
-  values of MinColumnWidth and MaxColumnWidth are also taken into consideration when auto sizing.
+  Auto sizing is only active when AutoSizeColumns is true and all visible columns in the grid
+  can be shown without a horizontal scrollbar. The values of MinColumnWidth and MaxColumnWidth are
+  also taken into consideration when auto sizing.
 See Also
   AutoSizeColumns, MinColumnWidth, MaxColumnWidth
 ----------------------------------------------------------------------------------------------------
@@ -90,102 +92,105 @@ See Also
 Summary
   Indicates whether the speaker beeps when there is an error.
 Description
-  Use BeepOnError to specify whether errors in input trigers a speaker beep. The standard DBGrid always 
+  Use BeepOnError to specify whether errors in input trigers a speaker beep. The standard DBGrid always
   beeps on errors. Set BeepOnError to false to suppress this behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ClearSelection
 Summary
-  Clears the selection in the grid.
+  Clears the selection in the grid when the user moves to a new cell in MultiSelect mode.
 Description
-  Write here a description
+  Set ClearSelection to true to remove any additional selected rows when the user moves to a new
+  cell in the grid and MultiSelect is true.
+  If ClearSelection is false, mutli selected rows remians selected when the user navigates the grid.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MultiSelect
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.FixedCols
 Summary
   Indicates the number of fixed columns in the grid.
 Description
-  Write here a description
+  Set FixedCols to make additional columns in the grid appear as fixed columns. By default, the only
+  fixed column in a DB grid is the indicator column.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Options, Columns
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.GotoSelection
 Summary
-  Moves focus to the specified row.
+  Moves focus to the specified selected row.
 Description
-  Write here a description
+  Use GotoSelection to move the focus in a multi selected grid to a new row. When MultiSelect is false or
+  no rows are selected, this procedure does nothing.
 Parameters
-  Index - Description for this parameter
+  Index - INdex of the selected row, i.e if there are two selected rows, index 0 moves to the first
+  selected row and index 1 to the second.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ClearSelection, MultiSelect
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.IniStorage
 Summary
   Indicates the application storage component to use to save the grids current settings.
 Description
-  Write here a description
+  Assign an existing TJvAppStorage component to this property to have the properties of the grid automatically
+  saved and loaded when the application starts and closes down.
+
+  Properties stored include the columns layout as well as the DisplayLabel, DisplayWidth and Visible property
+  of all the used fields.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Load, LoadFromAppStore, Save, SaveToAppStore
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Load
 Summary
   Load settings from storage.
 Description
-  Write here a description
+  Call Load to manually read previously saved settings using IniStorage. If IniStorage is nil, this
+  method does nothing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  LoadFromAppStore, Save, SaveToAppStore
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.LoadFromAppStore
 Summary
   Load settings from a specific application storage component.
 Description
-  Write here a description
+  Use LoadFromAppStore to load settings from a specific TJvAppStorage component instead of using IniStorage.
 Parameters
-  AppStorage - Description for this parameter
-  Path       - Description for this parameter
+  AppStorage - The TJvAppStorage component to use.
+  Path       - The path to the storage location.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IniStorage, Load, Save, SaveToAppStore
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.MaxColumnWidth
 Summary
   Sets the maximum width of a column.
 Description
-  Write here a description
+  Set MaxColumnWidth to a value > 0 to have the grid automatically size columns whose width exceeds MaxColumnWidth.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MinColumnWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.MinColumnWidth
 Summary
   Sets the minimum width of a column.
 Description
-  Write here a description
+  Set MinColumnWidth to a value > 0 to have the grid automatically size columns whose width is less than MinColumnWidth.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MaxColumnWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnCheckButton
 Summary
-  Occurs when a checkbox button is clicked.
+  Occurs when a title button is clicked.
 Description
-  Write here a description
+  Write a handler for this event to conditionally enable and disable title button clicks. Set Enabled to
+  tru (the default) to enable clicking the title button, set Enabled to false to disable clicking.
 Parameters
   Sender  - The grid that triggered the event.
   ACol    - The index of the column.
   Field   - The field of the cell.
-  Enabled - Indicates if the button is enabled or not.
+  Enabled - Indicates if the button should be enabled or not.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnDrawColumnTitle
 Summary
   Occurs when a column header is to be drawn.
 Description
-  Write here a description
+  Write a handler for the OnDrawColumnTitle to custom draw the title buttons in the grid.
 Parameters
   Sender                - The grid that triggered the event.
   ACanvas               - The canvas to draw on.
@@ -203,16 +208,13 @@ Parameters
 Summary
   Occurs when the user makes changes to a cell.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write a handler for the OnEditChange event to be notified when the user edits a cell in the grid.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnGetBtnParams
 Summary
   Occurs when the grid need additional information for the current header button.
 Description
-  Write here a description
+  Write a handler for this event to modify the appearance of the title buttons.
 Parameters
   Sender     - The grid that triggered the event.
   Field      - The field of the cell.
@@ -227,7 +229,8 @@ See Also
 Summary
   Occurs when the grid need additional information about the current cell.
 Description
-  Write here a description
+  Write a handler for this event to provide additional information about the current cell. This event differs
+  from OnGetCellProps only in the Highlight parameter.
 Parameters
   Sender     - The grid that triggered the event.
   Field      - The field of the cell.
@@ -241,7 +244,8 @@ See Also
 Summary
   Occurs when the grid needs additional information about the current cell.
 Description
-  Write here a description
+  Write a handler for this event to provide additional information about the current cell. This event differs
+  from OnGetCellParams only in the Highlight parameter.
 Parameters
   Sender     - The grid that triggered the event.
   Field      - The field of the cell.
@@ -254,7 +258,7 @@ See Also
 Summary
   Occurs when the inplace editor is about to be shown.
 Description
-  Write here a description
+  Write a handler for this event to conditionally enable and disable cell editing.
 Parameters
   Sender    - The grid that triggered the event.
   Field     - The field that is to be edited.
@@ -264,28 +268,27 @@ Parameters
 Summary
   Occurs when the arrow in the indicator column is clicked.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the title arrow in the indicator column is clicked.
+  This event is only triggered when TitleArrow is true, the titles and indicator row are visible
+  and the right mouse button is clicked.
 See Also
-  TitleArrow
+  TitleArrow, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnTitleBtnClick
 Summary
   Occurs when a column header button is clicked.
 Description
-  Write here a description
+  Write a handler for this event to be notified when a title button is clicked.
 Parameters
   Sender - The grid that triggered the event.
   ACol   - The index of the column.
   Field  - The field the column displays.
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.OnTitleHintEvent
 Summary
   Occurs when a column header wants to display its hint.
 Description
-  Write here a description
+  Write a handler for this event to provide custom hints for title buttons.
 Parameters
   Sender - The grid that triggered the event.
   Field  - The field the column displays.
@@ -297,62 +300,61 @@ See Also
 Summary
   Specifies whether pressing the Enter key posts the changes to the dataset.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use PostOnEnter to specify whether pressing the Enter key automatically posts data to the underlying dataset.
+  If PostOnEnter is false, the user must move to antoher cell before the mdofied data is committed.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.Save
 Summary
-  Save the grids settings to application storage
+  Save settings to storage.
 Description
-  Write here a description
+  Call Save to manually save the grid settings to IniStorage. If IniStorage is nil, this method does nothing.
 See Also
   IniStorage
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SaveToAppStore
 Summary
-  Save the grids settings to a specific application storage.
+  Save settings to a specific application storage component.
 Description
-  Write here a description
+  Use SaveToAppStore to save settings to a specific TJvAppStorage component instead of using IniStorage.
 Parameters
-  AppStorage - Description for this parameter
-  Path       - Description for this parameter
+  AppStorage - The TJvAppStorage component to use.
+  Path       - The path to the storage location.
 See Also
-  IniStorage
+  IniStorage, Save, Load, LoadFromAppStore
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SelCount
 Summary
   Indicates the number of rows selected.
 Description
-  Write here a description
+  Read SelCount to learn the number of selected rows in the grid. SelCount is always <= 1 when
+  MultiSelect is false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  MultiSelect
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SelectAll
 Summary
   Selects all rows in the grid.
 Description
-  Write here a description
+  Call SelectAll to select all rows in the grid. If MultiSelect is false, this method does nothing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UnselectAll, MultiSelect
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SelectColumn
 Summary
-  Idicates the currently selected column.
+  Indicates the item order in the select column dialog.
 Description
-  Write here a description
+  Use SelectColumn to specify the order of items in the select column dialog. When SelectColumn is scDatabase,
+  the fields in the dialog are displayed in the same order as in the dataset. When SelectColumn is scGrid, the
+  fields are displayed in the same order as they appear in the grid's Columns collection.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowColumnsDialog, SelectColumnsDialogStrings 
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SelectColumnsDialogStrings
 Summary
   Indicates the strings to use for the select column dialog.
 Description
-  Write here a description
+  SelectColumnsDialogStrings manages the strings used by the select column dialog. When localizing, change the
+  string properties of this class to the currently selected language.
 See Also
   ShowColumnsDialog
 ----------------------------------------------------------------------------------------------------
@@ -360,43 +362,56 @@ See Also
 Summary
   Displays the select column dialog.
 Description
-  Write here a description
+  Call ShowColumnsDialog to manually bring up the select column dialog. The select column dialog is used
+  to modify the visible state of the columns in the grid.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TitleArrow, OnTitleArrowMenuEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ShowGlyphs
 Summary
   Indicates whether the grid displays images or not.
 Description
-  Write here a description
+  Set ShowGlyphs to true to replace the field content of blob and memo fields with an image. If ShowGlyphs
+  is false, the grid displays the default text strings, like "(Memo)" and "(Blob)" instead.
+
+  The grid will display custm images for the following field types:
+  ftBytes, ftVarBytes, ftBlob, ftTypedBinary, ftOraBlob
+  ftMemo, ftOraClob
+  ftGraphic
+  ftParadoxOle, ftDBaseOle
+  ftCursor, ftReference, ftDataSet
+  ftBoolean
+Note
+  If the OnGetText and OnSetText events are assigned, ShowGlyphs does nothing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnGetText, OnSetText
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ShowTitleHint
 Summary
   Indicates whether hints are displayed for column headers.
 Description
-  Write here a description
+  Use ShowTitleHint to indicate whether title buttons should display their own custom hints. To actuall
+  display a hint text, assign a handler to the OnTitleHintEvent property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnTitleHintEvent
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.SortedField
 Summary
   Specifies the field to display a sort marker for.
 Description
-  Write here a description
+  Use SortedField to indicate the field that should be used to sort the grid. If the dataset in use
+  has the properties 'IndexDefs' and 'IndexName' and IndexDefs contains a definition for the value in
+  SortedField, IndexName will be changed automatically to the value of SortedField when a title button
+  is clicked.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnTitleBtnClick
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.TitleArrow
 Summary
   Specifies whether a down pointing arrow is displayed in the indicator column.
 Description
-  Clicking the arrow displays the select column dialog.
+  Use Title Arrow to indicate whether the indicator column displays a down pointing arrow or not.
+  When TitleArrow is true, clicking the arrow displays the select column dialog.
 See Also
   ShowColumnsDialog
 ----------------------------------------------------------------------------------------------------
@@ -404,46 +419,38 @@ See Also
 Summary
   Indicates whether column headers can be clicked or not.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use TitleButtons to specify whether title button clicking is enabled or not.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.TitleOffset
 Summary
   Indicates the offset from the left edge to the first "real" column.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Read TitleOffset to get the index of the first visible column in the grid.
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.TitlePopup
 Summary
   Specifies the popup menu to use for column headers.
 Description
-  Write here a description
+  Set TitlePopup to an existing popup menu to use it as the popup menu for the title buttons in the grid.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PopupMenu
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.ToggleRowSelection
 Summary
-  Toggles selection on the focused row on and off.
+  Toggles the currently selected row on and off.
 Description
-  Write here a description
+  Call ToggleRowSelection to toggle SelectedRows.CurrentRowSelected on and off. If MultiSelect is false,
+  this method does nothing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ClearSelection, GotoSelection, MultiSelect
 ----------------------------------------------------------------------------------------------------
 @@TJvDBGrid.UnselectAll
 Summary
   Removes any selection.
 Description
-  Write here a description
+  Call UnselectAll to remove any selection in the grid. If MultiSelect is false, this method does nothing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ClearSelection, GotoSelection, MultiSelect, SelectAll, ToggleRowSelection
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDialogColumnStrings
 Summary
@@ -464,13 +471,13 @@ Summary
 @@TSelectColumn
 <TITLE TSelectColumn type>
 Summary
-  Specifies how the select column dialog in a TJvDBGrid displays the columns.
+  Specifies how the select column dialog in a TJvDBGrid displays fields.
 Description
-  TSelectColumn is sued to specify the order of the columns in a select column dialog. 
+  TSelectColumn is used to specify the order of the fields in a select column dialog. 
 @@TSelectColumn.scDataBase
-  Columns are displayed in the same order as in the dataset.
+  Fields are displayed in the same order as in the dataset.
 @@TSelectColumn.scGrid
-  Columns are displayed in the same order as in the grid. 
+  Fields are displayed in the same order as in the grid. 
 ----------------------------------------------------------------------------------------------------
 @@TSortMarker
 <TITLE TSortMarker type>
