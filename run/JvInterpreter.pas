@@ -162,6 +162,7 @@ Upcoming JVCL 3.00
      as procedure parameters)
    - fixed record bugs with Delphi 6
    - fixed OLE bugs
+   - (rom) added fix for default properties from ivan_ra  26 Dec 2003
 }
 
 {.$DEFINE JvInterpreter_DEBUG}
@@ -3455,6 +3456,8 @@ end;
 
 function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Identifier: string;
   var Value: Variant; Args: TJvInterpreterArgs): Boolean;
+var
+  I: Integer;
 
   function GetMethod: Boolean;
   var
@@ -3468,6 +3471,8 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
       for I := I to FGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FGetList[I]);
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+          Break;
         if Assigned(JvInterpreterMethod.Func) and
           (((Args.ObjTyp = varObject) and
           (Args.Obj is JvInterpreterMethod.FClassType)) or
@@ -3481,8 +3486,6 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
           Result := True;
           Exit;
         end;
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
-          Break;
       end;
     if Cmp(Identifier, 'Free') then
     begin
@@ -3505,6 +3508,8 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
       for I := I to FIntfGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterIntfMethod(FIntfGetList[I]);
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+          Break;
         if Assigned(JvInterpreterMethod.Func) and
           ((Args.ObjTyp = varUnknown) and
           (IUnknown(Pointer(Args.Obj)).QueryInterface(JvInterpreterMethod.IID, Intf) = S_OK)) then
@@ -3517,8 +3522,6 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
           Result := True;
           Exit;
         end;
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
-          Break;
       end;
   end;
 
@@ -3531,6 +3534,8 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
       for I := I to FIGetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FIGetList[I]);
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+          Break;
         if Assigned(JvInterpreterMethod.Func) and
           (((Args.ObjTyp = varObject) and
           (Args.Obj is JvInterpreterMethod.FClassType)) or
@@ -3545,8 +3550,6 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
           Args.ReturnIndexed := True;
           Exit;
         end;
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
-          Break;
       end;
     Result := False;
   end;
@@ -3875,8 +3878,6 @@ function TJvInterpreterAdapter.GetValue(Expression: TJvInterpreterExpression; Id
     end;
   end;
 
-var
-  I: Integer;
 begin
   Result := True;
   if not FSorted then
@@ -3894,8 +3895,19 @@ begin
     end
     else
     if (Args.Obj <> nil) and ((Args.ObjTyp = varObject) or (Args.ObjTyp = varClass)) then
+    begin // ivan_ra
       if IGetMethod then
         Exit;
+      I := Args.Count;
+      try // try to get indexed property
+        Args.Count := 0;
+        Result := GetMethod or DGetMethod;
+      finally
+        Args.Count := I;
+      end;
+      if Result then
+        Exit;
+    end; // ivan_ra
   end
   else
   begin
@@ -4015,6 +4027,8 @@ var
       for I := I to FISetList.Count - 1 do
       begin
         JvInterpreterMethod := TJvInterpreterMethod(FISetList[I]);
+        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then // ivan_ra
+          Break;
         if Assigned(JvInterpreterMethod.Func) and
           (Args.Obj is JvInterpreterMethod.FClassType) and
           Cmp(JvInterpreterMethod.Identifier, Identifier) then
@@ -4027,8 +4041,6 @@ var
           Args.ReturnIndexed := True;
           Exit;
         end;
-        if not Cmp(JvInterpreterMethod.Identifier, Identifier) then
-          Break;
       end;
   end;
 
@@ -6069,6 +6081,8 @@ begin
   if FCurrArgs.Indexed then
   begin
     MyArgs := TJvInterpreterArgs.Create;
+    MyArgs.Obj := FCurrArgs.Obj; // ivan_ra
+    MyArgs.ObjTyp := FCurrArgs.ObjTyp; // ivan_ra
     try
       if GetValue(Identifier, Variable, MyArgs) then
       begin
