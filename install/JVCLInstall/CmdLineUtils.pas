@@ -43,9 +43,12 @@ type
     FIgnoreDelphi: Boolean;
     FHelp: Boolean;
     FLang: string;
+    FAutoUpdate: Boolean;
+    FRegistryKeyDelphi: string;
+    FRegistryKeyBCB: string;
+    FRegistryKeyBDS: string;
 
     FItemList: TObjectList;
-    FAutoUpdate: Boolean;
     procedure ShowHelp;
   protected
     procedure AddBool(const Name, Help: string; var Value: Boolean);
@@ -63,6 +66,9 @@ type
     property JclPath: string read FJclPath write FJclPath;
     property KeepFiles: Boolean read FKeepFiles write FKeepFiles;
     property AutoUpdate: Boolean read FAutoUpdate write FAutoUpdate;
+    property RegistryKeyDelphi: string read FRegistryKeyDelphi write FRegistryKeyDelphi;
+    property RegistryKeyBCB: string read FRegistryKeyBCB write FRegistryKeyBCB;
+    property RegistryKeyBDS: string read FRegistryKeyBDS write FRegistryKeyBDS;
 
     property Help: Boolean read FHelp;
     property Lang: string read FLang;
@@ -83,6 +89,9 @@ begin
   AddBool('--keep-files', 'Do not call "clean".', FKeepFiles);
   AddBool('--autoupdate', 'Updates all IDEs where JVCL 3 is installed.', FAutoUpdate);
   AddSpace;
+  AddString('-rDelphi=', 'Sets the Registry path for the Delphi IDEs. (-rDelphi=Barebones)', FRegistryKeyDelphi);
+  AddString('-rBCB=', 'Sets the Registry path for the BCB IDEs.', FRegistryKeyBCB);
+  AddString('-rBDS=', 'Sets the Registry path for the BDS IDEs. (-rBDS=Win32Only)', FRegistryKeyBDS);
   AddString('--lang=', 'Sets the Installer''s language to X.', FLang);
   AddBool('--help', 'Show this screen.', FHelp);
   AddBool('/?', '', FHelp);
