@@ -35,7 +35,7 @@ interface
 
 uses
   Windows, Messages, Graphics, Controls, Forms,
-  Classes, SysUtils, TypInfo,
+  Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer;
 
 
@@ -57,11 +57,15 @@ type
   JV_WINCONTROL(CustomControl)
   JV_WINCONTROL(HintWindow)
 
+function GetCanvas(Instance: TWinControl): TControlCanvas;
 function GetHintColor(Instance: TWinControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
 implementation
+
+uses
+  TypInfo;
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 const
@@ -76,8 +80,8 @@ function GetHintColor(Instance: TWinControl): TColor;
 var
   PI: PPropInfo;
 begin
-  Result := clDefaultColor;  { = parent HintColor }
-  while (Result = clDefaultColor) and (Instance <> nil) do
+  Result := clDefault;  { = parent HintColor }
+  while (Result = clDefault) and (Instance <> nil) do
   begin
     PI := GetPropInfo(Instance, 'HintColor');
     if PI <> nil then
@@ -85,7 +89,20 @@ begin
     Instance := Instance.Parent;
   end;
   case Result of
-  clNone, clDefaultColor: Result := Application.HintColor;
+  clNone, clDefault: Result := Application.HintColor;
+  end;
+end;
+
+function GetCanvas(Instance: TWinControl): TControlCanvas;
+var
+  PI: PPropInfo;
+begin
+  Result := nil;
+  if Assigned(Instance) then
+  begin
+    PI := GetPropInfo(Instance, 'Canvas');
+    if PI <> nil then
+      Result := TControlCanvas(GetOrdProp(Instance, PI));
   end;
 end;
 
@@ -102,13 +119,15 @@ begin
     inc(Result, DLGC_HASSETSEL);
   if ikTabs in InputKeys then
     inc(Result, DLGC_WANTTAB);
+  if ikButton in InputKeys then
+    inc(Result, DLGC_BUTTON);
 end;
 
-function DlgCodesToInputKeys(DlgCodes: integer): TInputKeys;
+function DlgCodesToInputKeys(DlgCodes: Integer): TInputKeys;
 begin
-  Result := 0;
+  Result := [];
   if DlgCodes and DLGC_WANTALLKEYS <> 0 then
-    Include(Result, ikAllKeys);
+    Include(Result, ikAll);
   if DlgCodes and DLGC_WANTARROWS <> 0 then
     Include(Result, ikArrows);
   if DlgCodes and DLGC_WANTCHARS <> 0 then
@@ -116,9 +135,10 @@ begin
   if DlgCodes and DLGC_HASSETSEL <> 0 then
     Include(Result, ikEdit);
   if DlgCodes and DLGC_WANTTAB <> 0 then
-    Include(Result, ikTab);
+    Include(Result, ikTabs);
+  if DlgCodes and DLGC_BUTTON <> 0 then
+    Include(Result, ikButton);
 end;
-
 
 JV_CONTROL_IMPL(Control)
 JV_WINCONTROL_IMPL(WinControl)

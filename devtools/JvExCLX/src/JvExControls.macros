@@ -74,12 +74,12 @@ EMPTYLINE
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
-    procedure WndProc(var Message: TMessage); override;
+    procedure WndProc(var Mesg: TMessage); override;
     procedure ColorChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure FocusChanged; dynamic;
     procedure FontChanged; dynamic;
-    function HintShow(var HintInfo: THintInfo): Boolean; dynamic;
+    function HintShow(var HintInf: THintInfo): Boolean; dynamic;
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(AControl: TControl); dynamic;
     procedure MouseLeave(AControl: TControl); dynamic;
@@ -90,8 +90,6 @@ EMPTYLINE
     procedure VisibleChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; dynamic;
-    procedure SetAutoSize(Value: Boolean);
-    property InputKeys: TInputKeys read FInputKeys write FInputKeys;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   published
@@ -111,8 +109,17 @@ EMPTYLINE
     destructor Destroy; override;
   end;
 
-  { QControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName);
+  { Control }
+  TJvExPub##ClassName = class(TJvEx##ClassName)
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  end;
   EMPTYLINE
 *)
 
@@ -128,16 +135,15 @@ EMPTYLINE
   protected
     procedure BoundsChanged; dynamic;
     procedure CursorChanged; dynamic;
-    procedure DoKillFocus(Wnd: HWND); dynamic;
-    procedure DoSetFocus(Wnd: HWND); dynamic;
+    procedure DoKillFocus(FocusedWnd: HWND); dynamic;
+    procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure GotFocus; dynamic;
     procedure LostFocus; dynamic;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; dynamic;
+    function DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
     property InputKeys: TInputKeys read FInputKeys write FInputKeys;
 *)
-
 
 (*$DEFINE JV_WINCONTROL_BEGIN(ClassName)
   { WinCustomControl }
@@ -147,13 +153,22 @@ EMPTYLINE
 *)
 
 (*$DEFINE JV_WINCONTROL_END(ClassName)
-  { WinCustomControl }
+  { WinControl }
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
-  TJvExPub##ClassName = class(TJvEx##ClassName);
+  TJvExPub##ClassName = class(TJvEx##ClassName)
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  end;
   EMPTYLINE
 *)
 
@@ -190,7 +205,7 @@ EMPTYLINE
     destructor Destroy; override;
   end;
 
-  { QEditControl }
+  { EditControl }
   TJvExPub##ClassName = class(TJvEx##ClassName);
   EMPTYLINE
 *)
@@ -211,10 +226,11 @@ EMPTYLINE
 *)
 
 (*$DEFINE JV_CUSTOMFORM_BEGIN(ClassName)
-  { QCustomForm }
+  { CustomForm }
   TJvEx##ClassName = class(T##ClassName)
   JV_DECL_CONTROL
   JV_DECL_WINCONTROL
+  JV_DECL_CUSTOMFORM
 *)
 
 (*$DEFINE JV_CUSTOMFORM_END(ClassName)
@@ -223,8 +239,17 @@ EMPTYLINE
     destructor Destroy; override;
   end;
 
-  { QCustomForm }
-  TJvExPub##ClassName = class(TJvEx##ClassName);
+  { CustomForm }
+  TJvExPub##ClassName = class(TJvEx##ClassName)
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  end;
   EMPTYLINE
 *)
 
@@ -238,37 +263,43 @@ EMPTYLINE
 // ************************* IMPLEMENTATION MACROS *************************
 // *************************************************************************
 
+(*$DEFINE JV_IMPL_CONTROL_MESSAGES
+    { Control Messages }
+      CM_COLORCHANGED       : ColorChanged;
+      CM_ENABLEDCHANGED     : EnabledChanged;
+      CM_FONTCHANGED        : FontChanged;
+      CM_TEXTCHANGED        : TextChanged ;
+      CM_MOUSEENTER         : MouseEnter(Self);
+      CM_MOUSELEAVE         : MouseLeave(Self);
+      CM_PARENTCOLORCHANGED : ParentColorChanged;
+      CM_PARENTFONTCHANGED  : ParentFontChanged;
+      CM_HITTEST            : if HitTest(XPos, YPos) then
+                                Result := HTCLIENT;
+      CM_HINTSHOW:
+      begin
+        HintInfo^.HintColor := GetHintColor(Parent);
+        Handled := HintShow(HintInfo^);
+      end;
+*)
+
 (*$DEFINE JV_IMPL_CONTROL(ClassName)
 { Control }
-procedure TJvEx##ClassName.WndProc(var Message: TMessage)
+procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
 begin
-  with Message as TJvMessage do
+  with TJvMessage(Mesg) do
   begin
-    case of Msg of
-    CM_COLORCHANGED       : ColorChanged;
-    CM_ENABLEDCHANGED     : EnabledChanged;
-    CM_FONTCHANGED        : FontChanged;
-    CM_CURSORCHANGED      : CursorChanged;
-    CM_TEXTCHANGED        : TextChanged ;
-    CM_MOUSEENTER         : MouseEnter(Self);
-    CM_MOUSELEAVE         : MouseLeave(Self);
-    CM_PARENTCOLORCHANGED : ParentColorChanged;
-    CM_PARENTFONTCHANGED  : ParentFontChanged;
-    CM_HITTEST            : if HitTest(XPos, YPos) then
-                              Result := HT_CLIENT;
-    CM_HINTSHOW:
-    begin
-      HintInfo.HintColor := GetHintColor(Parent);
-      Handled := HintShow(HintInfo);
+    case Msg of
+      JV_IMPL_CONTROL_MESSAGES
     end;
-    if not Handled then
-      inherited WndProc(Message);
   end;
+  if Mesg.Result = 0  then
+    inherited WndProc(Mesg);
 end;
  EMPTYLINE
 *)
 
 (*$DEFINE JV_IMPL_CONTROL_COMMON(ClassName)
+{ Control Common }
 procedure TJvEx##ClassName.ColorChanged;
 begin
   { notification }
@@ -289,39 +320,42 @@ begin
   { notification }
 end;
 
-function TJvEx##ClassName.HintShow(var HintInfo: THintInfo): Boolean;
+function TJvEx##ClassName.HintShow(var HintInf: THintInfo): Boolean;
 var
-  Mesg := TJvMessage;
+  Mesg: TMessage;
 begin
-  Mesg.Msg := CM_HINTSHOW;
-  Mesg.HintInfo := @HintInfo;
-  Mesg.Handled := False;
-  inherited WndProc(@Mesg)
-  Result := Mesg.Handled;
+  with TJvMessage(Mesg) do
+  begin
+    Msg := CM_HINTSHOW;
+    HintInfo := @HintInf;
+    Handled := False;
+  end;
+  inherited WndProc(Mesg);
+  Result := Mesg.Result <> 0;
 end;
 
 function TJvEx##ClassName.HitTest(X, Y: Integer): Boolean;
 var
-  Mesg: TJvMessage;
+  Mesg: TMessage;
 begin
-  with Mesg do
+  with TJvMessage(Mesg) do
   begin
     msg := CM_HITTEST;
     XPos := X;
     YPos := Y;
-    Result := 0;
-    inherited WndProc(@Mesg);
+    Mesg.Result := 0;
   end;
-  Result := Message.Result = HT_CLIENT;
+  inherited WndProc(Mesg);
+  Result := Mesg.Result = HTCLIENT;
 end;
 
-procedure TJvEx##ClassName.MouseEnter(Control: TControl);
+procedure TJvEx##ClassName.MouseEnter(AControl: TControl);
 begin
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-procedure TJvEx##ClassName.MouseLeave(Control: TControl);
+procedure TJvEx##ClassName.MouseLeave(AControl: TControl);
 begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
@@ -356,16 +390,17 @@ end;
 function TJvEx##ClassName.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 var
-  Mesg: TJvMessage;
+  Mesg: TMessage;
 begin
-  with Mesg do
+  with TJvMessage(Mesg) do
   begin
-    Msg := WM_DIALOGCHAR;
-    Shift := ShiftStateToKeyData(Shift);
-    Handled := 0;
-    inherited WndProc(@Mesg);
+    Msg := CM_DIALOGCHAR;
+    CharCode := Key;
+    KeyData := ShiftStateToKeyData(Shift);
+    Handled := False;
   end;
-  Result := Mesg.Handled;
+  inherited WndProc(Mesg);
+  Result := Mesg.Result <> 0 ;
 end;
   EMPTYLINE
 *) // MACRO END JV_IMPL_CONTROL_COMMON
@@ -393,63 +428,46 @@ JV_IMPL_CONTROL(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
-(*$DEFINE JV_IMPL_WINCONTROL(ClassName)
-procedure TJvEx##ClassName.WndProc(var Message: TMessage)
-var
-  Canvas: TControlCanvas;
-begin
-  with Message as TJvMessage do
-  begin
-    case of Msg of
-    CM_COLORCHANGED       : ColorChanged;
-    CM_ENABLEDCHANGED     : EnabledChanged;
-    CM_FONTCHANGED        : FontChanged;
-    CM_CURSORCHANGED      : CursorChanged;
-    CM_TEXTCHANGED        : TextChanged ;
-    CM_MOUSEENTER         : MouseEnter(Self);
-    CM_MOUSELEAVE         : MouseLeave(Self);
-    CM_PARENTCOLORCHANGED : ParentColorChanged;
-    CM_PARENTFONTCHANGED  : ParentFontChanged;
-    CM_BOUNDSCHANGED      : BoundsChanged;
-    CM_CURSORCHANGED      : CursorChanged;
-    CM_FOCUSCHANGED       : FocusChanged;
-    CM_SHOWHINTCHANGED    : ShowHintChanged;
-    CM_SHOWINGCHANGED     : ShowingChanged;
-    CM_DIALOGCHAR         : Handled := WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode));
-    CM_HITTEST            : if HitTest(XPos, YPos) then
-                              Result := HT_CLIENT;
-
-    CM_GOTFOCUS,
-    WM_SETFOCUS           : GotFocus;
-
-    CM_LOSTFOCUS,
-    WM_KILLFOCUS          : LostFocus;
-
-    WM_GETDLGCODE         : if not (ikNative in FInputKeys) then
-                              Result := InputKeysToDlgCodes(FInputKeys);
-
-    CM_HINTSHOW:
-    begin
-      HintInfo.HintColor := GetHintColor(Parent);
-      Handled := HintShow(HintInfo);
-    end;
-
-    WM_ERASEBKGND :
+(*$DEFINE JV_IMPL_WINCONTROL_MESSAGES
+      { WinControl Messages }     
+      CM_GOTFOCUS, WM_SETFOCUS: GotFocus;
+      CM_LOSTFOCUS, WM_KILLFOCUS: LostFocus;
+      WM_GETDLGCODE: if not (ikNative in FInputKeys) then
+                       Result := InputKeysToDlgCodes(FInputKeys);
+      WM_ERASEBKGND:
       begin
-        ACanvas :=  TControlCanvas.Create
-        with ACanvas do
+        ACanvas := GetCanvas(Self);
+        if Assigned(ACanvas) then
+          Handled := DoEraseBackGround(ACanvas, LParam)
+        else
         begin
-          Control := Self;
-          Handled := DoEraseBackGround(Canvas, LParam);
-          Destroy;
+          ACanvas := TControlCanvas.Create;
+          with TControlCanvas(ACanvas) do
+          begin
+            Control := Self;
+            Handled := DoEraseBackGround(ACanvas, LParam);
+            Destroy;
+          end;
         end;
       end;
-    end;  // case
+*)
 
-    if not Handled then
-      inherited WndProc(Message);
-  end;  // with Message
+(*$DEFINE JV_IMPL_WINCONTROL(ClassName)
+procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
+var
+  ACanvas: TControlCanvas;
+begin
+  with TJvMessage(Mesg) do
+  begin
+    case Msg of
+      JV_IMPL_CONTROL_MESSAGES
+      JV_IMPL_WINCONTROL_MESSAGES
+    end;
+  end;
+  if Mesg.Result = 0 then
+    inherited WndProc(Mesg);
 end;
+ EMPTYLINE
 *)
 
 (*$DEFINE JV_IMPL_WINCONTROL_COMMON(ClassName)
@@ -467,13 +485,15 @@ end;
 
 procedure TJvEx##ClassName.DoSetFocus(FocusedWnd: HWND);
 begin
+
 end;
 
 procedure TJvEx##ClassName.DoKillFocus(FocusedWnd: HWND);
 begin
+
 end;
 
-function TJvEx##ClassName.DoEraseBackground(Canvas: TCanvas; LParam: Integer): Boolean;
+function TJvEx##ClassName.DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -501,7 +521,7 @@ end;
 *) // MACRO END WINCONTROL
 
 (*$DEFINE JV_IMPL_WINCONTROL_CREATE(ClassName)
-{ Control Create }
+{ WinControl Create }
 constructor TJvEx##ClassName.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -518,94 +538,43 @@ end;
  EMPTYLINE
 *)
 
-
 (*$DEFINE JV_WINCONTROL_IMPL(ClassName)
-   JV_IMPL_WINCONTROL_CREATE(ClassName)
-   JV_IMPL_WINCONTROL(ClassName)
-   JV_IMPL_WINCONTROL_COMMON(ClassName)
-   JV_IMPL_CONTROL_COMMON(ClassName)
+JV_IMPL_WINCONTROL_CREATE(ClassName)
+JV_IMPL_WINCONTROL(ClassName)
+JV_IMPL_WINCONTROL_COMMON(ClassName)
+JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
 (*$DEFINE JV_IMPL_EDITCONTROL(ClassName)
 { EditControl }
-procedure TJvEx##ClassName.WndProc(var Message: TMessage)
+procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
 var
-  Canvas: TControlCanvas;
+  ACanvas: TControlCanvas;
 begin
-  with Message as TJvMessage do
+  with TJvMessage(Mesg) do
   begin
-    case of Msg of
-      CM_COLORCHANGED       : ColorChanged;
-      CM_ENABLEDCHANGED     : EnabledChanged;
-      CM_FOCUSCHANGED       : FocusChanged;
-      CM_FONTCHANGED        : FontChanged;
-      CM_CURSORCHANGED      : CursorChanged;
-      CM_TEXTCHANGED        : TextChanged ;
-      CM_PARENTCOLORCHANGED : ParentColorChanged;
-      CM_PARENTFONTCHANGED  : ParentFontChanged;
-      CM_BOUNDSCHANGED      : BoundsChanged;
-      CM_CURSORCHANGED      : CursorChanged;
-      CM_SHOWHINTCHANGED    : ShowHintChanged;
-      CM_SHOWINGCHANGED     : ShowingChanged;
-      CM_MOUSEENTER         : MouseEnter(Self);
-      CM_MOUSELEAVE         : MouseLeave(Self);
-
-      CM_GOTFOCUS,
-      WM_SETFOCUS           : GotFocus;
-
-      CM_LOSTFOCUS,
-      WM_KILLFOCUS          : LostFocus;
-
-      CM_HITTEST:           : if HitTest(XPos, YPos) then
-                                Result := HT_CLIENT;
-
-      CM_DIALOGCHAR         : Handled := WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode));
-
-      WM_GETDLGCODE         : if not (ikNative in FInputKeys) then
-                                Result := InputKeysToDlgCodes(FInputKeys);
-
-      WM_CLEAR,
-      WM_COPY,
-      WM_CUT,
-      WM_PASTE,
-      WM_UNDO,
-      EM_UNDO               : Result := DoClipBoardCommands(msg, FClipBoardCommands);
-
-      CM_HINTSHOW:
-        begin
-          HintInfo.HintColor := GetHintColor(Self);
-          Handled := HintShow(HintInfo);
-        end;
-
-      WM_ERASEBKGND :
-        begin
-          ACanvas :=  TControlCanvas.Create
-          with ACanvas do
-          begin
-            Control := Self;
-            Handled := DoEraseBackGround(Canvas, LParam);
-            Destroy;
-          end;
-        end;
-
-    end;  // case
-    if not Handled then
-      inherited WndProc(Message);
-  end;  // with Message
+    case Msg of
+      JV_IMPL_CONTROL_MESSAGES
+      JV_IMPL_WINCONTROL_MESSAGES
+      WM_CLEAR, WM_COPY, WM_CUT, WM_PASTE, WM_UNDO, EM_UNDO:
+        Handled := DoClipBoardCommands(msg, FClipBoardCommands);
+    end;
+  end;
+  if Mesg.Result = 0  then
+    inherited WndProc(Mesg);
 end;
   EMPTYLINE
 *) // end of JV_IMPL_EDITCONTROL
 
-
 (*$DEFINE JV_EDITCONTROL_IMPL(ClassName)
-   JV_IMPL_WINCONTROL_CREATE(ClassName)
-   JV_IMPL_EDITCONTROL(ClassName)
-   JV_IMPL_WINCONTROL_COMMON(ClassName)
-   JV_IMPL_CONTROL_COMMON(ClassName)
+JV_IMPL_WINCONTROL_CREATE(ClassName)
+JV_IMPL_EDITCONTROL(ClassName)
+JV_IMPL_WINCONTROL_COMMON(ClassName)
+JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
 (*$DEFINE JV_IMPL_CUSTOMFORM(ClassName)
-{ QCustomForm }
+{ CustomForm }
 constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
@@ -625,5 +594,4 @@ JV_IMPL_WINCONTROL(ClassName)
 JV_IMPL_WINCONTROL_COMMON(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
-
 
