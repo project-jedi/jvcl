@@ -10,13 +10,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvCharMap.PAS, released on 2003-11-03.
 
-The Initial Developer of the Original Code is Peter Thornqvist.
+The Initial Developer of the Original Code is Peter Thornqvist <peter3 at sourceforge dot net>
 Portions created by Peter Thornqvist are Copyright (c) 2003 Peter Thornqvist
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2003-11-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -26,6 +24,7 @@ Known Issues:
   only shows the first subrange
 
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -419,6 +418,14 @@ end;
 type
   TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
 
+{$IFNDEF COMPILER6_UP}
+const
+  {$EXTERNALSYM WS_EX_LAYERED}
+  WS_EX_LAYERED = $00080000;
+  {$EXTERNALSYM LWA_ALPHA}
+  LWA_ALPHA = $00000002;
+{$ENDIF !COMPILER6_UP}
+
 procedure TShadowWindow.CreateHandle;
 var
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
@@ -438,14 +445,14 @@ var
 
 begin
   inherited CreateHandle;
-  {$IFDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   InitProcs;
   if HandleAllocated and Assigned(DynamicSetLayeredWindowAttributes) then
   begin
     SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) or WS_EX_LAYERED);
     DynamicSetLayeredWindowAttributes(Handle, 0, cShadowAlpha, LWA_ALPHA);
   end;
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF !COMPILER6_UP}
 end;
 
 constructor TShadowWindow.Create(AOwner: TComponent);
