@@ -66,6 +66,7 @@ type
     procedure Loaded; override;
     procedure Cache;
     procedure FlushCache;
+    procedure DoContentsChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -306,9 +307,8 @@ begin
       LineTo(Width div 2 + FCrosshairSize div 2 + Dx, Height div 2 + Dy);
     end;
   end;
-
-  if Assigned(FOnContentsChanged) then
-    FOnContentsChanged(Self);
+  if Enabled then
+    DoContentsChanged;
 end;
 
 procedure TJvZoom.SetActive(const Value: Boolean);
@@ -328,11 +328,9 @@ begin
     else
       Invalidate;
   end
-  else
-  begin
+  else if not Enabled then
     FLastPoint := Point(MaxLongInt, MaxLongInt);
-    Invalidate;
-  end;
+  Invalidate;
 end;
 
 procedure TJvZoom.SetCacheOnDeactivate(const Value: Boolean);
@@ -362,7 +360,8 @@ begin
   begin
     FZoomLevel := Value;
     { Forget the old point; thus force repaint }
-    FLastPoint := Point(MaxLongint, MaxLongint);
+    if Enabled then
+      FLastPoint := Point(MaxLongint, MaxLongint);
     Invalidate;
   end;
 end;
@@ -373,7 +372,8 @@ begin
   begin
     FCrossHair := Value;
     { Forget the old point; thus force repaint }
-    FLastPoint := Point(MaxLongint, MaxLongint);
+    if Enabled then
+      FLastPoint := Point(MaxLongint, MaxLongint);
     Invalidate;
   end;
 end;
@@ -383,7 +383,8 @@ begin
   //On resize, refresh it
   inherited Resize;
   { Forget the old point; thus force repaint }
-  FLastPoint := Point(MaxLongint, MaxLongint);
+  if Enabled then
+    FLastPoint := Point(MaxLongint, MaxLongint);
   PaintMe(Self);
 end;
 
@@ -412,10 +413,20 @@ begin
     SetCursorPos(X,Y)
   else
   begin
-    FLastPoint.X := X;
-    FLastPoint.Y := Y;
+    if (FLastPoint.X <> X) or (FLastPoint.Y <> Y) then
+    begin
+      FLastPoint.X := X;
+      FLastPoint.Y := Y;
+      DoContentsChanged;
+    end;
   end;
   Invalidate;
+end;
+
+procedure TJvZoom.DoContentsChanged;
+begin
+  if Assigned(FOnContentsChanged) then
+    FOnContentsChanged(Self);
 end;
 
 {$IFDEF UNITVERSIONING}
