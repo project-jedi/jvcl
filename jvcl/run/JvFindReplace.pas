@@ -247,7 +247,6 @@ var
   S: string;
 begin
   Result.StartAt := -1; // assume failure
-
   if Fast then
     Found := BoyerMoore(PChar(AnsiUpperCase(Search)), PChar(AnsiUpperCase(Copy(Text, FromPos + 1, ToPos))))
   else
@@ -256,12 +255,21 @@ begin
   begin
     Result.StartAt := Found + FromPos - 1;
     Result.EndAt := Length(Search);
-//    S := Copy(Text, Result.StartAt - 1, Result.EndAt + 3);
     S := Copy(Text, Result.StartAt - 1, Result.EndAt + 2);
-    Result.isWhole := IsValidWholeWord(S) or AnsiSameText(S, Text);
-//    S := Copy(S, 3, Length(S) - 3);
-//    Result.isSameCase := (AnsiCompareStr(Search, S) = 0);
-    S := Copy(S, 1, Length(S) - 1);
+    // check for extremes...
+    // is find string the same as the whole string?
+    if Length(Search) = Length(Text) then begin
+      Result.isWhole := True;
+      S := Text;
+    end else begin
+      // check for match at beginning or end of string
+      if Result.StartAt - 1 < 0 then
+        S := Copy(' ' + S, 1, Result.EndAt + 2);
+      if Result.StartAt - 1 + Result.EndAt + 2 > Length(Text) then
+        S := Copy(S + ' ', Length(Text)- Result.EndAt-1, Result.EndAt + 2);
+      Result.isWhole := IsValidWholeWord(S);
+      S := Copy(S, 2, Length(S) - 2);
+    end;
     Result.isSameCase := (AnsiCompareStr(trim(Search), trim(S)) = 0);
   end;
 end;
