@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQSystem" Design="0">
+  <Description>JVCLX System Runtime Package</Description>
+  <Requires>
+    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
+    <Package Name="CJCL" Targets="D7,K3" Condition=""/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="vclx" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQXmlDatabase.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQAppInst.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQChangeNotify.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDirectories.pas" Targets="D7" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDragDrop.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQFormPlacement.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQFormPlacementSelectList.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQJoystick.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQScreenSaver.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSimpleXml.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSoundControl.pas" Targets="D7" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSystemColors.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQThread.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQThreadTimer.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTimer.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTimerList.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQAppXmlStorage.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>
