@@ -223,6 +223,7 @@ type
     function IJvDataIDSearch.Find = FindByID;
     function FindByID(ID: string; const Recursive: Boolean = False): IJvDataItem;
   public
+    constructor Create; virtual;
     constructor CreateProvider(const Provider: IJvDataProvider);
     constructor CreateParent(const Parent: IJvDataItem);
     procedure BeforeDestruction; override;
@@ -415,6 +416,9 @@ type
     procedure ReadRoot(Reader: TReader);
     procedure WriteRoot(Writer: TWriter);
     procedure AddToArray(var ClassArray: TClassArray; AClass: TClass);
+    procedure DeleteFromArray(var ClassArray: TClassArray; Index: Integer);
+    function IndexOfClass(AClassArray: TClassArray; AClass: TClass): Integer;
+    procedure RemoveFromArray(var ClassArray: TClassArray; AClass: TClass);
     function IsTreeProvider: Boolean; dynamic;
     {$IFNDEF COMPILER6_UP}
     { IInterfaceComponentReference }
@@ -1576,6 +1580,11 @@ begin
   end;
 end;
 
+constructor TJvBaseDataItems.Create;
+begin
+  inherited Create;
+end;
+
 constructor TJvBaseDataItems.CreateProvider(const Provider: IJvDataProvider);
 begin
   Create;
@@ -2174,6 +2183,32 @@ procedure TJvCustomDataProvider.AddToArray(var ClassArray: TClassArray; AClass: 
 begin
   SetLength(ClassArray, Length(ClassArray) + 1);
   ClassArray[High(ClassArray)] := AClass;
+end;
+
+procedure TJvCustomDataProvider.DeleteFromArray(var ClassArray: TClassArray; Index: Integer);
+begin
+  if (Index >= 0) and (Index <= High(ClassArray)) then
+  begin
+    if Index < High(ClassArray) then
+      Move(ClassArray[Index + 1], ClassArray[Index], SizeOf(TClass) * (High(ClassArray) - Index));
+    SetLength(ClassArray, High(ClassArray));
+  end;
+end;
+
+function TJvCustomDataProvider.IndexOfClass(AClassArray: TClassArray; AClass: TClass): Integer;
+begin
+  Result := High(AClassArray);
+  while (Result >= 0) and (AClassArray[Result] <> AClass) do
+    Dec(Result);
+end;
+
+procedure TJvCustomDataProvider.RemoveFromArray(var ClassArray: TClassArray; AClass: TClass);
+var
+  I: Integer;
+begin
+  I := IndexOfClass(ClassArray, AClass);
+  if I > -1 then
+    DeleteFromArray(ClassArray, I);
 end;
 
 function TJvCustomDataProvider.IsTreeProvider: Boolean;
