@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -19,13 +19,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,7 +35,7 @@ interface
 uses
   
   
-  QControls, QStdCtrls, Types, QWindows,
+  QGraphics, QControls, QStdCtrls, Types, QWindows,
   
   Classes;
 
@@ -56,8 +55,6 @@ implementation
 
 
 
-uses
-  QGraphics;
 
 const
   LB_ERR = -1;
@@ -204,7 +201,8 @@ end;
 
 procedure BoxMoveSelectedItems(SrcList, DstList: TWinControl);
 var
-  Index, I, NewIndex: Integer;
+  Index, I: Integer;
+  
 begin
   Index := BoxGetFirstSelection(SrcList);
   if Index <> LB_ERR then
@@ -216,7 +214,9 @@ begin
       while I < BoxItems(SrcList).Count do
         if BoxGetSelected(SrcList, I) then
         begin
-          NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList).Strings[I],
+          
+          
+          BoxItems(DstList).AddObject(BoxItems(SrcList).Strings[I],
             BoxItems(SrcList).Objects[I]);
           
           BoxItems(SrcList).Delete(I);
@@ -233,11 +233,14 @@ end;
 
 procedure BoxMoveAllItems(SrcList, DstList: TWinControl);
 var
-  I, NewIndex: Integer;
+  I: Integer;
+  
 begin
   for I := 0 to BoxItems(SrcList).Count - 1 do
   begin
-    NewIndex := BoxItems(DstList).AddObject(BoxItems(SrcList)[I],
+    
+    
+    BoxItems(DstList).AddObject(BoxItems(SrcList)[I],
       BoxItems(SrcList).Objects[I]);
     
   end;

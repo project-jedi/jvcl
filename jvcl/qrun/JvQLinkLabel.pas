@@ -202,6 +202,40 @@ uses
 const
   crNewLinkHand = 1;
 
+constructor TJvCustomLinkLabel.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FLinkCursor := crHandPoint;
+  FText := TStringList.Create;
+  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
+  
+  Width := 160;
+  Height := 17;
+  FNodeTree := TNodeTree.Create;
+  FAutoHeight := True;
+
+  // Give descendant components an opportunity to replace the default classes
+  FParser := CreateParser;
+  FParser.SetDynamicNodeHandler(Self);
+  FRenderer := CreateRenderer;
+
+  FLayout := tlTop;              // Bianconi
+
+  SetLinkColor(clBlue);
+  SetLinkColorClicked(clRed);
+  SetLinkColorHot(clPurple);
+  SetLinkStyle([fsUnderline]);
+
+  //  Screen.Cursors[crNewLinkHand] := LoadCursor(HInstance, 'LINKHAND');  // Bianconi
+end;
+
+destructor TJvCustomLinkLabel.Destroy;
+begin
+  FNodeTree.Free;
+  FText.Free;
+  inherited Destroy;
+end;
+
 procedure TJvCustomLinkLabel.ActivateLinkNodeAtPos(const P: TPoint; State: TLinkState);
 var
   NodeAtPoint: TLinkNode;
@@ -286,33 +320,6 @@ begin
   Invalidate;
 end;
 
-constructor TJvCustomLinkLabel.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FLinkCursor := crHandPoint;
-  FText := TStringList.Create;
-  ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  
-  Width := 160;
-  Height := 17;
-  FNodeTree := TNodeTree.Create;
-  FAutoHeight := True;
-
-  // Give descendant components an opportunity to replace the default classes
-  FParser := CreateParser;
-  FParser.SetDynamicNodeHandler(Self);
-  FRenderer := CreateRenderer;
-
-  FLayout := tlTop;              // Bianconi
-
-  SetLinkColor(clBlue);
-  SetLinkColorClicked(clRed);
-  SetLinkColorHot(clPurple);
-  SetLinkStyle([fsUnderline]);
-
-  //  Screen.Cursors[crNewLinkHand] := LoadCursor(HInstance, 'LINKHAND');  // Bianconi
-end;
-
 function TJvCustomLinkLabel.CreateParser: IParser;
 begin
   { Descendant components wishing to use another parser (implementing the
@@ -330,13 +337,6 @@ function TJvCustomLinkLabel.CreateRenderer: IRenderer;
 begin
   // Please refer to the comment in TJvCustomLinkLabel.CreateParser above.
   Result := TDefaultRenderer.Create;
-end;
-
-destructor TJvCustomLinkLabel.Destroy;
-begin
-  FNodeTree.Free;
-  FText.Free;
-  inherited Destroy;
 end;
 
 procedure TJvCustomLinkLabel.DoCaptionChanged;
@@ -489,7 +489,6 @@ begin
 
       TmpBmp := TBitmap.Create;
       TmpRect := ClientRect;
-
       TmpBmp.Height := TmpRect.Bottom - (FMarginHeight shl 1) + 1;  // TmpRect.Top = 0, ignore it
       TmpBmp.Width  := TmpRect.Right - (FMarginWidth shl 1) + 1;    // TmpRect.left = 0, ignore it
       TmpBmp.Canvas.Font.Assign(Canvas.Font);

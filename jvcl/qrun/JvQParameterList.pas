@@ -41,7 +41,7 @@ uses
   
   Variants,
   
-  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDSADialogs,
+  JvQTypes, JvQDynControlEngine, JvQDynControlEngineIntf, JvQDsaDialogs,
   JvQComponent, JvQPanel, JvQPropertyStore, JvQAppStorage, JvQAppStorageSelectList;
 
 type
@@ -934,7 +934,7 @@ begin
   else
     Result := not VarIsNull(AData);
   if not Result then
-    JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+    DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
 end;
 
 function TJvBaseParameter.GetParameterNameExt: string;
@@ -1175,9 +1175,11 @@ begin
   with TForm(ParameterDialog) do
   begin
     BorderIcons := [];
-    DefaultMonitor := dmActiveForm;
+    
+    
+    BorderStyle := fbsDialog;
+    
     FormStyle := fsNormal;
-    BorderStyle := bsDialog;
     Position := poScreenCenter;
     OnShow := DialogShow;
   end;

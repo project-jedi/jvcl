@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Robert Love [rlove att slcdug dott org].
 
-Last Modified: 2003-10-25
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -37,7 +36,7 @@ interface
 uses
   
   
-  Types, QGraphics, QControls, QExtCtrls, QWindows,
+  Types, QGraphics, QControls, QForms, QExtCtrls, QButtons, QWindows,
   
   SysUtils, Classes,
   JvQComponent, JvQTypes;
@@ -119,7 +118,7 @@ type
 implementation
 
 uses
-  JvQThemes;
+  JvQJCLUtils, JvQThemes;
 
 constructor TJvArrayButton.Create(AOwner: TComponent);
 begin
@@ -134,7 +133,7 @@ begin
   FCaptions := TStringList.Create;
   FHints := THintStringList.Create;
   FColors := TStringList.Create;
-//  DoubleBuffered := true;
+  
 end;
 
 destructor TJvArrayButton.Destroy;
@@ -207,18 +206,18 @@ var
       Frame3D(Self.Canvas, R, clBtnHighlight, clBlack, 1);
     end;
     if Cap <> '' then
-      DrawText(Canvas.Handle, PChar(Cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
   procedure DrawDown;
   begin
-
+    
     begin
       DrawBackground(BackColor);
       Frame3D(Self.Canvas, R, clblack, clBtnHighlight, 1);
     end;
     if Cap <> '' then
-      DrawText(Canvas.Handle, PChar(Cap), -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
+      DrawText(Canvas, Cap, -1, R, DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   end;
 
 begin

@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,7 +21,6 @@ All Rights Reserved.
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
                 André Snepvangers [asn att xs4all dott nl]
 
-Last Modified:
 2003-01-19 - (asn) support for CLX
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -29,6 +28,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -46,7 +46,7 @@ uses
 
 
  {$IF not declared(TJvExAnimate)}
-   This unit needs at least Delphi 7 or Kylix 3.
+  {$MESSAGE Fatal 'This unit needs at least Delphi 7 or Kylix 3.'}
  {$IFEND}
 
 

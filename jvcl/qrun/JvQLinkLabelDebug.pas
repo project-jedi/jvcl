@@ -58,7 +58,7 @@ type
 implementation
 
 class procedure TDebugLinkLabelTools.NodeTreeToTreeNodes(const LinkLabel: TJvLinkLabel;
- const Tree: TTreeNodes);
+  const Tree: TTreeNodes);
 
   function GetNodeDescription(const Node: TNode): string;
   begin

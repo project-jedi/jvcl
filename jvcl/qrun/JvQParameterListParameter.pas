@@ -26,7 +26,6 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvQParameterListParameter;
 
@@ -36,11 +35,14 @@ uses
   Classes, SysUtils,
   
   
-  QStdCtrls, QExtCtrls, Types, QGraphics, QForms, 
-  QControls, QFileCtrlS, QDialogs, QComCtrls, QButtons,
+  QStdCtrls, QExtCtrls, Types, QGraphics, QForms,
+  QControls, QFileCtrls, QDialogs, QComCtrls, QButtons,
   
   
   Variants,
+  
+  
+  JvQTypes,
   
   JvQPanel, JvQPropertyStore, JvQParameterList, JvQDynControlEngine, JvQDSADialogs,
   JvQDynControlEngineIntf;
@@ -314,7 +316,7 @@ type
   private
     FInitialDir: string;
     FDialogTitle: string;
-    FDialogOptions: TSelectDirOpts;
+    
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
@@ -326,7 +328,7 @@ type
     property Directory: string read GetAsString write SetAsString;
     property InitialDir: string read FInitialDir write FInitialDir;
     property DialogTitle: string read FDialogTitle write FDialogTitle;
-    property DialogOptions: TSelectDirOpts read FDialogOptions write FDialogOptions;
+    
   end;
 
   TJvListParameter = class(TJvBasePanelEditParameter)
@@ -480,10 +482,31 @@ type
     property FontName: string read FFontName write FFontName;
   end;
 
+function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
+  const HelpButton: TMsgDlgBtn = mbHelp;
+  const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
+  
 implementation
 
 uses
   JvQResources;
+
+function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
+  const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
+  const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
+  const HelpButton: TMsgDlgBtn = mbHelp;
+  const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
+begin
+  Result :=
+    
+    
+    JvQDSADialogs.
+    
+    MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
+    CancelButton, HelpButton, ADynControlEngine);
+end;
 
 //=== TJvNoDataParameter =====================================================
 
@@ -1497,7 +1520,7 @@ begin
   if VarIsNull(AData) or (AData = '') then
     if Required then
     begin
-      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end
     else
@@ -1508,11 +1531,11 @@ begin
   try
     I := AData;
   except
-    JvDSADialogs.MessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
+    DSADialogsMessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
     Exit;
   end;
   if (I < MinValue) or (I > MaxValue) then
-    JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, IntToStr(MinValue),
+    DSADialogsMessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, IntToStr(MinValue),
       IntToStr(MaxValue)]), mtError, [mbOK], 0)
   else
     Result := True;
@@ -1584,7 +1607,7 @@ begin
   if VarIsNull(AData) then
   begin
     if Required then
-      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0)
+      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0)
     else
       Result := True;
     Exit;
@@ -1592,11 +1615,11 @@ begin
   try
     D := AData;
   except
-    JvDSADialogs.MessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
+    DSADialogsMessageDlg(Format(RsErrParameterIsNotAValidNumber, [Caption, AData]), mtError, [mbOK], 0);
     Exit;
   end;
   if (D < MinValue) or (D > MaxValue) then
-    JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, FloatToStr(MinValue),
+    DSADialogsMessageDlg(Format(RsErrParameterMustBeBetween, [Caption, AData, FloatToStr(MinValue),
       FloatToStr(MaxValue)]), mtError, [mbOK], 0)
   else
     Result := True;
@@ -1655,7 +1678,7 @@ begin
   if Required then
     if AData = '' then
     begin
-      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end;
   if AData <> '' then
@@ -1668,19 +1691,19 @@ begin
   if ofFileMustExist in DialogOptions then
     if not FileExists(AData) then
     begin
-      JvDSADialogs.MessageDlg(Format(RsErrParameterFileDoesNotExist, [Caption, AData]), mtError, [mbOK], 0);
+      DSADialogsMessageDlg(Format(RsErrParameterFileDoesNotExist, [Caption, AData]), mtError, [mbOK], 0);
       Exit;
     end;
   if ofOverwritePrompt in DialogOptions then
     if FileExists(AData) then
-      if JvDSADialogs.MessageDlg(Format(RsErrParameterFileExistOverwrite, [Caption, AData]), mtConfirmation, [mbYes,
+      if DSADialogsMessageDlg(Format(RsErrParameterFileExistOverwrite, [Caption, AData]), mtConfirmation, [mbYes,
         mbNo], 0) = mrNo then
         Exit;
   if ofPathMustExist in DialogOptions then
     if ExtractFilePath(AData) <> '' then
       if not DirectoryExists(ExtractFilePath(AData)) then
       begin
-        JvDSADialogs.MessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, ExtractFilePath(AData)]), mtError,
+        DSADialogsMessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, ExtractFilePath(AData)]), mtError,
           [mbOK], 0);
         Exit;
       end;
@@ -1693,7 +1716,7 @@ procedure TJvDirectoryParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   InitialDir := TJvDirectoryParameter(Source).InitialDir;
-  DialogOptions := TJvDirectoryParameter(Source).DialogOptions;
+  
   DialogTitle := TJvDirectoryParameter(Source).DialogTitle;
 end;
 
@@ -1716,7 +1739,7 @@ begin
     with ITmpControlDirectory do
     begin
       ControlSetDialogTitle(DialogTitle);
-      ControlSetDialogOptions(DialogOptions);
+      
       ControlSetInitialDir(InitialDir);
     end;
 end;
@@ -1730,15 +1753,10 @@ begin
   if Required then
     if AData = '' then
     begin
-      JvDSADialogs.MessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
+      DSADialogsMessageDlg(Format(RsErrParameterMustBeEntered, [Caption]), mtError, [mbOK], 0);
       Exit;
     end;
-  if not DirectoryExists(AData) then
-    if not (sdAllowCreate in DialogOptions) then
-    begin
-      JvDSADialogs.MessageDlg(Format(RsErrParameterDirectoryNotExist, [Caption, AData]), mtError, [mbOK], 0);
-      Exit;
-    end;
+  
   Result := True;
 end;
 

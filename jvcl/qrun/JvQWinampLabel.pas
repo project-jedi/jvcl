@@ -59,7 +59,7 @@ type
     FScrollInterval: Cardinal;
     FActive: Boolean;
     FStretch: Boolean;
-    FScrollBy: Integer;
+    FScrollTextBy: Integer;
     FCurPos: Integer;
     FWait: Integer;
     FWaiting: Boolean;
@@ -68,7 +68,7 @@ type
     FText: TCaption;
     FCharHeight: Integer;
     FCharWidth: Integer;
-    function GetScrollBy: Integer;
+    function GetScrollTextBy: Integer;
     procedure SetActive(Value: Boolean);
     procedure SetStretch(Value: Boolean);
     procedure SetInterval(Value: Cardinal);
@@ -97,7 +97,7 @@ type
   published
     property Active: Boolean read FActive write SetActive;
     property Stretch: Boolean read FStretch write SetStretch;
-    property ScrollBy: Integer read GetScrollBy write FScrollBy;
+    property ScrollTextBy: Integer read GetScrollTextBy write FScrollTextBy;
     property ScrollInterval: Cardinal read FScrollInterval write SetInterval;
     property WaitOnEnd: Integer read FWait write FWait;
     property Skin: TPicture read FPicture write SetPicture;
@@ -203,7 +203,7 @@ begin
   FActive := False;
   Activate;
   FStretch := True;
-  FScrollBy := 2;
+  FScrollTextBy := 2;
   FWait := 1000;
   Color := clBlack;
 end;
@@ -223,9 +223,9 @@ begin
   inherited Destroy;
 end;
 
-function TJvWinampLabel.GetScrollBy: Integer;
+function TJvWinampLabel.GetScrollTextBy: Integer;
 begin
-  Result := Abs(FScrollBy);
+  Result := Abs(FScrollTextBy);
 end;
 
 procedure TJvWinampLabel.SetPicture(Value: TPicture);
@@ -288,7 +288,7 @@ begin
   FWaiting := False;
 
   FCurPos := 0;
-  FScrollBy := Abs(FScrollBy);
+  FScrollTextBy := Abs(FScrollTextBy);
   FillBitmap;
 end;
 
@@ -398,10 +398,10 @@ begin
   try
     if (Length(Text) * CharWidth) * FScale > Width then
     begin
-      FCurPos := FCurPos + FScrollBy;
+      FCurPos := FCurPos + FScrollTextBy;
       if FCurPos <= 0 then
       begin
-        FScrollBy := Abs(FScrollBy);
+        FScrollTextBy := Abs(FScrollTextBy);
         if FWait <> 0 then
         begin
           FWaiting := True;
@@ -410,7 +410,7 @@ begin
       end;
       if (Length(Text) * CharWidth - (FCurPos)) <= (Width / FScale) then
       begin
-        FScrollBy := Abs(FScrollBy) * -1;
+        FScrollTextBy := Abs(FScrollTextBy) * -1;
         if FWait <> 0 then
         begin
           FWaiting := True;
@@ -482,7 +482,7 @@ begin
     Canvas.Brush.Style := bsSolid;
     Canvas.FillRect(Rec);
     FCurPos := 0;
-    FScrollBy := Abs(FScrollBy);
+    FScrollTextBy := Abs(FScrollTextBy);
   end;
 end;
 

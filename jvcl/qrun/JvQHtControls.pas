@@ -104,7 +104,7 @@ Maciej Kaczkowski:
 
 {$I jvcl.inc}
 
-unit JvQHtControls;
+unit JvQHTControls;
 
 interface
 
@@ -815,7 +815,7 @@ end;
 
 procedure TJvCustomHTListBox.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   Style := lbOwnerDrawVariable;
 end;
 
@@ -973,11 +973,11 @@ end;
 
 
 procedure TJvCustomHTComboBox.CreateWidget;
-
 var
   Tmp: Integer;
 begin
-  inherited;
+  inherited CreateWidget;
+
   if DropWidth = 0 then
     DropWidth := Width
   else

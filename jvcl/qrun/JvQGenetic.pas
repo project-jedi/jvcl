@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -57,7 +56,6 @@ type
     function Generate(Father, Mother: PByte; Size: Integer): PByte;
     function Mutate(Value: Byte): Byte;
     function DoCrossover: Boolean;
-  protected
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

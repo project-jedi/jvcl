@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -22,17 +22,16 @@ Contributor(s):
   Michael Beck [mbeck att bigfoot dott com].
   Remko Bonte [remkobonte att myrealbox dott com].
 
-Last Modified: 2003-04-15
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
-unit JvQId3v2Types;
+unit JvQID3v2Types;
 
 interface
 
@@ -1305,6 +1304,24 @@ end;
 
 //=== TJvID3TermFinder =======================================================
 
+constructor TJvID3TermFinder.Create;
+var
+  ListType: TJvListType;
+begin
+  inherited Create;
+  for ListType := Low(TJvListType) to High(TJvListType) do
+    FLists[ListType] := nil;
+end;
+
+destructor TJvID3TermFinder.Destroy;
+var
+  ListType: TJvListType;
+begin
+  for ListType := Low(TJvListType) to High(TJvListType) do
+    FLists[ListType].Free;
+  inherited Destroy;
+end;
+
 procedure TJvID3TermFinder.BuildList_ID3Genres;
 var
   I: Integer;
@@ -1400,24 +1417,6 @@ begin
     for I := Low(CISO_639_2Data) to High(CISO_639_2Data) do
       AddObject(CISO_639_2Data[I].L, TObject(I));
   end;
-end;
-
-constructor TJvID3TermFinder.Create;
-var
-  ListType: TJvListType;
-begin
-  inherited Create;
-  for ListType := Low(TJvListType) to High(TJvListType) do
-    FLists[ListType] := nil;
-end;
-
-destructor TJvID3TermFinder.Destroy;
-var
-  ListType: TJvListType;
-begin
-  for ListType := Low(TJvListType) to High(TJvListType) do
-    FLists[ListType].Free;
-  inherited Destroy;
 end;
 
 procedure TJvID3TermFinder.ID3Genres(AStrings: TStrings;

@@ -279,7 +279,7 @@ type
   TJvLookOutPage = class(TJvCustomControl)
   private
     FEdit: TEdit;
-    FInScroll: Boolean;                 
+    FInScroll: Boolean;
     FAutoRepeat: Boolean;
     FAutoCenter: Boolean;
     FParentImageSize: Boolean;
@@ -309,7 +309,7 @@ type
     procedure SetHighlightFont(Value: TFont);
     procedure SetImageSize(Value: TJvImageSize);
     procedure SetParentImageSize(Value: Boolean);
-    procedure SetBitmap(Value: TBitmap);reintroduce;
+    procedure SetBitmap(Value: TBitmap);  reintroduce; 
     procedure SetCaption(Value: TCaption);
     procedure SetMargin(Value: Integer);
     procedure SetButton(Index: Integer; Value: TJvLookOutButton);
@@ -421,7 +421,7 @@ type
     
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   protected
-    procedure SetAutoSize(Value: Boolean); // override;
+    procedure SetAutoSize(Value: Boolean); 
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -487,11 +487,11 @@ type
 
 implementation
 
-
-
 uses
+  
+  
   QActnList;
-
+  
 
 const
   cSpeed = 20;
@@ -887,8 +887,7 @@ end;
 
 destructor TJvCustomLookOutButton.Destroy;
 begin
-  if Assigned(FEdit) then
-    FEdit.Free;
+  FEdit.Free;
   FLargeImageChangeLink.Free;
   FSmallImageChangeLink.Free;
   FHighlightFont.Free;
@@ -1199,7 +1198,7 @@ begin
     if csDesigning in ComponentState then
     begin
       Brush.Color := clBlack;
-      FrameRect(Canvas,R);
+      FrameRect(Canvas, R);
     end;
 
     if (FImageSize = isSmall) and Assigned(FSmallImages) then
@@ -1246,7 +1245,10 @@ begin
       Canvas.Font := Font;
 
     //    W := FSpacing  + W;
+    
+    
     SetBkMode(Canvas.Handle, QWindows.Transparent);
+    
     R := GetClientRect;
     if (ImageSize = isLarge) and Assigned(FLargeImages) then
       R.Top := R.Top + FLargeImages.Height + (FSpacing * 2)
@@ -1309,7 +1311,10 @@ begin
   if csDesigning in ComponentState then
   begin
     Canvas.Brush.Color := clBlack;
+    
+    
     FrameRect(Canvas, R);
+    
     Canvas.Brush.Color := Color;
   end;
 
@@ -1427,6 +1432,7 @@ end;
 procedure TJvCustomLookOutButton.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Tmp: TPoint;
+  
 begin
   if Parent is TJvLookOutPage then
     TJvLookOutPage(Parent).ActiveButton := Self;
@@ -1442,8 +1448,7 @@ begin
       FPopUpMenu.Popup(Tmp.X, Tmp.Y);
       { wait 'til menu is Done }
       // TODO
-//      while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
-//        {nothing};
+      
     end;
     { release button }
     if not FStayDown then
@@ -1610,8 +1615,7 @@ end;
 
 destructor TJvLookOutPage.Destroy;
 begin
-  if Assigned(FEdit) then
-    FEdit.Free;
+  FEdit.Free;
   FUpArrow.Free;
   FDownArrow.Free;
   FBitmap.Free;
@@ -2254,7 +2258,10 @@ begin
   { draw top caption }
   R := GetClientRect;
   R.Bottom := cHeight;
+  
+  
   SetBkMode(DC, QWindows.Transparent);
+  
   if FCaption <> '' then
   begin
     if not Enabled then
@@ -2320,6 +2327,7 @@ procedure TJvLookOutPage.MouseDown(Button: TMouseButton; Shift: TShiftState; X, 
 var
   R: TRect;
   Tmp: TPoint;
+  
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if Assigned(FPopUpMenu) and (Button = mbRight) then
@@ -2328,7 +2336,7 @@ begin
     Tmp := ClientToScreen(Point(X, Y));
     FPopUpMenu.PopupComponent := Self;
     FPopUpMenu.Popup(Tmp.X, Tmp.Y);
-    { wait 'til menu is Done }
+    
     FDown := False;
   end
   else
@@ -2405,7 +2413,10 @@ begin
     FFlatButtons := Value;
     //    for I := 0 to PageCount - 1 do
     //      Pages[I].DrawTopButton;
+    
+    
     RecreateWidget;
+    
   end;
 end;
 
@@ -2513,7 +2524,10 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
+    
+    
     RecreateWidget;
+    
   end;
 end;
 
@@ -2643,17 +2657,8 @@ begin
   FPages[Index] := Value;
 end;
 
-(*)
-procedure TJvLookOut.WMNCCalcSize(var Msg: TWMNCCalcSize);
-begin
-  with Msg.CalcSize_Params^ do
-    if FFlatButtons then
-      InflateRect(rgrc[0], -1, -1)
-    else
-      InflateRect(rgrc[0], -2, -2);
-  inherited;
-end;
-(*)
+
+
 
 procedure TJvLookOut.WMNCPaint(var Msg: TMessage);
 var
@@ -2662,9 +2667,13 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    QWindows.GetClientRect(Handle, RC);
+    
+    
+    QWindows.
+    
+    GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
-    MapWindowPoints(nil, Handle, RW, 2);
+    MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
@@ -2676,9 +2685,17 @@ begin
     else
     begin
       Canvas.Brush.Color := Color;
-      QWindows.FrameRect(DC, RW, Canvas.Brush.Handle);
+      
+      
+      QWindows.
+      
+      FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, -1, -1);
-      QWindows.FrameRect(DC, RW, Canvas.Brush.Handle);
+      
+      
+      QWindows.
+      
+      FrameRect(DC, RW, Canvas.Brush.Handle);
       InflateRect(RW, 1, 1);
     end;
     { Erase parts not drawn }
@@ -2876,9 +2893,13 @@ var
 begin
   DC := GetWindowDC(Handle);
   try
-    QWindows.GetClientRect(Handle, RC);
+    
+    
+    QWindows.
+    
+    GetClientRect(Handle, RC);
     GetWindowRect(Handle, RW);
-    MapWindowPoints(nil, Handle, RW, 2);
+    MapWindowPoints(NullHandle, Handle, RW, 2);
     OffsetRect(RC, -RW.Left, -RW.Top);
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);

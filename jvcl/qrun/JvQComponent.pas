@@ -37,7 +37,7 @@ interface
 uses
   Classes,
   {$IFDEF USE_DXGETTEXT}
-  JvQGnugettext,
+  JvGnugettext,
   {$ENDIF USE_DXGETTEXT}
   {$IFDEF MSWINDOWS}
   Windows,
@@ -46,7 +46,7 @@ uses
   
   Qt, QWindows,
   
-  JvQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
+  JVQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
 type
   TJvComponent = class(TComponent)

@@ -5454,6 +5454,10 @@ begin
 end;
 
 initialization
+  
+  GroupDescendentsWith(TExtensibleInterfacedPersistent, TControl);
+  GroupDescendentsWith(TAggregatedPersistent, TControl);
+  
   RegisterClasses([
     // Items related
     TJvDataItemsList, TJvCustomDataItemsImages, TJvCustomDataItemsTextRenderer,

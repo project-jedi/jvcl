@@ -515,6 +515,7 @@ procedure TCustomEdit_Copy(Instance: TWinControl);
 procedure TCustomEdit_Paste(Instance: TWinControl);
 procedure TCustomEdit_Cut(Instance: TWinControl);
 
+
 implementation
 
 
@@ -770,7 +771,7 @@ begin
   end;
 end;
 
-{$IFDEF _COMPILER6}
+{$IFDEF COMPILER6}
 
 // redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
 {$IF not declared(PatchedVCLX)}

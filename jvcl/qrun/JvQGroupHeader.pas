@@ -158,7 +158,7 @@ destructor TJvGroupHeaderOptions.Destroy;
 begin
   FPen.Free;
   FBrush.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvGroupHeaderOptions.SetBrush(Value: TBrush);
@@ -229,7 +229,7 @@ destructor TJvGroupHeader.Destroy;
 begin
   FBevelOptions.Free;
   FLabelOptions.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvGroupHeader.GetLabelText: string;
@@ -509,8 +509,6 @@ procedure TJvGroupHeader.SetLabelOptions(Value: TJvGroupHeaderOptions);
 begin
   //
 end;
-
-
 
 end.
 

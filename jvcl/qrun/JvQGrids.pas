@@ -93,7 +93,7 @@ type
     FOnEditButtonClick: TNotifyEvent;
     FOnGetPicklist: TPicklistEvent;
     FOnGetEditStyle: TEditStyleEvent;
-    FDrawButtons: boolean;
+    FDrawButtons: Boolean;
     FBeepOnError: Boolean;
     function GetStorage: TJvFormPlacement;
     procedure SetStorage(Value: TJvFormPlacement);
@@ -103,7 +103,7 @@ type
     procedure StopTracking;
     procedure TrackButton(X, Y: Integer);
     
-    procedure SetDrawButtons(const Value: boolean);
+    procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -159,13 +159,12 @@ type
   published
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DefaultRowHeight default 18;
-    property DrawButtons: boolean read FDrawButtons write SetDrawButtons;
+    property DrawButtons: Boolean read FDrawButtons write SetDrawButtons;
     property Options default [goFixedVertLine, goFixedHorzLine, goVertLine,
       goHorzLine, goDrawFocusSelected, goColSizing];
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
     property FixedButtons: Boolean read FFixedCellsButtons write SetFixedButtons
       default False;
-
     property OnAcceptEditKey: TAcceptKeyEvent read FOnAcceptEditKey
       write FOnAcceptEditKey;
     property OnCancelEdit: TNotifyEvent read FOnCancelEdit write FOnCancelEdit;
@@ -203,7 +202,9 @@ const
 
 type
   PIntArray = ^TIntArray;
-  TIntArray = array[0..MaxCustomExtents] of Integer;
+  TIntArray = array [0..MaxCustomExtents] of Integer;
+
+//=== TJvGridPopupListBox ====================================================
 
 type
   TJvGridPopupListBox = class;
@@ -412,8 +413,10 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
 end;
 
+
 type
   TOpenWidgetControl = class(TWidgetControl);
+
 
 procedure TJvInplaceEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
@@ -430,8 +433,10 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);
-        //SendMessage(FActiveList.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
-        TOpenWidgetControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.x, MousePos.y);
+        
+        
+        TOpenWidgetControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y);
+        
         Exit;
       end;
     end;
@@ -480,7 +485,8 @@ begin
     begin
       if FActiveList = nil then
         Flags := DFCS_INACTIVE
-      else if FPressed then
+      else
+      if FPressed then
         Flags := DFCS_FLAT or DFCS_PUSHED;
       DrawFrameControl(DC, R, DFC_SCROLL, Flags or DFCS_SCROLLCOMBOBOX);
     end
@@ -600,7 +606,7 @@ end;
 
 
 
-  //=== TJvDrawGrid ===========================================================
+//=== TJvDrawGrid ============================================================
 
 constructor TJvDrawGrid.Create(AOwner: TComponent);
 begin
@@ -926,7 +932,8 @@ begin
         FSwapButtons := True;
         MouseCapture := True;
       end
-      else if Button = mbLeft then
+      else
+      if Button = mbLeft then
       begin
         EnableClick := True;
         CheckFixedCellButton(Cell.X, Cell.Y, EnableClick);
@@ -1006,7 +1013,8 @@ begin
         DoFixedCellClick(ACol, ARow);
     end;
   end
-  else if FSwapButtons then
+  else
+  if FSwapButtons then
   begin
     FSwapButtons := False;
     MouseCapture := False;
@@ -1062,7 +1070,7 @@ var
   FrameFlags1, FrameFlags2: DWORD;
   Style: DWORD;
 const
-  EdgeFlag: array[Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
+  EdgeFlag: array [Boolean] of UINT = (BDR_RAISEDINNER, BDR_SUNKENINNER);
 begin
   if DrawButtons then
   begin
@@ -1074,8 +1082,7 @@ begin
       Style := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
       if (FCellDown.X = aCol) and (FCellDown.Y = aRow) then
         Style := Style or DFCS_PUSHED;
-      SetBkMode(Canvas.Handle, OPAQUE);  
-      DrawFrameControl(Canvas, TempRect, DFC_BUTTON, Style);
+      DrawFrameControl(Canvas.Handle, TempRect, DFC_BUTTON, Style);
     end;
     inherited DrawCell(ACol,ARow,ARect,AState);
     Exit;
@@ -1107,7 +1114,7 @@ begin
       FillRect(ARect);
     end;
   Down := FFixedCellsButtons and (gdFixed in AState) and
-
+    
     not (csLoading in ComponentState) and FPressed and FDefaultDrawing and
     (FPressedCell.X = ACol) and (FPressedCell.Y = ARow);
   inherited DefaultDrawing := FDefaultDrawing;
@@ -1127,7 +1134,7 @@ begin
     end;
   end;
   if FDefaultDrawing and
-
+     
      (gdFixed in AState) then
   begin
     FrameFlags1 := 0;
@@ -1148,13 +1155,12 @@ begin
       if ((FrameFlags1 and BF_RIGHT) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Right, GridLineWidth)
-      else if ((FrameFlags1 and BF_BOTTOM) = 0) and
+      else
+      if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth);
-      Canvas.Start;
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags2);
-      Canvas.Stop;
     end;
   end;
   if FDefaultDrawing and not (csDesigning in ComponentState) and
@@ -1216,7 +1222,7 @@ end;
 
 
 
-procedure TJvDrawGrid.SetDrawButtons(const Value: boolean);
+procedure TJvDrawGrid.SetDrawButtons(const Value: Boolean);
 begin
   if FDrawButtons <> Value then
   begin
@@ -1228,7 +1234,7 @@ end;
 function TJvDrawGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
   if DrawButtons then
-    Result := false
+    Result := False
   else
     Result := inherited SelectCell(ACol, ARow);
 end;
