@@ -1,0 +1,80 @@
+|- Bars=Bars=JVCL provides a number of components and controls that work like either tool/menu bars, statusbars or sidebars (a.k.a. Outlook bars).
+|   |- MenusAndTools=Menu and tool bars=JVCL provides a number of components and controls that work like tools and/or menubars.
+|   |- SideBars=Sidebars=JVCL provides a number of components that work like the Outlook bar.
+|   |- Statusbars=Statusbars=JVCL provides a number of components that work like the statusbar.
+|- Buttons=Buttons=JVCL provides a number of components and controls that enhance the various buttons (either, Push/Speed buttons, Check boxes or radio buttons).
+|   |- Check=Check boxes=JVCL provides a number of enhanced check box controls.
+|   |- Push=Push buttons=JVCL provides a number of enhanced push buttons and speed buttons.
+|   |- Radio=Radio buttons=JVCL provides a number of enhanced radio buttons.
+|- DBAware=Data aware components=JVCL provides a number of database aware components and controls (both visual as well as non visual).
+|   |- Providers=Datasets and DataSources=JVCL provides a number of data source and dataset derivatives.
+|   |   |- Datasets=Datasets=JVCL provides a number of dataset derivatives to retrieve data from other sources than databases.
+|   |   |- DataSources=DataSources=JVCL provides a number of TDataSources like components.
+|   |- EditsMemosAndCombos=Edits, memos and comboboxes=JVCL provides a number of data-aware controls that allow values to be changed.
+|   |   |- Combos=Comboboxes / lookups=JVCL provides a number of data aware comboboxes and lookup controls.
+|   |   |- Edits=Edits=JVCL provides a number of data aware edit controls.
+|   |   |- Memos=Memos=JVCL provides a number of data aware multiline edit controls.
+|   |   |- Other=Other=JVCL provides a number of data aware edit controls that can't be categorized in any of the other edit categories.
+|   |- Graphics=Graphics=JVCL provides a number of data aware graphic components.
+|   |- GridsTreesLists=Grids, trees and lists=JVCL provides a number of data aware grids, treeviews and lists.
+|   |   |- Grids=Grids=JVCL provides a number of data aware grid like controls.
+|   |   |- Trees=Treeviews=JVCL provides a number of data aware treeview like controls.
+|   |   |- Lists=Lists=JVCL provides a number of data aware list controls.
+|   |- LabelsAndStatic=Labels and static text controls=JVCL provides a number of labels and other static data aware controls.
+|   |- NavAndStatus=Navigational and status management=JVCL provides a number of navigational and status management controls.
+|   |   |- Navigational=Navigational controls=JVCL provides a number of navigational controls.
+|   |   |- Status=Status management=JVCL provides a number of dataset status displaying/controlling components and controls.
+|- Dialogs=Dialogs=JVCL provides a number of dialog controls and components.
+|   |- Common=Common dialogs (Windows dialogs)=JVCL provides a number of components to display and controls common windows dialogs.
+|   |- Custom=Custom dialogs=JVCL provides a number of components that display and control custom dialogs.
+|- EditsMemosAndCombos=Edits, memos and comboboxes=JVCL provides a number of controls that allow changing of values.
+|   |- Combos=Combo boxes=JVCL provides a number of combo box controls with various drop down features such as:$* show a pick list$* a calendar$* a calculator$* and more.$
+|   |- Edits=Edits=JVCL provides a number of edits with additional features.
+|   |- Memos=Memos=JVCL provides a number of memos with additional features.
+|   |- Other=Other=JVCL provides a number of edit controls that can't be categorized in any of the other edit categories.
+|- FormsAndApp=Forms and application=JVCL provides a number of components and controls that enhance or control forms and/or the application.
+|   |- Application=Application=JVCL provides a number of components and controls that enhance or controls the application.
+|   |   |- HotKeys=Hot keys=JVCL provides a number of components to set application wide hot keys.
+|   |   |- Tray=Tray icons=JVCL provides a number of components to set an icon for the application in the system tray, including support for animations and pop-up menus.
+|   |- Forms=Forms=JVCL provides a number of of components and controls that enhance or control forms.
+|   |   |- DecoratingAndEffects=Decorating and effects=JVCL provides a number of components and controls that add effects or decoration to a form.
+|   |   |- Shaping=Shaping=JVCL provides a number of components that can change the shape of a form.
+|   |   |- Sizing=Sizing=JVCL provides a number of components that allow controls on a form to reposition and resize with the form.
+|- Graphics=Graphics=JVCL provides a number of components and controls that deal with graphics.
+|   |- Animations=Animations=JVCL provides a number of components and controls that deal with graphic animation.
+|   |- Shapes=Shapes=JVCL provides a number of components and controls that generate shapes (like arrows and such) given a set of properties. Most of these components are designed like the TShape control in the Borland VCL.
+|   |- Static=Static graphics=JVCL provides a number of components and controls that deal with static graphics (such as image lists or a TImage like control).
+|- GridsAndContent=Grids and content controls=JVCL provides a number of controls that are used as either grids or content controls (like scroll boxes).
+|   |- Grids=Grids=JVCL provides a number of controls that enhance the standard grid controls as found in the Borland VCL.
+|   |- ScrollBoxes=Scroll boxes=JVCL provides a number of controls that enhance the scroll box control found in the Borland VCL.
+|- Internet=Internet=JVCL provides a number of components and controls that deal with internet related topics (both protocols as well as content).
+|   |- ConvertersAndParsers=Converters and Parsers=JVCL provides a number of components and controls that convert and/or parse internet related content (such as HTML and XML).
+|   |   |- HTML=HTML=JVCL provides a number of components and controls that convert and/or parse HTML content.
+|   |   |- XML=XML=JVCL provides a number of components and controls that convert and/or parse XML content.
+|   |- Protocols=Protocols=JVCL provides a number of components and controls that deal with internet protocols. These components and controls are very basic. For more control over the connection you should use the Indy components that are installed by Borland.
+|   |   |- FTP=FTP=JVCL provides a number of components and controls that deal with FTP connections. These components and controls are very basic. For more control over the connection you should use the Indy components that are installed by Borland.
+|   |   |- HTTP=HTTP=JVCL provides a number of components and controls that deal with HTTP connections. These components and controls are very basic. For more control over the connection you should use the Indy components that are installed by Borland.
+|   |   |- Mail=Mail (SMTP and POP3)=JVCL provides a number of components and controls that deal with SMTP and POP3 connections. These components and controls are very basic. For more control over the connection you should use the Indy components that are installed by Borland.
+|   |- Other=Other=JVCL provides a number of components and controls that deal with internet but can't be categorized in any of the other internet categories.
+|- LabelsAndStatic=Labels and static text controls=JVCL provides a number of controls that enhance the TLabel or TStaticText controls found in the Borland VCL.
+|- ListsAndTrees=Lists and treeviews=JVCL provides a number of controls that enhance the lists and treeview controls found in the Borland VCL.
+|   |- Lists=Lists=JVCL provides a number of controls that are enhanced listboxes or listviews.
+|   |- Trees=Treeviews=JVCL provides a number of controls that are enhanced treeviews.
+|- Miscel=Miscellaneous=JVCL provides a number of components and controls that we have not been able to categorize (yet).
+|- Multimedia=Multimedia=JVCL provides a number of components and controls that deal with multimedia (audio and video, but also player controlling).
+|   |- Audio=Audio=JVCL provides a number of components and controls that deal with audio.
+|   |- Video=Video=JVCL provides a number of components and controls that deal with video.
+|- PagesAndTabs=Pages and tabs=JVCL provides a number of controls that enhance the TPageControl/TTabSheet and TNoteBook controls found in the Borland VCL.
+|- PanelsBevelsAndGroups=Panels, bevels and group boxes=JVCL provides a number of panels, bevels and group box controls.
+|   |- Bevels=Bevels=JVCL provides a number of bevel like controls.
+|   |- Groups=Group boxes=JVCL provides a number of group box like controls.
+|   |- Panels=Panels=JVCL provides a number of panel like controls.
+|- Inspector=Data Inspector=JVCL provides a Object Inspector like control. The control has the ability to inspect various types of data sources (such as published properties, variables, INI-files, dataset fields and more).
+|- System=System=JVCL provides a number of system component and controls, such as alarms and timers and  library, process and thread managment.
+    |- AlarmsAndTimers=Alarms and timers=JVCL provides a number of components and controls to schedule and/or time events.
+    |   |- Alarms=Alarms=JVCL provides a number of components to schedule events.
+    |   |- Timers=Timers=JVCL provides a number of components to time events.
+    |- LibProcAndTread=Libraries, processes and threads=JVCL provides a number of components and controls to control/manage libraries, processes and threads.
+        |- Libraries=Libraries=JVCL provides a number of components to control library files (.DLLs).
+        |- Processes=Processes=JVCL provides a number of components and controls to create and/or control processes.
+        |- Threads=Threads=JVCL provides a number of components and controls to create and/or control threads.
