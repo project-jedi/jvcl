@@ -251,6 +251,17 @@ function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
 function OSCheck(RetVal: boolean): boolean;
 
 function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
+// RunDLL32 runs a function in a DLL using the utility rundll32.exe (on NT) or rundll.exe (on Win95/98)
+// ModuleName is the name of the DLL to load, FuncName is the function to call and CmdLine is
+// the command-line parameters (if any) to send to the function. Set WaitForCompletion to false to
+// return immediately after the call.
+// Return value:
+// if WaitForCompletion is true, returns true if the wait didn't return WAIT_FAILED
+// if WaitForCompletion is false, returns true if the process could be created
+// To get information on why RunDLL32 might have failed, call GetLastError
+// To get more info on what can actually be called using rundll32.exe, take a look at
+// http://www.dx21.com/SCRIPTING/RUNDLL32/REFGUIDE.ASP?NTI=4&SI=6
+function RunDLL32(const ModuleName,FuncName,CmdLine:string;WaitForCompletion:boolean):boolean;
 
 {$IFNDEF DELPHI6_UP}
 procedure RaiseLastOSError;
@@ -741,7 +752,9 @@ end;
 
 procedure LaunchCpl(FileName: string);
 begin
-  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
+ // rundll32.exe shell32,Control_RunDLL ';
+  RunDLL32('shell32.dll','Control_RunDLL',Filename,true);
+//  WinExec(PChar(RC_RunCpl + FileName), SW_SHOWNORMAL);
 end;
 
 resourcestring
@@ -1642,6 +1655,27 @@ begin
     Result := b
   else
     Result := Filename;
+end;
+
+function RunDLL32(const ModuleName,FuncName,CmdLine:string;WaitForCompletion:boolean):boolean;
+const
+  // run different exe's depending on OS:
+  cRunDllName:array [boolean] of shortstring = ('rundll.exe','rundll32.exe');
+var
+  SI:TStartUpInfo;PI:TProcessInformation;S:string;
+begin
+  GetStartupInfo(SI);
+  S := Format('%s %s,%s %s',
+    // this check should probably be expanded because only Win95 uses rundll AFAIC, so turn it of for the time being
+    [cRunDllName[true{Win32PlatForm = VER_PLATFORM_WIN32_NT}],ModuleName,FuncName,CmdLine]);
+  Result := CreateProcess(nil,PChar(S),nil,nil,false,0,nil,nil,SI,PI);
+  try
+    if WaitForCompletion then
+      Result := WaitForSingleObject(PI.hProcess,INFINITE) <> WAIT_FAILED;
+  finally
+    CloseHandle(PI.hThread);
+    CloseHandle(PI.hProcess);
+  end;
 end;
 
 function TimeOnly(pcValue: TDateTime): TTime;
