@@ -84,7 +84,8 @@ InspExample.exe \
 JvOutlookPanelProj.exe \
 RunDLL32Demo.exe \
 SpecialProgressTestPrj.exe \
-SystemPopupTest.exe
+SystemPopupTest.exe \
+ShFileOpDemo.exe
  
 #---------------------------------------------------------------------------------------------------
 
@@ -403,3 +404,7 @@ SystemPopupTest.exe: JvSystemPopUp2\SystemPopupTest.dpr
   $(DCC) $&.dpr
   cd ..
 
+ShFileOpDemo.exe: JvShFileOperation\SystemPopupTest.dpr
+  cd JvShFileOperation
+  $(DCC) $&.dpr
+  cd ..

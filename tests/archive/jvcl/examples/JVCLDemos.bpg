@@ -66,7 +66,8 @@ RunDLL32Demo.exe \
 ScrollWinDemo.exe \
 TipsDemo.exe \
 SimpleTLTest1.exe \
-TransparentButtonDemo.exe
+TransparentButtonDemo.exe \
+ShFileOpDemo.exe
 
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
@@ -74,7 +75,6 @@ default: $(PROJECTS)
 
 TimeLineDemo.exe: Timeline\TimeLineDemo.dpr
   $(DCC)
-
 
 AppDdeCmdExample.exe: AppDdeCmdExample\AppDdeCmdExample.dpr
   $(DCC)
@@ -246,3 +246,7 @@ SimpleTLTest1.exe: TMTimeLine\SimpleTLTest1.dpr
 
 TransparentButtonDemo.exe: TransBtn\TransparentButtonDemo.dpr
   $(DCC)
+
+ShFileOpDemo.exe: JvShFileOperation\ShFileOpDemo.dpr
+  $(DCC)
+
