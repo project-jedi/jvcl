@@ -107,8 +107,9 @@ type
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
+    {$IFDEF VCL}
     FMovable: boolean;
-
+    {$ENDIF VCL}
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
     function GetWidth: Integer;
@@ -137,11 +138,11 @@ type
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
     {$ENDIF VCL}
     procedure Loaded; override;
     procedure Resize; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
-    procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -160,11 +161,13 @@ type
     property DockManager;
     {$ENDIF VCL}
   published
+    {$IFDEF VCL}
+    property Movable:boolean read FMovable write FMovable default false;
+    {$ENDIF VCL}
     property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
-    property Movable:boolean read FMovable write FMovable default false;
     property MultiLine: Boolean read FMultiLine write SetMultiLine;
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
@@ -389,6 +392,16 @@ begin
     ControlStyle := ControlStyle + [csOpaque];
   end;
 end;
+
+procedure TJvPanel.WMNCHitTest(var Message: TWMNCHitTest);
+begin
+  inherited;
+  if Movable then
+    with ScreenToClient(SmallPointToPoint(Message.Pos)) do
+      if (X > 5) and (Y > 5) and (X < Width - 5) and (Y < Height - 5) then
+         Message.Result := HTCAPTION;
+end;
+
 {$ENDIF VCL}
 
 procedure TJvPanel.Paint;
@@ -921,14 +934,6 @@ begin
     FArrangeSettings.Assign(Value);
 end;
 
-procedure TJvPanel.WMNCHitTest(var Message: TWMNCHitTest);
-begin
-  inherited;
-  if Movable then
-    with ScreenToClient(SmallPointToPoint(Message.Pos)) do
-      if (X > 5) and (Y > 5) and (X < Width - 5) and (Y < Height - 5) then
-         Message.Result := HTCAPTION;
-end;
 
 end.
 
