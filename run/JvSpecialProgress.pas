@@ -58,7 +58,7 @@ type
     FTextCentered: Boolean;
     FTextOption: TJvTextOption;
     FBuffer: TBitmap;
-    FTaille: Integer;
+    FBlock: Integer;
     { FIsChanged indicates if the buffer needs to be redrawn }
     FIsChanged: Boolean;
     FStart: TColor;
@@ -100,7 +100,7 @@ type
     procedure FontChanged; override;
     procedure TextChanged; override;
     procedure UpdateBuffer;
-    procedure UpdateTaille;
+    procedure UpdateBlock;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -223,7 +223,7 @@ end;
 procedure TJvSpecialProgress.Loaded;
 begin
   inherited Loaded;
-  UpdateTaille;
+  UpdateBlock;
   UpdateBuffer;
 end;
 
@@ -232,7 +232,7 @@ begin
   if (FBuffer.Width <> ClientWidth) or (FBuffer.Height <> ClientHeight) then
   begin
     FIsChanged := True;
-    UpdateTaille;
+    UpdateBlock;
     UpdateBuffer;
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
@@ -247,12 +247,12 @@ end;
 
 procedure TJvSpecialProgress.PaintBackground;
 begin
-  if FTaille >= ClientWidth - 2 then
+  if FBlock >= ClientWidth - 2 then
     Exit;
 
   FBuffer.Canvas.Brush.Color := Color;
   FBuffer.Canvas.Brush.Style := bsSolid;
-  FBuffer.Canvas.FillRect(Rect(FTaille + 1, 1, ClientWidth - 1, ClientHeight - 1));
+  FBuffer.Canvas.FillRect(Rect(FBlock + 1, 1, ClientWidth - 1, ClientHeight - 1));
 end;
 
 procedure TJvSpecialProgress.PaintNonSolid;
@@ -263,7 +263,7 @@ var
   I, J: Integer;
   LBlockCount: Integer;
 begin
-  if (FTaille = 0) or (FBlockWidth = 0) then
+  if (FBlock = 0) or (FBlockWidth = 0) then
     Exit;
 
   X := 1;
@@ -292,9 +292,9 @@ begin
   end
   else
   begin
-    RedInc := (GetRValue(FEnd) - GetRValue(FStart)) / FTaille;
-    GreenInc := (GetGValue(FEnd) - GetGValue(FStart)) / FTaille;
-    BlueInc := (GetBValue(FEnd) - GetBValue(FStart)) / FTaille;
+    RedInc := (GetRValue(FEnd) - GetRValue(FStart)) / FBlock;
+    GreenInc := (GetGValue(FEnd) - GetGValue(FStart)) / FBlock;
+    BlueInc := (GetBValue(FEnd) - GetBValue(FStart)) / FBlock;
 
     Red := GetRValue(FStart);
     Green := GetGValue(FStart);
@@ -390,7 +390,7 @@ var
   RedInc, BlueInc, GreenInc: Real;
   I: Integer;
 begin
-  if FTaille = 0 then
+  if FBlock = 0 then
     Exit;
 
   if FStart = FEnd then
@@ -398,16 +398,16 @@ begin
     { No gradient fill because the start color equals the end color }
     FBuffer.Canvas.Brush.Color := FStart;
     FBuffer.Canvas.Brush.Style := bsSolid;
-    FBuffer.Canvas.FillRect(Rect(1, 1, 1 + FTaille, ClientHeight - 1));
+    FBuffer.Canvas.FillRect(Rect(1, 1, 1 + FBlock, ClientHeight - 1));
   end
   else
   begin
-    RedInc := (GetRValue(FEnd) - GetRValue(FStart)) / FTaille;
-    GreenInc := (GetGValue(FEnd) - GetGValue(FStart)) / FTaille;
-    BlueInc := (GetBValue(FEnd) - GetBValue(FStart)) / FTaille;
+    RedInc := (GetRValue(FEnd) - GetRValue(FStart)) / FBlock;
+    GreenInc := (GetGValue(FEnd) - GetGValue(FStart)) / FBlock;
+    BlueInc := (GetBValue(FEnd) - GetBValue(FStart)) / FBlock;
     FBuffer.Canvas.Brush.Style := bsSolid;
     { Fill the progressbar with slices of 1 width }
-    for I := 1 to FTaille do
+    for I := 1 to FBlock do
     begin
       FBuffer.Canvas.Brush.Color := RGB(
         Round(GetRValue(FStart) + ((I - 1) * RedInc)),
@@ -422,7 +422,7 @@ procedure TJvSpecialProgress.PaintText;
 var
   S: string;
   X, Y: Integer;
-  LTaille: Integer;
+  LBlock: Integer;
 begin
   case TextOption of
     toPercent:
@@ -436,11 +436,11 @@ begin
   end;
 
   if TextCentered then
-    LTaille := ClientWidth
+    LBlock := ClientWidth
   else
-    LTaille := FTaille;
+    LBlock := FBlock;
 
-  X := (LTaille - FBuffer.Canvas.TextWidth(S)) div 2;
+  X := (LBlock - FBuffer.Canvas.TextWidth(S)) div 2;
   if X < 0 then
     X := 0;
 
@@ -510,9 +510,9 @@ begin
       FPosition := Value;
 
     { If the percentage has changed we must update, otherwise check in
-      UpdateTaille if we must update }
+      UpdateBlock if we must update }
     FIsChanged := (TextOption in [toPercent, toFormat]) and (OldPercentageDone <> GetPercentDone);
-    UpdateTaille;
+    UpdateBlock;
     UpdateBuffer;
   end;
 end;
@@ -532,9 +532,9 @@ begin
       FPosition := Value;
 
     { If the percentage has changed we must update, otherwise check in
-      UpdateTaille if we must update }
+      UpdateBlock if we must update }
     FIsChanged := (TextOption in [toPercent, toFormat]) and (OldPercentageDone <> GetPercentDone);
-    UpdateTaille;
+    UpdateBlock;
     UpdateBuffer;
   end;
 end;
@@ -555,9 +555,9 @@ begin
       FPosition := FMinimum;
 
     { If the percentage has changed we must update, otherwise check in
-      UpdateTaille if we must update }
+      UpdateBlock if we must update }
     FIsChanged := (TextOption in [toPercent, toFormat]) and (OldPercentageDone <> GetPercentDone);
-    UpdateTaille;
+    UpdateBlock;
     UpdateBuffer;
   end;
 end;
@@ -568,7 +568,7 @@ begin
   begin
     FSolid := Value;
     FIsChanged := True;
-    UpdateTaille;
+    UpdateBlock;
     UpdateBuffer;
   end;
 end;
@@ -641,9 +641,9 @@ begin
   Repaint;
 end;
 
-procedure TJvSpecialProgress.UpdateTaille;
+procedure TJvSpecialProgress.UpdateBlock;
 var
-  NewTaille: Integer;
+  NewBlock: Integer;
   NextBlockWidth: Integer;
 begin
   if csLoading in ComponentState then
@@ -653,51 +653,51 @@ begin
     Exit;
 
   { Max width of the progressbar is ClientWidth -2 [-2 for the border],
-    NewTaille specifies the new length of the progressbar }
-  NewTaille := (ClientWidth - 2) * (FPosition - FMinimum) div (FMaximum - FMinimum);
+    NewBlock specifies the new length of the progressbar }
+  NewBlock := (ClientWidth - 2) * (FPosition - FMinimum) div (FMaximum - FMinimum);
   if not FSolid then
   begin
-    { The taille of a solid bar can have a different size than the taille
+    { The Block of a solid bar can have a different size than the Block
       of a non-solid bar }
     FBlockWidth := Round(ClientHeight * 2 div 3);
     if FBlockWidth = 0 then
-      NewTaille := 0
+      NewBlock := 0
     else
     begin
-      { The block count equals 'taille div blockwidth'. We add 1 to
-        that number if the taille is further than 1/2 of the next block.
+      { The block count equals 'Block div blockwidth'. We add 1 to
+        that number if the Block is further than 1/2 of the next block.
         Note that the next block doesn't have to be of size FBlockWidth,
         because it can be the last block, which can be smaller than
         FBlockWidth }
 
-      FBlockCount := NewTaille div FBlockWidth;
+      FBlockCount := NewBlock div FBlockWidth;
       NextBlockWidth := ClientWidth - 2 - (FBlockCount * FBlockWidth);
       if NextBlockWidth > FBlockWidth then
         NextBlockWidth := FBlockWidth;
 
-      if 2 * (NewTaille mod FBlockWidth) > NextBlockWidth then
+      if 2 * (NewBlock mod FBlockWidth) > NextBlockWidth then
       begin
         Inc(FBlockCount);
         FLastBlockPartial := NextBlockWidth < FBlockWidth;
         FLastBlockWidth := NextBlockWidth;
-        NewTaille := FBlockWidth * FBlockCount;
+        NewBlock := FBlockWidth * FBlockCount;
         { If FLastBlockPartial equals True then the progressbar is totally
           filled: }
         if FLastBlockPartial then
-          NewTaille := ClientWidth - 2;
+          NewBlock := ClientWidth - 2;
       end
       else
       begin
         FLastBlockPartial := False;
-        NewTaille := FBlockWidth * FBlockCount;
+        NewBlock := FBlockWidth * FBlockCount;
       end;
     end;
   end;
 
-  if NewTaille = FTaille then
+  if NewBlock = FBlock then
     Exit;
 
-  FTaille := NewTaille;
+  FBlock := NewBlock;
 
   FIsChanged := True;
   UpdateBuffer;
