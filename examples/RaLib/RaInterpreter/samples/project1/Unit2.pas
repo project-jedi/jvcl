@@ -30,7 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvRegAuto, Grids, DBGrids, Db, DBTables;
+  StdCtrls, ExtCtrls, Grids, DBGrids, Db, DBTables, JvComponent,
+  JvFormPlacement;
 
 type
   TForm2 = class(TForm)

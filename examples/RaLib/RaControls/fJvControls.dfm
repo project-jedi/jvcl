@@ -6182,7 +6182,7 @@ object MainForm: TMainForm
       Left = 4
       Top = 24
       Width = 561
-      Height = 28
+      Height = 30
       Align = alClient
       OnClick = RAComponentPanel1Click
       ButtonCount = 15

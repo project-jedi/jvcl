@@ -57,7 +57,7 @@ object Test: TTest
     Left = 0
     Top = 57
     Width = 360
-    Height = 340
+    Height = 343
     Cursor = crIBeam
     GutterWidth = 0
     RightMarginVisible = False
@@ -98,7 +98,7 @@ object Test: TTest
     Left = 360
     Top = 57
     Width = 208
-    Height = 340
+    Height = 343
     Align = alRight
     BevelOuter = bvNone
     BorderWidth = 3
@@ -106,7 +106,7 @@ object Test: TTest
     TabOrder = 2
     object Notebook1: TNotebook
       Left = 3
-      Top = 237
+      Top = 240
       Width = 202
       Height = 100
       Align = alBottom
@@ -212,7 +212,7 @@ object Test: TTest
       Left = 3
       Top = 3
       Width = 202
-      Height = 234
+      Height = 237
       Align = alClient
       Lines.Strings = (
         'Memo2')
@@ -222,7 +222,7 @@ object Test: TTest
   end
   object Panel3: TPanel
     Left = 0
-    Top = 397
+    Top = 400
     Width = 568
     Height = 20
     Align = alBottom

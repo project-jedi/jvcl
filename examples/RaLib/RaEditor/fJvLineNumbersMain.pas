@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, JvEditor, JvHLEditor, StdCtrls;
+  ExtCtrls, JvEditor, JvHLEditor, StdCtrls, JvExControls, JvComponent;
 
 type
   TJvLineNumbersMain = class(TForm)

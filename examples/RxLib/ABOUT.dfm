@@ -159,7 +159,7 @@ object AboutForm: TAboutForm
       'Igor V.Pavluk'
       'Serge V.Korolev'
       ''
-      #169' 1995,1998'
+      '© 1995,1998'
       '')
     Align = alClient
     BevelOuter = bvNone
@@ -176,7 +176,7 @@ object AboutForm: TAboutForm
       Top = 63
       Width = 182
       Height = 13
-      Caption = ' Copyright '#169' AO ROSNO 1995, 1996  '
+      Caption = ' Copyright © AO ROSNO 1995, 1996  '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -243,7 +243,7 @@ object AboutForm: TAboutForm
       Top = 79
       Width = 185
       Height = 13
-      Caption = ' Copyright '#169' Master-Bank 1997, 1998  '
+      Caption = ' Copyright © Master-Bank 1997, 1998  '
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

@@ -51,7 +51,7 @@ object JvLineNumbersMain: TJvLineNumbersMain
     Left = 0
     Top = 41
     Width = 550
-    Height = 304
+    Height = 307
     Cursor = crIBeam
     GutterWidth = 32
     RightMarginColor = clSilver

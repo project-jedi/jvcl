@@ -31,7 +31,7 @@ interface
 {$I jvcl.inc}
 
 uses
-  SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
+  SysUtils, Windows, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, Gauges, ExtCtrls, Menus, JvSpeedbar,
   JvAppEvent, JvSplit, JvMenus, JvComponent, JvTrayIcon, JvBDEProgress,
   JvFormPlacement, JvPicClip, JvAppStorage, JvAppRegistryStorage,
@@ -39,7 +39,7 @@ uses
 
 type
   TMainForm = class(TForm)
-    MainMenu1: TJvMainMenu ;
+    MainMenu1: TJvMainMenu;
     FileMenu: TMenuItem;
     WindowMenu: TMenuItem;
     HelpMenu: TMenuItem;
@@ -56,14 +56,14 @@ type
     Panel1: TPanel;
     ProgressPanel: TPanel;
     DbiProgress: TGauge;
-    DBProgress1: TJvDBProgress ;
-    ToolbarMenu: TJvPopupMenu ;
+    DBProgress1: TJvDBProgress;
+    ToolbarMenu: TJvPopupMenu;
     Customize1: TMenuItem;
     SaveLayoutItem: TMenuItem;
     RestoreLayoutItem: TMenuItem;
     CascadeItem: TMenuItem;
     TileItem: TMenuItem;
-    Toolbar: TJvSpeedBar ;
+    Toolbar: TJvSpeedBar;
     AboutBtn: TjvSpeedItem;
     TileBtn: TjvSpeedItem;
     CascadeBtn: TjvSpeedItem;
@@ -73,21 +73,21 @@ type
     View1Btn: TjvSpeedItem;
     View2Btn: TjvSpeedItem;
     View3Btn: TjvSpeedItem;
-    AppEvents: TJvAppEvents ;
+    AppEvents: TJvAppEvents;
     WizardBtn: TjvSpeedItem;
     SpeedbarSection1: TjvSpeedbarSection;
     SpeedbarSection2: TjvSpeedbarSection;
     SpeedbarSection3: TjvSpeedbarSection;
     SpeedbarSection4: TjvSpeedbarSection;
     TrayIcon: TJvTrayIcon;
-    PopupMenu: TJvPopupMenu ;
+    PopupMenu: TJvPopupMenu;
     RXDemo1: TMenuItem;
     About1: TMenuItem;
     N1: TMenuItem;
     Exit1: TMenuItem;
     WizardItem: TMenuItem;
-    Images: TJvPicClip ;
-    PopupImg: TJvPicClip ;
+    Images: TJvPicClip;
+    PopupImg: TJvPicClip;
     RXWebSite1: TMenuItem;
     JvAppRegistryStorage: TJvAppRegistryStorage;
     JvFormStorage: TJvFormStorage;
@@ -140,9 +140,9 @@ uses IniFiles, Buttons, Ctrls, DBAware, Tools, About, PageDemo,
 {$R *.DFM}
 
 {$IFDEF WIN32}
-  {$R BACKGRND.R32}
+{$R BACKGRND.R32}
 {$ELSE}
-  {$R BACKGRND.R16}
+{$R BACKGRND.R16}
 {$ENDIF}
 
 procedure TMainForm.UpdateToolbar;
@@ -166,7 +166,7 @@ begin
   UpdateToolbar;
 {$IFDEF WIN32}
   RXDemo1.Default := True;
-  GradientFormCaption(Self, clWindowText);
+//  GradientFormCaption(Self, clWindowText);
 {$ENDIF}
 end;
 
@@ -346,7 +346,7 @@ begin
   RxWebSite;
 end;
 
-procedure TMainForm.ToolbarMenuGetItemParams(Sender: TMenu;  Item: TMenuItem; State: TMenuOwnerDrawState; AFont: TFont;
+procedure TMainForm.ToolbarMenuGetItemParams(Sender: TMenu; Item: TMenuItem; State: TMenuOwnerDrawState; AFont: TFont;
   var Color: TColor; var Graphic: TGraphic; var NumGlyphs: Integer);
 begin
   case Item.Tag of
@@ -399,3 +399,4 @@ begin
 end;}
 
 end.
+

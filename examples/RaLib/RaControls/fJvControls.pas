@@ -35,7 +35,7 @@ uses
   Menus, ExtCtrls, JvComponentPanel, StdCtrls, ComCtrls,
   JvButtons, Buttons, JvScrollMax, Mask, DBCtrls, JvBDEMove, 
   JvProgressComponent, JvHtControls, JvaScrollText, ImgList, JvComponent, JvCaptionButton,
-  JvExControls, JvExExtCtrls;
+  JvExControls, JvExExtCtrls, JvExStdCtrls, JvExButtons;
 
 type
   TMainForm  = class(TForm)

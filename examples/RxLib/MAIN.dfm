@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 303
-  Top = 254
+  Left = 302
+  Top = 170
   Width = 440
   Height = 276
   Caption = 'JVCL RX Library Demo Program'
@@ -44,66 +44,11 @@ object MainForm: TMainForm
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object StatusPanel: TPanel
-    Left = 0
-    Top = 210
-    Width = 432
-    Height = 20
-    Align = alBottom
-    Caption = 'StatusPanel'
-    TabOrder = 0
-    object MessagePanel: TPanel
-      Left = 1
-      Top = 1
-      Width = 260
-      Height = 18
-      Align = alClient
-      Alignment = taLeftJustify
-      BevelOuter = bvNone
-      ParentColor = True
-      TabOrder = 0
-    end
-    object Panel1: TPanel
-      Left = 261
-      Top = 1
-      Width = 6
-      Height = 18
-      Align = alRight
-      BevelOuter = bvNone
-      ParentColor = True
-      TabOrder = 1
-    end
-    object ProgressPanel: TPanel
-      Left = 267
-      Top = 1
-      Width = 164
-      Height = 18
-      Align = alRight
-      BevelInner = bvLowered
-      BevelOuter = bvNone
-      BorderWidth = 1
-      Caption = 'ProgressPanel'
-      ParentColor = True
-      TabOrder = 2
-      object DbiProgress: TGauge
-        Left = 2
-        Top = 2
-        Width = 160
-        Height = 14
-        Align = alClient
-        BackColor = clBtnFace
-        BorderStyle = bsNone
-        ForeColor = clNavy
-        Progress = 0
-        ShowText = False
-      end
-    end
-  end
   object Toolbar: TJvSpeedBar
     Left = 0
     Top = 0
     Width = 432
-    Height = 56
+    Height = 46
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
     Font.Height = -11
@@ -112,8 +57,8 @@ object MainForm: TMainForm
     Options = [sbAllowDrag, sbAllowResize, sbFlatBtns, sbGrayedBtns, sbTransparentBtns]
     BtnOffsetHorz = 8
     BtnOffsetVert = 3
-    BtnWidth = 54
-    BtnHeight = 50
+    BtnWidth = 46
+    BtnHeight = 40
     Version = 3
     BevelInner = bvLowered
     BevelOuter = bvNone
@@ -150,9 +95,8 @@ object MainForm: TMainForm
         DDDDDDDDDDDDDDDD0000}
       Hint = 'Customize JvSpeedbar|'
       Spacing = 3
-      Left = 233
+      Left = 238
       Top = 3
-      Visible = True
       OnClick = CustomizeItemClick
       SectionName = 'File'
     end
@@ -174,7 +118,7 @@ object MainForm: TMainForm
         DDDDDDDDDDDDDDDD0000}
       Hint = 'Exit Application|'
       Spacing = 3
-      Left = 350
+      Left = 353
       Top = 3
       Visible = True
       OnClick = Exit
@@ -228,7 +172,7 @@ object MainForm: TMainForm
         88888888888888880000}
       Hint = 'View Data Controls|'
       Spacing = 3
-      Left = 62
+      Left = 54
       Top = 3
       Visible = True
       OnClick = View
@@ -255,7 +199,7 @@ object MainForm: TMainForm
         88888888888888880000}
       Hint = 'View Tools|'
       Spacing = 3
-      Left = 116
+      Left = 123
       Top = 3
       Visible = True
       OnClick = View
@@ -279,7 +223,7 @@ object MainForm: TMainForm
         DDDDDDDDDDDDDDDD0000}
       Hint = 'Wizard Demo|'
       Spacing = 1
-      Left = 170
+      Left = 238
       Top = 3
       Visible = True
       OnClick = WizardBtnClick
@@ -381,11 +325,66 @@ object MainForm: TMainForm
         DDDDDDDDDDDDDDDD0000}
       Hint = 'About|'
       Spacing = 3
-      Left = 287
+      Left = 284
       Top = 3
       Visible = True
       OnClick = AboutItemClick
       SectionName = 'Help'
+    end
+  end
+  object StatusPanel: TPanel
+    Left = 0
+    Top = 210
+    Width = 432
+    Height = 20
+    Align = alBottom
+    Caption = 'StatusPanel'
+    TabOrder = 0
+    object MessagePanel: TPanel
+      Left = 1
+      Top = 1
+      Width = 260
+      Height = 18
+      Align = alClient
+      Alignment = taLeftJustify
+      BevelOuter = bvNone
+      ParentColor = True
+      TabOrder = 0
+    end
+    object Panel1: TPanel
+      Left = 261
+      Top = 1
+      Width = 6
+      Height = 18
+      Align = alRight
+      BevelOuter = bvNone
+      ParentColor = True
+      TabOrder = 1
+    end
+    object ProgressPanel: TPanel
+      Left = 267
+      Top = 1
+      Width = 164
+      Height = 18
+      Align = alRight
+      BevelInner = bvLowered
+      BevelOuter = bvNone
+      BorderWidth = 1
+      Caption = 'ProgressPanel'
+      ParentColor = True
+      TabOrder = 2
+      object DbiProgress: TGauge
+        Left = 2
+        Top = 2
+        Width = 160
+        Height = 14
+        Align = alClient
+        BackColor = clBtnFace
+        BorderStyle = bsNone
+        ForeColor = clNavy
+        Progress = 0
+        ShowText = False
+      end
     end
   end
   object MainMenu1: TJvMainMenu
@@ -395,7 +394,8 @@ object MainForm: TMainForm
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msOwnerDraw
+    ShowCheckMarks = True
+    TextMargin = 4
     OnGetItemParams = MainMenu1GetItemParams
     Left = 4
     Top = 60
@@ -469,9 +469,10 @@ object MainForm: TMainForm
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
-    ImageSize.Height = 0
-    ImageSize.Width = 0
-    Style = msOwnerDraw
+    ImageSize.Height = 16
+    ImageSize.Width = 16
+    ShowCheckMarks = True
+    TextMargin = 4
     OnGetItemParams = ToolbarMenuGetItemParams
     Left = 60
     Top = 60
@@ -541,9 +542,10 @@ object MainForm: TMainForm
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
-    ImageSize.Height = 0
-    ImageSize.Width = 0
-    Style = msOwnerDraw
+    ImageSize.Height = 16
+    ImageSize.Width = 16
+    ShowCheckMarks = True
+    TextMargin = 4
     OnGetItemParams = PopupMenuGetItemParams
     Left = 60
     Top = 88
