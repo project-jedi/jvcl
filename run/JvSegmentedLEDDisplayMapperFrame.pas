@@ -79,6 +79,7 @@ type
     FLastSaveFileName: string;
     FOnDisplayChanged: TNotifyEvent;
     FOnClose: TNotifyEvent;
+    FOnInfoUpdate: TNotifyEvent;
     FOnMappingChanged: TNotifyEvent;
 
     function CheckCharModified: Boolean;
@@ -91,6 +92,7 @@ type
   protected
     procedure DisplayChanged;
     procedure CloseEditor;
+    procedure InfoUpdate;
     procedure MappingChanged;
   public
     { Public declarations }
@@ -98,6 +100,11 @@ type
     function CanClose: Boolean;
 
     property DigitClass: TJvSegmentedLEDDigitClass read GetDigitClass;
+    property CurChar: Char read FCurChar;
+    property CopiedValue: Int64 read FCopiedValue;
+    property CharSelected: Boolean read FCharSelected;
+    property CharModified: Boolean read FCharModified;
+    property MapperModified: Boolean read FMapperModified;
     property LastOpenFolder: string read FLastOpenFolder write FLastOpenFolder;
     property LastSaveFolder: string read FLastSaveFolder write FLastSaveFolder;
     property Mapper: TJvSegmentedLEDCharacterMapper read GetMapper;
@@ -105,6 +112,7 @@ type
     property Display: TJvCustomSegmentedLEDDisplay read GetDisplay write SetDisplay;
     property OnDisplayChanged: TNotifyEvent read FOnDisplayChanged write FOnDisplayChanged;
     property OnClose: TNotifyEvent read FOnClose write FOnClose;
+    property OnInfoUpdate: TNotifyEvent read FOnInfoUpdate write FOnInfoUpdate;
     property OnMappingChanged: TNotifyEvent read FOnMappingChanged write FOnMappingChanged;
   end;
 
@@ -145,7 +153,7 @@ var
 begin
   if FMapperModified then
   begin
-    mr := MessageDlg('The current mapping has been modified. Apply changes?', mtConfirmation,
+    mr := MessageDlg('The current mapping has been modified. Save changes to file?', mtConfirmation,
       [mbYes, mbNo, mbCancel], 0);
     Result := mr <> mrCancel;
     if mr = mrYes then
@@ -226,6 +234,12 @@ begin
     OnClose(Self);
 end;
 
+procedure TfmeJvSegmentedLEDDisplayMapper.InfoUpdate;
+begin
+  if Assigned(FOnInfoUpdate) then
+    OnInfoUpdate(Self);
+end;
+
 procedure TfmeJvSegmentedLEDDisplayMapper.MappingChanged;
 begin
   if Assigned(FOnMappingChanged) then
@@ -279,20 +293,7 @@ begin
     aiEditSetAll.Enabled := aiEditClear.Enabled;
     aiEditCopy.Enabled := aiEditClear.Enabled;
     aiEditSelectChar.Enabled := Display <> nil;
-(*
-    if CharSelected then
-    begin
-      if CurChar in ['!' .. 'z'] then
-        lblChar.Caption := CurChar + ' (#' + IntToStr(Ord(CurChar)) + ')'
-      else
-        lblChar.Caption := '#' + IntToStr(Ord(CurChar));
-    end
-    else
-      lblChar.Caption := '';
-    if Display <> nil then
-      lblMapperValue.Caption := IntToStr(sldEdit.Digits[0].GetSegmentStates)
-    else
-      lblMapperValue.Caption := '';*)
+    InfoUpdate;
   end;
 end;
 
