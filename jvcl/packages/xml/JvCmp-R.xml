@@ -37,5 +37,7 @@
     <File Name="..\..\run\JvLogFile.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLogForm.pas" Targets="all" Formname="FoLog" Condition=""/>
     <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQEventFilter.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvControlComponent.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
