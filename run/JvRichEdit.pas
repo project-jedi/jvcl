@@ -699,10 +699,14 @@ type
     // AFont is the font to use. If AFont = nil, then the current attributes at the insertion point are used.
     // NOTE: this procedure does not reset the attributes after the call, i.e if you change the text color
     // it will remain that color until you change it again.
-    procedure InsertFormatText(Index: Integer; const S: string; const AFont: TFont = nil);
+    procedure InsertFormatText(Index: Integer; const S: string; const AFont: TFont = nil);overload;
+    procedure InsertFormatText(Index:integer; const S:string;
+      FontStyle:TFontStyles; const FontName:string=''; const FontColor:TColor = clDefault; FontHeight:integer = 0);overload;
+
     // AddFormatText works just like InsertFormatText but always moves the insertion
     // point to the end of the available text
-    procedure AddFormatText(const S: string; const AFont: TFont = nil);
+    procedure AddFormatText(const S: string; const AFont: TFont = nil);overload;
+    procedure AddFormatText(const S:string; FontStyle:TFontStyles; const FontName:string=''; const FontColor:TColor = clDefault; FontHeight:integer = 0);overload;
 
     procedure SetSelection(StartPos, EndPos: Longint; ScrollCaret: Boolean);
     function GetSelection: TCharRange;
@@ -2238,6 +2242,15 @@ begin
   InsertFormatText(GetTextLen, S, AFont);
 end;
 
+
+
+procedure TJvCustomRichEdit.AddFormatText(const S: string;
+  FontStyle: TFontStyles; const FontName: string; const FontColor: TColor;
+  FontHeight: integer);
+begin
+  InsertFormatText(GetTextLen, S, FontStyle, FontName, FontColor, FontHeight);
+end;
+
 procedure TJvCustomRichEdit.AdjustFindDialogPosition(Dialog: TFindDialog);
 var
   TextRect, R: TRect;
@@ -3093,6 +3106,7 @@ procedure TJvCustomRichEdit.InsertFormatText(Index: Integer; const S: string; co
 var
   ASelStart, ASelLength: Integer;
 begin
+  if S = '' then Exit;
   ASelStart := SelStart;
   ASelLength := SelLength;
   try
@@ -3105,6 +3119,28 @@ begin
   finally
     SelStart := ASelStart;
     SelLength := ASelLength;
+  end;
+end;
+
+procedure TJvCustomRichEdit.InsertFormatText(Index: integer; const S: string; FontStyle: TFontStyles;
+  const FontName: string; const FontColor: TColor; FontHeight: integer);
+var AFont:TFont;
+begin
+  if S = '' then Exit;
+  AFont := TFont.Create;
+  try
+    AFont.Assign(SelAttributes);
+    AFont.Style := FontStyle;
+    if FontName <> '' then
+      AFont.Name := FontName;
+    if FontColor <> clDefault then
+      AFont.Color := FontColor;
+    if FontHeight <> 0 then
+      AFont.Height := FontHeight;
+    InsertFormatText(Index, S, AFont);
+
+  finally
+    AFont.Free;
   end;
 end;
 
