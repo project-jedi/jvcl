@@ -10,8 +10,8 @@ end;
 
 function Opt_QuickReport(Target: TCompileTarget): Boolean;
 begin
-  Result := FileExists(Target.RootDir + Target.VersionedDCPs('\lib\qrpt.dcp')) or
-            FileExists(Target.RootDir + Target.VersionedDCPs('\lib\obj\qrpt.dcp')) or
+  Result := FileExists(Target.RootDir + Target.VersionedDCP('\lib\qrpt.dcp')) or
+            FileExists(Target.RootDir + Target.VersionedDCP('\lib\obj\qrpt.dcp')) or
             Opt_QuickReport4(Target);
 end;
 
@@ -19,11 +19,11 @@ end;
 { Internet Components }
 function Opt_InternetComponents(Target: TCompileTarget): Boolean;
 begin
-  Result := (FileExists(Target.RootDir + Target.VersionedDCPs('\lib\vclie.dcp')) and
-             FileExists(Target.RootDir + Target.VersionedDCPs('\lib\inet.dcp')))
+  Result := (FileExists(Target.RootDir + Target.VersionedDCP('\lib\vclie.dcp')) and
+             FileExists(Target.RootDir + Target.VersionedDCP('\lib\inet.dcp')))
             or
-            (FileExists(Target.RootDir + Target.VersionedDCPs('\lib\obj\vclie.dcp')) and
-             FileExists(Target.RootDir + Target.VersionedDCPs('\lib\obj\inet.dcp')));
+            (FileExists(Target.RootDir + Target.VersionedDCP('\lib\obj\vclie.dcp')) and
+             FileExists(Target.RootDir + Target.VersionedDCP('\lib\obj\inet.dcp')));
 end;
 
 {------------------------------------------------------------------------------}
