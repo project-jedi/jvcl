@@ -24,13 +24,20 @@ Please follow JCL's instructions for installation (do not install the DJCL packa
 - JCL
 - JVCL
 
-3) In Delphi open the appropriate design package that is in the "Packages" subdirectory. 
+3) In Delphi open the appropriate run-time package in the "Packages" subdirectory. 
+    a) for Delphi 6 it's "JVCL200_R60.dpk" 
+    b) for Delphi 6 Personal it's "JVCL200_R60Personal.dpk"
+    c) for Delphi 5 it's "JVCL200_R50.dpk" 
+
+4) Right-click the uses node and select "Build" to build it
+
+5) In Delphi open the appropriate design package in the "Packages" subdirectory. 
     a) for Delphi 6 it's "JVCL200_D60.dpk" 
     b) for Delphi 6 Personal it's "JVCL200_D60Personal.dpk"
     c) for Delphi 5 it's "JVCL200_D50.dpk" 
 
 
-4) Click on the "Compile" button, and then on the "Install" button. If you get an error saying "<filename>.res not found: recreated", just hit the Compile button again and the res file will be created for you.
+6) Click on the "Compile" button, and then on the "Install" button. If you get an error saying "<filename>.res not found: recreated", just hit the Compile button again and the res file will be created for you.
 
 If you get compile error stating that zlib.pas, or some *.obj files are missing, please make sure that you have the zlib files on your computer and in Delphi's library path.
 
@@ -38,17 +45,17 @@ If not, you need to install those files from your Delphi CD first.
 
 You will get a couple of warnings about "implicitly included" files, but this is normal and can be ignored.
 
-5) The window showing all the components that have been installed will be very big, and most probably you won't see the "OK" button, so just close the window (or hit ENTER). You should now have JVCL installed on your PC. 
+7) The window showing all the components that have been installed will be very big, and most probably you won't see the "OK" button, so just close the window (or hit ENTER). You should now have JVCL installed on your PC. 
 
-6) To use the components in a program you need to add the DCU output path to the Delphi library path, like this:
+8) To use the components in a program you need to add the DCU output path to the Delphi library path, like this:
   a) If you are using Delphi 6 or Delphi 6 Personal, add the folder <JVCL>\lib6 to the path
   b) If you are using Delphi 5, add the folder <JVCL>\lib5 to the path
   <JVCL> is the full drive and path to the folder where you put the JVCL files
 
-7) (If you plan to do all your development using run-time packages you do not need to perform this step)
+9) (If you plan to do all your development using run-time packages you do not need to perform this step)
   Copy/move all *.res and *.dfm files from \source into either lib5 or lib6 depending on which version of Delphi you are using. If you are developing with both D5 and D6, copy the res and dfm files to both libX folders.
 
-8) If you would like to be able to open the source files in Delphi (hit Ctrl+Enter on a filename), add \source and \common to Delphi's Browsing path
+10) If you would like to be able to open the source files in Delphi (hit Ctrl+Enter on a filename), add \source and \common to Delphi's Browsing path
 
 
 If there are installation problems, please contact us via: 
