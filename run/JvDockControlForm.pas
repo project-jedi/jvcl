@@ -3201,11 +3201,13 @@ begin
     FConjoinPanelClass := TJvDockClient(Source).FConjoinPanelClass;
     FTabDockClass := TJvDockClient(Source).FTabDockClass;
     FParentVisible := TJvDockClient(Source).FParentVisible;
-    FNCPopupMenu := TJvDockClient(Source).FNCPopupMenu;
+    NCPopupMenu := TJvDockClient(Source).FNCPopupMenu;
     FDirectDrag := TJvDockClient(Source).FDirectDrag;
     FShowHint := TJvDockClient(Source).FShowHint;
     FCanFloat := TJvDockClient(Source).FCanFloat;
     FDockLevel := TJvDockClient(Source).DockLevel;
+    { (rb) Why not call TJvDockBaseControl.Assign, ie inherited? }
+    DockStyle := TJvDockClient(Source).DockStyle;
   end
   else
     inherited Assign(Source);

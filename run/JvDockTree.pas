@@ -2988,7 +2988,7 @@ begin
   begin
     with Stream do
     begin
-      Read(Level, SizeOf(Level));
+      if Read(Level, SizeOf(Level)) <> SizeOf(Level) then Break;
       if Level = TreeStreamEndFlag then
         Break;
       Zone := FDockZoneClass.Create(Self);
