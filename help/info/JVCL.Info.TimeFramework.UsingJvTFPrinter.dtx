@@ -1,0 +1,21 @@
+##Package: TimeFramework
+##Status: Locked by peter3
+----------------------------------------------------------------------------------------------------
+@@$JVCL.Info.TimeFramework.UsingJvTFPrinter
+<GROUP $JVCL.Info>
+<TITLE Using TJvTFPrinter in the JVCL Time Framework>
+  Printer uses one of two different printing models, based upon the value of DirectPrint.
+
+  If DirectPrint is TRUE:
+    * Create a new document via <xxx>.
+    * Call <xxx> to get a new page canvas. (<xxx>, <xxx>, and <xxx> are fired at this time. Each subsequent call to <xxx> sends the previous page directly to the printer.)
+    * Call <xxx> to send the last page to the printer and close the print job.
+    * Clean up used resources by calling <xxx>.
+
+  If DirectPrint is FALSE:
+    * Create a new document via <xxx>.
+    * Call <xxx> to get a new page canvas. (<xxx> is fired for each new page. Each page is stored in memory and is NOT sent to the printer at this time.)
+    * Call <xxx> to complete rendering the document. (<xxx> and <xxx> is fired for each page at this time. After FinishDoc executes, each page image is accessible via the property Pages.)
+    * Call <xxx> to send the document to the printer.
+    * Clean up used resources by calling <xxx>.
+----------------------------------------------------------------------------------------------------
