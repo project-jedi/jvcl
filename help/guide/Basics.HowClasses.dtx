@@ -4,7 +4,7 @@
 <TOPICORDER 300>
   Generally speaking, a class falls into one of three categories:
     
-  1. <LINK JVCL.HWG.Basics.HowClass.Helper, Helper class>. This is usually an auxilary class for
+  1. <LINK JVCL.HWG.Basics.HowClass.Helper, Helper class>. This is usually an auxilliary class for
      some property of a component (e.g. TJvSearchAttributes in JvSearchFiles is a helper class for
      TJvSearchFiles.DirParams.Attributes)
   2. <LINK JVCL.HWG.Basics.HowClass.Base, Base class>. This is usually a protected base component
@@ -20,10 +20,10 @@
 <TOPICORDER 100>
   
   * Helper classes should not be added to a functional reference group. *
-  Since the helper classes are never needed by an end user, it's not supposed to be found in the
-  functional reference tree (it will be added to the Symbol Reference automatically though).
+  Since the helper classes are never needed by an end user, they are not supposed to be found in
+  the functional reference tree (they will be added to the Symbol Reference automatically though).
   * Always start with the root class of a class hierarchy. *
-  If multiple helper classes inherit from eachother, start with the root class and it's members,
+  If multiple helper classes inherit from each other, start with the root class and its members,
   followed by all direct descendants and their members, then descendants and members from those
   descendants, etc. downto the lowest level of the hierarchy.
   <INCLUDE BasicDescribeSummary.dtx> \Examples:
@@ -41,9 +41,9 @@
   * Base classes are generally not in a functional reference group. *
   Base classes are rarely placed in a functional reference tree. Only if the base class is the
   only class documented it could be added to the functional reference tree, but only if the class is
-  an end user class as well (i.e. generaly useful for an end user to perform some task).
+  an end user class as well (i.e. generally useful for an end user to perform some task).
   * Always start with the root class of a class hierarchy. *
-  If multiple classes inherit from eachother, start with the root class and it's members, followed
+  If multiple classes inherit from each other, start with the root class and its members, followed
   by all direct descendants and their members, then descendants and members from those descendants,
   etc. downto the lowest level of the hierarchy.
   <INCLUDE BasicDescribeSummary.dtx> \Examples:
@@ -65,10 +65,10 @@
 <TOPICORDER 300>
   
   * End user classes are generally in a functional reference group. *
-  End user classes are usualy placed in the functional reference tree. An exception would be if the
+  End user classes are usually placed in the functional reference tree. An exception would be if the
   end user class is not a standalone class.
   * Always start with the root class of a class hierarchy. *
-  If multiple classes inherit from eachother, start with the root class and it's members, followed
+  If multiple classes inherit from each other, start with the root class and its members, followed
   by all direct descendants and their members, then descendants and members from those descendants,
   etc. downto the lowest level of the hierarchy.
   <INCLUDE BasicDescribeSummary.dtx> \Examples:
