@@ -23,6 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$IFDEF COMPILER6_UP}
+ {$WARN UNIT_PLATFORM OFF}
+{$ENDIF COMPILER6_UP}
 
 unit JvParameterListParameter;
 
@@ -465,7 +468,8 @@ type
 
 implementation
 
-Uses JvResources;
+uses
+  JvResources;
 
 //=== TJvNoDataParameter =====================================================
 
