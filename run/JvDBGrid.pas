@@ -458,8 +458,8 @@ type
     { WordWrap: are memo and string fields displayed on many lines ? }
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
 
-    // If true, Memo fields are shown as memo objects
-    property ShowMemos: Boolean read FShowMemos write SetShowMemos default False;
+    // If true, Memo fields are shown as text
+    property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
   end;
 
 implementation
@@ -872,7 +872,7 @@ begin
   FRowResize := False;
   FRowsHeight := DefaultRowHeight;
   FTitleRowHeight := RowHeights[0];
-  FShowMemos := False;
+  FShowMemos := True;
   
   FChangeLinks := TObjectList.Create(False);
 end;
@@ -919,10 +919,10 @@ begin
         Result := Ord(gpData);
       ftReference, ftDataSet:
         Result := Ord(gpData);
-      ftMemo, ftFmtMemo, ftOraClob:
-        if ShowMemos then
+      ftMemo, ftFmtMemo:
+        if not ShowMemos then
           Result := Ord(gpMemo);
-      ftOraBlob:
+      ftOraBlob, ftOraClob:
         Result := Ord(gpBlob);
       ftBoolean:
         if not Field.IsNull then
@@ -2122,14 +2122,18 @@ begin
   end
   else
   begin
-    if not Assigned(FCurrentControl) then
-      DoKeyPress(Msg)
-    else
-      inherited;
+    inherited;
 
     if Assigned(FCurrentControl) then
+    begin
       if FCurrentControl.Visible then
         PostMessage(FCurrentControl.Handle, WM_CHAR, Msg.CharCode, Msg.KeyData);
+    end
+    else
+      if not CanEditShow then
+        DoKeyPress(Msg); // This is needed to trigger an onKeyPressed event when the field
+                         // is not editable (the inherited function don't trigger it
+                         // because editing is prohibited by the UseDefaultEditor function)
   end;
 end;
 
@@ -2159,7 +2163,8 @@ begin
   if (Key = Cr) and PostOnEnter and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
 
-  inherited KeyPress(Key);
+  if not Assigned(FCurrentControl) then
+    inherited KeyPress(Key);
 
   if EditorMode then
   begin
@@ -2613,7 +2618,7 @@ begin
     end
     else
     begin
-      if (Field is TStringField) or (Field is TMemoField) then
+      if (Field is TStringField) or ((Field is TMemoField) and FShowMemos) then
       begin
         if Assigned(Field.OnGetText) then
           MemoText := Field.DisplayText
@@ -3465,7 +3470,7 @@ var
   GridControl: TJvDBGridControl;
   ClientTopLeft: TPoint;
 begin
-  // DO not test for Assigned(Control) here or you will end
+  // Do not test for Assigned(Control) here or you will end
   // up with an infinite loop of error messages. This check must
   // be done in UseDefaultEditor
 
@@ -3674,8 +3679,11 @@ end;
 
 procedure TJvDBGrid.SetShowMemos(const Value: Boolean);
 begin
-  FShowMemos := Value;
-  Invalidate;
+  if FShowMemos <> Value then
+  begin
+    FShowMemos := Value;
+    Invalidate;
+  end;
 end;
 
 {$IFDEF UNITVERSIONING}
