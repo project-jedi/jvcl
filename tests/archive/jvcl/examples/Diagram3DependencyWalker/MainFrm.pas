@@ -109,6 +109,8 @@ type
     dlgSaveImage: TSaveDialog;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
+    acSaveDiagram: TAction;
+    acOpenDiagram: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -134,12 +136,17 @@ type
     procedure acRefreshExecute(Sender: TObject);
     procedure acSaveBMPExecute(Sender: TObject);
     procedure acCopyExecute(Sender: TObject);
+    procedure acSaveDiagramExecute(Sender: TObject);
+    procedure acOpenDiagramExecute(Sender: TObject);
+    procedure sbMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private declarations }
     FPrintFormat: TPrintFormat;
     FFileShapes: TStringlist;
     FInitialDir: string;
     FLeft, FTop: integer;
+    FSelected:TJvCustomDiagramShape;
 
     procedure LoadSettings;
     procedure SaveSettings;
@@ -383,12 +390,14 @@ begin
       C := TJvConnector(AShape.Parent.Controls[i]);
       if (C.StartConn.Shape = AShape) or (C.EndConn.Shape = AShape) then
       begin
+        Changed := true;
         if C.LineColour = cIntfLineColor then
           C.LineColour := cIntfSelColor
+        else if C.LineColour = cImplLineColor then
+          C.LineColour := cImplSelColor
         else
-          C.LineColour := cImplSelColor;
-        Changed := true;
-        C.Invalidate;
+          Changed := false;
+        if Changed then C.Invalidate;
       end
       else // reset to standard color
       begin
@@ -419,8 +428,9 @@ end;
 
 procedure TfrmMain.DoShapeMouseDown(Sender:TObject;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+  FSelected := Sender as TJvCustomDiagramShape;
   if Button = mbLeft then
-    HighLightConnectors(Sender as TJvCustomDiagramShape);
+    HighLightConnectors(FSelected);
 end;
 
 // (p3) returns an existing or new shape
@@ -437,7 +447,7 @@ begin
   begin
     Result := TJvBitmapShape.Create(self);
     Result.Images := il32;
-    Result.ImageIndex := 0;
+    Result.ImageIndex := cUnitUsedImageIndex; // always set "used" as default
     Result.Hint := AFilename;
     Result.ShowHint := True;
     Result.OnClick := DoShapeClick;
@@ -550,7 +560,7 @@ begin
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
     // add the actual file
     FS := GetFileShape(AFilename);
-    FS.ImageIndex := 1; // this is a parsed file
+    FS.ImageIndex := cUnitParsedImageIndex; // this is a parsed file
     Inc(FLeft, cOffsetX);
     for i := 0 to AUsesIntf.Count - 1 do
     begin
@@ -604,6 +614,7 @@ begin
   TJvCustomDiagramShape.DeleteAllShapes(sb);
   FLeft := cStartX;
   FTop := cStartY;
+  FSelected := nil;
   StatusBar1.Panels[0].Text := SStatusReady;
 end;
 
@@ -924,9 +935,10 @@ begin
 
   // (p3) this might be too slow on large sets of shapes so comment it out
   // if it gets too sluggish
-  acDelShape.Enabled := GetFirstSelectedShape(sb) <> nil;
+  acDelShape.Enabled := FSelected <> nil;
   acUnitStats.Enabled := acDelShape.Enabled;
   acAddToSkipList.Enabled := acDelShape.Enabled;
+
 end;
 
 procedure TfrmMain.Load(Storage: TCustomIniFile);
@@ -995,7 +1007,7 @@ var
   AShape: TJvCustomDiagramShape;
   UsedByStrings, UsesStrings: TStringlist;
 begin
-  AShape := GetFirstSelectedShape(sb);
+  AShape := FSelected;
   if AShape = nil then
     AShape := TJvCustomDiagramShape(popShape.PopupComponent);
   if AShape = nil then Exit;
@@ -1025,12 +1037,13 @@ var AShape: TJvCustomDiagramShape;
 begin
   // (p3) Can't use TJvCustomDiagramShape.DeleteSelecetdShapes here since
   // we need to remove the item from the FFileShapes list as well:
-  AShape := GetFirstSelectedShape(sb);
+  AShape := FSelected;
   if (AShape <> nil) and YesNo(SConfirmDelete, Format(SDelSelItemFmt, [AShape.Caption.Text])) then
   begin
     i := FFileShapes.IndexOfObject(AShape);
     if i > -1 then
       FFileShapes.Delete(i);
+    FSelected := nil;
     AShape.Free;
   end;
 end;
@@ -1084,7 +1097,7 @@ end;
 procedure TfrmMain.acAddToSkipListExecute(Sender: TObject);
 var ASHape: TJvCustomDiagramShape;
 begin
-  AShape := GetFirstSelectedShape(sb);
+  AShape := FSelected;
   if AShape <> nil then
   begin
     lbSkipList.Items.Add(ChangeFileExt(ExtractFilename(AShape.Caption.Text), ''));
@@ -1199,6 +1212,41 @@ begin
   finally
     b.Free;
   end;
+end;
+
+procedure TfrmMain.acSaveDiagramExecute(Sender: TObject);
+begin
+  with TSaveDialog.Create(nil) do
+  try
+    if Execute then
+      TJvCustomDiagramShape.SaveToFile(Filename,sb);
+  finally
+    Free;
+  end;
+end;
+
+procedure TfrmMain.acOpenDiagramExecute(Sender: TObject);
+begin
+  with TOpenDialog.Create(nil) do
+  try
+    if Execute then
+    begin
+      FFileShapes.Clear;
+      TJvCustomDiagramShape.LoadFromFile(Filename,sb);
+      // TODO: update FFileShapes list with new items
+      // NB! loading a saved diagram looses the info about interface/implementation uses!
+    end;
+  finally
+    Free;
+  end;
+end;
+
+procedure TfrmMain.sbMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if FSelected <> nil then
+    FSelected.Selected := false;
+  FSelected := nil;
 end;
 
 end.
