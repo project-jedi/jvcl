@@ -358,6 +358,7 @@ type
     destructor Destroy; override;
 
     function AddTab(const Caption: string): TJvTabBarItem;
+    function FindTab(const Caption: string): TJvTabBarItem; // returns the first tab with the given Caption
     function TabAt(X, Y: Integer): TJvTabBarItem;
     function MakeVisible(Tab: TJvTabBarItem): Boolean;
     function FindData(Data: TObject): TJvTabBarItem;
@@ -1001,6 +1002,19 @@ function TJvCustomTabBar.AddTab(const Caption: string): TJvTabBarItem;
 begin
   Result := TJvTabBarItem(Tabs.Add);
   Result.Caption := Caption;
+end;
+
+function TJvCustomTabBar.FindTab(const Caption: string): TJvTabBarItem;
+var
+  i: Integer;
+begin
+  for i := 0 to Tabs.Count - 1 do
+    if Caption = Tabs[i].Caption then
+    begin
+      Result := Tabs[i];
+      Exit;
+    end;
+  Result := nil;
 end;
 
 procedure TJvCustomTabBar.CalcTabsRects;
