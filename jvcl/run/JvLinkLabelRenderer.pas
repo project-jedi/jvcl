@@ -41,7 +41,13 @@ unit JvLinkLabelRenderer;
 interface
 
 uses
-  Windows, Graphics, Classes, SysUtils,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Windows, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, Types,
+  {$ENDIF}
   JvLinkLabelTree, JvLinkLabelTextHandler, JvTypes;
 
 type

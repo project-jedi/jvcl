@@ -55,7 +55,13 @@ unit JvLinkLabelTextHandler;
 interface
 
 uses
-  Graphics, Classes, Windows, SysUtils,
+  Classes, SysUtils,
+  {$IFDEF VCL}
+  Graphics, Windows,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, Types,
+  {$ENDIF}
   JvLinkLabelTree, JvLinkLabelTools, JvTypes;
 
 type

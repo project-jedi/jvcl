@@ -35,7 +35,13 @@ unit JvLinkLabelDebug;
 interface
 
 uses
-  ComCtrls, TypInfo, Graphics, SysUtils,
+  TypInfo, SysUtils,
+  {$IFDEF VCL}
+  ComCtrls, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QComCtrls, QGraphics, Types,
+  {$ENDIF VisualCLX}
   JvLinkLabelTree, JvLinkLabelTools, JvLinkLabel;
 
 type
