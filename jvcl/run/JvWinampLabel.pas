@@ -443,25 +443,45 @@ begin
       Rec.Top := Rec.Top + CharHeight;
       Canvas.FillRect(Rec);
       if FActive then
+        {$IFDEF VCL}
         BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, FCurPos, 0, SRCCOPY)
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, FCurPos, 0, SRCCOPY)
+        {$ENDIF VisualCLX}
       else
       begin
         Rec := ClientRect;
         Rec.Bottom := Rec.Bottom + CharHeight;
         Rec.Left := Rec.Left + (CharWidth * Length(Text));
         Canvas.FillRect(Rec);
+        {$IFDEF VCL}
         BitBlt(Canvas.Handle, 0, 0, Width, CharHeight, FBitmap.Canvas.Handle, 0, 0, SRCCOPY);
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        BitBlt(Canvas, 0, 0, Width, CharHeight, FBitmap.Canvas, 0, 0, SRCCOPY);
+        {$ENDIF VisualCLX}
       end;
     end
     else
     begin
       FScale := Height / CharHeight;
+      {$IFDEF VCL}
       if FActive then
         StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, FCurPos, 0, Round(Width / FScale),
           CharHeight, SRCCOPY)
       else
         StretchBlt(Canvas.Handle, 0, 0, Width, Height, FBitmap.Canvas.Handle, 0, 0, Round(Width / FScale), CharHeight,
           SRCCOPY);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      if FActive then
+        StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, FCurPos, 0, Round(Width / FScale),
+          CharHeight, SRCCOPY)
+      else
+        StretchBlt(Canvas, 0, 0, Width, Height, FBitmap.Canvas, 0, 0, Round(Width / FScale), CharHeight,
+          SRCCOPY);
+      {$ENDIF VisualCLX}
     end;
   except
   end;
