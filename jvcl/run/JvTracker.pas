@@ -100,14 +100,14 @@ type
     procedure SetBorderColor(const Value: TColor);
     procedure SetTrackPositionColored(const Value: Boolean);
   protected
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoChangedValue(NewValue: Integer);
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     { Added By Steve Childs, 18/4/00 }
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     { Added By Steve Childs, 18/4/00 }
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -511,9 +511,9 @@ begin
     FOnChangedValue(Self, NewValue);
 end;
 
-procedure TJvTracker.DoBoundsChanged;
+procedure TJvTracker.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   SetThumbMinMax;
   SetTrackRect;
   UpdatePosition;
@@ -600,7 +600,7 @@ begin
   Invalidate;
 end;
 
-function TJvTracker.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvTracker.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 { Added By Steve Childs 18/04/00
   This elimates the flickering background when the thumb is updated
 }

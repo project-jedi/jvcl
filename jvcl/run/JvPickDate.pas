@@ -91,7 +91,7 @@ type
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
     function SelectCell(ACol, ARow: Longint): Boolean; override;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
   public
     constructor Create(AOwner: TComponent); override;
     procedure NextMonth;
@@ -773,7 +773,7 @@ begin
   CalendarUpdate(False);
 end;
 
-procedure TJvCalendar.DoBoundsChanged;
+procedure TJvCalendar.BoundsChanged;
 var
   GridLinesH, GridLinesW: Integer;
 begin
@@ -784,7 +784,7 @@ begin
     GridLinesW := 0;
   DefaultColWidth := (Width - GridLinesW) div 7;
   DefaultRowHeight := (Height - GridLinesH) div 7;
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
 end;
 
 //=== { TJvLocCalendar } =====================================================

@@ -93,7 +93,7 @@ type
     procedure SetRegionPentagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionRevPentagon(ALeft, ATop, AWidth, AHeight: Integer);
     procedure SetRegionRing(ALeft, ATop, AWidth, AHeight: Integer);
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseLeave(Control: TControl); override;
     procedure MouseEnter(Control: TControl); override;
     procedure FontChanged; override;
@@ -2716,7 +2716,7 @@ begin
   end;
 end;
 
-function TJvShapedButton.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvShapedButton.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle, False);
   Result := True;

@@ -147,7 +147,7 @@ type
     {$ENDIF VisualCLX}
     procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure EnabledChanged; override;
     procedure SetFlat(Value: Boolean); virtual;
     procedure MouseEnter(AControl: TControl); override;
@@ -562,12 +562,12 @@ begin
   inherited DoKillFocus(FocusedWnd);
 end;
 
-function TJvCustomEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomEdit.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 var
   R: TRect;
 begin
   if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited PaintBackground(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;

@@ -82,7 +82,7 @@ type
     procedure CaretChange(Sender: TObject); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure WndProc(var Msg: TMessage); override;
@@ -462,10 +462,10 @@ begin
   inherited;
 end;
 
-function TJvCustomMemo.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomMemo.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if not Transparent then
-    Result := inherited DoPaintBackground(Canvas, Param)
+    Result := inherited PaintBackground(Canvas, Param)
   else
     Result := False;
 end;

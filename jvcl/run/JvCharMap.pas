@@ -292,7 +292,7 @@ type
     procedure FontChanged; override;
     procedure DoRangeChange(Sender: TObject);
     procedure DoSelectChar(AChar: WideChar); virtual;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -446,7 +446,7 @@ type
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     {$ENDIF VCL}
     procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure VisibleChanged; override;
     procedure FontChanged; override;
 
@@ -1178,7 +1178,7 @@ begin
     PanelVisible := True;
 end;
 
-function TJvCustomCharMap.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomCharMap.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
 end;
@@ -1382,7 +1382,7 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TCharZoomPanel.DoGetDlgCode(var Code: TDlgCodes);
+procedure TCharZoomPanel.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows];
 end;

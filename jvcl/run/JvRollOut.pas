@@ -183,7 +183,7 @@ type
 
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
@@ -866,9 +866,9 @@ begin
   RedrawControl(False);
 end;
 
-function TJvCustomRollOut.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomRollOut.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  //  inherited DoPaintBackground(Canvas, Param);
+  //  inherited PaintBackground(Canvas, Param);
   Result := False;
 end;
 

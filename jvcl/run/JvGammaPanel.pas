@@ -65,7 +65,7 @@ type
     procedure Color1Click(Sender: TObject);
     procedure Color2Click(Sender: TObject);
   protected
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     procedure DoChangeColor(AForegroundColor, ABackgroundColor: TColor); virtual;
   public
     constructor Create(AOwner: TComponent); override;
@@ -389,7 +389,7 @@ begin
     FOnChangeColor(Self, FForegroundColor, FBackgroundColor);
 end;
 
-procedure TJvGammaPanel.DoBoundsChanged;
+procedure TJvGammaPanel.BoundsChanged;
 begin
   Width := 65;
   Height := 250;

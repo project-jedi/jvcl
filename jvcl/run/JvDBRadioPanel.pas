@@ -80,7 +80,7 @@ type
     procedure UpdateButtons;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
   protected
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     procedure DoExit; override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
@@ -612,9 +612,9 @@ begin
   Result := inherited UseRightToLeftAlignment;
 end;
 
-procedure TJvDBRadioPanel.DoBoundsChanged;
+procedure TJvDBRadioPanel.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   ArrangeButtons;
 end;
 

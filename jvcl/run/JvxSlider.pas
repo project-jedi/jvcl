@@ -118,9 +118,9 @@ type
     { TODO -cVisuaCLX : implement message handler substitutions }
     {$ENDIF VisualCLX}
   protected
-    procedure DoBoundsChanged; override;
-    procedure DoFocusChanged(Control: TWinControl); override;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure BoundsChanged; override;
+    procedure FocusChanged(Control: TWinControl); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure DefineProperties(Filer: TFiler); override;
@@ -1105,7 +1105,7 @@ begin
   InvalidateThumb;
 end;
 
-procedure TJvCustomSlider.DoFocusChanged(Control: TWinControl);
+procedure TJvCustomSlider.FocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
@@ -1116,17 +1116,17 @@ begin
     if (soShowFocus in Options) then
       Invalidate;
   end;
-  inherited DoFocusChanged(Control);
+  inherited FocusChanged(Control);
 end;
 
-procedure TJvCustomSlider.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvCustomSlider.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows];
 end;
 
-procedure TJvCustomSlider.DoBoundsChanged;
+procedure TJvCustomSlider.BoundsChanged;
 begin
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   if not (csReading in ComponentState) then
     Sized;
 end;

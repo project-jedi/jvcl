@@ -75,7 +75,7 @@ type
     {$IFDEF VisualCLX}
     function WidgetFlags: Integer; override;
     {$ENDIF VisualCLX}
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
     procedure SetPageList(Value: TJvCustomPageList);virtual;
@@ -457,7 +457,7 @@ begin
   end;
 end;
 
-function TJvCustomPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomPage.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then

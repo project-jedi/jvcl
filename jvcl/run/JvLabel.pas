@@ -126,7 +126,7 @@ type
   protected
     procedure DoDrawCaption(var Rect: TRect; Flags: Integer);virtual;
     procedure DoProviderDraw(var Rect: TRect; Flags: Integer);virtual;
-    procedure DoFocusChanged(Control: TWinControl); override;
+    procedure FocusChanged(Control: TWinControl); override;
     procedure TextChanged; override;
     procedure FontChanged; override;
     function WantKey(Key: Integer; Shift: TShiftState;
@@ -1040,7 +1040,7 @@ begin
       MouseLeave(Self);
 end;
 
-procedure TJvCustomLabel.DoFocusChanged(Control: TWinControl);
+procedure TJvCustomLabel.FocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
@@ -1051,7 +1051,7 @@ begin
     if FShowFocus then
       Invalidate;
   end;
-  inherited DoFocusChanged(Control);
+  inherited FocusChanged(Control);
 end;
 
 procedure TJvCustomLabel.TextChanged;

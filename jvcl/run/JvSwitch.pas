@@ -65,8 +65,8 @@ type
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
   protected
-    procedure DoFocusChanged(Control: TWinControl); override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure FocusChanged(Control: TWinControl); override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure TextChanged; override;
@@ -288,7 +288,7 @@ begin
   end;
 end;
 
-procedure TJvSwitch.DoFocusChanged(Control: TWinControl);
+procedure TJvSwitch.FocusChanged(Control: TWinControl);
 var
   Active: Boolean;
 begin
@@ -299,7 +299,7 @@ begin
     if FShowFocus then
       Invalidate;
   end;
-  inherited DoFocusChanged(Control);
+  inherited FocusChanged(Control);
 end;
 
 procedure TJvSwitch.EnabledChanged;
@@ -322,7 +322,7 @@ begin
     SetFocus;
 end;
 
-function TJvSwitch.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvSwitch.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True; // the component paints the background in Paint
 end;

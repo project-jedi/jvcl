@@ -79,7 +79,7 @@ type
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;
     {$ENDIF VisualCLX}
-//    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+//    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure DoLabelFontChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -437,7 +437,7 @@ begin
 end;
 
 (*
-function TJvGradientHeaderPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvGradientHeaderPanel.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   { Reduce flickering FGradient completely fills the TJvGradientHeaderPanel }
   Result := True;

@@ -93,7 +93,7 @@ type
     procedure CMParentButtonVisibleChanged(var Msg: TMessage); message CM_PARENTBUTTONVISIBLECHANGED;
   protected
     procedure TextChanged; override;
-    procedure DoBoundsChanged; override;
+    procedure BoundsChanged; override;
     procedure Loaded; override;
     procedure Paint; override;
     procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
@@ -152,7 +152,7 @@ type
   private
     FScrolling: Boolean;
   protected
-    procedure DoFocusChanged(Control: TWinControl); override;
+    procedure FocusChanged(Control: TWinControl); override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure ScrollControls(const DeltaY: Integer);
     procedure Paint; override;
@@ -603,11 +603,11 @@ begin
   Perform(CM_PARENTBUTTONFONTCHANGED, 0, 0);
 end;
 
-procedure TJvScrollMaxBand.DoBoundsChanged;
+procedure TJvScrollMaxBand.BoundsChanged;
 begin
   if FExpanded then
     ExpandedHeight := Height;
-  inherited DoBoundsChanged;
+  inherited BoundsChanged;
   if Parent <> nil then
     ScrollMax.CorrectHeight;
 end;
@@ -1043,9 +1043,9 @@ begin
   end;
 end;
 
-procedure TJvScrollMaxBands.DoFocusChanged(Control: TWinControl);
+procedure TJvScrollMaxBands.FocusChanged(Control: TWinControl);
 begin
-  inherited DoFocusChanged(Control);
+  inherited FocusChanged(Control);
   if (Control <> nil) and
     ContainsControl(Control) and
     (Parent <> nil) then

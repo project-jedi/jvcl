@@ -125,7 +125,7 @@ type
   protected
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
     property DataField: string read FDataFieldName write SetDataFieldName;
@@ -817,7 +817,7 @@ begin
   FDataLink.ReadOnly := Value;
 end;
 
-procedure TJvDBLookupControl.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvDBLookupControl.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows, dcWantChars];
 end;

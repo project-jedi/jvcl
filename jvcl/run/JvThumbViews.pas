@@ -119,7 +119,7 @@ type
     procedure DoInvalidImage(Sender: TObject; const FileName: string);
     //    procedure WMLoadWhenReady(var Msg: TMessage); message WM_LOADWHENREADY;
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure SetScrollMode(AMode: TScrollMode);
     procedure SetSelected(Number: Longint);
     //    procedure SetBufferFile(NewName: string);
@@ -1020,7 +1020,7 @@ begin
   end;
 end;
 
-procedure TJvThumbView.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvThumbView.GetDlgCode(var Code: TDlgCodes);
 begin
   Code := [dcWantArrows, dcWantAllKeys];
 end;

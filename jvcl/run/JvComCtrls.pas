@@ -47,7 +47,7 @@ uses
   CommCtrl,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QExtCtrls,
+  Qt, QExtCtrls,
   {$ENDIF VisualCLX}
   JvJVCLUtils, JvComponent, JvExControls, JvExComCtrls;
 
@@ -174,11 +174,11 @@ type
     //procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure SelectTabControl(Previous: Boolean);
   protected
-    procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure GetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function PaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure AdjustHeight;
     procedure AdjustSize; override;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -619,6 +619,27 @@ type
 
   {$ENDIF VCL}
 
+  {$IFDEF VisualCLX}
+
+  TJvTreeView = class(TJvExTreeView)
+  private
+    FOnSelectionChange: TNotifyEvent;
+    FLineColor: TColor;
+    FLastSelection: TTreeNode;
+    procedure SetLineColor(Value: TColor);
+  protected
+    procedure Change(Node: TTreeNode); override;
+    procedure DoSelectionChange; dynamic;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property LineColor: TColor read FLineColor write SetLineColor default clDefault;
+    property OnSelectionChange: TNotifyEvent read FOnSelectionChange write FOnSelectionChange;
+  end;
+
+  {$ENDIF VisualCLX}
+
 implementation
 
 uses
@@ -942,7 +963,7 @@ begin
     inherited;
 end;
 
-function TJvIPAddress.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvIPAddress.PaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Canvas.Brush.Color := Color;
   Canvas.FillRect(ClientRect);
@@ -957,7 +978,7 @@ var
   Pt: TPoint;
 begin
   { We paint the '.' ourself so we can also paint the control's background in
-    DoPaintBackground what would be impossible without self-painting because
+    PaintBackground what would be impossible without self-painting because
     the IP-Control always paints a clWindow background in WM_PAINT. } 
   for I := 0 to (FEditControlCount - 1) - 1 do
   begin
@@ -1175,7 +1196,7 @@ begin
   inherited;
 end;
 
-procedure TJvIPAddress.DoGetDlgCode(var Code: TDlgCodes);
+procedure TJvIPAddress.GetDlgCode(var Code: TDlgCodes);
 begin
   Include(Code, dcWantArrows);
   if FTabThroughFields then
@@ -1559,6 +1580,33 @@ end;
 function TJvTabDefaultPainter.IsInactiveFontStored: Boolean;
 begin
   Result := True;
+end;
+
+procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
+begin
+  if FGlyphLayout <> Value then
+  begin
+    FGlyphLayout := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetDivider(const Value: Boolean);
+begin
+  if FDivider <> Value then
+  begin
+    FDivider := Value;
+    Change;
+  end;
+end;
+
+procedure TJvTabDefaultPainter.SetShowFocus(const Value: Boolean);
+begin
+  if FShowFocus <> Value then
+  begin
+    FShowFocus := Value;
+    Change;
+  end;
 end;
 
 //=== { TJvTabControl } ======================================================
@@ -2130,10 +2178,9 @@ begin
 end;
 {$ENDIF VCL}
 
+{$IFDEF VCL}
 //=== { TJvTreeNode } ========================================================
 
-
-{$IFDEF VCL}
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
   Result := Create(AOwner);
@@ -3015,32 +3062,47 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TJvTabDefaultPainter.SetGlyphLayout(const Value: TButtonLayout);
+{$IFDEF VisualCLX}
+
+//=== { TJvTreeView } ========================================================
+
+constructor TJvTreeView.Create(AOwner: TComponent);
 begin
-  if FGlyphLayout <> Value then
+  inherited Create(AOwner);
+  FLineColor := clDefault;
+  FLastSelection := nil;
+end;
+
+destructor TJvTreeView.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvTreeView.SetLineColor(Value: TColor);
+begin
+  if Value <> FLineColor then
   begin
-    FGlyphLayout := Value;
-    Change;
+    FLineColor := Value;
+    Invalidate;
   end;
 end;
 
-procedure TJvTabDefaultPainter.SetDivider(const Value: Boolean);
+procedure TJvTreeView.Change(Node: TTreeNode);
 begin
-  if FDivider <> Value then
+  if Selected <> FLastSelection then
   begin
-    FDivider := Value;
-    Change;
+    FLastSelection := Selected;
+    DoSelectionChange;
   end;
 end;
 
-procedure TJvTabDefaultPainter.SetShowFocus(const Value: Boolean);
+procedure TJvTreeView.DoSelectionChange;
 begin
-  if FShowFocus <> Value then
-  begin
-    FShowFocus := Value;
-    Change;
-  end;
+  if Assigned(FOnSelectionChange) then
+    FOnSelectionChange(Self);
 end;
+
+{$ENDIF VisualCLX}
 
 {$IFDEF UNITVERSIONING}
 const
