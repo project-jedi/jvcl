@@ -1,3 +1,14 @@
+2003-04-10 and before
+Dmitry Osinovsky
+================
+JvInterpreter.pas and related files
+    - Interface (IInterface, IUnknown) methods call support (see AddIntfGet)
+    - Introduced data type system for variables and record fields initializations
+    - Fixed records (binded from Delphi) in Delphi 6
+    - Record declaration in interpreted code support,
+      fields can be simple data types, arrays and other records
+    - OLE calls fixes
+
 2003-04-05
 - Extracted property and design editors from various XXXReg files into their own units (this is to simplify a possible future split of packages). Several new units added. // peter3
 - Merged generic (i.e not JVCL specific) property and component editors into JvDsgnEditors, JvDBEditors and JvBDEEditors // peter3
