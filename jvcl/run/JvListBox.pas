@@ -229,6 +229,7 @@ type
     procedure Loaded; override;
     procedure DrawProviderItem(Canvas: TCanvas; Rect: TRect; Index: Integer;
       State: TOwnerDrawState);
+    procedure DoGetText(Index:integer; var AText:string);virtual;
 
     property LimitToClientWidth: Boolean read GetLimitToClientWidth;
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
@@ -1019,6 +1020,7 @@ const
 var
   Flags: Longint;
   ActualRect: TRect;
+  AText:string;
 begin
    if csDestroying in ComponentState then
     Exit;
@@ -1068,8 +1070,11 @@ begin
     if IsProviderSelected then
       DrawProviderItem(Canvas, ActualRect, Index, State)
     else
-      DrawText(Canvas.Handle, PChar(ItemsShowing[Index]), Length(ItemsShowing[Index]), ActualRect,
-        Flags);
+    begin
+      AText := ItemsShowing[Index];
+      DoGetText(Index, AText);
+      DrawText(Canvas.Handle, PChar(AText), Length(AText), ActualRect, Flags);
+    end;
 
     //if (Index >= 0) and (Index < Items.Count) then
     //  Canvas.TextOut(ActualRect.Left + 2, ActualRect.Top, Items[Index]);
@@ -1523,6 +1528,7 @@ var
   ItemsRenderer: IJvDataItemsRenderer;
   ItemRenderer: IJvDataItemRenderer;
   ItemText: IJvDataItemText;
+  AText:string;
 begin
   DrawState := DP_OwnerDrawStateToProviderDrawState(State);
   if not Enabled then
@@ -1540,14 +1546,28 @@ begin
         else if DP_FindItemsRenderer(Item, ItemsRenderer) then
           ItemsRenderer.DrawItem(Canvas, Rect, Item, DrawState)
         else if Supports(Item, IJvDataItemText, ItemText) then
-          Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
+        begin
+          AText := ItemText.Caption;
+          DoGetText(Index,AText);
+          Canvas.TextRect(Rect, Rect.Left, Rect.Top, AText);
+        end
         else
-          Canvas.TextRect(Rect, Rect.Left, Rect.Top, RsDataItemRenderHasNoText);
+        begin
+          AText := RsDataItemRenderHasNoText;
+          DoGetText(Index,AText);
+          Canvas.TextRect(Rect, Rect.Left, Rect.Top, AText);
+        end;
       end;
     end;
   finally
     Provider.Leave;
   end;
+end;
+
+procedure TJvCustomListBox.DoGetText(Index:integer; var AText:string);
+begin
+  if Assigned(FOnGetText) then
+    FOnGetText(Self, Index, AText);
 end;
 
 procedure TJvCustomListBox.MeasureItem(Index: Integer;
@@ -2142,6 +2162,7 @@ begin
     Change;
   end;
 end;
+
 
 end.
 

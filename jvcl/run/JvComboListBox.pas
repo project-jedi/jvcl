@@ -115,7 +115,8 @@ type
     property ImeMode;
     property ImeName;
     property IntegralHeight;
-    property ItemHeight default 17;
+    property ItemHeight default 21;
+    property ItemIndex default -1;
     property Items;
     property MultiSelect;
     property ParentBiDiMode;
@@ -159,6 +160,8 @@ type
   end;
 
 implementation
+uses
+  Math;
 
 constructor TJvComboListBox.Create(AOwner: TComponent);
 begin
@@ -168,7 +171,7 @@ begin
   FDrawStyle := dsOriginal;
   FButtonWidth := 20;
   FLastHotTrack := -1;
-  ItemHeight := 17;
+  ItemHeight := 21;
   // ControlStyle := ControlStyle + [csCaptureMouse];
 end;
 
@@ -313,16 +316,23 @@ procedure TJvComboListBox.DrawItem(Index: Integer; Rect: TRect;
 var
   P: TPicture;
   B: TBitmap;
-  Points: array [0..4] of TPoint;
+  Points: array[0..4] of TPoint;
   TmpRect: TRect;
   Pt: TPoint;
   I: Integer;
+  AText: string;
 begin
   if (Index < 0) or (Index >= Items.Count) or Assigned(OnDrawItem) then
     Exit;
   Canvas.Lock;
   try
+    Canvas.Font := Font;
     Canvas.Brush.Color := Self.Color;
+    if State * [odSelected, odFocused] <> [] then
+    begin
+      Canvas.Brush.Color := clHighlight;
+      Canvas.Font.Color := clHighlightText;
+    end;
 
     if Items.Objects[Index] is TPicture then
       P := TPicture(Items.Objects[Index])
@@ -342,8 +352,8 @@ begin
               try
                 B.Assign(P.Bitmap);
                 TmpRect := GetOffset(Rect, Classes.Rect(0, 0, B.Width, B.Height));
-                B.Width := Rect.Right - Rect.Left;
-                B.Height := Rect.Bottom - Rect.Top;
+                B.Width := Min(B.Width,TmpRect.Right - TmpRect.Left);
+                B.Height := Min(B.Height,TmpRect.Bottom - TmpRect.Top);
                 Canvas.Draw(TmpRect.Left, TmpRect.Top, B);
               finally
                 B.Free;
@@ -360,12 +370,15 @@ begin
     end
     else
     begin
-      Canvas.Font.Color := clWindowText;
       TmpRect := Rect;
       InflateRect(TmpRect, -2, -2);
       if DoDrawText(Index, Items[Index], TmpRect) then
-        DrawText(Canvas.Handle, PChar(Items[Index]), Length(Items[Index]),
+      begin
+        AText := Items[Index];
+        DoGetText(Index, AText);
+        DrawText(Canvas.Handle, PChar(AText), Length(AText),
           TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
+      end;
     end;
 
     // draw the combo button
@@ -393,7 +406,11 @@ begin
           Rect.Top + 1, Rect.Right - 2 - Ord(FPushed), Rect.Bottom - 2 - Ord(FPushed));
         DrawComboArrow(Canvas, TmpRect, FMouseOver and Focused, FPushed);
       end;
-    end;
+      Canvas.Brush.Style := bsSolid;
+    end
+    else if odFocused in State then
+      Canvas.DrawFocusRect(Rect);
+
     Canvas.Pen.Color := clBtnShadow;
     Canvas.Pen.Width := 1;
     Canvas.MoveTo(Rect.Left, Rect.Bottom - 1);
@@ -521,8 +538,7 @@ begin
         InvalidateItem(I);
       end;
     end
-    else
-    if FMouseOver then
+    else if FMouseOver then
     begin
       FMouseOver := False;
       InvalidateItem(I);
