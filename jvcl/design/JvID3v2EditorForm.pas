@@ -788,7 +788,7 @@ end;
 
 procedure TJvID3ControllerEditor.Commit;
 begin
-  if MessageDlg('Commit?', mtConfirmation, mbOKCancel, 0) = mrOk then
+  if MessageDlg(_('Commit?'), mtConfirmation, mbOKCancel, 0) = mrOk then
     TJvID3Controller(Component).Commit;
 end;
 

@@ -61,7 +61,7 @@ begin
     0:
       begin
         OpenDialog := TOpenDialog.Create(nil);
-        OpenDialog.Filter := 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
+        OpenDialog.Filter := _('RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt');
         if OpenDialog.Execute then
         begin
           (Component as TJvgHelpPanel).Strings.LoadFromFile(OpenDialog.FileName);
@@ -91,8 +91,8 @@ end;
 function TJvgHelpPanelEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Load RTF file';
-    1: Result := 'Preview RTF text';
+    0: Result := _('Load RTF file');
+    1: Result := _('Preview RTF text');
   end;
 end;
 

@@ -64,10 +64,10 @@ begin
   F := Application.FindComponent('AppBuilder') as TForm;
   if F <> nil then
   begin
-    MenuItem := F.FindComponent('RAZoomEditor') as TMenuItem;
+    MenuItem := F.FindComponent('JvZoomEditor') as TMenuItem;
     if MenuItem <> nil then
       MenuItem.Free;
-    MenuItem := F.FindComponent('RAZoomEditor2') as TMenuItem;
+    MenuItem := F.FindComponent('JvZoomEditor2') as TMenuItem;
     if MenuItem <> nil then
       MenuItem.Free;
   end;
@@ -92,9 +92,9 @@ begin
     MenuItem := TMenuItem.Create(F);
     with MenuItem do
     begin
-      Caption := 'Zoom Edit Window';
+      Caption := _('Zoom Edit Window');
       ShortCut := Menus.ShortCut(ord('Z'), [ssAlt]);
-      Name := 'RAZoomEditor';
+      Name := 'JvZoomEditor';
       OnClick := Zoom.Zoom;
     end;
     ViewNewEditorItem := F.FindComponent('ViewNewEditorItem') as TMenuItem;
@@ -107,7 +107,7 @@ begin
     with MenuItem do
     begin
       ShortCut := Menus.ShortCut(Ord('1'), [ssAlt]);
-      Name := 'RAZoomEditor2';
+      Name := 'JvZoomEditor2';
       OnClick := Zoom.Zoom;
       Visible := false;
     end;
@@ -140,7 +140,7 @@ begin
       F.WindowState := wsMaximized
     else
       F.WindowState := wsNormal;
- { MenuItem := F.FindComponent('RAZoomEditor') as TMenuItem;
+ { MenuItem := F.FindComponent('JvZoomEditor') as TMenuItem;
   if MenuItem <> nil then
     MenuItem.ShortCut := Menus.ShortCut(ord('Z'), [ssAlt]); }
 end;

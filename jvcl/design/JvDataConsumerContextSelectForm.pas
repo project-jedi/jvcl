@@ -60,10 +60,10 @@ begin
         Result := SelectForm.ShowModal = mrOk;
       end
       else
-        raise EJVCLException.Create('Consumer does not support context selection.');
+        raise EJVCLException.Create(_('Consumer does not support context selection.'));
     end
     else
-      raise EJVCLException.Create('IJvDataConsumerProvider is not supported by the specified consumer.');
+      raise EJVCLException.Create(_('IJvDataConsumerProvider is not supported by the specified consumer.'));
   except
     SelectForm.Free;
     raise;

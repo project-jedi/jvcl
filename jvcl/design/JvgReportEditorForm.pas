@@ -319,8 +319,8 @@ end;
 function TJvgReportCompEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Edit report...';
-    1: Result := 'Preview report...';
+    0: Result := _('Edit report...');
+    1: Result := _('Preview report...');
   end;
 end;
 
@@ -561,7 +561,7 @@ begin
       Top := Y - ScrollBox.VertScrollBar.Position;
       if B_Label.Down then
       begin
-        Text := 'Label';
+        Text := 'Label'; // do not localize
         SideLeft := 0;
         SideTop := 0;
         SideRight := 0;
@@ -834,7 +834,7 @@ procedure TJvgReportEditorForm.N_DeleteObjectClick(Sender: TObject);
 begin
   if Assigned(SelectedControl) then
   begin
-    if Windows.MessageBox(0, 'Delete object?', 'Confirm', MB_OKCANCEL) <> IDOK then
+    if Windows.MessageBox(0, PChar(_('Delete object?')), PChar(_('Confirm')), MB_OKCANCEL) <> IDOK then
       exit;
 
     if SelectedControl.ContainOLE then
@@ -1197,7 +1197,7 @@ begin
   if not Assigned(Component) then
     exit;
   Form := TForm.Create(nil);
-  Form.Caption := 'Page Preview';
+  Form.Caption := _('Page Preview');
   Image := TImage.Create(Form);
   bmp := TBitmap.Create;
   Image.Parent := Form;

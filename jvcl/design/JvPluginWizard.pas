@@ -47,7 +47,7 @@ unit JvPluginWizard;
 interface
 
 uses
-  Windows, ToolsApi;
+  Windows, ToolsApi, JvTypes;
 
 type
   TJvPluginWizard = class( TNotifierObject, IOTAWizard, IOTARepositoryWizard,
@@ -156,17 +156,19 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  Controls, SysUtils, Dialogs, Classes, actnList, Menus,
-  JvPlugin, JvPluginParamsForm;//, JvTypes;
+  Controls, SysUtils, Dialogs, Classes, ActnList, Menus,
+  JvPlugin, JvPluginParamsForm;
 
 {$R ..\resources\JvPluginWiz.res}
 
 const
-  CrLf = #13#10;
-  cJediPuginWizard = 'JEDI Plugin Wizard';
+  CrLf = sLineBreak;
   cPlgPrefix = 'Plg';
   cPluginPrefix = 'Plugin';
   cDirSep = '\';
+
+resourcestring
+  cJediPuginWizard = 'JEDI Plugin Wizard';
 
 function GetFormEditorFromModule(
   IModule: IOTAModule): IOTAFormEditor;
@@ -189,7 +191,7 @@ end;
 
 function TJvPluginWizard.GetIDString: string;
 begin
-  Result := 'JVCL.PluginWizard'; //cJediPuginWizard;
+  Result := 'JVCL.PluginWizard';
 end;
 
 function TJvPluginWizard.GetState: TWizardState;
@@ -204,12 +206,12 @@ end;
 
 function TJvPluginWizard.GetName: string;
 begin
-  Result := 'Jv Plugin Wizard';
+  Result := _('Jv Plugin Wizard');
 end;
 
 function TJvPluginWizard.GetPage: string;
 begin
-  Result := 'Projects';
+  Result := _('Projects');
 end;
 
 function TJvPluginWizard.GetAuthor: string;
@@ -219,7 +221,7 @@ end;
 
 function TJvPluginWizard.GetComment: string;
 begin
-  Result := 'New Plugin';
+  Result := _('New Plugin');
 end;
 
 function TJvPluginWizard.GetGlyph:{$IFDEF COMPILER6_UP}Cardinal;{$ELSE}HICON;{$ENDIF}
@@ -242,7 +244,7 @@ begin
         begin
           ProjectCreator := TJvPluginProjectCreator.Create;
           ProjectCreator.Wizard := Self;
-          
+
           { rbDll checked     => dll     => PlugType = 0 = Ord(False)
             rbPackage checked => package => PlugType = 1 = Ord(True)
           }
@@ -335,13 +337,13 @@ begin
       '{$IMPLICITBUILD ON}' + CrLf + CrLf +
       'requires' + CrLf +
     {$IFDEF COMPILER5}
-    '  vcl50,' + CrLf + '  JVCL200_R50;' +
+    '  vcl50,' + CrLf + '  JvCoreD5R;' +
     {$ENDIF COMPILER5}
     {$IFDEF COMPILER6}
-    '  vcl,' + CrLf + '  JVCL200_R60;' +
+    '  vcl,' + CrLf + '  JvCoreD6R;' +
     {$ENDIF COMPILER6}
     {$IFDEF COMPILER7}
-    '  vcl,' + CrLf + '  JVCL200_R70;' +
+    '  vcl,' + CrLf + '  JvCoreD7R;' +
     {$ENDIF COMPILER7}
 
     CrLf + CrLf + 'end.';
@@ -562,7 +564,7 @@ end;
   Return Values  : Returns the complete path to the implementation ( source )
                    file name, e.g. “C:\dir\Unit1.pas”. If GetUnnamed returns
                    true, the file name is just a placeholder, and the user
-                   will be prompted for a file name when the file is saved.                                                     
+                   will be prompted for a file name when the file is saved.
   Exceptions     : None
   Description    : Property getter for the ImplFileName property.
   History        :
@@ -671,9 +673,9 @@ begin
 end;
 
 {*****************************************************************************
-  Name           : TJvPluginModuleCreator.GetShowForm 
+  Name           : TJvPluginModuleCreator.GetShowForm
   Author         : Stefaan Lesage
-  Arguments      : None                                                     
+  Arguments      : None
   Return Values  : Returns true if you want the IDE to show the form editor
                    after the form is created. Have GetShowForm returns false
                    to keep the form hidden.
@@ -722,7 +724,7 @@ end;
                    file name. GetUnnamed returns false if the module has a
                    file name.                                                     
   Exceptions     : None
-  Description    : Property Getter for the Unnamed property.                                                         
+  Description    : Property Getter for the Unnamed property.
   History        :                                                          
                                                                             
   Date         By                   Description                                    
@@ -818,9 +820,9 @@ begin
     '  ' + aPluginClassName + ' = class(T' + Ancestor + ')' + CrLf +
 //    '  T' + TypeName + ' = class(T' + Ancestor + ')' + CrLf +
     '  private' + CrLf +
-    '    { Private declarations }' + CrLf +
+    '    ' + _('{ Private declarations }') + CrLf +
     '  public' + CrLf +
-    '    { Public declarations }' + CrLf +
+    '    ' + _('{ Public declarations }') + CrLf +
     '  end;' + CrLf + CrLf +
 
 //  'function RegisterPlugin: T' + TypeName + '; stdcall;' + CrLf + CrLf;
@@ -835,10 +837,10 @@ begin
 
   '{$R *.DFM}' + CrLf + CrLf +
 
-  '// IMPORTANT NOTE: If you change the name of the Plugin container,' + CrLf +
-    '// you must set the type below to the same type. (Delphi changes' + CrLf +
-    '// the declaration, but not the procedure itself. Both the return' + CrLf +
-    '// type and the type created must be the same as the declared type above.' + CrLf +
+  _('// IMPORTANT NOTE: If you change the name of the Plugin container,' + sLineBreak +
+    '// you must set the type below to the same type. (Delphi changes' + sLineBreak +
+    '// the declaration, but not the procedure itself. Both the return' + sLineBreak +
+    '// type and the type created must be the same as the declared type above.') + sLineBreak +
     'function RegisterPlugin: TJvPlugin;' + CrLf + CrLf +
     'begin' + CrLf +
     '  Result := ' + aPluginClassName + '.Create(nil);' + CrLf +
@@ -871,7 +873,7 @@ end;
                    interface or 0 for a default header.
   History        :
                                                                             
-  Date         By                   Description                                    
+  Date         By                   Description
   ----         --                   -----------                                    
   11/07/2003   slesage              Initial creation of the Method.                  
  *****************************************************************************}

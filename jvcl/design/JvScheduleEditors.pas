@@ -91,7 +91,7 @@ end;
 
 function TJvSchedEventComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := 'Event editor...';
+  Result := _('Event editor...');
 end;
 
 function TJvSchedEventComponentEditor.GetVerbCount: Integer;

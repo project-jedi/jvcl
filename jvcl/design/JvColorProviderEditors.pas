@@ -85,7 +85,7 @@ begin
     begin
       I := IndexOfMappingName(Value);
       if I < 0 then
-        raise EPropertyError.Create('Mapping does not exist for this color provider.');
+        raise EPropertyError.Create(_('Mapping does not exist for this color provider.'));
       SetOrdValue(I);
     end;
   end;

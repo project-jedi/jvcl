@@ -210,7 +210,7 @@ end;
 
 procedure TFrmOLBEditor.FormClosed(AForm: TCustomForm);
 begin
-  Assert(Designer <> nil, 'Designer is nil in FormClosed');
+  Assert(Designer <> nil, _('Designer is nil in FormClosed'));
   if AForm = Designer.Form then
   begin
     Designer := nil;

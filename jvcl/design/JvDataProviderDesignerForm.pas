@@ -357,7 +357,7 @@ end;
 
 function TfrmDataProviderDesigner.DesignerFormName: string;
 begin
-  Result := 'DataProvider Designer';
+  Result := _('DataProvider Designer');
 end;
 
 function TfrmDataProviderDesigner.AutoStoreSettings: Boolean;
@@ -478,7 +478,7 @@ begin
       if Supports(InternalProvider, IJvDataContexts, CtxList) then
         fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
       else
-        raise EJVCLException.Create('Internal error: unable to retrieve context list.');
+        raise EJVCLException.Create(_('Internal error: unable to retrieve context list.'));
     end
     else
       fmeTreeList.Provider.SetContextIntf(nil);

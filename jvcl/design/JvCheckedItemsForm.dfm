@@ -2,7 +2,7 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
   Left = 285
   Top = 129
   Width = 350
-  Height = 290
+  Height = 292
   BorderIcons = [biSystemMenu]
   Color = clBtnFace
   Constraints.MinHeight = 290
@@ -40,6 +40,9 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
   OldCreateOrder = True
   Position = poDefaultPosOnly
   OnShow = FormShow
+  DesignSize = (
+    342
+    258)
   PixelsPerInch = 96
   TextHeight = 13
   object OkBtn: TButton
@@ -138,7 +141,7 @@ object JvCheckItemsEditor: TJvCheckItemsEditor
     Left = 6
     Top = 6
     Width = 246
-    Height = 248
+    Height = 250
     AllowGrayed = True
     Anchors = [akLeft, akTop, akRight, akBottom]
     Ctl3D = True

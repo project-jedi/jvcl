@@ -50,7 +50,7 @@ end;
 function TJvHLEdPropDlgEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
-    Result := 'Execute'
+    Result := _('Execute')
   else
     Result := inherited GetVerb(Index);
 end;

@@ -204,8 +204,8 @@ begin
   Pic := TPicture.Create;
   FileDialog := TOpenDialog.Create(Self);
   SaveDialog := TSaveDialog.Create(Self);
-  FileDialog.Title := 'Load picture';
-  SaveDialog.Title := 'Save picture as';
+  FileDialog.Title := _('Load picture');
+  SaveDialog.Title := _('Save picture as');
   Bevel.Visible := False;
   Font.Style := [];
   AppStore.Root := SDelphiKey;

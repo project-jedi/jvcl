@@ -187,7 +187,7 @@ begin
     if Value <> nil then
     begin
       if not Supports(Value, IInterfaceComponentReference, CompRef) then
-        raise EPropertyError.Create('Specified provider is not a TComponent descendant.');
+        raise EPropertyError.Create(_('Specified provider is not a TComponent descendant.'));
       ProvComp := CompRef.GetComponent;
     end
     else
@@ -261,7 +261,7 @@ begin
   else if Supports(GetProviderIntf, IInterfaceComponentReference, ICR) then
     Result := ICR.GetComponent.Name
   else
-    raise EPropertyError.Create('Specified provider is not a TComponent descendant.');
+    raise EPropertyError.Create(_('Specified provider is not a TComponent descendant.'));
 end;
 
 procedure TJvDataConsumerProperty.SetValue(const Value: string);
@@ -326,7 +326,7 @@ end;
 
 function TJvDataProviderTreeProperty.GetValue: string;
 begin
-  Result := 'Data tree';
+  Result := 'Data tree'; // do not localize
 end;
 
 procedure TJvDataProviderTreeProperty.SetValue(const Value: string);
@@ -449,11 +449,11 @@ function TJvProviderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Tree designer...';
+      Result := _('Tree designer...');
     1:
-      Result := 'Context manager...';
+      Result := _('Context manager...');
     else
-      Result := 'Invalid verb#: ' + IntToStr(Index);
+      Result := _('Invalid verb#: %d', [Index]);
   end;
 end;
 

@@ -437,7 +437,7 @@ begin
     with Sender as TJvgShapePlus do
     begin
       str := CommentArea.Text;
-      if InputQuery('Caption', 'Comments', str) then
+      if InputQuery(_('Caption'), _('Comments'), str) then
         CommentArea.Text := str;
       PostMessage(TWinControl(Parent).Handle, WM_LBUTTONUP, 1, 1);
       exit;
@@ -696,7 +696,7 @@ end;
 function TJvgLogicsComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Edit component...';
+    0: Result := _('Edit component...');
   end;
 end;
 

@@ -63,7 +63,7 @@ end;
 
 function TJVCLAboutDialogProperty.GetValue: string;
 begin
-  Result := 'Version ' + JVCL_VERSIONSTRING;
+  Result := _('Version %s', [JVCL_VERSIONSTRING]);
 end;
 
 end.

@@ -222,7 +222,7 @@ end;
 function TJvgLabelEditor.GetVerb(Index: integer): string;
 begin
   case Index of
-    0: Result := 'Edit &Label...';
+    0: Result := _('Edit &Label...');
   end;
 end;
 

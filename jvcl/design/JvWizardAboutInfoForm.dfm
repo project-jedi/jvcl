@@ -25,6 +25,9 @@ object JvWizardAboutDialog: TJvWizardAboutDialog
     BevelOuter = bvNone
     BorderWidth = 3
     TabOrder = 0
+    DesignSize = (
+      311
+      171)
     object Label1: TLabel
       Left = 90
       Top = 16
@@ -58,7 +61,7 @@ object JvWizardAboutDialog: TJvWizardAboutDialog
       Width = 60
       Height = 13
       Alignment = taRightJustify
-      Caption = 'Version 1.60'
+      Caption = 'Version 1.70'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clHighlight
       Font.Height = -11

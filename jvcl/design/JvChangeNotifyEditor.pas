@@ -76,7 +76,7 @@ var
   PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName, 'Notifications') then
+  if SameText(PropName, 'Notifications') then // do not localize
   begin
     PropertyEditor.Edit;
     Cont := False;

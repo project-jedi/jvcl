@@ -59,7 +59,7 @@ uses
   SysUtils,
   JvTimeLine;
 
-const
+resourcestring
   SEditProperty = 'Items Editor...';
 
 {$IFDEF COMPILER6_UP}

@@ -90,7 +90,7 @@ uses
 {$I+}
 {$D-}
 
-const
+resourcestring
   SAllFiles = 'All files';
   SPreview = 'Preview';
 

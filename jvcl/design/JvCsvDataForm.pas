@@ -31,7 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, Buttons, StdCtrls;
+  Dialogs, ExtCtrls, Buttons, StdCtrls, JvTypes;
 
 type
   TJvCsvDefStrDialog = class(TForm)
@@ -222,11 +222,11 @@ procedure TJvCsvDefStrDialog.ButtonOkClick(Sender: TObject);
 begin
   UpdateCsvStr;
   if (EditCsvStr.Text = FOriginalCsvStr) then begin
-        if MessageBox(Self.Handle, PChar('You haven''t actually changed anything. If you '+
+        if MessageBox(Self.Handle, PChar(_('You haven''t actually changed anything. If you '+
                 'made changes and didn''t click Modify, the changes have '+
-                'not been made yet. (Click no, to go back.) '+Chr(13)+
-                'Are you sure you want to close the CSV Fields editor? '),
-                'Confirm?',
+                'not been made yet. (Click no, to go back.) '+ sLineBreak +
+                'Are you sure you want to close the CSV Fields editor? ')),
+                PChar(_('Confirm?')),
                 MB_YESNO or MB_ICONWARNING )= idNo
                         then
                           exit; // quit before we set modalResult, so we continue on editing.
@@ -288,7 +288,7 @@ begin
         EditFieldName.Text := s;
         
   if not ValidIdentifier(pchar(s)) then exit;
-  
+
   FFieldTypeCh := FTypeChars[ListBoxFieldTypes.ItemIndex];
   if FFieldTypeCh = '$' then begin
         FieldLength := StrToIntDef(EditFieldLength.Text,DEFAULT_CSV_STR_FIELD);
@@ -320,19 +320,19 @@ begin
    if FUpdating then exit;
    s:=MakeString;
    if s = '' then begin
-      MessageBox( Self.Handle,'Must type a valid field name and select a field type. Field name must start with a letter A-Z and consist of letters and numbers only. All field names will be converted to uppercase before being used.','Add Failed',MB_OK or MB_ICONERROR );
+      MessageBox( Self.Handle,PChar(_('Must type a valid field name and select a field type. Field name must start with a letter A-Z and consist of letters and numbers only. All field names will be converted to uppercase before being used.')),PChar(_('Add Failed')),MB_OK or MB_ICONERROR );
       exit;  { not valid, can't add }
    end;
    // XXX Check Validity and Uniqueness before adding.
    f := FieldNameOnly(s);
    if (not ValidIdentifier(PChar(f)) ) then begin
-             MessageBox( Self.Handle,PChar(s+': Field name is not a valid identifier'),'Add Failed',MB_OK or MB_ICONERROR );
+             MessageBox( Self.Handle,PChar(_('%s: Field name is not a valid identifier', [s])),PChar(_('Add Failed')),MB_OK or MB_ICONERROR );
              exit;
    end;
    for t := 0 to ListBoxFields.Items.Count -1 do begin
           unique := FieldNameOnly(ListBoxFields.Items[t]);
           if unique = f then begin
-                MessageBox( Self.Handle,'Can''t add two fields with the same name! Select existing item and click ''Modify'' button to change its properties.','Add Failed',MB_OK or MB_ICONERROR );
+                MessageBox( Self.Handle, PChar(_('Can''t add two fields with the same name! Select existing item and click ''Modify'' button to change its properties.')),PChar(_('Add Failed')),MB_OK or MB_ICONERROR );
                 exit;
           end;
    end;
@@ -358,24 +358,24 @@ begin
    if FUpdating then exit;
    s:=MakeString;
    if s = '' then begin
-      MessageBox( Self.Handle,'Must type a valid field name and select a field type. Field name must start with a letter A-Z and consist of letters and numbers only. All field names will be converted to uppercase before being used.','Update Failed',MB_OK or MB_ICONERROR );
+      MessageBox( Self.Handle,PChar(_('Must type a valid field name and select a field type. Field name must start with a letter A-Z and consist of letters and numbers only. All field names will be converted to uppercase before being used.')),PChar(_('Update Failed')),MB_OK or MB_ICONERROR );
       exit;  { not valid, can't add }
    end;
    // XXX Check Validity and Uniqueness before adding.
    f := FieldNameOnly(s);
    if (not ValidIdentifier(PChar(f)) ) then begin
-             MessageBox( Self.Handle,PChar(s+': Field name is not a valid identifier'),'Update Failed',MB_OK or MB_ICONERROR );
+             MessageBox( Self.Handle,PChar(_('%s: Field name is not a valid identifier', [s])),PChar(_('Update Failed')),MB_OK or MB_ICONERROR );
              exit;
    end;
    selected := ListBoxFields.ItemIndex;
    if selected <0 then begin
-     MessageBox( Self.Handle,'No item is selected in the fields list. You can''t update nothing.','Update Failed',MB_OK or MB_ICONERROR );
+     MessageBox( Self.Handle,PChar(_('No item is selected in the fields list. You can''t update nothing.')),PChar(_('Update Failed')),MB_OK or MB_ICONERROR );
      exit; // can't do that!
    end;
    for t := 0 to ListBoxFields.Items.Count -1 do begin
           unique := FieldNameOnly(ListBoxFields.Items[t]);
           if (t <> selected) and (unique = f) then begin
-                MessageBox( Self.Handle,'Modifying the currently selected item would create two items with the same name. ','Update Failed',MB_OK or MB_ICONERROR );
+                MessageBox( Self.Handle,PChar(_('Modifying the currently selected item would create two items with the same name.')),PChar(_('Update Failed')),MB_OK or MB_ICONERROR );
                 exit;
           end;
    end;

@@ -306,7 +306,7 @@ begin
   if (Comp <> nil) and (Comp is TComponent) then
     Result := (Comp as TComponent).Name
   else
-    Result := '<unknown>';
+    Result := _('<unknown>');
   if Item <> nil then
     Result := Result + ': Item[' + Item.GetID + ']'
   else

@@ -32,8 +32,9 @@ unit JvBandObjectDLLWizardForm;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  StdCtrls, ExtCtrls, Forms;
+  SysUtils, Windows, Messages, Classes, Graphics, Controls, StdCtrls, ExtCtrls,
+  Forms,
+  JvTypes;
 
 type
   TzWizardForm = class(TForm)
@@ -54,8 +55,20 @@ implementation
 
 {$R *.DFM}
 
-uses
-  JvTypes;
+const
+  CrLf2 = sLineBreak + sLineBreak;
+resourcestring
+  cHelpText = sLineBreak +
+    'Band Name' + sLineBreak +
+    'Enter a band name, e.g. MyBand.' + sLineBreak +
+    'This will be the class name of the band object.' + sLineBreak +
+    'No need to prefix it with ''T'' as it will be generated.' + CrLf2 +
+    'Description' + sLineBreak +
+    'Enter a menuitem text, e.g. &My Band' + sLineBreak +
+    'This text will appear in the Explorer Bar or Toolbars menu.' + CrLf2 +
+    'Band Type' + sLineBreak +
+    'Select the type of band object to create.';
+
 
 procedure TzWizardForm.Button1Click(Sender: TObject);
 begin
@@ -65,7 +78,7 @@ begin
     if not IsValidIdent(Text) then
     begin
       SetFocus;
-      raise Exception.Create('Band name has to be a valid identifier!');
+      raise Exception.Create(_('Band name has to be a valid identifier!'));
     end;
   end;
   with EditBandDesc do
@@ -74,25 +87,13 @@ begin
     if Text = '' then
     begin
       SetFocus;
-      raise Exception.Create('Please enter band description!');
+      raise Exception.Create(_('Please enter band description!'));
     end;
   end;
   ModalResult := mrOK;
 end;
 
 procedure TzWizardForm.Button3Click(Sender: TObject);
-const
-  CrLf2 = #13#10#13#10;
-  cHelpText = CrLf +
-    'Band Name' + CrLf +
-    'Enter a band name, e.g. MyBand.' + CrLf +
-    'This will be the class name of the band object.' + CrLf +
-    'No need to prefix it with ''T'' as it will be generated.' + CrLf2 +
-    'Description' + CrLf +
-    'Enter a menuitem text, e.g. &My Band' + CrLf +
-    'This text will appear in the Explorer Bar or Toolbars menu.' + CrLf2 +
-    'Band Type' + CrLf +
-    'Select the type of band object to create.';
 var
   HelpForm: TForm;
   HelpText: TMemo;
@@ -101,7 +102,7 @@ begin
   try
     with HelpForm do
     begin
-      Caption := Self.Caption + ' Help';
+      Caption := Self.Caption + ' ' + _('Help');
       BorderStyle := bsDialog;
       Top := Self.Top + Self.Height div 2;
       Left := Self.Left + Self.Width div 2;

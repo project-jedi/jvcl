@@ -96,7 +96,7 @@ end;
 function TJvgRepParamsEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := 'Edit params...';
+    0: Result := _('Edit params...');
   end;
 end;
 

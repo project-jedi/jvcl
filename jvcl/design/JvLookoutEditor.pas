@@ -155,17 +155,17 @@ begin
     Exit;
   case Index of
     0:
-      Result := 'Add page';
+      Result := _('Add page');
     1:
-      Result := 'Activate';
+      Result := _('Activate');
     2:
-      Result := 'Add Button';
+      Result := _('Add Button');
     3:
-      Result := '-';
+      Result := '-'; // do not localize
     4:
-      Result := 'Scroll Up';
+      Result := _('Scroll Up');
     5:
-      Result := 'Scroll Down';
+      Result := _('Scroll Down');
   end;
 end;
 
@@ -276,11 +276,11 @@ function TJvLookOutEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Add Page';
+      Result := _('Add Page');
     1:
-      Result := 'Next Page';
+      Result := _('Next Page');
     2:
-      Result := 'Previous Page';
+      Result := _('Previous Page');
   end;
 end;
 
@@ -332,7 +332,7 @@ begin
   case Index of
     0:
       AddButton;
-//  1: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
+//  1: ShowMessage(_('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved'));
   end;
 end;
 
@@ -340,8 +340,8 @@ function TJvExpressEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := 'Add Button';
-//    1: Result := 'About...';
+      Result := _('Add Button');
+//    1: Result := _('About...');
   end;
 end;
 

@@ -62,7 +62,7 @@ begin
   FStream := TMemoryStream(GetOrdValue);
   with TOpenDialog.Create(nil) do
   begin
-    Filter := 'All Files (*.*)|*.*';
+    Filter := _('All Files (*.*)|*.*');
     if Execute then
     begin
       Stream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
