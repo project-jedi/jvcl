@@ -238,6 +238,8 @@ type
     procedure DoBackgroundChange(Sender: TObject);
 
     procedure Loaded; override;
+    procedure DrawProviderItem(Canvas: TCanvas; Rect: TRect; Index: Integer;
+      State: TOwnerDrawState);
 
     property LimitToClientWidth: Boolean read GetLimitToClientWidth;
     property MaxWidth: Integer read FMaxWidth write SetMaxWidth;
@@ -1091,7 +1093,12 @@ begin
       Inc(ActualRect.Left, 2)
     else
       Dec(ActualRect.Right, 2);
-    DrawText(Canvas.Handle, PChar(ItemsShowing[Index]), Length(ItemsShowing[Index]), ActualRect, Flags);
+
+    if IsProviderSelected then
+      DrawProviderItem(Canvas, ActualRect, Index, State)
+    else
+      DrawText(Canvas.Handle, PChar(ItemsShowing[Index]), Length(ItemsShowing[Index]), ActualRect,
+        Flags);
 
     //if (Index >= 0) and (Index < Items.Count) then
     //  Canvas.TextOut(ActualRect.Left + 2, ActualRect.Top, Items[Index]);
@@ -1497,6 +1504,42 @@ begin
   inherited Loaded;
 
   UpdateStyle;
+end;
+
+procedure TJvCustomListBox.DrawProviderItem(Canvas: TCanvas; Rect: TRect; Index: Integer;
+  State: TOwnerDrawState);
+var
+  DrawState: TProviderDrawStates;
+  VL: IJvDataConsumerViewList;
+  Item: IJvDataItem;
+  ItemsRenderer: IJvDataItemsRenderer;
+  ItemRenderer: IJvDataItemRenderer;
+  ItemText: IJvDataItemText;
+begin
+  DrawState := DP_OwnerDrawStateToProviderDrawState(State);
+  if not Enabled then
+    DrawState := DrawState + [pdsDisabled, pdsGrayed];
+  Provider.Enter;
+  try
+    if Supports(Provider as IJvDataConsumer, IJvDataConsumerViewList, VL) then
+    begin
+      Item := VL.Item(Index);
+      if Item <> nil then
+      begin
+        Inc(Rect.Left, VL.ItemLevel(Index) * VL.LevelIndent);
+        if Supports(Item, IJvDataItemRenderer, ItemRenderer) then
+          ItemRenderer.Draw(Canvas, Rect, DrawState)
+        else if DP_FindItemsRenderer(Item, ItemsRenderer) then
+          ItemsRenderer.DrawItem(Canvas, Rect, Item, DrawState)
+        else if Supports(Item, IJvDataItemText, ItemText) then
+          Canvas.TextRect(Rect, Rect.Left, Rect.Top, ItemText.Caption)
+        else
+          Canvas.TextRect(Rect, Rect.Left, Rect.Top, SDataItemRenderHasNoText);
+      end;
+    end;
+  finally
+    Provider.Leave;
+  end;
 end;
 
 procedure TJvCustomListBox.MeasureItem(Index: Integer;
