@@ -222,6 +222,12 @@ end;
 
 // (rom) improvement. now only non-transparent pixels are considered
 // (rom) part of the clickable area
+// (p3) NB!!! This only works if TGraphic is a TBitmap! For PNG and JPG images, the result is that
+// the FPicture is cleared when "Assigned(Picture.Bitmap)" is called!
+// A (somewhat) better solution would be to replace the test with
+// "if Assigned(Picture) and (Picture.Graphic is TBitmap) and Transparent and"...
+// but then the PicEnter image will be assigned as soon as the mouse enters the component as no
+// transparency detection is possible (TGraphic doesn't have the necessary TransparentColor and Canvas.Pixels)
 
 procedure TJvImage.CMHitTest(var Msg: TCMHitTest);
 begin
@@ -249,13 +255,12 @@ procedure TJvImage.SetState(Value: TPicState);
   begin
     Result := (Value <> nil) and (Value.Width > 0) and (Value.Height > 0);
   end;
-
 begin
   case Value of
     stDefault:
-      if NotEmpty(FPicture) then
+      if NotEmpty(Picture) then
       begin
-        inherited Picture.Assign(FPicture);
+        inherited Picture.Assign(Picture);
         FState := Value;
       end;
     stEntered:
