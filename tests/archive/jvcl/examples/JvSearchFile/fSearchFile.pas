@@ -4,25 +4,25 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvListbox, JvCustomBox, JvDirectoryBox, JvSearchFile,
-  JvComponent, JvCtrls
-  //, JvCtrls
-  ;
+  StdCtrls, JvListbox, JvComponent, JvCtrls, JvSearchFiles, Mask, JvToolEdit;
 
 type
   TForm1 = class(TForm)
-    JvSearchFile1: TJvSearchFile;
+    JvSearchFile1: TJvSearchFiles;
     GroupBox1: TGroupBox;
-    JvDirectoryBox1: TJvDirectoryBox;
-    Button1: TButton;
+    JvDirectoryBox1: TJvDirectoryEdit;
+    btnSearch: TButton;
     Label1: TLabel;
-    CheckBox1: TCheckBox;
+    chkRecursive: TCheckBox;
     Label2: TLabel;
     Edit1: TEdit;
     GroupBox2: TGroupBox;
-    JvListBox1: TJvListBox;
-    procedure JvSearchFile1Found(Sender: TObject; Path: String);
-    procedure Button1Click(Sender: TObject);
+    lbFoundFiles: TJvListBox;
+    btnCancel: TButton;
+    procedure btnSearchClick(Sender: TObject);
+    procedure JvSearchFile1FindFile(Sender: TObject; const AName: string);
+    procedure btnCancelClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   private
     { Private declarations }
   public
@@ -36,17 +36,43 @@ implementation
 
 {$R *.DFM}
 
-procedure TForm1.JvSearchFile1Found(Sender: TObject; Path: String);
+procedure TForm1.btnSearchClick(Sender: TObject);
 begin
-  JvListBox1.Items.Add(Path);
+  btnSearch.Enabled := false;
+  btnCancel.Enabled := true;
+  Screen.Cursor := crHourGlass;
+  try
+    lbFoundFiles.Clear;
+    JvSearchFile1.FileParams.FileMasks.Text := Edit1.Text;
+    if chkRecursive.Checked then
+      JvSearchFile1.DirOption := doIncludeSubDirs
+    else
+      JvSearchFile1.DirOption := doExcludeInvalidDirs;
+    JvSearchFile1.RootDirectory := JvDirectoryBox1.EditText;
+    JvSearchFile1.Search;
+  finally
+    btnSearch.Enabled := true;
+    btnCancel.Enabled := false;
+    Screen.Cursor := crDefault;
+  end;
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.JvSearchFile1FindFile(Sender: TObject;
+  const AName: string);
 begin
-  JvListBox1.Clear;
-  JvSearchFile1.Mask := Edit1.Text;
-  JvSearchFile1.Recursive := CheckBox1.Checked;
-  JvSearchFile1.Execute(JvDirectoryBox1.Directory);
+  lbFoundFiles.Items.Add(AName);
+end;
+
+procedure TForm1.btnCancelClick(Sender: TObject);
+begin
+  JvSearchFile1.Abort;
+  btnCancel.Enabled := false;
+end;
+
+procedure TForm1.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  btnCancel.Click;
 end;
 
 end.
+

@@ -1,10 +1,9 @@
 object Form1: TForm1
-  Left = 196
-  Top = 197
-  BorderStyle = bsDialog
-  Caption = 'Form1'
-  ClientHeight = 275
-  ClientWidth = 324
+  Left = 372
+  Top = 182
+  Width = 328
+  Height = 376
+  Caption = 'JvSearchFiles Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,14 +12,22 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCloseQuery = FormCloseQuery
+  DesignSize = (
+    320
+    349)
   PixelsPerInch = 96
   TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 4
     Top = 6
-    Width = 309
+    Width = 305
     Height = 95
+    Anchors = [akLeft, akTop, akRight]
     TabOrder = 0
+    DesignSize = (
+      305
+      95)
     object Label1: TLabel
       Left = 10
       Top = 16
@@ -35,36 +42,17 @@ object Form1: TForm1
       Height = 13
       Caption = 'File Mask'
     end
-    object JvDirectoryBox1: TJvDirectoryBox
+    object JvDirectoryBox1: TJvDirectoryEdit
       Left = 62
       Top = 14
-      Width = 235
-      Height = 20
+      Width = 233
+      Height = 21
+      ButtonFlat = False
+      NumGlyphs = 1
+      Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
-      Edit.Font.Charset = DEFAULT_CHARSET
-      Edit.Font.Color = clWindowText
-      Edit.Font.Height = -11
-      Edit.Font.Name = 'MS Sans Serif'
-      Edit.Font.Style = []
-      Button.Flat = True
-      Button.Font.Charset = DEFAULT_CHARSET
-      Button.Font.Color = clWindowText
-      Button.Font.Height = -11
-      Button.Font.Name = 'MS Sans Serif'
-      Button.Font.Style = []
-      Button.Glyph.Data = {
-        F6000000424DF600000000000000760000002800000010000000100000000100
-        0400000000008000000000000000000000001000000010000000000000000000
-        BF0000BF000000BFBF00BF000000BF00BF00BFBF0000C0C0C000808080000000
-        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00777777777777
-        7777777777777777777777788888888888877700000000000088703838383838
-        380870F3B3B3B3B3B308703B3B3B3B3B380870F3B3B3B3B3B308703B3B3B3B3B
-        380870F3F3F3F3B3B308770000003B3B308777777770F3B38087777777703F3F
-        3077777777770000077777777777777777777777777777777777}
-      DialogOptions.Options = []
-      DialogOptions.HelpContext = 0
     end
-    object CheckBox1: TCheckBox
+    object chkRecursive: TCheckBox
       Left = 60
       Top = 64
       Width = 97
@@ -75,41 +63,63 @@ object Form1: TForm1
     object Edit1: TEdit
       Left = 62
       Top = 40
-      Width = 235
+      Width = 233
       Height = 21
+      Anchors = [akLeft, akTop, akRight]
       TabOrder = 2
       Text = '*.*'
     end
   end
-  object Button1: TButton
-    Left = 114
+  object btnSearch: TButton
+    Left = 10
     Top = 106
     Width = 75
     Height = 25
     Caption = 'Search'
     TabOrder = 1
-    OnClick = Button1Click
+    OnClick = btnSearchClick
   end
   object GroupBox2: TGroupBox
     Left = 4
     Top = 138
-    Width = 309
-    Height = 129
+    Width = 305
+    Height = 203
+    Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 2
-    object JvListBox1: TJvListBox
+    DesignSize = (
+      305
+      203)
+    object lbFoundFiles: TJvListBox
       Left = 8
       Top = 16
-      Width = 289
-      Height = 105
+      Width = 287
+      Height = 174
+      Anchors = [akLeft, akTop, akRight, akBottom]
       ItemHeight = 13
       TabOrder = 0
-      ScrollBars = ssNone
+      ScrollBars = ssVertical
     end
   end
-  object JvSearchFile1: TJvSearchFile
-    Mask = '*.exe'
-    OnFound = JvSearchFile1Found
-    Left = 12
-    Top = 68
+  object btnCancel: TButton
+    Left = 96
+    Top = 106
+    Width = 75
+    Height = 25
+    Cancel = True
+    Caption = 'Cancel'
+    Enabled = False
+    TabOrder = 3
+    OnClick = btnCancelClick
+  end
+  object JvSearchFile1: TJvSearchFiles
+    DirOption = doExcludeInvalidDirs
+    DirParams.LastChangeAfter = 29221
+    DirParams.LastChangeBefore = 29221
+    FileParams.SearchTypes = [stFileMask]
+    FileParams.LastChangeAfter = 29221
+    FileParams.LastChangeBefore = 29221
+    OnFindFile = JvSearchFile1FindFile
+    Left = 252
+    Top = 84
   end
 end
