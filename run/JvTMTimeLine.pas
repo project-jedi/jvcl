@@ -154,8 +154,8 @@ type
     procedure CursorChanged; override;
     procedure EnabledChanged; override;
     procedure Paint; override;
-    function DoMouseWheelDown(Shift: TShiftState; {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean; override;
-    function DoMouseWheelUp(Shift: TShiftState; {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean; override;
+    function DoMouseWheelDown(Shift: TShiftState; {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
+    function DoMouseWheelUp(Shift: TShiftState; {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -1311,7 +1311,7 @@ begin
 end;
 
 function TJvCustomTMTimeline.DoMouseWheelDown(Shift: TShiftState;
-  {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
@@ -1319,7 +1319,7 @@ begin
 end;
 
 function TJvCustomTMTimeline.DoMouseWheelUp(Shift: TShiftState;
-  {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX}const{$ENDIF} MousePos: TPoint): Boolean;
 begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then
