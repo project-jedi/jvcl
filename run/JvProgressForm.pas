@@ -217,7 +217,7 @@ end;
 
 procedure TfrmProgress.AddCaption;
 var
-  cw, ch: integer;
+  cw, ch: Integer;
 begin
   if BorderStyle <> fbsToolWindow then
   begin
@@ -231,7 +231,7 @@ end;
 
 procedure TfrmProgress.RemoveCaption;
 var
-  cw, ch: integer;
+  cw, ch: Integer;
 begin
   if BorderStyle <> fbsNone then
   begin
@@ -281,8 +281,8 @@ begin
     RemoveCaption
   else
     AddCaption;
-  if (imProgress.Picture = nil) or (imProgress.Picture.Graphic = nil)
-    or imProgress.Picture.Graphic.Empty then
+  if (imProgress.Picture = nil) or (imProgress.Picture.Graphic = nil) or
+    imProgress.Picture.Graphic.Empty then
     Offset := 12
   else
   begin
@@ -318,7 +318,8 @@ end;
 
 procedure TfrmProgress.Action1Execute(Sender: TObject);
 begin
-  if FCanClose then DoCancel;
+  if FCanClose then
+    DoCancel;
 end;
 
 end.

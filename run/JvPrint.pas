@@ -105,37 +105,31 @@ begin
     FOnBeginPrint(Self);
   case Style of
     bsNormal:
+      with Printer do
       begin
-        with Printer do
-        begin
-          BeginDoc;
-          Canvas.Draw(0, 0, Value);
-          EndDoc;
-        end;
+        BeginDoc;
+        Canvas.Draw(0, 0, Value);
+        EndDoc;
       end;
     bsCentered:
+      with Printer do
       begin
-        with Printer do
-        begin
-          BeginDoc;
-          Canvas.Draw((PageWidth - Value.Width) div 2, (PageHeight - Value.Height) div 2, Value);
-          EndDoc;
-        end;
+        BeginDoc;
+        Canvas.Draw((PageWidth - Value.Width) div 2, (PageHeight - Value.Height) div 2, Value);
+        EndDoc;
       end;
     bsStretched:
+      with Printer do
       begin
-        with Printer do
-        begin
-          BeginDoc;
-          {$IFDEF VCL}
-          CopyRectDIBits(Canvas, Rect(0, 0, PageWidth, PageHeight),
-            Value, Rect(0, 0, Value.Width, Value.Height));
-          {$ENDIF VCL}
-          {$IFDEF VisualCLX}
-          Canvas.StretchDraw(Rect(0, 0, PageWidth, PageHeight), Value);
-          {$ENDIF VisualCLX}
-          EndDoc;
-        end;
+        BeginDoc;
+        {$IFDEF VCL}
+        CopyRectDIBits(Canvas, Rect(0, 0, PageWidth, PageHeight),
+          Value, Rect(0, 0, Value.Width, Value.Height));
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        Canvas.StretchDraw(Rect(0, 0, PageWidth, PageHeight), Value);
+        {$ENDIF VisualCLX}
+        EndDoc;
       end;
   end;
   if Assigned(FOnFinishedPrint) then

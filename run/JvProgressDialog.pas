@@ -235,7 +235,7 @@ end;
 
 function TJvProgressDialog.Execute: Boolean;
 begin
-  Result := ShowModal <> mrCancel;
+  Result := IsPositiveResult(ShowModal);
 end;
 
 procedure TJvProgressDialog.SetPicture(const Value: TPicture);
