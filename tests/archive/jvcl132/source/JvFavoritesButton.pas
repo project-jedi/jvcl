@@ -29,12 +29,18 @@ Known Issues:
 unit JvFavoritesButton;
 
 {$OBJEXPORTALL On}
+{$IFDEF DELPHI6_UP}
+{$WARN UNIT_PLATFORM OFF}
+{$ENDIF}
+{$IFDEF LINUX}
+This unit is only supported on Windows!
+{$ENDIF}
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  StdCtrls, Menus, FileCtrl, Inifiles, ShellApi, imglist,
+  StdCtrls, Menus, Inifiles, ShellApi, imglist,
   JvTypes, JvButton, JvDirectories, JvFunctions;
 
 type
