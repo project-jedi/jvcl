@@ -168,7 +168,7 @@ Description
   No more than one balloon ToolTip at a time is displayed for the taskbar. If an application attempts
   to display a ToolTip when one is already being displayed, the ToolTip will not appear until the 
   existing balloon ToolTip has been visible for at least the system minimum timeout value. For example,
-  a balloon ToolTip with Delay set to 30 seconds has been visible for seven seconds when another
+  a balloon ToolTip with \Delay set to 30 seconds has been visible for seven seconds when another
   application attempts to display a balloon ToolTip. If the system minimum timeout is ten seconds,
   the first ToolTip displays for an additional three seconds before being replaced by the second ToolTip.
 
@@ -183,7 +183,7 @@ Parameters
   BalloonType - Flags that can be set to add an icon to the balloon ToolTip. It is placed to the left
                 of the title. If Title is an empty string, the icon is not shown. 
   Delay       - The timeout value, in milliseconds, for a balloon ToolTip. The system enforces minimum 
-                and maximum timeout values. Delay values that are too large are set to the maximum
+                and maximum timeout values. \Delay values that are too large are set to the maximum
                 value and values that are too small default to the minimum value. The system minimum
                 and maximum timeout values are currently set at 10 seconds and 30 seconds, respectively.
 See Also
