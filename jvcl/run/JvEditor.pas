@@ -188,8 +188,8 @@ Known Issues:
     - fixed bug: in readonly mode [Return] does nothing
     - added BlockOverwrite property
     - added PeristentBlocks
-  2.10.4 (changed by peter3, andreas)
-    - fixed bug where pressing Enter/Return while the completition list is open inserts a line break (andreas)
+  2.10.4 (changed by peter3, Andreas Hausladen)
+    - fixed bug where pressing Enter/Return while the completion list is open inserts a line break (andreas)
     - fixed GetNextWordPosEx (andreas)
     - added default popupmenu if none assigned (JvFixedEditPopup)
     - added handling of WM_CLEAR, WM_GETTEXTLENGTH, EM_SETREADONLY, EM_SETSEL, EM_GETSEL and EM_CANUNDO
@@ -6372,12 +6372,11 @@ begin
       Break
     else
       Inc(iEnd);
-  Dec(iEnd);                                 // <-- missing line
+  Dec(iEnd);                                 
   if iEnd >= iBeg then
     Result := Copy(Text, iBeg, iEnd - iBeg)
   else
     Result := Text[StartIndex];
-end;
 
  // go right
   iEnd := iBeg;
