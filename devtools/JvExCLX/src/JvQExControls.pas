@@ -34,13 +34,12 @@ interface
 
 uses
   Classes, SysUtils,
-  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QMask, QClipbrd,
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QMask, QClipbrd, TypInfo,
   Qt, QWindows, QMessages,
   JvQTypes, JvQThemes, JVCLXVer;
 
 type
   HWND = QWindows.HWND;
-  TClxWindowProc = procedure(var Msg: TMessage) of object;
 
   { Add IJvDenySubClassing to the base class list if the control should not
     be themed by the ThemeManager (www.delphi-gems.de).
@@ -69,8 +68,8 @@ type
   private
     FText: TCaption; { TControl does not save the Caption property }
   protected
+    procedure PaintRequest; override;
     function GetText: TCaption; override;
-    procedure ColorChanged; override;
     procedure SetText(const Value: TCaption); override;
   public
     function ColorToRGB(Value: TColor): TColor;
@@ -80,8 +79,10 @@ type
   JV_WINCONTROL(FrameControl)
   JV_CUSTOMCONTROL(HintWindow)
 
+function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
 function GetCanvas(Instance: TWinControl): TCanvas;
 function GetHintColor(Instance: TWinControl): TColor;
+function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
 function IsDoubleBuffered(Instance: TWinControl): Boolean;
 function IsPaintingCopy(Instance: TWinControl): Boolean;
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
@@ -92,8 +93,6 @@ var
 
 implementation
 
-uses
-  TypInfo;
 
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
 begin
@@ -105,7 +104,7 @@ var
   PI: PPropInfo;
 begin
   Result := nil;
-  if Assigned(Instance) do
+  if Assigned(Instance) then
   begin
     PI := GetPropInfo(Instance, 'Canvas');
     if PI <> nil then
@@ -118,7 +117,7 @@ var
   PI: PPropInfo;
 begin
   Result := True;
-  if Assigned(Instance) do
+  if Assigned(Instance) then
   begin
     PI := GetPropInfo(Instance, 'DoubleBuffered');
     if PI <> nil then
@@ -130,8 +129,8 @@ function GetHintColor(Instance: TWinControl): TColor;
 var
   PI: PPropInfo;
 begin
-  Result := clDefaultColor;
-  while (Result = clDefaultColor) and Assigned(Instance) do
+  Result := clDefault;
+  while (Result = clDefault) and Assigned(Instance) do
   begin
     PI := GetPropInfo(Instance, 'HintColor');
     if PI <> nil then
@@ -139,7 +138,7 @@ begin
     Instance := Instance.Parent;
   end;
   case Result of
-  clNone, clDefaultColor: Result := Application.HintColor;
+  clNone, clDefault: Result := Application.HintColor;
   end;
 end;
 
@@ -153,6 +152,45 @@ begin
   end;
 end;
 
+function DoClipBoardCommands(Msg: Integer; ClipBoardCommands: TJvClipBoardCommands): Boolean;
+begin
+  case Msg of
+    WM_COPY          : Result := caCopy in ClipBoardCommands;
+    WM_CUT           : Result := caCut in ClipBoardCommands;
+    WM_PASTE         : Result := caPaste in ClipBoardCommands;
+    WM_UNDO          : Result := caUndo in ClipBoardCommands;
+  else
+    Result := False;
+  end;
+end;
+
+function GetFocusedWnd(Instance: TWidgetControl): QWidgetH;
+var
+  Form: TCustomForm;
+begin
+  Result := nil;
+  Form := GetParentForm(Instance);
+  if Assigned(Form) and Assigned(Form.FocusedControl) then
+    Result := Form.FocusedControl.Handle ;
+end;
+
+function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
+begin
+  Result := 0;
+  if ikAll in InputKeys then
+    inc(Result, DLGC_WANTALLKEYS);
+  if ikArrows in InputKeys then
+    inc(Result, DLGC_WANTARROWS);
+  if ikChars in InputKeys then
+    inc(Result, DLGC_WANTCHARS);
+  if ikEdit in InputKeys then
+    inc(Result, DLGC_HASSETSEL);
+  if ikTabs in InputKeys then
+    inc(Result, DLGC_WANTTAB);
+  if ikButton in InputKeys then
+    inc(Result, DLGC_BUTTON);
+end;
+
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
 var
   PixMap: QPixmapH;
@@ -163,12 +201,10 @@ begin
       ControlState := ControlState + [csPaintCopy];
       QPixmap_grabWidget(PixMap, Handle, 0, 0, Width, Height);
       Qt.BitBlt(PaintDevice, X, Y, PixMap, 0, 0, Width, Height, RasterOp_CopyROP, True);
-    end;
     finally
       ControlState := ControlState - [csPaintCopy];
       QPixMap_destroy(PixMap);
     end;
-  end;
 end;
 
 type
@@ -176,9 +212,9 @@ type
   private
     FHook: QObject_hookH;
   protected
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
   public
-    constructor Create(AOwner: ; override
+    constructor Create(AOwner: TComponent) ; override;
     destructor Destroy; override;
   end;
 
@@ -198,67 +234,108 @@ begin
   inherited Destroy;
 end;
 
-function TJvCLXFilters.EventFilter(Instance: TWidgetControl; Event: QEventH): Boolean;
+{
+  - Handles Qt Events
+}
+function TJvCLXFilters.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
 var
   PixMap: QPixmapH;
-  WinTimer: TWinTimer;
   Mesg: TMessage;
   R: TRect;
   Canvas: TCanvas;
-begin
-  with Instance do case QEvent_type(Event) of
+  Instance: TWidgetControl;
 
-  QEventType_Paint:
+  procedure DoInternalFontChanged;
+  var
+    PI: PPropInfo;
+    IntFontChanged: TNotifyEvent;
   begin
-    with Event as QPaintEventH do
-    begin
-      if (csDestroying in ComponentState) or
-        ([csCreating, csRecreating]* Instance.ControlState <> []) then
-      begin
-        Result := True;
-        Exit;
-      end;
 
-      if not (csWidgetPainting in ControlState) then
-        if not IsPaintingCopy(Instance) then
-        begin
-          QRegion_boundingRect(QPaintEvent_region(Event), @R);
-          Pixmap := QPixmap_create ;
-          try
-            ControlState := ControlState + [csPaintCopy];
-            QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top,
-              R.Right - R.Left, R.Bottom - R.Top);
-            Qt.BitBlt(QWidget_to_QPaintDevice(Handle), R.Left, R.Top, PixMap,
-                   0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
-            Result := True;
-          finally
-            ControlState := ControlState - [csPaintCopy];
-            QPixMap_destroy(PixMap);
-          end;
-        end
-      else
+    PI := GetPropInfo(Instance, 'InternalFontChanged', [tkMethod]);
+    if PI <> nil then
+    begin
+      //// TODO
+      IntFontChanged := TNotifyEvent(GetMethodProp(Instance, PI).Data);
+      IntFontChanged(Instance);
+    end;
+  end;
+
+begin
+  Instance := FindControl(QWidgetH(Receiver));
+  if not Assigned(Instance) then
+    Exit;
+  with Instance do
+    case QEvent_type(Event) of
+
+    QEventType_ApplicationPaletteChange : PostMessage(Instance, CM_SYSCOLORCHANGE, 0, 0);
+    QEventType_ApplicationFontChange    : PostMessage(Instance, CM_SYSFONTCHANGED, 0, 0);
+    QEventType_Enter                    : Perform(Instance, CM_MOUSEENTER, 0, 0);
+    QEventType_Leave                    : Perform(Instance, CM_MOUSELEAVE, 0, 0);
+
+    QEventType_Message:
+    begin
+      Mesg := TMessage(QCustomEvent_data(QCustomEventH(Event))^);
+      if Mesg.Msg = CM_FONTCHANGED then
       begin
-        { csWidgetPainting / Paintbackground }
-        Mesg.Msg := WM_ERASEBKGND;
-        Canvas := GetCanvas(Instance);
-        try
-          if Assigned(Canvas) then
-          begin
-            Canvas.Start;
-            Mesg.DC := Canvas.Handle;
-          end
-          else
-            Mesg.WParam := 0;
-          Mesg.LParam := 0;
-          Mesg.Handled := False;
-          Dispatch(Mesg);
-        finally
-          if Assigned(Canvas) then
-            Canvas.Stop;
-        end;
-        Result := Mesg.Handled;
+        DoInternalFontChanged;
       end;
-    end;  // with Event as QPaintEventH
+    end;
+
+    QEventType_Paint:
+    begin
+      with Event as QPaintEventH do
+      begin
+        if (csDestroying in ComponentState) or
+          ([csCreating, csRecreating]* Instance.ControlState <> []) then
+        begin
+          Result := True;
+          Exit;
+        end;
+
+        if not (csWidgetPainting in ControlState) then
+          if not IsPaintingCopy(Instance) then
+          begin
+            QRegion_boundingRect(QPaintEvent_region(QPaintEventH(Event)), @R);
+            Pixmap := QPixmap_create ;
+            try
+              ControlState := ControlState + [csPaintCopy];
+              QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top,
+                R.Right - R.Left, R.Bottom - R.Top);
+              Qt.BitBlt(QWidget_to_QPaintDevice(Handle), R.Left, R.Top, PixMap,
+                   0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
+              Result := True;
+            finally
+              ControlState := ControlState - [csPaintCopy];
+              QPixMap_destroy(PixMap);
+            end;
+          end
+        else
+        begin
+        { csWidgetPainting / Paintbackground }
+          with TJvMessage(Mesg) do
+          begin
+            Msg := WM_ERASEBKGND;
+            Canvas := GetCanvas(Instance);
+            try
+              if Assigned(Canvas) then
+              begin
+                Canvas.Start;
+                DC := Canvas.Handle;
+              end
+              else
+                WParam := 0;
+              LParam := 0;
+              Handled := False;
+              Dispatch(Mesg);
+            finally
+              if Assigned(Canvas) then
+                Canvas.Stop;
+            end;
+          end;
+          Result := Mesg.Result <> 0 ;
+        end;
+      end;  // with Event as QPaintEventH
+    end;
   end;
 end;
 
@@ -268,12 +345,6 @@ JV_CUSTOMCONTROL_IMPL(CustomControl)
 JV_WINCONTROL_IMPL(FrameControl)
 JV_CUSTOMCONTROL_IMPL(HintWindow)
 JV_CONTROL_IMPL(GraphicControl)
-
-procedure TJvEx##ClassName.ColorChanged;
-begin
-  inherited ColorChanged;
-  Canvas.Brush.Color := Color;
-end;
 
 function TJvExGraphicControl.GetText: TCaption;
 begin
@@ -298,7 +369,7 @@ begin
     Canvas.Brush.Color := Color;
     Canvas.Brush.Style := bsSolid;
     Canvas.Font.Assign(Font);
-    RequiredState(Canvas, [csHandleNeeded, csFontValid, csBrushValid]);
+    RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
     inherited PaintRequest;
   finally
     Canvas.Stop;
