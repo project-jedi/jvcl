@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvDotNetCtrls" Design="-1">
+  <Description>JVCL DotNet Controls</Description>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <Requires>
+    <Package Name="rtl" Targets="C6,D6,D7" Condition=""/>
+    <Package Name="JvDotNetCtrls-R" Targets="all" Condition=""/>
+    <Package Name="vcl50" Targets="all" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\design\JvDotNetCtrlsReg.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
+</Package>

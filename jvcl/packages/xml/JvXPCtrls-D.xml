@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvXPCtrls" Design="-1">
+  <Description>JVCL XP Controls</Description>
+  <C5PFlags/>
+  <C6PFlags/>
+  <C5Libs/>
+  <C6Libs/>
+  <Requires>
+    <Package Name="JvXPCtrls-R" Targets="all" Condition=""/>
+    <Package Name="rtl" Targets="all" Condition=""/>
+    <Package Name="vcl" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="all" Condition=""/>
+    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
+  </Requires>
+  <Contains/>
+</Package>
