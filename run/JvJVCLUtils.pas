@@ -236,12 +236,12 @@ type
 procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
   EndColor: TColor; Direction: TFillDirection; Colors: Byte);
   
-const
-  WaitCursor: TCursor = crHourGlass;
 
 procedure StartWait;
 procedure StopWait;
 function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
+function WaitCursor:IInterface;
+function ChangeCursor(ACursor:TCursor):IInterface;
 
 {$IFDEF COMPLIB_VCL}
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
@@ -619,7 +619,29 @@ const
   RC_WallpaperRegistry = 'Wallpaper';
   RC_TileWallpaper = 'TileWallpaper';
   RC_RunCpl = 'rundll32.exe shell32,Control_RunDLL ';
-  
+
+type
+  TWaitCursor = class(TInterfacedObject, IInterface)
+  private
+    FCUrsor:TCursor;
+  public
+    constructor Create(ACursor:TCursor);
+    destructor Destroy;override;
+  end;
+
+constructor TWaitCursor.Create(ACursor: TCursor);
+begin
+  inherited Create;
+  FCursor := Screen.Cursor;
+  Screen.Cursor := ACursor;
+end;
+
+destructor TWaitCursor.Destroy;
+begin
+  Screen.Cursor := FCursor;
+  inherited;
+end;
+
 {$IFDEF MSWINDOWS}
 {$IFDEF COMPLIB_VCL}
 function IconToBitmap(Ico: HICON): TBitmap;
@@ -2492,7 +2514,7 @@ begin
 {$IFDEF COMPLIB_VCL}
   if Handle = 0 then
     Handle := LoadAniCursor(Instance, ResID);
-{$ENDIF}    
+{$ENDIF}
   if Integer(Handle) = 0 then
     ResourceNotFound(ResID);
   for Result := 100 to High(TCursor) do { Look for an unassigned cursor index }
@@ -2512,12 +2534,15 @@ var
   WaitCount: Integer = 0;
   SaveCursor: TCursor = crDefault;
 
+const
+  FWaitCursor: TCursor = crHourGlass;
+
 procedure StartWait;
 begin
   if WaitCount = 0 then
   begin
     SaveCursor := Screen.Cursor;
-    Screen.Cursor := WaitCursor;
+    Screen.Cursor := FWaitCursor;
   end;
   Inc(WaitCount);
 end;
@@ -2530,6 +2555,16 @@ begin
     if WaitCount = 0 then
       Screen.Cursor := SaveCursor;
   end;
+end;
+
+function WaitCursor:IInterface;
+begin
+  Result := ChangeCursor(crHourGlass);
+end;
+
+function ChangeCursor(ACursor:TCursor):IInterface;
+begin
+  Result := TWaitCursor.Create(ACursor);
 end;
 
 { Grid drawing }
@@ -5897,6 +5932,9 @@ begin
   Result.cy := 12;
 {$ENDIF}
 end;
+
+{ TWaitCursor }
+
 
 initialization
   { begin JvGraph }
