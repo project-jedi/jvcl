@@ -53,7 +53,7 @@ uses
 
 {$IFDEF VisualCLX}
 function Icon2Bitmap(Ico: TIcon): TBitmap;
-function Bitmap2Icon(bmp: TBitmap): TIcon;
+function Bitmap2Icon(Bmp: TBitmap): TIcon;
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
@@ -245,16 +245,16 @@ procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
   const Text: string; Alignment: TAlignment; WordWrap: Boolean; ARightToLeft:
   Boolean = False);
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
+  const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment); overload;
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
+  const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; WordWrap: Boolean); overload;
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
+  const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; ARightToLeft: Boolean); overload;
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
+  const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; WordWrap: Boolean; ARightToLeft: Boolean);
 overload;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
@@ -340,23 +340,20 @@ procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList;
 
 { Works like InputQuery but displays 2 edits. If PasswordChar <> #0, the second edit's PasswordChar is set }
 function DualInputQuery(const ACaption, Prompt1, Prompt2: string;
-  var AValue1, AValue2: string; PasswordChar: char = #0): Boolean;
+  var AValue1, AValue2: string; PasswordChar: Char = #0): Boolean;
 
 { Works like InputQuery but set the edit's PasswordChar to PasswordChar. If PasswordChar = #0, works exactly like InputQuery }
-function InputQueryPassword(const ACaption, APrompt: string; PasswordChar: char; var Value: string): Boolean;
+function InputQueryPassword(const ACaption, APrompt: string; PasswordChar: Char; var Value: string): Boolean;
 {$ENDIF VCL}
 
 { returns the sum of pc.Left, pc.Width and piSpace}
 function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
 { sets the top of pc to be in the middle of pcParent }
 procedure CenterHeight(const pc, pcParent: TControl);
-procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
-  TControl);
+procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of TControl);
 procedure EnableControls(Control: TWinControl; const Enable: Boolean);
-procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable:
-  Boolean);
-procedure ExpandWidth(Parent: TControl; MinWidth: Integer; Controls: array of
-  TControl);
+procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable: Boolean);
+procedure ExpandWidth(Parent: TControl; MinWidth: Integer; Controls: array of TControl);
 function PanelBorder(Panel: TCustomPanel): Integer;
 function Pixels(Control: TControl; APixels: Integer): Integer;
 
@@ -485,11 +482,10 @@ function ScreenColorCount: Integer;
 
 var
   DefaultMappingMethod: TMappingMethod = mmHistogram;
-  {$ENDIF VCL}
+{$ENDIF VCL}
 
 procedure TileImage(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
-function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean):
-  TPoint;
+function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean): TPoint;
 
 type
   TJvGradientOptions = class(TPersistent)
@@ -512,11 +508,9 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure Draw(Canvas: TCanvas; Rect: TRect);
   published
-    property Direction: TFillDirection read FDirection write SetDirection default
-      fdTopToBottom;
+    property Direction: TFillDirection read FDirection write SetDirection default fdTopToBottom;
     property EndColor: TColor read FEndColor write SetEndColor default clGray;
-    property StartColor: TColor read FStartColor write SetStartColor default
-      clSilver;
+    property StartColor: TColor read FStartColor write SetStartColor default clSilver;
     property StepCount: Byte read FStepCount write SetStepCount default 64;
     property Visible: Boolean read FVisible write SetVisible default False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -599,10 +593,11 @@ type
   TJvLVItemStateData = record
     Caption: string;
     Data: Pointer;
-    Focused, Selected: Boolean;
+    Focused: Boolean;
+    Selected: Boolean;
   end;
 
-  { listview functions }
+{ listview functions }
 function ConvertStates(const State: Integer): TItemStates;
 
 function ChangeHasDeselect(const peOld, peNew: TItemStates): Boolean;
@@ -616,8 +611,7 @@ function GetListItemColumn(const pcItem: TListItem; piIndex: Integer): string;
 procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean = False; Headers: Boolean = True);
 
-function JvListViewSafeSubItemString(Item: TListItem; SubItemIndex: Integer):
-  string;
+function JvListViewSafeSubItemString(Item: TListItem; SubItemIndex: Integer): string;
 
 procedure JvListViewSortClick(Column: TListColumn;
   AscendingSortImage: Integer = -1; DescendingSortImage: Integer = -1);
@@ -685,7 +679,7 @@ function StripAllFromResult(const Value: TModalResult): TModalResult;
 // returns either BrightColor or DarkColor depending on the luminance of AColor
 // This function gives the same result (AFAIK) as the function used in Windows to
 // calculate the desktop icon text color based on the desktop background color
-function SelectColorByLuminance(AColor, DarkColor, BrightColor:TColor):TColor;
+function SelectColorByLuminance(AColor, DarkColor, BrightColor: TColor): TColor;
 
 implementation
 
@@ -734,7 +728,7 @@ end;
 type
   TWaitCursor = class(TInterfacedObject, IInterface)
   private
-    FCUrsor: TCursor;
+    FCursor: TCursor;
   public
     constructor Create(ACursor: TCursor);
     destructor Destroy; override;
@@ -743,13 +737,13 @@ type
 constructor TWaitCursor.Create(ACursor: TCursor);
 begin
   inherited Create;
-  FCUrsor := Screen.Cursor;
+  FCursor := Screen.Cursor;
   Screen.Cursor := ACursor;
 end;
 
 destructor TWaitCursor.Destroy;
 begin
-  Screen.Cursor := FCUrsor;
+  Screen.Cursor := FCursor;
   inherited Destroy;
 end;
 
@@ -763,10 +757,10 @@ begin
   TIconAccessProtected(Ico).AssignTo(Result);
 end;
 
-function Bitmap2Icon(bmp: TBitmap): TIcon;
+function Bitmap2Icon(Bmp: TBitmap): TIcon;
 begin
   Result := TIcon.Create;
-  Result.Assign(bmp);
+  Result.Assign(Bmp);
 end;
 {$ENDIF VisualCLX}
 
@@ -822,7 +816,7 @@ begin
     Result.Width := Icon.Width;
     Result.Height := Icon.Height;
     Result.PixelFormat := pf24bit;
-    // fill the bitmap with the transparant color
+    // fill the bitmap with the transparent color
     Result.Canvas.Brush.Color := TransparentColor;
     Result.Canvas.FillRect(Rect(0, 0, Result.Width, Result.Height));
     Result.Canvas.Draw(0, 0, Icon);
@@ -905,7 +899,7 @@ function CaptureScreen(Rec: TRect): TBitmap;
 const
   NumColors = 256;
 var
-  r: TRect;
+  R: TRect;
   C: TCanvas;
   LP: PLogPalette;
   TmpPalette: HPALETTE;
@@ -914,12 +908,12 @@ begin
   Result := TBitmap.Create;
   Result.Width := Rec.Right - Rec.Left;
   Result.Height := Rec.Bottom - Rec.Top;
-  r := Rec;
+  R := Rec;
   C := TCanvas.Create;
   try
     C.Handle := GetDC(HWND_DESKTOP);
     Result.Canvas.CopyRect(Rect(0, 0, Rec.Right - Rec.Left, Rec.Bottom -
-      Rec.Top), C, r);
+      Rec.Top), C, R);
     Size := SizeOf(TLogPalette) + (Pred(NumColors) * SizeOf(TPaletteEntry));
     LP := AllocMem(Size);
     try
@@ -940,27 +934,27 @@ end;
 
 function CaptureScreen(IncludeTaskBar: Boolean): TBitmap;
 var
-  r: TRect;
+  R: TRect;
 begin
   if IncludeTaskBar then
-    r := Rect(0, 0, Screen.Width, Screen.Height)
+    R := Rect(0, 0, Screen.Width, Screen.Height)
   else
-    SystemParametersInfo(SPI_GETWORKAREA, 0, Pointer(@r), 0);
-  Result := CaptureScreen(r);
+    SystemParametersInfo(SPI_GETWORKAREA, 0, Pointer(@R), 0);
+  Result := CaptureScreen(R);
 end;
 
 function CaptureScreen(WndHandle: Longword): TBitmap;
 var
-  r: TRect;
+  R: TRect;
   WP: TWindowPlacement;
 begin
-  if GetWindowRect(WndHandle, r) then
+  if GetWindowRect(WndHandle, R) then
   begin
     GetWindowPlacement(WndHandle, @WP);
     if IsIconic(WndHandle) then
       ShowWindow(WndHandle, SW_RESTORE);
     BringWindowToTop(WndHandle);
-    Result := CaptureScreen(r);
+    Result := CaptureScreen(R);
     SetWindowPlacement(WndHandle, @WP);
   end
   else
@@ -973,8 +967,7 @@ end;
 
 procedure SetWallpaper(const Path: string);
 begin
-  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path),
-    SPIF_UPDATEINIFILE);
+  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
 end;
 
 procedure SetWallpaper(const Path: string; Style: TJvWallpaperStyle);
@@ -1156,11 +1149,11 @@ end;
 procedure HideFormCaption(FormHandle: HWND; Hide: Boolean);
 begin
   if Hide then
-    SetWindowLong(FormHandle, GWL_STYLE, GetWindowLong(FormHandle, GWL_STYLE) and
-      not WS_CAPTION)
+    SetWindowLong(FormHandle, GWL_STYLE,
+      GetWindowLong(FormHandle, GWL_STYLE) and not WS_CAPTION)
   else
-    SetWindowLong(FormHandle, GWL_STYLE, GetWindowLong(FormHandle, GWL_STYLE) or
-      WS_CAPTION);
+    SetWindowLong(FormHandle, GWL_STYLE,
+      GetWindowLong(FormHandle, GWL_STYLE) or WS_CAPTION);
 end;
 {$ENDIF VCL}
 
@@ -1169,7 +1162,7 @@ end;
 function Execute(const CommandLine, WorkingDirectory: string): Integer;
 {$IFDEF MSWINDOWS}
 var
-  r: Boolean;
+  R: Boolean;
   ProcessInformation: TProcessInformation;
   StartupInfo: TStartupInfo;
   ExCode: Cardinal;
@@ -1182,7 +1175,7 @@ begin
     dwFlags := STARTF_USESHOWWINDOW;
     wShowWindow := SW_SHOW;
   end;
-  r := CreateProcess(
+  R := CreateProcess(
     nil, // Pointer to name of executable module
     PChar(CommandLine), // Pointer to command line string
     nil, // Pointer to process security attributes
@@ -1193,7 +1186,7 @@ begin
     PChar(WorkingDirectory), // Pointer to current directory name
     StartupInfo, // Pointer to STARTUPINFO
     ProcessInformation); // Pointer to PROCESS_INFORMATION
-  if r then
+  if R then
     while (GetExitCodeProcess(ProcessInformation.hProcess, ExCode) and
       (ExCode = STILL_ACTIVE)) do
       Application.ProcessMessages
@@ -1257,9 +1250,9 @@ type
     dwHelpContext: DWORD;
     lData: Longint;
     HICON: HICON;
-    szName: array[0..31] of AnsiChar;
-    szInfo: array[0..63] of AnsiChar;
-    szHelpFile: array[0..127] of AnsiChar;
+    szName: array [0..31] of AnsiChar;
+    szInfo: array [0..63] of AnsiChar;
+    szHelpFile: array [0..127] of AnsiChar;
   end;
   TNewCPLInfoW = packed record
     dwSize: DWORD;
@@ -1267,9 +1260,9 @@ type
     dwHelpContext: DWORD;
     lData: Longint;
     HICON: HICON;
-    szName: array[0..31] of WideChar;
-    szInfo: array[0..63] of WideChar;
-    szHelpFile: array[0..127] of WideChar;
+    szName: array [0..31] of WideChar;
+    szInfo: array [0..63] of WideChar;
+    szHelpFile: array [0..127] of WideChar;
   end;
 
 function GetControlPanelApplet(const AFileName: string; Strings: TStrings;
@@ -1280,7 +1273,7 @@ var
   CplCall: TCPLApplet; // Pointer to CPlApplet() function
   I: Longint;
   TmpCount, Count: Longint;
-  s: WideString;
+  S: WideString;
   // the three types of information that can be returned
   CPLInfo: TCPLInfo;
   InfoW: TNewCPLInfoW;
@@ -1306,12 +1299,12 @@ begin
         FillChar(InfoW, SizeOf(InfoW), 0);
         FillChar(InfoA, SizeOf(InfoA), 0);
         FillChar(CPLInfo, SizeOf(CPLInfo), 0);
-        s := '';
+        S := '';
         CplCall(HWND, CPL_NEWINQUIRE, I, Longint(@InfoW));
         if InfoW.dwSize = SizeOf(InfoW) then
         begin
           hIco := InfoW.HICON;
-          s := WideString(InfoW.szName);
+          S := WideString(InfoW.szName);
         end
         else
         begin
@@ -1319,7 +1312,7 @@ begin
           begin
             Move(InfoW, InfoA, SizeOf(InfoA));
             hIco := CopyIcon(InfoA.HICON);
-            s := string(InfoA.szName);
+            S := string(InfoA.szName);
           end
           else
           begin
@@ -1328,20 +1321,20 @@ begin
               SizeOf(InfoA.szName));
             hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16,
               LR_DEFAULTCOLOR);
-            s := string(InfoA.szName);
+            S := string(InfoA.szName);
           end;
         end;
-        if s <> '' then
+        if S <> '' then
         begin
-          s := Format('%s=%s,@%d', [s, AFileName, I]);
+          S := Format('%s=%s,@%d', [S, AFileName, I]);
           if Images <> nil then
           begin
             hIco := CopyIcon(hIco);
             ImageList_AddIcon(Images.Handle, hIco);
-            Strings.AddObject(s, TObject(Images.Count - 1));
+            Strings.AddObject(S, TObject(Images.Count - 1));
           end
           else
-            Strings.AddObject(s, IconToBitmap2(hIco, 16, clMenu));
+            Strings.AddObject(S, IconToBitmap2(hIco, 16, clMenu));
           // (p3) not sure this is really needed...
           // DestroyIcon(hIco);
         end;
@@ -1407,9 +1400,9 @@ end;
 
 { compiled from ComCtrls.pas's implmentation section }
 
-function HasFlag(a, b: Integer): Boolean;
+function HasFlag(A, B: Integer): Boolean;
 begin
-  Result := (a and b) <> 0;
+  Result := (A and B) <> 0;
 end;
 
 function ConvertStates(const State: Integer): TItemStates;
@@ -1533,7 +1526,7 @@ procedure CopyParentImage(Control: TControl; Dest: TCanvas);
 var
   I, Count, X, Y, SaveIndex: Integer;
   DC: HDC;
-  r, SelfR, CtlR: TRect;
+  R, SelfR, CtlR: TRect;
 begin
   if (Control = nil) or (Control.Parent = nil) then
     Exit;
@@ -1574,7 +1567,7 @@ begin
         with TGraphicControl(Control.Parent.Controls[I]) do
         begin
           CtlR := Bounds(Left, Top, Width, Height);
-          if IntersectRect(r, SelfR, CtlR) and Visible then
+          if IntersectRect(R, SelfR, CtlR) and Visible then
           begin
             ControlState := ControlState + [csPaintCopy];
             SaveIndex := SaveDC(DC);
@@ -1615,7 +1608,7 @@ begin
       {$IFDEF VCL}
       Result.Handle := LoadBitmap(Module, ResID);
       if Result.Handle = 0 then
-        {$ENDIF VCL}
+      {$ENDIF VCL}
         ResourceNotFound(ResID);
     end;
   except
@@ -1842,7 +1835,7 @@ end;
 procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 var
-  BM: tagBitmap;
+  BM: tagBITMAP;
 begin
   GetObject(Bitmap, SizeOf(BM), @BM);
   DrawTransparentBitmapRect(DC, Bitmap, DstX, DstY, BM.bmWidth, BM.bmHeight,
@@ -1946,23 +1939,23 @@ function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor):
   TBitmap;
 var
   MonoBmp: TBitmap;
-  r: TRect;
+  R: TRect;
   DestDC, SrcDC: HDC;
 begin
-  r := Rect(0, 0, FOriginal.Width, FOriginal.Height);
+  R := Rect(0, 0, FOriginal.Width, FOriginal.Height);
   Result := TBitmap.Create;
   try
     Result.Width := FOriginal.Width;
     Result.Height := FOriginal.Height;
     Result.Canvas.Brush.Color := BackColor;
-    Result.Canvas.FillRect(r);
+    Result.Canvas.FillRect(R);
 
     MonoBmp := TBitmap.Create;
     try
       MonoBmp.Width := FOriginal.Width;
       MonoBmp.Height := FOriginal.Height;
       MonoBmp.Canvas.Brush.Color := clWhite;
-      MonoBmp.Canvas.FillRect(r);
+      MonoBmp.Canvas.FillRect(R);
       DrawBitmapTransparent(MonoBmp.Canvas, 0, 0, FOriginal, BackColor);
       MonoBmp.Monochrome := True;
 
@@ -2070,7 +2063,7 @@ end;
 
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
 var
-  r: TRect;
+  R: TRect;
 begin
   Result := TBitmap.Create;
   try
@@ -2078,11 +2071,11 @@ begin
     begin
       Height := Bitmap.Height;
       Width := Bitmap.Width;
-      r := Bounds(0, 0, Width, Height);
+      R := Bounds(0, 0, Width, Height);
       Canvas.Brush.Color := NewColor;
-      Canvas.FillRect(r);
+      Canvas.FillRect(R);
       {$IFDEF VCL}
-      Canvas.BrushCopy(r, Bitmap, r, Color);
+      Canvas.BrushCopy(R, Bitmap, R, Color);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
       DrawBitmapTransparent(Canvas, 0, 0, Bitmap, Color);
@@ -2221,7 +2214,7 @@ function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 {$IFDEF VisualCLX}
 var
   Bmp: TBitmap;
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
 begin
   with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
@@ -2262,12 +2255,12 @@ type
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
   DC: Windows.HDC;
-  r: TRect;
+  R: TRect;
 begin
   DC := Windows.GetDC(0);
   try
-    r := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
-    Windows.InvertRect(DC, r);
+    R := Rect(RectOrg.X, RectOrg.Y, RectEnd.X, RectEnd.Y);
+    Windows.InvertRect(DC, R);
   finally
     Windows.ReleaseDC(0, DC);
   end;
@@ -2296,7 +2289,7 @@ function PointInPolyRgn(const P: TPoint; const Points: array of TPoint):
   Boolean;
 type
   PPoints = ^TPoints;
-  TPoints = array[0..0] of TPoint;
+  TPoints = array [0..0] of TPoint;
 var
   Rgn: HRGN;
 begin
@@ -2333,7 +2326,7 @@ begin
     lfItalic := Ord(fsItalic in Font.Style);
     lfUnderline := Ord(fsUnderline in Font.Style);
     lfStrikeOut := Byte(fsStrikeOut in Font.Style);
-    lfCharSet := Byte(Font.CharSet);
+    lfCharSet := Byte(Font.Charset);
     if AnsiCompareText(Font.Name, 'Default') = 0 then
       StrPCopy(lfFaceName, DefFontData.Name)
     else
@@ -2415,7 +2408,7 @@ end;
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
 var
-  r: TRect;
+  R: TRect;
   AutoScroll: Boolean;
 begin
   AutoScroll := AForm.AutoScroll;
@@ -2438,8 +2431,8 @@ begin
       AForm.Align := Align
     else
     begin
-      r := AControl.ClientRect;
-      AForm.SetBounds(r.Left + AForm.Left, r.Top + AForm.Top, AForm.Width,
+      R := AControl.ClientRect;
+      AForm.SetBounds(R.Left + AForm.Left, R.Top + AForm.Top, AForm.Width,
         AForm.Height);
     end;
     AForm.AutoScroll := AutoScroll;
@@ -2483,7 +2476,7 @@ end;
 
 procedure ShadeRect(DC: HDC; const Rect: TRect);
 const
-  HatchBits: array[0..7] of Word = ($11, $22, $44, $88, $11, $22, $44, $88);
+  HatchBits: array [0..7] of Word = ($11, $22, $44, $88, $11, $22, $44, $88);
 var
   Bitmap: HBITMAP;
   SaveBrush: HBRUSH;
@@ -2524,78 +2517,91 @@ end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 var
-  mbs: TMessageButtons;
-  def: TMessageButton;
+  Mbs: TMessageButtons;
+  Def: TMessageButton;
   Style: TMessageStyle;
   DefFlags: Integer;
 begin
-  mbs := [];
+  Mbs := [];
   DefFlags := Flags and $00000F00;
   case Flags and $0000000F of
     MB_OK:
       begin
-        mbs := [smbOk];
-        def := smbOk;
+        Mbs := [smbOk];
+        Def := smbOk;
       end;
     MB_OKCANCEL:
       begin
-        mbs := [smbOk, smbCancel];
-        def := smbOk;
+        Mbs := [smbOk, smbCancel];
+        Def := smbOk;
         if DefFlags <> MB_DEFBUTTON1 then
-          def := smbCancel;
+          Def := smbCancel;
       end;
     MB_ABORTRETRYIGNORE:
       begin
-        mbs := [smbAbort, smbRetry, smbIgnore];
-        def := smbAbort;
+        Mbs := [smbAbort, smbRetry, smbIgnore];
+        Def := smbAbort;
         case DefFlags of
-          MB_DEFBUTTON2: def := smbRetry;
-          MB_DEFBUTTON3: def := smbIgnore;
+          MB_DEFBUTTON2:
+            Def := smbRetry;
+          MB_DEFBUTTON3:
+            Def := smbIgnore;
         end;
       end;
     MB_YESNOCANCEL:
       begin
-        mbs := [smbYes, smbNo, smbCancel];
-        def := smbYes;
+        Mbs := [smbYes, smbNo, smbCancel];
+        Def := smbYes;
         case DefFlags of
-          MB_DEFBUTTON2: def := smbNo;
-          MB_DEFBUTTON3: def := smbCancel;
+          MB_DEFBUTTON2:
+            Def := smbNo;
+          MB_DEFBUTTON3:
+            Def := smbCancel;
         end;
       end;
     MB_YESNO:
       begin
-        mbs := [smbYes, smbNo];
-        def := smbYes;
+        Mbs := [smbYes, smbNo];
+        Def := smbYes;
         if DefFlags <> MB_DEFBUTTON1 then
-          def := smbNo;
+          Def := smbNo;
       end;
     MB_RETRYCANCEL:
       begin
-        mbs := [smbRetry, smbCancel];
-        def := smbRetry;
+        Mbs := [smbRetry, smbCancel];
+        Def := smbRetry;
         if DefFlags <> MB_DEFBUTTON1 then
-          def := smbCancel;
+          Def := smbCancel;
       end;
   else
-    mbs := [smbOk];
-    def := smbOk;
+    Mbs := [smbOk];
+    Def := smbOk;
   end;
 
   case Flags and $000000F0 of
-    MB_ICONWARNING: Style := smsWarning;
-    MB_ICONERROR: Style := smsCritical;
+    MB_ICONWARNING:
+      Style := smsWarning;
+    MB_ICONERROR:
+      Style := smsCritical;
   else
     Style := smsInformation;
   end;
 
-  case Application.MessageBox(Text, Caption, mbs, Style, def) of
-    smbOk: Result := IDOK;
-    smbCancel: Result := IDCANCEL;
-    smbAbort: Result := IDABORT;
-    smbRetry: Result := IDRETRY;
-    smbIgnore: Result := IDIGNORE;
-    smbYes: Result := IDYES;
-    smbNo: Result := IDNO;
+  case Application.MessageBox(Text, Caption, Mbs, Style, Def) of
+    smbOk:
+      Result := IDOK;
+    smbCancel:
+      Result := IDCANCEL;
+    smbAbort:
+      Result := IDABORT;
+    smbRetry:
+      Result := IDRETRY;
+    smbIgnore:
+      Result := IDIGNORE;
+    smbYes:
+      Result := IDYES;
+    smbNo:
+      Result := IDNO;
   else
     Result := IDOK;
   end;
@@ -2607,7 +2613,7 @@ function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons;
 begin
   Result := MessageDlg(Msg, AType, AButtons, HelpCtx);
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 { Gradient fill procedure - displays a gradient beginning with a chosen        }
 { color and ending with another chosen color. Based on TGradientFill           }
@@ -2616,20 +2622,20 @@ end;
 procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
   EndColor: TColor; Direction: TFillDirection; Colors: Byte);
 var
-  StartRGB: array[0..2] of Byte; { Start RGB values }
-  RGBDelta: array[0..2] of Integer;
+  StartRGB: array [0..2] of Byte; { Start RGB values }
+  RGBDelta: array [0..2] of Integer;
   { Difference between start and end RGB values }
   ColorBand: TRect; { Color band rectangular coordinates }
   I, Delta: Integer;
   Brush: HBRUSH;
   TmpColor: TColor;
 begin
+  {$IFDEF VCL}
+  Canvas.Lock;
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Canvas.Start;
   {$ENDIF VisualCLX}
-    {$IFDEF VCL}
-    Canvas.lock;
-    {$ENDIF VCL}
   try
     if (StartColor = clNone) and (EndColor = clNone) then
       Exit;
@@ -2736,19 +2742,19 @@ begin
       end;
     end; //  if Not (IsRectEmpty(ARect) and ...
   finally
-    {$IFDEF VisualCLX}
-    Canvas.Stop;
-    {$ENDIF VisualCLX}
     {$IFDEF VCL}
     Canvas.Unlock;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Canvas.Stop;
+    {$ENDIF VisualCLX}
   end;
 end;
 
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 var
   I: Integer;
-  Buffer: array[0..51] of char;
+  Buffer: array [0..51] of Char;
 begin
   for I := 0 to 25 do
     Buffer[I] := Chr(I + Ord('A'));
@@ -2772,8 +2778,8 @@ function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
   executable resource directly. So I write this routine using temporary
   file and LoadCursorFromFile function. }
 var
-  s: TFileStream;
-  Path, FileName: array[0..MAX_PATH] of char;
+  S: TFileStream;
+  Path, FileName: array[0..MAX_PATH] of Char;
   RSrc: HRSRC;
   Res: THandle;
   Data: Pointer;
@@ -2790,11 +2796,11 @@ begin
         Data := LockResource(Res);
         if Data <> nil then
         try
-          s := TFileStream.Create(StrPas(FileName), fmCreate);
+          S := TFileStream.Create(StrPas(FileName), fmCreate);
           try
-            s.WriteBuffer(Data^, SizeOfResource(Instance, RSrc));
+            S.WriteBuffer(Data^, SizeOfResource(Instance, RSrc));
           finally
-            s.Free;
+            S.Free;
           end;
           Result := LoadCursorFromFile(FileName);
         finally
@@ -2948,7 +2954,7 @@ begin
     Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
     { begin RxLib }
     crHand := GetNextFreeCursorIndex(crJVCLFirst, False);
-    Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
+    Screen.Cursors[crHand] := LoadCursor(HInstance, 'JV_HANDCUR');
     crDragHand := GetNextFreeCursorIndex(crJVCLFirst, False);
     Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
     { end RxLib }
@@ -2966,23 +2972,23 @@ begin
   if DrawBitmap = nil then
   begin
     DrawBitmap := TBitmap.Create;
-    AddFinalizeObjectNil(SUnitName, TObject(DrawBitmap));
+    AddFinalizeObjectNil(sUnitName, TObject(DrawBitmap));
   end;
 end;
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
-  const Text: string; Alignment: TAlignment; WordWrap: Boolean; ARightToLeft:
-  Boolean = False);
+  const Text: string; Alignment: TAlignment; WordWrap: Boolean;
+  ARightToLeft: Boolean = False);
 const
-  AlignFlags: array[TAlignment] of Integer =
-  (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
+  AlignFlags: array [TAlignment] of Integer =
+   (DT_LEFT or DT_EXPANDTABS or DT_NOPREFIX,
     DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
     DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
-  WrapFlags: array[Boolean] of Integer = (0, DT_WORDBREAK);
-  {$IFDEF VCL}
-  RTL: array[Boolean] of Integer = (0, DT_RTLREADING);
+  WrapFlags: array [Boolean] of Integer = (0, DT_WORDBREAK);
+{$IFDEF VCL}
+  RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
 var
-  b, r: TRect;
+  B, R: TRect;
   I, Left: Integer;
 begin
   UsesBitmap;
@@ -3000,8 +3006,8 @@ begin
       taRightJustify:
         Left := ARect.Right - ACanvas.TextWidth(Text) - 3;
     else { taCenter }
-      Left := ARect.Left + (ARect.Right - ARect.Left) shr 1
-        - (ACanvas.TextWidth(Text) shr 1);
+      Left := ARect.Left + (ARect.Right - ARect.Left) shr 1 -
+        (ACanvas.TextWidth(Text) shr 1);
     end;
     ACanvas.TextRect(ARect, Left, ARect.Top + DY, Text);
   end
@@ -3013,9 +3019,8 @@ begin
       begin { brush origin tics in painting / scrolling.    }
         Width := Max(Width, Right - Left);
         Height := Max(Height, Bottom - Top);
-        r := Rect(DX, DY, Right - Left - 1,
-          Bottom - Top - 1);
-        b := Rect(0, 0, Right - Left, Bottom - Top);
+        R := Rect(DX, DY, Right - Left - 1, Bottom - Top - 1);
+        B := Rect(0, 0, Right - Left, Bottom - Top);
       end;
       with DrawBitmap.Canvas do
       begin
@@ -3023,14 +3028,14 @@ begin
         Font.Color := ACanvas.Font.Color;
         Brush := ACanvas.Brush;
         Brush.Style := bsSolid;
-        FillRect(b);
+        FillRect(B);
         SetBkMode(Handle, Transparent);
         if (ACanvas.CanvasOrientation = coRightToLeft) then
           ChangeBiDiModeAlignment(Alignment);
-        Windows.DrawText(Handle, PChar(Text), Length(Text), R, AlignFlags[Alignment]
-          or RTL[ARightToLeft] or WrapFlags[WordWrap]);
+        Windows.DrawText(Handle, PChar(Text), Length(Text), R,
+          AlignFlags[Alignment] or RTL[ARightToLeft] or WrapFlags[WordWrap]);
       end;
-      ACanvas.CopyRect(ARect, DrawBitmap.Canvas, b);
+      ACanvas.CopyRect(ARect, DrawBitmap.Canvas, B);
     finally
       DrawBitmap.Canvas.Unlock;
     end;
@@ -3045,71 +3050,65 @@ end;
 {$ENDIF VisualCLX}
 
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
-  VertAlign: TVertAlignment; WordWrap: Boolean; ARightToLeft: Boolean);
-  overload;
+  const S: string; const ARect: TRect; Align: TAlignment;
+  VertAlign: TVertAlignment; WordWrap: Boolean; ARightToLeft: Boolean); overload;
 const
   MinOffs = 2;
 var
-  h: Integer;
+  H: Integer;
 begin
   case VertAlign of
     vaTopJustify:
-      h := MinOffs;
+      H := MinOffs;
     vaCenterJustify:
       with TCustomControlAccessProtected(Control) do
-        h := Max(1, (ARect.Bottom - ARect.Top -
-          Canvas.TextHeight('W')) div 2);
+        H := Max(1, (ARect.Bottom - ARect.Top - Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
       with TCustomControlAccessProtected(Control) do
-        h := Max(MinOffs, ARect.Bottom - ARect.Top -
-          Canvas.TextHeight('W'));
+        H := Max(MinOffs, ARect.Bottom - ARect.Top - Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap,
-    ARightToLeft);
+  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs,
+    H, S, Align, WordWrap, ARightToLeft);
 end;
 
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
+  const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; ARightToLeft: Boolean); overload;
 begin
-  DrawCellTextEx(Control, ACol, ARow, s, ARect, Align, VertAlign,
+  DrawCellTextEx(Control, ACol, ARow, S, ARect, Align, VertAlign,
     Align = taCenter, ARightToLeft);
 end;
 
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
+  const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment; WordWrap: Boolean); overload;
 const
   MinOffs = 2;
 var
-  h: Integer;
+  H: Integer;
 begin
   case VertAlign of
     vaTopJustify:
-      h := MinOffs;
+      H := MinOffs;
     vaCenterJustify:
       with TCustomControlAccessProtected(Control) do
-        h := Max(1, (ARect.Bottom - ARect.Top -
-          Canvas.TextHeight('W')) div 2);
+        H := Max(1, (ARect.Bottom - ARect.Top - Canvas.TextHeight('W')) div 2);
   else {vaBottomJustify}
     begin
       with TCustomControlAccessProtected(Control) do
-        h := Max(MinOffs, ARect.Bottom - ARect.Top -
-          Canvas.TextHeight('W'));
+        H := Max(MinOffs, ARect.Bottom - ARect.Top - Canvas.TextHeight('W'));
     end;
   end;
-  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs, h, s, Align, WordWrap);
+  WriteText(TCustomControlAccessProtected(Control).Canvas, ARect, MinOffs, H, S, Align, WordWrap);
 end;
 
 procedure DrawCellText(Control: TCustomControl; ACol, ARow: Longint;
-  const s: string; const ARect: TRect; Align: TAlignment;
+  const S: string; const ARect: TRect; Align: TAlignment;
   VertAlign: TVertAlignment); overload;
 begin
-  DrawCellTextEx(Control, ACol, ARow, s, ARect, Align, VertAlign,
-    Align = taCenter);
+  DrawCellTextEx(Control, ACol, ARow, S, ARect, Align, VertAlign, Align = taCenter);
 end;
 
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
@@ -3199,7 +3198,7 @@ begin
         (Controls[I] as TRadioButton).Checked then
       begin
         RB := Controls[I] as TRadioButton;
-        break;
+        Break;
       end;
   if RB <> nil then
     Result := RB.Tag
@@ -3216,7 +3215,7 @@ begin
     if Application.Components[I].ClassName = FormClass.ClassName then
     begin
       Result := Application.Components[I] as TForm;
-      break;
+      Break;
     end;
 end;
 
@@ -3280,8 +3279,7 @@ end;
 
 {$IFDEF VCL}
 
-function MessageBox(const Msg, Caption: string; const Flags: Integer):
-  Integer;
+function MessageBox(const Msg, Caption: string; const Flags: Integer): Integer;
 var
   P: PChar;
 begin
@@ -3300,7 +3298,7 @@ function MsgDlgDef1(const Msg, ACaption: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; DefButton: TMsgDlgBtn; UseDefButton: Boolean;
   AHelpContext: Integer; Control: TWinControl): Integer;
 const
-  ButtonNames: array[TMsgDlgBtn] of PChar =
+  ButtonNames: array [TMsgDlgBtn] of PChar =
   ('Yes', 'No', 'OK', 'Cancel', 'Abort', 'Retry', 'Ignore', 'All', 'NoToAll',
     'YesToAll', 'Help');
 var
@@ -3314,7 +3312,7 @@ begin
   StayOnTop := False;
   with CreateMessageDialog(Msg, DlgType, Buttons) do
   try
-    Font.CharSet := MsgDlgCharSet;
+    Font.Charset := MsgDlgCharSet;
     if (Screen.ActiveForm <> nil) and
       (Screen.ActiveForm.FormStyle = fsStayOnTop) then
     begin
@@ -3439,11 +3437,13 @@ end;
 function FindIcon(hInstance: DWORD; const IconName: string): Boolean;
 begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
-    Result := (IconName <> '') and (FindResourceW(hInstance, PWideChar(WideString(IconName)), PWideChar(RT_GROUP_ICON)) <> 0)
-      or (FindResourceW(hInstance, PWideChar(WideString(IconName)), PWideChar(RT_ICON)) <> 0)
+    Result := (IconName <> '') and
+      (FindResourceW(hInstance, PWideChar(WideString(IconName)), PWideChar(RT_GROUP_ICON)) <> 0) or
+      (FindResourceW(hInstance, PWideChar(WideString(IconName)), PWideChar(RT_ICON)) <> 0)
   else
-    Result := (IconName <> '') and (FindResourceA(hInstance, PChar(IconName), RT_GROUP_ICON) <> 0)
-      or (FindResourceA(hInstance, PChar(IconName), RT_ICON) <> 0)
+    Result := (IconName <> '') and
+      (FindResourceA(hInstance, PChar(IconName), RT_GROUP_ICON) <> 0) or
+      (FindResourceA(hInstance, PChar(IconName), RT_ICON) <> 0);
 end;
 
 type
@@ -3460,7 +3460,7 @@ begin
   if Win32Platform = VER_PLATFORM_WIN32_NT then
     with Params.ParamsW do
     begin
-      cbSize := sizeof(TMsgBoxParamsW);
+      cbSize := SizeOf(TMsgBoxParamsW);
       hwndOwner := Handle;
       Params.ParamsW.hInstance := SysInit.hInstance;
       lpszText := PWideChar(WideString(Msg));
@@ -3481,7 +3481,7 @@ begin
   else
     with Params.ParamsA do
     begin
-      cbSize := sizeof(TMsgBoxParamsA);
+      cbSize := SizeOf(TMsgBoxParamsA);
       hwndOwner := Handle;
       Params.ParamsA.hInstance := SysInit.hInstance;
       lpszText := PChar(Msg);
@@ -3501,8 +3501,7 @@ begin
     end;
 end;
 
-procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList;
-  const NameRes: string);
+procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
 var
   Ico: TIcon;
 begin
@@ -3521,7 +3520,7 @@ begin
 end;
 
 function DualInputQuery(const ACaption, Prompt1, Prompt2: string;
-  var AValue1, AValue2: string; PasswordChar: char = #0): Boolean;
+  var AValue1, AValue2: string; PasswordChar: Char = #0): Boolean;
 var
   AForm: TForm;
   ALabel1, ALabel2: TLabel;
@@ -3573,7 +3572,7 @@ begin
       AForm.ClientHeight := AForm.ClientHeight + ASize;
       AForm.ClientWidth := 320;
       AForm.ActiveControl := AEdit1;
-      Result := AForm.ShowModal = mrOK;
+      Result := AForm.ShowModal = mrOk;
       if Result then
       begin
         AValue1 := AEdit1.Text;
@@ -3585,7 +3584,7 @@ begin
   end;
 end;
 
-function InputQueryPassword(const ACaption, APrompt: string; PasswordChar: char; var Value: string): Boolean;
+function InputQueryPassword(const ACaption, APrompt: string; PasswordChar: Char; var Value: string): Boolean;
 var
   AForm: TForm;
   ALabel: TLabel;
@@ -3619,7 +3618,7 @@ begin
       AForm.ClientHeight := AForm.ClientHeight + ASize;
       AForm.ClientWidth := 320;
       AForm.ActiveControl := AEdit;
-      Result := AForm.ShowModal = mrOK;
+      Result := AForm.ShowModal = mrOk;
       if Result then
         Value := AEdit.Text;
     end;
@@ -3629,13 +3628,12 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of
-  TControl);
+procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of TControl);
 var
   I: Integer;
 begin
   for I := Low(Controls) to High(Controls) do
-    Controls[I].Left := Max(MinLeft, (Parent.Width - Controls[I].Width) div 2)
+    Controls[I].Left := Max(MinLeft, (Parent.Width - Controls[I].Width) div 2);
 end;
 
 procedure EnableControls(Control: TWinControl; const Enable: Boolean);
@@ -3646,8 +3644,7 @@ begin
     Control.Controls[I].Enabled := Enable;
 end;
 
-procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable:
-  Boolean);
+procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable: Boolean);
 var
   I: Integer;
 begin
@@ -3656,14 +3653,12 @@ begin
       MenuItem[I].Enabled := Enable;
 end;
 
-procedure ExpandWidth(Parent: TControl; MinWidth: Integer; Controls: array of
-  TControl);
+procedure ExpandWidth(Parent: TControl; MinWidth: Integer; Controls: array of TControl);
 var
   I: Integer;
 begin
   for I := Low(Controls) to High(Controls) do
-    Controls[I].Width := Max(MinWidth, Parent.ClientWidth - 2 *
-      Controls[I].Left);
+    Controls[I].Width := Max(MinWidth, Parent.ClientWidth - 2 * Controls[I].Left);
 end;
 
 function PanelBorder(Panel: TCustomPanel): Integer;
@@ -3691,8 +3686,8 @@ end;
 procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
 var
   I: Integer;
-  h: Integer;
-  w: Integer;
+  H: Integer;
+  W: Integer;
 begin
   case MenuAni of
     maNone:
@@ -3701,25 +3696,25 @@ begin
       ;
     maUnfold:
       begin
-        h := Form.Height;
+        H := Form.Height;
         Form.Height := 0;
         Form.Show;
-        for I := 0 to h div 10 do
-          if Form.Height < h then
+        for I := 0 to H div 10 do
+          if Form.Height < H then
             Form.Height := Form.Height + 10;
       end;
     maSlide:
       begin
-        h := Form.Height;
-        w := Form.Width;
+        H := Form.Height;
+        W := Form.Width;
         Form.Height := 0;
         Form.Width := 0;
         Form.Show;
-        for I := 0 to Max(h div 5, w div 5) do
+        for I := 0 to Max(H div 5, W div 5) do
         begin
-          if Form.Height < h then
+          if Form.Height < H then
             Form.Height := Form.Height + 5;
-          if Form.Width < w then
+          if Form.Width < W then
             Form.Width := Form.Width + 5;
         end;
         //      CS_SAVEBITS
@@ -3741,7 +3736,7 @@ function ResolveLink(const HWND: HWND; const LinkFile: TFileName;
   var FileName: TFileName): HRESULT;
 var
   psl: IShellLink;
-  WLinkFile: array[0..MAX_PATH] of WideChar;
+  WLinkFile: array [0..MAX_PATH] of WideChar;
   wfd: TWin32FindData;
   ppf: IPersistFile;
   wnd: Windows.HWND;
@@ -3816,8 +3811,7 @@ begin
   FProcObj := AProcObj;
 end;
 
-procedure TmrProc(hwnd: HWND; uMsg: Integer; idEvent: Integer; dwTime: Integer);
-  stdcall;
+procedure TmrProc(hwnd: HWND; uMsg: Integer; idEvent: Integer; dwTime: Integer); stdcall;
 var
   Pr: TProcObj;
 begin
@@ -3934,7 +3928,7 @@ begin
     if Screen.Forms[I] is FormClass then
     begin
       Result := Screen.Forms[I];
-      break;
+      Break;
     end;
   end;
 end;
@@ -3951,7 +3945,7 @@ begin
       if (Caption = '') or (Caption = Screen.Forms[I].Caption) then
       begin
         Result := Screen.Forms[I];
-        break;
+        Break;
       end;
   end;
   if Result = nil then
@@ -3979,7 +3973,7 @@ var
 begin
   Application.CreateForm(FormClass, Dlg);
   try
-    Result := Dlg.ShowModal in [mrOK, mrYes];
+    Result := Dlg.ShowModal in [mrOk, mrYes];
   finally
     Dlg.Free;
   end;
@@ -4019,7 +4013,7 @@ begin
   repeat
     N := Pos('\n', Result);
     if N > 0 then
-      Result := Copy(Result, 1, N - 1) + CRLF + Copy(Result, N + 2, Length(Result));
+      Result := Copy(Result, 1, N - 1) + CrLf + Copy(Result, N + 2, Length(Result));
   until N = 0;
 end;
 
@@ -4052,7 +4046,7 @@ end;
 procedure IniWriteString(IniFile: TObject; const Section, Ident,
   Value: string);
 var
-  s: string;
+  S: string;
 begin
   {$IFDEF MSWINDOWS}
   if IniFile is TRegIniFile then
@@ -4060,15 +4054,15 @@ begin
   else
   {$ENDIF MSWINDOWS}
   begin
-    s := Value;
-    if s <> '' then
+    S := Value;
+    if S <> '' then
     begin
-      if ((s[1] = '"') and (s[Length(s)] = '"')) or
-      ((s[1] = '''') and (s[Length(s)] = '''')) then
-        s := '"' + s + '"';
+      if ((S[1] = '"') and (S[Length(S)] = '"')) or
+      ((S[1] = '''') and (S[Length(S)] = '''')) then
+        S := '"' + S + '"';
     end;
     if IniFile is TCustomIniFile then
-      TCustomIniFile(IniFile).WriteString(Section, Ident, s);
+      TCustomIniFile(IniFile).WriteString(Section, Ident, S);
   end;
 end;
 
@@ -4183,7 +4177,7 @@ type
   end;
 
   TComponentAccessProtected = class(TComponent);
-  {$HINTS ON}
+{$HINTS ON}
 
 function CrtResString: string;
 begin
@@ -4205,9 +4199,8 @@ begin
   AppStorage.WriteString(Path, Value);
 end;
 
-procedure InternalSaveMDIChildren(MainForm: TForm; const AppStorage:
-  TJvCustomAppStorage;
-  const StorePath: string);
+procedure InternalSaveMDIChildren(MainForm: TForm;
+  const AppStorage: TJvCustomAppStorage; const StorePath: string);
 var
   I: Integer;
 begin
@@ -4217,18 +4210,15 @@ begin
   if MainForm.MDIChildCount > 0 then
   begin
     AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
-      siListCount]),
-        MainForm.MDIChildCount);
+      siListCount]), MainForm.MDIChildCount);
     for I := 0 to MainForm.MDIChildCount - 1 do
       AppStorage.WriteString(AppStorage.ConcatPaths([StorePath, siMDIChild,
-        Format(siItem, [I])]),
-          MainForm.MDIChildren[I].ClassName);
+        Format(siItem, [I])]), MainForm.MDIChildren[I].ClassName);
   end;
 end;
 
-procedure InternalRestoreMDIChildren(MainForm: TForm; const AppStorage:
-  TJvCustomAppStorage;
-  const StorePath: string);
+procedure InternalRestoreMDIChildren(MainForm: TForm;
+  const AppStorage: TJvCustomAppStorage; const StorePath: string);
 var
   I: Integer;
   Count: Integer;
@@ -4261,8 +4251,7 @@ begin
   InternalSaveMDIChildren(MainForm, AppStorage, '');
 end;
 
-procedure RestoreMDIChildren(MainForm: TForm; const AppStorage:
-  TJvCustomAppStorage);
+procedure RestoreMDIChildren(MainForm: TForm; const AppStorage: TJvCustomAppStorage);
 begin
   InternalRestoreMDIChildren(MainForm, AppStorage, '');
 end;
@@ -4284,9 +4273,9 @@ begin
     if (FormStyle = fsMDIChild) and (WindowState = wsMinimized) then
       Flags := Flags or WPF_SETMINPOSITION;
     {$ENDIF VCL}
-    if (fpState in Options) then
+    if fpState in Options then
       AppStorage.WriteInteger(StorePath + '\' + siShowCmd, ShowCmd);
-    if ([fpSize, fpLocation] * Options <> []) then
+    if [fpSize, fpLocation] * Options <> [] then
     begin
       AppStorage.WriteInteger(StorePath + '\' + siFlags, Flags);
       AppStorage.WriteInteger(StorePath + '\' + siPixels, Screen.PixelsPerInch);
@@ -4294,7 +4283,7 @@ begin
         [ptMinPosition.X, ptMinPosition.Y, ptMaxPosition.X, ptMaxPosition.Y]));
       WritePosStr(AppStorage, StorePath + '\' + siNormPos, Format('%d,%d,%d,%d',
         [rcNormalPosition.Left, rcNormalPosition.Top, rcNormalPosition.Right,
-        rcNormalPosition.Bottom]));
+         rcNormalPosition.Bottom]));
     end;
   end;
 end;
@@ -4317,7 +4306,7 @@ begin
   begin
     if not IsWindowVisible(Form.Handle) then
       ShowCmd := SW_HIDE;
-    if ([fpSize, fpLocation] * Options <> []) then
+    if [fpSize, fpLocation] * Options <> [] then
     begin
       DataFound := False;
       AppStorage.ReadInteger(StorePath + '\' + siFlags, Flags);
@@ -4357,13 +4346,12 @@ begin
       begin
         {$IFDEF VCL}
         if not (BorderStyle in [bsSizeable, bsSizeToolWin]) then
-          {$ENDIF VCL}
+        {$ENDIF VCL}
           {$IFDEF VisualCLX}
           if not (BorderStyle in [fbsSizeable, fbsSizeToolWin]) then
-            {$ENDIF VisualCLX}
+          {$ENDIF VisualCLX}
             rcNormalPosition := Rect(rcNormalPosition.Left,
-              rcNormalPosition.Top,
-              rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
+              rcNormalPosition.Top, rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
         if rcNormalPosition.Right > rcNormalPosition.Left then
         begin
           if (Position in [poScreenCenter, poDesktopCenter]) and
@@ -4398,8 +4386,8 @@ begin
           WinState := wsMaximized;
       end;
       {$IFDEF VCL}
-      if (WinState = wsMinimized) and ((Form = Application.MainForm)
-        or (Application.MainForm = nil)) then
+      if (WinState = wsMinimized) and ((Form = Application.MainForm) or
+        (Application.MainForm = nil)) then
       begin
         TJvHackForm(Form).FWindowState := wsNormal;
         PostMessage(Application.Handle, WM_SYSCOMMAND, SC_MINIMIZE, 0);
@@ -4415,32 +4403,28 @@ begin
   end;
 end;
 
-procedure InternalSaveGridLayout(Grid: TCustomGrid; const AppStorage:
-  TJvCustomAppStorage;
-  const StorePath: string);
+procedure InternalSaveGridLayout(Grid: TCustomGrid;
+  const AppStorage: TJvCustomAppStorage; const StorePath: string);
 var
   I: Longint;
 begin
   for I := 0 to TDrawGrid(Grid).ColCount - 1 do
-    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, Format(siItem,
-        [I])]),
+    AppStorage.WriteInteger(AppStorage.ConcatPaths([StorePath, Format(siItem, [I])]),
       TDrawGrid(Grid).ColWidths[I]);
 end;
 
-procedure InternalRestoreGridLayout(Grid: TCustomGrid; const AppStorage:
-  TJvCustomAppStorage;
-  const StorePath: string);
+procedure InternalRestoreGridLayout(Grid: TCustomGrid;
+  const AppStorage: TJvCustomAppStorage; const StorePath: string);
 var
   I: Longint;
 begin
   for I := 0 to TDrawGrid(Grid).ColCount - 1 do
     TDrawGrid(Grid).ColWidths[I] :=
       AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath,
-      Format(siItem, [I])]), TDrawGrid(Grid).ColWidths[I]);
+        Format(siItem, [I])]), TDrawGrid(Grid).ColWidths[I]);
 end;
 
-procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage:
-  TJvCustomAppStorage);
+procedure RestoreGridLayout(Grid: TCustomGrid; const AppStorage: TJvCustomAppStorage);
 begin
   InternalRestoreGridLayout(Grid, AppStorage, GetDefaultSection(Grid));
 end;
@@ -4569,33 +4553,35 @@ const
   MAX_COLORS = 4096;
 
 type
+  TTriple = array [0..2] of Byte;
+
   PQColor = ^TQColor;
   TQColor = record
-    RGB: array[0..2] of Byte;
+    RGB: TTriple;
     NewColorIndex: Byte;
     Count: Longint;
     PNext: PQColor;
   end;
 
   PQColorArray = ^TQColorArray;
-  TQColorArray = array[0..MAX_COLORS - 1] of TQColor;
+  TQColorArray = array [0..MAX_COLORS - 1] of TQColor;
 
   PQColorList = ^TQColorList;
-  TQColorList = array[0..MaxListSize - 1] of PQColor;
+  TQColorList = array [0..MaxListSize - 1] of PQColor;
 
   PNewColor = ^TNewColor;
   TNewColor = record
-    RGBMin, RGBWidth: array[0..2] of Byte;
+    RGBMin: TTriple;
+    RGBWidth: TTriple;
     NumEntries: Longint;
     Count: Longint;
     QuantizedColors: PQColor;
   end;
 
   PNewColorArray = ^TNewColorArray;
-  TNewColorArray = array[Byte] of TNewColor;
+  TNewColorArray = array [Byte] of TNewColor;
 
-procedure PInsert(ColorList: PQColorList; Number: Integer;
-  SortRGBAxis: Integer);
+procedure PInsert(ColorList: PQColorList; Number: Integer; SortRGBAxis: Integer);
 var
   Q1, Q2: PQColor;
   I, J: Integer;
@@ -4610,7 +4596,7 @@ begin
       Q1 := Temp;
       Q2 := ColorList^[J];
       if Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis] > 0 then
-        break;
+        Break;
       ColorList^[J + 1] := ColorList^[J];
       Dec(J);
     end;
@@ -4618,8 +4604,7 @@ begin
   end;
 end;
 
-procedure PSort(ColorList: PQColorList; Number: Integer;
-  SortRGBAxis: Integer);
+procedure PSort(ColorList: PQColorList; Number: Integer; SortRGBAxis: Integer);
 var
   Q1, Q2: PQColor;
   I, J, N, Nr: Integer;
@@ -4647,7 +4632,7 @@ begin
       N := Q1^.RGB[SortRGBAxis] - Q2^.RGB[SortRGBAxis];
     until N <= 0;
     if I >= J then
-      break;
+      Break;
     Temp := ColorList^[I];
     ColorList^[I] := ColorList^[J];
     ColorList^[J] := Temp;
@@ -4670,8 +4655,7 @@ function DivideMap(NewColorSubdiv: PNewColorArray; ColorMapSize: Integer;
 var
   I, J: Integer;
   MaxSize, Index: Integer;
-  NumEntries, MinColor,
-    MaxColor: Integer;
+  NumEntries, MinColor, MaxColor: Integer;
   Sum, Count: Longint;
   QuantizedColor: PQColor;
   SortArray: PQColorList;
@@ -4828,7 +4812,7 @@ begin
       while I < MAX_COLORS do
       begin
         if ColorArrayEntries^[I].Count > 0 then
-          break;
+          Break;
         Inc(I);
       end;
       QuantizedColor := @ColorArrayEntries^[I];
@@ -4924,19 +4908,19 @@ type
   { For 6Rx6Gx6B, 7Rx8Gx4B palettes etc. }
 
 const
-  Scale04: array[0..3] of Byte = (0, 85, 170, 255);
-  Scale06: array[0..5] of Byte = (0, 51, 102, 153, 204, 255);
-  Scale07: array[0..6] of Byte = (0, 43, 85, 128, 170, 213, 255);
-  Scale08: array[0..7] of Byte = (0, 36, 73, 109, 146, 182, 219, 255);
+  Scale04: array [0..3] of Byte = (0, 85, 170, 255);
+  Scale06: array [0..5] of Byte = (0, 51, 102, 153, 204, 255);
+  Scale07: array [0..6] of Byte = (0, 43, 85, 128, 170, 213, 255);
+  Scale08: array [0..7] of Byte = (0, 36, 73, 109, 146, 182, 219, 255);
 
   { For 6Rx6Gx6B, 7Rx8Gx4B palettes etc. }
 
 var
   TruncTablesInitialized: Boolean = False;
-  TruncIndex04: array[Byte] of Byte;
-  TruncIndex06: array[Byte] of Byte;
-  TruncIndex07: array[Byte] of Byte;
-  TruncIndex08: array[Byte] of Byte;
+  TruncIndex04: array [Byte] of Byte;
+  TruncIndex06: array [Byte] of Byte;
+  TruncIndex07: array [Byte] of Byte;
+  TruncIndex08: array [Byte] of Byte;
 
   { These functions initialises this module }
 
@@ -4944,16 +4928,16 @@ procedure InitTruncTables;
 
   function NearestIndex(Value: Byte; const Bytes: array of Byte): Byte;
   var
-    b, I: Byte;
+    B, I: Byte;
     Diff, DiffMin: Word;
   begin
     Result := 0;
-    b := Bytes[0];
-    DiffMin := Abs(Value - b);
+    B := Bytes[0];
+    DiffMin := Abs(Value - B);
     for I := 1 to High(Bytes) do
     begin
-      b := Bytes[I];
-      Diff := Abs(Value - b);
+      B := Bytes[I];
+      Diff := Abs(Value - B);
       if Diff < DiffMin then
       begin
         DiffMin := Diff;
@@ -4984,7 +4968,7 @@ begin
   end;
 end;
 
-procedure trunc(const Header: TBitmapInfoHeader; Src, Dest: Pointer;
+procedure Trunc(const Header: TBitmapInfoHeader; Src, Dest: Pointer;
   DstBitsPerPixel: Integer; TruncLineProc: TTruncLine);
 var
   SrcScanline, DstScanline: Longint;
@@ -5004,17 +4988,17 @@ end;
 
 procedure TruncPal6R6G6B(var Colors: TRGBPalette);
 var
-  I, r, g, b: Byte;
+  I, R, G, B: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), $80);
   I := 0;
-  for r := 0 to 5 do
-    for g := 0 to 5 do
-      for b := 0 to 5 do
+  for R := 0 to 5 do
+    for G := 0 to 5 do
+      for B := 0 to 5 do
       begin
-        Colors[I].rgbRed := Scale06[r];
-        Colors[I].rgbGreen := Scale06[g];
-        Colors[I].rgbBlue := Scale06[b];
+        Colors[I].rgbRed := Scale06[R];
+        Colors[I].rgbGreen := Scale06[G];
+        Colors[I].rgbBlue := Scale06[B];
         Colors[I].rgbReserved := 0;
         Inc(I);
       end;
@@ -5025,18 +5009,18 @@ end;
 procedure TruncLine6R6G6B(Src, Dest: Pointer; CX: Integer);
 var
   X: Integer;
-  r, g, b: Byte;
+  R, G, B: Byte;
 begin
   InitTruncTables;
   for X := 0 to CX - 1 do
   begin
-    b := TruncIndex06[Byte(Src^)];
+    B := TruncIndex06[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    g := TruncIndex06[Byte(Src^)];
+    G := TruncIndex06[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    r := TruncIndex06[Byte(Src^)];
+    R := TruncIndex06[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    PByte(Dest)^ := 6 * (6 * r + g) + b;
+    PByte(Dest)^ := 6 * (6 * R + G) + B;
     Dest := HugeOffset(Dest, 1);
   end;
 end;
@@ -5046,7 +5030,7 @@ end;
 procedure Trunc6R6G6B(const Header: TBitmapInfoHeader;
   const Data24, Data8: Pointer);
 begin
-  trunc(Header, Data24, Data8, 8, TruncLine6R6G6B);
+  Trunc(Header, Data24, Data8, 8, TruncLine6R6G6B);
 end;
 
 { return 7Rx8Gx4B palette
@@ -5057,17 +5041,17 @@ end;
 
 procedure TruncPal7R8G4B(var Colors: TRGBPalette);
 var
-  I, r, g, b: Byte;
+  I, R, G, B: Byte;
 begin
   FillChar(Colors, SizeOf(TRGBPalette), $80);
   I := 0;
-  for r := 0 to 6 do
-    for g := 0 to 7 do
-      for b := 0 to 3 do
+  for R := 0 to 6 do
+    for G := 0 to 7 do
+      for B := 0 to 3 do
       begin
-        Colors[I].rgbRed := Scale07[r];
-        Colors[I].rgbGreen := Scale08[g];
-        Colors[I].rgbBlue := Scale04[b];
+        Colors[I].rgbRed := Scale07[R];
+        Colors[I].rgbGreen := Scale08[G];
+        Colors[I].rgbBlue := Scale04[B];
         Colors[I].rgbReserved := 0;
         Inc(I);
       end;
@@ -5078,18 +5062,18 @@ end;
 procedure TruncLine7R8G4B(Src, Dest: Pointer; CX: Integer);
 var
   X: Integer;
-  r, g, b: Byte;
+  R, G, B: Byte;
 begin
   InitTruncTables;
   for X := 0 to CX - 1 do
   begin
-    b := TruncIndex04[Byte(Src^)];
+    B := TruncIndex04[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    g := TruncIndex08[Byte(Src^)];
+    G := TruncIndex08[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    r := TruncIndex07[Byte(Src^)];
+    R := TruncIndex07[Byte(Src^)];
     Src := HugeOffset(Src, 1);
-    PByte(Dest)^ := 4 * (8 * r + g) + b;
+    PByte(Dest)^ := 4 * (8 * R + G) + B;
     Dest := HugeOffset(Dest, 1);
   end;
 end;
@@ -5099,7 +5083,7 @@ end;
 procedure Trunc7R8G4B(const Header: TBitmapInfoHeader;
   const Data24, Data8: Pointer);
 begin
-  trunc(Header, Data24, Data8, 8, TruncLine7R8G4B);
+  Trunc(Header, Data24, Data8, 8, TruncLine7R8G4B);
 end;
 
 { Grayscale support }
@@ -5118,7 +5102,7 @@ var
   SrcScanline, DstScanline: Longint;
   Y, X: Integer;
   Src, Dest: PByte;
-  r, g, b: Byte;
+  R, G, B: Byte;
 begin
   SrcScanline := (Header.biWidth * 3 + 3) and not 3;
   DstScanline := (Header.biWidth + 3) and not 3;
@@ -5128,13 +5112,13 @@ begin
     Dest := Data8;
     for X := 0 to Header.biWidth - 1 do
     begin
-      b := Src^;
+      B := Src^;
       Src := HugeOffset(Src, 1);
-      g := Src^;
+      G := Src^;
       Src := HugeOffset(Src, 1);
-      r := Src^;
+      R := Src^;
       Src := HugeOffset(Src, 1);
-      Dest^ := Byte(Longint(Word(r) * 77 + Word(g) * 150 + Word(b) * 29) shr 8);
+      Dest^ := Byte(Longint(Word(R) * 77 + Word(G) * 150 + Word(B) * 29) shr 8);
       Dest := HugeOffset(Dest, 1);
     end;
     Data24 := HugeOffset(Data24, SrcScanline);
@@ -5162,7 +5146,7 @@ var
   SrcScanline, DstScanline: Longint;
   Y, X: Integer;
   Src, Dest: PByte;
-  r, g, b: Byte;
+  R, G, B: Byte;
 begin
   SrcScanline := (Header.biWidth * 3 + 3) and not 3;
   DstScanline := (Header.biWidth + 3) and not 3;
@@ -5172,16 +5156,16 @@ begin
     Dest := Data8;
     for X := 0 to Header.biWidth - 1 do
     begin
-      b := Src^;
+      B := Src^;
       Src := HugeOffset(Src, 1);
-      g := Src^;
+      G := Src^;
       Src := HugeOffset(Src, 1);
-      r := Src^;
+      R := Src^;
       Src := HugeOffset(Src, 1);
       case ((X + Y) mod 3) of
-        0: Dest^ := Byte(r shr 2);
-        1: Dest^ := Byte($40 + (g shr 2));
-        2: Dest^ := Byte($80 + (b shr 2));
+        0: Dest^ := Byte(R shr 2);
+        1: Dest^ := Byte($40 + (G shr 2));
+        2: Dest^ := Byte($80 + (B shr 2));
       end;
       Dest := HugeOffset(Dest, 1);
     end;
@@ -5196,18 +5180,17 @@ const
   MAX_N_COLS = 2049;
   MAX_N_HASH = 5191;
 
-function Hash(r, g, b: Byte): Word;
+function Hash(R, G, B: Byte): Word;
 begin
-  Result := Word(Longint(Longint(r + g) * Longint(g + b) *
-    Longint(b + r)) mod MAX_N_HASH);
+  Result := Word(Longint(Longint(R + G) * Longint(G + B) * Longint(B + R)) mod MAX_N_HASH);
 end;
 
 type
   PFreqRecord = ^TFreqRecord;
   TFreqRecord = record
-    b: Byte;
-    g: Byte;
-    r: Byte;
+    B: Byte;
+    G: Byte;
+    R: Byte;
     Frequency: Longint;
     Nearest: Byte;
   end;
@@ -5218,31 +5201,31 @@ type
     Rm: Byte;
     Gm: Byte;
     BM: Byte;
-    Freqs: array[0..MAX_N_COLS - 1] of TFreqRecord;
-    HashTable: array[0..MAX_N_HASH - 1] of Word;
+    Freqs: array [0..MAX_N_COLS - 1] of TFreqRecord;
+    HashTable: array [0..MAX_N_HASH - 1] of Word;
   end;
 
-function CreateHistogram(r, g, b: Byte): PHist;
+function CreateHistogram(R, G, B: Byte): PHist;
 { create empty histogram }
 begin
   GetMem(Result, SizeOf(THist));
   with Result^ do
   begin
-    Rm := r;
-    Gm := g;
-    BM := b;
+    Rm := R;
+    Gm := G;
+    BM := B;
     ColCount := 0;
   end;
   FillChar(Result^.HashTable, MAX_N_HASH * SizeOf(Word), 255);
 end;
 
-procedure ClearHistogram(var Hist: PHist; r, g, b: Byte);
+procedure ClearHistogram(var Hist: PHist; R, G, B: Byte);
 begin
   with Hist^ do
   begin
-    Rm := r;
-    Gm := g;
-    BM := b;
+    Rm := R;
+    Gm := G;
+    BM := B;
     ColCount := 0;
   end;
   FillChar(Hist^.HashTable, MAX_N_HASH * SizeOf(Word), 255);
@@ -5260,7 +5243,7 @@ function AddToHistogram(var Hist: THist; const Header: TBitmapInfoHeader;
 var
   Step24: Integer;
   HashColor, Index: Word;
-  Rm, Gm, BM, r, g, b: Byte;
+  Rm, Gm, BM, R, G, B: Byte;
   X, Y, ColCount: Longint;
 begin
   Step24 := ((Header.biWidth * 3 + 3) and not 3) - Header.biWidth * 3;
@@ -5272,18 +5255,18 @@ begin
   begin
     for X := 0 to Header.biWidth - 1 do
     begin
-      b := Byte(Data24^) and BM;
+      B := Byte(Data24^) and BM;
       Data24 := HugeOffset(Data24, 1);
-      g := Byte(Data24^) and Gm;
+      G := Byte(Data24^) and Gm;
       Data24 := HugeOffset(Data24, 1);
-      r := Byte(Data24^) and Rm;
+      R := Byte(Data24^) and Rm;
       Data24 := HugeOffset(Data24, 1);
-      HashColor := Hash(r, g, b);
+      HashColor := Hash(R, G, B);
       repeat
         Index := Hist.HashTable[HashColor];
-        if (Index = $FFFF) or ((Hist.Freqs[Index].r = r) and
-          (Hist.Freqs[Index].g = g) and (Hist.Freqs[Index].b = b)) then
-          break;
+        if (Index = $FFFF) or ((Hist.Freqs[Index].R = R) and
+          (Hist.Freqs[Index].G = G) and (Hist.Freqs[Index].B = B)) then
+          Break;
         Inc(HashColor);
         if HashColor = MAX_N_HASH then
           HashColor := 0;
@@ -5299,9 +5282,9 @@ begin
           Exit;
         end;
         Hist.Freqs[ColCount].Frequency := 1;
-        Hist.Freqs[ColCount].b := b;
-        Hist.Freqs[ColCount].g := g;
-        Hist.Freqs[ColCount].r := r;
+        Hist.Freqs[ColCount].B := B;
+        Hist.Freqs[ColCount].G := G;
+        Hist.Freqs[ColCount].R := R;
         Hist.HashTable[HashColor] := ColCount;
         Inc(ColCount);
       end
@@ -5342,9 +5325,9 @@ begin
       end;
     Hist.Freqs[MaxJ].Nearest := Byte(I);
     Hist.Freqs[MaxJ].Frequency := 0; { Prevent later use of Freqs[MaxJ] }
-    Colors[I].rgbBlue := Hist.Freqs[MaxJ].b;
-    Colors[I].rgbGreen := Hist.Freqs[MaxJ].g;
-    Colors[I].rgbRed := Hist.Freqs[MaxJ].r;
+    Colors[I].rgbBlue := Hist.Freqs[MaxJ].B;
+    Colors[I].rgbGreen := Hist.Freqs[MaxJ].G;
+    Colors[I].rgbRed := Hist.Freqs[MaxJ].R;
     Colors[I].rgbReserved := 0;
     Inc(I);
   end;
@@ -5365,9 +5348,9 @@ begin
       MinDist := 3 * 256 * 256;
       for J := 0 to ColorsWanted - 1 do
       begin
-        DeltaB := Hist.Freqs[I].b - Colors[J].rgbBlue;
-        DeltaG := Hist.Freqs[I].g - Colors[J].rgbGreen;
-        DeltaR := Hist.Freqs[I].r - Colors[J].rgbRed;
+        DeltaB := Hist.Freqs[I].B - Colors[J].rgbBlue;
+        DeltaG := Hist.Freqs[I].G - Colors[J].rgbGreen;
+        DeltaR := Hist.Freqs[I].R - Colors[J].rgbRed;
         Dist := Longint(DeltaR * DeltaR) + Longint(DeltaG * DeltaG) +
           Longint(DeltaB * DeltaB);
         if Dist < MinDist then
@@ -5388,7 +5371,7 @@ var
   Step24: Integer;
   Step8: Integer;
   HashColor, Index: Longint;
-  Rm, Gm, BM, r, g, b: Byte;
+  Rm, Gm, BM, R, G, B: Byte;
   X, Y: Longint;
 begin
   Step24 := ((Header.biWidth * 3 + 3) and not 3) - Header.biWidth * 3;
@@ -5400,18 +5383,18 @@ begin
   begin
     for X := 0 to Header.biWidth - 1 do
     begin
-      b := Byte(Data24^) and BM;
+      B := Byte(Data24^) and BM;
       Data24 := HugeOffset(Data24, 1);
-      g := Byte(Data24^) and Gm;
+      G := Byte(Data24^) and Gm;
       Data24 := HugeOffset(Data24, 1);
-      r := Byte(Data24^) and Rm;
+      R := Byte(Data24^) and Rm;
       Data24 := HugeOffset(Data24, 1);
-      HashColor := Hash(r, g, b);
+      HashColor := Hash(R, G, B);
       repeat
         Index := Hist.HashTable[HashColor];
-        if (Hist.Freqs[Index].r = r) and (Hist.Freqs[Index].g = g) and
-          (Hist.Freqs[Index].b = b) then
-          break;
+        if (Hist.Freqs[Index].R = R) and (Hist.Freqs[Index].G = G) and
+          (Hist.Freqs[Index].B = B) then
+          Break;
         Inc(HashColor);
         if HashColor = MAX_N_HASH then
           HashColor := 0;
@@ -5434,7 +5417,7 @@ begin
   try
     repeat
       if AddToHistogram(Hist^, Header, Data24) then
-        break
+        Break
       else
       begin
         if Gm > Rm then
@@ -5583,8 +5566,7 @@ function BytesPerScanLine(PixelsPerScanline, BitsPerPixel,
   Alignment: Longint): Longint;
 begin
   Dec(Alignment);
-  Result := ((PixelsPerScanline * BitsPerPixel) + Alignment) and
-    not Alignment;
+  Result := ((PixelsPerScanline * BitsPerPixel) + Alignment) and not Alignment;
   Result := Result div 8;
 end;
 
@@ -5641,8 +5623,7 @@ begin
       Inc(InfoHeaderSize, 12);
   end
   else
-    InfoHeaderSize := SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) *
-      (1 shl BI.biBitCount);
+    InfoHeaderSize := SizeOf(TBitmapInfoHeader) + SizeOf(TRGBQuad) * (1 shl BI.biBitCount);
   ImageSize := BI.biSizeImage;
 end;
 
@@ -5652,8 +5633,7 @@ var
   OldPal: HPALETTE;
   DC: HDC;
 begin
-  InitializeBitmapInfoHeader(Bitmap, TBitmapInfoHeader(BitmapInfo),
-    PixelFormat);
+  InitializeBitmapInfoHeader(Bitmap, TBitmapInfoHeader(BitmapInfo), PixelFormat);
   with TBitmapInfoHeader(BitmapInfo) do
     biHeight := Abs(biHeight);
   OldPal := 0;
@@ -5885,6 +5865,7 @@ procedure GrayscaleBitmap(Bitmap: TBitmap);
 begin
   SetBitmapPixelFormat(Bitmap, pf8bit, mmGrayscale);
 end;
+
 {$ENDIF VCL}
 
 function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean):
@@ -5901,8 +5882,8 @@ begin
       Zoom := MaxFloat([ImageW / MaxW, ImageH / MaxH]);
       if Zoom > 0 then
       begin
-        X := round(ImageW * 0.98 / Zoom);
-        Y := round(ImageH * 0.98 / Zoom);
+        X := Round(ImageW * 0.98 / Zoom);
+        Y := Round(ImageH * 0.98 / Zoom);
       end
       else
       begin
@@ -5974,8 +5955,7 @@ end;
 
 procedure TJvGradientOptions.Draw(Canvas: TCanvas; Rect: TRect);
 begin
-  GradientFillRect(Canvas, Rect, FStartColor, FEndColor, FDirection,
-    FStepCount);
+  GradientFillRect(Canvas, Rect, FStartColor, FEndColor, FDirection, FStepCount);
 end;
 
 procedure TJvGradientOptions.SetStartColor(Value: TColor);
@@ -6095,13 +6075,13 @@ end;
 procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean; Headers: Boolean);
 var
-  r, C: Integer;
+  R, C: Integer;
   ColWidths: array of Word;
-  s: string;
+  S: string;
 
   procedure AddLine;
   begin
-    Strings.Add(TrimRight(s));
+    Strings.Add(TrimRight(S));
   end;
 
   function StrPadRight(const S: string; Len: Integer): string;
@@ -6128,42 +6108,42 @@ var
   end;
 
 begin
-  SetLength(s, 256);
+  SetLength(S, 256);
   with ListView do
   begin
     SetLength(ColWidths, Columns.Count);
     if Headers then
       for C := 0 to Columns.Count - 1 do
         ColWidths[C] := Length(Trim(Columns[C].Caption));
-    for r := 0 to Items.Count - 1 do
-      if not SelectedOnly or Items[r].Selected then
+    for R := 0 to Items.Count - 1 do
+      if not SelectedOnly or Items[R].Selected then
       begin
-        ColWidths[0] := Max(ColWidths[0], Length(Trim(Items[r].Caption)));
-        for C := 0 to Items[r].SubItems.Count - 1 do
+        ColWidths[0] := Max(ColWidths[0], Length(Trim(Items[R].Caption)));
+        for C := 0 to Items[R].SubItems.Count - 1 do
           ColWidths[C + 1] := Max(ColWidths[C + 1],
-            Length(Trim(Items[r].SubItems[C])));
+            Length(Trim(Items[R].SubItems[C])));
       end;
     Strings.BeginUpdate;
     try
       if Headers then
         with Columns do
         begin
-          s := '';
+          S := '';
           for C := 0 to Count - 1 do
-            s := s + MakeCellStr(Items[C].Caption, C);
+            S := S + MakeCellStr(Items[C].Caption, C);
           AddLine;
-          s := '';
+          S := '';
           for C := 0 to Count - 1 do
-            s := s + StringOfChar('-', ColWidths[C]) + ' ';
+            S := S + StringOfChar('-', ColWidths[C]) + ' ';
           AddLine;
         end;
-      for r := 0 to Items.Count - 1 do
-        if not SelectedOnly or Items[r].Selected then
-          with Items[r] do
+      for R := 0 to Items.Count - 1 do
+        if not SelectedOnly or Items[R].Selected then
+          with Items[R] do
           begin
-            s := MakeCellStr(Caption, 0);
+            S := MakeCellStr(Caption, 0);
             for C := 0 to Min(SubItems.Count, Columns.Count - 1) - 1 do
-              s := s + MakeCellStr(SubItems[C], C + 1);
+              S := S + MakeCellStr(SubItems[C], C + 1);
             AddLine;
           end;
     finally
@@ -6172,13 +6152,12 @@ begin
   end;
 end;
 
-function JvListViewSafeSubItemString(Item: TListItem; SubItemIndex: Integer):
-  string;
+function JvListViewSafeSubItemString(Item: TListItem; SubItemIndex: Integer): string;
 begin
   if Item.SubItems.Count > SubItemIndex then
     Result := Item.SubItems[SubItemIndex]
   else
-    Result := ''
+    Result := '';
 end;
 
 procedure JvListViewSortClick(Column: TListColumn; AscendingSortImage: Integer;
@@ -6217,17 +6196,17 @@ procedure JvListViewCompare(ListView: TListView; Item1, Item2: TListItem;
 var
   ColIndex: Integer;
 
-  function FmtStrToInt(s: string): Integer;
+  function FmtStrToInt(S: string): Integer;
   var
     I: Integer;
   begin
     I := 1;
-    while I <= Length(s) do
-      if not (s[I] in (DigitChars + ['-'])) then
-        Delete(s, I, 1)
+    while I <= Length(S) do
+      if not (S[I] in (DigitChars + ['-'])) then
+        Delete(S, I, 1)
       else
         Inc(I);
-    Result := StrToInt(s);
+    Result := StrToInt(S);
   end;
 
 begin
@@ -6259,7 +6238,7 @@ procedure JvListViewSelectAll(ListView: TListView; Deselect: Boolean);
 var
   I: Integer;
   {$IFDEF VCL}
-  h: THandle;
+  H: THandle;
   Data: Integer;
   {$ENDIF VCL}
   SaveOnSelectItem: TLVSelectItemEvent;
@@ -6272,14 +6251,14 @@ begin
       WaitCursor;
       try
         {$IFDEF VCL}
-        h := Handle;
+        H := Handle;
         OnSelectItem := nil;
         if Deselect then
           Data := 0
         else
           Data := LVIS_SELECTED;
         for I := 0 to Items.Count - 1 do
-          ListView_SetItemState(h, I, Data, LVIS_SELECTED);
+          ListView_SetItemState(H, I, Data, LVIS_SELECTED);
         {$ENDIF VCL}
         {$IFDEF VisualCLX}
         for I := 0 to Items.Count - 1 do
@@ -6362,13 +6341,12 @@ begin
   Result := -1;
   Columns := TListColumns(Column.Collection);
   SetLength(ColumnOrder, Columns.Count);
-  ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count,
-    PInteger(ColumnOrder));
+  ListView_GetColumnOrderArray(Columns.Owner.Handle, Columns.Count, PInteger(ColumnOrder));
   for I := 0 to High(ColumnOrder) do
     if ColumnOrder[I] = Column.Index then
     begin
       Result := I;
-      break;
+      Break;
     end;
 end;
 
@@ -6402,13 +6380,12 @@ begin
   Result := MsgBox(Text, Application.Title, Flags);
 end;
 
-procedure UpdateTrackFont(TrackFont, Font: TFont; TrackOptions:
-  TJvTrackFontOptions);
+procedure UpdateTrackFont(TrackFont, Font: TFont; TrackOptions: TJvTrackFontOptions);
 begin
   if hoFollowFont in TrackOptions then
   begin
     if not (hoPreserveCharSet in TrackOptions) then
-      TrackFont.CharSet := Font.CharSet;
+      TrackFont.Charset := Font.Charset;
     if not (hoPreserveColor in TrackOptions) then
       TrackFont.Color := Font.Color;
     if not (hoPreserveHeight in TrackOptions) then
@@ -6572,8 +6549,8 @@ begin
     begin
       { begin RxLib }
       { (rom) deactivated  can cause problems
-      Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
-      Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+      Screen.Cursors[crHand] := LoadCursor(HInstance, 'JV_HANDCUR');
+      Screen.Cursors[crDragHand] := LoadCursor(HInstance, 'JV_DRAGCUR');
       }
       { end RxLib }
       {$IFDEF VCL}
@@ -6753,36 +6730,28 @@ begin
   Canvas.Pen.Color := Color;
   case Direction of
     akLeft:
+      for I := 0 to Size div 2 do
       begin
-        for I := 0 to Size div 2 do
-        begin
-          Canvas.MoveTo(Rect.Right - I, Rect.Top + I);
-          Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
-        end;
+        Canvas.MoveTo(Rect.Right - I, Rect.Top + I);
+        Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
       end;
     akRight:
+      for I := 0 to Size div 2 do
       begin
-        for I := 0 to Size div 2 do
-        begin
-          Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
-          Canvas.LineTo(Rect.Left + I, Rect.Bottom - I);
-        end;
+        Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
+        Canvas.LineTo(Rect.Left + I, Rect.Bottom - I);
       end;
     akTop:
+      for I := 0 to Size div 2 do
       begin
-        for I := 0 to Size div 2 do
-        begin
-          Canvas.MoveTo(Rect.Left + I, Rect.Bottom - I);
-          Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
-        end;
+        Canvas.MoveTo(Rect.Left + I, Rect.Bottom - I);
+        Canvas.LineTo(Rect.Right - I, Rect.Bottom - I);
       end;
     akBottom:
+      for I := 0 to Size div 2 do
       begin
-        for I := 0 to Size div 2 do
-        begin
-          Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
-          Canvas.LineTo(Rect.Right - I, Rect.Top + I);
-        end;
+        Canvas.MoveTo(Rect.Left + I, Rect.Top + I);
+        Canvas.LineTo(Rect.Right - I, Rect.Top + I);
       end;
   end;
 end;
@@ -6959,8 +6928,9 @@ begin
   FBottomRight.X := FTopLeft.X + Value;
 end;
 
-function SelectColorByLuminance(AColor, DarkColor, BrightColor:TColor):TColor;
-var ACol:Longint;
+function SelectColorByLuminance(AColor, DarkColor, BrightColor: TColor): TColor;
+var
+  ACol: Longint;
 begin
   ACol := ColorToRGB(AColor) and $00FFFFFF;
   if ((2.99 * GetRValue(ACol) + 5.87 * GetGValue(ACol) + 1.14 * GetBValue(ACol)) > $400) then
