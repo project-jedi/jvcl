@@ -1,9 +1,11 @@
 object Form1: TForm1
   Left = 238
   Top = 113
-  Width = 413
-  Height = 367
+  AutoScroll = False
+  BorderWidth = 2
   Caption = 'JvMultiHTTPGrabber demo'
+  ClientHeight = 336
+  ClientWidth = 401
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,23 +21,23 @@ object Form1: TForm1
   TextHeight = 13
   object Splitter1: TSplitter
     Left = 0
-    Top = 233
-    Width = 405
-    Height = 3
-    Cursor = crVSplit
+    Top = 227
+    Width = 401
+    Height = 5
+    Cursor = crSizeNS
     Align = alBottom
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 405
+    Width = 401
     Height = 61
     Align = alTop
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
     DesignSize = (
-      405
+      401
       61)
     object Label1: TLabel
       Left = 12
@@ -45,7 +47,7 @@ object Form1: TForm1
       Caption = 'URL of file to download:'
     end
     object btnDownload: TButton
-      Left = 233
+      Left = 229
       Top = 26
       Width = 75
       Height = 25
@@ -56,7 +58,7 @@ object Form1: TForm1
     object cbURL: TComboBox
       Left = 12
       Top = 30
-      Width = 214
+      Width = 210
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       ItemHeight = 13
@@ -74,7 +76,7 @@ object Form1: TForm1
         'www.delphipages.com')
     end
     object btnDownloadAll: TButton
-      Left = 317
+      Left = 313
       Top = 26
       Width = 75
       Height = 25
@@ -86,17 +88,20 @@ object Form1: TForm1
   object gbContent: TGroupBox
     Left = 0
     Top = 61
-    Width = 405
-    Height = 172
+    Width = 401
+    Height = 166
     Align = alClient
     Caption = ' Content: '
     TabOrder = 1
+    DesignSize = (
+      401
+      166)
     object reContent: TRichEdit
-      Left = 2
-      Top = 15
-      Width = 401
-      Height = 155
-      Align = alClient
+      Left = 5
+      Top = 17
+      Width = 390
+      Height = 142
+      Anchors = [akLeft, akTop, akRight, akBottom]
       Lines.Strings = (
         
           'This demo shows how you can use the JvMultiHTTPGrabber component' +
@@ -108,13 +113,14 @@ object Form1: TForm1
         
           'Errors and informational messages are reported in the bottom ric' +
           'h edit and the content of the downloaded file(s) are shown in th' +
-          'is rich edit.'
+          'is rich edit (unless the "Save To File" option is checked in whi' +
+          'ch case downloads are saved to file).'
         ''
         
           'When you click "Download" or "Download All", the current URL is ' +
           'added to the history list. To remove an item from the list, sele' +
           'ct it from the list, right-click and select "Remove from history' +
-          '" from the menu. The URL'#39's in th ehistory list are remembered un' +
+          '" from the menu. The URL'#39's in the history list are remembered un' +
           'til the next time you start the program.')
       ScrollBars = ssBoth
       TabOrder = 0
@@ -124,18 +130,21 @@ object Form1: TForm1
   end
   object gnLog: TGroupBox
     Left = 0
-    Top = 236
-    Width = 405
+    Top = 232
+    Width = 401
     Height = 85
     Align = alBottom
     Caption = ' Log: '
     TabOrder = 2
+    DesignSize = (
+      401
+      85)
     object reLog: TRichEdit
-      Left = 2
+      Left = 5
       Top = 15
-      Width = 401
-      Height = 68
-      Align = alClient
+      Width = 390
+      Height = 64
+      Anchors = [akLeft, akTop, akRight, akBottom]
       ScrollBars = ssBoth
       TabOrder = 0
       WantReturns = False
@@ -144,8 +153,8 @@ object Form1: TForm1
   end
   object sbMain: TStatusBar
     Left = 0
-    Top = 321
-    Width = 405
+    Top = 317
+    Width = 401
     Height = 19
     Panels = <
       item
@@ -159,8 +168,8 @@ object Form1: TForm1
     OnResize = sbMainResize
   end
   object pbProgress: TProgressBar
-    Left = 24
-    Top = 108
+    Left = 66
+    Top = 186
     Width = 108
     Height = 13
     Min = 0
@@ -169,11 +178,11 @@ object Form1: TForm1
   end
   object JvMultiHttpGrabber1: TJvMultiHttpGrabber
     Agent = 'TJvMultiHttpGrabber Component'
-    Referer = 'JVCL'
     OnClosingConnection = JvMultiHttpGrabber1ClosingConnection
     OnClosedConnection = JvMultiHttpGrabber1ClosedConnection
     OnConnectingToServer = JvMultiHttpGrabber1ConnectingToServer
     OnConnectedToServer = JvMultiHttpGrabber1ConnectedToServer
+    OnDoneFile = JvMultiHttpGrabber1DoneFile
     OnDoneStream = JvMultiHttpGrabber1DoneStream
     OnError = JvMultiHttpGrabber1Error
     OnProgress = JvMultiHttpGrabber1Progress
@@ -222,6 +231,11 @@ object Form1: TForm1
       Hint = 'Clear the content'
       OnExecute = acClearContentExecute
     end
+    object acSaveToFile: TAction
+      AutoCheck = True
+      Caption = 'Save To File'
+      OnExecute = acSaveToFileExecute
+    end
   end
   object popMain: TPopupMenu
     Left = 318
@@ -249,6 +263,16 @@ object Form1: TForm1
     end
     object Clearlog1: TMenuItem
       Action = acClearLog
+    end
+    object N3: TMenuItem
+      Caption = '-'
+    end
+    object Options1: TMenuItem
+      Caption = 'Options'
+      object acSaveToFile1: TMenuItem
+        Action = acSaveToFile
+        AutoCheck = True
+      end
     end
   end
 end
