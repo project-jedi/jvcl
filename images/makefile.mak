@@ -11,8 +11,8 @@ ROOT = $(MAKEDIR)\..
 #----------------------------------------
 RSRC = ..\Resources
 #-----------------------------------------------
-MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
-BRC = $(ROOT)\bin\brc32.exe -r
+MAKE = "$(ROOT)\bin\make.exe" -$(MAKEFLAGS) -f$**
+BRC = "$(ROOT)\bin\brc32.exe" -r
 
 .rc.res:
   $(BRC) -fo$(RSRC)\$&.res $&.rc
