@@ -47,7 +47,7 @@ implementation
 {$IFDEF LINUX}
 uses
   Variants;
-{$ENDIF}
+{$ENDIF LINUX}
 
 { TSearchRec }
 

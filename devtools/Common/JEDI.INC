@@ -1,1 +1,1 @@
-{$INCLUDE ..\..\common\JEDI.INC}
+{$I ..\..\common\jedi.inc}

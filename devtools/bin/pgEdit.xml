@@ -48,7 +48,7 @@
     be available.
   -->
   <models>
-    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" packages="..\..\packages" incfile="..\..\common\JVCL.inc">
+    <model name="JVCL" prefix="Jv" format="%p%n%e%v%t" packages="..\..\packages" incfile="..\..\common\jvcl.inc">
       <targets>
         <target name="c5" dir="bcb5"/>
         <target name="c6" dir="bcb6" pname="c6p" pdir="bcb6per"/>

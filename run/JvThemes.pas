@@ -24,6 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
+{$IFDEF JVCLThemesEnabled}
+{$I windowsonly.inc}
+{$ENDIF JVCLThemesEnabled}
 
 unit JvThemes;
 
@@ -60,8 +63,6 @@ type
   end;
 
 {$IFDEF JVCLThemesEnabled}
-
-{$I windowsonly.inc}
 
 // type name redirection
 type

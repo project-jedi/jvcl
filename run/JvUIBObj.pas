@@ -23,11 +23,14 @@
 { Last modified: Mar 16, 2003                                                  }
 {                                                                              }
 {******************************************************************************}
+
 {$I jvcl.inc}
 {$I jvuib.inc}
+
 unit JvUIBObj;
 
 interface
+
 uses
   IdTCPClient, IdTCPServer, IdTCPConnection, IdException, SysUtils,
   JvUIBConst, JvUIBLib, Classes;

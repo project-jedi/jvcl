@@ -25,10 +25,10 @@
 {                                                                              }
 {******************************************************************************}
 
-unit JvUIBDataSet;
-
 {$I jvcl.inc}
 {$I jvuib.inc}
+
+unit JvUIBDataSet;
 
 interface
 

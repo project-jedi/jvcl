@@ -28,10 +28,10 @@
 {                                                                              }
 {******************************************************************************}
 
-unit JvUIBLib;
-
 {$I jvcl.inc}
 {$I jvuib.inc}
+
+unit JvUIBLib;
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}
