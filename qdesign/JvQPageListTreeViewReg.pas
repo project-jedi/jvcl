@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,15 +36,9 @@ unit JvQPageListTreeViewReg;
 interface
 
 uses
-  Classes,
-  
-  
-  QImgList,
-  
-  
-  DesignEditors, DesignIntf, DesignMenus
-  
-  
+  Classes,  
+  QImgList,  
+  DesignEditors, DesignIntf, DesignMenus,  
   ;
 
 procedure Register;
@@ -56,15 +51,11 @@ procedure Register;
 {$ENDIF LINUX}
 
 implementation
-
-uses
-  
-  
-  QComCtrls,
-  
-  JvQNavigationPane, JvQPageList, JvQPageListTreeView, JvQDsgnConsts,
-  JvQPageListEditors, JvQTreeItemsEditorForm, JvQPageLinkEditorForm,
-  JvQPageListEditorForm;
+uses  
+  QComCtrls, 
+  JvQNavigationPane, JvQPageList, JvQPageListTreeView, 
+  JvQDsgnConsts, JvQPageListEditors, JvQNavPaneEditors,
+  JvQTreeItemsEditorForm, JvQPageLinkEditorForm, JvQPageListEditorForm;
 
 
 procedure Register;
@@ -75,7 +66,7 @@ const
 
 begin
   RegisterComponents('Jv NavPane',[TJvNavigationPane, TJvNavIconButton, TJvNavPanelButton,
-    TJvNavPanelHeader, TJvNavPanelDivider, TJvOutlookSplitter, TJvNavPaneStyleManager]);
+    TJvNavPanelHeader, TJvNavPanelDivider, TJvOutlookSplitter, TJvNavPaneStyleManager, TJvNavPaneToolPanel]);
 
   RegisterComponents(RsPaletteListComboTree, [TJvSettingsTreeView,
     TJvPageListTreeView, TJvPageList]);
@@ -84,22 +75,25 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvShowDesignCaption), nil, '', TJvShowDesignCaptionProperty);
   RegisterClasses([TJvSettingsTreeView, TJvPageListTreeView, TJvPageList, TJvStandardPage]);
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
-  RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);
-  
+  RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor); 
   RegisterComponentEditor(TCustomTreeView, TJvTreeViewComponentEditor);
   RegisterComponentEditor(TJvCustomPageListTreeView, TJvPageTreeViewComponentEditor);
   // register for the standard TTreeView as well
-  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
+  //  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
   RegisterPropertyEditor(TypeInfo(TJvPageLinks),
     TJvCustomPageListTreeView, '', TJvPageLinksProperty);
   RegisterPropertyEditor(TypeInfo(TJvCustomPage),
     TJvCustomPageList, cActivePage, TJvActivePageProperty);
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvSettingsTreeImages, '', TJvSettingsTreeImagesProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelPage, 'ImageIndex', TJvNavPanePageImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelHeader, 'ImageIndex', TJvNavPanelHeaderImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavPanelButton, 'ImageIndex', TJvNavPanelButtonImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvNavIconButton, 'ImageIndex', TJvNavIconButtonImageIndexProperty);
 
-  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'CollapsedIndex', TJvSettingsTreeImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'ExpandedIndex', TJvSettingsTreeImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'ImageIndex', TJvSettingsTreeImagesProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'SelectedIndex', TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'CollapsedIndex', TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'ExpandedIndex', TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'ImageIndex', TJvSettingsTreeImagesProperty);
+  //  RegisterPropertyEditor(TypeInfo(Integer), TJvSettingsTreeImages, 'SelectedIndex', TJvSettingsTreeImagesProperty);
 end;
 
 //=== TJvCustomPageEditor ====================================================

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,21 +39,15 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  
-  
+  Classes,  
   QControls, QStdCtrls, QExtCtrls, QGraphics, QActnList, QImgList, QDialogs,
-  QTypes,
-  
-  
-  DesignEditors, DesignIntf,
-  
+  QTypes,  
+  DesignEditors, DesignIntf, 
   JvQTypes, JvQDsgnConsts, JvQJCLUtils, JVQCLVer, JvQComponent, JvQActions,
   JvQActnResForm, JvQJVCLAboutForm, JvQIDEZoom, JvQBaseDlg,
   JvQDataProvider, JvQDataProviderIntf, JvQColorProvider, JvQContextProvider,
   JvQDsgnEditors, JvQJVCLAboutEditor, JvQBaseDlgEditor, JvQColorEditor,
-  JvQPaintBoxEditor, JvQColorProviderEditors, JvQDataProviderEditors,
-  
+  JvQPaintBoxEditor, JvQColorProviderEditors, JvQDataProviderEditors, 
   {$IFDEF MSWINDOWS}
   JvQAppRegistryStorage,
   {$ENDIF MSWINDOWS}
@@ -68,38 +63,29 @@ uses
 procedure Register;
 const
   BaseClass: TClass = TComponent;
-begin
-  
-  GroupDescendentsWith(TJvComponent, TControl);
-  
+begin 
+  GroupDescendentsWith(TJvComponent, TControl); 
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
-   TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
-  
+   TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]); 
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
   {$IFDEF MSWINDOWS}
   RegisterComponents(RsPalettePersistence, [TJvAppRegistryStorage]);
   {$ENDIF MSWINDOWS}
-
   
-  
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty);
-  
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty); 
 
   // The TJvPersistent class needs an editor for D5 and BCB5, but for
   // all other compilers, it doesn't need anything as it is declared as
   // a SubComponent. However, we want to hide the Name and Tag property
-  // in this case, thus the registration of 'nil' property editors
-  
+  // in this case, thus the registration of 'nil' property editors 
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
-  RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
-  
+  RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil); 
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-
-  
+ 
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
@@ -122,8 +108,7 @@ begin
 
   RegisterComponentEditor(TPaintBox, TJvPaintBoxEditor);
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
-
-  
+ 
 
   {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
@@ -139,8 +124,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
-
-  
+ 
 
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,11 +36,8 @@ unit JvQColorProviderAddDialogForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  Types, QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls,
-  
+  SysUtils, Classes,  
+  Types, QGraphics, QControls, QForms, QDialogs, QButtons, QStdCtrls, 
   JvQColorProvider, JvQDataProvider, JvQDataProviderIntf, JvQTypes;
 
 type
@@ -50,9 +48,9 @@ type
     btnColor: TSpeedButton;
     btnOK: TButton;
     btnCancel: TButton;
-    procedure cbColorChange(Sender: TObject);
-    procedure cbColorDrawItem(Control: TWinControl; Index: Integer;
-      Rect: TRect; State: TOwnerDrawState);
+    procedure cbColorChange(Sender: TObject);  
+    procedure cbColorDrawItem(Sender: TObject; Index: Integer;
+      Rect: TRect; State: TOwnerDrawState; var Handled: Boolean); 
     procedure btnColorClick(Sender: TObject);
     procedure btnColorResize(Sender: TObject);
     procedure rbProviderClick(Sender: TObject);
@@ -289,8 +287,11 @@ begin
   end;
 end;
 
-procedure TfrmAddColor.cbColorDrawItem(Control: TWinControl;
-  Index: Integer; Rect: TRect; State: TOwnerDrawState);
+
+
+procedure TfrmAddColor.cbColorDrawItem(Sender: TObject; Index: Integer;
+  Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+
 var
   VL: IJvDataConsumerViewList;
   Item: IJvDataItem;

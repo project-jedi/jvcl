@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -37,20 +38,14 @@ uses
   SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
-  
-  
+  {$ENDIF MSWINDOWS}  
   QControls, QForms, QToolWin,
   QMenus, QActnList, QComCtrls, QImgList,
-  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
-  
-  JvQOutlookBar, QTypes, QExtCtrls;
+  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows, 
+  JvQOutlookBar;
 
-type
-  
-  
-  TFrmOLBEditor = class(TClxDesignWindow)
-  
+type  
+  TFrmOLBEditor = class(TClxDesignWindow) 
     tbTop: TToolBar;
     btnNew: TToolButton;
     btnDel: TToolButton;
@@ -116,15 +111,11 @@ type
   public
     property OutlookBar: TJvCustomOutlookBar read FOutlookBar write SetOutlookBar;
     procedure Activated; override;
-    function GetEditState: TEditState; override;
-    
+    function GetEditState: TEditState; override; 
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
-    procedure ItemsModified(const Designer: IDesigner); override;
-    
-    function UniqueName(Component: TComponent): string; override;
-    
-    
+    procedure ItemsModified(const Designer: IDesigner); override; 
+    function UniqueName(Component: TComponent): string; override;  
   end;
 
 implementation
@@ -134,12 +125,9 @@ uses
   Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  JvQRegistryIniFile,
-  {$ENDIF LINUX}
-  
-  
-  QDialogs,
-  
+  JvQQRegistryIniFile,
+  {$ENDIF LINUX}  
+  QDialogs, 
   JvQConsts, JvQDsgnConsts;
 
 
@@ -548,11 +536,10 @@ begin
 end;
 
 procedure TFrmOLBEditor.StoreSettings;
-
 var
   R: TRegIniFile;
 begin
-(*)  R := TRegIniFile.Create;
+  R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
     R.OpenKey(GetRegPath, True);
@@ -564,14 +551,12 @@ begin
   finally
     R.Free;
   end;
-(*)
 end;
 
 procedure TFrmOLBEditor.LoadSettings;
 var
   R: TRegIniFile;
 begin
-(*)
   R := TRegIniFile.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -586,17 +571,14 @@ begin
   finally
     R.Free;
   end;
-(*)
 end;
 
-function TFrmOLBEditor.GetRegPath: string;
 {$IFDEF MSWINDOWS}
+function TFrmOLBEditor.GetRegPath: string;
 const
   cRegKey = '\JVCL\OutlookBar Editor';
-begin
-
-  Result := Designer.GetBaseRegKey + cRegKey;
-
+begin 
+  Result := Designer.GetBaseRegKey + cRegKey; 
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}

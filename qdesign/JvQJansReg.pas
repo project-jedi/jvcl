@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 // No licence info because this should be merged with other Registration Unit
 
@@ -11,20 +12,14 @@ unit JvQJansReg;
 interface
 
 uses
-  Classes, Controls,
-  
-  DesignIntf, DesignEditors,
-  
-  
-  CLXEditors,
-  
-  
-  
+  Classes, QControls, 
+  DesignIntf, DesignEditors,  
+  CLXEditors,   
   JvQMarkupLabel, JvQMarkupViewer, JvQSAL, JvQSALCore, JvQSALMath,
   JvQYearGrid, JvQTracker, JvQAirBrush, JvQGridFilter, JvQGridPrinter,
   JvQArrayButton, JvQForth, JvQTurtle, JvQPaintFX, JvQDrawImage,
   JvQBitmapButton, JvQSimScope, JvQSimIndicator, JvQSimPID, JvQSIMPIDLinker,
-  JvQSimLogic, JvQSpellerForm, JvQCSVBaseControls, JvQCsvBaseEditor;
+  JvQSimLogic, JvQSpellerForm, JvQCSVBaseControls, JvQCSVBaseEditor;
 
 procedure Register;
 
@@ -41,8 +36,7 @@ procedure Register;
 const
   cCSVField = 'CSVField';
   cCSVFieldName = 'CSVFieldName';
-begin
-  
+begin 
   GroupDescendentsWith(TJvSALCore, TControl);
   GroupDescendentsWith(TJvSALMath, TControl);
   GroupDescendentsWith(TJvGridFilter, TControl);
@@ -51,18 +45,14 @@ begin
   GroupDescendentsWith(TJvForthScript, TControl);
   GroupDescendentsWith(TJvTurtle, TControl);
   GroupDescendentsWith(TJvSimPIDLinker, TControl);
-  GroupDescendentsWith(TJvSpeller, TControl);
-  
+  GroupDescendentsWith(TJvSpeller, TControl); 
 
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
-  RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
-    
+  RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL, 
     TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
-    TJvGridFilter, TJvGridPrinter,
-    
+    TJvGridFilter, TJvGridPrinter, 
     TJvPaintFX, TJvDrawImage,
-    TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller
-    ]);
+    TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller ]);
   // Simulator Components
   RegisterComponents('Jv Jans SIM', [TJvSimScope, TJvSimIndicator, TJvSimPID,
     TJvSimPIDLinker, TJvSimConnector, TJvLogic, TJvSimButton, TJvSimLight,

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -34,15 +35,9 @@ unit JvQFooterEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QForms, QGraphics, QImgList, QDialogs, QControls,
-  
-  
-  
-  DesignIntf, DesignEditors, DesignMenus;
-  
+  SysUtils, Classes,  
+  QForms, QGraphics, QImgList, QDialogs, QControls,   
+  DesignIntf, DesignEditors, DesignMenus; 
 
 type
   TJvFooterEditor = class(TComponentEditor)
@@ -55,11 +50,8 @@ type
 
 implementation
 
-uses
-  
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQTypes, JvQFooter, JvQDsgnConsts;
 
 //=== TJvFooterEditor ========================================================

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -21,13 +22,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2004-01-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -47,15 +47,9 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  
-  
-  QImgList,
-  
-  
-  DesignIntf, DesignEditors,
-  
-  
+  Classes,  
+  QImgList,  
+  DesignIntf, DesignEditors,  
   {$IFDEF USEJVCL}
   JvQDsgnConsts,
   {$ENDIF USEJVCL}
@@ -71,11 +65,9 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteXPControls, [TJvXPStyleManager, TJvXPBar, TJvXPContainer,
     TJvXPButton, TJvXPToolButton, TJvXPCheckBox]);
-    (*)
   RegisterPropertyEditor(TypeInfo(TImageIndex), TJvXPBarItem, 'ImageIndex',
     TJvXPItemImageIndexPropertyEditor);
   RegisterComponentEditor(TJvXPBar, TJvXPBarItemEditor);
-    (*)
 end;
 
 end.

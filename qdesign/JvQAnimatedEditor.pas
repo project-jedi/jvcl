@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,36 +21,31 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvQAnimatedEditor;
 
 interface
 
 uses
-  SysUtils, Classes,
-  QForms, QGraphics, QImgList,
-  QDialogs, QControls,
-
-  DesignIntf, DesignEditors, DesignMenus,
-
+  Windows, QForms, QGraphics, QImgList,
+  SysUtils, Classes, QDialogs, QControls, 
+  DesignIntf, DesignEditors, DesignMenus, VCLEditors, 
   JvQAnimatedImage;
 
 type
   TJvAnimatedEditor = class(TComponentEditor)
   private
-    FContinue: Boolean;
-    
-    procedure CheckEdit(const PropertyEditor: IProperty);
-    
+    FContinue: Boolean; 
+    procedure CheckEdit(const PropertyEditor: IProperty); 
     procedure EditImage(Image: TJvAnimatedImage);
     procedure LoadAniFile(Image: TJvAnimatedImage);
   public
@@ -77,8 +73,7 @@ begin
     begin
       PropertyEditor.Edit;
       FContinue := False;
-    end;
-  
+    end; 
 end;
 
 
@@ -89,15 +84,11 @@ type
 procedure TJvAnimatedEditor.EditImage(Image: TJvAnimatedImage);
 var
   Components: TDesignerSelectionList;
-begin
-  
-  Components := TDesignerSelections.Create;
-  
-  
+begin 
+  Components := TDesignerSelections.Create;  
     FContinue := True;
     Components.Add(Component);
-    GetComponentProperties(Components, tkAny, Designer, CheckEdit);
-  
+    GetComponentProperties(Components, tkAny, Designer, CheckEdit); 
 end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);

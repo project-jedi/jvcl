@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -33,16 +34,10 @@ unit JvQIconListForm;
 interface
 
 uses
-  Classes,
-  
-  
+  Classes,  
   QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QExtDlgs,
-  QImgList, QComCtrls, QGraphics, QToolWin, ClxEditors,
-  
-  
-  RTLConsts, DesignIntf, DesignEditors,
-  
-  
+  QImgList, QComCtrls, QGraphics, QToolWin, ClxEditors,  
+  RTLConsts, DesignIntf, DesignEditors,  
   JvQIconList, JvQComponent;
 
 type
@@ -97,12 +92,9 @@ type
     procedure CheckButtons;
     procedure ValidateImage;
     procedure CheckEnablePaste;
-    procedure LoadAniFile;
-    
-  protected
-    
-    procedure Activate; override;
-    
+    procedure LoadAniFile; 
+  protected 
+    procedure Activate; override; 
   public
     Modified: Boolean;
   end;
@@ -120,11 +112,8 @@ procedure EditIconList(IconList: TJvIconList);
 implementation
 
 uses
-  SysUtils,
-  
-  
-  QClipbrd, QConsts,
-  
+  SysUtils,  
+  QClipbrd, QConsts, 
   Math,
   JvQJVCLUtils, JvQJCLUtils, JvQDsgnConsts, JvQAni;
 
@@ -265,11 +254,8 @@ begin
 end;
 
 procedure TIconListDialog.CheckEnablePaste;
-begin
-  
-  
-  Paste.Enabled := ClipBoard.Provides('image/delphi.bitmap')
-  
+begin  
+  Paste.Enabled := Clipboard.Provides('image/delphi.bitmap') 
 end;
 
 procedure TIconListDialog.SetSelectedIndex(Index: Integer; Force: Boolean);
@@ -410,11 +396,8 @@ end;
 procedure TIconListDialog.PasteClick(Sender: TObject);
 var
   Ico: TIcon;
-begin
-  
-  
-  if Clipboard.Provides('image/delphi.bitmap') then
-  
+begin  
+  if Clipboard.Provides('image/delphi.bitmap') then 
   begin
     Ico := CreateIconFromClipboard;
     try

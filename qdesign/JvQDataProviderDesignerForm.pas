@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,18 +36,13 @@ unit JvQDataProviderDesignerForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QDialogs,
-  QActnList, QMenus, QImgList, QToolWin, QComCtrls, QStdCtrls, QExtCtrls,
-  
-  
-  DesignIntf, DesignEditors,
-  
+  QActnList, QMenus, QImgList, QToolWin, QComCtrls, QStdCtrls, QExtCtrls,  
+  DesignIntf, DesignEditors, 
   JvQBaseDsgnForm, JvQDataProvider, JvQDataProviderItemDesign, JvQDataProviderIntf,
   JvQProviderTreeListFrame, JvQBaseDsgnFrame, JvQBaseDsgnToolbarFrame,
-  JvQStdToolbarDsgnFrame, JvQProviderToolbarFrame, JvQDsgnTypes, QTypes;
+  JvQStdToolbarDsgnFrame, JvQProviderToolbarFrame, JvQDsgnTypes;
 
 type
   TfrmDataProviderDesigner = class(TJvBaseDesign)
@@ -331,10 +327,8 @@ begin
   if Value <> FDesigner then
   begin
     if FDesigner <> nil then
-      ResetSelection;
-    
-    FOrgSelect := TDesignerSelections.Create;
-    
+      ResetSelection; 
+    FOrgSelect := TDesignerSelections.Create; 
     FDesigner := Value;
     if Designer <> nil then
       Designer.GetSelections(FOrgSelect);
@@ -382,7 +376,7 @@ begin
     if Item <> nil then
       Item.QueryInterface(IJvDataItems, Items)
     else // should never occur
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
   end
   else
     Items := InternalProvider as IJvDataItems;
@@ -395,7 +389,7 @@ begin
     if Supports(Items, IJvDataItemsManagement, Mangr) then
       Item := Mangr.New
     else // should never occur
-      raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoManOrDsgn]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderAddErrorReason, [RsEDataProviderNoManOrDsgn]);
     if Item <> nil then
     begin
       fmeTreeList.SelectItemID(Item.GetID);
@@ -403,10 +397,10 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.Create(RsEDataProviderAddFailed);
+      raise EJVCLException.CreateRes(@RsEDataProviderAddFailed);
   end
   else // should never occur
-    raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoSubItems]);
+    raise EJVCLException.CreateResFmt(@RsEDataProviderAddErrorReason, [RsEDataProviderNoSubItems]);
 end;
 
 procedure TfrmDataProviderDesigner.aiDeleteItemExecute(Sender: TObject);
@@ -423,7 +417,7 @@ begin
     if Item <> nil then
       Items := Item.GetItems
     else
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       ResetSelection;
@@ -432,7 +426,7 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
   end;
 end;
 
@@ -448,10 +442,10 @@ begin
     if Item <> nil then
     begin
       if not Supports(Item, IJvDataItems, Items) then
-        raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoSubItems]);
+        raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoSubItems]);
     end
     else
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       Mangr.Clear;
@@ -459,7 +453,7 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
   end;
 end;
 
@@ -477,7 +471,7 @@ begin
       if Supports(InternalProvider, IJvDataContexts, CtxList) then
         fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
       else
-        raise EJVCLException.Create(RsEInternalErrorUnableToRetrieveContext);
+        raise EJVCLException.CreateRes(@RsEInternalErrorUnableToRetrieveContext);
     end
     else
       fmeTreeList.Provider.SetContextIntf(nil);

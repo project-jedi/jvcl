@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-05-26
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -37,14 +37,9 @@ unit JvQStringsForm;
 interface
 
 uses
-  Classes,
-  
-  
-  QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QWindows,
-  
-
-  DesignIntf, DesignEditors,
-  
+  Classes,  
+  QForms, QControls, QDialogs, QStdCtrls, QExtCtrls, QWindows,  
+  DesignIntf, DesignEditors, 
   JvQComponent;
 
 type
@@ -75,8 +70,7 @@ type
 implementation
 
 uses
-  SysUtils,
-  
+  SysUtils, 
   JvQDsgnConsts;
 
 
@@ -123,8 +117,7 @@ begin
 end;
 
 procedure TJvStrEditDlg.FormCreate(Sender: TObject);
-begin
-  
+begin 
   SingleLine := RsSingleLine;
   MultipleLines := RsMultipleLines;
   // set anchors
@@ -145,11 +138,8 @@ begin
 end;
 
 procedure TJvStrEditDlg.HelpBtnClick(Sender: TObject);
-begin
-  
-  
-  Application.ContextHelp(HelpContext);
-  
+begin  
+  Application.ContextHelp(HelpContext); 
 end;
 
 end.

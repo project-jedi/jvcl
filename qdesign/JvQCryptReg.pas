@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,16 +39,13 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  {$IFNDEF BCB}
-  JvQZlibMultiple,
-  {$ENDIF BCB}
-  JvQDsgnConsts,
-  JvQVigenereCipher,
+  Classes, 
+  JvQZlibMultiple, 
   {$IFDEF MSWINDOWS}
   JvQCabFile,
   {$ENDIF MSWINDOWS}
-  JvQCaesarCipher, JvQGenetic,
+  JvQDsgnConsts,
+  JvQVigenereCipher, JvQCaesarCipher, JvQGenetic,
   JvQSerialMaker, JvQXorCipher;
 
 {$IFDEF MSWINDOWS}
@@ -64,10 +61,8 @@ begin
     TJvXORCipher, TJvCaesarCipher, TJvGenetic,
     {$IFDEF MSWINDOWS}
     TJvCABFile,
-    {$ENDIF MSWINDOWS}
-    {$IFNDEF BCB}
-    TJvZlibMultiple,
-    {$ENDIF BCB}
+    {$ENDIF MSWINDOWS} 
+    TJvZlibMultiple, 
     TJvSerialMaker]);
 end;
 

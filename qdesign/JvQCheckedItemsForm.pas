@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,13 +20,12 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -34,17 +34,11 @@ unit JvQCheckedItemsForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QControls, QForms, QMenus, QGraphics,
-  QStdCtrls, QCheckLst, QWindows, Types,
-  
-  
-  RTLConsts, DesignIntf, DesignEditors,
-  
-  
-  JvQComponent, QTypes;
+  SysUtils, Classes,  
+  QWindows, QControls, QForms, QMenus, QGraphics,
+  QStdCtrls, QCheckLst, Types, QExtCtrls, ClxEditors,  
+  RTLConsts, DesignIntf, DesignEditors,  
+  JvQComponent;
 
 type
   TJvCheckItemEditor = class(TJvForm)
@@ -65,16 +59,17 @@ type
     cbUncheckedItem: TMenuItem;
     N2: TMenuItem;
     EnabledItem: TMenuItem;
+    CheckList: TCheckListBox;
+    PanelButtons: TPanel;
+    EditBtn: TButton;
+    NewBtn: TButton;
+    DeleteBtn: TButton;
+    AddListBtn: TButton;
+    ClearBtn: TButton;
+    UpBtn: TButton;
+    DownBtn: TButton;
     OkBtn: TButton;
     CancelBtn: TButton;
-    DownBtn: TButton;
-    UpBtn: TButton;
-    ClearBtn: TButton;
-    AddListBtn: TButton;
-    DeleteBtn: TButton;
-    NewBtn: TButton;
-    EditBtn: TButton;
-    CheckList: TCheckListBox;
     procedure EditBtnClick(Sender: TObject);
     procedure NewBtnClick(Sender: TObject);
     procedure DeleteBtnClick(Sender: TObject);
@@ -93,6 +88,7 @@ type
     procedure CheckListDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure CheckListDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
+    procedure FormCreate(Sender: TObject);
   private
     procedure CheckButtons;
   end;
@@ -110,19 +106,17 @@ implementation
 {$R *.xfm}
 
 
-uses
-  
-
-  
-  QConsts,
-  
+uses  
+  QConsts, 
   JvQStringsForm, JvQConsts, JvQDsgnConsts, JvQJVCLUtils, JvQBoxProcs;
 
 const
-  
-  
+  {$IFDEF MSWINDOWS}
+  cDefaultFontName = 'MS Sans Serif';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   cDefaultFontName = 'Helvetica';
-  
+  {$ENDIF LINUX}
 
 //=== TJvCheckItemsProperty ==================================================
 
@@ -160,18 +154,11 @@ end;
 
 constructor TJvCheckItemEditor.Create(AOwner: TComponent);
 begin
-  {$IFDEF BCB}
   inherited CreateNew(AOwner, 0);
-  {$ELSE}
-  inherited CreateNew(AOwner);
-  {$ENDIF BCB}
   { Form definitions }
   {Left := 354;
-  Top := 338;}
-  
-  
-  BorderStyle := fbsDialog;
-  
+  Top := 338;}  
+  BorderStyle := fbsDialog; 
   Caption := RsItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;
@@ -271,8 +258,7 @@ begin
   I := CheckList.ItemIndex;
   if I >= 0 then
     with TJvCheckItemEditor.Create(Application) do
-    try
-      
+    try 
       FEdit.Text := CheckList.Items[I];
       FComboBox.ItemIndex := Integer(CheckList.State[I]);
       FEnableBox.Checked := CheckList.ItemEnabled[I];
@@ -458,8 +444,12 @@ end;
 procedure TJvCheckItemsEditor.CheckListDragOver(Sender, Source: TObject;
   X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  BoxDragOver(CheckList, Source, X, Y, State, Accept, CheckList.Sorted);
-  
+  BoxDragOver(CheckList, Source, X, Y, State, Accept, CheckList.Sorted); 
+end;
+
+procedure TJvCheckItemsEditor.FormCreate(Sender: TObject);
+begin
+  CheckList.Anchors := [akLeft, akTop, akRight, akBottom];
 end;
 
 end.

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -14,13 +15,11 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvPageLinkEditorForm.PAS, released on 2003-01-01.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com] .
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 at sourceforge dot net] .
 Portions created by Peter Thörnqvist are Copyright (C) 2003 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2003-01-01
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -30,7 +29,10 @@ Changes:
 2002-10-22:
   changed the way a parent/child PageIndex is assigned so that it matches the
   actual component using this editor
+  
+$Id$
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,16 +41,11 @@ unit JvQPageLinkEditorForm;
 interface
 
 uses
-  Classes, SysUtils,
-  
-  
+  Classes, SysUtils,  
   QForms, QControls, QStdCtrls, QExtCtrls, QComCtrls,
-  QActnList, QMenus, QTypes,
-
-
-  DesignEditors, Variants, DesignIntf,
-
-  JvQPageListTreeView, JvQComponent, JvQPageList;
+  QActnList, QMenus,  
+  DesignEditors, Variants, DesignIntf, 
+  JvQPageList, JvQPageListTreeView, JvQComponent;
 
 type
   { a property editor for the PageLinks property of TJvCustomPageListTreeView}
@@ -107,8 +104,7 @@ type
 
 procedure ShowPageLinkEditor(TreeView: TJvCustomPageListTreeView);
 begin
-  if TfrmJvTreeViewLinksEditor.Edit(TreeView,
-     TreeView.PageList ) and
+  if TfrmJvTreeViewLinksEditor.Edit(TreeView,  TreeView.PageList ) and
     (THackTreeView(TreeView).Items.Count > 0) then
     THackTreeView(TreeView).Items.GetFirstNode.Expand(False);
 end;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -21,13 +22,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-12
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,13 +36,11 @@ unit JvQProviderTreeListDsgnFrame;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes,  
   QWindows, QGraphics, QControls, QForms, QDialogs,
-  QComCtrls, QImgList, QMenus, QActnList,
-  
-  DesignIntf, DesignEditors,
-  
-  JvQDataProviderIntf, JvQProviderTreeListFrame, JvQDsgnTypes, QTypes;
+  QComCtrls, QImgList, QMenus, QActnList,  
+  DesignIntf, DesignEditors, 
+  JvQDataProviderIntf, JvQProviderTreeListFrame, JvQDsgnTypes;
 
 type
   TDsgFmeBeforeNewItem = procedure(Sender: TObject; Kind: Integer; var Allow: Boolean) of object;
@@ -94,8 +92,7 @@ type
 
 implementation
 
-uses
-
+uses 
   JvQTypes, JvQDsgnConsts, JvQConsts;
 
 
@@ -188,7 +185,7 @@ begin
     if Item <> nil then
       Item.QueryInterface(IJvDataItems, Items)
     else // should never occur
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
   end
   else
     Items := Provider.ProviderIntf as IJvDataItems;
@@ -209,7 +206,7 @@ begin
       Item := Mangr.New;
     end
     else // should never occur
-      raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoManOrDsgn]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderAddErrorReason, [RsEDataProviderNoManOrDsgn]);
     DoAfterNew(Item);
     if Item <> nil then
     begin
@@ -218,10 +215,10 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.Create(RsEDataProviderAddFailed);
+      raise EJVCLException.CreateRes(@RsEDataProviderAddFailed);
   end
   else // should never occur
-    raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoSubItems]);
+    raise EJVCLException.CreateResFmt(@RsEDataProviderAddErrorReason, [RsEDataProviderNoSubItems]);
 end;
 
 procedure TfmeJvProviderTreeListDsgn.aiDeleteExecute(Sender: TObject);
@@ -240,7 +237,7 @@ begin
       if Item <> nil then
         Items := Item.GetItems
       else
-        raise EJVCLException.Create(RsEDataItemNotFound);
+        raise EJVCLException.CreateRes(@RsEDataItemNotFound);
       if Supports(Items, IJvDataItemsManagement, Mangr) then
       begin
         if I > 0 then
@@ -257,7 +254,7 @@ begin
           GetViewList.RebuildView;
       end
       else
-        raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
+        raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
     finally
       Provider.Leave;
     end;
@@ -279,10 +276,10 @@ begin
     if Item <> nil then
     begin
       if not Supports(Item, IJvDataItems, Items) then
-        raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoSubItems]);
+        raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoSubItems]);
     end
     else
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       Mangr.Clear;
@@ -290,7 +287,7 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
   end;
 end;
 
@@ -340,11 +337,8 @@ procedure TfmeJvProviderTreeListDsgn.aiRenameExecute(Sender: TObject);
 begin
   if lvProvider.Selected <> nil then
   begin
-    lvProvider.SetFocus;
-    
-    
-    lvProvider.Selected.EditText;
-    
+    lvProvider.SetFocus;  
+    lvProvider.Selected.EditText; 
   end;
 end;
 

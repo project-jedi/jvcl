@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -49,19 +50,11 @@ unit JvQWizardEditorForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
+  SysUtils, Classes,  
   QGraphics, QControls, QForms, QDialogs, Types, QTypes,
-  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,
-  
-  
-  DesignIntf, DesignEditors,
-  
-  
-  ClxDesignWindows,
-  
-  
+  QActnList, QImgList, QComCtrls, QStdCtrls, QToolWin, QMenus,  
+  DesignIntf, DesignEditors,  
+  ClxDesignWindows,  
   JvQWizard;
 
 type
@@ -91,11 +84,8 @@ type
     function GetValue: string; override;
     procedure Edit; override;
   end;
-
   
-  
-  TJvWizardPageListEditor = class(TClxDesignWindow)
-  
+  TJvWizardPageListEditor = class(TClxDesignWindow) 
     tbrWizardPages: TToolBar;
     lbxWizardPages: TListBox;
     btnAddWelcomePage: TToolButton;
@@ -129,7 +119,6 @@ type
       var Handled: Boolean);
     procedure acMoveUpExecute(Sender: TObject);
     procedure acMoveDownExecute(Sender: TObject);
-    procedure FormKeyPress(Sender: TObject; var Key: Char);
   private
     FWizard: TJvWizard;
     procedure SetWizard(const Value: TJvWizard);
@@ -142,15 +131,11 @@ type
     property Wizard: TJvWizard
       read FWizard write SetWizard;
   public
-    procedure Activated; override;
-    
+    procedure Activated; override; 
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     procedure DesignerClosed(const Designer: IDesigner; AGoingDormant: Boolean); override;
-    procedure ItemsModified(const Designer: IDesigner); override;
-    
-    function UniqueName(Component: TComponent): string; override;
-    
-    
+    procedure ItemsModified(const Designer: IDesigner); override; 
+    function UniqueName(Component: TComponent): string; override;  
     function GetEditState: TEditState; override;
   end;
 
@@ -202,10 +187,8 @@ begin
   else
   begin
     AWizardPageListEditor := TJvWizardPageListEditor.Create(Application);
-    try
-      
-      AWizardPageListEditor.Designer := Designer;
-      
+    try 
+      AWizardPageListEditor.Designer := Designer; 
       AWizardPageListEditor.Wizard := AWizard;
       AWizardPageListEditor.Show;
     except
@@ -393,15 +376,14 @@ procedure TJvWizardPageListEditor.SelectWizardPage(const Index: Integer);
 var
   Page: TJvWizardCustomPage;
 begin
-  if Assigned(FWizard) {and Active} then
+  if Assigned(FWizard) and Active then
   begin
     Page := nil;
     if (Index >= 0) and (Index < FWizard.PageCount) then
       Page := TJvWizardCustomPage(FWizard.Pages[Index]);
-    Wizard.ActivePage := Page;
     Designer.SelectComponent(Page);
+    Wizard.ActivePage := Page;
     Designer.Modified;
-    BringToFront;
   end;
 end;
 
@@ -603,12 +585,6 @@ begin
     TJvWizardCustomPage(FWizard.Pages[I]).PageIndex := I + 1;
     lbxWizardPages.ItemIndex := I + 1;
   end;
-end;
-
-procedure TJvWizardPageListEditor.FormKeyPress(Sender: TObject;
-  var Key: Char);
-begin
-  ActivateInspector(Key);
 end;
 
 end.

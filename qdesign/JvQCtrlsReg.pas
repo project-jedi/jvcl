@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -38,23 +39,15 @@ procedure Register;
 implementation
 
 uses
-  Classes,
-  
-  
-  QControls, QImgList, QActnList,
-  
-
-  DesignEditors, DesignIntf,
-
-
-  QTypes,
-
-  JvQDsgnConsts,
-
+  Classes,  
+  QControls, QImgList, QActnList,  
+  DesignEditors, DesignIntf, 
+  JvQDsgnConsts, 
   {$IFDEF MSWINDOWS}
-  JvQUninstallControls, JvQCharMap,
+  JvQUninstallControls,
   {$ENDIF MSWINDOWS}
-  JvQDsgnIntf,
+  JvQDsgnIntf, 
+  QTypes, 
   JvQZoom, JvQBehaviorLabel, JvQArrowButton, JvQaScrollText, JvQClock,
   JvQContentScroller, JvQColorBox, JvQColorButton, JvQDice, JvQFooter,
   JvQGroupHeader, JvQHint, JvQHtControls, JvQInstallLabel, JvQItemsPanel,
@@ -62,7 +55,7 @@ uses
   JvQSpeedbarSetupForm, JvQSwitch, JvQSplit, JvQSplitter, JvQSyncSplitter,
   JvQTransparentButton, JvQColorForm, JvQImageDrawThread, JvQWinampLabel,
   JvQComponentPanel, JvQButtons, JvQCaptionPanel, JvQScrollMax, JvQMovableBevel,
-  JvQComboListBox, JvQOfficeColorButton, JvQOfficeColorPanel,
+  JvQComboListBox, JvQCharMap, JvQOfficeColorButton, JvQOfficeColorPanel,
   JvQNetscapeSplitter,
   JvQDsgnEditors, JvQScrollMaxEditor, JvQBehaviorLabelEditor, JvQGroupHeaderEditor,
   JvQFooterEditor, JvQSpeedbarForm, JvQTransparentButtonEditors, JvQRollOutEditor;
@@ -75,14 +68,11 @@ uses
 {$ENDIF LINUX}
 
 procedure Register;
-begin
-
-  GroupDescendentsWith(TJvHint, TControl);
-  
+begin 
+  GroupDescendentsWith(TJvHint, TControl); 
 
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
-    TJvTransparentButton2, TJvArrowButton,
-    
+    TJvTransparentButton2, TJvArrowButton, 
     TJvColorButton,  TJvOfficeColorButton, TJvOfficeColorPanel,
     TJvHTButton, TJvSpacer, TJvSwitch]);
   RegisterComponents(RsPaletteBarPanel, [TJvSpeedBar, TJvCaptionPanel,
@@ -90,19 +80,17 @@ begin
     TJvComponentPanel]);
   RegisterComponents(RsPaletteLabel, [TJvBehaviorLabel, TJvInstallLabel,
     TJvHTLabel, TJvWinampLabel]);
+     
   {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteListComboTree, [TJvUninstallComboBox, TJvUninstallListBox]);
-  {$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS} 
+
   RegisterComponents(RsPaletteScrollerTracker, [TJvScrollMax, TJvaScrollText,
-    TJvContentScroller,
+    TJvContentScroller, 
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice
-  {$IFDEF MSWINDOWS}
-  , TJvCharMap
-  {$ENDIF MSWINDOWS}
-  ]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
@@ -121,8 +109,7 @@ begin
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvRollOut, TJvRollOutDefaultEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
-  RegisterComponentEditor(TJvFooter, TJvFooterEditor);
-  
+  RegisterComponentEditor(TJvFooter, TJvFooterEditor); 
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
 
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);

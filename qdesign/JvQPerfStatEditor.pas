@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,14 +36,9 @@ unit JvQPerfStatEditor;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QDialogs,
-  
-  
-  DesignEditors, DesignIntf,
-  
+  SysUtils, Classes,  
+  QDialogs,  
+  DesignEditors, DesignIntf, 
   JvQPerfMon95;
 
 type

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -14,19 +15,18 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvTimeLineEdit.PAS, released on 2002-05-26.
 
-The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
+The Initial Developer of the Original Code is Peter Thörnqvist [peter3 att users dott sourceforge dott net]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-05-26
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -36,18 +36,14 @@ unit JvQTimeLineEditor;
 
 interface
 
-uses
-  
-  DesignEditors, DesignIntf;
-  
+uses 
+  DesignEditors, DesignIntf; 
 
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
   TJvTimeLineEditor = class(TDefaultEditor)
-  public
-    
-    procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
-    
+  public 
+    procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override; 
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -36,10 +37,8 @@ unit JvQTipOfDayEditor;
 interface
 
 uses
-  SysUtils,
-  
-  DesignEditors, DesignIntf;
-  
+  SysUtils, 
+  DesignEditors, DesignIntf; 
 
 type
   { a component editor that shows the "Tip of the Day" dialog }
@@ -59,11 +58,9 @@ uses
 procedure TJvTipOfDayEditor.Edit;
 var
   SavedOptions: TJvTipOfDayOptions;
-begin
-  
+begin 
   with GetComponent as TJvTipOfDay do
-  begin
-  
+  begin 
       SavedOptions := Options;
       Options := [toShowOnStartUp];
       try

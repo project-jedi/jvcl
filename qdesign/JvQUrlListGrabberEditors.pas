@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -20,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-03-20
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,19 +35,15 @@ unit JvQUrlListGrabberEditors;
 interface
 
 uses
-//  Windows,
-  
-  DesignIntf, DesignEditors, DesignMenus, {VCLEditors,}
-  
+  Windows, 
+  DesignIntf, DesignEditors, DesignMenus, VCLEditors, 
   Classes;
 
 type
   TJvUrlGrabberDefaultPropertiesListEditor = class(TClassProperty)
   public
-    function GetAttributes: TPropertyAttributes; override;
-    
-    procedure GetProperties(Proc: TGetPropProc); override;
-    
+    function GetAttributes: TPropertyAttributes; override; 
+    procedure GetProperties(Proc: TGetPropProc); override; 
   end;
 
   TJvUrlGrabberDefaultPropertiesEditor = class (TClassProperty)
@@ -66,8 +62,9 @@ type
 implementation
 
 uses
-  TypInfo, SysUtils,
-  JvQUrlListGrabber;
+  TypInfo,
+  JvQUrlListGrabber,
+  SysUtils;
 
 const
   None: string = '(none)';

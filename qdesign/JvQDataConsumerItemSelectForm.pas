@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -35,14 +36,9 @@ unit JvQDataConsumerItemSelectForm;
 interface
 
 uses
-  SysUtils, Classes,
-  
-  
-  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types,
-  
-  
-  DesignIntf, DesignEditors,
-  
+  SysUtils, Classes,  
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QExtCtrls, Types,  
+  DesignIntf, DesignEditors, 
   JvQBaseDsgnForm, JvQProviderTreeListFrame, JvQDataProvider, JvQDataProviderIntf,
   JvQDsgnTypes;
 
@@ -168,11 +164,8 @@ begin
     fmeTreeList.Provider.Enter;
     try
       if ViewList.Count = 0 then
-        ViewList.RebuildView;
-      
-      
-      {TODO : CLX does not support virtual ListViews}
-      
+        ViewList.RebuildView;  
+      {TODO : CLX does not support virtual ListViews} 
       if Supports(Consumer as IJvDataConsumer, IJvDataConsumerItemSelect, ItemSelect) then
         if ItemSelect.GetItem <> nil then
         begin

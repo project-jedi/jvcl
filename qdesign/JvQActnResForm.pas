@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -19,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified:
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -28,6 +27,7 @@ description :
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -35,17 +35,16 @@ unit JvQActnResForm;
 
 interface
 
-uses
-  
-  
-  QActnList, QImgList, QControls, QForms,
-  
-  SysUtils, Classes;
+uses  
+  QActnList, QImgList, QControls, QForms, 
+  SysUtils, Classes, JvQActions, QStdActns;
 
 type
   TJvStandardActions = class(TDataModule)
     ImageList1: TImageList;
     ActionList1: TActionList;
+    JvSendMailAction1: TJvSendMailAction;
+    JvWebAction1: TJvWebAction;
   public
   end;
 
