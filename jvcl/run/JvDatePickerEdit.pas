@@ -452,15 +452,15 @@ function TJvCustomDatePickerEdit.AttemptTextToDate(const AText: string;
   var ADate: TDateTime; const AForce: Boolean; const ARaise: Boolean): Boolean;
 var
   OldFormat: string;
-  ADate: TDateTime;
-  ADummy: Integer;
+  TmpDate: TDateTime;
+  Dummy: Integer;
 begin
-  Result := Validate(AText, ADummy);
+  Result := Validate(AText, Dummy);
   {only attempt to convert, if at least the Mask is matched
   - otherwise we'd be swamped by exceptions during input}
   if Result or AForce then
   begin
-    ADate := ADate;
+    TmpDate := ADate;
     OldFormat := ShortDateFormat;
     try
       ShortDateFormat := Self.DateFormat;
@@ -475,7 +475,7 @@ begin
         if (ARaise) then
           raise
         else
-          ADate := ADate;
+          ADate := TmpDate;
       end;
     finally
       ShortDateFormat := OldFormat;
