@@ -31,6 +31,9 @@ interface
 {$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
   Dialogs, JvDsaDialogs, JvParameterList, StdCtrls, JvParameterListParameter, Mask,
   JvToolEdit, JvPanel,
@@ -177,6 +180,17 @@ type
 
 var
   Form1: TForm1;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\examples\JvParameterList'
+  );
+{$ENDIF UNITVERSIONING}
+
 
 implementation
 
