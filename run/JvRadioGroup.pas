@@ -44,10 +44,10 @@ type
   TJvRadioGroup = class(TJvExRadioGroup, IJvDenySubClassing)
   private
     FReadOnly: Boolean;
+    FDrawFrame: Boolean;
+    procedure SetDrawFrame(const Value: Boolean);
   protected
-    {$IFDEF JVCLThemesEnabledD56}
     procedure Paint; override;
-    {$ENDIF JVCLThemesEnabledD56}
     function CanModify: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -57,6 +57,7 @@ type
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
     property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
+    property DrawFrame: Boolean read FDrawFrame write SetDrawFrame default True;
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
@@ -70,19 +71,21 @@ uses
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FReadOnly := False;
+  FDrawFrame := True;
   {$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
   {$ENDIF JVCLThemesEnabledD56}
 end;
 
-{$IFDEF JVCLThemesEnabledD56}
 procedure TJvRadioGroup.Paint;
+{$IFDEF JVCLThemesEnabledD56}
 var
   Details: TThemedElementDetails;
   R, CaptionRect: TRect;
+{$ENDIF JVCLThemesEnabledD56}
 begin
-  if ThemeServices.ThemesEnabled then
+  {$IFDEF JVCLThemesEnabledD56}
+  if DrawFrame and ThemeServices.ThemesEnabled then
   begin
     if Enabled then
       Details := ThemeServices.GetElementDetails(tbGroupBoxNormal)
@@ -99,9 +102,10 @@ begin
     ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
   end
   else
+  {$ENDIF JVCLThemesEnabledD56}
+  if DrawFrame then
     inherited Paint;
 end;
-{$ENDIF JVCLThemesEnabledD56}
 
 function TJvRadioGroup.CanModify: Boolean;
 begin
@@ -109,6 +113,15 @@ begin
     Result := False
   else
     Result := inherited CanModify;
+end;
+
+procedure TJvRadioGroup.SetDrawFrame(const Value: Boolean);
+begin
+  if Value <> FDrawFrame then
+  begin
+    FDrawFrame := Value;
+    Invalidate;
+  end;
 end;
 
 end.
