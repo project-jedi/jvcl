@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvTimeLine,  ComCtrls, StdCtrls, ExtCtrls, Menus, ImgList, JvComponent;
+  ComCtrls, StdCtrls, ExtCtrls, Menus, ImgList, JvComponent, JvTimeLine;
 
 type
   TForm1 = class(TForm)
@@ -67,6 +67,7 @@ type
     btnLoad: TButton;
     ColorBtn: TButton;
     Disable1: TMenuItem;
+    cbDragging: TComboBox;
     procedure btnAddClick(Sender: TObject);
     procedure chkMonthsClick(Sender: TObject);
     procedure chkMultiClick(Sender: TObject);
@@ -110,16 +111,17 @@ type
     procedure ColorBtnClick(Sender: TObject);
     procedure Disable1Click(Sender: TObject);
     procedure TimeLine1ItemClick(Sender: TObject; Item: TJvTimeItem);
-    procedure TimeLine1ItemMoved(Sender: TObject; Item: TJvTimeItem;
-      NewStartDate: TDateTime);
     procedure TimeLine1DragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure TimeLine1MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure TimeLine1DragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure cbDraggingChange(Sender: TObject);
+    procedure TimeLine1ItemMoved(Sender: TObject; Item: TJvTimeItem;
+      var NewStartDate: TDateTime; var NewLevel: Integer);
   private
     { Private declarations }
-    FCurColor:TColor;
+    FCurColor: TColor;
   public
     { Public declarations }
   end;
@@ -134,24 +136,24 @@ uses Unit2;
 {$R *.DFM}
 { a record to save notes data in }
 type
-  PItemData=^TItemData;
-  TItemData=record
-    Text:string;
+  PItemData = ^TItemData;
+  TItemData = record
+    Text: string;
   end;
 
 procedure TForm1.btnAddClick(Sender: TObject);
-var aItem:TJvTimeItem;
+var aItem: TJvTimeItem;
 begin
-   aItem := TimeLine1.Items.Add;
-   aItem.Caption := edCaption.Text;
-   aItem.ImageIndex := StrToIntDef(edImIndex.Text,-1);
-   aItem.Level := StrToIntDef(edLevel.Text,0);
-   aItem.Date := dtpItemDate.Date;
-   aItem.Color := FCurColor;
-   if FCurColor <> clWhite then
-     aItem.TextColor := clWhite
-   else
-     aItem.TextColor := clBlack;
+  aItem := TimeLine1.Items.Add;
+  aItem.Caption := edCaption.Text;
+  aItem.ImageIndex := StrToIntDef(edImIndex.Text, -1);
+  aItem.Level := StrToIntDef(edLevel.Text, 0);
+  aItem.Date := dtpItemDate.Date;
+  aItem.Color := FCurColor;
+  if FCurColor <> clWhite then
+    aItem.TextColor := clWhite
+  else
+    aItem.TextColor := clBlack;
 end;
 
 procedure TForm1.chkMonthsClick(Sender: TObject);
@@ -189,16 +191,16 @@ end;
 procedure TForm1.TimeLine1Click(Sender: TObject);
 begin
   if TimeLine1.Selected <> nil then
-    Caption := Format ('%s (%s)',[TimeLine1.Selected.Caption,DateToStr(TimeLine1.Selected.Date)]);
+    Caption := Format('%s (%s)', [TimeLine1.Selected.Caption, DateToStr(TimeLine1.Selected.Date)]);
 end;
 
 procedure TForm1.Changecaption1Click(Sender: TObject);
-var S:string;
+var S: string;
 begin
   if TimeLine1.Selected <> nil then
   begin
     S := TimeLine1.Selected.Caption;
-    if InputQuery('Change caption','Change caption to:',S) then
+    if InputQuery('Change caption', 'Change caption to:', S) then
       TimeLine1.Selected.Caption := S;
   end;
 end;
@@ -206,7 +208,7 @@ end;
 procedure TForm1.remove1Click(Sender: TObject);
 begin
   if TimeLine1.Selected <> nil then
-    if MessageDlg('Sure you want to delete this item?',mtConfirmation,[mbYes,mbNo],0) = mrYes then
+    if MessageDlg('Sure you want to delete this item?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
     begin
       if TimeLine1.Selected.Data <> nil then
         Dispose(PItemData(TimeLine1.Selected.Data));
@@ -215,20 +217,20 @@ begin
 end;
 
 procedure TForm1.Move1Click(Sender: TObject);
-var S:string;
+var S: string;
 begin
   if TimeLine1.Selected <> nil then
   begin
     S := DateToStr(TimeLine1.Selected.Date);
-    if InputQuery('Move item','Move to new date:',S)then
+    if InputQuery('Move item', 'Move to new date:', S) then
       TimeLine1.Selected.Date := StrToDate(S);
   end;
 end;
 
 procedure TForm1.PopupMenu1Popup(Sender: TObject);
 const
-  aCaption:array [boolean] of string = ('E&nable','D&isable');
-var i:integer;
+  aCaption: array[boolean] of string = ('E&nable', 'D&isable');
+var i: integer;
 begin
   if TimeLine1.Selected = nil then
     for i := 0 to PopUpMenu1.Items.Count - 1 do
@@ -244,23 +246,23 @@ end;
 
 procedure TForm1.chkNoImagesClick(Sender: TObject);
 begin
- if chkNoImages.Checked then
- begin
-   TimeLine1.Images := nil;
-   TimeLine1.ItemHeight := 16;
-   udItemHeight.Position := 16;
- end
- else
-   chkLargeClick(nil);
+  if chkNoImages.Checked then
+  begin
+    TimeLine1.Images := nil;
+    TimeLine1.ItemHeight := 16;
+    udItemHeight.Position := 16;
+  end
+  else
+    chkLargeClick(nil);
 end;
 
 procedure TForm1.chkWidthAsClick(Sender: TObject);
 const
-  aType:array [boolean] of TJvTimeItemType =(asPixels,asDays);
-var i:integer;
+  aType: array[boolean] of TJvTimeItemType = (asPixels, asDays);
+var i: integer;
 begin
   for i := 0 to TimeLine1.Items.Count - 1 do
-     TimeLine1.Items[i].WidthAs := aType[chkWidthAs.Checked];
+    TimeLine1.Items[i].WidthAs := aType[chkWidthAs.Checked];
 end;
 
 procedure TForm1.chkAutosizeClick(Sender: TObject);
@@ -275,7 +277,8 @@ end;
 
 procedure TForm1.chkLargeClick(Sender: TObject);
 begin
-  if chkNoImages.Checked then Exit;
+  if chkNoImages.Checked then
+    Exit;
   if chkLarge.Checked then
   begin
     TimeLine1.Images := ImageList2;
@@ -294,7 +297,6 @@ procedure TForm1.udYrSizeClick(Sender: TObject; Button: TUDBtnType);
 begin
   TimeLine1.YearWidth := udYrSize.Position;
 end;
-
 
 procedure TForm1.TimeLine1MouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
@@ -320,8 +322,9 @@ end;
 
 { Show a memo to write notes about this item in. Allocate memory even if nothing is
 written ( makes it easier when we want to save it later)  }
+
 procedure TForm1.Notes1Click(Sender: TObject);
-var aData:PItemData;P:TPoint;
+var aData: PItemData; P: TPoint;
 begin
   if TimeLine1.Selected <> nil then
   begin
@@ -332,7 +335,7 @@ begin
     end
     else
       aData := TimeLine1.Selected.Data;
-    Form2.Caption := Format('Notes for "%s":',[TimeLine1.Selected.Caption]);
+    Form2.Caption := Format('Notes for "%s":', [TimeLine1.Selected.Caption]);
     Form2.Memo1.Text := aData^.Text;
     GetCursorPos(P);
     Form2.Left := P.x - 12;
@@ -344,6 +347,7 @@ begin
 end;
 
 { save all notes data and dispose of memory }
+
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   FCurColor := TimeLine1.Color;
@@ -351,12 +355,12 @@ end;
 
 procedure TForm1.TimeLine1SaveItem(Sender: TObject; Item: TJvTimeItem;
   Stream: TStream);
-var S:string;
+var S: string;
 begin
-{ I use #27 (ESC) as terminator as it doesn't appear naturally in text. #13 can't be
-  used if we want to use it in the text (and we do). Also, when nothing is written in the memo,
-  starting off a text with 3 @'s is highly unlikely especially if that's all that's there,
-  so I use it to tell when no notes have been saved in this item }
+  { I use #27 (ESC) as terminator as it doesn't appear naturally in text. #13 can't be
+    used if we want to use it in the text (and we do). Also, when nothing is written in the memo,
+    starting off a text with 3 @'s is highly unlikely especially if that's all that's there,
+    so I use it to tell when no notes have been saved in this item }
   S := '';
   if (Item.Data <> nil) then
     S := PItemData(Item.Data)^.Text;
@@ -364,19 +368,20 @@ begin
     S := '@@@' + #27
   else
     S := S + #27;
-  Stream.Write(S[1],Length(S));
+  Stream.Write(S[1], Length(S));
 end;
 
 { let's read our previously saved data from the file }
+
 procedure TForm1.TimeLine1LoadItem(Sender: TObject; Item: TJvTimeItem;
   Stream: TStream);
-var S:string;aData:PItemData;ch:char;
+var S: string; aData: PItemData; ch: char;
 begin
-  Stream.Read(ch,1);
+  Stream.Read(ch, 1);
   while ch <> #27 do
   begin
     S := S + ch;
-    Stream.Read(ch,1);
+    Stream.Read(ch, 1);
   end;
 
   if (S <> '@@@') then { nothing there }
@@ -387,8 +392,8 @@ begin
   end;
 end;
 
-function strrev(p:string):string;
-var pend,pstart:integer;
+function strrev(p: string): string;
+var pend, pstart: integer;
 begin
   Result := p;
   pend := Length(p);
@@ -403,32 +408,33 @@ begin
 end;
 
 { let's draw something funny ourselves }
+
 procedure TForm1.TimeLine1DrawItem(Sender: TObject; Canvas: TCanvas;
   Item: TJvTimeItem; var R: TRect);
-var S:string;
+var S: string;
 begin
-//  Canvas.Brush.Color := clBlack;
-//  Canvas.FrameRect(R);
+  //  Canvas.Brush.Color := clBlack;
+  //  Canvas.FrameRect(R);
 
-//  Canvas.Brush.Color := RGB(Random(255),Random(255),Random(255));
+  //  Canvas.Brush.Color := RGB(Random(255),Random(255),Random(255));
   Canvas.FillRect(R);
   if TimeLine1.Images <> nil then
   begin
-    TimeLine1.Images.Draw(Canvas,R.Left,R.Top,Item.ImageIndex);
-{
-    if Item.Selected then
-      TimeLine1.Images.Draw(Canvas,R.Left,R.Top,Random(TimeLine1.Images.Count))
-    else
-      TimeLine1.Images.Draw(Canvas,R.Right - TimeLine1.Images.Width,R.Top,Item.ImageIndex);
-    }
+    TimeLine1.Images.Draw(Canvas, R.Left, R.Top, Item.ImageIndex);
+    {
+        if Item.Selected then
+          TimeLine1.Images.Draw(Canvas,R.Left,R.Top,Random(TimeLine1.Images.Count))
+        else
+          TimeLine1.Images.Draw(Canvas,R.Right - TimeLine1.Images.Width,R.Top,Item.ImageIndex);
+        }
   end;
 
-//  if (Random > 0.5) and Item.Selected then
-//    S := strrev(Item.Caption)
-//  else
-    S := Item.Caption;
-//  Canvas.Font.Color := Canvas.Brush.Color xor clWhite;
-  DrawText(Canvas.Handle,PChar(' ' + S),-1,R,DT_LEFT or DT_BOTTOM or DT_SINGLELINE);
+  //  if (Random > 0.5) and Item.Selected then
+  //    S := strrev(Item.Caption)
+  //  else
+  S := Item.Caption;
+  //  Canvas.Font.Color := Canvas.Brush.Color xor clWhite;
+  DrawText(Canvas.Handle, PChar(' ' + S), -1, R, DT_LEFT or DT_BOTTOM or DT_SINGLELINE);
 end;
 
 procedure TForm1.dtpFirstDateChange(Sender: TObject);
@@ -453,7 +459,8 @@ begin
   if (TimeLine1.Selected <> nil) and (TimeLine1.Selected.Level > 0) then
   begin
     TimeLine1.Selected.Level := TimeLine1.Selected.Level - 1;
-  end else if TimeLine1.Selected <> nil then
+  end
+  else if TimeLine1.Selected <> nil then
     ShowMessage('Can''t move this item further up!');
 end;
 
@@ -465,12 +472,12 @@ end;
 procedure TForm1.btnAutoClick(Sender: TObject);
 begin
   TimeLine1.BeginUpdate;
-  TimeLine1.AutoLevels(chkComplete.Checked,chkReset.Checked);
+  TimeLine1.AutoLevels(chkComplete.Checked, chkReset.Checked);
   TimeLine1.EndUpdate;
 end;
 
 procedure TForm1.btnLoadClick(Sender: TObject);
-var i:integer;
+var i: integer;
 begin
   with TOpenDialog.Create(Self) do
   begin
@@ -510,7 +517,7 @@ begin
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
-var i:integer;
+var i: integer;
 begin
   { free allocated memory }
   for i := 0 to TimeLine1.Items.Count - 1 do
@@ -566,16 +573,6 @@ begin
   Caption := Item.Caption;
 end;
 
-procedure TForm1.TimeLine1ItemMoved(Sender: TObject; Item: TJvTimeItem;
-  NewStartDate: TDateTime);
-var S:string;
-begin
-  if TimeLine1.Dragging then Exit;
-  S := DateToStr(NewStartDate);
-  if InputQuery('Confirm move',Format('Move "%s" to new date:',[Item.Caption]),S) then
-     Item.Date := StrToDate(S);
-end;
-
 procedure TForm1.TimeLine1DragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
@@ -585,19 +582,47 @@ end;
 procedure TForm1.TimeLine1MouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if (ssCtrl in Shift) and (Button = mbLeft) and not (TimeLine1.DragMode = dmAutomatic) then
-    TimeLine1.BeginDrag(Mouse.DragImmediate,Mouse.DragThreshold);
+  if (Button = mbLeft) and (cbDragging.ItemIndex = 1) then
+    TimeLine1.BeginDrag(Mouse.DragImmediate, Mouse.DragThreshold);
 end;
 
 procedure TForm1.TimeLine1DragDrop(Sender, Source: TObject; X, Y: Integer);
-var S:string;
+var S: string;
 begin
   if (Sender = Source) and (TimeLine1.Selected <> nil) then
   begin
     S := DateToStr(TimeLine1.DateAtPos(X));
-    if InputQuery('Confirm move',Format('Move "%s" to new date:',[TimeLine1.Selected.Caption]),S) then
-       TimeLine1.Selected.Date := StrToDate(S);
+    if InputQuery('Confirm move', Format('Move "%s" to new date:', [TimeLine1.Selected.Caption]), S) then
+    begin
+      TimeLine1.Selected.Date := StrToDate(S);
+      TimeLine1.Selected.Level := TimeLine1.LevelAtPos(Y);
+    end;
+  end;
+end;
+
+procedure TForm1.cbDraggingChange(Sender: TObject);
+begin
+  case cbDragging.ItemIndex of
+    0, 1:
+      TimeLine1.DragMode := dmManual;
+    2:
+      TimeLine1.DragMode := dmAutomatic;
+  end;
+end;
+
+procedure TForm1.TimeLine1ItemMoved(Sender: TObject; Item: TJvTimeItem;
+  var NewStartDate: TDateTime; var NewLevel: Integer);
+var S: string;
+begin
+  if TimeLine1.Dragging then
+    Exit;
+  S := DateToStr(NewStartDate);
+  if not InputQuery('Confirm move', Format('Move "%s" to new date:', [Item.Caption]), S) then
+  begin
+    NewStartDate := Item.Date;
+    NewLevel := Item.Level;
   end;
 end;
 
 end.
+

@@ -74,8 +74,8 @@ object Form1: TForm1
     Images = ImageList1
     Items = <
       item
-        Left = 51
-        Top = 147
+        Left = 53
+        Top = 167
         Caption = ' Pin it up!'
         Color = 4210688
         Date = 35431
@@ -86,19 +86,20 @@ object Form1: TForm1
         Width = 45
       end
       item
-        Left = 391
-        Top = 111
+        Left = 393
+        Top = 167
         Caption = ' Something arrived'
         Color = clBtnFace
         Date = 35637
         Hint = 'Inbox'
         ImageIndex = 1
+        Level = 1
         Selected = True
         Width = 93
       end
       item
-        Left = 201
-        Top = 147
+        Left = 203
+        Top = 167
         Caption = ' Something departed'
         Color = 16512
         Date = 35521
@@ -109,31 +110,32 @@ object Form1: TForm1
         Width = 110
       end
       item
-        Left = 151
-        Top = 147
+        Left = 153
+        Top = 203
         Caption = ' Something saved'
         Color = cl3DDkShadow
         Date = 35490
         Hint = 'Saved items'
         ImageIndex = 3
-        Level = 1
+        Level = 2
         TextColor = clWhite
         Width = 88
       end
       item
-        Left = 113
-        Top = 111
+        Left = 115
+        Top = 167
         Caption = ' News started'
         Color = 8388672
         Date = 35469
         Hint = 'News started'
         ImageIndex = 7
+        Level = 1
         TextColor = clWhite
         Width = 70
       end
       item
-        Left = 413
-        Top = 183
+        Left = 415
+        Top = 203
         Caption = ' Flushed it'
         Color = clTeal
         Date = 35651
@@ -144,8 +146,8 @@ object Form1: TForm1
         Width = 56
       end
       item
-        Left = 231
-        Top = 183
+        Left = 233
+        Top = 203
         Caption = ' Simons birthday'
         Color = 8404992
         Date = 35539
@@ -156,8 +158,8 @@ object Form1: TForm1
         Width = 85
       end
       item
-        Left = 359
-        Top = 147
+        Left = 361
+        Top = 167
         Caption = ' Elias birthday'
         Color = clMaroon
         Date = 35617
@@ -168,72 +170,79 @@ object Form1: TForm1
         Width = 70
       end
       item
-        Left = 204
-        Top = 111
+        Left = 206
+        Top = 167
         Caption = ' Majas birthday'
         Color = 8388863
         Date = 35523
         Hint = 'Majas birthday'
         ImageIndex = 8
+        Level = 1
         TextColor = clWhite
         Width = 85
       end
       item
-        Left = 574
-        Top = 111
+        Left = 576
+        Top = 167
         Caption = ' Folder'
         Color = 8404992
         Date = 35749
         Hint = 'Folder'
         ImageIndex = 3
+        Level = 1
         TextColor = clAqua
       end
       item
-        Left = 662
-        Top = 111
+        Left = 664
+        Top = 167
         Caption = ' Item 6'
         Color = clBlue
         Date = 35803
         ImageIndex = 5
+        Level = 1
         TextColor = clWhite
       end
       item
-        Left = 654
-        Top = 111
+        Left = 656
+        Top = 159
         Caption = ' Item 7'
         Color = 16384
         Date = 35798
         ImageIndex = 6
+        Level = 4
         TextColor = clWhite
       end
       item
-        Left = 654
-        Top = 111
+        Left = 673
+        Top = 147
         Caption = ' Item 8'
         Color = 12615935
-        Date = 35798
+        Date = 35809
         ImageIndex = 7
+        Level = 3
       end
       item
-        Left = 654
-        Top = 111
+        Left = 656
+        Top = 203
         Caption = ' Item 9'
         Color = 4194368
         Date = 35798
         ImageIndex = 6
+        Level = 2
         TextColor = clWhite
       end
       item
-        Left = 654
-        Top = 111
+        Left = 656
+        Top = 167
         Caption = ' Item 10'
         Color = clTeal
         Date = 35798
         ImageIndex = 6
+        Level = 1
         TextColor = clAqua
       end>
     ItemHeight = 36
-    HorzSupports = False
+    HorzSupports = True
     OnItemClick = TimeLine1ItemClick
     OnDrawItem = TimeLine1DrawItem
     OnSaveItem = TimeLine1SaveItem
@@ -626,6 +635,22 @@ object Form1: TForm1
         Caption = 'Color...'
         TabOrder = 7
         OnClick = ColorBtnClick
+      end
+      object cbDragging: TComboBox
+        Left = 104
+        Top = 160
+        Width = 76
+        Height = 21
+        Style = csDropDownList
+        ItemHeight = 13
+        ItemIndex = 0
+        TabOrder = 8
+        Text = 'No dragging'
+        OnChange = cbDraggingChange
+        Items.Strings = (
+          'No dragging'
+          'Manual'
+          'Automatic')
       end
     end
     object btnSave: TButton
