@@ -1,0 +1,2 @@
+del *.~*; *.dcu; *.obj
+exit
