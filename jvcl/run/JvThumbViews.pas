@@ -347,64 +347,68 @@ begin
   end;
 end;
 
-procedure TJvThumbView.ScrollTo(const Number: Longint);
+procedure TJVThumbview.ScrollTo(const number: longint);
 begin
-  // if AutoScrolling then if (Number>-1) then
-  if (Number < 0) or (Number > FThumbList.Count - 1) then
-    Exit;
-  case ScrollMode of
-    smVertical:
+// if AutoScrolling then if (number>-1) then
+  if (number < 0) or (number > FThumbList.count - 1) then exit;
+  case scrollmode of
+    smvertical:
       begin
-        if TJvThumbnail(FThumbList.Objects[Number]).Top < 0 then
-          VertScrollBar.Position := VertScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Top -
-            (TJvThumbnail(FThumbList.Objects[Number]).Width div 2));
-        if TJvThumbnail(FThumbList.Objects[Number]).Top +
-          TJvThumbnail(FThumbList.Objects[Number]).Height > Height then
-          VertScrollBar.Position := VertScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Top -
-            (Height - TJvThumbnail(FThumbList.Objects[Number]).Height -
-            (TJvThumbnail(FThumbList.Objects[Number]).Height div 2)));
+        if TJvThumbnail(FThumbList.objects[number]).top < 0 then
+          vertscrollbar.position := vertscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).top -
+            (TJVThumbNail(FThumbList.objects[number]).width div 2));
+        if TJVThumbNail(FThumbList.objects[number]).top +
+          TJVThumbNail(FThumbList.objects[number]).height > height then
+          vertscrollbar.position := vertscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).top -
+            (height - TJVThumbNail(FThumbList.objects[number]).height -
+            (TJVThumbNail(FThumbList.objects[number]).height div 2)));
       end;
-    smHorizontal:
+    smhorizontal:
       begin
-        if TJvThumbnail(FThumbList.Objects[Number]).Left < 0 then
-          HorzScrollBar.Position := HorzScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Left -
-            (TJvThumbnail(FThumbList.Objects[Number]).Width div 2));
-        if TJvThumbnail(FThumbList.Objects[Number]).Left +
-          TJvThumbnail(FThumbList.Objects[Number]).Width > Width then
-          HorzScrollBar.Position := HorzScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Left -
-            (Width - TJvThumbnail(FThumbList.Objects[Number]).Width -
-            (TJvThumbnail(FThumbList.Objects[Number]).Width div 2)));
+        if TJVThumbNail(FThumbList.objects[number]).left < 0 then
+          horzscrollbar.position := Horzscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).left -
+            (TJVThumbNail(FThumbList.objects[number]).width div 2));
+        if TJVThumbNail(FThumbList.objects[number]).left +
+          TJVThumbNail(FThumbList.objects[number]).width > width then
+          Horzscrollbar.position := Horzscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).left -
+            (width - TJVThumbNail(FThumbList.objects[number]).width -
+            (TJVThumbNail(FThumbList.objects[number]).width div 2)));
       end;
     smBoth:
       begin
-        if TJvThumbnail(FThumbList.Objects[Number]).Top < 0 then
-          VertScrollBar.Position := VertScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Top -
-            (TJvThumbnail(FThumbList.Objects[Number]).Width div 2));
-        if TJvThumbnail(FThumbList.Objects[Number]).Top +
-          TJvThumbnail(FThumbList.Objects[Number]).Height > Height then
-          VertScrollBar.Position := VertScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Top -
-            (TJvThumbnail(FThumbList.Objects[Number]).Height -
-            (TJvThumbnail(FThumbList.Objects[Number]).Height div 2)));
-        if TJvThumbnail(FThumbList.Objects[Number]).Left < 0 then
-          HorzScrollBar.Position := HorzScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Left -
-            (TJvThumbnail(FThumbList.Objects[Number]).Width div 2));
-        if TJvThumbnail(FThumbList.Objects[Number]).Left +
-          TJvThumbnail(FThumbList.Objects[Number]).Width > Width then
-          HorzScrollBar.Position := HorzScrollBar.Position +
-            (TJvThumbnail(FThumbList.Objects[Number]).Left -
-            (Width - TJvThumbnail(FThumbList.Objects[Number]).Width -
-            (TJvThumbnail(FThumbList.Objects[Number]).Width div 2)));
+        if TJVThumbNail(FThumbList.objects[number]).top < 0 then
+          vertscrollbar.position := vertscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).top -
+            (TJVThumbNail(FThumbList.objects[number]).width div 2));
+        if TJVThumbNail(FThumbList.objects[number]).top +
+          TJVThumbNail(FThumbList.objects[number]).height > height then
+          vertscrollbar.position := vertscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).top -
+            (TJVThumbNail(FThumbList.objects[number]).height -
+            (TJVThumbNail(FThumbList.objects[number]).height div 2)));
+        if TJVThumbNail(FThumbList.objects[number]).left < 0 then
+          horzscrollbar.position := Horzscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).left -
+            (TJVThumbNail(FThumbList.objects[number]).width div 2));
+        if TJVThumbNail(FThumbList.objects[number]).left +
+          TJVThumbNail(FThumbList.objects[number]).width > width then
+          Horzscrollbar.position := Horzscrollbar.position +
+            (TJVThumbNail(FThumbList.objects[number]).left -
+            (width - TJVThumbNail(FThumbList.objects[number]).width -
+            (TJVThumbNail(FThumbList.objects[number]).width div 2)));
       end;
   end;
+  if FSelected <> Number then
+  begin
+    FSelected := Number;
+    if Assigned(OnClick) then
+      OnClick(Self);
+  end;
 end;
-
 (*
 function TJvThumbView.GetBufferName(AName: string): string;
 var
