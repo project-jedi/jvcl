@@ -30,7 +30,7 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 //>Polaris
 {$DEFINE POLESPIN} {Classic style in JvSpinButton and JvSpinEdit}

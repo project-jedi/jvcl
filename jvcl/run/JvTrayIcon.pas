@@ -35,7 +35,7 @@ History:
     Remove the old unsuccessful DoCheckCrash method.
 }
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvTrayIcon;
 

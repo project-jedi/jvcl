@@ -31,7 +31,7 @@ Todo : Why the "stdcall" definitions ? (routines Configure, Initialize...)
        What for the GlobalNameSpace.BeginWrite ?
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvPlugin;
 

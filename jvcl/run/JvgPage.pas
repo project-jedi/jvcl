@@ -25,7 +25,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { PageControl  component  that can  display  its  pages captions  in
  3D styles with 3D borders.  Component  can display  glyphs  on  own

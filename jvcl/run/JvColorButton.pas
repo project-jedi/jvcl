@@ -29,7 +29,7 @@ Known Issues:
     Solution: Set OtherCaption to ' ' instead
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvColorButton;
 

@@ -25,7 +25,7 @@ Known Issues:
 - Port to Kylix for hook class
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { Description
   This unit implements mouse gestures. For this purpose

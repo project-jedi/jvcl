@@ -23,7 +23,7 @@ Known Issues:
 
 unit JvImagesViewer;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 interface
 uses
   Windows, SysUtils, Messages, Classes, Controls,

@@ -331,7 +331,7 @@ unit JvWizard;
 
 interface
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 uses Windows, {$IFDEF COMPILER6_UP}Types, {$ENDIF}Classes, Messages, SysUtils,
   Controls, Forms, Graphics, Buttons, ImgList, JvWizardCommon

@@ -31,7 +31,7 @@ Known Issues:
   Please see the accompanying documentation.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvLinkLabelTools;
 

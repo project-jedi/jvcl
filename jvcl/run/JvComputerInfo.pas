@@ -47,7 +47,7 @@ Known Issues:
     Changed Company to RegisteredOrganization
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvComputerInfo;
 

@@ -27,7 +27,7 @@ Description: adapter unit - converts JvInterpreter calls to delphi calls
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvInterpreter_JvInterpreter;
 

@@ -25,7 +25,7 @@ Known Issues:
  Use QueryPerformanceCounter / Frequency instead of GetTickCount (the high resolution timer)
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvProfilerForm;
 

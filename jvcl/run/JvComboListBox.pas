@@ -29,8 +29,8 @@ Description:
   combobox button.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvComboListBox;
 

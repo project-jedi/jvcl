@@ -26,7 +26,7 @@ Known Issues:
   * Only custom animation for windows xp systems, because of use of window region.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBalloonHint;
 

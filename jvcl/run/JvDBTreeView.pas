@@ -30,7 +30,7 @@ Known Issues:
   with [translated]
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { history
  (JVCL Library versions) :

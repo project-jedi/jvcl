@@ -25,7 +25,7 @@ Known Issues:
   I do not clean the source style for this file ;-)
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvHidControllerClass;
 

@@ -35,7 +35,7 @@ components that handles the drawing differently
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvStaticText;
 

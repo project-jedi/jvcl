@@ -26,7 +26,7 @@ Known Issues:
   -Where conditions *MUST* be enclosed between parenthesis as ... WHERE (Col = 5) AND (Col2 < Col3) ...
   -Update statements are limited to simple operations like ... SET Col1 = Col1 + 1, Col2 = 4 ...
 -----------------------------------------------------------------------------}
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvXMLDatabase;
 

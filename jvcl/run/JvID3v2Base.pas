@@ -28,7 +28,7 @@ Known Issues:
     list indicate not supported frames.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvID3v2Base;
 

@@ -31,7 +31,7 @@ Known Issues:
 
 unit JvCustomItemViewer;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 interface
 uses
   Windows, SysUtils, Forms, Messages, Classes, Controls,

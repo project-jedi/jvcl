@@ -91,7 +91,7 @@ Maciej Kaczkowski:
       function)
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvHTControls;
 

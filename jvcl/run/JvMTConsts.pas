@@ -22,7 +22,7 @@ Last Modified: 2002-09-25
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvMTConsts;
 

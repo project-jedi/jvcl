@@ -26,7 +26,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 //{ Процедуры для удобной работы со свойствами объектов через RTTI }
 { Procedures for comfort working with objects' properties via RTTI [translated] }

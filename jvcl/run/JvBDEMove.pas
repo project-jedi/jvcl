@@ -27,7 +27,7 @@ description : database batchmove
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {
  history:

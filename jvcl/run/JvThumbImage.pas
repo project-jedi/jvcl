@@ -42,7 +42,7 @@ Removed the 180 degree rotation and replaced by the mirror(mtBoth) call.
  I must test it on Win98 before release.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvThumbImage;
 

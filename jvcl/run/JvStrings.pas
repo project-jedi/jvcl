@@ -25,7 +25,7 @@ Known Issues:
   Should be merged with JCL
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {$IFDEF COMPILER6_UP}
  {$IFDEF MSWINDOWS}

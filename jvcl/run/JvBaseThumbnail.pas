@@ -25,7 +25,7 @@ Known Issues:
   This file contains (most likely) greek comments.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBaseThumbnail;
 

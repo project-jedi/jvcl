@@ -32,6 +32,8 @@ Description:
         Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
+{$I jvcl.inc}
+
 unit JvLinkLabelTree;
 
 interface

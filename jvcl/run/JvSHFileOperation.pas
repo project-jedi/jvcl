@@ -28,7 +28,7 @@ Known Issues:
   fofConfirmMouse does nothing
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvSHFileOperation;
 

@@ -26,7 +26,7 @@ description : interface to design-time routines
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvDsgnIntf;
 

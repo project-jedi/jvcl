@@ -39,7 +39,7 @@ inherit it with JVCL3 from JvDBLookupEdit, the specified errors occur.
 Michael Habbe [2003-10-20]
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvDBLookupComboEdit;
 

@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 { A replacement for TDateTimePicker which is better suited for keyboard-input by
  ultimately descending from TCustomMaskEdit.

@@ -35,8 +35,8 @@ Known Issues:
     Can't focus next control by TAB key on D4.
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvComCtrls;
 

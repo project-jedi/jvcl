@@ -30,7 +30,7 @@ Known Issues:
       TJvHookInfo                -> TJvHookData
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvWndProcHook;
 

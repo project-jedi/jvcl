@@ -26,7 +26,7 @@ Description : JVCL Interpreter version 2
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvInterpreter_System;
 

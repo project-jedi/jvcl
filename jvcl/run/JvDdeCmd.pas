@@ -30,8 +30,8 @@ unit JvDdeCmd;
 
 interface
 
-{$I JVCL.INC}
-{$I WINDOWSONLY.INC}
+{$I jvcl.inc}
+{$I windowsonly.inc}
 
 uses
   DdeMan, Messages, SysUtils, Classes, JclBase, Forms,

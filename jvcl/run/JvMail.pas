@@ -27,7 +27,7 @@ Known Issues:
 -----------------------------------------------------------------------------
 Doesn't work with Paegasus Mail because it has no MAPI support at all.      }
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvMail;
 

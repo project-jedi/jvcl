@@ -22,15 +22,15 @@
 {   FireBird 1.x                                                               }
 {   Yaffil                                                                     }
 {  To use a specific version of Interbase or FireBird you must Define compiler }
-{  Options in "JvUIB.inc"                                                      }
+{  Options in "jvuib.inc"                                                      }
 {                                                                              }
 { Unit owner:    Henri Gourvest                                                }
 { Last modified: September 21, 2003                                            }
 {                                                                              }
 {******************************************************************************}
 
-{$I JVCL.INC}
-{$I JvUIB.inc}
+{$I jvcl.inc}
+{$I jvuib.inc}
 
 {$ALIGN ON}
 {$MINENUMSIZE 4}

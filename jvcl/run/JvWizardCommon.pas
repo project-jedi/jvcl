@@ -42,7 +42,7 @@ unit JvWizardCommon;
 
 interface
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 uses
   Windows,

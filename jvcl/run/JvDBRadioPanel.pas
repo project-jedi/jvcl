@@ -25,7 +25,7 @@
 { Last modified: March 7, 2003                                                 }
 {                                                                              }
 {******************************************************************************}
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvDBRadioPanel;
 

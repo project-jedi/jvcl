@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues: This component does not parse the !DOCTYPE tags but preserves them
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvSimpleXML;
 

@@ -33,6 +33,8 @@ Description:
         Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
+{$I jvcl.inc}
+
 unit JvLinkLabelParser;
 
 interface

@@ -25,7 +25,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvTFGlance;
 
@@ -36,7 +36,7 @@ uses
   ImgList,
   JvTFUtils, JvTFManager;
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 type

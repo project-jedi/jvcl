@@ -29,7 +29,7 @@ This could be rectified by a custom-written formatting routine.
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvValidateEdit;
 

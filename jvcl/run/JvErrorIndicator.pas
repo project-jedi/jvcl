@@ -34,7 +34,7 @@ To set the error, use the Error property: an empty error string, removes the err
 
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvErrorIndicator;
 

@@ -27,7 +27,7 @@ Description : db-aware component
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvBDESQLScript;
 

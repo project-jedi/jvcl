@@ -34,7 +34,7 @@ Description:
         Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvLinkLabelRenderer;
 

@@ -69,7 +69,7 @@ Versionhistory:
         fixed several Memory-leaks, fixed unload-bug, minimized uses-list
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvPluginManager;
 

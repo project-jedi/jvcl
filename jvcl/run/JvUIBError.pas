@@ -25,8 +25,8 @@
 {******************************************************************************}
 
 unit JvUIBError;
-{$I JVCL.INC}
-{$I JvUIB.inc}
+{$I jvcl.inc}
+{$I jvuib.inc}
 
 interface
 {$IFDEF USE_IBERROR_H}
