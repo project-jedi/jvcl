@@ -124,7 +124,7 @@ type
 
   TJvDesktopAlertOption = (daoCanClick, daoCanMove, daoCanMoveAnywhere, daoCanClose, daoCanFade);
   TJvDesktopAlertOptions = set of TJvDesktopAlertOption;
-
+  
   TJvDesktopAlert = class(TJvCommonDialogP)
   private
     FStacker: TJvDesktopAlertStack;
@@ -198,7 +198,7 @@ type
     property Data: TObject read FData write FData;
   published
     property AlertStack: TJvDesktopAlertStack read GetAlertStack write SetAlertStack;
-    property AutoFocus:boolean read FAutoFocus write FAutoFocus default False; 
+    property AutoFocus:boolean read FAutoFocus write FAutoFocus default False;
     property HeaderText: string read GetHeaderText write SetHeaderText;
     property MessageText: string read GetMessageText write SetMessageText;
 
@@ -863,6 +863,7 @@ end;
 procedure TJvDesktopAlert.SetMessageText(const Value: string);
 begin
   FDeskTopForm.lblText.Caption := Value;
+  FDeskTopForm.lblText.Update;
 end;
 
 procedure TJvDesktopAlert.SetParentFont(const Value: boolean);
