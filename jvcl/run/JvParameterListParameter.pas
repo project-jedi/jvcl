@@ -1001,7 +1001,7 @@ end;
 procedure TJvListParameter.SetAsVariant(Value: variant);
 begin
   if VariantAsItemIndex then
-    if VarType(Value) in [varSmallInt, varInteger, varByte, varShortInt, varWord, varLongWord] then
+    if VarType(Value) in [varSmallInt, varInteger, varByte {$IFDEF COMPILER6_UP}, varShortInt, varWord, varLongWord{$ENDIF}] then
       ItemIndex := Value
     else
       inherited SetAsString(Value)

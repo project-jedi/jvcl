@@ -177,7 +177,7 @@ type
     property WinControl: TWinControl read GetWinControl write SetWinControl;
     procedure SetWinControlProperties; virtual;
   public
-    constructor Create(AParameterList: TJvParameterList); virtual;
+    constructor Create(AParameterList: TJvParameterList); reintroduce; virtual;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     function Validate(var AData: variant): boolean; virtual;
