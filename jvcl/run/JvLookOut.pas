@@ -831,7 +831,7 @@ begin
   FDown := True;
   //  inherited MouseDown(Button, Shift, X, Y);
   if Assigned(OnMouseDown) then
-    OnMousedown(Self, Button, Shift, X, y);
+    OnMouseDown(Self, Button, Shift, X, Y);
   if Parent is TJvLookOutPage then
     FAutoRepeat := TJvLookOutPage(Parent).AutoRepeat;
   if FAutoRepeat then
@@ -853,7 +853,7 @@ procedure TJvDwnArrowBtn.MouseUp(Button: TMouseButton; Shift: TShiftState;
 begin
   //  inherited MouseUp(Button, Shift, X, Y);
   if Assigned(OnMouseUp) then
-    OnMouseUp(Self, Button, Shift, X, y);
+    OnMouseUp(Self, Button, Shift, X, Y);
   FDown := False;
   (Parent as TJvLookOutPage).DownArrowClick(Self);
   //  Parent.ScrollBy(0,-50);
@@ -1375,18 +1375,18 @@ begin
         Frame3D(Canvas, R, cl3DDkShadow, clBtnFace, 1)
       else
       if FButtonBorder = bbLight then
-        Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1)
+        Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1)
       else
-        Frame3D(Canvas, R, cl3DDkShadow, clBtnHighLight, 1)
+        Frame3D(Canvas, R, cl3DDkShadow, clBtnHighlight, 1)
     end
     else
       case FButtonBorder of
         bbDark:
           Frame3D(Canvas, R, clBtnFace, cl3DDkShadow, 1);
         bbLight:
-          Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1);
+          Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
       else
-        Frame3D(Canvas, R, clBtnHighLight, cl3DDkShadow, 1);
+        Frame3D(Canvas, R, clBtnHighlight, cl3DDkShadow, 1);
       end;
   end;
 end;
