@@ -3119,8 +3119,7 @@ begin
         end;
       csDialog:
         begin
-          FPopup.Free;
-          FPopup := nil;
+          FreeAndNil(FPopup);
         end;
     end;
   end;
@@ -4002,7 +4001,7 @@ begin
   // (p3) have to use CreateNew for VCL as well since there is no dfm
   inherited CreateNew(AOwner);
   FEditor := TWinControl(AOwner);
-  //ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
+  ControlStyle := ControlStyle + [csNoDesignVisible, csReplicatable, csAcceptsControls];
   Visible := False;
   {$IFDEF VCL}
   Ctl3D := False;
