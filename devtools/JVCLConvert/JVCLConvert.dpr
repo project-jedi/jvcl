@@ -4,7 +4,9 @@ uses
   Forms,
   fJvclConverterMain in 'fJvclConverterMain.pas' {frmMain},
   FastTime in 'FastTime.pas',
-  fAboutMe in 'fAboutMe.pas' {frmAboutMe};
+  fAboutMe in 'fAboutMe.pas' {frmAboutMe},
+  OptionsFrm in 'OptionsFrm.pas' {frmOptions},
+  JVCLConvertUtils in 'JVCLConvertUtils.pas';
 
 {$R *.RES}
 

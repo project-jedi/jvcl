@@ -51,6 +51,10 @@ object frmMain: TfrmMain
           item
             Caption = 'Microseconds'
             Width = 100
+          end
+          item
+            AutoSize = True
+            Caption = 'New filename'
           end>
         MultiSelect = True
         ReadOnly = True
@@ -124,7 +128,7 @@ object frmMain: TfrmMain
     object btnExit: TToolButton
       Left = 77
       Top = 0
-      Action = FileExit1
+      Action = FileExit
     end
     object ToolButton7: TToolButton
       Left = 100
@@ -204,12 +208,18 @@ object frmMain: TfrmMain
     Left = 264
     Top = 88
   end
-  object MainMenu1: TMainMenu
+  object MainMenu1: TJvMainMenu
     Images = StandardImages
+    ImageMargin.Left = 0
+    ImageMargin.Top = 0
+    ImageMargin.Right = 0
+    ImageMargin.Bottom = 0
+    ImageSize.Height = 0
+    ImageSize.Width = 0
     Left = 160
     Top = 88
     object File1: TMenuItem
-      Caption = 'File'
+      Action = FileExit
       object IterateSubdirectories1: TMenuItem
         Action = IterateSubdirectories
       end
@@ -223,7 +233,7 @@ object frmMain: TfrmMain
         Caption = '-'
       end
       object Exit1: TMenuItem
-        Action = FileExit1
+        Action = FileExit
       end
     end
     object Edit: TMenuItem
@@ -255,31 +265,14 @@ object frmMain: TfrmMain
     end
     object Options1: TMenuItem
       Caption = 'Options'
-      object mnuBackup: TMenuItem
-        Caption = '&Backup in *.BAK'
-        Checked = True
-        OnClick = mnuBackupClick
-      end
-      object mnuWholeWords: TMenuItem
-        Caption = 'Whole words only'
-        Checked = True
-        OnClick = mnuWholeWordsClick
-      end
-      object mnuReplaceFileNames: TMenuItem
-        Caption = 'Replace File Names'
-        Checked = True
-        OnClick = mnuReplaceFileNamesClick
-      end
-      object mnuSimulate: TMenuItem
-        Caption = 'Simulate'
-        OnClick = mnuSimulateClick
+      object mnuFileMask: TMenuItem
+        Action = FileMask
       end
       object N3: TMenuItem
         Caption = '-'
       end
-      object mnuFileMask: TMenuItem
-        Caption = 'File Mask...'
-        OnClick = mnuFileMaskClick
+      object Options2: TMenuItem
+        Action = Options
       end
     end
     object Help1: TMenuItem
@@ -294,7 +287,7 @@ object frmMain: TfrmMain
     OnUpdate = ActionList1Update
     Left = 216
     Top = 88
-    object FileExit1: TFileExit
+    object FileExit: TFileExit
       Category = 'File'
       Caption = 'E&xit'
       Hint = 'Exit|Quits the application'
@@ -391,6 +384,18 @@ object frmMain: TfrmMain
       ShortCut = 16449
       OnExecute = SelectAllExecute
       OnUpdate = SelectAllUpdate
+    end
+    object Options: TAction
+      Category = 'Options'
+      Caption = 'Options...'
+      ShortCut = 32781
+      OnExecute = OptionsExecute
+    end
+    object FileMask: TAction
+      Category = 'Options'
+      Caption = 'File Mask...'
+      ShortCut = 16461
+      OnExecute = FileMaskExecute
     end
   end
   object StandardImages: TImageList
