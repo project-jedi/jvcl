@@ -16,6 +16,9 @@ object TransBtnFormMain: TTransBtnFormMain
   OnActivate = FormActivate
   OnKeyPress = FormKeyPress
   OnPaint = FormPaint
+  DesignSize = (
+    528
+    355)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

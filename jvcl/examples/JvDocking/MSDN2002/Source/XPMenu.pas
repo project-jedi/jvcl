@@ -2906,7 +2906,7 @@ var
   C: TControlCanvas;
   R: TRect;
   BorderColor: TColor;
-  TempRect:TRect;  
+  //TempRect: TRect;
 begin
 
   C := nil;
@@ -3129,8 +3129,8 @@ var
   R: TRect;
   SelectColor, BorderColor: TColor;
   //***************************Tommstudio.com Update*********************
-  ParentColor:TColor;
-  TempRect:TRect;
+ // ParentColor: TColor;
+  TempRect: TRect;
   //***************************Tommstudio.com Update*********************
 begin
   C := nil;

@@ -136,17 +136,17 @@ var
   begin
     Result := '';
     if Attr and FILE_ATTRIBUTE_ARCHIVE = FILE_ATTRIBUTE_ARCHIVE then
-      AppendStr(Result, 'A');
+      Result := Result + 'A';
     if Attr and FILE_ATTRIBUTE_COMPRESSED = FILE_ATTRIBUTE_COMPRESSED then
-      AppendStr(Result, 'C');
+      Result := Result + 'C';
     if Attr and FILE_ATTRIBUTE_HIDDEN = FILE_ATTRIBUTE_HIDDEN then
-      AppendStr(Result, 'H');
+      Result := Result + 'H';
     if Attr and FILE_ATTRIBUTE_READONLY = FILE_ATTRIBUTE_READONLY then
-      AppendStr(Result, 'R');
+      Result := Result + 'R';
     if Attr and FILE_ATTRIBUTE_SYSTEM = FILE_ATTRIBUTE_SYSTEM then
-      AppendStr(Result, 'S');
+      Result := Result + 'S';
     if Attr and FILE_ATTRIBUTE_TEMPORARY = FILE_ATTRIBUTE_TEMPORARY then
-      AppendStr(Result, 'T');
+      Result := Result + 'T';
   end;
 
   procedure ParseFile(const Filename: string; Size: Cardinal; Attr: integer);

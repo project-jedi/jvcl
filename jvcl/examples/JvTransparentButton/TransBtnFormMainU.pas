@@ -198,9 +198,11 @@ begin
 end;
 
 procedure TTransBtnFormMain.FormPaint(Sender: TObject);
+{
 var
-  X, Y, W, H: LongInt;
-  ACanvas:TControlCanvas;
+  X, Y, W, H: Longint;
+  ACanvas: TControlCanvas;
+}
 begin
 {
   ACanvas := TControlCanvas.Create;

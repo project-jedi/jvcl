@@ -19,7 +19,7 @@ object frmMain: TfrmMain
     Left = 0
     Top = 0
     Width = 672
-    Height = 248
+    Height = 245
     Align = alClient
     DataSource = DataSource1
     Font.Charset = DEFAULT_CHARSET
@@ -120,7 +120,7 @@ object frmMain: TfrmMain
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 248
+    Top = 245
     Width = 672
     Height = 19
     Panels = <
