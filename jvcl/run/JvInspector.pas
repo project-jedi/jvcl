@@ -8343,7 +8343,8 @@ begin
           PrefixWithOwner := '';
         for J := 0 to CurOwner.ComponentCount - 1 do
           // don't allow setting self as property
-          if (CurOwner.Components[J] is MinClass) and (CurOwner.Components[J].ComponentIndex <> self.Parent.DisplayIndex) then
+          if (CurOwner.Components[J] is MinClass) and (not (Parent.Data is TJvInspectorPropData) or
+              (CurOwner.Components[J] <> TJvInspectorPropData(Parent.Data).Instance)) then
             SL.AddObject(PrefixWithOwner + CurOwner.Components[J].Name, CurOwner.Components[J]);
         if SL.Count > 0 then
         begin
