@@ -4,8 +4,9 @@
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="..\..\..\bin\JvChartDemo.exe"/>
-    <OBJFILES value="..\..\..\dcu\JvChartDemo.obj ..\..\..\dcu\MainForm.obj"/>
-    <RESFILES value="JvChartDemo.res"/>
+    <OBJFILES value="..\..\..\dcu\JvChartDemo.obj ..\..\..\dcu\MainForm.obj 
+      ..\..\..\dcu\StatClasses.obj"/>
+    <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -27,33 +28,24 @@
     <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl;..\..\..\common;..\..\..\run;..\..\..\..\jcl\source\visclx;..\..\..\..\jcl\source\windows;..\..\..\..\jcl\source\vcl;..\..\..\..\jcl\source\common;$(INCLUDEPATH)"/>
     <LIBPATH value="$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\resources;..\..\..\run;$(RESPATH)"/>
     <WARNINGS value="-w-par"/>
-    <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(INCLUDEPATH) -src_suffix cpp 
-      -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I..\..\..\common -I..\..\..\run 
+      -I..\..\..\..\jcl\source\visclx -I..\..\..\..\jcl\source\windows 
+      -I..\..\..\..\jcl\source\vcl -I..\..\..\..\jcl\source\common 
+      -I$(INCLUDEPATH) -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tW -tWM"/>
     <PFLAGS value="-N2..\..\..\dcu -N0..\..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\..\dcu -D&quot;&quot; -aa -Tpe -x -Gn -v"/>
-    <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0w32.obj Memmgr.Lib sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
     <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
-    <OTHERFILES value=""/>
   </LINKER>
-  <FILELIST>
-      <FILE FILENAME="JvChartDemo.res" FORMNAME="" UNITNAME="JvChartDemo.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="JvChartDemo.cpp" FORMNAME="" UNITNAME="JvChartDemo" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="MainForm.cpp" FORMNAME="frmMain" UNITNAME="MainForm" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-  </FILELIST>
-  <BUILDTOOLS>
-  </BUILDTOOLS>
-
   <IDEOPTIONS>
 [Version Info]
 IncludeVerInfo=0
@@ -69,75 +61,5 @@ Private=0
 DLL=0
 Locale=1036
 CodePage=1252
-
-[Version Info Keys]
-CompanyName=
-FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
-LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
-Comments=
-
-[HistoryLists\hlIncludePath]
-Count=3
-Item0=$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)
-Item1=C:\Prog\CBuilder6\Projects;C:\Perso\Prog\JVCL from CVS\dev\JVCL3\examples\JvChartDemo\BCB;$(BCB)\include;$(BCB)\include\vcl;$(INCLUDEPATH)
-Item2=$(BCB)\include;$(BCB)\include\vcl
-
-[HistoryLists\hlLibraryPath]
-Count=3
-Item0=$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-Item1=C:\Prog\CBuilder6\Projects;C:\Perso\Prog\JVCL from CVS\dev\JVCL3\examples\JvChartDemo\BCB;$(BCB)\lib\obj;$(BCB)\lib;$(RESPATH)
-Item2=$(BCB)\lib\obj;$(BCB)\lib
-
-[HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=$(BCB)\source\vcl
-
-[HistoryLists\hlConditionals]
-Count=1
-Item0=_DEBUG
-
-[HistoryLists\hlIntOutputDir]
-Count=1
-Item0=..\..\..\dcu
-
-[HistoryLists\hlFinalOutputDir]
-Count=1
-Item0=..\..\..\bin
-
-[Debugging]
-DebugSourceDirs=$(BCB)\source\vcl
-
-[Parameters]
-RunParams=
-Launcher=
-UseLauncher=0
-DebugCWD=
-HostApplication=
-RemoteHost=
-RemotePath=
-RemoteLauncher=
-RemoteCWD=
-RemoteDebug=0
-
-[Compiler]
-ShowInfoMsgs=0
-LinkDebugVcl=0
-LinkCGLIB=0
-
-[CORBA]
-AddServerUnit=1
-AddClientUnit=1
-PrecompiledHeaders=1
-
-[Language]
-ActiveLang=
-ProjectLang=
-RootDir=
   </IDEOPTIONS>
 </PROJECT>

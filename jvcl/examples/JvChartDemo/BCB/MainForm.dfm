@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
-  Left = 192
-  Top = 107
-  Width = 894
-  Height = 444
+  Left = 222
+  Top = 153
+  Width = 729
+  Height = 470
   Caption = 'JvChart Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -10,6 +10,7 @@ object frmMain: TfrmMain
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
@@ -17,21 +18,28 @@ object frmMain: TfrmMain
   PixelsPerInch = 96
   TextHeight = 13
   object Chart: TJvChart
-    Left = 0
-    Top = 36
-    Width = 886
-    Height = 361
+    Left = 124
+    Top = 35
+    Width = 597
+    Height = 389
     Align = alClient
-    Options.YGap = 1
+    Options.XAxisValuesPerDivision = 10
+    Options.XAxisDateTimeMode = False
+    Options.XAxisLegendSkipBy = 2
+    Options.PenCount = 3
     Options.XOrigin = 0
     Options.YOrigin = 0
-    Options.YStartOffset = 21
-    Options.PointSize = 3
-    Options.XLegendSkipBy = 3
-    Options.YLegendDecimalPlaces = 0
-    Options.LegendRowCount = 0
-    Options.XValueCount = 3
-    Options.YValueCount = 3
+    Options.YStartOffset = 42
+    Options.PrimaryYAxis.YMax = 20
+    Options.PrimaryYAxis.YLegendDecimalPlaces = 1
+    Options.SecondaryYAxis.YMax = 140
+    Options.SecondaryYAxis.YLegendDecimalPlaces = 0
+    Options.SecondaryYAxis.DefaultYLegends = 60
+    Options.Legend = clChartLegendBelow
+    Options.LegendRowCount = 1
+    Options.PenLineWidth = 2
+    Options.AxisLineWidth = 3
+    Options.XValueCount = 20
     Options.HeaderFont.Charset = DEFAULT_CHARSET
     Options.HeaderFont.Color = clWindowText
     Options.HeaderFont.Height = -11
@@ -49,30 +57,21 @@ object frmMain: TfrmMain
     Options.AxisFont.Style = []
     Options.PaperColor = clWhite
     Options.AxisLineColor = clBlack
+    Options.CursorColor = clBlack
+    Options.CursorStyle = psDot
   end
-  object Panel2: TPanel
-    Left = 0
-    Top = 397
-    Width = 886
-    Height = 20
-    Align = alBottom
-    Caption = 
-      'JvChart component originally written by  M'#229'rten Henrichson (AABS' +
-      'oft), modified by Warren Postma.'
-    TabOrder = 0
-    object CheckBox1: TCheckBox
-      Left = 83
-      Top = 2
-      Width = 22
-      Height = 17
-      TabOrder = 0
-    end
+  object Splitter1: TSplitter
+    Left = 121
+    Top = 35
+    Width = 3
+    Height = 389
+    Cursor = crHSplit
   end
-  object Panel1: TPanel
+  object PanelTop: TPanel
     Left = 0
     Top = 0
-    Width = 886
-    Height = 36
+    Width = 721
+    Height = 35
     Align = alTop
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
@@ -80,65 +79,13 @@ object frmMain: TfrmMain
     Font.Name = 'Verdana'
     Font.Style = []
     ParentFont = False
-    TabOrder = 1
-    object SpeedButton1: TSpeedButton
-      Left = 488
-      Top = 5
-      Width = 153
-      Height = 25
-      Hint = 'GraphToClipboard '
-      Caption = 'Copy to Clipboard'
-      Flat = True
-      Glyph.Data = {
-        76010000424D7601000000000000760000002800000020000000100000000100
-        04000000000000010000130B0000130B00001000000000000000000000000000
-        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
-        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF003333330B7FFF
-        FFB0333333777F3333773333330B7FFFFFB0333333777F3333773333330B7FFF
-        FFB0333333777F3333773333330B7FFFFFB03FFFFF777FFFFF77000000000077
-        007077777777777777770FFFFFFFF00077B07F33333337FFFF770FFFFFFFF000
-        7BB07F3FF3FFF77FF7770F00F000F00090077F77377737777F770FFFFFFFF039
-        99337F3FFFF3F7F777FF0F0000F0F09999937F7777373777777F0FFFFFFFF999
-        99997F3FF3FFF77777770F00F000003999337F773777773777F30FFFF0FF0339
-        99337F3FF7F3733777F30F08F0F0337999337F7737F73F7777330FFFF0039999
-        93337FFFF7737777733300000033333333337777773333333333}
-      NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = SpeedButton1Click
-    end
-    object SpeedButton2: TSpeedButton
-      Left = 646
-      Top = 5
-      Width = 99
-      Height = 25
-      Hint = 'PrintGraph'
-      Caption = 'Print'
-      Flat = True
-      Glyph.Data = {
-        76010000424D7601000000000000760000002800000020000000100000000100
-        04000000000000010000120B0000120B00001000000000000000000000000000
-        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
-        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00300000000000
-        0003377777777777777308888888888888807F33333333333337088888888888
-        88807FFFFFFFFFFFFFF7000000000000000077777777777777770F8F8F8F8F8F
-        8F807F333333333333F708F8F8F8F8F8F9F07F333333333337370F8F8F8F8F8F
-        8F807FFFFFFFFFFFFFF7000000000000000077777777777777773330FFFFFFFF
-        03333337F3FFFF3F7F333330F0000F0F03333337F77773737F333330FFFFFFFF
-        03333337F3FF3FFF7F333330F00F000003333337F773777773333330FFFF0FF0
-        33333337F3F37F3733333330F08F0F0333333337F7337F7333333330FFFF0033
-        33333337FFFF7733333333300000033333333337777773333333}
-      NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = SpeedButton2Click
-    end
-    object SpeedButton3: TSpeedButton
-      Left = 105
+    TabOrder = 0
+    object ButtonBarChart: TSpeedButton
+      Left = 5
       Top = 5
       Width = 25
       Height = 25
-      Hint = 'ShowAsBar'
+      Hint = 'Bar Chart'
       GroupIndex = 1
       Flat = True
       Glyph.Data = {
@@ -157,14 +104,14 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton3Click
+      OnClick = ButtonBarChartClick
     end
-    object SpeedButton4: TSpeedButton
-      Left = 157
+    object ButtonLine: TSpeedButton
+      Left = 58
       Top = 5
       Width = 25
       Height = 25
-      Hint = 'ShowAsLine'
+      Hint = 'Line Chart'
       GroupIndex = 1
       Down = True
       Flat = True
@@ -184,15 +131,16 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton4Click
+      OnClick = ButtonLineClick
     end
-    object SpeedButton5: TSpeedButton
-      Left = 183
-      Top = 5
+    object ButtonStackedBarAve: TSpeedButton
+      Left = 345
+      Top = 7
       Width = 25
       Height = 25
-      Hint = 'ShowAs100StackedBar'
+      Hint = 'Stacked Bars with Average'
       GroupIndex = 1
+      Enabled = False
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -210,14 +158,14 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton5Click
+      OnClick = ButtonStackedBarAveClick
     end
-    object SpeedButton6: TSpeedButton
-      Left = 209
+    object ButtonStackedBar: TSpeedButton
+      Left = 111
       Top = 5
-      Width = 25
+      Width = 26
       Height = 25
-      Hint = 'ShowAsStackedBar'
+      Hint = 'Stacked Bars'
       GroupIndex = 1
       Flat = True
       Glyph.Data = {
@@ -236,40 +184,14 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton6Click
+      OnClick = ButtonStackedBarClick
     end
-    object SpeedButton7: TSpeedButton
-      Left = 784
-      Top = 5
-      Width = 73
-      Height = 25
-      Hint = 'ChangeXValuesWithSeries'
-      Caption = 'Pivot'
-      Flat = True
-      Glyph.Data = {
-        76010000424D7601000000000000760000002800000020000000100000000100
-        04000000000000010000120B0000120B00001000000000000000000000000000
-        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
-        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF003FFFFFFFFFFF
-        FFFF33333333333FFFFF3FFFFFFFFF00000F333333333377777F33FFFFFFFF09
-        990F33333333337F337F333FFFFFFF09990F33333333337F337F3333FFFFFF09
-        990F33333333337FFF7F33333FFFFF00000F3333333333777773333333FFFFFF
-        FFFF3FFFFF3333333F330000033FFFFF0FFF77777F3333337FF30EEE0333FFF0
-        00FF7F337FFF333777FF0EEE00033F00000F7F33777F3777777F0EEE0E033000
-        00007FFF7F7FF777777700000E00033000FF777773777F3777F3330EEE0E0330
-        00FF337FFF7F7F3777F33300000E033000FF337777737F37773333330EEE0300
-        03FF33337FFF77777333333300000333333F3333777773333333}
-      NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = SpeedButton7Click
-    end
-    object SpeedButton8: TSpeedButton
-      Left = 131
+    object ButtonBarAve: TSpeedButton
+      Left = 31
       Top = 5
       Width = 25
       Height = 25
-      Hint = 'ShowAsBarWithAve'
+      Hint = 'Bar Chart with Average Line'
       GroupIndex = 1
       Flat = True
       Glyph.Data = {
@@ -288,40 +210,16 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton8Click
+      OnClick = ButtonBarAveClick
     end
-    object SpeedButton9: TSpeedButton
-      Left = 392
-      Top = 5
-      Width = 81
-      Height = 25
-      Hint = 'SetColorForSeries ... changes a single color.'
-      Caption = 'Colors'
-      Flat = True
-      Glyph.Data = {
-        76010000424D7601000000000000760000002800000020000000100000000100
-        04000000000000010000120B0000120B00001000000000000000000000000000
-        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
-        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00559999999995
-        5555557777777775F5555559999999505555555777777757FFF5555555555550
-        0955555555555FF7775F55555555995501955555555577557F75555555555555
-        01995555555555557F5755555555555501905555555555557F57555555555555
-        0F905555555555557FF75555555555500005555555555557777555555555550F
-        F05555555555557F57F5555555555008F05555555555F775F755555555570000
-        05555555555775577555555555700007555555555F755F775555555570000755
-        55555555775F77555555555700075555555555F75F7755555555570007555555
-        5555577F77555555555500075555555555557777555555555555}
-      NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
-    end
-    object SpeedButton10: TSpeedButton
-      Left = 235
-      Top = 5
+    object ButtonPie: TSpeedButton
+      Left = 371
+      Top = 7
       Width = 25
       Height = 25
-      Hint = 'ShowAsPie...just the first series!'
+      Hint = 'Show Pie Chart (one series only)'
       GroupIndex = 1
+      Enabled = False
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -339,41 +237,16 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton10Click
+      OnClick = ButtonPieClick
     end
-    object SpeedButton11: TSpeedButton
-      Left = 320
-      Top = 5
-      Width = 67
-      Height = 25
-      Hint = 'SetHeaderFontName'
-      Caption = 'Font'
-      Flat = True
-      Glyph.Data = {
-        76010000424D7601000000000000760000002800000020000000100000000100
-        04000000000000010000130B0000130B00001000000000000000000000000000
-        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
-        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
-        3333333333333333333333333333333333333333FFF33FFFFF33333300033000
-        00333337773377777333333330333300033333337FF33777F333333330733300
-        0333333377FFF777F33333333700000073333333777777773333333333033000
-        3333333337FF777F333333333307300033333333377F777F3333333333703007
-        33333333377F7773333333333330000333333333337777F33333333333300003
-        33333333337777F3333333333337007333333333337777333333333333330033
-        3333333333377333333333333333033333333333333733333333333333333333
-        3333333333333333333333333333333333333333333333333333}
-      NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
-      OnClick = SpeedButton11Click
-    end
-    object SpeedButton12: TSpeedButton
-      Left = 261
-      Top = 5
+    object ButtonMarkers: TSpeedButton
+      Left = 291
+      Top = 7
       Width = 25
       Height = 25
-      Hint = 'ShowAsMark'
+      Hint = 'Show Markers'
       GroupIndex = 1
+      Enabled = False
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -391,15 +264,16 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton12Click
+      OnClick = ButtonMarkersClick
     end
-    object SpeedButton14: TSpeedButton
-      Left = 287
-      Top = 5
+    object ButtonDeltaAverage: TSpeedButton
+      Left = 319
+      Top = 7
       Width = 25
       Height = 25
-      Hint = 'ShowAsDeltaAverage'
+      Hint = 'Delta Average'
       GroupIndex = 1
+      Enabled = False
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -417,17 +291,69 @@ object frmMain: TfrmMain
       NumGlyphs = 2
       ParentShowHint = False
       ShowHint = True
-      OnClick = SpeedButton14Click
+      OnClick = ButtonDeltaAverageClick
     end
-    object ButtonNewValues: TButton
-      Left = 2
-      Top = 6
-      Width = 91
+    object ButtonLineMarker: TSpeedButton
+      Left = 84
+      Top = 5
+      Width = 25
       Height = 25
-      Caption = 'New Values'
-      TabOrder = 0
-      OnClick = ButtonNewValuesClick
+      Hint = 'Line with Markers'
+      GroupIndex = 1
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        04000000000000010000120B0000120B00001000000000000000000000000000
+        800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00337333733373
+        3373337F3F7F3F7F3F7F33737373737373733F7F7F7F7F7F7F7F770000000000
+        000077777777777777773303333333333333337FF333333F33333709333333C3
+        333337773F3FF373F333330393993C3C33333F7F7F77F7F7FFFF77079797977C
+        77777777777777777777330339339333C333337FF73373F37F33370C333C3933
+        933337773F3737F37FF33303C3C33939C9333F7F7F7FF7F777FF7707C7C79797
+        7C97777777777777777733033C3393933C33337F37F33333373F37033C333933
+        33C3377F3733333333733303CCC3393333C33F7FFFFFFFFFFFFF77077C777777
+        7CCC777777777777777733333333333333C33333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = ButtonLineMarkerClick
     end
+    object Label1: TLabel
+      Left = 398
+      Top = 10
+      Width = 210
+      Height = 16
+      Caption = '(TODO: Fix broken chart types)'
+      Enabled = False
+    end
+  end
+  object ListBox1: TListBox
+    Left = 0
+    Top = 35
+    Width = 121
+    Height = 389
+    Align = alLeft
+    Color = clBtnFace
+    Font.Charset = OEM_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -8
+    Font.Name = 'Terminal'
+    Font.Style = [fsBold]
+    ItemHeight = 8
+    Items.Strings = (
+      '<Pen Values>')
+    ParentFont = False
+    TabOrder = 1
+    Visible = False
+    OnClick = ListBox1Click
+    OnDblClick = ListBox1DblClick
+  end
+  object ColorDialog1: TColorDialog
+    Ctl3D = True
+    Options = [cdFullOpen]
+    Left = 625
+    Top = 4
   end
   object FontDialog1: TFontDialog
     Font.Charset = DEFAULT_CHARSET
@@ -438,13 +364,102 @@ object frmMain: TfrmMain
     MinFontSize = 0
     MaxFontSize = 0
     Options = []
-    Left = 548
-    Top = 59
+    Left = 656
+    Top = 5
   end
-  object ColorDialog1: TColorDialog
-    Ctl3D = True
-    Options = [cdFullOpen]
-    Left = 455
-    Top = 78
+  object MainMenu1: TMainMenu
+    Left = 204
+    Top = 8
+    object Demo1: TMenuItem
+      Caption = '&Demo'
+      object SetHeaderFont1: TMenuItem
+        Caption = 'Set Header Font'
+        ShortCut = 16454
+        OnClick = SetHeaderFont1Click
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object Scrolling1: TMenuItem
+        Caption = 'Scrolling'
+        ShortCut = 16467
+        OnClick = Scrolling1Click
+      end
+      object CopyToClipboard1: TMenuItem
+        Caption = 'Copy To Clipboard'
+        ShortCut = 16451
+        OnClick = CopyToClipboard1Click
+      end
+      object Print1: TMenuItem
+        Caption = 'Print Chart to Printer'
+        ShortCut = 16464
+        OnClick = Print1Click
+      end
+      object PrintOptions1: TMenuItem
+        Caption = '&Print Options'
+        OnClick = PrintOptions1Click
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object Generatenewrandomvalues1: TMenuItem
+        Caption = '&Generate new random values'
+        ShortCut = 16466
+        OnClick = Generatenewrandomvalues1Click
+      end
+      object ShowgapinLineChart1: TMenuItem
+        Caption = '&Show gap in Line Chart'
+        ShortCut = 16455
+        OnClick = ShowgapinLineChart1Click
+      end
+      object DateTimeAxisMode: TMenuItem
+        Caption = 'Date/Time Axis Mode'
+        OnClick = DateTimeAxisModeClick
+      end
+      object MenuSecondaryAxisMode: TMenuItem
+        Caption = '&Plot Markers+Values using Alternate Scale (0-120%)'
+        OnClick = MenuSecondaryAxisModeClick
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object ShowDataInListbox1: TMenuItem
+        Caption = '&Show Data in listbox'
+        ShortCut = 16452
+        OnClick = ShowDataInListbox1Click
+      end
+      object LargeDataset576samples1: TMenuItem
+        Caption = '&Large Dataset (576 samples)'
+        ShortCut = 16460
+        OnClick = LargeDataset576samples1Click
+      end
+    end
+    object Help1: TMenuItem
+      Caption = '&Help'
+      object About1: TMenuItem
+        Caption = '&About JvChart Component'
+        ShortCut = 16449
+        OnClick = About1Click
+      end
+      object AboutJVCL301: TMenuItem
+        Caption = '&About JVCL 3.0'
+        OnClick = AboutJVCL301Click
+      end
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 100
+    OnTimer = Timer1Timer
+    Left = 170
+    Top = 6
+  end
+  object PrinterSetupDialog1: TPrinterSetupDialog
+    Left = 168
+    Top = 42
+  end
+  object PrintDialog1: TPrintDialog
+    Left = 204
+    Top = 40
   end
 end
