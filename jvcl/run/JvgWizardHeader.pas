@@ -87,6 +87,7 @@ type
 implementation
 
 uses
+  Math,
   JvgTypes, JvgUtils, JvJVCLUtils;
 
 constructor TJvgWizardHeader.Create(AOwner: TComponent);

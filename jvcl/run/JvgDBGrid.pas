@@ -87,6 +87,7 @@ type
 implementation
 
 uses
+  Math,
   JvgTypes, JvgUtils;
 
 constructor TJvgDBGrid.Create(AOwner: TComponent);

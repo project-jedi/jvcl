@@ -132,6 +132,9 @@ type
 
 implementation
 
+uses
+  Math;
+
 constructor TJvgBitmapImage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

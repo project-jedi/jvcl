@@ -82,6 +82,7 @@ procedure RegisterHtHints;
 implementation
 
 uses
+  Math,
   JvConsts, JvResources;
 
 //=== TJvHint ================================================================
@@ -223,23 +224,14 @@ end;
 
 function TJvHTHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
   AData: Pointer): TRect;
-
-  function Max(X, Y: Integer): Integer;
-  begin
-    if X > Y then
-      Result := X
-    else
-      Result := Y;
-  end;
-
 begin
   HtLabel.Caption := AHint;
   Result := Bounds(0, 0, HtLabel.Width + 6, HtLabel.Height + 2);
   if Application.HintHidePause > 0 then
     Application.HintHidePause :=
       Max(2500,  // default
-      Length(ItemHtPlain(AHint)) *
-      (1000 div 20)); // 20 symbols per second
+        Length(ItemHtPlain(AHint)) *
+        (1000 div 20)); // 20 symbols per second
 end;
 
 procedure RegisterHtHints;

@@ -30,9 +30,11 @@ Known Issues:
 unit JvgStringGrid;
 
 interface
+
 uses
-  Windows, Messages, Classes, Controls, Graphics, JvgTypes, JvgCommClasses,
-  JvgUtils, JVCLVer, ExtCtrls, grids, stdctrls, forms;
+  Windows, Messages, Classes, Controls, Graphics, ExtCtrls,
+  Grids, StdCtrls, Forms,
+  JvgTypes, JvgCommClasses, JvgUtils, JVCLVer;
 
 type
   TglStringGridExtOptions_ = (fsgVertCaptions, fsgHottrack, fsgMemoEditor,
@@ -157,6 +159,9 @@ type
   end;
 
 implementation
+
+uses
+  Math;
 
 constructor TJvgStringGrid.Create(AOwner: TComponent);
 begin

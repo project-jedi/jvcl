@@ -1051,10 +1051,15 @@ const
     Code: Byte;
     AValue: Integer;
     FinalSize: Integer;
+
     function Min(v1, v2: Integer): Integer;
     begin
-      if v1 > v2 then Result := v2 else Result := v1;
+      if v1 > v2 then
+        Result := v2
+      else
+        Result := v1;
     end;
+
     // dont reallocate memory each time, step by step ...
     procedure CheckBufferSize;
     begin
@@ -1064,18 +1069,21 @@ const
           SetLength(Result, BufferSize);
         end;
     end;
+
     procedure AddByte(AByte: Byte);
     begin
       inc(FinalSize);
       CheckBufferSize;
       Result[FinalSize] := chr(AByte);
     end;
+
     procedure AddWord(AWord: Word);
     begin
       inc(FinalSize,2);
       CheckBufferSize;
       PWord(@Result[FinalSize-1])^ := AWord;
     end;
+
     procedure AddCard(ACard: Cardinal);
     begin
       case ACard of
@@ -1096,6 +1104,7 @@ const
         PCardinal(@Result[FinalSize-3])^ := ACard;
       end;
     end;
+
     procedure AddString(var AString: String);
     var l: Integer;
     begin
@@ -3697,7 +3706,7 @@ const
     if a > b then
       Result := a
     else
-    Result := b;
+      Result := b;
   end;
   {$ELSE}
   asm

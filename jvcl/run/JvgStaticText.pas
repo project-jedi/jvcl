@@ -91,6 +91,9 @@ type
 
 implementation
 
+uses
+  Math;
+
 constructor TJvgStaticText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

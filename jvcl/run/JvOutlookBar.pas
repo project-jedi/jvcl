@@ -345,6 +345,9 @@ type
 
 implementation
 
+uses
+  Math;
+
 {$R ..\resources\JvOutlookBar.res}
 
 const
@@ -352,22 +355,6 @@ const
   cButtonTopOffset = 2;
   cInitRepeatPause = 400;
   cRepeatPause     = 100;
-
-function Max(Val1, Val2: Integer): Integer;
-begin
-  if Val2 > Val1 then
-    Result := Val2
-  else
-    Result := Val1;
-end;
-
-function Min(Val1, Val2: Integer): Integer;
-begin
-  if Val2 < Val1 then
-    Result := Val2
-  else
-    Result := Val1;
-end;
 
 //=== TJvOutlookBarEdit ======================================================
 

@@ -168,7 +168,8 @@ uses
   {$IFDEF DEBUGINFO_ON}
   //zTrace,
   {$ENDIF DEBUGINFO_ON}
-  Registry, SysUtils, Math, JvJVCLUtils;
+  Registry, SysUtils, Math,
+  JvJVCLUtils;
 
 const
   cIERegistryBase = 'Software\Microsoft\Internet Explorer\';

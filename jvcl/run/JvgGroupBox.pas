@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, JVCLVer, JvgTypes,
-  JvgUtils, JvgCommClasses;
+  JvgCommClasses;
 
 type
   TCaptionAlignment = (fcaNone, fcaLeft, fcaRight, fcaCenter, fcaWidth);
@@ -172,6 +172,10 @@ type
 
 
 implementation
+
+uses
+  Math,
+  JvgUtils;
 
 //____________________________________________________ Methods _
 

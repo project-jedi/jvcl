@@ -74,7 +74,7 @@ type
 implementation
 
 uses
-  JvgUtils;
+  Math;
 
 constructor TJvgGridHeaderControl.Create(AOwner: TComponent);
 begin

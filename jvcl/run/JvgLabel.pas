@@ -275,6 +275,7 @@ type
 implementation
 
 uses
+  Math,
   JvJVCLUtils;
 
 constructor TJvgCustomLabel.Create(AOwner: TComponent);

@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls,
-  JvgTypes, JvgUtils, JvComponent, JvgCommClasses;
+  JvgTypes, JvComponent, JvgCommClasses;
 
 type
   TRGNCombineMode = (cmAND, cmCOPY, cmDIFF, cmOR, cmXOR);
@@ -110,19 +110,15 @@ type
     property ShapeBitmap: TBitmap read FShapeBitmap write SetShapeBitmap;
   end;
 
-procedure Register;
-
 implementation
-const
-  aCombMode: array[0..4] of integer = (RGN_AND, RGN_COPY,
-    RGN_DIFF, RGN_OR, RGN_XOR);
-  {~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-//________________________________________________________ Methods _
+uses
+  Math,
+  JvgUtils;
+
+const
+  aCombMode: array[0..4] of integer =
+    (RGN_AND, RGN_COPY, RGN_DIFF, RGN_OR, RGN_XOR);
 
 constructor TJvgHoleShape.Create(AOwner: TComponent);
 begin

@@ -31,6 +31,7 @@ Known Issues:
 unit JvgCheckBox;
 
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls,
@@ -156,6 +157,7 @@ type
 implementation
 
 uses
+  Math,
   JvThemes, JvJVCLUtils;
 
 {$R ..\Resources\JvgCheckBox.res}

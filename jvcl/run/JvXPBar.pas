@@ -28,40 +28,33 @@ Known Issues:
 {$I jvcl.inc}
 
 {$IFNDEF USEJVCL}
- // sorry no theming
-  {$UNDEF JVCLThemesEnabled}
-  {$UNDEF JVCLThemesEnabledD56}
-{$ENDIF !USEJVCL}
+// sorry no theming
+{$UNDEF JVCLThemesEnabled}
+{$UNDEF JVCLThemesEnabledD56}
+{$ENDIF USEJVCL}
 
 unit JvXPBar;
 
 interface
 
 uses
-  Forms, Windows, Classes, Controls, Graphics, SysUtils, ImgList, ActnList,
-  Messages, JvXPCore, JvXPCoreUtils;
-
-{$R ..\Resources\JvXPBar.res}
+  Forms, Windows, Messages, Classes, Controls, Graphics,
+  SysUtils, ImgList, ActnList,
+  JvXPCore, JvXPCoreUtils;
 
 type
-{ TJvXPBarRollDirection
-
-  Warning: Never change order of enumeration because of
-           hardcoded type castes! }
-
+  { Warning: Never change order of enumeration because of
+             hardcoded type casts!
+             (rom) removed those hardcoded typecasts }
   TJvXPBarRollDirection = (
-    rdExpand, // expand roll
-    rdCollapse // collapse roll
+    rdExpand,
+    rdCollapse
     );
-
-{ TJvXPBarRollMode }
 
   TJvXPBarRollMode = (
-    rmFixed, // fixed mode (default)
-    rmShrink // shrink mode
+    rmFixed, // (default)
+    rmShrink
     );
-
-{ TJvXPBarHitTest }
 
   TJvXPBarHitTest = (
     htNone, // mouse is inside non-supported rect
@@ -69,44 +62,27 @@ type
     htRollButton // mouse is inside rollbutton
     );
 
-{ TJvXPBarRollDelay }
-
   TJvXPBarRollDelay = 1..200;
-
-{ TJvXPBarRollStep }
-
   TJvXPBarRollStep = 1..50;
 
 const
   WM_XPBARAFTERCOLLAPSE = WM_USER + 303; // Ord('J') + Ord('V') + Ord('C') + Ord('L')
 
 type
-{ forward declarations }
-
   TJvXPBarItem = class;
   TJvXPBarItems = class;
   TJvXPCustomWinXPBar = class;
 
-{ TJvXPBarOnCanChangeEvent }
-
   TJvXPBarOnCanChangeEvent = procedure(Sender: TObject; Item: TJvXPBarItem;
     var AllowChange: Boolean) of object;
-
-{ TJvXPBarOnCollapsedChangeEvent }
 
   TJvXPBarOnCollapsedChangeEvent = procedure(Sender: TObject;
     Collapsing: Boolean) of object;
 
-{ TJvXPBarOnDrawItemEvent }
-
   TJvXPBarOnDrawItemEvent = procedure(Sender: TObject; ACanvas: TCanvas;
     Rect: TRect; State: TJvXPDrawState; Item: TJvXPBarItem; Bitmap: TBitmap) of object;
 
-{ TJvXPBarOnItemClickEvent }
-
   TJvXPBarOnItemClickEvent = procedure(Sender: TObject; Item: TJvXPBarItem) of object;
-
-{ TJvXPBarItemActionLink }
 
   TJvXPBarItemActionLink = class(TActionLink)
   protected
@@ -126,11 +102,7 @@ type
     procedure SetOnExecute(Value: TNotifyEvent); override;
   end;
 
-{ TJvXPBarItemActionLinkClass }
-
   TJvXPBarItemActionLinkClass = class of TJvXPBarItemActionLink;
-
-{ TJvXPBarItem }
 
   TJvXPBarItem = class(TCollectionItem)
   private
@@ -194,8 +166,6 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
   end;
 
-{ TJvXPBarItems }
-
   TJvXPBarItems = class(TCollection)
   private
     FWinXPBar: TJvXPCustomWinXPBar;
@@ -218,8 +188,6 @@ type
     property Items[Index: Integer]: TJvXPBarItem read GetItem write SetItem; default;
   end;
 
-{ TJvXPBarVisibleItems }
-
   TJvXPBarVisibleItems = class(TPersistent)
   private
     FItems: TList;
@@ -234,8 +202,6 @@ type
     function Count: Integer;
     property Items[Index: Integer]: TJvXPBarItem read GetItem; default;
   end;
-
-{ TJvXPFadeThread }
 
   TJvXPFadeThread = class(TThread)
   private
@@ -271,8 +237,6 @@ type
 
   TJvXPBarOptions = class(TPersistent)
   end;
-
-{ TJvXPCustomWinXPBar }
 
   TJvXPCustomWinXPBar = class(TJvXPCustomControl)
   private
@@ -373,11 +337,8 @@ type
     property Width default 153;
   end;
 
-{ TJvXPBar }
-
   TJvXPBar = class(TJvXPCustomWinXPBar)
   published
-
     property Caption;
     property Collapsed;
     property Colors;
@@ -404,11 +365,14 @@ type
   end;
 
 implementation
+
 {$IFDEF JVCLThemesEnabled}
 uses
   UxTheme,
   JvThemes;
 {$ENDIF JVCLThemesEnabled}
+
+{$R ..\Resources\JvXPBar.res}
 
 const
   FC_HEADER_HEIGHT = 34;
@@ -428,7 +392,7 @@ begin
     Result := 1;
 end;
 
-{ TJvXPBarItemActionLink }
+//=== TJvXPBarItemActionLink =================================================
 
 procedure TJvXPBarItemActionLink.AssignClient(AClient: TObject);
 begin
@@ -507,7 +471,7 @@ begin
     FClient.OnClick := Value;
 end;
 
-{ TJvXPBarItem }
+//===TJvXPBarItem ============================================================
 
 constructor TJvXPBarItem.Create(Collection: TCollection);
 begin
@@ -534,7 +498,7 @@ begin
   FWinXPBar.ItemVisibilityChanged(Self);
   FActionLink.Free;
   FActionLink := nil;
-  inherited;
+  inherited Destroy;
   FWinXPBar.ResizeToMaxHeight;
 end;
 
@@ -733,7 +697,7 @@ begin
   end;
 end;
 
-{ TJvXPBarItems }
+//=== TJvXPBarItems ==========================================================
 
 constructor TJvXPBarItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
@@ -797,44 +761,44 @@ end;
 
 function TJvXPBarItems.Find(const AName: string): TJvXPBarItem;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := 0 to Count - 1 do
-    if Items[i].Name = AName then
+  for I := 0 to Count - 1 do
+    if Items[I].Name = AName then
     begin
-      Result := Items[i];
+      Result := Items[I];
       Break;
     end;
 end;
 
 function TJvXPBarItems.Find(const Action: TBasicAction): TJvXPBarItem;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := 0 to Count - 1 do
-    if Items[i].Action = Action then
+  for I := 0 to Count - 1 do
+    if Items[I].Action = Action then
     begin
-      Result := Items[i];
+      Result := Items[I];
       Break;
     end;
 end;
 
 function TJvXPBarItems.Find(const DataObject: TObject): TJvXPBarItem;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := nil;
-  for i := 0 to Count - 1 do
-    if Items[i].DataObject = DataObject then
+  for I := 0 to Count - 1 do
+    if Items[I].DataObject = DataObject then
     begin
-      Result := Items[i];
+      Result := Items[I];
       Break;
     end;
 end;
 
-{ TJvXPBarVisibleItems }
+//=== TJvXPBarVisibleItems ===================================================
 
 constructor TJvXPBarVisibleItems.Create(WinXPBar: TJvXPCustomWinXPBar);
 begin
@@ -846,7 +810,7 @@ end;
 destructor TJvXPBarVisibleItems.Destroy;
 begin
   FItems.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvXPBarVisibleItems.GetItem(Index: Integer): TJvXPBarItem;
@@ -863,11 +827,11 @@ end;
 
 function TJvXPBarVisibleItems.Exists(Item: TJvXPBarItem): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := False;
-  for i := 0 to Count - 1 do
-    if Items[i] = Item then
+  for I := 0 to Count - 1 do
+    if Items[I] = Item then
     begin
       Result := True;
       Break;
@@ -876,20 +840,20 @@ end;
 
 procedure TJvXPBarVisibleItems.Add(Item: TJvXPBarItem);
 begin
-  if Exists(Item) then
-    Exit;
-  FItems.Add(Item);
-  FWinXPBar.SortVisibleItems(False);
+  if not Exists(Item) then
+  begin
+    FItems.Add(Item);
+    FWinXPBar.SortVisibleItems(False);
+  end;
 end;
 
 procedure TJvXPBarVisibleItems.Delete(Item: TJvXPBarItem);
 begin
-  if not Exists(Item) then
-    Exit;
-  FItems.Delete(FItems.IndexOf(Item));
+  if Exists(Item) then
+    FItems.Delete(FItems.IndexOf(Item));
 end;
 
-{ TJvXPFadeThread }
+//=== TJvXPFadeThread ========================================================
 
 constructor TJvXPFadeThread.Create(WinXPBar: TJvXPCustomWinXPBar;
   RollDirection: TJvXPBarRollDirection);
@@ -942,16 +906,10 @@ begin
     TCustomForm(FWinXPBar.Owner).Designer.Modified
   else
     PostMessage(FWinXPBar.Handle, WM_XPBARAFTERCOLLAPSE,
-      Integer(FRollDirection = rdCollapse), 0);
+      Ord(FRollDirection = rdCollapse), 0);
 end;
 
-{ TJvXPBarColors }
-
-procedure TJvXPBarColors.Change;
-begin
-  if Assigned(FOnChange) then
-    FOnChange(self);
-end;
+//=== TJvXPBarColors =========================================================
 
 constructor TJvXPBarColors.Create;
 {$IFDEF JVCLThemesEnabled}
@@ -986,6 +944,12 @@ begin
     end;
   end;
   {$ENDIF JVCLThemesEnabled}
+end;
+
+procedure TJvXPBarColors.Change;
+begin
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvXPBarColors.SetBodyColor(const Value: TColor);
@@ -1024,7 +988,7 @@ begin
   end;
 end;
 
-{ TJvXPCustomWinXPBar }
+//=== TJvXPCustomWinXPBar ====================================================
 
 constructor TJvXPCustomWinXPBar.Create(AOwner: TComponent);
 begin
@@ -1078,20 +1042,20 @@ begin
   FItems.Free;
   FVisibleItems.Free;
   FColors.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvXPCustomWinXPBar.Notification(AComponent: TComponent;
   Operation: TOperation);
 var
-  i: Integer;
+  I: Integer;
 begin
   if not (csDestroying in ComponentState) and (Operation = opRemove) then
   begin
     if AComponent = FImageList then
       FImageList := nil;
-    for i := 0 to FItems.Count - 1 do
-      FItems[i].Notification(AComponent);
+    for I := 0 to FItems.Count - 1 do
+      FItems[I].Notification(AComponent);
   end;
   inherited Notification(AComponent, Operation);
 end;
@@ -1120,7 +1084,8 @@ begin
 
   { full collapsing }
   if (FRolling and not FCollapsed) or (not FRolling and FCollapsed) or
-    (FVisibleItems.Count = 0) then Dec(NewHeight, FC_ITEM_MARGIN);
+    (FVisibleItems.Count = 0) then
+    Dec(NewHeight, FC_ITEM_MARGIN);
 
   Height := NewHeight;
 end;
@@ -1177,7 +1142,7 @@ procedure TJvXPCustomWinXPBar.HookMouseDown;
 var
   Rect: TRect;
 begin
-  inherited; // update drawstate
+  inherited HookMouseDown; // update drawstate
   if FHitTest = htRollButton then
   begin
     Rect := GetHitTestRect(htRollButton);
@@ -1262,7 +1227,7 @@ begin
 
   // resize to maximum height
   ResizeToMaxHeight;
-  inherited;
+  inherited HookResized;
 end;
 
 procedure TJvXPCustomWinXPBar.SetCollapsed(Value: Boolean);
@@ -1272,7 +1237,10 @@ begin
     begin
       if Assigned(FBeforeCollapsedChange) then
         FBeforeCollapsedChange(Self, Value);
-      FFadeThread := TJvXPFadeThread.Create(Self, TJvXPBarRollDirection(Value));
+      if Value then
+        FFadeThread := TJvXPFadeThread.Create(Self, rdCollapse)
+      else
+        FFadeThread := TJvXPFadeThread.Create(Self, rdExpand);
       if Assigned(FOnCollapsedChange) then
         FOnCollapsedChange(Self, Value);
     end
@@ -1378,7 +1346,7 @@ end;
 
 procedure TJvXPCustomWinXPBar.EndUpdate;
 begin
-  inherited;
+  inherited EndUpdate;
   ResizeToMaxHeight;
 end;
 
@@ -1399,14 +1367,14 @@ begin
       FOnItemClick(Self, FVisibleItems[FHoverIndex]);
     if Assigned(FVisibleItems[FHoverIndex].FOnClick) then
     begin
-      { set linked 'action' as sender }
+      { set linked 'action' as Sender }
       if Assigned(FVisibleItems[FHoverIndex].Action) then
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex].Action)
       else
         FVisibleItems[FHoverIndex].FOnClick(FVisibleItems[FHoverIndex]);
     end;
   end;
-  inherited;
+  inherited Click;
 end;
 
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
@@ -1423,7 +1391,8 @@ begin
     Font.Assign(Self.Font);
     if not FVisibleItems[Index].Enabled then
       Font.Color := clGray
-    else if dsHighlight in State then
+    else
+    if dsHighlight in State then
     begin
       Font.Color := FHotTrackColor;
       Font.Style := Font.Style + [fsUnderline];
@@ -1435,7 +1404,8 @@ begin
     Bitmap.Transparent := True;
     if Assigned(FOnDrawItem) then
       FOnDrawItem(Self, Canvas, ItemRect, State, FVisibleItems[Index], Bitmap)
-    else begin
+    else
+    begin
       if HasImages then
         Draw(ItemRect.Left, ItemRect.Top + (FItemHeight - Bitmap.Height) div 2, Bitmap);
       ItemCaption := FVisibleItems[Index].Caption;
@@ -1454,7 +1424,7 @@ procedure TJvXPCustomWinXPBar.Paint;
 var
   Rect: TRect;
   Bitmap: TBitmap;
-  Index, i: Integer;
+  Index, I: Integer;
   OwnColor: TColor;
 begin
   with Canvas do
@@ -1468,8 +1438,8 @@ begin
     FillRect(Rect);
 
     { draw header }
-    JvXPCreateGradientRect(Width, 28, FColors.GradientFrom, FColors.GradientTo, 32, gsLeft, True,
-      FGradient);
+    JvXPCreateGradientRect(Width, 28, FColors.GradientFrom,
+      FColors.GradientTo, 32, gsLeft, True, FGradient);
     Draw(0, Rect.Top, FGradient);
 
     { draw frame... }
@@ -1537,20 +1507,18 @@ begin
     { draw visible items }
     Brush.Color := FColors.BodyColor;
     if not FCollapsed or FRolling then
-      for i := 0 to FVisibleItems.Count - 1 do
-      begin
-        if (i <> FHoverIndex) or not (dsHighlight in DrawState) then
-          DoDrawItem(i, [])
+      for I := 0 to FVisibleItems.Count - 1 do
+        if (I <> FHoverIndex) or not (dsHighlight in DrawState) then
+          DoDrawItem(I, [])
         else
-          DoDrawItem(i, [dsHighlight]);
-      end;
+          DoDrawItem(I, [dsHighlight]);
   end;
 end;
 
 procedure TJvXPCustomWinXPBar.WMAfterXPBarCollapse(var Msg: TMessage);
 begin
   if Assigned(FAfterCollapsedChange) then
-    FAfterCollapsedChange(Self, Boolean(Msg.WParam));
+    FAfterCollapsedChange(Self, Msg.WParam <> 0);
 end;
 
 procedure TJvXPCustomWinXPBar.DoColorsChange(Sender: TObject);

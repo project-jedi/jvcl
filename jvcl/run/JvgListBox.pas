@@ -41,7 +41,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, CommCtrl, ExtCtrls, Imglist,
-  JvgTypes, JvgUtils, JVCLVer, JvgCommClasses, Jvg3DColors;
+  JvgTypes, JVCLVer, JvgCommClasses, Jvg3DColors;
 
 const
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
@@ -208,6 +208,10 @@ type
   end;
 
 implementation
+
+uses
+  Math,
+  JvgUtils;
 
 //*****************************************_____________LowLevel METHODS
 

@@ -47,10 +47,6 @@ type
     property Color;
   end;
 
-function Min(i1, i2: integer): integer;
-function Max(i1, i2: integer): integer;
-function MinSingle(r1, r2: Single): Single;
-function MaxSingle(r1, r2: Single): Single;
 function IsEven(i: integer): boolean;
 function InchesToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
 function CentimetersToPixels(DC: HDC; Value: Single; IsHorizontal: Boolean): Integer;
@@ -159,7 +155,7 @@ function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 implementation
 
 uses
-  ShlObj,
+  ShlObj, Math,
   {$IFDEF USEJVCL}
   JvResources,
   {$ENDIF USEJVCL}
@@ -198,38 +194,6 @@ begin
 end;
 
 //_________________________________________________________________\\
-
-function Min(i1, i2: integer): integer;
-begin
-  if i1 < i2 then
-    Result := i1
-  else
-    Result := i2;
-end;
-
-function Max(i1, i2: integer): integer;
-begin
-  if i1 > i2 then
-    Result := i1
-  else
-    Result := i2;
-end;
-
-function MinSingle(r1, r2: Single): Single;
-begin
-  if r1 < r2 then
-    Result := r1
-  else
-    Result := r2;
-end;
-
-function MaxSingle(r1, r2: Single): Single;
-begin
-  if r1 > r2 then
-    Result := r1
-  else
-    Result := r2;
-end;
 
 //{ Проверка целого числа на четность }
 { Checks if integer is even [translated] }
@@ -344,9 +308,9 @@ var
   R, G, B: byte;
 begin
   if lColor < 0 then lColor := GetSysColor(lColor and $FF);
-  R := max(0, GetRValue(lColor) - bOffset);
-  G := max(0, GetGValue(lColor) - bOffset);
-  B := max(0, GetBValue(lColor) - bOffset);
+  R := Max(0, GetRValue(lColor) - bOffset);
+  G := Max(0, GetGValue(lColor) - bOffset);
+  B := Max(0, GetBValue(lColor) - bOffset);
   Result := RGB(R, G, B);
 end;
 
@@ -1545,7 +1509,7 @@ begin
       {if r<g then limit:=r else limit:=g; if b<limit then limit:=b;//...min
       if limit<FColorShadowShift then FColorShadowShift:=limit;
       FShadow := RGB(r-FColorShadowShift,g-FColorShadowShift,b-FColorShadowShift);}
-      Shadow := RGB(max(r - ColorShadowShift, 0), max(g - ColorShadowShift, 0), max(b - ColorShadowShift, 0));
+      Shadow := RGB(Max(r - ColorShadowShift, 0), max(g - ColorShadowShift, 0), max(b - ColorShadowShift, 0));
     end;
     if AutoHighlight then
     begin
