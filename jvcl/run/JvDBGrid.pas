@@ -339,7 +339,6 @@ uses
 
 const
   sUnitName = 'JvDBGrid';
-
 type
   TBookmarks = class(TBookmarkList);
   TGridPicture = (gpBlob, gpMemo, gpPicture, gpOle, gpObject, gpData,
@@ -357,7 +356,7 @@ const
 // (rom) changed to var
 var
   GridBitmaps: array[TGridPicture] of TBitmap =
-    (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
   FirstGridBitmaps: Boolean = True;
 
 procedure FinalizeGridBitmaps;
@@ -2766,29 +2765,55 @@ var
   ACol, ARow, ATimeOut: Integer;
   AtCursorPosition: boolean;
 begin
-  AtCursorPosition := false;
+  AtCursorPosition := true;
   with PHintInfo(Msg.LParam)^ do
   begin
+    HintStr := Hint;
     ATimeOut := HideTimeOut;
     self.MouseToCell(CursorPos.X, CursorPos.Y, ACol, ARow);
-    CursorRect := CellRect(ACol, ARow);
+
+    //-------------------------------------------------------------------------
+    // ARow = -1 if 'outside' a valid cell; 
+    // Adjust CursorRect 
+    //-------------------------------------------------------------------------
+    if (FShowTitleHint or FShowCellHint) then
+    begin
+      if (ARow = -1) or ((ARow >= 1) and not FShowCellHint) then
+      begin
+        if FShowCellHint then
+        begin
+          CursorRect.Left := CellRect(0,self.RowCount -1).Left;
+          CursorRect.top  := CellRect(0,self.RowCount -1).Bottom;
+        end  
+        else
+        begin
+          CursorRect.Left := CellRect(0,0).Left;
+          CursorRect.top  := CellRect(0,0).Bottom;
+        end;  
+      end                                    
+      else
+        CursorRect := CellRect(ACol, ARow);
+    end;
+      
     if dgIndicator in Options then
       Dec(ACol);
     if dgTitles in Options then
       Dec(ARow);
-
+      
     if FShowTitleHint and (ACol >= 0) and (ARow = -1) then
     begin
-//      AtCursorPosition := true;
+      AtCursorPosition := false;
       HintStr := Columns[ACol].FieldName;
       ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
       if Assigned(FOnShowTitleHint) and DataLink.Active then
         FOnShowTitleHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
+      HideTimeOut := ATimeOut;
     end;
-
+    
     if FShowCellHint and (ACol >= 0) and DataLink.Active and
       ((ARow >= 0) or (not FShowTitleHint)) then
     begin
+      AtCursorPosition := false;
       HintStr := Hint;
 
       if (ARow = -1) then
@@ -2811,19 +2836,12 @@ begin
       ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
       if Assigned(FOnShowCellHint) and DataLink.Active then
         FOnShowCellHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
+      HideTimeOut := ATimeOut;
     end;
-
-    HideTimeOut := ATimeOut;
-    if length(HintStr) > 0 then
+    
+    if not AtCursorPosition then
     begin
-      if AtCursorPosition then
-      begin
-        HintPos := ClientToScreen(CursorPos);
-        inc(HintPos.X, 18);
-        inc(HintPos.Y, 18);
-      end
-      else
-        HintPos := ClientToScreen(CursorRect.TopLeft);
+      HintPos := ClientToScreen(CursorRect.TopLeft);
     end;
   end;
   inherited;
