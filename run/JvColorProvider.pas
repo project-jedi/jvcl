@@ -68,7 +68,7 @@ type
   IJvColorProvider = interface
     ['{3DF32721-553B-4759-A628-35F5CA62F3D5}']
     procedure DoAddColor(ColorType: TColorType; var Color: TColor; var DoAdd: Boolean);
-    procedure AddColor(ColorType: TColorType; Color: TColor); 
+    function AddColor(ColorType: TColorType; Color: TColor): Boolean; 
     function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
     function IndexOfMappingName(Name: string): Integer;
     function Get_MappingCount: Integer;
@@ -86,6 +86,18 @@ type
     procedure SetStandardColorName(Index: Integer; NewName: string);
     procedure SetSystemColorName(Index: Integer; NewName: string);
     procedure SetCustomColorName(Index: Integer; NewName: string);
+    function AddStdColor(Value: TColor): Boolean;
+    procedure DeleteStdColor(Value: TColor);
+    procedure DeleteStdColorAt(Index: Integer);
+    procedure ClearStdColorList;
+    function AddSysColor(Value: TColor): Boolean;
+    procedure DeleteSysColor(Value: TColor);
+    procedure DeleteSysColorAt(Index: Integer);
+    procedure ClearSysColorList;
+    function AddCstColor(Value: TColor): Boolean;
+    procedure DeleteCstColor(Value: TColor);
+    procedure DeleteCstColorAt(Index: Integer);
+    procedure ClearCstColorList;
 
     property MappingCount: Integer read Get_MappingCount;
     property Mappings[Index: Integer]: TJvColorProviderNameMapping read Get_Mapping;
@@ -121,12 +133,43 @@ type
     FCstColors: array of TDynIntegerArray;  // list of custom colors for each context
     FMappings: TJvColorProviderNameMappings;
     FColorListChanged: Boolean;             // Flag to keep track of changes in FColorList w/resp. to the default
-    FOnAddColor: TJvColorProviderAddColorEvent;    
+    FOnAddColor: TJvColorProviderAddColorEvent;
   protected
+    { Notify any registered notifiers something is changing. For each notifier that is also a
+      consumer, that consumer will only be notified if it has the proper context. The settings
+      determine if either the GroupedItem or RootItem is specified as the Source. Any non-consumer
+      or consumers without a context or settings interface will receive the GroupedItem as the
+      Source parameter. }
+    procedure NotifyChanging(Reason: TDataProviderChangeReason; ContextIndex: Integer; GroupedItem,
+      RootItem: IUnknown);
+    { Notify any registered notifiers something has changed. For each notifier that is also a
+      consumer, that consumer will only be notified if it has the proper context. The settings
+      determine if either the GroupedItem or RootItem is specified as the Source. Any non-consumer
+      or consumers without a context or settings interface will receive the GroupedItem as the
+      Source parameter. }
+    procedure NotifyChanged(Reason: TDataProviderChangeReason; ContextIndex: Integer; GroupedItem,
+      RootItem: IUnknown);
+    { Notify all registered notifiers a color is being added to the specified group. }
+    procedure NotifyColorAdding(ColorType: TColorType; ContextIndex: Integer = -1);
+    { Notify all registered notifiers a color has been added to the specified group. }
+    procedure NotifyColorAdded(ColorType: TColorType; ListIndex: Integer; ContextIndex: Integer = -1);
+    { Notify all registered notifiers a color is being removed from the specified group. }
+    procedure NotifyColorDeleting(ColorType: TColorType; ListIndex: Integer; ContextIndex: Integer = -1);
+    { Notify all registered notifiers a color has been removed to the specified group. }
+    procedure NotifyColorDeleted(ColorType: TColorType; ContextIndex: Integer = -1);
+    { Notify all registered notifiers a color is being removed from the specified group. }
+    procedure NotifyColorsUpdating(ColorType: TColorType; ContextIndex: Integer = -1);
+    { Notify all registered notifiers a color has been removed to the specified group. }
+    procedure NotifyColorsUpdated(ColorType: TColorType; ContextIndex: Integer = -1);
+
     procedure DoAddColor(ColorType: TColorType; var Color: TColor; var DoAdd: Boolean);
     function AddInternalColor(Color: TColor; AddToCustomDefaultList: Boolean): Integer;
-    function AddColor(var List: TDynIntegerArray; Color: TColor): Integer; overload;
-    procedure DeleteColor(var List: TDynIntegerArray; Index: Integer);
+    function AddColor(var List: TDynIntegerArray; Color: TColor;
+      ColorType: TColorType; Context: Integer): Integer; overload;
+    function AddColor(var List: TDynIntegerArray; Color: TColor; ColorType: TColorType;
+      Context: Integer; out Added: Boolean): Integer; overload;
+    procedure DeleteColor(var List: TDynIntegerArray; Index: Integer; ColorType: TColorType;
+      Context: Integer);
     procedure RemoveContextList(Index: Integer); virtual;
     function IndexOfColor(Color: TColor): Integer;
     function IndexOfColIdx(const List: TDynIntegerArray; ColorIndex: Integer): Integer;
@@ -149,7 +192,8 @@ type
     function GetColorCount(List: Integer): Integer;
     procedure GenDelphiConstantMapping;
     procedure GenEnglishMapping;
-    procedure InitColorList(var List: TDynIntegerArray; const Definitions: array of TDefColorItem);
+    procedure InitColorList(var List: TDynIntegerArray; const Definitions: array of TDefColorItem;
+      ColorType: TColorType);
     procedure InitColors;
     function GetMappings: TJvColorProviderNameMappings;
     procedure DefineProperties(Filer: TFiler); override;
@@ -159,12 +203,14 @@ type
     procedure WriteMappings(Writer: TWriter);
     procedure ReadMapping(Reader: TReader);
     procedure WriteMapping(Writer: TWriter; Index: Integer);
+    function GetColorItem(ColorType: TColorType; Index: Integer): IJvDataItem;
+    function GetColorItemByValue(ColorType: TColorType; Color: TColor): IJvDataItem;
 
     property ColorListChanged: Boolean read FColorListChanged;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure AddColor(ColorType: TColorType; Color: TColor); overload;
+    function AddColor(ColorType: TColorType; Color: TColor): Boolean; overload;
     function IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
     function IndexOfMappingName(Name: string): Integer;
     function Get_MappingCount: Integer;
@@ -182,6 +228,18 @@ type
     procedure SetStandardColorName(Index: Integer; NewName: string);
     procedure SetSystemColorName(Index: Integer; NewName: string);
     procedure SetCustomColorName(Index: Integer; NewName: string);
+    function AddStdColor(Value: TColor): Boolean;
+    procedure DeleteStdColor(Value: TColor);
+    procedure DeleteStdColorAt(Index: Integer);
+    procedure ClearStdColorList;
+    function AddSysColor(Value: TColor): Boolean;
+    procedure DeleteSysColor(Value: TColor);
+    procedure DeleteSysColorAt(Index: Integer);
+    procedure ClearSysColorList;
+    function AddCstColor(Value: TColor): Boolean;
+    procedure DeleteCstColor(Value: TColor);
+    procedure DeleteCstColorAt(Index: Integer);
+    procedure ClearCstColorList;
 
     property Mappings: TJvColorProviderNameMappings read GetMappings;
   published
@@ -551,6 +609,9 @@ begin
   Result := AdderReg;
 end;
 
+var
+  MasterColorConsumer: IJvDataConsumer;
+
 const
   {$IFNDEF COMPILER6_UP}
   clMoneyGreen = TColor($C0DCC0);
@@ -848,6 +909,13 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Remove(var Item: IJvDataItem); override;
+  end;
+
+  TJvColorConsumer = class(TInterfacedObject, IJvDataConsumer)
+  protected
+    { IJvDataConsumer methods }
+    function VCLComponent: TComponent;
+    function AttributeApplies(Attr: Integer): Boolean;
   end;
 
 //===TJvColorProviderNameMapping====================================================================
@@ -1657,16 +1725,19 @@ var
   Settings: IJvColorProviderSettings;
 begin
   inherited InitImplementers;
+  {$WARNINGS OFF}
+  if GetItems.GetProvider.SelectedConsumer = MasterColorConsumer then
+    TJvColorItemsList.Create(Self)
+  else
   if Supports(GetItems.GetProvider.SelectedConsumer, IJvColorProviderSettings, Settings) then
   begin
     if not Settings.GroupingSettings.FlatList then
-      {$WARNINGS OFF}
       TJvColorItemsList.Create(Self);
-      {$WARNINGS ON}
     if (FListNumber = 2) and Settings.CustomColorSettings.AddColorSettings.Active and
         (Settings.CustomColorSettings.AddColorSettings.Location = ailUseHeader) then
       TJvColorItemAddExecute.Create(Self);
   end;
+  {$WARNINGS ON}
 end;
 
 function TJvColorHeaderItem.IsDeletable: Boolean;
@@ -1739,6 +1810,205 @@ end;
 
 //===TJvColorProvider===============================================================================
 
+procedure TJvColorProvider.NotifyChanging(Reason: TDataProviderChangeReason; ContextIndex: Integer;
+  GroupedItem, RootItem: IUnknown);
+var
+  I: Integer;
+  Consumer: IJvDataConsumer;
+  ConCtx: IJvDataConsumerContext;
+  Settings: IJvColorProviderSettings;
+  CtxIdx: Integer;
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+  try
+    for I := 0 to GetNotifierCount - 1 do
+    begin
+      if Supports(GetNotifier(I), IJvDataConsumer, Consumer) and
+        Supports(Consumer, IJvDataConsumerContext, ConCtx) and
+        Supports(Consumer, IJvColorProviderSettings, Settings) then
+      begin
+        CtxIdx := ConCtx.GetContext.Contexts.IndexOf(ConCtx.GetContext);
+        if (CtxIdx = ContextIndex) or ((CtxIdx = -1) and (ContextIndex = 0)) then
+        begin
+          if Settings.GroupingSettings.Active and not Settings.GroupingSettings.FlatList then
+            GetNotifier(I).DataProviderChanging(Self, Reason, GroupedItem)
+          else
+            GetNotifier(I).DataProviderChanging(Self, Reason, RootItem);
+        end;
+      end
+      else
+        { No consumer, contextless consumer or no color settings. Hand over the grouped item as it
+          is more specific. }
+        GetNotifier(I).DataProviderChanging(Self, pcrAdd, GroupedItem);
+    end;
+  finally
+    ReleaseContext;
+  end;
+end;
+
+procedure TJvColorProvider.NotifyChanged(Reason: TDataProviderChangeReason; ContextIndex: Integer;
+  GroupedItem, RootItem: IUnknown);
+var
+  I: Integer;
+  Consumer: IJvDataConsumer;
+  ConCtx: IJvDataConsumerContext;
+  Settings: IJvColorProviderSettings;
+  CtxIdx: Integer;
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectConsumer(MasterColorConsumer);
+  try
+    SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+    try
+      for I := 0 to GetNotifierCount - 1 do
+      begin
+        if Supports(GetNotifier(I), IJvDataConsumer, Consumer) and
+          Supports(Consumer, IJvDataConsumerContext, ConCtx) and
+          Supports(Consumer, IJvColorProviderSettings, Settings) then
+        begin
+          CtxIdx := ConCtx.GetContext.Contexts.IndexOf(ConCtx.GetContext);
+          if (CtxIdx = ContextIndex) or ((CtxIdx = -1) and (ContextIndex = 0)) then
+          begin
+            if Settings.GroupingSettings.Active and not Settings.GroupingSettings.FlatList then
+              GetNotifier(I).DataProviderChanged(Self, Reason, GroupedItem)
+            else
+              GetNotifier(I).DataProviderChanged(Self, Reason, RootItem);
+          end;
+        end
+        else
+          { No consumer, contextless consumer or no color settings. Hand over the grouped item as it
+            is more specific. }
+          GetNotifier(I).DataProviderChanged(Self, pcrAdd, GroupedItem);
+      end;
+    finally
+      ReleaseContext;
+    end;
+  finally
+    ReleaseConsumer;
+  end;
+end;
+
+procedure TJvColorProvider.NotifyColorAdding(ColorType: TColorType; ContextIndex: Integer);
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectConsumer(MasterColorConsumer);
+  try
+    SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+    try
+      NotifyChanging(pcrAdd, ContextIndex, TJvColorHeaderItem.Create(GetItems, Ord(ColorType)).Items,
+        GetItems);
+    finally
+      ReleaseContext;
+    end;
+  finally
+    ReleaseConsumer;
+  end;
+end;
+
+procedure TJvColorProvider.NotifyColorAdded(ColorType: TColorType; ListIndex: Integer;
+  ContextIndex: Integer);
+var
+  Grouped: IJvDataItem;
+  Rooted: IJvDataItem;
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectConsumer(MasterColorConsumer);
+  try
+    SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+    try
+      Grouped := TJvColorItem.Create(
+        TJvColorHeaderItem.Create(GetItems, Ord(ColorType)) as IJvDataItems, Ord(ColorType),
+        ListIndex);
+      Rooted := TJvColorItem.Create(GetItems, Ord(ColorType), ListIndex);
+      NotifyChanged(pcrAdd, ContextIndex,
+        Grouped, Rooted);
+    finally
+      ReleaseContext;
+    end;
+  finally
+    ReleaseConsumer;
+  end;
+end;
+
+procedure TJvColorProvider.NotifyColorDeleting(ColorType: TColorType; ListIndex: Integer; ContextIndex: Integer);
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectConsumer(MasterColorConsumer);
+  try
+    SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+    try
+      NotifyChanging(pcrDelete, ContextIndex, TJvColorItem.Create(
+          TJvColorHeaderItem.Create(GetItems, Ord(ColorType)) as IJvDataItems, Ord(ColorType),
+            ListIndex),
+          TJvColorItem.Create(GetItems, Ord(ColorType), ListIndex));
+    finally
+      ReleaseContext;
+    end;
+  finally
+    ReleaseConsumer;
+  end;
+end;
+
+procedure TJvColorProvider.NotifyColorDeleted(ColorType: TColorType; ContextIndex: Integer);
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectConsumer(MasterColorConsumer);
+  try
+    SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+    try
+      NotifyChanged(pcrDelete, ContextIndex,
+        TJvColorHeaderItem.Create(GetItems, Ord(ColorType)).Items, GetItems);
+    finally
+      ReleaseContext;
+    end;
+  finally
+    ReleaseConsumer;
+  end;
+end;
+
+procedure TJvColorProvider.NotifyColorsUpdating(ColorType: TColorType; ContextIndex: Integer);
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectConsumer(MasterColorConsumer);
+  try
+    SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+    try
+      NotifyChanging(pcrUpdateItems, ContextIndex,
+        TJvColorHeaderItem.Create(GetItems, Ord(ColorType)) as IJvDataItems, GetItems);
+    finally
+      ReleaseContext;
+    end;
+  finally
+    ReleaseConsumer;
+  end;
+end;
+
+procedure TJvColorProvider.NotifyColorsUpdated(ColorType: TColorType; ContextIndex: Integer);
+begin
+  if ContextIndex = -1 then
+    ContextIndex := SelectedContextIndex;
+  SelectConsumer(MasterColorConsumer);
+  try
+    SelectContext((DataContextsImpl as IJvDataContexts).GetContext(ContextIndex));
+    try
+      NotifyChanged(pcrUpdateItems, ContextIndex,
+        TJvColorHeaderItem.Create(GetItems, Ord(ColorType)) as IJvDataItems, GetItems);
+    finally
+      ReleaseContext;
+    end;
+  finally
+    ReleaseConsumer;
+  end;
+end;
+
 procedure TJvColorProvider.DoAddColor(ColorType: TColorType; var Color: TColor; var DoAdd: Boolean);
 begin
   if Assigned(FOnAddColor) then
@@ -1757,13 +2027,24 @@ begin
     FColorListChanged := True;
     if AddToCustomDefaultList then
     begin
+      NotifyColorAdding(ctCustom, 0);
       SetLength(FCstColors[0], Length(FCstColors[0]) + 1);
       FCstColors[0][High(FCstColors[0])] := Result;
+      NotifyColorAdded(ctCustom, High(FCstColors[0]), 0);
     end;
   end;
 end;
 
-function TJvColorProvider.AddColor(var List: TDynIntegerArray; Color: TColor): Integer;
+function TJvColorProvider.AddColor(var List: TDynIntegerArray; Color: TColor;
+  ColorType: TColorType; Context: Integer): Integer;
+var
+  Temp: Boolean;
+begin
+  Result := AddColor(List, Color, ColorType, Context, Temp);
+end;
+
+function TJvColorProvider.AddColor(var List: TDynIntegerArray; Color: TColor; ColorType: TColorType;
+  Context: Integer; out Added: Boolean): Integer;
 var
   ColorIdx: Integer;
 begin
@@ -1772,21 +2053,26 @@ begin
   Result := IndexOfColIdx(List, ColorIdx);
   if Result = -1 then
   begin
+    NotifyColorAdding(ColorType, Context);
     if (List <> FStdColors[0]) and (List <> FSysColors[0]) then
       FColorListChanged := True;
     Result := Length(List);
     SetLength(List, Result + 1);
     List[Result] := ColorIdx;
+    NotifyColorAdded(ColorType, Result, Context);
   end;
 end;
 
-procedure TJvColorProvider.DeleteColor(var List: TDynIntegerArray; Index: Integer);
+procedure TJvColorProvider.DeleteColor(var List: TDynIntegerArray; Index: Integer;
+  ColorType: TColorType; Context: Integer);
 begin
+  NotifyColorDeleting(ColorType, Index, Context);
   if (List <> FStdColors[0]) and (List <> FSysColors[0]) then
     FColorListChanged := True;
   if (Index < High(List)) then
     Move(List[Index + 1], List[Index], SizeOf(List[0]) * (High(List) - Index));
   SetLength(List, High(List));
+  NotifyColorDeleted(ColorType, Context);
 end;
 
 procedure TJvColorProvider.RemoveContextList(Index: Integer);
@@ -2107,7 +2393,7 @@ begin
 end;
 
 procedure TJvColorProvider.InitColorList(var List: TDynIntegerArray;
-  const Definitions: array of TDefColorItem);
+  const Definitions: array of TDefColorItem; ColorType: TColorType);
 var
   I: Integer;
   LstIdx: Integer;
@@ -2115,7 +2401,7 @@ var
 begin
   for I := 0 to High(Definitions) do
   begin
-    LstIdx := AddColor(List, Definitions[I].Value);
+    LstIdx := AddColor(List, Definitions[I].Value, ColorType, 0);
     ColIdx := List[LstIdx];
     FColorList[ColIdx].Names[0] := Definitions[I].Constant;
     FColorList[ColIdx].Names[1] := Definitions[I].English;
@@ -2124,8 +2410,8 @@ end;
 
 procedure TJvColorProvider.InitColors;
 begin
-  InitColorList(FStdColors[0], ColorValues);
-  InitColorList(FSysColors[0], SysColorValues);
+  InitColorList(FStdColors[0], ColorValues, ctStandard);
+  InitColorList(FSysColors[0], SysColorValues, ctSystem);
 end;
 
 function TJvColorProvider.GetMappings: TJvColorProviderNameMappings;
@@ -2233,6 +2519,47 @@ begin
   Writer.WriteListEnd;
 end;
 
+function TJvColorProvider.GetColorItem(ColorType: TColorType; Index: Integer): IJvDataItem;
+var
+  Settings: IJvColorProviderSettings;
+  ItemList: IJvDataItems;
+begin
+  if Supports(SelectedConsumer, IJvColorProviderSettings, Settings) then
+  begin
+    if Settings.GroupingSettings.Active and not Settings.GroupingSettings.FlatList then
+      ItemList := TJvColorHeaderItem.Create(GetItems, Ord(ColorType)).Items
+    else
+      ItemList := GetItems;
+  end
+  else
+    ItemList := GetItems;
+  Result := TJvColorItem.Create(ItemList, Ord(ColorType), Index);
+end;
+
+function TJvColorProvider.GetColorItemByValue(ColorType: TColorType; Color: TColor): IJvDataItem;
+var
+  Idx: Integer;
+begin
+  Idx := IndexOfColor(Color);
+  if Idx > -1 then
+  begin
+    case ColorType of
+      ctStandard:
+        Idx := IndexOfColIdx(FStdColors[SelectedContextIndex], Idx);
+      ctSystem:
+        Idx := IndexOfColIdx(FSysColors[SelectedContextIndex], Idx);
+      ctCustom:
+        Idx := IndexOfColIdx(FCstColors[SelectedContextIndex], Idx);
+      else
+        Idx := -1;
+    end;
+  end;
+  if Idx > -1 then
+    Result := GetColorItem(ColorType, Idx)
+  else
+    Result := nil;
+end;
+
 constructor TJvColorProvider.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2250,18 +2577,18 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvColorProvider.AddColor(ColorType: TColorType; Color: TColor);
+function TJvColorProvider.AddColor(ColorType: TColorType; Color: TColor): Boolean;
 begin
-  Changing(pcrAdd, GetItems);
   case ColorType of
     ctStandard:
-      AddColor(FStdColors[SelectedContextIndex], Color);
+      Result := AddStdColor(Color);
     ctSystem:
-      AddColor(FSysColors[SelectedContextIndex], Color);
+      Result := AddSysColor(Color);
     ctCustom:
-      AddColor(FCstColors[SelectedContextIndex], Color);
+      Result := AddCstColor(Color);
+    else
+      Result := False;
   end;
-  Changed(pcrAdd, (GetItems as IJvDataIDSearch).Find(cColorItemIDPrefix + IntToHex(Color, 8), True));
 end;
 
 function TJvColorProvider.IndexOfMapping(Mapping: TJvColorProviderNameMapping): Integer;
@@ -2372,6 +2699,156 @@ end;
 procedure TJvColorProvider.SetCustomColorName(Index: Integer; NewName: string);
 begin
   SetColorName(2, Index, NewName);
+end;
+
+function TJvColorProvider.AddStdColor(Value: TColor): Boolean;
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+    AddColor(FStdColors[CtxIdx], Value, ctStandard, CtxIdx, Result);
+end;
+
+procedure TJvColorProvider.DeleteStdColor(Value: TColor);
+var
+  ColIdx: Integer;
+  CtxIdx: Integer;
+  ItemIdx: Integer;
+begin
+  ColIdx := IndexOfColor(value);
+  if ColIdx > -1 then
+  begin
+    CtxIdx := SelectedContextIndex;
+    if CtxIdx > -1 then
+    begin
+      ItemIdx := IndexOfColIdx(FStdColors[CtxIdx], ColIdx);
+      if ItemIdx > -1 then
+        DeleteColor(FStdColors[CtxIdx], ItemIdx, ctStandard, CtxIdx);
+    end;
+  end;
+end;
+
+procedure TJvColorProvider.DeleteStdColorAt(Index: Integer);
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+    DeleteColor(FStdColors[CtxIdx], Index, ctStandard, CtxIdx);
+end;
+
+procedure TJvColorProvider.ClearStdColorList;
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+  begin
+    NotifyColorsUpdating(ctStandard, CtxIdx);
+    SetLength(FStdColors[CtxIdx], 0);
+    NotifyColorsUpdated(ctStandard, CtxIdx);
+  end;
+end;
+
+function TJvColorProvider.AddSysColor(Value: TColor): Boolean;
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+    AddColor(FSysColors[CtxIdx], Value, ctSystem, CtxIdx, Result);
+end;
+
+procedure TJvColorProvider.DeleteSysColor(Value: TColor);
+var
+  ColIdx: Integer;
+  CtxIdx: Integer;
+  ItemIdx: Integer;
+begin
+  ColIdx := IndexOfColor(value);
+  if ColIdx > -1 then
+  begin
+    CtxIdx := SelectedContextIndex;
+    if CtxIdx > -1 then
+    begin
+      ItemIdx := IndexOfColIdx(FSysColors[CtxIdx], ColIdx);
+      if ItemIdx > -1 then
+        DeleteColor(FSysColors[CtxIdx], ItemIdx, ctSystem, CtxIdx);
+    end;
+  end;
+end;
+
+procedure TJvColorProvider.DeleteSysColorAt(Index: Integer);
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+    DeleteColor(FSysColors[CtxIdx], Index, ctSystem, CtxIdx);
+end;
+
+procedure TJvColorProvider.ClearSysColorList;
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+  begin
+    NotifyColorsUpdating(ctSystem, CtxIdx);
+    SetLength(FSysColors[CtxIdx], 0);
+    NotifyColorsUpdated(ctSystem, CtxIdx);
+  end;
+end;
+
+function TJvColorProvider.AddCstColor(Value: TColor): Boolean;
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+    AddColor(FCstColors[CtxIdx], Value, ctCustom, CtxIdx, Result);
+end;
+
+procedure TJvColorProvider.DeleteCstColor(Value: TColor);
+var
+  ColIdx: Integer;
+  CtxIdx: Integer;
+  ItemIdx: Integer;
+begin
+  ColIdx := IndexOfColor(value);
+  if ColIdx > -1 then
+  begin
+    CtxIdx := SelectedContextIndex;
+    if CtxIdx > -1 then
+    begin
+      ItemIdx := IndexOfColIdx(FCstColors[CtxIdx], ColIdx);
+      if ItemIdx > -1 then
+        DeleteColor(FCstColors[CtxIdx], ItemIdx, ctCustom, CtxIdx);
+    end;
+  end;
+end;
+
+procedure TJvColorProvider.DeleteCstColorAt(Index: Integer);
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+    DeleteColor(FCstColors[CtxIdx], Index, ctCustom, CtxIdx);
+end;
+
+procedure TJvColorProvider.ClearCstColorList;
+var
+  CtxIdx: Integer;
+begin
+  CtxIdx := SelectedContextIndex;
+  if CtxIdx > -1 then
+  begin
+    NotifyColorsUpdating(ctCustom, CtxIdx);
+    SetLength(FCstColors[CtxIdx], 0);
+    NotifyColorsUpdated(ctCustom, CtxIdx);
+  end;
 end;
 
 //===TJvColorProviderNameMappings===================================================================
@@ -3323,6 +3800,22 @@ begin
     raise EJVCLDataItems.Create(SItemNotForList);
 end;
 
+//=== TJvColorConsumer ========================================================
+
+function TJvColorConsumer.VCLComponent: TComponent;
+begin
+  Result := nil;
+end;
+
+function TJvColorConsumer.AttributeApplies(Attr: Integer): Boolean;
+begin
+  Result := False;
+end;
+
 initialization
   RegisterClasses([TJvColorProviderSettings, TJvColorProviderServerNotify, TJvColorContext]);
+  MasterColorConsumer := TJvColorConsumer.Create;
+
+finalization
+  MasterColorConsumer := nil;
 end.
