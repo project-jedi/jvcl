@@ -315,18 +315,17 @@ type
     procedure SetLink(AComponent: TComponent);
     procedure FreeLink;
   published
-    // (rom) set default values 
-    property ArrowColor: TColor read FArrowColor write SetArrowColor;
-    property ArrowWidth: Integer read FArrowWidth write SetArrowWidth;
-    property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition;
-    property ColorOrientation: TJvColorOrientation read FColorOrientation write SetColorOrientation;
-    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation;
-    property BarWidth: Integer read FBarWidth write SetBarWidth;
+    property ArrowColor: TColor read FArrowColor write SetArrowColor default clBlack;
+    property ArrowWidth: Integer read FArrowWidth write SetArrowWidth default 9;
+    property ArrowPosition: TJvArrowPosition read FArrowPosition write SetArrowPosition default apTop;
+    property ColorOrientation: TJvColorOrientation read FColorOrientation write SetColorOrientation default coLeftToRight;
+    property Orientation: TTrackBarOrientation read FOrientation write SetOrientation default trHorizontal;
+    property BarWidth: Integer read FBarWidth write SetBarWidth default 10;
     property ValueX: Byte read FValueX write SetValueX stored IsValueXStored;
     property ValueXAuto: Boolean read FValueXAuto write SetValueXAuto stored False;
     property ValueY: Byte read FValueY write SetValueY stored IsValueYStored;
     property ValueYAuto: Boolean read FValueYAuto write SetValueYAuto stored False;
-    property FullColorDrawing: Boolean read FFullColorDrawing write SetFullColorDrawing;
+    property FullColorDrawing: Boolean read FFullColorDrawing write SetFullColorDrawing default True;
   end;
 
   TJvShapePosition = (spLeft, spRight, spTop, spBottom);
@@ -2155,10 +2154,10 @@ begin
   inherited Create(AOwner);
 
   FOrientation := trHorizontal;
-  FArrowPosition := apLeft;
+  FArrowPosition := apTop;
   FColorOrientation := coLeftToRight;
 
-  FArrowWidth := 5;
+  FArrowWidth := 9;
   FArrowColor := clBlack;
   FFullColorDrawing := True;
 
@@ -2192,13 +2191,13 @@ begin
     trHorizontal:
       begin
         Width := ColorAmp + (2 * ArrowWidth);
-        Height := BarWidth + ArrowWidth;
+        Height := BarWidth + ArrowWidth + 1;
         FBuffer.Width := ColorAmp;
         FBuffer.Height := BarWidth;
       end;
     trVertical:
       begin
-        Width := BarWidth + ArrowWidth;
+        Width := BarWidth + ArrowWidth + 1;
         Height := ColorAmp + (2 * ArrowWidth);
         FBuffer.Width := BarWidth;
         FBuffer.Height := ColorAmp;
@@ -2282,10 +2281,12 @@ begin
     PosZ := GetAxisValue(FullColor, AxisZ);
     // (rom) This shift is simply not in effect. Seems to be a bug of GetAxisValue.
     // PosZ := PosZ - AxisMin[AxisZ] + ArrowWidth;
-    PosZ := PosZ + ArrowWidth;
-    if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) or
-      ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
-      PosZ := Width - PosZ;
+    if ((Orientation = trHorizontal) and (ColorOrientation = coRightToLeft)) then
+      PosZ := FBuffer.Width - PosZ - 1
+    else
+    if ((Orientation = trVertical) and (ColorOrientation = coBottomToTop)) then
+      PosZ := FBuffer.Height - PosZ - 1;
+    Inc(PosZ, ArrowWidth);
   end;
 
   with Canvas do
@@ -2302,14 +2303,14 @@ begin
                 Points[0].Y := 0;
                 Points[1].Y := ArrowWidth;
                 Points[2].Y := 0;
-                DrawFrame(ArrowWidth, ArrowWidth);
-                Draw(ArrowWidth, ArrowWidth, FBuffer);
+                DrawFrame(ArrowWidth, ArrowWidth+1);
+                Draw(ArrowWidth, ArrowWidth+1, FBuffer);
               end;
             apBottom:
               begin
-                Points[0].Y := Height;
-                Points[1].Y := Height - ArrowWidth;
-                Points[2].Y := Height;
+                Points[0].Y := Height - 1;
+                Points[1].Y := Height - 1 - ArrowWidth;
+                Points[2].Y := Height - 1;
                 DrawFrame(ArrowWidth, 0);
                 Draw(ArrowWidth, 0, FBuffer);
               end;
@@ -2326,14 +2327,14 @@ begin
                 Points[0].X := 0;
                 Points[1].X := ArrowWidth;
                 Points[2].X := 0;
-                DrawFrame(ArrowWidth, ArrowWidth);
-                Draw(ArrowWidth, ArrowWidth, FBuffer);
+                DrawFrame(ArrowWidth+1, ArrowWidth);
+                Draw(ArrowWidth+1, ArrowWidth, FBuffer);
               end;
             apRight:
               begin
-                Points[0].X := Width;
-                Points[1].X := Width - ArrowWidth;
-                Points[2].X := Width;
+                Points[0].X := Width - 1;
+                Points[1].X := Width - 1 - ArrowWidth;
+                Points[2].X := Width - 1;
                 DrawFrame(0, ArrowWidth);
                 Draw(0, ArrowWidth, FBuffer);
               end;
@@ -2456,7 +2457,7 @@ begin
   if FArrowPosition <> Value then
   begin
     FArrowPosition := Value;
-    Update;
+    Invalidate;
   end;
 end;
 
