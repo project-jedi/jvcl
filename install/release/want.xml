@@ -8,8 +8,8 @@
   <property name="version"          value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
   <property name="shortversion"     value="${version.major}${version.minor}${version.release}${version.build}"/>
   <!-- JVCL releases -->
-  <property name="fullzip"     value="JCL+JVCL${shortversion}FullInstall.zip" />
-  <property name="srcexzip"    value="JVCL${shortversion}Source+Examples.zip" />
+  <property name="fullzip"     value="JVCL${shortversion}Complete.zip" />
+  <property name="srcexzip"    value="JVCL${shortversion}SourceExamples.zip" />
   <property name="srczip"      value="JVCL${shortversion}SourceOnly.zip" />
   <!-- standalone -->
   <property name="uibzip"      value="JvUIB${shortversion}.zip" />
@@ -33,24 +33,22 @@
   </target>
 
   <target name="jcl_export" description="Get latest jcl from CVS">
-  <delete dir="jcl" />
+<!--  <delete dir="jcl" /> -->
   <cvs
-    command="export"
+    command="export -D jcl"
     cvsroot=":pserver:anonymous@cvs.sourceforge.net:/cvsroot/jcl"
     dest="."
-    alias="jcl"
     package="jcl"
     tag="HEAD"
     />
   </target>
 
   <target name="jvcl_export" description="Get latest jvcl from CVS">
-  <delete dir="jvcl" />
+<!--  <delete dir="jvcl" /> -->
   <cvs
-    command="export"
+    command="export -D jvcl"
     cvsroot=":pserver:anonymous@cvs.jvcl.sourceforge.net:/cvsroot/jvcl"
     dest="."
-    alias="jvcl"
     package="dev/JVCL3"
     tag="HEAD"
     />
