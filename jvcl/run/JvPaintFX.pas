@@ -168,7 +168,7 @@ uses
   JvJCLUtils, JvTypes;
 
 resourcestring
-  RsSourceBitmapTooSmall = 'Source bitmap too small';
+  RsESourceBitmapTooSmall = 'Source bitmap too small';
 
 const
   {$IFDEF VCL}
@@ -1722,7 +1722,7 @@ begin
   SrcWidth := Src.Width;
   SrcHeight := Src.Height;
   if (SrcWidth < 1) or (SrcHeight < 1) then
-    raise Exception.Create(RsSourceBitmapTooSmall);
+    raise Exception.CreateRes(@RsESourceBitmapTooSmall);
 
   // Create intermediate image to hold horizontal zoom
   Work := TBitmap.Create;

@@ -370,7 +370,7 @@ begin
         if SetTimer(FWndHandle, 1, TimerInterval, nil) = 0 then
         begin
           Events.Deactivate;
-          raise EOutOfResources.Create(SNoTimers);
+          raise EOutOfResources.CreateRes(@SNoTimers);
         end;
     end;
   end;

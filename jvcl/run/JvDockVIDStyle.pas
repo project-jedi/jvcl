@@ -2736,7 +2736,7 @@ end;
 
 procedure TJvDockVIDTabPageControl.SetTabPosition(Value: TTabPosition);
 begin
-  Assert(Value in [tpTop, tpBottom], RsDockCannotSetTabPosition);
+  Assert(Value in [tpTop, tpBottom], RsEDockCannotSetTabPosition);
   inherited SetTabPosition(Value);
   Resize;
 end;
@@ -4247,7 +4247,7 @@ begin
   if Value = tpBottom then
     inherited SetTabPosition(Value)
   else
-    raise Exception.Create(RsDockTabPositionMustBetpBottom);
+    raise Exception.CreateRes(@RsEDockTabPositionMustBetpBottom);
 end;
 
 ///=== TJvDockVIDConjoinServerOption =========================================

@@ -387,7 +387,7 @@ begin
     if Item <> nil then
       Item.QueryInterface(IJvDataItems, Items)
     else // should never occur
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
   end
   else
     Items := InternalProvider as IJvDataItems;
@@ -400,7 +400,7 @@ begin
     if Supports(Items, IJvDataItemsManagement, Mangr) then
       Item := Mangr.New
     else // should never occur
-      raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoManOrDsgn]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderAddErrorReason, [RsEDataProviderNoManOrDsgn]);
     if Item <> nil then
     begin
       fmeTreeList.SelectItemID(Item.GetID);
@@ -408,10 +408,10 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.Create(RsEDataProviderAddFailed);
+      raise EJVCLException.CreateRes(@RsEDataProviderAddFailed);
   end
   else // should never occur
-    raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoSubItems]);
+    raise EJVCLException.CreateResFmt(@RsEDataProviderAddErrorReason, [RsEDataProviderNoSubItems]);
 end;
 
 procedure TfrmDataProviderDesigner.aiDeleteItemExecute(Sender: TObject);
@@ -428,7 +428,7 @@ begin
     if Item <> nil then
       Items := Item.GetItems
     else
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       ResetSelection;
@@ -437,7 +437,7 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
   end;
 end;
 
@@ -453,10 +453,10 @@ begin
     if Item <> nil then
     begin
       if not Supports(Item, IJvDataItems, Items) then
-        raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoSubItems]);
+        raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoSubItems]);
     end
     else
-      raise EJVCLException.Create(RsEDataItemNotFound);
+      raise EJVCLException.CreateRes(@RsEDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       Mangr.Clear;
@@ -464,7 +464,7 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
+      raise EJVCLException.CreateResFmt(@RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
   end;
 end;
 
@@ -482,7 +482,7 @@ begin
       if Supports(InternalProvider, IJvDataContexts, CtxList) then
         fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
       else
-        raise EJVCLException.Create(RsEInternalErrorUnableToRetrieveContext);
+        raise EJVCLException.CreateRes(@RsEInternalErrorUnableToRetrieveContext);
     end
     else
       fmeTreeList.Provider.SetContextIntf(nil);

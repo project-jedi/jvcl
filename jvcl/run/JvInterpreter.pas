@@ -1794,7 +1794,7 @@ begin
   R := Dispatch.GetIDsOfNames(GUID_NULL, @NameRefs, NameCount,
     LOCALE_SYSTEM_DEFAULT, DispIDs);
   if R <> 0 then
-    raise EOleError.CreateFmt(SNoMethod, [Names]);
+    raise EOleError.CreateResFmt(@SNoMethod, [Names]);
 end;
 
 { Central call dispatcher }

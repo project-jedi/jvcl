@@ -493,7 +493,7 @@ begin
                   edMonthlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.Create(RsEInvalidScheduleSettingsFound);
+              raise ESchedule.CreateRes(@RsEInvalidScheduleSettingsFound);
             end;
           end;
         end;
@@ -530,7 +530,7 @@ begin
                   edYearlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.Create(RsEInvalidScheduleSettingsFound);
+              raise ESchedule.CreateRes(@RsEInvalidScheduleSettingsFound);
             end;
           end;
         end;

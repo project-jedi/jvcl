@@ -544,7 +544,7 @@ begin
     ListBox.DeselectProvider;
     Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
     if Result < 0 then
-      raise EOutOfResources.Create(SInsertLineError);
+      raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
 end;
 
@@ -597,7 +597,7 @@ begin
       Exit;
     {$ENDIF COMPILER6_UP}
     if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index, Longint(PChar(S))) < 0 then
-      raise EOutOfResources.Create(SInsertLineError);
+      raise EOutOfResources.CreateRes(@SInsertLineError);
   end;
 end;
 
@@ -684,7 +684,7 @@ begin
         Obj := InternalList.Objects[0];
         Index := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
         if Index < 0 then
-          raise EOutOfResources.Create(SInsertLineError);
+          raise EOutOfResources.CreateRes(@SInsertLineError);
         SendMessage(ListBox.Handle, LB_SETITEMDATA, Index, Longint(Obj));
         InternalList.Delete(0);
       end;

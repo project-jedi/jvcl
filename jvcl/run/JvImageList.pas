@@ -302,7 +302,7 @@ begin
       TImageListPrivate(Self).FHandle := CreateImageListHandle(Self.Width, Self.Height,
         pfCustom, Self.Masked, Self.AllocBy);
       if not Self.HandleAllocated then
-        raise EInvalidOperation.Create(SInvalidImageList);
+        raise EInvalidOperation.CreateRes(@SInvalidImageList);
       if Self.BkColor <> clNone then
         Self.BkColor := Self.BkColor;
     end;
@@ -1125,7 +1125,7 @@ procedure TJvImageList.CreateImageList;
 begin
   FHandle := CreateImageListHandle(Width, Height, FPixelFormat, Masked, AllocBy);
   if not HandleAllocated then
-    raise EInvalidOperation.Create(SInvalidImageList);
+    raise EInvalidOperation.CreateRes(@SInvalidImageList);
   if BkColor <> clNone then
     BkColor := BkColor;
 end;

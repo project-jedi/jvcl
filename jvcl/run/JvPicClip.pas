@@ -246,7 +246,7 @@ end;
 procedure TJvPicClip.CheckIndex(Index: Integer);
 begin
   if (Index >= Cols * Rows) or (Index < 0) then
-    raise EListError.CreateFmt(SListIndexError, [Index]);
+    raise EListError.CreateResFmt(@SListIndexError, [Index]);
 end;
 
 function TJvPicClip.GetIndex(Col, Row: Cardinal): Integer;

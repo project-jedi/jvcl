@@ -4276,7 +4276,7 @@ begin
     ClearFileList;
   end
   else
-    raise EComboEditError.CreateFmt(SInvalidFilename, [Value]);
+    raise EComboEditError.CreateResFmt(@SInvalidFilename, [Value]);
 end;
 
 procedure TJvFilenameEdit.SetFilter(const Value: string);

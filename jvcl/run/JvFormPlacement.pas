@@ -969,7 +969,7 @@ procedure TJvStoredValue.SetDisplayName(const Value: string);
 begin
   if (Value <> '') and (AnsiCompareText(Value, FName) <> 0) and
     (Collection is TJvStoredValues) and (TJvStoredValues(Collection).IndexOf(Value) >= 0) then
-    raise EJVCLException.Create(SDuplicateString);
+    raise EJVCLException.CreateRes(@SDuplicateString);
   FName := Value;
   inherited;
 end;

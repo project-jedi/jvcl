@@ -184,7 +184,7 @@ begin
         (PictureEditor.Picture.Graphic is PictureEditor.GraphicClass) then
         SetOrdValue(Longint(PictureEditor.Picture.Graphic))
       else
-        raise EJVCLException.Create(SInvalidPropertyValue);
+        raise EJVCLException.CreateRes(@SInvalidPropertyValue);
   finally
     PictureEditor.Free;
   end;

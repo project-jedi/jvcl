@@ -205,7 +205,7 @@ begin
     if Value <> nil then
     begin
       if not Supports(Value, IInterfaceComponentReference, CompRef) then
-        raise EPropertyError.Create(RsESpecifiedProviderIsNotATComponentDe);
+        raise EPropertyError.CreateRes(@RsESpecifiedProviderIsNotATComponentDe);
       ProvComp := CompRef.GetComponent;
     end
     else
@@ -279,7 +279,7 @@ begin
   if Supports(GetProviderIntf, IInterfaceComponentReference, ICR) then
     Result := ICR.GetComponent.Name
   else
-    raise EPropertyError.Create(RsESpecifiedProviderIsNotATComponentDe);
+    raise EPropertyError.CreateRes(@RsESpecifiedProviderIsNotATComponentDe);
 end;
 
 procedure TJvDataConsumerProperty.SetValue(const Value: string);
@@ -304,7 +304,7 @@ begin
   begin
     with Comp do
       if not GetInterface(IInterfaceComponentReference, Ref) or not GetInterface(IJvDataProvider, ProvIntf) then
-        raise EPropertyError.Create(SInvalidPropertyValue);
+        raise EPropertyError.CreateRes(@SInvalidPropertyValue);
   end
   else
     ProvIntf := nil;

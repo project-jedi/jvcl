@@ -2745,7 +2745,7 @@ begin
     else
       Inc(Result);
     if (Result < Low(TCursor)) or (Result > High(TCursor)) then
-      raise EOutOfResources.Create(SOutOfResources);
+      raise EOutOfResources.CreateRes(@SOutOfResources);
   end;
 end;
 
@@ -4122,7 +4122,7 @@ var
   i: Integer;
 begin
   if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
+    raise EInvalidOperation.CreateRes(@SNoMDIForm);
   AppStorage.DeleteSubTree(AppStorage.ConcatPaths([StorePath, siMDIChild]));
   if MainForm.MDIChildCount > 0 then
   begin
@@ -4145,7 +4145,7 @@ var
   FormClass: TFormClass;
 begin
   if (MainForm = nil) or (MainForm.FormStyle <> fsMDIForm) then
-    raise EInvalidOperation.Create(SNoMDIForm);
+    raise EInvalidOperation.CreateRes(@SNoMDIForm);
   StartWait;
   try
     Count := AppStorage.ReadInteger(AppStorage.ConcatPaths([StorePath, siMDIChild,
@@ -4410,7 +4410,7 @@ end;
 
 procedure InvalidBitmap;
 begin
-  raise EInvalidGraphic.Create(SInvalidBitmap);
+  raise EInvalidGraphic.CreateRes(@SInvalidBitmap);
 end;
 
 function WidthBytes(i: Longint): Longint;
@@ -5933,8 +5933,8 @@ end;
 // ToolBarMenu
 //==============================================================================
 
-procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar; AMenu:
-  TMainMenu);
+procedure JvCreateToolBarMenu(AForm: TForm; AToolBar: TToolBar;
+  AMenu: TMainMenu);
 var
   i, TotalWidth: Integer;
   Button: TToolButton;

@@ -1543,7 +1543,7 @@ var
   ScrollInfo: TScrollInfo;
 begin
   if AMax < AMin then
-    raise EInvalidOperation.Create(SScrollBarRange);
+    raise EInvalidOperation.CreateRes(@SScrollBarRange);
   if APosition < AMin then
     APosition := AMin;
   if APosition > AMax then
@@ -1586,7 +1586,7 @@ begin
       FPage := Value;
   end;
   if FMax < FMin then
-    raise EInvalidOperation.Create(SScrollBarRange);
+    raise EInvalidOperation.CreateRes(@SScrollBarRange);
   if FPosition < FMin then
     FPosition := FMin;
   if FPosition > FMax then
@@ -2147,7 +2147,7 @@ var
   I: Integer;
 begin
   if Index <= 0 then
-    raise EListError.CreateFmt(SListIndexError, [LineCount]);
+    raise EListError.CreateResFmt(@SListIndexError, [LineCount]);
   for I := 0 to Count - 1 do
   begin
     Result := TJvLineInformation(FList[I]);

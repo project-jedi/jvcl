@@ -72,7 +72,7 @@ end;
 function TJvScreenResolution.GetMode(Index: Integer): TDevMode;
 begin
   if (Index < 0) or (Index >= Count) then
-    raise EJVCLException.CreateFmt(SListIndexError, [Index]);
+    raise EJVCLException.CreateResFmt(@SListIndexError, [Index]);
   EnumDisplaySettings(nil, Index, Result);
 end;
 

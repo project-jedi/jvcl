@@ -371,14 +371,14 @@ function TJvListBoxStrings.Add(const S: string): Integer;
 begin
   Result := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
   if Result < 0 then
-    raise EOutOfResources.Create(SInsertLineError);
+    raise EOutOfResources.CreateRes(@SInsertLineError);
 end;
 
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
 begin
   if SendMessage(ListBox.Handle, LB_INSERTSTRING, Index,
     Longint(PChar(S))) < 0 then
-    raise EOutOfResources.Create(SInsertLineError);
+    raise EOutOfResources.CreateRes(@SInsertLineError);
 end;
 
 procedure TJvListBoxStrings.Delete(Index: Integer);
@@ -409,7 +409,7 @@ function ReturnAddr: Pointer;
           MOV     EAX,[EBP+4]
   end;
 begin
-  raise EStringListError.CreateFmt(SListIndexError, [Index]) at ReturnAddr;
+  raise EStringListError.CreateResFmt(@SListIndexError, [Index]) at ReturnAddr;
 end;
 
 constructor TJvxCustomListBox.Create(AOwner: TComponent);

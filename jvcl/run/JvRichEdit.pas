@@ -5512,7 +5512,7 @@ begin
     if AConverter.Error then
       raise EOutOfResources.Create(AConverter.ErrorStr)
     else if EditStream.dwError <> 0 then
-      raise EOutOfResources.Create(sRichEditSaveFail);
+      raise EOutOfResources.CreateRes(@sRichEditSaveFail);
   end;
 end;
 
@@ -5566,7 +5566,7 @@ begin
     if AConverter.Error then
       raise EOutOfResources.Create(AConverter.ErrorStr)
     else if EditStream.dwError <> 0 then
-      raise EOutOfResources.Create(sRichEditLoadFail);
+      raise EOutOfResources.CreateRes(@sRichEditLoadFail);
   end;
 
   FRichEdit.SetSelection(0, 0, True);
@@ -5672,7 +5672,7 @@ begin
     end;
     if RichEditVersion = 1 then
       if FRichEdit.SelStart <> (Selection.cpMax + Length(Str)) then
-        raise EOutOfResources.Create(sRichEditInsertError);
+        raise EOutOfResources.CreateRes(@sRichEditInsertError);
   end;
 end;
 
@@ -5698,7 +5698,7 @@ begin
         end;
 
       if not Converter.Open(FileName, ckImport) then
-        raise EOutOfResources.Create(sRichEditLoadFail);
+        raise EOutOfResources.CreateRes(@sRichEditLoadFail);
 
       DoImport(Converter);
     finally
@@ -5735,7 +5735,7 @@ begin
           end;
 
         if not Converter.Open(Stream, ckImport) then
-          raise EOutOfResources.Create(sRichEditLoadFail);
+          raise EOutOfResources.CreateRes(@sRichEditLoadFail);
 
         DoImport(Converter)
       finally
@@ -5798,7 +5798,7 @@ begin
         end;
 
       if not Converter.Open(FileName, ckExport) then
-        raise EOutOfResources.Create(sRichEditSaveFail);
+        raise EOutOfResources.CreateRes(@sRichEditSaveFail);
 
       DoExport(Converter)
     finally
@@ -5835,7 +5835,7 @@ begin
           end;
 
         if not Converter.Open(Stream, ckExport) then
-          raise EOutOfResources.Create(sRichEditSaveFail);
+          raise EOutOfResources.CreateRes(@sRichEditSaveFail);
 
         DoExport(Converter)
       finally

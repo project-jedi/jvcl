@@ -1087,7 +1087,7 @@ begin
     (CompareText(Form.Name, Value) = 0) then
   begin
     if not (Form is GetTypeData(GetPropType)^.ClassType) then
-      raise EPropertyError.Create(SInvalidPropertyValue);
+      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
     SetOrdValue(Longint(Form));
   end
   else

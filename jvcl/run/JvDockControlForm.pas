@@ -2379,7 +2379,7 @@ begin
     FDockStyle := Value;
   end
   else
-    raise Exception.Create(RsDockCannotChangeDockStyleProperty);
+    raise Exception.CreateRes(@RsEDockCannotChangeDockStyleProperty);
 end;
 
 procedure TJvDockBaseControl.Notification(AComponent: TComponent;
@@ -2439,7 +2439,7 @@ var
 begin
   DockBaseControl := FindDockBaseControl(ParentForm);
   if Assigned(DockBaseControl) and (DockBaseControl <> Self) then
-    raise EInvalidOperation.Create(Format(RsDockCannotLayAnother, [DockBaseControl.ClassName, ClassName]));
+    raise EInvalidOperation.CreateResFmt(@RsEDockCannotLayAnother, [DockBaseControl.ClassName, ClassName]);
   inherited SetParentComponent(Value);
 end;
 

@@ -2727,7 +2727,7 @@ begin
     Dec(Result.Bottom, 2 * (Result.Bottom - NTop - Control.Height));
   end
   else
-    raise Exception.Create(RsDockControlCannotIsNil);
+    raise Exception.CreateRes(@RsEDockControlCannotIsNil);
 end;
 
 function TJvDockTree.GetSplitterRect(Zone: TJvDockZone): TRect;
@@ -2846,7 +2846,7 @@ begin
     doHorizontal:
       Result := DockSite.Height;
   else
-    raise Exception.Create(RsDockCannotGetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotGetValueWithNoOrient);
   end;
 end;
 
@@ -2862,7 +2862,7 @@ begin
       doHorizontal:
         DockSite.Height := Value;
     else
-      raise Exception.Create(RsDockCannotSetValueWithNoOrient);
+      raise Exception.CreateRes(@RsEDockCannotSetValueWithNoOrient);
     end;
   finally
     DockSite.Parent.EnableAlign;
@@ -2882,7 +2882,7 @@ begin
     doHorizontal:
       Result := DockSite.Top;
   else
-    raise Exception.Create(RsDockCannotGetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotGetValueWithNoOrient);
   end;
 end;
 
@@ -2894,7 +2894,7 @@ begin
     doHorizontal:
       DockSite.Top := Value;
   else
-    raise Exception.Create(RsDockCannotSetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotSetValueWithNoOrient);
   end;
 end;
 
@@ -2906,7 +2906,7 @@ begin
     doHorizontal:
       Result := DockSite.Width;
   else
-    raise Exception.Create(RsDockCannotGetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotGetValueWithNoOrient);
   end;
 end;
 
@@ -2918,7 +2918,7 @@ begin
     doHorizontal:
       DockSite.Width := Value;
   else
-    raise Exception.Create(RsDockCannotSetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotSetValueWithNoOrient);
   end;
 end;
 
@@ -3108,7 +3108,7 @@ begin
     doHorizontal:
       DockSite.Height := Value;
   else
-    raise Exception.Create(RsDockCannotSetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotSetValueWithNoOrient);
   end;
 end;
 
@@ -3266,7 +3266,7 @@ begin
     doHorizontal:
       Result := DockSite.Height;
   else
-    raise Exception.Create(RsDockCannotGetValueWithNoOrient);
+    raise Exception.CreateRes(@RsEDockCannotGetValueWithNoOrient);
   end;
 end;
 

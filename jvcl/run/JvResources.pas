@@ -1338,8 +1338,8 @@ resourcestring
 
 //=== JvObjectPickerDialog.pas ===============================================
 resourcestring
-  RsAttributeIndexOutOfBounds = '%d is not a valid attribute index';
-  RsSelectionIndexOutOfBounds = '%d is not a valid selection index';
+  RsEAttributeIndexOutOfBounds = '%d is not a valid attribute index';
+  RsESelectionIndexOutOfBounds = '%d is not a valid selection index';
 
 //=== JvPageSetup.pas ========================================================
 resourcestring
