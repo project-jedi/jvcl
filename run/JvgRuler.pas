@@ -115,43 +115,41 @@ begin
         end;
     end;
 
-    with Canvas do
-      if Orientation = goHorizontal then
-      begin
-        if Pt.X > Width then
-          Break;
-        if X = Trunc(X) then
+    if (Pt.X < Width) or (Pt.Y < Height) then
+      with Canvas do
+        if Orientation = goHorizontal then
         begin
-          R := Rect(Pt.X - 10, 0, Pt.X + 10, Height);
-          SetBkMode(Handle, TRANSPARENT);
-          if UseUnit = fsuPixels then
-            S := IntToStr(Pt.X)
-          else
-            S := IntToStr(Trunc(X));
-          Windows.DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_CENTER);
-        end;
-        MoveTo(Pt.X, Height - Offset[X = Trunc(X)]);
-        LineTo(Pt.X, Height - 1);
-      end
-      else
-      begin
-        if Pt.Y > Height then
-          Break;
-        if Y = Trunc(Y) then
+          if X = Trunc(X) then
+          begin
+            R := Rect(Pt.X - 10, 0, Pt.X + 10, Height);
+            SetBkMode(Handle, TRANSPARENT);
+            if UseUnit = fsuPixels then
+              S := IntToStr(Pt.X)
+            else
+              S := IntToStr(Trunc(X));
+            Windows.DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or DT_CENTER);
+          end;
+          MoveTo(Pt.X, Height - Offset[X = Trunc(X)]);
+          LineTo(Pt.X, Height - 1);
+        end
+        else
         begin
-          R := Rect(0, Pt.Y - 10, Width, Pt.Y + 10);
-          SetBkMode(Handle, TRANSPARENT);
-          if UseUnit = fsuPixels then
-            S := IntToStr(Pt.Y)
-          else
-            S := IntToStr(Trunc(Y));
-          Windows.DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or
-            DT_CENTER or DT_VCENTER);
+          if Y = Trunc(Y) then
+          begin
+            R := Rect(0, Pt.Y - 10, Width, Pt.Y + 10);
+            SetBkMode(Handle, TRANSPARENT);
+            if UseUnit = fsuPixels then
+              S := IntToStr(Pt.Y)
+            else
+              S := IntToStr(Trunc(Y));
+            Windows.DrawText(Handle, PChar(S), Length(S), R, DT_SINGLELINE or
+              DT_CENTER or DT_VCENTER);
+          end;
+          MoveTo(Width - Offset[Y = Trunc(Y)], Pt.Y);
+          LineTo(Width - 1, Pt.Y);
         end;
-        MoveTo(Width - Offset[Y = Trunc(Y)], Pt.Y);
-        LineTo(Width - 1, Pt.Y);
-      end;
-  until False;
+  until ((Orientation = goHorizontal) and (Pt.X > Width)) or
+        ((Orientation = goVertical) and (Pt.Y > Height));
 
   if Position > 0 then
     with Canvas do
