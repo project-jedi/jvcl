@@ -56,7 +56,7 @@ begin
   RegisterComponents(RsPaletteValidators, [TJvValidators,
     TJvValidationSummary, TJvErrorIndicator]);
   RegisterNoIcon([TJvRequiredFieldValidator, TJvCompareValidator,
-    TJvRangeValidator, TJvRegularExpressionValidator, TJvCustomValidator]);
+    TJvRangeValidator, TJvRegularExpressionValidator, TJvCustomValidator, TJvControlsCompareValidator]);
 
   RegisterComponentEditor(TJvValidators, TJvValidatorComponent);
   RegisterPropertyEditor(TypeInfo(Integer), TJvErrorIndicator,
@@ -64,6 +64,8 @@ begin
 //  RegisterPropertyEditor(TypeInfo(string), TJvCustomFormatEdit, 'Characters', TJvCharStringProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvBaseValidator,
     'PropertyToValidate', TJvPropertyValidateProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvBaseValidator,
+    'PropertyToCompare', TJvPropertyToCompareProperty);
   {$IFNDEF COMPILER6_UP}
   RegisterPropertyEditor(TypeInfo(TComponent), TComponent,
     'ValidationSummary', TJvValidationSummaryProperty);
