@@ -122,11 +122,10 @@ NoQuotes.exe: NoQuotes\NoQuotes.dpr
   $(DCC) $&.dpr
   cd ..
 
-# these are put last because they are most likely to fail (needs additional units from other libraries)
+# these are put last because they are most likely to fail
 ErrLook.exe: ErrLook\src\ErrLook.dpr
   cd ErrLook\src
   @echo.
-  @echo !!!  get HtmlHlp from from http://delphi-jedi.org (API Library Files)  !!!
   @echo.
   $(DCCH) $&.dpr
   cd ..\..
@@ -134,7 +133,6 @@ ErrLook.exe: ErrLook\src\ErrLook.dpr
 MakePNG.exe: MakePNG\MakePNG.dpr
   cd MakePNG
   @echo.
-  @echo !!!  Please be sure to download pngImage from http://pngimage.sf.net/  !!!
   @echo.
   $(DCC) $&.dpr
   cd ..
@@ -142,7 +140,6 @@ MakePNG.exe: MakePNG\MakePNG.dpr
 Res2Bmp.exe: Res2Bmp\Res2Bmp.dpr
   cd Res2Bmp
   @echo.
-  @echo !!!  get missing files from http://www.wilsonc.demon.co.uk/d7resourceutils.htm  !!!
   @echo.
   $(DCC) $&.dpr
   cd ..
