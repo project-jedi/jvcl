@@ -163,9 +163,10 @@ type
   protected
     procedure GetAttr(Editor: TJvHLEditor; Lines: Tstrings; Line, ColBeg, ColEnd: Integer;
       LongToken: TLongTokenType; var LineAttrs: TLineAttrs); virtual; abstract;
-    procedure ScanLongTokens(Editor: TJvHLEditor; Lines: Tstrings; Line: Integer;
+    procedure ScanLongTokens(Editor: TJvHLEditor; Lines: TStrings; Line: Integer;
       var FLong: TLongTokenType); virtual; abstract;
-    function GetRescanLongKeys(Editor: TJvHLEditor): string; virtual; abstract;
+    function GetRescanLongKeys(Editor: TJvHLEditor; Action: TModifiedAction;
+      ACaretX, ACaretY: Integer; const Text: string): Boolean; virtual; abstract;
   end;
 
   TJvHLEditor = class(TJvEditor)
@@ -1310,7 +1311,7 @@ begin
                     if {S[i + 1]} F[i] = '*' then
                     begin
                       if {S[i + 2]} F[i + 1] = '$' then
-                        FLong := lgPreproc1
+                        FLong := lgPreproc2
                       else
                         FLong := lgComment2;
                       P := StrScan(F + i + 2, Char(')'));
@@ -1716,7 +1717,7 @@ begin
     Exit;
   case FHighlighter of
     hlPascal:
-      S := #13'{}*()/$';
+      S := #13'{}*()/';
     hlCBuilder, hlJava, hlSql, hlPhp, hlNQC:
       S := #13'*/\';
     hlVB:
@@ -1729,19 +1730,46 @@ begin
       S := #13'*()/';
     hlSyntaxHighlighter:
       if FSyntaxHighlighter <> nil then
-        S := FSyntaxHighlighter.GetRescanLongKeys(Self)
+      begin
+        if Action = maAll then
+          ACaretY := -1  // rescan all lines
+        else if FSyntaxHighlighter.GetRescanLongKeys(Self, Action, ACaretX, ACaretY, Text) then
+        begin
+          if RescanLong(ACaretY) then
+            Invalidate;
+        end;
+        Exit;
+      end
       else
         S := #13;
   else
     S := #13; { unknown Highlighter ? }
   end;
+
+
+  if Action = maAll then
+    ACaretY := -1;  // rescan all lines
+
   if (Action in [maAll, maReplace]) or HasAnyChar(S, Text) then
   begin
-    if Action = maAll then
-      ACaretY := -1;  // rescan all lines
-
     if RescanLong(ACaretY) then
       Invalidate;
+  end
+  else
+  begin
+    if (Highlighter = hlPascal) and (ACaretY < Max_Line) then
+    begin
+     // comment <-> preproc
+      S := Lines[ACaretY];
+      if ((ACaretX > 0) and (S[ACaretX - 1] = '{')) or
+         ((ACaretX > 1) and (S[ACaretX - 2] = '(') and (S[ACaretX - 1] = '*')) or
+         ((ACaretX > 0) and (S[ACaretX] = '{')) or
+         ((ACaretX > 1) and (S[ACaretX - 1] = '(') and (S[ACaretX] = '*')) then
+      begin
+        if RescanLong(ACaretY) then
+          Invalidate;
+      end;
+    end;
   end;
  {
   if (FHighlighter = hlCocoR) and (HasAnyChar('productions'#13, Text)) then

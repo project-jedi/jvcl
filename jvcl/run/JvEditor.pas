@@ -2348,7 +2348,7 @@ end;
 
 procedure TJvCustomEditor.GetLineAttr(var Str: string; Line, ColBeg, ColEnd: Integer);
 var
-  I: Integer;
+  I, TmpI: Integer;
   S: string;
   LineStyle: TJvLineSelectStyle;
 
@@ -2437,7 +2437,9 @@ begin
   end;
   if LineStyle <> lssUnselected then
   begin
-    for I := ColBeg + 1 to ColEnd do
+    TmpI := ColEnd;
+    if TmpI < Max_X then Inc(TmpI);
+    for I := ColBeg + 1 to TmpI do
     begin
       LineAttrs[I].FC := LineAttrs[ColBeg].FC;
       LineAttrs[I].BC := LineAttrs[ColBeg].BC;
