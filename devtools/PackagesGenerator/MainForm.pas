@@ -44,7 +44,7 @@ type
     mnuNextPackage: TMenuItem;
     jbfFolder: TJvBrowseForFolderDialog;
     pnlEdit: TPanel;
-    Panel1: TPanel;
+    pnlPackagesLocation: TPanel;
     jdePackagesLocation: TJvDirectoryEdit;
     Label1: TLabel;
     aevEvents: TApplicationEvents;
@@ -65,6 +65,16 @@ type
     actGenerate: TAction;
     tbtGenerate: TToolButton;
     jpmGridPopup: TJvPopupMenu;
+    mnuView: TMenuItem;
+    mnuKnown: TMenuItem;
+    N2: TMenuItem;
+    actMainToolbar: TAction;
+    actLocation: TAction;
+    actKnown: TAction;
+    mnuMainToolbar: TMenuItem;
+    mnuLocationBar: TMenuItem;
+    mnuUp: TMenuItem;
+    mnuDown: TMenuItem;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -94,12 +104,20 @@ type
       Shift: TShiftState);
     procedure actPrevPackageExecute(Sender: TObject);
     procedure actNextPackageExecute(Sender: TObject);
+    procedure actMainToolbarUpdate(Sender: TObject);
+    procedure actLocationUpdate(Sender: TObject);
+    procedure actMainToolbarExecute(Sender: TObject);
+    procedure actLocationExecute(Sender: TObject);
+    procedure actKnownExecute(Sender: TObject);
+    procedure mnuUpClick(Sender: TObject);
+    procedure mnuDownClick(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
 
     procedure LoadPackagesList;
     procedure LoadPackage;
+    procedure MoveLine(sg : TStringGrid; direction : Integer);
   public
     { Public declarations }
     constructor Create(AOwner : TComponent); override;
@@ -112,7 +130,7 @@ implementation
 
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
-  GenerateUtils;
+  GenerateUtils, KnownTagsForm;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -603,6 +621,68 @@ procedure TfrmMain.actNextPackageExecute(Sender: TObject);
 begin
   jlbList.ItemIndex := jlbList.ItemIndex + 1;
   LoadPackage;
+end;
+
+procedure TfrmMain.actMainToolbarUpdate(Sender: TObject);
+begin
+  actMainToolbar.Checked := jtbTools.Visible;
+end;
+
+procedure TfrmMain.actLocationUpdate(Sender: TObject);
+begin
+  actLocation.Checked := pnlPackagesLocation.Visible;
+end;
+
+procedure TfrmMain.actMainToolbarExecute(Sender: TObject);
+begin
+  jtbTools.Visible := actMainToolbar.Checked;
+end;
+
+procedure TfrmMain.actLocationExecute(Sender: TObject);
+begin
+  pnlPackagesLocation.Visible := actLocation.Checked;
+end;
+
+procedure TfrmMain.actKnownExecute(Sender: TObject);
+begin
+  frmKnownTags.ShowModal;
+end;
+
+procedure TfrmMain.MoveLine(sg : TStringGrid; direction : Integer);
+var
+  tmpRow : TStrings;
+  RowIndex : Integer;
+begin
+  RowIndex := sg.Row;
+  if not ((RowIndex + direction = 0) or
+          (RowIndex + direction = sg.RowCount - 1)) then
+  begin
+    tmpRow := TStringList.Create;
+    try
+      tmpRow.Assign(sg.Rows[RowIndex]);
+      sg.Rows[RowIndex] := sg.Rows[RowIndex + direction];
+      sg.Rows[RowIndex + direction] := tmpRow;
+      Changed := True;
+    finally
+      tmpRow.Free;
+    end;
+  end;
+end;
+
+procedure TfrmMain.mnuUpClick(Sender: TObject);
+begin
+  if ActiveControl is TInPlaceEdit then
+  begin
+    MoveLine((ActiveControl as TInPlaceEdit).Parent as TStringGrid, -1);
+  end;
+end;
+
+procedure TfrmMain.mnuDownClick(Sender: TObject);
+begin
+  if ActiveControl is TInPlaceEdit then
+  begin
+    MoveLine((ActiveControl as TInPlaceEdit).Parent as TStringGrid, +1);
+  end;
 end;
 
 end.
