@@ -2432,7 +2432,7 @@ var
   begin
     if (AMenuItem.Caption <> '-') and (AMenuItem.Caption <> '') then
     begin
-      ANode := Items.AddChildObject(AParent, StripMenuHotKey(AMenuItem.Caption), TObject(AMenuItem));
+      ANode := Items.AddChildObject(AParent, StripHotKey(AMenuItem.Caption), TObject(AMenuItem));
       ANode.ImageIndex := AMenuItem.ImageIndex;
       ANode.SelectedIndex := AMenuItem.ImageIndex;
       for i := 0 to AMenuItem.Count - 1 do
