@@ -13,6 +13,7 @@
     <Package Name="JvCtrls-R" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5,C5s" Condition=""/>
     <Package Name="vcl50" Targets="C5,C5s" Condition=""/>
+    <Package Name="vclx50" Targets="C5,C5s" Condition=""/>
     <Package Name="vcldb50" Targets="C5,C5s,D5,D5s" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5,C5s" Condition=""/>
     <Package Name="bcbie50" Targets="C5,C5s" Condition=""/>
