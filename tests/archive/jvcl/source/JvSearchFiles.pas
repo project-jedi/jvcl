@@ -15,8 +15,9 @@ Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
+David Frauzel (DF)
 
-Last Modified: 2002-08-10
+Last Modified: 2003-02-18
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -54,7 +55,7 @@ type
       Search in root directory and it's sub-directories.
     doExcludeInvalidDirs
       Search in root directory and it's sub-directories; do not search in
-      an invalid directoriy, but do search in the sub-directories of an
+      an invalid directory, but do search in the sub-directories of an
       invalid directory.
     doExcludeCompleteInvalidDirs
       Search in root directory and it's sub-directories; do not search in
@@ -218,7 +219,9 @@ type
     FDirOption: TJvDirOption;
     FDirParams: TJvSearchParams;
     FFileParams: TJvSearchParams;
+    FRecurseDepth: Integer;
     function GetIsRootDirValid: Boolean;
+    function GetIsDepthAllowed(const ADepth: Integer): Boolean;
     procedure SetDirParams(const Value: TJvSearchParams);
     procedure SetFileParams(const Value: TJvSearchParams);
     procedure SetOptions(const Value: TJvSearchOptions);
@@ -234,7 +237,7 @@ type
     function EnumFiles(const ADirectoryName: string; Dirs: TStrings;
       const Search: Boolean): Boolean;
     function InternalSearch(const ADirectoryName: string;
-      const Search: Boolean): Boolean; virtual;
+      const Search: Boolean; var ADepth: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -249,8 +252,10 @@ type
     property TotalFileSize: Int64 read FTotalFileSize;
     property TotalFiles: Integer read FTotalFiles;
   published
-    property DirOption: TJvDirOption read FDirOption write FDirOption default
-      doIncludeSubDirs;
+    property DirOption: TJvDirOption read FDirOption write FDirOption default doIncludeSubDirs;
+    // RecurseDepth sets the number of subfolders to search. If 0, all subfolders
+    // are searched (as long as doIncludeSubDirs is true)
+    property RecurseDepth: Integer read FRecurseDepth write FRecurseDepth default 0;
     property RootDirectory: string read FRootDirectory write FRootDirectory;
     property Options: TJvSearchOptions read FOptions write SetOptions default [soSearchFiles];
     property ErrorResponse: TJvErrorResponse read FErrorResponse write
@@ -282,12 +287,12 @@ uses
 const
   CDate1_1_1980 = 29221;
 
-//=== TJvSearchFiles =========================================================
+  //=== TJvSearchFiles =========================================================
 
-// (p3)
+  // (p3)
 
-// (rom) better implement an OnProgress where the user can handle it
-// (rom) OnProgress is an abstract concept and this ProcessMessages is not good
+  // (rom) better implement an OnProgress where the user can handle it
+  // (rom) OnProgress is an abstract concept and this ProcessMessages is not good
 
 procedure ProcessMessages;
 var
@@ -497,7 +502,7 @@ begin
             end;
         end
         else
-        if Search and (soSearchFiles in Options) and DoCheckFile then
+          if Search and (soSearchFiles in Options) and DoCheckFile then
           DoFindFile(ADirectoryName);
 
       if not Windows.FindNextFile(Handle, FFindData) then
@@ -529,6 +534,11 @@ begin
   finally
     Windows.FindClose(Handle);
   end;
+end;
+
+function TJvSearchFiles.GetIsDepthAllowed(const ADepth: Integer): Boolean;
+begin
+  Result := (FRecurseDepth = 0) or (ADepth <= FRecurseDepth)
 end;
 
 function TJvSearchFiles.HandleError: Boolean;
@@ -563,12 +573,12 @@ begin
   FAborting := False;
 end;
 
-function TJvSearchFiles.InternalSearch(const ADirectoryName: string;
-  const Search: Boolean): Boolean;
+function TJvSearchFiles.InternalSearch(const ADirectoryName: string; const Search: Boolean; var ADepth: Integer):
+  Boolean;
 var
   List: TStringList;
   DirSep: string;
-  I: Integer;
+  i: Integer;
 begin
   List := TStringList.Create;
   try
@@ -577,23 +587,32 @@ begin
     Result := EnumFiles(DirSep, List, Search) or HandleError;
     if not Result then
       Exit;
+
+    { DO NOT set Result := False; the search should continue, this is not an error. }
+    Inc(ADepth); 
+    if not GetIsDepthAllowed(ADepth) then
+      Exit;
+
     { I think it would be better to do no recursion; Don't know if it can
       be easy implemented - if you want to keep the depth first search -
       and without doing a lot of TList moves }
-    for I := 0 to List.Count - 1 do
+    for i := 0 to List.Count - 1 do
     begin
-      Result := InternalSearch(DirSep + List[I], Boolean(List.Objects[I]));
+      Result := InternalSearch(
+        DirSep + List[i], Boolean(List.Objects[i]), ADepth);
       if not Result then
         Exit;
     end;
   finally
     List.Free;
+    Dec(ADepth); 
   end;
 end;
 
 function TJvSearchFiles.Search: Boolean;
 var
   SearchInRootDir: Boolean;
+  ADepth: Integer;
 begin
   Result := False;
   if Searching then
@@ -625,7 +644,8 @@ begin
       Exit;
     end;
 
-    Result := InternalSearch(FRootDirectory, SearchInRootDir);
+    ADepth := 0;
+    Result := InternalSearch(FRootDirectory, SearchInRootDir, ADepth);
   finally
     FSearching := False;
   end;
@@ -725,7 +745,7 @@ begin
   if FIncludeAttr and Index > 0 then
     Result := tsMustBeSet
   else
-  if FExcludeAttr and Index > 0 then
+    if FExcludeAttr and Index > 0 then
     Result := tsMustBeUnSet
   else
     Result := tsDontCare;
