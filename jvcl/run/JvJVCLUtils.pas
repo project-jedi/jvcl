@@ -6505,10 +6505,8 @@ begin
           result.Pitch := TFontPitch(StrToIntDef(S, Ord(result.Pitch)));
         5:
           result.Color := StringToColor(S);
-        {$IFDEF COMPILER3_UP}
         6:
           result.Charset := TFontCharset(StrToIntDef(S, result.Charset));
-        {$ENDIF}
       end;
     end;
   finally
