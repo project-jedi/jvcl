@@ -509,7 +509,8 @@ end;
 
 procedure HideAllPopupPanel(ExcludeChannel: TJvDockVSChannel);
 var
-  I, J: Integer;
+  I:Integer;
+  J: TAlign;
   Channel: TJvDockVSChannel;
   DockServer: TJvDockServer;
 begin
@@ -517,9 +518,9 @@ begin
   begin
     DockServer := FindDockServer(JvGlobalDockManager.DockServersList[I]);
     if (DockServer <> nil) and (DockServer.DockPanel[0] is TJvDockVSNETPanel) then
-      for J := 0 to 3 do
+      for J := alTop to alRight do
       begin
-        Channel := TJvDockVSNETPanel(DockServer.DockPanel[J]).VSChannel;
+        Channel := TJvDockVSNETPanel(DockServer.DockPanelWithAlign[J]).VSChannel;
         if (Channel <> nil) and (Channel <> ExcludeChannel) then
           Channel.HidePopupPanel(Channel.FActivePane);
       end;
@@ -528,7 +529,7 @@ end;
 
 procedure ResetChannelBlockStartOffset(Channel: TJvDockVSChannel);
 var
-  I: Integer;
+  I: TAlign;
   LeftChannel: TJvDockVSChannel;
   CurrChannel: TJvDockVSChannel;
   OldOffset: Integer;
@@ -538,9 +539,9 @@ begin
   if LeftChannel <> nil then
   begin
     LeftAlignArea := GetClientAlignControlArea(LeftChannel.Parent, alLeft);
-    for I := 0 to 3 do
+    for I := alTop to alRight do
     begin
-      CurrChannel := TJvDockVSNETPanel(Channel.DockServer.DockPanel[I]).VSChannel;
+      CurrChannel := TJvDockVSNETPanel(Channel.DockServer.DockPanelWithAlign[I]).VSChannel;
       if CurrChannel.Align in [alTop, alBottom] then
       begin
         OldOffset := CurrChannel.BlockStartOffset;
@@ -655,16 +656,16 @@ end;
 function TJvDockVSNetStyle.DockServerWindowProc(DockServer: TJvDockServer;
   var Msg: TMessage): Boolean;
 var
-  I: Integer;
+  I: TAlign;
   Channel: TJvDockVSChannel;
 begin
   Result := inherited DockServerWindowProc(DockServer, Msg);
   if Msg.Msg = WM_SIZE then
-    for I := 0 to 3 do
+    for I := alTop to alRight do
     begin
       Channel := nil;
-      if DockServer.DockPanel[I] <> nil then
-        Channel := TJvDockVSNETPanel(DockServer.DockPanel[I]).VSChannel;
+      if DockServer.DockPanelWithAlign[I] <> nil then
+        Channel := TJvDockVSNETPanel(DockServer.DockPanelWithAlign[I]).VSChannel;
       if Channel <> nil then
         Channel.HidePopupPanel(Channel.FActivePane);
     end;
@@ -828,7 +829,8 @@ var
   ControlH: HWND;
   WControl: TWinControl;
   P: TWinControl;
-  I, J: Integer;
+  I: Integer;
+  J: TAlign;
   VSChannel: TJvDockVSChannel;
 begin
   if not ChannelOption.MouseleaveHide then
@@ -861,9 +863,9 @@ begin
     else
       FCurrentTimer := -101;
     for I := 0 to FDockServerList.Count - 1 do
-      for J := 0 to 3 do
+      for J := alTop to alRight do
       begin
-        VSChannel := TJvDockVSNETPanel(TJvDockServer(FDockServerList[I]).DockPanel[J]).VSChannel;
+        VSChannel := TJvDockVSNETPanel(TJvDockServer(FDockServerList[I]).DockPanelWithAlign[J]).VSChannel;
         VSChannel.HidePopupPanelWithAnimate;
       end;
   end;
@@ -3019,13 +3021,13 @@ var
   end;
 
 var
-  I: Integer;
+  I: TAlign;
 begin
   if ADockServer <> nil then
-    for I := 0 to 3 do
-      if ADockServer.DockPanel[I] <> nil then
+    for I := alTop to alRight do
+      if ADockServer.DockPanelWithAlign[I] <> nil then
       begin
-        VSChannel := TJvDockVSNETPanel(ADockServer.DockPanel[I]).VSChannel;
+        VSChannel := TJvDockVSNETPanel(ADockServer.DockPanelWithAlign[I]).VSChannel;
         ResetActiveBlockSize;
       end;
 end;
@@ -3080,7 +3082,8 @@ var
   CurrControl: TWinControl;
   DockServer: TJvDockServer;
   VSChannel: TJvDockVSChannel;
-  I, J: Integer;
+  I:Integer;
+  J: TAlign;
 
   function CanHide: Boolean;
   begin
@@ -3112,9 +3115,9 @@ begin
         begin
           if DockServer.DockPanel[0] = nil then
             Exit;
-          for J := 0 to 3 do
+          for J := alTop to alRight do
           begin
-            VSChannel := TJvDockVSNETPanel(DockServer.DockPanel[J]).VSChannel;
+            VSChannel := TJvDockVSNETPanel(DockServer.DockPanelWithAlign[J]).VSChannel;
             VSChannel.HidePopupPanelWithAnimate;
           end;
         end;

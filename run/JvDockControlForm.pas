@@ -33,9 +33,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
   ExtCtrls, ComCtrls, StdCtrls, Consts, CommCtrl,
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
   JvComponent, JvAppStorage,
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   JvDockTree, JvDockSupportClass, JvDockSupportControl;
 
 const
@@ -220,11 +220,11 @@ type
   TJvDockBasicConjoinServerOptionClass = class of TJvDockBasicConjoinServerOption;
   TJvDockBasicTabServerOptionClass = class of TJvDockBasicTabServerOption;
 
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
   TJvDockBasicStyle = class(TJvComponent)
-  {$ELSE}
+{$ELSE}
   TJvDockBasicStyle = class(TComponent)
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   private
     FDockPanelClass: TJvDockPanelClass;
     FDockSplitterClass: TJvDockSplitterClass;
@@ -292,10 +292,10 @@ type
     function CanSetTopDocked(ADockBaseControl: TJvDockBaseControl): Boolean; virtual;
     function CanSetBottomDocked(ADockBaseControl: TJvDockBaseControl): Boolean; virtual;
     function CanSetEachOtherDocked(ADockBaseControl: TJvDockBaseControl): Boolean; virtual;
-    {$IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
     function GetControlName: string; virtual;
     function GetDockStyleVersion: string; virtual;
-    {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
     procedure ResetCursor(Source: TJvDockDragDockObject); virtual;
 
@@ -312,10 +312,10 @@ type
 
     procedure RestoreClient(DockClient: TJvDockClient); virtual;
 
-    {$IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
     property ControlName: string read GetControlName;
-    {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
     property DockPanelClass: TJvDockPanelClass
       read FDockPanelClass write FDockPanelClass;
@@ -352,11 +352,11 @@ type
     function DockClientWindowProc(DockClient: TJvDockClient; var Msg: TMessage): Boolean; override;
   end;
 
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
   TJvDockBaseControl = class(TJvComponent)
-  {$ELSE}
+{$ELSE}
   TJvDockBaseControl = class(TComponent)
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   private
     FEnableDock: Boolean;
     FLeftDock: Boolean;
@@ -403,9 +403,9 @@ type
     procedure Assign(Source: TPersistent); override;
     property ParentForm: TForm read FParentForm;
 
-    {$IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
     function GetDockStyleVersion: string; virtual;
-    {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
 
     property EnableDock: Boolean read FEnableDock write SetEnableDock default True;
     property LeftDock: Boolean read FLeftDock write SetLeftDock default True;
@@ -413,9 +413,9 @@ type
     property RightDock: Boolean read FRightDock write SetRightDock default True;
     property BottomDock: Boolean read FBottomDock write SetBottomDock default True;
     property EachOtherDock: Boolean read FEachOtherDock write SetEachOtherDock default True;
-    {$IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
-    {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
     property DockStyle: TJvDockBasicStyle read FDockStyle write SetDockStyle;
   end;
 
@@ -494,9 +494,9 @@ type
     property DockPanelWithAlign[Index: TAlign]: TJvDockPanel read GetDockPanelWithAlign;
     property DockSplitter[Index: Integer]: TJvDockSplitter read GetDockSplitter;
     property DockSplitterWithAlign[Index: TAlign]: TJvDockSplitter read GetDockSplitterWithAlign;
-    {$IFNDEF USEJVCL}
+{$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
-    {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   published
     property LeftSplitterStyle: TJvDockSplitterStyle read FLeftSplitterStyle write SetLeftSplitterStyle;
     property TopSplitterStyle: TJvDockSplitterStyle read FTopSplitterStyle write SetTopSplitterStyle;
@@ -873,9 +873,9 @@ implementation
 
 uses
   Dialogs, Math,
-  {$IFDEF USEJVCL}
+{$IFDEF USEJVCL}
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
-  {$ENDIF USEJVCL}
+{$ENDIF USEJVCL}
   IniFiles, Registry,
   JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle;
 
@@ -945,9 +945,9 @@ var
     ClientDockStyle: TJvDockBasicStyle;
   SenderStyleName,
     ClientStyleName: string;
-// (rom) disabled unused
-//label
-// JudgeRelation;
+  // (rom) disabled unused
+  //label
+  // JudgeRelation;
 begin
   ADockClient := FindDockClient(Client);
   Result := False;
@@ -1039,11 +1039,7 @@ begin
   ARect.TopLeft := Sender.ClientToScreen(Point(-(BW + 3), -(CH + BW + 1)));
   ARect.BottomRight := Sender.ClientToScreen(
     Point(Sender.UndockWidth - (BW + 3), Sender.UndockHeight - (BW + CH + 1)));
-  // (rom) this try finally is useless
-  try
-    AControl.ManualFloat(ARect);
-  finally
-  end;
+  AControl.ManualFloat(ARect);
   if (AControl.Left <> ARect.Left) or (AControl.Top <> ARect.Top) then
   begin
     AControl.Left := ARect.Left;
@@ -1082,8 +1078,7 @@ begin
       DockRect := DockLeftRect;
       DockRect.Right := ClientWidth div 2;
     end
-    else
-    if PtInRect(DockTopRect, MousePos) then
+    else if PtInRect(DockTopRect, MousePos) then
     begin
       Result := alTop;
       DockRect := DockTopRect;
@@ -1091,15 +1086,13 @@ begin
       DockRect.Right := ClientWidth;
       DockRect.Bottom := ClientHeight div 2;
     end
-    else
-    if PtInRect(DockRightRect, MousePos) then
+    else if PtInRect(DockRightRect, MousePos) then
     begin
       Result := alRight;
       DockRect := DockRightRect;
       DockRect.Left := ClientWidth div 2;
     end
-    else
-    if PtInRect(DockBottomRect, MousePos) then
+    else if PtInRect(DockBottomRect, MousePos) then
     begin
       Result := alBottom;
       DockRect := DockBottomRect;
@@ -1107,8 +1100,7 @@ begin
       DockRect.Right := ClientWidth;
       DockRect.Top := ClientHeight div 2;
     end
-    else
-    if PtInRect(DockCenterRect, MousePos) then
+    else if PtInRect(DockCenterRect, MousePos) then
     begin
       Result := alClient;
       DockRect := DockCenterRect;
@@ -1215,13 +1207,11 @@ var
   begin
     if Client.HostDockSite is TJvDockVSPopupPanel then
       TJvDockVSPopupPanel(Client.HostDockSite).VSChannel.PopupDockForm(Client)
-    else
-    if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
+    else if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
     begin
       if (Client.HostDockSite.Parent.HostDockSite is TJvDockVSPopupPanel) then
         TJvDockVSPopupPanel(Client.HostDockSite.Parent.HostDockSite).VSChannel.PopupDockForm(Client)
-      else
-      if Client.HostDockSite.Parent.HostDockSite is TJvDockPanel then
+      else if Client.HostDockSite.Parent.HostDockSite is TJvDockPanel then
         Client.HostDockSite.Parent.HostDockSite.Invalidate;
     end;
   end;
@@ -1283,13 +1273,11 @@ var
   begin
     if Client.HostDockSite is TJvDockVSPopupPanel then
       TJvDockVSPopupPanel(Client.HostDockSite).VSChannel.HidePopupPanel(Client)
-    else
-    if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
+    else if (Client.HostDockSite <> nil) and (Client.HostDockSite.Parent <> nil) then
     begin
       if (Client.HostDockSite.Parent.HostDockSite is TJvDockVSPopupPanel) then
         TJvDockVSPopupPanel(Client.HostDockSite.Parent.HostDockSite).VSChannel.HidePopupPanel(Client)
-      else
-      if (Client.HostDockSite.Parent.HostDockSite is TJvDockPanel) then
+      else if (Client.HostDockSite.Parent.HostDockSite is TJvDockPanel) then
         Client.HostDockSite.Parent.HostDockSite.Invalidate
     end;
   end;
@@ -1493,7 +1481,7 @@ begin
     // (p3) this seems dangerous but it's the same method as used by TJvAppRegistryStorage
     JvAppStorage.RegRoot := TJvRegKey(HKEY_CLASSES_ROOT + ARootKey);
     JvAppStorage.Path := RegPatch;
-    SaveDockTreeToAppStorage(JvAppStorage);
+    LoadDockTreeFromAppStorage(JvAppStorage);
   finally
     JvAppStorage.Free;
   end;
@@ -1635,7 +1623,8 @@ end;
 
 procedure DoFloatForm(DockForm: TControl);
 var
-  I, J: Integer;
+  I: TAlign;
+  J: Integer;
   ADockServer: TJvDockServer;
   ARect: TRect;
 begin
@@ -1643,8 +1632,8 @@ begin
   begin
     with TJvDockableForm(DockForm).DockableControl do
     begin
-      for I := DockClientCount - 1 downto 0 do
-        DoFloatForm(DockClients[I]);
+      for J := DockClientCount - 1 downto 0 do
+        DoFloatForm(DockClients[J]);
 
       DockForm.ManualDock(nil);
     end;
@@ -1655,12 +1644,14 @@ begin
     if ADockServer <> nil then
     begin
       // (rom) better use a Count or introduce one
-      for I := 0 to 3 do
+      // (p3) this is due to the fact that DockPanel returns a dockpanel based on the indices 0 to 3
+      //  DockPanelWithAlign uses the TAlign enumeration, however
+      for I := alTop to alRight do
       begin
-        for J := ADockServer.DockPanel[I].DockClientCount - 1 downto 0 do
-          DoFloatForm(ADockServer.DockPanel[I].DockClients[J]);
-        if ADockServer.DockPanel[I] is TJvDockVSNETPanel then
-          with TJvDockVSNETPanel(ADockServer.DockPanel[I]).VSChannel do
+        for J := ADockServer.DockPanelWithAlign[I].DockClientCount - 1 downto 0 do
+          DoFloatForm(ADockServer.DockPanelWithAlign[I].DockClients[J]);
+        if ADockServer.DockPanelWithAlign[I] is TJvDockVSNETPanel then
+          with TJvDockVSNETPanel(ADockServer.DockPanelWithAlign[I]).VSChannel do
           begin
             RemoveAllBlock;
             HidePopupPanel(ActiveDockForm);
@@ -2393,6 +2384,7 @@ begin
 end;
 
 {$IFNDEF USEJVCL}
+
 function TJvDockBaseControl.GetDockStyleVersion: string;
 begin
   Result := RsDockManagerVersion;
@@ -2405,8 +2397,7 @@ begin
   if (Action = caFree) and (JvGlobalDockManager <> nil) then
     if Self is TJvDockServer then
       JvGlobalDockManager.RemoveDockServerFromDockManager(ParentForm)
-    else
-    if Self is TJvDockClient then
+    else if Self is TJvDockClient then
       JvGlobalDockManager.RemoveDockClientFromDockManager(ParentForm);
   if Assigned(FOldOnClose) then
     FOldOnClose(Sender, Action);
@@ -2417,8 +2408,7 @@ begin
   if JvGlobalDockManager <> nil then
     if Self is TJvDockServer then
       JvGlobalDockManager.AddDockServerToDockManager(ParentForm)
-    else
-    if Self is TJvDockClient then
+    else if Self is TJvDockClient then
       JvGlobalDockManager.AddDockClientToDockManager(ParentForm);
   if Assigned(FOldOnCreate) then
     FOldOnCreate(Sender);
@@ -2734,19 +2724,19 @@ end;
 
 procedure TJvDockServer.WMActivate(var Msg: TWMActivate);
 var
-  I: Integer;
+  I: TAlign;
   Control: TWinControl;
 begin
   if Msg.Active = WA_INACTIVE then
-    for I := 0 to 3 do
-      DockPanel[I].JvDockManager.ActiveControl := nil
+    for I := alTop to alRight do
+      DockPanelWithAlign[I].JvDockManager.ActiveControl := nil
   else
   begin
     Control := GetActiveControl(ParentForm);
-    for I := 0 to 3 do
-      if GetHostDockParent(Control) = DockPanel[I] then
+    for I := alTop to alRight do
+      if GetHostDockParent(Control) = DockPanelWithAlign[I] then
       begin
-        DockPanel[I].JvDockManager.ActiveControl := Control;
+        DockPanelWithAlign[I].JvDockManager.ActiveControl := Control;
         if Control.CanFocus then
           Control.SetFocus;
       end;
@@ -3508,8 +3498,7 @@ begin
     DoFloat(Self, DockableControl.DockClients[0]);
     Action := caFree;
   end
-  else
-  if DockableControl.DockClientCount = 0 then
+  else if DockableControl.DockClientCount = 0 then
     Action := caFree
   else
   begin
@@ -3828,31 +3817,34 @@ end;
 
 procedure TJvDockTabPageControl.SaveToStream(Stream: TStream);
 var
-  I, Count, NameLen, SheetVisible, ActiveSheetIndex: Integer;
+  I, ACount, NameLen, SheetVisible, ActiveSheetIndex: Integer;
   ControlName: string;
   CurrentControl: TControl;
   TabPageStreamEndFlag: Integer;
 begin
   Stream.Write(FVersion, SizeOf(FVersion));
-  Count := Count;
+  ACount := Count;
 
-  Stream.Write(Count, SizeOf(Count));
-  for I := 0 to Count - 1 do
+  Stream.Write(ACount, SizeOf(ACount));
+  for I := ACount - 1 downto 0 do
   begin
-    CurrentControl := Pages[I].Controls[0];
-    ControlName := CurrentControl.Name;
-    NameLen := Length(ControlName);
+    if Pages[I].ControlCount > 0 then
+    begin
+      CurrentControl := Pages[I].Controls[0];
+      ControlName := CurrentControl.Name;
+      NameLen := Length(ControlName);
 
-    Stream.Write(NameLen, SizeOf(NameLen));
+      Stream.Write(NameLen, SizeOf(NameLen));
 
-    if NameLen > 0 then Stream.Write(Pointer(ControlName)^, NameLen);
-    SheetVisible := 0;
-    if (Self is TJvDockVSNETTabPageControl) and (ParentForm.HostDockSite is TJvDockPanel) then
-      SheetVisible := Integer(TJvDockVSNETTabSheet(Pages[I]).OldVisible)
-    else
-      SheetVisible := SheetVisible + Integer(CurrentControl.Visible);
+      if NameLen > 0 then Stream.Write(Pointer(ControlName)^, NameLen);
+      SheetVisible := 0;
+      if (Self is TJvDockVSNETTabPageControl) and (ParentForm.HostDockSite is TJvDockPanel) then
+        SheetVisible := Integer(TJvDockVSNETTabSheet(Pages[I]).OldVisible)
+      else
+        SheetVisible := SheetVisible + Integer(CurrentControl.Visible);
 
-    Stream.Write(SheetVisible, SizeOf(SheetVisible));
+      Stream.Write(SheetVisible, SizeOf(SheetVisible));
+    end;
   end;
   ActiveSheetIndex := ActivePageIndex;
 
@@ -4077,8 +4069,7 @@ begin
           SetDockSite(TWinControl(Source.Control), False);
           Host.Visible := True;
         end
-        else
-        if DockType <> alNone then
+        else if DockType <> alNone then
         begin
           Host := CreateConjoinHostAndDockControl(ParentForm, Source.Control, DockType);
           SetDockSite(ParentForm, False);
@@ -4355,8 +4346,7 @@ procedure TJvDockBasicStyle.ResetCursor(Source: TJvDockDragDockObject);
 begin
   if (Source.TargetControl = nil) and (Source.Control <> nil) and (Source.Control.Floating) then
     Windows.SetCursor(Screen.Cursors[crDefault])
-  else
-  if (Source.TargetControl = nil) and (not JvGlobalDockClient.CanFloat) then
+  else if (Source.TargetControl = nil) and (not JvGlobalDockClient.CanFloat) then
     Windows.SetCursor(Screen.Cursors[crNo])
   else
     Windows.SetCursor(Screen.Cursors[crDefault]);
@@ -4721,8 +4711,7 @@ begin
       ADockServer := TJvDockServer(DockStyle.DockBaseControlLists[I]);
       ResetDockServerOption(ADockServer);
     end
-    else
-    if DockStyle.DockBaseControlLists[I] is TJvDockClient then
+    else if DockStyle.DockBaseControlLists[I] is TJvDockClient then
     begin
       ADockClient := TJvDockClient(DockStyle.DockBaseControlLists[I]);
       if ADockClient.ParentForm.HostDockSite is TJvDockConjoinPanel then
@@ -4741,16 +4730,16 @@ end;
 
 procedure TJvDockBasicConjoinServerOption.ResetDockServerOption(ADockServer: TJvDockServer);
 var
-  I: Integer;
+  I: TAlign;
 begin
   if ADockServer = nil then
     Exit;
-  for I := 0 to 3 do
+  for I := alTop to alRight do
   begin
-    if ADockServer.DockPanel[I] = nil then
+    if ADockServer.DockPanelWithAlign[I] = nil then
       Break;
-    ResetDockPanel(ADockServer.DockPanel[I]);
-    ADockServer.DockPanel[I].Invalidate;
+    ResetDockPanel(ADockServer.DockPanelWithAlign[I]);
+    ADockServer.DockPanelWithAlign[I].Invalidate;
   end;
 end;
 

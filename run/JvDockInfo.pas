@@ -382,7 +382,8 @@ end;
 
 procedure TJvDockInfoTree.CreateZoneAndAddInfoFromApp(Control: TControl);
 var
-  I: Integer;
+  I: TAlign;
+  J:integer;
   TreeZone: TJvDockInfoZone;
   DockBaseControl: TJvDockBaseControl;
   TmpDockPanel: TJvDockPanel;
@@ -422,19 +423,19 @@ begin
       begin
         if Control is TJvDockableForm then
           with TJvDockableForm(Control).DockableControl do
-            for I := 0 to DockClientCount - 1 do
+            for J := 0 to DockClientCount - 1 do
             begin
               CurrTreeZone := TreeZone;
-              CreateZoneAndAddInfoFromApp(DockClients[I]);
+              CreateZoneAndAddInfoFromApp(DockClients[J]);
               CurrTreeZone := TreeZone.GetParentZone;
             end;
       end
       else
       begin
-        for I := 0 to 3 do
+        for I := alTop to alRight do
         begin
           CurrTreeZone := TreeZone;
-          TmpDockPanel := TJvDockServer(DockBaseControl).DockPanel[I];
+          TmpDockPanel := TJvDockServer(DockBaseControl).DockPanelWithAlign[I];
           CreateZoneAndAddInfoFromApp(TmpDockPanel);
           if TmpDockPanel is TJvDockVSNETPanel then
             CreateZoneAndAddInfoFromApp(TJvDockVSNETPanel(TmpDockPanel).VSChannel.VSPopupPanel);
@@ -448,18 +449,18 @@ begin
       DockFormStyle := dsDockPanel;
       if Control is TJvDockVSPopupPanel then
         with TJvDockVSPopupPanel(Control) do
-          for I := 0 to DockClientCount - 1 do
+          for J := 0 to DockClientCount - 1 do
           begin
             CurrTreeZone := TreeZone;
-            CreateZoneAndAddInfoFromApp(TWinControl(DockClients[I]));
+            CreateZoneAndAddInfoFromApp(TWinControl(DockClients[J]));
             CurrTreeZone := TreeZone.GetParentZone;
           end
       else
         with TJvDockPanel(Control) do
-          for I := 0 to DockClientCount - 1 do
+          for J := 0 to DockClientCount - 1 do
           begin
             CurrTreeZone := TreeZone;
-            CreateZoneAndAddInfoFromApp(TWinControl(DockClients[I]));
+            CreateZoneAndAddInfoFromApp(TWinControl(DockClients[J]));
             CurrTreeZone := TreeZone.GetParentZone;
           end;
     end;
