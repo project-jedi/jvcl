@@ -1,3 +1,0 @@
-<%
-  ResizeImage("value,100,60");
-%>

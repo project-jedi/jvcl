@@ -1,8 +1,0 @@
-[Directories]
-OutputDir=..\..\..\Bin
-UnitOutputDir=..\..\..\Dcu
-SearchPath=..\..\..\source;..\..\..\resources
-
-Packages=rtl;rai6;MyLabelPackage
-UsePackages=1
-

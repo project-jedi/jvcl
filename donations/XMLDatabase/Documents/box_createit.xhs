@@ -1,4 +1,0 @@
-<%
-  Request("INSERT INTO boxes.xml(BoxId, BoxPeremption, BoxName, BoxStatus) VALUES(NULL, '$peremption', '$name', $status)");
-  Redirect("box.xhs?id=$lastid");
-%>
