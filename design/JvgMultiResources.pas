@@ -70,16 +70,7 @@ type
 implementation
 
 uses
-  StdCtrls, Contnrs; //, JvgMultiResourceEditor;
-
-type
-  {$IFDEF COMPILER6_UP}
-  TDesigner = DesignIntf.IDesigner;
-  TFormDesigner = DesignIntf.IDesigner;
-  {$ELSE}
-  TDesigner = IDesigner;
-  TFormDesigner = IFormDesigner;
-  {$ENDIF}
+  StdCtrls, Contnrs; //, JvgMultiResourceEditor, JvDsgnTypes;
 
 constructor TJvgMultipleResources.Create(AOwner: TComponent);
 var
@@ -243,7 +234,7 @@ begin
   SLNames := TStringList.Create;
   SLValues := TStringList.Create;
   //  CompList := TComponentList.Create;
-  //  FormDesigner := TFormDesigner.Create;
+  //  FormDesigner := IJvFormDesigner.Create;
   if (Component is TLabel) or (Component is TListBox) then
     CompList.Add(Component);
 

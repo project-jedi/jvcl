@@ -37,7 +37,7 @@ uses
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvOutlookBar;
 
 type
@@ -617,7 +617,7 @@ begin
     TJvOutlookbarButton(Node2.Data).Index := I;
   end
   else
-    if TObject(Node1.Data) is TJvOutlookbarPage then
+  if TObject(Node1.Data) is TJvOutlookbarPage then
   begin
     I := TJvOutlookbarPage(Node1.Data).Index;
     TJvOutlookbarPage(Node1.Data).Index := TJvOutlookbarPage(Node2.Data).Index;

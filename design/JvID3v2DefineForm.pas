@@ -37,7 +37,7 @@ uses
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvID3v2Base, JvID3v2Types, JvComponent;
 
 type
@@ -97,9 +97,9 @@ begin
     for FrameID := Low(TJvID3FrameID) to High(TJvID3FrameID) do
       if Controller.CanAddFrame(FrameID) then
         Strings.AddObject(
-          Format('%s - %s', [
-            ID3_FrameIDToString(FrameID), TFSDesigner(FSDesigner).FrameDescription[FrameID]]),
-            TObject(FrameID));
+          Format('%s - %s',
+            [ID3_FrameIDToString(FrameID), TFSDesigner(FSDesigner).FrameDescription[FrameID]]),
+          TObject(FrameID));
   finally
     Strings.EndUpdate;
   end;

@@ -37,7 +37,7 @@ uses
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvDsgnEditors, JvOutlookBar;
 
 type
@@ -237,7 +237,7 @@ begin
       begin
         SetOrdValue(I);
         Modified;
-        Exit;
+        Break;
       end;
   end
   else

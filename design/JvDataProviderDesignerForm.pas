@@ -41,12 +41,9 @@ uses
   {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvDataProvider, JvDataProviderItemDesign, JvDataProviderImpl,
   JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
-  JvStdToolbarDsgnFrame, JvProviderToolbarFrame;
+  JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDsgnTypes;
 
 type
-  {$IFDEF COMPILER6_UP}
-  IFormDesigner = IDesigner;
-  {$ENDIF COMPILER6_UP}
   TfrmDataProviderDesigner = class(TJvBaseDesign)
     pmProviderEditor: TPopupMenu;
     miAddItem: TMenuItem;
@@ -64,7 +61,7 @@ type
     procedure cbContextsChange(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   private
-    FDesigner: IFormDesigner;
+    FDesigner: IJvFormDesigner;
   protected
     FOrgSelect: IDesignerSelections;
     FPropView: TJvDataProviderItem;
@@ -78,7 +75,7 @@ type
     function InternalProvider: IJvDataProvider;
     function GetProvider: IJvDataProvider; virtual;
     procedure SetProvider(Value: IJvDataProvider); virtual;
-    procedure SetDesigner(Value: IFormDesigner);
+    procedure SetDesigner(Value: IJvFormDesigner);
     procedure Loaded; override;
     function DesignerFormName: string; override;
     function AutoStoreSettings: Boolean; override;
@@ -86,11 +83,11 @@ type
     PropName: string;
     destructor Destroy; override;
     property Provider: IJvDataProvider read GetProvider write SetProvider;
-    property Designer: IFormDesigner read FDesigner write SetDesigner;
+    property Designer: IJvFormDesigner read FDesigner write SetDesigner;
   end;
 
 procedure DesignProvider(AProvider: IJvDataProvider;
-  ADesigner: IFormDesigner; PropName: string);
+  ADesigner: IJvFormDesigner; PropName: string);
 
 implementation
 
@@ -110,7 +107,7 @@ begin
 end;
 
 procedure DesignProvider(AProvider: IJvDataProvider;
-  ADesigner: IFormDesigner; PropName: string);
+  ADesigner: IJvFormDesigner; PropName: string);
 var
   Form: TfrmDataProviderDesigner;
 begin
@@ -320,7 +317,7 @@ begin
   UpdateSelectedItem(Self);
 end;
 
-procedure TfrmDataProviderDesigner.SetDesigner(Value: IFormDesigner);
+procedure TfrmDataProviderDesigner.SetDesigner(Value: IJvFormDesigner);
 begin
   if Value <> FDesigner then
   begin

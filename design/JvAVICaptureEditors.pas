@@ -38,7 +38,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvAVICapture;
+  JvAVICapture, JvDsgnTypes;
 
 type
   TJvDriverIndexEditor = class(TIntegerProperty)
@@ -46,7 +46,7 @@ type
     FDrivers: TStringList;
     procedure EnumDrivers;
   public
-    constructor Create(const ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF}; APropCount: Integer);
+    constructor Create(const ADesigner: IJvFormDesigner; APropCount: Integer);
       override;
     destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -74,7 +74,7 @@ const
 
 //=== TJvDriverIndexEditor ===================================================
 
-constructor TJvDriverIndexEditor.Create(const ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF};
+constructor TJvDriverIndexEditor.Create(const ADesigner: IJvFormDesigner;
   APropCount: Integer);
 begin
   inherited Create(ADesigner, APropCount);

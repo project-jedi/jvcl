@@ -40,7 +40,8 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDataProviderDesignerForm, Menus, ActnList,
   JvProviderTreeListFrame, JvBaseDsgnFrame, JvBaseDsgnToolbarFrame,
-  JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDataProvider;
+  JvStdToolbarDsgnFrame, JvProviderToolbarFrame, JvDataProvider,
+  JvDsgnTypes;
 
 type
   TfrmJvDataContextManager = class(TfrmDataProviderDesigner)
@@ -54,7 +55,7 @@ type
   end;
 
 procedure ManageProviderContexts(AProvider: IJvDataProvider;
-  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF}; PropName: string);
+  ADesigner: IJvFormDesigner; PropName: string);
 
 
 implementation
@@ -74,7 +75,7 @@ begin
 end;
 
 procedure ManageProviderContexts(AProvider: IJvDataProvider;
-  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF}; PropName: string);
+  ADesigner: IJvFormDesigner; PropName: string);
 var
   Form: TfrmJvDataContextManager;
 begin

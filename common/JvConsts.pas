@@ -336,6 +336,7 @@ resourcestring
   SPalettePrintPreview = 'Jv Print Preview';
   SPaletteTimeFramework = 'Jv TimeFrameWork';
   SPaletteUIB = 'Jv UIB';
+  SPaletteInterpreter = 'Jv Interpreter';
   SPaletteGlobusComponents1 = 'JVCL Globus Components 1';
   SPaletteGlobusComponents2 = 'JVCL Globus Components 2';
 

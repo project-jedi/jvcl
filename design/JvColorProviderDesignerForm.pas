@@ -41,12 +41,9 @@ uses
   {$ENDIF COMPILER6_UP}
   JvBaseDsgnForm, JvProviderTreeListFrame, JvComponent,
   JvDataProvider, JvDataProviderImpl, JvContextProvider,
-  JvProviderTreeListDsgnFrame, JvColorProvider;
+  JvProviderTreeListDsgnFrame, JvColorProvider, JvDsgnTypes;
 
 type
-  {$IFDEF COMPILER6_UP}
-  IFormDesigner = IDesigner;
-  {$ENDIF COMPILER6_UP}
   TfrmJvColorProviderDesigner = class(TJvBaseDesign)
     lblColors: TLabel;
     lblMappings: TLabel;
@@ -59,14 +56,14 @@ type
     dpColorMapping: TJvColorMappingProvider;
     procedure btnOKClick(Sender: TObject);
   private
-    FDesigner: IFormDesigner;
+    FDesigner: IJvFormDesigner;
     FDesignConsumer: TJvDataConsumer;
     FMappingConsumer: TJvDataConsumer;
     FCtxConsumer: TJvDataConsumer;
     FNewCtxResult: Integer;
     function GetProvider: IJvDataProvider;
     procedure SetProvider(Value: IJvDataProvider);
-    procedure SetDesigner(Value: IFormDesigner);
+    procedure SetDesigner(Value: IJvFormDesigner);
   protected
     function DesignConsumer: TJvDataConsumer;
     function MappingConsumer: TJvDataConsumer;
@@ -79,10 +76,10 @@ type
     destructor Destroy; override;
     procedure BeforeDestruction; override;
     property Provider: IJvDataProvider read GetProvider write SetProvider;
-    property Designer: IFormDesigner read FDesigner write SetDesigner;
+    property Designer: IJvFormDesigner read FDesigner write SetDesigner;
   end;
 
-procedure DesignColorProvider(AProvider: IJvDataProvider; ADesigner: IFormDesigner);
+procedure DesignColorProvider(AProvider: IJvDataProvider; ADesigner: IJvFormDesigner);
 
 implementation
 
@@ -100,7 +97,7 @@ begin
         (Pointer(Designer) = Args[1].VInterface);
 end;
 
-procedure DesignColorProvider(AProvider: IJvDataProvider; ADesigner: IFormDesigner);
+procedure DesignColorProvider(AProvider: IJvDataProvider; ADesigner: IJvFormDesigner);
 var
   Form: TfrmJvColorProviderDesigner;
 begin
@@ -192,7 +189,7 @@ begin
   end;
 end;
 
-procedure TfrmJvColorProviderDesigner.SetDesigner(Value: IFormDesigner);
+procedure TfrmJvColorProviderDesigner.SetDesigner(Value: IJvFormDesigner);
 begin
   if Value <> FDesigner then
   begin

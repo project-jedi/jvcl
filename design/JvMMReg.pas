@@ -1,3 +1,29 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvMMReg.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe.
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 
 unit JvMMReg;
@@ -7,7 +33,7 @@ interface
 procedure Register;
 
 implementation
-{.$DEFINE USE_JV_GIF}
+
 uses
   Classes, Graphics, ExtCtrls,
   {$IFDEF COMPILER6_UP}
@@ -17,32 +43,27 @@ uses
   {$ENDIF COMPILER6_UP}
   JvConsts, JvAni, JvAnimate, JvBmpAnimator, JvPicClip, JvIconList,
   JvEasterEgg, JvGradient, JvGradientHeaderPanel, JvId3v1, JvId3v2,
-  JvImageRotate, JvImageTransform, JvImageWindow, JvPcx,
-  JvStarfield, JvWaitingGradient, JvWaitingProgress, JvWavePlayer,
-  JvSpecialProgress, JvSlider, {$IFDEF USE_JV_GIF} JvGIF, JvGIFCtrl, {$ENDIF} JvID3v2Base, JvAnimatedImage,
-  JvSpecialImage, JvAVICapture, JvPictureEditors,
-
-  JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm, JvAVICaptureEditors;
+  JvImageRotate, JvImageTransform, JvImageWindow, JvPcx, JvStarfield,
+  JvWaitingGradient, JvWaitingProgress, JvWavePlayer, JvSpecialProgress,
+  {$IFDEF USE_JV_GIF}
+  JvGIF, JvGIFCtrl,
+  {$ENDIF USE_JV_GIF}
+  JvSlider, JvID3v2Base, JvAnimatedImage, JvSpecialImage, JvAVICapture,
+  JvPictureEditors, JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm,
+  JvIconListForm, JvAVICaptureEditors;
 
 {$R ..\resources\JvMMReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteImageAnimator,[
-    TJvAnimate, TJvBmpAnimator, TJvPicClip,
-    TJvImageRotate, TJvImageTransform, TJvImageWindow, TJvImageSquare,
-    TJvStarfield, {$IFDEF USE_JV_GIF}TJvGIFAnimator, {$ENDIF} TJvAnimatedImage,
-    TJvSpecialImage, TJvAVICapture
-    ]);
-  RegisterComponents(SPaletteBarPanel,[
-    TJvGradientHeaderPanel, TJvGradient, TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress
-    ]);
-  RegisterComponents(SPaletteNonVisual,[
-    TJvID3v1, TJvID3v2, TJvWavePlayer
-    ]);
-  RegisterComponents(SPaletteSliderSplitter,[
-    TJvSlider
-    ]);
+  RegisterComponents(SPaletteImageAnimator, [TJvAnimate, TJvBmpAnimator,
+    TJvPicClip, TJvImageRotate, TJvImageTransform, TJvImageWindow,
+    TJvImageSquare, TJvStarfield, {$IFDEF USE_JV_GIF} TJvGIFAnimator, {$ENDIF}
+    TJvAnimatedImage, TJvSpecialImage, TJvAVICapture]);
+  RegisterComponents(SPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
+    TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress]);
+  RegisterComponents(SPaletteNonVisual, [TJvID3v1, TJvID3v2, TJvWavePlayer]);
+  RegisterComponents(SPaletteSliderSplitter, [TJvSlider]);
 
   RegisterPropertyEditor(TypeInfo(TJvIconList), nil, '', TIconListProperty);
   RegisterPropertyEditor(TypeInfo(TJvDriverIndex), nil, '', TJvDriverIndexEditor);
@@ -57,11 +78,11 @@ begin
   RegisterPropertyEditor(TypeInfo(TPicture), nil, '', TJvPictProperty);
   RegisterPropertyEditor(TypeInfo(TGraphic), nil, '', TJvGraphicPropertyEditor);
   RegisterComponentEditor(TImage, TJvGraphicsEditor);
-  {$ENDIF}
+  {$ENDIF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
 
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
-  {$ENDIF}
+  {$ENDIF USE_JV_GIF}
 
 end;
 

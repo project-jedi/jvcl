@@ -47,10 +47,13 @@ object JvProxyEditor: TJvProxyEditor
     Left = 409
     Top = 0
     Width = 97
-    Height = 304
+    Height = 301
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      97
+      301)
     object CloseBtn: TButton
       Left = 11
       Top = 12
@@ -76,7 +79,7 @@ object JvProxyEditor: TJvProxyEditor
     Left = 0
     Top = 0
     Width = 409
-    Height = 304
+    Height = 301
     Align = alClient
     ColCount = 2
     Ctl3D = True

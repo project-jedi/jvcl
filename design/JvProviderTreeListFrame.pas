@@ -38,6 +38,7 @@ uses
 
 type
   TGetVirtualRootEvent = procedure(Sender: TObject; var AVirtualRoot: IJvDataItem) of object;
+
   TMasterConsumer = class(TJvDataConsumer)
   private
     FSlave: TJvDataConsumer;
@@ -71,14 +72,12 @@ type
     procedure lvProviderSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
   private
-    { Private declarations }
     FConsumerSvc: TMasterConsumer;
     FOnGetVirtualRoot: TGetVirtualRootEvent;
     FOnItemSelect: TNotifyEvent;
     FUseVirtualRoot: Boolean;
     FLastSelectIdx: Integer;
   protected
-    { Protected declarations }
     FVirtualRoot: IJvDataItem;
     function DoGetVirtualRoot: IJvDataItem;
     procedure DoItemSelect;
@@ -92,7 +91,6 @@ type
     procedure GenerateVirtualRoot; dynamic;
     property LastSelectIdx: Integer read FLastSelectIdx write FLastSelectIdx;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetDataItem(Index: Integer): IJvDataItem; virtual;
@@ -109,7 +107,7 @@ type
 implementation
 
 uses
-  Commctrl,
+  CommCtrl,
   JvDsgnConsts, JvConsts;
 
 {$R *.DFM}
@@ -129,12 +127,26 @@ begin
     Result := -1;
 end;
 
+{ (rom) see SysUtils
 function IsEqualGUID(const IID1, IID2: TGUID): Boolean;
 begin
   Result := CompareMem(@IID1, @IID2, SizeOf(IID1));
 end;
+}
 
-//===TMasterConsumer================================================================================
+//=== TMasterConsumer ========================================================
+
+constructor TMasterConsumer.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner, [DPA_ConsumerDisplaysList, DPA_RenderDisabledAsGrayed]);
+  BeforeCreateSubSvc := LimitSubServices;
+end;
+
+destructor TMasterConsumer.Destroy;
+begin
+  Slave := nil;
+  inherited Destroy;
+end;
 
 procedure TMasterConsumer.SetSlave(Value: TJvDataConsumer);
 var
@@ -172,8 +184,8 @@ procedure TMasterConsumer.LimitSubServices(Sender: TJvDataConsumer;
   var SubSvcClass: TJvDataConsumerAggregatedObjectClass);
 begin
   if (Slave <> nil) and not SubSvcClass.InheritsFrom(TJvDataConsumerContext) and
-      not SubSvcClass.InheritsFrom(TJvDataConsumerItemSelect) and
-      not SubSvcClass.InheritsFrom(TJvCustomDataConsumerViewList) then
+    not SubSvcClass.InheritsFrom(TJvDataConsumerItemSelect) and
+    not SubSvcClass.InheritsFrom(TJvCustomDataConsumerViewList) then
     SubSvcClass := nil;
 end;
 
@@ -183,18 +195,6 @@ begin
   if Reason = ccrViewChanged then
     ViewChanged(nil);
   Changed(Reason);
-end;
-
-constructor TMasterConsumer.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner, [DPA_ConsumerDisplaysList, DPA_RenderDisabledAsGrayed]);
-  BeforeCreateSubSvc := LimitSubServices;
-end;
-
-destructor TMasterConsumer.Destroy;
-begin
-  Slave := nil;
-  inherited Destroy;
 end;
 
 function TMasterConsumer.ProviderIntf: IJvDataProvider;
@@ -236,19 +236,32 @@ begin
     Result := Slave.GetInterface(IID, Obj);
 end;
 
-//===TfmeJvProviderTreeList=========================================================================
+//=== TfmeJvProviderTreeList =================================================
+
+constructor TfmeJvProviderTreeList.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FConsumerSvc := TMasterConsumer.Create(Self);
+  FConsumerSvc.OnChanged := ConsumerChanged;
+end;
+
+destructor TfmeJvProviderTreeList.Destroy;
+begin
+  FreeAndNil(FConsumerSvc);
+  inherited Destroy;
+end;
 
 function TfmeJvProviderTreeList.DoGetVirtualRoot: IJvDataItem;
 begin
   Result := nil;
-  if @FOnGetVirtualRoot <> nil then
-    OnGetVirtualRoot(Self, Result);
+  if Assigned(FOnGetVirtualRoot) then
+    FOnGetVirtualRoot(Self, Result);
 end;
 
 procedure TfmeJvProviderTreeList.DoItemSelect;
 begin
-  if @FonItemSelect <> nil then
-    OnItemSelect(Self);
+  if Assigned(FOnItemSelect) then
+    FOnItemSelect(Self);
 end;
 
 procedure TfmeJvProviderTreeList.SetUseVirtualRoot(Value: Boolean);
@@ -315,19 +328,6 @@ end;
 procedure TfmeJvProviderTreeList.GenerateVirtualRoot;
 begin
   FVirtualRoot := DoGetVirtualRoot;
-end;
-
-constructor TfmeJvProviderTreeList.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FConsumerSvc := TMasterConsumer.Create(Self);
-  FConsumerSvc.OnChanged := ConsumerChanged;
-end;
-
-destructor TfmeJvProviderTreeList.Destroy;
-begin
-  FreeAndNil(FConsumerSvc);
-  inherited Destroy;
 end;
 
 function TfmeJvProviderTreeList.GetDataItem(Index: Integer): IJvDataItem;

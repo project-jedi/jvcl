@@ -39,7 +39,8 @@ uses
   {$ELSE}
   DesignIntf, DesignEditors,
   {$ENDIF COMPILER6_UP}
-  JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProvider, JvDataProviderImpl;
+  JvBaseDsgnForm, JvProviderTreeListFrame, JvDataProvider, JvDataProviderImpl,
+  JvDsgnTypes;
 
 type
   TfrmJvDataConsumerItemSelect = class(TJvBaseDesign)
@@ -53,11 +54,11 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
     FConsumer: TJvDataConsumer;
-    FDesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF};
+    FDesigner: IJvFormDesigner;
   protected
     function GetConsumer: TJvDataConsumer;
     procedure SetConsumer(Value: TJvDataConsumer);
-    procedure SetDesigner(Value: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF});
+    procedure SetDesigner(Value: IJvFormDesigner);
     procedure SelectionChanged(Sender: TObject);
     procedure UpdateViewList;
     procedure UpdateConsumerSvc;
@@ -67,11 +68,11 @@ type
     function AutoStoreSettings: Boolean; override;
   public
     property Consumer: TJvDataConsumer read GetConsumer write SetConsumer;
-    property Designer: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF} read FDesigner write SetDesigner;
+    property Designer: IJvFormDesigner read FDesigner write SetDesigner;
   end;
 
 procedure DataConsumerSelectItem(AConsumer: TJvDataConsumer;
-  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF});
+  ADesigner: IJvFormDesigner);
 
 implementation
 
@@ -89,7 +90,7 @@ begin
 end;
 
 procedure DataConsumerSelectItem(AConsumer: TJvDataConsumer;
-  ADesigner: {$IFDEF COMPILER6_UP} IDesigner {$ELSE} IFormDesigner {$ENDIF});
+  ADesigner: IJvFormDesigner);
 var
   Form: TfrmJvDataConsumerItemSelect;
 begin
@@ -140,7 +141,7 @@ begin
   end;
 end;
 
-procedure TfrmJvDataConsumerItemSelect.SetDesigner(Value: {$IFDEF COMPILER6_UP}IDesigner{$ELSE}IFormDesigner{$ENDIF});
+procedure TfrmJvDataConsumerItemSelect.SetDesigner(Value: IJvFormDesigner);
 begin
   if Value <> FDesigner then
     FDesigner := Value;

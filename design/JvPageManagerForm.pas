@@ -30,14 +30,13 @@ unit JvPageManagerForm;
 interface
 
 uses
-  Windows,
-  SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, Grids,
+  StdCtrls, ExtCtrls,
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors, VCLEditors, DesignWindows,
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
-  {$ENDIF}
-  StdCtrls, ExtCtrls,
+  {$ENDIF COMPILER6_UP}
   JvSpeedButton, JvPageManager, JvJVCLUtils, JvComponent;
 
 type
@@ -75,13 +74,13 @@ type
     {$ELSE}
     procedure FormModified; override;
     procedure FormClosed(Form: TCustomForm); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     function GetEditState: TEditState; override;
     {$IFDEF COMPILER6_UP}
     procedure ItemDeleted(const ADesigner: IDesigner; Item: TPersistent); override;
     {$ELSE}
     procedure ComponentDeleted(Component: IPersistent); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property PageManager: TJvPageManager read FPageManager write SetPageManager;
     property OwnerForm: TCustomForm read GetForm;
   end;
@@ -111,21 +110,11 @@ implementation
 
 uses
   Consts, Buttons,
-  JvConsts;
+  JvConsts, JvDsgnTypes;
 
 {$R *.DFM}
 
 {$D-}
-
-{$IFDEF COMPILER6_UP}
-type
-  TDesigner = DesignIntf.IDesigner;
-  TFormDesigner = DesignIntf.IDesigner;
-{$ELSE}
-type
-  TDesigner = IDesigner;
-  TFormDesigner = IFormDesigner;
-{$ENDIF}
 
 function FindEditor(Manager: TJvPageManager): TJvProxyEditor;
 var
@@ -141,7 +130,7 @@ begin
       end;
 end;
 
-procedure ShowProxyEditor(Designer: TDesigner; Manager: TJvPageManager);
+procedure ShowProxyEditor(Designer: IJvDesigner; Manager: TJvPageManager);
 var
   Editor: TJvProxyEditor;
 begin
@@ -158,7 +147,7 @@ begin
   begin
     Editor := TJvProxyEditor.Create(Application);
     try
-      Editor.Designer := TFormDesigner(Designer);
+      Editor.Designer := IJvFormDesigner(Designer);
       Editor.PageManager := Manager;
       Editor.Show;
     except
@@ -202,13 +191,13 @@ begin
   for I := 0 to Designer.Root.ComponentCount - 1 do
   {$ELSE}
   for I := 0 to Designer.Form.ComponentCount - 1 do
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   begin
     {$IFDEF COMPILER6_UP}
     Component := Designer.Root.Components[I];
     {$ELSE}
     Component := Designer.Form.Components[I];
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
 
     if (Component.InheritsFrom(TButtonControl) or
       Component.InheritsFrom(TSpeedButton) or
@@ -304,13 +293,13 @@ end;
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
 {$ELSE}
 procedure TJvProxyEditor.FormClosed(Form: TCustomForm);
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   {$IFDEF COMPILER6_UP}
   if ADesigner.Root = OwnerForm then
   {$ELSE}
   if Form = OwnerForm then
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
     Free;
 end;
 
@@ -318,7 +307,7 @@ end;
 procedure TJvProxyEditor.ItemsModified(const Designer: IDesigner);
 {$ELSE}
 procedure TJvProxyEditor.FormModified;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 begin
   if not (csDestroying in ComponentState) then
     UpdateData;
@@ -334,16 +323,20 @@ procedure TJvProxyEditor.ItemDeleted(const ADesigner: IDesigner; Item: TPersiste
 begin
   if Item = FPageManager then
   begin
+    FPageManager := nil;
+    Close;
+  end;
+end;
 {$ELSE}
 procedure TJvProxyEditor.ComponentDeleted(Component: IPersistent);
 begin
   if ExtractPersistent(Component) = FPageManager then
   begin
-{$ENDIF}
     FPageManager := nil;
     Close;
   end;
 end;
+{$ENDIF COMPILER6_UP}
 
 procedure TJvProxyEditor.UpdateData;
 var
@@ -360,9 +353,7 @@ begin
       SelectProxy(nil);
     end
     else
-    begin
       ProxyGrid.RowCount := 1 + ProxyCount;
-    end;
     DeleteBtn.Enabled := ProxyCount > 0;
     ProxyGrid.Invalidate;
   end;
@@ -374,7 +365,7 @@ begin
   Result := TCustomForm(Designer.Root); { GetParentForm(FBar) }
   {$ELSE}
   Result := Designer.Form; { GetParentForm(FBar) }
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvProxyEditor.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -399,13 +390,13 @@ begin
     (Designer.Root <> nil);
     {$ELSE}
     (Designer.Form <> nil);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
 end;
 
 {$IFDEF COMPILER6_UP}
 type
   TDesignerSelectionList = IDesignerSelections;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvProxyEditor.SelectProxy(Proxy: TJvPageProxy);
 var
@@ -417,7 +408,7 @@ begin
     FComponents := TDesignerSelections.Create;
     {$ELSE}
     FComponents := TDesignerSelectionList.Create;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     if Proxy <> nil then
       FComponents.Add(Proxy)
     else
@@ -490,7 +481,7 @@ begin
     TCustomForm(Designer.Root).Designer.ValidateRename(Proxy, Proxy.Name, '');
     {$ELSE}
     Designer.ValidateRename(Proxy, Proxy.Name, '');
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FDeleting := True;
     try
       Proxy.Free;
