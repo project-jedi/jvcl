@@ -1,0 +1,406 @@
+----------------------------------------------------------------------------------------------------
+@@JvBehaviorLabel.pas
+<GROUP JVCL.FileRef>
+Summary
+  Contains the TJvBehaviorLabel component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Peter Thörnqvist
+----------------------------------------------------------------------------------------------------
+@@GetLabelBehaviorName
+Summary
+  Returns the registered name of BehaviorOptionsClass or an empty string if BehaviorOptionsClass is not registered
+Description
+Parameters
+  BehaviorOptionsClass - 
+See Also
+----------------------------------------------------------------------------------------------------
+@@GetLabelBehaviorOptionsClass
+Summary
+  Returns the class of the behaviour named Name or TJvLabelBehavior if Name not registered
+Description
+Parameters
+  Name - 
+See Also
+----------------------------------------------------------------------------------------------------
+@@GetRegisteredLabelBehaviorOptions
+Summary
+Description
+  Copies the internal TStrings list to Strings where each Strings[] is the name of a
+  registered class and each Objects[] is a pointer to the corresponding class
+Parameters
+  Strings - 
+See Also
+----------------------------------------------------------------------------------------------------
+@@RegisterLabelBehaviorOptions
+Summary
+  Registers a new behaviour.
+  Registers a new TJvLabelBehaviorOptionsClass class for use in LoadFromFile.
+Description
+  Use RegisterFileFormat to register a graphic file format with TPicture so that it can be used with a Open or Save dialog box.
+Parameters
+  Name                 - Specifies the description of the graphic to appear in the drop down list of the dialog box
+  BehaviorOptionsClass - Registers the new graphic class to associate with the file format.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvAppearDirection
+<TITLE TJvAppearDirection type>
+Summary
+  Enumerates different kinds of appear directions.
+Description
+  Use the TJvAppearDirection type to specify a direction from where something must appear.
+@@TJvAppearDirection.drFromLeft
+  Appears from the left.
+@@TJvAppearDirection.drFromRight
+  Appears from the right.
+@@TJvAppearDirection.drFromTop
+  Appears from the top.
+@@TJvAppearDirection.drFromBottom
+  Appears from the bottom.
+----------------------------------------------------------------------------------------------------
+@@TJvBehaviorLabel
+<TITLEIMG TJvBehaviorLabel>
+JVCLInfo
+  GROUP=JVCL.LabelsAndStatic
+  FLAG=Component
+Summary
+  Label with various special effects.
+Description
+  To use a TJvBehaviorLabel label, do the following:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to a specific effect, for example 'Typing'.
+  * Alter the properties of BehaviorOptions to your needs.
+  * Set Active to True at design-time, or set this property at run-time to start the effect.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel
+Summary
+  Base class for the TJvBehaviorLabel component.
+Description
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel.AboutJVCL
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel.Behavior
+Summary
+  Specifies a specific behavior for the label.
+Description
+  Use Behavior to select a specific effect for the label. You can select one of the following:
+  
+  * <LINK TJvLabelBlink,Blinking>: Blinks the text of the label.
+  * <LINK TJvLabelBounce,Bouncing>: Bounces the label over the form.
+  * <LINK TJvLabelScroll,Scrolling>: Scrolls the text of the label.
+  * <LINK TJvLabelTyping,Typing>: Type effect: makes individual letters of the label appear one after each other.
+  * <LINK TJvLabelAppear,Appearing>: Scrolls the label over the form.
+  * <LINK TJvLabelSpecial,Special>: Makes individual letters of the label appear one after each other.
+See Also
+  BehaviorOptions
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel.BehaviorOptions
+Summary
+  Controls the specific behavior (special effect) of the label.
+Description
+  Use the properties of BehaviorOptions to alter the specific behavior of the label. You can specify
+  a specific behavior for the label by setting property Behavior. Different special effect have different
+  options. 
+  
+  For example if you set Behavior to 'Scrolling', you can use BehaviorOptions to alter the interval between
+  scrolling events.
+See Also
+  Behavior
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel.OnCtl3DChanged
+Summary
+  Occurs when the Ctl3D property of the label changes.
+Description
+  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel.OnMouseEnter
+Summary
+  Occurs when the mouse pointer moves over the label.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  label.
+See Also
+  OnMouseLeave
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel.OnMouseLeave
+Summary
+  Occurs when the mouse pointer moves off the label.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  label. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  HotTrack, OnMouseEnter
+----------------------------------------------------------------------------------------------------
+@@TJvCustomBehaviorLabel.OnParentColorChange
+Summary
+  Occurs when the color property for the parent of the label changes.
+Description
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+See Also 
+  OnCtl3DChanged
+----------------------------------------------------------------------------------------------------
+@@TJvLabelAppear
+Summary
+  Enables the label to fly onto the form.
+Description
+  Use TJvLabelAppear to enable a TJvBehaviorLabel to fly onto the form. The label
+  can be set to appear from the top, right, bottom or left side of the screen. The appearing
+  sequence is handled in a background thread which makes it possible to have multiple labels
+  appearing at the same time.
+
+  When the label has appeared, the OnAppeared event is called.
+
+  To use TJvLabelAppear capabilities with a TJvBehaviorLabel label, do the following:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Appearing'.
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Use AppearFrom to specify the direction from which the label is to appear.
+  * Set Delay to a interval in milliseconds before the label starts appearing.
+  * Set Interval to a interval in milliseconds between two moves of the label.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelAppear.AppearFrom
+Summary
+  Indicates the direction from which the label is to appear.
+Description
+  AppearFrom indicates the direction from which the label appears on the form. You can specify if
+  the should appear from the left (drFromLeft), the right (drFromRight), the top (drFromTop) or the
+  bottom (drFromBottom) of the form.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelAppear.Delay
+Summary
+  The interval before the label starts appearing.
+Description
+  FirstInterval determines the initial delay (in milliseconds) before the label begins to move into
+  view.
+See Also
+  AutoStart, Interval
+----------------------------------------------------------------------------------------------------
+@@TJvLabelAppear.Interval
+Summary
+  The interval between two moves of the label.
+  Determines the amount of time, in milliseconds, that passes before the label text is scrolled.
+Description
+  Interval indicates the delay (in milliseconds) between two stages of appearing.
+
+  Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
+  the label text scrolls.
+
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  is 50 (1/20 second).
+
+  A 0 value is valid, however the label text will not scroll for a value of 0.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelAppear.Pixels
+Summary
+  Number of pixels to move.
+Description
+  Pixels indicates the number of pixels to move every interval.
+See Also
+  Interval
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBehavior
+Summary
+  Base class.
+Description
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBehavior.Active
+Summary
+  Indicates whether the specific behavior of the label is active.
+Description
+  Set Active to true to start the specific effect. Set Active to false to interrupt the specific effect.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBehavior.OwnerLabel
+Summary
+Description
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBehaviorName
+<TITLE TJvLabelBehaviorName type>
+Summary
+  TJvLabelBehaviorName is a string that represents a special effect for a label.
+Description
+  Use TJvLabelBehaviorName to represent strings that are only used for special effects for labels.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBehaviorOptionsClass
+Summary
+Description
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBlink
+Summary
+  Enables the label to blink.
+Description
+  TJvLabelBlink enables a TJvBehaviorLabel to blink.
+  
+  To use TJvLabelBlink capabilities with a TJvBehaviorLabel label, do the following:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Blinking'.
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Set Active to True to to let the label blink.
+  * Set the property Delay (in milliseconds) to determine the time the label is invisible
+    during blinking.
+  * Set the property Interval (in milliseconds) to determine the time the label is visible
+    during blinking.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBlink.Delay
+Summary
+  Determines the time the label is invisible during blinking.
+Description
+  Set BlinkingDelay to the time (in milliseconds) the label should be invisible during blinking.
+See Also
+  Active, Interval
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBlink.Interval
+Summary
+  Determines the time the label is visible during blinking.
+  Determines the amount of time, in milliseconds, that passes before the label text is scrolled.
+Description
+  Set BlinkingTime to the time (in milliseconds) the label should be visible during blinking.
+
+  Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
+  the label text scrolls.
+
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  is 50 (1/20 second).
+
+  A 0 value is valid, however the label text will not scroll for a value of 0.
+See Also
+  Active, Delay
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBounce
+Summary
+  Enables the label to bounce.
+Summary
+  Enables the label to bounce on the form.
+Description
+  TJvLabelBounce enables a TJvBehaviorLabel to bounce on the form.
+  
+  To use TJvLabelBounce capabilities with a TJvBehaviorLabel label, do the following:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Bouncing'.
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Use Interval to specify the amount of time in milliseconds between scroll events.
+  * Use Direction to change the default scroll direction.
+  * Set Active to True at design-time, or set this property at run-time to start the bouncing.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBounce.Interval
+Summary
+Description
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvLabelBounce.Pixels
+Summary
+Description
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvLabelScroll
+Summary
+  Enables the label to scroll it's text.
+Description
+  TJvLabelScroll enables a TJvBehaviorLabel to scroll it's text.
+  
+  To use TJvLabelScroll capabilities with a TJvBehaviorLabel label, do the following:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Scrolling'.
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Specify the scroll text by setting the property Text.
+  * Use Interval to specify the amount of time in milliseconds between scroll events.
+  * Use Direction to change the default scroll direction.
+  * Set Active to True at design-time, or set this property at run-time to start the scrolling.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelScroll.Direction
+Summary
+  Indicates the scroll direction for the text.
+Description
+  Set Direction to indicate the scroll direction for the text. The direction can be: left to right
+  or right to left.
+  
+  The default value of Direction is sdLeftToRight.
+See Also
+  TJvLabelBehavior.Active, Interval
+----------------------------------------------------------------------------------------------------
+@@TJvLabelScroll.Interval
+Summary
+  Determines the amount of time, in milliseconds, that passes before the label text is scrolled.
+Description
+  Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
+  the label text scrolls.
+
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  is 50 (1/20 second).
+
+  A 0 value is valid, however the label text will not scroll for a value of 0.
+See Also
+  Direction, TJvLabelBehavior.Active
+----------------------------------------------------------------------------------------------------
+@@TJvLabelScrollDirection
+<TITLE TJvLabelScrollDirection type>
+Summary
+  Enumerates different kinds of horizontal scroll directions.
+Description
+  Use the TJvLabelScrollDirection type to specify a horizontal scroll direction.
+@@TJvLabelScrollDirection.sdLeftToRight
+  Scrolls from left to right. 
+@@TJvLabelScrollDirection.sdRightToLeft
+  Scrolls from right to left.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelSpecial
+Summary
+  Enables the label to displays a small animation for each letter.
+Description
+  Use TJvLabelSpecial to show a label that displays a small animation for each letter. Initially the
+  label is empty, then the first letter changes until it is set to the correct letter; then the second
+  letter changes, and so on, until the last letter from the caption is set, and the label text is 
+  equal to the \string specified by Text. 
+  
+  To use TJvLabelSpecial capabilities with a TJvBehaviorLabel label, do the following:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Special'.
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Set property Text at runtime to start the animation. 
+  * Use Interval to specify the interval between animation events.
+  * Set Active to True at design-time, or set this property at run-time to start the effect.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelSpecial.Interval
+Summary
+  Determines the amount of time, in milliseconds, that passes between animation events.
+Description
+  SleepTime determines how frequently the animation event occurs. Each time the specified interval 
+  passes, the last letter of the visible text is changed in the caption.
+
+  Use SleepTime to specify any cardinal value as the interval between animation events. The default 
+  value is 20 (1/50 second).
+----------------------------------------------------------------------------------------------------
+@@TJvLabelTyping
+Summary
+  Enables the label to ...
+Description
+  TJvLabelTyping enables a TJvBehaviorLabel to ...
+  
+  To use TJvLabelTyping capabilities with a TJvBehaviorLabel label, do the following:
+  * Drop a TJvBehaviorLabel on a form.
+  * Set <LINK TJvCustomBehaviorLabel.Behavior,Behavior> to 'Typing'.
+  Do the following with the properties of property <LINK TJvCustomBehaviorLabel.BehaviorOptions,BehaviorOptions>:
+  * Specify the scroll text by setting the property Text.
+  * Use Interval to specify the amount of time in milliseconds between scroll events.
+  * Use Direction to change the default scroll direction.
+  * Set Active to True at design-time, or set this property at run-time to start the effect.
+----------------------------------------------------------------------------------------------------
+@@TJvLabelTyping.Interval
+Summary
+  Determines the amount of time, in milliseconds, that passes before the label text is scrolled.
+Description
+  Interval determines how frequently the scroll event occurs. Each time the specified interval passes,
+  the label text scrolls.
+
+  Use Interval to specify any cardinal value as the interval between scroll events. The default value 
+  is 50 (1/20 second).
+
+  A 0 value is valid, however the label text will not scroll for a value of 0.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvLabelTyping.MakeErrors
+Summary
+Description
+See Also
