@@ -39,8 +39,8 @@ type
     procedure YetAnotherOption1Click(Sender: TObject);
   private
     { Private declarations }
-    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
-    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+    procedure ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
+    procedure WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
 
   public
     { Public declarations }
@@ -60,13 +60,13 @@ begin
 end;
 
 
-procedure TMainFormDlg.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+procedure TMainFormDlg.ReadFromAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
 begin
   CheckBox1.Checked := AppStorage.ReadBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox1']), CheckBox1.Checked);
   CheckBox2.Checked := AppStorage.ReadBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox2']), CheckBox2.Checked);
 end;
 
-procedure TMainFormDlg.WriteToAppStorage(AppStorage: TJvCustomAppStorage; BasePath: string);
+procedure TMainFormDlg.WriteToAppStorage(AppStorage: TJvCustomAppStorage; const BasePath: string);
 begin
   AppStorage.WriteBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox1']), CheckBox1.Checked);
   AppStorage.WriteBoolean(AppStorage.ConcatPaths([BasePath, 'MyCheckBox2']), CheckBox2.Checked);
