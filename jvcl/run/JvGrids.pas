@@ -94,7 +94,7 @@ type
     FOnEditButtonClick: TNotifyEvent;
     FOnGetPicklist: TPicklistEvent;
     FOnGetEditStyle: TEditStyleEvent;
-    FDrawButtons: boolean;
+    FDrawButtons: Boolean;
     FBeepOnError: Boolean;
     function GetStorage: TJvFormPlacement;
     procedure SetStorage(Value: TJvFormPlacement);
@@ -112,7 +112,7 @@ type
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     {$ENDIF VCL}
-    procedure SetDrawButtons(const Value: boolean);
+    procedure SetDrawButtons(const Value: Boolean);
   protected
     function SelectCell(ACol, ARow: Longint): Boolean; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
@@ -170,7 +170,7 @@ type
   published
     property BeepOnError: Boolean read FBeepOnError write FBeepOnError default True;
     property DefaultRowHeight default 18;
-    property DrawButtons: boolean read FDrawButtons write SetDrawButtons;
+    property DrawButtons: Boolean read FDrawButtons write SetDrawButtons;
     property Options default [goFixedVertLine, goFixedHorzLine, goVertLine,
       goHorzLine, goDrawFocusSelected, goColSizing];
     property IniStorage: TJvFormPlacement read GetStorage write SetStorage;
@@ -540,7 +540,8 @@ begin
     begin
       if FActiveList = nil then
         Flags := DFCS_INACTIVE
-      else if FPressed then
+      else
+      if FPressed then
         Flags := DFCS_FLAT or DFCS_PUSHED;
       DrawFrameControl(DC, R, DFC_SCROLL, Flags or DFCS_SCROLLCOMBOBOX);
     end
@@ -1103,7 +1104,8 @@ begin
         FSwapButtons := True;
         MouseCapture := True;
       end
-      else if Button = mbLeft then
+      else
+      if Button = mbLeft then
       begin
         EnableClick := True;
         CheckFixedCellButton(Cell.X, Cell.Y, EnableClick);
@@ -1183,7 +1185,8 @@ begin
         DoFixedCellClick(ACol, ARow);
     end;
   end
-  else if FSwapButtons then
+  else
+  if FSwapButtons then
   begin
     FSwapButtons := False;
     MouseCapture := False;
@@ -1328,7 +1331,8 @@ begin
       if ((FrameFlags1 and BF_RIGHT) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Right, GridLineWidth)
-      else if ((FrameFlags1 and BF_BOTTOM) = 0) and
+      else
+      if ((FrameFlags1 and BF_BOTTOM) = 0) and
         (goFixedVertLine in Options) then
         Inc(TempRect.Bottom, GridLineWidth);
       DrawEdge(Canvas.Handle, TempRect, EdgeFlag[Down], FrameFlags1);
@@ -1343,11 +1347,13 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvDrawGrid.WMRButtonUp(var Msg: TWMMouse);
 begin
   if not (FGridState in [gsColMoving, gsRowMoving]) then
     inherited
-  else if not (csNoStdEvents in ControlStyle) then
+  else
+  if not (csNoStdEvents in ControlStyle) then
     with Msg do
       MouseUp(mbRight, KeysToShiftState(Keys), XPos, YPos);
 end;
@@ -1374,6 +1380,7 @@ begin
   end;
   inherited;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvDrawGrid.DoKillFocus(FocusedWnd: HWND);
@@ -1446,7 +1453,7 @@ begin
 end;
 {$ENDIF VCL}
 
-procedure TJvDrawGrid.SetDrawButtons(const Value: boolean);
+procedure TJvDrawGrid.SetDrawButtons(const Value: Boolean);
 begin
   if FDrawButtons <> Value then
   begin
@@ -1458,7 +1465,7 @@ end;
 function TJvDrawGrid.SelectCell(ACol, ARow: Integer): Boolean;
 begin
   if DrawButtons then
-    Result := false
+    Result := False
   else
     Result := inherited SelectCell(ACol, ARow);
 end;

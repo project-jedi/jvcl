@@ -38,7 +38,6 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDBEditors, JvBDESecurity;
 
-
 type
   { For TJvDBSecurity component }
   TJvUserTableNameProperty = class(TJvDBStringProperty)
@@ -48,7 +47,6 @@ type
   TLoginNameFieldProperty = class(TJvDBStringProperty)
     procedure GetValueList(List: TStrings); override;
   end;
-
 
 implementation
 

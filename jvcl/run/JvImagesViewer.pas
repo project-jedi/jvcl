@@ -483,7 +483,8 @@ begin
     Canvas.Brush.Color := clHighlight;
     Canvas.Pen.Width := 1;
   end
-  else if (Options.FrameColor <> clNone) and not (cdsHot in State) then
+  else
+  if (Options.FrameColor <> clNone) and not (cdsHot in State) then
   begin
     Canvas.Brush.Color := Options.FrameColor;
     Canvas.FrameRect(ItemRect);

@@ -589,7 +589,8 @@ procedure TJvgCustomGradient.SetSteps(Value: Integer);
 begin
   if Value > 255 then
     Value := 255
-  else if Value < 1 then
+  else
+  if Value < 1 then
     Value := 1;
   if FSteps <> Value then
   begin
@@ -641,7 +642,7 @@ end;
 
 procedure TJvgCustomGradient.TextOut(DC: HDC; Str: string; TextR: TRect; X, Y: Integer);
 var
-  i, Steps: Integer;
+  I, Steps: Integer;
   r: TRect;
   c1F, c2F, c3F: Byte;
   c1T, c2T, c3T: Byte;
@@ -675,18 +676,18 @@ begin
 
   OldTextColor := SetTextColor(DC, 0);
   Steps := MulDiv(Steps, PercentFilling, 100);
-  for i := 0 to Steps do
+  for I := 0 to Steps do
   begin
     SetTextColor(DC, RGB(trunc(c1), trunc(c2), trunc(c3)));
 
     if FOrientation = fgdVertical then
     begin
-      r.Left := i;
+      r.Left := I;
       r.Right := r.Left + 1;
     end
     else
     begin
-      r.Top := i;
+      r.Top := I;
       r.Bottom := r.Top + 1;
     end;
 
@@ -846,7 +847,8 @@ end;
 
 procedure TJvgIllumination.SetShadowDepth(Value: Integer);
 begin
-  if Value < 0 then Value := 0;
+  if Value < 0 then
+    Value := 0;
   if FShadowDepth <> Value then
   begin
     FShadowDepth := Value;
@@ -1414,7 +1416,7 @@ end;
 
 procedure TJvgGradient.Draw(DC: HDC; r: TRect; PenStyle, PenWidth: Integer);
 var
-  i, j, X, Y, x2, y2, h, w, NumberOfColors: Integer;
+  I, J, X, Y, x2, y2, h, w, NumberOfColors: Integer;
   c1F, c2F, c3F: Byte;
   c1T, c2T, c3T: Byte;
   c1D, c2D, c3D: Integer;
@@ -1435,7 +1437,8 @@ var
     FRGBToColor := TempColor;
   end;
 begin
-  if (not Active) or glGlobalData.fSuppressGradient then Exit;
+  if (not Active) or glGlobalData.fSuppressGradient then
+    Exit;
   if (Steps = 1) or (GetDeviceCaps(DC, BITSPIXEL) < 16) then
   begin
     Exit;
@@ -1513,8 +1516,10 @@ begin
     fgdLeftBias, fgdRightBias:
       begin
         NumberOfColors := Min(Steps, w + h);
-        if PenStyle = 0 then PenStyle := PS_SOLID;
-        if PenWidth = 0 then PenWidth := 1;
+        if PenStyle = 0 then
+          PenStyle := PS_SOLID;
+        if PenWidth = 0 then
+          PenWidth := 1;
         Pen := CreatePen(PenStyle, PenWidth, 0);
         OldPen := SelectObject(TargetDC, Pen);
         y2 := Y;
@@ -1535,11 +1540,11 @@ begin
   end;
   LOGBRUSH.lbStyle := BS_HATCHED;
   LOGBRUSH.lbHatch := Ord(BrushStyle) - Ord(bsHorizontal);
-  for i := 0 to NumberOfColors - 1 do
+  for I := 0 to NumberOfColors - 1 do
   begin
-    _R := c1F + MulDiv(i, c1D, NumberOfColors - 1);
-    _G := c2F + MulDiv(i, c2D, NumberOfColors - 1);
-    _B := c3F + MulDiv(i, c3D, NumberOfColors - 1);
+    _R := c1F + MulDiv(I, c1D, NumberOfColors - 1);
+    _G := c2F + MulDiv(I, c2D, NumberOfColors - 1);
+    _B := c3F + MulDiv(I, c3D, NumberOfColors - 1);
 
     case Orientation of
       fgdHorizontal, fgdVertical, fgdRectangle:
@@ -1557,34 +1562,34 @@ begin
               begin
                 if FReverse then
                 begin
-                  ColorR.Top := r.Bottom - MulDiv(i, h, NumberOfColors);
-                  ColorR.Bottom := r.Bottom - MulDiv(i + 1, h, NumberOfColors);
+                  ColorR.Top := r.Bottom - MulDiv(I, h, NumberOfColors);
+                  ColorR.Bottom := r.Bottom - MulDiv(I + 1, h, NumberOfColors);
                 end
                 else
                 begin
-                  ColorR.Top := r.Top + MulDiv(i, h, NumberOfColors);
-                  ColorR.Bottom := r.Top + MulDiv(i + 1, h, NumberOfColors);
+                  ColorR.Top := r.Top + MulDiv(I, h, NumberOfColors);
+                  ColorR.Bottom := r.Top + MulDiv(I + 1, h, NumberOfColors);
                 end;
               end;
             fgdVertical:
               begin
                 if FReverse then
                 begin
-                  ColorR.Left := r.Right - MulDiv(i, w, NumberOfColors);
-                  ColorR.Right := r.Right - MulDiv(i + 1, w, NumberOfColors);
+                  ColorR.Left := r.Right - MulDiv(I, w, NumberOfColors);
+                  ColorR.Right := r.Right - MulDiv(I + 1, w, NumberOfColors);
                 end
                 else
                 begin
-                  ColorR.Left := r.Left + MulDiv(i, w, NumberOfColors);
-                  ColorR.Right := r.Left + MulDiv(i + 1, w, NumberOfColors);
+                  ColorR.Left := r.Left + MulDiv(I, w, NumberOfColors);
+                  ColorR.Right := r.Left + MulDiv(I + 1, w, NumberOfColors);
                 end;
               end;
             fgdRectangle:
               begin
-                ColorR.Top := r.Top + MulDiv(i, h, NumberOfColors);
-                ColorR.Bottom := r.Bottom - MulDiv(i, h, NumberOfColors);
-                ColorR.Left := r.Left + MulDiv(i, w, NumberOfColors);
-                ColorR.Right := r.Right - MulDiv(i, w, NumberOfColors);
+                ColorR.Top := r.Top + MulDiv(I, h, NumberOfColors);
+                ColorR.Bottom := r.Bottom - MulDiv(I, h, NumberOfColors);
+                ColorR.Left := r.Left + MulDiv(I, w, NumberOfColors);
+                ColorR.Right := r.Right - MulDiv(I, w, NumberOfColors);
               end;
           end;
           FillRect(TargetDC, ColorR, FillBrush);
@@ -1598,7 +1603,7 @@ begin
         Pen := CreatePen(PenStyle, PenWidth, RGB(_R, _G, _B));
 
         OldPen := SelectObject(TargetDC, Pen);
-        for j := 1 to MulDiv(i + 1, h + w, NumberOfColors) - MulDiv(i, h + w, NumberOfColors) do
+        for J := 1 to MulDiv(I + 1, h + w, NumberOfColors) - MulDiv(I, h + w, NumberOfColors) do
         begin
           case Orientation of
             fgdLeftBias:
@@ -1633,7 +1638,8 @@ begin
       end; {end case else}
     end; {end case}
     //    if NumberOfColors=0 then exit;
-    if i / NumberOfColors * 100 > PercentFilling then break;
+    if I / NumberOfColors * 100 > PercentFilling then
+      Break;
   end; {end for}
 
   if BufferedDraw then
@@ -1650,7 +1656,8 @@ begin
   Result := 0;
   if Inner <> bvNone then
   begin
-    if fsdTop in Sides then Inc(Result);
+    if fsdTop in Sides then
+      Inc(Result);
     if fsdBottom in Sides then
       if Bold then
         Inc(Result, 1)
@@ -1659,7 +1666,8 @@ begin
   end;
   if Outer <> bvNone then
   begin
-    if fsdTop in Sides then Inc(Result);
+    if fsdTop in Sides then
+      Inc(Result);
     if fsdBottom in Sides then
       if Bold then
         Inc(Result, 1)
@@ -1673,7 +1681,8 @@ begin
   Result := 0;
   if Inner <> bvNone then
   begin
-    if fsdLeft in Sides then Inc(Result);
+    if fsdLeft in Sides then
+      Inc(Result);
     if fsdRight in Sides then
       if Bold then
         Inc(Result, 1)
@@ -1682,7 +1691,8 @@ begin
   end;
   if Outer <> bvNone then
   begin
-    if fsdLeft in Sides then Inc(Result);
+    if fsdLeft in Sides then
+      Inc(Result);
     if fsdRight in Sides then
       if Bold then
         Inc(Result, 1)

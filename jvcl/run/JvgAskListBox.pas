@@ -582,7 +582,8 @@ begin
   I := -1;
   if NumGlyphs = 1 then
     I := 0
-  else if Index < NumGlyphs then
+  else
+  if Index < NumGlyphs then
     I := Index;
   if I >= 0 then
   begin
@@ -614,7 +615,8 @@ begin
   if (not Assigned(Value)) and Assigned(WallpaperImage) then
     if Assigned(FWallpaper) then
       WallpaperBmp := FWallpaper
-    else if Assigned(FWallpaperImage) then
+    else
+    if Assigned(FWallpaperImage) then
       WallpaperBmp := FWallpaperImage.Picture.Bitmap
     else
       WallpaperBmp := nil;

@@ -41,17 +41,17 @@ type
   TglStringGridExtOptions = set of TglStringGridExtOptions_;
 
   TglGridCellStyle = record
-    Hottracking: boolean;
-    GradientFilling, Default_Drawing: boolean;
+    Hottracking: Boolean;
+    GradientFilling, Default_Drawing: Boolean;
     R: TRect;
     CellBorders: TglSides;
     BevelInner,
       BevelOuter: TPanelBevel;
-    BevelBold: boolean;
+    BevelBold: Boolean;
     FontStyle: TFontStyles;
     FontColor,
       BackgrColor: TColor;
-    Interspace: integer
+    Interspace: Integer
   end;
 
   TglOnGetCellStyleEvent = procedure(Sender: TObject; ACol, ARow: longint; var
@@ -68,7 +68,7 @@ type
     FBitmap, bmp: TBitmap;
     FImage: TImage;
     FCaptions: TStringList;
-    FHottrackThrought: boolean;
+    FHottrackThrought: Boolean;
     AHottrackCol, AHottrackRow: longint;
     Memo: TMemo;
     MemoCell: TGridCoord;
@@ -87,14 +87,14 @@ type
     procedure SetBitmap(Value: TBitmap);
     procedure SetImage(Value: TImage);
     procedure SetCaptions(Value: TStringList);
-    procedure SetVertCaptions(Value: boolean);
+    procedure SetVertCaptions(Value: Boolean);
     procedure OnMemoChange(Sender: TObject);
     procedure OnMemoExit(Sender: TObject);
     procedure ShowEditorAtCell(X, Y: Longint);
     procedure UpdateCaptions(Sender: TObject);
-    procedure SetHottrack(const Value: boolean);
-    procedure SetMemoEditor(const Value: boolean);
-    procedure SetWordWrap(const Value: boolean);
+    procedure SetHottrack(const Value: Boolean);
+    procedure SetMemoEditor(const Value: Boolean);
+    procedure SetWordWrap(const Value: Boolean);
     procedure SetExtOptions(const Value: TglStringGridExtOptions);
     procedure SetTextAlignment(const Value: TAlignment);
   protected
@@ -119,15 +119,15 @@ type
       CellRect: TRect; var Gradient: TJvgGradient); virtual;
   public
     //    property InplaceEditor;
-    AlignAll: boolean;
-    ColsBold: integer;
-    RowsBold: integer;
+    AlignAll: Boolean;
+    ColsBold: Integer;
+    RowsBold: Integer;
     HottrackColor: TColor;
 
-    property VertCaptions: boolean write SetVertCaptions default false;
-    property Hottrack: boolean write SetHottrack default false;
-    property MemoEditor: boolean write SetMemoEditor default false;
-    property WordWrap: boolean write SetWordWrap default false;
+    property VertCaptions: Boolean write SetVertCaptions default False;
+    property Hottrack: Boolean write SetHottrack default False;
+    property MemoEditor: Boolean write SetMemoEditor default False;
+    property WordWrap: Boolean write SetWordWrap default False;
 
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -164,12 +164,12 @@ uses
 
 constructor TJvgStringGrid.Create(AOwner: TComponent);
 begin
-  inherited; //FHottrackThrought := true;
+  inherited Create(AOwner); //FHottrackThrought := True;
 
   FCaptFont := TFont.Create;
   FEditorFont := TFont.Create;
   MemoUpdateTimer := TTimer.Create(nil);
-  MemoUpdateTimer.Enabled := false;
+  MemoUpdateTimer.Enabled := False;
   MemoUpdateTimer.Interval := 200;
   MemoUpdateTimer.OnTimer := OnMemoChange;
   FCaptionTextAlignment := taCenter;
@@ -183,15 +183,15 @@ begin
   Options := Options + [goEditing];
 
   if csDesigning in ComponentState then
-    exit;
+    Exit;
   Memo := TMemo.Create(Self);
-  Memo.Visible := false;
+  Memo.Visible := False;
   Memo.BorderStyle := bsNone;
   Memo.Parent := Self;
   Memo.OnChange := OnMemoChange;
   Memo.OnExit := OnMemoExit;
   //  Memo.OnKeyDown := OnMemoKeyDown;
-  DefaultDrawing := false;
+  DefaultDrawing := False;
 end;
 
 destructor TJvgStringGrid.Destroy;
@@ -206,12 +206,12 @@ begin
     FBitmap.Free;
   if Assigned(Gradient) then
     Gradient.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvgStringGrid.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   if Assigned(FBitmap) and (not FBitmap.Empty) then
     Bmp := FBitmap;
   VertCaptions := fsgVertCaptions in FExtOptions;
@@ -222,11 +222,11 @@ procedure TJvgStringGrid.DrawCell(ACol, ARow: Longint; ARect: TRect; AState:
 const
   aAlignments: array[TAlignment] of Longint = (DT_LEFT,
     DT_RIGHT, DT_CENTER);
-  aWordWrap: array[boolean] of longint = (0, DT_WORDBREAK);
+  aWordWrap: array[Boolean] of longint = (0, DT_WORDBREAK);
 var
   R: TRect;
-  doHottracking, isFixedCell: boolean;
-  x, x_, y, y_, IHeight, IWidth, l, t, i, Interspace: integer;
+  doHottracking, isFixedCell: Boolean;
+  x, x_, y, y_, IHeight, IWidth, l, t, I, Interspace: Integer;
   Style: TglGridCellStyle;
   CellTextAlignment: TAlignment;
 begin
@@ -271,15 +271,16 @@ begin
       end;
     end;
 
-  if true then
+  if True then
   begin
     if FHottrackThrought then
       doHottracking := (AHottrackCol = ACol) or (AHottrackRow = ARow)
-    else if fsgHottrack in FExtOptions then
+    else
+    if fsgHottrack in FExtOptions then
       doHottracking := (AHottrackCol = ACol) and (AHottrackRow = ARow) and
         ((ACol < FixedCols) or (ARow < FixedRows))
     else
-      doHottracking := false;
+      doHottracking := False;
 
     if isFixedCell then
     begin
@@ -308,29 +309,29 @@ begin
       Style.FontColor := clHighlightText;
 
     Style.Hottracking := doHottracking;
-    Style.GradientFilling := false;
-    Style.Default_Drawing := true;
+    Style.GradientFilling := False;
+    Style.Default_Drawing := True;
     Style.R := R;
     Style.CellBorders := ALLGLSIDES;
     Style.BevelInner := bvNone;
 
-    Style.BevelBold := false;
+    Style.BevelBold := False;
     Style.FontStyle := Canvas.Font.Style;
     Style.Interspace := Interspace;
     GetCellStyle(Self, ACol, ARow, Style);
     Canvas.Font.Style := Style.FontStyle;
     R := Style.R;
     if not Style.Default_Drawing then
-      exit;
+      Exit;
 
     if Style.GradientFilling then
     begin
       if Gradient = nil then
         Gradient := TJvgGradient.Create;
-      Gradient.Active := true;
+      Gradient.Active := True;
       ARect := R;
       GetCellGradientParams(Self, ACol, ARow, ARect, Gradient);
-      GradientBox(Canvas.Handle, ARect, Gradient, integer(psSolid), 1);
+      GradientBox(Canvas.Handle, ARect, Gradient, Integer(psSolid), 1);
     end;
 
     DrawBoxEx(Canvas.Handle, R, Style.CellBorders, Style.BevelInner,
@@ -347,11 +348,11 @@ begin
 
     if (fsgCellHeightAutoSize in ExtOptions) and not isFixedCell then
     begin
-      i := R.Bottom - R.Top;
-      if (i > DefaultRowHeight) and (RowHeights[ARow] < i) then
+      I := R.Bottom - R.Top;
+      if (I > DefaultRowHeight) and (RowHeights[ARow] < I) then
       begin
-        ///RowHeights[ARow] := i;
-        exit;
+        ///RowHeights[ARow] := I;
+        Exit;
       end;
     end;
 
@@ -373,7 +374,7 @@ begin
     DrawText(Canvas.Handle, PChar(Cells[ACol, ARow]), length(Cells[ACol,
       ARow]), ARect, DT_LEFT or DT_WORDBREAK)
   end; //  else inherited;
-  // DefaultDrawing := true;
+  // DefaultDrawing := True;
 end;
 
 procedure TJvgStringGrid.SetCaptionTextAlignment(Value: TAlignment);
@@ -403,7 +404,8 @@ begin
   FBitmap.Assign(Value);
   if Assigned(Value) then
     Bmp := FBitmap
-  else if Assigned(FImage) and Assigned(FImage.Picture) and
+  else
+  if Assigned(FImage) and Assigned(FImage.Picture) and
     Assigned(FImage.Picture.Bitmap) then
     Bmp := FImage.Picture.Bitmap
   else
@@ -417,7 +419,8 @@ begin
   if Assigned(FImage) and Assigned(FImage.Picture) and
     Assigned(FImage.Picture.Bitmap) then
     Bmp := FImage.Picture.Bitmap
-  else if Assigned(FBitmap) then
+  else
+  if Assigned(FBitmap) then
     Bmp := FBitmap
   else
     Bmp := nil;
@@ -437,14 +440,14 @@ var
   R: TRect;
   ACol, ARow: longint;
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   if not (fsgHottrack in FExtOptions) then
-    exit;
+    Exit;
   MouseToCell(x, y, ACol, ARow);
   if (ACol >= FixedCols) and (ARow >= FixedRows) then
   begin
     SetCursor(Screen.Cursors[crCross]);
-    exit;
+    Exit;
   end;
   SetCursor(Screen.Cursors[crDefault]);
 
@@ -453,38 +456,40 @@ begin
     if (AHottrackCol < FixedCols) or (AHottrackRow < FixedRows) then
     begin
       R := CellRect(AHottrackCol, AHottrackRow);
-      InvalidateRect(Handle, @R, false); //DefaultDrawing := false;
+      InvalidateRect(Handle, @R, False); //DefaultDrawing := False;
     end
-    else if FHottrackThrought then
+    else
+    if FHottrackThrought then
     begin
       if (ACol <> AHottrackCol) and (FixedCols > 0) then
       begin
-        R := CellRect(AHottrackCol, 0); //DefaultDrawing := false;
-        InvalidateRect(Handle, @R, false);
+        R := CellRect(AHottrackCol, 0); //DefaultDrawing := False;
+        InvalidateRect(Handle, @R, False);
       end;
       if (ARow <> AHottrackRow) and (FixedRows > 0) then
       begin
-        R := CellRect(0, AHottrackRow); //DefaultDrawing := false;
-        InvalidateRect(Handle, @R, false);
+        R := CellRect(0, AHottrackRow); //DefaultDrawing := False;
+        InvalidateRect(Handle, @R, False);
       end;
     end;
 
     if (ACol < FixedCols) or (ARow < FixedCols) then
     begin
-      R := CellRect(ACol, ARow); //DefaultDrawing := false;
-      InvalidateRect(Handle, @R, false);
+      R := CellRect(ACol, ARow); //DefaultDrawing := False;
+      InvalidateRect(Handle, @R, False);
     end
-    else if FHottrackThrought then
+    else
+    if FHottrackThrought then
     begin
       if (ACol <> AHottrackCol) and (FixedCols > 0) then
       begin
-        R := CellRect(ACol, 0); //DefaultDrawing := false;
-        InvalidateRect(Handle, @R, false);
+        R := CellRect(ACol, 0); //DefaultDrawing := False;
+        InvalidateRect(Handle, @R, False);
       end;
       if (ARow <> AHottrackRow) and (FixedRows > 0) then
       begin
-        R := CellRect(0, ARow); //DefaultDrawing := false;
-        InvalidateRect(Handle, @R, false);
+        R := CellRect(0, ARow); //DefaultDrawing := False;
+        InvalidateRect(Handle, @R, False);
       end;
     end;
     AHottrackCol := ACol;
@@ -498,21 +503,21 @@ var
 begin
   inherited;
   if not (fsgHottrack in FExtOptions) then
-    exit;
+    Exit;
   R := CellRect(AHottrackCol, AHottrackRow);
   AHottrackCol := -1;
-  //DefaultDrawing := false;
-  InvalidateRect(Handle, @R, false);
+  //DefaultDrawing := False;
+  InvalidateRect(Handle, @R, False);
 end;
 
-procedure TJvgStringGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvgStringGrid.MouseDown(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
   GridCoord: TGridCoord;
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if (not (goEditing in Options)) or (csDesigning in ComponentState) then
-    exit;
+    Exit;
 
   if Assigned(OnMouseDown) then
     OnMouseDown(Self, Button, Shift, X, Y);
@@ -532,7 +537,7 @@ var
   GridRect: TGridRect;
 begin
   if not (fsgMemoEditor in FExtOptions) then
-    exit;
+    Exit;
   if (X >= FixedCols) and (Y >= FixedRows) then
   begin
 
@@ -550,7 +555,7 @@ begin
     MemoCell.X := X;
     MemoCell.Y := Y;
     Memo.Text := Cells[MemoCell.X, MemoCell.Y];
-    Memo.Visible := true;
+    Memo.Visible := True;
     Memo.SetFocus;
     Memo.OnChange := OnMemoChange;
     Memo.Color := EditorColor;
@@ -561,26 +566,26 @@ end;
 procedure TJvgStringGrid.OnMemoChange(Sender: TObject);
 var
   R: TRect;
-  maxHeight, h, i: integer;
+  maxHeight, h, I: Integer;
 begin
   /// need handle it -> if Assigned(OnSetEditText) then ...
   if (MemoCell.X < FixedCols) or (MemoCell.Y < FixedRows) then
-    exit;
+    Exit;
 
-  MemoUpdateTimer.Enabled := false;
+  MemoUpdateTimer.Enabled := False;
   Cells[MemoCell.X, MemoCell.Y] := Memo.Text;
 
   if (fsgCellHeightAutoSize in ExtOptions) and (MemoCell.Y <> 0) then
   begin
     Canvas.Font.Assign(Font);
     maxHeight := DefaultRowHeight;
-    for i := FixedCols to ColCount - 1 do
+    for I := FixedCols to ColCount - 1 do
     begin
-      R := CellRect(i, MemoCell.Y);
-      if length(Cells[i, MemoCell.Y]) = 0 then
+      R := CellRect(I, MemoCell.Y);
+      if length(Cells[I, MemoCell.Y]) = 0 then
         continue;
 
-      DrawText(Canvas.Handle, PChar(Cells[i, MemoCell.Y]), length(Cells[i,
+      DrawText(Canvas.Handle, PChar(Cells[I, MemoCell.Y]), length(Cells[I,
         MemoCell.Y]), R, DT_WORDBREAK or DT_CALCRECT);
       h := R.Bottom - R.Top;
       if h > maxHeight then
@@ -594,7 +599,7 @@ end;
 procedure TJvgStringGrid.OnMemoExit(Sender: TObject);
 begin
   //  Cells[MemoCell.X, MemoCell.Y] := Memo.Text;
-  Memo.Visible := false;
+  Memo.Visible := False;
 end;
 
 procedure TJvgStringGrid.ClearSelection;
@@ -630,15 +635,12 @@ begin
     if Message.WParam > VK_ESCAPE then
     begin
       if not (goEditing in Options) then
-        exit;
+        Exit;
 
       if (MemoCell.X < FixedCols) or (MemoCell.Y < FixedRows) then // show editor first time
-      begin
-
         ShowEditorAtCell(Selection.Left, Selection.Top);
-      end;
 
-      MemoUpdateTimer.Enabled := true;
+      MemoUpdateTimer.Enabled := True;
     end;
   end;
 end;
@@ -673,12 +675,12 @@ end;
 
 procedure TJvgStringGrid.WMSize(var Message: TWMSize);
 var
-  i, w: integer;
+  I, w: Integer;
 begin
   inherited;
   w := 0;
-  for i := 0 to ColCount - 2 do
-    inc(w, ColWidths[i]);
+  for I := 0 to ColCount - 2 do
+    inc(w, ColWidths[I]);
   ColWidths[ColCount - 1] := Width - w;
 end;
 
@@ -701,7 +703,7 @@ begin
   SetVertCaptions(fsgVertCaptions in FExtOptions);
 end;
 
-procedure TJvgStringGrid.SetHottrack(const Value: boolean);
+procedure TJvgStringGrid.SetHottrack(const Value: Boolean);
 begin
   if Value then
     Include(FExtOptions, fsgHottrack)
@@ -709,7 +711,7 @@ begin
     Exclude(FExtOptions, fsgHottrack);
 end;
 
-procedure TJvgStringGrid.SetMemoEditor(const Value: boolean);
+procedure TJvgStringGrid.SetMemoEditor(const Value: Boolean);
 begin
   if Value then
     Include(FExtOptions, fsgMemoEditor)
@@ -717,7 +719,7 @@ begin
     Exclude(FExtOptions, fsgMemoEditor);
 end;
 
-procedure TJvgStringGrid.SetWordWrap(const Value: boolean);
+procedure TJvgStringGrid.SetWordWrap(const Value: Boolean);
 begin
   if Value then
     Include(FExtOptions, fsgWordWrap)
@@ -725,20 +727,20 @@ begin
     Exclude(FExtOptions, fsgWordWrap);
 end;
 
-procedure TJvgStringGrid.SetVertCaptions(Value: boolean);
+procedure TJvgStringGrid.SetVertCaptions(Value: Boolean);
 var
-  i: integer;
+  I: Integer;
 begin
   if Value then
     Include(FExtOptions, fsgVertCaptions)
   else
     Exclude(FExtOptions, fsgVertCaptions);
   try
-    for i := 0 to FCaptions.Count - 1 do
+    for I := 0 to FCaptions.Count - 1 do
       if fsgVertCaptions in FExtOptions then
-        Cells[0, i] := FCaptions[i]
+        Cells[0, I] := FCaptions[I]
       else
-        Cells[i, 0] := FCaptions[i];
+        Cells[I, 0] := FCaptions[I];
   except
   end;
 end;
@@ -760,7 +762,7 @@ function TJvgStringGrid.CanEditShow: Boolean;
 begin
   Result := inherited CanEditShow;
   if fsgMemoEditor in FExtOptions then
-    Result := false;
+    Result := False;
 end;
 
 end.

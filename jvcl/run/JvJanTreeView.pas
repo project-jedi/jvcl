@@ -435,25 +435,35 @@ begin
   begin
     if MAddNode then
       DoAddNode
-    else if MDeleteNode then
+    else
+    if MDeleteNode then
       DoDeleteNode
-    else if MInsertNode then
+    else
+    if MInsertNode then
       DoInsertNode
-    else if MAddChildNode then
+    else
+    if MAddChildNode then
       DoAddChildNode
-    else if MDuplicateNode then
+    else
+    if MDuplicateNode then
       DuplicateNode
-    else if MEditNode then
+    else
+    if MEditNode then
       DoEditNode
-    else if MFindNode then
+    else
+    if MFindNode then
       DoFindNode
-    else if MLoadTree then
+    else
+    if MLoadTree then
       DoLoadTree
-    else if MSaveTree then
+    else
+    if MSaveTree then
       DoSaveTree
-    else if MSaveTreeAs then
+    else
+    if MSaveTreeAs then
       DoSaveTreeAs
-    else if MCloseTree then
+    else
+    if MCloseTree then
       DoCloseTree;
   end;
   if assigned(onKeyDown) then
@@ -533,7 +543,8 @@ begin
       //
     end;
   end
-  else if lowercase(VarName) = 'pi' then
+  else
+  if lowercase(VarName) = 'pi' then
   begin
     value := pi;
     found := true;
@@ -603,7 +614,8 @@ begin
       20: GotoState := 28;
     end; { case }
   end
-  else if Production <= 6 then
+  else
+  if Production <= 6 then
   begin
     case State of
       0, 9, 20: GotoState := 2;
@@ -611,7 +623,8 @@ begin
       13: GotoState := 22;
     end; { case }
   end
-  else if (Production <= 8) or (Production = 100) then
+  else
+  if (Production <= 8) or (Production = 100) then
   begin
     case State of
       0, 9, 12, 13, 20: GotoState := 3;
@@ -621,13 +634,15 @@ begin
       40: GotoState := 80;
     end; { case }
   end
-  else if Production <= 10 then
+  else
+  if Production <= 10 then
   begin
     case State of
       0, 9, 12..16, 20, 40: GotoState := 4;
     end; { case }
   end
-  else if Production <= 12 then
+  else
+  if Production <= 12 then
   begin
     case State of
       0, 9, 12..16, 20, 40: GotoState := 6;
@@ -763,7 +778,8 @@ begin
     end; { else }
     Exit;
   end { if }
-  else if Ch in IdentifierLetters then
+  else
+  if Ch in IdentifierLetters then
   begin
     if IsFunc('ABS') or
       IsFunc('ATAN') or
@@ -819,8 +835,8 @@ begin
     Inc(Position);
     TokenLen := Position - TokenLen;
     Exit;
-  end; { else if }
-end; { NextToken }
+  end;
+end;
 
 procedure TJvMathParser.Pop(var Token: TokenRec);
 { Pops the top Token off of the stack }
@@ -863,17 +879,21 @@ begin
         begin
           if TokenType = NUM then
             Shift(10)
-          else if TokenType = FUNC then
+          else
+          if TokenType = FUNC then
             Shift(11)
-          else if TokenType = MINUS then
+          else
+          if TokenType = MINUS then
             Shift(5)
-          else if TokenType = OPAREN then
+          else
+          if TokenType = OPAREN then
             Shift(9)
-          else if TokenType = ERR then
+          else
+          if TokenType = ERR then
           begin
             MathError := True;
             Accepted := True;
-          end { else if }
+          end
           else
           begin
             TokenError := ErrExpression;
@@ -884,9 +904,11 @@ begin
         begin
           if TokenType = EOL then
             Accepted := True
-          else if TokenType = PLUS then
+          else
+          if TokenType = PLUS then
             Shift(12)
-          else if TokenType = MINUS then
+          else
+          if TokenType = MINUS then
             Shift(13)
           else
           begin
@@ -898,7 +920,8 @@ begin
         begin
           if TokenType = TIMES then
             Shift(14)
-          else if TokenType = DIVIDE then
+          else
+          if TokenType = DIVIDE then
             Shift(15)
           else
             Reduce(3);
@@ -921,9 +944,11 @@ begin
         begin
           if TokenType = NUM then
             Shift(10)
-          else if TokenType = FUNC then
+          else
+          if TokenType = FUNC then
             Shift(11)
-          else if TokenType = OPAREN then
+          else
+          if TokenType = OPAREN then
             Shift(9)
           else
           begin
@@ -951,9 +976,11 @@ begin
         begin
           if TokenType = PLUS then
             Shift(12)
-          else if TokenType = MINUS then
+          else
+          if TokenType = MINUS then
             Shift(13)
-          else if TokenType = CPAREN then
+          else
+          if TokenType = CPAREN then
             Shift(27)
           else
           begin
@@ -965,7 +992,8 @@ begin
         begin
           if TokenType = TIMES then
             Shift(14)
-          else if TokenType = DIVIDE then
+          else
+          if TokenType = DIVIDE then
             Shift(15)
           else
             Reduce(1);
@@ -974,7 +1002,8 @@ begin
         begin
           if TokenType = TIMES then
             Shift(14)
-          else if TokenType = DIVIDE then
+          else
+          if TokenType = DIVIDE then
             Shift(15)
           else
             Reduce(2);
@@ -988,9 +1017,11 @@ begin
         begin
           if TokenType = PLUS then
             Shift(12)
-          else if TokenType = MINUS then
+          else
+          if TokenType = MINUS then
             Shift(13)
-          else if TokenType = CPAREN then
+          else
+          if TokenType = CPAREN then
             Shift(29)
           else
           begin
@@ -1075,7 +1106,8 @@ begin
         Pop(Token2);
         if Token2.Value <= 0 then
           MathError := True
-        else if (Token1.Value * Ln(Token2.Value) < -ExpLimit) or
+        else
+        if (Token1.Value * Ln(Token2.Value) < -ExpLimit) or
           (Token1.Value * Ln(Token2.Value) > ExpLimit) then
           MathError := True
         else
@@ -1103,58 +1135,67 @@ begin
         Pop(Token1);
         if Token1.FuncName = 'ABS' then
           CurrToken.Value := Abs(CurrToken.Value)
-        else if Token1.FuncName = 'ATAN' then
+        else
+        if Token1.FuncName = 'ATAN' then
           CurrToken.Value := ArcTan(CurrToken.Value)
-        else if Token1.FuncName = 'COS' then
+        else
+        if Token1.FuncName = 'COS' then
         begin
           if (CurrToken.Value < -9E18) or (CurrToken.Value > 9E18) then
             MathError := True
           else
             CurrToken.Value := Cos(CurrToken.Value)
         end {...if Token1.FuncName = 'SIN' }
-        else if Token1.FuncName = 'EXP' then
+        else
+        if Token1.FuncName = 'EXP' then
         begin
           if (CurrToken.Value < -ExpLimit) or (CurrToken.Value > ExpLimit) then
             MathError := True
           else
             CurrToken.Value := Exp(CurrToken.Value);
         end
-        else if Token1.FuncName = 'LN' then
+        else
+        if Token1.FuncName = 'LN' then
         begin
           if CurrToken.Value <= 0 then
             MathError := True
           else
             CurrToken.Value := Ln(CurrToken.Value);
         end
-        else if Token1.FuncName = 'ROUND' then
+        else
+        if Token1.FuncName = 'ROUND' then
         begin
           if (CurrToken.Value < -1E9) or (CurrToken.Value > 1E9) then
             MathError := True
           else
             CurrToken.Value := Round(CurrToken.Value);
         end
-        else if Token1.FuncName = 'SIN' then
+        else
+        if Token1.FuncName = 'SIN' then
         begin
           if (CurrToken.Value < -9E18) or (CurrToken.Value > 9E18) then
             MathError := True
           else
             CurrToken.Value := Sin(CurrToken.Value)
         end {...if Token1.FuncName = 'SIN' }
-        else if Token1.FuncName = 'SQRT' then
+        else
+        if Token1.FuncName = 'SQRT' then
         begin
           if CurrToken.Value < 0 then
             MathError := True
           else
             CurrToken.Value := Sqrt(CurrToken.Value);
         end
-        else if Token1.FuncName = 'SQR' then
+        else
+        if Token1.FuncName = 'SQR' then
         begin
           if (CurrToken.Value < -SQRLIMIT) or (CurrToken.Value > SQRLIMIT) then
             MathError := True
           else
             CurrToken.Value := Sqr(CurrToken.Value);
         end
-        else if Token1.FuncName = 'TRUNC' then
+        else
+        if Token1.FuncName = 'TRUNC' then
         begin
           if (CurrToken.Value < -1E9) or (CurrToken.Value > 1E9) then
             MathError := True
@@ -1256,8 +1297,9 @@ begin
       textrect(dr, dr.left, dr.Top, s);
       defaultdraw := false;
     end
-  else if FColorFormulas and (pos('=', s) > 0) then
-    with canvas do
+  else
+  if FColorFormulas and (pos('=', s) > 0) then
+    with Canvas do
     begin
       dr := node.displayrect(true);
       font := Self.Font;

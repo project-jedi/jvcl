@@ -175,8 +175,10 @@ var
 begin
   Result := #0;
   i := Length(S);
-  while (i > 0) and (S[i] = ' ') do Dec(i);
-  if i > 0 then Result := S[i];
+  while (i > 0) and (S[i] = ' ') do
+    Dec(i);
+  if i > 0 then
+    Result := S[i];
 end;
 
 function GetTrimChar(const S: string; Index: Integer): Char;
@@ -187,7 +189,8 @@ begin
   if LS <> 0 then
   begin
     l := 1;
-    while (l <= LS) and (s[l] = ' ') do Inc(l);
+    while (l <= LS) and (s[l] = ' ') do
+      Inc(l);
     if l <= LS then
       Result := S[l - 1 + Index]
     else
@@ -206,7 +209,8 @@ var
   S: string;
 begin
   Result := False;
-  if (iLine < 0) or (iLine >= Lines.Count) then exit;
+  if (iLine < 0) or (iLine >= Lines.Count) then
+    exit;
   i := iLine - 1;
   IsOpen := False;
   if (i >= 0) and (LastNonSpaceChar(Lines[i]) = '\') then // check prior lines
@@ -224,8 +228,10 @@ begin
       begin
        // count the backslashes
         i := 1;
-        while (P-1-i > F) and (P[-1-i] = '\') do inc(i);
-        if i mod 2 = 0 then IsOpen := not IsOpen;
+        while (P-1-i > F) and (P[-1-i] = '\') do
+          inc(i);
+        if i mod 2 = 0 then
+          IsOpen := not IsOpen;
       end;
       inc(P);
     end;
@@ -238,10 +244,12 @@ begin
   Result := P;
   while True do
   begin
-    while Result[0] in LeadBytes do Inc(Result); // mbcs
+    while Result[0] in LeadBytes do
+      Inc(Result); // mbcs
     if Result[0] = Ch then
       Exit
-    else if Result[0] = #0 then
+    else
+    if Result[0] = #0 then
     begin
       Result := nil;
       Exit;
@@ -492,9 +500,11 @@ const
     P := PChar(S2);
     while P[0] <> #0 do
     begin
-      while P[0] = ' ' do Inc(P);
+      while P[0] = ' ' do
+        Inc(P);
       F := P;
-      while not (P[0] <= #32) do Inc(P);
+      while not (P[0] <= #32) do
+        Inc(P);
       if (P - F) = Len then
         if StrLIComp(PChar(S1), F, Len) = 0 then
           Exit;
@@ -512,9 +522,11 @@ const
     P := PChar(S2);
     while P[0] <> #0 do
     begin
-      while P[0] = ' ' do Inc(P);
+      while P[0] = ' ' do
+        Inc(P);
       F := P;
-      while not (P[0] <= #32) do Inc(P);
+      while not (P[0] <= #32) do
+        Inc(P);
       if (P - F) = Len then
         if StrLComp(PChar(S1), F, Len) = 0 then
           Exit;
@@ -667,7 +679,8 @@ const
   var
     I: Integer;
   begin
-    if iEnd > Max_X then iEnd := Max_X;
+    if iEnd > Max_X then
+      iEnd := Max_X;
     for I := iBeg to iEnd do
       with LineAttrs[I] do
       begin
@@ -783,7 +796,8 @@ var
   i: Integer;
 
 begin
-  if not FSyntaxHighlighting then Exit;
+  if not FSyntaxHighlighting then
+    Exit;
   S := Lines[Line];
   if (FHighlighter = hlNone) and not UserReservedWords then
     C := Colors.PlainText
@@ -1095,7 +1109,8 @@ begin
   MaxLine := Lines.Count - 1;
   if MaxLine > High(FLongDesc) then
     MaxLine := High(FLongDesc);
-  if iLine > MaxLine then Exit;;
+  if iLine > MaxLine then
+    Exit;
 
   MaxScanLine := MaxLine;
   FLong := lgNone;
@@ -1536,7 +1551,8 @@ begin
                   begin
                    // count the backslashes
                     i := 1;
-                    while (P - 1 - i > F) and (P[-1 - i] = '\') do Inc(i);
+                    while (P - 1 - i > F) and (P[-1 - i] = '\') do
+                      Inc(i);
                     if i and $01 = 0 then {faster than: if i mod 2 = 0 then}
                     begin
                       Result := P - F;
@@ -1547,7 +1563,7 @@ begin
                 end;
               until P = nil;
             end;
-          end;  // case
+          end;
       end;
     hlPython, hlPerl:
       case FLong of
@@ -1695,19 +1711,27 @@ function TJvHLEditor.GetDelphiColors: Boolean;
   function CompareColor(Symbol: TJvSymbolColor; const DelphiColor: TDelphiColor): Boolean;
   begin
     Result := (Symbol.ForeColor = DelphiColor.ForeColor) and
-              (Symbol.BackColor = DelphiColor.BackColor) and
-              (Symbol.Style = DelphiColor.Style);
+      (Symbol.BackColor = DelphiColor.BackColor) and
+      (Symbol.Style = DelphiColor.Style);
   end;
 begin
   Result := False;
-  if not CompareColor(Colors.Comment, DelphiColor_Comment) then Exit;
-  if not CompareColor(Colors.Preproc, DelphiColor_Preproc) then Exit;
-  if not CompareColor(Colors.Number, DelphiColor_Number) then Exit;
-  if not CompareColor(Colors.Strings, DelphiColor_Strings) then Exit;
-  if not CompareColor(Colors.Symbol, DelphiColor_Symbol) then Exit;
-  if not CompareColor(Colors.Reserved, DelphiColor_Reserved) then Exit;
-  if not CompareColor(Colors.Identifier, DelphiColor_Identifier) then Exit;
-  if not CompareColor(Colors.PlainText, DelphiColor_PlainText) then Exit;
+  if not CompareColor(Colors.Comment, DelphiColor_Comment) then
+    Exit;
+  if not CompareColor(Colors.Preproc, DelphiColor_Preproc) then
+    Exit;
+  if not CompareColor(Colors.Number, DelphiColor_Number) then
+    Exit;
+  if not CompareColor(Colors.Strings, DelphiColor_Strings) then
+    Exit;
+  if not CompareColor(Colors.Symbol, DelphiColor_Symbol) then
+    Exit;
+  if not CompareColor(Colors.Reserved, DelphiColor_Reserved) then
+    Exit;
+  if not CompareColor(Colors.Identifier, DelphiColor_Identifier) then
+    Exit;
+  if not CompareColor(Colors.PlainText, DelphiColor_PlainText) then
+    Exit;
   Result := True;
 end;
 
