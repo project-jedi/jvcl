@@ -115,9 +115,9 @@ object FramePackageSelection: TFramePackageSelection
     OnClick = CheckListBoxFrameworksClick
   end
   object BtnReset: TButton
-    Left = 384
+    Left = 356
     Top = 24
-    Width = 129
+    Width = 157
     Height = 25
     Action = ActionResetPackages
     ParentShowHint = False
