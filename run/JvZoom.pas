@@ -43,17 +43,22 @@ type
     FZoomLevel: Integer;
     FDelay: Cardinal;
     FLastPoint: TPoint;
-    FCrosshair: Boolean;
+    FCrossHair: Boolean;
     FCrosshairColor: TColor;
     FCrosshairSize: Integer;
     FOnContentsChanged: TNotifyEvent;
     FCacheOnDeactivate: Boolean;
     FCacheBitmap: TBitmap;
+    FCrossHairPicture:TPicture;
     procedure SetActive(const Value: Boolean);
     procedure SetDelay(const Value: Cardinal);
     procedure SetZoomLevel(const Value: Integer);
     procedure SetCacheOnDeactivate(const Value: Boolean);
+    procedure SetCrossHairPicture(const Value:TPicture);
+    function GetZoomPercentage: integer;
+    procedure SetZoomPercentage(const Value: integer);
     procedure PaintMe(Sender: TObject);
+    procedure SetCrossHair(const Value: Boolean);
   protected
     procedure Resize; override;
     procedure Paint; override;
@@ -64,11 +69,21 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure ZoomInAt(X,Y:integer);
   published
+    property Anchors;
+    property Align;
+    property Constraints;
+    property Color;
+    property Enabled;
+    property Visible;
+
     property Active: Boolean read FActive write SetActive default True;
     property ZoomLevel: Integer read FZoomLevel write SetZoomLevel default 100;
+    property ZoomPercentage:integer read GetZoomPercentage write SetZoomPercentage stored false;
     property Delay: Cardinal read FDelay write SetDelay default 100;
-    property Crosshair: Boolean read FCrosshair write FCrosshair default False;
+    property Crosshair: Boolean read FCrossHair write SetCrossHair default False;
+    property CrossHairPicture: TPicture read FCrossHairPicture write SetCrossHairPicture;
     property CrosshairColor: TColor read FCrosshairColor write FCrosshairColor default clBlack;
     property CrosshairSize: Integer read FCrosshairSize write FCrosshairSize default 20;
     property CacheOnDeactivate: Boolean read FCacheOnDeactivate write SetCacheOnDeactivate default True;
@@ -84,6 +99,7 @@ type
     property OnMouseWheel;
     property OnMouseWheelUp;
     property OnMouseWheelDown;
+
   end;
 
 implementation
@@ -100,6 +116,8 @@ uses
 constructor TJvZoom.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FCrossHairPicture := TPicture.Create;
+  FCrossHairPicture.OnChange := PaintMe;
   Height := 100;
   Width := 100;
   FDelay := 100;
@@ -117,6 +135,8 @@ destructor TJvZoom.Destroy;
 begin
   FCacheBitmap.Free;
   FCacheBitmap := nil;
+  FCrossHairPicture.OnChange := nil;
+  FCrossHairPicture.Free;
   { Timer is automatically freed }
   inherited Destroy;
 end;
@@ -180,10 +200,12 @@ begin
   PaintWindow(Canvas.Handle);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  GetCursorPos(P);
-  //Only draw if on a different position
-  if (P.X <> FLastPoint.X) or (P.Y <> FLastPoint.Y) then
-    Invalidate;
+  if Enabled then
+    GetCursorPos(P);
+    //Only draw if on a different position
+    if (P.X <> FLastPoint.X) or (P.Y <> FLastPoint.Y) then
+      Invalidate;
+  end;
   {$ENDIF VisualCLX}
 end;
 
@@ -199,11 +221,15 @@ var
   Bmp: TBitmap;
   {$ENDIF VisualCLX}
 begin
-  GetCursorPos(P);
-
-  //Only draw if on a different position
-  if (P.X = FLastPoint.X) and (P.Y = FLastPoint.Y) then
-    Exit;
+  if Enabled then
+  begin
+    GetCursorPos(P);
+    //Only draw if on a different position
+    if (P.X = FLastPoint.X) and (P.Y = FLastPoint.Y) then
+      Exit;
+  end
+  else
+    P := FLastPoint;
 
   //Analyse the point
   FLastPoint := P;
@@ -261,7 +287,15 @@ begin
   end;
   {$ENDIF VisualCLX}
 
-  if FCrosshair then
+  if FCrossHair then
+  begin
+    if (FCrossHairPicture.Graphic <> nil) and not FCrossHairPicture.Graphic.Empty then
+    begin
+      FCrossHairPicture.Graphic.Transparent := true;
+      Canvas.Draw((Width - FCrossHairPicture.Graphic.Width) div 2 + Dx,
+        (Height - FCrossHairPicture.Graphic.Height) div 2 + Dy,FCrossHairPicture.Graphic);
+    end
+    else
     with Canvas do
     begin
       Pen.Color := FCrosshairColor;
@@ -271,6 +305,7 @@ begin
       MoveTo(Width div 2 - FCrosshairSize div 2 + Dx, Height div 2 + Dy);
       LineTo(Width div 2 + FCrosshairSize div 2 + Dx, Height div 2 + Dy);
     end;
+  end;
 
   if Assigned(FOnContentsChanged) then
     FOnContentsChanged(Self);
@@ -292,6 +327,11 @@ begin
       Cache
     else
       Invalidate;
+  end
+  else
+  begin
+    FLastPoint := Point(MaxLongInt, MaxLongInt);
+    Invalidate;
   end;
 end;
 
@@ -318,9 +358,24 @@ end;
 
 procedure TJvZoom.SetZoomLevel(const Value: Integer);
 begin
-  FZoomLevel := Value;
-  { Forget the old point; thus force repaint }
-  FLastPoint := Point(MaxLongint, MaxLongint);
+  if (FZoomLevel <> Value) and (Value > 0) then
+  begin
+    FZoomLevel := Value;
+    { Forget the old point; thus force repaint }
+    FLastPoint := Point(MaxLongint, MaxLongint);
+    Invalidate;
+  end;
+end;
+
+procedure TJvZoom.SetCrossHair(const Value: Boolean);
+begin
+  if FCrossHair <> Value then
+  begin
+    FCrossHair := Value;
+    { Forget the old point; thus force repaint }
+    FLastPoint := Point(MaxLongint, MaxLongint);
+    Invalidate;
+  end;
 end;
 
 procedure TJvZoom.Resize;
@@ -332,6 +387,37 @@ begin
   PaintMe(Self);
 end;
 
+function TJvZoom.GetZoomPercentage: integer;
+begin
+  if ZoomLevel <> 0 then
+    Result := trunc((100 / ZoomLevel) * 100)
+  else
+    Result := 0;
+end;
+
+procedure TJvZoom.SetZoomPercentage(const Value: integer);
+begin
+  if Value <> 0 then
+    ZoomLevel := trunc((100/Value) * 100);
+end;
+
+procedure TJvZoom.SetCrossHairPicture(const Value: TPicture);
+begin
+  FCrossHairPicture.Assign(Value);
+end;
+
+procedure TJvZoom.ZoomInAt(X, Y: integer);
+begin
+  if Enabled then
+    SetCursorPos(X,Y)
+  else
+  begin
+    FLastPoint.X := X;
+    FLastPoint.Y := Y;
+  end;
+  Invalidate;
+end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -340,6 +426,7 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
