@@ -261,7 +261,7 @@ type
     procedure FontChanged; override;
     procedure DoRangeChange(Sender: TObject);
     procedure DoSelectChar(AChar: WideChar); virtual;
-    //function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -289,7 +289,7 @@ type
     property Align;
     property Anchors; 
     property BorderStyle;
-//    property DoubleBuffered default True;
+    property DoubleBuffered default True;
     property Color;
     property Constraints;
     property Enabled;
@@ -347,7 +347,7 @@ type
   private 
   protected  
     procedure InitWidget; override;
-    function WidgetFlags: Integer; override;
+    function WidgetFlags: Integer; override; 
     procedure VisibleChanged; override;
   public
     property Visible default False;
@@ -365,7 +365,7 @@ type
     FEndChar: Cardinal; 
     FShowShadow: Boolean;
     FShadowSize: Integer;
-    procedure SetCharacter(const Value: WideChar);
+    procedure SetCharacter(const Value: WideChar); 
     procedure UpdateShadow;
     procedure SetShowShadow(const Value: Boolean);
     procedure SetShadowSize(const Value: Integer);
@@ -487,7 +487,7 @@ end;
 constructor TJvCustomCharMap.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
- // DoubleBuffered := True;
+  DoubleBuffered := True;
   //  DefaultDrawing := False;
   //  VirtualView := True;
 
@@ -996,12 +996,11 @@ begin
     PanelVisible := True;
 end;
 
-(*
-function TJvCustomCharMap.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomCharMap.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
 end;
-*)
+
 
 
 //=== { TCharZoomPanel } =====================================================

@@ -180,6 +180,9 @@ begin
     CopyRect( DestRect, FImgMask.Canvas, SrcRect);
     CopyMode := cmSrcPaint;
     CopyRect(DestRect, FImgPict.Canvas, SrcRect);
+//    QWindows.CopyRect( Canvas,  DestRect, FImgMask.Canvas, SrcRect);
+//    CopyMode := cmSrcPaint;
+//    QWindows.CopyRect( Canvas,  DestRect, FImgPict.Canvas, SrcRect);
   end;
 end;
 

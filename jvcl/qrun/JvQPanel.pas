@@ -41,11 +41,12 @@ interface
 uses
   QWindows, QMessages,
   SysUtils, Classes, QGraphics, QControls, QForms, QExtCtrls, 
-  Qt,  
+  Qt, 
   JvQThemes, JvQComponent, JvQExControls, JvQJCLUtils;
 
 type
   TJvPanelResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
+  TJvPanelChangedSizeEvent = procedure(Sender: TObject; ChangedSize : Integer) of object;
   TJvAutoSizePanel = (asNone, asWidth, asHeight, asBoth);
 
   TJvPanel = class;
@@ -105,6 +106,8 @@ type
     FArrangeWidth: Integer;
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
+    FOnChangedWidth: TJvPanelChangedSizeEvent;
+    FOnChangedHeight: TJvPanelChangedSizeEvent;
     FOnPaint: TNotifyEvent;
     FMovable: Boolean;
     FWasMoved: Boolean;
@@ -138,7 +141,7 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure Paint; override;
-//    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override; 
     function DoBeforeMove(X, Y: Integer): Boolean; dynamic;
     procedure DoAfterMove; dynamic; 
     procedure DrawMask(ACanvas: TCanvas); override; 
@@ -178,6 +181,9 @@ type
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property OnResizeParent: TJvPanelResizeParentEvent read FOnResizeParent write FOnResizeParent;
+    property OnChangedWidth: TJvPanelChangedSizeEvent read FOnChangedWidth write FOnChangedWidth;
+    property OnChangedHeight: TJvPanelChangedSizeEvent read FOnChangedHeight write FOnChangedHeight;
+
     property Align;
     property Alignment;
     property Anchors; 
@@ -515,7 +521,7 @@ end;
 
 procedure TJvPanel.DrawCaption;
 begin
-  DrawCaptionTo(self.Canvas);
+  DrawCaptionTo(Self.Canvas);
 end;
 
 procedure TJvPanel.DrawCaptionTo(ACanvas: TCanvas ; DrawingMask: Boolean = False );
@@ -638,15 +644,14 @@ begin
   end;
 end;
 
-(*
-function TJvPanel.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   if Transparent and not IsThemed then
     Result := True
   else
-    Result := inherited DoEraseBackground(Canvas, Param);
+    Result := inherited DoPaintBackground(Canvas, Param);
 end;
-*)
+
 procedure TJvPanel.SetMultiLine(const Value: Boolean);
 begin
   if FMultiLine <> Value then
@@ -957,11 +962,15 @@ begin
   Changed := inherited Width <> Value;
   inherited Width := Value;
   if Changed then
+  begin
+    if Assigned(FOnChangedWidth) then
+      FOnChangedWidth (Self, Value);
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Value, Height)
     else
     if Parent is TJvPanel then
       TJvPanel(Parent).ArrangeSettings.Rearrange;
+  end;
 end;
 
 function TJvPanel.GetWidth: Integer;
@@ -976,11 +985,15 @@ begin
   Changed := inherited Height <> Value;
   inherited Height := Value;
   if Changed then
+  begin
+    if Assigned(FOnChangedHeight) then
+      FOnChangedHeight (Self, Value);
     if Assigned(FOnResizeParent) then
       FOnResizeParent(Self, Left, Top, Width, Value)
     else
     if Parent is TJvPanel then
       TJvPanel(Parent).ArrangeSettings.Rearrange;
+  end;
 end;
 
 function TJvPanel.GetHeight: Integer;

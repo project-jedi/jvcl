@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -26,18 +27,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvQHints;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  
-  
-  QGraphics, QControls, QForms, Types, QWindows,
-  
-  Classes,
+  QWindows, QMessages, QGraphics, QControls, QForms, Classes,
   JvQTypes;
 
 type
@@ -53,12 +50,11 @@ type
     FRect: TRect;
     FTextRect: TRect;
     FTileSize: TPoint;
-    FRoundFactor: Integer;
-    
+    FRoundFactor: Integer; 
     function CreateRegion(Shade: Boolean): HRGN;
     procedure FillRegion(Rgn: HRGN; Shade: Boolean);
-  protected
-//    procedure CreateParams(var Params: TCreateParams); override;
+  protected  
+//    procedure DrawMask(ACanvas: TCanvas); override; 
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -80,6 +76,9 @@ function GetHintControl: TControl;
 implementation
 
 uses
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
   SysUtils, Math,
   JvQJCLUtils;
 
@@ -132,9 +131,9 @@ end;
 
 procedure StandardHintFont(AFont: TFont);
 begin
-  AFont.Name := 'Helvetica';
-  AFont.Height := 11;
-  AFont.Color := clInfoText;
+  AFont.Name := Screen.HintFont.Name;
+  AFont.Size := 8; //Screen.HintFont.Size;
+  AFont.Color := Screen.HintFont.Color;
 end;
 
 
@@ -169,7 +168,7 @@ var
 
 begin
   R := FRect;
-  Result := nil;
+  Result := 0;
   if Shade then
     OffsetRect(R, HintShadowSize, HintShadowSize);
   case HintStyle of
@@ -214,7 +213,7 @@ begin
       try
         CombineRgn(Result, Dest, Tail, RGN_OR);
       finally
-        if Dest <> nil then
+        if Dest <> 0 then
           DeleteObject(Dest);
       end;
     finally
@@ -384,9 +383,9 @@ begin
       with FSrcImage do
       begin
         Width := RectWidth(BoundsRect);
-        Height := RectHeight(BoundsRect);
-        BitBlt(Canvas.Handle, 0, 0, Width, Height, ScreenDC,
-          Rect.Left, Rect.Top, SRCCOPY);
+        Height := RectHeight(BoundsRect);  
+        Qt.BitBlt(QPainter_PaintDevice(Canvas.Handle), 0, 0, Width, Height,
+          QWidget_to_PaintDevice(QApplication_desktop, Rect.Left, Rect.Top, SRCCOPY); 
       end;
     finally
       ReleaseDC(0, ScreenDC);
@@ -407,7 +406,7 @@ var
 begin
   Result := Rect(0, 0, MaxWidth, 0);
   DrawText(Canvas, AHint, -1, Result,
-    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment]);
+    DT_CALCRECT or DT_WORDBREAK or DT_NOPREFIX or Flag[HintAlignment] or );
   Inc(Result.Right, 8);
   Inc(Result.Bottom, 4);
   FRect := Result;
@@ -453,6 +452,22 @@ procedure TJvHintWindow.ActivateHintData(Rect: TRect;
 begin
   ActivateHint(Rect, AHint);
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

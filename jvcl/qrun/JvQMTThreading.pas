@@ -34,9 +34,6 @@ unit JvQMTThreading;
 
 interface
 
-
-
-
 uses
   SysUtils, Classes, SyncObjs, Contnrs,
   {$IFDEF MSWINDOWS}
@@ -181,13 +178,8 @@ begin
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-    {$IFDEF MSWINDOWS}
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(Longword),
       @ThreadNameInfo);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    // TODO
-    {$ENDIF LINUX}
   except
   end; 
 end;
@@ -650,6 +642,7 @@ end;
 
 
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -660,16 +653,17 @@ const
   );
 {$ENDIF UNITVERSIONING}
 
-initialization
+
+initialization 
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
  
 
 finalization 
-
+ 
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING} 
 
 end.

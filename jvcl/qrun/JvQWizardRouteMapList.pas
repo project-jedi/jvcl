@@ -136,14 +136,14 @@ type
     property OnDrawItem: TJvWizardDrawRouteMapListItem read FOnDrawItem write FOnDrawItem;
   end;
 
-
-
 implementation
+
 
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+
 
 constructor TJvWizardRouteMapList.Create(AOwner: TComponent);
 begin
@@ -561,6 +561,7 @@ begin
   UpdateTrackFont(ActiveFont, Font, FActiveFontOptions); 
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -576,6 +577,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

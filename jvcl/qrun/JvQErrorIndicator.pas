@@ -211,12 +211,17 @@ uses
   SysUtils, 
   JvQTypes, JvQResources;
 
+
+
+
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvQErrorIndicator.res}
 {$ENDIF MSWINDOWS}
 {$IFDEF UNIX}
 {$R ../Resources/JvQErrorIndicator.res}
 {$ENDIF UNIX}
+
+
 
 const
   cDefBlinkCount = 5;
@@ -249,7 +254,7 @@ begin
   FDefaultImage := TImageList.CreateSize(16, 16);  
   Bmp := TBitmap.Create;
   Bmp.LoadFromResourceName(hInstance, 'JVERRORINDICATORICON');
-  FDefaultImage.AddMasked(Bmp, clFuchsia);
+  FDefaultImage.AddMasked(Bmp, clBlack);
   Bmp.Free; 
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;

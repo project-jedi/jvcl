@@ -174,6 +174,7 @@ type
     FContinue: Boolean;
     function GetGrabber: TJvHttpUrlGrabber;
     procedure Execute; override;
+    procedure Closed;
   public
     constructor Create(Grabber: TJvCustomUrlGrabber); override;
     property Grabber: TJvHttpUrlGrabber read GetGrabber;
@@ -483,6 +484,7 @@ var
   dwFileSizeHigh: DWORD;
 begin
   Grabber.Stream := nil;
+  SetGrabberStatus(gsStopped);
   hSession := nil;
   hHostConnection := nil;
   hDownload := nil;
@@ -509,6 +511,7 @@ begin
         Password := PChar(strPassword);
 
       // Connect to the web
+      SetGrabberStatus(gsConnecting);
       hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
       if hSession = nil then
       begin
@@ -556,7 +559,9 @@ begin
 
       TotalBytes := 0;
       LocalBytesRead := 1;
+      SetGrabberStatus(gsGrabbing);
       while (LocalBytesRead <> 0) and not Terminated and Continue do // acp
+      begin
         if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), LocalBytesRead) then
           LocalBytesRead := 0
         else
@@ -566,6 +571,9 @@ begin
           Grabber.Stream.Write(Buf, LocalBytesRead);
           DoProgress;
         end;
+      end;
+
+      SetGrabberStatus(gsStopping);
       if not Terminated and Continue then // acp
         Synchronize(Ended);
     except
@@ -593,6 +601,7 @@ begin
       Synchronize(Error);
     end;
     Synchronize(Closed);
+    SetGrabberStatus(gsStopped);
   end;
 end;
 
@@ -602,6 +611,11 @@ begin
 end;
 
 //=== { TJvHttpUrlGrabberThread } ============================================
+
+procedure TJvHttpUrlGrabberThread.Closed;
+begin
+  Grabber.DoClosed;
+end;
 
 constructor TJvHttpUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
@@ -622,6 +636,7 @@ begin
   Buffer := nil;
 
   FContinue := True;
+  SetGrabberStatus(gsStopped);
   Grabber.Stream := nil;
   hSession := nil;
   hHostConnection := nil;
@@ -650,6 +665,7 @@ begin
       ErrorText := '';
 
       //Connect to the web
+      SetGrabberStatus(gsConnecting);
       hSession := InternetOpen(PChar(Grabber.Agent), INTERNET_OPEN_TYPE_PRECONFIG, nil, nil, 0);
       if hSession = nil then
       begin
@@ -709,10 +725,12 @@ begin
         Grabber.SetSize(0);
 
       dwTotalBytes := 0;
+      SetGrabberStatus(gsGrabbing);
       if HasSize then
       begin
         dwBytesRead := 1;
         while (dwBytesRead > 0) and not Terminated and FContinue do
+        begin
           if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) then
             dwBytesRead := 0
           else
@@ -722,6 +740,9 @@ begin
             Grabber.Stream.Write(Buf, dwBytesRead);
             DoProgress;
           end;
+        end;
+
+        SetGrabberStatus(gsStopping);
         if FContinue and not Terminated then
           Synchronize(Ended);
       end
@@ -734,6 +755,8 @@ begin
           Grabber.Stream.Write(Buf, dwBytesRead);
           Synchronize(UpdateGrabberProgress);
         end;
+
+        SetGrabberStatus(gsStopping);
         if FContinue and not Terminated then
           Synchronize(Ended);
       end;
@@ -762,6 +785,8 @@ begin
       ErrorText := GetLastInternetError;
       Synchronize(Error);
     end;
+    Synchronize(Closed);
+    SetGrabberStatus(gsStopped);
   end;
 end;
 
@@ -851,6 +876,7 @@ var
   AFileStream: TFileStream;
   Attrs: Integer;
 begin
+  SetGrabberStatus(gsStopped);
   Grabber.Stream := nil;
   Grabber.ParseUrl(Grabber.Url, FileName);
   if not FileExists(FileName) then
@@ -866,6 +892,7 @@ begin
     Attrs := 0;
   try
     ErrorText := '';
+    SetGrabberStatus(gsConnecting);
     Grabber.Stream := TMemoryStream.Create;
     AFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyNone);
     try
@@ -875,6 +902,7 @@ begin
       DoProgress;
       TotalBytes := 0;
       BytesRead := 1;
+      SetGrabberStatus(gsGrabbing);
       while (BytesRead <> 0) and not Terminated and Continue do
       begin
         BytesRead := AFileStream.Read(Buf, SizeOf(Buf));
@@ -885,6 +913,7 @@ begin
           Grabber.Stream.Write(Buf, BytesRead);
         DoProgress;
       end;
+      SetGrabberStatus(gsStopping);
       if not Terminated and Continue then // acp
         Synchronize(Ended);
       if Grabber.PreserveAttributes and FileExists(Grabber.FileName) then
@@ -893,6 +922,7 @@ begin
       AFileStream.Free;
       Grabber.Stream.Free;
       Grabber.Stream := nil;
+      SetGrabberStatus(gsStopped);
     end;
   except
 //    Application.HandleException(Self);

@@ -3325,7 +3325,7 @@ begin
     Result := CreateBitmap(Size.X, Size.Y, 1, 1, nil)
   else
   begin
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     if DC = NullHandle then
       OutOfResources;
     try
@@ -3333,7 +3333,7 @@ begin
       if Result = NullHandle then
         OutOfResources;
     finally
-      ReleaseDC(0, DC);
+      ReleaseDC(HWND_DESKTOP, DC);
     end;
   end;
   if Result <> NullHandle then
@@ -3372,7 +3372,7 @@ begin
     biSizeImage := WidthBytes(Longint(biWidth) * biBitCount) * biHeight;
     NumColors := GetDInColors(biBitCount);
   end;
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   if DC = NullHandle then
     OutOfResources;
   try
@@ -3408,7 +3408,7 @@ begin
       DeleteObject(Temp);
     end;
   finally
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 
@@ -3438,7 +3438,7 @@ begin
     Stream.Read(List^, HeaderLen);
     IconSize.X := GetSystemMetrics(SM_CXICON);
     IconSize.Y := GetSystemMetrics(SM_CYICON);
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     if DC = NullHandle then
       OutOfResources;
     try
@@ -3448,7 +3448,7 @@ begin
       else
         Colors := 1 shl BitsPerPixel;
     finally
-      ReleaseDC(0, DC);
+      ReleaseDC(HWND_DESKTOP, DC);
     end;
     Index := -1;
     { the following code determines which image most closely matches the
@@ -6821,9 +6821,9 @@ end;
 
 function RegisterServer(const ModuleName: string): Boolean;
 type
-  TCOMFunc = function:HResult;
+  TCOMFunc = function: HRESULT;
 const
-  S_OK    = $00000000;
+  S_OK = $00000000;
 var
   Handle: THandle;
   DllRegServ: TCOMFunc;
@@ -7122,7 +7122,7 @@ var
 begin
   with BrowseInfo do
   begin  
-    hwndOwner := QWidget_WinID(Handle); 
+    hwndOwner := QWidget_winId(Handle); 
     pidlRoot := nil;
     pszDisplayName := FN;
     lpszTitle := PChar(Title);
@@ -7338,13 +7338,14 @@ end;
 
 
 
+
 { JclQGraphics: Crossplatform versions  }
 
 procedure ScreenShot(Bmp: TBitmap; Left, Top, Width, Height: Integer; Window: QWidgetH); {overload;}
 begin
   if not Assigned(Bmp.Handle) then
     Bmp.Handle := QPixmap_create;
-  QPixmap_grabWindow(Bmp.Handle, QWidget_winID(Window), Left, Top, Width, Height);
+  QPixmap_grabWindow(Bmp.Handle, QWidget_winId(Window), Left, Top, Width, Height);
 end;
 
 function CreateRegionFromBitmap(Bitmap: TBitmap; RegionColor: TColor;

@@ -1269,8 +1269,6 @@ begin
   if FDown then
     OffsetRect(FImageRect, FOffset, FOffset);
   FSmallImages.Draw(Canvas, FImageRect.Left, FImageRect.Top, FImageIndex);
-  {   ImageList_DrawEx(FSmallImages.Handle,FImageIndex,Canvas.Handle,
-         FImageRect.Left,FImageRect.Top,0,0,clNone,clNone,ILD_TRANSPARENT);}
 end;
 
 procedure TJvCustomLookOutButton.DrawLargeImages;
@@ -1278,9 +1276,6 @@ begin
   if FDown then
     OffsetRect(FImageRect, FOffset, FOffset);
   FLargeImages.Draw(Canvas, FImageRect.Left, FImageRect.Top, FImageIndex);
-
-  {  ImageList_DrawEx(FLargeImages.Handle,FImageIndex,Canvas.Handle,
-       FImageRect.Left,FImageRect.Top,0,0,clNone,clNone,ILD_TRANSPARENT);}
 end;
 
 procedure TJvCustomLookOutButton.PaintFrame;
@@ -2633,7 +2628,7 @@ begin
     ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);
     OffsetRect(RW, -RW.Left, -RW.Top);
     if FBorderStyle = bsSingle then
-    begin
+    begin 
       DrawEdge(DC, RW, EDGE_SUNKEN, BF_RECT)
     end
     else
@@ -2654,8 +2649,8 @@ end;
 procedure TJvLookOut.Paint;
 begin
   if not (Visible or (csDesigning in ComponentState)) then
-    Exit;
-  Perform(WM_NCPAINT, 1, 0);
+    Exit; 
+  Perform(WM_NCPAINT, 1, 0); 
   Canvas.Brush.Color := Color;
   Canvas.FillRect(GetClientRect);
   { make TJvLookOuts adjust to Managers size }

@@ -64,6 +64,7 @@ type
   TJvListBoxDataEvent = procedure(Sender: TWinControl; Index: Integer; var Text: string) of object; // JvListBox
   TJvComboListBox = class(TJvExCustomListBox) 
   private
+    FMouseOver: Boolean;
     FPushed: Boolean;
     FDropdownMenu: TPopupMenu;
     FDrawStyle: TJvComboListBoxDrawStyle;
@@ -190,11 +191,12 @@ procedure TJvComboListBox.MouseLeave(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if MouseOver then
+  inherited MouseLeave(Control);
+  if FMouseOver then
   begin
     InvalidateItem(ItemIndex);
+    FMouseOver := False;
   end;
-  inherited MouseLeave(Control);
   if HotTrackCombo and (FLastHotTrack > -1) then
   begin
     InvalidateItem(FLastHotTrack);
@@ -408,7 +410,7 @@ begin
       begin
         TmpRect := Classes.Rect(Rect.Right - ButtonWidth - 1,
           Rect.Top + 1, Rect.Right - 2 - Ord(FPushed), Rect.Bottom - 2 - Ord(FPushed));
-        DrawComboArrow(Canvas, TmpRect, MouseOver and Focused, FPushed);
+        DrawComboArrow(Canvas, TmpRect, FMouseOver and Focused, FPushed);
       end;
       Canvas.Brush.Style := bsSolid;
     end
@@ -487,7 +489,7 @@ procedure TJvComboListBox.MouseDown(Button: TMouseButton; Shift: TShiftState;
 var
   I: Integer;
   R: TRect;
-  P: TPoint;
+  P: TPoint; 
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if ItemIndex > -1 then
@@ -497,7 +499,7 @@ begin
     R := ItemRect(I);
     if (I = ItemIndex) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
     begin
-      MouseOver := True;
+      FMouseOver := True;
       FPushed := True;
       InvalidateItem(I);
       if (DropdownMenu <> nil) and DoDropDown(I, X, Y) then
@@ -514,7 +516,7 @@ begin
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := Self;
         DropdownMenu.Popup(P.X, P.Y);  
-//        QWindows.IgnoreMouseEvents(Handle); 
+        //QWindows.IgnoreMouseEvents(Handle); 
       end;
       MouseUp(Button, Shift, X, Y);
     end;
@@ -542,16 +544,16 @@ begin
     end;
     if ((I = ItemIndex) or HotTrackCombo) and (X >= R.Right - ButtonWidth) and (X <= R.Right) then
     begin
-      if not MouseOver then
+      if not FMouseOver then
       begin
-        MouseOver := True;
+        FMouseOver := True;
         InvalidateItem(I);
       end;
     end
     else
-    if MouseOver then
+    if FMouseOver then
     begin
-      MouseOver := False;
+      FMouseOver := False;
       InvalidateItem(I);
     end;
   end;

@@ -39,22 +39,23 @@ uses
   JvQComponent;
 
 type
-  // (ahuer) changed NameValues: TStringList to TStrings
+  // (ahuser) changed NameValues: TStringList to TStrings
   TCursorChangedEvent = procedure(Sender: TObject; NameValues: TStrings;
     FieldCount: Integer) of object;
 
   TJvCSVBase = class(TJvComponent)
   private
     FDBOpen: Boolean;
-    FDB: TStrings;
-    FDBRecord: TStrings;
-    FDBFields: TStrings;
+    FDB: TStringList;
+    FDBRecord: TStringList;
+    FDBFields: TStringList;
     FDBCursor: Integer;
     FOnCursorChanged: TCursorChangedEvent;
     FCSVFileName: string;
-    FCSVFieldNames: TStrings;
+    FCSVFieldNames: TStringList;
     procedure DoCursorChange;
     procedure SetCSVFileName(const Value: string);
+    function GetCSVFieldNames: TStrings;
     procedure SetCSVFieldNames(const Value: TStrings);
     procedure DisplayFields(NameValues: TStrings);
   protected
@@ -79,7 +80,7 @@ type
     procedure Display;
   published
     property CSVFileName: string read FCSVFileName write SetCSVFileName;
-    property CSVFieldNames: TStrings read FCSVFieldNames write SetCSVFieldNames;
+    property CSVFieldNames: TStrings read GetCSVFieldNames write SetCSVFieldNames;
     property OnCursorChanged: TCursorChangedEvent read FOnCursorChanged write FOnCursorChanged;
   end;
 
@@ -117,7 +118,6 @@ type
     procedure SetCSVField(const Value: string);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-  public
   published
     property CSVDataBase: TJvCSVBase read FCSVDataBase write SetCSVDataBase;
     property CSVField: string read FCSVField write SetCSVField;
@@ -594,6 +594,11 @@ begin
 
   FDB[FDBCursor] := FDBRecord.CommaText;
   FDB.SaveToFile(CSVFileName);
+end;
+
+function TJvCSVBase.GetCSVFieldNames: TStrings;
+begin
+  Result := FCSVFieldNames;
 end;
 
 procedure TJvCSVBase.SetCSVFieldNames(const Value: TStrings);

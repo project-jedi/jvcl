@@ -100,10 +100,7 @@ end;
 procedure TJvMaxPixel.SetFont(const Value: TFont);
 begin
   if Value <> FFont then
-  begin
     FFont.Assign(Value);
-    Changed;
-  end;
 end;
 
 procedure TJvMaxPixel.SetLength(const Value: Integer);
@@ -140,8 +137,8 @@ begin
         Font.Assign(FFont);
 
       Result := TextWidth(Value) > Length;
-      while (TextWidth(Value) > Length) and (Value <> '') do
-        Value := Copy(Value, 1, System.Length(Value) - 1);
+      while (Value <> '') and (TextWidth(Value) > Length) do
+        Delete(Value, System.Length(Value), 1);
     finally
       Free;
     end;

@@ -40,7 +40,7 @@ unit JvQArrowButton;
 interface
 
 uses
-  Classes, QWindows, QMessages, QControls, QGraphics, QButtons, QMenus,  
+  Classes, QWindows, QMessages, QControls, QGraphics, QButtons, QMenus,
   QImgList, 
   JvQComponent, JvQTypes;
 
@@ -78,7 +78,7 @@ type
     procedure SetArrowWidth(Value: Integer);
     procedure SetFillFont(Value: TFont);
     procedure UpdateTracking;
-    procedure CMButtonPressed(var Msg: TJvCMButtonPressed); message CM_BUTTONPRESSED; 
+    procedure CMButtonPressed(var Msg: TCMButtonPressed); message CM_BUTTONPRESSED;
   protected
     FState: TButtonState; 
     procedure Loaded; override;
@@ -1029,7 +1029,7 @@ end;
 
 procedure TJvArrowButton.UpdateExclusive;
 var
-  Msg: TJvCMButtonPressed;
+  Msg: TCMButtonPressed;
 begin
   if (GroupIndex <> 0) and (Parent <> nil) then
   begin
@@ -1154,7 +1154,7 @@ begin
   Repaint;
 end;
 
-procedure TJvArrowButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
+procedure TJvArrowButton.CMButtonPressed(var Msg: TCMButtonPressed);
 var
   Sender: TJvArrowButton; 
 begin

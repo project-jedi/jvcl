@@ -275,7 +275,7 @@ type
   protected 
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override; 
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoPaintBackGround(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure FontChanged; override; 
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -1304,7 +1304,8 @@ end;
 
 procedure TJvCustomOutlookBar.Notification(AComponent: TComponent;
   Operation: TOperation);
-var I, J:Integer;
+var
+  I, J: Integer;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
@@ -1829,17 +1830,17 @@ var
 begin
   if csDestroying in ComponentState then
     Exit;
-  Canvas.Brush.Style := bsSolid;  
   Canvas.Font := Self.Font;
   Canvas.Brush.Color := Self.Color;
-  Canvas.Brush.Style := bsSolid;
   if Pages.Count = 0 then // we only need to draw the background when there are no pages
-  begin
+  begin 
     begin
       if DoDrawBackGround then
         Canvas.FillRect(ClientRect);
     end;
   end;
+  SetBkMode(Canvas.Handle, TRANSPARENT);  
+  Canvas.Brush.Style := bsSolid;
   I := DrawTopPages;
   DrawBottomPages(I + 1);
   if I >= 0 then
@@ -2159,7 +2160,7 @@ begin
   Inc(Result, 4);
 end;
 
-function TJvCustomOutlookBar.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomOutlookBar.DoPaintBackGround(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   // don't redraw background: we always fill it anyway
   Result := True;
@@ -2167,7 +2168,7 @@ end;
 
 procedure TJvCustomOutlookBar.RedrawRect(R: TRect; Erase: Boolean = False);
 begin
-//  QWindows.InvalidateRect(Handle, @R, Erase);
+  QWindows.InvalidateRect(Handle, @R, Erase);
 end;
 
 procedure TJvCustomOutlookBar.CMCaptionEditing(var Msg: TMessage);

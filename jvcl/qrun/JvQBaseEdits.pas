@@ -41,7 +41,7 @@ unit JvQBaseEdits;
 interface
 
 uses
-  QWindows, QMessages, Classes, QControls, QImgList,
+  QWindows, Classes, QControls, QImgList, QMessages, 
   JvQToolEdit;
 
 type
@@ -850,7 +850,7 @@ var
   S: string;
   WasModified: Boolean;
 begin
-//  Mesg.Result := 1;
+  Mesg.Result := 1;
   WasModified := Modified;
   S := EditText;
   try

@@ -257,7 +257,7 @@ end;
 
 procedure TJvCustomThreadDialogForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  CanClose := JvThreadComp(fConnectedThread).Terminated;
+  CanClose := JvThreadComp(FConnectedThread).Terminated;
 end;
 
 //=== { TJvCustomThreadDialog } ==============================================
@@ -559,7 +559,8 @@ begin
       Parent := FAnimatePanel;
       Top := 0;
       Left := 0;
-      AutoSize := True; 
+      AutoSize := True;
+//      CommonAVI := TJvThreadAnimateDialogOptions(DialogOptions).CommonAVI;
       FileName := TJvThreadAnimateDialogOptions(DialogOptions).FileName;
       FAnimatePanel.Height := Height + 6;
     end;

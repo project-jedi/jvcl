@@ -90,9 +90,9 @@ implementation
 
 
 uses
-{$IFDEF UNITVERSIONING}
+  {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-{$ENDIF UNITVERSIONING}
+  {$ENDIF UNITVERSIONING}
   JvQResources;
 
 
@@ -378,6 +378,7 @@ begin
   Result := PreviousStepText <> RsBackTo;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -393,6 +394,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

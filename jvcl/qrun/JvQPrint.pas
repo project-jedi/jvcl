@@ -49,7 +49,7 @@ type
     FOnFinishedPrint: TNotifyEvent;
     FOnProgress: TJvProgressEvent;
     FOnNextPage: TJvNextPageEvent;
-    FOwnerDraw: boolean;
+    FOwnerDraw: Boolean;
     FOnMeasureItem: TJvPrintMeasureItemEvent;
     FOnDrawItem: TJvPrintDrawItemEvent;
   protected
@@ -63,7 +63,7 @@ type
     procedure PrintHTML(Value: TStrings);
     procedure PrintImage(Value: TBitmap; Style: TJvBitmapStyle);
     procedure Abort;
-    property OwnerDraw:boolean read FOwnerDraw write FOwnerDraw default false;
+    property OwnerDraw: Boolean read FOwnerDraw write FOwnerDraw default False;
     property OnBeginPrint: TNotifyEvent read FOnBeginPrint write FOnBeginPrint;
     property OnFinishedPrint: TNotifyEvent read FOnFinishedPrint write FOnFinishedPrint;
     property OnProgress: TJvProgressEvent read FOnProgress write FOnProgress;
@@ -100,7 +100,7 @@ begin
   begin
     if Assigned(FOnProgress) then
       FOnProgress(Self, I + 1, Value.Count);
-    LineHeight := MeasureItem(Printer.Canvas, I, Value[i]);
+    LineHeight := MeasureItem(Printer.Canvas, I, Value[I]);
     // JvHtControls:
     // AHeight := ItemHTHeight(ACanvas, AItem, GetScaleX)+1;
     if LineTop + LineHeight > Printer.PageHeight then
@@ -152,7 +152,7 @@ begin
         FOnNextPage(Self, PageNum);
     end;
     LRect := Rect(0,Line, Printer.PageWidth , LHeight);
-    HTMLDrawText(Printer.Canvas,LRect,[odReserved1], Value[i], LPixels);
+    HTMLDrawText(Printer.Canvas,LRect,[odReserved1], Value[I], LPixels);
     Line := Line + LHeight;
   end;
   Printer.EndDoc;

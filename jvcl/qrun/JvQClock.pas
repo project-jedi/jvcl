@@ -278,14 +278,14 @@ var
   hSize: Integer; { width of the display in millimeters       }
   DC: HDC;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   try
     VRes := GetDeviceCaps(DC, VERTRES);
     HRes := GetDeviceCaps(DC, HORZRES);
     vSize := GetDeviceCaps(DC, VERTSIZE);
     hSize := GetDeviceCaps(DC, HORZSIZE);
   finally
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
   AspectV := (Longint(VRes) * MmPerDm) div Longint(vSize);
   AspectH := (Longint(HRes) * MmPerDm) div Longint(hSize);
@@ -424,7 +424,7 @@ begin
   W := (Rect.Right - Rect.Left - 30);
   if (H <= 0) or (W <= 0) then
     Exit;
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   try
     Canvas.Handle := DC;
     Canvas.Font := Font;
@@ -442,7 +442,7 @@ begin
     Font := Canvas.Font;
   finally  
     Canvas.Handle := nil; 
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 

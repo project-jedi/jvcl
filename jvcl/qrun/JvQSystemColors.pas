@@ -221,7 +221,7 @@ begin
   begin
     For I:= 0 to Screen.CustomFormCount - 1 do
     begin
-      THackedForm(Screen.CustomForms[i]).RecreateWidget;
+//      THackedForm(Screen.CustomForms[i]).RecreateWidget;
     end;
   end;
 end;

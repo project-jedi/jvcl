@@ -264,9 +264,9 @@ var
     R := BoxItemRect(List, Idx);
     P := List.ClientToScreen(R.TopLeft);
     R := Bounds(P.X, P.Y, R.Right - R.Left, R.Bottom - R.Top);
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     DrawFocusRect(DC, R);
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 
 begin

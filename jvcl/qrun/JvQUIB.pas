@@ -413,7 +413,7 @@ TJvUIBComponent = class(TJvComponent)
     { Interbase 7.1 spceficic, Start a savepoint.
       On Firebird 1.5 this must be call by SQL.}
     procedure SavepointStart(const Name: string);
-{$ENDIF}
+{$ENDIF IB71_UP}
     property InTransaction: Boolean read GetInTransaction;
     {Transaction handle.}
     property TrHandle: IscTrHandle read FTrHandle;
@@ -753,7 +753,13 @@ TJvUIBComponent = class(TJvComponent)
   end;
 
 implementation
-uses JvQUIBMetaData, Math;
+
+uses 
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING} 
+  Math,
+  JvQUIBMetaData;
 
 type
   PExceptionInfo = ^TExceptionInfo;
@@ -2040,7 +2046,7 @@ begin
             blr_int64     : Params.AddFieldType(Trim(AsString[1]), uftInt64);
           {$IFDEF IB7_UP}
             blr_boolean_dtype : Params.AddFieldType(Trim(AsString[1]), uftBoolean);
-          {$ENDIF}
+          {$ENDIF IB7_UP}
           else
             // shouldn't occur but ...
             raise Exception.Create(EUIB_UNEXPECTEDERROR);
@@ -2411,7 +2417,7 @@ begin
   BeginTransaction;
   FDataBase.FLibrary.SavepointStart(FTrHandle, Name);
 end;
-{$ENDIF}
+{$ENDIF IB71_UP}
 
 function TJvUIBTransaction.GetInTransaction: Boolean;
 begin
@@ -2583,14 +2589,14 @@ procedure TJvUIBComponent.Lock;
 begin
 {$IFDEF UIBTHREADSAFE}
   FCriticalsection.Enter;
-{$ENDIF}
+{$ENDIF UIBTHREADSAFE}
 end;
 
 procedure TJvUIBComponent.UnLock;
 begin
 {$IFDEF UIBTHREADSAFE}
   FCriticalsection.Leave;
-{$ENDIF}
+{$ENDIF UIBTHREADSAFE}
 end;
 
 { TJvUIBService }
@@ -2935,7 +2941,7 @@ begin
             Transaction.SavepointRelease(Grammar.RootNode.Nodes[i].Nodes[0].Value);
           NodeSavepointUndo:
             Transaction.SavepointRollback(Grammar.RootNode.Nodes[i].Nodes[0].Value);
-        {$ENDIF}
+        {$ENDIF IB71_UP}
           NodeSelect, // perhaps a select statement execute a procedure ...
           NodeInsert,
           NodeDeleteSearched,
@@ -2996,5 +3002,23 @@ begin
   FUDFs := ALLUDFs;
   FSysInfos := False;
 end;
+
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 
 end.

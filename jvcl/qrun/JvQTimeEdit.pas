@@ -149,12 +149,14 @@ Constructor TJvTimeSpin.create(AOwner: TComponent);
 begin
   inherited;
   ValueType := vtFloat;
-  EditText := FormatDateTime(LongTimeFormat, 0.5);;
+  EditText := FormatDateTime(LongTimeFormat, 0.5);
   EditMask := '!90:00:00;1;';
   MinValue := 0.0;
   MaxValue := 1.0;
   AutoSelect := false;
   ButtonKind := bkClassic;
+  InputKeys := InputKeys + [ikArrows];
+  ArrowKeys := True;
 end;
 
 procedure TJvTimeSpin.setTime(value :TTime);
@@ -185,12 +187,13 @@ var
   tf : TTimeField;
   cp : integer;
 begin
+  CheckCursor;
   tf := GetTimeField;
   Increment := GetDelta(tf);
-  cp := CursorPos;
+//  cp := CursorPos;
   inherited;
-  CursorPos := cp;
-  SetSelection(tf);
+//  CursorPos := cp;
+//  SetSelection(tf);
 end;
 
 procedure TJvTimeSpin.DownClick(Sender: TObject);
@@ -198,19 +201,22 @@ var
   tf : TTimeField;
   cp : integer;
 begin
+  CheckCursor;
   tf := GetTimeField;
   Increment := GetDelta(tf);
-  cp := CursorPos;
+//  cp := CursorPos;
   inherited;
-  CursorPos := cp;
-  SetSelection(tf);
+//  CursorPos := cp;
+//  SetSelection(tf);
 end;
 
 function TJvTimeSpin.GetTimeField : TTimeField;
 var
   CrsrPos : integer;
 begin
-  CrsrPos := QClxLineEdit_cursorPosition(Handle);
+//  CheckCursor;
+  CrsrPos := QLineEdit_cursorPosition(Handle);//self.cursorpos;
+  //QLineEdit_cursorPosition
   if CrsrPos > 5
   then
     Result := teSeconds    // 1 second
@@ -235,7 +241,8 @@ end;
 
 procedure TJvTimeSpin.DoEnter;
 begin
-//  inherited DoEnter;
+  inherited DoEnter;
+  CheckCursor;
   SetSelection(GetTimeField);
 end;
 

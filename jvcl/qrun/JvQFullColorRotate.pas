@@ -60,17 +60,13 @@ type
   TJvAxisDelta = class(TPersistent)
   private
     FConstituents: array [TJvAxisIndex] of TJvRotateValue;
-
     function GetConstituents(Index: TJvAxisIndex): TJvRotateValue;
-    procedure SetConstituents(Index: TJvAxisIndex;
-      const Value: TJvRotateValue);
+    procedure SetConstituents(Index: TJvAxisIndex; const Value: TJvRotateValue);
   public
     constructor Create;
     destructor Destroy; override;
-
     procedure Assign(Value: TJvAxisDelta); reintroduce;
-
-    property Constituents[Index: TJvAxisIndex]:TJvRotateValue read GetConstituents write SetConstituents; default;
+    property Constituents[Index: TJvAxisIndex]: TJvRotateValue read GetConstituents write SetConstituents; default;
   end;
 
   TJvColorDelta = class(TPersistent)
@@ -85,9 +81,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-
     procedure Assign(Value: TJvColorDelta); reintroduce;
-
     property ColorID: TJvFullColorSpaceID read FColorID write FColorID default csRGB;
     property AxisRed: TJvAxisDelta read FAxisRed write SetAxisRed;
     property AxisGreen: TJvAxisDelta read FAxisGreen write SetAxisGreen;
@@ -101,10 +95,10 @@ procedure RotateBitmap(SourceBitmap, DestBitmap: TBitmap;
 
 implementation
 
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 // (rom) reworked for loops
 function RotateColor(AColor: TJvFullColor; AColorDelta: TJvColorDelta): TJvFullColor;
@@ -117,6 +111,7 @@ var
   MaxColorAxis:Integer;
   SourceColorSpace, DeltaColorSpace: TJvColorSpace;
   LColor: TColor;
+
   function DoRotate(AValue: TJvFullColor; AAxisDelta: TJvAxisDelta): TColor;
   var
     I: TJvAxisIndex;
@@ -131,7 +126,9 @@ var
           ValueAxis[I] := MaxAxis[I];
         if ValueAxis[I] < MinAxis[I] then
           ValueAxis[I] := MinAxis[I];
-      end else begin
+      end
+      else
+      begin
         Range := MaxAxis[I] - MinAxis[I] + 1;
         while ValueAxis[I] < MinAxis[I] do
           Inc(ValueAxis[I], Range);
@@ -200,7 +197,8 @@ var
   MaxColorAxis: SmallInt;
   DeltaColorSpace: TJvColorSpace;
   DestLine, SourceLine: PCardinal;
-  procedure DoRotate(Color:TColor; AAxisDelta: TJvAxisDelta; out DestColor:TFullColorValue);
+
+  procedure DoRotate(Color: TColor; AAxisDelta: TJvAxisDelta; out DestColor: TFullColorValue);
   var
     I: TJvAxisIndex;
     Range: Integer;
@@ -217,7 +215,9 @@ var
           ColorValue[I] := MaxAxis[I];
         if ColorValue[I] < MinAxis[I] then
           ColorValue[I] := MinAxis[I];
-      end else begin
+      end
+      else
+      begin
         Range := MaxAxis[I] - MinAxis[I] + 1;
         while ColorValue[I] < MinAxis[I] do
           Inc(ColorValue[I], Range);
@@ -231,6 +231,7 @@ var
     DestColor[axIndex1] := (Color shr 8) and $FF;
     DestColor[axIndex2] := (Color shr 16) and $FF;
   end;
+
 begin
   DestBitmap.Width := SourceBitmap.Width;
   DestBitmap.Height := SourceBitmap.Height;
@@ -294,22 +295,13 @@ begin
   DestBitmap.PixelFormat := OriginalPixelFormat;
 end;
 
-{ TJvAxisDelta }
-
-procedure TJvAxisDelta.Assign(Value: TJvAxisDelta);
-var
-  Index: TJvAxisIndex;
-begin
-  for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
-    FConstituents[Index].Assign(Value[Index]);
-end;
+//=== { TJvAxisDelta } =======================================================
 
 constructor TJvAxisDelta.Create;
 var
   Index: TJvAxisIndex;
 begin
   inherited Create;
-
   for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     FConstituents[Index] := TJvRotateValue.Create;
 end;
@@ -320,8 +312,15 @@ var
 begin
   for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
     FConstituents[Index].Free;
-
   inherited Destroy;
+end;
+
+procedure TJvAxisDelta.Assign(Value: TJvAxisDelta);
+var
+  Index: TJvAxisIndex;
+begin
+  for Index := Low(TJvAxisIndex) to High(TJvAxisIndex) do
+    FConstituents[Index].Assign(Value[Index]);
 end;
 
 function TJvAxisDelta.GetConstituents(Index: TJvAxisIndex): TJvRotateValue;
@@ -335,16 +334,7 @@ begin
   FConstituents[Index].Assign(Value);
 end;
 
-{ TJvColorDelta }
-
-procedure TJvColorDelta.Assign(Value: TJvColorDelta);
-begin
-  AxisRed.Assign(Value.AxisRed);
-  AxisGreen.Assign(Value.AxisGreen);
-  AxisBlue.Assign(Value.AxisBlue);
-
-  ColorID := Value.ColorID;
-end;
+//=== { TJvColorDelta } ======================================================
 
 constructor TJvColorDelta.Create;
 begin
@@ -360,8 +350,15 @@ begin
   FAxisRed.Free;
   FAxisGreen.Free;
   FAxisBlue.Free;
-
   inherited Destroy;
+end;
+
+procedure TJvColorDelta.Assign(Value: TJvColorDelta);
+begin
+  AxisRed.Assign(Value.AxisRed);
+  AxisGreen.Assign(Value.AxisGreen);
+  AxisBlue.Assign(Value.AxisBlue);
+  ColorID := Value.ColorID;
 end;
 
 procedure TJvColorDelta.SetAxisBlue(const Value: TJvAxisDelta);
@@ -379,7 +376,7 @@ begin
   FAxisRed.Assign(Value);
 end;
 
-{ TJvRotateValue }
+//=== { TJvRotateValue } =====================================================
 
 constructor TJvRotateValue.Create;
 begin

@@ -29,86 +29,155 @@ interface
 
 uses
   Classes, SysUtils,
-  Qt, QWindows, QMessages, QControls, QForms;
+  Qt, QWindows, QGraphics, QControls, QForms;
 
 type
-  { implements double buffered painting & handles WM_ERASEBKGND }
-  TJvDoubleBuffered = class(TJvEventFilter)
+  TJvDoubleBuffered = class(TComponent)
   private
-    FDoubleBuffered: boolean;
+    FHook: QApplication_hookH;
+    FPaintObject: QObjectH;
+    FIgnoreList: TList;
+  protected
+    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; cdecl;
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure OnEventFilter(Sender: QObjectH; Event: QEventH; var Handled: Boolean); override;
-    property Enabled: Boolean read FDoubleBuffered write FDoubleBuffered default true;
+    destructor Destroy; override;
   end;
-
-var
-  DoubleBuffering: TJvDoubleBuffered;  // global doublebuffering
 
 implementation
 
 type
   THackedWidgetControl = class(TWidgetControl);
 
-constructor TJvDoubleBuffered.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FDoubleBuffered := true;
-end;
-
-procedure TJvDoubleBuffered.OnEventFilter(Sender: QObjectH; Event: QEventH; var Handled: Boolean);
+function SetPixmapMask(Pixmap: QPixmapH; RegionForMask: QRegionH): boolean;
 var
-  Instance: TObject;
-  PixMap: QPixmapH;
-  R: TRect;
-  PaintEvent: QPaintEventH;
+  Bmp: QBitmapH;
+  Painter: QPainterH;
+  Canvas: TCanvas;
+  w, h: integer;
 begin
-  Handled := false;
-
-  if not QEvent_isQPaintEvent(Event) then
-    exit;
-
-  // only widgetcontrols receive a paintevent
-  Instance := TWidgetControl(FindObject(Sender));
-  with Instance as TWidgetControl do
-  begin
-
-    if (csDestroying in ComponentState) or
-       ([csCreating, csRecreating]* Instance.ControlState <> []) then
-    begin
-      // (Re)Post the event in case of csCreating, csRecreating ?
-      Handled := True;
-      exit;
-    end;
-
-    if csWidgetPainting in ControlState then
-    begin
-      Handled := SendMessage(Handle, WM_ERASEBKGND, 0, 0) <> 0;
-      exit;
-    end;
-
-    if (csPaintCopy in ControlState) or not FDoubleBuffered then
-      exit
-    else
-    begin
-      QRegion_boundingRect(QPaintEvent_region(QPaintEventH(Event)), @R);
-      Pixmap := QPixmap_create ;
+  Result := false;
+  w := QPixmap_width(Pixmap);
+  h := QPixmap_height(Pixmap);
+  Bmp := QBitmap_Create(w, h, True, QPixmapOptimization_DefaultOptim);
+  try
+    Painter := QPainter_create(Bmp);
+    try
+      Canvas := TCanvas.Create;
       try
-        ControlState := ControlState + [csPaintCopy];
-        QPixmap_grabWidget(PixMap, Handle, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
-        Qt.BitBlt(THackedWidgetControl(Instance).GetPaintDevice, R.Left, R.Top, PixMap, 0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP, False);
-        Handled := True;
+        Canvas.Start(False);
+        Canvas.Handle := Painter;
+        with Canvas do
+        begin
+          Brush.Color := clMask;
+          FillRect(Rect(0, 0, w, h));
+          QPainter_setClipRegion(Painter, RegionForMask);
+          Brush.Color := clDontMask;
+          FillRect(Rect(0, 0, w, h));
+        end;
+        Canvas.Stop;
       finally
-        ControlState := ControlState - [csPaintCopy];
-        QPixMap_destroy(PixMap);
+        Canvas.Free;
       end;
+      QPixmap_setMask(Pixmap, bmp);
+      Result := True;
+    finally
+      QPainter_destroy(Painter);
     end;
+  finally
+    QBitmap_destroy(Bmp);
   end;
 end;
 
-Initialization
-  // install global doublebuffering
-  DoubleBuffering := TJvDoubleBuffered.Create(Application);
-  { temporarely, until new JvExQControls.pas }
-  Application.OnEvent := DoubleBuffering.OnEventFilter;
+constructor TJvDoubleBuffered.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPaintObject := nil;
+  FIgnoreList := TList.Create;
+end;
+
+destructor TJvDoubleBuffered.Destroy;
+begin
+  if Assigned(FHook) then
+  begin
+    QApplication_hook_destroy(FHook);
+  end;
+  FIgnoreList.Free;
+  inherited Destroy;
+end;
+
+procedure TJvDoubleBuffered.Loaded;
+var
+  Method: TMethod;
+begin
+  inherited;
+  if not (csDesigning in ComponentState) then
+  begin
+    FHook := QApplication_hook_create(Application.Handle);
+    TEventFilterMethod(Method) := EventFilter;
+    Qt_hook_hook_events(FHook, Method);
+  end;
+end;
+
+function TJvDoubleBuffered.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+var
+  PixMap: QPixmapH;
+  R: TRect;
+  PaintRegion: QRegionH;
+  Instance: TWidgetControl;
+  tl, br: TPoint;
+//  Bitmap: TBitmap;
+begin
+  Result := False;
+  if QEvent_type(Event) = QEventType_Paint then
+  begin
+    Instance := FindControl(QWidgetH(Receiver));
+    if not Assigned(Instance) or (csPaintCopy in Instance.ControlState) then
+    begin
+      Exit;
+    end;
+    if THackedWidgetControl(Instance).Masked then
+    begin
+//      OutputDebugString('Masked ' + Instance.Name + ': ' + Instance.ClassName);
+      Exit;
+    end;
+
+    if FPaintObject = nil then
+    begin
+//      if assigned(Instance) then
+      FPaintObject := Receiver;
+      PaintRegion := QRegion_create(QPaintEvent_region(QPaintEventH(Event)));
+      QRegion_boundingRect(PaintRegion, @R);
+      Pixmap := QPixmap_create(R.Right - R.Left, R.Bottom - R.Top, -1, QPixmapOptimization_DefaultOptim);
+      try
+        // this would paint the widget *and* its children
+        QPixmap_grabWidget(PixMap, QWidgetH(Receiver), R.Left, R.Top,
+              R.Right - R.Left, R.Bottom - R.Top);
+//        QRegion_translate(PaintRegion, - R.Left, - R.Top);
+//        SetPixmapMask(Pixmap, PaintRegion);
+        Qt.BitBlt(QWidget_to_QPaintDevice(QWidgetH(Receiver)), R.Left, R.Top, PixMap,
+              0, 0, R.Right - R.Left, R.Bottom - R.Top, RasterOp_CopyROP,
+              False);
+        Result := True;
+      finally
+        QRegion_destroy(PaintRegion);
+        QPixMap_destroy(PixMap);
+        FPaintObject := nil;
+//      if assigned(Instance) then
+//        OutputDebugString('STOP ' + Instance.Name + ': ' + Instance.ClassName);
+      end;
+    end
+    else
+    begin
+      if FPaintObject <> Receiver then
+      begin
+//        if assigned(Instance) then
+//          OutputDebugString('Ignored ' + Instance.Name + ': ' + Instance.ClassName);
+        Result := True;
+      end;
+    end;
+  end
+end;
+
 end.

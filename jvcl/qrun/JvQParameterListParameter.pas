@@ -64,11 +64,11 @@ type
     FGlyph: TBitmap;
     FNumGlyphs: Integer;
     FLayout: TButtonLayout;
-    FOnButtonClick: TJvParameterListEvent;
+    FOnClick: TJvParameterListEvent;
   protected
     procedure SetGlyph(Value: TBitmap);
     function GetParameterNameExt: string; override;
-    procedure OnButtonClickInt(Sender: TObject);
+    procedure Click(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
@@ -79,7 +79,7 @@ type
     property Glyph: TBitmap read FGlyph write SetGlyph;
     property NumGlyphs: Integer read FNumGlyphs write FNumGlyphs;
     property Layout: TButtonLayout read FLayout write FLayout;
-    property OnButtonClick: TJvParameterListEvent read FOnButtonClick write FOnButtonClick;
+    property OnClick: TJvParameterListEvent read FOnClick write FOnClick;
   end;
 
   TJvRadioButtonParameter = class(TJvNoDataParameter)
@@ -87,7 +87,7 @@ type
     FOnClick: TJvParameterListEvent;
   protected
     function GetParameterNameExt: string; override;
-    procedure OnClickInt(Sender: TObject);
+    procedure Click(Sender: TObject);
     procedure SetWinControlProperties; override;
   public
     procedure Assign(Source: TPersistent); override;
@@ -95,7 +95,6 @@ type
   published
     property OnClick: TJvParameterListEvent read FOnClick write FOnClick;
   end;
-
 
   TJvParameterLabelArrangeMode = (lamBefore, lamAbove);
 
@@ -239,14 +238,14 @@ type
 
   TJvButtonEditParameter = class(TJvEditParameter)
   private
-    FOnButtonClick: TNotifyEvent;
+    FOnClick: TNotifyEvent;
   protected
     function GetParameterNameExt: string; override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
   public
     procedure Assign(Source: TPersistent); override;
   published
-    property OnButtonClick: TNotifyEvent read FOnButtonClick write FOnButtonClick;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
   TJvNumberEditorType = (netEdit, netSpin, netCalculate);
@@ -422,7 +421,7 @@ type
     property Sorted: Boolean read FSorted write FSorted;
   end;
 
-  TJvCheckListItemDataWrapper = class
+  TJvCheckListItemDataWrapper = class(TObject)
   private
     FState: TCheckBoxState;
     FItemEnabled: Boolean;
@@ -532,6 +531,27 @@ type
     property FontName: string read FFontName write FFontName;
   end;
 
+  TJvRichEditParameter = class(TJvBasePanelEditParameter)
+  private
+    FWordWrap: Boolean;
+    FWantTabs: Boolean;
+    FWantReturns: Boolean;
+    FScrollBars: TScrollStyle;
+    FFontName: string;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
+    procedure SetWinControlProperties; override;
+  public
+    constructor Create(AParameterList: TJvParameterList); override;
+  published
+    property WordWrap: Boolean read FWordWrap write FWordWrap;
+    property WantTabs: Boolean read FWantTabs write FWantTabs;
+    property WantReturns: Boolean read FWantReturns write FWantReturns;
+    property ScrollBars: TScrollStyle read FScrollBars write FScrollBars;
+    property FontName: string read FFontName write FFontName;
+  end;
+
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
@@ -576,10 +596,10 @@ begin
   Result := 'Button';
 end;
 
-procedure TJvButtonParameter.OnButtonClickInt(Sender: TObject);
+procedure TJvButtonParameter.Click(Sender: TObject);
 begin
-  if Assigned(OnButtonClick) then
-    OnButtonClick(ParameterList, Self);
+  if Assigned(OnClick) then
+    OnClick(ParameterList, Self);
 end;
 
 procedure TJvButtonParameter.SetGlyph(Value: TBitmap);
@@ -607,7 +627,7 @@ end;
 procedure TJvButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
 begin
   WinControl := DynControlEngine.CreateButton(Self, ParameterParent,
-    GetParameterName, Caption, Hint, OnButtonClickInt, False, False);
+    GetParameterName, Caption, Hint, Click, False, False);
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -634,17 +654,17 @@ begin
     end;
 end;
 
-//=== { TJvRadioButtonParameter } =================================================
+//=== { TJvRadioButtonParameter } ============================================
 
 function TJvRadioButtonParameter.GetParameterNameExt: string;
 begin
   Result := 'RadioButton';
 end;
 
-procedure TJvRadioButtonParameter.OnClickInt(Sender: TObject);
+procedure TJvRadioButtonParameter.Click(Sender: TObject);
 begin
-  if Assigned(OnClick) then
-    OnClick(ParameterList, Self);
+  if Assigned(FOnClick) then
+    FOnClick(ParameterList, Self);
 end;
 
 procedure TJvRadioButtonParameter.Assign(Source: TPersistent);
@@ -657,7 +677,6 @@ begin
   WinControl := DynControlEngine.CreateRadioButton(Self, ParameterParent,
     GetParameterName, Caption);
   WinControl.Hint := Hint;
-//  WinControl.OnClick := OnClickInt;
   if Height > 0 then
     WinControl.Height := Height;
   if Width > 0 then
@@ -1859,7 +1878,7 @@ procedure TJvButtonEditParameter.CreateWinControl(AParameterParent: TWinControl)
 var
   DynCtrlEdit: IJvDynControlEdit;
 begin
-  WinControl := DynControlEngine.CreateButtonEditControl(Self, AParameterParent, GetParameterName, FOnButtonClick);
+  WinControl := DynControlEngine.CreateButtonEditControl(Self, AParameterParent, GetParameterName, FOnClick);
   if Supports(WinControl, IJvDynControlEdit, DynCtrlEdit) then
   begin
     DynCtrlEdit.ControlSetPasswordChar(PasswordChar);
@@ -1871,7 +1890,7 @@ procedure TJvButtonEditParameter.Assign(Source: TPersistent);
 begin
   inherited Assign(Source);
   if Source is TJvButtonEditParameter then
-    OnButtonClick := TJvButtonEditParameter(Source).OnButtonClick;
+    OnClick := TJvButtonEditParameter(Source).OnClick;
 end;
 
 //=== { TJvNumberEditParameter } =============================================
@@ -2241,6 +2260,42 @@ begin
     end;
 end;
 
+///=== { TJvRichEditParameter } ==============================================
+
+constructor TJvRichEditParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  ScrollBars := ssNone;
+  WantTabs := False;
+  WantReturns := True;
+  WordWrap := False;
+end;
+
+function TJvRichEditParameter.GetParameterNameExt: string;
+begin
+  Result := 'RichEdit';
+end;
+
+procedure TJvRichEditParameter.CreateWinControl(AParameterParent: TWinControl);
+begin
+  WinControl := DynControlEngine.CreateRichEditControl(Self, AParameterParent, GetParameterName);
+end;
+
+procedure TJvRichEditParameter.SetWinControlProperties;
+var
+  ITmpMemo: IJvDynControlMemo;
+begin
+  inherited SetWinControlProperties;
+  if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
+    with ITmpMemo do
+    begin
+      ControlSetWantTabs(WantTabs);
+      ControlSetWantReturns(WantReturns);
+      ControlSetWordWrap(WordWrap);
+      ControlSetScrollbars(ScrollBars);
+    end;
+end;
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -2249,8 +2304,6 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
-
-
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);

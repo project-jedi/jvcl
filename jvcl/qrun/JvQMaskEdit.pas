@@ -51,6 +51,7 @@ type
     FLeaving: Boolean;
     FProtectPassword: Boolean;
     FLastNotifiedText: string;
+    FHasLastNotifiedText: Boolean;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent; 
     procedure SetHotTrack(Value: Boolean);
@@ -84,6 +85,7 @@ type
 
   TJvMaskEdit = class(TJvCustomMaskEdit)
   published
+//    property Caret;
     property ClipboardCommands;
     property DisabledTextColor;
     property DisabledColor;
@@ -148,6 +150,7 @@ uses
 procedure TJvCustomMaskEdit.Change;
 begin
   FLastNotifiedText := Text;
+  FHasLastNotifiedText := True;
   inherited Change;
 end;
 
@@ -247,13 +250,8 @@ end;
 
 procedure TJvCustomMaskEdit.NotifyIfChanged;
 begin
-  if FLastNotifiedText <> Text then
-  begin
-    { (ahuser) same code as in Change()
-    FLastNotifiedText := Text;
-    inherited Change;}
+  if FHasLastNotifiedText and (FLastNotifiedText <> Text) then
     Change;
-  end;
 end;
 
 

@@ -36,7 +36,6 @@ interface
 
 
 
-
 type
   // JvUIB Server Commands
   TServerCommand = (scGetClassObject, scInvokeMethod);
@@ -71,7 +70,7 @@ const
   BreakLine = #10;
 {$ELSE}
   BreakLine = #13;
-{$ENDIF}
+{$ENDIF LINUX}
   NewLine = BreakLine + BreakLine;
 
 resourcestring
@@ -340,5 +339,26 @@ resourcestring
   {$ENDIF UIBLANG_ES}
 
 implementation
+
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+
 
 end.

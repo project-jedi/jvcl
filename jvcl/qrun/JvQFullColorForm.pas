@@ -36,14 +36,25 @@ interface
 
 uses
   QWindows, QMessages, SysUtils, Classes, QControls, QForms, QGraphics,
-  QDialogs, QStdCtrls, QExtCtrls,
-  JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorDialogs, QMask, JvQExMask,
-  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo, JvQExControls,
-  JvQComponent, JvQExExtCtrls, QComboEdits, JvQExComboEdits;
+  QDialogs, QStdCtrls, QExtCtrls, QMask,
+  JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorDialogs, JvQExMask,
+  JvQSpin, JvQExStdCtrls, JvQCombobox, JvQColorCombo, JvQExMaskEdit,
+  JvQExControls, JvQComponent, JvQExExtCtrls;
 
 type
   TJvFullColorFrm = class(TForm)
     LabelColorSpace: TLabel;
+    GroupBoxSettings: TGroupBox;
+    ScrollBarAxis0: TScrollBar;
+    ScrollBarAxis1: TScrollBar;
+    ScrollBarAxis2: TScrollBar;
+    SpinEditAxis0: TJvSpinEdit;
+    SpinEditAxis1: TJvSpinEdit;
+    SpinEditAxis2: TJvSpinEdit;
+    LabelAxis0: TLabel;
+    LabelAxis1: TLabel;
+    LabelAxis2: TLabel;
+    LabelPredefined: TLabel;
     PanelGraphic: TPanel;
     JvColorPanel: TJvFullColorPanel;
     JvFullColorTrackBar: TJvFullColorTrackBar;
@@ -58,19 +69,8 @@ type
     ButtonApply: TButton;
     JvColorAxisConfigCombo: TJvFullColorAxisCombo;
     JvColorSpaceCombo: TJvFullColorSpaceCombo;
-    JvFullColorGroup: TJvFullColorGroup;
-    GroupBoxSettings: TGroupBox;
-    LabelAxis0: TLabel;
-    LabelAxis1: TLabel;
-    LabelAxis2: TLabel;
-    LabelPredefined: TLabel;
-    ScrollBarAxis0: TScrollBar;
-    ScrollBarAxis1: TScrollBar;
-    ScrollBarAxis2: TScrollBar;
-    SpinEditAxis0: TJvSpinEdit;
-    SpinEditAxis1: TJvSpinEdit;
-    SpinEditAxis2: TJvSpinEdit;
     ColorBox: TJvColorComboBox;
+    JvFullColorGroup: TJvFullColorGroup;
     procedure ButtonGraphicsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure JvComboBoxColorSpaceSelect(Sender: TObject);

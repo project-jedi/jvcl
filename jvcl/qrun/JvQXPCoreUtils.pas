@@ -36,8 +36,9 @@ unit JvQXPCoreUtils;
 interface
 
 uses
-  SysUtils, Classes, TypInfo, QWindows, QGraphics, QControls,
-  JvQJCLUtils, JvQXPCore;
+  SysUtils, Classes, TypInfo, QWindows, QGraphics, QControls, 
+  JvQJCLUtils, 
+  JvQXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
@@ -55,8 +56,8 @@ procedure JvXPDrawBoundLines(const ACanvas: TCanvas; const BoundLines: TJvXPBoun
 
 procedure JvXPConvertToGray2(Bitmap: TBitmap);
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
-  AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
-  var Rect: TRect; Flags: Integer);
+  ACaption: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
+  var ARect: TRect; AFlags: Integer);
 procedure JvXPFrame3D(const ACanvas: TCanvas; const Rect: TRect;
   const TopColor, BottomColor: TColor; const Swapped: Boolean = False);
 procedure JvXPColorizeBitmap(Bitmap: TBitmap; const AColor: TColor);
@@ -68,10 +69,12 @@ procedure JvXPPlaceText(const AParent: TControl; const ACanvas: TCanvas;
 
 implementation
 
+
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 begin
@@ -275,20 +278,20 @@ begin
 end;
 
 procedure JvXPRenderText(const AParent: TControl; const ACanvas: TCanvas;
-  AText: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
-  var Rect: TRect; Flags: Integer); overload;
+  ACaption: TCaption; const AFont: TFont; const AEnabled, AShowAccelChar: Boolean;
+  var ARect: TRect; AFlags: Integer);
 
   procedure DoDrawText;
-  begin
-    DrawText(ACanvas, AText, -1, Rect, Flags);
+  begin 
+    DrawText(ACanvas, ACaption, -1, ARect, AFlags); 
   end;
 
 begin
-  if (Flags and DT_CALCRECT <> 0) and ((AText = '') or AShowAccelChar and
-    (AText[1] = '&') and (AText[2] = #0)) then
-    AText := AText + ' ';
+  if (AFlags and DT_CALCRECT <> 0) and ((ACaption = '') or AShowAccelChar and
+    (ACaption[1] = '&') and (ACaption[2] = #0)) then
+    ACaption := ACaption + ' ';
   if not AShowAccelChar then
-    Flags := Flags or DT_NOPREFIX; 
+    AFlags := AFlags or DT_NOPREFIX; 
   with ACanvas do
   begin
     Font.Assign(AFont);
@@ -296,10 +299,10 @@ begin
       Font.Color := dxColor_Msc_Dis_Caption_WXP;
     if not AEnabled then
     begin
-      OffsetRect(Rect, 1, 1);
+      OffsetRect(ARect, 1, 1);
       Font.Color := clBtnHighlight;
       DoDrawText;
-      OffsetRect(Rect, -1, -1);
+      OffsetRect(ARect, -1, -1);
       Font.Color := clBtnShadow;
       DoDrawText;
     end
@@ -394,6 +397,7 @@ begin
   JvXPRenderText(AParent, ACanvas, AText, AFont, AEnabled, AShowAccelChar, Rect, Flags);
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -409,6 +413,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

@@ -295,6 +295,8 @@ begin
     Result := Comp.ClassName;
 end;
 
+
+
 //=== { TJvBaseValidator } ===================================================
 
 constructor TJvBaseValidator.Create(AOwner: TComponent);

@@ -43,8 +43,8 @@ type
   private
     FHotTrack: Boolean;
     procedure SetHotTrack(Value: Boolean);
-    procedure SetDefaultStyle(Value: TDefaultStyle);
-    function GetDefaultStyle: TDefaultStyle;
+//    procedure SetDefaultStyle(Value: TDefaultStyle);
+//    function GetDefaultStyle: TDefaultStyle;
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -56,7 +56,7 @@ type
     property OnMouseEnter;
     property OnMouseLeave;
     property OnParentColorChange;
-    property DefaultStyle: TDefaultStyle read GetDefaultStyle write SetDefaultStyle default dsSystemDefault;
+//    property DefaultStyle: TDefaultStyle read GetDefaultStyle write SetDefaultStyle default dsSystemDefault;
   end;
 
 implementation
@@ -70,10 +70,11 @@ constructor TJvScrollBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHotTrack := False;
-  DefaultStyle := dsMotif;
+//  DefaultStyle := dsMotif;
   // ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 
+(*
 procedure TJvScrollBar.SetDefaultStyle(Value: TDefaultStyle);
 begin
   Style.DefaultStyle := Value;
@@ -83,6 +84,7 @@ function TJvScrollBar.GetDefaultStyle: TDefaultStyle;
 begin
   Result := Style.DefaultStyle;
 end;
+*)
 
 procedure TJvScrollBar.MouseEnter(Control: TControl);
 begin

@@ -38,7 +38,7 @@ Known Issues:
  |   Wayne Niddery         <waynen att logicfundamentals dott com>           |
  |   Raymond J. Schappe    <rschappe att isthmus-ts dott com>                |
  |   Theodore              <thpana att otenet dott gr>                       |
- |   Max Evans             <max att codecraft dott com dott au>              |              |
+ |   Max Evans             <max att codecraft dott com dott au>              |
  +---------------------------------------------------------------------------+
  | HISTORY      COMMENTS                                                     |
  +---------------------------------------------------------------------------+
@@ -341,10 +341,8 @@ interface
 uses
   SysUtils, Classes,
   QWindows, QMessages, QControls, QForms, QGraphics, QButtons, QImgList, 
-  Types, 
-  {.$IFDEF USEJVCL}
-  JvQComponent, JvQThemes,
-  {.$ENDIF USEJVCL}
+  Types,  
+  JvQComponent, JvQThemes, 
   JvQWizardCommon;
 
 type
@@ -415,13 +413,13 @@ type
     FAlign: TJvWizardAlign;
     FPages: TList;
     FPageIndex: Integer;
-    FImage:TJvWizardImage;
+    FImage: TJvWizardImage;
     FOnDisplaying: TJvWizardRouteMapDisplayEvent;
     function GetPage(Index: Integer): TJvWizardCustomPage;
     function GetPageCount: Integer;
     procedure SetAlign(Value: TJvWizardAlign);
     procedure SetPageIndex(Value: Integer);
-    procedure SetImage(const Value:TJvWizardImage); 
+    procedure SetImage(const Value: TJvWizardImage); 
     procedure DoAddPage(const APage: TJvWizardCustomPage);
     procedure DoDeletePage(const APage: TJvWizardCustomPage);
     procedure DoUpdatePage(const APage: TJvWizardCustomPage);
@@ -429,7 +427,7 @@ type
     procedure DoMovePage(const APage: TJvWizardCustomPage; const OldIndex: Integer);
     procedure DoImageChange(Sender: TObject);
   protected
-    function HasPicture:boolean;  
+    function HasPicture: Boolean;  
     procedure SetParent(const ParentA: TWidgetControl); override; 
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -443,7 +441,7 @@ type
     function CanDisplay(const APage: TJvWizardCustomPage): Boolean; virtual;
     property Wizard: TJvWizard read FWizard write FWizard;
     property Align: TJvWizardAlign read FAlign write SetAlign default alLeft;
-    property Image:TJvWizardImage read FImage write SetImage;
+    property Image: TJvWizardImage read FImage write SetImage;
     property OnDisplaying: TJvWizardRouteMapDisplayEvent
       read FOnDisplaying write FOnDisplaying;
   public
@@ -628,7 +626,7 @@ type
   published
     property BorderWidth: Word read FBorderWidth write SetBorderWidth default 7;
     property Color default clBtnFace;
-    property Visible;
+    property Visible default False;
   end;
 
   TJvWizardPageClickEvent = procedure(Sender: TObject; var Stop: Boolean) of object;
@@ -872,10 +870,10 @@ type
 
 implementation
 
-uses
+uses 
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
-  {$ENDIF UNITVERSIONING} 
+  {$ENDIF UNITVERSIONING}
   JvQResources, 
   QConsts;
 
@@ -1312,7 +1310,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvWizardRouteMapControl.DoImageChange(Sender:TObject);
+procedure TJvWizardRouteMapControl.DoImageChange(Sender: TObject);
 begin
   Invalidate;
 end;
@@ -1396,12 +1394,12 @@ begin
   Result := FPages.Count;
 end;
 
-procedure TJvWizardRouteMapControl.SetImage(const Value:TJvWizardImage);
+procedure TJvWizardRouteMapControl.SetImage(const Value: TJvWizardImage);
 begin
   FImage.Assign(Value);
 end;
 
-function TJvWizardRouteMapControl.HasPicture:boolean;
+function TJvWizardRouteMapControl.HasPicture: Boolean;
 begin
   Result := (FImage.Picture.Graphic <> nil) and not FImage.Picture.Graphic.Empty;
 end;
@@ -3121,6 +3119,7 @@ begin
     FOnActivePageChanging(Self, ToPage);
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -3136,6 +3135,7 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.
 

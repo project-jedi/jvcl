@@ -39,7 +39,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS} 
-  Qt, QWindows, QClipbrd, 
+  QWindows, QClipbrd, Qt,
   SysUtils, Classes, Contnrs, QGraphics, QControls, QForms, QStdCtrls, QDialogs,
   QExtCtrls,
   JvQComponent, JvQDynControlEngine, JvQTypes;
@@ -473,7 +473,7 @@ end;
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 
 begin
-  inherited CreateNew(AOwner, Dummy);
+  inherited CreateNew(AOwner, Dummy); 
   FTimer := TTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 1000;
@@ -516,8 +516,8 @@ end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
-  CancelAutoClose;
-  Application.ContextHelp(HelpContext);
+  CancelAutoClose;  
+  Application.ContextHelp(HelpContext); 
 end;
 
 procedure TDSAMessageForm.TimerEvent(Sender: TObject);
@@ -684,7 +684,8 @@ begin
   Result := TDSAMessageForm.CreateNew(Screen.ActiveCustomForm);
   try
     with Result do
-    begin  
+    begin
+      Position := poDesigned; // Delphi 2005 has a new default  
       BorderStyle := fbsDialog; 
       Canvas.Font := Font;
       KeyPreview := True;
@@ -1508,15 +1509,11 @@ end;
 const
   Captions: array [TMsgDlgType] of string =
     (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
-
   IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
     (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
      QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
 
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
-//    (mbNone, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
-//     mbAll, mbNoToAll, mbYesToAll, mbHelp);
-
   ButtonCaptions: array [TMsgDlgBtn] of string =
    ('', SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
     SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
@@ -1535,8 +1532,8 @@ begin
   if IconIDs[DlgType] <> QMessageBoxIcon_NoIcon then
   begin
     Result := TIcon.Create;
-    try
-      // TODO
+    try  
+      // TODO 
     except
       Result.Free;
       raise;
@@ -1717,11 +1714,12 @@ function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic;
   const CancelButton: Integer; const HelpButton: Integer;
   const ADynControlEngine: TJvDynControlEngine): TModalResult;
 begin
+  Result := 0;
   with CreateDSAMessageForm(Caption, Msg, Picture, Buttons, Results, HelpCtx, '',
     Center, Timeout, DefaultButton, CancelButton, HelpButton, ADynControlEngine) do
   try
     Result := ShowModal;
-  finally
+  except
     Free;
   end;
 end;

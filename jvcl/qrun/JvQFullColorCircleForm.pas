@@ -36,10 +36,9 @@ interface
 
 uses
   QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms,
-  QExtCtrls, QStdCtrls, 
+  QExtCtrls, QStdCtrls, QMask, 
   JvQFullColorDialogs, JvQFullColorCtrls, JvQFullColorSpaces, JvQFullColorRotate,
-  QMask, JvQExMask, JvQSpin, QComboEdits, JvQExComboEdits, JvQExStdCtrls,
-  JvQExControls, JvQComponent;
+  JvQExMask, JvQSpin, JvQExStdCtrls, JvQExControls, JvQComponent;
 
 type
   TJvFullColorCircleFrm = class(TForm)
@@ -360,12 +359,10 @@ var
   LCaption: string;
   LColor: TJvFullColor;
 begin
-  if FUpdating  then
-    Exit;
-
-  if JvColorSpaceCombo.SelectedSpace = nil then
+  if FUpdating then
     Exit;
   FillInternalArrays;
+
   FUpdating := True;
 
   with JvColorSpaceCombo.SelectedSpace do

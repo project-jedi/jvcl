@@ -196,7 +196,7 @@ begin
               case Alarm.Kind of
                 tkOneShot:
                   ;
-                //hs Delete(i) removed - later on was a reference to 'Alarm.Kind'
+                //hs Delete(I) removed - later on was a reference to 'Alarm.Kind'
                 //  which failed caused by an invalid Alarm
                 tkEachSecond:
                   Inc(Stamp.Time, 1000);
@@ -222,7 +222,7 @@ begin
               end;
               if Alarm.Kind <> tkOneShot then
                 Alarm.Time := TimeStampToDateTime(Stamp)
-                  // hs a better place for 'Delete(i)'
+                  // hs a better place for 'Delete(I)'
               else
                 Delete(I);
             end;
@@ -253,7 +253,7 @@ end;
 procedure TJvAlarms.ResetAlarms;
 var
   Current: TDateTime;
-  i: integer;
+  I: Integer;
 
   function MaxDate(Val1, Val2: TDateTime): TDateTime;
   begin
@@ -261,11 +261,12 @@ var
     if Val2 > Val1 then
       Result := Val2;
   end;
+
 begin
   // make sure no alarm item is in past time (this will trigger the OnAlaram event every second until the alarm catches up) 
   Current := Now;
-  for i := 0 to Alarms.Count - 1 do
-    Alarms[i].Time := MaxDate(Current, Alarms[i].Time);
+  for I := 0 to Alarms.Count - 1 do
+    Alarms[I].Time := MaxDate(Current, Alarms[I].Time);
 end;
 
 //=== { TJvAlarmItems } ======================================================
@@ -318,7 +319,6 @@ begin
     inherited Assign(Source);
 end;
 
-
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -328,13 +328,12 @@ const
     LogPath: 'JVCL\run'
     );
 
-
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -45,20 +45,13 @@ type
   TJvFullColorSpaceID = type Byte;
   TJvFullColor = type Cardinal;
 
-const 
-  clSystemColor = $FF000000; 
-
-  JvSystemColorMask =
-
-    clSystemColor;
-
+const
+  JvSystemColorMask =  clSystemColor; 
 
   JvSubFullColorMask     = $03000000;
 
   JvSystemFullColorMask  = $01000000;
   JvSpecialFullColorMask = $03000000;
-
-  
 
 const
   csRGB = TJvFullColorSpaceID(1 shl 2);
@@ -131,6 +124,28 @@ type
     property AxisMax[Index: TJvAxisIndex]: Byte read GetAxisMax;
     property AxisDefault[Index: TJvAxisIndex]: Byte read GetAxisDefault;
   end;
+
+  {TJvColorConversionMatrix = array[0..3,0..3] of Extended; // OpenGL and D3D style matrix
+  PJvColorConversionMatrix = ^TJvColorConversionMatrix;
+  TJvMatrixType = (mtFromRGB, mtToRGB);
+
+  TJvMatrixColorSpace = class(TJvColorSpace)
+  protected
+    FToRGBMatrix,
+    FFromRGBMatrix: TJvColorConversionMatrix;
+  public
+    constructor Create(ColorID: TJvFullColorSpaceID; AMatrix: PJvColorConversionMatrix;
+      MatrixType: TJvMatrixType); reintroduce;
+    destructor Destroy; override;
+    function ConvertToID(AFullColor: TJvFullColor; NewID: TJvFullColorSpaceID;         //
+      RGBToNewIDMatrix: PJvColorConversionMatrix): TJvFullColor;                       // use a call with pointer argument
+    function ConvertFromID(AFullColor: TJvFullColor; OldID: TJvFullColorSpaceID;       // because a matrix is 160 Bytes !!!
+      OldIDToRGBMatrix: PJvColorConversionMatrix): TJvFullColor;                       //    /!\ not on the stack /!\
+    function ConvertFromColor(AColor: TColor): TColor; override;                       //
+    function ConvertToColor(AColor: TJvFullColor): TColor; override;
+    function GetToRGBMatrix: PJvColorConversionMatrix;
+    function GetFromRGBMatrix: PJvColorConversionMatrix;
+  end;}
 
   TJvRGBColorSpace = class(TJvColorSpace)
   protected
@@ -254,7 +269,7 @@ type
     FDelphiColors: TStringList;
     procedure GetColorValuesCallBack(const S: String);
   protected
-    function GetName:string; override;
+    function GetName: string; override;
     function GetShortName: string; override;
     function GetNumberOfColors: Cardinal; override;
     function GetColorName(Index: Integer): string;
@@ -265,12 +280,12 @@ type
     destructor Destroy; override;
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
-    procedure AddCustomColor(AColor:TColor; ShortName:string; PrettyName:string);
-    procedure AddDelphiColor(Value:TColor);
-    property ColorCount:Cardinal read GetNumberOfColors;
-    property ColorName[Index:Integer]:string read GetColorName;
-    property ColorPrettyName[Index:Integer]:string read GetPrettyName;
-    property ColorValue[Index:Integer]:TColor read GetColorValue; default;
+    procedure AddCustomColor(AColor: TColor; ShortName: string; PrettyName: string);
+    procedure AddDelphiColor(Value: TColor);
+    property ColorCount: Cardinal read GetNumberOfColors;
+    property ColorName[Index: Integer]: string read GetColorName;
+    property ColorPrettyName[Index: Integer]: string read GetPrettyName;
+    property ColorValue[Index: Integer]: TColor read GetColorValue; default;
   end;
 
   TJvColorSpaceManager = class(TPersistent)
@@ -322,9 +337,6 @@ uses
 var
   GlobalColorSpaceManager: TJvColorSpaceManager = nil;
 
-  GlobalPrettyNameStrings: TStrings = nil;
-
-
 const
   HLS_MAX_HALF = HLS_MAX / 2.0;
   HLS_MAX_ONE_THIRD = HLS_MAX / 3.0;
@@ -335,7 +347,19 @@ const
 function ColorSpaceManager: TJvColorSpaceManager;
 begin
   if GlobalColorSpaceManager = nil then
+  begin
     GlobalColorSpaceManager := TJvColorSpaceManager.Create;
+    GlobalColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvYUVColorSpace.Create(csYUV));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvHSVColorSpace.Create(csHSV));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvYIQColorSpace.Create(csYIQ));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvYCCColorSpace.Create(csYCC));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvXYZColorSpace.Create(csXYZ));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
+    GlobalColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
+  end;
   Result := GlobalColorSpaceManager;
 end;
 
@@ -390,34 +414,49 @@ begin
     ((Part3 and $000000FF) shl 16);
 end;
 
-// (outchy) Hook of TColorBox to have access to color's pretty names.
-// Shame on me but that's the only way to access ColorToPrettyName array in the
-// ExtCtrls unit. Thanks Borland.
-
-
 function ColorToPrettyName(Value: TColor): string;
-
-
+var
+  Index: Integer;
 begin
+  for Index := Low(ColorValues) to High(ColorValues) do
+    if Value = ColorValues[Index].Value then
+  begin
+    Result := ColorValues[Index].Description;
+    Exit;
+  end;
+  for Index := Low(SysColorValues) to High(SysColorValues) do
+    if Value = SysColorValues[Index].Value then
+  begin
+    Result := SysColorValues[Index].Description;
+    Exit;
+  end;
   Result := ColorToString(Value);
 end;
 
-
+{$IFDEF VCL}
 function PrettyNameToColor(Value: string): TColor;
-
-
 var
-  TempResult: Longint;
+  Index: Integer;
+  ColorResult: Integer;
 begin
-  if IdentToColor(Value,TempResult) then
-    Result := TempResult
+  for Index := Low(ColorValues) to High(ColorValues) do
+    if CompareText(Value,ColorValues[Index].Description) = 0 then
+  begin
+    Result := ColorValues[Index].Value;
+    Exit;
+  end;
+  for Index := Low(SysColorValues) to High(SysColorValues) do
+    if CompareText(Value,SysColorValues[Index].Description) = 0 then
+  begin
+    Result := SysColorValues[Index].Value;
+    Exit;
+  end;
+  if IdentToColor(Value,ColorResult) then
+    Result := ColorResult
   else
     Result := clNone;
 end;
-
-
-
-
+{$ENDIF}
 
 //=== { TJvColorSpace } ======================================================
 
@@ -1626,27 +1665,14 @@ const
 {$ENDIF UNITVERSIONING}
 
 initialization
-  ColorSpaceManager.RegisterColorSpace(TJvRGBColorSpace.Create(csRGB));
-  ColorSpaceManager.RegisterColorSpace(TJvHLSColorSpace.Create(csHLS));
-  ColorSpaceManager.RegisterColorSpace(TJvCMYColorSpace.Create(csCMY));
-  ColorSpaceManager.RegisterColorSpace(TJvYUVColorSpace.Create(csYUV));
-  ColorSpaceManager.RegisterColorSpace(TJvHSVColorSpace.Create(csHSV));
-  ColorSpaceManager.RegisterColorSpace(TJvYIQColorSpace.Create(csYIQ));
-  ColorSpaceManager.RegisterColorSpace(TJvYCCColorSpace.Create(csYCC));
-  ColorSpaceManager.RegisterColorSpace(TJvXYZColorSpace.Create(csXYZ));
-  ColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
-  ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
-
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
 finalization
-  FreeAndNil(GlobalColorSpaceManager); 
-
+  FreeAndNil(GlobalColorSpaceManager);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
 
 end.
-

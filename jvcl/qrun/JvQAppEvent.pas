@@ -89,10 +89,10 @@ type
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
     FOnHelp: THelpEvent;
-    FOnHint: TNotifyEvent; 
+    FOnHint: TNotifyEvent;
     FOnEvent: TEventEvent;
     FSavedHintFont: TFont;
-    FSavedStyle: TApplicationStyle; 
+    FSavedStyle: TDefaultStyle;
     FOnMinimize: TNotifyEvent;
     FOnRestore: TNotifyEvent;
     FOnShowHint: TShowHintEvent;
@@ -119,24 +119,24 @@ type
     function GetMouseDragImmediate: Boolean;
     function GetMouseDragThreshold: Integer;
     procedure SetMouseDragImmediate(Value: Boolean);
-    procedure SetMouseDragThreshold(Value: Integer);  
+    procedure SetMouseDragThreshold(Value: Integer);
     function GetEffects: TUIEffects;
     function GetHintFont: TFont;
-    function GetStyle: TApplicationStyle;
+    function GetStyle: TDefaultStyle;
     procedure SetEffects(Value: TUIEffects);
     procedure SetHintFont(Value: TFont);
-    procedure SetStyle(Value: TApplicationStyle); 
+    procedure SetStyle(Value: TDefaultStyle);
   protected
-    procedure Loaded; override; 
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas; { for painting the icon }
     procedure CancelDispatch;
-  published 
+  published
     property HintFont: TFont read GetHintFont write SetHintFont;
     property Effects: TUIEffects read GetEffects write SetEffects;
-    property Style: TApplicationStyle read GetStyle write SetStyle;  
+    property Style: TDefaultStyle read GetStyle write SetStyle;
     property Chained: Boolean read FChained write FChained default True;
     property HintColor: TColor read GetHintColor write SetHintColor default DefHintColor;
     property HintPause: Integer read GetHintPause write SetHintPause default DefHintPause;
@@ -167,7 +167,7 @@ type
     property OnMinimize: TNotifyEvent read FOnMinimize write FOnMinimize;
     property OnPaintIcon: TNotifyEvent read FOnPaintIcon write FOnPaintIcon;
     property OnRestore: TNotifyEvent read FOnRestore write FOnRestore;
-    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint; 
+    property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnActiveControlChange: TNotifyEvent read FOnActiveControlChange write FOnActiveControlChange;
     property OnActiveFormChange: TNotifyEvent read FOnActiveFormChange write FOnActiveFormChange; 
     property OnEvent: TEventEvent read FOnEvent write FOnEvent; 
@@ -279,8 +279,8 @@ begin
       FOnException := Application.OnException;
       FOnIdle := Application.OnIdle;
       FOnHelp := Application.OnHelp;
-      FOnHint := Application.OnHint;  
-      FOnEvent := Application.OnEvent; 
+      FOnHint := Application.OnHint;
+      FOnEvent := Application.OnEvent;
       FOnMinimize := Application.OnMinimize;
       FOnRestore := Application.OnRestore;
       FOnShowHint := Application.OnShowHint;
@@ -295,8 +295,8 @@ begin
       Application.OnException := DoException;
       Application.OnIdle := DoIdle;
       Application.OnHelp := DoHelp;
-      Application.OnHint := DoHint;  
-      Application.OnEvent := DoEvent; 
+      Application.OnHint := DoHint;
+      Application.OnEvent := DoEvent;
       Application.OnMinimize := DoMinimize;
       Application.OnRestore := DoRestore;
       Application.OnShowHint := DoShowHint;
@@ -632,7 +632,7 @@ begin
   FUpdateFormatSettings := True;
   FSavedHintFont := TFont.Create;
   FSavedHintFont.assign(Screen.HintFont);
-  FSavedStyle := Application.Style;
+  FSavedStyle := Application.Style.DefaultStyle;
 
   AppList.AddEvents(Self);
 end;
@@ -640,7 +640,7 @@ end;
 destructor TJvAppEvents.Destroy;
 begin  
   Screen.HintFont.assign(FSavedHintFont);
-  Application.Style := FSavedStyle; 
+  Application.Style.DefaultStyle := FSavedStyle; 
 
   if (Self <> nil) and (AppList <> nil) then
     AppList.RemoveEvents(Self);
@@ -790,19 +790,15 @@ begin
   Screen.HintFont := Value;
 end;
 
-function TJvAppEvents.GetStyle: TApplicationStyle;
+function TJvAppEvents.GetStyle: TDefaultStyle;
 begin
-  Result := Application.Style;
+  Result := Application.Style.DefaultStyle;
 end;
 
-procedure TJvAppEvents.SetStyle(Value: TApplicationStyle);
+procedure TJvAppEvents.SetStyle(Value: TDefaultStyle);
 begin
-  Application.Style := Value;
+  Application.Style.DefaultStyle := Value;
 end;
-
-
-
-
 
 
 function TJvAppEvents.GetHintShortCuts: Boolean;

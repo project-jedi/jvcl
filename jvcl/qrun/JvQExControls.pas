@@ -304,7 +304,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -442,7 +442,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -517,7 +517,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -597,7 +597,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -628,6 +628,7 @@ function GetFocusedWnd(Instance: TControl): QWidgetH;
 function GetHintColor(Instance: TControl): TColor;
 function InputKeysToDlgCodes(InputKeys: TInputKeys): Integer;
 function SendAppMessage(Msg: Cardinal; WParam, LParam: Integer): Integer;
+procedure SetCursorPos(X, Y: integer);
 function TextHeight(Control: TWidgetControl): Integer;
 function TextWidth(Control: TWidgetControl; const Text: WideString): Integer;
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -709,6 +710,15 @@ begin
     inc(Result, DLGC_WANTTAB);
   if ikButton in InputKeys then
     inc(Result, DLGC_BUTTON);
+end;
+
+procedure SetCursorPos(X, Y: integer);
+var
+  Value: TPoint;
+begin
+  Value.X := X;
+  Value.Y := Y;
+  QCursor_setPos(@Value);
 end;
 
 procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: Integer);
@@ -990,7 +1000,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1030,7 +1040,7 @@ begin
   end;
 end;
 
-function TJvExWinControl.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1273,7 +1283,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1313,7 +1323,7 @@ begin
   end;
 end;
 
-function TJvExCustomControl.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1517,322 +1527,6 @@ begin
 end;
   
  
-{$UNDEF CONSTRUCTOR_CODE}
-{$DEFINE CONSTRUCTOR_CODE}
-
-{ QWinControl Create }
-
-constructor TJvExFrameControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FWindowProc := WndProc;
-  FInternalFontChanged := Font.OnChange;
-  Font.OnChange := DoOnFontChanged;
-  FHintColor := clDefault;
-  FDoubleBuffered := True;
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  
-end;
-
-destructor TJvExFrameControl.Destroy;
-begin
-  
-  FCanvas.Free;
-  inherited Destroy;
-end;
-  
-{ WinControl Paint }
-
-
-procedure TJvExFrameControl.Paint;
-begin
-  TControlCanvas(Canvas).StopPaint;
-  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
-  TControlCanvas(Canvas).StartPaint;
-end;
-
-procedure TJvExFrameControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  if QRegion_isEmpty(EventRegion) then
-    Exit;
-//  QPainter_setClipping(Canvas.Handle, True);
-  TControlCanvas(Canvas).StartPaint;
-  try
-    QPainter_setClipRegion(Canvas.Handle, EventRegion);
-    Canvas.Brush.Assign(Brush);
-    Canvas.Font.Assign(Font);
-    RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
-    Paint;
-  finally
-    TControlCanvas(Canvas).StopPaint;
-  end;
-end;
- 
-procedure TJvExFrameControl.WndProc(var Mesg: TMessage);
-begin
-  //OutputDebugString(PAnsiChar(Format('WINCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
-  with TJvMessage(Mesg) do
-  begin
-    case Msg of
-      { WinControl Messages }
-      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
-      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
-      CM_FONTCHANGED : FInternalFontChanged(Font);
-      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
-      WM_GETDLGCODE:
-      begin
-        Result := InputKeysToDlgCodes(InputKeys);
-        Exit;
-      end;
-      WM_ERASEBKGND:
-      begin
-        Canvas.Start;
-        try
-          Handled := DoEraseBackGround(Canvas, LParam);
-        finally
-          Canvas.Stop;
-        end;
-        Exit;
-      end;
-      { Control Messages }
-      CM_FOCUSCHANGED: FocusChanged;
-      CM_MOUSEENTER: FMouseOver := True;
-      CM_MOUSELEAVE: FMouseOver := False;
-    end;
-  end;
-  inherited Dispatch(Mesg);
-end;
-{ QWinControl Common }
-procedure TJvExFrameControl.CMDesignHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    Handled := inherited HitTest(XPos, YPos);
-    if Handled then
-      Result := HTCLIENT;
-  end;
-end;
-
-procedure TJvExFrameControl.CMHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    if csDesigning in ComponentState then
-      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
-    else
-    begin
-      Handled := inherited HitTest(XPos, YPos);
-      if Handled then
-        Result := HTCLIENT;
-    end;
-  end;
-end;
-
-function TJvExFrameControl.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  Result := false;
-end;
-
-procedure TJvExFrameControl.ShowingChanged;
-begin
-  Perform(CM_SHOWINGCHANGED, 0 ,0);
-  inherited;
-end;
-
-procedure TJvExFrameControl.ColorChanged;
-begin
-  Perform(CM_COLORCHANGED, 0, 0);
-  inherited;
-end;
-
-procedure TJvExFrameControl.CursorChanged;
-begin
-  Perform(CM_CURSORCHANGED, 0, 0);
-  inherited;
-end;
-
-procedure TJvExFrameControl.DoSetFocus(PreviousWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExFrameControl.DoKillFocus(NextWnd: QWidgetH);
-begin
-  { notification }
-end;
-
-procedure TJvExFrameControl.DoEnter;
-begin
-  Perform(CM_ENTER, 0 ,0);
-  inherited DoEnter;
-end;
-
-procedure TJvExFrameControl.DoExit;
-begin
-  Perform(CM_EXIT, 0 ,0);
-  inherited DoExit;
-end;
-
-function TJvExFrameControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
-begin
-  Result := False;
-  if Assigned(FOnEvent) then
-    FOnEvent(Sender, Event, Result);
-  if not Result then
-    Result := inherited EventFilter(Sender, Event); 
-end;
-
-procedure TJvExFrameControl.FocusChanged;
-begin
-  NotifyControls(CM_FOCUSCHANGED);
-end;
-
-procedure TJvExFrameControl.DoOnFontChanged(Sender: TObject);
-begin
-  ParentFont := False;
-  PostMessage(Self, CM_FONTCHANGED, 0, 0);
-end;
-
-procedure TJvExFrameControl.CreateWidget;
-begin
-  CreateWnd;
-end;
-
-procedure TJvExFrameControl.CreateWnd;
-begin
-  inherited CreateWidget;
-end;
-
-procedure TJvExFrameControl.RecreateWnd;
-begin
-  if not (csRecreating in ControlState) then
-    RecreateWidget;
-end;
-
-procedure TJvExFrameControl.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-begin
-  WidgetControl_PaintTo(self, PaintDevice, X, Y);
-end;
-
-procedure TJvExFrameControl.PaintWindow(PaintDevice: QPaintDeviceH);
-begin
-  PaintTo(PaintDevice, 0, 0);
-end;
-
-function TJvExFrameControl.WidgetFlags: Integer;
-begin
-  Result := inherited WidgetFlags or
-    Integer(WidgetFlags_WRepaintNoErase) or
-    Integer(WidgetFlags_WMouseNoMask);
-end;
-
-function TJvExFrameControl.ColorToRGB(Value: TColor): TColor;
-begin
-  Result := QWindows.ColorToRGB(Value, self);
-end;
-  
-{ QControl Common}
-
-function TJvExFrameControl.HitTest(X, Y: integer): Boolean;
-begin
-   Result := Perform(CM_HITTEST, 0, 0) <> HTNOWHERE;
-end;
-
-procedure TJvExFrameControl.CMHintShow(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    Handled := inherited HintShow(HintInfo^);
-  end;
-end;
-
-procedure TJvExFrameControl.CMSysFontChanged(var Mesg: TMessage);
-begin
-  if FDesktopFont then
-  begin
-    Font.Assign(Application.Font);
-    FDesktopFont := True;
-  end;
-end;
-
-procedure TJvExFrameControl.EnabledChanged;
-begin
-  Perform(CM_ENABLEDCHANGED, 0, 0);
-  inherited EnabledChanged;
-end;
-
-procedure TJvExFrameControl.TextChanged;
-begin
-  Perform(CM_TEXTCHANGED, 0, 0);
-  inherited TextChanged;
-end;
-
-procedure TJvExFrameControl.VisibleChanged;
-begin
-  Perform(CM_VISIBLECHANGED, 0, 0);
-  inherited VisibleChanged;
-end;
-
-function TJvExFrameControl.HintShow(var HintInfo : THintInfo): Boolean;
-begin
-  Result := Perform(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
-end;
-
-procedure TJvExFrameControl.MouseEnter(AControl: TControl);
-begin
-  Perform(CM_MOUSEENTER, 0, 0);
-  inherited MouseEnter(AControl);
-end;
-
-procedure TJvExFrameControl.MouseLeave(AControl: TControl);
-begin
-  Perform(CM_MOUSELEAVE, 0, 0);
-  inherited MouseLeave(AControl);
-end;
-
-procedure TJvExFrameControl.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
-procedure TJvExFrameControl.SetDesktopFont(Value: Boolean);
-begin
-  if FDesktopFont <> Value then
-  begin
-    FDesktopFont := Value;
-    Perform(CM_SYSFONTCHANGED, 0, 0);
-  end;
-end;
-
-procedure TJvExFrameControl.Dispatch(var Mesg);
-begin
-  if Assigned(FWindowProc) then
-    FWindowProc(TMessage(Mesg))
-  else
-    inherited Dispatch(Mesg);
-end;
-
-function TJvExFrameControl.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
-var
-  Mesg: TMessage;
-begin
-  Mesg.Msg := Msg;
-  Mesg.WParam := WParam;
-  Mesg.LParam := LParam;
-  Mesg.Result := 0;
-  Dispatch(Mesg);
-  Result := Mesg.Result;
-end;
-
-function TJvExFrameControl.IsRightToLeft: Boolean;
-begin
-  Result := False;
-end;
-  
- 
 { QCustomControl Create }
 
 constructor TJvExHintWindow.Create(AOwner: TComponent);
@@ -1872,7 +1566,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -1912,7 +1606,7 @@ begin
   end;
 end;
 
-function TJvExHintWindow.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExHintWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -2111,6 +1805,322 @@ begin
 end;
 
 function TJvExHintWindow.IsRightToLeft: Boolean;
+begin
+  Result := False;
+end;
+  
+ 
+{$UNDEF CONSTRUCTOR_CODE}
+{$DEFINE CONSTRUCTOR_CODE}
+
+{ QWinControl Create }
+
+constructor TJvExFrameControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FWindowProc := WndProc;
+  FInternalFontChanged := Font.OnChange;
+  Font.OnChange := DoOnFontChanged;
+  FHintColor := clDefault;
+  FDoubleBuffered := True;
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  
+end;
+
+destructor TJvExFrameControl.Destroy;
+begin
+  
+  FCanvas.Free;
+  inherited Destroy;
+end;
+  
+{ WinControl Paint }
+
+
+procedure TJvExFrameControl.Paint;
+begin
+  TControlCanvas(Canvas).StopPaint;
+  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
+  TControlCanvas(Canvas).StartPaint;
+end;
+
+procedure TJvExFrameControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  if QRegion_isEmpty(EventRegion) then
+    Exit;
+//  QPainter_setClipping(Canvas.Handle, True);
+  TControlCanvas(Canvas).StartPaint;
+  try
+    QPainter_setClipRegion(Canvas.Handle, EventRegion);
+    Canvas.Brush.Assign(Brush);
+    Canvas.Font.Assign(Font);
+    RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    Paint;
+  finally
+    TControlCanvas(Canvas).StopPaint;
+  end;
+end;
+ 
+procedure TJvExFrameControl.WndProc(var Mesg: TMessage);
+begin
+  //OutputDebugString(PAnsiChar(Format('WINCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
+  with TJvMessage(Mesg) do
+  begin
+    case Msg of
+      { WinControl Messages }
+      WM_KILLFOCUS   : DoKillFocus(FocusedWnd);
+      WM_SETFOCUS    : DoSetFocus(FocusedWnd);
+      CM_FONTCHANGED : FInternalFontChanged(Font);
+      CM_HINTSHOW    : HintInfo^.HintColor := GetHintcolor(Self);
+      WM_GETDLGCODE:
+      begin
+        Result := InputKeysToDlgCodes(InputKeys);
+        Exit;
+      end;
+      WM_ERASEBKGND:
+      begin
+        Canvas.Start;
+        try
+          Handled := DoPaintBackGround(Canvas, LParam);
+        finally
+          Canvas.Stop;
+        end;
+        Exit;
+      end;
+      { Control Messages }
+      CM_FOCUSCHANGED: FocusChanged;
+      CM_MOUSEENTER: FMouseOver := True;
+      CM_MOUSELEAVE: FMouseOver := False;
+    end;
+  end;
+  inherited Dispatch(Mesg);
+end;
+{ QWinControl Common }
+procedure TJvExFrameControl.CMDesignHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    Handled := inherited HitTest(XPos, YPos);
+    if Handled then
+      Result := HTCLIENT;
+  end;
+end;
+
+procedure TJvExFrameControl.CMHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    if csDesigning in ComponentState then
+      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
+    else
+    begin
+      Handled := inherited HitTest(XPos, YPos);
+      if Handled then
+        Result := HTCLIENT;
+    end;
+  end;
+end;
+
+function TJvExFrameControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  Result := false;
+end;
+
+procedure TJvExFrameControl.ShowingChanged;
+begin
+  Perform(CM_SHOWINGCHANGED, 0 ,0);
+  inherited;
+end;
+
+procedure TJvExFrameControl.ColorChanged;
+begin
+  Perform(CM_COLORCHANGED, 0, 0);
+  inherited;
+end;
+
+procedure TJvExFrameControl.CursorChanged;
+begin
+  Perform(CM_CURSORCHANGED, 0, 0);
+  inherited;
+end;
+
+procedure TJvExFrameControl.DoSetFocus(PreviousWnd: QWidgetH);
+begin
+  { notification }
+end;
+
+procedure TJvExFrameControl.DoKillFocus(NextWnd: QWidgetH);
+begin
+  { notification }
+end;
+
+procedure TJvExFrameControl.DoEnter;
+begin
+  Perform(CM_ENTER, 0 ,0);
+  inherited DoEnter;
+end;
+
+procedure TJvExFrameControl.DoExit;
+begin
+  Perform(CM_EXIT, 0 ,0);
+  inherited DoExit;
+end;
+
+function TJvExFrameControl.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
+begin
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
+end;
+
+procedure TJvExFrameControl.FocusChanged;
+begin
+  NotifyControls(CM_FOCUSCHANGED);
+end;
+
+procedure TJvExFrameControl.DoOnFontChanged(Sender: TObject);
+begin
+  ParentFont := False;
+  PostMessage(Self, CM_FONTCHANGED, 0, 0);
+end;
+
+procedure TJvExFrameControl.CreateWidget;
+begin
+  CreateWnd;
+end;
+
+procedure TJvExFrameControl.CreateWnd;
+begin
+  inherited CreateWidget;
+end;
+
+procedure TJvExFrameControl.RecreateWnd;
+begin
+  if not (csRecreating in ControlState) then
+    RecreateWidget;
+end;
+
+procedure TJvExFrameControl.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
+begin
+  WidgetControl_PaintTo(self, PaintDevice, X, Y);
+end;
+
+procedure TJvExFrameControl.PaintWindow(PaintDevice: QPaintDeviceH);
+begin
+  PaintTo(PaintDevice, 0, 0);
+end;
+
+function TJvExFrameControl.WidgetFlags: Integer;
+begin
+  Result := inherited WidgetFlags or
+    Integer(WidgetFlags_WRepaintNoErase) or
+    Integer(WidgetFlags_WMouseNoMask);
+end;
+
+function TJvExFrameControl.ColorToRGB(Value: TColor): TColor;
+begin
+  Result := QWindows.ColorToRGB(Value, self);
+end;
+  
+{ QControl Common}
+
+function TJvExFrameControl.HitTest(X, Y: integer): Boolean;
+begin
+   Result := Perform(CM_HITTEST, 0, 0) <> HTNOWHERE;
+end;
+
+procedure TJvExFrameControl.CMHintShow(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    Handled := inherited HintShow(HintInfo^);
+  end;
+end;
+
+procedure TJvExFrameControl.CMSysFontChanged(var Mesg: TMessage);
+begin
+  if FDesktopFont then
+  begin
+    Font.Assign(Application.Font);
+    FDesktopFont := True;
+  end;
+end;
+
+procedure TJvExFrameControl.EnabledChanged;
+begin
+  Perform(CM_ENABLEDCHANGED, 0, 0);
+  inherited EnabledChanged;
+end;
+
+procedure TJvExFrameControl.TextChanged;
+begin
+  Perform(CM_TEXTCHANGED, 0, 0);
+  inherited TextChanged;
+end;
+
+procedure TJvExFrameControl.VisibleChanged;
+begin
+  Perform(CM_VISIBLECHANGED, 0, 0);
+  inherited VisibleChanged;
+end;
+
+function TJvExFrameControl.HintShow(var HintInfo : THintInfo): Boolean;
+begin
+  Result := Perform(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+procedure TJvExFrameControl.MouseEnter(AControl: TControl);
+begin
+  Perform(CM_MOUSEENTER, 0, 0);
+  inherited MouseEnter(AControl);
+end;
+
+procedure TJvExFrameControl.MouseLeave(AControl: TControl);
+begin
+  Perform(CM_MOUSELEAVE, 0, 0);
+  inherited MouseLeave(AControl);
+end;
+
+procedure TJvExFrameControl.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
+procedure TJvExFrameControl.SetDesktopFont(Value: Boolean);
+begin
+  if FDesktopFont <> Value then
+  begin
+    FDesktopFont := Value;
+    Perform(CM_SYSFONTCHANGED, 0, 0);
+  end;
+end;
+
+procedure TJvExFrameControl.Dispatch(var Mesg);
+begin
+  if Assigned(FWindowProc) then
+    FWindowProc(TMessage(Mesg))
+  else
+    inherited Dispatch(Mesg);
+end;
+
+function TJvExFrameControl.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+var
+  Mesg: TMessage;
+begin
+  Mesg.Msg := Msg;
+  Mesg.WParam := WParam;
+  Mesg.LParam := LParam;
+  Mesg.Result := 0;
+  Dispatch(Mesg);
+  Result := Mesg.Result;
+end;
+
+function TJvExFrameControl.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
@@ -2317,11 +2327,21 @@ begin
   Result := QWindows.ColorToRGB(Value, Parent);
 end;
 
-Initialization
-  OutputDebugString('JvExCLX Loaded: JvQExControls.pas');
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
 
-Finalization
-  OutputDebugString('JvExCLX Unloaded: JvQExControls.pas');
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 

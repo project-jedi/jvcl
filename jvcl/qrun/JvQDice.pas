@@ -66,7 +66,7 @@ type
     procedure NewRandomValue;
   protected
     procedure FocusChanged; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetAutoSize(Value: Boolean);  
     procedure AdjustSize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -148,7 +148,7 @@ begin
   for I := Low(TJvDiceValue) to High(TJvDiceValue) do
   begin
     FBitmap[I] := TBitmap.Create;
-    FBitmap[I].LoadFromResourceName(HInstance, Format('JV_DICE%d', [Ord(I)]));
+    FBitmap[I].LoadFromResourceName(HInstance, Format('JvDice%d', [Ord(I)]));
   end;
   AutoSize := True;
   Width := FBitmap[Value].Width + 2;
@@ -208,7 +208,7 @@ begin
   inherited FocusChanged;
 end;
 
-function TJvDice.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvDice.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True; // Paint clears the background
 end;

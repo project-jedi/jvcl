@@ -36,12 +36,13 @@
 {                                                                              }
 {******************************************************************************}
 
-{$I jvcl.inc}
-{$I jvuib.inc}
-
 unit JvQUIBSQLParser;
 
+{$I jvcl.inc}
+{$I JvUIB.inc}
+
 interface
+
 uses
   Classes,
   SysUtils;
@@ -537,6 +538,13 @@ const AUTODDL = 530;
 const CONNECT = 531;
 
 implementation
+
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 
 function TLexer.get_char: Char;
 var
@@ -41707,7 +41715,7 @@ begin(*yyparse*)
   yydebug := true;
 {$else}
   yydebug := false;
-{$endif}
+{$ENDIF yydebug}
 
 parse:
 
@@ -41819,6 +41827,24 @@ abort:
   yyparse := 1; exit;
 
 end(*yyparse*);
+
+
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 
 end.

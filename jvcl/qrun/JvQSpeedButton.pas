@@ -2093,7 +2093,8 @@ begin
           end
           else
           begin
-            MonoBmp := CreateDisabledBitmap(FOriginal, clBlack);
+            MonoBmp := CreateDisabledBitmap(FOriginal, clWhite);
+//            MonoBmp := CreateMonoBitmap(FOriginal, clNone);
             try
               FIndexs[State] := TJvGlyphList(FGlyphList).AddMasked(MonoBmp,
                 ColorToRGB(clBtnFace));

@@ -40,26 +40,32 @@ uses
   JvQAppStorage, JvQComponent;
 
 type
+  TJvIgnorePropertiesStringList = class(TStringList)
+  public
+    procedure AddDelete(AItem: string; ADelete: Boolean);
+  end;
+
   TJvCustomPropertyStore = class(TJvComponent)
   private
     FAppStoragePath: string;
     FAppStorage: TJvCustomAppStorage;
     FEnabled: Boolean;
+    FReadOnly: Boolean;
     FDeleteBeforeStore: Boolean;
     FClearBeforeLoad: Boolean;
     FIntIgnoreProperties: TStringList;
-    FIgnoreProperties: TStringList;
+    FIgnoreProperties: TJvIgnorePropertiesStringList;
     FAutoLoad: Boolean;
     FLastLoadTime: TDateTime;
     FIgnoreLastLoadTime: Boolean;
-    FCombinedIgnoreProperties: TStrings;
+    FCombinedIgnoreProperties: TStringList;
     FOnBeforeLoadProperties: TNotifyEvent;
     FOnAfterLoadProperties: TNotifyEvent;
     FOnBeforeStoreProperties: TNotifyEvent;
     FOnAfterStoreProperties: TNotifyEvent;
     procedure SetAutoLoad(Value: Boolean);
-    function GetIgnoreProperties: TStrings;
-    procedure SetIgnoreProperties(Value: TStrings);
+    function GetIgnoreProperties: TJvIgnorePropertiesStringList;
+    procedure SetIgnoreProperties(Value: TJvIgnorePropertiesStringList);
     function GetPropCount(Instance: TPersistent): Integer;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
     procedure CloneClass(Src, Dest: TPersistent);
@@ -73,7 +79,7 @@ type
     procedure LoadData; virtual;
     procedure StoreData; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function GetCombinedIgnoreProperties: TStrings;
+    function GetCombinedIgnoreProperties: TStringList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -83,11 +89,12 @@ type
     procedure Clear; virtual;
     function TranslatePropertyName(AName: string): string; virtual;
     property AppStorage: TJvCustomAppStorage read FAppStorage write SetAppStorage;
-    property CombinedIgnoreProperties: TStrings read GetCombinedIgnoreProperties;
-    property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
+    property CombinedIgnoreProperties: TStringList read GetCombinedIgnoreProperties;
+    property IgnoreProperties: TJvIgnorePropertiesStringList read GetIgnoreProperties write SetIgnoreProperties;
     property AutoLoad: Boolean read FAutoLoad write SetAutoLoad;
     property AppStoragePath: string read FAppStoragePath write SetPath;
     property Enabled: Boolean read FEnabled write FEnabled default True;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore default False;
     property ClearBeforeLoad: Boolean read FClearBeforeLoad write FClearBeforeLoad default False;
     property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write FIgnoreLastLoadTime default False;
@@ -111,10 +118,12 @@ type
     procedure SetString(Index: Integer; Value: string);
     procedure SetObject(Index: Integer; Value: TObject);
     function GetCount: Integer;
-    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;const Index: Integer; const ItemName: string);
-    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string; const List: TObject; const Index: Integer; const ItemName: string);
-    procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string; const List: TObject;
-      const First, Last: Integer; const ItemName: string);
+    procedure ReadSLOItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject;const Index: Integer; const ItemName: string);
+    procedure WriteSLOItem(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const Index: Integer; const ItemName: string);
+    procedure DeleteSLOItems(Sender: TJvCustomAppStorage; const Path: string;
+      const List: TObject; const First, Last: Integer; const ItemName: string);
     function CreateItemList: TStringList; virtual;
     function CreateObject: TObject; virtual;
     function GetSorted: Boolean;
@@ -160,7 +169,7 @@ const
 
 type
   // Read-only TStrings combining multiple TStrings instances in a single list
-  TCombinedStrings = class(TStrings)
+  TCombinedStrings = class(TStringList)
   private
     FList: TList;
   protected
@@ -262,11 +271,27 @@ procedure TCombinedStrings.Insert(Index: Integer; const S: string);
 begin
 end;
 
+//=== { TJvIgnorePropertiesStringList } ======================================
+
+procedure TJvIgnorePropertiesStringList.AddDelete(AItem: string; ADelete: Boolean);
+begin
+  if ADelete then
+  begin
+    if IndexOf(AItem) >= 0 then
+      Delete(IndexOf(AItem));
+  end
+  else
+  begin
+    if IndexOf(AItem) < 0 then
+     Add(AItem);
+  end;
+end;
+
 //=== { TJvCustomPropertyStore } =============================================
 
 constructor TJvCustomPropertyStore.Create(AOwner: TComponent);
 const
-  IgnorePropertyList: array [1..15] of PChar =
+  IgnorePropertyList: array [1..16] of PChar =
    (
     'AboutJVCL',
     'AppStorage',
@@ -276,6 +301,7 @@ const
     'Name',
     'Tag',
     'Enabled',
+    'ReadOnly',
     'DeleteBeforeStore',
     'IgnoreLastLoadTime',
     'IgnoreProperties',
@@ -291,10 +317,11 @@ begin
   FLastLoadTime := Now;
   FAppStorage := nil;
   FEnabled := True;
+  FReadOnly := False;
   FDeleteBeforeStore := False;
   FAutoLoad := False;
   FIntIgnoreProperties := TStringList.Create;
-  FIgnoreProperties := TStringList.Create;
+  FIgnoreProperties := TJvIgnorePropertiesStringList.Create;
   FIgnoreLastLoadTime := False;
   FCombinedIgnoreProperties := TCombinedStrings.Create;
   for I := Low(IgnorePropertyList) to High(IgnorePropertyList) do
@@ -321,7 +348,7 @@ begin
     FAppStorage := nil;
 end;
 
-function TJvCustomPropertyStore.GetCombinedIgnoreProperties: TStrings;
+function TJvCustomPropertyStore.GetCombinedIgnoreProperties: TStringList;
 begin
   FCombinedIgnoreProperties.Assign(FIntIgnoreProperties);
   FCombinedIgnoreProperties.AddStrings(FIgnoreProperties);
@@ -499,12 +526,12 @@ begin
   end;
 end;
 
-function TJvCustomPropertyStore.GetIgnoreProperties: TStrings;
+function TJvCustomPropertyStore.GetIgnoreProperties: TJvIgnorePropertiesStringList;
 begin
   Result := FIgnoreProperties;
 end;
 
-procedure TJvCustomPropertyStore.SetIgnoreProperties(Value: TStrings);
+procedure TJvCustomPropertyStore.SetIgnoreProperties(Value: TJvIgnorePropertiesStringList);
 begin
   FIgnoreProperties.Assign(Value);
 end;
@@ -523,7 +550,7 @@ begin
     Result := 0;
   end;
 end;
-
+ 
 procedure TJvCustomPropertyStore.LoadProperties;
 begin
   if not Enabled then
@@ -547,6 +574,8 @@ var
   SaveProperties: Boolean;
 begin
   if not Enabled then
+    Exit;
+  if ReadOnly then
     Exit;
   if not Assigned(AppStorage) then
     Exit;
@@ -623,10 +652,11 @@ var
 begin
   if FreeObjects then
     for I := 0 to Count - 1 do
-    begin
-      Objects[I].Free;
-      Objects[I] := nil;
-    end;
+      if Assigned(Objects[I]) then
+      begin
+        Objects[I].Free;
+        Objects[I] := nil;
+      end;
   if Assigned(Items) then
     Items.Clear;
   inherited Clear;
@@ -644,12 +674,18 @@ end;
 
 function TJvCustomPropertyListStore.GetString(Index: Integer): string;
 begin
-  Result := Items.Strings[Index];
+  if Assigned(Items) then
+    Result := Items.Strings[Index]
+  else
+    Result := '';
 end;
 
 function TJvCustomPropertyListStore.GetObject(Index: Integer): TObject;
 begin
-  Result := Items.Objects[Index];
+  if Assigned(Items) then
+    Result := Items.Objects[Index]
+  else
+    Result := nil;
 end;
 
 procedure TJvCustomPropertyListStore.SetString(Index: Integer; Value: string);

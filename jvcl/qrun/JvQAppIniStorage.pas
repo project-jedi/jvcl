@@ -52,12 +52,10 @@ type
   public
     constructor Create; override;
   published
-    property ReplaceCRLF: Boolean read FReplaceCRLF
-      write SetReplaceCRLF default false;
-    property PreserveLeadingTrailingBlanks: Boolean
-      read FPreserveLeadingTrailingBlanks
-      write SetPreserveLeadingTrailingBlanks default false;
-    property FloatAsString default false;
+    property ReplaceCRLF: Boolean read FReplaceCRLF write SetReplaceCRLF default False;
+    property PreserveLeadingTrailingBlanks: Boolean read FPreserveLeadingTrailingBlanks
+      write SetPreserveLeadingTrailingBlanks default False;
+    property FloatAsString default False;
   end;
 
   // Storage to INI file, all in memory. This is the base class
@@ -154,8 +152,7 @@ const
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
 
-
-//=== { TJvAppIniStorageOptions } =========================================
+//=== { TJvAppIniStorageOptions } ============================================
 
 constructor TJvAppIniStorageOptions.Create;
 begin
@@ -192,6 +189,7 @@ begin
 end;
 
 // Replaces all CRLF through "\n"
+// (rom) probably better use JclStrings.StrEscapedToString and StrStringToEscaped
 function TJvCustomAppIniStorage.ReplaceCRLFToSlashN(const Value: string): string;
 begin
   if (Pos(#13, Value) > 0) or (Pos(#10, Value) > 0) then
@@ -509,10 +507,10 @@ begin
     if TJvAppIniStorageOptions(StorageOptions).PreserveLeadingTrailingBlanks then
       if TJvAppIniStorageOptions(StorageOptions).ReplaceCRLF then
         IniFile.WriteString(CalcDefaultSection(Section), Key,
-                            SaveLeadingTrailingBlanks(ReplaceCRLFToSlashN(Value)))
+          SaveLeadingTrailingBlanks(ReplaceCRLFToSlashN(Value)))
       else
         IniFile.WriteString(CalcDefaultSection(Section), Key,
-                            SaveLeadingTrailingBlanks(Value))
+          SaveLeadingTrailingBlanks(Value))
     else
       if TJvAppIniStorageOptions(StorageOptions).ReplaceCRLF then
         IniFile.WriteString(CalcDefaultSection(Section), Key, ReplaceCRLFToSlashN(Value))
@@ -658,7 +656,7 @@ end;
 
 procedure TJvAppIniFileStorage.Flush;
 begin
-  if (FullFileName <> '') and not Readonly then
+  if (FullFileName <> '') and not ReadOnly then
   begin
     IniFile.Rename(FullFileName, False);
     IniFile.UpdateFile;
@@ -671,7 +669,7 @@ begin
     IniFile.Rename(FullFileName, True);
 end;
 
-//=== { Common procedures } ===============================================
+//=== { Common procedures } ==================================================
 
 procedure StorePropertyStoreToIniFile(APropertyStore: TJvCustomPropertyStore;
   const AFileName: string; const AAppStoragePath: string = '');

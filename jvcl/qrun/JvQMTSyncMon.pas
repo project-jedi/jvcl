@@ -91,10 +91,12 @@ type
 
 implementation
 
+
 {$IFDEF UNITVERSIONING}
 uses
   JclUnitVersioning;
 {$ENDIF UNITVERSIONING}
+
 
 // Invalid is -1 pointer. The nil pointer is used for the main VCL thread
 const
@@ -334,6 +336,7 @@ begin
   end;
 end;
 
+
 {$IFDEF UNITVERSIONING}
 const
   UnitVersioning: TUnitVersionInfo = (
@@ -349,5 +352,6 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
 
 end.

@@ -1,8 +1,10 @@
 object JvFullColorCircleFrm: TJvFullColorCircleFrm
-  Left = 145
-  Top = 178
+  Left = 154
+  Top = 246
   Width = 1010
   Height = 614
+  HorzScrollBar.Range = 1007
+  VertScrollBar.Range = 609
   ActiveControl = SpinEditBlueAxis2
   BorderStyle = fbsDialog
   Caption = 'Color circle configurations'

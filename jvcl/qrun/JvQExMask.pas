@@ -38,9 +38,9 @@ unit JvQExMask;
 interface
 
 uses
+  Classes, SysUtils,
   QGraphics, QControls, QForms, QExtCtrls, QMask,
   Qt, QWindows, QMessages,
-  Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 type
@@ -96,7 +96,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -200,7 +200,7 @@ type
     procedure CreateWnd; virtual;
     procedure CursorChanged; override;
     procedure DoEnter; override;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
@@ -254,6 +254,12 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
+
 { The CREATE_CUSTOMCODE macro is used to extend the constructor by the macro
   content. }
 {$UNDEF CREATE_CUSTOMCODE}
@@ -282,8 +288,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   FBeepOnError := True;
   FClipboardCommands := [caCopy..caUndo];
 end;
@@ -324,7 +330,6 @@ end;
 
 procedure TJvExCustomMaskEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -350,7 +355,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -447,7 +452,7 @@ begin
   end;
 end;
 
-function TJvExCustomMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExCustomMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -671,8 +676,8 @@ begin
   Font.OnChange := DoOnFontChanged;
   FHintColor := clDefault;
   FClipBoardCommands := [caUndo, caCopy, caPaste, caCut];
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := self;
+  FCanvas := TQtCanvas.Create;
+  TQtCanvas(FCanvas).QtHandle := Handle;
   FBeepOnError := True;
   FClipboardCommands := [caCopy..caUndo];
 end;
@@ -713,7 +718,6 @@ end;
 
 procedure TJvExMaskEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -739,7 +743,7 @@ begin
       begin
         Canvas.Start;
         try
-          Handled := DoEraseBackGround(Canvas, LParam);
+          Handled := DoPaintBackGround(Canvas, LParam);
         finally
           Canvas.Stop;
         end;
@@ -836,7 +840,7 @@ begin
   end;
 end;
 
-function TJvExMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvExMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
@@ -1042,16 +1046,20 @@ end;
 
 {$UNDEF CREATE_CUSTOMCODE} // undefine at file end
 
-{$DEFINE UnitName 'JvQExMask.pas'}
-
+{$IFDEF UNITVERSIONING}
 const
-  UnitVersion = 'JvQExMask.pas';
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\qrun'
+  );
 
 initialization
-  OutputDebugString(PChar('JvExCLX Loaded: ' + UnitVersion));
+  RegisterUnitVersion(HInstance, UnitVersioning);
 
 finalization
-  OutputDebugString(PChar('JvExCLX Unloaded: ' + UnitVersion));
-
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

@@ -198,8 +198,8 @@ begin
     Result := (ShowModal = mrOk);
 
     NewColor := FullColor;
-  end;
-  FreeAndNil(FForm);
+  end;  
+  FForm := nil; 
 
   with ColorSpaceManager do
     if foConvertToOriginalSpace in Options then
@@ -342,8 +342,8 @@ begin
     Self.FDelta.AxisGreen.Assign(GreenDelta);
     Self.FDelta.AxisBlue.Assign(BlueDelta);
     Self.FDelta.ColorID := ColorID;
-  end;
-  FreeAndNil(FForm);
+  end;  
+  FForm := nil; 
 end;
 
 procedure TJvFullColorCircleDialog.FormApply(Sender: TObject);
