@@ -10,8 +10,8 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
-  Application.CreateForm(TForm2, Form2);
+  Application.CreateForm(TGLDemoFrm, GLDemoFrm);
+  Application.CreateForm(THShapeFrm, HShapeFrm);
 //  Application.CreateForm(TfTglHelpPanel, fTglHelpPanel);
   Application.Run;
 end.
