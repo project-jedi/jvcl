@@ -57,7 +57,6 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FWindowProc: TWndMethod;
     procedure SetDesktopFont(Value: Boolean);
-    procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
     procedure CMHitTest(var Mesg: TJvMessage); message CM_HITTEST;
     procedure CMHintShow(var Mesg: TJvMessage); message CM_HINTSHOW;
     procedure CMSysFontChanged(var Mesg: TMessage); message CM_SYSFONTCHANGED;
@@ -66,6 +65,8 @@ type
     procedure EnabledChanged; override;
     procedure FocusChanged; dynamic;
     function HitTest(X, Y: integer): Boolean; override;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure VisibleChanged; override;
@@ -88,6 +89,7 @@ type
   private
     FInternalFontChanged: TNotifyEvent;
     procedure DoOnFontChanged(Sender: TObject);
+    procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
     procedure CreateWidget; override;
     procedure CreateWnd; virtual;
@@ -163,7 +165,6 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FWindowProc: TWndMethod;
     procedure SetDesktopFont(Value: Boolean);
-    procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
     procedure CMHitTest(var Mesg: TJvMessage); message CM_HITTEST;
     procedure CMHintShow(var Mesg: TJvMessage); message CM_HINTSHOW;
     procedure CMSysFontChanged(var Mesg: TMessage); message CM_SYSFONTCHANGED;
@@ -172,6 +173,8 @@ type
     procedure EnabledChanged; override;
     procedure FocusChanged; dynamic;
     function HitTest(X, Y: integer): Boolean; override;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure VisibleChanged; override;
@@ -194,6 +197,7 @@ type
   private
     FInternalFontChanged: TNotifyEvent;
     procedure DoOnFontChanged(Sender: TObject);
+    procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
     procedure CreateWidget; override;
     procedure CreateWnd; virtual;
@@ -327,7 +331,7 @@ end;
 
 procedure TJvExCustomMaskEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
+  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -348,7 +352,6 @@ begin
       CM_HINTSHOW:
       begin
         HintInfo^.HintColor := GetHintcolor(Self);
-        Handled := HintShow(HintInfo^);
       end;
 
       WM_ERASEBKGND:
@@ -363,7 +366,7 @@ begin
       { Control Messages }
       CM_FOCUSCHANGED: FocusChanged;
       CM_MOUSEENTER: FMouseOver := True;
-      CM_MOUSELEAVE: FMouseOver := True;
+      CM_MOUSELEAVE: FMouseOver := False;
     else
       inherited Dispatch(Mesg);
     end;
@@ -404,17 +407,39 @@ function TJvExCustomMaskEdit.GetCanvas: TCanvas;
 begin
   if not Assigned(FCanvas) then
   begin
-    FCanvas:= TControlCanvas.Create;
+    FCanvas := TControlCanvas.Create;
     FCanvas.Control := self;
   end;
   Result := FCanvas;
 end;
 
+
+//procedure TJvEx##NameOfClass.Paint;
+//begin
+//  TControlCanvas(Canvas).StopPaint;
+//  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
+//  TControlCanvas(Canvas).StartPaint;
+//end;
+
+
 procedure TJvExCustomMaskEdit.Paint;
+var
+  ForcedPaintEvent: QPaintEventH;
 begin
-  TControlCanvas(Canvas).StopPaint;
-  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
-  TControlCanvas(Canvas).StartPaint;
+//  ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
+    ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), True);
+  try
+    ControlState := ControlState + [csWidgetPainting];
+    TControlCanvas(Canvas).StopPaint;
+    try
+      QObject_event(Handle, ForcedPaintEvent);
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  finally
+    QPaintEvent_destroy(ForcedPaintEvent);
+    TControlCanvas(Canvas).StartPaint;
+  end;
 end;
 
 procedure TJvExCustomMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
@@ -424,6 +449,7 @@ begin
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
   finally
     TControlCanvas(Canvas).StopPaint;
@@ -431,6 +457,30 @@ begin
 end;
  
 { QWinControl Common }
+procedure TJvExCustomMaskEdit.CMDesignHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    Handled := inherited HitTest(XPos, YPos);
+    if Handled then
+      Result := HTCLIENT;
+  end;
+end;
+
+procedure TJvExCustomMaskEdit.CMHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    if csDesigning in ComponentState then
+      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
+    else
+    begin
+      Handled := inherited HitTest(XPos, YPos);
+      if Handled then
+        Result := HTCLIENT;
+    end;
+  end;
+end;
 
 function TJvExCustomMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
@@ -445,8 +495,6 @@ end;
 
 procedure TJvExCustomMaskEdit.ColorChanged;
 begin
-  if HandleAllocated and Bitmap.Empty then
-    Palette.Color := Brush.Color;
   Perform(CM_COLORCHANGED, 0, 0);
   inherited;
 end;
@@ -554,31 +602,6 @@ begin
    Result := Perform(CM_HITTEST, 0, 0) <> HTNOWHERE;
 end;
 
-procedure TJvExCustomMaskEdit.CMHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    if csDesigning in ComponentState then
-      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
-    else
-    begin
-      Handled := inherited HitTest(XPos, YPos);
-      if Handled then
-        Result := HTCLIENT;
-    end;
-  end;
-end;
-
-procedure TJvExCustomMaskEdit.CMDesignHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    Handled := inherited HitTest(XPos, YPos);
-    if Handled then
-      Result := HTCLIENT;
-  end;
-end;
-
 procedure TJvExCustomMaskEdit.CMHintShow(var Mesg: TJvMessage);
 begin
   with Mesg do
@@ -617,6 +640,18 @@ end;
 function TJvExCustomMaskEdit.HintShow(var HintInfo : THintInfo): Boolean;
 begin
   Result := Perform(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+procedure TJvExCustomMaskEdit.MouseEnter(AControl: TControl);
+begin
+  Perform(CM_MOUSEENTER, 0, 0);
+  inherited MouseEnter(AControl);
+end;
+
+procedure TJvExCustomMaskEdit.MouseLeave(AControl: TControl);
+begin
+  Perform(CM_MOUSELEAVE, 0, 0);
+  inherited MouseLeave(AControl);
 end;
 
 procedure TJvExCustomMaskEdit.ParentColorChanged;
@@ -722,7 +757,7 @@ end;
 
 procedure TJvExMaskEdit.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
+  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -743,7 +778,6 @@ begin
       CM_HINTSHOW:
       begin
         HintInfo^.HintColor := GetHintcolor(Self);
-        Handled := HintShow(HintInfo^);
       end;
 
       WM_ERASEBKGND:
@@ -758,7 +792,7 @@ begin
       { Control Messages }
       CM_FOCUSCHANGED: FocusChanged;
       CM_MOUSEENTER: FMouseOver := True;
-      CM_MOUSELEAVE: FMouseOver := True;
+      CM_MOUSELEAVE: FMouseOver := False;
     else
       inherited Dispatch(Mesg);
     end;
@@ -799,17 +833,39 @@ function TJvExMaskEdit.GetCanvas: TCanvas;
 begin
   if not Assigned(FCanvas) then
   begin
-    FCanvas:= TControlCanvas.Create;
+    FCanvas := TControlCanvas.Create;
     FCanvas.Control := self;
   end;
   Result := FCanvas;
 end;
 
+
+//procedure TJvEx##NameOfClass.Paint;
+//begin
+//  TControlCanvas(Canvas).StopPaint;
+//  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
+//  TControlCanvas(Canvas).StartPaint;
+//end;
+
+
 procedure TJvExMaskEdit.Paint;
+var
+  ForcedPaintEvent: QPaintEventH;
 begin
-  TControlCanvas(Canvas).StopPaint;
-  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
-  TControlCanvas(Canvas).StartPaint;
+//  ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
+    ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), True);
+  try
+    ControlState := ControlState + [csWidgetPainting];
+    TControlCanvas(Canvas).StopPaint;
+    try
+      QObject_event(Handle, ForcedPaintEvent);
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  finally
+    QPaintEvent_destroy(ForcedPaintEvent);
+    TControlCanvas(Canvas).StartPaint;
+  end;
 end;
 
 procedure TJvExMaskEdit.Painting(Sender: QObjectH; EventRegion: QRegionH);
@@ -819,6 +875,7 @@ begin
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
   finally
     TControlCanvas(Canvas).StopPaint;
@@ -826,6 +883,30 @@ begin
 end;
  
 { QWinControl Common }
+procedure TJvExMaskEdit.CMDesignHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    Handled := inherited HitTest(XPos, YPos);
+    if Handled then
+      Result := HTCLIENT;
+  end;
+end;
+
+procedure TJvExMaskEdit.CMHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    if csDesigning in ComponentState then
+      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
+    else
+    begin
+      Handled := inherited HitTest(XPos, YPos);
+      if Handled then
+        Result := HTCLIENT;
+    end;
+  end;
+end;
 
 function TJvExMaskEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
@@ -840,8 +921,6 @@ end;
 
 procedure TJvExMaskEdit.ColorChanged;
 begin
-  if HandleAllocated and Bitmap.Empty then
-    Palette.Color := Brush.Color;
   Perform(CM_COLORCHANGED, 0, 0);
   inherited;
 end;
@@ -949,31 +1028,6 @@ begin
    Result := Perform(CM_HITTEST, 0, 0) <> HTNOWHERE;
 end;
 
-procedure TJvExMaskEdit.CMHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    if csDesigning in ComponentState then
-      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
-    else
-    begin
-      Handled := inherited HitTest(XPos, YPos);
-      if Handled then
-        Result := HTCLIENT;
-    end;
-  end;
-end;
-
-procedure TJvExMaskEdit.CMDesignHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    Handled := inherited HitTest(XPos, YPos);
-    if Handled then
-      Result := HTCLIENT;
-  end;
-end;
-
 procedure TJvExMaskEdit.CMHintShow(var Mesg: TJvMessage);
 begin
   with Mesg do
@@ -1012,6 +1066,18 @@ end;
 function TJvExMaskEdit.HintShow(var HintInfo : THintInfo): Boolean;
 begin
   Result := Perform(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+end;
+
+procedure TJvExMaskEdit.MouseEnter(AControl: TControl);
+begin
+  Perform(CM_MOUSEENTER, 0, 0);
+  inherited MouseEnter(AControl);
+end;
+
+procedure TJvExMaskEdit.MouseLeave(AControl: TControl);
+begin
+  Perform(CM_MOUSELEAVE, 0, 0);
+  inherited MouseLeave(AControl);
 end;
 
 procedure TJvExMaskEdit.ParentColorChanged;
