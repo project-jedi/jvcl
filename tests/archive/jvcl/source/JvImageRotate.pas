@@ -92,8 +92,8 @@ begin
   FOriginal.Free;
   FRotated.Free;
   FTimer.OnDraw := nil;
-//  FTimer.Terminate;
-  FTimer.WaitFor;
+  FTimer.Terminate;
+//  FTimer.WaitFor;
   FreeAndNil(FTimer);
   inherited;
 end;
