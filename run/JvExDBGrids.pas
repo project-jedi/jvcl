@@ -112,7 +112,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -125,6 +124,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubCustomDBGrid = class(TJvExCustomDBGrid)
@@ -203,7 +203,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -216,6 +215,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubDBGrid = class(TJvExDBGrid)
@@ -402,15 +402,6 @@ end;
 procedure TJvExCustomDBGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExCustomDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExCustomDBGrid.DoBoundsChanged;
 begin
 end;
@@ -425,6 +416,16 @@ end;
 
 procedure TJvExCustomDBGrid.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExCustomDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExCustomDBGrid.Create(AOwner: TComponent);
@@ -606,15 +607,6 @@ end;
 procedure TJvExDBGrid.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExDBGrid.DoBoundsChanged;
 begin
 end;
@@ -629,6 +621,16 @@ end;
 
 procedure TJvExDBGrid.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExDBGrid.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExDBGrid.Create(AOwner: TComponent);

@@ -88,7 +88,6 @@ type
     function HitTest(X, Y: Integer): Boolean; // CM_HITTEST
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
     procedure DoFocusChanged(Control: TWinControl);
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean);
@@ -106,6 +105,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
   end;
 
   IJvCustomControlEvents = interface
@@ -191,7 +191,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -277,7 +276,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -290,6 +288,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   {$IFDEF VisualCLX}
   private
     FCanvas: TCanvas;
@@ -356,7 +355,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -449,7 +447,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -462,6 +459,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubCustomControl = class(TJvExCustomControl)
@@ -540,7 +538,6 @@ type
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -553,6 +550,7 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
   
   end;
   TJvExPubHintWindow = class(TJvExHintWindow)
@@ -696,18 +694,6 @@ begin
           with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
         // CM_FOCUSCHANGED: handled by a message handler in the JvExVCL classes
-
-        WM_ERASEBKGND:
-          begin
-            Canvas := TCanvas.Create;
-            try
-              Canvas.Handle := HDC(PMsg^.WParam);
-              PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
-            finally
-              Canvas.Handle := 0;
-              Canvas.Free;
-            end;
-          end
       else
         CallInherited := True;
       end;
@@ -770,7 +756,6 @@ begin
                   PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
               end;
             end;
-
           WM_SETFOCUS:
             begin
               with PMsg^ do
@@ -783,13 +768,23 @@ begin
                 Result := InheritMsg(Instance, Msg, WParam, LParam);
               DoKillFocus(HWND(PMsg^.WParam));
             end;
-
           WM_SIZE:
             begin
               DoBoundsChanged;
               with PMsg^ do
                 Result := InheritMsg(Instance, Msg, WParam, LParam);
             end;
+        WM_ERASEBKGND:
+          begin
+            Canvas := TCanvas.Create;
+            try
+              Canvas.Handle := HDC(PMsg^.WParam);
+              PMsg^.Result := Ord(DoPaintBackground(Canvas, PMsg^.LParam));
+            finally
+              Canvas.Handle := 0;
+              Canvas.Free;
+            end;
+          end;
         else
           CallInherited := True;
         end;
@@ -1200,15 +1195,6 @@ procedure TJvExControl.DoFocusChanged(Control: TWinControl);
 begin
 end;
 
-function TJvExControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
-
 constructor TJvExControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1388,15 +1374,6 @@ end;
 procedure TJvExWinControl.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExWinControl.DoBoundsChanged;
 begin
 end;
@@ -1411,6 +1388,16 @@ end;
 
 procedure TJvExWinControl.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExWinControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
@@ -1558,15 +1545,6 @@ end;
 
 procedure TJvExGraphicControl.DoFocusChanged(Control: TWinControl);
 begin
-end;
-
-function TJvExGraphicControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
 end;
 
 constructor TJvExGraphicControl.Create(AOwner: TComponent);
@@ -1765,15 +1743,6 @@ end;
 procedure TJvExCustomControl.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExCustomControl.DoBoundsChanged;
 begin
 end;
@@ -1788,6 +1757,16 @@ end;
 
 procedure TJvExCustomControl.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExCustomControl.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExCustomControl.Create(AOwner: TComponent);
@@ -1969,15 +1948,6 @@ end;
 procedure TJvExHintWindow.DoFocusChanged(Control: TWinControl);
 begin
 end;
-
-function TJvExHintWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ELSE}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VCL}
-end;
 procedure TJvExHintWindow.DoBoundsChanged;
 begin
 end;
@@ -1992,6 +1962,16 @@ end;
 
 procedure TJvExHintWindow.DoKillFocus(FocusedWnd: HWND);
 begin
+end;
+
+function TJvExHintWindow.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := False; // Qt allways paints the background
+  {$ENDIF VisualCLX}
 end;
 
 constructor TJvExHintWindow.Create(AOwner: TComponent);
