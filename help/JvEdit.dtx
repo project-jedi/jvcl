@@ -1,5 +1,7 @@
 ##Package: StdCtrls
 ##Status: Completed
+##Skip: TJvCustomEdit.PasswordChar
+##Skip: TJvCustomEdit.Text
 ----------------------------------------------------------------------------------------------------
 @@JvEdit.pas
 Summary
@@ -52,7 +54,7 @@ Summary
 Description
   Use DisabledColor to read or change the background color displayed when the control isn't enabled.
 
-  Set Enabled to False to disable the control.
+  Set Enabled to false to disable the control.
 See Also
   DisabledTextColor
 ----------------------------------------------------------------------------------------------------
@@ -63,18 +65,16 @@ Description
   Use DisabledTextColor to specify the color of the text characters (as opposed to the background color),
   when the control isn't enabled.
 
-  Set Enabled to False to disable the control.
+  Set Enabled to false to disable the control.
 See Also
   DisabledColor
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.Flat
 Summary
-  Write here a summary (1 line)
+  Determines whether the control appears flat.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  When Flat is false, the control has raised borders, which create a three-dimensional look.
+  Setting Flat to true gives the control flat borders. 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.GroupIndex
 Summary
@@ -100,8 +100,8 @@ See Also
 Summary
   Specifies whether the edit control is highlighted when the mouse passes over it.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse. When HotTrack
-  is False, there is no visual feedback when the mouse passes over the edit control.
+  Set HotTrack to true to provide visual feedback about which item is under the mouse. When HotTrack
+  is false, there is no visual feedback when the mouse passes over the edit control.
 Note
   The HotTrack property only works if BorderStyle is set to bsSingle and BevelKind is set to bvNone.
 ----------------------------------------------------------------------------------------------------
@@ -123,42 +123,28 @@ Summary
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.PasswordChar
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.ProtectPassword
 Summary
   Specifies whether to protect to text of the edit control.
 Description
-  Setting ProtectPassword to True will prevent other programs from access to the text of this edit
+  Setting ProtectPassword to true will prevent other programs from access to the text of this edit
   control, and disable altering the PasswordChar.
 
   This is usefull if you want the user to type enter a password in this edit control, and want to
   prevent possible trojans from retrieving the typed password.
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomEdit.Text
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvCustomEdit.UseFixedPopup
 Summary
-  Write here a summary (1 line)
+  Specifies whether to replace the default system popup menu.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use the UseFixedPopup property to specify whether to replace the default system popup menu with a
+  fixed popup menu. 
+
+  The fixed popup menu fixes problems such as incorrectly displaying the Paste command as enabled even 
+  when the edit is set to read-only, and works in combination with the ClipboardCommands property.
+  
+  Set UseFixedPopup to true (the default) to use the fixed popup menu, or set it to false to use
+  the defualt implementation.
 ----------------------------------------------------------------------------------------------------
 @@TJvEdit
 <TITLEIMG TJvEdit>
