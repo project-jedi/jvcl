@@ -343,11 +343,11 @@ type
     property NavPanel: TJvNavPanelButton read FNavPanel;
     property IconButton: TJvNavIconButton read FIconButton;
     property IconPanel: TJvIconPanel read FIconPanel write SetIconPanel;
+    property Colors: TJvNavPanelColors read GetColors write SetColors;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property Color;
-    property Colors: TJvNavPanelColors read GetColors write SetColors;
     property Caption: TCaption read GetCaption write SetCaption;
     property Iconic: boolean read GetIconic write SetIconic default False;
     property ImageIndex: TImageIndex read GetImageIndex write SetImageIndex default -1;
