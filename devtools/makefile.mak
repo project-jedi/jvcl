@@ -12,6 +12,8 @@ ROOT = $(MAKEDIR)\..
 JCLROOT = ..\..\..\jcl
 !endif
 
+.path.exe=bin
+
 #---------------------------------------------------------------------------------------------------
 SRC = ..\..\Run
 ARCH = ..\..\Archive
@@ -59,29 +61,32 @@ isu.exe: ITEStrip\isu.dpr
   $(DCC) $&.dpr
   cd ..
 
-MakeRC.exe: MakeRC\MakeRC.dpr
+MakeRC.exe: MakeRC\MakeRC.dpr \
+		MakeRC\MakeRCUtils.pas
   cd MakeRC
   $(DCC) $&.dpr
   cd ..
 
-jconvert.exe: JConvert\jconvert.dpr
+jconvert.exe: JConvert\jconvert.dpr \
+		JConvert\JConvertUtils.pas
   cd JConvert
   $(DCC) $&.dpr
   cd ..
 
-MakeDOF.exe: MakeDOF\MakeDOF.dpr
+MakeDOF.exe: MakeDOF\MakeDOF.dpr \
+		MakeDOF\MakeDOFUtils.pas
   cd MakeDOF
   $(DCC) $&.dpr
   cd ..
 
-MakeCFG.exe: MakeCFG\MakeCFG.dpr
+MakeCFG.exe: MakeCFG\MakeCFG.dpr \
+		MakeCFG\MakeCFGUtils.pas
   cd MakeCFG
   $(DCC) $&.dpr
   cd ..
 
-Bpg2Make.exe: bin\Bpg2Make.exe
-
-bin\Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr Bpg2Make\Bpg2MakeUtils.pas
+Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr \
+		Bpg2Make\Bpg2MakeUtils.pas
   cd Bpg2Make
   @type &&|
 -e"$(BIN)"
@@ -96,17 +101,20 @@ bin\Bpg2Make.exe: Bpg2Make\Bpg2Make.dpr Bpg2Make\Bpg2MakeUtils.pas
   -@del Make*.@@@ >NUL 2>NUL
   cd ..
 
-jtouch.exe: JTouch\jtouch.dpr
+jtouch.exe: JTouch\jtouch.dpr \
+		JTouch\JTouchUtils.pas
   cd JTouch
   $(DCC) $&.dpr
   cd ..
 
-crlf.exe: JvAdjustLineBreaks\crlf.dpr
+crlf.exe: JvAdjustLineBreaks\crlf.dpr \
+		JvAdjustLineBreaks\crlfutils.pas
   cd JvAdjustLineBreaks
-  $(DCCx) $&.dpr
+  $(DCC) $&.dpr
   cd ..
 
-stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
+stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr \
+		stripCmtPO\stripUtils.pas
   cd stripCmtPO
   $(DCC) $&.dpr
   cd ..
@@ -116,14 +124,16 @@ dxgettextResstr.exe: dxgettextResstr\dxgettextResstr.dpr
   $(DCC) $&.dpr
   cd ..
 
-dc.exe: DFMCleaner\dc.dpr
+dc.exe: DFMCleaner\dc.dpr \
+		DFMCleaner\dcUtils.pas
   cd DFMCleaner
   $(DCC) $&.dpr
   cd ..
 
-pg.exe: bin\pg.exe
-
-bin\pg.exe: PackagesGenerator\pg.dpr PackagesGenerator\CmdLineUtils.pas PackagesGenerator\FileUtils.pas PackagesGenerator\GenerateUtils.pas
+pg.exe: PackagesGenerator\pg.dpr \
+		PackagesGenerator\CmdLineUtils.pas \
+		PackagesGenerator\FileUtils.pas \
+		PackagesGenerator\GenerateUtils.pas
   @cd PackagesGenerator
   @type &&|
 -e"$(BIN)"
@@ -138,26 +148,57 @@ bin\pg.exe: PackagesGenerator\pg.dpr PackagesGenerator\CmdLineUtils.pas Packages
   -@del Make*.@@@ >NUL 2>NUL
   @cd ..
 
-pgEdit.exe: PackagesGenerator\pgEdit.dpr
+pgEdit.exe: PackagesGenerator\pgEdit.dpr \
+		PackagesGenerator\AdvancedBCBForm.pas \
+		PackagesGenerator\CmdLineUtils.pas \
+		PackagesGenerator\CmdLineUtils.pas \
+		PackagesGenerator\FileUtils.pas \
+		PackagesGenerator\FormTypeDialog.pas \
+		PackagesGenerator\GenerateUtils.pas \
+		PackagesGenerator\GenerationMessagesForm.pas \
+		PackagesGenerator\KnownTagsForm.pas \
+		PackagesGenerator\MainForm.pas \
+		PackagesGenerator\ModelsForm.pas \
+		PackagesGenerator\TargetDialog.pas \
+		PackagesGenerator\UtilsJcl.pas
   cd PackagesGenerator
-  $(DCC) $&.dpr
-  cd ..
+  @type &&|
+-e"$(BIN)"
+-i"$(SRCP)"
+-n"$(DCU)"
+-r"$(SRCP)"
+-u"$(SRCP)"
+-u"$(ROOT)\Lib\Obj"
+| >pgEdit.cfg
+  $(DCCx) pgEdit.dpr
+  -@del pgEdit.cfg >NUL 2>NUL
+  -@del Make*.@@@ >NUL 2>NUL
+  @cd ..
 
 NoQuotes.exe: NoQuotes\NoQuotes.dpr
   cd NoQuotes
   $(DCC) $&.dpr
   cd ..
-  
-SetPoHeader.exe: bin\SetPoHeader.exe
 
-bin\SetPoHeader.exe: SetPoHeader\SetPoHeaderUtils.pas SetPoHeader\SetPoHeader.dpr
+SetPoHeader.exe: SetPoHeader\SetPoHeaderUtils.pas \
+		SetPoHeader\SetPoHeader.dpr
   cd SetPoHeader
+  @echo.
+  @echo.
   $(DCC) SetPoHeader.dpr
   cd ..
 
 
-JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
+JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr \
+		JVCLConvert\fAboutMe.pas \
+		JVCLConvert\fAboutMe.pas \
+		JVCLConvert\FastTime.pas \
+		JVCLConvert\fJvclConverterMain.pas \
+		JVCLConvert\JVCLConvertUtils.pas \
+		JVCLConvert\OptionsFrm.pas
   cd JVCLConvert
+  @echo.
+  @echo.
   $(DCC) $&.dpr
   cd ..
   
@@ -190,7 +231,8 @@ pg2want.exe: pg2want\pg2want.dpr
   $(DCC) $&.dpr
   cd ..
 
-LastModifyRepl.exe: LastModifyRepl\LastModifyRepl.dpr LastModifyRepl\LastModifyReplUtil.pas
+LastModifyRepl.exe: LastModifyRepl\LastModifyRepl.dpr \
+		LastModifyRepl\LastModifyReplUtil.pas
   cd LastModifyRepl
   @echo.
   @echo.
