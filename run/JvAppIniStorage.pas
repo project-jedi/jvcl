@@ -114,18 +114,6 @@ const
   cSectionHeaderEnd = ']';
   cKeyValueSeparator = '=';
 
-{ (ahuser) make Delphi 5 compiler happy
-function AnsiSameTextShortest(S1, S2: string): Boolean;
-begin
-  if Length(S1) > Length(S2) then
-    SetLength(S1, Length(S2))
-  else
-  if Length(S2) > Length(S1) then
-    SetLength(S2, Length(S1));
-  Result := AnsiSameText(S1, S2);
-end;
-}
-
 function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
 var
   P: PChar;
@@ -135,10 +123,11 @@ begin
   if (Length(Value) div 2) < BufSize then
     BufSize := Length(Value) div 2;
   Result := 0;
+  Dec(BufSize); // adjust for PChar
   P := PChar(Value);
-  while BufSize > 0 do
+  while BufSize >= 0 do
   begin
-    PChar(Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
+    PChar(@Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
     Inc(Result);
     Dec(BufSize);
     Inc(P, 2);
@@ -152,10 +141,11 @@ var
 begin
   SetLength(Result, BufSize * 2);
   P := PChar(Result);
-  Inc(P, (BufSize - 1) * 2); // Point to end of string ^
-  while BufSize > 0 do
+  Dec(BufSize); // adjust for PChar
+  Inc(P, BufSize * 2); // Point to end of string ^
+  while BufSize >= 0 do
   begin
-    S := IntToHex(Ord(PChar(Buf)[BufSize]), 2);
+    S := IntToHex(Ord(PChar(@Buf)[BufSize]), 2);
     P[0] := S[1];
     P[1] := S[2];
     Dec(P, 2);
