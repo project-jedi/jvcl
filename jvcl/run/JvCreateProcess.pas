@@ -223,8 +223,6 @@ uses
   JvJVCLUtils, JvTypes;
 
 resourcestring
-  RsListIndex = 'Process list index error';
-  RsPIDNotFound = 'ProcessID %.8x not found';
   RsProcessIsRunning = 'Can''t perform this operation when process is running';
   RsProcessNotRunning = 'Process is not running';
   RsIdle = 'Idle';

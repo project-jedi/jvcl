@@ -501,6 +501,7 @@ procedure TJvOutlookBarEdit.WMNCPaint(var Msg: TMessage);
 //  DC: HDC;
 //  RC, RW: TRect;
 begin
+  GetCanvas; // make Delphi 5 compiler happy // andreas
   inherited;
 (*
   DC := GetWindowDC(Handle);

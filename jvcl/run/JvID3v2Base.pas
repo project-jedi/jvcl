@@ -1427,6 +1427,7 @@ begin
   end;
 end;
 
+(* make Delphi 5 compiler happy // andreas
 function GetByteCount(const SP: TJvID3StringPair; const Encoding: TJvID3Encoding): Cardinal;
 begin
   { Returns the nr. of bytes needed to store a string of a specific encoding }
@@ -1445,6 +1446,7 @@ begin
     ID3Error(SID3UnknownEncoding);
   end;
 end;
+*)
 
 function LengthEnc(const S: TJvID3StringPair; const FromEnc, ToEnc: TJvID3Encoding): Cardinal;
 begin

@@ -128,12 +128,6 @@ function AppVerInfo: TJvVersionInfo;
 
 function OkToWriteModule(ModuleName: string; NewVer: Longint): Boolean;
 
-implementation
-
-uses
-  SysUtils,
-  JvJVCLUtils, JvJCLUtils, JvTypes;
-
 const
   LanguageValues: array [TVersionLanguage] of Word =
     ($0401, $0402, $0403, $0404, $0405, $0406, $0407, $0408, $0409, $040A,
@@ -145,6 +139,12 @@ const
 const
   CharacterSetValues: array [TVersionCharSet] of Integer =
     (0, 932, 949, 950, 1200, 1250, 1251, 1252, 1253, 1254, 1255, 1256, -1);
+
+implementation
+
+uses
+  SysUtils,
+  JvJVCLUtils, JvJCLUtils, JvTypes;
 
 constructor TJvVersionInfo.Create(const AFileName: string);
 begin

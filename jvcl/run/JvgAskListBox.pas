@@ -187,9 +187,6 @@ implementation
 uses
   JvConsts, JvgUtils;
 
-const
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
-
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

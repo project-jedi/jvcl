@@ -156,11 +156,6 @@ type
 
 implementation
 
-function GetFontHeight(Canvas: TCanvas): Integer;
-begin
-  Result := Canvas.TextHeight('Wq');
-end;
-
 constructor TJvItemsPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);

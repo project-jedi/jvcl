@@ -439,14 +439,6 @@ type
   public
     constructor Create(Delay:integer; HintWindow:THintWindow);
   end;
-// returns Value rounded up to nearest integer
-
-function ceil(Value: double): integer;
-begin
-  Result := trunc(Value);
-  if frac(Value) <> 0.0 then
-    Inc(Result);
-end;
 
 // returns greater of Val1 and Val2
 

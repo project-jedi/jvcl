@@ -1198,6 +1198,7 @@ type
 
   TJvUnselectUndo = class(TJvSelectUndo);
 
+(* make Delphi 5 compiler happy // andreas
   TJvIndentColumnUndo = class(TJvInsertColumnUndo)
   private
     FNewCaretX: Integer;
@@ -1207,6 +1208,7 @@ type
       ABegX, ABegY: Integer; const AText: string);
     procedure Undo; override;
   end;
+*)
 
   TJvUnindentColumnUndo = class(TJvInsertUndo)
   private
@@ -6142,6 +6144,7 @@ end;
 
 //=== TJvIndentColumnUndo ====================================================
 
+(* make Delphi 5 compiler happy // andreas
 constructor TJvIndentColumnUndo.Create(AJvEditor: TJvCustomEditor; ACaretX,
   ACaretY, ABegX, ABegY: Integer; const AText: string);
 begin
@@ -6156,7 +6159,7 @@ begin
   inherited Undo;
   RestoreSelection;
   FJvEditor.SetCaretInternal(FNewCaretX, FNewCaretY);
-end;
+end;*)
 
 //=== TJvUnindentColumnUndo ====================================================
 

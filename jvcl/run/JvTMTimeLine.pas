@@ -326,6 +326,7 @@ uses
 const
   cMagic = 'Jv.TMTIMELINE1';
 
+(* make Delphi 5 compiler happy // andreas
 function Max(Val1, Val2: Integer): Integer;
 begin
   if Val2 > Val1 then
@@ -333,6 +334,7 @@ begin
   else
     Result := Val1;
 end;
+*)
 
 //=== TJvTLSelFrame ==========================================================
 

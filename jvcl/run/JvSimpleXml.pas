@@ -451,10 +451,12 @@ begin
   Result := TextToFloat(PChar(S), Value, fvExtended);
 end;
 
+(*  make Delphi 5 compiler happy // andreas
 procedure ConvertErrorFmt(ResString: PResStringRec; const Args: array of const);
 begin
   raise EConvertError.CreateResFmt(ResString, Args);
 end;
+*)
 
 function TryStrToBool(const S: string; out Value: Boolean): Boolean;
 
@@ -498,11 +500,13 @@ begin
     Result := Default;
 end;
 
+(*  make Delphi 5 compiler happy // andreas
 function StrToBool(S: string): Boolean;
 begin
   if not TryStrToBool(S, Result) then
     ConvertErrorFmt(@SInvalidBoolean, [S]);
 end;
+*)
 
 function BoolToStr(B: Boolean; UseBoolStrs: Boolean = False): string;
 const

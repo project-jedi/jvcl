@@ -110,6 +110,8 @@ function PosStr(const FindString, SourceString: string;
 function PosStrLast(const FindString, SourceString: string): integer;
 {finds the last occurance}
 
+function LastPosChar(const FindChar: char; SourceString: string): integer;
+
 function PosText(const FindString, SourceString: string;
   StartPos: Integer = 1): Integer;
 { PosText searches the first occurrence of a substring FindString in a string
@@ -193,6 +195,13 @@ function Easter(nYear: Integer): TDateTime;
 // returns the easter date of a year.
 function getWeekNumber(today: Tdatetime): string;
 //gets a datecode. Returns year and weeknumber in format: YYWW
+
+function parseNumber(s: string): integer;
+// parse number returns the last position, starting from 1
+function parseDate(s: string): integer;
+// parse a SQL style data string from positions 1,
+// starts and ends with #
+
 implementation
 
 uses
@@ -226,6 +235,7 @@ const
     #$C0, #$C1, #$C2, #$C3, #$C4, #$C5, #$C6, #$C7, #$C8, #$C9, #$CA, #$CB, #$CC, #$CD, #$CE, #$CF,
     #$D0, #$D1, #$D2, #$D3, #$D4, #$D5, #$D6, #$D7, #$D8, #$D9, #$DA, #$DB, #$DC, #$DD, #$DE, #$DF);
 
+(* make Delphi 5 compiler happy // andreas
   ToLowerChars: array[0..255] of Char =
   (#$00, #$01, #$02, #$03, #$04, #$05, #$06, #$07, #$08, #$09, #$0A, #$0B, #$0C, #$0D, #$0E, #$0F,
     #$10, #$11, #$12, #$13, #$14, #$15, #$16, #$17, #$18, #$19, #$1A, #$1B, #$1C, #$1D, #$1E, #$1F,
@@ -243,13 +253,15 @@ const
     #$F0, #$F1, #$F2, #$F3, #$F4, #$F5, #$F6, #$F7, #$F8, #$F9, #$FA, #$FB, #$FC, #$FD, #$FE, #$FF,
     #$E0, #$E1, #$E2, #$E3, #$E4, #$E5, #$E6, #$E7, #$E8, #$E9, #$EA, #$EB, #$EC, #$ED, #$EE, #$EF,
     #$F0, #$F1, #$F2, #$F3, #$F4, #$F5, #$F6, #$F7, #$F8, #$F9, #$FA, #$FB, #$FC, #$FD, #$FE, #$FF);
+*)
 
 procedure SaveString(aFile, aText: string);
 begin
   with TFileStream.Create(aFile, fmCreate) do
   try
-    writeBuffer(aText[1], length(aText));
-  finally free;
+    WriteBuffer(aText[1], Length(aText));
+  finally
+    Free;
   end;
 end;
 
@@ -261,7 +273,8 @@ begin
   try
     SetLength(s, Size);
     ReadBuffer(s[1], Size);
-  finally free;
+  finally
+    Free;
   end;
   result := s;
 end;
@@ -1033,6 +1046,18 @@ begin
   xml := xml + '</accountdata>' + cr;
   alist.free;
   result := xml;
+end;
+
+function LastPosChar(const FindChar: char; SourceString: string): integer;
+var
+  i: integer;
+begin
+  result := 0;
+  i := length(sourcestring);
+  if i = 0 then exit;
+  while (i > 0) and (sourceString[i] <> Findchar) do
+    dec(i);
+  result := i;
 end;
 
 function PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
@@ -2036,6 +2061,51 @@ begin
       if (sr.Attr and faArchive) <> 0 then
         aFileList.append(aDir + sr.Name);
   FindClose(sr);
+end;
+
+
+// parse number returns the last position, starting from 1
+
+function parseNumber(s: string): integer;
+var
+  i, e, e2, c: integer;
+begin
+  result := 0;
+  i := 0;
+  c := length(s);
+  if c = 0 then exit;
+  while (i + 1 <= c) and (s[i + 1] in ['0'..'9', ',', '.']) do
+    inc(i);
+  if (i + 1 <= c) and (s[i + 1] in ['e', 'E']) then
+  begin
+    e := i;
+    inc(i);
+    if (i + 1 <= c) and (s[i + 1] in ['+', '-']) then inc(i);
+    e2 := i;
+    while (i + 1 <= c) and (s[i + 1] in ['0'..'9']) do
+      inc(i);
+    if i = e2 then i := e;
+  end;
+  result := i;
+end;
+
+// parse a SQL style data string from positions 1,
+// starts and ends with #
+
+function parseDate(s: string): integer;
+var
+  p: integer;
+begin
+  result := 0;
+  if length(s) < 2 then exit;
+  p := posstr('#', s, 2);
+  if p = 0 then exit;
+  try
+    strtodate(copy(s, 2, p - 2));
+    result := p;
+  except
+    result := 0;
+  end;
 end;
 
 end.

@@ -98,9 +98,6 @@ type
 
 implementation
 
-resourcestring
-  RC_Alarm = 'Unable to get alarm number %d. Index out of bounds';
-
 //=== TJvAlarms ==============================================================
 
 constructor TJvAlarms.Create(AOwner: TComponent);

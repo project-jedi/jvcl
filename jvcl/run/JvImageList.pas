@@ -927,10 +927,10 @@ end;
 
 {$IFDEF COMPLIB_VCL}
 initialization
-  HandleNeededHookInstaned := False;
+  HandleNeededHookInstalled := False;
 
 finalization
-  if HandleNeededHookInstaned then
+  if HandleNeededHookInstalled then
     UninstallHandleNeededHook;
 {$ENDIF}    
 
