@@ -63,7 +63,10 @@ unit JvDatePickerEdit;
 interface
                                                                        
 uses
-  Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  Windows, Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
   JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvButton,
   JvToolEdit, ImgList;
 
@@ -116,11 +119,9 @@ type
     FDate: TDateTime;
     FDateError: Boolean;
     FDeleting: Boolean;
-    FCalLostFocus: Boolean;
     FDateFigures: TJvDateFigures;
     FInternalDateFormat,
     FDateFormat: string;
-    FDropFo: TJvDropCalendar;
     FEnableValidation: Boolean;
     FMask: string;
     FNoDateShortcut: TShortcut;
@@ -132,12 +133,10 @@ type
     FDateSeparator: Char;
     //    FMinYear: Word;
     //    FMaxYear: Word;
-    procedure DropButtonClick(Sender: TObject);
     procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
     procedure CalCloseQuery(Sender: TObject; var CanClose: Boolean);
-    procedure CalKillFocus(const ASender: TObject; const ANextControl: TWinControl);
     function AttemptTextToDate(const AText: string; var ADate: TDateTime;
       const AForce: Boolean = False; const ARaise: Boolean = False): Boolean;
     function DateFormatToEditMask(var ADateFormat: string): string;
@@ -169,18 +168,20 @@ type
     procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
     procedure KeyDown(var AKey: Word; AShift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-//    procedure GetInternalMargins(var ALeft, ARight: Integer); override;
+    procedure CreatePopup; override;
+    procedure HidePopup; override;
+    procedure ShowPopup(Origin: TPoint); override;
     procedure DoCtl3DChanged; override;
     procedure EnabledChanged; override;
     function GetChecked: Boolean; override;
+    function GetPopupValue: Variant; override;
     procedure SetChecked(const AValue: Boolean); override;
+    procedure SetPopupValue(const Value: Variant); override;
     procedure SetShowCheckbox(const AValue: Boolean); override;
     function GetEnableValidation: Boolean; virtual;
     procedure UpdateDisplay; virtual;
     function ValidateDate(const ADate: TDateTime): Boolean; virtual;
     function ActiveFigure: TJvDateFigureInfo;
-    procedure CloseUp; virtual;
-    procedure DropDown; virtual;
     procedure ClearMask;
     procedure RestoreMask;
     function IsEmptyMaskText(const AText: string): Boolean;
@@ -310,7 +311,7 @@ type
 implementation
 
 uses
-  Windows, Menus, SysUtils,
+  Menus, SysUtils,
   JclStrings, JclGraphUtils,
   JvResources;
 
@@ -375,7 +376,8 @@ end;
 
 procedure TJvCustomDatePickerEdit.CalChange(Sender: TObject);
 begin
-  Text := DateToText(FDropFo.SelDate);
+  if FPopup is TJvDropCalendar then
+    Text := DateToText(TJvDropCalendar(FPopup).SelDate);
 end;
 
 procedure TJvCustomDatePickerEdit.CalCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -391,26 +393,12 @@ end;
 
 procedure TJvCustomDatePickerEdit.CalDestroy(Sender: TObject);
 begin
-  CloseUp;
-  FDropFo := nil;
-  FCalLostFocus := False;
-end;
-
-procedure TJvCustomDatePickerEdit.CalKillFocus(const ASender: TObject;
-  const ANextControl: TWinControl);
-begin
-  {We've got to catch the case where the user moves the focus somewhere else
-   while the calendar is visible. Otherwise the control might erroneously try
-   to refocus itself in method CloseUp where this could not be tested as the
-   calendar will no longer be "leaving" by that time already.}
-  if (ANextControl = nil) or ((ANextControl <> Self) and (ANextControl.Owner <> Self)) then
-    FCalLostFocus := True;
+  PopupCloseUp(Self, False);
 end;
 
 procedure TJvCustomDatePickerEdit.CalSelect(Sender: TObject);
 begin
-  Self.Date := FDropFo.SelDate;
-  NotifyIfChanged;
+  PopupCloseUp(Self, True);
 end;
 
 procedure TJvCustomDatePickerEdit.Change;
@@ -506,17 +494,6 @@ begin
   end;
 end;
 
-procedure TJvCustomDatePickerEdit.CloseUp;
-begin
-  if Dropped then
-  begin
-    Date := FDropFo.SelDate;
-    FreeAndNil(FDropFo);
-  end;
-  if not (Leaving or (csDestroying in ComponentState) or FCalLostFocus) then
-    SetFocus;
-end;
-
 constructor TJvCustomDatePickerEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -526,8 +503,6 @@ begin
   FDate := SysUtils.Date;
   FDateError := False;
   FDeleting := False;
-  FCalLostFocus := False;
-  FDropFo := nil;
   FEnableValidation := True;
   //  FMaxYear := 2900;
   //  FMinYear := 1800;
@@ -535,8 +510,6 @@ begin
   FNoDateText := '';
   FStoreDate := False;
   FStoreDateFormat := False;
-
-  Button.OnClick := DropButtonClick;
 
   FCalAppearance := TJvMonthCalAppearance.Create;
 
@@ -546,6 +519,25 @@ begin
     ShowButton := True;
   finally
     ControlState := ControlState - [csCreating];
+  end;
+end;
+
+procedure TJvCustomDatePickerEdit.CreatePopup;
+begin
+  if not Assigned(FPopup) then
+  begin
+    FPopup := TJvDropCalendar.CreateWithAppearance(Self, FCalAppearance);
+    with TJvDropCalendar(FPopup) do
+    begin
+//      SelDate := Self.Date;
+      OnChange := Self.CalChange;
+      OnSelect := Self.CalSelect;
+      OnDestroy := Self.CalDestroy;
+      OnCloseQuery := Self.CalCloseQuery;
+//      OnKillFocus := Self.CalKillFocus;
+//      Show;
+//      SetFocus;
+    end;
   end;
 end;
 
@@ -597,8 +589,6 @@ end;
 
 destructor TJvCustomDatePickerEdit.Destroy;
 begin
-  CloseUp;
-  Button.OnClick := nil;
   FreeAndNil(FCalAppearance);
   inherited Destroy;
 end;
@@ -623,11 +613,11 @@ procedure TJvCustomDatePickerEdit.DoKillFocusEvent(const ANextControl: TWinContr
 var
   lDate: TDateTime;
 begin
-  if (ANextControl = nil) or ((ANextControl <> FDropFo) and
-    (ANextControl.Owner <> FDropFo)) then
+  if (ANextControl = nil) or ((ANextControl <> FPopup) and
+    (ANextControl.Owner <> FPopup)) then
     if not FDateError then
     begin
-      CloseUp;
+      PopupCloseUp(Self, False);
       inherited DoKillFocusEvent(ANextControl);
       if EnableValidation then
       try
@@ -650,41 +640,41 @@ begin
       inherited DoKillFocusEvent(ANextControl);
 end;
 
-procedure TJvCustomDatePickerEdit.DropButtonClick(Sender: TObject);
-begin
-  if Dropped then
-    CloseUp
-  else
-    DropDown;
-end;
+//procedure TJvCustomDatePickerEdit.DropButtonClick(Sender: TObject);
+//begin
+//  if Dropped then
+//    CloseUp
+//  else
+//    DropDown;
+//end;
 
-procedure TJvCustomDatePickerEdit.DropDown;
-begin
-  if not Dropped then
-  begin
-    if IsEmpty then
-      Self.Date := SysUtils.Date;
-
-    FDropFo := TJvDropCalendar.CreateWithAppearance(Self, FCalAppearance);
-    with FDropFo do
-    begin
-      SelDate := Self.Date;
-      OnChange := Self.CalChange;
-      OnSelect := Self.CalSelect;
-      OnDestroy := Self.CalDestroy;
-      OnCloseQuery := Self.CalCloseQuery;
-      OnKillFocus := Self.CalKillFocus;
-      Show;
-      SetFocus;
-    end;
-  end;
-end;
+//procedure TJvCustomDatePickerEdit.DropDown;
+//begin
+//  if not Dropped then
+//  begin
+//    if IsEmpty then
+//      Self.Date := SysUtils.Date;
+//
+//    FDropFo := TJvDropCalendar.CreateWithAppearance(Self, FCalAppearance);
+//    with FDropFo do
+//    begin
+//      SelDate := Self.Date;
+//      OnChange := Self.CalChange;
+//      OnSelect := Self.CalSelect;
+//      OnDestroy := Self.CalDestroy;
+//      OnCloseQuery := Self.CalCloseQuery;
+//      OnKillFocus := Self.CalKillFocus;
+//      Show;
+//      SetFocus;
+//    end;
+//  end;
+//end;
 
 procedure TJvCustomDatePickerEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
   if not (Self.Enabled) and Dropped then
-    CloseUp;
+    PopupCloseUp(Self, False);
 end;
 
 procedure TJvCustomDatePickerEdit.FindSeparators(var AFigures: TJvDateFigures;
@@ -715,7 +705,8 @@ end;
 
 function TJvCustomDatePickerEdit.GetDropped: Boolean;
 begin
-  Result := Assigned(FDropFo) and not (csDestroying in FDropFo.ComponentState);
+  //Result := Assigned(FDropFo) and not (csDestroying in FDropFo.ComponentState);
+  Result := PopupVisible;
 end;
 
 function TJvCustomDatePickerEdit.GetEditMask: string;
@@ -728,11 +719,11 @@ begin
   Result := FEnableValidation;
 end;
 
-//procedure TJvCustomDatePickerEdit.GetInternalMargins(var ALeft, ARight: Integer);
-//begin
-//  inherited GetInternalMargins(ALeft, ARight);
-//  ARight := ARight + Button.Width;
-//end;
+function TJvCustomDatePickerEdit.GetPopupValue: Variant;
+begin
+  if FPopup is TJvDropCalendar then
+    Result := TJvDropCalendar(FPopup).SelDate;
+end;
 
 function TJvCustomDatePickerEdit.GetText: TCaption;
 var
@@ -745,6 +736,13 @@ begin
   finally
     SysUtils.DateSeparator := OldSep;
   end;
+end;
+
+procedure TJvCustomDatePickerEdit.HidePopup;
+begin
+  if (FPopup is TJvDropCalendar) and not (csDestroying in FPopup.ComponentState) then
+    TJvDropCalendar(FPopup).Release;
+  FPopup := nil;
 end;
 
 function TJvCustomDatePickerEdit.IsEmpty: Boolean;
@@ -786,14 +784,14 @@ begin
   end
   else
     case AKey of
-      VK_ESCAPE:
-        begin
-          CloseUp;
-          Reset;
-        end;
-      VK_DOWN:
-        if AShift = [ssAlt] then
-          DropDown;
+//      VK_ESCAPE:
+//        begin
+//          CloseUp;
+//          Reset;
+//        end;
+//      VK_DOWN:
+//        if AShift = [ssAlt] then
+//          DropDown;
       VK_BACK, VK_CLEAR, VK_DELETE, VK_EREOF, VK_OEM_CLEAR:
         begin
           DeleteSetHere := not FDeleting;
@@ -978,6 +976,13 @@ begin
   UpdateDisplay;
 end;
 
+procedure TJvCustomDatePickerEdit.SetPopupValue(const Value: Variant);
+begin
+  if FPopup is TJvDropCalendar then
+    TJvDropCalendar(FPopup).SelDate :=
+      StrToDateDef(VarToStr(Value), SysUtils.Date);
+end;
+
 procedure TJvCustomDatePickerEdit.SetShowCheckbox(const AValue: Boolean);
 begin
   inherited SetShowCheckbox(AValue);
@@ -997,6 +1002,12 @@ begin
   finally
     SysUtils.DateSeparator := OldSep;
   end;
+end;
+
+procedure TJvCustomDatePickerEdit.ShowPopup(Origin: TPoint);
+begin
+  if FPopup is TJvDropCalendar then
+    TJvDropCalendar(FPopup).Show;
 end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
@@ -1146,7 +1157,6 @@ procedure TJvDropCalendar.DoSelect;
 begin
   if Assigned(OnSelect) then
     OnSelect(Self);
-  Release;
 end;
 
 procedure TJvDropCalendar.DoShow;

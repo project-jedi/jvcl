@@ -67,7 +67,7 @@ type
     function IsLinked: Boolean;
     procedure Change; override;
     procedure DoKillFocusEvent(const ANextControl: TWinControl); override;
-    procedure DropDown; override;
+    procedure PopupDropDown(DisableEdit: Boolean); override;
     function EditCanModify: Boolean; override;
     procedure SetChecked(const AValue: Boolean); override;
     procedure SetShowCheckbox(const AValue: Boolean); override;
@@ -261,12 +261,6 @@ begin
     inherited DoUndo;
 end;
 
-procedure TJvCustomDBDatePickerEdit.DropDown;
-begin
-  if EditCanModify then
-    inherited DropDown;
-end;
-
 function TJvCustomDBDatePickerEdit.EditCanModify: Boolean;
 begin
   Result := (not IsLinked) or FDataLink.Edit;
@@ -318,6 +312,12 @@ end;
 function TJvCustomDBDatePickerEdit.IsLinked: Boolean;
 begin
   Result := Assigned(FDataLink) and Assigned(FDataLink.Field);
+end;
+
+procedure TJvCustomDBDatePickerEdit.PopupDropDown(DisableEdit: Boolean);
+begin
+  if EditCanModify then
+    inherited PopupDropDown(DisableEdit);
 end;
 
 procedure TJvCustomDBDatePickerEdit.SetChecked(const AValue: Boolean);
