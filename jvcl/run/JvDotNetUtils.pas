@@ -37,8 +37,18 @@ uses
 procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl;
   AColor: TColor; var InControl: Boolean);
 procedure DrawDotNetControl(Control: TWinControl; AColor: TColor; InControl: Boolean);
+procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);
 
 implementation
+var
+  InternalFocusedColor:TColor = $00733800;
+  InternalUnfocusedColor:TColor = clGray;
+
+procedure SetDotNetFrameColors(FocusedColor, UnfocusedColor:TColor);
+begin
+  InternalFocusedColor := FocusedColor;
+  InternalUnfocusedColor := UnfocusedColor;
+end;
 
 procedure DotNetMessageHandler(var Msg: TMessage; AControl: TWinControl; AColor: TColor;
   var InControl: Boolean);
@@ -71,9 +81,9 @@ begin
     with Canvas do
     try
       Handle := DC;
-      Brush.Color := clGray;
+      Brush.Color := InternalUnfocusedColor;
       if Control.Focused or InControl then
-        Brush.Color := $00733800;
+        Brush.Color := InternalFocusedColor;
       FrameRect(R);
       InflateRect(R, -1, -1);
       if not (Control.Focused or InControl) then
