@@ -33,7 +33,7 @@ unit JvImageWindow;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,
+  Windows, Messages, SysUtils, Classes, Graphics, Math,
   Controls, Forms, Dialogs, ExtCtrls, CommCtrl, ImgList, JvComponent;
 
 type

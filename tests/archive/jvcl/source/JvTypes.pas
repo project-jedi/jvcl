@@ -36,7 +36,7 @@ unit JvTypes;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls;
   
 const
   MaxPixelCount = 32768;
