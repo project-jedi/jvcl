@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvPanel.PAS, released on 2001-02-28.
+The Original Code is: JvPanel.pas, released on 2001-02-28.
 
 The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.com]
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
@@ -19,7 +19,7 @@ Michael Beck [mbeck@bigfoot.com].
 pongtawat
 Peter Thornqvist [peter3@peter3.com]
 
-Last Modified: 2002-11-19
+Last Modified: 2003-11-02
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,9 +35,49 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
-  JVCLVer, JvThemes; 
+  JVCLVer, JvThemes;
 
 type
+  TJvResizeParentEvent = procedure(Sender: TObject; nLeft, nTop, nWidth, nHeight: Integer) of object;
+  TJvAutoSizePanel = (asNone, asWidth, asHeight, asBoth);
+
+  TJvPanel = class;
+
+  TJvArrangeSettings = class(TPersistent)
+  private
+    FPanel: TJvPanel;
+    FAutoArrange: Boolean;
+    FAutoSize: TJvAutoSizePanel;
+    FWrapControls: Boolean;
+    FBorderLeft: Integer;
+    FBorderTop: Integer;
+    FDistanceVertical: Integer;
+    FDistanceHorizontal: Integer;
+    FShowNotVisibleAtDesignTime: Boolean;
+
+    procedure SetWrapControls(Value: Boolean);
+    procedure SetAutoArrange(Value: Boolean);
+    procedure SetAutoSize(Value: TJvAutoSizePanel);
+    procedure SetBorderLeft(Value: Integer);
+    procedure SetBorderTop(Value: Integer);
+    procedure SetDistanceVertical(Value: Integer);
+    procedure SetDistanceHorizontal(Value: Integer);
+
+    procedure Rearrange;
+  public
+    constructor Create(APanel: TJvPanel);
+    procedure Assign(Source: TPersistent); override;
+  published
+    property WrapControls: Boolean read FWrapControls write SetWrapControls default True;
+    property BorderLeft: Integer read FBorderLeft write SetBorderLeft default 0;
+    property BorderTop: Integer read FBorderTop write SetBorderTop default 0;
+    property DistanceVertical: Integer read FDistanceVertical write SetDistanceVertical default 0;
+    property DistanceHorizontal: Integer read FDistanceHorizontal write SetDistanceHorizontal default 0;
+    property ShowNotVisibleAtDesignTime: Boolean read FShowNotVisibleAtDesignTime write FShowNotVisibleAtDesignTime default True;
+    property AutoSize: TJvAutoSizePanel read FAutoSize write SetAutoSize default asNone;
+    property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
+  end;
+
   TJvPanel = class(TPanel)
   private
     FAboutJVCL: TJVCLAboutInfo;
@@ -54,9 +94,23 @@ type
     FMultiLine: Boolean;
     FOldColor: TColor;
     FHotColor: TColor;
-    FSizeable: boolean;
+    FSizeable: Boolean;
     FDragging: Boolean;
     FLastPos: TPoint;
+
+    FArrangeSettings: TJvArrangeSettings;
+    FEnableArrangeCount: Integer;
+    FArrangeControlActive: Boolean;
+    FArrangeWidth: Integer;
+    FArrangeHeight: Integer;
+    FOnResizeParent: TJvResizeParentEvent;
+
+    function GetHeight: Integer;
+    procedure SetHeight(Value: Integer);
+    function GetWidth: Integer;
+    procedure SetWidth(Value: Integer);
+    procedure SetArrangeSettings(Value: TJvArrangeSettings);
+
     procedure SetTransparent(const Value: Boolean);
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
@@ -64,7 +118,7 @@ type
     procedure DrawBorders;
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
-    procedure SetSizeable(const Value: boolean);
+    procedure SetSizeable(const Value: Boolean);
 {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
@@ -83,13 +137,26 @@ type
     procedure AdjustSize; override;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+
+    procedure Loaded; override;
+    procedure Resize; override;
+    procedure AlignControls(AControl: TControl; var Rect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure Invalidate; override;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
+
+    procedure ArrangeControls;
+    procedure EnableArrange;
+    procedure DisableArrange;
+    function ArrangeEnabled: Boolean;
+    property ArrangeWidth: Integer read FArrangeWidth;
+    property ArrangeHeight: Integer read FArrangeHeight;
   published
-    property Sizeable: boolean read FSizeable write SetSizeable default false;
+    property Sizeable: Boolean read FSizeable write SetSizeable default False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property HotColor: TColor read FHotColor write SetHotColor default clBtnFace;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
@@ -101,6 +168,11 @@ type
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 
+    property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
+    property Width: Integer read GetWidth write SetWidth;
+    property Height: Integer read GetHeight write SetHeight;
+    property OnResizeParent: TJvResizeParentEvent read FOnResizeParent write FOnResizeParent;
+
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
 {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
@@ -111,6 +183,113 @@ implementation
 uses
   JvMouseTimer;
 
+{ TJvArrangeSettings }
+
+constructor TJvArrangeSettings.Create(APanel: TJvPanel);
+begin
+  inherited Create;
+  FPanel := APanel;
+  WrapControls := True;
+  ShowNotVisibleAtDesignTime := True;
+  FAutoSize := asNone;
+  AutoArrange := False;
+end;
+
+procedure TJvArrangeSettings.SetWrapControls(Value: Boolean);
+begin
+  if Value <> FWrapControls then
+  begin
+    FWrapControls := Value;
+    Rearrange;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetAutoArrange(Value: Boolean);
+begin
+  if Value <> FAutoArrange then
+  begin
+    FAutoArrange := Value;
+    if Value then
+      Rearrange;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetAutoSize(Value: TJvAutoSizePanel);
+begin
+  if Value <> FAutoSize then
+  begin
+    FAutoSize := Value;
+    if AutoSize <> asNone then
+      Rearrange;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetBorderLeft(Value: Integer);
+begin
+  if Value <> FBorderLeft then
+  begin
+    FBorderLeft := Value;
+    Rearrange;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetBorderTop(Value: Integer);
+begin
+  if Value <> FBorderTop then
+  begin
+    FBorderTop := Value;
+    Rearrange;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetDistanceVertical(Value: Integer);
+begin
+  if Value <> FDistanceVertical then
+  begin
+    FDistanceVertical := Value;
+    Rearrange;
+  end;
+end;
+
+procedure TJvArrangeSettings.SetDistanceHorizontal(Value: Integer);
+begin
+  if Value <> FDistanceHorizontal then
+  begin
+    FDistanceHorizontal := Value;
+    Rearrange;
+  end;
+end;
+
+
+procedure TJvArrangeSettings.Assign(Source: TPersistent);
+var A: TJvArrangeSettings;
+begin
+  if Source is TJvArrangeSettings then
+  begin
+    A := TJvArrangeSettings(Source);
+    FAutoArrange := A.AutoArrange;
+    FAutoSize := A.AutoSize;
+    FWrapControls := A.WrapControls;
+    FBorderLeft := A.BorderLeft;
+    FBorderTop := A.BorderTop;
+    FDistanceVertical := A.DistanceVertical;
+    FDistanceHorizontal := A.DistanceHorizontal;
+    FShowNotVisibleAtDesignTime := A.ShowNotVisibleAtDesignTime;
+
+    Rearrange;
+  end
+  else
+    inherited Assign(Source);
+end;
+
+procedure TJvArrangeSettings.Rearrange;
+begin
+  if (FPanel <> nil) and (AutoArrange) and
+     not (csLoading in FPanel.ComponentState) then
+    FPanel.ArrangeControls;
+end;
+
+{ TJvPanel }
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
@@ -122,6 +301,14 @@ begin
   FFlatBorder := False;
   FFlatBorderColor := clBtnShadow;
   FHotColor := clBtnFace;
+
+  FArrangeSettings := TJvArrangeSettings.Create(Self);
+end;
+
+destructor TJvPanel.Destroy;
+begin
+  FArrangeSettings.Free;
+  inherited Destroy;
 end;
 
 procedure TJvPanel.CreateParams(var Params: TCreateParams);
@@ -344,7 +531,6 @@ begin
 end;
 
 procedure TJvPanel.SetTransparent(const Value: Boolean);
-var R: TRect;
 begin
   if Value <> FTransparent then
   begin
@@ -417,7 +603,7 @@ begin
   end;
 end;
 
-procedure TJvPanel.SetSizeable(const Value: boolean);
+procedure TJvPanel.SetSizeable(const Value: Boolean);
 begin
   if FSizeable <> Value then
   begin
@@ -488,6 +674,203 @@ procedure TJvPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited;
   if Transparent then Invalidate;
+end;
+
+procedure TJvPanel.WMSize(var Message: TWMSize);
+begin
+  inherited;
+  if FArrangeSettings.AutoArrange then
+    ArrangeControls;
+end;
+
+procedure TJvPanel.Resize;
+begin
+  if FArrangeSettings.AutoArrange then
+    ArrangeControls;
+  inherited;
+end;
+
+procedure TJvPanel.EnableArrange;
+begin
+  EnableAlign;
+  if FEnableArrangeCount > 0 then
+    Dec(FEnableArrangeCount);
+end;
+
+procedure TJvPanel.DisableArrange;
+begin
+  Inc(FEnableArrangeCount);
+  DisableAlign;
+end;
+
+function TJvPanel.ArrangeEnabled: Boolean;
+begin
+  Result := FEnableArrangeCount <= 0;
+end;
+
+procedure TJvPanel.Loaded;
+begin
+  inherited Loaded;
+  if FArrangeSettings.AutoArrange then
+    ArrangeControls;
+end;
+
+procedure TJvPanel.AlignControls(AControl: TControl; var Rect: TRect);
+begin
+  inherited AlignControls(AControl, Rect);
+  if FArrangeSettings.AutoArrange then
+    ArrangeControls;
+end;
+
+procedure TJvPanel.ArrangeControls;
+var
+  AktX, AktY, NewX, NewY, MaxY: Integer;
+  ControlMaxX, ControlMaxY: Integer;
+  LastTabOrder: Integer;
+  LastControlCount, CurrControlCount: Integer;
+  CurrControl: TWinControl;
+  i: Integer;
+  OldHeight: Integer;
+begin
+  if (not ArrangeEnabled) or FArrangeControlActive or (ControlCount = 0) then
+    Exit;
+  if [csLoading, csReading] * ComponentState <> [] then
+    Exit;
+  FArrangeWidth := 0;
+  FArrangeHeight := 0;
+  FArrangeControlActive := True;
+  try
+    OldHeight := Height;
+    LastControlCount := 0;
+    CurrControlCount := 0;
+    AktY := FArrangeSettings.BorderTop;
+    AktX := FArrangeSettings.BorderLeft;
+    LastTabOrder := -1;
+    MaxY := -1;
+    if (FArrangeSettings.AutoSize in [asWidth, asBoth]) and (Align in [alLeft, alRight]) then
+      ControlMaxX := Width - 2 * FArrangeSettings.BorderLeft
+    else
+      ControlMaxX := -1;
+    if (FArrangeSettings.AutoSize in [asHeight, asBoth]) and (Align in [alTop, alBottom]) then
+      ControlMaxY := Height - 2 * FArrangeSettings.BorderTop
+    else
+      ControlMaxY := -1;
+
+    for i := 0 to ControlCount - 1 do
+      if Controls[i] is TWinControl then
+      begin
+        if Controls[i] is TJvPanel then
+          TJvPanel(Controls[i]).ArrangeSettings.Rearrange;
+        if Controls[i].Width + 2 * FArrangeSettings.BorderLeft > Width then
+          Width := Controls[i].Width + 2 * FArrangeSettings.BorderLeft;
+      end;
+
+    while CurrControlCount < ControlCount do
+    begin
+      for i := 0 to ControlCount - 1 do
+      begin
+        if Controls[i] is TWinControl then
+        begin
+          CurrControl := TWinControl(Controls[i]);
+          if CurrControl.TabOrder = (LastTabOrder + 1) then
+          begin
+//            if CurrControl is TJvPanel then
+//              TJvPanel(Controls[i]).ArrangeSettings.Rearrange;
+            LastTabOrder := CurrControl.TabOrder;
+            Inc(CurrControlCount);
+            if CurrControl.Visible or
+              ((csDesigning in ComponentState) and FArrangeSettings.ShowNotVisibleAtDesignTime) then
+            begin
+              NewX := AktX;
+              NewY := AktY;
+              if ((AktX + CurrControl.Width + FArrangeSettings.DistanceHorizontal + FArrangeSettings.BorderLeft) > Width) and
+                 (AktX > FArrangeSettings.BorderLeft) and
+                 FArrangeSettings.WrapControls then
+              begin
+                AktX := FArrangeSettings.BorderLeft;
+                AktY := AktY + MaxY + FArrangeSettings.DistanceVertical;
+                MaxY := -1;
+                NewX := AktX;
+                NewY := AktY;
+              end;
+              AktX := AktX + CurrControl.Width;
+              if AktX > ControlMaxX then
+                ControlMaxX := AktX;
+              AktX := AktX + FArrangeSettings.DistanceHorizontal;
+              CurrControl.Left := NewX;
+              CurrControl.Top := NewY;
+              if CurrControl.Height > MaxY then
+                MaxY := CurrControl.Height;
+              ControlMaxY := AktY + MaxY;
+            end;   {*** if CurrControl.Visible then ***}
+          end;   {*** if CurrControl.TabOrder > LastTabOrder then ***}
+        end;   {*** if Controls[i] is TWinControl then ***}
+      end;   {*** for i := 0 to ControlCount do ***}
+      if CurrControlCount = LastControlCOunt then
+        Break;
+      LastControlCount := CurrControlCount;
+    end;  // while
+
+    if not (csLoading in ComponentState) then
+    begin
+      if FArrangeSettings.AutoSize in [asWidth, asBoth] then
+//        if not (Align in [alTop, alBottom, alClient]) then
+          if ControlMaxX >= 0 then
+            Width := ControlMaxX + FArrangeSettings.BorderLeft
+          else
+            Width := 0;
+      if FArrangeSettings.AutoSize in [asHeight, asBoth] then
+//        if not (Align in [alLeft, alRight, alClient]) then
+          if ControlMaxY >=0  then
+            Height := ControlMaxY + FArrangeSettings.BorderTop
+          else
+            Height := 0;
+    end;
+    FArrangeWidth := ControlMaxX + 2 * FArrangeSettings.BorderLeft;
+    FArrangeHeight := ControlMaxY + 2 * FArrangeSettings.BorderTop;
+    if OldHeight <> Height then
+      SendMessage(GetFocus, WM_PAINT, 0, 0);
+  finally
+    FArrangeControlActive := False;
+  end;
+end;
+
+procedure TJvPanel.SetWidth(Value: Integer);
+begin
+  if inherited Width <> Value then
+    if Assigned(FOnResizeParent) then
+      FOnResizeParent(Self, Left, Top, Value, Height)
+    else
+    if Parent is TJvPanel then
+       TJvPanel(Parent).ArrangeSettings.Rearrange;
+  inherited Width := Value;
+end;
+
+function TJvPanel.GetWidth: Integer;
+begin
+  Result := inherited Width;
+end;
+
+procedure TJvPanel.SetHeight(Value: Integer);
+begin
+  if inherited Height <> Value then
+    if Assigned(FOnResizeParent) then
+      FOnResizeParent(Self, Left, Top, Width, Value)
+    else
+    if Parent is TJvPanel then
+       TJvPanel(Parent).ArrangeSettings.Rearrange;
+  inherited Height := Value;
+end;
+
+function TJvPanel.GetHeight: Integer;
+begin
+  Result := inherited Height;
+end;
+
+procedure TJvPanel.SetArrangeSettings(Value: TJvArrangeSettings);
+begin
+  if (Value <> nil) and (Value <> FArrangeSettings) then
+    FArrangeSettings.Assign(Value);
 end;
 
 end.
