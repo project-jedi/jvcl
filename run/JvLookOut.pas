@@ -1288,22 +1288,33 @@ begin
 end;
 
 procedure TJvCustomLookOutButton.DrawSmallImages;
+var
+  Icon:TIcon;
 begin
   if FDown then
     OffsetRect(FImageRect, FOffset, FOffset);
-  FSmallImages.Draw(Canvas, FImageRect.Left, FImageRect.Top, FImageIndex);
-  {   ImageList_DrawEx(FSmallImages.Handle,FImageIndex,Canvas.Handle,
-         FImageRect.Left,FImageRect.Top,0,0,clNone,clNone,ILD_TRANSPARENT);}
+  Icon := TIcon.Create;
+  try
+    FSmallImages.GetIcon(FImageIndex, Icon);
+    DrawIconEx(Canvas.Handle, FImageRect.Left, FImageRect.Top, Icon.Handle, 0, 0, 0, 0, DI_NORMAL);
+  finally
+    Icon.Free;
+  end;
 end;
 
 procedure TJvCustomLookOutButton.DrawLargeImages;
+var
+  Icon:TIcon;
 begin
   if FDown then
     OffsetRect(FImageRect, FOffset, FOffset);
-  FLargeImages.Draw(Canvas, FImageRect.Left, FImageRect.Top, FImageIndex);
-
-  {  ImageList_DrawEx(FLargeImages.Handle,FImageIndex,Canvas.Handle,
-       FImageRect.Left,FImageRect.Top,0,0,clNone,clNone,ILD_TRANSPARENT);}
+  Icon := TIcon.Create;
+  try
+    FLargeImages.GetIcon(FImageIndex, Icon);
+    DrawIconEx(Canvas.Handle, FImageRect.Left, FImageRect.Top, Icon.Handle, 0, 0, 0, 0, DI_NORMAL);
+  finally
+    Icon.Free;
+  end;
 end;
 
 procedure TJvCustomLookOutButton.PaintFrame;
