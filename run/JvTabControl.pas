@@ -33,7 +33,13 @@ unit JvTabControl;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, ComCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QComCtrls, QWindows,
+  {$ENDIF VisualCLX}
   JvExComCtrls;
 
 type
@@ -42,8 +48,13 @@ type
     FHintColor: TColor;
     FSaved: TColor;
     FOnParentColorChanged: TNotifyEvent;
+    {$IFDEF VCL}
     procedure CMDialogKey(var Msg: TWMKey); message CM_DIALOGKEY; // not WantKeys
+    {$ENDIF VCL}
   protected
+    {$IFDEF VisualCLX}
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override ;
+    {$ENDIF VisualCLX}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure ParentColorChanged; override;
@@ -63,6 +74,9 @@ constructor TJvTabControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
+  {$IFDEF VisualCLX}
+  InputKeys := [ikTabs];
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvTabControl.ParentColorChanged;
@@ -89,6 +103,7 @@ begin
   inherited MouseLeave(Control);
 end;
 
+{$IFDEF VCL}
 procedure TJvTabControl.CMDialogKey(var Msg: TWMKey);
 begin
   if (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) and
@@ -108,6 +123,28 @@ begin
   else
     inherited;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvTabControl.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  if (Key = VK_TAB )  and (ssCtrl in Shift) then
+  begin
+    if ssShift in Shift then
+    begin
+      if TabIndex = 0 then
+        TabIndex := Tabs.Count - 1
+      else
+        TabIndex := TabIndex - 1;
+    end
+    else
+      TabIndex := (TabIndex + 1) mod Tabs.Count;
+    Key := 0 ;
+  end
+  else
+    inherited;
+end;
+{$ENDIF VisualCLX}
 
 end.
 
