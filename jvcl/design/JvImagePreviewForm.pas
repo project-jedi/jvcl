@@ -32,14 +32,14 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
+  {$WARN UNIT_PLATFORM OFF}
   Windows, Graphics, Forms, Controls, StdCtrls, ExtCtrls,
   FileCtrl, Buttons,
   {$ENDIF}
   {$IFDEF VisualCLX}
   QStdCtrls, QFileCtrls, QExtCtrls, QControls, QButtons,
   {$ENDIF}
-  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent,
-  JvPlacemnt;
+  JvPicClip, JvFormPlacement, JvAppStorage, JvAppRegistryStorage, JvComponent;
 
 type
   TImageForm = class(TJvForm)
@@ -317,7 +317,7 @@ begin
   if ValidPicture(Image.Picture) then
     ModalResult := mrOk
   else
-    Beep;
+    SysUtils.Beep;
 end;
 
 end.

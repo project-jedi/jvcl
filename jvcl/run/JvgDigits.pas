@@ -439,7 +439,7 @@ end;
 
 procedure TJvgDigits.SmthChanged(Sender: TObject);
 begin
-  Paint;
+  Repaint;
 end;
 //...______________________________________________PROPERTIES METHODS
 

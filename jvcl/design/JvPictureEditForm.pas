@@ -36,11 +36,12 @@ uses
   StdCtrls, ExtCtrls, ExtDlgs, Buttons,
   {$ENDIF}
   {$IFDEF VisualCLX}
+  Types,
   QGraphics, QForms, QControls, QDialogs, QMenus,
-  QStdCtrls, QExtCtrls, QExtDlgs, QButtons, Types,
+  QStdCtrls, QExtCtrls, QExtDlgs, QButtons, QTypes,
   {$ENDIF}
   JvMRUManager, JvFormPlacement, JvClipboardMonitor, JvComponent,
-  JvAppStorage, JvAppRegistryStorage, JvMRUList, JvPlacemnt, QTypes;
+  JvAppStorage, JvAppRegistryStorage, JvMRUList;
 
 type
   TPictureEditDialog = class(TJvForm)

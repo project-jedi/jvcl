@@ -208,7 +208,7 @@ begin
   if FTimer <> nil then
     FTimer.Interval := FInterval;
   Inc(StepNum);
-  Paint;
+  Repaint;
   if FTimer <> nil then
     if FTimer.Enabled then
       if StepNum >= Steps then

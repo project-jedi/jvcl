@@ -39,7 +39,7 @@ uses
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
   JvSpeedButton, JvSpeedBar, JvFormPlacement,
-  JvConsts, JvComponent, JvAppStorage, JvAppRegistryStorage, JvPlacemnt;
+  JvConsts, JvComponent, JvAppStorage, JvAppRegistryStorage;
 
 type
   TSelectData = record
