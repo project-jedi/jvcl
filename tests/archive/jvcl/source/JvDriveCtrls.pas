@@ -272,7 +272,7 @@ type
 
   { TJvDirectoryListBox }
 
-  TJvDirectoryListBox = class(TJvCustomListBox)
+  TJvDirectoryListBox = class(TCustomListBox)
   private
     FFileList: TJvFileListBox;
     FDriveCombo: TJvDriveCombo;
@@ -281,6 +281,7 @@ type
     FPreserveCase: Boolean;
     FCaseSensitive: Boolean;
     FAutoExpand: boolean;
+    FAboutJVCL: TJVCLAboutInfo;
     function GetDrive: char;
     procedure SetFileListBox(Value: TJvFileListBox);
     procedure SetDirLabel(Value: TLabel);
@@ -316,10 +317,11 @@ type
     function GetItemPath(Index: Integer): string;
     procedure OpenCurrent;
     property Drive: Char read GetDrive write SetDrive stored false;
-    procedure Update;  reintroduce; 
+    procedure Update;  reintroduce;
     property PreserveCase: Boolean read FPreserveCase;
     property CaseSensitive: Boolean read FCaseSensitive;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property AutoExpand: boolean read FAutoExpand write SetAutoExpand default true;
     property BorderStyle;
@@ -330,7 +332,7 @@ type
 
     property Color;
     property Ctl3D;
-    property Directory: string read FDirectory write SetDirectory stored false;
+    property Directory: string read FDirectory write SetDirectory;
     property DirLabel: TLabel read FDirLabel write SetDirLabel;
     property DragCursor;
     property DragMode;
@@ -1312,28 +1314,30 @@ end;
 
 procedure TJvDirectoryListBox.SetDirectory(const NewDirectory: string);
 var
-  DirPart: string;
-  FilePart: string;
-  NewDrive: Char;
+  NewDrive: string;
 begin
-  if Length(NewDirectory) = 0 then
+  if (Length(NewDirectory) = 0) or (AnsiCompareText(NewDirectory, Directory) = 0) then
     Exit;
-  if (AnsiCompareText(NewDirectory, Directory) = 0) then
+  NewDrive := ExtractFileDrive(NewDirectory);
+  if (Length(NewDrive) <> 2) then // we only support single char drives (no UNC's)
     Exit;
-  ProcessPath(NewDirectory, NewDrive, DirPart, FilePart);
+//  ProcessPath(NewDirectory, NewDrive, DirPart, FilePart);
   try
-    if Drive <> NewDrive then
+    if Drive <> NewDrive[1] then
     begin
       FInSetDir := True;
       if (FDriveCombo <> nil) then
-        FDriveCombo.Drive := Drive
+        FDriveCombo.Drive := NewDrive[1]
       else
-        DriveChange(NewDrive);
+        DriveChange(NewDrive[1]);
     end;
   finally
     FInSetDir := False;
   end;
-  SetDir(DirPart);
+  if not DirectoryExists(NewDirectory) then
+    SetDir(GetCurrentDir) // we have to do this because we might have changed drive
+  else
+    SetDir(NewDirectory);
 end;
 
 procedure TJvDirectoryListBox.KeyPress(var Key: Char);
