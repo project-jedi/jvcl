@@ -3431,8 +3431,8 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomComboEdit.WndProc(var Msg: TMessage);
 begin
-  if not SettingCursor and PopupVisible and
-    (Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST) and
+  if (((Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST)) or (Msg.Msg = WM_CONTEXTMENU)) and
+     not SettingCursor and PopupVisible and
     (FPopup is TJvPopupWindow) and Assigned(TJvPopupWindow(FPopup).ActiveControl) then
   begin
     with Msg do
@@ -5093,9 +5093,14 @@ end;
 {$IFDEF VCL}
 procedure TJvPopupWindow.WMActivate(var Msg: TWMActivate);
 begin
-  if Msg.Active = WA_INACTIVE then
-    CloseUp(False);
   inherited;
+  if Msg.Active = WA_INACTIVE then
+  begin
+    if FEditor is TJvCustomComboEdit then
+      TJvCustomComboEdit(FEditor).AsyncPopupCloseUp(False)
+    else
+      CloseUp(False);
+  end;
 end;
 {$ENDIF VCL}
 
