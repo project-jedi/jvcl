@@ -29,13 +29,13 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, JvExExtCtrls, JvComponent, JvRollOut, StdCtrls,
   JvExStdCtrls, JvRichEdit, Mask, JvExMask, JvToolEdit, ComCtrls, JvEdit,
-  JvDotNetControls;
+  JvDotNetControls, Buttons;
 
 type
   TfrmOptions = class(TForm)
     pcOptions: TPageControl;
-    btnOK: TButton;
-    btnCancel: TButton;
+    btnOK: TJvDotNetButton;
+    btnCancel: TJvDotNetButton;
     tabGeneral: TTabSheet;
     tabTemplates: TTabSheet;
     Label1: TLabel;
