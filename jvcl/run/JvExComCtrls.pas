@@ -3679,6 +3679,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExCustomComboBoxEx.Dispatch(var Msg);

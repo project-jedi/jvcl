@@ -2276,6 +2276,11 @@ procedure SplitterMouseDownFix(Splitter: TSplitter);
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFDEF VCL}
 procedure TJvExShape.Dispatch(var Msg);
 asm
