@@ -413,6 +413,11 @@ contains
   JvMemTable in '..\source\JvMemTable.pas',
   JvDBExcpt in '..\source\JvDBExcpt.pas' {JvBdeErrorDlg},
   JvFormProgress in '..\source\JvFormProgress.pas' {FormProg},
-  JvRadioCtl in '..\source\JvRadioCtl.pas';
+  JvRadioCtl in '..\source\JvRadioCtl.pas',
+  JvThumbImage in '..\Source\JvThumbImage.pas',
+  JvThumbnails in '..\Source\JvThumbNail.pas',
+  JvThumbViews in '..\Source\JvThumbView.pas',
+  JvMovableBevel in '..\Source\JvMovableBevel.pas'
+  ;
 
 end.

@@ -89,7 +89,7 @@ contains
   JvEdit in '..\source\JvEdit.pas',
   JvFavoritesButton in '..\source\JvFavoritesButton.pas',
   JvFloatEdit in '..\source\JvFloatEdit.pas',
-  JvFormAlarms in '..\source\JvFormAlarms.pas' {FormAlarm}, 
+  JvFormAlarms in '..\source\JvFormAlarms.pas' {FormAlarm},
   JvFormAnimatedIcon in '..\source\JvFormAnimatedIcon.pas',
   JvFormAnimation in '..\source\JvFormAnimation.pas',
   JvFormImage in '..\source\JvFormImage.pas' {FormImg},
@@ -388,6 +388,11 @@ contains
   JvMemTable in '..\source\JvMemTable.pas',
   JvDBExcpt in '..\source\JvDBExcpt.pas' {JvBdeErrorDlg},
   JvFormProgress in '..\source\JvFormProgress.pas' {FormProg},
-  JvRadioCtl in '..\source\JvRadioCtl.pas';
+  JvRadioCtl in '..\source\JvRadioCtl.pas',
+  JvThumbImage in '..\Source\JvThumbImage.pas',
+  JvThumbnails in '..\Source\JvThumbNail.pas',
+  JvThumbViews in '..\Source\JvThumbView.pas',
+  JvMovableBevel in '..\Source\JvMovableBevel.pas'
+  ;
 
 end.
