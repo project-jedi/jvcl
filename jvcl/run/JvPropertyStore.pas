@@ -119,11 +119,11 @@ type
     procedure SetSorted(Value: Boolean);
     function GetDuplicates: TDuplicates;
     procedure SetDuplicates(Value: TDuplicates);
+    procedure StoreData; override;
+    procedure LoadData; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure StoreData; override;
-    procedure LoadData; override;
     procedure Clear; override;
     property Strings[Index: Integer]: string read GetString write SetString;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
