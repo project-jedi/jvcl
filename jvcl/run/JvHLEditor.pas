@@ -91,6 +91,9 @@ unit JvHLEditor;
 interface
 
 uses
+  {$IFDEF HAS_INLINE}
+  Windows,
+  {$ENDIF HAS_INLINE}
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}

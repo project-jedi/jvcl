@@ -249,6 +249,9 @@ const
 implementation
 
 uses
+  {$IFDEF COMPILER6_UP}
+  StrUtils,
+  {$ENDIF COMPILER6_UP}
   JvConsts, JvJCLUtils;
 
 //=== { TJvControlAutoComplete } =============================================
@@ -528,10 +531,10 @@ begin
   if List <> nil then
   begin
     for Result := IndexStart + 1 to List.Count - 1 do
-      if StringStartsWith(List[Result], Prefix) then
+      if AnsiStartsText(Prefix, List[Result]) then
         Exit;
     for Result := 0 to IndexStart do
-      if StringStartsWith(List[Result], Prefix) then
+      if AnsiStartsText(Prefix, List[Result]) then
         Exit;
   end;
   Result := -1;
@@ -706,10 +709,10 @@ function TJvComboBoxAutoComplete.FindItemPrefix(IndexStart: Integer;
   const Prefix: string): Integer;
 begin
   for Result := IndexStart + 1 to ComboBox.Items.Count - 1 do
-    if StringStartsWith(ComboBox.Items[Result], Prefix) then
+    if AnsiStartsText(Prefix, ComboBox.Items[Result]) then
       Exit;
   for Result := 0 to IndexStart do
-    if StringStartsWith(ComboBox.Items[Result], Prefix) then
+    if AnsiStartsText(Prefix, ComboBox.Items[Result]) then
       Exit;
   Result := -1;
 end;
