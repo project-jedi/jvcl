@@ -168,6 +168,7 @@ Upcoming JVCL 3.00
       TJvInterpreterFunction.InFunction.  See code marker VARLEAKFIX.
       (Fix suggested by ivan_ra@mail.ru)
 
+   - bug fixed: exceptions, raised in Assign nil to Method property  - dejoy-2004-3-13
 }
 
 {$I jvcl.inc}
@@ -320,6 +321,10 @@ type
       AUnitName, AFunctionName: string); virtual;
     function CallFunction(Args: TJvInterpreterArgs; Params: array of Variant): Variant;
     property Args: TJvInterpreterArgs read GetArgs;
+    property Owner: TJvInterpreterExpression read FOwner;
+    property Instance: TObject read FInstance;
+    property UnitName: string read FUnitName;
+    property FunctionName: string read FFunctionName;
   public
     destructor Destroy; override;
   end;
@@ -705,18 +710,30 @@ type
   public
     property DisableExternalFunctions: Boolean read FDisableExternalFunctions write FDisableExternalFunctions;
   //dejoy added begin
-    property GetList: TJvInterpreterIdentifierList read FGetList;
-    property SetList: TJvInterpreterIdentifierList read FSetList;
-    property SrcFunctionList: TJvInterpreterIdentifierList read FSrcFunctionList;
-    property SrcUnitList: TJvInterpreterIdentifierList read FSrcUnitList;
-    property ExtUnitList: TJvInterpreterIdentifierList read FExtUnitList;
-    property ClassList: TJvInterpreterIdentifierList read FClassList;
-    property ConstList: TJvInterpreterIdentifierList read FConstList;
-    property FunctionList: TJvInterpreterIdentifierList read FFunctionList;
-    property EventHandlerList: TJvInterpreterIdentifierList read FEventHandlerList;
-    property EventList: TJvInterpreterIdentifierList read FEventList;
-    property SrcVarList: TJvInterpreterVarList read FSrcVarList;
-    property SrcClassList: TJvInterpreterIdentifierList read FSrcClassList;
+    property  SrcUnitList: TJvInterpreterIdentifierList Read FSrcUnitList;
+    property  ExtUnitList: TJvInterpreterIdentifierList Read FExtUnitList;
+    property  GetList: TJvInterpreterIdentifierList Read FGetList;
+    property  SetList: TJvInterpreterIdentifierList Read FSetList;
+    property  IGetList: TJvInterpreterIdentifierList Read FIGetList;
+    property  ISetList: TJvInterpreterIdentifierList Read FISetList;
+    property  IDGetList: TJvInterpreterIdentifierList Read FIDGetList;
+    property  IDSetList: TJvInterpreterIdentifierList Read FIDSetList;
+    property  IntfGetList: TJvInterpreterIdentifierList Read FIntfGetList;
+    property  DirectGetList: TJvInterpreterIdentifierList Read FDirectGetList;
+    property  ClassList: TJvInterpreterIdentifierList Read FClassList;
+    property  ConstList: TJvInterpreterIdentifierList Read FConstList;
+    property  FunctionList: TJvInterpreterIdentifierList Read FFunctionList;
+    property  RecordList: TJvInterpreterIdentifierList Read FRecordList;
+    property  RecordGetList: TJvInterpreterIdentifierList Read FRecordGetList;
+    property  RecordSetList: TJvInterpreterIdentifierList Read FRecordSetList;
+    property  OnGetList: TJvInterpreterIdentifierList Read FOnGetList;
+    property  OnSetList: TJvInterpreterIdentifierList Read FOnSetList;
+    property  SrcFunctionList: TJvInterpreterIdentifierList Read FSrcFunctionList;
+    property  ExtFunctionList: TJvInterpreterIdentifierList Read FExtFunctionList;
+    property  EventHandlerList: TJvInterpreterIdentifierList Read FEventHandlerList;
+    property  EventList: TJvInterpreterIdentifierList Read FEventList;
+    property  SrcVarList: TJvInterpreterVarList Read FSrcVarList;
+    property  SrcClassList: TJvInterpreterIdentifierList Read FSrcClassList;
   //dejoy added end
   end;
 
@@ -789,8 +806,10 @@ type
     procedure SetAdapter(Adapter: TJvInterpreterAdapter);
     property Token: Variant read FToken;
     property TTyp: TTokenKind read FTTyp;
+    property PrevTTyp: TTokenKind read FPrevTTyp;
     property TokenStr: string read GetTokenStr;
     property CurPos: Integer read GetCurPos write SetCurPos;
+    property Compiled: Boolean read FCompiled;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -864,12 +883,15 @@ type
     function ParseDataType: IJvInterpreterDataType;
     function NewEvent(const UnitName: string; const FunctionName, EventType: string;
       Instance: TObject): TSimpleEvent;
+    function FindEvent(const UnitName: string;Instance: TObject;
+      const PropName: string ): TJvInterpreterEvent;
     procedure InternalSetValue(const Identifier: string);
     function GetValue(Identifier: string; var Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
     function SetValue(Identifier: string; const Value: Variant;
       var Args: TJvInterpreterArgs): Boolean; override;
     property LocalVars: TJvInterpreterVarList read GetLocalVars;
+    property EventList: TList read FEventList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -908,6 +930,7 @@ type
     procedure ExecFunction(Fun: TJvInterpreterFunctionDesc);
     procedure SourceChanged; override;
     procedure InterpretRecord(const Identifier: string);
+    property  EventHandlerList: TList read FEventHandlerList;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -6158,6 +6181,30 @@ begin
     JvInterpreterErrorN(ieEventNotRegistered, -1, EventType);
 end;
 
+function TJvInterpreterFunction.FindEvent(const UnitName: string;
+  Instance: TObject; const PropName: string): TJvInterpreterEvent;
+var
+  i:integer;
+  Event,Event1 :TJvInterpreterEvent;
+  Method: TMethod;
+begin
+  Result:=nil;
+  Method := GetPropMethod(Instance,PropName);
+  Event1 := TJvInterpreterEvent(Method.Data);
+  for i :=0  to FEventList.Count-1 do
+  begin
+    Event := TJvInterpreterEvent(FEventList[i]);
+    if (Event.FUnitName=UnitName) and
+      (Event.FInstance=Instance) and
+      (Event=Event1) then
+    begin
+      Result:= Event;
+      Exit;
+    end;  
+  end;
+
+end;
+
 procedure TJvInterpreterFunction.InternalSetValue(const Identifier: string);
 var
   FunctionDesc: TJvInterpreterFunctionDesc;
@@ -6167,12 +6214,14 @@ var
   MyArgs: TJvInterpreterArgs;
   Variable: Variant;
   Method: TMethod;
+  t:TObject;
+  Event:TJvInterpreterEvent;
 begin
   { may be event assignment }
   if (FCurrArgs.Obj <> nil) and (FCurrArgs.ObjTyp = varObject) then
   begin
     FunctionDesc := FAdapter.FindFunDesc(FCurUnitName, Token);
-    if FunctionDesc <> nil then
+    if (FunctionDesc <> nil) or ((FunctionDesc = nil) and cmp(Token,kwNIL)) then
     begin
       PushState;
       PopSt := True;
@@ -6185,10 +6234,33 @@ begin
           if Assigned(PropInf) and (PropInf.PropType^.Kind = tkMethod) then
           begin
            { method assignment }
-            Method := TMethod(NewEvent(FCurUnitName, FunctionName,
-              PropInf^.PropType^.Name, FCurInstance));
-            SetMethodProp(FCurrArgs.Obj, PropInf, Method);
-            FEventList.Add(Method.Data);
+            if  not cmp(Token,kwNIL) then
+            begin
+              Event:=FindEvent(FCurUnitName,FCurrArgs.Obj,Identifier);
+              if Event<>nil then
+              begin
+                FEventList.Remove(Event);
+                Event.Free;
+              end;
+              Method := TMethod(NewEvent(FCurUnitName, FunctionName,
+                PropInf^.PropType^.Name,FCurrArgs.Obj {FCurInstance}));
+              SetMethodProp(FCurrArgs.Obj, PropInf, Method);
+              FEventList.Add(Method.Data);
+            end else
+            begin   //Fixed Assign nil to Method property bugs - dejoy-2004-3-13
+              Method:=GetMethodProp(FCurrArgs.Obj, PropInf);
+              if Method.Data<>nil then
+              begin
+                FEventList.Remove(Method.Data);
+                t:=Method.Data ;
+                if t is TJvInterpreterEvent then
+                  t.Free;
+              end;
+
+              Method.Code:=nil;
+              Method.Data:=nil;
+              SetMethodProp(FCurrArgs.Obj, PropInf, Method);
+            end;
 
             PopSt := False;
             Exit;
