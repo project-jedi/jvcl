@@ -35,7 +35,9 @@ uses
 
 type
   // To lift the ambiguity in BCB between TBitmap and Windows::TBitmap
+  {$IFDEF BCB5} // (ahuser) BCB 6 has problems with this. For BCB 5 I don't know it.
   {$HPPEMIT '#define TBitmap Graphics::TBitmap'}
+  {$ENDIF BCB5}
 
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
     cvMetafile, cvPalette, cvOemText, cvPicture, cvComponent, cvIcon);
