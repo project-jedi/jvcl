@@ -316,7 +316,7 @@ begin
   FColWidth    := 21;
   FPrefix      := SNewColorPrefix;
   FOther       := SOtherCaption;
-  FOptions      := [coCustomColors,coText];
+  FOptions      := [coText];
   FHiLiteColor  := clHighLight;
   FHiLiteText   := clHighLightText;
 end;
