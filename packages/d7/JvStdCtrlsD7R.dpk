@@ -98,6 +98,7 @@ contains
   JvColorCombo in '..\..\run\JvColorCombo.pas',
   JvGrids in '..\..\run\JvGrids.pas',
   JvCheckTreeView in '..\..\run\JvCheckTreeView.pas',
-  JvFixedEditPopUp in '..\..\run\JvFixedEditPopUp.pas';
+  JvFixedEditPopUp in '..\..\run\JvFixedEditPopUp.pas',
+  JvImageList in '..\..\run\JvImageList.pas';
 
 end.
