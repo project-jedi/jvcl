@@ -313,6 +313,10 @@ resourcestring
   RsEInvalidColor = 'Invalid color (%d)';
   RsEItemNotForList = 'Item does not belong to this list';
 
+//=== JvComputerInfoEx.pas ===================================================
+resourcestring
+  RsEReadOnlyProperty = 'This value is read-only and cannot be changed.';
+
 //=== JvContextProvider.pas ==================================================
 resourcestring
   RsContextItemEmptyCaption = '(no context assigned to this item)';

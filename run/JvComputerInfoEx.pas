@@ -34,99 +34,102 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
+
 unit JvComputerInfoEx;
 
 {$HPPEMIT '#pragma link "wininet.lib"'}
 
 interface
+
 uses
   Windows, Messages, Classes, SysUtils, Controls, Graphics, ShlObj,
-  JclWin32, JclSysInfo, JvJCLUtils, JvDataProvider, JvTypes;
+  JclWin32, JclSysInfo,
+  JvJCLUtils, JvDataProvider, JvTypes;
 
 // these are defined here to avoid including DBT.pas
 const
-{$EXTERNALSYM DBT_DEVICEARRIVAL}
+  {$EXTERNALSYM DBT_DEVICEARRIVAL}
   DBT_DEVICEARRIVAL = $8000; { system detected a new device }
-{$EXTERNALSYM DBT_DEVICEREMOVECOMPLETE}
+  {$EXTERNALSYM DBT_DEVICEREMOVECOMPLETE}
   DBT_DEVICEREMOVECOMPLETE = $8004; { device is gone }
-{$EXTERNALSYM DBT_DEVTYP_VOLUME}
+  {$EXTERNALSYM DBT_DEVTYP_VOLUME}
   DBT_DEVTYP_VOLUME = $00000002; { logical volume }
-{$EXTERNALSYM DBTF_MEDIA}
+  {$EXTERNALSYM DBTF_MEDIA}
   DBTF_MEDIA = $0001; { media commings and goings }
 
   // new params for SystemParametersInfo not defined in Windows
   SPI_GETDESKWALLPAPER = $0073;
-{$EXTERNALSYM SPI_GETDESKWALLPAPER}
+  {$EXTERNALSYM SPI_GETDESKWALLPAPER}
   SPI_GETMOUSESONAR = $101C;
-{$EXTERNALSYM SPI_GETMOUSESONAR}
+  {$EXTERNALSYM SPI_GETMOUSESONAR}
   SPI_SETMOUSESONAR = $101D;
-{$EXTERNALSYM SPI_SETMOUSESONAR}
+  {$EXTERNALSYM SPI_SETMOUSESONAR}
   SPI_GETMOUSECLICKLOCK = $101E;
-{$EXTERNALSYM SPI_GETMOUSECLICKLOCK}
+  {$EXTERNALSYM SPI_GETMOUSECLICKLOCK}
   SPI_SETMOUSECLICKLOCK = $101F;
-{$EXTERNALSYM SPI_SETMOUSECLICKLOCK}
+  {$EXTERNALSYM SPI_SETMOUSECLICKLOCK}
   SPI_GETMOUSEVANISH = $1020;
-{$EXTERNALSYM SPI_GETMOUSEVANISH}
+  {$EXTERNALSYM SPI_GETMOUSEVANISH}
   SPI_SETMOUSEVANISH = $1021;
-{$EXTERNALSYM SPI_SETMOUSEVANISH}
+  {$EXTERNALSYM SPI_SETMOUSEVANISH}
   SPI_GETFLATMENU = $1022;
-{$EXTERNALSYM SPI_GETFLATMENU}
+  {$EXTERNALSYM SPI_GETFLATMENU}
   SPI_SETFLATMENU = $1023;
-{$EXTERNALSYM SPI_SETFLATMENU}
+  {$EXTERNALSYM SPI_SETFLATMENU}
   SPI_GETDROPSHADOW = $1024;
-{$EXTERNALSYM SPI_GETDROPSHADOW}
+  {$EXTERNALSYM SPI_GETDROPSHADOW}
   SPI_SETDROPSHADOW = $1025;
-{$EXTERNALSYM SPI_SETDROPSHADOW}
+  {$EXTERNALSYM SPI_SETDROPSHADOW}
 
   SPI_GETFOREGROUNDLOCKTIMEOUT = $2000;
-{$EXTERNALSYM SPI_GETFOREGROUNDLOCKTIMEOUT}
+  {$EXTERNALSYM SPI_GETFOREGROUNDLOCKTIMEOUT}
   SPI_SETFOREGROUNDLOCKTIMEOUT = $2001;
-{$EXTERNALSYM SPI_SETFOREGROUNDLOCKTIMEOUT}
+  {$EXTERNALSYM SPI_SETFOREGROUNDLOCKTIMEOUT}
   SPI_GETACTIVEWNDTRKTIMEOUT = $2002;
-{$EXTERNALSYM SPI_GETACTIVEWNDTRKTIMEOUT}
+  {$EXTERNALSYM SPI_GETACTIVEWNDTRKTIMEOUT}
   SPI_SETACTIVEWNDTRKTIMEOUT = $2003;
-{$EXTERNALSYM SPI_SETACTIVEWNDTRKTIMEOUT}
+  {$EXTERNALSYM SPI_SETACTIVEWNDTRKTIMEOUT}
   SPI_GETFOREGROUNDFLASHCOUNT = $2004;
-{$EXTERNALSYM SPI_GETFOREGROUNDFLASHCOUNT}
+  {$EXTERNALSYM SPI_GETFOREGROUNDFLASHCOUNT}
   SPI_SETFOREGROUNDFLASHCOUNT = $2005;
-{$EXTERNALSYM SPI_SETFOREGROUNDFLASHCOUNT}
+  {$EXTERNALSYM SPI_SETFOREGROUNDFLASHCOUNT}
   SPI_GETCARETWIDTH = $2006;
-{$EXTERNALSYM SPI_GETCARETWIDTH}
+  {$EXTERNALSYM SPI_GETCARETWIDTH}
   SPI_SETCARETWIDTH = $2007;
-{$EXTERNALSYM SPI_SETCARETWIDTH}
+  {$EXTERNALSYM SPI_SETCARETWIDTH}
 
   SPI_GETMOUSECLICKLOCKTIME = $2008;
-{$EXTERNALSYM SPI_GETMOUSECLICKLOCKTIME}
+  {$EXTERNALSYM SPI_GETMOUSECLICKLOCKTIME}
   SPI_SETMOUSECLICKLOCKTIME = $2009;
-{$EXTERNALSYM SPI_SETMOUSECLICKLOCKTIME}
+  {$EXTERNALSYM SPI_SETMOUSECLICKLOCKTIME}
   SPI_GETFONTSMOOTHINGTYPE = $200A;
-{$EXTERNALSYM SPI_GETFONTSMOOTHINGTYPE}
+  {$EXTERNALSYM SPI_GETFONTSMOOTHINGTYPE}
   SPI_SETFONTSMOOTHINGTYPE = $200B;
-{$EXTERNALSYM SPI_SETFONTSMOOTHINGTYPE}
+  {$EXTERNALSYM SPI_SETFONTSMOOTHINGTYPE}
 
   { constants for SPI_GETFONTSMOOTHINGTYPE and SPI_SETFONTSMOOTHINGTYPE: }
   FE_FONTSMOOTHINGSTANDARD = $0001;
-{$EXTERNALSYM FE_FONTSMOOTHINGSTANDARD}
+  {$EXTERNALSYM FE_FONTSMOOTHINGSTANDARD}
   FE_FONTSMOOTHINGCLEARTYPE = $0002;
-{$EXTERNALSYM FE_FONTSMOOTHINGCLEARTYPE}
+  {$EXTERNALSYM FE_FONTSMOOTHINGCLEARTYPE}
   FE_FONTSMOOTHINGDOCKING = $8000;
-{$EXTERNALSYM FE_FONTSMOOTHINGDOCKING}
+  {$EXTERNALSYM FE_FONTSMOOTHINGDOCKING}
 
   SPI_GETFONTSMOOTHINGCONTRAST = $200C;
-{$EXTERNALSYM SPI_GETFONTSMOOTHINGCONTRAST}
+  {$EXTERNALSYM SPI_GETFONTSMOOTHINGCONTRAST}
   SPI_SETFONTSMOOTHINGCONTRAST = $200D;
-{$EXTERNALSYM SPI_SETFONTSMOOTHINGCONTRAST}
+  {$EXTERNALSYM SPI_SETFONTSMOOTHINGCONTRAST}
 
   SPI_GETFOCUSBORDERWIDTH = $200E;
-{$EXTERNALSYM SPI_GETFOCUSBORDERWIDTH}
+  {$EXTERNALSYM SPI_GETFOCUSBORDERWIDTH}
   SPI_SETFOCUSBORDERWIDTH = $200F;
-{$EXTERNALSYM SPI_SETFOCUSBORDERWIDTH}
+  {$EXTERNALSYM SPI_SETFOCUSBORDERWIDTH}
   SPI_GETFOCUSBORDERHEIGHT = $2010;
-{$EXTERNALSYM SPI_GETFOCUSBORDERHEIGHT}
+  {$EXTERNALSYM SPI_GETFOCUSBORDERHEIGHT}
   SPI_SETFOCUSBORDERHEIGHT = $2011;
-{$EXTERNALSYM SPI_SETFOCUSBORDERHEIGHT}
+  {$EXTERNALSYM SPI_SETFOCUSBORDERHEIGHT}
 
-{$IFDEF COMPILER5} // This is because there's no point in redifining symbols already defined
+  {$IFDEF COMPILER5} // This is because there's no point in redefining symbols already defined
   {$EXTERNALSYM SPI_GETMENUSHOWDELAY}
   SPI_GETMENUSHOWDELAY = 106;
   {$EXTERNALSYM SPI_SETMENUSHOWDELAY}
@@ -163,8 +166,7 @@ const
   SPI_GETKEYBOARDCUES = $100A;
   {$EXTERNALSYM SPI_SETKEYBOARDCUES}
   SPI_SETKEYBOARDCUES = $100B;
-{$ENDIF COMPILER5}
-
+  {$ENDIF COMPILER5}
 
 type
   PDevBroadcastHdr = ^TDevBroadcastHdr;
@@ -202,9 +204,9 @@ type
   // are allowed to change
   TJvWriteableInfo = class(TPersistent)
   private
-    FReadOnly: boolean;
+    FReadOnly: Boolean;
   protected
-    property ReadOnly: boolean read FReadOnly write FReadOnly default True;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default True;
   public
     constructor Create;
   end;
@@ -298,8 +300,8 @@ type
     procedure SetRawFreq(const Value: Cardinal);
     procedure SetStepping(const Value: Byte);
     procedure SetVendorIDString(const Value: string);
-    function GetProcessorCount: integer;
-    procedure SetProcessorCount(const Value: integer);
+    function GetProcessorCount: Integer;
+    procedure SetProcessorCount(const Value: Integer);
   public
     function IntelSpecific: TIntelSpecific;
     function CyrixSpecific: TCyrixSpecific;
@@ -322,7 +324,7 @@ type
     property VendorIDString: string read GetVendorIDString write SetVendorIDString stored False;
     property Manufacturer: string read GetManufacturer write SetManufacturer stored False;
     property Name: string read GetCPUName write SetCPUName stored False;
-    property ProcessorCount: integer read GetProcessorCount write SetProcessorCount stored False;
+    property ProcessorCount: Integer read GetProcessorCount write SetProcessorCount stored False;
     // FreqInfo
     property RawFreq: Cardinal read GetRawFreq write SetRawFreq stored False;
     property NormFreq: Cardinal read GetNormFreq write SetNormFreq stored False;
@@ -467,7 +469,6 @@ type
     function GetVolumeName(const Drive: string): string;
     function GetVolumeSerialNumber(const Drive: string): string;
     function GetIPAddress: string;
-
     procedure SetDomainName(const Value: string);
     procedure SetLocalComputerName(const Value: string);
     procedure SetLocalUserName(const Value: string);
@@ -496,17 +497,17 @@ type
   private
     FHz: DWORD;
     FBitsPerPixel: DWORD;
-    FWidth: integer;
-    FHeight: integer;
+    FWidth: Integer;
+    FHeight: Integer;
     FFlags: TJvDisplayFlags;
     procedure SetBitsPerPixel(const Value: DWORD);
     procedure SetFlags(const Value: TJvDisplayFlags);
-    procedure SetHeight(const Value: integer);
+    procedure SetHeight(const Value: Integer);
     procedure SetHz(const Value: DWORD);
-    procedure SetWidth(const Value: integer);
+    procedure SetWidth(const Value: Integer);
   published
-    property Width: integer read FWidth write SetWidth;
-    property Height: integer read FHeight write SetHeight;
+    property Width: Integer read FWidth write SetWidth;
+    property Height: Integer read FHeight write SetHeight;
     property BitsPerPixel: DWORD read FBitsPerPixel write SetBitsPerPixel;
     property Hz: DWORD read FHz write SetHz;
     property Flags: TJvDisplayFlags read FFlags write SetFlags;
@@ -516,17 +517,17 @@ type
   private
     FItems: TList;
     FDefaultMode: TJvScreenMode;
-    function GetItems(Index: integer): TJvScreenMode;
-    procedure SetItems(Index: integer; const Value: TJvScreenMode);
-    function GetCount: integer;
+    function GetItems(Index: Integer): TJvScreenMode;
+    procedure SetItems(Index: Integer; const Value: TJvScreenMode);
+    function GetCount: Integer;
   protected
     procedure Clear;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Refresh;
-    property Items[Index: integer]: TJvScreenMode read GetItems write SetItems; default;
-    property Count: integer read GetCount;
+    property Items[Index: Integer]: TJvScreenMode read GetItems write SetItems; default;
+    property Count: Integer read GetCount;
   end;
 
   TJvScreenInfo = class(TJvWriteableInfo)
@@ -610,32 +611,32 @@ type
     FVersions: TJvAppVersions;
     FHardwareProfile: TJvHardwareProfile;
     FColorSchemes: TStrings;
-    function GetIsOnline: boolean;
+    function GetIsOnline: Boolean;
     function GetScreenSaver: string;
-    function GetDVDRegion: integer;
+    function GetDVDRegion: Integer;
     function GetTimeRunning: Cardinal;
     function GetTimeRunningAsString: string;
-    function GetNetBIOS: boolean;
+    function GetNetBIOS: Boolean;
     function GetVersions: TJvAppVersions;
     function GetHardwareProfile: TJvHardwareProfile;
     function GetPattern: string;
     function GetWallpaper: string;
     function GetWallpaperStyle: TJvWallpaperStyle;
-    function GetWallpaperTiled: boolean;
+    function GetWallpaperTiled: Boolean;
     function GetColorSchemes: TStrings;
     function GetCurrentColorScheme: string;
-    procedure SetIsOnline(const Value: boolean);
+    procedure SetIsOnline(const Value: Boolean);
     procedure SetScreenSaver(const Value: string);
-    procedure SetDVDRegion(const Value: integer);
+    procedure SetDVDRegion(const Value: Integer);
     procedure SetTimeRunning(const Value: Cardinal);
     procedure SetTimeRunningAsString(const Value: string);
-    procedure SetNetBIOS(const Value: boolean);
+    procedure SetNetBIOS(const Value: Boolean);
     procedure SetVersions(const Value: TJvAppVersions);
     procedure SetHardwareProfile(const Value: TJvHardwareProfile);
     procedure SetPattern(const Value: string);
     procedure SetWallpaper(const Value: string);
     procedure SetWallpaperStyle(const Value: TJvWallpaperStyle);
-    procedure SetWallpaperTiled(const Value: boolean);
+    procedure SetWallpaperTiled(const Value: Boolean);
     procedure SetColorSchemes(const Value: TStrings);
     procedure SetCurrentColorScheme(const Value: string);
   public
@@ -643,11 +644,11 @@ type
   published
     property TimeRunning: Cardinal read GetTimeRunning write SetTimeRunning stored False;
     property TimeRunningAsString: string read GetTimeRunningAsString write SetTimeRunningAsString stored False;
-    property Online: boolean read GetIsOnline write SetIsOnline stored False;
+    property Online: Boolean read GetIsOnline write SetIsOnline stored False;
     property ScreenSaver: string read GetScreenSaver write SetScreenSaver stored False;
-    property DVDRegion: integer read GetDVDRegion write SetDVDRegion stored False;
-    property NetBIOS: boolean read GetNetBIOS write SetNetBIOS stored False;
-    property WallpaperTiled: boolean read GetWallpaperTiled write SetWallpaperTiled stored False;
+    property DVDRegion: Integer read GetDVDRegion write SetDVDRegion stored False;
+    property NetBIOS: Boolean read GetNetBIOS write SetNetBIOS stored False;
+    property WallpaperTiled: Boolean read GetWallpaperTiled write SetWallpaperTiled stored False;
     property Wallpaper: string read GetWallpaper write SetWallpaper stored False;
     property WallpaperStyle: TJvWallpaperStyle read GetWallpaperStyle write SetWallpaperStyle stored False;
     property Pattern: string read GetPattern write SetPattern stored False;
@@ -665,114 +666,111 @@ type
   TJvMetricsInfo = class(TJvWriteableInfo)
     // writeable: CursorX, CursorY, CaretX, CaretY
   private
-    function GetBoolMetrics(const Index: Integer): boolean;
-    function GetMetrics(const Index: Integer): integer;
+    function GetBoolMetrics(const Index: Integer): Boolean;
+    function GetMetrics(const Index: Integer): Integer;
     function GetArrange: TJvWindowsArrange;
     function GetCleanBoot: TJvCleanBoot;
     function GetCaretBlinkTime: DWORD;
-    function GetCaretPos(const Index: Integer): integer;
-    function GetCursorPos(const Index: Integer): integer;
-    procedure SetBoolMetric(const Index: Integer; const Value: boolean);
-    procedure SetMetric(const Index, Value: integer);
+    function GetCaretPos(const Index: Integer): Integer;
+    function GetCursorPos(const Index: Integer): Integer;
+    procedure SetBoolMetrics(const Index: Integer; const Value: Boolean);
+    procedure SetMetrics(const Index, Value: Integer);
     procedure SetArrange(const Value: TJvWindowsArrange);
     procedure SetCleanBoot(const Value: TJvCleanBoot);
     procedure SetCaretBlinkTime(const Value: DWORD);
-    procedure SetCaretPos(const Index, Value: integer);
-    procedure SetCursorPos(const Index, Value: integer);
-    function GetDialogBaseUnits: integer;
-    procedure SetDialogBaseUnits(const Value: integer);
-    function GetACP: integer;
-    function GetDoubleClickTime: integer;
-    function GetOEMCP: integer;
-    procedure SetACP(const Value: integer);
-    procedure SetDoubleClickTime(const Value: integer);
-    procedure SetOEMCP(const Value: integer);
+    procedure SetCaretPos(const Index, Value: Integer);
+    procedure SetCursorPos(const Index, Value: Integer);
+    function GetDialogBaseUnits: Integer;
+    procedure SetDialogBaseUnits(const Value: Integer);
+    function GetACP: Integer;
+    function GetDoubleClickTime: Integer;
+    function GetOEMCP: Integer;
+    procedure SetACP(const Value: Integer);
+    procedure SetDoubleClickTime(const Value: Integer);
+    procedure SetOEMCP(const Value: Integer);
   published
     property Arrange: TJvWindowsArrange read GetArrange write SetArrange stored False;
     property CleanBoot: TJvCleanBoot read GetCleanBoot write SetCleanBoot stored False;
-    property MouseButtons: integer index SM_CMOUSEBUTTONS read GetMetrics write SetMetric stored False;
-    property BorderWidth: integer index SM_CXBORDER read GetMetrics write SetMetric stored False;
-    property BorderHeight: integer index SM_CYBORDER read GetMetrics write SetMetric stored False;
-    property CursorWidth: integer index SM_CXCURSOR read GetMetrics write SetMetric stored False;
-    property CursorHeight: integer index SM_CYCURSOR read GetMetrics write SetMetric stored False;
+    property MouseButtons: Integer index SM_CMOUSEBUTTONS read GetMetrics write SetMetrics stored False;
+    property BorderWidth: Integer index SM_CXBORDER read GetMetrics write SetMetrics stored False;
+    property BorderHeight: Integer index SM_CYBORDER read GetMetrics write SetMetrics stored False;
+    property CursorWidth: Integer index SM_CXCURSOR read GetMetrics write SetMetrics stored False;
+    property CursorHeight: Integer index SM_CYCURSOR read GetMetrics write SetMetrics stored False;
     property CaretBlinkTime: LongWord read GetCaretBlinkTime write SetCaretBlinkTime stored False;
-    property CaretX: integer index 0 read GetCaretPos write SetCaretPos stored False;
-    property CaretY: integer index 1 read GetCaretPos write SetCaretPos stored False;
-    property CursorX: integer index 0 read GetCursorPos write SetCursorPos stored False;
-    property CursorY: integer index 1 read GetCursorPos write SetCursorPos stored False;
-    property CodePageANSI: integer read GetACP write SetACP stored False;
-    property CodePageOEM: integer read GetOEMCP write SetOEMCP stored False;
-
-    property DialogBaseUnits: integer read GetDialogBaseUnits write SetDialogBaseUnits stored False;
-    property DialogFrameWidth: integer index SM_CXDLGFRAME read GetMetrics write SetMetric stored False;
-    property DialogFrameHeight: integer index SM_CYDLGFRAME read GetMetrics write SetMetric stored False;
-    property DoubleClickWidth: integer index SM_CXDOUBLECLK read GetMetrics write SetMetric stored False;
-    property DoubleClickHeight: integer index SM_CYDOUBLECLK read GetMetrics write SetMetric stored False;
-    property DoubleClickTime: integer read GetDoubleClickTime write SetDoubleClickTime stored False;
-
-    property DragWidth: integer index SM_CXDRAG read GetMetrics write SetMetric stored False;
-    property DragHeight: integer index SM_CYDRAG read GetMetrics write SetMetric stored False;
-    property EdgeWidth: integer index SM_CXEDGE read GetMetrics write SetMetric stored False;
-    property EdgeHeight: integer index SM_CYEDGE read GetMetrics write SetMetric stored False;
-    property FixedFrameWidth: integer index SM_CXFIXEDFRAME read GetMetrics write SetMetric stored False;
-    property FixedFrameHeight: integer index SM_CYFIXEDFRAME read GetMetrics write SetMetric stored False;
-    property FrameWidth: integer index SM_CXFRAME read GetMetrics write SetMetric stored False;
-    property FrameHeight: integer index SM_CYFRAME read GetMetrics write SetMetric stored False;
-    property ScreenClientWidth: integer index SM_CXFULLSCREEN read GetMetrics write SetMetric stored False;
-    property ScreenClientHeight: integer index SM_CYFULLSCREEN read GetMetrics write SetMetric stored False;
-    property ScreenWidth: integer index SM_CXSCREEN read GetMetrics write SetMetric stored False;
-    property ScreenHeight: integer index SM_CYSCREEN read GetMetrics write SetMetric stored False;
-    property ScrollArrowWidth: integer index SM_CXHSCROLL read GetMetrics write SetMetric stored False;
-    property ScrollArrowHeight: integer index SM_CYHSCROLL read GetMetrics write SetMetric stored False;
-    property ScrollThumbWidth: integer index SM_CXHTHUMB read GetMetrics write SetMetric stored False;
-    property ScrollThumbHeight: integer index SM_CYVTHUMB read GetMetrics write SetMetric stored False;
-    property ScrollWidth: integer index SM_CXVSCROLL read GetMetrics write SetMetric stored False;
-    property ScrollHeight: integer index SM_CYVSCROLL read GetMetrics write SetMetric stored False;
-    property IconWidth: integer index SM_CXICON read GetMetrics write SetMetric stored False;
-    property IconHeight: integer index SM_CYICON read GetMetrics write SetMetric stored False;
-    property SmallIconWidth: integer index SM_CXSMICON read GetMetrics write SetMetric stored False;
-    property SmallIconHeight: integer index SM_CYSMICON read GetMetrics write SetMetric stored False;
-    property IconSpacingWidth: integer index SM_CXICONSPACING read GetMetrics write SetMetric stored False;
-    property IconSpacingHeight: integer index SM_CYICONSPACING read GetMetrics write SetMetric stored False;
-    property MaximizedWindowWidth: integer index SM_CXMAXIMIZED read GetMetrics write SetMetric stored False;
-    property MaximizedWindowHeight: integer index SM_CYMAXIMIZED read GetMetrics write SetMetric stored False;
-    property MinimizedWindowWidth: integer index SM_CXMINIMIZED read GetMetrics write SetMetric stored False;
-    property MinimizedWindowHeight: integer index SM_CYMINIMIZED read GetMetrics write SetMetric stored False;
-    property MaxDragWindowWidth: integer index SM_CXMAXTRACK read GetMetrics write SetMetric stored False;
-    property MaxDragWindowHeight: integer index SM_CYMAXTRACK read GetMetrics write SetMetric stored False;
-    property MinDragWindowWidth: integer index SM_CXMINTRACK read GetMetrics write SetMetric stored False;
-    property MinDragWindowHeight: integer index SM_CYMINTRACK read GetMetrics write SetMetric stored False;
-    property MinWindowWidth: integer index SM_CXMIN read GetMetrics write SetMetric stored False;
-    property MinWindowHeight: integer index SM_CYMIN read GetMetrics write SetMetric stored False;
-    property MenuCheckWidth: integer index SM_CXMENUCHECK read GetMetrics write SetMetric stored False;
-    property MenuCheckHeight: integer index SM_CYMENUCHECK read GetMetrics write SetMetric stored False;
-    property MenuButtonWidth: integer index SM_CXMENUSIZE read GetMetrics write SetMetric stored False;
-    property MenuButtonHeight: integer index SM_CYMENUSIZE read GetMetrics write SetMetric stored False;
-    property MinimizedWindowSpacingWidth: integer index SM_CXMINSPACING read GetMetrics write SetMetric stored False;
-    property MinimizedWindowSpacingHeight: integer index SM_CYMINSPACING read GetMetrics write SetMetric stored False;
-    property CaptionButtonWidth: integer index SM_CXSIZE read GetMetrics write SetMetric stored False;
-    property CaptionButtonheight: integer index SM_CYSIZE read GetMetrics write SetMetric stored False;
-    property ResizeBorderWidth: integer index SM_CXSIZEFRAME read GetMetrics write SetMetric stored False;
-    property ResizeBorderHeight: integer index SM_CYSIZEFRAME read GetMetrics write SetMetric stored False;
-    property SmallCaptionButtonWidth: integer index SM_CXSMSIZE read GetMetrics write SetMetric stored False;
-    property SmallCaptionButtonHeight: integer index SM_CYSMSIZE read GetMetrics write SetMetric stored False;
-    property WindowCaptionHeight: integer index SM_CYCAPTION read GetMetrics write SetMetric stored False;
-    property SmallWindowCaptionHeight: integer index SM_CYSMCAPTION read GetMetrics write SetMetric stored False;
-    property KanjiWindowHeight: integer index SM_CYKANJIWINDOW read GetMetrics write SetMetric stored False;
-    property MenuItemHeight: integer index SM_CYMENU read GetMetrics write SetMetric stored False;
-    property DBCSEnabled: boolean index SM_DBCSENABLED read GetBoolMetrics write SetBoolMetric stored False;
-    property Debug: boolean index SM_DEBUG read GetBoolMetrics write SetBoolMetric stored False;
-    property MenuRightAligned: boolean index SM_MENUDROPALIGNMENT read GetBoolMetrics write SetBoolMetric stored False;
-    property MidEastEnabled: boolean index SM_MIDEASTENABLED read GetBoolMetrics write SetBoolMetric stored False;
-    property MousePresent: boolean index SM_MOUSEPRESENT read GetBoolMetrics write SetBoolMetric stored False;
-    property MouseWheelPresent: boolean index SM_MOUSEWHEELPRESENT read GetBoolMetrics write SetBoolMetric stored
-      False;
-    property Networked: boolean index SM_NETWORK read GetBoolMetrics write SetBoolMetric stored False;
-    property PenWindows: boolean index SM_PENWINDOWS read GetBoolMetrics write SetBoolMetric stored False;
-    property Secure: boolean index SM_SECURE read GetBoolMetrics write SetBoolMetric stored False;
-    property ShowSounds: boolean index SM_SHOWSOUNDS read GetBoolMetrics write SetBoolMetric stored False;
-    property SlowMachine: boolean index SM_SLOWMACHINE read GetBoolMetrics write SetBoolMetric stored False;
-    property MouseButtonsSwapped: boolean index SM_SWAPBUTTON read GetBoolMetrics write SetBoolMetric stored False;
+    property CaretX: Integer index 0 read GetCaretPos write SetCaretPos stored False;
+    property CaretY: Integer index 1 read GetCaretPos write SetCaretPos stored False;
+    property CursorX: Integer index 0 read GetCursorPos write SetCursorPos stored False;
+    property CursorY: Integer index 1 read GetCursorPos write SetCursorPos stored False;
+    property CodePageANSI: Integer read GetACP write SetACP stored False;
+    property CodePageOEM: Integer read GetOEMCP write SetOEMCP stored False;
+    property DialogBaseUnits: Integer read GetDialogBaseUnits write SetDialogBaseUnits stored False;
+    property DialogFrameWidth: Integer index SM_CXDLGFRAME read GetMetrics write SetMetrics stored False;
+    property DialogFrameHeight: Integer index SM_CYDLGFRAME read GetMetrics write SetMetrics stored False;
+    property DoubleClickWidth: Integer index SM_CXDOUBLECLK read GetMetrics write SetMetrics stored False;
+    property DoubleClickHeight: Integer index SM_CYDOUBLECLK read GetMetrics write SetMetrics stored False;
+    property DoubleClickTime: Integer read GetDoubleClickTime write SetDoubleClickTime stored False;
+    property DragWidth: Integer index SM_CXDRAG read GetMetrics write SetMetrics stored False;
+    property DragHeight: Integer index SM_CYDRAG read GetMetrics write SetMetrics stored False;
+    property EdgeWidth: Integer index SM_CXEDGE read GetMetrics write SetMetrics stored False;
+    property EdgeHeight: Integer index SM_CYEDGE read GetMetrics write SetMetrics stored False;
+    property FixedFrameWidth: Integer index SM_CXFIXEDFRAME read GetMetrics write SetMetrics stored False;
+    property FixedFrameHeight: Integer index SM_CYFIXEDFRAME read GetMetrics write SetMetrics stored False;
+    property FrameWidth: Integer index SM_CXFRAME read GetMetrics write SetMetrics stored False;
+    property FrameHeight: Integer index SM_CYFRAME read GetMetrics write SetMetrics stored False;
+    property ScreenClientWidth: Integer index SM_CXFULLSCREEN read GetMetrics write SetMetrics stored False;
+    property ScreenClientHeight: Integer index SM_CYFULLSCREEN read GetMetrics write SetMetrics stored False;
+    property ScreenWidth: Integer index SM_CXSCREEN read GetMetrics write SetMetrics stored False;
+    property ScreenHeight: Integer index SM_CYSCREEN read GetMetrics write SetMetrics stored False;
+    property ScrollArrowWidth: Integer index SM_CXHSCROLL read GetMetrics write SetMetrics stored False;
+    property ScrollArrowHeight: Integer index SM_CYHSCROLL read GetMetrics write SetMetrics stored False;
+    property ScrollThumbWidth: Integer index SM_CXHTHUMB read GetMetrics write SetMetrics stored False;
+    property ScrollThumbHeight: Integer index SM_CYVTHUMB read GetMetrics write SetMetrics stored False;
+    property ScrollWidth: Integer index SM_CXVSCROLL read GetMetrics write SetMetrics stored False;
+    property ScrollHeight: Integer index SM_CYVSCROLL read GetMetrics write SetMetrics stored False;
+    property IconWidth: Integer index SM_CXICON read GetMetrics write SetMetrics stored False;
+    property IconHeight: Integer index SM_CYICON read GetMetrics write SetMetrics stored False;
+    property SmallIconWidth: Integer index SM_CXSMICON read GetMetrics write SetMetrics stored False;
+    property SmallIconHeight: Integer index SM_CYSMICON read GetMetrics write SetMetrics stored False;
+    property IconSpacingWidth: Integer index SM_CXICONSPACING read GetMetrics write SetMetrics stored False;
+    property IconSpacingHeight: Integer index SM_CYICONSPACING read GetMetrics write SetMetrics stored False;
+    property MaximizedWindowWidth: Integer index SM_CXMAXIMIZED read GetMetrics write SetMetrics stored False;
+    property MaximizedWindowHeight: Integer index SM_CYMAXIMIZED read GetMetrics write SetMetrics stored False;
+    property MinimizedWindowWidth: Integer index SM_CXMINIMIZED read GetMetrics write SetMetrics stored False;
+    property MinimizedWindowHeight: Integer index SM_CYMINIMIZED read GetMetrics write SetMetrics stored False;
+    property MaxDragWindowWidth: Integer index SM_CXMAXTRACK read GetMetrics write SetMetrics stored False;
+    property MaxDragWindowHeight: Integer index SM_CYMAXTRACK read GetMetrics write SetMetrics stored False;
+    property MinDragWindowWidth: Integer index SM_CXMINTRACK read GetMetrics write SetMetrics stored False;
+    property MinDragWindowHeight: Integer index SM_CYMINTRACK read GetMetrics write SetMetrics stored False;
+    property MinWindowWidth: Integer index SM_CXMIN read GetMetrics write SetMetrics stored False;
+    property MinWindowHeight: Integer index SM_CYMIN read GetMetrics write SetMetrics stored False;
+    property MenuCheckWidth: Integer index SM_CXMENUCHECK read GetMetrics write SetMetrics stored False;
+    property MenuCheckHeight: Integer index SM_CYMENUCHECK read GetMetrics write SetMetrics stored False;
+    property MenuButtonWidth: Integer index SM_CXMENUSIZE read GetMetrics write SetMetrics stored False;
+    property MenuButtonHeight: Integer index SM_CYMENUSIZE read GetMetrics write SetMetrics stored False;
+    property MinimizedWindowSpacingWidth: Integer index SM_CXMINSPACING read GetMetrics write SetMetrics stored False;
+    property MinimizedWindowSpacingHeight: Integer index SM_CYMINSPACING read GetMetrics write SetMetrics stored False;
+    property CaptionButtonWidth: Integer index SM_CXSIZE read GetMetrics write SetMetrics stored False;
+    property CaptionButtonheight: Integer index SM_CYSIZE read GetMetrics write SetMetrics stored False;
+    property ResizeBorderWidth: Integer index SM_CXSIZEFRAME read GetMetrics write SetMetrics stored False;
+    property ResizeBorderHeight: Integer index SM_CYSIZEFRAME read GetMetrics write SetMetrics stored False;
+    property SmallCaptionButtonWidth: Integer index SM_CXSMSIZE read GetMetrics write SetMetrics stored False;
+    property SmallCaptionButtonHeight: Integer index SM_CYSMSIZE read GetMetrics write SetMetrics stored False;
+    property WindowCaptionHeight: Integer index SM_CYCAPTION read GetMetrics write SetMetrics stored False;
+    property SmallWindowCaptionHeight: Integer index SM_CYSMCAPTION read GetMetrics write SetMetrics stored False;
+    property KanjiWindowHeight: Integer index SM_CYKANJIWINDOW read GetMetrics write SetMetrics stored False;
+    property MenuItemHeight: Integer index SM_CYMENU read GetMetrics write SetMetrics stored False;
+    property DBCSEnabled: Boolean index SM_DBCSENABLED read GetBoolMetrics write SetBoolMetrics stored False;
+    property Debug: Boolean index SM_DEBUG read GetBoolMetrics write SetBoolMetrics stored False;
+    property MenuRightAligned: Boolean index SM_MENUDROPALIGNMENT read GetBoolMetrics write SetBoolMetrics stored False;
+    property MidEastEnabled: Boolean index SM_MIDEASTENABLED read GetBoolMetrics write SetBoolMetrics stored False;
+    property MousePresent: Boolean index SM_MOUSEPRESENT read GetBoolMetrics write SetBoolMetrics stored False;
+    property MouseWheelPresent: Boolean index SM_MOUSEWHEELPRESENT read GetBoolMetrics write SetBoolMetrics stored False;
+    property Networked: Boolean index SM_NETWORK read GetBoolMetrics write SetBoolMetrics stored False;
+    property PenWindows: Boolean index SM_PENWINDOWS read GetBoolMetrics write SetBoolMetrics stored False;
+    property Secure: Boolean index SM_SECURE read GetBoolMetrics write SetBoolMetrics stored False;
+    property ShowSounds: Boolean index SM_SHOWSOUNDS read GetBoolMetrics write SetBoolMetrics stored False;
+    property SlowMachine: Boolean index SM_SLOWMACHINE read GetBoolMetrics write SetBoolMetrics stored False;
+    property MouseButtonsSwapped: Boolean index SM_SWAPBUTTON read GetBoolMetrics write SetBoolMetrics stored False;
   end;
 
   TJvAccessTimeOutFlags = set of (atfOnOffFeedback, atfTimeOutOn);
@@ -845,22 +843,22 @@ type
   private
     FFont: TFont;
     function GetFont: TFont;
-    function GetHorzSpacing: integer;
+    function GetHorzSpacing: Integer;
     function GetNativeType: ICONMETRICS;
-    function GetTitleWrap: boolean;
-    function GetVertSpacing: integer;
+    function GetTitleWrap: Boolean;
+    function GetVertSpacing: Integer;
     procedure SetFont(const Value: TFont);
-    procedure SetHorzSpacing(const Value: integer);
+    procedure SetHorzSpacing(const Value: Integer);
     procedure SetNativeType(Value: ICONMETRICS);
-    procedure SetTitleWrap(const Value: boolean);
-    procedure SetVertSpacing(const Value: integer);
+    procedure SetTitleWrap(const Value: Boolean);
+    procedure SetVertSpacing(const Value: Integer);
   public
     destructor Destroy; override;
     property NativeType: ICONMETRICS read GetNativeType write SetNativeType;
   published
-    property VertSpacing: integer read GetVertSpacing write SetVertSpacing stored False;
-    property HorzSpacing: integer read GetHorzSpacing write SetHorzSpacing stored False;
-    property TitleWrap: boolean read GetTitleWrap write SetTitleWrap stored False;
+    property VertSpacing: Integer read GetVertSpacing write SetVertSpacing stored False;
+    property HorzSpacing: Integer read GetHorzSpacing write SetHorzSpacing stored False;
+    property TitleWrap: Boolean read GetTitleWrap write SetTitleWrap stored False;
     property Font: TFont read GetFont write SetFont stored False;
   end;
 
@@ -868,22 +866,21 @@ type
     // writeable: all (using NativeType recommended)
   private
     function GetArrange: TJvWindowsArrange;
-    function GetHorzGap: integer;
+    function GetHorzGap: Integer;
     function GetNativeType: MINIMIZEDMETRICS;
-    function GetVertGap: integer;
-    function GetWidth: integer;
+    function GetVertGap: Integer;
+    function GetWidth: Integer;
     procedure SetArrange(const Value: TJvWindowsArrange);
-    procedure SetHorzGap(const Value: integer);
+    procedure SetHorzGap(const Value: Integer);
     procedure SetNativeType(Value: MINIMIZEDMETRICS);
-    procedure SetVertGap(const Value: integer);
-    procedure SetWidth(const Value: integer);
-  published
+    procedure SetVertGap(const Value: Integer);
+    procedure SetWidth(const Value: Integer);
   public
     property NativeType: MINIMIZEDMETRICS read GetNativeType write SetNativeType;
   published
-    property Width: integer read GetWidth write SetWidth stored False;
-    property HorzGap: integer read GetHorzGap write SetHorzGap stored False;
-    property VertGap: integer read GetVertGap write SetVertGap stored False;
+    property Width: Integer read GetWidth write SetWidth stored False;
+    property HorzGap: Integer read GetHorzGap write SetHorzGap stored False;
+    property VertGap: Integer read GetVertGap write SetVertGap stored False;
     property Arrange: TJvWindowsArrange read GetArrange write SetArrange stored False;
   end;
 
@@ -920,51 +917,51 @@ type
     FMessageFont: TFont;
     FStatusFont: TFont;
     FSmallCaptionFont: TFont;
-    function GetBorderWidth: integer;
+    function GetBorderWidth: Integer;
     function GetCaptionFont: TFont;
-    function GetCaptionHeight: integer;
-    function GetCaptionWidth: integer;
+    function GetCaptionHeight: Integer;
+    function GetCaptionWidth: Integer;
     function GetMenuFont: TFont;
-    function GetMenuHeight: integer;
-    function GetMenuWidth: integer;
+    function GetMenuHeight: Integer;
+    function GetMenuWidth: Integer;
     function GetMessageFont: TFont;
     function GetNativeType: NONCLIENTMETRICS;
-    function GetScrollHeight: integer;
-    function GetScrollWidth: integer;
+    function GetScrollHeight: Integer;
+    function GetScrollWidth: Integer;
     function GetSmallCaptionFont: TFont;
-    function GetSmallCaptionHeight: integer;
-    function GetSmallCaptionWidth: integer;
+    function GetSmallCaptionHeight: Integer;
+    function GetSmallCaptionWidth: Integer;
     function GetStatusFont: TFont;
-    procedure SetBorderWidth(const Value: integer);
+    procedure SetBorderWidth(const Value: Integer);
     procedure SetCaptionFont(const Value: TFont);
-    procedure SetCaptionHeight(const Value: integer);
-    procedure SetCaptionWidth(const Value: integer);
+    procedure SetCaptionHeight(const Value: Integer);
+    procedure SetCaptionWidth(const Value: Integer);
     procedure SetMenuFont(const Value: TFont);
-    procedure SetMenuHeight(const Value: integer);
-    procedure SetMenuWidth(const Value: integer);
+    procedure SetMenuHeight(const Value: Integer);
+    procedure SetMenuWidth(const Value: Integer);
     procedure SetMessageFont(const Value: TFont);
     procedure SetNativeType(Value: NONCLIENTMETRICS);
-    procedure SetScrollHeight(const Value: integer);
-    procedure SetScrollWidth(const Value: integer);
+    procedure SetScrollHeight(const Value: Integer);
+    procedure SetScrollWidth(const Value: Integer);
     procedure SetSmallCaptionFont(const Value: TFont);
-    procedure SetSmallCaptionHeight(const Value: integer);
-    procedure SetSmallCaptionWidth(const Value: integer);
+    procedure SetSmallCaptionHeight(const Value: Integer);
+    procedure SetSmallCaptionWidth(const Value: Integer);
     procedure SetStatusFont(const Value: TFont);
   public
     property NativeType: NONCLIENTMETRICS read GetNativeType write SetNativeType;
     destructor Destroy; override;
   published
-    property BorderWidth: integer read GetBorderWidth write SetBorderWidth stored False;
-    property ScrollWidth: integer read GetScrollWidth write SetScrollWidth stored False;
-    property ScrollHeight: integer read GetScrollHeight write SetScrollHeight stored False;
-    property CaptionWidth: integer read GetCaptionWidth write SetCaptionWidth stored False;
-    property CaptionHeight: integer read GetCaptionHeight write SetCaptionHeight stored False;
+    property BorderWidth: Integer read GetBorderWidth write SetBorderWidth stored False;
+    property ScrollWidth: Integer read GetScrollWidth write SetScrollWidth stored False;
+    property ScrollHeight: Integer read GetScrollHeight write SetScrollHeight stored False;
+    property CaptionWidth: Integer read GetCaptionWidth write SetCaptionWidth stored False;
+    property CaptionHeight: Integer read GetCaptionHeight write SetCaptionHeight stored False;
     property CaptionFont: TFont read GetCaptionFont write SetCaptionFont stored False;
-    property SmallCaptionWidth: integer read GetSmallCaptionWidth write SetSmallCaptionWidth stored False;
-    property SmallCaptionHeight: integer read GetSmallCaptionHeight write SetSmallCaptionHeight stored False;
+    property SmallCaptionWidth: Integer read GetSmallCaptionWidth write SetSmallCaptionWidth stored False;
+    property SmallCaptionHeight: Integer read GetSmallCaptionHeight write SetSmallCaptionHeight stored False;
     property SmallCaptionFont: TFont read GetSmallCaptionFont write SetSmallCaptionFont stored False;
-    property MenuWidth: integer read GetMenuWidth write SetMenuWidth stored False;
-    property MenuHeight: integer read GetMenuHeight write SetMenuHeight stored False;
+    property MenuWidth: Integer read GetMenuWidth write SetMenuWidth stored False;
+    property MenuHeight: Integer read GetMenuHeight write SetMenuHeight stored False;
     property MenuFont: TFont read GetMenuFont write SetMenuFont stored False;
     property StatusFont: TFont read GetStatusFont write SetStatusFont stored False;
     property MessageFont: TFont read GetMessageFont write SetMessageFont stored False;
@@ -987,12 +984,12 @@ type
     procedure SetPortState(const Value: TJvSerialKeysPortState);
     function GetPort: string;
     procedure SetPort(const Value: string);
-    function GetActive: boolean;
-    procedure SetActive(const Value: boolean);
+    function GetActive: Boolean;
+    procedure SetActive(const Value: Boolean);
   public
     property NativeType: SERIALKEYS read GetNativeType write SetNativeType;
   published
-    property Active: boolean read GetActive write SetActive stored False;
+    property Active: Boolean read GetActive write SetActive stored False;
     property Flags: TJvSerialKeysFlags read GetFlags write SetFlags stored False;
     property ActivePort: string read GetActivePort write SetActivePort stored False;
     property Port: string read GetPort write SetPort stored False;
@@ -1004,6 +1001,7 @@ type
   TJvSoundSentryTextEffect = (sstfNone, sstfChars, sstfBorder, sstfDisplay);
   TJvSoundSentryGrafEffect = (ssgfNone, ssgfDisplay);
   TJvSoundSentryWindowsEffect = (sswfNone, sswfTitle, sswfWindow, sswfDisplay, sswfCustom);
+
   TJvSoundSentry = class(TJvWriteableInfo)
     // writeable: all (using NativeType recommended)
   private
@@ -1070,7 +1068,7 @@ type
     FSoundSentry: TJvSoundSentry;
     FIconTitleFont: TFont;
     FWorkArea: TJvRect;
-
+    FMap: array of TPoint;
     function GetAccessTimeOut: TJvAccessTimeOut;
     function GetFilterKeys: TJvFilterKeys;
     function GetHighContrast: TJvHighContrast;
@@ -1084,17 +1082,16 @@ type
     function GetStickyKeys: TJvStickyKeysFlags;
     function GetToggleKeys: TJvToggleKeysFlags;
     function GetWorkArea: TJvRect;
-    function GetIntInfo(const Index: Integer): integer;
-    function GetBoolInfo(const Index: Integer): boolean;
-    function GetMouseInfo(const Index: Integer): integer;
-    function GetAnimationInfo: boolean;
+    function GetIntInfo(const Index: Integer): Integer;
+    function GetBoolInfo(const Index: Integer): Boolean;
+    function GetMouseInfo(const Index: Integer): Integer;
+    function GetAnimationInfo: Boolean;
     function GetKeyboardLayoutName: string;
     function GetDeskWallpaper: string;
     function GetFontSmoothingType: TJvFontSmoothingType;
-    function GetIconSpacing(const Index: Integer): integer;
-
-    procedure SetBoolInfo(const Index: Integer; const Value: boolean);
-    procedure SetIntInfo(const Index, Value: integer);
+    function GetIconSpacing(const Index: Integer): Integer;
+    procedure SetBoolInfo(const Index: Integer; const Value: Boolean);
+    procedure SetIntInfo(const Index, Value: Integer);
     procedure SetAccessTimeOut(const Value: TJvAccessTimeOut);
     procedure SetFilterKeys(const Value: TJvFilterKeys);
     procedure SetHighContrast(const Value: TJvHighContrast);
@@ -1108,102 +1105,97 @@ type
     procedure SetStickyKeys(const Value: TJvStickyKeysFlags);
     procedure SetToggleKeys(const Value: TJvToggleKeysFlags);
     procedure SetWorkArea(const Value: TJvRect);
-    procedure SetMouseInfo(const Index, Value: integer);
-    procedure SetAnimationInfo(const Value: boolean);
+    procedure SetMouseInfo(const Index, Value: Integer);
+    procedure SetAnimationInfo(const Value: Boolean);
     procedure SetKeyboardLayoutName(const Value: string);
     procedure SetDeskWallpaper(const Value: string);
     procedure SetFontSmoothingType(const Value: TJvFontSmoothingType);
-    procedure SetIconSpacing(const Index, Value: integer);
+    procedure SetIconSpacing(const Index, Value: Integer);
+    procedure InitMap;
+    function MapToSet(Index: Integer): Integer;
   public
     constructor Create;
     destructor Destroy; override;
   published
     property AccessTimeOut: TJvAccessTimeOut read GetAccessTimeOut write SetAccessTimeOut stored False;
-    property Animation: boolean read GetAnimationInfo write SetAnimationInfo stored False;
-    property Beep: boolean index SPI_GETBEEP read GetBoolInfo write SetBoolInfo stored False;
-    property BorderMultiplier: integer index SPI_GETBORDER read GetIntInfo write SetIntInfo stored False;
-    property DefaultInputLanguage: integer index SPI_GETDEFAULTINPUTLANG read GetIntInfo write SetIntInfo stored False;
-    property DragFullWindows: boolean index SPI_GETDRAGFULLWINDOWS read GetBoolInfo write SetBoolInfo stored False;
+    property Animation: Boolean read GetAnimationInfo write SetAnimationInfo stored False;
+    property Beep: Boolean index SPI_GETBEEP read GetBoolInfo write SetBoolInfo stored False;
+    property BorderMultiplier: Integer index SPI_GETBORDER read GetIntInfo write SetIntInfo stored False;
+    property DefaultInputLanguage: Integer index SPI_GETDEFAULTINPUTLANG read GetIntInfo write SetIntInfo stored False;
+    property DragFullWindows: Boolean index SPI_GETDRAGFULLWINDOWS read GetBoolInfo write SetBoolInfo stored False;
     property FilterKeys: TJvFilterKeys read GetFilterKeys write SetFilterKeys stored False;
-    property FontSmoothing: boolean index SPI_GETFONTSMOOTHING read GetBoolInfo write SetBoolInfo stored False;
-    property GridGranularity: integer index SPI_GETGRIDGRANULARITY read GetIntInfo write SetIntInfo stored False;
+    property FontSmoothing: Boolean index SPI_GETFONTSMOOTHING read GetBoolInfo write SetBoolInfo stored False;
+    property GridGranularity: Integer index SPI_GETGRIDGRANULARITY read GetIntInfo write SetIntInfo stored False;
     property HighContrast: TJvHighContrast read GetHighContrast write SetHighContrast stored False;
     property IconMetrics: TJvIconMetrics read GetIconMetrics write SetIconMetrics stored False;
     property IconTitleFont: TFont read GetIconTitleFont write SetIconTitleFont stored False;
-    property IconTitleWrap: boolean index SPI_GETICONTITLEWRAP read GetBoolInfo write SetBoolInfo stored False;
-    property KeyboardDelay: integer index SPI_GETKEYBOARDDELAY read GetIntInfo write SetIntInfo stored False;
-    property KeyboardPreferred: boolean index SPI_GETKEYBOARDPREF read GetBoolInfo write SetBoolInfo stored False;
-    property KeyboardSpeed: integer index SPI_GETKEYBOARDSPEED read GetIntInfo write SetIntInfo stored False;
+    property IconTitleWrap: Boolean index SPI_GETICONTITLEWRAP read GetBoolInfo write SetBoolInfo stored False;
+    property KeyboardDelay: Integer index SPI_GETKEYBOARDDELAY read GetIntInfo write SetIntInfo stored False;
+    property KeyboardPreferred: Boolean index SPI_GETKEYBOARDPREF read GetBoolInfo write SetBoolInfo stored False;
+    property KeyboardSpeed: Integer index SPI_GETKEYBOARDSPEED read GetIntInfo write SetIntInfo stored False;
     property KeyboardLayoutName: string read GetKeyboardLayoutName write SetKeyboardLayoutName stored False;
-    property LowPowerActive: boolean index SPI_GETLOWPOWERACTIVE read GetBoolInfo write SetBoolInfo stored False;
-    property LowPowerTimeOut: integer index SPI_GETLOWPOWERTIMEOUT read GetIntInfo write SetIntInfo stored False;
-    property MenuLeftAligned: boolean index SPI_GETMENUDROPALIGNMENT read GetBoolInfo write SetBoolInfo stored False;
+    property LowPowerActive: Boolean index SPI_GETLOWPOWERACTIVE read GetBoolInfo write SetBoolInfo stored False;
+    property LowPowerTimeOut: Integer index SPI_GETLOWPOWERTIMEOUT read GetIntInfo write SetIntInfo stored False;
+    property MenuLeftAligned: Boolean index SPI_GETMENUDROPALIGNMENT read GetBoolInfo write SetBoolInfo stored False;
     property MinimizedMetrics: TJvMinimizedMetrics read GetMinimizedMetrics write SetMinimizedMetrics stored False;
-    property MouseSpeed: integer index SPI_GETMOUSESPEED read GetIntInfo write SetIntInfo stored False;
-    property MouseThreshold1: integer index 0 read GetMouseInfo write SetMouseInfo stored False;
-    property MouseThreshold2: integer index 1 read GetMouseInfo write SetMouseInfo stored False;
-    property MouseHoverHeight: integer index SPI_GETMOUSEHOVERHEIGHT read GetIntInfo write SetIntInfo stored False;
-    property MouseHoverTime: integer index SPI_GETMOUSEHOVERTIME read GetIntInfo write SetIntInfo stored False;
-    property MouseHoverWidth: integer index SPI_GETMOUSEHOVERWIDTH read GetIntInfo write SetIntInfo stored False;
+    property MouseSpeed: Integer index SPI_GETMOUSESPEED read GetIntInfo write SetIntInfo stored False;
+    property MouseThreshold1: Integer index 0 read GetMouseInfo write SetMouseInfo stored False;
+    property MouseThreshold2: Integer index 1 read GetMouseInfo write SetMouseInfo stored False;
+    property MouseHoverHeight: Integer index SPI_GETMOUSEHOVERHEIGHT read GetIntInfo write SetIntInfo stored False;
+    property MouseHoverTime: Integer index SPI_GETMOUSEHOVERTIME read GetIntInfo write SetIntInfo stored False;
+    property MouseHoverWidth: Integer index SPI_GETMOUSEHOVERWIDTH read GetIntInfo write SetIntInfo stored False;
     property MouseKeys: TJvMouseKeys read GetMouseKeys write SetMouseKeys stored False;
-    property MouseTrails: integer index SPI_GETMOUSETRAILS read GetIntInfo write SetIntInfo stored False;
+    property MouseTrails: Integer index SPI_GETMOUSETRAILS read GetIntInfo write SetIntInfo stored False;
     property NonClientMetrics: TJvNonClientMetrics read GetNonClientMetrics write SetNonClientMetrics stored False;
-    property PowerOffActive: boolean index SPI_GETPOWEROFFACTIVE read GetBoolInfo write SetBoolInfo stored False;
-    property PowerOffTimeout: integer index SPI_GETPOWEROFFTIMEOUT read GetIntInfo write SetIntInfo stored False;
-    property ScreenReader: boolean index SPI_GETSCREENREADER read GetBoolInfo write SetBoolInfo stored False;
-    property ScreenSaverActive: boolean index SPI_GETSCREENSAVEACTIVE read GetBoolInfo write SetBoolInfo stored False;
-    property ScreenSaveTimeOut: integer index SPI_GETSCREENSAVETIMEOUT read GetIntInfo write SetIntInfo stored False;
+    property PowerOffActive: Boolean index SPI_GETPOWEROFFACTIVE read GetBoolInfo write SetBoolInfo stored False;
+    property PowerOffTimeout: Integer index SPI_GETPOWEROFFTIMEOUT read GetIntInfo write SetIntInfo stored False;
+    property ScreenReader: Boolean index SPI_GETSCREENREADER read GetBoolInfo write SetBoolInfo stored False;
+    property ScreenSaverActive: Boolean index SPI_GETSCREENSAVEACTIVE read GetBoolInfo write SetBoolInfo stored False;
+    property ScreenSaveTimeOut: Integer index SPI_GETSCREENSAVETIMEOUT read GetIntInfo write SetIntInfo stored False;
     property SerialKeys: TJvSerialKeys read GetSerialKeys write SetSerialKeys stored False;
-    property ShowSounds: boolean index SPI_GETSHOWSOUNDS read GetBoolInfo write SetBoolInfo stored False;
-    property SnapToDefaultButton: boolean index SPI_GETSNAPTODEFBUTTON read GetBoolInfo write SetBoolInfo stored False;
+    property ShowSounds: Boolean index SPI_GETSHOWSOUNDS read GetBoolInfo write SetBoolInfo stored False;
+    property SnapToDefaultButton: Boolean index SPI_GETSNAPTODEFBUTTON read GetBoolInfo write SetBoolInfo stored False;
     property SoundSentry: TJvSoundSentry read GetSoundSentry write SetSoundSentry stored False;
     property StickyKeys: TJvStickyKeysFlags read GetStickyKeys write SetStickyKeys stored False;
     property ToggleKeys: TJvToggleKeysFlags read GetToggleKeys write SetToggleKeys stored False;
-    property WheelScrollLines: integer index SPI_GETWHEELSCROLLLINES read GetIntInfo write SetIntInfo stored False;
-    property WindowsExtensions: boolean index SPI_GETWINDOWSEXTENSION read GetBoolInfo write SetBoolInfo stored False;
+    property WheelScrollLines: Integer index SPI_GETWHEELSCROLLLINES read GetIntInfo write SetIntInfo stored False;
+    property WindowsExtensions: Boolean index SPI_GETWINDOWSEXTENSION read GetBoolInfo write SetBoolInfo stored False;
     property WorkArea: TJvRect read GetWorkArea write SetWorkArea stored False;
-    property ScreenSaverRunning: boolean index SPI_GETSCREENSAVERRUNNING read GetBoolInfo write SetBoolInfo stored False;
+    property ScreenSaverRunning: Boolean index SPI_GETSCREENSAVERRUNNING read GetBoolInfo write SetBoolInfo stored False;
     // New (W2k, XP and up)
-    property FocusBorderHeight: integer index SPI_GETFOCUSBORDERHEIGHT read GetIntInfo write SetIntInfo stored False;
-    property FocusBorderWidth: integer index SPI_GETFOCUSBORDERWIDTH read GetIntInfo write SetIntInfo stored False;
-    property MouseClickLock: boolean index SPI_GETMOUSECLICKLOCK read GetBoolInfo write SetBoolInfo stored False;
-    property MouseClickLockTime: integer index SPI_GETMOUSECLICKLOCKTIME read GetIntInfo write SetIntInfo stored False;
-    property MouseSonar: boolean index SPI_GETMOUSESONAR read GetBoolInfo write SetBoolInfo stored False;
-    property MouseVanish: boolean index SPI_GETMOUSEVANISH read GetBoolInfo write SetBoolInfo stored False;
+    property FocusBorderHeight: Integer index SPI_GETFOCUSBORDERHEIGHT read GetIntInfo write SetIntInfo stored False;
+    property FocusBorderWidth: Integer index SPI_GETFOCUSBORDERWIDTH read GetIntInfo write SetIntInfo stored False;
+    property MouseClickLock: Boolean index SPI_GETMOUSECLICKLOCK read GetBoolInfo write SetBoolInfo stored False;
+    property MouseClickLockTime: Integer index SPI_GETMOUSECLICKLOCKTIME read GetIntInfo write SetIntInfo stored False;
+    property MouseSonar: Boolean index SPI_GETMOUSESONAR read GetBoolInfo write SetBoolInfo stored False;
+    property MouseVanish: Boolean index SPI_GETMOUSEVANISH read GetBoolInfo write SetBoolInfo stored False;
     property DeskWallpaper: string read GetDeskWallpaper write SetDeskWallpaper stored False;
-    property DropShadow: boolean index SPI_GETDROPSHADOW read GetBoolInfo write SetBoolInfo stored False;
-    property FlatMenu: boolean index SPI_GETFLATMENU read GetBoolInfo write SetBoolInfo stored False;
-    property FontSmoothingContrast: integer index SPI_GETFONTSMOOTHINGCONTRAST read GetIntInfo write SetIntInfo stored
-      False;
+    property DropShadow: Boolean index SPI_GETDROPSHADOW read GetBoolInfo write SetBoolInfo stored False;
+    property FlatMenu: Boolean index SPI_GETFLATMENU read GetBoolInfo write SetBoolInfo stored False;
+    property FontSmoothingContrast: Integer index SPI_GETFONTSMOOTHINGCONTRAST read GetIntInfo write SetIntInfo stored False;
     property FontSmoothingType: TJvFontSmoothingType read GetFontSmoothingType write SetFontSmoothingType stored False;
-    property MenuShowDelay: integer index SPI_GETMENUSHOWDELAY read GetIntInfo write SetIntInfo stored False;
-    property ShowIMEUI: boolean index SPI_GETSHOWIMEUI read GetBoolInfo write SetBoolInfo stored False;
-    property ActiveWindowTracking: boolean index SPI_GETACTIVEWINDOWTRACKING read GetBoolInfo write SetBoolInfo stored
-      False;
-    property MenuAnimation: boolean index SPI_GETMENUANIMATION read GetBoolInfo write SetBoolInfo stored False;
-    property ComboboxAnimation: boolean index SPI_GETCOMBOBOXANIMATION read GetBoolInfo write SetBoolInfo stored False;
-    property ListboxSmoothScrolling: boolean index SPI_GETLISTBOXSMOOTHSCROLLING read GetBoolInfo write SetBoolInfo
-      stored False;
-    property GradientCaptions: boolean index SPI_GETGRADIENTCAPTIONS read GetBoolInfo write SetBoolInfo stored False;
-    property MenuUnderLines: boolean index SPI_GETMENUUNDERLINES read GetBoolInfo write SetBoolInfo stored False;
-    property ActiveWindowTrackZOrder: boolean index SPI_GETACTIVEWNDTRKZORDER read GetBoolInfo write SetBoolInfo stored
-      False;
-    property HotTracking: boolean index SPI_GETHOTTRACKING read GetBoolInfo write SetBoolInfo stored False;
-    property MenuFade: boolean index SPI_GETMENUFADE read GetBoolInfo write SetBoolInfo stored False;
-    property SelectionFade: boolean index SPI_GETSELECTIONFADE read GetBoolInfo write SetBoolInfo stored False;
-    property ToolTipAnimation: boolean index SPI_GETTOOLTIPANIMATION read GetBoolInfo write SetBoolInfo stored False;
-    property ToolTipFade: boolean index SPI_GETTOOLTIPFADE read GetBoolInfo write SetBoolInfo stored False;
-    property CursorShadow: boolean index SPI_GETCURSORSHADOW read GetBoolInfo write SetBoolInfo stored False;
-    property UIEffects: boolean index SPI_GETUIEFFECTS read GetBoolInfo write SetBoolInfo stored False;
-    property ForegroundLockTimeOut: integer index SPI_GETFOREGROUNDLOCKTIMEOUT read GetIntInfo write SetIntInfo stored
-      False;
-    property ActiveWindowTrackTimeOut: integer index SPI_GETACTIVEWNDTRKTIMEOUT read GetIntInfo write SetIntInfo stored
-      False;
-    property ForegroundFlashCount: integer index SPI_GETFOREGROUNDFLASHCOUNT read GetIntInfo write SetIntInfo stored
-      False;
-    property CaretWidth: integer index SPI_GETCARETWIDTH read GetIntInfo write SetIntInfo stored False;
-    property IconHorizontalSpacing: integer index 0 read GetIconSpacing write SetIconSpacing stored False;
-    property IconVerticalSpacing: integer index 1 read GetIconSpacing write SetIconSpacing stored False;
+    property MenuShowDelay: Integer index SPI_GETMENUSHOWDELAY read GetIntInfo write SetIntInfo stored False;
+    property ShowIMEUI: Boolean index SPI_GETSHOWIMEUI read GetBoolInfo write SetBoolInfo stored False;
+    property ActiveWindowTracking: Boolean index SPI_GETACTIVEWINDOWTRACKING read GetBoolInfo write SetBoolInfo stored False;
+    property MenuAnimation: Boolean index SPI_GETMENUANIMATION read GetBoolInfo write SetBoolInfo stored False;
+    property ComboboxAnimation: Boolean index SPI_GETCOMBOBOXANIMATION read GetBoolInfo write SetBoolInfo stored False;
+    property ListboxSmoothScrolling: Boolean index SPI_GETLISTBOXSMOOTHSCROLLING read GetBoolInfo write SetBoolInfo  stored False;
+    property GradientCaptions: Boolean index SPI_GETGRADIENTCAPTIONS read GetBoolInfo write SetBoolInfo stored False;
+    property MenuUnderLines: Boolean index SPI_GETMENUUNDERLINES read GetBoolInfo write SetBoolInfo stored False;
+    property ActiveWindowTrackZOrder: Boolean index SPI_GETACTIVEWNDTRKZORDER read GetBoolInfo write SetBoolInfo stored False;
+    property HotTracking: Boolean index SPI_GETHOTTRACKING read GetBoolInfo write SetBoolInfo stored False;
+    property MenuFade: Boolean index SPI_GETMENUFADE read GetBoolInfo write SetBoolInfo stored False;
+    property SelectionFade: Boolean index SPI_GETSELECTIONFADE read GetBoolInfo write SetBoolInfo stored False;
+    property ToolTipAnimation: Boolean index SPI_GETTOOLTIPANIMATION read GetBoolInfo write SetBoolInfo stored False;
+    property ToolTipFade: Boolean index SPI_GETTOOLTIPFADE read GetBoolInfo write SetBoolInfo stored False;
+    property CursorShadow: Boolean index SPI_GETCURSORSHADOW read GetBoolInfo write SetBoolInfo stored False;
+    property UIEffects: Boolean index SPI_GETUIEFFECTS read GetBoolInfo write SetBoolInfo stored False;
+    property ForegroundLockTimeOut: Integer index SPI_GETFOREGROUNDLOCKTIMEOUT read GetIntInfo write SetIntInfo stored False;
+    property ActiveWindowTrackTimeOut: Integer index SPI_GETACTIVEWNDTRKTIMEOUT read GetIntInfo write SetIntInfo stored False;
+    property ForegroundFlashCount: Integer index SPI_GETFOREGROUNDFLASHCOUNT read GetIntInfo write SetIntInfo stored False;
+    property CaretWidth: Integer index SPI_GETCARETWIDTH read GetIntInfo write SetIntInfo stored False;
+    property IconHorizontalSpacing: Integer index 0 read GetIconSpacing write SetIconSpacing stored False;
+    property IconVerticalSpacing: Integer index 1 read GetIconSpacing write SetIconSpacing stored False;
   end;
 
   TJvSystemColorsInfo = class(TJvWriteableInfo)
@@ -1229,8 +1221,7 @@ type
     property ColorHighlightText: TColor index COLOR_HIGHLIGHTTEXT read GetColor write SetColor stored False;
     property ColorInactiveBorder: TColor index COLOR_INACTIVEBORDER read GetColor write SetColor stored False;
     property ColorInactiveCaption: TColor index COLOR_INACTIVECAPTION read GetColor write SetColor stored False;
-    property ColorInactiveCaptionText: TColor index COLOR_INACTIVECAPTIONTEXT read GetColor write SetColor stored
-      False;
+    property ColorInactiveCaptionText: TColor index COLOR_INACTIVECAPTIONTEXT read GetColor write SetColor stored False;
     property ColorInfoBk: TColor index COLOR_INFOBK read GetColor write SetColor stored False;
     property ColorInfoText: TColor index COLOR_INFOTEXT read GetColor write SetColor stored False;
     property ColorMenu: TColor index COLOR_MENU read GetColor write SetColor stored False;
@@ -1240,22 +1231,20 @@ type
     property ColorWindowFrame: TColor index COLOR_WINDOWFRAME read GetColor write SetColor stored False;
     property ColorWindowText: TColor index COLOR_WINDOWTEXT read GetColor write SetColor stored False;
     property ColorHotLight: TColor index COLOR_HOTLIGHT read GetColor write SetColor stored False;
-    property ColorGradientActiveCaption: TColor index COLOR_GRADIENTACTIVECAPTION read GetColor write SetColor stored
-      False;
-    property ColorGradientInactiveCaption: TColor index COLOR_GRADIENTINACTIVECAPTION read GetColor write SetColor
-      stored False;
+    property ColorGradientActiveCaption: TColor index COLOR_GRADIENTACTIVECAPTION read GetColor write SetColor stored False;
+    property ColorGradientInactiveCaption: TColor index COLOR_GRADIENTINACTIVECAPTION read GetColor write SetColor stored False;
     property ColorMenuHighlight: TColor index COLOR_MENUHILIGHT read GetColor write SetColor stored False;
     property ColorMenuBar: TColor index COLOR_MENUBAR read GetColor write SetColor stored False;
   end;
 
-  TJvDriveChangeEvent = procedure(Sender: TObject; Drive: char) of object;
-  TJvCompactingEvent = procedure(Sender: TObject; Ratio: integer) of object;
-  TJvPowerBroadcastEvent = procedure(Sender: TObject; Event, Data: integer) of object;
+  TJvDriveChangeEvent = procedure(Sender: TObject; Drive: Char) of object;
+  TJvCompactingEvent = procedure(Sender: TObject; Ratio: Integer) of object;
+  TJvPowerBroadcastEvent = procedure(Sender: TObject; Event, Data: Integer) of object;
   TJvDeviceChangeEvent = procedure(Sender: TObject; Event: UINT; Data: Pointer) of object;
   TJvDevModeChangeEvent = procedure(Sender: TObject; Device: string) of object;
-  TJvDisplayChangeEvent = procedure(Sender: TObject; BitsPerPixel, ScreenWidth, ScreenHeight: integer) of object;
-  TJvSettingChangeEvent = procedure(Sender: TObject; Flag: integer; const Section: string) of object;
-  TJvSpoolerChangeEvent = procedure(Sender: TObject; JobStatus, JobsLeft: integer) of object;
+  TJvDisplayChangeEvent = procedure(Sender: TObject; BitsPerPixel, ScreenWidth, ScreenHeight: Integer) of object;
+  TJvSettingChangeEvent = procedure(Sender: TObject; Flag: Integer; const Section: string) of object;
+  TJvSpoolerChangeEvent = procedure(Sender: TObject; JobStatus, JobsLeft: Integer) of object;
   TJvPaletteChangeEvent = procedure(Sender: TObject; Wnd: HWND) of object;
 
   TJvComputerInfoEx = class(TComponent)
@@ -1289,7 +1278,7 @@ type
     FOnSpoolerStatusChange: TJvSpoolerChangeEvent;
     FOnPaletteChanging: TJvPaletteChangeEvent;
     FOnPaletteChanged: TJvPaletteChangeEvent;
-    FReadOnly: boolean;
+    FReadOnly: Boolean;
     procedure SetAPMInfo(const Value: TJvAPMInfo);
     procedure SetBIOSInfo(const Value: TJvBIOSInfo);
     procedure SetCPUInfo(const Value: TJvCPUInfo);
@@ -1316,32 +1305,30 @@ type
     function GetSystemFolders: TJvSystemFolders;
     function GetColors: TJvSystemColorsInfo;
     procedure SetColors(const Value: TJvSystemColorsInfo);
-    procedure SetReadOnly(const Value: boolean);
+    procedure SetReadOnly(const Value: Boolean);
   protected
-    function FirstDrive(AMask: Longint): char;
-
+    function FirstDrive(AMask: Longint): Char;
     procedure WMDeviceChange(var Msg: TWMDeviceChange);
-    procedure WMDisplayChange(var Msg: TWmDisplayChange);
-    procedure DoSettingChange(Flag: integer; Section: string); dynamic;
-    procedure DoDriveChange(Drive: Char; Removed: boolean); dynamic;
-    procedure DoCompacting(Ratio: integer); dynamic;
-    procedure DoPowerBroadcast(Event, Data: integer); dynamic;
+    procedure WMDisplayChange(var Msg: TWMDisplayChange);
+    procedure DoSettingChange(Flag: Integer; Section: string); dynamic;
+    procedure DoDriveChange(Drive: Char; Removed: Boolean); dynamic;
+    procedure DoCompacting(Ratio: Integer); dynamic;
+    procedure DoPowerBroadcast(Event, Data: Integer); dynamic;
     procedure DoUserChanged; dynamic;
     procedure DoDeviceChange(Event: UINT; dwData: Pointer); dynamic;
     procedure DoDevModeChange(const Device: PChar); dynamic;
     procedure DoTimeChange; dynamic;
     procedure DoFontChange; dynamic;
     procedure DoSysColorChange; dynamic;
-    procedure DoSpoolerStatus(JobStatus, JobsLeft: integer); dynamic;
+    procedure DoSpoolerStatus(JobStatus, JobsLeft: Integer); dynamic;
     procedure DoPaletteChanging(Wnd: HWND); dynamic;
     procedure DoPaletteChanged(Wnd: HWND); dynamic;
     procedure WndProc(var Message: TMessage);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function ResetSystemCursors: boolean;
-    function ResetSystemIcons: boolean;
-
+    function ResetSystemCursors: Boolean;
+    function ResetSystemIcons: Boolean;
   published
     property APM: TJvAPMInfo read GetAPMInfo write SetAPMInfo stored False;
     property BIOS: TJvBIOSInfo read GetBIOSInfo write SetBIOSInfo stored False;
@@ -1354,10 +1341,9 @@ type
     property Metrics: TJvMetricsInfo read GetMetrics write SetMetrics;
     property Misc: TJvMiscInfo read GetMiscInfo write SetMiscInfo stored False;
     property OS: TJvOSVersionInfo read GetOSVersionInfo write SetOSVersionInfo stored False;
-    property ReadOnly: boolean read FReadOnly write SetReadOnly default True;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default True;
     property Screen: TJvScreenInfo read GetScreenInfo write SetScreenInfo stored False;
     property System: TJvSystemParametersInfo read GetSystem write SetSystem stored False;
-
     property OnDeviceAdded: TJvDriveChangeEvent read FOnDeviceAdded write FOnDeviceAdded;
     property OnDeviceRemoved: TJvDriveChangeEvent read FOnDeviceRemoved write FOnDeviceRemoved;
     property OnSettingChange: TJvSettingChangeEvent read FOnSettingChange write FOnSettingChange;
@@ -1375,13 +1361,15 @@ type
     property OnPaletteChanged: TJvPaletteChangeEvent read FOnPaletteChanged write FOnPaletteChanged;
   end;
 
-
 implementation
+
 uses
-  WinInet, Registry, JclShell, JclRegistry, JclFileUtils, JvJVCLUtils, ShellAPI, ActiveX;
+  WinInet, Registry, ShellAPI, ActiveX,
+  JclShell, JclRegistry, JclFileUtils,
+  JvJVCLUtils, JvResources;
 
 var
-  IsDesigning: boolean = false;
+  IsDesigning: Boolean = False;
 
 const
   DEFAULT_SPIF_SENDCHANGE = SPIF_UPDATEINIFILE or SPIF_SENDCHANGE;
@@ -1396,10 +1384,14 @@ begin
     AFont.Height := lfHeight;
     AFont.Charset := TFontCharset(lfCharSet);
     Style := [];
-    if lfWeight > FW_REGULAR then Include(Style, fsBold);
-    if lfItalic <> 0 then Include(Style, fsItalic);
-    if lfUnderline <> 0 then Include(Style, fsUnderline);
-    if lfStrikeOut <> 0 then Include(Style, fsStrikeOut);
+    if lfWeight > FW_REGULAR then
+      Include(Style, fsBold);
+    if lfItalic <> 0 then
+      Include(Style, fsItalic);
+    if lfUnderline <> 0 then
+      Include(Style, fsUnderline);
+    if lfStrikeOut <> 0 then
+      Include(Style, fsStrikeOut);
     AFont.Style := Style;
   end;
 end;
@@ -1421,10 +1413,10 @@ begin
   end;
 end;
 
-procedure RaiseReadOnly(AlwaysRaise: boolean = false);
+procedure RaiseReadOnly(AlwaysRaise: Boolean = False);
 begin
   if not IsDesigning or AlwaysRaise then
-    raise Exception.Create('This value is read-only and cannot be changed.');
+    raise EJVCLException.Create(RsEReadOnlyProperty);
 end;
 
 function ArrangeToWindowsArrange(Value: DWORD): TJvWindowsArrange;
@@ -1432,7 +1424,8 @@ begin
   Result := [];
   if Value and ARW_HIDE = ARW_HIDE then
     Include(Result, waHide)
-  else if Value and ARW_BOTTOMLEFT = ARW_BOTTOMLEFT then
+  else
+  if Value and ARW_BOTTOMLEFT = ARW_BOTTOMLEFT then
   begin
     Include(Result, waBottomLeft);
     if Value and ARW_UP = ARW_UP then
@@ -1440,7 +1433,8 @@ begin
     else
       Include(Result, waRight);
   end
-  else if Value and ARW_BOTTOMRIGHT = ARW_BOTTOMRIGHT then
+  else
+  if Value and ARW_BOTTOMRIGHT = ARW_BOTTOMRIGHT then
   begin
     Include(Result, waBottomRight);
     if Value and ARW_UP = ARW_UP then
@@ -1448,7 +1442,8 @@ begin
     else
       Include(Result, waLeft);
   end
-  else if Value and ARW_TOPLEFT = ARW_TOPLEFT then
+  else
+  if Value and ARW_TOPLEFT = ARW_TOPLEFT then
   begin
     Include(Result, waTopLeft);
     if Value and ARW_DOWN = ARW_DOWN then
@@ -1456,7 +1451,8 @@ begin
     else
       Include(Result, waRight);
   end
-  else if Value and ARW_TOPRIGHT = ARW_TOPRIGHT then
+  else
+  if Value and ARW_TOPRIGHT = ARW_TOPRIGHT then
   begin
     Include(Result, waTopRight);
     if Value and ARW_DOWN = ARW_DOWN then
@@ -1469,7 +1465,7 @@ end;
 function WindowsArrangeToArrange(Value: TJvWindowsArrange): DWORD;
 begin
   Result := 0;
-  // NB! no error checking - trusst the user (bad idea?)
+  // NB! no error checking - trust the user (bad idea?)
   if waHide in Value then
     Result := Result or ARW_HIDE;
   if waBottomLeft in Value then
@@ -1486,7 +1482,7 @@ begin
     Result := Result or ARW_TOPRIGHT;
 end;
 
-{ TJvWriteableInfo }
+//=== TJvWriteableInfo =======================================================
 
 constructor TJvWriteableInfo.Create;
 begin
@@ -1494,7 +1490,7 @@ begin
   FReadOnly := True;
 end;
 
-{ TJvAPMInfo }
+//=== TJvAPMInfo =============================================================
 
 function TJvAPMInfo.GetAPMBatteryFlag: TAPMBatteryFlag;
 begin
@@ -1558,7 +1554,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvOSVersionInfo }
+//=== TJvOSVersionInfo =======================================================
 
 const
   HKLM_CURRENT_VERSION_WINDOWS = 'Software\Microsoft\Windows\CurrentVersion';
@@ -1652,7 +1648,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvCPUInfo }
+//=== TJvCPUInfo =============================================================
 
 function TJvCPUInfo.AMDSpecific: TAMDSpecific;
 begin
@@ -1744,7 +1740,7 @@ begin
   Result := GetCPUSpeed.NormFreq;
 end;
 
-function TJvCPUInfo.GetProcessorCount: integer;
+function TJvCPUInfo.GetProcessorCount: Integer;
 begin
   Result := JclSysInfo.ProcessorCount;
 end;
@@ -1839,7 +1835,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvCPUInfo.SetProcessorCount(const Value: integer);
+procedure TJvCPUInfo.SetProcessorCount(const Value: Integer);
 begin
   RaiseReadOnly;
 end;
@@ -1859,7 +1855,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvBIOSInfo }
+//=== TJvBIOSInfo ============================================================
 
 function TJvBIOSInfo.GetBIOSCopyright: string;
 begin
@@ -1901,7 +1897,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvSystemFolders }
+//=== TJvSystemFolders =======================================================
 
 function TJvSystemFolders.GetCommonFiles: string;
 begin
@@ -1980,7 +1976,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvMemInfo }
+//=== TJvMemInfo =============================================================
 
 function TJvMemInfo.GetFreePageFileMemory: Integer;
 begin
@@ -2092,7 +2088,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvKeyInfo }
+//=== TJvKeyInfo =============================================================
 
 function TJvKeyInfo.GetCapsLockKeyState: Boolean;
 begin
@@ -2122,7 +2118,7 @@ begin
   begin
     GetKeyboardState(Keys);
     Keys[VK_CAPITAL] := Ord(Value);
-    SetkeyboardState(Keys);
+    SetKeyboardState(Keys);
   end
   else
     RaiseReadOnly;
@@ -2136,7 +2132,7 @@ begin
   begin
     GetKeyboardState(Keys);
     Keys[VirtualKey] := Ord(Value) * $80;
-    SetkeyboardState(Keys);
+    SetKeyboardState(Keys);
   end
   else
     RaiseReadOnly;
@@ -2150,7 +2146,7 @@ begin
   begin
     GetKeyboardState(Keys);
     Keys[VK_NUMLOCK] := Ord(Value);
-    SetkeyboardState(Keys);
+    SetKeyboardState(Keys);
   end
   else
     RaiseReadOnly;
@@ -2164,13 +2160,13 @@ begin
   begin
     GetKeyboardState(Keys);
     Keys[VK_SCROLL] := Ord(Value);
-    SetkeyboardState(Keys);
+    SetKeyboardState(Keys);
   end
   else
     RaiseReadOnly;
 end;
 
-{ TJvIdentification }
+//=== TJvIdentification ======================================================
 
 function TJvIdentification.GetDomainName: string;
 begin
@@ -2207,7 +2203,7 @@ type
     wki100_ver_major: DWORD;
     wki100_ver_minor: DWORD;
   end;
-{$EXTERNALSYM _WKSTA_INFO_100}
+  {$EXTERNALSYM _WKSTA_INFO_100}
   TWkstaInfo100 = _WKSTA_INFO_100;
 
 const
@@ -2218,7 +2214,7 @@ var
   _NetApiBufferFree: function(Buffer: Pointer): DWORD; stdcall = nil;
   LibHandle: Cardinal = 0;
 
-function LoadNetLib: boolean;
+function LoadNetLib: Boolean;
 begin
   if LibHandle = 0 then
   begin
@@ -2348,6 +2344,8 @@ begin
     RaiseReadOnly;
 end;
 
+//=== TJvScreenMode ==========================================================
+
 function DisplayFlagsToSet(Flags: DWORD): TJvDisplayFlags;
 begin
   Result := [];
@@ -2366,8 +2364,6 @@ begin
     Result := Result or DM_INTERLACED;
 end;
 
-{ TJvScreenMode }
-
 procedure TJvScreenMode.SetBitsPerPixel(const Value: DWORD);
 begin
   RaiseReadOnly;
@@ -2378,7 +2374,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvScreenMode.SetHeight(const Value: integer);
+procedure TJvScreenMode.SetHeight(const Value: Integer);
 begin
   RaiseReadOnly;
 end;
@@ -2388,18 +2384,24 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvScreenMode.SetWidth(const Value: integer);
+procedure TJvScreenMode.SetWidth(const Value: Integer);
 begin
   RaiseReadOnly;
 end;
 
-{ TJvScreenInfo }
+//=== TJvScreenInfo ==========================================================
+
+destructor TJvScreenInfo.Destroy;
+begin
+  FScreenModes.Free;
+  inherited Destroy;
+end;
 
 function TJvScreenInfo.GetCurrentMode: TDeviceMode;
 const
   cCurrentSettings = $FFFFFFFE;
 begin
-  Result.dmSize := sizeof(Result);
+  Result.dmSize := SizeOf(Result);
   EnumDisplaySettings(nil, cCurrentSettings, Result);
 end;
 
@@ -2536,12 +2538,6 @@ begin
   //
 end;
 
-destructor TJvScreenInfo.Destroy;
-begin
-  FScreenModes.Free;
-  inherited;
-end;
-
 procedure TJvScreenInfo.SetCurrentMode(ADeviceMode: TDeviceMode; Flags: DWORD);
 begin
   if not IsDesigning and not ReadOnly then
@@ -2555,7 +2551,7 @@ begin
     RaiseReadOnly;
 end;
 
-{ TJvAppVersions }
+//=== TJvAppVersions =========================================================
 
 function TJvAppVersions.GetADOVersion: string;
 begin
@@ -2564,8 +2560,8 @@ end;
 
 function TJvAppVersions.GetBDELocation: string;
 begin
-  Result := ExcludeTrailingPathDelimiter(RegReadStringDef(HKEY_LOCAL_MACHINE, '\SOFTWARE\Borland\Database Engine',
-    'DLLPATH', ''));
+  Result := ExcludeTrailingPathDelimiter(RegReadStringDef(HKEY_LOCAL_MACHINE,
+    '\SOFTWARE\Borland\Database Engine', 'DLLPATH', ''));
 end;
 
 function TJvAppVersions.GetBDEVersion: string;
@@ -2630,7 +2626,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvHardwareProfile }
+//=== TJvHardwareProfile =====================================================
 
 function TJvHardwareProfile.GetDockInfo: TJvHWDockInfo;
 var
@@ -2697,16 +2693,7 @@ begin
   RaiseReadOnly;
 end;
 
-{ TJvScreenModes }
-
-procedure TJvScreenModes.Clear;
-var
-  i: integer;
-begin
-  for i := 0 to FItems.Count - 1 do
-    TObject(FItems[i]).Free;
-  FItems.Clear;
-end;
+//=== TJvScreenModes =========================================================
 
 constructor TJvScreenModes.Create;
 begin
@@ -2719,19 +2706,29 @@ begin
   Clear;
   FItems.Free;
   FDefaultMode.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-function TJvScreenModes.GetCount: integer;
+procedure TJvScreenModes.Clear;
+var
+  I: Integer;
+begin
+  for I := 0 to FItems.Count - 1 do
+    TObject(FItems[I]).Free;
+  FItems.Clear;
+end;
+
+function TJvScreenModes.GetCount: Integer;
 begin
   Result := FItems.Count;
 end;
 
-function TJvScreenModes.GetItems(Index: integer): TJvScreenMode;
+function TJvScreenModes.GetItems(Index: Integer): TJvScreenMode;
 begin
   if Index < 0 then
     Result := FDefaultMode
-  else if (Index >= 0) and (Index < Count) then
+  else
+  if (Index >= 0) and (Index < Count) then
     Result := TJvScreenMode(FItems[Index])
   else
     Result := nil;
@@ -2741,13 +2738,13 @@ procedure TJvScreenModes.Refresh;
 const
   cCurrentSettings = $FFFFFFFE;
 var
-  i: integer;
+  I: Integer;
   DevMode: TDeviceMode;
   Item: TJvScreenMode;
 begin
   FItems.Clear;
-  DevMode.dmSize := sizeof(DevMode);
-  i := 0;
+  DevMode.dmSize := SizeOf(DevMode);
+  I := 0;
   EnumDisplaySettings(nil, cCurrentSettings, DevMode);
   if DevMode.dmDisplayFrequency < 2 then
     FDefaultMode.FHz := 60
@@ -2758,7 +2755,7 @@ begin
   FDefaultMode.FBitsPerPixel := DevMode.dmBitsPerPel;
   FDefaultMode.FFlags := DisplayFlagsToSet(DevMode.dmDisplayFlags);
 
-  while EnumDisplaySettings(nil, i, DevMode) do
+  while EnumDisplaySettings(nil, I, DevMode) do
   begin
     Item := TJvScreenMode.Create;
     if DevMode.dmDisplayFrequency < 2 then
@@ -2770,22 +2767,25 @@ begin
     Item.FBitsPerPixel := DevMode.dmBitsPerPel;
     Item.FFlags := DisplayFlagsToSet(DevMode.dmDisplayFlags);
     FItems.Add(Item);
-    Inc(i);
+    Inc(I);
   end;
 end;
 
-procedure TJvScreenModes.SetItems(Index: integer; const Value: TJvScreenMode);
+procedure TJvScreenModes.SetItems(Index: Integer; const Value: TJvScreenMode);
 begin
   RaiseReadOnly;
 end;
 
-{ TJvMiscInfo }
+//=== TJvMiscInfo ============================================================
+
+const
+  HKCU_CONTROL_PANEL_DESKTOP = '\Control Panel\Desktop';
 
 destructor TJvMiscInfo.Destroy;
 begin
   FVersions.Free;
   FColorSchemes.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvMiscInfo.GetColorSchemes: TStrings;
@@ -2809,7 +2809,7 @@ begin
   Result := RegReadStringDef(HKEY_CURRENT_USER, '\Control Panel\Current', 'Color Schemes', '');
 end;
 
-function TJvMiscInfo.GetDVDRegion: integer;
+function TJvMiscInfo.GetDVDRegion: Integer;
 begin
   Result := RegReadIntegerDef(HKEY_LOCAL_MACHINE, REG_CURRENT_VERSION, 'DVD_Region', -1);
 end;
@@ -2821,7 +2821,7 @@ begin
   Result := FHardwareProfile;
 end;
 
-function TJvMiscInfo.GetIsOnline: boolean;
+function TJvMiscInfo.GetIsOnline: Boolean;
 const
   INTERNET_CONNECTION_OFFLINE = $20;
 var
@@ -2831,20 +2831,21 @@ begin
   Result := InternetGetConnectedState(@ConnectFlag, 0) and (ConnectFlag <> INTERNET_CONNECTION_OFFLINE);
 end;
 
-function TJvMiscInfo.GetNetBIOS: boolean;
-var P:_NCB;
+function TJvMiscInfo.GetNetBIOS: Boolean;
+var
+  P: _NCB;
 begin
   Result := RtdlNetBios(@P) <> NRC_OPENERR;
 end;
 
 function TJvMiscInfo.GetPattern: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'Pattern', '');
+  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Pattern', '');
 end;
 
 function TJvMiscInfo.GetScreenSaver: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, 'Control Panel\Desktop', 'SCRNSAVE.EXE', '');
+  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'SCRNSAVE.EXE', '');
   if Result <> '' then
     // screen saver is usually returned in 8.3 format
     Result := PathGetLongName(Result);
@@ -2860,7 +2861,7 @@ var
   DateTime: TDateTime;
 begin
   DateTime := GetTickCount / 86400000;
-  Result := Format('%d %s', [trunc(DateTime), FormatDateTime('hh:mm:ss', DateTime)]);
+  Result := Format('%d %s', [Trunc(DateTime), FormatDateTime('hh:mm:ss', DateTime)]);
 end;
 
 function TJvMiscInfo.GetVersions: TJvAppVersions;
@@ -2872,17 +2873,17 @@ end;
 
 function TJvMiscInfo.GetWallpaper: string;
 begin
-  Result := RegReadStringDef(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'Wallpaper', '');
+  Result := RegReadStringDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Wallpaper', '');
 end;
 
 function TJvMiscInfo.GetWallpaperStyle: TJvWallpaperStyle;
 begin
-  Result := TJvWallpaperStyle(RegReadIntegerDef(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'WallpaperStyle', 0));
+  Result := TJvWallpaperStyle(RegReadIntegerDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', 0));
 end;
 
-function TJvMiscInfo.GetWallpaperTiled: boolean;
+function TJvMiscInfo.GetWallpaperTiled: Boolean;
 begin
-  Result := RegReadIntegerDef(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'TileWallpaper', 0) <> 0;
+  Result := RegReadIntegerDef(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', 0) <> 0;
 end;
 
 procedure TJvMiscInfo.SetColorSchemes(const Value: TStrings);
@@ -2898,7 +2899,7 @@ begin
     RaiseReadOnly;
 end;
 
-procedure TJvMiscInfo.SetDVDRegion(const Value: integer);
+procedure TJvMiscInfo.SetDVDRegion(const Value: Integer);
 begin
   RaiseReadOnly;
 end;
@@ -2908,12 +2909,12 @@ begin
   //
 end;
 
-procedure TJvMiscInfo.SetIsOnline(const Value: boolean);
+procedure TJvMiscInfo.SetIsOnline(const Value: Boolean);
 begin
   RaiseReadOnly;
 end;
 
-procedure TJvMiscInfo.SetNetBIOS(const Value: boolean);
+procedure TJvMiscInfo.SetNetBIOS(const Value: Boolean);
 begin
   RaiseReadOnly;
 end;
@@ -2921,7 +2922,7 @@ end;
 procedure TJvMiscInfo.SetPattern(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'Pattern', Value)
+    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Pattern', Value)
   else
     RaiseReadOnly;
 end;
@@ -2929,7 +2930,7 @@ end;
 procedure TJvMiscInfo.SetScreenSaver(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'SCRSAVE.EXE', Value)
+    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'SCRSAVE.EXE', Value)
   else
     RaiseReadOnly;
 end;
@@ -2952,7 +2953,7 @@ end;
 procedure TJvMiscInfo.SetWallpaper(const Value: string);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteString(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'Wallpaper', Value)
+    RegWriteString(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'Wallpaper', Value)
   else
     RaiseReadOnly;
 end;
@@ -2962,23 +2963,23 @@ begin
   if not IsDesigning and not ReadOnly then
   begin
     if Value <> wsUnused then
-      RegWriteInteger(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'WallpaperStyle', Ord(Value));
+      RegWriteInteger(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'WallpaperStyle', Ord(Value));
   end
   else
     RaiseReadOnly;
 end;
 
-procedure TJvMiscInfo.SetWallpaperTiled(const Value: boolean);
+procedure TJvMiscInfo.SetWallpaperTiled(const Value: Boolean);
 begin
   if not IsDesigning and not ReadOnly then
-    RegWriteInteger(HKEY_CURRENT_USER, '\Control Panel\Desktop', 'TileWallpaper', Ord(Value))
+    RegWriteInteger(HKEY_CURRENT_USER, HKCU_CONTROL_PANEL_DESKTOP, 'TileWallpaper', Ord(Value))
   else
     RaiseReadOnly;
 end;
 
-{ TJvMetricsInfo }
+//=== TJvMetricsInfo =========================================================
 
-function TJvMetricsInfo.GetACP: integer;
+function TJvMetricsInfo.GetACP: Integer;
 begin
   Result := Windows.GetACP;
 end;
@@ -2988,7 +2989,7 @@ begin
   Result := ArrangeToWindowsArrange(GetSystemMetrics(SM_ARRANGE));
 end;
 
-function TJvMetricsInfo.GetBoolMetrics(const Index: Integer): boolean;
+function TJvMetricsInfo.GetBoolMetrics(const Index: Integer): Boolean;
 begin
   Result := GetSystemMetrics(Index) <> 0;
 end;
@@ -2998,15 +2999,18 @@ begin
   Result := Windows.GetCaretBlinkTime;
 end;
 
-function TJvMetricsInfo.GetCaretPos(const Index: Integer): integer;
+function TJvMetricsInfo.GetCaretPos(const Index: Integer): Integer;
 var
   P: TPoint;
 begin
   Result := -1;
-  if not Windows.GetCaretPos(P) then P := Point(-1, -1);
+  if not Windows.GetCaretPos(P) then
+    P := Point(-1, -1);
   case Index of
-    0: Result := P.X;
-    1: Result := P.Y;
+    0:
+      Result := P.X;
+    1:
+      Result := P.Y;
   end;
 end;
 
@@ -3015,39 +3019,42 @@ begin
   Result := TJvCleanBoot(GetSystemMetrics(SM_CLEANBOOT));
 end;
 
-function TJvMetricsInfo.GetCursorPos(const Index: Integer): integer;
+function TJvMetricsInfo.GetCursorPos(const Index: Integer): Integer;
 var
   P: TPoint;
 begin
   Result := -1;
-  if not Windows.GetCursorPos(P) then P := Point(-1, -1);
+  if not Windows.GetCursorPos(P) then
+    P := Point(-1, -1);
   case Index of
-    0: Result := P.X;
-    1: Result := P.Y;
+    0:
+      Result := P.X;
+    1:
+      Result := P.Y;
   end;
 end;
 
-function TJvMetricsInfo.GetDialogBaseUnits: integer;
+function TJvMetricsInfo.GetDialogBaseUnits: Integer;
 begin
   Result := Windows.GetDialogBaseUnits;
 end;
 
-function TJvMetricsInfo.GetDoubleClickTime: integer;
+function TJvMetricsInfo.GetDoubleClickTime: Integer;
 begin
   REsult := Windows.GetDoubleClickTime;
 end;
 
-function TJvMetricsInfo.GetMetrics(const Index: Integer): integer;
+function TJvMetricsInfo.GetMetrics(const Index: Integer): Integer;
 begin
   Result := GetSystemMetrics(Index);
 end;
 
-function TJvMetricsInfo.GetOEMCP: integer;
+function TJvMetricsInfo.GetOEMCP: Integer;
 begin
   Result := Windows.GetOEMCP;
 end;
 
-procedure TJvMetricsInfo.SetACP(const Value: integer);
+procedure TJvMetricsInfo.SetACP(const Value: Integer);
 begin
   RaiseReadOnly;
 end;
@@ -3057,8 +3064,8 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvMetricsInfo.SetBoolMetric(const Index: Integer;
-  const Value: boolean);
+procedure TJvMetricsInfo.SetBoolMetrics(const Index: Integer;
+  const Value: Boolean);
 begin
   RaiseReadOnly;
 end;
@@ -3071,7 +3078,7 @@ begin
     RaiseReadOnly;
 end;
 
-procedure TJvMetricsInfo.SetCaretPos(const Index, Value: integer);
+procedure TJvMetricsInfo.SetCaretPos(const Index, Value: Integer);
 var
   P: TPoint;
 begin
@@ -3079,8 +3086,10 @@ begin
   begin
     Windows.GetCaretPos(P);
     case Index of
-      0: P.X := Value;
-      1: P.Y := Value;
+      0:
+        P.X := Value;
+      1:
+        P.Y := Value;
     end;
     Windows.SetCaretPos(P.X, P.Y);
   end
@@ -3093,7 +3102,7 @@ begin
   RaiseReadOnly;
 end;
 
-procedure TJvMetricsInfo.SetCursorPos(const Index, Value: integer);
+procedure TJvMetricsInfo.SetCursorPos(const Index, Value: Integer);
 var
   P: TPoint;
 begin
@@ -3101,8 +3110,10 @@ begin
   begin
     Windows.GetCursorPos(P);
     case Index of
-      0: P.X := Value;
-      1: P.Y := Value;
+      0:
+        P.X := Value;
+      1:
+        P.Y := Value;
     end;
     Windows.SetCursorPos(P.x, P.Y);
   end
@@ -3110,27 +3121,27 @@ begin
     RaiseReadOnly;
 end;
 
-procedure TJvMetricsInfo.SetDialogBaseUnits(const Value: integer);
+procedure TJvMetricsInfo.SetDialogBaseUnits(const Value: Integer);
 begin
   RaiseReadOnly;
 end;
 
-procedure TJvMetricsInfo.SetDoubleClickTime(const Value: integer);
+procedure TJvMetricsInfo.SetDoubleClickTime(const Value: Integer);
 begin
 
 end;
 
-procedure TJvMetricsInfo.SetMetric(const Index, Value: integer);
-begin
-  RaiseReadOnly;
-end;
-
-procedure TJvMetricsInfo.SetOEMCP(const Value: integer);
+procedure TJvMetricsInfo.SetMetrics(const Index, Value: Integer);
 begin
   RaiseReadOnly;
 end;
 
-{ TJvAccessTimeOut }
+procedure TJvMetricsInfo.SetOEMCP(const Value: Integer);
+begin
+  RaiseReadOnly;
+end;
+
+//=== TJvAccessTimeOut =======================================================
 
 function TJvAccessTimeOut.GetFlags: TJvAccessTimeOutFlags;
 var
@@ -3146,8 +3157,8 @@ end;
 
 function TJvAccessTimeOut.GetNativeType: ACCESSTIMEOUT;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETACCESSTIMEOUT, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETACCESSTIMEOUT, SizeOf(Result), @Result, 0) then
   begin
     Result.dwFlags := 0;
     Result.iTimeOutMSec := 0;
@@ -3181,8 +3192,8 @@ procedure TJvAccessTimeOut.SetNativeType(Value: ACCESSTIMEOUT);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETACCESSTIMEOUT, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETACCESSTIMEOUT, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
@@ -3200,7 +3211,7 @@ begin
   end;
 end;
 
-{ TJvFilterKeys }
+//=== TJvFilterKeys ==========================================================
 
 function TJvFilterKeys.GetBounceMSec: DWORD;
 begin
@@ -3236,8 +3247,8 @@ end;
 
 function TJvFilterKeys.GetNativeType: FILTERKEYS;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETFILTERKEYS, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETFILTERKEYS, SizeOf(Result), @Result, 0) then
   begin
     Result.dwFlags := 0;
     Result.iWaitMSec := 0;
@@ -3313,8 +3324,8 @@ procedure TJvFilterKeys.SetNativeType(Value: FILTERKEYS);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETFILTERKEYS, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETFILTERKEYS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
@@ -3344,7 +3355,7 @@ begin
   end;
 end;
 
-{ TJvHighContrast }
+//=== TJvHighContrast ========================================================
 
 function TJvHighContrast.GetDefaultScheme: string;
 begin
@@ -3375,8 +3386,8 @@ end;
 
 function TJvHighContrast.GetNativeType: HIGHCONTRAST;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETHIGHCONTRAST, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETHIGHCONTRAST, SizeOf(Result), @Result, 0) then
   begin
     Result.dwFlags := 0;
     Result.lpszDefaultScheme := '';
@@ -3427,19 +3438,19 @@ procedure TJvHighContrast.SetNativeType(Value: HIGHCONTRAST);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETHIGHCONTRAST, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETHIGHCONTRAST, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
 end;
 
-{ TJvIconMetrics }
+//=== TJvIconMetrics =========================================================
 
 destructor TJvIconMetrics.Destroy;
 begin
   FFont.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvIconMetrics.GetFont: TFont;
@@ -3450,15 +3461,15 @@ begin
   Result := FFont;
 end;
 
-function TJvIconMetrics.GetHorzSpacing: integer;
+function TJvIconMetrics.GetHorzSpacing: Integer;
 begin
   Result := NativeType.iHorzSpacing;
 end;
 
 function TJvIconMetrics.GetNativeType: ICONMETRICS;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETICONMETRICS, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETICONMETRICS, SizeOf(Result), @Result, 0) then
   begin
     Result.iHorzSpacing := 0;
     Result.iVertSpacing := 0;
@@ -3467,12 +3478,12 @@ begin
   end;
 end;
 
-function TJvIconMetrics.GetTitleWrap: boolean;
+function TJvIconMetrics.GetTitleWrap: Boolean;
 begin
   Result := NativeType.iTitleWrap <> 0;
 end;
 
-function TJvIconMetrics.GetVertSpacing: integer;
+function TJvIconMetrics.GetVertSpacing: Integer;
 begin
   Result := NativeType.iVertSpacing;
 end;
@@ -3486,7 +3497,7 @@ begin
   NativeType := Native;
 end;
 
-procedure TJvIconMetrics.SetHorzSpacing(const Value: integer);
+procedure TJvIconMetrics.SetHorzSpacing(const Value: Integer);
 var
   Native: ICONMETRICS;
 begin
@@ -3502,14 +3513,14 @@ procedure TJvIconMetrics.SetNativeType(Value: ICONMETRICS);
 begin
   if not IsDesigning and not Readonly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETICONMETRICS, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETICONMETRICS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
 end;
 
-procedure TJvIconMetrics.SetTitleWrap(const Value: boolean);
+procedure TJvIconMetrics.SetTitleWrap(const Value: Boolean);
 var
   Native: ICONMETRICS;
 begin
@@ -3521,7 +3532,7 @@ begin
   end;
 end;
 
-procedure TJvIconMetrics.SetVertSpacing(const Value: integer);
+procedure TJvIconMetrics.SetVertSpacing(const Value: Integer);
 var
   Native: ICONMETRICS;
 begin
@@ -3533,22 +3544,22 @@ begin
   end;
 end;
 
-{ TJvMinimizedMetrics }
+//=== TJvMinimizedMetrics ====================================================
 
 function TJvMinimizedMetrics.GetArrange: TJvWindowsArrange;
 begin
   Result := ArrangeToWindowsArrange(NativeType.iArrange);
 end;
 
-function TJvMinimizedMetrics.GetHorzGap: integer;
+function TJvMinimizedMetrics.GetHorzGap: Integer;
 begin
   Result := NativeType.iHorzGap;
 end;
 
 function TJvMinimizedMetrics.GetNativeType: MINIMIZEDMETRICS;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETMINIMIZEDMETRICS, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETMINIMIZEDMETRICS, SizeOf(Result), @Result, 0) then
   begin
     Result.iWidth := 0;
     Result.iHorzGap := 0;
@@ -3557,12 +3568,12 @@ begin
   end;
 end;
 
-function TJvMinimizedMetrics.GetVertGap: integer;
+function TJvMinimizedMetrics.GetVertGap: Integer;
 begin
   Result := NativeType.iVertGap;
 end;
 
-function TJvMinimizedMetrics.GetWidth: integer;
+function TJvMinimizedMetrics.GetWidth: Integer;
 begin
   Result := NativeType.iWidth;
 end;
@@ -3570,18 +3581,18 @@ end;
 procedure TJvMinimizedMetrics.SetArrange(const Value: TJvWindowsArrange);
 var
   Native: MINIMIZEDMETRICS;
-  AArrange: integer;
+  WArrange: Integer;
 begin
   Native := NativeType;
-  AArrange := WindowsArrangeToArrange(Value);
-  if Native.iArrange <> AArrange then
+  WArrange := WindowsArrangeToArrange(Value);
+  if Native.iArrange <> WArrange then
   begin
-    Native.iArrange := AArrange;
+    Native.iArrange := WArrange;
     NativeType := Native;
   end;
 end;
 
-procedure TJvMinimizedMetrics.SetHorzGap(const Value: integer);
+procedure TJvMinimizedMetrics.SetHorzGap(const Value: Integer);
 var
   Native: MINIMIZEDMETRICS;
 begin
@@ -3597,14 +3608,14 @@ procedure TJvMinimizedMetrics.SetNativeType(Value: MINIMIZEDMETRICS);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETMINIMIZEDMETRICS, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETMINIMIZEDMETRICS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
 end;
 
-procedure TJvMinimizedMetrics.SetVertGap(const Value: integer);
+procedure TJvMinimizedMetrics.SetVertGap(const Value: Integer);
 var
   Native: MINIMIZEDMETRICS;
 begin
@@ -3616,7 +3627,7 @@ begin
   end;
 end;
 
-procedure TJvMinimizedMetrics.SetWidth(const Value: integer);
+procedure TJvMinimizedMetrics.SetWidth(const Value: Integer);
 var
   Native: MINIMIZEDMETRICS;
 begin
@@ -3628,7 +3639,7 @@ begin
   end;
 end;
 
-{ TJvMouseKeys }
+//=== TJvMouseKeys ===========================================================
 
 function TJvMouseKeys.GetCtrlSpeed: DWORD;
 begin
@@ -3666,8 +3677,8 @@ end;
 
 function TJvMouseKeys.GetNativeType: MOUSEKEYS;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETMOUSEKEYS, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETMOUSEKEYS, SizeOf(Result), @Result, 0) then
   begin
     Result.dwFlags := 0;
     Result.iMaxSpeed := 0;
@@ -3741,8 +3752,8 @@ procedure TJvMouseKeys.SetNativeType(Value: MOUSEKEYS);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETMOUSEKEYS, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETMOUSEKEYS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
@@ -3760,7 +3771,7 @@ begin
   end;
 end;
 
-{ TJvNonClientMetrics }
+//=== TJvNonClientMetrics ====================================================
 
 destructor TJvNonClientMetrics.Destroy;
 begin
@@ -3768,10 +3779,10 @@ begin
   FMenuFont.Free;
   FMessageFont.Free;
   FStatusFont.Free;
-  inherited;
+  inherited Destroy; 
 end;
 
-function TJvNonClientMetrics.GetBorderWidth: integer;
+function TJvNonClientMetrics.GetBorderWidth: Integer;
 begin
   Result := NativeType.iBorderWidth;
 end;
@@ -3784,12 +3795,12 @@ begin
   Result := FCaptionFont;
 end;
 
-function TJvNonClientMetrics.GetCaptionHeight: integer;
+function TJvNonClientMetrics.GetCaptionHeight: Integer;
 begin
   Result := NativeType.iCaptionHeight;
 end;
 
-function TJvNonClientMetrics.GetCaptionWidth: integer;
+function TJvNonClientMetrics.GetCaptionWidth: Integer;
 begin
   Result := NativeType.iCaptionWidth;
 end;
@@ -3802,12 +3813,12 @@ begin
   Result := FMenuFont;
 end;
 
-function TJvNonClientMetrics.GetMenuHeight: integer;
+function TJvNonClientMetrics.GetMenuHeight: Integer;
 begin
   Result := NativeType.iMenuHeight;
 end;
 
-function TJvNonClientMetrics.GetMenuWidth: integer;
+function TJvNonClientMetrics.GetMenuWidth: Integer;
 begin
   Result := NativeType.iMenuWidth;
 end;
@@ -3822,8 +3833,8 @@ end;
 
 function TJvNonClientMetrics.GetNativeType: NONCLIENTMETRICS;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETNONCLIENTMETRICS, SizeOf(Result), @Result, 0) then
   begin
     Result.iBorderWidth := 0;
     Result.iScrollWidth := 0;
@@ -3842,12 +3853,12 @@ begin
   end;
 end;
 
-function TJvNonClientMetrics.GetScrollHeight: integer;
+function TJvNonClientMetrics.GetScrollHeight: Integer;
 begin
   Result := NativeType.iScrollHeight;
 end;
 
-function TJvNonClientMetrics.GetScrollWidth: integer;
+function TJvNonClientMetrics.GetScrollWidth: Integer;
 begin
   Result := NativeType.iScrollWidth;
 end;
@@ -3860,12 +3871,12 @@ begin
   Result := FSmallCaptionFont;
 end;
 
-function TJvNonClientMetrics.GetSmallCaptionHeight: integer;
+function TJvNonClientMetrics.GetSmallCaptionHeight: Integer;
 begin
   Result := NativeType.iSmCaptionHeight;
 end;
 
-function TJvNonClientMetrics.GetSmallCaptionWidth: integer;
+function TJvNonClientMetrics.GetSmallCaptionWidth: Integer;
 begin
   Result := NativeType.iSmCaptionWidth;
 end;
@@ -3878,7 +3889,7 @@ begin
   Result := FStatusFont;
 end;
 
-procedure TJvNonClientMetrics.SetBorderWidth(const Value: integer);
+procedure TJvNonClientMetrics.SetBorderWidth(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -3899,7 +3910,7 @@ begin
   NativeType := Native;
 end;
 
-procedure TJvNonClientMetrics.SetCaptionHeight(const Value: integer);
+procedure TJvNonClientMetrics.SetCaptionHeight(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -3911,7 +3922,7 @@ begin
   end;
 end;
 
-procedure TJvNonClientMetrics.SetCaptionWidth(const Value: integer);
+procedure TJvNonClientMetrics.SetCaptionWidth(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -3932,7 +3943,7 @@ begin
   NativeType := Native;
 end;
 
-procedure TJvNonClientMetrics.SetMenuHeight(const Value: integer);
+procedure TJvNonClientMetrics.SetMenuHeight(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -3944,7 +3955,7 @@ begin
   end;
 end;
 
-procedure TJvNonClientMetrics.SetMenuWidth(const Value: integer);
+procedure TJvNonClientMetrics.SetMenuWidth(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -3969,14 +3980,14 @@ procedure TJvNonClientMetrics.SetNativeType(Value: NONCLIENTMETRICS);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETNONCLIENTMETRICS, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETNONCLIENTMETRICS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
 end;
 
-procedure TJvNonClientMetrics.SetScrollHeight(const Value: integer);
+procedure TJvNonClientMetrics.SetScrollHeight(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -3988,7 +3999,7 @@ begin
   end;
 end;
 
-procedure TJvNonClientMetrics.SetScrollWidth(const Value: integer);
+procedure TJvNonClientMetrics.SetScrollWidth(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -4009,7 +4020,7 @@ begin
   NativeType := Native;
 end;
 
-procedure TJvNonClientMetrics.SetSmallCaptionHeight(const Value: integer);
+procedure TJvNonClientMetrics.SetSmallCaptionHeight(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -4021,7 +4032,7 @@ begin
   end;
 end;
 
-procedure TJvNonClientMetrics.SetSmallCaptionWidth(const Value: integer);
+procedure TJvNonClientMetrics.SetSmallCaptionWidth(const Value: Integer);
 var
   Native: NONCLIENTMETRICS;
 begin
@@ -4042,9 +4053,9 @@ begin
   NativeType := Native;
 end;
 
-{ TJvSerialKeys }
+//== TJvSerialKeys ===========================================================
 
-function TJvSerialKeys.GetActive: boolean;
+function TJvSerialKeys.GetActive: Boolean;
 begin
   Result := NativeType.iActive <> 0;
 end;
@@ -4075,8 +4086,8 @@ end;
 
 function TJvSerialKeys.GetNativeType: SERIALKEYS;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETSERIALKEYS, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETSERIALKEYS, SizeOf(Result), @Result, 0) then
   begin
     Result.lpszActivePort := '';
     Result.lpszPort := '';
@@ -4097,12 +4108,12 @@ begin
   Result := TJvSerialKeysPortState(NativeType.iPortState);
 end;
 
-procedure TJvSerialKeys.SetActive(const Value: boolean);
+procedure TJvSerialKeys.SetActive(const Value: Boolean);
 var
   Native: SERIALKEYS;
 begin
   Native := NativeType;
-  if integer(Native.iActive) <> Ord(Value) then
+  if Integer(Native.iActive) <> Ord(Value) then
   begin
     Native.iActive := Ord(Value);
     NativeType := Native;
@@ -4157,8 +4168,8 @@ procedure TJvSerialKeys.SetNativeType(Value: SERIALKEYS);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETSERIALKEYS, sizeof(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETSERIALKEYS, SizeOf(Value), @Value, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
@@ -4181,14 +4192,14 @@ var
   Native: SERIALKEYS;
 begin
   Native := NativeType;
-  if integer(Native.iPortState) <> Ord(Value) then
+  if Integer(Native.iPortState) <> Ord(Value) then
   begin
     Native.iPortState := Ord(Value);
     NativeType := Native;
   end;
 end;
 
-{ TJvSoundSentry }
+//=== TJvSoundSentry =========================================================
 
 function TJvSoundSentry.GetFlags: TJvSoundSentryFlags;
 var
@@ -4224,8 +4235,8 @@ end;
 
 function TJvSoundSentry.GetNativeType: SOUNDSENTRY;
 begin
-  Result.cbSize := sizeof(Result);
-  if not SystemParametersInfo(SPI_GETSOUNDSENTRY, sizeof(Result), @Result, 0) then
+  Result.cbSize := SizeOf(Result);
+  if not SystemParametersInfo(SPI_GETSOUNDSENTRY, SizeOf(Result), @Result, 0) then
   begin
     Result.dwFlags := 0;
     Result.iFSTextEffect := 0;
@@ -4331,8 +4342,8 @@ procedure TJvSoundSentry.SetNativeType(Value: SOUNDSENTRY);
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Value.cbSize := sizeof(Value);
-    SystemParametersInfo(SPI_SETSOUNDSENTRY, sizeof(Value), @Value, 0);
+    Value.cbSize := SizeOf(Value);
+    SystemParametersInfo(SPI_SETSOUNDSENTRY, SizeOf(Value), @Value, 0);
   end
   else
     RaiseReadOnly;
@@ -4410,15 +4421,34 @@ begin
   end;
 end;
 
-{ TJvSystemParametersInfo }
+//=== TJvSystemParametersInfo ================================================
 
-var
-  FMap: array of TPoint;
+constructor TJvSystemParametersInfo.Create;
+begin
+  inherited Create;
+  FWorkArea := TJvRect.Create;
+end;
 
-procedure InitMap;
+destructor TJvSystemParametersInfo.Destroy;
+begin
+  FAccessTimeOut.Free;
+  FFilterKeys.Free;
+  FHighContrast.Free;
+  FIconMetrics.Free;
+  FMinimizedMetrics.Free;
+  FMouseKeys.Free;
+  FNonClientMetrics.Free;
+  FSerialKeys.Free;
+  FSoundSentry.Free;
+  FWorkArea.Create;
+  inherited Destroy;
+end;
+
+procedure TJvSystemParametersInfo.InitMap;
 begin
   { TODO: make this a hash table for faster access? }
-  if Length(FMap) > 0 then Exit;
+  if Length(FMap) > 0 then
+    Exit;
   SetLength(FMap, 96);
   FMap[0] := Point(SPI_GETBEEP, SPI_SETBEEP);
   FMap[1] := Point(SPI_GETMOUSE, SPI_SETMOUSE);
@@ -4518,56 +4548,34 @@ begin
   FMap[95] := Point(SPI_GETFOCUSBORDERHEIGHT, SPI_SETFOCUSBORDERHEIGHT);
 end;
 
-function MapToSet(Index: integer): integer;
+function TJvSystemParametersInfo.MapToSet(Index: Integer): Integer;
 var
-  i: integer;
+  I: Integer;
 begin
   InitMap;
-  for i := 0 to Length(FMap) - 1 do
-    if FMap[i].Y = Index then
+  for I := 0 to Length(FMap) - 1 do
+    if FMap[I].Y = Index then
     begin
-      Result := FMap[i].X;
+      Result := FMap[I].X;
       Exit;
     end;
   Result := -1;
 end;
 
 { (ahuser) make Delphi 5 Compiler happy
-function MapToGet(Index: integer): integer;
+function MapToGet(Index: Integer): Integer;
 var
-  i: integer;
+  I: Integer;
 begin
   InitMap;
-  for i := 0 to Length(FMap) - 1 do
-    if FMap[i].X = Index then
+  for I := 0 to Length(FMap) - 1 do
+    if FMap[I].X = Index then
     begin
-      Result := FMap[i].Y;
+      Result := FMap[I].Y;
       Exit;
     end;
   Result := -1;
 end;}
-
-constructor TJvSystemParametersInfo.Create;
-begin
-  inherited Create;
-
-  FWorkArea := TJvRect.Create;
-end;
-
-destructor TJvSystemParametersInfo.Destroy;
-begin
-  FAccessTimeOut.Free;
-  FFilterKeys.Free;
-  FHighContrast.Free;
-  FIconMetrics.Free;
-  FMinimizedMetrics.Free;
-  FMouseKeys.Free;
-  FNonClientMetrics.Free;
-  FSerialKeys.Free;
-  FSoundSentry.Free;
-  FWorkArea.Create;
-  inherited;
-end;
 
 function TJvSystemParametersInfo.GetAccessTimeOut: TJvAccessTimeOut;
 begin
@@ -4576,24 +4584,24 @@ begin
   Result := FAccessTimeOut;
 end;
 
-function TJvSystemParametersInfo.GetAnimationInfo: boolean;
+function TJvSystemParametersInfo.GetAnimationInfo: Boolean;
 var
   Info: ANIMATIONINFO;
 begin
-  if SystemParametersInfo(SPI_GETANIMATION, sizeof(Info), @Info, 0) then
+  if SystemParametersInfo(SPI_GETANIMATION, SizeOf(Info), @Info, 0) then
     Result := Info.iMinAnimate <> 0
   else
-    Result := false;
+    Result := False;
 end;
 
-function TJvSystemParametersInfo.GetBoolInfo(const Index: Integer): boolean;
+function TJvSystemParametersInfo.GetBoolInfo(const Index: Integer): Boolean;
 var
-  Value: integer;
+  Value: Integer;
 begin
   if SystemParametersInfo(Index, 0, @Value, 0) then
     Result := Value <> 0
   else
-    Result := false;
+    Result := False;
 end;
 
 function TJvSystemParametersInfo.GetDeskWallpaper: string;
@@ -4613,14 +4621,16 @@ end;
 
 function TJvSystemParametersInfo.GetFontSmoothingType: TJvFontSmoothingType;
 var
-  Value: integer;
+  Value: Integer;
 begin
   Result := fstStandard;
   if SystemParametersInfo(SPI_GETFONTSMOOTHINGTYPE, 0, @Value, 0) then
     case Value of
       //    FE_FONTSMOOTHINGSTANDARD: Result := fstStandard;
-      FE_FONTSMOOTHINGCLEARTYPE: Result := fstClearType;
-      FE_FONTSMOOTHINGDOCKING: Result := fstDocking;
+      FE_FONTSMOOTHINGCLEARTYPE:
+        Result := fstClearType;
+      FE_FONTSMOOTHINGDOCKING:
+        Result := fstDocking;
     end;
 end;
 
@@ -4638,9 +4648,9 @@ begin
   Result := FIconMetrics;
 end;
 
-function TJvSystemParametersInfo.GetIconSpacing(const Index: Integer): integer;
+function TJvSystemParametersInfo.GetIconSpacing(const Index: Integer): Integer;
 const
-  cIconSpacing: array[0..1] of DWORD = (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
+  cIconSpacing: array [0..1] of DWORD = (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
 begin
   SystemParametersInfo(cIconSpacing[Index], 0, @Result, 0);
 end;
@@ -4651,12 +4661,12 @@ var
 begin
   if FIconTitleFont = nil then
     FIconTitleFont := TFont.Create;
-  SystemParametersInfo(SPI_GETICONTITLELOGFONT, sizeof(ALogFont), @ALogFont, 0);
+  SystemParametersInfo(SPI_GETICONTITLELOGFONT, SizeOf(ALogFont), @ALogFont, 0);
   UpdateFromLogFont(FIconTitleFont, ALogFont);
   Result := FIconTitleFont;
 end;
 
-function TJvSystemParametersInfo.GetIntInfo(const Index: Integer): integer;
+function TJvSystemParametersInfo.GetIntInfo(const Index: Integer): Integer;
 begin
   if not SystemParametersInfo(Index, 0, @Result, 0) then
     Result := 0;
@@ -4664,10 +4674,10 @@ end;
 
 function TJvSystemParametersInfo.GetKeyboardLayoutName: string;
 var
-  buf: array[0..8] of char;
+  Buf: array [0..8] of Char;
 begin
-  if Windows.GetKeyboardLayoutName(buf) then
-    Result := buf
+  if Windows.GetKeyboardLayoutName(Buf) then
+    Result := Buf
   else
     Result := '';
 end;
@@ -4679,11 +4689,11 @@ begin
   Result := FMinimizedMetrics;
 end;
 
-function TJvSystemParametersInfo.GetMouseInfo(const Index: Integer): integer;
+function TJvSystemParametersInfo.GetMouseInfo(const Index: Integer): Integer;
 var
-  Mouse: array[0..2] of integer;
+  Mouse: array [0..2] of Integer;
 begin
-  if (Index in [0..2]) and SystemParametersInfo(SPI_GETMOUSE, sizeof(Mouse), @Mouse, 0) then
+  if (Index in [0..2]) and SystemParametersInfo(SPI_GETMOUSE, SizeOf(Mouse), @Mouse, 0) then
     Result := Mouse[Index]
   else
     Result := 0;
@@ -4722,8 +4732,8 @@ var
   StickyKeys: TStickyKeys;
   Flags: DWORD;
 begin
-  StickyKeys.cbSize := sizeof(StickyKeys);
-  if SystemParametersInfo(SPI_GETSTICKYKEYS, sizeof(StickyKeys), @StickyKeys, 0) then
+  StickyKeys.cbSize := SizeOf(StickyKeys);
+  if SystemParametersInfo(SPI_GETSTICKYKEYS, SizeOf(StickyKeys), @StickyKeys, 0) then
     Flags := StickyKeys.dwFlags
   else
     Flags := 0;
@@ -4785,8 +4795,8 @@ var
   ToggleKeys: TToggleKeys;
   Flags: DWORD;
 begin
-  ToggleKeys.cbSize := sizeof(ToggleKeys);
-  if SystemParametersInfo(SPI_GETTOGGLEKEYS, sizeof(ToggleKeys), @ToggleKeys, 0) then
+  ToggleKeys.cbSize := SizeOf(ToggleKeys);
+  if SystemParametersInfo(SPI_GETTOGGLEKEYS, SizeOf(ToggleKeys), @ToggleKeys, 0) then
     Flags := ToggleKeys.dwFlags
   else
     Flags := 0;
@@ -4822,22 +4832,22 @@ begin
   //
 end;
 
-procedure TJvSystemParametersInfo.SetAnimationInfo(const Value: boolean);
+procedure TJvSystemParametersInfo.SetAnimationInfo(const Value: Boolean);
 var
   Info: ANIMATIONINFO;
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    Info.cbSize := sizeof(Info);
+    Info.cbSize := SizeOf(Info);
     Info.iMinAnimate := Ord(Value);
-    SystemParametersInfo(SPI_SETANIMATION, sizeof(Info), @Info, 0);
+    SystemParametersInfo(SPI_SETANIMATION, SizeOf(Info), @Info, 0);
   end
   else
     RaiseReadOnly;
 end;
 
 procedure TJvSystemParametersInfo.SetBoolInfo(const Index: Integer;
-  const Value: boolean);
+  const Value: Boolean);
 begin
   if not IsDesigning and not ReadOnly and (Index <> SPI_GETSCREENSAVERRUNNING) then
   begin
@@ -4865,13 +4875,15 @@ end;
 
 procedure TJvSystemParametersInfo.SetFontSmoothingType(const Value: TJvFontSmoothingType);
 var
-  Smoothing: integer;
+  Smoothing: Integer;
 begin
   if not IsDesigning and not ReadOnly then
   begin
     case Value of
-      fstClearType: Smoothing := FE_FONTSMOOTHINGCLEARTYPE;
-      fstDocking: Smoothing := FE_FONTSMOOTHINGDOCKING;
+      fstClearType:
+        Smoothing := FE_FONTSMOOTHINGCLEARTYPE;
+      fstDocking:
+        Smoothing := FE_FONTSMOOTHINGDOCKING;
     else
       Smoothing := FE_FONTSMOOTHINGSTANDARD;
     end;
@@ -4891,9 +4903,10 @@ begin
   //
 end;
 
-procedure TJvSystemParametersInfo.SetIconSpacing(const Index, Value: integer);
+procedure TJvSystemParametersInfo.SetIconSpacing(const Index, Value: Integer);
 const
-  cIconSpacing: array[0..1] of DWORD = (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
+  cIconSpacing: array [0..1] of DWORD =
+    (SPI_ICONHORIZONTALSPACING, SPI_ICONVERTICALSPACING);
 begin
   if not IsDesigning and not ReadOnly then
     SystemParametersInfo(cIconSpacing[Index], Value, nil, 0)
@@ -4908,13 +4921,13 @@ begin
   if not IsDesigning and not ReadOnly then
   begin
     UpdateToLogFont(Value, ALogFont);
-    SystemParametersInfo(SPI_SETICONTITLELOGFONT, sizeof(ALogFont), @ALogFont, 0);
+    SystemParametersInfo(SPI_SETICONTITLELOGFONT, SizeOf(ALogFont), @ALogFont, 0);
   end
   else
     RaiseReadOnly;
 end;
 
-procedure TJvSystemParametersInfo.SetIntInfo(const Index, Value: integer);
+procedure TJvSystemParametersInfo.SetIntInfo(const Index, Value: Integer);
 begin
   if not IsDesigning and not ReadOnly and (Index <> SPI_GETSCREENSAVERRUNNING) then
   begin
@@ -4940,16 +4953,16 @@ begin
   //
 end;
 
-procedure TJvSystemParametersInfo.SetMouseInfo(const Index, Value: integer);
+procedure TJvSystemParametersInfo.SetMouseInfo(const Index, Value: Integer);
 var
-  Mouse: array[0..2] of integer;
+  Mouse: array [0..2] of Integer;
 begin
   if not IsDesigning and not ReadOnly then
   begin
-    if (Index in [0..2]) and SystemParametersInfo(SPI_GETMOUSE, sizeof(Mouse), @Mouse, 0) then
+    if (Index in [0..2]) and SystemParametersInfo(SPI_GETMOUSE, SizeOf(Mouse), @Mouse, 0) then
     begin
       Mouse[Index] := Value;
-      SystemParametersInfo(SPI_SETMOUSE, sizeof(Mouse), @Mouse, DEFAULT_SPIF_SENDCHANGE);
+      SystemParametersInfo(SPI_SETMOUSE, SizeOf(Mouse), @Mouse, DEFAULT_SPIF_SENDCHANGE);
     end;
   end
   else
@@ -5052,9 +5065,9 @@ begin
       Flags := Flags or SKF_LWINLOCKED;
     if skfRightWinLocked in Value then
       Flags := Flags or SKF_RWINLOCKED;
-    StickyKeys.cbSize := sizeof(StickyKeys);
+    StickyKeys.cbSize := SizeOf(StickyKeys);
     StickyKeys.dwFlags := Flags;
-    SystemParametersInfo(SPI_SETSTICKYKEYS, sizeof(StickyKeys), @StickyKeys, DEFAULT_SPIF_SENDCHANGE);
+    SystemParametersInfo(SPI_SETSTICKYKEYS, SizeOf(StickyKeys), @StickyKeys, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
@@ -5078,9 +5091,9 @@ begin
       Flags := Flags or TKF_HOTKEYSOUND;
     if tkfToggleKeysOn in Value then
       Flags := Flags or TKF_TOGGLEKEYSON;
-    ToggleKeys.cbSize := sizeof(ToggleKeys);
+    ToggleKeys.cbSize := SizeOf(ToggleKeys);
     ToggleKeys.dwFlags := Flags;
-    SystemParametersInfo(SPI_SETTOGGLEKEYS, sizeof(ToggleKeys), @ToggleKeys, DEFAULT_SPIF_SENDCHANGE);
+    SystemParametersInfo(SPI_SETTOGGLEKEYS, SizeOf(ToggleKeys), @ToggleKeys, DEFAULT_SPIF_SENDCHANGE);
   end
   else
     RaiseReadOnly;
@@ -5104,7 +5117,7 @@ begin
   Result := GetSysColor(Index);
 end;
 
-{ TJvComputerInfoEx }
+//=== TJvComputerInfoEx ======================================================
 
 constructor TJvComputerInfoEx.Create(AOwner: TComponent);
 begin
@@ -5132,21 +5145,22 @@ begin
   FSystem.Free;
   if not IsDesigning and (FDeviceHandle <> 0) then
     DeallocateHWndEx(FDeviceHandle);
-  inherited;
+  inherited Destroy;
 end;
 
-procedure TJvComputerInfoEx.DoDriveChange(Drive: Char; Removed: boolean);
+procedure TJvComputerInfoEx.DoDriveChange(Drive: Char; Removed: Boolean);
 begin
   if Removed then
   begin
     if Assigned(FOnDeviceRemoved) then
       FOnDeviceRemoved(Self, Drive);
   end
-  else if Assigned(FOnDeviceAdded) then
+  else
+  if Assigned(FOnDeviceAdded) then
     FOnDeviceAdded(Self, Drive);
 end;
 
-function TJvComputerInfoEx.FirstDrive(AMask: Integer): char;
+function TJvComputerInfoEx.FirstDrive(AMask: Integer): Char;
 var
   Drive: Shortint;
 begin
@@ -5333,7 +5347,7 @@ begin
   //
 end;
 
-procedure TJvComputerInfoEx.DoSettingChange(Flag: integer; Section: string);
+procedure TJvComputerInfoEx.DoSettingChange(Flag: Integer; Section: string);
 begin
   if Assigned(FOnSettingChange) then
     FOnSettingChange(Self, Flag, Section);
@@ -5347,36 +5361,33 @@ begin
   lpdb := PDevBroadcastHdr(Msg.dwData);
   case Msg.Event of
     DBT_DEVICEARRIVAL:
+      if lpdb^.dbch_devicetype = DBT_DEVTYP_VOLUME then
       begin
-        if lpdb^.dbch_devicetype = DBT_DEVTYP_VOLUME then
-        begin
-          lpdbv := PDevBroadcastVolume(Msg.dwData);
-          if (lpdbv^.dbcv_flags and DBTF_MEDIA) = 1 then
-            DoDriveChange(FirstDrive(lpdbv^.dbcv_unitmask), false);
-        end;
+        lpdbv := PDevBroadcastVolume(Msg.dwData);
+        if (lpdbv^.dbcv_flags and DBTF_MEDIA) = 1 then
+          DoDriveChange(FirstDrive(lpdbv^.dbcv_unitmask), False);
       end;
     DBT_DEVICEREMOVECOMPLETE:
+      if lpdb^.dbch_devicetype = DBT_DEVTYP_VOLUME then
       begin
-        if lpdb^.dbch_devicetype = DBT_DEVTYP_VOLUME then
-        begin
-          lpdbv := PDevBroadcastVolume(Msg.dwData);
-          if (lpdbv^.dbcv_flags and DBTF_MEDIA) = 1 then
-            DoDriveChange(FirstDrive(lpdbv^.dbcv_unitmask), true);
-        end;
+        lpdbv := PDevBroadcastVolume(Msg.dwData);
+        if (lpdbv^.dbcv_flags and DBTF_MEDIA) = 1 then
+          DoDriveChange(FirstDrive(lpdbv^.dbcv_unitmask), True);
       end;
+      // (rom) one of the rare occasions where ; before else is correct
   else
     with Msg do
       DoDeviceChange(Event, dwData);
   end
 end;
 
-procedure TJvComputerInfoEx.DoCompacting(Ratio: integer);
+procedure TJvComputerInfoEx.DoCompacting(Ratio: Integer);
 begin
   if Assigned(FOnCompacting) then
     FOnCompacting(Self, Ratio);
 end;
 
-procedure TJvComputerInfoEx.DoPowerBroadcast(Event, Data: integer);
+procedure TJvComputerInfoEx.DoPowerBroadcast(Event, Data: Integer);
 begin
   if Assigned(FOnPowerBroadcast) then
     FOnPowerBroadcast(Self, Event, Data);
@@ -5394,9 +5405,9 @@ begin
   begin
     case Msg of
       WM_DISPLAYCHANGE:
-        WMDisplayChange(TWmDisplayChange(Message));
+        WMDisplayChange(TWMDisplayChange(Message));
       WM_DEVMODECHANGE:
-        DoDevModeChange(TWmDevModeChange(Message).Device);
+        DoDevModeChange(TWMDevModeChange(Message).Device);
       WM_SETTINGCHANGE:
         with TWMSettingChange(Message) do
           DoSettingChange(Flag, Section);
@@ -5434,7 +5445,7 @@ begin
     FOnDeviceModeChange(Self, Device);
 end;
 
-procedure TJvComputerInfoEx.WMDisplayChange(var Msg: TWmDisplayChange);
+procedure TJvComputerInfoEx.WMDisplayChange(var Msg: TWMDisplayChange);
 begin
   if Assigned(FOnDisplayChange) then
     FOnDisplayChange(Self, Msg.BitsPerPixel, Msg.Width, Msg.Height);
@@ -5464,7 +5475,7 @@ begin
     FOnSysColorChange(Self);
 end;
 
-procedure TJvComputerInfoEx.DoSpoolerStatus(JobStatus, JobsLeft: integer);
+procedure TJvComputerInfoEx.DoSpoolerStatus(JobStatus, JobsLeft: Integer);
 begin
   if Assigned(FOnSpoolerStatusChange) then
     FOnSpoolerStatusChange(Self, JobStatus, JobsLeft);
@@ -5482,48 +5493,50 @@ begin
     FOnPaletteChanged(Self, Wnd);
 end;
 
-procedure TJvComputerInfoEx.SetReadOnly(const Value: boolean);
+procedure TJvComputerInfoEx.SetReadOnly(const Value: Boolean);
 begin
   if FReadOnly <> Value then
   begin
     FReadOnly := Value;
-    if (FColors <> nil) then
+    if FColors <> nil then
       FColors.ReadOnly := FReadOnly;
-    if (FIdentification <> nil) then
+    if FIdentification <> nil then
       FIdentification.ReadOnly := FReadOnly;
-    if (FKeyInfo <> nil) then
+    if FKeyInfo <> nil then
       FKeyInfo.ReadOnly := FReadOnly;
-    if (FMiscInfo <> nil) then
+    if FMiscInfo <> nil then
       FMiscInfo.ReadOnly := FReadOnly;
-    if (FScreenInfo <> nil) then
+    if FScreenInfo <> nil then
       FScreenInfo.ReadOnly := FReadOnly;
-    if (FSystem <> nil) then
+    if FSystem <> nil then
       FSystem.ReadOnly := FReadOnly;
   end;
 end;
 
-function TJvComputerInfoEx.ResetSystemCursors: boolean;
+function TJvComputerInfoEx.ResetSystemCursors: Boolean;
 begin
   Result := SystemParametersInfo(SPI_SETCURSORS, 0, nil, SPIF_SENDCHANGE);
 end;
 
-function TJvComputerInfoEx.ResetSystemIcons: boolean;
+function TJvComputerInfoEx.ResetSystemIcons: Boolean;
+const
+  HKCU_WINDOWMETRICS = '\Control Panel\Desktop\WindowMetrics';
+  cShellIconSize = 'Shell Icon Size';
 var
-  DefaultValue: integer;
+  DefaultValue: Integer;
 begin
   //  Result := SystemParametersInfo(SPI_SETICONS, 0, nil, SPIF_SENDCHANGE);
     // I stole the idea for this from the TortoiseCVS guys (thanks!)
-  DefaultValue := StrToIntDef(RegReadStringDef(HKEY_CURRENT_USER, '\Control Panel\Desktop\WindowMetrics', 'Shell Icon Size', '0'), 0);
+  DefaultValue := StrToIntDef(RegReadStringDef(HKEY_CURRENT_USER, HKCU_WINDOWMETRICS, cShellIconSize, '0'), 0);
   Result := DefaultValue <> 0;
   if Result then
   begin
-    RegWriteString(HKEY_CURRENT_USER, '\Control Panel\Desktop\WindowMetrics', 'Shell Icon Size', IntToStr(Succ(DefaultValue)));
+    RegWriteString(HKEY_CURRENT_USER, HKCU_WINDOWMETRICS, cShellIconSize, IntToStr(Succ(DefaultValue)));
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS, 0);
-    RegWriteString(HKEY_CURRENT_USER, '\Control Panel\Desktop\WindowMetrics', 'Shell Icon Size', IntToStr(DefaultValue));
+    RegWriteString(HKEY_CURRENT_USER, HKCU_WINDOWMETRICS, cShellIconSize, IntToStr(DefaultValue));
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS, 0);
   end;
 end;
-
 
 initialization
 
