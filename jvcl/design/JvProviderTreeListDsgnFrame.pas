@@ -32,14 +32,8 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ImgList, Menus, ActnList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows, QGraphics, QControls, QForms, QDialogs,
-  QComCtrls, QImgList, QMenus, QActnList,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
   {$ELSE}
@@ -98,15 +92,12 @@ type
 implementation
 
 uses
+  {$IFDEF VCL}
   CommCtrl,
+  {$ENDIF VCL}
   JvTypes, JvDsgnConsts, JvConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function TfmeJvProviderTreeListDsgn.DoBeforeNew(Kind: Integer): Boolean;
 begin

@@ -30,19 +30,11 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, QButtons, QGrids, QMenus, QWindows, ClxDesignWindows,
-  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors,
-  {$IFDEF VCL}
   DesignWindows,
-  {$ENDIF VCL}
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
@@ -183,12 +175,7 @@ uses
   TypInfo, Math,
   JvPropertyStorage, JvDsgnConsts, JvDsgnTypes, JvJVCLUtils;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 //== Utility routines ========================================================
 

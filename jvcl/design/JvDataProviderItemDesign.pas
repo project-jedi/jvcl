@@ -55,7 +55,13 @@ procedure RegisterDataItemIntfProp(const IID: TGUID; const PropClass: TJvDataPro
 implementation
 
 uses
-  ImgList, SysUtils, TypInfo, Windows,
+  SysUtils, TypInfo,
+  Windows, ImgList,
+  {$IFDEF VisualCLX}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$ENDIF VisualCLX}
   JvDsgnConsts;
 
 type
