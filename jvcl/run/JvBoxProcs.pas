@@ -47,8 +47,8 @@ function BoxCanDropItem(List: TWinControl; X, Y: Integer;
 implementation
 
 uses
-  Windows,
-  Graphics, JvxCheckListBox;
+  Windows, Graphics,
+  JvxCheckListBox;
 
 function BoxItems(List: TWinControl): TStrings;
 begin

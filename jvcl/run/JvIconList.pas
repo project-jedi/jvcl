@@ -30,8 +30,7 @@ unit JvIconList;
 interface
 
 uses
-  Windows,
-  SysUtils, Classes, Graphics;
+  Windows, SysUtils, Classes, Graphics;
 
 type
   TJvIconList = class(TPersistent)

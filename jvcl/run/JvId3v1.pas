@@ -67,21 +67,16 @@ type
     procedure SetGenreAsString(const Value: string);
   protected
     procedure CheckActive;
-
     procedure DoOpen; virtual;
     procedure DoClose; virtual;
-
     function ReadTag: Boolean;
-
     procedure Loaded; override;
   public
     procedure Refresh;
-
     procedure Open;
     procedure Close;
     function Commit: Boolean;
     procedure Erase;
-
     property HasTag: Boolean read GetHasTag;
   published
     property Active: Boolean read FActive write SetActive;
@@ -113,20 +108,6 @@ const
 
   CTagSize = 128;
   CTagIDSize = 3;
-
-//=== Local procedures =======================================================
-
-function TagToStr(P: PChar; MaxLength: Integer): string;
-var
-  Q: PChar;
-begin
-  Q := P;
-  while (P - Q < MaxLength) and (P^ <> #0) do
-    Inc(P);
-
-  { [Q..P) is valid }
-  SetString(Result, Q, P - Q);
-end;
 
 //=== Global procedures ======================================================
 
@@ -192,7 +173,7 @@ begin
 
     with TFileStream.Create(AFileName, fmOpenReadWrite or fmShareExclusive) do
     try
-      //Remove old Tag ?
+      // Remove old Tag ?
       if Size >= CTagSize then
       begin
         Seek(-CTagSize, soFromEnd);
@@ -204,7 +185,7 @@ begin
       else
         Seek(0, soFromEnd);
 
-      //Write it
+      // Write it
       Result := Write(ATag, CTagSize) = CTagSize;
     finally
       Free;
@@ -214,7 +195,30 @@ begin
   end;
 end;
 
+//=== Local procedures =======================================================
+
+function TagToStr(P: PChar; MaxLength: Integer): string;
+var
+  Q: PChar;
+begin
+  Q := P;
+  while (P - Q < MaxLength) and (P^ <> #0) do
+    Inc(P);
+
+  { [Q..P) is valid }
+  SetString(Result, Q, P - Q);
+end;
+
 //=== TJvID3v1 ===============================================================
+
+procedure TJvID3v1.Loaded;
+begin
+  inherited Loaded;
+
+  FHasTagDirty := True;
+  if FStreamedActive then
+    SetActive(True);
+end;
 
 procedure TJvID3v1.CheckActive;
 begin
@@ -237,7 +241,7 @@ begin
 
   FillChar(Tag, CTagSize, #0);
 
-  //Set new Tag
+  // Set new Tag
   Tag.Identifier := CID3v1Tag;
   Move(PChar(SongName)^, Tag.SongName[0], Min(30, Length(SongName)));
   Move(PChar(Artist)^, Tag.Artist[0], Min(30, Length(Artist)));
@@ -294,15 +298,6 @@ begin
   Result := FHasTag;
 end;
 
-procedure TJvID3v1.Loaded;
-begin
-  inherited Loaded;
-
-  FHasTagDirty := True;
-  if FStreamedActive then
-    SetActive(True);
-end;
-
 procedure TJvID3v1.Open;
 begin
   SetActive(True);
@@ -340,7 +335,6 @@ end;
 procedure TJvID3v1.Refresh;
 begin
   CheckActive;
-
   ReadTag;
 end;
 

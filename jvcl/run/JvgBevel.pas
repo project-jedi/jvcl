@@ -22,16 +22,17 @@ Last Modified:  2003-01-15
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  This unit implements the TJvgBevel component which is an extended
+  TBevel Delphi component with gradient filling and advanced borders
+  drawing.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
 unit JvgBevel;
-
-{ This unit implements the TJvgBevel component which is an extended
- TBevel Delphi component with gradient filling and advanced borders
- drawing.}
 
 interface
 
@@ -43,6 +44,12 @@ uses
 type
   TJvgBevel = class(TJvGraphicControl)
   private
+    FHintColor: TColor;
+    FSaved: TColor;
+    FOver: Boolean;
+    FOnMouseEnter: TNotifyEvent;
+    FOnMouseLeave: TNotifyEvent;
+    FOnParentColorChanged: TNotifyEvent;
     FBevelInner: TPanelBevel;
     FBevelOuter: TPanelBevel;
     FBevelSides: TglSides;
@@ -54,12 +61,6 @@ type
     FVertLines: TJvgBevelLines;
     FHorLines: TJvgBevelLines;
     FExternalCanvas: TCanvas;
-    FHintColor: TColor;
-    FSaved: TColor;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
-    FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     procedure SomethingChanged(Sender: TObject);
     procedure SetBevelInner(Value: TPanelBevel);
     procedure SetBevelOuter(Value: TPanelBevel);
@@ -68,9 +69,13 @@ type
     procedure SetBevelPenStyle(Value: TPenStyle);
     procedure SetBevelPenWidth(Value: Word);
     procedure SetInteriorOffset(Value: Word);
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+  protected
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -108,9 +113,9 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property VertLines: TJvgBevelLines read FVertLines write FVertLines;
     property HorLines: TJvgBevelLines read FHorLines write FHorLines;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
@@ -226,21 +231,20 @@ begin
   DrawLines(R_, fldVertical, VertLines);
 end;
 
-procedure TJvgBevel.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
-
 procedure TJvgBevel.CMMouseEnter(var Msg: TMessage);
 begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvgBevel.MouseEnter(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
     Application.HintColor := FHintColor;
     FOver := True;
   end;
@@ -250,13 +254,34 @@ end;
 
 procedure TJvgBevel.CMMouseLeave(var Msg: TMessage);
 begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvgBevel.MouseLeave(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
-    Application.HintColor := FSaved;
     FOver := False;
+    Application.HintColor := FSaved;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
+end;
+
+procedure TJvgBevel.CMParentColorChanged(var Msg: TMessage);
+begin
+  inherited;
+  ParentColorChanged;
+end;
+
+procedure TJvgBevel.ParentColorChanged;
+begin
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
 procedure TJvgBevel.SomethingChanged(Sender: TObject);
