@@ -4718,22 +4718,29 @@ end;
 procedure TJvCustomInspectorItem.Edit_WndProc(var Message: TMessage);
 var
   ExecInherited: Boolean;
+  PostToInsp: Boolean;
  // Key:Word;
 
   function LeftRightCanNavigate: Boolean;
   begin
     Result := (
-      (Message.WParam = VK_LEFT) and (
-      (EditCtrl.SelLength = Length(EditCtrl.Text)) or
-      (EditCtrl.SelStart < 1)
-      )
+        (Message.WParam = VK_LEFT) and (
+          (EditCtrl.SelLength = Length(EditCtrl.Text)) or
+          (EditCtrl.SelStart < 1)
+        )
       ) or (
-      (Message.WParam = VK_RIGHT) and (
-      (EditCtrl.SelLength = Length(EditCtrl.Text)) or
-      (EditCtrl.SelStart >= Length(EditCtrl.Text))
-      )
+        (Message.WParam = VK_RIGHT) and (
+          (EditCtrl.SelLength = Length(EditCtrl.Text)) or
+          (EditCtrl.SelStart >= Length(EditCtrl.Text))
+        )
       );
   end;
+
+  function TabNavigate: Boolean;
+  begin
+    Result := Inspector.WantTabs and (Message.WParam = VK_TAB);
+  end;
+  
 begin
   ExecInherited := True;
   case Message.Msg of
@@ -4753,9 +4760,15 @@ begin
                 ExecInherited := False;
             end;
           end;
-        if (Message.Msg = WM_KEYDOWN) and (KeyDataToShiftState(Message.LParam) = []) and
-          ((Message.WParam in [VK_NEXT, VK_PRIOR]) or (not DroppedDown and
-          (Message.WParam in [VK_DOWN, VK_UP])) or LeftRightCanNavigate) then
+        PostToInsp :=
+          (Message.Msg = WM_KEYDOWN) and (
+            (KeyDataToShiftState(Message.LParam) = []) and (
+              (Message.WParam in [VK_NEXT, VK_PRIOR]) or (
+                not DroppedDown and
+                (Message.WParam in [VK_DOWN, VK_UP])
+              ) or LeftRightCanNavigate)
+            ) or TabNavigate;
+        if PostToInsp then
         begin
           PostMessage(Inspector.Handle, Message.Msg, Message.WParam, Message.LParam);
           Message.Result := 1;
