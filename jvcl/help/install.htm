@@ -9,7 +9,7 @@
 <h3> </h3>
 <hr>
 <h2>Current version</h2>
-<p>The current version of JVCL is 3.00 beta 1, released on 2004-02-20<br>
+<p>The current version of JVCL is 3.00 RC 1, released on 2005-01-08<br>
 </p>
 <p>&nbsp;</p>
 <h2>Supported compiler versions</h2>
@@ -19,6 +19,8 @@
   <li>Delphi 5</li>
   <li>Delphi 6</li>
   <li>Delphi 7</li>
+  <li>Delphi 2005 (Win32 only)<br>
+  </li>
   <li>C++ Builder 5</li>
   <li>C++ Builder 6<br>
   </li>
@@ -45,7 +47,7 @@ you have installed</li>
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
   <li>Delete or rename the top folder where JCL and JVCL is installed</li>
   <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
-hit <b> Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
+hit <b> Enter</b>). Open the key <font face="Courier New" size="2">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
 and delete all name/value items in the list related to JVCL.
 (&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt;
 is the IDE version you have installed)</li>
@@ -53,14 +55,13 @@ is the IDE version you have installed)</li>
 <br>
 <h2>Getting required packages</h2>
 <p align="left">JVCL requires that you also install the latest version
-of JCL (JEDI Code Library). Currently, this is the JCL 1.9 Beta 2
+of JCL (JEDI Code Library). Currently, this is the JCL 1.94 RC1
 (Build
-1400), but
+1758), but
 newer versions might have been released since this document was
 published. The file you need is here: <a
- href="http://prdownloads.sourceforge.net/jcl/Jcl1.90Build1391.zip?download"></a><a
- href="http://prdownloads.sourceforge.net/jcl/Jcl1.90Build1400.zip?download"><span
- style="text-decoration: underline;">http://prdownloads.sourceforge.net/jcl/Jcl1.90Build1400.zip?download</span></a><br>
+ href="http://prdownloads.sourceforge.net/jcl/JCL1.94-Build1758.zip?download"><span
+ style="text-decoration: underline;">http://prdownloads.sourceforge.net/jcl/JCL1.94-Build1758.zip?download</span></a><br>
 and instructions for the JCL can be found starting at this
 page:&nbsp; <a href="http://homepages.borland.com/jedi/jcl/">http://homepages.borland.com/jedi/jcl/</a>.</p>
 <p align="left">As of today (27th of December 2003), the JCL package
@@ -116,7 +117,7 @@ and try running install.bat again. </p>
 automatically and it should look something like this: </p>
 <p align="left">&nbsp;</p>
 <p align="left">
-<img border="0" src="images/installer_main.jpg" width="689" height="476"></p>
+<img src="images/installer_main.jpg" border="0" height="476" width="689"></p>
 <p align="left">&nbsp;</p>
 <p align="left">At the top left is a list of all installed and
 supported Delphi and C++Builder editions. Check the ones for which you
@@ -190,8 +191,8 @@ since this dcument was written. Select an item to see it's explanation.
 Check an item to enable it, uncheck to disable it. </p>
 <p align="left" dir="ltr">&nbsp;</p>
 <p align="left" dir="ltr">
-<img border="0" src="images/installer_config_editor.jpg" width="750"
- height="429"></p>
+<img src="images/installer_config_editor.jpg" border="0" height="429"
+ width="750"></p>
 <p align="left" dir="ltr">&nbsp;</p>
 <p align="left" dir="ltr">These are the currently available options:</p>
 <ul>
@@ -212,8 +213,7 @@ well, you are recommended to enable it. </p>
     <p dir="ltr"><b>USE_DXGETTEXT </b>- if you have dxgettext
 installed (<a href="http://dxgettext.sourceforge.net">http://dxgettext.sourceforge.net</a>)
 and want to use it with JVCL, you should enable this define. A PO file
-with the JVCL strings is located in \devtools\po (\devtools is only
-included in the full JVCL install). </p>
+with the JVCL strings is located in the \locale directory. </p>
   </li>
   <li dir="ltr">
     <p align="left" dir="ltr"><b>DelphiPersonalEdition </b>- enable
