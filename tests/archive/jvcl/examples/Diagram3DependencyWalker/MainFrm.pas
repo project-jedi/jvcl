@@ -4,7 +4,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls,
-  ActnList, IniFiles, PersistSettings, DepWalkConsts;
+  ActnList, IniFiles, PersistSettings, DepWalkConsts, ToolWin;
 
 type
   // (p3) interposer class for TListBox that implements IPersistSettings (for the skiplist)
@@ -68,6 +68,22 @@ type
     Print1: TMenuItem;
     acFind: TAction;
     Find1: TMenuItem;
+    CoolBar1: TCoolBar;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    Actions: TImageList;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
+    ToolButton12: TToolButton;
+    ToolButton13: TToolButton;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
