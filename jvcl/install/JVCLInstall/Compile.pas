@@ -716,7 +716,7 @@ var
   DccOpt: string;
   Path: string;
   PathList, BplPaths: TStringList;
-  S, SearchPaths: string;
+  {S, }SearchPaths: string;
 
   function GetProjectIndex: Integer;
   begin
@@ -807,6 +807,7 @@ begin
       PathList.Free;
     end;
 
+    { Removed until we have a non-make.exe-bug harmed build process.
     if TargetConfig.Target.Version > 6 then // Overcome make.exe "command line too long" bug
     begin
       SearchPaths := '';
@@ -819,7 +820,7 @@ begin
           SearchPaths := S;
       end;
     end
-    else
+    else}
       SearchPaths := '.';
 
     SetEnvironmentVariable('PATH', PChar(Path));
