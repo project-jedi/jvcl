@@ -213,19 +213,19 @@ type
     property OnExportRecord;
     property OnExportField;
     property OnProgress;
-      end;
+  end;
 
 implementation
 
 uses
   ComObj, FileCtrl,
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   JvResources,
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
   JvConsts, JvSimpleXML,
-{$IFDEF DEBUG}
+  {$IFDEF DEBUG}
   JvDebug,
-{$ENDIF}
+  {$ENDIF DEBUG}
   JvgUtils, JvgFileUtils;
 
 {$IFNDEF USEJVCL}
@@ -280,7 +280,7 @@ function TJvgCommonExport.GetFieldValue(const Field: TField): string;
 begin
   Result := Field.AsString;
   if Assigned(OnExportField) then
-    OnExportField(self, Field, Result);
+    OnExportField(Self, Field, Result);
 
   if FTransliterateRusToEng then
     Result := Transliterate(Result, true);
@@ -346,7 +346,7 @@ var
       Sheet.Cells[RecNo, ColNo] := Strings[i];
       CellFont.Assign(Font);
       if Assigned(FOnGetHeaderLineFont) then
-        OnGetHeaderLineFont(self, i, Strings[i], CellFont);
+        OnGetHeaderLineFont(Self, i, Strings[i], CellFont);
 
       Sheet.Cells[RecNo, ColNo].Font.Size := CellFont.Size;
       Sheet.Cells[RecNo, ColNo].Font.Color := CellFont.Color;
@@ -406,7 +406,7 @@ begin
     begin
       AllowExportRecord := true;
       if Assigned(OnExportRecord) then
-        OnExportRecord(self, Dataset, AllowExportRecord);
+        OnExportRecord(Self, Dataset, AllowExportRecord);
       if AllowExportRecord then
       begin
         for i := 0 to DataSet.FieldCount - 1 do
@@ -598,7 +598,7 @@ begin
     begin
       AllowExportRecord := true;
       if Assigned(OnExportRecord) then
-        OnExportRecord(self, DataSet, AllowExportRecord);
+        OnExportRecord(Self, DataSet, AllowExportRecord);
       if AllowExportRecord then
       begin
         Dest.Append;
@@ -647,7 +647,7 @@ var
   end;
 
 begin
-  XML := TJvSimpleXML.Create(self);
+  XML := TJvSimpleXML.Create(Self);
   XML.Root.Name := 'Database';
   XML.IndentString := '  ';
 
@@ -685,7 +685,7 @@ begin
     XMLRecord.Properties.Add('Nr', RecNo);
     AllowExportRecord := true;
     if Assigned(OnExportRecord) then
-      OnExportRecord(self, Dataset, AllowExportRecord);
+      OnExportRecord(Self, Dataset, AllowExportRecord);
     if AllowExportRecord then
     begin
       for i := 0 to DataSet.FieldCount - 1 do
@@ -699,7 +699,7 @@ begin
           Field.Properties.Add('Name', DataSet.Fields[i].DisplayName);
           FieldValue := DataSet.Fields[i].AsString;
           if Assigned(OnExportField) then
-            OnExportField(self, DataSet.Fields[i], FieldValue);
+            OnExportField(Self, DataSet.Fields[i], FieldValue);
         end;
         Field.Value := FieldValue;
       end;
@@ -709,7 +709,7 @@ begin
     DataSet.Next;
   end;
   DoProgress(0, RecCount, RecCount, '');
-  XML.SaveToFile(self.FSaveToFileName);
+  XML.SaveToFile(Self.FSaveToFileName);
 end;
 *)
 
@@ -742,19 +742,19 @@ var
      Caption : String;
   begin
     Caption := '';
-    if self.FCaptions = fecDisplayLabels then
+    if Self.FCaptions = fecDisplayLabels then
       Caption := DataSet.Fields[i].DisplayName;
-    if self.FCaptions = fecFieldNames then
+    if Self.FCaptions = fecFieldNames then
       Caption := DataSet.Fields[i].FullName;
-    if self.FCaptions = fecNone then (* NIX *);
+    if Self.FCaptions = fecNone then (* NIX *);
 
     if Assigned(FOnGetCaption) then
-       FOnGetCaption(self, DataSet.Fields[i], Caption );
+       FOnGetCaption(Self, DataSet.Fields[i], Caption );
       Field.Properties.Add('Name', Caption);
   end;    // AddFieldName
 
 begin
-  XML := TJvSimpleXML.Create(self);
+  XML := TJvSimpleXML.Create(Self);
   XML.Root.Name := 'Database';
   XML.IndentString := '  ';
 
@@ -783,7 +783,7 @@ begin
     XMLRecord.Properties.Add('Nr', RecNo);
     AllowExportRecord := true;
     if Assigned(OnExportRecord) then
-      OnExportRecord(self, Dataset, AllowExportRecord);
+      OnExportRecord(Self, Dataset, AllowExportRecord);
     if AllowExportRecord then
     begin
       for i := 0 to DataSet.FieldCount - 1 do
@@ -797,7 +797,7 @@ begin
           AddFieldName(Field);
           FieldValue := DataSet.Fields[i].AsString;
           if Assigned(OnExportfield) then
-            OnExportField(self, DataSet.Fields[i], Fieldvalue);
+            OnExportField(Self, DataSet.Fields[i], Fieldvalue);
           Field.Value := Fieldvalue;
         end;
       end;
@@ -807,7 +807,7 @@ begin
   end;
   DoProgress(0, RecCount, RecCount, '');
 
-  XML.SaveToFile(self.FSaveToFileName);
+  XML.SaveToFile(Self.FSaveToFileName);
 end; // TJvgExportXML.Execute
 
 end.
