@@ -49,11 +49,8 @@ interface
 
 uses
   SysUtils, Classes, Contnrs, TypInfo, IniFiles,
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Messages, Graphics, Controls, StdCtrls, ExtCtrls,
+  Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows, JvExExtCtrls,
@@ -5923,7 +5920,9 @@ begin
   R := Rects[iprEditButton];
   if not IsRectEmpty(R) then
   begin
+    {$IFDEF VCL}
     BFlags := 0;
+    {$ENDIF VCL}
     if iifValueList in Flags then
     begin
       {$IFDEF VCL}
@@ -5951,7 +5950,7 @@ begin
       {$ENDIF JVCLThemesEnabled}
         DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
       {$ELSE}
-      DrawEdge(ACanvas, R, esRaised, esNone, [ebLeft, ebTop, ebRight, ebBottom]);
+      QGraphics.DrawEdge(ACanvas, R, esRaised, esNone, [ebLeft, ebTop, ebRight, ebBottom]);
       {$ENDIF VCL}
 
       W := 2;
@@ -6021,7 +6020,10 @@ begin
         DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
           DT_WORDBREAK, nil);
         {$ELSE}
-        ClxDrawText(ACanvas, S, ARect, {DT_EDITCONTROL or DT_WORDBREAK} 0);
+        ACanvas.Start;
+        DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
+          DT_WORDBREAK, nil);
+        ACanvas.Stop;
         {$ENDIF VCL}
     end
     else
@@ -6186,7 +6188,9 @@ begin
       DisplayValue := EditCtrl.Text;
     FreeAndNil(FListBox);
     SetEditCtrl(nil);
+    {$IFDEF VCL}
     FEditWndPrc := nil;
+    {$ENDIF VCL}
     if HadFocus then
       SetFocus;
   end;

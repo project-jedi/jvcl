@@ -5984,12 +5984,22 @@ function CanvasMaxTextHeight(Canvas: TCanvas): Integer;
 var
   I: Integer;
   S: string;
+  {$IFDEF VisualCLX}
+  tt: TTextMetric;
+  {$ENDIF VisualCLX}
 begin
   // (p3) has this even been tested? Returns the exact same thing as Canvas.TextHeight(' ')
+  {$IFDEF VCL}
   SetLength(S, 255);
   for I := 1 to 255 do
     S[I] := Chr(I);
   Result := Canvas.TextHeight(S);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  // (ahuser) Qt returns different values for TextHeight('Ay') and TextHeigth(#1..#255)
+  GetTextMetrics(Canvas.Handle, tt);
+  Result := tt.tmHeight;
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF MSWINDOWS}
