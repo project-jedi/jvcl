@@ -61,7 +61,7 @@ object FormMain: TFormMain
     ButtonHelp.Layout = blGlyphLeft
     ButtonHelp.ModalResult = 0
     ButtonHelp.Width = 75
-    ShowRouteMap = False
+    ShowRouteMap = True
     OnFinishButtonClick = JvWizardFinishButtonClick
     OnCancelButtonClick = JvWizardCancelButtonClick
     OnActivePageChanged = JvWizardActivePageChanged
@@ -179,7 +179,7 @@ object FormMain: TFormMain
         OnClick = ImageLogoClick
       end
     end
-    object JvWizardRouteMapList1: TJvWizardRouteMapList
+    object JvWizardRouteMapList: TJvWizardRouteMapList
       Left = 0
       Top = 0
       Width = 145
@@ -196,7 +196,8 @@ object FormMain: TFormMain
       HotTrackFont.Height = -11
       HotTrackFont.Name = 'MS Sans Serif'
       HotTrackFont.Style = [fsUnderline]
-      OnDrawItem = JvWizardRouteMapList1DrawItem
+      BorderColor = clNone
+      OnDrawItem = JvWizardRouteMapListDrawItem
     end
   end
   object ImageList: TImageList

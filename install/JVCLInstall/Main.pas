@@ -39,7 +39,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ImgList,
   Dialogs, JvExControls, JvComponent, jpeg, ExtCtrls, StdCtrls, JvWizard,
-  JvWizardRouteMapList, JvJVCLAboutForm,
+  JvWizardRouteMapList,
   Core,
   ShellAPI, HtHint;
 
@@ -49,7 +49,7 @@ type
     ImageList: TImageList;
     PanelLogo: TPanel;
     ImageLogo: TImage;
-    JvWizardRouteMapList1: TJvWizardRouteMapList;
+    JvWizardRouteMapList: TJvWizardRouteMapList;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure JvWizardActivePageChanging(Sender: TObject;
@@ -61,7 +61,7 @@ type
     procedure ImageLogoClick(Sender: TObject);
     procedure JvWizardRouteMapNodes1Displaying(Sender: TObject;
       const Page: TJvWizardCustomPage; var AllowDisplay: Boolean);
-    procedure JvWizardRouteMapList1DrawItem(Sender: TObject;
+    procedure JvWizardRouteMapListDrawItem(Sender: TObject;
       ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
       var DefaultDraw: Boolean);
   private
@@ -310,7 +310,7 @@ begin
   AllowDisplay := Page.PageIndex < Page.Wizard.PageCount - 1;
 end;
 
-procedure TFormMain.JvWizardRouteMapList1DrawItem(Sender: TObject;
+procedure TFormMain.JvWizardRouteMapListDrawItem(Sender: TObject;
   ACanvas: TCanvas; ARect: TRect; MousePos: TPoint; PageIndex: Integer;
   var DefaultDraw: Boolean);
 begin
