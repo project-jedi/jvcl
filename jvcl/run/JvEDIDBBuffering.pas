@@ -52,9 +52,8 @@ const
   TransactionSetKeyName = 'TS';
 
 type
-  // (rom) bad names. Not "On" but "Event"
-  TJvOnAfterProfiledTransactionSet = procedure(TransactionSet: TEDIObject) of object;
-  TJvOnAfterProfiledSegment = procedure(Segment: TEDIObject) of object;
+  TJvAfterProfiledTransactionSetEvent = procedure(TransactionSet: TEDIObject) of object;
+  TJvAfterProfiledSegmentEvent = procedure(Segment: TEDIObject) of object;
 
   // Base Class EDI Specification Profiler (TDataSet Compatible)
   TJvEDIDBProfiler = class(TJvComponent)
@@ -62,8 +61,8 @@ type
     FElementProfiles: TDataSet;
     FSegmentProfiles: TDataSet;
     FLoopProfiles: TDataSet;
-    FOnAfterProfiledTransactionSet: TJvOnAfterProfiledTransactionSet;
-    FOnAfterProfiledSegment: TJvOnAfterProfiledSegment;
+    FOnAfterProfiledTransactionSet: TJvAfterProfiledTransactionSetEvent;
+    FOnAfterProfiledSegment: TJvAfterProfiledSegmentEvent;
   protected
     procedure DoAfterProfiledTransactionSet(TransactionSet: TEDIObject); virtual;
     procedure DoAfterProfiledSegment(Segment: TEDIObject); virtual;
@@ -85,9 +84,9 @@ type
     property ElementProfiles: TDataSet read FElementProfiles write FElementProfiles;
     property SegmentProfiles: TDataSet read FSegmentProfiles write FSegmentProfiles;
     property LoopProfiles: TDataSet read FLoopProfiles write FLoopProfiles;
-    property OnAfterProfiledTransactionSet: TJvOnAfterProfiledTransactionSet
+    property OnAfterProfiledTransactionSet: TJvAfterProfiledTransactionSetEvent
       read FOnAfterProfiledTransactionSet write FOnAfterProfiledTransactionSet;
-    property OnAfterProfiledSegment: TJvOnAfterProfiledSegment read FOnAfterProfiledSegment
+    property OnAfterProfiledSegment: TJvAfterProfiledSegmentEvent read FOnAfterProfiledSegment
       write FOnAfterProfiledSegment;
   end;
 
