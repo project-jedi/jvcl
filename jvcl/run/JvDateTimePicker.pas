@@ -169,7 +169,7 @@ begin
   if FNullText <> Value then
   begin
     FNullText := Value;
-    FKeepNullText := Value;
+//    FKeepNullText := Value;
     CheckNullValue;
   end;
 end;
