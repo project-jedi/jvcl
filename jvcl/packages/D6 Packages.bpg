@@ -22,7 +22,7 @@ PROJECTS = JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl JvSystemD6D.bpl \
   JvTimeFrameworkD6R.bpl JvTimeFrameworkD6D.bpl JvHMID6R.bpl JvHMID6D.bpl \
   JvManagedThreadsD6R.bpl JvManagedThreadsD6D.bpl JvXPCtrlsD6R.bpl \
   JvXPCtrlsD6D.bpl JvDockingD6R.bpl JvDockingD6D.bpl JvDotNetCtrlsD6R.bpl \
-  JvDotNetCtrlsD6D.bpl
+  JvDotNetCtrlsD6D.bpl JvEDID6R.bpl JvEDID6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -199,6 +199,12 @@ JvDotNetCtrlsD6R.bpl: d6\JvDotNetCtrlsD6R.dpk
   $(DCC)
 
 JvDotNetCtrlsD6D.bpl: d6\JvDotNetCtrlsD6D.dpk
+  $(DCC)
+
+JvEDID6R.bpl: d6\JvEDID6R.dpk
+  $(DCC)
+
+JvEDID6D.bpl: d6\JvEDID6D.dpk
   $(DCC)
 
 

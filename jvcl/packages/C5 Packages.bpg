@@ -37,7 +37,8 @@ PROJECTS = JvCoreC5R.bpl JvCoreC5D.bpl                     \
            JvManagedThreadsC5R.bpl JvManagedThreadsC5D.bpl \
            JvXPCtrlsC5R.bpl JvXPCtrlsC5D.bpl               \
            JvDockingC5R.bpl JvDockingC5D.bpl               \
-           JvDotNetCtrlsC5R.bpl JvDotNetCtrlsC5D.bpl
+           JvDotNetCtrlsC5R.bpl JvDotNetCtrlsC5D.bpl       \
+           JvEDIC5R.bpl JvEDIC5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -271,6 +272,14 @@ JvDotNetCtrlsC5R.bpl: c5\JvDotNetCtrlsC5R.bpk
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvDotNetCtrlsC5D.bpl: c5\JvDotNetCtrlsC5D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvEDIC5R.bpl: c5\JvEDIC5R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvEDIC5D.bpl: c5\JvEDIC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
