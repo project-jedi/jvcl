@@ -49,11 +49,15 @@ Known Issues:
   (http:// www.lischke-online.de) installed and available and
   you are using D6/BCB6 or below. The ThemeManager package must
   be compiled as "never-build package". }
+{$IFDEF VCL}
 {.$DEFINE JVCLThemesEnabled}
+{$ENDIF VCL}
 
 { D7 has theme support built in...}
 {$IFDEF COMPILER7_UP}
+ {$IFDEF VCL}
  {$DEFINE JVCLThemesEnabled}
+ {$ENDIF VCL}
 {$ELSE}
  {$IFDEF JVCLThemesEnabled}
   {$DEFINE JVCLThemesEnabledD56}

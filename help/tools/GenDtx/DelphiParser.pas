@@ -1268,10 +1268,10 @@ procedure TDelphiParser.EndBlock(const AllowDoubleEnd: Boolean);
 
   function DEFIndexOf(const S: string): Integer;
   begin
-    if SameText(S, 'COMPLIB_CLX') then
+    if SameText(S, 'VisualCLX') then
       Result := 0
     else
-    if SameText(S, 'COMPLIB_VCL') then
+    if SameText(S, 'VCL') then
       Result := 1
     else
     if SameText(S, 'MSWINDOWS') then
