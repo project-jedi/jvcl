@@ -163,7 +163,7 @@ object ToolsForm: TToolsForm
           Top = 24
           Width = 28
           Height = 28
-          Hint = 'TJvxClipboardViewer |'
+          Hint = 'TJvClipboardViewer |'
           AutoSize = True
           ParentShowHint = False
           Picture.Data = {
@@ -188,7 +188,7 @@ object ToolsForm: TToolsForm
             0000}
           ShowHint = True
         end
-        object ClipboardViewer1: TJvxClipboardViewer
+        object ClipboardViewer1: TJvClipboardViewer
           Left = 8
           Top = 36
           Width = 249
@@ -902,7 +902,7 @@ object ToolsForm: TToolsForm
             ''
             'Moscow'
             ''
-            #169' 1995,1997'
+            '© 1995,1997'
             ''
             'Click twice here to stop'
             '')

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvComponent, JvTransparentForm, JvBaseDlg, JvLoginDlg;
+  StdCtrls, JvComponent, JvTransparentForm;
 
 type
   TfrTransparentForm = class(TForm)

@@ -242,9 +242,9 @@ end;
 
 procedure TJvDualListForm.FormCreate(Sender: TObject);
 begin
-  OkBtn.Caption := ResStr(SOKButton);
-  CancelBtn.Caption := ResStr(SCancelButton);
-  HelpBtn.Caption := ResStr(SHelpButton);
+  OkBtn.Caption := SOKButton;
+  CancelBtn.Caption := SCancelButton;
+  HelpBtn.Caption := SHelpButton;
   if NewStyleControls then
     Font.Style := [];
 end;

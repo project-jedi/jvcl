@@ -30,13 +30,9 @@ unit JvxLogin;
 interface
 
 uses
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvComponent;
+  JvComponent, JvBaseDlg;
 
 type
   TUpdateCaption = (ucNoChange, ucAppTitle, ucFormCaption);
@@ -48,7 +44,7 @@ type
 
   TJvLoginForm = class;
 
-  TJvCustomLogin = class(TJvComponent)
+  TJvCustomLogin = class(TJvCommonDialogF)
   private
     FActive: Boolean;
     FAttemptNumber: Integer;
@@ -66,6 +62,7 @@ type
     FOnUnlock: TCheckUnlockEvent;
     FOnUnlockApp: TUnlockAppEvent;
     FOnIconDblClick: TNotifyEvent;
+    FPasswordChar: char;
     function GetLoggedUser: string;
     function GetIniFileName: string;
     procedure SetIniFileName(const Value: string);
@@ -88,6 +85,7 @@ type
     property MaxPasswordLen: Integer read FMaxPasswordLen write FMaxPasswordLen default 0;
     property UpdateCaption: TUpdateCaption read FUpdateCaption write FUpdateCaption default ucNoChange;
     property UseRegistry: Boolean read FUseRegistry write FUseRegistry default False;
+    property PasswordChar:char read FPasswordChar write FPasswordChar default '*'; 
     property AfterLogin: TNotifyEvent read FAfterLogin write FAfterLogin;
     property BeforeLogin: TNotifyEvent read FBeforeLogin write FBeforeLogin;
     property OnUnlock: TCheckUnlockEvent read FOnUnlock write FOnUnlock; { obsolete }
@@ -97,6 +95,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Login: Boolean; virtual;
+    function Execute: Boolean; override;
     procedure TerminateApplication;
     procedure Lock;
     property LoggedUser: string read GetLoggedUser;
@@ -119,6 +118,7 @@ type
     property MaxPasswordLen;
     property UpdateCaption;
     property UseRegistry;
+    property PasswordChar;
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
     property AfterLogin;
     property BeforeLogin;
@@ -162,10 +162,7 @@ function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
 implementation
 
 uses
-  {$IFDEF WIN32}
-  Registry,
-  {$ENDIF}
-  Consts, IniFiles,
+  Registry, Consts, IniFiles,
   JvAppUtils, JvxRConst, JvVCLUtils, JvConst;
 
 {$R *.DFM}
@@ -203,6 +200,7 @@ begin
   FLoggedUser := EmptyStr;
   FActive := True;
   FAttemptNumber := 3;
+  FPasswordChar := '*';
   FAllowEmptyPassword := True;
   FUseRegistry := False;
 end;
@@ -385,6 +383,7 @@ begin
       end;
     end;
     PasswordEdit.MaxLength := FMaxPasswordLen;
+    PasswordEdit.PasswordChar := PassWordChar;
     AttemptNumber := Self.AttemptNumber;
   end;
 end;
@@ -662,6 +661,11 @@ begin
   if Assigned(FOnFormShow) then
     FOnFormShow(Self);
   FAttempt := 0;
+end;
+
+function TJvCustomLogin.Execute: Boolean;
+begin
+  Result := Login;
 end;
 
 end.

@@ -13,7 +13,7 @@
       ..\lib6\JvButtonPersistent.obj
       ..\lib6\JvCabFile.obj ..\lib6\JvCaesarCipher.obj ..\lib6\JvCheckBox.obj 
       ..\lib6\JvCheckListBox.obj ..\lib6\JvChrono.obj 
-      ..\lib6\JvClipboardViewer.obj ..\lib6\JvClock.obj ..\lib6\JvCombobox.obj 
+      ..\lib6\JvClock.obj ..\lib6\JvCombobox.obj
       ..\lib6\JvCommonDialogD.obj ..\lib6\JvCommonExecDlg.obj 
       ..\lib6\JvCommStatus.obj ..\lib6\JvComplex.obj ..\lib6\JvComputerInfo.obj 
       ..\lib6\JvConnectNetwork.obj ..\lib6\JvControlBar.obj 
@@ -26,8 +26,7 @@
       ..\lib6\JvFavoritesButton.obj ..\lib6\JvValidateEdit.obj
       ..\lib6\JvFormAlarms.obj ..\lib6\JvFormAnimatedIcon.obj 
       ..\lib6\JvFormAnimation.obj ..\lib6\JvFormImage.obj 
-      ..\lib6\JvFormLogin.obj ..\lib6\JvFormParser.obj ..\lib6\JvFormPass.obj 
-      ..\lib6\JvFormPatch.obj ..\lib6\JvFormPlace.obj ..\lib6\JvFormSerial.obj 
+      ..\lib6\JvFormParser.obj ..\lib6\JvFormPatch.obj ..\lib6\JvFormPlace.obj
       ..\lib6\JvFormToHtml.obj ..\lib6\JvFormWallpaper.obj 
       ..\lib6\JvFormWallpaperEdit.obj ..\lib6\JvFtpGrabber.obj 
       ..\lib6\JvFunctions.obj ..\lib6\JvGammaPanel.obj ..\lib6\JvGenetic.obj 
@@ -43,11 +42,10 @@
       ..\lib6\JvMemoryInfos.obj ..\lib6\JvMonthCalendar.obj 
       ..\lib6\JvMousePositionner.obj ..\lib6\JvMru.obj 
       ..\lib6\JvMultiHttpGrabber.obj ..\lib6\JvNagScreen.obj 
-      ..\lib6\JvPageScroller.obj ..\lib6\JvPanel.obj ..\lib6\JvPasswordForm.obj 
+      ..\lib6\JvPageScroller.obj ..\lib6\JvPanel.obj
       ..\lib6\JvPatchFile.obj ..\lib6\JvPcx.obj ..\lib6\JvPerforated.obj 
       ..\lib6\JvPlaylist.obj ..\lib6\JvPrint.obj ..\lib6\JvProgressBar.obj 
-      ..\lib6\JvDBProgressBar.obj ..\lib6\JvProgressDlg.obj 
-      ..\lib6\JvPropAutoSave.obj ..\lib6\JvRadioButton.obj 
+      ..\lib6\JvDBProgressBar.obj ..\lib6\JvPropAutoSave.obj ..\lib6\JvRadioButton.obj
       ..\lib6\JvRadioGroup.obj ..\lib6\JvRas32.obj
       ..\lib6\JvRecentMenuBtn.obj ..\lib6\JvRegistry.obj 
       ..\lib6\JvRenameError.obj
@@ -56,7 +54,7 @@
       ..\lib6\JvScreenResolution.obj ..\lib6\JvScreenSaver.obj 
       ..\lib6\JvScrollBar.obj ..\lib6\JvScrollBox.obj 
       ..\lib6\JvScrollText.obj
-      ..\lib6\JvSelectDirectory.obj ..\lib6\JvSerialDlg.obj 
+      ..\lib6\JvSelectDirectory.obj
       ..\lib6\JvSerialMaker.obj ..\lib6\JvShape.obj ..\lib6\JvSlider.obj 
       ..\lib6\JvSoundControl.obj ..\lib6\JvSpecialImage.obj 
       ..\lib6\JvSpecialProgress.obj ..\lib6\JvSplitter.obj ..\lib6\JvStarfield.obj
@@ -74,8 +72,7 @@
       ..\lib6\JvWinHelp.obj ..\lib6\JvXorCipher.obj ..\lib6\JvZoom.obj 
       ..\lib6\JvCoupler.obj ..\lib6\JvHighlighter.obj
       ..\lib6\JvGroupBox.obj ..\lib6\JvSyncSplitter.obj ..\lib6\JvPopupMemo.obj
-      ..\lib6\JvSizeablePanel.obj ..\lib6\JvSpacer.obj 
-      ..\lib6\JvTransparentPanel.obj ..\lib6\JvMousePanel.obj 
+      ..\lib6\JvSpacer.obj ..\lib6\JvTransparentPanel.obj
       ..\lib6\JvMouseTimerU.obj ..\lib6\JvSysComp.obj ..\lib6\JvCtrls.obj ..\lib6\JvDdeCmd.obj
       ..\lib6\JvDialogs.obj ..\lib6\JvPerfMon95.obj ..\lib6\JvComCtrls.obj 
       ..\lib6\JvMail.obj ..\lib6\JvPageSetupTitled.obj ..\lib6\JvPageSetup.obj 
@@ -117,7 +114,7 @@
       ..\lib6\JvSbSetup.obj ..\lib6\JvPageMngr.obj ..\lib6\JvMrgMngr.obj 
       ..\lib6\JvStrHlder.obj ..\lib6\JvAppEvent.obj ..\lib6\JvTimerLst.obj 
       ..\lib6\JvMRUList.obj ..\lib6\JvIni.obj ..\lib6\JvMenus.obj 
-      ..\lib6\JvNotify.obj ..\lib6\JvGrdCpt.obj ..\lib6\JvSplshWnd.obj 
+      ..\lib6\JvGrdCpt.obj ..\lib6\JvSplshWnd.obj
       ..\lib6\JvDataConv.obj ..\lib6\JvOle2Auto.obj ..\lib6\JvVerInf.obj 
       ..\lib6\JvDBCtrl.obj ..\lib6\JvLookup.obj ..\lib6\JvxLogin.obj 
       ..\lib6\JvDBUtils.obj ..\lib6\JvDBComb.obj ..\lib6\JvDBRichEd.obj 
@@ -166,9 +163,7 @@
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\source\JvFormAlarms.dfm ..\source\JvFormImage.dfm 
-      ..\source\JvFormLogin.dfm ..\source\JvFormParser.dfm 
-      ..\source\JvFormPass.dfm ..\source\JvFormPatch.dfm 
-      ..\source\JvFormSerial.dfm ..\source\JvFormWallpaperEdit.dfm 
+      ..\source\JvFormParser.dfm ..\source\JvFormPatch.dfm ..\source\JvFormWallpaperEdit.dfm
       ..\source\JvProfiler32.dfm ..\source\JvColorForm.dfm 
       ..\source\JvExcptDlg.dfm ..\source\JvFDualLst.dfm ..\source\JvSbSetup.dfm 
       ..\source\JvxLogin.dfm ..\source\JvChPswDlg.dfm ..\source\JvDBExcpt.dfm 
@@ -242,7 +237,6 @@
       <FILE FILENAME="..\source\JvCheckBox.pas" FORMNAME="" UNITNAME="JvCheckBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCheckListBox.pas" FORMNAME="" UNITNAME="JvCheckListBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvChrono.pas" FORMNAME="" UNITNAME="JvChrono" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvClipboardViewer.pas" FORMNAME="" UNITNAME="JvClipboardViewer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvClock.pas" FORMNAME="" UNITNAME="JvClock" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCombobox.pas" FORMNAME="" UNITNAME="JvCombobox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCommonDialogD.pas" FORMNAME="" UNITNAME="JvCommonDialogD" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -272,12 +266,9 @@
       <FILE FILENAME="..\source\JvFormAnimatedIcon.pas" FORMNAME="" UNITNAME="JvFormAnimatedIcon" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormAnimation.pas" FORMNAME="" UNITNAME="JvFormAnimation" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormImage.pas" FORMNAME="FormImg" UNITNAME="JvFormImage" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvFormLogin.pas" FORMNAME="FormLogi" UNITNAME="JvFormLogin" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormParser.pas" FORMNAME="FormParsers" UNITNAME="JvFormParser" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvFormPass.pas" FORMNAME="PassForm" UNITNAME="JvFormPass" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormPatch.pas" FORMNAME="foPatch" UNITNAME="JvFormPatch" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormPlace.pas" FORMNAME="" UNITNAME="JvFormPlace" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvFormSerial.pas" FORMNAME="FormSer" UNITNAME="JvFormSerial" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormToHtml.pas" FORMNAME="" UNITNAME="JvFormToHtml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormWallpaper.pas" FORMNAME="" UNITNAME="JvFormWallpaper" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvFormWallpaperEdit.pas" FORMNAME="foWallpaperChooser" UNITNAME="JvFormWallpaperEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -316,7 +307,6 @@
       <FILE FILENAME="..\source\JvNagScreen.pas" FORMNAME="" UNITNAME="JvNagScreen" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPageScroller.pas" FORMNAME="" UNITNAME="JvPageScroller" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPanel.pas" FORMNAME="" UNITNAME="JvPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvPasswordForm.pas" FORMNAME="" UNITNAME="JvPasswordForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPatchFile.pas" FORMNAME="" UNITNAME="JvPatchFile" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPcx.pas" FORMNAME="" UNITNAME="JvPcx" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPerforated.pas" FORMNAME="" UNITNAME="JvPerforated" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -324,7 +314,6 @@
       <FILE FILENAME="..\source\JvPrint.pas" FORMNAME="" UNITNAME="JvPrint" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvProgressBar.pas" FORMNAME="" UNITNAME="JvProgressBar" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDBProgressBar.pas" FORMNAME="" UNITNAME="JvDBProgressBar" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvProgressDlg.pas" FORMNAME="" UNITNAME="JvProgressDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPropAutoSave.pas" FORMNAME="" UNITNAME="JvPropAutoSave" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRadioButton.pas" FORMNAME="" UNITNAME="JvRadioButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRadioGroup.pas" FORMNAME="" UNITNAME="JvRadioGroup" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -342,7 +331,6 @@
       <FILE FILENAME="..\source\JvScrollBox.pas" FORMNAME="" UNITNAME="JvScrollBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScrollText.pas" FORMNAME="" UNITNAME="JvScrollText" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSelectDirectory.pas" FORMNAME="" UNITNAME="JvSelectDirectory" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvSerialDlg.pas" FORMNAME="" UNITNAME="JvSerialDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSerialMaker.pas" FORMNAME="" UNITNAME="JvSerialMaker" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvShape.pas" FORMNAME="" UNITNAME="JvShape" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSlider.pas" FORMNAME="" UNITNAME="JvSlider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -385,10 +373,8 @@
       <FILE FILENAME="..\source\JvGroupBox.pas" FORMNAME="" UNITNAME="JvGroupBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSyncSplitter.pas" FORMNAME="" UNITNAME="JvSyncSplitter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvPopupMemo.pas" FORMNAME="" UNITNAME="JvPopupMemo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvSizeablePanel.pas" FORMNAME="" UNITNAME="JvSizeablePanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSpacer.pas" FORMNAME="" UNITNAME="JvSpacer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransparentPanel.pas" FORMNAME="" UNITNAME="JvTransparentPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvMousePanel.pas" FORMNAME="" UNITNAME="JvMousePanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvMouseTimerU.pas" FORMNAME="" UNITNAME="JvMouseTimerU" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSysComp.pas" FORMNAME="" UNITNAME="JvSysComp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCtrls.pas" FORMNAME="" UNITNAME="JvCtrls" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -504,7 +490,6 @@
       <FILE FILENAME="..\source\JvMRUList.pas" FORMNAME="" UNITNAME="JvMRUList" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvIni.pas" FORMNAME="" UNITNAME="JvIni" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvMenus.pas" FORMNAME="" UNITNAME="JvMenus" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvNotify.pas" FORMNAME="" UNITNAME="JvNotify" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvGrdCpt.pas" FORMNAME="" UNITNAME="JvGrdCpt" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSplshWnd.pas" FORMNAME="" UNITNAME="JvSplshWnd" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDataConv.pas" FORMNAME="" UNITNAME="JvDataConv" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

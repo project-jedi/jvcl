@@ -110,7 +110,7 @@ uses
   // Utils 2
   JvMru, JvRas32, JvSystemPopup, JvMousePositionner,
   JvWinHelp, JvEasterEgg, JvPrint, JvThreadTimer,
-  JvTimeLimit, JvScreenSaver, JvClipboardViewer, JvSystemColors,
+  JvTimeLimit, JvScreenSaver, JvSystemColors,
   JvPatchFile, JvComputerInfo, JvCommStatus, JvLogFile,
   JvCabFile, JvDataEmbedded,
 
@@ -120,14 +120,13 @@ uses
 
   // Dialogs
   JvCommonDialogD, JvBaseDlg,
-  JvSelectDirectory, JvPasswordForm,
-  JvExchListboxes, JvLoginDlg, JvSerialDlg, JvNagScreen,
-  JvTipOfDay, JvImageDlg, JvProgressDlg, JvDiskPrompt,
+  JvSelectDirectory,
+  JvNagScreen, JvTipOfDay, JvImageDlg, JvDiskPrompt,
   JvCopyError, JvDeleteError, JvRenameError, JvPageSetupTitled, JvPageSetup,
 
   // WinDialogs
   JvBrowseFolder, JvObjPickerComp, JvConnectNetwork,
-  JvAddPrinter, JvWinDialogs,
+  JvAddPrinter, JvWinDialogs, JvxLogin,
 
   // Win32
   JvStatusBar, JvProgressBar,
@@ -143,7 +142,7 @@ uses
   JvArrow,
 
   // Peter Below Goodies
-  JvCoupler, JvHighlighter, JvMousePanel, JvGroupBox, JvPopupMemo, JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
+  JvCoupler, JvHighlighter, JvGroupBox, JvPopupMemo, JvTransparentPanel, JvSpacer, JvSyncSplitter,
 
   // Petr Vones Components
   JVCLMiscal,
@@ -279,8 +278,7 @@ begin
 
      TJvInstallLabel,
 
-     TJvMousePanel, TJvSizeablePanel, TJvTransparentPanel,
-     TJvCaptionPanel, TJvItemsPanel, TJvRollout,
+     TJvTransparentPanel, TJvCaptionPanel, TJvItemsPanel, TJvRollout,
 
      JvSpacer.TJvSpacer, TJvDivider, TJvArrow, TJvHighlighter, TJvRadioControl,
 
@@ -306,7 +304,7 @@ begin
 
      TJvDragDrop, TJvAppDdeCmd, TJvPerfStat95, TJvCreateProcess,
      TJvChangeNotify, TJvFileInfo, TJvComputerInfo, TJvDirectories,
-     TJvSystemColors, TJvClipboardViewer, TJvSystemPopup, TJvNTEventLog, TJvShellHook]);
+     TJvSystemColors, TJvSystemPopup, TJvNTEventLog, TJvShellHook]);
 
   {$IFNDEF DelphiPersonalEdition}
   // Jv Data Controls
@@ -335,10 +333,9 @@ begin
      TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
      TJvObjectPickerDialog,
 
-     TJvPasswordForm, TJvExchListboxes, TJvLoginDlg, TJvSerialDlg,
-     TJvNagScreen, TJvTipOfDay, TJvProgressDlg, TJvFindReplace,
+     TJvNagScreen, TJvTipOfDay, TJvFindReplace,
      TJvImageDlg, TJvDiskPrompt, TJvCopyError, TJvDeleteError,
-     TJvRenameError, TJvDSADialog]);
+     TJvRenameError, TJvDSADialog, TJvLoginDialog]);
 
   // Jv Custom
   RegisterComponents(srJvCustomPalette,

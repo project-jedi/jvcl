@@ -50,7 +50,7 @@ uses
   {$ENDIF}
   JvxCtrls,
   JvMenus, JvMRUList,
-  JvNotify, JvGrdCpt, JvGradEdit,
+  JvGrdCpt, JvGradEdit,
   JvPictEdit, JvWndProcHook, JvPicClip, JvPlacemnt, JvPresrDsn, JvMinMaxEd, JvDualList,
   JvClipView, JvSpeedbar, JvSbEdit, JvDataConv, JvCalc, JvPageMngr, JvPgMngrEd, JvMrgMngr,
   JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
@@ -130,14 +130,13 @@ begin
   RegisterComponents(srJvXToolsPalette, [TJvPicClip, TJvFormStorage,
     TJvFormPlacement, TJvWindowHook, TJvAppEvents, TJvSpeedBar, TJvCalculator,
       TJvTimerList, TJvPageManager, TJvMergeManager, TJvMRUManager, TJvSecretPanel,
-      TJvStrHolder, TJvMainMenu, TJvPopupMenu,
-      TJvFolderMonitor, TJvxClipboardViewer,
+      TJvStrHolder, TJvMainMenu, TJvPopupMenu, TJvClipboardViewer,
       TJvxGradientCaption, TJvDualListDialog]);
 
   RegisterNonActiveX([TJvPicClip, TJvFormPlacement, TJvFormStorage, TJvWindowHook,
-    TJvDualListDialog, TJvSecretPanel, TJvSpeedBar, TJvxClipboardViewer,
+    TJvDualListDialog, TJvSecretPanel, TJvSpeedBar, TJvClipboardViewer,
       TJvPageManager, TJvMergeManager, TJvMRUManager, TJvAppEvents, TJvTimerList,
-      TJvFolderMonitor, TJvxGradientCaption], axrComponentOnly);
+      TJvxGradientCaption], axrComponentOnly);
 
   RegisterComponentEditor(TJvPicClip, TJvGraphicsEditor);
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);

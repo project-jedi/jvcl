@@ -52,13 +52,23 @@ type
     FFlatBorder: Boolean;
     FFlatBorderColor: TColor;
     FMultiLine: Boolean;
+    FOldColor:TColor;
+    FHotColor: TColor;
+    FSizeable: boolean;
+    FDragging: Boolean;
+    FLastPos: TPoint;
     procedure SetTransparent(const Value: Boolean);
     procedure SetFlatBorder(const Value: Boolean);
     procedure SetFlatBorderColor(const Value: TColor);
     procedure DrawCaption;
     procedure DrawBorders;
     procedure SetMultiLine(const Value: Boolean);
+    procedure SetHotColor(const Value: TColor);
+    procedure SetSizeable(const Value: boolean);
   protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
@@ -72,7 +82,9 @@ type
     procedure Invalidate; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property Sizeable:boolean read FSizeable write SetSizeable default false;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
+    property HotColor:TColor read FHotColor write SetHotColor default clBtnFace;
     property Transparent: Boolean read FTransparent write SetTransparent default False;
     property MultiLine: Boolean read FMultiLine write SetMultiLine;
     property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
@@ -84,6 +96,8 @@ type
   end;
 
 implementation
+uses
+  JvMouseTimerU;
 
 constructor TJvPanel.Create(AOwner: TComponent);
 begin
@@ -93,20 +107,25 @@ begin
   FTransparent := False;
   FFlatBorder := False;
   FFlatBorderColor := clBtnShadow;
+  FHotColor := clBtnFace;
 end;
 
 procedure TJvPanel.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   Params.ExStyle := Params.ExStyle + WS_EX_TRANSPARENT;
-  ControlStyle := ControlStyle - [csOpaque] + [csAcceptsControls];
+  if Transparent then
+    ControlStyle := ControlStyle - [csOpaque];
 end;
 
 procedure TJvPanel.Paint;
+var X,Y:integer;
 begin
   Canvas.Brush.Color := Color;
-  if not FTransparent then
-    Canvas.FillRect(ClientRect);
+  if not Transparent then
+    Canvas.FillRect(ClientRect)
+  else
+    Canvas.Brush.Style := bsClear;
 
   if FFlatBorder then
   begin
@@ -117,6 +136,20 @@ begin
   else
     DrawBorders;
   Self.DrawCaption;
+  if Sizeable then
+  with Canvas do
+  begin
+    Font.Name := 'Marlett';
+    Font.Charset := DEFAULT_CHARSET;
+    Font.Size := 12;
+    Canvas.Font.Style := [];
+    Canvas.Font.Color := clBtnShadow;
+    Brush.Style := bsClear;
+    X := ClientWidth - Canvas.TextWidth('o') - BevelWidth - 2;
+    Y := ClientHeight - Canvas.TextWidth('o') - BevelWidth - 2;
+    SetBkMode(Handle,Windows.TRANSPARENT);
+    TextOut(X, Y, 'o');
+  end;
 end;
 
 procedure TJvPanel.DrawBorders;
@@ -217,11 +250,17 @@ begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
+    FOldColor := Color;
     // for D7...
     if csDesigning in ComponentState then
       Exit;
     Application.HintColor := FHintColor;
     FOver := True;
+    if not Transparent then
+    begin
+      Color := HotColor;
+      MouseTimer.Attach(Self);
+    end;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -233,6 +272,11 @@ begin
   begin
     Application.HintColor := FSaved;
     FOver := False;
+    if not Transparent then
+    begin
+      Color := FOldColor;
+      MouseTimer.Detach(Self);
+    end;
   end;
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
@@ -243,7 +287,7 @@ begin
   if Value <> FTransparent then
   begin
     FTransparent := Value;
-    Invalidate;
+    RecreateWnd;
   end;
 end;
 
@@ -291,6 +335,74 @@ begin
     RedrawWindow(Parent.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE
       or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN);
   inherited Invalidate;
+end;
+
+procedure TJvPanel.SetHotColor(const Value: TColor);
+begin
+  if FHotColor <> Value then
+  begin
+    FHotColor := Value;
+    if not Transparent then
+      Invalidate;
+  end;
+end;
+
+procedure TJvPanel.SetSizeable(const Value: boolean);
+begin
+  if FSizeable <> Value then
+  begin
+    FSizeable := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  if Sizeable and (Button = mbLeft) and ((Width - X) < 12) and ((Height - Y) < 12) then
+  begin
+    FDragging := True;
+    FLastPos := Point(X, Y);
+    MouseCapture := True;
+    Screen.cursor := crSizeNWSE;
+  end
+  else
+    inherited MouseDown(Button, Shift, X, Y);
+end;
+
+procedure TJvPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
+var
+  R: TRect;
+begin
+  if FDragging and Sizeable then
+  begin
+    R := BoundsRect;
+    SetBounds(R.Left, R.Top,
+      R.Right - R.Left + X - FLastPos.X,
+      R.Bottom - R.Top + Y - FLastPos.Y);
+    FLastPos := Point(X, Y);
+  end
+  else
+  begin
+    inherited MouseMove(Shift, X, Y);
+    if Sizeable and ((Width - X) < 12) and ((Height - Y) < 12) then
+      Cursor := crSizeNWSE
+    else
+      Cursor := crDefault;
+  end;
+end;
+
+procedure TJvPanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  if FDragging and Sizeable then
+  begin
+    FDragging := False;
+    MouseCapture := False;
+    Screen.Cursor := crDefault;
+  end
+  else
+    inherited MouseUp(Button, Shift, X, Y);
 end;
 
 end.

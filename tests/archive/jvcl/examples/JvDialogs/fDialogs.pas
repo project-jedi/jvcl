@@ -3,11 +3,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, JvCommonExecDlg, JvRenameError, JvDeleteError,
-  JvCopyError, JvCommonDialogD, JvDiskPrompt, JvProgressDlg, 
-  JvSerialDlg, JvLoginDlg, JvExchListboxes, JvPasswordForm,
+  JvCopyError, JvCommonDialogD, JvDiskPrompt,
   JvConnectNetwork, JvSelectDirectory, JvBaseDlg, JvFindFiles, JvComponent,
   JvWinDialogs, ComCtrls, JvBrowseFolder, JvPageSetupTitled, JvPageSetup,
-  JvAddPrinter, JvSHFmt, JvCalc;
+  JvAddPrinter, JvCalc, JvDialogs;
 
 type
   TForm1 = class(TForm)
@@ -17,12 +16,7 @@ type
     JvSelectDirectory1: TJvSelectDirectory;
     JvConnectNetwork1: TJvConnectNetwork;
     JvDisconnectNetwork1: TJvDisconnectNetwork;
-    JvPasswordForm1: TJvPasswordForm;
-    JvExchListboxes1: TJvExchListboxes;
-    JvLoginDlg1: TJvLoginDlg;
-    JvSerialDlg1: TJvSerialDlg;
     JvCalculator1: TJvCalculator;
-    JvProgressDlg1: TJvProgressDlg;
     JvDiskPrompt1: TJvDiskPrompt;
     JvCopyError1: TJvCopyError;
     JvDeleteError1: TJvDeleteError;
@@ -66,14 +60,11 @@ type
     JvObjectPropertiesDlg1: TJvObjectPropertiesDialog;
     JvOutOfMemoryDlg1: TJvOutOfMemoryDialog;
     JvOutOfSpaceDlg1: TJvDiskFullDialog;
-    JvOpenDialog1: TJvOpenDialog2000;
-    JvSaveDialog1: TJvSaveDialog2000;
     Button34: TButton;
     JvPageSetupDialog1: TJvPageSetupDialog;
     JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
     JvBrowseFolder2: TJvBrowseForFolderDialog;
     JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog;
-    JvControlPanelDialog1: TJvControlPanelDialog;
     JvAppletDialog1: TJvAppletDialog;
     JvNewLinkDialog1: TJvNewLinkDialog;
     JvOpenWithDialog1: TJvOpenWithDialog;
@@ -86,6 +77,8 @@ type
     Button3: TButton;
     Button7: TButton;
     Button41: TButton;
+    JvOpenDialog1: TJvOpenDialog;
+    JvSaveDialog1: TJvSaveDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -94,12 +87,7 @@ type
     procedure Button8Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
-    procedure Button11Click(Sender: TObject);
-    procedure Button14Click(Sender: TObject);
-    procedure Button16Click(Sender: TObject);
-    procedure Button17Click(Sender: TObject);
     procedure Button18Click(Sender: TObject);
-    procedure Button19Click(Sender: TObject);
     procedure Button20Click(Sender: TObject);
     procedure Button21Click(Sender: TObject);
     procedure Button22Click(Sender: TObject);
@@ -112,8 +100,6 @@ type
     procedure Button29Click(Sender: TObject);
     procedure Button30Click(Sender: TObject);
     procedure Button31Click(Sender: TObject);
-    procedure Button32Click(Sender: TObject);
-    procedure Button33Click(Sender: TObject);
     procedure Button39Click(Sender: TObject);
     procedure Button38Click(Sender: TObject);
     procedure Button36Click(Sender: TObject);
@@ -121,6 +107,8 @@ type
     procedure Button40Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure Button41Click(Sender: TObject);
+    procedure Button32Click(Sender: TObject);
+    procedure Button33Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -173,43 +161,9 @@ begin
   JvDisconnectNetwork1.execute;
 end;
 
-procedure TForm1.Button11Click(Sender: TObject);
-begin
-  JvPasswordForm1.Execute;
-end;
-
-procedure TForm1.Button14Click(Sender: TObject);
-begin
-  JvExchListboxes1.Execute;
-end;
-
-procedure TForm1.Button16Click(Sender: TObject);
-begin
-  JvLoginDlg1.Execute;
-end;
-
-procedure TForm1.Button17Click(Sender: TObject);
-begin
-  JvSerialDlg1.Execute;
-end;
-
 procedure TForm1.Button18Click(Sender: TObject);
 begin
   JvCalculator1.Execute;
-end;
-
-procedure TForm1.Button19Click(Sender: TObject);
-var
-  i: integer;
-begin
-  JvProgressDlg1.Maximum := 100;
-  JvProgressDlg1.Show;
-  for i := 1 to 100 do
-  begin
-    JvProgressDlg1.Value := i;
-    sleep(20);
-  end;
-  JvProgressDlg1.Close;
 end;
 
 procedure TForm1.Button20Click(Sender: TObject);
@@ -275,16 +229,6 @@ begin
   JvOutOfSpaceDlg1.Execute;
 end;
 
-procedure TForm1.Button32Click(Sender: TObject);
-begin
-  JvOpenDialog1.Execute;
-end;
-
-procedure TForm1.Button33Click(Sender: TObject);
-begin
-  JvSaveDialog1.Execute;
-end;
-
 procedure TForm1.Button39Click(Sender: TObject);
 begin
   JvOrganizeFavoritesDialog1.execute;
@@ -308,7 +252,8 @@ end;
 
 procedure TForm1.Button36Click(Sender: TObject);
 begin
-  JvControlPanelDialog1.Execute;
+  JvAppletDialog1.AppletName := '';
+  JvAppletDialog1.Execute;
 end;
 
 procedure TForm1.Button37Click(Sender: TObject);
@@ -329,6 +274,16 @@ end;
 procedure TForm1.Button41Click(Sender: TObject);
 begin
   JvPageSetupTitledDialog1.Execute;
+end;
+
+procedure TForm1.Button32Click(Sender: TObject);
+begin
+  JvOpenDialog1.Execute;
+end;
+
+procedure TForm1.Button33Click(Sender: TObject);
+begin
+  JvSaveDialog1.Execute;
 end;
 
 end.

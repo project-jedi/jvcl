@@ -1,3 +1,11 @@
+2003-03-30
+- Merged TJvClipBoardViewer and TJvxClipboardViewer into TJvxClipboardViewer. Renamed TJvxClipboardViewer to TJvClipboardViewer. Moved JvClipboardViewer.pas to \archive // peter3
+- Moved JvExchListBoxes.pas and JvFormLists.pas to \archive - duplicates functionality in JvDualList.pas and JvFDualList.pas //peter3
+- Merged TJvSerialDlg, TJvLoginDlg and TJvPasswordForm into TJvLoginDialog. Added PasswordChar property to TJvLoginDialog. Moved JvSerialDlg, JvLoginDlg, JvFormPass, JvFormLogin, JvFormLists and JvFormSerial to \archive // peter3
+- Moved JvNotify.pas to \archive - TJvFolderMonitor duplicates TJvChangeNotify. // peter3
+- Moved JvProgressDlg.pas to \archive - TJvProgressDlg duplicates TJvProgressForm. // peter3
+- Merged TJvMousePanel and TJvSizeablePanel into JvPanel. Moved JvSizeablePanel.pas and JvMousePanel.pas to \archive // peter3
+
 2003-03-29
 Andreas Hausladen:
 ==================
@@ -294,15 +302,15 @@ JvHLEditor.pas:
 
 2002-07-08
 - Modified Files for D5 support:
-	JvAppHotKey.pas JvCaptionButton.pas JvChangeNotify.pas 
-	JvCheckBox.pas JvCheckListBox.pas JvClipboardViewer.pas 
-	JvColorCombo.pas JvCombobox.pas JvDateTimePicker.pas 
-	JvDeviceChanged.pas JvDiagramShape.pas JvDialogs.pas 
-	JvDragDrop.pas JvEasterEgg.pas JvFunctions.pas 
-	JvImageTransform.pas JvJoystick.pas JvListBox.pas JvMagnet.pas 
-	JvPlaylist.pas JvRas32.pas JvScreenResolution.pas 
-	JvSearchFile.pas JvSearchFiles.pas JvSimpleXml.pas 
-	JvSlider.pas JvZlibMultiple.pas 
+  JvAppHotKey.pas JvCaptionButton.pas JvChangeNotify.pas 
+  JvCheckBox.pas JvCheckListBox.pas JvClipboardViewer.pas 
+  JvColorCombo.pas JvCombobox.pas JvDateTimePicker.pas 
+  JvDeviceChanged.pas JvDiagramShape.pas JvDialogs.pas 
+  JvDragDrop.pas JvEasterEgg.pas JvFunctions.pas 
+  JvImageTransform.pas JvJoystick.pas JvListBox.pas JvMagnet.pas 
+  JvPlaylist.pas JvRas32.pas JvScreenResolution.pas 
+  JvSearchFile.pas JvSearchFiles.pas JvSimpleXml.pas 
+  JvSlider.pas JvZlibMultiple.pas 
 
 - Added DPK's and DOF's for Delphi 5 (JVCL200_R5 and JVCL200_D5)
 

@@ -42,6 +42,8 @@ uses
 type
   TClipboardViewFormat = (cvDefault, cvEmpty, cvUnknown, cvText, cvBitmap,
     cvMetafile, cvPalette, cvOemText, cvPicture, cvComponent, cvIcon);
+  TJvOnImageEvent = procedure(Sender: TObject; Image: TBitmap) of object;
+  TJvOnTextEvent = procedure(Sender: TObject; AText: string) of object;
 
   TJvCustomClipboardViewer = class(TScrollBox)
   private
@@ -50,6 +52,8 @@ type
     FPaintControl: TComponent;
     FViewFormat: TClipboardViewFormat;
     FOnChange: TNotifyEvent;
+    FOnImage: TJvOnImageEvent;
+    FOnText: TJvOnTextEvent;
     function IsEmptyClipboard: Boolean;
     procedure ForwardMessage(var Msg: TMessage);
     procedure WMSize(var Msg: TMessage); message WM_SIZE;
@@ -62,6 +66,8 @@ type
   protected
     procedure CreateWnd; override;
     procedure DestroyWindowHandle; override;
+    procedure DoImage(Image:TBitmap);dynamic;
+    procedure DoText(const AText:string);dynamic;
     procedure Change; dynamic;
     procedure CreatePaintControl; virtual;
     function GetDrawFormat: TClipboardViewFormat; virtual;
@@ -69,16 +75,20 @@ type
     property ViewFormat: TClipboardViewFormat read FViewFormat write
       SetViewFormat stored False;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnImage:TJvOnImageEvent read FOnImage write FOnImage;
+    property OnText:TJvOnTextEvent read FOnText write FOnText;
   public
     constructor Create(AOwner: TComponent); override;
     class function CanDrawFormat(ClipboardFormat: Word): Boolean;
+    procedure EmptyClipboard;
     property ClipboardFormatNames[Index: Integer]: string read GetClipboardFormatNames;
   published
     property Color default clWindow;
     property ParentColor default False;
+
   end;
 
-  TJvxClipboardViewer = class(TJvCustomClipboardViewer)
+  TJvClipboardViewer = class(TJvCustomClipboardViewer)
   published
     {$IFDEF COMPILER4_UP}
     property Anchors;
@@ -658,6 +668,7 @@ end;
 procedure TJvCustomClipboardViewer.WMDrawClipboard(var Msg: TMessage);
 var
   Format: Word;
+  B:TBitmap;
 begin
   ForwardMessage(Msg);
   Format := ViewToClipboardFormat(ViewFormat);
@@ -666,6 +677,18 @@ begin
   else
   if not Clipboard.HasFormat(Format) then
     FViewFormat := cvDefault;
+  if Clipboard.HasFormat(CF_BITMAP) then
+  begin
+    B := TBitmap.Create;
+    try
+      B.Assign(Clipboard);
+      DoImage(B);
+    finally
+      B.Free;
+    end;
+  end;
+  if Clipboard.HasFormat(CF_TEXT) then
+    DoText(Clipboard.AsText);
   Change;
   DisableAlign;
   try
@@ -761,6 +784,26 @@ begin
   if not Result then
     if Clipboard.HasFormat(ViewToClipboardFormat(Format)) then
       Result := True;
+end;
+
+procedure TJvCustomClipboardViewer.DoImage(Image: TBitmap);
+begin
+  if Assigned(FOnImage) then
+    FOnImage(self,Image);
+end;
+
+procedure TJvCustomClipboardViewer.DoText(const AText: string);
+begin
+  if Assigned(FOnText) then
+    FOnText(self,AText);
+end;
+
+procedure TJvCustomClipboardViewer.EmptyClipboard;
+begin
+  OpenClipboard(Application.Handle);
+  // (rom) added Windows. to avoid recursion
+  Windows.EmptyClipboard;
+  CloseClipboard;
 end;
 
 end.

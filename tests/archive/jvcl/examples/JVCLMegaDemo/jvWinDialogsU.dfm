@@ -47,7 +47,6 @@ object JvWinDialogs: TJvWinDialogs
     Height = 25
     Caption = 'Controlpanel'
     TabOrder = 4
-    OnClick = Button5Click
   end
   object Button6: TButton
     Left = 8
@@ -56,7 +55,6 @@ object JvWinDialogs: TJvWinDialogs
     Height = 25
     Caption = 'Appletdialog'
     TabOrder = 5
-    OnClick = Button6Click
   end
   object Button7: TButton
     Left = 8
@@ -155,7 +153,6 @@ object JvWinDialogs: TJvWinDialogs
     Height = 25
     Caption = 'Save Dialog 2000'
     TabOrder = 16
-    OnClick = Button17Click
   end
   object Button18: TButton
     Left = 232
@@ -164,7 +161,6 @@ object JvWinDialogs: TJvWinDialogs
     Height = 25
     Caption = 'Open Dialog 2000'
     TabOrder = 17
-    OnClick = Button18Click
   end
   object Button19: TButton
     Left = 8
@@ -213,10 +209,6 @@ object JvWinDialogs: TJvWinDialogs
     Caption = 'Computername'
     Left = 192
     Top = 104
-  end
-  object JvControlPanelDialog1: TJvControlPanelDialog
-    Left = 192
-    Top = 136
   end
   object JvAppletDialog1: TJvAppletDialog
     Left = 192
@@ -328,23 +320,6 @@ object JvWinDialogs: TJvWinDialogs
   object JvDisconnectNetwork1: TJvDisconnectNetwork
     Left = 416
     Top = 200
-  end
-  object JvOpenDialog20001: TJvOpenDialog2000
-    DefaultExt = '*.cpl'
-    FileName = '*.cpl'
-    Filter = 'Appletfile|*.cpl'
-    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Title = 'Open Applet'
-    Left = 416
-    Top = 232
-  end
-  object JvSaveDialog20001: TJvSaveDialog2000
-    DefaultExt = '*.*'
-    FileName = '*.*'
-    Filter = 'all files (*.*)|*.*'
-    Title = 'Save something'
-    Left = 416
-    Top = 264
   end
   object JvAddPrinterDialog1: TJvAddPrinterDialog
     Left = 416

@@ -9,7 +9,7 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = DJCL60.bpl JVCL200_R60.bpl JVCL200_D60.bpl
+PROJECTS = DJCL60.bpl JVCL200_R60.bpl JVCL200_D60.bpl Project2.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -22,6 +22,9 @@ JVCL200_R60.bpl: JVCL200_R60.dpk
   $(DCC)
 
 DJCL60.bpl: ..\..\JCL\packages\DJCL60.dpk
+  $(DCC)
+
+Project2.exe: ..\examples\DialogsDemo\Project2.dpr
   $(DCC)
 
 

@@ -15,7 +15,7 @@ type
     Label1: TLabel;
     Button1: TButton;
     GroupBox2: TGroupBox;
-    ClipboardViewer1: TJvxClipboardViewer ;
+    ClipboardViewer1: TJvClipboardViewer;
     Label8: TLabel;
     Label9: TLabel;
     ComboBox1: TComboBox;

@@ -4,19 +4,17 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvWinDialogs, JvComponent, JvSHFmt, JvBaseDlg, JvBrowseFolder;
+  StdCtrls, JvWinDialogs, JvComponent, JvBaseDlg, JvBrowseFolder;
 
 type
   TForm1 = class(TForm)
     OrganizeFavoritesDialog: TjvOrganizeFavoritesDialog;
     BrowseFolderDialog: TJvBrowseForFolderDialog;
-    ControlPanel: TjvControlPanelDialog;
     AppletDialog: TjvAppletDialog;
     ChangeIconDialog: TjvChangeIconDialog;
     ShellAboutDialog: TjvShellAboutDialog;
     OutOfMemoryDialog: TjvOutOfMemoryDialog;
     RunDialog: TjvRunDialog;
-    FormatDialog: TJvFormatDrive;
     ComputerNameDialog: TjvComputerNameDialog;
     Button1: TButton;
     Button2: TButton;
@@ -34,19 +32,21 @@ type
     psvNewLinkDialog: TjvNewLinkDialog;
     AddHardwareDialog: TjvAddHardwareDialog;
     Button14: TButton;
+    JvFormatDriveDialog1: TJvFormatDriveDialog;
+    JvAppletDialog1: TJvAppletDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure Button8Click(Sender: TObject);
-    procedure Button9Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure Button11Click(Sender: TObject);
     procedure Button13Click(Sender: TObject);
     procedure Button14Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
+    procedure Button9Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -68,11 +68,6 @@ end;
 procedure TForm1.Button2Click(Sender: TObject);
 begin
   BrowseFolderDialog.Execute;
-end;
-
-procedure TForm1.Button3Click(Sender: TObject);
-begin
-  ControlPanel.Execute;
 end;
 
 procedure TForm1.Button4Click(Sender: TObject);
@@ -100,11 +95,6 @@ begin
   RunDialog.Execute;
 end;
 
-procedure TForm1.Button9Click(Sender: TObject);
-begin
-  FormatDialog.Execute;
-end;
-
 procedure TForm1.Button10Click(Sender: TObject);
 begin
   ComputerNameDialog.Execute;
@@ -127,6 +117,16 @@ end;
 procedure TForm1.Button14Click(Sender: TObject);
 begin
    AddHardwareDialog.Execute;
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  JvAppletDialog1.Execute;
+end;
+
+procedure TForm1.Button9Click(Sender: TObject);
+begin
+  JvFormatDriveDialog1.Execute;
 end;
 
 end.

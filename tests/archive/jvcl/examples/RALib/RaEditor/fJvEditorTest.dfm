@@ -496,17 +496,6 @@ object frmEditor: TfrmEditor
         RightMargin = 0
         RightMarginColor = clSilver
         Completion.Enabled = True
-        Completion.Identifers.Strings = (
-          'Add==method Add==2'
-          'ANSILowerCase==function ANSILowerCase==3'
-          'ANSIUpperCase==function ANSIUpperCase==3'
-          'Application==variable Application==1'
-          'Clear==method Clear==2'
-          'Copy==function Copy==3'
-          'Delete==function Delete==3'
-          'Delete==method Delete==2'
-          'MessageBox==function MessageBox==3'
-          'Screen==variable Screen==1')
         Completion.Templates.Strings = (
           'arrayd==array declaration (var)==array[0..|] of ;'
           'arrayc==array declaration (const)==array[0..|] of = ();'
@@ -549,37 +538,15 @@ object frmEditor: TfrmEditor
         UseDockManager = False
         Colors.Comment.Style = [fsItalic]
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet2: TTabSheet
@@ -700,8 +667,6 @@ object frmEditor: TfrmEditor
         RightMarginColor = clSilver
         Completion.DropDownCount = 8
         Completion.Enabled = True
-        Completion.Identifers.Strings = (
-          'Don'#39't use builder - use DELPHI !=builder')
         Completion.Templates.Strings = (
           'builder=builder sample=Don'#39't use builder - use DELPHI !')
         Completion.ItemHeight = 16
@@ -728,37 +693,15 @@ object frmEditor: TfrmEditor
         HighLighter = hlCBuilder
         Colors.Comment.Style = [fsItalic]
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet3: TTabSheet
@@ -1164,10 +1107,6 @@ object frmEditor: TfrmEditor
         RightMarginColor = clSilver
         Completion.DropDownCount = 8
         Completion.Enabled = True
-        Completion.Identifers.Strings = (
-          'Human=Human'
-          'Organ=Organ'
-          'Vars=Vars')
         Completion.Templates.Strings = (
           'crp=create procedure=create procedure | as/nbegin/nend')
         Completion.ItemHeight = 13
@@ -1194,37 +1133,15 @@ object frmEditor: TfrmEditor
         HighLighter = hlSql
         Colors.Comment.Style = [fsItalic]
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet6: TTabSheet
@@ -1317,37 +1234,15 @@ object frmEditor: TfrmEditor
         HighLighter = hlPython
         Colors.Comment.Style = [fsItalic]
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet7: TTabSheet
@@ -1922,37 +1817,15 @@ object frmEditor: TfrmEditor
         HighLighter = hlJava
         Colors.Comment.Style = [fsItalic]
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet8: TTabSheet
@@ -2178,37 +2051,15 @@ object frmEditor: TfrmEditor
         HighLighter = hlVB
         Colors.Comment.Style = [fsItalic]
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet9: TTabSheet
@@ -2357,37 +2208,16 @@ object frmEditor: TfrmEditor
         HighLighter = hlHtml
         Colors.Comment.Style = [fsItalic]
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clGreen
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clRed
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clRed
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
         Colors.Statement.ForeColor = clLime
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet10: TTabSheet
@@ -2461,39 +2291,19 @@ object frmEditor: TfrmEditor
         TabStop = True
         UseDockManager = False
         HighLighter = hlIni
-        Colors.Comment.Style = []
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clGreen
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clGreen
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clGreen
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
         Colors.Declaration.Style = [fsBold]
         Colors.Declaration.ForeColor = clNavy
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
         Colors.PlainText.ForeColor = clGray
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet11: TTabSheet
@@ -2807,39 +2617,19 @@ object frmEditor: TfrmEditor
         TabStop = True
         UseDockManager = False
         HighLighter = hlPerl
-        Colors.Comment.Style = []
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clGreen
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clGreen
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clGreen
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
         Colors.Declaration.Style = [fsBold]
         Colors.Declaration.ForeColor = clNavy
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
         Colors.PlainText.ForeColor = clGray
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet12: TTabSheet
@@ -2882,39 +2672,19 @@ object frmEditor: TfrmEditor
         TabStop = True
         UseDockManager = False
         HighLighter = hlPhp
-        Colors.Comment.Style = []
         Colors.Comment.ForeColor = clOlive
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clBlack
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
         Colors.Declaration.Style = [fsBold]
         Colors.Declaration.ForeColor = clNavy
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
         Colors.PlainText.ForeColor = clGray
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
       end
     end
     object TabSheet4: TTabSheet
@@ -3083,39 +2853,15 @@ object frmEditor: TfrmEditor
         TabStop = True
         UseDockManager = False
         HighLighter = hlNone
-        Colors.Comment.Style = []
-        Colors.Comment.ForeColor = clWindowText
-        Colors.Comment.BackColor = clWindow
-        Colors.Number.Style = []
         Colors.Number.ForeColor = clNavy
-        Colors.Number.BackColor = clWindow
-        Colors.Strings.Style = []
         Colors.Strings.ForeColor = clPurple
-        Colors.Strings.BackColor = clWindow
-        Colors.Symbol.Style = []
         Colors.Symbol.ForeColor = clBlue
-        Colors.Symbol.BackColor = clWindow
         Colors.Reserved.Style = [fsBold]
         Colors.Reserved.ForeColor = clBlack
-        Colors.Reserved.BackColor = clWindow
-        Colors.Identifer.Style = []
-        Colors.Identifer.ForeColor = clBlack
-        Colors.Identifer.BackColor = clWindow
-        Colors.Preproc.Style = []
+        Colors.Identifier.ForeColor = clBlack
         Colors.Preproc.ForeColor = clGreen
-        Colors.Preproc.BackColor = clWindow
-        Colors.FunctionCall.Style = []
-        Colors.FunctionCall.ForeColor = clWindowText
-        Colors.FunctionCall.BackColor = clWindow
-        Colors.Declaration.Style = []
-        Colors.Declaration.ForeColor = clWindowText
-        Colors.Declaration.BackColor = clWindow
         Colors.Statement.Style = [fsBold]
-        Colors.Statement.ForeColor = clWindowText
-        Colors.Statement.BackColor = clWindow
-        Colors.PlainText.Style = []
-        Colors.PlainText.ForeColor = clWindowText
-        Colors.PlainText.BackColor = clWindow
+        DelphiColors = False
         OnReservedWord = RAEditor3ReservedWord
       end
     end

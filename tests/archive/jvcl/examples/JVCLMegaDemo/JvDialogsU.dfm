@@ -1,6 +1,6 @@
 object JvDialogs: TJvDialogs
-  Left = 75
-  Top = 66
+  Left = 262
+  Top = 119
   Width = 583
   Height = 505
   HelpContext = 3
@@ -331,7 +331,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Open Dialog 2000'
       TabOrder = 5
-      OnClick = JvBitBtn6Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B0000000100000C000000FFFFFF0000FF
@@ -465,7 +464,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Save Dialog 2000'
       TabOrder = 7
-      OnClick = JvBitBtn8Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B0000000100000E000000FFFFFF0000FF
@@ -1202,7 +1200,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Control Panel'
       TabOrder = 18
-      OnClick = JvBitBtn19Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B0000000100000E000000FFFFFF0000FF
@@ -2006,7 +2003,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Password Form'
       TabOrder = 30
-      OnClick = JvBitBtn32Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B00000001000017000000FFFFFF00F0FB
@@ -2073,7 +2069,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Exch. ListBox'
       TabOrder = 31
-      OnClick = JvBitBtn33Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B0000000100000B000000FFFFFF0000FF
@@ -2140,7 +2135,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Login Dialog'
       TabOrder = 32
-      OnClick = JvBitBtn34Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B0000000100000C000000FFFFFF0000FF
@@ -2207,7 +2201,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Serial Number'
       TabOrder = 33
-      OnClick = JvBitBtn35Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B00000001000017000000FFFFFF00F0FB
@@ -2346,7 +2339,6 @@ object JvDialogs: TJvDialogs
       Height = 34
       Caption = 'Progress Dialog'
       TabOrder = 35
-      OnClick = JvBitBtn37Click
       Glyph.Data = {
         76060000424D7606000000000000360400002800000018000000180000000100
         08000000000040020000120B0000120B0000000100000B000000F0FBFF0000FF
@@ -3014,50 +3006,6 @@ object JvDialogs: TJvDialogs
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
-  end
-  object JvPasswordForm1: TJvPasswordForm
-    Title = 'Enter password'
-    OkCaption = '&OK'
-    CancelCaption = '&Cancel'
-    LabelCaption = '&Password:'
-    OnCancel = JvPasswordForm1Cancel
-    OnOk = JvPasswordForm1Ok
-    PasswordChar = '*'
-    Left = 800
-    Top = 312
-  end
-  object JvExchListboxes1: TJvExchListboxes
-    FirstListbox.Strings = (
-      'Line 1'
-      'Line 2'
-      'Line 3'
-      'Line 4'
-      'Line 5')
-    SecondListbox.Strings = (
-      'Item 1'
-      'Item 2'
-      'Item 3'
-      'Item 4'
-      'Item 5')
-    FirstCaption = 'First Column'
-    SecondCaption = 'Second Column'
-    Title = 'Listbox Editor'
-    Left = 800
-    Top = 360
-  end
-  object JvLoginDlg1: TJvLoginDlg
-    FirstLabel = '&Username:'
-    SecondLabel = '&Password:'
-    Title = 'Login'
-    Left = 800
-    Top = 408
-  end
-  object JvSerialDlg1: TJvSerialDlg
-    FirstLabel = '&Name:'
-    SecondLabel = '&Serial:'
-    Title = 'Enter Serial'
-    Left = 800
-    Top = 464
   end
   object JvImageDlg1: TJvImageDlg
     Picture.Data = {
@@ -10792,11 +10740,6 @@ object JvDialogs: TJvDialogs
     Left = 736
     Top = 608
   end
-  object JvProgressDlg1: TJvProgressDlg
-    Text = 'Progress'
-    Left = 800
-    Top = 512
-  end
   object JvDiskPrompt1: TJvDiskPrompt
     Title = 'Insert Disk...'
     DiskName = 'A:\'
@@ -10881,14 +10824,6 @@ object JvDialogs: TJvDialogs
     Left = 616
     Top = 192
   end
-  object JvOpenDialog20001: TJvOpenDialog2000
-    Left = 616
-    Top = 224
-  end
-  object JvSaveDialog20001: TJvSaveDialog2000
-    Left = 616
-    Top = 264
-  end
   object JvConnectNetwork1: TJvConnectNetwork
     Left = 616
     Top = 296
@@ -10918,10 +10853,6 @@ object JvDialogs: TJvDialogs
   object JvComputerNameDialog1: TJvComputerNameDialog
     Left = 680
     Top = 168
-  end
-  object JvControlPanelDialog1: TJvControlPanelDialog
-    Left = 680
-    Top = 216
   end
   object JvAppletDialog1: TJvAppletDialog
     Left = 680

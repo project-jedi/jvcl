@@ -17,7 +17,7 @@ PROJECTS = AppDdeCmdExample.exe ArrowButtonDemo.exe BmpAnimDemo.exe \
   SimpleHIDWrite.exe CollectionDemo.exe GreyMouser.exe ImageWindowDemo.exe \
   Install2LabelDemo.exe JvAniProj.exe JvAppHotKeyDemo.exe JvBrowserFolder.exe \
   JvClipboardViewerProj.exe JVCLDemo.exe ColorComboDemo.exe \
-  JvDataEmbeddedProj.exe DBDTPDemo.exe JvDialogs.exe JvEdits.exe prjControls.exe \
+  JvDataEmbeddedProj.exe DBDTPDemo.exe JvDialogsDemo.exe JvEdits.exe prjControls.exe \
   JvHtmlParserProj.exe InspectorDBExample.exe InspExample.exe JvLinkLabelDemo.exe \
   JvMousePositionnerProj.exe JvMruList.exe EventViewer.exe JvPlayListProj.exe \
   PlugInDemo.exe SamplePluginOne.dll MDIPlugin.dll MDISample.exe \
@@ -128,7 +128,7 @@ JvDataEmbeddedProj.exe: JvDataEmbedded\JvDataEmbeddedProj.dpr
 DBDTPDemo.exe: JvDBDateTimePicker\DBDTPDemo.dpr
   $(DCC)
 
-JvDialogs.exe: JvDialogs\JvDialogs.dpr
+JvDialogsDemo.exe: JvDialogs\JvDialogsDemo.dpr
   $(DCC)
 
 JvEdits.exe: JvEdits\JvEdits.dpr

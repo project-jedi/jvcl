@@ -4,7 +4,6 @@
 #pragma hdrstop
 USEFORMNS("..\Source\JvRegAutoEditor.pas", Jvregautoeditor, JvRegEditor);
 USEFORMNS("..\Source\JvHTHintEditor.pas", Jvhthinteditor, JvHintEditor);
-USEFORMNS("..\Source\JvFormLists.pas", Jvformlists, FormListb);
 USEFORMNS("..\Source\JvFormLog.pas", Jvformlog, foLog);
 USEFORMNS("..\Source\JvDateTimeDlg.pas", Jvdatetimedlg, frmSelectDateTimeDlg);
 USEFORMNS("..\Source\JvStrLEdit.pas", Jvstrledit, JvStrEditDlg);

@@ -55,7 +55,7 @@ JVCLDemo.exe \
 ColorComboDemo.exe \
 JvDataEmbeddedProj.exe \
 DBDTPDemo.exe \
-JvDialogs.exe \
+JvDialogsDemo.exe \
 JvEdits.exe \
 prjControls.exe \
 JvHtmlParserProj.exe \
@@ -281,7 +281,7 @@ DBDTPDemo.exe: JvDBDateTimePicker\DBDTPDemo.dpr
   $(DCC) $&.dpr
   cd ..
 
-JvDialogs.exe: JvDialogs\JvDialogs.dpr
+JvDialogsDemo.exe: JvDialogs\JvDialogsdemo.dpr
   cd JvDialogs
   $(DCC) $&.dpr
   cd ..

@@ -259,7 +259,6 @@ object Form1: TForm1
         Height = 25
         Caption = 'Password'
         TabOrder = 0
-        OnClick = Button11Click
       end
       object Button14: TButton
         Left = 10
@@ -268,7 +267,6 @@ object Form1: TForm1
         Height = 25
         Caption = 'Exchange listboxes'
         TabOrder = 1
-        OnClick = Button14Click
       end
       object Button16: TButton
         Left = 10
@@ -277,7 +275,6 @@ object Form1: TForm1
         Height = 25
         Caption = 'Login'
         TabOrder = 2
-        OnClick = Button16Click
       end
       object Button17: TButton
         Left = 10
@@ -286,7 +283,6 @@ object Form1: TForm1
         Height = 25
         Caption = 'Serial'
         TabOrder = 3
-        OnClick = Button17Click
       end
       object Button18: TButton
         Left = 10
@@ -304,7 +300,6 @@ object Form1: TForm1
         Height = 25
         Caption = 'Progress Dlg'
         TabOrder = 5
-        OnClick = Button19Click
       end
       object Button20: TButton
         Left = 10
@@ -382,45 +377,9 @@ object Form1: TForm1
     Left = 168
     Top = 422
   end
-  object JvPasswordForm1: TJvPasswordForm
-    Title = 'Enter password'
-    OkCaption = '&Ok'
-    CancelCaption = '&Cancel'
-    LabelCaption = 'Password'
-    PasswordChar = '*'
-    Left = 538
-    Top = 146
-  end
-  object JvExchListboxes1: TJvExchListboxes
-    FirstCaption = 'First Column'
-    SecondCaption = 'Second Column'
-    Title = 'Listbox Editor'
-    Left = 624
-    Top = 232
-  end
-  object JvLoginDlg1: TJvLoginDlg
-    FirstLabel = 'Username'
-    SecondLabel = 'Password'
-    Title = 'Enter login'
-    Left = 534
-    Top = 42
-  end
-  object JvSerialDlg1: TJvSerialDlg
-    FirstLabel = 'Name'
-    SecondLabel = 'Serial'
-    Title = 'Enter Serial'
-    Left = 614
-    Top = 102
-  end
   object JvCalculator1: TJvCalculator
     Left = 462
     Top = 298
-  end
-  object JvProgressDlg1: TJvProgressDlg
-    Text = 'Progress'
-    AutoTimeLeft = True
-    Left = 462
-    Top = 246
   end
   object JvDiskPrompt1: TJvDiskPrompt
     Style = []
@@ -477,17 +436,8 @@ object Form1: TForm1
     Top = 536
   end
   object JvOutOfSpaceDlg1: TJvDiskFullDialog
-    DriveChar = 'C'
     Left = 258
     Top = 532
-  end
-  object JvOpenDialog1: TJvOpenDialog2000
-    Left = 274
-    Top = 394
-  end
-  object JvSaveDialog1: TJvSaveDialog2000
-    Left = 292
-    Top = 482
   end
   object JvPageSetupDialog1: TJvPageSetupDialog
     Left = 544
@@ -506,10 +456,6 @@ object Form1: TForm1
     Left = 448
     Top = 424
   end
-  object JvControlPanelDialog1: TJvControlPanelDialog
-    Left = 536
-    Top = 416
-  end
   object JvAppletDialog1: TJvAppletDialog
     Left = 448
     Top = 480
@@ -526,5 +472,17 @@ object Form1: TForm1
   object JvAddPrinterDialog1: TJvAddPrinterDialog
     Left = 312
     Top = 288
+  end
+  object JvOpenDialog1: TJvOpenDialog
+    Height = 0
+    Width = 0
+    Left = 404
+    Top = 280
+  end
+  object JvSaveDialog1: TJvSaveDialog
+    Height = 0
+    Width = 0
+    Left = 384
+    Top = 328
   end
 end

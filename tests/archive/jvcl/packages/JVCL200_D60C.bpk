@@ -8,8 +8,7 @@
       ..\lib6\JvIDEZoom.obj ..\lib6\JvaDsgn.obj ..\lib6\JvRegAutoEditor.obj 
       ..\lib6\JvHTHintEditor.obj ..\lib6\JvIReg.obj ..\lib6\JVCLReg.obj 
       ..\lib6\JvAlarmsEditor.obj ..\lib6\JvBaseDlgEditor.obj 
-      ..\lib6\JvCommonDialogDEditor.obj ..\lib6\JvDataEmbeddedEditor.obj 
-      ..\lib6\JvExchListboxes.obj ..\lib6\JvFormLists.obj ..\lib6\JvFormLog.obj 
+      ..\lib6\JvCommonDialogDEditor.obj ..\lib6\JvDataEmbeddedEditor.obj ..\lib6\JvFormLog.obj
       ..\lib6\JvHtmlParserEditor.obj ..\lib6\JvLogFile.obj 
       ..\lib6\JvLoginDlg.obj ..\lib6\JvPatcherEditor.obj ..\lib6\JVCLMiscal.obj 
       ..\lib6\JvDateTimeDlg.obj ..\lib6\JvDsgnEditors.obj 
@@ -106,12 +105,9 @@
       <FILE FILENAME="..\Source\JvBaseDlgEditor.pas" FORMNAME="" UNITNAME="JvBaseDlgEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvCommonDialogDEditor.pas" FORMNAME="" UNITNAME="JvCommonDialogDEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvDataEmbeddedEditor.pas" FORMNAME="" UNITNAME="JvDataEmbeddedEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\Source\JvExchListboxes.pas" FORMNAME="" UNITNAME="JvExchListboxes" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\Source\JvFormLists.pas" FORMNAME="FormListb" UNITNAME="JvFormLists" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvFormLog.pas" FORMNAME="foLog" UNITNAME="JvFormLog" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvHtmlParserEditor.pas" FORMNAME="" UNITNAME="JvHtmlParserEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvLogFile.pas" FORMNAME="" UNITNAME="JvLogFile" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\Source\JvLoginDlg.pas" FORMNAME="" UNITNAME="JvLoginDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvPatcherEditor.pas" FORMNAME="" UNITNAME="JvPatcherEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JVCLMiscal.pas" FORMNAME="" UNITNAME="JVCLMiscal" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvDateTimeDlg.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

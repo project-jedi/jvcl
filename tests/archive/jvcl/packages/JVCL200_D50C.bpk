@@ -5,10 +5,9 @@
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JVCL200_D50C.bpl"/>
     <OBJFILES value="..\lib5\JVCLReg.obj ..\lib5\JvAlarmsEditor.obj ..\lib5\JvBaseDlgEditor.obj 
-      ..\lib5\JvCommonDialogDEditor.obj ..\lib5\JvDataEmbeddedEditor.obj 
-      ..\lib5\JvExchListboxes.obj ..\lib5\JvFormLists.obj ..\lib5\JvFormLog.obj 
+      ..\lib5\JvCommonDialogDEditor.obj ..\lib5\JvDataEmbeddedEditor.obj ..\lib5\JvFormLog.obj
       ..\lib5\JvHtmlParserEditor.obj ..\lib5\JvLogFile.obj 
-      ..\lib5\JvLoginDlg.obj ..\lib5\JvPatcherEditor.obj ..\lib5\JVCLMiscal.obj 
+      ..\lib5\JvPatcherEditor.obj ..\lib5\JVCLMiscal.obj
       ..\lib5\JvDateTimeDlg.obj ..\lib5\JvDsgnEditors.obj 
       ..\lib5\JvTimeLineEdit.obj ..\lib5\JvOutEdit.obj ..\lib5\JvStrLEdit.obj 
       ..\lib5\JvOLBEditor.obj ..\lib5\JvChNtfyProperty.obj 

@@ -574,7 +574,7 @@ begin
     AddISet(TJvCustomEditor, 'BookMarkValid', TRACustomEditor_Write_BookMarkValid, 1, [varInteger]);
 
     { TCompletionList }
-//    AddConst(cJvEditor, 'cmIdentifers', cmIdentifers);
+    AddConst(cJvEditor, 'cmIdentifiers', cmIdentifiers);
     AddConst(cJvEditor, 'cmTemplates', cmTemplates);
 
     AddConst(cJvEditor, 'ecCharFirst', ecCharFirst);

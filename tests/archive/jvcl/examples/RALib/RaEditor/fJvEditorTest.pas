@@ -127,7 +127,7 @@ begin
   begin
     Canvas.FillRect(Rect);
     case Mode of
-      cmIdentifers :
+      cmIdentifers:
         begin
           ImageIndex := StrToInt(Trim(SubStr(Items[Index], 2, Separator))) - 1;
           ilCompletions.Draw(Canvas, Rect.Left + 2, Rect.Top, ImageIndex);

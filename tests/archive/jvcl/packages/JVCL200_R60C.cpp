@@ -4,11 +4,8 @@
 #pragma hdrstop
 USEFORMNS("..\source\JvFormAlarms.pas", Jvformalarms, FormAlarm);
 USEFORMNS("..\source\JvFormImage.pas", Jvformimage, FormImg);
-USEFORMNS("..\source\JvFormLogin.pas", Jvformlogin, FormLogi);
 USEFORMNS("..\source\JvFormParser.pas", Jvformparser, FormParsers);
-USEFORMNS("..\source\JvFormPass.pas", Jvformpass, PassForm);
 USEFORMNS("..\source\JvFormPatch.pas", Jvformpatch, foPatch);
-USEFORMNS("..\source\JvFormSerial.pas", Jvformserial, FormSer);
 USEFORMNS("..\source\JvFormWallpaperEdit.pas", Jvformwallpaperedit, foWallpaperChooser);
 USEFORMNS("..\source\JvProfiler32.pas", Jvprofiler32, profreport);
 USEFORMNS("..\source\JvColorForm.pas", Jvcolorform, JvClrFrm);

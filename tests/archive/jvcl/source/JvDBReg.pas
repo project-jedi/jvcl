@@ -59,7 +59,7 @@ uses
   JvSelDSFrm,
   JvMemDS,
   JvDBRichEd,
-  JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils, JvDsgn, JvxDConst;
+  JvDBCtrl, JvLookup, JvDBComb, JvVCLUtils, JvDsgn, JvxDConst;
 
 //=== TJvFieldProperty =======================================================
 
@@ -119,7 +119,7 @@ begin
 
   { Data aware components and controls }
   RegisterComponents(srJvDataAccessPalette,
-    [TJvMemoryData, TJvLoginDialog]);
+    [TJvMemoryData]);
 
   RegisterComponents(srJvDataControlsPalette,
     [TJvDBGrid, TJvDBLookupList, TJvDBLookupCombo, TJvLookupEdit, TJvDBDateEdit,
@@ -129,7 +129,7 @@ begin
   RegisterNonActiveX([TJvMemoryData, TJvDBGrid, TJvDBDateEdit,
     TJvDBStatusLabel, TJvDBComboBox, TJvDBLookupList,
     TJvDBLookupCombo, TJvLookupEdit, TJvDBComboEdit, TJvDBCalcEdit,
-    TJvDBRichEdit, TJvCustomDBComboBox, TJvLookupControl, TJvLoginDialog],
+    TJvDBRichEdit, TJvCustomDBComboBox, TJvLookupControl],
     axrComponentOnly);
   { Property and component editors for data aware components }
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, 'LookupField',

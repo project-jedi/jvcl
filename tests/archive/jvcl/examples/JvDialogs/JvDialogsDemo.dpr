@@ -1,4 +1,4 @@
-program JvDialogs;
+program JvDialogsDemo;
 
 uses
   Forms,

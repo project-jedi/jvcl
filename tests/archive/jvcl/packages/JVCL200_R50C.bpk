@@ -12,7 +12,7 @@
       ..\lib5\JvButtonPersistent.obj
       ..\lib5\JvCabFile.obj ..\lib5\JvCaesarCipher.obj ..\lib5\JvCheckBox.obj 
       ..\lib5\JvCheckListBox.obj ..\lib5\JvChrono.obj 
-      ..\lib5\JvClipboardViewer.obj ..\lib5\JvClock.obj ..\lib5\JvCombobox.obj 
+      ..\lib5\JvClock.obj ..\lib5\JvCombobox.obj
       ..\lib5\JvCommonDialogD.obj ..\lib5\JvCommonExecDlg.obj 
       ..\lib5\JvCommStatus.obj ..\lib5\JvComplex.obj ..\lib5\JvComputerInfo.obj 
       ..\lib5\JvConnectNetwork.obj ..\lib5\JvControlBar.obj 
@@ -25,8 +25,7 @@
       ..\lib5\JvFavoritesButton.obj ..\lib5\JvValidateEdit.obj
       ..\lib5\JvFormAlarms.obj ..\lib5\JvFormAnimatedIcon.obj 
       ..\lib5\JvFormAnimation.obj ..\lib5\JvFormImage.obj 
-      ..\lib5\JvFormLogin.obj ..\lib5\JvFormParser.obj ..\lib5\JvFormPass.obj 
-      ..\lib5\JvFormPatch.obj ..\lib5\JvFormPlace.obj ..\lib5\JvFormSerial.obj 
+      ..\lib5\JvFormParser.obj ..\lib5\JvFormPatch.obj ..\lib5\JvFormPlace.obj
       ..\lib5\JvFormToHtml.obj ..\lib5\JvFormWallpaper.obj 
       ..\lib5\JvFormWallpaperEdit.obj ..\lib5\JvFtpGrabber.obj 
       ..\lib5\JvFunctions.obj ..\lib5\JvGammaPanel.obj ..\lib5\JvGenetic.obj 
@@ -42,11 +41,10 @@
       ..\lib5\JvMemoryInfos.obj ..\lib5\JvMonthCalendar.obj 
       ..\lib5\JvMousePositionner.obj ..\lib5\JvMru.obj 
       ..\lib5\JvMultiHttpGrabber.obj ..\lib5\JvNagScreen.obj 
-      ..\lib5\JvPageScroller.obj ..\lib5\JvPanel.obj ..\lib5\JvPasswordForm.obj 
+      ..\lib5\JvPageScroller.obj ..\lib5\JvPanel.obj
       ..\lib5\JvPatchFile.obj ..\lib5\JvPcx.obj ..\lib5\JvPerforated.obj 
       ..\lib5\JvPlaylist.obj ..\lib5\JvPrint.obj ..\lib5\JvProgressBar.obj 
-      ..\lib5\JvDBProgressBar.obj ..\lib5\JvProgressDlg.obj 
-      ..\lib5\JvPropAutoSave.obj ..\lib5\JvRadioButton.obj 
+      ..\lib5\JvDBProgressBar.obj ..\lib5\JvPropAutoSave.obj ..\lib5\JvRadioButton.obj
       ..\lib5\JvRadioGroup.obj ..\lib5\JvRas32.obj
       ..\lib5\JvRecentMenuBtn.obj ..\lib5\JvRegistry.obj 
       ..\lib5\JvRenameError.obj
@@ -55,7 +53,7 @@
       ..\lib5\JvScreenResolution.obj ..\lib5\JvScreenSaver.obj 
       ..\lib5\JvScrollBar.obj ..\lib5\JvScrollBox.obj 
       ..\lib5\JvScrollText.obj
-      ..\lib5\JvSelectDirectory.obj ..\lib5\JvSerialDlg.obj 
+      ..\lib5\JvSelectDirectory.obj
       ..\lib5\JvSerialMaker.obj ..\lib5\JvShape.obj ..\lib5\JvSlider.obj 
       ..\lib5\JvSoundControl.obj ..\lib5\JvSpecialImage.obj 
       ..\lib5\JvSpecialProgress.obj ..\lib5\JvSplitter.obj ..\lib5\JvStarfield.obj
@@ -72,10 +70,9 @@
       ..\lib5\JvWavePlayer.obj ..\lib5\JvWinampApi.obj ..\lib5\JvWinampLabel.obj 
       ..\lib5\JvWinHelp.obj ..\lib5\JvXorCipher.obj ..\lib5\JvZoom.obj 
       ..\lib5\JvCoupler.obj ..\lib5\JvHighlighter.obj ..\lib5\JvGroupBox.obj
-      ..\lib5\JvSyncSplitter.obj ..\lib5\JvPopupMemo.obj 
-      ..\lib5\JvSizeablePanel.obj ..\lib5\JvSpacer.obj 
-      ..\lib5\JvTransparentPanel.obj ..\lib5\JvMousePanel.obj 
-      ..\lib5\JvMouseTimerU.obj ..\lib5\JvSysComp.obj ..\lib5\JvCtrls.obj ..\lib5\JvDdeCmd.obj
+      ..\lib5\JvSyncSplitter.obj ..\lib5\JvPopupMemo.obj ..\lib5\JvSpacer.obj
+      ..\lib5\JvTransparentPanel.obj ..\lib5\JvMouseTimerU.obj ..\lib5\JvSysComp.obj
+      ..\lib5\JvCtrls.obj ..\lib5\JvDdeCmd.obj
       ..\lib5\JvDialogs.obj ..\lib5\JvPerfMon95.obj ..\lib5\JvComCtrls.obj 
       ..\lib5\JvMail.obj ..\lib5\JvPageSetupTitled.obj ..\lib5\JvPageSetup.obj 
       ..\lib5\JVCLVer.obj ..\lib5\JvComponent.obj ..\lib5\JvLinkLabel.obj 
@@ -116,7 +113,7 @@
       ..\lib5\JvSbSetup.obj ..\lib5\JvPageMngr.obj ..\lib5\JvMrgMngr.obj 
       ..\lib5\JvStrHlder.obj ..\lib5\JvAppEvent.obj ..\lib5\JvTimerLst.obj 
       ..\lib5\JvMRUList.obj ..\lib5\JvIni.obj ..\lib5\JvMenus.obj 
-      ..\lib5\JvNotify.obj ..\lib5\JvGrdCpt.obj ..\lib5\JvSplshWnd.obj 
+      ..\lib5\JvGrdCpt.obj ..\lib5\JvSplshWnd.obj
       ..\lib5\JvDataConv.obj ..\lib5\JvOle2Auto.obj ..\lib5\JvVerInf.obj 
       ..\lib5\JvDBCtrl.obj ..\lib5\JvLookup.obj ..\lib5\JvxLogin.obj 
       ..\lib5\JvDBUtils.obj ..\lib5\JvDBComb.obj ..\lib5\JvDBRichEd.obj 
@@ -163,9 +160,7 @@
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
     <RESDEPEN value="$(RESFILES) ..\source\JvFormAlarms.dfm ..\source\JvFormImage.dfm 
-      ..\source\JvFormLogin.dfm ..\source\JvFormParser.dfm 
-      ..\source\JvFormPass.dfm ..\source\JvFormPatch.dfm 
-      ..\source\JvFormSerial.dfm ..\source\JvFormWallpaperEdit.dfm 
+      ..\source\JvFormParser.dfm ..\source\JvFormPatch.dfm ..\source\JvFormWallpaperEdit.dfm
       ..\source\JvProfiler32.dfm ..\source\JvColorForm.dfm 
       ..\source\JvFDualLst.dfm ..\source\JvSbSetup.dfm ..\source\JvxLogin.dfm 
       ..\source\JvChPswDlg.dfm ..\source\JvDBExcpt.dfm 

@@ -67,6 +67,8 @@ object JvDualListForm: TJvDualListForm
     OnDragDrop = SrcListDragDrop
     OnDragOver = SrcListDragOver
     OnKeyDown = SrcListKeyDown
+    Background.FillMode = bfmTile
+    Background.Visible = False
     ScrollBars = ssNone
   end
   object DstList: TJvListBox
@@ -86,6 +88,8 @@ object JvDualListForm: TJvDualListForm
     OnDragDrop = DstListDragDrop
     OnDragOver = DstListDragOver
     OnKeyDown = DstListKeyDown
+    Background.FillMode = bfmTile
+    Background.Visible = False
     ScrollBars = ssNone
   end
   object IncBtn: TButton
@@ -153,6 +157,7 @@ object JvDualListForm: TJvDualListForm
     Top = 239
     Width = 77
     Height = 25
+    Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 6
@@ -163,6 +168,7 @@ object JvDualListForm: TJvDualListForm
     Width = 77
     Height = 25
     Cancel = True
+    Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 7
   end
@@ -171,6 +177,7 @@ object JvDualListForm: TJvDualListForm
     Top = 239
     Width = 77
     Height = 25
+    Caption = 'Help'
     TabOrder = 8
     OnClick = HelpBtnClick
   end

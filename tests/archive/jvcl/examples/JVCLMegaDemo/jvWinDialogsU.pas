@@ -34,7 +34,6 @@ type
     JvSelectDirectory1: TJvSelectDirectory;
     JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog;
     JvComputerNameDialog1: TJvComputerNameDialog;
-    JvControlPanelDialog1: TJvControlPanelDialog;
     JvAppletDialog1: TJvAppletDialog;
     JvChangeIconDialog1: TJvChangeIconDialog;
     JvShellAboutDialog1: TJvShellAboutDialog;
@@ -48,15 +47,11 @@ type
     JvOutOfMemoryDialog1: TJvOutOfMemoryDialog;
     JvConnectNetwork1: TJvConnectNetwork;
     JvDisconnectNetwork1: TJvDisconnectNetwork;
-    JvOpenDialog20001: TJvOpenDialog2000;
-    JvSaveDialog20001: TJvSaveDialog2000;
     JvAddPrinterDialog1: TJvAddPrinterDialog;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure Button15Click(Sender: TObject);
     procedure Button21Click(Sender: TObject);
@@ -69,8 +64,6 @@ type
     procedure Button11Click(Sender: TObject);
     procedure Button10Click(Sender: TObject);
     procedure Button9Click(Sender: TObject);
-    procedure Button18Click(Sender: TObject);
-    procedure Button17Click(Sender: TObject);
     procedure Button16Click(Sender: TObject);
   end;
 
@@ -96,20 +89,6 @@ end;
 procedure TJvWinDialogs.Button4Click(Sender: TObject);
 begin
   JvComputerNameDialog1.execute;
-end;
-
-procedure TJvWinDialogs.Button5Click(Sender: TObject);
-begin
-  JvControlPanelDialog1.execute;
-end;
-
-procedure TJvWinDialogs.Button6Click(Sender: TObject);
-begin
-  if JvOpenDialog20001.execute then
-  begin
-    jvAppletDialog1.AppletName := jvOpenDialog20001.FileName;
-    JvAppletDialog1.execute;
-  end;
 end;
 
 procedure TJvWinDialogs.Button7Click(Sender: TObject);
@@ -171,16 +150,6 @@ end;
 procedure TJvWinDialogs.Button9Click(Sender: TObject);
 begin
   JvDisconnectNetwork1.execute;
-end;
-
-procedure TJvWinDialogs.Button18Click(Sender: TObject);
-begin
-  JvOpenDialog20001.Execute;
-end;
-
-procedure TJvWinDialogs.Button17Click(Sender: TObject);
-begin
-  JvSaveDialog20001.execute;
 end;
 
 procedure TJvWinDialogs.Button16Click(Sender: TObject);

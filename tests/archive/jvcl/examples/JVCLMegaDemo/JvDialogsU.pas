@@ -32,29 +32,23 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvBaseDlg, JvPasswordForm, StdCtrls, JvExchListboxes,
-  JvLoginDlg, JvNagScreen, JvImageDlg, JvWinDialogs, 
-  JvProgressDlg, JvCommonDialogD, JvDiskPrompt, JvCopyError,
+  JvComponent, JvBaseDlg, StdCtrls, JvNagScreen, JvImageDlg, JvWinDialogs,
+  JvCommonDialogD, JvDiskPrompt, JvCopyError,
   JvDeleteError, JvPageSetup, JvPageSetupTitled, JvObjPickerComp,
-  JvCalc, JvTipOfDay, JvSerialDlg, ExtCtrls, JvCaptionPanel, JvFindFiles,
+  JvCalc, JvTipOfDay, ExtCtrls, JvCaptionPanel, JvFindFiles,
   JvGroupBox, Buttons, JvBitBtn, JvDlg, JvBrowseFolder, JvSelectDirectory,
   JvDialogs, JvConnectNetwork, JvAddPrinter, JvRenameError, JvFindReplace;
 
 type
   TJvDialogs = class(TForm)
-    JvPasswordForm1: TJvPasswordForm;
-    JvExchListboxes1: TJvExchListboxes;
-    JvLoginDlg1: TJvLoginDlg;
     JvImageDlg1: TJvImageDlg;
     JvCalculator1: TJvCalculator;
-    JvProgressDlg1: TJvProgressDlg;
     JvDiskPrompt1: TJvDiskPrompt;
     JvCopyError1: TJvCopyError;
     JvDeleteError1: TJvDeleteError;
     JvPageSetupDialog1: TJvPageSetupDialog;
     JvPageSetupTitledDialog1: TJvPageSetupTitledDialog;
     JvObjectPickerDialog1: TJvObjectPickerDialog;
-    JvSerialDlg1: TJvSerialDlg;
     JvCaptionPanel1: TJvCaptionPanel;
     Button17: TButton;
     JvFindFilesDialog1: TJvFindFilesDialog;
@@ -66,8 +60,6 @@ type
     JvBitBtn4: TJvBitBtn;
     JvOpenDialog1: TJvOpenDialog;
     JvSaveDialog1: TJvSaveDialog;
-    JvOpenDialog20001: TJvOpenDialog2000;
-    JvSaveDialog20001: TJvSaveDialog2000;
     JvBitBtn5: TJvBitBtn;
     JvBitBtn6: TJvBitBtn;
     JvBitBtn7: TJvBitBtn;
@@ -96,7 +88,6 @@ type
     JvBitBtn25: TJvBitBtn;
     JvOrganizeFavoritesDialog1: TJvOrganizeFavoritesDialog;
     JvComputerNameDialog1: TJvComputerNameDialog;
-    JvControlPanelDialog1: TJvControlPanelDialog;
     JvAppletDialog1: TJvAppletDialog;
     JvChangeIconDialog1: TJvChangeIconDialog;
     JvShellAboutDialog1: TJvShellAboutDialog;
@@ -140,9 +131,7 @@ type
     procedure JvBitBtn3Click(Sender: TObject);
     procedure JvBitBtn4Click(Sender: TObject);
     procedure JvBitBtn5Click(Sender: TObject);
-    procedure JvBitBtn6Click(Sender: TObject);
     procedure JvBitBtn7Click(Sender: TObject);
-    procedure JvBitBtn8Click(Sender: TObject);
     procedure JvBitBtn9Click(Sender: TObject);
     procedure JvBitBtn10Click(Sender: TObject);
     procedure JvBitBtn11Click(Sender: TObject);
@@ -153,7 +142,6 @@ type
     procedure JvBitBtn16Click(Sender: TObject);
     procedure JvBitBtn17Click(Sender: TObject);
     procedure JvBitBtn18Click(Sender: TObject);
-    procedure JvBitBtn19Click(Sender: TObject);
     procedure JvBitBtn20Click(Sender: TObject);
     procedure JvBitBtn21Click(Sender: TObject);
     procedure JvBitBtn22Click(Sender: TObject);
@@ -166,12 +154,7 @@ type
     procedure JvBitBtn29Click(Sender: TObject);
     procedure JvBitBtn30Click(Sender: TObject);
     procedure JvBitBtn31Click(Sender: TObject);
-    procedure JvBitBtn32Click(Sender: TObject);
-    procedure JvBitBtn33Click(Sender: TObject);
-    procedure JvBitBtn34Click(Sender: TObject);
-    procedure JvBitBtn35Click(Sender: TObject);
     procedure JvBitBtn36Click(Sender: TObject);
-    procedure JvBitBtn37Click(Sender: TObject);
     procedure JvBitBtn39Click(Sender: TObject);
     procedure JvBitBtn40Click(Sender: TObject);
     procedure JvBitBtn42Click(Sender: TObject);
@@ -241,19 +224,9 @@ begin
   jvOpenDialog1.Execute;
 end;
 
-procedure TJvDialogs.JvBitBtn6Click(Sender: TObject);
-begin
-  jvOpenDialog20001.Execute;
-end;
-
 procedure TJvDialogs.JvBitBtn7Click(Sender: TObject);
 begin
   jvSaveDialog1.Execute;
-end;
-
-procedure TJvDialogs.JvBitBtn8Click(Sender: TObject);
-begin
-  jvSaveDialog20001.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn9Click(Sender: TObject);
@@ -304,11 +277,6 @@ end;
 procedure TJvDialogs.JvBitBtn18Click(Sender: TObject);
 begin
   JvComputerNameDialog1.Execute;
-end;
-
-procedure TJvDialogs.JvBitBtn19Click(Sender: TObject);
-begin
-  jvControlPanelDialog1.Execute;
 end;
 
 procedure TJvDialogs.JvBitBtn20Click(Sender: TObject);
@@ -382,26 +350,6 @@ begin
   jvObjectPickerDialog1.Execute;
 end;
 
-procedure TJvDialogs.JvBitBtn32Click(Sender: TObject);
-begin
-   JvPasswordForm1.Execute;
-end;
-
-procedure TJvDialogs.JvBitBtn33Click(Sender: TObject);
-begin
-  JvExchListboxes1.Execute;
-end;
-
-procedure TJvDialogs.JvBitBtn34Click(Sender: TObject);
-begin
-  JvLoginDlg1.Execute;
-end;
-
-procedure TJvDialogs.JvBitBtn35Click(Sender: TObject);
-begin
-  JvSerialDlg1.Execute;
-end;
-
 procedure TJvDialogs.JvBitBtn36Click(Sender: TObject);
 begin
   with TJvNagScreen.Create(Application) do
@@ -410,25 +358,6 @@ begin
     Execute;
   finally
     Free;
-  end;
-
-end;
-
-procedure TJvDialogs.JvBitBtn37Click(Sender: TObject);
-var
-  I: Integer;
-begin
-  with JvProgressDlg1 do
-  begin
-    Text := 'Progressing....';
-    Show;
-    StartProgression;
-    for I := 0 to 100 do
-    begin
-      Value := I;
-      Sleep(100);
-    end;
-    Close;
   end;
 
 end;
