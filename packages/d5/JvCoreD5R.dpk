@@ -1,6 +1,5 @@
 package JvCoreD5R;
 
-{$INCLUDE JVCL.INC}
 {$R *.RES}
 {$ALIGN ON}
 {$ASSERTIONS ON}
@@ -56,6 +55,7 @@ contains
   JvAppStore in '..\..\run\JvAppStore.pas',
   JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
   JvAppIniStore in '..\..\run\JvAppIniStore.pas',
-  JvThemes in '..\..\run\JvThemes.pas';
+  JvThemes in '..\..\run\JvThemes.pas',
+  JvColorProvider in '..\..\run\JvColorProvider.pas';
 
 end.
