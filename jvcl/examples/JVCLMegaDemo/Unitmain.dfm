@@ -795,6 +795,7 @@ object Mainform: TMainform
       Width = 225
       Height = 139
       Align = alTop
+      AutoURLDetect = False
       Color = clInfoBk
       TabOrder = 1
       OnURLClick = JvRichEditHintsURLClick
