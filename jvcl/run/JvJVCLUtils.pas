@@ -31,9 +31,19 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF}
-  Windows, Forms, Graphics, Messages, Classes, Controls, StdCtrls,
-  ExtCtrls, Menus, Dialogs, Registry, ComCtrls, SysUtils, ShellApi,
-  ImgList, Grids, IniFiles,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages, ShellApi,
+  {$ENDIF}
+  SysUtils, Classes,
+  {$IFDEF COMPLIB_VCL}
+  Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
+  Registry, ComCtrls, ImgList, Grids,
+  {$ENDIF}
+  {$IFDEF COMPLIB_CLX}
+  QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus, QDialogs,
+  QComCtrls, QImgList, QGrids,
+  {$ENDIF}
+  IniFiles,
   JclBase, JclSysUtils, JclStrings,
   JvAppStore, JvTypes;
 
@@ -305,6 +315,7 @@ function ExcludeTrailingPathDelimiter(const APath: string): string;
 
 { from JvVCLUtils }
 
+{$IFDEF MSWINDOWS}
 { Windows resources (bitmaps and icons) VCL-oriented routines }
 
 procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
@@ -326,6 +337,7 @@ procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
 procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighlightColor, GrayColor: TColor; DrawHighlight: Boolean);
+{$ENDIF MSWINDOWS}
 
 function MakeIcon(ResID: PChar): TIcon;
 function MakeIconID(ResID: Word): TIcon;
@@ -342,9 +354,11 @@ function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean
 function PaletteColor(Color: TColor): Longint;
 function WidthOf(R: TRect): Integer;
 function HeightOf(R: TRect): Integer;
+{$IFDEF MSWINDOWS}
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 procedure CopyParentImage(Control: TControl; Dest: TCanvas);
+{$ENDIF MSWINDOWS}
 procedure Delay(MSecs: Longint);
 procedure CenterControl(Control: TControl);
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
@@ -353,26 +367,30 @@ function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
 function MsgDlg(const Msg: string; AType: TMsgDlgType;
   AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
-{$IFDEF CBUILDER}
+{$IFDEF MSWINDOWS}
+ {$IFDEF CBUILDER}
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
-{$ELSE}
+ {$ELSE}
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
-{$ENDIF CBUILDER}
+ {$ENDIF CBUILDER}
 function IsForegroundTask: Boolean;
+{$ENDIF MSWINDOWS}
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 function MinimizeText(const Text: string; Canvas: TCanvas;
   MaxWidth: Integer): string;
+{$IFDEF MSWINDOWS}
 procedure FreeUnusedOle;
 procedure Beep;
 function GetWindowsVersion: string;
 function LoadDLL(const LibName: string): THandle;
 function RegisterServer(const ModuleName: string): Boolean;
+{$ENDIF MSWINDOWS}
 
 { Gradient filling routine }
 
@@ -414,6 +432,7 @@ const
   clCream = TColor($A6CAF0);
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($FFFBF0);
+  clMedGray = TColor($A4A0A0);
 
 const
   WaitCursor: TCursor = crHourGlass;
@@ -423,6 +442,7 @@ procedure StopWait;
 function DefineCursor(Instance: THandle; ResID: PChar): TCursor;
 function LoadAniCursor(Instance: THandle; ResID: PChar): HCURSOR;
 
+{$IFDEF MSWINDOWS}
 { Windows API level routines }
 
 procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
@@ -446,6 +466,7 @@ function DialogUnitsToPixelsX(DlgUnits: Word): Word;
 function DialogUnitsToPixelsY(DlgUnits: Word): Word;
 function PixelsToDialogUnitsX(PixUnits: Word): Word;
 function PixelsToDialogUnitsY(PixUnits: Word): Word;
+{$ENDIF MSWINDOWS}
 
 { Grid drawing }
 
@@ -469,6 +490,7 @@ procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
 procedure DrawCellBitmap(Control: TCustomControl; ACol, ARow: Longint;
   Bmp: TGraphic; Rect: TRect);
 
+{$IFDEF COMPLIB_VCL}
 type
   TJvScreenCanvas = class(TCanvas)
   private
@@ -480,6 +502,7 @@ type
     procedure SetOrigin(X, Y: Integer);
     procedure FreeHandle;
   end;
+{$ENDIF COMPLIB_VCL}  
 
 
 { end from JvVCLUtils }
@@ -2366,6 +2389,7 @@ begin
   end;
   Result := False;
 end;
+
 {from JvVCLUtils }
 
 { Exceptions }
@@ -2383,6 +2407,7 @@ end;
 
 { Bitmaps }
 
+{$IFDEF MSWINDOWS}
 function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
 begin
   Result := TBitmap.Create;
@@ -2882,6 +2907,7 @@ begin
     Canvas.Brush.Color := SaveColor;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 { Brush Pattern }
 
@@ -2919,12 +2945,22 @@ end;
 function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
 begin
   Result := TIcon.Create;
+{$IFDEF COMPLIB_VCL}
   Result.Handle := LoadIcon(Module, ResID);
   if Result.Handle = 0 then
   begin
     Result.Free;
     Result := nil;
   end;
+{$ENDIF COMPLIB_VCL}
+{$IFDEF COMPLIB_CLX}
+  try
+    Result.LoadFromResourceName(hInstance, ResID);
+  except
+    Result.Free;
+    Result := nil;
+  end;
+{$ENDIF COMPLIB_CLX}
 end;
 
 { Create TBitmap object from TIcon }
@@ -2954,16 +2990,33 @@ begin
 end;
 
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
+{$IFDEF COMPLIB_CLX}
+var
+  Bmp :TBitmap;
+{$ENDIF}
 begin
   with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
+  {$IFDEF COMPLIB_VCL}
     AllocBy := 1;
+  {$ENDIF}
     AddMasked(Bitmap, TransparentColor);
     Result := TIcon.Create;
     try
+    {$IFDEF COMPLIB_VCL}
       GetIcon(0, Result);
+    {$ENDIF}
+    {$IFDEF COMPLIB_CLX}
+      Bmp := TBitmap.Create;
+      try
+        GetBitmap(0, Bmp);
+        Result.Assign(Bmp);
+      finally
+        Bmp.Free;
+      end;
+    {$ENDIF}
     except
       Result.Free;
       raise;
@@ -2973,6 +3026,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 { Dialog units }
 
 function DialogUnitsToPixelsX(DlgUnits: Word): Word;
@@ -2996,9 +3050,6 @@ begin
 end;
 
 { Service routines }
-
-type
-  TJvHack = class(TCustomControl);
 
 function LoadDLL(const LibName: string): THandle;
 var
@@ -3043,6 +3094,11 @@ begin
   FreeLibrary(GetModuleHandle('OleAut32'));
 end;
 
+{$ENDIF MSWINDOWS}
+
+type
+  TJvHack = class(TCustomControl);
+
 procedure NotImplemented;
 begin
   Screen.Cursor := crDefault;
@@ -3050,6 +3106,7 @@ begin
   Abort;
 end;
 
+{$IFDEF MSWINDOWS}
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 var
   DC: HDC;
@@ -3080,6 +3137,7 @@ begin
     ReleaseDC(0, DC);
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 function WidthOf(R: TRect): Integer;
 begin
@@ -3098,6 +3156,7 @@ begin
       (Right >= P.X) and (Bottom >= P.Y);
 end;
 
+{$IFDEF MSWINDOWS}
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 type
   PPoints = ^TPoints;
@@ -3184,6 +3243,7 @@ function PaletteEntries(Palette: HPALETTE): Integer;
 begin
   GetObject(Palette, SizeOf(Integer), @Result);
 end;
+{$ENDIF MSWINDOWS}
 
 procedure CenterControl(Control: TControl);
 var
@@ -3226,6 +3286,7 @@ begin
     SetBounds(X, Y, Width, Height);
 end;
 
+{$IFDEF MSWINDOWS}
 procedure FitRectToScreen(var Rect: TRect);
 var
   X, Y, Delta: Integer;
@@ -3273,6 +3334,7 @@ begin
   SetWindowPos(Wnd, 0, R.Left, R.Top, 0, 0, SWP_NOACTIVATE or
     SWP_NOSIZE or SWP_NOZORDER);
 end;
+{$ENDIF MSWINDOWS}
 
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
@@ -3306,6 +3368,7 @@ begin
   end;
 end;
 
+{$IFDEF MSWINDOWS}
 { ShowMDIClientEdge function has been copied from Inprise's FORMS.PAS unit,
   Delphi 4 version }
 
@@ -3331,6 +3394,7 @@ begin
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER);
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 function MakeVariant(const Values: array of Variant): Variant;
 begin
@@ -3343,6 +3407,7 @@ begin
     Result := Null;
 end;
 
+{$IFDEF MSWINDOWS}
 { Shade rectangle }
 
 procedure ShadeRect(DC: HDC; const Rect: TRect);
@@ -3529,6 +3594,7 @@ begin
     Result := True;
   end;
 end;
+{$ENDIF MSWINDOWS}
 
 { Standard Windows MessageBox function }
 
@@ -3553,15 +3619,23 @@ var
   RGBDelta: array [0..2] of Integer; { Difference between start and end RGB values }
   ColorBand: TRect; { Color band rectangular coordinates }
   I, Delta: Integer;
+  {$IFDEF COMPLIB_VCL}
   Brush: HBrush;
+  {$ENDIF COMPLIB_VCL}
 begin
   if IsRectEmpty(ARect) then
     Exit;
   if Colors < 2 then
   begin
+  {$IFDEF COMPLIB_VCL}
     Brush := CreateSolidBrush(ColorToRGB(StartColor));
     FillRect(Canvas.Handle, ARect, Brush);
     DeleteObject(Brush);
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
+    Canvas.Brush.Color := StartColor;
+    Canvas.FillRect(ARect);
+  {$ENDIF COMPLIB_CLX}
     Exit;
   end;
   StartColor := ColorToRGB(StartColor);
@@ -3629,12 +3703,21 @@ begin
           end;
       end;
       { Calculate the color band's color }
+      {$IFDEF COMPLIB_VCL}
       Brush := CreateSolidBrush(RGB(
         StartRGB[0] + MulDiv(I, RGBDelta[0], Colors - 1),
         StartRGB[1] + MulDiv(I, RGBDelta[1], Colors - 1),
         StartRGB[2] + MulDiv(I, RGBDelta[2], Colors - 1)));
       FillRect(Canvas.Handle, ColorBand, Brush);
       DeleteObject(Brush);
+      {$ENDIF COMPLIB_VCL}
+      {$IFDEF COMPLIB_CLX}
+      Canvas.Brush.color := RGB(
+        StartRGB[0] + MulDiv(I, RGBDelta[0], Colors - 1),
+        StartRGB[1] + MulDiv(I, RGBDelta[1], Colors - 1),
+        StartRGB[2] + MulDiv(I, RGBDelta[2], Colors - 1));
+      Canvas.FillRect(ColorBand);
+      {$ENDIF COMPLIB_CLX}
     end;
   end;
   if Direction in [fdTopToBottom, fdBottomToTop] then
@@ -3657,6 +3740,7 @@ begin
           ColorBand.Right := ColorBand.Left + Delta;
         end;
     end;
+    {$IFDEF COMPLIB_VCL}
     case Direction of
       fdTopToBottom, fdLeftToRight:
         Brush := CreateSolidBrush(EndColor);
@@ -3665,6 +3749,16 @@ begin
     end;
     FillRect(Canvas.Handle, ColorBand, Brush);
     DeleteObject(Brush);
+    {$ENDIF COMPLIB_VCL}
+   {$IFDEF COMPLIB_CLX}
+    case Direction of
+      fdTopToBottom, fdLeftToRight:
+        Canvas.Brush.Color := EndColor;
+    else {fdBottomToTop, fdRightToLeft }
+      Canvas.Brush.Color := StartColor;
+    end;
+    Canvas.FillRect(ColorBand);
+   {$ENDIF COMPLIB_CLX}
   end;
 end;
 
@@ -3691,7 +3785,13 @@ begin
     Buffer[I] := Chr(I + Ord('A'));
   for I := 0 to 25 do
     Buffer[I + 26] := Chr(I + Ord('a'));
+{$IFDEF COMPLIB_CLX}
+  Result.X := Canvas.TextWidth(Buffer);
+  Result.Y := Canvas.TextHeight(Buffer);
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}
   GetTextExtentPoint(Canvas.Handle, Buffer, 52, TSize(Result));
+{$ENDIF}  
   Result.X := Result.X div 52;
 end;
 
@@ -3700,22 +3800,37 @@ end;
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
+{$IFDEF MSWINDOWS}
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
+{$ENDIF}
+{$IFDEF LINUX}
+    Result := Libc.malloc(Size)
+{$ENDIF}
   else
     Result := nil;
 end;
 
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 begin
+{$IFDEF MSWINDOWS}
   Result := GlobalReallocPtr(fpBlock, Size,
     HeapAllocFlags or GMEM_ZEROINIT);
+{$ENDIF}
+{$IFDEF LINUX}
+  Result := Libc.realloc(fpBlock, Size);
+{$ENDIF}
 end;
 
 procedure FreeMemo(var fpBlock: Pointer);
 begin
   if fpBlock <> nil then
   begin
+{$IFDEF MSWINDOWS}
     GlobalFreePtr(fpBlock);
+{$ENDIF}
+{$IFDEF LINUX}
+    Libc.free(fpBlock);
+{$ENDIF}
     fpBlock := nil;
   end;
 end;
@@ -3727,9 +3842,14 @@ begin
   Result := 0;
   if fpBlock <> nil then
   begin
+{$IFDEF MSWINDOWS}
     hMem := GlobalHandle(fpBlock);
     if hMem <> 0 then
       Result := GlobalSize(hMem);
+{$ENDIF}
+{$IFDEF LINUX}
+    Result := memsize(
+{$ENDIF}
   end;
 end;
 
@@ -4032,6 +4152,7 @@ const
      DT_RIGHT or DT_EXPANDTABS or DT_NOPREFIX,
      DT_CENTER or DT_EXPANDTABS or DT_NOPREFIX);
   WrapFlags: array [Boolean] of Integer = (0, DT_WORDBREAK);
+{$IFDEF COMPLIB_VCL}
   RTL: array [Boolean] of Integer = (0, DT_RTLREADING);
 var
   B, R: TRect;
@@ -4088,6 +4209,13 @@ begin
     end;
   end;
 end;
+{$ENDIF COMPLIB_VCL}
+{$IFDEF COMLIB_CLX}
+begin
+  ACanvas.TextRect(ARect, ARect.Left + DX , ARect.Top + DY,
+                   Text, AlignFlags[alignment] or WrapFlags[WordWrap]);
+end;
+{$ENDIF COMPLIB_CLX}
 
 procedure DrawCellTextEx(Control: TCustomControl; ACol, ARow: Longint;
   const S: string; const ARect: TRect; Align: TAlignment;
@@ -4164,6 +4292,7 @@ begin
   TJvHack(Control).Canvas.Draw(Rect.Left, Rect.Top, Bmp);
 end;
 
+{$IFDEF COMPLIB_VCL}
 destructor TJvScreenCanvas.Destroy;
 begin
   FreeHandle;
@@ -4193,7 +4322,9 @@ var
 begin
   SetWindowOrgEx(Handle, -X, -Y, @FOrigin);
 end;
+{$ENDIF COMPLIB_VCL}
 
+{$IFDEF MSWINDOWS}
 { Check if this is the active Windows task }
 { Copied from implementation of FORMS.PAS  }
 
@@ -4253,11 +4384,12 @@ begin
       dwMinorVersion, dwBuildNumber, szCSDVersion]));
   end;
 end;
-
+{$ENDIF MSWINDOWS}
 // (rom) moved to file end to minimize W- switch impact at end of function
 
 {$W+}
 function GetEnvVar(const VarName: string): string;
+{$IFDEF MSWINDOWS}
 var
   S: array [0..2048] of Char;
 begin
@@ -4265,6 +4397,10 @@ begin
     Result := StrPas(S)
   else
     Result := '';
+{$ENDIF}
+{$IFDEF LINUX}
+  Result := getenv(PChar(VarName));
+{$ENDIF}
 end;
 {$W-}
 

@@ -56,8 +56,6 @@ unit JvJCLUtils;
 
 interface
 
-{$DEFINE INCLUDE_RAUTILSW}
-
 uses
   {$IFDEF MSWINDOWS}
   Windows, ShlObj, ActiveX,
@@ -70,7 +68,7 @@ uses
   Graphics, Clipbrd,
   {$ENDIF}
   {$IFDEF COMPLIB_CLX}
-  Qt, QGraphics, QClipbrd,
+  Qt, QGraphics, QClipbrd, JvUnicodeCanvas,
   {$ENDIF}
   JvTypes,
   {$IFDEF COMPILER6_UP}
@@ -84,12 +82,12 @@ const
   PathDelim = '\';
   DriveDelim = ':';
   PathSep = ';';
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
   AllFilesMask = {$IFDEF MSWINDOWS}'*.*'{$ELSE}'*'{$ENDIF};
 {$IFDEF LINUX}
 type
   TFileTime = Integer;
-{$ENDIF}
+{$ENDIF LINUX}
 
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
@@ -128,6 +126,7 @@ function ConcatLeftSep(const S, S2, Separator: string): string;
 { MinimizeString trunactes long string, S, and appends
   '...' symbols, if Length of S is more than MaxLen }
 function MinimizeString(const S: string; const MaxLen: Integer): string;
+
 { Next 4 function for russian chars transliterating.
   This functions are needed because Oem2Ansi and Ansi2Oem functions
   sometimes works sucks }
@@ -175,14 +174,16 @@ function StrLenW(S: PWideChar): Integer;
 function WideCompareText(const S1, S2: WideString): Integer;
 function WideUpperCase(const S: WideString): WideString;
 function WideLowerCase(const S: WideString): WideString;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
 {**** files routines}
 
+{$IFDEF MSWINDOWS}
 { GetWinDir returns Windows folder name }
 function GetWinDir: TFileName;
+{$ENDIF MSWINDOWS}
 { GetTempDir returns Windows temporary folder name }
 function GetTempDir: string;
 { GenTempFileName returns temporary file name on
@@ -197,17 +198,21 @@ function ClearDir(const Dir: string): Boolean;
 function DeleteDir(const Dir: string): Boolean;
 { FileEquMask returns True if file, FileName,
   is compatible with given dos file mask, Mask }
-function FileEquMask(FileName, Mask: TFileName): Boolean;
+function FileEquMask(FileName, Mask: TFileName;
+  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
 { FileEquMasks returns True if file, FileName,
   is compatible with given Masks.
   Masks must be separated with SepPath (MSW: ';' / LINUX: ':') }
-function FileEquMasks(FileName, Masks: TFileName): Boolean;
+function FileEquMasks(FileName, Masks: TFileName;
+  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
 function DeleteFiles(const Folder: TFileName; const Masks: string):boolean;
+
 {$IFDEF MSWINDOWS}
 { LZFileExpand expand file, FileSource,
   into FileDest. Given file must be compressed, using MS Compress program }
 function LZFileExpand(const FileSource, FileDest: string): Boolean;
-{$ENDIF}
+{$ENDIF MSWINDOWS}
+
 { FileGetInfo fills SearchRec record for specified file attributes}
 function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): Boolean;
 { HasSubFolder returns True, if folder APath contains other folders }
@@ -248,7 +253,6 @@ function TrueInflateRect(const R: TRect; const I: Integer): TRect;
 {$IFDEF LINUX}
 procedure SetRect(out R: TRect; Left, Top, Right, Bottom: Integer);
 {$ENDIF}
-
 
 {**** other routines }
 {$IFDEF MSWINDOWS}
@@ -348,9 +352,9 @@ procedure Roughed(ACanvas: TCanvas; const ARect: TRect; const AVert: Boolean);
   source bitmap }
 function BitmapFromBitmap(SrcBitmap: TBitmap; const AWidth, AHeight, Index: Integer): TBitmap;
 { TextWidth calculate text with for writing using standard desktop font }
-function TextWidth(AStr: string): Integer;
+function TextWidth(const AStr: string): Integer;
 
-procedure SetChildPropOrd(Owner: TComponent; PropName: string; Value: Longint);
+procedure SetChildPropOrd(Owner: TComponent; const PropName: string; Value: Longint);
 procedure Error(const Msg: string);
 procedure ItemHtDrawEx(Canvas: TCanvas; Rect: TRect;
   const State: TOwnerDrawState; const Text: string;
@@ -610,6 +614,10 @@ function StringEndsWith(const Str, SubStr: string): Boolean;
 function ExtractFilePath2(const FileName: string): string;
 {end JvStrUtils}
 
+{$IFDEF LINUX}
+function GetTempFileName(const Prefix: string);
+{$ENDIF LINUX}
+
 { begin JvFileUtil }
 function GetFileSize(const FileName: string): Int64;
 function FileDateTime(const FileName: string): TDateTime;
@@ -823,241 +831,6 @@ begin
     Result := Copy(S, iBeg, iEnd - iBeg)
   else
     Result := S[P];
-end;
-
-{$IFDEF MSWINDOWS}
-function GetWinDir: TFileName;
-begin
-  Result := GetWindowsDir;
-end;
-{$ENDIF}
-
-function GenTempFileName(FileName: string): string;
-var
-  TempDir: array [0..MAX_PATH] of Char;
-  TempFile: array [0..MAX_PATH] of Char;
-  STempDir: TFileName;
-  Res: Integer;
-begin
-  TempDir[GetTempPath(260, TempDir)] := #0;
-  if FileName <> '' then
-  begin
-    if Length(FileName) < 4 then
-      FileName := ExpandFileName(FileName);
-    if (Length(FileName) > 4) and (FileName[2] = ':') and
-      (StrLen(@TempDir[0]) > 4) and
-      (AnsiCompareText(TempDir[0], FileName[1]) <> 0) then
-    begin
-      STempDir := ExtractFilePath(FileName);
-      Move(STempDir[1], TempDir, Length(STempDir) + 1);
-    end;
-  end;
-  Res := GetTempFileName(
-    TempDir, { address of directory name for temporary file}
-    '~RA', { address of filename prefix}
-    0, { number used to create temporary filename}
-    TempFile); { address of buffer that receives the new filename}
-  if Res <> 0 then
-    Result := TempFile
-  else
-    Result := '~JVCLTemp.tmp';
-  DeleteFile(Result);
-end;
-
-function GenTempFileNameExt(FileName: string; const FileExt: string): string;
-begin
-  Result := ChangeFileExt(GenTempFileName(FileName), FileExt);
-end;
-
-function GetTempDir: string;
-{$IFDEF MSWINDOWS}
-var
-  TempDir: array [0..MAX_PATH] of Char;
-begin
-  TempDir[GetTempPath(260, TempDir)] := #0;
-  Result := TempDir;
-end;
-{$ENDIF}
-{$IFDEF LINUX}
-function GetTempDir: string;
-begin
-  Result := '/tmp'; // hard coded
-end;
-{$ENDIF}
-
-
-function ClearDir(const Dir: string): Boolean;
-var
-  SearchRec: TSearchRec;
-  DosError: Integer;
-  Path: TFileName;
-begin
-  Result := True;
-  Path := Dir;
-  AddSlash(Path);
-  DosError := FindFirst(Path + '*.*', faAnyFile, SearchRec);
-  while DosError = 0 do
-  begin
-    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-    begin
-      if (SearchRec.Attr and faDirectory) = faDirectory then
-        Result := Result and DeleteDir(Path + SearchRec.Name)
-      else
-        Result := Result and DeleteFile(Path + SearchRec.Name);
-      // if not Result then Exit;
-    end;
-    DosError := FindNext(SearchRec);
-  end;
-  FindClose(SearchRec);
-end;
-
-function DeleteDir(const Dir: string): Boolean;
-begin
-  ClearDir(Dir);
-  Result := RemoveDir(Dir);
-end;
-
-function DeleteFiles(const Folder: TFileName; const Masks: string):boolean;
-var
-  SearchRec: TSearchRec;
-  DosError: Integer;
-  Path: TFileName;
-begin
-  Result := false;
-  Path := AddSlash2(Folder);
-  DosError := FindFirst(Path + AllFilesMask, faAnyFile and not faDirectory, SearchRec);
-  while DosError = 0 do
-  begin
-    if FileEquMasks(Path + SearchRec.Name, Masks) then
-      Result := DeleteFile(Path + SearchRec.Name);
-    DosError := FindNext(SearchRec);
-  end;
-  FindClose(SearchRec);
-end;
-
-function GetParameter: string;
-var
-  FN, FN1: PChar;
-begin
-  if ParamCount = 0 then
-  begin
-    Result := '';
-    Exit
-  end;
-{$WARNINGS OFF}
-  FN := CmdLine;
-{$WARNINGS ON}
-  if FN[0] = '"' then
-  begin
-    FN := StrScan(FN + 1, '"');
-    if (FN[0] = #00) or (FN[1] = #00) then
-      Result := ''
-    else
-    begin
-      Inc(FN, 2);
-      if FN[0] = '"' then
-      begin
-        Inc(FN, 1);
-        FN1 := StrScan(FN + 1, '"');
-        if FN1[0] <> #00 then
-          FN1[0] := #00;
-      end;
-      Result := FN;
-    end;
-  end
-  else
-{$WARNINGS OFF}
-    Result := Copy(CmdLine, Length(ParamStr(0)) + 1, 260);
-{$WARNINGS ON}
-  while (Length(Result) > 0) and (Result[1] = ' ') do
-    Delete(Result, 1, 1);
-  Result := ReplaceString(Result, '"', '');
-  if FileExists(Result) then
-    Result := GetLongFileName(Result);
-end;
-
-function GetLongFileName(FileName: string): string;
-{$IFDEF MSWINDOWS}
-var
-  SearchRec: TSearchRec;
-{$ENDIF}  
-begin
-{$IFDEF MSWINDOWS}
-  if FileGetInfo(FileName, SearchRec) then
-    {$WARNINGS OFF}
-    Result := ExtractFilePath(ExpandFileName(FileName)) + SearchRec.FindData.cFileName
-    {$WARNINGS ON}
-  else
-{$ENDIF}
-    Result := FileName;
-end;
-
-function FileEquMask(FileName, Mask: TFileName): Boolean;
-var
-  I: Integer;
-  C: Char;
-  P: PChar;
-begin
-  FileName := AnsiUpperCase(ExtractFileName(FileName));
-  Mask := AnsiUpperCase(Mask);
-  Result := False;
-{$IFDEF MSWINDOWS}
-  if Pos('.', FileName) = 0 then
-    FileName := FileName + '.';
-{$ENDIF}    
-  I := 1;
-  P := PChar(FileName);
-  while I <= Length(Mask) do
-  begin
-    C := Mask[I];
-    if (P[0] = #0) and (C <> '*') then
-      Exit;
-    case C of
-      '*':
-        if I = Length(Mask) then
-        begin
-          Result := True;
-          Exit;
-        end
-        else
-        begin
-          P := StrScan(P, Mask[I + 1]);
-          if P = nil then
-            Exit;
-        end;
-      '?':
-        Inc(P);
-    else
-      if C = P[0] then
-        Inc(P)
-      else
-        Exit;
-    end;
-    Inc(I);
-  end;
-  if P[0] = #0 then
-    Result := True;
-end;
-
-function FileEquMasks(FileName, Masks: TFileName): Boolean;
-var
-  I: Integer;
-  Mask: string;
-begin
-  Result := False;
-  I := 0;
-  Mask := Trim(GetSubStr(Masks, I, PathSep));
-  while Length(Mask) <> 0 do
-    if FileEquMask(FileName, Mask) then
-    begin
-      Result := True;
-      Break;
-    end
-    else
-    begin
-      Inc(I);
-      Mask := Trim(GetSubStr(Masks, I, PathSep));
-    end;
 end;
 
 { (rb) This function seems to translate a number to a russian string, but is
@@ -1324,76 +1097,6 @@ begin
   Result := SubStr(S, MaxIndex - Index, Separator);
 end;
 
-function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): Boolean;
-var
-  DosError: Integer;
-  Path: TFileName;
-begin
-  Result := False;
-  Path := ExtractFilePath(ExpandFileName(FileName)) + AllFilesMask;
-  FileName := AnsiUpperCase(ExtractFileName(FileName));
-  DosError := FindFirst(Path, faAnyFile, SearchRec);
-  while DosError = 0 do
-  begin
-{$IFDEF MSWINDOWS}
-    {$WARNINGS OFF}
-    if (AnsiCompareText(SearchRec.FindData.cFileName, FileName) = 0) or
-      (AnsiCompareText(SearchRec.FindData.cAlternateFileName, FileName) = 0) then
-   {$WARNINGS ON}
-    begin
-      Result := True;
-      Break;
-    end;
-    DosError := FindNext(SearchRec);
-{$ENDIF}
-// Linux has no alternate file names    
-  end;
-  FindClose(SearchRec);
-end;
-
-function HasSubFolder(APath: TFileName): Boolean;
-var
-  SearchRec: TSearchRec;
-  DosError: Integer;
-begin
-  Result := False;
-  AddSlash(APath);
-  APath := Concat(APath, AllFilesMask);
-  DosError := FindFirst(APath, faDirectory, SearchRec);
-  while DosError = 0 do
-  begin
-    if (SearchRec.Attr and faDirectory = faDirectory) and
-       (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-    begin
-      Result := True;
-      Break;
-    end;
-    DosError := FindNext(SearchRec);
-  end;
-  FindClose(SearchRec);
-end;
-
-function IsEmptyFolder(APath: TFileName): Boolean;
-var
-  SearchRec: TSearchRec;
-  DosError: Integer;
-begin
-  Result := True;
-  AddSlash(APath);
-  APath := Concat(APath, AllFilesMask);
-  DosError := FindFirst(APath, faDirectory, SearchRec);
-  while DosError = 0 do
-  begin
-    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
-    begin
-      Result := False;
-      Break;
-    end;
-    DosError := FindNext(SearchRec);
-  end;
-  FindClose(SearchRec);
-end;
-
 function TTFontSelected(const DC: HDC): Boolean;
 var
   TM: TTEXTMETRIC;
@@ -1496,21 +1199,95 @@ end;
 {$ENDIF}
 
 
-{* from unit FileCtrl}
-
-function DirectoryExists(const Name: string): Boolean;
-{$IFDEF MSWINDOWS}
+function FileGetInfo(FileName: TFileName; var SearchRec: TSearchRec): Boolean;
 var
-  Code: Integer;
+  DosError: Integer;
+  Path: TFileName;
 begin
-  Code := Integer(GetFileAttributes(PChar(Name)));
-  Result := (Code <> -1) and (FILE_ATTRIBUTE_DIRECTORY and Code <> 0);
-end;
+  Result := False;
+  Path := ExtractFilePath(ExpandFileName(FileName)) + AllFilesMask;
+{$IFDEF MSWINDOWS}
+  FileName := AnsiUpperCase(ExtractFileName(FileName));
 {$ENDIF}
 {$IFDEF LINUX}
+  FileName := ExtactFileName(FileName);
+{$ENDIF}
+  DosError := FindFirst(Path, faAnyFile, SearchRec);
+  while DosError = 0 do
+  begin
+{$IFDEF MSWINDOWS}
+   {$WARNINGS OFF}
+    if (AnsiCompareText(SearchRec.FindData.cFileName, FileName) = 0) or
+      (AnsiCompareText(SearchRec.FindData.cAlternateFileName, FileName) = 0) then
+   {$WARNINGS ON}
+{$ENDIF}
+{$IFDEF LINUX}
+    if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
+{$ENDIF}
+    begin
+      Result := True;
+      Break;
+    end;
+    DosError := FindNext(SearchRec);
+  end;
+  FindClose(SearchRec);
+end;
+
+function HasSubFolder(APath: TFileName): Boolean;
+var
+  SearchRec: TSearchRec;
+  DosError: Integer;
+begin
+  Result := False;
+  AddSlash(APath);
+  APath := Concat(APath, AllFilesMask);
+  DosError := FindFirst(APath, faDirectory, SearchRec);
+  while DosError = 0 do
+  begin
+    if (SearchRec.Attr and faDirectory = faDirectory) and
+       (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+    begin
+      Result := True;
+      Break;
+    end;
+    DosError := FindNext(SearchRec);
+  end;
+  FindClose(SearchRec);
+end;
+
+function IsEmptyFolder(APath: TFileName): Boolean;
+var
+  SearchRec: TSearchRec;
+  DosError: Integer;
+begin
+  Result := True;
+  AddSlash(APath);
+  APath := Concat(APath, AllFilesMask);
+  DosError := FindFirst(APath, faDirectory, SearchRec);
+  while DosError = 0 do
+  begin
+    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+    begin
+      Result := False;
+      Break;
+    end;
+    DosError := FindNext(SearchRec);
+  end;
+  FindClose(SearchRec);
+end;
+
+function DirectoryExists(const Name: string): Boolean;
+{$IFDEF COMPILER6_UP}
 begin
   Result := SysUtils.DirectoryExists(Name);
-{$ENDIF}
+end;
+{$ELSE}
+var Code: Cardinal;
+begin
+  Code := Integer(GetFileAttributes(PChar(Name)));
+  Result := (Code <> $FFFFFFFF) and (Code and FILE_ATTRIBUTE_DIRECTORY <> 0);
+end;
+{$ENDIF COMPILER6_UP}
 
 procedure ForceDirectories(Dir: string);
 begin
@@ -1519,7 +1296,7 @@ begin
 {$IFDEF MSWINDOWS}
   if (Length(Dir) < 3) or DirectoryExists(Dir) or (ExtractFilePath(Dir) = Dir) then
     Exit; { avoid 'xyz:\' problem.}
-{$ENDIF}    
+{$ENDIF}
   ForceDirectories(ExtractFilePath(Dir));
   CreateDir(Dir);
 end;
@@ -2329,14 +2106,7 @@ begin
     Result := H * Ss.Count;
     if not CalcHeight then
       for I := 0 to Ss.Count - 1 do
-{        TUnicodeCanvas(Canvas).ExtTextOut(
-          R.Left, // X-coordinate of reference point
-          R.Top + H * I, // Y-coordinate of reference point
-          [etoClipped],
-          @RClip, // optional clipping and/or opaquing rectangle
-          Ss[I],
-          nil); // address of array of intercharacter spacing values
-}
+      {$IFDEF MSWINDOWS}
         ExtTextOut(
           Canvas.Handle, // handle of device context
           R.Left, // X-coordinate of reference point
@@ -2346,6 +2116,16 @@ begin
           PChar(Ss[I]),
           Length(Ss[I]), // number of characters in string
           nil); // address of array of intercharacter spacing values
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+        TUnicodeCanvas(Canvas).ExtTextOut(
+          R.Left, // X-coordinate of reference point
+          R.Top + H * I, // Y-coordinate of reference point
+          [etoClipped],
+          @RClip, // optional clipping and/or opaquing rectangle
+          Ss[I],
+          nil); // address of array of intercharacter spacing values
+      {$ENDIF LINUX}
   finally
     Ss.Free;
   end;
@@ -2802,7 +2582,7 @@ end;
 {$ENDIF}
 
 
-function TextWidth(AStr: string): Integer;
+function TextWidth(const AStr: string): Integer;
 {$IFDEF MSWINDOWS}
 var
   Canvas: TCanvas;
@@ -2826,7 +2606,6 @@ var
   Bmp: TBitmap;
 begin
   Bmp := TBitmap.Create;
-  // (rom) secured
   try
     Result := Bmp.Canvas.TextWidth(AStr);
   finally
@@ -2836,8 +2615,7 @@ end;
 {$ENDIF}
 
 
-
-procedure SetChildPropOrd(Owner: TComponent; PropName: string; Value: Longint);
+procedure SetChildPropOrd(Owner: TComponent; const PropName: string; Value: Longint);
 var
   I: Integer;
   PropInfo: PPropInfo;
@@ -3244,7 +3022,7 @@ end;
 var
 {$ELSE}
 const
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
   Private_CF_ICON: Word = 0;
 
 function CF_ICON: Word;
@@ -3714,7 +3492,7 @@ begin
   end;
 end;
 { end JvIconClipboardUtils }
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 
 { begin JvRLE }
@@ -4477,7 +4255,6 @@ begin
     end;
   end;
 end;
-
 
 function iconvString(const S, ToCode, FromCode: string): string;
 begin
@@ -5501,7 +5278,7 @@ begin
       Result := Result + ':\'
     else
       Result := Result + '\';
-{$ENDIF}      
+{$ENDIF}
 end;
 
 function RemoveBackSlash(const DirName: string): string;
@@ -5599,7 +5376,265 @@ var
 begin
   SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
 end;
+
+function GetWinDir: TFileName;
+begin
+  Result := GetWindowsDir;
+end;
+{$ENDIF MSWINDOWS}
+
+{$IFDEF LINUX}
+function GetTempFileName(const Prefix: string);
+var
+  P: PChar;
+begin
+  P := tempnam(nil, Pointer(Prefix));
+  Result := P;
+  if P <> nil then
+    Libc.free(P);
+end;
+{$ENDIF LINUX}
+
+function GenTempFileName(FileName: string): string;
+var
+  TempDir: string;
+  TempFile: array [0..MAX_PATH] of Char;
+  STempDir: TFileName;
+  Res: Integer;
+begin
+  TempDir := GetTempDir;
+  if FileName <> '' then
+  begin
+    if Length(FileName) < 4 then
+      FileName := ExpandFileName(FileName);
+    if (Length(FileName) > 4) and (FileName[2] = ':') and
+      (Length(TempDir) > 4) and
+      (AnsiCompareText(TempDir, FileName) <> 0) then
+    begin
+      STempDir := ExtractFilePath(FileName);
+      Move(STempDir[1], TempDir, Length(STempDir) + 1);
+    end;
+  end;
+{$IFDEF MSWINDOWS}
+  Res := GetTempFileName(
+    PChar(TempDir), { address of directory name for temporary file}
+    '~JV', { address of filename prefix}
+    0, { number used to create temporary filename}
+    TempFile); { address of buffer that receives the new filename}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+  TempFile := GetTempFileName('~JV');
+{$ENDIF LINUX}
+  if Res <> 0 then
+    Result := TempFile
+  else
+    Result := '~JVCLTemp.tmp';
+  DeleteFile(Result);
+end;
+
+function GenTempFileNameExt(FileName: string; const FileExt: string): string;
+begin
+  Result := ChangeFileExt(GenTempFileName(FileName), FileExt);
+end;
+
+function GetTempDir: string;
+{$IFDEF MSWINDOWS}
+var
+  TempDir: array [0..MAX_PATH] of Char;
+begin
+  TempDir[GetTempPath(260, TempDir)] := #0;
+  Result := TempDir;
+end;
 {$ENDIF}
+{$IFDEF LINUX}
+begin
+  Result := ExtractFileDir(GetTempFileName(''));
+  if Result = '' then
+    Result := '/tmp'; // hard coded
+end;
+{$ENDIF}
+
+function ClearDir(const Dir: string): Boolean;
+var
+  SearchRec: TSearchRec;
+  DosError: Integer;
+  Path: TFileName;
+begin
+  Result := True;
+  Path := Dir;
+  AddSlash(Path);
+  DosError := FindFirst(Path + AllFilesMask, faAnyFile, SearchRec);
+  while DosError = 0 do
+  begin
+    if (SearchRec.Name <> '.') and (SearchRec.Name <> '..') then
+    begin
+      if (SearchRec.Attr and faDirectory) = faDirectory then
+        Result := Result and DeleteDir(Path + SearchRec.Name)
+      else
+        Result := Result and DeleteFile(Path + SearchRec.Name);
+      // if not Result then Exit;
+    end;
+    DosError := FindNext(SearchRec);
+  end;
+  FindClose(SearchRec);
+end;
+
+function DeleteDir(const Dir: string): Boolean;
+begin
+  ClearDir(Dir);
+  Result := RemoveDir(Dir);
+end;
+
+function DeleteFiles(const Folder: TFileName; const Masks: string):boolean;
+var
+  SearchRec: TSearchRec;
+  DosError: Integer;
+  Path: TFileName;
+begin
+  Result := false;
+  Path := AddSlash2(Folder);
+  DosError := FindFirst(Path + AllFilesMask, faAnyFile and not faDirectory, SearchRec);
+  while DosError = 0 do
+  begin
+    if FileEquMasks(Path + SearchRec.Name, Masks) then
+      Result := DeleteFile(Path + SearchRec.Name);
+    DosError := FindNext(SearchRec);
+  end;
+  FindClose(SearchRec);
+end;
+
+function GetParameter: string;
+var
+  FN, FN1: PChar;
+begin
+  if ParamCount = 0 then
+  begin
+    Result := '';
+    Exit
+  end;
+{$WARNINGS OFF}
+  FN := CmdLine;
+{$WARNINGS ON}
+  if FN[0] = '"' then
+  begin
+    FN := StrScan(FN + 1, '"');
+    if (FN[0] = #0) or (FN[1] = #0) then
+      Result := ''
+    else
+    begin
+      Inc(FN, 2);
+      if FN[0] = '"' then
+      begin
+        Inc(FN, 1);
+        FN1 := StrScan(FN + 1, '"');
+        if FN1[0] <> #0 then
+          FN1[0] := #0;
+      end;
+      Result := FN;
+    end;
+  end
+  else
+{$WARNINGS OFF}
+    Result := Copy(CmdLine, Length(ParamStr(0)) + 1, 260);
+{$WARNINGS ON}
+  while (Length(Result) > 0) and (Result[1] = ' ') do
+    Delete(Result, 1, 1);
+  Result := ReplaceString(Result, '"', '');
+  if FileExists(Result) then
+    Result := GetLongFileName(Result);
+end;
+
+function GetLongFileName(FileName: string): string;
+{$IFDEF MSWINDOWS}
+var
+  SearchRec: TSearchRec;
+{$ENDIF}
+begin
+{$IFDEF MSWINDOWS}
+  if FileGetInfo(FileName, SearchRec) then
+    {$WARNINGS OFF}
+    Result := ExtractFilePath(ExpandFileName(FileName)) + SearchRec.FindData.cFileName
+    {$WARNINGS ON}
+  else
+    Result := FileName;
+{$ENDIF}
+{$IFDEF LINUX}
+  Result := ExpandFileName(FileName);
+{$ENDIF}
+end;
+
+function FileEquMask(FileName, Mask: TFileName;
+  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+var
+  I: Integer;
+  C: Char;
+  P: PChar;
+begin
+  if not CaseSensitive then
+  begin
+    FileName := AnsiUpperCase(ExtractFileName(FileName));
+    Mask := AnsiUpperCase(Mask);
+  end;
+  Result := False;
+{$IFDEF MSWINDOWS}
+  if Pos('.', FileName) = 0 then
+    FileName := FileName + '.';
+{$ENDIF}
+  I := 1;
+  P := PChar(FileName);
+  while I <= Length(Mask) do
+  begin
+    C := Mask[I];
+    if (P[0] = #0) and (C <> '*') then
+      Exit;
+    case C of
+      '*':
+        if I = Length(Mask) then
+        begin
+          Result := True;
+          Exit;
+        end
+        else
+        begin
+          P := StrScan(P, Mask[I + 1]);
+          if P = nil then
+            Exit;
+        end;
+      '?':
+        Inc(P);
+    else
+      if C = P[0] then
+        Inc(P)
+      else
+        Exit;
+    end;
+    Inc(I);
+  end;
+  if P[0] = #0 then
+    Result := True;
+end;
+
+function FileEquMasks(FileName, Masks: TFileName;
+  CaseSensitive: Boolean = {$IFDEF WINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+var
+  I: Integer;
+  Mask: string;
+begin
+  Result := False;
+  I := 0;
+  Mask := Trim(GetSubStr(Masks, I, PathSep));
+  while Length(Mask) <> 0 do
+    if FileEquMask(FileName, Mask, CaseSensitive) then
+    begin
+      Result := True;
+      Break;
+    end
+    else
+    begin
+      Inc(I);
+      Mask := Trim(GetSubStr(Masks, I, PathSep));
+    end;
+end;
 
 function ValidFileName(const FileName: string): Boolean;
 
