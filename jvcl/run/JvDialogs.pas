@@ -139,10 +139,7 @@ uses
   CommDlg, CommCtrl, Dlgs,
   SysUtils, Math,
   JclSysInfo,
-  JvJVCLUtils, JvFinalize;
-
-const
-  sUnitName = 'JvDialogs';
+  JvJVCLUtils;
 
 const
   btnOk = 1;
@@ -180,11 +177,7 @@ end;
 procedure InstallW2kFix;
 begin
   if JvDialogsUseFixW2k and IsWin2K and (W2kFixMsAcmLibrary = 0) then
-  begin
     W2kFixMsAcmLibrary := LoadLibrary('msacm32.dll');
-    if W2kFixMsAcmLibrary > 0 then
-      AddFinalizeProc(sUnitName, UninstallW2kFix);
-  end;
 end;
 
 //=== { TJvOpenDialog } ======================================================
@@ -675,9 +668,9 @@ initialization
 
 
 finalization
+  UninstallW2kFix;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.

@@ -109,10 +109,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvMTData';
+  JvResources;
 {$ENDIF USEJVCL}
 
 
@@ -127,12 +124,7 @@ var
 function DataThreadsMan: TMTManager;
 begin
   if not Assigned(GlobalDataThreadsMan) then
-  begin
     GlobalDataThreadsMan := TMTManager.Create;
-    {$IFDEF USEJVCL}
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalDataThreadsMan));
-    {$ENDIF USEJVCL}
-  end;
   Result := GlobalDataThreadsMan;
 end;
 
@@ -378,11 +370,8 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+  FreeAndNil(GlobalDataThreadsMan);
   {$IFDEF MSWINDOWS}
   // (rom) no OutputDebugString in production code
   {$IFDEF DEBUGINFO_ON}
@@ -392,10 +381,8 @@ finalization
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
 
-  {$IFDEF USEJVCL}
-  FinalizeUnit(sUnitName);
-  {$ELSE}
-  GlobalDataThreadsMan.Free;
-  {$ENDIF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.

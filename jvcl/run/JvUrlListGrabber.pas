@@ -491,14 +491,11 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  JvConsts, JvResources, JvFinalize,
+  JvConsts, JvResources,
   // JvUrlGrabbers MUST be included here so that the grabbers
   // it contains are registered before any JvUrlListGrabber
   // component reads its properties.
   JvUrlGrabbers;
-
-const
-  sUnitName = 'JvUrlListGrabber';
 
 var
   // the global object to contain the list of registered
@@ -508,11 +505,7 @@ var
 function JvUrlGrabberClassList: TJvUrlGrabberClassList;
 begin
   if not Assigned(GJvUrlGrabberClassList) then
-  begin
-    // create the object
     GJvUrlGrabberClassList := TJvUrlGrabberClassList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GJvUrlGrabberClassList));
-  end;
   Result := GJvUrlGrabberClassList;
 end;
 
@@ -1313,12 +1306,12 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GJvUrlGrabberClassList);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

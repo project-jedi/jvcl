@@ -87,10 +87,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Forms,
-  JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvDdeCmd';
+  JvResources;
 
 const
   DdeTopicStr = 'System';
@@ -180,10 +177,7 @@ begin
   if not (csDesigning in ComponentState) then
   begin
     if not Assigned(AppDdeMgr) then
-    begin
       AppDdeMgr := TAppDdeMgr.Create;
-      AddFinalizeObjectNil(sUnitName, TObject(AppDdeMgr));
-    end;
     AppDdeMgr.AddComponent(Self);
     Application.HookMainWindow(HookWndProc);
   end;
@@ -396,11 +390,10 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(AppDdeMgr);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.

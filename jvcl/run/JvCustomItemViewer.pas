@@ -342,10 +342,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   SysUtils, Math,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvFinalize;
-
-const
-  sUnitName = 'JvCustomItemViewer';
+  JvJCLUtils, JvJVCLUtils, JvThemes;
 
 const
   cScrollDelay = 400;
@@ -413,10 +410,7 @@ begin
   begin
     I := Length(GlobalPatterns);
     if FirstGlobalPatterns then
-    begin
       FirstGlobalPatterns := False;
-      AddFinalizeProc(sUnitName, ClearBrushPatterns);
-    end;
     SetLength(GlobalPatterns, I + 1);
   end;
   if Result = nil then
@@ -1989,10 +1983,10 @@ initialization
   LoadOLEDragCursors;
 
 finalization
+  ClearBrushPatterns;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

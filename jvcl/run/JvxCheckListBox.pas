@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
   Peter Thornqvist [peter3 at sourceforge dot net]
-  Andreas Hausladen (XP theming, JvFinalize)
+  Andreas Hausladen (XP theming)
 
 Changes:
 2003-10-19:
@@ -42,7 +42,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  JvAppStorage, JvFormPlacement, JvComponent, JvFinalize;
+  JvAppStorage, JvFormPlacement, JvComponent;
 
 type
   TGetItemWidthEvent = procedure(Control: TWinControl; Index: Integer;
@@ -319,9 +319,6 @@ uses
   {$ENDIF UNITVERSIONING}
   SysUtils, Consts, Math,
   JvConsts, JvJVCLUtils, JvThemes;
-
-const
-  sUnitName = 'JvxCheckListBox';
 
 //=== { TJvListBoxStrings } ==================================================
 
@@ -1254,7 +1251,6 @@ begin
   if GCheckBitmap = nil then
   begin
     GCheckBitmap := TBitmap.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GCheckBitmap));
     GCheckBitmap.Handle := LoadBitmap(HInstance, 'JV_CHECK_IMAGES');
   end;
   Result := GCheckBitmap;
@@ -2018,11 +2014,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GCheckBitmap);
+  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.

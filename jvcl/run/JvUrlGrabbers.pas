@@ -244,10 +244,9 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   WinInet,
-  JvFinalize, JvResources;
+  JvResources;
 
 const
-  sUnitName = 'JvUrlGrabbers';
   cFilePrefix = 'file://';
   cHTTPPrefix = 'http://';
   cFTPPrefix = 'ftp://';
@@ -945,7 +944,6 @@ finalization
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

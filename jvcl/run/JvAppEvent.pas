@@ -183,14 +183,10 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
-  JvFinalize;
-
-const
-  sUnitName = 'JvAppEvent';
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 type
   TJvAppEventList = class(TObject)
@@ -673,10 +669,7 @@ constructor TJvAppEvents.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if AppList = nil then
-  begin
     AppList := TJvAppEventList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(AppList));
-  end;
 
   FChained := True;
   FHintColor := DefHintColor;
@@ -1046,10 +1039,11 @@ initialization
 
 
 finalization
+  AppList.Free;
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

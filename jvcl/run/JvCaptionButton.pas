@@ -311,7 +311,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   CommCtrl, Buttons, SysUtils,
-  JvThemes, JvFinalize,
+  JvThemes, 
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
   {$IFNDEF COMPILER7_UP}
@@ -320,9 +320,6 @@ uses
   JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
   JvDsgnIntf, JvTypes, JvJCLUtils, JvResources, JvWndProcHook;
-
-const
-  sUnitName = 'JvCaptionButton';
 
 const
   { Msimg32.dll is included in Windows 98 and later }
@@ -525,8 +522,6 @@ begin
   begin
     _TransparentBlt := GetProcAddress(GMsimg32Handle, TransparentBltName);
     _AlphaBlend := GetProcAddress(GMsimg32Handle, AlphaBlendName);
-
-    AddFinalizeProc(sUnitName, UnloadMsimg32Dll);
   end;
 end;
 
@@ -2772,10 +2767,10 @@ initialization
   {$ENDIF UNITVERSIONING}
 
 finalization
+  UnloadMsimg32Dll;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

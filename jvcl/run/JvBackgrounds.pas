@@ -257,10 +257,7 @@ uses
   JvGIF,
   {$DEFINE RECOGNIZE_GIF}
   {$ENDIF USE_JvGIF}
-  JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvBackgrounds';
+  JvResources;
 
 type
   TWinControlAccessProtected = class(TWinControl);
@@ -1242,7 +1239,6 @@ begin
   if Hooked = nil then
   begin
     Hooked := TList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(Hooked));
     Application.HookMainWindow(MainWindowHook);
   end;
   if Hooked.IndexOf(Self) = -1 then
@@ -1761,10 +1757,7 @@ begin
   FImage := TJvBackgroundImage.Create;
   FImage.FOnChange := WallpaperChanged;
   if Backgrounds = nil then
-  begin
     Backgrounds := TList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(Backgrounds));
-  end;
   Backgrounds.Add(Self);
   FClients := TJvBackgroundClients.Create(Self);
   if csDesigning in ComponentState then
@@ -1851,12 +1844,13 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(Hooked);
+  FreeAndNil(Backgrounds);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

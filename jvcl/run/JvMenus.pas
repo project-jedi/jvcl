@@ -34,7 +34,7 @@ interface
 uses
   Windows, Messages, SysUtils, Contnrs, Graphics, Controls, Forms, Classes,
   ExtCtrls, ImgList, Menus,
-  JvTypes, JvWndProcHook, JVCLVer, JvFinalize;
+  JvTypes, JvWndProcHook, JVCLVer;
 
 const
   // custom painter constants
@@ -705,9 +705,6 @@ uses
   JvConsts, JvJCLUtils, JvJVCLUtils;
 
 const
-  sUnitName = 'JvMenus';
-
-const
   Separator = '-';
 
   // The space between a menu item text and its shortcut
@@ -1371,10 +1368,7 @@ constructor TJvPopupMenu.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   if PopupList = nil then
-  begin
     PopupList := TJvPopupList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(PopupList));
-  end;
   FStyle := msStandard;
   FStyleItemPainter := CreateMenuItemPainterFromStyle(FStyle, Self);
   FCursor := crDefault;
@@ -3412,12 +3406,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(PopupList);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

@@ -164,10 +164,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   DBConsts, jpeg, SysUtils,
-  JvConsts, JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvDBImage';
+  JvConsts, JvResources;
 
 //=== { TGraphicSignature } ==================================================
 
@@ -272,11 +269,9 @@ var
   I: Integer;
 begin
   if Assigned(GraphicSignatures) then
-  begin
     for I := GraphicSignatures.Count - 1 downto 0 do
       if TGraphicSignature(GraphicSignatures[I]).GraphicClass = AGraphicClass then
         GraphicSignatures.Delete(I);
-  end;
 end;
 
 procedure UnregisterGraphicSignature(const ASignature: string; AOffset: Integer);
@@ -284,12 +279,10 @@ var
   I: Integer;
 begin
   if Assigned(GraphicSignatures) then
-  begin
     for I := GraphicSignatures.Count - 1 downto 0 do
       with TGraphicSignature(GraphicSignatures[I]) do
         if (Signature = ASignature) and (Offset = AOffset) then
           GraphicSignatures.Delete(I);
-  end;
 end;
 
 procedure UnregisterGraphicSignature(const ASignature: array of Byte; AOffset: Integer);
@@ -714,12 +707,12 @@ initialization
   {$ENDIF UNITVERSIONING}
 
   { registration happens in GraphicSignatures Needed() }
-  
+
 finalization
+  FreeAndNil(GraphicSignatures);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

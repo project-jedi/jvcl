@@ -50,7 +50,7 @@ uses
   {$IFNDEF NO_JCL}
   JclBase,
   {$ENDIF !NO_JCL}
-  JvJCLUtils, JvAppStorage, JvTypes, JvFinalize;
+  JvJCLUtils, JvAppStorage, JvTypes;
 
 
 {$IFDEF VisualCLX}
@@ -718,7 +718,6 @@ uses
 {$ENDIF UNIX}
 
 const
-  sUnitName = 'JvJVCLUtils';
   {$IFDEF MSWINDOWS}
   RC_ControlRegistry = 'Control Panel\Desktop';
   RC_WallPaperStyle = 'WallpaperStyle';
@@ -3011,17 +3010,13 @@ end;
 
 { Grid drawing }
 
-// (rom) changed to var
 var
   DrawBitmap: TBitmap = nil;
 
 procedure UsesBitmap;
 begin
   if DrawBitmap = nil then
-  begin
     DrawBitmap := TBitmap.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(DrawBitmap));
-  end;
 end;
 
 procedure WriteText(ACanvas: TCanvas; ARect: TRect; DX, DY: Integer;
@@ -6998,10 +6993,10 @@ initialization
   InitScreenCursors;
 
 finalization
+  FreeAndNil(DrawBitmap);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

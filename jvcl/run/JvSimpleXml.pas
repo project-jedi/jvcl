@@ -30,17 +30,17 @@ unit JvSimpleXml;
 interface
 
 uses
-  SysUtils, Classes, IniFiles,
+  SysUtils, Classes,
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  JvFinalize;
+  IniFiles;
 
 type
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   THashedStringList = class(TStringList);
   THandle = Longword;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   TJvSimpleXML = class;
   EJvSimpleXMLError = class(Exception);
   TJvSimpleXMLElem = class;
@@ -446,13 +446,10 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   JvJCLUtils, // for StrToFloatDef
   {$ENDIF COMPILER6_UP}
   JvConsts, JvResources;
-
-const
-  sUnitName = 'JvSimpleXml';
 
 const
   cBufferSize = 8192;
@@ -466,18 +463,15 @@ var
   GlobalXMLVariant: TXMLVariant = nil;
   {$ENDIF COMPILER6_UP}
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   TrueBoolStrs: array of string;
   FalseBoolStrs: array of string;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
 function GSorts: TList;
 begin
   if not Assigned(GlobalSorts) then
-  begin
     GlobalSorts := TList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalSorts));
-  end;
   Result := GlobalSorts;
 end;
 
@@ -485,10 +479,7 @@ end;
 function XMLVariant: TXMLVariant;
 begin
   if not Assigned(GlobalXMLVariant) then
-  begin
     GlobalXMLVariant := TXMLVariant.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalXMLVariant));
-  end;
   Result := GlobalXMLVariant;
 end;
 {$ENDIF COMPILER6_UP}
@@ -597,7 +588,7 @@ begin
     SetLength(Result, 0);
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 procedure VerifyBoolStrArray;
 begin
@@ -691,7 +682,7 @@ begin
     Result := cSimpleBoolStrs[B];
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function SimpleXMLEncode(const S: string): string;
 const
@@ -3274,12 +3265,15 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  {$IFDEF COMPILER6_UP}
+  FreeAndNil(GlobalXMLVariant);
+  {$ENDIF COMPILER6_UP}
+  FreeAndNil(GlobalSorts);
+  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

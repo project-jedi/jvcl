@@ -30,9 +30,8 @@ unit JvValidators;
 interface
 
 uses
-  SysUtils, Classes,
-  Windows, Controls, Forms,
-  JvComponent, JvErrorIndicator, JvFinalize;
+  Windows, SysUtils, Classes, Controls, Forms,
+  JvComponent, JvErrorIndicator;
 
 type
   EValidatorError = class(Exception);
@@ -270,9 +269,6 @@ uses
   {$ENDIF VisualCLX}
   JvTypes, JvResources;
 
-const
-  sUnitName = 'JvValidators';
-
 var
   GlobalValidatorsList: TStringList = nil;
 
@@ -283,7 +279,6 @@ begin
   if not Assigned(GlobalValidatorsList) then
   begin
     GlobalValidatorsList := TStringList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalValidatorsList));
    // register
     RegisterBaseValidators;
   end;
@@ -964,10 +959,11 @@ initialization
   RegisterBaseValidators;
 
 finalization
+  FreeAndNil(GlobalValidatorsList);
+
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

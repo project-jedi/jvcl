@@ -84,7 +84,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Menus, TypInfo,
-  JvTypes, JvFinalize;
+  JvTypes;
 
 type
   { IFixedPopupIntf is implemented by a component that supports the
@@ -128,9 +128,6 @@ uses
   {$ENDIF UNITVERSIONING}
   JvResources;
 
-const
-  sUnitName = 'JvFixedEditPopUp';
-
 type
   THiddenPopupObject = class(TComponent)
   private
@@ -166,10 +163,7 @@ var
 function FixedDefaultEditPopup(AEdit: TWinControl; Update: Boolean = True): TPopupMenu;
 begin
   if GlobalHiddenPopup = nil then
-  begin
     GlobalHiddenPopup := THiddenPopupObject.Create(nil);
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalHiddenPopup));
-  end;
   GlobalHiddenPopup.Edit := AEdit;
   Result := GlobalHiddenPopup.GetPopupMenuEx(Update);
 end;
@@ -507,12 +501,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GlobalHiddenPopup);
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

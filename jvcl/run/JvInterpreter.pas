@@ -1254,11 +1254,7 @@ uses
   {$IFDEF JvInterpreter_OLEAUTO}
   OleConst, ActiveX, ComObj,
   {$ENDIF JvInterpreter_OLEAUTO}
-  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes,
-  JvFinalize;
-
-const
-  sUnitName = 'JvInterpreter';
+  JvConsts, JvInterpreterConst, JvJVCLUtils, JvJCLUtils, JvResources, JvTypes;
 
 var
   FieldGlobalJvInterpreterAdapter: TJvInterpreterAdapter = nil;
@@ -1266,10 +1262,7 @@ var
 function GlobalJvInterpreterAdapter: TJvInterpreterAdapter;
 begin
   if not Assigned(FieldGlobalJvInterpreterAdapter) then
-  begin
     FieldGlobalJvInterpreterAdapter := TJvInterpreterAdapter.Create(nil);
-    AddFinalizeObjectNil(sUnitName, TObject(FieldGlobalJvInterpreterAdapter))
-  end;
   Result := FieldGlobalJvInterpreterAdapter;
 end;
 
@@ -1299,60 +1292,42 @@ var
 function VariantRecordInstance: TJvRecordVariantType;
 begin
   if not Assigned(GlobalVariantRecordInstance) then
-  begin
     GlobalVariantRecordInstance := TJvRecordVariantType.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantRecordInstance));
-  end;
   Result := GlobalVariantRecordInstance;
 end;
 
 function VariantObjectInstance: TJvObjectVariantType;
 begin
   if not Assigned(GlobalVariantObjectInstance) then
-  begin
     GlobalVariantObjectInstance := TJvObjectVariantType.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantObjectInstance));
-  end;
   Result := GlobalVariantObjectInstance;
 end;
 
 function VariantClassInstance: TJvClassVariantType;
 begin
   if not Assigned(GlobalVariantClassInstance) then
-  begin
     GlobalVariantClassInstance := TJvClassVariantType.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantClassInstance));
-  end;
   Result := GlobalVariantClassInstance;
 end;
 
 function VariantPointerInstance: TJvPointerVariantType;
 begin
   if not Assigned(GlobalVariantPointerInstance) then
-  begin
     GlobalVariantPointerInstance := TJvPointerVariantType.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantPointerInstance));
-  end;
   Result := GlobalVariantPointerInstance;
 end;
 
 function VariantSetInstance: TJvSetVariantType;
 begin
   if not Assigned(GlobalVariantSetInstance) then
-  begin
     GlobalVariantSetInstance := TJvSetVariantType.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantSetInstance));
-  end;
   Result := GlobalVariantSetInstance;
 end;
 
 function VariantArrayInstance: TJvArrayVariantType;
 begin
   if not Assigned(GlobalVariantArrayInstance) then
-  begin
     GlobalVariantArrayInstance := TJvArrayVariantType.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalVariantArrayInstance));
-  end;
   Result := GlobalVariantArrayInstance;
 end;
 
@@ -8102,10 +8077,16 @@ initialization
   {$ENDIF JvInterpreter_OLEAUTO}
 
 finalization
-  {$IFDEF UNITVERSIONING}
-  UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
+  FreeAndNil(FieldGlobalJvInterpreterAdapter);
+
+  {$IFDEF COMPILER6_UP}
+  FreeAndNil(GlobalVariantObjectInstance);
+  FreeAndNil(GlobalVariantRecordInstance);
+  FreeAndNil(GlobalVariantClassInstance);
+  FreeAndNil(GlobalVariantPointerInstance);
+  FreeAndNil(GlobalVariantSetInstance);
+  FreeAndNil(GlobalVariantArrayInstance);
+  {$ENDIF COMPILER6_UP}
 
   {$IFDEF JvInterpreter_OLEAUTO}
   if OleInitialized then
@@ -8118,5 +8099,9 @@ finalization
       'JvInterpreter Internal Error', MB_ICONERROR);
   {$ENDIF JvInterpreter_DEBUG}
 
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
+  
 end.
 

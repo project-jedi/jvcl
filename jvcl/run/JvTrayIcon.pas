@@ -50,7 +50,7 @@ uses
   {$IFDEF COMPILER6_UP}
   DateUtils,
   {$ENDIF COMPILER6_UP}
-  JvConsts, JvTypes, JvComponent, JvFinalize;
+  JvConsts, JvTypes, JvComponent;
 
 type
   TBalloonType = (btNone, btError, btInfo, btWarning);
@@ -236,8 +236,6 @@ type
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
 const
-  sUnitName = 'JvTrayIcon';
-
   AnimationTimer = 1;
   CloseBalloonTimer = 2;
   DblClickTimer = 3;
@@ -384,11 +382,7 @@ begin
 
     GKernel32Handle := Windows.LoadLibrary(Kernel32DLLName);
     if GKernel32Handle > 0 then
-    begin
-      AddFinalizeProc(sUnitName, UnloadKernel32Dll);
-
       RegisterServiceProcess := GetProcAddress(GKernel32Handle, RegisterServiceProcessName);
-    end;
   end;
 end;
 
@@ -1257,11 +1251,11 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  UnloadKernel32Dll;
+  
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.

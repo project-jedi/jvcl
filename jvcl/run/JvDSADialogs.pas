@@ -425,10 +425,7 @@ uses
   JclRegistry,
   {$ENDIF MSWINDOWS}
   JclBase, JclSysUtils,
-  JvDynControlEngineIntf, JvConsts, JvResources, JvFinalize;
-
-const
-  sUnitName = 'JvDSADialogs';
+  JvDynControlEngineIntf, JvConsts, JvResources;
 
 const
   cDSAStateValueName = 'DSA_State'; // do not localize
@@ -445,10 +442,7 @@ var
 function CheckMarkTexts: TStrings;
 begin
   if GlobalCheckMarkTexts = nil then
-  begin
     GlobalCheckMarkTexts := TStringList.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalCheckMarkTexts));
-  end;
   Result := GlobalCheckMarkTexts;
 end;
 
@@ -937,7 +931,6 @@ begin
   if not Assigned(GlobalDSARegister) then
   begin
     GlobalDSARegister := TDSARegister.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalDSARegister));
    // register
     RegisterDSACheckMarkText(ctkShow, RsDSActkShowText);
     RegisterDSACheckMarkText(ctkAsk, RsDSActkAskText);
@@ -2093,7 +2086,6 @@ begin
   begin
     GlobalRegStore :=
       TDSARegStorage.Create(HKEY_CURRENT_USER, 'Software\' + Application.Title + '\DSA');
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalRegStore));
   end;
   Result := TDSARegStorage(GlobalRegStore);
 end;
@@ -2106,10 +2098,7 @@ var
 function DSAQueueStore: TDSAQueueStorage;
 begin
   if GlobalQueueStore = nil then
-  begin
     GlobalQueueStore := TDSAQueueStorage.Create;
-    AddFinalizeObjectNil(sUnitName, TObject(GlobalQueueStore));
-  end;
   Result := TDSAQueueStorage(GlobalQueueStore);
 end;
 
@@ -2449,12 +2438,16 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FreeAndNil(GlobalCheckMarkTexts);
+  FreeAndNil(GlobalDSARegister);
+  FreeAndNil(GlobalQueueStore);
+  {$IFDEF MSWINDOWS}
+  FreeAndNil(GlobalRegStore);
+  {$ENDIF MSWINDOWS}
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
 

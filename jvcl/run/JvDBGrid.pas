@@ -471,7 +471,7 @@ uses
   JvDBLookup,
   {$ENDIF COMPILER6_UP}
   JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
-  JvDBGridSelectColumnForm, JvFinalize;
+  JvDBGridSelectColumnForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBGrid.res}
@@ -479,9 +479,6 @@ uses
 {$IFDEF UNIX}
 {$R ../Resources/JvDBGrid.res}
 {$ENDIF UNIX}
-
-const
-  sUnitName = 'JvDBGrid';
 
 type
   TBookmarks = class(TBookmarkList);
@@ -515,10 +512,7 @@ begin
   if GridBitmaps[BmpType] = nil then
   begin
     if FirstGridBitmaps then
-    begin
       FirstGridBitmaps := False;
-      AddFinalizeProc(sUnitName, FinalizeGridBitmaps);
-    end;
     GridBitmaps[BmpType] := TBitmap.Create;
     GridBitmaps[BmpType].LoadFromResourceName(HInstance, GridBmpNames[BmpType]);
   end;
@@ -3677,11 +3671,10 @@ initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
 
-
 finalization
+  FinalizeGridBitmaps;
   {$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
   {$ENDIF UNITVERSIONING}
-  FinalizeUnit(sUnitName);
 
 end.
