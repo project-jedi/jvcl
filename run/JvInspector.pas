@@ -167,8 +167,8 @@ uses
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows,
-  JvExExtCtrls,
+  Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls,
+  QWindows, QMessages, JvExExtCtrls,
   {$ENDIF VisualCLX}
   JvComponent, JvTypes, JvExControls, JvFinalize;
 
@@ -181,37 +181,26 @@ const
   irsValueMask = $0FFFFFFF;
 
 {$IFDEF VisualCLX}
-  WM_HSCROLL = 101;
-  WM_VSCROLL = 102;
-  CM_DEACTIVATE = 100;
-
-  // WM_xSCROLL ScrollCodes
-  SB_BOTTOM = 1;
-  SB_ENDSCROLL = 2;
-  SB_LINEDOWN = 3;
-  SB_LINEUP = 4;
-  SB_PAGEDOWN = 5;
-  SB_PAGEUP = 6;
-  SB_THUMBPOSITION = 7;
-  SB_THUMBTRACK = 8;
-  SB_TOP = 9;
-
-  SB_HORZ = 1;
-  SB_VERT = 2;
-  SB_BOTH = SB_HORZ or SB_VERT;
-
 type
-  TWMScroll = packed record
-    Msg: Integer;
-    Pos: Integer;
-    ScrollCode: Integer;
-  end;
-
-  TCMActivate = packed record
-    Msg: Integer;
-    WParam: Integer;
-    LParam: Longint;
-    Result: Integer;
+  // do not create instances of this class.
+  // use with TMemo/TEdit
+  TOpenEdit = class(TWidgetControl)
+  private
+    procedure SetModified(Value: boolean);
+    function GetModified: boolean;
+    procedure SetOnChange(Value: TNotifyEvent);
+    function GetOnChange: TNotifyEvent;
+    procedure SetReadOnly(Value: Boolean);
+    function GetReadOnly: boolean;
+    procedure SetBorderStyle(Value: TBorderStyle);
+    function GetBorderStyle: TBorderStyle;
+  public
+    procedure SelectAll;
+    property Text: TCaption read GetText write SetText;
+    property Modified: boolean read GetModified write SetModified;
+    property OnChange: TNotifyEvent read GetOnchange write SetOnChange;
+    property ReadOnly: boolean read GetReadOnly write SetReadOnly;
+    property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle;
   end;
 {$ENDIF VisualCLX}
 
@@ -797,11 +786,14 @@ type
     FDisplayIndex: Integer;
     FDisplayName: string;
     FDroppedDown: Boolean;
-    FEditCtrl: TCustomEdit;
     FEditCtrlDestroying: Boolean;
     {$IFDEF VCL}
+    FEditCtrl: TCustomEdit;
     FEditWndPrc: TWndMethod;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FEditCtrl: TOpenEdit;
+    {$ENDIF VisualCLX}
     FEditing: Boolean;
     FFlags: TInspectorItemFlags;
     FHeight: Integer;
@@ -876,7 +868,12 @@ type
     function GetDisplayParent: TJvCustomInspectorItem; virtual;
     function GetDisplayValue: string; virtual;
     function GetDroppedDown: Boolean; virtual;
+    {$IFDEF VCL}
     function GetEditCtrl: TCustomEdit; virtual;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function GetEditCtrl: TOpenEdit; virtual;
+    {$ENDIF VisualCLX}
     function GetEditCtrlDestroying: Boolean; virtual;
     function GetEditing: Boolean; virtual;
     function GetExpanded: Boolean; virtual;
@@ -921,7 +918,12 @@ type
     procedure SetDisplayIndexValue(const Value: Integer); virtual;
     procedure SetDisplayName(Value: string); virtual;
     procedure SetDisplayValue(const Value: string); virtual;
+    {$IFDEF VCL}
     procedure SetEditCtrl(const Value: TCustomEdit); virtual;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure SetEditCtrl(const Value: TOpenEdit); virtual;
+    {$ENDIF VisualCLX}
     procedure SetEditing(const Value: Boolean); virtual;
     procedure SetExpanded(Value: Boolean); virtual;
     procedure SetFlags(const Value: TInspectorItemFlags); virtual;
@@ -947,11 +949,14 @@ type
     property BaseCategory: TJvCustomInspectorItem read GetBaseCategory;
     property Category: TJvCustomInspectorItem read GetCategory;
     property DroppedDown: Boolean read GetDroppedDown;
-    property EditCtrl: TCustomEdit read GetEditCtrl;
     property EditCtrlDestroying: Boolean read GetEditCtrlDestroying;
     {$IFDEF VCL}
+    property EditCtrl: TCustomEdit read GetEditCtrl;
     property EditWndPrc: TWndMethod read FEditWndPrc;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    property EditCtrl: TOpenEdit read GetEditCtrl;
+    {$ENDIF VisualCLX}
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
@@ -1063,7 +1068,12 @@ type
     function GetColumnCount: Integer; virtual;
     function GetColumns(I: Integer): TJvInspectorCompoundColumn; virtual;
     function GetDisplayName: string; override;
+    {$IFDEF VCL}
     function GetEditCtrl: TCustomEdit; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function GetEditCtrl: TOpenEdit; override;
+    {$ENDIF VisualCLX}
     function GetEditCtrlDestroying: Boolean; override;
     function GetEditing: Boolean; override;
     function GetSelectedColumn: TJvInspectorCompoundColumn; virtual;
@@ -2046,8 +2056,8 @@ uses
   {$IFDEF VisualCLX}
   QDialogs, QForms, QButtons, QConsts,
   {$ENDIF VisualCLX}
-  JclRTTI, JclLogic,
-  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources, JclStrings;
+  JclRTTI, JclLogic, JclStrings,
+  JvJCLUtils, JvJVCLUtils, JvThemes, JvResources;
 
 const
   sUnitName = 'JvInspector';
@@ -2055,6 +2065,107 @@ const
 // BCB Type Info support
 var
   GlobalTypeInfoHelpersList: TClassList;
+
+
+{$IFDEF VisualCLX}
+procedure TOpenEdit.SetModified(Value: boolean);
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    TEdit(self).Modified := Value
+  else if self.InheritsFrom(TMemo)
+  then
+    TMemo(self).Modified := Value;
+end;
+
+function TOpenEdit.GetModified: boolean;
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    Result := TEdit(self).Modified
+  else if self.InheritsFrom(TMemo)
+  then
+    Result := TMemo(self).Modified
+  else
+    Result := false;
+end;
+
+procedure TOpenEdit.SetOnChange(Value: TNotifyEvent);
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    TEdit(self).OnChange := Value
+  else if self.InheritsFrom(TMemo)
+  then
+    TMemo(self).OnChange := Value;
+end;
+
+function TOpenEdit.GetOnChange: TNotifyEvent;
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    Result := TEdit(self).OnChange
+  else if self.InheritsFrom(TMemo)
+  then
+    Result := TMemo(self).OnChange
+  else
+    Result := nil;
+end;
+
+procedure TOpenEdit.SetReadOnly(Value: boolean);
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    TEdit(self).ReadOnly := Value
+  else if self.InheritsFrom(TMemo)
+  then
+    TMemo(self).ReadOnly := Value;
+end;
+
+function TOpenEdit.GetReadOnly: boolean;
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    Result := TEdit(self).ReadOnly
+  else if self.InheritsFrom(TMemo)
+  then
+    Result := TMemo(self).ReadOnly
+  else
+    Result := false;
+end;
+
+procedure TOpenEdit.SetBorderStyle(Value: TBorderStyle);
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    TEdit(self).BorderStyle := Value
+  else if self.InheritsFrom(TMemo)
+  then
+    TMemo(self).BorderStyle := Value;
+end;
+
+function TOpenEdit.GetBorderStyle: TBorderStyle;
+begin
+  if self.InheritsFrom(TEdit)
+  then
+    Result := TBorderStyle(TEdit(self).BorderStyle)
+  else if self.InheritsFrom(TMemo)
+  then
+    Result := TMemo(self).BorderStyle
+  else
+    Result := bsNone;
+end;
+
+procedure TOpenEdit.SelectAll;
+begin
+  if self.InheritsFrom(TCustomEdit)
+  then
+    TCustomEdit(self).SelectAll
+  else if self.InheritsFrom(TCustomMemo)
+  then
+    TCustomMemo(self).SelectAll;
+end;
+{$ENDIF VisualCLX}
 
 function TypeInfoHelpersList: TClassList;
 begin
@@ -2101,8 +2212,9 @@ type
   PMethod = ^TMethod;
   PComp = ^Comp;
   PPointer = ^Pointer;
+  {$IFDEF VCL}
   TOpenEdit = class(TCustomEdit);
-
+  {$ENDIF VCL}
 var
   GlobalGenItemReg: TJvInspectorRegister = nil;
   GlobalVarItemReg: TJvInspectorRegister = nil;
@@ -5415,14 +5527,18 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomInspectorItem.DoDrawListItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
+begin
+  DoDefaultDrawListItem(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
+end;
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
 procedure TJvCustomInspectorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
   State: TOwnerDrawState; var Handled: Boolean);
-{$ENDIF VisualCLX}
 begin
   DoDefaultDrawListItem(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
+  Handled := True;
 end;
+{$ENDIF VisualCLX}
 
 procedure TJvCustomInspectorItem.DoDropDownKeys(var Key: Word; Shift: TShiftState);
 begin
@@ -5483,7 +5599,6 @@ begin
     TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
     ListBox.Items.Clear;
     GetValueList(ListBox.Items);
-    {$IFDEF VCL}
     if ([iifOwnerDrawListFixed, iifOwnerDrawListVariable, iifOwnerDrawListMaxHeight] * Flags <> []) then
     begin
       ListBox.Canvas.Font := TListBox(ListBox).Font;
@@ -5508,7 +5623,6 @@ begin
       end;
       TListBox(ListBox).ItemHeight := MH;
     end;
-    {$ENDIF VCL}
     if ListBox.Items.Count < DropDownCount then
       ListCount := ListBox.Items.Count
     else
@@ -5855,10 +5969,18 @@ begin
   Result := FDroppedDown;
 end;
 
+{$IFDEF VCL}
 function TJvCustomInspectorItem.GetEditCtrl: TCustomEdit;
 begin
   Result := FEditCtrl;
 end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvCustomInspectorItem.GetEditCtrl: TOpenEdit;
+begin
+  Result := FEditCtrl;
+end;
+{$ENDIF VisualCLX}
 
 function TJvCustomInspectorItem.GetEditCtrlDestroying: Boolean;
 begin
@@ -6247,7 +6369,12 @@ procedure TJvCustomInspectorItem.SetDisplayValue(const Value: string);
 begin
 end;
 
+{$IFDEF VCL}
 procedure TJvCustomInspectorItem.SetEditCtrl(const Value: TCustomEdit);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomInspectorItem.SetEditCtrl(const Value: TOpenEdit);
+{$ENDIF VisualCLX}
 begin
   if EditCtrl <> Value then
   begin
@@ -6888,7 +7015,12 @@ begin
       Memo.OnExit := OnInternalEditControlExiting; // NEW. VCL only.
       FEditChanged := False; }
       {.$ENDIF VCL}
+      {$IFDEF VCL}
       SetEditCtrl(Memo);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      SetEditCtrl(TOpenEdit(Memo));
+      {$ENDIF VisualCLX}
     end
     else
     begin
@@ -6906,7 +7038,13 @@ begin
       Edit.OnExit := OnInternalEditControlExiting;
       FEditChanged := False;}
       {.$ENDIF VCL}
+      {$IFDEF VCL}
       SetEditCtrl(Edit);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      Edit.AutoSize := false;
+      SetEditCtrl(TOpenEdit(Edit));
+      {$ENDIF VisualCLX}
 
     end;
     if iifEditFixed in Flags then
@@ -6922,8 +7060,8 @@ begin
     {$IFDEF VCL}
     FEditWndPrc := EditCtrl.WindowProc;
     EditCtrl.WindowProc := Edit_WndProc;
-    {$ENDIF VCL}
     TOpenEdit(EditCtrl).AutoSize := False;
+    {$ENDIF VCL}
     if iifValueList in Flags then
     begin
       {$IFDEF VCL}
@@ -7316,7 +7454,12 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 function TJvInspectorCustomCompoundItem.GetEditCtrl: TCustomEdit;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function TJvInspectorCustomCompoundItem.GetEditCtrl: TOpenEdit;
+{$ENDIF VisualCLX}
 begin
   if (SelectedColumn <> nil) then
     Result := SelectedColumn.Item.EditCtrl
@@ -8675,6 +8818,9 @@ begin
     end;
     DoDefaultDrawListItem(TListBox(Control).Canvas, Rect, TListBox(Control).Items[Index]);
   end;
+  {$IFDEF VisualCLX}
+  Handled := True;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvInspectorFontNameItem.DoMeasureListItem(Control: TWinControl;
@@ -12285,7 +12431,12 @@ begin
   if (Selected <> nil) and Selected.DroppedDown then
   begin
     lbPos := Selected.ListBox.ScreenToClient(ClientToScreen(MousePos));
+    {$IFDEF VCL}
     Selected.ListBox.Perform(WM_MOUSEWHEEL, WheelDelta shl 16, lbPos.x + (lbPos.y shl 16));
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Selected.ListBox.ScrollBy(0, Wheeldelta);
+    {$ENDIF VisualCLX}
   end
   else
   begin
