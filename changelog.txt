@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2004-03-19
+- The menu item painters are now autonomous components, compatibility is preserved // obones
+2004-03-12
+- Many corrections for BCB5 support // obones
 2004-02-26
 - Added JvOfficeColorButton, JvOfficeColorPanel and JvNetscapeSplitter from dejoy // peter3
 - Added JvDBSearchEdit and JvDBSearchComboBox to JvDB package and demo to examples. Donated by Lionel Reynaud // peter3
