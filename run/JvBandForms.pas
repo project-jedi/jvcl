@@ -330,7 +330,7 @@ end;
 
 constructor TJvBandForm.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
-  inherited Create(AOwner);
+  inherited CreateNew(AOwner);
   FBandModeFlags := [bmfVariableHeight];
   FBandIntegralX := 1;
   FBandIntegralY := 1;
