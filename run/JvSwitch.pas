@@ -30,13 +30,11 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Menus,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QControls, QForms, QMenus, QWindows,
+  Qt,
   {$ENDIF VisualCLX}
-  JvComponent;
+  JvJCLUtils, JvComponent;
 
 type
   TTextPos = (tpNone, tpLeft, tpRight, tpAbove, tpBelow);
@@ -430,14 +428,8 @@ begin
           Bottom := Top + FontHeight;
         end;
         Text := Caption;
-        {$IFDEF VCL}
-        DrawText(Handle, PChar(Text), Length(Caption), ARect,
-          DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
         DrawText(Canvas, Text, Length(Caption), ARect,
           DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
-        {$ENDIF VisualCLX}
       end;
     end;
   {$IFDEF VisualCLX}
