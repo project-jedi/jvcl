@@ -6,13 +6,16 @@ object FilterDialog: TFilterDialog
   Caption = 'Filter'
   ClientHeight = 80
   ClientWidth = 258
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  PixelsPerInch = 96
+  OldCreateOrder = True
   OnCreate = FormCreate
   OnShow = FormShow
+  PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
     Left = 8
@@ -63,15 +66,16 @@ object FilterDialog: TFilterDialog
     Visible = False
     OnClick = UpCaseBoxClick
   end
-  object Storage: TJvFormStorage 
-    IniSection = 'Filter Dialog'
+  object Storage: TJvFormStorage
     Options = []
     StoredProps.Strings = (
       'UpCaseBox.Checked')
+    StoredValues = <>
     Left = 216
     Top = 4
   end
-  object MRU: TJvMRUManager 
+  object MRU: TJvMRUManager
+    Duplicates = dupIgnore
     Capacity = 15
     IniStorage = Storage
     ShowAccelChar = False

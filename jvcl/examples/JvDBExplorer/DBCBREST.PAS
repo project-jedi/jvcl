@@ -14,7 +14,7 @@ unit DBCbRest;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  ExtCtrls, BDE, JvxCtrls, JvLabel;
+  ExtCtrls, BDE, JvLabel, JvComponent;
 
 type
   TRestructureDialog = class(TForm)

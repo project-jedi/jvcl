@@ -13,8 +13,9 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, StdCtrls, ExtCtrls, TabNotBk, JvPlacemnt, DB, JvDBLists,
-  JvLookup, Mask, JvCurrEdit, ComCtrls, DBTables, JvToolEdit, JvValidateEdit;
+  Forms, Dialogs, StdCtrls, ExtCtrls, TabNotBk, DB, JvBDELists,
+  Mask, ComCtrls, DBTables, JvToolEdit, JvValidateEdit,
+  JvComponent, JvFormPlacement, JvDBLookup, JvEdit;
 
 type
   TOptionsDialog = class(TForm)
@@ -33,7 +34,6 @@ type
     Label1: TLabel;
     Label2: TLabel;
     DataSource1: TDataSource;
-    LangDrivList: TJvBDEItems ;
     Label4: TLabel;
     TimeFormatEdit: TEdit;
     Label5: TLabel;
@@ -86,6 +86,7 @@ type
     procedure UpDownChanging(Sender: TObject; var AllowChange: Boolean);
   private
     { Private declarations }
+    LangDrivList:TJvLangDrivList; //!!!
     procedure ApplyOptions;
     procedure SetOptions;
   protected
@@ -96,7 +97,7 @@ type
 
 implementation
 
-uses Consts, IniFiles, JvVCLUtils, JvDBUtils, Options, Main, DBCbRest, JvBdeUtils;
+uses Consts, IniFiles, JvJVCLUtils, JvDBUtils, Options, Main, DBCbRest, JvBdeUtils;
 
 {$R *.DFM}
 
@@ -185,8 +186,8 @@ begin
     ApplyOptions;
     if (Application.MainForm <> nil) then begin
       TDBExplorerMainForm(Application.MainForm).ApplyOptions;
-      Ini := TIniFile.Create(
-        TDBExplorerMainForm(Application.MainForm).FormPlacement.IniFileName);
+//!!!      Ini := TIniFile.Create(
+//!!!        TDBExplorerMainForm(Application.MainForm).FormPlacement.IniFileName);
       try
         SaveOptions(Ini);
       finally

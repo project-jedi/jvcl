@@ -1,17 +1,20 @@
 object PictEditDlg: TPictEditDlg
-  Left = 191
-  Top = 127
+  Left = 497
+  Top = 165
   BorderStyle = bsDialog
-  ClientHeight = 276
+  ClientHeight = 279
   ClientWidth = 476
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  PixelsPerInch = 96
+  OldCreateOrder = True
   Position = poDefaultPosOnly
   ShowHint = True
   OnCreate = FormCreate
+  PixelsPerInch = 96
   TextHeight = 13
   object Bevel: TBevel
     Left = 6
@@ -30,7 +33,7 @@ object PictEditDlg: TPictEditDlg
     OnClick = OkBtnClick
     Glyph.Data = {
       46010000424D460100000000000076000000280000001C0000000D0000000100
-      040000000000D000000000000000000000000000000000000000000000000000
+      040000000000D000000000000000000000001000000000000000000000000000
       80000080000000808000800000008000800080800000C0C0C000808080000000
       FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
       33333333333333330000333333333333333333F3333333330000333303333333
@@ -55,7 +58,7 @@ object PictEditDlg: TPictEditDlg
     TabOrder = 3
     Glyph.Data = {
       46010000424D460100000000000076000000280000001C0000000D0000000100
-      040000000000D000000000000000000000000000000000000000000000000000
+      040000000000D000000000000000000000001000000000000000000000000000
       80000080000000808000800000008000800080800000C0C0C000808080000000
       FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
       3333333333333333000033333333333333333FF33333FF330000333003333300
@@ -90,11 +93,20 @@ object PictEditDlg: TPictEditDlg
   object DBNavigator: TDBNavigator
     Left = 373
     Top = 14
-    Width = 85
+    Width = 84
     Height = 21
     DataSource = DataSource
     VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast]
     TabOrder = 4
+  end
+  object StretchBox: TCheckBox
+    Left = 16
+    Top = 16
+    Width = 181
+    Height = 17
+    Caption = ' S&tretch bitmap'
+    TabOrder = 5
+    OnClick = StretchBoxClick
   end
   object DBImage: TDBImage
     Left = 12
@@ -103,21 +115,7 @@ object PictEditDlg: TPictEditDlg
     Height = 189
     DataSource = DataSource
     PopupMenu = PopupMenu
-    TabOrder = 5
-    OnKeyDown = ImageKeyDown
-  end
-  object StretchBox: TCheckBox
-    Left = 16
-    Top = 16
-    Width = 181
-    Height = 17
-    Caption = ' S&tretch bitmap'
     TabOrder = 6
-    OnClick = StretchBoxClick
-  end
-  object FormPlacement: TjvFormPlacement
-    Left = 268
-    Top = 4
   end
   object DataSource: TDataSource
     Left = 240

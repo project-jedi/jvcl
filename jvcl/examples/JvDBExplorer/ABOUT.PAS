@@ -12,7 +12,8 @@ interface
 
 uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
-  Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, JvxCtrls, JvComponent;
+  Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, JvComponent,
+  JvSecretPanel;
 
 type
   TAboutDlg = class(TForm)
@@ -42,7 +43,8 @@ const
 
 implementation
 
-uses JvVerInf, JvConst, JvVCLUtils;
+uses
+  JvVersionInfo, JvConsts, JvJVCLUtils;
 
 {$R *.DFM}
 
@@ -69,7 +71,7 @@ var
   MemStatus: TMemoryStatus;
 {$ENDIF}
 begin
-  Image1.Cursor := crHand;
+  Image1.Cursor := crHandPoint;
   VersionLabel.Caption := Format(VersionLabel.Caption, [SDbxVersion]);
   WinVer.Caption := GetWindowsVersion;
 {$IFDEF WIN32}

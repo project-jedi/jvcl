@@ -11,8 +11,8 @@ program DbExpl32;
 
 uses
   Forms,
-  JvDBExcpt,
-  JvVCLUtils,
+  JvBDEExceptionForm,
+  JvJVCLUtils,
   Main in 'MAIN.PAS' {DBExplorerMainForm},
   ChildWin2 in 'CHILDWIN2.PAS' {MDIChild},
   OpenDlg in 'OPENDLG.PAS' {OpenDatabaseDlg},

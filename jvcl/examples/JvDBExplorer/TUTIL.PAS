@@ -128,8 +128,7 @@ procedure CheckTable(const TableName: string; Repair: TCheckRepair);
 
 implementation
 
-uses Classes, Controls, Dialogs, Forms, JvDBUtils, JvBdeUtils, JvDBPrgrss,
-  JvVCLUtils, JvFileUtil;
+uses Classes, Controls, Dialogs, Forms, JvDBUtils, JvBdeUtils,  JvBDEProgress, JvJCLUtils, JvJVCLUtils;
 
 const
 { Verify table options }

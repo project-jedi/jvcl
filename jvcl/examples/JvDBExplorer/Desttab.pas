@@ -11,9 +11,9 @@ unit DestTab;
 
 interface
 
-uses WinTypes, WinProcs, SysUtils, Classes, Graphics, Forms, Controls,
-  StdCtrls, ExtCtrls, FileCtrl, JvPlacemnt, Mask, JvToolEdit, DB, DBTables,
-  JvLookup, JvCurrEdit, JvValidateEdit;
+uses Windows, SysUtils, Classes, Graphics, Forms, Controls,
+  StdCtrls, ExtCtrls, FileCtrl, Mask, JvToolEdit, DB, DBTables,
+  JvValidateEdit, JvComponent, JvFormPlacement, JvEdit;
 
 type
   TDestTableDlg = class(TForm)
@@ -55,7 +55,8 @@ implementation
 
 {$B-}
 
-uses Consts, Dialogs, JvVCLUtils, JvFileUtil, Main;
+uses
+  Consts, Dialogs, JvJVCLUtils, JvJCLUtils, Main;
 
 {$R *.DFM}
 

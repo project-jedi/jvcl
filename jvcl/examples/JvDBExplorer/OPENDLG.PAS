@@ -11,13 +11,12 @@ unit OpenDlg;
 interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons,
-  StdCtrls, Mask, JvToolEdit, JvLookup, DB, JvDBLists, ExtCtrls, JvPlacemnt,
-  JvPicclip, DBTables;
+  StdCtrls, Mask, JvToolEdit, DB, ExtCtrls, JvBDELists, 
+  DBTables, JvComponent, JvFormPlacement, JvDBLookup, JvPicClip;
 
 type
   TOpenDatabaseDlg = class(TForm)
     Bevel1: TBevel;
-    DatabaseList: TJvBDEItems ;
     DataSource1: TDataSource;
     rxDBLookupCombo1: TJvDBLookupCombo ;
     DirectoryEdit1: TJvDirectoryEdit ;
@@ -34,6 +33,8 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+    LangDrivList:TJvLangDrivList; //!!!
+    DatabaseList:TJvBDEItems; //!!!
     function GetDatabaseName: string;
   public
     { Public declarations }

@@ -7,13 +7,16 @@ object OpenDatabaseDlg: TOpenDatabaseDlg
   Caption = 'Open Database'
   ClientHeight = 151
   ClientWidth = 302
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  PixelsPerInch = 96
+  OldCreateOrder = True
   Position = poScreenCenter
   OnCreate = FormCreate
+  PixelsPerInch = 96
   TextHeight = 13
   object Bevel1: TBevel
     Left = 8
@@ -39,7 +42,7 @@ object OpenDatabaseDlg: TOpenDatabaseDlg
     Caption = '&Directory:   '
     FocusControl = DirectoryEdit1
   end
-  object rxDBLookupCombo1: TJvDBLookupCombo 
+  object rxDBLookupCombo1: TJvDBLookupCombo
     Left = 20
     Top = 32
     Width = 261
@@ -53,13 +56,13 @@ object OpenDatabaseDlg: TOpenDatabaseDlg
     OnChange = rxDBLookupCombo1Change
     OnGetImage = DBLookupComboGetImage
   end
-  object DirectoryEdit1: TJvDirectoryEdit 
+  object DirectoryEdit1: TJvDirectoryEdit
     Left = 20
     Top = 76
     Width = 261
     Height = 21
-    AcceptFiles = True
     ButtonHint = 'Select directory|'
+    ButtonFlat = False
     CharCase = ecLowerCase
     NumGlyphs = 1
     ParentShowHint = False
@@ -87,28 +90,23 @@ object OpenDatabaseDlg: TOpenDatabaseDlg
     ModalResult = 2
     TabOrder = 3
   end
-  object DatabaseList: TJvBDEItems 
-    Active = True
-    Left = 148
-    Top = 28
-  end
   object DataSource1: TDataSource
-    DataSet = DatabaseList
     Left = 176
     Top = 28
   end
-  object FormStorage1: TJvFormStorage 
+  object FormStorage1: TJvFormStorage
     Options = []
     StoredProps.Strings = (
       'DirectoryEdit1.InitialDir')
+    StoredValues = <>
     Left = 8
     Top = 116
   end
-  object JvPicclip: TJvPicClip 
+  object JvPicclip: TJvPicClip
     Cols = 2
     Picture.Data = {
       07544269746D617036010000424D360100000000000076000000280000002000
-      00000C0000000100040000000000C00000000000000000000000000000000000
+      00000C0000000100040000000000C00000000000000000000000100000000000
       000000000000000080000080000000808000800000008000800080800000C0C0
       C000808080000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFF
       FF00DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD80000008DDDDDDDDDDDDDDDD

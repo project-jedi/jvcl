@@ -30,11 +30,14 @@ unit ChildWin2;
 interface
 
 uses WinTypes, WinProcs, Messages, Classes, Graphics, Forms, Controls, DB,
-  JvDBLists, Tabs, ExtCtrls, JvSplit, DBTables, Grids, DBGrids, JvDBCtrl,
-  JvQuery, StdCtrls, Buttons, JvPlacemnt, JvDBIndex, JvDBSecur, Menus, Dialogs,
-  JvDBPrgrss, JvPicclip, ComCtrls, JvxAnimate, JvxCtrls
+  Tabs, ExtCtrls, JvSplit, DBTables, Grids, DBGrids, 
+  StdCtrls, Buttons, Menus, Dialogs,
+  ComCtrls, JvComponent, JvFormPlacement, JvBDEQuery,
+  JvBDEProgress, JvPicClip, JvBDELists, JvAnimatedImage, JvSpeedButton,
+  JvBDEIndex, JvDBControls
   {$IFDEF USE_QR2}, QuickRpt, QRPrntr, QRExtra, QRPrev, Printers,
-  QRCtrls, JvComponent {$ENDIF USE_QR2};
+  QRCtrls, JvComponent, JvFormPlacement, JvBDEQuery, JvBDEProgress,
+  JvBDELists, JvAnimatedImage, JvSpeedButton, JvBDEIndex, JvDBControls {$ENDIF USE_QR2};
 
 type
   TTransOperation = (teStart, teCommit, teRollback);
@@ -242,10 +245,10 @@ implementation
 {$B-}
 {$R *.DFM}
 
-uses SysUtils, Clipbrd, DBConsts, TUtil, JvVCLUtils, JvObjStr, Options, JvStrUtils,
-  {$IFDEF USE_VQB} Qbe, {$ENDIF} Bde, SqlMon, JvFileUtil, JvAppUtils, EditStr,
-  EditPict, ViewBlob, JvDBUtils, JvBdeUtils, Main, FiltDlg, DestTab, SrcTab,
-  JvQbnddlg, BdeInfo;
+uses SysUtils, Clipbrd, DBConsts, TUtil, JvJVCLUtils, JvJCLUtils, Options,
+  {$IFDEF USE_VQB} Qbe, {$ENDIF} Bde, SqlMon, EditStr,
+  EditPict, ViewBlob, JvDBUtils, JvBdeUtils, JvDBQueryParamsForm, Main, FiltDlg, DestTab, SrcTab,
+  BdeInfo;
 
 const
   SQuerySuccess = 'Query successfully executed.';
@@ -1272,7 +1275,7 @@ end;
 procedure TMDIChild.FormCreate(Sender: TObject);
 begin
   FSQLHistoryIndex := -1;
-  FSQLHistory := TJvObjectStrings .Create;
+  FSQLHistory := TStringlist.Create;
   FDeletedList := TStringList.Create;
   TStringList(FDeletedList).Sorted := True;
   Notebook1.PageIndex := 0;
@@ -1341,16 +1344,16 @@ end;
 
 procedure TMDIChild.FormStorageRestorePlacement(Sender: TObject);
 begin
-  RestoreFields(FieldList1, FormStorage.IniFile, False);
-  RestoreFields(IndexList1, FormStorage.IniFile, False);
-  RestoreFields(RefIntList, FormStorage.IniFile, False);
+//!!!  RestoreFields(FieldList1, FormStorage.IniFile, False);
+//!!!  RestoreFields(IndexList1, FormStorage.IniFile, False);
+//!!!  RestoreFields(RefIntList, FormStorage.IniFile, False);
 end;
 
 procedure TMDIChild.FormStorageSavePlacement(Sender: TObject);
 begin
-  SaveFields(FieldList1, FormStorage.IniFile);
-  SaveFields(IndexList1, FormStorage.IniFile);
-  SaveFields(RefIntList, FormStorage.IniFile);
+//!!!  SaveFields(FieldList1, FormStorage.IniFile);
+//!!!  SaveFields(IndexList1, FormStorage.IniFile);
+//!!!  SaveFields(RefIntList, FormStorage.IniFile);
 end;
 
 procedure TMDIChild.DataSource2StateChange(Sender: TObject);

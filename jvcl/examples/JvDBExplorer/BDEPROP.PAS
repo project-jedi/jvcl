@@ -12,7 +12,7 @@ interface
 
 uses
   WinTypes, WinProcs, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, DB, JvxCtrls, BdeInfo;
+  Dialogs, ExtCtrls, StdCtrls, DB, BdeInfo, JvTextListBox;
 
 type
   TBdePropertyDlg = class(TForm)
@@ -44,7 +44,7 @@ type
 
 implementation
 
-uses JvFileUtil, JvVCLUtils;
+uses JvJVCLUtils, JvJCLUtils;
 
 {$R *.DFM}
 

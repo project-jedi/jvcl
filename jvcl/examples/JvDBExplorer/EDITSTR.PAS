@@ -11,8 +11,8 @@ unit EditStr;
 interface
 
 uses WinTypes, WinProcs, Classes, Graphics, Forms, Controls, Buttons, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, JvPlacemnt, DBCtrls, DB, JvDBRichEd,
-  JvRichEd;
+  StdCtrls, ComCtrls, ExtCtrls, DBCtrls, DB, 
+  JvComponent, JvFormPlacement, JvRichEdit, JvDBRichEdit;
 
 type
   TJvStrEditDlg  = class(TForm)
