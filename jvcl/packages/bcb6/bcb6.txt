@@ -1,1 +1,0 @@
-The BCB6 packages go in this directory

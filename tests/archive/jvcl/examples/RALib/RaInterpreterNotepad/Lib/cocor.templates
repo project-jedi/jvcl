@@ -1,5 +1,0 @@
-if~if statemnet~if | then
-if~if (else) statemnet~if | then/n/n/else
-fors~for (no begin/end)~for | :=  to  do/n/
-forb~for (begin/end)~for | :=  to  do/n/begin/n//n/end;/n/
-proc~procedure~procedure |();/n/begin/n//n/end;

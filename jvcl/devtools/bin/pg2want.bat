@@ -1,1 +1,0 @@
-pg2want ..\..\packages\xml\*.xml sep.xml fixed.xml ..\..\packages\xml ./jvcl/**/ >pg2want.log

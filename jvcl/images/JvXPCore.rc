@@ -1,8 +1,0 @@
-CHECKBOX   BITMAP "XPCoreCheckBox.bmp"
-ARROWLEFT  BITMAP "XPCoreArrowLeft.bmp"
-ARROWRIGHT BITMAP "XPCoreArrowRight.bmp"
-CLOSE      BITMAP "XPCoreClose.bmp"
-POPUP      BITMAP "XPCorePopup.bmp"
-MAXIMIZE   BITMAP "XPCoreMaximize.bmp"
-MINIMIZE   BITMAP "XPCoreMinimize.bmp"
-RESTORE    BITMAP "XPCoreRestore.bmp"
