@@ -128,7 +128,7 @@ begin
     begin
       CloseHandle(ProcessInfo.hThread);
       try
-        while (WaitForSingleObject(ProcessInfo.hProcess, 10) = WAIT_TIMEOUT) and (not Aborted) do
+        while (WaitForSingleObject(ProcessInfo.hProcess, 30) = WAIT_TIMEOUT) and (not Aborted) do
           ProcessInput;
         ProcessInput;
         if Line <> '' then
