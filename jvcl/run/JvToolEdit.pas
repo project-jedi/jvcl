@@ -65,12 +65,7 @@ type
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
 
-  {$IFDEF VCL}
-  TJvPopupWindow = class(TJvCustomControl)
-  {$ENDIF}
-  {$IFDEF VisualCLX}
   TJvPopupWindow = class(TCustomForm)
-  {$ENDIF}
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
@@ -223,12 +218,7 @@ type
     FButton: TJvEditButton; // Polaris
     FPopupVisible: Boolean; // Polaris
     FFocused: Boolean; // Polaris
-    {$IFDEF VCL}
-    FPopup: TCustomControl;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FPopup: TCustomForm;
-    {$ENDIF VisualCLX}
+    FPopup: TWinControl;
     procedure DoClearText; override;
     procedure DoClipboardCut; override;
     procedure DoClipboardPaste; override;
