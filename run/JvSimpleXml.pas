@@ -1681,7 +1681,7 @@ begin
     Result := Elem.Value;
 end;
 
-function SortItems(List: TStringlist; Index1, Index2: Integer): Integer;
+function SortItems(List: TStringList; Index1, Index2: Integer): Integer;
 var
   I: Integer;
 begin
@@ -1690,12 +1690,11 @@ begin
     if TJvSimpleXMLElems(GSorts[I]).FElems = List then
     begin
       Result := TJvSimpleXMLElems(GSorts[I]).FCompare(TJvSimpleXMLElems(GSorts[I]), Index1, Index2);
-      Exit;
+      Break;
     end;
 end;
 
-procedure TJvSimpleXMLElems.CustomSort(
-  AFunction: TJvSimpleXMLElemCompare);
+procedure TJvSimpleXMLElems.CustomSort(AFunction: TJvSimpleXMLElemCompare);
 begin
   if FElems <> nil then
   begin

@@ -187,7 +187,7 @@ type
     class function GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass; override;
     class function GetSupportedProtocolMarker: string; override;
     class function GetSupportedURLName: string; override;
-    procedure ParseUrl(URL: string; Protocol: string; var Host: string; var FileName: string;
+    procedure ParseUrl(Url: string; Protocol: string; var Host: string; var FileName: string;
       var UserName: string; var Password: string; var Port: Cardinal); overload; override;
     procedure ParseUrl(const Url: string; var FileName: string); reintroduce; overload;
   published
@@ -821,10 +821,10 @@ begin
   Result := 'LocalFile';
 end;
 
-procedure TJvLocalFileUrlGrabber.ParseUrl(URL, Protocol: string; var Host,
-  FileName, UserName, Password: string; var Port: Cardinal);
+procedure TJvLocalFileUrlGrabber.ParseUrl(Url, Protocol: string;
+  var Host, FileName, UserName, Password: string; var Port: Cardinal);
 begin
-  ParseUrl(URL, FileName);
+  ParseUrl(Url, FileName);
 end;
 
 procedure TJvLocalFileUrlGrabber.ParseUrl(const Url: string;

@@ -943,7 +943,7 @@ begin
     with Bitmap.Canvas do { Convert FromColor to ToColor }
     begin
       Bitmap.Canvas.Brush.Color := FromColor;
-      {copy Bitmap to MonoBmp}
+      {copy Bitmap to MonoBMP}
       BitBlt(MonoDC, 0, 0, IWidth, IHeight, Handle, 0, 0, cmSrcCopy);
       Brush.Color := ToColor;
       SetTextColor(Handle, clBlack);
@@ -981,7 +981,7 @@ const
 var
   X1, Y1, H, W: Integer;
   D, D1: Double;
-  TmpImage, MonoBmp: TBitmap;
+  TmpImage, MonoBMP: TBitmap;
   IWidth, IHeight: Integer;
   IRect, ORect: TRect;
   //  DestDC: HDC;
@@ -1075,9 +1075,9 @@ begin
         begin
           if DisabledMaskColor <> 0 then
             ChangeBitmapColor(TmpImage, DisabledMaskColor, clBlack);
-          MonoBmp := TBitmap.Create;
+          MonoBMP := TBitmap.Create;
           try { Create a disabled version }
-            with MonoBmp do
+            with MonoBMP do
             begin
               Assign(SourceBitmap);
               Canvas.Brush.Color := 0;
@@ -1098,15 +1098,15 @@ begin
               SetTextColor(Handle, 0);
               SetBkColor(Handle, clWhite);
               BitBlt(Handle, 1, 1, IWidth, IHeight,
-                MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                MonoBMP.Canvas.Handle, 0, 0, ROP_DSPDxax);
               Brush.Color := clBtnShadow;
               SetTextColor(Handle, 0);
               SetBkColor(Handle, clWhite);
               BitBlt(Handle, 0, 0, IWidth, IHeight,
-                MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                MonoBMP.Canvas.Handle, 0, 0, ROP_DSPDxax);
             end;
           finally
-            MonoBmp.Free;
+            MonoBMP.Free;
           end;
         end;
     end;

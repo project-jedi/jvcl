@@ -3589,7 +3589,7 @@ begin
   FData.AddRow(PNewRow);
 end;
 
-procedure TJvCustomCsvDataSet.AutoCreateDir(const Filename: string);
+procedure TJvCustomCsvDataSet.AutoCreateDir(const FileName: string);
 var
   Path: string;
 begin
