@@ -666,6 +666,36 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
+@@TJvDockVSNetStyle.GetAnimationInterval
+Summary
+  Returns the current animation move width.
+Description
+  Call GetAnimationInterval to read the current animation move width for VS.Net style dockable forms.
+  The animation move width affects how much of the form is hidden or shown at each animation interval.
+
+  This is a class method and thus can be called without creating an instance of the object.
+
+  The default value for the move width is 20 pixels.
+Return value
+  The current animation move width, in pixels.
+See Also
+  SetAnimationInterval
+----------------------------------------------------------------------------------------------------
+@@TJvDockVSNetStyle.GetAnimationMoveWidth
+Summary
+  Returns the current animation interval.
+Description
+  Call GetAnimateInterval to read the current animation interval for VS.Net style dockable forms.
+  The animation interval (in milliseconds) affects the speed with which docked forms are shown and hidden.
+
+  This is a class method and thus can be called without creating an instance of the object.
+
+  The default value for the animation interval is 20 milliseconds.
+Return value
+  The current animation itnerval, in milliseconds.
+See Also
+  SetAnimateInterval
+----------------------------------------------------------------------------------------------------
 @@TJvDockVSNetStyle.GetDockFormVisible
 Summary
   Write here a summary (1 line)
@@ -707,21 +737,6 @@ See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
-@@TJvDockVSNetStyle.GetAnimateInterval
-Summary
-  Returns the current animation interval.
-Description
-  Call GetAnimateInterval to read the current animation interval for VS.Net style dockable forms.
-  The animation interval (in milliseconds) affects the speed with which docked forms are shown and hidden.
-
-  This is a class method and thus can be called without creating an instance of the object.
-
-  The default value for the animation interval is 20 milliseconds.
-Return value
-  The current animation itnerval, in milliseconds.
-See Also
-  SetAnimateInterval
-----------------------------------------------------------------------------------------------------
 @@TJvDockVSNetStyle.SetAnimationInterval
 Summary
   Sets a new animation interval.
@@ -738,21 +753,6 @@ Parameters
   Value - the new animation interval, in milliseconds.
 See Also
   GetAnimationInterval
-----------------------------------------------------------------------------------------------------
-@@TJvDockVSNetStyle.GetAnimationInterval
-Summary
-  Returns the current animation move width.
-Description
-  Call GetAnimationInterval to read the current animation move width for VS.Net style dockable forms.
-  The animation move width affects how much of the form is hidden or shown at each animation interval.
-
-  This is a class method and thus can be called without creating an instance of the object.
-
-  The default value for the move width is 20 pixels.
-Return value
-  The current animation move width, in pixels.
-See Also
-  SetAnimationInterval
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSNetStyle.SetAnimationMoveWidth
 Summary
@@ -1028,4 +1028,3 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
-
