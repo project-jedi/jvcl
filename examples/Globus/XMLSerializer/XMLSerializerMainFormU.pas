@@ -22,7 +22,7 @@
 
 ******************************************************************}
 
-unit main;
+unit XMLSerializerMainFormU;
 
 { the Example shows saving/loading of a class into/from XML.
 Before saving, the class is initialized by the test data.
@@ -33,8 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls,
-  JvgXMLSerializer, JvComponent;
+  StdCtrls, JvgXMLSerializer, JvComponent;
 
 type
   TfglXMLSerializerDemo = class(TForm)

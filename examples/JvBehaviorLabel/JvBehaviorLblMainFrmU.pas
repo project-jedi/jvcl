@@ -22,7 +22,7 @@
 
 ******************************************************************}
 
-unit MainFrm;
+unit JvBehaviorLblMainFrmU;
 
 interface
 
@@ -31,7 +31,7 @@ uses
   Dialogs, StdCtrls, JvBehaviorLabel, JvExStdCtrls;
 
 type
-  TForm1 = class(TForm)
+  TJvBehaviorLblMainFrm = class(TForm)
     lblCodeBreaker: TJvBehaviorLabel;
     btnCodeBreak: TButton;
     lblAppearing: TJvBehaviorLabel;
@@ -62,13 +62,13 @@ type
   end;
 
 var
-  Form1: TForm1;
+  JvBehaviorLblMainFrm: TJvBehaviorLblMainFrm;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.btnCodeBreakClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnCodeBreakClick(Sender: TObject);
 begin
   Randomize;
   lblCodeBreaker.OnStart := nil;
@@ -81,48 +81,48 @@ begin
   lblCodeBreaker.OnStop := DoCodeBreakStop;
 end;
 
-procedure TForm1.DoCodeBreakStart(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.DoCodeBreakStart(Sender: TObject);
 begin
   lblCodeBreaker.Caption := 'BREAK THE CODE';
 end;
 
-procedure TForm1.DoCodeBreakStop(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.DoCodeBreakStop(Sender: TObject);
 begin
   ShowMessage('Congratulations! You''ve hacked the system!');
 end;
 
-procedure TForm1.btnAppearClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnAppearClick(Sender: TObject);
 begin
   lblAppearing.Alignment := taCenter;
   lblAppearing.BehaviorOptions.Active := not lblAppearing.BehaviorOptions.Active;
 end;
 
-procedure TForm1.btnBlinkClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnBlinkClick(Sender: TObject);
 begin
   lblBlinking.BehaviorOptions.Active := not lblBlinking.BehaviorOptions.Active;
 end;
 
-procedure TForm1.btnBounceClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnBounceClick(Sender: TObject);
 begin
   lblBouncing.BehaviorOptions.Active := not lblBouncing.BehaviorOptions.Active;
 end;
 
-procedure TForm1.btnScrollClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnScrollClick(Sender: TObject);
 begin
   lblScrolling.BehaviorOptions.Active := not lblScrolling.BehaviorOptions.Active;
 end;
 
-procedure TForm1.btnSpecialClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnSpecialClick(Sender: TObject);
 begin
   lblSpecial.BehaviorOptions.Active := not lblSpecial.BehaviorOptions.Active;
 end;
 
-procedure TForm1.btnTypeClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnTypeClick(Sender: TObject);
 begin
   lblTyping.BehaviorOptions.Active := not lblTyping.BehaviorOptions.Active;
 end;
 
-procedure TForm1.btnAllClick(Sender: TObject);
+procedure TJvBehaviorLblMainFrm.btnAllClick(Sender: TObject);
 var i:integer;
 begin
   for i := 0 to ControlCount -1 do
