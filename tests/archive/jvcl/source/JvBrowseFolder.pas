@@ -14,9 +14,11 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s): 
+  Michael Beck [mbeck@bigfoot.com]
+  Roman Kovbasiouk [roko@users.sourceforge.net]
 
-Last Modified: 2000-02-28
+Last Modified: 2003-03-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,13 +40,14 @@ uses
 type
   TJvBrowseAcceptChange = procedure(Sender: TObject; const NewFolder: string; var
     Accept: Boolean) of object;
+  TJvDirChange = procedure(Sender: TObject; const Directory: string) of object;
+
   TFromDirectory = (fdRootFolder, fdRecycleBin, fdControlPanel, fdDesktop,
     fdDesktopDirectory, fdMyComputer, fdFonts, fdNetHood, fdNetWork, fdPersonal,
     fdPrinters, fdPrograms, fdRecent, fdSendTo, fdStartMenu, fdStartup,
     fdTemplates);
   TJvFolderPos = (fpDefault, fpScreenCenter, fpFormCenter, fpTopLeft,
     fpTopRight, fpBottomLeft, fpBottomRight);
-  TJvDirChange = procedure(Sender: TObject; Directory: string) of object;
   TOptionsDirectory = (odBrowseForComputer, odOnlyDirectory, odOnlyPrinters,
     odNoBelowDomain, odSystemAncestorsOnly, odFileSystemDirectoryOnly,
     odStatusAvailable, odIncludeFiles, odIncludeUrls, odEditBox,
@@ -59,6 +62,7 @@ type
     FOwnerWindow: HWND;
     { Handle to the MS "Browse for folder" dialog }
     FDialogWindow: HWND;
+    FHelpContext: THelpContext;
     FTitle: string;
     FOptions: TOptionsDir;
     FDisplayName: string;
@@ -106,6 +110,7 @@ type
   published
     property Directory: string read FDirectory write FDirectory;
     property DisplayName: string read FDisplayName write FDisplayName;
+    property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Options: TOptionsDir read FOptions write FOptions default
       [odStatusAvailable, odNewDialogStyle];
     property Position: TJvFolderPos read FPosition write FPosition default
@@ -120,12 +125,15 @@ type
     property OnChange: TJvDirChange read FOnChange write FOnChange;
   end;
 
-function BrowseForFolder(const ATitle: string; AllowCreate: Boolean; var ADirectory: string): Boolean;
+function BrowseForFolder(const ATitle: string; AllowCreate: Boolean;
+  var ADirectory: string; AHelpContext: THelpContext = 0): Boolean;
+function BrowseForComputer(const ATitle: string; AllowCreate: Boolean;
+  var ADirectory: string; AHelpContext: THelpContext = 0): Boolean;
 
 implementation
 
 uses
-  JvTypes;
+  JvTypes, Consts;
 
 const
   BIF_BROWSEINCLUDEURLS  = $0080;
@@ -136,17 +144,42 @@ const
   BIF_VALIDATE           = $0020;
   BIF_NEWDIALOGSTYLE     = $0040;
 
-function BrowseForFolder(const ATitle: string; AllowCreate: Boolean; var ADirectory: string): Boolean;
+function BrowseForFolder(const ATitle: string; AllowCreate: Boolean;
+  var ADirectory: string; AHelpContext: THelpContext): Boolean;
 begin
   with TJvBrowseForFolderDialog.Create(nil) do
   try
     Position := fpScreenCenter;
     Directory := ADirectory;
     Title := ATitle;
+    HelpContext := AHelpContext;
     if AllowCreate then
       Options := Options + [odNewDialogStyle]
     else
       Options := Options - [odNewDialogStyle];
+    Result := Execute;
+    if Result then
+      ADirectory := Directory;
+  finally
+    Free;
+  end;
+end;
+
+function BrowseForComputer(const ATitle: string; AllowCreate: Boolean;
+  var ADirectory: string; AHelpContext: THelpContext): Boolean;
+begin
+  with TJvBrowseForFolderDialog.Create(nil) do
+  try
+    Position := fpScreenCenter;
+    Directory := ADirectory;
+    Title := ATitle;
+    HelpContext := AHelpContext;
+    if AllowCreate then
+      Options := Options + [odNewDialogStyle]
+    else
+      Options := Options - [odNewDialogStyle];
+    Options := Options + [odBrowseForComputer];
+    RootDirectory := fdNetWork;
     Result := Execute;
     if Result then
       ADirectory := Directory;
@@ -272,6 +305,13 @@ var
   FBrowser: TJvBrowseForFolderDialog;
   FBuff: array [0..MAX_PATH] of Char;
   APath: string;
+// [roko] From JvFileUtils.TJvBrowseFolderDlg.DoInitialized
+const
+  SBtn = 'BUTTON';
+  HelpButtonId = $FFFF;
+var
+  BtnHandle, HelpBtn, BtnFont: THandle;
+  BtnSize: TRect;
 begin
   { TODO : Need to react on BFFM_IUNKNOWN (for custom filtering) and
            BFFM_VALIDATEFAILED }
@@ -291,9 +331,29 @@ begin
           else
             SetDialogPos(FOwnerWindow, FDialogWindow, Position);
 
+          // [roko] Rx's code to insert Help button
+          if FHelpContext <> 0 then
+          begin
+            BtnHandle := FindWindowEx(FDialogWindow, 0, SBtn, nil);
+            if BtnHandle <> 0 then
+            begin
+              GetWindowRect(BtnHandle, BtnSize);
+              ScreenToClient(FDialogWindow, BtnSize.TopLeft);
+              ScreenToClient(FDialogWindow, BtnSize.BottomRight);
+              BtnFont := SendMessage(FDialogWindow, WM_GETFONT, 0, 0);
+              HelpBtn := CreateWindow(SBtn, PChar(SHelpButton),
+                WS_CHILD or WS_CLIPSIBLINGS or WS_VISIBLE or BS_PUSHBUTTON or WS_TABSTOP,
+                12, BtnSize.Top, BtnSize.Right - BtnSize.Left, BtnSize.Bottom - BtnSize.Top,
+                FDialogWindow, HelpButtonId, HInstance, nil);
+              if BtnFont <> 0 then
+                SendMessage(HelpBtn, WM_SETFONT, BtnFont, MakeLParam(1, 0));
+              UpdateWindow(FDialogWindow);
+            end;
+          end; // end Help button code
+
           //Change directory (if possible)
           if FDirectory <> '' then
-            SetPath(FDialogWindow, FDIrectory);
+            SetPath(FDialogWindow, FDirectory);
           //            SendMessage(FDialogWindow, BFFM_SETSELECTION, Integer(True), Integer(PChar(FDirectory)));
           UpdateStatusText(HWND, FDirectory);
           //Call init event
@@ -380,7 +440,7 @@ begin
     BrowseInfo.ulFlags := BrowseInfo.ulFlags or BIF_SHAREABLE;
 
   BrowseInfo.hwndOwner := FOwnerWindow;
-  
+
   if CSIDLLocations[FFromDirectory] <> 0 then
     SHGetSpecialFolderLocation(Handle, CSIDLLocations[FFromDirectory],
       BrowseInfo.pidlRoot);
