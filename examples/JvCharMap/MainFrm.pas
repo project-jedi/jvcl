@@ -3,7 +3,7 @@ unit MainFrm;
 interface
 // enable this define (remove the dot) if you have Troy Wolbrink's Tnt Controls installed
 // (http://home.ccci.org/wolbrink/tnt/delphi_unicode_controls.htm)
-{.$DEFINE USETNT}
+{$DEFINE USETNT}
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvCharMap, StdCtrls, ExtCtrls, ComCtrls, JvColorCombo,
@@ -89,6 +89,7 @@ begin
   JM.Height := Panel1.Top - JM.Top - 20;
   JM.Anchors := [akTop, akBottom];
   JM.PopupMenu := PopupMenu1;
+  JM.AutoSizeWidth := true;
   chkZoomPanel.Checked := JM.ShowZoomPanel;
   udStart.Position := JM.CharRange.StartChar;
   udEnd.Position := JM.CharRange.EndChar;
@@ -108,6 +109,7 @@ begin
   edCharacter.Top := 16;
   edCharacter.Width := 121;
   edCharacter.Height := 22;
+  edCharacter.Anchors := [akLeft, akTop, akRight];
   edCharacter.TabOrder := 11;
   ActiveControl := JM;
 end;
