@@ -199,37 +199,6 @@ begin
 end;
 
 
-
-procedure AddFinalizeProc(FinalizeProc: TFinalizeProc);
-begin
-  FinalizeList := TFinalizeProcItem.Create(FinalizeProc, FinalizeList);
-end;
-
-function AddFinalizeObject(Instance: TObject): TObject;
-begin
-  FinalizeList := TFinalizeObjectItem.Create(Instance, FinalizeList);
-  Result := Instance;
-end;
-
-function AddFinalizeObjectNil(var Reference: TObject): TObject;
-begin
-  FinalizeList := TFinalizeObjectNilItem.Create(Reference, FinalizeList);
-  Result := Reference;
-end;
-
-function AddFinalizeMemory(Ptr: Pointer): Pointer;
-begin
-  FinalizeList := TFinalizeMemoryItem.Create(Ptr, FinalizeList);
-  Result := Ptr;
-end;
-
-function AddFinalizeMemoryNil(var Ptr: Pointer): Pointer;
-begin
-  FinalizeList := TFinalizeMemoryNilItem.Create(Ptr, FinalizeList);
-  Result := Ptr;
-end;
-
-
 { TFinalizeMemoryItem }
 
 constructor TFinalizeMemoryItem.Create(APtr: Pointer; ANext: TFinalizeItem);
@@ -263,6 +232,38 @@ begin
     FPtr^ := nil;
   end;
   inherited Destroy;
+end;
+
+
+// -----------------------------------------------------------------------------
+
+procedure AddFinalizeProc(FinalizeProc: TFinalizeProc);
+begin
+  FinalizeList := TFinalizeProcItem.Create(FinalizeProc, FinalizeList);
+end;
+
+function AddFinalizeObject(Instance: TObject): TObject;
+begin
+  FinalizeList := TFinalizeObjectItem.Create(Instance, FinalizeList);
+  Result := Instance;
+end;
+
+function AddFinalizeObjectNil(var Reference: TObject): TObject;
+begin
+  FinalizeList := TFinalizeObjectNilItem.Create(Reference, FinalizeList);
+  Result := Reference;
+end;
+
+function AddFinalizeMemory(Ptr: Pointer): Pointer;
+begin
+  FinalizeList := TFinalizeMemoryItem.Create(Ptr, FinalizeList);
+  Result := Ptr;
+end;
+
+function AddFinalizeMemoryNil(var Ptr: Pointer): Pointer;
+begin
+  FinalizeList := TFinalizeMemoryNilItem.Create(Ptr, FinalizeList);
+  Result := Ptr;
 end;
 
 initialization
