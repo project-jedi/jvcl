@@ -43,8 +43,10 @@ uses
 type
   TJvCustomAppStore = class;
 
-  TAppStoreListItem = procedure(Sender: TJvCustomAppStore; const Path: string; const Index: Integer) of object;
-  TAppStoreListDelete = procedure(Sender: TJvCustomAppStore; const Path: string; const First, Last: Integer) of object;
+  TAppStoreListItem = procedure(Sender: TJvCustomAppStore; const Path: string;
+    const Index: Integer) of object;
+  TAppStoreListDelete = procedure(Sender: TJvCustomAppStore; const Path: string;
+    const First, Last: Integer) of object;
 
   TJvCustomAppStore = class(TJvComponent)
   private
@@ -69,7 +71,8 @@ type
     { StringList item writer used by WriteStringList in the call to WriteList. }
     procedure WriteSLItem(Sender: TJvCustomAppStore; const Path: string; const Index: Integer);
     { StringList item deleter used by WriteStringList in the call to WriteList. }
-    procedure DeleteSLItems(Sender: TJvCustomAppStore; const Path: string; const First, Last: Integer);
+    procedure DeleteSLItems(Sender: TJvCustomAppStore; const Path: string; const First,
+      Last: Integer);
     { Current root path for storage. Paths used in other methods are relative to this path. }
     function GetRoot: string; virtual;
     { Specify a new root. Given path is relative to the current path. Se remarks above }
@@ -124,7 +127,8 @@ type
       item write method is called. Any additional items in the list (from a previous write) will be
       removed by the optionally provided delete method. }
     procedure WriteList(const Path: string; const ItemCount: Integer;
-      const OnWriteItem: TAppStoreListItem; const OnDeleteItems: TAppStoreListDelete = nil); virtual;
+      const OnWriteItem: TAppStoreListItem;
+      const OnDeleteItems: TAppStoreListDelete = nil); virtual;
     { Retrieves a string list. The string list is optionally cleared before reading starts. The
       result value is the number of items read. Uses ReadList with internally provided methods to
       do the actual reading. }
@@ -229,8 +233,8 @@ begin
   Sender.WriteString(Path + '\Item' + IntToStr(Index), Sender.FStoreSL[Index]);
 end;
 
-procedure TJvCustomAppStore.DeleteSLItems(Sender: TJvCustomAppStore; const Path: string; const First,
-  Last: Integer);
+procedure TJvCustomAppStore.DeleteSLItems(Sender: TJvCustomAppStore; const Path: string;
+  const First, Last: Integer);
 var
   I: Integer;
 begin
@@ -258,7 +262,8 @@ begin
   WriteFloat(Path, Value);
 end;
 
-function TJvCustomAppStore.ReadList(const Path: string; const OnReadItem: TAppStoreListItem): Integer;
+function TJvCustomAppStore.ReadList(const Path: string;
+  const OnReadItem: TAppStoreListItem): Integer;
 var
   I: Integer;
 begin
