@@ -90,6 +90,10 @@ begin
       begin
         incfile := Copy(curParam, 4, Length(ParamStr(i)));
       end
+      else if AnsiSameText(Copy(curParam, 2, 1), 'm') then
+      begin
+        modelname := Copy(curParam, 4, Length(ParamStr(i)));
+      end
       else if AnsiSameText(Copy(curParam, 2, 1), 'h') then
       begin
         Help;
