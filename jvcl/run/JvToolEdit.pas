@@ -371,6 +371,7 @@ type
   private
     FDialog: TOpenDialog;
     FDialogKind: TFileDialogKind;
+    FAddQuotes: boolean;
     procedure CreateEditDialog;
     function GetFileName: TFileName;
     function GetDefaultExt: TFileExt;
@@ -408,6 +409,7 @@ type
     //Polaris
     property Align;
     property AutoSize;
+    property AddQuotes:boolean read FAddQuotes write FAddQuotes default true;
     property DialogKind: TFileDialogKind read FDialogKind write SetDialogKind
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
@@ -2336,7 +2338,10 @@ begin
   DoAfterDialog(Temp, Action);
   if Action then
   begin
-    inherited Text := ExtFilename(Temp);
+    if AddQuotes then
+      inherited Text := ExtFilename(Temp)
+    else
+      inherited Text := Temp;
     SetInitialDir(ExtractFilePath(FDialog.FileName));
   end;
 end;
@@ -2350,7 +2355,10 @@ procedure TJvFilenameEdit.SetFileName(const Value: TFileName);
 begin
   if (Value = '') or ValidFileName(ClipFilename(Value)) then
   begin
-    inherited Text := ExtFilename(Value);
+    if AddQuotes then
+      inherited Text := ExtFilename(Value)
+    else
+      inherited Text := Value;
     ClearFileList;
   end
   else
