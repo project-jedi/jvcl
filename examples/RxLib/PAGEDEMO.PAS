@@ -32,7 +32,8 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, DBCtrls, DB, DBTables, JvPageManager,
   JvComponent, JvFormPlacement, JvBDEQuery, JvDBCombobox, JvToolEdit,
-  JvDBControls, Mask, JvLabel, Grids, DBGrids, ExtCtrls, JvExControls;
+  JvDBControls, Mask, JvLabel, Grids, DBGrids, ExtCtrls, JvExControls,
+  JvDBGrid, JvExStdCtrls, JvExMask, JvExDBGrids;
 
 type
   TClientAssistanceMode = (camNew, camEdit, camDelete, camView);
