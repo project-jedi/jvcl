@@ -894,6 +894,8 @@ function IsDockable(Sender: TWinControl; Client: TControl;
 function ComputeDockingRect(AControl: TControl;
   var DockRect: TRect; MousePos: TPoint): TAlign;
 
+{ Undocks AControl from Sender; Sender is used to calculate the rectangle in
+  which AControl is displayed when it starts floating. }
 procedure DoFloat(Sender, AControl: TControl);
 procedure SetDockSite(Control: TWinControl; SiteValue: Boolean);
 procedure DoFloatForm(DockForm: TControl);
@@ -1545,7 +1547,7 @@ procedure ResetDockClient(DockClient: TJvDockClient; NewTarget: TControl);
 var
   Pt: TPoint;
 begin
-  if DockClient <> nil then
+  if (DockClient <> nil) and not (csDestroying in DockClient.ParentForm.ComponentState) then
   begin
     if (DockClient.ParentForm.HostDockSite is TJvDockPanel) and (NewTarget is TJvDockPanel) then
     begin
@@ -2237,11 +2239,13 @@ procedure TJvDockBaseControl.DoFormOnClose(Sender: TObject;
   var Action: TCloseAction);
 begin
   if (Action = caFree) and (JvGlobalDockManager <> nil) then
+  begin
     if Self is TJvDockServer then
       JvGlobalDockManager.RemoveDockServerFromDockManager(ParentForm)
     else
     if Self is TJvDockClient then
       JvGlobalDockManager.RemoveDockClientFromDockManager(ParentForm);
+  end;
   if Assigned(FOldOnClose) then
     FOldOnClose(Sender, Action);
 end;
@@ -2249,11 +2253,13 @@ end;
 procedure TJvDockBaseControl.DoFormOnCreate(Sender: TObject);
 begin
   if JvGlobalDockManager <> nil then
+  begin
     if Self is TJvDockServer then
       JvGlobalDockManager.AddDockServerToDockManager(ParentForm)
     else
     if Self is TJvDockClient then
       JvGlobalDockManager.AddDockClientToDockManager(ParentForm);
+  end;
   if Assigned(FOldOnCreate) then
     FOldOnCreate(Sender);
 end;
@@ -3321,14 +3327,16 @@ end;
 
 procedure TJvDockClient.DoFloatDockClients(PanelAlign: TAlign);
 begin
-  if (ParentForm.HostDockSite is TJvDockPanel) and
+  if not (csDestroying in ParentForm.ComponentState) and
+    (ParentForm.HostDockSite is TJvDockPanel) and
     (PanelAlign = ParentForm.HostDockSite.Align) then
     RestoreChild;
 end;
 
 procedure TJvDockClient.DoFloatDockEachOther;
 begin
-  if (ParentForm.HostDockSite <> nil) and
+  if not (csDestroying in ParentForm.ComponentState) and
+    (ParentForm.HostDockSite <> nil) and
     (ParentForm.HostDockSite.Parent is TJvDockableForm) then
     RestoreChild;
 end;
@@ -3341,6 +3349,7 @@ begin
     HideDockForm(ParentForm);
     FParentVisible := True;
   end;
+  inherited DoFormOnClose(Sender, Action);
 end;
 
 procedure TJvDockClient.DoFormShowHint(HTFlag: Integer; var HintStr: string;
@@ -3622,7 +3631,8 @@ end;
 procedure TJvDockClient.SetNCPopupMenu(Value: TPopupMenu);
 begin
   FNCPopupMenu := Value;
-  if Value <> nil then Value.FreeNotification(Self);
+  if Value <> nil then
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvDockClient.SetParentVisible(const Value: Boolean);
@@ -3950,6 +3960,7 @@ begin
     SetDockSite(TForm(Client), True);
   if (VisibleDockClientCount = 1) or
     (DockClientCount <= 2) then
+    { It's possible that 2 WM_CLOSE are send to the parent form  }
     PostMessage(Parent.Handle, WM_CLOSE, 0, 0);
   UpdateCaption(Client);
   Result := Perform(CM_UNDOCKCLIENT, Integer(NewTarget), Integer(Client)) = 0;
@@ -4517,7 +4528,8 @@ begin
       if AComponent = Splitter[Position] then
       begin
         FSplitters[Position] := nil;
-        SplitterStyle[Position].Splitter := nil;
+        if Assigned(SplitterStyle[Position]) then
+          SplitterStyle[Position].Splitter := nil;
         DestroyDockPanelAndSplitter;
       end;
   end;
