@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-12
+Last Modified: 2004-01-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -46,6 +46,16 @@ uses
 {$ENDIF VCL}
 
 type
+  TDlgCode = (
+    dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,
+    dcButton,
+    dcNative // if dcNative is in the set the native functions are used and DoGetDlgCode is ignored
+  );
+  TDlgCodes = set of TDlgCode;
+const
+  dcWantMessage = dcWantAllKeys;
+
+type
   IJvControlEvents = interface
     ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
     procedure VisibleChanged;
@@ -68,13 +78,18 @@ type
     {$ENDIF VCL}
   end;
 
-  IJvWinControlEvents = interface(IJvControlEvents)
+  IJvWinControlEvents = interface
     ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     procedure CursorChanged;
     procedure ShowingChanged;
     procedure ShowHintChanged;
     procedure ControlsListChanging(Control: TControl; Inserting: Boolean);
     procedure ControlsListChanged(Control: TControl; Inserting: Boolean);
+    procedure DoGetDlgCode(var Code: TDlgCodes);
+  end;
+
+  IJvCustomControlEvents = interface
+    ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
   end;
 
 const
@@ -88,6 +103,7 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
+
 type
   JV_CONTROL_EVENTS(Control)
   JV_WINCONTROL_EVENTS(WinControl)
@@ -96,8 +112,8 @@ type
   JV_CUSTOMCONTROL_EVENTS(CustomControl)
   JV_CUSTOMCONTROL_EVENTS(HintWindow)
 
-{$IFDEF VCL}
 
+{$IFDEF VCL}
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
 function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
@@ -121,6 +137,9 @@ function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   // - enters the painting and returns an interface that leaves the painting when
   //   is is released.
 procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
+
+function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
+  Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
 {$ENDIF VisualCLX}
 
 implementation
@@ -166,6 +185,7 @@ var
   PMsg: PMessage;
   CallInherited: Boolean;
   Canvas: TCanvas;
+  DlgCodes: TDlgCodes;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -252,6 +272,40 @@ begin
               ControlsListChanging(TControl(PMsg^.WParam), False)
             else
               ControlsListChanged(TControl(PMsg^.WParam), True);
+
+          WM_GETDLGCODE:
+            begin
+              PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
+
+              DlgCodes := [dcNative];
+              if PMsg^.Result and DLGC_WANTARROWS <> 0 then
+                Include(DlgCodes, dcWantArrows);
+              if PMsg^.Result and DLGC_WANTTAB <> 0 then
+                Include(DlgCodes, dcWantTab);
+              if PMsg^.Result and DLGC_WANTALLKEYS <> 0 then
+                Include(DlgCodes, dcWantAllKeys);
+              if PMsg^.Result and DLGC_WANTCHARS <> 0 then
+                Include(DlgCodes, dcWantChars);
+              if PMsg^.Result and DLGC_BUTTON <> 0 then
+                Include(DlgCodes, dcButton);
+
+              DoGetDlgCode(DlgCodes);
+
+              if not (dcNative in DlgCodes) then
+              begin
+                PMsg^.Result := 0;
+                if dcWantAllKeys in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTALLKEYS;
+                if dcWantArrows in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTARROWS;
+                if dcWantTab in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTTAB;
+                if dcWantChars in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_WANTCHARS;
+                if dcButton in DlgCodes then
+                  PMsg^.Result := PMsg^.Result or DLGC_BUTTON;
+              end;
+            end;
         else
           CallInherited := True;
         end;
@@ -329,7 +383,9 @@ procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 var
   Event: QPaintEventH;
 begin
-  if not (csDestroying in Instance.ComponentState) then
+  if not (csDestroying in Instance.ComponentState) and
+     (not Supports(Instance, IJvCustomControlEvents) then
+       { TCustomControls do not have a default paint method. }
   begin
     Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
     try
@@ -345,6 +401,55 @@ begin
   end;
 end;
 
+function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
+  Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
+
+  function IsTabKey: Boolean;
+  begin
+    Result := (Key = Key_Tab) or (Key = Tab_BackTab);
+  end;
+
+  function IsArrowKey: Boolean;
+  begin
+    Result := (Key = Key_Left) or (Key = Key_Right) or
+              (Key = Key_Down) or (Key = Key_Up);
+  end
+
+var
+  DlgCodes: TDlgCodes;
+  Value: TInputKeys;
+begin
+  Result := InheritedValue;
+  Value := TOpenWidgetControl(Instance).InputKeys;
+
+  DlgCodes := [dcNative];
+  if ikAll in Value then
+    Include(DlgCodes, dcWantAllKeys);
+  if ikArrows in Value then
+    Include(DlgCodes, dcWantArrows);
+  if ikTabs in Value then
+    Include(DlgCodes, dcWantTab);
+  if ikChars in Value then
+    Include(DlgCodes, dcWantChars);
+
+  DoGetDlgCode(DlgCodes);
+
+  if not (dcNative in DlgCodes) then
+  begin
+    Result := False;
+    if dcWantAllKeys in DlgCodes then
+      Result := True;
+    if (not Result) and (dcWantTab in DlgCodes) then
+      Result := IsTabKey;
+    if (not Result) and (dcWantArrows in DlgCodes) then
+      Result := IsArrowKey;
+    if (not Result) and (dcWantChars in DlgCodes) then
+      Result := ((Shift * [ssCtrl, ssAlt] = []) and
+                ((Hi(Word(Key)) = 0) or (Length(KeyText) > 0)) and
+                not (IsTabKey or IsArrowKey);
+  end;
+end;
+
 {$ENDIF VisualCLX}
 
 // *****************************************************************************
@@ -356,15 +461,29 @@ JV_CONTROL_EVENTS_IMPL(GraphicControl)
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomControl)
 JV_CUSTOMCONTROL_EVENTS_IMPL(HintWindow)
 
-{$IFNDEF COMPILER6_UP}
-var
-  AutoSizeOffset: Cardinal;
-  TControl_SetAutoSize: Pointer;
+// *****************************************************************************
 
+{$IFNDEF COMPILER6_UP}
 type
   TOpenControl = class(TControl);
   PBoolean = ^Boolean;
   PPointer = ^Pointer;
+
+  TJumpCode = packed record
+    Pop: Byte; // pop xxx
+    Jmp: Byte; // jmp Offset
+    Offset: Integer;
+  end;
+
+  TRelocationRec = packed record
+    Jump: Word;
+    Address: PPointer;
+  end;
+
+var
+  AutoSizeOffset: Cardinal;
+  TControl_SetAutoSize: Pointer;
+  SavedControlCode: TJumpCode;
 
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 begin
@@ -389,99 +508,115 @@ begin
     TOpenControl_SetAutoSize(Instance, Value);
 end;
 
+function ReadProtectedMemory(Address: Pointer; var Buffer; Count: Cardinal): Boolean;
+var
+  n: Cardinal;
+begin
+  Result := ReadProcessMemory(GetCurrentProcess, Address, @Buffer, Count, n);
+  Result := Result and (n = Count);
+end;
+
+function WriteProtectedMemory(Address: Pointer; const Buffer; Count: Cardinal): Boolean;
+var
+  n: Cardinal;
+begin
+  Result := WriteProcessMemory(GetCurrentProcess, Address, @Buffer, Count, n);
+  Result := Result and (n = Count);
+end;
+
+{$OPTIMIZATION ON} // be sure to have optimization activated
+function GetCode(Instance: TOpenControl): Boolean;
+begin
+  { generated code:
+      8A40xx       mov al,[eax+Byte(Offset)]
+  }
+  Result := Instance.AutoSize;
+end;
+
+procedure SetCode(Instance: TOpenControl);
+begin
+  { generated code:
+      B201         mov dl,$01
+      E8xxxxxxxx   call TControl.SetAutoSize
+  }
+  Instance.AutoSize := True;
+end;
+
 type
-  TJumpCode = packed record
-    Pop: Byte; // pop xxx
-    Jmp: Byte; // jmp Offset
+  PGetCodeRec = ^TGetCodeRec;
+  TGetCodeRec = packed record
+    Sign: Word; // $408a   bytes swapped
+    Offset: Byte;
+  end;
+
+type
+  PSetCodeRec = ^TSetCodeRec;
+  TSetCodeRec = packed record
+    Sign1: Word; // $01b2  bytes swapped
+    Sign2: Byte; // $e8
     Offset: Integer;
   end;
 
-  TRelocationRec = packed record
-    Jump: Word;
-    Address: PPointer;
-  end;
+const
+  GetCodeSign = $408a;
+  SetCodeSign1 = $01b2;
+  SetCodeSign2 = $e8;
 
-var
-  SavedControlCode: TJumpCode;
-
-{$O-}
 procedure InitHookVars;
-label
-  Field, Proc, Leave;
 var
-  c: TControl;
-  b: Boolean;
-  Data: Byte;
   Relocation: TRelocationRec;
-  n: Cardinal;
+  PGetCode: PGetCodeRec;
+  PSetCode: PSetCodeRec;
+  Data: Byte;
 begin
-  asm
-        MOV     EAX, OFFSET Field
-        ADD     EAX, 3
-        ADD     EAX, 2
-        XOR     EDX, EDX
-        MOV     DL, BYTE PTR [EAX]
-        MOV     [AutoSizeOffset], EDX
+  TControl_SetAutoSize := nil;
+  AutoSizeOffset := 0;
 
-        MOV     EAX, OFFSET Proc
-        ADD     EAX, 2
-        ADD     EAX, 3
-        ADD     EAX, 1
-        MOV     EDX, [EAX]
-        MOV     [TControl_SetAutoSize], EDX
+  PGetCode := @GetCode;
+  PSetCode := @SetCode;
 
-        JMP     Leave
-  end;
-
-  c := nil;
-Field:
-  b := TOpenControl(c).AutoSize;
-  if b then ;
-Proc:
-  TOpenControl(c).AutoSize := True;
-
-Leave:
-  if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
-     @Data, SizeOf(Data), n) then
+  if (PGetCode^.Sign = GetCodeSign) and
+     (PSetCode^.Sign1 = SetCodeSign1) and (PSetCode^.Sign2 = SetCodeSign2) then
   begin
-    if Data = $FF then // Proc is in a dll or package
+    AutoSizeOffset := PGetCode^.Offset;
+    TControl_SetAutoSize := Pointer(Integer(@SetCode) + SizeOf(TSetCodeRec) +
+      PSetCode^.Offset);
+
+   // the relocation table meight be protected
+    if ReadProtectedMemory(TControl_SetAutoSize, Data, SizeOf(Data)) then
     begin
-      if not ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
-        @Relocation, SizeOf(Relocation), n) then
-      TControl_SetAutoSize := Relocation.Address^;
+      if Data = $FF then // TControl.SetAutoSize is in a dll or package
+        if ReadProtectedMemory(TControl_SetAutoSize, Relocation, SizeOf(Relocation)) then
+          TControl_SetAutoSize := Relocation.Address^;
     end;
   end;
 end;
-{$O+}
 
 procedure InstallSetAutoSizeHook;
 var
   Code: TJumpCode;
-  P: procedure;
-  n: Cardinal;
 begin
   InitHookVars;
-  P := TControl_SetAutoSize;
-  if Assigned(P) then
+  if Assigned(TControl_SetAutoSize) then
   begin
-    if PByte(@P)^ = $53 then // push ebx
+    if PByte(TControl_SetAutoSize)^ = $53 then // push ebx
       Code.Pop := $5B // pop ebx
     else
-    if PByte(@P)^ = $55 then // push ebp
+    if PByte(TControl_SetAutoSize)^ = $55 then // push ebp
       Code.Pop := $5D // pop ebp
     else
       Exit;
     Code.Jmp := $E9;
-    Code.Offset := Integer(@SetAutoSizeHook) - (Integer(@P) + 1) - SizeOf(Code);
+    Code.Offset := Integer(@SetAutoSizeHook) -
+      (Integer(TControl_SetAutoSize) + 1) - SizeOf(Code);
 
-    if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
-         @SavedControlCode, SizeOf(SavedControlCode), n) then
+    if ReadProtectedMemory(Pointer(Cardinal(TControl_SetAutoSize) + 1),
+      SavedControlCode, SizeOf(SavedControlCode)) then
     begin
-     { The strange thing is that WriteProcessMemory does not want @P or something
-       overrides the $e9 with a "PUSH xxx"}
-      if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code,
-           SizeOf(Code), n) then
-        FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+     { The strange thing is that something overwrites the $e9 with a "PUSH xxx" }
+      if WriteProtectedMemory(Pointer(Cardinal(TControl_SetAutoSize) + 1), Code,
+           SizeOf(Code)) then
+        FlushInstructionCache(GetCurrentProcess, TControl_SetAutoSize, SizeOf(Code));
     end;
   end;
 end;

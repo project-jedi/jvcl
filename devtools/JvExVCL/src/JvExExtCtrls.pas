@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-12
+Last Modified: 2004-01-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -56,19 +56,19 @@ type
   JV_WINCONTROL_EVENTS(RadioGroup)
   JV_CONTROL_EVENTS(Splitter)
 
-  JV_CUSTOMCONTROL_EVENTS_FEATURE_BEGIN(CustomControlBar)
+  JV_CUSTOMCONTROL_EVENTS_BEGIN(CustomControlBar)
   {$IFDEF VisualCLX}
   protected
     function HitTest(X, Y: Integer): Boolean; overload; dynamic;
   {$ENDIF VisualCLX}
-  JV_CUSTOMCONTROL_EVENTS_FEATURE_END(CustomControlBar)
+  JV_CUSTOMCONTROL_EVENTS_END(CustomControlBar)
 
-  JV_CUSTOMCONTROL_EVENTS_FEATURE_BEGIN(ControlBar)
+  JV_CUSTOMCONTROL_EVENTS_BEGIN(ControlBar)
   {$IFDEF VisualCLX}
   protected
     function HitTest(X, Y: Integer): Boolean; overload; dynamic;
   {$ENDIF VisualCLX}
-  JV_CUSTOMCONTROL_EVENTS_FEATURE_END(ControlBar)
+  JV_CUSTOMCONTROL_EVENTS_END(ControlBar)
   
 {$IFDEF VCL}
   JV_CUSTOMCONTROL_EVENTS(Page)
@@ -95,23 +95,23 @@ JV_WINCONTROL_EVENTS_IMPL(CustomRadioGroup)
 JV_WINCONTROL_EVENTS_IMPL(RadioGroup)
 JV_CONTROL_EVENTS_IMPL(Splitter)
 
-JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_BEGIN(CustomControlBar)
+JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(CustomControlBar)
 {$IFDEF VisualCLX}
 function TJvExCustomControlBar.HitTest(X, Y: Integer): Boolean;
 begin
   Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
 end;
 {$ENDIF VisualCLX}
-JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_END(CustomControlBar)
+JV_CUSTOMCONTROL_EVENTS_IMPL_END(CustomControlBar)
 
-JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_BEGIN(ControlBar)
+JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(ControlBar)
 {$IFDEF VisualCLX}
 function TJvExControlBar.HitTest(X, Y: Integer): Boolean;
 begin
   Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
 end;
 {$ENDIF VisualCLX}
-JV_CUSTOMCONTROL_EVENTS_IMPL_FEATURE_END(ControlBar)
+JV_CUSTOMCONTROL_EVENTS_IMPL_END(ControlBar)
 
 {$IFDEF VCL}
 JV_CUSTOMCONTROL_EVENTS_IMPL(Page)
