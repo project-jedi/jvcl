@@ -125,6 +125,18 @@ resourcestring
 
   RsEInvalidDockSiteOrientationValue = 'Invalid DockSiteOrientation value doNoOrient';
 
+  { GLOBALS NOTE:
+
+    JvGlobalDockManager:
+
+    JvDocking's TForm Drag-and-Drop functionality requires the use of these globals.
+    During a drag-drop operation (see JvDockSupportControl.pas, particularly
+    the class TJvDockDragDockObject, it is assumed that JvGlobalDockManager
+    will always be assigned to a valid dock manager. If it is not assigned,
+    access violations would occur.
+
+    }
+
 var
   JvGlobalDockManager: TJvDockManager = nil;
   JvGlobalDockIsLoading: Boolean = False;

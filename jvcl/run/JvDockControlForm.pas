@@ -15,8 +15,12 @@ Portions created by luxiaoban are Copyright (C) 2002,2003 luxiaoban.
 All Rights Reserved.
 
 Contributor(s):
+  2005-02-08 - Warren Postma - TJvDockServer.CustomPanel.
 
-Last Modified: 2003-12-31
+
+
+Last Modified: 2005-02-08
+
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -24,6 +28,19 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
+{ Changes:
+
+  2005-02-08 WP: Added TJvDockServer.CustomDock panel (new property),
+  and new event TJvDockServer.OnCustomPanel to get
+  a custom parent control (such as the form's center area) for the
+  CustomPanel. Previously you could only dock at the edges. Created a
+  splitter object (to avoid possible access violations) but the splitter
+  control is hidden and never used for this custom panel.  Several
+  changes were made  to the VID dock style also to make this custom
+  panel more useful,allowing an "tabbed MDI" style application.
+
+}
 
 unit JvDockControlForm;
 
@@ -37,9 +54,11 @@ uses
   {$IFDEF USEJVCL}
   JvComponent, JvAppStorage,
   {$ENDIF USEJVCL}
-  JvDockTree, JvDockSupportClass, JvDockSupportControl;
+  JvDockTree, JvDockSupportClass, JvDockSupportControl, JvDockAdvTree;
 
 const
+  JvDockPositionCount = 5;
+
   JvDockState_Unknown = 0;
   JvDockState_Docking = 1;
   JvDockState_Floating = 2;
@@ -72,6 +91,8 @@ type
   TJvDockPanel = class(TJvDockCustomPanel)
   private
     FDockServer: TJvDockServer;
+    FCustomFlag:Boolean; // Set only if custom area! {NEW}
+
     function GetPanelIndex: Integer;
     procedure SetDockServer(ADockServer: TJvDockServer);
   protected
@@ -94,6 +115,8 @@ type
     function DoUnDock(NewTarget: TWinControl; Client: TControl): Boolean; override;
 
     procedure Resize; override;
+
+
   public
     constructor Create(AOwner: TComponent); override;
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
@@ -101,19 +124,49 @@ type
     procedure ShowDockPanel(MakeVisible: Boolean; Client: TControl;
       PanelSizeFrom: TJvDockSetDockPanelSizeFrom = sdfClient); virtual;
     procedure ResetPosition;
+
+
+    // GetDockedControls:  NEW! -WPostma.
+    // base class doesn't have this capability.
+    // see TJvDockAdvPanel for override that implements this!
+    procedure GetDockedControls( WinControls:TList ); virtual;
+
+
     property PanelIndex: Integer read GetPanelIndex;
     property DockServer: TJvDockServer read FDockServer write SetDockServer;
+    property CustomFlag:Boolean read FCustomFlag write FCustomFlag; // Set only if custom area! {NEW}
+
+
+
   end;
+
+
+
+
+
 
   TJvDockAdvPanel = class(TJvDockPanel)
   private
+
     procedure CMUnDockClient(var Msg: TCMUnDockClient); message CM_UNDOCKCLIENT;
   protected
+    FADVTree:TJvDockAdvTree; // NEW! Link to the entire TJvDockAdvTree. Required for GetDockedControls to work!
+
     procedure CustomDockDrop(Source: TJvDockDragDockObject; X, Y: Integer); override;
     function CustomUnDock(Source: TJvDockDragDockObject; NewTarget: TWinControl; Client: TControl): Boolean; override;
     function DoUnDock(NewTarget: TWinControl; Client: TControl): Boolean; override;
+
+
+
+
   public
+
+    procedure GetDockedControls( WinControls:TList ); override; 
+
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
+
+    property ADVTree:TJvDockAdvTree read FADVTree write FADVTree; // NEW! Link allows AdvPanel to scan this tree to enumerate items currently docked to it. It also contains items docked to other places, so be careful!
+
   end;
 
   TJvDockPanelClass = class of TJvDockPanel;
@@ -162,6 +215,7 @@ type
     FDockStyle is set (to itself) }
   TJvDockBasicServerOption = class(TPersistent)
   private
+
     FDockStyle: TJvDockBasicStyle;
   protected
     procedure ResetDockControlOption; virtual; abstract;
@@ -181,7 +235,7 @@ type
     FGrabbersSize: TJvDockGrabbersSize;
     FSplitterWidth: TJvDockSplitterWidth;
   protected
-    procedure SeTJvDockGrabbersSize(const Value: TJvDockGrabbersSize); virtual;
+    procedure SetGrabbersSize(const Value: TJvDockGrabbersSize); virtual;
     procedure SetDockSplitterWidth(const Value: TJvDockSplitterWidth); virtual;
 
     procedure ResetDockControlOption; override;
@@ -196,7 +250,7 @@ type
     procedure SetDockGrabbersSize_WithoutChangeSystemInfo(const Value: TJvDockGrabbersSize);
     procedure SetDockSplitterWidth_WithoutChangeSystemInfo(const Value: TJvDockSplitterWidth);
   published
-    property GrabbersSize: TJvDockGrabbersSize read FGrabbersSize write SeTJvDockGrabbersSize;
+    property GrabbersSize: TJvDockGrabbersSize read FGrabbersSize write SetGrabbersSize;
     property SplitterWidth: TJvDockSplitterWidth read FSplitterWidth write SetDockSplitterWidth;
   end;
 
@@ -230,6 +284,11 @@ type
   TJvDockBasicStyle = class(TComponent)
   {$ENDIF USEJVCL}
   private
+
+  {$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+    FNotifyListeners:TList; // List of TJvDockTree listeners. Future feature in development. -WPostma
+  {$endif}
+
     FDockPanelClass: TJvDockPanelClass;
     FDockSplitterClass: TJvDockSplitterClass;
     FConjoinPanelClass: TJvDockConjoinPanelClass;
@@ -264,6 +323,8 @@ type
     procedure FormGetDockEdge(DockClient: TJvDockClient; Source: TJvDockDragDockObject;
       MousePos: TPoint; var DropAlign: TAlign); virtual;
 
+
+
     { (rb) not used? }
     procedure CreateConjoinServerOption(var Option: TJvDockBasicConjoinServerOption); virtual;
     { (rb) not used? }
@@ -285,10 +346,23 @@ type
     procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); virtual;
 
     procedure AssignTabServerOption(APage: TJvDockTabPageControl); virtual;
+
+
     property DockBaseControlList: TList read FDockBaseControlList;
+
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+    procedure NotifyDockTree; { FUTURE feature. call listeners (TJvDockTree objects) and tell them to update themselves. }
+{$endif}
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    {$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+    procedure AddDockTreeListener( Listener:TJvDockTree ); {future feature. }
+    procedure RemoveDockTreeListener( Listener:TJvDockTree ); {future feature. }
+    {$endif}
+    
     procedure AfterConstruction; override;
     function CanSetEnableDocked(ADockBaseControl: TJvDockBaseControl): Boolean; virtual;
     function CanSetLeftDocked(ADockBaseControl: TJvDockBaseControl): Boolean; virtual;
@@ -350,6 +424,10 @@ type
       read GetConjoinServerOption write SetConjoinServerOption;
     property TabServerOption: TJvDockBasicTabServerOption
       read GetTabServerOption write SetTabServerOption;
+
+    published
+
+
   end;
 
   TJvDockAdvStyle = class(TJvDockBasicStyle)
@@ -364,10 +442,11 @@ type
   {$ENDIF USEJVCL}
   private
     FEnableDock: Boolean;
-    FLeftDock: Boolean;
-    FTopDock: Boolean;
-    FRightDock: Boolean;
-    FBottomDock: Boolean;
+    FLeftDock: Boolean;  { Can the parent form be docked into the Left dock? }
+    FTopDock: Boolean;   { Can the parent form be docked into the Top dock? }
+    FRightDock: Boolean; { Can the parent form be docked into the Right dock? }
+    FBottomDock: Boolean; { Can the parent form be docked into the Bottom dock? }
+    FCustomDock: Boolean; {NEW!  Can the parent form be docked into the Custom (center window) dock area? }
     FEachOtherDock: Boolean;
     FDockStyle: TJvDockBasicStyle;
 
@@ -421,11 +500,17 @@ type
     property RightDock: Boolean read FRightDock write SetRightDock default True;
     property BottomDock: Boolean read FBottomDock write SetBottomDock default True;
     property EachOtherDock: Boolean read FEachOtherDock write SetEachOtherDock default True;
+    property CustomDock: Boolean read FCustomDock write FCustomDock default True; {NEW!}
     {$IFNDEF USEJVCL}
     property Version: string read GetDockStyleVersion;
     {$ENDIF !USEJVCL}
     property DockStyle: TJvDockBasicStyle read FDockStyle write SetDockStyle;
   end;
+
+  TJvDockCustomPanelEvent = procedure(Sender:TJvDockServer; var aParent:TWinControl; var Align:TAlign ) of object; {NEW!}
+  TJvDockCheckDockableEvent = procedure ( DockClient:TJvDockClient; DockForm:TForm; DockServer:TJvDockServer; DockPanel:TJvDockPanel; var CanDock:Boolean ) of object; {NEW!}
+
+
 
   TJvDockGetClientAlignSizeEvent = procedure(Align: TAlign; var Value: Integer) of object;
   TJvDockFinishSetDockPanelSizeEvent = procedure(DockPanel: TJvDockPanel) of object;
@@ -443,7 +528,7 @@ type
     o  If DockStyle is set to nil then the panels+splitters are nil.
   }
 
-  TJvDockPosition = (dpLeft, dpRight, dpTop, dpBottom);
+  TJvDockPosition = (dpLeft, dpRight, dpTop, dpBottom, dpCustom); {dpCustom NEW!}
 
   TJvDockServer = class(TJvDockBaseControl)
   private
@@ -452,6 +537,8 @@ type
     FDockSplitterClass: TJvDockSplitterClass;
     FSplitters: array [TJvDockPosition] of TJvDockSplitter;
     FSplitterStyles: array [TJvDockPosition] of TJvDockSplitterStyle;
+
+    FOnCustomPanel : TJvDockCustomPanelEvent;// Self, aParent, Align
 
     FOnGetClientAlignSize: TJvDockGetClientAlignSizeEvent;
     FOnFinishSetDockPanelSize: TJvDockFinishSetDockPanelSizeEvent;
@@ -506,7 +593,8 @@ type
     property RightDockPanel: TJvDockPanel index 1 read GetDockPanelIndex;
     property TopDockPanel: TJvDockPanel index 2 read GetDockPanelIndex;
     property BottomDockPanel: TJvDockPanel index 3 read GetDockPanelIndex;
-
+    property CustomDockPanel:TJvDockPanel index 4 read GetDockPanelIndex;
+    
     property LeftSplitter: TJvDockSplitter index 0 read GetSplitterIndex;
     property RightSplitter: TJvDockSplitter index 1 read GetSplitterIndex;
     property TopSplitter: TJvDockSplitter index 2 read GetSplitterIndex;
@@ -529,12 +617,16 @@ type
     property OnFinishSetDockPanelSize: TJvDockFinishSetDockPanelSizeEvent
       read FOnFinishSetDockPanelSize write FOnFinishSetDockPanelSize;
 
+    property OnCustomPanel:TJvDockCustomPanelEvent read FOnCustomPanel write FOnCustomPanel; {NEW!}
+
     property EnableDock;
     property LeftDock;
     property TopDock;
     property RightDock;
     property BottomDock;
     property DockStyle;
+    property CustomDock;
+
   end;
 
   TJvDockMouseStation = (msFloat, msConjoin, msTabPage);
@@ -551,6 +643,8 @@ type
   TJvDockPaintDockGrabberEvent = TJvDockPaintDockEvent;
   TJvDockPaintDockSplitterEvent = TJvDockPaintDockEvent;
   TJvDockFormHintEvent = procedure(HTFlag: Integer; var HintStr: string; var CanShow: Boolean) of object;
+
+
 
   TJvDockClient = class(TJvDockBaseControl)
   private
@@ -572,6 +666,7 @@ type
     FOnFormShowHint: TJvDockFormHintEvent;
     FOnFormShow: TNotifyEvent;
     FOnFormHide: TNotifyEvent;
+    FOnCheckIsDockable :TJvDockCheckDockableEvent;  {NEW!}
     FCurrentDockSite: TWinControl;
     FLastDockSite: TWinControl;
     FUnDockLeft: Integer;
@@ -658,6 +753,9 @@ type
       DockType: TAlign): TJvDockConjoinHostForm; virtual;
     function CreateTabHostAndDockControl(Control1, Control2: TControl): TJvDockTabHostForm; virtual;
 
+
+    function FindTabHostForm:TForm; // return nil if not found, otherwise, get currently docked parent tabhost form if there is one.
+
     procedure DoNCButtonDown(Msg: TWMNCHitMessage; Button: TMouseButton;
       MouseStation: TJvDockMouseStation); virtual;
     procedure DoNCButtonUp(Msg: TWMNCHitMessage; Button: TMouseButton;
@@ -689,6 +787,9 @@ type
   published
     property OnFormShow: TNotifyEvent read FOnFormShow write FOnFormShow;
     property OnFormHide: TNotifyEvent read FOnFormHide write FOnFormHide;
+
+    property OnCheckIsDockable :TJvDockCheckDockableEvent read FOnCheckIsDockable write FOnCheckIsDockable;  {NEW!}
+
     property OnNCButtonDown: TJvDockNCButtonDownEvent read FOnNCButtonDown write FOnNCButtonDown;
     property OnNCButtonUp: TJvDockNCButtonUpEvent read FOnNCButtonUp write FOnNCButtonUp;
     property OnNCMouseMove: TJvDockNCMouseMoveEvent read FOnNCMouseMove write FOnNCMouseMove;
@@ -712,6 +813,7 @@ type
     property BottomDock;
     property EachOtherDock;
     property DockStyle;
+    property CustomDock;
   end;
 
   { Maintained by a TJvDockConjoinHostForm; That is (always) the owner, ie.
@@ -809,6 +911,10 @@ type
     procedure DockDrop(Source: TDragDockObject; X, Y: Integer); override;
   end;
 
+  { A TJvDockableForm is a base class for TJvDockConjoinHostForm
+     and TJvDockTabHostForm which are the base classes for the two kinds of
+     docked-views possible for handling multiple controls docked to the same
+     dock site. }
   TJvDockableForm = class(TForm)
   private
     FDockClient: TJvDockClient;
@@ -875,7 +981,9 @@ procedure SetTabDockHostBorderStyle(Value: TFormBorderStyle);
 procedure SetConjoinDockHostBorderStyle(Value: TFormBorderStyle);
 
 {$IFDEF USEJVCL}
+    // Save Layout to JvAppStorage:
 procedure SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
+    // Load Layout from JvAppStorage:
 procedure LoadDockTreeFromAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
 {$ENDIF USEJVCL}
 
@@ -906,6 +1014,19 @@ procedure ResetDockClient(Control: TControl; NewTarget: TControl); overload;
 procedure ResetDockClient(DockClient: TJvDockClient; NewTarget: TControl); overload;
 procedure ReshowAllVisibleWindow;
 
+{ Quick way to do tabbed docking programmatically - Added by Warren }
+function ManualTabDock( DockSite:TWinControl; Form1,Form2:TForm ): TJvDockTabHostForm;
+{ Must create the initial tab dock with two pages, using ManualTabDock,
+  then you can add more pages with this:}
+procedure  ManualTabDockAddPage( tabHost: TJvDockTabHostForm; aForm:TForm);
+
+
+function ManualConjoinDock( DockSite:TWinControl; Form1,Form2:TForm ): TJvDockConjoinHostForm;
+
+function DockStateStr(dockState:Integer):String; {return string for a dock state}
+
+
+
 implementation
 
 uses
@@ -930,9 +1051,9 @@ type
   TControlAccessProtected = class(TControl);
   TWinControlAccessProtected = class(TWinControl);
 
-const
-  cDefaultFormName = 'A_B_C_D_E_F_G_H_I_J_K_L_M_N';
-  cDefaultNameSuffix = '_A_B_C_D_E_F_G';
+//const
+//  cDefaultFormName = '_JVFORM_';   This just obscures things unecessarily. -WP
+//  cDefaultNameSuffix = '_JVDOCK_';
 
 var
   DockPageControlPopupMenu: TPopupMenu = nil;
@@ -942,6 +1063,17 @@ var
   IsWinXP: Boolean;
 
 //=== Local procedures =======================================================
+
+function DockStateStr(dockState:Integer):String;
+begin
+  case dockState of
+     JvDockState_Unknown:  result := 'Unknown';
+     JvDockState_Docking:  result := 'Docking';
+     JvDockState_Floating: result := 'Floating';
+     else
+        result := IntToStr(DockState);
+  end;
+end;
 
 procedure UpdateCaption(Source: TWinControl; Exclude: TControl);
 var
@@ -1316,7 +1448,9 @@ var
   SenderDockStyle,
     ClientDockStyle: TJvDockBasicStyle;
   SenderStyleName,
-    ClientStyleName: string;
+  ClientStyleName: string;
+  SenderDocPanel:TJvDockPanel;
+  //s:String;
   // (rom) disabled unused
   //label
   // JudgeRelation;
@@ -1325,17 +1459,36 @@ begin
   Result := False;
   if (ADockClient <> nil) and (ADockClient.EnableDock) then
   begin
-    if Sender is TJvDockPanel then
-    begin
-      with TJvDockPanel(Sender) do
-      begin
-        Result := DockServer.EnableDock and
-          (((Align = alLeft) and DockServer.LeftDock and (ADockClient.LeftDock)) or
-          ((Align = alTop) and DockServer.TopDock and (ADockClient.TopDock)) or
-          ((Align = alRight) and DockServer.RightDock and (ADockClient.RightDock)) or
-          ((Align = alBottom) and DockServer.BottomDock and (ADockClient.BottomDock)));
-        SenderDockStyle := DockServer.DockStyle;
-      end;
+    if Sender is TJvDockPanel then begin
+        SenderDocPanel := TJvDockPanel(Sender);
+        with SenderDocPanel do begin
+           {$ifdef JVDOCK_DEBUG}
+            if CustomFlag and (not ADockClient.CustomDock) then begin
+                  OutputDebugString('IsDockable() - Debugging Dock-to-custom-panel problem.');
+                  ADockClient.CustomDock := true; // BUG WORKAROUND. WPostma.
+            end;
+           {$endif}
+          Result := DockServer.EnableDock and
+            ( ((Align = alLeft) and DockServer.LeftDock and (ADockClient.LeftDock)) or
+              ((Align = alTop) and DockServer.TopDock and (ADockClient.TopDock)) or
+              ((Align = alRight) and DockServer.RightDock and (ADockClient.RightDock)) or
+              ((Align = alBottom) and DockServer.BottomDock and (ADockClient.BottomDock)) or
+              ((CustomFlag) and Assigned(DockServer.CustomDockPanel) and (ADockClient.CustomDock) )
+             );
+
+
+          //{$ifdef JVDOCK_DEBUG}
+          // XXXXXX very noisy during drag operations:
+          //if Result then begin
+          //    if Assigned(DropCtl) then
+          //        s := DropCtl.Name
+          //   else
+          //        s := 'nil';
+          //    OutputDebugString(PChar( 'JvDockControlForm.pas IsDockable: '+Sender.Name+ ': Dockable. DropCtl='+s ));
+          //end;
+          //{$endif}
+          SenderDockStyle := DockServer.DockStyle;
+        end;
     end
     else
     begin
@@ -1389,11 +1542,11 @@ begin
   try
     HideAllPopupPanel(nil);
 
-    Form := TForm.CreateNew(nil);
+    Form := TForm.CreateNew(nil); // What does this form do, and why is it created only during the loading of the app storage? 
     Form.BorderStyle := bsNone;
     Form.BoundsRect := Rect(0, 0, 0, 0);
     Form.Visible := True;
-    Form.Name := cDefaultFormName;
+    Form.Name := {NOTRANSLATE}'LoadDockTreeFromAppStorage_Form';
 
     JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
 
@@ -1597,6 +1750,11 @@ end;
 
 {$IFDEF USEJVCL}
 
+ // Save Layout to JvAppStorage:
+ //
+ // Uses Global VCL object Screens to go through all forms, and save layout for
+ // all the forms. Use any JvCustomAppStorage descendant to store to, such
+ // as registry, ini files, etc.
 procedure SaveDockTreeToAppStorage(AppStorage: TJvCustomAppStorage; AppStoragePath: string = '');
 var
   JvDockInfoTree: TJvDockInfoTree;
@@ -1604,13 +1762,19 @@ var
 begin
   AppStorage.BeginUpdate;
   try
-    HideAllPopupPanel(nil);
+    HideAllPopupPanel(nil);  {This is in JvDockVSNetStyle.pas }
     JvDockInfoTree := TJvDockInfoTree.Create(TJvDockInfoZone);
     try
       for I := 0 to Screen.CustomFormCount - 1 do
         if (Screen.CustomForms[I].Parent = nil) and
-          ((FindDockClient(Screen.CustomForms[I]) <> nil) or (FindDockServer(Screen.CustomForms[I]) <> nil)) then
+          (    (FindDockClient(Screen.CustomForms[I]) <> nil)
+            or (FindDockServer(Screen.CustomForms[I]) <> nil)
+           ) then begin
+           {$ifdef JVDOCK_DEBUG}
+          OutputDebugString(PChar('SaveDockTreeToAppStorage : Form '+Screen.CustomForms[I].Name));
+          {$endif}
           JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
+        end;
 
       JvDockInfoTree.AppStorage := AppStorage;
       if AppStoragePath <> '' then
@@ -1883,6 +2047,7 @@ end;
 
 //=== { TJvDockableForm } ====================================================
 
+
 constructor TJvDockableForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -2065,6 +2230,18 @@ begin
   Result := inherited DoUnDock(NewTarget, Client);
 end;
 
+// NEW! -WPostma.
+// Calls FADVTree.QueryControls which finds forms containing JvDockClient
+// objects that are directly or indirectly docked to this panel.  
+procedure TJvDockAdvPanel.GetDockedControls( WinControls:TList ); //override;
+begin
+  Assert(Assigned(WinControls));
+  if Assigned(FADVTree) then begin
+     WinControls.Clear;
+     FADVTree.ControlQuery( {Docked to self}Self, WinControls);
+  end;
+end;
+
 //=== { TJvDockAdvStyle } ====================================================
 
 function TJvDockAdvStyle.DockClientWindowProc(DockClient: TJvDockClient;
@@ -2141,6 +2318,7 @@ begin
   FEnableDock := True;
   FLeftDock := True;
   FTopDock := True;
+  FCustomDock := True; {Allowed to dock in custom area!}
   FRightDock := True;
   FBottomDock := True;
   FEachOtherDock := True;
@@ -2187,6 +2365,7 @@ begin
     FTopDock := TJvDockBaseControl(Source).TopDock;
     FRightDock := TJvDockBaseControl(Source).RightDock;
     FBottomDock := TJvDockBaseControl(Source).BottomDock;
+    FCustomDock := TJvDockBaseControl(Source).CustomDock; {NEW!}
     FEachOtherDock := TJvDockBaseControl(Source).EachOtherDock;
     DockStyle := TJvDockBaseControl(Source).DockStyle;
   end
@@ -2301,6 +2480,9 @@ end;
 
 procedure TJvDockBaseControl.SetDockStyle(ADockStyle: TJvDockBasicStyle);
 begin
+  {$ifdef JVDOCK_DEBUG}
+  OutputDebugString('TJvDockBaseControl.SetDockStyle');
+  {$endif}
   if ADockStyle <> FDockStyle then
   begin
     ParentForm.DisableAlign;
@@ -2455,17 +2637,18 @@ end;
 
 procedure TJvDockBasicConjoinServerOption.ResetDockServerOption(ADockServer: TJvDockServer);
 var
-  I: TAlign;
+  I: TJvDockPosition;
+  panel:TJvDockPanel;
 begin
   if ADockServer = nil then
     Exit;
-  for I := alTop to alRight do
+  for I := Low(TJvDockPosition) to High(TJvDockPosition) do
   begin
-    if ADockServer.DockPanelWithAlign[I] = nil then
-      { (rb) ?? }
-      Break;
-    ResetDockPanel(ADockServer.DockPanelWithAlign[I]);
-    ADockServer.DockPanelWithAlign[I].Invalidate;
+    panel :=  ADockServer.DockPanel[I];
+    if panel  = nil then
+       continue; // panel doesn't exist. skip it.
+    ResetDockPanel( panel );
+    panel.Invalidate;
   end;
 end;
 
@@ -2491,7 +2674,7 @@ begin
   FSplitterWidth := Value;
 end;
 
-procedure TJvDockBasicConjoinServerOption.SeTJvDockGrabbersSize(const Value: TJvDockGrabbersSize);
+procedure TJvDockBasicConjoinServerOption.SetGrabbersSize(const Value: TJvDockGrabbersSize);
 begin
   if FGrabbersSize <> Value then
   begin
@@ -2532,6 +2715,9 @@ end;
 constructor TJvDockBasicStyle.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+  FNotifyListeners := TList.Create; {Future feature, not yet functional.}
+  {$endif}
 
   DockPanelClass := DefaultDockPanelClass;
   DockSplitterClass := DefaultDockSplitterClass;
@@ -2557,7 +2743,41 @@ begin
   end;
 end;
 
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+procedure TJvDockBasicStyle.AddDockTreeListener( Listener:TJvDockTree ); {NEW!}
+begin
+    Assert(Assigned(Listener));
+    if Assigned(FNotifyListeners) then begin
+        FNotifyListeners.Add(Listener);
+    end;
+end;
+
+procedure TJvDockBasicStyle.RemoveDockTreeListener( Listener:TJvDockTree ); {NEW!}
+var
+  index,i:Integer;
+
+begin
+    Assert(Assigned(Listener));
+    if Assigned(FNotifyListeners) then begin
+        {find and remove listener!}
+        index := -1;
+        for i := FNotifyListeners.Count-1 downto 0 do begin
+            if TJvDockTree(FNotifyListeners[i])=Listener then begin
+                index := i;
+                break;
+            end;
+        end;
+      if (index>=0) then
+        FNotifyListeners.Delete(index)
+      else
+        OutputDebugString('TJvDockBasicStyle.RemoveDockTreeListener - INVALID LISTENER OBJECT');
+    end;
+end;
+{$endif}
+
 destructor TJvDockBasicStyle.Destroy;
+var
+ t:Integer;
 begin
   if not (csDesigning in ComponentState) then
   begin
@@ -2565,6 +2785,17 @@ begin
       FParentForm.WindowProc := FOldWindowProc;
     FOldWindowProc := nil;
   end;
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+  for t := FNotifyListeners.Count-1 downto 0 do begin
+      with TJvDockTree(FNotifyListeners[t]) do begin
+        // prevents Access Violations when trees access style objects
+        // that don't exist anymore:
+          DockStyleListener := false;
+          DockStyle := nil;
+      end;
+  end;
+  FNotifyListeners.Free; {new!}
+{$endif}
   FDockBaseControlList.Free;
   FreeServerOption;
   inherited Destroy;
@@ -2572,6 +2803,9 @@ end;
 
 procedure TJvDockBasicStyle.AddDockBaseControl(ADockBaseControl: TJvDockBaseControl);
 begin
+  {$ifdef JVDOCK_DEBUG}
+  OutputDebugString('TJvDockBasicStyle.AddDockBaseControl');
+  {$endif}
   if ADockBaseControl = nil then
     Exit;
   if FDockBaseControlList.IndexOf(ADockBaseControl) = -1 then
@@ -2599,6 +2833,23 @@ begin
   APage.HotTrack := TabServerOption.HotTrack;
   APage.TabPosition := TabServerOption.TabPosition;
 end;
+
+// DockTree objects must be updated with new style information:
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+procedure TJvDockBasicStyle.NotifyDockTree;
+var
+  t:Integer;
+  tree:TJvDockTree;
+begin
+  if Assigned(FNotifyListeners) then begin
+      for t := FNotifyListeners.Count-1 downto 0 do begin
+            tree := TJvDockTree(FNotifyListeners[t]);
+            tree.NotifyDockStyleChange;
+      end;
+  end;
+end;
+{$endif}
+
 
 function TJvDockBasicStyle.CanSetBottomDocked(ADockBaseControl: TJvDockBaseControl): Boolean;
 begin
@@ -2642,6 +2893,8 @@ begin
   if FTabServerOption = nil then
     FTabServerOption := FTabServerOptionClass.Create(Self);
 end;
+
+
 
 procedure TJvDockBasicStyle.CreateTabServerOption(var Option: TJvDockBasicTabServerOption);
 begin
@@ -3220,11 +3473,12 @@ begin
     FShowHint := TJvDockClient(Source).FShowHint;
     FCanFloat := TJvDockClient(Source).FCanFloat;
     FDockLevel := TJvDockClient(Source).DockLevel;
-    { (rb) Why not call TJvDockBaseControl.Assign, ie inherited? }
+    FCustomDock := TJvDockClient(Source).CustomDock;{NEW!}
+
     DockStyle := TJvDockClient(Source).DockStyle;
-  end
-  else
-    inherited Assign(Source);
+  end;
+
+  inherited Assign(Source); // Also copy base class properties!
 end;
 
 procedure TJvDockClient.CMVisibleChanged(var Msg: TMessage);
@@ -3280,10 +3534,25 @@ begin
   end;
 end;
 
+{ CreateTabDockClass creates a TJvDockTabPageControl subclass. The actual subclass
+  used is stored in  FTabDockClass which is assigned by the Docking Style object,
+  so this is truly polymorphic.
+
+  We need a TJvDockTabPageControl to do tabbed-docking inside a container form.
+  The typical container this is placed inside of is either a
+  TJvDockConjoinHostForm or TJvDockTabHostForm.
+}
 function TJvDockClient.CreateTabDockClass(TabHost: TForm): TJvDockTabPageControl;
 begin
   Result := nil;
+  { copy properties of the JvTabDockPageControl's DockClient
+    from the form it contains. }
   TJvDockTabHostForm(TabHost).DockClient.Assign(Self);
+
+  Assert( TJvDockTabHostForm(TabHost).DockClient.CustomDock, 'DEBUG HELPER: Not working!');
+
+
+
   if (FTabDockClass <> nil) and
     (FTabDockClass <> TJvDockTabClass(ClassType)) then
   begin
@@ -3297,16 +3566,47 @@ begin
   end;
 end;
 
+
+function TJvDockClient.FindTabHostForm:TForm; // return nil if not found, otherwise, get currently docked parent tabhost form if there is one.
+var
+  ownerWin:TWinControl;
+  tabSheet:TJvDockTabSheet;
+  checkForm:TComponent;
+begin
+  result := nil;
+  if not Assigned(Owner) then exit;
+  if not (Owner is TWinControl) then exit;
+  ownerWin := TWinControl(Owner);
+  if Self.DockState <> JvDockState_Docking then exit;
+  if not Assigned(ownerWin.Parent) then exit;
+  if ownerWin.Parent is TJvDockTabSheet then begin
+      tabSheet := TJvDockTabSheet(ownerWin.Parent);
+      if tabSheet.Owner is TJvDockPageControl then begin
+          checkForm := TJvDockPageControl(tabSheet.Owner).Owner;
+          if checkForm is TJvDockTabHostForm then begin
+              result := TForm(checkForm);
+          end;
+      end;
+  end;
+end;
+
+{ This is the main function for creating a tabbed dock, given two non-tab-docked
+ controls (usually these are actually Forms), we create a TJvDockTabHostForm,
+ and then inside it we create a TabDock container.  A TJvDockTabHostForm is
+ an empty TForm containing a DockClient object, and then it contains a set of
+ tabbed pages inside the TJvDockTabPageControl object (Page). }
 function TJvDockClient.CreateTabHostAndDockControl(Control1, Control2: TControl): TJvDockTabHostForm;
 var
   Page: TJvDockTabPageControl;
   OldDockWidth, OldDockHeight: Integer;
 begin
   Result := TJvDockTabHostForm.Create(Application);
+  Result.Name := 'TJvDockTabHostForm_'+Control1.Name+'_'+Control2.Name+'_'+IntToHex(Integer(Result),8);
 
   { CreateTabDockClass implicitly sets Result.DockClient.DockStyle via the
     assign in that function }
   Page := CreateTabDockClass(Result);
+  Page.Name := Page.ClassName+'_'+Control1.Name+'_'+Control2.Name; // debug!
 
   Result.BoundsRect := Control1.BoundsRect;
 
@@ -3857,6 +4157,9 @@ end;
 
 constructor TJvDockConjoinHostForm.Create(AOwner: TComponent);
 begin
+  {$ifdef JVDOCK_DEBUG}
+  OutputDebugString('TJvDockConjoinHostForm.Create');
+  {$endif}
   inherited Create(AOwner);
   BorderStyle := ConjoinDockHostBorderStyle;
 end;
@@ -3870,6 +4173,9 @@ end;
 
 constructor TJvDockConjoinPanel.Create(AOwner: TComponent);
 begin
+  {$ifdef JVDOCK_DEBUG}
+  OutputDebugString('TJvDockConjoinPanel.Create');
+  {$endif}
   inherited Create(AOwner);
   Parent := TWinControl(AOwner);
   Align := alClient;
@@ -4025,6 +4331,13 @@ begin
   Height := 10;
 end;
 
+procedure TJvDockPanel.GetDockedControls( WinControls:TList );
+begin
+    // THE BASE CLASS DOESN'T SUPPORT THIS. JUST RETURN QUIETLY.
+    // See TJvDockAdvPanel.GetDockedControls for the actual implementation.
+end;
+
+
 procedure TJvDockPanel.AddDockServer(ADockServer: TJvDockServer);
 begin
   { Notification }
@@ -4136,6 +4449,10 @@ begin
       SetDockSite(TForm(Client), True);
 end;
 
+
+
+
+
 function TJvDockPanel.GetPanelIndex: Integer;
 begin
   case Align of
@@ -4148,7 +4465,10 @@ begin
     alRight:
       Result := 3;
   else
-    Result := -1;
+    if FCustomFlag then 
+        Result := 4 {NEW!}
+    else
+      Result := -1; {unknown.}
   end;
 end;
 
@@ -4337,13 +4657,13 @@ procedure TJvDockServer.CreateDockPanelAndSplitter;
 //var
 //  ControlList: TList;
 
-  function CreatePanel(Align: TAlign; Name: string): TJvDockPanel;
+  function CreatePanel(aParent:TWinControl; Align: TAlign; Name: string): TJvDockPanel;
   begin
     if (FDockPanelClass <> nil) and
       (FDockPanelClass <> TJvDockPanelClass(ClassType)) then
     begin
       Result := FDockPanelClass.Create({Owner}Self); // (ahuser) Delphi 5's TComponent.Notification() will fail if Owner=Self.Owner
-      Result.Parent := ParentForm;
+      Result.Parent := aParent; {ParentForm;}
       Result.Name := Name;
       Result.Caption := '';
       Result.Align := Align;
@@ -4351,7 +4671,7 @@ procedure TJvDockServer.CreateDockPanelAndSplitter;
       Result.ResetPosition;
       if Align in [alTop, alBottom] then
         Result.Height := 0
-      else
+      else if Align in [alLeft,alRight] then 
         Result.Width := 0;
       SetDockSite(Result, True);
 
@@ -4363,13 +4683,13 @@ procedure TJvDockServer.CreateDockPanelAndSplitter;
       Result := nil;
   end;
 
-  function CreateSplitter(Align: TAlign; Name: string): TJvDockSplitter;
+  function CreateSplitter(aParent:TWinControl; Align: TAlign; Name: string): TJvDockSplitter;
   begin
     if (FDockSplitterClass <> nil) and
       (FDockSplitterClass <> TJvDockSplitterClass(ClassType)) then
     begin
       Result := FDockSplitterClass.Create({Owner}Self); // (ahuser) Delphi 5's TComponent.Notification() will fail if Owner=Self.Owner
-      Result.Parent := ParentForm;
+      Result.Parent := aParent; {ParentForm;}
       Result.Name := Name;
       Result.Visible := False;
       Result.Align := Align;
@@ -4380,17 +4700,49 @@ procedure TJvDockServer.CreateDockPanelAndSplitter;
       Result := nil;
   end;
 
+  {NEW! Docking panel in center area, or other part of form than the built in left/top/right/bottom panels! }
+  procedure CustomDockPanel;
+  var
+    aParent:TWinControl;
+    aAlign:TAlign;
+  begin
+    aParent := PArentForm;
+    aAlign := alClient;
+    if Assigned(FOnCustomPanel) then begin
+    //TJvDockCustomPanelEvent:
+      FOnCustomPanel( Self, aParent, aAlign );
+    end else begin
+        FDockPanels[dpCustom] := nil;
+        FSplitters[dpCustom] := nil;
+        exit;
+    end;
+    if (aAlign <> alNone) and Assigned(aParent) then begin // Don't create if align is alNone or parent is NIL.
+        FDockPanels[dpCustom] := CreatePanel( aParent, aAlign, {NOTRANSLATE}'CustomDockPanel' );
+        FDockPanels[dpCustom].CustomFlag := true;
+        if aParent is TPanel then begin
+         FDockPanels[dpCustom].Color := TPanel(aParent).Color;
+        end;
+        FSplitters[dpCustom] := nil; //CreateSplitter (ParentForm, alTop, 'CustomSplitter' + cDefaultNameSuffix);
+        //FSplitters[dpCustom].Visible := false;
+    end else
+        FDockPanels[dpCustom] := nil;
+        FSplitters[dpCustom] := nil;
+  end;
 begin
   //  ControlList := TList.Create;
   //  try
-  FDockPanels[dpLeft] := CreatePanel(alLeft, 'LeftDockPanel' + cDefaultNameSuffix);
-  FSplitters[dpLeft] := CreateSplitter(alLeft, 'LeftSplitter' + cDefaultNameSuffix);
-  FDockPanels[dpRight] := CreatePanel(alRight, 'RightDockPanel' + cDefaultNameSuffix);
-  FSplitters[dpRight] := CreateSplitter(alRight, 'RightSplitter' + cDefaultNameSuffix);
-  FDockPanels[dpTop] := CreatePanel(alTop, 'TopDockPanel' + cDefaultNameSuffix);
-  FSplitters[dpTop] := CreateSplitter(alTop, 'TopSplitter' + cDefaultNameSuffix);
-  FDockPanels[dpBottom] := CreatePanel(alBottom, 'BottomDockPanel' + cDefaultNameSuffix);
-  FSplitters[dpBottom] := CreateSplitter(alBottom, 'BottomSplitter' + cDefaultNameSuffix);
+  FDockPanels[dpLeft]   := CreatePanel    (ParentForm, alLeft,   {NOTRANSLATE}'LeftDockPanel');
+  FSplitters[dpLeft]    := CreateSplitter (ParentForm, alLeft,   {NOTRANSLATE}'LeftSplitter');
+  FDockPanels[dpRight]  := CreatePanel    (ParentForm, alRight,  {NOTRANSLATE}'RightDockPanel');
+  FSplitters[dpRight]   := CreateSplitter (ParentForm, alRight,  {NOTRANSLATE}'RightSplitter');
+  FDockPanels[dpTop]    := CreatePanel    (ParentForm, alTop,    {NOTRANSLATE}'TopDockPanel');
+  FSplitters[dpTop]     := CreateSplitter (ParentForm, alTop,    {NOTRANSLATE}'TopSplitter' );
+  FDockPanels[dpBottom] := CreatePanel    (ParentForm, alBottom, {NOTRANSLATE}'BottomDockPanel');
+  FSplitters[dpBottom]  := CreateSplitter (ParentForm, alBottom, {NOTRANSLATE}'BottomSplitter' );
+
+  CustomDockPanel;
+
+//  FSplitters[dpCustom] := nil; // NOT USED!
   //  finally
   //    ControlList.Free;
   //  end;
@@ -4398,7 +4750,7 @@ end;
 
 procedure TJvDockServer.CreateSplitterStyle;
 const
-  cCursor: array [TJvDockPosition] of TCursor = (crHSplit, crHSplit, crVSplit, crVSplit);
+  cCursor: array [TJvDockPosition] of TCursor = (crHSplit, crHSplit, crVSplit, crVSplit,  crNone);
 var
   Position: TJvDockPosition;
 begin
@@ -5101,6 +5453,94 @@ begin
   JvGlobalDockManager := nil;
 end;
 
+{ Quick way to do tabbed docking programmatically - Added by Warren }
+function ManualTabDock( DockSite:TWinControl; Form1,Form2:TForm ): TJvDockTabHostForm;
+var
+ tabHost: TJvDockTabHostForm;
+// wasVisible1,wasVisible2:Boolean;
+ DockClient1,DockCLient2:TJvDockClient;
+ screenPos:TRect;
+begin
+  //Form1.Show;
+  //Form2.Show;
+
+
+  DockClient1 := FindDockClient(Form1);
+  //wasVisible1 := Form1.Visible;
+  Form1.Hide;
+  Assert(Assigned(DockClient1));
+  if DockClient1.DockState=JvDockState_Docking then begin
+
+      screenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+      Form1.ManualFloat(screenPos);
+  end;
+  DockClient2 := FindDockClient(Form2);
+  //wasVisible2 := Form2.Visible;
+  Form2.Hide;
+
+  Assert(Assigned(DockClient2));
+  if DockClient2.DockState=JvDockState_Docking then begin
+      screenPos := Application.MainForm.ClientRect; // Just making it float temporarily.
+      Form2.ManualFloat(screenPos);
+  end;
+
+
+  tabHost := DockClient1.CreateTabHostAndDockControl
+                (
+                  Form1,{DockClient1.ParentForm}
+                  Form2 {DockClient2.ParentForm}
+                );
+  tabHost.Hide;
+
+
+  tabHost.ManualDock(  DockSite );
+  if not Form1.Visible then
+      Form1.Show;
+  if not Form2.Visible then
+      Form2.Show;
+
+  tabHost.Show;
+  ShowDockForm( Form2 );
+  result := tabHost;
+end;
+
+
+{ Must create the initial tab dock with two pages, using ManualTabDock,
+  then you can add more pages with this:}
+procedure  ManualTabDockAddPage( tabHost: TJvDockTabHostForm; aForm:TForm);
+begin
+  Assert(Assigned(tabHost));
+  Assert(Assigned(tabHost.PageControl));
+  //aForm.Show;
+  aForm.ManualDock( tabHost.PageControl );
+  aForm.Show;
+end;
+
+{ Quick way to do conjoined docking programmatically - Added by Warren }
+function ManualConjoinDock( DockSite:TWinControl; Form1,Form2:TForm ): TJvDockConjoinHostForm;
+var
+ conjoinHost:TJvDockConjoinHostForm;
+ DockClient1,DockCLient2:TJvDockClient;
+begin
+  Form1.Show;
+  Form2.Show;
+  DockClient1 := FindDockClient(Form1);
+  Assert(Assigned(DockClient1));
+  DockClient2 := FindDockClient(Form2);
+  Assert(Assigned(DockClient2));
+  conjoinHost := DockClient1.CreateConjoinHostAndDockControl(
+                  DockClient1.ParentForm,
+                  Form2,
+                  alTop
+                );
+  ShowDockForm( Form2 );
+  conjoinHost.ManualDock(  DockSite );
+  result := conjoinHost;
+end;
+
+
+
+
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}
 const
@@ -5114,6 +5554,7 @@ const
 {$ENDIF USEJVCL}
 
 initialization
+
   {$IFDEF USEJVCL}
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);

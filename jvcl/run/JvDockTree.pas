@@ -27,6 +27,8 @@ unit JvDockTree;
 
 {$I jvcl.inc}
 
+{$define JVDOCK_QUERY} // experimental!
+
 interface
 
 uses
@@ -76,6 +78,7 @@ type
     property DockSiteSize: Integer read GetDockSiteSize write SetDockSiteSize;
     property DockRect: TRect read GetDockRect write SetDockRect;
     property MinSize: Integer read GetMinSize;
+    //property AlwaysAdjust:Boolean read GetAlwaysAdjust write SetAlwaysAdjust;
   end;
 
   { Left dock panel with 3 zones; zone 1 contains zone 2 & 3; zone 2 contains
@@ -237,7 +240,6 @@ type
     FSplitterWidth: Integer;
     FBrush: TBrush;
     FDockSite: TWinControl;
-    FGrabberSize: Integer;
     FPreviousRect: TRect;
     FDockRect: TRect;
     FOldWndProc: TWndMethod;
@@ -250,7 +252,7 @@ type
     FSizingDC: HDC;
     FSizingWnd: HWND;
     FSizingZone: TJvDockZone;
-    FTopZone: TJvDockZone;
+    FTopZone: TJvDockZone; // <-- Root Node of the tree. What is called Zone in here should really be called TreeNode.
     FTopXYLimit: Integer;
     FUpdateCount: Integer;
     FVersion: Integer;
@@ -258,6 +260,12 @@ type
     FParentLimit: Integer;
     FMinSize: Integer;
     FCanvas: TControlCanvas;
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+    FDockStyle:TComponent; {FUTURE: actual type is TJvDockBasicStyle}  {NEW!}
+    FDockStyleListener:Boolean; {FUTURE:if true, we are linked as a listener to this dock style.}
+{$endif}
+    FGrabberSize: Integer;
+
     procedure SetTopZone(const Value: TJvDockZone);
     procedure SetTopXYLimit(const Value: Integer);
     procedure SetDockZoneClass(const Value: TJvDockZoneClass);
@@ -279,8 +287,11 @@ type
     function GetDockRect: TRect;
     procedure SetDockRect(const Value: TRect);
     function GetMinSize: Integer;
-  protected
+
     function HasZoneWithControl(Control: TControl): Boolean;
+
+   protected
+
     procedure WindowProc(var Msg: TMessage); virtual;
     procedure BeginDrag(Control: TControl;
       Immediate: Boolean; Threshold: Integer = -1); virtual;
@@ -434,82 +445,70 @@ type
     property SplitterWidth: Integer read GetDockSplitterWidth write SetDockSplitterWidth;
     property UpdateCount: Integer read FUpdateCount write FUpdateCount;
     property Version: Integer read FVersion write SetVersion;
-  public
+
+  {$ifdef JVDOCK_DEBUG}
+    // internal helper functions used recursively from DebugDump:
+    procedure _parentDump( levelsLeft:Integer; aParent:TWinControl;  indent:String; Strs:TStrings);
+    procedure _pageControlDump( pageControl : TWinControl; indent:String; Strs:TStrings); {actually TJvDockTabPageControl}
+    procedure _controlDump(    aControl     : TWinControl;           indent:String; Strs:TStrings);
+
+    // This helps us to understand the content of the tree by allowing
+    // us to build a dump:
+    procedure DebugDump(var index:Integer; indent,entity:String; TreeZone: TJvDockZone; Strs:TStrings); //virtual;
+  {$endif}
+
+    {$ifdef JVDOCK_QUERY}
+    procedure _parentQuery( levelsLeft:Integer; aParent:TWinControl; FoundItems:TList );
+    procedure _pageControlQuery(pageControl : TWinControl; FoundItems:TList); {actually TJvDockTabPageControl}
+    procedure _controlQuery( aControl:TWinControl; FoundItems:TList);
+    procedure DoControlQuery(TreeZone: TJvDockZone; FoundItems:TList); //virtual;
+    {$endif}
+
+    public
+
+    {$ifdef JVDOCK_DEBUG}
+    // A top level call for end user to call, which calls
+    // DebugDump in turn:
+    procedure Debug(basePropertyName:String;Strs:TStrings);
+    {$endif}
+
+
+    {$ifdef JVDOCK_QUERY}
+    procedure ControlQuery( DockedTo:TWinControl; FoundItems:TList); // Descends the Tree and Finds and return TWinControls docked to a particular parent.
+    {$endif}
+
+
+
     // (rom) deactivated  completely unused
     // SplitterCanvas: TControlCanvas;
-    constructor Create(ADockSite: TWinControl; ADockZoneClass: TJvDockZoneClass); virtual;
+    constructor Create(ADockSite: TWinControl; ADockZoneClass: TJvDockZoneClass; ADockStyle:TComponent{TJvDockBasicStyle}); virtual;
     destructor Destroy; override;
+
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+    procedure NotifyDockStyleChange; virtual; // properties in Dock Style (FDockStyle) have changed.
+{$endif}
+
     property DockSite: TWinControl read FDockSite write FDockSite;
     property DockSiteOrientation: TDockOrientation read GetDockSiteOrientation;
     procedure SetSplitterCursor(CursorIndex: TDockOrientation); virtual;
     procedure PaintSite(DC: HDC); virtual;
     property TopXYLimit: Integer read FTopXYLimit write SetTopXYLimit;
-    property TopZone: TJvDockZone read FTopZone write SetTopZone;
+
+    property TopZone: TJvDockZone read FTopZone write SetTopZone; // ROOT NODE!
+
     procedure UpdateAll;
     procedure UpdateChild(Zone: TJvDockZone);
     property DockZoneClass: TJvDockZoneClass read FDockZoneClass write SetDockZoneClass;
+
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+    property DockStyle :TComponent read FDockStyle write FDockStyle; {actual type is TJvDockBasicStyle}  {NEW!}
+    property DockStyleListener:Boolean read FDockStyleListener write FDockStyleListener; {if true, we are linked as a listener to this dock style.}
+{$endif}
+
   end;
 
   TJvDockTreeClass = class of TJvDockTree;
 
-  TJvDockAdvTree = class(TJvDockTree)
-  private
-    FButtonHeight: Integer;
-    FButtonWidth: Integer;
-    FLeftOffset: Integer;
-    FRightOffset: Integer;
-    FTopOffset: Integer;
-    FBottomOffset: Integer;
-    FButtonSplitter: Integer;
-    FCloseButtonZone: TJvDockAdvZone;
-    FDropDockSize: Integer;
-    FDockHeightWidth: array [TDockOrientation] of Integer;
-    FDockRectangles: array [TDockOrientation, Boolean] of Integer;
-    procedure SetBottomOffset(const Value: Integer);
-    procedure SetButtonHeight(const Value: Integer);
-    procedure SetButtonSplitter(const Value: Integer);
-    procedure SetButtonWidth(const Value: Integer);
-    procedure SetLeftOffset(const Value: Integer);
-    procedure SetRightOffset(const Value: Integer);
-    procedure SetTopOffset(const Value: Integer);
-    function GetDockHeightWidth(Orient: TDockOrientation): Integer;
-    procedure SetDockHeightWidth(Orient: TDockOrientation; const Value: Integer);
-    function GetDockRectangles(Orient: TDockOrientation; AtLast: Boolean): Integer;
-    procedure SetDockRectangles(Orient: TDockOrientation; AtLast: Boolean; const Value: Integer);
-    procedure SetDropDockSize(const Value: Integer);
-  protected
-    function DoLButtonDown(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer): Boolean; override;
-    procedure DoLButtonUp(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); override;
-    procedure DoMouseMove(var Msg: TWMMouse;
-      var Zone: TJvDockZone; out HTFlag: Integer); override;
-    procedure InsertSibling(NewZone, SiblingZone: TJvDockZone;
-      InsertLast, Update: Boolean); override;
-    procedure InsertNewParent(NewZone, SiblingZone: TJvDockZone;
-      ParentOrientation: TDockOrientation; InsertLast, Update: Boolean); override;
-    procedure InitDockHeightWidth(NoOrValue, HorValue, VerValue: Integer);
-    procedure InitDockRectangles(ARect: TRect);
-    procedure ScaleZone(Zone: TJvDockZone); override;
-    procedure ScaleChildZone(Zone: TJvDockZone); override;
-    procedure ScaleSiblingZone(Zone: TJvDockZone); override;
-    procedure ShiftZone(Zone: TJvDockZone); override;
-    procedure RemoveZone(Zone: TJvDockZone; Hide: Boolean); override;
-  public
-    constructor Create(DockSite: TWinControl; ADockZoneClass: TJvDockZoneClass); override;
-    property BottomOffset: Integer read FBottomOffset write SetBottomOffset;
-    property ButtonHeight: Integer read FButtonHeight write SetButtonHeight;
-    property ButtonSplitter: Integer read FButtonSplitter write SetButtonSplitter;
-    property ButtonWidth: Integer read FButtonWidth write SetButtonWidth;
-    property LeftOffset: Integer read FLeftOffset write SetLeftOffset;
-    property RightOffset: Integer read FRightOffset write SetRightOffset;
-    property TopOffset: Integer read FTopOffset write SetTopOffset;
-    property CloseButtonZone: TJvDockAdvZone read FCloseButtonZone write FCloseButtonZone;
-    property DockHeightWidth[Orient: TDockOrientation]: Integer read GetDockHeightWidth write SetDockHeightWidth;
-    property DockRectangles[Orient: TDockOrientation; AtLast: Boolean]: Integer read GetDockRectangles write
-      SetDockRectangles;
-    property DropDockSize: Integer read FDropDockSize write SetDropDockSize;
-  end;
 
 // (rom) made typed const to allow SizeOf
 const
@@ -525,6 +524,7 @@ uses
   {$ENDIF USEJVCL}
   {$IFDEF JVCLThemesEnabled}
   JvThemes,
+  JvDockAdvTree,
   {$ENDIF JVCLThemesEnabled}
   Consts, SysUtils, Math,
   JvDockControlForm, JvDockSupportProc, JvDockGlobals, JvDockVSNetStyle;
@@ -1206,8 +1206,371 @@ end;
 
 //=== { TJvDockTree } ========================================================
 
-constructor TJvDockTree.Create(ADockSite: TWinControl;
-  ADockZoneClass: TJvDockZoneClass);
+
+{$ifdef JVDOCK_DEBUG}
+procedure TJvDockTree.Debug(basePropertyName:String;Strs:TStrings);
+var
+ n:Integer;
+begin
+    Assert(Assigned(Strs));
+    Strs.Clear;
+    n := 0;
+    DebugDump( n, '',  basePropertyName, TopZone,Strs );
+    if (Strs.Count=0)or(n=0) then begin
+          Strs.Add('<empty>This tree is empty</empty>');
+    end;
+end;
+
+//XXX Helper routines for DebugDump: XXX
+
+
+  procedure TJvDockTree._parentDump( levelsLeft:Integer; aParent:TWinControl;indent:String;Strs:TStrings);
+  var
+   dockServer:TJvDockServer;
+   aClassName,aName:String;
+   procedure write(s:String);
+   begin
+     Strs.Add(s);
+   end;
+  begin
+       if Assigned(aParent) then begin
+               aClassName := aParent.ClassName;
+               aName := aParent.Name;
+               write( indent+'      <parent>');
+               write( indent+'        <class>'+aClassName+'</class>');
+               write( indent+'        <name>'+aName+'@'+IntToHex(Integer(aParent),8)+'</name>');
+               if aParent is TJvDockPanel then begin
+                    dockServer := TJvDockPanel(aParent).DockServer;
+                    if Assigned(dockServer) then begin
+                       write( indent+'        <dockserver>'+dockServer.Name+'</dockserver>');
+                    end else begin
+                       write( indent+'        <error>TJvDockPanel has no dockServer</name>');
+                    end;
+               end;
+                // recurse down:
+                if (levelsLeft>0) then begin
+                    if (aParent.Parent <> aParent) then // don't show controls where they are their own parent!
+                        _parentDump( levelsLeft-1, aParent.Parent, indent+'    ', Strs );
+                end;
+               write( indent+'      </parent>');
+       end;
+  end;
+
+  procedure TJvDockTree._pageControlDump(pageControl : TWinControl; indent:String; Strs:TStrings); {actually TJvDockTabPageControl}
+  var
+    i,j,count:Integer;
+    page_id:String;
+    aPageControl:TJvDockTabPageControl;
+    aClassName,aName:String;
+   procedure write(s:String);
+   begin
+     Strs.Add(s);
+   end;
+  begin
+      if Assigned(pageControl) then begin
+           aPageControl := pageControl as TJvDockTabPageControl;
+           aClassName := aPageControl.ClassName;
+           aName := aPageControl.Name;
+           count := aPageControl.Count;
+           write( indent+'      <pageControl>');
+           write( indent+'         <class>' +aClassName +'</class>');
+           write( indent+'         <name>'  +aName      +'</name>');
+           for i := 0 to count-1 do begin
+             page_id := 'Page'+IntToStr(i+1);
+             write( indent+'           <'+page_id+'>');
+             write( indent+'              <class>'+aPageControl.Pages[i].ClassName+'</class>');
+             write( indent+'              <name>'+aPageControl.Pages[i].Name+'</name>' );
+             write( indent+'              <pageCaption>'+aPageControl.Pages[i].Caption+'</pageCaption>');
+             write( '' );
+             for j := 0 to aPageControl.Pages[i].ControlCount-1 do begin
+                   _controlDump( aPageControl.Pages[i].Controls[j] as TWinControl, indent+'             ', Strs);
+                   write( '' );
+             end;
+             write( indent+'           </'+page_id+'>');
+             write( '' );                    
+           end;
+
+           write( indent+'      </pageControl>');
+           write( '' );           
+      end else begin
+           write( indent+'      <ERROR>No pagecontrol in the TJvDockTabHostForm.</ERROR>');
+      end;
+  end;
+  procedure TJvDockTree._controlDump( aControl:TWinControl; indent:String; Strs:TStrings);
+  var
+   aClassName,aName:String;
+   aForm:TForm;
+   dockClient:TJvDockClient;   
+   procedure write(s:String);
+   begin
+     Strs.Add(s);
+   end;
+  begin
+     write( indent+'   <Control>');
+     aClassName := aControl.ClassName;
+     aName := aControl.Name;
+     write( indent+'      <class>'+aClassName+'</class>');
+     write( indent+'      <name>'+aName+'</name>');
+     write( indent+'      <visible>'+BoolToStr( aControl.Visible,true) +'</visible>');
+     write( indent+'      <enabled>'+BoolToStr( aControl.Enabled, true) +'</enabled>');
+
+     if aControl is TForm then begin
+        aForm := TForm(aControl);
+        write( indent+'      <caption>'+aForm.Caption+'</caption>');
+        dockClient := FindDockClient( aControl);
+        if Assigned(dockClient) then begin
+            aClassName := dockClient.ClassName;
+            aName := dockClient.Name;
+            write( indent+'      <dockclient>');
+            write( indent+'         <class>' +aClassName +'</class>');
+            write( indent+'         <name>'  +aName      +'</name>');
+            write( indent+'         <customdock>'+BoolToStr(dockClient.CustomDock,true)+'</customdock>');
+
+            // uses DockStateStr - utility function in JvDockControlForm.pas:
+            write( indent+'         <dockstate>'+DockStateStr(dockClient.DockState)+'</dockstate>');
+
+            write( indent+'      </dockclient>');
+        end else begin
+            write( indent+'      <WARNING>No dockclient found in this form.</WARNING>');
+        end;
+        if aForm is TJvDockTabHostForm then begin
+             _pageControlDump(TJvDockTabHostForm(aForm).PageControl, indent, Strs );
+         end; {TabDockHostForm }
+     end;{form}
+
+     { LAST for each control, recursively dump the TWinControl.Parent
+       tree, but limit to only a few levels
+       so we can avoid information overload. Oops. Too late. :-) }
+     _parentDump( {depth}3, aControl.Parent, indent, Strs );
+
+
+     write( indent+'   </Control>');
+  end;
+//YYY
+
+// This helps us to understand the current contents of the tree at runtime,
+// by allowing  us to build an XML dump of the TJvDockTree.
+procedure TJvDockTree.DebugDump(var index:Integer; indent,entity:String; TreeZone: TJvDockZone; Strs:TStrings); //virtual;
+var
+  zone:TJvDockZone;
+  wasIndex:Integer;
+  procedure write(s:String);
+  begin
+     Strs.Add(s);
+  end;  
+begin
+ zone := TreeZone;
+ 
+ { while loop over siblings at this level...}
+ while Assigned(zone) do begin
+   wasIndex := index;
+   Inc(index);
+
+   {xml entity begins }
+   write( indent+'<'+entity+IntToStr(wasIndex)+'>' );
+
+   {for every tree and tree item inside it that we dump, report actual class name }
+   write( indent+'   <class>'+ zone.ClassName +'</class>' );
+
+   { Dump controls recursively }
+   if Assigned( zone.ChildControl) then begin
+        _controlDump(zone.ChildControl, indent, Strs );
+   end;
+
+   { Dump children recursively }
+   DebugDump(index, indent+'       ', entity+'.ChildZone', zone.ChildZones, Strs );
+
+   {xml entity ends }
+   write( indent+'</'+entity+IntToStr(wasIndex)+'>' );
+
+   {blank line after each entity ends}
+   write ( '');
+
+   {dump all siblings at this level immediately after current item }
+   zone := zone.NextSibling;
+ end;
+end;
+{$endif}
+
+
+
+{$ifdef JVDOCK_QUERY}
+// This helps us to find particular Controls (ie Forms) that are
+// docked to a particular dock panel, or are floating, etc.
+//
+// DockedTo - return only items docked to this parent control,
+//            or if the parameter DockedTo is NIL, then query for
+//            floating Forms. These forms must contain a
+//            JvDockClient that says it is currently in a Floating state.
+//
+// FoundItems - OUT: TList of results (pointers to TWinControl objects).
+//
+//
+procedure TJvDockTree.ControlQuery( DockedTo:TWinControl; FoundItems:TList);
+begin
+    Assert(Assigned(FoundItems));
+    FoundItems.Clear;
+    // Root tree node is TopZone. The tree is made of nodes called
+    // Zones and Zones may have Controls. Some of those Controls are Forms
+    // we might be querying for, and some are parent container forms containing
+    // a tabbed set of other forms, so we have to check for that and
+    // go down into those container forms. DoQuery calls itself and other
+    // helper routines, recursively, and together this set of routines
+    // descends through the Zones, Controls (Forms), etc, finding all
+    // the Controls inside those zones.  
+    DoControlQuery( TopZone,FoundItems );
+end;
+
+//XXX Helper routines for DoQuery: XXX
+
+
+  procedure TJvDockTree._parentQuery( levelsLeft:Integer; aParent:TWinControl; FoundItems:TList );
+  var
+   dockServer:TJvDockServer;
+   aClassName,aName:String;
+  begin
+       if Assigned(aParent) then begin
+               aClassName := aParent.ClassName;
+               aName := aParent.Name;
+               //write( indent+'      <parent>');
+               //write( indent+'        <class>'+aClassName+'</class>');
+               //write( indent+'        <name>'+aName+'@'+IntToHex(Integer(aParent),8)+'</name>');
+               if aParent is TJvDockPanel then begin
+                    dockServer := TJvDockPanel(aParent).DockServer;
+                    if Assigned(dockServer) then begin
+                       //write( indent+'        <dockserver>'+dockServer.Name+'</dockserver>');
+                    end else begin
+                       //write( indent+'        <error>TJvDockPanel has no dockServer</name>');
+                    end;
+               end;
+                // recurse down:
+                if (levelsLeft>0) then begin
+                    if (aParent.Parent <> aParent) then // don't show controls where they are their own parent!
+                        _parentQuery( levelsLeft-1, aParent.Parent, FoundItems  );
+                end;
+               //write( indent+'      </parent>');
+       end;
+  end;
+
+  procedure TJvDockTree._pageControlQuery(pageControl : TWinControl; FoundItems:TList); {actually TJvDockTabPageControl}
+  var
+    i,j,count:Integer;
+    page_id:String;
+    aPageControl:TJvDockTabPageControl;
+    aClassName,aName:String;
+  begin
+      if Assigned(pageControl) then begin
+           aPageControl := pageControl as TJvDockTabPageControl;
+           aClassName := aPageControl.ClassName;
+           aName := aPageControl.Name;
+           count := aPageControl.Count;
+           //write( indent+'      <pageControl>');
+           //write( indent+'         <class>' +aClassName +'</class>');
+           //write( indent+'         <name>'  +aName      +'</name>');
+           for i := 0 to count-1 do begin
+             page_id := 'Page'+IntToStr(i+1);
+             //write( indent+'           <'+page_id+'>');
+             //write( indent+'              <class>'+aPageControl.Pages[i].ClassName+'</class>');
+             //write( indent+'              <name>'+aPageControl.Pages[i].Name+'</name>' );
+             //write( indent+'              <pageCaption>'+aPageControl.Pages[i].Caption+'</pageCaption>');
+             //write( '' );
+             for j := 0 to aPageControl.Pages[i].ControlCount-1 do begin
+                   _controlQuery( aPageControl.Pages[i].Controls[j] as TWinControl, FoundItems);
+             end;
+             //write( indent+'           </'+page_id+'>');
+
+           end;
+
+           //write( indent+'      </pageControl>');
+           //write( '' );           
+      end;
+  end;
+  procedure TJvDockTree._controlQuery( aControl:TWinControl; FoundItems:TList);
+  var
+   aClassName,aName:String;
+   aForm:TForm;
+   dockClient:TJvDockClient;
+  begin
+     //write( indent+'   <Control>');
+     aClassName := aControl.ClassName;
+     aName := aControl.Name;
+     //write( indent+'      <class>'+aClassName+'</class>');
+     //write( indent+'      <name>'+aName+'</name>');
+     //write( indent+'      <visible>'+BoolToStr( aControl.Visible,true) +'</visible>');
+     //write( indent+'      <enabled>'+BoolToStr( aControl.Enabled, true) +'</enabled>');
+
+     if aControl is TForm then begin
+        aForm := TForm(aControl);
+        //write( indent+'      <caption>'+aForm.Caption+'</caption>');
+        dockClient := FindDockClient( aControl);
+        if Assigned(dockClient) then begin
+            aClassName := dockClient.ClassName;
+            aName := dockClient.Name;
+
+            // FOUND A CONTROL WHICH IS A FORM AND HAS A JVDOCK CLIENT.
+            // Add it to FoundItems:
+            if (dockClient.DockState = JvDockState_Docking) then begin
+                  Assert(Assigned(FoundItems));
+                  FoundItems.Add( aControl );
+            end;
+            //write( indent+'      <dockclient>');
+            //write( indent+'         <class>' +aClassName +'</class>');
+            //write( indent+'         <name>'  +aName      +'</name>');
+            //write( indent+'         <customdock>'+BoolToStr(dockClient.CustomDock,true)+'</customdock>');
+
+            // uses DockStateStr - utility function in JvDockControlForm.pas:
+            //write( indent+'         <dockstate>'+DockStateStr(dockClient.DockState)+'</dockstate>');
+
+            //write( indent+'      </dockclient>');
+        end else begin
+            //write( indent+'      <WARNING>No dockclient found in this form.</WARNING>');
+        end;
+        if aForm is TJvDockTabHostForm then begin
+             _pageControlQuery( TJvDockTabHostForm(aForm).PageControl, FoundItems );
+         end; {TabDockHostForm }
+     end;{form}
+
+     { LAST for each control, recursively query the TWinControl.Parent
+       tree, but limit to only a few levels
+       so we can avoid information overload. Oops. Too late. :-) }
+     _parentQuery( {depth}3, aControl.Parent, FoundItems );
+
+
+     //write( indent+'   </Control>');
+end;
+
+
+// DoQuery:
+// This is a recursive function called from top level function Query().
+// This helps us to find particular Controls, that are docked to a particular
+// dock panel, or are floating, etc.
+procedure TJvDockTree.DoControlQuery(TreeZone: TJvDockZone; FoundItems:TList); //virtual;
+var
+  zone : TJvDockZone;
+begin
+  zone := TreeZone;
+
+ { while loop over siblings at this level...}
+ while Assigned(zone) do begin
+   { Dump controls recursively }
+   if Assigned( zone.ChildControl) then begin
+        _controlQuery(zone.ChildControl, FoundItems );
+   end;
+   { query children, descends recursively }
+   DoControlQuery(zone.ChildZones, FoundItems );
+
+   {query all siblings at this level immediately after current item }
+   zone := zone.NextSibling;
+ end;
+end;
+
+{$endif}
+
+constructor TJvDockTree.Create(
+      ADockSite:      TWinControl;
+      ADockZoneClass: TJvDockZoneClass;
+      ADockStyle    : TComponent {TJvDockBasicStyle}
+      );
 var
   I: Integer;
 begin
@@ -1219,9 +1582,24 @@ begin
   FBorderWidth := 0;
   FSplitterWidth := 4;
   FDockSite := ADockSite;
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+  FDockStyle := ADockStyle;
+  if Assigned(FDockStyle) then begin
+      TJvDockBasicStyle(FDockStyle).AddDockTreeListener(Self);
+      FDockStyleListener := true; // must unhook our listener link unless this flag is turned off.
+      if TJvDockBasicStyle(FDockStyle).ConjoinServerOption.GrabbersSize >0 then
+          FGrabberSize := TJvDockBasicStyle(FDockStyle).ConjoinServerOption.GrabbersSize
+
+  end else begin
+      FGrabberSize := 18; {Default Grabber Height}
+  end;
+{$else}
+      FGrabberSize := 18; {Default Grabber Height}
+{$endif}
+
   FDockSite.ShowHint := True;
   FVersion := RsDockBaseDockTreeVersion;
-  GrabberSize := 12;
+
   FMinSize := 12;
   FTopZone := FDockZoneClass.Create(Self);
   FBrush := TBrush.Create;
@@ -1244,6 +1622,13 @@ end;
 
 destructor TJvDockTree.Destroy;
 begin
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+  if Assigned(FDockStyle) and FDockStyleListener then begin
+      TJvDockBasicStyle(FDockStyle).RemoveDockTreeListener(Self);
+      FDockStyleListener := true; // must unhook our listener link unless this flag is turned off.
+  end;
+{$endif}
+
   if Assigned(FOldWndProc) then
     FDockSite.WindowProc := FOldWndProc;
   PruneZone(FTopZone);
@@ -1252,6 +1637,37 @@ begin
   // (rom) free a Canvas always AFTER inherited Destroy
   FCanvas.Free;
 end;
+
+{$ifdef JVCL_DOCKING_NOTIFYLISTENERS}
+// properties in Dock Style (FDockStyle) have changed.
+procedure TJvDockTree.NotifyDockStyleChange;
+var
+ changed:Boolean;
+ aDockStyle :TJvDockBasicStyle;
+begin
+  if not Assigned(FDockStyle) then exit;
+  aDockStyle := FDockStyle as TJvDockBasicStyle;
+  changed := false;
+ { change in grabber size: }
+  if (aDockStyle.ConjoinServerOption.GrabbersSize>0) then
+    if FGrabberSize<> aDockStyle.ConjoinServerOption.GrabbersSize then begin
+        changed := true;
+        // we purposely DON'T use the TJvDockTree.SetGrabberSize function or
+        // access the GrabberSize as a Property, instead we assign FGrabberSize
+        // directly, because doing otherwise would cause TWO calls to UpdateAll
+        // and DockSite.Invalidate.
+        FGrabberSize := aDockStyle.ConjoinServerOption.GrabbersSize;
+    end;
+
+  // This now happens only when NotifyDockStyleChange is invoked, because
+  // multiple properties might be updated, and we only want to update the whole
+  // deal once, for less flickering, and more efficiency: Wpostma.
+  if changed then begin
+    UpdateAll; // Update once with each change.
+    DockSite.Invalidate;
+  end;
+end;
+{$endif}
 
 procedure TJvDockTree.AdjustDockRect(Control: TControl; var ARect: TRect);
 begin
@@ -2752,6 +3168,8 @@ begin
     NTop := Result.Top;
     AdjustDockRect(Control, Result);
     Dec(Result.Left, 2 * (Result.Left - Control.Left) + 1);
+    if Result.Left<0 then
+        Result.Left := 0;
     Dec(Result.Top, 2 * (Result.Top - Control.Top));
     Dec(Result.Right, 2 * (Result.Right - NLeft - Control.Width));
     Dec(Result.Bottom, 2 * (Result.Bottom - NTop - Control.Height));
@@ -3552,7 +3970,8 @@ var
   R: TRect;
 begin
   R := GetSplitterRect(Zone);
-  DrawSplitterRect(R);
+  if (R.Left<>0)or(R.Right<>0) then  
+    DrawSplitterRect(R);
 end;
 
 procedure TJvDockTree.PaintDockSite;
@@ -3623,241 +4042,8 @@ begin
   InsertOrRemove(DockSize, False, Hide);
 end;
 
-//=== { TJvDockAdvTree } =====================================================
-
-constructor TJvDockAdvTree.Create(DockSite: TWinControl;
-  ADockZoneClass: TJvDockZoneClass);
-begin
-  inherited Create(DockSite, ADockZoneClass);
-  GrabberSize := 15;
-  FButtonHeight := 12;
-  FButtonWidth := 12;
-  FLeftOffset := 0;
-  FRightOffset := 0;
-  FTopOffset := 0;
-  FBottomOffset := 0;
-  FButtonSplitter := 2;
-end;
-
-function TJvDockAdvTree.DoLButtonDown(var Msg: TWMMouse;
-  var Zone: TJvDockZone; out HTFlag: Integer): Boolean;
-var
-  TempZone: TJvDockAdvZone;
-begin
-  Result := inherited DoLButtonDown(Msg, Zone, HTFlag);
-  if (Zone <> nil) and (HTFlag = HTCLOSE) then
-  begin
-    TempZone := TJvDockAdvZone(Zone);
-    TempZone.CloseBtnDown := True;
-    TempZone.MouseDown := True;
-    FCloseButtonZone := TempZone;
-    DockSite.Invalidate;
-  end;
-end;
-
-procedure TJvDockAdvTree.DoLButtonUp(var Msg: TWMMouse;
-  var Zone: TJvDockZone; out HTFlag: Integer);
-begin
-  inherited DoLButtonUp(Msg, Zone, HTFlag);
-  if SizingZone = nil then
-  begin
-    FCloseButtonZone := nil;
-    if (Zone <> nil) and (HTFlag = HTCLOSE) then
-      TJvDockAdvZone(Zone).CloseBtnDown := False;
-  end;
-end;
-
-procedure TJvDockAdvTree.DoMouseMove(var Msg: TWMMouse;
-  var Zone: TJvDockZone; out HTFlag: Integer);
-var
-  TempZone: TJvDockAdvZone;
-begin
-  inherited DoMouseMove(Msg, Zone, HTFlag);
-  if SizingZone = nil then
-  begin
-    TempZone := TJvDockAdvZone(Zone);
-    if ((TempZone <> nil) and (TempZone.CloseBtnDown <> (HTFlag = HTCLOSE)) and
-      ((FCloseButtonZone = TempZone) and FCloseButtonZone.MouseDown)) then
-    begin
-      TempZone.CloseBtnDown := (HTFlag = HTCLOSE) and FCloseButtonZone.MouseDown;
-      DockSite.Invalidate;
-    end;
-  end;
-end;
-
-procedure TJvDockAdvTree.InsertSibling(NewZone, SiblingZone: TJvDockZone;
-  InsertLast, Update: Boolean);
-var
-  TempUpdate: Boolean;
-begin
-  TempUpdate := Update;
-  Update := False;
-  try
-    inherited InsertSibling(NewZone, SiblingZone, InsertLast, Update);
-    if NewZone.ChildControl <> nil then
-      InitDockHeightWidth(0, NewZone.ChildControl.TBDockHeight + BorderWidth,
-        NewZone.ChildControl.LRDockWidth + BorderWidth)
-    else
-      InitDockHeightWidth(0, 0, 0);
-  finally
-    Update := TempUpdate;
-  end;
-
-  if Update then
-  begin
-    NewZone.Insert(FDropDockSize, False);
-    SetNewBounds(NewZone.ParentZone);
-    ForEachAt(NewZone.ParentZone, UpdateZone, tskForward);
-  end;
-end;
-
-procedure TJvDockAdvTree.SetBottomOffset(const Value: Integer);
-begin
-  FBottomOffset := Value;
-end;
-
-procedure TJvDockAdvTree.SetButtonHeight(const Value: Integer);
-begin
-  FButtonHeight := Value;
-end;
-
-procedure TJvDockAdvTree.SetButtonSplitter(const Value: Integer);
-begin
-  FButtonSplitter := Value;
-end;
-
-procedure TJvDockAdvTree.SetButtonWidth(const Value: Integer);
-begin
-  FButtonWidth := Value;
-end;
-
-procedure TJvDockAdvTree.SetLeftOffset(const Value: Integer);
-begin
-  FLeftOffset := Value;
-end;
-
-procedure TJvDockAdvTree.SetRightOffset(const Value: Integer);
-begin
-  FRightOffset := Value;
-end;
-
-procedure TJvDockAdvTree.SetTopOffset(const Value: Integer);
-begin
-  FTopOffset := Value;
-end;
-
-function TJvDockAdvTree.GetDockHeightWidth(Orient: TDockOrientation): Integer;
-begin
-  Result := FDockHeightWidth[Orient];
-end;
-
-procedure TJvDockAdvTree.SetDockHeightWidth(Orient: TDockOrientation;
-  const Value: Integer);
-begin
-  FDockHeightWidth[Orient] := Value;
-end;
-
-function TJvDockAdvTree.GetDockRectangles(Orient: TDockOrientation;
-  AtLast: Boolean): Integer;
-begin
-  Result := FDockRectangles[Orient, AtLast];
-end;
-
-procedure TJvDockAdvTree.SetDockRectangles(Orient: TDockOrientation;
-  AtLast: Boolean; const Value: Integer);
-begin
-  FDockRectangles[Orient, AtLast] := Value;
-end;
-
-procedure TJvDockAdvTree.InitDockRectangles(ARect: TRect);
-begin
-  FDockRectangles[doNoOrient, False] := 0;
-  FDockRectangles[doNoOrient, True] := 0;
-  FDockRectangles[doHorizontal, False] := ARect.Top;
-  FDockRectangles[doHorizontal, True] := ARect.Bottom;
-  FDockRectangles[doVertical, False] := ARect.Left;
-  FDockRectangles[doVertical, True] := ARect.Right;
-end;
-
-procedure TJvDockAdvTree.InitDockHeightWidth(NoOrValue, HorValue,
-  VerValue: Integer);
-begin
-  FDockHeightWidth[doNoOrient] := NoOrValue;
-  FDockHeightWidth[doHorizontal] := HorValue;
-  FDockHeightWidth[doVertical] := VerValue;
-end;
-
-procedure TJvDockAdvTree.ScaleChildZone(Zone: TJvDockZone);
-begin
-  if Zone = ReplacementZone then
-    ShiftScaleOrientation := doNoOrient;
-  inherited ScaleChildZone(Zone);
-end;
-
-procedure TJvDockAdvTree.ScaleSiblingZone(Zone: TJvDockZone);
-begin
-  if Zone = ReplacementZone then
-    ShiftScaleOrientation := doNoOrient;
-  inherited ScaleSiblingZone(Zone);
-end;
-
-procedure TJvDockAdvTree.ScaleZone(Zone: TJvDockZone);
-begin
-  if Zone = ReplacementZone then
-    ShiftScaleOrientation := doNoOrient;
-  inherited ScaleZone(Zone);
-end;
-
-procedure TJvDockAdvTree.ShiftZone(Zone: TJvDockZone);
-begin
-  if Zone = ReplacementZone then
-    ShiftScaleOrientation := doNoOrient;
-  inherited ShiftZone(Zone);
-end;
-
-procedure TJvDockAdvTree.InsertNewParent(NewZone, SiblingZone: TJvDockZone;
-  ParentOrientation: TDockOrientation; InsertLast, Update: Boolean);
-var
-  TempUpdate: Boolean;
-begin
-  TempUpdate := Update;
-  Update := False;
-  if NewZone.ChildControl <> nil then
-    InitDockHeightWidth(0, NewZone.ChildControl.TBDockHeight + BorderWidth,
-      NewZone.ChildControl.LRDockWidth + BorderWidth)
-  else
-    InitDockHeightWidth(0, 0, 0);
-
-  if SiblingZone = nil then
-    if InsertLast then
-      ReplacementZone := TopZone
-    else
-      ReplacementZone := NewZone;
-
-  try
-    inherited InsertNewParent(NewZone, SiblingZone, ParentOrientation, InsertLast, Update);
-  finally
-    Update := TempUpdate;
-    ReplacementZone := nil;
-  end;
-
-  if Update then
-  begin
-    NewZone.Insert(DropDockSize, False);
-    ForEachAt(NewZone.ParentZone, UpdateZone, tskForward);
-    SetNewBounds(NewZone.ParentZone);
-  end;
-end;
-
-procedure TJvDockAdvTree.RemoveZone(Zone: TJvDockZone; Hide: Boolean);
-begin
-  inherited RemoveZone(Zone, Hide);
-end;
-
-procedure TJvDockAdvTree.SetDropDockSize(const Value: Integer);
-begin
-  FDropDockSize := Value;
-end;
+// TJvDockAdvTree has been moved into its own unit because of compiler issues.
+// -Wpostma.
 
 {$IFDEF USEJVCL}
 {$IFDEF UNITVERSIONING}

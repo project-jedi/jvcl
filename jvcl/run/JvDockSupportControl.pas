@@ -40,6 +40,7 @@ uses
 type
   TJvDockDragDockObject = class(TObject)
   private
+//    FDockClient:TObject;{NEW: Opaque reference to TJvDockClient}
     FMouseDeltaX: Double;
     FMouseDeltaY: Double;
     FControl: TControl;
@@ -73,6 +74,7 @@ type
   public
     constructor Create(AControl: TControl); virtual;
     destructor Destroy; override;
+
     procedure AdjustDockRect(const ARect: TRect); virtual;
     function Capture: HWND;
     function DragFindWindow(const Pos: TPoint): HWND; virtual;
@@ -84,6 +86,7 @@ type
     procedure DrawDragDockImage; virtual;
     procedure EraseDragDockImage; virtual;
     function GetDropCtl: TControl; virtual;
+
     property MouseDeltaX: Double read FMouseDeltaX write FMouseDeltaX;
     property MouseDeltaY: Double read FMouseDeltaY write FMouseDeltaY;
     property Control: TControl read FControl write FControl;
@@ -101,6 +104,10 @@ type
     property Brush: TBrush read FBrush write SetBrush;
     property CtrlDown: Boolean read FCtrlDown write FCtrlDown;
     property TargetControl: TWinControl read GetTargetControl write SetTargetControl;
+
+    {DockClient: Opaque reference to TJvDockClient. Nil if none.}    
+//    property DockClient:TObject read FDockClient write FDockClient;
+
   end;
 
   {$IFDEF USEJVCL}
@@ -811,37 +818,69 @@ begin
 end;
 
 function TJvDockCustomPanel.CreateDockManager: IDockManager;
+var
+ aDockStyle:TJvDockBasicStyle;
+// aDockClient:TJvDockClient;
 begin
+  // Wow, TJvDockCustomPanel.CreateDockManager is actually checking that
+  // it is a particular Subclass of itself in this case. I guess that this method
+  // can't be virtual, so instead there is a big if..else... clause here
+  // that handles a number of different TJvDockCustomPanel descendants.
   if (Self is TJvDockConjoinPanel) and
     (TJvDockConjoinPanel(Self).DockClient <> nil) and
     (TJvDockConjoinPanel(Self).DockClient.DockStyle <> nil) and
     (TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass <> nil) and
     (TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass <> TJvDockTreeClass(ClassType)) then
   begin
-    if (DockManager = nil) and DockSite and UseDockManager then
-      Result := TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass.Create(
-        Self, TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelZoneClass) as IJvDockManager
-    else
+    if (DockManager = nil) and DockSite and UseDockManager then begin
+        { Given a custom panel, to create the dock manager (which is an
+          interface, IDockManager, but is of a delphi Class that descends
+          from TJvDockTree), we have to do a dynamic constructor. The
+          class of object created here is stored in
+             TJvDockConjoinPanel(Self).DockClient.DockStyle.ConjoinPanelTreeClass
+          and we pass in the owner,
+      }
+      aDockStyle := TJvDockConjoinPanel(Self).DockClient.DockStyle;
+      Result := aDockStyle.ConjoinPanelTreeClass.Create(
+                              {ADockSite}      Self,
+                              {ADockZoneClass} aDockStyle.ConjoinPanelZoneClass,
+                                               aDockStyle
+                          ) as IJvDockManager; // cast VCL object to Interface IDockManager
+    end else
       Result := DockManager;
   end
   else
   if (Self is TJvDockPanel) and
-    (TJvDockPanel(Self).DockServer <> nil) and
-    (TJvDockPanel(Self).DockServer.DockStyle <> nil) and
-    (TJvDockPanel(Self).DockServer.DockStyle.DockPanelTreeClass <> nil) and
-    (TJvDockPanel(Self).DockServer.DockStyle.DockPanelTreeClass <> TJvDockTreeClass(ClassType)) then
+    (TJvDockPanel(Self).DockServer <> nil) then begin
+    aDockStyle := TJvDockPanel(Self).DockServer.DockStyle;
+    if ((aDockStyle<> nil) and
+        (aDockStyle.DockPanelTreeClass <> nil) and
+        (aDockStyle.DockPanelTreeClass <> TJvDockTreeClass(ClassType)) ) then
   begin
-    if (DockManager = nil) and DockSite and UseDockManager then
-      Result := TJvDockPanel(Self).DockServer.DockStyle.DockPanelTreeClass.Create(
-        Self, TJvDockPanel(Self).DockServer.DockStyle.DockPanelZoneClass) as IJvDockManager
-    else
+    if (DockManager = nil) and DockSite and UseDockManager then begin
+        /// This is a fallback, kind of ugly!  This is used for the JVVSNET
+        // and other special panel types only.
+
+          Result := aDockStyle.DockPanelTreeClass.Create(
+                    {DockSite} Self,
+                    {DockZoneClass} aDockStyle.DockPanelZoneClass,
+                    {DockStyle}  aDockStyle ) as IJvDockManager;
+
+
+    end else begin
       Result := DockManager;
+    end;
+  end else begin
+    Result := DockManager;
+  end;
   end
   else
   begin
-    if (DockManager = nil) and DockSite and UseDockManager then
-      Result := DefaultDockTreeClass.Create(Self, DefaultDockZoneClass) as IJvDockManager
-    else
+
+    if (DockManager = nil) and DockSite and UseDockManager then begin
+      //aDockStyle := ????
+      Result := DefaultDockTreeClass.Create( Self, DefaultDockZoneClass, nil{aDockStyle} ) as IJvDockManager
+    end else
       Result := DockManager;
   end;
   DoubleBuffered := DoubleBuffered or (Result <> nil);
@@ -1955,6 +1994,69 @@ end;
 procedure TJvDockDragDockObject.MouseMsg(var Msg: TMessage);
 var
   P: TPoint;
+  procedure DoDragDone( dropFlag:Boolean ); {NEW! Warren added.}
+  var
+      aDockServer : TJvDockServer;
+      aDockClient : TJvDockClient;
+      aDockPanel  : TJvDockPanel;
+      aDockForm   : TForm;
+  begin
+      if not Assigned(JvGlobalDockManager) then exit;
+
+      if (dropFlag)   and Assigned(FControl) then begin // only do this if dropFlag is true and there is a control (usually a form) we are dragging
+              if not Assigned(TargetControl) then begin
+
+                  OutputDebugString('TJvDockDragDockObject.MouseMsg.DoDragDone: User drag finished, TargetControl=nil, user made form floating.');
+
+                {In this case, we're dragging something off and making it floating. }
+                  {if Assigned(FControl) then
+                    aDockClient := FindDockClient(FControl)
+                  else
+                     aDockClient := nil;
+
+                  aDockPanel := nil;
+                  aDockServer := nil;
+                  aDockForm := nil;
+                  if Assigned(aDockClient) then begin
+                    if Assigned(aDockClient.OnCheckIsDockable) then begin
+                        aDockClient.OnCheckIsDockable( aDockClient, aDockForm, aDockServer, aDockPanel, dropFlag );
+                    end;
+                  end;}
+
+              end else if TargetControl is TJvDockPanel then begin
+                { In this case, we're about to dock to a TJvDockPanel }
+                  {aDockPanel := TargetControl as TJvDockPanel;
+                  aDockServer := aDockPanel.DockServer;
+                  aDockClient := FindDockClient(FControl);
+                  if FControl is TForm then
+                    aDockForm := FControl as TForm
+                  else
+                    aDockForm := nil;
+                  if Assigned(aDockClient.OnCheckIsDockable) then begin
+                      aDockClient.OnCheckIsDockable( aDockClient, aDockForm, aDockServer, aDockPanel, dropFlag );
+                  end;}
+              end else  if TargetControl is TForm then begin
+                { This appears to have something to do with conjoined and tabbed host forms }
+                  aDockClient := FindDockClient(TargetControl);
+                  aDockPanel := nil;
+                  aDockServer := nil;
+                  if FControl is TForm then 
+                      aDockForm := FControl as TForm
+                  else
+                      aDockForm := nil;
+                  if Assigned(aDockClient.OnCheckIsDockable) then begin
+                      aDockClient.OnCheckIsDockable( aDockClient, aDockForm, aDockServer, aDockPanel, dropFlag );
+                  end;
+              end else begin
+                  // Debug message!
+                  OutputDebugString('TJvDockDragDockObject.MouseMsg.DoDragDone: TargetControl is not an expected type!');
+              end;
+      end;
+      Assert(Assigned(JvGlobalDockManager));
+      Assert(Assigned(JvGlobalDockClient));
+      JvGlobalDockManager.DragDone(dropFlag);
+      OutputDebugString('DoDragDone completed.');
+  end;
 begin
   try
     case Msg.Msg of
@@ -1965,17 +2067,17 @@ begin
           JvGlobalDockManager.DragTo(P);
         end;
       WM_CAPTURECHANGED:
-        JvGlobalDockManager.DragDone(False);
+        DoDragDone(False);//JvGlobalDockManager.DragDone(False);
       WM_LBUTTONUP, WM_RBUTTONUP:
         if not JvGlobalDockClient.CanFloat then
         begin
           if (TargetControl = nil) and (JvGlobalDockClient.ParentForm.HostDockSite = nil) then
-            JvGlobalDockManager.DragDone(True)
+            DoDragDone(True)//JvGlobalDockManager.DragDone(True)
           else
-            JvGlobalDockManager.DragDone(TargetControl <> nil);
+            DoDragDone(TargetControl <> nil);//JvGlobalDockManager.DragDone(TargetControl <> nil);
         end
         else
-          JvGlobalDockManager.DragDone(True);
+          DoDragDone(True);//JvGlobalDockManager.DragDone(True);
       CN_KEYUP:
         if Msg.WParam = VK_CONTROL then
         begin
@@ -1992,13 +2094,13 @@ begin
           VK_ESCAPE:
             begin
               Msg.Result := 1;
-              JvGlobalDockManager.DragDone(False);
+              DoDragDone(False);//JvGlobalDockManager.DragDone(False);
             end;
         end;
     end;
   except
     if JvGlobalDockManager.FDragControl <> nil then
-      JvGlobalDockManager.DragDone(False);
+        DoDragDone(False);//JvGlobalDockManager.DragDone(False);
     raise;
   end;
 end;
@@ -2309,9 +2411,11 @@ begin
         TargetPos := DragObject.DragTargetPos
       else
         TargetPos := DragObject.DragPos;
-      Accepted := CheckUndock and
 
-      Drop;
+      {Check before we undock, then check if the drop is going to be accepted }
+      
+      Accepted := {local function:}CheckUndock and {DragDone parameter:}Drop;
+
       if FActiveDrag = dopDock then
       begin
         if Accepted and DockObject.Floating then
@@ -2331,7 +2435,7 @@ begin
           Windows.SetCursor(FDragSaveCursor);
       end;
       FDragControl := nil;
-      if DragSave.DragTarget <> nil then
+      if DragSave.DragTarget <> nil then begin
         if not Accepted then
         begin
           DragSave.DragPos := Point(0, 0);
@@ -2340,6 +2444,7 @@ begin
         end
         else
           DoDockDrop(DragSave, DragSave.DragPos);
+      end;
       DragObject := nil;
     finally
       FQualifyingSites.Free;
@@ -2450,6 +2555,18 @@ begin
   end;
 end;
 
+{ TJvDockManager.DragTo: WM_MOUSEMOVE Mouse Drag handler.
+
+  The global Dock manager which is of this type, TJvDockManager, handles
+  the WM_MOUSEMOVE messages sent to TJvDockDragDockObject.MouseMsg.
+
+  In this function we decide what destination (drop object)
+  we are in by calling DragFindTarget.
+
+  There is a lot of boilerplate code here that isn't used, such
+  as the ability to draw a drag image (not useful when dragging forms).
+    
+}
 procedure TJvDockManager.DragTo(const Pos: TPoint);
 var
   DragCursor: TCursor;
