@@ -2287,7 +2287,9 @@ begin
     begin
       RebuildVisible;
       UpdateScrollbars;
-    end;
+    end
+    else
+      NeedRebuild := True;
   end
   else
     NeedRebuild := True;
@@ -2617,6 +2619,8 @@ procedure TJvCustomInspector.Paint;
 begin
   if Painter <> nil then
   begin
+    if NeedRebuild then
+      InvalidateList;
     IncPaintGeneration;
     Painter.Setup(Canvas);
     Painter.Paint;
@@ -2666,6 +2670,7 @@ begin
   if OldSel <> nil then
     SelectedIndex := FVisible.IndexOfObject(OldSel);
   CalcImageHeight;
+  NeedRebuild := False;
 end;
 
 procedure TJvCustomInspector.RemoveNotifySort(const Item: TJvCustomInspectorItem);
@@ -4785,8 +4790,10 @@ end;
 procedure TJvCustomInspectorItem.InvalidateValue;
 begin
   DoValueChanged;
+  { Removed: InvalidateValue will be called from the data instance which will already notify
+    each inspector involved once.
   if Inspector <> nil then
-    Inspector.DoItemValueChanged(Self);
+    Inspector.DoItemValueChanged(Self); }
 end;
 
 procedure TJvCustomInspectorItem.ListMouseUp(Sender: TObject;
