@@ -71,7 +71,7 @@ uses
   //Multimedia
   JvSoundControl, JvDeviceChanged, JvImageTransform, JvImageRotate,
   JvWavePlayer, JvStarfield, JvJoystick, JvSpecialImage,
-  JvThumbImage, JvThumbNail, JvThumbView, JvMovableBevel,
+  JvThumbImage, JvThumbNails, JvThumbViews, JvMovableBevel,
 
   //Labels
   JvHotLink, JvBlinkingLabel, JvScrollingLabel, JvReversedLabel,
@@ -506,7 +506,7 @@ begin
       TJvWinampApi
 
     TjvThumbImage,
-      TjvThumbNail,
+      TjvThumbnail,
       TjvThumbView,
       TJvMovableBevel
       ]);
