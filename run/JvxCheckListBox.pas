@@ -1422,7 +1422,7 @@ end;
 
 procedure TJvxCheckListBox.DefineProperties(Filer: TFiler);
 
-function DoWrite: Boolean;
+  function DoWrite: Boolean;
   var
     I: Integer;
     Ancestor: TJvxCheckListBox;
@@ -1442,6 +1442,7 @@ function DoWrite: Boolean;
     else
       Result := Items.Count > 0;
   end;
+
 begin
   inherited DefineProperties(Filer);
   Filer.DefineProperty('InternalVersion', ReadVersion, WriteVersion, Filer.Ancestor = nil);

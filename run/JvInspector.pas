@@ -3554,7 +3554,7 @@ end;
 
 function ListCompare(List: TStringList; Index1, Index2: Integer): Integer;
 begin
-  Result := CompareText(List[Index1], List[Index2]);
+  Result := AnsiCompareText(List[Index1], List[Index2]);
 end;
 
 procedure TJvCustomInspector.RebuildVisible;
@@ -5316,7 +5316,7 @@ end;
 
 function AlphaSortCompare(Item1, Item2: Pointer): Integer;
 begin
-  Result := CompareText(TJvCustomInspectorItem(Item1).DisplayName,
+  Result := AnsiCompareText(TJvCustomInspectorItem(Item1).DisplayName,
     TJvCustomInspectorItem(Item2).DisplayName);
 end;
 

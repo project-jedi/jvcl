@@ -1057,7 +1057,7 @@ begin
   Result := AField.ClassName;
   if Result[1] = 'T' then
     Delete(Result, 1, 1);
-  if CompareText('Field', Copy(Result, Length(Result) - 4, 5)) = 0 then { do not localize }
+  if AnsiCompareText('Field', Copy(Result, Length(Result) - 4, 5)) = 0 then { do not localize }
     Delete(Result, Length(Result) - 4, 5);
 end;
 

@@ -3165,7 +3165,7 @@ begin
       Result := PCsvColumn(Get(I));
       if Assigned(Result.FFieldDef) then
         // Case insensitive field name matching:
-        if CompareText(Result.FFieldDef.Name, FieldName) = 0 then
+        if AnsiCompareText(Result.FFieldDef.Name, FieldName) = 0 then
           Exit; //return that field was found!
     end;
   except

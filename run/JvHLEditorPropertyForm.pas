@@ -965,7 +965,7 @@ begin
     S := Ini[I];
     if (S <> '') and (S[1] = '[') and (S[Length(S)] = ']') then
     begin
-      if CompareText(Copy(S, 2, Length(S) - 2), Section) = 0 then
+      if AnsiCompareText(Copy(S, 2, Length(S) - 2), Section) = 0 then
         InSection := True
       else
       if InSection then

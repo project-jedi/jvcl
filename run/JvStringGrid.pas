@@ -308,7 +308,7 @@ var
       stDate:
         Result := StrToDateTime(First) < StrToDateTime(Second);
       stClassic:
-        Result := CompareText(First, Second) < 0;
+        Result := AnsiCompareText(First, Second) < 0;
     else
       Result := First > Second;
     end;
@@ -336,16 +336,16 @@ var
         case SortType of
           stClassic:
             begin
-              while CompareText(Cells[Column, I], St) < 0 do
+              while AnsiCompareText(Cells[Column, I], St) < 0 do
                 Inc(I);
-              while CompareText(Cells[Column, J], St) > 0 do
+              while AnsiCompareText(Cells[Column, J], St) > 0 do
                 Dec(J);
             end;
           stCaseSensitive:
             begin
-              while CompareStr(Cells[Column, I], St) < 0 do
+              while AnsiCompareStr(Cells[Column, I], St) < 0 do
                 Inc(I);
-              while CompareStr(Cells[Column, J], St) > 0 do
+              while AnsiCompareStr(Cells[Column, J], St) > 0 do
                 Dec(J);
             end;
           stNumeric:

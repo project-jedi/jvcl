@@ -1839,7 +1839,6 @@ begin
     {$ENDIF MSWINDOWS}
     {$ENDIF COMPILER6_UP}
     
-
     AddFunction(cSysUtils, 'AllocMem', JvInterpreter_AllocMem, 1, [varEmpty], varEmpty);
     {$IFNDEF COMPILER6_UP}
     AddFunction(cSysUtils, 'NewStr', JvInterpreter_NewStr, 1, [varEmpty], varEmpty);

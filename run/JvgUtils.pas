@@ -2020,7 +2020,7 @@ begin
   Result := fftUndefined;
   Ext := ExtractFileExt(FileName);
   for I := 0 to 3 do
-    if CompareText(Ext, Extensions[I]) = 0 then
+    if AnsiCompareText(Ext, Extensions[I]) = 0 then
     begin
       Result := Types[I];
       Break;

@@ -53,8 +53,8 @@ type
     destructor Destroy; override;
     procedure InsertHeader;
     procedure InsertFooter;
-    function ParamNameIndex(str: string): Integer; //...returns -1 if Name doesn't exist
-    function ParamValueIndex(str: string): Integer; //...returns -1 if Name doesn't exist
+    function ParamNameIndex(Str: string): Integer; //...returns -1 if Name doesn't exist
+    function ParamValueIndex(Str: string): Integer; //...returns -1 if Name doesn't exist
   end;
 
 implementation
@@ -182,12 +182,12 @@ begin
   end;
 end;
 
-function TJvgCGI.ParamNameIndex(str: string): Integer;
+function TJvgCGI.ParamNameIndex(Str: string): Integer;
 var
   I: Integer;
 begin
   for I := 0 to Params.Count - 1 do
-    if CompareText(Params.Names[I], str) = 0 then
+    if AnsiCompareText(Params.Names[I], Str) = 0 then
     begin
       Result := I;
       Exit;
@@ -195,12 +195,12 @@ begin
   Result := -1;
 end;
 
-function TJvgCGI.ParamValueIndex(str: string): Integer;
+function TJvgCGI.ParamValueIndex(Str: string): Integer;
 //var
 //  I: Integer;
 begin
   {  for I:=0 to Params.Count-1 do
-      if CompareText( Params.Values[I], str ) = 0 then exit;
+      if AnsiCompareText( Params.Values[I], Str ) = 0 then exit;
       begin Result := I; exit; end;}
   Result := -1;
 end;
