@@ -1,0 +1,241 @@
+@@$TJvDSADialog
+<GROUP JVCL.Dialogs.Custom, JVCL.Info.Dialogs>
+<TITLE TJvDSADialog>
+  The TJvDSADialog component allows you to make any form a "don't show again" dialog with minimal
+  changes, both in usage as well as design.
+
+  Converting a dialog into a DSA dialog involves the following tasks:
+
+  * Create and design the form or use an existing form.
+  * Drop a control on the form that has both a "Checked" as well as a "Caption" property. A
+    TCheckBox will do fine. There is no need to provide a caption for the check box, as it will be
+    set by the DSA backend when the dialog is shown.
+  * Drop a TJvDSADialog component on the form. The component will be the link between the VCL form
+    and the DSA backend. You need to set DialogID to a registered dialog (you can optionally
+    register the dialog in the initialization section of this unit).
+  * Use ShowModal to display the form or retrieve the last modal result if the form was previously
+    suppressed.
+
+  TJvDSADialog will hook the ShowModal virtual method of the form it is on. This allows the
+  component to check the DSA state and either call the original ShowModal method or just return it's
+  result. Note that because the ShowModal method of the form the component is on is being hooked, it
+  doesn't matter if a custom form is used that happens to override the ShowModal method. This
+  overriden method will be called if the dialog is to be displayed.
+----------------------------------------------------------------------------------------------------
+@@JvDSADialogs.pas
+<GROUP JVCL.FileRef>
+Summary
+  Provides code and a component to manage and create DSA (Don't Show Again) dialogs.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Marcel Bestebroer
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog
+<GROUP TJvDSADialog>
+<TITLEIMG TJvDSADialog>
+Summary
+  Converts a form into a "Don't Show Again" dialog.
+Description
+  The TJvDSADialog component converts the form it's placed on into a DSA ("Don't Show Again")
+  dialog. The component is basically a link between a VCL form and the included DSA backend.
+
+  A quick "how to" for the component can be found <LINK $JVCL.Comps.TJvDSADialogs, here>.
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.ApplySavedState
+Summary
+  Applies the saved state of the dialog.
+Description
+  ApplySavedState retrieves all info of the dialog from the DSA storage and applies it to the form.
+  By default this will result in the saved ModalResult being applied to the form's ModalResult
+  property. In addition, if an OnApplyKeys event is assigned, the event will be called with all
+  neccessary information to retrieve custom stored data from the DSA storage.
+See Also
+  OnApplyKeys, UpdateDSAState
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.CheckControl
+Summary
+  Reference to the control to use as a DSA state setter.
+Description
+  CheckControl is a reference to the control to use as a DSA state toggler.
+
+  The control has to have both a "Checked" as well as a "Caption" property. Usually you will use a
+  TCheckBox control, but for TJvDSADialog it doesn't matter what kind of control is used (eg. it is
+  possible to use a third party's check box equivalent control, even if it's not descending from
+  TCustomCheckBox).
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.DialogID
+Summary
+  Indicates the dialog's ID in the DSA system.
+Description
+  DialogID indicates the dialog's ID to use with the DSA system. If the specified ID is not
+  registered, an exception will be raised as soon as the form is used.
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.GetDSAStateInternal
+Summary
+  Retrieves the DSA state for the dialog.
+Description
+  GetDSAStateInternal retrieves the DSA state and ModalResult from the DSA storage.
+
+  If the dialog is suppressed the method will return True and ModalResult will be set to the saved
+  ModalResult code. If an event handler is assigned to OnApplyKey, it will be triggered as well.
+
+  If the dialog is not suppressed the method will return False and ModalResult will be set to mrNone
+  (0).
+Parameters
+  ModalResult - variable to retrieve the saved ModalResult value in.
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.GetModalResult
+Summary
+  Retrieves the ModalResult from the owner form.
+Description
+  GetModalResult retrieves the ModelResult from the Owner. Since TJvDSADialog can only be placed on
+  a TCustomForm descendant, a simple typecast is used to cast the owner to a TCustomForm and
+  retrieve the ModalResult value.
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.GetOrgOwner
+Summary
+  Retrieves the owner of the component.
+Description
+  GetOrgOwner retrieves the reference to owner (form) of the component. Because the Owner property
+  is set to nil before Destroy is called, the unpatching mechanism can not use Owner. To circumvent
+  this, the patch method will store a reference to the form which the unpatch method can use.
+See Also
+  FormPatch, FormUnPatch
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.GetOrgShowModalPtr
+Summary
+  Retrieves the original ShowModal code pointer.
+Description
+  GetOrgShowModalPtr retrieves the original ShowModal code pointer as stored by the FormPatch
+  method. The pointer is used in two situations:
+
+  1 The dialog was not suppressed and needs to be displayed.
+  2 The dialog is being disposed and needs to be unpatched.
+See Also
+  FormPatch, FormUnPatch
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.GetStorage
+Summary
+  Retrieves a reference to storage device for this dialog.
+Description
+  GetStorage will retrieve the reference to the storage device assigned to the dialog. It is the
+  read method for the Storage property.
+
+  It's used internally to retrieve and store the DSA state and dialog result.
+See Also
+  Storage
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.FormPatch
+Summary
+  Pathes the form for DSA usage.
+Description
+  FormPatch will patch the form so that it can be used as a DSA dialog. The patch involves the
+  following:
+
+  1 Retrieve the VMT index for ShowModal
+  2 Store the original pointer for ShowModal using SetOrgShowModalPtr.
+  3 Set the pointer for ShowModal to a new ShowModal method declared in an internal form class.
+See Also
+  FormUnPatch
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.FormUnPatch
+Summary
+  Unpathes the form for DSA usage.
+Description
+  FormUnPatch will unpatch the form so that it can no longer be used as a DSA dialog. Unpatch
+  involves the following:
+
+  1 Retrieve the VMT index for ShowModal
+  2 Set the pointer for ShowModal to the original pointer, retrieved using GetOrgShowModalPtr.
+See Also
+  FormPatch
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.IsDSAChecked
+Summary
+  Checks if the DSA state has been set to "suppress".
+Description
+  IsDSAChecked checks if the DSA state has been set to suppressed state. The base implementation
+  does this by checking the CheckControl's Checked property, but descendant can override this to do
+  additional checking.
+See Also
+  CheckControl
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.OnApplyKeys
+<COMBINEWITH TJvDSADataEvent>
+Summary
+  Occurs when the DSA state is read in from the DSA storage.
+Description
+  Write an OnApplyKeys event handler to retrieve additional (custom) data from the DSA storage 
+  related to this dialog. This event (together with OnUpdateKeys) allows you to store and retrieve
+  additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
+  result for the dialog.
+Parameters
+  Sender  - reference to the TJvDSADialog component.
+  DSAInfo - reference to the DSA registration item for the dialog.
+  Storage - reference to the storage where the dialog info is stored.
+See Also
+  OnUpdateKeys
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.OnUpdateKeys
+<COMBINEWITH TJvDSADataEvent>
+Summary
+  Occurs when the DSA state is written to the DSA storage.
+Description
+  Write an OnUpdateKeys event handler to store additional (custom) data from the DSA storage 
+  related to this dialog. This event (together with OnApplyKeys) allows you to store and retrieve
+  additional information (e.g. the ItemIndex of a combo box) along with the DSA state and modal
+  result for the dialog.
+Parameters
+  Sender  - reference to the TJvDSADialog component.
+  DSAInfo - reference to the DSA registration item for the dialog.
+  Storage - reference to the storage where the dialog info is stored.
+See Also
+  OnApplyKeys
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.OrgOwner
+Summary
+  References the owner of the component.
+Description
+  OrgOwner is the reference to the owner (form) of the component. Because the Owner property is set
+  to nil before Destroy is called, the unpatching mechanism can not use Owner. To circumvent this,
+  the patch method will store a reference to the form which the unpatch method can use.
+See Also
+  FormPatch, FormUnPatch
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.OrgShowModalPtr
+Summary
+  Holds the original ShowModal code pointer.
+Description
+  OrgShowModalPtr holds the original ShowModal code pointer as stored by the FormPatch method. The
+  pointer is used in two situations:
+
+  1 The dialog was not suppressed and needs to be displayed.
+  2 The dialog is being disposed and needs to be unpatched.
+See Also
+  FormPatch, FormUnPatch
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.Storage
+Summary
+  Reference to storage device for this dialog.
+Description
+  Storage holds the reference to the storage device assigned to the dialog.
+
+  It's used internally to retrieve and store the DSA state and dialog result.
+----------------------------------------------------------------------------------------------------
+@@TJvDSADialog.UpdateDSAState
+Summary
+  Stores the DSA state in the DSA storage.
+Description
+  UpdateDSAState will store the DSA state and ModalResult value in the DSA storage. In addition, if
+  an event handler is assigned to OnUpdateKeys it will be triggered to allow storing custom data in
+  the DSA storage.
+See Also
+  ApplySavedState, OnUpdateKeys
+----------------------------------------------------------------------------------------------------
+@@EJvDSADialog
+Summary
+  Exception class for TJvDSADialog errors.
+Description
+  EJvDSADialog is the exception class used for errors using the TJvDSADialog the TJvDSADialog
+  component.
+----------------------------------------------------------------------------------------------------
