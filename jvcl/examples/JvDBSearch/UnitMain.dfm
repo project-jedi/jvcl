@@ -1,9 +1,11 @@
 object Form1: TForm1
-  Left = 399
-  Top = 392
-  Width = 687
-  Height = 398
+  Left = 295
+  Top = 224
+  ActiveControl = btnConnect
+  AutoScroll = False
   Caption = 'JvDBSearchDemo'
+  ClientHeight = 332
+  ClientWidth = 608
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,23 +13,23 @@ object Form1: TForm1
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
   TextHeight = 13
   object JvDBGrid1: TJvDBGrid
     Left = 0
     Top = 73
-    Width = 679
-    Height = 298
+    Width = 608
+    Height = 259
     Align = alClient
-    DataSource = dts1
+    DataSource = DataSource1
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -11
     TitleFont.Name = 'MS Shell Dlg 2'
     TitleFont.Style = []
-    TitleButtons = True
     TitleArrow = True
     SelectColumnsDialogStrings.Caption = 'S'#233'lection des colonnes'
     SelectColumnsDialogStrings.OK = '&OK'
@@ -36,7 +38,7 @@ object Form1: TForm1
   object pnl1: TPanel
     Left = 0
     Top = 0
-    Width = 679
+    Width = 608
     Height = 73
     Align = alTop
     TabOrder = 1
@@ -57,10 +59,10 @@ object Form1: TForm1
     object JvDBSearchComboBox1: TJvDBSearchComboBox
       Left = 348
       Top = 5
-      Width = 145
+      Width = 150
       Height = 21
       DataField = 'Common_Name'
-      DataSource = dts1
+      DataSource = DataSource1
       Style = csDropDownList
       ItemHeight = 13
       TabOrder = 0
@@ -68,41 +70,41 @@ object Form1: TForm1
     object JvDBSearchEdit1: TJvDBSearchEdit
       Left = 348
       Top = 37
-      Width = 145
+      Width = 150
       Height = 21
-      DataSource = dts1
+      DataSource = DataSource1
       DataField = 'Common_Name'
       TabOrder = 1
     end
-    object btn1: TButton
+    object btnConnect: TButton
       Left = 12
       Top = 12
       Width = 75
       Height = 25
       Caption = 'Connect'
       TabOrder = 2
-      OnClick = btn1Click
+      OnClick = btnConnectClick
     end
-    object CheckBox1: TCheckBox
+    object chkClearOnEnter: TCheckBox
       Left = 512
       Top = 40
-      Width = 97
+      Width = 90
       Height = 17
       Caption = 'Clear on Enter'
       Checked = True
       State = cbChecked
       TabOrder = 3
-      OnClick = CheckBox1Click
+      OnClick = chkClearOnEnterClick
     end
   end
-  object tbl1: TTable
+  object Table1: TTable
     DatabaseName = 'DBDEMOS'
     TableName = 'biolife.db'
     Left = 4
     Top = 40
   end
-  object dts1: TDataSource
-    DataSet = tbl1
+  object DataSource1: TDataSource
+    DataSet = Table1
     Left = 40
     Top = 40
   end
