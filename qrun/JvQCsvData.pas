@@ -15,7 +15,7 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is by Warren Postma.
 
-Contributor(s):  Warren Postma (warrenpstma@hotmail.com)
+Contributor(s):  Warren Postma (warrenpstma att hotmail dott com)
 
 2003-07-29 Warren Postma - New features (Sorting, Indexing, UserData)
 
@@ -141,7 +141,7 @@ Known Issues and Updates:
 // INSTEAD OF MEMORIZING ALL THIS FIELD TYPE STUFF.
 //
 // Originally written by Warren Postma
-// Contact: warren.postma@sympatico.ca or warrenpstma@hotmail.com
+// Contact: warren.postma att sympatico dott ca or warrenpstma att hotmail dott com
 //
 // Donated to the Delphi Jedi Project.
 // All Copyrights and Ownership donated to the Delphi Jedi Project.
@@ -158,9 +158,7 @@ uses
   Windows,
   {$ENDIF MSWINDOWS} 
   QWindows, 
-  SysUtils, Classes, 
-  Variants, 
-  DB;
+  Classes, DB;
 
 const
   MaxCalcDataOffset = 256; // 128 bytes per record for Calculated Field Data.
@@ -547,6 +545,9 @@ type
     function IsKeyUnique: Boolean; // Checks current row's key uniqueness. Note that FCsvKeyDef MUST be set!
     procedure SaveToFile(const FileName: string);
     procedure LoadFromFile(const FileName: string);
+
+     {These are made protected so that you can write another derivce component
+      unfortunately if it is in another unit, you can't do much about it.}
   protected
     property InternalData: TJvCsvRows read FData write FData;
     property AppendedFieldCount: Integer read FAppendedFieldCount;
@@ -563,10 +564,6 @@ type
     property Changed: Boolean read FFileDirty write FFileDirty;
     // property DataFileSize: Integer read GetDataFileSize;
 
-     // CSV Table definition properties:
-    property CsvFieldDef: string read FCsvFieldDef write SetCsvFieldDef; // Our own "Csv Field Definition String"
-    property CsvKeyDef: string read FCsvKeyDef write FCsvKeyDef; // Primary key definition.
-    property CsvUniqueKeys: Boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
     // if HasHeaderRow is True, calidate that it conforms to CvsFieldDef
     property ValidateHeaderRow: Boolean read FValidateHeaderRow write FValidateHeaderRow default True;
     property ExtendedHeaderInfo: Boolean read FExtendedHeaderInfo write FExtendedHeaderInfo;
@@ -603,6 +600,11 @@ type
     { these MUST be available at runtime even when the object is of the Custom base class type
       This enables interoperability at design time between non-visual helper components
       and user-derived CsvDataSet descendants }
+     // CSV Table definition properties:
+    property CsvFieldDef: string read FCsvFieldDef write SetCsvFieldDef; // Our own "Csv Field Definition String"
+    property CsvKeyDef: string read FCsvKeyDef write FCsvKeyDef; // Primary key definition.
+    property CsvUniqueKeys: Boolean read FCsvUniqueKeys write FCsvUniqueKeys; // Rows must be unique on the primary key.
+      
     property OpenFileName: string read FOpenFileName; // Set in InternalOpen, used elsewhere.
     property FieldDefs stored FieldDefsStored;
     property TableName: string read FTableName; // Another name, albeit read only, for the FileName property!
@@ -700,8 +702,9 @@ function JvCsvWildcardMatch(Data, Pattern: string): Boolean;
 
 implementation
 
-uses
-  QForms, QControls, 
+uses 
+  Variants, 
+  SysUtils, QControls, QForms,  
   JvQJCLUtils, JvQCsvParse, JvQConsts, JvQResources;
 
 const
@@ -3634,12 +3637,25 @@ begin
   end;
 end;
 
+{ GetCsvHeader:
+
+  XXX Normally you don't need to call this function, if you
+      have already opened the file, then use the HeaderRow
+      property instead!
+
+  This routine loads just the first line of a CSV file
+  from the disk. This way you can peek at a CSV file, get
+  the first line, parse it or do something else with it, before
+  you decide if you want this component to open the rest
+  of the file.
+}
 function TJvCustomCsvDataSet.GetCsvHeader: string;
 var
   F: Text;
   FirstLine: string;
 begin
-  if (not FLoadsFromFile) or (not FHasHeaderRow) or not (FileExists(FTableName)) then
+  if (not FLoadsFromFile) or (not FHasHeaderRow)
+     or (not FileExists(FTableName)) then
   begin
     Result := '';
     Exit;
@@ -4122,8 +4138,12 @@ begin
   end;
   BackupFolder := BackupFolder + 'Backup'+ PathDelim;
   if not DirectoryExists(BackupFolder) then
+    {$IFDEF MSWINDOWS}
     CreateDirectory(PChar(BackupFolder), nil);
-
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    ForceDirectories(BackupFolder};
+    {$ENDIF LINUX}
   Found := False;
   for I := 0 to MaxFiles - 1 do
   begin
