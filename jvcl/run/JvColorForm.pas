@@ -35,7 +35,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Buttons, ExtCtrls,
-  JvColorBox, JvColorBtn, JvComponent;
+  JvColorBox, JvColorButton, JvComponent;
 
 type
   TJvClrFrm = class(TForm)

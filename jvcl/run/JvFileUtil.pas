@@ -106,7 +106,7 @@ uses
   FileCtrl,
   {$ENDIF}
   ShellAPI, Forms,
-  JvDateUtil, JvVCLUtils, JvPrgrss;
+  JvDateUtil, JvVCLUtils, JvProgressUtils;
 
 {$IFDEF WIN32}
 

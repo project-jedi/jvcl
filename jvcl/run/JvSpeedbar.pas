@@ -39,7 +39,7 @@ uses
   ImgList, ActnList,
   {$ENDIF}
   ExtCtrls, Grids, IniFiles,
-  JvTypes, JvxCtrls, JvPlacemnt, JvComponent;
+  JvTypes, JvxCtrls, JvFormPlacement, JvComponent;
 
 const
   DefButtonWidth = 24;
@@ -542,7 +542,7 @@ implementation
 
 uses
   Consts, Math,
-  JvVCLUtils, JvAppUtils, JvStrUtils, JvConst, JvSbSetup;
+  JvVCLUtils, JvAppUtils, JvStrUtils, JvConst, JvSpeedbarSetupForm;
 
 {$IFDEF COMPILER3_UP}
 resourcestring

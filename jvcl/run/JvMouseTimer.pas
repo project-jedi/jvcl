@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvMouseTimerU;
+unit JvMouseTimer;
 
 interface
 

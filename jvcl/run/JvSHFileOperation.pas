@@ -26,7 +26,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvSHFileOp;
+unit JvSHFileOperation;
 
 {A wrapper component for the SHFileOperation function }
 {  Notes:

@@ -134,7 +134,7 @@ implementation
 
 uses
   SysUtils, Messages, Consts,
-  JvTypes, JvStrUtils, JvFileUtil, JvPlacemnt;
+  JvTypes, JvStrUtils, JvFileUtil, JvFormPlacement;
 
 function GetDefaultSection(Component: TComponent): string;
 var

@@ -26,17 +26,13 @@ Known Issues:
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
-unit JvClipMon;
+unit JvClipboardMonitor;
 
 interface
 
 uses
   Messages,
-  {$IFDEF WIN32}
   Windows,
-  {$ELSE}
-  WinTypes, WinProcs,
-  {$ENDIF}
   SysUtils, Classes, JvComponent;
 
 type

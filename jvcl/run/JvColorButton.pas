@@ -30,7 +30,7 @@ Known Issues:
 
 {A color selection button that mimicks the one on the 'Display Properties' page in Win95/NT4 }
 
-unit JvColorBtn;
+unit JvColorButton;
 
 interface
 

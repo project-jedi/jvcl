@@ -25,7 +25,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvVerInf;
+unit JvVersionInfo;
 
 {$IFDEF COMPILER3_UP}
 {$WEAKPACKAGEUNIT}

@@ -27,7 +27,7 @@ Known Issues:
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
 
-unit JvStartMenuBtn;
+unit JvStartMenuButton;
 
 interface
 
