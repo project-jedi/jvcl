@@ -35,14 +35,8 @@ uses
   Windows, Messages,
   {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Graphics, Controls, Forms, Dialogs, ActnList, Menus, ImgList, ToolWin,
   ComCtrls, ExtCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QActnList, QMenus, QImgList,
-  QComCtrls, QExtCtrls, Types,
-  {$ENDIF VisualCLX}
   JvBaseDsgnFrame;
 
 type
@@ -78,16 +72,11 @@ uses
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 uses
-  IniFiles;
+  JvQRegistryIniFile;
 {$ENDIF LINUX}
 
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 const
   cLargeButton = 'LargeButton';
@@ -108,16 +97,11 @@ procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ '/.borland/.borlandrc') do
-      try
-        WriteBool(RegKey, cLargeButton, aiTextLabels.Checked);
-          WriteBool(RegKey, cToolbar, aiShowToolbar.Checked);
-      finally
-        Free;
-      end;
+    with TJvRegistryIniFile.Create do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
+    {$ENDIF MSWINDOWS}
     try
       LazyWrite := False;
       if OpenKey(RegKey, True) then
@@ -130,24 +114,17 @@ begin
     finally
       Free;
     end;
-   {$ENDIF MSWINDOWS}
 end;
 
 procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
     {$IFDEF LINUX}
-    with TIniFile.Create(GetEnvironmentVariable('HOME')+ PathDelim + '/.borland/.borlandrc') do
-    try
-      if SectionExists(RegKey) then
-          EnableLargeButtons(not ValueExists(RegKey, cLargeButton) or ReadBool(RegKey, cLargeButton, false));
-          ShowToolbar(not ValueExists(RegKey, cToolbar) or ReadBool(RegKey, cToolbar, false));
-    finally
-      Free;
-    end;
+    with TJvRegistryIniFile.Create do
     {$ENDIF LINUX}
     {$IFDEF MSWINDOWS}
     with TRegistry.Create do
+    {$ENDIF MSWINDOWS}
     try
       if OpenKey(RegKey, False) then
         try
@@ -159,7 +136,6 @@ begin
     finally
       Free;
     end;
-    {$ENDIF MSWINDOWS}
 end;
 
 procedure TfmeJvBaseToolbarDesign.UpdateToolbarSeparators;
