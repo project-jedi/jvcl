@@ -28,16 +28,16 @@ unit JvImagesViewer;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Messages, Controls, Graphics, StdCtrls, ComCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
+  Types, QWindows, QControls, QGraphics, QStdCtrls, QComCtrls,
   {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvCustomItemViewer;
 
 type
