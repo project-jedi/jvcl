@@ -264,7 +264,11 @@ type
     FDockStyle:TComponent; {FUTURE: actual type is TJvDockBasicStyle}  {NEW!}
     FDockStyleListener:Boolean; {FUTURE:if true, we are linked as a listener to this dock style.}
 {$endif}
-    FGrabberSize: Integer;
+    FGrabberSize: Integer; { size of grabber }
+    FGrabberShowLines :Boolean; {should there be bump-lines to make the grabber look 'grabby'? }
+    FGrabberBgColor:TColor; // if FGrabberStandardDraw is false, this indicates background color of Grabber.
+    FGrabberBottomEdgeColor:TColor; // if anything other than clNone, draw a line at bottom edge.
+
 
     procedure SetTopZone(const Value: TJvDockZone);
     procedure SetTopXYLimit(const Value: Integer);
@@ -427,7 +431,14 @@ type
     property DockSiteBegin: Integer read GetDockSiteBegin write SetDockSiteBegin;
     property DockSiteSizeWithOrientation[Orient: TDockOrientation]: Integer
     read GetDockSiteSizeWithOrientation write SetDockSiteSizeWithOrientation;
+
     property GrabberSize: Integer read FGrabberSize write SetGrabberSize;
+    property GrabberShowLines :Boolean read FGrabberShowLines write FGrabberShowLines; {should there be bump-lines to make the grabber look 'grabby'? }
+    property GrabberBgColor:TColor read FGrabberBgColor write FGrabberBgColor; // if FGrabberStandardDraw is false, this indicates background color of Grabber. Set to clNone to skip painting the background.
+    property GrabberBottomEdgeColor:TColor read FGrabberBottomEdgeColor write FGrabberBottomEdgeColor; // if anything other than clNone, draw a line at bottom edge.
+
+
+
     property GrabbersPosition: TJvDockGrabbersPosition read GeTJvDockGrabbersPosition;
     property MinSize: Integer read GetMinSize write SetMinSize;
     property DockRect: TRect read GetDockRect write SetDockRect;
@@ -1606,6 +1617,10 @@ begin
   FBrush := TBrush.Create;
   FBrush.Bitmap := AllocPatternBitmap(clBlack, clWhite);
 
+  FGrabberBgColor := clBtnFace; // default grabber color.
+  FGrabberShowLines := true;
+  FGrabberBottomEdgeColor := clBtnShadow; // Dark gray, usually.
+  
   BeginUpdate;
   try
     for I := 0 to DockSite.ControlCount - 1 do
@@ -3883,9 +3898,11 @@ procedure TJvDockTree.DrawDockGrabber(Control: TControl;
     end
     else
       {$ENDIF JVCLThemesEnabled}
-      DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + GrabberSize - 2,
-        Top + GrabberSize - 2), DFC_CAPTION, DFCS_CAPTIONCLOSE);
-  end;
+      {This is the grabber's Close button if one should be drawn.  }
+      DrawFrameControl( Canvas.Handle, Rect(Left, Top, Left + GrabberSize - 2,
+                        Top + GrabberSize - 2), DFC_CAPTION, DFCS_CAPTIONCLOSE);
+
+  end;{local func.}
 
   procedure DrawGrabberLine(Left, Top, Right, Bottom: Integer);
   begin
@@ -3902,23 +3919,70 @@ procedure TJvDockTree.DrawDockGrabber(Control: TControl;
   end;
 
 begin
+
   with ARect do
     case GrabbersPosition of
       gpLeft:
         begin
+
+          if FGrabberBgColor<>clNone then begin { draw only if color is given }
+              Canvas.Brush.Color := FGrabberBgColor;
+              Canvas.Brush.Style := bsSolid;
+              if FGrabberBottomEdgeColor<>clNone then begin
+                Canvas.Pen.Color :=  FGrabberBottomEdgeColor;
+                Canvas.Pen.Style := psSolid;
+              end else begin
+                Canvas.Pen.Style := psClear;
+              end;
+              
+              Canvas.Rectangle(  {X1}ARect.Left,{y1}ARect.Top, {X2}ARect.Left+GrabberSize,{Y2}ARect.Bottom );
+          end;
+
           DrawCloseButton(Left + BorderWidth + BorderWidth + 1, Top + BorderWidth + BorderWidth + 1);
-          DrawGrabberLine(Left + BorderWidth + 3, Top + GrabberSize + BorderWidth + 1, Left + BorderWidth + 5, Bottom +
-            BorderWidth - 2);
-          DrawGrabberLine(Left + BorderWidth + 6, Top + GrabberSize + BorderWidth + 1, Left + BorderWidth + 8, Bottom +
-            BorderWidth - 2);
+          if FGrabberShowLines then begin
+            DrawGrabberLine(Left + BorderWidth + 3, Top + GrabberSize + BorderWidth + 1, Left + BorderWidth + 5, Bottom +
+              BorderWidth - 2);
+            DrawGrabberLine(Left + BorderWidth + 6, Top + GrabberSize + BorderWidth + 1, Left + BorderWidth + 8, Bottom +
+              BorderWidth - 2);
+          end;
+
+          if FGrabberBottomEdgeColor<>clNone then begin
+              Canvas.Pen.Color :=  FGrabberBottomEdgeColor;
+              Canvas.Pen.Style := psSolid;
+              Canvas.MoveTo(Left+GrabberSize,Top);
+              Canvas.LineTo(Left+GrabberSize,Bottom);
+          end;
         end;
       gpTop:
         begin
+
+         if FGrabberBgColor<>clNone then begin { draw only if color is given }
+              Canvas.Brush.Color := FGrabberBgColor;
+              Canvas.Brush.Style := bsSolid;
+              if FGrabberBottomEdgeColor<>clNone then begin
+                Canvas.Pen.Color :=  FGrabberBottomEdgeColor;
+                Canvas.Pen.Style := psSolid;
+              end else begin
+                Canvas.Pen.Style := psClear;
+              end;
+              Canvas.Rectangle(  {X1}ARect.Left,{y1}ARect.Top, {X2}ARect.Right,{Y2}ARect.Top+GrabberSize+2 );
+          end;
+
           DrawCloseButton(Right - GrabberSize + BorderWidth + 1, Top + BorderWidth + 1);
-          DrawGrabberLine(Left + BorderWidth + 2, Top + BorderWidth + BorderWidth + 3, Right - GrabberSize + BorderWidth
-            - 2, Top + BorderWidth + 5);
-          DrawGrabberLine(Left + BorderWidth + 2, Top + BorderWidth + BorderWidth + 6, Right - GrabberSize + BorderWidth
-            - 2, Top + BorderWidth + 8);
+          if FGrabberShowLines then begin
+            DrawGrabberLine(Left + BorderWidth + 4, Top + BorderWidth + BorderWidth + 3, Right - GrabberSize + BorderWidth
+              - 4, Top + BorderWidth + 5);
+            DrawGrabberLine(Left + BorderWidth + 4, Top + BorderWidth + BorderWidth + 6, Right - GrabberSize + BorderWidth
+              - 4, Top + BorderWidth + 8);
+          end;
+
+          if FGrabberBottomEdgeColor<>clNone then begin
+              Canvas.Pen.Color :=  FGrabberBottomEdgeColor;
+              Canvas.Pen.Style := psSolid;
+              Canvas.MoveTo(Left,(ARect.Top+GrabberSize)-1 );
+              Canvas.LineTo(Right,(ARect.Top+GrabberSize)-1 );
+          end;
+
         end;
     end;
 end;
