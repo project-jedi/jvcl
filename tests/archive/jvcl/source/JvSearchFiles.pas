@@ -538,7 +538,7 @@ end;
 
 function TJvSearchFiles.GetIsDepthAllowed(const ADepth: Integer): Boolean;
 begin
-  Result := (FRecurseDepth = 0) or (ADepth <= FRecurseDepth)
+  Result := (FRecurseDepth = 0) or (ADepth <= FRecurseDepth);
 end;
 
 function TJvSearchFiles.HandleError: Boolean;
@@ -573,12 +573,12 @@ begin
   FAborting := False;
 end;
 
-function TJvSearchFiles.InternalSearch(const ADirectoryName: string; const Search: Boolean; var ADepth: Integer):
-  Boolean;
+function TJvSearchFiles.InternalSearch(const ADirectoryName: string; const Search: Boolean;
+  var ADepth: Integer): Boolean;
 var
   List: TStringList;
   DirSep: string;
-  i: Integer;
+  I: Integer;
 begin
   List := TStringList.Create;
   try
@@ -596,10 +596,9 @@ begin
     { I think it would be better to do no recursion; Don't know if it can
       be easy implemented - if you want to keep the depth first search -
       and without doing a lot of TList moves }
-    for i := 0 to List.Count - 1 do
+    for I := 0 to List.Count - 1 do
     begin
-      Result := InternalSearch(
-        DirSep + List[i], Boolean(List.Objects[i]), ADepth);
+      Result := InternalSearch(DirSep + List[I], List.Objects[I] <> nil, ADepth);
       if not Result then
         Exit;
     end;

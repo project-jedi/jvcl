@@ -64,7 +64,7 @@ procedure TileImage(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
 function ZoomImage(ImageW, ImageH, MaxW, MaxH: Integer; Stretch: Boolean): TPoint;
 
 var
-  DefaultMappingMethod:TMappingMethod = mmHistogram;
+  DefaultMappingMethod: TMappingMethod = mmHistogram;
 
 type
   TJvGradient = class(TPersistent)

@@ -31,8 +31,9 @@ unit JvObjPickerComp;
 interface
 
 uses
-  Windows, ActiveX, Classes, ComObj, SysUtils,
-  ObjSel, JvBaseDlg, JvTypes;
+  Windows, ActiveX, Classes, ComObj, SysUtils, // (rom) from VCL
+  ObjSel,                                      // (rom) from JVCL Common
+  JvBaseDlg, JvTypes;                          // (rom) from JVCL Source
 
 // (rom) Jv the type names?
 type
