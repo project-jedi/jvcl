@@ -4663,7 +4663,7 @@ procedure TJvCustomDataConsumerViewList.ExpandTreeTo(Item: IJvDataItem);
 var
   ParIdx: Integer;
 begin
-  if (Item <> nil) and (GetItemVisibleState(Item) = disTrue) then
+  if (Item <> nil) and (GetItemVisibleState(Item) <> disFalse) then
   begin
     if (IndexOfID(Item.GetID) >= 0) and (Item.Items.GetParent <> nil) then
     begin
@@ -4716,7 +4716,7 @@ var
   Idx: Integer;
   SubItems: IJvDataItems;
 begin
-  if GetItemVisibleState(Item) = disTrue then
+  if GetItemVisibleState(Item) <> disFalse then
   begin
     if Index < 0 then
     begin
@@ -4769,7 +4769,7 @@ procedure TJvDataConsumerViewList.AddChildItem(ParentIndex: Integer; Item: IJvDa
 var
   InsertIndex: Integer;
 begin
-  if GetItemVisibleState(Item) = disTrue then
+  if GetItemVisibleState(Item) <> disFalse then
   begin
     InsertIndex := -1;
     if ParentIndex > -1 then
@@ -4812,7 +4812,7 @@ begin
   end;
   for I  := 0 to Items.Count - 1 do
   begin
-    if GetItemVisibleState(Items.Items[I]) = disTrue then
+    if GetItemVisibleState(Items.Items[I]) <> disFalse then
     begin
       with FViewItems[Index] do
       begin
@@ -4843,7 +4843,7 @@ var
   Level: Integer;
   SubItems: IJvDataItems;
 begin
-  if GetItemVisibleState(Item) = disTrue then
+  if GetItemVisibleState(Item) <> disFalse then
   begin
     if ParentIndex < 0 then
       Level := 0
