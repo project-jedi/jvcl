@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 187
-  Top = 69
+  Left = 192
+  Top = 109
   Width = 800
   Height = 600
   Caption = 'JVCL Package editor and generator'
@@ -94,7 +94,7 @@ object frmMain: TfrmMain
     object jtbTools: TJvToolBar
       Left = 11
       Top = 28
-      Width = 174
+      Width = 170
       Height = 22
       Caption = 'Main tools'
       DisabledImages = imlDisabled
@@ -162,94 +162,100 @@ object frmMain: TfrmMain
         ShowHint = True
       end
     end
-    object pnlPackagesLocation: TPanel
-      Left = 198
+    object pnlOptions: TPanel
+      Left = 194
       Top = 28
-      Width = 219
+      Width = 596
       Height = 22
       BevelOuter = bvNone
-      Caption = 'Packages location'
+      Caption = 'Options'
       DragKind = dkDock
       DragMode = dmAutomatic
       TabOrder = 2
-      object lblPackagesLocation: TLabel
-        Left = 4
-        Top = 4
-        Width = 105
-        Height = 13
-        AutoSize = False
-        Caption = 'Packages location '
-      end
-      object jdePackagesLocation: TJvDirectoryEdit
-        Left = 96
-        Top = 0
-        Width = 121
-        Height = 21
-        AcceptFiles = False
-        InitialDir = '..\..\packages'
-        ButtonFlat = False
-        NumGlyphs = 1
-        TabOrder = 0
-        Text = '..\..\packages'
-        OnChange = jdePackagesLocationChange
-      end
-    end
-    object pnlParameters: TPanel
-      Left = 430
-      Top = 28
-      Width = 291
-      Height = 22
-      BevelOuter = bvNone
-      Caption = 'Parameters'
-      DragKind = dkDock
-      DragMode = dmAutomatic
-      TabOrder = 3
-      object shHideParameters: TShape
+      object shHideOptions: TShape
         Left = 0
         Top = 0
-        Width = 291
+        Width = 597
         Height = 22
         Align = alClient
         Brush.Color = clBtnFace
         Pen.Style = psClear
       end
       object lblPrefix: TLabel
-        Left = 0
+        Left = 364
         Top = 4
         Width = 26
         Height = 13
         Caption = 'Prefix'
       end
       object lblFormat: TLabel
-        Left = 108
+        Left = 448
         Top = 4
         Width = 37
         Height = 13
         Caption = 'Formats'
       end
-      object cmbPrefix: TComboBox
-        Left = 32
+      object lblPackagesLocation: TLabel
+        Left = 0
+        Top = 4
+        Width = 59
+        Height = 13
+        Caption = 'Packages in'
+      end
+      object lblIncFile: TLabel
+        Left = 176
+        Top = 4
+        Width = 31
+        Height = 13
+        Caption = 'Inc file'
+      end
+      object cmbFormat: TComboBox
+        Left = 492
         Top = 0
-        Width = 61
+        Width = 105
         Height = 21
         ItemHeight = 13
         TabOrder = 0
+        Text = '%p%n%e%v%t'
+        Items.Strings = (
+          '%p%n%e%v%t'
+          '%p%n,%p%n%v0')
+      end
+      object cmbPrefix: TComboBox
+        Left = 396
+        Top = 0
+        Width = 45
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 1
         Text = 'Jv'
         Items.Strings = (
           'Jv'
           'Jcl')
       end
-      object cmbFormat: TComboBox
-        Left = 152
+      object jdePackagesLocation: TJvDirectoryEdit
+        Left = 64
         Top = 0
-        Width = 137
+        Width = 101
         Height = 21
-        ItemHeight = 13
-        TabOrder = 1
-        Text = '%p%n%e%v%t'
-        Items.Strings = (
-          '%p%n%e%v%t'
-          '%p%n,%p%n%v0')
+        AcceptFiles = False
+        InitialDir = '..\..\packages'
+        ButtonFlat = False
+        NumGlyphs = 1
+        TabOrder = 2
+        Text = '..\..\packages'
+        OnChange = jdePackagesLocationChange
+      end
+      object jfeIncFile: TJvFilenameEdit
+        Left = 212
+        Top = 0
+        Width = 145
+        Height = 21
+        DialogOptions = []
+        ButtonFlat = False
+        NumGlyphs = 1
+        TabOrder = 3
+        Text = '..\..\common\JVCL.INC'
       end
     end
   end
@@ -451,7 +457,7 @@ object frmMain: TfrmMain
       Top = 448
       Width = 89
       Height = 45
-      Anchors = [akTop, akRight]
+      Anchors = [akRight, akBottom]
       Caption = 'Advanced BCB'
       TabOrder = 7
       OnClick = btnAdvancedBCBClick
@@ -476,6 +482,9 @@ object frmMain: TfrmMain
       end
       object mnuSave: TMenuItem
         Action = actSave
+      end
+      object mnuDeletePackage: TMenuItem
+        Action = actDelete
       end
       object N2: TMenuItem
         Caption = '-'
@@ -507,11 +516,8 @@ object frmMain: TfrmMain
       object mnuMainToolbar: TMenuItem
         Action = actMainToolbar
       end
-      object mnuLocationBar: TMenuItem
-        Action = actLocation
-      end
       object mnuParameters: TMenuItem
-        Action = actParameters
+        Action = actOptions
         AutoCheck = True
       end
     end
@@ -530,12 +536,6 @@ object frmMain: TfrmMain
     Images = imlActive
     Left = 732
     Top = 116
-    object actLocation: TAction
-      Category = 'View'
-      Caption = '&Location bar'
-      OnExecute = actLocationExecute
-      OnUpdate = actLocationUpdate
-    end
     object actExit: TAction
       Category = 'File'
       Caption = '&Exit'
@@ -606,16 +606,16 @@ object frmMain: TfrmMain
       OnUpdate = actMainToolbarUpdate
     end
     object actKnown: TAction
-      Category = 'View'
+      Category = 'Help'
       Caption = '&Known replacement tags'
       OnExecute = actKnownExecute
     end
-    object actParameters: TAction
+    object actOptions: TAction
       Category = 'View'
       AutoCheck = True
-      Caption = '&Parameters'
-      OnExecute = actParametersExecute
-      OnUpdate = actParametersUpdate
+      Caption = '&Options toolbar'
+      OnExecute = actOptionsExecute
+      OnUpdate = actOptionsUpdate
     end
     object actUp: TAction
       Category = 'Grid Popups'
@@ -1495,7 +1495,7 @@ object frmMain: TfrmMain
     end
   end
   object jfsStore: TJvFormStorage
-    AppStorage = jaiIniStore
+    AppStorage = jaxStore
     AppStoragePath = 'pgEdit\'
     StoredProps.Strings = (
       'pnlList.Width'
@@ -1505,7 +1505,8 @@ object frmMain: TfrmMain
       'cmbPrefix.Text'
       'cmbFormat.Text'
       'jdePackagesLocation.Text'
-      'odlAddFiles.InitialDir')
+      'odlAddFiles.InitialDir'
+      'jfeIncFile.FileName')
     StoredValues = <>
     Left = 704
     Top = 172
@@ -1550,8 +1551,16 @@ object frmMain: TfrmMain
     ImageSize.Width = 0
     Left = 676
     Top = 172
-    object Deletepackage1: TMenuItem
+    object mnuDeletePackageP: TMenuItem
       Action = actDelete
     end
+  end
+  object jaxStore: TJvAppXmlStore
+    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    FileName = 'pgEdit.xml'
+    RootNodeName = 'Configuration'
+    Left = 716
+    Top = 216
   end
 end
