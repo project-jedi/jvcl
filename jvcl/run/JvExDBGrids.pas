@@ -48,7 +48,7 @@ uses
 
 
 type
-  TJvExCustomDBGrid = class(TCustomDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExCustomDBGrid = class(TCustomDBGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -112,6 +112,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -128,7 +129,7 @@ type
     property OnStartDock;
   end;
   
-  TJvExDBGrid = class(TDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
+  TJvExDBGrid = class(TDBGrid, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   protected
    // IJvControlEvents
     procedure VisibleChanged; dynamic;
@@ -192,6 +193,7 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
     procedure DoBoundsChanged; dynamic;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; virtual;
+  
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
