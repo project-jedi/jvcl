@@ -77,6 +77,21 @@ type
     property OnButtonClick: TJvParameterListEvent read FOnButtonClick write FOnButtonClick;
   end;
 
+  TJvRadioButtonParameter = class(TJvNoDataParameter)
+  private
+    FOnClick: TJvParameterListEvent;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure OnClickInt(Sender: TObject);
+    procedure SetWinControlProperties; override;
+  public
+    procedure Assign(Source: TPersistent); override;
+    procedure CreateWinControlOnParent(ParameterParent: TWinControl); override;
+  published
+    property OnClick: TJvParameterListEvent read FOnClick write FOnClick;
+  end;
+
+
   TJvParameterLabelArrangeMode = (lamBefore, lamAbove);
 
   TJvBasePanelEditParameter = class(TJvBaseParameter)
@@ -606,6 +621,41 @@ begin
       ControlSetNumGlyphs(NumGlyphs);
       ControlSetLayout(Layout);
     end;
+end;
+
+//=== { TJvRadioButtonParameter } =================================================
+
+function TJvRadioButtonParameter.GetParameterNameExt: string;
+begin
+  Result := 'RadioButton';
+end;
+
+procedure TJvRadioButtonParameter.OnClickInt(Sender: TObject);
+begin
+  if Assigned(OnClick) then
+    OnClick(ParameterList, Self);
+end;
+
+procedure TJvRadioButtonParameter.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+end;
+
+procedure TJvRadioButtonParameter.CreateWinControlOnParent(ParameterParent: TWinControl);
+begin
+  WinControl := DynControlEngine.CreateRadioButton(Self, ParameterParent,
+    GetParameterName, Caption);
+  WinControl.Hint := Hint;
+//  WinControl.OnClick := OnClickInt;
+  if Height > 0 then
+    WinControl.Height := Height;
+  if Width > 0 then
+    WinControl.Width := Width;
+end;
+
+procedure TJvRadioButtonParameter.SetWinControlProperties;
+begin
+  inherited SetWinControlProperties;
 end;
 
 //=== { TJvBasePanelEditParameter } ==========================================

@@ -35,6 +35,7 @@ type
   TJvDynControlType =
     (jctLabel, jctStaticText, jctPanel, jctScrollBox,
     jctEdit, jctCheckBox, jctComboBox, jctGroupBox, jctImage, jctRadioGroup,
+    jctRadioButton,
     jctMemo, jctListBox, jctCheckListBox, jctDateTimeEdit, jctDateEdit, jctTimeEdit,
     jctCalculateEdit, jctSpinEdit, jctDirectoryEdit, jctFileNameEdit,
     jctButton, jctButtonEdit, jctForm,
@@ -133,6 +134,8 @@ type
       const AButtonName, ACaption, AHint: string;
       AOnClick: TNotifyEvent; ADefault: Boolean = False;
       ACancel: Boolean = False): TButton; virtual;
+    function CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
+      const ARadioButtonName, ACaption: string): TWinControl; virtual;
     function CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; AOnButtonClick: TNotifyEvent): TWinControl; virtual;
     function CreateForm(const ACaption, AHint: string): TCustomForm; virtual;
@@ -640,6 +643,17 @@ begin
   Result.Default := ADefault;
   Result.Cancel := ACancel;
   Result.OnClick := AOnClick;
+end;
+
+function TJvDynControlEngine.CreateRadioButton(AOwner: TComponent; AParentControl: TWinControl;
+      const ARadioButtonName, ACaption: string): TWinControl;
+var
+  DynCtrl: IJvDynControl;
+begin
+  Result := TWinControl(CreateControl(jctRadioButton, AOwner, AParentControl, ARadioButtonName));
+  if not Supports(Result, IJvDynControl, DynCtrl) then
+    raise EIntfCastError.CreateRes(@RsEIntfCastError);
+  DynCtrl.ControlSetCaption(ACaption);
 end;
 
 function TJvDynControlEngine.CreateButtonEditControl(AOwner: TComponent; AParentControl: TWinControl;

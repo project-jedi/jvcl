@@ -127,6 +127,7 @@ type
     FJvDynControl: IJvDynControl;
     FJvDynControlData: IJvDynControlData;
     FHint: string;
+    FTag: Integer;
     FColor: TColor;
     FEnabled: Boolean;
     FHelpContext: THelpContext;
@@ -215,6 +216,7 @@ type
     property Width: Integer read GetWidth write SetWidth;
     property Height: Integer read GetHeight write SetHeight;
     property Hint: string read FHint write FHint;
+    property Tag: Integer read FTag write FTag;
     property HelpContext: THelpContext read FHelpContext write FHelpContext;
     property TabOrder: Integer read FTabOrder write SetTabOrder;
     property DisableReasons: TJvParameterListEnableDisableReasonList read FDisableReasons;
@@ -890,6 +892,7 @@ begin
     if FHeight > 0 then
       SetHeight(FHeight);
     WinControl.Hint := Hint;
+    WinControl.Tag := Tag;
     WinControl.HelpContext := HelpContext;
     JvDynControl.ControlSetOnEnter(ParameterList.OnExitParameterControl);
     JvDynControl.ControlSetOnExit(ParameterList.OnExitParameterControl);
