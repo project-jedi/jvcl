@@ -52,6 +52,7 @@ unit ObjSel;
 {$HPPEMIT ''}
 {$HPPEMIT '#include "ObjSel.h"'}
 {$HPPEMIT ''}
+{$HPPEMIT 'typedef IDsObjectPicker* _di_IDsObjectPicker'}
 
 interface
 
