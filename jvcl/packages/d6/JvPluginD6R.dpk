@@ -1,6 +1,6 @@
 package JvPluginD6R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,10 +27,12 @@ package JvPluginD6R;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD6R;
+  JvCoreD6R
+  ;
 
 contains
-  JvPluginManager in '..\..\run\JvPluginManager.pas',
-  JvPlugin in '..\..\run\JvPlugin.pas';
+  JvPluginManager in '..\..\run\JvPluginManager.pas' ,
+  JvPlugin in '..\..\run\JvPlugin.pas' 
+  ;
 
 end.

@@ -1,22 +1,22 @@
 package JvSystemD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST ON}
@@ -27,17 +27,19 @@ package JvSystemD6D;
 {$IMPLICITBUILD OFF}
 
 requires
+  JvCoreD6D,
   JvSystemD6R,
   designide,
-  dclstd,
-  JvCoreD6D;
-contains
-  JvSystemReg in '..\..\design\JvSystemReg.pas',
-  JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas',
-  JvTimerListEditor in '..\..\design\JvTimerListEditor.pas',
-  JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas',
-  JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas' {JvFormPropsDlg},
-  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas' {MinMaxInfoEditDialog};
+  dclstd
+  ;
 
+contains
+  JvMinMaxForm in '..\..\design\JvMinMaxForm.pas' {MinMaxInfoEditDialog},
+  JvPerfStatEditor in '..\..\design\JvPerfStatEditor.pas' ,
+  JvSystemReg in '..\..\design\JvSystemReg.pas' ,
+  JvTimerListEditor in '..\..\design\JvTimerListEditor.pas' ,
+  JvChangeNotifyEditor in '..\..\design\JvChangeNotifyEditor.pas' ,
+  JvFormPropertiesForm in '..\..\design\JvFormPropertiesForm.pas' {JvFormPropsDlg}
+  ;
 
 end.

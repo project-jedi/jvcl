@@ -1,6 +1,6 @@
 package JvCustomD6R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,40 +28,42 @@ package JvCustomD6R;
 
 requires
   JvCoreD6R,
-  DJCL60,
+  JvCtrlsD6R,
   JvSystemD6R,
-  JvCtrlsD6R;
+  DJCL60
+  ;
 
 contains
-  JvTrayIcon in '..\..\run\JvTrayIcon.pas',
-  JvDiagramShape in '..\..\run\JvDiagramShape.pas',
-  JvGammaPanel in '..\..\run\JvGammaPanel.pas',
-  JvChart in '..\..\run\JvChart.pas',
-  JvInspector in '..\..\run\JvInspector.pas',
-  JvInspExtraEditors in '..\..\run\JvInspExtraEditors.pas',
-  JvLinkLabel in '..\..\run\JvLinkLabel.pas',
-  JvLinkLabelDebug in '..\..\run\JvLinkLabelDebug.pas',
-  JvLinkLabelParser in '..\..\run\JvLinkLabelParser.pas',
-  JvLinkLabelRenderer in '..\..\run\JvLinkLabelRenderer.pas',
-  JvLinkLabelTextHandler in '..\..\run\JvLinkLabelTextHandler.pas',
-  JvLinkLabelTools in '..\..\run\JvLinkLabelTools.pas',
-  JvLinkLabelTree in '..\..\run\JvLinkLabelTree.pas',
-  JvLookOut in '..\..\run\JvLookOut.pas',
-  JvOutlookBar in '..\..\run\JvOutlookBar.pas',
-  JvSchedEvtStore in '..\..\run\JvSchedEvtStore.pas',
-  JvScheduledEvents in '..\..\run\JvScheduledEvents.pas',
-  JvThumbImage in '..\..\run\JvThumbImage.pas',
-  JvThumbnails in '..\..\run\JvThumbNails.pas',
-  JvThumbviews in '..\..\run\JvThumbviews.pas',
-  JvTimeLine in '..\..\run\JvTimeLine.pas',
-  JvTMTimeLine in '..\..\run\JvTMTimeLine.pas',
-  JvBalloonHint in '..\..\run\JvBalloonHint.pas',
-  JvBaseThumbnail in '..\..\run\JvBaseThumbnail.pas',
-  JvEditor in '..\..\run\JvEditor.pas',
-  JvHLEditor in '..\..\run\JvHLEditor.pas',
-  JvHLParser in '..\..\run\JvHLParser.pas',
-  JvValidateEdit in '..\..\run\JvValidateEdit.pas',
+  JvChart in '..\..\run\JvChart.pas' ,
+  JvDiagramShape in '..\..\run\JvDiagramShape.pas' ,
+  JvEditor in '..\..\run\JvEditor.pas' ,
+  JvGammaPanel in '..\..\run\JvGammaPanel.pas' ,
+  JvHLEditor in '..\..\run\JvHLEditor.pas' ,
   JvHLEditorPropertyForm in '..\..\run\JvHLEditorPropertyForm.pas' {JvHLEditorParamsForm},
-  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas';
+  JvHLParser in '..\..\run\JvHLParser.pas' ,
+  JvInspector in '..\..\run\JvInspector.pas' ,
+  JvInspExtraEditors in '..\..\run\JvInspExtraEditors.pas' ,
+  JvLinkLabel in '..\..\run\JvLinkLabel.pas' ,
+  JvLinkLabelDebug in '..\..\run\JvLinkLabelDebug.pas' ,
+  JvLinkLabelParser in '..\..\run\JvLinkLabelParser.pas' ,
+  JvLinkLabelRenderer in '..\..\run\JvLinkLabelRenderer.pas' ,
+  JvLinkLabelTextHandler in '..\..\run\JvLinkLabelTextHandler.pas' ,
+  JvLinkLabelTools in '..\..\run\JvLinkLabelTools.pas' ,
+  JvLinkLabelTree in '..\..\run\JvLinkLabelTree.pas' ,
+  JvLookOut in '..\..\run\JvLookOut.pas' ,
+  JvOutlookBar in '..\..\run\JvOutlookBar.pas' ,
+  JvSchedEvtStore in '..\..\run\JvSchedEvtStore.pas' ,
+  JvScheduledEvents in '..\..\run\JvScheduledEvents.pas' ,
+  JvThumbImage in '..\..\run\JvThumbImage.pas' ,
+  JvThumbnails in '..\..\run\JvThumbnails.pas' ,
+  JvThumbViews in '..\..\run\JvThumbViews.pas' ,
+  JvTMTimeLine in '..\..\run\JvTMTimeLine.pas' ,
+  JvTrayIcon in '..\..\run\JvTrayIcon.pas' ,
+  JvUnicodeCanvas in '..\..\run\JvUnicodeCanvas.pas' ,
+  JvValidateEdit in '..\..\run\JvValidateEdit.pas' ,
+  JvBalloonHint in '..\..\run\JvBalloonHint.pas' ,
+  JvBaseThumbnail in '..\..\run\JvBaseThumbnail.pas' ,
+  JvTimeLine in '..\..\run\JvTimeLine.pas' 
+  ;
 
 end.

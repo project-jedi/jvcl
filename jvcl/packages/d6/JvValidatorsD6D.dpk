@@ -1,25 +1,25 @@
 package JvValidatorsD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
-{$OPTIMIZATION OFF}
+{$OPTIMIZATION ON}
 {$OVERFLOWCHECKS OFF}
-{$RANGECHECKS OFF}
+{$RANGECHECKS ON}
 {$REFERENCEINFO OFF}
 {$SAFEDIVIDE OFF}
-{$STACKFRAMES ON}
+{$STACKFRAMES OFF}
 {$TYPEDADDRESS OFF}
 {$VARSTRINGCHECKS ON}
-{$WRITEABLECONST OFF}
+{$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Validators and Error Provider Components'}
@@ -27,14 +27,16 @@ package JvValidatorsD6D;
 {$IMPLICITBUILD OFF}
 
 requires
-  rtl,
   JvValidatorsD6R,
+  JvCoreD6D,
+  rtl,
   designide,
-  dclstd,
-  JvCoreD6D;
+  dclstd
+  ;
 
 contains
-  JvValidatorsEditorForm in '..\..\design\JvValidatorsEditorForm.pas' {frmValidatorsEditor},
-  JvValidatorsReg in '..\..\design\JvValidatorsReg.pas';
+  JvValidatorsReg in '..\..\design\JvValidatorsReg.pas' ,
+  JvValidatorsEditorForm in '..\..\design\JvValidatorsEditorForm.pas' {frmValidatorsEditor}
+  ;
 
 end.

@@ -1,6 +1,6 @@
 package JvMMD6R;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -28,43 +28,43 @@ package JvMMD6R;
 
 requires
   JvCoreD6R,
+  JvCtrlsD6R,
   JvSystemD6R,
   JvCmpD6R,
-  designide,
-  JvStdCtrlsD6R,
-  JvCtrlsD6R;
+  JvStdCtrlsD6R
+  ;
 
 contains
-  JvGradient in '..\..\run\JvGradient.pas',
-  JvId3v1 in '..\..\run\JvId3v1.pas',
-  JvId3v2 in '..\..\run\JvId3v2.pas',
-  JvId3v2Types in '..\..\run\JvId3v2Types.pas',
-  JvImageRotate in '..\..\run\JvImageRotate.pas',
-  JvImageTransform in '..\..\run\JvImageTransform.pas',
-  JvImageWindow in '..\..\run\JvImageWindow.pas',
-  JvPcx in '..\..\run\JvPcx.pas',
-  JvSplashWindow in '..\..\run\JvSplashWindow.pas',
-  JvStarfield in '..\..\run\JvStarfield.pas',
-  JvWaitingGradient in '..\..\run\JvWaitingGradient.pas',
-  JvWaitingProgress in '..\..\run\JvWaitingProgress.pas',
-  JvWavePlayer in '..\..\run\JvWavePlayer.pas',
-  JvSpecialProgress in '..\..\run\JvSpecialProgress.pas',
-  JvSlider in '..\..\run\JvSlider.pas',
-  JvGIF in '..\..\run\JvGIF.pas',
-  JvGIFCtrl in '..\..\run\JvGIFCtrl.pas',
-  JvID3v2Base in '..\..\run\JvID3v2Base.pas',
-  JvAnimatedImage in '..\..\run\JvAnimatedImage.pas',
-  JvSpecialImage in '..\..\run\JvSpecialImage.pas',
-  JvPicClip in '..\..\run\JvPicClip.pas',
-  JvAni in '..\..\run\JvAni.pas',
-  JvAniFile in '..\..\run\JvAniFile.pas',
-  JvAnimate in '..\..\run\JvAnimate.pas',
-  JvBmpAnimator in '..\..\run\JvBmpAnimator.pas',
-  JvIconList in '..\..\run\JvIconList.pas',
-  JvGradientHeaderPanel in '..\..\run\JvGradientHeaderPanel.pas',
+  JvAVICapture in '..\..\run\JvAVICapture.pas' ,
+  JvBmpAnimator in '..\..\run\JvBmpAnimator.pas' ,
+  JvGIF in '..\..\run\JvGIF.pas' ,
+  JvGIFCtrl in '..\..\run\JvGIFCtrl.pas' ,
+  JvGradient in '..\..\run\JvGradient.pas' ,
+  JvGradientHeaderPanel in '..\..\run\JvGradientHeaderPanel.pas' ,
+  JvIconList in '..\..\run\JvIconList.pas' ,
+  JvId3v1 in '..\..\run\JvId3v1.pas' ,
+  JvId3v2 in '..\..\run\JvId3v2.pas' ,
+  JvID3v2Base in '..\..\run\JvID3v2Base.pas' ,
+  JvId3v2Types in '..\..\run\JvId3v2Types.pas' ,
+  JvImageRotate in '..\..\run\JvImageRotate.pas' ,
+  JvImageTransform in '..\..\run\JvImageTransform.pas' ,
+  JvImageWindow in '..\..\run\JvImageWindow.pas' ,
+  JvPcx in '..\..\run\JvPcx.pas' ,
+  JvPicClip in '..\..\run\JvPicClip.pas' ,
+  JvSlider in '..\..\run\JvSlider.pas' ,
+  JvSpecialImage in '..\..\run\JvSpecialImage.pas' ,
+  JvSpecialProgress in '..\..\run\JvSpecialProgress.pas' ,
+  JvSplashWindow in '..\..\run\JvSplashWindow.pas' ,
+  JvStarfield in '..\..\run\JvStarfield.pas' ,
   JvVirtualKeySelectionFrame in '..\..\run\JvVirtualKeySelectionFrame.pas' {JvVirtualKeySelectionFrame: TFrame},
-  JvAVICapture in '..\..\run\JvAVICapture.pas',
-  VFW in '..\..\common\VFW.pas';
-
+  JvWaitingGradient in '..\..\run\JvWaitingGradient.pas' ,
+  JvWaitingProgress in '..\..\run\JvWaitingProgress.pas' ,
+  JvWavePlayer in '..\..\run\JvWavePlayer.pas' ,
+  JvAni in '..\..\run\JvAni.pas' ,
+  JvAniFile in '..\..\run\JvAniFile.pas' ,
+  JvAnimate in '..\..\run\JvAnimate.pas' ,
+  JvAnimatedImage in '..\..\run\JvAnimatedImage.pas' ,
+  VFW in '..\..\common\VFW.pas' 
+  ;
 
 end.

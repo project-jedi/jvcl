@@ -1,6 +1,6 @@
 package JvDlgsD6D;
 
-{$R *.res}
+{$R *.RES}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
@@ -27,15 +27,17 @@ package JvDlgsD6D;
 {$IMPLICITBUILD OFF}
 
 requires
-  JvCoreD6R,
-  JvCoreD6D,
   JvDlgsD6R,
-  designide;
+  JvCoreD6D,
+  designide,
+  JvCoreD6R
+  ;
 
 contains
-  JvDlgsReg in '..\..\design\JvDlgsReg.pas',
-  JvTipOfDayEditor in '..\..\design\JvTipOfDayEditor.pas',
-  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas',
-  JvAppletEditor in '..\..\design\JvAppletEditor.pas';
+  JvTipOfDayEditor in '..\..\design\JvTipOfDayEditor.pas' ,
+  JvAppletEditor in '..\..\design\JvAppletEditor.pas' ,
+  JvCommonDialogDEditor in '..\..\design\JvCommonDialogDEditor.pas' ,
+  JvDlgsReg in '..\..\design\JvDlgsReg.pas' 
+  ;
 
 end.
