@@ -1673,6 +1673,8 @@ begin
 end;
 
 function TJvParaAttributes.GetNumberingStyle: TJvNumberingStyle;
+const
+  CNumberingStyle: array[0..3] of TJvNumberingStyle = (nsParenthesis, nsEnclosed, nsPeriod, nsSimple);
 var
   Paragraph: TParaFormat2;
 begin
@@ -1681,11 +1683,13 @@ begin
   else
   begin
     GetAttributes(Paragraph);
-    Result := TJvNumberingStyle(Paragraph.wNumberingStyle);
+    Result := CNumberingStyle[Paragraph.wNumberingStyle];
   end;
 end;
 
 procedure TJvParaAttributes.SetNumberingStyle(Value: TJvNumberingStyle);
+const
+  CNumberingStyle: array[TJvNumberingStyle] of Word = ($0000, $0200, $0100, $0300);
 var
   Paragraph: TParaFormat2;
 begin
@@ -1695,7 +1699,7 @@ begin
   with Paragraph do
   begin
     dwMask := PFM_NUMBERINGSTYLE;
-    wNumberingStyle := Ord(Value);
+    wNumberingStyle := CNumberingStyle[Value];
   end;
   SetAttributes(Paragraph);
 end;

@@ -42,7 +42,7 @@ type
     FNewPath: string;
     FFileSought: string;
     FDiskName: string;
-    FStyle: TDiskStyles;
+    FStyle: TJvDiskStyles;
   protected
   public
     constructor Create(AOwner: TComponent); override;
@@ -52,8 +52,8 @@ type
     property FileSought: string read FFileSought write FFileSought;
     property TagFile: string read FTagFile write FTagFile;
     property NewPath: string read FNewPath write FNewPath;
-    property Style: TDiskStyles read FStyle write FStyle;
-    function Execute: TDiskRes; override;
+    property Style: TJvDiskStyles read FStyle write FStyle;
+    function Execute: TJvDiskRes; override;
   end;
 
 implementation
@@ -94,7 +94,7 @@ begin
   FStyle := [];
 end;
 
-function TJvDiskPrompt.Execute: TDiskRes;
+function TJvDiskPrompt.Execute: TJvDiskRes;
 var
   Sty: DWORD;
   Required: DWORD;

@@ -688,6 +688,7 @@ type
     function FourDigitYear: Boolean;
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMExit(var Msg: TCMExit); message CM_EXIT;
+    procedure WMContextMenu(var Message: TWMContextMenu);message WM_CONTEXTMENU;
   protected
     // Polaris
     FDateAutoBetween: Boolean;
@@ -862,9 +863,13 @@ type
 
 procedure DateFormatChanged;
 
-function EditorTextMargins(Editor: TJvCustomComboEdit): TPoint;
+function EditorTextMargins(Editor: TCustomEdit): TPoint;
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
+  var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
+function PaintEdit(Editor: TCustomEdit; const AText: string;
+  AAlignment: TAlignment; PopupVisible: Boolean; ButtonWidth: Integer;
+  DisabledTextColor: TColor; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 
 implementation
@@ -891,14 +896,17 @@ const
 
   { Utility routines }
 
-function EditorTextMargins(Editor: TJvCustomComboEdit): TPoint;
+type
+  TCustomEditAccess = class(TCustomEdit);
+
+function EditorTextMargins(Editor: TCustomEdit): TPoint;
 var
   DC: HDC;
   SaveFont: HFONT;
   I: Integer;
   SysMetrics, Metrics: TTextMetric;
 begin
-  with Editor do
+  with TCustomEditAccess(Editor) do
   begin
     {$IFDEF WIN32}
     if NewStyleControls then
@@ -909,11 +917,14 @@ begin
         I := 1
       else
         I := 2;
-      Result.X := SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF + I;
+      if GetWindowLong(Handle, GWL_STYLE) and ES_MULTILINE = 0 then
+        Result.X := (SendMessage(Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
+      else
+        Result.X := I;
       Result.Y := I;
     end
     else
-      {$ENDIF}
+    {$ENDIF}
     begin
       if BorderStyle = bsNone then
         I := 0
@@ -940,6 +951,27 @@ function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
 var
+  ButtonWidth: Integer;
+  R: TRect;
+begin
+  SendMessage(Editor.Handle, EM_GETRECT, 0, Integer(@R));
+  {$IFDEF COMPILER4_UP}
+  if Editor.BiDiMode = bdRightToLeft then
+    ButtonWidth := R.Left - 1
+  else
+  {$ENDIF COMPILER4_UP}
+    ButtonWidth := Editor.ClientWidth - R.Right - 2;
+  if ButtonWidth < 0 then ButtonWidth := 0;
+
+  Result := PaintEdit(Editor, AText, AAlignment, Editor.PopupVisible,
+    ButtonWidth, Editor.FDisabledTextColor, StandardPaint, ACanvas, Msg);
+end;
+
+function PaintEdit(Editor: TCustomEdit; const AText: string;
+  AAlignment: TAlignment; PopupVisible: Boolean; ButtonWidth: Integer;
+  DisabledTextColor: TColor; StandardPaint: Boolean;
+  var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
+var
   AWidth, ALeft: Integer;
   Margins: TPoint;
   R: TRect;
@@ -949,13 +981,13 @@ var
   {$IFDEF COMPILER4_UP}
   ExStyle: DWORD;
 const
-  AlignStyle: array [Boolean, TAlignment] of DWORD =
-    ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
-     (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
+  AlignStyle: array[Boolean, TAlignment] of DWORD =
+  ((WS_EX_LEFT, WS_EX_RIGHT, WS_EX_LEFT),
+    (WS_EX_RIGHT, WS_EX_LEFT, WS_EX_LEFT));
   {$ENDIF}
 begin
   Result := True;
-  with Editor do
+  with TCustomEditAccess(Editor) do
   begin
     {$IFDEF COMPILER4_UP}
     if UseRightToLeftAlignment then
@@ -988,7 +1020,7 @@ begin
     if ACanvas = nil then
     begin
       ACanvas := TControlCanvas.Create;
-      ACanvas.Control := Editor;
+      TControlCanvas(ACanvas).Control := Editor;
     end;
     DC := Msg.DC;
     if DC = 0 then
@@ -1018,7 +1050,7 @@ begin
             taLeftJustify:
               ALeft := Margins.X;
             taRightJustify:
-              ALeft := ClientWidth - ButtonWidth - AWidth - Margins.X {Polaris - 2};
+              ALeft := ClientWidth - ButtonWidth - AWidth - Margins.X - 1 {Polaris - 2};
           else
             ALeft := (ClientWidth - ButtonWidth - AWidth) div 2;
           end;
@@ -1035,7 +1067,7 @@ begin
           SaveDC(ACanvas.Handle);
           try
             ACanvas.Brush.Style := bsClear;
-            ACanvas.Font.Color := FDisabledTextColor;
+            ACanvas.Font.Color := DisabledTextColor;
             ACanvas.TextRect(R, ALeft, Margins.Y, S);
           finally
             RestoreDC(ACanvas.Handle, -1);
@@ -1378,46 +1410,17 @@ end;
 
 procedure TJvCustomComboEdit.WMPaint(var Msg: TWMPaint);
 var
-  Canvas: TCanvas;
-  PS: TPaintStruct;
-  callEndPaint: Boolean;
+  Canvas: TControlCanvas;
 begin
   if Enabled then
     inherited
   else
   begin
-    callEndPaint := False;
-    Canvas := TCanvas.Create;
-    try
-      if Msg.DC <> 0 then
-      begin
-        Canvas.Handle := Msg.DC;
-        PS.fErase := True;
-      end
-      else
-      begin
-        BeginPaint(Handle, PS);
-        callEndPaint := True;
-        Canvas.Handle := PS.HDC;
-      end;
-
-      if PS.fErase then
-        Perform(WM_ERASEBKGND, Canvas.Handle, 0);
-
-      SaveDC(Canvas.Handle);
-      try
-        Canvas.Brush.Style := bsClear;
-        Canvas.Font := Font;
-        Canvas.Font.Color := FDisabledTextColor;
-        Canvas.TextOut(1, 1, Text);
-      finally
-        RestoreDC(Canvas.Handle, -1);
-      end;
-    finally
-      if callEndPaint then
-        EndPaint(Handle, PS);
-      Canvas.Free
-    end;
+    Canvas := nil;
+    if not PaintComboEdit(Self, Text, FAlignment, Focused and not PopupVisible,
+       Canvas, Msg) then
+      inherited;
+    Canvas.Free;
   end;
 end;
 
@@ -2877,6 +2880,12 @@ begin
   inherited;
 end;
 
+procedure TJvCustomDateEdit.WMContextMenu(var Message: TWMContextMenu);
+begin
+  if not PopupVisible then
+    inherited;
+end;
+
 function TJvCustomDateEdit.GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap;
 begin
   DestroyNeeded := False;
@@ -2917,15 +2926,18 @@ begin
   SetDate(DateValue);
 end;
 
-function TJvCustomDateEdit.FormatSettingsChange(var Msg: TMessage): Boolean;
+function TJvCustomDateEdit.FormatSettingsChange(var Msg: TMessage): boolean;
 begin
-  Result := False;
-  {$IFDEF WIN32}
+  Result := false;
+{$IFDEF WIN32}
   if (Msg.Msg = WM_WININICHANGE) and Application.UpdateFormatSettings then
-    {$ELSE}
+{$ELSE}
   if Msg.Msg = WM_WININICHANGE then
-    {$ENDIF}
+{$ENDIF}
+  begin
+    GetFormatSettings;
     UpdateMask;
+  end;
 end;
 
 function TJvCustomDateEdit.FourDigitYear: Boolean;

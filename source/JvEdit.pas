@@ -47,7 +47,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, StdCtrls, Forms,
-  JvCaret, JvComponent, JvPropAutoSave, JvMaxPixel, JVCLVer;
+  JvCaret, JvComponent, JvPropAutoSave, JvMaxPixel, JVCLVer, JvToolEdit;
 
 type
   TJvCustomEdit = class(TCustomEdit)
@@ -455,49 +455,22 @@ end;
 
 procedure TJvCustomEdit.WMPaint(var Msg: TWMPaint);
 var
-  Canvas: TCanvas;
-  Ps: TPaintStruct;
-  CallEndPaint: Boolean;
+  Canvas: TControlCanvas;
+  S: string;
 begin
   if Enabled then
     inherited
   else
   begin
-    CallEndPaint := False;
-    Canvas := TCanvas.Create;
-    try
-      if Msg.DC <> 0 then
-      begin
-        Canvas.Handle := Msg.DC;
-        Ps.fErase := True;
-      end
-      else
-      begin
-        BeginPaint(Handle, Ps);
-        CallEndPaint := True;
-        Canvas.Handle := Ps.hdc;
-      end;
-
-      if Ps.fErase then
-        Perform(WM_ERASEBKGND, Canvas.handle, 0);
-
-      SaveDC(Canvas.Handle);
-      try
-        Canvas.Brush.Style := bsClear;
-        Canvas.Font := Font;
-        Canvas.Font.Color := FDisabledTextColor;
-        if PasswordChar = #0 then
-          Canvas.TextOut(1, 1, Text)
-        else
-          Canvas.TextOut(1, 1, StrFillChar(PasswordChar, Length(Text)))
-      finally
-        RestoreDC(Canvas.Handle, -1);
-      end;
-    finally
-      if CallEndPaint then
-        EndPaint(Handle, Ps);
-      Canvas.Free;
-    end;
+    if PasswordChar = #0 then
+      S := Text
+    else
+      S := StrFillChar(PasswordChar, Length(Text));
+    Canvas := nil;
+    if not PaintEdit(Self, S, FAlignment, False, 0, FDisabledTextColor,
+       Focused, Canvas, Msg) then
+      inherited;
+    Canvas.Free;
   end;
 end;
 

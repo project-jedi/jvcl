@@ -280,6 +280,7 @@ var
   PlgInfo: TPluginInfo;
   Counter: Integer;
 begin
+  Result := false;
   try
     Result := Plugin.Initialize(Self, Application, 'CustomPlugin');
     if not Result then Exit;
@@ -332,6 +333,7 @@ var
   PlgInfo: TPluginInfo;
   AllowLoad: Boolean;
 begin
+  LibHandle := 0;
   AllowLoad := true;
   if (assigned(fOnBeforeLoad)) then
     fOnBeforeLoad(Self, Filename, AllowLoad);

@@ -456,6 +456,7 @@ var
   TmpRect : TRect;
 begin
   inherited Paint;
+  TmpBmp := nil;
   if Assigned(FNodeTree) then
   begin
     try

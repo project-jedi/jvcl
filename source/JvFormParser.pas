@@ -72,7 +72,7 @@ implementation
 {$R *.DFM}
 
 {type
-  TParserInf = class
+  TJvParserInfo = class
     StartTag: string;
     EndTag: string;
     MustBe: Integer;
@@ -87,9 +87,9 @@ end;
 
 procedure TFormParsers.Button1Click(Sender: TObject);
 var
-  Ob: TParserInf;
+  Ob: TJvParserInfo;
 begin
-  Ob := TParserInf.Create;
+  Ob := TJvParserInfo.Create;
   Ob.StartTag := '';
   Ob.EndTag := '';
   Ob.MustBe := -1;
@@ -100,10 +100,10 @@ end;
 
 procedure TFormParsers.ListBox1Click(Sender: TObject);
 var
-  Ob: TParserInf;
+  Ob: TJvParserInfo;
 begin
   GroupBox1.Enabled := True;
-  Ob := TParserInf(ListBox1.Items.Objects[ListBox1.ItemIndex]);
+  Ob := TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]);
   Edit1.Text := ListBox1.Items[ListBox1.ItemIndex];
   Edit2.Text := Ob.StartTag;
   Edit3.Text := Ob.EndTag;
@@ -133,25 +133,25 @@ end;
 procedure TFormParsers.Edit2Change(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
-    TParserInf(ListBox1.Items.Objects[ListBox1.ItemIndex]).StartTag := (Sender as TEdit).Text;
+    TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).StartTag := (Sender as TEdit).Text;
 end;
 
 procedure TFormParsers.Edit3Change(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
-    TParserInf(ListBox1.Items.Objects[ListBox1.ItemIndex]).EndTag := (Sender as TEdit).Text;
+    TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).EndTag := (Sender as TEdit).Text;
 end;
 
 procedure TFormParsers.LoadFromStr(Value: TStringList);
 var
   I: Integer;
-  Ob: TParserInf;
+  Ob: TJvParserInfo;
   Cap: string;
 begin
   I := 0;
   while I < Value.Count do
   begin
-    Ob := TParserInf.Create;
+    Ob := TJvParserInfo.Create;
     try
       Cap := Value[I];
       Inc(I);
@@ -177,17 +177,17 @@ begin
   for I := 0 to ListBox1.Items.Count - 1 do
   begin
     Result.Add(ListBox1.Items[I]);
-    Result.Add(TParserInf(ListBox1.Items.Objects[I]).StartTag);
-    Result.Add(TParserInf(ListBox1.Items.Objects[I]).EndTag);
-    Result.Add(IntToStr(TParserInf(ListBox1.Items.Objects[I]).MustBe));
-    Result.Add(IntToStr(TParserInf(ListBox1.Items.Objects[I]).TakeText));
+    Result.Add(TJvParserInfo(ListBox1.Items.Objects[I]).StartTag);
+    Result.Add(TJvParserInfo(ListBox1.Items.Objects[I]).EndTag);
+    Result.Add(IntToStr(TJvParserInfo(ListBox1.Items.Objects[I]).MustBe));
+    Result.Add(IntToStr(TJvParserInfo(ListBox1.Items.Objects[I]).TakeText));
   end;
 end;
 
 procedure TFormParsers.ComboBox1Change(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
-    TParserInf(ListBox1.Items.Objects[ListBox1.ItemIndex]).TakeText := (Sender as TComboBox).ItemIndex;
+    TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).TakeText := (Sender as TComboBox).ItemIndex;
 end;
 
 procedure TFormParsers.Edit4Change(Sender: TObject);
@@ -201,7 +201,7 @@ begin
     Beep;
   end;
   if ListBox1.ItemIndex <> -1 then
-    TParserInf(ListBox1.Items.Objects[ListBox1.ItemIndex]).MustBe := I;
+    TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).MustBe := I;
 end;
 
 procedure TFormParsers.OkBtnClick(Sender: TObject);

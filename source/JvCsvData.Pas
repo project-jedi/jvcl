@@ -29,7 +29,7 @@ Known Issues:
                  DataSets and the component was reading/writing a 32 bit value,
                  which could caused all kinds of squirrelly things to happen
                  when the boolean (ftBoolean, csv type '!') was encountered.
-                 Search for the WordBool to see the changes. 
+                 Search for the WordBool to see the changes.
 -----------------------------------------------------------------------------}
 
 //------------------------------------------------------------------------
@@ -83,7 +83,7 @@ Known Issues:
 // All Copyrights and Ownership donated to the Delphi Jedi Project.
 //------------------------------------------------------------------------
 
-{$R  JVCSVDATA.DCR }
+//  { $ R  JVCSVDATA.DCR }
 
 interface
 
@@ -92,12 +92,12 @@ uses Windows,
      Db,
      SysUtils,
      Classes,
-     Graphics; 
+     Graphics;
 
 const
    MAXCOLUMNS    = 80;
    DEFAULT_CSV_STR_FIELD= 80;
-   MAXLINELENGTH = 512;
+   MAXLINELENGTH = 2048;
    COLUMN_ENDMARKER = $FFFF;
    ON_BOF_CRACK  = -1;
    ON_EOF_CRACK  = -2;
@@ -161,9 +161,19 @@ type
       index    : Integer; // original ordering index (0..REcordCount-1)
       wordfield: array[0..MAXCOLUMNS+1]    of Word; // lookup field beginning, Column Data (column dirty bit+column length) }
       text     : array[0..MAXLINELENGTH]   of Char; // lookup actual character data.
-
       // bookmark
       bookmark : TJvCsvBookmark;
+
+      // filter flag;
+      filtered : Boolean; // row is hidden from view right now.
+
+      // user data:
+      userdatapointer:Pointer;
+            // A pointer used for user data (allows us to associate each DB Row with an object in memory, for instance)
+            // use JvCsvDataSet.GetRowUserData and SetRowUserData to manipulate 'userdatapointer'
+      usertag:Integer; // Just like each TComponent has a Tag, each JvCsvRow has an integer tag along with the pointer.
+            // use JvCsvDataSet.GetRowTag and SetRowTag, to manipulate 'usertag'
+
   end;
 
   { Row collection }
@@ -204,6 +214,8 @@ type
     FCsvCaseInsensitiveComparison:Boolean; // CSV Key Uniqueness and Key Comparisons - case insensitive mode if True, else case sensitive.
     
 
+    FIsFiltered:Boolean; // Filter conditions have been set.
+
     FEmptyRowStr:String; // A string of just commas (used to add a new empty row)
     FHeaderRow:String; // first row of CSV file.
     FTableName: string; // CSV File Name
@@ -216,6 +228,7 @@ type
     FLoadsFromFile:Boolean;
     FHasHeaderRow:Boolean;
     FSavesChanges:Boolean;
+    FAutoBackupCount:Integer; // Keep Last N Copies the Old Csv File, updated before each save? 
     FInsertBlocked:Boolean; // internal way to block new records but allows editing of existing ones!
     FPostBlocked:Boolean; // internal way to block posting of changes, but allows inserting of new ones!
 
@@ -233,6 +246,11 @@ type
 //    function GetDataFileSize: Integer; virtual;
     function GetActiveRecordBuffer:  PChar; virtual;
     procedure CsvRowInit(RowPtr:PCsvRow);
+
+    // New filtering on cursor (GetRecord advances the cursor past
+    // any hidden rows using InternalSkipForward).
+    function InternalSkipFiltered( defaultResult:TGetResult; ForwardBackwardMode:Boolean ):TGetResult;
+
     procedure InternalClearFileStrings;
     function InternalLoadFileStrings:Boolean;
     // Internal methods used by sorting:
@@ -243,7 +261,13 @@ type
     function InternalFindByKey( row:PCsvRow ):Integer;
 
 
-
+    // Each ROW Record has an internal Data pointer (similar to the
+    // user-accessible 'Data:Pointer' stored in treeviews, etc)  
+    function GetRowUserData:Pointer;
+    procedure SetRowUserData(userdata:Pointer);
+    
+    function  GetRowTag:Integer;
+    procedure SetRowTag(tagValue:Integer);
 
 
     // protected TDataSet base METHODS:
@@ -316,6 +340,15 @@ type
     destructor Destroy; override;
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; override;
 
+    // SELECT * FROM TABLE WHERE <fieldname> LIKE <pattern>:
+    procedure SetFilter( fieldname,pattern:String); // Make Rows Visible Only if they match filterString
+                                                   
+    procedure ClearFilter; // Clear all previous SetFilters, shows All Rows.
+
+    /// procedure FilteredDeletion(Inverted:Boolean); /// XXX TODO?
+    /// procedure DeleteRowsMatchingFilter; /// XXX TODO?
+    /// procedure DeleteRowsNotMatchingFilter; /// XXX TODO?
+
     // this is necessary to make bookmarks work as well:
     function CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Integer; override;
 
@@ -325,6 +358,19 @@ type
     // Sort the table:
     procedure Sort( SortFields:String; Ascending:Boolean);
 
+    // All rows have a UserData and UserTag property, these
+    // next two functions quickly set all the userdata and usertag
+    // values for all rows, which is a good way to set defaults
+    // without having to iterate through the dataset.
+    procedure SetAllUserData(data:Pointer);
+    procedure SetAllUserTags(tagValue:Integer);
+
+
+    // The UserData/UserTag properties apply to the row that the
+    // cursor is sitting on. Without visibly moving the cursor,
+    // its handy to get/set the usertag values.
+    function  GetUserTag(recno:Integer):Integer;
+    procedure SetUserTag(recno,newValue:Integer);
 
 
     function GetCsvHeader:String;
@@ -339,8 +385,12 @@ type
     // as long as the field names and positions have not changed.
     procedure AssignFromStrings(const Strings:TStrings);virtual; // update String data directly.
     procedure AssignToStrings(Strings:TStrings);virtual;
-    procedure ExportCsvFile(const Filename:String);virtual; // save out to a file.
+
+    procedure ExportCsvFile(const Filename:String);virtual; // save out to a file. does NOT keep backups! If file exists, it will be
+        // overwritten, and NO backups are made!
+
     procedure Flush;virtual; // Save CSV file to disk if file has changed and SavesChanges is true.
+                  // Note: FLUSH will make backup copies if FAutoBackupCount>0!!!
 
     { Row Access as String }
     function GetRowAsString(const Index:Integer):String;virtual;
@@ -359,6 +409,14 @@ type
 
     public
       property TableName : String read FTableName; // Another name, albeit read only, for the FileName property!
+
+      // Per-Record user-data fields:
+      //    Each record can have a pointer (for associating each row with an object)
+      property UserData:Pointer read GetRowUserData write SetRowUserData;
+      //    Each record can have a tag (integer) (for help in marking rows as Selected/Unselected or some other
+      //    end user task)
+      property UserTag:Integer read GetRowTag write SetRowTag;
+
       
     published
      property FieldDefs stored FieldDefsStored;
@@ -399,9 +457,10 @@ type
      
 
 
-     // Properties for Automatically Loading/Saving CSV file when Active property is set true/false: 
+     // Properties for Automatically Loading/Saving CSV file when Active property is set true/false:
      property LoadsFromFile:Boolean read FLoadsFromFile write FLoadsFromFile default true;
      property SavesChanges:Boolean read FSavesChanges write FSavesChanges default true;
+     property AutoBackupCount:Integer read FAutoBackupCount write FAutoBackupCount; // >0 means Keep Last N Copies the Old Csv File, updated before each save? 
 
 
      // Do field definitions "persist"?
@@ -449,7 +508,13 @@ function DateTimeToTimeToIsoAscii(aDateTime:TDateTime):String;
 function DateTimeToTimeTHex(aDateTime:TDateTime; TimeZoneCorrection:Integer ):String;
 
 
+{ Routine to keep backup copies of old data files around }
+function JvCsvBackupPreviousFiles( filename:String; MaxFiles:Integer):Boolean;
 
+//JvCsvWildcardMatch:
+// Recursive wildcard (%=AnyString, ?=SingleChar) matching function with
+// boolean sub expressions (|=or, &=and).
+function JvCsvWildcardMatch( data, pattern:String ):Boolean;
 
 implementation
 
@@ -463,6 +528,306 @@ begin
     OutputDebugString( PChar('JvCsvDatabaseError '+Message));
     raise EJvCsvDataSetError.Create(Message);
 end;
+
+
+    // Each ROW Record has an internal Data pointer (similar to the
+    // user-accessible 'Data:Pointer' stored in treeviews, etc)
+function TJvCsvCustomInMemoryDataSet.GetRowUserData:Pointer;
+var
+  recno:Integer;
+begin
+  recno := GetRecNo;
+  if (recno >= 0) and (recno < FData.Count) then
+    Result := PCsvRow(FData[recno])^.userdatapointer
+  else
+    Result := nil;
+end;
+
+procedure TJvCsvCustomInMemoryDataSet.SetRowUserData(userdata:Pointer);
+var
+  recno:Integer;
+begin
+  recno := GetRecNo;
+  if (recno >= 0) and (recno < FData.Count) then
+    PCsvRow(FData[recno])^.userdatapointer := userdata;
+end;
+
+function  TJvCsvCustomInMemoryDataSet.GetRowTag:Integer;
+var
+  recno:Integer;
+begin
+  recno := GetRecNo;
+  if (recno >= 0) and (recno < FData.Count) then
+    Result := PCsvRow(FData[recno])^.usertag
+  else
+    Result := -1;
+end;
+
+procedure TJvCsvCustomInMemoryDataSet.SetRowTag(tagValue:Integer);
+var
+  recno:Integer;
+begin
+  recno := GetRecNo;
+  if (recno >= 0) and (recno < FData.Count) then
+    if (PCsvRow(FData[recno])^.usertag <>tagValue) then
+       PCsvRow(FData[recno])^.usertag  := tagValue;
+end;
+
+function _WildcardsMatchBoolOp( data, pattern:String; boolOp:Char ):Boolean;
+var
+  subPattern:Array [0..20] of String;
+  t,count:Integer;
+begin
+  count := StrSplit( pattern, boolOp, subPattern, 20);
+  if (count >0 ) then begin
+      for t := 0 to count-1 do begin
+          result := JvCsvWildcardMatch( data, subPattern[t]);
+          // If ANY OR TRUE return TRUE;
+          // if ANY AND FALSE return FALSE;
+          if (boolOp = '|') = result then begin
+             exit;
+          end;
+      end;
+  end else begin // split failed...
+      result := false;
+  end;
+  // if we get here, no short circuit was possible.
+  if (boolOp = '|') then
+      result := false // NONE of the OR conditions were met!
+  else
+      result := true; // ALL of the AND condition were met!
+end;
+
+procedure TJvCsvCustomInMemoryDataSet.SetAllUserTags(tagValue:Integer);
+var
+  row:PCsvRow;
+  t:Integer;
+begin
+  for t := 0 to FData.Count do begin
+     row :=PCsvRow(FData[recno]);
+     if Assigned(row) then
+       if row^.usertag <> tagValue then 
+          row^.usertag := tagValue
+  end;
+end;
+
+
+procedure TJvCsvCustomInMemoryDataSet.SetAllUserData(data:Pointer);
+var
+  row:PCsvRow;
+  t:Integer;
+begin
+  for t := 0 to FData.Count do begin
+     row :=PCsvRow(FData[recno]);
+     if Assigned(row) then
+          row^.userdatapointer := data;
+  end;
+end;
+
+
+function TJvCsvCustomInMemoryDataSet.GetUserTag(recno:Integer):Integer;
+var
+  row:PCsvRow;
+begin
+  result := 0;
+  if (recno>=0) and (recno<FData.Count) then begin
+     row :=PCsvRow(FData[recno]);
+     if Assigned(row) then
+          result := row^.usertag;
+  end;
+end;
+
+
+procedure TJvCsvCustomInMemoryDataSet.SetUserTag(recno,newValue:Integer);
+var
+  row:PCsvRow;
+begin
+  if (recno>=0) and (recno<FData.Count) then begin
+     row :=PCsvRow(FData[recno]);
+     if Assigned(row) then
+          row^.usertag := newValue;
+  end;
+end;
+
+
+// Recursive wildcard matching function
+function JvCsvWildcardMatch( data, pattern:String ):Boolean;
+var
+  t:Integer;
+  firstwildcard:Integer;
+  datalength,patternlength,dataposition,patternposition :Integer;
+  firstBoolCondition:Integer;
+begin
+  datalength := Length(data);
+  patternlength := Length(pattern);
+  // no data?
+  if (datalength = 0) then begin
+      if (pattern = '%') or (pattern = '') then begin
+          result := true;
+          exit;
+      end;
+      result := false;
+      exit; // definitely no match.
+  end;
+  // no pattern?
+  if (patternlength = 0) then begin
+      result := true; //everything matches a non-pattern.
+  end;
+  // replace all '%%' -> '%' (don't put duplicate wildcards in)
+  t := 1;
+  while t < patternlength do begin
+      if (pattern[t] = '%') and (pattern[t+1] = '%') then begin
+          pattern := Copy(pattern,1,t)+Copy(pattern,t+2,patternlength);
+          patternlength := Length(pattern);
+      end else
+          Inc(t);
+  end;
+  // find any | and split into two or more strings, and run ORs on them
+  firstBoolCondition := Pos('&',pattern);
+  if (firstBoolCondition>0) then begin
+      result := _WildcardsMatchBoolOp( data, pattern, '&'); 
+      exit;
+  end;
+  firstBoolCondition := Pos('|',pattern);
+  if (firstBoolCondition>0) then begin
+      result := _WildcardsMatchBoolOp( data, pattern, '|' );
+      exit;
+  end;
+
+
+
+  firstwildcard := Pos('%',pattern); // wildcards?
+  if (firstwildcard = 0) then
+    firstwildcard := Pos('?',pattern); // other wildcard.
+
+  if (firstwildcard<=0) then begin // no wildcard case.
+      if (data = pattern) then
+          result := true
+      else
+          result := false;
+      exit; // simple match returns immediately.
+  end;
+  // wildcard tail?
+  if ((firstwildcard = patternlength) and (pattern[1] <> '?')) then begin // prefix match
+      if Copy(data,1,patternlength-1) = Copy(pattern,1,patternlength-1) then
+          result := true
+      else
+          result := false;
+      exit; // tail case is easy!
+  end;
+  // match literal characters until we hit wildcards,
+  // then search for a wildcard resync, which continues
+  // recursively.
+  result := true;
+  dataposition := 1;
+  patternposition := 1;
+  while ((dataposition <= datalength) and (patternposition <= patternlength)) do begin
+    // WILDCARD HANDLER
+    if (pattern[patternposition] = '?') then begin // match any one character or nothing.
+        Inc(patternposition);
+        Inc(dataposition);
+    end else if (pattern[patternposition] = '%' ) then begin
+       if (patternposition = patternlength) then begin // last byte!
+            result := true;
+            exit;
+       end;
+       // Resync after %:
+       t := Pos( pattern[patternposition+1], data );
+       while t>0 do  begin// possible resync point!
+                result :=JvCsvWildcardMatch( Copy(data,t,Length(data)),
+                                        Copy(pattern,patternposition+1,patternlength)
+                                      );
+                if (result) then
+                    exit;   // found a resync, and rest of strings match
+                data := Copy(data,t+1,datalength);
+                datalength := Length(data);
+                dataposition := 0;
+                if (datalength = 0) then begin
+                    result := false;
+                    exit;
+                end;
+                t := Pos( pattern[patternposition+1], data );
+       end;  { end while loop }
+       // failed to resync
+       result := false;
+       exit;
+    end else begin // NORMAL CHARACTER
+      if (data[dataposition] <> pattern[patternposition]) then begin
+            result := false; // failed.
+            exit;
+      end;
+      Inc(dataposition);
+      Inc(patternposition);
+    end;
+  end; {while}
+  if (    (dataposition <= datalength)
+      and (patternposition <= patternlength)
+     ) then begin
+        result := false; // there is pattern left over, or data left over.
+       end;
+end;
+
+// NEW: TJvCsvCustomInMemoryDataSet.SetFilter
+//
+// XXX Simplest possible filtering routine. Not very flexible.
+// XXX Todo: Make this more flexible.
+// XXX Users can also subclass and write their own filter.
+// XXX Perhaps a OnFilter event should be provided, and SetCustomFilter
+// XXX method would allow us to do a row by row filtering scan, and then
+// XXX hide rows that the user sets HideRow := true in the event handler.
+// XXX
+procedure TJvCsvCustomInMemoryDataSet.SetFilter( fieldname,pattern:String); // Make Rows Visible Only if they match filterString
+var
+  valueLen, t   : Integer;
+  pRow          : PCsvRow;
+  fieldRec      : PCsvColumn;
+  fieldIndex    : Integer;
+  fieldValue    : String;
+begin
+//  fieldIndex := Self.FCsvColumns.
+  fieldRec := FCsvColumns.FindByName(fieldname);
+  if not Assigned(fieldRec) then exit;
+  fieldIndex := fieldRec^.FPhysical;
+  valueLen := Length(pattern); // if valuelen is zero then we are searching for blank or nulls
+  pattern := UpperCase(pattern); // make value case insensitive.
+
+  // Now check if field value matches given pattern for this row.
+  for t := 0 to FData.Count -1 do begin
+       pRow := PCsvRow(FData[t]);
+       if (not pRow^.filtered) then begin
+              fieldValue := FData.GetARowItem(t,fieldindex);
+              if (Length(fieldValue)>0) and (fieldValue[1] = '"') then
+                   fieldValue := _Dequote(fieldValue); // remove quotes.
+              if (valuelen = 0) then begin
+                    if fieldValue <> '' then // if not empty, hide row.
+                        pRow^.filtered := true;
+              end else begin
+                 fieldValue := UpperCase(fieldValue);
+                  if not JvCsvWildcardMatch( fieldValue, pattern ) then // hide row if not same prefix
+                      pRow^.filtered := true;
+              end;
+
+       end
+   end;
+   FIsFiltered := true;
+   First; // redisplay controls
+end;
+
+procedure TJvCsvCustomInMemoryDataSet.ClearFilter; // Clear Previous Filtering.
+var
+  t:Integer;
+  pRow:PCsvRow;
+begin
+   for t := 0 to FData.Count -1 do begin
+       pRow := PCsvRow(FData[t]);
+       if Assigned(pRow) then 
+         pRow^.filtered := false; // clear all filter bits.
+   end;
+   FIsFiltered := false;
+   First; // redisplay controls
+end;
+
+
 
 
 // note that file is not being locked!
@@ -638,6 +1003,42 @@ begin
   result := false; // not yet implemented! XXX
 end;
 
+function TJvCsvCustomInMemoryDataSet.InternalSkipFiltered( defaultResult:TGetResult; ForwardBackwardMode:Boolean ):TGetResult;
+var
+  LimitReached:Boolean;
+  RowPtr:PCsvRow;
+begin
+ if (FRecordPos<0) then begin
+     result := defaultResult;
+     exit;
+ end;
+  LimitReached := false; // hit BOF or EOF?
+ while not LimitReached do begin
+    { no skippage required }
+    RowPtr := PCsvRow(FData.GetRowPtr(FRecordPos));
+    if (not RowPtr^.filtered) then begin
+         result := defaultResult;
+         exit;
+    end;
+    { skippage ensues }
+    if (ForwardBackwardMode) then begin // ForwardSkip mode
+      Inc(FRecordPos);
+      if (FRecordPos>=FData.Count) then begin
+                FRecordPos := ON_EOF_CRACK;
+                result := grEOF;
+                exit;
+      end;
+    end else begin // BackwardSkip mode
+      Dec(FRecordPos);
+      if (FRecordPos<0) then begin // hit BOF_CRACK
+                FRecordPos := ON_BOF_CRACK;
+                result := grBOF;
+                exit;
+      end;
+    end;
+ end;
+end;
+
 function TJvCsvCustomInMemoryDataSet.GetRecord(Buffer: PChar; GetMode: TGetMode;
   DoCheck: Boolean): TGetResult;
 var
@@ -658,10 +1059,21 @@ begin
            result := grBOF
         else if FRecordPos = ON_EOF_CRACK then begin
            FRecordPos := FData.Count-1;
-           result := grOk;
+
+          // NEW FILTERING
+           if FIsFiltered then
+               result := InternalSkipFiltered(grOk,false) // skipping backwards.
+           else
+               result := grOk;
         end else if FRecordPos > 0 then begin
            Dec(FRecordPos);
-           result := grOk;
+
+          // NEW FILTERING
+           if FIsFiltered then
+               result := InternalSkipFiltered(grOk,false) // skipping backwards.
+           else
+               result := grOk;
+
         end else
            result := grBOF;
        end;
@@ -669,11 +1081,17 @@ begin
 
       gmCurrent:
         begin
+
          //Trace(' GetRecord( Buffer, gmCurrent, DoCheck)');
          if (FRecordPos<0) then // BOF Crack or EOF Crack?
             result := grError
          else
             result := grOk;
+
+          // NEW FILTERING
+           if FIsFiltered then
+               result := InternalSkipFiltered(result,true); // skipping forwards.
+
          end;
       gmNext:
         begin
@@ -682,11 +1100,18 @@ begin
             result := grEOF
          else begin
           Inc(FRecordPos);
+
           if (FRecordPos >= FData.Count) then begin
             FRecordPos := ON_EOF_CRACK;
             result := grEOF
-          end else
-            result := grOk;
+          end else begin
+            // NEW FILTERING
+            if FIsFiltered then
+                result := InternalSkipFiltered(grOk,true) // skipping forwards.
+            else
+                result := grOk;
+          end;
+
         end
        end;
         
@@ -1217,7 +1642,7 @@ var
 //  FDef:TFieldDef;
 begin
 
-//  Application.MessageBox('InternalInitFieldDefs','Debug',MB_OK);
+
 
 //  FFieldsInitialized := true;
   FieldType := jcsvString;
@@ -1227,18 +1652,24 @@ begin
   FieldDefs.Clear;   // Clear VCL Database field definitions
   FCsvColumns.Clear; // Clear our own CSV related field data
 
+
   aCsvFieldDef :=   FCsvFieldDef;
   if Length(aCsvFieldDef)=0 then begin
         if FHasHeaderRow and InternalLoadFileStrings then
                 aCsvFieldDef := FCsvFileAsStrings[0];
   end;
 
+
   if Length(aCsvFieldDef) > 0 then begin
      StringToCsvRow(aCsvFieldDef,@CsvFieldRec, false,false);
+
+
+
      colnum := 0;
      while (CsvRowGetColumnMarker(@CsvFieldRec,colnum) <> COLUMN_ENDMARKER) do begin
        FieldLen := 80; // default.
        CsvFieldOption := GetCsvRowItem( @CsvFieldRec, colnum ); // get a string in the format COLUMNAME:Options
+
 
        // Look for Colon or Semicolon:
        pos1 := Pos(':',CsvFieldOption);
@@ -1335,6 +1766,8 @@ begin
      if (NOT FHasHeaderRow) and ( length(FHeaderRow)=0 ) then
         FHeaderRow := GetColumnsAsString;
 
+
+
      if Length(FHeaderRow) > 0 then
        ProcessCsvHeaderRow(FHeaderRow);
   end else
@@ -1360,6 +1793,9 @@ begin
                  end;
             end;
     end;
+
+
+
 end; { InternalInitFieldDefs ends }
 
 
@@ -1375,8 +1811,15 @@ end;
 // and write changes to the file.
 procedure TJvCsvCustomInMemoryDataSet.Flush;
 begin
-  if FFileDirty and FSavesChanges and (Length(FTableName)>0) then
+  if FFileDirty and FSavesChanges and (Length(FTableName)>0) then begin
+    // Make backup first, if enabled (>2)
+    if (FAutoBackupCount>0) then begin
+        if (FAutoBackupCount<10) then FAutoBackupCount := 10;// can't be between 1 and 9, must be at least 10.
+        JvCsvBackupPreviousFiles( FTableName, FAutoBackupCount );
+    end;
+    // Now write new file.
     ExportCsvFile( FTableName );
+  end;
 end;
 
 
@@ -1546,16 +1989,24 @@ begin
   if FCursorOpen then InternalClose; // close first!
 
 
+
   FFileDirty := False;
   if ( Length(FTableName) = 0 ) and FLoadsFromFile then
      JvCsvDatabaseError('LoadFromFile=True, so a TableName is required');
   Strings:=NIL;
 
+
+
   InternalInitFieldDefs;             // initialize FieldDef objects
+
+
+
   // Create TField components when no persistent fields have been created
   if DefaultFields then
       CreateFields;
   BindFields(True);                 // bind FieldDefs to actual data
+
+
 
   if (FCsvColumns.Count>1) then begin
      // Create a null terminated string which is just a bunch of commas:
@@ -1566,6 +2017,8 @@ begin
   end else begin
       FEmptyRowStr := ''; // nothing.
   end;
+
+
 
 
   FBufferSize := SizeOf(TJvCsvRow) + CalcFieldsSize; // our regular record + calculated field data.
@@ -1714,10 +2167,11 @@ end; *)
 
 procedure TJvCsvCustomInMemoryDataSet.EmptyTable;
 begin
+   // Erase Rows.
+   while ( FData.Count >0) do
+       FData.DeleteRow(FData.Count-1);
+   // Refresh controls.
    First;
-   while not Eof do begin
-        Delete;
-   end;
 end;
 
 
@@ -2157,6 +2611,9 @@ var
 begin
   if (Length(DataRow)=0) then
           exit;
+  if (Length(DataRow)>=(MAXLINELENGTH-1)) then begin
+        raise Exception.Create('CSV String is too long: '+Copy(datarow,1,40)+'...' );
+  end;
   pNewRow := AllocMem(sizeof(TJvCsvRow));
   StringToCsvRow(datarow,pNewRow, true, FEnquoteBackslash);
   pNewRow^.index := index;
@@ -2577,6 +3034,73 @@ begin
 end;
 
 
+function JvFilePathSplit(filename:String; var path,filenameonly:String):Boolean;
+var
+  len,t:Integer;
+begin
+ len := Length(filename);
+ result := false;
+ path := '';
+ filenameonly := '';
+ for t := len downto 1 do begin
+     if filename[t] = '\' then begin
+        path := Copy(filename,1,t);
+        filenameonly := Copy(filename,t+1,len);
+        if (Length(filenameonly)>0) and (Length(path)>0) and DirectoryExists(Path) then
+           result := true;
+        exit;
+     end;
+ end;
+end;
+
+{ Routine to keep backup copies of old data files around }
+function JvCsvBackupPreviousFiles( filename:String; MaxFiles:Integer):Boolean;
+var
+  BackupFolder,FileNameOnly,BackupFilename,RemoveFile:String;
+  t:Integer;
+  found:Boolean;
+  function MakeFilename(index:Integer):String;
+  begin
+    result := BackupFolder + FileNameOnly + '.'+IntToStr(index)+'.bak';
+  end;
+begin
+  result := false;
+
+  if not FileExists(filename) then
+    exit; // failed.
+  if not JvFilePathSplit(filename,BackupFolder,FileNameOnly) then
+    exit; // failed.
+  BackupFolder := BackupFolder + 'Backup\';
+  if not DirectoryExists(BackupFolder) then
+    CreateDirectory(PChar(BackupFolder),nil);
+    
+  found := false;
+  for t := 0 to MaxFiles-1 do begin
+     BackupFilename := MakeFilename(t);
+     if not FileExists(BackupFilename) then begin
+        RemoveFile := MakeFilename((t+1) mod MaxFiles );
+        found := true;
+        break;
+     end;
+  end;
+
+  if not found then begin
+      t := 1;
+      BackupFilename :=   MakeFilename(t);
+      RemoveFile := MakeFilename((t+1) mod MaxFiles );
+  end;
+
+  // We remove an old backup if necessary so that the next time we run
+  // we will find the gap and know where to write the next numbered
+  // backup. That means that anywhere from zero to 998 backups could exist
+  // in a circular fashion. Without this logic, we wouldn't know the next
+  // extension number to use.
+  if FileExists(RemoveFile) then
+     DeleteFile(RemoveFile);
+
+  CopyFile(PChar(filename),PChar(BackupFilename),false);
+  result := true;
+end;
 
 
 

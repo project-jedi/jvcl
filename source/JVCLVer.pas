@@ -32,7 +32,7 @@ unit JVCLVer;
 interface
 
 const
-  JVCL_VERSIONSTRING = '2.10';
+  JVCL_VERSIONSTRING = '3.00';
 
 type
   TJVCLAboutInfo = (JVCLAbout);

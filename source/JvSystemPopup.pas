@@ -44,23 +44,23 @@ uses
   JvTypes, JvComponent;
 
 type
-  TPositionInMenu = (pmTop, pmBottom);
+  TJvPositionInMenu = (pmTop, pmBottom);
 
   TJvSystemPopup = class(TJvComponent)
   private
     FPopup: TPopupMenu;
     FOwnerForm: TForm;
     FIsHooked: Boolean;
-    FPosition: TPopupPosition;
-    FPositionInMenu: TPositionInMenu;
+    FPosition: TJvPopupPosition;
+    FPositionInMenu: TJvPositionInMenu;
     procedure Hook;
     procedure UnHook;
     procedure ResetSystemMenu(SystemReset: Boolean = True);
     function HandleWndProc(var Msg: TMessage): Boolean;
     procedure SetPopup(const Value: TPopupMenu);
     procedure PopulateMenu;
-    procedure SetPosition(const Value: TPopupPosition);
-    procedure SetPositionInMenu(const Value: TPositionInMenu);
+    procedure SetPosition(const Value: TJvPopupPosition);
+    procedure SetPositionInMenu(const Value: TJvPositionInMenu);
     function GetMenu: HMENU;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -70,9 +70,9 @@ type
     destructor Destroy; override;
   published
     property Popup: TPopupMenu read FPopup write SetPopup;
-    property PositionInMenu: TPositionInMenu read FPositionInMenu write
+    property PositionInMenu: TJvPositionInMenu read FPositionInMenu write
       SetPositionInMenu default pmTop;
-    property Position: TPopupPosition read FPosition write SetPosition default ppNone;
+    property Position: TJvPopupPosition read FPosition write SetPosition default ppNone;
   end;
 
 implementation
@@ -469,7 +469,7 @@ begin
   //  Refresh;
 end;
 
-procedure TJvSystemPopup.SetPosition(const Value: TPopupPosition);
+procedure TJvSystemPopup.SetPosition(const Value: TJvPopupPosition);
 begin
   if FPosition = Value then
     Exit;
@@ -490,7 +490,7 @@ begin
   //PopulateMenu;
 end;
 
-procedure TJvSystemPopup.SetPositionInMenu(const Value: TPositionInMenu);
+procedure TJvSystemPopup.SetPositionInMenu(const Value: TJvPositionInMenu);
 begin
   FPositionInMenu := Value;
   //if ComponentState * [csLoading, csDesigning] = [] then

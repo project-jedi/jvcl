@@ -45,15 +45,15 @@ type
     FFileName: string;
     FPassword: string;
     FOutputMode: TJvOutputMode;
-    FOnError: TOnError;
-    FOnDoneFile: TOnDoneFile;
-    FOnDoneStream: TOnDoneStream;
-    FOnProgress: TOnProgress;
+    FOnError: TJvErrorEvent;
+    FOnDoneFile: TJvDoneFileEvent;
+    FOnDoneStream: TJvDoneStreamEvent;
+    FOnProgress: TJvProgressEvent;
     FAgent: string;
     FBytesReaded: Integer;
     FTotalBytes: Integer;
     FErrorText: string;
-    FOnStatus: TOnFtpProgress;
+    FOnStatus: TJvFTPProgressEvent;
     FContinue: Boolean;
     FCriticalSection: TCriticalSection;
     function GetLastErrorMsg: string;
@@ -64,10 +64,10 @@ type
     procedure Execute; override;
   public
     constructor Create(Url, Referer, Username, FileName, Password: string;
-      OutPutMode: TJvOutputMode; OnError: TOnError;
-      OnDoneFile: TOnDoneFile; OnDoneStream: TOnDoneStream;
-      OnProgress: TOnProgress; Agent: string;
-      OnStatus: TOnFtpProgress);
+      OutPutMode: TJvOutputMode; OnError: TJvErrorEvent;
+      OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
+      OnProgress: TJvProgressEvent; Agent: string;
+      OnStatus: TJvFTPProgressEvent);
     destructor Destroy; override;
   end;
 
@@ -80,10 +80,10 @@ type
     FFileName: TFileName;
     FPassword: string;
     FOutputMode: TJvOutputMode;
-    FOnError: TOnError;
-    FOnDoneFile: TOnDoneFile;
-    FOnDoneStream: TOnDoneStream;
-    FOnProgress: TOnProgress;
+    FOnError: TJvErrorEvent;
+    FOnDoneFile: TJvDoneFileEvent;
+    FOnDoneStream: TJvDoneStreamEvent;
+    FOnProgress: TJvProgressEvent;
     FAgent: string;
     FOnReceived: TNotifyEvent;
     FOnResolving: TNotifyEvent;
@@ -118,10 +118,10 @@ type
     property FileName: TFileName read FFileName write FFileName;
     property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
     property Agent: string read FAgent write FAgent;
-    property OnDoneFile: TOnDoneFile read FOnDoneFile write FOnDoneFile;
-    property OnDoneStream: TOnDoneStream read FOnDoneStream write FOnDoneStream;
-    property OnError: TOnError read FOnError write FOnError;
-    property OnProgress: TOnProgress read FOnProgress write FOnProgress;
+    property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
+    property OnDoneStream: TJvDoneStreamEvent read FOnDoneStream write FOnDoneStream;
+    property OnError: TJvErrorEvent read FOnError write FOnError;
+    property OnProgress: TJvProgressEvent read FOnProgress write FOnProgress;
     property OnResolvingName: TNotifyEvent read FOnResolving write FOnResolving;
     property OnResolvedName: TNotifyEvent read FOnResolved write FOnResolved;
     property OnConnectingToServer: TNotifyEvent read FOnConnecting write FOnConnecting;
@@ -282,9 +282,9 @@ end;
 //=== TJvHttpThread ==========================================================
 
 constructor TJvHttpThread.Create(Url, Referer, Username, FileName,
-  Password: string; OutPutMode: TJvOutputMode; OnError: TOnError;
-  OnDoneFile: TOnDoneFile; OnDoneStream: TOnDoneStream;
-  OnProgress: TOnProgress; Agent: string; OnStatus: TOnFtpProgress);
+  Password: string; OutPutMode: TJvOutputMode; OnError: TJvErrorEvent;
+  OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
+  OnProgress: TJvProgressEvent; Agent: string; OnStatus: TJvFTPProgressEvent);
 begin
   inherited Create(True);
   FUrl := Url;
@@ -356,7 +356,7 @@ var
   HostName, FileName: string;
   Username, Password: PChar;
   Buffer: PChar;
-  dwBufLen, dwIndex, BytesRead, TotalBytes: DWORD;
+  dwBufLen, dwIndex, dwBytesRead, dwTotalBytes: DWORD;
   HasSize: Boolean;
   Buf: array [0..1024] of Byte;
 
@@ -455,19 +455,19 @@ begin
       else
         FTotalBytes := 0;
 
-      TotalBytes := 0;
+      dwTotalBytes := 0;
       if HasSize then
       begin
-        BytesRead := 1;
-        while BytesRead > 0 do
+        dwBytesRead := 1;
+        while dwBytesRead > 0 do
         begin
-          if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) then
-            BytesRead := 0
+          if not InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) then
+            dwBytesRead := 0
           else
           begin
-            Inc(TotalBytes, BytesRead);
-            FBytesReaded := TotalBytes;
-            FStream.Write(Buf, BytesRead);
+            Inc(dwTotalBytes, dwBytesRead);
+            FBytesReaded := dwTotalBytes;
+            FStream.Write(Buf, dwBytesRead);
             Progress;
           end;
         end;
@@ -478,11 +478,11 @@ begin
       else
       begin
         FCriticalSection.Enter;
-        while InternetReadFile(hDownload, @Buf, SizeOf(Buf), BytesRead) do
+        while InternetReadFile(hDownload, @Buf, SizeOf(Buf), dwBytesRead) do
         begin
-          if BytesRead = 0 then Break;
-          Inc(TotalBytes,BytesRead);
-          FStream.Write(Buf, BytesRead);
+          if dwBytesRead = 0 then Break;
+//          Inc(dwTotalBytes,dwBytesRead);
+          FStream.Write(Buf, dwBytesRead);
           Progress;
         end;
         if FContinue then

@@ -41,7 +41,7 @@ type
     FAuthor: string;
     FTitle: string;
     FNumberFrames: Cardinal;
-    FHeader: TAniHeader;
+    FHeader: TJvAniHeader;
     FCurrentIcon: TIcon;
     FImage: TMemoryStream;
     FRate: TList;

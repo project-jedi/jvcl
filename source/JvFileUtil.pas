@@ -78,14 +78,7 @@ function GetTempDir: string;
 function GetWindowsDir: string;
 function GetSystemDir: string;
 
-// JvBrowseFolder.BrowseForFolder should be used instead
-function BrowseDirectory(var AFolderName: string; const DlgText: string;
-  AHelpContext: THelpContext): Boolean;  {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-
 {$IFDEF WIN32}
-// JvBrowseFolder.BrowseForComputer should be used instead
-function BrowseComputer(var AComputerName: string; const DlgText: string;
-  AHelpContext: THelpContext): Boolean;  {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
 function ShortToLongFileName(const ShortName: string): string;
 function ShortToLongPath(const ShortName: string): string;
 function LongToShortFileName(const LongName: string): string;
@@ -113,21 +106,9 @@ uses
   FileCtrl,
   {$ENDIF}
   ShellAPI, Forms,
-  JvDateUtil, JvVCLUtils, JvPrgrss, JvBrowseFolder;
+  JvDateUtil, JvVCLUtils, JvPrgrss;
 
 {$IFDEF WIN32}
-
-function BrowseDirectory(var AFolderName: string; const DlgText: string;
-  AHelpContext: THelpContext): Boolean;
-begin
-  Result := BrowseForFolder(DlgText, True, AFolderName, AHelpContext);
-end;
-
-function BrowseComputer(var AComputerName: string; const DlgText: string;
-  AHelpContext: THelpContext): Boolean;
-begin
-  Result := BrowseForComputer(DlgText, True, AComputerName, AHelpContext);
-end;
 
 //=== TJvFileOperator ========================================================
 

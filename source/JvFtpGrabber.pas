@@ -47,15 +47,15 @@ type
     FFileName: string;
     FPassword: string;
     FOutputMode: TJvOutputMode;
-    FOnError: TOnError;
-    FOnDoneFile: TOnDoneFile;
-    FOnDoneStream: TOnDoneStream;
-    FOnProgress: TOnFtpProgress;
+    FOnError: TJvErrorEvent;
+    FOnDoneFile: TJvDoneFileEvent;
+    FOnDoneStream: TJvDoneStreamEvent;
+    FOnProgress: TJvFTPProgressEvent;
     FMode: TJvDownloadMode;
     FAgent: string;
     FBytesRead: Integer;
     FErrorText: string;
-    FOnStatus: TOnFtpProgress;
+    FOnStatus: TJvFTPProgressEvent;
     FOnClosed: TNotifyEvent;
     function GetLastErrorMsg: string;
   protected
@@ -66,10 +66,10 @@ type
     procedure Closed;
   public
     constructor Create(Url, UserName, FileName, Password: string;
-      OutputMode: TJvOutputMode; OnError: TOnError;
-      OnDoneFile: TOnDoneFile; OnDoneStream: TOnDoneStream;
-      OnProgress: TOnFtpProgress; Mode: TJvDownloadMode; Agent: string;
-      OnStatus: TOnFtpProgress; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
+      OutputMode: TJvOutputMode; OnError: TJvErrorEvent;
+      OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
+      OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode; Agent: string;
+      OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
   end;
 
   TJvFtpGrabber = class(TJvComponent)
@@ -81,10 +81,10 @@ type
     FFileName: TFileName;
     FPassword: string;
     FOutputMode: TJvOutputMode;
-    FOnError: TOnError;
-    FOnDoneFile: TOnDoneFile;
-    FOnDoneStream: TOnDoneStream;
-    FOnProgress: TOnFtpProgress;
+    FOnError: TJvErrorEvent;
+    FOnDoneFile: TJvDoneFileEvent;
+    FOnDoneStream: TJvDoneStreamEvent;
+    FOnProgress: TJvFTPProgressEvent;
     FMode: TJvDownloadMode;
     FAgent: string;
     FOnReceived: TNotifyEvent;
@@ -119,10 +119,10 @@ type
     property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
     property Mode: TJvDownloadMode read FMode write FMode default hmBinary;
     property Agent: string read FAgent write FAgent;
-    property OnDoneFile: TOnDoneFile read FOnDoneFile write FOnDoneFile;
-    property OnDoneStream: TOnDoneStream read FOnDoneStream write FOnDoneStream;
-    property OnError: TOnError read FOnError write FOnError;
-    property OnProgress: TOnFtpProgress read FOnProgress write FOnProgress;
+    property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
+    property OnDoneStream: TJvDoneStreamEvent read FOnDoneStream write FOnDoneStream;
+    property OnError: TJvErrorEvent read FOnError write FOnError;
+    property OnProgress: TJvFTPProgressEvent read FOnProgress write FOnProgress;
     property OnResolvingName: TNotifyEvent read FOnResolving write FOnResolving;
     property OnResolvedName: TNotifyEvent read FOnResolved write FOnResolved;
     property OnConnectingToServer: TNotifyEvent read FOnConnecting write FOnConnecting;
@@ -280,10 +280,10 @@ end;
 //=== TJvFtpThread ===========================================================
 
 constructor TJvFtpThread.Create(Url, UserName, FileName,
-  Password: string; OutputMode: TJvOutputMode; OnError: TOnError;
-  OnDoneFile: TOnDoneFile; OnDoneStream: TOnDoneStream;
-  OnProgress: TOnFtpProgress; Mode: TJvDownloadMode;
-  Agent: string; OnStatus: TOnFtpProgress; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
+  Password: string; OutputMode: TJvOutputMode; OnError: TJvErrorEvent;
+  OnDoneFile: TJvDoneFileEvent; OnDoneStream: TJvDoneStreamEvent;
+  OnProgress: TJvFTPProgressEvent; Mode: TJvDownloadMode;
+  Agent: string; OnStatus: TJvFTPProgressEvent; Sender: TObject; OnClosedConnection: TNotifyEvent); // acp
 begin
   inherited Create(True);
   FUrl := Url;

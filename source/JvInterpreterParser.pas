@@ -577,7 +577,7 @@ var
   P, F: PChar;
   F1: PChar;
   I: Integer;
-  PointCount: Integer;
+//  PointCount: Integer;
 
   procedure Skip;
   begin

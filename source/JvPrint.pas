@@ -39,16 +39,16 @@ type
   private
     FOnBeginPrint: TNotifyEvent;
     FOnFinishedPrint: TNotifyEvent;
-    FOnProgress: TOnPrintProgress;
-    FOnNextPage: TOnNextPage;
+    FOnProgress: TJvPrintProgressEvent;
+    FOnNextPage: TJvNextPageEvent;
   published
     procedure Print(Value: TStringList);
-    procedure PrintImage(Value: TBitmap; Style: TBitmapStyle);
+    procedure PrintImage(Value: TBitmap; Style: TJvBitmapStyle);
     procedure Abort;
     property OnBeginPrint: TNotifyEvent read FOnBeginPrint write FOnBeginPrint;
     property OnFinishedPrint: TNotifyEvent read FOnFinishedPrint write FOnFinishedPrint;
-    property OnProgress: TOnPrintProgress read FOnProgress write FOnProgress;
-    property OnNextPage: TOnNextPage read FOnNextPage write FOnNextPage;
+    property OnProgress: TJvPrintProgressEvent read FOnProgress write FOnProgress;
+    property OnNextPage: TJvNextPageEvent read FOnNextPage write FOnNextPage;
   end;
 
 implementation
@@ -90,7 +90,7 @@ begin
     FOnFinishedPrint(Self);
 end;
 
-procedure TJvPrint.PrintImage(Value: TBitmap; Style: TBitmapStyle);
+procedure TJvPrint.PrintImage(Value: TBitmap; Style: TJvBitmapStyle);
 begin
   //let's print too :)
   if Assigned(FOnBeginPrint) then
