@@ -122,6 +122,7 @@ begin
   FGradient.Free;
   FCommentFont.Free;
   FSymbolFont.Free;
+  FGlyph.Free;
   inherited Destroy;
 end;
 
