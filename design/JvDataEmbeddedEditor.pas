@@ -40,7 +40,7 @@ uses
   JvDataEmbedded;
 
 type
-  TJvDataEmbeddedEditor = class(TClassProperty)
+{  TJvDataEmbeddedEditor = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
@@ -48,18 +48,25 @@ type
     procedure SetValue(const Value: string); override;
     procedure Edit; override;
   end;
+  }
+  TJvDataEmbeddedComponentEditor = class(TComponentEditor)
+  public
+    function GetVerbCount:integer;override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
+  end;
 
 implementation
 
 uses
   JvDsgnConsts;
 
-procedure TJvDataEmbeddedEditor.Edit;
+procedure LoadDataFromFile(Comp:TJvDataEmbedded);
 var
   Stream: TFileStream;
   MemStream: TMemoryStream;
 begin
-  MemStream := TMemoryStream(GetOrdValue);
+  MemStream := TMemoryStream(Comp.Data);
   with TOpenDialog.Create(nil) do
     try
       Filter := RsAllFilesFilter;
@@ -69,7 +76,7 @@ begin
         try
           MemStream.Clear;
           MemStream.CopyFrom(Stream, 0);
-          SetOrdValue(Integer(MemStream));
+//          Comp.Data := MemStream;
         finally
           Stream.Free;
         end;
@@ -78,10 +85,15 @@ begin
       Free;
     end;
 end;
+{
+procedure TJvDataEmbeddedEditor.Edit;
+begin
+  LoadDataFromFile(GetComponent(0) as TJvDataEmbedded);
+end;
 
 function TJvDataEmbeddedEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paDialog, paSortList];
+  Result := [paDialog, paSortList];
 end;
 
 function TJvDataEmbeddedEditor.GetValue: string;
@@ -97,6 +109,27 @@ end;
 procedure TJvDataEmbeddedEditor.SetValue(const Value: string);
 begin
   SetStrValue(RsJvEditorString);
+end;
+}
+
+{ TJvDataEmbeddedComponentEditor }
+
+procedure TJvDataEmbeddedComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  if Index = 0 then
+    LoadDataFromFile(Component as TJvDataEmbedded);
+end;
+
+function TJvDataEmbeddedComponentEditor.GetVerb(Index: Integer): string;
+begin
+  if Index = 0 then
+    Result := 'Load From File...';
+
+end;
+
+function TJvDataEmbeddedComponentEditor.GetVerbCount: integer;
+begin
+  Result := 1;
 end;
 
 end.
