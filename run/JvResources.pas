@@ -1779,7 +1779,7 @@ resourcestring
   RsTipsTitle = 'Tips and Tricks';
   RsTipsHeaderText = 'Did you know...';
   RsTipsCheckBoxText = '&Show Tips on Startup';
-  RsStoreShowOnStartUp = 'Show On Startup';
+  RsStoreShowOnStartUp = 'Show_On_Startup'; // (p3) Spaces in XML node names is not valid XML...
 
 //=== JvToolEdit.pas =========================================================
 resourcestring
