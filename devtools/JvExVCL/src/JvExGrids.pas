@@ -50,6 +50,18 @@ uses
 {$ENDIF VisualCLX}
 
 type
+{$IFDEF COMPILER6_UP}
+ {$IFDEF VCL}
+  {$DEFINE HAS_GRID_EDITSTYLE}
+ {$ENDIF VCL}
+{$ENDIF COMPILER6_UP}
+
+{$IFNDEF HAS_GRID_EDITSTYLE}
+ // Compiler 5 and VisualCLX do not have TEditStyle
+  TEditStyle = (esSimple, esEllipsis, esPickList);
+{$ENDIF HAS_GRID_EDITSTYLE}
+
+
   JV_WINCONTROL_EVENTS(InplaceEdit)
   JV_CUSTOMCONTROL_EVENTS(CustomGrid)
 {$IFDEF VCL}
@@ -58,8 +70,22 @@ type
   JV_WINCONTROL_EVENTS(InplaceEditList)
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
-  JV_CUSTOMCONTROL_EVENTS(DrawGrid)
-  JV_CUSTOMCONTROL_EVENTS(StringGrid)
+
+  JV_CUSTOMCONTROL_EVENTS_BEGIN(DrawGrid)
+  JV_CONSTRUCTOR
+  {$IFNDEF HAS_GRID_EDITSTYLE}
+  protected
+    function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
+  {$ENDIF !HAS_GRID_EDITSTYLE}
+  JV_CUSTOMCONTROL_EVENTS_END(DrawGrid)
+
+  JV_CUSTOMCONTROL_EVENTS_BEGIN(StringGrid)
+  JV_CONSTRUCTOR
+  {$IFNDEF HAS_GRID_EDITSTYLE}
+  protected
+    function GetEditStyle(ACol, ARow: Longint): TEditStyle; dynamic;
+  {$ENDIF !HAS_GRID_EDITSTYLE}
+  JV_CUSTOMCONTROL_EVENTS_END(StringGrid)
 
 implementation
 
@@ -71,7 +97,23 @@ JV_CUSTOMCONTROL_EVENTS_IMPL(CustomDrawGrid)
 JV_WINCONTROL_EVENTS_IMPL(InplaceEditList)
  {$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
-JV_CUSTOMCONTROL_EVENTS_IMPL(DrawGrid)
-JV_CUSTOMCONTROL_EVENTS_IMPL(StringGrid)
+
+JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(DrawGrid)
+{$IFNDEF HAS_GRID_EDITSTYLE}
+function TJvExDrawGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
+begin
+  Result := esSimple;
+end;
+{$ENDIF !HAS_GRID_EDITSTYLE}
+JV_CUSTOMCONTROL_EVENTS_IMPL_END(DrawGrid)
+
+JV_CUSTOMCONTROL_EVENTS_IMPL_BEGIN(StringGrid)
+{$IFNDEF HAS_GRID_EDITSTYLE}
+function TJvExStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle;
+begin
+  Result := esSimple;
+end;
+{$ENDIF !HAS_GRID_EDITSTYLE}
+JV_CUSTOMCONTROL_EVENTS_IMPL_END(StringGrid)
 
 end.

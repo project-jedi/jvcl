@@ -1,9 +1,12 @@
 {$UNDEF CONSTRUCTOR_CODE}
 {$UNDEF DESTRUCTOR_CODE}
+{$UNDEF IFISNOTCUSTOMFORM}
 
 {$DEFINE EMPTYLINE}
 {$DEFINE CONSTRUCTOR_CODE}
 {$DEFINE DESTRUCTOR_CODE}
+{$DEFINE IFISNOTCUSTOMFORM}
+
 
 // This comment is inserted into every JvExXxx.pas file
 (*$DEFINE WARNINGHEADER
@@ -54,6 +57,7 @@
 (*$DEFINE JV_CONTROL_EVENTS_DECL_VISUALCLX
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+    function IsRightToLeft: Boolean;
   protected
     WindowProc: TClxWindowProc;
     procedure WndProc(var Msg: TMessage); virtual;
@@ -126,11 +130,16 @@
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_VISUALCLX
+  private
+    FDoubleBuffered: Boolean;
   protected
     procedure BoundsChanged; override;
     function NeedKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    function GetDoubleBuffered: Boolean;
+  public
+    property DoubleBuffered: Boolean read GetDoubleBuffered write FDoubleBuffered;
 *)
 
 (*$DEFINE JV_WINCONTROL_EVENTS_DECL_COMMON
@@ -389,28 +398,13 @@ end;
 
 procedure TJvEx##ClassName.MouseEnter(Control: TControl);
 begin
-  if (not FMouseOver) and not (csDesigning in ComponentState) then
-  begin
-    FMouseOver := True;
-    FSavedHintColor := Application.HintColor;
-    if FHintColor <> clNone then
-      Application.HintColor := FHintColor;
-  end;
-  InheritMsgEx(Self, CM_MOUSEENTER, 0, Integer(Control));
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  Control_MouseEnter(Self, Control, FMouseOver, FSavedHintColor, FHintColor,
+    FOnMouseEnter);
 end;
 
 procedure TJvEx##ClassName.MouseLeave(Control: TControl);
 begin
-  if FMouseOver then
-  begin
-    FMouseOver := False;
-    Application.HintColor := FSavedHintColor;
-  end;
-  InheritMsgEx(Self, CM_MOUSELEAVE, 0, Integer(Control));
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  Control_MouseLeave(Self, Control, FMouseOver, FSavedHintColor, FOnMouseLeave);
 end;
 
 procedure TJvEx##ClassName.ParentColorChanged;
@@ -434,13 +428,7 @@ end;
 (*$DEFINE JV_CONTROL_EVENTS_IMPL_VISUALCLX(ClassName)
 procedure TJvEx##ClassName.MouseEnter(Control: TControl);
 begin
-  if (not FMouseOver) and not (csDesigning in ComponentState) then
-  begin
-    FMouseOver := True;
-    FSavedHintColor := Application.HintColor;
-    if FHintColor <> clNone then
-      Application.HintColor := FHintColor;
-  end;
+  Control_MouseEnter(Self, FMouseOver, FSavedHintColor, FHintColor);
   inherited MouseEnter(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseEnter) then
@@ -450,11 +438,7 @@ end;
 
 procedure TJvEx##ClassName.MouseLeave(Control: TControl);
 begin
-  if FMouseOver then
-  begin
-    FMouseOver := False;
-    Application.HintColor := FSavedHintColor;
-  end;
+  Control_MouseLeave(FMouseOver, FSavedHintColor);
   inherited MouseLeave(Control);
   {$IF not declared(PatchedVCLX)}
   if Assigned(FOnMouseLeave) then
@@ -487,6 +471,11 @@ end;
 procedure TJvEx##ClassName.WndProc(var Msg: TMessage);
 begin
   Dispatch(Msg);
+end;
+
+function TJvEx##ClassName.IsRightToLeft: Boolean;
+begin
+  Result := False;
 end;
 *) // MACRO END CONTROL_VISUALCLX
 
@@ -553,10 +542,15 @@ end;
 procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   if WidgetControl_Painting(Self, Canvas, EventRegion) <> nil then
-  begin // returns an interface
-    DoPaintBackground(Canvas, 0);
-    Paint;
+  begin
+    WidgetControl_PaintBackground(Self, Canvas);
+    IFISNOTCUSTOMFORM Paint;
   end;
+end;
+
+function TJvEx##ClassName.GetDoubleBuffered: Boolean;
+begin
+  Result := FDoubleBuffered;
 end;
 
 function TJvEx##ClassName.NeedKey(Key: Integer; Shift: TShiftState;
@@ -593,7 +587,7 @@ end;
 
 function TJvEx##ClassName.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 asm
-  JMP   JvExDoPaintBackground
+  JMP   DefaultDoPaintBackground
 end;
 
 *) // MACRO END WINCONTROL_COMMON
