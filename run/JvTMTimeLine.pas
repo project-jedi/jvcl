@@ -514,6 +514,8 @@ begin
   FChangeLink.Free;
   FMonthFont.Free;
   FSelection.Free;
+  FDateImages.Free;
+  FObjects.Free;
   inherited Destroy;
 end;
 
