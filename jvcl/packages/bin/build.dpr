@@ -113,7 +113,8 @@ var
 begin
   StartupInfo.cb := SizeOf(StartupInfo);
   GetStartupInfo(StartupInfo);
-  if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil, nil, StartupInfo, ProcessInfo) then
+  if CreateProcess(nil, PChar(Cmd), nil, nil, True, 0, nil, 
+    PChar(ExtractFileDir(ParamStr(0))), StartupInfo, ProcessInfo) then
   begin
     CloseHandle(ProcessInfo.hThread);
     WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
