@@ -3,7 +3,7 @@
 ----------------------------------------------------------------------------------------------------
 @@JvComCtrls.pas
 Summary
-  Contains the TJvComCtrls component.
+  Contains several enhanced Common Controls components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Petr Vones (petr dott v att mujmail dott cz)
@@ -51,36 +51,36 @@ See Also
 @@TJvHintSource
 <TITLE TJvHintSource type>
 Summary
-  Write here a summary (1 line)
+  Defines the available hint sources for controls that can have multiple hints depending on the
+  location of the mouse.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvHintSource is used in TJvPageControl to determine the hint to display when the user moves the mouse over the control.
 @@TJvHintSource.hsDefault
-  Description for hsDefault
+  Display the default hint.
 @@TJvHintSource.hsForceMain
-  Description for hsForceMain
+  Always display the main hint. If no main hint is available, display nothing.
 @@TJvHintSource.hsForceChildren
-  Description for hsForceChildren
+  Always display a child hint. If no child hint is available, display nothing.
 @@TJvHintSource.hsPreferMain
-  Description for hsPreferMain
+  Display the main hint. If no main hint is available, display a child hint (if available).
 @@TJvHintSource.hsPreferChildren
-  Description for hsPreferChildren
+  Display the child hint. If no child hint is available, display the main hint (if available).
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress
 <TITLEIMG TJvIPAddress>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Edits
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  An edit control that can display and edit IP values.
 Description
-  Write here a description
+  Use a TJvIPAddress when you need to display IP values to your users. TJvIPAddress has separate fields
+  for each part of the IP address as well as several properties, methods and events to limit
+  the input in each field.
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.Address
 Summary
-  Write here a summary (1 line)
+  Indicates the IP address as an integer value
 Description
   Write here a description
 See Also
@@ -89,7 +89,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.AddressValues
 Summary
-  Write here a summary (1 line)
+  Provides access to individual address values.
 Description
   Write here a description
 See Also
@@ -98,7 +98,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.ClearAddress
 Summary
-  Write here a summary (1 line)
+  Empties the control.
 Description
   Write here a description
 See Also
@@ -107,7 +107,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvIPAddress.IsBlank
 Summary
-  Write here a summary (1 line)
+  Resturns true if the control is empty.
 Description
   Write here a description
 Return value
@@ -715,21 +715,18 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.ItemHeight
 Summary
-  Write here a summary (1 line)
+  Specifies the height of the node items.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ItemHeight to specify the height of the node in the treeview.
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.LineColor
 Summary
-  Write here a summary (1 line)
+  Specifies the color to use for the node connection line.
 Description
-  Write here a description
+  Use LineColor to specify the color used for the line connecting nodes in the tree. ShowLines
+  must be true for this property to have any effect.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ShowLines
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.MaxScrollTime
 Summary
@@ -744,20 +741,20 @@ See Also
 Summary
   Specifies a menu that is used as the items of the tree view.
 Description
-  Assign a TMenu (or descendant, like TMainMenu or TPopupMenu) to the Menu property of the control to
+  Assign a TMenu (or a descendant, like TMainMenu or TPopupMenu) to the Menu property of the control to
   make the treeview use the menu's items for its structure.
 
-  Whena menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
+  When a menu is assigned, clicking a node in the tree view has the same effect as clicking the menu
   item itself (see MenuDblClick for details).  
 
   Only menu items with valid captions (all captions except '-' and '') are added to the treeview.
 Note
   TJvTreeView replaces the OnChange event of the assigned TMenu to be notified about changes in the
-  menus structure. The original OnCHange event is called automatically (if assigned). If you need to
-  replace the menu's OnChange event at run-time, you should first set Menu equal to nil, replace the
-  menu's OnChange event and reset the Menu property to its previous value.
+  menu's structure. The original OnChange event is called automatically (if assigned). If you need to
+  replace the menu's OnChange event at run-time, you should first set Menu to nil, replace the
+  OnChange event and reset the Menu property to its previous value.
 
-  Failing to do so, can cause errors and even Access Violations exceptions in your program.
+  Failing to do so can cause errors and even Access Violation exceptions in your program.
 See Also
   MenuDblClick
 ----------------------------------------------------------------------------------------------------
@@ -778,7 +775,7 @@ See Also
 Summary
   Occurs when the treeview needs to determine which page to activate in a page control.
 Description
-  Assign a handler to this event to control which page is slected in a page control when a specific node is
+  Assign a handler to this event to control which page is selected in a page control when a specific node is
   clicked. This event is only triggered if PageControl is assigned.
 
   If no handler is assigned, TJvTreeView selects the first tab in the page control where the Caption matches the Text
@@ -793,43 +790,37 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnCustomDrawItem
 Summary
-  Write here a summary (1 line)
+  Occurs when the treeview needs to be drawn.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Assign a handler to this event to perform your own custom drawing of the treeview.
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnEditCancelled
 Summary
-  Write here a summary (1 line)
+  Occurs when the user is canceling the editing of a node text.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write a handler for this event to take specific actions when the user cancels the editing of a node's text.
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnHorizontalScroll
 Summary
-  Write here a summary (1 line)
+  Occurs when the horizontal scrollbar is moved.
 Description
-  Write here a description
+  Write a handler for this event to take specific action when the horizontal scrollbar is changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnVerticalScroll
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnPageChanged
 Summary
-  Write here a summary (1 line)
+  Occurs when the active tab of an associated page control is changed.
 Description
-  Write here a description
+  Write a handler for this event to take specific action when clicking a node in the tree changes the
+  active tab of an associated page control. This event only occurs when a page control is assigned to the
+  PageControl property and a matching tab is found.
 Parameters
-  Sender - Description for this parameter
-  Item   - Description for this parameter
-  Page   - Description for this parameter
+  Sender - The control that triggered the event.
+  Item   - The selected node
+  Page   - The new active page in the page control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PageControl
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnParentColorChange
 Summary
@@ -848,21 +839,26 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.OnVerticalScroll
 Summary
-  Write here a summary (1 line)
+  Occurs when the vertical scrollbar is moved.
 Description
-  Write here a description
+  Write a handler for this event to take specific action when the vertical scrollbar is changed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnHorizontalScroll
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.PageControl
 Summary
-  Write here a summary (1 line)
+  Specifies a page control to associate with the control.
 Description
-  Write here a description
+  Assign a TPageControl (or descendant) to this property to make the treeview automatically change
+  the active tab when a node is clicked in the treeview.
+
+  By default, the treeview searches the tabs of the page control for a a caption matching
+  the text of the node. If no tab is found, the active tab is not changed.
+
+  To control what tab gets activated, write a handler for the OnComparePage event.
+
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnPageChanged, OnComparePage
 ----------------------------------------------------------------------------------------------------
 @@TJvTreeView.RemoveMark
 Summary
