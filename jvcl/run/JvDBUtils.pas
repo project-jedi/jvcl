@@ -870,7 +870,7 @@ begin
     for I := 0 to Source.FieldCount - 1 do
     begin
       F := Dest.FindField(Source.Fields[I].FieldName);
-      if F <> nil then
+      if (F <> nil) and (F.DataType <> ftAutoInc) then
         F.Value := Source.Fields[I].Value;
     end;
   end
@@ -880,7 +880,7 @@ begin
     begin
       F := Dest.FindField(Dest.FieldDefs[I].Name);
       FSrc := Source.FindField(Source.FieldDefs[I].Name);
-      if (F <> nil) and (FSrc <> nil) then
+      if (F <> nil) and (FSrc <> nil) and (F.DataType <> ftAutoInc) then
         F.Value := FSrc.Value;
     end;
   end;
