@@ -752,7 +752,7 @@ type
     property AutoCompleteOptions;
     property AutoCompleteFileOptions default [acfFileSystem, acfFileSysDirs];
     property Flat;
-    property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
+    property DialogOptions: TSelectDirOpts read FOptions write FOptions default [sdAllowCreate];
     {$ENDIF VCL}
     property InitialDir: string read FInitialDir write FInitialDir;
     property MultipleDirs: Boolean read FMultipleDirs write FMultipleDirs default False;
