@@ -26,8 +26,8 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
 {$I JEDI.INC}
-
 unit JvAnalogClock;
+
 interface
 
 uses
@@ -35,13 +35,20 @@ uses
   ExtCtrls, JVCLVer;
 
 type
-  TJvNotifyTime = procedure(Sender: TObject; nVal: integer) of object;
-  TJvHrStyle = (hsLine, hsCircle, hsNumber, hsNumInCir);
+  TJvNotifyTime = procedure(Sender: TObject; nHour, nMin, nSec: integer) of
+    object;
+  TJvHourStyle = (hsLine, hsCircle, hsNumber, hsNumInCir);
+  TJvHourMarks = (hmNone, hmFour, hmAll);
   TJvAnalogClock = class(TCustomPanel)
   private
     { Private declarations }
-    phStyle: TJvHrStyle;
+    FAboutJVCL:TJVCLAboutInfo;
+    phStyle: TJvHourStyle;
+    pmStyle: TJvHourStyle;
+    pHrMarks: TJvHourMarks;
     pnHrSize: integer;
+    pnMinSize: integer;
+    pnMinFontSize: integer;
 
     OldS: Word;
 
@@ -57,6 +64,7 @@ type
     plColHr: TColor;
     plColHrIn: TColor;
     plColMin: TColor;
+    plColMinIn: TColor;
     plColHandHr: TColor;
     plColHandMin: TColor;
     plColHandSec: TColor;
@@ -65,6 +73,7 @@ type
     pnWidthHandHr: Byte;
     pnWidthHandSec: Byte;
     pnWidthHr: Byte;
+    pnWidthMin: Byte;
 
     pnCenterSize: Byte;
     pnCenterCol: TColor;
@@ -84,7 +93,8 @@ type
     FOnChangeMin: TJvNotifyTime;
     FOnChangeHour: TJvNotifyTime;
     FOnSameTime: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
+
+//  	pfMinFont :TFont;
   protected
 
     { Protected declarations }
@@ -93,10 +103,30 @@ type
     procedure PplSpider(Value: Boolean);
     procedure PplEnabled(Value: boolean);
     procedure PplMinMarks(Value: boolean);
-    procedure PphStyle(Value: TJvHrStyle);
-    procedure pphrSize(Value: integer);
+    procedure PphStyle(Value: TJvHourStyle);
+    procedure PpmStyle(Value: TJvHourStyle);
+    procedure PpHrMarks(Value: TJvHourMarks);
+//		procedure ppHrSize(Value: integer);
+    procedure ppHrSize(Value: integer);
+    procedure ppMinSize(Value: integer);
+    procedure ppMinFontSize(Value: integer);
     procedure PpdUra(Value: TDateTime);
     procedure PpnOffs(Value: integer);
+    procedure PplColHr(Value: TColor);
+    procedure PplColHrIn(Value: TColor);
+    procedure PplColMin(Value: TColor);
+    procedure PplColMinIn(Value: TColor);
+
+    procedure PplColHandHr(Value: TColor);
+    procedure PplColHandMin(Value: TColor);
+    procedure PplColHandSec(Value: TColor);
+
+    procedure PpnWidthHandMin(Value: Byte);
+    procedure PpnWidthHandHr(Value: Byte);
+    procedure PpnWidthHandSec(Value: Byte);
+    procedure PpnWidthHr(Value: Byte);
+    procedure PpnWidthMin(Value: Byte);
+
     procedure Zrisi;
     procedure Loaded; override;
     procedure Resize; override;
@@ -104,40 +134,56 @@ type
     procedure ActTimer(Sender: TObject);
 
     procedure DoAlarm;
-    procedure DoChangeSec(nSec: integer);
-    procedure DoChangeMin(nMin: integer);
-    procedure DoChangeHour(nHr: integer);
+    procedure DoChangeSec(nHr, nMin, nSec: integer);
+    procedure DoChangeMin(nHr, nMin, nSec: integer);
+    procedure DoChangeHour(nHr, nMin, nSec: integer);
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     { Published declarations }
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Date: Boolean read plDate write PplDate default True;
+    property AboutJVCL:TJVCLAboutInfo read FAboutJVCL write FAboutJVCL;
+
+    property Date: Boolean read plDate write PplDate default false;
     property ClockEnabled: Boolean read plEnabled write PplEnabled default True;
     property TimeSet: TDateTime read pdUra write PpdUra;
-    property TimeOffset: Integer read pnOffs write PpnOffs;
-    property SpiderClock: Boolean read plSpider write PplSpider;
-    property SecJump: Boolean read plSecJump write PplSecJump default False;
+    property TimeOffset: Integer read pnOffs write PpnOffs default 0;
+    property SpiderClock: Boolean read plSpider write PplSpider default false;
+    property SecJump: Boolean read plSecJump write PplSecJump default false;
     property Seconds: Boolean read plSekunde write plSekunde default True;
     property MinMarks: Boolean read plMinMarks write pplMinMarks default True;
-    property HrStyle: TJvHrStyle read phStyle write pphStyle default hsLine;
+    property HrStyle: TJvHourStyle read phStyle write pphStyle default hsLine;
+    property MinStyle: TJvHourStyle read pmStyle write ppmStyle default hsLine;
+    property HrMarks: TJvHourMarks read pHrMarks write ppHrMarks default hmAll;
     property HrSize: integer read pnHrSize write ppHrSize default 12;
-    property ColorHr: TColor read plColHr write plColHr default clBlack;
-    property ColorHrIn: TColor read plColHrIn write plColHrIn default clBlack;
-    property ColorMin: TColor read plColMin write plColMin default clBlack;
-    property ColorHandHr: TColor read plColHandHr write plColHandHr default clBlack;
-    property ColorHandMin: TColor read plColHandMin write plColHandMin default clBlack;
-    property ColorHandSec: TColor read plColHandSec write plColHandSec default clBlack;
+    property MinSize: integer read pnMinSize write ppMinSize default 7;
+    property MinFontSize: integer read pnMinFontSize write ppMinFontSize default
+      7;
+    property ColorHr: TColor read plColHr write PplColHr default clBlack;
+    property ColorHrIn: TColor read plColHrIn write PplColHrIn default clBlack;
+    property ColorMin: TColor read plColMin write PplColMin default clBlack;
+    property ColorMinIn: TColor read plColMinIn write PplColMinIn default  clBlack;
+    property ColorHandHr: TColor read plColHandHr write PplColHandHr default clBlack;
+    property ColorHandMin: TColor read plColHandMin write PplColHandMin default
+      clBlack;
+    property ColorHandSec: TColor read plColHandSec write PplColHandSec default
+      clBlack;
 
-    property WidthHandSec: Byte read pnWidthHandSec write pnWidthHandSec default 1;
-    property WidthHandMin: Byte read pnWidthHandMin write pnWidthHandMin default 3;
-    property WidthHandHr: Byte read pnWidthHandHr write pnWidthHandHr default 3;
-    property WidthHr: Byte read pnWidthHr write pnWidthHr default 2;
+    property WidthHandSec: Byte read pnWidthHandSec write PpnWidthHandSec default
+      1;
+    property WidthHandMin: Byte read pnWidthHandMin write PpnWidthHandMin default
+      3;
+    property WidthHandHr: Byte read pnWidthHandHr write PpnWidthHandHr default
+      5;
+    property WidthHr: Byte read pnWidthHr write PpnWidthHr default 2;
+    property WidthMin: Byte read pnWidthMin write PpnWidthMin default 1;
+
+//    property MinFont :TFont read pfMinFont write pfMinFont;
 
     property CenterSize: Byte read pnCenterSize write pnCenterSize default 3;
-    property CenterCol: TColor read pnCenterCol write pnCenterCol default clPurple;
+    property CenterCol: TColor read pnCenterCol write pnCenterCol default
+      clPurple;
 
     property Align;
     property Color default clBtnFace;
@@ -172,26 +218,31 @@ type
     property OnResize;
     property OnStartDrag;
 
-    property Width default 140;
-    property Height default 140;
+    property Width default 137;
+    property Height default 137;
     property BevelWidth;
-    property BevelInner default bvNone; // bvLowered;
-    property BevelOuter default bvNone; // bvRaised;
+    property BevelInner default bvRaised;
+    property BevelOuter default bvLowered;
   end;
+
 
 implementation
 
-constructor TJvAnalogClock.Create;
+{.$R *.res}
+
+constructor TJvAnalogClock.Create(AOwner: TComponent);
+var
+  h, m, s, hund: word;
 begin
   inherited;
-  // (p3) changed some defaults to "dull it down" :)
-  BevelOuter := bvNone; // bvLowered;
-  BevelInner := bvNone; // bvRaised;
-  BevelWidth := 1;
+  BevelInner := bvRaised;
+  BevelOuter := bvLowered;
   pnHrSize := 12;
+  pnMinSize := 7;
+  pnMinFontSize := 7;
 
-//  plSpider := True;
-  plSecJump := False;
+  plSpider := True;
+  plSecJump := false;
   plEnabled := True;
 
   FTimer := TTimer.Create(Self);
@@ -207,9 +258,14 @@ begin
   plMinMarks := True;
   nDeli := 50;
 
+  phStyle := hsLine;
+  pmStyle := hsLine;
+  pHrMarks := hmAll;
+
   plColHr := clBlack;
   plColHrIn := clBlack;
   plColMin := clBlack;
+  plColMinIn := clBlack;
   plColHandHr := clBlack;
   plColHandMin := clBlack;
   plColHandSec := clBlack;
@@ -218,16 +274,34 @@ begin
   pnWidthHandMin := 3;
   pnWidthHandHr := 5;
   pnWidthHr := 2;
+  pnWidthMin := 1;
 
   pnCenterCol := clBlack;
   pnCenterSize := 5;
 
-  //Zrisi;
+//  pfMinFont := TFont.Create;
+//  pfMinFont := TTextAttributes.Create;
+//	pfMinFont.Assign(Font);
+//	pfMinFont.Charset := Font.Charset;
+//	pfMinFont.Name := Font.Name;
+//	pfMinFont.Color := Font.Color;
+//	pfMinFont.Size := Font.Size;
+//	pfMinFont.Style := Font.Style;
+//	pfMinFont.Pitch := Font.Pitch;
+//	pfMinFont.FontAdapter := Font.FontAdapter;
+//	pfMinFont.OnChange := Font.OnChange;
+ //Zrisi;
+
+  DecodeTime(Now, h, m, s, hund);
+  OldMin := m;
+  OldHour := h;
+  OldSec := s;
 end;
 
 destructor TJvAnalogClock.Destroy;
 begin
   FTimer.Free;
+//  pfMinFont.Free;
   inherited;
 end;
 
@@ -248,7 +322,6 @@ begin
   inherited;
   Zrisi;
 end;
-
 
 procedure TJvAnalogClock.PpdUra(Value: TDateTime);
 begin
@@ -284,9 +357,21 @@ begin
   Invalidate;
 end;
 
-procedure TJvAnalogClock.pphStyle(Value: TJvHrStyle);
+procedure TJvAnalogClock.pphStyle(Value: TJvHourStyle);
 begin
   phStyle := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.ppmStyle(Value: TJvHourStyle);
+begin
+  pmStyle := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.ppHrMarks(Value: TJvHourMarks);
+begin
+  pHrMarks := Value;
   Invalidate;
 end;
 
@@ -296,10 +381,94 @@ begin
   Invalidate;
 end;
 
+procedure TJvAnalogClock.ppMinSize(Value: integer);
+begin
+  pnMinSize := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.ppMinFontSize(Value: integer);
+begin
+  pnMinFontSize := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PplColHr(Value: TColor);
+begin
+  plColHr := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PplColHrIn(Value: TColor);
+begin
+  plColHrIn := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PplColMinIn(Value: TColor);
+begin
+  plColMinIn := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PplColMin(Value: TColor);
+begin
+  plColMin := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PplColHandHr(Value: TColor);
+begin
+  plColHandHr := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PplColHandMin(Value: TColor);
+begin
+  plColHandMin := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PplColHandSec(Value: TColor);
+begin
+  plColHandSec := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PpnWidthHandSec(Value: Byte);
+begin
+  pnWidthHandSec := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PpnWidthHandMin(Value: Byte);
+begin
+  pnWidthHandMin := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PpnWidthHandHr(Value: Byte);
+begin
+  pnWidthHandHr := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PpnWidthHr(Value: Byte);
+begin
+  pnWidthHr := Value;
+  Invalidate;
+end;
+
+procedure TJvAnalogClock.PpnWidthMin(Value: Byte);
+begin
+  pnWidthMin := Value;
+  Invalidate;
+end;
+
 procedure TJvAnalogClock.PplSecJump(Value: Boolean);
 begin
   plSecJump := Value;
-  //if plSecJump then FTimer.Interval := 500 else FTimer.Interval := 100;
+//if plSecJump then FTimer.Interval := 500 else FTimer.Interval := 100;
 end;
 
 procedure TJvAnalogClock.PplSpider(Value: Boolean);
@@ -312,7 +481,7 @@ procedure TJvAnalogClock.PplDate(Value: Boolean);
 begin
   plDate := Value;
   Invalidate;
-  //Zrisi;
+//Zrisi;
 end;
 
 procedure TJvAnalogClock.DoAlarm;
@@ -321,37 +490,38 @@ begin
     FOnSameTime(Self);
 end;
 
-procedure TJvAnalogClock.DoChangeSec(nSec: integer);
+procedure TJvAnalogClock.DoChangeSec(nHr, nMin, nSec: integer);
 begin
   if Assigned(FOnChangeSec) and not (csDestroying in ComponentState) then
-    FOnChangeSec(Self, nSec);
+    FOnChangeSec(Self, nHr, nMin, nSec);
 end;
 
-procedure TJvAnalogClock.DoChangeMin(nMin: integer);
+procedure TJvAnalogClock.DoChangeMin(nHr, nMin, nSec: integer);
 begin
   if Assigned(FOnChangeMin) and not (csDestroying in ComponentState) then
-    FOnChangeMin(Self, nMin);
+    FOnChangeMin(Self, nHr, nMin, nSec);
 end;
 
-procedure TJvAnalogClock.DoChangeHour(nHr: integer);
+procedure TJvAnalogClock.DoChangeHour(nHr, nMin, nSec: integer);
 begin
   if Assigned(FOnChangeHour) and not (csDestroying in ComponentState) then
-    FOnChangeHour(Self, nHr);
+    FOnChangeHour(Self, nHr, nMin, nSec);
 end;
+
 
 procedure TJvAnalogClock.Zrisi;
 var
   fak: real;
   t: Integer;
-  nUrca: Integer; //??
+  nUrca: Integer;                       //??
   npkT, nXT, nYT: Integer;
   rT: Trect;
   sT: ShortString;
 begin
 
-  npx := ((Width) div 2); {Center}
+  npx := ((Width) div 2);               {Center}
   npy := ((Height) div 2);
-  //if plDate then npy := ((Height - pFDate.Height) div 2);
+//if plDate then npy := ((Height - pFDate.Height) div 2);
   if plDate then
     npy := ((Height - (Font.Height + 4)) div 2);
 
@@ -375,102 +545,167 @@ begin
 
   if plMinMarks then
   begin
-    for t := 0 to 59 do
+    if pmStyle = hsLine then
     begin
-      if (phStyle = hsNumInCir) or ((t mod 5) > 0) then
+      Canvas.Pen.Color := plColMin;
+      Canvas.Pen.Width := pnWidthMin;
+      fak := (Pi / (3000));
+      for t := 0 to 59 do
       begin
-        nUrca := ((t) * 100);
-        fak := (Pi / (3000));
-        if plSpider then
+        if (phStyle = hsNumInCir) or ((t mod 5) > 0) or (pHrMarks = hmNone) or
+          ((pHrMarks = hmFour) and (((t div 5) mod 3) > 0)) then
         begin
-          npkT := Round(SQRT(Abs((npYk) * cos(nUrca * fak)) * Abs((npYk) * cos(nUrca * fak)) + Abs((npXk) * sin(nUrca * fak)) * Abs((npXk) * sin(nUrca * fak))));
-        end
-        else
+          nUrca := ((t) * 100);
+          if plSpider then
+          begin
+            npkT := Round(SQRT(Abs((npYk) * cos(nUrca * fak)) * Abs((npYk) *
+              cos(nUrca * fak)) + Abs((npXk) * sin(nUrca * fak)) * Abs((npXk) *
+              sin(nUrca * fak))));
+          end
+          else
+          begin
+            if npYk < npXk then
+              npkT := npYk
+            else
+              npkT := npXk;
+          end;
+          Canvas.MoveTo(npX + Round((npk + 1) * sin(nUrca * fak)), npY -
+            Round((npk + 1) * cos(nUrca * fak)));
+          nXT := npX + Round((npkT + pnMinSize) * sin(nUrca * fak));
+          if nXT > npX + npXK + pnMinSize then
+            nXT := npX + npXK + pnMinSize;
+          if nXT < npX - npXK - pnMinSize then
+            nXT := npX - npXK - pnMinSize;
+          nYT := npY - Round((npkT + pnMinSize) * cos(nUrca * fak));
+          if nYT > npY + npYK + pnMinSize then
+            nYT := npY + npYK + pnMinSize;
+          if nYT < npY - npYK - pnMinSize then
+            nYT := npY - npYK - pnMinSize;
+          Canvas.LineTo(nXT, nYT);
+        end;
+      end;
+    end
+    else
+    begin
+      Canvas.Pen.Color := plColMin;
+      Canvas.Pen.Width := pnWidthMin;
+      if (pmStyle = hsNumber) or (pmStyle = hsNumInCir) then
+      begin
+        Canvas.Font := Font;
+        Canvas.Font.Size := pnMinFontSize;
+      end;
+      fak := (Pi / (3000));
+      for t := 0 to 59 do
+      begin
+        if ((t mod 5) > 0) or (pHrMarks = hmNone) or ((pHrMarks = hmFour) and
+          (((t div 5) mod 3) > 0)) then
+//			if ((t mod 5) > 0) then
         begin
+          nUrca := ((t) * 100);
           if npYk < npXk then
             npkT := npYk
           else
             npkT := npXk;
+
+          nXT := npX + 1 + Round((npkT + (pnMinSize div 2)) * sin(nUrca * fak));
+          nYT := npY + 1 - Round((npkT + (pnMinSize div 2)) * cos(nUrca * fak));
+          rT := rect(nXT - (pnMinSize div 2), nYT - (pnMinSize div 2), nXT +
+            (pnMinSize div 2), nYT + (pnMinSize div 2));
+          sT := inttostr(t);
+          if (pmStyle = hsCircle) or (pmStyle = hsNumInCir) then
+          begin
+            Canvas.Brush.Color := plColMinIn;
+            Canvas.Brush.Style := bsSolid;
+            Canvas.Ellipse(rT);
+          end;
+          if (pmStyle = hsNumber) or (pmStyle = hsNumInCir) then
+          begin
+            Canvas.Brush.Style := bsClear;
+            Canvas.TextRect(rT, rT.Right - ((rT.Right - rT.Left) div 2) -
+              (Canvas.TextWidth(sT) div 2) - 1, rT.Bottom - ((rT.Bottom - rT.Top)
+              div 2) - (Canvas.TextHeight(sT) div 2) - 1, sT);
+          end;
         end;
-        Canvas.Pen.Color := plColMin;
-        Canvas.Pen.Width := 1;
-        Canvas.MoveTo(npX + Round((npk + 1) * sin(nUrca * fak)), npY - Round((npk + 1) * cos(nUrca * fak)));
-        nXT := npX + Round((npkT + 7) * sin(nUrca * fak));
-        if nXT > npX + npXK + 7 then
-          nXT := npX + npXK + 7;
-        if nXT < npX - npXK - 7 then
-          nXT := npX - npXK - 7;
-        nYT := npY - Round((npkT + 7) * cos(nUrca * fak));
-        if nYT > npY + npYK + 7 then
-          nYT := npY + npYK + 7;
-        if nYT < npY - npYK - 7 then
-          nYT := npY - npYK - 7;
-        Canvas.LineTo(nXT, nYT);
       end;
     end;
   end;
 
-  if phStyle = hsLine then
+  if pHrMarks <> hmNone then
   begin
-    Canvas.Pen.Color := plColHr;
-    Canvas.Pen.Width := pnWidthHr;
-    for t := 1 to 12 do
+    if phStyle = hsLine then
     begin
-      nUrca := ((t) * 100) * 30 div 6;
+      Canvas.Pen.Color := plColHr;
+      Canvas.Pen.Width := pnWidthHr;
       fak := (Pi / (3000));
-      if plSpider then
+      for t := 1 to 12 do
       begin
-        npkT := Round(SQRT(Abs((npYk) * cos(nUrca * fak)) * Abs((npYk) * cos(nUrca * fak)) + Abs((npXk) * sin(nUrca * fak)) * Abs((npXk) * sin(nUrca * fak))));
-      end
-      else
-      begin
-        if npYk < npXk then
-          npkT := npYk
-        else
-          npkT := npXk;
+        if (pHrMarks = hmAll) or ((pHrMarks = hmFour) and ((t mod 3) = 0)) then
+        begin
+          nUrca := ((t) * 100) * 30 div 6;
+          if plSpider then
+          begin
+            npkT := Round(SQRT(Abs((npYk) * cos(nUrca * fak)) * Abs((npYk) *
+              cos(nUrca * fak)) + Abs((npXk) * sin(nUrca * fak)) * Abs((npXk) *
+              sin(nUrca * fak))));
+          end
+          else
+          begin
+            if npYk < npXk then
+              npkT := npYk
+            else
+              npkT := npXk;
+          end;
+          Canvas.MoveTo(npX + Round((npk + 1) * sin(nUrca * fak)), npY -
+            Round((npk + 1) * cos(nUrca * fak)));
+          nXT := npX + Round((npkT + pnHrSize) * sin(nUrca * fak));
+          if nXT > npX + npXK + pnHrSize then
+            nXT := npX + npXK + pnHrSize;
+          if nXT < npX - npXK - pnHrSize then
+            nXT := npX - npXK - pnHrSize;
+          nYT := npY - Round((npkT + pnHrSize) * cos(nUrca * fak));
+          if nYT > npY + npYK + pnHrSize then
+            nYT := npY + npYK + pnHrSize;
+          if nYT < npY - npYK - pnHrSize then
+            nYT := npY - npYK - pnHrSize;
+          Canvas.LineTo(nXT, nYT);
+        end;
       end;
-      Canvas.MoveTo(npX + Round((npk + 1) * sin(nUrca * fak)), npY - Round((npk + 1) * cos(nUrca * fak)));
-      nXT := npX + Round((npkT + pnHrSize) * sin(nUrca * fak));
-      if nXT > npX + npXK + pnHrSize then
-        nXT := npX + npXK + pnHrSize;
-      if nXT < npX - npXK - pnHrSize then
-        nXT := npX - npXK - pnHrSize;
-      nYT := npY - Round((npkT + pnHrSize) * cos(nUrca * fak));
-      if nYT > npY + npYK + pnHrSize then
-        nYT := npY + npYK + pnHrSize;
-      if nYT < npY - npYK - pnHrSize then
-        nYT := npY - npYK - pnHrSize;
-      Canvas.LineTo(nXT, nYT);
-    end;
-  end
-  else
-  begin
-    Canvas.Pen.Color := plColHr;
-    Canvas.Pen.Width := pnWidthHr;
-    if (phStyle = hsNumber) or (phStyle = hsNumInCir) then
-      Canvas.Font := Font;
-    for t := 1 to 12 do
+    end
+    else
     begin
-      nUrca := ((t) * 100) * 30 div 6;
-      fak := (Pi / (3000));
-      if npYk < npXk then
-        npkT := npYk
-      else
-        npkT := npXk;
-      nXT := npX + 1 + Round((npkT + (pnHrSize div 2)) * sin(nUrca * fak));
-      nYT := npY + 1 - Round((npkT + (pnHrSize div 2)) * cos(nUrca * fak));
-      rT := rect(nXT - (pnHrSize div 2), nYT - (pnHrSize div 2), nXT + (pnHrSize div 2), nYT + (pnHrSize div 2));
-      sT := inttostr(t);
-      if (phStyle = hsCircle) or (phStyle = hsNumInCir) then
-      begin
-        Canvas.Brush.Color := plColHrIn;
-        Canvas.Brush.Style := bsSolid;
-        Canvas.Ellipse(rT);
-      end;
+      Canvas.Pen.Color := plColHr;
+      Canvas.Pen.Width := pnWidthHr;
       if (phStyle = hsNumber) or (phStyle = hsNumInCir) then
+        Canvas.Font := Font;
+      fak := (Pi / (3000));
+      for t := 1 to 12 do
       begin
-        Canvas.Brush.Style := bsClear;
-        Canvas.TextRect(rT, rT.Right - ((rT.Right - rT.Left) div 2) - (Canvas.TextWidth(sT) div 2) - 1, rT.Bottom - ((rT.Bottom - rT.Top) div 2) - (Canvas.TextHeight(sT) div 2) - 1, sT);
+        if (pHrMarks = hmAll) or ((pHrMarks = hmFour) and ((t mod 3) = 0)) then
+        begin
+          nUrca := ((t) * 100) * 30 div 6;
+          if npYk < npXk then
+            npkT := npYk
+          else
+            npkT := npXk;
+          nXT := npX + 1 + Round((npkT + (pnHrSize div 2)) * sin(nUrca * fak));
+          nYT := npY + 1 - Round((npkT + (pnHrSize div 2)) * cos(nUrca * fak));
+          rT := rect(nXT - (pnHrSize div 2), nYT - (pnHrSize div 2), nXT +
+            (pnHrSize div 2), nYT + (pnHrSize div 2));
+          sT := inttostr(t);
+          if (phStyle = hsCircle) or (phStyle = hsNumInCir) then
+          begin
+            Canvas.Brush.Color := plColHrIn;
+            Canvas.Brush.Style := bsSolid;
+            Canvas.Ellipse(rT);
+          end;
+          if (phStyle = hsNumber) or (phStyle = hsNumInCir) then
+          begin
+            Canvas.Brush.Style := bsClear;
+            Canvas.TextRect(rT, rT.Right - ((rT.Right - rT.Left) div 2) -
+              (Canvas.TextWidth(sT) div 2) - 1, rT.Bottom - ((rT.Bottom - rT.Top)
+              div 2) - (Canvas.TextHeight(sT) div 2) - 1, sT);
+          end;
+        end;
       end;
     end;
   end;
@@ -509,22 +744,22 @@ begin
     hund := 0;
   end;
 
-  //event handler by Ujlaki Sándor e-mail: ujlaki.sandor@drotposta.hu
-  if plEnabled and (s <> OldSec) then //every seconds
+//event handler by Ujlaki Sándor e-mail: ujlaki.sandor@drotposta.hu
+  if plEnabled and (s <> OldSec) then   //every seconds
   begin
     OldSec := s;
-    DoChangeSec(s);
+    DoChangeSec(h, m, s);
     DecodeTime(pdUra, h1, m1, s1, hund1);
     if (s1 = s) and (m1 = m) and (h1 = h) then
       DoAlarm;
     if m <> OldMin then
     begin
       OldMin := m;
-      DoChangeMin(m);
+      DoChangeMin(h, m, s);
       if h <> OldHour then
       begin
         OldHour := h;
-        DoChangeHour(h);
+        DoChangeHour(h, m, s);
       end;
     end;
   end;
@@ -534,67 +769,87 @@ begin
   if plSekunde then
     inc(nDeli);
 
-  //Delete sec hand
+//Delete sec hand
   if plSekunde or (nUraS > 0) then
   begin
     Canvas.Pen.Color := Color;
     Canvas.Pen.Width := pnWidthHandSec;
 
-    Canvas.MoveTo(npX + Round(4 * sin(nUraS * fak)), npY - Round(4 * cos(nUraS * fak)));
-    Canvas.LineTo(npX + Round(npk * sin(nUraS * fak)), npY - Round(npk * cos(nUraS * fak)));
+    Canvas.MoveTo(npX + Round(4 * sin(nUraS * fak)), npY - Round(4 * cos(nUraS *
+      fak)));
+    Canvas.LineTo(npX + Round(npk * sin(nUraS * fak)), npY - Round(npk *
+      cos(nUraS * fak)));
 
-    Canvas.MoveTo(npX - Round(4 * sin(nUraS * fak)), npY + Round(4 * cos(nUraS * fak)));
-    Canvas.LineTo(npX - Round(15 * sin(nUraS * fak)), npY + Round(15 * cos(nUraS * fak)));
+    Canvas.MoveTo(npX - Round(4 * sin(nUraS * fak)), npY + Round(4 * cos(nUraS *
+      fak)));
+    Canvas.LineTo(npX - Round(15 * sin(nUraS * fak)), npY + Round(15 * cos(nUraS
+      * fak)));
   end;
 
-  //Delete hand
+//Delete hand
   if nDeli > 50 then
   begin
     Canvas.Pen.Color := Color;
     Canvas.Pen.Width := pnWidthHandHr;
 
-    //Urni kazalec
-    Canvas.MoveTo(npX + Round(03 * sin(nUraU * fak)), npY - Round(03 * cos(nUraU * fak)));
-    Canvas.LineTo(npX + Round((npk - npy23) * sin(nUraU * fak)), npY - Round((npk - npy23) * cos(nUraU * fak)));
+ //Urni kazalec
+    Canvas.MoveTo(npX + Round(03 * sin(nUraU * fak)), npY - Round(03 * cos(nUraU
+      * fak)));
+    Canvas.LineTo(npX + Round((npk - npy23) * sin(nUraU * fak)), npY - Round((npk
+      - npy23) * cos(nUraU * fak)));
 
-    Canvas.MoveTo(npX - Round(03 * sin(nUraU * fak)), npY + Round(03 * cos(nUraU * fak)));
-    Canvas.LineTo(npX - Round(10 * sin(nUraU * fak)), npY + Round(10 * cos(nUraU * fak)));
+    Canvas.MoveTo(npX - Round(03 * sin(nUraU * fak)), npY + Round(03 * cos(nUraU
+      * fak)));
+    Canvas.LineTo(npX - Round(10 * sin(nUraU * fak)), npY + Round(10 * cos(nUraU
+      * fak)));
 
-    //Minutni kazalec
+ //Minutni kazalec
     Canvas.Pen.Width := pnWidthHandMin;
 
-    Canvas.MoveTo(npX + Round(3 * sin(nUraM * fak)), npY - Round(3 * cos(nUraM * fak)));
-    Canvas.LineTo(npX + Round((npk - pnWidthHandMin) * sin(nUraM * fak)), npY - Round((npk - pnWidthHandMin) * cos(nUraM * fak)));
+    Canvas.MoveTo(npX + Round(3 * sin(nUraM * fak)), npY - Round(3 * cos(nUraM *
+      fak)));
+    Canvas.LineTo(npX + Round((npk - pnWidthHandMin) * sin(nUraM * fak)), npY -
+      Round((npk - pnWidthHandMin) * cos(nUraM * fak)));
 
-    Canvas.MoveTo(npX - Round(3 * sin(nUraM * fak)), npY + Round(3 * cos(nUraM * fak)));
-    Canvas.LineTo(npX - Round(10 * sin(nUraM * fak)), npY + Round(10 * cos(nUraM * fak)));
+    Canvas.MoveTo(npX - Round(3 * sin(nUraM * fak)), npY + Round(3 * cos(nUraM *
+      fak)));
+    Canvas.LineTo(npX - Round(10 * sin(nUraM * fak)), npY + Round(10 * cos(nUraM
+      * fak)));
 
     nUraM := (((m) * 60 + S) * 10) div 6;
     nUraU := (((h) * 60 + m) * 25) div 3;
   end;
 
-  //Draw hand
+//Draw hand
   if ((nDeli > 50) or lSekOver) then
   begin
-    lSekOver := False;
+    lSekOver := false;
 
-    //Minutni kazalec
+ //Minutni kazalec
     Canvas.Pen.Width := pnWidthHandMin;
     Canvas.Pen.Color := plColHandMin;
-    Canvas.MoveTo(npX + Round(3 * sin(nUraM * fak)), npY - Round(3 * cos(nUraM * fak)));
-    Canvas.LineTo(npX + Round((npk - pnWidthHandMin) * sin(nUraM * fak)), npY - Round((npk - pnWidthHandMin) * cos(nUraM * fak)));
+    Canvas.MoveTo(npX + Round(3 * sin(nUraM * fak)), npY - Round(3 * cos(nUraM *
+      fak)));
+    Canvas.LineTo(npX + Round((npk - pnWidthHandMin) * sin(nUraM * fak)), npY -
+      Round((npk - pnWidthHandMin) * cos(nUraM * fak)));
 
-    Canvas.MoveTo(npX - Round(3 * sin(nUraM * fak)), npY + Round(3 * cos(nUraM * fak)));
-    Canvas.LineTo(npX - Round(10 * sin(nUraM * fak)), npY + Round(10 * cos(nUraM * fak)));
+    Canvas.MoveTo(npX - Round(3 * sin(nUraM * fak)), npY + Round(3 * cos(nUraM *
+      fak)));
+    Canvas.LineTo(npX - Round(10 * sin(nUraM * fak)), npY + Round(10 * cos(nUraM
+      * fak)));
 
-    //Urni kazalec
+ //Urni kazalec
     Canvas.Pen.Color := plColHandHr;
     Canvas.Pen.Width := pnWidthHandHr;
-    Canvas.MoveTo(npX + Round(03 * sin(nUraU * fak)), npY - Round(03 * cos(nUraU * fak)));
-    Canvas.LineTo(npX + Round((npk - npy23) * sin(nUraU * fak)), npY - Round((npk - npy23) * cos(nUraU * fak)));
+    Canvas.MoveTo(npX + Round(03 * sin(nUraU * fak)), npY - Round(03 * cos(nUraU
+      * fak)));
+    Canvas.LineTo(npX + Round((npk - npy23) * sin(nUraU * fak)), npY - Round((npk
+      - npy23) * cos(nUraU * fak)));
 
-    Canvas.MoveTo(npX - Round(03 * sin(nUraU * fak)), npY + Round(03 * cos(nUraU * fak)));
-    Canvas.LineTo(npX - Round(10 * sin(nUraU * fak)), npY + Round(10 * cos(nUraU * fak)));
+    Canvas.MoveTo(npX - Round(03 * sin(nUraU * fak)), npY + Round(03 * cos(nUraU
+      * fak)));
+    Canvas.LineTo(npX - Round(10 * sin(nUraU * fak)), npY + Round(10 * cos(nUraU
+      * fak)));
 
     if (not plSekunde) and (pnCenterSize > 0) then
     begin
@@ -602,7 +857,8 @@ begin
       Canvas.Brush.Color := pnCenterCol;
       Canvas.Brush.Style := bsSolid;
       Canvas.Pen.Width := 1;
-      Canvas.Ellipse(nPX - pnCenterSize, nPY - pnCenterSize, nPX + pnCenterSize, nPY + pnCenterSize);
+      Canvas.Ellipse(nPX - pnCenterSize, nPY - pnCenterSize, nPX + pnCenterSize,
+        nPY + pnCenterSize);
     end;
     if (nDeli > 50) then
       nDeli := 0;
@@ -613,11 +869,15 @@ begin
     Canvas.Pen.Width := pnWidthHandSec;
     Canvas.Pen.Color := plColHandSec;
 
-    Canvas.MoveTo(npX + Round(4 * sin(nUra * fak)), npY - Round(4 * cos(nUra * fak)));
-    Canvas.LineTo(npX + Round(npk * sin(nUra * fak)), npY - Round(npk * cos(nUra * fak)));
+    Canvas.MoveTo(npX + Round(4 * sin(nUra * fak)), npY - Round(4 * cos(nUra *
+      fak)));
+    Canvas.LineTo(npX + Round(npk * sin(nUra * fak)), npY - Round(npk * cos(nUra
+      * fak)));
 
-    Canvas.MoveTo(npX - Round(4 * sin(nUra * fak)), npY + Round(4 * cos(nUra * fak)));
-    Canvas.LineTo(npX - Round(15 * sin(nUra * fak)), npY + Round(15 * cos(nUra * fak)));
+    Canvas.MoveTo(npX - Round(4 * sin(nUra * fak)), npY + Round(4 * cos(nUra *
+      fak)));
+    Canvas.LineTo(npX - Round(15 * sin(nUra * fak)), npY + Round(15 * cos(nUra *
+      fak)));
     nUraS := nUra;
 
     lSekOver := True;
@@ -628,7 +888,8 @@ begin
       Canvas.Brush.Color := pnCenterCol;
       Canvas.Brush.Style := bsSolid;
       Canvas.Pen.Width := 1;
-      Canvas.Ellipse(nPX - pnCenterSize, nPY - pnCenterSize, nPX + pnCenterSize, nPY + pnCenterSize);
+      Canvas.Ellipse(nPX - pnCenterSize, nPY - pnCenterSize, nPX + pnCenterSize,
+        nPY + pnCenterSize);
     end;
 
   end
