@@ -122,8 +122,14 @@ type
     procedure DoClearText;
   end;
 
+{$IDEF VCL}
 const
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
+{$ENDIF VCL}
+{$IDEF VisualCLX}
+const
+  CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
+{$ENDIF VisualCLX}
 
 type
   { Add IJvDenySubClassing to the base class list if the control should not
