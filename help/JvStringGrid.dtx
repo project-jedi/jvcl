@@ -242,9 +242,10 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.FixedFont
 Summary
-  Write here a summary (1 line)
+  Specifies the font to use for the fixed columns and rows in the gird.
 Description
-  Write here a description
+  Set the properties of FixedFont to change the visual appearance of the font used in the fixed row(s) 
+  and columns in the grid. By default, the FixedFont properties are the same as the properties for Font.
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.GetCellAlignment
 Summary
@@ -314,7 +315,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InsertCol
 Summary
-  nserts a new column in the grid.
+  Inserts a new column in the grid.
 Description
   Call InsertCol to insert a new column at the specified Index. All existing columns left of and at
   the insertion point will be moved one step to the right.
@@ -327,7 +328,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.InsertRow
 Summary
-  Inserts a new column in the grid.
+  Inserts a new row in the grid.
 Description
   Call InsertRow to insert a new row at the specified Index. All existing rows below and at the insertion
   point will be moved down one step.
@@ -377,7 +378,7 @@ Summary
   Indicates whether a specific cell is hidden.
 Description
   Call IsHidden to determine whether a specific cell, as specified by the ACol and ARow parameters,
-  is hidden. A cell is determined to be hidden, if it's RowHeight or ColWidth is smaller than 0.
+  is hidden. A cell is determined to be hidden, if it's RowHeight or ColWidth is less than 0.
 Parameters
   ACol - The column coordinate of the cell.
   ARow - The row coordinate of the cell.
@@ -589,8 +590,8 @@ See Also
 Summary
   Removes a column from the grid.
 Description
-  Call RemoveCol to remove the column specified by Index from the grid. All columns right of the removed column
-  will be left one step.
+  Call RemoveCol to remove the column specified by Index from the grid. All columns to the right of 
+  the removed column will be moved left one step.
 Parameters
   Index - Position of the column to remove.
 See Also
@@ -669,14 +670,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ShowAll
 Summary
-  Shows all previously hidden rows and columns.
+  Shows all previously hidden cells.
 Description
-  Call ShowAll to show all previously hidden rows and columns.
+  Call ShowAll to show all previously hidden cells.
 Parameters
-  AWidth  - The new width of hidden columns. If AWidth is set to a value < 0, DefaultColWidth
-             determines the new width of hidden columns.
-  AHeight - The new height of hidden rows. If AHeight is set to a value < 0, DefaultRowHeight
-             determines the new height of hidden columns.
+  AWidth  - The new width of hidden cells. If AWidth is set to a value < 0, DefaultColWidth
+             determines the new width of the cells.
+  AHeight - The new height of hidden cells. If AHeight is set to a value < 0, DefaultRowHeight
+             determines the new height of the cells.
 See Also
   ShowCell, ShowCol, ShowRow
 ----------------------------------------------------------------------------------------------------
@@ -699,9 +700,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvStringGrid.ShowCol
 Summary
-  Shows a previously column.
+  Shows a previously hidden column.
 Description
-  Call ShowCol to show a previoulsy hidden column.
+  Call ShowCol to show a previously hidden column.
 Parameters
   Index   - Position of the hidden column.
   AWidth  - The new width for the hidden column. If AWidth is set to a value < 0, DefaultColWidth
@@ -714,7 +715,7 @@ See Also
 Summary
   Shows a previously hidden row.
 Description
-  Call ShowRow to show a previoulsy hidden row.
+  Call ShowRow to show a previously hidden row.
 Parameters
   Index   - Position of the hidden row.
   AHeight - The new height of hidden row. If AHeight is set to a value < 0, DefaultRowHeight
