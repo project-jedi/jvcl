@@ -1,4 +1,0 @@
-[Directories]
-OutputDir=..\..\Bin
-UnitOutputDir=..\..\DCU
-SearchPath=..\..\Source;\..\..\Common
