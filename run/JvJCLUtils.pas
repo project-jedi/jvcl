@@ -193,18 +193,18 @@ function DefStr(const S: string; Default: string): string;
 function StrLICompW2(S1, S2: PWideChar; MaxLen: Integer): Integer;
 function StrPosW(S, SubStr: PWideChar): PWideChar;
 function StrLenW(S: PWideChar): Integer;
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function WideCompareText(const S1, S2: WideString): Integer;
 function WideUpperCase(const S: WideString): WideString;
 function WideLowerCase(const S: WideString): WideString;
-{$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER5}
 function TrimW(const S: WideString): WideString;
 function TrimLeftW(const S: WideString): WideString;
 function TrimRightW(const S: WideString): WideString;
 {**** files routines}
 procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 type
   TValueSign = -1..1;
@@ -218,7 +218,7 @@ function Sign(const AValue: Integer): TValueSign; overload;
 function Sign(const AValue: Int64): TValueSign; overload;
 function Sign(const AValue: Double): TValueSign; overload;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 const
   {$IFDEF MSWINDOWS}
@@ -319,9 +319,9 @@ function StrToBool(const S: string): Boolean;
 function Var2Type(V: Variant; const VarType: Integer): Variant;
 function VarToInt(V: Variant): Integer;
 function VarToFloat(V: Variant): Double;
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function VarIsStr(const V: Variant): Boolean;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 { following functions are not documented
   because they do not work properly sometimes, so do not use them }
@@ -500,9 +500,9 @@ function CutTime(ADate: TDateTime): TDateTime; { Set time to 00:00:00:00 }
 { String to date conversions }
 function GetDateOrder(const DateFormat: string): TDateOrder;
 function MonthFromName(const S: string; MaxLen: Byte): Byte;
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 function StrToDateFmtDef(const DateFormat, S: string; Default: TDateTime): TDateTime;
@@ -664,9 +664,18 @@ function FindNotBlankCharPos(const S: string): Integer;
 function FindNotBlankCharPosW(const S: WideString): Integer;
 function AnsiChangeCase(const S: string): string;
 function WideChangeCase(const S: string): string;
-function StringStartsWith(const Str, SubStr: string): Boolean;
-function StringEndsWith(const Str, SubStr: string): Boolean;
+function StringStartsWith(const Str, SubStr: string): Boolean; // case insensitive
+function StringEndsWith(const Str, SubStr: string): Boolean; // case insensitive
 function ExtractFilePath2(const FileName: string): string;
+
+{$IFDEF COMPILER5}
+// missing in Delphi 5
+function AnsiStartsText(const SubText, Text: string): Boolean;
+function AnsiEndsText(const SubText, Text: string): Boolean;
+function AnsiStartsStr(const SubStr, Str: string): Boolean;
+function AnsiEndsStr(const SubStr, Str: string): Boolean;
+{$ENDIF COMPILER5}
+
 {end JvStrUtils}
 
 {$IFDEF UNIX}
@@ -701,7 +710,7 @@ procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 
 { end JvFileUtil }
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 { begin JvXMLDatabase D5 compatiblility functions }
 function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
 function CompareDateTime(const A, B: TDateTime): Integer;
@@ -712,7 +721,7 @@ function CompareDateTime(const A, B: TDateTime): Integer;
 procedure RaiseLastOSError;
 function IncludeTrailingPathDelimiter(const APath: string): string;
 function ExcludeTrailingPathDelimiter(const APath: string): string;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 // Works like PtInRect but includes all edges in comparision
 function PtInRectInclusive(R: TRect; Pt: TPoint): Boolean;
@@ -1085,6 +1094,9 @@ uses
   {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
+  {$IFDEF HAS_UNIT_STRUTILS}
+  StrUtils,
+  {$ENDIF HAS_UNIT_STRUTILS}
   {$IFDEF VCL}
   Consts,
   {$ENDIF VCL}
@@ -2345,7 +2357,7 @@ begin
   Result := Var2Type(V, varDouble);
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function VarIsStr(const V: Variant): Boolean;
 var
   VarType: TVarType;
@@ -2358,7 +2370,7 @@ begin
   VarType := VarData^.VType;
   Result := (VarType = varOleStr) or (VarType = varString);
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function CopyDir(const SourceDir, DestDir: TFileName): Boolean;
 var
@@ -2481,7 +2493,7 @@ begin
       Inc(Result);
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 function WideCompareText(const S1, S2: WideString): Integer;
 begin
@@ -2506,7 +2518,7 @@ begin
     CharLowerBuffW(Pointer(Result), Length(Result));
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER}
 
 function TrimW(const S: WideString): WideString;
 {$IFDEF COMPILER6_UP}
@@ -2625,7 +2637,7 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 function Sign(const AValue: Integer): TValueSign;
 begin
@@ -2660,7 +2672,7 @@ begin
     Result := PositiveValue;
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function GetComputerName: string;
 var
@@ -4820,7 +4832,7 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
 begin
   Result := True;
@@ -4830,7 +4842,7 @@ begin
     Result := False;
   end;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
@@ -5953,28 +5965,13 @@ begin
 end;
 
 function StringStartsWith(const Str, SubStr: string): Boolean;
-var
-  P: PChar;
-  L, L2: Integer;
 begin
-  P := PChar(Str);
-  L := Length(SubStr);
-  L2 := Length(Str);
-  if L > L2 then
-    Result := False
-  else
-    {$IFDEF MSWINDOWS}
-    Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
-      P, L, PChar(SubStr), L) = 2;
-    {$ENDIF MSWINDOWS}
-    {$IFDEF UNIX}
-    Result := AnsiStartsText(SubStr, Str);
-    {$ENDIF UNIX}
+  Result := AnsiStartsText(SubStr, Str);
 end;
 
 function StringEndsWith(const Str, SubStr: string): Boolean;
 begin
-  Result := Copy(Str, Length(Str) - Length(SubStr) + 1, Length(SubStr)) = SubStr;
+  Result := AnsiEndsText(SubStr, Str);
 end;
 
 function ExtractFilePath2(const FileName: string): string;
@@ -6017,6 +6014,54 @@ begin
       Result := Result + '\';
   {$ENDIF MSWINDOWS}
 end;
+
+{$IFDEF COMPILER5}
+function AnsiStartsText(const SubText, Text: string): Boolean;
+var
+  SubTextLen: Integer;
+begin
+  SubTextLen := Length(SubText);
+  if SubTextLen > Length(Text) then
+    Result := False
+  else
+    Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
+      PChar(Text), SubTextLen, PChar(SubText), SubTextLen) = 2;
+end;
+
+function AnsiEndsText(const SubText, Text: string): Boolean;
+var
+  SubTextStart: Integer;
+begin
+  SubTextStart := Length(Text) - Length(SubText) + 1;
+  if (SubTextStart > 0) and (SubText <> '') and (ByteType(Text, SubTextStart) <> mbTrailByte) then
+    Result := AnsiStrIComp(Pointer(SubText), PChar(Pointer(Text)) + SubTextStart - 1) = 0
+  else
+    Result := False;
+end;
+
+function AnsiStartsStr(const SubStr, Str: string): Boolean;
+var
+  SubStrLen: Integer;
+begin
+  SubStrLen := Length(SubStr);
+  if SubStrLen > Length(Str) then
+    Result := False
+  else
+    Result := CompareString(LOCALE_USER_DEFAULT, 0,
+      PChar(Str), SubStrLen, PChar(SubStr), SubStrLen) = 2;
+end;
+
+function AnsiEndsStr(const SubStr, Str: string): Boolean;
+var
+  SubStrStart: Integer;
+begin
+  SubStrStart := Length(Str) - Length(SubStr) + 1;
+  if (SubStrStart > 0) and (SubStr <> '') and (ByteType(Str, SubStrStart) <> mbTrailByte) then
+    Result := AnsiStrComp(Pointer(SubStr), PChar(Pointer(Str)) + SubStrStart - 1) = 0
+  else
+    Result := False;
+end;
+{$ENDIF COMPILER5}
 
 function RemoveBackSlash(const DirName: string): string;
 begin
@@ -6558,7 +6603,7 @@ end;
 
 { end JvFileUtil }
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 { begin JvXMLDatabase D5 compatiblility functions }
 
 { TODO -oJVCL -cTODO : Implement these better for D5! }
@@ -6613,7 +6658,7 @@ begin
   SetLength(Result, I);
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function PtInRectInclusive(R: TRect; Pt: TPoint): Boolean;
 begin
