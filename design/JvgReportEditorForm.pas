@@ -223,7 +223,7 @@ type
     FSelPt: TPoint;
     FGrid: TPoint;
     FStep: TPoint;
-    FScrollBox: TJvgRepScrollBox;
+    FScrollBox: TJvgReportScrollBox;
     FSelectedControl: TJvgReportItem;
     FSelection: Boolean;
     FSelectionRect: TRect;
@@ -657,7 +657,7 @@ var
 begin
   R := Rect(0, 0, Screen.Width, Screen.Height);
   ClipCursor(@R);
-  FScrollBox := TJvgRepScrollBox.Create(Self);
+  FScrollBox := TJvgReportScrollBox.Create(Self);
   FScrollBox.Align := alClient;
   //  FScrollBox.Color := clWhite;
   ShapeSize.Parent := FScrollBox;
@@ -1223,8 +1223,8 @@ begin
   Image := TImage.Create(Form);
   Bmp := TBitmap.Create;
   Image.Parent := Form;
-  H := SantimsToPixels(Form.Canvas.Handle, 29, True);
-  W := SantimsToPixels(Form.Canvas.Handle, 21, False);
+  H := CentimetersToPixels(Form.Canvas.Handle, 29, True);
+  W := CentimetersToPixels(Form.Canvas.Handle, 21, False);
   //  Image.Width := W+8;
   //  Image.Height := H+8;
   Image.Left := 0;

@@ -45,12 +45,12 @@ uses
 type
   TJvAnimate = class(TAnimate)
   private
-    FColor: TColor;
+    FAboutJVCL: TJVCLAboutInfo;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FAboutJVCL: TJVCLAboutInfo;
     {$IFDEF VCL}
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
@@ -74,7 +74,7 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -98,7 +98,7 @@ implementation
 constructor TJvAnimate.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FColor := clInfoBk;
+  FHintColor := clInfoBk;
   // ControlStyle := ControlStyle + [csAcceptsControls];
   IncludeThemeStyle(Self, [csParentBackground]);
 end;
@@ -113,8 +113,6 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
 {$IFDEF VCL}
 procedure TJvAnimate.DoMouseEnter(var Msg: TMessage);
 {$ELSE}
@@ -125,21 +123,15 @@ begin
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 {$IFDEF VCL}
 procedure TJvAnimate.DoMouseLeave(var Msg: TMessage);
-begin
 {$ELSE}
 procedure TJvAnimate.DoMouseLeave;
-begin
-//  inherited;
 {$ENDIF VCL}
+begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
-
-{**************************************************}
 
 {$IFDEF VCL}
 procedure TJvAnimate.CMParentColorChanged(var Msg: TMessage);
@@ -155,8 +147,6 @@ begin
   {$ENDIF VCL}
 end;
 
-{**************************************************}
-
 {$IFDEF VCL}
 procedure TJvAnimate.MouseEnter(var Msg: TMessage);
 {$ELSE}
@@ -164,15 +154,13 @@ procedure TJvAnimate.MouseEnter(AControl: TControl);
 {$ENDIF VCL}
 begin
   FSaved := Application.HintColor;
-  Application.HintColor := FColor;
+  Application.HintColor := FHintColor;
   {$IFDEF VCL}
   DoMouseEnter(Msg);
   {$ELSE}
   DoMouseEnter;
   {$ENDIF VCL}
 end;
-
-{**************************************************}
 
 {$IFDEF VCL}
 procedure TJvAnimate.MouseLeave(var Msg: TMessage);

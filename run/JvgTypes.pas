@@ -62,7 +62,6 @@ type
   TglFileType = (fftUndefined, fftGif, fftJpeg, fftBmp);
   //  TglProgressBorderStyle = ( fbsFlat, fbsCtl3D, fbsStatusControl,
   //			       fbsRaised, fbsRaisedFrame, fbsRecessedFrame );
-  TglOrientation = (goHorizontal, goVertical);
   TPercentRange = 0..100;
   TglLabelOptions_ = (floActiveWhileControlFocused, floBufferedDraw,
     floDelineatedText, floIgnoreMouse, {floQuality3D,} floTransparentFont);

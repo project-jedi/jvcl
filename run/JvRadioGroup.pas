@@ -46,19 +46,19 @@ type
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
-{$IFDEF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     procedure SetParentBackground(const Value: Boolean);
-{$ENDIF}
+    {$ENDIF JVCLThemesEnabledD56}
   protected
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
-{$IFDEF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabledD56}
     procedure Paint; override;
-{$ENDIF}
+    {$ENDIF JVCLThemesEnabledD56}
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -68,9 +68,9 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-{$IFDEF JVCLThemesEnabledD56}
+    {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
-{$ENDIF}
+    {$ENDIF JVCLThemesEnabledD56}
   end;
 
 implementation
@@ -90,16 +90,16 @@ begin
   JvThemes.SetParentBackground(Self, Value);
 end;
 
-{$ENDIF}
+{$ENDIF JVCLThemesEnabledD56}
 
 constructor TJvRadioGroup.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-{$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabledD56}
   IncludeThemeStyle(Self, [csParentBackground]);
-{$ENDIF}  
+  {$ENDIF JVCLThemesEnabledD56}
   FOver := False;
 end;
 
@@ -175,7 +175,7 @@ begin
     inherited Paint;
 end;
 
-{$ENDIF}
+{$ENDIF JVCLThemesEnabledD56}
 
 end.
 

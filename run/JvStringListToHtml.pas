@@ -57,14 +57,14 @@ type
     property Strings: TStrings read GetStrings write SetStrings;
     property HTMLLineBreak: string read FHTMLLineBreak write FHTMLLineBreak;
     property HTMLTitle: string read FHTMLTitle write FHTMLTitle;
-    property IncludeHeader: boolean read FIncludeHeader write FIncludeHeader default true;
+    property IncludeHeader: Boolean read FIncludeHeader write FIncludeHeader default True;
   end;
 
 implementation
 
-procedure ConvertStringsToHTML(Source, Destination: TStrings; const HTMLTitle, HTMLLineBreak: string; IncludeHeader: boolean);
+procedure ConvertStringsToHTML(Source, Destination: TStrings; const HTMLTitle, HTMLLineBreak: string; IncludeHeader: Boolean);
 var
-  I: integer;
+  I: Integer;
 begin
   if (Source = nil) or (Destination = nil) then
     Exit;
@@ -92,7 +92,7 @@ end;
 
 procedure TJvStringListToHtml.ConvertToHtml(Source: TStrings; const FileName: string);
 var
-  Dest: TStringlist;
+  Dest: TStringList;
 begin
   if Source = nil then
     Exit;
@@ -118,7 +118,7 @@ begin
   FStrings.OnChange := DoStringsChange;
   FHTMLLineBreak := '<BR>';
   FHTMLTitle := 'Converted by TJvStringListToHtml';
-  FIncludeHeader := true;
+  FIncludeHeader := True;
 end;
 
 destructor TJvStringListToHtml.Destroy;

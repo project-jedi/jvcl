@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I jvcl.inc}
+{$I JVCL.INC}
 
 unit JvShape;
 
@@ -32,24 +32,24 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Messages, Graphics, Controls, ExtCtrls, Forms,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QExtCtrls, QForms,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JVCLVer;
 
 type
   TJvShape = class(TShape)
   private
-    FColor: TColor;
+    FHintColor: TColor;
     FSaved: TColor;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     {$IFDEF VCL}
     FOnCtl3DChanged: TNotifyEvent;
-    {$ENDIF}
+    {$ENDIF VCL}
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
@@ -59,26 +59,26 @@ type
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
-    {$ENDIF}
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
-    {$ENDIF}
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Anchors;
     property Constraints;
-    property HintColor: TColor read FColor write FColor default clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     {$IFDEF VCL}
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 
     property OnClick;
@@ -95,14 +95,20 @@ type
     property OnMouseWheel;
     property OnMouseWheelDown;
     property OnMouseWheelUp;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnResize;
     property OnStartDrag;
   end;
 
 implementation
 
-{**************************************************}
+constructor TJvShape.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clInfoBk;
+  FOver := False;
+end;
+
 {$IFDEF VCL}
 procedure TJvShape.CMCtl3DChanged(var Msg: TMessage);
 begin
@@ -110,53 +116,42 @@ begin
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
-{**************************************************}
 {$IFDEF VisualCLX}
 procedure TJvShape.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
 {$ELSE}
 procedure TJvShape.CMParentColorChanged(var Msg: TMessage);
-{$ENDIF}
 begin
   inherited;
+{$ENDIF VisualCLX}
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-{**************************************************}
-
-constructor TJvShape.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FColor := clInfoBk;
-  FOver := False;
-end;
-
-{**************************************************}
 {$IFDEF VisualCLX}
 procedure TJvShape.MouseEnter(AControl: TControl);
 {$ELSE}
 procedure TJvShape.CMMouseEnter(var Msg: TMessage);
-{$ENDIF}
+{$ENDIF VisualCLX}
 begin
   if not FOver then
   begin
     FSaved := Application.HintColor;
-    Application.HintColor := FColor;
+    Application.HintColor := FHintColor;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
 
-{**************************************************}
-
 {$IFDEF VisualCLX}
 procedure TJvShape.MouseLeave(AControl: TControl);
 {$ELSE}
 procedure TJvShape.CMMouseLeave(var Msg: TMessage);
-{$ENDIF}
+{$ENDIF VisualCLX}
 begin
   if FOver then
   begin

@@ -21,12 +21,11 @@ Last Modified: 2003-08-19
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
-
-Abstract:
+Description:
   Interface declarations for classes that want to implement a spell
   checker compatible with the TJvSpellChecker component.
 
+Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -41,6 +40,7 @@ uses
 type
   TJvSpellCheckIgnoreEvent = procedure(Sender: TObject; const Value: string;
     var CanIgnore: Boolean) of object;
+
   IJvSpellChecker = interface
     ['{819CE37A-E3C1-4F54-B9E1-1CFAA8AFB887}']
     // GetCurrentWord returns the currently found misspelled or missing word

@@ -33,7 +33,11 @@ unit JvInterpreter_Types;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}Types, Variants,{$ELSE}Windows, Classes, {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  Types, Variants,
+  {$ELSE}
+  Windows, Classes,
+  {$ENDIF}
   JvInterpreter;
 
 function Point2Var(const Point: TPoint): Variant;
@@ -45,6 +49,10 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 
 implementation
 
+const
+  cTRect = 'TRect';
+  cTPoint = 'TPoint';
+
 { TPoint }
 
 function Point2Var(const Point: TPoint): Variant;
@@ -53,7 +61,7 @@ var
 begin
   New(Rec);
   Rec^ := Point;
-  Result := R2V('TPoint', Rec);
+  Result := R2V(cTPoint, Rec);
 end;
 
 function Var2Point(const Point: Variant): TPoint;
@@ -74,7 +82,7 @@ var
 begin
   New(Rec);
   Rec^ := Rect;
-  Result := R2V('TRect', Rec);
+  Result := R2V(cTRect, Rec);
 end;
 
 function Var2Rect(const Rect: Variant): TRect;
@@ -128,17 +136,17 @@ begin
   begin
     AddExtUnit(cTypes);
     { TPoint }
-    AddRec(cTypes, 'TPoint', sizeof(TPoint), [RFD('X', 0, varInteger), RFD('Y', 4, varInteger)], nil, nil, nil);
+    AddRec(cTypes, cTPoint, SizeOf(TPoint), [RFD('X', 0, varInteger), RFD('Y', 4, varInteger)], nil, nil, nil);
     AddFun(cTypes, 'Point', JvInterpreter_Point, 2, [varInteger, varInteger], varRecord);
     { TRect }
-    AddRec(cTypes, 'TRect', sizeof(TRect), [RFD('Left', 0, varInteger), RFD('Top', 4, varInteger), RFD('Right', 8,
-      varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
+    AddRec(cTypes, cTRect, SizeOf(TRect), [RFD('Left', 0, varInteger), RFD('Top', 4, varInteger),
+      RFD('Right', 8, varInteger), RFD('Bottom', 12, varInteger)], nil, nil, nil);
     AddFun(cTypes, 'Rect', JvInterpreter_Rect, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
     AddFun(cTypes, 'Bounds', JvInterpreter_Bounds, 4, [varInteger, varInteger, varInteger, varInteger], varRecord);
-    AddRecGet(cTypes, 'TRect', 'TopLeft', TRect_Read_TopLeft, 0, [0], varRecord);
-    AddRecSet(cTypes, 'TRect', 'TopLeft', TRect_Write_TopLeft, 0, [0]);
-    AddRecGet(cTypes, 'TRect', 'BottomRight', TRect_Read_BottomRight, 0, [0], varRecord);
-    AddRecSet(cTypes, 'TRect', 'BottomRight', TRect_Write_BottomRight, 0, [0]);
+    AddRecGet(cTypes, cTRect, 'TopLeft', TRect_Read_TopLeft, 0, [0], varRecord);
+    AddRecSet(cTypes, cTRect, 'TopLeft', TRect_Write_TopLeft, 0, [0]);
+    AddRecGet(cTypes, cTRect, 'BottomRight', TRect_Read_BottomRight, 0, [0], varRecord);
+    AddRecSet(cTypes, cTRect, 'BottomRight', TRect_Write_BottomRight, 0, [0]);
   end;
 end;
 

@@ -31,8 +31,7 @@ unit JvClipboardMonitor;
 interface
 
 uses
-  Messages,
-  Windows,
+  Windows, Messages,
   SysUtils, Classes, JvComponent;
 
 type
@@ -133,19 +132,19 @@ begin
   FWindowHandle := Classes.AllocateHWnd(WndProc);
   {$ELSE}
   FWindowHandle := AllocateHWnd(WndProc);
-  {$ENDIF}
-  SetEnabled(True);
+  {$ENDIF COMPILER6_UP}
+  Enabled := True;
 end;
 
 destructor TJvClipboardMonitor.Destroy;
 begin
   FOnChange := nil;
-  SetEnabled(False);
+  Enabled := False;
   {$IFDEF COMPILER6_UP}
   Classes.DeallocateHWnd(FWindowHandle);
   {$ELSE}
   DeallocateHWnd(FWindowHandle);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   inherited Destroy;
 end;
 
@@ -175,7 +174,7 @@ begin
           ClipboardChanged;
         end;
       WM_DESTROY:
-        SetEnabled(False);
+        Enabled := False;
     else
       Result := DefWindowProc(FWindowHandle, Msg, WParam, LParam);
     end;
@@ -187,16 +186,13 @@ begin
   if FEnabled <> Value then
   begin
     if Value then
-    begin
-      FNextWindow := SetClipboardViewer(FWindowHandle);
-      FEnabled := True;
-    end
+      FNextWindow := SetClipboardViewer(FWindowHandle)
     else
     begin
       ChangeClipboardChain(FWindowHandle, FNextWindow);
-      FEnabled := False;
       FNextWindow := 0;
     end;
+    FEnabled := Value;
   end;
 end;
 

@@ -49,10 +49,10 @@ type
 
   TJvCommStatus = class(TJvComponent)
   private
-    FClear: Boolean;
-    FDataSet: Boolean;
+    FClearToSend: Boolean;
+    FDataSetReady: Boolean;
     FRing: Boolean;
-    FReceive: Boolean;
+    FReceiveLine: Boolean;
     FHandle: THandle;
     FWatcher: TJvCommWatcher;
     FDummy: Boolean;
@@ -60,16 +60,16 @@ type
     FOnChanged: TNotifyEvent;
     procedure SetComm(const Value: TJvCommPort);
     procedure OnChange(Sender: TObject);
-  protected
+    procedure UpdateStates(State: Cardinal);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     { Do not store dummies }
-    property ClearToSend: Boolean read FClear write FDummy stored False;
-    property DataSetReady: Boolean read FDataSet write FDummy stored False;
+    property ClearToSend: Boolean read FClearToSend write FDummy stored False;
+    property DataSetReady: Boolean read FDataSetReady write FDummy stored False;
     property Ring: Boolean read FRing write FDummy stored False;
-    property ReceiveLine: Boolean read FReceive write FDummy stored False;
+    property ReceiveLine: Boolean read FReceiveLine write FDummy stored False;
     property Comm: TJvCommPort read FComm write SetComm default 0;
     property OnChanged: TNotifyEvent read FOnChanged write FOnChanged;
   end;
@@ -113,20 +113,20 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvCommStatus.UpdateStates(State: Cardinal);
+begin
+  FClearToSend := (State and MS_CTS_ON) <> 0;
+  FDataSetReady := (State and MS_DSR_ON) <> 0;
+  FRing := (State and MS_RING_ON) <> 0;
+  FReceiveLine := (State and MS_RLSD_ON) <> 0;
+end;
+
 procedure TJvCommStatus.OnChange(Sender: TObject);
-var
-  Stat: Cardinal;
 begin
   if (FWatcher <> nil) and (FHandle <> 0) then
-    Stat := FWatcher.FStat
+    UpdateStates(FWatcher.FStat)
   else
-    Stat := 0;
-
-  FClear := (Stat and MS_CTS_ON) <> 0;
-  FDataSet := (Stat and MS_DSR_ON) <> 0;
-  FRing := (Stat and MS_RING_ON) <> 0;
-  FReceive := (Stat and MS_RLSD_ON) <> 0;
-
+    UpdateStates(0);
   if Assigned(FOnChanged) then
     FOnChanged(Self);
 end;
@@ -138,10 +138,10 @@ var
 begin
   if FWatcher <> nil then
     FWatcher.FHandle := 0;
-  FComm := Value;
   if FHandle <> 0 then
     CloseHandle(FHandle);
   FHandle := 0;
+  FComm := Value;
   // (rom) simplified through better TJvCommPort
   if FComm <> 0 then
   begin
@@ -149,18 +149,10 @@ begin
     FHandle := CreateFile(PChar(CommName), 0, FILE_SHARE_READ or FILE_SHARE_WRITE, nil, OPEN_EXISTING, 0, 0);
   end;
 
-  FClear := False;
-  FDataSet := False;
-  FRing := False;
-  FReceive := False;
-
   if GetCommModemStatus(FHandle, Stat) then
-  begin
-    FClear := (Stat and MS_CTS_ON) <> 0;
-    FDataSet := (Stat and MS_DSR_ON) <> 0;
-    FRing := (Stat and MS_RING_ON) <> 0;
-    FReceive := (Stat and MS_RLSD_ON) <> 0;
-  end;
+    UpdateStates(Stat)
+  else
+    UpdateStates(0);
 
   if FWatcher <> nil then
   begin

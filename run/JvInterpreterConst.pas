@@ -52,6 +52,8 @@ type
     Description: PChar;
   end;
 
+// (rom) need to be made resourcestrings
+
 const
   JvInterpreterErrors: array [0..48] of TJvInterpreterErrorsDescr =
     ((ID: 0; Description: 'Ok'),
@@ -66,11 +68,11 @@ const
      (ID: 31; Description: 'Record ''%s'' not defined'),
 
      (ID: 52; Description: 'Stack overflow'),
-     (ID: 53; Description: 'Type mistmatch'),
+     (ID: 53; Description: 'Type mismatch'),
      (ID: 55; Description: 'Function ''main'' undefined'),
      (ID: 56; Description: 'Unit ''%s'' not found'),
      (ID: 57; Description: 'Event ''%s'' not registered'),
-     (ID: 58; Description: 'Dfm ''%s'' not found'),
+     (ID: 58; Description: 'DFM ''%s'' not found'),
 
      (ID: 101; Description: 'Error in remark'), // (rom) in comment?
      (ID: 103; Description: '%s expected but %s found'),
@@ -99,7 +101,7 @@ const
      (ID: 187; Description: 'Can''t get proc address for function ''%s'''),
      (ID: 188; Description: 'Invalid type of argument in call to function ''%s'''),
      (ID: 189; Description: 'Invalid type of result in call to function ''%s'''),
-     (ID: 190; Description: 'Invalid call convention for function ''%s'''),
+     (ID: 190; Description: 'Invalid calling convention for function ''%s'''),
 
      (ID: 201; Description: 'Calling ''%s'' failed: ''%s'''),
 

@@ -178,17 +178,19 @@ Known Issues:
     Rendering the table to the given canvas, specifying size of conditional(virtual,
     conventional) table in pixels.
 }
+
+
+{$I JVCL.INC}
+
 unit JvgCrossTable;
 
 interface
+
 uses
   Windows, Messages, Classes, Controls, Graphics, Buttons, Dialogs,
   StdCtrls, ExtCtrls, SysUtils, Forms, DB, DBCtrls, Menus, DBTables, Printers,
   JvComponent, JvgTypes, JvgCommClasses, JvgUtils, JvgBevel;
 
-const
-  MAX_COLS = 1024;
-  MAX_ROWS = 1024;
 type
   TglPrintingStatus = (fpsContinue, fpsResume, fpsAbort);
 
@@ -314,10 +316,10 @@ type
 
     Font_: TFont;
     Color_: TColor;
-    ColsSum: array[0..MAX_COLS] of single;
-    RowsSum: array[0..MAX_ROWS] of single;
-    FinalColsSum: array[0..MAX_COLS] of single;
-    FinalRowsSum: array[0..MAX_ROWS] of single;
+    ColsSum: array of single;
+    RowsSum: array of single;
+    FinalColsSum: array of single;
+    FinalRowsSum: array of single;
     Columnslist, RowsList: TStringList;
     ColsOnPage, RowsOnPage, TotalCols, TotalRows: integer;
     ColsOnPage1, RowsOnPage1: integer;
@@ -393,15 +395,11 @@ type
       FTitleAlignment;
   end;
 
-procedure Register;
-
 implementation
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
 
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
+const
+  MAX_COLS = 1024;
+  MAX_ROWS = 1024;
 
 constructor TJvgPrintCrossTableFonts.Create;
 begin
@@ -456,7 +454,11 @@ end;
 
 constructor TJvgPrintCrossTable.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
+  SetLength(ColsSum, MAX_COLS+1);
+  SetLength(RowsSum, MAX_ROWS+1);
+  SetLength(FinalColsSum, MAX_COLS+1);
+  SetLength(FinalRowsSum, MAX_ROWS+1);
   ColumnsList := TStringList.Create;
   RowsList := TStringList.Create;
   Colors := TJvgPrintCrossTableColors.Create;
@@ -826,14 +828,14 @@ begin
       //    LOGPIXELSX_ := GetDeviceCaps(Canvas.Handle,LOGPIXELSX);
       //    LOGPIXELSY_ := GetDeviceCaps(Canvas.Handle,LOGPIXELSY);
 
-      ColWidth := SantimsToPixels(Handle, ColWidthInSantim, true);
-      RowHeight := SantimsToPixels(Handle, RowHeightInSantim, false);
-      LeftIndent := SantimsToPixels(Handle, _Left, true);
-      TopIndent := SantimsToPixels(Handle, _Top, false);
-      RightIndent := SantimsToPixels(Handle, _Right, true);
-      BottomIndent := SantimsToPixels(Handle, _Bottom, false);
-      CaptColWidth := SantimsToPixels(Handle, CaptColWidthInSantim, true);
-      CaptRowHeight := SantimsToPixels(Handle, CaptRowHeightInSantim, false);
+      ColWidth := CentimetersToPixels(Handle, ColWidthInSantim, true);
+      RowHeight := CentimetersToPixels(Handle, RowHeightInSantim, false);
+      LeftIndent := CentimetersToPixels(Handle, _Left, true);
+      TopIndent := CentimetersToPixels(Handle, _Top, false);
+      RightIndent := CentimetersToPixels(Handle, _Right, true);
+      BottomIndent := CentimetersToPixels(Handle, _Bottom, false);
+      CaptColWidth := CentimetersToPixels(Handle, CaptColWidthInSantim, true);
+      CaptRowHeight := CentimetersToPixels(Handle, CaptRowHeightInSantim, false);
 
     end;
     //  CaptR := Rect( LeftIndent, TopIndent, PageWidth-RightIndent, PageHeight-BottomIndent );

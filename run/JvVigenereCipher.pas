@@ -127,8 +127,7 @@ end;
 
 function TJvVigenereCipher.DecodeStream(Value: TStream): TStream;
 var
-  { (rb) Why array [] of _Byte_ not Char? }
-  Buffer: array [0..1023] of Byte; { (RB) should be const }
+  Buffer: array [0..1023] of Byte;
   I, J, Count: Integer;
 begin
   { (RB) Letting this function create a stream is not a good idea; }
@@ -148,8 +147,7 @@ end;
 
 function TJvVigenereCipher.EncodeStream(Value: TStream): TStream;
 var
-  { (rb) Why array [] of _Byte_ not Char? }
-  Buffer: array[0..1023] of Byte; { (RB) should be const}
+  Buffer: array[0..1023] of Byte;
   I, J, Count: Integer;
 begin
   { (RB) Letting this function create a stream is not a good idea; }

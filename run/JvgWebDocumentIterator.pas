@@ -62,6 +62,7 @@ implementation
 
 constructor TJvgWebDocumentIterator.Create(WebBrowser: TWebBrowser);
 begin
+  inherited Create;
   FWebBrowser := WebBrowser;
   FDoc := WebBrowser.Document;
   FDocLocationHRef := FDoc.Location.HRef;
@@ -121,27 +122,16 @@ begin
   FCurrentItem := StringReplace(FCurrentItem, 'file:///', '', [rfReplaceAll, rfIgnoreCase]);
   FCurrentItem := StringReplace(FCurrentItem, '/', '\', [rfReplaceAll]);
 
-  if FDocLocationHRef = FCurrentItem then
+  if (FDocLocationHRef = FCurrentItem) or
+    (Pos('http:\\', FCurrentItem) = 1) or
+    (Pos('mailto:', FCurrentItem) = 1) then
+    Next
+  else
   begin
-    Next;
-    Exit;
+    FCurrentItem := StringReplace(FCurrentItem, 'url(', '', [rfReplaceAll]);
+    FCurrentItem := StringReplace(FCurrentItem, ')', '', [rfReplaceAll]);
+    FCurrentItem := StringReplace(FCurrentItem, '%20', ' ', [rfReplaceAll]);
   end;
-
-  if Pos('http:\\', FCurrentItem) = 1 then
-  begin
-    Next;
-    Exit;
-  end;
-
-  if Pos('mailto:', FCurrentItem) = 1 then
-  begin
-    Next;
-    Exit;
-  end;
-
-  FCurrentItem := StringReplace(FCurrentItem, 'url(', '', [rfReplaceAll]);
-  FCurrentItem := StringReplace(FCurrentItem, ')', '', [rfReplaceAll]);
-  FCurrentItem := StringReplace(FCurrentItem, '%20', ' ', [rfReplaceAll]);
 end;
 
 end.

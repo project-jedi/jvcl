@@ -68,9 +68,9 @@ begin
   inherited Create(AOwner);
   FHelpFile := '';
   FOwner := AOwner;
-  // (rom) this is silly
   while FOwner.GetParentComponent <> nil do
     FOwner := FOwner.GetParentComponent;
+  // (rom) TForm or TCustomForm?
   if not (FOwner is TForm) then
     raise EJVCLException.Create(RC_OwnerForm);
 end;
