@@ -64,7 +64,7 @@ uses
   {$IFDEF WIN32}
   JvDBRichEd,
   {$ENDIF}
-  JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils, JvDsgn;
+  JvDBCtrl, JvLookup, JvxLogin, JvDBComb, JvVCLUtils, JvDsgn, JvxConst;
 
 //=== TJvFieldProperty =======================================================
 
@@ -131,13 +131,13 @@ begin
   {$ENDIF}
 
   { Data aware components and controls }
-  RegisterComponents('Jv Data Controls',
+  RegisterComponents(srJvDataAccessPalette,
+    [{$IFDEF COMPILER3_UP} TJvMemoryData, {$ENDIF} TJvLoginDialog]);
+
+  RegisterComponents(srJvDataControlsPalette,
     [TJvDBGrid, TJvDBLookupList, TJvDBLookupCombo, TJvLookupEdit, TJvDBDateEdit,
      TJvDBCalcEdit, TJvDBComboEdit, {$IFDEF WIN32} TJvDBRichEdit, {$ENDIF}
      TJvDBStatusLabel, TJvDBComboBox]);
-
-  RegisterComponents('Jv Data Access',
-    [{$IFDEF COMPILER3_UP} TJvMemoryData, {$ENDIF} TJvLoginDialog]);
 
   {$IFDEF COMPILER3_UP}
   RegisterNonActiveX([TJvMemoryData, TJvDBGrid, TJvDBDateEdit,

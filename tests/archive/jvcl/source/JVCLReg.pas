@@ -191,7 +191,10 @@ uses
   JvPluginWizard,
 
   // Actions
-  JvActions;
+  JvActions,
+
+  // palette names
+  JvxConst;
 
 procedure RegPropEds;
 begin
@@ -214,9 +217,9 @@ begin
   RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
 
   {Thumbview.filter editor}
-  RegisterPropertyEditor(typeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
-//  RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
-  RegisterPropertyEditor(typeinfo(TShortCut),TJvComponent,'',TShortCutProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
+//  RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletFileProperty);
+  RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TShortCutProperty);
 
 // JvPlugin
 //   RegisterPropertyEditor(TypeInfo(string), TJvPlugin, 'Version', TVersionEditor);
@@ -246,13 +249,13 @@ end;
 procedure RegComps;
 begin
   // Jv Standard
-  RegisterComponents('Jv Standard',
+  RegisterComponents(srJvStandardPalette,
     [TJvLabel, TJvEdit, TJvMemo, TJvButton, TJvCheckBox, TJvRadioButton,
      TJvListBox, TJvCombobox, TJvScrollBar, TJvGroupBox, TJvRadioGroup,
      TJvPanel, TJvJVCLAboutComponent]);
 
   // Jv Additional
-  RegisterComponents('Jv Additional',
+  RegisterComponents(srJvAdditionalPalette,
     [TJvBitBtn, TJvImgBtn, TJvSpeedButton, TJvMultilineButton,
      TJvOneSizeFitsAllButton, TJvButtonShaped, TJvArrowButton,
      TJvTransparentButton, TJvTransparentButton2,
@@ -283,7 +286,7 @@ begin
      TJvGroupHeader, TJvFooter]);
 
   // Jv Win32
-  RegisterComponents('Jv Win32',
+  RegisterComponents(srJvWin32Palette,
     [TJvTabControl, TJvPageControl, TJvRichEdit, TJvTrackBar,
      {$IFNDEF DelphiPersonalEdition}
      TJvProgressBar,
@@ -295,7 +298,7 @@ begin
      TJvSHFileOperation, TJvTrayIcon, TJvHidDeviceController]);
 
   // Jv System
-  RegisterComponents('Jv System',
+  RegisterComponents(srJvSystemPalette,
     [TJvDriveCombo, TJvDriveList, TJvDirectoryListBox, TJvFileListBox,
      TJvCaptionButton, TJvColorButton, TJvColorBox, TJvColorSquare,
      TJvRegistryTreeView, TJvUninstallListBox, TJvUninstallComboBox,
@@ -306,12 +309,19 @@ begin
 
   {$IFNDEF DelphiPersonalEdition}
   // Jv Data Controls
-  RegisterComponents('Jv Data Controls',
+  RegisterComponents(srJvDataControlsPalette,
     [TJvDBDateTimePicker, TJvDBProgressBar, TJvDBSpinEdit]);
   {$ENDIF}
 
+  // Jv Internet
+  RegisterComponents(srJvInternetPalette,
+    [TJvHotLink, TJvHtmlParser, TJvHttpGrabber, TJvMultiHttpGrabber,
+     TJvFtpGrabber, TJvSimpleXml, TJvStringListToHtml, TJvRichEditToHtml,
+     TJvRgbToHtml, TJvStrToHtml, TJvFormToHtml, TJvMail, TJvRas32,
+     TJvCommStatus]);
+
   // Jv Dialogs
-  RegisterComponents('Jv Dialogs',
+  RegisterComponents(srJvDialogsPalette,
     [TJvBrowseForFolderDialog, TJvSelectDirectory, TJvOpenDialog, TJvSaveDialog,
      TJvOpenDialog2000, TJvSaveDialog2000,TJvConnectNetwork,
      TJvDisconnectNetwork, TJvPageSetupDialog, TJvPageSetupTitledDialog,
@@ -328,26 +338,19 @@ begin
      TJvImageDlg, TJvDiskPrompt, TJvCopyError, TJvDeleteError,
      TJvRenameError, TJvDSADialog]);
 
-  // Jv Internet
-  RegisterComponents('Jv Internet',
-    [TJvHotLink, TJvHtmlParser, TJvHttpGrabber, TJvMultiHttpGrabber,
-     TJvFtpGrabber, TJvSimpleXml, TJvStringListToHtml, TJvRichEditToHtml,
-     TJvRgbToHtml, TJvStrToHtml, TJvFormToHtml, TJvMail, TJvRas32,
-     TJvCommStatus]);
-
   // Jv Custom
-  RegisterComponents('Jv Custom',
+  RegisterComponents(srJvCustomPalette,
     [TJvLinkLabel, TJvGammaPanel, TJvOutlookBar, TJvLookOut, TJvLookOutButton,
      TJvExpress, TJvExpressButton, TJvTimeLine, TJvTMTimeline, TJvInspector,
      TJvInspectorBorlandPainter, TJvInspectorDotNetPainter, TJvBalloonHint]);
 
   // Jv Labels
-  RegisterComponents('Jv Labels',
+  RegisterComponents(srJvLabelsPalette,
     [TJvBlinkingLabel, TJvScrollingLabel, TJvReversedLabel, TJvRealLabel,
      TJvSpecialLabel, TJvAngleLabel, TJvBouncingLabel, TJvAppearingLabel]);
 
   // Jv Multimedia
-  RegisterComponents('Jv Multimedia',
+  RegisterComponents(srJvMultimediaPalette,
     [TJvPlaylist, TJvSoundControl, TJvDeviceChanged, TJvJoystick,
      TJvWavePlayer, TJvBmpAnimator,
 
@@ -364,13 +367,13 @@ begin
      TJvThumbImage, TJvThumbNail, TJvThumbView, TJvMovableBevel]);
 
   // Jv Forms
-  RegisterComponents('Jv Forms',
+  RegisterComponents(srJvFormsPalette,
     [TJvFormMagnet, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvAnimTitle,
      TJvTransparentForm, TJvPerforated, TJvFormPlace,
      TJvFormAnimation, TJvAutoSizeCompo]);
 
   // Jv Utils
-  RegisterComponents('Jv Utils',
+  RegisterComponents(srJvUtilsPalette,
     [TJvTranslator, TJvTranslatorStrings,
 
      TJvFavoritesButton, TJvStartMenuBtn, TJvRecentMenuBtn,
@@ -393,7 +396,7 @@ begin
      TJvApplication, TJvEnterAsTab, TJvKeyboardStates ]);
 
   // Jv Convert
-  RegisterComponents('Jv Convert',
+  RegisterComponents(srJvConvertPalette,
     [TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvIntegerEdit, TJvYearEdit]);
 
   // JvBands
@@ -402,11 +405,11 @@ begin
 
 
   //JvPlugin
-  RegisterComponents('Jv Plugin',
+  RegisterComponents(srJvPluginPalette,
     [TJvPluginManager]);
 
   // Jv Composites
-{  RegisterComponents('Jv Composites',
+{  RegisterComponents(srJvCompositesPalette,
      [TJvDirectoryBox, TJvFileNameBox, TJvImageBox,
       TJvButtonBox, TJvCalculatorBox]); }
 end;
@@ -418,7 +421,7 @@ end;
 
 procedure RegActions;
 begin
-  RegisterActions('JVCL', [TJvSendMail, TJvWebAction], nil);
+  RegisterActions(srJVCLActions, [TJvSendMail, TJvWebAction], nil);
 end;
 
 procedure Register;

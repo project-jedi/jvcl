@@ -36,19 +36,18 @@ implementation
 
 uses
   Classes,
-  {$IFDEF DelphiPersonalEdition}
-  JvCheckedMaskEdit, JvDatePickerEdit;
-  {$ELSE}
-  JvCheckedMaskEdit, JvDatePickerEdit, JvDBDatePickerEdit;
+  {$IFNDEF DelphiPersonalEdition}
+  JvDBDatePickerEdit,
   {$ENDIF}
+  JvCheckedMaskEdit, JvDatePickerEdit, JvxConst;
 
 {.$R ..\Resources\JvDatePickerReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents( 'Jv Composites', [ TJvCheckedMaskEdit, TJvDatePickerEdit]);
+  RegisterComponents(srJvCompositesPalette, [TJvCheckedMaskEdit, TJvDatePickerEdit]);
   {$IFNDEF DelphiPersonalEdition}
-  RegisterComponents( 'Jv Data Controls', [ TJvDBDatePickerEdit]);
+  RegisterComponents(srJvDataControlsPalette, [TJvDBDatePickerEdit]);
   {$ENDIF}
 end;
 

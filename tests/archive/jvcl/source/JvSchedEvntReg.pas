@@ -41,7 +41,7 @@ uses
   {$ELSE}
   DsgnIntf
   {$ENDIF},
-  JclSchedule;
+  JclSchedule, JvxConst;
 
 type
   TSchedulePropertyEditor = class(TPropertyEditor)
@@ -102,7 +102,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Jv Additional', [TJvScheduledEvents]);
+  RegisterComponents(srJvAdditionalPalette, [TJvScheduledEvents]);
   RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem, 'Schedule', TSchedulePropertyEditor);
   RegisterComponentEditor(TJvCustomScheduledEvents, TSchedEventComponentEditor);
 end;

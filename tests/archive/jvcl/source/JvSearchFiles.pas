@@ -274,7 +274,7 @@ type
     { Maybe add a flag to Options to disable OnCheck }
     property OnCheck: TJvCheckEvent read FOnCheck write FOnCheck;
     // (rom) replaced ProcessMessages with OnProgress event
-    property OnProgress read FOnProgress write FOnProgress;
+    property OnProgress: TNotifyEvent read FOnProgress write FOnProgress;
   end;
 
 implementation

@@ -56,7 +56,7 @@ uses
   JvPictEdit, JvWndProcHook, JvPicClip, JvPlacemnt, JvPresrDsn, JvMinMaxEd, JvDualList,
   JvClipView, JvSpeedbar, JvSbEdit, JvDataConv, JvCalc, JvPageMngr, JvPgMngrEd, JvMrgMngr,
   JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
-  JvDsgnEditors;
+  JvDsgnEditors, JvxConst;
 
 //=== TJvStringsEditor =======================================================
 
@@ -133,7 +133,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('JvX Tools', [TJvPicClip, TJvFormStorage,
+  RegisterComponents(srJvXToolsPalette, [TJvPicClip, TJvFormStorage,
     TJvFormPlacement, TJvWindowHook, TJvAppEvents, TJvSpeedBar, TJvCalculator,
       TJvTimerList, TJvPageManager, TJvMergeManager, TJvMRUManager, TJvSecretPanel,
       TJvStrHolder, TJvMainMenu, TJvPopupMenu,

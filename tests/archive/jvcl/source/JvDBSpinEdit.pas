@@ -32,7 +32,7 @@ interface
 
 {$DEFINE READONLY}
 
-//  RegisterComponents('Jv Data Controls', [TJvDBSpinEdit]);
+//  RegisterComponents(cJvDataControlsPalette, [TJvDBSpinEdit]);
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, StdCtrls, DB, DBCtrls,

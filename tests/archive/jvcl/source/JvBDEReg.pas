@@ -69,11 +69,7 @@ uses
   JvQBindDlg,
   {$ENDIF}
   {$ENDIF}
-  Consts, LibHelp, JvMemTable;
-
-const
-  cJvDataControlsPallette = 'Jv Data Controls';
-  cJvDataAccessPallette = 'Jv Data Access';
+  Consts, LibHelp, JvMemTable, JvxConst;
 
 {$IFDEF WIN32}
 
@@ -323,22 +319,22 @@ begin
   {$ENDIF}
 
   { Data aware components and controls }
-  RegisterComponents(cJvDataAccessPallette, [TJvQuery, TJvSQLScript,
-    TJvMemoryTable, TJvQBEQuery, TJvDBFilter, 
+  RegisterComponents(srJvDataAccessPalette, [TJvQuery, TJvSQLScript,
+    TJvMemoryTable, TJvQBEQuery, TJvDBFilter,
       TJvDBSecurity]);
-      
-  RegisterComponents(cJvDataControlsPallette, [TJvDBIndexCombo, TJvDBProgress]);
+
+  RegisterComponents(srJvDataControlsPalette, [TJvDBIndexCombo, TJvDBProgress]);
   {$IFDEF Jv_MIDAS}
   { MIDAS components }
-  RegisterComponents(cJvDataAccessPallette, [TJvRemoteLogin]);
+  RegisterComponents(srJvDataAccessPalette, [TJvRemoteLogin]);
   RegisterNonActiveX([TJvRemoteLogin], axrComponentOnly);
   {$ENDIF}
   { Database lists }
-  RegisterComponents(cJvDataAccessPallette, [TJvBDEItems, TJvDatabaseItems,
+  RegisterComponents(srJvDataAccessPalette, [TJvBDEItems, TJvDatabaseItems,
     TJvTableItems]);
   {$IFNDEF CBUILDER}
   {$IFDEF USE_OLD_DBLISTS}
-  RegisterComponents(cJvDataAccessPallette, [TJvDatabaseList, TJvLangDrivList,
+  RegisterComponents(srJvDataAccessPalette, [TJvDatabaseList, TJvLangDrivList,
     TJvTableList, TJvStoredProcList, TJvFieldList, TJvIndexList]);
   {$ENDIF USE_OLD_DBLISTS}
   {$ENDIF CBUILDER}

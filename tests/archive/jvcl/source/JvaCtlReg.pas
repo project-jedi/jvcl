@@ -58,7 +58,7 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   Classes,
-  JvRegAuto;
+  JvRegAuto, JvxConst;
 
 {$R ..\resources\ractl.dcr}
 
@@ -157,7 +157,7 @@ begin
         NewRegAuto.UseStr := False;
         SetLength(PakName, MAX_PATH);
         SetLength(PakName, GetModuleFileName(hInstance, PChar(PakName), MAX_PATH));
-        NewRegAuto.IniFile := ExtractFilePath(PakName) + 'JvHLEdPropDlg.ini';
+        NewRegAuto.IniFile := ExtractFilePath(PakName) + srJvHLEdPropDlgIni;
         with Component as TJvHLEdPropDlg do
         begin
           OldRegAuto := RegAuto;
@@ -213,44 +213,38 @@ end;
 
 {$ENDIF COMPLIB_VCL}
 
-const
-  cJvCustomPallette = 'Jv Custom';
-  cJvAdditionalPallette = 'Jv Additional';
-  cJvSystemPallette = 'Jv System';
-  cJvDialogsPallette = 'Jv Dialogs';
-
 procedure Register;
 begin
   {$IFDEF COMPLIB_VCL}
   {JvEditor unit}
-  RegisterComponents(cJvCustomPallette, [TJvEditor]);
+  RegisterComponents(srJvCustomPalette, [TJvEditor]);
   {JvHLEditor unit}
-  RegisterComponents(cJvCustomPallette, [TJvHLEditor]);
+  RegisterComponents(srJvCustomPalette, [TJvHLEditor]);
   {JvHLEdPropDlg unit}
-  RegisterComponents(cJvCustomPallette, [TJvHLEdPropDlg]);
+  RegisterComponents(srJvCustomPalette, [TJvHLEdPropDlg]);
   RegisterComponentEditor(TJvHLEdPropDlg, TJvHLEdPropDlgEditor);
   RegisterPropertyEditor(TypeInfo(TJvColors), TJvHLEditor, 'Colors', TJvHLEditorColorProperty);
   {JvRegAuto unit}
-  RegisterComponents(cJvCustomPallette, [TJvRegAuto]);
+  RegisterComponents(srJvCustomPalette, [TJvRegAuto]);
   RegisterComponentEditor(TJvRegAuto, TJvRegAutoEditor);
 
   {JvScrollMax unit}
-  RegisterComponents(cJvCustomPallette, [TJvScrollMax]);
+  RegisterComponents(srJvCustomPalette, [TJvScrollMax]);
   RegisterClass(TJvScrollMaxBand);
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   {JvaScrollText}
-  RegisterComponents(cJvAdditionalPallette, [TJvaScrollText]);
+  RegisterComponents(srJvAdditionalPalette, [TJvaScrollText]);
 
   {JvHtControls unit}
-  RegisterComponents(cJvAdditionalPallette, [TJvhtListBox, TJvHTComboBox, TJvHTLabel]);
+  RegisterComponents(srJvAdditionalPalette, [TJvhtListBox, TJvHTComboBox, TJvHTLabel]);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
   {JvButtons unit}
-  RegisterComponents(cJvAdditionalPallette, [TJvHTButton]);
-  RegisterComponents(cJvSystemPallette, [TJvaCaptionButton]);
+  RegisterComponents(srJvAdditionalPalette, [TJvHTButton]);
+  RegisterComponents(srJvSystemPalette, [TJvaCaptionButton]);
   {JvDlg unit}
-  RegisterComponents(cJvDialogsPallette, [TJvProgressForm]);
+  RegisterComponents(srJvDialogsPalette, [TJvProgressForm]);
   {JvComponentPanel unit}
-  RegisterComponents(cJvCustomPallette, [TJvComponentPanel]);
+  RegisterComponents(srJvCustomPalette, [TJvComponentPanel]);
   {$ENDIF COMPLIB_VCL}
 
   {$IFDEF COMPLIB_CLX}

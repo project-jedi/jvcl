@@ -268,9 +268,12 @@ procedure Register;
 
 implementation
 
+uses
+  JvxConst;
+
 procedure Register;
 begin
-  RegisterComponents('Jv Dialogs', [TJvObjectPickerDialog]);
+  RegisterComponents(srJvDialogsPalette, [TJvObjectPickerDialog]);
 end;
 
 function ScopeTypesToOrdinal(const ScopeTypes: TScopeTypes): Cardinal;

@@ -222,7 +222,7 @@ procedure Register;
 implementation
 
 uses
-  JvActnRes;
+  JvActnRes, JvxConst;
 
 //=== TJvCommonDialogAction ==================================================
 
@@ -477,7 +477,7 @@ end;
 
 procedure Register;
 begin
-  RegisterActions('Jv Dialog',
+  RegisterActions(srJvDialogActions,
     [TJvBrowseForFolderAction, TJvSelectDirectoryAction, TJvConnectNetworkAction,
      TJvFloppyFormatAction, TJvOrganizeFavoritesAction, TJvControlPanelAction,
      TJvOpenFileAction, TJvSaveFileAction, TJvPageSetupAction,

@@ -36,11 +36,41 @@ unit JvxConst;
 interface
 
 resourcestring
-  // JvLConst
-  { Component pages }
-  srJvControls         = 'Jv Controls';
-  srJvDBAware          = 'Jv DBAware';
-  srJvTools            = 'Jv Tools';
+  srJvHLEdPropDlgIni = 'JvHLEdPropDlg.ini';
+
+  { see JvCtlReg }
+  {$IFDEF COMPILER3_UP}
+  srSamplesPalette = 'Samples';
+  {$ENDIF}
+
+  { JVCL versions of standard IDE palettes }
+  srJvStandardPalette     = 'Jv Standard';
+  srJvAdditionalPalette   = 'Jv Additional';
+  srJvWin32Palette        = 'Jv Win32';
+  srJvSystemPalette       = 'Jv System';
+  srJvDataAccessPalette   = 'Jv Data Access';
+  srJvDataControlsPalette = 'Jv Data Controls';
+  srJvBDEPalette          = 'Jv BDE';
+  srJvInternetPalette     = 'Jv Internet';
+  srJvDialogsPalette      = 'Jv Dialogs';
+
+  { other JVCL palettes }
+  srJvCustomPalette       = 'Jv Custom';
+  srJvLabelsPalette       = 'Jv Labels';
+  srJvMultimediaPalette   = 'Jv Multimedia';
+  srJvFormsPalette        = 'Jv Forms';
+  srJvUtilsPalette        = 'Jv Utils';
+  srJvConvertPalette      = 'Jv Convert';
+  srJvPluginPalette       = 'Jv Plugin';
+  srJvCompositesPalette   = 'Jv Composites';
+  srJvControlsPalette     = 'Jv Controls';
+  srJvInterpreterPalette  = 'Jv Interpreter';
+  srJvXToolsPalette       = 'JvX Tools';
+  srJvJFreeVCSPalette     = 'Jv JFreeVCS';
+
+  { for RegisterActions }
+  srJVCLActions     = 'JVCL';
+  srJvDialogActions = 'Jv Dialog';
 
   { TImageList component editor }
   srSaveImageList      = 'Save to bitmap...';

@@ -1,4 +1,4 @@
-// (rom) no Jedi header because thi file will die soon
+// (rom) no Jedi header because this file will die soon
 
 unit JvTransLedReg;
 
@@ -10,14 +10,13 @@ implementation
 
 uses
   Classes,
-  JvTransLED;
+  JvTransLED, JvxConst;
   
 {$R ..\resources\JvTransLed.dcr}
 
 procedure Register;
 begin
-  RegisterComponents('Jv JFreeVCS', [TJvTransLED]);
+  RegisterComponents(srJvJFreeVCSPalette, [TJvTransLED]);
 end;
-
 
 end.

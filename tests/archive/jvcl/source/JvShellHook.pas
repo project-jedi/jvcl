@@ -251,10 +251,11 @@ procedure UnInitJvShellHooks;
 procedure Register;
 
 implementation
-{$IFNDEF COMPILER6_UP}
 uses
-  Forms;
-{$ENDIF}
+  {$IFNDEF COMPILER6_UP}
+  Forms,
+  {$ENDIF}
+  JvJVCLConst;
 
 const
   cUser32 = 'user32.dll';
@@ -378,7 +379,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Jv System', [TJvShellHookComponent]);
+  RegisterComponents(cJvSystemPalette, [TJvShellHookComponent]);
 end;
 
 initialization

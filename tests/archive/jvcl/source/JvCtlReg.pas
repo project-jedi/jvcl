@@ -541,11 +541,6 @@ begin
   Result := [paMultiSelect, paValueList];
 end;
 
-{$IFDEF COMPILER3_UP}
-resourcestring
-  srSamples = 'Samples';
-{$ENDIF}
-
 procedure Register;
 const
   {$IFDEF COMPILER3_UP}
@@ -554,12 +549,12 @@ const
   BaseClass: TClass = TComponent;
   {$ENDIF}
 begin
-  RegisterComponents('Jv Composites',
+  RegisterComponents(srJvCompositesPalette,
     [TJvComboEdit, TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvCalcEdit]);
 
-  RegisterComponents('Jv Convert', [TJvxCurrencyEdit]);
+  RegisterComponents(srJvConvertPalette, [TJvxCurrencyEdit]);
 
-  RegisterComponents('Jv Controls', [TJvTextListBox,
+  RegisterComponents(srJvControlsPalette, [TJvTextListBox,
     TJvxCheckListBox, TJvxSplitter, TJvxSlider,
     TJvxLabel,
     {$IFDEF WIN32}
@@ -573,12 +568,12 @@ begin
     TJvSwitch, TJvDice]);
   {$IFDEF CBUILDER}
   {$IFNDEF COMPILER35_UP} { C++Builder 1.0 }
-  RegisterComponents(ResStr(srAdditional), [TScroller]);
+  RegisterComponents(ResStr(srAdditionalPalette), [TScroller]);
   {$ELSE}
-  RegisterComponents(ResStr(srSamples), [TScroller]);
+  RegisterComponents(ResStr(srSamplesPalette), [TScroller]);
   {$ENDIF}
   {$ELSE}
-  RegisterComponents(ResStr(srSamples), [TScroller]);
+  RegisterComponents(ResStr(srSamplesPalette), [TScroller]);
   {$ENDIF}
 
   {$IFDEF COMPILER3_UP}

@@ -51,7 +51,7 @@ uses
   {$IFDEF COMPLIB_VCL}
   JvInterpreterFm,
   {$ENDIF COMPLIB_VCL}
-  JvInterpreter;
+  JvInterpreter, JvxConst;
 
 {$R ..\resources\rai.dcr}
 
@@ -174,13 +174,11 @@ end;
 {$ENDIF JvInterpreter_INTEGERPROPERTY}
 
 procedure Register;
-const
-  cJvInterpreter = 'Jv Interpreter';
 begin
   {JvInterpreter unit}
-  RegisterComponents(cJvInterpreter, [TJvInterpreterProgram]);
+  RegisterComponents(srJvInterpreterPalette, [TJvInterpreterProgram]);
   {$IFDEF COMPLIB_VCL}
-  RegisterComponents(cJvInterpreter, [TJvInterpreterFm]);
+  RegisterComponents(srJvInterpreterPalette, [TJvInterpreterFm]);
   {$ENDIF COMPLIB_VCL}
   {$IFDEF JvInterpreter_INTEGERPROPERTY}
   RegisterPropertyEditor(TypeInfo(Integer), TObject, '', TJvIntegerProperty);

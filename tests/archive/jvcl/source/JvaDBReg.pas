@@ -74,32 +74,28 @@ implementation
 
 uses
   TypInfo, DB, DBTables,
-  JvDBTreeView, JvDBLookupTreeView, JvDBMove, JvSQLS;
+  JvDBTreeView, JvDBLookupTreeView, JvDBMove, JvSQLS, JvxConst;
 
 {$R ..\resources\radb.dcr}
-
-const
-  cJvBDEPallette = 'Jv BDE';
-  cJvDataControlsPallette = 'Jv Data Controls';
 
 procedure Register;
 begin
   {RADBCt unit}
-  RegisterComponents(cJvBDEPallette, [TJvaSQLScript]);
+  RegisterComponents(srJvBDEPalette, [TJvaSQLScript]);
   { JvDBMove unit }
-  RegisterComponents(cJvBDEPallette, [TJvDBMove]);
+  RegisterComponents(srJvBDEPalette, [TJvDBMove]);
   RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Source', TJvDatabaseNameProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBMove, 'Destination', TJvDatabaseNameProperty);
 
   {JvDBTreeView unit}
-  RegisterComponents(cJvDataControlsPallette, [TJvDBTreeView]);
+  RegisterComponents(srJvDataControlsPalette, [TJvDBTreeView]);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'ItemField', TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'MasterField', TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'DetailField', TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBTreeView, 'IconField', TJvDataFieldProperty);
 
  {JvDBLookupTreeView unit}
-  RegisterComponents(cJvDataControlsPallette, [TJvDBLookupTreeView, TJvDBLookupTreeViewCombo]);
+  RegisterComponents(srJvDataControlsPalette, [TJvDBLookupTreeView, TJvDBLookupTreeViewCombo]);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'KeyField', TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'ListField', TJvListFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvDBLookupTreeViewCombo, 'MasterField', TJvListFieldProperty);
