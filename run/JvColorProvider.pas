@@ -533,7 +533,7 @@ begin
     Color := StrToInt('$0' + Copy(S, 8, 8));
 {$IFDEF COMPILER7_UP}
     if (Color and $80000000)<>0 then
-      Color := Color or clSystemColor;
+      Color := Color or TColor(clSystemColor);
 {$ENDIF COMPILER7_UP}
   end;
 end;
