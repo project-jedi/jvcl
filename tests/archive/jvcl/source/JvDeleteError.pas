@@ -34,38 +34,38 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  SetupApi, JvCommonDialogD, JvBaseDlg, JvTypes;
+  SetupApi,
+  JvCommonDialogD, JvBaseDlg, JvTypes;
 
 type
   TJvDeleteError = class(TJvCommonDialogD)
   private
-    FError: Integer;
-    FFile: string;
+    FWin32ErrorCode: Integer;
+    FFileName: string;
     FStyle: TDeleteStyles;
   protected
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property FileName: string read FFile write FFile;
-    property W32ErrorCode: Integer read FError write FError default 0;
+    property FileName: string read FFileName write FFileName;
+    property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
     property Style: TDeleteStyles read FStyle write FStyle;
     function Execute: TDiskRes; override;
   end;
 
 implementation
 
+uses
+  JclSysUtils;
+
 {**************************************************}
 
 constructor TJvDeleteError.Create(AOwner: TComponent);
 begin
-  inherited;
-  // (rom) TODO? The if is not needed
-  if AOwner is TWinControl then
-  begin
-    FStyle := [];
-    FFile := '';
-    FError := 0;
-  end;
+  inherited Create(AOwner);
+  FStyle := [];
+  FFileName := '';
+  FWin32ErrorCode := 0;
 end;
 
 {**************************************************}
@@ -74,25 +74,22 @@ function TJvDeleteError.Execute: TDiskRes;
 var
   Sty: DWORD;
 begin
-  Result := dsError;
   Sty := 0;
   if idNoBeep in FStyle then
     Sty := Sty or IDF_NOBEEP;
   if idNoForeground in FStyle then
     Sty := Sty or IDF_NOFOREGROUND;
 
-  if @FSetupDeleteError <> nil then
-  begin
-    case FSetupDeleteError(FOwnerHandle, PChar(FTitle), PChar(FFile), FError, Sty) of
-      DPROMPT_SUCCESS:
-        Result := dsSuccess;
-      DPROMPT_CANCEL:
-        Result := dsCancel;
-      DPROMPT_SKIPFILE:
-        Result := dsSkipfile;
-    else
-      Result := dsError;
-    end;
+  case SetupDeleteError(OwnerWindow, PCharOrNil(Title),
+      PChar(FileName), FWin32ErrorCode, Sty) of
+    DPROMPT_SUCCESS:
+      Result := dsSuccess;
+    DPROMPT_CANCEL:
+      Result := dsCancel;
+    DPROMPT_SKIPFILE:
+      Result := dsSkipfile;
+  else
+    Result := dsError;
   end;
 end;
 

@@ -34,39 +34,40 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  SetupApi, JvCommonDialogD, JvBaseDlg, JvTypes;
+  SetupApi,
+  JvCommonDialogD, JvBaseDlg, JvTypes;
 
 type
   TJvRenameError = class(TJvCommonDialogD)
   private
-    FError: Integer;
+    FWin32ErrorCode: Integer;
     FStyle: TDeleteStyles;
-    FDest: string;
-    FSource: string;
+    FDestFile: string;
+    FSourceFile: string;
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property SourceFile: string read FSource write FSource;
-    property DestFile: string read FDest write FDest;
-    property W32ErrorCode: Integer read FError write FError default 0;
+    property SourceFile: string read FSourceFile write FSourceFile;
+    property DestFile: string read FDestFile write FDestFile;
+    property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
     property Style: TDeleteStyles read FStyle write FStyle;
     function Execute: TDiskRes; override;
   end;
 
 implementation
 
+uses
+  JclSysUtils;
+
 {**************************************************}
 
 constructor TJvRenameError.Create(AOwner: TComponent);
 begin
-  inherited;
-  if AOwner is TWinControl then
-  begin
-    FStyle := [];
-    FError := 0;
-    FDest := '';
-    FSource := '';
-  end;
+  inherited Create(AOwner);
+  FStyle := [];
+  FWin32ErrorCode := 0;
+  FDestFile := '';
+  FSourceFile := '';
 end;
 
 {**************************************************}
@@ -75,25 +76,22 @@ function TJvRenameError.Execute: TDiskRes;
 var
   Sty: DWORD;
 begin
-  Result := dsError;
   Sty := 0;
   if idNoBeep in Style then
     Sty := Sty or IDF_NOBEEP;
   if idNoForeground in Style then
     Sty := Sty or IDF_NOFOREGROUND;
 
-  if @FSetupRenameError <> nil then
-  begin
-    case FSetupRenameError(FOwnerHandle, PChar(FTitle), PChar(FSource), PChar(FDest), FError, Sty) of
-      DPROMPT_SUCCESS:
-        Result := dsSuccess;
-      DPROMPT_CANCEL:
-        Result := dsCancel;
-      DPROMPT_SKIPFILE:
-        Result := dsSkipfile;
-    else
-      Result := dsError;
-    end;
+  case SetupRenameError(OwnerWindow, PCharOrNil(Title), PChar(FSourceFile),
+      PChar(FDestFile), FWin32ErrorCode, Sty) of
+    DPROMPT_SUCCESS:
+      Result := dsSuccess;
+    DPROMPT_CANCEL:
+      Result := dsCancel;
+    DPROMPT_SKIPFILE:
+      Result := dsSkipfile;
+  else
+    Result := dsError;
   end;
 end;
 

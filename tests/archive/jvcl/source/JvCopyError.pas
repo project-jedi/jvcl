@@ -28,56 +28,54 @@ Known Issues:
 
 unit JvCopyError;
 
-
-
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  SetupApi, JvCommonDialogD, JvBaseDlg, JvTypes;
+  SetupApi,
+  JvCommonDialogD, JvBaseDlg, JvTypes;
 
 type
   TJvCopyError = class(TJvCommonDialogD)
   private
     FPathToSource: string;
-    FPath: string;
+    FNewPath: string;
     FDiskName: string;
     FStyle: TDiskStyles;
-    FError: Integer;
-    FTarget: string;
-    FSource: string;
+    FWin32ErrorCode: Integer;
+    FTargetFile: string;
+    FSourceFile: string;
   protected
   public
     constructor Create(AOwner: TComponent); override;
   published
     property DiskName: string read FDiskName write FDiskName;
     property PathToSource: string read FPathToSource write FPathToSource;
-    property NewPath: string read FPath write FPath;
-    property SourceFile: string read FSource write FSource;
-    property TargetFile: string read FTarget write FTarget;
-    property W32ErrorCode: Integer read FError write FError default 0;
+    property NewPath: string read FNewPath write FNewPath;
+    property SourceFile: string read FSourceFile write FSourceFile;
+    property TargetFile: string read FTargetFile write FTargetFile;
+    property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
     property Style: TDiskStyles read FStyle write FStyle;
     function Execute: TDiskRes; override;
   end;
 
 implementation
 
+uses
+  JclSysUtils;
+
 {**************************************************}
 
 constructor TJvCopyError.Create(AOwner: TComponent);
 begin
-  inherited;
-  // (rom) TODO missing?
-  if AOwner is TWinControl then
-  begin
-    FDiskName := '';
-    FPathToSource := '';
-    FPath := '';
-    FStyle := [];
-    FSource := '';
-    FTarget := '';
-    FError := 0;
-  end;
+  inherited Create(AOwner);
+  FDiskName := '';
+  FPathToSource := '';
+  FNewPath := '';
+  FStyle := [];
+  FSourceFile := '';
+  FTargetFile := '';
+  FWin32ErrorCode := 0;
 end;
 
 {**************************************************}
@@ -86,10 +84,9 @@ function TJvCopyError.Execute: TDiskRes;
 var
   Sty: DWORD;
   Required: DWORD;
-  res: array[0..255] of Char;
+  Res: array [0..255] of Char;
 begin
   // (rom) simplified/fixed
-  Result := dsError;
   Sty := 0;
   if idfCheckFirst in FStyle then
     Sty := Sty or IDF_CHECKFIRST;
@@ -110,24 +107,22 @@ begin
   if idfWarnIfSkip in FStyle then
     Sty := Sty or IDF_WARNIFSKIP;
 
-  if @FSetupCopyError <> nil then
-  begin
-    case FSetupCopyError(FOwnerHandle, PChar(FTitle), PChar(FDiskName),
-      PChar(FPathToSource), PChar(FSource), PCHar(FTarget),
-      FError, Sty, res, SizeOf(res), @Required) of
-      DPROMPT_SUCCESS:
-        begin
-          FPath := StrPas(res);
-          Result := dsSuccess;
-        end;
-      DPROMPT_CANCEL:
-        Result := dsCancel;
-      DPROMPT_SKIPFILE:
-        Result := dsSkipfile;
-    else
-      Result := dsError;
-    end;
+  case SetupCopyError(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
+      PChar(PathToSource), PChar(SourceFile), PCharOrNil(TargetFile),
+      FWin32ErrorCode, Sty, Res, SizeOf(Res), @Required) of
+    DPROMPT_SUCCESS:
+      begin
+        FNewPath := Res;
+        Result := dsSuccess;
+      end;
+    DPROMPT_CANCEL:
+      Result := dsCancel;
+    DPROMPT_SKIPFILE:
+      Result := dsSkipfile;
+  else
+    Result := dsError;
   end;
 end;
 
 end.
+

@@ -6015,7 +6015,7 @@ var
 {$ENDIF}
 
 function IsSetupApiLoaded: Boolean;
-function LoadsetupAPI: Boolean;
+function LoadSetupApi: Boolean;
 procedure UnloadSetupApi;
 
 implementation
@@ -6029,6 +6029,7 @@ const
 {$IFDEF SETUPAPI_LINKONREQUEST}
 var
   SetupApiLib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
+  SetupApiLoadCount: Integer = 0;
 {$ENDIF}
 
 function IsSetupApiLoaded: Boolean;
@@ -6043,6 +6044,9 @@ end;
 function LoadSetupApi: Boolean;
 begin
   {$IFDEF SETUPAPI_LINKONREQUEST}
+  Inc(SetupApiLoadCount);
+  if SetupApiLoadCount > 1 then
+    Exit;
   Result := LoadModule(SetupApiLib, SetupApiModuleName);
   if Result then
   begin
@@ -6484,6 +6488,9 @@ end;
 procedure UnloadSetupApi;
 begin
   {$IFDEF SETUPAPI_LINKONREQUEST}
+  Dec(SetupApiLoadCount);
+  if SetupApiLoadCount > 0 then
+    Exit;
   UnloadModule(SetupApiLib);
   SetupGetInfInformationA := nil;
   SetupGetInfInformationW := nil;

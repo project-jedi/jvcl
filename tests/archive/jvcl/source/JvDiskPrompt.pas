@@ -42,7 +42,7 @@ type
   private
     FPathToSource: string;
     FTagFile: string;
-    FPath: string;
+    FNewPath: string;
     FFileSought: string;
     FDiskName: string;
     FStyle: TDiskStyles;
@@ -54,28 +54,27 @@ type
     property PathToSource: string read FPathToSource write FPathToSource;
     property FileSought: string read FFileSought write FFileSought;
     property TagFile: string read FTagFile write FTagFile;
-    property NewPath: string read FPath write FPath;
+    property NewPath: string read FNewPath write FNewPath;
     property Style: TDiskStyles read FStyle write FStyle;
     function Execute: TDiskRes; override;
   end;
 
 implementation
 
+uses
+  JclSysUtils;
+
 {**************************************************}
 
 constructor TJvDiskPrompt.Create(AOwner: TComponent);
 begin
-  inherited;
-  // (rom) TODO? if is not needed
-  if AOwner is TWinControl then
-  begin
-    FDiskName := '';
-    FPathToSource := '';
-    FFileSought := '';
-    FTagFile := '';
-    FPath := '';
-    FStyle := [];
-  end;
+  inherited Create(AOwner);
+  FDiskName := '';
+  FPathToSource := '';
+  FFileSought := '';
+  FTagFile := '';
+  FNewPath := '';
+  FStyle := [];
 end;
 
 {**************************************************}
@@ -84,9 +83,8 @@ function TJvDiskPrompt.Execute: TDiskRes;
 var
   Sty: DWORD;
   Required: DWORD;
-  res: array[0..255] of Char;
+  Res: array [0..255] of Char;
 begin
-  Result := dsError;
   Sty := 0;
   if idfCheckFirst in FStyle then
     Sty := Sty or IDF_CHECKFIRST;
@@ -107,22 +105,20 @@ begin
   if idfWarnIfSkip in FStyle then
     Sty := Sty or IDF_WARNIFSKIP;
 
-  if @FSetupPromptForDisk <> nil then
-  begin
-    case FSetupPromptForDisk(FOwnerHandle, PChar(FTitle), PChar(FDiskName),
-      PChar(FPathToSource), PChar(FFileSought), PChar(FTagFile), Sty, res, SizeOf(res), Required) of
-      DPROMPT_SUCCESS:
-        begin
-          FPath := StrPas(res);
-          Result := dsSuccess;
-        end;
-      DPROMPT_CANCEL:
-        Result := dsCancel;
-      DPROMPT_SKIPFILE:
-        Result := dsSkipfile;
-    else
-      Result := dsError;
-    end;
+  case SetupPromptForDisk(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
+      PCharOrNil(PathToSource), PChar(FileSought), PCharOrNil(TagFile), Sty,
+      Res, SizeOf(Res), Required) of
+    DPROMPT_SUCCESS:
+      begin
+        FNewPath := Res;
+        Result := dsSuccess;
+      end;
+    DPROMPT_CANCEL:
+      Result := dsCancel;
+    DPROMPT_SKIPFILE:
+      Result := dsSkipfile;
+  else
+    Result := dsError;
   end;
 end;
 

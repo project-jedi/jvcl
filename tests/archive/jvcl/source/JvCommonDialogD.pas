@@ -40,60 +40,44 @@ uses
 type
   TJvCommonDialogD = class(TJvComponent)
   private
-  protected
-    FOwnerHandle: THandle;
-    FDll: THandle;
     FTitle: string;
-    // (rom) needs some TODO
-    FSetupPromptForDisk: TSetupPromptForDisk;
-    FSetupRenameError: TSetupRenameError;
-    FSetupDeleteError: TSetupDeleteError;
-    FSetupCopyError: TSetupCopyError;
+    FOwnerWindow: HWND;
   public
-    function Execute: TDiskRes; virtual; abstract;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function Execute: TDiskRes; virtual; abstract;
+    property OwnerWindow: HWND read FOwnerWindow;
   published
-    property DialogTitle: string read FTitle write FTitle;
+    property Title: string read FTitle write FTitle;
   end;
 
 implementation
 
 resourcestring
-  RC_ErrorSetupDll = 'Unable to find setupapi.dll';
-  RC_ErrorOwner = 'Owner must be of type TWinControl';
+  RC_ErrorSetupDll = 'Unable to find SetupApi.dll';
 
   {**************************************************}
 
 constructor TJvCommonDialogD.Create(AOwner: TComponent);
 begin
-  inherited;
-  if AOwner is TWinControl then
-  begin
-    FTitle := '';
-    FOwnerHandle := (AOwner as TWinControl).Handle;
-    FDll := LoadLibrary('setupapi.dll');
-    if FDll <> 0 then
-    begin
-      FSetupPromptForDisk := GetProcAddress(FDll, 'SetupPromptForDiskA');
-      FSetupCopyError := GetProcAddress(FDll, 'SetupCopyErrorA');
-      FSetupDeleteError := GetProcAddress(FDll, 'SetupDeleteErrorA');
-      FSetupRenameError := GetProcAddress(FDll, 'SetupRenameErrorA');
-    end
-    else
-      raise EJVCLException.Create(RC_ErrorSetupDll);
-  end
+  inherited Create(AOwner);
+  FTitle := '';
+  if Owner is TWinControl then
+    FOwnerWindow := (AOwner as TWinControl).Handle
   else
-    raise EJVCLException.Create(RC_ErrorOwner);
+    FOwnerWindow := 0;
+
+  LoadSetupApi;
+  if not IsSetupApiLoaded then
+    raise EJVCLException.Create(RC_ErrorSetupDll);
 end;
 
 {**************************************************}
 
 destructor TJvCommonDialogD.Destroy;
 begin
-  if FDll <> 0 then
-    FreeLibrary(FDll);
-  inherited;
+  UnloadSetupApi;
+  inherited Destroy;
 end;
 
 end.
