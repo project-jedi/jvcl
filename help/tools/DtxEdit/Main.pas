@@ -7,7 +7,7 @@ uses
   Dialogs, ToolWin, ComCtrls, JvToolBar, Menus, JvMenus, ExtCtrls,
   StdCtrls, JvListBox, JvCtrls, JvCoolBar, JvSplitter, JvStatusBar,
   JvComCtrls, JvControlBar, ImgList, ActnList, FileWrapper, AppEvnts,
-  JvComponent, JvMRUList, JvFormPlacement, JvAppStore, JvAppRegistryStore,
+  JvComponent, JvMRUList, JvFormPlacement, JvAppStorage, JvAppRegistryStorage,
   JvMRUManager;
 
 type
@@ -80,7 +80,7 @@ type
     memPreText: TMemo;
     jvmRecentFiles: TJvMRUList;
     sepAfterMRU: TMenuItem;
-    JvAppRegistryStore: TJvAppRegistryStore;
+    JvAppRegistryStore: TJvAppRegistryStorage;
     JvFormStorage: TJvFormStorage;
     procedure actExitExecute(Sender: TObject);
     procedure actOpenExecute(Sender: TObject);
@@ -368,7 +368,7 @@ begin
 end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
-begin
+begin                    
   inherited;
 
   jvmRecentFiles.Open;

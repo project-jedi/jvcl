@@ -849,11 +849,8 @@ object frmMain: TfrmMain
     Left = 756
     Top = 56
   end
-  object JvAppRegistryStore: TJvAppRegistryStore
-    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+  object JvAppRegistryStore: TJvAppRegistryStorage
     Root = 'Software\JVCL\DtxEditor'
-    SubStores = <>
     Left = 670
     Top = 85
   end
