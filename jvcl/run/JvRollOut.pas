@@ -52,8 +52,7 @@ interface
 
 uses
   SysUtils, Classes,
-  Controls,    // clx: QWindows.TMsg is required
-  Windows, Messages, Graphics, ImgList, ExtCtrls, ACtnList,
+  Windows, Messages, Controls, Graphics, ImgList, ExtCtrls, ACtnList,
   JvComponent, JvThemes;
 
 const
