@@ -53,11 +53,11 @@ type
     RASEvent: Word;
     FEntryIndex: Integer;
     FConnected: Boolean;
-    FPhoneBook: TStrings;
+    FPhoneBook: TStringList;
     FOnAuthProject: TNotifyEvent;
     FOnAuthChangePassword: TNotifyEvent;
     FOnAuthLinkSpeed: TNotifyEvent;
-    FOnDisConnected: TNotifyEvent;
+    FOnDisconnected: TNotifyEvent;
     FOnAuthNotify: TNotifyEvent;
     FOnDeviceConnected: TNotifyEvent;
     FOnReAuthenticate: TNotifyEvent;
@@ -98,13 +98,18 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure RefreshPhoneBook;
+    function Dial(Index: Integer): Boolean;
+    function HangUp: Boolean;
+    function CreateNewConnection: Boolean;
+    function EditConnection(Index: Integer): Boolean;
+    function GetActiveConnection: string;
+    property CallBackNumber: string read FCallBack write FCallBack;
     property DeviceType: string read FDevice;
     property DeviceName: string read FDeviceName;
     property PhoneNumber: string read FPhone write FPhone;
     property Domain: string read FDomain write FDomain;
-    property CallBackNumber: string read FCallBack write FCallBack;
-  published
     property PhoneBook: TStrings read GetPhoneBook;
+  published
     property KeepConnected: Boolean read FKeepConnected write FKeepConnected;
     //    property PhoneBook: TStringList read GetPhoneBook;
     property EntryIndex: Integer read FEntryIndex write SetIndex default -1;
@@ -134,12 +139,8 @@ type
     property OnRetryAuthentication: TNotifyEvent read FOnRetryAuthentication write FOnRetryAuthentication;
     property OnPasswordExpired: TNotifyEvent read FOnPasswordExpired write FOnPasswordExpired;
     property OnConnected: TNotifyEvent read FOnConnected write FOnConnected;
-    property OnDisConnected: TNotifyEvent read FOnDisConnected write FOnDisConnected;
+    property OnDisconnected: TNotifyEvent read FOnDisconnected write FOnDisconnected;
     property OnWaitForCallBack: TNotifyEvent read FOnWaitForCallBack write FOnWaitForCallBack;
-    function Dial(Index: Integer): Boolean;
-    function HangUp: Boolean;
-    function CreateNewConnection: Boolean;
-    function EditConnection(Index: Integer): Boolean;
   end;
 
   // (rom) renamed
@@ -205,6 +206,34 @@ begin
   end;
   DeallocateHWndEx(FHandle);
   inherited Destroy;
+end;
+
+function TJvRas32.GetActiveConnection: string;
+var
+  Ret: Longint;
+  nCB: DWORD;
+  RasConn: array [0..63] of TRASCONN;
+  nRasConnCount: DWORD;
+  I: Integer;
+begin
+  Result := '';
+
+  RasConn[0].dwSize := SizeOf(TRASCONN);
+  nCB := SizeOf(RasConn);
+  Ret := FRasEnumConnections(@RasConn, nCB, nRasConnCount);
+
+  if (Ret <> Success) or (nRasConnCount = 0) then
+    Exit;
+
+  if not Assigned(FPhoneBook) then
+    RefreshPhoneBook;
+  for I := 0 to FPhoneBook.Count - 1 do
+   if FPhoneBook[I] = RasConn[0].szEntryName then
+   begin
+     FConnection := RasConn[0].rasConn;
+     Result := FPhoneBook[I];
+     Break;
+   end;
 end;
 
 function TJvRas32.CreateNewConnection: Boolean;
@@ -458,8 +487,8 @@ begin
         if Assigned(FOnConnected) then
           FOnConnected(Self);
       RASCS_DisConnected:
-        if Assigned(FOnDisConnected) then
-          FOnDisConnected(Self);
+        if Assigned(FOnDisconnected) then
+          FOnDisconnected(Self);
       RASCS_WaitForCallBack:
         if Assigned(FOnWaitForCallBack) then
           FOnWaitForCallBack(Self);
