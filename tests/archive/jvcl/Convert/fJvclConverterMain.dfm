@@ -15,58 +15,51 @@ object frmMain: TfrmMain
   Position = poScreenCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnResize = FormResize
   PixelsPerInch = 96
   TextHeight = 14
   object JvPageControl: TPageControl
     Left = 0
     Top = 26
     Width = 463
-    Height = 314
+    Height = 295
     ActivePage = tbsFiles
     Align = alClient
     TabIndex = 0
     TabOrder = 0
     object tbsFiles: TTabSheet
       Caption = 'Select Files'
-      object Panel1: TPanel
+      object SearchList: TListView
         Left = 0
         Top = 0
         Width = 455
-        Height = 285
+        Height = 266
         Align = alClient
+        Columns = <
+          item
+            AutoSize = True
+            Caption = 'Filename'
+          end
+          item
+            Caption = 'Replacements'
+            Width = 100
+          end
+          item
+            Caption = 'Status'
+            Width = 53
+          end
+          item
+            Caption = 'Microseconds'
+            Width = 100
+          end>
+        FlatScrollBars = True
+        MultiSelect = True
+        SmallImages = SortArrows
         TabOrder = 0
-        object SearchList: TListView
-          Left = 1
-          Top = 1
-          Width = 453
-          Height = 283
-          Align = alClient
-          Columns = <
-            item
-              AutoSize = True
-              Caption = 'Filename'
-            end
-            item
-              Caption = 'Replacements'
-              Width = 100
-            end
-            item
-              Caption = 'Status'
-              Width = 53
-            end
-            item
-              Caption = 'Microseconds'
-              Width = 100
-            end>
-          FlatScrollBars = True
-          MultiSelect = True
-          SmallImages = SortArrows
-          TabOrder = 0
-          ViewStyle = vsReport
-          OnColumnClick = SearchListColumnClick
-          OnDblClick = SearchListDblClick
-          OnKeyUp = SearchListKeyUp
-        end
+        ViewStyle = vsReport
+        OnColumnClick = SearchListColumnClick
+        OnDblClick = SearchListDblClick
+        OnKeyUp = SearchListKeyUp
       end
     end
     object tbsStrings: TTabSheet
@@ -76,7 +69,7 @@ object frmMain: TfrmMain
         Left = 0
         Top = 0
         Width = 455
-        Height = 285
+        Height = 266
         Align = alClient
         KeyOptions = [keyEdit, keyAdd]
         Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goColSizing, goEditing, goThumbTracking]
@@ -183,6 +176,21 @@ object frmMain: TfrmMain
       Top = 0
       Action = AboutMe
     end
+  end
+  object sbStatus: TStatusBar
+    Left = 0
+    Top = 321
+    Width = 463
+    Height = 19
+    Panels = <
+      item
+        Text = 'Ready'
+        Width = 250
+      end
+      item
+        Width = 50
+      end>
+    SimplePanel = False
   end
   object OpenDialog: TOpenDialog
     DefaultExt = 'pas'
