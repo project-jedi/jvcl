@@ -165,8 +165,9 @@ Count=0
 LinkPrecedence=0
 
 [Link Database Files]
-Count=1
-File0=external_links\vcl.ldb
+Count=2
+File0=external_links\jcl.ldb
+File1=external_links\vcl.ldb
 
 [Export Symbols]
 AutoCreateMissingTopics=0
