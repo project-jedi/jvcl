@@ -1,5 +1,6 @@
 ##Package: Wizard
-##Status: Locked by peter3 (incomplete)
+##Status: Completed (peter3), Review
+##Skip: TJvWizardPageList
 ----------------------------------------------------------------------------------------------------
 @@JvWizard.pas
 Summary
@@ -24,274 +25,280 @@ Description
 Summary
   Specifies the currently active page.
 Description
-  Write here a description
+  \Read ActivePage to determine which page is selected by the user. The user selects a page by
+  clicking the navigation buttons. Set ActivePage to bring a page to the foreground. Only one page
+  can be active at a time.
+
+  To change the ActivePage to the page that precedes or follows the active page, use the SelectNextPage
+  method. To iterate through all the pages to locate a specific page, use the FindNextPage method.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActivePageIndex, SelectNextPage, FindNextPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ActivePageIndex
 Summary
-  Specifies the index of the currently active page.
+  Specifies the currently active page.
 Description
-  Write here a description
+  Use ActivePageIndex to get or set the active page by index rather than by object. The value of
+  ActivePageIndex identifies a page in the Pages property array.  Changing the value of ActivePageIndex
+  changes the ActivePage property, and vice versa.
+
+  If there is no active page, reading ActivePageIndex gives a value of –1.
+
+  Setting ActivePageIndex to a value that is out of bounds (less than 0 or greater than PageCount - 1)
+  results in the page control having no active page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActivePage, Pages
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonBack
 Summary
   Contains the properties for the back button.
 Description
-  Write here a description
+  Use the subproperties of this class to modify the look and behavior of the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonCancel, ButtonFinish, ButtonHelp, ButtonLast, ButtonNext, ButtonStart
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonBarHeight
 Summary
   Specifies the height of the button bar at the bottom.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ButtonBarHeight to set the height of the panel where the navigation buttons are located.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonCancel
 Summary
   Contains the properties for the cancel button.
 Description
-  Write here a description
+  Use the subproperties of this class to modify the look and behavior of the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonBack, ButtonFinish, ButtonHelp, ButtonLast, ButtonNext, ButtonStart
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonFinish
 Summary
   Contains the properties for the finish button.
 Description
-  Write here a description
+  Use the subproperties of this class to modify the look and behavior of the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonBack, ButtonCancel, ButtonHelp, ButtonLast, ButtonNext, ButtonStart
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonHelp
 Summary
   Contains the properties for the help button.
 Description
-  Write here a description
+  Use the subproperties of this class to modify the look and behavior of the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonBack, ButtonCancel, ButtonFinish, ButtonLast, ButtonNext, ButtonStart
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonLast
 Summary
   Contains the properties for the last button.
 Description
-  Write here a description
+  Use the subproperties of this class to modify the look and behavior of the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonBack, ButtonCancel, ButtonFinish, ButtonHelp, ButtonNext, ButtonStart
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonNext
 Summary
   Contains the properties for the next button.
 Description
-  Write here a description
+  Use the subproperties of this class to modify the look and behavior of the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonBack, ButtonCancel, ButtonFinish, ButtonHelp, ButtonLast, ButtonStart
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ButtonStart
 Summary
   Contains the properties for the start button.
 Description
-  Write here a description
+  Use the subproperties of this class to modify the look and behavior of the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ButtonBack, ButtonCancel, ButtonFinish, ButtonHelp, ButtonLast, ButtonNext
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.FindNextPage
 Summary
-  Retrns the next page in the sequence.
+  Returns the next page in the wizard before or after a specified page.
 Description
-  Write here a description
+  Call FindNextPage to locate a page in the wizard by its position relative to the page
+  specified by the PageIndex parameter. If Step is > 0, FindNextPage moves forward throught
+  the Pages array. If Step < 0, FindNextPage moves backwards. If PageIndex is not a page in the wizard,
+  FindNextPage returns the first page when Step > 0 or the last page when Step < 0.
+
+  When CheckDisabled is True, FindNextPage returns the next page with an Enabled property set to True;
+  if CheckDisabled is False, FindNextPage returns the next page, including pages with Enabled set to False.
 Parameters
-  PageIndex    - Description for this parameter
-  Step         - Description for this parameter
-  CheckDisable - Description for this parameter
+  PageIndex    - The index of the page to start with.
+  Step         - The number of pages to step over at each iteration. If Step is > 0, the search moves forward, if Step < 0
+                 the search goes backwards. Do not set Step = 0 as this could cause infinite loops.
+  CheckDisable - Specifies whether disabled pages are checked.
 Return value
-  Describe here what the function returns
+  The next page or nil if there is no next page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IsFirstPage, IsLastPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.HeaderImages
 Summary
   Contains properties for a header image.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use the subproperties of HeaderImages to manage the settings for the image displayed in the header of the
+  wizard.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.IsFirstPage
 Summary
   Checks whether the specified page is the first page.
 Description
-  Write here a description
+  Call IsFirstPage to determine whether the specified page is the first page in the wizard.
 Parameters
-  APage        - Description for this parameter
-  CheckDisable - Description for this parameter
+  APage        - The page to check.
+  CheckDisable - Specifies whether disabled pages are checked.
 Return value
-  Describe here what the function returns
+  True if APage is the first page in the wizard.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IsLastPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.IsForward
 Summary
   Checks whether FromPage is before ToPage
 Description
-  Write here a description
+  Call IsForward to determine if FromPage is before ToPage in the Pages array.
 Parameters
-  FromPage - Description for this parameter
-  ToPage   - Description for this parameter
+  FromPage - The first page.
+  ToPage   - The last page.
 Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  True if FromPage is before ToPage.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.IsLastPage
 Summary
   Checks whether the specified page is the last page.
 Description
-  Write here a description
+  Call IsLastPage to determine whether the specified page is the last page in the wizard.
 Parameters
-  APage        - Description for this parameter
-  CheckDisable - Description for this parameter
+  APage        - The page to check.
+  CheckDisable - Specifies whether disabled pages are checked.
 Return value
-  Describe here what the function returns
+  True if APage is the last page in the wizard.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  IsFirstPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnBackButtonClick
 Summary
   Occurs when the back button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnBackButtonClick if you want to be notified when the back button is clicked.
+  OnBackButtonClick is a general handler for back button clicks on all pages. To handle button clicks for a
+  specific page only, use <LINK TJvWizardCustomPage.OnBackButtonClick, OnBackButtonClick> of TJvCustomPage
+  instead.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnCancelButtonClick
 Summary
   Occurs when the cancel button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnCancelButtonClick if you want to be notified when the cancel button is clicked.
+  OnCancelButtonClick is a general handler for cancel button clicks on all pages. To handle button clicks for a
+  specific page only, use <LINK TJvWizardCustomPage.OnCancelButtonClick, OnCancelButtonClick> of TJvCustomPage
+  instead.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnFinishButtonClick
 Summary
   Occurs when the finish button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnFinishButtonClick if you want to be notified when the finish button is clicked.
+  OnFinishButtonClick is a general handler for finish button clicks on all pages. To handle button clicks for a
+  specific page only, use <LINK TJvWizardCustomPage.OnFinishButtonClick, OnFinishButtonClick> of TJvCustomPage
+  instead.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnLastButtonClick
 Summary
   Occurs when the last button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnLastButtonClick if you want to be notified when the last button is clicked.
+  OnLastButtonClick is a general handler for last button clicks on all pages. To handle button clicks for a
+  specific page only, use <LINK TJvWizardCustomPage.OnLastButtonClick, OnLastButtonClick> of TJvCustomPage
+  instead.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnNextButtonClick
 Summary
   Occurs when the next button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnNextButtonClick if you want to be notified when the next button is clicked.
+  OnNextButtonClick is a general handler for next button clicks on all pages. To handle button clicks for a
+  specific page only, use <LINK TJvWizardCustomPage.OnNextButtonClick, OnNextButtonClick> of TJvCustomPage
+  instead.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnSelectFirstPage
 Summary
   Occurs when the first page is selected.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the first page is selected.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSelectLastPage, OnSelectNextPage, OnSelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnSelectLastPage
 Summary
-  Occurs when the last apge is selected.
+  Occurs when the last page is selected.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the last page is selected.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSelectFirstPage, OnSelectNextPage, OnSelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnSelectNextPage
 Summary
   Occurs when the next page is selected.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the next page is selected.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSelectFirstPage, OnSelectLastPage, OnSelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnSelectPriorPage
 Summary
   Occurs when the previous page is selected.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the previous page is selected.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnSelectFirstPage, OnSelectLastPage, OnSelectNextPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.OnStartButtonClick
 Summary
   Occurs when the start button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnStartButtonClick if you want to be notified when the start button is clicked.
+  OnStartButtonClick is a general handler for next button clicks on all pages. To handle button clicks for a
+  specific page only, use <LINK TJvWizardCustomPage.OnStartButtonClick, OnStartButtonClick> of TJvCustomPage
+  instead.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.PageCount
 Summary
   Returns the total number of pages in the wizard.
 Description
-  Write here a description
+  \Read PageCount to determine the total number of pages in the Pages array. To iterate the Pages array,
+  indices between 0 and PageCount - 1 are valid.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pages
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.Pages
 Summary
   Provides indexed access to the wizard's pages.
 Description
-  Write here a description
+  Use Pages to access the pages in the wizard using an index. To access the first page of the wizard, use
+  Pages[0]. TO access the last page, use Pages[PageCount-1].
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PageCount
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.SelectFirstPage
 Summary
   Moves to the first page.
 Description
-  Write here a description
+  Call SelectFirstPage to move directly to the first page in the wizard.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectLastPage, SelectNextPage, SelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.SelectLastPage
 Summary
@@ -299,8 +306,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectFirstPage, SelectNextPage, SelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.SelectNextPage
 Summary
@@ -308,8 +314,7 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectFirstPage, SelectLastPage, SelectNextPage, SelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.SelectPriorPage
 Summary
@@ -317,62 +322,47 @@ Summary
 Description
   Write here a description
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SelectFirstPage, SelectLastPage, SelectNextPage, SelectPriorPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ShowDivider
 Summary
   Specifies whether a divider is visible in the wizard.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ShowDivider to specify whether a divider line is displayed just above the panel holding the
+  navigation buttons. Showing a divider is common in wizard style applications.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.ShowRouteMap
 Summary
   Specifies whether the route map is visible.
 Description
-  Write here a description
+  Use ShowRouteMap to conditionally hide and show the assigned route map component. If no route map is assigned, this property
+  does nothing.
+
+Note
+  The route map is automatically assigned when dropped on the form.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvWizardAlign
-<TITLE TJvWizardAlign type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = alTop..alRight; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RouteMap
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardButtonControl
 Summary
   Base class for the buttons on a wizard control.
 Description
-  Write here a description
+  TJvWizardButtonControl is the base class for all navigation buttons in a TJvWizard, such as Start,
+  Next, Prior, Finish, Cancel, Help
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardButtonControl.Alignment
 Summary
-  Write here a summary (1 line)
+  Controls the horizontal placement of the button.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Alignment is used internally to position a button correctly on its parent. Do not change this value
+  as it might destroy the layout of buttons on the wizard.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardButtonControl.Wizard
 Summary
   Specifies the wizard this button is located on.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Wizard is used internally to specify the wizard on which this button is displayed. Do not change this
+  property manually unless you are writing a descendant button control.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardButtonControlClass
 <TITLE TJvWizardButtonControlClass type>
@@ -387,7 +377,7 @@ Description
 Summary
   Defines the available types for a wizard button.
 Description
-  Write here a description
+  TJvWizardButtonKind is used by TJvWizard to set the type of an embedded button.
 @@TJvWizardButtonKind.bkStart
   The button is a start button.
 @@TJvWizardButtonKind.bkLast
@@ -412,21 +402,21 @@ Description
 Summary
   Defines the event type used when the active page in a wizard is changed.
 Description
-  This type is used by (for reference):
-    TJvWizardCustomPage.OnEnterPage
-    TJvWizardCustomPage.OnExitPage
+  TJvWizardChangePageEvent is the type of the TJvWizardCustomPage.OnEnterPage and TJvWizardCustomPage.OnExitPage
+  events.
 Parameters
-  Sender - Description for this parameter
-  Page   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The wizard that called the event.
+  Page   - The current or next page depending on the event. If it is an OnExitPage event, Page is the
+           page that is recieving focus. If it is an OnEnterPage event, Page is the page lossing focus.
+           Note that Page can be nil.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage
 Summary
   Base class for wizard pages.
 Description
-  Write here a description
+  TJvWizardCustomPage is the bsae class for pages that can be displayed in a TJvWizard. Currently,
+  TJvWizard only defines two differnt page types derived from TJvCustomPage: TJvWizardWelcomePage
+  and TJvWizardInteriorPage.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.EnableButton
 Summary
@@ -443,7 +433,7 @@ See Also
 Summary
   Indicates the buttons that should be enabled.
 Description
-  Write here a description
+  Use EnabledButtons to set the buttons that should be enabled for this page.
 See Also
   VisibleButtons
 ----------------------------------------------------------------------------------------------------
@@ -451,7 +441,7 @@ See Also
 Summary
   Indicates whether the user can jump from this page to any other page.
 Description
-  Set EnableJumpToPage to true (the default) to allwo the user to move to any other page. This property
+  Set EnableJumpToPage to true (the default) to allow the user to move to any other page. This property
   is mostly used with route maps.
 See Also
   TJvCustomRouteMapControl
@@ -460,97 +450,90 @@ See Also
 Summary
   Defines properties for the page's header area.
 Description
-  Write here a description
+  Use the subproperties of Header to manage the settings for the header area of a page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Image, Panel, Title, Subtitle
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.Image
 Summary
   Defines the image to show on the page.
 Description
-  Write here a description
+  Use the subproperties of Image to manage the settings for an image displayed on the page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Header, Panel, Title, Subtitle
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnBackButtonClick
 Summary
-  Occurs when the back button is clicked and the page is the active page.
+  Occurs when the back button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnBackButtonClick if you want to be notified when the back button is clicked
+  on the current page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnCancelButtonClick
 Summary
-  Occurs when the cancel button is clicked and the page is the active page.
+  Occurs when the cancel button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnCancelButtonClick if you want to be notified when the cancel button is clicked
+  on the current page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnEnterPage
 Summary
   Occurs when the page gains focus.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the page recieves focus.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnExitPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnExitPage
 Summary
   Occurs when the page looses focus.
 Description
-  Write here a description
+  Write a handler for this event to be notified when the page looses focus.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnEnterPage
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnFinishButtonClick
 Summary
-  Occurs when the finish button is clicked and the page is the active page.
+  Occurs when the finish button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnFinishButtonClick if you want to be notified when the finish button is clicked
+  on the current page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnLastButtonClick
 Summary
-  Occurs when the last button is clicked and the page is the active page.
+  Occurs when the last button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnLastButtonClick if you want to be notified when the last button is clicked
+  on the current page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnNextButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnNextButtonClick
 Summary
-  Occurs when the next button is clicked and the page is the active page.
+  Occurs when the next button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnNextButtonClick if you want to be notified when the next button is clicked
+  on the current page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnStartButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnPage
 Summary
-  Write here a summary (1 line)
+  Occurs when a new page has been selected and is fully loaded and ready to use.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write a handler for this event to be notified when a page has been activated and fully loaded.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnPaintPage
 Summary
   Occurs when the page needs to be drawn.
 Description
-  Write here a description
+  Write a handler for this event to custom draw the page.
 Parameters
   Sender  - The page that needs painting.
   ACanvas - The cavas to draw on.
@@ -558,135 +541,121 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.OnStartButtonClick
 Summary
-  Occurs when the start button is clicked and the page is the active page.
+  Occurs when the start button is clicked.
 Description
-  Write here a description
+  Write a handler for the OnStartButtonClick if you want to be notified when the start button is clicked
+  on the current page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBackButtonClick, OnCancelButtonClick, OnFinishButtonClick, OnLastButtonClick, OnNextButtonClick
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.PageIndex
 Summary
   Defines the location of the page within the parent's Pages property.
 Description
-  Write here a description
+  Use PageIndex to determine where the page sits in its wizard. Each page in a
+  wizard is automatically assigned a PageIndex when it is inserted in the wizard. The first page receives
+  a value of 0, the second has a value of 1, and so on. PageIndex values are reassigned if pages are
+  deleted or moved.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pages, Wizard
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.Panel
 Summary
   Specifies properties for the background panel on the page.
 Description
-  Write here a description
+  Use the subproperties of Panel to manage the settings for a background panel on the page.
+Note
+  Panel is not a TWinControl descendant and thus you cannot make it a parent of other controls. Any control
+  dropped on the panel are still parented to the page itself.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Header, Image, Title, Subtitle
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.Subtitle
 Summary
   Specifies the settings for the page's subtitle.
 Description
-  Write here a description
+  Use the subproperties of Subtitle to manage the settings for the subtitle area in the page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Header, Image, Panel, Title
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.Title
 Summary
   Specifies the settings for the page's title.
 Description
-  Write here a description
+  Use the subproperties of Title to manage the settings for the title area in the page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Header, Image, Panel, Subtitle
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.VisibleButtons
 Summary
   Defines the buttons that are visible on the page.
 Description
-  Write here a description
+  Use VisibleButtons to specify the buttons that should be visible on the page.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EnabledButtons
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage.Wizard
 Summary
   Indicates the wizard this page is displayed on.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Wizard is used internally to specify the wizard this page is parented to. Do not assign a new
+  wizard to this property unless you are writing a wizard descendant with special requirements.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardGraphicObject
 Summary
   Base class for graphic objects in a wizard.
 Description
-  Write here a description
+  TJvWizardGraphicObject is used as a base class for several graphic objects within a wizard and the
+  pages of a wizard.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardGraphicObject.Color
 Summary
   Indicates the color of the object.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Color to set and retrieve the color of the object.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardGraphicObject.PaintTo
 Summary
   Draws the object on a canvas.
 Description
-  Write here a description
+  Call PaintTo to draw the object on an arbitrary canvas.
 Parameters
-  ACanvas - Description for this parameter
-  ARect   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ACanvas - The canvas to draw to.
+  ARect   - The area to draw in.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardGraphicObject.Visible
 Summary
   Indicates whether the object is visible or not.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Visible to specify whether the object can be seen on screen or not.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImage
 Summary
   Base class for wizard images.
 Description
-  Write here a description
+  TJvWizardImage manages the settings for an image in a wizard.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImage.Alignment
 Summary
-  Indicates the vertical text alignment of the image.
+  Indicates the vertical alignment of the image.
 Description
-  Write here a description
+  Use Alignment to specify the alignment of the image within the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Layout
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImage.Layout
 Summary
-  Indicates the horizontal text alignment of the image.
+  Indicates the horizontal alignment of the image.
 Description
-  Write here a description
+  Use Layout to specify the alignment of the image within the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Alignment
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImage.Picture
 Summary
   Specifies the image that appears in the object.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Picture to specify the image to display.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardImage.Transparent
 Summary
@@ -782,87 +751,66 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader
 Summary
-  Claass that manages the header settings for a wizard page.
+  Class that manages the header settings for a wizard page.
 Description
-  Write here a description
+  TJvWizardPageHeader is the type of the Header property for a TJvWizardCustomPage and it contains
+  properties to manage the appearance and content of the header.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.Height
 Summary
   Indicates the height in pixels of the header.
 Description
-  Write here a description
+  Use Height to specify the height of the header area in pixels.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.ImageAlignment
 Summary
-  Indicates the alignment of the image.
+  Indicates the alignment of the header image.
 Description
-  Write here a description
+  Use ImageAlignment to specify the alignment of the image within the header.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex, ImageOffset
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.ImageIndex
 Summary
   Indicates the index of the image to display.
 Description
-  Write here a description
+  Use ImageIndex to indicate the image to display in the header. The image is taken from the
+  <TJvWizard.HeaderImages, HeaderImages> property of TJvWizard.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageAlignment, ImageOffset
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.ImageOffset
 Summary
-  Indicates th eoffset of the image.
+  Indicates the offset of the image from the edge.
 Description
-  Write here a description
+  Use imageOffset to set the offset in pixels from the edge of the image. The calculation of the
+  offset is also controlled by the ImageAlignment property.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageAlignment, ImageIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.ShowDivider
 Summary
-  Indictes whether a divider is shown above the navigation buttons.
+  Indicates whether a divider is shown above the navigation buttons.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ShowDivider to indicate whether a divider line is displayed in the header or not. Note that the divider
+  is always visible at design time.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.Subtitle
 Summary
   Manages the settings for the subtitle on a page.
 Description
-  Write here a description
+  Use the subproperties of Subtitle to manage the subtitle settings of the header.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Title
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageHeader.Title
 Summary
   Manages the settings for the title on a page.
 Description
-  Write here a description
+  Use the subproperties of Title to manage the title settings of the header.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvWizardPageList
-Summary
-  Internal class (derived from TList) that manages a list of pages.
-Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvWizardPageList.Wizard
-Summary
-  Reference to the wizard where this object appears.
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Subtitle
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardPageObject
 Summary
@@ -983,63 +931,59 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapControl.Align
 Summary
-  Write here a summary (1 line)
+  Determines how the route map aligns within its container (the wizard).
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Align to align a route map to the top, bottom, left, or right of a wizard and have it remain
+  there even if the size of the wizard changes. When the parent is resized, an aligned control
+  also resizes so that it continues to span the top, bottom, left, or right edge of the
+  parent.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapControl.OnDisplaying
 Summary
-  Write here a summary (1 line)
+  Occurs just before a page is to be displayed.
 Description
-  Write here a description
+  Write a handler for this event in a derived route map control when you want to be
+  notified about a page change and have the possibility to cancel the change. OnDisplaying
+  is called by CanChange.
 Parameters
-  Sender       - Description for this parameter
-  Page         - Description for this parameter
-  AllowDisplay - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender       - The route map that called the event.
+  Page         - The page that is about to be activated. This can be nil.
+  AllowDisplay - Set to True to allow the page change, False otherwise.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapControl.PageCount
-Summary
-  Write here a summary (1 line)
+  Returns the total number of pages in the wizard.
 Description
-  Write here a description
+  \Read PageCount to determine the total number of pages in the Pages array. To iterate the Pages array,
+  indices between 0 and PageCount - 1 are valid.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Pages
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapControl.PageIndex
 Summary
-  Write here a summary (1 line)
+  Indicates the curently selected page.
 Description
-  Write here a description
+  Use PageIndex to access the currently active page in the wizard. Before accessing this property,
+  make sure Wizard <> nil.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Wizard
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapControl.Pages
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the wizard pages.
 Description
-  Write here a description
+  Pages is provided as a simple way of accessing the pages of the wizard control that the
+  route map is connected to. Before accessing Pages, make sure that Wizard <> nil.
 Parameters
-  Index - Description for this parameter
+  Index - Index of the page to access.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Wizard
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapControl.Wizard
 Summary
   References the wizard the route map is linked to.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Wizard is used internally to access the wizard that the route map is connected to. This property
+  is set automatically when the route map is dropped on a form containing a TJvWizard.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardRouteMapDisplayEvent
 <TITLE TJvWizardRouteMapDisplayEvent type>
