@@ -1,0 +1,629 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvAppStore.pas, released on --.
+
+The Initial Developer of the Original Code is Marcel Bestebroer
+Portions created by Marcel Bestebroer are Copyright (C) 2002 - 2003 Marcel
+Bestebroer
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-09-05
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
+unit JvAppIniStore;
+
+interface
+
+uses
+  Classes, Forms, IniFiles, Messages, SysUtils, Windows,
+  JvAppStore;
+
+type
+  TJvAppINIStore = class(TJvCustomAppStore)
+  protected
+    function ValueExists(const Section, Key: string): Boolean; virtual; abstract;
+    function ReadValue(const Section, Key: string): string; virtual; abstract;
+    procedure WriteValue(const Section, Key, Value: string); virtual; abstract;
+    procedure RemoveValue(const Section, Key: string); virtual; abstract;
+  public
+    function ValueStored(const Path: string): Boolean; override;
+    procedure DeleteValue(const Path: string); override;
+    function ReadInteger(const Path: string; Default: Integer = 0): Integer; override;
+    procedure WriteInteger(const Path: string; Value: Integer); override;
+    function ReadFloat(const Path: string; Default: Extended = 0): Extended; override;
+    procedure WriteFloat(const Path: string; Value: Extended); override;
+    function ReadString(const Path: string; Default: string = ''): string; override;
+    procedure WriteString(const Path: string; Value: string); override;
+    function ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
+    procedure WriteBinary(const Path: string; const Buf; BufSize: Integer); override;
+  end;
+
+  { Storage to INI file. Optionally a buffered version (TMemIniFile) is used. IdleDelay will then
+    determine how long there has to be no key or mouse activities or writes to the storage before
+    it is written to the actual file. The non-buffered version will write directly to the file
+    (TIniFile) is used. }
+  TJvAppINIFileStore = class(TJvAppINIStore)
+  private
+    FBuffered: Boolean;
+    FHasWritten: Boolean;
+    FIdleDelay: Longint;
+    FIniFile: TCustomIniFile;
+    FLastUserAct: Longint;
+  protected
+    procedure CreateIniFile(Name: string);
+    procedure DestroyIniFile;
+    procedure SetBuffered(Value: Boolean);
+    function GetFileName: TFileName;
+    procedure SetFileName(Value: TFileName);
+    function AppWindowMsg(var Msg: TMessage): Boolean;
+    function ValueExists(const Section, Key: string): Boolean; override;
+    function ReadValue(const Section, Key: string): string; override;
+    procedure WriteValue(const Section, Key, Value: string); override;
+    procedure RemoveValue(const Section, Key: string); override;
+
+    property HasWritten: Boolean read FHasWritten;
+    property IniFile: TCustomIniFile read FIniFile;
+    property LastUserAct: Longint read FLastUserAct;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Flush;
+  published
+    property Buffered: Boolean read FBuffered write SetBuffered;
+    property FileName: TFileName read GetFileName write SetFileName;
+    property IdleDelay: Longint read FIdleDelay write FIdleDelay default 100;
+  end;
+
+  { In memory INI file. The contents is not backed by a file at all, but descendants may be written
+    that will read/store the contents to a physical device (file, DB, etc.).
+
+    Disclaimer: this class has not yet been tested!! }
+  TJvCustomAppINIStringsStore = class(TJvAppINIStore)
+  private
+    FIsInternalChange: Boolean;
+    FSections: TStrings;
+    FStrings: TStrings;
+  protected
+    procedure SetStrings(Value: TStrings);
+    procedure StringsChanged(Sender: TObject);
+    procedure RebuildSections;
+    function LocateSection(const Section: string; var Index: Integer): Boolean;
+    function LocateValue(const Section, Key: string; var Index: Integer): Boolean;
+    function LocateValueInSection(const Key: string; var Index: Integer): Boolean;
+    function ValueExists(const Section, Key: string): Boolean; override;
+    function ReadValue(const Section, Key: string): string; override;
+    procedure WriteValue(const Section, Key, Value: string); override;
+    procedure RemoveValue(const Section, Key: string); override;
+
+    property IsInternalChange: Boolean read FIsInternalChange;
+    property Strings: TStrings read FStrings write SetStrings;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
+
+implementation
+
+function AnsiSameTextShortest(S1, S2: string): Boolean;
+begin
+  if Length(S1) > Length(S2) then
+    SetLength(S1, Length(S2))
+  else if Length(S2) > Length(S1) then
+    SetLength(S2, Length(S1));
+  Result := AnsiSameText(S1, S2);
+end;
+
+function BinStrToBuf(Value: string; var Buf; BufSize: Integer): Integer;
+var
+  P: PChar;
+begin
+  if Odd(Length(Value)) then
+    Value := '0' + Value;
+  if (Length(Value) div 2) < BufSize then
+    BufSize := Length(Value) div 2;
+  Result := 0;
+  P := PChar(Value);
+  while (BufSize > 0) do
+  begin
+    PChar(Buf)[Result] := Chr(StrToInt('$' + P[0] + P[1]));
+    Inc(Result);
+    Dec(BufSize);
+    Inc(P, 2);
+  end;
+end;
+
+function BufToBinStr(const Buf; BufSize: Integer): string;
+var
+  P: PChar;
+  S: string;
+begin
+  SetLength(Result, BufSize * 2);
+  P := PChar(Result);
+  Inc(P, (BufSize - 1) * 2); // Point to end of string ^
+  while BufSize > 0 do
+  begin
+    S := IntToHex(Ord(PChar(Buf)[BufSize]), 2);
+    P[0] := S[1];
+    P[1] := S[2];
+    Dec(P, 2);
+    Dec(BufSize);
+  end;
+end;
+
+type
+  TIdleThread = class(TThread)
+  protected
+    function TickDiff(Start, Current: Longint): Longint;
+    procedure Execute; override;
+  public
+    constructor Create;
+  end;
+
+var
+  StoresList: TThreadList;
+  FIdleThread: TIdleThread;
+
+function TIdleThread.TickDiff(Start, Current: Longint): Longint;
+begin
+  if Start < Current then
+    Result := Current - Start
+  else
+    Result := Longint(Int64(Start) + MaxInt - Current);
+end;
+
+procedure TIdleThread.Execute;
+var
+  I: Integer;
+begin
+  while not Terminated do
+  begin
+    with StoresList.LockList do
+    try
+      I := 0;
+      while not Terminated and (I < Count) do
+      begin
+        if TickDiff(TJvAppINIFileStore(Items[I]).LastUserAct, GetTickCount) > TJvAppINIFileStore(Items[I]).IdleDelay then
+          TJvAppINIFileStore(Items[I]).Flush;
+        Inc(I);
+      end;
+    finally
+      StoresList.UnlockList;
+    end;
+    if not Terminated then
+      Sleep(100);
+  end;
+end;
+
+constructor TIdleThread.Create;
+begin
+  inherited Create(False);
+end;
+
+//===TJvAppINIStore=================================================================================
+
+function TJvAppINIStore.ValueStored(const Path: string): Boolean;
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  Result := ValueExists(Section, Key);
+end;
+
+procedure TJvAppINIStore.DeleteValue(const Path: string);
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  RemoveValue(Section, Key);
+end;
+
+function TJvAppINIStore.ReadInteger(const Path: string; Default: Integer = 0): Integer;
+var
+  Section: string;
+  Key: string;
+  Value: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  if ValueExists(Section, Key) then
+  begin
+    Value := ReadValue(Section, Key);
+    if Value = '' then
+      Value := '0';
+    Result := StrToInt(Value);
+  end
+  else
+    Result := Default;
+end;
+
+procedure TJvAppINIStore.WriteInteger(const Path: string; Value: Integer);
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  WriteValue(Section, Key, IntToStr(Value));
+end;
+
+function TJvAppINIStore.ReadFloat(const Path: string; Default: Extended = 0): Extended;
+var
+  Section: string;
+  Key: string;
+  Value: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  if ValueExists(Section, Key) then
+  begin
+    Value := ReadValue(Section, Key);
+    if Value = '' then
+      Value := '0';
+    Result := StrToFloat(Value);
+  end
+  else
+    Result := Default;
+end;
+
+procedure TJvAppINIStore.WriteFloat(const Path: string; Value: Extended);
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  WriteValue(Section, Key, FloatToStr(Value));
+end;
+
+function TJvAppINIStore.ReadString(const Path: string; Default: string = ''): string;
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  if ValueExists(Section, Key) then
+    Result := ReadValue(Section, Key)
+  else
+    Result := Default;
+end;
+
+procedure TJvAppINIStore.WriteString(const Path: string; Value: string);
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  WriteValue(Section, Key, Value);
+end;
+
+function TJvAppINIStore.ReadBinary(const Path: string; var Buf; BufSize: Integer): Integer;
+var
+  Section: string;
+  Key: string;
+  Value: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  if ValueExists(Section, Key) then
+  begin
+    Value := ReadValue(Section, Key);
+    Result := BinStrToBuf(Value, Buf, BufSize);
+  end
+  else
+    Result := 0;
+end;
+
+procedure TJvAppINIStore.WriteBinary(const Path: string; const Buf; BufSize: Integer);
+var
+  Section: string;
+  Key: string;
+begin
+  SplitKeyPath(Path, Section, Key);
+  WriteValue(Section, Key, BufToBinStr(Buf, BufSize));
+end;
+
+//===TJvAppINIFileStore=============================================================================
+
+procedure TJvAppINIFileStore.CreateIniFile(Name: string);
+begin
+  if Buffered then
+  begin
+    FIniFile := TMemIniFile.Create(Name);
+    if not (csDesigning in ComponentState) then
+    begin
+      StoresList.Add(Self);
+      Application.HookMainWindow(AppWindowMsg);
+    end;
+  end
+  else
+    FIniFile := TIniFile.Create(Name);
+end;
+
+procedure TJvAppINIFileStore.DestroyIniFile;
+begin
+  if not (csDesigning in ComponentState) then
+  begin
+    StoresList.Remove(Self);
+    Application.UnhookMainWindow(AppWindowMsg);
+  end;
+  Flush;
+  FreeAndNil(FIniFile);
+end;
+
+procedure TJvAppINIFileStore.SetBuffered(Value: Boolean);
+var
+  FName: string;
+begin
+  if Value <> Buffered then
+  begin
+    if Buffered and (IniFile <> nil) then
+      IniFile.UpdateFile;
+    FBuffered := Value;
+    if IniFile <> nil then
+    begin
+      FName := FileName;
+      DestroyIniFile;
+      CreateIniFile(FName);
+    end;
+  end;
+end;
+
+function TJvAppINIFileStore.GetFileName: TFileName;
+begin
+  if IniFile <> nil then
+    Result := IniFile.FileName;
+end;
+
+procedure TJvAppINIFileStore.SetFileName(Value: TFileName);
+begin
+  if Value <> FileName then
+  begin
+    FreeAndNil(FIniFile);
+    if Value <> '' then
+      CreateIniFile(Value);
+  end;
+end;
+
+function TJvAppINIFileStore.AppWindowMsg(var Msg: TMessage): Boolean;
+begin
+  if ((Msg.Msg >= WM_MOUSEFIRST) and (Msg.Msg <= WM_MOUSELAST)) or
+     ((Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST)) then
+    FLastUserAct := GetTickCount;
+  Result := False;
+end;
+
+function TJvAppINIFileStore.ValueExists(const Section, Key: string): Boolean;
+begin
+  if IniFile <> nil then
+    Result := IniFile.ValueExists(Section, Key)
+  else
+    Result := False;
+end;
+
+function TJvAppINIFileStore.ReadValue(const Section, Key: string): string;
+begin
+  if IniFile <> nil then
+    Result := IniFile.ReadString(Section, Key, '')
+  else
+    Result := '';
+end;
+
+procedure TJvAppINIFileStore.WriteValue(const Section, Key, Value: string);
+begin
+  if IniFile <> nil then
+  begin
+    IniFile.WriteString(Section, Key, Value);
+    FLastUserAct := GetTickCount;
+    FHasWritten := True;
+  end;
+end;
+
+procedure TJvAppINIFileStore.RemoveValue(const Section, Key: string);
+begin
+  if IniFile <> nil then
+  begin
+    if IniFile.ValueExists(Section, Key) then
+    begin
+      IniFile.DeleteKey(Section, Key);
+      FLastUserAct := GetTickCount;
+      FHasWritten := True;
+    end
+    else if IniFile.SectionExists(Section + '\' + Key) then
+    begin
+      IniFile.EraseSection(Section + '\' + Key);
+      FLastUserAct := GetTickCount;
+      FHasWritten := True;
+    end;
+  end;
+end;
+
+constructor TJvAppINIFileStore.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FIdleDelay := 100;
+end;
+
+destructor TJvAppINIFileStore.Destroy;
+begin
+  Flush;
+  FreeAndNil(FIniFile);
+  StoresList.Remove(Self);
+  inherited Destroy;
+end;
+
+procedure TJvAppINIFileStore.Flush;
+begin
+  if Buffered and (IniFile <> nil) and HasWritten then
+  begin
+    IniFile.UpdateFile;
+    FHasWritten := False;
+  end;
+end;
+
+//===TJvCustomAppINIStringsStore====================================================================
+
+procedure TJvCustomAppINIStringsStore.SetStrings(Value: TStrings);
+begin
+  FStrings.Assign(Value);
+end;
+
+procedure TJvCustomAppINIStringsStore.StringsChanged(Sender: TObject);
+begin
+  if not IsInternalChange then
+    RebuildSections;
+end;
+
+procedure TJvCustomAppINIStringsStore.RebuildSections;
+var
+  I: Integer;
+begin
+  FSections.Clear;
+  for I := 0 to FStrings.Count - 1 do
+  begin
+    if Copy(FStrings[I], 1, 1) = '[' then
+      FSections.AddObject(Copy(FStrings[I], 2, Length(FStrings[I]) - 2), TObject(I));
+  end;
+  TStringList(FSections).Sort;
+end;
+
+function TJvCustomAppINIStringsStore.LocateSection(const Section: string; var Index: Integer): Boolean;
+begin
+  Result := TStringList(FSections).Find(Section, Index);
+  if not Result then
+    Index := FStrings.Count
+  else
+    Index := Integer(FSections.Objects[Index]);
+end;
+
+function TJvCustomAppINIStringsStore.LocateValue(const Section, Key: string; var Index: Integer): Boolean;
+begin
+  Result := LocateSection(Section, Index) and LocateValueInSection(Key, Index);
+end;
+
+function TJvCustomAppINIStringsStore.LocateValueInSection(const Key: string; var Index: Integer): Boolean;
+begin
+  while (Index < FStrings.Count) and not AnsiSameTextShortest(FStrings[Index], Key + '=') do
+    Inc(Index);
+  Result := Index < FStrings.Count;
+end;
+
+function TJvCustomAppINIStringsStore.ValueExists(const Section, Key: string): Boolean;
+var
+  Idx: Integer;
+begin
+  Result := LocateValue(Section, Key, Idx);
+end;
+
+function TJvCustomAppINIStringsStore.ReadValue(const Section, Key: string): string;
+var
+  Idx: Integer;
+begin
+  if LocateValue(Section, Key, Idx) then
+    Result := Copy(FStrings[Idx], Length(Key) + 1, Length(FStrings[Idx]) - Length(Key) - 1)
+  else
+    Result := '';
+end;
+
+procedure TJvCustomAppINIStringsStore.WriteValue(const Section, Key, Value: string);
+var
+  SectIdx: Integer;
+  KeyIdx: Integer;
+begin
+  FIsInternalChange := True;
+  try
+    if not LocateSection(Section, SectIdx) then
+    begin
+      SectIdx := FStrings.Add('[' + Section + ']');
+      FSections.AddObject(Section, TObject(SectIdx));
+      TStringList(FSections).Sort;
+    end;
+    KeyIdx := SectIdx + 1;
+    if not LocateValueInSection(Key, KeyIdx) then
+    begin
+      FStrings.Insert(KeyIdx, Key + '=' + Value);
+      for SectIdx := 0 to FSections.Count - 1 do
+        if Integer(FSections.Objects[SectIdx]) >= KeyIdx then
+          FSections.Objects[SectIdx] := TObject(Integer(FSections.Objects[SectIdx]) + 1);
+    end
+    else
+      FStrings[KeyIdx] := Key + '=' + Value;
+  finally
+    FIsInternalChange := False;
+  end;
+end;
+
+procedure TJvCustomAppINIStringsStore.RemoveValue(const Section, Key: string);
+var
+  Idx: Integer;
+  DelCount: Integer;
+  SectIdx: Integer;
+begin
+  FIsInternalChange := True;
+  try
+    DelCount := 0;
+    if LocateValue(Section, Key, Idx) then
+    begin
+      FStrings.Delete(Idx);
+      DelCount := 1;
+    end
+    else
+    begin
+      if LocateSection(Section + '\' + Key, Idx) then
+      begin
+        if TStringList(FSections).Find(Section + '\' + Key, SectIdx) then
+          FSections.Delete(SectIdx);
+        repeat
+          FStrings.Delete(Idx);
+          Inc(DelCount);
+        until (Idx > FStrings.Count) or (Copy(FStrings[Idx], 1, 1) = '[');
+      end;
+    end;
+    if DelCount > 0 then
+    begin
+      for SectIdx := 0 to FSections.Count - 1 do
+        if Integer(FSections.Objects[SectIdx]) > Idx then
+          FSections.Objects[SectIdx] := TObject(Integer(FSections.Objects[SectIdx]) - DelCount);
+    end;
+  finally
+    FIsInternalChange := False;
+  end;
+end;
+
+constructor TJvCustomAppINIStringsStore.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FStrings := TStringList.Create;
+  TStringList(FStrings).OnChange := StringsChanged;
+  FSections := TStringList.Create;
+end;
+
+destructor TJvCustomAppINIStringsStore.Destroy;
+begin
+  FreeAndNil(FStrings);
+  FreeAndNil(FSections);
+  inherited Destroy;
+end;
+
+initialization
+  StoresList := TThreadList.Create;
+  FIdleThread := TIdleThread.Create;
+
+finalization
+  FIdleThread.Terminate;
+  FIdleThread.WaitFor;
+  FreeAndNil(StoresList);
+end.

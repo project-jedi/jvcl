@@ -53,6 +53,7 @@ contains
   JvCaret in '..\..\run\JvCaret.pas',
   JvContextProvider in '..\..\run\JvContextProvider.pas',
   JvAppStore in '..\..\run\JvAppStore.pas',
-  JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas';
+  JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
+  JvAppIniStore in '..\..\run\JvAppIniStore.pas';
 
 end.

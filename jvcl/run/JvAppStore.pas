@@ -81,6 +81,9 @@ type
     FCurRoot: string;
     FStoreSL: TStrings;
   protected
+    { Split the specified path into an absolute path and a value name (the last item in the path
+      string). Just a helper for all the storage methods. }
+    procedure SplitKeyPath(const Path: string; out Key, ValueName: string); virtual;
     { Retrieve application specific root. Path is prepended to any path specified and serves as an
       absolute root for any storage method. }
     function GetAppRoot: string; virtual;
@@ -115,6 +118,8 @@ type
   public
     { Determines if the specified value is stored }
     function ValueStored(const Path: string): Boolean; virtual; abstract;
+    { Determines if the specified list is stored }
+    function ListStored(const Path: string): Boolean; virtual;
     { Deletes the specified value. If the value wasn't stored, nothing will happen. }
     procedure DeleteValue(const Path: string); virtual; abstract;
     { Retrieves the specified Integer value. If the value is not found, the Default will be
@@ -228,6 +233,17 @@ end;
 
 //===TJvCustomAppStore==============================================================================
 
+procedure TJvCustomAppStore.SplitKeyPath(const Path: string; out Key, ValueName: string);
+var
+  AbsPath: string;
+  IValueName: Integer;
+begin
+  AbsPath := GetAbsPath(Path);
+  IValueName := LastDelimiter('\', AbsPath);
+  Key := StrLeft(AbsPath, IValueName - 1);
+  ValueName := StrRestOf(AbsPath, IValueName + 1);
+end;
+
 function TJvCustomAppStore.GetAppRoot: string;
 begin
   Result := FAppRoot;
@@ -246,6 +262,8 @@ end;
 function TJvCustomAppStore.GetAbsPath(Path: string): string;
 begin
   Result := GetAppRoot + '\' + OptimizePaths([GetRoot, Path]);
+  while (Result <> '') and (Result[1] = '\') do
+    Delete(Result, 1, 1);
 end;
 
 procedure TJvCustomAppStore.ReadSLItem(Sender: TJvCustomAppStore; const Path: string;
@@ -277,6 +295,11 @@ end;
 procedure TJvCustomAppStore.SetRoot(const Path: string);
 begin
   FCurRoot := OptimizePaths([Path]);
+end;
+
+function TJvCustomAppStore.ListStored(const Path: string): Boolean;
+begin
+  Result := ValueStored(Path + '\' + 'Count');
 end;
 
 function TJvCustomAppStore.ReadDateTime(const Path: string; Default: TDateTime): TDateTime;
