@@ -74,10 +74,13 @@ type
     FOver: Boolean;
     FPicture: TPicture;
     FClickCount: Integer;
+    FPictureChange:TNotifyEvent;
     procedure SetState(Value: TPicState);
     procedure PicturesChanged(Sender: TObject);
+    procedure DoPictureChange(Sender: TObject);
     procedure SetPicture(const Value: TPicture);
     procedure ApplyClick;
+    function UsesPictures:boolean;
   protected
     procedure Click; override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -115,10 +118,14 @@ begin
   FPictures := TJvPictures.Create;
   FPictures.OnChanged := PicturesChanged;
   FPicture := TPicture.Create;
+  FPictureChange := inherited Picture.OnChange;
+  inherited Picture.OnChange := DoPictureChange;
 end;
 
 destructor TJvImage.Destroy;
 begin
+  inherited Picture.OnChange := FPictureChange;
+  FPictureChange := nil;
   FPictures.Free;
   FPicture.Free;
   inherited Destroy;
@@ -163,22 +170,26 @@ end;
 procedure TJvImage.Click;
 begin
   inherited Click;
-  Inc(FClickCount);
-  ApplyClick;
+  if UsesPictures then
+  begin
+    Inc(FClickCount);
+    ApplyClick;
+  end;
 end;
 
 procedure TJvImage.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  State := stDown;
+  if UsesPictures then
+    State := stDown;
 end;
 
 procedure TJvImage.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if (State = stClicked1) or (State = stClicked2) then
+  if not UsesPictures or (State = stClicked1) or (State = stClicked2) then
     Exit;
   if (X > 0) and (X < Width) and (Y > 0) and (Y < Height) then
   begin
@@ -200,7 +211,8 @@ begin
     if csDesigning in ComponentState then
       Exit;
     Application.HintColor := FHintColor;
-    State := stEntered;
+    if UsesPictures then
+      State := stEntered;
     FOver := True;
   end;
   if Assigned(FOnMouseEnter) then
@@ -213,7 +225,8 @@ begin
   if FOver then
   begin
     Application.HintColor := FSaved;
-    ApplyClick;
+    if UsesPictures then
+      ApplyClick;
     FOver := False;
   end;
   if Assigned(FOnMouseLeave) then
@@ -240,7 +253,8 @@ end;
 
 procedure TJvImage.PicturesChanged(Sender: TObject);
 begin
-  SetState(State);
+  if UsesPictures then
+    SetState(State);
 end;
 
 procedure TJvImage.SetPicture(const Value: TPicture);
@@ -258,9 +272,9 @@ procedure TJvImage.SetState(Value: TPicState);
 begin
   case Value of
     stDefault:
-      if NotEmpty(Picture) then
+      if NotEmpty(FPicture) then
       begin
-        inherited Picture.Assign(Picture);
+        inherited Picture.Assign(FPicture);
         FState := Value;
       end;
     stEntered:
@@ -290,6 +304,19 @@ begin
   end;
   if Assigned(FOnStateChanged) then
     FOnStateChanged(Self);
+end;
+
+procedure TJvImage.DoPictureChange(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+function TJvImage.UsesPictures: boolean;
+begin
+  Result := (Pictures.PicEnter.Graphic <> nil)
+    or (Pictures.PicClicked1.Graphic <> nil)
+    or (Pictures.PicClicked2.Graphic <> nil)
+    or (Pictures.PicDown.Graphic <> nil);
 end;
 
 //=== TJvPictures ============================================================
