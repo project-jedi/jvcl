@@ -43,7 +43,8 @@ uses
   CoreData in 'CoreData.pas',
   FrmMake in 'FrmMake.pas' {FormMake},
   BuildHelpers in 'BuildHelpers.pas',
-  CapExec in 'CapExec.pas';
+  CapExec in 'CapExec.pas',
+  JvSimpleXML in '..\..\run\JvSimpleXml.pas';
 
 {$R *.res}
 

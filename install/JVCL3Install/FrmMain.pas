@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-11-28
+Last Modified: 2003-11-30
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,6 +35,8 @@ Known Issues:
 command line switches:
   -NoUpdateCheck    Do not check for installed updates
   -IgnoreDelphi     Do not check for running Delphi/BCB instances
+  -NoDelphi         Ignore Delphi product targets      (see CodeData.TTargetList.GetTargets)
+  -NoBCB            Ignore C++Builder product targets  (see CodeData.TTargetList.GetTargets)
 }
 
 unit FrmMain;
@@ -79,6 +81,8 @@ type
     Bevel2: TBevel;
     Bevel3: TBevel;
     Bevel4: TBevel;
+    CheckBoxInstallJcl: TCheckBox;
+    Bevel5: TBevel;
     procedure BtnQuitClick(Sender: TObject);
     procedure BtnAdvancedOptionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -98,6 +102,8 @@ type
     procedure MenuInvertSelectionClick(Sender: TObject);
     procedure imgProjectJEDIMouseDown(Sender: TObject;
       Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure LblVersionsClick(Sender: TObject);
+    procedure LblPackagesClick(Sender: TObject);
   private
     { Private-Deklarationen }
     FXPThemeSupportFirstClick: Boolean;
@@ -126,16 +132,6 @@ uses
   MainConfig, JVCLConfiguration, FrmMake;
 
 {$R *.dfm}
-
-function FindCmdSwitch(const Switch: string): Boolean;
-var i: Integer;
-begin
-  Result := True;
-  for i := 1 to ParamCount do
-    if CompareText(Switch, ParamStr(i)) = 0 then
-      Exit;
-  Result := False;
-end;
 
 function NoYesDlg(const Text: string): TModalResult;
 var Dlg: TForm;
@@ -280,26 +276,13 @@ begin
   Inc(FLockOptClick);
   try
    // special handling for XP Theme Support (Delphi 7)
-    try
-      if (SelTarget <> nil) and (SelTarget.MajorVersion >= 7) then
-      begin
-        CheckBoxOptTheming.Checked := True;
-        CheckBoxOptTheming.Enabled := False;
-      end
-      else
-      begin
-        CheckBoxOptTheming.Checked := FormMainConfig.Config.Enabled['JVCLThemesEnabled'];
-        CheckBoxOptTheming.Enabled := True;
-      end;
-    finally
-      CheckBoxOptTheming.OnClick := CheckBoxOptThemingClick;
-    end;
+    CheckBoxOptTheming.Enabled := (SelTarget <> nil) and (SelTarget.MajorVersion < 7);
 
    // load configuration
+    CheckBoxOptTheming.Checked := FormMainConfig.Config.Enabled['JVCLThemesEnabled'];
     CheckBoxOptRegGlobalDsgnEditor.Checked := FormMainConfig.Config.Enabled['JVCL_REGISTER_GLOBAL_DESIGNEDITORS'];
     CheckBoxOptDxgettext.Checked := FormMainConfig.Config.Enabled['USE_DXGETTEXT'];
     CheckBoxOptJvGIF.Checked := FormMainConfig.Config.Enabled['USE_Jv_GIF'];
-
   finally
     Dec(FLockOptClick);
   end;
@@ -319,7 +302,7 @@ begin
     Exit;
     
   NeedsUpdate := 0;
-  if Target.ProductName = 'Delphi' then
+  if Target.IsDelphi then
   begin
     case Target.MajorVersion of
       5: NeedsUpdate := 1; // needs at least Update #1
@@ -360,6 +343,7 @@ end;
 
 procedure TFormMain.FormCreate(Sender: TObject);
 begin
+  Application.HintHidePause := 10000;
   if not FindCmdSwitch('-IgnoreDelphi') then
   begin
     if IsDelphiRunning then
@@ -404,18 +388,37 @@ end;
 procedure TFormMain.ListViewTargetsSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
-  if Selected then
-  begin
-    CheckTargetUpdates(Item.Data);
-    Update_JVCL_INC_Config;
-    CheckBoxClearJVCLPalette.Checked := SelTarget.ClearJVCLPalette;
-    CheckBoxBuild.Checked := SelTarget.Build;
-    CheckBoxDeveloperInstall.Checked := SelTarget.DeveloperInstall;
+  Inc(FLockOptClick);
+  try
+    CheckBoxClearJVCLPalette.Enabled := Selected;
+    CheckBoxBuild.Enabled := Selected;
+    CheckBoxDeveloperInstall.Enabled := Selected;
+    CheckBoxInstallJcl.Enabled := Selected;
+    if Selected then
+    begin
+      CheckTargetUpdates(Item.Data);
+      Update_JVCL_INC_Config;
+      CheckBoxClearJVCLPalette.Checked := SelTarget.ClearJVCLPalette;
+      CheckBoxBuild.Checked := SelTarget.Build;
+      CheckBoxDeveloperInstall.Checked := SelTarget.DeveloperInstall;
+      CheckBoxInstallJcl.Checked := SelTarget.InstallJcl;
+      if (SelTarget.IsJCLInstalled) and (SelTarget.IsOldJVCLInstalled = 0) then
+        CheckBoxInstallJcl.Font.Style := []
+      else
+        CheckBoxInstallJcl.Font.Style := [fsBold];
+    end
+    else
+    begin
+      CheckBoxClearJVCLPalette.Checked := False;
+      CheckBoxBuild.Checked := False;
+      CheckBoxDeveloperInstall.Checked := False;
+      CheckBoxInstallJcl.Checked := False;
+      CheckBoxInstallJcl.Font.Style := []
+    end;
+    UpdatePackageList;
+  finally
+    Dec(FLockOptClick);
   end;
-  UpdatePackageList;
-  CheckBoxClearJVCLPalette.Enabled := Selected;
-  CheckBoxBuild.Enabled := Selected;
-  CheckBoxDeveloperInstall.Enabled := Selected;
 end;
 
 procedure TFormMain.CheckBoxOptThemingClick(Sender: TObject);
@@ -483,6 +486,13 @@ begin
           Item.Checked := False;
           Exit;
         end;
+        if (not TTargetInfo(Item.Data).IsJCLInstalled) and (JCLDir = '') then
+        begin
+          if not FInFillingList then
+            MessageDlg('JCL is not installed for this target and no JCL directory available.'#10 +
+                       'Please install the newest JCL or download it to $(JVCL)\..\JCL', mtWarning, [mbOk], 0);
+          Item.Checked := False;
+        end;
       end;
       TTargetInfo(Item.Data).CompileFor := Item.Checked;
     end;
@@ -504,11 +514,13 @@ end;
 
 procedure TFormMain.CheckBoxClearJVCLPaletteClick(Sender: TObject);
 begin
+  if FLockOptClick > 0 then Exit;
   if SelTarget <> nil then
   begin
     SelTarget.ClearJVCLPalette := CheckBoxClearJVCLPalette.Checked;
     SelTarget.Build := CheckBoxBuild.Checked;
     SelTarget.DeveloperInstall := CheckBoxDeveloperInstall.Checked;
+    SelTarget.InstallJcl := CheckBoxInstallJcl.Checked;
   end;
 end;
 
@@ -630,6 +642,16 @@ begin
     Dec(FLockPackageCheckStates);
   end;
   UpdatePackageCheckStates;
+end;
+
+procedure TFormMain.LblVersionsClick(Sender: TObject);
+begin
+  ListViewTargets.SetFocus;
+end;
+
+procedure TFormMain.LblPackagesClick(Sender: TObject);
+begin
+  ListViewPackages.SetFocus;
 end;
 
 end.
