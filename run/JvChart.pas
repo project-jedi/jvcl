@@ -508,7 +508,10 @@ type
 
 implementation
 
-
+{$IFNDEF COMPILER6_UP}
+uses
+  JvJVCLUtils;
+{$ENDIF COMPILER6_UP}
 
 { GRAPH DATA }
 
