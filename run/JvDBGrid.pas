@@ -458,8 +458,8 @@ type
     { WordWrap: are memo and string fields displayed on many lines ? }
     property WordWrap: Boolean read FWordWrap write SetWordWrap default False;
 
-    // If true, Memo fields are shown as text
-    property ShowMemos: Boolean read FShowMemos write SetShowMemos default True;
+    // If true, Memo fields are shown as memo objects
+    property ShowMemos: Boolean read FShowMemos write SetShowMemos default False;
   end;
 
 implementation
@@ -476,6 +476,7 @@ uses
   JvDBLookup,
   {$ENDIF COMPILER6_UP}
   JvConsts, JvResources, JvDBUtils, JvJCLUtils, JvJVCLUtils,
+  JvAppStoragePropertyEngineDB,
   JvDBGridSelectColumnForm;
 
 {$IFDEF MSWINDOWS}
@@ -871,7 +872,7 @@ begin
   FRowResize := False;
   FRowsHeight := DefaultRowHeight;
   FTitleRowHeight := RowHeights[0];
-  FShowMemos := True;
+  FShowMemos := False;
   
   FChangeLinks := TObjectList.Create(False);
 end;
@@ -918,10 +919,10 @@ begin
         Result := Ord(gpData);
       ftReference, ftDataSet:
         Result := Ord(gpData);
-      ftMemo, ftFmtMemo:
-        if not ShowMemos then
+      ftMemo, ftFmtMemo, ftOraClob:
+        if ShowMemos then
           Result := Ord(gpMemo);
-      ftOraBlob, ftOraClob:
+      ftOraBlob:
         Result := Ord(gpBlob);
       ftBoolean:
         if not Field.IsNull then
@@ -2121,18 +2122,14 @@ begin
   end
   else
   begin
-    inherited;
+    if not Assigned(FCurrentControl) then
+      DoKeyPress(Msg)
+    else
+      inherited;
 
     if Assigned(FCurrentControl) then
-    begin
       if FCurrentControl.Visible then
         PostMessage(FCurrentControl.Handle, WM_CHAR, Msg.CharCode, Msg.KeyData);
-    end
-    else
-      if not CanEditShow then
-        DoKeyPress(Msg); // This is needed to trigger an onKeyPressed event when the field
-                         // is not editable (the inherited function don't trigger it
-                         // because editing is prohibited by the UseDefaultEditor function)
   end;
 end;
 
@@ -2162,8 +2159,7 @@ begin
   if (Key = Cr) and PostOnEnter and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
 
-  if not Assigned(FCurrentControl) then
-    inherited KeyPress(Key);
+  inherited KeyPress(Key);
 
   if EditorMode then
   begin
@@ -2617,7 +2613,7 @@ begin
     end
     else
     begin
-      if (Field is TStringField) or ((Field is TMemoField) and FShowMemos) then
+      if (Field is TStringField) or (Field is TMemoField) then
       begin
         if Assigned(Field.OnGetText) then
           MemoText := Field.DisplayText
@@ -3469,7 +3465,7 @@ var
   GridControl: TJvDBGridControl;
   ClientTopLeft: TPoint;
 begin
-  // Do not test for Assigned(Control) here or you will end
+  // DO not test for Assigned(Control) here or you will end
   // up with an infinite loop of error messages. This check must
   // be done in UseDefaultEditor
 
@@ -3678,11 +3674,8 @@ end;
 
 procedure TJvDBGrid.SetShowMemos(const Value: Boolean);
 begin
-  if FShowMemos <> Value then
-  begin
-    FShowMemos := Value;
-    Invalidate;
-  end;
+  FShowMemos := Value;
+  Invalidate;
 end;
 
 {$IFDEF UNITVERSIONING}
