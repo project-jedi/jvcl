@@ -1706,6 +1706,7 @@ resourcestring
   RsYearGridFind = 'YearGrid Find';
   RsEnterSeachText = 'Enter seach text:';
   RsFounds = 'Found %s';
+  RsToday = 'Today ';
 
 //=== not taken into JVCL ====================================================
 {
