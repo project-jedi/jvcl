@@ -4,9 +4,9 @@
 
  Copyright (C) 2002 Project JEDI
 
- Original author:
+ Original author:dejoy
 
- Contributor(s):
+ Contributor(s):dejoy
 
  You may retrieve the latest version of this file at the JEDI-JVCL
  home page, located at http://jvcl.sourceforge.net
@@ -40,7 +40,8 @@ uses
   Types, QGraphics, QControls, QForms, QStdCtrls, QDialogs, QExtCtrls,
 {$ENDIF VisualCLX}
   JvNetscapeSplitter, JvOfficeColorButton, JvOfficeColorPanel,
-  JvExExtCtrls, JvComponent, JvExControls;
+  JvColorButton, JvComponent, JvExExtCtrls
+  ;
 
 type
   TColorDemoMainForm = class(TForm)
