@@ -68,6 +68,10 @@ uses
   Windows, SysUtils, Classes, Graphics, Controls,
   JvId3v2Types, JvComponent;
 
+const
+  cJvID3LowIndex = $00;
+  cJvID3HighIndex = $14;
+
 type
   TJvID3FileType =
     (ftUNKNOWN, ftMPG, ftMPG1, ftMPG2, ftMPG3, ftMPG2_5, ftMPG_AAC, ftVQF, ftPCM);
@@ -245,14 +249,14 @@ type
 
   TJvIdPictures = class(TPersistent)
   private
-    FPictures: array[$00..$14] of TPicture;
+    FPictures: array [cJvID3LowIndex..cJvID3HighIndex] of TPicture;
     function GetPicture(const Index: Integer): TPicture;
     procedure DummyProcedure(const Index: Integer; const Value: TPicture);
   public
     constructor Create; virtual;
     destructor Destroy; override;
   published
-    { TODO : Setters necessairy ?? }
+    { TODO : Setters necessary ?? }
     property Other: TPicture index $00 read GetPicture write DummyProcedure stored False;
     property FileIcon: TPicture index $01 read GetPicture write DummyProcedure stored False;
     property OtherIcon: TPicture index $02 read GetPicture write DummyProcedure stored False;
@@ -278,7 +282,7 @@ type
 
   TJvIdPicturesDesc = class(TPersistent)
   private
-    FStrings: array[$00..$14] of string;
+    FStrings: array [cJvID3LowIndex..cJvID3HighIndex] of string;
     function GetDescription(const Index: Integer): string;
     procedure DummyProcedure(const Index: Integer; const Value: string);
     procedure SetDescription(const Index: Integer; const Value: string);
@@ -390,7 +394,6 @@ type
   public
     procedure StartFrame(const AFrameSize: Integer);
     procedure EndFrame;
-
     function ReadDate(var ADate: TDateTime): Longint;
     function ReadLanguage(var Language: string): Longint;
     function ReadNumber(var AValue: Cardinal): Longint;
@@ -399,16 +402,14 @@ type
     function ReadWideString(var SW: WideString): Longint;
     function ReadUserWideString(var SW1, SW2: WideString): Longint;
     function ReadIsWideString: Boolean;
-
     procedure ReadFromStream(AStream: TStream; const ASize: Integer);
     function WriteBinaryDataToFile(const AFileName: string): Boolean;
-
     property BytesToRead: Longint read GetBytesToRead;
   end;
 
   TJvID3v2 = class(TJvComponent)
   private
-    FEvents: array[0..1000] of TJvID3Events;
+    FEvents: array [0..1000] of TJvID3Events;
     FEventsCount: Integer;
     FEventsTiming: Integer;
     FCount: Integer;
@@ -432,7 +433,6 @@ type
     FFrameStream: TJvID3Stream;
     FCurrentFrame: TID3v2Frame;
     FCurrentFrameID: TJvID3FrameID;
-
     // unuseful variables
     FDummyB: Boolean;
     FDummyR: Real;
@@ -442,7 +442,6 @@ type
     procedure ResetProp;
   protected
     procedure ReadAndUnsynchro(Source, Dest: TStream; BytesToRead: Integer);
-
     procedure ReadText;
     procedure ReadWeb;
     procedure ReadInvolvedPeople;
@@ -455,18 +454,16 @@ type
     procedure ReadUnsyncedLyrics;
     procedure ReadTermsOfUse;
     procedure ReadGeneralObject;
-
     { (rb) this must be a function, not a method }
-    function Iso639ToName(Code: string): string;
+    // (rom) class function as compromise
+    class function Iso639ToName(Code: string): string;
   public
-    MusicCDIdentifier: array[0..803] of Byte;
+    MusicCDIdentifier: array [0..803] of Byte;
     MusicCDIdentifierLength: Integer;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure LoadFromStream(Stream: TStream);
     procedure LoadFromFile(FileName: string);
-
     procedure CheckEvent(CurrentTime: Integer);
   published
     { Do not store dummies }
@@ -495,40 +492,86 @@ uses
   Math,
   JclUnicode, JclFileUtils;
 
+// (rom) avoid assembler if possible
+
+procedure ConvertHeaderSize(var P: Cardinal);
+{             Byte1    Byte2    Byte3    Byte4
+  Pre : P = Xabcdefg-Xhijklmn-Xopqrstu-XvwxyzAB  X = don't care;
+  Post: P = 0000vwxy-zABopqrs-tuhijklm-nabcdefg  a..z,A,B = bits   }
+var
+  D: Cardinal;
+begin
+  D := 0;
+  D := D or (P and $7F);
+  P := P shr 8;
+  D := D shl 7;
+  D := D or (P and $7F);
+  P := P shr 8;
+  D := D shl 7;
+  D := D or (P and $7F);
+  P := P shr 8;
+  D := D shl 7;
+  D := D or (P and $7F);
+  P := D;
+end;
+
+procedure ConvertID3Cardinal(var P: Cardinal);
+{             Byte1    Byte2    Byte3    Byte4
+  Pre : P = Xabcdefg-Xhijklmn-Xopqrstu-XvwxyzAB  X = don't care;
+  Post: P = 0000vwxy-zABopqrs-tuhijklm-nabcdefg  a..z,A,B = bits   }
+var
+  D: Cardinal;
+begin
+  D := 0;
+  D := D or (P and $FF);
+  P := P shr 8;
+  D := D shl 8;
+  D := D or (P and $FF);
+  P := P shr 8;
+  D := D shl 8;
+  D := D or (P and $FF);
+  P := P shr 8;
+  D := D shl 8;
+  D := D or (P and $FF);
+  P := D;
+end;
+
+(*
 procedure ConvertHeaderSize(var P);
 {             Byte1    Byte2    Byte3    Byte4
   Pre : P = Xabcdefg-Xhijklmn-Xopqrstu-XvwxyzAB  X = don't care;
   Post: P = 0000vwxy-zABopqrs-tuhijklm-nabcdefg  a..z,A,B = bits   }
 asm
-    MOV    EDX, DWORD PTR [P] ;
-    XOR    ECX, ECX           ;
-    OR     CL, DL             ;
-    SHL    ECX, 7             ;
-    OR     CL, DH             ;
-    SHL    ECX, 7             ;
-    SHR    EDX, 16            ;
-    OR     CL, DL             ;
-    SHL    ECX, 7             ;
-    OR     CL, DH             ;
-    MOV    DWORD PTR [P],ECX  ;
+    MOV    EDX, DWORD PTR [P]
+    XOR    ECX, ECX
+    OR     CL, DL
+    SHL    ECX, 7
+    OR     CL, DH
+    SHL    ECX, 7
+    SHR    EDX, 16
+    OR     CL, DL
+    SHL    ECX, 7
+    OR     CL, DH
+    MOV    DWORD PTR [P],ECX
 end;
 
-procedure ConvertID3Integer(var P);
+procedure ConvertID3Cardinal(var P);
 {
   Pre : P = B1-B2-B3-B4   B1,B2,B3,B4 = bytes
   Post: P = B4-B3-B2-B1                       }
 asm
-    MOV    EDX, DWORD PTR [P] ;
-    MOV    CL, DL             ;
-    SHL    ECX, 8             ;
-    MOV    CL, DH             ;
-    SHL    ECX, 8             ;
-    SHR    EDX, 16            ;
-    MOV    CL, DL             ;
-    SHL    ECX, 8             ;
-    MOV    CL, DH             ;
-    MOV    DWORD PTR [P],ECX  ;
+    MOV    EDX, DWORD PTR [P]
+    MOV    CL, DL
+    SHL    ECX, 8
+    MOV    CL, DH
+    SHL    ECX, 8
+    SHR    EDX, 16
+    MOV    CL, DL
+    SHL    ECX, 8
+    MOV    CL, DH
+    MOV    DWORD PTR [P],ECX
 end;
+*)
 
 function ExtractStrings(Source: string; Strings: TStrings): Integer;
 var
@@ -569,20 +612,16 @@ procedure TJvID3Stream.EndFrame;
 begin
   if not FInFrame then
     raise Exception.Create('Not reading frame');
-
   MoveToNextFrame;
   FInFrame := False;
 end;
 
 function TJvID3Stream.GetBytesToRead: Longint;
 begin
-  if not FInFrame then
-  begin
+  if FInFrame then
+    Result := FEndMarker - PChar(Memory) - Position
+  else
     Result := 0;
-    Exit;
-  end;
-
-  Result := FEndMarker - PChar(Memory) - Position;
 end;
 
 procedure TJvID3Stream.MoveToNextFrame;
@@ -646,7 +685,7 @@ begin
   if BytesToRead = 4 then
   begin
     Result := Read(AValue, 4);
-    ConvertID3Integer(AValue);
+    ConvertID3Cardinal(AValue);
   end
   else
   begin
@@ -784,20 +823,17 @@ procedure TJvID3Stream.StartFrame(const AFrameSize: Integer);
 begin
   if FInFrame then
     raise Exception.Create('Already reading frame');
-
   FEndMarker := PChar(Memory) + Position + AFrameSize;
   FInFrame := True;
 end;
 
-function TJvID3Stream.WriteBinaryDataToFile(
-  const AFileName: string): Boolean;
+function TJvID3Stream.WriteBinaryDataToFile(const AFileName: string): Boolean;
 var
   FileStream: TFileStream;
 begin
   Result := not FileExists(AFileName);
   if not Result then
     Exit;
-
   FileStream := TFileStream.Create(AFileName, fmCreate);
   try
     if BytesToRead > 0 then
@@ -873,7 +909,7 @@ type
   end;
 
 const
-  cShortToLongNameTable: array[1..427] of TShortToLongName =
+  cShortToLongNameTable: array [1..427] of TShortToLongName =
   (
     (S: 'aar'; L: 'Afar'),
     (S: 'abk'; L: 'Abkhazian'),
@@ -1304,7 +1340,7 @@ const
     (S: 'zun'; L: 'Zuni')
     );
 
-function TJvID3v2.Iso639ToName(Code: string): string;
+class function TJvID3v2.Iso639ToName(Code: string): string;
 var
   I: Integer;
 begin
@@ -1364,7 +1400,6 @@ begin
   { The ID3v2 tag size is the size of the complete tag after unsychronisation,
     including padding, excluding the header but not excluding the extended
     header }
-
   FTagSize := Header.Size;
 
   { Only version 2.3 is supported for now }
@@ -1396,10 +1431,9 @@ begin
     while (FFrameStream.Size - FFrameStream.Position > 10) do
     begin
       FFrameStream.Read(FCurrentFrame, 10);
-      ConvertID3Integer(FCurrentFrame.Size);
+      ConvertID3Cardinal(FCurrentFrame.Size);
 
       { Not implemented: Flags }
-
       FCurrentFrameID := ID3_TextToFrameID(FCurrentFrame.ID);
 
       FFrameStream.StartFrame(FCurrentFrame.Size);
@@ -1412,18 +1446,12 @@ begin
             fiConductor, fiMixArtist, fiPartInSet, fiPublisher, fiTrackNum, fiRecordingDates,
             fiNetRadioStation, fiNetRadioOwner, fiSize, fiISRC, fiEncoderSettings, fiUserText,
             fiYear:
-
             ReadText;
-
           fiWWWCommercialInfo, fiWWWCopyright, fiWWWAudioFile, fiWWWArtist, fiWWWAudioSource,
             fiWWWRadioPage, fiWWWPayment, fiWWWPublisher, fiWWWUser:
-
             ReadWeb;
-
           fiInvolvedPeople:
-
             ReadInvolvedPeople;
-
           fiComment:
             { This frame is indended for any kind of full text information that
               does not fit in any other frame. It consists of a frame header
@@ -1432,9 +1460,7 @@ begin
               allowed in the comment text string. There may be more than one
               comment frame in each tag, but only one with the same language and
               content descriptor. }
-
             ReadComment;
-
           fiCDID:
             { This frame is intended for music that comes from a CD, so that the CD
               can be identified in databases such as the CDDB. The frame consists of
@@ -1484,7 +1510,7 @@ var
   LastWasFF: Boolean;
   BytesRead: Integer;
   SourcePtr, DestPtr: Integer;
-  SourceBuf, DestBuf: array[0..CBufferSize - 1] of Byte;
+  SourceBuf, DestBuf: array [0..CBufferSize - 1] of Byte;
 begin
   { Replace $FF 00 with $FF }
 
@@ -1602,7 +1628,6 @@ begin
        Language             $xx xx xx
        The actual text      <text string according to encoding>
   }
-
   with FFrameStream do
   begin
     IsUnicode := ReadIsWideString;
@@ -1655,7 +1680,6 @@ begin
     be one "PCNT" frame in each tag. When the counter reaches all one's, one byte
     is inserted in front of the counter thus making the counter eight bits bigger.
     The counter must be at least 32-bits long to begin with. }
-
   FFrameStream.ReadNumber(FPlayCounter);
 end;
 
@@ -1673,31 +1697,55 @@ begin
   while FFrameStream.BytesToRead > 0 do
   begin
     FFrameStream.Read(TypeOfEvent, 1);
-    case TypeOfEvent of
-      $00: FEvents[FEventsCount].EventType := etPADDING;
-      $01: FEvents[FEventsCount].EventType := etEND_OF_INITIAL_SILENCE;
-      $02: FEvents[FEventsCount].EventType := etINTRO_START;
-      $03: FEvents[FEventsCount].EventType := etMAINPART_START;
-      $04: FEvents[FEventsCount].EventType := etOUTRO_START;
-      $05: FEvents[FEventsCount].EventType := etOUTRO_END;
-      $06: FEvents[FEventsCount].EventType := etVERSE_START;
-      $07: FEvents[FEventsCount].EventType := etREFRAIN_START;
-      $08: FEvents[FEventsCount].EventType := etINTERLUDE_START;
-      $09: FEvents[FEventsCount].EventType := etTHEME_START;
-      $0A: FEvents[FEventsCount].EventType := etVARIATION_START;
-      $0B: FEvents[FEventsCount].EventType := etKEY_CHANGE;
-      $0C: FEvents[FEventsCount].EventType := eTTime_CHANGE;
-      $0D: FEvents[FEventsCount].EventType := etUNWANTED_NOISE;
-      $0E: FEvents[FEventsCount].EventType := etSUSTAINED_NOISE;
-      $0F: FEvents[FEventsCount].EventType := etSUSTAINED_NOISE_END;
-      $10: FEvents[FEventsCount].EventType := etINTRO_END;
-      $11: FEvents[FEventsCount].EventType := etMAINPART_END;
-      $12: FEvents[FEventsCount].EventType := etVERSE_END;
-      $13: FEvents[FEventsCount].EventType := etREFRAIN_END;
-      $14: FEvents[FEventsCount].EventType := etTHEME_END;
-      $FD: FEvents[FEventsCount].EventType := etAUDIO_END;
-      $FE: FEvents[FEventsCount].EventType := etFILE_END;
-    end;
+    with FEvents[FEventsCount] do
+      case TypeOfEvent of
+        $00:
+          EventType := etPADDING;
+        $01:
+          EventType := etEND_OF_INITIAL_SILENCE;
+        $02:
+          EventType := etINTRO_START;
+        $03:
+          EventType := etMAINPART_START;
+        $04:
+          EventType := etOUTRO_START;
+        $05:
+          EventType := etOUTRO_END;
+        $06:
+          EventType := etVERSE_START;
+        $07:
+          EventType := etREFRAIN_START;
+        $08:
+          EventType := etINTERLUDE_START;
+        $09:
+          EventType := etTHEME_START;
+        $0A:
+          EventType := etVARIATION_START;
+        $0B:
+          EventType := etKEY_CHANGE;
+        $0C:
+          EventType := eTTime_CHANGE;
+        $0D:
+          EventType := etUNWANTED_NOISE;
+        $0E:
+          EventType := etSUSTAINED_NOISE;
+        $0F:
+          EventType := etSUSTAINED_NOISE_END;
+        $10:
+          EventType := etINTRO_END;
+        $11:
+          EventType := etMAINPART_END;
+        $12:
+          EventType := etVERSE_END;
+        $13:
+          EventType := etREFRAIN_END;
+        $14:
+          EventType := etTHEME_END;
+        $FD:
+          EventType := etAUDIO_END;
+        $FE:
+          EventType := etFILE_END;
+      end;
 
     FFrameStream.ReadNumber(TimeStamp);
     FEvents[FEventsCount].TimeStamp := TimeStamp;
@@ -1735,7 +1783,6 @@ begin
      Description        <text string according to encoding> $00 (00)
      Picture data       <binary data>
   }
-
   with FFrameStream do
   begin
     IsUnicode := ReadIsWideString;
@@ -1915,7 +1962,7 @@ begin
     FPopularimeter.Rating := B;
 
     ReadNumber(Counter);
-    ConvertID3Integer(Counter);
+    ConvertID3Cardinal(Counter);
     FPopularimeter.Counter := Counter;
   end;
 end;
@@ -2712,7 +2759,7 @@ var
   Index: Byte;
 begin
   inherited Create;
-  for Index := $00 to $14 do
+  for Index := Low(FPictures) to High(FPictures) do
     FPictures[Index] := TPicture.Create;
 end;
 
@@ -2720,7 +2767,7 @@ destructor TJvIdPictures.Destroy;
 var
   Index: Byte;
 begin
-  for Index := $00 to $14 do
+  for Index := Low(FPictures) to High(FPictures) do
     FPictures[Index].Free;
   inherited Destroy;
 end;
@@ -2756,7 +2803,7 @@ procedure TJvIdImages.ResetFields;
 var
   Index: Integer;
 begin
-  for Index := $00 to $14 do
+  for Index := cJvID3LowIndex to cJvID3HighIndex do
   begin
     FPictures.GetPicture(Index).Assign(nil);
     FInfos.SetDescription(Index, '');
@@ -2816,6 +2863,8 @@ begin
   FPrice := '';
   FDatePurchased := EncodeDate(1900, 1, 1);
 end;
+
+//=== TJvID3Popularimeter ====================================================
 
 procedure TJvID3Popularimeter.ResetFields;
 begin

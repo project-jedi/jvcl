@@ -65,7 +65,8 @@ type
 
   TId3v2Frame = packed record
     Id: array [0..3] of Char;
-    Size: Integer;
+    // (rom) changed to Cardinal sizes are usually unsigned
+    Size: Cardinal;
     Flags: Word;
   end;
 
@@ -180,16 +181,14 @@ type
 
   TJvID3TermFinder = class
   private
-    FLists: array[TJvListType] of TStringList;
+    FLists: array [TJvListType] of TStringList;
   protected
     procedure BuildList_ID3LongText;
     procedure BuildList_ID3ShortText;
   public
     constructor Create; virtual;
     destructor Destroy; override;
-
     class function Instance: TJvID3TermFinder;
-
     function ID3LongTextToFrameID(const S: string): TJvID3FrameID;
     function ID3ShortTextToFrameID(const S: string): TJvID3FrameID;
   end;
@@ -202,7 +201,8 @@ begin
   with TJvID3TermFinder.Instance do
     if L = 3 then
       Result := ID3ShortTextToFrameID(S)
-    else if L = 4 then
+    else
+    if L = 4 then
       Result := ID3LongTextToFrameID(S)
     else
       Result := fiNoFrame;
@@ -210,12 +210,12 @@ end;
 
 type
   TJvID3FrameDef = packed record
-    ShortTextID: array[0..2] of Char;
-    LongTextID: array[0..3] of Char;
+    ShortTextID: array [0..2] of Char;
+    LongTextID: array [0..3] of Char;
   end;
 
 const
-  CID3FrameDefs: array[TJvID3FrameID] of TJvID3FrameDef = ( { Ver.  2 3 4 }
+  CID3FrameDefs: array [TJvID3FrameID] of TJvID3FrameDef = ( { Ver. 2 3 4 }
     (ShortTextID: ''; LongTextID: ''), { fiNoFrame                  - - - }
     (ShortTextID: 'CRA'; LongTextID: 'AENC'), { fiAudioCrypto       X X X }
     (ShortTextID: 'PIC'; LongTextID: 'APIC'), { fiPicture           X X X }
@@ -315,6 +315,24 @@ const
 
 // === TJvID3TermFinder =====================================================
 
+constructor TJvID3TermFinder.Create;
+var
+  ListType: TJvListType;
+begin
+  inherited Create;
+  for ListType := Low(TJvListType) to High(TJvListType) do
+    FLists[ListType] := nil;
+end;
+
+destructor TJvID3TermFinder.Destroy;
+var
+  ListType: TJvListType;
+begin
+  for ListType := Low(TJvListType) to High(TJvListType) do
+    FLists[ListType].Free;
+  inherited Destroy;
+end;
+
 procedure TJvID3TermFinder.BuildList_ID3LongText;
 var
   FrameID: TJvID3FrameID;
@@ -356,25 +374,7 @@ begin
   end;
 end;
 
-constructor TJvID3TermFinder.Create;
-var
-  ListType: TJvListType;
-begin
-  for ListType := Low(TJvListType) to High(TJvListType) do
-    FLists[ListType] := nil;
-end;
-
-destructor TJvID3TermFinder.Destroy;
-var
-  ListType: TJvListType;
-begin
-  for ListType := Low(TJvListType) to High(TJvListType) do
-    FLists[ListType].Free;
-  inherited;
-end;
-
-function TJvID3TermFinder.ID3LongTextToFrameID(
-  const S: string): TJvID3FrameID;
+function TJvID3TermFinder.ID3LongTextToFrameID(const S: string): TJvID3FrameID;
 var
   I: Integer;
 begin
@@ -387,8 +387,7 @@ begin
     Result := TJvID3FrameID(FLists[ltID3LongText].Objects[I]);
 end;
 
-function TJvID3TermFinder.ID3ShortTextToFrameID(
-  const S: string): TJvID3FrameID;
+function TJvID3TermFinder.ID3ShortTextToFrameID(const S: string): TJvID3FrameID;
 var
   I: Integer;
 begin
@@ -412,7 +411,9 @@ begin
 end;
 
 initialization
+
 finalization
   GInstance.Free;
+
 end.
 
