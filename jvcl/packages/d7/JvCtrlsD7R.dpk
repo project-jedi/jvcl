@@ -66,12 +66,17 @@ contains
   JvxClock in '..\..\run\JvxClock.pas',
   JvSpeedbarSetupForm in '..\..\run\JvSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
   JvColorForm in '..\..\run\JvColorForm.pas',
-  JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
   JvRegAuto in '..\..\run\JvRegAuto.pas',
   JvWinampLabel in '..\..\run\JvWinampLabel.pas',
   JvButtons in '..\..\run\JvButtons.pas',
   JvCaptionPanel in '..\..\run\JvCaptionPanel.pas',
   JvScrollMax in '..\..\run\JvScrollMax.pas',
-  JvGroupHeader in '..\..\run\JvGroupHeader.pas';
+  JvGroupHeader in '..\..\run\JvGroupHeader.pas',
+  JvImageDrawThread in '..\..\run\JvImageDrawThread.pas',
+  JvComponentPanel in '..\..\run\JvComponentPanel.pas',
+  JvUninstallControls in '..\..\run\JvUninstallControls.pas',
+  JvHint in '..\..\run\JvHint.pas',
+  JvMovableBevel in '..\..\run\JvMovableBevel.pas',
+  JvPlaylist in '..\..\run\JvPlaylist.pas';
 
 end.

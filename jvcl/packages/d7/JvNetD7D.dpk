@@ -32,7 +32,8 @@ requires
   vcl,
   rtl,
   vclactnband,
-  vclx;
+  vclx,
+  JvStdCtrlsD7D;
 
 contains
   JvNetReg in '..\..\design\JvNetReg.pas',

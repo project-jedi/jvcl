@@ -33,7 +33,8 @@ requires
   rtl,
   vclx,
   dclstd,
-  JvCoreD7D;
+  JvCoreD7D,
+  vclactnband;
 
 contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
@@ -42,6 +43,7 @@ contains
   JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
   JvFooterEditor in '..\..\design\JvFooterEditor.pas',
   JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',
-  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas';
+  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas',
+  JvHTHintForm in '..\..\design\JvHTHintForm.pas' {JvHintEditor};
 
 end.
