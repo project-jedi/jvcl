@@ -4011,16 +4011,16 @@ end;
 procedure TJvTFDaysApptAttr.Assign(Source: TPersistent);
 begin
   if Source is TJvTFDaysApptAttr then
-  try
-    FParentFont := False;
-    FFrameWidth := TJvTFDaysApptAttr(Source).FrameWidth;
-    FFrameColor := TJvTFDaysApptAttr(Source).FrameColor;
-    FColor := TJvTFDaysApptAttr(Source).Color;
-    Font.Assign(TJvTFDaysApptAttr(Source).Font);
-    ParentFont := TJvTFDaysApptAttr(Source).ParentFont;
-  finally
-    Change;
-  end
+    try
+      FParentFont := False;
+      FFrameWidth := TJvTFDaysApptAttr(Source).FrameWidth;
+      FFrameColor := TJvTFDaysApptAttr(Source).FrameColor;
+      FColor := TJvTFDaysApptAttr(Source).Color;
+      Font.Assign(TJvTFDaysApptAttr(Source).Font);
+      ParentFont := TJvTFDaysApptAttr(Source).ParentFont;
+    finally
+      Change;
+    end
   else
     inherited Assign(Source);
 end;

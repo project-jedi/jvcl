@@ -278,7 +278,7 @@ end;
 
 procedure TJvMacro.Assign(Source: TPersistent);
 begin
-  if (Source is TJvMacro) and (Source <> nil) then
+  if Source is TJvMacro then
   begin
     if VarIsEmpty(TJvMacro(Source).FData) then
       Clear
@@ -286,6 +286,7 @@ begin
       Value := TJvMacro(Source).FData;
     Name := TJvMacro(Source).Name;
   end;
+  // (rom) else inherited Assign(source) missing?
 end;
 
 function TJvMacro.GetDisplayName: string;

@@ -729,9 +729,9 @@ begin
   begin
     IncludeAttr := TJvSearchAttributes(Source).IncludeAttr;
     ExcludeAttr := TJvSearchAttributes(Source).ExcludeAttr;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvSearchAttributes.DefineProperties(Filer: TFiler);

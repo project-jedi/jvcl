@@ -355,7 +355,6 @@ type
     property DrawBottomLine: boolean read FDrawBottomLine write SetDrawBottomLine;
   end;
 
-
   TJvTFGlanceTitle = class(TPersistent)
   private
     FColor: TColor;
@@ -398,7 +397,6 @@ type
   published
     property Title: string read FTitle write SetTitle;
   end;
-
 
   TJvTFGlanceCoord = record
     Col: Integer;
@@ -522,10 +520,10 @@ type
 
     // mouse routines
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-                        X, Y: Integer); override;
+      X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-                      X, Y: Integer); override;
+      X, Y: Integer); override;
     procedure DblClick; override;
 
     procedure CheckApptHint(Info: TJvTFGlanceCoord); virtual;
@@ -665,14 +663,14 @@ type
       read FOnUpdateCellTitleText write FOnUpdateCellTitleText;
 
     //inherited properties
-    Property DateFormat; // from TJvTFControl
-    Property TimeFormat; // from TJvTFControl
+    property DateFormat; // from TJvTFControl
+    property TimeFormat; // from TJvTFControl
 
-    Property Align;
-    Property Color default clWindow;
-    Property ParentColor default False;
-    Property TabStop default True;
-    Property TabOrder;
+    property Align;
+    property Color default clWindow;
+    property ParentColor default False;
+    property TabStop default True;
+    property TabOrder;
     property Anchors;
     property Constraints;
     property DragKind;
@@ -783,15 +781,16 @@ resourcestring
   RsEApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
   RsECellCannotBeSplit = 'Cell cannot be split';
   RsEASubcellCannotBeSplit = 'A subcell cannot be split';
-{$ENDIF USEJVCL}
+  {$ENDIF USEJVCL}
 
 { TJvTFGlanceCell }
 { TODO 3 -cMisc: Complete TGlance.Assign }
+
 procedure TJvTFGlanceCell.Assign(Source: TPersistent);
 begin
   if Source is TJvTFGlanceCell then
-    begin
-    end
+  begin
+  end
   else
     inherited Assign(Source);
 end;
@@ -808,40 +807,40 @@ var
   I: Integer;
   aSched: TJvTFSched;
   aSchedName,
-  aSchedID: string;
+    aSchedID: string;
 begin
   GlanceControl := CellCollection.GlanceControl;
 
   if CellCollection.Configuring or not Assigned(GlanceControl.ScheduleManager) or
-     (csLoading in GlanceControl.ComponentState) then
+    (csLoading in GlanceControl.ComponentState) then
     Exit;
 
   // First, disconnect any schedules that shouldn't be connected
   I := 0;
-  While I < FSchedules.Count do
+  while I < FSchedules.Count do
+  begin
+    aSched := TJvTFSched(FSchedules.Objects[I]);
+    if (GlanceControl.SchedNames.IndexOf(aSched.SchedName) = -1) or
+      not EqualDates(aSched.SchedDate, CellDate) then
     begin
-      aSched := TJvTFSched(FSchedules.Objects[I]);
-      if (GlanceControl.SchedNames.IndexOf(aSched.SchedName) = -1) or
-         not EqualDates(aSched.SchedDate, CellDate) then
-        begin
-          FSchedules.Delete(I);
-          GlanceControl.SafeReleaseSchedule(aSched);
-        end
-      else
-        Inc(I);
-    end;
+      FSchedules.Delete(I);
+      GlanceControl.SafeReleaseSchedule(aSched);
+    end
+    else
+      Inc(I);
+  end;
 
   // Now connect any schedules that are not connected and should be
-  For I := 0 to GlanceControl.SchedNames.Count - 1 do
+  for I := 0 to GlanceControl.SchedNames.Count - 1 do
+  begin
+    aSchedName := GlanceControl.SchedNames[I];
+    aSchedID := TJvTFScheduleManager.GetScheduleID(aSchedName, CellDate);
+    if FSchedules.IndexOf(aSchedID) = -1 then
     begin
-      aSchedName := GlanceControl.SchedNames[I];
-      aSchedID := TJvTFScheduleManager.GetScheduleID(aSchedName, CellDate);
-      if FSchedules.IndexOf(aSchedID) = -1 then
-        begin
-          aSched := GlanceControl.RetrieveSchedule(aSchedName, CellDate);
-          FSchedules.AddObject(aSchedID, aSched);
-        end;
+      aSched := GlanceControl.RetrieveSchedule(aSchedName, CellDate);
+      FSchedules.AddObject(aSchedID, aSched);
     end;
+  end;
 
   if not CellCollection.FCheckingAllConnections then
     GlanceControl.ScheduleManager.ProcessBatches;
@@ -852,19 +851,19 @@ var
   TheSubcell: TJvTFGlanceCell;
 begin
   if IsSplit then
-    begin
-      TheSubcell := Subcell;
-      FSplitRef.FSplitRef := nil;
-      FSplitRef := nil;
-      CellCollection.ReconfigCells;
-      if not FDestroying and (TheSubcell <> Self) then
-        TheSubcell.Free;
-    end;
+  begin
+    TheSubcell := Subcell;
+    FSplitRef.FSplitRef := nil;
+    FSplitRef := nil;
+    CellCollection.ReconfigCells;
+    if not FDestroying and (TheSubcell <> Self) then
+      TheSubcell.Free;
+  end;
 end;
 
 constructor TJvTFGlanceCell.Create(Collection: TCollection);
 begin
-  inherited;
+  inherited Create(Collection);
   FCellCollection := TJvTFGlanceCells(Collection);
 
   if Assigned(CellCollection) and not CellCollection.AllowAdd then
@@ -892,31 +891,30 @@ begin
     FSplitRef.Free
   else
   if Assigned(FSplitRef) then
-    begin
-      FSplitRef.FSplitRef := nil;
-      FSplitRef := nil;
-    end;
-
+  begin
+    FSplitRef.FSplitRef := nil;
+    FSplitRef := nil;
+  end;
 
   FCellPics.Free;
 
   DisconnectList := TstringList.Create;
-  Try
+  try
     DisconnectList.Assign(FSchedules);
     FSchedules.Clear;
 
-    For I := 0 to DisconnectList.Count - 1 do
-      begin
-        aSched := TJvTFSched(DisconnectList.Objects[I]);
-        CellCollection.GlanceControl.ReleaseSchedule(aSched.SchedName,
-                                                     aSched.SchedDate);
-      end;
-  Finally
+    for I := 0 to DisconnectList.Count - 1 do
+    begin
+      aSched := TJvTFSched(DisconnectList.Objects[I]);
+      CellCollection.GlanceControl.ReleaseSchedule(aSched.SchedName,
+        aSched.SchedDate);
+    end;
+  finally
     DisconnectList.Free;
   end;
   FSchedules.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvTFGlanceCell.GetDisplayName: string;
@@ -928,7 +926,6 @@ begin
     Result := FormatDateTime(Glance.DateFormat, CellDate)
   else
     Result := FormatDateTime('m/d/yyyy', CellDate);
-
 end;
 
 function TJvTFGlanceCell.GetParentCell: TJvTFGlanceCell;
@@ -966,15 +963,15 @@ end;
 procedure TJvTFGlanceCell.InternalSetCellDate(Value: TDate);
 begin
   if not EqualDates(Value, FCellDate) then
+  begin
+    FCellDate := Value;
+    if not CellCollection.Configuring and
+      not (csLoading in CellCollection.GlanceControl.ComponentState) then
     begin
-      FCellDate := Value;
-      if not CellCollection.Configuring and
-         not (csLoading in CellCollection.GlanceControl.ComponentState) then
-        begin
-          CellCollection.GlanceControl.UpdateCellTitleText(Self);
-          CheckConnections;
-        end;
+      CellCollection.GlanceControl.UpdateCellTitleText(Self);
+      CheckConnections;
     end;
+  end;
 end;
 
 function TJvTFGlanceCell.IsParent: Boolean;
@@ -1011,8 +1008,8 @@ end;
 procedure TJvTFGlanceCell.SetCellDate(Value: TDate);
 begin
   if Assigned(CellCollection.GlanceControl) and
-     (not CellCollection.GlanceControl.AllowCustomDates and
-      not (csLoading in CellCollection.GlanceControl.ComponentState)) then
+    (not CellCollection.GlanceControl.AllowCustomDates and
+    not (csLoading in CellCollection.GlanceControl.ComponentState)) then
     raise EJvTFGlanceError.CreateRes(@RsECellDatesCannotBeChanged);
 
   InternalSetCellDate(Value);
@@ -1032,10 +1029,10 @@ end;
 procedure TJvTFGlanceCell.SetColor(Value: TColor);
 begin
   if Value <> FColor then
-    begin
-      FColor := Value;
-      Change;
-    end;
+  begin
+    FColor := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceCell.SetRowIndex(Value: Integer);
@@ -1062,22 +1059,22 @@ var
   I: Integer;
 begin
   if Source is TJvTFGlanceCells then
-    begin
-      BeginUpdate;
-      Try
-        FAllowDestroy := True;
-        Try
-          Clear;
-        Finally
-          FAllowDestroy := False;
-        end;
-
-        For I := 0 to TJvTFGlanceCells(Source).Count - 1 do
-          InternalAdd.Assign(TJvTFGlanceCells(Source).Items[I]);
-      Finally
-        EndUpdate;
+  begin
+    BeginUpdate;
+    try
+      FAllowDestroy := True;
+      try
+        Clear;
+      finally
+        FAllowDestroy := False;
       end;
-    end
+
+      for I := 0 to TJvTFGlanceCells(Source).Count - 1 do
+        InternalAdd.Assign(TJvTFGlanceCells(Source).Items[I]);
+    finally
+      EndUpdate;
+    end;
+  end
   else
     inherited Assign(Source);
 end;
@@ -1087,23 +1084,23 @@ var
   I: Integer;
 begin
   if (not Assigned(GlanceControl) or not Assigned(GlanceControl.ScheduleManager)) or
-     (csLoading in GlanceControl.ComponentState) then
+    (csLoading in GlanceControl.ComponentState) then
     Exit;
-    
+
   FCheckingAllConnections := True;
-  Try
+  try
     {
     For I := 0 to Count - 1 do
       Items[I].CheckConnections;
     }
-    For I := 0 to Count - 1 do
-      With Items[I] do
-        begin
-          CheckConnections;
-          if IsSplit then
-            Subcell.CheckConnections;
-        end;
-  Finally
+    for I := 0 to Count - 1 do
+      with Items[I] do
+      begin
+        CheckConnections;
+        if IsSplit then
+          Subcell.CheckConnections;
+      end;
+  finally
     FCheckingAllConnections := False;
     GlanceControl.ScheduleManager.ProcessBatches;
   end;
@@ -1120,9 +1117,9 @@ begin
     Exit;
 
   FConfiguring := True;
-  Try
+  try
     GlanceControl.ConfigCells;
-  Finally
+  finally
     FConfiguring := False;
   end;
 
@@ -1142,7 +1139,7 @@ end;
 destructor TJvTFGlanceCells.Destroy;
 begin
   FDestroying := True;
-  inherited;          
+  inherited Destroy;
 end;
 
 procedure TJvTFGlanceCells.DestroyError;
@@ -1153,7 +1150,7 @@ end;
 procedure TJvTFGlanceCells.EnsureCellCount;
 var
   I,
-  DeltaCount: Integer;
+    DeltaCount: Integer;
 begin
   {
   if not Assigned(GlanceControl) or
@@ -1166,14 +1163,14 @@ begin
   // Adjust the cell count
   DeltaCount := GlanceControl.RowCount * GlanceControl.ColCount - Count;
 
-  For I := 1 to DeltaCount do
+  for I := 1 to DeltaCount do
     InternalAdd;
 
   FAllowDestroy := True;
-  Try
-    For I := -1 downto DeltaCount do
+  try
+    for I := -1 downto DeltaCount do
       Items[Count - 1].Free;
-  Finally
+  finally
     FAllowDestroy := False;
   end;
 end;
@@ -1185,21 +1182,21 @@ var
 begin
   SaveConfiguring := Configuring;
   FConfiguring := True;
-  Try
+  try
     EnsureCellCount;
 
     K := 0;
-    For I := 0 to GlanceControl.RowCount - 1 do
-      For J := 0 to GlanceControl.ColCount - 1 do
-        With Items[K] do
-          begin
-            SetColIndex(J);
-            SetRowIndex(I);
-            CellPics.Clear;
-            Combine;
-            Inc(K);
-          end;
-  Finally
+    for I := 0 to GlanceControl.RowCount - 1 do
+      for J := 0 to GlanceControl.ColCount - 1 do
+        with Items[K] do
+        begin
+          SetColIndex(J);
+          SetRowIndex(I);
+          CellPics.Clear;
+          Combine;
+          Inc(K);
+        end;
+  finally
     FConfiguring := SaveConfiguring;
   end;
 end;
@@ -1215,15 +1212,15 @@ begin
 
   AbsIndex := RowIndex * GlanceControl.ColCount + ColIndex;
   if (AbsIndex >= 0) and (AbsIndex < Count) then
+  begin
+    Result := Items[AbsIndex];
+    if (Result.ColIndex <> ColIndex) or (Result.RowIndex <> RowIndex) then
     begin
-      Result := Items[AbsIndex];
-      if (Result.ColIndex <> ColIndex) or (Result.RowIndex <> RowIndex) then
-        begin
-          S := '(' + IntToStr(Result.ColIndex) + ':' + IntToStr(ColIndex) + ') ' +
-               '(' + IntToStr(Result.RowIndex) + ':' + IntToStr(RowIndex) + ')';
-          raise EJvTFGlanceError.CreateResFmt(@RsECellMapHasBeenCorrupteds, [S]);
-        end;
+      S := '(' + IntToStr(Result.ColIndex) + ':' + IntToStr(ColIndex) + ') ' +
+        '(' + IntToStr(Result.RowIndex) + ':' + IntToStr(RowIndex) + ')';
+      raise EJvTFGlanceError.CreateResFmt(@RsECellMapHasBeenCorrupteds, [S]);
     end;
+  end;
 end;
 
 function TJvTFGlanceCells.GetItem(Index: Integer): TJvTFGlanceCell;
@@ -1239,9 +1236,9 @@ end;
 function TJvTFGlanceCells.InternalAdd: TJvTFGlanceCell;
 begin
   FAllowAdd := True;
-  Try
+  try
     Result := TJvTFGlanceCell(inherited Add);
-  Finally
+  finally
     FAllowAdd := False;
   end;
 end;
@@ -1253,18 +1250,18 @@ var
 begin
   Result := False;
   I := 0;
-  While (I < Count) and not Result do
-    begin
-      aCell := Items[I];
+  while (I < Count) and not Result do
+  begin
+    aCell := Items[I];
 
-      if aCell.IsSchedUsed(aSched) then
-        Result := True
-      else
-      if aCell.IsSplit and aCell.Subcell.IsSchedUsed(aSched) then
-        Result := True
-      else
-        Inc(I);
-    end;
+    if aCell.IsSchedUsed(aSched) then
+      Result := True
+    else
+    if aCell.IsSplit and aCell.Subcell.IsSchedUsed(aSched) then
+      Result := True
+    else
+      Inc(I);
+  end;
 end;
 
 procedure TJvTFGlanceCells.ReconfigCells;
@@ -1275,16 +1272,16 @@ begin
     Exit;
 
   FConfiguring := True;
-  Try
-    For I := 0 to Count - 1 do
-      With Items[I] do
-        begin
-          CellPics.Clear;
-          if IsSplit then
-            Subcell.CellPics.Clear;
-        end;
+  try
+    for I := 0 to Count - 1 do
+      with Items[I] do
+      begin
+        CellPics.Clear;
+        if IsSplit then
+          Subcell.CellPics.Clear;
+      end;
     GlanceControl.ConfigCells;
-  Finally
+  finally
     FConfiguring := False;
   end;
 
@@ -1314,29 +1311,29 @@ var
   Offset: Integer;
 begin
   Windows.SubtractRect(Result, CellRect(aCell),
-                       CalcCellTitleRect(aCell, Selected, True));
+    CalcCellTitleRect(aCell, Selected, True));
   if not Full then
-    begin
-      if Selected then
-        Attr := SelCellAttr
-      else
-        Attr := CellAttr;
+  begin
+    if Selected then
+      Attr := SelCellAttr
+    else
+      Attr := CellAttr;
 
-      Case Attr.FrameAttr.Style of
-        fs3DRaised, fs3DLowered: Offset := 1;
-        fsFlat                 : Offset := Attr.FrameAttr.Width;
-      else
-        Offset := 0;
-      end;
+    case Attr.FrameAttr.Style of
+      fs3DRaised, fs3DLowered: Offset := 1;
+      fsFlat: Offset := Attr.FrameAttr.Width;
+    else
+      Offset := 0;
+    end;
 
       // Col 0 has frame running down left side of cell, whereas others
       // do not.
-      if aCell.ColIndex = 0 then
-        Inc(Result.Left, Offset);
-        
-      Dec(Result.Bottom, Offset);
-      Dec(Result.Right, Offset);
-    end;
+    if aCell.ColIndex = 0 then
+      Inc(Result.Left, Offset);
+
+    Dec(Result.Bottom, Offset);
+    Dec(Result.Right, Offset);
+  end;
 end;
 
 function TJvTFCustomGlance.CellIsSelected(aCell: TJvTFGlanceCell): Boolean;
@@ -1349,17 +1346,17 @@ end;
 function TJvTFCustomGlance.CellRect(aCell: TJvTFGlanceCell): TRect;
 var
   ParentRect,
-  SubRect: TRect;
+    SubRect: TRect;
 begin
   Result := EmptyRect;
   if Assigned(aCell) then
-    begin
-      SplitRects(aCell.ColIndex, aCell.RowIndex, ParentRect, SubRect);
-      if aCell.IsParent then
-        Result := ParentRect
-      else
-        Result := SubRect;
-    end;
+  begin
+    SplitRects(aCell.ColIndex, aCell.RowIndex, ParentRect, SubRect);
+    if aCell.IsParent then
+      Result := ParentRect
+    else
+      Result := SubRect;
+  end;
 end;
 
 function TJvTFCustomGlance.CalcCellTitleRect(aCell: TJvTFGlanceCell; Selected,
@@ -1373,35 +1370,34 @@ begin
     Attr := CellAttr;
 
   if not Attr.TitleAttr.Visible then
-    begin
-      Result := Rect(0, 0, 0, 0);
-      Exit;
-    end
+  begin
+    Result := Rect(0, 0, 0, 0);
+    Exit;
+  end
   else
     Result := CellRect(aCell);
 
-
-  Case Attr.TitleAttr.Align of
-    alTop  : Result.Bottom := Result.Top + Attr.TitleAttr.Height;
+  case Attr.TitleAttr.Align of
+    alTop: Result.Bottom := Result.Top + Attr.TitleAttr.Height;
     alBottom: Result.Top := Result.Bottom - Attr.TitleAttr.Height;
-    alLeft : Result.Right := Result.Left + Attr.TitleAttr.Height;
+    alLeft: Result.Right := Result.Left + Attr.TitleAttr.Height;
     alRight: Result.Left := Result.Right - Attr.TitleAttr.Height;
   end;
 
   if not Full then
-    begin
-      Case Attr.TitleAttr.FrameAttr.Style of
-        fs3DLowered, fs3DRaised :
-          Windows.InflateRect(Result, -1, -1);
-        fsFlat :
-          Case Attr.TitleAttr.Align of
-            alTop: Dec(Result.Bottom, Attr.TitleAttr.FrameAttr.Width);
-            alBottom: Inc(Result.Top, Attr.TitleAttr.FrameAttr.Width);
-            alLeft: Dec(Result.Right, Attr.TitleAttr.FrameAttr.Width);
-            alRight: Inc(Result.Left, Attr.TitleAttr.FrameAttr.Width);
-          end;
-      end;
+  begin
+    case Attr.TitleAttr.FrameAttr.Style of
+      fs3DLowered, fs3DRaised:
+        Windows.InflateRect(Result, -1, -1);
+      fsFlat:
+        case Attr.TitleAttr.Align of
+          alTop: Dec(Result.Bottom, Attr.TitleAttr.FrameAttr.Width);
+          alBottom: Inc(Result.Top, Attr.TitleAttr.FrameAttr.Width);
+          alLeft: Dec(Result.Right, Attr.TitleAttr.FrameAttr.Width);
+          alRight: Inc(Result.Left, Attr.TitleAttr.FrameAttr.Width);
+        end;
     end;
+  end;
 end;
 
 {$IFDEF VCL}
@@ -1418,9 +1414,9 @@ begin
   FCreatingControl := True;
 
   AllowCustomDates := False;
-  inherited;
+  inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csCaptureMouse, csClickEvents,
-                                  csDoubleClicks];
+    csDoubleClicks];
   TabStop := True;
   Height := 300;
   Width := 300;
@@ -1441,7 +1437,7 @@ begin
   StartDate := Date;
 
   FTitleAttr := TJvTFGlanceMainTitle.Create(Self);
-  FTitleAttr.Visible := False;  // not visible by default. (Tim)
+  FTitleAttr.Visible := False; // not visible by default. (Tim)
   FTitleAttr.OnChange := GlanceTitleChange;
 
   FCellAttr := TJvTFGlanceCellAttr.Create(Self);
@@ -1470,9 +1466,10 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvTFCustomGlance.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array [TBorderStyle] of DWORD = (0, WS_BORDER);
+  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -1494,8 +1491,7 @@ end;
 
 procedure TJvTFCustomGlance.DblClick;
 begin
-  inherited;
-
+  inherited DblClick;
 end;
 
 destructor TJvTFCustomGlance.Destroy;
@@ -1517,7 +1513,7 @@ begin
 
   Viewer := nil;
 
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFCustomGlance.DoConfigCells;
@@ -1531,78 +1527,78 @@ procedure TJvTFCustomGlance.Draw3DFrame(aCanvas: TCanvas; aRect: TRect; TLColor,
 var
   OldPenColor: TColor;
 begin
-  With aCanvas do
-    begin
-      OldPenColor := Pen.Color;
-      Pen.Color := TLColor;
-      MoveTo(aRect.Left, aRect.Top);
-      LineTo(aRect.Right, aRect.Top);
-      MoveTo(aRect.Left, aRect.Top);
-      LineTo(aRect.Left, aRect.Bottom);
+  with aCanvas do
+  begin
+    OldPenColor := Pen.Color;
+    Pen.Color := TLColor;
+    MoveTo(aRect.Left, aRect.Top);
+    LineTo(aRect.Right, aRect.Top);
+    MoveTo(aRect.Left, aRect.Top);
+    LineTo(aRect.Left, aRect.Bottom);
 
-      Pen.Color := BRColor;
-      MoveTo(aRect.Right - 1, aRect.Top);
-      LineTo(aRect.Right - 1, aRect.Bottom);
-      MoveTo(aRect.Left, aRect.Bottom - 1);
-      LineTo(aRect.Right, aRect.Bottom - 1);
-      Pen.Color := OldPenColor;
-    end;
+    Pen.Color := BRColor;
+    MoveTo(aRect.Right - 1, aRect.Top);
+    LineTo(aRect.Right - 1, aRect.Bottom);
+    MoveTo(aRect.Left, aRect.Bottom - 1);
+    LineTo(aRect.Right, aRect.Bottom - 1);
+    Pen.Color := OldPenColor;
+  end;
 end;
 
 procedure TJvTFCustomGlance.DrawCell(aCanvas: TCanvas; aCell: TJvTFGlanceCell);
 var
   aRect,
-  TheTitleRect,
-  TheBodyRect: TRect;
+    TheTitleRect,
+    TheBodyRect: TRect;
   Attr: TJvTFGlanceCellAttr;
 begin
-  With aCanvas do
-    begin
-      aRect := CellRect(aCell);
-      Attr := GetCellAttr(aCell);
-      TheTitleRect := CellTitleRect(aCell);
+  with aCanvas do
+  begin
+    aRect := CellRect(aCell);
+    Attr := GetCellAttr(aCell);
+    TheTitleRect := CellTitleRect(aCell);
 
       // calc the body rect
-      Windows.SubtractRect(TheBodyRect, aRect, TheTitleRect);
+    Windows.SubtractRect(TheBodyRect, aRect, TheTitleRect);
 
       // draw the cell title
-      if Attr.TitleAttr.Visible then
-        DrawCellTitle(aCanvas, TheTitleRect, Attr, aCell);
+    if Attr.TitleAttr.Visible then
+      DrawCellTitle(aCanvas, TheTitleRect, Attr, aCell);
 
       // shade the body of the cell
-      Brush.Color := Attr.Color;
-      FillRect(TheBodyRect);
+    Brush.Color := Attr.Color;
+    FillRect(TheBodyRect);
 
-      DrawCellFrame(aCanvas, aRect, Attr, aCell);
+    DrawCellFrame(aCanvas, aRect, Attr, aCell);
 
       // draw the cell data
-      if Assigned(Viewer) and not (csDesigning in ComponentState) then
-        Viewer.PaintTo(aCanvas, aCell);
+    if Assigned(Viewer) and not (csDesigning in ComponentState) then
+      Viewer.PaintTo(aCanvas, aCell);
 
-      DoDrawCell(aCanvas, aRect, TheTitleRect, TheBodyRect, Attr, aCell);
-    end;
+    DoDrawCell(aCanvas, aRect, TheTitleRect, TheBodyRect, Attr, aCell);
+  end;
 end;
 
 procedure TJvTFCustomGlance.DrawCells(aCanvas: TCanvas);
 var
   Col,
-  Row: Integer;
+    Row: Integer;
   aCell: TJvTFGlanceCell;
 begin
-  For Col := 0 to ColCount - 1 do
-    For Row := 0 to RowCount - 1 do
-      begin
-        aCell := Cells.Cells[Col, Row];
-        DrawCell(aCanvas, aCell);
-        if Assigned(aCell.Subcell) then
-          DrawCell(aCanvas, aCell.Subcell);
-      end;
+  for Col := 0 to ColCount - 1 do
+    for Row := 0 to RowCount - 1 do
+    begin
+      aCell := Cells.Cells[Col, Row];
+      DrawCell(aCanvas, aCell);
+      if Assigned(aCell.Subcell) then
+        DrawCell(aCanvas, aCell.Subcell);
+    end;
 end;
 
 procedure TJvTFCustomGlance.DrawTitle(aCanvas: TCanvas);
 var
   aRect,
-  TxtRect: TRect;
+    TxtRect: TRect;
   Flags: UINT;
   PTxt: PChar;
   Txt: string;
@@ -1610,7 +1606,7 @@ var
   OldBrush: TBrush;
   OldFont: TFont;
   I,
-  LineBottom: Integer;
+    LineBottom: Integer;
 begin
   if not TitleAttr.Visible then
     Exit;
@@ -1619,27 +1615,27 @@ begin
   TxtRect := aRect;
   Windows.InflateRect(TxtRect, -2, -2);
 
-  With aCanvas do
-    begin
-      OldPen := TPen.Create;
-      OldPen.Assign(Pen);
-      OldBrush := TBrush.Create;
-      OldBrush.Assign(Brush);
-      OldFont := TFont.Create;
-      OldFont.Assign(Font);
+  with aCanvas do
+  begin
+    OldPen := TPen.Create;
+    OldPen.Assign(Pen);
+    OldBrush := TBrush.Create;
+    OldBrush.Assign(Brush);
+    OldFont := TFont.Create;
+    OldFont.Assign(Font);
 
-      Brush.Color := TitleAttr.Color;
-      FillRect(aRect);
+    Brush.Color := TitleAttr.Color;
+    FillRect(aRect);
 
       //Pen.Color := clBlack;
       //MoveTo(aRect.Left, aRect.Bottom - 1);
       //LineTo(aRect.Right, aRect.Bottom - 1);
 
-      Case TitleAttr.FrameAttr.Style of
-        fs3DRaised :
-          Draw3DFrame(aCanvas, aRect, clBtnHighlight, clBtnShadow);
-        fs3DLowered :
-          Draw3DFrame(aCanvas, aRect, clBtnShadow, clBtnHighlight);
+    case TitleAttr.FrameAttr.Style of
+      fs3DRaised:
+        Draw3DFrame(aCanvas, aRect, clBtnHighlight, clBtnShadow);
+      fs3DLowered:
+        Draw3DFrame(aCanvas, aRect, clBtnShadow, clBtnHighlight);
         {
         fs3DRaised, fs3DLowered :
           begin
@@ -1664,9 +1660,9 @@ begin
             LineTo(aRect.Right, aRect.Bottom - 1);
           end;
         }
-        fsFlat :
-          begin
-            Pen.Color := TitleAttr.FrameAttr.Color;
+      fsFlat:
+        begin
+          Pen.Color := TitleAttr.FrameAttr.Color;
             {
             Pen.Width := TitleAttr.FrameAttr.Width;
             LineBottom := aRect.Bottom - Pen.Width div 2;
@@ -1675,37 +1671,37 @@ begin
             MoveTo(aRect.Left, LineBottom);
             LineTo(aRect.Right, LineBottom);
             }
-            Pen.Width := 1;
-            LineBottom := aRect.Bottom - 1;
-            For I := 1 to TitleAttr.FrameAttr.Width do
-              begin
-                MoveTo(aRect.Left, LineBottom);
-                LineTo(aRect.Right, LineBottom);
-                Dec(LineBottom);
-              end;
+          Pen.Width := 1;
+          LineBottom := aRect.Bottom - 1;
+          for I := 1 to TitleAttr.FrameAttr.Width do
+          begin
+            MoveTo(aRect.Left, LineBottom);
+            LineTo(aRect.Right, LineBottom);
+            Dec(LineBottom);
           end;
-      end;
+        end;
+    end;
 
       //Font.Assign(TitleAttr.Font);
-      Font.Assign(TitleAttr.TxtAttr.Font);
-      Flags := DT_NOPREFIX or DT_CENTER or DT_SINGLELINE or DT_VCENTER;
+    Font.Assign(TitleAttr.TxtAttr.Font);
+    Flags := DT_NOPREFIX or DT_CENTER or DT_SINGLELINE or DT_VCENTER;
 
       // Allocate length of Txt + 4 chars
       // (1 char for null terminator, 3 chars for ellipsis)
-      Txt := TitleAttr.Title;
-      PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
-      StrPCopy(PTxt, Txt);
+    Txt := TitleAttr.Title;
+    PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
+    StrPCopy(PTxt, Txt);
 
-      Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
-      StrDispose(PTxt);
+    Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
+    StrDispose(PTxt);
 
-      Pen.Assign(OldPen);
-      Brush.Assign(OldBrush);
-      Font.Assign(OldFont);
-      OldPen.Free;
-      OldBrush.Free;
-      OldFont.Free;
-    end;
+    Pen.Assign(OldPen);
+    Brush.Assign(OldBrush);
+    Font.Assign(OldFont);
+    OldPen.Free;
+    OldBrush.Free;
+    OldFont.Free;
+  end;
 
   DoDrawTitle(aCanvas, aRect);
 end;
@@ -1771,7 +1767,7 @@ end;
 
 procedure TJvTFCustomGlance.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   Cells.EnsureCells;
   Cells.ConfigCells;
 end;
@@ -1780,9 +1776,8 @@ procedure TJvTFCustomGlance.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
   Info: TJvTFGlanceCoord;
-
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
 
   if Enabled then
     SetFocus;
@@ -1792,34 +1787,34 @@ begin
     Viewer.Visible := False;
 
   if ssLeft in Shift then
+  begin
+    if ssShift in Shift then
     begin
-      if ssShift in Shift then
-        begin
           // contiguous selection
-          if Info.Cell.CanSelect then
-            begin
-              FMouseCell := Info.Cell;
-              UpdateSelection;
-            end;
-        end
-      else
-      if ssCtrl in Shift then
-        begin
+      if Info.Cell.CanSelect then
+      begin
+        FMouseCell := Info.Cell;
+        UpdateSelection;
+      end;
+    end
+    else
+    if ssCtrl in Shift then
+    begin
           // non-contiguous selection
-          if CellIsSelected(Info.Cell) then
-            DeselectCell(Info.Cell)
-          else
-            SelectCell(Info.Cell, False);
-        end
+      if CellIsSelected(Info.Cell) then
+        DeselectCell(Info.Cell)
       else
-        begin
-          if Assigned(Info.Cell) and Info.Cell.CanSelect then
-            SelectCell(Info.Cell, True);
-          SelAppt := Info.Appt;
-          if Assigned(Info.Appt) then
-            BeginDrag(False);
-        end;
+        SelectCell(Info.Cell, False);
+    end
+    else
+    begin
+      if Assigned(Info.Cell) and Info.Cell.CanSelect then
+        SelectCell(Info.Cell, True);
+      SelAppt := Info.Appt;
+      if Assigned(Info.Appt) then
+        BeginDrag(False);
     end;
+  end;
 end;
 
 procedure TJvTFCustomGlance.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -1828,7 +1823,7 @@ var
   Info: TJvTFGlanceCoord;
   Hints: TStrings;
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
 
   Info := PtToCell(X, Y);
 
@@ -1862,32 +1857,32 @@ begin
   //GetParentForm(Self).Caption := S;
 
   if ssLeft in Shift then
-    begin
-      UpdateSelection;
-    end;
+  begin
+    UpdateSelection;
+  end;
 end;
 
-procedure TJvTFCustomGlance.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvTFCustomGlance.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 var
   Info: TJvTFGlanceCoord;
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
 
   if (Sel.Count = 1) and Assigned(Viewer) then
-    begin
-      Info := PtToCell(X, Y);
-      Viewer.MoveTo(Info.Cell);
-      Viewer.Visible := True;
-      if not Info.InCellTitle then
-        Viewer.MouseAccel(X, Y);
-    end;
+  begin
+    Info := PtToCell(X, Y);
+    Viewer.MoveTo(Info.Cell);
+    Viewer.Visible := True;
+    if not Info.InCellTitle then
+      Viewer.MouseAccel(X, Y);
+  end;
 end;
 
 procedure TJvTFCustomGlance.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if Operation = opRemove then
     if AComponent = Viewer then
       Viewer := nil
@@ -1898,142 +1893,143 @@ end;
 
 procedure TJvTFCustomGlance.Paint;
 begin
-  With FPaintBuffer do
+  with FPaintBuffer do
+  begin
+    Height := ClientHeight;
+    Width := ClientWidth;
+
+    with Canvas do
     begin
-      Height := ClientHeight;
-      Width := ClientWidth;
-
-      With Canvas do
-        begin
-          Brush.Color := Color;
-          FillRect(ClientRect);
-        end;
-
-      DrawTitle(Canvas);
-      DrawCells(Canvas);
+      Brush.Color := Color;
+      FillRect(ClientRect);
     end;
+
+    DrawTitle(Canvas);
+    DrawCells(Canvas);
+  end;
 
   if Enabled then
     Windows.BitBlt(Canvas.Handle, 0, 0, ClientWidth, ClientHeight,
-                   FPaintBuffer.Canvas.Handle, 0, 0, SRCCOPY)
+      FPaintBuffer.Canvas.Handle, 0, 0, SRCCOPY)
   else
     Windows.DrawState(Canvas.Handle, 0, nil, FPaintBuffer.Handle, 0,
-                      0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
+      0, 0, 0, 0, DST_BITMAP or DSS_UNION or DSS_DISABLED);
 end;
 
 function TJvTFCustomGlance.PtToCell(X, Y: Integer): TJvTFGlanceCoord;
 var
   I,
-  AdjX,
-  AdjY,
-  ViewerX,
-  ViewerY: Integer;
+    AdjX,
+    AdjY,
+    ViewerX,
+    ViewerY: Integer;
   PicRect,
-  ViewerBounds,
-  ParentRect,
-  SubRect: TRect;
+    ViewerBounds,
+    ParentRect,
+    SubRect: TRect;
   VCell: TJvTFGlanceCell;
   InSubRect: Boolean;
 begin
-  With Result do
+  with Result do
+  begin
+    AbsX := X;
+    AbsY := Y;
+
+    AdjY := Y - GetDataTop;
+    if AdjY < 0 then
+      Row := -1
+    else
+      Row := GetDivNum(GetDataHeight, RowCount, AdjY);
+
+    AdjX := X - GetDataLeft;
+    if AdjX < 0 then
+      Col := -1
+    else
+      Col := GetDivNum(GetDataWidth, ColCount, AdjX);
+
+    if (Col >= 0) and (Row >= 0) then
     begin
-      AbsX := X;
-      AbsY := Y;
-
-      AdjY := Y - GetDataTop;
-      if AdjY < 0 then
-        Row := -1
-      else
-        Row := GetDivNum(GetDataHeight, RowCount, AdjY);
-
-      AdjX := X - GetDataLeft;
-      if AdjX < 0 then
-        Col := -1
-      else
-        Col := GetDivNum(GetDataWidth, ColCount, AdjX);
-
-      if (Col >= 0) and (Row >= 0) then
-        begin
-          Cell := Cells.Cells[Col, Row];
-          SplitRects(Col, Row, ParentRect, SubRect);
-          InSubRect := Windows.PtInRect(SubRect, Point(X, Y));
-          if InSubRect then
-            Cell := Cell.Subcell;
-        end
-      else
-        begin
-          InSubRect := False;
-          Cell := nil;
-        end;
-
-      if Col < 0 then
-        CellX := X
-      else
-        if InSubRect and (Cell.SplitOrientation = soVertical) then
-          CellX := X - SubRect.Left
-        else
-          CellX := X - ParentRect.Left;
-
-      if Row < 0 then
-        CellY := Y
-      else
-        if InSubRect and (Cell.SplitOrientation = soHorizontal) then
-          CellY := Y - SubRect.Top
-        else
-          CellY := Y - ParentRect.Top;
-
-      DragAccept := (Col > -1) and (Row > -1) and Assigned(ScheduleManager);
-
-      CellTitlePic := nil;
-      InCellTitle := Windows.PtInRect(CellTitleRect(Cell), Point(X, Y));
-      if InCellTitle and Assigned(Cell) and Assigned(CellPics) then
-        begin
-          I := 0;
-          While (I < Cell.CellPics.Count) and not Assigned(CellTitlePic) do
-            begin
-              PicRect.TopLeft := Cell.CellPics[I].PicPoint;
-              PicRect.Right := PicRect.Left + CellPics.Width;
-              PicRect.Bottom := PicRect.Top + CellPics.Height;
-              if Windows.PtInRect(PicRect, Point(X, Y)) then
-                CellTitlePic := Cell.CellPics[I]
-              else
-                Inc(I);
-            end;
-        end;
-
-      Appt := nil;
-      if Assigned(Viewer) and not InCellTitle and
-         (Col > -1) and (Row > -1) then
-        begin
-          VCell := Viewer.Cell;
-
-          Viewer.SetTo(Cell);
-          ViewerBounds := Viewer.CalcBoundsRect(Cell);
-
-          ViewerX := AbsX - ViewerBounds.Left;
-          ViewerY := AbsY - ViewerBounds.Top;
-
-          Appt := Viewer.GetApptAt(ViewerX, ViewerY);
-
-          Viewer.SetTo(VCell);
-        end;
+      Cell := Cells.Cells[Col, Row];
+      SplitRects(Col, Row, ParentRect, SubRect);
+      InSubRect := Windows.PtInRect(SubRect, Point(X, Y));
+      if InSubRect then
+        Cell := Cell.Subcell;
+    end
+    else
+    begin
+      InSubRect := False;
+      Cell := nil;
     end;
+
+    if Col < 0 then
+      CellX := X
+    else
+    if InSubRect and (Cell.SplitOrientation = soVertical) then
+      CellX := X - SubRect.Left
+    else
+      CellX := X - ParentRect.Left;
+
+    if Row < 0 then
+      CellY := Y
+    else
+    if InSubRect and (Cell.SplitOrientation = soHorizontal) then
+      CellY := Y - SubRect.Top
+    else
+      CellY := Y - ParentRect.Top;
+
+    DragAccept := (Col > -1) and (Row > -1) and Assigned(ScheduleManager);
+
+    CellTitlePic := nil;
+    InCellTitle := Windows.PtInRect(CellTitleRect(Cell), Point(X, Y));
+    if InCellTitle and Assigned(Cell) and Assigned(CellPics) then
+    begin
+      I := 0;
+      while (I < Cell.CellPics.Count) and not Assigned(CellTitlePic) do
+      begin
+        PicRect.TopLeft := Cell.CellPics[I].PicPoint;
+        PicRect.Right := PicRect.Left + CellPics.Width;
+        PicRect.Bottom := PicRect.Top + CellPics.Height;
+        if Windows.PtInRect(PicRect, Point(X, Y)) then
+          CellTitlePic := Cell.CellPics[I]
+        else
+          Inc(I);
+      end;
+    end;
+
+    Appt := nil;
+    if Assigned(Viewer) and not InCellTitle and
+      (Col > -1) and (Row > -1) then
+    begin
+      VCell := Viewer.Cell;
+
+      Viewer.SetTo(Cell);
+      ViewerBounds := Viewer.CalcBoundsRect(Cell);
+
+      ViewerX := AbsX - ViewerBounds.Left;
+      ViewerY := AbsY - ViewerBounds.Top;
+
+      Appt := Viewer.GetApptAt(ViewerX, ViewerY);
+
+      Viewer.SetTo(VCell);
+    end;
+  end;
 end;
 
 // Parameter Clear defaults to True for D4+ versions
+
 procedure TJvTFCustomGlance.SelectCell(aCell: TJvTFGlanceCell; Clear: Boolean);
 begin
   EnsureCell(aCell);
 
   BeginSelUpdate;
-  Try
+  try
     if Clear then
-      begin
-        Sel.Clear;
-        FSelAnchor := aCell;
-      end;
+    begin
+      Sel.Clear;
+      FSelAnchor := aCell;
+    end;
     InternalSelectCell(aCell);
-  Finally
+  finally
     EndSelUpdate;
   end;
 end;
@@ -2041,15 +2037,15 @@ end;
 procedure TJvTFCustomGlance.SetBorderStyle(Value: TBorderStyle);
 begin
   if FBorderStyle <> Value then
-    begin
-      FBorderStyle := Value;
-      RecreateWnd;
-    end;
+  begin
+    FBorderStyle := Value;
+    RecreateWnd;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-  inherited;
+  inherited SetBounds(ALeft, ATop, AWidth, AHeight);
   if Assigned(Viewer) then
     Viewer.Realign;
 end;
@@ -2062,20 +2058,20 @@ end;
 procedure TJvTFCustomGlance.SeTJvTFCellPics(Value: TCustomImageList);
 begin
   if Value <> FCellPics then
+  begin
+    if Assigned(FCellPics) then
+      FCellPics.UnregisterChanges(FImageChangeLink);
+
+    FCellPics := Value;
+
+    if Assigned(FCellPics) then
     begin
-      if Assigned(FCellPics) then
-        FCellPics.UnregisterChanges(FImageChangeLink);
-
-      FCellPics := Value;
-
-      if Assigned(FCellPics) then
-        begin
-          FCellPics.RegisterChanges(FImageChangeLink);
-          FCellPics.FreeNotification(Self);
-        end;
-
-      Invalidate;
+      FCellPics.RegisterChanges(FImageChangeLink);
+      FCellPics.FreeNotification(Self);
     end;
+
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SetCells(Value: TJvTFGlanceCells);
@@ -2088,26 +2084,26 @@ begin
   Value := Greater(Value, 1);
 
   if Value <> FColCount then
-    begin
-      FColCount := Value;
-      Cells.EnsureCells;
-      Cells.ConfigCells;
-      if Assigned(Viewer) then
-        Viewer.Realign;
-      Invalidate;
-    end;
+  begin
+    FColCount := Value;
+    Cells.EnsureCells;
+    Cells.ConfigCells;
+    if Assigned(Viewer) then
+      Viewer.Realign;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SetOriginDate(Value: TDate);
 begin
   if not EqualDates(Value, FOriginDate) then
-    begin
-      FOriginDate := Value;
-      StartOfWeek := BorlToDOW(DayOfWeek(Value));
-      if not FCreatingControl and not (csLoading in ComponentState) then
-        Cells.ConfigCells;
-      Invalidate;
-    end;
+  begin
+    FOriginDate := Value;
+    StartOfWeek := BorlToDOW(DayOfWeek(Value));
+    if not FCreatingControl and not (csLoading in ComponentState) then
+      Cells.ConfigCells;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SetRowCount(Value: Integer);
@@ -2115,14 +2111,14 @@ begin
   Value := Greater(Value, 1);
 
   if Value <> FRowCount then
-    begin
-      FRowCount := Value;
-      Cells.EnsureCells;
-      Cells.ConfigCells;
-      if Assigned(Viewer) then
-        Viewer.Realign;
-      Invalidate;
-    end;
+  begin
+    FRowCount := Value;
+    Cells.EnsureCells;
+    Cells.ConfigCells;
+    if Assigned(Viewer) then
+      Viewer.Realign;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SeTJvTFSelCellAttr(Value: TJvTFGlanceCellAttr);
@@ -2133,12 +2129,12 @@ end;
 procedure TJvTFCustomGlance.SetStartDate(Value: TDate);
 begin
   if not EqualDates(Value, FStartDate) then
-    begin
-      FStartDate := Value;
-      While BorlToDOW(DayOfWeek(Value)) <> StartOfWeek do
-        Value := Value - 1;
-      OriginDate := Value;
-    end;
+  begin
+    FStartDate := Value;
+    while BorlToDOW(DayOfWeek(Value)) <> StartOfWeek do
+      Value := Value - 1;
+    OriginDate := Value;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SetStartOfWeek(Value: TTFDayOfWeek);
@@ -2146,16 +2142,16 @@ var
   WorkDate: TDate;
 begin
   if Value <> FStartOfWeek then
-    begin
-      FStartOfWeek := Value;
+  begin
+    FStartOfWeek := Value;
 
-      WorkDate := StartDate;
-      While BorlToDOW(DayOfWeek(WorkDate)) <> FStartOfWeek do
-        WorkDate := WorkDate - 1;
-      OriginDate := WorkDate;
+    WorkDate := StartDate;
+    while BorlToDOW(DayOfWeek(WorkDate)) <> FStartOfWeek do
+      WorkDate := WorkDate - 1;
+    OriginDate := WorkDate;
 
-      Invalidate;
-    end;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SetTitleAttr(Value: TJvTFGlanceMainTitle);
@@ -2167,18 +2163,18 @@ end;
 procedure TJvTFCustomGlance.SetViewer(Value: TJvTFGlanceViewer);
 begin
   if Value <> FViewer then
+  begin
+    if Assigned(FViewer) then
+      FViewer.Notify(Self, sncDisconnectControl);
+    if Assigned(Value) then
+      Value.Notify(Self, sncConnectControl);
+    FViewer := Value;
+    if Assigned(FViewer) then
     begin
-      if Assigned(FViewer) then
-        FViewer.Notify(Self, sncDisconnectControl);
-      if Assigned(Value) then
-        Value.Notify(Self, sncConnectControl);
-      FViewer := Value;
-      if Assigned(FViewer) then
-        begin
-          FViewer.MoveTo(Cells.Cells[0, 0]);
-          FViewer.Visible := (csDesigning in ComponentState);
-        end;
+      FViewer.MoveTo(Cells.Cells[0, 0]);
+      FViewer.Visible := (csDesigning in ComponentState);
     end;
+  end;
 end;
 
 function TJvTFCustomGlance.TitleRect: TRect;
@@ -2191,261 +2187,261 @@ end;
 procedure TJvTFCustomGlance.UpdateSelection;
 var
   Col,
-  Row,
-  StartCol,
-  EndCol,
-  StartRow,
-  EndRow: Integer;
+    Row,
+    StartCol,
+    EndCol,
+    StartRow,
+    EndRow: Integer;
   aCell,
-  aCell1,
-  aCell2: TJvTFGlanceCell;
+    aCell1,
+    aCell2: TJvTFGlanceCell;
 begin
   BeginSelUpdate;
 
-  Try
+  try
     if not Assigned(FMouseCell) or not Assigned(FSelAnchor) then
       Exit;
 
     Sel.Clear;
     if SelOrder = soColMajor then
-      begin
+    begin
         // handle the first sel col
-        if FMouseCell.ColIndex < FSelAnchor.ColIndex then  // sel end is left of anchor
-          begin
-            For Row := 0 to FSelAnchor.RowIndex do
-              begin
-                aCell := Cells.Cells[FSelAnchor.ColIndex, Row];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-            if not FSelAnchor.IsSubcell then
-              InternalDeselectCell(FSelAnchor.Subcell);
-          end
-        else
-        if FMouseCell.ColIndex = FSelAnchor.ColIndex then  // sel end is in same col as anchor
-          begin
-            StartRow := Lesser(FSelAnchor.RowIndex, FMouseCell.RowIndex);
-            EndRow := Greater(FSelAnchor.RowIndex, FMouseCell.RowIndex);
-            For Row := StartRow to EndRow do
-              begin
-                aCell := Cells.Cells[FSelAnchor.ColIndex, Row];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-
-            if (FMouseCell.RowIndex < FSelAnchor.RowIndex) then
-              begin
-                if FMouseCell.IsSubcell then
-                  InternalDeselectCell(FMouseCell.ParentCell);
-                if FSelAnchor.IsParent then
-                  InternalDeselectCell(FSelAnchor.Subcell);
-              end
-            else
-            if FMouseCell = FSelAnchor then
-              InternalDeselectCell(FMouseCell.SplitRef)
-            else
-            if (FMouseCell.RowIndex > FSelAnchor.RowIndex) then
-              begin
-                if FMouseCell.IsParent then
-                  InternalDeselectCell(FMouseCell.Subcell);
-                if FSelAnchor.IsSubcell then
-                  InternalDeselectCell(FSelAnchor.ParentCell);
-              end;
-          end
-        else  // sel end is to the right of anchor
-          begin
-            InternalSelectCell(FSelAnchor);
-            if FSelAnchor.IsParent then
-              InternalSelectCell(FSelAnchor.Subcell);
-
-            For Row := FSelAnchor.RowIndex + 1 to RowCount - 1 do
-              begin
-                InternalSelectCell(FSelAnchor.ParentCell);
-                InternalSelectCell(FSelAnchor.Subcell);
-              end;
-          end;
-
-        // handle any intermediate cols (all rows in col will be selected)
-        StartCol := Lesser(FSelAnchor.ColIndex, FMouseCell.ColIndex);
-        EndCol := Greater(FSelAnchor.ColIndex, FMouseCell.ColIndex);
-        For Col := StartCol + 1 to EndCol - 1 do
-          For Row := 0 to RowCount - 1 do
-            begin
-              aCell := Cells.Cells[Col, Row];
-              InternalSelectCell(aCell);
-              InternalSelectCell(aCell.Subcell);
-            end;
-
-        // handle the last sel col
-        if FMouseCell.ColIndex < FSelAnchor.ColIndex then
-          begin
-            InternalSelectCell(FMouseCell);
-            if FMouseCell.IsParent then
-              InternalSelectCell(FMouseCell.Subcell);
-
-            For Row := FMouseCell.RowIndex + 1 to RowCount - 1 do
-              begin
-                aCell := Cells.Cells[FMouseCell.ColIndex, Row];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-          end
-        else
-        if FMouseCell.ColIndex > FSelAnchor.ColIndex then
-          begin
-            For Row := 0 to FMouseCell.RowIndex do
-              begin
-                aCell := Cells.Cells[FMouseCell.ColIndex, Row];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-            if FMouseCell.IsParent then
-              InternalDeselectCell(FMouseCell.Subcell);
-          end
-      end
-    else
-    if SelOrder = soRowMajor then
+      if FMouseCell.ColIndex < FSelAnchor.ColIndex then // sel end is left of anchor
       begin
-        // handle the first sel row
-        if FMouseCell.RowIndex < FSelAnchor.RowIndex then
-          begin
-            For Col := 0 to FSelAnchor.ColIndex do
-              begin
-                aCell := Cells.Cells[Col, FSelAnchor.RowIndex];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-            if FSelAnchor.IsParent then
-              InternalDeselectCell(FSelAnchor.Subcell);
-          end
-        else
-        if FMouseCell.RowIndex = FSelAnchor.RowIndex then
-          begin
-            if FMouseCell = FSelAnchor then
-              InternalSelectCell(FMouseCell)
-            else
-              begin
-                if FMouseCell.ColIndex < FSelAnchor.ColIndex then
-                  begin
-                    aCell1 := FMouseCell;
-                    aCell2 := FSelAnchor;
-                  end
-                else
-                  begin
-                    aCell1 := FSelAnchor;
-                    aCell2 := FMouseCell;
-                  end;
-
-                InternalSelectCell(aCell1);
-                if aCell1.IsParent then
-                  InternalSelectCell(aCell1.Subcell);
-
-                InternalSelectCell(aCell2);
-                if aCell2.IsSubcell then
-                  InternalSelectCell(aCell2.ParentCell);
-
-                For Col := aCell1.ColIndex + 1 to aCell2.ColIndex - 1 do
-                  begin
-                    aCell := Cells.Cells[Col, FMouseCell.RowIndex];
-                    InternalSelectCell(aCell);
-                    InternalSelectCell(aCell.Subcell);
-                  end;
-              end;
-          end
-        else
-          begin
-            InternalSelectCell(FSelAnchor);
-            if FSelAnchor.IsParent then
-              InternalSelectCell(FSelAnchor.Subcell);
-
-            For Col := FSelAnchor.ColIndex + 1 to ColCount - 1 do
-              begin
-                aCell := Cells.Cells[Col, FSelAnchor.RowIndex];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-          end;
-
-        // handle any intermediate rows (all cols in row will be selected)
+        for Row := 0 to FSelAnchor.RowIndex do
+        begin
+          aCell := Cells.Cells[FSelAnchor.ColIndex, Row];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+        if not FSelAnchor.IsSubcell then
+          InternalDeselectCell(FSelAnchor.Subcell);
+      end
+      else
+      if FMouseCell.ColIndex = FSelAnchor.ColIndex then // sel end is in same col as anchor
+      begin
         StartRow := Lesser(FSelAnchor.RowIndex, FMouseCell.RowIndex);
         EndRow := Greater(FSelAnchor.RowIndex, FMouseCell.RowIndex);
-        For Col := 0 to ColCount - 1 do
-          For Row := StartRow + 1 to EndRow - 1 do
-            begin
-              aCell := Cells.Cells[Col, Row];
-              InternalSelectCell(aCell);
-              InternalSelectCell(aCell.Subcell);
-            end;
+        for Row := StartRow to EndRow do
+        begin
+          aCell := Cells.Cells[FSelAnchor.ColIndex, Row];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
 
-        // handle last sel row
-        if FMouseCell.RowIndex < FSelAnchor.RowIndex then
-          begin
-            InternalSelectCell(FMouseCell);
-            if FMouseCell.IsParent then
-              InternalSelectCell(FMouseCell.Subcell);
-
-            For Col := FMouseCell.ColIndex + 1 to ColCount - 1 do
-              begin
-                aCell := Cells.Cells[Col, FMouseCell.RowIndex];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-          end
+        if (FMouseCell.RowIndex < FSelAnchor.RowIndex) then
+        begin
+          if FMouseCell.IsSubcell then
+            InternalDeselectCell(FMouseCell.ParentCell);
+          if FSelAnchor.IsParent then
+            InternalDeselectCell(FSelAnchor.Subcell);
+        end
+        else
+        if FMouseCell = FSelAnchor then
+          InternalDeselectCell(FMouseCell.SplitRef)
         else
         if FMouseCell.RowIndex > FSelAnchor.RowIndex then
-          begin
-            For Col := 0 to FMouseCell.ColIndex do
-              begin
-                aCell := Cells.Cells[Col, FMouseCell.RowIndex];
-                InternalSelectCell(aCell);
-                InternalSelectCell(aCell.Subcell);
-              end;
-            if FMouseCell.IsParent then
-              InternalDeselectCell(FMouseCell.Subcell);
-          end
+        begin
+          if FMouseCell.IsParent then
+            InternalDeselectCell(FMouseCell.Subcell);
+          if FSelAnchor.IsSubcell then
+            InternalDeselectCell(FSelAnchor.ParentCell);
+        end;
       end
-    else
+      else // sel end is to the right of anchor
       begin
-        StartRow := Lesser(FSelAnchor.RowIndex, FMouseCell.RowIndex);
-        EndRow := Greater(FSelAnchor.RowIndex, FMouseCell.RowIndex);
-        StartCol := Lesser(FSelAnchor.ColIndex, FMouseCell.ColIndex);
-        EndCol := Greater(FSelAnchor.ColIndex, FMouseCell.ColIndex);
+        InternalSelectCell(FSelAnchor);
+        if FSelAnchor.IsParent then
+          InternalSelectCell(FSelAnchor.Subcell);
+
+        for Row := FSelAnchor.RowIndex + 1 to RowCount - 1 do
+        begin
+          InternalSelectCell(FSelAnchor.ParentCell);
+          InternalSelectCell(FSelAnchor.Subcell);
+        end;
+      end;
+
+        // handle any intermediate cols (all rows in col will be selected)
+      StartCol := Lesser(FSelAnchor.ColIndex, FMouseCell.ColIndex);
+      EndCol := Greater(FSelAnchor.ColIndex, FMouseCell.ColIndex);
+      for Col := StartCol + 1 to EndCol - 1 do
+        for Row := 0 to RowCount - 1 do
+        begin
+          aCell := Cells.Cells[Col, Row];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+
+        // handle the last sel col
+      if FMouseCell.ColIndex < FSelAnchor.ColIndex then
+      begin
+        InternalSelectCell(FMouseCell);
+        if FMouseCell.IsParent then
+          InternalSelectCell(FMouseCell.Subcell);
+
+        for Row := FMouseCell.RowIndex + 1 to RowCount - 1 do
+        begin
+          aCell := Cells.Cells[FMouseCell.ColIndex, Row];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+      end
+      else
+      if FMouseCell.ColIndex > FSelAnchor.ColIndex then
+      begin
+        for Row := 0 to FMouseCell.RowIndex do
+        begin
+          aCell := Cells.Cells[FMouseCell.ColIndex, Row];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+        if FMouseCell.IsParent then
+          InternalDeselectCell(FMouseCell.Subcell);
+      end
+    end
+    else
+    if SelOrder = soRowMajor then
+    begin
+        // handle the first sel row
+      if FMouseCell.RowIndex < FSelAnchor.RowIndex then
+      begin
+        for Col := 0 to FSelAnchor.ColIndex do
+        begin
+          aCell := Cells.Cells[Col, FSelAnchor.RowIndex];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+        if FSelAnchor.IsParent then
+          InternalDeselectCell(FSelAnchor.Subcell);
+      end
+      else
+      if FMouseCell.RowIndex = FSelAnchor.RowIndex then
+      begin
+        if FMouseCell = FSelAnchor then
+          InternalSelectCell(FMouseCell)
+        else
+        begin
+          if FMouseCell.ColIndex < FSelAnchor.ColIndex then
+          begin
+            aCell1 := FMouseCell;
+            aCell2 := FSelAnchor;
+          end
+          else
+          begin
+            aCell1 := FSelAnchor;
+            aCell2 := FMouseCell;
+          end;
+
+          InternalSelectCell(aCell1);
+          if aCell1.IsParent then
+            InternalSelectCell(aCell1.Subcell);
+
+          InternalSelectCell(aCell2);
+          if aCell2.IsSubcell then
+            InternalSelectCell(aCell2.ParentCell);
+
+          for Col := aCell1.ColIndex + 1 to aCell2.ColIndex - 1 do
+          begin
+            aCell := Cells.Cells[Col, FMouseCell.RowIndex];
+            InternalSelectCell(aCell);
+            InternalSelectCell(aCell.Subcell);
+          end;
+        end;
+      end
+      else
+      begin
+        InternalSelectCell(FSelAnchor);
+        if FSelAnchor.IsParent then
+          InternalSelectCell(FSelAnchor.Subcell);
+
+        for Col := FSelAnchor.ColIndex + 1 to ColCount - 1 do
+        begin
+          aCell := Cells.Cells[Col, FSelAnchor.RowIndex];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+      end;
+
+        // handle any intermediate rows (all cols in row will be selected)
+      StartRow := Lesser(FSelAnchor.RowIndex, FMouseCell.RowIndex);
+      EndRow := Greater(FSelAnchor.RowIndex, FMouseCell.RowIndex);
+      for Col := 0 to ColCount - 1 do
+        for Row := StartRow + 1 to EndRow - 1 do
+        begin
+          aCell := Cells.Cells[Col, Row];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+
+        // handle last sel row
+      if FMouseCell.RowIndex < FSelAnchor.RowIndex then
+      begin
+        InternalSelectCell(FMouseCell);
+        if FMouseCell.IsParent then
+          InternalSelectCell(FMouseCell.Subcell);
+
+        for Col := FMouseCell.ColIndex + 1 to ColCount - 1 do
+        begin
+          aCell := Cells.Cells[Col, FMouseCell.RowIndex];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+      end
+      else
+      if FMouseCell.RowIndex > FSelAnchor.RowIndex then
+      begin
+        for Col := 0 to FMouseCell.ColIndex do
+        begin
+          aCell := Cells.Cells[Col, FMouseCell.RowIndex];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
+        if FMouseCell.IsParent then
+          InternalDeselectCell(FMouseCell.Subcell);
+      end
+    end
+    else
+    begin
+      StartRow := Lesser(FSelAnchor.RowIndex, FMouseCell.RowIndex);
+      EndRow := Greater(FSelAnchor.RowIndex, FMouseCell.RowIndex);
+      StartCol := Lesser(FSelAnchor.ColIndex, FMouseCell.ColIndex);
+      EndCol := Greater(FSelAnchor.ColIndex, FMouseCell.ColIndex);
 
         // select all cells and subcells in square
-        For Col := StartCol to EndCol do
-          For Row := StartRow to EndRow do
-            begin
-              aCell := Cells.Cells[Col, Row];
-              InternalSelectCell(aCell);
-              InternalSelectCell(aCell.Subcell);
-            end;
+      for Col := StartCol to EndCol do
+        for Row := StartRow to EndRow do
+        begin
+          aCell := Cells.Cells[Col, Row];
+          InternalSelectCell(aCell);
+          InternalSelectCell(aCell.Subcell);
+        end;
 
         // for direction (anchor --> mouse)
         //  W, NW, N, NE: if anchor is parent, anchor subcell is NOT selected and
         //                if mouse is subcell, mouse parent is NOT selected
-        if (FMouseCell.RowIndex < FSelAnchor.RowIndex) or // all northerly dir
-           ((FMouseCell.RowIndex = FSelAnchor.RowIndex) and
-            (FMouseCell.ColIndex < FSelAnchor.ColIndex)) then // west
-          begin
-            if FSelAnchor.IsParent then
-              InternalDeselectCell(FSelAnchor.Subcell);
+      if (FMouseCell.RowIndex < FSelAnchor.RowIndex) or // all northerly dir
+        ((FMouseCell.RowIndex = FSelAnchor.RowIndex) and
+        (FMouseCell.ColIndex < FSelAnchor.ColIndex)) then // west
+      begin
+        if FSelAnchor.IsParent then
+          InternalDeselectCell(FSelAnchor.Subcell);
 
-            if FMouseCell.IsSubcell then
-              InternalDeselectCell(FMouseCell.ParentCell);
-          end
+        if FMouseCell.IsSubcell then
+          InternalDeselectCell(FMouseCell.ParentCell);
+      end
         // for direction E, SE, S, SW:
         //   if anchor is subcell, anchor parent is NOT selected and
         //   if mouse is parent, mouse subcell is NOT selected
-        else
-          begin
-            if FSelAnchor.IsSubcell then
-              InternalDeselectCell(FSelAnchor.ParentCell);
+      else
+      begin
+        if FSelAnchor.IsSubcell then
+          InternalDeselectCell(FSelAnchor.ParentCell);
 
-            if FMouseCell.IsParent then
-              InternalDeselectCell(FMouseCell.Subcell);
-          end;
+        if FMouseCell.IsParent then
+          InternalDeselectCell(FMouseCell.Subcell);
       end;
-  Finally
+    end;
+  finally
     EndSelUpdate;
   end;
 end;
@@ -2489,155 +2485,154 @@ const
 var
   Txt: string;
   DayRect,
-  PicRect,
-  AdjTitleRect,
-  TextBounds: TRect;
+    PicRect,
+    AdjTitleRect,
+    TextBounds: TRect;
   HorzLayout: Boolean;
   I,
-  PicIndex,
-  PicLeft,
-  PicTop,
-  PicsHeight,
-  PicsWidth: Integer;
+    PicIndex,
+    PicLeft,
+    PicTop,
+    PicsHeight,
+    PicsWidth: Integer;
 begin
   // shade the title
   aCanvas.Brush.Color := Attr.TitleAttr.Color;
   aCanvas.FillRect(TheTitleRect);
 
   HorzLayout := (Attr.TitleAttr.Align = alTop) or
-                (Attr.TitleAttr.Align = alBottom);
+    (Attr.TitleAttr.Align = alBottom);
 
   if Assigned(Cell) then
-    begin
+  begin
       //Txt := FormatDateTime(Attr.TitleAttr.DayFormat, Cell.CellDate);
-      Txt := Cell.TitleText;
-      AdjTitleRect := TheTitleRect;
-      Windows.InflateRect(AdjTitleRect, -2, -2);
+    Txt := Cell.TitleText;
+    AdjTitleRect := TheTitleRect;
+    Windows.InflateRect(AdjTitleRect, -2, -2);
 
       // Draw the day text and Calc the rects
-      if Txt <> '' then
-        begin
-          aCanvas.Font := Attr.TitleAttr.DayTxtAttr.Font;
-          DrawAngleText(aCanvas, AdjTitleRect, TextBounds,
-                        Attr.TitleAttr.DayTxtAttr.Rotation,
-                        Attr.TitleAttr.DayTxtAttr.AlignH,
-                        Attr.TitleAttr.DayTxtAttr.AlignV, Txt);
+    if Txt <> '' then
+    begin
+      aCanvas.Font := Attr.TitleAttr.DayTxtAttr.Font;
+      DrawAngleText(aCanvas, AdjTitleRect, TextBounds,
+        Attr.TitleAttr.DayTxtAttr.Rotation,
+        Attr.TitleAttr.DayTxtAttr.AlignH,
+        Attr.TitleAttr.DayTxtAttr.AlignV, Txt);
 
-          DayRect := AdjTitleRect;
-          Case Attr.TitleAttr.Align of
-            alTop, alBottom :
-              Case Attr.TitleAttr.DayTxtAttr.AlignH of
-                taLeftJustify: DayRect.Right := TextBounds.Right;
-                taRightJustify: DayRect.Left := TextBounds.Left;
-              end;
-            alLeft, alRight :
-              Case Attr.TitleAttr.DayTxtAttr.AlignV of
-                vaTop: DayRect.Bottom := TextBounds.Bottom;
-                vaBottom: DayRect.Top := TextBounds.Top;
-              end;
+      DayRect := AdjTitleRect;
+      case Attr.TitleAttr.Align of
+        alTop, alBottom:
+          case Attr.TitleAttr.DayTxtAttr.AlignH of
+            taLeftJustify: DayRect.Right := TextBounds.Right;
+            taRightJustify: DayRect.Left := TextBounds.Left;
           end;
-          Windows.SubtractRect(PicRect, AdjTitleRect, DayRect);
-        end
-      else
-        begin
-          DayRect := Rect(0, 0, 0, 0);
-          PicRect := AdjTitleRect;
-        end;
+        alLeft, alRight:
+          case Attr.TitleAttr.DayTxtAttr.AlignV of
+            vaTop: DayRect.Bottom := TextBounds.Bottom;
+            vaBottom: DayRect.Top := TextBounds.Top;
+          end;
+      end;
+      Windows.SubtractRect(PicRect, AdjTitleRect, DayRect);
+    end
+    else
+    begin
+      DayRect := Rect(0, 0, 0, 0);
+      PicRect := AdjTitleRect;
+    end;
 
       // draw the pics
-      if PicsToDraw(Cell) then
-        begin
-          GetPicsWidthHeight(Cell, PicBuffer, HorzLayout, PicsWidth, PicsHeight);
+    if PicsToDraw(Cell) then
+    begin
+      GetPicsWidthHeight(Cell, PicBuffer, HorzLayout, PicsWidth, PicsHeight);
 
           // find PicLeft of first pic
-          Case Attr.TitleAttr.PicAttr.AlignH of
-            taLeftJustify :
-              PicLeft := PicRect.Left;
-            taCenter :
-              PicLeft := PicRect.Left + RectWidth(PicRect) div 2 - PicsWidth div 2;
-          else
-            PicLeft := PicRect.Right - PicsWidth;
-          end;
+      case Attr.TitleAttr.PicAttr.AlignH of
+        taLeftJustify:
+          PicLeft := PicRect.Left;
+        taCenter:
+          PicLeft := PicRect.Left + RectWidth(PicRect) div 2 - PicsWidth div 2;
+      else
+        PicLeft := PicRect.Right - PicsWidth;
+      end;
 
           // find PicTop of first pic
-          Case Attr.TitleAttr.PicAttr.AlignV of
-            vaTop :
-              PicTop := PicRect.Top;
-            vaCenter :
-              PicTop := PicRect.Top + RectHeight(PicRect) div 2 - PicsHeight div 2;
-          else
-            PicTop := PicRect.Bottom - PicsHeight;
-          end;
+      case Attr.TitleAttr.PicAttr.AlignV of
+        vaTop:
+          PicTop := PicRect.Top;
+        vaCenter:
+          PicTop := PicRect.Top + RectHeight(PicRect) div 2 - PicsHeight div 2;
+      else
+        PicTop := PicRect.Bottom - PicsHeight;
+      end;
 
-          For I := 0 to Cell.CellPics.Count - 1 do
-            begin
-              PicIndex := Cell.CellPics[I].PicIndex;
-              if ValidPicIndex(PicIndex) then
-                begin
-                  Cell.CellPics[I].SetPicPoint(PicLeft, PicTop);
-                  CellPics.Draw(aCanvas, PicLeft, PicTop, PicIndex);
-                  if HorzLayout then
-                    Inc(PicLeft, CellPics.Width + PicBuffer)
-                  else
-                    Inc(PicTop, CellPics.Height + PicBuffer);
-                end;
-            end;
+      for I := 0 to Cell.CellPics.Count - 1 do
+      begin
+        PicIndex := Cell.CellPics[I].PicIndex;
+        if ValidPicIndex(PicIndex) then
+        begin
+          Cell.CellPics[I].SetPicPoint(PicLeft, PicTop);
+          CellPics.Draw(aCanvas, PicLeft, PicTop, PicIndex);
+          if HorzLayout then
+            Inc(PicLeft, CellPics.Width + PicBuffer)
+          else
+            Inc(PicTop, CellPics.Height + PicBuffer);
         end;
+      end;
     end;
+  end;
 
   // draw the title frame
   DrawCellTitleFrame(aCanvas, TheTitleRect, Attr);
 end;
 
-
 procedure TJvTFCustomGlance.DrawCellFrame(aCanvas: TCanvas; aRect: TRect;
   Attr: TJvTFGlanceCellAttr; aCell: TJvTFGlanceCell);
 var
   I,
-  LineBottom: Integer;
+    LineBottom: Integer;
 begin
-  With aCanvas do
-    begin
+  with aCanvas do
+  begin
       // draw the cell frame
-      Case Attr.FrameAttr.Style of
-        fs3DRaised: Draw3DFrame(aCanvas, aRect, clBtnHighlight, clBtnShadow);
-        fs3DLowered: Draw3DFrame(aCanvas, aRect, clBtnShadow, clBtnHighlight);
-        fsFlat :
-          begin
-            Pen.Color := Attr.FrameAttr.Color;
-            Pen.Width := 1;
+    case Attr.FrameAttr.Style of
+      fs3DRaised: Draw3DFrame(aCanvas, aRect, clBtnHighlight, clBtnShadow);
+      fs3DLowered: Draw3DFrame(aCanvas, aRect, clBtnShadow, clBtnHighlight);
+      fsFlat:
+        begin
+          Pen.Color := Attr.FrameAttr.Color;
+          Pen.Width := 1;
 
             // draw the bottom line
-            LineBottom := aRect.Bottom - 1;
-            For I := 1 to Attr.FrameAttr.Width do
-              begin
-                MoveTo(aRect.Left, LineBottom);
-                LineTo(aRect.Right, LineBottom);
-                Dec(LineBottom);
-              end;
+          LineBottom := aRect.Bottom - 1;
+          for I := 1 to Attr.FrameAttr.Width do
+          begin
+            MoveTo(aRect.Left, LineBottom);
+            LineTo(aRect.Right, LineBottom);
+            Dec(LineBottom);
+          end;
 
             // draw the right line
-            LineBottom := aRect.Right - 1;
-            For I := 1 to Attr.FrameAttr.Width do
-              begin
-                MoveTo(LineBottom, aRect.Top);
-                LineTo(LineBottom, aRect.Bottom);
-                Dec(LineBottom);
-              end;
+          LineBottom := aRect.Right - 1;
+          for I := 1 to Attr.FrameAttr.Width do
+          begin
+            MoveTo(LineBottom, aRect.Top);
+            LineTo(LineBottom, aRect.Bottom);
+            Dec(LineBottom);
+          end;
 
             // draw the left line only for col 0 cells
-            if aCell.ColIndex = 0 then
-              begin
-                LineBottom := aRect.Left;
-                For I := 1 to Attr.FrameAttr.Width do
-                  begin
-                    MoveTo(LineBottom, aRect.Top);
-                    LineTo(LineBottom, aRect.Bottom);
-                    Inc(LineBottom);
-                  end;
-              end;
+          if aCell.ColIndex = 0 then
+          begin
+            LineBottom := aRect.Left;
+            for I := 1 to Attr.FrameAttr.Width do
+            begin
+              MoveTo(LineBottom, aRect.Top);
+              LineTo(LineBottom, aRect.Bottom);
+              Inc(LineBottom);
+            end;
           end;
-      end;
+        end;
+    end;
   end;
 end;
 
@@ -2645,67 +2640,67 @@ procedure TJvTFCustomGlance.DrawCellTitleFrame(aCanvas: TCanvas; TheTitleRect: T
   Attr: TJvTFGlanceCellAttr);
 var
   I,
-  LineBottom: Integer;
+    LineBottom: Integer;
 begin
-  With aCanvas do
-    begin
+  with aCanvas do
+  begin
       // draw the title frame
-      Case Attr.TitleAttr.FrameAttr.Style of
-        fs3DRaised :
-          Draw3DFrame(aCanvas, TheTitleRect, clBtnHighlight, clBtnShadow);
-        fs3DLowered :
-          Draw3DFrame(aCanvas, TheTitleRect, clBtnShadow, clBtnHighlight);
-        fsFlat :
-          begin
-            Pen.Color := Attr.TitleAttr.FrameAttr.Color;
-            Case Attr.TitleAttr.Align of
-              alTop :
+    case Attr.TitleAttr.FrameAttr.Style of
+      fs3DRaised:
+        Draw3DFrame(aCanvas, TheTitleRect, clBtnHighlight, clBtnShadow);
+      fs3DLowered:
+        Draw3DFrame(aCanvas, TheTitleRect, clBtnShadow, clBtnHighlight);
+      fsFlat:
+        begin
+          Pen.Color := Attr.TitleAttr.FrameAttr.Color;
+          case Attr.TitleAttr.Align of
+            alTop:
+              begin
+                if Attr.DrawBottomLine then
                 begin
-                  if Attr.DrawBottomLine then
+                  LineBottom := TheTitleRect.Bottom - 1;
+                  for I := 1 to Attr.TitleAttr.FrameAttr.Width do
                   begin
-                    LineBottom := TheTitleRect.Bottom - 1;
-                    For I := 1 to Attr.TitleAttr.FrameAttr.Width do
-                      begin
-                        MoveTo(TheTitleRect.Left + FGapSize, LineBottom);
-                        LineTo(TheTitleRect.Right - FGapSize, LineBottom);
-                        Dec(LineBottom);
-                      end;
+                    MoveTo(TheTitleRect.Left + FGapSize, LineBottom);
+                    LineTo(TheTitleRect.Right - FGapSize, LineBottom);
+                    Dec(LineBottom);
                   end;
                 end;
-              alBottom :
+              end;
+            alBottom:
+              begin
+                LineBottom := TheTitleRect.Top;
+                for I := 1 to Attr.TitleAttr.FrameAttr.Width do
                 begin
-                  LineBottom := TheTitleRect.Top;
-                  For I := 1 to Attr.TitleAttr.FrameAttr.Width do
-                    begin
-                      MoveTo(TheTitleRect.Left + 4, LineBottom);
-                      LineTo(TheTitleRect.Right - 4, LineBottom);
-                      Inc(LineBottom);
-                    end;
+                  MoveTo(TheTitleRect.Left + 4, LineBottom);
+                  LineTo(TheTitleRect.Right - 4, LineBottom);
+                  Inc(LineBottom);
                 end;
-              alLeft :
+              end;
+            alLeft:
+              begin
+                LineBottom := TheTitleRect.Right - 1;
+                for I := 1 to Attr.TitleAttr.FrameAttr.Width do
                 begin
-                  LineBottom := TheTitleRect.Right - 1;
-                  For I := 1 to Attr.TitleAttr.FrameAttr.Width do
-                    begin
-                      MoveTo(LineBottom, TheTitleRect.Top);
-                      LineTo(LineBottom, TheTitleRect.Bottom);
-                      Dec(LineBottom);
-                    end;
+                  MoveTo(LineBottom, TheTitleRect.Top);
+                  LineTo(LineBottom, TheTitleRect.Bottom);
+                  Dec(LineBottom);
                 end;
-              alRight :
+              end;
+            alRight:
+              begin
+                LineBottom := TheTitleRect.Left;
+                for I := 1 to Attr.TitleAttr.FrameAttr.Width do
                 begin
-                  LineBottom := TheTitleRect.Left;
-                  For I := 1 to Attr.TitleAttr.FrameAttr.Width do
-                    begin
-                      MoveTo(LineBottom, TheTitleRect.Top);
-                      LineTo(LineBottom, TheTitleRect.Bottom);
-                      Inc(LineBottom);
-                    end;
+                  MoveTo(LineBottom, TheTitleRect.Top);
+                  LineTo(LineBottom, TheTitleRect.Bottom);
+                  Inc(LineBottom);
                 end;
-            end;
+              end;
           end;
-      end;
+        end;
     end;
+  end;
 end;
 
 function TJvTFCustomGlance.PicsToDraw(aCell: TJvTFGlanceCell): Boolean;
@@ -2714,42 +2709,42 @@ var
 begin
   Result := False;
   if Assigned(CellPics) and (CellPics.Count > 0) then
-    begin
-      I := 0;
-      While (I < aCell.CellPics.Count) and not Result do
-        if aCell.CellPics[I].PicIndex > -1 then
-          Result := True
-        else
-          Inc(I);
-    end;
+  begin
+    I := 0;
+    while (I < aCell.CellPics.Count) and not Result do
+      if aCell.CellPics[I].PicIndex > -1 then
+        Result := True
+      else
+        Inc(I);
+  end;
 end;
 
 procedure TJvTFCustomGlance.GetPicsWidthHeight(aCell: TJvTFGlanceCell;
   PicBuffer: Integer; Horz: Boolean; var PicsWidth, PicsHeight: Integer);
 var
   I,
-  PicIndex: Integer;
+    PicIndex: Integer;
 begin
   if Horz then
-    begin
-      PicsWidth := 0;
-      PicsHeight := CellPics.Height;
-    end
+  begin
+    PicsWidth := 0;
+    PicsHeight := CellPics.Height;
+  end
   else
-    begin
-      PicsWidth := CellPics.Width;
-      PicsHeight := 0;
-    end;
+  begin
+    PicsWidth := CellPics.Width;
+    PicsHeight := 0;
+  end;
 
-  For I := 0 to aCell.CellPics.Count - 1 do
-    begin
-      PicIndex := aCell.CellPics[I].PicIndex;
-      if ValidPicIndex(PicIndex) then
-        if Horz then
-          Inc(PicsWidth, CellPics.Width + PicBuffer)
-        else
-          Inc(PicsHeight, CellPics.Height + PicBuffer);
-    end;
+  for I := 0 to aCell.CellPics.Count - 1 do
+  begin
+    PicIndex := aCell.CellPics[I].PicIndex;
+    if ValidPicIndex(PicIndex) then
+      if Horz then
+        Inc(PicsWidth, CellPics.Width + PicBuffer)
+      else
+        Inc(PicsHeight, CellPics.Height + PicBuffer);
+  end;
 
   if Horz and (PicsWidth > 0) then
     Dec(PicsWidth, PicBuffer);
@@ -2786,11 +2781,11 @@ var
   I: Integer;
 begin
   if Assigned(aCell) then
-    begin
-      I := Sel.IndexOf(aCell.CellDate);
-      if I > -1 then
-        Sel.Delete(I);
-    end;
+  begin
+    I := Sel.IndexOf(aCell.CellDate);
+    if I > -1 then
+      Sel.Delete(I);
+  end;
 end;
 
 procedure TJvTFCustomGlance.DeselectCell(aCell: TJvTFGlanceCell);
@@ -2817,9 +2812,9 @@ procedure TJvTFCustomGlance.SelChange(Sender: TObject);
 //  I: Integer;
 begin
   if not UpdatingSel then
-    begin
-      if Assigned(FOnSelChanged) then
-        FOnSelChanged(Self);
+  begin
+    if Assigned(FOnSelChanged) then
+      FOnSelChanged(Self);
 
       // DoNavigate
 //      if Assigned(Navigator) then
@@ -2839,15 +2834,15 @@ begin
 //          end;
 //        end;
 
-      Invalidate;
-    end;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFCustomGlance.ReleaseSchedule(const SchedName: string;
   SchedDate: TDate);
 begin
   // ALWAYS RELEASE SCHEDULE HERE
-  inherited;
+  inherited ReleaseSchedule(SchedName, SchedDate);
 end;
 
 function TJvTFCustomGlance.GetSchedNames: TStrings;
@@ -2875,7 +2870,7 @@ end;
 
 procedure TJvTFCustomGlance.Notify(Sender: TObject; Code: TJvTFServNotifyCode);
 begin
-  inherited;
+  inherited Notify(Sender, Code);
 
   // WHAT IS THIS CODE FOR ??!!?!!
   if Assigned(Viewer) then
@@ -2897,7 +2892,7 @@ end;
 
 procedure TJvTFCustomGlance.DoEndDrag(Target: TObject; X, Y: Integer);
 begin
-  inherited;
+  inherited DoEndDrag(Target, X, Y);
 end;
 
 procedure TJvTFCustomGlance.DoStartDrag(var DragObject: TDragObject);
@@ -2905,7 +2900,7 @@ begin
   if Assigned(Viewer) and Viewer.Editing then
     Viewer.FinishEditAppt;
 
-  inherited;
+  inherited DoStartDrag(DragObject);
 
   FDragInfo.Appt := SelAppt;
 end;
@@ -2919,40 +2914,40 @@ var
 begin
   //Viewer.Visible := False;
 
-  inherited;
+  inherited DragOver(Source, X, Y, State, Accept);
 
   if Source is TJvTFControl then
-    begin
-      SrcDragInfo := TJvTFControl(Source).DragInfo;
-      PtInfo := PtToCell(X, Y);
-      Accept := PtInfo.DragAccept;
+  begin
+    SrcDragInfo := TJvTFControl(Source).DragInfo;
+    PtInfo := PtToCell(X, Y);
+    Accept := PtInfo.DragAccept;
       //Appt := SrcDragInfo.Appt;
 
-      Case State of
-        dsDragEnter :
-          begin
-            if not Assigned(FDragInfo) then
-              FDragInfo := SrcDragInfo;
+    case State of
+      dsDragEnter:
+        begin
+          if not Assigned(FDragInfo) then
+            FDragInfo := SrcDragInfo;
             //BeginDragging(GridCoord, agsMoveAppt, Appt);
-          end;
-        dsDragLeave :
-          begin
+        end;
+      dsDragLeave:
+        begin
             //EndDragging(GridCoord, Appt);
-            if FDragInfo.ApptCtrl <> Self then
-              FDragInfo := nil;
-          end;
+          if FDragInfo.ApptCtrl <> Self then
+            FDragInfo := nil;
+        end;
         //dsDragMove: ContinueDragging(GridCoord, Appt);
-      end;
     end;
+  end;
 end;
 
 procedure TJvTFCustomGlance.SetSelAppt(Value: TJvTFAppt);
 begin
   if Value <> FSelAppt then
-    begin
-      FSelAppt := Value;
-      Invalidate;
-    end;
+  begin
+    FSelAppt := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvTFCustomGlance.DragDrop(Source: TObject; X, Y: Integer);
@@ -2960,13 +2955,13 @@ begin
   if Source is TJvTFControl then
     DropAppt(TJvTFControl(Source).DragInfo, X, Y);
 
-  inherited;
+  inherited DragDrop(Source, X, Y);
 end;
 
 procedure TJvTFCustomGlance.DropAppt(DragInfo: TJvTFDragInfo; X, Y: Integer);
 var
   NewStart,
-  NewEnd: TDate;
+    NewEnd: TDate;
   Appt: TJvTFAppt;
   PtInfo: TJvTFGlanceCoord;
   Confirm: Boolean;
@@ -2985,7 +2980,7 @@ begin
     FOnDropAppt(Self, Appt, NewStart, NewEnd, Confirm);
 
   if Confirm then
-    begin
+  begin
       {
       DateChange := (Trunc(Appt.StartDate) <> Trunc(NewStart)) or
                     (Trunc(Appt.EndDate) <> Trunc(NewEnd));
@@ -2995,9 +2990,9 @@ begin
         end;
       }
 
-      Appt.SetStartEnd(NewStart, Appt.StartTime, NewEnd, Appt.EndTime);
-      ScheduleManager.RefreshConnections(Appt);
-    end;
+    Appt.SetStartEnd(NewStart, Appt.StartTime, NewEnd, Appt.EndTime);
+    ScheduleManager.RefreshConnections(Appt);
+  end;
 end;
 
 procedure TJvTFCustomGlance.ConfigCells;
@@ -3079,13 +3074,13 @@ begin
 
   aCell := Cells.Cells[Col, Row];
   if aCell.IsSplit then
-    begin
-      if aCell.SplitOrientation = soHorizontal then
-        ParentRect.Bottom := ParentRect.Top + RectHeight(ParentRect) div 2
-      else
-        ParentRect.Right := ParentRect.Left + RectWidth(ParentRect) div 2;
-      Windows.SubtractRect(SubRect, WorkRect, ParentRect);
-    end;
+  begin
+    if aCell.SplitOrientation = soHorizontal then
+      ParentRect.Bottom := ParentRect.Top + RectHeight(ParentRect) div 2
+    else
+      ParentRect.Right := ParentRect.Left + RectWidth(ParentRect) div 2;
+    Windows.SubtractRect(SubRect, WorkRect, ParentRect);
+  end;
 end;
 
 procedure TJvTFCustomGlance.UpdateCellTitles;
@@ -3093,13 +3088,13 @@ var
   I: Integer;
   aCell: TJvTFGlanceCell;
 begin
-  For I := 0 to Cells.Count - 1 do
-    begin
-      aCell := Cells[I];
-      UpdateCellTitleText(aCell);
-      if Assigned(aCell.Subcell) then
-        UpdateCellTitleText(aCell.Subcell);
-    end;
+  for I := 0 to Cells.Count - 1 do
+  begin
+    aCell := Cells[I];
+    UpdateCellTitleText(aCell);
+    if Assigned(aCell.Subcell) then
+      UpdateCellTitleText(aCell.Subcell);
+  end;
 end;
 
 procedure TJvTFCustomGlance.SplitCell(aCell: TJvTFGlanceCell);
@@ -3122,14 +3117,14 @@ end;
 procedure TJvTFGlanceTitle.Assign(Source: TPersistent);
 begin
   if Source is TJvTFGlanceTitle then
-    begin
-      FColor := TJvTFGlanceTitle(Source).Color;
-      FHeight := TJvTFGlanceTitle(Source).Height;
-      FVisible := TJvTFGlanceTitle(Source).Visible;
-      FFrameAttr.Assign(TJvTFGlanceTitle(Source).FrameAttr);
-      FTxtAttr.Assign(TJvTFGlanceTitle(Source).TxtAttr);
-      Change;
-    end
+  begin
+    FColor := TJvTFGlanceTitle(Source).Color;
+    FHeight := TJvTFGlanceTitle(Source).Height;
+    FVisible := TJvTFGlanceTitle(Source).Visible;
+    FFrameAttr.Assign(TJvTFGlanceTitle(Source).FrameAttr);
+    FTxtAttr.Assign(TJvTFGlanceTitle(Source).TxtAttr);
+    Change;
+  end
   else
     inherited Assign(Source);
 end;
@@ -3163,16 +3158,16 @@ begin
   FTxtAttr.OnChange := nil;
   FTxtAttr.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFGlanceTitle.SetColor(Value: TColor);
 begin
   if Value <> FColor then
-    begin
-      FColor := Value;
-      Change;
-    end;
+  begin
+    FColor := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceTitle.SetFrameAttr(Value: TJvTFGlanceFrameAttr);
@@ -3187,10 +3182,10 @@ begin
     Value := Lesser(Value, GlanceControl.Height - 5);
 
   if Value <> FHeight then
-    begin
-      FHeight := Value;
-      Change;
-    end;
+  begin
+    FHeight := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceTitle.SetTxtAttr(Value: TJvTFTextAttr);
@@ -3202,10 +3197,10 @@ end;
 procedure TJvTFGlanceTitle.SetVisible(Value: Boolean);
 begin
   if Value <> FVisible then
-    begin
-      FVisible := Value;
-      Change;
-    end;
+  begin
+    FVisible := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceTitle.TxtAttrChange(Sender: TObject);
@@ -3218,12 +3213,12 @@ end;
 procedure TJvTFFrameAttr.Assign(Source: TPersistent);
 begin
   if Source is TJvTFFrameAttr then
-    begin
-      FStyle := TJvTFFrameAttr(Source).Style;
-      FColor := TJvTFFrameAttr(Source).Color;
-      FWidth := TJvTFFrameAttr(Source).Width;
-      Change;
-    end
+  begin
+    FStyle := TJvTFFrameAttr(Source).Style;
+    FColor := TJvTFFrameAttr(Source).Color;
+    FWidth := TJvTFFrameAttr(Source).Width;
+    Change;
+  end
   else
     inherited Assign(Source);
 end;
@@ -3232,7 +3227,7 @@ procedure TJvTFFrameAttr.Change;
 begin
   if Assigned(FOnChange) then
     FOnChange(Self);
-    
+
   if Assigned(Control) then
     Control.Invalidate;
 end;
@@ -3250,19 +3245,19 @@ end;
 procedure TJvTFFrameAttr.SetColor(Value: TColor);
 begin
   if Value <> FColor then
-    begin
-      FColor := Value;
-      Change;
-    end;
+  begin
+    FColor := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFFrameAttr.SetStyle(Value: TJvTFFrameStyle);
 begin
   if Value <> FStyle then
-    begin
-      FStyle := Value;
-      Change;
-    end;
+  begin
+    FStyle := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFFrameAttr.SetWidth(Value: Integer);
@@ -3270,10 +3265,10 @@ begin
   Value := Greater(Value, 1);
 
   if Value <> FWidth then
-    begin
-      FWidth := Value;
-      Change;
-    end;
+  begin
+    FWidth := Value;
+    Change;
+  end;
 end;
 
 { TJvTFGlanceCellAttr }
@@ -3281,13 +3276,13 @@ end;
 procedure TJvTFGlanceCellAttr.Assign(Source: TPersistent);
 begin
   if Source is TJvTFGlanceCellAttr then
-    begin
-      FColor := TJvTFGlanceCellAttr(Source).Color;
-      FFrameAttr.Assign(TJvTFGlanceCellAttr(Source).FrameAttr);
-      FTitleAttr.Assign(TJvTFGlanceCellAttr(Source).TitleAttr);
-      FFont.Assign(TJvTFGlanceCellAttr(Source).Font);
-      Change;
-    end
+  begin
+    FColor := TJvTFGlanceCellAttr(Source).Color;
+    FFrameAttr.Assign(TJvTFGlanceCellAttr(Source).FrameAttr);
+    FTitleAttr.Assign(TJvTFGlanceCellAttr(Source).TitleAttr);
+    FFont.Assign(TJvTFGlanceCellAttr(Source).Font);
+    Change;
+  end
   else
     inherited Assign(Source);
 end;
@@ -3317,7 +3312,7 @@ begin
   FTitleAttr.Free;
   FFont.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFGlanceCellAttr.FontChange(Sender: TObject);
@@ -3327,20 +3322,20 @@ end;
 
 procedure TJvTFGlanceCellAttr.SetDrawBottomLine(Value: boolean);
 begin
-   if Value <> FDrawBottomLine then
-   begin
-      FDrawBottomLine := Value;
-      Change;
-   end;
+  if Value <> FDrawBottomLine then
+  begin
+    FDrawBottomLine := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceCellAttr.SetColor(Value: TColor);
 begin
   if Value <> FColor then
-    begin
-      FColor := Value;
-      Change;
-    end;
+  begin
+    FColor := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceCellAttr.SetFont(Value: TFont);
@@ -3363,16 +3358,16 @@ end;
 procedure TJvTFGlanceTitleAttr.Assign(Source: TPersistent);
 begin
   if Source is TJvTFGlanceTitleAttr then
-    begin
-      FAlign := TJvTFGlanceTitleAttr(Source).Align;
+  begin
+    FAlign := TJvTFGlanceTitleAttr(Source).Align;
       //FDayFormat := TJvTFGlanceTitleAttr(Source).DayFormat;
-      FColor := TJvTFGlanceTitleAttr(Source).Color;
-      FHeight := TJvTFGlanceTitleAttr(Source).Height;
-      FVisible := TJvTFGlanceTitleAttr(Source).Visible;
-      FFrameAttr.Assign(TJvTFGlanceTitleAttr(Source).FrameAttr);
-      FDayTxtAttr.Assign(TJvTFGlanceTitleAttr(Source).DayTxtAttr);
-      Change;
-    end
+    FColor := TJvTFGlanceTitleAttr(Source).Color;
+    FHeight := TJvTFGlanceTitleAttr(Source).Height;
+    FVisible := TJvTFGlanceTitleAttr(Source).Visible;
+    FFrameAttr.Assign(TJvTFGlanceTitleAttr(Source).FrameAttr);
+    FDayTxtAttr.Assign(TJvTFGlanceTitleAttr(Source).DayTxtAttr);
+    Change;
+  end
   else
     inherited Assign(Source);
 end;
@@ -3380,11 +3375,11 @@ end;
 procedure TJvTFGlanceTitleAttr.Change;
 begin
   if Assigned(GlanceControl) then
-    begin
-      if Assigned(GlanceControl.Viewer) then
-        GlanceControl.Viewer.Realign;
-      GlanceControl.Invalidate;
-    end;
+  begin
+    if Assigned(GlanceControl.Viewer) then
+      GlanceControl.Viewer.Realign;
+    GlanceControl.Invalidate;
+  end;
 end;
 
 constructor TJvTFGlanceTitleAttr.Create(AOwner: TJvTFCustomGlance);
@@ -3416,7 +3411,7 @@ begin
   FPicAttr.OnChange := nil;
   FPicAttr.Free;
 
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFGlanceTitleAttr.PicAttrChange(Sender: TObject);
@@ -3427,19 +3422,19 @@ end;
 procedure TJvTFGlanceTitleAttr.SetAlign(Value: TJvTFTitleAlign);
 begin
   if Value <> FAlign then
-    begin
-      FAlign := Value;
-      Change;
-    end;
+  begin
+    FAlign := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceTitleAttr.SetColor(Value: TColor);
 begin
   if Value <> FColor then
-    begin
-      FColor := Value;
-      Change;
-    end;
+  begin
+    FColor := Value;
+    Change;
+  end;
 end;
 
 {
@@ -3468,10 +3463,10 @@ end;
 procedure TJvTFGlanceTitleAttr.SetHeight(Value: Integer);
 begin
   if Value <> FHeight then
-    begin
-      FHeight := Value;
-      Change;
-    end;
+  begin
+    FHeight := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceTitleAttr.SetPicAttr(Value: TJvTFGlanceTitlePicAttr);
@@ -3483,10 +3478,10 @@ end;
 procedure TJvTFGlanceTitleAttr.SetVisible(Value: Boolean);
 begin
   if Value <> FVisible then
-    begin
-      FVisible := Value;
-      Change;
-    end;
+  begin
+    FVisible := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFGlanceTitleAttr.TxtAttrChange(Sender: TObject);
@@ -3510,26 +3505,26 @@ var
   ApptList: TstringList;
 begin
   if RepeatGrouped then
-    begin
-      Result := 0;
-      For I := 0 to ScheduleCount - 1 do
-        Inc(Result, Schedules[I].ApptCount);
-    end
+  begin
+    Result := 0;
+    for I := 0 to ScheduleCount - 1 do
+      Inc(Result, Schedules[I].ApptCount);
+  end
   else
-    begin
-      ApptList := TstringList.Create;
-      Try
-        GetDistinctAppts(ApptList);
-        Result := ApptList.Count;
-      Finally
-        ApptList.Free;
-      end;
+  begin
+    ApptList := TstringList.Create;
+    try
+      GetDistinctAppts(ApptList);
+      Result := ApptList.Count;
+    finally
+      ApptList.Free;
     end;
+  end;
 end;
 
 constructor TJvTFGlanceViewer.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FRepeatGrouped := True;
 end;
 
@@ -3546,7 +3541,7 @@ end;
 function TJvTFGlanceViewer.GetRepeatAppt(Index: Integer): TJvTFAppt;
 var
   I,
-  AbsIndex: Integer;
+    AbsIndex: Integer;
 begin
   if (Index < 0) or (Index > ApptCount - 1) then
     raise EGlanceViewerError.CreateResFmt(@RsEApptIndexOutOfBoundsd, [Index]);
@@ -3554,10 +3549,10 @@ begin
   AbsIndex := 0;
   I := -1;
 
-  Repeat
+  repeat
     Inc(I);
     Inc(AbsIndex, Schedules[I].ApptCount);
-  Until AbsIndex - 1 >= Index;
+  until AbsIndex - 1 >= Index;
 
   Result := Schedules[I].Appts[Schedules[I].ApptCount - (AbsIndex - Index)];
 end;
@@ -3573,13 +3568,13 @@ var
 begin
   Result := nil;
   ApptList := TstringList.Create;
-  Try
+  try
     GetDistinctAppts(ApptList);
     if (Index < 0) or (Index >= ApptList.Count) then
       raise EGlanceViewerError.CreateResFmt(@RsEApptIndexOutOfBoundsd, [Index]);
 
     Result := TJvTFAppt(ApptList.Objects[Index]);
-  Finally
+  finally
     ApptList.Free;
   end;
 end;
@@ -3587,22 +3582,22 @@ end;
 procedure TJvTFGlanceViewer.GetDistinctAppts(ApptList: TstringList);
 var
   I,
-  J: Integer;
+    J: Integer;
   Sched: TJvTFSched;
   Appt: TJvTFAppt;
 begin
   ApptList.Clear;
 
-  For I := 0 to ScheduleCount - 1 do
+  for I := 0 to ScheduleCount - 1 do
+  begin
+    Sched := Schedules[I];
+    for J := 0 to Sched.ApptCount - 1 do
     begin
-      Sched := Schedules[I];
-      For J := 0 to Sched.ApptCount - 1 do
-        begin
-          Appt := Sched.Appts[J];
-          if ApptList.IndexOf(Appt.ID) = -1 then
-            ApptList.AddObject(Appt.ID, Appt);
-        end;
+      Appt := Sched.Appts[J];
+      if ApptList.IndexOf(Appt.ID) = -1 then
+        ApptList.AddObject(Appt.ID, Appt);
     end;
+  end;
 end;
 
 function TJvTFGlanceViewer.GetSchedule(Index: Integer): TJvTFSched;
@@ -3625,10 +3620,10 @@ end;
 procedure TJvTFGlanceViewer.Notify(Sender: TObject;
   Code: TJvTFServNotifyCode);
 begin
-  Case Code of
-    sncConnectControl :
+  case Code of
+    sncConnectControl:
       SetGlanceControl(TJvTFCustomGlance(Sender));
-    sncDisconnectControl :
+    sncDisconnectControl:
       if GlanceControl = Sender then
         SetGlanceControl(nil);
   end;
@@ -3652,14 +3647,13 @@ begin
   FGlanceControl := Value;
 end;
 
-
 procedure TJvTFGlanceViewer.SetRepeatGrouped(Value: Boolean);
 begin
   if Value <> FRepeatGrouped then
-    begin
-      FRepeatGrouped := Value;
-      Refresh;
-    end;
+  begin
+    FRepeatGrouped := Value;
+    Refresh;
+  end;
 end;
 
 procedure TJvTFGlanceViewer.SetTo(aCell: TJvTFGlanceCell);
@@ -3678,7 +3672,7 @@ end;
 function TJvTFGlanceViewer.CalcBoundsRect(aCell: TJvTFGlanceCell): TRect;
 begin
   if Assigned(GlanceControl) and Assigned(aCell) then
-    With GlanceControl do
+    with GlanceControl do
       Result := CalcCellBodyRect(aCell, CellIsSelected(aCell), False)
   else
     Result := Rect(0, 0, 0, 0);
@@ -3708,7 +3702,7 @@ end;
 
 procedure TJvTFGlanceFrameAttr.Change;
 begin
-  inherited;
+  inherited Change;
   if Assigned(GlanceControl) and Assigned(GlanceControl.Viewer) then
     GlanceControl.Viewer.Realign;
 end;
@@ -3724,21 +3718,21 @@ end;
 procedure TJvTFTextAttr.Assign(Source: TPersistent);
 begin
   if Source is TJvTFTextAttr then
-    begin
-      FFont.Assign(TJvTFTextAttr(Source).Font);
-      FRotation := TJvTFTextAttr(Source).Rotation;
-      FAlignH := TJvTFTextAttr(Source).AlignH;
-      FAlignV := TJvTFTextAttr(Source).AlignV;
-      DoChange;
-    end
+  begin
+    FFont.Assign(TJvTFTextAttr(Source).Font);
+    FRotation := TJvTFTextAttr(Source).Rotation;
+    FAlignH := TJvTFTextAttr(Source).AlignH;
+    FAlignV := TJvTFTextAttr(Source).AlignV;
+    DoChange;
+  end
   else
     inherited Assign(Source);
 end;
 
 constructor TJvTFTextAttr.Create;
 begin
-  inherited;
-  
+  inherited Create;
+
   FFont := TFont.Create;
   FFont.OnChange := FontChange;
   FAlignH := taLeftJustify;
@@ -3749,7 +3743,7 @@ destructor TJvTFTextAttr.Destroy;
 begin
   FFont.OnChange := nil;
   FFont.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvTFTextAttr.DoChange;
@@ -3766,19 +3760,19 @@ end;
 procedure TJvTFTextAttr.SetAlignH(Value: TAlignment);
 begin
   if Value <> FAlignH then
-    begin
-      FAlignH := Value;
-      DoChange;
-    end;
+  begin
+    FAlignH := Value;
+    DoChange;
+  end;
 end;
 
 procedure TJvTFTextAttr.SetAlignV(Value: TJvTFVAlignment);
 begin
   if Value <> FAlignV then
-    begin
-      FAlignV := Value;
-      DoChange;
-    end;
+  begin
+    FAlignV := Value;
+    DoChange;
+  end;
 end;
 
 procedure TJvTFTextAttr.SetFont(Value: TFont);
@@ -3790,10 +3784,10 @@ end;
 procedure TJvTFTextAttr.SetRotation(Value: Integer);
 begin
   if Value <> FRotation then
-    begin
-      FRotation := Value;
-      DoChange;
-    end;
+  begin
+    FRotation := Value;
+    DoChange;
+  end;
 end;
 
 { TJvTFCellPics }
@@ -3815,16 +3809,16 @@ var
   I: Integer;
 begin
   if Source is TJvTFCellPics then
-    begin
-      BeginUpdate;
-      Try
-        Clear;
-        For I := 0 to TJvTFCellPics(Source).Count - 1 do
-          Add.Assign(TJvTFCellPics(Source).Items[I]);
-      Finally
-        EndUpdate;
-      end
+  begin
+    BeginUpdate;
+    try
+      Clear;
+      for I := 0 to TJvTFCellPics(Source).Count - 1 do
+        Add.Assign(TJvTFCellPics(Source).Items[I]);
+    finally
+      EndUpdate;
     end
+  end
   else
     inherited Assign(Source);
 end;
@@ -3861,12 +3855,12 @@ var
 begin
   Result := nil;
   I := 0;
-  While (I < Count) and not Assigned(Result) do
-    begin
-      if Items[I].PicName = PicName then
-        Result := Items[I];
-      Inc(I);
-    end;
+  while (I < Count) and not Assigned(Result) do
+  begin
+    if Items[I].PicName = PicName then
+      Result := Items[I];
+    Inc(I);
+  end;
 end;
 
 procedure TJvTFCellPics.SetItem(Index: Integer; Value: TJvTFCellPic);
@@ -3879,11 +3873,11 @@ end;
 procedure TJvTFCellPic.Assign(Source: TPersistent);
 begin
   if Source is TJvTFCellPic then
-    begin
-      FPicName := TJvTFCellPic(Source).PicName;
-      FPicIndex := TJvTFCellPic(Source).PicIndex;
-      Change;
-    end
+  begin
+    FPicName := TJvTFCellPic(Source).PicName;
+    FPicIndex := TJvTFCellPic(Source).PicIndex;
+    Change;
+  end
   else
     inherited Assign(Source);
 end;
@@ -3933,19 +3927,19 @@ end;
 procedure TJvTFCellPic.SetPicIndex(Value: Integer);
 begin
   if Value <> FPicIndex then
-    begin
-      FPicIndex := Value;
-      Change;
-    end;
+  begin
+    FPicIndex := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFCellPic.SetPicName(const Value: string);
 begin
   if Value <> FPicName then
-    begin
-      FPicName := Value;
-      Change;
-    end;
+  begin
+    FPicName := Value;
+    Change;
+  end;
 end;
 
 procedure TJvTFCellPic.SetPicPoint(X, Y: Integer);
@@ -3964,12 +3958,12 @@ begin
     DoChange;
   end
   else
-  inherited Assign(Source);
+    inherited Assign(Source);
 end;
 
 constructor TJvTFGlanceTitlePicAttr.Create;
 begin
-  inherited;
+  inherited Create;
   FAlignH := taLeftJustify;
   FAlignV := vaCenter;
 end;
@@ -4002,7 +3996,7 @@ end;
 
 constructor TJvTFGlance.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   AllowCustomDates := True;
 end;
 
@@ -4055,8 +4049,8 @@ end;
 procedure TJvTFGlanceCell.Split;
 begin
   if Assigned(CellCollection.GlanceControl) and
-     not CellCollection.GlanceControl.AllowCustomDates and
-     not CellCollection.Configuring then
+    not CellCollection.GlanceControl.AllowCustomDates and
+    not CellCollection.Configuring then
     raise EJvTFGlanceError.CreateRes(@RsECellCannotBeSplit);
 
   if IsSubCell then
@@ -4078,3 +4072,4 @@ begin
 end;
 
 end.
+

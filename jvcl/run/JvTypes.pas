@@ -524,18 +524,19 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-
-    property TopLeft    : TJvPoint     read FTopLeft     write SetTopLeft;
-    property BottomRight: TJvPoint     read FBottomRight write SetBottomRight;
-    property OnChange   : TNotifyEvent read FOnChange    write FOnChange;
+    property TopLeft: TJvPoint read FTopLeft write SetTopLeft;
+    property BottomRight: TJvPoint read FBottomRight write SetBottomRight;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
-    property Left  : Integer read GetLeft   write SetLeft;
-    property Top   : Integer read GetTop    write SetTop;
-    property Right : Integer read GetRight  write SetRight;
+    property Left: Integer read GetLeft write SetLeft;
+    property Top: Integer read GetTop write SetTop;
+    property Right: Integer read GetRight write SetRight;
     property Bottom: Integer read GetBottom write SetBottom;
   end;
 
 implementation
+
+//=== TJvPersistent ==========================================================
 
 {$IFDEF COMPILER6_UP}
 constructor TJvPersistent.Create(AOwner: TComponent);
@@ -547,7 +548,23 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-{ TJvRect }
+//=== TJvRect ================================================================
+
+constructor TJvRect.Create;
+begin
+  inherited Create;
+  FTopLeft := TJvPoint.Create;
+  FBottomRight := TJvPoint.Create;
+  FTopLeft.OnChange := PointChange;
+  FBottomRight.OnChange := PointChange;
+end;
+
+destructor TJvRect.Destroy;
+begin
+  FTopLeft.Free;
+  FBottomRight.Free;
+  inherited Destroy;
+end;
 
 procedure TJvRect.Assign(Source: TPersistent);
 begin
@@ -559,23 +576,6 @@ begin
   end
   else
     inherited Assign(Source);
-end;
-
-constructor TJvRect.Create;
-begin
-  inherited Create;
-  FTopLeft     := TJvPoint.Create;
-  FBottomRight := TJvPoint.Create;
-
-  FTopLeft.OnChange     := PointChange;
-  FBottomRight.OnChange := PointChange;
-end;
-
-destructor TJvRect.Destroy;
-begin
-  FTopLeft.Free;
-  FBottomRight.Free;
-  inherited Destroy;
 end;
 
 procedure TJvRect.DoChange;
@@ -639,7 +639,7 @@ begin
   FTopLeft.Assign(Value);
 end;
 
-{ TJvPoint }
+//=== TJvPoint ===============================================================
 
 procedure TJvPoint.Assign(Source: TPersistent);
 begin
@@ -650,7 +650,7 @@ begin
     DoChange;
   end
   else
-    inherited;
+    inherited Assign(Source);
 end;
 
 procedure TJvPoint.DoChange;

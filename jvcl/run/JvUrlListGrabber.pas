@@ -868,7 +868,6 @@ end;
 procedure TJvCustomUrlGrabberDefaultProperties.Assign(Source: TPersistent);
 begin
   if Source is TJvCustomUrlGrabberDefaultProperties then
-  begin
     with Source as TJvCustomUrlGrabberDefaultProperties do
     begin
       Self.Agent := Agent;
@@ -876,10 +875,9 @@ begin
       Self.UserName := UserName;
       Self.FileName := FileName;
       Self.OutputMode := OutputMode;
-    end;
-  end
+    end
   else
-    inherited;
+    inherited Assign(Source);
 end;
 
 constructor TJvCustomUrlGrabberDefaultProperties.Create(AOwner: TJvUrlGrabberDefaultPropertiesList);

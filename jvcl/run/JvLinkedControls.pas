@@ -109,11 +109,14 @@ end;
 
 procedure TJvLinkedControl.Assign(Source: TPersistent);
 begin
-  if (Source <> Self) and (Source is TJvLinkedControl) then
+  if Source is TJvLinkedControl then
   begin
-    Control := TJvLinkedControl(Source).Control;
-    Options := TJvLinkedControl(Source).Options;
-    Changed(False);
+    if Source <> Self then
+    begin
+      Control := TJvLinkedControl(Source).Control;
+      Options := TJvLinkedControl(Source).Options;
+      Changed(False);
+    end;
   end
   else
     inherited Assign(Source);
@@ -184,16 +187,19 @@ procedure TJvLinkedControls.Assign(Source: TPersistent);
 var
   I: Integer;
 begin
-  if (Source <> Self) and (Source is TJvLinkedControls) then
+  if Source is TJvLinkedControls then
   begin
-    BeginUpdate;
-    try
-      Clear;
-      for I := 0 to TJvLinkedControls(Source).Count - 1 do
-        Add.Assign(TJvLinkedControls(Source)[I]);
-      RestoreEnabled := TJvLinkedControls(Source).RestoreEnabled;
-    finally
-      EndUpdate;
+    if Source <> Self then
+    begin
+      BeginUpdate;
+      try
+        Clear;
+        for I := 0 to TJvLinkedControls(Source).Count - 1 do
+          Add.Assign(TJvLinkedControls(Source)[I]);
+        RestoreEnabled := TJvLinkedControls(Source).RestoreEnabled;
+      finally
+        EndUpdate;
+      end;
     end;
   end
   else
