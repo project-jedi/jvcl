@@ -82,7 +82,7 @@ type
 
 implementation
 
-{$R RES_Gamma.res}
+{$R JvGammaPanel.res}
 
 resourcestring
   RC_RedFormat = 'R : %3D';

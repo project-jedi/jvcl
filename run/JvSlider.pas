@@ -111,7 +111,7 @@ type
 
 implementation
 
-{$R RES_Slider.res}
+{$R JvSlider.res}
 
 constructor TJvSlider.Create(AOwner: TComponent);
 begin

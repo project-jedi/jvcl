@@ -138,7 +138,7 @@ resourcestring
   RC_InvalidSkin = 'Invalid skin';
   RC_WinampRC = 'WINAMP1';
 
-{$R RES_WinampLabel.res}
+{$R JvWinampLabel.res}
 
 //=== TJvWinampThread ========================================================
 
