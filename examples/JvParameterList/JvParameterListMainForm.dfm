@@ -2080,7 +2080,7 @@ object Form1: TForm1
         Name = 'Stored Value 2'
         Value = '2'
       end>
-    Left = 414
+    Left = 409
     Top = 3
   end
   object JvFormStorage2: TJvFormStorage
@@ -2117,7 +2117,7 @@ object Form1: TForm1
     Top = 10
   end
   object Cipher: TJvVigenereCipher
-    Left = 360
-    Top = 50
+    Left = 410
+    Top = 55
   end
 end

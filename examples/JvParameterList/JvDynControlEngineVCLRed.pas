@@ -31,10 +31,11 @@ interface
 uses
   Classes, Controls, StdCtrls, ExtCtrls, ComCtrls, Mask, Forms, Graphics,
   Buttons, Dialogs,
-  JvDynControlEngine, JvDynControlEngineIntf;
+  JvDynControlEngine, JvDynControlEngineVCL,
+  JvDynControlEngineIntf;
 
 type
-  TJvDynControlEngineVCLRed = class (TJvDynControlEngine)
+  TJvDynControlEngineVCLRed = class (TJvDynControlEngineVCL)
   private
   protected
     procedure AfterCreateControl(aControl: TControl); override;
@@ -52,7 +53,6 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvDynControlEngineVCL,
   SysUtils, ExtDlgs;
 
 type
@@ -77,7 +77,8 @@ end;
 
 procedure TJvDynControlEngineVclRed.RegisterControls;
 begin
-  RegisterControlType(jctLabel, TJvDynControlVCLLabel);
+  Inherited RegisterControls;
+(*  RegisterControlType(jctLabel, TJvDynControlVCLLabel);
   {$IFDEF VCL}
   RegisterControlType(jctStaticText, TJvDynControlVCLStaticText);
   {$ENDIF VCL}
@@ -102,6 +103,7 @@ begin
   RegisterControlType(jctFileNameEdit, TJvDynControlVCLFileNameEdit);
   RegisterControlType(jctMemo, TJvDynControlVCLMemo);
   RegisterControlType(jctButtonEdit, TJvDynControlVCLButtonEdit);
+  *)
 end;
 
 initialization
