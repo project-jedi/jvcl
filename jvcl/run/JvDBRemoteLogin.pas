@@ -35,7 +35,7 @@ uses
   SysUtils, Windows, Messages, Classes, Graphics, Controls, Forms,
   Dialogs, DBClient,
   JvLoginForm;
-
+x
 type
   TJvDBRemoteLogin = class(TJvCustomLogin)
   private
@@ -65,11 +65,11 @@ type
     property RemoteServer: TCustomRemoteServer read FRemoteServer write SetRemoteServer;
     property Active;
     property AllowEmptyPassword;
+    property AppStore;
+    property AppStorePath;
     property AttemptNumber;
-    property IniFileName;
     property MaxPasswordLen;
     property UpdateCaption;
-    property UseRegistry;
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;
     property AfterLogin;
     property BeforeLogin;
@@ -85,7 +85,7 @@ implementation
 {$IFDEF JV_MIDAS}
 
 uses
-  IniFiles, Registry,
+  IniFiles,
   MConnect,
   JvJVCLUtils, JvResources;
 
@@ -239,43 +239,17 @@ begin
 end;
 
 procedure TJvDBRemoteLogin.WriteUserName(const UserName: string);
-var
-  Ini: TObject;
 begin
-  try
-    if UseRegistry then
-      Ini := TRegIniFile.Create(IniFileName)
-    else
-      Ini := TIniFile.Create(IniFileName);
-    try
-      IniWriteString(Ini, RsKeyLoginSection, RsKeyLastLoginUserName, UserName);
-    finally
-      Ini.Free;
-    end;
-  except
-  end;
+  if Assigned(AppStore) then
+    AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName);
 end;
 
 function TJvDBRemoteLogin.ReadUserName(const UserName: string): string;
-var
-  Ini: TObject;
 begin
-  try
-    if UseRegistry then
-    begin
-      Ini := TRegIniFile.Create(IniFileName);
-      TRegIniFile(Ini).Access := KEY_READ;
-    end
-    else
-      Ini := TIniFile.Create(IniFileName);
-    try
-      Result := IniReadString(Ini, RSKeyLoginSection, RSKeyLastLoginUserName, UserName);
-    finally
-      Ini.Free;
-    end;
-  except
+  if Assigned(AppStore) then
+    Result := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), UserName)
+  else
     Result := UserName;
-  end;
 end;
 
 procedure TJvDBRemoteLogin.AbortConnection;

@@ -35,7 +35,7 @@ interface
 uses
   SysUtils, Classes, Controls, Forms, StdCtrls, ExtCtrls,
   DB, DBTables,
-  JvBDELists, JvLoginForm;
+  JvBDELists, JvLoginForm, JvAppStore;
 
 type
   TCheckUserNameEvent = function(UsersTable: TTable;
@@ -52,6 +52,16 @@ type
     FCheckUserEvent: TCheckUserNameEvent;
     FCheckUnlock: TCheckUnlockEvent;
     FIconDblClick: TNotifyEvent;
+    FDatabase: TDatabase;
+    FAttemptNumber: Integer;
+    FShowDBName: Boolean;
+    FUsersTableName: string;
+    FUserNameField: string;
+    FMaxPwdLen: Integer;
+    FLoginName: string;
+    FAppStore: TJvCustomAppStore;
+    FAppStorePath : String;
+
     procedure Login(Database: TDatabase; LoginParams: TStrings);
     function GetUserInfo: Boolean;
     function CheckUser(Table: TTable): Boolean;
@@ -62,16 +72,6 @@ type
     function ExecuteDbLogin(LoginParams: TStrings): Boolean;
     function ExecuteUnlock: Boolean;
   public
-    // (rom) better make that properties
-    Database: TDatabase;
-    AttemptNumber: Integer;
-    ShowDBName: Boolean;
-    UsersTableName: string;
-    UserNameField: string;
-    MaxPwdLen: Integer;
-    LoginName: string;
-    IniFileName: string;
-    UseRegistry: Boolean;
     constructor Create(DialogMode: TDialogMode; DatabaseSelect: Boolean);
     destructor Destroy; override;
     function Execute(LoginParams: TStrings): Boolean;
@@ -83,6 +83,15 @@ type
     property OnCheckUnlock: TCheckUnlockEvent read FCheckUnlock write FCheckUnlock;
     property OnCheckUserEvent: TCheckUserNameEvent read FCheckUserEvent write FCheckUserEvent;
     property OnIconDblClick: TNotifyEvent read FIconDblClick write FIconDblClick;
+    property AppStore: TJvCustomAppStore read FAppStore write FAppStore;
+    property AppStorePath : String read FAppStorePath write FAppStorePath;
+    property Database: TDatabase read FDatabase write FDatabase;
+    property AttemptNumber: Integer read FAttemptNumber write FAttemptNumber;
+    property ShowDBName: Boolean read FShowDBName write FShowDBName;
+    property UsersTableName: string read FUsersTableName write FUsersTableName;
+    property UserNameField: string read FUserNameField write FUserNameField;
+    property MaxPwdLen: Integer read FMaxPwdLen write fMaxPwdLen;
+    property LoginName: string read FLoginName write FLoginName;
   end;
 
 procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
@@ -91,8 +100,8 @@ procedure OnLoginDialog(Database: TDatabase; LoginParams: TStrings;
 function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   const UsersTableName, UserNameField: string; MaxPwdLen: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
-  var LoginName: string; const IniFileName: string;
-  UseRegistry, SelectDatabase: Boolean): Boolean;
+  var LoginName: string; AppStore : TJvCustomAppStore;
+  AppStorePath : string; SelectDatabase: Boolean): Boolean;
 
 function UnlockDialog(const UserName: string; OnUnlock: TCheckUnlockEvent;
   IconDblClick: TNotifyEvent): Boolean;
@@ -102,14 +111,9 @@ function UnlockDialogEx(const UserName: string; OnUnlock: TCheckUnlockEvent;
 implementation
 
 uses
-  Windows, Registry, BDE,
+  Windows, BDE,
   IniFiles, Graphics,
   JvJVCLUtils, JvConsts, JvResources;
-
-const
-  keyLastLoginUserName = 'LastUser';
-  keySelectDatabase = 'SelectDatabase'; { dialog never writes this value }
-  keyLastAliasName = 'LastAlias'; { used if SelectDatabase = True  }
 
 constructor TJvDBLoginDialog.Create(DialogMode: TDialogMode; DatabaseSelect: Boolean);
 begin
@@ -229,29 +233,12 @@ begin
 end;
 
 function TJvDBLoginDialog.ExecuteAppLogin: Boolean;
-var
-  Ini: TObject;
 begin
-  try
-    if UseRegistry then
-    begin
-      Ini := TRegIniFile.Create(IniFileName);
-      TRegIniFile(Ini).Access := KEY_READ;
-    end
-    else
-      Ini := TIniFile.Create(IniFileName);
-    try
-      FDialog.UserNameEdit.Text := IniReadString(Ini, FDialog.ClassName,
-        keyLastLoginUserName, LoginName);
-      FSelectDatabase := IniReadBool(Ini, FDialog.ClassName,
-        keySelectDatabase, FSelectDatabase);
-      FIniAliasName := IniReadString(Ini, FDialog.ClassName,
-        keyLastAliasName, '');
-    finally
-      Ini.Free;
-    end;
-  except
-    IniFileName := '';
+  if Assigned(AppStore) then
+  begin
+    FDialog.UserNameEdit.Text := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), LoginName);
+    FSelectDatabase := AppStore.ReadBoolean (AppStore.ConcatPaths([AppStorePath, RsSelectDatabase]), FSelectDatabase);
+    FIniAliasName := AppStore.ReadString (AppStore.ConcatPaths([AppStorePath, RsLastAliasName]), '');
   end;
   FDialog.SelectDatabase := SelectDatabase;
   Result := (FDialog.ShowModal = mrOk);
@@ -259,18 +246,10 @@ begin
   if Result then
   begin
     LoginName := GetUserName;
-    if IniFileName <> '' then
+    if Assigned(AppStore) then
     begin
-      if UseRegistry then
-        Ini := TRegIniFile.Create(IniFileName)
-      else
-        Ini := TIniFile.Create(IniFileName);
-      try
-        IniWriteString(Ini, FDialog.ClassName, keyLastLoginUserName, GetUserName);
-        IniWriteString(Ini, FDialog.ClassName, keyLastAliasName, Database.AliasName);
-      finally
-        Ini.Free;
-      end;
+      AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastLoginUserName]), GetUserName);
+      AppStore.WriteString (AppStore.ConcatPaths([AppStorePath, RsLastAliasName]), Database.AliasName);
     end;
   end;
 end;
@@ -476,8 +455,8 @@ end;
 function LoginDialog(Database: TDatabase; AttemptNumber: Integer;
   const UsersTableName, UserNameField: string; MaxPwdLen: Integer;
   CheckUserEvent: TCheckUserNameEvent; IconDblClick: TNotifyEvent;
-  var LoginName: string; const IniFileName: string;
-  UseRegistry, SelectDatabase: Boolean): Boolean;
+  var LoginName: string; AppStore : TJvCustomAppStore;
+  AppStorePath : string; SelectDatabase: Boolean): Boolean;
 var
   Dlg: TJvDBLoginDialog;
 begin
@@ -491,8 +470,8 @@ begin
     Dlg.AttemptNumber := AttemptNumber;
     Dlg.UsersTableName := UsersTableName;
     Dlg.UserNameField := UserNameField;
-    Dlg.IniFileName := IniFileName;
-    Dlg.UseRegistry := UseRegistry;
+    Dlg.AppStore := AppStore;
+    Dlg.AppStorePath:= AppStorePath;
     Result := Dlg.Execute(nil);
     if Result then
       LoginName := Dlg.LoginName;
