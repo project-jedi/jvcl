@@ -21,36 +21,16 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('Jv Jans', [TJvMarkupLabel]);
-  RegisterComponents('Jv Jans', [TJvMarkupViewer]);
-  RegisterComponents('Jv Jans', [TJvSAL]);
-  RegisterComponents('Jv Jans', [TJvSticker]);
-  RegisterComponents('Jv Jans', [TJvSALCore]);
-  RegisterComponents('Jv Jans', [TJvSALMath]);
-  RegisterComponents('Jv Jans', [TJvYearGrid]);
-  RegisterComponents('Jv Jans', [TJvAirBrush]);
-  RegisterComponents('Jv Jans', [TJvTracker]);
-  RegisterComponents('Jv Jans', [TJvGridFilter]);
-  RegisterComponents('Jv Jans', [TJvGridPrinter]);
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
-  RegisterComponents('Jv Jans', [TJvJanTreeview]);
-  RegisterComponents('Jv Jans', [TJvPaintFX]);
-  RegisterComponents('Jv Jans', [TJvDrawImage]);
-  RegisterComponents('Jv Jans', [TJvArrayButton]);
-
-  RegisterComponents('Jv Jans', [TJvForthScript]);
-  RegisterComponents('Jv Jans', [TJvTurtle]);
-  RegisterComponents('Jv Jans', [TJvBitmapButton]);
-  RegisterComponents('Jv Jans', [TJvSpeller]);
-
-  RegisterComponents('Jv Jans', [TJvShapedButton]);
+  RegisterComponents('Jv Jans', [
+    TJvMarkupLabel,TJvMarkupViewer, TJvSAL, TJvSticker, TJvSALCore, TJvSALMath, TJvYearGrid,
+    TJvAirBrush, TJvTracker, TJvGridFilter, TJvGridPrinter, TJvJanTreeview, TJvPaintFX,
+    TJvDrawImage, TJvArrayButton, TJvForthScript, TJvTurtle, TJvBitmapButton, TJvSpeller, TJvShapedButton]);
 
   // Simluator Components
-  RegisterComponents('Jv Jans SIM', [TJvSimScope]);
-  RegisterComponents('Jv Jans SIM', [TJvSimIndicator]);
-  RegisterComponents('Jv Jans SIM', [TJvSimPID]);
-  RegisterComponents('Jv Jans SIM', [TJvSimPIDLinker]);
-  RegisterComponents('Jv Jans SIM', [TJvSIMConnector, TJvLogic, TJvSimButton, TJvSimLight, TJvSimLogicBox, TJvSimReverse]);
+  RegisterComponents('Jv Jans SIM', [
+    TJvSimScope, TJvSimIndicator, TJvSimPID, TJvSimPIDLinker,
+    TJvSimConnector, TJvLogic, TJvSimButton, TJvSimLight, TJvSimLogicBox, TJvSimReverse]);
   // CSV Components
   RegisterComponents('Jv Jans CSV', [TJvCSVBase, TJvCSVEdit, TJvCSVComboBox, TJvCSVCheckBox, TJvCSVNavigator]);
   RegisterPropertyEditor(TypeInfo(string), TJvCSVBase, 'CSVFileName', TCSVFileNameProperty);
