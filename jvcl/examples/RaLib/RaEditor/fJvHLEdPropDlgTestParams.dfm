@@ -19,6 +19,7 @@ object MyParams: TMyParams
     Width = 345
     Height = 225
     ActivePage = TabSheet1
+    TabIndex = 0
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Application specific page 1'
@@ -51,15 +52,5 @@ object MyParams: TMyParams
         TabOrder = 0
       end
     end
-  end
-  object RegAuto1: TJvRegAuto
-    RegPath = 'Software\\CustomEditor'
-    IniFile = '$HOME/.RAHLEdPropDlgTest'
-    Props.Strings = (
-      'Edit1.Text'
-      'Edit2.Text')
-    AutoMode = False
-    Left = 44
-    Top = 152
   end
 end
