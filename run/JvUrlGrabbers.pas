@@ -356,6 +356,7 @@ begin
   Grabber.DoClosed;
 end;
 
+
 procedure TJvFtpUrlGrabberThread.Execute;
 const
   cPassive: array[Boolean] of DWORD = (0, INTERNET_FLAG_PASSIVE);
@@ -406,8 +407,6 @@ begin
         InternetGetLastResponseInfo(dwIndex, Buffer, dwBufLen);
         FErrorText := StrPas(Buffer);
         FreeMem(Buffer);
-        Buffer := nil;
-
         Synchronize(Error);
         Exit;
       end;
@@ -443,7 +442,7 @@ begin
           Inc(TotalBytes, LocalBytesRead);
           Grabber.FBytesRead := TotalBytes;
           Grabber.FStream.Write(Buf, LocalBytesRead);
-          DoProgress;
+          Synchronize(Progress);
         end;
       end;
       if not Terminated and FContinue then // acp
@@ -706,7 +705,7 @@ begin
       Grabber.FSize := AFileStream.Size;
       Grabber.FBytesRead := 0;
       FStatus    := 0;
-      DoProgress;
+      Synchronize(Progress);
       TotalBytes := 0;
       BytesRead := 1;
       while (BytesRead <> 0) and not Terminated and FContinue do
@@ -717,7 +716,7 @@ begin
         FStatus    := Grabber.FBytesRead;
         if BytesRead > 0 then
           Grabber.FStream.Write(Buf, BytesRead);
-        DoProgress;
+        Synchronize(Progress);
       end;
       if not Terminated and FContinue then // acp
         Synchronize(Ended);
