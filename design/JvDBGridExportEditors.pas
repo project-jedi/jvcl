@@ -23,11 +23,11 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBGridExportEditors;
 
 interface
+
+{$I jvcl.inc}
 
 uses
   Classes,

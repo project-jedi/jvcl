@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvMinMaxForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -43,7 +43,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvJVCLUtils, JvFormPlacement, JvComponent ;
+  JvJVCLUtils, JvFormPlacement, JvComponent;
 
 type
   TMinMaxInfoEditDialog = class(TJvForm)

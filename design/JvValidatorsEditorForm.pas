@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvValidatorsEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -128,7 +128,7 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
 
   // since D5 doesn't support interface style published properties,
   // these editors are supplied to make it easier to select a specific interface
@@ -141,7 +141,7 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER5}
 
 implementation
 
@@ -575,7 +575,7 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 //=== { TJvValidationSummaryProperty } =======================================
 
@@ -603,9 +603,9 @@ begin
       Proc(Designer.Form.Components[I].Name);
 end;
 
-{$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER5}
 
-{ TJvPropertyToCompareProperty }
+//=== { TJvPropertyToCompareProperty } =======================================
 
 function TJvPropertyToCompareProperty.GetAttributes: TPropertyAttributes;
 begin

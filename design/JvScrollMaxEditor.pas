@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvScrollMaxEditor;
+
+{$I jvcl.inc}
 
 interface
 

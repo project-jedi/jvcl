@@ -19,15 +19,16 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-description : Dephi IDE enhancement tool
+Description:
+  Delphi IDE enhancement tool
 
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvIDEZoom;
+
+{$I jvcl.inc}
 
 interface
 

@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgPropertyCenter;
+
+{$I jvcl.inc}
 
 interface
 
@@ -36,11 +36,11 @@ uses
   JvComponent;
 
 type
-  TglProperties_ = (fupColor, fupFont, fupFontColor);
-  TglProperties = set of TglProperties_;
+  TglProperty = (fupColor, fupFont, fupFontColor);
+  TglProperties = set of TglProperty;
 
-  Tgl_Properties_ = (f_upColor, f_upFont, f_upFontColor);
-  Tgl_Properties = set of Tgl_Properties_;
+  Tgl_Property = (f_upColor, f_upFont, f_upFontColor);
+  Tgl_Properties = set of Tgl_Property;
 
   TJvgPropertyCenter = class(TJvComponent)
   private
@@ -63,13 +63,10 @@ type
     destructor Destroy; override;
   published
     property ColorProperty: TColor read FColorProperty write SetColorProperty;
-    property FontColorProperty: TColor read FFontColorProperty write
-      SetFontColorProperty;
+    property FontColorProperty: TColor read FFontColorProperty write SetFontColorProperty;
     property FontProperty: TFont read FFontProperty write SetFontProperty;
-    property ComponentList: TStringList read FComponentList write
-      FComponentList;
-    property UseProperties: TglProperties read FUseProperties write
-      FUseProperties;
+    property ComponentList: TStringList read FComponentList write FComponentList;
+    property UseProperties: TglProperties read FUseProperties write FUseProperties;
     property AutoApdate: Boolean read FAutoApdate write FAutoApdate;
   end;
 

@@ -23,11 +23,12 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBMemDatasetEditor;
 
+{$I jvcl.inc}
+
 interface
+
 uses
   Classes, DB, SysUtils,
   {$IFDEF COMPILER6_UP}
@@ -105,7 +106,7 @@ var
   I: Integer;
 begin
   Result := '';
-  if (Field <> nil) then
+  if Field <> nil then
   begin
     Temp := Field.FieldName;
     for I := Length(Temp) downto 1 do
@@ -167,8 +168,7 @@ end;
 
 //=== { TJvMemDataSetEditor } ================================================
 
-function TJvMemDataSetEditor.CopyStructure(Source,
-  Dest: TDataSet): Boolean;
+function TJvMemDataSetEditor.CopyStructure(Source, Dest: TDataSet): Boolean;
 begin
   Result := Dest is TJvMemoryData;
   if Result then

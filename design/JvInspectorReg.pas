@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvInspectorReg;
+
+{$I jvcl.inc}
 
 interface
 
@@ -35,8 +35,7 @@ implementation
 
 uses
   Classes,
-  JvInspector,
-  JvDsgnConsts;
+  JvInspector, JvDsgnConsts;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvInspectorReg.dcr}

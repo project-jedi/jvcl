@@ -23,15 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvStdCtrlsReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
+
+interface
 
 procedure Register;
 
@@ -123,8 +123,8 @@ begin
     {$ENDIF VCL}
     TJvDateEdit]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(RsPaletteBarPanel, [
-    TJvPageControl, TJvTabControl, TJvTabDefaultPainter,
+  RegisterComponents(RsPaletteBarPanel, [TJvPageControl,
+    TJvTabControl, TJvTabDefaultPainter,
     {$IFDEF VisualCLX}
     TJvGauge,
     {$ENDIF VisualCLX}
@@ -135,13 +135,12 @@ begin
     TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {, TJvTransparentPanel}]);
-  RegisterComponents(RsPaletteLabel, [TJvLabel
+  RegisterComponents(RsPaletteLabel, [
     {$IFDEF VCL}
-    , TJvStaticText
+    TJvStaticText,
     {$ENDIF VCL}
-    ]);
-  RegisterComponents(RsPaletteListComboTree, [
-    TJvComboBox,
+    TJvLabel]);
+  RegisterComponents(RsPaletteListComboTree, [TJvComboBox,
     {$IFDEF VCL}
     TJvListBox,
     {$ENDIF VCL}
@@ -156,10 +155,11 @@ begin
     TJvMonthCalendar, {TJvMonthCalendar2,}
     {$ENDIF VCL}
     TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar
+  RegisterComponents(RsPaletteScrollerTracker, [
     {$IFDEF VCL}
-    , TJvScrollBox
-    {$ENDIF VCL}]);
+    TJvScrollBox,
+    {$ENDIF VCL}
+    TJvScrollBar]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvTrackBar]);
   {$IFDEF VCL}
   RegisterComponents(RsPaletteSliderSplitter, [TJvxSlider]);

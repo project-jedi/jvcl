@@ -23,15 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBandObjectDLLWizardForm;
+
+{$I jvcl.inc}
 
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls, StdCtrls, ExtCtrls,
-  Forms,
+  SysUtils, Windows, Messages, Classes, Graphics, Controls,
+  StdCtrls, ExtCtrls, Forms,
   JvTypes, JvComponent;
 
 type

@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDBReg;
+
+{$I jvcl.inc}
 
 interface
 
@@ -41,15 +41,15 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts,
+  {$IFDEF JV_MIDAS}
+  JvDBRemoteLogin,
+  {$ENDIF JV_MIDAS}
   JvMemoryDataset, JvDBDatePickerEdit, JvDBDateTimePicker, JvDBLookupTreeView,
   JvDBProgressBar, JvDBRichEdit, JvDBSpinEdit, JvDBTreeView, JvDBLookup,
   JvCsvData, JvDBCombobox, JvDBControls, JvDBGrid, JvDBRadioPanel,
   JvDBGridExport, JvDBLookupComboEdit, JvDBHTLabel, JvDBSearchEdit,
-  JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage,
-  {$IFDEF JV_MIDAS}
-  JvDBRemoteLogin,
-  {$ENDIF JV_MIDAS}
-  JvDBEditors, JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridProp;
+  JvDBSearchComboBox, JvAppDBStorage, JvDBFindEdit, JvDBImage, JvDBEditors,
+  JvDBMemDatasetEditor, JvDBGridExportEditors, JvDBGridProp, JvCsvDataEditor;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBReg.dcr}
@@ -75,7 +75,8 @@ const
 begin
   RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF},
-    TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport, TJvDBGridCSVExport, TJvDBGridXMLExport]);
+    TJvDBGridWordExport, TJvDBGridExcelExport, TJvDBGridHTMLExport,
+    TJvDBGridCSVExport, TJvDBGridXMLExport, TJvCsvDataSet]);
   RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
     TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
@@ -107,6 +108,8 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cKeyField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomAppDBStorage, cValueField, TJvDataFieldProperty);
   RegisterPropertyEditor(TypeInfo(TJvDBGridControls), TJvDBGrid, cEditControls, TJvDBGridControlsEditor);
+  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'CsvFieldDef', TJvCsvDefStrProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCsvDataSet, 'FileName', TJvFilenameProperty);
 
   RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 end;

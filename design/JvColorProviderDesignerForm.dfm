@@ -43,8 +43,9 @@ inherited frmJvColorProviderDesigner: TfrmJvColorProviderDesigner
     Top = 20
     Width = 245
     Height = 355
-    Align = alNone
     Anchors = [akLeft, akTop, akBottom]
+    AutoScroll = False
+    TabOrder = 0
     inherited lvProvider: TListView
       Width = 245
       Height = 355
@@ -55,8 +56,8 @@ inherited frmJvColorProviderDesigner: TfrmJvColorProviderDesigner
     Top = 20
     Width = 140
     Height = 355
-    Align = alNone
     Anchors = [akLeft, akTop, akBottom]
+    AutoScroll = False
     TabOrder = 1
     inherited lvProvider: TListView
       Width = 140
@@ -68,8 +69,8 @@ inherited frmJvColorProviderDesigner: TfrmJvColorProviderDesigner
     Top = 20
     Width = 195
     Height = 355
-    Align = alNone
     Anchors = [akLeft, akTop, akBottom]
+    AutoScroll = False
     TabOrder = 2
     inherited lvProvider: TListView
       Width = 195

@@ -23,10 +23,10 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+unit JvAppletEditor;
+
 {$I jvcl.inc}
 {$I vclonly.inc}
-
-unit JvAppletEditor;
 
 interface
 

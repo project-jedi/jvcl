@@ -22,10 +22,11 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
-{$I jvcl.inc}
+// $Id$
 
 unit JvEDIDBBufferingReg;
+
+{$I jvcl.inc}
 
 interface
 

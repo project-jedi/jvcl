@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBDEEditors;
+
+{$I jvcl.inc}
 
 interface
 
@@ -59,7 +59,7 @@ uses
 
 procedure TJvDatabaseNameProperty.GetValueList(List: TStrings);
 begin
-  if (GetComponent(0) is TDBDataSet) then
+  if GetComponent(0) is TDBDataSet then
     (GetComponent(0) as TDBDataSet).DBSession.GetDatabaseNames(List)
   else
   if Session <> nil then
@@ -77,8 +77,8 @@ end;
 
 procedure TJvTableNameProperty.GetValueList(List: TStrings);
 begin
-  (GetComponent(0) as TDBDataSet).DBSession.GetTableNames((GetComponent(0)
-    as TDBDataSet).DatabaseName, '', True, False, List);
+  (GetComponent(0) as TDBDataSet).DBSession.GetTableNames(
+    (GetComponent(0) as TDBDataSet).DatabaseName, '', True, False, List);
 end;
 
 end.

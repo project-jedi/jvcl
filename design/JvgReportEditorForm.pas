@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgReportEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -44,18 +44,21 @@ uses
 
 type
   TJvgRepProperty = class(TPropertyEditor)
+  public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure Edit; override;
   end;
 
   TJvgReportCompEditor = class(TComponentEditor)
+  public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
   TJvgReportEditor = class(TJvComponent)
+  private
     FReport: TJvgReport;
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -682,7 +685,6 @@ begin
       Orientation := goVertical;
    end;
 
-
   R := Rect(0, 0, Screen.Width, Screen.Height);
   ClipCursor(@R);
   FScrollBox := TJvgReportScrollBox.Create(Self);
@@ -1300,8 +1302,8 @@ begin
   FReportParamEditor.ShowModal;
 end;
 
-procedure TJvgReportEditorForm.cb_ComponentsKeyDown(Sender: TObject; var Key:
-  Word; Shift: TShiftState);
+procedure TJvgReportEditorForm.cb_ComponentsKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
 begin
   if Key = VK_RETURN then
   begin

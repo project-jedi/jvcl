@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvGradientCaptionForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -95,6 +95,7 @@ type
   end;
 
   TGradientCaptionEditor = class(TComponentEditor)
+  public
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;

@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvStdToolbarDsgnFrame;
+
+{$I jvcl.inc}
 
 interface
 
@@ -55,7 +55,6 @@ type
     tbDivider1: TToolButton;
     tbMoveUp: TToolButton;
     tbMoveDown: TToolButton;
-  private
   public
   end;
 

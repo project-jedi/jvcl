@@ -23,15 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSystemReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
+
+interface
 
 procedure Register;
 
@@ -99,15 +99,12 @@ begin
   RegisterComponents(RsPaletteNonVisual, [
     {$IFDEF USEWINDOWS}
     TJvSearchFiles, TJvMRUList, TJvMRUManager, TJvShellHook,
+    TJvTimerList,
     {$ENDIF USEWINDOWS}
     {$IFDEF VCL}
     TJvWindowHook,
     {$ENDIF VCL}
-    TJvTimer, TJvThread, TJvThreadTimer
-    {$IFDEF USEWINDOWS}
-    , TJvTimerList
-    {$ENDIF USEWINDOWS}
-    ]);
+    TJvTimer, TJvThread, TJvThreadTimer]);
 
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);

@@ -20,6 +20,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+
 Changes:
 2002-10-22:
   Drawing of State images differs from normal images since they are 1-based:
@@ -27,9 +28,9 @@ Changes:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvTreeItemsEditorForm;
+
+{$I jvcl.inc}
 
 interface
 

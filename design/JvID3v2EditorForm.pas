@@ -23,13 +23,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
-{ Most code is copied from DSDesign.pas }
-
 unit JvID3v2EditorForm;
 
+{$I jvcl.inc}
+
 interface
+
+{ Most code is copied from DSDesign.pas }
 
 uses
   Classes,

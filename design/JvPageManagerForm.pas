@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvPageManagerForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -309,17 +309,17 @@ end;
 
 {$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.DesignerClosed(const ADesigner: IDesigner; AGoingDormant: Boolean);
-{$ELSE}
-procedure TJvProxyEditor.FormClosed(Form: TCustomForm);
-{$ENDIF COMPILER6_UP}
 begin
-  {$IFDEF COMPILER6_UP}
   if ADesigner.Root = OwnerForm then
-  {$ELSE}
-  if Form = OwnerForm then
-  {$ENDIF COMPILER6_UP}
     Free;
 end;
+{$ELSE}
+procedure TJvProxyEditor.FormClosed(Form: TCustomForm);
+begin
+  if Form = OwnerForm then
+    Free;
+end;
+{$ENDIF COMPILER6_UP}
 
 {$IFDEF COMPILER6_UP}
 procedure TJvProxyEditor.ItemsModified(const Designer: IDesigner);
@@ -396,9 +396,7 @@ end;
 procedure TJvProxyEditor.FormShow(Sender: TObject);
 begin
   if FPageManager.PageOwner <> nil then
-  begin
     Caption := Format(RsPageProxies, [FPageManager.PageOwner.Name]);
-  end;
 end;
 
 function TJvProxyEditor.CheckPageManager: Boolean;
@@ -440,27 +438,23 @@ begin
   Result := nil;
   if CheckPageManager and (Row >= 0) and
     (Row < FPageManager.PageProxies.Count) then
-  begin
     Result := FPageManager.PageProxies.Items[Row];
-  end;
 end;
 
-procedure TJvProxyEditor.ProxyGridDrawCell(Sender: TObject; Col,
-  Row: Longint; Rect: TRect; State: TGridDrawState);
+procedure TJvProxyEditor.ProxyGridDrawCell(Sender: TObject;
+  Col, Row: Longint; Rect: TRect; State: TGridDrawState);
 var
   CellText: string;
   Proxy: TJvPageProxy;
 begin
   CellText := '';
   if gdFixed in State then
-  begin
     case Col of
       0:
         CellText := RsProxyName;
       1:
         CellText := RsPageName;
-    end;
-  end
+    end
   else
   begin
     Proxy := ProxyByRow(Row - 1);
@@ -477,8 +471,8 @@ begin
   DrawCellText(ProxyGrid, Col, Row, CellText, Rect, taLeftJustify, vaCenterJustify);
 end;
 
-procedure TJvProxyEditor.ProxyGridSelectCell(Sender: TObject; Col,
-  Row: Longint; var CanSelect: Boolean);
+procedure TJvProxyEditor.ProxyGridSelectCell(Sender: TObject;
+  Col, Row: Longint; var CanSelect: Boolean);
 begin
   SelectProxy(ProxyByRow(Row - 1));
 end;
@@ -496,11 +490,11 @@ begin
   if Proxy <> nil then
   begin
     {$IFDEF VCL}
-     {$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     TCustomForm(Designer.Root).Designer.ValidateRename(Proxy, Proxy.Name, '');
-     {$ELSE}
+    {$ELSE}
     Designer.ValidateRename(Proxy, Proxy.Name, '');
-     {$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     TCustomForm(Designer.Root).DesignerHook.ValidateRename(Proxy, Proxy.Name, '');

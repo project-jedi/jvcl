@@ -25,11 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvGlobusReg;
 
-// this unit contains registration procedures for Delphi 5 - 7
+{$I jvcl.inc}
 
 interface
 

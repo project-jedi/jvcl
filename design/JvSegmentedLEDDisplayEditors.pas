@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSegmentedLEDDisplayEditors;
+
+{$I jvcl.inc}
 
 interface
 
@@ -70,7 +70,7 @@ type
     {$ENDIF COMPILER6_UP}
   end;
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TUnlitColorProperty = class(TColorProperty {$IFDEF COMPILER6_UP}, ICustomPropertyDrawing, ICustomPropertyListDrawing {$ENDIF})
     {$IFDEF COMPILER6_UP}
     procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
@@ -86,17 +86,16 @@ type
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
     {$ENDIF COMPILER6_UP}
   end;
-{$ENDIF VCL}
+  {$ENDIF VCL}
 
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   TUnlitColorProperty = class(TJvColorProperty)
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
   end;
-{$ENDIF VisualCLX}
-
+  {$ENDIF VisualCLX}
 
 implementation
 
@@ -130,12 +129,12 @@ var
   I: Integer;
 begin
   with DigitClassList.LockList do
-  try
-    for I := 0 to Count - 1 do
-      Proc(TClass(Items[I]).ClassName);
-  finally
-    DigitClassList.UnlockList;
-  end;
+    try
+      for I := 0 to Count - 1 do
+        Proc(TClass(Items[I]).ClassName);
+    finally
+      DigitClassList.UnlockList;
+    end;
 end;
 
 //=== { TJvSegmentedLEDDisplayEditor } =======================================
@@ -240,31 +239,32 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TUnlitColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
   const ARect: TRect; ASelected: Boolean);
 var
-  vRight: Integer;
-  vOldPenColor, vOldBrushColor, TmpColor: TColor;
+  LRight: Integer;
+  OldPenColor, OldBrushColor, TmpColor: TColor;
   TmpRect: TRect;
 begin
-  vRight := (ARect.Bottom - ARect.Top) + ARect.Left;
+  LRight := (ARect.Bottom - ARect.Top) + ARect.Left;
   with ACanvas do
-  try
-    vOldPenColor := Pen.Color;
-    vOldBrushColor := Brush.Color;
-    Pen.Color := Brush.Color;
-    Rectangle(ARect.Left, ARect.Top, vRight, ARect.Bottom);
-    IdentToUnlitColor(Value, Integer(TmpColor));
-    Brush.Color := TmpColor;
-    Pen.Color := JvColorToBorderColor(ColorToRGB(Brush.Color), ASelected);
-    Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, ARect.Bottom - 1);
-    Brush.Color := vOldBrushColor;
-    Pen.Color := vOldPenColor;
-  finally
-    TmpRect := ARect;
-    TmpRect.Left := vRight;
-    ACanvas.TextRect(TmpRect, TmpRect.Left + 1, TmpRect.Top + 1, Value);
-  end;
+    try
+      OldPenColor := Pen.Color;
+      OldBrushColor := Brush.Color;
+      Pen.Color := Brush.Color;
+      Rectangle(ARect.Left, ARect.Top, LRight, ARect.Bottom);
+      IdentToUnlitColor(Value, Integer(TmpColor));
+      Brush.Color := TmpColor;
+      Pen.Color := JvColorToBorderColor(ColorToRGB(Brush.Color), ASelected);
+      Rectangle(ARect.Left + 1, ARect.Top + 1, LRight - 1, ARect.Bottom - 1);
+      Brush.Color := OldBrushColor;
+      Pen.Color := OldPenColor;
+    finally
+      TmpRect := ARect;
+      TmpRect.Left := LRight;
+      ACanvas.TextRect(TmpRect, TmpRect.Left + 1, TmpRect.Top + 1, Value);
+    end;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -277,6 +277,7 @@ begin
     DefaultPropertyDrawValue(Self, ACanvas, ARect);
 end;
 {$ENDIF COMPILER6_UP}
+
 {$ENDIF VCL}
 
 end.

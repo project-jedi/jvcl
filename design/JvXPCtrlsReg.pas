@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvXPCtrlsReg;
+
+{$I jvcl.inc}
 
 interface
 
@@ -57,7 +57,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsPaletteXPControls = 'Jv XP Controls';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure Register;
 begin

@@ -23,15 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvCmpReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
+
+interface
 
 procedure Register;
 

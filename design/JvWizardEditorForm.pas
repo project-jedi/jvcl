@@ -38,9 +38,9 @@ Known Issues:
                       TJvWizardPageList dialog form added
 ******************************************************************************}
 
-{$I jvcl.inc}
-
 unit JvWizardEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -186,7 +186,7 @@ resourcestring
   RsNextPage = 'Next Page';
   RsPreviousPage = 'Previous Page';
   RsNone = '(none)';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure ShowWizardPageListEditor(Designer: IDesigner; AWizard: TJvWizard);
 var

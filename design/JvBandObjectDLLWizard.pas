@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBandObjectDLLWizard;
+
+{$I jvcl.inc}
 
 interface
 
@@ -268,19 +268,16 @@ procedure TJvBandObjectProjectCreator.NewDefaultModule;
 begin
 end;
 
-function TJvBandObjectProjectCreator.NewOptionSource(
-  const ProjectName: string): IOTAFile;
+function TJvBandObjectProjectCreator.NewOptionSource(const ProjectName: string): IOTAFile;
 begin
   Result := nil;
 end;
 
-procedure TJvBandObjectProjectCreator.NewProjectResource(
-  const Project: IOTAProject);
+procedure TJvBandObjectProjectCreator.NewProjectResource(const Project: IOTAProject);
 begin
 end;
 
-function TJvBandObjectProjectCreator.NewProjectSource(
-  const ProjectName: string): IOTAFile;
+function TJvBandObjectProjectCreator.NewProjectSource(const ProjectName: string): IOTAFile;
 begin
   Result := TJvBandObjectProjectSource.Create(ProjectName);
 end;
@@ -329,8 +326,7 @@ begin
   FBandType := BandType;
 end;
 
-procedure TJvBandObjectModuleCreator.FormCreated(
-  const FormEditor: IOTAFormEditor);
+procedure TJvBandObjectModuleCreator.FormCreated(const FormEditor: IOTAFormEditor);
 begin
 end;
 
@@ -394,14 +390,12 @@ begin
   Result := True;
 end;
 
-function TJvBandObjectModuleCreator.NewFormFile(const FormIdent,
-  AncestorIdent: string): IOTAFile;
+function TJvBandObjectModuleCreator.NewFormFile(const FormIdent, AncestorIdent: string): IOTAFile;
 begin
   Result := nil;
 end;
 
-function TJvBandObjectModuleCreator.NewImplSource(const ModuleIdent,
-  FormIdent, AncestorIdent: string): IOTAFile;
+function TJvBandObjectModuleCreator.NewImplSource(const ModuleIdent, FormIdent, AncestorIdent: string): IOTAFile;
 begin
   Result := TJvBandObjectModuleSource.Create(FBandName, FBandDesc, FBandType,
     ModuleIdent, FormIdent, AncestorIdent);

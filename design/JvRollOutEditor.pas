@@ -22,9 +22,10 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-{$I jvcl.inc}
 
 unit JvRollOutEditor;
+
+{$I jvcl.inc}
 
 interface
 
@@ -40,8 +41,7 @@ uses
   {$IFDEF VisualCLX}
   QImgList,
   {$ENDIF VisualCLX}
-  JvDsgnEditors,
-  JvRollOut;
+  JvDsgnEditors, JvRollOut;
 
 type
   // property editor for IndexCollapsed and IndexExpanded on a TJvRollOut to

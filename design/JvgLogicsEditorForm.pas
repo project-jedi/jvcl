@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgLogicsEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -170,7 +170,7 @@ type
 implementation
 
 uses
-  ClipBrd,
+  Clipbrd,
   JvgTypes, JvgUtils, JvgLogicItemEditorForm, JvDsgnConsts;
 
 {$R *.dfm}

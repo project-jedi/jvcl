@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSelectDataSetForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -56,7 +56,7 @@ type
 
 function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; ExcludeDataSet: TDataSet): TDataSet;
 
-{$ENDIF DelphiPersonalEdition}
+{$ENDIF !DelphiPersonalEdition}
 
 implementation
 
@@ -78,24 +78,24 @@ function SelectDataSet(ADesigner: IJvFormDesigner; const ACaption: string; Exclu
 begin
   Result := nil;
   with TJvSelectDataSetForm.Create(Application) do
-  try
-    if ACaption <> '' then
-      Caption := ACaption;
-    FDesigner := ADesigner;
-    FillDataSetList(ExcludeDataSet);
-    if ShowModal = mrOk then
-      if DataSetList.ItemIndex >= 0 then
-      begin
-        with DataSetList do
-          {$IFDEF COMPILER6_UP}
-          Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet;
-          {$ELSE}
-          Result := FDesigner.Form.FindComponent(Items[ItemIndex]) as TDataSet;
-          {$ENDIF COMPILER6_UP}
-      end;
-  finally
-    Free;
-  end;
+    try
+      if ACaption <> '' then
+        Caption := ACaption;
+      FDesigner := ADesigner;
+      FillDataSetList(ExcludeDataSet);
+      if ShowModal = mrOk then
+        if DataSetList.ItemIndex >= 0 then
+        begin
+          with DataSetList do
+            {$IFDEF COMPILER6_UP}
+            Result := FDesigner.GetComponent(Items[ItemIndex]) as TDataSet;
+            {$ELSE}
+            Result := FDesigner.Form.FindComponent(Items[ItemIndex]) as TDataSet;
+            {$ENDIF COMPILER6_UP}
+        end;
+    finally
+      Free;
+    end;
 end;
 
 //=== { TJvSelectDataSetForm } ===============================================
@@ -154,7 +154,7 @@ begin
     ModalResult := mrOk;
 end;
 
-{$ENDIF DelphiPersonalEdition}
+{$ENDIF !DelphiPersonalEdition}
 
 end.
 

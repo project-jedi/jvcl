@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgHelpPanelEditor;
+
+{$I jvcl.inc}
 
 interface
 

@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jedi.inc}
-
 unit JvBackgroundEditors;
+
+{$I jedi.inc}
 
 interface
 

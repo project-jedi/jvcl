@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvXPPropertyEditors;
+
+{$I jvcl.inc}
 
 interface
 

@@ -25,9 +25,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvDataProviderEditors;
+
+{$I jvcl.inc}
 
 interface
 

@@ -22,9 +22,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvSpeedbarForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -487,10 +487,8 @@ begin
   Canvas.Font := Font;
   MaxHeight := MulDiv(MaxBtnListHeight, Screen.PixelsPerInch, 96);
   ButtonsList.DefaultRowHeight := FBar.BtnHeight + 2;
-  Cnt := Max(1, Max(ButtonsList.ClientHeight, MaxHeight) div
-    (FBar.BtnHeight + 2));
-  ButtonsList.ClientHeight := Min(ButtonsList.DefaultRowHeight * Cnt,
-    MaxHeight);
+  Cnt := Max(1, Max(ButtonsList.ClientHeight, MaxHeight) div (FBar.BtnHeight + 2));
+  ButtonsList.ClientHeight := Min(ButtonsList.DefaultRowHeight * Cnt, MaxHeight);
   SectionList.DefaultRowHeight := CanvasMaxTextHeight(Canvas) + 2;
 end;
 

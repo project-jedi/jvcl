@@ -32,9 +32,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvWizardReg;
+
+{$I jvcl.inc}
 
 interface
 
@@ -54,8 +54,8 @@ uses
   {$ELSE}
   JvWizardAboutInfoForm,
   {$ENDIF USEJVCL}
-  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps, JvWizardRouteMapList,
-  JvWizardEditorForm;
+  JvWizard, JvWizardRouteMapNodes, JvWizardRouteMapSteps,
+  JvWizardRouteMapList, JvWizardEditorForm;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWizardReg.dcr}
@@ -67,7 +67,7 @@ uses
 {$IFNDEF USEJVCL}
 resourcestring
   RsPaletteWizard = 'Jv Wizard';
-{$ENDIF USEJVCL}
+{$ENDIF !USEJVCL}
 
 procedure Register;
 const

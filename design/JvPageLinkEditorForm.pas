@@ -29,9 +29,9 @@ $Id$
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvPageLinkEditorForm;
+
+{$I jvcl.inc}
 
 interface
 

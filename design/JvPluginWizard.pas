@@ -39,9 +39,9 @@ Known Issues:
  -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvPluginWizard;
+
+{$I jvcl.inc}
 
 interface
 
@@ -51,7 +51,7 @@ uses
 
 type
   TJvPluginWizard = class(TNotifierObject, IOTAWizard, IOTARepositoryWizard,
-      IOTAMenuWizard, IOTAProjectWizard)
+    IOTAMenuWizard, IOTAProjectWizard)
   public
     PluginMainMenu: IOTAComponent;
 
@@ -232,7 +232,6 @@ var
   ProjectCreator: TJvPluginProjectCreator;
 begin
   with TfrmPluginParams.Create(nil) do
-  begin
     try
       if ShowModal = mrOk then
       begin
@@ -259,7 +258,6 @@ begin
     finally
       Free;
     end;
-  end;
 end;
 
 //=== { TJvPluginProjectCreator } ============================================

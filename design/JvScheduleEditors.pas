@@ -19,9 +19,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvScheduleEditors;
+
+{$I jvcl.inc}
 
 interface
 
@@ -68,13 +68,13 @@ uses
 procedure TJvSchedulePropertyEditor.Edit;
 begin
   with TfrmScheduleEditor.Create(nil) do
-  try
-    Schedule := IJclSchedule({TEventSchedule(} GetOrdValue) {.Schedule};
-    if ShowModal = mrOk then
-      Self.Modified;
-  finally
-    Free;
-  end;
+    try
+      Schedule := IJclSchedule({TEventSchedule(} GetOrdValue) {.Schedule};
+      if ShowModal = mrOk then
+        Self.Modified;
+    finally
+      Free;
+    end;
 end;
 
 function TJvSchedulePropertyEditor.GetAttributes: TPropertyAttributes;

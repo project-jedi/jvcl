@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBehaviorLabelEditor;
+
+{$I jvcl.inc}
 
 interface
 

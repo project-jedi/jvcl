@@ -24,9 +24,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvgReportParamEditorForm;
+
+{$I jvcl.inc}
 
 interface
 
@@ -68,7 +68,6 @@ type
     procedure lbRadioItemsClick(Sender: TObject);
     procedure eTextMaskChange(Sender: TObject);
     procedure pbDeleteItemClick(Sender: TObject);
-  private
   public
   end;
 

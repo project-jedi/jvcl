@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvID3v2DefineForm;
+
+{$I jvcl.inc}
 
 interface
 

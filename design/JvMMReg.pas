@@ -23,15 +23,15 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvMMReg;
 
-interface
+{$I jvcl.inc}
 
 {$IFDEF MSWINDOWS}
 {$DEFINE USEWINDOWS}
 {$ENDIF MSWINDOWS}
+
+interface
 
 procedure Register;
 
@@ -75,7 +75,7 @@ begin
   RegisterComponents(RsPaletteImageAnimator, [TJvAnimate, TJvBmpAnimator,
     TJvPicClip, TJvImageRotate, TJvImageTransform,
     TJvImageSquare, TJvStarfield, {$IFDEF USE_JV_GIF} TJvGIFAnimator, {$ENDIF}
-    TJvAnimatedImage, TJvSpecialImage {$IFDEF VCL}, TJvAVICapture{$ENDIF}]);
+    TJvAnimatedImage, TJvSpecialImage {$IFDEF VCL}, TJvAVICapture {$ENDIF}]);
   RegisterComponents(RsPaletteBarPanel, [TJvGradientHeaderPanel, TJvGradient,
     TJvWaitingGradient, TJvSpecialProgress, TJvWaitingProgress, TJvColorTrackBar]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSlider]);
@@ -102,7 +102,6 @@ begin
   {$IFDEF USE_JV_GIF}
   RegisterComponentEditor(TJvGIFAnimator, TJvGraphicsEditor);
   {$ENDIF USE_JV_GIF}
-
 end;
 
 end.

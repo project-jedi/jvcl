@@ -23,9 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-{$I jvcl.inc}
-
 unit JvBDESecurityEditor;
+
+{$I jvcl.inc}
 
 interface
 
@@ -41,10 +41,12 @@ uses
 type
   { For TJvDBSecurity component }
   TJvUserTableNameProperty = class(TJvDBStringProperty)
+  public
     procedure GetValueList(List: TStrings); override;
   end;
 
   TLoginNameFieldProperty = class(TJvDBStringProperty)
+  public
     procedure GetValueList(List: TStrings); override;
   end;
 
