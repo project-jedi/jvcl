@@ -6,8 +6,8 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvPageComps-R" Targets="allbutclx" Condition=""/>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvPageComps-R" Targets="all" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="dclstd50" Targets="C5,D5,D5s" Condition=""/>
@@ -19,10 +19,10 @@
     <Package Name="dclstd" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="allbutclx" Formname="frmJvTreeViewLinksEditor" Condition=""/>
-    <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="allbutclx" Formname="frmTreeViewItems" Condition=""/>
-    <File Name="..\..\design\JvPageListEditorForm.pas"  Targets="allbutclx" Formname="frmPageListEditor" Condition=""/>
-    <File Name="..\..\design\JvPageListEditors.pas"  Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPageLinkEditorForm.pas" Targets="all" Formname="frmJvTreeViewLinksEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListTreeViewReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvTreeItemsEditorForm.pas" Targets="all" Formname="frmTreeViewItems" Condition=""/>
+    <File Name="..\..\design\JvPageListEditorForm.pas"  Targets="all" Formname="frmPageListEditor" Condition=""/>
+    <File Name="..\..\design\JvPageListEditors.pas"  Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

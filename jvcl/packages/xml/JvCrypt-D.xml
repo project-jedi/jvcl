@@ -6,13 +6,13 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCrypt-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCrypt-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvCryptReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCryptReg.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

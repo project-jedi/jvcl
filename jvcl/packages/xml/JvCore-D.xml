@@ -6,8 +6,8 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
-    <Package Name="designide" Targets="D6,D6p,D7,D7p,C6,C6p" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="designide" Targets="D6,D6p,D7,D7p,C6,C6p,allclx" Condition=""/>
     <Package Name="dclstd" Targets="D6,D6p,D7,D7p,C6,C6p" Condition=""/>
     <Package Name="dclstd50" Targets="D5,D5s,C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
@@ -17,37 +17,39 @@
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl" Targets="C6,C6p" Condition=""/>
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
+    <Package Name="DJclVClx" Targets="allclx" Condition=""/>
+    <Package Name="clxdesigner" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" Targets="allbutclx" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
-    <File Name="..\..\design\JvProviderTreeListFrame.pas" Targets="allbutclx" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
-    <File Name="..\..\design\JvStdToolbarDsgnFrame.pas" Targets="allbutclx" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvStringsForm.pas" Targets="allbutclx" Formname="JvStrEditDlg" Condition=""/>
-    <File Name="..\..\design\JvBaseDlgEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnForm.pas" Targets="allbutclx" Formname="JvBaseDesign" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnFrame.pas" Targets="allbutclx" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvBaseDsgnToolbarFrame.pas" Targets="allbutclx" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
-    <File Name="..\..\design\JvColorEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvColorProviderDesignerForm.pas" Targets="allbutclx" Formname="frmJvColorProviderDesigner" Condition=""/>
-    <File Name="..\..\design\JvColorProviderEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCoreReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataConsumerContextSelectForm.pas" Targets="allbutclx" Formname="frmDataConsumerContextSelect" Condition=""/>
-    <File Name="..\..\design\JvDataConsumerItemSelectForm.pas" Targets="allbutclx" Formname="frmJvDataConsumerItemSelect" Condition=""/>
-    <File Name="..\..\design\JvDataContextManagerForm.pas" Targets="allbutclx" Formname="frmJvDataContextManager" Condition=""/>
-    <File Name="..\..\design\JvDataProviderDesignerForm.pas" Targets="allbutclx" Formname="frmDataProviderDesigner" Condition=""/>
-    <File Name="..\..\design\JvDataProviderEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDataProviderItemDesign.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDateTimeForm.pas" Targets="allbutclx" Formname="frmSelectDateTimeDlg" Condition=""/>
-    <File Name="..\..\design\JvDesignerUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDsgnConsts.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvDsgnEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProviderTreeListDsgnFrame.pas" Targets="all" Formname="fmeJvProviderTreeListDsgn: TFrame" Condition=""/>
+    <File Name="..\..\design\JvProviderTreeListFrame.pas" Targets="all" Formname="fmeJvProviderTreeList: TFrame" Condition=""/>
+    <File Name="..\..\design\JvStdToolbarDsgnFrame.pas" Targets="all" Formname="fmeJvStdToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvStringsForm.pas" Targets="all" Formname="JvStrEditDlg" Condition=""/>
+    <File Name="..\..\design\JvBaseDlgEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnForm.pas" Targets="all" Formname="JvBaseDesign" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnFrame.pas" Targets="all" Formname="fmeJvBaseDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvBaseDsgnToolbarFrame.pas" Targets="all" Formname="fmeJvBaseToolbarDesign: TFrame" Condition=""/>
+    <File Name="..\..\design\JvColorEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvColorProviderDesignerForm.pas" Targets="all" Formname="frmJvColorProviderDesigner" Condition=""/>
+    <File Name="..\..\design\JvColorProviderEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCoreReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataConsumerContextSelectForm.pas" Targets="all" Formname="frmDataConsumerContextSelect" Condition=""/>
+    <File Name="..\..\design\JvDataConsumerItemSelectForm.pas" Targets="all" Formname="frmJvDataConsumerItemSelect" Condition=""/>
+    <File Name="..\..\design\JvDataContextManagerForm.pas" Targets="all" Formname="frmJvDataContextManager" Condition=""/>
+    <File Name="..\..\design\JvDataProviderDesignerForm.pas" Targets="all" Formname="frmDataProviderDesigner" Condition=""/>
+    <File Name="..\..\design\JvDataProviderEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDataProviderItemDesign.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDateTimeForm.pas" Targets="all" Formname="frmSelectDateTimeDlg" Condition=""/>
+    <File Name="..\..\design\JvDesignerUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnConsts.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvDsgnEditors.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvIDEZoom.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="allbutclx" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
-    <File Name="..\..\design\JvDsgnTypes.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="allbutclx" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
-    <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="allbutclx" Formname="frmAddColor" Condition=""/>
-    <File Name="..\..\design\JvActnResForm.pas" Targets="allbutclx" Formname="JvStandardActions: TDataModule" Condition=""/>
+    <File Name="..\..\design\JvJVCLAboutEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvPaintBoxEditor.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvProviderToolbarFrame.pas" Targets="all" Formname="fmeJvProviderToolbar: TFrame" Condition=""/>
+    <File Name="..\..\design\JvDsgnTypes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvColorProviderDsgnTreeFrame.pas" Targets="all" Formname="fmeJvColorProviderDsgnTree: TFrame" Condition=""/>
+    <File Name="..\..\design\JvColorProviderAddDialogForm.pas" Targets="all" Formname="frmAddColor" Condition=""/>
+    <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
   </Contains>
 </Package>

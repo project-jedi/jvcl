@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvJans-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvJans-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="vclsmp50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
@@ -16,7 +16,7 @@
     <Package Name="vclx" Targets="D6,D6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvJansReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvCsvBaseEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvJansReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvCsvBaseEditor.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

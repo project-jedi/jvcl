@@ -6,7 +6,7 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvUIB-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvUIB-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="C5,C6,C6p" Condition="USEJVCL"/>
     <Package Name="JvCore-D" Targets="all" Condition="USEJVCL"/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -16,6 +16,6 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvUIBReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvUIBReg.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

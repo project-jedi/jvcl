@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCrypt" Design="0">
   <Description>JVCL Encryption and Compression Runtime Package</Description>
-  <C5PFlags> -LUCJcl50</C5PFlags>
+  <C5PFlags>-LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p" Condition=""/>
@@ -15,12 +15,12 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvZlibMultiple.pas" Targets="DelphiNoClx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCabFile.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCaesarCipher.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvGenetic.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSerialMaker.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvVigenereCipher.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvXorCipher.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvZlibMultiple.pas" Targets="d5,d5s,d6,d6p,d7,d7p,d7clx,k3,k3p" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCabFile.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaesarCipher.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvGenetic.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSerialMaker.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvVigenereCipher.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXorCipher.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

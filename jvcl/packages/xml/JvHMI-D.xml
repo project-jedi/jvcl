@@ -7,7 +7,7 @@
   <C6Libs/>
   <Requires>
     <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
-    <Package Name="JvHMI-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvHMI-R" Targets="all" Condition=""/>
     <Package Name="JvCore-R" Targets="C6,C6p" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -22,6 +22,7 @@
   <Contains>
     <File Name="..\..\design\JvSegmentedLEDDisplayMappingForm.pas" Targets="allbutclx" Formname="frmJvSLDMappingEditor" Condition=""/>
     <File Name="..\..\design\JvHMIReg.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qdesign\JvQHMIReg.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvSegmentedLEDDisplayEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

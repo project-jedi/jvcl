@@ -6,7 +6,7 @@
   <C5Libs>wininet.lib</C5Libs>
   <C6Libs>wininet.lib</C6Libs>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="allclx" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
@@ -22,7 +22,7 @@
     <Package Name="bcbie" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvXmlDatabase.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvXmlDatabase.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppInst.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvChangeNotify.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipboardMonitor.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -33,8 +33,8 @@
     <File Name="..\..\run\JvDeviceChanged.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDirectories.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDragDrop.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormPlacement.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvFormPlacementSelectList.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormPlacement.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvFormPlacementSelectList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvHidControllerClass.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvJoystick.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvKeyboardStates.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -48,12 +48,12 @@
     <File Name="..\..\run\JvSearchFiles.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvShellHook.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSHFileOperation.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSimpleXml.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSimpleXml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSoundControl.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvSystemColors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvThread.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvThreadTimer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTimer.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvSystemColors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThread.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThreadTimer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimerList.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvWndProcHook.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\Ras32.pas" Targets="allbutclx" Formname="" Condition=""/>
@@ -61,7 +61,7 @@
     <File Name="..\..\common\ModuleLoader.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\DBT.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\common\SetupApi.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppXmlStorage.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppXmlStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComputerInfoEx.pas" Targets="allbutclx" Formname="" Condition=""/>
   </Contains>
 </Package>

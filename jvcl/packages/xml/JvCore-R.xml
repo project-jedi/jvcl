@@ -12,59 +12,66 @@
     <Package Name="CJCL" Targets="C6,C6p" Condition=""/>
     <Package Name="DJCL50" Targets="D5,D5s" Condition=""/>
     <Package Name="DJclVcl" Targets="D6,D6p,D7,D7p" Condition=""/>
-    <Package Name="vclx" Targets="D6,D6p,D7,D7p,C6,C6p,K2,K3" Condition=""/>
-    <Package Name="vcl" Targets="D7,D7p,C6,C6p,K2,K3" Condition=""/>
-    <Package Name="rtl" Targets="D7,D7p,C6,C6p,K2,K3" Condition=""/>
+    <Package Name="vclx" Targets="D6,D6p,D7,D7p,C6,C6p," Condition=""/>
+    <Package Name="vcl" Targets="D7,D7p,C6,C6p" Condition=""/>
+    <Package Name="rtl" Targets="D7,D7p,C6,C6p" Condition=""/>
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
     <Package Name="vcljpg" Targets="C6,C6p" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="vcljpg50" Targets="C5" Condition=""/>
     <Package Name="vclx50" Targets="D5,D5s,C5" Condition=""/>
     <Package Name="bcbsmp50" Targets="C5" Condition=""/>
+    <Package Name="DJcl" Targets="allclx" Condition=""/>
+    <Package Name="visualclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\common\JvConsts.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\common\JvConsts.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvColorProvider.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvComponent.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvContextProvider.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDataProvider.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDataProviderIntf.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDynControlEngine.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDynControlEngineIntf.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDynControlEngineVCL.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvDsgnIntf.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvJCLUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvComponent.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvContextProvider.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataProvider.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDataProviderIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngine.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDynControlEngineVCL.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvDsgnIntf.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvJCLUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvJVCLAboutForm.pas" Targets="allbutclx" Formname="JvJVCLAboutForm" Condition=""/>
-    <File Name="..\..\run\JvJVCLUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMaxPixel.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvMouseTimer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvProgressUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPropertyStore.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPropertyStorage.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvThemes.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvTypes.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQJVCLAboutForm.pas" Targets="allclx" Formname="JvJVCLAboutForm" Condition=""/>
+    <File Name="..\..\run\JvJVCLUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMaxPixel.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMouseTimer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvProgressUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStorage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThemes.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionInfo.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvActions.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppIniStorage.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvActions.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppIniStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppRegistryStorage.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppStorage.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvAppStorageSelectList.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvBaseDlg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCaret.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JVCLVer.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvResources.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExControls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExStdCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExExtCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExComCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExForms.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExCheckLst.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExMask.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExGrids.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvExButtons.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppStorage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvAppStorageSelectList.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvBaseDlg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCaret.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JVCLVer.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExControls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExStdCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExExtCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExComCtrls.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExForms.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExCheckLst.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExMask.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExGrids.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvExButtons.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvClipbrd.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\common\JvWStrUtils.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="gnugettext.pas" Targets="allbutclx" Formname="" Condition="USE_DXGETTEXT"/>
-    <File Name="..\..\common\JvFinalize.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\common\JvWStrUtils.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="gnugettext.pas" Targets="all" Formname="" Condition="USE_DXGETTEXT"/>
+    <File Name="..\..\common\JvFinalize.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QWindows.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QExtDlgs.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QToolWin.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QWinCursors.pas" Targets="allclx" Formname="" Condition=""/>
   </Contains>
 </Package>

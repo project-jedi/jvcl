@@ -6,9 +6,9 @@
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvNet-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvNet-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-D" Targets="D5,D5s,D6,D6p" Condition=""/>
-    <Package Name="JvCore-D" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-D" Targets="all" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="vcl50" Targets="C5" Condition=""/>
     <Package Name="designide" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
@@ -18,10 +18,10 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvUrlListGrabberEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvHtmlParserEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\design\JvUrlListGrabberEditors.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\design\JvHtmlParserEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvMailEditor.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\design\JvNetReg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvParserForm.pas" Targets="allbutclx" Formname="FormParsers" Condition=""/>
+    <File Name="..\..\design\JvNetReg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvParserForm.pas" Targets="all" Formname="FormParsers" Condition=""/>
   </Contains>
 </Package>
