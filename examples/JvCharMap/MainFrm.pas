@@ -37,6 +37,7 @@ type
     Label4: TLabel;
     cbLocales: TComboBox;
     lblChars: TLabel;
+    chkShadow: TCheckBox;
     procedure FormCreate(Sender: TObject);
     procedure btnFontClick(Sender: TObject);
     procedure chkZoomPanelClick(Sender: TObject);
@@ -50,6 +51,7 @@ type
     procedure cbFontChange(Sender: TObject);
     procedure cbFilterClick(Sender: TObject);
     procedure cbLocalesClick(Sender: TObject);
+    procedure chkShadowClick(Sender: TObject);
   private
     { Private declarations }
 {$IFDEF USETNT}
@@ -59,12 +61,9 @@ type
 {$ENDIF}
     procedure FillFilter;
     procedure FillLocales;
+    procedure DoJMSelectChar(Sender:TObject; AChar:WideChar);
     procedure DoJMResize(Sender:TObject);
-    procedure DoJMKeyUp(Sender: TObject; var Key: word; Shift: TShiftState);
-    procedure DoJMMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: integer);
-    procedure DoJMMouseWheel(Sender: TObject; Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-    procedure DisplayInfo;
+    procedure DisplayInfo(AChar:WideChar);
   public
     { Public declarations }
     JM: TJvCharMap;
@@ -90,17 +89,17 @@ begin
 //  JM.Align := alClient;
   JM.Parent := self;
   JM.CharRange.EndChar := 255;
-  JM.OnKeyUp := DoJMKeyUp;
-  JM.OnMouseUp := DoJMMouseUp;
-  JM.OnMouseWheel := DoJMMouseWheel;
+  JM.OnSelectChar := DoJMSelectChar;
+//  JM.OnKeyUp := DoJMKeyUp;
+//  JM.OnMouseUp := DoJMMouseUp;
+//  JM.OnMouseWheel := DoJMMouseWheel;
   JM.OnResize := DoJMResize;
-  JM.ClientWidth := JM.CellSize.cx * JM.Columns + JM.Columns;
-  JM.Left := (ClientWidth - JM.Width) div 2;
-  JM.Top := lblChars.Top + lblChars.Height + 2;
-  JM.Height := Panel1.Top - JM.Top - 20;
   JM.Anchors := [akTop, akBottom];
   JM.PopupMenu := PopupMenu1;
   JM.AutoSizeWidth := true;
+  JM.Left := (ClientWidth - JM.Width) div 2;
+  JM.Top := lblChars.Top + lblChars.Height + 2;
+  JM.Height := Panel1.Top - JM.Top - 20;
   lblChars.FocusControl := JM;
 
   chkZoomPanel.Checked := JM.ShowZoomPanel;
@@ -111,6 +110,7 @@ begin
   cbFont.Fontname := JM.Font.Name;
   cbColor.OnChange := cbColorChange;
   cbFont.OnChange := cbFontChange;
+  chkShadow.Checked := JM.ShowShadow;
 
 {$IFDEF USETNT}
   edCharacter := TTntEdit.Create(self);
@@ -142,17 +142,6 @@ end;
 procedure TForm1.chkZoomPanelClick(Sender: TObject);
 begin
   JM.ShowZoomPanel := chkZoomPanel.Checked;
-end;
-
-procedure TForm1.DoJMMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: integer);
-begin
-  DisplayInfo;
-end;
-
-procedure TForm1.DoJMKeyUp(Sender: TObject; var Key: word;
-  Shift: TShiftState);
-begin
-  DisplayInfo;
 end;
 
 procedure TForm1.udStartClick(Sender: TObject; Button: TUDBtnType);
@@ -271,13 +260,13 @@ begin
     Result := Copy(Result, 2, MaxInt);
 end;
 
-procedure TForm1.DisplayInfo;
+procedure TForm1.DisplayInfo(AChar:WideChar);
 begin
   reInfo.Clear;
-  reInfo.Lines.Add('Character Type: ' + GetTypeString1(JM.Character));
-  reInfo.Lines.Add('Bidirectional Layout: ' + GetTypeString2(JM.Character));
-  reInfo.Lines.Add('Text Processing:' + GetTypeString3(JM.Character));
-  reInfo.Lines.Add(Format('Keyboard Code: U+%.4x', [Cardinal(JM.Character)]));
+  reInfo.Lines.Add('Character Type: ' + GetTypeString1(AChar));
+  reInfo.Lines.Add('Bidirectional Layout: ' + GetTypeString2(AChar));
+  reInfo.Lines.Add('Text Processing:' + GetTypeString3(AChar));
+  reInfo.Lines.Add(Format('Keyboard Code: U+%.4x, Alt+%.4d', [Cardinal(AChar),Cardinal(AChar)]));
   reInfo.Hint := trim(reInfo.Lines.Text);
 end;
 
@@ -287,7 +276,10 @@ begin
   if chkUnicode.Checked then
     JM.CharRange.Filter := TJvCharMapUnicodeFilter(cbFilter.ItemIndex)
   else
+  begin
+    JM.CharRange.Filter := ufUndefined;
     JM.CharRange.EndChar := udEnd.Position;
+  end;
 end;
 
 procedure TForm1.Copy1Click(Sender: TObject);
@@ -297,12 +289,6 @@ begin
 {$ELSE}
   Clipboard.AsText := WideString(JM.Character);
 {$ENDIF}
-end;
-
-procedure TForm1.DoJMMouseWheel(Sender: TObject; Shift: TShiftState;
-  WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
-begin
-  DisplayInfo;
 end;
 
 procedure TForm1.btnSelectClick(Sender: TObject);
@@ -341,7 +327,7 @@ procedure TForm1.cbFilterClick(Sender: TObject);
 begin
   if chkUnicode.Checked and (cbFilter.ItemIndex > -1) then
     JM.CharRange.Filter := TJvCharMapUnicodeFilter(cbFilter.ItemIndex);
-  DisplayInfo;
+  DisplayInfo(JM.Character);
 end;
 
 procedure TForm1.FillLocales;
@@ -376,6 +362,17 @@ begin
   lblChars.Left := JM.Left;
   if lblChars.Left < 8 then
     lblChars.Left := 8;
+end;
+
+procedure TForm1.chkShadowClick(Sender: TObject);
+begin
+  JM.ShowShadow := chkShadow.Checked;
+  JM.ShadowSize := Random(4) + 2;
+end;
+
+procedure TForm1.DoJMSelectChar(Sender: TObject; AChar: WideChar);
+begin
+  DisplayInfo(AChar);
 end;
 
 end.
