@@ -84,7 +84,7 @@ object LocalsForm: TLocalsForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
-    EnableCloseBtn = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 88
