@@ -52,7 +52,7 @@ uses
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
+  qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
   QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvExComboEdits,
   {$ENDIF VisualCLX}
@@ -937,10 +937,18 @@ const
 {$R ../Resources/JvToolEdit.res}
 {$ENDIF LINUX}
 
+{$IFDEF VCL}
+
 type
-  TWinControlHack = class(TWinControl);
+  TSHAutoComplete = function (hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall;
+
+{$ENDIF VCL}
+
+type
   TCustomEditHack = class(TCustomEdit);
   TCustomFormHack = class(TCustomForm);
+  TOpenReader = class(TReader);  // (ahuser) Delphi 5's TReader.SkipValue is protected
+  TWinControlHack = class(TWinControl);
 
   { TDateHook is used to only have 1 hook per application for monitoring
     date changes;
@@ -965,21 +973,55 @@ type
     procedure Add;
     procedure Delete;
   end;
-  {$ENDIF VCL}
+{$ENDIF VCL}
 
 const
-  sDirBmp = 'JV_SEDITBMP';   { Directory editor button glyph }
+  sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
   sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
 
+{$IFDEF VCL}
+
+const
+  SHACF_DEFAULT                  = $00000000;  // Currently (SHACF_FILESYSTEM | SHACF_URLALL)
+  SHACF_FILESYSTEM               = $00000001;  // This includes the File System as well as the rest of the shell (Desktop\My Computer\Control Panel\)
+  SHACF_URLHISTORY               = $00000002;  // URLs in the User's History
+  SHACF_URLMRU                   = $00000004;  // URLs in the User's Recently Used list.
+  SHACF_URLALL                   = (SHACF_URLHISTORY or SHACF_URLMRU);
+  SHACF_USETAB                   = $00000008;  // Use the tab to move thru the autocomplete possibilities instead of to the next dialog/window control.
+  SHACF_FILESYS_ONLY             = $00000010;  // This includes the File System
+
+  // WIN32_IE >= 0x0600)
+
+  SHACF_FILESYS_DIRS             = $00000020;  // Same as SHACF_FILESYS_ONLY except it only includes directories, UNC servers, and UNC server shares.
+  SHACF_AUTOSUGGEST_FORCE_ON     = $10000000;  // Ignore the registry default and force the feature on.
+  SHACF_AUTOSUGGEST_FORCE_OFF    = $20000000;  // Ignore the registry default and force the feature off.
+  SHACF_AUTOAPPEND_FORCE_ON      = $40000000;  // Ignore the registry default and force the feature on. (Also know as AutoComplete)
+  SHACF_AUTOAPPEND_FORCE_OFF     = $80000000;  // Ignore the registry default and force the feature off. (Also know as AutoComplete)
+
+  ShlwapiDLLName  = 'Shlwapi.dll';
+
+  SHAutoCompleteName = 'SHAutoComplete';
+
 var
-  {$IFDEF VCL}
   GDateHook: TDateHook = nil;
-  {$ENDIF VCL}
+
+{$ENDIF VCL}
+
+var
   GDateImageIndex: TImageIndex = -1;
   GDefaultComboEditImagesList: TImageList = nil;
-  GFileImageIndex: TImageIndex = -1;
   GDirImageIndex: TImageIndex = -1;
+  GFileImageIndex: TImageIndex = -1;
+
+{$IFDEF VCL}
+
+var
+  GNeedToUninitialize: Boolean = False;
+  GShlwapiHandle: THandle = 0;
+  GTriedLoadShlwapiDll: Boolean = False;
+  SHAutoComplete: TSHAutoComplete = nil;
+{$ENDIF VCL}
 
 //=== Local procedures =======================================================
 
@@ -995,42 +1037,6 @@ begin
 end;
 {$ENDIF VCL}
 
-function LoadDefaultBitmap(Bmp: TBitmap; Item: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Bmp.Handle := LoadBitmap(0, PChar(Item));
-  Result := Bmp.Handle <> 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := True;
-  case Item of
-    OBM_COMBO:
-      begin
-        Bmp.Width := QStyle_sliderLength(Application.Style.Handle);
-        Bmp.Height := Bmp.Width;
-        Bmp.Canvas.Start;
-        DrawFrameControl(Bmp.Canvas.Handle, Rect(0, 0, Bmp.Width, Bmp.Height),
-          DFC_SCROLL, DFCS_SCROLLDOWN);
-        Bmp.Canvas.Stop;
-      end;
-  else
-    Bmp.Width := 0;
-    Bmp.Height := 0;
-    Result := False;
-  end;
-  {$ENDIF VisualCLX}
-end;
-
-function IsInWordArray(Value: Word; const A: array of Word): Boolean;
-var
-  I: Integer;
-begin
-  Result := False;
-  for I := 0 to High(A) do
-    if A[I] = Value then
-      Exit;
-  Result := True;
-end;
 
 function ClipFilename(const FileName: string): string;
 var
@@ -1060,6 +1066,94 @@ begin
   else
     Result := DateValue;
 end;
+
+{$IFDEF VisualCLX}
+
+procedure DrawSelectedText(Canvas: TCanvas; const R: TRect; X, Y: Integer;
+  const Text: WideString; SelStart, SelLength: Integer;
+  HighlightColor, HighlightTextColor: TColor);
+var
+  w, h, Width: Integer;
+  S: WideString;
+  SelectionRect: TRect;
+  Brush: TBrushRecall;
+  PenMode: TPenMode;
+  FontColor: TColor;
+begin
+  w := R.Right - R.Left;
+  h := R.Bottom - R.Top;
+  if (w <= 0) or (h <= 0) then
+    Exit;
+
+  S := Copy(Text, 1, SelStart);
+  if S <> '' then
+  begin
+    Canvas.TextRect(R, X, Y, S);
+    Inc(X, Canvas.TextWidth(S));
+  end;
+
+  S := Copy(Text, SelStart + 1, SelLength);
+  if S <> '' then
+  begin
+    Width := Canvas.TextWidth(S);
+    Brush := TBrushRecall.Create(Canvas.Brush);
+    PenMode := Canvas.Pen.Mode;
+    try
+      SelectionRect := Rect(Max(X, R.Left), R.Top,
+                            Min(X + Width, R.Right), R.Bottom);
+      Canvas.Pen.Mode := pmCopy;
+      Canvas.Brush.Color := HighlightColor;
+      Canvas.FillRect(SelectionRect);
+      FontColor := Canvas.Font.Color;
+      Canvas.Font.Color := HighlightTextColor;
+      Canvas.TextRect(R, X, Y, S);
+      Canvas.Font.Color := FontColor;
+    finally
+      Canvas.Pen.Mode := PenMode;
+      Brush.Free;
+    end;
+    Inc(X, Width);
+  end;
+
+  S := Copy(Text, SelStart + SelLength + 1, MaxInt);
+  if S <> '' then
+    Canvas.TextRect(R, X, Y, S);
+end;
+
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
+
+procedure UnloadShlwapiDll;
+begin
+  SHAutoComplete := nil;
+  if GShlwapiHandle > 0 then
+    FreeLibrary(GShlwapiHandle);
+  GShlwapiHandle := 0;
+  if GNeedToUninitialize then
+    CoUninitialize;
+end;
+
+procedure LoadShlwapiDll;
+begin
+  if not GTriedLoadShlwapiDll then
+  begin
+    GTriedLoadShlwapiDll := True;
+
+    GShlwapiHandle := Windows.LoadLibrary(ShlwapiDLLName);
+    if GShlwapiHandle > 0 then
+    begin
+      AddFinalizeProc(sUnitName, UnloadShlwapiDll);
+
+      SHAutoComplete := GetProcAddress(GShlwapiHandle, SHAutoCompleteName);
+
+      if Assigned(SHAutoComplete) then
+        GNeedToUninitialize := Succeeded(CoInitialize(nil));
+    end;
+  end;
+end;
+
+{$ENDIF VCL}
 
 //=== Global procedures ======================================================
 
@@ -1136,6 +1230,76 @@ begin
   end;
 end;
 
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+function EditorTextMargins(Editor: TCustomEdit): TPoint;
+var
+  I: Integer;
+  ed: TCustomEditHack;
+begin
+  ed := TCustomEditHack(Editor);
+  if ed.BorderStyle = bsNone then
+    I := 0
+  else
+  if Supports(Editor, IComboEditHelper) then
+  begin
+    if (Editor as IComboEditHelper).GetFlat then
+      I := 1
+    else
+      I := 2;
+  end
+  else
+    I := 2;
+  {if GetWindowLong(ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
+    Result.X := (SendMessage(ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
+  else}
+    Result.X := I;
+  Result.Y := I;
+end;
+
+{$ENDIF VisualCLX}
+
+function IsInWordArray(Value: Word; const A: array of Word): Boolean;
+var
+  I: Integer;
+begin
+  Result := False;
+  for I := 0 to High(A) do
+    if A[I] = Value then
+      Exit;
+  Result := True;
+end;
+
+function LoadDefaultBitmap(Bmp: TBitmap; Item: Integer): Boolean;
+begin
+  {$IFDEF VCL}
+  Bmp.Handle := LoadBitmap(0, PChar(Item));
+  Result := Bmp.Handle <> 0;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := True;
+  case Item of
+    OBM_COMBO:
+      begin
+        Bmp.Width := QStyle_sliderLength(Application.Style.Handle);
+        Bmp.Height := Bmp.Width;
+        Bmp.Canvas.Start;
+        DrawFrameControl(Bmp.Canvas.Handle, Rect(0, 0, Bmp.Width, Bmp.Height),
+          DFC_SCROLL, DFCS_SCROLLDOWN);
+        Bmp.Canvas.Stop;
+      end;
+  else
+    Bmp.Width := 0;
+    Bmp.Height := 0;
+    Result := False;
+  end;
+  {$ENDIF VisualCLX}
+end;
+
+{$IFDEF VCL}
+
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean;
   var ACanvas: TControlCanvas; var Msg: TWMPaint): Boolean;
@@ -1148,6 +1312,132 @@ begin
   else
     Result := True;
 end;
+
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
+  AAlignment: TAlignment; StandardPaint: Boolean; Flat: Boolean;
+  ACanvas: TCanvas): Boolean;
+begin
+  if not (csDestroying in Editor.ComponentState) then
+  begin
+    Result := PaintEdit(Editor, AText, AAlignment, Editor.PopupVisible,
+      Editor.FDisabledTextColor, StandardPaint, Flat, ACanvas);
+  end
+  else
+    Result := True;
+end;
+
+{ PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
+  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
+
+function PaintEdit(Editor: TCustomEdit; const AText: WideString;
+  AAlignment: TAlignment; PopupVisible: Boolean; 
+  DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
+  ACanvas: TCanvas): Boolean;
+var
+  LTextWidth, X: Integer;
+  EditRect: TRect;
+  S: WideString;
+  ed: TCustomEditHack;
+  SavedFont: TFontRecall;
+  SavedBrush: TBrushRecall;
+  Offset: Integer;
+  R: TRect;
+begin
+  Result := True;
+  if csDestroying in Editor.ComponentState then
+    Exit;
+  ed := TCustomEditHack(Editor);
+  if StandardPaint and not (csPaintCopy in ed.ControlState) then
+  begin
+    Result := False;
+    { return false if we need to use standard paint handler }
+    Exit;
+  end;
+  SavedFont := TFontRecall.Create(ACanvas.Font);
+  SavedBrush := TBrushRecall.Create(ACanvas.Brush);
+  try
+    ACanvas.Font := ed.Font;
+
+   // paint Border
+    R := ed.ClientRect;
+    Offset := 0;
+    if (ed.BorderStyle = bsSingle) then
+    begin
+      ACanvas.Start;
+      QStyle_drawPanel(QWidget_style(Editor.Handle), ACanvas.Handle,
+        R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, QWidget_colorGroup(Editor.Handle),
+        True, 2, nil);
+      ACanvas.Stop;
+      //QGraphics.DrawEdge(ACanvas, R, esLowered, esLowered, ebRect)
+    end
+    else
+    begin
+      if Flat then
+        QGraphics.DrawEdge(ACanvas, R, esNone, esLowered, ebRect);
+      Offset := 2;
+    end;
+
+    with ACanvas do
+    begin
+      EditRect := Rect(0, 0, 0, 0);
+      SendMsg(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
+      if IsRectEmpty(EditRect) then
+      begin
+        EditRect := ed.ClientRect;
+        if ed.BorderStyle = bsSingle then
+          InflateRect(EditRect, -2, -2);
+      end
+      else
+        InflateRect(EditRect, -Offset, -Offset);
+      if Flat and (ed.BorderStyle = bsSingle) then
+      begin
+        Brush.Color := clWindowFrame;
+        FrameRect(ACanvas, ed.ClientRect);
+      end;
+      S := AText;
+      LTextWidth := TextWidth(S);
+      if PopupVisible then
+        X := EditRect.Left
+      else
+      begin
+        case AAlignment of
+          taLeftJustify:
+            X := EditRect.Left;
+          taRightJustify:
+            X := EditRect.Right - LTextWidth;
+        else
+          X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
+        end;
+      end;
+      if not ed.Enabled then
+      begin
+        if Supports(ed, IJvWinControlEvents) then
+          (ed as IJvWinControlEvents).DoPaintBackground(ACanvas, 0);
+        ACanvas.Brush.Style := bsClear;
+        ACanvas.Font.Color := DisabledTextColor;
+        ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
+      end
+      else
+      begin
+        Brush.Color := ed.Color;
+        DrawSelectedText(ACanvas, EditRect, X, EditRect.Top + 1, S,
+          ed.SelStart, ed.SelLength,
+          clHighlight, clHighlightText);
+      end;
+    end;
+  finally
+    SavedFont.Free;
+    SavedBrush.Free;
+  end;
+end;
+
+{$ENDIF VisualCLX}
+
+{$IFDEF VCL}
 
 function PaintEdit(Editor: TCustomEdit; const AText: string;
   AAlignment: TAlignment; PopupVisible: Boolean; 
@@ -1257,208 +1547,7 @@ begin
   end;
 end;
 
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-
-function EditorTextMargins(Editor: TCustomEdit): TPoint;
-var
-  I: Integer;
-  ed: TCustomEditHack;
-begin
-  ed := TCustomEditHack(Editor);
-  if ed.BorderStyle = bsNone then
-    I := 0
-  else
-  if Supports(Editor, IComboEditHelper) then
-  begin
-    if (Editor as IComboEditHelper).GetFlat then
-      I := 1
-    else
-      I := 2;
-  end
-  else
-    I := 2;
-  {if GetWindowLong(ed.Handle, GWL_STYLE) and ES_MULTILINE = 0 then
-    Result.X := (SendMessage(ed.Handle, EM_GETMARGINS, 0, 0) and $0000FFFF) + I
-  else}
-    Result.X := I;
-  Result.Y := I;
-end;
-
-function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
-  AAlignment: TAlignment; StandardPaint: Boolean; Flat: Boolean;
-  ACanvas: TCanvas): Boolean;
-begin
-  if not (csDestroying in Editor.ComponentState) then
-  begin
-    Result := PaintEdit(Editor, AText, AAlignment, Editor.PopupVisible,
-      Editor.FDisabledTextColor, StandardPaint, Flat, ACanvas);
-  end
-  else
-    Result := True;
-end;
-
-procedure DrawSelectedText(Canvas: TCanvas; const R: TRect; X, Y: Integer;
-  const Text: WideString; SelStart, SelLength: Integer;
-  HighlightColor, HighlightTextColor: TColor);
-var
-  w, h, Width: Integer;
-  S: WideString;
-  SelectionRect: TRect;
-  Brush: TBrushRecall;
-  PenMode: TPenMode;
-  FontColor: TColor;
-begin
-  w := R.Right - R.Left;
-  h := R.Bottom - R.Top;
-  if (w <= 0) or (h <= 0) then
-    Exit;
-
-  S := Copy(Text, 1, SelStart);
-  if S <> '' then
-  begin
-    Canvas.TextRect(R, X, Y, S);
-    Inc(X, Canvas.TextWidth(S));
-  end;
-
-  S := Copy(Text, SelStart + 1, SelLength);
-  if S <> '' then
-  begin
-    Width := Canvas.TextWidth(S);
-    Brush := TBrushRecall.Create(Canvas.Brush);
-    PenMode := Canvas.Pen.Mode;
-    try
-      SelectionRect := Rect(Max(X, R.Left), R.Top,
-                            Min(X + Width, R.Right), R.Bottom);
-      Canvas.Pen.Mode := pmCopy;
-      Canvas.Brush.Color := HighlightColor;
-      Canvas.FillRect(SelectionRect);
-      FontColor := Canvas.Font.Color;
-      Canvas.Font.Color := HighlightTextColor;
-      Canvas.TextRect(R, X, Y, S);
-      Canvas.Font.Color := FontColor;
-    finally
-      Canvas.Pen.Mode := PenMode;
-      Brush.Free;
-    end;
-    Inc(X, Width);
-  end;
-
-  S := Copy(Text, SelStart + SelLength + 1, MaxInt);
-  if S <> '' then
-    Canvas.TextRect(R, X, Y, S);
-end;
-
-{ PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
-  EM_GETTEXT handler exists, it uses the ClientRect of the edit control. }
-function PaintEdit(Editor: TCustomEdit; const AText: WideString;
-  AAlignment: TAlignment; PopupVisible: Boolean; 
-  DisabledTextColor: TColor; StandardPaint: Boolean; Flat: Boolean;
-  ACanvas: TCanvas): Boolean;
-var
-  LTextWidth, X: Integer;
-  EditRect: TRect;
-  S: WideString;
-  ed: TCustomEditHack;
-  SavedFont: TFontRecall;
-  SavedBrush: TBrushRecall;
-  Offset: Integer;
-  R: TRect;
-begin
-  Result := True;
-  if csDestroying in Editor.ComponentState then
-    Exit;
-  ed := TCustomEditHack(Editor);
-  if StandardPaint and not (csPaintCopy in ed.ControlState) then
-  begin
-    Result := False;
-    { return false if we need to use standard paint handler }
-    Exit;
-  end;
-  SavedFont := TFontRecall.Create(ACanvas.Font);
-  SavedBrush := TBrushRecall.Create(ACanvas.Brush);
-  try
-    ACanvas.Font := ed.Font;
-
-   // paint Border
-    R := ed.ClientRect;
-    Offset := 0;
-    if (ed.BorderStyle = bsSingle) then
-    begin
-      ACanvas.Start;
-      QStyle_drawPanel(QWidget_style(Editor.Handle), ACanvas.Handle,
-        R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top, QWidget_colorGroup(Editor.Handle),
-        True, 2, nil);
-      ACanvas.Stop;
-      //QGraphics.DrawEdge(ACanvas, R, esLowered, esLowered, ebRect)
-    end
-    else
-    begin
-      if Flat then
-        QGraphics.DrawEdge(ACanvas, R, esNone, esLowered, ebRect);
-      Offset := 2;
-    end;
-
-    with ACanvas do
-    begin
-      EditRect := Rect(0, 0, 0, 0);
-      SendMsg(Editor.Handle, EM_GETRECT, 0, Integer(@EditRect));
-      if IsRectEmpty(EditRect) then
-      begin
-        EditRect := ed.ClientRect;
-        if ed.BorderStyle = bsSingle then
-          InflateRect(EditRect, -2, -2);
-      end
-      else
-        InflateRect(EditRect, -Offset, -Offset);
-      if Flat and (ed.BorderStyle = bsSingle) then
-      begin
-        Brush.Color := clWindowFrame;
-        FrameRect(ACanvas, ed.ClientRect);
-      end;
-      S := AText;
-      LTextWidth := TextWidth(S);
-      if PopupVisible then
-        X := EditRect.Left
-      else
-      begin
-        case AAlignment of
-          taLeftJustify:
-            X := EditRect.Left;
-          taRightJustify:
-            X := EditRect.Right - LTextWidth;
-        else
-          X := (EditRect.Right + EditRect.Left - LTextWidth) div 2;
-        end;
-      end;
-      if not ed.Enabled then
-      begin
-        if Supports(ed, IJvWinControlEvents) then
-          (ed as IJvWinControlEvents).DoPaintBackground(ACanvas, 0);
-        ACanvas.Brush.Style := bsClear;
-        ACanvas.Font.Color := DisabledTextColor;
-        ACanvas.TextRect(EditRect, X, EditRect.Top + 1, S);
-      end
-      else
-      begin
-        Brush.Color := ed.Color;
-        DrawSelectedText(ACanvas, EditRect, X, EditRect.Top + 1, S,
-          ed.SelStart, ed.SelLength,
-          clHighlight, clHighlightText);
-      end;
-    end;
-  finally
-    SavedFont.Free;
-    SavedBrush.Free;
-  end;
-end;
-
-{$ENDIF VisualCLX}
-
 //=== TDateHook ==============================================================
-
-{$IFDEF VCL}
 
 procedure TDateHook.Add;
 begin
@@ -1514,51 +1603,6 @@ end;
 {$ENDIF VCL}
 
 //=== TJvCustomComboEdit =====================================================
-
-constructor TJvCustomComboEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlStyle := ControlStyle + [csCaptureMouse];
-  //  AutoSize := False;   // Polaris
-  FDirectInput := True;
-  FClickKey := scAltDown;
-  FPopupAlign := epaRight;
-  FBtnControl := TWinControl.Create(Self);
-  with FBtnControl do
-    ControlStyle := ControlStyle + [csReplicatable];
-  FBtnControl.Width := DefEditBtnWidth;
-  FBtnControl.Height := 17;
-  FBtnControl.Visible := True;
-  {$IFDEF VCL}
-  FBtnControl.Parent := Self;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FBtnControl.Parent := Self.ClientArea;
-  {$ENDIF VisualCLX}
-  FButton := TJvEditButton.Create(Self);
-  FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
-  FButton.Visible := True;
-  FButton.Parent := FBtnControl;
-  TJvEditButton(FButton).OnClick := EditButtonClick;
-  Height := 21;
-  (* ++ RDB ++ *)
-  FDisabledColor := clWindow;
-  FDisabledTextColor := clGrayText;
-  FGroupIndex := -1;
-  FGlyph := TBitmap.Create;
-  FStreamedButtonWidth := -1;
-  FImageKind := ikCustom;
-  FImageIndex := -1;
-  inherited OnKeyDown := LocalKeyDown;
-  (* -- RDB -- *)
-end;
-
-destructor TJvCustomComboEdit.Destroy;
-begin
-  FButton.OnClick := nil;
-  FGlyph.Free;
-  inherited Destroy;
-end;
 
 function TJvCustomComboEdit.AcceptPopup(var Value: Variant): Boolean;
 begin
@@ -1687,6 +1731,12 @@ begin
     PopupCloseUp(FPopup, False);
 end;
 
+procedure TJvCustomComboEdit.CMCtl3DChanged(var Msg: TMessage);
+begin
+  inherited;
+  UpdateBtnBounds;
+end;
+
 procedure TJvCustomComboEdit.CNCtlColor(var Msg: TMessage);
 var
   TextColor: Longint;
@@ -1701,21 +1751,45 @@ begin
   end;
 end;
 
-procedure TJvCustomComboEdit.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  UpdateBtnBounds;
-end;
-
 {$ENDIF VCL}
 
-{$IFDEF VisualCLX}
-procedure TJvCustomComboEdit.DoFlatChanged;
+constructor TJvCustomComboEdit.Create(AOwner: TComponent);
 begin
-  inherited DoFlatChanged;
-  UpdateBtnBounds;
+  inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csCaptureMouse];
+  //  AutoSize := False;   // Polaris
+  FDirectInput := True;
+  FClickKey := scAltDown;
+  FPopupAlign := epaRight;
+  FBtnControl := TWinControl.Create(Self);
+  with FBtnControl do
+    ControlStyle := ControlStyle + [csReplicatable];
+  FBtnControl.Width := DefEditBtnWidth;
+  FBtnControl.Height := 17;
+  FBtnControl.Visible := True;
+  {$IFDEF VCL}
+  FBtnControl.Parent := Self;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FBtnControl.Parent := Self.ClientArea;
+  {$ENDIF VisualCLX}
+  FButton := TJvEditButton.Create(Self);
+  FButton.SetBounds(0, 0, FBtnControl.Width, FBtnControl.Height);
+  FButton.Visible := True;
+  FButton.Parent := FBtnControl;
+  TJvEditButton(FButton).OnClick := EditButtonClick;
+  Height := 21;
+  (* ++ RDB ++ *)
+  FDisabledColor := clWindow;
+  FDisabledTextColor := clGrayText;
+  FGroupIndex := -1;
+  FGlyph := TBitmap.Create;
+  FStreamedButtonWidth := -1;
+  FImageKind := ikCustom;
+  FImageIndex := -1;
+  inherited OnKeyDown := LocalKeyDown;
+  (* -- RDB -- *)
 end;
-{$ENDIF VisualCLX}
 
 {$IFDEF VCL}
 
@@ -1728,12 +1802,6 @@ begin
     or Alignments[FAlignment];
 end;
 
-procedure TJvCustomComboEdit.CreateWnd;
-begin
-  inherited CreateWnd;
-  SetEditRect;
-end;
-
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -1743,6 +1811,16 @@ begin
   SetEditRect;
 end;
 {$ENDIF VisualCLX}
+
+{$IFDEF VCL}
+
+procedure TJvCustomComboEdit.CreateWnd;
+begin
+  inherited CreateWnd;
+  SetEditRect;
+end;
+
+{$ENDIF VCL}
 
 class function TJvCustomComboEdit.DefaultImageIndex: TImageIndex;
 begin
@@ -1766,9 +1844,45 @@ begin
   Filer.DefineProperty('GlyphKind', ReadGlyphKind, nil, False);
 end;
 
+destructor TJvCustomComboEdit.Destroy;
+begin
+  FButton.OnClick := nil;
+  FGlyph.Free;
+  inherited Destroy;
+end;
+
+procedure TJvCustomComboEdit.DoBoundsChanged;
+var
+  MinHeight: Integer;
+begin
+  inherited DoBoundsChanged;
+  if not (csLoading in ComponentState) then
+  begin
+    MinHeight := GetMinHeight;
+    { text edit bug: if size to less than MinHeight, then edit ctrl does
+      not display the text }
+    if Height < MinHeight then
+    begin
+      Height := MinHeight;
+      Exit;
+    end;
+  end
+  else
+  begin
+    if (FPopup <> nil) and (csDesigning in ComponentState) then
+      FPopup.SetBounds(0, Height + 1, 10, 10);
+  end;
+  UpdateBtnBounds;
+end;
+
 procedure TJvCustomComboEdit.DoChange;
 begin
   inherited Change;
+end;
+
+procedure TJvCustomComboEdit.DoClearText;
+begin
+  Text := '';
 end;
 
 procedure TJvCustomComboEdit.DoClick;
@@ -1776,11 +1890,63 @@ begin
   EditButtonClick(Self);
 end;
 
+procedure TJvCustomComboEdit.DoClipboardCut;
+begin
+  if FDirectInput and not ReadOnly then
+    inherited DoClipboardCut;
+end;
+
+procedure TJvCustomComboEdit.DoClipboardPaste;
+begin
+  if FDirectInput and not ReadOnly then
+    inherited DoClipboardPaste;
+  UpdateEdit;
+end;
+
 procedure TJvCustomComboEdit.DoEnter;
 begin
   if AutoSelect and not (csLButtonDown in ControlState) then
     SelectAll;
   inherited DoEnter;
+end;
+
+{$IFDEF VisualCLX}
+
+procedure TJvCustomComboEdit.DoFlatChanged;
+begin
+  inherited DoFlatChanged;
+  UpdateBtnBounds;
+end;
+
+{$ENDIF VisualCLX}
+
+procedure TJvCustomComboEdit.DoKillFocus(FocusedWnd: HWND);
+begin
+  inherited DoKillFocus(FocusedWnd);
+  FFocused := False;
+  PopupCloseUp(FPopup, False);
+end;
+
+function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
+begin
+  Result := True;
+  if csDestroying in ComponentState then
+    Exit;
+  if Enabled then
+    Result := inherited DoPaintBackground(Canvas, Param)
+  else
+  begin
+    Canvas.Brush.Color := FDisabledColor;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.FillRect(ClientRect);
+  end;
+end;
+
+procedure TJvCustomComboEdit.DoSetFocus(FocusedWnd: HWND);
+begin
+  inherited DoSetFocus(FocusedWnd);
+  FFocused := True;
+  SetShowCaret;
 end;
 
 procedure TJvCustomComboEdit.EditButtonClick(Sender: TObject);
@@ -2023,6 +2189,22 @@ begin
     Images := nil;
 end;
 
+{$IFDEF VisualCLX}
+
+procedure TJvCustomComboEdit.Paint;
+begin
+  if Enabled then
+    inherited Paint
+  else
+  begin
+    if not PaintEdit(Self, Text, FAlignment, PopupVisible,
+      DisabledTextColor, Focused and not PopupVisible, {Flat:}False, Canvas) then
+      inherited Paint;
+  end;
+end;
+
+{$ENDIF VisualCLX}
+
 procedure TJvCustomComboEdit.PopupChange;
 begin
 end;
@@ -2130,10 +2312,6 @@ begin
       Break;
     end;
 end;
-
-
-type
-  TOpenReader = class(TReader); // (ahuser) Delphi 5's TReader.SkipValue is protected  
 
 procedure TJvCustomComboEdit.ReadNumGlyphs(Reader: TReader);
 begin
@@ -2554,46 +2732,6 @@ begin
   FPopupVisible := (FPopup <> nil) and FPopup.Visible;
 end;
 
-procedure TJvCustomComboEdit.DoClearText;
-begin
-  Text := '';
-end;
-
-procedure TJvCustomComboEdit.DoClipboardCut;
-begin
-  if FDirectInput and not ReadOnly then
-    inherited DoClipboardCut;
-end;
-
-procedure TJvCustomComboEdit.DoClipboardPaste;
-begin
-  if FDirectInput and not ReadOnly then
-    inherited DoClipboardPaste;
-  UpdateEdit;
-end;
-
-function TJvCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  Result := True;
-  if csDestroying in ComponentState then
-    Exit;
-  if Enabled then
-    Result := inherited DoPaintBackground(Canvas, Param)
-  else
-  begin
-    Canvas.Brush.Color := FDisabledColor;
-    Canvas.Brush.Style := bsSolid;
-    Canvas.FillRect(ClientRect);
-  end;
-end;
-
-procedure TJvCustomComboEdit.DoKillFocus(FocusedWnd: HWND);
-begin
-  inherited DoKillFocus(FocusedWnd);
-  FFocused := False;
-  PopupCloseUp(FPopup, False);
-end;
-
 {$IFDEF JVCLThemesEnabled}
 procedure TJvCustomComboEdit.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
@@ -2665,50 +2803,6 @@ begin
   end;
 end;
 {$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomComboEdit.Paint;
-begin
-  if Enabled then
-    inherited Paint
-  else
-  begin
-    if not PaintEdit(Self, Text, FAlignment, PopupVisible,
-      DisabledTextColor, Focused and not PopupVisible, {Flat:}False, Canvas) then
-      inherited Paint;
-  end;
-end;
-{$ENDIF VisualCLX}
-
-procedure TJvCustomComboEdit.DoSetFocus(FocusedWnd: HWND);
-begin
-  inherited DoSetFocus(FocusedWnd);
-  FFocused := True;
-  SetShowCaret;
-end;
-
-procedure TJvCustomComboEdit.DoBoundsChanged;
-var
-  MinHeight: Integer;
-begin
-  inherited DoBoundsChanged;
-  if not (csLoading in ComponentState) then
-  begin
-    MinHeight := GetMinHeight;
-    { text edit bug: if size to less than MinHeight, then edit ctrl does
-      not display the text }
-    if Height < MinHeight then
-    begin
-      Height := MinHeight;
-      Exit;
-    end;
-  end
-  else
-  begin
-    if (FPopup <> nil) and (csDesigning in ComponentState) then
-      FPopup.SetBounds(0, Height + 1, 10, 10);
-  end;
-  UpdateBtnBounds;
-end;
 
 //=== TJvCustomComboEditActionLink ===========================================
 
@@ -2766,74 +2860,6 @@ begin
 end;
 
 //=== TJvCustomDateEdit ======================================================
-
-constructor TJvCustomDateEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  // Polaris
-  FDateAutoBetween := True;
-  FMinDate := NullDate;
-  FMaxDate := NullDate;
-
-  FBlanksChar := ' ';
-  FTitle := RsDateDlgCaption;
-  {$IFDEF VCL}
-  FPopupColor := clMenu;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  FPopupColor := clWindow;
-  {$ENDIF VisualCLX}
-  //  FDefNumGlyphs := 2;
-  FStartOfWeek := Mon;
-  FWeekends := [Sun];
-  FWeekendColor := clRed;
-  FYearDigits := dyDefault;
-  FCalendarHints := TStringList.Create;
-  FCalendarHints.OnChange := CalendarHintsChanged;
-  {$IFDEF VCL}
-  DateHook.Add;
-  {$ENDIF VCL}
-
-  ControlState := ControlState + [csCreating];
-  try
-    UpdateFormat;
-    {$IFDEF DEFAULT_POPUP_CALENDAR}
-    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
-      {$IFDEF VCL}
-      BiDiMode,
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      bdLeftToRight,
-      {$ENDIF VisualCLX}
-      // Polaris
-      FMinDate, FMaxDate));
-    TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
-    TJvPopupWindow(FPopup).Color := FPopupColor;
-    {$ENDIF DEFAULT_POPUP_CALENDAR}
-    ImageKind := ikDefault; { force update }
-  finally
-    ControlState := ControlState - [csCreating];
-  end;
-end;
-
-destructor TJvCustomDateEdit.Destroy;
-begin
-  {$IFDEF VCL}
-  DateHook.Delete;
-  {$ENDIF VCL}
-
-  if FPopup <> nil then
-  begin
-    TJvPopupWindow(FPopup).OnCloseUp := nil;
-    FPopup.Parent := nil;
-  end;
-  FPopup.Free;
-  FPopup := nil;
-  FCalendarHints.OnChange := nil;
-  FCalendarHints.Free;
-  FCalendarHints := nil;
-  inherited Destroy;
-end;
 
 function TJvCustomDateEdit.AcceptPopup(var Value: Variant): Boolean;
 var
@@ -2939,14 +2965,54 @@ begin
   end;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomDateEdit.CreateWindowHandle(const Params: TCreateParams);
+constructor TJvCustomDateEdit.Create(AOwner: TComponent);
 begin
-  inherited CreateWindowHandle(Params);
-  if Handle <> 0 then
-    UpdateMask;
+  inherited Create(AOwner);
+  // Polaris
+  FDateAutoBetween := True;
+  FMinDate := NullDate;
+  FMaxDate := NullDate;
+
+  FBlanksChar := ' ';
+  FTitle := RsDateDlgCaption;
+  {$IFDEF VCL}
+  FPopupColor := clMenu;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  FPopupColor := clWindow;
+  {$ENDIF VisualCLX}
+  //  FDefNumGlyphs := 2;
+  FStartOfWeek := Mon;
+  FWeekends := [Sun];
+  FWeekendColor := clRed;
+  FYearDigits := dyDefault;
+  FCalendarHints := TStringList.Create;
+  FCalendarHints.OnChange := CalendarHintsChanged;
+  {$IFDEF VCL}
+  DateHook.Add;
+  {$ENDIF VCL}
+
+  ControlState := ControlState + [csCreating];
+  try
+    UpdateFormat;
+    {$IFDEF DEFAULT_POPUP_CALENDAR}
+    FPopup := TJvPopupWindow(CreatePopupCalendar(Self,
+      {$IFDEF VCL}
+      BiDiMode,
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      bdLeftToRight,
+      {$ENDIF VisualCLX}
+      // Polaris
+      FMinDate, FMaxDate));
+    TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
+    TJvPopupWindow(FPopup).Color := FPopupColor;
+    {$ENDIF DEFAULT_POPUP_CALENDAR}
+    ImageKind := ikDefault; { force update }
+  finally
+    ControlState := ControlState - [csCreating];
+  end;
 end;
-{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 procedure TJvCustomDateEdit.CreateWidget;
@@ -2956,6 +3022,15 @@ begin
     UpdateMask;
 end;
 {$ENDIF VisualCLX}
+
+{$IFDEF VCL}
+procedure TJvCustomDateEdit.CreateWindowHandle(const Params: TCreateParams);
+begin
+  inherited CreateWindowHandle(Params);
+  if Handle <> 0 then
+    UpdateMask;
+end;
+{$ENDIF VCL}
 
 class function TJvCustomDateEdit.DefaultImageIndex: TImageIndex;
 var
@@ -2976,6 +3051,25 @@ begin
   Result := GDateImageIndex;
 end;
 
+destructor TJvCustomDateEdit.Destroy;
+begin
+  {$IFDEF VCL}
+  DateHook.Delete;
+  {$ENDIF VCL}
+
+  if FPopup <> nil then
+  begin
+    TJvPopupWindow(FPopup).OnCloseUp := nil;
+    FPopup.Parent := nil;
+  end;
+  FPopup.Free;
+  FPopup := nil;
+  FCalendarHints.OnChange := nil;
+  FCalendarHints.Free;
+  FCalendarHints := nil;
+  inherited Destroy;
+end;
+
 procedure TJvCustomDateEdit.DoExit;
 begin
   if not (csDesigning in ComponentState) and CheckOnExit then
@@ -2987,6 +3081,11 @@ function TJvCustomDateEdit.FourDigitYear: Boolean;
 begin
   Result := (FYearDigits = dyFour) or ((FYearDigits = dyDefault) and
    {$IFDEF VCL}JvJCLUtils.{$ELSE}JvQJCLUtils.{$ENDIF}FourDigitYear);
+end;
+
+function TJvCustomDateEdit.GetCalendarHints: TStrings;
+begin
+  Result := FCalendarHints;
 end;
 
 function TJvCustomDateEdit.GetCalendarStyle: TCalendarStyle;
@@ -3092,11 +3191,6 @@ begin
     FBlanksChar := Value;
     UpdateMask;
   end;
-end;
-
-function TJvCustomDateEdit.GetCalendarHints: TStrings;
-begin
-  Result := FCalendarHints;
 end;
 
 procedure TJvCustomDateEdit.SetCalendarHints(Value: TStrings);
@@ -3369,15 +3463,6 @@ end;
 
 //=== TJvDirectoryEdit =======================================================
 
-constructor TJvDirectoryEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  {$IFDEF VCL}
-  FOptions := [];
-  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
-  {$ENDIF VCL}
-end;
-
 procedure TJvDirectoryEdit.ButtonClick;
 var
   Temp: string;
@@ -3432,6 +3517,33 @@ begin
     if (Temp <> '') and DirectoryExists(Temp) then
       InitialDir := Temp;
   end;
+end;
+
+constructor TJvDirectoryEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  {$IFDEF VCL}
+  FOptions := [];
+  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
+  {$ENDIF VCL}
+end;
+
+class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
+var
+  Bmp: TBitmap;
+begin
+  if GDirImageIndex < 0 then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
+      Bmp.LoadFromResourceName(HInstance, sDirBmp);
+      GDirImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
+  end;
+  Result := GDirImageIndex;
 end;
 
 function TJvDirectoryEdit.GetLongName: string;
@@ -3490,33 +3602,7 @@ begin
     Text := Text + ';' + Temp;
 end;
 
-class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
-var
-  Bmp: TBitmap;
-begin
-  if GDirImageIndex < 0 then
-  begin
-    Bmp := TBitmap.Create;
-    try
-      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
-      Bmp.LoadFromResourceName(HInstance, sDirBmp);
-      GDirImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
-    finally
-      Bmp.Free;
-    end;
-  end;
-  Result := GDirImageIndex;
-end;
-
 //=== TJvEditButton ==========================================================
-
-constructor TJvEditButton.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FStandard := True; // Polaris
-  ControlStyle := ControlStyle + [csReplicatable];
-  ParentShowHint := True;
-end;
 
 procedure TJvEditButton.Click;
 begin
@@ -3524,6 +3610,14 @@ begin
     inherited Click
   else
     FNoAction := False;
+end;
+
+constructor TJvEditButton.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FStandard := True; // Polaris
+  ControlStyle := ControlStyle + [csReplicatable];
+  ParentShowHint := True;
 end;
 
 procedure TJvEditButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -3616,6 +3710,10 @@ end;
 
 //=== TJvFileDirEdit =========================================================
 
+procedure TJvFileDirEdit.ClearFileList;
+begin
+end;
+
 constructor TJvFileDirEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -3632,11 +3730,8 @@ begin
   end;
 end;
 
-procedure TJvFileDirEdit.ClearFileList;
-begin
-end;
-
 {$IFDEF VCL}
+
 procedure TJvFileDirEdit.CreateHandle;
 begin
   inherited CreateHandle;
@@ -3646,14 +3741,13 @@ begin
   if FAutoComplete then
     UpdateAutoComplete;
 end;
-{$ENDIF VCL}
 
-{$IFDEF VCL}
 procedure TJvFileDirEdit.DestroyWindowHandle;
 begin
   SetDragAccept(False);
   inherited DestroyWindowHandle;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvFileDirEdit.DisableSysErrors;
@@ -3696,10 +3790,92 @@ begin
   end;
 end;
 
+procedure TJvFileDirEdit.SetAutoComplete(Value: Boolean);
+begin
+  if Value <> FAutoComplete then
+  begin
+    FAutoComplete := Value;
+    if HandleAllocated and not (csDesigning in ComponentState) then
+      if AutoComplete then
+        UpdateAutoComplete
+      else
+        RecreateWnd;
+  end;
+end;
+
+procedure TJvFileDirEdit.SetAutoCompleteOptions(
+  const Value: TJvAutoCompleteOptions);
+const
+  cListFillMethods = [acoFileSystem, acoFileSysDirs, acoURLAll, acoURLHistory, acoURLMRU];
+  cOptions = [acoAutoappendForceOff, acoAutoappendForceOn, acoAutosuggestForceOff,
+    acoAutosuggestForceOn, acoUseTab];
+var
+  AddedOptions, RemovedOptions: TJvAutoCompleteOptions;
+begin
+  if FAutoCompleteOptions <> Value then
+  begin
+    AddedOptions := Value - (FAutoCompleteOptions * Value);
+    RemovedOptions := FAutoCompleteOptions - (FAutoCompleteOptions * Value);
+
+    FAutoCompleteOptions := Value;
+
+    { Force correct options }
+    if acoAutoappendForceOff in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutoappendForceOn)
+    else if acoAutoappendForceOn in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutoappendForceOff);
+    if acoAutosuggestForceOff in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutosuggestForceOn)
+    else if acoAutosuggestForceOn in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutosuggestForceOff);
+    if acoDefault in AddedOptions then
+      FAutoCompleteOptions := [acoDefault]
+    else if AddedOptions <> [] then
+      Exclude(FAutoCompleteOptions, acoDefault);
+    if (cListFillMethods * FAutoCompleteOptions = []) and
+       (cListFillMethods * RemovedOptions <> []) then
+       FAutoCompleteOptions := FAutoCompleteOptions - cOptions;
+
+    { Last check }
+    if (cOptions * FAutoCompleteOptions <> []) and
+       (cListFillMethods * FAutoCompleteOptions = []) then
+      FAutoCompleteOptions := FAutoCompleteOptions + [acoFileSystem];
+
+    if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
+      RecreateWnd;
+  end;
+end;
+
 procedure TJvFileDirEdit.SetDragAccept(Value: Boolean);
 begin
   if not (csDesigning in ComponentState) and (Handle <> 0) then
     DragAcceptFiles(Handle, Value);
+end;
+
+procedure TJvFileDirEdit.UpdateAutoComplete;
+const
+  cAutoCompleteOptionValues: array [TJvAutoCompleteOption] of DWORD =
+    (SHACF_AUTOAPPEND_FORCE_OFF, SHACF_AUTOAPPEND_FORCE_ON,
+     SHACF_AUTOSUGGEST_FORCE_OFF, SHACF_AUTOSUGGEST_FORCE_ON, SHACF_DEFAULT, SHACF_FILESYSTEM,
+     SHACF_FILESYS_DIRS, SHACF_URLALL, SHACF_URLHISTORY, SHACF_URLMRU, SHACF_USETAB);
+var
+  Flags: DWORD;
+  AutoCompleteOption: TJvAutoCompleteOption;
+begin
+  if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
+  begin
+    LoadShlwapiDll;
+
+    if Assigned(SHAutoComplete) then
+    begin
+      Flags := 0;
+      for AutoCompleteOption := Low(TJvAutoCompleteOption) to High(TJvAutoCompleteOption) do
+        if AutoCompleteOption in AutoCompleteOptions then
+          Inc(Flags, cAutoCompleteOptionValues[AutoCompleteOption]);
+
+      SHAutoComplete(Handle, Flags);
+    end;
+  end;
 end;
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
@@ -3731,16 +3907,6 @@ end;
 {$ENDIF VCL}
 
 //=== TJvFilenameEdit ========================================================
-
-constructor TJvFilenameEdit.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FAddQuotes := True;
-  {$IFDEF VCL}
-  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem];
-  {$ENDIF VCL}
-  CreateEditDialog;
-end;
 
 procedure TJvFilenameEdit.ButtonClick;
 var
@@ -3792,6 +3958,16 @@ begin
   FDialog.Files.Clear;
 end;
 
+constructor TJvFilenameEdit.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FAddQuotes := True;
+  {$IFDEF VCL}
+  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem];
+  {$ENDIF VCL}
+  CreateEditDialog;
+end;
+
 procedure TJvFilenameEdit.CreateEditDialog;
 var
   NewDialog: TOpenDialog;
@@ -3835,6 +4011,24 @@ begin
   finally
     FDialog := NewDialog;
   end;
+end;
+
+class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
+var
+  Bmp: TBitmap;
+begin
+  if GFileImageIndex < 0 then
+  begin
+    Bmp := TBitmap.Create;
+    try
+      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
+      Bmp.LoadFromResourceName(HInstance, sFileBmp);
+      GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
+    finally
+      Bmp.Free;
+    end;
+  end;
+  Result := GFileImageIndex;
 end;
 
 function TJvFilenameEdit.GetDefaultExt: TFileExt;
@@ -3995,25 +4189,13 @@ begin
   end;
 end;
 
-class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
-var
-  Bmp: TBitmap;
-begin
-  if GFileImageIndex < 0 then
-  begin
-    Bmp := TBitmap.Create;
-    try
-      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
-      Bmp.LoadFromResourceName(HInstance, sFileBmp);
-      GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
-    finally
-      Bmp.Free;
-    end;
-  end;
-  Result := GFileImageIndex;
-end;
-
 //=== TJvPopupWindow =========================================================
+
+procedure TJvPopupWindow.CloseUp(Accept: Boolean);
+begin
+  if Assigned(FCloseUp) then
+    FCloseUp(Self, Accept);
+end;
 
 constructor TJvPopupWindow.Create(AOwner: TComponent);
 begin
@@ -4031,12 +4213,6 @@ begin
   {$ENDIF VCL}
 end;
 
-procedure TJvPopupWindow.CloseUp(Accept: Boolean);
-begin
-  if Assigned(FCloseUp) then
-    FCloseUp(Self, Accept);
-end;
-
 {$IFDEF VCL}
 procedure TJvPopupWindow.CreateParams(var Params: TCreateParams);
 begin
@@ -4049,32 +4225,6 @@ begin
   end;
 end;
 {$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-
-procedure TJvPopupWindow.SetParent(const Value: TWidgetControl);
-var
-  Pt: TPoint;
-  R: TRect;
-begin
-  Pt := Point(Left, Top);
-  R := BoundsRect;
-  inherited SetParent(Value);
-  if not (csDestroying in ComponentState) then
-  begin
-    QWidget_reparent(Handle, nil, 0, @Pt, Showing);
-    BoundsRect := R;
-  end;
-end;
-
-function TJvPopupWindow.WidgetFlags: Integer;
-begin
-  Result := Integer(WidgetFlags_WType_Popup) or // WS_POPUP
-    Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
-    Integer(WidgetFlags_WStyle_Tool);  // WS_EX_TOOLWINDOW
-end;
-
-{$ENDIF VisualCLX}
 
 function TJvPopupWindow.GetPopupText: string;
 begin
@@ -4116,6 +4266,23 @@ begin
     CloseUp(PtInRect(ClientRect, Point(X, Y)));
 end;
 
+{$IFDEF VisualCLX}
+procedure TJvPopupWindow.SetParent(const Value: TWidgetControl);
+var
+  Pt: TPoint;
+  R: TRect;
+begin
+  Pt := Point(Left, Top);
+  R := BoundsRect;
+  inherited SetParent(Value);
+  if not (csDestroying in ComponentState) then
+  begin
+    QWidget_reparent(Handle, nil, 0, @Pt, Showing);
+    BoundsRect := R;
+  end;
+end;
+{$ENDIF VisualCLX}
+
 procedure TJvPopupWindow.Show(Origin: TPoint);
 {$IFDEF VCL}
 var
@@ -4142,152 +4309,19 @@ begin
   Visible := True;
 end;
 
+{$IFDEF VisualCLX}
+function TJvPopupWindow.WidgetFlags: Integer;
+begin
+  Result := Integer(WidgetFlags_WType_Popup) or // WS_POPUP
+    Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
+    Integer(WidgetFlags_WStyle_Tool);  // WS_EX_TOOLWINDOW
+end;
+{$ENDIF VisualCLX}
+
 {$IFDEF VCL}
 procedure TJvPopupWindow.WMMouseActivate(var Msg: TMessage);
 begin
   Msg.Result := MA_NOACTIVATE;
-end;
-{$ENDIF VCL}
-
-{$IFDEF VCL}
-const
-  SHACF_DEFAULT                  = $00000000;  // Currently (SHACF_FILESYSTEM | SHACF_URLALL)
-  SHACF_FILESYSTEM               = $00000001;  // This includes the File System as well as the rest of the shell (Desktop\My Computer\Control Panel\)
-  SHACF_URLHISTORY               = $00000002;  // URLs in the User's History
-  SHACF_URLMRU                   = $00000004;  // URLs in the User's Recently Used list.
-  SHACF_URLALL                   = (SHACF_URLHISTORY or SHACF_URLMRU);
-  SHACF_USETAB                   = $00000008;  // Use the tab to move thru the autocomplete possibilities instead of to the next dialog/window control.
-  SHACF_FILESYS_ONLY             = $00000010;  // This includes the File System
-  // WIN32_IE >= 0x0600)
-  SHACF_FILESYS_DIRS             = $00000020;  // Same as SHACF_FILESYS_ONLY except it only includes directories, UNC servers, and UNC server shares.
-
-  SHACF_AUTOSUGGEST_FORCE_ON     = $10000000;  // Ignore the registry default and force the feature on.
-  SHACF_AUTOSUGGEST_FORCE_OFF    = $20000000;  // Ignore the registry default and force the feature off.
-  SHACF_AUTOAPPEND_FORCE_ON      = $40000000;  // Ignore the registry default and force the feature on. (Also know as AutoComplete)
-  SHACF_AUTOAPPEND_FORCE_OFF     = $80000000;  // Ignore the registry default and force the feature off. (Also know as AutoComplete)
-
-const
-  ShlwapiDLLName  = 'Shlwapi.dll';
-  SHAutoCompleteName = 'SHAutoComplete';
-
-type
-  TSHAutoComplete = function (hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall;
-
-var
-  GShlwapiHandle: THandle = 0;
-  GTriedLoadShlwapiDll: Boolean = False;
-  GNeedToUninitialize: Boolean = False;
-  SHAutoComplete: TSHAutoComplete = nil;
-
-procedure UnloadShlwapiDll;
-begin
-  SHAutoComplete := nil;
-  if GShlwapiHandle > 0 then
-    FreeLibrary(GShlwapiHandle);
-  GShlwapiHandle := 0;
-  if GNeedToUninitialize then
-    CoUninitialize;
-end;
-
-procedure LoadShlwapiDll;
-begin
-  if not GTriedLoadShlwapiDll then
-  begin
-    GTriedLoadShlwapiDll := True;
-
-    GShlwapiHandle := Windows.LoadLibrary(ShlwapiDLLName);
-    if GShlwapiHandle > 0 then
-    begin
-      AddFinalizeProc(sUnitName, UnloadShlwapiDll);
-
-      SHAutoComplete := GetProcAddress(GShlwapiHandle, SHAutoCompleteName);
-
-      if Assigned(SHAutoComplete) then
-        GNeedToUninitialize := Succeeded(CoInitialize(nil));
-    end;
-  end;
-end;
-
-procedure TJvFileDirEdit.UpdateAutoComplete;
-const
-  cAutoCompleteOptionValues: array [TJvAutoCompleteOption] of DWORD =
-    (SHACF_AUTOAPPEND_FORCE_OFF, SHACF_AUTOAPPEND_FORCE_ON,
-     SHACF_AUTOSUGGEST_FORCE_OFF, SHACF_AUTOSUGGEST_FORCE_ON, SHACF_DEFAULT, SHACF_FILESYSTEM,
-     SHACF_FILESYS_DIRS, SHACF_URLALL, SHACF_URLHISTORY, SHACF_URLMRU, SHACF_USETAB);
-var
-  Flags: DWORD;
-  AutoCompleteOption: TJvAutoCompleteOption;
-begin
-  if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
-  begin
-    LoadShlwapiDll;
-
-    if Assigned(SHAutoComplete) then
-    begin
-      Flags := 0;
-      for AutoCompleteOption := Low(TJvAutoCompleteOption) to High(TJvAutoCompleteOption) do
-        if AutoCompleteOption in AutoCompleteOptions then
-          Inc(Flags, cAutoCompleteOptionValues[AutoCompleteOption]);
-
-      SHAutoComplete(Handle, Flags);
-    end;
-  end;
-end;
-
-procedure TJvFileDirEdit.SetAutoComplete(Value: Boolean);
-begin
-  if Value <> FAutoComplete then
-  begin
-    FAutoComplete := Value;
-    if HandleAllocated and not (csDesigning in ComponentState) then
-      if AutoComplete then
-        UpdateAutoComplete
-      else
-        RecreateWnd;
-  end;
-end;
-
-procedure TJvFileDirEdit.SetAutoCompleteOptions(
-  const Value: TJvAutoCompleteOptions);
-const
-  cListFillMethods = [acoFileSystem, acoFileSysDirs, acoURLAll, acoURLHistory, acoURLMRU];
-  cOptions = [acoAutoappendForceOff, acoAutoappendForceOn, acoAutosuggestForceOff,
-    acoAutosuggestForceOn, acoUseTab];
-var
-  AddedOptions, RemovedOptions: TJvAutoCompleteOptions;
-begin
-  if FAutoCompleteOptions <> Value then
-  begin
-    AddedOptions := Value - (FAutoCompleteOptions * Value);
-    RemovedOptions := FAutoCompleteOptions - (FAutoCompleteOptions * Value);
-
-    FAutoCompleteOptions := Value;
-
-    { Force correct options }
-    if acoAutoappendForceOff in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutoappendForceOn)
-    else if acoAutoappendForceOn in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutoappendForceOff);
-    if acoAutosuggestForceOff in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutosuggestForceOn)
-    else if acoAutosuggestForceOn in AddedOptions then
-      Exclude(FAutoCompleteOptions, acoAutosuggestForceOff);
-    if acoDefault in AddedOptions then
-      FAutoCompleteOptions := [acoDefault]
-    else if AddedOptions <> [] then
-      Exclude(FAutoCompleteOptions, acoDefault);
-    if (cListFillMethods * FAutoCompleteOptions = []) and
-       (cListFillMethods * RemovedOptions <> []) then
-       FAutoCompleteOptions := FAutoCompleteOptions - cOptions;
-
-    { Last check }
-    if (cOptions * FAutoCompleteOptions <> []) and
-       (cListFillMethods * FAutoCompleteOptions = []) then
-      FAutoCompleteOptions := FAutoCompleteOptions + [acoFileSystem];
-
-    if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
-      RecreateWnd;
-  end;
 end;
 {$ENDIF VCL}
 
