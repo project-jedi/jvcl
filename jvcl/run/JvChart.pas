@@ -2954,7 +2954,8 @@ begin
     MyLeftTextOut(horiz, vert, StrText);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    TextOutAngle(ChartCanvas, 90, horiz, vert, StrText);
+    wd := ChartCanvas.TextHeight(StrText);
+    TextOutAngle(ChartCanvas, 90, horiz + wd, vert, StrText);
     {$ENDIF VisualCLX}
   end;
   MyAxisFont;
