@@ -32,7 +32,7 @@ unit JvgReportEditorForm;
 interface
 
 uses
-  Windows, Mask, Spin, Menus, ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls,
+  Windows, Mask, Menus, ExtCtrls, StdCtrls, Buttons, ComCtrls, Controls,
   Dialogs, Forms, Classes, SysUtils, Graphics, ImgList, Printers,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, PropertyCategories,

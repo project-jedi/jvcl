@@ -157,7 +157,8 @@ var
   Obj: TJvParserInfo;
   Cap: string;
 begin
-  FParser.Assign(Value);
+  if FParser <> Value then // make sure we don't assign to ourselves (that will clear the list)
+    FParser.Assign(Value);
   FKeys.Clear;
   I := 0;
   while I < FParser.Count do

@@ -40,42 +40,42 @@ uses
   JvTypes, JvComponent;
 
 type
-  TFormParsers = class(TJvForm)
+  TJvHTMLParserForm = class(TJvForm)
     ListBox1: TListBox;
     GroupBox1: TGroupBox;
-    Edit1: TEdit;
+    edKeyword: TEdit;
     Label1: TLabel;
-    Edit2: TEdit;
+    edStartTag: TEdit;
     Label2: TLabel;
-    Edit3: TEdit;
+    edEndTag: TEdit;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    ComboBox1: TComboBox;
-    Edit4: TEdit;
-    AddBtn: TButton;
-    RemoveBtn: TButton;
+    cbTakeText: TComboBox;
+    edMustBe: TEdit;
+    btnAdd: TButton;
+    btnRemove: TButton;
     OkBtn: TButton;
     CancelBtn: TButton;
-    procedure Edit1Change(Sender: TObject);
+    procedure edKeywordChange(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure ListBox1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
-    procedure Edit2Change(Sender: TObject);
-    procedure Edit3Change(Sender: TObject);
-    procedure ComboBox1Change(Sender: TObject);
-    procedure Edit4Change(Sender: TObject);
+    procedure edStartTagChange(Sender: TObject);
+    procedure edEndTagChange(Sender: TObject);
+    procedure cbTakeTextChange(Sender: TObject);
+    procedure edMustBeChange(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
     procedure CancelBtnClick(Sender: TObject);
   public
-    procedure LoadFromStr(Value: TStringList);
-    function SetFromStr: TStringList;
+    procedure LoadFromStr(Value: TStrings);
+    procedure SaveToStr(Value: TStrings);
   end;
 
 implementation
 
 uses
-  JvHTMLParser, JvResources;
+  Dialogs, JvHTMLParser, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}
@@ -84,13 +84,13 @@ uses
 {$R *.xfm}
 {$ENDIF VisualCLX}
 
-procedure TFormParsers.Edit1Change(Sender: TObject);
+procedure TJvHTMLParserForm.edKeywordChange(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
     ListBox1.Items[ListBox1.ItemIndex] := (Sender as TEdit).Text;
 end;
 
-procedure TFormParsers.Button1Click(Sender: TObject);
+procedure TJvHTMLParserForm.Button1Click(Sender: TObject);
 var
   Ob: TJvParserInfo;
 begin
@@ -101,22 +101,24 @@ begin
   Ob.TakeText := 0;
   ListBox1.ItemIndex := ListBox1.Items.AddObject(RsNewObject, TObject(Ob));
   ListBox1Click(Sender);
+  edKeyword.SetFocus;
+  edKeyword.SelectAll;
 end;
 
-procedure TFormParsers.ListBox1Click(Sender: TObject);
+procedure TJvHTMLParserForm.ListBox1Click(Sender: TObject);
 var
   Ob: TJvParserInfo;
 begin
   GroupBox1.Enabled := True;
   Ob := TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]);
-  Edit1.Text := ListBox1.Items[ListBox1.ItemIndex];
-  Edit2.Text := Ob.StartTag;
-  Edit3.Text := Ob.EndTag;
-  Edit4.Text := IntToStr(Ob.MustBe);
-  ComboBox1.ItemIndex := Ob.TakeText;
+  edKeyword.Text := ListBox1.Items[ListBox1.ItemIndex];
+  edStartTag.Text := Ob.StartTag;
+  edEndTag.Text := Ob.EndTag;
+  edMustBe.Text := IntToStr(Ob.MustBe);
+  cbTakeText.ItemIndex := Ob.TakeText;
 end;
 
-procedure TFormParsers.Button2Click(Sender: TObject);
+procedure TJvHTMLParserForm.Button2Click(Sender: TObject);
 var
   I: Integer;
 begin
@@ -124,30 +126,33 @@ begin
   begin
     I := ListBox1.ItemIndex;
     ListBox1.Items.Delete(I);
-    Dec(I);
+    if ListBox1.Items.Count >= I then
+      Dec(I);
     if I >= 0 then
     begin
       ListBox1.ItemIndex := I;
       ListBox1Click(Sender);
+      edKeyword.SetFocus;
+      edKeyword.SelectAll;
     end
     else
       GroupBox1.Enabled := False;
   end;
 end;
 
-procedure TFormParsers.Edit2Change(Sender: TObject);
+procedure TJvHTMLParserForm.edStartTagChange(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
     TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).StartTag := (Sender as TEdit).Text;
 end;
 
-procedure TFormParsers.Edit3Change(Sender: TObject);
+procedure TJvHTMLParserForm.edEndTagChange(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
     TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).EndTag := (Sender as TEdit).Text;
 end;
 
-procedure TFormParsers.LoadFromStr(Value: TStringList);
+procedure TJvHTMLParserForm.LoadFromStr(Value: TStrings);
 var
   I: Integer;
   Ob: TJvParserInfo;
@@ -174,28 +179,13 @@ begin
   end;
 end;
 
-function TFormParsers.SetFromStr: TStringList;
-var
-  I: Integer;
-begin
-  Result := TStringList.Create;
-  for I := 0 to ListBox1.Items.Count - 1 do
-  begin
-    Result.Add(ListBox1.Items[I]);
-    Result.Add(TJvParserInfo(ListBox1.Items.Objects[I]).StartTag);
-    Result.Add(TJvParserInfo(ListBox1.Items.Objects[I]).EndTag);
-    Result.Add(IntToStr(TJvParserInfo(ListBox1.Items.Objects[I]).MustBe));
-    Result.Add(IntToStr(TJvParserInfo(ListBox1.Items.Objects[I]).TakeText));
-  end;
-end;
-
-procedure TFormParsers.ComboBox1Change(Sender: TObject);
+procedure TJvHTMLParserForm.cbTakeTextChange(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
     TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).TakeText := (Sender as TComboBox).ItemIndex;
 end;
 
-procedure TFormParsers.Edit4Change(Sender: TObject);
+procedure TJvHTMLParserForm.edMustBeChange(Sender: TObject);
 var
   I: Integer;
 begin
@@ -209,16 +199,34 @@ begin
     TJvParserInfo(ListBox1.Items.Objects[ListBox1.ItemIndex]).MustBe := I;
 end;
 
-procedure TFormParsers.OkBtnClick(Sender: TObject);
+procedure TJvHTMLParserForm.OkBtnClick(Sender: TObject);
 begin
   Tag := 0;
+  ModalResult := mrOK;
   Close;
 end;
 
-procedure TFormParsers.CancelBtnClick(Sender: TObject);
+procedure TJvHTMLParserForm.CancelBtnClick(Sender: TObject);
 begin
   Tag := 1;
+  ModalResult := mrCancel;
   Close;
+end;
+
+procedure TJvHTMLParserForm.SaveToStr(Value: TStrings);
+var
+  I: Integer;
+begin
+//  ShowMessage('TFormParsers.SaveToStr');
+  Value.Clear;
+  for I := 0 to ListBox1.Items.Count - 1 do
+  begin
+    Value.Add(ListBox1.Items[I]);
+    Value.Add(TJvParserInfo(ListBox1.Items.Objects[I]).StartTag);
+    Value.Add(TJvParserInfo(ListBox1.Items.Objects[I]).EndTag);
+    Value.Add(IntToStr(TJvParserInfo(ListBox1.Items.Objects[I]).MustBe));
+    Value.Add(IntToStr(TJvParserInfo(ListBox1.Items.Objects[I]).TakeText));
+  end;
 end;
 
 end.
