@@ -110,12 +110,12 @@ procedure LaunchCpl(FileName: string);
   The function returns True if any Control Panel Applets were found (i.e Strings.Count is > 0 when returning)
 }
 
-function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
+function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
 { GetControlPanelApplet works like GetControlPanelApplets, with the difference that it only loads and searches one cpl file (according to AFilename).
   Note though, that some CPL's contains multiple applets, so the Strings and Images lists can contain multiple return values.
   The function returns True if any Control Panel Applets were found in AFilename (i.e if items were added to Strings)
 }
-function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
+function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
 
 // execute a program without waiting
 procedure Exec(FileName, Parameters, Directory: string);
@@ -302,7 +302,7 @@ function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor): TBitmap
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
-procedure ImageListDrawDisabled(Images: TImageList; Canvas: TCanvas;
+procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighlightColor, GrayColor: TColor; DrawHighlight: Boolean);
 
 function MakeIcon(ResID: PChar): TIcon;
@@ -498,7 +498,7 @@ procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
 
 { LoadIcoToImage loads two icons from resource named NameRes,
   into two image lists ALarge and ASmall}
-procedure LoadIcoToImage(ALarge, ASmall: TImageList; const NameRes: string);
+procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
 
 { DefineCursor load cursor from resource, and return
   available cursor number, assigned to it }
@@ -808,7 +808,7 @@ end;
 function IconToBitmap2(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
 begin
   // (p3) this seems to generate "better" bitmaps...
-  with TImageList.CreateSize(Size, Size) do
+  with TCustomImageList.CreateSize(Size, Size) do
   try
     Masked := True;
     BkColor := TransparentColor;
@@ -1283,7 +1283,7 @@ type
     szHelpFile: array [0..127] of WideChar;
   end;
 
-function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TImageList = nil): Boolean;
+function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
 var
   hLib: HMODULE; // Library Handle to *.cpl file
   hIco: HICON;
@@ -1362,7 +1362,7 @@ begin
   end;
 end;
 
-function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TImageList = nil): Boolean;
+function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
 var
   H: THandle;
   F: TSearchRec;
@@ -2847,7 +2847,7 @@ begin
     clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
 
-procedure ImageListDrawDisabled(Images: TImageList; Canvas: TCanvas;
+procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighlightColor, GrayColor: TColor; DrawHighlight: Boolean);
 var
   Bmp: TBitmap;
@@ -2956,7 +2956,7 @@ end;
 
 function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 begin
-  with TImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
+  with TCustomImageList.CreateSize(Bitmap.Width, Bitmap.Height) do
   try
     if TransparentColor = clDefault then
       TransparentColor := Bitmap.TransparentColor;
@@ -4458,7 +4458,7 @@ begin
     SWP_NOSIZE or SWP_NOACTIVATE);
 end;
 
-procedure LoadIcoToImage(ALarge, ASmall: TImageList; const NameRes: string);
+procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
 var
   Ico: TIcon;
 begin
