@@ -58,6 +58,7 @@ uses
   JvShellHook, JvSHFileOperation, JvSoundControl, JvChangeNotify, JvSearchFiles,
   JvPerfMon95, JvComputerInfoEx,
   JvChangeNotifyEditor, JvPerfStatEditor, JvTimerList, JvTimerListEditor,
+  JvDebugHandler,
   {$ENDIF USEWINDOWS}
   JvThread, JvThreadDialog, JvThreadTimer, JvTimer, JvSimpleXml, JvXMLDatabase,
   JvFormPlacement, JvAppXMLStorage, JvFormPlacementSelectList,
@@ -93,7 +94,7 @@ begin
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
     TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
     {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
-    TJvPerfStat95, TJvComputerInfoEx]);
+    TJvPerfStat95, TJvComputerInfoEx, TJclDebugHandler]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
   {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [
