@@ -16,17 +16,16 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-
-{$I JVCL.INC}
+// $Id$
 
 unit JvMemoryInfos;
+
+{$I jvcl.inc}
 
 interface
 
@@ -55,10 +54,12 @@ type
   published
     procedure Refresh(Sender: TObject);
     property AutoRefresh: Boolean read FAutoRefresh write SetAuto default False;
-    property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay;
+    property RefreshDelay: Integer read FRefreshDelay write SetRefreshDelay default 500;
+    // (rom) i am not sure if these properties should be string
+    // (rom) it limits the component to display purposes
     property TotalMemory: string read FTotalMemory write FDummy stored False;
-    property FreeMemory: string read FfreeMemory write FDummy  stored False;
-    property NumberOfPages: string read FTotalPages write FDummy  stored False;
+    property FreeMemory: string read FFreeMemory write FDummy stored False;
+    property NumberOfPages: string read FTotalPages write FDummy stored False;
     property DisponiblePages: string read FDisponiblePages write FDummy stored False;
     property NumberOfRegions: string read FNumberOfRegions write FDummy stored False;
     property DisponibleRegions: string read FDisponibleRegions write FDummy stored False;
@@ -70,8 +71,9 @@ implementation
 constructor TJvMemoryInfos.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FRefreshDelay := 500;
   FTimer := TTimer.Create(Self);
-  FTimer.Interval := 500;
+  FTimer.Interval := FRefreshDelay;
   FTimer.OnTimer := Refresh;
   FTimer.Enabled := AutoRefresh;
   Refresh(Self);
