@@ -233,7 +233,6 @@ type
     procedure UpdateSizes;
     function GetTopPage: integer;
   protected
-
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DrawPages(ACanvas: TCanvas);
     procedure DrawPages2(ACanvas: TCanvas; Offset: TPoint);
@@ -1629,7 +1628,6 @@ begin
   tmp := tmp - TotalCols;
   TopPage := tmp;
 end;
-
 
 end.
 

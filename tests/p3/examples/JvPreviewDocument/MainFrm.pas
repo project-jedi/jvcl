@@ -4,7 +4,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvPrvwDoc, ComCtrls, StdCtrls, ExtCtrls, Menus, JvRichEdit, JvPrvwRender;
+  Dialogs, JvPrvwDoc, ComCtrls, StdCtrls, ExtCtrls, Menus, jpeg,
+  JvRichEdit, JvPrvwRender;
 
 type
   TfrmMain = class(TForm)
@@ -50,6 +51,8 @@ type
     Label6: TLabel;
     cbScaleMode: TComboBox;
     StatusBar1: TStatusBar;
+    N3: TMenuItem;
+    PreviewForm1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure udColsClick(Sender: TObject; Button: TUDBtnType);
     procedure udRowsClick(Sender: TObject; Button: TUDBtnType);
@@ -67,15 +70,24 @@ type
     procedure About1Click(Sender: TObject);
     procedure Print1Click(Sender: TObject);
     procedure cbScaleModeChange(Sender: TObject);
+    procedure PreviewForm1Click(Sender: TObject);
   private
     { Private declarations }
-    procedure OpenFile(const Filename: string);
+    procedure OpenRTFFile(const Filename: string);
     procedure DoChange(Sender: TObject);
     procedure DoVertScroll(Sender: TObject);
-    procedure BuildPreview;
+    procedure BuildRTFPreview;
+    procedure BuildTXTPreview;
+    procedure BuildImagePreview;
+    procedure OpenImages(Files: TStrings);
+    procedure OpenTxtFile(const Filename: string);
+    procedure OpenImage(const Filename: string);
   public
     { Public declarations }
     pd: TJvPreviewDoc;
+    JvRTF: TJvPreviewRichEditRender;
+    JvTxt: TJvPreviewStringsRender;
+    JvImg: TJvPreviewGraphicRender;
   end;
 
 
@@ -127,6 +139,8 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
+  OpenDialog1.Filter := OpenDialog1.Filter + '|' + GraphicFilter(TGraphic);
+
   pd := TJvPreviewDoc.Create(self);
   pd.Parent := tabPreview;
   pd.Align := alClient;
@@ -159,9 +173,9 @@ begin
   udZoom.Position := pd.Options.Scale;
   mnuMargins.Checked := pd.Options.DrawMargins;
   cbScaleMode.ItemIndex := Ord(pd.Options.ScaleMode);
-  Statusbar1.Panels[0].Text := ExtractFilename(OpenDIalog1.Filename);
-  Statusbar1.Panels[1].Text := Format('%d pages',[pd.PageCount]);
-  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d',[pd.TotalCols,pd.VisibleRows,pd.TopPage]);
+  Statusbar1.Panels[0].Text := ExtractFilename(OpenDialog1.Filename);
+  Statusbar1.Panels[1].Text := Format('%d pages', [pd.PageCount]);
+  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d', [pd.TotalCols, pd.VisibleRows, pd.TopPage]);
 end;
 
 procedure TfrmMain.udColsClick(Sender: TObject; Button: TUDBtnType);
@@ -189,6 +203,7 @@ begin
 end;
 
 procedure TfrmMain.cbPreviewChange(Sender: TObject);
+var Ext: string;
 begin
   case cbPreview.ItemIndex of
     0:
@@ -197,27 +212,81 @@ begin
       pd.DeviceInfo.ReferenceHandle := Printer.Handle;
   end;
   // set 0.5 inch margin
-  pd.DeviceInfo.OffsetLeft := Max(pd.DeviceInfo.InchToXPx(0.5),pd.DeviceInfo.OffsetLeft);
-  pd.DeviceInfo.OffsetRight := Max(pd.DeviceInfo.InchToXPx(0.5),pd.DeviceInfo.OffsetRight);
-  pd.DeviceInfo.OffsetTop := Max(pd.DeviceInfo.InchToYPx(0.5),pd.DeviceInfo.OffsetTop);
-  pd.DeviceInfo.OffsetBottom := Max(pd.DeviceInfo.InchToYPx(0.5),pd.DeviceInfo.OffsetBottom);
-  
-  BuildPreview;
+  pd.DeviceInfo.OffsetLeft := Max(pd.DeviceInfo.InchToXPx(0.5), pd.DeviceInfo.OffsetLeft);
+  pd.DeviceInfo.OffsetRight := Max(pd.DeviceInfo.InchToXPx(0.5), pd.DeviceInfo.OffsetRight);
+  pd.DeviceInfo.OffsetTop := Max(pd.DeviceInfo.InchToYPx(0.5), pd.DeviceInfo.OffsetTop);
+  pd.DeviceInfo.OffsetBottom := Max(pd.DeviceInfo.InchToYPx(0.5), pd.DeviceInfo.OffsetBottom);
+  Ext := AnsiLowerCase(ExtractFileExt(OpenDialog1.Filename));
+  case OpenDialog1.FilterIndex of
+    1: BuildRTFPreview;
+    2: BuildTxtPreview;
+  else if Pos(Ext, AnsiLowerCase(GraphicFilter(TGraphic))) > 0 then
+    BuildImagePreview
+  else
+    BuildRTFPreview;
+  end;
 end;
 
-procedure TfrmMain.OpenFile(const Filename: string);
+procedure TfrmMain.OpenRTFFile(const Filename: string);
 begin
-  reOriginal.Lines.LoadFromFile(OpenDialog1.Filename);
   Screen.Cursor := crHourGlass;
-  BuildPreview;
-  Screen.Cursor := crDefault;
+  try
+    reOriginal.Lines.LoadFromFile(OpenDialog1.Filename);
+    BuildRTFPreview;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TfrmMain.OpenTxtFile(const Filename: string);
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    reOriginal.Lines.LoadFromFile(OpenDialog1.Filename);
+    BuildTxtPreview;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TfrmMain.OpenImage(const Filename: string);
+begin
+  if JvImg = nil then
+    JvImg := TJvPreviewGraphicRender.Create(self);
+  with JvImg.Images.Add do
+    Picture.LoadFromFile(Filename);
+end;
+
+procedure TfrmMain.OpenImages(Files: TStrings);
+var i: integer;
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    for i := 0 to Files.Count - 1 do
+      OpenImage(Files[i]);
+    BuildImagePreview;
+  finally
+    Screen.Cursor := crDefault;
+  end;
 end;
 
 procedure TfrmMain.Open1Click(Sender: TObject);
+var Ext: string;
 begin
   if OpenDialog1.Execute then
-    OpenFile(OpenDialog1.Filename);
+  begin
+    Ext := AnsiLowerCase(ExtractFileExt(OpenDialog1.Filename));
+    case OpenDialog1.FilterIndex of
+      1: OpenRTFFile(OpenDialog1.Filename);
+      2: OpenTxtFile(OpenDialog1.Filename);
+    else if Pos(Ext, AnsiLowerCase(GraphicFilter(TGraphic))) > 0 then
+      OpenImages(OpenDialog1.Files)
+    else
+      OpenRTFFile(OpenDialog1.Filename);
+    end; // case
+  end; // if
 end;
+
 
 procedure TfrmMain.Exit1Click(Sender: TObject);
 begin
@@ -269,15 +338,51 @@ end;
 
 procedure TfrmMain.DoVertScroll(Sender: TObject);
 begin
-  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d',[pd.TotalCols,pd.VisibleRows,pd.TopPage]);
+  Statusbar1.Panels[2].Text := Format('Cols: %d, Rows: %d, Page %d', [pd.TotalCols, pd.VisibleRows, pd.TopPage]);
 end;
 
-procedure TfrmMain.BuildPreview;
+procedure TfrmMain.BuildRTFPreview;
 begin
-  with TJvPreviewRichEditRender.Create(nil) do
-  try
+  if JvRTF = nil then
+    JvRTF := TJvPreviewRichEditRender.Create(self);
+  with JvRTF do
+  begin
     RichEdit := reOriginal;
     PrintPreview := pd;
+    CreatePreview(false);
+  end;
+end;
+
+procedure TfrmMain.BuildImagePreview;
+begin
+  if JvImg = nil then
+    JvImg := TJvPreviewGraphicRender.Create(self);
+  with JvImg do
+  begin
+    PrintPreview := pd;
+    CreatePreview(false);
+  end;
+end;
+
+procedure TfrmMain.BuildTXTPreview;
+begin
+  if JvTxt = nil then
+    JvTxt := TJvPreviewStringsRender.Create(self);
+  with JvTxt do
+  begin
+    PrintPreview := pd;
+    Strings := reOriginal.Lines;
+    CreatePreview(false);
+  end;
+end;
+
+procedure TfrmMain.PreviewForm1Click(Sender: TObject);
+begin
+  with TJvPreviewControlRender.Create(nil) do
+  try
+    pd.TopPage := 0;
+    PrintPreview := pd;
+    Control := self;
     CreatePreview(false);
   finally
     Free;

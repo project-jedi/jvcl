@@ -285,6 +285,13 @@ object frmMain: TfrmMain
         ShortCut = 16419
         OnClick = Last1Click
       end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object PreviewForm1: TMenuItem
+        Caption = 'Preview Form'
+        OnClick = PreviewForm1Click
+      end
     end
     object Options1: TMenuItem
       Caption = 'Options'
@@ -303,8 +310,9 @@ object frmMain: TfrmMain
     end
   end
   object OpenDialog1: TOpenDialog
-    Filter = 'RTF files|*.rtf|Text files|*.txt|All files(*.*)|*.*'
+    Filter = 'RTF files|*.rtf|Text files|*.txt'
     InitialDir = '.'
+    Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Left = 92
     Top = 112
   end
