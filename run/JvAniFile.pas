@@ -35,10 +35,10 @@ uses
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VCL}
-  Windows, Graphics, Forms, Dialogs,
+  Windows, Graphics, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QGraphics, QForms, QDialogs, Types,
+  QWindows, QGraphics, QForms, Types,
   {$ENDIF VisualCLX}
   JvTypes;
 
@@ -79,11 +79,11 @@ type
     procedure ReadAniStream(Stream: TStream);
     procedure WriteAniStream(Stream: TStream);
   protected
-    procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
     procedure Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure Clear;
     procedure LoadFromStream(Stream: TStream); virtual;
@@ -103,8 +103,6 @@ type
     property Header: TJvAniHeader read FHeader;
     property Index: Integer read FIndex write SetIndex;
   end;
-
-function LoadJvAnimatedCursorImageDialog: TJvAnimatedCursorImage;
 
 implementation
 
@@ -156,23 +154,23 @@ begin
   Result := S.Read(Tag, SizeOf(TJvAniTag)) = SizeOf(TJvAniTag);
 end;
 
-function ReadChunk(S: TStream; const Tag: TJvAniTag; Data: Pointer): Boolean;
+function ReadChunk(S: TStream; const Tag: TJvAniTag; var Data): Boolean;
 begin
-  Result := S.Read(Data^, Tag.ckSize) = Tag.ckSize;
+  Result := S.Read(Data, Tag.ckSize) = Tag.ckSize;
   if Result then
     Result := S.Seek(Tag.ckSize mod 2, soFromCurrent) <> -1;
 end;
 
-function ReadChunkN(S: TStream; const Tag: TJvAniTag; Data: Pointer;
+function ReadChunkN(S: TStream; const Tag: TJvAniTag; var Data;
   cbMax: Longint): Boolean;
 var
   cbRead: Longint;
 begin
-  FillChar(Data^, cbMax, #0);
+  FillChar(Data, cbMax, #0);
   cbRead := Tag.ckSize;
   if cbMax < cbRead then
     cbRead := cbMax;
-  Result := S.Read(Data^, cbRead) = cbRead;
+  Result := S.Read(Data, cbRead) = cbRead;
   if Result then
   begin
     cbRead := PadUp(Tag.ckSize) - cbRead;
@@ -239,47 +237,11 @@ begin
       Move(FTag, Self.FTag, SizeOf(TJvAniTag));
       Self.FHotSpot.X := FHotSpot.X;
       Self.FHotSpot.Y := FHotSpot.Y;
-      Self.FJiffRate := FJiffRate;
-      Self.FSeq := FSeq;
+      Self.FJiffRate := JiffRate;
+      Self.FSeq := Seq;
     end
   else
     inherited Assign(Source);
-end;
-
-//=== TJvAnimatedCursorImage helper ==========================================
-
-// (rom) created because JvAnimatedEditor.pas and JvIconListForm.pas contained the same code
-
-function LoadJvAnimatedCursorImageDialog: TJvAnimatedCursorImage;
-var
-  CurDir: string;
-begin
-  Result := nil;
-  CurDir := GetCurrentDir;
-  with TOpenDialog.Create(Application) do
-    try
-      Options := [
-        {$IFDEF VCL}
-        ofHideReadOnly,
-        {$ENDIF VCL}
-        ofFileMustExist
-      ];
-      DefaultExt := RsAniExtension;
-      Filter := RsAniCurFilter;
-      if Execute then
-      begin
-        Result := TJvAnimatedCursorImage.Create;
-        try
-          Result.LoadFromFile(FileName);
-        except
-          FreeAndNil(Result);
-          raise;
-        end;
-      end;
-    finally
-      Free;
-      SetCurrentDir(CurDir);
-    end;
 end;
 
 //=== TJvAnimatedCursorImage =================================================
@@ -527,7 +489,7 @@ begin
   begin
     if Tag.ckID = FOURCC_anih then
     begin
-      if not ReadChunk(Stream, Tag, @FHeader) then
+      if not ReadChunk(Stream, Tag, FHeader) then
         Break;
       if ((FHeader.dwFlags and AF_ICON) <> AF_ICON) or
         (FHeader.dwFrames = 0) then
@@ -542,7 +504,7 @@ begin
     if Tag.ckID = FOURCC_rate then
     begin
       { If we find a rate chunk, read it into its preallocated space }
-      if not ReadChunkN(Stream, Tag, @Temp, SizeOf(Longint)) then
+      if not ReadChunkN(Stream, Tag, Temp, SizeOf(Longint)) then
         Break;
       if iRate < FIcons.Count then
         TJvIconFrame(FIcons[iRate]).FJiffRate := Temp;
@@ -552,7 +514,7 @@ begin
     if Tag.ckID = FOURCC_seq then
     begin
       { If we find a seq chunk, read it into its preallocated space }
-      if not ReadChunkN(Stream, Tag, @Temp, SizeOf(Longint)) then
+      if not ReadChunkN(Stream, Tag, Temp, SizeOf(Longint)) then
         Break;
       if iSeq < FIcons.Count then
         TJvIconFrame(FIcons[iSeq]).FSeq := Temp;
@@ -621,7 +583,7 @@ begin
           if Tag.ckID = FOURCC_INAM then
           begin
             if (cbChunk < Tag.ckSize) or
-              not ReadChunkN(Stream, Tag, @Buffer[0], SizeOf(Buffer)-1) then
+              not ReadChunkN(Stream, Tag, Buffer[0], SizeOf(Buffer)-1) then
               Break;
             Dec(cbChunk, PadUp(Tag.ckSize));
             FTitle := Buffer;
@@ -630,7 +592,7 @@ begin
           if Tag.ckID = FOURCC_IART then
           begin
             if (cbChunk < Tag.ckSize) or
-              not ReadChunkN(Stream, Tag, @Buffer[0], SizeOf(Buffer)-1) then
+              not ReadChunkN(Stream, Tag, Buffer[0], SizeOf(Buffer)-1) then
               Break;
             Dec(cbChunk, PadUp(Tag.ckSize));
             FCreator := Buffer;
@@ -673,16 +635,108 @@ begin
     RiffReadError;
 end;
 
+{
+procedure SetFOURCC(var FourCC: TJvFourCC; ID: string);
+begin
+  FourCC[0] := ID[1];
+  FourCC[1] := ID[2];
+  FourCC[2] := ID[3];
+  FourCC[3] := ID[4];
+end;
+
+procedure StartWriteChunk(Stream: TStream; var Tag: TJvAniTag; ID: string);
+begin
+  SetFOURCC(Tag.ckID, ID);
+  Tag.ckSize := Stream.Position;
+  Stream.Write(Tag, SizeOf(Tag));
+end;
+
+procedure EndWriteChunk(Stream: TStream; var Tag: TJvAniTag);
+var
+  Pos: Int64;
+  B: Byte;
+begin
+  Pos := Stream.Position;
+  Tag.ckSize := Pos - Tag.ckSize;
+  Stream.Seek(-Tag.ckSize, soFromCurrent);
+  Stream.Write(Tag, SizeOf(Tag));
+  Stream.Seek(Pos, soFromBeginning);
+  if Odd(Tag.ckSize) then
+  begin
+    B := 0;
+    Stream.Write(B, 1);
+  end;
+end;
+
 procedure TJvAnimatedCursorImage.WriteAniStream(Stream: TStream);
 var
-  Data: TMemoryStream;
+  I: Integer;
+  MemStream: TMemoryStream;
+  TagRIFF, TagLIST, Tag: TJvAniTag;
+  Id: TJvFourCC;
 begin
-  Data := TMemoryStream.Create;
+  MemStream := TMemoryStream.Create;
   try
-    Stream.CopyFrom(Data, 0);
+    StartWriteChunk(MemStream, TagRIFF, FOURCC_RIFF);
+
+    SetFOURCC(Id, FOURCC_ACON);
+    MemStream.Write(Id, SizeOf(TJvFourCC));
+
+    if (Title <> '') or (Creator <> '') then
+    begin
+      StartWriteChunk(MemStream, TagLIST, FOURCC_LIST);
+      SetFOURCC(Id, FOURCC_INFO);
+      MemStream.Write(Id, SizeOf(TJvFourCC));
+      if Title <> '' then
+      begin
+        StartWriteChunk(MemStream, Tag, FOURCC_INAM);
+        MemStream.Write(PChar(Title)^, Length(Title));
+        EndWriteChunk(MemStream, Tag);
+      end;
+      if Creator <> '' then
+      begin
+        StartWriteChunk(MemStream, Tag, FOURCC_IART);
+        MemStream.Write(PChar(Creator)^, Length(Creator));
+        EndWriteChunk(MemStream, Tag);
+      end;
+      EndWriteChunk(MemStream, TagLIST);
+    end;
+    SetFOURCC(Id, FOURCC_anih);
+    MemStream.Write(Id, SizeOf(TJvFourCC));
+    I := SizeOf(TJvAniHeader);
+    MemStream.Write(I, SizeOf(Integer));
+    FHeader.dwFrames := IconCount;
+    MemStream.Write(FHeader, SizeOf(TJvAniHeader));
+    StartWriteChunk(MemStream, Tag, FOURCC_rate);
+    MemStream.Write(Frames[0].FJiffRate, SizeOf(Integer));
+    EndWriteChunk(MemStream, Tag);
+    StartWriteChunk(MemStream, Tag, FOURCC_seq);
+    I := IconCount;
+    MemStream.Write(I, SizeOf(Integer));
+    EndWriteChunk(MemStream, Tag);
+
+    StartWriteChunk(MemStream, TagLIST, FOURCC_LIST);
+    SetFOURCC(Id, FOURCC_fram);
+    MemStream.Write(Id, SizeOf(TJvFourCC));
+    for I := 0 to IconCount - 1 do
+    begin
+      StartWriteChunk(MemStream, Tag, FOURCC_icon);
+      Icons[I].SaveToStream(MemStream);
+      EndWriteChunk(MemStream, Tag);
+    end;
+    EndWriteChunk(MemStream, TagLIST);
+
+    EndWriteChunk(MemStream, TagRIFF);
+    Stream.CopyFrom(MemStream, 0);
   finally
-    Data.Free;
+    MemStream.Free;
   end;
+end;
+}
+
+procedure TJvAnimatedCursorImage.WriteAniStream(Stream: TStream);
+begin
+  raise EInvalidGraphicOperation.Create('writing of ANI files not yet supported');
 end;
 
 procedure TJvAnimatedCursorImage.LoadFromStream(Stream: TStream);

@@ -39,7 +39,10 @@ type
     DriveComboBox1: TJvDriveCombo;
     Memo1: TMemo;
     Image2: TImage;
+    SaveDialog1: TSaveDialog;
+    Save: TButton;
     procedure FileListBox1Click(Sender: TObject);
+    procedure SaveClick(Sender: TObject);
   end;
 
 var
@@ -62,6 +65,14 @@ begin
     Memo1.Lines.Add('Title: ' + Title);
     Memo1.Lines.Add('Frames: ' + IntToStr(FramesCount));
   end;
+end;
+
+procedure TJvAniMainForm.SaveClick(Sender: TObject);
+begin
+  SaveDialog1.InitialDir := DirectoryListBox1.Directory;
+  if SaveDialog1.Execute then
+    with TJvAni(Image1.Picture.Graphic) do
+      SaveToFile(SaveDialog1.FileName);
 end;
 
 end.
