@@ -18,7 +18,7 @@ Contributor(s): none to date
 
 
 Last Modified: 2003-06-28;
-Current Version: 0.2
+Current Version: 0.3
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -49,6 +49,15 @@ resourcestring NOT_CONNECTED = 'Not connected';
                ERROR_MSG = 'Error #';
 
 type
+  TJvScrollPos = class (TPersistent)
+  protected
+    FLeft: Integer;
+    FTop: Integer;
+  published
+    property Left : Integer read FLeft write FLeft;
+    property Top  : Integer read FTop  write FTop;
+  end;
+
   // The video format used by the video device
   TJvVideoFormat = class (TPersistent)
   protected
@@ -251,7 +260,7 @@ type
   TJvPaletteNbColors = 0..256;
 
   TJvPalette = class (TPersistent)
-  private
+  protected
     FHwnd : HWND;     // the AVICap window that will use these settings
   public
     // create the object
@@ -385,7 +394,7 @@ type
     FCaptureStatus : TCAPSTATUS;      // the state of the current capture
     FVideoFormat   : TJvVideoFormat;  // the current video format used (or to be used)
     FAudioFormat   : TJvAudioFormat;  // the current audio format used (or to be used)
-    FScrollPos     : TPoint;          // the scrolling position in the window
+    FScrollPos     : TJvScrollPos;    // the scrolling position in the window
     FPalette       : TJvPalette;      // the palette in use
     FDriverIndex   : TJvDriverIndex;  // the driver index (-1 if not connected)
 
@@ -444,7 +453,7 @@ type
 
     // set the scrolling position in the AviCap window. Useful if the frame is larger than
     // the actual size of the control
-    procedure SetScrollPos(nScrollPos : TPoint);
+    procedure SetScrollPos(nScrollPos : TJvScrollPos);
 
     // sets and gets the MCI device used with this AviCap component (may well be empty)
     procedure SetMCIDevice(nMCIDevice : string);
@@ -595,7 +604,7 @@ type
     property PreviewFrameDelay : Cardinal           read FPreviewFrameDelay write SetPreviewFrameDelay;
     property PreviewFPS        : Double             read GetPreviewFPS      write SetPreviewFPS;
     property Previewing        : Boolean            read FPreviewing        write SetPreviewing;
-    property ScrollPos         : TPoint             read FScrollPos         write SetScrollPos;
+    property ScrollPos         : TJvScrollPos       read FScrollPos         write SetScrollPos;
     property Title             : string             read FTitle             write SetTitle;
     property UsedEvents        : TJvUsedEvents      read FUsedEvents        write SetUsedEvents;
     property VideoLeft         : Integer            read FVideoLeft         write SetVideoLeft;
@@ -1289,12 +1298,15 @@ begin
   end;
 end;
 
-procedure TJvAVICapture.SetScrollPos(nScrollPos : TPoint);
+procedure TJvAVICapture.SetScrollPos(nScrollPos : TJvScrollPos);
+var tmpPoint : TPoint;
 begin
-  if FHwnd <> 0 then 
+  if FHwnd <> 0 then
   begin
     FScrollPos := nScrollPos;
-    capSetScrollPos(FHwnd, @FScrollPos);
+    tmpPoint.X := FScrollPos.Left;
+    tmpPoint.Y := FScrollPos.Top;
+    capSetScrollPos(FHwnd, @tmpPoint);
   end;
 end;
 
@@ -1427,6 +1439,8 @@ constructor TJvAVICapture.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
 
+  FScrollPos := TJvScrollPos.Create;
+
   // Not connected yet
   FDriverIndex := -1;
 
@@ -1478,6 +1492,7 @@ begin
   FAudioFormat.Free;
   FVideoFormat.Free;
   FPalette.Free;
+  FScrollPos.Free;
 
   inherited;
 end;
