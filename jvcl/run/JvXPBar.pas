@@ -807,7 +807,8 @@ begin
   if Sender is TCustomAction then
     with TCustomAction(Sender) do
     begin
-      Update;
+      if not (csLoading in ComponentState) then
+        Update;
       {$IFDEF VCL}
       {$IFDEF COMPILER6_UP}
       if not CheckDefaults or (Self.AutoCheck = False) then
