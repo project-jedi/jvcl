@@ -2319,7 +2319,6 @@ begin
   FDisplayValues := TStringList.Create;
   FSelImage := TPicture.Create;
   Height := {GetMinHeight} 21;
-  FIgnoreCase := True;
   FEscapeClear := True;
 end;
 
