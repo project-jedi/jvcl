@@ -39,7 +39,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ImgList,
   Dialogs, JvExControls, JvComponent, jpeg, ExtCtrls, StdCtrls, JvWizard,
-  JvWizardRouteMapSteps, JvWizardRouteMapList,
+  JvWizardRouteMapList, JvJVCLAboutForm,
   Core,
   ShellAPI, HtHint;
 

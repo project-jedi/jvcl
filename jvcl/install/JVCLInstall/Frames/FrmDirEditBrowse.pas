@@ -52,6 +52,8 @@ type
   public
     class function Build(const Caption, Dir: string; OnChange: TDirEditChangeEvent;
       UserData: TObject; Client: TWinControl): TFrameDirEditBrowse;
+  published
+    property OnChange: TDirEditChangeEvent read FOnChange write FOnChange;
   end;
 
 implementation

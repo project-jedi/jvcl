@@ -27,7 +27,7 @@ object FrameInstall: TFrameInstall
   object LblOpenFile: TLabel
     Left = 8
     Top = 320
-    Width = 417
+    Width = 505
     Height = 13
     Cursor = crHandPoint
     AutoSize = False
@@ -41,6 +41,7 @@ object FrameInstall: TFrameInstall
     ParentShowHint = False
     ShowHint = True
     Visible = False
+    OnClick = LblOpenFileClick
   end
   object ProgressBarTarget: TProgressBar
     Left = 8

@@ -109,14 +109,14 @@ begin
               end;
 
              // directories:
-              Add('BPL output directory:', Target.BplDir);
+              Add('BPL output directory:', BplDir);
               if Target.IsBCB then
               begin
-                Add('Lib output directory:', Target.DcpDir);
+                Add('Lib output directory:', DcpDir);
                 Add('HPP output directory:', HppDir);
               end
               else
-                Add('DCP output directory:', Target.DcpDir);
+                Add('DCP output directory:', DcpDir);
 
              // options
               if Build then

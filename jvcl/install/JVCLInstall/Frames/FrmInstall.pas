@@ -33,6 +33,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, StdCtrls,
+  ShellAPI,
   JVCL3Install, JVCLData, PackageUtils, Compile, Utils;
 
 type
@@ -46,6 +47,7 @@ type
     BtnDetails: TButton;
     procedure RichEditLogSelectionChange(Sender: TObject);
     procedure BtnDetailsClick(Sender: TObject);
+    procedure LblOpenFileClick(Sender: TObject);
   private
     FInitializing: Boolean;
     FInstaller: TInstaller;
@@ -274,7 +276,7 @@ begin
   try
     Compiler.OnProgress := EvProgress;
     Compiler.OnCaptureLine := EvCaptureLine;
-    Success := Compiler.Compile(True);
+    Success := Compiler.Compile;
   finally
     Compiler.Free;
   end;
@@ -312,6 +314,12 @@ begin
   BtnDetails.Visible := False;
   RichEditLog.Visible := True;
   RichEditLog.SetFocus;
+end;
+
+procedure TFrameInstall.LblOpenFileClick(Sender: TObject);
+begin
+  if ShellExecute(Handle, 'open', PChar(LblOpenFile.Hint), nil, nil, SW_SHOW) < 32 then
+    MessageDlg('Error opening the file.', mtError, [mbOk], 0);
 end;
 
 end.

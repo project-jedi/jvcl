@@ -65,6 +65,8 @@ type
 
     FInstallMode: TInstallMode;
     FFrameworks: TJVCLFrameworks;
+    FDcpDir: string;
+    FBplDir: string;
 
     procedure SetInstallMode(const Value: TInstallMode);
     function GetFrameworkCount: Integer;
@@ -85,6 +87,8 @@ type
     function GetTarget: TCompileTarget;
     function GetJCLDir: string;
     function GetHppDir: string;
+    function GetBplDir: string;
+    function GetDcpDir: string;
   protected
     procedure Init; virtual;
     procedure DoCleanPalette(reg: TRegistry; const Name: string;
@@ -127,6 +131,8 @@ type
 
     property UnitOutDir: string read GetUnitOutDir;
       // UnitOutDir specifies the JVCL directory where the .dcu should go.
+    property BplDir: string read GetBplDir write FBplDir;
+    property DcpDir: string read GetDcpDir write FDcpDir;
 
     property InstalledJVCLVersion: Integer read FInstalledJVCLVersion;
       // InstalledJVCLVersion returns the version of the installed JVCL.
@@ -484,7 +490,7 @@ begin
        ProjectGroup.Packages[PackageIndex].Info.IsDesign then
     begin
       KnownPackages.Add(
-        Target.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName,
+        ProjectGroup.TargetConfig.BplDir + '\' + ProjectGroup.Packages[PackageIndex].TargetName,
         ProjectGroup.Packages[PackageIndex].Info.Description
       );
     end;
@@ -609,6 +615,8 @@ begin
   FCleanPalettes := True;
   FDeveloperInstall := False;
   FAutoDependencies := True;
+  FBplDir := Target.BplDir;
+  FDcpDir := Target.DcpDir;
   Init;
   FInstallJVCL := CanInstallJVCL;
 
@@ -652,6 +660,7 @@ begin
   else if Target.FindPackageEx('JvCore') <> nil then
     FInstalledJVCLVersion := 3;
 
+ // identify JCL version
   FMissingJCL := True;
   if FJCLDir = '' then
   begin
@@ -693,13 +702,12 @@ begin
       FMissingJCL := False;
   end;
 
- // identify JCL version
-  // are CJcl.dcp and CJclVcl.dcp are available
-  if FileExists(Target.BplDir + '\CJcl.dcp') and
-     FileExists(Target.BplDir + '\CJclVcl.dcp') then
+  // are CJcl.dcp and CJclVcl.dcp available
+  if FileExists(BplDir + '\CJcl.dcp') and
+     FileExists(BplDir + '\CJclVcl.dcp') then
   begin
     if FJCLDIr = '' then
-      FJCLDir := Target.BplDir;
+      FJCLDir := BplDir;
     FMissingJCL := False;
     FCompiledJCL := True;
   end;
@@ -924,6 +932,16 @@ end;
 function TTargetConfig.GetCompileOnly: Boolean;
 begin
   Result := FCompileOnly;
+end;
+
+function TTargetConfig.GetBplDir: string;
+begin
+  Result := FBplDir;
+end;
+
+function TTargetConfig.GetDcpDir: string;
+begin
+  Result := FDcpDir;
 end;
 
 function TTargetConfig.GetFrameworkCount: Integer;
