@@ -14,10 +14,8 @@ object Form1: TForm1
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  ShowHint = True
   OnCreate = FormCreate
-  DesignSize = (
-    547
-    404)
   PixelsPerInch = 96
   TextHeight = 13
   object lblChars: TLabel
@@ -37,9 +35,6 @@ object Form1: TForm1
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
-    DesignSize = (
-      547
-      156)
     object Label1: TLabel
       Left = 8
       Top = 8
@@ -74,8 +69,6 @@ object Form1: TForm1
         'to show StartChar/EndChar range.'
       Caption = '&Filter:'
       FocusControl = cbFilter
-      ParentShowHint = False
-      ShowHint = True
     end
     object Label4: TLabel
       Left = 160
@@ -84,8 +77,6 @@ object Form1: TForm1
       Height = 13
       Hint = 'This combo is only enabled on non-NT OS'#39'es (Win95/98/Me).'
       Caption = '&Locale:'
-      ParentShowHint = False
-      ShowHint = True
     end
     object btnFont: TButton
       Left = 216
@@ -93,7 +84,7 @@ object Form1: TForm1
       Width = 75
       Height = 25
       Caption = '&Font...'
-      TabOrder = 12
+      TabOrder = 13
       OnClick = btnFontClick
     end
     object chkZoomPanel: TCheckBox
@@ -119,7 +110,7 @@ object Form1: TForm1
       Left = 65
       Top = 24
       Width = 15
-      Height = 22
+      Height = 21
       Associate = edStart
       Min = 0
       Max = 32767
@@ -140,7 +131,7 @@ object Form1: TForm1
       Left = 161
       Top = 24
       Width = 15
-      Height = 22
+      Height = 21
       Associate = edEnd
       Min = 0
       Max = 32767
@@ -161,7 +152,7 @@ object Form1: TForm1
       Left = 257
       Top = 24
       Width = 15
-      Height = 22
+      Height = 21
       Associate = edCols
       Min = 1
       Max = 32767
@@ -174,7 +165,7 @@ object Form1: TForm1
       Left = 8
       Top = 126
       Width = 97
-      Height = 20
+      Height = 22
       ColorNameMap.Strings = (
         'clBlack=Black'
         'clMaroon=Maroon'
@@ -234,7 +225,7 @@ object Form1: TForm1
       NewColorText = 'Custom'
       Options = [coText, coCustomColors]
       DroppedDownWidth = 97
-      TabOrder = 10
+      TabOrder = 11
     end
     object cbFont: TJvFontComboBox
       Left = 112
@@ -244,15 +235,15 @@ object Form1: TForm1
       FontName = 'System'
       ItemIndex = 0
       Sorted = False
-      TabOrder = 11
+      TabOrder = 12
     end
     object chkUnicode: TCheckBox
-      Left = 126
+      Left = 198
       Top = 52
       Width = 59
       Height = 17
       Caption = '&Unicode'
-      TabOrder = 7
+      TabOrder = 8
       OnClick = chkUnicodeClick
     end
     object reInfo: TRichEdit
@@ -261,10 +252,8 @@ object Form1: TForm1
       Width = 222
       Height = 96
       Anchors = [akLeft, akTop, akRight, akBottom]
-      ParentShowHint = False
       ScrollBars = ssBoth
-      ShowHint = True
-      TabOrder = 14
+      TabOrder = 15
       WordWrap = False
     end
     object btnSelect: TButton
@@ -274,7 +263,7 @@ object Form1: TForm1
       Height = 25
       Anchors = [akTop, akRight]
       Caption = 'Se&lect'
-      TabOrder = 13
+      TabOrder = 14
       OnClick = btnSelectClick
     end
     object cbFilter: TComboBox
@@ -285,7 +274,7 @@ object Form1: TForm1
       Style = csDropDownList
       Enabled = False
       ItemHeight = 13
-      TabOrder = 8
+      TabOrder = 9
       OnClick = cbFilterClick
     end
     object cbLocales: TComboBox
@@ -295,8 +284,21 @@ object Form1: TForm1
       Height = 21
       Style = csDropDownList
       ItemHeight = 13
-      TabOrder = 9
+      TabOrder = 10
       OnClick = cbLocalesClick
+    end
+    object chkShadow: TCheckBox
+      Left = 120
+      Top = 52
+      Width = 73
+      Height = 17
+      Hint = 
+        'Shows and hides the drop shadow. Also, when checking/unchecking,' +
+        ' the shadow is offset randomly  from the zoom panel. Default off' +
+        'set value  is 2px.'
+      Caption = 'Shado&w'
+      TabOrder = 7
+      OnClick = chkShadowClick
     end
   end
   object FontDialog1: TFontDialog
