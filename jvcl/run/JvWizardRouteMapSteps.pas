@@ -20,23 +20,20 @@ Last Modified: 2002-02-12
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Purpose:
+  Step style route map for TJvWizardRouteMap
+
+History:
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{*****************************************************************************
-Purpose:      Step style route map for TJvWizardRouteMap
-History:
----------------------------------------------------------------------------
-Date(mm/dd/yy)   Comments
----------------------------------------------------------------------------
-11/02/2002       Initial release
-******************************************************************************}
 unit JvWizardRouteMapSteps;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvWizard;
 
 type
@@ -47,18 +44,18 @@ type
     FPreviousStepText: string;
     FShowDivider: Boolean;
     FShowNavigators: Boolean;
-    function  GetActiveStepRect:TRect;
-    function  GetPreviousStepRect:TRect;
-    function  GetNextStepRect:TRect;
-    function  GetPreviousArrowRect:TRect;
-    function  GetNextArrowRect:TRect;
+    function  GetActiveStepRect: TRect;
+    function  GetPreviousStepRect: TRect;
+    function  GetNextStepRect: TRect;
+    function  GetPreviousArrowRect: TRect;
+    function  GetNextArrowRect: TRect;
     procedure SetIndent(const Value: Integer);
     procedure SetNextStepText(const Value: string);
     procedure SetPreviousStepText(const Value: string);
     procedure SetShowDivider(const Value: Boolean);
     procedure SetShowNavigators(const Value: Boolean);
     function  DetectPageCount(var ActivePageIndex: Integer): Integer; // Add by Yu Wei
-    function  DetectPage(Pt: TPoint): TJvWizardCustomPage; // Add by Yu Wei
+    function  DetectPage(const Pt: TPoint): TJvWizardCustomPage; // Add by Yu Wei
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
@@ -68,14 +65,12 @@ type
   published
     property Color;
     property Font;
-    property Indent:Integer read FIndent write SetIndent;
-    property PreviousStepText: string
-      read FPreviousStepText write SetPreviousStepText;
+    property Indent: Integer read FIndent write SetIndent default 5;
+    property PreviousStepText: string read FPreviousStepText write SetPreviousStepText;
     property NextStepText: string read FNextStepText write SetNextStepText;
-    property ShowDivider: Boolean read FShowDivider write SetShowDivider;
-    property ShowNavigators:Boolean read FShowNavigators write SetShowNavigators;
+    property ShowDivider: Boolean read FShowDivider write SetShowDivider default True;
+    property ShowNavigators: Boolean read FShowNavigators write SetShowNavigators  default True;
   end;
-
 
 implementation
 
@@ -84,12 +79,9 @@ resourcestring
   rsBackTo = 'Back to';
   rsNextStep = 'Next Step';
 
-
-{ TJvWizardRouteMapSteps }
-
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FIndent := 5;
   Color := clBackground;
   Font.Color := clWhite;
@@ -99,18 +91,16 @@ begin
   FShowDivider := True;
 end;
 
-function TJvWizardRouteMapSteps.DetectPage(Pt: TPoint): TJvWizardCustomPage;
+function TJvWizardRouteMapSteps.DetectPage(const Pt: TPoint): TJvWizardCustomPage;
 begin
   // Ignore all disabled pages at run time.
-  Result := nil;
   if PtInRect(GetPreviousArrowRect, Pt) then
-  begin
-    Result := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
-  end
-  else if PtInRect(GetNextArrowRect, Pt) then
-  begin
-    Result := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
-  end;
+    Result := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState))
+  else
+  if PtInRect(GetNextArrowRect, Pt) then
+    Result := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState))
+  else
+    Result := nil;
 end;
 
 function TJvWizardRouteMapSteps.GetActiveStepRect: TRect;
@@ -131,19 +121,19 @@ begin
     Height - FIndent - 32  +  Canvas.TextHeight('Yy'));
 end;
 
-function TJvWizardRouteMapSteps.DetectPageCount(
-  var ActivePageIndex: Integer): Integer;
+function TJvWizardRouteMapSteps.DetectPageCount(var ActivePageIndex: Integer): Integer;
 var
-  i: Integer;
+  I: Integer;
 begin
   // Ignore all disabled pages at run time.
   ActivePageIndex := 0;
   Result := 0;
-  for i := 0 to PageCount - 1 do
+  for I := 0 to PageCount - 1 do
   begin
-    if (csDesigning in ComponentState) or Pages[i].Enabled then
+    if (csDesigning in ComponentState) or Pages[I].Enabled then
     begin
-      if i <= PageIndex then Inc(ActivePageIndex);
+      if I <= PageIndex then
+        Inc(ActivePageIndex);
       Inc(Result);
     end;
   end;
@@ -161,12 +151,12 @@ begin
     Top + FIndent + Canvas.TextHeight('Yy'));
 end;
 
-procedure TJvWizardRouteMapSteps.MouseMove(Shift: TShiftState; X,Y: Integer);
+procedure TJvWizardRouteMapSteps.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   Pt: TPoint;
   APage: TJvWizardCustomPage;
 begin
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   Pt := Point(X, Y);
   if PtInRect(ClientRect, Pt) and ShowNavigators then
   begin
@@ -202,7 +192,7 @@ begin
      [ActivePageIndex, TotalPageCount])), -1, TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
 
-  //Display Active Page Description
+  // Display Active Page Description
   Canvas.Font.Style:= [];
   OffsetRect(TextRect, 0, StepHeight);
   DrawText(Canvas.Handle, PChar(Pages[PageIndex].Caption), -1, TextRect,
