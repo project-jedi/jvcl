@@ -1,8 +1,8 @@
 object frmMain: TfrmMain
-  Left = 192
+  Left = 191
   Top = 107
-  Width = 696
-  Height = 480
+  Width = 543
+  Height = 382
   Caption = 'TJvUrlListGrabber demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,15 +11,119 @@ object frmMain: TfrmMain
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    535
+    355)
   PixelsPerInch = 96
   TextHeight = 13
-  object Button1: TButton
-    Left = 188
-    Top = 76
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
+  object lblExpl: TLabel
+    Left = 4
+    Top = 148
+    Width = 397
+    Height = 33
+    Anchors = [akLeft, akTop, akRight]
+    AutoSize = False
+    Caption = 
+      'Please use the memo below to indicate one URL per line. Those ur' +
+      'l will then be grabbed by the component when you press Go in the' +
+      ' Design Time box'
+    WordWrap = True
+  end
+  object memExplanation: TMemo
+    Left = 4
+    Top = 4
+    Width = 527
+    Height = 137
+    Anchors = [akLeft, akTop, akRight]
+    Lines.Strings = (
+      'This is the demo for TJvUrlListGrabber.'
+      
+        'This component takes a list of strings through its Urls property' +
+        ', each representing a URL to grab. At '
+      'present it only supports HTTP and FTP URLs'
+      
+        'This component is intended to replace TJvHttpGrabber, TJvFtpGrab' +
+        'ber and TJvMultiHttpGrabber. '
+      
+        'However, it is still in the early stages of development and may ' +
+        'lack some methods and/or properties. '
+      'It works well in runtime though.'
+      
+        'The dynamic creation group allows to work with a component creat' +
+        'ed dynamically at runtime as opposed '
+      
+        'to using the one available on the form at design time. This has ' +
+        'been done to test both usages as there are '
+      'errors that only show up by using a design created component.')
+    ScrollBars = ssVertical
     TabOrder = 0
-    OnClick = Button1Click
+  end
+  object grbDynamic: TGroupBox
+    Left = 415
+    Top = 148
+    Width = 113
+    Height = 65
+    Anchors = [akTop, akRight]
+    Caption = ' Dynamic creation '
+    TabOrder = 1
+    object btnGoDynamic: TButton
+      Left = 18
+      Top = 24
+      Width = 71
+      Height = 25
+      Caption = 'Go'
+      TabOrder = 0
+      OnClick = btnGoDynamicClick
+    end
+  end
+  object grbDesign: TGroupBox
+    Left = 415
+    Top = 228
+    Width = 113
+    Height = 121
+    Anchors = [akTop, akRight, akBottom]
+    Caption = ' Design time use '
+    TabOrder = 2
+    object btnGoDesign: TButton
+      Left = 20
+      Top = 56
+      Width = 75
+      Height = 25
+      Caption = 'Go'
+      TabOrder = 0
+      OnClick = btnGoDesignClick
+    end
+    object btnClear: TButton
+      Left = 20
+      Top = 24
+      Width = 75
+      Height = 25
+      Caption = 'Clear list'
+      TabOrder = 1
+      OnClick = btnClearClick
+    end
+    object btnStop: TButton
+      Left = 20
+      Top = 88
+      Width = 75
+      Height = 25
+      Caption = 'Stop'
+      TabOrder = 2
+      OnClick = btnStopClick
+    end
+  end
+  object memUrls: TMemo
+    Left = 4
+    Top = 188
+    Width = 389
+    Height = 161
+    Anchors = [akLeft, akTop, akRight, akBottom]
+    Lines.Strings = (
+      'http://jvcl.sf.net')
+    TabOrder = 3
+  end
+  object julGrabber: TJvUrlListGrabber
+    Left = 384
+    Top = 156
   end
 end

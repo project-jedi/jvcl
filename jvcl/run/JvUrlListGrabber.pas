@@ -86,7 +86,14 @@ type
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
 
+    // cleans up the internal list of grabbers
     procedure Cleanup;
+
+    // starts all the grabbers
+    procedure StartAll;
+
+    // stops all the grabbers
+    procedure StopAll;
 
     // the Grabber objects associated with the Urls
     property Grabbers[const Index : Integer]: TJvUrlGrabber read GetGrabbers;
@@ -180,6 +187,26 @@ begin
     FDefaultGrabberIndex := -1
   else
     FDefaultGrabberIndex := Value;
+end;
+
+procedure TJvUrlListGrabber.StartAll;
+var
+  i : Integer;
+begin
+  for i := 0 to FUrls.Count - 1 do
+  begin
+    Grabbers[i].Start;
+  end;
+end;
+
+procedure TJvUrlListGrabber.StopAll;
+var
+  i : Integer;
+begin
+  for i := 0 to FUrls.Count - 1 do
+  begin
+    Grabbers[i].Stop;
+  end;
 end;
 
 procedure TJvUrlListGrabber.URLsChange(Sender: TObject);
