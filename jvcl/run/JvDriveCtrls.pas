@@ -61,12 +61,12 @@ type
     FDirList: TJvDirectoryListBox;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
-    procedure SetJvImageSize(Value: TJvImageSize);
+    procedure SetImageSize(Value: TJvImageSize);
     procedure SetOffset(Value: Integer);
   protected
     procedure CreateWnd; override;
     procedure SetDrive(Value: Char);
-    procedure SetJvDriveTypes(Value: TJvDriveTypes);
+    procedure SetDriveTypes(Value: TJvDriveTypes);
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
@@ -85,9 +85,9 @@ type
     property BevelKind;
     property BevelWidth;
     property Drive: Char read FDrive write SetDrive stored False;
-    property DriveTypes: TJvDriveTypes read FDriveTypes write SetJvDriveTypes;
+    property DriveTypes: TJvDriveTypes read FDriveTypes write SetDriveTypes;
     property Offset: Integer read FOffset write SetOffset;
-    property ImageSize: TJvImageSize read FImageSize write SetJvImageSize;
+    property ImageSize: TJvImageSize read FImageSize write SetImageSize;
     property DisplayName: string read FDisplayName;
     property Color;
     property Ctl3D;
@@ -145,12 +145,12 @@ type
     procedure SetJvImageAlign(Value: TJvImageAlign);
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure ResetItemHeight;
-    procedure SetJvImageSize(Value: TJvImageSize);
+    procedure SetImageSize(Value: TJvImageSize);
     procedure SetOffset(Value: Integer);
     procedure WMSize(var Msg: TWMNoParams); message WM_SIZE;
   protected
     procedure SetDrive(Value: Char);
-    procedure SetJvDriveTypes(Value: TJvDriveTypes);
+    procedure SetDriveTypes(Value: TJvDriveTypes);
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure DrawItem(Index: Integer; Rect: TRect; State: TOwnerDrawState); override;
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
@@ -169,8 +169,8 @@ type
     property ScrollBars default ssNone;
     property ImageAlign: TJvImageAlign read FImageAlign write SetJvImageAlign default iaCentered;
     property Drive: Char read FDrive write SetDrive stored False;
-    property DriveTypes: TJvDriveTypes read FDriveTypes write SetJvDriveTypes;
-    property ImageSize: TJvImageSize read FImageSize write SetJvImageSize;
+    property DriveTypes: TJvDriveTypes read FDriveTypes write SetDriveTypes;
+    property ImageSize: TJvImageSize read FImageSize write SetImageSize;
     property Align;
     property BorderStyle;
     property Color;
@@ -582,7 +582,7 @@ begin
   ItemHeight := NewHeight;
 end;
 
-procedure TJvDriveCombo.SetJvDriveTypes(Value: TJvDriveTypes);
+procedure TJvDriveCombo.SetDriveTypes(Value: TJvDriveTypes);
 begin
   FDriveTypes := Value;
   if FDriveTypes = [] then
@@ -617,7 +617,7 @@ begin
     ItemIndex := J;
 end;
 
-procedure TJvDriveCombo.SetJvImageSize(Value: TJvImageSize);
+procedure TJvDriveCombo.SetImageSize(Value: TJvImageSize);
 begin
   if FImageSize <> Value then
   begin
@@ -901,7 +901,7 @@ begin
   ItemHeight := GetItemHeight(Font) + FImageWidth + 8;
 end;
 
-procedure TJvDriveList.SetJvDriveTypes(Value: TJvDriveTypes);
+procedure TJvDriveList.SetDriveTypes(Value: TJvDriveTypes);
 begin
   FDriveTypes := Value;
   if FDriveTypes = [] then
@@ -932,7 +932,7 @@ begin
     ItemIndex := J;
 end;
 
-procedure TJvDriveList.SetJvImageSize(Value: TJvImageSize);
+procedure TJvDriveList.SetImageSize(Value: TJvImageSize);
 begin
   if FImageSize <> Value then
   begin
