@@ -17,8 +17,9 @@ uses
   {$ENDIF COMPILER6_UP}
   JvConsts,
   JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit, JvCheckedMaskEdit,
-  JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit, JvxCtrls,
-  JvxSlider, JvBevel, JvCheckBox, JvCheckListBox, JvCombobox, JvCheckTreeView,
+  JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit, JvxSlider, JvBevel, JvCheckBox,
+  JvSpeedButton, JvTextListBox, JvSecretPanel, JvxCheckListBox,
+  JvCheckListBox, JvCombobox, JvCheckTreeView,
   JvComCtrls, JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvHeaderControl,
   JvHotKey, JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
   JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids, JvStringGrid,

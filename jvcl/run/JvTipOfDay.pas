@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Messages, Forms,
-  JvBaseDlg, JvButtonPersistent, JvTypes, StdCtrls;
+  JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes, StdCtrls;
 
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
@@ -147,7 +147,7 @@ type
 implementation
 
 uses
-  Windows, ExtCtrls, JvxCtrls, JvButton, Dialogs, SysUtils, Registry,
+  Windows, ExtCtrls, JvButton, Dialogs, SysUtils, Registry,
   JvWndProcHook;
 
 {$R ..\resources\JvTipOfDay.res}

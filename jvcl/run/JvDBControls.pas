@@ -50,7 +50,7 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, Mask, IniFiles, DB, DBGrids,
-  JvAppStore, JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls, JvxCtrls,
+  JvAppStore, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls,
   JvMaskEdit, JvBaseEdits;
 
 { TJvDBGrid }

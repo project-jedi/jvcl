@@ -38,7 +38,7 @@ uses
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF}
   StdCtrls, ExtCtrls,
-  JvPageManager, JvJVCLUtils, JvComponent;
+  JvSpeedButton, JvPageManager, JvJVCLUtils, JvComponent;
 
 type
   TJvProxyEditor = class(TDesignWindow)
@@ -111,7 +111,7 @@ implementation
 
 uses
   Consts, Buttons,
-  JvxCtrls, JvConsts;
+  JvConsts;
 
 {$R *.DFM}
 

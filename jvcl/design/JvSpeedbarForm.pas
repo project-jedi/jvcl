@@ -38,7 +38,7 @@ uses
   {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  JvxCtrls, JvSpeedBar, JvFormPlacement, JvTypes, JvJVCLUtils, JvComponent,
+  JvSpeedButton, JvSpeedBar, JvFormPlacement, JvTypes, JvJVCLUtils, JvComponent,
   JvAppStore, JvAppRegistryStore;
 
 type

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, jpeg, ExtCtrls, JvLabel, JvComponent, JvxCtrls;
+  Dialogs, StdCtrls, jpeg, ExtCtrls, JvLabel, JvComponent;
 
 type
   TfrmAboutMe = class(TForm)

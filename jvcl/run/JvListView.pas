@@ -35,8 +35,53 @@ uses
   CommCtrl, Menus, Clipbrd,
   JVCLVer, JvTypes;
 
+const
+  LV_VIEW_TILE = $0004;
+  LV_VIEW_MAX = $0004;
+  LVM_SETVIEW = (LVM_FIRST + 142);
+  LVM_GETVIEW = (LVM_FIRST + 143);
+  LVM_SETTILEVIEWINFO = (LVM_FIRST + 162);
+  LVM_GETTILEVIEWINFO = (LVM_FIRST + 163);
+  LVM_SETTILEINFO = (LVM_FIRST + 164);
+  LVM_GETTILEINFO = (LVM_FIRST + 165);
+
+  LVGMF_NONE = $00000000;
+  LVGMF_BORDERSIZE = $00000001;
+  LVGMF_BORDERCOLOR = $00000002;
+  LVGMF_TEXTCOLOR = $00000004;
+  LVTVIF_AUTOSIZE = $00000000;
+  LVTVIF_FIXEDWIDTH = $00000001;
+  LVTVIF_FIXEDHEIGHT = $00000002;
+  LVTVIF_FIXEDSIZE = $00000003;
+
+  LVTVIM_TILESIZE = $00000001;
+  LVTVIM_COLUMNS = $00000002;
+  LVTVIM_LABELMARGIN = $00000004;
+
 type
   EJvListViewError = EJVCLException;
+
+  tagLVTILEINFO = record
+    cbSize: UINT;
+    iItem: integer;
+    cColumns: UINT;
+    puColumns: PUINT;
+  end;
+  LVTILEINFO = tagLVTILEINFO;
+  PLVTILEINFO = ^tagLVTILEINFO;
+  TLVTileInfo = tagLVTILEINFO;
+
+  tagLVTILEVIEWINFO = record
+    cbSize: UINT;
+    dwMask: DWORD; //LVTVIM_*
+    dwFlags: DWORD; //LVTVIF_*
+    sizeTile: Size;
+    cLines: integer;
+    rcLabelMargin: TRect;
+  end;
+  LVTILEVIEWINFO = tagLVTILEVIEWINFO;
+  PLVTILEVIEWINFO = ^LVTILEVIEWINFO;
+  TLVTileViewInfo = LVTILEVIEWINFO;
 
   TJvListItem = class(TListItem)
   private
@@ -67,6 +112,8 @@ type
     FOnAutoSort: TJvListViewColumnSortEvent;
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
+    FTile: boolean;
+    procedure SetTile(const Value: boolean);
   protected
     function CreateListItem: TListItem; override;
     procedure ColClick(Column: TListColumn); override;
@@ -99,11 +146,12 @@ type
 {$IFNDEF COMPILER6_UP}
     procedure DeleteSelected;
 {$ENDIF}
-    property ItemPopup[Item:TListItem]:TPopupMenu read GetItemPopup write SetItemPopup;
+    property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
   published
+    property Tile:boolean read FTile write SetTile;
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored false;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property ColumnsOrder:string read GetColumnsOrder write SetColumnsOrder;
+    property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -117,7 +165,6 @@ type
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
 
   end;
-
 
 resourcestring
   sTooManyColumns = 'too many columns';
@@ -989,6 +1036,31 @@ begin
     ListView_SetColumnOrderArray(Columns.Owner.Handle, Columns.Count, @Res[0]);
   finally
     Free;
+  end;
+end;
+
+procedure TJvListView.SetTile(const Value: boolean);
+var TI:TLvTileViewInfo;
+begin
+  if FTile <> Value then
+  begin
+    FTile := Value;
+    if FTile then
+    begin
+      FTile := SendMessage(Handle, LVM_SETVIEW, LV_VIEW_TILE, 0) >= 0;
+      if FTile then
+      begin
+        TI.cbSize := sizeof(TI);
+        TI.dwMask := LVTVIM_TILESIZE;
+        TI.dwFlags := LVTVIF_FIXEDSIZE;
+        TI.sizeTile.cx := 120;
+        TI.sizeTile.cy := 120;
+        TI.cLines      := 2;
+        SendMessage(Handle,LVM_SETTILEVIEWINFO, 0, integer(@TI));
+      end;
+    end
+    else
+      RecreateWnd;
   end;
 end;
 

@@ -38,7 +38,7 @@ uses
   Variants,
   {$ENDIF}
   Controls, SysUtils, Graphics,
-  JvJCLUtils;
+  jvSpeedButton, JvJCLUtils;
 
 { Calendar dialog }
 
@@ -75,7 +75,7 @@ implementation
 
 uses
   Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls, Math,
-  JvThemes, JvxCtrls, JvConsts, JvToolEdit, JvJVCLUtils;
+  JvThemes, JvConsts, JvToolEdit, JvJVCLUtils;
 
 {$R ..\resources\JvPickDate.res}
 
