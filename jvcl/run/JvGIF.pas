@@ -613,9 +613,6 @@ type
   PDictTable = ^TDictTable;
   TDictTable = array [0..CODE_TABLE_SIZE - 1] of TImageDict;
 
-  PRGBPalette = ^TRGBPalette;
-  TRGBPalette = array [Byte] of TRGBQuad;
-
 function InitHash(P: Longint): Longint;
 begin
   Result := (P + 3) * 301;

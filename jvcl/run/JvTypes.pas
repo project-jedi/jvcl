@@ -154,6 +154,8 @@ type
   TJvRGBArray = array [0..MaxPixelCount - 1] of TJvRGBTriple;
   PRGBQuadArray = ^TRGBQuadArray;
   TRGBQuadArray = array [0..MaxPixelCount - 1] of TRGBQuad;
+  PRGBPalette = ^TRGBPalette;
+  TRGBPalette = array[Byte] of TRGBQuad;
 
   TBalance = 0..100;
 
@@ -199,7 +201,7 @@ type
   TJvKeyFoundEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
   TJvParserInfoList = TStringList;
   // (rom) definitely needs improvement
-  TJvParserInfo = class
+  TJvParserInfo = class(TObject)
   public
     StartTag: string;
     EndTag: string;

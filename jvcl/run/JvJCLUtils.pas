@@ -970,7 +970,8 @@ uses
   RTLConsts,
   {$ENDIF COMPILER6_UP}
   SysConst, ComObj, Registry, ShellAPI, MMSystem,
-  JclSysInfo, JclStrings;
+  JclSysInfo, JclStrings,
+  JvTypes;
 
 // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
 resourcestring
@@ -8057,20 +8058,12 @@ begin
   AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
 end;
 
-procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
-  XFinal, YFinal: Integer);
-const
-{$IFDEF VCL}
-  EditPixelFormat = pf24bit;
-  bpp = 3;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  EditPixelFormat = pf32bit;
-  bpp = 4;
-{$ENDIF VisualCLX}
+procedure AntiAliasRect(Clip: TBitmap;
+  XOrigin, YOrigin, XFinal, YFinal: Integer);
 var
   Tmp, X, Y: Integer;
-  P0, P1, P2: PByteArray;
+  Line0, Line1, Line2: PJvRGBArray;
+  OPF: TPixelFormat;
 begin
   // swap values
   if XFinal < XOrigin then
@@ -8089,20 +8082,21 @@ begin
   YOrigin := Max(1, YOrigin);
   XFinal := Min(Clip.Width - 2, XFinal);
   YFinal := Min(Clip.Height - 2, YFinal);
-  // (rom) this change of pixel format has to be documented or reversed afterwards
-  Clip.PixelFormat := EditPixelFormat;
+  OPF := Clip.PixelFormat;
+  Clip.PixelFormat := pf24bit;
   for Y := YOrigin to YFinal do
   begin
-    P0 := Clip.ScanLine[Y - 1];
-    P1 := Clip.ScanLine[Y];
-    P2 := Clip.ScanLine[Y + 1];
+    Line0 := Clip.ScanLine[Y-1];
+    Line1 := Clip.ScanLine[Y];
+    Line2 := Clip.ScanLine[Y+1];
     for X := XOrigin to XFinal do
     begin
-      P1[X * bpp    ] := (P0[X * bpp    ] + P2[X * bpp    ] + P1[(X - 1) * bpp    ] + P1[(X + 1) * bpp    ]) div 4;
-      P1[X * bpp + 1] := (P0[X * bpp + 1] + P2[X * bpp + 1] + P1[(X - 1) * bpp + 1] + P1[(X + 1) * bpp + 1]) div 4;
-      P1[X * bpp + 2] := (P0[X * bpp + 2] + P2[X * bpp + 2] + P1[(X - 1) * bpp + 2] + P1[(X + 1) * bpp + 2]) div 4;
+      Line1[X].rgbRed   := (Line0[X].rgbRed   + Line2[X].rgbRed   + Line1[X-1].rgbRed   + Line1[X+1].rgbRed  ) div 4;
+      Line1[X].rgbGreen := (Line0[X].rgbGreen + Line2[X].rgbGreen + Line1[X-1].rgbGreen + Line1[X+1].rgbGreen) div 4;
+      Line1[X].rgbBlue  := (Line0[X].rgbBlue  + Line2[X].rgbBlue  + Line1[X-1].rgbBlue  + Line1[X+1].rgbBlue ) div 4;
     end;
   end;
+  Clip.PixelFormat := OPF;
 end;
 
 initialization

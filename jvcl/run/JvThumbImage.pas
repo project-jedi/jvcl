@@ -50,7 +50,7 @@ interface
 uses
   Windows, Classes, Controls, ExtCtrls, SysUtils, Messages, Graphics, Forms,
   jpeg, Dialogs,
-  JvTypes, JvBaseThumbnail;
+  JvBaseThumbnail;
 
 type
   TAngle = (AT0, AT90, AT180, AT270);
@@ -115,15 +115,11 @@ type
 implementation
 
 uses
-  JvThumbnails;
+  JvThumbnails, JvTypes;
 
 resourcestring
   sUnknownFileExitension = 'Unknown file extension %s';
   sFileFilters = '|PCX Files(*.pcx)|*.pcx|Targa Files(*.tga)|*.tga';
-
-type
-  TRGBTripleArray = array [0..MaxListSize] of TRGBTriple;
-  PRGBTripleArray = ^TRGBTripleArray;
 
 constructor TJvThumbImage.Create(AOwner: TComponent);
 begin
@@ -787,8 +783,8 @@ end;
 procedure TJvThumbImage.Rotate270;
 var
   MemBmp: Graphics.TBitmap;
-  PByte1: PRGBTripleArray;
-  PByte2: PRGBTripleArray;
+  PByte1: PJvRGBArray;
+  PByte2: PJvRGBArray;
   //  Stp: Byte;
   RotateBmp: Graphics.TBitmap;
   I, J: Longint;
@@ -893,8 +889,8 @@ end;
 procedure TJvThumbImage.Rotate90;
 var
   MemBmp: Graphics.TBitmap;
-  PByte1: PRGBtripleArray;
-  PByte2: PRGBtripleArray;
+  PByte1: PJvRGBArray;
+  PByte2: PJvRGBArray;
   //  Stp: Byte;
   RotateBmp: Graphics.TBitmap;
   I, J {, C}: Longint;

@@ -377,7 +377,7 @@ begin
         for I := 0 to FBitmap.Height - 1 do
         begin
           Decompressed.Read(IBuf, BytesPerLine);
-          IBufTmp := FBitmap.Scanline[I];
+          IBufTmp := FBitmap.ScanLine[I];
           FillChar(IBufTmp^, (FBitmap.Width div 2) + 1, #0);
 
           L := 0;
@@ -576,7 +576,7 @@ begin
         //Write data
         for I := 0 to FBitmap.Height - 1 do
         begin
-          IBufTmp := FBitmap.Scanline[I];
+          IBufTmp := FBitmap.ScanLine[I];
           FillChar(IBuf, BytesPerLine, #0);
 
           //Red

@@ -3952,10 +3952,6 @@ begin
   raise EInvalidGraphic.Create(SInvalidBitmap);
 end;
 
-type
-  PRGBPalette = ^TRGBPalette;
-  TRGBPalette = array[byte] of TRGBQuad;
-
 function WidthBytes(i: Longint): Longint;
 begin
   Result := ((i + 31) div 32) * 4;
