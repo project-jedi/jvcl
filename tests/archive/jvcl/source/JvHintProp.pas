@@ -73,7 +73,7 @@ procedure THintProperty.Edit;
 var
   Temp: string;
   Comp: TPersistent;
-  I, Cnt: Integer;
+//  I, Cnt: Integer;
 begin
   with TJvStrEditDlg.Create(Application) do
   try
