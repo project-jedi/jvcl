@@ -34,7 +34,13 @@ unit JvMarkupViewer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Forms, Controls, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QForms, QControls, QStdCtrls, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent, JvMarkupCommon;
 
 type
@@ -63,7 +69,12 @@ type
     procedure SetMarginTop(const Value: Integer);
     procedure ScrollViewer(Sender: TObject);
   protected
+    {$IFDEF VCL}
     procedure CreateWnd; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -150,9 +161,14 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvMarkupViewer.CreateWnd;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvMarkupViewer.CreateWidget;
+{$ENDIF VisualCLX}
 begin
-  inherited CreateWnd;
+  inherited;
   FScrollBar := TScrollBar.Create(Self);
   FScrollBar.Kind := sbVertical;
   FScrollBar.Parent := Self;

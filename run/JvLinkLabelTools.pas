@@ -38,7 +38,10 @@ unit JvLinkLabelTools;
 interface
 
 uses
-  Windows, SysUtils, Classes,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows,
+  {$ENDIF VCL}
   JvTypes;
 
 type
@@ -92,7 +95,12 @@ type
 implementation
 
 uses
+  {$IFDEF MSWINDOWS}
   ShellAPI,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Libc,
+  {$ENDIF LINUX}
   JvResources;
 
 //=== TStaticObject ==========================================================
@@ -186,7 +194,12 @@ end;
 
 class function TWebTools.OpenWebPage(const URI: string): Boolean;
 begin
+  {$IFDEF MSWINDOWS}
   Result := ShellExecute(0, 'open', PChar(URI), nil, nil, SW_SHOWNORMAL) > 32;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := libc.system(PChar(GetEnvironmentVariable('BROWSER') + ' ' + URI+'&'))<> -1;
+  {$ENDIF}
 end;
 
 //=== TOwnerPointerList ======================================================

@@ -70,7 +70,7 @@ uses
   Graphics, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QStdCtrls, QGraphics, QClipbrd, QWindows, Types,
+  Qt, QStdCtrls, QGraphics, QClipbrd, Types, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -983,11 +983,11 @@ uses
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Consts,
+  Consts, JclSysInfo,
   {$ELSE}
   QConsts,
   {$ENDIF VCL}
-  JclSysInfo, JclStrings,
+  JclStrings,
   JvTypes;
 
 const
@@ -6738,6 +6738,7 @@ var
 begin
   Result := TStringList.Create;
   Result.Clear;
+  {$IFDEF VCL}
   Path := IncludeTrailingPathDelimiter(GetRecentFolder);
   //search for all files
   Res := FindFirst(Path + '*.*', faAnyFile, t);
@@ -6751,6 +6752,7 @@ begin
   finally
     FindClose(t);
   end;
+  {$ENDIF}
 end;
 
 { (rb) Duplicate of JvWinDialogs.AddToRecentDocs }

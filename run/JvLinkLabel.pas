@@ -33,14 +33,20 @@ Description:
         Doc\Readme.txt!
 -----------------------------------------------------------------------------}
 
-{%I jvcl.inc}
+{$I jvcl.inc}
 
 unit JvLinkLabel;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QStdCtrls, Types,
+  {$ENDIF VisualCLX}
   JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree,
   JvTypes, JvComponent;
 
@@ -161,7 +167,9 @@ type
     property Align;
     property Color;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF}
     property DragMode;
     property Font;
     property ParentColor;
