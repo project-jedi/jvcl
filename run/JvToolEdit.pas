@@ -53,7 +53,7 @@ uses
   RTLConsts, Variants,
   {$ENDIF COMPILER6_UP}
   {$IFDEF VisualCLX}
-  qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
+  Qt, QGraphics, QControls, QForms, QDialogs, QStdCtrls, QMenus, QButtons,
   QMask, QImgList, QActnList, QExtDlgs, QComboEdits, QWindows, Types,
   JvExComboEdits,
   {$ENDIF VisualCLX}
@@ -2212,8 +2212,9 @@ begin
       Exit;
     if FPopupVisible then
       PopupCloseUp(FPopup, False);
-    {else if (not ReadOnly or AlwaysEnable) and (not DirectInput) then
-      PopupDropDown(True);}
+    {else
+     if (not ReadOnly or AlwaysEnable) and (not DirectInput) then
+       PopupDropDown(True);}
   end;
   inherited MouseDown(Button, Shift, X, Y);
 end;
@@ -2477,7 +2478,8 @@ begin
         ControlStyle := ControlStyle - [csFixedWidth];
       RecreateGlyph;
     end
-      //    else if (Value <> ButtonWidth) and (Value < ClientWidth) then begin
+      //else
+      //if (Value <> ButtonWidth) and (Value < ClientWidth) then begin
       //Polaris
     else
     if (Value <> ButtonWidth) and
@@ -3942,15 +3944,18 @@ begin
     { Force correct options }
     if acoAutoappendForceOff in AddedOptions then
       Exclude(FAutoCompleteOptions, acoAutoappendForceOn)
-    else if acoAutoappendForceOn in AddedOptions then
+    else
+    if acoAutoappendForceOn in AddedOptions then
       Exclude(FAutoCompleteOptions, acoAutoappendForceOff);
     if acoAutosuggestForceOff in AddedOptions then
       Exclude(FAutoCompleteOptions, acoAutosuggestForceOn)
-    else if acoAutosuggestForceOn in AddedOptions then
+    else
+    if acoAutosuggestForceOn in AddedOptions then
       Exclude(FAutoCompleteOptions, acoAutosuggestForceOff);
     if acoDefault in AddedOptions then
       FAutoCompleteOptions := [acoDefault]
-    else if AddedOptions <> [] then
+    else
+    if AddedOptions <> [] then
       Exclude(FAutoCompleteOptions, acoDefault);
     if (cListFillMethods * FAutoCompleteOptions = []) and
        (cListFillMethods * RemovedOptions <> []) then

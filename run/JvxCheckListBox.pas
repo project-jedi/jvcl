@@ -36,6 +36,7 @@ Known Issues:
 unit JvxCheckListBox;
 
 interface
+
 uses
   Windows, Messages, Classes, Controls, Graphics, StdCtrls, Forms,
   {$IFDEF COMPILER6_UP}
@@ -692,7 +693,8 @@ begin
   begin
     if Value then
       SetItemIndex(Index)
-    else if ItemIndex = Index then
+    else
+    if ItemIndex = Index then
       SetItemIndex(-1);
   end;
 end;
@@ -784,7 +786,8 @@ begin
   Count := Items.Count;
   if (Index = 0) or (Index < Count) then
     Perform(LB_GETITEMRECT, Index, Longint(@Result))
-  else if Index = Count then
+  else
+  if Index = Count then
   begin
     Perform(LB_GETITEMRECT, Index - 1, Longint(@Result));
     OffsetRect(Result, 0, Result.Bottom - Result.Top);
@@ -1660,12 +1663,14 @@ begin
       Flags := Flags or DFCS_INACTIVE;
     if AState = cbChecked then
       Flags := Flags or DFCS_CHECKED
-    else if AState = cbGrayed then
+    else
+    if AState = cbGrayed then
       Flags := Flags or DFCS_MONO;
     if CheckKind = ckCheckBoxes then
       DrawThemedFrameControl(Self, Canvas.Handle, DrawRect, DFC_BUTTON,
         DFCS_BUTTONCHECK or Flags)
-    else if CheckKind = ckRadioButtons then
+    else
+    if CheckKind = ckRadioButtons then
       DrawThemedFrameControl(Self, Canvas.Handle, DrawRect, DFC_BUTTON,
         DFCS_BUTTONRADIO or Flags);
   end

@@ -572,7 +572,8 @@ begin
 
   if Assigned(FOnDblClick) then
     FOnDblClick(Self, Button, Shift, X, Y)
-  else if Button = mbLeft then
+  else
+  if Button = mbLeft then
   begin
     if FPopupMenu <> nil then
       for I := 0 to FPopupMenu.Items.Count - 1 do
@@ -781,7 +782,8 @@ begin
         Ico.Free;
       end;
     end
-    else if Assigned(Icon) and (not Icon.Empty) then
+    else
+    if Assigned(Icon) and (not Icon.Empty) then
       SetCurrentIcon(Icon)
     else
       SetCurrentIcon(Application.Icon);

@@ -327,11 +327,11 @@ Known Issues:
  | Wizard page can be transparent                                            |
  +---------------------------------------------------------------------------+}
 
+{$I jvcl.inc}
+
 unit JvWizard;
 
 interface
-
-{$I jvcl.inc}
 
 uses
   SysUtils, Classes,
@@ -1568,7 +1568,8 @@ begin
     begin
       if APage.PageIndex = PageIndex + 1 then
         Wizard.SelectNextPage
-      else if APage.PageIndex = PageIndex - 1 then
+      else
+      if APage.PageIndex = PageIndex - 1 then
         Wizard.SelectPriorPage
       else
         PageIndex := APage.PageIndex;
@@ -2341,7 +2342,8 @@ var
 begin
   tmpSet := [AButton];
   IsEnabled := (tmpSet * EnabledButtons) <> [];
-  if AEnabled = IsEnabled then System.Exit;
+  if AEnabled = IsEnabled then
+    System.Exit;
 
   if AEnabled then
     EnabledButtons := EnabledButtons + tmpSet
@@ -2456,7 +2458,8 @@ procedure TJvWizardCustomPage.Paint;
 var
   ARect: TRect;
 begin
-  if FDrawing then System.Exit;
+  if FDrawing then
+    System.Exit;
   FDrawing := True;
   try
     ARect := ClientRect;
@@ -2477,7 +2480,7 @@ begin
       FPanel.PaintTo(Canvas, ARect);
     end;
     { YW - display page caption at design time. }
-    if (csDesigning in ComponentState) then
+    if csDesigning in ComponentState then
     begin
       Canvas.Brush.Style := bsClear;
       Canvas.Font.Assign(Font);
@@ -2762,7 +2765,8 @@ begin
   begin
     if PageIndex < 0 then
       PageIndex := FPages.Count - 1
-    else if PageIndex >= FPages.Count then
+    else
+    if PageIndex >= FPages.Count then
       PageIndex := 0;
   end;
   if (PageIndex >= 0) and (PageIndex < FPages.Count) and
@@ -2918,7 +2922,8 @@ begin
       begin
         if Page.CanFocus then
           ParentForm.ActiveControl := Page
-        else if CanFocus then
+        else
+        if CanFocus then
           ParentForm.ActiveControl := Self;
       end;
     end;
@@ -3149,7 +3154,8 @@ begin
      the Finish Button. }
   if (bkNext in AVisibleButtonSet) and (bkNext in AEnabledButtonSet) then
     FNavigateButtons[bkNext].Control.Default := True
-  else if (bkFinish in AVisibleButtonSet) and (bkFinish in AEnabledButtonSet) then
+  else
+  if (bkFinish in AVisibleButtonSet) and (bkFinish in AEnabledButtonSet) then
     FNavigateButtons[bkFinish].Control.Default := True;
 end;
 

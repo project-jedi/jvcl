@@ -202,7 +202,8 @@ begin
     Root := FXML.Root;
   if AnsiSameText(Root.Name, AName) then
     Result := Root
-  else if not ARecurse then
+  else
+  if not ARecurse then
     Result := Root.Items.ItemNamed[AName]
   else
     for I := 0 to Root.Items.Count - 1 do
@@ -337,13 +338,17 @@ var
                 AnObj := GetObjectProp(AnObject, PropName);
                 if IsObject(AnObj.ClassType, cTTreeNodes) then
                   TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, cTListItems) then
+                else
+                if IsObject(AnObj.ClassType, cTListItems) then
                   ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, cTStrings) then
+                else
+                if IsObject(AnObj.ClassType, cTStrings) then
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, cTCollection) then
+                else
+                if IsObject(AnObj.ClassType, cTCollection) then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
-                else if not IsObject(AnObj.ClassType, cTComponent) then
+                else
+                if not IsObject(AnObj.ClassType, cTComponent) then
                   // NB! TComponents are excluded because most of the time, a published TComponent
                   // property references another component on the form. In some cases, however, a TComponent
                   // *can* be an internal component and this code won't list it.
@@ -406,13 +411,17 @@ var
                 AnObj := GetObjectProp(AComponent, PropName);
                 if IsObject(AnObj.ClassType, cTTreeNodes) then
                   TreeNodesToXML(TTreeNodes(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, cTListItems) then
+                else
+                if IsObject(AnObj.ClassType, cTListItems) then
                   ListItemsToXML(TListItems(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, cTStrings) then
+                else
+                if IsObject(AnObj.ClassType, cTStrings) then
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
-                else if IsObject(AnObj.ClassType, cTCollection) then
+                else
+                if IsObject(AnObj.ClassType, cTCollection) then
                   CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
-                else if not IsObject(AnObj.ClassType, cTComponent) then
+                else
+                if not IsObject(AnObj.ClassType, cTComponent) then
                   // NB! TComponents are excluded because most of the time, a published TComponent
                   // property references another component on the form. In some cases, however, a TComponent
                   // *can* be an internal component and this code won't list it.
@@ -734,9 +743,11 @@ begin
             Obj := GetObjectProp(Component, Elem.Items[I].Name);
             if IsObject(Obj.ClassType, cTStrings) then
               TransStrings(Obj, Elem.Items[I])
-            else if IsObject(Obj.ClassType, cTTreeNodes) then
+            else
+            if IsObject(Obj.ClassType, cTTreeNodes) then
               TransTreeNodes(Obj, Elem.Items[I])
-            else if IsObject(Obj.ClassType, cTListItems) then
+            else
+            if IsObject(Obj.ClassType, cTListItems) then
               TransListItems(Obj, Elem.Items[I])
             else
             begin
@@ -942,7 +953,8 @@ begin
       P := PSkipPropRec(FSkipList[I]);
       if PropName = '' then
         P^.AProps.Clear // skip entire class
-      else if P^.AProps.Count > 0 then // only add if the class is not skipped as a whole
+      else
+      if P^.AProps.Count > 0 then // only add if the class is not skipped as a whole
         P^.AProps.Add(PropName); // the list is sorted, so property name will only be added once
       Exit;
     end;

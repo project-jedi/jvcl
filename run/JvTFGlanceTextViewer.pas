@@ -692,7 +692,8 @@ begin
 
   if Windows.PtInRect(ScrollDnBtnRect(ClientRect), Point(X, Y)) then
     Scroll(1)
-  else if Windows.PtInRect(ScrollUpBtnRect(ClientRect), Point(X, Y)) then
+  else
+  if Windows.PtInRect(ScrollUpBtnRect(ClientRect), Point(X, Y)) then
     Scroll(-1)
   else
   begin
@@ -705,8 +706,8 @@ begin
       EditAppt(Viewer.Cell, FMousePtInfo.RelLineNum, Appt);
       Viewer.LineDDClick(MouseLine);
     end
-    else if not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and
-                Assigned(Appt) then
+    else
+    if not Windows.PtInRect(FDDBtnRect, Point(X, Y)) and Assigned(Appt) then
       Viewer.GlanceControl.BeginDrag(False);
   end;
 end;
@@ -1247,7 +1248,8 @@ begin
       FTopLines.Delete(I)
     else
       FTopLines.Objects[I] := TObject(Value)
-  else if Value <> 0 then
+  else
+  if Value <> 0 then
     FTopLines.AddObject(CellStr, TObject(Value));
   Refresh;
 end;
@@ -1347,7 +1349,8 @@ begin
     Key := 0;
     Visible := False;
   end
-  else if (Key = VK_RETURN) and (ssCtrl in Shift) then
+  else
+  if (Key = VK_RETURN) and (ssCtrl in Shift) then
     TJvTFGVTextControl(Owner).FinishEditAppt;
 end;
 

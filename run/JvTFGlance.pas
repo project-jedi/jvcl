@@ -890,7 +890,8 @@ begin
 
   if not IsSubcell then
     FSplitRef.Free
-  else if Assigned(FSplitRef) then
+  else
+  if Assigned(FSplitRef) then
     begin
       FSplitRef.FSplitRef := nil;
       FSplitRef := nil;
@@ -1258,7 +1259,8 @@ begin
 
       if aCell.IsSchedUsed(aSched) then
         Result := True
-      else if aCell.IsSplit and aCell.Subcell.IsSchedUsed(aSched) then
+      else
+      if aCell.IsSplit and aCell.Subcell.IsSchedUsed(aSched) then
         Result := True
       else
         Inc(I);
@@ -1800,7 +1802,8 @@ begin
               UpdateSelection;
             end;
         end
-      else if ssCtrl in Shift then
+      else
+      if ssCtrl in Shift then
         begin
           // non-contiguous selection
           if CellIsSelected(Info.Cell) then
@@ -1888,7 +1891,8 @@ begin
   if Operation = opRemove then
     if AComponent = Viewer then
       Viewer := nil
-    else if AComponent = CellPics then
+    else
+    if AComponent = CellPics then
       CellPics := nil;
 end;
 
@@ -2217,7 +2221,8 @@ begin
             if not FSelAnchor.IsSubcell then
               InternalDeselectCell(FSelAnchor.Subcell);
           end
-        else if FMouseCell.ColIndex = FSelAnchor.ColIndex then  // sel end is in same col as anchor
+        else
+        if FMouseCell.ColIndex = FSelAnchor.ColIndex then  // sel end is in same col as anchor
           begin
             StartRow := Lesser(FSelAnchor.RowIndex, FMouseCell.RowIndex);
             EndRow := Greater(FSelAnchor.RowIndex, FMouseCell.RowIndex);
@@ -2235,9 +2240,11 @@ begin
                 if FSelAnchor.IsParent then
                   InternalDeselectCell(FSelAnchor.Subcell);
               end
-            else if FMouseCell = FSelAnchor then
+            else
+            if FMouseCell = FSelAnchor then
               InternalDeselectCell(FMouseCell.SplitRef)
-            else if (FMouseCell.RowIndex > FSelAnchor.RowIndex) then
+            else
+            if (FMouseCell.RowIndex > FSelAnchor.RowIndex) then
               begin
                 if FMouseCell.IsParent then
                   InternalDeselectCell(FMouseCell.Subcell);
@@ -2283,7 +2290,8 @@ begin
                 InternalSelectCell(aCell.Subcell);
               end;
           end
-        else if FMouseCell.ColIndex > FSelAnchor.ColIndex then
+        else
+        if FMouseCell.ColIndex > FSelAnchor.ColIndex then
           begin
             For Row := 0 to FMouseCell.RowIndex do
               begin
@@ -2295,7 +2303,8 @@ begin
               InternalDeselectCell(FMouseCell.Subcell);
           end
       end
-    else if SelOrder = soRowMajor then
+    else
+    if SelOrder = soRowMajor then
       begin
         // handle the first sel row
         if FMouseCell.RowIndex < FSelAnchor.RowIndex then
@@ -2309,7 +2318,8 @@ begin
             if FSelAnchor.IsParent then
               InternalDeselectCell(FSelAnchor.Subcell);
           end
-        else if FMouseCell.RowIndex = FSelAnchor.RowIndex then
+        else
+        if FMouseCell.RowIndex = FSelAnchor.RowIndex then
           begin
             if FMouseCell = FSelAnchor then
               InternalSelectCell(FMouseCell)
@@ -2381,7 +2391,8 @@ begin
                 InternalSelectCell(aCell.Subcell);
               end;
           end
-        else if FMouseCell.RowIndex > FSelAnchor.RowIndex then
+        else
+        if FMouseCell.RowIndex > FSelAnchor.RowIndex then
           begin
             For Col := 0 to FMouseCell.ColIndex do
               begin
@@ -4027,7 +4038,8 @@ begin
     FSplitOrientation := Value;
     if IsSubCell then
       ParentCell.SplitOrientation := Value
-    else if IsSplit then
+    else
+    if IsSplit then
     begin
       SubCell.SplitOrientation := Value;
       Change;

@@ -56,22 +56,21 @@ uses
   QGraphics, QControls, QForms, QDialogs,
   QStdCtrls, QImgList, QWindows, Types,
   {$ENDIF VisualCLX}
-  JvTFManager, JvTFSparseMatrix,
-  JvTFUtils;
+  JvTFManager, JvTFSparseMatrix, JvTFUtils;
 
 // (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed
 
 const
-   AbsMinColWidth = 5;
-   SizingThreshold = 5;
-   gcUndef = -3;
-   gcGroupHdr = -2;
-   gcHdr = -1;
+  AbsMinColWidth = 5;
+  SizingThreshold = 5;
+  gcUndef = -3;
+  gcGroupHdr = -2;
+  gcHdr = -1;
 
 type
   EJvTFDaysError = class(Exception);
 
- {$IFDEF Jv_TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
  // remove TTFDayOfWeek and TTFDaysOfWeek, they are found in JvTFUtils
  //TTFDayOfWeek = (dowSunday, dowMonday, dowTuesday, dowWednesday,
    //            dowThursday, dowFriday, dowSaturday);
@@ -125,7 +124,6 @@ type
     property OnMove: TJvTFListMoveEvent read FOnMove write FOnMove;
   end;
 
-
   TJvTFDaysTemplate = class(TPersistent)
   private
     FActiveTemplate: TJvTFDaysTemplates;
@@ -170,21 +168,21 @@ type
     property ApptGrid: TJvTFDays read FGrid;
   published
     property ActiveTemplate: TJvTFDaysTemplates read FActiveTemplate
-       write SetActiveTemplate default agtNone;
+      write SetActiveTemplate default agtNone;
 
     property CompDate: TDate read FCompDate write SetCompDate;
     property CompNames: TStrings read GetCompNames write SetCompNames;
 
     property IgnoreNav: Boolean read FIgnoreNav write FIgnoreNav default False;
     property LinearDayCount: Integer read FLinearDayCount
-       write SetLinearDayCount;
+      write SetLinearDayCount;
     property LinearEndDate: TDate read FLinearEndDate write SetLinearEndDate;
     property LinearName: string read FLinearName write SetLinearName;
     property LinearStartDate: TDate read FLinearStartDate
-       write SetLinearStartDate;
+      write SetLinearStartDate;
 
     property ShortTitles: Boolean read FShortTitles write SetShortTitles
-       default True;
+      default True;
   end;
 
   TJvTFDaysPrimeTime = class(TPersistent)
@@ -368,7 +366,7 @@ type
   TJvTFUpdateTitlesEvent = procedure(Sender: TObject; Col: TJvTFDaysCol;
     var NewGroupTitle, NewTitle: string) of object;
 
- {$IFDEF Jv_TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
  // ok
   TJvTFDaysTimeBlock = class(TCollectionItem)
   private
@@ -446,18 +444,18 @@ type
   published
     property BlockGran: Integer read FBlockGran write SetBlockGran default 60;
     property BlockHdrAttr: TJvTFDaysHdrAttr read FBlockHdrAttr
-       write SetBlockHdrAttr;
+      write SetBlockHdrAttr;
     property BlockHdrWidth: Integer read FBlockHdrWidth write SetBlockHdrWidth
-       default 50;
+      default 50;
     property DataDivColor: TColor read FDataDivColor write SetDataDivColor
-       default clBlack;
+      default clBlack;
     property DayStart: TTime read FDayStart write SetDayStart;
     property DrawOffTime: Boolean read FDrawOffTime write SetDrawOffTime
-       default True;
+      default True;
     property OffTimeColor: TColor read FOffTimeColor write SetOffTimeColor
-       default clGray;
+      default clGray;
     property SelBlockHdrAttr: TJvTFDaysHdrAttr read FSelBlockHdrAttr
-       write SetSelBlockHdrAttr;
+      write SetSelBlockHdrAttr;
     property SnapMove: Boolean read FSnapMove write FSnapMove default True;
   end;
   {$ENDIF Jv_TIMEBLOCKS}
@@ -582,10 +580,8 @@ type
     property MinorFont: TFont read FMinorFont write SetMinorFont;
     property MajorFont: TFont read FMajorFont write SetMajorFont;
     property TickColor: TColor read FTickColor write SetTickColor
-       default clGray;
+      default clGray;
   end;
-
-
 
   TJvTFDaysHdrAttr = class(TPersistent)
   private
@@ -624,9 +620,9 @@ type
     {$IFDEF Jv_TIMEBLOCKS}
    // ok
     property FrameColor: TColor read FFrameColor write SetFrameColor
-       nodefault;
+      nodefault;
     property TitleRotation: Integer read FTitleRotation write SetTitleRotation
-       default 0;
+      default 0;
     {$ENDIF Jv_TIMEBLOCKS}
   end;
 
@@ -655,11 +651,10 @@ type
     property Width: Integer read FWidth write SetWidth default 5;
     property Visible: Boolean read FVisible write SetVisible default True;
     property TimeStampStyle: TJvTFTimeStampStyle read FTimeStampStyle
-       write SeTJvTFTimeStampStyle default tssBlock;
+      write SeTJvTFTimeStampStyle default tssBlock;
     property TimeStampColor: TColor read FTimeStampColor
-       write SetTimeStampColor default clBlue;
+      write SetTimeStampColor default clBlue;
   end;
-
 
   TJvTFDaysApptAttr = class(TPersistent)
   private
@@ -686,9 +681,9 @@ type
     property Color: TColor read FColor write SetColor;
     property Font: TFont read FFont write SetFont;
     property ParentFont: Boolean read FParentFont write SetParentFont
-       default True;
+      default True;
     property FrameColor: TColor read FFrameColor write SetFrameColor
-       default clBlack;
+      default clBlack;
     property FrameWidth: Integer read FFrameWidth write SetFrameWidth default 1;
   end;
 
@@ -774,7 +769,7 @@ type
     FHitTest: TPoint;
     FVisibleScrollBars: TJvTFVisibleScrollBars;
     FDitheredBackground: boolean;
-     
+
    // row, col layout
     FGranularity: Integer;
     FColHdrHeight: Integer;
@@ -865,7 +860,7 @@ type
 
    // editor events
     FOnFailEditor: TJvTFFailEditorEvent;
-    FOnCreateQuickEntry:  TJvTFCreateQuickEntryEvent;
+    FOnCreateQuickEntry: TJvTFCreateQuickEntryEvent;
     FOnQuickEntry: TNotifyEvent;
     FOnBeginEdit: TJvTFBeginEditEvent;
 
@@ -953,8 +948,8 @@ type
     procedure SetWeekend(Value: TTFDaysOfWeek);
    // ok
     procedure SetWeekendColor(Value: TColor);
-   procedure SetDitheredBackground(const Value: boolean);
-   {$ENDIF Jv_TIMEBLOCKS}
+    procedure SetDitheredBackground(const Value: boolean);
+    {$ENDIF Jv_TIMEBLOCKS}
   protected
     FState: TJvTFDaysState;
     FHint: TJvTFHint;
@@ -998,36 +993,36 @@ type
     procedure DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer);
     procedure DrawEmptyColHdr(aCanvas: TCanvas);
     procedure DrawAppt(aCanvas: TCanvas; Col: Integer; Appt: TJvTFAppt;
-       StartRow, EndRow: Integer);
+      StartRow, EndRow: Integer);
     procedure DrawApptDetail(aCanvas: TCanvas; aRect: TRect; Appt: TJvTFAppt;
-       Selected: Boolean; Col, StartRow, EndRow: Integer);
+      Selected: Boolean; Col, StartRow, EndRow: Integer);
     procedure DrawApptBar(aCanvas: TCanvas; Appt: TJvTFAppt; BarRect: TRect;
-       Col, StartRow, EndRow: Integer);
+      Col, StartRow, EndRow: Integer);
     function CalcTimeStampRect(Appt: TJvTFAppt; BarRect: TRect;
-       Col, StartRow, EndRow: Integer): TRect;
+      Col, StartRow, EndRow: Integer): TRect;
     procedure DrawTimeStamp(aCanvas: TCanvas; TimeStampRect: TRect);
     procedure DrawPics(aCanvas: TCanvas; var aRect: TRect; Appt: TJvTFAppt);
     procedure CreatePicDrawList(aRect: TRect; Appt: TJvTFAppt; DrawList: TList);
     procedure FilterPicDrawList(aRect: TRect; DrawList: TList;
-       var PicsHeight: Integer);
+      var PicsHeight: Integer);
     procedure ClearPicDrawList(DrawList: TList);
     procedure DrawListPics(aCanvas: TCanvas; var aRect: TRect; DrawList: TList);
     procedure DrawGrabLines(aCanvas: TCanvas; LineTop, LineLeft,
-       LineRight: Integer);
+      LineRight: Integer);
     procedure DrawGrabHandle(aCanvas: TCanvas; aRect: TRect;
-       anAppt: TJvTFAppt; TopHandle: Boolean);
+      anAppt: TJvTFAppt; TopHandle: Boolean);
     procedure DrawCorner(aCanvas: TCanvas; Corner: TJvTFDaysCorner);
     procedure DrawRowHdr(aCanvas: TCanvas; Index: Integer);
    //procedure DrawColHdr(aCanvas: TCanvas; Index: Integer);
     function GetTallestColTitle(aCanvas: TCanvas): Integer;
 
     procedure GetApptDrawInfo(DrawInfo: TJvTFDaysApptDrawInfo;
-       anAppt: TJvTFAppt; Attr: TJvTFDaysApptAttr);
+      anAppt: TJvTFAppt; Attr: TJvTFDaysApptAttr);
 
     {$IFDEF Jv_TIMEBLOCKS}
    // ok to REPLACE old DrawFrame
     procedure DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean;
-       FrameColour: TColor);
+      FrameColour: TColor);
     {$ELSE}
     // obsolete
     //procedure DrawFrame(aCanvas: TCanvas; aRect: TRect; Draw3D: Boolean);
@@ -1036,19 +1031,19 @@ type
     procedure DrawAppts(aCanvas: TCanvas; DrawAll: Boolean);
     procedure AdjustForMargins(var aRect: TRect);
     procedure CanDrawWhat(aCanvas: TCanvas; ApptRect: TRect; PicsHeight: Integer;
-       var CanDrawText, CanDrawPics: Boolean);
+      var CanDrawText, CanDrawPics: Boolean);
     procedure ManualFocusRect(aCanvas: TCanvas; aRect: TRect);
    // Fancy painting routines
     procedure DrawFancyRowHdrs(aCanvas: TCanvas);
     procedure DrawMinor(aCanvas: TCanvas; aRect: TRect; RowNum: Integer;
-       const LabelStr: string; TickLength: Integer; Selected: Boolean);
+      const LabelStr: string; TickLength: Integer; Selected: Boolean);
     function GetMinorLabel(RowNum: Integer): string;
     function GetMinorTickLength: Integer; virtual;
     function GetMajorTickLength: Integer; virtual;
     procedure DrawGroupHdrs(aCanvas: TCanvas);
    //procedure DrawGroupHdr(aCanvas: TCanvas; aCol: Integer);
     procedure DrawColGroupHdr(aCanvas: TCanvas; Index: Integer;
-       IsGroupHdr: Boolean);
+      IsGroupHdr: Boolean);
 
     {$IFDEF Jv_TIMEBLOCKS}
    // ok
@@ -1084,16 +1079,16 @@ type
    // scroll bar stuff
     procedure CheckSBParams;
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode;
-       var ScrollPos: Integer);
+      var ScrollPos: Integer);
     property VisibleScrollBars: TJvTFVisibleScrollBars read FVisibleScrollBars
-       write SeTJvTFVisibleScrollBars;
+      write SeTJvTFVisibleScrollBars;
 
    // mouse routines
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-       X, Y: Integer); override;
+      X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
-       X, Y: Integer); override;
+      X, Y: Integer); override;
     procedure DblClick; override;
     procedure DoApptHint(GridCoord: TJvTFDaysCoord);
     procedure DoCellHint(GridCoord: TJvTFDaysCoord);
@@ -1101,22 +1096,21 @@ type
    // Drag/Drop routines
     procedure DoStartDrag(var DragObject: TDragObject); override;
     procedure DragOver(Source: TObject; X, Y: Integer; State: TDragState;
-       var Accept: Boolean); override;
+      var Accept: Boolean); override;
     procedure DoEndDrag(Target: TObject; X, Y: Integer); override;
     procedure DropAppt(DragInfo: TJvTFDragInfo; X, Y: Integer);
 
     procedure BeginDragging(Coord: TJvTFDaysCoord; DragWhat: TJvTFDaysState;
-       Appt: TJvTFAppt);
+      Appt: TJvTFAppt);
     procedure DrawDrag(Coord: TJvTFDaysCoord; anAppt: TJvTFAppt; Clear: Boolean);
     procedure ContinueDragging(Coord: TJvTFDaysCoord; Appt: TJvTFAppt);
     procedure EndDragging(Coord: TJvTFDaysCoord; Appt: TJvTFAppt);
     function CanDragWhat(Coord: TJvTFDaysCoord): TJvTFDaysState;
     procedure CalcSizeEndTime(Appt: TJvTFAppt; var NewEndDT: TDateTime);
     procedure CalcMoveStartEnd(Appt: TJvTFAppt; Coord: TJvTFDaysCoord;
-       KeepDates, KeepTimes: Boolean; var StartDT, EndDT: TDateTime);
+      KeepDates, KeepTimes: Boolean; var StartDT, EndDT: TDateTime);
 
     procedure KillAutoScrollTimer;
-
 
     procedure EnsureCol(aCol: Integer);
     procedure EnsureRow(aRow: Integer);
@@ -1134,7 +1128,7 @@ type
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DestroyApptNotification(anAppt: TJvTFAppt); override;
     procedure Navigate(aControl: TJvTFControl; SchedNames: TStringList;
-       Dates: TJvTFDateList); override;
+      Dates: TJvTFDateList); override;
 
     procedure DoEnter; override;
     procedure DoExit; override;
@@ -1151,7 +1145,7 @@ type
     procedure EnsureBlockRules(GridGran, BlockGran: Integer; DayStart: TTime);
    // ok
     function ValidateBlockRules(GridGran, BlockGran: Integer;
-       DayStart: TTime): Boolean;
+      DayStart: TTime): Boolean;
     {$ENDIF Jv_TIMEBLOCKS}
   public
 
@@ -1166,7 +1160,6 @@ type
     function GetBottomGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
     function PtInTopHandle(aPoint: TPoint; Col: Integer; Appt: TJvTFAppt): Boolean;
     function PtInBottomHandle(aPoint: TPoint; Col: Integer; Appt: TJvTFAppt): Boolean;
-
 
    // grid region functions
     function GetAdjClientRect: TRect;
@@ -1188,7 +1181,7 @@ type
     function RowToTimeBlock(aRow: Integer): Integer;
    // ok
     procedure GetTimeBlockStartEnd(aTimeBlock: Integer; var BlockStart,
-       BlockEnd: Integer);
+      BlockEnd: Integer);
    // ok
     function CalcBlockHdrWidth: Integer;
    // ok
@@ -1233,7 +1226,7 @@ type
 
     procedure DragDrop(Source: TObject; X, Y: Integer); override;
     procedure CalcStartEndRows(anAppt: TJvTFAppt; SchedDate: TDate;
-       var StartRow, EndRow: Integer);
+      var StartRow, EndRow: Integer);
 
     {$IFDEF Jv_TIMEBLOCKS}
    // ok
@@ -1285,7 +1278,7 @@ type
   published
     property DitheredBackground: boolean read FDitheredBackground write SetDitheredBackground default true;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
-       default bsSingle;
+      default bsSingle;
 
    // grid layout properties
     property AutoSizeCols: Boolean read FAutoSizeCols write SetAutoSizeCols default True;
@@ -1296,9 +1289,9 @@ type
     property MinColWidth: Integer read FMinColWidth write SetMinColWidth default AbsMinColWidth;
     property MinRowHeight: Integer read FMinRowHeight write SetMinRowHeight default 12;
     property Options: TJvTFDaysOptions read FOptions write SetOptions
-       default [agoSizeCols, agoSizeRows, agoSizeColHdr, agoSizeRowHdr,
-       agoSizeAppt, agoMoveAppt, agoEditing, agoShowPics,
-       agoShowText, agoShowApptHints, agoQuickEntry, agoShowSelHint];
+      default [agoSizeCols, agoSizeRows, agoSizeColHdr, agoSizeRowHdr,
+      agoSizeAppt, agoMoveAppt, agoEditing, agoShowPics,
+      agoShowText, agoShowApptHints, agoQuickEntry, agoShowSelHint];
     property RowHdrWidth: Integer read FRowHdrWidth write SetRowHdrWidth default 50;
     property RowHeight: Integer read FRowHeight write SetRowHeight default 19;
     property Template: TJvTFDaysTemplate read FTemplate write FTemplate;
@@ -1320,34 +1313,34 @@ type
     property HdrAttr: TJvTFDaysHdrAttr read FHdrAttr write SetHdrAttr;
     property SelHdrAttr: TJvTFDaysHdrAttr read FSelHdrAttr write SetSelHdrAttr;
     property FancyRowHdrAttr: TJvTFDaysFancyRowHdrAttr read FFancyRowHdrAttr
-       write SetFancyRowHdrAttr;
+      write SetFancyRowHdrAttr;
     property SelFancyRowHdrAttr: TJvTFDaysFancyRowHdrAttr
-       read FSelFancyRowHdrAttr write SetSelFancyRowHdrAttr;
+      read FSelFancyRowHdrAttr write SetSelFancyRowHdrAttr;
     property SelCellAttr: TJvTFSelCellAttr read FSelCellAttr write SeTJvTFSelCellAttr;
 
     property ApptBar: TJvTFDaysApptBar read FApptBar write SetApptBar;
     property ApptBuffer: Integer read FApptBuffer write SetApptBuffer default 5;
     property ColTitleStyle: TJvTFColTitleStyle read FColTitleStyle
-       write SeTJvTFColTitleStyle default ctsSingleEllipsis;
+      write SeTJvTFColTitleStyle default ctsSingleEllipsis;
     property GrabHandles: TJvTFDaysGrabHandles read FGrabHandles
-       write SetGrabHandles;
+      write SetGrabHandles;
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor
-       default clGray;
+      default clGray;
     property PrimeTime: TJvTFDaysPrimeTime read FPrimeTime write FPrimeTime;
     property RowHdrType: TJvTFRowHdrType read FRowHdrType write SeTJvTFRowHdrType
-       default rhFancy;
+      default rhFancy;
     property Thresholds: TJvTFDaysThresholds read FThresholds write FThresholds;
     property HintProps: TJvTFHintProps read FHintProps
-       write SeTJvTFHintProps;
+      write SeTJvTFHintProps;
     property GroupHdrAttr: TJvTFDaysHdrAttr read FGroupHdrAttr
-       write SetGroupHdrAttr;
+      write SetGroupHdrAttr;
     property SelGroupHdrAttr: TJvTFDaysHdrAttr read FSelGroupHdrAttr
-       write SetSelGroupHdrAttr;
+      write SetSelGroupHdrAttr;
 
     {$IFDEF Jv_TIMEBLOCKS}
    // ok
     property Weekend: TTFDaysOfWeek read FWeekend write SetWeekend
-       default [dowSunday, dowSaturday];
+      default [dowSunday, dowSaturday];
     property WeekendColor: TColor read FWeekendColor write SetWeekendColor default clSilver;
     {$ENDIF Jv_TIMEBLOCKS}
 
@@ -1367,67 +1360,67 @@ type
     property OnMoveCol: TJvTFDragRowColEvent read FOnMoveCol write FOnMoveCol;
 
     property OnDateChanging: TJvTFDateChangingEvent read FOnDateChanging
-       write FOnDateChanging;
+      write FOnDateChanging;
     property OnDateChanged: TNotifyEvent read FOnDateChanged write FOnDateChanged;
     property OnGranularityChanging: TJvTFGranChangingEvent read FOnGranularityChanging
-       write FOnGranularityChanging;
+      write FOnGranularityChanging;
     property OnGranularityChanged: TNotifyEvent read FOnGranularityChanged
-       write FOnGranularityChanged;
+      write FOnGranularityChanged;
 
    // Custom draw events
     property OnDrawAppt: TJvTFDrawApptEvent read FOnDrawAppt write FOnDrawAppt;
     property OnDrawApptBar: TJvTFDrawApptBarEvent read FOnDrawApptBar
-       write FOnDrawApptBar;
+      write FOnDrawApptBar;
     property OnDrawColHdr: TJvTFDrawHdrEvent read FOnDrawColHdr write FOnDrawColHdr;
     property OnDrawCorner: TJvTFDrawCornerEvent read FOnDrawCorner
-       write FOnDrawCorner;
+      write FOnDrawCorner;
     property OnDrawDataCell: TJvTFDrawDataCellEvent read FOnDrawDataCell
-       write FOnDrawDataCell;
+      write FOnDrawDataCell;
     property OnDrawGrabHandle: TJvTFDrawGrabHandleEvent read FOnDrawGrabHandle
-       write FOnDrawGrabHandle;
+      write FOnDrawGrabHandle;
     property OnDrawMajorRowHdr: TJvTFDrawHdrEvent read FOnDrawMajorRowHdr
-       write FOnDrawMajorRowHdr;
+      write FOnDrawMajorRowHdr;
     property OnDrawMinorRowHdr: TJvTFDrawHdrEvent read FOnDrawMinorRowHdr
-       write FOnDrawMinorRowHdr;
+      write FOnDrawMinorRowHdr;
     property OnDrawRowHdr: TJvTFDrawHdrEvent read FOnDrawRowHdr write FOnDrawRowHdr;
     property OnDrawGroupHdr: TJvTFDrawHdrEvent read FOnDrawGroupHdr
-       write FOnDrawGroupHdr;
+      write FOnDrawGroupHdr;
     property OnShadeCell: TJvTFShadeCellEvent read FOnShadeCell write FOnShadeCell;
     property OnGetApptDrawInfo: TJvTFGetDaysApptDrawInfoEvent read FOnGetApptDrawInfo
-       write FOnGetApptDrawInfo;
+      write FOnGetApptDrawInfo;
 
    // Input events
     property OnFailEditor: TJvTFFailEditorEvent read FOnFailEditor write FOnFailEditor;
     property OnInsertAppt: TNotifyEvent read FOnInsertAppt write FOnInsertAppt;
     property OnInsertSchedule: TNotifyEvent read FOnInsertSchedule
-       write FOnInsertSchedule;
+      write FOnInsertSchedule;
     property OnDeleteAppt: TNotifyEvent read FOnDeleteAppt write FOnDeleteAppt;
     property OnDeleteSchedule: TNotifyEvent read FOnDeleteSchedule
-       write FOnDeleteSchedule;
-    property OnCreateQuickEntry:  TJvTFCreateQuickEntryEvent read FOnCreateQuickEntry
-       write FOnCreateQuickEntry;
+      write FOnDeleteSchedule;
+    property OnCreateQuickEntry: TJvTFCreateQuickEntryEvent read FOnCreateQuickEntry
+      write FOnCreateQuickEntry;
     property OnQuickEntry: TNotifyEvent read FOnQuickEntry write FOnQuickEntry;
     property OnBeginEdit: TJvTFBeginEditEvent read FOnBeginEdit write FOnBeginEdit;
 
    // Help and Hint events
     property OnShowHint: TJvTFShowHintEvent read GetOnShowHint
-       write SetOnShowHint;
+      write SetOnShowHint;
 
    // Misc events
     property OnSelectingAppt: TJvTFVarApptEvent read FOnSelectingAppt
-       write FOnSelectingAppt;
+      write FOnSelectingAppt;
     property OnSelectAppt: TJvTFSelecTJvTFApptEvent read FOnSelectAppt
-       write FOnSelectAppt;
+      write FOnSelectAppt;
     property OnSelectedAppt: TNotifyEvent read FOnSelectedAppt
-       write FOnSelectedAppt;
+      write FOnSelectedAppt;
    //property OnUpdateColTitle: TJvTFUpdateTitleEvent read FOnUpdateColTitle
     //write FOnUpdateColTitle;
     property OnUpdateColTitles: TJvTFUpdateTitlesEvent read FOnUpdateColTitles
-       write FOnUpdateColTitles;
+      write FOnUpdateColTitles;
     property OnFocusedRowChanged: TNotifyEvent read FOnFocusedRowChanged
-       write FOnFocusedRowChanged;
+      write FOnFocusedRowChanged;
     property OnFocusedColChanged: TNotifyEvent read FOnFocusedColChanged
-       write FOnFocusedColChanged;
+      write FOnFocusedColChanged;
 
    //Inherited properties
     property DateFormat; // from TJvTFControl
@@ -1489,9 +1482,9 @@ type
     property ColsPerPage: Integer read FColsPerPage write SetColsPerPage;
     property RowsPerPage: Integer read FRowsPerPage write SetRowsPerPage;
     property AlwaysShowColHdr: Boolean read FAlwaysShowColHdr
-       write SetAlwaysShowColHdr;
+      write SetAlwaysShowColHdr;
     property AlwaysShowRowHdr: Boolean read FAlwaysShowRowHdr
-       write SetAlwaysShowRowHdr;
+      write SetAlwaysShowRowHdr;
   end;
 
   TJvTFDaysPageInfo = class
@@ -1603,40 +1596,40 @@ type
    //procedure DrawColHdr(aCanvas: TCanvas; Index: Integer;
     //PageInfo: TJvTFDaysPageInfo);
     procedure DrawColGroupHdr(aCanvas: TCanvas; Index: Integer;
-       PageInfo: TJvTFDaysPageInfo; IsGroupHdr: Boolean);
+      PageInfo: TJvTFDaysPageInfo; IsGroupHdr: Boolean);
     procedure DrawRowHdr(aCanvas: TCanvas; Index: Integer;
-       PageInfo: TJvTFDaysPageInfo);
+      PageInfo: TJvTFDaysPageInfo);
     procedure DrawGroupHdrs(aCanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
 
     procedure DrawFancyRowHdrs(aCanvas: TCanvas; PageInfo: TJvTFDaysPageInfo);
     procedure DrawMinor(aCanvas: TCanvas; aRect: TRect; RowNum: Integer;
-       const LabelStr: string; TickLength: Integer);
+      const LabelStr: string; TickLength: Integer);
     function GetMinorLabel(RowNum: Integer; PageInfo: TJvTFDaysPageInfo): string;
     function GetMinorTickLength(aCanvas: TCanvas): Integer; virtual;
     function GetMajorTickLength: Integer; virtual;
 
     procedure DrawDataCell(aCanvas: TCanvas; ColIndex, RowIndex: Integer;
-       PageInfo: TJvTFDaysPageInfo);
+      PageInfo: TJvTFDaysPageInfo);
     procedure DrawAppts(aCanvas: TCanvas; DrawAll: Boolean;
-       PageInfo: TJvTFDaysPageInfo);
+      PageInfo: TJvTFDaysPageInfo);
     procedure PrintBitmap(aCanvas: TCanvas; SourceRect, DestRect: TRect;
-       aBitmap: TBitmap);
+      aBitmap: TBitmap);
     procedure DrawAppt(aCanvas: TCanvas; Col: Integer; Appt: TJvTFAppt;
-       StartRow, EndRow: Integer; PageInfo: TJvTFDaysPageInfo);
+      StartRow, EndRow: Integer; PageInfo: TJvTFDaysPageInfo);
     procedure DrawApptDetail(aCanvas: TCanvas; aRect: TRect; Appt: TJvTFAppt;
-       Col, StartRow, EndRow: Integer);
+      Col, StartRow, EndRow: Integer);
     procedure DrawApptBar(aCanvas: TCanvas; Appt: TJvTFAppt; BarRect: TRect;
-       Col, StartRow, EndRow: Integer);
+      Col, StartRow, EndRow: Integer);
     function CalcTimeStampRect(Appt: TJvTFAppt; BarRect: TRect;
-       Col, StartRow, EndRow: Integer): TRect;
+      Col, StartRow, EndRow: Integer): TRect;
     procedure DrawTimeStamp(aCanvas: TCanvas; TimeStampRect: TRect);
     procedure GetApptDrawInfo(DrawInfo: TJvTFDaysApptDrawInfo; Appt: TJvTFAppt);
 
     procedure CreatePicDrawList(aRect: TRect; Appt: TJvTFAppt; DrawList: TList);
     procedure FilterPicDrawList(aRect: TRect; DrawList: TList;
-       var PicsHeight: Integer);
+      var PicsHeight: Integer);
     procedure CanDrawWhat(aCanvas: TCanvas; ApptRect: TRect;
-       PicsHeight: Integer; var CanDrawText, CanDrawPics: Boolean);
+      PicsHeight: Integer; var CanDrawText, CanDrawPics: Boolean);
     procedure DrawListPics(aCanvas: TCanvas; var aRect: TRect; DrawList: TList);
     procedure ClearPicDrawList(DrawList: TList);
 
@@ -1647,9 +1640,9 @@ type
     procedure ClearPageInfo;
     procedure CalcPageInfo; dynamic;
     procedure CalcPageRowInfo(ShowColHdrs: Boolean; var CalcRowsPerPage,
-       CalcRowHeight: Integer);
+      CalcRowHeight: Integer);
     procedure CalcPageColInfo(ShowRowHdrs: Boolean; var CalcColsPerPage,
-       CalcColWidth: Integer);
+      CalcColWidth: Integer);
     function GetPageLayout: TJvTFDaysPrinterPageLayout;
     procedure SetPageLayout(Value: TJvTFDaysPrinterPageLayout);
     procedure CreateDoc; override;
@@ -1671,10 +1664,10 @@ type
     function DaysPageLayout: TJvTFDaysPrinterPageLayout;
     function CellRect(Col, Row: Integer; PageInfo: TJvTFDaysPageInfo): TRect;
     function GetApptRect(Col: Integer; Appt: TJvTFAppt;
-       PageInfo: TJvTFDaysPageInfo): TRect;
+      PageInfo: TJvTFDaysPageInfo): TRect;
     function GetApptDispColor(Appt: TJvTFAppt): TColor;
     procedure CalcStartEndRows(anAppt: TJvTFAppt; SchedDate: TDate;
-       var StartRow, EndRow: Integer);
+      var StartRow, EndRow: Integer);
     procedure Prepare; dynamic;
     property ApptCount: Integer read GetApptCount;
     property PageInfo[PageNum: Integer]: TJvTFDaysPageInfo read GetPageInfo;
@@ -1683,11 +1676,11 @@ type
     function CalcGroupHdrHeight: Integer;
     function CalcGroupColHdrsHeight: Integer;
     function VirtualGroupHdrRect(Col: Integer;
-       PageInfo: TJvTFDaysPageInfo): TRect;
+      PageInfo: TJvTFDaysPageInfo): TRect;
     procedure GetGroupStartEndCols(Col: Integer; var StartCol, EndCol: Integer);
   published
     property PageLayout: TJvTFDaysPrinterPageLayout read GetPageLayout
-       write SetPageLayout;
+      write SetPageLayout;
     property ApptAttr: TJvTFDaysApptAttr read FApptAttr write SetApptAttr;
     property ApptBar: TJvTFDaysApptBar read FApptBar write SetApptBar;
     property ApptBuffer: Integer read FApptBuffer write SetApptBuffer;
@@ -1695,17 +1688,17 @@ type
     property Color: TColor read FColor write SetColor;
     property Cols: TJvTFDaysCols read FCols write SetCols;
     property ColTitleStyle: TJvTFColTitleStyle read FColTitleStyle
-       write SeTJvTFColTitleStyle;
+      write SeTJvTFColTitleStyle;
     property DateFormat; // inherited
     property FancyRowHdrAttr: TJvTFDaysFancyRowHdrAttr read FFancyRowHdrAttr
-       write SetFancyRowHdrAttr;
+      write SetFancyRowHdrAttr;
     property FormattedDesc: Boolean read FFormattedDesc write SetFormattedDesc;
     property Granularity: Integer read FGranularity write SetGranularity;
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor;
     property GroupHdrAttr: TJvTFDaysHdrAttr read FGroupHdrAttr
-       write SetGroupHdrAttr;
+      write SetGroupHdrAttr;
     property GroupHdrHeight: Integer read FGroupHdrHeight
-       write SetGroupHdrHeight default 25;
+      write SetGroupHdrHeight default 25;
     property Grouping: TJvTFDaysGrouping read FGrouping write SetGrouping;
     property HdrAttr: TJvTFDaysHdrAttr read FHdrAttr write SetHdrAttr;
     property MinColWidth: Integer read FMinColWidth write SetMinColWidth;
@@ -1717,42 +1710,42 @@ type
     property ShowPics: Boolean read FShowPics write SetShowPics;
     property ShowText: Boolean read FShowText write SetShowText;
     property Thresholds: TJvTFDaysThresholds read FThresholds
-       write SetThresholds;
+      write SetThresholds;
     property TimeFormat; // inherited;
     property OnDrawCorner: TJvTFDrawCornerEvent read FOnDrawCorner
-       write FOnDrawCorner;
+      write FOnDrawCorner;
     property OnDrawGroupHdr: TJvTFDrawHdrEvent read FOnDrawGroupHdr
-       write FOnDrawGroupHdr;
+      write FOnDrawGroupHdr;
     property OnDrawMinorRowHdr: TJvTFDrawHdrEvent read FOnDrawMinorRowHdr
-       write FOnDrawMinorRowHdr;
+      write FOnDrawMinorRowHdr;
     property OnDrawMajorRowHdr: TJvTFDrawHdrEvent read FOnDrawMajorRowHdr
-       write FOnDrawMajorRowHdr;
+      write FOnDrawMajorRowHdr;
    //property OnUpdateColTitle: TJvTFUpdateTitleEvent read FOnUpdateColTitle
     //write FOnUpdateColTitle;
     property OnUpdateColTitles: TJvTFUpdateTitlesEvent read FOnUpdateColTitles
-       write FOnUpdateColTitles;
+      write FOnUpdateColTitles;
     property OnDrawColHdr: TJvTFDrawHdrEvent read FOnDrawColHdr write FOnDrawColHdr;
     property OnDrawRowHdr: TJvTFDrawHdrEvent read FOnDrawRowHdr write FOnDrawRowHdr;
     property OnDrawDataCell: TJvTFDrawDataCellEvent read FOnDrawDataCell
-       write FOnDrawDataCell;
+      write FOnDrawDataCell;
     property OnDrawAppt: TJvTFDrawApptEvent read FOnDrawAppt write FOnDrawAppt;
     property OnDrawApptBar: TJvTFDrawApptBarEvent read FOnDrawApptBar
-       write FOnDrawApptBar;
+      write FOnDrawApptBar;
     property OnGetApptDrawInfo: TJvTFGetDaysApptDrawInfoEvent read FOnGetApptDrawInfo
-       write FOnGetApptDrawInfo;
+      write FOnGetApptDrawInfo;
     property OnShadeCell: TJvTFShadeCellEvent read FOnShadeCell write FOnShadeCell;
     property OnApptProgress: TJvTFProgressEvent read FOnApptProgress
-       write FOnApptProgress;
+      write FOnApptProgress;
     property GridStartTime: TTime read FGridStartTime write SetGridStartTime;
     property GridEndTime: TTime read FGridEndTime write SetGridEndTime;
   end;
 
-{$IFDEF Jv_TIMEBLOCKS}
+  {$IFDEF Jv_TIMEBLOCKS}
 // REMOVE, replaced by DOWToBorl in JvTFUtils
 //function DOWToBorl(aDOW: TTFDayOfWeek): Integer;
 // REMOVE, replaced by BorlToDOW in JvTFUtils
 //function BorlToDOW(BorlDOW: Integer): TTFDayOfWeek;
-{$ENDIF Jv_TIMEBLOCKS}
+  {$ENDIF Jv_TIMEBLOCKS}
 
 implementation
 
@@ -1772,23 +1765,23 @@ resourcestring
   RsEMapColNotFoundForAppointment = 'Map column not found for appointment';
   RsECorruptAppointmentMap = 'Corrupt appointment map';
   RsEGridGranularityCannotBeGreater = 'Grid granularity cannot be greater ' +
-   'than the time block granularity';
+    'than the time block granularity';
   RsETimeBlockGranularityMustBeEvenly = 'Time block granularity must be evenly ' +
-   'divisible by the grid granularity';
+    'divisible by the grid granularity';
   RsETimeBlocksMustBeginExactlyOn = 'Time blocks must begin exactly on ' +
-   'a grid time division';
+    'a grid time division';
   RsEGridEndTimeCannotBePriorToGridStart = 'GridEndTime cannot be prior to GridStartTime';
   RsEGridStartTimeCannotBeAfterGridEndTi = 'GridStartTime cannot be after GridEndTime';
   RsEInvalidRowd = 'Invalid row (%d)';
   RsEThereIsNoDataToPrint = 'There is no data to print';
   RsENoPageInfoExists = 'No page info exists.  ' +
-   'Document must be prepared';
+    'Document must be prepared';
   RsEATimeBlockNameCannotBeNull = 'A time block name cannot be null';
   RsEAnotherTimeBlockWithTheName = 'Another time block with the name ' +
-   '"%s" already exists';
+    '"%s" already exists';
   RsEATimeBlockWithTheNamesDoesNotExist = 'A time block with the name "%s" does not exist';
-{$ENDIF USEJVCL}
-  
+  {$ENDIF USEJVCL}
+
 //Type
   // DEF TIMEBLOCK (not conditionally compiled, just marked for reference)
   // removed as part of TimeBlock integration
@@ -2189,7 +2182,8 @@ begin
       EndGridUpdate;
     end
   end
-  else if ActiveTemplate = agtComparative then
+  else
+  if ActiveTemplate = agtComparative then
   begin
     try
       BeginGridUpdate;
@@ -2207,7 +2201,6 @@ begin
 
   FGrid.Cols.UpdateTitles;
 end;
-
 
 procedure TJvTFDaysTemplate.CompNamesMoved(Sender: TObject; CurIndex,
   NewIndex: Integer);
@@ -2317,11 +2310,11 @@ begin
 
   ControlStyle := ControlStyle + [csNoDesignVisible];
 
-   BorderStyle := bsNone;
-   {$IFDEF VCL}
-   ParentCtl3D := False;
-   Ctl3D := False;
-   {$ENDIF VCL}
+  BorderStyle := bsNone;
+  {$IFDEF VCL}
+  ParentCtl3D := False;
+  Ctl3D := False;
+  {$ENDIF VCL}
 end;
 
 procedure TJvTFInPlaceApptEditor.DoExit;
@@ -2335,7 +2328,6 @@ begin
     Parent.SetFocus;
   end;
 end;
-
 
 procedure TJvTFInPlaceApptEditor.KeyDown(var Key: Word; Shift: TShiftState);
 begin
@@ -2417,111 +2409,110 @@ begin
   end;
 end;
 
-procedure TJvTFApptMap.ProcessMapGroup(GroupStart, GroupEnd: Integer); Var
+procedure TJvTFApptMap.ProcessMapGroup(GroupStart, GroupEnd: Integer);
+var
   MapRow,
-  Examined,
-  ApptCount,
-  MaxCol,
-  MapCol: Integer;
+    Examined,
+    ApptCount,
+    MaxCol,
+    MapCol: Integer;
 begin
   // Find the highest used column in group
   MaxCol := 0;
   for MapRow := GroupStart to GroupEnd do
   begin
-   Examined := 0;
-   ApptCount := FData[MapRow, -1];
+    Examined := 0;
+    ApptCount := FData[MapRow, -1];
    // ApptCount > 0 check added by Mike 1/14/01
-   if ApptCount > 0 then
-   begin
-    MapCol := 1;
+    if ApptCount > 0 then
+    begin
+      MapCol := 1;
 
-    repeat
-      if FData[MapRow, MapCol] <> 0 then
-       Inc(Examined);
-      Inc(MapCol);
-    until Examined = ApptCount;
+      repeat
+        if FData[MapRow, MapCol] <> 0 then
+          Inc(Examined);
+        Inc(MapCol);
+      until Examined = ApptCount;
 
-    Dec(MapCol);
+      Dec(MapCol);
 
-    MaxCol := Greater(MaxCol, MapCol);
-   end;
+      MaxCol := Greater(MaxCol, MapCol);
+    end;
   end;
 
   // Now write MaxCol in col 0 for each row in the groups
-  For MapRow := GroupStart to GroupEnd do
-   FData[MapRow, 0] := MaxCol;
+  for MapRow := GroupStart to GroupEnd do
+    FData[MapRow, 0] := MaxCol;
 end;
 
-
 procedure TJvTFApptMap.UpdateMapGroups;
-Var
+var
   MapRow,
-  MapCol,
-  GroupStart,
-  GroupEnd,
-  MaxEndRow,
-  CurrStartRow,
-  CurrEndRow,
-  GridRowCount,
-  Examined,
-  ApptCount: Integer;
+    MapCol,
+    GroupStart,
+    GroupEnd,
+    MaxEndRow,
+    CurrStartRow,
+    CurrEndRow,
+    GridRowCount,
+    Examined,
+    ApptCount: Integer;
   Appt: TJvTFAppt;
 begin
   GroupStart := 0;
   MapRow := 0;
 
-  If Assigned(FGridCol.ColCollection.ApptGrid) Then
-   GridRowCount := FGridCol.ColCollection.ApptGrid.RowCount
-  Else If Assigned(FGridCol.ColCollection.Printer) Then
-   GridRowCount := FGridCol.ColCollection.Printer.RowCount
-  Else
-   GridRowCount := 0;
+  if Assigned(FGridCol.ColCollection.ApptGrid) then
+    GridRowCount := FGridCol.ColCollection.ApptGrid.RowCount
+  else
+  if Assigned(FGridCol.ColCollection.Printer) then
+    GridRowCount := FGridCol.ColCollection.Printer.RowCount
+  else
+    GridRowCount := 0;
 
-  While (MapRow <= GridRowCount - 1) do
-   Begin
-    If FData[MapRow, -1] > 0 Then
-      Begin
-       MaxEndRow := MapRow;
+  while (MapRow <= GridRowCount - 1) do
+  begin
+    if FData[MapRow, -1] > 0 then
+    begin
+      MaxEndRow := MapRow;
 
-       Examined := 0;
-       ApptCount := FData[MapRow, -1];
-       MapCol := 1;
-       While (Examined < ApptCount) and (MapCol <= 60) do
-        Begin
-          Appt := TJvTFAppt(FData[MapRow, MapCol]);
-          If Assigned(Appt) Then
-           Begin
-            FGridCol.CalcStartEndRows(Appt, CurrStartRow, CurrEndRow);
-            If CurrEndRow > MaxEndRow Then
-              MaxEndRow := CurrEndRow;
-            Inc(Examined);
-           End;
-          Inc(MapCol);
-        End;
+      Examined := 0;
+      ApptCount := FData[MapRow, -1];
+      MapCol := 1;
+      while (Examined < ApptCount) and (MapCol <= 60) do
+      begin
+        Appt := TJvTFAppt(FData[MapRow, MapCol]);
+        if Assigned(Appt) then
+        begin
+          FGridCol.CalcStartEndRows(Appt, CurrStartRow, CurrEndRow);
+          if CurrEndRow > MaxEndRow then
+            MaxEndRow := CurrEndRow;
+          Inc(Examined);
+        end;
+        Inc(MapCol);
+      end;
 
-       If (MaxEndRow = MapRow) or (MaxEndRow >= GridRowCount - 1) Then  // end of group
-        Begin
-          GroupEnd := MapRow;
+      if (MaxEndRow = MapRow) or (MaxEndRow >= GridRowCount - 1) then // end of group
+      begin
+        GroupEnd := MapRow;
           // find max appts in group and record in map col 0
-          ProcessMapGroup(GroupStart, GroupEnd);
+        ProcessMapGroup(GroupStart, GroupEnd);
 
 //          TForm(FGridCol.ColCollection.ApptGrid.Owner).Caption := IntToStr(GroupStart) + ' - ' + IntToStr(GroupEnd);
 
-          Inc(MapRow);
-          GroupStart := MapRow; // next group starts on next row
-        End
-       Else
-       begin
+        Inc(MapRow);
+        GroupStart := MapRow; // next group starts on next row
+      end
+      else
         MapRow := MaxEndRow;
-       end
-      End
-    Else
+    end
+    else
     begin
       ProcessMapGroup(MapRow, MapRow);
       Inc(MapRow);
       GroupStart := MapRow; // next group starts on next row
     end;
-   End;
+  end;
 end;
 
 procedure TJvTFApptMap.Clear;
@@ -2614,7 +2605,6 @@ begin
     DumpData.Free;
   end;
 end;
-
 
 function TJvTFApptMap.HasAppt(Appt: TJvTFAppt): Boolean;
 var
@@ -2792,7 +2782,7 @@ end;
 constructor TJvTFDaysScrollBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  // If we set the csNoDesignVisible flag then visibility at design time
+  // if we set the csNoDesignVisible flag then visibility at design time
   //  is controled by the Visible property, which is exactly what we want.
   ControlStyle := ControlStyle + [csNoDesignVisible];
   ParentCtl3D := False;
@@ -2834,7 +2824,6 @@ begin
   end;
   SetScrollInfo(Handle, SB_CTL, Info, True);
 end;
-
 
 { TJvTFDaysCol }
 
@@ -2939,9 +2928,9 @@ begin
     Result := Result + FormatDateTime('ddddd', SchedDate);
   Result := Result + ']';
 {
-  If Title <> '' Then
+  if Title <> '' then
    Result := Title
-  Else
+  else
    Result := Inherited GetDisplayName;
 }
 end;
@@ -3005,7 +2994,8 @@ begin
       UpdateTitles;
     end;
   end
-  else if Assigned(FPrinter) then
+  else
+  if Assigned(FPrinter) then
   begin
     if not Connected and not (csDesigning in FPrinter.ComponentState) and
       not FNullSchedDate and (SchedName <> '') and
@@ -3046,7 +3036,8 @@ begin
         ApptGrid.Invalidate;
       end;
     end
-    else if Assigned(FPrinter) then
+    else
+    if Assigned(FPrinter) then
     begin
       if Connected and Assigned(FPrinter.ScheduleManager) then
       begin
@@ -3074,7 +3065,6 @@ begin
   CheckTemplate;
 end;
 
-
 procedure TJvTFDaysCol.RefreshMap;
 begin
   FMap.Refresh;
@@ -3101,7 +3091,8 @@ begin
     else
       EndRow := ApptGrid.RowCount - 1;
   end
-  else if Assigned(FPrinter) then
+  else
+  if Assigned(FPrinter) then
   begin
     if Trunc(Appt.StartDate) = Trunc(SchedDate) then
       StartRow := FPrinter.TimeToRow(Appt.StartTime)
@@ -3124,29 +3115,31 @@ begin
   ApptGrid := ColCollection.ApptGrid;
   FPrinter := ColCollection.Printer;
 
-  If Assigned(ApptGrid) Then
-   Begin
-    If (ApptGrid.Template.ActiveTemplate = agtLinear) and
-      (ApptGrid.Template.ShortTitles) Then
+  if Assigned(ApptGrid) then
+   begin
+    if (ApptGrid.Template.ActiveTemplate = agtLinear) and
+      (ApptGrid.Template.ShortTitles) then
       NewTitle := FormatDateTime(ApptGrid.DateFormat, SchedDate)
-    Else If (ApptGrid.Template.ActiveTemplate = agtComparative) and
-          (ApptGrid.Template.ShortTitles) Then
+    else
+    if (ApptGrid.Template.ActiveTemplate = agtComparative) and
+          (ApptGrid.Template.ShortTitles) then
       NewTitle := SchedName
-    Else
+    else
       NewTitle := SchedName + ' - ' + FormatDateTime(ApptGrid.DateFormat, SchedDate);
 
-    If Assigned(ApptGrid.OnUpdateColTitle) Then
+    if Assigned(ApptGrid.OnUpdateColTitle) then
       ApptGrid.OnUpdateColTitle(ApptGrid, Self, NewTitle);
     Title := NewTitle;
-   End
-  Else If Assigned(FPrinter) Then
-   Begin
+   end
+  else
+  if Assigned(FPrinter) then
+   begin
     NewTitle := SchedName + ' - ' +
       FormatDateTime(FPrinter.DateFormat, SchedDate);
-    If Assigned(FPrinter.OnUpdateColTitle) Then
+    if Assigned(FPrinter.OnUpdateColTitle) then
       FPrinter.OnUpdateColTitle(FPrinter, Self, NewTitle);
     Title := NewTitle;
-   End;
+   end;
 end;
 }
 
@@ -3198,7 +3191,7 @@ begin
     if ApptList.Count > 0 then
     begin
       NextIndex := ApptList.IndexOfObject(RefAppt) + 1;
-      // If NextIndex = 0 then RefAppt is in a different column,
+      // if NextIndex = 0 then RefAppt is in a different column,
       // so return the first appt.
       if (NextIndex >= 0) and (NextIndex < ApptList.Count) then
         Result := TJvTFAppt(ApptList.Objects[NextIndex]);
@@ -3228,8 +3221,9 @@ begin
       PrevIndex := ApptList.IndexOfObject(RefAppt) - 1;
       if (PrevIndex > -1) then
         Result := TJvTFAppt(ApptList.Objects[PrevIndex])
-      else if PrevIndex = -2 then
-       // RefAppt is in a different column so return last appt
+      else
+      if PrevIndex = -2 then
+        // RefAppt is in a different column so return last appt
         Result := GetLastAppt;
     end;
   finally
@@ -3272,7 +3266,8 @@ begin
 
   if FNullSchedDate then
     DateStr := ''
-  else if FromGrid then
+  else
+  if FromGrid then
     DateStr := FormatDateTime(ApptGrid.DateFormat, SchedDate)
   else
     DateStr := FormatDateTime(FPrinter.DateFormat, SchedDate);
@@ -3283,22 +3278,22 @@ begin
     NameStr := SchedName;
 
   case Grouping of
-    grNone :
+    grNone:
       begin
         NewGroupTitle := '';
         NewTitle := NameStr + ' - ' + DateStr;
       end;
-    grDate :
+    grDate:
       begin
         NewGroupTitle := DateStr;
         NewTitle := NameStr;
       end;
-    grResource :
+    grResource:
       begin
         NewGroupTitle := NameStr;
         NewTitle := DateStr;
       end;
-    grCustom :
+    grCustom:
       begin
         NewGroupTitle := GroupTitle;
         NewTitle := NameStr + ' - ' + DateStr;
@@ -3310,7 +3305,8 @@ begin
     if Assigned(ApptGrid.OnUpdateColTitles) then
       ApptGrid.OnUpdateColTitles(ApptGrid, Self, NewGroupTitle, NewTitle)
   end
-  else if Assigned(FPrinter.OnUpdateColTitles) then
+  else
+  if Assigned(FPrinter.OnUpdateColTitles) then
     FPrinter.OnUpdateColTitles(FPrinter, Self, NewGroupTitle, NewTitle);
 
   GroupTitle := NewGroupTitle;
@@ -3377,7 +3373,8 @@ function TJvTFDaysCols.GetOwner: TPersistent;
 begin
   if Assigned(FApptGrid) then
     Result := FApptGrid
-  else if Assigned(FPrinter) then
+  else
+  if Assigned(FPrinter) then
     Result := FPrinter
   else
     Result := nil;
@@ -3418,7 +3415,6 @@ begin
   end;
 end;
 
-
 procedure TJvTFDaysCols.Update(Item: TCollectionItem);
 begin
 {*******************************************************************}
@@ -3439,7 +3435,7 @@ begin
     try
       FAddingCol := True;
 
-      // If we're adding the first col then set left col to 0.
+      // if we're adding the first col then set left col to 0.
       if FOldCount = 0 then
         ApptGrid.LeftCol := 0;
 
@@ -3451,8 +3447,8 @@ begin
         if not (vsbHorz in ApptGrid.VisibleScrollBars) then
           // run the CheckSBVis routine
           if not ApptGrid.CheckSBVis then
-           // If CheckSBVis didn't resize the cols then recheck
-           //  the visibility of the horz scroll bar.  If still not
+           // if CheckSBVis didn't resize the cols then recheck
+           //  the visibility of the horz scroll bar.  if still not
            //  visible, then size the cols.
             if not (vsbHorz in ApptGrid.VisibleScrollBars) then
               SizeCols;
@@ -3462,7 +3458,8 @@ begin
     finally
       FAddingCol := False;
     end
-    else if Count < FOldCount then // we're removing a col
+    else
+    if Count < FOldCount then // we're removing a col
     begin
       if ApptGrid.FocusedCol >= Count then
         ApptGrid.FocusedCol := Count - 1;
@@ -3479,8 +3476,8 @@ begin
         begin
            // run the CheckSBVis routine
           if not ApptGrid.CheckSBVis then
-            // If CheckSBVis didn't resize the cols then recheck
-            //  the visibility of the horz scroll bar.  If still not
+            // if CheckSBVis didn't resize the cols then recheck
+            //  the visibility of the horz scroll bar.  if still not
             //  visible, then size the cols.
             if not (vsbHorz in ApptGrid.VisibleScrollBars) then
               SizeCols;
@@ -3511,16 +3508,15 @@ var
 begin
   if Assigned(ApptGrid) then
     MCW := ApptGrid.MinColWidth
-  else if Assigned(FPrinter) then
+  else
+  if Assigned(FPrinter) then
     MCW := FPrinter.MinColWidth
   else
     Exit;
 
   for I := 0 to Count - 1 do
     if Items[I].Width < MCW then
-    begin
       Items[I].Width := MCW;
-    end;
 end;
 
 procedure TJvTFDaysCols.EnsureMaxColWidth;
@@ -4300,7 +4296,6 @@ begin
   PaintBuffer := TBitmap.Create;
 end;
 
-
 destructor TJvTFDays.Destroy;
 begin
   FVScrollBar.Free;
@@ -4414,6 +4409,7 @@ var
     //*****************************************************
     //           SUBORDINATE ROUTINES
     //*****************************************************
+
   function CalcDataRect(ForScrollBars: TJvTFVisibleScrollBars): TRect;
   begin
     Result := GetClientRect;
@@ -4478,7 +4474,7 @@ begin
     end;
   end;
 
-  // If the horz scrollbar should show, we must recheck the vert scrollbar,
+  // if the horz scrollbar should show, we must recheck the vert scrollbar,
   //  since the vert scrollbar was initially checked with the assumption
   //  that the horz scrollbar was not needed.
   if vsbHorz in NewSBVis then
@@ -4488,7 +4484,7 @@ begin
       Include(NewSBVis, vsbVert);
   end;
 
-  // If we're autosizing the cols and the vert scrollbar has been
+  // if we're autosizing the cols and the vert scrollbar has been
   //  toggled and the horz scroll isn't visible then we need to resize
   //  the cols.  We can't call Cols.Resize until VisibleScrollBars has
   //  been updated so just set a flag here.
@@ -4501,7 +4497,7 @@ begin
 
   // In order to optimize the resizing of cols when AutoSizeCols is on, this
   //  function needs a return value specifying whether or not the cols have
-  //  been resized from within this routine.  If we're not autosizing cols
+  //  been resized from within this routine.  if we're not autosizing cols
   //  it'll return false, but the result is meaningless.
   Result := DoColResize;
 
@@ -4534,7 +4530,8 @@ begin
   // Enforce minimum granularity of 1 min and max of 60 mins
   if Value < 1 then
     Value := 1
-  else if Value > 60 then
+  else
+  if Value > 60 then
     Value := 60;
 
   // Ensure that granularity is evenly divisable by an hour
@@ -4551,7 +4548,7 @@ begin
     {$IFDEF Jv_TIMEBLOCKS}
     // ok
     EnsureBlockRules(Value, TimeBlockProps.BlockGran, TimeBlockProps.DayStart);
-   {$ENDIF Jv_TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     aTime := RowToTime(TopRow);
     FGranularity := Value;
@@ -4703,7 +4700,6 @@ begin
   if Value > MaxTopRow then
     Value := MaxTopRow;
 
-
   if Value <> FTopRow then
     if (Value > -1) and (Value < RowCount) then
     begin
@@ -4776,7 +4772,8 @@ begin
       end
       else
         raise EJvTFDaysError.CreateRes(@RsEColumnIndexOutOfBounds)
-    else if Value = -1 then
+    else
+    if Value = -1 then
     begin
       FLeftCol := -1;
       Invalidate;
@@ -4927,7 +4924,7 @@ end;
 
 procedure TJvTFDays.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
+  BorderStyles: array [TBorderStyle] of DWORD = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -4977,19 +4974,19 @@ var
 begin
 { optimization incorrectly kicks in if control is only partially
   visible on the screen
-  If not PaintBuffer.Empty and
+  if not PaintBuffer.Empty and
     ((Canvas.ClipRect.Left <> ClientRect.Left) or
     (Canvas.ClipRect.Top <> ClientRect.Top) or
     (Canvas.ClipRect.Right <> ClientRect.Right) or
-    (Canvas.ClipRect.Bottom <> ClientRect.Bottom)) Then
-   Begin
+    (Canvas.ClipRect.Bottom <> ClientRect.Bottom)) then
+   begin
     With Canvas do
       Windows.BitBlt(Canvas.Handle, ClipRect.Left, ClipRect.Top,
                 RectWidth(ClipRect), RectHeight(ClipRect),
                 PaintBuffer.Canvas.Handle,
                 ClipRect.Left, ClipRect.Top, SRCCOPY);
     Exit;
-   End;
+   end;
   }
 
   with PaintBuffer do
@@ -5015,7 +5012,6 @@ begin
       DrawEmptyColHdr(Canvas);
 
     DrawGroupHdrs(Canvas);
-
 
     RightCol := LeftCol + VisibleCols - 1;
     for I := LeftCol to RightCol do
@@ -5076,10 +5072,10 @@ Var
   FrameOffset: Integer;
   CellColor: TColor;
   IsPrimeTimeCell: Boolean;
-Begin
+begin
   // Calc the cell rect
   With aRect do
-   Begin
+   begin
     Left := RowHdrWidth;
     For I := LeftCol to ColIndex - 1 do
       Inc(Left, Cols[I].Width);
@@ -5088,122 +5084,124 @@ Begin
     //group Top := ColHdrHeight + (RowIndex - TopRow) * RowHeight;
     Top := CalcGroupColHdrsHeight + (RowIndex - TopRow) * RowHeight;
     Bottom := Top + RowHeight;
-   End;
+   end;
 
   PrimeStartRow := TimeToRow(PrimeTime.StartTime);
   PrimeEndRow := TimeToRow(AdjustEndTime(PrimeTime.EndTime));
 
   IsPrimeTimeCell := (RowIndex >= PrimeStartRow) and (RowIndex <= PrimeEndRow);
 
-  If IsPrimeTimeCell Then
+  if IsPrimeTimeCell then
    CellColor := PrimeTime.Color
-  Else
+  else
    CellColor := Color;
 
-  If Assigned(FOnShadeCell) Then
+  if Assigned(FOnShadeCell) then
    FOnShadeCell(Self, ColIndex, RowIndex, CellColor);
 
-  If IsPrimeTimeCell and (CellColor = PrimeTime.Color) Then
+  if IsPrimeTimeCell and (CellColor = PrimeTime.Color) then
    Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
                 RectHeight(aRect), PrimeTime.FFillPic.Canvas.Handle,
                 0, 0, PrimeTime.FFillPic.Width,
                 PrimeTime.FFillPic.Height, SRCCOPY)
-  Else If (CellColor <> Color) Then
-   Begin
+  else
+  if (CellColor <> Color) then
+   begin
     aCanvas.Brush.Color := CellColor;
     aCanvas.FillRect(aRect);
-   End;
+   end;
 
-  If CellIsSelected(Point(ColIndex, RowIndex)) Then
-   If (SelCellAttr.Style = scsFrame) Then
-    Begin
+  if CellIsSelected(Point(ColIndex, RowIndex)) then
+   if (SelCellAttr.Style = scsFrame) then
+    begin
       SelFrameRect := aRect;
       FrameOffset := -(SelCellAttr.FrameWidth div 2);
       Windows.InflateRect(SelFrameRect, FrameOffset, FrameOffset);
 
-      If SelCellAttr.FrameWidth mod 2 <> 0 Then
-       Begin
+      if SelCellAttr.FrameWidth mod 2 <> 0 then
+       begin
         Dec(SelFrameRect.Right);
         Dec(SelFrameRect.Bottom);
-       End;
+       end;
 
       With aCanvas do
-       Begin
+       begin
         Pen.Color := SelCellAttr.Color;
         Pen.Width := SelCellAttr.FrameWidth;
 
-        If FFromToSel Then
-          Begin
+        if FFromToSel then
+          begin
            // Draw Left border
            MoveTo(SelFrameRect.Left, SelFrameRect.Top);
            LineTo(SelFrameRect.Left, SelFrameRect.Bottom - 1);
 
            // Draw Top border only if this cell is the same as SelStart cell
-           If (ColIndex = SelStart.X) and (RowIndex = SelStart.Y) Then
-            Begin
+           if (ColIndex = SelStart.X) and (RowIndex = SelStart.Y) then
+            begin
               MoveTo(SelFrameRect.Left, SelFrameRect.Top);
               LineTo(SelFrameRect.Right - 1, SelFrameRect.Top);
-            End;
+            end;
 
            // Draw Right border
            MoveTo(SelFrameRect.Right - 1, SelFrameRect.Top);
            LineTo(SelFrameRect.Right - 1, SelFrameRect.Bottom - 1);
 
            // Draw bottom border only in this cell is the same as SelEnd cell
-           If (ColIndex = SelEnd.X) and (RowIndex = SelEnd.Y) Then
-            Begin
+           if (ColIndex = SelEnd.X) and (RowIndex = SelEnd.Y) then
+            begin
               MoveTo(SelFrameRect.Left, SelFrameRect.Bottom - 1);
               LineTo(SelFrameRect.Right - 1, SelFrameRect.Bottom - 1);
-            End;
-          End
-        Else
-          Begin
+            end;
+          end
+        else
+          begin
            // Draw Left border only if col is left-most in selection
-           If ColIndex = SelStart.X Then
-            Begin
+           if ColIndex = SelStart.X then
+            begin
               MoveTo(SelFrameRect.Left, SelFrameRect.Top);
               LineTo(SelFrameRect.Left, SelFrameRect.Bottom - 1);
-            End;
+            end;
 
            // Draw Top border only if row is top-most in selection
-           If RowIndex = SelStart.Y Then
-            Begin
+           if RowIndex = SelStart.Y then
+            begin
               MoveTo(SelFrameRect.Left, SelFrameRect.Top);
               LineTo(SelFrameRect.Right - 1, SelFrameRect.Top);
-            End;
+            end;
 
            // Draw Right border only if col is right-most in selection
-           If ColIndex = SelEnd.X Then
-            Begin
+           if ColIndex = SelEnd.X then
+            begin
               MoveTo(SelFrameRect.Right - 1, SelFrameRect.Top);
               LineTo(SelFrameRect.Right - 1, SelFrameRect.Bottom - 1);
-            End;
+            end;
 
            // Draw Bottom border only if row is bottom-most in selection
-           If RowIndex = SelEnd.Y Then
-            Begin
+           if RowIndex = SelEnd.Y then
+            begin
               MoveTo(SelFrameRect.Left, SelFrameRect.Bottom - 1);
               LineTo(SelFrameRect.Right - 1, SelFrameRect.Bottom - 1);
-            End;
-          End;
-       End;
-    End
+            end;
+          end;
+       end;
+    end
    // Refer to the private FSel* fields because we want anchor
-   Else If (SelCellAttr.Style = scsCombo) and
-        (FSelStart.X = ColIndex) and (FSelStart.Y = RowIndex) Then
-    Begin
+   else
+   if (SelCellAttr.Style = scsCombo) and
+        (FSelStart.X = ColIndex) and (FSelStart.Y = RowIndex) then
+    begin
       SelFrameRect := aRect;
       FrameOffset := -(SelCellAttr.FrameWidth div 2);
       Windows.InflateRect(SelFrameRect, FrameOffset, FrameOffset);
 
-      If SelCellAttr.FrameWidth mod 2 <> 0 Then
-       Begin
+      if SelCellAttr.FrameWidth mod 2 <> 0 then
+       begin
         Dec(SelFrameRect.Right);
         Dec(SelFrameRect.Bottom);
-       End;
+       end;
 
       With aCanvas do
-       Begin
+       begin
         Pen.Color := SelCellAttr.Color;
         Pen.Width := SelCellAttr.FrameWidth;
         MoveTo(SelFrameRect.Left, SelFrameRect.Top);
@@ -5211,26 +5209,26 @@ Begin
         LineTo(SelFrameRect.Right - 1, SelFrameRect.Bottom - 1);
         LineTo(SelFrameRect.Left, SelFrameRect.Bottom - 1);
         LineTo(SelFrameRect.Left, SelFrameRect.Top);
-       End;
-    End
-   Else
-    Begin
+       end;
+    end
+   else
+    begin
       aCanvas.Brush.Color := SelCellAttr.Color;
       aCanvas.FillRect(aRect);
-    End;
+    end;
 
-  If (ColIndex = FocusedCol) and (RowIndex = FocusedRow) and Focused Then
-   Begin
+  if (ColIndex = FocusedCol) and (RowIndex = FocusedRow) and Focused then
+   begin
     FocusRect := aRect;
     Windows.InflateRect(FocusRect, -1, -1);
     Dec(FocusRect.Bottom);
     Dec(FocusRect.Right);
     ManualFocusRect(aCanvas, FocusRect);
-   End;
+   end;
 
   // Draw a line across the bottom and down the right side
   With aCanvas do
-   Begin
+   begin
     Pen.Color := GridLineColor;
     Pen.Width := 1;
 
@@ -5238,11 +5236,11 @@ Begin
     LineTo(aRect.Right, aRect.Bottom - 1);
     MoveTo(aRect.Right - 1, aRect.Top);
     LineTo(aRect.Right - 1, aRect.Bottom);
-   End;
+   end;
 
-  If Assigned(FOnDrawDataCell) Then
+  if Assigned(FOnDrawDataCell) then
    FOnDrawDataCell(Self, aCanvas, aRect, ColIndex, RowIndex);
-End;
+end;
 }
 {$ENDIF Jv_TIMEBLOCKS}
 
@@ -5289,7 +5287,8 @@ begin
 
   if IsWeekend(ColIndex) then
     CellColor := WeekendColor
-  else if IsPrimeTimeCell then
+  else
+  if IsPrimeTimeCell then
     CellColor := PrimeTime.Color
   else
     CellColor := Color;
@@ -5302,31 +5301,34 @@ begin
       RectHeight(aRect), FWeekendFillPic.Canvas.Handle,
       0, 0, FWeekendFillPic.Width,
       FWeekendFillPic.Height, SRCCOPY)
-  else if IsPrimeTimeCell and (CellColor = PrimeTime.Color) then
+  else
+  if IsPrimeTimeCell and (CellColor = PrimeTime.Color) then
   begin
-      if FDitheredBackground then
-        DrawDither(ACanvas, ARect, CellColor, clWhite)
-      else
-      begin
-        Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
-          RectHeight(aRect), PrimeTime.FFillPic.Canvas.Handle,
-          0, 0, PrimeTime.FFillPic.Width,
-          PrimeTime.FFillPic.Height, SRCCOPY)
-      end;
+    if FDitheredBackground then
+      DrawDither(ACanvas, ARect, CellColor, clWhite)
+    else
+    begin
+      Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
+        RectHeight(aRect), PrimeTime.FFillPic.Canvas.Handle,
+        0, 0, PrimeTime.FFillPic.Width,
+        PrimeTime.FFillPic.Height, SRCCOPY)
+    end;
   end
-  else if (CellColor <> Color) then
+  else
+  if (CellColor <> Color) then
   begin
     aCanvas.Brush.Color := CellColor;
     aCanvas.FillRect(aRect);
   end;
 
   {
-  If IsWeekend(ColIndex) Then
+  if IsWeekend(ColIndex) then
    Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
                 RectHeight(aRect), FWeekendFillPic.Canvas.Handle,
                 0, 0, FWeekendFillPic.Width,
                 FWeekendFillPic.Height, SRCCOPY)
-  Else If (RowIndex >= PrimeStartRow) and (RowIndex <= PrimeEndRow) Then
+  else
+  if (RowIndex >= PrimeStartRow) and (RowIndex <= PrimeEndRow) then
    Windows.StretchBlt(aCanvas.Handle, aRect.Left, aRect.Top, RectWidth(aRect),
                 RectHeight(aRect), PrimeTime.FFillPic.Canvas.Handle,
                 0, 0, PrimeTime.FFillPic.Width,
@@ -5377,14 +5379,14 @@ begin
         end
         else
         begin
-           // Draw Left border only if col is left-most in selection
+          // Draw Left border only if col is left-most in selection
           if ColIndex = SelStart.X then
           begin
             MoveTo(SelFrameRect.Left, SelFrameRect.Top);
             LineTo(SelFrameRect.Left, SelFrameRect.Bottom - 1);
           end;
 
-           // Draw Top border only if row is top-most in selection
+          // Draw Top border only if row is top-most in selection
           if RowIndex = SelStart.Y then
           begin
             MoveTo(SelFrameRect.Left, SelFrameRect.Top);
@@ -5408,7 +5410,8 @@ begin
       end;
     end
    // Refer to the private FSel* fields because we want anchor
-    else if (SelCellAttr.Style = scsCombo) and
+    else
+    if (SelCellAttr.Style = scsCombo) and
       (FSelStart.X = ColIndex) and (FSelStart.Y = RowIndex) then
     begin
       SelFrameRect := aRect;
@@ -5598,7 +5601,7 @@ var
 begin
   with aCanvas do
     case ApptBar.TimeStampStyle of
-      tssFullI :
+      tssFullI:
         begin
           OldColor := Pen.Color;
           Pen.Color := ApptBar.TimeStampColor;
@@ -5622,7 +5625,7 @@ begin
           Pen.Color := OldColor;
         end;
 
-      tssHalfI :
+      tssHalfI:
         begin
        // we only want the left half of the time stamp rect
           TimeStampRect.Right := (TimeStampRect.Left + TimeStampRect.Right) div 2;
@@ -5644,7 +5647,7 @@ begin
           Pen.Width := 1;
         end;
 
-      tssBlock :
+      tssBlock:
         begin
        // we only want the left half of the time stamp rect
           TimeStampRect.Right := (TimeStampRect.Left + TimeStampRect.Right) div 2;
@@ -5831,10 +5834,10 @@ begin
     if Selected then
     begin
        { OLD 3D HANDLES CODE
-       If agoMoveAppt in Options Then
+       if agoMoveAppt in Options then
         DrawGrabLines(aCanvas, aRect.Top + 0, aRect.Left + 2,
                   aRect.Right - 3);
-       If agoSizeAppt in Options Then
+       if agoSizeAppt in Options then
         DrawGrabLines(aCanvas, aRect.Bottom - GrabHandles.Height,
                   aRect.Left + 2, aRect.Right - 3);
        }
@@ -5948,6 +5951,7 @@ var
       ///////////////////////////////////////////////////////
       //          SUBORDINATE ROUTINE
       ///////////////////////////////////////////////////////
+
   procedure AddToList(_ImageList: TCustomImageList; _ImageIndex: Integer;
     _PicLeft, _PicTop: Integer);
   var
@@ -6158,16 +6162,16 @@ var
 begin
   case Corner of
    //group agcTopLeft   : aRect := Rect(0, 0, RowHdrWidth, ColHdrHeight);
-    agcTopLeft :
+    agcTopLeft:
       {$IFDEF Jv_TIMEBLOCKS}
     // ok
       aRect := Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight);
-      {$ELSE}
+    {$ELSE}
     // remove
     //  aRect := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight);
       {$ENDIF Jv_TIMEBLOCKS}
 
-      agcTopRight :
+      agcTopRight:
       begin
         CornerLeft := Lesser(CellRect(RightCol, -1).Right,
           ClientWidth - FVScrollBar.Width);
@@ -6175,12 +6179,12 @@ begin
         aRect := Rect(CornerLeft, 0, ClientWidth, CalcGroupColHdrsHeight);
       end;
 
-    agcBottomLeft :
+    agcBottomLeft:
       {$IFDEF Jv_TIMEBLOCKS}
     // ok
       aRect := Rect(0, ClientHeight - FHScrollBar.Height,
         CalcBlockRowHdrsWidth, ClientHeight);
-      {$ELSE}
+    {$ELSE}
     // remove
     //  aRect := Rect(0,  ClientHeight - FHScrollBar.Height,
       //        RowHdrWidth, ClientHeight);
@@ -6202,7 +6206,7 @@ begin
       DrawFrame(aCanvas, aRect,
         not ((Corner = agcTopLeft) and not HdrAttr.Frame3D),
         GridLineColor)
-      {$ELSE}
+        {$ELSE}
       // remove
       //DrawFrame(aCanvas, aRect,
        //      not ((Corner = agcTopLeft) and not HdrAttr.Frame3D))
@@ -6210,7 +6214,7 @@ begin
     else
     begin
       case Corner of
-        agcTopLeft :
+        agcTopLeft:
           if RowHdrType = rhFancy then
           begin
             Pen.Color := FancyRowHdrAttr.TickColor;
@@ -6223,12 +6227,12 @@ begin
             {$IFDEF Jv_TIMEBLOCKS}
            // ok
             DrawFrame(aCanvas, aRect, False, GridLineColor);
-            {$ELSE}
+        {$ELSE}
            // remove
            //DrawFrame(aCanvas, aRect, False);
             {$ENDIF Jv_TIMEBLOCKS}
 
-            agcTopRight :
+            agcTopRight:
           begin
             Pen.Color := clGray;
             MoveTo(aRect.Left, aRect.Bottom - 1);
@@ -6240,7 +6244,7 @@ begin
               LineTo(ClientWidth - FVScrollBar.Width, aRect.Bottom - 1);
             end;
           end;
-        agcBottomLeft :
+        agcBottomLeft:
           begin
             Pen.Color := clGray;
             MoveTo(aRect.Right - 1, aRect.Top);
@@ -6335,9 +6339,9 @@ begin
   //Txt := Copy(Cols[Index].Title, 1, Length(Cols[Index].Title));
   Txt := Cols[Index].Title;
 
-  If ColIsSelected(Index) Then
+  if ColIsSelected(Index) then
    UseAttr := SelHdrAttr
-  Else
+  else
    UseAttr := HdrAttr;
 
   aCanvas.Brush.Color := UseAttr.Color;
@@ -6352,7 +6356,7 @@ begin
    ctsMultiEllipsis : Flags := Flags or DT_END_ELLIPSIS or
                         DT_WORDBREAK or DT_EDITCONTROL;
    ctsHide       : Flags := Flags or DT_SINGLELINE or DT_VCENTER;
-  End;
+  end;
 
   aCanvas.FillRect(aRect);
   TxtRect := aRect;
@@ -6360,44 +6364,45 @@ begin
   CalcRect := TxtRect;
 
   PTxt := StrNew(PChar(Txt));
-  If (ColTitleStyle = ctsMultiClip) or
-    (ColTitleStyle = ctsMultiEllipsis) Then
-   Begin
+  if (ColTitleStyle = ctsMultiClip) or
+    (ColTitleStyle = ctsMultiEllipsis) then
+   begin
     TxtHt := Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect,
                       Flags or DT_CALCRECT);
 
-    If TxtHt < RectHeight(TxtRect) Then
-      Begin
+    if TxtHt < RectHeight(TxtRect) then
+      begin
        // we need to vertically center the text
        TxtRectHt := RectHeight(TxtRect);
        TxtRect.Top := TxtRect.Top + RectHeight(TxtRect) div 2 - TxtHt div 2;
        TxtRect.Bottom := Lesser(TxtRect.Top + TxtRectHt, TxtRect.Bottom);
-      End;
-   End
-  Else If (ColTitleStyle = ctsHide) Then
-   Begin
+      end;
+   end
+  else
+  if (ColTitleStyle = ctsHide) then
+   begin
     Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
-    If RectWidth(CalcRect) > RectWidth(TxtRect) Then
+    if RectWidth(CalcRect) > RectWidth(TxtRect) then
       PTxt := '';
-   End;
+   end;
 
   Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
 
-  If (Index = FocusedCol) and Focused Then
-   Begin
+  if (Index = FocusedCol) and Focused then
+   begin
     CalcRect := aRect;
     Windows.InflateRect(CalcRect, -2, -2);
     ManualFocusRect(aCanvas, CalcRect);
     {
-    If Windows.IsRectEmpty(TxtRect) Then
+    if Windows.IsRectEmpty(TxtRect) then
       Windows.InflateRect(TxtRect, 5, 5);
     ManualFocusRect(aCanvas, TxtRect);
     }
-{   End;
+{   end;
 
   DrawFrame(aCanvas, aRect, UseAttr.Frame3D);
 
-  If Assigned(FOnDrawColHdr) Then
+  if Assigned(FOnDrawColHdr) then
    FOnDrawColHdr(Self, aCanvas, aRect, Index, ColIsSelected(Index));
 end;
 }
@@ -6474,12 +6479,12 @@ var
   OldPenColor: TColor;
 begin
   With aCanvas, aRect do
-   Begin
+   begin
     OldPenColor := Pen.Color;
 
-    If Draw3D Then
+    if Draw3D then
       Pen.Color := clBtnShadow
-    Else
+    else
       Pen.Color := GridLineColor;
 
     MoveTo(Right - 1, Top);
@@ -6487,21 +6492,20 @@ begin
     MoveTo(Left, Bottom - 1);
     LineTo(Right, Bottom - 1);
 
-    If Draw3D Then
-      Begin
+    if Draw3D then
+      begin
        Pen.Color := clBtnHighlight;
        MoveTo(Left, Top);
        LineTo(Right, Top);
        MoveTo(Left, Top);
        LineTo(Left, Bottom);
-      End;
+      end;
 
     Pen.Color := OldPenColor;
-   End;
+   end;
 end;
 }
 {$ENDIF Jv_TIMEBLOCKS}
-
 
 procedure TJvTFDays.DrawAppts(aCanvas: TCanvas; DrawAll: Boolean);
 var
@@ -6531,7 +6535,7 @@ begin
     FromRow := TopRow;
     ToRow := BottomRow;
   end;
- 
+
   for Col := FromCol to ToCol do
     if Cols[Col].Connected then
     begin
@@ -6551,23 +6555,22 @@ begin
         else
         begin
           CalcStartEndRows(Appt, SchedDate, ApptStartRow, ApptEndRow);
- 
+
           if (ApptStartRow <= ToRow) and (ApptEndRow >= FromRow) then
             DrawAppt(aCanvas, Col, Appt, ApptStartRow, ApptEndRow);
         end;
       end;
- 
+
       // Added by Mike 10/31/01 7:04 pm - see above
       if Assigned(TempSelAppt) then
       begin
         CalcStartEndRows(TempSelAppt, SchedDate, ApptStartRow, ApptEndRow);
- 
+
         if (ApptStartRow <= ToRow) and (ApptEndRow >= FromRow) then
           DrawAppt(aCanvas, Col, TempSelAppt, ApptStartRow, ApptEndRow);
       end;
     end;
 end;
-
 
 procedure TJvTFDays.AdjustForMargins(var aRect: TRect);
 begin
@@ -6577,9 +6580,9 @@ begin
   Windows.InflateRect(aRect, -1, -1);
 
 // Commented out by Tim:
-//  If agoMoveAppt in Options Then
+//  if agoMoveAppt in Options then
 //   Inc(aRect.Top, GrabHandles.Height - 1);
-//  If agoSizeAppt in Options Then
+//  if agoSizeAppt in Options then
 //   Dec(aRect.Bottom, GrabHandles.Height - 1);
 end;
 
@@ -6597,7 +6600,8 @@ begin
 //    CanDrawText := RectWidth(ApptRect) >= TextWidthThreshold;
 //    CanDrawPics := True;
 //  end
-//  else if Thresholds.DropTextFirst then
+//  else
+//  if Thresholds.DropTextFirst then
 //  begin
 //    CanDrawText := False;
 //    CanDrawPics := True;
@@ -6721,7 +6725,6 @@ begin
     else
       TickLength := MajorTickLength;
 
-
     DrawMinor(aCanvas, aRect, I, aLabel, TickLength, Selected);
 
     // Draw Major if needed
@@ -6742,7 +6745,7 @@ begin
           {$ENDIF Jv_TIMEBLOCKS}
 
           Top := VirtualCellRect(-1, HourStartRow(PrevHour)).Top;
-            //group If Top < ColHdrHeight Then
+            //group if Top < ColHdrHeight then
               //group Top := ColHdrHeight;
           if Top < CalcGroupColHdrsHeight then
             Top := CalcGroupColHdrsHeight;
@@ -6757,7 +6760,8 @@ begin
         begin
           if PrevHour = 0 then
             aLabel := '12'
-          else if PrevHour > 12 then
+          else
+          if PrevHour > 12 then
             aLabel := IntToStr(PrevHour - 12)
           else
             aLabel := IntToStr(PrevHour);
@@ -6775,7 +6779,6 @@ begin
           aCanvas.Font.Assign(FancyRowHdrAttr.MajorFont);
 
         aCanvas.Brush.Style := bsClear;
-
 
         PTxt := StrAlloc((Length(aLabel) + 4) * SizeOf(Char));
         StrPCopy(PTxt, aLabel);
@@ -6874,8 +6877,9 @@ begin
   if Granularity = 60 then
     aTimeFormat := Full24
   else
-    aTimeFormat := MinOnly; 
-//  else if (RowNum = TopRow) and (not RowStartsHour(RowNum) or (PossVisibleRows = 1)) then
+    aTimeFormat := MinOnly;
+//  else
+//  if (RowNum = TopRow) and (not RowStartsHour(RowNum) or (PossVisibleRows = 1)) then
 //    aTimeFormat := Full24
 //  else
 //  begin
@@ -6968,7 +6972,7 @@ begin
 
   if Enabled and FNeedCheckSBParams then
   begin
-    // This is needed because of a TScrollBar bug.  If the Max or LargeChange
+    // This is needed because of a TScrollBar bug.  if the Max or LargeChange
     //  properties are changed while the scrollbar is disabled, the
     //  scrollbar will magically enable itself.  Very frustrating.  Anyway...
     //  This check and call to CheckSBParams will workaround the problem.
@@ -7058,7 +7062,7 @@ var
 begin
   for I := 0 to Cols.Count - 1 do
    // Should do some additional checking here (which is commented out)
-   //If (Cols[I].Schedule = Msg.Schedule) or (Msg.Schedule = nil) Then
+   //if (Cols[I].Schedule = Msg.Schedule) or (Msg.Schedule = nil) then
     Cols[I].RefreshMap;
   inherited RefreshControl;
 end;
@@ -7084,7 +7088,7 @@ var
 begin
   if not Enabled then
   begin
-    // This is needed because of a TScrollBar bug.  If the Max or LargeChange
+    // This is needed because of a TScrollBar bug.  if the Max or LargeChange
     //  properties are changed while the scrollbar is disabled, the
     //  scrollbar will magically enable itself.  Very frustrating.  Anyway...
     //  This check and exit will workaround the problem.
@@ -7136,7 +7140,7 @@ begin
   SB := TJvTFDaysScrollBar(Sender);
 
   case ScrollCode of
-    scLineUp, scLineDown, scPageUp, scPageDown, scTrack :
+    scLineUp, scLineDown, scPageUp, scPageDown, scTrack:
       if SB.Kind = sbVertical then
       begin
         if (ScrollCode = scLineDown) or (ScrollCode = scPageDown) then
@@ -7196,9 +7200,11 @@ begin
 
       if (Col > gcHdr) and (Row > gcHdr) then
         SelStart := Point(Col, Row)
-      else if (Col = gcHdr) and (Row > gcHdr) then
+      else
+      if (Col = gcHdr) and (Row > gcHdr) then
         SelStart := Point(FocusedCol, Row)
-      else if (Col > gcHdr) and (Row = gcHdr) then
+      else
+      if (Col > gcHdr) and (Row = gcHdr) then
         SelStart := Point(Col, FocusedRow);
     end;
 
@@ -7207,14 +7213,14 @@ begin
     DragWhat := CanDragWhat(GridCoord);
     case DragWhat of
       agsSizeCol, agsSizeRow, agsSizeColHdr, agsSizeRowHdr,
-        agsMoveCol, agsSizeAppt :
+        agsMoveCol, agsSizeAppt:
         BeginDragging(GridCoord, DragWhat, GridCoord.Appt);
 
-      agsMoveAppt :
+      agsMoveAppt:
         begin
           BeginDrag(False);
         end;
-      agsNormal :
+      agsNormal:
         begin
           if Assigned(SelAppt) then
             EditAppt(GridCoord.Col, SelAppt);
@@ -7245,6 +7251,7 @@ var
       /////////////////////////////////////////////
       // SUBORDINATE ROUTINE
       /////////////////////////////////////////////
+
   procedure UpdateAutoScroll;
   begin
     AutoScrollMargin := GetDataAreaRect;
@@ -7252,11 +7259,14 @@ var
 
     if (Y < AutoScrollMargin.Top) then
       FAutoScrollDir := asdUp
-    else if (Y > AutoScrollMargin.Bottom) then
+    else
+    if (Y > AutoScrollMargin.Bottom) then
       FAutoScrollDir := asdDown
-    else if (X < AutoScrollMargin.Left) then
+    else
+    if (X < AutoScrollMargin.Left) then
       FAutoScrollDir := asdLeft
-    else if (X > AutoScrollMargin.Right) then
+    else
+    if (X > AutoScrollMargin.Right) then
       FAutoScrollDir := asdRight
     else
       FAutoScrollDir := asdNowhere;
@@ -7286,7 +7296,7 @@ begin
   FMouseMoveState := Shift;
 
   case State of
-    agsNormal :
+    agsNormal:
       if ssLeft in Shift then
       begin
         with GridCoord do
@@ -7298,7 +7308,8 @@ begin
 
           if Row > gcHdr then
             FocusedRow := Lesser(Row, Lesser(RowCount - 1, BottomRow + 1))
-          else if FAutoScrollDir = asdDown then
+          else
+          if FAutoScrollDir = asdDown then
             FocusedRow := RowCount - 1
           else
             FocusedRow := TopRow;
@@ -7334,7 +7345,7 @@ begin
         UpdateAutoScroll;
       end;
     agsSizeCol..agsMoveCol: ContinueDragging(GridCoord, nil);
-    agsSizeAppt :
+    agsSizeAppt:
       begin
         UpdateAutoScroll;
 
@@ -7401,6 +7412,7 @@ var
       /////////////////////////////////////////////
       // SUBORDINATE ROUTINE
       /////////////////////////////////////////////
+
   procedure UpdateAutoScroll;
   begin
     AutoScrollMargin := GetDataAreaRect;
@@ -7408,11 +7420,14 @@ var
 
     if (Y < AutoScrollMargin.Top) then
       FAutoScrollDir := asdUp
-    else if (Y > AutoScrollMargin.Bottom) then
+    else
+    if (Y > AutoScrollMargin.Bottom) then
       FAutoScrollDir := asdDown
-    else if (X < AutoScrollMargin.Left) then
+    else
+    if (X < AutoScrollMargin.Left) then
       FAutoScrollDir := asdLeft
-    else if (X > AutoScrollMargin.Right) then
+    else
+    if (X > AutoScrollMargin.Right) then
       FAutoScrollDir := asdRight
     else
       FAutoScrollDir := asdNowhere;
@@ -7428,19 +7443,19 @@ begin
     Appt := SrcDragInfo.Appt;
 
     case State of
-      dsDragEnter :
+      dsDragEnter:
         begin
           if not Assigned(FDragInfo) then
             FDragInfo := SrcDragInfo;
           BeginDragging(GridCoord, agsMoveAppt, Appt);
         end;
-      dsDragLeave :
+      dsDragLeave:
         begin
           EndDragging(GridCoord, Appt);
           if FDragInfo.ApptCtrl <> Self then
             FDragInfo := nil;
         end;
-      dsDragMove :
+      dsDragMove:
         begin
           FMouseMovePt := Point(X, Y);
           UpdateAutoScroll;
@@ -7522,26 +7537,27 @@ begin
       begin
         if DragInfo.ApptCtrl is TJvTFDays then
           Appt.RemoveSchedule(DragInfo.Schedule.SchedName)
-        else if IsClassByName(DragInfo.ApptCtrl, 'TJvTFCustomGlance') then
+        else
+        if IsClassByName(DragInfo.ApptCtrl, 'TJvTFCustomGlance') then
           Appt.ClearSchedules;
 
         // THE FOLLOWING CODE SHOULD NOT BE NECESSARY.
         // Make sure the old schedules get refreshed
         {
         aDate := Appt.StartDate;
-        While Trunc(aDate) <= Trunc(Appt.EndDate) do
-          Begin
+        while Trunc(aDate) <= Trunc(Appt.EndDate) do
+          begin
            Sched := ScheduleManager.FindSchedule(DragInfo.Schedule.SchedName, aDate);
-           If Assigned(Sched) Then
+           if Assigned(Sched) then
             ScheduleManager.RefreshConnections(Sched);
            aDate := aDate + 1;
-          End;
+          end;
         }
       end;
 
       // Now we set the new StartEnd
       Appt.SetStartEnd(NewStartDate, NewStartTime, NewEndDate, NewEndTime);
-      // If there's a change in SchedName then add the appt to the schedule
+      // if there's a change in SchedName then add the appt to the schedule
       Appt.AddSchedule(NewSchedName);
       // THE FOLLOWING CODE SHOULD NOT BE NECESSARY.
       //ScheduleManager.RefreshConnections(Appt);
@@ -7584,6 +7600,7 @@ var
     ////////////////////////////////////////////////////
     //      SUBORDINATE ROUTINE
     ////////////////////////////////////////////////////
+
   procedure DrawFrame(aRect: TRect);
   begin
     with aRect, Canvas do
@@ -7612,17 +7629,17 @@ begin
       Pen.Width := 1;
 
       case State of
-        agsSizeCol, agsSizeRowHdr :
+        agsSizeCol, agsSizeRowHdr:
           begin
             MoveTo(AbsX, 0);
             LineTo(AbsX, ClientHeight);
           end;
-        agsSizeRow, agsSizeColHdr :
+        agsSizeRow, agsSizeColHdr:
           begin
             MoveTo(0, AbsY);
             LineTo(ClientWidth, AbsY);
           end;
-        agsMoveCol :
+        agsMoveCol:
           begin
             Pen.Mode := pmNotXOR;
             Pen.Style := psSolid;
@@ -7635,7 +7652,7 @@ begin
             MoveTo(LineLeft, 0);
             LineTo(LineLeft, ClientHeight);
           end;
-        agsSizeAppt :
+        agsSizeAppt:
           begin
             Pen.Style := psSolid;
             Pen.Mode := pmNotXOR;
@@ -7647,7 +7664,7 @@ begin
             if Clear and FHint.HandleAllocated then
             begin
               FHint.ReleaseHandle;
-            // Control must be updated here.  If not, drag lines will
+            // Control must be updated here.  if not, drag lines will
             //  not be drawn properly.
               Update;
             end;
@@ -7660,7 +7677,7 @@ begin
                 ((Trunc(Sched.SchedDate) >= Trunc(anAppt.StartDate)) and
                 (Trunc(Sched.SchedDate) <= Trunc(EndDT))) then
               begin
-               //Calc Start and End rows
+               //Calc Start and end rows
                 if Trunc(Sched.SchedDate) = Trunc(anAppt.StartDate) then
                   StartRow := TimeToRow(anAppt.StartTime)
                 else
@@ -7688,7 +7705,7 @@ begin
                 DragRect.Bottom + 2,
                 True);
           end;
-        agsMoveAppt :
+        agsMoveAppt:
           begin
             Pen.Style := psSolid;
             Pen.Mode := pmNotXOR;
@@ -7712,7 +7729,7 @@ begin
                 ((Trunc(Sched.SchedDate) >= Trunc(StartDT)) and
                 (Trunc(Sched.SchedDate) <= Trunc(EndDT))) then
               begin
-               //Calc Start and End rows
+               //Calc Start and end rows
                 if Trunc(Sched.SchedDate) = Trunc(StartDT) then
                   StartRow := TimeToRow(StartDT)
                 else
@@ -7764,16 +7781,16 @@ begin
   DoDrawDrag := False;
 
   case State of
-    agsSizeCol, agsSizeRowHdr, agsSizeRow, agsSizeColHdr :
+    agsSizeCol, agsSizeRowHdr, agsSizeRow, agsSizeColHdr:
       DoDrawDrag := True;
-    agsMoveCol :
+    agsMoveCol:
       begin
         OldLeft := FDraggingCoord.AbsX - FDraggingCoord.CellX;
         NewLeft := Coord.AbsX - Coord.CellX;
         DoDrawDrag := (OldLeft <> NewLeft) and
           (Coord.Row = gcHdr) and (Coord.Col > gcHdr);
       end;
-    agsSizeAppt :
+    agsSizeAppt:
       begin
         SameSchedName := False;
         ValidEnd := False;
@@ -7799,7 +7816,7 @@ begin
         end;
         DoDrawDrag := ValidDrag and SameSchedName and ValidEnd and DiffCoord;
       end;
-    agsMoveAppt :
+    agsMoveAppt:
       begin
         DoDrawDrag := (Coord.Col <> FDraggingCoord.Col) or
           (Coord.Row <> FDraggingCoord.Row);
@@ -7830,7 +7847,7 @@ begin
       DrawDrag(FDraggingCoord, Appt, True); // clear old line
 
     case State of
-      agsSizeCol :
+      agsSizeCol:
         begin
           ColNum := FBeginDraggingCoord.Col;
           DeltaSize := Coord.AbsX - FBeginDraggingCoord.AbsX;
@@ -7845,7 +7862,7 @@ begin
             UpdateDesigner;
           end;
         end;
-      agsSizeRow :
+      agsSizeRow:
         begin
           DeltaSize := Coord.AbsY - FBeginDraggingCoord.AbsY;
           NewSize := RowHeight + DeltaSize;
@@ -7859,7 +7876,7 @@ begin
             UpdateDesigner;
           end;
         end;
-      agsSizeColHdr :
+      agsSizeColHdr:
         begin
           DeltaSize := Coord.AbsY - FBeginDraggingCoord.AbsY;
           NewSize := ColHdrHeight + DeltaSize;
@@ -7873,7 +7890,7 @@ begin
             UpdateDesigner;
           end;
         end;
-      agsSizeRowHdr :
+      agsSizeRowHdr:
         begin
           DeltaSize := Coord.AbsX - FBeginDraggingCoord.AbsX;
           NewSize := RowHdrWidth + DeltaSize;
@@ -7887,7 +7904,7 @@ begin
             UpdateDesigner;
           end;
         end;
-      agsMoveCol :
+      agsMoveCol:
         begin
           NewSize := FDraggingCoord.Col;
           if Assigned(FOnMoveCol) then
@@ -7899,7 +7916,7 @@ begin
             UpdateDesigner;
           end;
         end;
-      agsSizeAppt :
+      agsSizeAppt:
         begin
           FHint.ReleaseHandle;
           Appt := FBeginDraggingCoord.Appt;
@@ -7935,7 +7952,7 @@ var
 begin
   case State of
     agsSizeCol, agsSizeRow, agsSizeColHdr, agsSizeRowHdr,
-      agsMoveCol, agsSizeAppt, agsMoveAppt :
+      agsMoveCol, agsSizeAppt, agsMoveAppt:
       begin
         Result := State;
         Exit;
@@ -8001,28 +8018,30 @@ begin
       if Windows.PtInRect(TopHandleRect, Point(AbsX, AbsY)) and
         (agoMoveAppt in Options) then
         Result := agsMoveAppt
-      else if Windows.PtInRect(BottomHandleRect, Point(AbsX, AbsY)) and
+      else
+      if Windows.PtInRect(BottomHandleRect, Point(AbsX, AbsY)) and
         (agoSizeAppt in Options) then
         Result := agsSizeAppt;
     end;
 
-//    If ((agoSizeAppt in Options) or (agoMoveAppt in Options)) and
-//      Assigned(Appt) and (Appt = SelAppt) Then
-//      Begin
+//    if ((agoSizeAppt in Options) or (agoMoveAppt in Options)) and
+//      Assigned(Appt) and (Appt = SelAppt) then
+//      begin
 //       ApptRect := GetApptRect(Col, Appt);
-//       If (AbsY <= ApptRect.Top + GrabHandles.Height - 1) and
-//         (agoMoveAppt in Options) Then
-//        Begin
+//       if (AbsY <= ApptRect.Top + GrabHandles.Height - 1) and
+//         (agoMoveAppt in Options) then
+//        begin
 //          Result := agsMoveAppt;
 //          Exit;
-//        End
-//       Else If (AbsY >= ApptRect.Bottom - GrabHandles.Height + 1) and
-//            (agoSizeAppt in Options) Then
-//        Begin
+//        end
+//       else
+//       if (AbsY >= ApptRect.Bottom - GrabHandles.Height + 1) and
+//            (agoSizeAppt in Options) then
+//        begin
 //          Result := agsSizeAppt;
 //          Exit;
-//        End;
-//      End;
+//        end;
+//      end;
   end;
 end;
 
@@ -8061,7 +8080,7 @@ var
   NewEnd: TDateTime;
 begin
   NewStart := Trunc(Cols[Coord.Col].SchedDate) + Frac(RowToTime(Coord.Row));
-  If not (agoSnapMove in Options) Then
+  if not (agoSnapMove in Options) then
    NewStart := NewStart +
     Frac(Appt.StartTime) - RowToTime(TimeToRow(Appt.StartTime));
 
@@ -8069,17 +8088,17 @@ begin
         (Trunc(Appt.StartDate) + Frac(Appt.StartTime)) +
         NewStart;
 
-  If KeepDates Then
-   Begin
+  if KeepDates then
+   begin
     NewStart := Trunc(Appt.StartDate) + Frac(NewStart);
     NewEnd := Trunc(Appt.EndDate) + Frac(NewEnd);
-   End;
+   end;
 
-  If KeepTimes Then
-   Begin
+  if KeepTimes then
+   begin
     NewStart := Trunc(NewStart) + Frac(Appt.StartTime);
     NewEnd := Trunc(NewEnd) + Frac(Appt.EndTime);
-   End;
+   end;
 
   StartDT := NewStart;
   EndDT := NewEnd;
@@ -8165,6 +8184,7 @@ var
               ///////////////////////////////////////////
               //    SUBORDINATE ROUTINE
               ///////////////////////////////////////////
+
   procedure DoSel;
   begin
     if ssShift in Shift then
@@ -8182,50 +8202,54 @@ begin
   inherited KeyDown(Key, Shift);
 
   case Key of
-    VK_RETURN :
+    VK_RETURN:
       if ssAlt in Shift then
         EditAppt(FocusedCol, SelAppt);
-    VK_UP :
+    VK_UP:
       if ssCtrl in Shift then
         ScrollDays(-7)
-      else if ssAlt in Shift then
+      else
+      if ssAlt in Shift then
         SelPrevAppt
       else
       begin
         FocusedRow := Greater(FocusedRow - 1, 0);
         DoSel;
       end;
-    VK_DOWN :
+    VK_DOWN:
       if ssCtrl in Shift then
         ScrollDays(7)
-      else if ssAlt in Shift then
+      else
+      if ssAlt in Shift then
         SelNextAppt
       else
       begin
         FocusedRow := Lesser(FocusedRow + 1, RowCount - 1);
         DoSel;
       end;
-    VK_RIGHT :
+    VK_RIGHT:
       if ssCtrl in Shift then
         NextDate
-      else if ssAlt in Shift then
+      else
+      if ssAlt in Shift then
         SelFirstApptNextCol
       else
       begin
         FocusedCol := Lesser(FocusedCol + 1, Cols.Count - 1);
         DoSel;
       end;
-    VK_LEFT :
+    VK_LEFT:
       if ssCtrl in Shift then
         PrevDate
-      else if ssAlt in Shift then
+      else
+      if ssAlt in Shift then
         SelFirstApptPrevCol
       else
       begin
         FocusedCol := Greater(FocusedCol - 1, 0);
         DoSel;
       end;
-    VK_PRIOR :
+    VK_PRIOR:
       if ssCtrl in Shift then
         ScrollMonths(-1)
       else
@@ -8234,7 +8258,7 @@ begin
         FocusedRow := Greater(FocusedRow - FullVisibleRows, TopRow);
         DoSel;
       end;
-    VK_NEXT :
+    VK_NEXT:
       if ssCtrl in Shift then
         ScrollMonths(1)
       else
@@ -8243,7 +8267,7 @@ begin
         FocusedRow := Lesser(FocusedRow + FullVisibleRows, RowCount - 1);
         DoSel;
       end;
-    VK_HOME :
+    VK_HOME:
       if ssCtrl in Shift then
         TopRow := TimeToRow(PrimeTime.StartTime)
       else
@@ -8252,7 +8276,7 @@ begin
         FocusedRow := 0;
         DoSel;
       end;
-    VK_END :
+    VK_END:
       if ssCtrl in Shift then
         RowInView(TimeToRow(AdjustEndTime(PrimeTime.EndTime)))
       else
@@ -8261,7 +8285,7 @@ begin
         FocusedRow := RowCount - 1;
         DoSel;
       end;
-    VK_F1..VK_F12 :
+    VK_F1..VK_F12:
       if ssCtrl in Shift then
       begin
         H := Key - VK_F1 + 1;
@@ -8271,7 +8295,7 @@ begin
           Dec(H, 12);
         RowInView(TimeToRow(EncodeTime(H, 0, 0, 0)));
       end;
-    VK_INSERT :
+    VK_INSERT:
       if Shift = [ssCtrl] then
         case Granularity of
           2: Granularity := 1;
@@ -8286,11 +8310,13 @@ begin
           30: Granularity := 20;
           60: Granularity := 30;
         end
-      else if Shift = [ssShift] then
+      else
+      if Shift = [ssShift] then
         DoInsertSchedule
-      else if Shift = [] then
+      else
+      if Shift = [] then
         DoInsertAppt;
-    VK_DELETE :
+    VK_DELETE:
       if Shift = [ssCtrl] then
         case Granularity of
           1: Granularity := 2;
@@ -8305,9 +8331,11 @@ begin
           20: Granularity := 30;
           30: Granularity := 60;
         end
-      else if Shift = [ssShift] then
+      else
+      if Shift = [ssShift] then
         DoDeleteSchedule
-      else if Shift = [] then
+      else
+      if Shift = [] then
         DoDeleteAppt;
   else
     Handled := False;
@@ -8513,18 +8541,18 @@ begin
   ///////////////////////////////////////////////////////////////////////
 
   // Check for different end value
-  If (FSelEnd.X <> Value.X) or (FSelEnd.Y <> Value.Y) Then
-   Begin
+  if (FSelEnd.X <> Value.X) or (FSelEnd.Y <> Value.Y) then
+   begin
     // Check for valid end
-    If (FSelStart.X > gcHdr) and (Value.X > gcHdr) and (FSelEnd.X > gcHdr) and
-      (FSelStart.Y > gcHdr) and (Value.Y > gcHdr) and (FSelEnd.Y > gcHdr) Then
-      Begin
+    if (FSelStart.X > gcHdr) and (Value.X > gcHdr) and (FSelEnd.X > gcHdr) and
+      (FSelStart.Y > gcHdr) and (Value.Y > gcHdr) and (FSelEnd.Y > gcHdr) then
+      begin
        // FFromToSel flag needed for drawing selection frame when
        // SelCellAttr.Style = scsFrame.  Frame is drawn in DrawDataCell.
        //FFromToSel := False;
 
        // We need a two-level check.  First check new end (Value) against
-       //  old end (FSelEnd).  If that is NOT a valid end then check
+       //  old end (FSelEnd).  if that is NOT a valid end then check
        //  new end (Value) against start (FSelStart).
 
        // IMPORTANT NOTE: When in a case #1 and selection moves up or down
@@ -8537,64 +8565,64 @@ begin
        DateDiff := Abs(Trunc(Cols[FSelEnd.X].SchedDate) -
                   Trunc(Cols[Value.X].SchedDate));
 
-       If (   SameName and (DateDiff = 1)) or   // Case #1
+       if (   SameName and (DateDiff = 1)) or   // Case #1
          (   SameName and (DateDiff = 0)) or   // Case #3
-         (not SameName and (DateDiff = 0)) Then  // Case #6
-        Begin
+         (not SameName and (DateDiff = 0)) then  // Case #6
+        begin
           FFromToSel := (SameName and (DateDiff = 1)) or
                    (FFromToSel and (SameName and (DateDiff = 0)));
 
           FSelEnd := Value;
           DoNavigate;
           Invalidate;
-        End
-       Else
-        // If first check fails then check new end against start
-        Begin
+        end
+       else
+        // if first check fails then check new end against start
+        begin
           SameName := Cols[FSelStart.X].SchedName = Cols[Value.X].SchedName;
           DateDiff := Abs(Trunc(Cols[FSelStart.X].SchedDate) -
                     Trunc(Cols[Value.X].SchedDate));
-          If (   SameName and (DateDiff = 1)) or   // Case #1
+          if (   SameName and (DateDiff = 1)) or   // Case #1
             (   SameName and (DateDiff = 0)) or   // Case #3
-            (not SameName and (DateDiff = 0)) Then  // Case #6
-           Begin
+            (not SameName and (DateDiff = 0)) then  // Case #6
+           begin
             FFromToSel := (SameName and (DateDiff = 1)) or
                       (FFromToSel and (SameName and (DateDiff = 0)));
 
             FSelEnd := Value;
             DoNavigate;
             Invalidate;
-           End
-          Else
+           end
+          else
            // Do a third check for "lagging selection"
            //  (Sometimes mouse loses selection, especially when speed
            //  threshold is exceeded.)
-           Begin
+           begin
             // Check for consecutive dates
             TestStart := Lesser(SelStart.X, Value.X);
             TestEnd := Greater(SelStart.X, Value.X);
             I := TestStart;
             Consecutive := True;
-            While (I < TestEnd) and Consecutive do
-              If Trunc(Cols[I + 1].SchedDate) -
-                Trunc(Cols[I].SchedDate) <> 1 Then
+            while (I < TestEnd) and Consecutive do
+              if Trunc(Cols[I + 1].SchedDate) -
+                Trunc(Cols[I].SchedDate) <> 1 then
                Consecutive := False
-              Else
+              else
                Inc(I);
 
-            If Consecutive Then
-              Begin
+            if Consecutive then
+              begin
                FFromToSel := True;
                FSelEnd := Value;
                DoNavigate;
                Invalidate;
-              End
-            Else
+              end
+            else
               FFromToSel := False;
-           End;
-        End;
-      End;
-   End;
+           end;
+        end;
+      end;
+   end;
 end;
 }
 {$ENDIF Jv_TIMEBLOCKS}
@@ -8619,6 +8647,7 @@ var
           //////////////////////////////////////
           //      SUBORDINATE ROUTINE
           //////////////////////////////////////
+
   procedure CheckFollowMouse;
   begin
     if (TimeBlocks.Count > 0) and
@@ -8644,7 +8673,6 @@ begin
          type of allowable selection when using Time Blocks is
          Block, however a Block selection can exist without
          the use of Time Blocks.
-
 
   There are six different cases that are possible:
     1.  Same SchedName (resource), contiguous dates  ==> From/To selection
@@ -8693,7 +8721,7 @@ begin
        //FFromToSel := False;
 
        // We need a two-level check.  First check new end (Value) against
-       //  old end (FSelEnd).  If that is NOT a valid end then check
+       //  old end (FSelEnd).  if that is NOT a valid end then check
        //  new end (Value) against start (FSelStart).
 
        // IMPORTANT NOTE: When in a case #1 and selection moves up or down
@@ -8720,7 +8748,7 @@ begin
         Invalidate;
       end
       else
-        // If first check fails then check new end against start
+        // if first check fails then check new end against start
       begin
         SameName := Cols[FSelStart.X].SchedName = Cols[Value.X].SchedName;
         DateDiff := Abs(Trunc(Cols[FSelStart.X].SchedDate) -
@@ -8796,7 +8824,7 @@ begin
     ApptEndTime := RowToTime(SelEnd.Y) +
       EncodeTime(0, Granularity - 1, 0, 0) +
       EncodeTime(0, 1, 0, 0);
-    // If we're on the last row make sure end time is not = 0 (12am next day)
+    // if we're on the last row make sure end time is not = 0 (12am next day)
     //  This avoids InvalidStartEnd exception when calling Appt.SetStartEnd
     if SelEnd.Y = RowCount - 1 then
       ApptEndTime := ApptEndTime - EncodeTime(0, 0, 1, 0);
@@ -8813,7 +8841,7 @@ begin
       Appt := ScheduleManager.dbNewAppt(ID);
       Appt.Persistent := True;
 
-       // Set the Start/End info
+       // Set the Start/end info
       Appt.SetStartEnd(ApptStartDate, ApptStartTime, ApptEndDate, ApptEndTime);
 
        // Set the Schedule (resource) names
@@ -8888,7 +8916,7 @@ Var
   ApptRect: TRect;
 begin
   With Result do
-   Begin
+   begin
     Col := gcUndef;
     Row := gcUndef;
     CellX := -100;
@@ -8897,89 +8925,91 @@ begin
     AbsY := Y;
     Schedule := nil;
     Appt := nil;
-   End;
+   end;
 
-  If X < RowHdrWidth Then
-   Begin
+  if X < RowHdrWidth then
+   begin
     Result.Col := gcHdr;
     Result.CellX := X;
-   End
-  Else
-   If LeftCol > -1 Then
-    Begin
+   end
+  else
+   if LeftCol > -1 then
+    begin
       // Find the col that PtX falls in
       ColNum := LeftCol;
       AdjX := X - RowHdrWidth;
       Done := False;
       Temp := 0;
 
-      While (ColNum < Cols.Count) and not Done do
-       Begin
+      while (ColNum < Cols.Count) and not Done do
+       begin
         Inc(Temp, Cols[ColNum].Width);
-        If AdjX < Temp Then
-          Begin
+        if AdjX < Temp then
+          begin
            Done := True;
            Result.Col := ColNum;
            Result.CellX := AdjX - (Temp - Cols[ColNum].Width);
-          End
-        Else
+          end
+        else
           Inc(ColNum);
-       End;
-    End;
+       end;
+    end;
 
-  If Y < CalcGroupHdrHeight Then
-   Begin
+  if Y < CalcGroupHdrHeight then
+   begin
     Result.Row := gcGroupHdr;
     Result.CellY := Y;
-   End
-  //Else If Y < ColHdrHeight Then
-  Else If Y < CalcGroupColHdrsHeight Then
-   Begin
+   end
+  //else
+  //if Y < ColHdrHeight then
+  else
+  if Y < CalcGroupColHdrsHeight then
+   begin
     Result.Row := gcHdr;
     Result.CellY := Y - CalcGroupHdrHeight;
-   End
-  Else
-   If TopRow > -1 Then
-    Begin
+   end
+  else
+   if TopRow > -1 then
+    begin
       RowNum := TopRow;
       //group AdjY := Y - ColHdrHeight;
       AdjY := Y - CalcGroupColHdrsHeight;
       Done := False;
       Temp := 0;
 
-      While (RowNum < RowCount) and not Done do
-       Begin
+      while (RowNum < RowCount) and not Done do
+       begin
         Inc(Temp, RowHeight);
-        If AdjY < Temp Then
-          Begin
+        if AdjY < Temp then
+          begin
            Done := True;
            Result.Row := RowNum;
            Result.CellY := AdjY - (Temp - RowHeight);
-          End
-        Else
+          end
+        else
           Inc(RowNum);
-       End;
-    End;
+       end;
+    end;
 
-  If (Result.Col > gcHdr) Then
-   Begin
+  if (Result.Col > gcHdr) then
+   begin
     Result.Schedule := Cols[Result.Col].Schedule;
 
-    If (Result.Row > gcHdr) and Assigned(Result.Schedule) Then
-      Begin
+    if (Result.Row > gcHdr) and Assigned(Result.Schedule) then
+      begin
        TotalWidth := Cols[Result.Col].Width;
        SegCount := Cols[Result.Col].MapColCount(Result.Row);
-       If SegCount > 0 Then
-        Begin
+       if SegCount > 0 then
+        begin
           MapCol := LocateDivCol(Result.CellX, TotalWidth, SegCount);
           Result.Appt := Cols[Result.Col].MapLocation(MapCol, Result.Row);
 
           ApptRect := GetApptRect(Result.Col, Result.Appt);
-          If not Windows.PtInRect(ApptRect, Point(X, Y)) Then
+          if not Windows.PtInRect(ApptRect, Point(X, Y)) then
            Result.Appt := nil;
-        End;
-      End;
-   End;
+        end;
+      end;
+   end;
 
   Result.DragAccept := (Result.Row > gcHdr) and (Result.Col > gcHdr);
 end;
@@ -9021,13 +9051,15 @@ begin
     Result.Col := gcGroupHdr; // UNTESTED - CORRECT CODE
     Result.CellX := X;
   end
-  //block If X < RowHdrWidth Then
-  else if X < CalcBlockRowHdrsWidth then
+  //block if X < RowHdrWidth then
+  else
+  if X < CalcBlockRowHdrsWidth then
   begin
     Result.Col := gcHdr;
     Result.CellX := X - CalcBlockHdrWidth;
   end
-  else if LeftCol > -1 then
+  else
+  if LeftCol > -1 then
   begin
       // Find the col that PtX falls in
     ColNum := LeftCol;
@@ -9055,13 +9087,15 @@ begin
     Result.Row := gcGroupHdr;
     Result.CellY := Y;
   end
-  //Else If Y < ColHdrHeight Then
-  else if Y < CalcGroupColHdrsHeight then
+  //else if Y < ColHdrHeight then
+  else
+  if Y < CalcGroupColHdrsHeight then
   begin
     Result.Row := gcHdr;
     Result.CellY := Y - CalcGroupHdrHeight;
   end
-  else if TopRow > -1 then
+  else
+  if TopRow > -1 then
   begin
     RowNum := TopRow;
       //group AdjY := Y - ColHdrHeight;
@@ -9090,9 +9124,11 @@ begin
     // move grab handles
     if PtInTopHandle(Point(X, Y), Result.Col, SelAppt) then
       Result.Appt := SelAppt
-    else if PtInBottomHandle(Point(X, Y), Result.Col, SelAppt) then
+    else
+    if PtInBottomHandle(Point(X, Y), Result.Col, SelAppt) then
       Result.Appt := SelAppt
-    else if (Result.Row > gcHdr) and Assigned(Result.Schedule) then
+    else
+    if (Result.Row > gcHdr) and Assigned(Result.Schedule) then
     begin
       TotalWidth := Cols[Result.Col].Width;
       SegCount := Cols[Result.Col].MapColCount(Result.Row);
@@ -9120,35 +9156,38 @@ Var
   I: Integer;
   VisGrpHdrRect: TRect;
 begin
-  If (Row = gcGroupHdr) and (Col > gcHdr) Then
-    Begin
+  if (Row = gcGroupHdr) and (Col > gcHdr) then
+    begin
       VisGrpHdrRect := Rect(RowHdrWidth, 0, RowHdrWidth + GetDataWidth,
                     CalcGroupHdrHeight);
       Windows.IntersectRect(Result, VisGrpHdrRect, VirtualGroupHdrRect(Col));
-    End
-  Else If Col < 0 Then // Row hdr
-    If Row < 0 Then
+    end
+  else
+  if Col < 0 then // Row hdr
+    if Row < 0 then
       //group Result := Rect(0, 0, RowHdrWidth, ColHdrHeight)  // origin cell
       Result := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight) // origin cell
-    Else If (Row >= TopRow) and (Row <= BottomRow) Then
+    else
+    if (Row >= TopRow) and (Row <= BottomRow) then
       // Row Hdr for visible data row
       With Result do
-       Begin
+       begin
         Left := 0;
         //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
         Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
         Right := RowHdrWidth;
         Bottom := Top + RowHeight;
-       End
-    Else
+       end
+    else
       // Row Hdr for non-visible data row
       Result := EmptyRect
 
-  Else If (Col >= LeftCol) and (Col <= RightCol) Then // visible data col
-    If Row < 0 Then
+  else
+  if (Col >= LeftCol) and (Col <= RightCol) then // visible data col
+    if Row < 0 then
       // Col hdr for visible data col
       With Result do
-       Begin
+       begin
         Left := RowHdrWidth;
         For I := LeftCol to Col - 1 do
           Inc(Left, Cols[I].Width);
@@ -9157,11 +9196,12 @@ begin
         Top := CalcGroupHdrHeight;
         //group Bottom := ColHdrHeight;
         Bottom := CalcGroupColHdrsHeight;
-       End
-    Else If (Row >= TopRow) and (Row <= BottomRow) Then
+       end
+    else
+    if (Row >= TopRow) and (Row <= BottomRow) then
       // visible data cell
       With Result do
-       Begin
+       begin
         Left := RowHdrWidth;
         For I := LeftCol to Col - 1 do
           Inc(Left, Cols[I].Width);
@@ -9169,12 +9209,12 @@ begin
         //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
         Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
         Bottom := Top + RowHeight;
-       End
-    Else
+       end
+    else
       // non-visible data cell (visible col, but non-visible row)
       Result := EmptyRect
 
-  Else // non-visible data col
+  else // non-visible data col
     Result := EmptyRect;
 end;
 }
@@ -9194,7 +9234,8 @@ begin
       CalcGroupColHdrsHeight + GetDataHeight);
     Windows.IntersectRect(Result, VisGrpHdrRect, VirtualBlockHdrRect(Row));
   end
-  else if (Row = gcGroupHdr) and (Col > gcHdr) then
+  else
+  if (Row = gcGroupHdr) and (Col > gcHdr) then
   begin
       //block VisGrpHdrRect := Rect(RowHdrWidth, 0, RowHdrWidth + GetDataWidth,
            //          CalcGroupHdrHeight);
@@ -9203,12 +9244,14 @@ begin
       CalcGroupHdrHeight);
     Windows.IntersectRect(Result, VisGrpHdrRect, VirtualGroupHdrRect(Col));
   end
-  else if Col < 0 then // Row hdr
+  else
+  if Col < 0 then // Row hdr
     if Row < 0 then
       //group Result := Rect(0, 0, RowHdrWidth, ColHdrHeight)  // origin cell
       //block Result := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight) // origin cell
       Result := Rect(0, 0, CalcBlockRowHdrsWidth, CalcGroupColHdrsHeight)
-    else if (Row >= TopRow) and (Row <= BottomRow) then
+    else
+    if (Row >= TopRow) and (Row <= BottomRow) then
       // Row Hdr for visible data row
       with Result do
       begin
@@ -9223,8 +9266,8 @@ begin
     else
       // Row Hdr for non-visible data row
       Result := EmptyRect
-
-  else if (Col >= LeftCol) and (Col <= RightCol) then // visible data col
+  else
+  if (Col >= LeftCol) and (Col <= RightCol) then // visible data col
     if Row < 0 then
       // Col hdr for visible data col
       with Result do
@@ -9239,7 +9282,8 @@ begin
         //group Bottom := ColHdrHeight;
         Bottom := CalcGroupColHdrsHeight;
       end
-    else if (Row >= TopRow) and (Row <= BottomRow) then
+    else
+    if (Row >= TopRow) and (Row <= BottomRow) then
       // visible data cell
       with Result do
       begin
@@ -9268,13 +9312,13 @@ function TJvTFDays.VirtualCellRect(Col, Row: Integer): TRect;
 Var
   I: Integer;
 begin
-  If Row = gcGroupHdr Then
+  if Row = gcGroupHdr then
    Result := VirtualGroupHdrRect(Col)
-  Else
+  else
    With Result do
-    Begin
-      If Col > -1 Then
-       Begin
+    begin
+      if Col > -1 then
+       begin
         Left := RowHdrWidth;
         // At most, only one of the following For loops will execute
         // depending on whether Col is to the left or to the right of LeftCol
@@ -9284,26 +9328,26 @@ begin
         For I := LeftCol - 1 downto Col do
           Dec(Left, Cols[I].Width);
         Right := Left + Cols[Col].Width;
-       End
-      Else
-       Begin
+       end
+      else
+       begin
         Left := 0;
         Right := RowHdrWidth;
-       End;
+       end;
 
-      If Row > -1 Then
-       Begin
+      if Row > -1 then
+       begin
         //group Top := ColHdrHeight + (Row - TopRow) * RowHeight;
         Top := CalcGroupColHdrsHeight + (Row - TopRow) * RowHeight;
         Bottom := Top + RowHeight;
-       End
-      Else
-       Begin
+       end
+      else
+       begin
         //group Top := 0;
         Top := CalcGroupHdrHeight;
         Bottom := Top + ColHdrHeight;
-       End;
-    End;
+       end;
+    end;
 end;
 }
 {$ENDIF Jv_TIMEBLOCKS}
@@ -9317,7 +9361,8 @@ var
 begin
   if (Col = gcGroupHdr) and (Row > gcHdr) then
     Result := VirtualBlockHdrRect(Row)
-  else if (Row = gcGroupHdr) and (Col > gcHdr) then
+  else
+  if (Row = gcGroupHdr) and (Col > gcHdr) then
     Result := VirtualGroupHdrRect(Col)
   else
     with Result do
@@ -9384,7 +9429,7 @@ begin
 
   if (StartRow < 0) and (EndRow >= 0) then
     StartRow := 0;
-  // If the above condition fails and the StartRow is STILL invalid then
+  // if the above condition fails and the StartRow is STILL invalid then
   // let the 'Map col not found' catch the error.
 
   EndRow := Lesser(EndRow, RowCount - 1);
@@ -9413,7 +9458,7 @@ begin
 
     // The Base* and MakeUp* code that follows calc's the appt width and left
     // and takes into account a total width that isn't evenly divisible by
-    // the map col count.  If there is a discrepency then that discrepency
+    // the map col count.  if there is a discrepency then that discrepency
     // is divvied up amoung the cols working left to right.
     //
     //  Example:  Total width = 113, col count = 5
@@ -9461,7 +9506,8 @@ var
 begin
   if X <= 0 then
     Result := 1
-  else if X >= TotalWidth then
+  else
+  if X >= TotalWidth then
     Result := SegCount
   else
   begin
@@ -9709,7 +9755,7 @@ begin
   for I := LeftCol to RightCol do
     Inc(TempWidth, Cols[I].Width);
 
-  // If TempWidth > Data width then fully vis cols = one less the visible cols
+  // if TempWidth > Data width then fully vis cols = one less the visible cols
   if TempWidth <= GetDataWidth then
     Result := VisibleCols
   else
@@ -9921,7 +9967,8 @@ begin
       Dec(DeltaY);
       M := 12 + M;
     end
-    else if M > 12 then
+    else
+    if M > 12 then
     begin
       Inc(DeltaY);
       M := M - 12;
@@ -9990,7 +10037,8 @@ begin
 
   if aRow < TopRow then
     TopRow := aRow
-  else if aRow > TopRow + FullVisibleRows - 1 then
+  else
+  if aRow > TopRow + FullVisibleRows - 1 then
     TopRow := Greater(aRow - FullVisibleRows + 1, 0);
 end;
 
@@ -10004,7 +10052,8 @@ begin
 
   if aCol < LeftCol then
     LeftCol := aCol
-  else if aCol > RightCol then
+  else
+  if aCol > RightCol then
   begin
     ColSizes := 0;
     DataWidth := RectWidth(GetDataAreaRect);
@@ -10031,6 +10080,7 @@ var
          ///////////////////////////////////////////
          //     SUBORDINATE ROUTINE
          ///////////////////////////////////////////
+
   function PointInDataArea(aPoint: TPoint): Boolean;
   begin
     Result := (aPoint.X > gcHdr) and (aPoint.Y > gcHdr);
@@ -10051,21 +10101,25 @@ begin
         (Trunc(Cols[aCell.X].SchedDate) = Trunc(Cols[SelStart.X].SchedDate)) then
         Result := (aCell.Y >= SelStart.Y) and (aCell.Y <= SelEnd.Y)
     end
-    else if SelSameName then
+    else
+    if SelSameName then
     begin
       if Cols[aCell.X].SchedName = Cols[SelStart.X].SchedName then
       begin
         TestDate := Cols[aCell.X].SchedDate;
         if Trunc(TestDate) = Trunc(Cols[SelStart.X].SchedDate) then
           Result := aCell.Y >= SelStart.Y
-        else if (Trunc(TestDate) > Trunc(Cols[SelStart.X].SchedDate)) and
+        else
+        if (Trunc(TestDate) > Trunc(Cols[SelStart.X].SchedDate)) and
           (Trunc(TestDate) < Trunc(Cols[SelEnd.X].SchedDate)) then
           Result := True
-        else if Trunc(TestDate) = Trunc(Cols[SelEnd.X].SchedDate) then
+        else
+        if Trunc(TestDate) = Trunc(Cols[SelEnd.X].SchedDate) then
           Result := aCell.Y <= SelEnd.Y;
       end
     end
-    else if SelSameDate then
+    else
+    if SelSameDate then
     begin
       NameList := TStringList.Create;
       NameList.Sorted := True;
@@ -10102,7 +10156,7 @@ begin
   Result := False;
   if (SelStart.X > gcHdr) and (SelEnd.X > gcHdr) then
     // Don't know if we really should be doing the follow check
-    //and (aCol >= SelStart.X) and (aCol <= SelEnd.X) Then
+    //and (aCol >= SelStart.X) and (aCol <= SelEnd.X) then
   begin
     // Determine type of selection (case)
     StartCol := Cols[SelStart.X];
@@ -10115,11 +10169,13 @@ begin
     if SelSameName and SelSameDate then
       Result := (TestCol.SchedName = StartCol.SchedName) and
         (Trunc(TestCol.SchedDate) = Trunc(StartCol.SchedDate))
-    else if SelSameName then
+    else
+    if SelSameName then
       Result := (TestCol.SchedName = StartCol.SchedName) and
         (Trunc(TestCol.SchedDate) >= Trunc(StartCol.SchedDate)) and
         (Trunc(TestCol.SchedDate) <= Trunc(EndCol.SchedDate))
-    else if SelSameDate then
+    else
+    if SelSameDate then
       if Trunc(TestCol.SchedDate) = Trunc(StartCol.SchedDate) then
       begin
         I := SelStart.X;
@@ -10151,7 +10207,8 @@ begin
 
     if (SelSameName and SelSameDate) or SelSameDate then
       Result := (aRow >= SelStart.Y) and (aRow <= SelEnd.Y)
-    else if SelSameName then
+    else
+    if SelSameName then
       Result := (aRow >= SelStart.Y) or (aRow <= SelEnd.Y);
   end;
 end;
@@ -10179,6 +10236,7 @@ var
               ///////////////////////////////////////
               //    SUBORDINATE ROUTINES
               ///////////////////////////////////////
+
   procedure AddToArray(X, Y: Integer);
   begin
     Result[NextEntry] := Point(X, Y);
@@ -10214,7 +10272,8 @@ begin
           AddToArray(aCol, aRow);
       end;
     end
-  else if SelSameName then
+  else
+  if SelSameName then
    // only have to go to SelEnd.X??
    // What about if two cols have same SchedName and SchedDate??
     for aCol := 0 to Cols.Count - 1 do
@@ -10229,14 +10288,16 @@ begin
           for aRow := SelStart.Y to RowCount - 1 do
             AddToArray(aCol, aRow);
         end
-        else if (Trunc(TestDate) > Trunc(Cols[SelStart.X].SchedDate)) and
+        else
+        if (Trunc(TestDate) > Trunc(Cols[SelStart.X].SchedDate)) and
           (Trunc(TestDate) < Trunc(Cols[SelEnd.X].SchedDate)) then
         begin
           BumpLength(RowCount);
           for aRow := 0 to RowCount - 1 do
             AddToArray(aCol, aRow);
         end
-        else if Trunc(TestDate) = Trunc(Cols[SelEnd.X].SchedDate) then
+        else
+        if Trunc(TestDate) = Trunc(Cols[SelEnd.X].SchedDate) then
         begin
           BumpLength(SelEnd.Y + 1);
           for aRow := 0 to SelEnd.Y do
@@ -10244,7 +10305,8 @@ begin
         end;
       end;
     end
-  else if SelSameDate then
+  else
+  if SelSameDate then
   begin
     NameList := TStringList.Create;
     NameList.Sorted := True;
@@ -10282,6 +10344,7 @@ var
           /////////////////////////////////////
           // SUBORDINATE ROUTINE
           /////////////////////////////////////
+
   procedure AddToArray(aCol: Integer);
   begin
     SetLength(Result, Length(Result) + 1);
@@ -10310,7 +10373,8 @@ begin
           (Trunc(TestCol.SchedDate) = Trunc(StartCol.SchedDate)) then
           AddToArray(I);
       end
-    else if SelSameName then
+    else
+    if SelSameName then
       for I := 0 to Cols.Count - 1 do
       begin
         TestCol := Cols[I];
@@ -10319,7 +10383,8 @@ begin
           (Trunc(TestCol.SchedDate) <= Trunc(EndCol.SchedDate))) then
           AddToArray(I);
       end
-    else if SelSameDate then
+    else
+    if SelSameDate then
     begin
       TempList := TStringList.Create;
       TempList.Sorted := True;
@@ -10354,6 +10419,7 @@ var
           /////////////////////////////////////
           // SUBORDINATE ROUTINE
           /////////////////////////////////////
+
   procedure AddToArray(aCol: Integer);
   begin
     SetLength(Result, Length(Result) + 1);
@@ -10378,7 +10444,8 @@ begin
     if (SelSameName and SelSameDate) or SelSameDate then
       for I := SelStart.Y to SelEnd.Y do
         AddToArray(I)
-    else if SelSameName then
+    else
+    if SelSameName then
       for I := 0 to RowCount - 1 do
         if (I >= SelStart.Y) or (I <= SelEnd.Y) then
           AddToArray(I);
@@ -10396,7 +10463,8 @@ begin
         Result := Appt.Color
     else
       Result := SelApptAttr.Color
-  else if Appt.Color = clDefault then
+  else
+  if Appt.Color = clDefault then
     Result := ApptAttr.Color
   else
     Result := Appt.Color;
@@ -10464,20 +10532,20 @@ begin
   end;
 
 {
-  If Cols.Count > 0 Then
+  if Cols.Count > 0 then
    LastAppt := Cols[Cols.Count - 1].GetLastAppt;
 
-  If not Assigned(LastAppt) and (Cols.Count > 1) Then
-   Begin
+  if not Assigned(LastAppt) and (Cols.Count > 1) then
+   begin
     RefCol := Cols.Count - 2;
-    While not Assigned(LastAppt) and (RefCol >= 0) do
-      Begin
+    while not Assigned(LastAppt) and (RefCol >= 0) do
+      begin
        LastAppt := Cols[RefCol].GetLastAppt;
        Dec(RefCol);
-      End;
-    If Assigned(LastAppt) Then
+      end;
+    if Assigned(LastAppt) then
       Inc(RefCol);
-   End;
+   end;
 
   SelAppt := LastAppt;
   ApptInView(LastAppt, RefCol);
@@ -10514,29 +10582,29 @@ begin
   RefAppt := SelAppt;
   RefCol := Greater(FocusedCol, 0);
 
-  If Assigned(RefAppt) Then
+  if Assigned(RefAppt) then
    NextAppt := Cols[RefCol].GetNextAppt(RefAppt)
-  Else
+  else
    NextAppt := Cols[RefCol].GetFirstAppt;
 
-  If not Assigned(NextAppt) Then
-   Begin
+  if not Assigned(NextAppt) then
+   begin
     NextCol := RefCol + 1;
-    If NextCol = Cols.Count Then
+    if NextCol = Cols.Count then
       NextCol := 0;
 
-    While not Assigned(NextAppt) and (NextCol <> RefCol) do
-      Begin
+    while not Assigned(NextAppt) and (NextCol <> RefCol) do
+      begin
        NextAppt := Cols[NextCol].GetFirstAppt;
-       If not Assigned(NextAppt) Then
-        Begin
+       if not Assigned(NextAppt) then
+        begin
           Inc(NextCol);
-          If NextCol = Cols.Count Then
+          if NextCol = Cols.Count then
            NextCol := 0;
-        End;
-      End;
+        end;
+      end;
     RefCol := NextCol;
-   End;
+   end;
 
   SelAppt := NextAppt;
   ApptInView(NextAppt, RefCol);
@@ -10569,32 +10637,31 @@ begin
     SelApptCell(PrevAppt, RefCol + 1);
   end;
 
-
 {
-  If Assigned(RefAppt) Then
+  if Assigned(RefAppt) then
    PrevAppt := Cols[RefCol].GetPrevAppt(RefAppt)
-  Else
+  else
    PrevAppt := Cols[RefCol].GetFirstAppt;
 
-  If not Assigned(PrevAppt) Then
-   Begin
+  if not Assigned(PrevAppt) then
+   begin
     PrevCol := RefCol - 1;
-    If PrevCol = -1 Then
+    if PrevCol = -1 then
       PrevCol := Cols.Count - 1;
 
-    While not Assigned(PrevAppt) and (PrevCol <> RefCol) do
-      Begin
+    while not Assigned(PrevAppt) and (PrevCol <> RefCol) do
+      begin
        PrevAppt := Cols[PrevCol].GetLastAppt;
-       If not Assigned(PrevAppt) Then
-        Begin
+       if not Assigned(PrevAppt) then
+        begin
           Dec(PrevCol);
-          If PrevCol = -1 Then
+          if PrevCol = -1 then
            PrevCol := Cols.Count - 1;
-        End;
-      End;
+        end;
+      end;
 
     RefCol := PrevCol;
-   End;
+   end;
 
   SelAppt := PrevAppt;
   ApptInView(PrevAppt, RefCol);
@@ -10662,29 +10729,29 @@ begin
   Case Grouping of
    grNone :
     For I := 0 to Cols.Count - 1 do
-      Begin
+      begin
        Cols[I].GroupTitle := '';
        //Cols[I].UpdateTitle;
        Cols[I].UpdateTitles;
-      End;
+      end;
    grDate :
     For I := 0 to Cols.Count - 1 do
-      Begin
+      begin
        Cols[I].GroupTitle := FormatDateTime(DateFormat, Cols[I].SchedDate);
        Cols[I].Title := Cols[I].SchedName;
-      End;
+      end;
    grResource :
     For I := 0 to Cols.Count - 1 do
-      Begin
+      begin
        Cols[I].GroupTitle := Cols[I].SchedName;
        Cols[I].Title := FormatDateTime(DateFormat, Cols[I].SchedDate);
-      End;
+      end;
    grCustom :
     For I := 0 to Cols.Count - 1 do
-      Begin
+      begin
        Cols[I].GroupTitle := '';
-      End;
-  End;
+      end;
+  end;
 end;
 }
 
@@ -10737,8 +10804,8 @@ begin
 //      Windows.DeleteObject(ClipRgn);
 //    end;
 
-  ACanvas.Brush.Bitmap := DitherBitmap;
-  aCanvas.FillRect(ARect);
+    ACanvas.Brush.Bitmap := DitherBitmap;
+    aCanvas.FillRect(ARect);
 
 //      Windows.BitBlt(aCanvas.Handle, aRect.Left, aRect.Top, DitherBitmap.Width, DitherBitmap.Height,
 //        DitherBitmap.Canvas.Handle, 0, 0, SRCCOPY);
@@ -10746,9 +10813,6 @@ begin
     DitherBitmap.Free;
   end;
 end;
-
-
-
 
 procedure TJvTFDays.SelFirstApptNextCol;
 var
@@ -10919,13 +10983,13 @@ var
   Attr: TJvTFDaysHdrAttr;
 begin
   aRect := VirtualGroupHdrRect(aCol);
-  If GroupHdrIsSelected(aCol) Then
+  if GroupHdrIsSelected(aCol) then
    Attr := SelGroupHdrAttr
-  Else
+  else
    Attr := GroupHdrAttr;
 
   With aCanvas do
-   Begin
+   begin
     Font.Assign(Attr.Font);
     Brush.Color := Attr.Color;
     FillRect(aRect);
@@ -10944,7 +11008,7 @@ begin
     LineTo(aRect.Right - 1, aRect.Bottom - 1);
     LineTo(aRect.Left, aRect.Bottom - 1);
     }
-{   End;
+{   end;
 end;
 }
 
@@ -11039,7 +11103,6 @@ begin
   PTxt := StrAlloc((Length(Txt) + 12) * SizeOf(Char));
   StrPCopy(PTxt, Txt);
 
-
   if (ColTitleStyle = ctsMultiClip) or
     (ColTitleStyle = ctsMultiEllipsis) then
   begin
@@ -11056,31 +11119,33 @@ begin
       TxtRect.Bottom := Lesser(TxtRect.Top + TxtRectHt, TxtRect.Bottom);
     end;
   end
-  else if (ColTitleStyle = ctsHide) then
+  else
+  if (ColTitleStyle = ctsHide) then
   begin
     Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
       StrPCopy(PTxt, '');
   end
-  {$IFDEF Jv_TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
-  else if (ColTitleStyle = ctsRotated) then
+  else
+  if (ColTitleStyle = ctsRotated) then
    //DrawAngleText(aCanvas, TxtRect, UseAttr.TitleRotation, Txt);
     DrawAngleText(aCanvas, TxtRect, TxtBounds, UseAttr.TitleRotation,
       taCenter, vaCenter, Txt);
   {$ELSE}
   // remove
   //; // semi-colon needed to terminate last end
-  {$ENDIF Jv_TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
-  {$IFDEF Jv_TIMEBLOCKS}
+    {$IFDEF Jv_TIMEBLOCKS}
   // okay to leave
     if ColTitleStyle <> ctsRotated then
       Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
   {$ELSE}
   // remove
   //Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
-  {$ENDIF Jv_TIMEBLOCKS}
+    {$ENDIF Jv_TIMEBLOCKS}
 
     StrDispose(PTxt);
 
@@ -11090,7 +11155,7 @@ begin
     Windows.InflateRect(CalcRect, -2, -2);
     ManualFocusRect(aCanvas, CalcRect);
     {
-    If Windows.IsRectEmpty(TxtRect) Then
+    if Windows.IsRectEmpty(TxtRect) then
       Windows.InflateRect(TxtRect, 5, 5);
     ManualFocusRect(aCanvas, TxtRect);
     }
@@ -11109,7 +11174,8 @@ begin
     if Assigned(FOnDrawGroupHdr) then
       FOnDrawGroupHdr(Self, aCanvas, aRect, Index, GroupHdrIsSelected(Index));
   end
-  else if Assigned(FOnDrawColHdr) then
+  else
+  if Assigned(FOnDrawColHdr) then
     FOnDrawColHdr(Self, aCanvas, aRect, Index, ColIsSelected(Index));
 end;
 
@@ -11227,6 +11293,7 @@ var
         ///////////////////////////////////////////////
         //        SUBORDINATE ROUTINE
         ///////////////////////////////////////////////
+
   procedure FillIt;
   begin
     with aCanvas do
@@ -11286,7 +11353,7 @@ var DC    : HDC;
    hSavFont: HFont;
    Size  : TSize;
    x,y   : Integer;
-   cStr  : array[0..255] of Char;
+   cStr  : array [0..255] of Char;
    SaveRect: TRect;
 begin
   aAngle := aAngle div 10;
@@ -11307,17 +11374,20 @@ begin
     x := 0;
     y := Trunc(Size.cx * sin(aAngle*Pi/180));
    end
-  else if aAngle<=180 then
+  else
+  if aAngle<=180 then
    begin         // 2.Quadrant
     x := Trunc(Size.cx * -cos(aAngle*Pi/180));
     y := Trunc(Size.cx *  sin(aAngle*Pi/180) + Size.cy * cos((180-aAngle)*Pi/180));
    end
-  else if aAngle<=270 then
+  else
+  if aAngle<=270 then
    begin         // 3.Quadrant
     x := Trunc(Size.cx * -cos(aAngle*Pi/180) + Size.cy * sin((aAngle-180)*Pi/180));
     y := Trunc(Size.cy * sin((270-aAngle)*Pi/180));
    end
-  else if aAngle<=360 then
+  else
+  if aAngle<=360 then
    begin         // 4.Quadrant
     x := Trunc(Size.cy * sin((360-aAngle)*Pi/180));
     y := 0;
@@ -11362,7 +11432,6 @@ begin
   ClipRgn := Windows.CreateRectRgn(aRect.Left, aRect.Top,
                         aRect.Right, aRect.Bottom);
   Windows.SelectClipRgn(aCanvas.Handle, ClipRgn);
-
 
   Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
 
@@ -11563,7 +11632,6 @@ end;
 {$ENDIF Jv_TIMEBLOCKS}
 //^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-
 procedure TJvTFDays.SetGridEndTime(Value: TTime);
 var
   I,
@@ -11579,7 +11647,6 @@ begin
 
   if not (csLoading in ComponentState) and (WorkEnd <= GridStartTime) then
     raise EJvTFDaysError.CreateRes(@RsEGridEndTimeCannotBePriorToGridStart);
-
 
   TopTime := RowToTime(TopRow);
   FGridEndTime := Value;
@@ -11623,7 +11690,6 @@ begin
 
   if not (csLoading in ComponentState) and (Value >= WorkEnd) then
     raise EJvTFDaysError.CreateRes(@RsEGridStartTimeCannotBeAfterGridEndTi);
-
 
   TopTime := RowToTime(TopRow);
   FGridStartTime := Value;
@@ -11671,7 +11737,7 @@ begin
     asdUp: TopRow := Greater(TopRow - 1, 0);
     asdDown: TopRow := Lesser(TopRow + 1, RowCount - FullVisibleRows);
     asdLeft: LeftCol := Greater(LeftCol - 1, 0);
-    asdRight :
+    asdRight:
       begin
         TempWidth := 0;
         for I := LeftCol to Cols.Count - 1 do
@@ -11702,7 +11768,8 @@ begin
       DrawDrag(PtInfo, nil, False);
       ContinueDragging(PtInfo, nil);
     end
-    else if State = agsMoveAppt then
+    else
+    if State = agsMoveAppt then
     begin
       DrawDrag(PtInfo, FDragInfo.Appt, False);
       FDraggingCoord.Row := PtInfo.Row;
@@ -11732,7 +11799,7 @@ begin
     case Template.ActiveTemplate of
       agtLinear: Template.LinearStartDate := Dates[0];
       agtComparative: Template.CompDate := Dates[0];
-      agtNone :
+      agtNone:
         begin
           Cols.BeginUpdate;
           try
@@ -11776,11 +11843,12 @@ var
        CurrCol: TJvTFDaysCol;
       begin
        CurrCol := TJvTFDaysCol(NewList.Objects[Slot]);
-       If Grouping = grDate Then
+       if Grouping = grDate then
         Result := Trunc(CurrCol.SchedDate) > Trunc(ColToAdd.SchedDate)
-       Else If Grouping = grResource Then
+       else
+       if Grouping = grResource then
         Result := CurrCol.SchedName > ColToAdd.SchedName
-       Else
+       else
         Result := True;
       end;
 
@@ -11791,21 +11859,21 @@ begin
   NewList := TStringList.Create;
   Try
    For I := 0 to Cols.Count - 1 do
-    Begin
+    begin
       ColToAdd := Cols[I];
 
       Slot := 0;
-      While (Slot < NewList.Count) and not SortCompare do
+      while (Slot < NewList.Count) and not SortCompare do
        Inc(Slot);
 
       NewList.InsertObject(Slot, '', ColToAdd);
-    End;
+    end;
 
    For I := 0 to NewList.Count - 1 do
     TJvTFDaysCol(NewList.Objects[I]).Index := I;
   Finally
    NewList.Free;
-  End;
+  end;
 end;
 }
 
@@ -11899,26 +11967,26 @@ end;
 //function TJvTFDays.GetBottomGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 //begin
 //  Result := Rect(0, 0, 0, 0);
-//  If (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
-//    Cols[Col].ApptInCol(Appt) Then
-//   Begin
+//  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
+//    Cols[Col].ApptInCol(Appt) then
+//   begin
 //    Result := GetApptRect(Col, Appt);
 //    Result.Top := Result.Bottom - GrabHandles.Height;
 //    Windows.OffsetRect(Result, 0, GrabHandles.Height);
-//   End;
+//   end;
 //end;
 //
 //// move grab handles
 //function TJvTFDays.GetTopGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 //begin
 //  Result := Rect(0, 0, 0, 0);
-//  If (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
-//    Cols[Col].ApptInCol(Appt) Then
-//   Begin
+//  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
+//    Cols[Col].ApptInCol(Appt) then
+//   begin
 //    Result := GetApptRect(Col, Appt);
 //    Result.Bottom := Result.Top + GrabHandles.Height;
 //    Windows.OffsetRect(Result, 0, -GrabHandles.Height);
-//   End;
+//   end;
 //end;
 
 // move grab handles
@@ -11926,7 +11994,7 @@ end;
 function TJvTFDays.GetBottomGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 begin
   Result := Rect(0, 0, 0, 0);
-//  If (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
+//  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
   if (Col > gcHdr) and Assigned(Appt) and
     Cols[Col].ApptInCol(Appt) then
   begin
@@ -11941,7 +12009,7 @@ end;
 function TJvTFDays.GetTopGrabHandleRect(Col: Integer; Appt: TJvTFAppt): TRect;
 begin
   Result := Rect(0, 0, 0, 0);
-//  If (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
+//  if (Col = FocusedCol) and (Col > gcHdr) and Assigned(Appt) and
   if (Col > gcHdr) and Assigned(Appt) and
     Cols[Col].ApptInCol(Appt) then
   begin
@@ -11950,8 +12018,6 @@ begin
     Windows.OffsetRect(Result, 0, -GrabHandles.Height);
   end;
 end;
-
-
 
 function TJvTFDays.PtInBottomHandle(aPoint: TPoint; Col: Integer;
   Appt: TJvTFAppt): Boolean;
@@ -12041,8 +12107,8 @@ begin
   ClearPageInfo;
 
   // Calculate the segments
-  //  A segment is concerned with rows only (If all rows fit on one page then
-  //  there is one segment.  If the rows fit on two pages then there are two
+  //  A segment is concerned with rows only (if all rows fit on one page then
+  //  there is one segment.  if the rows fit on two pages then there are two
   //  segments...)
   Segments := TStringList.Create;
 
@@ -12154,7 +12220,8 @@ begin
     CanDrawText := RectWidth(ApptRect) >= TextWidthThreshold;
     CanDrawPics := True;
   end
-  else if Thresholds.DropTextFirst then
+  else
+  if Thresholds.DropTextFirst then
   begin
     CanDrawText := False;
     CanDrawPics := True;
@@ -12188,7 +12255,8 @@ begin
     Windows.IntersectRect(Result, VisGrpHdrRect,
       VirtualGroupHdrRect(Col, PageInfo));
   end
-  else if Col < 0 then // Row hdr
+  else
+  if Col < 0 then // Row hdr
     if Row < 0 then
       // origin cell
       if PageInfo.ShowColHdr and PageInfo.ShowRowHdr then
@@ -12196,7 +12264,8 @@ begin
         Result := Rect(0, 0, RowHdrWidth, CalcGroupColHdrsHeight)
       else
         Result := EmptyRect
-    else if (Row >= PageInfo.StartRow) and (Row <= PageInfo.EndRow) then
+    else
+    if (Row >= PageInfo.StartRow) and (Row <= PageInfo.EndRow) then
       // Row Hdr for visible data row
       if PageInfo.ShowRowHdr then
         with Result do
@@ -12216,8 +12285,8 @@ begin
     else
       // Row Hdr for non-visible data row
       Result := EmptyRect
-
-  else if (Col >= PageInfo.StartCol) and (Col <= PageInfo.EndCol) then
+  else
+  if (Col >= PageInfo.StartCol) and (Col <= PageInfo.EndCol) then
    // visible data col
     if Row < 0 then
       // Col hdr for visible data col
@@ -12244,7 +12313,8 @@ begin
         end
       else
         Result := EmptyRect
-    else if (Row >= PageInfo.StartRow) and (Row <= PageInfo.EndRow) then
+    else
+    if (Row >= PageInfo.StartRow) and (Row <= PageInfo.EndRow) then
       // visible data cell
       with Result do
       begin
@@ -12335,6 +12405,7 @@ var
       ///////////////////////////////////////////////////////
       //          SUBORDINATE ROUTINE
       ///////////////////////////////////////////////////////
+
   procedure AddToList(_ImageList: TCustomImageList; _ImageIndex: Integer;
     _PicLeft, _PicTop: Integer);
   var
@@ -12403,13 +12474,13 @@ begin
     end;
 
     { don't show modified pic in printed page
-    If Appt.Modified and (ImageMap.Modified > -1) Then
-      Begin
+    if Appt.Modified and (ImageMap.Modified > -1) then
+      begin
        AddToList(ImageList, ImageMap.Modified, NextPicLeft, aRect.Top);
        // The following line generates a compiler hint so comment out,
        //  but leave here as reminder in case method is expanded.
        //Inc(NextPicLeft, ImageList.Width + 2);
-      End;
+      end;
     }
   end;
 end;
@@ -12440,7 +12511,6 @@ begin
 
   inherited Destroy;
 end;
-
 
 {***************************************************************************
  * The following routine was based off of a routine originally found in the
@@ -12485,7 +12555,6 @@ begin
     FreeMem(BitmapImage)
   end;
 end;
-
 
 procedure TJvTFDaysPrinter.DrawAppt(aCanvas: TCanvas; Col: Integer;
   Appt: TJvTFAppt; StartRow, EndRow: Integer; PageInfo: TJvTFDaysPageInfo);
@@ -12572,7 +12641,7 @@ var
 begin
   with aCanvas do
     case ApptBar.TimeStampStyle of
-      tssFullI :
+      tssFullI:
         begin
           OldColor := Pen.Color;
           Pen.Color := ApptBar.TimeStampColor;
@@ -12598,7 +12667,7 @@ begin
           Pen.Color := OldColor;
         end;
 
-      tssHalfI :
+      tssHalfI:
         begin
        // we only want the left half of the time stamp rect
           TimeStampRect.Right := (TimeStampRect.Left + TimeStampRect.Right) div 2;
@@ -12623,7 +12692,7 @@ begin
           Pen.Width := 1;
         end;
 
-      tssBlock :
+      tssBlock:
         begin
        // we only want the left half of the time stamp rect
           TimeStampRect.Right := (TimeStampRect.Left + TimeStampRect.Right) div 2;
@@ -12683,12 +12752,12 @@ var
   EndPercent: Double;
 begin
   With aCanvas do
-   Begin
+   begin
     // Fill Bar Color
     OldColor := Brush.Color;
-    If Appt.BarColor = clDefault Then
+    if Appt.BarColor = clDefault then
       Brush.Color := ApptBar.Color
-    Else
+    else
       Brush.Color := Appt.BarColor;
 
     FillRect(BarRect);
@@ -12703,21 +12772,21 @@ begin
     // Draw Time Stamp
     Case ApptBar.TimeStampStyle of
       tssFullI :
-       Begin
+       begin
         MarkerRect := BarRect;
 
         Offset := RowToTime(StartRow);
         ApptLength := RowEndTime(EndRow) - Offset;
         ColDate := Cols[Col].SchedDate;
 
-        If Trunc(ColDate) <> Trunc(Appt.StartDate) Then
+        if Trunc(ColDate) <> Trunc(Appt.StartDate) then
           StartPercent := 0
-        Else
+        else
           StartPercent := (Appt.StartTime - Offset) / ApptLength;
 
-        If Trunc(ColDate) <> Trunc(Appt.EndDate) Then
+        if Trunc(ColDate) <> Trunc(Appt.EndDate) then
           EndPercent := 1.0
-        Else
+        else
           EndPercent := (Appt.EndTime - Offset) / ApptLength;
 
         MarkerRect.Top := Round((BarRect.Bottom - BarRect.Top) *
@@ -12734,9 +12803,9 @@ begin
         MoveTo(MarkerRect.Left + 1, MarkerRect.Bottom - 1);
         LineTo(MarkerRect.Right - 1, MarkerRect.Bottom - 1);
 
-        If ApptBar.Width > 5 Then
+        if ApptBar.Width > 5 then
           Pen.Width := ScreenToPrinter(2, True)
-        Else
+        else
           Pen.Width := ScreenToPrinter(1, True);
 
         MoveTo((MarkerRect.Right) div 2, MarkerRect.Top + 1);
@@ -12744,10 +12813,10 @@ begin
         Pen.Width := 1;
 
         Pen.Color := OldColor;
-       End;
+       end;
 
       tssHalfI :
-       Begin
+       begin
         MarkerRect := BarRect;
         MarkerRect.Right := MarkerRect.Right div 2;
 
@@ -12755,14 +12824,14 @@ begin
         ApptLength := RowEndTime(EndRow) - Offset;
         ColDate := Cols[Col].SchedDate;
 
-        If Trunc(ColDate) <> Trunc(Appt.StartDate) Then
+        if Trunc(ColDate) <> Trunc(Appt.StartDate) then
           StartPercent := 0
-        Else
+        else
           StartPercent := (Appt.StartTime - Offset) / ApptLength;
 
-        If Trunc(ColDate) <> Trunc(Appt.EndDate) Then
+        if Trunc(ColDate) <> Trunc(Appt.EndDate) then
           EndPercent := 1.0
-        Else
+        else
           EndPercent := (Appt.EndTime - Offset) / ApptLength;
 
         MarkerRect.Top := Round((BarRect.Bottom - BarRect.Top) *
@@ -12779,18 +12848,18 @@ begin
         MoveTo(MarkerRect.Left, MarkerRect.Bottom - 0);
         LineTo(MarkerRect.Right - 0, MarkerRect.Bottom - 0);
 
-        If ApptBar.Width > 5 Then
+        if ApptBar.Width > 5 then
           Pen.Width := ScreenToPrinter(2, True)
-        Else
+        else
           Pen.Width := ScreenToPrinter(1, True);
         MoveTo(MarkerRect.Right - 0, MarkerRect.Top + 1);
         LineTo(MarkerRect.Right - 0, MarkerRect.Bottom);
         Pen.Color := OldColor;
         Pen.Width := 1;
-       End;
+       end;
 
       tssBlock :
-       Begin
+       begin
         MarkerRect := BarRect;
         MarkerRect.Right := MarkerRect.Right div 2;
 
@@ -12798,14 +12867,14 @@ begin
         ApptLength := RowEndTime(EndRow) - Offset;
         ColDate := Cols[Col].SchedDate;
 
-        If Trunc(ColDate) <> Trunc(Appt.StartDate) Then
+        if Trunc(ColDate) <> Trunc(Appt.StartDate) then
           StartPercent := 0
-        Else
+        else
           StartPercent := (Appt.StartTime - Offset) / ApptLength;
 
-        If Trunc(ColDate) <> Trunc(Appt.EndDate) Then
+        if Trunc(ColDate) <> Trunc(Appt.EndDate) then
           EndPercent := 1.0
-        Else
+        else
           EndPercent := (Appt.EndTime - Offset) / ApptLength;
 
         MarkerRect.Top := Round((BarRect.Bottom - BarRect.Top) *
@@ -12817,9 +12886,9 @@ begin
         Brush.Color := ApptBar.TimeStampColor;
         FillRect(MarkerRect);
         Brush.Color := OldColor;
-       End;
-    End;
-   End;
+       end;
+    end;
+   end;
 end;
 }
 
@@ -13115,7 +13184,7 @@ begin
    ctsMultiEllipsis : Flags := Flags or DT_END_ELLIPSIS or DT_WORDBREAK or
                         DT_EDITCONTROL;
    ctsHide       : Flags := Flags or DT_SINGLELINE or DT_VCENTER;
-  End;
+  end;
 
   aCanvas.FillRect(aRect);
   TxtRect := aRect;
@@ -13126,33 +13195,34 @@ begin
   PTxt := StrAlloc((Length(Txt) + 4) * SizeOf(Char));
   StrPCopy(PTxt, Txt);
 
-  If (ColTitleStyle = ctsMultiClip) or
-    (ColTitleStyle = ctsMultiEllipsis) Then
-   Begin
+  if (ColTitleStyle = ctsMultiClip) or
+    (ColTitleStyle = ctsMultiEllipsis) then
+   begin
     TxtHt := Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect,
                       Flags or DT_CALCRECT);
 
-    If TxtHt < RectHeight(TxtRect) Then
-      Begin
+    if TxtHt < RectHeight(TxtRect) then
+      begin
        // we need to vertically center the text
        TxtRectHt := RectHeight(TxtRect);
        TxtRect.Top := TxtRect.Top + RectHeight(TxtRect) div 2 - TxtHt div 2;
        TxtRect.Bottom := Lesser(TxtRect.Top + TxtRectHt, TxtRect.Bottom);
-      End;
-   End
-  Else If (ColTitleStyle = ctsHide) Then
-   Begin
+      end;
+   end
+  else
+  if (ColTitleStyle = ctsHide) then
+   begin
     Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
-    If RectWidth(CalcRect) > RectWidth(TxtRect) Then
+    if RectWidth(CalcRect) > RectWidth(TxtRect) then
       StrPCopy(PTxt, '');
-   End;
+   end;
 
   Windows.DrawText(aCanvas.Handle, PTxt, -1, TxtRect, Flags);
   StrDispose(PTxt);
 
   DrawFrame(aCanvas, aRect, HdrAttr.Frame3D);
 
-  If Assigned(FOnDrawColHdr) Then
+  if Assigned(FOnDrawColHdr) then
    FOnDrawColHdr(Self, aCanvas, aRect, Index, False);
 end;
 }
@@ -13327,7 +13397,7 @@ begin
           Left := 0;
           Right := RowHdrWidth - MinorTickLength;
           Top := CellRect(-1, HourStartRow(PrevHour), PageInfo).Top;
-            //group If Top < ColHdrHeight Then
+            //group if Top < ColHdrHeight then
               //group Top := ColHdrHeight;
           if Top < CalcGroupColHdrsHeight then
             Top := CalcGroupColHdrsHeight;
@@ -13342,7 +13412,8 @@ begin
         begin
           if PrevHour = 0 then
             aLabel := '12'
-          else if PrevHour > 12 then
+          else
+          if PrevHour > 12 then
             aLabel := IntToStr(PrevHour - 12)
           else
             aLabel := IntToStr(PrevHour);
@@ -13628,7 +13699,7 @@ begin
 
   if (StartRow < 0) and (EndRow >= 0) then
     StartRow := 0;
-  // If the above condition fails and the StartRow is STILL invalid then
+  // if the above condition fails and the StartRow is STILL invalid then
   // let the 'Map col not found' catch the error.
 
   // Printer bug, fixed
@@ -13664,7 +13735,7 @@ begin
 
     // The Base* and MakeUp* code that follows calc's the appt width and left
     // and takes into account a total width that isn't evenly divisible by
-    // the map col count.  If there is a discrepency then that discrepency
+    // the map col count.  if there is a discrepency then that discrepency
     // is divvied up amoung the cols working left to right.
     //
     //  Example:  Total width = 113, col count = 5
@@ -13738,7 +13809,8 @@ var
 begin
   if Granularity = 60 then
     aTimeFormat := Full24
-  else if (RowNum = PageInfo.StartRow) and not RowStartsHour(RowNum) then
+  else
+  if (RowNum = PageInfo.StartRow) and not RowStartsHour(RowNum) then
     aTimeFormat := Full24
   else
   begin
@@ -13957,7 +14029,8 @@ begin
   // Enforce minimum granularity of 1 min and max of 60 mins
   if Value < 1 then
     Value := 1
-  else if Value > 60 then
+  else
+  if Value > 60 then
     Value := 60;
 
   // Ensure that granularity is evenly divisable by an hour
@@ -14313,7 +14386,8 @@ begin
       TxtRect.Bottom := Lesser(TxtRect.Top + TxtRectHt, TxtRect.Bottom);
     end;
   end
-  else if (ColTitleStyle = ctsHide) then
+  else
+  if (ColTitleStyle = ctsHide) then
   begin
     Windows.DrawText(aCanvas.Handle, PTxt, -1, CalcRect, Flags or DT_CALCRECT);
     if RectWidth(CalcRect) > RectWidth(TxtRect) then
@@ -14330,7 +14404,8 @@ begin
     if Assigned(FOnDrawGroupHdr) then
       FOnDrawGroupHdr(Self, aCanvas, aRect, Index, False);
   end
-  else if Assigned(FOnDrawColHdr) then
+  else
+  if Assigned(FOnDrawColHdr) then
     FOnDrawColHdr(Self, aCanvas, aRect, Index, False);
 end;
 
@@ -14789,11 +14864,12 @@ begin
   // Enforce minimum granularity of 1 min and max of 60 mins
   if Value < 1 then
     Value := 1
-  else if Value > 60 then
+  else
+  if Value > 60 then
     Value := 60;
 
   // Ensure that granularity is evenly divisable by an hour
-  //While 60 mod Value <> 0 do
+  //while 60 mod Value <> 0 do
    //Dec(Value);
   Value := Value - 60 mod Value;
 
@@ -14838,7 +14914,6 @@ begin
     Change;
   end;
 end;
-
 
 procedure TJvTFDaysBlockProps.SetDrawOffTime(Value: Boolean);
 begin
