@@ -34,13 +34,17 @@ uses
 type
   TJvRegistryIniFile = class(TObject)
   private
+    FHKEY : string;
+    FIniName: string;
     FSection: string;
     FIniFile: TIniFile;
     function GetFilename: string;
   protected
+    function Key2IniSection(const Key: string; out ininame: string;
+      out section: string; AllowCreate: boolean = false): boolean; dynamic;
   public
 //    constructor Create; override;
-    constructor Create(const FileName: string); overload;
+    constructor Create(const Root: string); overload;
     destructor Destroy; override;
     function OpenKey(const Key: string; AllowCreate: boolean): boolean;
     function CloseKey: boolean;
@@ -85,19 +89,23 @@ begin
   raise EJvRegIniFileException.CreateResFmt(@SInvalidRegType, [Name]);
 end;
 
-constructor TJvRegistryIniFile.Create(const FileName: string);
+constructor TJvRegistryIniFile.Create(const Root: string);
 begin
   inherited Create;
-  if FileName = ''
+  if Root = ''
   then
-    FIniFile := TIniFile.Create(FileName)
+    FHKey := Root
   else
-    FIniFile := TIniFile.Create(GetEnvironmentVariable('HOME')+ '/.' + ExtractFileName(Application.ExeName));
+    FHKey := GetEnvironmentVariable('HOME'); //+ '/.' +
+                ExtractFileName(Application.ExeName));
 end;
 
 destructor TJvRegistryIniFile.Destroy;
 begin
-  FIniFile.Free;
+  if assigned(FIniFile)
+  then
+    FIniFile.Free;
+  inherited;
 end;
 
 function TJvRegistryIniFile.GetFilename: string;
@@ -105,22 +113,85 @@ begin
   Result := FIniFile.FileName;
 end;
 
+function TJvRegistryIniFile.Key2IniSection(const Key: string;
+  out ininame: string; out section: string; AllowCreate: boolean): boolean;
+var
+  strlist: TStrings;
+  i : integer;
+begin
+  // TODO allowcreate
+  strlist := TStringList.Create;
+  strlist.Delimiter := '/';
+  strlist.DelimitedText := Key;
+  Ininame := FHKEY;
+  i := 0;
+  while (i < strlist.Count) and FileExists(IniName + PathDelim + strlist[i]) do
+  begin
+    IniName := IniName + PathDelim + strlist[i];
+    inc(i);
+  end;
+  if i < strList.Count then
+  begin
+    Section := strList[i];
+    inc(i);
+    while i < strlist.count do
+    begin
+      Section := Section + PathDelim + strlist[i];
+      inc(i);
+    end
+  end
+  else
+    Section := '' ;
+  strlist.free;
+  Result := (FileExists(IniName) or AllowCreate) and not DirectoryExists(IniName);
+end;
+
 function TJvRegistryIniFile.OpenKey(const Key: string; AllowCreate: boolean): boolean;
 begin
-  Result := FIniFile.SectionExists(Key) or AllowCreate;
-  FSection := Key;
+  Result := Key2IniSection(Key, FIniName, FSection, AllowCreate);
+  if Result = false then exit;
+  try
+    FIniFile := TIniFile.Create(FIniName);
+    Result := FIniFile.SectionExists(FSection) or AllowCreate;
+  except
+    Result := false;
+  end;
 end;
 
 function TJvRegistryIniFile.CloseKey: boolean;
 begin
-  FIniFile.UpdateFile;
+  if assigned(FIniFile) then
+    FreeAndNil(FIniFile);
+  FIniName := '';
   Result := true;
 end;
 
 function TJvRegistryIniFile.DeleteKey(const Key: String): boolean;
+var
+  Name, Sect: string;
 begin
-  FIniFile.EraseSection(Key);
-  Result := FIniFile.SectionExists(Key);
+  Result := Key2IniSection(Key, Name, Sect);
+  if Result then
+    if Sect <> '' then
+    begin
+      with TIniFile.Create(Name) do
+      begin
+        EraseSection(Sect);
+        Result := not SectionExists(Sect);
+        Free;
+      end;
+    end
+    else
+    begin
+      try
+        if not DirectoryExists(Name) then
+          DeleteFile(Name);
+        // else   // delete directory ?
+        Result := not FileExists(Name)
+      except
+        Result := false;
+      end;
+    end;
 end;
 
 procedure TJvRegistryIniFile.GetValueNames(strings :TStrings);

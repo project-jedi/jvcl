@@ -203,17 +203,32 @@ end;
 
 procedure TJvThread.QuitThread(Thread: THandle);
 begin
+  {$IFDEF MSWINDOWS}
   TerminateThread(Thread, 0);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  TThread(Thread).Terminate;      
+  {$ENDIF LINUX}
 end;
 
 procedure TJvThread.Suspend(Thread: THandle);
 begin
+  {$IFDEF MSWINDOWS}
   SuspendThread(Thread);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  TThread(Thread).Suspend;
+  {$ENDIF LINUX}
 end;
 
 procedure TJvThread.Resume(Thread: THandle);
 begin
+  {$IFDEF MSWINDOWS}
   ResumeThread(Thread);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  TThread(Thread).Resume;
+  {$ENDIF LINUX}
 end;
 
 procedure TJvThread.DoCreate;
