@@ -81,6 +81,9 @@ type
     property Checked;
     property Spacing;
     property BiDiMode;
+    property ParentColor;
+    property Color;
+
 
     //property BevelInner;
     //property BevelOuter;
@@ -234,7 +237,7 @@ begin
   begin
     // clear background.
     Rect := GetClientRect;
-    Brush.Color := TJvXPWinControl(Parent).Color;
+    Brush.Color := Color;
     FillRect(Rect);
     // draw designtime rect.
     if csDesigning in ComponentState then
