@@ -107,7 +107,6 @@ contains
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
   JvActions in '..\source\JvActions.pas',
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
-  JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvDialogActns in '..\source\JvDialogActns.pas',
   JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
