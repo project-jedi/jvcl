@@ -29,94 +29,99 @@ unit JvFormPlacementSelectList;
 
 interface
 
-uses  Classes, JvAppStore,
+uses
+  Classes, JvAppStore,
   JvFormPlacement, JvAppStoreSelectList;
 
 type
-  tJvFormStorageSelectList = class (tJvAppStoreSelectList)
+  TJvFormStorageSelectList = class(TJvAppStoreSelectList)
   private
-    fFormStorage : TJvFormStorage;
+    FFormStorage: TJvFormStorage;
   protected
-    function GetFormStorage : TJvFormStorage; virtual;
-    procedure SetFormStorage(Value : TJvFormStorage); virtual;
-    function GetAppStore : TJvCustomAppStore; override;
-    procedure SetAppStore(Value : TJvCustomAppStore); override;
+    function GetFormStorage: TJvFormStorage; virtual;
+    procedure SetFormStorage(Value: TJvFormStorage); virtual;
+    function GetAppStore: TJvCustomAppStore; override;
+    procedure SetAppStore(Value: TJvCustomAppStore); override;
   public
- //        constructor create (aOwner : TComponent); override;
- //        destructor destroy; override;
-    procedure Notification(AComponent : TComponent; Operation : TOperation); override;
-    procedure RestoreFormStorage(aCaption : string = '');
-    procedure SaveFormStorage(aCaption : string = '');
+ //        constructor Create(AOwner: TComponent); override;
+ //        destructor Destroy; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure RestoreFormStorage(ACaption: string = '');
+    procedure SaveFormStorage(ACaption: string = '');
   published
-    property FormStorage : TJvFormStorage Read GetFormStorage Write SetFormStorage;
+    property FormStorage: TJvFormStorage read GetFormStorage write SetFormStorage;
   end;
 
 implementation
 
-uses SysUtils;
+uses
+  SysUtils;
 
- //constructor tJvAppStoreSelectList.create (aOwner : TComponent);
+ //constructor tJvAppStoreSelectList.Create(AOwner: TComponent);
  //begin
- //  Inherited Create (aOwner);
- //  fSelectList := tStringList.Create;
- //  fCheckEntries := True;
+ //  inherited Create(AOwner);
+ //  FSelectList := TStringList.Create;
+ //  FCheckEntries := True;
  //end;
  //
- //destructor tJvAppStoreSelectList.destroy;
+ //destructor TJvAppStoreSelectList.Destroy;
  //begin
- //  FreeAndNil (fSelectList);
- //  IF Assigned(fSelectDialog) THEN
- //    FreeAndNil (fSelectDialog);
- //  Inherited Destroy;
+ //  FreeAndNil(FSelectList);
+ //  FreeAndNil(FSelectDialog);
+ //  inherited Destroy;
  //end;
 
-function tJvFormStorageSelectList.GetFormStorage : TJvFormStorage;
+function TJvFormStorageSelectList.GetFormStorage: TJvFormStorage;
 begin
-  Result := fFormStorage;
+  Result := FFormStorage;
 end;
 
-procedure tJvFormStorageSelectList.SetFormStorage(Value : TJvFormStorage);
+procedure TJvFormStorageSelectList.SetFormStorage(Value: TJvFormStorage);
 begin
-  fFormStorage := Value;
+  FFormStorage := Value;
 end;
 
-function tJvFormStorageSelectList.GetAppStore : TJvCustomAppStore;
+function TJvFormStorageSelectList.GetAppStore: TJvCustomAppStore;
 begin
-  if Assigned(fFormStorage) then
-    Result := fFormStorage.AppStorage;
+  if Assigned(FFormStorage) then
+    Result := FFormStorage.AppStorage
+  // (rom) otherwise Result may be undefined
+  else
+    Result := nil;
 end;
 
-procedure tJvFormStorageSelectList.SetAppStore(Value : TJvCustomAppStore);
+procedure TJvFormStorageSelectList.SetAppStore(Value: TJvCustomAppStore);
 begin
-  if Assigned(fFormStorage) then
-    fFormStorage.AppStorage := Value;
+  if Assigned(FFormStorage) then
+    FFormStorage.AppStorage := Value;
 end;
 
-procedure tJvFormStorageSelectList.Notification(AComponent : TComponent; Operation : TOperation);
+procedure TJvFormStorageSelectList.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  inherited;
-  if (Operation = opRemove) and (AComponent = fFormStorage) then
-    fFormStorage := nil;
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FFormStorage) then
+    FFormStorage := nil;
 end;
 
-
-procedure tJvFormStorageSelectList.RestoreFormStorage(aCaption : string = '');
+procedure TJvFormStorageSelectList.RestoreFormStorage(ACaption: string = '');
 begin
-  if not Assigned(FormStorage) then
-    Exit;
-  FormStorage.AppStoragePath := GetSelectPath(sloLoad, aCaption);
-  if FormStorage.AppStoragePath <> '' then
-    FormStorage.RestoreFormPlacement;
+  if Assigned(FormStorage) then
+  begin
+    FormStorage.AppStoragePath := GetSelectPath(sloLoad, ACaption);
+    if FormStorage.AppStoragePath <> '' then
+      FormStorage.RestoreFormPlacement;
+  end;
 end;
 
-procedure tJvFormStorageSelectList.SaveFormStorage(aCaption : string = '');
+procedure TJvFormStorageSelectList.SaveFormStorage(ACaption: string = '');
 begin
-  if not Assigned(FormStorage) then
-    Exit;
-  FormStorage.AppStoragePath := GetSelectPath(sloStore, aCaption);
-  if FormStorage.AppStoragePath <> '' then
-    FormStorage.SaveFormPlacement;
+  if Assigned(FormStorage) then
+  begin
+    FormStorage.AppStoragePath := GetSelectPath(sloStore, ACaption);
+    if FormStorage.AppStoragePath <> '' then
+      FormStorage.SaveFormPlacement;
+  end;
 end;
-
 
 end.
+
