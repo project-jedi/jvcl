@@ -31,8 +31,13 @@ unit JvXPContainer;
 interface
 
 uses
-  TypInfo,
-  Windows, Classes, Controls, Graphics, StdCtrls,
+  TypInfo, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Graphics, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QGraphics, QStdCtrls, QExtCtrls, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 
 type
@@ -71,7 +76,9 @@ type
     procedure SetSpacing(Value: Byte);
     procedure SetWordWrap(Value: Boolean);
   protected
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure AdjustClientRect(var Rect: TRect); override;
     procedure HookEnabledChanged; override;
     procedure HookMouseDown; override;
@@ -105,7 +112,9 @@ type
   TJvXPContainer = class(TJvXPCustomContainer)
   published
     property Alignment;
+    {$IFDEF VCL}
     property AutoSize;
+    {$ENDIF VCL}
     property BorderWidth;
     property BoundColor;
     property BoundLines;
@@ -142,8 +151,11 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnCanResize;
+    {$ENDIF VCL}
     property DragMode;
     //property Enabled;
     property Font;
@@ -158,7 +170,6 @@ type
     //property OnGetSiteInfo;
     //property OnStartDock;
     //property OnUnDock;
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     property OnContextPopup;
@@ -209,12 +220,14 @@ begin
   inherited Destroy;
 end;
 
+{$IFDEF VCL}
 procedure TJvXPCustomContainer.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
     WindowClass.Style := WindowClass.Style and not (CS_HREDRAW or CS_VREDRAW);
 end;
+{$ENDIF VCL}
 
 procedure TJvXPCustomContainer.HookEnabledChanged;
 var
@@ -374,7 +387,7 @@ var
   DrawStyle: LongInt;
   CalcRect: TRect;
 
-  procedure DoDrawText(Handle: THandle; ACaption: string; var ARect: TRect;
+  procedure DoDrawText(Handle: HDC; ACaption: string; var ARect: TRect;
     Flags: Integer);
   begin
     DrawText(Handle, PChar(ACaption), -1, ARect, Flags);
@@ -435,7 +448,7 @@ begin
       if csDesigning in ComponentState then
       begin
         Pen.Color := clGray;
-        Pen.Style := psInsideFrame;
+        Pen.Style := psSolid;
         MoveTo(Rect.Left, Rect.Top);
         LineTo(Rect.Left, Rect.Bottom);
         MoveTo(Rect.Right, Rect.Top);

@@ -31,7 +31,13 @@ unit JvXPCheckCtrls;
 interface
 
 uses
-  Windows, Graphics, Classes, Controls,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QWindows,
+  {$ENDIF VisualCLX}
   JvXPCore, JvXPCoreUtils;
 
 type
@@ -90,8 +96,11 @@ type
     property Anchors;
     //property AutoSize;
     property Constraints;
+    {$IFDEF VCL}
     property DragCursor;
     property DragKind;
+    property OnCanResize;
+    {$ENDIF VCL}
     property DragMode;
     //property Enabled;
     property Font;
@@ -108,7 +117,6 @@ type
     //property OnGetSiteInfo;
     //property OnStartDock;
     //property OnUnDock;
-    property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
     {$IFDEF COMPILER6_UP}
@@ -226,8 +234,9 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := TJvXPWinControl(Parent).Color;
+    {$IFDEF VCL}
     FillRect(Rect);
-
+    {$ENDIF VCL}
     // draw designtime rect.
     if csDesigning in ComponentState then
       DrawFocusRect(Rect);
@@ -270,8 +279,13 @@ var
 
   procedure DrawGradient(const Bitmap: TBitmap);
   begin
+    {$IFDEF VCL}
     BitBlt(Canvas.Handle, R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1,
       FCheckSize - 2, FCheckSize - 2, Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Canvas.Draw( R.Left + 3, (ClientHeight - FCheckSize) div 2 + 1, Bitmap);
+    {$ENDIF VisualCLX}
   end;
 
 begin
@@ -299,9 +313,16 @@ begin
           begin
             if ClipW <> 0 then
               DrawGradient(FHlGradient);
+            {$IFDEF VCL}
             BitBlt(Handle, R.Left + 3 + ClipW, (ClientHeight - FCheckSize) div 2 + 1 +
               ClipW, FCheckSize - 2 - ClipW * 2, FCheckSize - 2 - ClipW * 2,
               FBgGradient.Canvas.Handle, 0, 0, SRCCOPY);
+            {$ENDIF VCL}
+            {$IFDEF VisualCLX}
+            Draw(R.Left + 3 + ClipW,
+                 (ClientHeight - FCheckSize) div 2 + 1
+                 + ClipW, FBgGradient);
+            {$ENDIF VisualCLX}
           end
           else
             DrawGradient(FCkGradient);
@@ -328,7 +349,7 @@ begin
       Bitmap := TBitmap.Create;
       try
         Bitmap.Transparent := True;
-        Bitmap.Handle := LoadBitmap(hInstance, 'CHECKBOX');
+        Bitmap.LoadFromResourceName(hInstance, 'CHECKBOX');
         if Theme = WindowsXP then
           JvXPColorizeBitmap(Bitmap, dxColor_Chk_Enb_NmSymb_WXP)
         else
