@@ -35,8 +35,9 @@ uses
 //const
 //  RX_VERSION = $0002004B;  { 2.75 }
 
+
 const
-  {RegAutoEditor}
+  {RegAutoEditor} // designtime
   sRegAutoEditorEdtPropHint    = 'You can type property name here';
   sRegAutoEditorTreeHint       = 'Available properties';
   sRegAutoEditorListHint       = 'Stored properties';
@@ -47,30 +48,17 @@ const
   JvEditorCompletionChars = #8+'0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
 
   {IParser}
-  {$IFDEF Delphi}
   StIdSymbols      = ['_', '0'..'9', 'A'..'Z', 'a'..'z'];
   StIdFirstSymbols = ['_', 'A'..'Z', 'a'..'z'];
   StConstSymbols   = ['0'..'9', 'A'..'F', 'a'..'f'];
   StConstSymbols10 = ['0'..'9'];
   StSeparators     = ['(', ')', ',', '.', ';'];
-  {$ENDIF Delphi}
-  {$IFDEF CBUILDER}
-  StIdSymbols      = '_0123456789QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
-  StIdFirstSymbols = '_QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm';
-  StConstSymbols   = '0123456789ABCDEFabcdef';
-  StConstSymbols10 = '0123456789';
-  StSeparators     = '(),.;';
-  {$ENDIF CBUILDER}
 
   {$IFDEF RAINTER}
   {RAInter}
   RAIIdSymbols      = ['0'..'9', 'A'..'Z', 'a'..'z',  '_'];
   RAIIdFirstSymbols = ['A'..'Z', 'a'..'z', '_'];
   {$ENDIF RAINTER}
-
-  {$IFDEF COMPILER2}
-  SScrollBarRange = 'Scrollbar value out of bounds';
-  {$ENDIF}
 
   {JvDlg}
   SOk = 'OK';
@@ -90,6 +78,7 @@ const
 
   { RALib 1.55 }
 
+resourcestring
   {JvHLEdPropDlg}
   SHLEdPropDlg_Caption = 'Editor Properties';
   SHLEdPropDlg_tsEditor = 'Editor';
@@ -122,6 +111,7 @@ const
   SHLEdPropDlg_RAHLEditorNotAssigned = 'JvHLEditor property is not assigned';
   SHLEdPropDlg_RegAutoNotAssigned = 'RegAuto property is not assigned';
 
+const
   { Command message for JvSpeedbar editor }
   CM_SPEEDBARCHANGED = CM_BASE + 80;
   { Command message for TJvSpeedButton }
@@ -170,6 +160,12 @@ const
   {$ENDIF}
   {$IFDEF DELPHI7}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
+  {$ENDIF}
+  {$IFDEF BCB7} // will it ever be released?
+  SDelphiKey = 'Software\Borland\C++Builder\7.0';
+  {$ENDIF}
+  {$IFDEF DELPHI8}
+  SDelphiKey = 'Software\Borland\Delphi\8.0';
   {$ENDIF}
 
 resourcestring
