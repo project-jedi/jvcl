@@ -31,31 +31,35 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Controls, Forms, StdCtrls, Mask,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QMask, 
-  {$ENDIF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QMask,
+{$ENDIF VisualCLX}
   JvToolEdit, JvComponent, JvExMask;
 
 type
-  TFoPatch = class(TJvForm)
+  TPatchFrm = class(TJvForm)
     GroupBox1: TGroupBox;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
-    Edit1: TEdit;
-    FileNameBox1: TJvFilenameEdit;
-    FileNameBox2: TJvFilenameEdit;
+    edPassword: TEdit;
+    edSource: TJvFilenameEdit;
+    edDest: TJvFilenameEdit;
     OkBtn: TButton;
     CancelBtn: TButton;
+    ClearBtn: TButton;
     procedure OkBtnClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure ClearBtnClick(Sender: TObject);
   private
     FPos: Integer;
     function Crypt(Value: Byte): Byte;
   public
-    Res: TStringList;
+    FPatch: TStringList;
     procedure LoadFromStr(Value: TStringList);
     function SetFromStr: TStringList;
   end;
@@ -63,7 +67,7 @@ type
 implementation
 
 uses
-  JvConsts, JvResources;
+  JvConsts, Dialogs, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}
@@ -72,125 +76,150 @@ uses
 {$R *.xfm}
 {$ENDIF VisualCLX}
 
-procedure TFoPatch.LoadFromStr(Value: TStringList);
+procedure TPatchFrm.LoadFromStr(Value: TStringList);
 begin
   if Value.Count > 2 then
   begin
-    FileNameBox1.FileName := Value[0];
-    FileNameBox2.FileName := Value[1];
+    edSource.FileName := Value[0];
+    edDest.FileName := Value[1];
   end;
 end;
 
-function TFoPatch.SetFromStr: TStringList;
+function TPatchFrm.SetFromStr: TStringList;
 begin
-  Result := Res;
+  Result := FPatch;
 end;
 
-function TFoPatch.Crypt(Value: Byte): Byte;
+function TPatchFrm.Crypt(Value: Byte): Byte;
 begin
-  if Edit1.Text = '' then
+  if edPassword.Text = '' then
     Result := Value
   else
   begin
-    FPos := (FPos + 1) mod Length(Edit1.Text);
-    Result := Value xor (Byte(Edit1.Text[FPos + 1]));
+    FPos := (FPos + 1) mod Length(edPassword.Text);
+    Result := Value xor (Byte(edPassword.Text[FPos + 1]));
   end;
 end;
 
 // (rom) needs modernizing
 
-procedure TFoPatch.OkBtnClick(Sender: TObject);
+procedure TPatchFrm.OkBtnClick(Sender: TObject);
 var
-  f, g: file of Byte;
-  buf1, buf2: array [0..1024] of Byte;
-  i, l: Integer;
+  Src, Dest: TFileStream;
+  buf1, buf2: array[0..1023] of Byte;
+  i, j: Integer;
   res1, res2: Integer;
-  icount, lastcount: Integer;
+  iCount, LastCount: Integer;
 begin
-  FPos := -1;
-  Tag := 0;
-  Res := TStringList.Create;
-  Res.Add(FileNameBox1.FileName);
-  Res.Add(FileNameBox2.FileName);
-  AssignFile(f, FileNameBox1.FileName);
-  AssignFile(g, FileNameBox2.FileName);
-  Reset(f);
-  Reset(g);
-  Caption := Format(RsJvPatcherEditorComparingFilesd, [0]);
-  Repaint;
-  l := Res.Add(IntToStr(FileSize(f)));
-  Res.Add(IntToStr(FileSize(g)));
-  icount := 0;
-  lastcount := 0;
-  while not Eof(f) and not Eof(g) do
+  if not FileExists(edSource.FileName) or not FileExists(edDest.FileName) then
   begin
-    Caption := Format(RsJvPatcherEditorComparingFilesd, [icount div l]);
-    Application.ProcessMessages;
-    BlockRead(f, buf1, 1024, res1); //f = original file
-    BlockRead(g, buf2, 1024, res2); //g = patched file
-    if res1 = res2 then
+    ModalResult := mrNone;
+    MessageDlg(RsErrJvPatcherEditorInvalidFilename, mtError, [mbOK], 0);
+    Exit;
+  end;
+  Src := TFileStream.Create(edSource.FileName, fmOpenRead or fmShareDenyNone);
+  Dest := TFileStream.Create(edDest.FileName, fmOpenRead or fmShareDenyNone);
+  try
+    res1 := 0;
+    res2 := 0;
+    FPos := -1;
+    Tag := 0;
+
+    FPatch.Clear;
+    FPatch.Add(edSource.FileName);
+    FPatch.Add(edDest.FileName);
+    Caption := Format(RsJvPatcherEditorComparingFilesd, [0]);
+    Repaint;
+    j := FPatch.Add(IntToStr(Src.Size));
+    FPatch.Add(IntToStr(Dest.Size));
+    iCount := 0;
+    LastCount := 0;
+    while (Src.Position < Src.Size) and (Dest.Position < Dest.Size) do
     begin
-      for i := 0 to res1 - 1 do
+      Caption := Format(RsJvPatcherEditorComparingFilesd, [iCount div j]);
+      Application.ProcessMessages;
+      res1 := Src.Read(buf1, sizeof(buf1)); // original file
+      res2 := Dest.Read(buf2, sizeof(buf2)); // patched file
+      if res1 = res2 then
       begin
-        Inc(icount);
-        if buf1[i] <> buf2[i] then
+        for i := 0 to res1 - 1 do
         begin
-          Res.Add(IntToStr(icount - lastcount) + '|' + Char(Crypt(buf2[i])));
-          lastcount := icount;
+          Inc(iCount);
+          if buf1[i] <> buf2[i] then
+          begin
+            FPatch.Add(IntToStr(iCount - LastCount) + '|' + Char(Crypt(buf2[i])));
+            LastCount := iCount;
+          end;
         end;
       end;
     end;
-  end;
 
-  Caption := RsJvPatcherEditorEndStep;
-  Repaint;
-  if res1 > res2 then
-  begin
-    //f>g original>patched
-    for i := 0 to res2 - 1 do
+    Caption := RsJvPatcherEditorEndStep;
+    Repaint;
+    if res1 > res2 then
     begin
-      Inc(icount);
-      if buf1[i] <> buf2[i] then
-      begin
-        Res.Add(IntToStr(icount - lastcount) + '|' + Char(Crypt(buf2[i])));
-        lastcount := icount;
-      end;
-    end;
-
-    //telling it's the end ...
-    Res.Add('end%' + IntToStr(icount));
-  end
-  else
-  if res2 > res1 then
-  begin
-    //g>f patched>original
-
-    //comparing last bytes
-    for i := 0 to res1 - 1 do
-    begin
-      Inc(icount);
-      if buf1[i] <> buf2[i] then
-      begin
-        Res.Add(IntToStr(icount - lastcount) + '|' + Char(Crypt(buf2[i])));
-        lastcount := icount;
-      end;
-    end;
-
-    //adding the rest
-    for i := res1 to res2 - 1 do
-      Res.Add(Char(Crypt(buf2[i])));
-
-    //adding the rest of the file
-    while not eof(g) do
-    begin
-      BlockRead(g, buf2, 1024, res2);
+      //f>g original>patched
       for i := 0 to res2 - 1 do
-        Res.Add(Char(Crypt(buf2[i])));
+      begin
+        Inc(iCount);
+        if buf1[i] <> buf2[i] then
+        begin
+          FPatch.Add(IntToStr(iCount - LastCount) + '|' + Char(Crypt(buf2[i])));
+          LastCount := iCount;
+        end;
+      end;
+
+      //telling it's the end ...
+      FPatch.Add('end%' + IntToStr(iCount));
+    end
+    else if res2 > res1 then
+    begin
+      //g>f patched>original
+
+      //comparing last bytes
+      for i := 0 to res1 - 1 do
+      begin
+        Inc(iCount);
+        if buf1[i] <> buf2[i] then
+        begin
+          FPatch.Add(IntToStr(iCount - LastCount) + '|' + Char(Crypt(buf2[i])));
+          LastCount := iCount;
+        end;
+      end;
+
+      //adding the rest
+      for i := res1 to res2 - 1 do
+        FPatch.Add(Char(Crypt(buf2[i])));
+
+      //adding the rest of the file
+      while Dest.Position < Dest.Size do
+      begin
+        res2 := Dest.Read(buf2, sizeof(buf2));
+        for i := 0 to res2 - 1 do
+          FPatch.Add(Char(Crypt(buf2[i])));
+      end;
     end;
+  finally
+    Src.Free;
+    Dest.Free;
   end;
-  CloseFile(f);
-  CloseFile(g);
-  Close;
+  // Close;
+end;
+
+procedure TPatchFrm.FormCreate(Sender: TObject);
+begin
+  FPatch := TStringList.Create;
+end;
+
+procedure TPatchFrm.FormDestroy(Sender: TObject);
+begin
+  FPatch.Free;
+end;
+
+procedure TPatchFrm.ClearBtnClick(Sender: TObject);
+begin
+  FPatch.Clear;
 end;
 
 end.
+

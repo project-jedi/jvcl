@@ -38,7 +38,7 @@ type
   private
     FEndFile: TFileName;
     FStartFile: TFileName;
-    FDifferences: TStringList;
+    FDifferences: TStrings;
     FChangeInFile: Boolean;
     FPos: Integer;
     FPass: string;
@@ -50,7 +50,7 @@ type
     property StartFile: TFileName read FStartFile write FStartFile;
     property EndFile: TFileName read FEndFile write FEndFile;
     property ChangeInFile: Boolean read FChangeInFile write FChangeInFile default True;
-    property Differences: TStringList read FDifferences write FDifferences;
+    property Differences: TStrings read FDifferences write FDifferences;
     function Patch(Password: string = ''): Boolean;
     function IsPatched(FileName: string): Boolean;
     function IsPatchable(FileName: string): Boolean;
@@ -61,7 +61,7 @@ implementation
 constructor TJvPatchFile.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FDifferences := TStringList.Create;
+  FDifferences := TStringlist.Create;
   FChangeInFile := True;
 end;
 
