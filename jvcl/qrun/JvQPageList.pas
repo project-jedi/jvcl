@@ -37,7 +37,7 @@ uses
   SysUtils, Classes,
   
   
-  QGraphics, QControls, Types, QWindows,
+  QGraphics, QControls, Types, Qt, QWindows,
   
   JvQComponent, JvQThemes;
 
@@ -68,10 +68,10 @@ type
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
   protected
-    {$IFDEF vcl}
-//    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
-//    procedure CreateParams(var Params: TCreateParams); override;
-    {$ENDIF}
+    
+    
+    function WidgetFlags: integer; override;
+    
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
     procedure SetPageIndex(Value: Integer);virtual;
     function GetPageIndex: Integer;virtual;
@@ -167,7 +167,7 @@ type
 
   TJvStandardPage = class(TJvCustomPage)
   published
-//    property BorderWidth;
+    
     property Caption;
     property Color;
     property DragMode;
@@ -217,7 +217,6 @@ type
     property Align;
     property Anchors;
     
-//    property BorderWidth;
     property Constraints;
     property DragMode;
     property Enabled;
@@ -229,20 +228,16 @@ type
     property OnMouseLeave;
     property OnParentColorChange;
 
-//    property OnCanResize;
     property OnChange;
     property OnChanging;
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
-//    property OnDockDrop;
-//    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-//    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -273,6 +268,13 @@ begin
   
 end;
 
+
+
+
+function TJvCustomPage.WidgetFlags: integer;
+begin
+  Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
+end;
 
 
 destructor TJvCustomPage.Destroy;
@@ -337,7 +339,10 @@ begin
         InflateRect(ARect, -4, -4);
         if not Enabled then
         begin
+
+          
           SetBkMode(Handle, QWindows.TRANSPARENT);
+          
           Canvas.Font.Color := clHighlightText;
           DrawText(Handle, PChar(S), Length(S), ARect, GetDesignCaptionFlags(PageList.ShowDesignCaption) or DT_SINGLELINE);
           OffsetRect(ARect, -1, -1);
@@ -445,12 +450,8 @@ begin
   end;
 end;
 
-(*)
-procedure TJvCustomPage.WMEraseBkgnd(var Message: TWMEraseBkgnd);
-begin
-  Message.Result := 1;
-end;
-(*)
+
+
 { TJvCustomPageList }
 
 function TJvCustomPageList.CanChange(AIndex: Integer): Boolean;
@@ -737,7 +738,7 @@ begin
     FShowDesignCaption := Value;
     if HandleAllocated and (csDesigning in ComponentState) then
       Invalidate;
-//      RedrawWindow(Handle, nil, 0, RDW_UPDATENOW or RDW_INVALIDATE or RDW_ALLCHILDREN);
+      //RedrawWindow(Handle, nil, 0, RDW_UPDATENOW or RDW_INVALIDATE or RDW_ALLCHILDREN);
   end;
 end;
 

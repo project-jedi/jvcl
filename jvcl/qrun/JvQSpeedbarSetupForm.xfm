@@ -1,17 +1,18 @@
 object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
-  Left = 231
-  Top = 121
+  Left = 293
+  Top = 207
   Width = 436
   Height = 272
   HorzScrollBar.Range = 428
   VertScrollBar.Range = 269
   ActiveControl = SectionList
   BorderIcons = [biSystemMenu]
-  BorderStyle = fbsSingle
+  BorderStyle = fbsDialog
+  Caption = 'JvSpeedbar Setup'
   Color = clButton
   Font.Color = clText
   Font.Height = 11
-  Font.Name = 'MS Sans Serif'
+  Font.Name = 'adobe-helvetica'
   Font.Pitch = fpVariable
   Font.Style = []
   Font.Weight = 40
@@ -60,7 +61,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Left = 146
     Top = 11
     Width = 94
-    Height = 18
+    Height = 13
     Caption = '&Available buttons:    '
     FocusControl = ButtonsList
   end
@@ -68,7 +69,7 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Left = 12
     Top = 11
     Width = 65
-    Height = 18
+    Height = 13
     Caption = '&Categories:    '
   end
   object HintLabel: TLabel

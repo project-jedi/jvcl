@@ -700,16 +700,16 @@ var
 begin
   OldCol := SetTextColor(DC, ColorToRGB(clBtnHighlight));
   OffsetRect(lpRect, 1, 1);
-  
-  
+
+
   DrawTextW(DC, lpString, nCount, lpRect, uFormat);
-  
+
   OffsetRect(lpRect, -1, -1);
   SetTextColor(DC, ColorToRGB(clBtnShadow));
-  
-  
+
+
   Result := DrawTextW(DC, lpString, nCount, lpRect, uFormat);
-  
+
   SetTextColor(DC, OldCol);
 end;
 
@@ -720,26 +720,21 @@ var
   Flags, MidX, MidY: Integer;
   DC: HDC; { Col:TColor; }
   TmpRect: TRect;
-  ws : widestring;
 begin
   if (bsMouseInside in MouseStates) and HotTrack then
     aCanvas.Font := HotTrackFont
   else
     aCanvas.Font := Self.Font;
-  DC := aCanvas.Handle; { reduce calls to GetHandle }
-
-  if FWordWrap then
-    Flags := DT_WORDBREAK
-  else
-    Flags := DT_SINGLELINE;
-
-  TmpRect := Rect(0, 0, Width, Height);
 
   { calculate width and height of text: }
 
+  if FWordWrap then
+    aCanvas.TextExtent(Caption, TmpRect, WordBreak)
+  else
+    aCanvas.TextExtent(Caption, TmpRect, 0);
 
-  ws := Caption;
-//  QWindows.DrawText(DC, ws, -1, TmpRect, Flags or DT_CALCRECT);
+  DC := aCanvas.Handle; { reduce calls to GetHandle }
+
 
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
@@ -784,7 +779,7 @@ begin
       SetTextColor(DC, ColorToRGB(HotTrackFont.Color))
     else
       SetTextColor(DC, ColorToRGB(Self.Font.Color));
-    QWindows.DrawText(DC, ws, -1, TmpRect, Flags);
+    QWindows.DrawTextW(DC, PWideChar(Caption), -1, TmpRect, Flags);
   end;
 
 

@@ -1361,10 +1361,9 @@ begin
   if Caption <> '' then
   begin
     Canvas.Font := Font;
-    RequiredState(Canvas, [csHandleValid, csFontValid]);
-    SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
-    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
-      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX );
+    Canvas.TextRect(R, R.Top, R.Left, Caption, SingleLine + ShowPrefix + AlignVCenter );
+//    DrawTextW(Canvas.Handle, PWideChar(Caption), Length(Caption), R,
+//      DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX );
   end;
   Canvas.Pen.Color := clGray;
   if Align = alBottom then
