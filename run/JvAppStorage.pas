@@ -120,6 +120,7 @@ type
   TFileLocation = (
     flCustom,       // FileName property will contain full path
     flWindows,      // Store in %WINDOWS%; only use file name part of FileName property.
+    flTemp,         // Store in %TEMP%; only use file name part of FileName property.
     flExeFile,      // Store in same folder as application's exe file; only use file name part of FileName property.
     flUserFolder);  // Store in %USER%\Application Data. Use the FileName property if it's a relative path or only the file name part of FileName property.
 
@@ -596,6 +597,7 @@ type
     FAutoFlush: Boolean;
     FFileName: TFileName;
     FLocation: TFileLocation;
+    FLocationInitialized: Boolean;
     FOnGetFileName: TJvAppStorageGetFileNameEvent;
 
     function GetAsString: string; virtual; abstract;
@@ -2223,6 +2225,8 @@ begin
     case Location of
       flCustom:
         Result := FileName;
+      flTemp:
+        Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:
@@ -2247,6 +2251,7 @@ begin
   inherited Create(AOwner);
   FLocation := flExeFile;
   FAutoFlush := False;
+  FLocationInitialized := False;
 end;
 
 destructor TJvCustomAppMemoryFileStorage.Destroy;
@@ -2267,7 +2272,7 @@ var
   NameOnly: string;
   RelPathName: string;
 begin
-  if FileName = '' then
+  if (FileName = '') or not FLocationInitialized then
     Result := ''
   else
   begin
@@ -2279,6 +2284,8 @@ begin
     case Location of
       flCustom:
         Result := DoGetFilename;
+      flTemp:
+        Result := PathAddSeparator(GetWindowsTempFolder) + NameOnly;
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:
@@ -2300,6 +2307,7 @@ end;
 
 procedure TJvCustomAppMemoryFileStorage.SetLocation(const Value: TFileLocation);
 begin
+  FLocationInitialized := True;
   if FLocation <> Value then
   begin
     FLocation := Value;
