@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvMail, ExtCtrls, ComCtrls, StdCtrls, JvDialogs, JvComponent;
+  JclMapi, JvMail, ExtCtrls, ComCtrls, StdCtrls, JvComponent, JvDialogs;
 
 type
   TMailExampleMainForm = class(TForm)
@@ -54,6 +54,8 @@ type
     JvOpenDialog1: TJvOpenDialog;
     CcEdit: TEdit;
     Label5: TLabel;
+    DownloadBtn: TButton;
+    DownloadsListView: TListView;
     procedure FormCreate(Sender: TObject);
     procedure ClientsListViewSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
@@ -62,6 +64,7 @@ type
       Item: TListItem; State: TCustomDrawState; var DefaultDraw: Boolean);
     procedure SendBtnClick(Sender: TObject);
     procedure AttachBtnClick(Sender: TObject);
+    procedure DownloadBtnClick(Sender: TObject);
   private
     procedure BuildClientList;
     procedure UpdateClientName;
@@ -71,11 +74,7 @@ var
   MailExampleMainForm: TMailExampleMainForm;
 
 implementation
-
 {$R *.DFM}
-
-uses
-  JclMapi;
 
 procedure TMailExampleMainForm.BuildClientList;
 var
@@ -83,6 +82,7 @@ var
 begin
   ClientsListView.Items.BeginUpdate;
   ClientsListView.Items.Clear;
+  ClientsListView.BringToFront;
   with JvMail1.SimpleMAPI do
   begin
     for I := 0 to ClientCount - 1 do
@@ -120,6 +120,7 @@ end;
 procedure TMailExampleMainForm.UpdateClientName;
 begin
   ClientLabel.Caption := JvMail1.SimpleMAPI.CurrentClientName;
+  ClientsListView.BringToFront;
 end;
 
 procedure TMailExampleMainForm.AutomaticRadioBtnClick(Sender: TObject);
@@ -158,4 +159,32 @@ begin
     AttachmentMemo.Lines.AddStrings(JvOpenDialog1.Files);
 end;
 
+procedure TMailExampleMainForm.DownloadBtnClick(Sender: TObject);
+var b:boolean;
+begin
+  DownloadsListView.Items.Clear;
+  JvMail1.LogonOptions := [JvMail.loNewSession, JvMail.loDownloadMail];
+  JvMail1.LogOn;
+  try
+    b := JvMail1.FindFirstMail;
+    while b do
+    begin
+      JvMail1.ReadOptions := [roFifo, roHeaderOnly, roPeek];
+      JvMail1.ReadMail;
+      with DownloadsListView.Items.Add do
+      begin
+        Caption := JvMail1.Subject;
+        SubItems.Add(JvMail1.ReadedMail.RecipientName);
+        SubItems.Add(DateTimeToStr(JvMail1.ReadedMail.DateReceived));
+      end;
+      b := JvMail1.FindNextMail;
+    end;
+  finally
+    JvMail1.LogOff;
+    JvMail1.Clear;
+    DownloadsListView.BringToFront;
+  end;
+end;
+
 end.
+
