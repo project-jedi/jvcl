@@ -30,15 +30,17 @@ requires
   JvCoreD5R;
 
 contains
-  JvStringListToHtml in '..\..\run\JvStringListToHtml.pas',
-  JvFormToHtml in '..\..\run\JvFormToHtml.pas',
-  JvFtpGrabber in '..\..\run\JvFtpGrabber.pas',
-  JvHtmlParser in '..\..\run\JvHtmlParser.pas',
-  JvHttpGrabber in '..\..\run\JvHttpGrabber.pas',
+  JvFormToHtml       in '..\..\run\JvFormToHtml.pas',
+  JvFtpGrabber       in '..\..\run\JvFtpGrabber.pas',
+  JvHtmlParser       in '..\..\run\JvHtmlParser.pas',
+  JvHttpGrabber      in '..\..\run\JvHttpGrabber.pas',
+  JvMail             in '..\..\run\JvMail.pas',
   JvMultiHttpGrabber in '..\..\run\JvMultiHttpGrabber.pas',
-  JvRgbToHtml in '..\..\run\JvRgbToHtml.pas',
-  JvRichEditToHtml in '..\..\run\JvRichEditToHtml.pas',
-  JvStrToHtml in '..\..\run\JvStrToHTML.pas',
-  JvMail in '..\..\run\JvMail.pas';
+  JvRgbToHtml        in '..\..\run\JvRgbToHtml.pas',
+  JvRichEditToHtml   in '..\..\run\JvRichEditToHtml.pas',
+  JvStringListToHtml in '..\..\run\JvStringListToHtml.pas',
+  JvStrToHtml        in '..\..\run\JvStrToHTML.pas',
+  JvUrlListGrabber   in '..\..\run\JvUrlListGrabber.pas',
+  JvUrlGrabbers      in '..\..\run\JvUrlGrabbers.pas';
 
 end.

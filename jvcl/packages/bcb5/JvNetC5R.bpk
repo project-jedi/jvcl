@@ -9,7 +9,8 @@
       ..\..\dcu\JvHttpGrabber.obj ..\..\dcu\JvMail.obj 
       ..\..\dcu\JvMultiHttpGrabber.obj ..\..\dcu\JvRgbToHtml.obj 
       ..\..\dcu\JvRichEditToHtml.obj ..\..\dcu\JvStringListToHtml.obj 
-      ..\..\dcu\JvNetC5R.obj"/>
+      ..\..\dcu\JvNetC5R.obj ..\..\dcu\JvUrlListGrabber.obj
+      ..\..\dcu\JvUrlGrabbers.obj"/>
     <RESFILES value="JvNetC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>

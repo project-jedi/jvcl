@@ -6,7 +6,7 @@
     <PROJECT value="JvNetC6D.bpl"/>
     <OBJFILES value="..\..\dcu\JvNetC6D.obj ..\..\dcu\JvNetReg.obj 
       ..\..\dcu\JvHtmlParserEditor.obj ..\..\dcu\JvMailEditor.obj 
-      ..\..\dcu\JvParserForm.obj"/>
+      ..\..\dcu\JvParserForm.obj ..\..\dcu\JvUrlListGrabberEditors.obj"/>
     <RESFILES value="JvNetC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -55,6 +55,7 @@
       <FILE FILENAME="..\..\design\JvNetReg.pas" FORMNAME="" UNITNAME="JvNetReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvHtmlParserEditor.pas" FORMNAME="" UNITNAME="JvHtmlParserEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvMailEditor.pas" FORMNAME="" UNITNAME="JvMailEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvUrlListGrabberEditors.pas" FORMNAME="" UNITNAME="JvUrlListGrabberEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvParserForm.pas" FORMNAME="FormParsers" UNITNAME="JvParserForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="DesignIde.bpi" FORMNAME="" UNITNAME="DesignIde" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>

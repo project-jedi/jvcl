@@ -6,6 +6,7 @@ USERES("JvNetC5D.res");
 USEUNIT("..\..\design\JvNetReg.pas");
 USEUNIT("..\..\design\JvHtmlParserEditor.pas");
 USEUNIT("..\..\design\JvMailEditor.pas");
+USEUNIT("..\..\design\JvUrlListGrabberEditors.pas");
 USEUNIT("..\..\run\JvParserForm.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("CJCL50.bpi");

@@ -403,6 +403,10 @@ resourcestring
   SDataItemRenderHasNoText = '(item doesn''t support the IJvDataItemText interface)';
   SDataProviderNeedsItemsImpl = 'Can''t create a data provider without an IJvDataItems implementation.';
 
+  { JvUrlListGrabber }
+resourcestring
+  sENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
+
 implementation
 
 {$IFDEF MSWINDOWS}
