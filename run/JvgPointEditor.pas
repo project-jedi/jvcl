@@ -34,17 +34,15 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   {$IFDEF COMPILER6_UP}
-  DesignIntf,
-  DesignEditors,
-  PropertyCategories,
-  {$ELSE}
+  DesignIntf, DesignEditors, PropertyCategories,
+  {$ELSE COMPILER6_UP}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  TypInfo; //FrTypes;
+  TypInfo;
 
 type
-
   TJvgPointProperty = class(TPropertyEditor)
+  public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
   end;
@@ -53,6 +51,7 @@ procedure Register;
 
 implementation
 
+// (rom) seem obsolete
 var
   PPointTypeInfo: PTypeInfo;
   PointTypeInfo: TTypeInfo;

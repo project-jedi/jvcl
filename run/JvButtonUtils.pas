@@ -23,58 +23,65 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvButtonUtils;
 
 interface
-uses
-  Windows, SysUtils, Classes, Graphics, math;
 
-procedure AntiAlias(clip: tbitmap);
-procedure AntiAliasRect(clip: tbitmap; XOrigin, YOrigin,
+uses
+  Windows, SysUtils, Classes, Graphics;
+
+procedure AntiAlias(Clip: TBitmap);
+procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
 
 implementation
 
-procedure AntiAlias(clip: tbitmap);
+uses
+  Math;
+
+procedure AntiAlias(Clip: TBitmap);
 begin
-  AntiAliasRect(clip, 0, 0, clip.width, clip.height);
+  AntiAliasRect(Clip, 0, 0, Clip.Width, Clip.Height);
 end;
 
-procedure AntiAliasRect(clip: tbitmap; XOrigin, YOrigin,
+procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
 var
-  Memo, x, y: Integer; (* Composantes primaires des points environnants *)
-  p0, p1, p2: pbytearray;
+  Memo, X, Y: Integer; (* Composantes primaires des points environnants *)
+  P0, P1, P2: PByteArray;
 
 begin
   if XFinal < XOrigin then
   begin
+    // swap values
     Memo := XOrigin;
     XOrigin := XFinal;
     XFinal := Memo;
-  end; (* Inversion des valeurs   *)
+  end;
   if YFinal < YOrigin then
   begin
     Memo := YOrigin;
     YOrigin := YFinal;
     YFinal := Memo;
-  end; (* si diff‚rence n‚gative*)
-  XOrigin := max(1, XOrigin);
-  YOrigin := max(1, YOrigin);
-  XFinal := min(clip.width - 2, XFinal);
-  YFinal := min(clip.height - 2, YFinal);
-  clip.PixelFormat := pf24bit;
-  for y := YOrigin to YFinal do
+  end; (* si diff‚rence n‚gative *)
+  XOrigin := Max(1, XOrigin);
+  YOrigin := Max(1, YOrigin);
+  XFinal := Min(Clip.Width - 2, XFinal);
+  YFinal := Min(Clip.Height - 2, YFinal);
+  Clip.PixelFormat := pf24bit;
+  for Y := YOrigin to YFinal do
   begin
-    p0 := clip.ScanLine[y - 1];
-    p1 := clip.scanline[y];
-    p2 := clip.ScanLine[y + 1];
-    for x := XOrigin to XFinal do
+    P0 := Clip.ScanLine[Y - 1];
+    P1 := Clip.ScanLine[Y];
+    P2 := Clip.ScanLine[Y + 1];
+    for X := XOrigin to XFinal do
     begin
-      p1[x * 3] := (p0[x * 3] + p2[x * 3] + p1[(x - 1) * 3] + p1[(x + 1) * 3]) div 4;
-      p1[x * 3 + 1] := (p0[x * 3 + 1] + p2[x * 3 + 1] + p1[(x - 1) * 3 + 1] + p1[(x + 1) * 3 + 1]) div 4;
-      p1[x * 3 + 2] := (p0[x * 3 + 2] + p2[x * 3 + 2] + p1[(x - 1) * 3 + 2] + p1[(x + 1) * 3 + 2]) div 4;
+      P1[X * 3] := (P0[X * 3] + P2[X * 3] + P1[(X - 1) * 3] + P1[(X + 1) * 3]) div 4;
+      P1[X * 3 + 1] := (P0[X * 3 + 1] + P2[X * 3 + 1] + P1[(X - 1) * 3 + 1] + P1[(X + 1) * 3 + 1]) div 4;
+      P1[X * 3 + 2] := (P0[X * 3 + 2] + P2[X * 3 + 2] + P1[(X - 1) * 3 + 2] + P1[(X + 1) * 3 + 2]) div 4;
     end;
   end;
 end;

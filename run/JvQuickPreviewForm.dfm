@@ -1,4 +1,4 @@
-object QuickPreviewF: TQuickPreviewF
+object QuickPreviewForm: TQuickPreviewForm
   Left = 123
   Top = 127
   Width = 312
@@ -19,10 +19,10 @@ object QuickPreviewF: TQuickPreviewF
     Left = 0
     Top = 0
     Width = 304
-    Height = 298
+    Height = 295
     Align = alClient
     TabOrder = 0
-    object Image1: TImage
+    object PreviewImage: TImage
       Left = 0
       Top = 0
       Width = 208
@@ -32,7 +32,7 @@ object QuickPreviewF: TQuickPreviewF
   end
   object Panel1: TPanel
     Left = 0
-    Top = 298
+    Top = 295
     Width = 304
     Height = 22
     Align = alBottom
@@ -45,12 +45,6 @@ object QuickPreviewF: TQuickPreviewF
       Height = 18
       Caption = 'Use'
       Flat = True
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clRed
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = [fsBold]
-      ParentFont = False
       OnClick = btnUseClick
     end
   end

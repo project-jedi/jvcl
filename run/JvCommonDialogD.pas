@@ -62,7 +62,7 @@ begin
   if Owner is TWinControl then
     FOwnerWindow := (AOwner as TWinControl).Handle
   else
-    FOwnerWindow := 0;
+    FOwnerWindow := HWND_DESKTOP;
   SetupApiDllHandle := LoadLibrary('SETUPAPI.DLL');
   if SetupApiDllHandle = 0 then
     raise EJVCLException.Create(RC_ErrorSetupDll);

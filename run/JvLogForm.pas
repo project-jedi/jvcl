@@ -52,20 +52,22 @@ type
   end;
 
 implementation
+
 uses
   Printers;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TFoLog.SaveExecute(Sender: TObject);
-var S:TStringlist;
+var
+  S: TStringList;
 begin
   if SaveDialog1.Execute then
   begin
-    S := TStringlist.Create;
+    S := TStringList.Create;
     try
       MakeLogLines(S);
-      S.SaveToFile(SaveDialog1.Filename);
+      S.SaveToFile(SaveDialog1.FileName);
     finally
       S.Free;
     end;
@@ -73,10 +75,14 @@ begin
 end;
 
 procedure TFoLog.MakeLogLines(S:TStrings);
-var i:integer;
+var
+  I: Integer;
 begin
-  for i := 0 to ListView1.Items.Count -1 do
-    S.Add(Format('[%s] %s > %s',[]));
+  for I := 0 to ListView1.Items.Count-1 do
+    // (rom) Format parameters were missing
+    S.Add(Format('[%s] %s > %s',
+      [ListView1.Items[I].Caption, ListView1.Items[I].SubItems[0],
+       ListView1.Items[I].SubItems[1]]));
 end;
 
 procedure TFoLog.PrintExecute(Sender: TObject);
@@ -90,8 +96,8 @@ begin
     MakeLogLines(S);
     AssignPrn(F);
     Rewrite(F);
-    for i := 0 to S.Count -1  do
-      WriteLn(F,S[i]);
+    for I := 0 to S.Count-1 do
+      Writeln(F, S[I]);
     CloseFile(F);
   finally
     S.Free;
