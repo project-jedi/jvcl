@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, JvSysComp, JvComponent;
+  StdCtrls, ComCtrls, ExtCtrls, JvSysComp, JvComponent, JvCreateProcess;
 
 type
   TCreateProcessExampleMainForm = class(TForm)
