@@ -36,7 +36,15 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls, Menus;
+  SysUtils,
+  {$IFDEF VCL}
+  Controls, Forms, StdCtrls, ComCtrls, Menus,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QStdCtrls, QComCtrls, QMenus,
+  {$ENDIF VisualCLX}
+  Classes,
+  JvComponent;
 
 type
   { define the different types of date and time combinations supported by the dialog }
