@@ -35,7 +35,7 @@ procedure Register;
 implementation
 
 uses
-  Classes, Controls,
+  Classes, Controls, ImgList, 
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}
@@ -51,7 +51,8 @@ uses
   JvImageDrawThread, JvWinampLabel, JvPlaylist, JvComponentPanel, JvButtons,
   JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
   JvComboListBox, JvCharMap, JvScrollMaxEditor, JvBehaviorLabelEditor,
-  JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors;
+  JvGroupHeaderEditor, JvFooterEditor, JvSpeedbarForm, JvDsgnEditors,
+  JvTransparentButtonEditors;
 
 {$R ..\resources\JvCtrlsReg.dcr}
 
@@ -84,6 +85,11 @@ begin
   RegisterPropertyEditor(TypeInfo(TDateTime),TJvAlarmInfo, 'Date', TJvDateTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TDateTime),TJvAnalogClock, 'Time', TJvTimeExProperty);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
+
+  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'ActiveIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DisabledIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'DownIndex', TJvTBImagesProperty);
+  RegisterPropertyEditor(TypeInfo(integer), TJvTransparentButton2, 'GrayIndex', TJvTBImagesProperty);
 
   RegisterComponentEditor(TJvScrollMax, TJvScrollMaxEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);

@@ -40,7 +40,8 @@ contains
   JvBehaviorLabelEditor in '..\..\design\JvBehaviorLabelEditor.pas' ,
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas' ,
   JvFooterEditor in '..\..\design\JvFooterEditor.pas' ,
-  JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas' 
+  JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas' ,
+  JvTransparentButtonEditors in '..\..\design\JvTransparentButtonEditors' 
   ;
 
 end.
