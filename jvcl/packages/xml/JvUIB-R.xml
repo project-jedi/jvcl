@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvUIB" Design="0">
+  <Description>UIB - Unified Interbase Components</Description>
+  <C5PFlags>-LUvcl50</C5PFlags>
+  <C6PFlags/>
+  <Requires>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
+    <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="CJCL50" Targets="C5" Condition=""/>
+    <Package Name="vcldb50" Targets="C5,D5,D5s" Condition=""/>
+    <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="vcl" Targets="C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="vclx" Targets="C6,C6p,D7,D7p" Condition=""/>
+    <Package Name="dbrtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
+    <Package Name="CJCL60" Targets="C6,C6p" Condition=""/>
+    <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
+    <Package Name="DJCL70" Targets="D7,D7p" Condition=""/>
+    <Package Name="vcljpg" Targets="D7,D7p" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\run\JvUIBMetaData.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBSQLParser.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIB.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBase.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBConst.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBDataSet.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBError.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvUIBLib.pas" Targets="all" Formname="" Condition=""/>
+  </Contains>
+</Package>
