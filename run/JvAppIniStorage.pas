@@ -665,6 +665,7 @@ procedure TJvAppIniFileStorage.Reload;
 begin
   if not IsUpdating and not (csDesigning in ComponentState) then
   begin
+    inherited Reload;
     if FileExists(FullFileName) then
       IniFile.Rename(FullFileName, True)
     else  // file may have disappeared. If so, clear the file
