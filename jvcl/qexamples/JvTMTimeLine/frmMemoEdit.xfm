@@ -1,0 +1,100 @@
+object MemoEditFrm: TMemoEditFrm
+  Left = 427
+  Top = 205
+  Width = 305
+  Height = 305
+  VertScrollBar.Range = 298
+  HorzScrollBar.Range = 297
+  ActiveControl = btnOK
+  BorderStyle = fbsSizeToolWin
+  Caption = 'Memo for %s'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  ParentFont = False
+  PixelsPerInch = 96
+  TextHeight = 13
+  TextWidth = 6
+  object Panel1: TPanel
+    Left = 0
+    Top = 264
+    Width = 305
+    Height = 41
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 0
+    object btnOK: TButton
+      Left = 129
+      Top = 8
+      Width = 75
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Caption = '&OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      Left = 209
+      Top = 8
+      Width = 75
+      Height = 25
+      Anchors = [akRight, akBottom]
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object reLines: TMemo
+    Left = 8
+    Top = 8
+    Width = 289
+    Height = 249
+    TabOrder = 1
+  end
+  object popMemo: TPopupMenu
+    Left = 128
+    Top = 104
+    object Load1: TMenuItem
+      Caption = 'Load...'
+      ShortCut = 16463
+      OnClick = Load1Click
+    end
+    object Save1: TMenuItem
+      Caption = 'Save...'
+      ShortCut = 16467
+      OnClick = Save1Click
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object Cut1: TMenuItem
+      Caption = 'Cut'
+      ShortCut = 16472
+      OnClick = Cut1Click
+    end
+    object Copy1: TMenuItem
+      Caption = 'Copy'
+      ShortCut = 16451
+      OnClick = Copy1Click
+    end
+    object Paste1: TMenuItem
+      Caption = 'Paste'
+      ShortCut = 16470
+      OnClick = Paste1Click
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object Selectall1: TMenuItem
+      Caption = 'Select all'
+      ShortCut = 16449
+      OnClick = Selectall1Click
+    end
+  end
+end
