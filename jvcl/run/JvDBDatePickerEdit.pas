@@ -77,7 +77,7 @@ type
     function ValidateDate(const ADate: TDateTime): Boolean; override;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
-    property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default True;
+    property EnforceRequired: Boolean read FEnforceRequired write SetEnforceRequired default False;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
