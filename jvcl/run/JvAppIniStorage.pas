@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Jens Fudickar
 
-Last Modified: 2003-11-19
+Last Modified: 2004-01-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -74,7 +74,6 @@ type
   private
     FBuffered: Boolean;
     FHasWritten: Boolean;
-//    FIdleDelay: Longint;                                          TIdleThread disabled for now
     FIniFile: TCustomIniFile;
     FLastUserAct: Longint;
     FFileName: TJvAppStorageFileName;
@@ -85,9 +84,6 @@ type
     function GetFileName: TJvAppStorageFileName;
     procedure SetFileName(Value: TJvAppStorageFileName);
     procedure FileNameChanged(Sender: TObject);
-(*    function GetFileName: TFileName;
-    procedure SetFileName(Value: TFileName);*)
-//    function AppWindowMsg(var Msg: TMessage): Boolean;            TIdleThread disabled for now
     procedure EnumFolders(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
@@ -102,7 +98,6 @@ type
 
     property HasWritten: Boolean read FHasWritten;
     property IniFile: TCustomIniFile read FIniFile;
-//    property LastUserAct: Longint read FLastUserAct;              TIdleThread disabled for now
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -111,9 +106,7 @@ type
     property Buffered: Boolean read FBuffered write SetBuffered;
     property DefaultSection;
     property FileName: TJvAppStorageFileName read GetFileName write SetFileName;
-//    property FileName: TFileName read GetFileName write SetFileName;
     property SubStorages;
-//    property IdleDelay: Longint read FIdleDelay write FIdleDelay default 100; TIdleThread disabled for now
   end;
 
   { In memory INI file. The contents is not backed by a file at all, but descendants may be written
@@ -204,58 +197,6 @@ begin
     Dec(BufSize);
   end;
 end;
-
-(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
-    reimplemented later
-type
-  TIdleThread = class(TThread)
-  protected
-    function TickDiff(Start, Current: Longint): Longint;
-    procedure Execute; override;
-  public
-    constructor Create;
-  end;
-
-var
-  StoresList: TThreadList;
-  FIdleThread: TIdleThread;
-
-function TIdleThread.TickDiff(Start, Current: Longint): Longint;
-begin
-  if Start < Current then
-    Result := Current - Start
-  else
-    Result := Longint(Int64(Start) + MaxInt - Current);
-end;
-
-procedure TIdleThread.Execute;
-var
-  I: Integer;
-begin
-  while not Terminated do
-  begin
-    with StoresList.LockList do
-    try
-      I := 0;
-      while not Terminated and (I < Count) do
-      begin
-        if TickDiff(TJvAppIniFileStorage(Items[I]).LastUserAct, GetTickCount) > TJvAppIniFileStorage(Items[I]).IdleDelay then
-          TJvAppIniFileStorage(Items[I]).Flush;
-        Inc(I);
-      end;
-    finally
-      StoresList.UnlockList;
-    end;
-    if not Terminated then
-      Sleep(100);
-  end;
-end;
-
-constructor TIdleThread.Create;
-begin
-  inherited Create(False);
-end;
-*)
 
 //=== TJvAppIniStorage =========================================================
 
@@ -389,36 +330,18 @@ end;
 procedure TJvAppIniFileStorage.CreateIniFile(Name: string);
 begin
   if Buffered then
-  begin
-    FIniFile := TMemIniFile.Create(Name);
-(*    This idle thread business is a death-trap at the moment. Commented out for now, maybe
-      reimplemented later
-    if not (csDesigning in ComponentState) then
-    begin
-      StoresList.Add(Self);
-      Application.HookMainWindow(AppWindowMsg);
-    end;*)
-  end
+    FIniFile := TMemIniFile.Create(Name)
   else
     FIniFile := TIniFile.Create(Name);
 end;
 
 procedure TJvAppIniFileStorage.DestroyIniFile;
 begin
-(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
-    reimplemented later
-  if not (csDesigning in ComponentState) then
-  begin
-    StoresList.Remove(Self);
-    Application.UnhookMainWindow(AppWindowMsg);
-  end;*)
   Flush;
   FreeAndNil(FIniFile);
 end;
 
 procedure TJvAppIniFileStorage.SetBuffered(Value: Boolean);
-(*var
-  FName: string;*)
 begin
   if Value <> Buffered then
   begin
@@ -427,7 +350,6 @@ begin
     FBuffered := Value;
     if IniFile <> nil then
     begin
-//      FName := FileName;
       DestroyIniFile;
       CreateIniFile(FileName.GetFileName);
     end;
@@ -436,30 +358,12 @@ end;
 
 function TJvAppIniFileStorage.GetFileName: TJvAppStorageFileName;
 begin
-(*  if IniFile <> nil then
-    Result := IniFile.FileName;*)
   Result := FFileName;
 end;
 
 procedure TJvAppIniFileStorage.SetFileName(Value: TJvAppStorageFileName);
 begin
-(*  if Value <> FileName then
-  begin
-    FreeAndNil(FIniFile);
-    if Value <> '' then
-      CreateIniFile(Value);
-  end; *)
 end;
-
-(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
-    reimplemented later
-function TJvAppIniFileStorage.AppWindowMsg(var Msg: TMessage): Boolean;
-begin
-  if ((Msg.Msg >= WM_MOUSEFIRST) and (Msg.Msg <= WM_MOUSELAST)) or
-     ((Msg.Msg >= WM_KEYFIRST) and (Msg.Msg <= WM_KEYLAST)) then
-    FLastUserAct := GetTickCount;
-  Result := False;
-end;*)
 
 procedure TJvAppIniFileStorage.FileNameChanged(Sender: TObject);
 begin
@@ -596,16 +500,11 @@ begin
   inherited Create(AOwner);
   FFileName := TJvAppStorageFileName.Create('ini');
   FFileName.OnChange := FileNameChanged;
-//  FIdleDelay := 100; TIdleThread death-trap
 end;
 
 destructor TJvAppIniFileStorage.Destroy;
 begin
   Flush;
-(*  This idle thread business is a death-trap at the moment. Commented out for now, maybe
-    reimplemented later
-  FreeAndNil(FIniFile);
-  StoresList.Remove(Self); *)
   inherited Destroy;
 end;
 
@@ -797,18 +696,5 @@ begin
     FIsInternalChange := False;
   end;
 end;
-
-(*initialization
-    This idle thread business is a death-trap at the moment. Commented out for now, maybe
-    reimplemented later
-  StoresList := TThreadList.Create;
-  FIdleThread := TIdleThread.Create;*)
-
-(*finalization
-    This idle thread business is a death-trap at the moment. Commented out for now, maybe
-    reimplemented later
-  FIdleThread.Terminate;
-  FIdleThread.WaitFor;
-  FreeAndNil(StoresList);*)
 
 end.
