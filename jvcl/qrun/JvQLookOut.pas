@@ -162,6 +162,7 @@ type
     property Caption: TCaption read FCaption write SetCaption;
     property Centered: Boolean read FCentered write SetCentered;
     property Down: Boolean read FStayDown write SetDown default False;
+//    property DoubleBuffered;
     // (rom) renamed
     property HighlightFont: TFont read FHighlightFont write SetHighlightFont;
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
@@ -174,6 +175,7 @@ type
     property Data: Pointer read FData write FData;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property OnEdited: TJvLookOutEditedEvent read FOnEdited write FOnEdited;
+
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -883,6 +885,7 @@ begin
   FSmallImageChangeLink := TChangeLink.Create;
   FLargeImageChangeLink.OnChange := ImageListChange;
   FSmallImageChangeLink.OnChange := ImageListChange;
+//  DoubleBuffered := true;
 end;
 
 destructor TJvCustomLookOutButton.Destroy;
@@ -1193,7 +1196,7 @@ var
   Flags, H: Integer;
 begin
   R := GetClientRect;
-
+  RequiredState(Canvas, [csHandleValid, csBrushValid, csPenValid]);
   with Canvas do
   begin
     if csDesigning in ComponentState then
@@ -1244,6 +1247,7 @@ begin
       Canvas.Font := FHighlightFont
     else
       Canvas.Font := Font;
+    RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
 
     //    W := FSpacing  + W;
 //    SetBkMode(Canvas.Handle, Windows.Transparent);
@@ -2686,7 +2690,7 @@ begin
   if not (Visible or (csDesigning in ComponentState)) then
     Exit;
   
-//  Perform(self, WM_NCPAINT, 0, 0);
+  Perform(WM_NCPAINT, 0, 0);
 
   Canvas.Brush.Color := Color;
   Canvas.FillRect(GetClientRect);
@@ -2710,7 +2714,7 @@ end;
 procedure TJvExpress.Paint;
 begin
 
-//  Perform(self, WM_NCPAINT, 0, 0);
+  Perform(WM_NCPAINT, 0, 0);
   
   if not FBitmap.Empty then
   begin

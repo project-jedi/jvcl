@@ -160,6 +160,7 @@ begin
   FBgGradient := TBitmap.Create; // background gradient
   FCkGradient := TBitmap.Create; // clicked gradient
   FHlGradient := TBitmap.Create; // Highlight gradient
+  DoubleBuffered := true;
 end;
 
 destructor TJvXPCustomCheckControl.Destroy;
@@ -232,6 +233,7 @@ begin
     // clear background.
     Rect := GetClientRect;
     Brush.Color := TJvXPWinControl(Parent).Color;
+    FillRect(Rect);
     
     // draw designtime rect.
     if csDesigning in ComponentState then

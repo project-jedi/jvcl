@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -21,13 +21,12 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-01-16
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -40,6 +39,12 @@ uses
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
   {$ENDIF USE_DXGETTEXT}
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
+  
+  
+  Qt, Types, QWindows,
   
   JVQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
@@ -48,7 +53,7 @@ type
   private
     FAboutJVCL: TJVCLAboutInfo;
   published
-    property AboutJVCLX : TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
   TJvGraphicControl = class(TJvExGraphicControl);
@@ -76,7 +81,19 @@ type
 
 //=== TJvPopupListBox ========================================================
 
-
+type
+  TJvPopupListBox = class(TJvExCustomListBox)
+  private
+    FSearchText: string;
+    FSearchTickCount: Longint;
+  protected
+    
+    
+    procedure CreateWidget; override;
+    function WidgetFlags: Integer; override;
+    
+    procedure KeyPress(var Key: Char); override;
+  end;
 
 implementation
 
@@ -96,7 +113,48 @@ end;
 
 {$ENDIF USE_DXGETTEXT}
 
+//=== TJvPopupListBox ========================================================
 
+
+
+procedure TJvPopupListBox.CreateWidget;
+begin
+  inherited CreateWidget;
+  QWidget_setFocus(Handle);
+end;
+
+function TJvPopupListBox.WidgetFlags: Integer;
+begin
+  Result := Integer(WidgetFlags_WType_Popup) or         // WS_POPUPWINDOW 
+            Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
+            Integer(WidgetFlags_WStyle_Tool) or         // WS_EX_TOOLWINDOW
+            Integer(WidgetFlags_WStyle_StaysOnTop);     // WS_EX_TOPMOST
+end;
+
+
+procedure TJvPopupListBox.KeyPress(var Key: Char);
+var
+  TickCount: Int64;
+begin
+  case Word(Key) of
+    VK_BACK, VK_ESCAPE:
+      FSearchText := '';
+    32..255:
+      begin
+        TickCount := GetTickCount;
+        if TickCount < FSearchTickCount then
+          Inc(TickCount, $100000000); // (ahuser) reduces the overflow
+        if TickCount - FSearchTickCount >= 4000 then
+          FSearchText := '';
+        FSearchTickCount := TickCount;
+        if Length(FSearchText) < 32 then
+          FSearchText := FSearchText + Key;
+        
+        Key := #0;
+      end;
+  end;
+  inherited KeyPress(Key);
+end;
 
 {$IFDEF USE_DXGETTEXT}
 

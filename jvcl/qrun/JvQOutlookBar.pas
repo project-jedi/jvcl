@@ -418,13 +418,13 @@ end;
 procedure TJvOutlookBarEdit.EditAccept;
 begin
 //  Parent.Perform(CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
-  Perform(Parent, CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
+  QWindows.Perform(Parent, CM_CAPTION_EDIT_ACCEPT, Integer(Self), Tag);
   Hide;
 end;
 
 procedure TJvOutlookBarEdit.EditCancel;
 begin
-  Perform(Parent, CM_CAPTION_EDIT_CANCEL, Integer(Self), Tag);
+  QWindows.Perform(Parent, CM_CAPTION_EDIT_CANCEL, Integer(Self), Tag);
   Hide;
 end;
 

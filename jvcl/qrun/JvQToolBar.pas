@@ -36,9 +36,9 @@ unit JvQToolBar;
 interface
 
 uses
-  Messages, CommCtrl, SysUtils, Classes, Graphics, Controls, Forms, ComCtrls,
-  Menus,
-  JvQTypes, JvQMenus, JvQExComCtrls;
+  SysUtils, Classes,
+  QGraphics, QControls, QForms, QComCtrls, QMenus,
+  JvQTypes, {JvQMenus,} JvQExComCtrls;
 
 type
   TJvToolBar = class(TJvExToolBar)
@@ -54,7 +54,7 @@ type
     procedure MenuChange(Sender: TJvMainMenu; Source: TMenuItem; Rebuild: Boolean);
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure CNDropDownClosed(var Msg: TMessage); message CN_DROPDOWNCLOSED;
-    
+
   protected
     procedure AdjustSize; override;
   public
@@ -184,6 +184,7 @@ begin
   end;
 end;
 
+(*)
 procedure TJvToolBar.CNNotify(var Msg: TWMNotify);
 var
   Button: TToolButton;
@@ -253,6 +254,7 @@ begin
   else
     inherited;
 end;
+(*)
 
 procedure TJvToolBar.CNDropDownClosed(var Msg: TMessage);
 begin

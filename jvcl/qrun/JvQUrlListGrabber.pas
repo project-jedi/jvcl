@@ -109,7 +109,7 @@ type
 
     // stops all the grabbers
     procedure StopAll;
-    
+
     // the Grabber objects associated with the Urls
     property Grabbers[const Index : Integer]: TJvCustomUrlGrabber read GetGrabbers;
   published
@@ -238,6 +238,9 @@ type
   // grabber is not stopped
   EGrabberNotStopped = class(Exception);
 
+  // The event type used when a grabbing has had some progress
+  TJvUrlGrabberProgressEvent = procedure(Sender: TObject; Position, TotalSize: Int64; Url: string; var Continue: Boolean) of object;
+
   // The ancestor of all the Url Grabbers that declares the required
   // methods that a grabber must provide.
   // Do not instanciate a TJvCustomUrlGrabber directly, simply use one
@@ -249,23 +252,23 @@ type
     // the thread that will grab for us
     FUrlGrabberThread: TJvCustomUrlGrabberThread;
     // events
-    FOnDoneFile   : TJvDoneFileEvent;    // file is done
-    FOnDoneStream : TJvDoneStreamEvent;  // stream is done
-    FOnError      : TJvErrorEvent;       // error occured
-    FOnProgress   : TJvFTPProgressEvent; // download progressed a bit
-    FOnClosed     : TNotifyEvent;        // connection is closed
-    FOnReceiving  : TNotifyEvent;        // beginning to receive
-    FOnReceived   : TNotifyEvent;        // end of reception
-    FOnConnecting : TNotifyEvent;        // beginning of connection
-    FOnResolving  : TNotifyEvent;        // beginning of resolving URL
-    FOnRedirect   : TNotifyEvent;        // redirection happened
-    FOnConnected  : TNotifyEvent;        // now connected to host
-    FOnStateChange: TNotifyEvent;        // state of connection changed
-    FOnResolved   : TNotifyEvent;        // name has been resolved
-    FOnClosing    : TNotifyEvent;        // beginning of close of connection
-    FOnRequest    : TNotifyEvent;        // sending a request
-    FOnSent       : TNotifyEvent;        // data sent
-    FOnSending    : TNotifyEvent;        // beginning to send data
+    FOnDoneFile   : TJvDoneFileEvent;           // file is done
+    FOnDoneStream : TJvDoneStreamEvent;         // stream is done
+    FOnError      : TJvErrorEvent;              // error occured
+    FOnProgress   : TJvUrlGrabberProgressEvent; // download progressed a bit
+    FOnClosed     : TNotifyEvent;               // connection is closed
+    FOnReceiving  : TNotifyEvent;               // beginning to receive
+    FOnReceived   : TNotifyEvent;               // end of reception
+    FOnConnecting : TNotifyEvent;               // beginning of connection
+    FOnResolving  : TNotifyEvent;               // beginning of resolving URL
+    FOnRedirect   : TNotifyEvent;               // redirection happened
+    FOnConnected  : TNotifyEvent;               // now connected to host
+    FOnStateChange: TNotifyEvent;               // state of connection changed
+    FOnResolved   : TNotifyEvent;               // name has been resolved
+    FOnClosing    : TNotifyEvent;               // beginning of close of connection
+    FOnRequest    : TNotifyEvent;               // sending a request
+    FOnSent       : TNotifyEvent;               // data sent
+    FOnSending    : TNotifyEvent;               // beginning to send data
 
     // current status of the grabber
     FStatus: TJvGrabberStatus;
@@ -275,8 +278,6 @@ type
 
     // the stream to grab into.
     FStream: TMemoryStream;
-    FTotalBytes: Int64;
-    FBytesRead: Int64;
 
     // agent to impersonate
     FAgent: string;
@@ -291,9 +292,15 @@ type
     // output mode (stream or file)
     FOutputMode: TJvOutputMode;
 
+    // size of the file to grab
+    FSize: Int64;
+
+    // What has been read so far
+    FBytesRead: Int64;
+
     // Event callers
     procedure DoError(ErrorMsg: string);
-    procedure DoProgress(Status: DWORD);
+    procedure DoProgress(Position: Integer; var Continue: boolean);
     procedure DoEnded;
     procedure DoClosed;
     
@@ -335,6 +342,12 @@ type
     // The status of the grab
     property Status: TJvGrabberStatus read FStatus;
 
+    // The size of the file being grabbed
+    property Size: Int64 read FSize;
+
+    // What has been read so far
+    property BytesRead: Int64 read FBytesRead;
+
     // the Url being grabbed
     property Url: string read FUrl write SetUrl;
 
@@ -346,7 +359,7 @@ type
     property FileName: TFileName read FFileName write FFileName;
 
     // The output mode
-    property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omStream;
+    property OutputMode: TJvOutputMode read FOutputMode write FOutputMode default omFile;
 
     // The agent to impersonate
     property Agent: string read FAgent write FAgent;
@@ -355,7 +368,7 @@ type
     property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
     property OnDoneStream: TJvDoneStreamEvent read FOnDoneStream write FOnDoneStream;
     property OnError: TJvErrorEvent read FOnError write FOnError;
-    property OnProgress: TJvFTPProgressEvent read FOnProgress write FOnProgress;
+    property OnProgress: TJvUrlGrabberProgressEvent read FOnProgress write FOnProgress;
     property OnResolvingName: TNotifyEvent read FOnResolving write FOnResolving;
     property OnNameResolved: TNotifyEvent read FOnResolved write FOnResolved;
     property OnConnectingToServer: TNotifyEvent read FOnConnecting write FOnConnecting;
@@ -380,6 +393,8 @@ type
     FErrorText: string; // the error string received from the server
     FGrabber: TJvCustomUrlGrabber;
     FStatus: DWORD;
+    FContinue: boolean;
+    
     procedure Error;
     procedure Ended;
     procedure Progress;
@@ -638,10 +653,10 @@ begin
     FOnError(Self, ErrorMsg);
 end;
 
-procedure TJvCustomUrlGrabber.DoProgress(Status: DWORD);
+procedure TJvCustomUrlGrabber.DoProgress(Position: Integer; var Continue: boolean);
 begin
   if Assigned(FOnProgress) then
-    FOnProgress(Self, Status, FUrl);
+    FOnProgress(Self, Position, FSize, Url, Continue);
 end;
 
 class function TJvCustomUrlGrabber.GetDefaultPropertiesClass: TJvCustomUrlGrabberDefaultPropertiesClass;
@@ -746,6 +761,7 @@ end;
 constructor TJvCustomUrlGrabberThread.Create(Grabber: TJvCustomUrlGrabber);
 begin
   inherited Create(True);
+  FContinue := True;
   FGrabber := Grabber;
 end;
 
@@ -761,7 +777,7 @@ end;
 
 procedure TJvCustomUrlGrabberThread.Progress;
 begin
-  FGrabber.DoProgress(FStatus);
+  FGrabber.DoProgress(FGrabber.BytesRead, FContinue);
 end;
 
 procedure TJvCustomUrlGrabberThread.DoProgress;
