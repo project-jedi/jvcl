@@ -57,3 +57,12 @@ Known Issues:
 { This define controls whether a popup calendar is used as default
   instead of a modal dialog in TDateEdit, TDBDateEdit components }
 
+{$IFDEF D6PersonalEdition}
+{$DEFINE DelphiPersonalEdition}
+{$ENDIF}
+
+{$IFDEF D7PersonalEdition}
+{$DEFINE DelphiPersonalEdition}
+{$ENDIF}
+
+
