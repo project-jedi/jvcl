@@ -34,8 +34,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls,
-  JvTFManager, JvTFGlance, JvTFUtils
-  {$IFDEF USEJVCL}, JvComponent{$ENDIF};
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvTFManager, JvTFGlance, JvTFUtils;
 
 type
   TJvTFGlanceTextViewer = class;
@@ -67,11 +69,11 @@ type
     property LinkedAppt: TJvTFAppt read FLinkedAppt write FLinkedAppt;
   end;
 
-  {$IFDEF USE JVCL}
+  {$IFDEF USEJVCL}
   TJvTFGVTextControl = class(TJvCustomControl)
   {$ELSE}
   TJvTFGVTextControl = class(TCustomControl)
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   private
     FViewer: TJvTFGlanceTextViewer;
     FReplicating: Boolean;
@@ -89,7 +91,7 @@ type
     {$IFDEF USEJVCL}
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    {$ENDIF}
+    {$ENDIF USEJVCL}
 
     procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
     procedure DoEnter; override;
@@ -241,15 +243,16 @@ type
   end;
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvJVCLUtils, JvResources;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
   RsEGlanceControlNotAssigned = 'GlanceControl not assigned';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 function TJvTFGVTextControl.CalcAbsLineNum(Y: Integer): Integer;
 begin
@@ -706,6 +709,7 @@ begin
 end;
 
 {$IFDEF USEJVCL}
+
 procedure TJvTFGVTextControl.MouseEnter(Control: TControl);
 begin
   FMouseInControl := True;
@@ -719,7 +723,8 @@ begin
   inherited;
   Invalidate;
 end;
-{$ENDIF}
+
+{$ENDIF USEJVCL}
 
 procedure TJvTFGVTextControl.Scroll(ScrollBy: Integer);
 var
