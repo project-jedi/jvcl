@@ -52,6 +52,7 @@ type
     FSourceRect: TRect;
     FDestRect: TRect;
     FScroll: TJvImageDrawThread;
+    FAlwaysRestart: boolean;
     procedure Deplace(Sender: TObject);
     procedure UpdateBitmap;
     function GetActive: Boolean;
@@ -68,20 +69,48 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Restart;
   published
     // (rom) renamed Active
     property Active: Boolean read GetActive write SetActive default False;
     property Align;
+    property Anchors;
+    property Constraints;
     property Color;
-    property EndColor: TColor read FEndColor write SetEndColor default clBlack;
+    property Cursor;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
     property GradientWidth: Integer read FGradientWidth write SetGradientWidth;
+    property Enabled;
+    property EndColor: TColor read FEndColor write SetEndColor default clBlack;
     property Height default 10;
+
     property Interval: Cardinal read GetInterval write SetInterval default 50;
-    property StartColor: TColor read FStartColor write SetStartColor default clBtnFace;
-    property Width default 100;
-    {(rb) ParentColor included }
     property ParentColor;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property AlwaysRestart:boolean read FAlwaysRestart write FAlwaysRestart default False; 
+    property StartColor: TColor read FStartColor write SetStartColor default clBtnFace;
     property Visible;
+    property Width default 100;
+
+    property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnMouseMove;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnMouseEnter;
+    property OnMouseLeave;
+
+    property OnDblClick;
+    property OnContextPopup;
   end;
 
 implementation
@@ -109,8 +138,8 @@ begin
   FScroll.FreeOnTerminate := False;
   FScroll.Delay := 50;
   FScroll.OnDraw := Deplace;
-
-  Color := clBtnFace;
+  // (p3) don't set color: it will set ParentColor to false
+//  Color := clBtnFace;
 
   { (rb) Set the size properties last; will trigger Resize }
   // (rom) also always set the default values
@@ -243,18 +272,19 @@ end;
 
 function TJvWaitingGradient.GetActive: Boolean;
 begin
-  Result := FScroll.Suspended;
+  Result := not FScroll.Suspended;
 end;
 
 procedure TJvWaitingGradient.SetActive(const Value: Boolean);
 begin
-  if csLoading in ComponentState then
-    Exit;
-
-  if Active then
+//  if csLoading in ComponentState then
+//    Exit;
+  if FScroll = nil then Exit;
+  if FScroll.Suspended then
     FScroll.Resume
   else
     FScroll.Suspend;
+  if AlwaysRestart then Restart;
 end;
 
 procedure TJvWaitingGradient.SetEndColor(const Value: TColor);
@@ -295,6 +325,12 @@ begin
     FDestRect := Rect(0, 0, FGradientWidth, Height);
     UpdateBitmap;
   end;
+end;
+
+procedure TJvWaitingGradient.Restart;
+begin
+  FLeftOffset := -FGradientWidth;
+  UpdateBitmap;
 end;
 
 end.
