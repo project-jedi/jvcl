@@ -304,6 +304,7 @@ procedure TVCLConverter.ParsePasFile(const Filename: string);
 var
   Parser: TPascalParser;
   Lines: TStrings;
+  FFilepath: string;
 begin
   FFilename := Filename;
   FUsesUnits.Clear;
@@ -319,9 +320,8 @@ begin
       Statistics.IncParsedFiles; {statistic}
 
       Lines.Text := Parser.Text;
-      WriteFile(Lines,
-        FOutDirectory + PathDelim + ChangeFileName(ExtractFileName(Filename)),
-        True);
+      FFilepath := FOutDirectory + PathDelim + ChangeFileName(ExtractFileName(Filename));
+      WriteFile(Lines, FFilePath,True);
     finally
       Parser.Free;
     end;
@@ -974,7 +974,7 @@ begin
       end;
 
       WriteFile(Lines,
-        FOutDirectory + PathDelim + ChangeFileName(ExtractFileName(Filename)),
+        FOutDirectory + PathDelim + ChangeFileExt(ChangeFileName(ExtractFileName(Filename)),'.xfm'),
         False);
     end
     else

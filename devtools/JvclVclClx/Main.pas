@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, Mask, JvExMask, JvToolEdit, ExtCtrls;
+  Dialogs, StdCtrls, ComCtrls, Mask, JvExMask, JvToolEdit, ExtCtrls, StrUtils;
 
 type
   TFormMain = class(TForm)
@@ -40,7 +40,7 @@ type
     EditOutDir: TJvDirectoryEdit;
     EditSingleFile: TJvFilenameEdit;
     RBtnSingleFile: TRadioButton;
-    RBtnAll: TRadioButton;
+    RBtnDir: TRadioButton;
     BtnQuit: TButton;
     Label1: TLabel;
     Label2: TLabel;
@@ -50,11 +50,15 @@ type
     CheckBoxKeepLines: TCheckBox;
     CheckBoxUnixLineBreaks: TCheckBox;
     CheckBoxForceOverwrite: TCheckBox;
+    ListBox1: TListBox;
+    RBtnAll: TRadioButton;
+    EditDirectory: TJvDirectoryEdit;
     procedure BtnExecuteClick(Sender: TObject);
     procedure BtnQuitClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
     { Private-Deklarationen }
+    function GetQName(const Filename: string): string;
   public
     { Public-Deklarationen }
     procedure DoProgress(Sender: TObject; const Text: string; Position, Max: Integer);
@@ -75,26 +79,62 @@ var
   Converter: TConverter;
   JVCLConverter: TJVCLConverter;
   Sr: TSearchRec;
+  dof, kof: TStrings;
+  dir:string;
+
 begin
+  ListBox1.Items.Clear;
+  dof := TStringList.Create;
+  kof := TStringList.Create;
   Converter := TConverter.Create(EditJVCLDir.Text);
   try
-    if RBtnSingleFile.Checked then
+    if RBtnSingleFile.Checked or RBtnDir.Checked then
     begin
       JVCLConverter := TJVCLConverter.Create(ExtractFilePath(ParamStr(0)) + 'VclClxData',
         Converter.Model);
       try
+          Dir := ExtractFileDir(ParamStr(0)) + PathDelim + 'VclClxData'+ PathDelim;
+          if FileExists(Dir + 'qexamples.dof') then
+            dof.loadfromfile(Dir + 'qexamples.dof');
+          if FileExists(Dir + 'qexamples.kof') then
+            kof.loadfromfile(Dir + 'qexamples.kof');
+//        JVCLConverter.OnProgress := DoProgress;
         JVCLConverter.OutDirectory := EditOutDir.Text;
         JVCLConverter.ReduceConditions := CheckBoxReduceConditions.Checked;
         JVCLConverter.KeepLines := CheckBoxKeepLines.Checked;
         JVCLConverter.UnixLineBreak := CheckBoxUnixLineBreaks.Checked;
         JVCLConverter.ForceOverwrite := CheckBoxForceOverwrite.Checked;
-
-        if DirectoryExists(EditSingleFile.Text) then
+        ForceDirectories(EditOutDir.Text);
+        if RBtnDir.Checked  then
         begin
-          if FindFirst(EditSingleFile.Text + PathDelim + '*.pas', faAnyFile and not faDirectory, Sr) = 0 then
+          if FindFirst(EditDirectory.Text + PathDelim + '*.*', faAnyFile and not faDirectory, Sr) = 0 then
           begin
             repeat
-              JVCLConverter.ParsePasFile(EditSingleFile.Text + PathDelim + Sr.Name);
+              with JVCLConverter do
+              begin
+                if (ExtractFileExt(Sr.Name) = '.pas')   then
+                begin
+                  Listbox1.Items.Add(Sr.name);
+                  ParsePasFile(EditDirectory.Text + PathDelim + Sr.Name);
+                end
+                else if (ExtractFileExt(Sr.Name) = '.dfm') then
+                begin
+                  if not FileExists(EditOutDir.Text + PathDelim + Sr.Name) then
+                  begin
+                    Listbox1.Items.Add(Sr.name);
+                    ParseDfmFile(EditDirectory.Text + PathDelim + Sr.Name);
+                  end;
+                end
+                else if ExtractFileExt(Sr.Name) = '.dpr' then
+                begin
+                  Listbox1.Items.Add(Sr.name);
+                  ParsePasFile(EditDirectory.Text + PathDelim + Sr.Name);
+                  dof.SaveToFile(EditOutDir.Text + PathDelim +
+                                 ChangeFileExt(GetQName(Sr.Name), '.dof'));
+                  kof.SaveToFile(EditOutDir.Text + PathDelim +
+                                  ChangeFileExt(GetQName(Sr.Name), '.kof'));
+                end;
+              end;
             until FindNext(sr) <> 0;
             FindClose(sr);
           end;
@@ -121,6 +161,8 @@ begin
   finally
     Converter.Free;
   end;
+  dof.Free;
+  kof.Free;
 end;
 
 procedure TFormMain.DoProgress(Sender: TObject; const Text: string; Position,
@@ -129,6 +171,7 @@ begin
   LblProgress.Caption := Text;
   ProgressBar.Max := Max;
   ProgressBar.Position := Position;
+  ListBox1.Items.Add(Text);
   Application.ProcessMessages;
 end;
 
@@ -142,7 +185,7 @@ var
   Dir, LastDir: string;
 begin
   LblProgress.Caption := '';
-  
+
   Dir := ExtractFileDir(ParamStr(0));
   repeat
     if DirectoryExists(Dir + PathDelim + 'packages' + PathDelim + 'd7clx') then
@@ -156,5 +199,18 @@ begin
     Dir := ExtractFileDir(ParamStr(0));
   EditJVCLDir.Text := Dir;
 end;
+
+function TFormMain.GetQName(const Filename: string): string;
+var Fn: string;
+begin
+  Result := ExtractFilePath(Filename);
+  Fn := ExtractFileName(Filename);
+  if AnsiStartsText('Jv', Fn) then
+    Insert('Q', Fn, 3)
+  else
+    Fn := 'Q' + Fn;
+  Result := Result + Fn;
+end;
+
 
 end.
