@@ -9,7 +9,7 @@
 SET BCBDIR=%1
 if %BCBDIR%!==! SET BCBDIR=C:\Program Files\CBuilder5
 
-MakeBCB "BCB5 Packages" Bcb5 "%BCBDIR%"
+MakeBCB "BCB5 Packages" Bcb5 "%BCBDIR%" %2 %3
 
 SET BCBDIR=
 
@@ -18,12 +18,10 @@ goto end
 :help
 echo MakeBCB5.bat - Builds the JVCL for BCB5
 echo.
-echo Usage:    MakeBCB5 [BCBDirectory] [JCLDirectory] [LIBDirectory] [BPLDirectory]
+echo Usage:    MakeBCB5 [BCBDirectory] [LIBDirectory] [BPLDirectory]
 echo.
 echo     BCBDirectory   The place where BCB5 is installed.
 echo                    Defaults to "C:\Program Files\CBuilder5"
-echo     JCLDirectory   The place where the JCL is installed. You must specify 
-echo                    this value if the JCL is not in ..\..\JCL
 echo     LIBDirectory   The place where to put the BPI and LIB files.
 echo                    Defaults to $(BCB)\Projects\Lib
 echo                    You MUST ensure that this directory is in the

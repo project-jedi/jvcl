@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvJans" Design="0">
   <Description>JVCL Jans Components</Description>
-  <C5PFlags>-LUvcl50 -LUdclstd50</C5PFlags>
-  <C6PFlags>-LUdclstd</C6PFlags>
+  <C5PFlags>-LUvcl50 -LUdclstd50 -LUCJcl50</C5PFlags>
+  <C6PFlags>-LUdclstd -LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCore" Design="-1">
   <Description>JVCL Core Components</Description>
-  <C5PFlags>-LUdsnide50.dcp -LUdclstd50.dcp</C5PFlags>
-  <C6PFlags>-LUDesignIde -LUdclstd.dcp</C6PFlags>
+  <C5PFlags>-LUdsnide50.dcp -LUdclstd50.dcp -LUCJcl50</C5PFlags>
+  <C6PFlags>-LUDesignIde -LUdclstd -LUCJcl</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
   <Requires>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="designide" Targets="D6,D6p,D7,D7p,C6,C6p" Condition=""/>

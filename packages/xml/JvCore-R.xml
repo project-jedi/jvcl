@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCore" Design="0">
   <Description>JVCL Core Runtime Package</Description>
-  <C5PFlags/>
-  <C6PFlags/>
+  <C5PFlags>-LUCJcl50</C5PFlags>
+  <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
