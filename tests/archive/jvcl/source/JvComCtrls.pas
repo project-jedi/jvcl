@@ -744,14 +744,14 @@ var
   thistab, tab: TTabSheet;
   forward: Boolean;
 begin
-  if (msg.CharCode = Ord(#9)) and (GetKeyState(VK_CONTROL) < 0) then
+  if (msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin
     thistab := ActivePage;
     forward := GetKeyState(VK_SHIFT) >= 0;
     tab := thistab;
     repeat
       tab := FindNextPage(tab, forward, true);
-    until tab.Enabled or (tab = thistab);
+    until (tab = nil) or tab.Enabled or (tab = thistab);
     if tab <> thistab then
     begin
       if CanChange then
