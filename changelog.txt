@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2003-10-13:
+- moved JvTransparentForm to /archive - duplicate of JvFormTransparent // peter3
+2003-10-11:
+- added BCB6 packages for JvManagedThreads // obones
+- implemented CheckSynchronize in JvManagedThreads for Delphi5 //ahuser
+- added D5 packages for JvManagedThreads // peter3
 2003-10-10:
 - moved types from JvConsts to JvTypes. JvConsts does no longer depend on VCL // andreas
 - merged JvComponent and JvTypes with the JVCLX ones. // andreas
