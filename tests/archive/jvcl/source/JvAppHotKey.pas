@@ -40,17 +40,17 @@ uses
   JvComponent;
 
 type
+  TJvHotKeyRegisterFailed = procedure (Sender:TObject; var HotKey:TShortCut) of object;
   TJvApplicationHotKey = class(TJvComponent)
   private
     { Private declarations }
     FActive: boolean;
     FShortCut: TShortCut;
-    FMods: word;
-    FVirtKey: word;
     FOnHotKey: TNotifyEvent;
     FHandle: THandle;
     FID: integer;
-    procedure GetKeys;
+    FHasRegistered:boolean;
+    FOnHotKeyRegisterFailed: TJvHotKeyRegisterFailed;
     procedure SetActive(Value: boolean);
     procedure SetShortCut(Value: TShortCut);
     function WndProc(var Msg: TMessage): boolean;
@@ -59,15 +59,18 @@ type
   protected
     { Protected declarations }
     procedure DoHotKey; virtual;
+    function DoRegisterHotKey: boolean;dynamic;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
   published
     { Published declarations }
     property Active: boolean read FActive write SetActive default false;
     property HotKey: TShortCut read FShortCut write SetShortCut;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
+    property OnHotKeyRegisterFailed:TJvHotKeyRegisterFailed read FOnHotKeyRegisterFailed write FOnHotKeyRegisterFailed;
   end;
 
 implementation
@@ -79,17 +82,19 @@ uses
 var
   HotKeyInstances:integer = 0;
 
-procedure TJvApplicationHotKey.GetKeys;
+procedure GetHotKey(AShortCut:TShortCut;var VirtKey,Modifiers:Word);
 var aShift: TShiftState;
 begin
-  ShortCutToKey(FShortCut, FVirtKey, aShift);
+  ShortCutToKey(AShortCut, VirtKey, aShift);
+  Modifiers := 0;
   if ssCtrl in aShift then
-    FMods := FMods or MOD_CONTROL;
+    Modifiers := Modifiers or MOD_CONTROL;
   if ssShift in aShift then
-    FMods := FMods or MOD_SHIFT;
+    Modifiers := Modifiers or MOD_SHIFT;
   if ssAlt in aShift then
-    FMods := FMods or MOD_ALT;
+    Modifiers := Modifiers or MOD_ALT;
 end;
+
 
 procedure TJvApplicationHotKey.SetShortCut(Value: TShortCut);
 var b: Boolean;
@@ -114,15 +119,38 @@ begin
   inherited Destroy;
 end;
 
+function TJvApplicationHotKey.DoRegisterHotKey:boolean;
+var AShortCut:TShortCut;FVirtKey,FMods:word;
+begin
+  Result := false;
+  if FHandle = 0 then
+  begin
+    FHandle := TWinControl(Owner).Handle;
+    GetHotKey(FShortCut,FVirtKey,FMods);
+    while not RegisterHotKey(FHandle,FID,FMods,FVirtKey) do
+    begin
+      if Assigned(FOnHotKeyRegisterFailed) then
+      begin
+        AShortCut := FShortCut;
+        FOnHotKeyRegisterFailed(self,FShortCut);
+        // make sure we don't get stuck in a loop here:
+        if AShortCut = FShortCut then Exit;
+        GetHotKey(FShortCut,FVirtKey,FMods);
+      end
+      else
+        Exit;
+    end;
+    Result := true;
+  end;
+end;
+
 procedure TJvApplicationHotKey.SetActive(Value: boolean);
 begin
   if FActive <> Value then
   begin
     if csDesigning in ComponentState then Exit;
-    if Value then
+    if Value and not FHasRegistered then
     begin
-      GetWndProc;
-      if FHandle = 0 then Exit;
       if IsLibrary then
         FID := GlobalAddAtom(PChar(Application.Exename))
       else
@@ -130,10 +158,10 @@ begin
         FID := HotKeyInstances;
         Inc(HotKeyInstances);
       end;
-      GetKeys;
-      RegisterHotKey(FHandle,FID,FMods,FVirtKey);
+      if not DoRegisterHotKey then Exit;
+      GetWndProc;
     end
-    else
+    else if FHasRegistered then
     begin
       UnRegisterHotKey(FHandle,FID);
       ResetWndProc;
@@ -152,10 +180,10 @@ end;
 
 procedure TJvApplicationHotKey.GetWndProc;
 begin
-  if (Owner is TWinControl) and (FHandle = 0) then
+  if not FHasRegistered and (Owner is TWinControl) then
   begin
-    FHandle := TWinControl(Owner).Handle;
     RegisterWndProcHook(TWinControl(Owner), WndProc, hoAfterMsg);
+    FHasRegistered := true;
   end
   else
     SetActive(false);
@@ -163,11 +191,12 @@ end;
 
 procedure TJvApplicationHotKey.ResetWndProc;
 begin
-  if FHandle <> 0 then
+  if FHasRegistered and (Owner is TWinControl) then
   begin
     UnregisterWndProcHook(TWinControl(Owner), WndProc, hoAfterMsg);
-    FHandle := 0;
-  end
+    FHasRegistered := false;
+  end;
+  FHandle := 0;
 end;
 
 function TJvApplicationHotKey.WndProc(var Msg: TMessage): boolean;
