@@ -96,18 +96,18 @@ function FourDigitYear: Boolean;
 
 const
   CenturyOffset: Byte = 60;
-  {$IFDEF WIN32}
+{$IFDEF WIN32}
   NullDate: TDateTime = {-693594} 0;
-  {$ELSE}
+{$ELSE}
   NullDate: TDateTime = 0;
-  {$ENDIF}
+{$ENDIF}
 
 implementation
 
 uses
-  {$IFDEF WIN32}
+{$IFDEF WIN32}
   Windows,
-  {$ENDIF}
+{$ENDIF}
   SysUtils, Consts,
   JvStrUtils;
 
@@ -118,7 +118,7 @@ end;
 
 function DaysPerMonth(AYear, AMonth: Integer): Integer;
 const
-  DaysInMonth: array [1..12] of Integer =
+  DaysInMonth: array[1..12] of Integer =
   (31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31);
 begin
   Result := DaysInMonth[AMonth];
@@ -207,8 +207,7 @@ begin
     Inc(Month, 12);
     Dec(Year);
   end
-  else
-  if Month > 12 then
+  else if Month > 12 then
   begin
     Dec(Month, 12);
     Inc(Year);
@@ -278,14 +277,11 @@ begin
   Result := 12 * Y + M;
   if (D > 1) and (D < 7) then
     Result := Result + 0.25
-  else
-  if (D >= 7) and (D < 15) then
+  else if (D >= 7) and (D < 15) then
     Result := Result + 0.5
-  else
-  if (D >= 15) and (D < 21) then
+  else if (D >= 15) and (D < 21) then
     Result := Result + 0.75
-  else
-  if D >= 21 then
+  else if D >= 21 then
     Result := Result + 1;
 end;
 
@@ -412,6 +408,7 @@ begin
 end;
 
 {$IFDEF COMPILER3_UP}
+
 procedure ScanToNumber(const S: string; var Pos: Integer);
 begin
   while (Pos <= Length(S)) and not (S[Pos] in ['0'..'9']) do
@@ -432,10 +429,10 @@ begin
   while I <= Length(DateFormat) do
   begin
     case Chr(Ord(DateFormat[I]) and $DF) of
-      {$IFDEF COMPILER3_UP}
+{$IFDEF COMPILER3_UP}
       'E':
         Result := doYMD;
-      {$ENDIF}
+{$ENDIF}
       'Y':
         Result := doYMD;
       'M':
@@ -451,17 +448,32 @@ begin
   Result := DefaultDateOrder; { default }
 end;
 
+function CurrentMonth: Word;
+var
+  SystemTime: TSystemTime;
+begin
+  GetLocalTime(SystemTime);
+  Result := SystemTime.wMonth;
+end;
+
+{Modified}
+
 function ExpandYear(Year: Integer): Integer;
 var
   N: Longint;
 begin
-  Result := Year;
-  if Result < 100 then
+  if Year = -1 then
+    Result := CurrentYear
+  else
   begin
-    N := CurrentYear - CenturyOffset;
-    Inc(Result, N div 100 * 100);
-    if (CenturyOffset > 0) and (Result < N) then
-      Inc(Result, 100);
+    Result := Year;
+    if Result < 100 then
+    begin
+      N := CurrentYear - CenturyOffset;
+      Inc(Result, N div 100 * 100);
+      if (CenturyOffset > 0) and (Result < N) then
+        Inc(Result, 100);
+    end;
   end;
 end;
 
@@ -476,10 +488,10 @@ begin
   M := 0;
   D := 0;
   DateOrder := GetDateOrder(DateFormat);
-  {$IFDEF COMPILER3_UP}
+{$IFDEF COMPILER3_UP}
   if ShortDateFormat[1] = 'g' then { skip over prefix text }
     ScanToNumber(S, Pos);
-  {$ENDIF COMPILER3_UP}
+{$ENDIF COMPILER3_UP}
   if not (ScanNumber(S, MaxInt, Pos, N1) and ScanChar(S, Pos, DateSeparator) and
     ScanNumber(S, MaxInt, Pos, N2)) then
     Exit;
@@ -525,7 +537,7 @@ begin
   end;
   ScanChar(S, Pos, DateSeparator);
   ScanBlanks(S, Pos);
-  {$IFDEF COMPILER3_UP}
+{$IFDEF COMPILER3_UP}
   if SysLocale.FarEast and (System.Pos('ddd', ShortDateFormat) <> 0) then
   begin { ignore trailing text }
     if ShortTimeFormat[1] in ['0'..'9'] then { stop at time digit }
@@ -539,7 +551,7 @@ begin
         (AnsiCompareText(TimeAMString, Copy(S, Pos, Length(TimeAMString))) = 0) or
         (AnsiCompareText(TimePMString, Copy(S, Pos, Length(TimePMString))) = 0);
   end;
-  {$ENDIF COMPILER3_UP}
+{$ENDIF COMPILER3_UP}
   Result := IsValidDate(Y, M, D) and (Pos > Length(S));
 end;
 
@@ -567,8 +579,7 @@ begin
   L := Length(Format);
   if Length(S) < L then
     L := Length(S)
-  else
-  if Length(S) > L then
+  else if Length(S) > L then
     Exit;
   J := Pos(MakeStr(Ch, Cnt), AnsiUpperCase(Format));
   if J <= 0 then
@@ -582,8 +593,7 @@ begin
   end;
   if Tmp = '' then
     I := Blank
-  else
-  if Cnt > 1 then
+  else if Cnt > 1 then
   begin
     I := MonthFromName(Tmp, Length(Tmp));
     if I = 0 then
@@ -598,10 +608,11 @@ var
   Pos: Integer;
 begin
   ExtractMask(Format, S, 'm', 3, M, -1, 0); { short month name? }
-  if M = 0 then
-    ExtractMask(Format, S, 'm', 1, M, -1, 0);
+  if M = 0 then ExtractMask(Format, S, 'm', 1, M, -1, 0);
   ExtractMask(Format, S, 'd', 1, D, -1, 1);
   ExtractMask(Format, S, 'y', 1, Y, -1, CurrentYear);
+  if M = -1 then
+    M := CurrentMonth;
   Y := ExpandYear(Y);
   Result := IsValidDate(Y, M, D);
   if not Result then
@@ -636,11 +647,11 @@ end;
 function StrToDateFmt(const DateFormat, S: string): TDateTime;
 begin
   if not InternalStrToDate(DateFormat, S, Result) then
-    {$IFDEF COMPILER3_UP}
+{$IFDEF COMPILER3_UP}
     raise EConvertError.CreateFmt(SInvalidDate, [S]);
-    {$ELSE}
+{$ELSE}
     raise EConvertError.CreateFmt(LoadStr(SInvalidDate), [S]);
-    {$ENDIF}
+{$ENDIF}
 end;
 
 function StrToDateDef(const S: string; Default: TDateTime): TDateTime;
@@ -712,15 +723,15 @@ var
   Buffer: array[0..1023] of Char;
   SystemTime: TSystemTime;
 begin
-  {$IFDEF COMPILER3_UP}
+{$IFDEF COMPILER3_UP}
   DateTimeToSystemTime(Value, SystemTime);
-  {$ELSE}
+{$ELSE}
   with SystemTime do
   begin
     DecodeDate(Value, wYear, wMonth, wDay);
     DecodeTime(Value, wHour, wMinute, wSecond, wMilliseconds);
   end;
-  {$ENDIF}
+{$ENDIF}
   SetString(Result, Buffer, GetDateFormat(GetThreadLocale, DATE_LONGDATE,
     @SystemTime, nil, Buffer, SizeOf(Buffer) - 1));
   Result := TrimRight(Result);
@@ -737,6 +748,7 @@ end;
 {$ENDIF WIN32}
 
 {$IFNDEF USE_FOUR_DIGIT_YEAR}
+
 function FourDigitYear: Boolean;
 begin
   Result := Pos('YYYY', AnsiUpperCase(ShortDateFormat)) > 0;

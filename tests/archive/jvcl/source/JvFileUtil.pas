@@ -667,7 +667,7 @@ function ValidFileName(const FileName: string): Boolean;
   end;
 
 begin
-  Result := (FileName <> '') and (not HasAny(FileName, '<>"[]|'));
+  Result := (FileName <> '') and (not HasAny(FileName, '/<>"?*|'));
   if Result then
     Result := Pos('\', ExtractFileName(FileName)) = 0;
 end;
