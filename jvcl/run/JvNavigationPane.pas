@@ -3640,7 +3640,7 @@ begin
   if Parent <> nil then
   begin
     FCloseButton.SetBounds(ClientWidth - cWidth - 2, (HeaderHeight - cHeight) div 2, cWidth, cHeight);
-    if FCloseButton.Visible then
+    if FCloseButton.Visible or (csDesigning in ComponentState) then
       FDropDown.SetBounds(cOffset, (HeaderHeight - cHeight) div 2, Width - cWidth - cOffset - 2, cHeight)
     else
       FDropDown.SetBounds(cOffset, (HeaderHeight - cHeight) div 2, Width - cOffset - 4, cHeight);
@@ -3915,7 +3915,15 @@ begin
     if (bsMouseInside in MouseStates) then
       Canvas.Brush.Color := $D6BEB5;
     if (bsMouseDown in MouseStates) or Down then
-      Canvas.Brush.Color := $B59284;
+    begin
+      if (ButtonType = nibDropArrow) and (DropDownMenu <> nil) then
+      begin
+        Canvas.Brush.Color := clWindow;
+        Canvas.Pen.Color := cl3DDkShadow;
+      end
+      else
+        Canvas.Brush.Color := $B59284;
+    end;
     Canvas.Rectangle(ClientRect);
   end;
   case ButtonType of
@@ -3975,6 +3983,8 @@ begin
         TCustomImageListEx(Images).Draw(
           Canvas, (Width - Images.Width) div 2, (Height - Images.Height) div 2,
           ImageIndex, dsTransparent, itImage, Enabled);
+    else
+      raise Exception.Create('ButtonType not supported');
   end;
 
 end;
