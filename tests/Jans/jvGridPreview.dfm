@@ -1,4 +1,4 @@
-object jvGridPreviewF: TjvGridPreviewF
+object jvGridPreviewF: TJvGridPreviewF
   Left = 213
   Top = 177
   Width = 603

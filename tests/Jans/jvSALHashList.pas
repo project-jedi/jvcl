@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvSALHashList.PAS, released on 2002-06-15.
+The Original Code is: JvSALHashList.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
-unit jvSALHashList;
+unit JvSALHashList;
 
 interface
 
@@ -35,7 +35,7 @@ var
   janInsensitiveHashTable: array[#0..#255] of Byte;
 
 type
-  TJvSALProc=procedure of object;
+  TJvSALProc = procedure of object;
   TJvSALHash = function(const aString: string): Integer;
   TJvSALHashCompare = function(const Str1: string; const Str2: string): Boolean;
 
@@ -315,7 +315,8 @@ begin
     ReallocMem(FList, (NewCapacity) * SizeOf(Pointer));
     OldCapacity := fCapacity;
     FCapacity := NewCapacity;
-    for I := OldCapacity + 1 to NewCapacity do Items[I] := nil;
+    for I := OldCapacity + 1 to NewCapacity do
+      Items[I] := nil;
   end;
 end;
 
@@ -340,19 +341,20 @@ begin
   if Items[HashVal] = nil then
   begin
     Items[HashVal] := TJvHashWord.Create(aString, anId, anExId);
-  end else
-    if fList[HashVal] is TJvHashStrings then
-    begin
-      TJvHashStrings(Items[HashVal]).AddString(aString, anId, anExId);
-    end else
-    begin
-      HashWord := Items[HashVal];
-      HashStrings := TJvHashStrings.Create;
-      Items[HashVal] := HashStrings;
-      HashStrings.AddString(HashWord.S, HashWord.Id, HashWord.ExId);
-      HashWord.Free;
-      HashStrings.AddString(aString, anId, anExId)
-    end;
+  end
+  else if fList[HashVal] is TJvHashStrings then
+  begin
+    TJvHashStrings(Items[HashVal]).AddString(aString, anId, anExId);
+  end
+  else
+  begin
+    HashWord := Items[HashVal];
+    HashStrings := TJvHashStrings.Create;
+    Items[HashVal] := HashStrings;
+    HashStrings.AddString(HashWord.S, HashWord.Id, HashWord.ExId);
+    HashWord.Free;
+    HashStrings.AddString(aString, anId, anExId)
+  end;
 end;
 
 constructor TJvHashItems.Create(aHash: TJvSALHash);
@@ -382,19 +384,20 @@ begin
   if Items[HashValue] = nil then
   begin
     Items[HashValue] := TJvHashWord.Create(aString, anId, anExId);
-  end else
-    if fList[HashValue] is TJvHashItems then
-    begin
-      TJvHashItems(Items[HashValue]).AddString(aString, anId, anExId);
-    end else
-    begin
-      HashWord := Items[HashValue];
-      HashItems := TJvHashItems.Create(fSecondaryHash);
-      Items[HashValue] := HashItems;
-      HashItems.AddString(HashWord.S, HashWord.Id, HashWord.ExId);
-      HashWord.Free;
-      HashItems.AddString(aString, anId, anExId);
-    end;
+  end
+  else if fList[HashValue] is TJvHashItems then
+  begin
+    TJvHashItems(Items[HashValue]).AddString(aString, anId, anExId);
+  end
+  else
+  begin
+    HashWord := Items[HashValue];
+    HashItems := TJvHashItems.Create(fSecondaryHash);
+    Items[HashValue] := HashItems;
+    HashItems.AddString(HashWord.S, HashWord.Id, HashWord.ExId);
+    HashWord.Free;
+    HashItems.AddString(aString, anId, anExId);
+  end;
 end;
 
 function TJvSALHashList.Hash(const S: string; var anId: TJvSALProc; var anExId: TJvSALProc): Boolean;
@@ -425,7 +428,8 @@ begin
         anID := HashWord.Id;
         anExId := HashWord.ExID;
       end;
-    end else
+    end
+    else
     begin
       HashItems := Items[HashValue];
       ItemHash := HashItems.fHash(S);
@@ -440,7 +444,8 @@ begin
             anID := TJvHashWord(Temp).Id;
             anExId := TJvHashWord(Temp).ExID;
           end;
-        end else
+        end
+        else
           for I := 1 to TJvHashStrings(Temp).Capacity do
           begin
             HashWord := TJvHashStrings(Temp)[I];
@@ -458,6 +463,5 @@ end;
 
 initialization
   InitTables;
-{$R+}
+  {$R+}
 end.
-

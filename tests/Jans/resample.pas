@@ -81,7 +81,6 @@ interface
 {$DEFINE USE_SCANLINE}
 //{$ENDIF}
 
-
 uses
   SysUtils, Classes, Graphics;
 
@@ -90,20 +89,20 @@ type
   TFilterProc = function(Value: Single): Single;
 
   // Sample filters for use with Stretch()
-  function SplineFilter(Value: Single): Single;
-  function BellFilter(Value: Single): Single;
-  function TriangleFilter(Value: Single): Single;
-  function BoxFilter(Value: Single): Single;
-  function HermiteFilter(Value: Single): Single;
-  function Lanczos3Filter(Value: Single): Single;
-  function MitchellFilter(Value: Single): Single;
+function SplineFilter(Value: Single): Single;
+function BellFilter(Value: Single): Single;
+function TriangleFilter(Value: Single): Single;
+function BoxFilter(Value: Single): Single;
+function HermiteFilter(Value: Single): Single;
+function Lanczos3Filter(Value: Single): Single;
+function MitchellFilter(Value: Single): Single;
 
-  // Interpolator
-  // Src:	Source bitmap
-  // Dst:	Destination bitmap
-  // filter:	Weight calculation filter
-  // fwidth:	Relative sample radius
-  procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: single);
+// Interpolator
+// Src:	Source bitmap
+// Dst:	Destination bitmap
+// filter:	Weight calculation filter
+// fwidth:	Relative sample radius
+procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: single);
 
 // -----------------------------------------------------------------------------
 //
@@ -113,17 +112,17 @@ type
 
 const
   ResampleFilters: array[0..6] of record
-    Name: string;	// Filter name
-    Filter: TFilterProc;// Filter implementation
-    Width: Single;	// Suggested sampling width/radius
+    Name: string; // Filter name
+    Filter: TFilterProc; // Filter implementation
+    Width: Single; // Suggested sampling width/radius
   end = (
-    (Name: 'Box';	Filter: BoxFilter;	Width: 0.5),
-    (Name: 'Triangle';	Filter: TriangleFilter;	Width: 1.0),
-    (Name: 'Hermite';	Filter: HermiteFilter;	Width: 1.0),
-    (Name: 'Bell';	Filter: BellFilter;	Width: 1.5),
-    (Name: 'B-Spline';	Filter: SplineFilter;	Width: 2.0),
-    (Name: 'Lanczos3';	Filter: Lanczos3Filter;	Width: 3.0),
-    (Name: 'Mitchell';	Filter: MitchellFilter;	Width: 2.0)
+    (Name: 'Box'; Filter: BoxFilter; Width: 0.5),
+    (Name: 'Triangle'; Filter: TriangleFilter; Width: 1.0),
+    (Name: 'Hermite'; Filter: HermiteFilter; Width: 1.0),
+    (Name: 'Bell'; Filter: BellFilter; Width: 1.5),
+    (Name: 'B-Spline'; Filter: SplineFilter; Width: 2.0),
+    (Name: 'Lanczos3'; Filter: Lanczos3Filter; Width: 3.0),
+    (Name: 'Mitchell'; Filter: MitchellFilter; Width: 2.0)
     );
 
 implementation
@@ -138,6 +137,7 @@ uses
 // -----------------------------------------------------------------------------
 
 // Hermite filter
+
 function HermiteFilter(Value: Single): Single;
 begin
   // f(t) = 2|t|^3 - 3|t|^2 + 1, -1 <= t <= 1
@@ -153,6 +153,7 @@ end;
 // a.k.a. "Nearest Neighbour" filter
 // anme: I have not been able to get acceptable
 //       results with this filter for subsampling.
+
 function BoxFilter(Value: Single): Single;
 begin
   if (Value > -0.5) and (Value <= 0.5) then
@@ -163,6 +164,7 @@ end;
 
 // Triangle filter
 // a.k.a. "Linear" or "Bilinear" filter
+
 function TriangleFilter(Value: Single): Single;
 begin
   if (Value < 0.0) then
@@ -174,6 +176,7 @@ begin
 end;
 
 // Bell filter
+
 function BellFilter(Value: Single): Single;
 begin
   if (Value < 0.0) then
@@ -184,38 +187,45 @@ begin
   begin
     Value := Value - 1.5;
     Result := 0.5 * Sqr(Value);
-  end else
+  end
+  else
     Result := 0.0;
 end;
 
 // B-spline filter
+
 function SplineFilter(Value: Single): Single;
 var
-  tt			: single;
+  tt: single;
 begin
   if (Value < 0.0) then
     Value := -Value;
   if (Value < 1.0) then
   begin
     tt := Sqr(Value);
-    Result := 0.5*tt*Value - tt + 2.0 / 3.0;
-  end else if (Value < 2.0) then
+    Result := 0.5 * tt * Value - tt + 2.0 / 3.0;
+  end
+  else if (Value < 2.0) then
   begin
     Value := 2.0 - Value;
-    Result := 1.0/6.0 * Sqr(Value) * Value;
-  end else
+    Result := 1.0 / 6.0 * Sqr(Value) * Value;
+  end
+  else
     Result := 0.0;
 end;
 
 // Lanczos3 filter
+
 function Lanczos3Filter(Value: Single): Single;
-  function SinC(Value: Single): Single;
+
+function SinC(Value: Single): Single;
   begin
     if (Value <> 0.0) then
     begin
       Value := Value * Pi;
       Result := sin(Value) / Value
-    end else
+    end
+    else
       Result := 1.0;
   end;
 begin
@@ -229,10 +239,10 @@ end;
 
 function MitchellFilter(Value: Single): Single;
 const
-  B		= (1.0 / 3.0);
-  C		= (1.0 / 3.0);
+  B = (1.0 / 3.0);
+  C = (1.0 / 3.0);
 var
-  tt			: single;
+  tt: single;
 begin
   if (Value < 0.0) then
     Value := -Value;
@@ -243,15 +253,16 @@ begin
       + ((-18.0 + 12.0 * B + 6.0 * C) * tt)
       + (6.0 - 2 * B));
     Result := Value / 6.0;
-  end else
-  if (Value < 2.0) then
+  end
+  else if (Value < 2.0) then
   begin
     Value := (((-1.0 * B - 6.0 * C) * (Value * tt))
       + ((6.0 * B + 30.0 * C) * tt)
       + ((-12.0 * B - 48.0 * C) * Value)
       + (8.0 * B + 24 * C));
     Result := Value / 6.0;
-  end else
+  end
+  else
     Result := 0.0;
 end;
 
@@ -263,8 +274,8 @@ end;
 type
   // Contributor for a pixel
   TContributor = record
-    pixel: integer;		// Source pixel
-    weight: single;		// Pixel weight
+    pixel: integer; // Source pixel
+    weight: single; // Pixel weight
   end;
 
   TContributorList = array[0..0] of TContributor;
@@ -272,20 +283,20 @@ type
 
   // List of source pixels contributing to a destination pixel
   TCList = record
-    n		: integer;
-    p		: PContributorList;
+    n: integer;
+    p: PContributorList;
   end;
 
   TCListList = array[0..0] of TCList;
   PCListList = ^TCListList;
 
   TRGB = packed record
-    r, g, b	: single;
+    r, g, b: single;
   end;
 
   // Physical bitmap pixel
   TColorRGB = packed record
-    r, g, b	: BYTE;
+    r, g, b: BYTE;
   end;
   PColorRGB = ^TColorRGB;
 
@@ -295,39 +306,39 @@ type
 
 procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: single);
 var
-  xscale, yscale	: single;		// Zoom scale factors
-  i, j, k		: integer;		// Loop variables
-  center		: single;		// Filter calculation variables
-  width, fscale, weight	: single;		// Filter calculation variables
-  left, right		: integer;		// Filter calculation variables
-  n			: integer;		// Pixel number
-  Work			: TBitmap;
-  contrib		: PCListList;
-  rgb			: TRGB;
-  color			: TColorRGB;
-{$IFDEF USE_SCANLINE}
-  SourceLine		,
-  DestLine		: PRGBList;
-  SourcePixel		,
-  DestPixel		: PColorRGB;
-  Delta			,
-  DestDelta		: integer;
-{$ENDIF}
-  SrcWidth		,
-  SrcHeight		,
-  DstWidth		,
-  DstHeight		: integer;
+  xscale, yscale: single; // Zoom scale factors
+  i, j, k: integer; // Loop variables
+  center: single; // Filter calculation variables
+  width, fscale, weight: single; // Filter calculation variables
+  left, right: integer; // Filter calculation variables
+  n: integer; // Pixel number
+  Work: TBitmap;
+  contrib: PCListList;
+  rgb: TRGB;
+  color: TColorRGB;
+  {$IFDEF USE_SCANLINE}
+  SourceLine,
+    DestLine: PRGBList;
+  SourcePixel,
+    DestPixel: PColorRGB;
+  Delta,
+    DestDelta: integer;
+  {$ENDIF}
+  SrcWidth,
+    SrcHeight,
+    DstWidth,
+    DstHeight: integer;
 
   function Color2RGB(Color: TColor): TColorRGB;
   begin
-    Result.r := Color AND $000000FF;
-    Result.g := (Color AND $0000FF00) SHR 8;
-    Result.b := (Color AND $00FF0000) SHR 16;
+    Result.r := Color and $000000FF;
+    Result.g := (Color and $0000FF00) shr 8;
+    Result.b := (Color and $00FF0000) shr 16;
   end;
 
   function RGB2Color(Color: TColorRGB): TColor;
   begin
-    Result := Color.r OR (Color.g SHL 8) OR (Color.b SHL 16);
+    Result := Color.r or (Color.g shl 8) or (Color.b shl 16);
   end;
 
 begin
@@ -347,32 +358,32 @@ begin
     // yscale := DstHeight / SrcHeight;
     // Improvement suggested by David Ullrich:
     if (SrcWidth = 1) then
-      xscale:= DstWidth / SrcWidth
+      xscale := DstWidth / SrcWidth
     else
-      xscale:= (DstWidth - 1) / (SrcWidth - 1);
+      xscale := (DstWidth - 1) / (SrcWidth - 1);
     if (SrcHeight = 1) then
-      yscale:= DstHeight / SrcHeight
+      yscale := DstHeight / SrcHeight
     else
-      yscale:= (DstHeight - 1) / (SrcHeight - 1);
+      yscale := (DstHeight - 1) / (SrcHeight - 1);
     // This implementation only works on 24-bit images because it uses
     // TBitmap.Scanline
-{$IFDEF USE_SCANLINE}
+    {$IFDEF USE_SCANLINE}
     Src.PixelFormat := pf24bit;
     Dst.PixelFormat := Src.PixelFormat;
     Work.PixelFormat := Src.PixelFormat;
-{$ENDIF}
+    {$ENDIF}
 
     // --------------------------------------------
     // Pre-calculate filter contributions for a row
     // -----------------------------------------------
-    GetMem(contrib, DstWidth* sizeof(TCList));
+    GetMem(contrib, DstWidth * sizeof(TCList));
     // Horizontal sub-sampling
     // Scales from bigger to smaller width
     if (xscale < 1.0) then
     begin
       width := fwidth / xscale;
       fscale := 1.0 / xscale;
-      for i := 0 to DstWidth-1 do
+      for i := 0 to DstWidth - 1 do
       begin
         contrib^[i].n := 0;
         GetMem(contrib^[i].p, trunc(width * 2.0 + 1) * sizeof(TContributor));
@@ -399,11 +410,12 @@ begin
           contrib^[i].p^[k].weight := weight;
         end;
       end;
-    end else
-    // Horizontal super-sampling
-    // Scales from smaller to bigger width
+    end
+    else
+      // Horizontal super-sampling
+      // Scales from smaller to bigger width
     begin
-      for i := 0 to DstWidth-1 do
+      for i := 0 to DstWidth - 1 do
       begin
         contrib^[i].n := 0;
         GetMem(contrib^[i].p, trunc(fwidth * 2.0 + 1) * sizeof(TContributor));
@@ -435,24 +447,24 @@ begin
     // ----------------------------------------------------
     // Apply filter to sample horizontally from Src to Work
     // ----------------------------------------------------
-    for k := 0 to SrcHeight-1 do
+    for k := 0 to SrcHeight - 1 do
     begin
-{$IFDEF USE_SCANLINE}
+      {$IFDEF USE_SCANLINE}
       SourceLine := Src.ScanLine[k];
       DestPixel := Work.ScanLine[k];
-{$ENDIF}
-      for i := 0 to DstWidth-1 do
+      {$ENDIF}
+      for i := 0 to DstWidth - 1 do
       begin
         rgb.r := 0.0;
         rgb.g := 0.0;
         rgb.b := 0.0;
-        for j := 0 to contrib^[i].n-1 do
+        for j := 0 to contrib^[i].n - 1 do
         begin
-{$IFDEF USE_SCANLINE}
+          {$IFDEF USE_SCANLINE}
           color := SourceLine^[contrib^[i].p^[j].pixel];
-{$ELSE}
+          {$ELSE}
           color := Color2RGB(Src.Canvas.Pixels[contrib^[i].p^[j].pixel, k]);
-{$ENDIF}
+          {$ENDIF}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             continue;
@@ -478,19 +490,19 @@ begin
           color.b := 0
         else
           color.b := round(rgb.b);
-{$IFDEF USE_SCANLINE}
+        {$IFDEF USE_SCANLINE}
         // Set new pixel value
         DestPixel^ := color;
         // Move on to next column
         inc(DestPixel);
-{$ELSE}
+        {$ELSE}
         Work.Canvas.Pixels[i, k] := RGB2Color(color);
-{$ENDIF}
+        {$ENDIF}
       end;
     end;
 
     // Free the memory allocated for horizontal filter weights
-    for i := 0 to DstWidth-1 do
+    for i := 0 to DstWidth - 1 do
       FreeMem(contrib^[i].p);
 
     FreeMem(contrib);
@@ -498,14 +510,14 @@ begin
     // -----------------------------------------------
     // Pre-calculate filter contributions for a column
     // -----------------------------------------------
-    GetMem(contrib, DstHeight* sizeof(TCList));
+    GetMem(contrib, DstHeight * sizeof(TCList));
     // Vertical sub-sampling
     // Scales from bigger to smaller height
     if (yscale < 1.0) then
     begin
       width := fwidth / yscale;
       fscale := 1.0 / yscale;
-      for i := 0 to DstHeight-1 do
+      for i := 0 to DstHeight - 1 do
       begin
         contrib^[i].n := 0;
         GetMem(contrib^[i].p, trunc(width * 2.0 + 1) * sizeof(TContributor));
@@ -532,11 +544,12 @@ begin
           contrib^[i].p^[k].weight := weight;
         end;
       end
-    end else
-    // Vertical super-sampling
-    // Scales from smaller to bigger height
+    end
+    else
+      // Vertical super-sampling
+      // Scales from smaller to bigger height
     begin
-      for i := 0 to DstHeight-1 do
+      for i := 0 to DstHeight - 1 do
       begin
         contrib^[i].n := 0;
         GetMem(contrib^[i].p, trunc(fwidth * 2.0 + 1) * sizeof(TContributor));
@@ -568,30 +581,30 @@ begin
     // --------------------------------------------------
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
-{$IFDEF USE_SCANLINE}
+    {$IFDEF USE_SCANLINE}
     SourceLine := Work.ScanLine[0];
     Delta := integer(Work.ScanLine[1]) - integer(SourceLine);
     DestLine := Dst.ScanLine[0];
     DestDelta := integer(Dst.ScanLine[1]) - integer(DestLine);
-{$ENDIF}
-    for k := 0 to DstWidth-1 do
+    {$ENDIF}
+    for k := 0 to DstWidth - 1 do
     begin
-{$IFDEF USE_SCANLINE}
+      {$IFDEF USE_SCANLINE}
       DestPixel := pointer(DestLine);
-{$ENDIF}
-      for i := 0 to DstHeight-1 do
+      {$ENDIF}
+      for i := 0 to DstHeight - 1 do
       begin
         rgb.r := 0;
         rgb.g := 0;
         rgb.b := 0;
         // weight := 0.0;
-        for j := 0 to contrib^[i].n-1 do
+        for j := 0 to contrib^[i].n - 1 do
         begin
-{$IFDEF USE_SCANLINE}
-          color := PColorRGB(integer(SourceLine)+contrib^[i].p^[j].pixel*Delta)^;
-{$ELSE}
+          {$IFDEF USE_SCANLINE}
+          color := PColorRGB(integer(SourceLine) + contrib^[i].p^[j].pixel * Delta)^;
+          {$ELSE}
           color := Color2RGB(Work.Canvas.Pixels[k, contrib^[i].p^[j].pixel]);
-{$ENDIF}
+          {$ENDIF}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             continue;
@@ -617,21 +630,21 @@ begin
           color.b := 0
         else
           color.b := round(rgb.b);
-{$IFDEF USE_SCANLINE}
+        {$IFDEF USE_SCANLINE}
         DestPixel^ := color;
         inc(integer(DestPixel), DestDelta);
-{$ELSE}
+        {$ELSE}
         Dst.Canvas.Pixels[k, i] := RGB2Color(color);
-{$ENDIF}
+        {$ENDIF}
       end;
-{$IFDEF USE_SCANLINE}
+      {$IFDEF USE_SCANLINE}
       Inc(SourceLine, 1);
       Inc(DestLine, 1);
-{$ENDIF}
+      {$ENDIF}
     end;
 
     // Free the memory allocated for vertical filter weights
-    for i := 0 to DstHeight-1 do
+    for i := 0 to DstHeight - 1 do
       FreeMem(contrib^[i].p);
 
     FreeMem(contrib);

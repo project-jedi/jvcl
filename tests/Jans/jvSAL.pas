@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvSAL.PAS, released on 2002-06-15.
+The Original Code is: JvSAL.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -24,66 +24,66 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
-unit jvSAL;
+unit JvSAL;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  jvSALHashList;
+  JvSALHashList;
 
 const
 
-  stacklimit=256;
+  stacklimit = 256;
   // message are processed every 250 milliseconds
   // use the stop procedure to stop a locked script
-  timeout=250;
+  timeout = 250;
 
 type
 
-  TonGetUnit=procedure(sender:TObject;aUnit:string; var aValue:string;var handled:boolean) of object;
-  TJvAtom=class(TObject)
+  TonGetUnit = procedure(sender: TObject; aUnit: string; var aValue: string; var handled: boolean) of object;
+  TJvAtom = class(TObject)
   private
     FValue: variant;
     Factor: TJvSALProc;
-    procedure Setactor(const Value: TJvSALProc);
+    procedure SetActor(const Value: TJvSALProc);
     procedure SetValue(const aValue: variant);
   public
-    property Value:variant read FValue write SetValue;
-    property actor:TJvSALProc read Factor write Setactor;
+    property Value: variant read FValue write SetValue;
+    property Actor: TJvSALProc read Factor write Setactor;
   end;
 
-  TJvSALProcAtom=class(TObject)
+  TJvSALProcAtom = class(TObject)
   private
     Fparser: TJvSALProc;
     Factor: TJvSALProc;
     procedure Setactor(const Value: TJvSALProc);
     procedure Setparser(const Value: TJvSALProc);
   public
-    property actor:TJvSALProc read Factor write Setactor;
-    property parser:TJvSALProc read Fparser write Setparser;
+    property actor: TJvSALProc read Factor write Setactor;
+    property parser: TJvSALProc read Fparser write Setparser;
   end;
-  TJvAtoms=class(TStringList)
-    public
-      procedure ClearAll;
-      destructor Destroy; override;
+  TJvAtoms = class(TStringList)
+  public
+    procedure ClearAll;
+    destructor Destroy; override;
   end;
 
   TJvSAL = class(TComponent)
   private
-    FStop:boolean;
-    FCaption:string;
-    sp:integer;
-    rsp:integer;
-    bsp:integer;
+    FStop: boolean;
+    FCaption: string;
+    sp: integer;
+    rsp: integer;
+    bsp: integer;
     stack: array[0..stacklimit] of variant;
     bstack: array[0..stacklimit] of boolean;
     rstack: array[0..stacklimit] of integer;
-//    procs: TJvAtoms;
-    procs:TJvSALHashList;
+    //    procs: TJvAtoms;
+    procs: TJvSALHashList;
     Fscript: string;
-    Funits:TStringList;
-    ticks:cardinal;
+    Funits: TStringList;
+    ticks: cardinal;
     FonGetUnit: TonGetUnit;
     FVariableName: string;
     FVariable: TJvAtom;
@@ -123,64 +123,65 @@ type
     procedure xnoParser;
   public
     { Public declarations }
-    constructor create(AOwner:Tcomponent); override;
-    destructor  destroy;override;
+    constructor create(AOwner: Tcomponent); override;
+    destructor destroy; override;
     procedure ClearProcedures;
-    procedure AddProcedure(aName:string;aProcedure, aParser:TJvSALProc);
-    function  apo(op:string;aProc:TJvSALProc):integer;
-    procedure Push(aValue:variant);
-    function Pop:variant;
-    procedure rPush(aValue:integer);
-    function rPop:integer;
-    procedure boolPush(aValue:boolean);
-    function boolPop:boolean;
-    procedure LoadFromFile(fn:string);
+    procedure AddProcedure(aName: string; aProcedure, aParser: TJvSALProc);
+    function apo(op: string; aProc: TJvSALProc): integer;
+    procedure Push(aValue: variant);
+    function Pop: variant;
+    procedure rPush(aValue: integer);
+    function rPop: integer;
+    procedure boolPush(aValue: boolean);
+    function boolPop: boolean;
+    procedure LoadFromFile(fn: string);
     procedure execute;
     procedure stop;
-    property pc:integer read Fpc write Setpc;
+    property pc: integer read Fpc write Setpc;
     property atoms: TJvAtoms read Fatoms;
-    property pcproc:integer read Fpcproc;
-    property token:string read Ftoken write Settoken;
-    property script:string read Fscript write Setscript;
-    property Caption:string read FCaption write SetCaption;
-    property Variable:TJvAtom read FVariable write SetVariable;
-    property VariableName:string read FVariableName write SetVariableName;
-    property theSelect:variant read FtheSelect write SettheSelect;
-    property useDirective:string read FuseDirective write SetuseDirective;
-    property BeginOfComment:string read FBeginOfComment write SetBeginOfComment;
-    property EndOfComment:string read FEndOfComment write SetEndOfComment;
-    property stringDelim:string read FstringDelim write SetstringDelim;
+    property pcproc: integer read Fpcproc;
+    property token: string read Ftoken write Settoken;
+    property script: string read Fscript write Setscript;
+    property Caption: string read FCaption write SetCaption;
+    property Variable: TJvAtom read FVariable write SetVariable;
+    property VariableName: string read FVariableName write SetVariableName;
+    property theSelect: variant read FtheSelect write SettheSelect;
+    property useDirective: string read FuseDirective write SetuseDirective;
+    property BeginOfComment: string read FBeginOfComment write SetBeginOfComment;
+    property EndOfComment: string read FEndOfComment write SetEndOfComment;
+    property stringDelim: string read FstringDelim write SetstringDelim;
   published
     { Published declarations }
-    property onGetUnit:TonGetUnit read FonGetUnit write SetonGetUnit;
+    property onGetUnit: TonGetUnit read FonGetUnit write SetonGetUnit;
   end;
-
 
 implementation
 
-
 const
-  cr = chr(13)+chr(10);
+  cr = chr(13) + chr(10);
   tab = chr(9);
 
-
-procedure SaveString(aFile, aText:string);
+procedure SaveString(aFile, aText: string);
 begin
-  with TFileStream.Create(aFile, fmCreate) do try
-    writeBuffer(aText[1],length(aText));
-    finally free; end;
+  with TFileStream.Create(aFile, fmCreate) do
+  try
+    writeBuffer(aText[1], length(aText));
+  finally free;
+  end;
 end;
 
-function  LoadString(aFile:string):string;
-var s:string;
+function LoadString(aFile: string): string;
+var
+  s: string;
 begin
-  with TFileStream.Create(aFile, fmOpenRead) do try
+  with TFileStream.Create(aFile, fmOpenRead) do
+  try
     SetLength(s, Size);
-      ReadBuffer(s[1], Size);
-    finally free; end;
-  result:=s;
+    ReadBuffer(s[1], Size);
+  finally free;
+  end;
+  result := s;
 end;
-
 
 { TJvAtom }
 
@@ -189,24 +190,21 @@ begin
   Factor := Value;
 end;
 
-
-
 procedure TJvAtom.SetValue(const aValue: variant);
 begin
   FValue := aValue;
 end;
 
-
 { TJvAtoms }
 
 procedure TJvAtoms.ClearAll;
 var
-  i:integer;
+  i: integer;
 begin
-  if count=0 then exit;
-  for i:=0 to count-1 do
-//    TJvAtom(objects[i]).free;
-     objects[i].free;
+  if count = 0 then exit;
+  for i := 0 to count - 1 do
+    //    TJvAtom(objects[i]).free;
+    objects[i].free;
   Clear;
 end;
 
@@ -221,30 +219,30 @@ end;
 function TJvSAL.boolPop: boolean;
 begin
   dec(bsp);
-  if bsp<0 then
+  if bsp < 0 then
     raise exception.create('boolean stack underflow');
-  result:=bstack[bsp];
+  result := bstack[bsp];
 end;
 
 procedure TJvSAL.boolPush(aValue: boolean);
 begin
-  bstack[bsp]:=aValue;
+  bstack[bsp] := aValue;
   inc(bsp);
-  if bsp>stacklimit then
+  if bsp > stacklimit then
     raise exception.create('boolean stack overflow');
 end;
 
-constructor TJvSAL.create(AOwner:TComponent);
+constructor TJvSAL.create(AOwner: TComponent);
 begin
   inherited;
-  FAtoms:=TJvAtoms.Create;
-  Procs:=TJvSALHashList.Create(ITinyHash,HashSecondaryOne,sameText);
-  FUnits:=TStringlist.create;
-  FCaption:='SAL';
-  FuseDirective:='use::';
-  FBeginOfComment:='{';
-  FEndOfComment:='}';
-  fStringDelim:='"';
+  FAtoms := TJvAtoms.Create;
+  Procs := TJvSALHashList.Create(ITinyHash, HashSecondaryOne, sameText);
+  FUnits := TStringlist.create;
+  FCaption := 'SAL';
+  FuseDirective := 'use::';
+  FBeginOfComment := '{';
+  FEndOfComment := '}';
+  fStringDelim := '"';
 end;
 
 destructor TJvSAL.destroy;
@@ -257,250 +255,257 @@ end;
 
 procedure TJvSAL.execute;
 var
-  a:TJvAtom;
-  c:integer;
+  a: TJvAtom;
+  c: integer;
 begin
-  pc:=0;
-  sp:=0;
-  rsp:=0;
-  bsp:=0;
-  c:=atoms.Count;
-  Fstop:=false;
-  ticks:=gettickcount;
-  if c=0 then exit;
+  pc := 0;
+  sp := 0;
+  rsp := 0;
+  bsp := 0;
+  c := atoms.Count;
+  Fstop := false;
+  ticks := gettickcount;
+  if c = 0 then exit;
   repeat
-    a:=TJvAtom(atoms.objects[pc]);
-    Fpcproc:=pc;
+    a := TJvAtom(atoms.objects[pc]);
+    Fpcproc := pc;
     inc(fpc);
     a.actor;
-    if (gettickcount-ticks)> timeout then begin
-      ticks:=gettickcount;
+    if (gettickcount - ticks) > timeout then
+    begin
+      ticks := gettickcount;
       application.ProcessMessages;
     end;
     if FStop then
       raise exception.create('program stopped');
-  until pc>=c ;
+  until pc >= c;
 end;
 
 procedure TJvSAL.parsescript;
 var
-  s:string;
-//  iprocs:integer;
-  haveproc:boolean;
-  aActor:TJvSALProc;
-  aParser:TJvSALProc;
-  i,p,p2:integer;
-  fv:double;
-  a:TJvAtom;
-  fn, theunit:string;
-  handled:boolean;
+  s: string;
+  //  iprocs:integer;
+  haveproc: boolean;
+  aActor: TJvSALProc;
+  aParser: TJvSALProc;
+  i, p, p2: integer;
+  fv: double;
+  a: TJvAtom;
+  fn, theunit: string;
+  handled: boolean;
 
-
-  function charfrom(from:integer;achar:char;aText:string):integer;
+  function charfrom(from: integer; achar: char; aText: string): integer;
   var
-    cc:integer;
+    cc: integer;
   begin
-    result:=0;
-    cc:=length(aText);
+    result := 0;
+    cc := length(aText);
     repeat
-      if aText[from]=achar then begin
-        result:=from;
+      if aText[from] = achar then
+      begin
+        result := from;
         exit;
       end;
       inc(from);
-    until from>cc;
+    until from > cc;
   end;
 begin
-  pc:=1;
-  s:=FScript;
+  pc := 1;
+  s := FScript;
   FUnits.Clear;
   // process any includes
   repeat
-    p:=pos(fuseDirective,s); // default use::
-    if p>0 then begin
-      p2:=charfrom(p,' ',s);
-      if p2=0 then
-        raise exception.create('unterminated include directive near '+copy(s,p,50));
-      fn:=trim(copy(s,p+length(fuseDirective),p2-p-length(fuseDirective)));
+    p := pos(fuseDirective, s); // default use::
+    if p > 0 then
+    begin
+      p2 := charfrom(p, ' ', s);
+      if p2 = 0 then
+        raise exception.create('unterminated include directive near ' + copy(s, p, 50));
+      fn := trim(copy(s, p + length(fuseDirective), p2 - p - length(fuseDirective)));
       if not assigned(onGetUnit) then
         raise exception.create('ongetUnit event handler is not assigned');
-      handled:=false;
-      fn:=lowercase(fn);
-      if FUnits.IndexOf(fn)=-1 then begin
-        onGetUnit(self,fn,theunit,handled);
+      handled := false;
+      fn := lowercase(fn);
+      if FUnits.IndexOf(fn) = -1 then
+      begin
+        onGetUnit(self, fn, theunit, handled);
         if not handled then
-          raise exception.create('could not include unit '+fn);
-        theunit:=stringreplace(theunit,cr,' ',[rfreplaceall]);
-        delete(s,p,p2-p);
-        insert(theunit,s,p);
+          raise exception.create('could not include unit ' + fn);
+        theunit := stringreplace(theunit, cr, ' ', [rfreplaceall]);
+        delete(s, p, p2 - p);
+        insert(theunit, s, p);
         FUnits.Append(fn);
       end;
     end;
-  until p=0;
-  while s<>'' do begin
-    if pos(fBeginOfComment,s)=1 then begin  // default= {
-      p:=pos(fEndOfComment,s);  // default= }
-      if p=0 then
-        raise exception.create('unterminated comment near '+s);
-      delete(s,1,p+length(fEndOfComment)-1);
-      s:=trim(s);
+  until p = 0;
+  while s <> '' do
+  begin
+    if pos(fBeginOfComment, s) = 1 then
+    begin // default= {
+      p := pos(fEndOfComment, s); // default= }
+      if p = 0 then
+        raise exception.create('unterminated comment near ' + s);
+      delete(s, 1, p + length(fEndOfComment) - 1);
+      s := trim(s);
     end
-    else if pos(fStringDelim,s)=1 then begin  // default = "
-      delete(s,1,length(fStringDelim));
-      p:=pos(fStringDelim,s);
-      if p=0 then
-        raise exception.create('unterminated string near '+s);
-      token:=copy(s,1,p-1);
-      delete(s,1,p+length(fStringDelim)-1);
-      s:=trim(s);
-      a:=TJvAtom.Create;
-      a.Value:=token;
-      a.actor:=xValue;
-      atoms.AddObject('literal',a);
+    else if pos(fStringDelim, s) = 1 then
+    begin // default = "
+      delete(s, 1, length(fStringDelim));
+      p := pos(fStringDelim, s);
+      if p = 0 then
+        raise exception.create('unterminated string near ' + s);
+      token := copy(s, 1, p - 1);
+      delete(s, 1, p + length(fStringDelim) - 1);
+      s := trim(s);
+      a := TJvAtom.Create;
+      a.Value := token;
+      a.actor := xValue;
+      atoms.AddObject('literal', a);
     end
-    else begin
-      p:=pos(' ',s);
-      if p=0 then begin
-        token:=s;
-        s:='';
+    else
+    begin
+      p := pos(' ', s);
+      if p = 0 then
+      begin
+        token := s;
+        s := '';
       end
-      else begin
-        token:=copy(s,1,p-1);
-        delete(s,1,p);
-        s:=trim(s);
+      else
+      begin
+        token := copy(s, 1, p - 1);
+        delete(s, 1, p);
+        s := trim(s);
       end;
       // take care of aliasis
-      if token='.' then token:='+=';
+      if token = '.' then token := '+=';
       // check for user procs
-      haveproc:=procs.Hash(token,aActor,aParser);
-      try  // float
-        fv:=strtofloat(token);
-        a:=TJvAtom.Create;
-        a.Value:=fv;
-        a.actor:=xValue;
-        atoms.AddObject('literal',a);
+      haveproc := procs.Hash(token, aActor, aParser);
+      try // float
+        fv := strtofloat(token);
+        a := TJvAtom.Create;
+        a.Value := fv;
+        a.actor := xValue;
+        atoms.AddObject('literal', a);
       except //
-        if pos('proc-',token)=1  then begin // begin of procedure
-          if pos('end-proc',s)=0 then
-            raise exception.create('unterminated procedure near'+s);
-          apo(token,xbosub);
+        if pos('proc-', token) = 1 then
+        begin // begin of procedure
+          if pos('end-proc', s) = 0 then
+            raise exception.create('unterminated procedure near' + s);
+          apo(token, xbosub);
         end
-        else if token='end-proc' then apo(token,xeosub)
-        else if copy(token,length(token)-1,2)='()' then apo(token,xproc)  // proc call
-        else if pos('var-',token)=1 then begin  // define variable
-           if atoms.IndexOf(token)<>-1 then
-             raise exception.Create('variable '+token+' allready defined;'+s);
-           a:=TJvAtom.create;
-           a.actor:=xDefVariable;
-           atoms.AddObject(token,a);
+        else if token = 'end-proc' then
+          apo(token, xeosub)
+        else if copy(token, length(token) - 1, 2) = '()' then
+          apo(token, xproc) // proc call
+        else if pos('var-', token) = 1 then
+        begin // define variable
+          if atoms.IndexOf(token) <> -1 then
+            raise exception.Create('variable ' + token + ' allready defined;' + s);
+          a := TJvAtom.create;
+          a.actor := xDefVariable;
+          atoms.AddObject(token, a);
         end
-        else if token[1]='$' then begin  // variable value
+        else if token[1] = '$' then
+        begin // variable value
           // find address
-          i:=atoms.IndexOf('var-'+copy(token,2,maxint));
-          if i=-1 then
-            raise exception.Create('variable '+token+' is not yet defined;'+s);
-          a:=TJvAtom.create;
-          a.Value:=i;
-          a.actor:=xVariable;
-          atoms.AddObject(token,a);
+          i := atoms.IndexOf('var-' + copy(token, 2, maxint));
+          if i = -1 then
+            raise exception.Create('variable ' + token + ' is not yet defined;' + s);
+          a := TJvAtom.create;
+          a.Value := i;
+          a.actor := xVariable;
+          atoms.AddObject(token, a);
         end
-        else if haveproc then begin
-          if @aparser<>nil then
+        else if haveproc then
+        begin
+          if @aparser <> nil then
             aparser
           else
-            apo(Token,aActor);
+            apo(Token, aActor);
         end
         else
-          raise exception.create('procedure '+token+' near '+s);
+          raise exception.create('procedure ' + token + ' near ' + s);
       end
     end
   end;
   // now resolve procs()
-  if atoms.count=0 then exit;
-  for i:=0 to atoms.count-1 do begin
-    s:=atoms[i];
-    if copy(s,length(s)-1,2)='()' then begin
-      s:='proc-'+copy(s,1,length(s)-2);
-      p:=atoms.indexof(s);
-      if p=-1 then
-        raise exception.create('undefined procedure '+s);
-      TJvAtom(atoms.objects[i]).value:=p;
+  if atoms.count = 0 then exit;
+  for i := 0 to atoms.count - 1 do
+  begin
+    s := atoms[i];
+    if copy(s, length(s) - 1, 2) = '()' then
+    begin
+      s := 'proc-' + copy(s, 1, length(s) - 2);
+      p := atoms.indexof(s);
+      if p = -1 then
+        raise exception.create('undefined procedure ' + s);
+      TJvAtom(atoms.objects[i]).value := p;
     end;
   end;
 end;
 
-
-function TJvSAL.Pop:variant;
+function TJvSAL.Pop: variant;
 begin
   dec(sp);
-  if sp<0 then
+  if sp < 0 then
     raise exception.create('stack underflow');
-  result:=stack[sp];
+  result := stack[sp];
 end;
 
-procedure TJvSAL.Push(aValue:variant);
+procedure TJvSAL.Push(aValue: variant);
 begin
-  stack[sp]:=aValue;
+  stack[sp] := aValue;
   inc(sp);
-  if sp>stacklimit then
+  if sp > stacklimit then
     raise exception.create('stack overflow');
 end;
 
-
 procedure TJvSAL.Setscript(const Value: string);
 begin
-  Fscript := trim(stringreplace(Value,cr,' ',[rfreplaceall]));
+  Fscript := trim(stringreplace(Value, cr, ' ', [rfreplaceall]));
   Atoms.ClearAll;
   parsescript;
 end;
 
-
 procedure TJvSAL.xDefVariable;
 var
-  a:TJvAtom;
+  a: TJvAtom;
 begin
-  a:=TJvAtom(atoms.objects[pcproc]);
-  FvariableName:=atoms[pcproc];
-  Fvariablename:='$'+copy(Fvariablename,5,maxint);
-  Fvariable:=a;
+  a := TJvAtom(atoms.objects[pcproc]);
+  FvariableName := atoms[pcproc];
+  Fvariablename := '$' + copy(Fvariablename, 5, maxint);
+  Fvariable := a;
 end;
-
-
 
 procedure TJvSAL.xValue;
 begin
   push(TJvAtom(atoms.objects[pcproc]).value);
 end;
 
-
 procedure TJvSAL.xVariable;
 var
-  index:integer;
-  a:TJvAtom;
+  index: integer;
+  a: TJvAtom;
 begin
-  a:=TJvAtom(atoms.objects[pcproc]);
-  variableName:=atoms[pcproc];
-  index:=a.Value;
-  variable:=TJvAtom(atoms.objects[index]);
+  a := TJvAtom(atoms.objects[pcproc]);
+  variableName := atoms[pcproc];
+  index := a.Value;
+  variable := TJvAtom(atoms.objects[index]);
 end;
-
-
 
 procedure TJvSAL.stop;
 begin
-  FStop:=true;
+  FStop := true;
 end;
 
 procedure TJvSAL.LoadFromFile(fn: string);
 begin
-  script:=loadstring(fn);
+  script := loadstring(fn);
 end;
-
-
 
 procedure TJvSAL.ClearProcedures;
 begin
-//  procs.ClearAll;
+  //  procs.ClearAll;
   procs.Clear;
 end;
 
@@ -508,52 +513,52 @@ procedure TJvSAL.AddProcedure(aName: string; aProcedure, aParser: TJvSALProc);
 //var
 //  a:TJvSALProcAtom;
 begin
-//  a:=TJvSALProcAtom.Create;
-//  a.actor:=aProcedure;
-//  a.parser:=aParser;
-//  procs.AddObject(aName,a);
-  procs.AddString(aName,aProcedure,aParser);
+  //  a:=TJvSALProcAtom.Create;
+  //  a.actor:=aProcedure;
+  //  a.parser:=aParser;
+  //  procs.AddObject(aName,a);
+  procs.AddString(aName, aProcedure, aParser);
 end;
-
 
 function TJvSAL.rPop: integer;
 begin
   dec(rsp);
-  if rsp<0 then
+  if rsp < 0 then
     raise exception.create('return stack underflow');
-  result:=rstack[rsp];
+  result := rstack[rsp];
 end;
 
 procedure TJvSAL.rPush(aValue: integer);
 begin
-  rstack[rsp]:=aValue;
+  rstack[rsp] := aValue;
   inc(rsp);
-  if rsp>stacklimit then
+  if rsp > stacklimit then
     raise exception.create('return stack overflow');
 end;
 
 // end of subroutine, marked with end-proc
+
 procedure TJvSAL.xeosub;
 begin
-  pc:=rpop;
+  pc := rpop;
 end;
 
 // begin of subroutine, marked with [
 // loop to ]
+
 procedure TJvSAL.xbosub;
 var
-  op:string;
-  c:integer;
+  op: string;
+  c: integer;
 begin
-  c:=atoms.count;
+  c := atoms.count;
   repeat
-    op:=atoms[pc];
+    op := atoms[pc];
     inc(fpc);
-    if op='end-proc' then exit;
-  until pc>=c ;
+    if op = 'end-proc' then exit;
+  until pc >= c;
   raise exception.Create('could not find end of procedure');
 end;
-
 
 procedure TJvSAL.SetonGetUnit(const Value: TonGetUnit);
 begin
@@ -561,15 +566,15 @@ begin
 end;
 
 // function call
+
 procedure TJvSAL.xProc;
 var
-  index:integer;
+  index: integer;
 begin
-  index:=TJvAtom(atoms.objects[pcproc]).value;
+  index := TJvAtom(atoms.objects[pcproc]).value;
   rpush(pc);
-  pc:=index+1;
+  pc := index + 1;
 end;
-
 
 procedure TJvSAL.SetVariable(const Value: TJvAtom);
 begin
@@ -585,8 +590,6 @@ procedure TJvSAL.SettheSelect(const Value: variant);
 begin
   FtheSelect := Value;
 end;
-
-
 
 procedure TJvSAL.SetuseDirective(const Value: string);
 begin
@@ -613,16 +616,13 @@ begin
   Fpc := Value;
 end;
 
-
-
-
-function TJvSAL.apo(op:string;aProc: TJvSALProc): integer;
+function TJvSAL.apo(op: string; aProc: TJvSALProc): integer;
 var
-  a:TJvAtom;
+  a: TJvAtom;
 begin
-  a:=TJvAtom.create;
-  a.actor:=aProc;
-  result:=atoms.AddObject(op,a);
+  a := TJvAtom.create;
+  a.actor := aProc;
+  result := atoms.AddObject(op, a);
 end;
 
 procedure TJvSAL.Settoken(const Value: string);

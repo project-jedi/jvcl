@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvTracker.PAS, released on 2002-06-15.
+The Original Code is: JvTracker.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -27,7 +27,7 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
-unit jvTracker;
+unit JvTracker;
 
 interface
 
@@ -36,18 +36,18 @@ uses
   ExtCtrls;
 
 type
-  TonChangedValue= procedure (sender:TObject;NewValue:integer) of object;
+  TonChangedValue = procedure(sender: TObject; NewValue: integer) of object;
 
-  TjtbOrientation=(jtbHorizontal,jtbVertical);
+  TjtbOrientation = (jtbHorizontal, jtbVertical);
 
   TJvTracker = class(TCustomControl)
   private
-    FHitRect:TRect;
-    FTrackRect:TRect;
-    FTumbRect:TRect;
-    FTumbPosition:integer;
-    FTumbMin:integer;
-    FTumbmax:integer;
+    FHitRect: TRect;
+    FTrackRect: TRect;
+    FTumbRect: TRect;
+    FTumbPosition: integer;
+    FTumbMin: integer;
+    FTumbmax: integer;
     FValue: integer;
     FMinimum: integer;
     FMaximum: integer;
@@ -67,7 +67,7 @@ type
     FOrientation: TjtbOrientation;
     FBackBitmap: TBitmap;
     { Added By Steve Childs, 18/4/00 }
-    FbClickWasInRect : Boolean;
+    FbClickWasInRect: Boolean;
     FBorderColor: Tcolor;
     FTrackPositionColor: boolean; // Was the original mouse click in the Track Rect ?
 
@@ -94,7 +94,7 @@ type
     procedure SetCaptionBold(const Value: boolean);
     procedure SetOrientation(const Value: TjtbOrientation);
     procedure SetBackBitmap(const Value: TBitmap);
-    procedure BackBitmapChanged(sender:TObject);
+    procedure BackBitmapChanged(sender: TObject);
     { Added By Steve Childs, 18/4/00 }
     procedure WMEraseBkgnd(var Msg: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure SetBorderColor(const Value: Tcolor);
@@ -103,87 +103,84 @@ type
     { Private declarations }
   protected
     { Protected declarations }
-    procedure doChangedValue(NewValue:integer);
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer);override;
+    procedure doChangedValue(NewValue: integer);
+    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     { Added By Steve Childs, 18/4/00 }
-    procedure MouseDown(Button: TMouseButton;Shift: TShiftState; X, Y: Integer);override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     { Added By Steve Childs, 18/4/00 }
-    procedure MouseUp(Button: TMouseButton;Shift: TShiftState; X, Y: Integer);override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Resize; override;
 
   public
     { Public declarations }
-    constructor Create (AOwner:TComponent);override;
+    constructor Create(AOwner: TComponent); override;
     procedure Paint; override;
   published
     { Published declarations }
-    property Minimum:integer read FMinimum write SetMinimum;
-    property Maximum:integer read FMaximum write SetMaximum;
-    property Value:integer read FValue write SetValue;
-    property Orientation:TjtbOrientation read FOrientation write SetOrientation;
-    property BackBitmap:TBitmap read FBackBitmap write SetBackBitmap;
-    property BackColor:TColor read FBackColor write SetBackColor;
-    property BackBorder:boolean read FBackBorder write SetBackBorder;
-    property TrackColor:TColor read FTrackColor write SetTrackColor;
-    property TrackPositionColor:boolean read FTrackPositionColor write SetTrackPositionColor;
-    property TrackBorder:boolean read FTrackBorder write SetTrackBorder;
-    property BorderColor:Tcolor read FBorderColor write SetBorderColor;
+    property Minimum: integer read FMinimum write SetMinimum;
+    property Maximum: integer read FMaximum write SetMaximum;
+    property Value: integer read FValue write SetValue;
+    property Orientation: TjtbOrientation read FOrientation write SetOrientation;
+    property BackBitmap: TBitmap read FBackBitmap write SetBackBitmap;
+    property BackColor: TColor read FBackColor write SetBackColor;
+    property BackBorder: boolean read FBackBorder write SetBackBorder;
+    property TrackColor: TColor read FTrackColor write SetTrackColor;
+    property TrackPositionColor: boolean read FTrackPositionColor write SetTrackPositionColor;
+    property TrackBorder: boolean read FTrackBorder write SetTrackBorder;
+    property BorderColor: Tcolor read FBorderColor write SetBorderColor;
     {
       Changed Next 4 By Steve Childs, 18/4/00, Corrects Spelling Mistake
       Although, this may cause more trouble than it's worth with exisiting users
       So you might want to comment these out
     }
-    property ThumbColor:TColor read FTumbColor write SetTumbColor;
-    property ThumbBorder:boolean read FTumbBorder write SetTumbBorder;
-    property ThumbWidth:integer read FTumbWidth write SetTumbWidth;
-    property ThumbHeight:integer read FTumbHeight write SetTumbHeight;
+    property ThumbColor: TColor read FTumbColor write SetTumbColor;
+    property ThumbBorder: boolean read FTumbBorder write SetTumbBorder;
+    property ThumbWidth: integer read FTumbWidth write SetTumbWidth;
+    property ThumbHeight: integer read FTumbHeight write SetTumbHeight;
 
-
-    property TrackHeight:integer read FTrackHeight write SetTrackHeight;
-    property ShowCaption:boolean read FShowCaption write SetShowCaption;
-    property CaptionColor:TColor read FCaptionColor write SetCaptionColor;
-    property CaptionBold:boolean read FCaptionBold write SetCaptionBold;
-    property onChangedValue:TonChangedValue read FonChangedValue write SetonChangedValue;
+    property TrackHeight: integer read FTrackHeight write SetTrackHeight;
+    property ShowCaption: boolean read FShowCaption write SetShowCaption;
+    property CaptionColor: TColor read FCaptionColor write SetCaptionColor;
+    property CaptionBold: boolean read FCaptionBold write SetCaptionBold;
+    property onChangedValue: TonChangedValue read FonChangedValue write SetonChangedValue;
   end;
 
-
 implementation
-
 
 { TJvTracker }
 
 constructor TJvTracker.Create(AOwner: TComponent);
 begin
   inherited;
-  width:=150;
-  height:=24;
-  FOrientation:=jtbHorizontal;
-  FTrackHeight:=6;
-  FTumbWidth:=20;
-  FTumbHeight:=16;
-  FBackColor:=clsilver;
-  FTrackColor:=clgray;
-  FTrackBorder:=true;
-  FBorderColor:=clblack;
-  FTumbColor:=clsilver;
-  FCaptioncolor:=clblack;
-  FShowCaption:=true;
-  FMinimum:=0;
-  FMaximum:=100;
-  FValue:=0;
+  width := 150;
+  height := 24;
+  FOrientation := jtbHorizontal;
+  FTrackHeight := 6;
+  FTumbWidth := 20;
+  FTumbHeight := 16;
+  FBackColor := clsilver;
+  FTrackColor := clgray;
+  FTrackBorder := true;
+  FBorderColor := clblack;
+  FTumbColor := clsilver;
+  FCaptioncolor := clblack;
+  FShowCaption := true;
+  FMinimum := 0;
+  FMaximum := 100;
+  FValue := 0;
   FBackBitmap := TBitmap.Create;
   FBackBitmap.OnChange := BackBitmapChanged;
 end;
 
 procedure TJvTracker.UpdateValue;
 begin
-  FValue:=round(FMinimum+(FTumbPosition-FTumbMin)/(FTumbMax-FTumbMin)*(FMaximum-FMinimum));
+  FValue := round(FMinimum + (FTumbPosition - FTumbMin) / (FTumbMax - FTumbMin) * (FMaximum - FMinimum));
 end;
 
-procedure TJvTracker.MouseDown(Button: TMouseButton;Shift: TShiftState; X, Y: Integer);
+procedure TJvTracker.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if (ssleft in shift) then
-    if ptinRect(FHitRect,point(x,y)) then
+    if ptinRect(FHitRect, point(x, y)) then
     begin
       {
        Added By Steve Childs 18/04/00 - Set Flag To Tell MouseMove event that
@@ -191,8 +188,8 @@ begin
       }
       FbClickWasInRect := True;
       case Orientation of
-        jtbHorizontal: FTumbPosition:=x;
-        jtbVertical  : FTumbPosition:=y;
+        jtbHorizontal: FTumbPosition := x;
+        jtbVertical: FTumbPosition := y;
       end;
       UpdateValue;
       SetTumbRect;
@@ -204,68 +201,69 @@ end;
 procedure TJvTracker.SetTumbMinMax;
 begin
   case Orientation of
-  jtbHorizontal:
-    begin
-      FTumbMin:=5+(FTumbwidth div 2);
-      FTumbMax:=Width-FTumbMin;
-    end;
-  jtbVertical:
-    begin
-      FTumbMin:=5+(FTumbHeight div 2);
-      FTumbMax:=Height-FTumbMin;
-    end;
+    jtbHorizontal:
+      begin
+        FTumbMin := 5 + (FTumbwidth div 2);
+        FTumbMax := Width - FTumbMin;
+      end;
+    jtbVertical:
+      begin
+        FTumbMin := 5 + (FTumbHeight div 2);
+        FTumbMax := Height - FTumbMin;
+      end;
   end;
 end;
 
 procedure TJvTracker.SetTrackRect;
-var dy,dx:integer;
+var
+  dy, dx: integer;
 begin
   case Orientation of
-  jtbHorizontal:
-  begin
-    dy:=(height-FTrackHeight) div 2;
-    FTrackRect:=Rect(FTumbMin,dy,FTumbMax,height-dy);
-    FHitRect:=FTrackrect;
-    inflateRect(FHitRect,0,(FTumbHeight-FTrackHeight) div 2);
-  end;
-  jtbVertical:
-  begin
-    dx:=(Width-FTrackHeight) div 2;
-    FTrackRect:=Rect(dx,FTumbMin,Width-dx,FTumbMax);
-    FHitRect:=FTrackrect;
-    inflateRect(FHitRect,(FTumbWidth-FTrackHeight) div 2,0);
-  end;
+    jtbHorizontal:
+      begin
+        dy := (height - FTrackHeight) div 2;
+        FTrackRect := Rect(FTumbMin, dy, FTumbMax, height - dy);
+        FHitRect := FTrackrect;
+        inflateRect(FHitRect, 0, (FTumbHeight - FTrackHeight) div 2);
+      end;
+    jtbVertical:
+      begin
+        dx := (Width - FTrackHeight) div 2;
+        FTrackRect := Rect(dx, FTumbMin, Width - dx, FTumbMax);
+        FHitRect := FTrackrect;
+        inflateRect(FHitRect, (FTumbWidth - FTrackHeight) div 2, 0);
+      end;
   end;
 end;
 
 procedure TJvTracker.SetTumbRect;
-var dx,dy:integer;
+var
+  dx, dy: integer;
 begin
   case Orientation of
-  jtbHorizontal:
-    begin
-      dx:=FTumbWidth div 2;
-      dy:=(height-FTumbHeight) div 2;
-      FTumbrect:=Rect(FTumbPosition-dx,dy,FTumbPosition+dx,height-dy);
-    end;
-  jtbVertical:
-    begin
-      dy:=FTumbHeight div 2;
-      dx:=(Width-FTumbWidth) div 2;
-      FTumbrect:=Rect(dx,FTumbPosition-dy,Width-dx,FTumbPosition+dy);
-    end;
+    jtbHorizontal:
+      begin
+        dx := FTumbWidth div 2;
+        dy := (height - FTumbHeight) div 2;
+        FTumbrect := Rect(FTumbPosition - dx, dy, FTumbPosition + dx, height - dy);
+      end;
+    jtbVertical:
+      begin
+        dy := FTumbHeight div 2;
+        dx := (Width - FTumbWidth) div 2;
+        FTumbrect := Rect(dx, FTumbPosition - dy, Width - dx, FTumbPosition + dy);
+      end;
   end;
 end;
 
-
 procedure TJvTracker.Paint;
 var
-  s : string;
+  s: string;
   {Added By Steve Childs 18/04/00 - Double Buffer Bitmap}
-  Buffer : TBitmap;
-  col:TColor;
-  r,g,b:Byte;
-  fact:double;
+  Buffer: TBitmap;
+  col: TColor;
+  r, g, b: Byte;
+  fact: double;
 
   procedure DrawBackBitmap;
   var
@@ -288,74 +286,77 @@ var
             0, 0, SRCCOPY);
     end;
 
-   { Old Code!!}
-{      hCanvas := THandle(canvas.handle);
-      for iy := 0 to ClientHeight div BmpHeight do
-        for ix := 0 to ClientWidth div BmpWidth do
-          BitBlt(hCanvas, ix * BmpWidth, iy * BmpHeight,
-            BmpWidth, BmpHeight, BmpCanvas,
-            0, 0, SRCCOPY);
-    end;}
+    { Old Code!!}
+ {      hCanvas := THandle(canvas.handle);
+       for iy := 0 to ClientHeight div BmpHeight do
+         for ix := 0 to ClientWidth div BmpWidth do
+           BitBlt(hCanvas, ix * BmpWidth, iy * BmpHeight,
+             BmpWidth, BmpHeight, BmpCanvas,
+             0, 0, SRCCOPY);
+     end;}
   end;
 
   procedure DrawBackGround;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
-    if FBackBorder then begin
-      Buffer.canvas.pen.color:=FBorderColor;  // modified 2-jul-2000 by Jan Verhoeven
+    if FBackBorder then
+    begin
+      Buffer.canvas.pen.color := FBorderColor; // modified 2-jul-2000 by Jan Verhoeven
     end
-    else begin
-      Buffer.canvas.pen.color:=FBackColor;
+    else
+    begin
+      Buffer.canvas.pen.color := FBackColor;
     end;
-    Buffer.canvas.brush.color:=FBackColor;
-    Buffer.canvas.Rectangle (rect(0,0,width,height));
+    Buffer.canvas.brush.color := FBackColor;
+    Buffer.canvas.Rectangle(rect(0, 0, width, height));
   end;
 
   procedure DrawTrack;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
-    if FTrackPositionColor then begin  // 2-jul-2000 Jan Verhoeven
-      fact:=value/(maximum-minimum);
-      r:=getrvalue(FtrackColor);
-      g:=getgvalue(FtrackColor);
-      b:=getbvalue(FtrackColor);
-      col:=rgb(trunc(fact*r),trunc(fact*g),trunc(fact*b));
-      Buffer.canvas.brush.color:=col;
+    if FTrackPositionColor then
+    begin // 2-jul-2000 Jan Verhoeven
+      fact := value / (maximum - minimum);
+      r := getrvalue(FtrackColor);
+      g := getgvalue(FtrackColor);
+      b := getbvalue(FtrackColor);
+      col := rgb(trunc(fact * r), trunc(fact * g), trunc(fact * b));
+      Buffer.canvas.brush.color := col;
     end
     else
-      Buffer.canvas.brush.color:=FTrackColor;
+      Buffer.canvas.brush.color := FTrackColor;
     Buffer.canvas.FillRect(FTrackRect);
-    Buffer.canvas.pen.style:=pssolid;
+    Buffer.canvas.pen.style := pssolid;
     if FTrackBorder then
-      Frame3D( Buffer.Canvas, FTrackRect, clBlack, clBtnHighlight, 1 );
+      Frame3D(Buffer.Canvas, FTrackRect, clBlack, clBtnHighlight, 1);
   end;
 
   procedure DrawCaption;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
     s := intToStr(FValue);
-    Buffer.canvas.brush.style:=bsclear;
+    Buffer.canvas.brush.style := bsclear;
     if FCaptionBold then
-      Buffer.canvas.font.style:=canvas.font.style+[fsbold]
+      Buffer.canvas.font.style := canvas.font.style + [fsbold]
     else
-      Buffer.canvas.font.style:=canvas.font.style-[fsbold];
-    Buffer.canvas.font.color:=FCaptionColor;
-    drawText(Buffer.canvas.handle,pchar(s),-1,FTumbRect,DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS);
+      Buffer.canvas.font.style := canvas.font.style - [fsbold];
+    Buffer.canvas.font.color := FCaptionColor;
+    drawText(Buffer.canvas.handle, pchar(s), -1, FTumbRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE or DT_END_ELLIPSIS);
   end;
 
   procedure DrawTumb;
   begin
     { Changed By Steve Childs 18/04/00 - Now Refers To Buffer Bitmap}
-    Buffer.canvas.brush.color:=FTumbColor;
+    Buffer.canvas.brush.color := FTumbColor;
     Buffer.canvas.FillRect(FTumbRect);
-    Buffer.canvas.pen.style:=pssolid;
-    Frame3D( Buffer.Canvas, FTumbRect, clBtnHighlight, clBlack, 1 );
+    Buffer.canvas.pen.style := pssolid;
+    Frame3D(Buffer.Canvas, FTumbRect, clBtnHighlight, clBlack, 1);
   end;
 
 begin
   { Added By Steve Childs 18/04/00 - Added Double Buffering}
   Buffer := TBitmap.Create;
-  Try
+  try
     { Added By Steve Childs 18/04/00 - Setup DoubleBuffer Bitmap}
     Buffer.Width := ClientWidth;
     Buffer.Height := ClientHeight;
@@ -371,12 +372,12 @@ begin
     DrawTumb;
     if FShowCaption then
       DrawCaption;
-  Finally
+  finally
     { Added By Steve Childs 18/04/00 - Finally, Draw the Buffer Onto Main Canvas}
-    Canvas.Draw(0,0,Buffer);
+    Canvas.Draw(0, 0, Buffer);
     { Added By Steve Childs 18/04/00 - Free Buffer}
     Buffer.Free;
-  End;
+  end;
 end;
 
 procedure TJvTracker.SetBackColor(const Value: TColor);
@@ -387,31 +388,32 @@ end;
 
 procedure TJvTracker.SetMaximum(const Value: integer);
 begin
-  if value>FMinimum then
+  if value > FMinimum then
   begin
     FMaximum := Value;
-    if FValue>FMaximum then
-      FValue:=FMaximum;
+    if FValue > FMaximum then
+      FValue := FMaximum;
     UpdatePosition;
   end;
 end;
 
 procedure TJvTracker.SetMinimum(const Value: integer);
 begin
-  if value<FMaximum then
+  if value < FMaximum then
   begin
     FMinimum := Value;
-    if FValue<FMinimum then
-      FValue:=FMinimum;
+    if FValue < FMinimum then
+      FValue := FMinimum;
     UpdatePosition;
   end;
 end;
 
 procedure TJvTracker.UpdatePosition;
-var fac:extended;
+var
+  fac: extended;
 begin
-  fac:=(FValue-FMinimum)/(FMaximum-FMinimum);
-  FTumbPosition:=FTumbMin+round((FTumbMax-FTumbMin)*fac);
+  fac := (FValue - FMinimum) / (FMaximum - FMinimum);
+  FTumbPosition := FTumbMin + round((FTumbMax - FTumbMin) * fac);
   invalidate;
 end;
 
@@ -429,7 +431,7 @@ end;
 
 procedure TJvTracker.SetValue(const Value: integer);
 begin
-  if (FValue>=FMinimum) and (FValue<=FMaximum) then
+  if (FValue >= FMinimum) and (FValue <= FMaximum) then
   begin
     FValue := Value;
     UpdatePosition;
@@ -448,7 +450,7 @@ end;
 
 procedure TJvTracker.SetTumbHeight(const Value: integer);
 begin
-  if value<height then
+  if value < height then
   begin
     FTumbHeight := Value;
     SetTumbMinMax;
@@ -461,24 +463,24 @@ end;
 procedure TJvTracker.SetTrackHeight(const Value: integer);
 begin
   case Orientation of
-  jtbHorizontal:
-  begin
-    if value<(Height) then
-    begin
-    FTrackHeight := Value;
-    setTrackrect;
-    invalidate;
-    end;
-  end;
-  jtbVertical:
-  begin
-    if value<(Width) then
-    begin
-    FTrackHeight := Value;
-    setTrackrect;
-    invalidate;
-    end;
-  end;
+    jtbHorizontal:
+      begin
+        if value < (Height) then
+        begin
+          FTrackHeight := Value;
+          setTrackrect;
+          invalidate;
+        end;
+      end;
+    jtbVertical:
+      begin
+        if value < (Width) then
+        begin
+          FTrackHeight := Value;
+          setTrackrect;
+          invalidate;
+        end;
+      end;
   end;
 end;
 
@@ -490,7 +492,7 @@ end;
 procedure TJvTracker.doChangedValue(NewValue: integer);
 begin
   if assigned(onChangedValue) then
-   onchangedvalue(self,NewValue);
+    onchangedvalue(self, NewValue);
 end;
 
 procedure TJvTracker.Resize;
@@ -538,14 +540,15 @@ begin
 end;
 
 procedure TJvTracker.SetOrientation(const Value: TjtbOrientation);
-var tmp:integer;
+var
+  tmp: integer;
 begin
-  FOrientation:= Value;
+  FOrientation := Value;
   if (csDesigning in ComponentState) then
   begin
-    tmp:=width;
-    width:=height;
-    height:=tmp;
+    tmp := width;
+    width := height;
+    height := tmp;
   end;
   invalidate;
 end;
@@ -564,65 +567,67 @@ procedure TJvTracker.WMEraseBkgnd(var Msg: TWmEraseBkgnd);
 { Added By Steve Childs 18/04/00
   This elimates the flickering background when the thumb is updated
 }
-Begin
-{ Added By Steve Childs 18/04/00 - Tell Windows that we have cleared background }
+begin
+  { Added By Steve Childs 18/04/00 - Tell Windows that we have cleared background }
   msg.Result := -1
-End;
+end;
 
 procedure TJvTracker.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
- inherited;
- if (ssleft in shift) then
-  if FbClickWasInRect then
-  begin
-    {
-      - Added By Steve Childs 18/04/00
-      OK, we know that when the mouse button went down, the
-      click was in the rect. So, we only need to check that it's now
-      within the bounds of the track (otherwise the button goes off the
-      end of the track!!)
+  inherited;
+  if (ssleft in shift) then
+    if FbClickWasInRect then
+    begin
+      {
+        - Added By Steve Childs 18/04/00
+        OK, we know that when the mouse button went down, the
+        click was in the rect. So, we only need to check that it's now
+        within the bounds of the track (otherwise the button goes off the
+        end of the track!!)
 
-    }
-//    If (X >= FTrackRect.Left) and (X <= FTrackRect.Right) then
-    if ptinrect(FTrackRect,point(x,y)) then  // 2-jul-2000 Jan Verhoeven
-     If Orientation = jtbHorizontal then
-       FTumbPosition := x
-     else
-       FTumbPosition := y
-    Else
-    Begin
-      { Added By Steve Childs 18/04/00
-        If it's off the edges - Set Either to left or right, depending on
-        which side the mouse is!!
       }
-      // 2-jul-2000 Jan Verhoeven
-      if Orientation=jtbHorizontal then begin
-        if x<FTrackRect.left then
-          FTumbPosition := FTrackRect.Left-1
-        else if x>FTrackRect.right then
-          FTumbPosition := FTrackRect.Right+1
+  //    If (X >= FTrackRect.Left) and (X <= FTrackRect.Right) then
+      if ptinrect(FTrackRect, point(x, y)) then // 2-jul-2000 Jan Verhoeven
+        if Orientation = jtbHorizontal then
+          FTumbPosition := x
         else
-          FTumbPosition:=x;
-      end
-      else begin
-        if y<FTrackRect.top then
-          FTumbPosition := FTrackRect.top-1
-        else if y>FTrackRect.bottom then
-          FTumbPosition := FTrackRect.bottom+1
-        else
-          FTumbPosition:=y;
-      end;
-{      If X < FTrackRect.Left then
-        FTumbPosition := FTrackRect.Left-1
+          FTumbPosition := y
       else
-        // Must Be Off Right
-        FTumbPosition := FTrackRect.Right+1;}
-    End;
-    UpdateValue;
-    SetTumbRect;
-    invalidate;
-    dochangedValue(FValue);
-  end;
+      begin
+        { Added By Steve Childs 18/04/00
+          If it's off the edges - Set Either to left or right, depending on
+          which side the mouse is!!
+        }
+        // 2-jul-2000 Jan Verhoeven
+        if Orientation = jtbHorizontal then
+        begin
+          if x < FTrackRect.left then
+            FTumbPosition := FTrackRect.Left - 1
+          else if x > FTrackRect.right then
+            FTumbPosition := FTrackRect.Right + 1
+          else
+            FTumbPosition := x;
+        end
+        else
+        begin
+          if y < FTrackRect.top then
+            FTumbPosition := FTrackRect.top - 1
+          else if y > FTrackRect.bottom then
+            FTumbPosition := FTrackRect.bottom + 1
+          else
+            FTumbPosition := y;
+        end;
+        {      If X < FTrackRect.Left then
+                FTumbPosition := FTrackRect.Left-1
+              else
+                // Must Be Off Right
+                FTumbPosition := FTrackRect.Right+1;}
+      end;
+      UpdateValue;
+      SetTumbRect;
+      invalidate;
+      dochangedValue(FValue);
+    end;
 end;
 
 procedure TJvTracker.MouseUp(Button: TMouseButton; Shift: TShiftState; X,

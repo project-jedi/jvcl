@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvSAL.PAS, released on 2002-06-15.
+The Original Code is: JvSAL.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -24,30 +24,30 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
-unit jvSALMath;
+unit JvSALMath;
 
 // SAL math package
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,jvSAL,math;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvSAL, math;
 
 type
   TJvSALMath = class(TComponent)
   private
     { Private declarations }
-    sal:TJvSAL;
+    sal: TJvSAL;
   protected
     { Protected declarations }
   public
     { Public declarations }
-    procedure AddProcedures(aSal:TJvSAL);
+    procedure AddProcedures(aSal: TJvSAL);
     procedure xSin;
     procedure xArcSin;
     procedure xCos;
     procedure xArcCos;
     procedure xTan;
-    procedure xArcTan;    
+    procedure xArcTan;
     procedure xPi;
     procedure xExp;
     procedure xLn;
@@ -56,56 +56,52 @@ type
     { Published declarations }
   end;
 
-
 implementation
 
-
 const
-  cr = chr(13)+chr(10);
+  cr = chr(13) + chr(10);
   tab = chr(9);
 
-{ TJvSALMathBasic }
+  { TJvSALMathBasic }
 
 procedure TJvSALMath.AddProcedures(aSal: TJvSAL);
 begin
-  sal:=aSal;
-  sal.AddProcedure('sin',xsin,nil);
-  sal.AddProcedure('cos',xcos,nil);
-  sal.AddProcedure('tan',xtan,nil);
-  sal.AddProcedure('arcsin',xsin,nil);
-  sal.AddProcedure('arccos',xcos,nil);
-  sal.AddProcedure('arctan',xtan,nil);
-  sal.AddProcedure('pi',xpi,nil);
-  sal.AddProcedure('exp',xpi,nil);
-  sal.AddProcedure('ln',xpi,nil);
+  sal := aSal;
+  sal.AddProcedure('sin', xsin, nil);
+  sal.AddProcedure('cos', xcos, nil);
+  sal.AddProcedure('tan', xtan, nil);
+  sal.AddProcedure('arcsin', xsin, nil);
+  sal.AddProcedure('arccos', xcos, nil);
+  sal.AddProcedure('arctan', xtan, nil);
+  sal.AddProcedure('pi', xpi, nil);
+  sal.AddProcedure('exp', xpi, nil);
+  sal.AddProcedure('ln', xpi, nil);
 end;
-
 
 procedure TJvSALMath.xSin;
 var
-  v1:variant;
+  v1: variant;
 begin
-  v1:=sal.pop;
-  v1:=sin(v1);
+  v1 := sal.pop;
+  v1 := sin(v1);
   sal.push(v1);
 end;
 
-
 procedure TJvSALMath.xCos;
 var
-  v1:variant;
+  v1: variant;
 begin
-  v1:=sal.pop;
-  v1:=cos(v1);
+  v1 := sal.pop;
+  v1 := cos(v1);
   sal.push(v1);
 end;
 
 procedure TJvSALMath.xTan;
 var
-  v1:variant;
+  v1: variant;
 begin
-  v1:=sal.pop;
-  v1:=tan(v1);
+  v1 := sal.pop;
+  v1 := tan(v1);
   sal.push(v1);
 end;
 

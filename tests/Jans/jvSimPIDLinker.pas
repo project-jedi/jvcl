@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvSimPIDlinker.PAS, released on 2002-06-15.
+The Original Code is: JvSimPIDlinker.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -24,48 +24,48 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
-unit jvSimPIDLinker;
+unit JvSimPIDLinker;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,jvSimPID;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, JvSimPID;
 
 type
-  TjvSimPIDLinker = class(TComponent)
+  TJvSimPIDLinker = class(TComponent)
   private
-    FIn1: TjvSimPID;
-    FOut1: TjvSimPID;
-    FOut7: TjvSimPID;
-    FOut6: TjvSimPID;
-    FOut4: TjvSimPID;
-    FIn2: TjvSimPID;
-    FIn4: TjvSimPID;
-    FOut2: TjvSimPID;
-    FIn8: TjvSimPID;
-    FOut8: TjvSimPID;
-    FIn5: TjvSimPID;
-    FOut3: TjvSimPID;
-    FIn3: TjvSimPID;
-    FIn7: TjvSimPID;
-    FOut5: TjvSimPID;
-    FIn6: TjvSimPID;
-    procedure SetIn1(const Value: TjvSimPID);
-    procedure SetOut1(const Value: TjvSimPID);
-    procedure SetIn2(const Value: TjvSimPID);
-    procedure SetIn3(const Value: TjvSimPID);
-    procedure SetIn4(const Value: TjvSimPID);
-    procedure SetIn5(const Value: TjvSimPID);
-    procedure SetIn6(const Value: TjvSimPID);
-    procedure SetIn7(const Value: TjvSimPID);
-    procedure SetIn8(const Value: TjvSimPID);
-    procedure SetOut2(const Value: TjvSimPID);
-    procedure SetOut3(const Value: TjvSimPID);
-    procedure SetOut4(const Value: TjvSimPID);
-    procedure SetOut5(const Value: TjvSimPID);
-    procedure SetOut6(const Value: TjvSimPID);
-    procedure SetOut7(const Value: TjvSimPID);
-    procedure SetOut8(const Value: TjvSimPID);
+    FIn1: TJvSimPID;
+    FOut1: TJvSimPID;
+    FOut7: TJvSimPID;
+    FOut6: TJvSimPID;
+    FOut4: TJvSimPID;
+    FIn2: TJvSimPID;
+    FIn4: TJvSimPID;
+    FOut2: TJvSimPID;
+    FIn8: TJvSimPID;
+    FOut8: TJvSimPID;
+    FIn5: TJvSimPID;
+    FOut3: TJvSimPID;
+    FIn3: TJvSimPID;
+    FIn7: TJvSimPID;
+    FOut5: TJvSimPID;
+    FIn6: TJvSimPID;
+    procedure SetIn1(const Value: TJvSimPID);
+    procedure SetOut1(const Value: TJvSimPID);
+    procedure SetIn2(const Value: TJvSimPID);
+    procedure SetIn3(const Value: TJvSimPID);
+    procedure SetIn4(const Value: TJvSimPID);
+    procedure SetIn5(const Value: TJvSimPID);
+    procedure SetIn6(const Value: TJvSimPID);
+    procedure SetIn7(const Value: TJvSimPID);
+    procedure SetIn8(const Value: TJvSimPID);
+    procedure SetOut2(const Value: TJvSimPID);
+    procedure SetOut3(const Value: TJvSimPID);
+    procedure SetOut4(const Value: TJvSimPID);
+    procedure SetOut5(const Value: TJvSimPID);
+    procedure SetOut6(const Value: TJvSimPID);
+    procedure SetOut7(const Value: TJvSimPID);
+    procedure SetOut8(const Value: TJvSimPID);
     { Private declarations }
   protected
     { Protected declarations }
@@ -74,133 +74,130 @@ type
     procedure Execute;
   published
     { Published declarations }
-    property In1:TjvSimPID read FIn1 write SetIn1;
-    property Out1:TjvSimPID read FOut1 write SetOut1;
-    property In2:TjvSimPID read FIn2 write SetIn2;
-    property Out2:TjvSimPID read FOut2 write SetOut2;
-    property In3:TjvSimPID read FIn3 write SetIn3;
-    property Out3:TjvSimPID read FOut3 write SetOut3;
-    property In4:TjvSimPID read FIn4 write SetIn4;
-    property Out4:TjvSimPID read FOut4 write SetOut4;
-    property In5:TjvSimPID read FIn5 write SetIn5;
-    property Out5:TjvSimPID read FOut5 write SetOut5;
-    property In6:TjvSimPID read FIn6 write SetIn6;
-    property Out6:TjvSimPID read FOut6 write SetOut6;
-    property In7:TjvSimPID read FIn7 write SetIn7;
-    property Out7:TjvSimPID read FOut7 write SetOut7;
-    property In8:TjvSimPID read FIn8 write SetIn8;
-    property Out8:TjvSimPID read FOut8 write SetOut8;
-
+    property In1: TJvSimPID read FIn1 write SetIn1;
+    property Out1: TJvSimPID read FOut1 write SetOut1;
+    property In2: TJvSimPID read FIn2 write SetIn2;
+    property Out2: TJvSimPID read FOut2 write SetOut2;
+    property In3: TJvSimPID read FIn3 write SetIn3;
+    property Out3: TJvSimPID read FOut3 write SetOut3;
+    property In4: TJvSimPID read FIn4 write SetIn4;
+    property Out4: TJvSimPID read FOut4 write SetOut4;
+    property In5: TJvSimPID read FIn5 write SetIn5;
+    property Out5: TJvSimPID read FOut5 write SetOut5;
+    property In6: TJvSimPID read FIn6 write SetIn6;
+    property Out6: TJvSimPID read FOut6 write SetOut6;
+    property In7: TJvSimPID read FIn7 write SetIn7;
+    property Out7: TJvSimPID read FOut7 write SetOut7;
+    property In8: TJvSimPID read FIn8 write SetIn8;
+    property Out8: TJvSimPID read FOut8 write SetOut8;
 
   end;
 
-
 implementation
 
+{ TJvSimPIDLinker }
 
-{ TjvSimPIDLinker }
-
-procedure TjvSimPIDLinker.Execute;
-var value:extended;
+procedure TJvSimPIDLinker.Execute;
+var
+  value: extended;
 begin
-if assigned(FIn1) then value:=Fin1.CV ;
-if assigned(FOut1) then FOut1.MV :=value;
-if assigned(FIn2) then value:=Fin2.CV ;
-if assigned(FOut2) then FOut2.MV :=value;
-if assigned(FIn3) then value:=Fin3.CV ;
-if assigned(FOut3) then FOut3.MV :=value;
-if assigned(FIn4) then value:=Fin4.CV ;
-if assigned(FOut4) then FOut4.MV :=value;
-if assigned(FIn5) then value:=Fin5.CV ;
-if assigned(FOut5) then FOut5.MV :=value;
-if assigned(FIn6) then value:=Fin6.CV ;
-if assigned(FOut6) then FOut6.MV :=value;
-if assigned(FIn7) then value:=Fin7.CV ;
-if assigned(FOut7) then FOut7.MV :=value;
-if assigned(FIn8) then value:=Fin8.CV ;
-if assigned(FOut8) then FOut8.MV :=value;
+  if assigned(FIn1) then value := Fin1.CV;
+  if assigned(FOut1) then FOut1.MV := value;
+  if assigned(FIn2) then value := Fin2.CV;
+  if assigned(FOut2) then FOut2.MV := value;
+  if assigned(FIn3) then value := Fin3.CV;
+  if assigned(FOut3) then FOut3.MV := value;
+  if assigned(FIn4) then value := Fin4.CV;
+  if assigned(FOut4) then FOut4.MV := value;
+  if assigned(FIn5) then value := Fin5.CV;
+  if assigned(FOut5) then FOut5.MV := value;
+  if assigned(FIn6) then value := Fin6.CV;
+  if assigned(FOut6) then FOut6.MV := value;
+  if assigned(FIn7) then value := Fin7.CV;
+  if assigned(FOut7) then FOut7.MV := value;
+  if assigned(FIn8) then value := Fin8.CV;
+  if assigned(FOut8) then FOut8.MV := value;
 
 end;
 
-procedure TjvSimPIDLinker.SetIn1(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn1(const Value: TJvSimPID);
 begin
   FIn1 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetIn2(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn2(const Value: TJvSimPID);
 begin
   FIn2 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetIn3(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn3(const Value: TJvSimPID);
 begin
   FIn3 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetIn4(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn4(const Value: TJvSimPID);
 begin
   FIn4 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetIn5(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn5(const Value: TJvSimPID);
 begin
   FIn5 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetIn6(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn6(const Value: TJvSimPID);
 begin
   FIn6 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetIn7(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn7(const Value: TJvSimPID);
 begin
   FIn7 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetIn8(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetIn8(const Value: TJvSimPID);
 begin
   FIn8 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut1(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut1(const Value: TJvSimPID);
 begin
   FOut1 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut2(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut2(const Value: TJvSimPID);
 begin
   FOut2 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut3(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut3(const Value: TJvSimPID);
 begin
   FOut3 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut4(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut4(const Value: TJvSimPID);
 begin
   FOut4 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut5(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut5(const Value: TJvSimPID);
 begin
   FOut5 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut6(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut6(const Value: TJvSimPID);
 begin
   FOut6 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut7(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut7(const Value: TJvSimPID);
 begin
   FOut7 := Value;
 end;
 
-procedure TjvSimPIDLinker.SetOut8(const Value: TjvSimPID);
+procedure TJvSimPIDLinker.SetOut8(const Value: TJvSimPID);
 begin
   FOut8 := Value;
 end;
 
 end.
- 

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvSimIndicator.PAS, released on 2002-06-15.
+The Original Code is: JvSimIndicator.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
-unit jvSimIndicator;
+unit JvSimIndicator;
 
 interface
 
@@ -33,7 +33,7 @@ uses
   extCtrls;
 
 type
-  TjvSimIndicator = class(TGraphicControl)
+  TJvSimIndicator = class(TGraphicControl)
   private
     Fvalue: integer;
     Fmaximum: integer;
@@ -51,97 +51,95 @@ type
     { Protected declarations }
   public
     { Public declarations }
-    constructor create(AOwner:Tcomponent); override;
-    destructor  destroy; override;
-    procedure   paint; override;
+    constructor create(AOwner: Tcomponent); override;
+    destructor destroy; override;
+    procedure paint; override;
   published
     { Published declarations }
-    property value:integer read Fvalue write Setvalue;
-    property minimum:integer read Fminimum write Setminimum;
-    property maximum:integer read Fmaximum write Setmaximum;
-    property BarColor:TColor read FColor write SetBarColor;
-    property BackColor:TColor read FBackColor write SetBackColor;
+    property value: integer read Fvalue write Setvalue;
+    property minimum: integer read Fminimum write Setminimum;
+    property maximum: integer read Fmaximum write Setmaximum;
+    property BarColor: TColor read FColor write SetBarColor;
+    property BackColor: TColor read FBackColor write SetBackColor;
   end;
-
-
 
 implementation
 
+{ TJvSimIndicator }
 
-{ TjvSimIndicator }
-
-constructor TjvSimIndicator.create(AOwner: Tcomponent);
+constructor TJvSimIndicator.create(AOwner: Tcomponent);
 begin
   inherited;
-  width:=25;
-  height:=100;
-  FMinimum:=0;
-  FMaximum:=100;
-  FValue:=50;
-  FBarColor:=cllime;
-  FBackColor:=clSilver;
+  width := 25;
+  height := 100;
+  FMinimum := 0;
+  FMaximum := 100;
+  FValue := 50;
+  FBarColor := cllime;
+  FBackColor := clSilver;
 end;
 
-destructor TjvSimIndicator.destroy;
+destructor TJvSimIndicator.destroy;
 begin
   inherited;
 
 end;
 
-procedure TjvSimIndicator.paint;
-var R,Ri:TRect;
-    i,n:integer;
-    h,dh:integer;
+procedure TJvSimIndicator.paint;
+var
+  R, Ri: TRect;
+  i, n: integer;
+  h, dh: integer;
 begin
-   R:=ClientRect;
-   canvas.brush.color:=clsilver;
-   canvas.fillrect(R);
-   Frame3D(canvas,R,clbtnhighlight,clbtnshadow,1);
-   inflaterect(R,-3,-3);
-   Frame3D(canvas,R,clbtnshadow,clbtnhighlight,1);
-   canvas.brush.color:=FBackColor;
-   inflaterect(R,-1,-1);
-   canvas.fillrect(R);
-   inc(R.right,-1);
-   h:=R.bottom-R.top;
-   dh:=h div 20;
-   n:=round(h*(FValue-FMinimum)/(FMaximum-FMinimum)/dh);
-   canvas.brush.color:=FBarColor;
-   Ri:=rect(R.left+1,R.bottom-dh+1,R.right-1,R.bottom);
-   if n>0 then
-   for i:=1 to n do
-   begin
-    canvas.fillrect(Ri);
-    inc(Ri.top,-dh);
-    inc(Ri.bottom,-dh);
-   end;
+  R := ClientRect;
+  canvas.brush.color := clsilver;
+  canvas.fillrect(R);
+  Frame3D(canvas, R, clbtnhighlight, clbtnshadow, 1);
+  inflaterect(R, -3, -3);
+  Frame3D(canvas, R, clbtnshadow, clbtnhighlight, 1);
+  canvas.brush.color := FBackColor;
+  inflaterect(R, -1, -1);
+  canvas.fillrect(R);
+  inc(R.right, -1);
+  h := R.bottom - R.top;
+  dh := h div 20;
+  n := round(h * (FValue - FMinimum) / (FMaximum - FMinimum) / dh);
+  canvas.brush.color := FBarColor;
+  Ri := rect(R.left + 1, R.bottom - dh + 1, R.right - 1, R.bottom);
+  if n > 0 then
+    for i := 1 to n do
+    begin
+      canvas.fillrect(Ri);
+      inc(Ri.top, -dh);
+      inc(Ri.bottom, -dh);
+    end;
 end;
 
-procedure TjvSimIndicator.SetBackColor(const Value: TColor);
+procedure TJvSimIndicator.SetBackColor(const Value: TColor);
 begin
   FBackColor := Value;
   invalidate;
 end;
 
-procedure TjvSimIndicator.SetBarColor(const Value: TColor);
+procedure TJvSimIndicator.SetBarColor(const Value: TColor);
 begin
   FBarColor := Value;
   invalidate;
 end;
 
-procedure TjvSimIndicator.Setmaximum(const Value: integer);
+procedure TJvSimIndicator.Setmaximum(const Value: integer);
 begin
   Fmaximum := Value;
   invalidate;
 end;
 
-procedure TjvSimIndicator.Setminimum(const Value: integer);
+procedure TJvSimIndicator.Setminimum(const Value: integer);
 begin
   Fminimum := Value;
   invalidate;
 end;
 
-procedure TjvSimIndicator.Setvalue(const Value: integer);
+procedure TJvSimIndicator.Setvalue(const Value: integer);
 begin
   Fvalue := Value;
   invalidate;

@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvQuickPreviewU.PAS, released on 2002-06-15.
+The Original Code is: JvQuickPreviewU.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -25,13 +25,13 @@ Known Issues:
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
 
-unit jvQuickPreviewU;
+unit JvQuickPreviewU;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls, StdCtrls, jvDrawImage;
+  Buttons, ExtCtrls, StdCtrls, JvDrawImage;
 
 type
   TQuickPreviewF = class(TForm)
@@ -42,36 +42,32 @@ type
     procedure btnUseClick(Sender: TObject);
   private
     { Private declarations }
-    PainterF:TjvDrawImage;
+    PainterF: TJvDrawImage;
   public
     { Public declarations }
-    procedure setDrawImage(ADrawImage:TjvDrawImage);
+    procedure setDrawImage(ADrawImage: TJvDrawImage);
   end;
 
 var
   QuickPreviewF: TQuickPreviewF;
-  anifile:string;
-  aniframe:integer;
+  anifile: string;
+  aniframe: integer;
 
 implementation
 
 {$R *.DFM}
 
-
-
 procedure TQuickPreviewF.btnUseClick(Sender: TObject);
 
 begin
-  PainterF.canvas.draw(0,0,image1.picture.bitmap);
+  PainterF.canvas.draw(0, 0, image1.picture.bitmap);
   //PainterF.mypaint.Update ;
   close;
 end;
 
-
-
-procedure TQuickPreviewF.setDrawImage(ADrawImage: TjvDrawImage);
+procedure TQuickPreviewF.setDrawImage(ADrawImage: TJvDrawImage);
 begin
-  PainterF:=aDrawImage;
+  PainterF := aDrawImage;
 end;
 
 end.

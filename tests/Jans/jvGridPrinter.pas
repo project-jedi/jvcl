@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: jvGridPrinter.PAS, released on 2002-06-15.
+The Original Code is: JvGridPrinter.PAS, released on 2002-06-15.
 
 The Initial Developer of the Original Code is Jan Verhoeven [jan1.verhoeven@wxs.nl]
 Portions created by Jan Verhoeven are Copyright (C) 2002 Jan Verhoeven.
@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 {$I JEDI.INC}
-unit jvGridPrinter;
+unit JvGridPrinter;
 
 interface
 
@@ -35,15 +35,15 @@ uses
 type
   TPrintMode = (pmPrint, pmPreview, pmPageCount);
 
- TPrintOptions = class(TPersistent)
+  TPrintOptions = class(TPersistent)
   private
-    fJobTitle: String;
-    fPageTitle: String;
+    fJobTitle: string;
+    fPageTitle: string;
     fPageTitleMargin: Cardinal;
     fCopies: Cardinal;
     fPreviewPage: Cardinal;
     fBorderStyle: TBorderStyle;
-    fLeftPadding:Cardinal;
+    fLeftPadding: Cardinal;
     FMarginBottom: Cardinal;
     FMarginLeft: Cardinal;
     FMarginTop: Cardinal;
@@ -71,30 +71,30 @@ type
 
   private
   published
-    property Orientation:TPrinterOrientation read FOrientation write SetOrientation;
+    property Orientation: TPrinterOrientation read FOrientation write SetOrientation;
     property JobTitle: string read fJobTitle write fJobTitle;
     property PageTitle: string read fPageTitle write fPageTitle;
-    property Logo:string read FLogo write SetLogo;
+    property Logo: string read FLogo write SetLogo;
     property PageTitleMargin: Cardinal read fpageTitleMargin write fpageTitleMargin;
-    property PageFooter:string read FPageFooter write SetPageFooter;
-    property HeaderSize:Cardinal read FHeaderSize write SetHeaderSize;
-    property FooterSize:Cardinal read FFooterSize write SetFooterSize;
-    property DateFormat:string read FDateFormat write SetDateFormat;
-    property TimeFormat:string read FTimeFormat write SetTimeFormat;
+    property PageFooter: string read FPageFooter write SetPageFooter;
+    property HeaderSize: Cardinal read FHeaderSize write SetHeaderSize;
+    property FooterSize: Cardinal read FFooterSize write SetFooterSize;
+    property DateFormat: string read FDateFormat write SetDateFormat;
+    property TimeFormat: string read FTimeFormat write SetTimeFormat;
     property Copies: Cardinal read fCopies write fCopies default 1;
     property PreviewPage: Cardinal read fPreviewPage write fPreviewPage;
-    property BorderStyle:TBorderstyle read fBorderStyle write fBorderStyle;
-    property Leftpadding:Cardinal read fLeftpadding write fLeftpadding;
-    property MarginBottom:Cardinal read FMarginBottom write SetMarginBottom;
-    property MarginLeft:Cardinal read FMarginLeft write SetMarginLeft;
-    property MarginTop:Cardinal read FMarginTop write SetMarginTop;
-    property MarginRight:Cardinal read FMarginRight write SetMarginRight;
+    property BorderStyle: TBorderstyle read fBorderStyle write fBorderStyle;
+    property Leftpadding: Cardinal read fLeftpadding write fLeftpadding;
+    property MarginBottom: Cardinal read FMarginBottom write SetMarginBottom;
+    property MarginLeft: Cardinal read FMarginLeft write SetMarginLeft;
+    property MarginTop: Cardinal read FMarginTop write SetMarginTop;
+    property MarginRight: Cardinal read FMarginRight write SetMarginRight;
   end;
 
-  TjvGridPrinter = class(TComponent)
+  TJvGridPrinter = class(TComponent)
   private
     { Private declarations }
-    FPrintOptions:TPrintOptions;
+    FPrintOptions: TPrintOptions;
     FGrid: TStringGrid;
     FNumbersalRight: boolean;
     FNumberFormat: string;
@@ -107,33 +107,28 @@ type
     { Protected declarations }
   public
     { Public declarations }
-    constructor Create (AOwner:TComponent);override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Preview:boolean;
+    function Preview: boolean;
   published
     { Published declarations }
     property PrintOptions: TPrintOptions read fPrintOptions write fPrintOptions;
-    property Grid:TStringGrid read FGrid write SetGrid;
-    property Wordwrap:boolean read FWordwrap write SetWordwrap;
-    property NumbersalRight:boolean read FNumbersalRight write SetNumbersalRight;
-    property NumberFormat:string read FNumberFormat write SetNumberFormat;
+    property Grid: TStringGrid read FGrid write SetGrid;
+    property Wordwrap: boolean read FWordwrap write SetWordwrap;
+    property NumbersalRight: boolean read FNumbersalRight write SetNumbersalRight;
+    property NumberFormat: string read FNumberFormat write SetNumberFormat;
   end;
-
 
 implementation
 
 uses
-    jvGridPreview;
+  JvGridPreview;
 
 const
-  cr = chr(13)+chr(10);
+  cr = chr(13) + chr(10);
   tab = chr(9);
 
-
-
-
-
-{ TPrintOptions }
+  { TPrintOptions }
 
 procedure TPrintOptions.SetDateFormat(const Value: string);
 begin
@@ -190,75 +185,64 @@ begin
   FTimeFormat := Value;
 end;
 
-{ TjvGridPrinter }
+{ TJvGridPrinter }
 
-constructor TjvGridPrinter.Create(AOwner: TComponent);
+constructor TJvGridPrinter.Create(AOwner: TComponent);
 begin
-  inherited create (AOwner);
+  inherited create(AOwner);
   FPrintOptions := TPrintOptions.Create;
-  FPrintOptions.PageFooter:='date|time|page';
-  FPrintOptions.DateFormat :='d-mmm-yyyy';
-  FprintOptions.TimeFormat :='h:nn am/pm';
-  FprintOptions.HeaderSize:=14;
-  FPrintOptions.FooterSize:=8;
-  FprintOptions.PreviewPage :=1;
-  FNumbersalright:=true;
-  FNumberFormat:='%.2f';
-  FWordwrap:=true;
+  FPrintOptions.PageFooter := 'date|time|page';
+  FPrintOptions.DateFormat := 'd-mmm-yyyy';
+  FprintOptions.TimeFormat := 'h:nn am/pm';
+  FprintOptions.HeaderSize := 14;
+  FPrintOptions.FooterSize := 8;
+  FprintOptions.PreviewPage := 1;
+  FNumbersalright := true;
+  FNumberFormat := '%.2f';
+  FWordwrap := true;
 end;
 
-destructor TjvGridPrinter.Destroy;
+destructor TJvGridPrinter.Destroy;
 begin
- FPrintOptions.free;
- inherited destroy;
+  FPrintOptions.free;
+  inherited destroy;
 end;
 
-function TjvGridPrinter.Preview: boolean;
-var preview: TjvGridPreviewF;
+function TJvGridPrinter.Preview: boolean;
+var
+  preview: TJvGridPreviewF;
 begin
-  if assigned(FGrid) then begin
-  preview:=TjvGridPreviewF.create(application);
-  preview.GridPrinter :=self;
-  preview.Grid :=Grid;
-  preview.ShowModal;
-  preview.free;
-  result:=true;
+  if assigned(FGrid) then
+  begin
+    preview := TJvGridPreviewF.create(application);
+    preview.GridPrinter := self;
+    preview.Grid := Grid;
+    preview.ShowModal;
+    preview.free;
+    result := true;
   end
-  else result:=false;
+  else
+    result := false;
 end;
 
-
-
-procedure TjvGridPrinter.SetNumbersalRight(const Value: boolean);
+procedure TJvGridPrinter.SetNumbersalRight(const Value: boolean);
 begin
   FNumbersalRight := Value;
 end;
 
-procedure TjvGridPrinter.SetNumberFormat(const Value: string);
+procedure TJvGridPrinter.SetNumberFormat(const Value: string);
 begin
   FNumberFormat := Value;
 end;
 
-
-
-procedure TjvGridPrinter.SetGrid(const Value: TStringGrid);
+procedure TJvGridPrinter.SetGrid(const Value: TStringGrid);
 begin
   FGrid := Value;
 end;
 
-
-
-
-
-
-
-
-
-procedure TjvGridPrinter.SetWordwrap(const Value: boolean);
+procedure TJvGridPrinter.SetWordwrap(const Value: boolean);
 begin
   FWordwrap := Value;
 end;
-
-
 
 end.

@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Buttons, ExtCtrls, StdCtrls, janDrawImage;
+  Buttons, ExtCtrls, StdCtrls, JvDrawImage;
 
 type
   TQuickPreviewF = class(TForm)
@@ -15,36 +15,32 @@ type
     procedure btnUseClick(Sender: TObject);
   private
     { Private declarations }
-    PainterF:TjanDrawImage;
+    PainterF: TJvDrawImage;
   public
     { Public declarations }
-    procedure setDrawImage(ADrawImage:TjanDrawImage);
+    procedure setDrawImage(ADrawImage: TJvDrawImage);
   end;
 
 var
   QuickPreviewF: TQuickPreviewF;
-  anifile:string;
-  aniframe:integer;
+  anifile: string;
+  aniframe: integer;
 
 implementation
 
 {$R *.DFM}
 
-
-
 procedure TQuickPreviewF.btnUseClick(Sender: TObject);
 
 begin
-  PainterF.canvas.draw(0,0,image1.picture.bitmap);
+  PainterF.canvas.draw(0, 0, image1.picture.bitmap);
   //PainterF.mypaint.Update ;
   close;
 end;
 
-
-
-procedure TQuickPreviewF.setDrawImage(ADrawImage: TjanDrawImage);
+procedure TQuickPreviewF.setDrawImage(ADrawImage: TJvDrawImage);
 begin
-  PainterF:=aDrawImage;
+  PainterF := aDrawImage;
 end;
 
 end.
