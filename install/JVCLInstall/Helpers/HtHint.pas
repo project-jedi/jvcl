@@ -24,14 +24,14 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit HtHint;
-
 {$I jvcl.inc}
+
+unit HtHint;
 
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls, Forms,
+  Windows, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
   JvConsts;
 
 type
@@ -39,8 +39,12 @@ type
   protected
     procedure Paint; override;
   public
-    function CalcHintRect(MaxWidth: Integer; const AHint: string;
-      AData: Pointer): TRect; override;
+    {$IFDEF VCL}
+    function CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    function CalcHintRect(MaxWidth: Integer; const AHint: WideString; AData: Pointer): TRect; override;
+    {$ENDIF VisualCLX}
   end;
 
 implementation
@@ -240,8 +244,12 @@ begin
   ItemHtDrawEx(Canvas, Rect, State, Text, HideSelColor, S, W, False);
 end;
 
-function THtHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string;
-  AData: Pointer): TRect;
+{$IFDEF VCL}
+function THtHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: string; AData: Pointer): TRect;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function THtHintWindow.CalcHintRect(MaxWidth: Integer; const AHint: WideString; AData: Pointer): TRect;
+{$ENDIF VisualCLX}
 var
   S: string;
   R: TRect;
