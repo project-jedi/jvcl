@@ -35,8 +35,6 @@ unit JvUIBSQLParser;
 {$I JVCL.INC}
 {$I JvUIB.inc}
 
-{$HPPEMIT '#undef MESSAGE'}
-
 interface
 uses
   Classes,
@@ -367,7 +365,7 @@ const MANUAL = 365;
 const MAXIMUM = 366;
 const MAX_SEGMENT = 367;
 const MERGE = 368;
-const MESSAGE = 369;
+const Message = 369;
 const MINIMUM = 370;
 const MODULE_NAME = 371;
 const NAMES = 372;
