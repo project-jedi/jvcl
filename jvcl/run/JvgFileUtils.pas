@@ -32,7 +32,7 @@ unit JvgFileUtils;
 interface
 
 uses
-  Windows, SysUtils, ShlObj, Classes,
+  Windows, SysUtils, ShlObj, ActiveX, Classes,
   JvgTypes;
 
 function GetOwnPath: string;
@@ -108,25 +108,27 @@ end;
 
 function GetFolder(Wnd: HWND; Title: string): string;
 var
-  lpItemID: PItemIDList;
+  ItemID: PItemIDList;
   BrowseInfo: TBrowseInfo;
+  Malloc: IMalloc;
   DisplayName: array [0..MAX_PATH] of Char;
 begin
   Result := '';
   if not SetForegroundWindow(Wnd) then
+    Exit;
+  if SHGetMalloc(Malloc) <> NOERROR then
     Exit;
   FillChar(BrowseInfo, SizeOf(TBrowseInfo), #0);
   BrowseInfo.hwndOwner := 0;
   BrowseInfo.pszDisplayName := @DisplayName;
   BrowseInfo.lpszTitle := PChar(Title);
   BrowseInfo.ulFlags := BIF_RETURNONLYFSDIRS;
-  lpItemId := SHBrowseForFolder(BrowseInfo);
-  if lpItemId <> nil then
+  ItemID := SHBrowseForFolder(BrowseInfo);
+  if ItemID <> nil then
   begin
-    if SHGetPathFromIDList(lpItemId, DisplayName) then
+    if SHGetPathFromIDList(ItemID, DisplayName) then
       Result := DisplayName;
-    // (rom) wrong
-    GlobalFreePtr(lpItemID);
+    Malloc.Free(ItemID);
   end;
 end;
 

@@ -102,6 +102,7 @@ type
     FLookupMode: Boolean;
     FListActive: Boolean;
     FFocused: Boolean;
+    FSearchTickCount: Integer;
     function CanModify: Boolean;
     procedure CheckNotCircular;
     procedure CheckNotLookup;
@@ -493,11 +494,6 @@ begin
   end;
 end;
 
-// (rom) definitely bad implementation two components may concurrently use
-// (rom) the variable
-var
-  SearchTickCount: Integer = 0;
-
 constructor TJvDBLookupControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -516,6 +512,7 @@ begin
   FListLink.FDBLookupControl := Self;
   FListFields := TList.Create;
   FKeyValue := Null;
+  FSearchTickCount := 0;
 end;
 
 destructor TJvDBLookupControl.Destroy;
@@ -708,9 +705,9 @@ begin
         if CanModify then
         begin
           TickCount := GetTickCount;
-          if TickCount - SearchTickCount > 2000 then
+          if TickCount - FSearchTickCount > 2000 then
             FSearchText := '';
-          SearchTickCount := TickCount;
+          FSearchTickCount := TickCount;
           if Length(FSearchText) < 32 then
           begin
             S := FSearchText + Key;

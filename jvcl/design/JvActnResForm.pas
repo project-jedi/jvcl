@@ -32,7 +32,7 @@ interface
 
 uses
   {$IFDEF VCL}
-  ActnList, ImgList,  Controls,
+  ActnList, ImgList, Controls,
   {$IFNDEF COMPILER6_UP}
   Forms,
   {$ENDIF COMPILER6_UP}
@@ -40,7 +40,8 @@ uses
   {$IFDEF VisualCLX}
   QActnList, QImgList, QControls, QForms,
   {$ENDIF VisualCLX}
-  SysUtils, Classes, JvActions, StdActns;
+  SysUtils, Classes, StdActns,
+  JvActions;
 
 type
   TJvStandardActions = class(TDataModule)

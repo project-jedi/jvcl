@@ -961,7 +961,7 @@ begin
     Result := nil;
 end;
 
-// (rom) is this useful for other ocmponents? It seems superior.
+// (rom) is this useful for other components? It seems superior.
 
 function TJvLookupControl.DefaultTextHeight: Integer;
 var
