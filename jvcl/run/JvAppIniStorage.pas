@@ -365,26 +365,34 @@ begin
 end;
 
 function TJvCustomAppIniStorage.ReadValue(const Section, Key: string): string;
+var ASection:string;
 begin
-  if Section = '' then
-    raise EJVCLAppStorageError.Create(RsEReadValueFailed);
   if IniFile <> nil then
   begin
-    if AutoReload and not IsUpdating then Reload;
-    Result := IniFile.ReadString(Section, Key, '')
+    if (Section = '') or (Section[1] = '.') then
+      ASection := DefaultSection + Section
+    else
+      ASection := Section;
+    if (ASection = '') or (ASection[1] = '.') then
+      raise EJVCLAppStorageError.Create(RsEReadValueFailed);
+    Result := IniFile.ReadString(ASection, Key, '');
   end
   else
     Result := '';
 end;
 
 procedure TJvCustomAppIniStorage.WriteValue(const Section, Key, Value: string);
+var ASection:string;
 begin
   if IniFile <> nil then
   begin
-    if Section = '' then
+    if (Section = '') or (Section[1] = '.') then
+      ASection := DefaultSection + Section
+    else
+      ASection := Section;
+    if (ASection = '') or (ASection[1] = '.') then
       raise EJVCLAppStorageError.Create(RsEWriteValueFailed);
-    if AutoReload and not IsUpdating then Reload;
-    IniFile.WriteString(Section, Key, Value);
+    IniFile.WriteString(ASection, Key, Value);
     if AutoFlush and not IsUpdating then Flush;
   end;
 end;
