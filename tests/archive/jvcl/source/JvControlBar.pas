@@ -144,7 +144,7 @@ begin
         it.Caption := Controls[i].Hint
       else
         it.Caption := Controls[i].Name;
-      {$IFDEF COMPILER6UP}
+      {$IFDEF COMPILER6_UP}
       it.AutoCheck := true;
       {$ENDIF}
       it.Tag := i;
@@ -171,8 +171,13 @@ end;
 procedure TJvControlBar.PopupMenuClick(Sender: TObject);
 begin
   with Sender as TMenuItem do
+  begin
+    {$IFDEF COMPILER6_UP}
+    Checked := not Checked;
+    {$ENDIF}
     if (Tag>=0) and (Tag<ControlCount) then
       Controls[Tag].Visible := Checked;
+  end;
 end;
 
 {**************************************************}
