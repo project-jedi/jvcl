@@ -138,7 +138,8 @@ procedure TJvDBSpinEdit.DataChange(Sender: TObject); { Triggered when data chang
 begin
   if FFieldDataLink.Field = nil then
     Self.Text := ' '
-  else if not FFieldDataLink.Editing then
+  else
+  if not FFieldDataLink.Editing then
     Self.Text := FFieldDataLink.Field.AsString;
 end;
 

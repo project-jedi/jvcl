@@ -46,11 +46,10 @@ uses
   {$IFDEF USEJVCL}
   JvDsgnConsts,
   {$ENDIF USEJVCL}
-  JvDotNetControls
   {$IFNDEF DelphiPersonalEdition}
-  , JvDBDotNetControls
+  JvDBDotNetControls,
   {$ENDIF !DelphiPersonalEdition}
-  ;
+  JvDotNetControls;
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -65,9 +64,9 @@ begin
   RegisterComponents(RsPaletteDotNet, [TJvDotNetCheckListBox,
     TJvDotNetEdit, TJvDotNetHotKey, TJvDotNetListBox,
     TJvDotNetListView, TJvDotNetMaskEdit, TJvDotNetMemo,
-    TJvDotNetRichEdit, TJvDotNetScrollBox, TJvDotNetTreeView]);
+    TJvDotNetRichEdit, TJvDotNetScrollBox, TJvDotNetTreeView, TJvDotNetButton]);
   {$IFDEF USEJVCL}
-  RegisterComponents(RsPaletteDotNet, [TJvDotNetFilenameEdit, TJvDotNetDirectoryEdit, TJvDotNetButton]);
+  RegisterComponents(RsPaletteDotNet, [TJvDotNetFilenameEdit, TJvDotNetDirectoryEdit]);
   {$ENDIF USEJVCL}
 
   {$IFNDEF DelphiPersonalEdition}
