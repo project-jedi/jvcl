@@ -1043,6 +1043,7 @@ end;
 procedure TJvDBGrid.KeyDown(var Key: Word; Shift: TShiftState);
 var
   KeyDownEvent: TKeyEvent;
+  SelRect: TGridRect;
 
   procedure ClearSelections;
   begin
@@ -1220,6 +1221,43 @@ begin
       if (Key = VK_TAB) and not (ssAlt in Shift) then
         CheckTab(not (ssShift in Shift));
     end;
+
+  if ssShift in Shift then
+  begin
+    // prevent TDBGrid from doubling the fixed cols.
+    case Key of
+      VK_LEFT:
+        begin
+          if ssCtrl in Shift then
+          begin
+            SelRect := Selection;
+            SelRect.Left := FixedCols + 1;
+            Col := FixedCols + 1;
+            if MultiSelect and not (dgRowSelect in Options) then
+              Selection := SelRect;
+            Exit;
+          end;
+          if Col <= FixedCols + 1 then
+            Exit;
+          if MultiSelect and not (dgRowSelect in Options) then
+          begin
+            SelRect := Selection;
+            SelRect.Left := Col - 1;
+            Selection := SelRect;
+          end;
+        end;
+      VK_HOME:
+        begin
+          SelRect := Selection;
+          SelRect.Left := FixedCols + 1;
+          Col := FixedCols + 1;
+          if MultiSelect and not (dgRowSelect in Options) then
+            Selection := SelRect;
+          Exit;
+        end;
+    end;
+  end;
+
   OnKeyDown := nil;
   try
     inherited KeyDown(Key, Shift);
@@ -2063,8 +2101,6 @@ var
 begin
   if (Key = Cr) and PostOnEnter and not ReadOnly then
     DataSource.DataSet.CheckBrowseMode;
-
-  inherited KeyPress(Key);
 
   if EditorMode then
   begin
@@ -3454,6 +3490,7 @@ var
 begin
   if Message.Msg = WM_CHAR then
   begin
+    inherited;
     if not DoKeyPress(TWMChar(Message)) then
       with TWMKey(Message) do
       begin
