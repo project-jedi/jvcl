@@ -18,6 +18,20 @@ All Rights Reserved.
 TJvBdeErrorDlg based on sample form
    DELPHI\DEMOS\DB\TOOLS\DBEXCEPT.PAS
 
+Contributor(s):
+  Hofi
+
+Last Modified: 2004-10-07
+
+Changes:
+2004-10-07:
+  * Added by Hofi
+    TJvBdeErrorDlg
+      property GlobalNotMemberExceptionHandler
+        gives a chance to handle db exceptions in a global common exception
+        handler.
+
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -38,6 +52,7 @@ uses
 
 type
   TDBErrorEvent = procedure(Error: TDBError; var Msg: string) of object;
+  TNotMemberExceptionEventHandler = procedure (Sender: TObject; E: Exception);
 
   TJvBdeErrorDlg = class(TJvForm)
     BasicPanel: TPanel;
@@ -70,12 +85,15 @@ type
     FDetails: Boolean;
     FDetailsHeight: Integer;
     FDbException: EDbEngineError;
+    FGlobalNotMemberExceptionHandler: TNotMemberExceptionEventHandler;
     FPrevOnException: TExceptionEvent;
     FOnErrorMsg: TDBErrorEvent;
     procedure GetErrorMsg(Error: TDBError; var Msg: string);
     procedure ShowError;
     procedure SetShowDetails(Value: Boolean);
   public
+    procedure SetGlobalExceptionHandler(
+     GlobalNotMemberExceptionHandler: TNotMemberExceptionEventHandler);
     procedure ShowException(Sender: TObject; E: Exception);
     property OnErrorMsg: TDBErrorEvent read FOnErrorMsg write FOnErrorMsg;
   end;
@@ -83,7 +101,8 @@ type
 const
   DbErrorHelpCtx = THelpContext(0);
 
-procedure DbErrorIntercept;
+procedure DbErrorIntercept(
+ GlobalNotMemberExceptionHandler: TNotMemberExceptionEventHandler = nil);
 
 implementation
 
@@ -99,10 +118,12 @@ uses
 var
   DbEngineErrorDlg: TJvBdeErrorDlg = nil;
 
-procedure DbErrorIntercept;
+procedure DbErrorIntercept(
+ GlobalNotMemberExceptionHandler: TNotMemberExceptionEventHandler);
 begin
   DbEngineErrorDlg.Free;
   DbEngineErrorDlg := TJvBdeErrorDlg.Create(Application);
+  DbEngineErrorDlg.SetGlobalExceptionHandler(GlobalNotMemberExceptionHandler);
 end;
 
 procedure TJvBdeErrorDlg.ShowException(Sender: TObject; E: Exception);
@@ -119,21 +140,34 @@ begin
       finally
         FDbException := nil;
       end;
+      if Assigned(FGlobalNotMemberExceptionHandler) then
+        FGlobalNotMemberExceptionHandler(Sender, E);
     end
     else
     begin
-      if Assigned(FPrevOnException) then
-        FPrevOnException(Sender, E)
+      if Assigned(FGlobalNotMemberExceptionHandler) or Assigned(FPrevOnException) then
+      begin
+        if Assigned(FGlobalNotMemberExceptionHandler) then
+          FGlobalNotMemberExceptionHandler(Sender, E);
+        if Assigned(FPrevOnException) then
+          FPrevOnException(Sender, E);
+      end
       else
-      if NewStyleControls then
-        Application.ShowException(E)
-      else
-        MessageDlg(E.Message + '.', mtError, [mbOk], 0);
+        if NewStyleControls then
+          Application.ShowException(E)
+        else
+          MessageDlg(E.Message + '.', mtError, [mbOk], 0);
     end;
   except
     { ignore any exceptions }
   end;
   Application.RestoreTopMosts;
+end;
+
+procedure TJvBdeErrorDlg.SetGlobalExceptionHandler(
+ GlobalNotMemberExceptionHandler: TNotMemberExceptionEventHandler);
+begin
+  FGlobalNotMemberExceptionHandler := GlobalNotMemberExceptionHandler;
 end;
 
 procedure TJvBdeErrorDlg.ShowError;

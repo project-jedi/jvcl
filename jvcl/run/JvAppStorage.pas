@@ -840,6 +840,10 @@ begin
         Inc(Index);
       until Index > High(Paths);
       Result := StringsToStr(GlobalPaths, PathDelim, False);
+      // (hofi) it would be better to trim both ends of path ?!?!?
+      // currently only path contains space(s) filtered out
+      if Length(Trim(Result)) = 0 then
+        Result := '';
     finally
       CurPaths.Free;
       GlobalPaths.Free;

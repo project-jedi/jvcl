@@ -15,6 +15,17 @@ Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
+Contributor(s):
+  Hofi
+
+Last Modified: 2004-10-07
+
+Changes:
+2004-10-07:
+  * Added
+     TJvCustomLogin
+       property Caption to support a custom dialog Caption.
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -66,6 +77,7 @@ type
     property AppStorage;
     property AppStoragePath;
     property AttemptNumber;
+    property Caption;
     property MaxPasswordLen;
     property UpdateCaption;
     property OnCheckUser: TJvLoginEvent read FOnCheckUser write FOnCheckUser;

@@ -1275,11 +1275,11 @@ resourcestring
 resourcestring
   RsRegistrationCaption = 'Registration';
   RsAppTitleLabel = 'Application "%s"';
-  RsHintLabel = 'Type your user name and password';
+  RsHintLabel = 'Type your user name and password to enter the application';
   RsUserNameLabel = '&User name:';
   RsPasswordLabel = '&Password:';
   RsUnlockCaption = 'Unlock application';
-  RsUnlockHint = 'Type your password';
+  RsUnlockHint = 'Type your password to unlock the application';
 
 //=== JvMail.pas =============================================================
 resourcestring
