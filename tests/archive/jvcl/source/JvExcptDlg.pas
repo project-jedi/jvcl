@@ -113,8 +113,8 @@ resourcestring
 {$ELSE}
 const
 {$ENDIF}
-  SCodeError = '%s.'#13#10'Error Code: %.8x (%1:d).';
-  SModuleError = 'Exception in module %s.'#13#10'%s';
+  SCodeError = '%s.' + CrLf + 'Error Code: %.8x (%1:d).';
+  SModuleError = 'Exception in module %s.' + CrLf + '%s';
 
 procedure JvErrorIntercept;
 begin

@@ -73,7 +73,7 @@ type
 implementation
 
 uses
-  JvFormLog;
+  JvFormLog, JvTypes;
 
 constructor TJvLogFile.Create(AOwner: TComponent);
 begin
@@ -228,7 +228,8 @@ begin
     for I := 0 to FList.Count - 1 do
       with TJvLogRecord(FList.Items[I]) do
       begin
-        St := '[' + Time + ']' + StringReplace(Title, '>', '>>', [rfReplaceAll]) + '>' + Description + #13#10;
+        St := '[' + Time + ']' + StringReplace(Title, '>', '>>', [rfReplaceAll]) +
+          '>' + Description + CrLf;
         Stream.WriteBuffer(Pointer(St)^, Length(St));
       end;
   finally

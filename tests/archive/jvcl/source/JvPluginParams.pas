@@ -51,9 +51,13 @@ var
 
 implementation
 
+uses
+  JvTypes;
+
 const
-  SInfoText = 'The settings above will create the following project:' + #13#10#13#10 +
-    '* A project called plg%0:s.%1:s' + #13#10 +
+  SInfoText = 'The settings above will create the following project:' +
+    CrLf + CrLf +
+    '* A project called Plg%0:s.%1:s' + CrLf +
     '* A unit called Plugin%0:s, containing the data module T%0:s.';
 
 {$R *.DFM}

@@ -54,6 +54,9 @@ implementation
 
 {$R *.DFM}
 
+uses
+  JvTypes;
+
 procedure TzWizardForm.Button1Click(Sender: TObject);
 begin
   with EditBandName do
@@ -79,19 +82,17 @@ end;
 
 procedure TzWizardForm.Button3Click(Sender: TObject);
 const
-  CRLF = #13#10;
-  CRLF2 = #13#10#13#10;
-  cHelpText = CRLF +
-    'Band Name' + CRLF +
-    'Enter a band name, e.g. MyBand.' + CRLF +
-    'This will be the class name of the band object.' + CRLF +
-    'No need to prefix it with ''T'' as it will be generated.' + CRLF2 +
-    'Description' + CRLF +
-    'Enter a menuitem text, e.g. &My Band' + CRLF +
-    'This text will appear in the Explorer Bar or Toolbars menu.' + CRLF2 +
-    'Band Type' + CRLF +
+  CrLf2 = #13#10#13#10;
+  cHelpText = CrLf +
+    'Band Name' + CrLf +
+    'Enter a band name, e.g. MyBand.' + CrLf +
+    'This will be the class name of the band object.' + CrLf +
+    'No need to prefix it with ''T'' as it will be generated.' + CrLf2 +
+    'Description' + CrLf +
+    'Enter a menuitem text, e.g. &My Band' + CrLf +
+    'This text will appear in the Explorer Bar or Toolbars menu.' + CrLf2 +
+    'Band Type' + CrLf +
     'Select the type of band object to create.';
-
 var
   HelpForm: TForm;
   HelpText: TMemo;

@@ -36,7 +36,7 @@ uses
 
 type
   TJvBandObjectDLLWizard = class(TInterfacedObject,
-      IOTANotifier, IOTAWizard, IOTARepositoryWizard, IOTAProjectWizard)
+    IOTANotifier, IOTAWizard, IOTARepositoryWizard, IOTAProjectWizard)
   public
     // IOTANotifier
     procedure AfterSave;
@@ -57,11 +57,10 @@ type
     {$ELSE}
     function GetGlyph: HICON;
     {$ENDIF}
-
   end;
 
   TJvBandObjectProjectCreator = class(TInterfacedObject,
-      IOTACreator, IOTAProjectCreator)
+    IOTACreator, IOTAProjectCreator)
   public
     // IOTACreator
     function GetCreatorType: string;
@@ -92,7 +91,7 @@ type
   TJvBandType = (zbtInfoBand, zbtCommBand, zbtToolBand, zbtDeskBand);
 
   TJvBandObjectModuleCreator = class(TInterfacedObject,
-      IOTACreator, IOTAModuleCreator)
+    IOTACreator, IOTAModuleCreator)
   private
     FBandName: string;
     FBandDesc: string;
@@ -141,11 +140,10 @@ implementation
 
 uses
   SysUtils, Forms, Controls, ComObj,
-  JvBandObjectDLLWizardForm;
+  JvBandObjectDLLWizardForm, JvTypes;
 
 const
-  CRLF = #13#10;
-  CRLF2 = #13#10#13#10;
+  CrLf2 = #13#10#13#10;
   BAND_TYPE_DESC: array [0..3] of PChar = ('Info', 'Comm', 'Tool', 'Desk');
 
 var
@@ -304,16 +302,16 @@ end;
 function TJvBandObjectProjectSource.GetSource: string;
 begin
   Result :=
-    'library ' + FProjectName + ';' + CRLF2 +
-    'uses' + CRLF +
-    '  ComServ;' + CRLF2 +
-    'exports' + CRLF +
-    '  DllGetClassObject,' + CRLF +
-    '  DllCanUnloadNow,' + CRLF +
-    '  DllRegisterServer,' + CRLF +
-    '  DllUnregisterServer;' + CRLF2 +
-    '{$R *.RES}' + CRLF2 +
-    'begin' + CRLF +
+    'library ' + FProjectName + ';' + CrLf2 +
+    'uses' + CrLf +
+    '  ComServ;' + CrLf2 +
+    'exports' + CrLf +
+    '  DllGetClassObject,' + CrLf +
+    '  DllCanUnloadNow,' + CrLf +
+    '  DllRegisterServer,' + CrLf +
+    '  DllUnregisterServer;' + CrLf2 +
+    '{$R *.RES}' + CrLf2 +
+    'begin' + CrLf +
     'end.';
 end;
 
@@ -434,46 +432,46 @@ end;
 function TJvBandObjectModuleSource.GetSource: string;
 const
   cSource =
-    'unit %3:s;' + CRLF2 +
-    'interface' + CRLF2 +
-    'uses' + CRLF +
-    '  Windows,' + CRLF +
-    '  JvBandObject, JvBandForms;' + CRLF2 +
-    'type' + CRLF +
-    '  // Band Object Factory' + CRLF +
-    '  T%0:sFactory = class(Tz%2:sBandObjectFactory)' + CRLF +
-    '  end;' + CRLF2 +
-    '  // Band Object' + CRLF +
-    '  T%0:s = class(Tz%2:sBandObject)' + CRLF +
-    '  protected' + CRLF +
-    '    function CreateBandForm(const ParentWnd: HWND): TJvBandForm; override;' + CRLF +
-    '  end;' + CRLF2 +
-    '  // Band Form' + CRLF +
-    '  T%4:s = class(T%5:s)' + CRLF +
-    '  private' + CRLF +
-    '    function GetBandObject: T%0:s;' + CRLF +
-    '  public' + CRLF +
-    '    property BandObject: T%0:s read GetBandObject;' + CRLF +
-    '  end;' + CRLF2 +
-    'const' + CRLF +
-    '  Class_%0:s: TGUID = ''%6:s'';' + CRLF2 +
-    'implementation' + CRLF2 +
-    '{$R *.DFM}' + CRLF2 +
-    'uses' + CRLF +
-    '  ComObj, ComServ;' + CRLF2 +
-    '{ T%0:s }' + CRLF2 +
-    'function T%0:s.CreateBandForm(const ParentWnd: HWND): TJvBandForm;' + CRLF +
-    'begin' + CRLF +
-    '  Result := T%4:s.CreateBandForm(ParentWnd, Self);' + CRLF +
-    'end;' + CRLF2 +
-    '{ T%4:s }' + CRLF2 +
-    'function T%4:s.GetBandObject: T%0:s;' + CRLF +
-    'begin' + CRLF +
-    '  Result := T%0:s(_BandObject);' + CRLF +
-    'end;' + CRLF2 +
-    'initialization' + CRLF +
-    '  T%0:sFactory.Create(ComServer, T%0:s, Class_%0:s,' + CRLF +
-    '    ''%0:s'', ''%1:s'', ciMultiInstance, tmApartment);' + CRLF2 +
+    'unit %3:s;' + CrLf2 +
+    'interface' + CrLf2 +
+    'uses' + CrLf +
+    '  Windows,' + CrLf +
+    '  JvBandObject, JvBandForms;' + CrLf2 +
+    'type' + CrLf +
+    '  // Band Object Factory' + CrLf +
+    '  T%0:sFactory = class(Tz%2:sBandObjectFactory)' + CrLf +
+    '  end;' + CrLf2 +
+    '  // Band Object' + CrLf +
+    '  T%0:s = class(Tz%2:sBandObject)' + CrLf +
+    '  protected' + CrLf +
+    '    function CreateBandForm(const ParentWnd: HWND): TJvBandForm; override;' + CrLf +
+    '  end;' + CrLf2 +
+    '  // Band Form' + CrLf +
+    '  T%4:s = class(T%5:s)' + CrLf +
+    '  private' + CrLf +
+    '    function GetBandObject: T%0:s;' + CrLf +
+    '  public' + CrLf +
+    '    property BandObject: T%0:s read GetBandObject;' + CrLf +
+    '  end;' + CrLf2 +
+    'const' + CrLf +
+    '  Class_%0:s: TGUID = ''%6:s'';' + CrLf2 +
+    'implementation' + CrLf2 +
+    '{$R *.DFM}' + CrLf2 +
+    'uses' + CrLf +
+    '  ComObj, ComServ;' + CrLf2 +
+    '{ T%0:s }' + CrLf2 +
+    'function T%0:s.CreateBandForm(const ParentWnd: HWND): TJvBandForm;' + CrLf +
+    'begin' + CrLf +
+    '  Result := T%4:s.CreateBandForm(ParentWnd, Self);' + CrLf +
+    'end;' + CrLf2 +
+    '{ T%4:s }' + CrLf2 +
+    'function T%4:s.GetBandObject: T%0:s;' + CrLf +
+    'begin' + CrLf +
+    '  Result := T%0:s(_BandObject);' + CrLf +
+    'end;' + CrLf2 +
+    'initialization' + CrLf +
+    '  T%0:sFactory.Create(ComServer, T%0:s, Class_%0:s,' + CrLf +
+    '    ''%0:s'', ''%1:s'', ciMultiInstance, tmApartment);' + CrLf2 +
     'end.';
 begin
   Result := Format(cSource, [FBandName, FBandDesc, BAND_TYPE_DESC[Ord(FBandType)],
