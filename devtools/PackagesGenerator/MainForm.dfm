@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 331
-  Top = 115
+  Left = 187
+  Top = 69
   Width = 800
   Height = 600
   Caption = 'JVCL Package editor and generator'
@@ -45,6 +45,9 @@ object frmMain: TfrmMain
     Align = alLeft
     BevelOuter = bvLowered
     TabOrder = 1
+    DesignSize = (
+      137
+      502)
     object jlbList: TJvListBox
       Left = 8
       Top = 8
@@ -72,7 +75,7 @@ object frmMain: TfrmMain
     object jtbMenus: TJvToolBar
       Left = 11
       Top = 2
-      Width = 126
+      Width = 158
       Height = 22
       Align = alNone
       ButtonHeight = 21
@@ -80,9 +83,9 @@ object frmMain: TfrmMain
       Caption = 'Menus'
       EdgeBorders = []
       Flat = True
+      Menu = jmmMain
       ShowCaptions = True
       TabOrder = 0
-      Menu = jmmMain
     end
     object jtbTools: TJvToolBar
       Left = 11
@@ -195,6 +198,9 @@ object frmMain: TfrmMain
     Align = alClient
     BevelOuter = bvLowered
     TabOrder = 3
+    DesignSize = (
+      653
+      502)
     object lblDependencies: TLabel
       Left = 12
       Top = 132
@@ -397,10 +403,19 @@ object frmMain: TfrmMain
       object mnuSave: TMenuItem
         Action = actSave
       end
-      object N1: TMenuItem
+      object N2: TMenuItem
         Caption = '-'
       end
-      object mnuExit: TMenuItem
+      object mnuAddFiles: TMenuItem
+        Action = actAddFiles
+      end
+      object mnuGenPackages: TMenuItem
+        Action = actGenerate
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object Exit1: TMenuItem
         Action = actExit
       end
     end
@@ -415,17 +430,21 @@ object frmMain: TfrmMain
     end
     object mnuView: TMenuItem
       Caption = '&View'
-      object mnuKnown: TMenuItem
-        Action = actKnown
-      end
-      object N2: TMenuItem
-        Caption = '-'
-      end
       object mnuMainToolbar: TMenuItem
         Action = actMainToolbar
       end
       object mnuLocationBar: TMenuItem
         Action = actLocation
+      end
+    end
+    object mnuHelp: TMenuItem
+      Caption = '&Help'
+      object Knownreplacementtags1: TMenuItem
+        Action = actKnown
+      end
+      object mnuAbout: TMenuItem
+        Caption = '&About...'
+        OnClick = mnuAboutClick
       end
     end
   end
@@ -1377,8 +1396,6 @@ object frmMain: TfrmMain
     Left = 648
   end
   object jaiIniStore: TJvAppINIFileStore
-    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
-    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     Buffered = False
     FileName = 'pgEdit.ini'
     Left = 648

@@ -83,7 +83,8 @@ object frmKnownTags: TfrmKnownTags
     Top = 8
     Width = 561
     Height = 305
-    ActivePage = tshOutside
+    ActivePage = tshFilesAndForms
+    TabIndex = 2
     TabOrder = 1
     object tshOutside: TTabSheet
       Caption = 'Outside any repeating section'
@@ -272,8 +273,8 @@ object frmKnownTags: TfrmKnownTags
           'ion'
       end
     end
-    object tshFiles: TTabSheet
-      Caption = 'Inside Files section'
+    object tshFilesAndForms: TTabSheet
+      Caption = 'Inside Files section and Forms section'
       ImageIndex = 2
       object lblFilename: TLabel
         Left = 8
@@ -383,89 +384,14 @@ object frmKnownTags: TfrmKnownTags
           'The name of the associated form (if any), along with path inform' +
           'ation'
       end
-    end
-    object tshForms: TTabSheet
-      Caption = 'Inside Forms section'
-      ImageIndex = 3
-      object Label1: TLabel
-        Left = 8
-        Top = 12
-        Width = 61
-        Height = 13
-        Caption = '%Unitname%'
-      end
-      object Label2: TLabel
-        Left = 208
-        Top = 12
-        Width = 341
-        Height = 29
-        AutoSize = False
-        Caption = 
-          'The name of the contained unit (no path information, no extensio' +
-          'n), all lowercase, first letter in upper case.'
-        WordWrap = True
-      end
-      object Label3: TLabel
-        Left = 8
-        Top = 48
-        Width = 78
-        Height = 13
-        Caption = '%FORMNAME%'
-      end
-      object Label4: TLabel
-        Left = 208
-        Top = 48
-        Width = 189
-        Height = 13
-        Caption = 'The name of the associated form (if any)'
-      end
-      object Label5: TLabel
-        Left = 8
-        Top = 72
-        Width = 107
-        Height = 13
-        Caption = '%FORMPATHNAME%'
-      end
-      object Label6: TLabel
-        Left = 208
-        Top = 72
-        Width = 321
+      object lblNote: TLabel
+        Left = 40
+        Top = 224
+        Width = 476
         Height = 13
         Caption = 
-          'The name of the associated form (if any), along with path inform' +
-          'ation'
-      end
-      object Label7: TLabel
-        Left = 8
-        Top = 96
-        Width = 75
-        Height = 13
-        Caption = '%FORMTYPE%'
-      end
-      object Label8: TLabel
-        Left = 208
-        Top = 96
-        Width = 183
-        Height = 13
-        Caption = 'The type of the associated form (if any)'
-      end
-      object Label9: TLabel
-        Left = 208
-        Top = 120
-        Width = 316
-        Height = 29
-        AutoSize = False
-        Caption = 
-          'The form name (if any) followed by the type separated by a colon' +
-          '. If no type is known, the colon doesn'#39't get output.'
-        WordWrap = True
-      end
-      object Label10: TLabel
-        Left = 8
-        Top = 120
-        Width = 129
-        Height = 13
-        Caption = '%FORMNAMEANDTYPE%'
+          'Note that the lines inside a Forms section are only output if th' +
+          'ere is a form associated to the given unit'
       end
     end
   end
