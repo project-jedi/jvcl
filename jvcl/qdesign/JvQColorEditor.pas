@@ -36,10 +36,10 @@ unit JvQColorEditor;
 interface
 
 uses
-  SysUtils, Classes,  
-  QGraphics, Types,  
-  RTLConsts, DesignIntf, DesignEditors,  
-  ClxEditors,  
+  SysUtils, Classes,
+  QWindows, Types, QGraphics, 
+  RTLConsts, DesignIntf, DesignEditors,
+  ClxEditors, 
   JvQConsts, JvQJVCLUtils;
 
 type

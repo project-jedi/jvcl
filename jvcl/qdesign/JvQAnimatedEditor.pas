@@ -36,7 +36,7 @@ unit JvQAnimatedEditor;
 interface
 
 uses
-  QWindows, QForms, Types, QGraphics, QImgList,
+  Windows, QForms, Types, QGraphics, QImgList,
   SysUtils, Classes, QDialogs, QControls, 
   DesignIntf, DesignEditors, DesignMenus, ClxEditors, 
   JvQAnimatedImage;

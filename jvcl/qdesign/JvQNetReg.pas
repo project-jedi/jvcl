@@ -42,8 +42,8 @@ uses
   Classes, 
   DesignEditors, DesignIntf, 
   {$IFDEF MSWINDOWS}
-  JvMail, JvMailEditor,
-  JvUrlListGrabber, JvUrlGrabbers, JvUrlListGrabberEditors,
+  {JvMail, JvMailEditor,}
+  JvQUrlListGrabber, JvQUrlGrabbers, JvQUrlListGrabberEditors,
   {$ENDIF MSWINDOWS}
   JvQHtmlParser, JvQHtmlParserEditor, 
   JvQTypes, JvQDsgnConsts,
@@ -61,7 +61,7 @@ begin
   RegisterComponents(RsPaletteInterNetWork, [
     {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber, TJvMail,
+    TJvLocalFileURLGrabber, {TJvMail,}
     {$ENDIF MSWINDOWS}
     TJvHTMLParser, 
     {$IFDEF MSWINDOWS}

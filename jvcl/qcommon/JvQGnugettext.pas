@@ -635,7 +635,7 @@ var
 begin
   {$ifdef DELPHI5OROLDER}
   SetLength(Result, 1024);
-  Len := Windows.GetEnvironmentVariable(PChar(Name), PChar(Result), 1024);
+  Len := QWindows.GetEnvironmentVariable(PChar(Name), PChar(Result), 1024);
   SetLength(Result, Len);
   if Len > 1024 then
     if Windows.GetEnvironmentVariable(PChar(Name),PChar(Result), Len) <> Len then

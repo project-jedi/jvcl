@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, 
-  DesignIntf, DesignEditors, ClxEditors,
+  DesignIntf, DesignEditors,    
   QForms, QImgList, QActnList, QGraphics, Types, 
   TypInfo;
 
@@ -196,14 +196,14 @@ begin
         HeaderFont.Color := cFontColor;
         HotTrackColor := cHotTrackColor;
         if csDesigning in ComponentState then
-          TCustomForm(Owner).DesignerHook.Modified;
+          TCustomForm(Owner).Designer.Modified;
       end;
     2: // 'Restore Default Fonts'
       with TCustomWinXPBar(Component) do
       begin
         ParentFont := True;
         if csDesigning in ComponentState then
-          TCustomForm(Owner).DesignerHook.Modified;
+          TCustomForm(Owner).Designer.Modified;
       end;
   end;
 end;
