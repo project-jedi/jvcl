@@ -100,6 +100,7 @@ type
 
     constructor Create(AUnitName: string; ANext: TFinalizeUnitItem);
     destructor Destroy; override;
+    procedure FinalizeUnit;
   end;
 
 var
@@ -139,31 +140,36 @@ begin
 end;
 
 destructor TFinalizeUnitItem.Destroy;
+begin
+  FinalizeUnit;
+  inherited Destroy;
+end;
+
+procedure TFinalizeUnitItem.FinalizeUnit;
 var
   P: TFinalizeItem;
 begin
- // this code also works if the finalization code adds a new finalize object
   while Items <> nil do
   begin
     P := Items;
     Items := P.Next;
-    try
-      P.Free;
-    except
-    end;
+    P.Free;
   end;
-  inherited Destroy;
 end;
 
 procedure FinalizeUnits;
 var
   P: TFinalizeUnitItem;
 begin
-  while FinalizeUnitList <> nil do
-  begin
-    P := FinalizeUnitList;
-    FinalizeUnitList := P.Next;
-    P.Free;
+  try
+    while FinalizeUnitList <> nil do
+    begin
+      P := FinalizeUnitList;
+      FinalizeUnitList := P.Next;
+      P.Free;
+    end;
+  except
+    FinalizeUnits; // finalize others
   end;
 end;
 
@@ -183,10 +189,7 @@ begin
         FinalizeUnitList := P.Next
       else
         N.Next := P.Next;
-      try
-        P.Free;
-      except
-      end;
+      P.Free;
       Break;
     end;
     N := P;
