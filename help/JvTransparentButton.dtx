@@ -1,4 +1,4 @@
-## Locked by Peter Thörnqvist
+## Completed and spell-checked (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvTransparentButton.pas
 <GROUP JVCL.FileRef>
@@ -36,7 +36,7 @@ Description
 Summary
   Defines the available text alignment styles.
 Description
-  The TJvTextAlign type is used to define seeral different text alignments for the text in a TJvTransparentButton
+  The TJvTextAlign type is used to define several different text alignments for the text in a TJvTransparentButton
   and TJvTransparentButton2.
 @@TJvTextAlign.ttaTopLeft
   Text is aligned to the top/left of the button.
@@ -51,7 +51,7 @@ Description
 @@TJvTextAlign.ttaBottom
   Text is aligned to the bottom/center of the button.
 @@TJvTextAlign.ttaBottomLeft
-  Text is aligned to the bottom/leftof the button.
+  Text is aligned to the bottom/left of the button.
 @@TJvTextAlign.ttaLeft
   Text is aligned to the left/center of the button.
 @@TJvTextAlign.ttaCenter
@@ -72,6 +72,10 @@ Description
     * be transparent or opaque.
     * display multi-line strings.
     * automatically create disabled and "hot" images.
+
+  TJvTransparentButton is very similar to TJvTransparentButton2 but uses a bitmap instead of
+  image lists for it's image. Using image lists is more resource friendly but can be more
+  laborious to set up.
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.AutoGray
 Summary
@@ -85,12 +89,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.BorderWidth
 Summary
-  Specifies the width of the buttons border.
+  Specifies the width of the button's border.
 Description
-  Write here a description
+  Use BorderWidth to get or set the width of the control’s border. Graphics or text drawn by the
+  control is clipped to the area within the border.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ClientRect
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.FrameStyle
 Summary
@@ -99,7 +103,6 @@ Description
   Use FrameStyle to specify the appearance of the button's frame. When FrameStyle is fsExplorer, the
   frame is only displayed when the mouse is inside the button.
 See Also
-  FrameStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.Glyph
 Summary
@@ -128,7 +131,7 @@ Note
   The lower left pixel of the bitmap is reserved for the "transparent" color. Any pixel in
   the bitmap which matches that lower left pixel will be transparent.
 See Also
-  NumGlyph
+  NumGlyphs
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.NumGlyphs
 Summary
@@ -159,7 +162,7 @@ Summary
 Description
   Use ShowPressed to set whether the button is drawn as a depressed button when the left mouse is
   clicked and held on the button. The normal behavior for a button is to show the user that it has been
-  pressed by moving the image and text down and right 1 pixel but you can acheive other effects by setting
+  pressed by moving the image and text down and right 1 pixel but you can achieve other effects by setting
   this value to false.
 See Also
   Offset
@@ -182,28 +185,37 @@ See Also
 Summary
   Specifies where the text is placed on the button.
 Description
-  Write here a description
+  Use TextAlign to specify where text is to appear on the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Offset, Spacing
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.Transparent
 Summary
-  Indicates whether the background can be seen through the button.
+  Specifies whether controls that sit below the control on a form can be seen through the control.
 Description
-  Write here a description
+  Set Transparent to true to prevent the control from obscuring other controls on the form. For
+  example, if the control is used on top of a background image, set Transparent to true so that
+  the control does not obscure the image more than necessary.
+
+  Writing text so that the background is transparent is slower than writing text when
+  Transparent is false. If the control is not obscuring a complicated image, performance can
+  be improved by setting the background color of the control to match the object beneath
+  it and setting Transparent to false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Color, Parent
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.WordWrap
 Summary
-  Write here a summary (1 line)
+  Specifies whether the text wraps when it is too long for the width of the control.
 Description
-  Write here a description
+  Set WordWrap to true to allow the control to display multiple line of text. When
+  WordWrap is true, text that is too wide for the control wraps at the right margin
+  and continues in additional lines.
+
+  Set WordWrap to false to limit the text to a single line. When WordWrap is false, text that is too
+  wide for the control appears truncated.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Caption
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2
 <TITLEIMG TJvTransparentButton2>
@@ -211,168 +223,205 @@ JVCLInfo
   GROUP=JVCL.Buttons.Push
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A button that can display images and text and also can align text and image in various ways.
 Description
-  Write here a description
+  Use TJvTransparentButton2 when you need a button that can:
+    * display an image from an imagelist as well as text.
+    * display different images depending on it's state
+    * align the text and image in several positions.
+    * use different frame colors.
+    * be transparent or opaque.
+    * display multi-line strings.
+    * automatically create disabled and "hot" images.
+
+  TJvTransparentButton2 is very similar to TJvTransparentButton but uses imagelists instead of
+  a bitmap image for it's image. Using imagelists is more resource friendly but can be more
+  difficult to set up.
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.ActiveImage
 Summary
-  Write here a summary (1 line)
+  Specifies the imagelist to get the active image from.
 Description
-  Write here a description
+  Use ActiveImage to specify the imagelist to extract the active image from. This is the only
+  imagelist you need to set to be able to display an image in the button. If none of the other
+  imagelists are set, the other three images are created automatically.
+Note
+  The button has four different imagelist properties you can assign to but they can all point
+  to the same imagelist. The button also has four different image index properties to match
+  the imagelists but these can also be set to the same value. Internally, the button creates
+  a read-only imagelist (InternalList) that contains the selected images or the auto created
+  images for the three other states (down, disabled, gray).
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveIndex, DisabledImage, DisabledIndex, DownImage, DownIndex, GrayImage, GrayIndex, InternalList
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.ActiveIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the index of the active image.
 Description
-  Write here a description
+  Use ActiveIndex to set the index of the image to use in ActiveImage. If ActiveIndex is -1, no image
+  is displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, DisabledImage, DisabledIndex, DownImage, DownIndex, GrayImage, GrayIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.AutoGray
 Summary
-  Write here a summary (1 line)
+  Specifies if a special, gray, image is displayed when the mouse is outside the button.
 Description
-  Write here a description
+  Use AutoGray to set whether the image on the button is automatically transformed to a gray
+  scale image when the mouse leaves the button. When the mouse enters the button again, the image
+  is displayed in color. This property only has effect if FrameStyle is fsExplorer and an
+  image can be shown (by at least setting ActiveImage and ActiveIndex).
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, ActiveIndex, GrayImage, GrayIndex, FrameStyle
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.BorderWidth
 Summary
-  Write here a summary (1 line)
+  Specifies the width of the button's border.
 Description
-  Write here a description
+  Use BorderWidth to get or set the width of the control’s border. Graphics or text drawn by the
+  control is clipped to the area within the border.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ClientRect
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.DisabledImage
 Summary
-  Write here a summary (1 line)
+  Specifies the imagelist to get the disabled image from.
 Description
-  Write here a description
+  Use DisabledImage to specify the imagelist to extract the disabled image from. If this
+  property is not set, a disabled image is generated automatically using ActiveImage as a template.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, ActiveIndex, DisabledIndex, DownImage, DownIndex, GrayImage, GrayIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.DisabledIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the index of the disabled image.
 Description
-  Write here a description
+  Use DisabledIndex to set the index of the image to use in DisabledImage. If DisabledIndex is -1,
+  a disabled image is created automatically using ActiveImage as a template.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, ActiveIndex, DisabledImage, DownImage, DownIndex, GrayImage, GrayIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.DownImage
 Summary
-  Write here a summary (1 line)
+  Specifies the imagelist to get the down image from.
 Description
-  Write here a description
+  Use DownImage to specify the imagelist to extract the down image from. If this
+  property is not set, ActiveImage is used for the down state as well.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, ActiveIndex, DisabledImage, DisabledIndex, DownIndex, GrayImage, GrayIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.DownIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the index of the down image.
 Description
-  Write here a description
+  Use DownIndex to set the index of the image to use in DownImage. If DownIndex is -1,
+  ActiveImage is used for the down state as well.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, ActiveIndex, DisabledImage, DisabledIndex, DownImage, GrayImage, GrayIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.FrameStyle
 Summary
-  Write here a summary (1 line)
+  Specifies the appearance of the button's frame.
 Description
-  Write here a description
+  Use FrameStyle to specify the appearance of the button's frame. When FrameStyle is fsExplorer, the
+  frame is only displayed when the mouse is inside the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.GrayImage
 Summary
-  Write here a summary (1 line)
+  Specifies the imagelist to get the grayed image from.
 Description
-  Write here a description
+  Use GrayImage to specify the imagelist to extract the gray image from. If this
+  property is not set, a gray image is created automatically using ActiveImage as a template.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, ActiveIndex, DisabledImage, DisabledIndex, DownImage, DownIndex, GrayIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.GrayIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the index of the gray image.
 Description
-  Write here a description
+  Use GrayIndex to set the index of the image to use in GrayImage. If GrayIndex is -1,
+  a grayed image is created automatically using ActiveImage as a template.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, ActiveIndex, DisabledImage, DisabledIndex, DownImage, DownIndex, GrayImage
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.HiFont
 Summary
-  Write here a summary (1 line)
+  Specifies the font to use when the button is highlighted.
 Description
-  Write here a description
+  Use HiFont to specify the font properties to use when the mouse is hovering above the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Font
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.InternalList
 Summary
-  Write here a summary (1 line)
+  References the internal imagelist used by the button.
 Description
-  Write here a description
+  When an imagelist is assigned to either of the four imagelist properties, the button creates
+  an internal imagelist that contains the images that are actually used. Depending on the settings
+  of the imagelist properties, some of the images in InternalList are created automatically.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AutoGray, ActiveImage, ActiveIndex, DisabledImage, DisabledIndex, DownImage, DownIndex, GrayImage, GrayIndex
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.ShowPressed
 Summary
-  Write here a summary (1 line)
+  Specifies if the button is drawn in it's depressed state when the left mouse button is clicked on
+  the button.
 Description
-  Write here a description
+  Use ShowPressed to set whether the button is drawn as a depressed button when the left mouse is
+  clicked and held on the button. The normal behavior for a button is to show the user that it has been
+  pressed by moving the image and text down and right 1 pixel but you can achieve other effects by setting
+  this value to false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Offset
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.Spacing
 Summary
-  Write here a summary (1 line)
+  Determines where the image and text appear on the button.
 Description
-  Write here a description
+  Spacing determines the number of pixels between the image (specified using the imagelist properties)
+  and the text (specified in the Caption property). The default value is 4 pixels.
+
+  If Spacing is a positive number, its value is the number of pixels between the image and text. If
+  Spacing is 0, no pixels will be between the image and text. If Spacing is -1, the text appears
+  centered between the image and the button edge. The number of pixels between the image and text is
+  equal to the number of pixels between the text and the button edge opposite the glyph.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ActiveImage, DownImage, DisabledImage, GrayImage, Offset, TextAlign
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.TextAlign
 Summary
-  Write here a summary (1 line)
+  Specifies where the text is placed on the button.
 Description
-  Write here a description
+  Use TextAlign to specify where text is to appear on the button.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Offset, Spacing
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.Transparent
 Summary
-  Write here a summary (1 line)
+  Specifies whether controls that sit below the control on a form can be seen through the control.
 Description
-  Write here a description
+  Set Transparent to true to prevent the control from obscuring other controls on the form. For
+  example, if the control is used on top of a background image, set Transparent to true so that
+  the control does not obscure the image more than necessary.
+
+  Writing text so that the background is transparent is slower than writing text when
+  Transparent is false. If the control is not obscuring a complicated image, performance can
+  be improved by setting the background color of the control to match the object beneath
+  it and setting Transparent to false.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Color, Parent
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.WordWrap
 Summary
-  Write here a summary (1 line)
+  Specifies whether the text wraps when it is too long for the width of the control.
 Description
-  Write here a description
+  Set WordWrap to true to allow the control to display multiple line of text. When
+  WordWrap is true, text that is too wide for the control wraps at the right margin
+  and continues in additional lines.
+
+  Set WordWrap to false to limit the text to a single line. When WordWrap is false, text that is too
+  wide for the control appears truncated.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Caption
+

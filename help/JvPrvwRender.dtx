@@ -1,4 +1,4 @@
-## Locked by Peter Thörnqvist
+## Completed and spell-checked (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvPrvwRender.pas
 <GROUP JVCL.FileRef>
@@ -11,40 +11,38 @@ Author
 @@EPrintPreviewError
 <TITLE EPrintPreviewError type>
 Summary
-  Write here a summary (1 line)
+  Exception class used by print preview components.
 Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = Exception ; - for reference)
+  EPrintPreviewError is the exception class used by print preview components when errors
+  are detected.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewRenderer
 Summary
-  Write here a summary (1 line)
+  Base class for components that can render a print preview on a TJvCustomPreviewControl.
 Description
-  Write here a description
+  Use TJvCustomPreviewRenderer as a base class to derive from when you want to create
+  components that can render a print preview. Override the abstract DoAddPage to create
+  a print preview page by page.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewRenderer.CreatePreview
 Summary
-  Write here a summary (1 line)
+  Called when a preview should be created.
 Description
-  Write here a description
+  CreatePreview is called by a TJvCustomPreviewControl when the user wants to create a preview.
 Parameters
-  Append - Description for this parameter
+  Append - True if the preview should be appended to the existing preview or false if
+           a new preview should be created
 Return value
-  Describe here what the function returns
+  True if the preview could be created, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewRenderer.PrintPreview
 Summary
-  Write here a summary (1 line)
+  Specifies the print preview component that is associated with this renderer.
 Description
-  Write here a description
+  \Read PrintPreview to determine the TJvCustomPreviewControl or descendant that displays the preview
+  created by the renderer.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvNewPageEvent
 <TITLE TJvNewPageEvent type>
@@ -52,424 +50,371 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem
 Summary
-  Write here a summary (1 line)
+  An item representing a graphic object.
 Description
-  Write here a description
+  TJvPreviewGraphicItem is the class of items maintained by the TJvPreviewGraphicItems class. It
+  represents the image data and property settings for a graphic object that can be rendered to
+  a preview.
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem.Center
 Summary
-  Write here a summary (1 line)
+  Specifies if the graphic should be centered in it's container.
 Description
-  Write here a description
+  Use Center to specify whether the image should be centered on the preview page or not.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem.DestRect
 Summary
-  Write here a summary (1 line)
+  Calculates the size of the output rectangle based on a reference rectangle and a DC.
 Description
-  Write here a description
+  Call DestRect to calculate the size of the output rectangle needed fo he image when it is resized
+  according to the settings of the DC.
 Parameters
-  RefRect - Description for this parameter
-  DestDC  - Description for this parameter
+  RefRect - Reference rectangle.
+  DestDC  - The DC to render to.
 Return value
-  Describe here what the function returns
+  A rectangle that specifies the coordinates of the required destination rectangle of the image.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem.Picture
 Summary
-  Write here a summary (1 line)
+  The graphic object associated with this item.
 Description
-  Write here a description
+  Use Picture to specify the image that is associated with this object. At design time, click the
+  ellipsis button in the Object Inspector to select an image.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem.Proportional
 Summary
-  Write here a summary (1 line)
+  Indicates whether the image should be changed, without distortion, so that it fits the bounds of
+  the container.
 Description
-  Write here a description
+  Use Proportional to set whether images are stretched to fill the entire client area when Stretch is true
+  or if they should be stretched to fill as much as possible without changing the original width to height
+  ratio of the image.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DestRect, Stretch
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem.Stretch
 Summary
-  Write here a summary (1 line)
+  Indicates whether the image should be changed so that it exactly fits the bounds of the container.
 Description
-  Write here a description
+  If Stretch is true, the image is changed to fill the entire available client area. If Stretch is false,
+  the image is displayed at it's original size.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Proportional
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem.Transparent
 Summary
-  Write here a summary (1 line)
+  Indicates whether the image should be rendered transparently.
 Description
-  Write here a description
+  Use Transparent to indicate whether the background of the rendering area is filled or not.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItem.UpdateGraphic
 Summary
-  Write here a summary (1 line)
+  Updates the image to match the current property settings.
 Description
-  Write here a description
+  Call UpdateGraphic to make sure that property changes are propagated to the image in Picture.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Picture
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItems
 Summary
-  Write here a summary (1 line)
+  Collection that maintains a list of graphic objects.
 Description
-  Write here a description
+  TJvPreviewGraphicItems is a collection that maintains a list of TJvPreviewGraphicItem objects.
+  TJvPreviewGraphicItems is the type of the <LINK TJvPreviewRenderGraphics.Items, Items> property of
+  TJvPreviewRenderGraphics.
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItems.Add
 Summary
-  Write here a summary (1 line)
+  Adds a new graphic object to the collection.
 Description
-  Write here a description
+  Call add to add a new image object to the collection.
 Return value
-  Describe here what the function returns
+  The newly added image object.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewGraphicItems.Items
 Summary
-  Write here a summary (1 line)
+  Provides indexed access to the items in the collection.
 Description
-  Write here a description
+  Use Items to access the image objects using an index.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter
 <TITLEIMG TJvPreviewPrinter>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Miscel
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A class that implements the IJvPrinter interface using TPrinter as the output device.
 Description
-  Write here a description
+  Use TJvPreviewPrinter when you want to output the content of a preview control to the printer.
+  If a preview control is assigned to the PrintPreview property, calling Print will
+  call the preview control's <LINK TJvCustomPreviewControl.PrintRange, PrintRange>
+  method to create a printout using the current settings of the TJvPreviewPrinter
+  and send it to the currently selected printer.
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Assign
 Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
+  Copies the properties of a compatible object to this object
 Description
-  Write here a description
+  Call Assign to copy the properties of a TJvPreviewPrinter or a TPrintDialog to this object.
+  If Source is a TPrintDialog the Collate, Copies, FromPage, Options, PrintRange and ToPage
+  properties are copied.
 Parameters
-  Source - Description for this parameter
+  Source - The object to copy from
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TPrintDialog, Collate, Copies, FromPage, Options, PrintRange, ToPage
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Collate
 Summary
-  Write here a summary (1 line)
+  Indicates whether collating is active.
 Description
-  Write here a description
+  Use Collate to specify if collating should be used or not when printing.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Copies
 Summary
-  Write here a summary (1 line)
+  Indicates the number of copies to print.
 Description
-  Write here a description
+  Set Copies to the number of copies of the document to print. Copies can never be less than 1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.FromPage
 Summary
-  Write here a summary (1 line)
+  Indicates the page on which the print job is to begin.
 Description
-  Write here a description
+  The FromPage property corresponds to the From field in a Print dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ToPage
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.OnAbort
 Summary
-  Write here a summary (1 line)
+  Occurs when the print job is aborted.
 Description
-  Write here a description
+  Write a handler for OnAbort to take specific action when the print job is aborted. For example,
+  you could display a dialog to the user warning them that the print job was aborted or you could
+  hide a progress dialog previously shown in OnBeginDoc.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBeginDoc, OnEndDoc, OnNewPage
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.OnBeginDoc
 Summary
-  Write here a summary (1 line)
+  Occurs when the print job is started.
 Description
-  Write here a description
+  Write a handler for OnBeginDoc to take specific action when the print job starts. For example, you
+  could display a dialog to the user while the printing is in progress.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnNewPage, OnEndDoc
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.OnEndDoc
 Summary
-  Write here a summary (1 line)
+  Occurs when the print job is finished.
 Description
-  Write here a description
+  Write a handler for OnEndDoc to take specific action when the print job has finished. For example,
+  you could hide a dialog previously shown in OnBeginDoc.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBeginDoc, OnNewPage
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.OnNewPage
 Summary
-  Write here a summary (1 line)
+  Occurs when a new page is to be printed.
 Description
-  Write here a description
+  Write a handler for OnNewPage to take specific action when a new page is about to be sent to the printer.
+  For example, you can update the progress on a dialog shown to the user.
 Parameters
-  Sender    - Description for this parameter
-  PageIndex - Description for this parameter
+  Sender    - The object that called the event.
+  PageIndex - The number of the page that is to be printed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnBeginDoc, OnEndDoc, OnAbort
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Options
 Summary
-  Write here a summary (1 line)
+  Indicates the options to use when a print dialog is displayed.
 Description
-  Write here a description
+  Use Options to specify the print options to use when a print dialog is to be displayed. Options
+  isn't used by TJvPreviewPrinter itself. It is only provided as a convenient way of storing the
+  print dialog options without actually having to create a dialog to house them.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TPrintDialog.Options
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Print
 Summary
-  Write here a summary (1 line)
+  Starts the print job.
 Description
-  Write here a description
+  Call Print to send the document in the preview control to the printer. If a preview control is
+  assigned to the PrintPreview property, it's PrintRange method is called to do the actual printing. 
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  PrintPreview
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Printer
 Summary
-  Write here a summary (1 line)
+  Provides access to the global printer object.
 Description
-  Write here a description
+  \Read Printer to access the properties and methods of the TPrinter class.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TPrinter
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.PrintPreview
 Summary
-  Write here a summary (1 line)
+  Specifies the print preview control that is responsible for creating the print job.
 Description
-  Write here a description
+  Set PrintPreview to a TJvCustomPreviewControl or descendant that should be handling the
+  creation of the document to print. TJvPreviewPrinter does not itself provide methods for creating
+  the document. Instead, it uses the <LINK TJvCustomPreviewControl.PrintRange, PrintRange> method
+  of TJvCustomPreviewControl to do the actual work.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomPreviewControl
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.PrintRange
 Summary
-  Write here a summary (1 line)
+  Specifies whether FromPage and ToPage are valid.
 Description
-  Write here a description
+  Use PrintRange to determine whether FromPage and ToPage contains valid values. If PrintRange
+  is prAllPages, FromPage and ToPage are ignored, otherwise they are considered valid.
+Note
+  prSelection is not supported by the print preview components at his time.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.Title
 Summary
-  Write here a summary (1 line)
+  Determines the text that is listed in the Print Manager and on network header pages.
 Description
-  Write here a description
+  Title is used by Windows in the Print Manager and for network title pages.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewPrinter.ToPage
 Summary
-  Write here a summary (1 line)
+  Indicates the page on which the print job is to end.
 Description
-  Write here a description
+  The ToPage property corresponds to the To field in a Print dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FromPage
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderControl
 <TITLEIMG TJvPreviewRenderControl>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Miscel
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Renders a preview of a TControl descendant.
 Description
-  Write here a description
+  Use TJvPreviewRenderControl when you want to render a TControl descendant (visual control) in a simple
+  way. Assign the TControl to render to the Control property and call the CreatePreview method to render
+  the output to a preview control.
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderControl.Center
 Summary
-  Write here a summary (1 line)
+  Indicates whether the preview is centered in it's container.
 Description
-  Write here a description
+  Use Center to specify whether the TControl is rendered centered on the preview control
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderControl.Control
 Summary
-  Write here a summary (1 line)
+  Indicates the control to render.
 Description
-  Write here a description
+  Use Control to specify the TControl descendant to render to the preview control. If Control is nil,
+  no preview is generated when CreatePreview is called.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderControl.CreatePreview
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Append - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CreatePreview
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderControl.Proportional
 Summary
-  Write here a summary (1 line)
+  Indicates whether the Control preview should be changed, without distortion, so that it fits the
+  bounds of the container.
 Description
-  Write here a description
+  Use Proportional to set whether the Control preview is stretched to fill the entire client area
+  or if it should be stretched to fill as much as possible without changing the original width to height
+  ratio of the image. Proportional only have effect if Stretch is true.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DestRect, Stretch
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderControl.Stretch
 Summary
-  Write here a summary (1 line)
+  Indicates whether the Control preview should be changed so that it exactly fits the bounds of
+  the container.
 Description
-  Write here a description
+  If Stretch is true, the image is changed to fill the entire available client area. If Stretch is false,
+  the image is displayed at it's original size.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Proportional
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderGraphics
 <TITLEIMG TJvPreviewRenderGraphics>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Miscel
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A renderer that can render a collection of images.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderGraphics.CreatePreview
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Append - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use TJvPreviewRenderGraphics when you want to preview a set of images. Add images to the renderer
+  by using the methods of the Images property. Every image in the collection can have a different format
+  and use different property settings. When you are ready to show the preview, call CreatePreview.
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderGraphics.Images
 Summary
-  Write here a summary (1 line)
+  A collection of images to render.
 Description
-  Write here a description
+  Use Images to add and modify the images to preview. At design time, click the ellipsis button
+  in the Object Inspector to show the collection editor. Use the editor to add and modify
+  the images in the collection.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CreatePreview
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderRichEdit
 <TITLEIMG TJvPreviewRenderRichEdit>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Miscel
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Preview renderer for rich edits.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderRichEdit.CreatePreview
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Append - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use TJvPreviewRenderRichEdit when you want to render a preview of the content in a rich edit control.
+  This renderer supports formatted output of RTF. Assign a rich edit to the RichEdit property and call
+  CreatePreview to render the rich edit to a preview control.
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderRichEdit.RichEdit
 Summary
-  Write here a summary (1 line)
+  References the rich edit that should be rendered.
 Description
-  Write here a description
+  Set RichEdit to a rich edit control on your form that you want to preview.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CreatePreview
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderStrings
 <TITLEIMG TJvPreviewRenderStrings>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Miscel
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Preview render for string lists.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvPreviewRenderStrings.CreatePreview
-Summary
-  Write here a summary (1 line)
-  This is an overridden method, you don't have to describe these
-  if it does the same as the inherited method
-Description
-  Write here a description
-Parameters
-  Append - Description for this parameter
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use TJvPreviewRenderStrings when you want to render a preview for a TStrings or descendant. Assign
+  a TStrings to the Strings property or use the methods of Strings to add content to the string list.
+  Use Font to specify the visual appearance of the text and call CreatePreview to render the string list
+  content to a print preview control.
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderStrings.Font
 Summary
-  Write here a summary (1 line)
+  Specifies the font settings to use in when rendering.
 Description
-  Write here a description
+  Use Font to specify the font settings to use when creating the preview. Changing the properties
+  of the font won't be instantly visible in the preview. Call CreatePreview to update the preview.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CreatePreview
 ----------------------------------------------------------------------------------------------------
 @@TJvPreviewRenderStrings.Strings
 Summary
-  Write here a summary (1 line)
+  List of text strings that should be rendered.
 Description
-  Write here a description
+  use Strings to specify the text strings to render to the preview. You can copy strings from any other
+  control or TStrings descendant by assigning directly to the Strings property or you can use
+  the methods of TStrings (like Add, Remove, LoadFromFile etc) to define the content of the list.
+
+  To view the new or changed content of Strings, you must call the CreatePreview method.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  CreatePreview

@@ -1,9 +1,9 @@
-## Locked by Peter Thörnqvist
+## Completed and spell-checked (p3)
 ----------------------------------------------------------------------------------------------------
 @@JvImageWindow.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the TJvImageWindow component.
+  Contains the image viewing components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
@@ -14,81 +14,75 @@ JVCLInfo
   GROUP=JVCL.Graphics.Shape
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A control that can display an image from an imagelist.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.BackColor
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use TJvImageSquare when you need a control that can display an image from an imagelist. By setting the
+  ImageList and ImageIndex properties, the control displays the selected image in it's client area.
+
+  Use properties like Color, HiColor and BorderStyle to modify the control's appearance. Use ShowClick
+  to alter it's behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.BorderStyle
 Summary
-  Write here a summary (1 line)
+  Specifies whether the control has a border.
 Description
-  Write here a description
+  Use BorderStyle to get or set whether the control has a border.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.HiColor
 Summary
-  Write here a summary (1 line)
+  Specifies the background color to use when hot tracking.
 Description
-  Write here a description
+  Use HiColor to specify the color to use when the mouse is hovering over the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Color
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the index of the image to display from the image list.
 Description
-  Write here a description
+  Use ImageIndex to specify the image to display in the control. The icon with
+  the specified index is drawn using ImageList. To not display an image, set ImageIndex to -1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageList
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.ImageList
 Summary
-  Write here a summary (1 line)
+  Specifies an imagelist to retrieve the displayed image from.
 Description
-  Write here a description
+  Set ImageList to an imagelist where the component should retrieve the image to display. ImageList
+  in combination with the ImageIndex property determines what image to display.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex
 ----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.OnEnter
+@@TJvImageSquare.OnMouseEnter
 Summary
-  Write here a summary (1 line)
+  Occurs when the mouse pointer moves over the control.
 Description
-  Write here a description
+  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnMouseLeave
 ----------------------------------------------------------------------------------------------------
-@@TJvImageSquare.OnExit
+@@TJvImageSquare.OnMouseLeave
 Summary
-  Write here a summary (1 line)
+  Occurs when the mouse pointer moves off the control.
 Description
-  Write here a description
+  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvImageSquare.ShowClick
 Summary
-  Write here a summary (1 line)
+  Specifies if mouse clicks are shown visually.
 Description
-  Write here a description
+  Use ShowClick to specify whether mouse clinks are shown or not. if ShowClick is true, a small,
+  double-line frame with a white background is drawn around the image when the user clicks with
+  the mouse.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Click, OnClick
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow
 <TITLEIMG TJvImageWindow>
@@ -96,167 +90,148 @@ JVCLInfo
   GROUP=JVCL.Graphics.Shape
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Component that can display the images from an imagelist in a grid.
 Description
-  Write here a description
+  Use TJvImageWindow when you need a component that can display the content of an imagelist in a grid.
+  Use properties like BackColor, FrontColor, Ghost, GridColor, ShowFrame and ShowGrid to modify the component's
+  appearance. Use properties like ColCount and ImageCount to
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.AutoSize
 Summary
-  Write here a summary (1 line)
+  Specifies whether the control sizes itself automatically to accommodate its contents.
 Description
-  Write here a description
+  Use AutoSize to specify whether the control sizes itself automatically. When AutoSize is true,
+  the control resizes automatically when its contents change.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.BackColor
 Summary
-  Write here a summary (1 line)
+  Specifies the background color of the control.
 Description
-  Write here a description
+  Use Color to read or change the background color of the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FrontColor
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.ColCount
 Summary
-  Write here a summary (1 line)
+  Specifies the number of columns in the grid.
 Description
-  Write here a description
+  Use ColCount to specify how many columns the grid should display. When Optimal is set to true, ColCount
+  might change.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Optimal
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.FrontColor
 Summary
-  Write here a summary (1 line)
+  Specifies the color of the control's border.
 Description
-  Write here a description
+  Use FrontColor to specify a color to use for the control's border. FrontColor is also used to
+  highlight the grid frame when ShowFrame is true,
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BackColor, ShowFrame
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.Ghost
 Summary
-  Write here a summary (1 line)
+  Specifies if the grid lines are "ghosted".
 Description
-  Write here a description
+  Use Ghost to specify if the grid lines in the control are ghosted, i.e if an extra border is drawn
+  around the grid lines. The extra border is drawn using FrontColor.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  GridColor, FrontColor
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.GridColor
 Summary
-  Write here a summary (1 line)
+  Specifies the color used for the grid lines.
 Description
-  Write here a description
+  Use GridColor to set the color for the separator lines in the grid.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Ghost, FrontColor, BackColor
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.ImageCount
 Summary
-  Write here a summary (1 line)
+  Specifies the number of images to display.
 Description
-  Write here a description
+  Use ImageCount to specify the number of images to display from ImageList. For example, setting
+  ImageCount to 2, will only display the first 2 images in the imagelist. ImageCount can never be set
+  to a value higher than ImageList.Count.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex, ImageList
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.ImageIndex
 Summary
-  Write here a summary (1 line)
+  Specifies the currently selected or clicked image.
 Description
-  Write here a description
+  \Read ImageIndex to determine which image is currently selected or clicked. If no image is selected,
+  ImageIndex returns -1.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageList
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.ImageList
 Summary
-  Write here a summary (1 line)
+  Specifies the images to display in the grid.
 Description
-  Write here a description
+  Set ImageList to the imagelist that should be displayed in the grid. If no imagelist is
+  assigned, no images are displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ImageIndex, ColCount, ImageCount
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.Margin
 Summary
-  Write here a summary (1 line)
+  Specifies a margin to reserve around images.
 Description
-  Write here a description
+  Use Margin to set the number of pixels that surrounds each image. Setting Margin alters the size
+  of each grid square.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.Optimal
 Summary
-  Write here a summary (1 line)
+  Specifies how the grid columns and rows are calculated.
 Description
-  Write here a description
+  Use Optimal to specify how rows and columns are calculated. If Optimal is true, the component
+  alters the row and column count so that the grid occupies as little space as possible.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.SaveImage
 Summary
-  Write here a summary (1 line)
+  Saves an image in the imagelist to a file.
 Description
-  Write here a description
+  Call SaveImage to save an image from the imagelist to file.
 Parameters
-  Index    - Description for this parameter
-  Filename - Description for this parameter
-  AsBmp    - Description for this parameter
+  Index    - Index of the image in the imagelist.
+  Filename - The name of the file to save to. If Filename exists, it is overwritten.
+  AsBmp    - Specifies if the image is saved as a bitmap or an icon. If true, the file is a bitmap file.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveImageList
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.SaveImageList
 Summary
-  Write here a summary (1 line)
+  Saves the images in the imagelist to a composite bitmap file.
 Description
-  Write here a description
+  Call SaveImageList to save the content of ImageList to a bitmap file. The images in ImageList are
+  merged into a single strip of images before saving to file.
 Parameters
-  Filename - Description for this parameter
+  Filename - The name of the file to save to. If Filename exists, it is overwritten.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  SaveImage
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.ShowFrame
 Summary
-  Write here a summary (1 line)
+  Specifies whether the frame around images are hot tracked.
 Description
-  Write here a description
+  Set ShowFrame to true to make the control highlight the frame around the selected image when the
+  mouse hovers over it. The highlight is drawn using FrontColor. Don't set ShowFrame to true unless
+  ShowGrid is also true as doing so will leave frame traces when the user moves the mouse
+  over the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FrontColor, ShowGrid
 ----------------------------------------------------------------------------------------------------
 @@TJvImageWindow.ShowGrid
 Summary
-  Write here a summary (1 line)
+  Specifies if grid lines are shown.
 Description
-  Write here a description
+  Use ShowGrid to specify whether the control draws the horizontal and vertical grid lines. If ShowGrid
+  is true, no grid is drawn. If ShowFrame is true, ShowGrid should also be true. The grid is drawn using
+  GridColor.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvMargin
-<TITLE TJvMargin type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 2..24 ; - for reference)
-----------------------------------------------------------------------------------------------------
-@@TJvPositive
-<TITLE TJvPositive type>
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 1.. MaxInt ; - for reference)
+  GridColor, ShowGrid, FrontColor, BackColor
+
