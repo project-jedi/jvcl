@@ -1,4 +1,2 @@
 @echo off
-SET INSTALLOPTIONS=--autoupdate
-install.bat
-SET INSTALLOPTIONS=
+install.bat --autoupdate "%1" "%2" "%3" "%4" "%5" "%6" "%7" "%8" "%9"
