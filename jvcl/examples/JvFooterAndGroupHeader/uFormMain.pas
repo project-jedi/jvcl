@@ -29,9 +29,9 @@ unit uFormMain;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, JvFooter, JvGroupHeader, JvComponent, JvBitBtn, Buttons,
-  JvExButtons, JvExExtCtrls, JvExControls;
+  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
+  QExtCtrls, QStdCtrls, JvQFooter, JvQGroupHeader, JvQComponent, JvQBitBtn, QButtons,
+  JvQExButtons, JvQExExtCtrls, JvQExControls;
 
 type
   TForm1 = class(TForm)
@@ -58,6 +58,6 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.xfm}
 
 end.
