@@ -34,6 +34,7 @@
     <Package Name="visualdbclx" Targets="allclx" Condition=""/>
   </Requires>
   <Contains>
+    <File Name="..\..\run\JvAppStoragePropertyEngineDB.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMemoryDataset.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvData.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvCsvParse.pas" Targets="all" Formname="" Condition=""/>
