@@ -1,292 +1,316 @@
-================================================================
+----------------------------------------------------------------------------------------------------
+@@$TJvCheckListBox
+<GROUP JVCL.Miscel>
+<TITLE TJvCheckListBox overview>
+  TJvCheckListBox is an enhance TCheckListBox control that adds various features:
+
+  * <LINK TJvCheckBox.HotTrack, Hot track> support.
+  * A <LINK TJvCheckListBox.HorScrollbar, horizontal scroll bar>.
+  * Events for both the <LINK TJvCheckListBox.OnHorizontalScroll, horizontal> as well as the
+    <LINK TJvCheckListBox.OnHorizontalScroll, vertical> scrollbar.
+  * Mechanism to search items based on <LINK TJvCheckListBox.SearchExactString, exact string>,
+    <LINK TJvCheckListBox.SearchPrefix, start with a string> or
+    <LINK TJvCheckListBox.SearchSubString, containing a string>.
+  * Manipulating selections (<LINK TJvCheckListBox.SelectAll, all>,
+    <LINK TJvCheckListBox.UnselectAll, none> or <LINK TJvCheckListBox.InvertSelection, invert>).
+  * Manipulating check marks (<LINK TJvCheckListBox.CheckAll, all>,
+    <LINK TJvCheckListBox.UnCheckall, none> or <LINK TJvCheckListBox.InvertCheck, invert>).
+  * Conditional deletion (<LINK TJvCheckListBox.DeleteExactString, string matching>,
+    <LINK TJvCheckListBox.DeleteSelected, selected>).
+----------------------------------------------------------------------------------------------------
 @@JvCheckListBox.pas
-Description:
-This is an enhanced version of a TCheckListBox with search methods, HotTrack effects, an Horizontal scrollbar, etc...
-
-Note:
-<B>Delphi Versions:</B> <COLOR Brown>5, 6</COLOR> <B> 
-
-C++ Builder Versions:</B> <COLOR Brown>none</COLOR>
-
-Conditions:
-The contents of this file are subject to the Mozilla Public License Version 1.1 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.mozilla.org/MPL/MPL-1.1.html
-
-Author:
-Sebastien Buysse
-
-Version:
-1.20 Beta
-
-================================================================
-@@TCheckListRecord
-
-================================================================
-@@TCheckListRecord.Checked
-
-================================================================
-@@TCheckListRecord.StringSize
-
-================================================================
+Summary
+  Contains the TJvCheckListBox component.
+<INCLUDE JVCL.UnitText.dtx>
+Author
+  Sébastien Buysse
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox
-Description:
-This is an enhanced version of a TCheckListBox with search methods, HotTrack effects, an Horizontal scrollbar, etc...
+<GROUP TJvCheckListBox>
+Summary
+  Enhanced TCheckListBox with hot track, horizontal scrollbar, searching, selection manipulation and
+  checkmark mainulation.
+Description
+  TJvCheckListBox is an enhance TCheckListBox control that adds hot tracking effects, a horizontal
+  scrollbar, searching, selection manipulation and manipulation on multiple check marks.
 
-================================================================
-@@TJvCheckListBox.FAboutJVCL
-
-================================================================
-@@TJvCheckListBox.FColor
-
-================================================================
-@@TJvCheckListBox.FEffect
-
-================================================================
-@@TJvCheckListBox.FItemSearchs
-
-================================================================
-@@TJvCheckListBox.FMaxWidth
-
-================================================================
-@@TJvCheckListBox.FOnCtl3DChanged
-
-================================================================
-@@TJvCheckListBox.FOnHScroll
-
-================================================================
-@@TJvCheckListBox.FOnMouseEnter
-
-================================================================
-@@TJvCheckListBox.FOnMouseLeave
-
-================================================================
-@@TJvCheckListBox.FOnParentColorChanged
-
-================================================================
-@@TJvCheckListBox.FOnSelectCancel
-
-================================================================
-@@TJvCheckListBox.FOnVScroll
-
-================================================================
-@@TJvCheckListBox.FOver
-
-================================================================
-@@TJvCheckListBox.FSaved
-
-================================================================
-@@TJvCheckListBox.FScroll
-
-================================================================
+  For more information on how to use this component, check out the
+  <LINK $TJvCheckListBox, overview>.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.CheckAll
-Description:
-Call this method to check all elements of the list.
+Summary
+  Checks all items in the list.
+Description
+  CheckAll will check all items in list box.
+See Also
+  GetChecked, GetUnChecked, InvertCheck, UnCheckAll
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.DeleteExactString
+Summary
+  Deletes items that match a certain string.
+Description
+  DeleteExactString deletes items based on their string. It can either delete all occurences or only
+  the first occurance. In addition you can specify if the matching should be case sensitive or not.
 
-================================================================
-@@TJvCheckListBox.CMCtl3DChanged@TMessage
-
-================================================================
-@@TJvCheckListBox.CMMouseEnter@TMessage
-
-================================================================
-@@TJvCheckListBox.CMMouseLeave@TMessage
-
-================================================================
-@@TJvCheckListBox.CMParentColorChanged@TMessage
-
-================================================================
-@@TJvCheckListBox.Create@TComponent
-
-================================================================
-@@TJvCheckListBox.CreateParams@TCreateParams
-
-================================================================
-@@TJvCheckListBox.DeleteExactString@string@Boolean@Boolean
-Description:
-Call this method to delete a string of the list. This method can either delete all or only the first occurence of the string.
-
-Parameters:
-Value - is the string you want to search for.
-All - is true if you want to delete all occurences of the string
-CaseSensitive - is true if the search is case sensitive, false if not.
-
-
-
-Returns:
-X: the index of the item in the list.
-
--1: if the string hasn't been found.
-
-================================================================
+  The method returns the number of items deleted.
+Parameters
+  Value -         The string to be deleted.
+  All -           Flag to signal if all occurences should be removed. If set to True all occurences
+                  are removed from the list, otherwise only the first occurence will be removed.
+  CaseSensitive - Flag to signal if the matching should be case sensitive or not. If set to True,
+                  matching is case sensitive, otherwise it's not.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.DeleteSelected
-Description:
-Call this method to delete all selected elements of the list. If the MultiSelect property is false, it only deletes the element indiced by the itemindex property. But if the MultiSelect property is true, it deletes all selected items.
-
-================================================================
-@@TJvCheckListBox.Destroy
-
-================================================================
+Summary
+  Deletes all selected items.
+Description
+  DeleteSelected deletes all selected items.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.GetChecked
-Description:
-Call this method to retrieve all checked elements of the list.
-If you have stored datas in the associated object (Objects[]), they are also present in this list.
-
-================================================================
+Summary
+  Retrieves a list of checked items.
+Description
+  GetChecked generates a string list with all items that are checked. If you have objects associated
+  with the items (using the Objects property), these objects will also be present in the list.
+Note
+  GetChecked will create a new string list instance. The caller will be responsible of freeing the
+  list when it's done with it.
+See Also
+  GetUnChecked
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.GetUnChecked
-Description:
-Call this method to retrieve all non checked elements of the list.
-If you have stored datas in the associated object (Objects[]), they are also present in this list.
-
-================================================================
+  Retrieves a list of unchecked items.
+Description
+  GetUnChecked generates a string list with all items that are not checked. If you have objects
+  associated with the items (using the Objects property), these objects will also be present in the
+  list.
+Note
+  GetUnChecked will create a new string list instance. The caller will be responsible of freeing the
+  list when it's done with it.
+See Also
+  GetChecked
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.InvertCheck
-Description:
-Call this method to check all elements of the list. All checked items are unchecked and others are checked.
-
-================================================================
+Summary
+  Toggles the check mark state on all items.
+Description
+  InvertCheck will toggle the check mark state of all items in the list box.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.InvertSelection
-Description:
-Call this method to invert the selection of the elements.
-If the MultiSelect property is false, this method has no effect! After calling this method, all selected elements aren't anymore, and all elements non selected are now selected.
+Summary
+  Toggle the selection state of all items.
+Description
+  InvertSelection will invert the item selection. This method has no effect if MultiSelect is set to
+  False.
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.LoadFromFile
+Summary
+  Reads the list from a file.
+Description
+  LoadFromFile will read a list from a file, including the Checked state of the individual items.
+See Also
+  LoadFromStream, SaveToFile
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.LoadFromStream
+Summary
+  Reads the list from a stream.
+Description
+  LoadFromStream will read a list from a stream, including the Checked state of the individual
+  items.
+See Also
+  LoadFromFile, SaveToStream
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.SaveToFile
+Summary
+  Writes the list to a file.
+Description
+  SaveToFile will write the list to a file, including the Checked state of the individual items.
+See Also
+  LoadFromFile, SaveToStream
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.SaveToStream
+Summary
+  Writes the list to a stream.
+Description
+  SaveToStream will write the list to a stream, including the Checked state of the individual items.
+See Also
+  LoadFromStream, SaveToFile
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.SearchExactString
+Summary
+  Searches for an item using an exact string match.
+Description
+  SearchExactString searches for an item who's string matches that of the given string. You can
+  specify if the matching should be done case sensitive or not.
 
-================================================================
-@@TJvCheckListBox.LoadFromFile@TFileName
-Description:
-Call this method to load the content of the list from a file. 
-The items and their status are loaded from the file (checked or not).
+  If an item is found, it's index will be returned, otherwise -1 will be returned.
+Parameters
+  Value -         The string to search for.
+  CaseSensitive - Flag to signal if the matching should be case sensitive or not. If set to True,
+                  matching is case sensitive, otherwise it's not.
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.SearchPrefix
+Summary
+  Searches for an item that starts with the given string.
+Description
+  SearchPrefix will search for an item who's string starts with the given string. You can specify if
+  the matching should be done case sensitive or not.
 
-================================================================
-@@TJvCheckListBox.LoadFromStream@TStream
-Description:
-Call this method to save the content of the list to a stream. The items and their status (checked or not) are saved in the file.
+  If an item is found, it's index will be returned, otherwise -1 will be returned.
+Parameters
+  Value -         The string to search for.
+  CaseSensitive - Flag to signal if the matching should be case sensitive or not. If set to True,
+                  matching is case sensitive, otherwise it's not.
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.SearchSubString
+Summary
+  Searches for an item that contains the given string.
+Description
+  SearchPrefix will search for an item who's string contains the given string. You can specify if
+  the matching should be done case sensitive or not.
 
-================================================================
-@@TJvCheckListBox.RefreshH
-
-================================================================
-@@TJvCheckListBox.SaveToFile@TFileName
-Description:
-Call this method to save the content of the list to a file. The items and their status (checked or not) are saved in the file.
-
-================================================================
-@@TJvCheckListBox.SaveToStream@TStream
-Description:
-Call this method to load the content of the list from a stream. The items and their status are loaded from the file (checked or not).
-
-================================================================
-@@TJvCheckListBox.SearchExactString@string@Boolean
-Description:
-Call this method to search an exact string in the list.
-
-Parameters:
-Value - is the string you want to search for.
-CaseSensitive - is true if the search is case sensitive, false if not.
-
-
-
-Returns:
-X: the index of the item in the list, 
-
--1 if the string hasn't been found.
-
-================================================================
-@@TJvCheckListBox.SearchPrefix@string@Boolean
-Description:
-Call this method to search a prefix in the list. A prefix is the beginning of the word (ex "Cas" is a prefix for "CaseSensitive").
-
-Parameters:
-Value - is the string you want to search for.
-CaseSensitive - is true if the search is case sensitive, false if not.
-
-
-
-Returns:
- X: the index of the item in the list.
-
- -1: if the string hasn't been found.
-
-================================================================
-@@TJvCheckListBox.SearchSubString@string@Boolean
-Description:
-Call this method to search a substring in the list. A substring is string contained in a string (ex "ens" is a substring of "CaseSensitive").
-
-Parameters:
-Value - is the string you want to search for.
-CaseSensitive - is true if the search is case sensitive, false if not.
-
-
-
-
-Returns:
-X: the index of the item in the list.
-
--1: if the string hasn't been found.
-
-================================================================
+  If an item is found, it's index will be returned, otherwise -1 will be returned.
+Parameters
+  Value -         The string to search for.
+  CaseSensitive - Flag to signal if the matching should be case sensitive or not. If set to True,
+                  matching is case sensitive, otherwise it's not.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.SelectAll
-Description:
-Call this method to select all elements of the list. If the MultiSelect property is false, this method has no effect!
-
-================================================================
-@@TJvCheckListBox.SelectCancel@TMessage
-
-================================================================
-@@TJvCheckListBox.SetEffect@Boolean
-
-================================================================
-@@TJvCheckListBox.SetHScroll@Boolean
-
-================================================================
+Summary
+  Selects all items.
+Description
+  SelectAll will select all items in the list. This method has no effect if MultiSelect is set to
+  False.
+----------------------------------------------------------------------------------------------------
+@@TJvCheckListBox.SelectCancel
+Summary
+  Generates the OnSelectCancel event.
+Description
+  SelectCancel responds to the list box's message that the selection is being canceled. It will
+  generate an OnSelectCancel event if a handler has been assigned.
+See Also
+  OnSelectCancel
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.UnCheckall
-Description:
-Call this method to uncheck all elements of the list.
-
-================================================================
+Summary
+  Unchecks all items in the list.
+Description
+  UnCheckAll will un check all items in list box.
+See Also
+  CheckAll, GetChecked, GetUnChecked, InvertCheck
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.UnselectAll
-Description:
-Call this method to unselect all elements of the list. If the MultiSelect property is false, this method has no effect!
-
-================================================================
-@@TJvCheckListBox.WMHScroll@TWMHScroll
-
-================================================================
-@@TJvCheckListBox.WMVScroll@TWMVScroll
-
-================================================================
-@@TJvCheckListBox.WndProc@TMessage
-
-================================================================
+Summary
+  Unselects all items.
+Description
+  UnselectAll will un select all items in the list. This method has no effect if MultiSelect is set
+  to False.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.AboutJVCL
-
-================================================================
+<INCLUDE JVCL.Main.AboutJVCL.dtx>
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.HintColor
-
-================================================================
+Summary
+  Determines the background color for hint boxes.
+Description
+  HintColor is the background color used for the hint boxes shown for the control.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.HorScrollbar
-Description:
-Set this property to true if you want to see an horizontal scrollbar in your CheckListBox. The scrollbar is automatically showed when an item is not completly visible, and is hided when all items are visible.
+Summary
+  Determines if a horizontal scrollbar is needed.
+Description
+  HorScrollbar indicates if a horizontal scrollbar should be shown when one or more items do not
+  fit in the control.
 
-================================================================
+  Set this property to True if you want a horizontal scrollbar.
+
+  Set this property to False if you don't want a horizontal scrollbar, even if one or more items
+  don't fit.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.HotTrack
+Summary
+  Enables or disables hot tracking.
+Description
+  HotTrack determines if hot tracking is enabled or disabled. When hot tracking is enabled, the
+  control will be flat, except when the mouse is over the control.
 
-================================================================
+  Set HotTrack to True to enable hot tracking support.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnCtl3DChanged
-
-================================================================
+Summary
+  Occurs when the Ctl3D property of the label changes.
+Description
+  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnHorizontalScroll
-
-================================================================
+Summary
+  Occurs when the view is scrolled horizontally.
+Description
+  Write an OnHorizontalScroll event handler to take specific action when the user scrolls the view
+  horizontally.
+See Also
+  OnVerticalScroll
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnMouseEnter
-
-================================================================
+Summary
+  Occurs when the mouse pointer moves over the control.
+Description
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  control. For example, you can use this event to change the font color when the mouse is over the
+  control, and then use the OnMouseLeave event to change it back when the mouse moves off the
+  control.
+See Also
+  OnMouseLeave
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnMouseLeave
-
-================================================================
+Summary
+  Occurs when the mouse pointer moves off the control.
+Description
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  control. For example, you can use this event to undo changes that were made in an OnMouseEnter
+  event handler.
+See Also
+  OnMouseEnter
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnParentColorChange
-
-================================================================
+Summary
+  Occurs when the color property for the parent of the control changes.
+Description
+  Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnSelectCancel
-Description:
-This event is called when the user cancels the selection in the CheckListbox.
-
-================================================================
+Summary
+  Occurs when the user cancels the selection.
+Description
+  Write an OnSelectCancle event to take specific action when the user cancel the selection in the
+  list box.
+----------------------------------------------------------------------------------------------------
 @@TJvCheckListBox.OnVerticalScroll
+Summary
+  Occurs when the view is scrolled vertically.
+Description
+  Write an OnVerticalScroll event handler to take specific action when the user scrolls the view
+  vertically.
+See Also
+  OnHorizontalScroll
+----------------------------------------------------------------------------------------------------
+@@TCheckListRecord
+<GROUP TJvCheckListBox>
+Summary
+  Internal structure used when streaming the TJvCheckListBox contents.
+Description
+  TCheckListRecord is an internally used structure used when streaming the TJvCheckListBox contents.
+----------------------------------------------------------------------------------------------------
+@@TCheckListRecord.Checked
+Summary
+  Indicates the checked state of an item.
+Description
+  Checked indidates the checked state of an item.
+----------------------------------------------------------------------------------------------------
+@@TCheckListRecord.StringSize
+Summary
+  Indicates the length of an item's text.
+Description
+  StringSize indicates the length of an item's text.
+----------------------------------------------------------------------------------------------------
 
