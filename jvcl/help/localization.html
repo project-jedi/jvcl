@@ -10,24 +10,29 @@
 <h1>Localization of the JVCL<br>
 </h1>
 <hr style="width: 100%; height: 2px;"><br>
-All strings in JVCL that are displayed to the user have been grouped into JvResources.pas and 
-are stored as resourcestrings. Even if you could use
+All strings in JVCL that are displayed to the user have been grouped
+into JvResources.pas and are stored as resourcestrings. Even if you
+could use
 the Integrated Translation Environment that comes with Delphi, we do
-not recommend it as it is not easily maintainable and contains a few very 
-annoying bugs. The only
-other localization method supported by the JVCL group is DxGettext, a port of
-the GNU Gettext library to Delphi done by <a href="mailto:Lars@dybdahl.dk">Lars
+not recommend it as it is not easily maintainable and contains a few
+very annoying bugs. The only
+other localization method supported by the JVCL group is DxGettext, a
+port of
+the GNU Gettext library to Delphi done by <a
+ href="mailto:Lars@dybdahl.dk">Lars
 B. Dybdahl</a>. It is available at this address: <a
  href="http://dybdahl.dk/dxgettext/">http://dybdahl.dk/dxgettext/</a><br>
 <br>
 All you need to do is download and install DxGettext, compile the JVCL
-with USE_DXGETTEXT defined (this define is in \common\jvcl.inc) and the JVCL will be localized to the
+with USE_DXGETTEXT defined (this define is in \common\jvcl.inc) and the
+JVCL will be localized to the
 language your application chose to run in. We won't go into the details
 of the usage of DxGettext here, but the easiest way to have your
 forms localized is to make them inherit from TJvForm
-instead of TForm (the declaration of TJvForm can be found in \run\JvComponent, 
-so you need to add JvComponent to the uses clause of your form). This ensures automatic localization 
-of JVCL components and strings. <br>
+instead of TForm (the declaration of TJvForm can be found in
+\run\JvComponent, so you need to add JvComponent to the uses clause of
+your form). This ensures automatic localization of JVCL components and
+strings. <br>
 <br>
 The following languages are currently distributed with the JVCL:<br>
 <br>
@@ -57,9 +62,9 @@ code<br>
       <div style="margin-left: 40px;">fr<br>
       </div>
       </td>
-      <td style="vertical-align: top; width: 10%;">32%<br>
+      <td style="vertical-align: top; width: 10%;">95%<br>
       </td>
-      <td style="vertical-align: top;">Olivier Sannier<br>
+      <td style="vertical-align: top;">Lionel Reynaud, Olivier Sannier<br>
       </td>
     </tr>
     <tr>
@@ -128,8 +133,10 @@ code<br>
 As you can see, there is still a lot of work to do on this side of the
 JVCL. If you want to help us, we recommend you download poEdit from <a
  href="http://poEdit.sf.net/">http://poEdit.sf.net/</a> and edit the
-jvcl.po file for the language you want to work on.<p><br>
-If your language doesn't appear in this list,  use the file jvcl.po located directly in the <span style="font-weight: bold;">locale</span>
+jvcl.po file for the language you want to work on.
+<p><br>
+If your language doesn't appear in this list, use the file jvcl.po
+located directly in the <span style="font-weight: bold;">locale</span>
 directory. Translate as much as you can, then send the file to us
 indicating the language on which you worked (ideally indicating the two
 letter code). You can contact us <a href="../readme.htm#contact">here</a>.</p>
