@@ -38,13 +38,11 @@ uses
   Controls, Graphics, ExtCtrls, Tabs, Dialogs, 
   ExtDlgs, Menus, StdCtrls, DsnConst, 
   {$IFDEF COMPILER6_UP}
-  FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors
+  FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
-  LibIntf, DsgnIntf
+  LibIntf, DsgnIntf,
   {$ENDIF}
-  {$IFNDEF DelphiPersonalEdition}
-  , ImgEdit, ImgList
-  {$ENDIF}
+  ImgEdit, ImgList
   ;
 
 type
@@ -183,7 +181,6 @@ type
     procedure SetValue(const Value: string); override;
   end;
                   
-{$IFNDEF DelphiPersonalEdition}
 type
   TJvImageListEditor = class(TComponentEditor)
   private
@@ -193,7 +190,6 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-{$ENDIF}
 
   TJvWeekDayProperty = class(TEnumProperty)
     function GetAttributes: TPropertyAttributes; override;
@@ -849,8 +845,6 @@ begin
     SetFloatValue(StrToFloat(Value));
 end;
 
-{$IFNDEF DelphiPersonalEdition}
-
 procedure TJvImageListEditor.SaveAsBitmap(ImageList: TImageList);
 var
   Bitmap: TBitmap;
@@ -928,8 +922,6 @@ function TJvImageListEditor.GetVerbCount: Integer;
 begin
   Result := 2;
 end;
-
-{$ENDIF DelphiPersonalEdition}
 
 //=== TJvWeekDayProperty =====================================================
 

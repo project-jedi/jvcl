@@ -8,7 +8,7 @@ procedure Register;
 
 implementation
 uses
-  Classes,
+  Classes, Dialogs,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf,
   {$ELSE}

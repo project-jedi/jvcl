@@ -50,23 +50,28 @@ uses Classes,
   JvgReportEditorForm, JvgAlignForm, JvgAlignFunction, JvgReportParamEditorForm,
   JvgBitBtn, JvgRuler, JvgReport, JvgCaption, JvgCGI, JvgReportParamsEditor, JvgReportParamsForm,
   JvgRichEditUtils, JvgCommClasses, JvgRttiUtils, JvgScrollBox,
-  JvgConstSysRequirements, JvgCrossTable, JvgShade, JvgDBNav, JvgDigits,
-  JvgDrawTab, JvgEdit, JvgExceptionHandler, JvgExport, JvgShadowEditor,
+  JvgConstSysRequirements, JvgShade, JvgDigits,
+  JvgDrawTab, JvgEdit, JvgExceptionHandler, JvgShadowEditor,
   JvgFileIterator, JvgFileUtils, JvgFixFont, JvgShadow, {JvgGraph,}
-  JvgGraphicButton, JvgGridHeaderControl, JvgSingleInstance, JvgShape,
-  JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgHTTPVersionInfo, JvgSplit,
+  JvgGraphicButton, JvgSingleInstance, JvgShape,
+  JvgSpeedButton, JvgStaticText, JvgHoleShape, JvgSplit,
   {JvgImageGroup, }JvgInspectorGrid, JvgJump, JvgSmallFontsDefense, JvgSysInf,
   JvgLogicItemEditorForm, JvgLogics, JvgStringContainer, JvgMailSlots,
   JvgStringGrid, JvgTabComm, JvgTab, JvgSysRequirements, JvgProcess,
-  JvgProcessUtils, JvgPropertyCenter, JvgQPrintPreviewForm, JvgQPrintSetupForm,
-  JvgQRLabel, JvgTransparentMemo, JvgTreeView, JvgTypes, JvgVertDBGrid,
-  JvgUtils, {JvgWinMask, } JvgWebDocumentIterator, JvgRTFPreviewForm,
+  JvgProcessUtils, JvgPropertyCenter, JvgTransparentMemo, JvgTreeView, JvgTypes,
+  JvgUtils, {JvgWinMask, } JvgRTFPreviewForm,
   JvgWizardHeader, JvgXMLSerializer, Jvg3DColors, JvgAskListBox, JvgBevel,
-  JvgButton, JvgCheckBox, JvgCheckVersionInfoForm, JvgCompDescription,
-  JvgComponentListEditorForm, JvgDBGrid, JvgExportComponents, JvgFlyingText,
+  JvgButton, JvgCheckBox, JvgCompDescription,
+  JvgComponentListEditorForm, JvgFlyingText,
   JvgGroupBox, JvgHelpPanel, JvgHelpPanelEditor, JvgHint, JvgImage,
   JvgLabel, JvgLanguageLoader, JvgListBox, JvgLogicsEditorForm,
   JvgMultiResourceEditorForm, { JvgMultiResources, } JvgPage, JvgProgress,
+  {$IFNDEF DelphiPersonalEdition}
+  JvgCrossTable, JvgDBNav, JvgExport, JvgDBGrid, JvgExportComponents,
+  JvgWebDocumentIterator, JvgGridHeaderControl, JvgHTTPVersionInfo,
+  JvgQPrintPreviewForm, JvgQPrintSetupForm, JvgQRLabel, JvgVertDBGrid,
+  JvgCheckVersionInfoForm,
+  {$ENDIF}
   JvgLabelEditorForm;
 // JvgStepLabel,
 // JvgTagParser,
@@ -74,25 +79,33 @@ uses Classes,
 
 procedure Register;
 begin
-  RegisterComponents('JVCL Globus Components 1', [TJvgExportDBETable,
-    TJvgDBNAvigator, TJvgPrintCrossTable, TJvgDBGrid, TJvgVertDBSGrid,
+  RegisterComponents('JVCL Globus Components 1', [
+    {$IFNDEF DelphiPersonalEdition}
+      TJvgExportDBETable, TJvgDBNAvigator, TJvgPrintCrossTable, TJvgDBGrid,
+      TJvgVertDBSGrid, TJvgGridHeaderControl,
+    {$ENDIF}
       TJvgSysInfo, TJvgMaskEdit, TJvgBevel, TJvgBitBtn, TJvgGraphicButton,
       { TJvgGraph, } TJvgTreeView, TJvgCheckTreeView, TJvgSplitter, TJvgShadow,
       TJvgShade, TJvgButton, {TJvgImageGroup, }TJvgProgress, TJvgTransparentMemo,
       {TJvgWinMask, } TJvgGroupBox, TJvgBitmapImage, TJvgListBox, TJvgCheckListBox,
       TJvgAskListBox, TJvgScrollBox, TJvgStringGrid, TJvgSpeedButton,
-      TJvgWizardHeader, TJvgCaption, TJvgGridHeaderControl]);
+      TJvgWizardHeader, TJvgCaption]);
 
   RegisterComponents('JVCL Globus Components 2', [TJvgCheckBox,
-    TJvgRuler, TJvgPageControl, TJvgTabControl, TJvgProcess, TJvgMailSlotServer,
+      TJvgRuler, TJvgPageControl, TJvgTabControl, TJvgProcess, TJvgMailSlotServer,
       TJvgMailSlotClient, TJvgLabel, TJvgFlyingText, TJvgDigits, TJvgStaticText,
-      TJvgHoleShape, TJvgExportExcel, TJvgExportHTML, TJvgHelpPanel,
-      TJvgExportXML, TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
+      TJvgHoleShape, TJvgHelpPanel,
+      TJvgXMLSerializer, TJvgLanguageLoader, TJvgExceptionHandler,
       TJvgJumpingComponent, TJvgStringContainer, TJvgSysRequirements,
       TJvg3DColors, TJvgHint, TJvginspectorGrid, TJvgReport,
       TJvgReportParamsEditor, TJvgLogicProducer, TJvgSmallFontsDefence,
-      {TJvgMultipleResources, }TJvgSingleInstance, TJvgFixFont,
-      {TJvgComponentDescription, } TJvgQRLabel, TJvgQRDBText, TJvgMyQRPreview]);
+    {$IFNDEF DelphiPersonalEdition}
+      TJvgExportExcel, TJvgExportHTML, TJvgExportXML, TJvgQRLabel, TJvgQRDBText,
+      TJvgMyQRPreview,
+    {$ENDIF}
+      {TJvgMultipleResources, }TJvgSingleInstance, TJvgFixFont
+      {TJvgComponentDescription, }
+      ]);
 
   RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
