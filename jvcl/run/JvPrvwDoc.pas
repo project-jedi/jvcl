@@ -413,6 +413,9 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 var
   HintWindow: THintWindow = nil;
 
@@ -984,6 +987,7 @@ begin
 
   Color := clAppWorkSpace;
   ControlStyle := [csOpaque, csAcceptsControls, csCaptureMouse, csClickEvents, csDoubleClicks];
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   Width := 150;
   Height := 250;
   FBorderStyle := bsSingle;

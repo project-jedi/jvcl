@@ -765,7 +765,8 @@ begin
 {$IFDEF JVCLThemesEnabled}
   if (not (csDesigning in Control.ComponentState)) and
      (Control.Parent <> nil) and
-     (Canvas.Brush.Color = TWinControlThemeInfo(Control.Parent).Color) and
+     ((Canvas.Brush.Color = TWinControlThemeInfo(Control.Parent).Color) or
+     (ColorToRGB(Canvas.Brush.Color) = ColorToRGB(TWinControlThemeInfo(Control.Parent).Color))) and
      (ThemeServices.ThemesEnabled) and
      (csParentBackground in GetThemeStyle(Control)) then
 

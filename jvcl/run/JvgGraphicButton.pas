@@ -91,6 +91,9 @@ type
 
 implementation
 
+uses
+  JvThemes;
+
 //*****************************************_____________LowLevel METHODS
 //________________________________________________________
 
@@ -101,6 +104,7 @@ begin
   //  ControlStyle := ControlStyle + [{csReplicatable,}csOpaque];
     {inherited } Width := 105;
   {inherited } Height := 105;
+  IncludeThemeStyle(Self, [csParentBackground]);
 
   FGlyphActive := TBitmap.create;
   FGlyphPassive := TBitmap.create;
