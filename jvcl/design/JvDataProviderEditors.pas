@@ -33,10 +33,14 @@ unit JvDataProviderEditors;
 interface
 
 uses
-  {$IFNDEF COMPILER6_UP}DsgnIntf, Menus,{$ELSE}DesignIntf, DesignEditors, DesignMenus, {$ENDIF}
+  Classes, {$IFNDEF COMPILER6_UP}DsgnIntf, Menus,{$ELSE}DesignIntf, DesignEditors, DesignMenus, {$ENDIF}
   JvDataProvider, JvDataProviderImpl;
 
 type
+{$IFDEF COMPILER6_UP}
+  TGetPropEditProc = TGetPropProc;
+{$ENDIF COMPILER6_UP}
+
   TJvDataConsumerExtPropertyEditor = class(TPropertyEditor)
   protected
     function GetConsumerExt: TJvDataConsumerAggregatedObject;
@@ -58,27 +62,6 @@ type
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override;
     {$ENDIF}
   end;
-
-procedure Register;
-
-
-resourcestring
-  sSpecifiedProviderIsNotATComponentDe = 'Specified provider is not a TComponent descendant.';
-  sTreeDesigner = 'Tree designer...';
-  sContextManager = 'Context manager...';
-  sInvalidVerbd = 'Invalid verb#: %d';
-
-implementation
-
-uses
-  Classes, {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo,
-  JvDataConsumerContextSelectForm, JvDataConsumerItemSelectForm, JvDataProviderDesignerForm,
-  JvDataContextManagerForm;
-
-type
-{$IFDEF COMPILER6_UP}
-  TGetPropEditProc = TGetPropProc;
-{$ENDIF COMPILER6_UP}
 
   TJvDataConsumerProperty = class(TEnumProperty)
   private
@@ -134,6 +117,20 @@ type
     procedure GetValues(Proc: TGetStrProc); override;
   end;
 
+resourcestring
+  sSpecifiedProviderIsNotATComponentDe = 'Specified provider is not a TComponent descendant.';
+  sTreeDesigner = 'Tree designer...';
+  sContextManager = 'Context manager...';
+  sInvalidVerbd = 'Invalid verb#: %d';
+
+implementation
+
+uses
+  {$IFNDEF COMPILER6_UP}Consts,{$ELSE}RTLConsts,{$ENDIF} SysUtils, TypInfo,
+  JvDataConsumerContextSelectForm, JvDataConsumerItemSelectForm, JvDataProviderDesignerForm,
+  JvDataContextManagerForm;
+
+type
   TOpenSvc = class(TJvDataConsumer);
   TOpenConsumerAggregate = class(TJvDataConsumerAggregatedObject);
 
@@ -533,16 +530,6 @@ begin
     1:
       AItem.Enabled := Provider.AllowContextManager;
   end;
-end;
-
-procedure Register;
-begin
-  RegisterPropertyEditor(TypeInfo(TJvDataConsumer), TPersistent, '', TJvDataConsumerProperty);
-  RegisterPropertyEditor(TypeInfo(TJvDataItemID), TPersistent, '', TJvDataProviderItemIDProperty);
-  RegisterPropertyEditor(TypeInfo(TJvDataContextID), TPersistent, '', TJvDataConsumerContextProperty);
-  RegisterPropertyEditor(TypeInfo(TJvDataProviderTree), TComponent, '', TJvDataProviderTreeProperty);
-  RegisterPropertyEditor(TypeInfo(TComponent), TJvDataConsumerClientNotifyItem, '', TJvConsumerNotifyComponentProperty);
-  RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
 end;
 
 end.
