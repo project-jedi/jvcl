@@ -20,7 +20,7 @@ PROJECTS = JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl \
   JvPrintPreviewD5R.bpl JvPrintPreviewD5D.bpl JvPageCompsD5R.bpl \
   JvPageCompsD5D.bpl JvValidatorsD5R.bpl JvValidatorsD5D.bpl JvUIBD5R.bpl \
   JvUIBD5D.bpl JvTimeFrameworkD5R.bpl JvTimeFrameworkD5D.bpl JvHMID5R.bpl \
-  JvHMID5D.bpl
+  JvHMID5D.bpl JvManagedThreadsD5R.bpl JvManagedThreadsD5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -169,3 +169,8 @@ JvHMID5R.bpl: d5\JvHMID5R.dpk
 JvHMID5D.bpl: d5\JvHMID5D.dpk
   $(DCC)
 
+JvManagedThreadsD5R.bpl: d5\JvManagedThreadsD5R.dpk 
+  $(DCC)
+
+JvManagedThreadsD5D.bpl: d5\JvManagedThreadsD5D.dpk
+  $(DCC)
