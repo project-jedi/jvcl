@@ -10,6 +10,9 @@ object FrameConfigPage: TFrameConfigPage
     Width = 102
     Height = 13
     Cursor = crHandPoint
+    Hint = 
+      'Open the default web browser to show the C++Builder Installation' +
+      ' Guide.'
     Caption = 'BCB installation guide'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlue
@@ -17,6 +20,8 @@ object FrameConfigPage: TFrameConfigPage
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsUnderline]
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     Visible = False
     OnClick = LblBCBGuideClick
   end
@@ -75,8 +80,8 @@ object FrameConfigPage: TFrameConfigPage
       Width = 225
       Height = 17
       Hint = 
-        'Enable this if you want to register property and component'#13#10'edit' +
-        'ors included in JVCL (for non-JVCL components as well).'
+        'Enable this option if you want to register property and componen' +
+        't'#13#10'editors included in JVCL (for non-JVCL components as well).'
       Caption = '&Register global design editors'
       ParentShowHint = False
       ShowHint = True
@@ -89,11 +94,11 @@ object FrameConfigPage: TFrameConfigPage
       Width = 225
       Height = 17
       Hint = 
-        'Enable this if you want to use the dxgettext'#13#10'(<c:navy>http://dx' +
-        'gettext.sourceforge.net<c:black>) translation tool.'#13#10#13#10'<c:red>Th' +
-        'e gnugettext.pas unit will be added to the contains list'#13#10'of the' +
-        ' JvCore-R package. That means that you cannot add'#13#10'it to another' +
-        ' package.'
+        'Enable this option if you want to use the dxgettext'#13#10'(<c:navy>ht' +
+        'tp://dxgettext.sourceforge.net<c:black>) translation tool.'#13#10#13#10'<c' +
+        ':red>The gnugettext.pas unit will be added to the contains list'#13 +
+        #10'of the JvCore-R package. That means that you cannot add'#13#10'it to ' +
+        'another package.'
       Caption = 'dxgettext &support'
       ParentShowHint = False
       ShowHint = True
@@ -133,7 +138,10 @@ object FrameConfigPage: TFrameConfigPage
       Top = 130
       Width = 81
       Height = 25
+      Hint = 'Edit all compile time conditions that are in the jvcl.inc file.'
       Caption = 'Edit jvcl.inc'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 5
       OnClick = BtnEditJvclIncClick
     end
@@ -159,7 +167,8 @@ object FrameConfigPage: TFrameConfigPage
       Height = 17
       Hint = 
         'Activate this option if you are a JVCL developer.'#13#10'This adds the' +
-        ' \run, \common and \design directory to the library paths.'
+        ' \run, \common, \design, \qrun,'#13#10'\qcommon and \qdesign directori' +
+        'es to the library'#13#10'paths.'
       AllowGrayed = True
       Caption = '&JVCL Developer installation'
       ParentShowHint = False
@@ -310,8 +319,9 @@ object FrameConfigPage: TFrameConfigPage
       Height = 17
       Hint = 
         'Activate this option if the installer should generate'#13#10'detailed ' +
-        'map-files for each package.'#13#10#13#10'Map files are used for debug purp' +
-        'oses, e.g. JclDebug'#13#10'could use them.'
+        'map-files for each package.The .map files'#13#10'are written only for ' +
+        'newly compiled packages.'#13#10#13#10'Map files are used for debug purpose' +
+        's, e.g. JclDebug'#13#10'could use them.'
       AllowGrayed = True
       Caption = 'Genera&te Map files'
       ParentShowHint = False
@@ -322,20 +332,31 @@ object FrameConfigPage: TFrameConfigPage
   end
   object CheckBoxCompileJclDcp: TCheckBox
     Left = 272
-    Top = 176
+    Top = 208
     Width = 241
     Height = 17
-    Caption = 'Co&mpile JCL .dcp files if necessary'
-    TabOrder = 2
+    Hint = 
+      'Deactivate this option if you do not want the installer to'#13#10'comp' +
+      'ile/update the JCL .dcp files that are required for'#13#10'C++Builder ' +
+      'installation.'
+    Caption = 'Co&mpile JCL .dcp files for C++Builder'
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
     OnClick = CheckBoxCompileJclDcpClick
   end
   object CheckBoxVerbose: TCheckBox
     Left = 272
-    Top = 200
+    Top = 184
     Width = 241
     Height = 17
+    Hint = 
+      'Activate this option if you want to see a more detailed compiler' +
+      ' log on'#13#10'the installation progress page.'
     Caption = '&Verbose compiler output'
-    TabOrder = 3
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
     OnClick = CheckBoxCompileJclDcpClick
   end
   object ImageListTargets: TImageList

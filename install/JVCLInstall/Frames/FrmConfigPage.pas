@@ -140,6 +140,7 @@ procedure TFrameConfigPage.Init;
 var
   i: Integer;
   x: Integer;
+  CommonCompiledJcl, HasBCB: Boolean;
 begin
   Inc(FInitializing);
   try
@@ -155,6 +156,8 @@ begin
     FrameDirEditBrowseHPP.OnChange := HppDirChanged;
     FrameDirEditBrowseHPP.AllowEmpty := True;
 
+    CommonCompiledJcl := True;
+    HasBCB := False;
     with ComboBoxTargetIDE do
     begin
       Items.Clear;
@@ -165,6 +168,13 @@ begin
         begin
           if InstallJVCL then
           begin
+            if Installer.SelTargets[i].Target.IsBCB then
+            begin
+              if not Installer.SelTargets[i].CompiledJCL then
+                CommonCompiledJcl := False;
+              HasBCB := True;
+            end;
+
             Items.AddObject(Target.DisplayName, Installer.SelTargets[i]);
             AddIconFileToImageList(ImageListTargets, Target.Executable);
           end;
@@ -192,8 +202,13 @@ begin
     CheckBoxDxgettextSupport.Visible := Installer.Data.IsDxgettextInstalled;
     LblDxgettextHomepage.Visible := not Installer.Data.IsDxgettextInstalled;
 
-   // common options 
+   // common options
+    if not CommonCompiledJcl then
+      Installer.Data.CompileJclDcp := True;
     CheckBoxCompileJclDcp.Checked := Installer.Data.CompileJclDcp;
+    CheckBoxCompileJclDcp.Enabled := CommonCompiledJcl;
+    CheckBoxCompileJclDcp.Visible := HasBCB;
+    
     CheckBoxVerbose.Checked := Installer.Data.Verbose;
 
     UpdateJvclIncSettings;
