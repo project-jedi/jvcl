@@ -73,6 +73,9 @@ type
   // database field, if anyone is willing to write such
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
+  private
+    function GetWhiteSpaceReplacement: string;
+    procedure SetWhiteSpaceReplacement(const Value: string);
   protected
     FXml: TJvSimpleXML;
 
@@ -127,6 +130,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    // Just here for legacy reasons, use the Options.WhiteSpaceReplacement
+    property WhiteSpaceReplacement: string read GetWhiteSpaceReplacement write SetWhiteSpaceReplacement;
   end;
 
   // This class handles the flushing into a disk file
@@ -779,6 +785,17 @@ procedure TJvCustomAppXMLStorage.SetOnEncodeValue(
   const Value: TJvSimpleXMLEncodeEvent);
 begin
   FXml.OnEncodeValue := Value;
+end;
+
+function TJvCustomAppXMLStorage.GetWhiteSpaceReplacement: string;
+begin
+  Result := TJvAppXMLStorageOptions(StorageOptions).WhiteSpaceReplacement; 
+end;
+
+procedure TJvCustomAppXMLStorage.SetWhiteSpaceReplacement(
+  const Value: string);
+begin
+  TJvAppXMLStorageOptions(StorageOptions).WhiteSpaceReplacement := Value;
 end;
 
 //=== { TJvAppXMLFileStorage } ===============================================
