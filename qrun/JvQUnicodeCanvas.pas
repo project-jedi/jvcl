@@ -145,10 +145,10 @@ end;
 
 function TJvUnicodeCanvas.ExtTextOutW(X, Y: Integer; Options: TJvExtTextOutOptions;
   Rect: PRect; const Text: WideString; lpDx: Pointer): Boolean;
-begin  
-  Start;
+begin 
+  Start; 
   Result := QWindows.ExtTextOutW(Handle, X, Y, ExtTextOutOptionsToInt(Options),
-    Rect, PWideChar(Text), Length(Text), lpDx);
+    Rect, PWideChar(Text), Length(Text), lpDx); 
   Stop; 
 end;
 
