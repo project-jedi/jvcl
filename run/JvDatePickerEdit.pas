@@ -927,10 +927,12 @@ end;
 
 procedure TJvDropCalendar.DoShow;
 begin
-  inherited DoShow;
-  {in the constructor the calendar will sometimes report the wrong width, so
-   we do this here.}
+  {
+   In the constructor the calendar will sometimes report
+   the wrong size, so we do this here.
+  }
   AutoSize := True;
+  inherited DoShow;
 end;
 
 function TJvDropCalendar.GetSelDate: TDateTime;
