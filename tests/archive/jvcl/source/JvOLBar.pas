@@ -40,7 +40,7 @@ unit JvOLBar;
 interface
 uses
   Windows, Messages, SysUtils, Classes, Controls,
-  Buttons, Graphics, ImgList, Forms, StdCtrls,JvComponent;
+  Buttons, Graphics, ImgList, Forms, StdCtrls, JvComponent;
 
 const
   CM_CAPTION_EDITING = CM_BASE + 756;
@@ -112,6 +112,7 @@ type
     procedure SetFont(const Value: TFont);
     procedure SetImageIndex(const Value: integer);
     procedure SetAlignment(const Value: TAlignment);
+    procedure DoFontChange(Sender:TObject);
   protected
     function GetDisplayName: String; override;
     { TODO: implement ImageIndex and Alignment }
@@ -208,7 +209,7 @@ type
     procedure DoButtonEdit(NewText: string; B: TJvOutlookbarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function getActivePage: TJvOutlookBarPage;
-    function GetActivePageIndex: integer;
+    function getActivePageIndex: integer;
   protected
     procedure CreateParams(var Params: TCreateParams);override;
     function getButtonHeight(PageIndex:integer):integer;
@@ -318,7 +319,7 @@ uses
 
 const
   cButtonLeftOffset = 4;
-  cButtonTopOffset = 4;
+  cButtonTopOffset = 2;
 
 
 function Max(Val1,Val2:integer):integer;
@@ -506,6 +507,7 @@ begin
   inherited Create(Collection);
   FButtons := TJvOutlookBarButtons.Create(self);
   FFont := TFont.Create;
+  FFont.OnChange := DoFontChange;
   FParentColor := true;
   FParentFont := true;
   FImage := TBitmap.Create;
@@ -527,10 +529,10 @@ begin
   end
   else
   begin
-    FButtonSize := olbsLarge;
-    FColor      := clGray;
+    FButtonSize   := olbsLarge;
+    FColor        := clGray;
   end;
-  FFont.Color   := clWhite;
+  Font.Color   := clWhite;
   FParentButtonSize := true;
 end;
 
@@ -593,7 +595,7 @@ procedure TJvOutlookBarPage.SetFont(const Value: TFont);
 begin
   FFont.Assign(Value);
   FParentFont := false;
-  Change;
+//  Change;
 end;
 
 procedure TJvOutlookBarPage.SetImage(const Value: TBitmap);
@@ -641,8 +643,7 @@ begin
     begin
       //PRY 2002.06.04
       //FFont.Assign((Collection.Owner as TJvCustomOutlookBar).Font);
-      FFont.Assign((TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).Font);
-      Change;
+      Font := (TJvOutlookBarPages(Collection).GetOwner as TJvCustomOutlookBar).Font;
     end;
   end;
 end;
@@ -678,6 +679,11 @@ begin
     FAlignment := Value;
     Change;
   end;
+end;
+
+procedure TJvOutlookBarPage.DoFontChange(Sender: TObject);
+begin
+  Change;
 end;
 
 { TJvOutlookBarPages }
@@ -766,6 +772,7 @@ begin
     begin
       Parent := self;
       Visible := false;
+      Transparent := false;
       bmp.LoadFromResourceName(hInstance,'UPARROW');
       Glyph := bmp;
       OnClick := DoUpClick;
@@ -778,6 +785,7 @@ begin
     begin
       Parent := self;
       Visible := false;
+      Transparent := false;
       bmp.LoadFromResourceName(hInstance,'DWNARROW');
       Glyph := bmp;
       OnClick := DoDwnClick;
@@ -810,6 +818,7 @@ begin
   ActivePageIndex := 0;
 end;
 
+
 procedure TJvCustomOutlookBar.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
@@ -823,7 +832,7 @@ begin
       Style := Style and not WS_BORDER;
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;
     end;
-  end; 
+  end;
 end;
 
 destructor TJvCustomOutlookBar.Destroy;
@@ -920,10 +929,10 @@ begin
   H := getButtonHeight(Index);
   C := Canvas.Pen.Color;
   try
-    Canvas.Font := Pages[Index].Font;
     Canvas.Brush.Style := bsClear;
     for i := Pages[Index].TopButtonIndex to Pages[Index].Buttons.Count - 1 do
     begin
+      Canvas.Font := Pages[Index].Font;
 //      Canvas.Rectangle(R);  // DEBUG
       case Pages[Index].ButtonSize of
         olbsLarge:
@@ -949,7 +958,7 @@ begin
       if R.Top >= R2.Bottom then Break;
     end;
   finally
-    Canvas.Font := Font;
+    Canvas.Font := self.Font;
     Canvas.Pen.Color := C;
   end;
 end;
@@ -1069,7 +1078,7 @@ begin
   Result := nil;
   if (ActivePageIndex < 0) or (ActivePageIndex >= Pages.Count) then Exit;
   B := getButtonRect(ActivePageIndex,0);
-  H := B.Bottom - B.Top;
+  H := getButtonHeight(ActivePageIndex);
   R := getPageRect(ActivePageIndex);
   for i := 0 to Pages[ActivePageIndex].Buttons.Count - 1 do
   begin
@@ -1079,7 +1088,8 @@ begin
       Exit;
     end;
     OffsetRect(B,0,H);
-    if B.Top >= R.Bottom then Break;
+    if B.Top >= R.Bottom then
+      Break;
   end;
 end;
 
@@ -1374,7 +1384,7 @@ procedure TJvCustomOutlookBar.MouseMove(Shift: TShiftState; X, Y: Integer);
 var P:TJvOutlookBarPage;B:TJvOutlookbarButton;R:TRect;
 begin
   inherited;
-  { TODO -oJv : 
+  { TODO -oJv :
 1. check whether the mouse is down on a page button and whether the mouse has moved from
     the currently pressed page button }
   P := getPageButtonAtPos(Point(X,Y));
@@ -1480,12 +1490,12 @@ begin
         if LargeImages <> nil then
           Result := Max(Result,LargeImages.Height - Pages[PageIndex].Font.Height + cLargeOffset)
         else
-          Result := -Pages[PageIndex].Font.Height + cLargeOffset;
+          Result := abs(Pages[PageIndex].Font.Height) + cLargeOffset;
       olbsSmall:
         if SmallImages <> nil then
           Result := Max(SmallImages.Height,-Pages[PageIndex].Font.Height) + cSmallOffset
         else
-          Result := -Pages[PageIndex].Font.Height + cSmallOffset;
+          Result := abs(Pages[PageIndex].Font.Height) + cSmallOffset;
     end;
   end;
   Inc(Result,4);
@@ -1604,7 +1614,7 @@ begin
     Result := nil;
 end;
 
-function TJvCustomOutlookBar.GetActivePageIndex: integer;
+function TJvCustomOutlookBar.getActivePageIndex: integer;
 begin
   if (FActivePageIndex < 0) or (FActivePageIndex >= FPages.Count) then
     FActivePageIndex := 0;
@@ -1718,12 +1728,12 @@ begin
 end;
 
 procedure TJvOutlookBarEdit.WMNCPaint(var Message: TMessage);
-var
-  DC: HDC;
-  RC, RW: TRect;
+//var
+//  DC: HDC;
+//  RC, RW: TRect;
 begin
   inherited;
-  Exit;
+(*
   DC := GetWindowDC(Handle);
   try
     Canvas.Handle := DC;
@@ -1752,6 +1762,7 @@ begin
   finally
     ReleaseDC(Handle, DC);
   end;
+  *)
 end;
 
 end.
