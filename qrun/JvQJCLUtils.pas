@@ -6592,7 +6592,7 @@ begin
   b := Filename;
   UniqueString(b);
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if QWindows.DrawText(Canvas.Handle, PChar(b), Length(b), R, DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
+  if Windows.DrawText(Canvas.Handle, PChar(b), Length(b), R, DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or DT_CALCRECT or DT_NOPREFIX) > 0 then
     Result := string(PChar(b))
   else
     Result := Filename;

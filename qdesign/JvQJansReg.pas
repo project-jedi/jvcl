@@ -11,7 +11,7 @@ unit JvQJansReg;
 interface
 
 uses
-  Classes,
+  Classes, Controls,
   
   DesignIntf, DesignEditors,
   
@@ -20,7 +20,7 @@ uses
   
   
   
-  JvQMarkupLabel, JvQMarkupViewer, JvQSAL, JvQSALCore, JvQSALMath,
+  JvQMarkupLabel, JvQMarkupViewer, JvQSAL, JvQSticker, JvQSALCore, JvQSALMath,
   JvQYearGrid, JvQTracker, JvQAirBrush, JvQGridFilter, JvQGridPrinter,
   JvQArrayButton, JvQForth, JvQTurtle, JvQPaintFX, JvQDrawImage,
   JvQBitmapButton, JvQSimScope, JvQSimIndicator, JvQSimPID, JvQSIMPIDLinker,
@@ -42,9 +42,20 @@ const
   cCSVField = 'CSVField';
   cCSVFieldName = 'CSVFieldName';
 begin
+  
+  GroupDescendentsWith(TJvSALCore, TControl);
+  GroupDescendentsWith(TJvSALMath, TControl);
+  GroupDescendentsWith(TJvGridFilter, TControl);
+  GroupDescendentsWith(TJvGridPrinter, TControl);
+  GroupDescendentsWith(TJvPaintFX, TControl);
+  GroupDescendentsWith(TJvForthScript, TControl);
+  GroupDescendentsWith(TJvTurtle, TControl);
+  GroupDescendentsWith(TJvSimPIDLinker, TControl);
+  
+
   //TODO: Register a TShortCut Property Editor on TTreeKeyMappings class in TJvJanTreeView
   RegisterComponents('Jv Jans', [TJvMarkupLabel, TJvMarkupViewer, TJvSAL,
-    {TJvSticker,} TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
+    TJvSticker, TJvSALCore, TJvSALMath, TJvYearGrid, TJvAirBrush, TJvTracker,
     TJvGridFilter, TJvGridPrinter,
     
     TJvPaintFX, TJvDrawImage,

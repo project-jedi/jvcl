@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,20 +38,20 @@ procedure Register;
 implementation
 
 uses
-  Classes, QControls,
-
-  DesignEditors, DesignIntf,
-
+  Classes, Controls,
+  
+  FiltEdit, DesignEditors, DesignIntf,
+  
   JvQDsgnConsts,
-  {$IFDEF MSWINDOWS}
-  JvQJoystick, JvQSoundControl, JvQChangeNotifyEditor, JvQChangeNotify,
-  JvQScreenSaver,
-  {$ENDIF MSWINDOWS}
-  JvQSystemColors,
-  JvQSimpleXml, JvQXmlDatabase, JvQTimer, JvQFormPlacement,
-  JvQMinMaxForm, JvQThread, JvQThreadTimer, {JvQTimerList,}
-  JvQFormPropertiesForm, JvQDsgnEditors, JvQFormPlacementSelectList,
-  JvQAppXMLStorage{, JvQTimerListEditor};
+  JvQClipboardMonitor, JvQClipboardViewer, JvQCommStatus, {JvComputerInfo,}
+  JvQDdeCmd, JvQDeviceChanged, JvQDirectories, JvQDragDrop, JvQHidControllerClass,
+  JvQSystemColors, JvQJoystick, JvQKeyboardStates, JvQMRUList, JvQMRUManager, JvQNTEventLog, JvQRas32,
+  JvQAppInst, JvQScreenSaver, JvQShellHook, JvQSHFileOperation, JvQSoundControl,
+  JvQThread, JvQThreadTimer, JvQTimerList, JvQChangeNotify,
+  JvQSimpleXml, JvQXMLDatabase, JvQWndProcHook, JvQFormPlacement, JvQTimer,
+  JvQSearchFiles, JvQPerfMon95, JvQChangeNotifyEditor, JvQMinMaxForm, JvQComputerInfoEx, 
+  JvQFormPropertiesForm, JvQPerfStatEditor, JvQTimerListEditor, JvQDsgnEditors,
+  JvQAppXMLStorage, JvQFormPlacementSelectList;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSystemReg.dcr}
@@ -63,30 +62,40 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteSystem, [
-      {$IFDEF MSWINDOWS}
-      TJvScreenSaver, TJvJoystick, TJvSoundControl, TJvChangeNotify,
-      {$ENDIF MSWINDOWS}
-      TJvSystemColors]);
-  RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
-  RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread , TJvThreadTimer{, TJvTimerList}]);
+  
+  GroupDescendentsWith(TJvSimpleXML, TControl);
+  GroupDescendentsWith(TJvTimer, TControl);
+  
+
+  RegisterComponents(RsPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
+    {TJvComputerInfo, // - do not register this component as default}
+    TJvSHFileOperation, TJvChangeNotify, TJvDropTarget, TJvDragDrop, TJvAppInstances,
+      TJvHidDeviceController, TJvNTEventLog, TJvScreenSaver,
+      TJvJoystick, TJvSoundControl, {TJvDeviceChanged, TJvSystemColors, TJvKeyboardStates, TJvDirectories, these are not needed - included in JvComputerInfoEx instead}
+      TJvAppDdeCmd, TJvPerfStat95, TJvComputerInfoEx]);
+  RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase,
+    TJvRas32, TJvCommStatus]);
+  RegisterComponents(RsPaletteNonVisual, [TJvSearchFiles, TJvMRUList, TJvMRUManager,
+      TJvShellHook, TJvWindowHook, TJvTimer, TJvThread, TJvThreadTimer, TJvTimerList]);
   RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
       TJvAppXMLFileStorage]);
 
-  {$IFDEF MSWINDOWS}
-  RegisterPropertyEditor(TypeInfo(string), TJvChangeItem,
-    'Directory', TJvDirectoryProperty);
-  {$ENDIF}
   RegisterPropertyEditor(TypeInfo(TJvWinMinMaxInfo), TJvFormPlacement,
     'MinMaxInfo', TMinMaxProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvFormStorage,
     'StoredProps', TJvStoredPropsProperty);
+  RegisterPropertyEditor(TypeInfo(TWinControl), TJvWindowHook,
+    'WinControl', TJvComponentFormProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvChangeItem,
+    'Directory', TJvDirectoryProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvPerfStatItem,
+    'PerfStatKey', TJvPerfStatProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvSearchFiles,
+    'RootDirectory', TJvDirectoryProperty);
 
   RegisterComponentEditor(TJvFormStorage, TJvFormStorageEditor);
-{  RegisterComponentEditor(TJvTimerList, TJvTimerListDefaultEditor); }
-  {$IFDEF MSWINDOWS}
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
-  {$ENDIF MSWINDOWS}
+  RegisterComponentEditor(TJvTimerList, TJvTimerListDefaultEditor);
 end;
 
 end.

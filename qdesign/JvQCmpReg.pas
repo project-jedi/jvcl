@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -12,7 +12,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvCmpReg.PAS, released on 2002-05-26.
+The Original Code is: JvBandsReg.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is John Doe.
 Portions created by John Doe are Copyright (C) 2003 John Doe.
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -39,69 +38,54 @@ procedure Register;
 implementation
 
 uses
-  Classes, QControls,
-
+  Classes,
+  
+  
+  QControls,
+  
+  
   DesignEditors, DesignIntf,
-
+  
   JvQDsgnConsts,
-  JvQAlarms, JvQConverter, JvQDataEmbedded,
-  JvQMergeManager, {JvQPageManager,} JvQPatchFile, JvQStringHolder,
-  JvQTimeLimit, JvQTranslator, JvQPrint,
-  JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
-  JvQProfilerForm, {JvQPageManagerForm,} JvQDsgnEditors
-  {$IFDEF MSWINDOWS}
-  , JvQWinHelp
-  {$ENDIF MSWINDOWS}
-  ;
+  JvQAlarms, JvQConverter, JvQDataEmbedded, JvQCreateProcess,
+  JvQEnterTab, JvQMergeManager, JvQPageManager, JvQPatchFile, JvQStringHolder,
+  JvQTimeLimit, JvQWinHelp, JvQTranslator, JvQPrint, JvQEasterEgg,
+  JvQMouseGesture, JvQLogFile, JvQDataEmbeddedEditor, JvQPatcherEditor,
+  JvQProfilerForm, JvQPageManagerForm, JvQDsgnEditors;
 
-{$IFDEF MSWINDOWS}
-{$R ..\Resources\JvCmpReg.dcr}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+
+
 {$R ../Resources/JvCmpReg.dcr}
-{$ENDIF LINUX}
+
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter, TJvDataEmbedded,
+  
+  GroupDescendentsWith(TJvDataEmbedded, TControl);
+  GroupDescendentsWith(TJvStrHolder, TControl);
+  
 
-    TJvMergeManager, //TJvPageManager,
+  RegisterComponents(RsPaletteNonVisual,[TJvAlarms, TJvConverter,
+    TJvDataEmbedded, TJvCreateProcess,
+    TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
+    TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvTranslatorStrings,
+    TJvPrint, TJvEasterEgg, TJvMouseGesture, TJvMouseGestureHook, TJvLogFile]);
 
-    TJvPatchFile, TJvProfiler,
-    TJvStrHolder, TJvTimeLimit,
-    {$IFDEF MSWINDOWS}
-    TJvWinHelp,
-    {$ENDIF MSWINDOWS}
-    TJvTranslator, TJvTranslatorStrings,  TJvPrint,
-
-    TJvLogFile]);
-
+  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
+    '', TJvExeNameProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvCreateProcess,
+    'CurrentDirectory', TJvDirectoryProperty);
+//  RegisterPropertyEditor(TypeInfo(TStream), TJvDataEmbedded,
+//    'Data', TJvDataEmbeddedEditor);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
     'Differences', TJvPatcherEditor);
-
-  RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
-    'MergeFrame', TJvComponentFormProperty);
-  RegisterPropertyEditor(TypeInfo(TStrings), TJvPatchFile,
-    'Differences', TJvPatcherEditor);
-(*)
-  RegisterPropertyEditor(TypeInfo(TList), TJvPageManager,
-    'PageProxies', TJvProxyListProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvPageProxy,
-    'PageName', TJvPageNameProperty);
-  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
-    'PriorBtn', TJvPageBtnProperty);
-  RegisterPropertyEditor(TypeInfo(TControl), TJvPageManager,
-    'NextBtn', TJvPageBtnProperty);
-  (*)
+  
   RegisterPropertyEditor(TypeInfo(TWinControl), TJvMergeManager,
     'MergeFrame', TJvComponentFormProperty);
 
-  // RegisterComponentEditor(TJvPageManager, TJvPageManagerEditor);
   RegisterComponentEditor(TJvStrHolder, TJvStringsEditor);
   RegisterComponentEditor(TJvDataEmbedded,TJvDataEmbeddedComponentEditor);
-
-//  RegisterNoIcon([TJvPageProxy]);
-
+  
 end;
 
 end.

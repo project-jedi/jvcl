@@ -27,6 +27,12 @@ Known Issues:
 
 {$I jvcl.inc}
 
+// for FileCtrl.pas and QFileCtrls.pas 
+
+{$WARN UNIT_PLATFORM OFF}
+{$WARN SYMBOL_PLATFORM OFF}
+
+
 unit JvQParameterListParameter;
 
 interface
