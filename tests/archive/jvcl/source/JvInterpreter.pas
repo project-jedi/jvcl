@@ -25,6 +25,8 @@ component   : JvInterpreterProgram and more..
 description : JVCL Interpreter version 2
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 
@@ -1394,7 +1396,7 @@ end;
 
 {************* Some code from JvUtils unit **************}
 function SubStr(const S : string; const index : integer; const Separator : string) : string;
- {Вырезает подстроку. Подстроки разделяются символом Sep}
+{ SubStr returns substring from string, S, separated with Separator string [translated]}
 var
   i : integer;
   pB, pE : PChar;

@@ -25,6 +25,8 @@ Component   : TJvEditor
 Description : 'Delphi IDE'-like Editor
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -294,11 +296,11 @@ var
       if FStop then
         Exit;
     until GetTickCount - DelayMsec > DelayPause;
-//    {************* Коррекция скорости *************}
+    {************* Correction of speed [translated] *************}
     Inc(Pic);
     if Pic > 11 then
     begin
-//     {Подкорректировать скорость - сделать рывками}
+      { To recorrect speed - to make by the jerks [translated] }
       Pixels := 1;
       if Pix[2] > Pix[Pixels] then
         Pixels := 2;
@@ -319,14 +321,14 @@ var
     begin
       if (DelayFact > DelayPause2) and (Pixels2 < 4) then
       begin
-//      {Подкорректировать скорость - сделать рывками}
+        { To recorrect speed - to make by the jerks [translated] }
         Inc(Pixels2);
         Inc(DelayPause2, cDelayIncrement);
       end
       else
       if Pixels2 > 1 then
       begin
-//      {Подкорректировать скорость - сделать плавнее - машина успевает}
+        { To recorrect speed - to make more smoothly - the computer has time [translated] }
         Dec(Pixels2);
         Dec(DelayPause2, cDelayIncrement);
       end;
@@ -336,32 +338,32 @@ var
       lblInfo.Caption := 'P='+IntToStr(Pixels)
        +' P2='+IntToStr(Pixels2)+' D='+IntToStr(DelayFact)
        +' DP='+IntToStr(DelayPause)+' DP2='+IntToStr(DelayPause2); }
-//    {############# Коррекция скорости #############}
+    {############# Correction of speed [translated] #############}
   end;
 
   procedure CopyAll;
   begin
     FFontMaskImage.Canvas.FillRect(SourceFon);
-//  {перенести текст}
+    { To transfer the text [translated] }
     FFontMaskImage.Canvas.CopyMode := cmNotSrcCopy;
     FFontMaskImage.Canvas.CopyRect(Dest, FFontImage.Canvas, Source);
-//  {Корректировка верхней границы}
+    { Adjustment of a high bound [translated] }
     RecTmp := SourceFon;
     RecTmp.Bottom := FScrollTop;
     FFontMaskImage.Canvas.FillRect(RecTmp);
-//  {Корректировка правой границы}
+    { Adjustment of the right boundary [translated] }
     RecTmp := SourceFon;
     RecTmp.Left := FRightMargin;
     FFontMaskImage.Canvas.FillRect(RecTmp);
-//  {наложить маску на фон}
+    { To put a mask on a background [translated] }
     FScrollImage.Canvas.CopyMode := cmSrcCopy;
     FScrollImage.Canvas.CopyRect(SourceFon, FForeImage.Canvas, SourceFon);
     FScrollImage.Canvas.CopyMode := cmSrcAnd;
     FScrollImage.Canvas.CopyRect(SourceFon, FFontMaskImage.Canvas, SourceFon);
-//  {наложить маску}
+    { To put the mask [translated] }
     FFontMaskImage.Canvas.CopyMode := cmSrcErase;
     FFontMaskImage.Canvas.CopyRect(SourceFon, FBackImage.Canvas, SourceFon);
-//  {наложить текст на фон}
+    { To put text on the background [translated] }
     FScrollImage.Canvas.CopyMode := cmSrcPaint;
     FScrollImage.Canvas.CopyRect(SourceFon, FFontMaskImage.Canvas, SourceFon);
   end;
@@ -373,14 +375,14 @@ begin
     Inc(Line);
     if Line = FStrings.Count then
       Line := 0;
-//  {Вывести строку}
+    { To output the line [translated] }
     if ChangeFont(FStrings[Line]) then
       Continue;
     H := LastLine - Popr;
     LastLine := LastLine + FontHeight;
     {H := Line * FontHeight - Popr;}
     FFontImage.Canvas.TextOut(FLeftMargin, H, FStrings[Line]);
-//  {Прокрутить строку}
+    { To scroll line [translated] }
     for j := 1 to FontHeight do
     begin
       Dec(H2);

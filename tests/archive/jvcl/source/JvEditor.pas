@@ -25,6 +25,8 @@ component   : TJvEditor
 description : 'Delphi IDE'-like Editor
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -153,8 +155,8 @@ Known Issues:
 
 {
   to do:
-   1) добавить событие OnGutterClick(Sender: TObject; Line: Integer);
-   2) добавить поддержку <Persistent Block> !!!!!????;
+   1) To add event OnGutterClick(Sender: TObject; Line: Integer); [translated]
+   2) To add support <Persistent Block> !!!!!????;                [translated]
 }
 
 unit JvEditor;
@@ -185,8 +187,7 @@ uses
 
 const
   Max_X = 1024; {max symbols per row}
-  Max_X_Scroll = 256;
-  {max symbols per row for scrollbar - max кол-во символов в строке для прокрутки}
+  Max_X_Scroll = 256; { max symbols per row for scrollbar }
   GutterRightMargin = 2;
 
   WM_EDITCOMMAND = WM_USER + $101;
@@ -902,7 +903,7 @@ const
   ecSelUp = ecSelLeft + 1;
   ecSelRight = ecSelLeft + 2;
   ecSelDown = ecSelLeft + 3;
-  {Cursor по словам}
+  {Cursor On words [translated] }
   ecPrevWord = ecSelDown + 1;
   ecNextWord = ecPrevWord + 1;
   ecSelPrevWord = ecPrevWord + 2;
@@ -1576,7 +1577,7 @@ begin
     Cols := Max_X; }
 end;
 
-{************** Управление отрисовкой ***************}
+{************** Handle otrisovkoj [translated] ***************}
 
 procedure TJvCustomEditor.CreateParams(var Params: TCreateParams);
 const
@@ -1683,9 +1684,9 @@ begin
   else
     inherited;
 end;
-{############## Управление отрисовкой ###############}
+{############## Handle otrisovkoj [translated] ###############}
 
-{************** Отрисовка ***************}
+{************** Otrisovka [translated] ***************}
 
 {
 function IsRectEmpty(R: TRect): boolean;
@@ -1714,7 +1715,7 @@ begin
 {$IFDEF RAEDITOR_NOOPTIMIZE}
   FAllRepaint := true;
 {$ENDIF}
-//   {оптимизировано - отрисовывается только необходимая часть}
+  { It is optimized - otrisovyvayetsya only necessary part  [translated] }
   PaintCaret(false);
 
   ECR := EditorClient.Canvas.ClipRect;
@@ -1946,7 +1947,7 @@ begin
   if Assigned(FOnGetLineAttr) then
     FOnGetLineAttr(Self, S, Line, LineAttrs);
   if FSelected then
-    ChangeSelectedAttr; // {изменяем атрибуты выделенного блока}
+    ChangeSelectedAttr; { we change the attributes of the chosen block [translated] }
   ChangeAttr(Line, ColBeg, ColEnd);
 end;
 
@@ -1966,7 +1967,7 @@ begin
     and (FRightMargin < FLastVisibleCol + 3) then
     with EditorClient.Canvas do
     begin
-      {рисуем RightMargin Line}
+      { we paint RightMargin Line [translated] }
       Pen.Color := FRightMarginColor;
       F := CalcCellRect(FRightMargin - FLeftCol, 0).Left;
       MoveTo(F, EditorClient.Top);
@@ -2019,7 +2020,7 @@ begin
     PaintCaret(false);
     if Vert then
     begin {Vertical Scroll}
-      {оптимизировано}
+      { it is optimized [translated] }
       OldFTopRow := FTopRow;
       FTopRow := ScrollPos;
       if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < EditorClient.Height
@@ -2046,7 +2047,7 @@ begin
     end
     else {Horizontal Scroll}
     begin
-      {неоптимизировано}
+      { it is not optimized [translated] }
       FLeftCol := ScrollPos;
       (*  OldFLeftCol := FLeftCol;
         FLeftCol := ScrollPos;
@@ -2091,7 +2092,7 @@ begin
   //  EndTick;
 end;
 {####################### Scroll #########################}
-{####################### Painting - Отрисовка #######################}
+{####################### Painting - Otrisovka [translated] ##################}
 
 {************** Caret ***************}
 
@@ -2118,7 +2119,7 @@ var
 begin
   if (X = FCaretX) and (Y = FCaretY) then
     exit;
-  //прокручивать изображение
+  // To scroll the image [translated]
   if not FCursorBeyondEOF then
     Y := Min(Y, FLines.Count - 1);
   Y := Max(Y, 0);
@@ -2698,7 +2699,7 @@ begin
         if not FReadOnly then
           if X > 0 then
           begin
-            { into line - в середине строки }
+            { into line }
             if FSelected then
               DoAndCorrectXY(DeleteSelected)
             else
@@ -2734,7 +2735,7 @@ begin
           end
           else if Y > 0 then
           begin
-            { on begin of line - в начале строки}
+            { on begin of line }
             DeleteSelected;
             ReLine;
             F := SelStart - 2;
@@ -2770,7 +2771,7 @@ begin
             DoAndCorrectXY(DeleteSelected)
           else if X < Length(FLines[Y]) then
           begin
-            { into line - в середине строки}
+            { into line }
 {$IFDEF RAEDITOR_UNDO}
             TJvDeleteUndo.Create(Self, FCaretX, FCaretY, FLines[Y][X + 1]);
             CaretUndo := false;
@@ -2802,7 +2803,7 @@ begin
           end
           else if (Y >= 0) and (Y <= FLines.Count - 2) then
           begin
-            { on end of line - в конце строки}
+            { on end of line }
 {$IFDEF RAEDITOR_UNDO}
             TJvDeleteUndo.Create(Self, FCaretX, FCaretY, #13#10);
             CaretUndo := false;
@@ -3106,7 +3107,7 @@ begin
   FGutter.Invalidate;
 end;
 
-{############### Клавиатура ###############}
+{############### Keyboard [translated] ###############}
 
 procedure TJvCustomEditor.SelectionChanged;
 begin
@@ -3218,7 +3219,7 @@ begin
   Command(ecInclusiveBlock + Integer(Value));
 end;
 
-{************** Мышь ***************}
+{************** Mouse [translated] ***************}
 
 procedure TJvCustomEditor.Mouse2Cell(const X, Y: integer; var CX, CY: integer);
 begin
@@ -3388,7 +3389,7 @@ begin
   end;
 end;
 
-{############## Мышь ###############}
+{############## Mouse [translated] ###############}
 
 {************** ClipBoard ***************}
 
@@ -3517,7 +3518,7 @@ begin
 {$ENDIF RAEDITOR_UNDO}
   Insert(Text, S, P + 1);
   TextModified(P, maInsert, Text);
-  FLines.Text := S; // {!!! Вызывает перерисовку всего}
+  FLines.Text := S; {!!! Causes copying all [translated] }
   CaretFromPos(P + Length(Text), X, Y);
   SetCaretInternal(X, Y);
   Changed;
@@ -3525,8 +3526,8 @@ begin
   PaintCaret(true);
 end;
 
-// {заменяет слово в позиции курсора на NewString}
-// { строка NewString не должна содержать #13, #10}
+// Substitutes a word in a cursor position on NewString
+// string NewString should not contain #13, #10 [translated]
 
 procedure TJvCustomEditor.ReplaceWord(const NewString: string);
 var
@@ -3583,7 +3584,7 @@ begin
   if FSelected then
   begin
     if (FSelBegY <= FCaretY) or (FCaretY >= FSelEndY) then
-      // скорректировать LW ..
+      // To correct LW .. [translated]
   end;
   Delete(S, iBeg, iEnd - iBeg);
   Insert(NewString, S, iBeg);
@@ -3597,7 +3598,7 @@ begin
   PaintCaret(true);
 end;
 
-// {заменяет слово в позиции курсора на NewString}
+{ Substitutes a word on the cursor position by NewString [translated] }
 
 procedure TJvCustomEditor.ReplaceWord2(const NewString: string);
 var
@@ -3627,11 +3628,11 @@ begin
   if FSelected then
   begin
     if (FSelBegY <= FCaretY) or (FCaretY >= FSelEndY) then
-      // скорректировать LW ..
+      // To correct LW .. [translated]
   end;
   Delete(S, iBeg, iEnd - iBeg);
   Insert(S1, S, iBeg);
-  FLines.Text := S; // {!!! Вызывает перерисовку всего}
+  FLines.Text := S; {!!! Causes copying all [translated] }
   CaretFromPos(iBeg + NewCaret - 1, X, Y);
   SetCaretInternal(X, Y);
   Changed;
@@ -3710,7 +3711,7 @@ begin
 
   SetCaretInternal(X, Y);
   Changed;
-  EndUpdate; // {!!! Вызывает перерисовку всего}
+  EndUpdate; {!!! Causes copying all [translated] }
   PaintCaret(true);
 end;
 
@@ -3958,13 +3959,16 @@ begin
 end;
 
 procedure TJvCustomEditor.CaretFromPos(const Pos: integer; var X, Y: integer);
-// {возвращает по индексу Pos - номеру символа - его координаты}
+{ it returns on the index Of pos - to the number of symbol - its coordinate.
+  Returns on index Pos - to number of the character - his(its) coordinates.
+  [translated]
+}
 begin
   GetXYByPos(FLines.Text, Pos, X, Y);
 end;
 
 function TJvCustomEditor.PosFromCaret(const X, Y: integer): integer;
-// {наоборот}
+{ vice versa [translated] }
 var
   i: integer;
 begin
@@ -5031,7 +5035,7 @@ begin
   end;
 end;
 
-{заменяет слово в позиции курсора на NewString}
+{ Substitutes word on the cursor position by NewString [translated] }
 
 procedure TJvCompletion.ReplaceWord(const NewString: string);
 var
@@ -5088,7 +5092,7 @@ begin
     if FSelected then
     begin
       if (FSelBegY <= FCaretY) or (FCaretY >= FSelEndY) then
-        // скорректировать LW ..
+        // To correct LW .. [translated]
     end;
     Delete(S, iBeg, iEnd - iBeg);
     Insert(S1, S, iBeg);

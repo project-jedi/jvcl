@@ -25,6 +25,8 @@ class       : TJvIParser
 description : text parser
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 
@@ -46,7 +48,7 @@ type
   TJvIParser = class
   protected
     FpcProgram: PChar;
-    FpcPos: PChar; // текущая позиция
+    FpcPos: PChar; // Current position [translated]
     FHistory: TStringList;
     FHistorySize: integer;
     FHistoryPtr: integer;
@@ -62,11 +64,12 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    // {возвращает следующую лексему сдвигает текущую позицию}
+    { Returns the following token; shifts a current position [translated] }
     function Token: string;
-    // {возвращает следующую лексему слева от текущей позиции сдвигает текущую позицию влево}
-    // function TokenL : string; - чертовски трудно это сделать #;-(
-    // {откат назад на указанное количество лексем}
+    { Returns the following token to the left of a current position shifts
+      a current position to the left [translated]
+    function TokenL : string; - It is devilishly difficult to make it *;-( [translated] }
+    { Rollback back on the indicated quantity of tokens [translated] }
     procedure RollBack(index: integer);
     property History[index: integer]: string read GetHistory;
     property PosBeg[index: integer]: integer read GetPosBeg;
@@ -249,7 +252,7 @@ var
   F1: PChar;
   i: integer;
 begin
-//   { New Token - начать чтение новой лексемы }
+  { New Token - To begin reading a new token [translated] }
   F := FpcPos;
   P := FpcPos;
   { Firstly skip spaces and remarks }

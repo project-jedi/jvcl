@@ -23,6 +23,7 @@ You may Thumb the latest version of this file at the Project JEDI's JVCL home pa
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  This file contains (most likely) greek comments.
 -----------------------------------------------------------------------------}
 {$I JVCL.INC}
 
@@ -281,7 +282,7 @@ var
   fs: tpoint;
 begin
   // Υπολογισμός ποσοστού  επί της εκατό που θα επιδοθεί στην τιμή προς
-  // αλλαγή.
+  // αλλαγή. [This seems to be greek, couldn't find translator]
   if phisicalsize.x <> 0 then
     tempx := ((newsize.x) / phisicalsize.x) * 100
   else tempx := 0;
@@ -289,6 +290,7 @@ begin
     tempy := ((newsize.y) / phisicalsize.y) * 100
   else Tempy := 0;
   //Ευρεση μικρότερου ποσοστού αλαγής και χρήση αυτού.
+  // [this seems to be greek, couldn't find translator]
   if tempx <= tempy then
     percent := tempx
   else

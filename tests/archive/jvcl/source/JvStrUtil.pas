@@ -24,8 +24,9 @@ located at http://jvcl.sourceforge.net
 Description : String utilities
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
-
 
 {$I JVCL.INC}
 
@@ -252,7 +253,6 @@ end;
 { SubStr returns substring from string, S,
   separated with Separator string}
 function SubStr(const S : string; const index : integer; const Separator : string) : string;
-// Вырезает подстроку. Подстроки разделяются символом Sep
 var
   i : integer;
   pB, pE : PChar;
@@ -274,12 +274,11 @@ begin
 end;
 
 function SubStrEnd(const S : string; const index : integer; const Separator : string) : string;
-// то же что и SubStr, но подстроки нумеруются с конца
 var
   MaxIndex : integer;
   pB : PChar;
 begin
-// неоптимальная реализация
+// Not optimal implementation [translated]
   MaxIndex := 0;
   pB := StrPos(PChar(S), PChar(Separator));
   while pB <> nil do begin

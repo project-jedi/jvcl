@@ -25,6 +25,8 @@ component   : JvDBTreeView
 description : db-aware TreeView
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 
@@ -760,7 +762,7 @@ begin
         if not GetDetailValue(V, V) then exit;
         Node := FindNode(V);
         if Node <> nil then begin
-//           {раскрыть все ветки от найденной до нужной}
+          { To open all branches from that found to the necessary [translated] }
           //..
           Node.Expand(false);
           while i > 0 do begin
@@ -769,7 +771,7 @@ begin
           end;
           Result := FindNode(AMasterValue);
         end else begin
-//           {добавить в массив родителей}
+          { To add in the array of parents [translated] }
           inc(i);
           VarArrayRedim(Parents, i);
           Parents[i] := V;
@@ -786,7 +788,8 @@ procedure TCustomJvDBTreeView.UpdateTree;
   var
     Node, ParentNode : TJvDBTreeNode;
   begin
-//     {если текущая запись отсутствует в дереве, но должна быть в нем, то добавить}
+    { If the current record is absent from the tree, but it must be in it, then
+      add [translated] }
     Node := FindNode(FDataLink.DataSet[FMasterField]);
     if (Node = nil) then begin
       ParentNode := FindNode(FDataLink.DataSet[FDetailField]);
@@ -824,7 +827,7 @@ begin
       BK := GetBookmark;
       DisableControls;
       try
-//        {*** удалить из дерева удаленные записи}
+        {*** To delete from a tree the remote/removed records [translated] }
         repeat
           AllChecked := true;
           for i :=0 to Items.Count -1 do
@@ -836,7 +839,7 @@ begin
               Items[i].HasChildren := Lookup(FDetailField, (Items[i] as TJvDBTreeNode).FMasterValue, FDetailField) <> null;
         until AllChecked;
        {###}
-//        {*** добавить новые}
+        {*** To add new [translated]}
         First;
         while not Eof do begin
           AddRecord;
@@ -1040,7 +1043,8 @@ begin
       end;
     end;
     Result.Selected := Select;
-    Result.Selected := Select; // {эта строка очень нужна, ну не понимает он с первого раза}
+    { This line is very necessary, well it(he) does not understand from the first [translated]}
+    Result.Selected := Select;
   finally
     dec(FUpdateLock);
   end;

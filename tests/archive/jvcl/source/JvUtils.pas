@@ -25,6 +25,9 @@ located at http://jvcl.sourceforge.net
 Description : common routines
 
 Known Issues:
+  * Some functions are also in JvStrUtil
+  * Some russian comments were translated to english; these comments are marked
+    with [translated]
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -384,7 +387,7 @@ type
   function GetComputerName: string;
 
 
- {**** string routines - строковые функции}
+ {**** string routines }
 
   { ReplaceAllSokr searches for all substrings, Words,
     in a string, S, and replaces them with Frases with the same index.
@@ -456,7 +459,7 @@ type
   function ReadFolder(const Folder, Mask : TFileName; FileList : TStrings) : integer;
 
   function ReadFolders(const Folder : TFileName; FolderList : TStrings) : integer;
-// {#### files routines - файловые функции}
+  { #### files routines }
 
  {$IFDEF COMPILER3_UP}
   { TargetFileName - if FileName is ShortCut returns filename ShortCut linked to }
@@ -1043,7 +1046,7 @@ begin
 end;
 
 function SubStr(const S : string; const index : integer; const Separator : string) : string;
-// {Вырезает подстроку. Подстроки разделяются символом Sep}
+{ Returns a substring. Substrings are divided by Sep character [translated] }
 var
   i : integer;
   pB, pE : PChar;
@@ -1065,12 +1068,12 @@ begin
 end;
 
 function SubStrEnd(const S : string; const index : integer; const Separator : string) : string;
-// {то же что и SubStr, но подстроки нумеруются с конца}
+{ The same as SubStr, but substrings are numbered from the end [translated]}
 var
   MaxIndex : integer;
   pB : PChar;
 begin
-// {неоптимальная реализация}
+{ Not optimal implementation [translated] }
   MaxIndex := 0;
   pB := StrPos(PChar(S), PChar(Separator));
   while pB <> nil do begin
@@ -1404,7 +1407,7 @@ end;
 function LastDate(const Dat : TDateTime) : string;
 const
   D2D : array [0..9] of 1..3 = (3, 1, 2, 2, 2, 3, 3, 3, 3, 3);
-  Day   : array [1..3] of string = ('день', 'дня', 'дней');
+  Day   : array [1..3] of string = ('день', 'дня', 'дней'); 
   Month : array [1..3] of string = ('месяц', 'месяца', 'месяцев');
   Year  : array [1..3] of string = ('год', 'года', 'лет');
   Week  : array [1..4] of string = ('неделю', '2 недели', '3 недели', 'месяц');
@@ -2397,8 +2400,8 @@ begin
     Rhrsrc  // resource handle
    );
   if RLen = 0 then exit;
-//  {А вот теперь можно копировать}
-  Stream := nil;{для Free}
+  { And now it is possible to duplicate [translated] }
+  Stream := nil; { for Free [translated] }
   if Compressed then
     FileDest := GenTempFileName(FileName) else
     FileDest := FileName;
@@ -2452,7 +2455,7 @@ begin
     Rhrsrc  // resource handle
    );
   if RLen = 0 then exit;
-//  {А вот теперь можно копировать}
+  { And now it is possible to duplicate [translated] }
   SetString(S, PChar(RAddr), RLen);
 end;
 
@@ -2581,8 +2584,7 @@ begin
       Btn := FindComponent(ButtonNames[mbIgnore]) as TButton;
       if Btn <> nil then
       begin
-       // Btn.Width := Btn.Width * 5 div 4;
-        {сдвинуть кнопку Help}
+       // Btn.Width := Btn.Width * 5 div 4; {To shift the Help button Help [translated] }
       end;
       Result := ShowModal;
     finally

@@ -25,6 +25,8 @@ component   : JvRegAuto
 description : registry and ini-file storage for properties of other components 
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 
@@ -100,7 +102,7 @@ type
     procedure SetStrPrp(Value : string);
     function GetFloatPrp : extended;
     procedure SetFloatPrp(Value : extended);
-    // {************ Для Property ************}
+    {************ For Property [translated] ************}
     procedure SetFProps(lProps : TStrings);
    {$IFDEF COMPLIB_VCL}
     procedure SetSaveWindowPlace(F : boolean);
@@ -113,7 +115,7 @@ type
     function GetUse(Index: Integer): Boolean;
     procedure SetUse(Index: Integer; Value: Boolean);
    {$ENDIF COMPILER4_UP}
-    // {############ Для Property ############}
+    {############ For Property [translated] ############}
     procedure NewFormOnCreate(Sender : TObject);
     procedure NewFormOnDestroy(Sender : TObject);
     procedure GenerateRegistryName;
@@ -180,7 +182,7 @@ type
     procedure RemoveNotify(ANotify : TRegAutoEvent);
     function GetFullIniFileName: String;
   published
-    // Путь в реестре
+    // Path in the registry [translated]
    {$IFDEF COMPLIB_VCL}
     property RegPath : string read FRegPath write FRegPath;
     property Storage: TStorageMedia read FStorage write FStorage default raRegistry;
@@ -188,15 +190,15 @@ type
    {$IFDEF COMPLIB_CLX}
     property Storage: TStorageMedia read FStorage write FStorage default raIniFile;
    {$ENDIF COMPLIB_CLX}
-    // Имя ini-файла
+    // Name of the ini-file [translated]
     property IniFile : string read FIniFile write FIniFile;
     //
     property IniStrings : TStrings read FIniStrings write SetIniStrings;
 
-    // Список сохраняемых свойств
+    // The list of saved properties [translated]
     property Props : TStrings read FProps write SetFProps;
     property AutoMode : boolean read FAutoMode write FAutoMode default true;
-    // Сохранять размер и положение окна
+    // To save a size and position of the window [translated]
    {$IFDEF COMPLIB_VCL}
     property SaveWindowPlace : boolean read FSaveWindowPlace write SetSaveWindowPlace default False;
    {$ENDIF COMPLIB_VCL}
@@ -397,7 +399,7 @@ begin
   else Obj := Owner.FindComponent(ComponentName);
   if Obj = nil then exit;
   
-  // Ищем вложенные свойства
+  // We look for nested properties [translated]
   i := Pos('.', ObjProp);
   Last := false;
   while not Last do begin

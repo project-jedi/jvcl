@@ -25,6 +25,8 @@ components : TJvComponentPanel
 description: Component panel for GUI developers
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -55,14 +57,14 @@ type
     FButtonRight: TJvNoFrameButton;
     FFirstVisible: Integer;
     FLockUpdate: Integer;
-    {***** Для property начало *****}
+    {***** For property the beginning [translated] *****}
     function GetButton(Index: Integer): TSpeedButton;
     function GetButtonCount: Integer;
     procedure SetButtonCount(AButtonCount: Integer);
     procedure SetButtonW(AButtonW: Integer);
     procedure SetButtonH(AButtonH: Integer);
     procedure SetFirstVisible(AButton: Integer);
-    {##### Для property конец #####}
+    {##### For property the end [translated] #####}
   protected
     FSelectButton: TSpeedButton;
     procedure OnMoveClick(Sender: TObject);

@@ -25,6 +25,8 @@ component   : TJvScrollMax
 description : scrollable panels
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 
@@ -451,7 +453,7 @@ var
   CH, H, T : integer;
   L, FP, P, P1 : integer;
 begin
- {перед изменением кода обязательно сделайте копию!}
+  { Before change of the code necessarily make a copy! [translated] }
   if FMin > FMax then FMin := FMax;
   if FPage > FMax-FMin+1 then FPage := FMax-FMin+1;
   if FInclusive then P := FPage else P := 0;

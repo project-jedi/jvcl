@@ -24,6 +24,8 @@ located at http://jvcl.sourceforge.net
 description : Design-time Editor for TJvRegAuto component
 
 Known Issues:
+  Some russian comments were translated to english; these comments are marked
+  with [translated]
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -157,14 +159,14 @@ var
   LoadProgress: TJvLoadProgress;
 
 const
-  // индексы картинок в TreeImages
+  // Indexes of pictures in TreeImages [translated]
   imUnknown = 4;
   imClass = 4;
   imInteger = 1;
   imChar = 1;
   imString = 1;
   imEnumeration = 1;
-  imComponent = 3; //с этой картинки начинаются компонеты
+  imComponent = 3; // With this picture start komponety [translated]
 
 function LoadProgressCreate: TJvLoadProgress;
 begin
@@ -305,21 +307,21 @@ const
           begin
             MyNode :=
               Tree.Items.AddChild(Node, 'Unknown - ' + AName + #0 + 'N');
-            MyNode.ImageIndex := imUnknown; //картинка - нельзя выделять
+            MyNode.ImageIndex := imUnknown; // Picture - Not possible to select [translated]
           end;
         tkInteger:
           begin
             MyNode :=
               Tree.Items.AddChild(Node, AName + ' : '
               + SOrdType[Integer(TypeData^.OrdType)] + #0 + 'Y');
-            MyNode.ImageIndex := imInteger; //картинка - можно выделять
+            MyNode.ImageIndex := imInteger; // Picture - Possible to select [translated]
           end;
         tkFloat:
           begin
             MyNode :=
               Tree.Items.AddChild(Node, AName + ' : '
               + SFloatType[Integer(TypeData^.FloatType)] + #0 + 'Y');
-            MyNode.ImageIndex := imInteger; //картинка - можно выделять
+            MyNode.ImageIndex := imInteger; // Picture - Possible to select [translated]
           end;
         tkWChar,
           tkChar:
@@ -328,14 +330,14 @@ const
               Tree.Items.AddChild(Node, AName + ' : '
               + System.Copy(GetEnumName(TypeInfo(TTypeKind)
               , Integer(Kind)), 3, 255) + #0 + 'Y');
-            MyNode.ImageIndex := imChar; //картинка - можно выделять
+            MyNode.ImageIndex := imChar; // Picture - Possible to select [translated]
           end;
         tkEnumeration:
           begin
             MyNode :=
               Tree.Items.AddChild(Node, AName + ' : '
               + ATypeInfo^.Name + #0 + 'Y');
-            MyNode.ImageIndex := imEnumeration; //картинка - можно выделять
+            MyNode.ImageIndex := imEnumeration; // Picture - Possible to select [translated]
           end;
         tkString,
           tkLString {,
@@ -346,16 +348,16 @@ const
               + ATypeInfo^.Name + ' ( '
               + Format('String[%d]', [TypeData^.MaxLength])
               + ' )' + #0 + 'Y');
-            MyNode.ImageIndex := imString; //картинка - можно выделять
+            MyNode.ImageIndex := imString; // Picture - Possible to select [translated]
           end;
         tkClass:
           begin
             MyNode := Tree.Items.AddChild(Node, AName + ' : '
               + TypeData^.ClassType.ClassName + #0 + 'N');
-            MyNode.ImageIndex := imClass; //картинка класс - нельзя выделять
+            MyNode.ImageIndex := imClass; // Picture - Possible to select [translated]
             AComponent := TComponent(GetOrdProp(AComponent, APropInfo));
 
-            // { защита от рекурсивных ссылок компонентов }
+            { Protection against recursive references of components [translated] }
             if (AComponent = nil) or (CompList.IndexOf(AComponent) > -1) then
               Exit;
             CompList.Add(AComponent);
@@ -373,7 +375,7 @@ const
               FreeMem(aPropList, aNumProps * sizeof(pointer));
             end;
           end;
-        // tkSet    // - пока не поддерживается
+        // tkSet    // - Not yet supported [translated] 
       end;
     if MyNode <> nil then
       MyNode.SelectedIndex := MyNode.ImageIndex;
