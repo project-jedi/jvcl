@@ -90,7 +90,7 @@ begin
   {$IFDEF USEWINDOWS}
   RegisterComponents(RsPaletteSystem, [{TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvAppInstances, TJvNTEventLog,
-    TJvScreenSaver, TJvNTEventLog, TJvScreenSaver, TJvJoystick, TJvSoundControl,
+    TJvScreenSaver, TJvJoystick, TJvSoundControl,
     TJvPerfStat95, TJvComputerInfoEx, TJvDebugHandler]);
   RegisterComponents(RsPaletteInternetWork, [TJvRas32, TJvCommStatus]);
   {$ENDIF USEWINDOWS}
