@@ -166,7 +166,6 @@ contains
   JvRadioGroup in '..\Source\JvRadioGroup.pas',
   JvRas32 in '..\Source\JvRas32.pas',
   JvRealLabel in '..\Source\JvRealLabel.pas',
-  JvRecentDocs in '..\Source\JvRecentDocs.pas',
   JvRecentMenuBtn in '..\Source\JvRecentMenuBtn.pas',
   JvRegistry in '..\Source\JvRegistry.pas',
   JvRenameError in '..\Source\JvRenameError.pas',
