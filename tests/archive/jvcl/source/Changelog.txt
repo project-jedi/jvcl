@@ -6,6 +6,7 @@
 
 2002-10-09
 - Renamed the "RxLib" resources (bitmaps and string tables) in JVCL so that RxLib and JVCL can be installed side-by-side without name conflicts
+- Reassigned JvFormStorage lost event handlers
 
 2002-10-05
 - Added datetimepicker and checked mask edit donated by Oliver Giesen/Lucatec
