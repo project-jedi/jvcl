@@ -54,6 +54,7 @@ contains
   JvContextProvider in '..\..\run\JvContextProvider.pas',
   JvAppStore in '..\..\run\JvAppStore.pas',
   JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
-  JvAppIniStore in '..\..\run\JvAppIniStore.pas';
+  JvAppIniStore in '..\..\run\JvAppIniStore.pas',
+  JvThemes in '..\..\run\JvThemes.pas';
 
 end.

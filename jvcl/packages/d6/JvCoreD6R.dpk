@@ -1,5 +1,6 @@
 package JvCoreD6R;
 
+{$INCLUDE JVCL.INC}
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
@@ -28,6 +29,9 @@ package JvCoreD6R;
 
 requires
   DJCL60,
+{$IFDEF JVCLThemesEnabled}
+  ThemeManager6,
+{$ENDIF}
   vclx;
 
 contains
@@ -51,6 +55,7 @@ contains
   JvContextProvider in '..\..\run\JvContextProvider.pas',
   JvAppStore in '..\..\run\JvAppStore.pas',
   JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
-  JvAppIniStore in '..\..\run\JvAppIniStore.pas';
+  JvAppIniStore in '..\..\run\JvAppIniStore.pas',
+  JvThemes in '..\..\run\JvThemes.pas';
 
 end.
