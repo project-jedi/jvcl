@@ -986,23 +986,25 @@ begin
         Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
            Pkg.JclDependencies[depI] + '.dcp';
 
-
       if AutoDepend then
       begin
        // Add all contained files and test for their condition.
         for depI := 0 to Pkg.Info.ContainCount - 1 do
-          if IsCondition(Pkg.Info.Contains[depI].Condition) then
+          if Pkg.Info.Contains[depI].IsUsedByTarget(ProjectGroup.TargetConfig) then
           begin
-            Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-              ExtractFileName(Pkg.Info.Contains[depI].Name);
-            {if Pkg.Info.Contains[depI].FormName <> '' then
+            if IsCondition(Pkg.Info.Contains[depI].Condition) then
             begin
-              if ProjectGroup.IsVCLX then
-                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.xfm')
-              else
-                S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.dfm');
-              Dependencies := Dependencies + '\' + sLineBreak + #9#9 + S;
-            end;}
+              Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+                ExtractFileName(Pkg.Info.Contains[depI].Name);
+              {if Pkg.Info.Contains[depI].FormName <> '' then
+              begin
+                if ProjectGroup.IsVCLX then
+                  S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.xfm')
+                else
+                  S := ChangeFileExt(ExtractFileName(Pkg.Info.Contains[depI].Name), '.dfm');
+                Dependencies := Dependencies + '\' + sLineBreak + #9#9 + S;
+              end;}
+            end;
           end;
         Dependencies := Dependencies + '\' + sLineBreak + #9#9'$(CommonDependencies)';
       end;

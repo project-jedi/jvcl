@@ -325,7 +325,7 @@ end;
 
 function TCompileTarget.InsertDirMacros(const Dir: string): string;
 begin
-  Result := Dir + '\';
+  Result := Dir;
   if AnsiStartsText(RootDir + '\', Dir) then
   begin
     if IsBCB then

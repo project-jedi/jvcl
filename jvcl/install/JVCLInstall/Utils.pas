@@ -246,22 +246,33 @@ procedure AddPaths(List: TStrings; Add: Boolean; const Dir: string;
   const Paths: array of string);
 var
   i, j: Integer;
+  Path: string;
 begin
  // remove old paths
   for j := 0 to High(Paths) do
     for i := List.Count - 1 downto 0 do
       if Paths[j] <> '' then
-        if EndsWith(List[i], Paths[j], True) then
+      begin
+        Path := Paths[j];
+        if (Pos(':', Path) = 0) and (Path[1] <> '$') then
+          Path := PathDelim + ExtractFileName(Dir) + PathDelim + Paths[j];
+        if EndsWith(List[i], Path, True) then
+          List.Delete(i)
+        else if EndsWith(List[i], Path + '\', True) then
           List.Delete(i);
+      end;
 
   if Add then
    // add new paths
     for j := 0 to High(Paths) do
       if Paths[j] <> '' then
-        if (Pos(':', Paths[j]) = 0) and (Paths[j][1] <> '$') then
-          List.Add(Dir + '\' + Paths[j])
+      begin
+        Path := Paths[j];
+        if (Pos(':', Path) = 0) and (Path[1] <> '$') then
+          List.Add(Dir + PathDelim + Path)
         else
-          List.Add(Paths[j])
+          List.Add(Path);
+      end;
 end;
 
 function OpenAtAnchor(const FileName, Anchor: string): Boolean;
