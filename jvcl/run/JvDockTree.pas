@@ -87,7 +87,7 @@ type
     FOrientation: TDockOrientation;
     FParentZone: TJvDockZone;
     FPrevSibling: TJvDockZone;
-    FTree: TJvDockTree;
+    FTree: TJvDockTree; { Owner }
     FZoneLimit: Integer;
     FVisibleSize: Integer;
     FVisibled: Boolean;
@@ -133,7 +133,7 @@ type
     procedure DoCustomSetControlName; virtual;
     procedure SetChildControlVisible(Client: TControl; AVisible: Boolean); virtual;
   public
-    constructor Create(Tree: TJvDockTree); virtual;
+    constructor Create(ATree: TJvDockTree); virtual;
     procedure Insert(DockSize: Integer; Hide: Boolean); virtual;
     procedure Remove(DockSize: Integer; Hide: Boolean); virtual;
     procedure InsertOrRemove(DockSize: Integer; Insert: Boolean; Hide: Boolean); virtual;
@@ -168,7 +168,7 @@ type
     property PrevSiblingCount: Integer read GetPrevSiblingCount;
     property Top: Integer index Ord(doHorizontal) read GetTopLeft;
     property TopLeft[Orient: TDockOrientation]: Integer read GetTopLeftArr;
-    property Tree: TJvDockTree read FTree write FTree;
+    property Tree: TJvDockTree read FTree;
     property VisibleChildCount: Integer read GetVisibleChildCount;
     property VisibleChildTotal: Integer read GetVisibleChildTotal;
     property VisiblePrevSiblingCount: Integer read GetVisiblePrevSiblingCount;
@@ -189,7 +189,7 @@ type
   protected
     procedure LButtonDblClkMethod; override;
   public
-    constructor Create(Tree: TJvDockTree); override;
+    constructor Create(ATree: TJvDockTree); override;
     destructor Destroy; override;
     procedure Insert(DockSize: Integer; Hide: Boolean); override;
     procedure Remove(DockSize: Integer; Hide: Boolean); override;
@@ -411,7 +411,7 @@ type
   public
     // (rom) deactivated  completely unused
     // SplitterCanvas: TControlCanvas;
-    constructor Create(DockSite: TWinControl; ADockZoneClass: TJvDockZoneClass); virtual;
+    constructor Create(ADockSite: TWinControl; ADockZoneClass: TJvDockZoneClass); virtual;
     destructor Destroy; override;
     property DockSite: TWinControl read FDockSite write FDockSite;
     property DockSiteOrientation: TDockOrientation read GetDockSiteOrientation;
@@ -503,14 +503,14 @@ type
 
 //=== { TJvDockZone } ========================================================
 
-constructor TJvDockZone.Create(Tree: TJvDockTree);
+constructor TJvDockZone.Create(ATree: TJvDockTree);
 begin
   ParentZone := nil;
   PrevSibling := nil;
   NextSibling := nil;
   ChildZones := nil;
   ChildControl := nil;
-  FTree := Tree;
+  FTree := ATree;
   FVisibled := True;
 end;
 
@@ -1175,7 +1175,7 @@ end;
 
 //=== { TJvDockTree } ========================================================
 
-constructor TJvDockTree.Create(DockSite: TWinControl;
+constructor TJvDockTree.Create(ADockSite: TWinControl;
   ADockZoneClass: TJvDockZoneClass);
 var
   I: Integer;
@@ -1187,7 +1187,7 @@ begin
   FDockZoneClass := ADockZoneClass;
   FBorderWidth := 0;
   FSplitterWidth := 4;
-  FDockSite := TWinControl(DockSite);
+  FDockSite := ADockSite;
   FDockSite.ShowHint := True;
   FVersion := RsDockBaseDockTreeVersion;
   GrabberSize := 12;
@@ -2988,7 +2988,8 @@ begin
   begin
     with Stream do
     begin
-      if Read(Level, SizeOf(Level)) <> SizeOf(Level) then Break;
+      if Read(Level, SizeOf(Level)) <> SizeOf(Level) then
+        Break;
       if Level = TreeStreamEndFlag then
         Break;
       Zone := FDockZoneClass.Create(Self);
@@ -3543,9 +3544,9 @@ end;
 
 //=== { TJvDockAdvZone } =====================================================
 
-constructor TJvDockAdvZone.Create(Tree: TJvDockTree);
+constructor TJvDockAdvZone.Create(ATree: TJvDockTree);
 begin
-  inherited Create(Tree);
+  inherited Create(ATree);
   FCloseBtnDown := False;
   FMouseDown := False;
 end;
