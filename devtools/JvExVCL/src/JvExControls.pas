@@ -1352,13 +1352,6 @@ begin
   end;
 end;
 
-initialization
-  InitHookVars;
-  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
-
-finalization
-  UninstallProcHook(@OrgSetAutoSize);
-
 {$ENDIF COMPILER5}
 
 {$IFDEF VISUALCLX}
@@ -1437,7 +1430,15 @@ var
   CallCutToClipboard, CallPasteFromClipboard,
     CallCopyToClipboard, CallUndo: TOrgCallCode;
 
+
 initialization
+  {$IFDEF COMPILER5}
+  InitHookVars;
+  InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
+  {$ENDIF COMPILER5}
+
+  {$IFDEF VisualCLX}
+  
 //  InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
 //    @CallSetFocusedControl);
   InstallProcHook(@TCustomEdit.CutToClipboard, @CutToClipboardHook,
@@ -1456,7 +1457,15 @@ initialization
   {$IFEND}
   {$ENDIF COMPILER7}
 
+  {$ENDIF VisualCLX}
+
 finalization
+  {$IFDEF COMPILER5}
+  UninstallProcHook(@OrgSetAutoSize);
+  {$ENDIF COMPILER5}
+
+  {$IFDEF VisualCLX}
+
   UninstallProcHook(@CallCutToClipboard);
   UninstallProcHook(@CallCopyToClipboard);
   UninstallProcHook(@CallPasteFromClipboard);
@@ -1468,7 +1477,8 @@ finalization
   {$IFEND}
   {$ENDIF COMPILER7}
 //  UninstallProcHook(@CallSetFocusedControl);
-{$ENDIF VisualCLX}
+
+  {$ENDIF VisualCLX}
 
 end.
 
