@@ -7,70 +7,26 @@ Summary
 Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
-@@Cr
-Description
-  Write here a description
-Cr = 
- ;
-----------------------------------------------------------------------------------------------------
-@@CrLf
-Description
-  Write here a description
-CrLf = 
- ;
-----------------------------------------------------------------------------------------------------
-@@DEFAULT_SYSCOLOR_MASK
-Description
-  Write here a description
-DEFAULT_SYSCOLOR_MASK = $80000000 ;
-----------------------------------------------------------------------------------------------------
 @@EJVCLException
-<TITLEIMG EJVCLException>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@EJvDirectoryError
-<TITLEIMG EJvDirectoryError>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@Lf
-Description
-  Write here a description
-Lf = 
- ;
-----------------------------------------------------------------------------------------------------
-@@MaxPixelCount
-Description
-  Write here a description
-MaxPixelCount = 32768 ;
-----------------------------------------------------------------------------------------------------
 @@PAniTag
 <TITLE PAniTag type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = ^ TAniTag ; - for reference)
+<COMBINE TAniTag>
 ----------------------------------------------------------------------------------------------------
 @@PRGBArray
 <TITLE PRGBArray type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = ^ TRGBArray ; - for reference)
-----------------------------------------------------------------------------------------------------
+<COMBINE TRGBArray>
+---------------------------------------------------------------------------------------------------
 @@TAlarm
 Summary
   Write here a summary (1 line)
@@ -88,7 +44,7 @@ Description
   No desciption is needed for already described items such as sets,
   pointers to records etc.
 (Value = 0..360 ; - for reference)
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TAniHeader
 Summary
   Write here a summary (1 line)
@@ -112,7 +68,7 @@ Description
   Description for dwJIFRate
 @@TAniHeader.dwFlags
   Description for dwFlags
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TAniTag
 Summary
   Write here a summary (1 line)
@@ -188,11 +144,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TButtonOptions
 <TITLE TButtonOptions type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = set of TButtonOption ; - for reference)
+<COMBINE TButtonOption>
 ----------------------------------------------------------------------------------------------------
 @@TButtonResult
 <TITLE TButtonResult type>
@@ -236,6 +188,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TCoordChanged
 <TITLE TCoordChanged type>
+Parameters
   Sender - Description for this parameter
   Coord  - Description for this parameter
 ----------------------------------------------------------------------------------------------------
@@ -267,11 +220,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TDeleteStyles
 <TITLE TDeleteStyles type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = set of TDeleteStyle ; - for reference)
+<COMBINE TDeleteStyle>
 ----------------------------------------------------------------------------------------------------
 @@TDirection
 <TITLE TDirection type>
@@ -330,18 +279,15 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TDiskStyles
 <TITLE TDiskStyles type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = set of TDiskStyle ; - for reference)
+<COMBINE TDiskStyle>
 ----------------------------------------------------------------------------------------------------
 @@TDropEvent
 <TITLE TDropEvent type>
+Parameters
   Sender - Description for this parameter
   Pos    - Description for this parameter
   Value  - Description for this parameter
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TFileInformation
 Summary
   Write here a summary (1 line)
@@ -404,11 +350,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimation
 <TITLE TJvAnimation type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = set of TJvAnimations ; - for reference)
+<COMBINE TJvAnimations>
 ----------------------------------------------------------------------------------------------------
 @@TJvAnimations
 <TITLE TJvAnimations type>
@@ -461,11 +403,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDirMasks
 <TITLE TJvDirMasks type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = set of TJvDirMask ; - for reference)
+<COMBINE TJvDirMask>
 ----------------------------------------------------------------------------------------------------
 @@TJvFileKind
 <TITLE TJvFileKind type>
@@ -480,6 +418,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvFocusChangeEvent
 <TITLE TJvFocusChangeEvent type>
+Parameters
   ASender       - Description for this parameter
   AFocusControl - Description for this parameter
 ----------------------------------------------------------------------------------------------------
@@ -553,11 +492,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvRunOptions
 <TITLE TJvRunOptions type>
-Description
-  Write here a description
-  No desciption is needed for already described items such as sets,
-  pointers to records etc.
-(Value = set of TJvRunOption ; - for reference)
+<COMBINE TJvRunOption>
 ----------------------------------------------------------------------------------------------------
 @@TJvWaveLocation
 <TITLE TJvWaveLocation type>
@@ -585,6 +520,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TListEvent
 <TITLE TListEvent type>
+Parameters
   Sender - Description for this parameter
   Title  - Description for this parameter
   Handle - Description for this parameter
@@ -623,32 +559,38 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TNotifyEventParams
 <TITLE TNotifyEventParams type>
+Parameters
   Sender - Description for this parameter
   params - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnAlarm
 <TITLE TOnAlarm type>
+Parameters
   Sender  - Description for this parameter
   Keyword - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnChangeColor
 <TITLE TOnChangeColor type>
+Parameters
   Sender     - Description for this parameter
   Foreground - Description for this parameter
   Background - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnChangedDir
 <TITLE TOnChangedDir type>
+Parameters
   Sender    - Description for this parameter
   Directory - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnDelete
 <TITLE TOnDelete type>
+Parameters
   Sender - Description for this parameter
   Path   - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnDoneFile
 <TITLE TOnDoneFile type>
+Parameters
   Sender   - Description for this parameter
   FileName - Description for this parameter
   FileSize - Description for this parameter
@@ -656,6 +598,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnDoneStream
 <TITLE TOnDoneStream type>
+Parameters
   Sender     - Description for this parameter
   Stream     - Description for this parameter
   StreamSize - Description for this parameter
@@ -663,27 +606,32 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnError
 <TITLE TOnError type>
+Parameters
   Sender   - Description for this parameter
   ErrorMsg - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnFound
 <TITLE TOnFound type>
+Parameters
   Sender - Description for this parameter
   Path   - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnFtpProgress
 <TITLE TOnFtpProgress type>
+Parameters
   Sender   - Description for this parameter
   Position - Description for this parameter
   Url      - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnImage
 <TITLE TOnImage type>
+Parameters
   Sender - Description for this parameter
   Image  - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnKeyFound
 <TITLE TOnKeyFound type>
+Parameters
   Sender       - Description for this parameter
   Key          - Description for this parameter
   Results      - Description for this parameter
@@ -691,42 +639,50 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnLinkClick
 <TITLE TOnLinkClick type>
+Parameters
   Sender - Description for this parameter
   Link   - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnNextPage
 <TITLE TOnNextPage type>
+Parameters
   Sender     - Description for this parameter
   PageNumber - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnOk
 <TITLE TOnOk type>
+Parameters
   Sender   - Description for this parameter
   Password - Description for this parameter
   Accept   - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnOpenCanceled
 <TITLE TOnOpenCanceled type>
+Parameters
   Sender - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnOpened
 <TITLE TOnOpened type>
+Parameters
   Sender - Description for this parameter
   Value  - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnParent
 <TITLE TOnParent type>
+Parameters
   Sender       - Description for this parameter
   ParentWindow - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnPrintProgress
 <TITLE TOnPrintProgress type>
+Parameters
   Sender  - Description for this parameter
   Current - Description for this parameter
   Total   - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnProgress
 <TITLE TOnProgress type>
+Parameters
   Sender    - Description for this parameter
   Position  - Description for this parameter
   TotalSize - Description for this parameter
@@ -735,20 +691,18 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnRegistryChangeKey
 <TITLE TOnRegistryChangeKey type>
+Parameters
   Sender  - Description for this parameter
   RootKey - Description for this parameter
   Path    - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnText
 <TITLE TOnText type>
+Parameters
   Sender - Description for this parameter
   Text   - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TParserInf
-<TITLEIMG TParserInf>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -784,6 +738,7 @@ Description
 (Value = array [ 0.. MaxPixelCount - 1 ] of TRGBTriple ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TSHFormatDrive
+<TITLE TSHFormatDrive type>
 Summary
   Write here a summary (1 line)
 Description
@@ -794,7 +749,9 @@ Parameters
   ID      - Description for this parameter
   Options - Description for this parameter
 See Also
-  List here other properties, methods (comma seperated)----------------------------------------------------------------------------------------------------
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+----------------------------------------------------------------------------------------------------
 @@TTransformationKind
 <TITLE TTransformationKind type>
 Summary
@@ -825,7 +782,7 @@ Description
   Description for ttWipeUpRight
 @@TTransformationKind.ttWipeUpLeft
   Description for ttWipeUpLeft
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TVolumeRec
 Summary
   Write here a summary (1 line)

@@ -7,504 +7,15 @@ Summary
 Author
   Andrei Prygounkov
 ----------------------------------------------------------------------------------------------------
-@@ecBackspace
-Description
-  Write here a description
-ecBackspace = ecInsertPara + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecBackspaceWord
-Description
-  Write here a description
-ecBackspaceWord = ecIntern + 10 ;
-----------------------------------------------------------------------------------------------------
-@@ecBackTab
-Description
-  Write here a description
-ecBackTab = ecInsertPara + 5 ;
-----------------------------------------------------------------------------------------------------
-@@ecBeginCompound
-Description
-  Write here a description
-ecBeginCompound = ecUndo + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecBeginDoc
-Description
-  Write here a description
-ecBeginDoc = ecBeginLine + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecBeginLine
-Description
-  Write here a description
-ecBeginLine = ecSelNextPage + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecBeginRecord
-Description
-  Write here a description
-ecBeginRecord = ecRecordMacro + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecBeginUpdate
-Description
-  Write here a description
-ecBeginUpdate = ecUndo + 4 ;
-----------------------------------------------------------------------------------------------------
-@@ecChangeCase
-Description
-  Write here a description
-ecChangeCase = ecToUpperCase + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecChangeInsertMode
-Description
-  Write here a description
-ecChangeInsertMode = ecInsertPara + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecCharFirst
-Description
-  Write here a description
-ecCharFirst = $00 ;
-----------------------------------------------------------------------------------------------------
-@@ecCharLast
-Description
-  Write here a description
-ecCharLast = $FF ;
-----------------------------------------------------------------------------------------------------
-@@ecClipboardCopy
-Description
-  Write here a description
-ecClipboardCopy = ecInsertPara + 11 ;
-----------------------------------------------------------------------------------------------------
-@@ecClipboardCut
-Description
-  Write here a description
-ecClipboardCut = ecClipboardCopy + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecClipboardPaste
-Description
-  Write here a description
-ecClipboardPaste = ecClipboardCopy + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecColumnBlock
-Description
-  Write here a description
-ecColumnBlock = ecCommandFirst + 102 ;
-----------------------------------------------------------------------------------------------------
-@@ecCommandFirst
-Description
-  Write here a description
-ecCommandFirst = $100 ;
-----------------------------------------------------------------------------------------------------
-@@ecCompletionIdentifiers
-Description
-  Write here a description
-ecCompletionIdentifiers = ecGotoBookmark9 + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecCompletionTemplates
-Description
-  Write here a description
-ecCompletionTemplates = ecCompletionIdentifiers + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecDelete
-Description
-  Write here a description
-ecDelete = ecInsertPara + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecDeleteLine
-Description
-  Write here a description
-ecDeleteLine = ecClipboardPaste + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecDeleteSelected
-Description
-  Write here a description
-ecDeleteSelected = ecInsertPara + 10 ;
-----------------------------------------------------------------------------------------------------
-@@ecDeleteWord
-Description
-  Write here a description
-ecDeleteWord = ecDeleteLine + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecDown
-Description
-  Write here a description
-ecDown = ecLeft + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecEndCompound
-Description
-  Write here a description
-ecEndCompound = ecUndo + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecEndDoc
-Description
-  Write here a description
-ecEndDoc = ecBeginLine + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecEndLine
-Description
-  Write here a description
-ecEndLine = ecBeginLine + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecEndRecord
-Description
-  Write here a description
-ecEndRecord = ecRecordMacro + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecEndUpdate
-Description
-  Write here a description
-ecEndUpdate = ecUndo + 5 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark0
-Description
-  Write here a description
-ecGotoBookmark0 = ecSetBookmark9 + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark1
-Description
-  Write here a description
-ecGotoBookmark1 = ecGotoBookmark0 + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark2
-Description
-  Write here a description
-ecGotoBookmark2 = ecGotoBookmark0 + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark3
-Description
-  Write here a description
-ecGotoBookmark3 = ecGotoBookmark0 + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark4
-Description
-  Write here a description
-ecGotoBookmark4 = ecGotoBookmark0 + 4 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark5
-Description
-  Write here a description
-ecGotoBookmark5 = ecGotoBookmark0 + 5 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark6
-Description
-  Write here a description
-ecGotoBookmark6 = ecGotoBookmark0 + 6 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark7
-Description
-  Write here a description
-ecGotoBookmark7 = ecGotoBookmark0 + 7 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark8
-Description
-  Write here a description
-ecGotoBookmark8 = ecGotoBookmark0 + 8 ;
-----------------------------------------------------------------------------------------------------
-@@ecGotoBookmark9
-Description
-  Write here a description
-ecGotoBookmark9 = ecGotoBookmark0 + 9 ;
-----------------------------------------------------------------------------------------------------
-@@ecInclusiveBlock
-Description
-  Write here a description
-ecInclusiveBlock = ecCommandFirst + 100 ;
-----------------------------------------------------------------------------------------------------
-@@ecIndent
-Description
-  Write here a description
-ecIndent = ecInsertPara + 6 ;
-----------------------------------------------------------------------------------------------------
-@@ecInsertPara
-Description
-  Write here a description
-ecInsertPara = ecCommandFirst + 121 ;
-----------------------------------------------------------------------------------------------------
-@@ecIntern
-Description
-  Write here a description
-ecIntern = $1000 ;
-----------------------------------------------------------------------------------------------------
-@@ecLeft
-Description
-  Write here a description
-ecLeft = ecCommandFirst + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecLineBlock
-Description
-  Write here a description
-ecLineBlock = ecCommandFirst + 101 ;
-----------------------------------------------------------------------------------------------------
-@@ecNextPage
-Description
-  Write here a description
-ecNextPage = ecWindowTop + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecNextWord
-Description
-  Write here a description
-ecNextWord = ecPrevWord + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecNonInclusiveBlock
-Description
-  Write here a description
-ecNonInclusiveBlock = ecCommandFirst + 103 ;
-----------------------------------------------------------------------------------------------------
-@@ecPlayMacro
-Description
-  Write here a description
-ecPlayMacro = ecRecordMacro + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecPrevPage
-Description
-  Write here a description
-ecPrevPage = ecWindowTop + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecPrevWord
-Description
-  Write here a description
-ecPrevWord = ecSelDown + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecRecordMacro
-Description
-  Write here a description
-ecRecordMacro = ecCompletionTemplates + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecRedo
-Description
-  Write here a description
-ecRedo = ecUndo + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecRight
-Description
-  Write here a description
-ecRight = ecLeft + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecScrollLineDown
-Description
-  Write here a description
-ecScrollLineDown = ecScrollLineUp + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecScrollLineUp
-Description
-  Write here a description
-ecScrollLineUp = ecSelAll + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelAll
-Description
-  Write here a description
-ecSelAll = ecBeginLine + 8 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelBeginDoc
-Description
-  Write here a description
-ecSelBeginDoc = ecBeginLine + 6 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelBeginLine
-Description
-  Write here a description
-ecSelBeginLine = ecBeginLine + 4 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelColumnDown
-Description
-  Write here a description
-ecSelColumnDown = ecSelColumnLeft + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelColumnLeft
-Description
-  Write here a description
-ecSelColumnLeft = ecIntern + 0 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelColumnRight
-Description
-  Write here a description
-ecSelColumnRight = ecSelColumnLeft + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelColumnUp
-Description
-  Write here a description
-ecSelColumnUp = ecSelColumnLeft + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelDown
-Description
-  Write here a description
-ecSelDown = ecSelLeft + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelEndDoc
-Description
-  Write here a description
-ecSelEndDoc = ecBeginLine + 7 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelEndLine
-Description
-  Write here a description
-ecSelEndLine = ecBeginLine + 5 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelLeft
-Description
-  Write here a description
-ecSelLeft = ecCommandFirst + 9 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelNextPage
-Description
-  Write here a description
-ecSelNextPage = ecWindowTop + 5 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelNextWord
-Description
-  Write here a description
-ecSelNextWord = ecPrevWord + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelPrevPage
-Description
-  Write here a description
-ecSelPrevPage = ecWindowTop + 4 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelPrevWord
-Description
-  Write here a description
-ecSelPrevWord = ecPrevWord + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelRight
-Description
-  Write here a description
-ecSelRight = ecSelLeft + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelUp
-Description
-  Write here a description
-ecSelUp = ecSelLeft + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecSelWord
-Description
-  Write here a description
-ecSelWord = ecPrevWord + 4 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark0
-Description
-  Write here a description
-ecSetBookmark0 = ecEndUpdate + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark1
-Description
-  Write here a description
-ecSetBookmark1 = ecSetBookmark0 + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark2
-Description
-  Write here a description
-ecSetBookmark2 = ecSetBookmark0 + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark3
-Description
-  Write here a description
-ecSetBookmark3 = ecSetBookmark0 + 3 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark4
-Description
-  Write here a description
-ecSetBookmark4 = ecSetBookmark0 + 4 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark5
-Description
-  Write here a description
-ecSetBookmark5 = ecSetBookmark0 + 5 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark6
-Description
-  Write here a description
-ecSetBookmark6 = ecSetBookmark0 + 6 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark7
-Description
-  Write here a description
-ecSetBookmark7 = ecSetBookmark0 + 7 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark8
-Description
-  Write here a description
-ecSetBookmark8 = ecSetBookmark0 + 8 ;
-----------------------------------------------------------------------------------------------------
-@@ecSetBookmark9
-Description
-  Write here a description
-ecSetBookmark9 = ecSetBookmark0 + 9 ;
-----------------------------------------------------------------------------------------------------
-@@ecTab
-Description
-  Write here a description
-ecTab = ecInsertPara + 4 ;
-----------------------------------------------------------------------------------------------------
-@@ecToLowerCase
-Description
-  Write here a description
-ecToLowerCase = ecToUpperCase + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecToUpperCase
-Description
-  Write here a description
-ecToUpperCase = ecDeleteLine + 2 ;
-----------------------------------------------------------------------------------------------------
-@@ecUndo
-Description
-  Write here a description
-ecUndo = ecChangeCase + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecUnindent
-Description
-  Write here a description
-ecUnindent = ecInsertPara + 7 ;
-----------------------------------------------------------------------------------------------------
-@@ecUp
-Description
-  Write here a description
-ecUp = ecLeft + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecUser
-Description
-  Write here a description
-ecUser = $8000 ;
-----------------------------------------------------------------------------------------------------
-@@ecWindowBottom
-Description
-  Write here a description
-ecWindowBottom = ecWindowTop + 1 ;
-----------------------------------------------------------------------------------------------------
-@@ecWindowTop
-Description
-  Write here a description
-ecWindowTop = ecSelWord + 1 ;
-----------------------------------------------------------------------------------------------------
 @@EJvEditorError
-<TITLEIMG EJvEditorError>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
-@@GutterRightMargin
-Description
-  Write here a description
-GutterRightMargin = 2 ;
-----------------------------------------------------------------------------------------------------
-@@Max_X
-Description
-  Write here a description
-Max_X = 1024 ;
-----------------------------------------------------------------------------------------------------
-@@Max_X_Scroll
-Description
-  Write here a description
-Max_X_Scroll = Max_X ;
-----------------------------------------------------------------------------------------------------
 @@PJvSelectionRec
 <TITLE PJvSelectionRec type>
 <COMBINE TJvSelectionRec>
-----------------------------------------------------------------------------------------------------
-@@sLineBreakLen
-Description
-  Write here a description
-sLineBreakLen = Length ( sLineBreak ) ;
 ----------------------------------------------------------------------------------------------------
 @@TAdjustPersistentBlockMode
 <TITLE TAdjustPersistentBlockMode type>
@@ -522,7 +33,7 @@ Description
   Description for amLineConcat
 @@TAdjustPersistentBlockMode.amLineBreak
   Description for amLineBreak
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TBookMark
 Summary
   Write here a summary (1 line)
@@ -550,7 +61,7 @@ Description
   No desciption is needed for already described items such as sets,
   pointers to records etc.
 (Value = array [ TBookMarkNum ] of TBookMark ; - for reference)
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TCellRect
 Summary
   Write here a summary (1 line)
@@ -563,6 +74,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TCommand2Event
 <TITLE TCommand2Event type>
+Parameters
   Sender  - Description for this parameter
   Key1    - Description for this parameter
   Shift1  - Description for this parameter
@@ -590,10 +102,6 @@ Description
 (Value = Word ; - for reference)
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion
-<TITLEIMG TJvCompletion>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -606,6 +114,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.CloseUp
 Summary
@@ -616,6 +125,7 @@ Parameters
   Apply - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.CRLF
 Summary
@@ -624,6 +134,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.DoCompletion
 Summary
@@ -634,6 +145,7 @@ Parameters
   AMode - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.DropDown
 Summary
@@ -645,6 +157,7 @@ Parameters
   ShowAlways - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.DropDownCount
 Summary
@@ -653,6 +166,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.DropDownWidth
 Summary
@@ -661,6 +175,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Enabled
 Summary
@@ -669,6 +184,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Identifiers
 Summary
@@ -677,6 +193,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Interval
 Summary
@@ -685,6 +202,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.ItemHeight
 Summary
@@ -693,6 +211,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.ItemIndex
 Summary
@@ -701,6 +220,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Items
 Summary
@@ -709,6 +229,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.ListBoxStyle
 Summary
@@ -717,6 +238,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Mode
 Summary
@@ -725,16 +247,16 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.SelectItem
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Separator
 Summary
@@ -743,6 +265,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Templates
 Summary
@@ -751,6 +274,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCompletion.Visible
 Summary
@@ -759,12 +283,9 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95
-<TITLEIMG TJvControlScrollBar95>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -779,6 +300,7 @@ Parameters
   Msg - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.Handle
 Summary
@@ -787,6 +309,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.Kind
 Summary
@@ -795,6 +318,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.LargeChange
 Summary
@@ -803,6 +327,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.Max
 Summary
@@ -811,6 +336,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.Min
 Summary
@@ -819,6 +345,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.OnScroll
 Summary
@@ -827,6 +354,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.Page
 Summary
@@ -835,6 +363,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.Position
 Summary
@@ -843,6 +372,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.SetParams
 Summary
@@ -856,6 +386,7 @@ Parameters
   APage     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvControlScrollBar95.SmallChange
 Summary
@@ -864,12 +395,9 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor
-<TITLEIMG TJvCustomEditor>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -882,6 +410,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.BackSpaceUnindents
 Summary
@@ -890,26 +419,25 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.BeginCompound
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.BeginUpdate
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.BlockOverwrite
 Summary
@@ -918,6 +446,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.BorderStyle
 Summary
@@ -926,6 +455,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CalcCellRect
 Summary
@@ -939,42 +469,40 @@ Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CanCopy
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CanCut
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CanPaste
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CaretFromPos
 Summary
@@ -987,6 +515,7 @@ Parameters
   Y   - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CaretX
 Summary
@@ -995,6 +524,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CaretY
 Summary
@@ -1003,6 +533,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CellRect
 Summary
@@ -1011,46 +542,43 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ClearSelection
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ClipboardCopy
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ClipboardCut
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ClipboardPaste
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Cols
 Summary
@@ -1059,6 +587,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Command
 Summary
@@ -1069,6 +598,7 @@ Parameters
   ACommand - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Completion
 Summary
@@ -1077,6 +607,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.CursorBeyondEOF
 Summary
@@ -1085,16 +616,16 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.DeleteSelected
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.DoubleClickLine
 Summary
@@ -1103,38 +634,36 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.EndCompound
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.EndUpdate
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.GetSelText
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.GetText
 Summary
@@ -1149,30 +678,29 @@ Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.GetTextLen
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.GetWordOnCaret
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.GroupUndo
 Summary
@@ -1181,6 +709,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Gutter
 Summary
@@ -1189,6 +718,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.GutterColor
 Summary
@@ -1197,6 +727,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.GutterWidth
 Summary
@@ -1205,6 +736,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.HideCaret
 Summary
@@ -1213,6 +745,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.IndentColumns
 Summary
@@ -1225,6 +758,7 @@ Parameters
   EndY - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.IndentLines
 Summary
@@ -1237,6 +771,7 @@ Parameters
   EndY     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.IndentSelLines
 Summary
@@ -1247,6 +782,7 @@ Parameters
   UnIndent - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.InsertColumnText
 Summary
@@ -1259,6 +795,7 @@ Parameters
   Text - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.InsertMode
 Summary
@@ -1267,6 +804,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.InsertText
 Summary
@@ -1277,6 +815,7 @@ Parameters
   Text - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.KeepTrailingBlanks
 Summary
@@ -1285,6 +824,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Keyboard
 Summary
@@ -1293,6 +833,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.LastVisibleCol
 Summary
@@ -1301,6 +842,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.LastVisibleRow
 Summary
@@ -1309,6 +851,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.LeftCol
 Summary
@@ -1317,6 +860,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Lines
 Summary
@@ -1325,6 +869,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.MakeRowVisible
 Summary
@@ -1335,6 +880,7 @@ Parameters
   ARow - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Modified
 Summary
@@ -1343,6 +889,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnChange
 Summary
@@ -1351,6 +898,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnChangeStatus
 Summary
@@ -1359,6 +907,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnCompletionApply
 Summary
@@ -1367,6 +916,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnCompletionDrawItem
 Summary
@@ -1375,6 +925,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnCompletionIdentifier
 Summary
@@ -1383,6 +934,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnCompletionMeasureItem
 Summary
@@ -1391,6 +943,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnCompletionTemplate
 Summary
@@ -1399,6 +952,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnDblClick
 Summary
@@ -1407,6 +961,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnGetLineAttr
 Summary
@@ -1415,6 +970,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnGutterClick
 Summary
@@ -1423,6 +979,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnGutterDblClick
 Summary
@@ -1431,6 +988,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnPaintGutter
 Summary
@@ -1439,6 +997,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnResize
 Summary
@@ -1447,6 +1006,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnScroll
 Summary
@@ -1455,6 +1015,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.OnSelectionChange
 Summary
@@ -1463,6 +1024,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.PaintCaret
 Summary
@@ -1473,6 +1035,7 @@ Parameters
   bShow - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.PersistentBlocks
 Summary
@@ -1481,6 +1044,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.PosFromCaret
 Summary
@@ -1494,6 +1058,7 @@ Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.PostCommand
 Summary
@@ -1504,6 +1069,7 @@ Parameters
   ACommand - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ReadOnly
 Summary
@@ -1512,6 +1078,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Recording
 Summary
@@ -1520,6 +1087,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ReplaceWord
 Summary
@@ -1530,6 +1098,7 @@ Parameters
   NewString - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ReplaceWord2
 Summary
@@ -1540,6 +1109,7 @@ Parameters
   NewString - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.RightMargin
 Summary
@@ -1548,6 +1118,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.RightMarginColor
 Summary
@@ -1556,6 +1127,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.RightMarginVisible
 Summary
@@ -1564,6 +1136,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.Rows
 Summary
@@ -1572,6 +1145,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.ScrollBars
 Summary
@@ -1580,6 +1154,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelBackColor
 Summary
@@ -1588,6 +1163,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelBlockFormat
 Summary
@@ -1596,16 +1172,16 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelectAll
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelectRange
 Summary
@@ -1619,6 +1195,7 @@ Parameters
   EndY - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelForeColor
 Summary
@@ -1627,6 +1204,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelLength
 Summary
@@ -1635,6 +1213,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelStart
 Summary
@@ -1643,6 +1222,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SelText
 Summary
@@ -1651,6 +1231,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SetCaret
 Summary
@@ -1662,6 +1243,7 @@ Parameters
   Y - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SetLeftTop
 Summary
@@ -1673,6 +1255,7 @@ Parameters
   ATopRow  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SetSelText
 Summary
@@ -1683,6 +1266,7 @@ Parameters
   AValue - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.SmartTab
 Summary
@@ -1691,6 +1275,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.TabStops
 Summary
@@ -1699,6 +1284,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.TopRow
 Summary
@@ -1707,6 +1293,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.UndoAfterSave
 Summary
@@ -1715,6 +1302,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.UndoBuffer
 Summary
@@ -1723,6 +1311,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.UnIndentColumns
 Summary
@@ -1735,6 +1324,7 @@ Parameters
   EndY - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.VisibleColCount
 Summary
@@ -1743,6 +1333,7 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomEditor.VisibleRowCount
 Summary
@@ -1751,12 +1342,9 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditKey
-<TITLEIMG TJvEditKey>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -1775,6 +1363,7 @@ Parameters
   AShift2  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditor
 <TITLEIMG TJvEditor>
@@ -1787,20 +1376,12 @@ Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorClient
-<TITLEIMG TJvEditorClient>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorStrings
-<TITLEIMG TJvEditorStrings>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -1809,6 +1390,8 @@ Description
 @@TJvEditorStrings.Add
 Summary
   Write here a summary (1 line)
+  This is an overridden method, you don't have to describe these
+  if it does the same as the inherited method
 Description
   Write here a description
 Parameters
@@ -1817,6 +1400,7 @@ Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorStrings.DeleteColumnText
 Summary
@@ -1830,6 +1414,7 @@ Parameters
   EndY - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorStrings.DeleteText
 Summary
@@ -1843,10 +1428,13 @@ Parameters
   EndY - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorStrings.Insert
 Summary
   Write here a summary (1 line)
+  This is an overridden method, you don't have to describe these
+  if it does the same as the inherited method
 Description
   Write here a description
 Parameters
@@ -1854,6 +1442,7 @@ Parameters
   S     - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorStrings.InsertColumnText
 Summary
@@ -1866,6 +1455,7 @@ Parameters
   Text - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorStrings.InsertText
 Summary
@@ -1878,6 +1468,7 @@ Parameters
   Text - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvEditorStrings.Internal
 Summary
@@ -1886,12 +1477,9 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvGutter
-<TITLEIMG TJvGutter>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -1902,26 +1490,20 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvGutter.Paint
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard
-<TITLEIMG TJvKeyboard>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -1938,6 +1520,7 @@ Parameters
   AShift1  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard.Add2
 Summary
@@ -1952,6 +1535,7 @@ Parameters
   AShift2  - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard.Add2Ctrl
 Summary
@@ -1965,16 +1549,16 @@ Parameters
   AKey2    - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard.Clear
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard.Command
 Summary
@@ -1988,6 +1572,7 @@ Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard.Command2
 Summary
@@ -2003,6 +1588,7 @@ Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard.OnCommand2
 Summary
@@ -2011,17 +1597,17 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TJvKeyboard.SetDefLayout
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
-----------------------------------------------------------------------------------------------------
+  Remove the 'See Also' section if there are no references
+---------------------------------------------------------------------------------------------------
 @@TJvSelectionRec
 Summary
   Write here a summary (1 line)
@@ -2047,7 +1633,7 @@ Description
   Description for SelLineOrgBegX
 @@TJvSelectionRec.SelLineOrgEndX
   Description for SelLineOrgEndX
-----------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
 @@TLineAttr
 Summary
   Write here a summary (1 line)
@@ -2105,17 +1691,20 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnCompletion
 <TITLE TOnCompletion type>
+Parameters
   Sender - Description for this parameter
   Cancel - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnCompletionApply
 <TITLE TOnCompletionApply type>
+Parameters
   Sender    - Description for this parameter
   OldString - Description for this parameter
   NewString - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnGetLineAttr
 <TITLE TOnGetLineAttr type>
+Parameters
   Sender - Description for this parameter
   Line   - Description for this parameter
   Index  - Description for this parameter
@@ -2123,11 +1712,13 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TOnGutterClick
 <TITLE TOnGutterClick type>
+Parameters
   Sender - Description for this parameter
   Line   - Description for this parameter
 ----------------------------------------------------------------------------------------------------
 @@TOnPaintGutter
 <TITLE TOnPaintGutter type>
+Parameters
   Sender - Description for this parameter
   Canvas - Description for this parameter
 ----------------------------------------------------------------------------------------------------
@@ -2147,10 +1738,6 @@ Description
   Description for bfNonInclusive
 ----------------------------------------------------------------------------------------------------
 @@TUndo
-<TITLEIMG TUndo>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -2163,52 +1750,45 @@ Description
   Write here a description
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndo.Redo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndo.RestoreSelection
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndo.SaveSelection
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndo.Undo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndoBuffer
-<TITLEIMG TUndoBuffer>
-JVCLInfo
-  GROUP=JVCL.??
-  FLAG=Component
 Summary
   Write here a summary (1 line)
 Description
@@ -2223,65 +1803,53 @@ Parameters
   AUndo - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndoBuffer.CanUndo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 Return value
   Describe here what the function returns
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndoBuffer.Clear
 Summary
   Write here a summary (1 line)
+  This is an overridden method, you don't have to describe these
+  if it does the same as the inherited method
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndoBuffer.Delete
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndoBuffer.Redo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@TUndoBuffer.Undo
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
-Parameters
-  None.
 See Also
   List here other properties, methods (comma seperated)
-----------------------------------------------------------------------------------------------------
-@@twoKeyCommand
-Description
-  Write here a description
-twoKeyCommand = High ( Word ) ;
-----------------------------------------------------------------------------------------------------
-@@WM_EDITCOMMAND
-Description
-  Write here a description
-WM_EDITCOMMAND = CM_BASE + $101 ;
+  Remove the 'See Also' section if there are no references
