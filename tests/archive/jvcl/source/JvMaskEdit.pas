@@ -350,16 +350,17 @@ procedure TJvCustomMaskEdit.UpdateEdit;
 var
   I: Integer;
 begin
-  for I := 0 to Owner.ComponentCount - 1 do
-  begin
-    if (Owner.Components[i] is TJvCustomMaskEdit) then
-      with TJvCustomMaskEdit(Owner.Components[i]) do
-      begin
-        if (Name <> Self.Name) and (GroupIndex <> -1) and
-        (GroupIndex = Self.GroupIndex) then
-          Clear;
-      end;
-  end;
+  if Assigned(Owner) then
+    for I := 0 to Owner.ComponentCount - 1 do
+    begin
+      if (Owner.Components[i] is TJvCustomMaskEdit) then
+        with TJvCustomMaskEdit(Owner.Components[i]) do
+        begin
+          if (Name <> Self.Name) and (GroupIndex <> -1) and
+          (GroupIndex = Self.GroupIndex) then
+            Clear;
+        end;
+    end;
 end;
 
 procedure TJvCustomMaskEdit.SetDisabledColor(const Value: TColor);
