@@ -1519,8 +1519,10 @@ begin
   begin
     AutoScroll := False;
     BorderStyle := bsNone;
+    {$IFDEF COMPILER6_UP}
     BevelInner := bvNone;
     BevelOuter := bvNone;
+    {$ENDIF COMPILER6_UP}
     Align := alClient;
   end;
   RightPanel := TJvPanel.Create(Self);
