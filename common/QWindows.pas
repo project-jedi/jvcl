@@ -168,7 +168,7 @@ const
   clMedGray = TColor($A4A0A0);
 
   INFINITE = Longword($FFFFFFFF); // Infinite timeout
-  
+
 type
   HWND = QWidgetH;
   HCURSOR = QCursorH;
@@ -179,11 +179,8 @@ type
   HFONT = QFontH;
   UINT = Cardinal;
   BOOL = LongBool;
-  HGDIOBJ = Pointer;
-
   COLORREF = TColorRef;
 
-  TWinControl = TWidgetControl;
   TControlClass = class of TControl;
   TColorRef = Integer;    // real colors
   TPointL = record
@@ -532,7 +529,6 @@ const
   DIB_RGB_COLORS = 0;
   // DIB_PAL_COLORS = 1; // not supported by CreateDIBitmap
 
-
 function GetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
 function SetBitmapBits(Bitmap: QPixmapH; Count: Longint; Bits: Pointer): Longint;
 
@@ -541,16 +537,22 @@ function GetObject(Handle: QPenH; Size: Cardinal; Data: PLogPen): Boolean; overl
 
 { Stock Logical Objects }
 type
-  TStockObject = (
+  TStockObjectBrush = (
     WHITE_BRUSH = 0,
     LTGRAY_BRUSH = 1,
     GRAY_BRUSH = 2,
     DKGRAY_BRUSH = 3,
     BLACK_BRUSH = 4,
     NULL_BRUSH = 5,
+    DC_BRUSH = 18
+  );
+  TStockObjectPen = (
     WHITE_PEN = 6,
     BLACK_PEN = 7,
     NULL_PEN = 8,
+    DC_PEN = 19
+  );
+  TStockObjectFont = (
     OEM_FIXED_FONT = 10,
     ANSI_FIXED_FONT = 11,
     ANSI_VAR_FONT = 12,
@@ -558,16 +560,16 @@ type
     DEVICE_DEFAULT_FONT = 14,
     DEFAULT_PALETTE = 15,
     SYSTEM_FIXED_FONT = $10,
-    DEFAULT_GUI_FONT = 17,
-    DC_BRUSH = 18,
-    DC_PEN = 19
+    DEFAULT_GUI_FONT = 17
   );
 
 const
   HOLLOW_BRUSH = NULL_BRUSH;
   STOCK_LAST = DC_PEN;
 
-function GetStockObject(fnObject: TStockObject): HGDIOBJ;
+function GetStockObject(fnObject: TStockObjectBrush): QBrushH; overload;
+function GetStockObject(fnObject: TStockObjectPen): QPenH; overload;
+function GetStockObject(fnObject: TStockObjectFont): QFontH; overload;
 
 // DeleteObject is intended to destroy the Handle returned by CreateCompatibleBitmap
 // (it destroys the Painter AND PaintDevice)
@@ -932,7 +934,7 @@ function SelectObject(Handle: QPainterH; Bitmap: QPixmapH): QPixmapH; overload;
 // region related API's
 type
   TCombineMode = (
-    RGN_AND,  // Creates the intersection of the two combined regions.
+    RGN_AND,   // Creates the intersection of the two combined regions.
     RGN_COPY,  // Creates a copy of the region identified by hrgnSrc1.
     RGN_DIFF,  // Combines the parts of hrgnSrc1 that are not part of hrgnSrc2.
     RGN_OR,    // Creates the union of two combined regions.
@@ -962,6 +964,10 @@ function PtInRegion(Rgn: QRegionH; X, Y: Integer): Boolean;
 function RectInRegion(RGN: QRegionH; const Rect: TRect): LongBool;
 function SelectClipRgn(Handle: QPainterH; Region: QRegionH): Integer;
 function SetRectRgn(Rgn: QRegionH; X1, Y1, X2, Y2: Integer): LongBool;
+function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Integer;
+  { SetWindowRgn limitation: The region must have negative top coordinate in
+    order to contain the window's caption bar. }
+//function GetWindowRgn(Handle: QWidgetH; Region: QRegionH): Integer;
 
 const
   // constants for CreatePolygon
@@ -1057,6 +1063,37 @@ procedure MessageBeep(Value: Integer);   // value ignored
 
 const
   MAX_COMPUTERNAME_LENGTH = 15;
+
+function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
+function GlobalReAllocPtr(P: Pointer; Bytes: Longint; Flags: Integer): Pointer;
+function GlobalFreePtr(P: Pointer): THandle;
+
+function GlobalAlloc(uFlags: Cardinal; dwBytes: Longword): Cardinal;
+function GlobalReAlloc(hMem: Cardinal; dwBytes: Longword; uFlags: Cardinal): Cardinal;
+function GlobalSize(hMem: Cardinal): Longword;
+function GlobalLock(hMem: Cardinal): Pointer;
+function GlobalHandle(Mem: Pointer): Cardinal;
+function GlobalUnlock(hMem: Cardinal): LongBool;
+function GlobalFree(hMem: Cardinal): Cardinal;
+
+const
+  GMEM_FIXED = 0;
+  GMEM_MOVEABLE = 2;
+  GMEM_NOCOMPACT = $10;
+  GMEM_NODISCARD = $20;
+  GMEM_ZEROINIT = $40; // only supported flag
+  GMEM_MODIFY = $80;
+  GMEM_DISCARDABLE = $100;
+  GMEM_NOT_BANKED = $1000;
+  GMEM_SHARE = $2000;
+  GMEM_DDESHARE = $2000;
+  GMEM_NOTIFY = $4000;
+  GMEM_LOWER = GMEM_NOT_BANKED;
+  GMEM_VALID_FLAGS = 32626;
+  GMEM_INVALID_HANDLE = $8000;
+
+  GHND = GMEM_MOVEABLE or GMEM_ZEROINIT;
+  GPTR = GMEM_FIXED or GMEM_ZEROINIT;
 
 {$ENDIF LINUX}
 
@@ -1334,7 +1371,6 @@ begin
       Result := false;   // only rgb values are accepted
 end;
 
-
 function SetSysColors(Elements: Integer; const lpaElements;
   const lpaRgbValues): LongBool;
 var
@@ -1357,6 +1393,184 @@ begin
   Application.Palette.EndUpdate;
 end;
 
+type
+  TStockObjectResource = class(TObject)
+  private
+    FStockObject: Integer;
+    FHandle: Pointer;
+    FRefCount: Integer;
+  public
+    constructor Create(AHandle: Pointer; AStockObject: Integer);
+    destructor Destroy; override;
+    function AddRef: Pointer;
+    procedure Release;
+
+    property Handle: Pointer read FHandle;
+    property StockObject: Integer read FStockObject;
+  end;
+
+  TStockObjectList = class(TObjectList)
+  public
+    function FindStockObject(AStockObject: Integer): TStockObjectResource;
+    class function ReleaseStockObject(AHandle: Pointer): Boolean;
+  end;
+
+var
+  StockObjectList: TStockObjectList = nil;
+  SockObjectListCritSect: TRTLCriticalSection;
+
+constructor TStockObjectResource.Create(AHandle: Pointer; AStockObject: Integer);
+begin
+  inherited Create;
+  AddRef;
+  FHandle := AHandle;
+  FStockObject := AStockObject;
+end;
+
+destructor TStockObjectResource.Destroy;
+type
+  Int = Integer;
+begin
+  case StockObject of
+    Int(WHITE_BRUSH)..Int(NULL_BRUSH), Int(DC_BRUSH):
+      QBrush_destroy(QBrushH(Handle));
+    Int(WHITE_PEN)..Int(NULL_PEN), Int(DC_PEN):
+      QPen_destroy(QPenH(Handle));
+    Int(OEM_FIXED_FONT)..Int(DEVICE_DEFAULT_FONT), Int(SYSTEM_FIXED_FONT), Int(DEFAULT_GUI_FONT):
+      QFont_destroy(QFontH(Handle));
+  end;
+  StockObjectList.Extract(Self);
+  inherited Destroy;
+end;
+
+function TStockObjectResource.AddRef: Pointer;
+begin
+  Inc(FRefCount);
+  Result := Handle;
+end;
+
+procedure TStockObjectResource.Release;
+begin
+  Dec(FRefCount);
+  if FRefCount = 0 then
+    Free;
+end;
+
+function TStockObjectList.FindStockObject(AStockObject: Integer): TStockObjectResource;
+var
+  i: Integer;
+begin
+  for i := 0 to Count - 1 do
+  begin
+    Result := TStockObjectResource(Items[i]);
+    if Result.StockObject = AStockObject then
+      Exit;
+  end;
+  Result := nil;
+end;
+
+class function TStockObjectList.ReleaseStockObject(AHandle: Pointer): Boolean;
+var
+  i: Integer;
+begin
+  EnterCriticalSection(SockObjectListCritSect);
+  try
+    if Assigned(StockObjectList) then
+    begin
+      for i := 0 to StockObjectList.Count - 1 do
+        if TStockObjectResource(StockObjectList.Items[i]).Handle = AHandle then
+        begin
+          TStockObjectResource(StockObjectList.Items[i]).Release;
+          Result := True;
+          Exit;
+        end;
+    end;
+    Result := False;
+  finally
+    LeaveCriticalSection(SockObjectListCritSect);
+  end;
+end;
+
+function GetStockObject(fnObject: Integer): Pointer; overload;
+const
+  BrushColors: array[WHITE_BRUSH..BLACK_BRUSH] of TColor =
+    (clWhite, clLtGray, clGray, clDkGray, clBlack);
+  {$IFDEF MSWINDOWS}
+  SystemFont: WideString = 'System';
+  GuiFont: array[Boolean] of WideString = ('MS Sans Serife', 'Tahoma');
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  SystemFont: WideString = 'Fixed';
+  GuiFont: array[Boolean] of WideString = ('Verdana', 'Verdana');
+  {$ENDIF LINUX}
+type
+  Int = Integer;
+var
+  Resource: TStockObjectResource;
+  GuiFontSelector: Boolean;
+begin
+  {$IFDEF MSWINDOWS}
+  GuiFontSelector := Win32MajorVersion >= 5;
+  {$ELSE}
+  GuiFontSelector := True;
+  {$ENDIF MSWINDOWS}
+  EnterCriticalSection(SockObjectListCritSect);
+  try
+    if not Assigned(StockObjectList) then
+      StockObjectList := TStockObjectList.Create;
+    Resource := StockObjectList.FindStockObject(fnObject);
+    if Resource <> nil then
+      Result := Resource.AddRef
+    else
+    begin
+      case fnObject of
+        Int(WHITE_BRUSH)..Int(BLACK_BRUSH):
+          Result := CreateSolidBrush(BrushColors[TStockObjectBrush(fnObject)]);
+        Int(NULL_BRUSH):
+          Result := QBrush_create(BrushStyle_NoBrush);
+        Int(DC_BRUSH):
+          Result := CreateSolidBrush(clWhite);
+
+        Int(WHITE_PEN):
+          Result := CreatePen(PS_SOLID, 1, clWhite);
+        Int(BLACK_PEN):
+          Result := CreatePen(PS_SOLID, 1, clBlack);
+        Int(NULL_PEN):
+          Result := CreatePen(PS_NULL, 1, clWhite);
+        Int(DC_PEN):
+          Result := CreatePen(PS_SOLID, 1, clWhite);
+
+        Int(OEM_FIXED_FONT), Int(ANSI_FIXED_FONT), Int(SYSTEM_FONT), Int(SYSTEM_FIXED_FONT):
+          Result := QFont_create(@SystemFont, 8, 1, False);
+        Int(ANSI_VAR_FONT), Int(DEVICE_DEFAULT_FONT), Int(DEFAULT_GUI_FONT):
+          Result := QFont_create(@GuiFont[GuiFontSelector], 8, 1, False);
+      else
+        Result := nil;
+      end;
+      if Result <> nil then
+        StockObjectList.Add(TStockObjectResource.Create(Result, fnObject));
+    end;
+  finally
+    LeaveCriticalSection(SockObjectListCritSect);
+  end;
+end;
+
+function GetStockObject(fnObject: TStockObjectBrush): QBrushH;
+begin
+  Result := QBrushH(GetStockObject(Integer(fnObject)));
+end;
+
+function GetStockObject(fnObject: TStockObjectPen): QPenH;
+begin
+  Result := QPenH(GetStockObject(Integer(fnObject)));
+end;
+
+function GetStockObject(fnObject: TStockObjectFont): QFontH;
+begin
+  Result := QFontH(GetStockObject(Integer(fnObject)));
+end;
+
+
 function CreatePen(Style, Width: Integer; Color: TColorRef): QPenH;
 begin
   Result := QPen_create(QColorEx(Color).Handle, Width, PenStyle(Style));
@@ -1365,7 +1579,8 @@ end;
 function DeleteObject(Handle: QPenH): LongBool;
 begin
   try
-    QPen_destroy(Handle);
+    if not TStockObjectList.ReleaseStockObject(Handle) then
+      QPen_destroy(Handle);
     Result := True;
   except
     Result := False;
@@ -1388,7 +1603,8 @@ begin
   if Handle <> nil then
   begin
     try
-      QBrush_destroy(Handle);
+      if not TStockObjectList.ReleaseStockObject(Handle) then
+        QBrush_destroy(Handle);
       Result := True;
     except
     end;
@@ -1701,7 +1917,7 @@ end;
 function SetBkColor(Handle: QPainterH; Color: TColor): TColor;
 begin
   Result := QColorColor(QPainter_backgroundColor(Handle));
-  QPainter_setBackGroundColor(Handle, QColorEx(Color).Handle);
+  QPainter_setBackgroundColor(Handle, QColorEx(Color).Handle);
 end;
 
 function SetDCBrushColor(Handle: QPainterH; Color: TColorRef): TColorRef;
@@ -2719,7 +2935,8 @@ end;
 function DeleteObject(Region: QRegionH): LongBool;
 begin
   try
-    QRegion_destroy(Region);
+    if not TStockObjectList.ReleaseStockObject(Region) then
+      QRegion_destroy(Region);
     Result := True;
   except
     Result := False;
@@ -2754,6 +2971,38 @@ begin
   end;
   DeleteObject(tmpRgn);}
 end;
+
+function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Integer;
+begin
+  Result := 0;
+  if (Region <> nil) and (Handle <> nil) then
+  begin
+    try
+      QWidget_setMask(Handle, Region);
+      DeleteObject(Region); // Windows owns the window region
+      if Redraw then
+        UpdateWindow(Handle);
+      Result := 1;
+    except
+      Result := 0;
+    end;
+  end;
+end;
+
+function GetWindowRgn(Handle: QWidgetH; Region: QRegionH): Integer;
+begin
+  Result := ERROR;
+{  if (Region <> nil) and (Handle <> nil) then
+  begin
+    try
+      // there is no QWidget_mask() function
+      Result := GetRegionType(Region);
+    except
+      Result := ERROR;
+    end;
+  end;}
+end;
+
 
 function LPtoDP(Handle: QPainterH; var Points; Count: Integer): LongBool;
 var
@@ -4481,54 +4730,6 @@ begin
   end;
 end;
 
-type
-{ TODO -oahuser : Implement a StockObjectResourceList and change all DeleteObject() functions to look for a stock object. }
-  TStockObjectResource = class(TObject)
-    Obj: TStockObject;
-    Handle: HGDIOBJ;
-    destructor Destroy; override;
-  end;
-
-  TStockObjectResourceList = class(TObjectList)
-  end;
-
-destructor TStockObjectResource.Destroy;
-begin
-  case Obj of
-    WHITE_BRUSH..NULL_BRUSH:
-      QBrush_destroy(QBrushH(Handle));
-    WHITE_PEN..NULL_PEN:
-      QPen_destroy(QPenH(Handle));
-    {...}
-  end;
-  inherited Destroy;
-end;
-
-function GetStockObject(fnObject: TStockObject): HGDIOBJ;
-const
-  BrushColors: array[WHITE_BRUSH..BLACK_BRUSH] of TColor =
-    (clWhite, clLtGray, clGray, clDkGray, clBlack);
-begin
-  case fnObject of
-    WHITE_BRUSH..BLACK_BRUSH:
-      Result := CreateSolidBrush(BrushColors[fnObject]);
-    NULL_BRUSH:
-      Result := QBrush_create(BrushStyle_NoBrush);
-
-    WHITE_PEN:
-      Result := CreatePen(PS_SOLID, 1, clWhite);
-    BLACK_PEN:
-      Result := CreatePen(PS_SOLID, 1, clBlack);
-    NULL_PEN:
-      Result := CreatePen(PS_NULL, 1, clWhite);
-
-    {...}
-  else
-    Result := nil;
-  end;
-end;
-
-
 function SetPixel(Handle: QPainterH; X, Y: Integer; Color: TColorRef): TColorRef;
 var
   Brush: QBrushH;
@@ -4619,7 +4820,8 @@ end;
 function DeleteObject(Handle: QPixmapH): LongBool;
 begin
   try
-    QPixmap_destroy(Handle);
+    if not TStockObjectList.ReleaseStockObject(Handle) then
+      QPixmap_destroy(Handle);
     Result := True;
   except
     Result := False;
@@ -4867,6 +5069,120 @@ begin
 end;
 
 
+function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
+begin
+  Result := GlobalLock(GlobalAlloc(Flags, Bytes));
+end;
+
+function GlobalReAllocPtr(P: Pointer; Bytes: Longint; Flags: Integer): Pointer;
+var
+  hMem: Cardinal;
+begin
+  hMem := GlobalHandle(P);
+  GlobalUnlock(hMem);
+  Result := GlobalLock(GlobalReAlloc(hMem, Bytes, Flags));
+end;
+
+function GlobalFreePtr(P: Pointer): THandle;
+var
+  hMem: Cardinal;
+begin
+  hMem := GlobalHandle(P);
+  GlobalUnlock(hMem);
+  Result := GlobalFree(hMem);
+end;
+
+type
+  PGlobalBlock = ^TGlobalBlock;
+  TGlobalBlock = packed record
+    Start: Pointer;
+    Size: Longword;
+  end;
+
+function GlobalAlloc(uFlags: Cardinal; dwBytes: Longword): Cardinal;
+var
+  Info: PGlobalBlock;
+  Start, P: PByte;
+begin
+  Result := 0;
+  if dwBytes > 0 then
+  begin
+    GetMem(P, SizeOf(TGlobalBlock) + dwBytes + 16);
+    Start := P;
+    Inc(P, SizeOf(TGlobalBlock) + $0F);
+    P := Pointer(Cardinal(P) and not $0F);
+    Info := Pointer(Cardinal(P) - SizeOf(TGlobalBlock));
+    Info^.Start := Start;
+    Info^.Size := dwBytes;
+
+    if uFlags and GMEM_ZEROINIT <> 0 then
+      FillChar(P^, dwBytes, 0);
+
+    Result := Cardinal(P);
+  end;
+end;
+
+function GlobalReAlloc(hMem: Cardinal; dwBytes: Longword; uFlags: Cardinal): Cardinal;
+ // with this call the memory block meight loose its 16 Byte alignment
+var
+  CurSize: Longword;
+  Offset: Cardinal;
+  Start: Pointer;
+  P: PChar;
+begin
+  if hMem = 0 then
+    Result := GlobalAlloc(uFlags, dwBytes)
+  else
+  begin
+    CurSize := GlobalSize(hMem);
+    Start := PGlobalBlock(hMem - SizeOf(TGlobalBlock))^.Start;
+    Offset := hMem - Cardinal(Start);
+    ReallocMem(Start, SizeOf(TGlobalBlock) + dwBytes + 16);
+    hMem := Cardinal(Start) + Offset;
+    P := Pointer(hMem);
+
+    if uFlags and GMEM_ZEROINIT <> 0 then
+      if CurSize < dwBytes then
+        FillChar(P[CurSize], dwBytes - CurSize, 0);
+    Result := hMem;
+  end;
+end;
+
+function GlobalSize(hMem: Cardinal): Longword;
+begin
+  if hMem > 0 then
+    Result := PGlobalBlock(hMem - SizeOf(TGlobalBlock))^.Size
+  else
+    Result := 0;
+end;
+
+function GlobalLock(hMem: Cardinal): Pointer;
+begin
+  Result := Pointer(hMem);
+end;
+
+function GlobalHandle(Mem: Pointer): Cardinal;
+begin
+  Result := Cardinal(Mem);
+end;
+
+function GlobalUnlock(hMem: Cardinal): LongBool;
+begin
+  Result := hMem <> 0;
+end;
+
+function GlobalFree(hMem: Cardinal): Cardinal;
+begin
+  if hMem <> 0 then
+  begin
+    FreeMem(PGlobalBlock(hMem - SizeOf(TGlobalBlock))^.Start);
+    Result := 0;
+  end
+  else
+    Result := GMEM_INVALID_HANDLE;
+end;
+
+
 var
   StartTimeVal: TTimeVal;
 
@@ -4890,8 +5206,6 @@ begin
 end;
 
 {$ENDIF LINUX}
-
-
 
 type
   TQtObject = class(TObject)
@@ -5571,12 +5885,15 @@ initialization
   InitGetTickCount;
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
+  InitializeCriticalSection(SockObjectListCritSect);
 
 finalization
   GlobalCaret.Free;
+  StockObjectList.Free;
   TimerList.Free;
   if Assigned(AppEventFilterHook) then
     QObject_hook_destroy(AppEventFilterHook);
   FreePainterInfos;
+  DeleteCriticalSection(SockObjectListCritSect);
 
 end.
