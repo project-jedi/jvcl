@@ -1,3 +1,6 @@
+2002-10-05
+- Added datetimepicker and checked mask edit donated by Oliver Giesen/Lucatec
+
 2002-09-12
 - Added Multiline to JvSizeablePanel //MBeck
 
