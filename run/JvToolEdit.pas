@@ -265,7 +265,6 @@ type
     {$ENDIF COMPILER6_UP}
     { (rb) renamed from UpdateEdit }
     procedure UpdateGroup; // RDB
-
     {$IFDEF VCL}
     procedure CMWantSpecialKey(var Msg: TCMWantSpecialKey); message CM_WANTSPECIALKEY;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
@@ -2117,7 +2116,8 @@ procedure TJvCustomComboEdit.CMWantSpecialKey(var Msg: TCMWantSpecialKey);
 begin
   inherited;
   { Ignore tabs when popup is visible }
-  if PopupVisible and (Msg.CharCode = VK_TAB) then Msg.Result := 1;
+  if PopupVisible and (Msg.CharCode = VK_TAB) then
+    Msg.Result := 1;
 end;
 
 procedure TJvCustomComboEdit.CNCtlColor(var Msg: TMessage);
@@ -2670,13 +2670,40 @@ procedure TJvCustomComboEdit.PopupDropDown(DisableEdit: Boolean);
 var
   P: TPoint;
   Y: Integer;
+  {$IFDEF VCL}
+  Monitor: TMonitor;
+  {$ENDIF VCL}
 begin
   if not ((ReadOnly and not FAlwaysShowPopup) or FPopupVisible) then
   begin
     CreatePopup;
-    if FPopup = nil then Exit;
+    if FPopup = nil then
+      Exit;
 
     P := Parent.ClientToScreen(Point(Left, Top));
+    {$IFDEF VCL}
+    Monitor := Screen.MonitorFromWindow(Handle);
+    Y := Monitor.Top + P.Y + Height;
+    if Y + FPopup.Height > Monitor.Top + Monitor.Height then
+      Y := Monitor.Top + P.Y - FPopup.Height;
+    case FPopupAlign of
+      epaRight:
+        begin
+          Dec(P.X, FPopup.Width - Width);
+          if P.X < Monitor.Left then
+            Inc(P.X, FPopup.Width - Width);
+        end;
+      epaLeft:
+        if P.X + FPopup.Width > Monitor.Left + Monitor.Width then
+          Dec(P.X, FPopup.Width - Width);
+    end;
+    if P.X < Monitor.Left then
+      P.X := Monitor.Left
+    else
+    if P.X + FPopup.Width > Monitor.Left + Monitor.Width then
+      P.X := Monitor.Left + Monitor.Width - FPopup.Width;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     Y := P.Y + Height;
     if Y + FPopup.Height > Screen.Height then
       Y := P.Y - FPopup.Height;
@@ -2688,16 +2715,15 @@ begin
             Inc(P.X, FPopup.Width - Width);
         end;
       epaLeft:
-        begin
-          if P.X + FPopup.Width > Screen.Width then
-            Dec(P.X, FPopup.Width - Width);
-        end;
+        if P.X + FPopup.Width > Screen.Width then
+          Dec(P.X, FPopup.Width - Width);
     end;
     if P.X < 0 then
       P.X := 0
     else
     if P.X + FPopup.Width > Screen.Width then
       P.X := Screen.Width - FPopup.Width;
+    {$ENDIF VisualCLX}
     if Text <> '' then
       SetPopupValue(Text)
     else
@@ -3386,7 +3412,8 @@ begin
     with Msg do
       Result := TJvPopupWindow(FPopup).ActiveControl.Perform(Msg, WParam, LParam);
 
-    if Msg.Result = 0 then Exit;
+    if Msg.Result = 0 then
+      Exit;
   end;
 
   inherited WndProc(Msg)
@@ -4983,22 +5010,15 @@ var
 {$ENDIF VCL}
 begin
   {$IFDEF VCL}
-  if GetParentForm(Self) <> nil then
-  begin
-    if Screen.ActiveCustomForm <> nil then
-      Monitor := Screen.ActiveCustomForm.Monitor
-    else
-      Monitor := Application.MainForm.Monitor;
-    Inc(Origin.X, Monitor.Left);
-    Inc(Origin.Y, Monitor.Top);
-  end;
+  Monitor := Screen.MonitorFromPoint(Origin);
+  Inc(Origin.X, Monitor.Left);
+  Inc(Origin.Y, Monitor.Top);
   SetBounds(Origin.X, Origin.Y, Width, Height);
   SetWindowPos(Handle, HWND_TOP, Origin.X, Origin.Y, 0, 0,
     SWP_NOACTIVATE or SWP_SHOWWINDOW or SWP_NOSIZE);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Left := Origin.X;
-  Top := Origin.Y;
+  SetBounds(Origin.X, Origin.Y, Width, Height);
   {$ENDIF VisualCLX}
   Visible := True;
 end;
