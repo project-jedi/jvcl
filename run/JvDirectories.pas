@@ -98,7 +98,7 @@ resourcestring
   RC_ShellFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders\';
 //  RC_allFolders = 'Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders\';
 
-var
+const
   DirectoryList: array [0..14] of PChar =
    ('AppData', 'Cache', 'Cookies', 'Desktop', 'Favorites',
     'Fonts', 'History', 'NetHood', 'Personal', 'Programs', 'Recent',

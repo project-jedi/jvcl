@@ -35,7 +35,8 @@ unit JvLED;
 interface
 
 uses
-  Windows, Messages, Controls, Classes, Graphics, JvComponent;
+  Windows, Messages, Controls, Classes, Graphics,
+  JvComponent;
 
 type
   TJvCustomLED = class(TJvGraphicControl)
@@ -55,8 +56,8 @@ type
     function GetActive: Boolean;
     procedure SetStatus(Value: Boolean);
     function GetStatus: Boolean;
-    procedure DoBlink(Sender: Tobject; BlinkOn: Boolean);
-    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
+    procedure DoBlink(Sender: TObject; BlinkOn: Boolean);
+    procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
   protected
     procedure Paint; override;
     property Active: Boolean read GetActive write SetActive default False;
@@ -106,6 +107,7 @@ type
   end;
 
 implementation
+
 uses
   SysUtils;
 
@@ -130,7 +132,7 @@ type
     property OnBlink: TBlinkEvent read FOnBlink write FOnBlink;
   end;
 
-//===TJvCustomLED===================================================================================
+//=== TJvCustomLED ===========================================================
 
 constructor TJvCustomLED.Create(AOwner: TComponent);
 begin
@@ -144,7 +146,7 @@ begin
   FInterval := 1000;
   ColorOn := clLime;
   ColorOff := clRed;
-  Active := false;
+  Active := False;
   Status := True;
 end;
 
@@ -211,13 +213,14 @@ procedure TJvCustomLED.SetActive(Value: Boolean);
 begin
   if Value then
   begin
-    if (FThread = nil) then
+    if FThread = nil then
       FThread := TBlinkThread.Create(Interval);
     TBlinkThread(FThread).OnBlink := DoBlink;
     if Interval > 0 then
       FThread.Resume;
   end
-  else if FThread <> nil then
+  else
+  if FThread <> nil then
     FThread.Suspend;
 end;
 
@@ -233,7 +236,8 @@ begin
     Color := ColorOn
   else
     Color := ColorOff;
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 function TJvCustomLED.GetStatus: Boolean;
@@ -241,24 +245,24 @@ begin
   Result := FStatus;
 end;
 
-procedure TJvCustomLED.DoBlink(Sender: Tobject; BlinkOn: Boolean);
+procedure TJvCustomLED.DoBlink(Sender: TObject; BlinkOn: Boolean);
 begin
   Status := BlinkOn;
 end;
 
 procedure TJvCustomLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   if AutoSize and (Align in [alNone, alCustom]) then
-{$ELSE}
+  {$ELSE}
   if AutoSize and (Align = alNone) then
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
     inherited SetBounds(ALeft, ATop, FImgPict.Width, FImgPict.Height)
   else
     inherited SetBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
-//===TBlinkThread===================================================================================
+//=== TBlinkThread ===========================================================
 
 constructor TBlinkThread.Create(Interval: Cardinal);
 begin
@@ -283,7 +287,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLED.CMColorChanged(var Message: TMessage);
+procedure TJvCustomLED.CMColorChanged(var Msg: TMessage);
 var
   X, Y: Integer;
 begin

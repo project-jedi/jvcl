@@ -23,28 +23,32 @@
 { Last modified: Mar 16, 2003                                                  }
 {                                                                              }
 {******************************************************************************}
+
 {$I JVCL.INC}
 {$I JvUIB.inc}
+
 unit JvUIBSrv;
 
 interface
-uses Classes, IdTCPServer, SysUtils, JvUIBObj, JvUIBConst;
+
+uses
+  Classes, IdTCPServer, SysUtils,
+  JvUIBObj, JvUIBConst;
 
 type
 
   TJvUIBPeerThread = class;
   TJvUIBObjectFactory = class;
 
-  TJvUIBServer = class
+  TJvUIBServer = class(TObject)
   private
     FTCPServer: TidTCPServer;
     FFactoryList: TJvUIBObjectFactory;
     FLock: TMultiReadExclusiveWriteSynchronizer;
     function GetActive: Boolean;
     procedure SetActive(const Value: Boolean);
-    function GetDefaultPort: integer;
-    procedure SetDefaultPort(const Value: integer);
-
+    function GetDefaultPort: Integer;
+    procedure SetDefaultPort(const Value: Integer);
     procedure AddObjectFactory(Factory: TJvUIBObjectFactory);
     procedure RemoveObjectFactory(Factory: TJvUIBObjectFactory);
     procedure FreeFactories;
@@ -56,10 +60,10 @@ type
     procedure Stop;
   published
     property Active: Boolean read GetActive write SetActive default False;
-    property DefaultPort: integer read GetDefaultPort write SetDefaultPort;
+    property DefaultPort: Integer read GetDefaultPort write SetDefaultPort;
   end;
 
-  TJvUIBObjectFactory = class
+  TJvUIBObjectFactory = class(TObject)
   private
     FNext: TJvUIBObjectFactory;
     FClassID: TGUID;
@@ -86,16 +90,17 @@ var
 
 implementation
 
-uses IdThread, IdException, IdStackConsts, IdTCPConnection;
+uses
+  IdThread, IdException, IdStackConsts, IdTCPConnection;
 
-{ TJvUIBServer }
+//=== TJvUIBServer ===========================================================
 
 constructor TJvUIBServer.Create;
 begin
-  inherited;
+  inherited Create;
   FLock := TMultiReadExclusiveWriteSynchronizer.Create;
   FTCPServer := TidTCPServer.Create(nil);
-  FTCPServer.ThreadClass  := TJvUIBPeerThread;
+  FTCPServer.ThreadClass := TJvUIBPeerThread;
 end;
 
 destructor TJvUIBServer.Destroy;
@@ -108,12 +113,12 @@ end;
 
 function TJvUIBServer.GetActive: Boolean;
 begin
-  result := FTCPServer.Active;
+  Result := FTCPServer.Active;
 end;
 
-function TJvUIBServer.GetDefaultPort: integer;
+function TJvUIBServer.GetDefaultPort: Integer;
 begin
-  result := FTCPServer.DefaultPort;
+  Result := FTCPServer.DefaultPort;
 end;
 
 procedure TJvUIBServer.SetActive(const Value: Boolean);
@@ -121,7 +126,7 @@ begin
   FTCPServer.Active := Value;
 end;
 
-procedure TJvUIBServer.SetDefaultPort(const Value: integer);
+procedure TJvUIBServer.SetDefaultPort(const Value: Integer);
 begin
   FTCPServer.DefaultPort := Value;
 end;
@@ -136,8 +141,7 @@ begin
   Active := False;
 end;
 
-procedure TJvUIBServer.AddObjectFactory(
-  Factory: TJvUIBObjectFactory);
+procedure TJvUIBServer.AddObjectFactory(Factory: TJvUIBObjectFactory);
 begin
   FLock.BeginWrite;
   try
@@ -166,19 +170,19 @@ begin
   end;
 end;
 
-function TJvUIBServer.GetFactoryFromClassID(
-  const ClassID: TGUID): TJvUIBObjectFactory;
+function TJvUIBServer.GetFactoryFromClassID(const ClassID: TGUID): TJvUIBObjectFactory;
 begin
   FLock.BeginRead;
   try
     Result := FFactoryList;
     while Result <> nil do
     begin
-{$IFDEF DELPHI6_UP}
-      if IsEqualGUID(Result.ClassID, ClassID) then Exit;
-{$ELSE}
-      if CompareMem(@Result.ClassID, @ClassID, SizeOf(TGUID)) then Exit;
-{$ENDIF}
+      {$IFDEF DELPHI6_UP}
+      if IsEqualGUID(Result.ClassID, ClassID) then
+      {$ELSE}
+      if CompareMem(@Result.ClassID, @ClassID, SizeOf(TGUID)) then
+      {$ENDIF DELPHI6_UP}
+        Exit;
       Result := Result.FNext;
     end;
   finally
@@ -186,8 +190,7 @@ begin
   end;
 end;
 
-procedure TJvUIBServer.RemoveObjectFactory(
-  Factory: TJvUIBObjectFactory);
+procedure TJvUIBServer.RemoveObjectFactory(Factory: TJvUIBObjectFactory);
 var
   F, P: TJvUIBObjectFactory;
 begin
@@ -200,7 +203,8 @@ begin
       if F = Factory then
       begin
         if P <> nil then
-          P.FNext := F.FNext else
+          P.FNext := F.FNext
+        else
           FFactoryList := F.FNext;
         Exit;
       end;
@@ -212,7 +216,7 @@ begin
   end;
 end;
 
-{ TJvUIBObjectFactory }
+//=== TJvUIBObjectFactory ====================================================
 
 constructor TJvUIBObjectFactory.Create(Server: TJvUIBServer;
   NetClass: TJvUIBStubClass; const ClassID: TGUID);
@@ -232,16 +236,16 @@ end;
 destructor TJvUIBObjectFactory.Destroy;
 begin
   JvUIBServer.RemoveObjectFactory(Self);
-  inherited;
+  inherited Destroy;
 end;
 
-{ TJvUIBPeerThread }
+//=== TJvUIBPeerThread =======================================================
 
 procedure TJvUIBPeerThread.CleanUp;
 begin
-  if (FData <> nil) then
+  if FData <> nil then
   begin
-    IUnKnown(TJvUIBStub(FData))._Release;
+    IUnknown(TJvUIBStub(FData))._Release;
     FData := nil;
   end;
   inherited CleanUp;
@@ -251,44 +255,47 @@ procedure TJvUIBPeerThread.GetClassObject;
 var
   GUID: TGUID;
   Factory: TJvUIBObjectFactory;
-  Result: HResult;
+  Reslt: HRESULT;
 begin
-  Result := S_OK;
+  Reslt := S_OK;
   with FConnection do
   begin
-    ReadBuffer(GUID, 16);
+    ReadBuffer(GUID, SizeOf(TGUID));
     Factory := JvUIBServer.GetFactoryFromClassID(GUID);
     if Factory <> nil then
     begin
-      if (FData <> nil) then
+      if FData <> nil then
       begin
-        IUnKnown(TJvUIBStub(FData))._Release;
+        IUnknown(TJvUIBStub(FData))._Release;
         FData := nil;
       end;
       FData := Factory.CreateInstance(FConnection);
       OpenWriteBuffer;
-      Connection.WriteBuffer(Result, 4);
+      Connection.WriteBuffer(Reslt, SizeOf(HRESULT));
       CloseWriteBuffer;
-    end else
+    end
+    else
     begin
-      Result := S_FALSE;
+      Reslt := S_FALSE;
       OpenWriteBuffer;
-      Connection.WriteBuffer(Result, 4);
+      Connection.WriteBuffer(Reslt, SizeOf(HRESULT));
       CloseWriteBuffer;
     end;
   end;
 end;
 
 procedure TJvUIBPeerThread.InvokeMethod;
-var MethodID: Integer;
+var
+  MethodID: Integer;
 begin
   if FData <> nil then
   begin
-    FConnection.ReadBuffer(MethodID, 4);
+    FConnection.ReadBuffer(MethodID, SizeOf(Integer));
     TJvUIBStub(FData).Invoke(MethodID);
-  end else
+  end
+  else
   begin
-    // todo Disconnect !!!
+    // TODO Disconnect !!!
   end;
 end;
 
@@ -301,26 +308,25 @@ begin
     begin
       FConnection.ReadBuffer(Command, SizeOf(TServerCommand));
       case Command of
-        scGetClassObject: GetClassObject;
-        scInvokeMethod  : InvokeMethod;
+        scGetClassObject:
+          GetClassObject;
+        scInvokeMethod:
+          InvokeMethod;
       else
-        // Todo Deconnecter
+        // TODO Deconnecter
       end;
     end;
   except
     on E: EIdSocketError do begin
       case E.LastError of
-        Id_WSAECONNABORTED
-         , Id_WSAECONNRESET:
+        Id_WSAECONNABORTED, Id_WSAECONNRESET:
           Connection.Disconnect;
       end;
     end;
   end;
-  if not Connection.Connected then begin
+  if not Connection.Connected then
     Stop;
-  end;
 end;
-
 
 initialization
   JvUIBServer := TJvUIBServer.Create;

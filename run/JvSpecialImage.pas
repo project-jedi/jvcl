@@ -111,7 +111,6 @@ begin
   FWorking := True;
   Dest := TBitmap.Create;
   try
-
     //Copy original bitmap
     Dest.Width := FOriginal.Width;
     Dest.Height := FOriginal.Height;
@@ -265,7 +264,7 @@ end;
 
 procedure TJvSpecialImage.Reset;
 begin
-  FWorking := true;
+  FWorking := True;
   Brightness := 100;
   Inverted := False;
   Flipped := False;

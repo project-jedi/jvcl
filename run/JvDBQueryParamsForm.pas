@@ -30,7 +30,8 @@ unit JvDBQueryParamsForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, DB, JvComponent;
+  SysUtils, Classes, Controls, Forms, StdCtrls, DB,
+  JvComponent;
 
 type
   TJvQueryParamsDialog = class(TJvForm)
@@ -71,13 +72,12 @@ uses
   JvJVCLUtils, JvTypes;
 
 {$R *.dfm}
+
 resourcestring
   // (p3) copied from bdeconst so we don't have to include the entire BDE for three strings...
   SDataTypes = ';String;SmallInt;Integer;Word;Boolean;Float;Currency;BCD;Date;Time;DateTime;;;;Blob;Memo;Graphic;;;;;Cursor;';
   SParamEditor = '%s%s%s Parameters';
   SInvalidParamFieldType = 'Must have a valid field type selected';
-
-
 
 var
   FieldTypes: array [TFieldType] of string;
@@ -303,7 +303,7 @@ begin
   try
     ParamValueExit(Sender);
   except
-    ModalResult := 0;
+    ModalResult := mrNone;
     raise;
   end;
 end;
@@ -315,6 +315,7 @@ end;
 
 initialization
   FillFieldTypes;
+
 finalization
   DoneQBind;
 
