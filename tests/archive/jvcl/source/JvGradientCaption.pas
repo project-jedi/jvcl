@@ -67,13 +67,14 @@ type
     procedure SetLabelColor(Value: TColor);
     procedure SetHints(const Value: Boolean);
     function GetFont: TFont;
-    procedure SetFont(const Value: Tfont);
+    procedure SetFont(const Value: TFont);
     function GetGStyle: TGradStyle;
     procedure SetGstyle(const Value: TGradStyle);
     function GetAlignment: TAlignment;
     procedure Setalignment(const Value: TAlignment);
     procedure AdjustLabelWidth;
   protected
+    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure DoLabelFontChange(Sender: TObject);
   public
@@ -160,12 +161,13 @@ resourcestring
 constructor TJvGradientCaption.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle + [csOpaque];
   Self.Width := 285;
   Self.Height := 30;
   FGradient := TJvGradient.Create(Self);
   FGradient.Parent := Self;
   FLabel := TLabel.Create(Self);
-  FLabel.AutoSize := false;
+  FLabel.AutoSize := False;
   FLabel.Parent := Self;
   FGradient.Left := 0;
   FGradient.Top := 0;
@@ -315,7 +317,7 @@ procedure TJvGradientCaption.SetHints(const Value: Boolean);
 begin
   FHint := Value;
   FLabel.ShowHint := Value;
-  FGradient.showhint := Value;
+  FGradient.ShowHint := Value;
 end;
 
 function TJvGradientCaption.GetFont: TFont;
@@ -323,7 +325,7 @@ begin
   Result := FLabel.Font;
 end;
 
-procedure TJvGradientCaption.SetFont(const Value: Tfont);
+procedure TJvGradientCaption.SetFont(const Value: TFont);
 begin
   FLabel.Font := Value;
   AdjustLabelWidth;
@@ -362,8 +364,8 @@ var
 begin
   L := FLabel.Left;
   // make as large as we need:
-  FLabel.AutoSize := true;
-  FLabel.AutoSize := false;
+  FLabel.AutoSize := True;
+  FLabel.AutoSize := False;
   FLabel.Left := L;
   W := FGradient.Width - FLabelLeft - FLabelLeft;
   // make bigger if there's room
@@ -373,11 +375,11 @@ begin
     FLabel.Left := FLabelLeft;
   end
   else
-  if W < FLabel.Width then // otherwise, just center
+    if W < FLabel.Width then // otherwise, just center
   begin
     FLabel.Left := (Width - FLabel.Width) div 2;
-//    if (FLabelLeft > FLabel.Left) and  then
-//      FLabelLeft := FLabel.Left;
+    //    if (FLabelLeft > FLabel.Left) and  then
+    //      FLabelLeft := FLabel.Left;
   end;
 end;
 
@@ -386,6 +388,12 @@ begin
   if Assigned(FOldLabelFontChange) then
     FOldLabelFontChange(Sender);
   AdjustLabelWidth;
+end;
+
+procedure TJvGradientCaption.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
+begin
+  { Reduce flickering FGradient completely fills the TJvGradientCaption }
+  Msg.Result := 1;
 end;
 
 end.

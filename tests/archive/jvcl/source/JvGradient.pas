@@ -31,7 +31,7 @@ unit JvGradient;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Controls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
   JvTypes, JVCLVer;
 
 type
@@ -42,21 +42,22 @@ type
     FStartColor: TColor;
     FEndColor: TColor;
     FSteps: Word;
-    FOldB: TBitmap;
-    FOldX: Integer;
-    FOldY: Integer;
+    FBuffer: TBitmap;
+    FBufferWidth: Integer;
+    FBufferHeight: Integer;
     procedure SetSteps(Value: Word);
     procedure SetStartColor(Value: TColor);
     procedure SetEndColor(Value: TColor);
     procedure SetStyle(Value: TGradStyle);
   protected
+    { Note: No need to respond to WM_ERASEBKGND; this is not a TWinControl }
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property Align;
+    property Align default alClient;
     property ShowHint;
     property Visible;
     property ParentShowHint;
@@ -73,208 +74,234 @@ implementation
 constructor TJvGradient.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FOldX := 0;
-  FOldY := 0;
+  ControlStyle := ControlStyle + [csOpaque];
+
+  FBufferWidth := 0;
+  FBufferHeight := 0;
   FSteps := 100;
-  FOldB := TBitmap.Create;
+  FBuffer := TBitmap.Create;
   FStyle := grHorizontal;
   FEndColor := clBlack;
   FStartColor := clBlue;
   Align := alClient;
-  ControlStyle := ControlStyle + [csOpaque];
 end;
 
 destructor TJvGradient.Destroy;
 begin
-  FOldB.Free;
+  FBuffer.Free;
   inherited Destroy;
 end;
 
 procedure TJvGradient.Paint;
 var
-  bt: TBitmap;
-  i: Integer;
-  j, k: Real;
-  Deltas: array [0..2] of Real; //R,G,B
-  r: TRect;
-  FStart, FEnd: TColor;
-  FInternalSteps:word;
+  I: Integer;
+  J, K: Real;
+  Deltas: array[0..2] of Real; //R,G,B
+  R: TRect;
+  LStartRGB, LEndRGB: TColor;
+  LSteps: Word;
 begin
   if csDestroying in ComponentState then
     Exit;
-  if (FOldX <> Width) or (FOldY <> Height) then
+  if (FBufferWidth <> Width) or (FBufferHeight <> Height) then
   begin
-    FInternalSteps := FSteps;
-    FStart := ColorToRGB(FStartColor);
-    FEnd := ColorToRGB(FEndColor);
+    LSteps := FSteps;
+    LStartRGB := ColorToRGB(FStartColor);
+    LEndRGB := ColorToRGB(FEndColor);
 
-    FOldX := Width;
-    FOldY := Height;
-    bt := TBitmap.Create;
-    bt.Width := Width;
-    bt.Height := Height;
+    FBufferWidth := Width;
+    FBufferHeight := Height;
+    if (FBufferWidth = 0) or (FBufferHeight = 0) then
+      Exit;
+
+    FBuffer.Width := FBufferWidth;
+    FBuffer.Height := FBufferHeight;
+    //bt := TBitmap.Create;
+    //bt.Width := Width;
+    //bt.Height := Height;
     case FStyle of
       grFilled:
         begin
-          bt.Canvas.Brush.Color := FStart;
-          bt.Canvas.Brush.Style := bsSolid;
-          bt.Canvas.FillRect(Rect(0, 0, Width, Height));
+          FBuffer.Canvas.Brush.Color := LStartRGB;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          FBuffer.Canvas.FillRect(Rect(0, 0, Width, Height));
         end;
       grEllipse:
         begin
-          bt.Canvas.Brush.Color := FStart;
-          bt.Canvas.Brush.Style := bsSolid;
-          bt.Canvas.FillRect(Rect(0, 0, Width, Height));
-          if FInternalSteps > (Width div 2) then
-            FInternalSteps := Trunc(Width / 2);
-          if FInternalSteps > (Height div 2) then
-            FInternalSteps := Trunc(Height / 2);
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
-          bt.Canvas.Brush.Style := bsSolid;
-          j := (Width / FInternalSteps) / 2;
-          k := (Height / FInternalSteps) / 2;
-          for i := 0 to FInternalSteps do
+          FBuffer.Canvas.Brush.Color := LStartRGB;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          FBuffer.Canvas.FillRect(Rect(0, 0, Width, Height));
+          if LSteps > (Width div 2) then
+            LSteps := Trunc(Width / 2);
+          if LSteps > (Height div 2) then
+            LSteps := Trunc(Height / 2);
+          if LSteps < 1 then
+            LSteps := 1;
+          Deltas[0] := (GetRValue(LEndRGB) - GetRValue(LStartRGB)) / LSteps;
+          Deltas[1] := (GetGValue(LEndRGB) - GetGValue(LStartRGB)) / LSteps;
+          Deltas[2] := (GetBValue(LEndRGB) - GetBValue(LStartRGB)) / LSteps;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          J := (Width / LSteps) / 2;
+          K := (Height / LSteps) / 2;
+          for I := 0 to LSteps do
           begin
-            r.Top := Round(i * k);
-            r.Bottom := Height - r.Top;
-            r.Right := Round(i * j);
-            r.Left := Width - r.Right;
-            bt.Canvas.Brush.Color := RGB(Round(GetRValue(FStart) + i * Deltas[0]), Round(GetGValue(FStart) + i *
-              Deltas[1]), Round(GetBValue(FStart) + i * Deltas[2]));
-            bt.Canvas.Pen.Color := bt.Canvas.Brush.Color;
-            bt.Canvas.Ellipse(r.Right, r.Top, r.Left, r.Bottom);
+            R.Top := Round(I * K);
+            R.Bottom := Height - R.Top;
+            R.Right := Round(I * J);
+            R.Left := Width - R.Right;
+            FBuffer.Canvas.Brush.Color := RGB(
+              Round(GetRValue(LStartRGB) + I * Deltas[0]),
+              Round(GetGValue(LStartRGB) + I * Deltas[1]),
+              Round(GetBValue(LStartRGB) + I * Deltas[2]));
+            FBuffer.Canvas.Pen.Color := FBuffer.Canvas.Brush.Color;
+            FBuffer.Canvas.Ellipse(R.Right, R.Top, R.Left, R.Bottom);
           end;
         end;
       grHorizontal:
         begin
-          if FInternalSteps > Width then
-            FInternalSteps := Width;
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
-          bt.Canvas.Brush.Style := bsSolid;
-          j := Width / FInternalSteps;
-          for i := 0 to FInternalSteps do
+          if LSteps > Width then
+            LSteps := Width;
+          if LSteps < 1 then
+            LSteps := 1;
+          Deltas[0] := (GetRValue(LEndRGB) - GetRValue(LStartRGB)) / LSteps;
+          Deltas[1] := (GetGValue(LEndRGB) - GetGValue(LStartRGB)) / LSteps;
+          Deltas[2] := (GetBValue(LEndRGB) - GetBValue(LStartRGB)) / LSteps;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          J := Width / LSteps;
+          for I := 0 to LSteps do
           begin
-            r.Top := 0;
-            r.Bottom := Height;
-            r.Left := Round(i * j);
-            r.Right := Round((i + 1) * j);
-            bt.Canvas.Brush.Color := RGB(Round(GetRValue(FStart) + i * Deltas[0]), Round(GetGValue(FStart) + i *
-              Deltas[1]), Round(GetBValue(FStart) + i * Deltas[2]));
-            bt.Canvas.FillRect(r);
+            R.Top := 0;
+            R.Bottom := Height;
+            R.Left := Round(I * J);
+            R.Right := Round((I + 1) * J);
+            FBuffer.Canvas.Brush.Color := RGB(
+              Round(GetRValue(LStartRGB) + I * Deltas[0]),
+              Round(GetGValue(LStartRGB) + I * Deltas[1]),
+              Round(GetBValue(LStartRGB) + I * Deltas[2]));
+            FBuffer.Canvas.FillRect(R);
           end;
         end;
       grVertical:
         begin
-          if FInternalSteps > Height then
-            FInternalSteps := Height;
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
-          bt.Canvas.Brush.Style := bsSolid;
-          j := Height / FInternalSteps;
-          for i := 0 to FInternalSteps do
+          if LSteps > Height then
+            LSteps := Height;
+          if LSteps < 1 then
+            LSteps := 1;
+          Deltas[0] := (GetRValue(LEndRGB) - GetRValue(LStartRGB)) / LSteps;
+          Deltas[1] := (GetGValue(LEndRGB) - GetGValue(LStartRGB)) / LSteps;
+          Deltas[2] := (GetBValue(LEndRGB) - GetBValue(LStartRGB)) / LSteps;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          J := Height / LSteps;
+          for I := 0 to LSteps do
           begin
-            r.Left := Width;
-            r.Right := 0;
-            r.Top := Round(i * j);
-            r.Bottom := Round((i + 1) * j);
-            bt.Canvas.Brush.Color := RGB(Round(GetRValue(FStart) + i * Deltas[0]), Round(GetGValue(FStart) + i *
-              Deltas[1]), Round(GetBValue(FStart) + i * Deltas[2]));
-            bt.Canvas.FillRect(r);
+            R.Left := Width;
+            R.Right := 0;
+            R.Top := Round(I * J);
+            R.Bottom := Round((I + 1) * J);
+            FBuffer.Canvas.Brush.Color := RGB(
+              Round(GetRValue(LStartRGB) + I * Deltas[0]),
+              Round(GetGValue(LStartRGB) + I * Deltas[1]),
+              Round(GetBValue(LStartRGB) + I * Deltas[2]));
+            FBuffer.Canvas.FillRect(R);
           end;
         end;
       grMount:
         begin
-          bt.Canvas.Brush.Color := FStart;
-          bt.Canvas.Brush.Style := bsSolid;
-          bt.Canvas.FillRect(Rect(0, 0, Width, Height));
-          if FInternalSteps > (Width div 2) then
-            FInternalSteps := Trunc(Width / 2);
-          if FInternalSteps > (Height div 2) then
-            FInternalSteps := Trunc(Height / 2);
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
-          bt.Canvas.Brush.Style := bsSolid;
-          j := (Width / FInternalSteps) / 2;
-          k := (Height / FInternalSteps) / 2;
-          for i := 0 to FInternalSteps do
+          FBuffer.Canvas.Brush.Color := LStartRGB;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          FBuffer.Canvas.FillRect(Rect(0, 0, Width, Height));
+          if LSteps > (Width div 2) then
+            LSteps := Trunc(Width / 2);
+          if LSteps > (Height div 2) then
+            LSteps := Trunc(Height / 2);
+          if LSteps < 1 then
+            LSteps := 1;
+          Deltas[0] := (GetRValue(LEndRGB) - GetRValue(LStartRGB)) / LSteps;
+          Deltas[1] := (GetGValue(LEndRGB) - GetGValue(LStartRGB)) / LSteps;
+          Deltas[2] := (GetBValue(LEndRGB) - GetBValue(LStartRGB)) / LSteps;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          J := (Width / LSteps) / 2;
+          K := (Height / LSteps) / 2;
+          for I := 0 to LSteps do
           begin
-            r.Top := Round(i * k);
-            r.Bottom := Height - r.Top;
-            r.Right := Round(i * j);
-            r.Left := Width - r.Right;
-            bt.Canvas.Brush.Color := RGB(Round(GetRValue(FStart) + i * Deltas[0]), Round(GetGValue(FStart) + i *
-              Deltas[1]), Round(GetBValue(FStart) + i * Deltas[2]));
-            bt.Canvas.Pen.Color := bt.Canvas.Brush.Color;
-            bt.Canvas.RoundRect(r.Right, r.Top, r.Left, r.Bottom, ((r.Left - r.Right) div 2), ((r.Bottom - r.Top) div
-              2));
+            R.Top := Round(I * K);
+            R.Bottom := Height - R.Top;
+            R.Right := Round(I * J);
+            R.Left := Width - R.Right;
+            FBuffer.Canvas.Brush.Color := RGB(
+              Round(GetRValue(LStartRGB) + I * Deltas[0]),
+              Round(GetGValue(LStartRGB) + I * Deltas[1]),
+              Round(GetBValue(LStartRGB) + I * Deltas[2]));
+            FBuffer.Canvas.Pen.Color := FBuffer.Canvas.Brush.Color;
+            FBuffer.Canvas.RoundRect(R.Right, R.Top, R.Left, R.Bottom,
+              ((R.Left - R.Right) div 2), ((R.Bottom - R.Top) div 2));
           end;
         end;
       grPyramid:
         begin
-          bt.Canvas.Brush.Color := FStart;
-          bt.Canvas.Brush.Style := bsSolid;
-          bt.Canvas.FillRect(Rect(0, 0, Width, Height));
-          if FInternalSteps > (Width div 2) then
-            FInternalSteps := Trunc(Width / 2);
-          if FInternalSteps > (Height div 2) then
-            FInternalSteps := Trunc(Height / 2);
-          Deltas[0] := (GetRValue(FEnd) - GetRValue(FStart)) / FInternalSteps;
-          Deltas[1] := (GetGValue(FEnd) - GetGValue(FStart)) / FInternalSteps;
-          Deltas[2] := (GetBValue(FEnd) - GetBValue(FStart)) / FInternalSteps;
-          bt.Canvas.Brush.Style := bsSolid;
-          j := (Width / FInternalSteps) / 2;
-          k := (Height / FInternalSteps) / 2;
-          for i := 0 to FInternalSteps do
+          FBuffer.Canvas.Brush.Color := LStartRGB;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          FBuffer.Canvas.FillRect(Rect(0, 0, Width, Height));
+          if LSteps > (Width div 2) then
+            LSteps := Trunc(Width / 2);
+          if LSteps > (Height div 2) then
+            LSteps := Trunc(Height / 2);
+          if LSteps < 1 then
+            LSteps := 1;
+          Deltas[0] := (GetRValue(LEndRGB) - GetRValue(LStartRGB)) / LSteps;
+          Deltas[1] := (GetGValue(LEndRGB) - GetGValue(LStartRGB)) / LSteps;
+          Deltas[2] := (GetBValue(LEndRGB) - GetBValue(LStartRGB)) / LSteps;
+          FBuffer.Canvas.Brush.Style := bsSolid;
+          J := (Width / LSteps) / 2;
+          K := (Height / LSteps) / 2;
+          for I := 0 to LSteps do
           begin
-            r.Top := Round(i * k);
-            r.Bottom := Height - r.Top;
-            r.Right := Round(i * j);
-            r.Left := Width - r.Right;
-            bt.Canvas.Brush.Color := RGB(Round(GetRValue(FStart) + i * Deltas[0]), Round(GetGValue(FStart) + i *
-              Deltas[1]), Round(GetBValue(FStart) + i * Deltas[2]));
-            bt.Canvas.Pen.Color := bt.Canvas.Brush.Color;
-            bt.Canvas.FillRect(Rect(r.Right, r.Top, r.Left, r.Bottom));
+            R.Top := Round(I * K);
+            R.Bottom := Height - R.Top;
+            R.Right := Round(I * J);
+            R.Left := Width - R.Right;
+            FBuffer.Canvas.Brush.Color := RGB(
+              Round(GetRValue(LStartRGB) + I * Deltas[0]),
+              Round(GetGValue(LStartRGB) + I * Deltas[1]),
+              Round(GetBValue(LStartRGB) + I * Deltas[2]));
+            FBuffer.Canvas.Pen.Color := FBuffer.Canvas.Brush.Color;
+            FBuffer.Canvas.FillRect(Rect(R.Right, R.Top, R.Left, R.Bottom));
           end;
         end;
     end;
-    FOldB.Assign(bt);
-    bt.Free;
+    //FBuffer.Assign(bt);
+    //bt.Free;
   end;
-  Canvas.Draw(0, 0, FOldB);
+  Canvas.Draw(0, 0, FBuffer);
 end;
 
 procedure TJvGradient.SetStyle(Value: TGradStyle);
 begin
   FStyle := Value;
-  FOldX := 0;
+  FBufferWidth := 0;
   Invalidate;
 end;
 
 procedure TJvGradient.SetStartColor(Value: TColor);
 begin
   FStartColor := Value;
-  FOldX := 0;
+  FBufferWidth := 0;
   Invalidate;
 end;
 
 procedure TJvGradient.SetSteps(Value: Word);
 begin
   FSteps := Value;
-  FOldX := 0;
+  FBufferWidth := 0;
   Invalidate;
 end;
 
 procedure TJvGradient.SetEndColor(Value: TColor);
 begin
   FEndColor := Value;
-  FOldX := 0;
+  FBufferWidth := 0;
   Invalidate;
 end;
 
 end.
+
