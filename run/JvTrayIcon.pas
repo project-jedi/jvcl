@@ -75,11 +75,20 @@ type
   TAnimateEvent = procedure(Sender: TObject; const ImageIndex: Integer) of object;
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
+  { (rb) Change tvVisibleTaskBar to tvStartHidden or something; tvVisibleTaskBar
+         is mainly used to indicate whether the application should start hidden
+         with a trayicon; Functionality of tvVisibleTaskBar is available at
+         run-time by using ShowApplication/HideApplication, at design-time it has
+         no use, except to indicate whether the application should start hidden.
+         Did not do the change because it changes the functionality of
+         the trayicon, and could not come up with a backwards compatible way
+         right-away }
   TTrayVisibility = (tvVisibleTaskBar, tvVisibleTaskList, tvAutoHide, tvAutoHideIcon, tvVisibleDesign,
     tvRestoreClick, tvRestoreDbClick, tvMinimizeClick, tvMinimizeDbClick);
   TTrayVisibilities = set of TTrayVisibility;
 
-  TJvTrayIconState = (tisTrayIconVisible, tisAnimating, tisHooked, tisHintChanged);
+  TJvTrayIconState = (tisTrayIconVisible, tisAnimating, tisHooked, tisHintChanged,
+    tisWaitingForDoubleClick, tisAppHiddenButNotMinimized);
   TJvTrayIconStates = set of TJvTrayIconState;
 
   TJvTrayIcon = class(TJvComponent)
@@ -87,6 +96,8 @@ type
     FTaskbarRestartMsg: Cardinal;
     FCurrentIcon: TIcon;
     FState: TJvTrayIconStates;
+    FStreamedActive: Boolean;
+
     function GetApplicationVisible: Boolean;
     procedure SetApplicationVisible(const Value: Boolean);
   protected
@@ -108,7 +119,6 @@ type
     the timer. If the custom slot is visited you know that a single click was
     done.
     }
-    FDblClicked: boolean;
     FClickedButton: TMouseButton;
     FClickedShift: TShiftState;
     FClickedX: Integer;
@@ -164,9 +174,6 @@ type
     procedure Loaded; override; //HEG: New
 
     procedure InitIconData;
-
-    procedure Activate;
-    procedure Deactivate;
 
     procedure ShowTrayIcon;
     procedure HideTrayIcon;
@@ -287,29 +294,6 @@ begin
   Result := GetShellVersion >= $00050000;
 end;
 
-procedure TJvTrayIcon.Activate;
-begin
-  // note: no reentrance check
-
-  if csLoading in ComponentState then
-    Exit;
-
-  if not Active then
-    Exit;
-
-  if (csDesigning in ComponentState) and not (tvVisibleDesign in Visibility) then
-    Exit;
-
-  Hook;
-
-  InitIconData;
-
-  ShowTrayIcon;
-
-  if AcceptBalloons then
-    NotifyIcon(0, NIM_SETVERSION);
-end;
-
 function TJvTrayIcon.ApplicationHook(var Msg: TMessage): Boolean;
 begin
   if (Msg.Msg = WM_SYSCOMMAND) and (Msg.WParam = SC_MINIMIZE) and
@@ -396,23 +380,6 @@ begin
   FTaskbarRestartMsg := RegisterWindowMessage('TaskbarCreated');
 end;
 
-procedure TJvTrayIcon.Deactivate;
-begin
-  // note: no reentrance check
-
-  if csLoading in ComponentState then
-    Exit;
-
-  if Active then
-    Exit;
-
-  EndAnimation;
-
-  Unhook;
-
-  HideTrayIcon;
-end;
-
 destructor TJvTrayIcon.Destroy;
 begin
   StopTimer(DblClickTimer); { Vlad S}
@@ -436,7 +403,7 @@ end;
 
 procedure TJvTrayIcon.DoAnimation;
 begin
-  if FActive and (FIcons <> nil) and (FIcons.Count > 0) then
+  if (tisTrayIconVisible in FState) and (FIcons <> nil) and (FIcons.Count > 0) then
   begin
     if IconIndex < 0 then
       IconIndex := 0
@@ -460,7 +427,7 @@ begin
       FDropDownMenu.Popup(X, Y);
       PostMessage(FHandle, WM_NULL, 0, 0);
     end;
-    if IsApplicationMinimized then
+    if IsApplicationMinimized or (tisAppHiddenButNotMinimized in FState) then
     begin
       if tvRestoreClick in Visibility then
         ShowApplication;
@@ -468,7 +435,7 @@ begin
     else
     if tvMinimizeClick in Visibility then
       { (rb) Call Application.Minimize instead of HideApplication
-             if tvAutoHide in Visibility ? }
+             if tvAutoHide not in Visibility ? }
       HideApplication;
   end
   else if (Button = mbRight) and (FPopupMenu <> nil) then
@@ -496,8 +463,11 @@ procedure TJvTrayIcon.DoDoubleClick(Button: TMouseButton;
 var
   I: Integer;
 begin
-  FDblClicked := true; { Vlad S}
-  StopTimer(DblClickTimer); { Vlad S}
+  if tisWaitingForDoubleClick in FState then
+  begin
+    Exclude(FState, tisWaitingForDoubleClick); { Vlad S}
+    StopTimer(DblClickTimer); { Vlad S}
+  end;
 
   if Assigned(FOnDblClick) then
     FOnDblClick(Self, Button, Shift, X, Y)
@@ -510,7 +480,7 @@ begin
           FPopupMenu.Items[I].Click;
           Break;
         end;
-    if IsApplicationMinimized then
+    if IsApplicationMinimized or (tisAppHiddenButNotMinimized in FState) then
     begin
       if tvRestoreDbClick in Visibility then
         ShowApplication;
@@ -526,13 +496,17 @@ end;
 procedure TJvTrayIcon.DoMouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  { (rb) todo: Delay only if OnDblClick assigned }
-  FDblClicked := False;
   FClickedButton := Button;
   FClickedShift := Shift;
   FClickedX := X;
   FClickedY := Y;
-  SetTimer(FHandle, DblClickTimer, GetDoubleClickTime, nil);
+
+  if not (tisWaitingForDoubleClick in FState) then
+  begin
+    Include(FState, tisWaitingForDoubleClick);
+
+    SetTimer(FHandle, DblClickTimer, GetDoubleClickTime, nil);
+  end;
 
   if Assigned(FOnMouseDown) then
     FOnMouseDown(Self, Button, Shift, X, Y);
@@ -565,10 +539,13 @@ procedure TJvTrayIcon.DoTimerDblClick;
 begin
   StopTimer(DblClickTimer);
 
-  // Double-clicking a mouse button actually generates four messages:
-  // WM_XBUTTONDOWN, WM_XBUTTONUP, WM_XBUTTONDBLCLK, and WM_XBUTTONUP again
-  if not FDblClicked then
+  if tisWaitingForDoubleClick in FState then
+  begin
+    Exclude(FState, tisWaitingForDoubleClick);
+    // Double-clicking a mouse button actually generates four messages:
+    // WM_XBUTTONDOWN, WM_XBUTTONUP, WM_XBUTTONDBLCLK, and WM_XBUTTONUP again
     DoClick(FClickedButton, FClickedShift, FClickedX, FClickedY);
+  end;
 end;
 
 procedure TJvTrayIcon.EndAnimation;
@@ -597,26 +574,24 @@ end;
 
 procedure TJvTrayIcon.HideApplication;
 begin
-  if csLoading in ComponentState then
-    Application.ShowMainForm := True
-  else
+  if not IsApplicationMinimized and not (tisAppHiddenButNotMinimized in FState) then
   begin
-    if not IsApplicationMinimized then
+    // Minimize the application..
+    if Snap then
     begin
-      if Snap then
-      begin
+      if Assigned(Application.MainForm) then
         Application.MainForm.Visible := False;
-        Application.ShowMainForm := False;
-      end;
-      Application.Minimize;
+      Application.ShowMainForm := False;
     end;
-
-    ShowWindow(Application.Handle, SW_HIDE);
-    Exclude(FVisibility, tvVisibleTaskBar);
-
-    if tvAutoHideIcon in Visibility then
-      ShowTrayIcon;
+    Application.Minimize;
   end;
+
+  // ..and hide the taskbar button of the application
+  ShowWindow(Application.Handle, SW_HIDE);
+  Exclude(FVisibility, tvVisibleTaskBar);
+
+  if tvAutoHideIcon in Visibility then
+    ShowTrayIcon;
 end;
 
 procedure TJvTrayIcon.HideTrayIcon;
@@ -690,7 +665,7 @@ begin
     uId := 1;
     uCallBackMessage := WM_CALLBACKMESSAGE;
     if not CurrentIcon.Empty then
-      HICON := CurrentIcon.Handle
+      hIcon := CurrentIcon.Handle
     else
       CurrentIcon := Application.Icon;
     StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
@@ -704,8 +679,26 @@ begin
 
   IconPropertyChanged;
 
-  if Active then
-    Activate;
+  if FStreamedActive then
+  begin
+    SetActive(True);
+
+    if not (tvVisibleTaskBar in Visibility) then
+    begin
+      // Start hidden 
+      Application.ShowMainForm := False;
+      // Note that the application is not really minimized
+      // (ie IsIconic(Application.Handle) = False), just hidden.
+      // Calling Application.Minimize or something would show the
+      // application's button on the taskbar for a short time.
+      // So we use the tisHiddenNotMinized flag as work-around, to indicate that
+      // the application is minimized.
+
+      ShowWindow(Application.Handle, SW_HIDE);
+
+      Include(FState, tisAppHiddenButNotMinimized);
+    end;
+  end;
 end;
 
 procedure TJvTrayIcon.Notification(AComponent: TComponent; Operation: TOperation);
@@ -727,26 +720,38 @@ begin
   FIconData.uFlags := uFlags;
 
   Result := Shell_NotifyIcon(dwMessage, @FIconData);
-
-  {  if FActive and (tvAutoHideIcon in Visibility) then
-    begin
-      if Application.MainForm.Visible then
-        Result := Shell_NotifyIcon(NIM_DELETE,@FIconData)
-      else
-        Result := Shell_NotifyIcon(NIM_ADD,@FIconData);
-    end;
-    }
 end;
 
 procedure TJvTrayIcon.SetActive(Value: Boolean);
 begin
+  if csLoading in ComponentState then
+    FStreamedActive := Value
+  else
   if FActive <> Value then
   begin
     FActive := Value;
     if FActive then
-      Activate
+    begin
+      InitIconData;
+
+      if (csDesigning in ComponentState) and not (tvVisibleDesign in Visibility) then
+        Exit;
+
+      Hook;
+
+      ShowTrayIcon;
+
+      if AcceptBalloons then
+        NotifyIcon(0, NIM_SETVERSION);
+    end
     else
-      Deactivate;
+    begin
+      EndAnimation;
+
+      Unhook;
+
+      HideTrayIcon;
+    end;
   end;
 end;
 
@@ -777,7 +782,7 @@ begin
   FCurrentIcon.Assign(Value);
   FIconData.hIcon := FCurrentIcon.Handle;
   if tisTrayIconVisible in FState then
-    //    if FIconData.HICON = 0 then
+    //    if FIconData.hIcon = 0 then
     //      HideTrayIcon
     //    else
     NotifyIcon(NIF_ICON, NIM_MODIFY);
@@ -874,43 +879,47 @@ begin
     end
     else
     begin
-      { tvAutoHide: Application minimized -> remove from traybar }
       if tvAutoHide in ToBeSet then
       begin
         if IsApplicationMinimized then
           HideApplication;
       end;
 
-      if (tvAutoHideIcon in ToBeSet) and not IsApplicationMinimized then
-        HideTrayIcon;
-      if (tvAutoHideIcon in ToBeCleared) and not IsApplicationMinimized then
-        ShowTrayIcon;
-
       if tvVisibleTaskBar in ToBeSet then
         ShowApplication
       else
       if tvVisibleTaskBar in ToBeCleared then
         HideApplication;
+
+      if (tvAutoHideIcon in ToBeSet) and not IsApplicationMinimized then
+        HideTrayIcon;
+      if (tvAutoHideIcon in ToBeCleared) and not IsApplicationMinimized then
+        ShowTrayIcon;
     end;
   end;
 end;
 
 procedure TJvTrayIcon.ShowApplication;
 begin
-  if csLoading in ComponentState then
-    Application.ShowMainForm := True
-  else
+  if tisAppHiddenButNotMinimized in FState then
   begin
-    Include(FVisibility, tvVisibleTaskBar);
-    ShowWindow(Application.Handle, SW_SHOW);
+    Exclude(FState, tisAppHiddenButNotMinimized);
 
-    Application.Restore;
-
-    if Application.MainForm <> nil then
-      Application.MainForm.Visible := True;
-    if tvAutoHideIcon in Visibility then
-      HideTrayIcon;
+    Application.Minimize;
+    Application.ShowMainForm := True;
   end;
+
+  // Show the taskbar button of the application..
+  Include(FVisibility, tvVisibleTaskBar);
+  ShowWindow(Application.Handle, SW_SHOW);
+
+  // ..and restore the application
+  Application.Restore;
+
+  if Application.MainForm <> nil then
+    Application.MainForm.Visible := True;
+  if tvAutoHideIcon in Visibility then
+    HideTrayIcon;
 end;
 
 procedure TJvTrayIcon.ShowTrayIcon;
@@ -979,6 +988,7 @@ begin
     with Mesg do
       case Msg of
         WM_CALLBACKMESSAGE:
+          if not (csDesigning in ComponentState) then
           begin
             GetCursorPos(Pt);
             ShState := [];
@@ -1034,6 +1044,7 @@ begin
                 end;
               NIN_BALLOONUSERCLICK: //sb
                 begin
+                  { (rb) Double try..except }
                   try
                     if Assigned(FOnBalloonClick) then
                       FOnBalloonClick(self);
@@ -1079,13 +1090,22 @@ begin
         begin
           if tisTrayIconVisible in FState then
           begin
-            // Ensure tisTrayIconVisible is not in FState
+            { You can test this on XP:
+                - Click Start, then click Turn Off Computer
+                - Press CTRL + Shift + Alt + Click Cancel          (all at once)
+                    this will dump explorer.exe
+                - Press CTRL + Alt + Delete
+                - Click New Task...
+                - Enter 'explorer.exe' and click OK.
+                    this will restart explorer.exe
+            }
+            // Ensure tisTrayIconVisible is not in FState:
             HideTrayIcon;
             ShowTrayIcon;
           end;
         end
         else
-        Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+          Result := DefWindowProc(FHandle, Msg, wParam, lParam);
       end; // case
   except
     Application.HandleException(Self);
@@ -1093,3 +1113,4 @@ begin
 end;
 
 end.
+
