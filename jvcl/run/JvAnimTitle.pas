@@ -31,13 +31,13 @@ unit JvAnimTitle;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Controls, ExtCtrls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QExtCtrls, QForms,
   {$ENDIF VisualCLX}
-  SysUtils, Classes,
   JvComponent;
 
 type
@@ -50,7 +50,7 @@ type
     FDelay: Integer;
     FSens: Boolean;
     FForm: TCustomForm;
-    FBlinker: Integer;
+    FBlink: Integer;
     FBlinked: Integer;
     FBlinking: Boolean;
     procedure ChangeTitle(const NewTitle: string);
@@ -64,7 +64,7 @@ type
     property Title: string read FInitialTitle write ChangeTitle;
     property Enabled: Boolean read FEnable write EnableChange default False;
     property Delay: Integer read FDelay write ChangeDelay default 50;
-    property Blink: Integer read FBlinker write FBlinker default 5;
+    property Blink: Integer read FBlink write FBlink default 5;
   end;
 
 implementation
@@ -74,7 +74,7 @@ begin
   inherited Create(AOwner);
   FEnable := False;
   FDelay := 50;
-  FBlinker := 5;
+  FBlink := 5;
   FForm := GetParentForm(TControl(AOwner));
   FInitialTitle := FForm.Caption;
   FSens := True;
@@ -108,7 +108,7 @@ begin
     begin
       FForm.Caption := FInitialTitle;
       Inc(FBlinked);
-      if FBlinked >= FBlinker then
+      if FBlinked >= FBlink then
       begin
         FBlinking := False;
         FBlinked := 0;
@@ -122,7 +122,7 @@ begin
       if Length(FTitle) = Length(FInitialTitle) then
       begin
         FSens := False;
-        if FBlinker > 0 then
+        if FBlink > 0 then
           FBlinking := True;
       end
       else

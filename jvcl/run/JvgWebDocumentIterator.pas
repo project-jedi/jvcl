@@ -31,109 +31,112 @@ unit JvgWebDocumentIterator;
 
 interface
 uses
-  Windows, Classes, SysUtils, Graphics, Controls, Menus, ExtCtrls,
-  JvgCommClasses, JvgTypes, shdocvw;
+  Windows, Classes, SysUtils, Graphics, Controls, Menus, ExtCtrls, SHDocVw,
+  JvgCommClasses, JvgTypes;
 
 type
-  {  TJvgIterator = class
-      procedure First; virtual; abstract;
-      procedure Next; virtual; abstract;
-      function IsDone: boolean; virtual; abstract;
+  {  TJvgIterator = class(TObject)
+     protected
+       procedure First; virtual; abstract;
+       procedure Next; virtual; abstract;
+       function IsDone: Boolean; virtual; abstract;
     end;}
 
-  TJvgWebDocumentIterator = class {(TJvgIterator)}
+  TJvgWebDocumentIterator = class(TObject) // TJvgIterator
   private
-    WebBrowser: TWebBrowser;
-    Doc, Item: variant;
-    ItemIndex: integer;
-    DocLocationHref: string;
+    FWebBrowser: TWebBrowser;
+    FDoc: Variant;
+    FItem: Variant;
+    FItemIndex: Integer;
+    FDocLocationHRef: string;
     FCurrentItem: TFileName;
   public
-    property CurrentItem: TFileName read FCurrentItem;
-
     constructor Create(WebBrowser: TWebBrowser);
     procedure First;
     procedure Next;
-    function IsDone: boolean;
+    function IsDone: Boolean;
+    property CurrentItem: TFileName read FCurrentItem;
   end;
 
 implementation
 
-{ TJvgWebDocumentIterator }
-
 constructor TJvgWebDocumentIterator.Create(WebBrowser: TWebBrowser);
 begin
-  self.WebBrowser := WebBrowser;
-  Doc := WebBrowser.Document;
-  DocLocationHref := Doc.Location.Href;
-  DocLocationHref := StringReplace(DocLocationHref, '#', ' ', [rfReplaceAll]);
-  DocLocationHref := StringReplace(DocLocationHref, 'file:///', '', [rfReplaceAll, rfIgnoreCase]);
-  DocLocationHref := StringReplace(DocLocationHref, '/', '\', [rfReplaceAll]);
+  FWebBrowser := WebBrowser;
+  FDoc := WebBrowser.Document;
+  FDocLocationHRef := FDoc.Location.HRef;
+  FDocLocationHRef := StringReplace(FDocLocationHRef, '#', ' ', [rfReplaceAll]);
+  FDocLocationHRef := StringReplace(FDocLocationHRef, 'file:///', '', [rfReplaceAll, rfIgnoreCase]);
+  FDocLocationHRef := StringReplace(FDocLocationHRef, '/', '\', [rfReplaceAll]);
 end;
 
 procedure TJvgWebDocumentIterator.First;
 begin
-  ItemIndex := -1;
+  FItemIndex := -1;
   Next;
 end;
 
-function TJvgWebDocumentIterator.IsDone: boolean;
+function TJvgWebDocumentIterator.IsDone: Boolean;
 begin
-  Result := ItemIndex > Doc.images.length + {Doc.all.length +} Doc.links.length;
+  Result := FItemIndex > FDoc.Images.Length + {FDoc.All.Length +} FDoc.Links.Length;
 end;
 
 procedure TJvgWebDocumentIterator.Next;
 begin
-  inc(ItemIndex);
+  Inc(FItemIndex);
   FCurrentItem := '';
-  if IsDone then exit;
+  if IsDone then
+    Exit;
 
   try
-    if ItemIndex <= Doc.images.length - 1 then
+    if FItemIndex <= FDoc.Images.Length - 1 then
     begin
-      Item := Doc.images.Item(ItemIndex);
-      FCurrentItem := Item.src;
+      FItem := FDoc.Images.Item(FItemIndex);
+      FCurrentItem := FItem.Src;
     end
-    else if ItemIndex - Doc.images.length <= Doc.links.length - 1 then
+    else
+    if FItemIndex - FDoc.Images.Length <= FDoc.Links.Length - 1 then
     begin
-      Item := Doc.links.Item(ItemIndex - Doc.images.length);
-      FCurrentItem := Item.href;
+      FItem := FDoc.Links.Item(FItemIndex - FDoc.Images.Length);
+      FCurrentItem := FItem.HRef;
     end
-    else if ItemIndex - Doc.images.length - Doc.links.length <= Doc.all.length - 1 then
+    else
+    if FItemIndex - FDoc.Images.Length - FDoc.Links.Length <= FDoc.All.Length - 1 then
     begin
-      Item := Doc.all.item(ItemIndex - Doc.images.length - Doc.links.length).style;
-      FCurrentItem := Item.backgroundImage;
+      FItem := FDoc.All.Item(FItemIndex - FDoc.Images.Length - FDoc.Links.Length).Style;
+      FCurrentItem := FItem.BackgroundImage;
     end;
   except
     Next;
-    exit;
+    Exit;
   end;
 
-  FCurrentItem := LowerCase(trim(FCurrentItem));
-  if (FCurrentItem = '') and not IsDone then Next;
+  FCurrentItem := LowerCase(Trim(FCurrentItem));
+  if (FCurrentItem = '') and not IsDone then
+    Next;
 
-  if pos('#', FCurrentItem) > 0 then
-    FCurrentItem := copy(FCurrentItem, 1, pos('#', FCurrentItem) - 1);
+  if Pos('#', FCurrentItem) > 0 then
+    FCurrentItem := Copy(FCurrentItem, 1, Pos('#', FCurrentItem) - 1);
 
   FCurrentItem := StringReplace(FCurrentItem, 'file:///', '', [rfReplaceAll, rfIgnoreCase]);
   FCurrentItem := StringReplace(FCurrentItem, '/', '\', [rfReplaceAll]);
 
-  if DocLocationHref = FCurrentItem then
+  if FDocLocationHRef = FCurrentItem then
   begin
     Next;
-    exit;
+    Exit;
   end;
 
-  if pos('http:\\', FCurrentItem) = 1 then
+  if Pos('http:\\', FCurrentItem) = 1 then
   begin
     Next;
-    exit;
+    Exit;
   end;
 
-  if pos('mailto:', FCurrentItem) = 1 then
+  if Pos('mailto:', FCurrentItem) = 1 then
   begin
     Next;
-    exit;
+    Exit;
   end;
 
   FCurrentItem := StringReplace(FCurrentItem, 'url(', '', [rfReplaceAll]);
