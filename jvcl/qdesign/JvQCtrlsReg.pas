@@ -97,7 +97,10 @@ begin
     TJvScrollingWindow, TJvScrollText]);
   RegisterComponents(RsPaletteSliderSplitter, [TJvSplitter, TJvxSplitter,
     TJvSyncSplitter, TJvNetscapeSplitter]);
-  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice, TJvCharMap]);
+  RegisterComponents(RsPaletteVisual, [TJvClock, TJvZoom, TJvDice]);
+  {$IFDEF USEWINDOWS}
+  RegisterComponents(RsPaletteVisual, [TJvCharMap]);
+  {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvHint]);
 
   RegisterPropertyEditor(TypeInfo(TCaption), TJvHTLabel, 'Caption', TJvHintProperty);
