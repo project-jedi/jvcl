@@ -1289,6 +1289,13 @@ begin
     list is changed). }
   if (Reason = ccrProviderSelect) and not (csDestroying in ComponentState) then
     HandleNeeded;
+  if (Reason = ccrProviderSelect) and IsProviderSelected and not FProviderToggle then
+  begin
+    FProviderIsActive := False;
+    FProviderToggle := True;
+{    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
+    RecreateWnd;}
+  end;
 end;
 
 procedure TJvCustomListBox.ConsumerServiceChanged(Sender: TJvDataConsumer;
@@ -1302,14 +1309,20 @@ begin
     RecreateWnd;
   end
   else
+  if (Reason = ccrProviderSelect) and not IsProviderSelected and FProviderToggle then
+  begin
+    TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
+    RecreateWnd;
+{  end
+  else
   if (Reason = ccrProviderSelect) and IsProviderSelected and not FProviderToggle then
   begin
     FProviderIsActive := False;
     FProviderToggle := True;
     TJvListBoxStrings(Items).ActivateInternal; // apply internal string list to list box
-    RecreateWnd;
+    RecreateWnd;}
   end;
-  if not FProviderToggle or (Reason = ccrProviderSelect) then
+  if (not FProviderToggle or (Reason = ccrProviderSelect)) and IsProviderSelected then
   begin
     UpdateItemCount;
     Refresh;
@@ -1478,16 +1491,19 @@ begin
   InheritedCalled := False;
   if not LimitToClientWidth then
   begin
-    MeasureString(ItemsShowing[Msg.WParam], 0, LSize);
-    InheritedCalled := LSize.cy = FMaxWidth;
+    if Msg.WParam < ItemsShowing.Count then
+      MeasureString(ItemsShowing[Msg.WParam], 0, LSize)
+    else
+      LSize.cx := FMaxWidth;
+    InheritedCalled := LSize.cx = FMaxWidth;
     if InheritedCalled then
     begin
       inherited;
       RemeasureAll;
     end;
   end;
-  if Assigned(FOnDeleteString) then
-    FOnDeleteString(Self, ItemsShowing.Strings[Longint(Msg.WParam)]);
+  if (Msg.WParam < ItemsShowing.Count) and Assigned(FOnDeleteString) then
+    FOnDeleteString(Self, ItemsShowing.Strings[Msg.WParam]);
   if not InheritedCalled then
     inherited;
   if Assigned(FOnChange) then
@@ -2057,7 +2073,10 @@ begin
       end;
     LB_DELETESTRING:
       begin
-        ItemWidth := Canvas.TextWidth(ItemsShowing[Msg.WParam] + ' ');
+        if Msg.WParam < ItemsShowing.Count then
+          ItemWidth := Canvas.TextWidth(ItemsShowing[Msg.WParam] + ' ')
+        else
+          ItemWidth := FMaxWidth;
         if ItemWidth = FMaxWidth then
         begin
           inherited WndProc(Msg);
