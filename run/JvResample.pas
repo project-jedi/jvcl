@@ -27,6 +27,7 @@ Known Issues:
 {$I jvcl.inc}
 
 unit JvResample;
+
 // -----------------------------------------------------------------------------
 // Project: bitmap resampler
 // Module: resample
@@ -99,15 +100,8 @@ unit JvResample;
 // * Fix BoxFilter.
 // * Optimize to use integer math instead of floating point where possible.
 // -----------------------------------------------------------------------------
-interface
 
-// If USE_SCANLINE is defined, Stretch will use the TBitmap.Scanline property
-// instead of TBitmap.Canvas.Pixels to access the bitmap pixels.
-// Use of the Scanline property is 20 to 50 times faster than the Pixels
-// property!
-//{$IFDEF VER100}
-{$DEFINE USE_SCANLINE}
-//{$ENDIF}
+interface
 
 uses
   {$IFDEF VCL}
@@ -122,7 +116,7 @@ type
   // Type of a filter for use with Stretch()
   TFilterProc = function(Value: Single): Single;
 
-  // Sample filters for use with Stretch()
+// Sample filters for use with Stretch()
 function SplineFilter(Value: Single): Single;
 function BellFilter(Value: Single): Single;
 function TriangleFilter(Value: Single): Single;
@@ -143,7 +137,7 @@ procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: single);
 //----------------------------------------------------------------------------
 
 const
-  ResampleFilters: array[0..6] of record
+  ResampleFilters: array [0..6] of record
     Name: string; // Filter name
     Filter: TFilterProc; // Filter implementation
     Width: Single; // Suggested sampling width/radius
@@ -172,9 +166,9 @@ uses
 function HermiteFilter(Value: Single): Single;
 begin
   // f(t) = 2|t|^3 - 3|t|^2 + 1, -1 <= t <= 1
-  if (Value < 0.0) then
+  if Value < 0.0 then
     Value := -Value;
-  if (Value < 1.0) then
+  if Value < 1.0 then
     Result := (2.0 * Value - 3.0) * Sqr(Value) + 1.0
   else
     Result := 0.0;
@@ -198,9 +192,9 @@ end;
 
 function TriangleFilter(Value: Single): Single;
 begin
-  if (Value < 0.0) then
+  if Value < 0.0 then
     Value := -Value;
-  if (Value < 1.0) then
+  if Value < 1.0 then
     Result := 1.0 - Value
   else
     Result := 0.0;
@@ -210,11 +204,12 @@ end;
 
 function BellFilter(Value: Single): Single;
 begin
-  if (Value < 0.0) then
+  if Value < 0.0 then
     Value := -Value;
-  if (Value < 0.5) then
+  if Value < 0.5 then
     Result := 0.75 - Sqr(Value)
-  else if (Value < 1.5) then
+  else
+  if Value < 1.5 then
   begin
     Value := Value - 1.5;
     Result := 0.5 * Sqr(Value);
@@ -229,14 +224,15 @@ function SplineFilter(Value: Single): Single;
 var
   tt: single;
 begin
-  if (Value < 0.0) then
+  if Value < 0.0 then
     Value := -Value;
-  if (Value < 1.0) then
+  if Value < 1.0 then
   begin
     tt := Sqr(Value);
     Result := 0.5 * tt * Value - tt + 2.0 / 3.0;
   end
-  else if (Value < 2.0) then
+  else
+  if Value < 2.0 then
   begin
     Value := 2.0 - Value;
     Result := 1.0 / 6.0 * Sqr(Value) * Value;
@@ -251,18 +247,18 @@ function Lanczos3Filter(Value: Single): Single;
 
 function SinC(Value: Single): Single;
   begin
-    if (Value <> 0.0) then
+    if Value <> 0.0 then
     begin
       Value := Value * Pi;
-      Result := sin(Value) / Value
+      Result := Sin(Value) / Value
     end
     else
       Result := 1.0;
   end;
 begin
-  if (Value < 0.0) then
+  if Value < 0.0 then
     Value := -Value;
-  if (Value < 3.0) then
+  if Value < 3.0 then
     Result := SinC(Value) * SinC(Value / 3.0)
   else
     Result := 0.0;
@@ -270,27 +266,28 @@ end;
 
 function MitchellFilter(Value: Single): Single;
 const
-  B = (1.0 / 3.0);
-  C = (1.0 / 3.0);
+  B = 1.0 / 3.0;
+  C = 1.0 / 3.0;
 var
-  tt: single;
+  tt: Single;
 begin
-  if (Value < 0.0) then
+  if Value < 0.0 then
     Value := -Value;
   tt := Sqr(Value);
-  if (Value < 1.0) then
+  if Value < 1.0 then
   begin
-    Value := (((12.0 - 9.0 * B - 6.0 * C) * (Value * tt))
-      + ((-18.0 + 12.0 * B + 6.0 * C) * tt)
-      + (6.0 - 2 * B));
+    Value := (((12.0 - 9.0 * B - 6.0 * C) * (Value * tt)) +
+      ((-18.0 + 12.0 * B + 6.0 * C) * tt) +
+      (6.0 - 2 * B));
     Result := Value / 6.0;
   end
-  else if (Value < 2.0) then
+  else
+  if Value < 2.0 then
   begin
-    Value := (((-1.0 * B - 6.0 * C) * (Value * tt))
-      + ((6.0 * B + 30.0 * C) * tt)
-      + ((-12.0 * B - 48.0 * C) * Value)
-      + (8.0 * B + 24 * C));
+    Value := (((-1.0 * B - 6.0 * C) * (Value * tt)) +
+      ((6.0 * B + 30.0 * C) * tt) +
+      ((-12.0 * B - 48.0 * C) * Value) +
+      (8.0 * B + 24 * C));
     Result := Value / 6.0;
   end
   else
@@ -304,39 +301,39 @@ end;
 type
   // Contributor for a pixel
   TContributor = record
-    pixel: integer; // Source pixel
-    weight: single; // Pixel weight
+    pixel: Integer; // Source pixel
+    weight: Single; // Pixel weight
   end;
 
-  TContributorList = array[0..0] of TContributor;
+  TContributorList = array [0..0] of TContributor;
   PContributorList = ^TContributorList;
 
   // List of source pixels contributing to a destination pixel
   TCList = record
-    n: integer;
+    n: Integer;
     p: PContributorList;
   end;
 
-  TCListList = array[0..0] of TCList;
+  TCListList = array [0..0] of TCList;
   PCListList = ^TCListList;
 
   TRGB = packed record
-    r, g, b: single;
+    r, g, b: Single;
   end;
 
   // Physical bitmap pixel
   TColorRGB = packed record
-    r, g, b: BYTE;
+    r, g, b: Byte;
   end;
   PColorRGB = ^TColorRGB;
 
   // Physical bitmap scanline (row)
-  TRGBList = packed array[0..0] of TColorRGB;
+  TRGBList = packed array [0..0] of TColorRGB;
   PRGBList = ^TRGBList;
 
-procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: single);
+procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: Single);
 var
-  xscale, yscale: single; // Zoom scale factors
+  xscale, yscale: Single; // Zoom scale factors
   i, j, k: integer; // Loop variables
   center: single; // Filter calculation variables
   width, fscale, weight: single; // Filter calculation variables
@@ -346,14 +343,12 @@ var
   contrib: PCListList;
   rgb: TRGB;
   color: TColorRGB;
-  {$IFDEF USE_SCANLINE}
   SourceLine,
     DestLine: PRGBList;
   SourcePixel,
     DestPixel: PColorRGB;
   Delta,
     DestDelta: integer;
-  {$ENDIF USE_SCANLINE}
   SrcWidth,
     SrcHeight,
     DstWidth,
@@ -397,11 +392,9 @@ begin
       yscale := (DstHeight - 1) / (SrcHeight - 1);
     // This implementation only works on 24-bit images because it uses
     // TBitmap.Scanline
-    {$IFDEF USE_SCANLINE}
     Src.PixelFormat := pf24bit;
     Dst.PixelFormat := Src.PixelFormat;
     Work.PixelFormat := Src.PixelFormat;
-    {$ENDIF USE_SCANLINE}
 
     // --------------------------------------------
     // Pre-calculate filter contributions for a row
@@ -479,10 +472,8 @@ begin
     // ----------------------------------------------------
     for k := 0 to SrcHeight - 1 do
     begin
-      {$IFDEF USE_SCANLINE}
       SourceLine := Src.ScanLine[k];
       DestPixel := Work.ScanLine[k];
-      {$ENDIF USE_SCANLINE}
       for i := 0 to DstWidth - 1 do
       begin
         rgb.r := 0.0;
@@ -490,11 +481,7 @@ begin
         rgb.b := 0.0;
         for j := 0 to contrib^[i].n - 1 do
         begin
-          {$IFDEF USE_SCANLINE}
           color := SourceLine^[contrib^[i].p^[j].pixel];
-          {$ELSE}
-          color := Color2RGB(Src.Canvas.Pixels[contrib^[i].p^[j].pixel, k]);
-          {$ENDIF USE_SCANLINE}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             continue;
@@ -520,14 +507,10 @@ begin
           color.b := 0
         else
           color.b := round(rgb.b);
-        {$IFDEF USE_SCANLINE}
         // Set new pixel value
         DestPixel^ := color;
         // Move on to next column
         inc(DestPixel);
-        {$ELSE}
-        Work.Canvas.Pixels[i, k] := RGB2Color(color);
-        {$ENDIF USE_SCANLINE}
       end;
     end;
 
@@ -611,17 +594,13 @@ begin
     // --------------------------------------------------
     // Apply filter to sample vertically from Work to Dst
     // --------------------------------------------------
-    {$IFDEF USE_SCANLINE}
     SourceLine := Work.ScanLine[0];
     Delta := integer(Work.ScanLine[1]) - integer(SourceLine);
     DestLine := Dst.ScanLine[0];
     DestDelta := integer(Dst.ScanLine[1]) - integer(DestLine);
-    {$ENDIF USE_SCANLINE}
     for k := 0 to DstWidth - 1 do
     begin
-      {$IFDEF USE_SCANLINE}
       DestPixel := pointer(DestLine);
-      {$ENDIF USE_SCANLINE}
       for i := 0 to DstHeight - 1 do
       begin
         rgb.r := 0;
@@ -630,11 +609,7 @@ begin
         // weight := 0.0;
         for j := 0 to contrib^[i].n - 1 do
         begin
-          {$IFDEF USE_SCANLINE}
           color := PColorRGB(integer(SourceLine) + contrib^[i].p^[j].pixel * Delta)^;
-          {$ELSE}
-          color := Color2RGB(Work.Canvas.Pixels[k, contrib^[i].p^[j].pixel]);
-          {$ENDIF USE_SCANLINE}
           weight := contrib^[i].p^[j].weight;
           if (weight = 0.0) then
             continue;
@@ -660,17 +635,11 @@ begin
           color.b := 0
         else
           color.b := round(rgb.b);
-        {$IFDEF USE_SCANLINE}
         DestPixel^ := color;
         inc(integer(DestPixel), DestDelta);
-        {$ELSE}
-        Dst.Canvas.Pixels[k, i] := RGB2Color(color);
-        {$ENDIF USE_SCANLINE}
       end;
-      {$IFDEF USE_SCANLINE}
       Inc(SourceLine, 1);
       Inc(DestLine, 1);
-      {$ENDIF USE_SCANLINE}
     end;
 
     // Free the memory allocated for vertical filter weights
@@ -678,7 +647,6 @@ begin
       FreeMem(contrib^[i].p);
 
     FreeMem(contrib);
-
   finally
     Work.Free;
   end;
