@@ -1,4 +1,4 @@
-object frmMain: TfrmMain
+object PackageModifierMainFrm: TPackageModifierMainFrm
   Left = 354
   Top = 190
   Width = 432
@@ -27,7 +27,6 @@ object frmMain: TfrmMain
     Height = 389
     ActivePage = tabOptions
     Anchors = [akLeft, akTop, akRight, akBottom]
-    TabOrder = 0
     object tabOptions: TTabSheet
       Caption = 'Options'
       object GroupBox1: TGroupBox
@@ -242,6 +241,9 @@ object frmMain: TfrmMain
     object tabFiles: TTabSheet
       Caption = 'Files'
       ImageIndex = 1
+      DesignSize = (
+        398
+        361)
       object reFiles: TRichEdit
         Left = 8
         Top = 16
