@@ -814,7 +814,7 @@ var
   DccOpt: string;
   Path: string;
   PathList, BplPaths: TStringList;
-  S, BrowsePaths: string;
+  S, SearchPaths: string;
 
   function GetProjectIndex: Integer;
   begin
@@ -904,21 +904,21 @@ begin
       PathList.Free;
     end;
 
-    BrowsePaths := '';
-    for i := 0 to TargetConfig.Target.BrowsingPaths.Count - 1 do
+    SearchPaths := '';
+    for i := 0 to TargetConfig.Target.SearchPaths.Count - 1 do
     begin
-      S := ExtractShortPathName(ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.BrowsingPaths[i])));
-      if BrowsePaths <> '' then
-        BrowsePaths := BrowsePaths + ';' + S
+      S := ExcludeTrailingPathDelimiter(TargetConfig.Target.ExpandDirMacros(TargetConfig.Target.SearchPaths[i]));
+      if SearchPaths <> '' then
+        SearchPaths := SearchPaths + ';' + S
       else
-        BrowsePaths := S;
+        SearchPaths := S;
     end;
 
     SetEnvironmentVariable('PATH', PChar(Path));
     SetEnvironmentVariable('DCCOPT', Pointer(DccOpt));
     // especially for BCB generated make file
     SetEnvironmentVariable('DCC', PChar('"' + TargetConfig.Target.RootDir + '\bin\dcc32.exe" ' + DccOpt));
-    SetEnvironmentVariable('UNITDIRS', PChar(BrowsePaths));
+    SetEnvironmentVariable('UNITDIRS', PChar(SearchPaths));
 
     SetEnvironmentVariable('QUIET', Pointer(Copy(FQuiet, 2, MaxInt))); // make command line option " -s"
 
