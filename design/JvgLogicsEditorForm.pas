@@ -483,7 +483,7 @@ begin
   S := LogicElement.Expression + ' ' + LogicRuleLabels[LogicElement.Rule] +
     ' ' + LogicElement.Value;
   R := Bounds(3, 20, Width - 6, Height - 22);
-  DrawText(Canvas.Handle, PChar(S), Length(S), R,
+  Windows.DrawText(Canvas.Handle, PChar(S), Length(S), R,
     DT_WORDBREAK or DT_END_ELLIPSIS or DT_MODIFYSTRING);
 end;
 
@@ -781,7 +781,7 @@ begin
   Canvas.Font.Style := [fsBold];
   S := CommentArea.Text;
   R := Bounds(3, 2, Width, Height);
-  DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_WORDBREAK);
+  Windows.DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_WORDBREAK);
 end;
 
 procedure TJvgLogicsEditor.cbIgnoreSpacesClick(Sender: TObject);

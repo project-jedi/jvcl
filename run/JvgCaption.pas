@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls,
-  JvComponent, JvgTypes, JvgUtils, JvgCommClasses;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgTypes, JvgUtils, JvgCommClasses;
 
 type
+  {$IFDEF USEJVCL}
   TJvgCaption = class(TJvComponent)
+  {$ELSE}
+  TJvgCaption = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FExcludeButtons: Boolean;
     FExcludeIcon: Boolean;
@@ -89,8 +96,7 @@ type
   protected
     //    procedure WndProc(var Message: TMessage);override;
     procedure Loaded; override;
-    procedure Notification(Component: TComponent; Operation: TOperation);
-      override;
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -122,12 +128,14 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
   Math,
-  {$IFDEF USEJVCL}
-  JvResources,
-  {$ENDIF USEJVCL}
-  JvConsts, JvJVCLUtils;
+  JvResources, JvJVCLUtils;
+{$ELSE}
+uses
+  Math;
+{$ENDIF USEJVCL}
 
 {$IFDEF GL_CAPT_BUTTONS}
 {$IFDEF MSWINDOWS}
@@ -139,8 +147,29 @@ uses
 {$ENDIF GL_CAPT_BUTTONS}
 
 {$IFNDEF USEJVCL}
+
 resourcestring
   RsEOnlyOneInstanceOfTJvgCaption = 'Cannot create more than one instance of TJvgCaption component';
+
+function JvMakeObjectInstance(Method: TWndMethod): Pointer;
+begin
+  {$IFDEF COMPILER6_UP}
+  Result := Classes.MakeObjectInstance(Method);
+  {$ELSE}
+  Result := MakeObjectInstance(Method);
+  {$ENDIF COMPILER6_UP}
+end;
+
+procedure JvFreeObjectInstance(ObjectInstance: Pointer);
+begin
+  if ObjectInstance <> nil then
+    {$IFDEF COMPILER6_UP}
+    Classes.FreeObjectInstance(ObjectInstance);
+    {$ELSE}
+    FreeObjectInstance(ObjectInstance);
+    {$ENDIF COMPILER6_UP}
+end;
+
 {$ENDIF USEJVCL}
 
 constructor TJvgCaption.Create(AOwner: TComponent);
