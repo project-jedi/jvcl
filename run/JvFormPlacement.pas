@@ -1150,19 +1150,19 @@ begin
     StoredValues.Storage.WriteString(Name, SaveStrValue);
   end
   else
-    if VarIsInt (Value) then
-      StoredValues.Storage.WriteInteger(Name, Value)
+    if VarIsInt (SaveValue) then
+      StoredValues.Storage.WriteInteger(Name, SaveValue)
     else
-    if VarType (Value) in [varSingle, varDouble, varCurrency] then
-      StoredValues.Storage.WriteFloat(Name, Value)
+    if VarType (SaveValue) in [varSingle, varDouble, varCurrency] then
+      StoredValues.Storage.WriteFloat(Name, SaveValue)
     else
-    if VarType (Value) in [varDate] then
-      StoredValues.Storage.WriteDateTime(Name, Value)
+    if VarType (SaveValue) in [varDate] then
+      StoredValues.Storage.WriteDateTime(Name, SaveValue)
     else
-    if VarType (Value) in [varBoolean] then
-      StoredValues.Storage.WriteBoolean(Name, Value)
+    if VarType (SaveValue) in [varBoolean] then
+      StoredValues.Storage.WriteBoolean(Name, SaveValue)
     else
-      StoredValues.Storage.WriteString(Name, Value);
+      StoredValues.Storage.WriteString(Name, SaveValue);
 end;
 
 procedure TJvStoredValue.Restore;
