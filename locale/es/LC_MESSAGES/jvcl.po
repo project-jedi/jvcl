@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2005-02-07 08:35\n"
+"POT-Creation-Date: 2005-02-13 17:40\n"
 "PO-Revision-Date: 2004-12-14 17:03-0300\n"
 "Last-Translator: Hugo Moner <hmoner@cantv.net>\n"
 "Language-Team: \n"
@@ -885,7 +885,7 @@ msgstr "Tiempo"
 #. FoLog..ListView1......Caption
 #. Programmer's name for it: RsTitle
 #. Programmer's name for it: RsTitle
-#: JvLogForm.dfm:68 JvResources.pas:2198 JvWizard.pas:943
+#: JvLogForm.dfm:68 JvResources.pas:2198 JvWizard.pas:946
 msgid "Title"
 msgstr "Titulo"
 
@@ -1320,7 +1320,7 @@ msgstr "Uso"
 
 #. Programmer's name for it: RsBackButtonCaption
 #. Programmer's name for it: RsBackButtonCaption
-#: JvResources.pas:42 JvWizard.pas:936
+#: JvResources.pas:42 JvWizard.pas:939
 msgid "< &Back"
 msgstr "< &Atras"
 
@@ -1331,7 +1331,7 @@ msgstr "< &Previo"
 
 #. Programmer's name for it: RsNextButtonCaption
 #. Programmer's name for it: RsNextButtonCaption
-#: JvResources.pas:44 JvWizard.pas:937
+#: JvResources.pas:44 JvWizard.pas:940
 msgid "&Next >"
 msgstr "&Siguiente >"
 
@@ -3506,19 +3506,22 @@ msgstr "Sistema %s no definido"
 msgid "can not assign System %s"
 msgstr "no puede asignar Sistema %s"
 
-#. Programmer's name for it: RsEUnrecognizeExternalVariableMethodss
+#. Programmer's name for it: RsEUnrecognizedExternalVariableMethodss
 #: JvResources.pas:727
-msgid "unrecognize external variable method %s.%s"
+#, fuzzy
+msgid "unrecognized external variable method %s.%s"
 msgstr "metodo de variable externa no reconocido %s.%s"
 
-#. Programmer's name for it: RsEUnrecognizeInternalVariableMethodss
+#. Programmer's name for it: RsEUnrecognizedInternalVariableMethodss
 #: JvResources.pas:728
-msgid "unrecognize internal variable method %s.%s"
+#, fuzzy
+msgid "unrecognized internal variable method %s.%s"
 msgstr "metodo de variable interna no reconocido %s.%s"
 
-#. Programmer's name for it: RsEUnrecognizeSystemMethodss
+#. Programmer's name for it: RsEUnrecognizedSystemMethodss
 #: JvResources.pas:729
-msgid "unrecognize system method %s.%s"
+#, fuzzy
+msgid "unrecognized system method %s.%s"
 msgstr "metodo de sistema no reconocido %s.%s"
 
 #. Programmer's name for it: RsEFilesDoesNotExist
@@ -7783,43 +7786,43 @@ msgstr "Dueño debe ser del tipo TCustomForm"
 #. (rom) no IFDEF USEJVCL because of CLX version
 #. Programmer's name for it: RsFirstButtonCaption
 #. Programmer's name for it: RsFirstButtonCaption
-#: JvResources.pas:2194 JvWizard.pas:939
+#: JvResources.pas:2194 JvWizard.pas:942
 msgid "To &Start Page"
 msgstr "A Pagina &Inicial"
 
 #. Programmer's name for it: RsLastButtonCaption
 #. Programmer's name for it: RsLastButtonCaption
-#: JvResources.pas:2195 JvWizard.pas:940
+#: JvResources.pas:2195 JvWizard.pas:943
 msgid "To &Last Page"
 msgstr "A Pagina &Final"
 
 #. Programmer's name for it: RsFinishButtonCaption
 #. Programmer's name for it: RsFinishButtonCaption
-#: JvResources.pas:2196 JvWizard.pas:941
+#: JvResources.pas:2196 JvWizard.pas:944
 msgid "&Finish"
 msgstr "&Finalizar"
 
 #. Programmer's name for it: RsWelcome
 #. Programmer's name for it: RsWelcome
-#: JvResources.pas:2197 JvWizard.pas:942
+#: JvResources.pas:2197 JvWizard.pas:945
 msgid "Welcome"
 msgstr "Bienvenido"
 
 #. Programmer's name for it: RsSubtitle
 #. Programmer's name for it: RsSubtitle
-#: JvResources.pas:2199 JvWizard.pas:944
+#: JvResources.pas:2199 JvWizard.pas:947
 msgid "Subtitle"
 msgstr "Subtitulo"
 
 #. Programmer's name for it: RsEInvalidParentControl
 #. Programmer's name for it: RsEInvalidParentControl
-#: JvResources.pas:2201 JvWizard.pas:946
+#: JvResources.pas:2201 JvWizard.pas:949
 msgid "The Parent should be TJvWizard or a descendant"
 msgstr "El padre deberia ser TJvWizard o un descendiente"
 
 #. Programmer's name for it: RsEInvalidWizardPage
 #. Programmer's name for it: RsEInvalidWizardPage
-#: JvResources.pas:2202 JvWizard.pas:947
+#: JvResources.pas:2202 JvWizard.pas:950
 msgid "The pages belong to another wizard"
 msgstr "Las paginas pertenecen a otro wizard"
 
@@ -7871,13 +7874,6 @@ msgstr "Sentencia inesperada %s"
 #: JvResources.pas:2227 JvXPBar.pas:604
 msgid "untitled"
 msgstr "Sin Titulo"
-
-#. Programmer's name for it: RsUntitledFmt
-#. Programmer's name for it: RsUntitledFmt
-#: JvResources.pas:2228 JvXPBar.pas:605
-#, fuzzy
-msgid "(%s %d)"
-msgstr "%s: %s"
 
 #. === JvXPCore.pas ===========================================================
 #. Programmer's name for it: RsCopyright
@@ -8782,10 +8778,6 @@ msgstr "Cadena de expresion esta vacia."
 #~ msgstr "Encabezado de Página:"
 
 #, fuzzy
-#~ msgid "LabelAxis2"
-#~ msgstr "Etiqueta"
-
-#, fuzzy
 #~ msgid "Show_On_Startup"
 #~ msgstr "Mostrar al Arranque"
 
@@ -8799,3 +8791,11 @@ msgstr "Cadena de expresion esta vacia."
 #, fuzzy
 #~ msgid "LabelAxis1"
 #~ msgstr "Etiqueta"
+
+#, fuzzy
+#~ msgid "LabelAxis2"
+#~ msgstr "Etiqueta"
+
+#, fuzzy
+#~ msgid "(%s %d)"
+#~ msgstr "%s: %s"
