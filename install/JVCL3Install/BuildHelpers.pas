@@ -329,7 +329,7 @@ begin
       Lines.Add('..\devtools\bin\pg.exe: ');
       Lines.Add(#9'@echo ** Generating packages...');
       Lines.Add(#9'@cd ..\devtools');
-      Lines.Add(#9'@$(MAKE) pg.exe');
+      Lines.Add(#9'$(MAKE) makefile pg.exe');
       Lines.Add(#9'@cd ..\packages');
       Lines.Add('');
     end;
@@ -350,10 +350,15 @@ begin
       for ActIndex := 0 to Make.Targets[i].Actions.Count - 1 do
       begin
         S := Make.Targets[i].Actions[ActIndex];
-        if CompareText(S, '$(DCC)') = 0 then S := S + Format(' "%s"', [SourceFile]);  
+        if CompareText(S, '$(DCC)') = 0 then
+          S := S + Format(' "%s"', [SourceFile]);
         S := FastStringReplace(S, '$**', SourceFile, True, False);
         S := FastStringReplace(S, '$*', Copy(SourceFile, 1, Length(SourceFile) - Length(ExtractFileExt(SourceFile))), True, False);
-        if S[1] <> '@' then S := '@' + S;
+       // long path name support 
+        S := FastStringReplace(S, '$(ROOT)\bin\bpr2mak', '"$(ROOT)\bin\bpr2mak"', False, True);
+        S := FastStringReplace(S, '$(ROOT)\bin\make', '"$(ROOT)\bin\make"', False, True);
+        if S[1] <> '@' then
+          S := '@' + S;
         Lines.Add(#9 + S);
       end;
 
