@@ -123,8 +123,12 @@ type
   end;
 
 const
+{$IFDEF VCL}
   CM_DENYSUBCLASSING = JvThemes.CM_DENYSUBCLASSING;
-
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  CM_DENYSUBCLASSING = JvQThemes.CM_DENYSUBCLASSING;
+{$ENDIF VisualCLX}
 type
   { Add IJvDenySubClassing to the base class list if the control should not
     be themed by the ThemeManager (www.delphi-gems.de).
@@ -654,13 +658,13 @@ procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
 {$IFDEF COMPILER5}
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF COMPILER5}
+{$ENDIF VCL}
 
 // jump targets:
 
 function JvExDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 
 
-{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
