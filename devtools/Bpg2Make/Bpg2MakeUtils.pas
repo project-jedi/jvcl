@@ -35,7 +35,7 @@ const
     '#ifndef DCC' + sLineBreak +
     'DCC  = "$(ROOT)\bin\dcc32.exe" -U"$(DCPDIR)" -LE"$(DCPDIR)" -LN"$(DCPDIR)" $(DCCOPT) -Q -W -H -M $&.dpk' + sLineBreak +
     '#else' + sLineBreak +
-    '#DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT) $&.dpk' + sLineBreak +
+    'DCC = "$(ROOT)\bin\dcc32.exe" $(DCCOPT) $&.dpk' + sLineBreak +
     '#endif' + sLineBreak +
     '' + sLineBreak +
     '#--------------------------------------------------------------------------------------------------#' + sLineBreak;
