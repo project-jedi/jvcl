@@ -316,7 +316,7 @@ begin
     S := 'library ' + ProjectName + ';' + CrLf +
       CrLf +
       'uses' + CrLf +
-      '  ShareMem;' + CrLf +
+      '  ShareMem,' + cPluginPrefix + PlugName + ';' + CrLf +
       CrLf +
       'exports' + CrLf +
       '  RegisterPlugin;' + CrLf +
