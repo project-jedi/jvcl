@@ -34,7 +34,13 @@ unit JvTipOfDay;
 interface
 
 uses
-  Classes, Graphics, Controls, Messages, Forms, StdCtrls,
+  Classes,
+  {$IFDEF VCL}
+  Graphics, Controls, Messages, Forms, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QStdCtrls,
+  {$ENDIF VisualCLX}
   JvAppStorage, JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes;
 
 type
@@ -74,9 +80,15 @@ type
     FTipLabel: TControl;
     FNextTipButton: TControl;
     FCheckBox: TButtonControl;
+    {$IFDEF VCL}
     { Parent form: }
     FForm: TCustomForm;
     FDummyMsgSend: Boolean;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure FormHide(Sender : TObject);
+    procedure ButtonClick(Sender : TObject);
+    {$ENDIF VisualCLX}
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
     function GetTips: TStrings;
@@ -117,12 +129,14 @@ type
     procedure UpdateTip;
     { Handles button clicks on the 'Next' button: }
     procedure HandleNextClick(Sender: TObject);
+    {$IFDEF VCL}
     { Hooks/Unhooks the parent form, this is done if
       toShowWhenFormShown is in Options }
     procedure HookForm;
     procedure UnHookForm;
     { The hook; responds when the parent form activates }
     function HookProc(var Msg: TMessage): Boolean;
+    {$ENDIF VCL}
     procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -154,15 +168,22 @@ type
 implementation
 
 uses
-  Windows, ExtCtrls, Dialogs, SysUtils,
-  JvButton, JvWndProcHook, JvResources;
+  SysUtils,
+  {$IFDEF VCL}
+  Windows, ExtCtrls, Dialogs,  JvWndProcHook,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QExtCtrls, QDialogs,
+  {$ENDIF VisualCLX}
+  JvButton, JvResources;
 
-{$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 {$R ..\Resources\JvTipOfDay.res}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvTipOfDay.res}
-{$ENDIF LINUX}
+{$ENDIF VisualCLX}
+
 
 type
   TControlAccess = class(TControl);
@@ -281,6 +302,7 @@ begin
 
       UpdateTip;
 
+{$IFDEF VCL}
       ShowModal;
 
       if TButtonControlAccess(FCheckBox).Checked then
@@ -298,7 +320,40 @@ begin
   finally
     FRunning := False;
   end;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+      OnHide := FormHide ;  // onclose
+      Show ;  // Shown non modal
+    except
+      Free;
+    end;
+  except
+    FRunning := False;
+  end;
+{$ENDIF  VisualCLX}
 end;
+
+{$IFDEF VisualCLX}
+procedure TJvTipOfDay.FormHide(Sender : TObject);
+begin
+  with Sender as TForm do
+  begin
+    if TButtonControlAccess(FCheckBox).Checked then
+      Include(FOptions, toShowOnStartUp)
+    else
+      Exclude(FOptions, toShowOnStartUp) ;
+    Release ;   // destroy it
+    FRunning := False;
+  end;
+end;
+
+procedure TJvTipOfDay.ButtonClick(Sender : TObject);
+begin
+  with sender as TControl do
+    FormHide(Parent)
+end;
+{$ENDIF VisualCLX}
+
 
 procedure TJvTipOfDay.Notification(AComponent: TComponent; Operation: TOperation);
 begin
@@ -325,6 +380,7 @@ begin
   UpdateTip;
 end;
 
+{$IFDEF VCL}
 procedure TJvTipOfDay.HookForm;
 begin
   if Owner is TControl then
@@ -362,13 +418,18 @@ begin
       end;
   end;
 end;
+{$ENDIF VCL}
 
 procedure TJvTipOfDay.InitStandard(AForm: TForm);
 begin
   with AForm do
   begin
+    {$IFDEF VCL}
     BorderStyle := bsDialog;
-
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := fbsDialog;
+    {$ENDIF VisualCLX}
     { Title }
     Caption := Self.Title;
     ClientHeight := 267;
@@ -475,7 +536,12 @@ procedure TJvTipOfDay.InitVC(AForm: TForm);
 begin
   with AForm do
   begin
+    {$IFDEF VCL}
     BorderStyle := bsDialog;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := fbsDialog;
+    {$ENDIF VisualCLX}
 
     { Title }
     Caption := Self.Title;
