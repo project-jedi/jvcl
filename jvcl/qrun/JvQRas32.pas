@@ -57,7 +57,7 @@ type
     FPhoneNumber: string;
     FCallBackNumber: string;
     FDomain: string;
-    FConnection: DWord;
+    FConnection: DWORD;
     FHandle: THandle;
     FPHandle: THandle;
     RASEvent: Word;
@@ -270,7 +270,7 @@ begin
     FConnection := 0;
     with RASDialParams do
     begin
-      dwSize := SizeOf(TRasDialParams);
+      dwSize := SizeOf(TRASDialParams);
       StrLCopy(szEntryName, PChar(PhoneBook[Index]), RAS_MAXENTRYNAME);
       X := Self.EntryIndex;
       Self.EntryIndex := Index;
@@ -330,8 +330,8 @@ begin
   FPhoneBook.BeginUpdate;
   try
     FPhoneBook.Clear;
-    RasEntryName[1].dwSize := SizeOf(RasEntryName[1]);
-    BufSize := SizeOf(RasEntryName);
+    RASEntryName[1].dwSize := SizeOf(RASEntryName[1]);
+    BufSize := SizeOf(RASEntryName);
 
     if Assigned(FRasEnumEntries) then
     begin
@@ -341,8 +341,8 @@ begin
         I := FRasEnumEntries(nil, nil, @RASEntryName[1], BufSize, Entries);
       if (I = 0) or (I = ERROR_BUFFER_TOO_SMALL) then
         for I := 1 to Entries do
-          if (I < 51) and (RasEntryName[I].szEntryName[0] <> #0) then
-            FPhoneBook.Add(StrPas(RasEntryName[I].szEntryName));
+          if (I < 51) and (RASEntryName[I].szEntryName[0] <> #0) then
+            FPhoneBook.Add(StrPas(RASEntryName[I].szEntryName));
     end;
   finally
     FPhoneBook.EndUpdate;
@@ -353,7 +353,7 @@ function TJvRas32.HangUp: Boolean;
 var
   Rc: Longint;
   I: Integer;
-  RasConnStatus: TRasConnStatus;
+  RasConnStatus: TRASConnStatus;
 begin
   Result := False;
   if (FConnection <> 0) and Assigned(FRasHangUp) then
@@ -406,17 +406,17 @@ begin
 
   if FEntryIndex <> -1 then
   begin
-    FEntry := Phonebook[FEntryIndex];
+    FEntry := PhoneBook[FEntryIndex];
 
-    FillChar(RasDial, SizeOf(TRasDialParams), #0);
+    FillChar(RasDial, SizeOf(TRASDialParams), #0);
     StrLCopy(RasDial.szEntryName, PChar(PhoneBook[FEntryIndex]), RAS_MAXENTRYNAME);
-    RasDial.dwSize := SizeOf(TRasDialParams);
+    RasDial.dwSize := SizeOf(TRASDialParams);
 
     if Assigned(FRasGetEntryDialParams) then
       if FRasGetEntryDialParams(nil, RasDial, Res) = 0 then
         with RasDial do
         begin
-          FUsername := StrPas(szUsername);
+          FUsername := StrPas(szUserName);
           FPassword := StrPas(szPassword);
           FDomain := StrPas(szDomain);
           FCallBackNumber := StrPas(szCallbackNumber);
@@ -429,7 +429,7 @@ procedure TJvRas32.WndProc(var Msg: TMessage);
 begin
   if (Msg.Msg = RASEvent) and (FConnection <> 0) then
   begin
-    case Msg.wParam of
+    case Msg.WParam of
       RASCS_OpenPort:
         if Assigned(FOnOpenPort) then
           FOnOpenPort(Self);

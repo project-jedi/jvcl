@@ -55,14 +55,7 @@ uses
   JvQJVCLUtils, JvQComponent, JvQExControls, JvQExComCtrls;
 
 const
-  JvDefPageControlBorder = 4;
-
-//  TVM_SETLINECOLOR = TV_FIRST + 40;
-//  {$EXTERNALSYM TVM_SETLINECOLOR}
-
-//  TVM_GETLINECOLOR = TV_FIRST + 41;
-//  {$EXTERNALSYM TVM_GETLINECOLOR}
-
+  JvDefPageControlBorder = 4; 
   JvDefaultInactiveColorFrom = TColor($D7D7D7);
   JvDefaultInactiveColorTo= TColor($ADADAD);
 
@@ -322,8 +315,8 @@ begin
   FActiveFont := TFont.Create;
   if Owner is TForm then
     FActiveFont.Assign(TForm(Owner).Font)
-  else
-    FActiveFont.Assign(Screen.HintFont);
+  else  
+    FActiveFont.Assign(Screen.HintFont); 
   FActiveFont.Color := clHighlight;
   FActiveFont.OnChange := DoFontChange;
   FActiveColorFrom := clWhite;
@@ -333,8 +326,8 @@ begin
   FDisabledFont := TFont.Create;
   if Owner is TForm then
     FDisabledFont.Assign(TForm(Owner).Font)
-  else
-    FDisabledFont.Assign(Screen.HintFont);
+  else  
+    FDisabledFont.Assign(Screen.HintFont); 
   FDisabledFont.Color := clGrayText;
   FDisabledFont.OnChange := DoFontChange;
   FDisabledColorFrom := clBtnFace;
@@ -344,8 +337,8 @@ begin
   FInactiveFont := TFont.Create;
   if Owner is TForm then
     FInactiveFont.Assign(TForm(Owner).Font)
-  else
-    FInactiveFont.Assign(Screen.HintFont);
+  else  
+    FInactiveFont.Assign(Screen.HintFont); 
   FInactiveFont.OnChange := DoFontChange;
   FInactiveColorFrom := JvDefaultInactiveColorFrom;
   FInactiveColorTo := JvDefaultInactiveColorTo;
@@ -433,7 +426,9 @@ begin
     InflateRect(ImageRect, -(RectWidth(ImageRect) - Images.Width) div 2, -(RectHeight(ImageRect) - Images.Height) div 2);
     SaveState := SaveDC(Canvas.Handle);
     try
-      Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex, itImage, Enabled);
+      Images.Draw(Canvas, ImageRect.Left, ImageRect.Top, ImageIndex, 
+      itImage, 
+      Enabled);
     finally
       RestoreDC(Canvas.Handle, SaveState);
     end;
@@ -682,23 +677,23 @@ end;
 function TJvPageControl.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 var
-  thistab, tab: TTabSheet;
-  forwrd: Boolean;
+  ThisTab, Tab: TTabSheet;
+  Forwrd: Boolean;
 begin
   Result := False;
   if HandleGlobalTab and not FormKeyPreview and (Key = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin
-    thistab := ActivePage;
-    forwrd := GetKeyState(VK_SHIFT) >= 0;
-    tab := thistab;
+    ThisTab := ActivePage;
+    Forwrd := GetKeyState(VK_SHIFT) >= 0;
+    Tab := ThisTab;
     repeat
-      tab := FindNextPage(tab, forwrd, True);
-    until (tab = nil) or tab.Enabled or (tab = thistab);
-    if tab <> thistab then
+      Tab := FindNextPage(Tab, Forwrd, True);
+    until (Tab = nil) or Tab.Enabled or (Tab = ThisTab);
+    if Tab <> ThisTab then
     begin
       if CanChange then
       begin
-        ActivePage := tab;
+        ActivePage := Tab;
         Result := True;
         Change;
       end;
@@ -716,7 +711,7 @@ function TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
 var
   I, RealIndex: Integer;
 begin 
-  Result := true; 
+  Result := false; 
   if TabPainter <> nil then
   begin
     RealIndex := 0;
@@ -779,7 +774,7 @@ end;
 function TJvPageControl.HintShow(var HintInfo: THintInfo): Boolean;
 var
   TabNo: Integer;
-  Tab: TTabsheet;
+  Tab: TTabSheet;
 begin
   Result := inherited HintShow(HintInfo);
 

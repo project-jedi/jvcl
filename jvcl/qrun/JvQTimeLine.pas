@@ -257,9 +257,9 @@ type
  
     procedure DrawDays(ACanvas: TCanvas; Days, StartAt: Integer);
     procedure DrawDayNumbers(ACanvas: TCanvas; Days, StartAt: Integer);
-    procedure DrawMonth(ACanvas: TCanvas; StartAt, m: Integer);
+    procedure DrawMonth(ACanvas: TCanvas; StartAt, M: Integer);
     procedure DrawMonthName(ACanvas: TCanvas; Month, StartAt: Integer);
-    procedure DrawYear(ACanvas: TCanvas; StartAt: Integer; Yr: string);
+    procedure DrawYear(ACanvas: TCanvas; StartAt: Integer; YR: string);
     procedure DrawTimeLine(ACanvas: TCanvas);
     procedure DrawVertSupport(ACanvas: TCanvas; StartAt: Integer);
     procedure DrawHorzSupports(ACanvas: TCanvas);
@@ -303,7 +303,7 @@ type
     procedure VertScroll(ScrollCode: TScrollCode; var ScrollPos: Integer); virtual;
     procedure HorzScroll(ScrollCode: TScrollCode; var ScrollPos: Integer); virtual;
     procedure ItemClick(Item: TJvTimeItem); virtual;
-    procedure ItemDBlClick(Item: TJvTimeItem); virtual;
+    procedure ItemDblClick(Item: TJvTimeItem); virtual;
     procedure Size; virtual;
     procedure SaveItem(Item: TJvTimeItem; Stream: TStream); virtual;
     procedure LoadItem(Item: TJvTimeItem; Stream: TStream); virtual;
@@ -472,12 +472,12 @@ var
 
 function MonthCount(Date1, Date2: TDateTime): Integer;
 var
-  y1, m1, d1, y2, m2, d2: Word;
+  Y1, M1, D1, Y2, M2, D2: Word;
 begin
-  DecodeDate(Date1, y1, m1, d1);
-  DecodeDate(Date2, y2, m2, d2);
-  Result := (Y2 - Y1) * 12 + (m2 - m1);
-  if (d1 = 1) and (d2 = 1) then
+  DecodeDate(Date1, Y1, M1, D1);
+  DecodeDate(Date2, Y2, M2, D2);
+  Result := (Y2 - Y1) * 12 + (M2 - M1);
+  if (D1 = 1) and (D2 = 1) then
     Dec(Result);
 end;
 
@@ -818,7 +818,7 @@ end;
 procedure TJvTLScrollBtn.SetDirection(const Value: TJvScrollArrow);
 begin
   FDirection := Value;
-  if (TimeLine <> nil) and (TimeLine.parent <> nil )then
+  if (TimeLine <> nil) and (TimeLine.Parent <> nil )then
   begin
     UpdatePlacement;
     Invalidate;
@@ -827,7 +827,7 @@ end;
 
 procedure TJvTLScrollBtn.SetFlat(const Value: Boolean);
 begin
-  if FFLat <> Value then
+  if FFlat <> Value then
   begin
     FFlat := Value;
     Invalidate;
@@ -1558,7 +1558,7 @@ procedure TJvCustomTimeLine.DrawDayNumbers(ACanvas: TCanvas; Days, StartAt:
   Integer);
 var
   I: Integer;
-  aRect: TRect;
+  LRect: TRect;
   DayWidth: Extended;
   sDay: string;
 begin
@@ -1570,23 +1570,23 @@ begin
     for I := 1 to Days do
     begin
       sDay := IntToStr(I);
-      aRect.Left := Round((I - 1) * DayWidth) + (StartAt + Round(DayWidth) div 2
+      LRect.Left := Round((I - 1) * DayWidth) + (StartAt + Round(DayWidth) div 2
         - TextWidth(sDay) div 2);
-      aRect.Right := aRect.Left + TextWidth(sDay);
-      aRect.Top := FTopOffset + FDayTextTop;
-      aRect.Bottom := aRect.Top + TextHeight(sDay);  
-      DrawText(ACanvas, sDay, Length(sDay), aRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
+      LRect.Right := LRect.Left + TextWidth(sDay);
+      LRect.Top := FTopOffset + FDayTextTop;
+      LRect.Bottom := LRect.Top + TextHeight(sDay);  
+      DrawText(ACanvas, sDay, Length(sDay), LRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
 
     end;
   ACanvas.Font.Size := Font.Size + 2;
 end;
 
-procedure TJvCustomTimeLine.DrawMonth(ACanvas: TCanvas; StartAt, m: Integer);
+procedure TJvCustomTimeLine.DrawMonth(ACanvas: TCanvas; StartAt, M: Integer);
 begin
   if csDestroying in ComponentState then
     Exit;
   ACanvas.Pen.Width := 1;
-  if (FYearWidth >= 140) or (m mod 3 = 1) then
+  if (FYearWidth >= 140) or (M mod 3 = 1) then
     { draw every month only if it fits }
   begin
     ACanvas.MoveTo(StartAt, FTopOffset);
@@ -1598,7 +1598,7 @@ end;
 procedure TJvCustomTimeLine.DrawMonthName(ACanvas: TCanvas; Month, StartAt:
   Integer);
 var
-  aRect: TRect;
+  LRect: TRect;
   AName: string;
 begin
   if csDestroying in ComponentState then
@@ -1611,35 +1611,34 @@ begin
   with ACanvas do
   begin
     ACanvas.Font.Assign(Self.Font);
-    aRect.Left := StartAt + Round(FMonthWidth) div 2 - TextWidth(AName) div 2;
-    aRect.Right := aRect.Left + TextWidth(AName);
-    aRect.Top := FTopOffset + FMonthTextTop;
-    aRect.Bottom := aRect.Top + TextHeight(AName);  
-    DrawText(ACanvas, AName, -1, aRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
+    LRect.Left := StartAt + Round(FMonthWidth) div 2 - TextWidth(AName) div 2;
+    LRect.Right := LRect.Left + TextWidth(AName);
+    LRect.Top := FTopOffset + FMonthTextTop;
+    LRect.Bottom := LRect.Top + TextHeight(AName);  
+    DrawText(ACanvas, AName, -1, LRect, DT_CENTER or DT_VCENTER or DT_SINGLELINE); 
   end;
 end;
 
-procedure TJvCustomTimeLine.DrawYear(ACanvas: TCanvas; StartAt: Integer; Yr:
-  string);
+procedure TJvCustomTimeLine.DrawYear(ACanvas: TCanvas; StartAt: Integer; YR: string);
 var
-  aRect: TRect;
+  LRect: TRect;
 begin
   if csDestroying in ComponentState then
     Exit;
   ACanvas.Font := FYearFont;
   ACanvas.Pen.Width := 1;
   if FYearWidth <= 96 then
-    Yr := Copy(Yr, Length(Yr) - 1, Length(Yr)); { skip 100's }
-  aRect.Left := StartAt - ACanvas.TextWidth(Yr) div 2;
-  aRect.Top := FTopOffset + FYearTextTop;
-  aRect.Right := StartAt + ACanvas.TextWidth(Yr) div 2;
-  aRect.Bottom := aRect.Top + ACanvas.TextHeight(Yr);
+    YR := Copy(YR, Length(YR) - 1, Length(YR)); { skip 100's }
+  LRect.Left := StartAt - ACanvas.TextWidth(YR) div 2;
+  LRect.Top := FTopOffset + FYearTextTop;
+  LRect.Right := StartAt + ACanvas.TextWidth(YR) div 2;
+  LRect.Bottom := LRect.Top + ACanvas.TextHeight(YR);
   { draw vertical line }
   ACanvas.MoveTo(StartAt, FTopOffset);
   ACanvas.LineTo(StartAt, FTopOffset + FYearLineLength);
   { draw text }
   SetBkMode(ACanvas.Handle, Transparent);
-  DrawText(ACanvas.Handle, PChar(Yr), Length(Yr), aRect,
+  DrawText(ACanvas.Handle, PChar(YR), Length(YR), LRect,
     DT_CENTER or DT_VCENTER or DT_SINGLELINE);
   with ACanvas.Pen do
   begin
@@ -1997,31 +1996,31 @@ end;
 
 procedure TJvCustomTimeLine.UpdateItem(Index: Integer; ACanvas: TCanvas);
 var
-  aHeight: Integer;
-  aItem: TJvTimeItem;
-  aRect: TRect;
+  LHeight: Integer;
+  LItem: TJvTimeItem;
+  LRect: TRect;
 begin
   UpdateOffset;
-  aItem := FTimeItems[Index];
+  LItem := FTimeItems[Index];
   ACanvas.Font := Font;
-  aHeight := FItemHeight;
+  LHeight := FItemHeight;
 
-  MeasureItem(aItem, aHeight);
+  MeasureItem(LItem, LHeight);
 
-  aRect.Left := PosAtDate(aItem.Date);
-  aRect.Top := FItemOffset + (aHeight * (aItem.Level - FTopLevel));
-  aRect.Bottom := aRect.Top + aHeight;
-  if aItem.WidthAs = asPixels then
-    aRect.Right := aRect.Left + aItem.Width
+  LRect.Left := PosAtDate(LItem.Date);
+  LRect.Top := FItemOffset + (LHeight * (LItem.Level - FTopLevel));
+  LRect.Bottom := LRect.Top + LHeight;
+  if LItem.WidthAs = asPixels then
+    LRect.Right := LRect.Left + LItem.Width
   else
-    aRect.Right := PosAtDate(aItem.Date + aItem.Width);
+    LRect.Right := PosAtDate(LItem.Date + LItem.Width);
 
-  FNewHeight := Max(aRect.Bottom + FTopOffset, FNewHeight);
-  if (aItem.Level < FTopLevel) or not RectInRect(aRect, ClientRect) or (FUpdate <> 0) then
+  FNewHeight := Max(LRect.Bottom + FTopOffset, FNewHeight);
+  if (LItem.Level < FTopLevel) or not RectInRect(LRect, ClientRect) or (FUpdate <> 0) then
     Exit;
-  aItem.FRect := aRect;
-  DrawItem(aItem, ACanvas, aRect);
-  aItem.FRect := aRect;
+  LItem.FRect := LRect;
+  DrawItem(LItem, ACanvas, LRect);
+  LItem.FRect := LRect;
 end;
 
 procedure TJvCustomTimeLine.UpdateItems;
@@ -2057,29 +2056,29 @@ end;
 
 function TJvCustomTimeLine.DateAtPos(Pos: Integer): TDateTime;
 var
-  yr, M, D: Word;
+  YR, M, D: Word;
   em, xremain, xday: Integer;
 begin
   em := Trunc(Pos / FMonthWidth); { elapsed months }
   xremain := Pos mod Trunc(FMonthWidth);
-  DecodeDate(FFirstDate, yr, M, D);
+  DecodeDate(FFirstDate, YR, M, D);
   em := M + em;
-  Yr := Yr + em div 12;
+  YR := YR + em div 12;
   em := em mod 12;
   if em < 1 then
   begin
     em := 12;
-    Dec(Yr);
+    Dec(YR);
   end;
 
-  xday := Ceil(xremain * (MonthDays[IsLeapYear(yr), em] / FMonthWidth));
+  xday := Ceil(xremain * (MonthDays[IsLeapYear(YR), em] / FMonthWidth));
 
   if xday <= 0 then
     xday := 1
   else
-  if xday > MonthDays[IsLeapYear(yr), em] then
-    xday := MonthDays[IsLeapYear(yr), em];
-  Result := EncodeDate(Yr, em, xday);
+  if xday > MonthDays[IsLeapYear(YR), em] then
+    xday := MonthDays[IsLeapYear(YR), em];
+  Result := EncodeDate(YR, em, xday);
 end;
 
 function TJvCustomTimeLine.PosAtDate(Date: TDateTime): Integer;
@@ -2343,7 +2342,7 @@ begin
   end;
 end;
 
-procedure TJvCustomTimeLine.ItemDBlClick(Item: TJvTimeItem);
+procedure TJvCustomTimeLine.ItemDblClick(Item: TJvTimeItem);
 begin
   if Assigned(FOnItemDblClick) then
     FOnItemDblClick(Self, Item);

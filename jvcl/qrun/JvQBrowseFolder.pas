@@ -61,7 +61,7 @@ const
 
 type
   IFolderFilterSite = interface(IUnknown)
-    [SID_IfolderFilterSite]
+    [SID_IFolderFilterSite]
     function SetFilter(punk: IUnknown): HResult; stdcall;
   end;
 
@@ -304,7 +304,7 @@ type
   
 
 type
-  TSHGetFolderPathProc = function(hWnd: HWND; csidl: Integer; hToken: THandle;
+  TSHGetFolderPathProc = function(hWnd: HWND; CSIDL: Integer; hToken: THandle;
     dwFlags: DWORD; pszPath: PAnsiChar): HResult; stdcall;
 
 var
@@ -419,7 +419,7 @@ begin
     else
       Options := Options - [odNewDialogStyle];
     Options := Options + [odBrowseForComputer];
-    RootDirectory := fdNetWork;
+    RootDirectory := fdNetwork;
     Result := Execute;
     if Result then
       ADirectory := Directory;
@@ -497,7 +497,7 @@ const
     { fdNetHood }
     (CSIDL: CSIDL_NETHOOD; MinVersion: 0; OnlyNT: False;
     CanSimulate: False; Alternative: fdNoSpecialFolder),
-    { fdNetWork }
+    { fdNetwork }
     (CSIDL: CSIDL_NETWORK; MinVersion: 0; OnlyNT: False;
     CanSimulate: False; Alternative: fdNoSpecialFolder),
     { fdPersonal }
@@ -856,7 +856,7 @@ begin
   end;
 end;
 
-function lpfnBrowseProc(Wnd: HWND; uMsg: UINT; lParam, lpData: LParam): Integer; stdcall;
+function lpfnBrowseProc(Wnd: HWND; uMsg: UINT; lParam, lpData: LPARAM): Integer; stdcall;
 begin
   Result := 0;
 
@@ -1053,7 +1053,7 @@ function TJvBrowseForFolderDialog.Execute: Boolean;
 var
   dspName: array [0..MAX_PATH] of Char;
   BrowseInfo: TBrowseInfo;
-  pidl: PItemIDList;
+  PIDL: PItemIDList;
   ShellVersion: Cardinal;
   ActiveWindow: HWND;
   WindowList: Pointer;
@@ -1112,20 +1112,20 @@ begin
       ActiveWindow := GetActiveWindow;
       WindowList := DisableTaskWindows(0);
       try
-        pidl := SHBrowseForFolder(BrowseInfo);
+        PIDL := SHBrowseForFolder(BrowseInfo);
       finally
         EnableTaskWindows(WindowList);
         SetActiveWindow(ActiveWindow);
       end;
 
-      Result := pidl <> nil;
+      Result := PIDL <> nil;
       if Result then
       begin
-        { (rb) This does not work; pidl^ has variable length }
-        FPidl := pidl^;
+        { (rb) This does not work; PIDL^ has variable length }
+        FPidl := PIDL^;
         FDisplayName := BrowseInfo.pszDisplayName;
-        FDirectory := IDListToPath(pidl);
-        CoTaskMemFree(pidl);
+        FDirectory := IDListToPath(PIDL);
+        CoTaskMemFree(PIDL);
       end;
 
       CoTaskMemFree(BrowseInfo.pidlRoot);
@@ -1227,19 +1227,19 @@ end;
 procedure TJvBrowseForFolderDialog.SetExpanded(IDList: PItemIDList);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETEXPANDED, WParam(False), LParam(IDList));
+    SendMessage(FDialogWindow, BFFM_SETEXPANDED, WPARAM(False), LPARAM(IDList));
 end;
 
 procedure TJvBrowseForFolderDialog.SetExpandedW(const APath: WideString);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETEXPANDED, WParam(True), LParam(PWideChar(APath)));
+    SendMessage(FDialogWindow, BFFM_SETEXPANDED, WPARAM(True), LPARAM(PWideChar(APath)));
 end;
 
 procedure TJvBrowseForFolderDialog.SetOKEnabled(const Value: Boolean);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_ENABLEOK, 0, LParam(Value));
+    SendMessage(FDialogWindow, BFFM_ENABLEOK, 0, LPARAM(Value));
 end;
 
 procedure TJvBrowseForFolderDialog.SetOKText(const AText: string);
@@ -1252,7 +1252,7 @@ end;
 procedure TJvBrowseForFolderDialog.SetOKTextW(const AText: WideString);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETOKTEXT, 0, LParam(PWideChar(AText)));
+    SendMessage(FDialogWindow, BFFM_SETOKTEXT, 0, LPARAM(PWideChar(AText)));
 end;
 
 procedure TJvBrowseForFolderDialog.SetOptions(const Value: TOptionsDir);
@@ -1281,7 +1281,7 @@ begin
 
   if odEditBox in RemovedOptions then
     FOptions := FOptions - [odIncludeUrls, odValidate];
-  if odNewDialogstyle in RemovedOptions then
+  if odNewDialogStyle in RemovedOptions then
     FOptions := FOptions - [odIncludeUrls, odShareable, odUsageHint];
   if odIncludeFiles in RemovedOptions then
     FOptions := FOptions - [odIncludeUrls];
@@ -1314,25 +1314,25 @@ end;
 procedure TJvBrowseForFolderDialog.SetSelection(const APath: string);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETSELECTION, WParam(True), LParam(Pointer(APath)));
+    SendMessage(FDialogWindow, BFFM_SETSELECTION, WPARAM(True), LPARAM(Pointer(APath)));
 end;
 
 procedure TJvBrowseForFolderDialog.SetSelection(IDList: PItemIDList);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETSELECTION, WParam(False), LParam(IDList));
+    SendMessage(FDialogWindow, BFFM_SETSELECTION, WPARAM(False), LPARAM(IDList));
 end;
 
 procedure TJvBrowseForFolderDialog.SetStatusText(const AText: string);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETSTATUSTEXT, 0, LParam(Pointer(AText)));
+    SendMessage(FDialogWindow, BFFM_SETSTATUSTEXT, 0, LPARAM(Pointer(AText)));
 end;
 
 procedure TJvBrowseForFolderDialog.SetStatusTextW(const AText: WideString);
 begin
   if FDialogWindow <> 0 then
-    SendMessage(FDialogWindow, BFFM_SETSTATUSTEXTW, 0, LParam(PWideChar(AText)));
+    SendMessage(FDialogWindow, BFFM_SETSTATUSTEXTW, 0, LPARAM(PWideChar(AText)));
 end;
 
 function TJvBrowseForFolderDialog.ShouldShow(psf: IShellFolder; pidlFolder,
