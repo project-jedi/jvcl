@@ -1,6 +1,7 @@
+[Compiler]
+UnsafeType=0
+UnsafeCode=0
+UnsafeCast=0
 [Directories]
-OutputDir=
 UnitOutputDir=..\..\lib7
-PackageDLLOutputDir=
-PackageDCPOutputDir=
 SearchPath=..\..\common;..\..\Resources
