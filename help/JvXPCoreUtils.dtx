@@ -1,5 +1,5 @@
 ##Package: XPCtrls
-##Status: Locked by peter3
+##Status: Completed (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvXPCoreUtils.pas
 Summary
@@ -11,171 +11,151 @@ Author
 @@JvXPAdjustBoundRect
 <TITLE JvXPAdjustBoundRect procedure>
 Summary
-  Write here a summary (1 line)
+  Adjust a TRect based on several parameters.
 Description
-  Write here a description
+  JvXPAdjustBoundRect is used to modify the size of a TRect based on the current value of several properties.
+  When entering the procedure , Rect should be set to the current boundning rect of the control. When returning,
+  Rect has been modified with the new values.
 Parameters
-  BorderWidth    - Description for this parameter
-  ShowBoundLines - Description for this parameter
-  BoundLines     - Description for this parameter
-  Rect           - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BorderWidth    - Width of the controls borders.
+  ShowBoundLines - Determines if BoundLines is valid.
+  BoundLines     - Contains a set of edges that are showing in the control.
+  Rect           - At entry, contains the bounding rect of the control. At exit, contains the modified values.
 ----------------------------------------------------------------------------------------------------
 @@JvXPColorizeBitmap
 <TITLE JvXPColorizeBitmap procedure>
 Summary
-  Write here a summary (1 line)
+  Changes the background color of a bitmap.
 Description
-  Write here a description
+  JvXPColorizeBitmap changes the background color of a bitmap to a new color.
 Parameters
-  Bitmap - Description for this parameter
-  AColor - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Bitmap - The bitmap to change.
+  AColor - The new background color for the bitmap.
 ----------------------------------------------------------------------------------------------------
 @@JvXPConvertToGray2
 <TITLE JvXPConvertToGray2 procedure>
 Summary
-  Write here a summary (1 line)
+  Converts a color image to a gray scale image.
 Description
-  Write here a description
+  Use JvXPConvertToGray2 to convert a bitmap image to a gray scale equivalent.
 Parameters
-  Bitmap - Description for this parameter
+  Bitmap - The bitmap to convert.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 ----------------------------------------------------------------------------------------------------
 @@JvXPCreateGradientRect
 <TITLE JvXPCreateGradientRect procedure>
 Summary
-  Write here a summary (1 line)
+  Creates a bitmap with a gradient color pattern.
 Description
-  Write here a description
+  Call JvXPCreateGradientRect to create a gradient bitmap.
 Parameters
-  AWidth     - Description for this parameter
-  AHeight    - Description for this parameter
-  StartColor - Description for this parameter
-  EndColor   - Description for this parameter
-  Colors     - Description for this parameter
-  Style      - Description for this parameter
-  Dithered   - Description for this parameter
-  Bitmap     - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AWidth     - Width of gradient.
+  AHeight    - Height of gradient.
+  StartColor - Start color of gradient.
+  EndColor   - End color of gradient.
+  Colors     - The number of colors in the gradient.
+  Style      - Sets the direction of the gradient.
+  Dithered   - Determines if the gradient is dithered or not.
+  Bitmap     - The resulting gradient.
 ----------------------------------------------------------------------------------------------------
 @@JvXPDrawBoundLines
 <TITLE JvXPDrawBoundLines procedure>
 Summary
-  Write here a summary (1 line)
+  Draws bounding lines in a specific rect on a specific canvas.
 Description
-  Write here a description
+  Call JvXPDrawBoundLines when you need to draw the boudning lines of a control.
 Parameters
-  ACanvas    - Description for this parameter
-  BoundLines - Description for this parameter
-  AColor     - Description for this parameter
-  Rect       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ACanvas    - The canvas to draw on.
+  BoundLines - The bounding lines to draw.
+  AColor     - The color to use for the lines.
+  Rect       - The bounding rect to draw in.
 ----------------------------------------------------------------------------------------------------
 @@JvXPDrawLine
 <TITLE JvXPDrawLine procedure>
 Summary
-  Write here a summary (1 line)
+  Draw a line in XP style.
 Description
-  Write here a description
+  Use JvXPDrawLine to draw a line in XP style on a canvas.
 Parameters
-  ACanvas - Description for this parameter
-  X1      - Description for this parameter
-  Y1      - Description for this parameter
-  X2      - Description for this parameter
-  Y2      - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ACanvas - The canvas to draw on.
+  X1      - The horizontal start position of the line.
+  Y1      - The vertical start position of the line.
+  X2      - The horizontal end position of the line.
+  Y2      - The vertical end position of the line.
 ----------------------------------------------------------------------------------------------------
 @@JvXPFrame3D
 <TITLE JvXPFrame3D procedure>
 Summary
-  Write here a summary (1 line)
+  Draws a frame on a canvas.
 Description
-  Write here a description
+  Use JvXPFrame3D to draw like Frame3D but using an XP style.
 Parameters
-  ACanvas     - Description for this parameter
-  Rect        - Description for this parameter
-  TopColor    - Description for this parameter
-  BottomColor - Description for this parameter
-  Swapped     - Description for this parameter
+  ACanvas     - The canvas to draw on.
+  Rect        - The rect to draw in. This is adjusted to the dimensions of the rectangle that lies inside the frame.
+  TopColor    - The color for the top and left edges.
+  BottomColor - The color for the bottom and right edges.
+  Swapped     - Set to true if TopColor and BottomColor should swap places.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Frame3D
 ----------------------------------------------------------------------------------------------------
 @@JvXPMethodsEqual
 <TITLE JvXPMethodsEqual function>
 Summary
-  Write here a summary (1 line)
+  Determines whether two method pointers point to the same method.
 Description
-  Write here a description
+  Use JvXPMethodsEqual to determine whether to methods point to the same method implementation.
 Parameters
-  Method1 - Description for this parameter
-  Method2 - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Method1 - The first method to test.
+  Method2 - The second method to test.
+Return value
+  Returns true if the method pointers point to the same method.
 ----------------------------------------------------------------------------------------------------
 @@JvXPPlaceText
 <TITLE JvXPPlaceText procedure>
 Summary
-  Write here a summary (1 line)
+  Calculates and draws text.
 Description
-  Write here a description
+  Use JvXPPlaceText to simplify the drawing of text.
 Parameters
-  AParent        - Description for this parameter
-  ACanvas        - Description for this parameter
-  AText          - Description for this parameter
-  AFont          - Description for this parameter
-  AEnabled       - Description for this parameter
-  AShowAccelChar - Description for this parameter
-  AAlignment     - Description for this parameter
-  AWordWrap      - Description for this parameter
-  Rect           - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AParent        - The parent of the control being drawn into.
+  ACanvas        - The canvas to draw on.
+  AText          - The text to draw.
+  AFont          - The font to use.
+  AEnabled       - Draw text enabled or disabled.
+  AShowAccelChar - Draw accelerator characters or not.
+  AAlignment     - Alignment of text.
+  AWordWrap      - Wordwrapping on/off.
+  Rect           - The rect to draw in.
 ----------------------------------------------------------------------------------------------------
 @@JvXPRenderText
 <TITLE JvXPRenderText procedure>
 Summary
-  Write here a summary (1 line)
+  Draws text.
 Description
-  Write here a description
+  Use JvXPRenderText to either calculate or draw text.
 Parameters
-  AParent        - Description for this parameter
-  ACanvas        - Description for this parameter
-  AText          - Description for this parameter
-  AFont          - Description for this parameter
-  AEnabled       - Description for this parameter
-  AShowAccelChar - Description for this parameter
-  Rect           - Description for this parameter
-  Flags          - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  AParent        - The parent of the control to draw.
+  ACanvas        - The canvas to draw on.
+  AText          - The text to draw.
+  AFont          - The font to use.
+  AEnabled       - Draw text enabled or disabled.
+  AShowAccelChar - Draw accelerators or not.
+  Rect           - The rect to draw in or adjust according to the parameters.
+  Flags          - Additional flags to use. These are the same flags as used by DrawText. Specifically,
+                   if you include DT_CALCRECT in flags, the Rect is adjusted but nothing is drawn.
 ----------------------------------------------------------------------------------------------------
 @@JvXPSetDrawFlags
 <TITLE JvXPSetDrawFlags procedure>
 Summary
-  Write here a summary (1 line)
+  Adjusts Flags according to the values of the parameters.
 Description
-  Write here a description
+  Use JvXPSetDrawFlags as an easy way to set Flags with the alignment and wordwrap values.
+  The DT_ENDELLIPSIS value is always included in Flags. Flags can be used in calls to DrawText and
+  JvXPRenderText.
 Parameters
-  AAlignment - Description for this parameter
-  AWordWrap  - Description for this parameter
-  Flags      - Description for this parameter
+  AAlignment - The alignment to include in Flags
+  AWordWrap  - The wordwrap value to include in Flags.
+  Flags      - Modified to include the values of AAlignment and AWordWrap.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DrawText, JvXPRenderText
+

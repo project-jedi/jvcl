@@ -1,5 +1,5 @@
 ##Package: XPCtrls
-##Status: Locked by peter3
+##Status: Completed, needs review (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvXPCore.pas
 Summary
@@ -8,221 +8,156 @@ Summary
 Author
   Marc Hoffman.
 ----------------------------------------------------------------------------------------------------
-@@TJvXPBoundLines
-<TITLE TJvXPBoundLines type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = set of (blLeft, blTop, blRight, blBottom); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPControlStyle
-<TITLE TJvXPControlStyle type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = set of (csRedrawCaptionChanged, csRedrawBorderChanged, csRedrawEnabledChanged, csRedrawFocusedChanged, csRedrawMouseDown, csRedrawMouseEnter, csRedrawMouseLeave, csRedrawMouseMove, csRedrawMouseUp, csRedrawParentColorChanged, csRedrawParentFontChanged, csRedrawPosChanged, csRedrawResized); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
 @@TJvXPCustomComponent
 Summary
-  Write here a summary (1 line)
+  Base class for XP style components.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomComponent.Version
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Derive from TJvXPCustomComponent when you want to create a non-visual component
+  that is part of the XP style component hierarchy.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomControl
 Summary
-  Write here a summary (1 line)
+  Base class for XP style controls.
 Description
-  Write here a description
+  Derive from TJvXPCustomControl when you want to create a visual control that has the basic properties
+  and events of the XP style controls. Do not create instances of TJvXPCustomControl.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomControl.DrawState
 Summary
-  Write here a summary (1 line)
+  Describes the current state of the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use DrawState to determine or change the current state of the control. DrawState is used
+  to modify the visual appearance of the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomControl.IsLocked
 Summary
-  Write here a summary (1 line)
+  Determines if the control is being updated.
 Description
-  Write here a description
+  IsLocked is true when a call to BeginUpdate has benn made without a corresponding call to EndUpdate.
+  When IsLocked is true, the control is not redrawn. Use IsLocked to make multiple updates to the visual
+  appearance of the control without redrawing it between each change.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  BeginUpdate, EndUpdate
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomControl.IsSibling
 Summary
-  Write here a summary (1 line)
+  Determines if the currently selected control is a sibling of this control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  \Read IsSibling to determine if the currently focused control is also a TJvXPCustomControl
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomControl.ModalResult
 Summary
-  Write here a summary (1 line)
+  Determines whether and how the control closes its (modal) parent form.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Setting the TJvXPCustomControl's ModalResult property is an easy way to make clicking the
+  control close a modal form. When a TJvXPCustomControl is clicked, the ModalResult
+  property of its parent form is set to the same value as the TJvXPCustomControl's
+  ModalResult property.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomControl.OnMouseEnter
 Summary
-  Occurs when the mouse pointer moves over the <xxx>.
+  Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
-  <xxx>.
+  Write an OnMouseEnter event handler to take specific action when the user moves the
+  mouse over the control.
 See Also
-  HotTrack, OnMouseLeave
+  OnMouseLeave
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomControl.OnMouseLeave
 Summary
-  Occurs when the mouse pointer moves off the <xxx>.
+  Occurs when the mouse pointer moves off the control.
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
-  <xxx>. For example, you can use this event to undo changes that were made in an OnMouseEnter
-  event handler.
+  Write an OnMouseLeave event handler to take specific action when the user moves the mouse
+  off the control. For example, you can use this event to undo changes that were made in
+  an OnMouseEnter event handler.
 See Also
-  HotTrack, OnMouseEnter
-----------------------------------------------------------------------------------------------------
-@@TJvXPCustomControl.Version
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnMouseEnter
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomStyleControl
 Summary
-  Write here a summary (1 line)
+  Base class for controls that can have their appearance modified by a style manager.
 Description
-  Write here a description
+  TJvXPCustomStyleControl introduces the Style and StyleManager property. These properties allows
+  centralized control over the look and feel of controls.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomStyleControl.Style
 Summary
-  Write here a summary (1 line)
+  Determines the style of the control.
 Description
-  Write here a description
+  Use Style to set a visual style for the control.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StyleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomStyleControl.StyleManager
 Summary
-  Write here a summary (1 line)
+  Sets the style manager responsible for drawing the control.
 Description
-  Write here a description
+  Set StyleManager to point to a TJvXPStyleManager instance on your form. If you set the same style
+  manager for all TJvXPCustomControls on the form, you can control the style of all controls from one
+  central point
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
-----------------------------------------------------------------------------------------------------
-@@TJvXPDrawState
-<TITLE TJvXPDrawState type>
-Summary
-  Write here a summary (1 line)
-Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = set of (dsDefault, dsHighlight, dsClicked, dsFocused); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Style
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGlyphLayout
 <TITLE TJvXPGlyphLayout type>
 Summary
-  Write here a summary (1 line)
+  Determines the layout of images in XP style controls.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPGlyphLayout defines the possible locations of images on a XP style control.
 @@TJvXPGlyphLayout.glBottom
-  Description for glBottom
+  The image(s) are aligned to the bottom of the control.
 @@TJvXPGlyphLayout.glCenter
-  Description for glCenter
+  The image(s) are centered in the control.
 @@TJvXPGlyphLayout.glTop
-  Description for glTop
+  The image(s) are aligned to the top of the control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient
 Summary
-  Write here a summary (1 line)
+  Defines properties for drawing an image gradient.
 Description
-  Write here a description
+  TJvXPGradient defines properties for drawing a gradient image. The graient is available through the
+  Bitmap variable.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.Bitmap
 Summary
-  Write here a summary (1 line)
+  Contains a gradient image.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use bitmap to access the gradient created by the class based on its property settings. For example,
+  the bitmap can be used as the background of an XP style control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.Colors
 Summary
-  Write here a summary (1 line)
+  Defines the number of colors in the gradient.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Colors to define the number of color shifts the gradient contains. The minimum value for Colors
+  is 2 and the maximum value is 255.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.Dithered
 Summary
-  Write here a summary (1 line)
+  Determines how the gradient is color matched.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use dithered to determine how the gradient is color matched. When dithered is true, a color
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.Enabled
 Summary
-  Write here a summary (1 line)
+  Defines if the gradient is drawn in an enabled or disabled style.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Enabled to control the general visual appearance of the gradient. When Enabled is true, the
+  gradient is more "alive" than when disabled.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.EndColor
 Summary
-  Write here a summary (1 line)
+  Determines the end color of the gradient.
 Description
-  Write here a description
+  Use EndColor to \read and change the end color of the gradient. The gradient is created as a color
+  starting with StartColor and shifting towards EndColor using the number of color bands determined
+  by Colors.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartColor, Style, Colors
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.RecreateBands
 Summary
-  Write here a summary (1 line)
+  Recreates the gradient.
 Description
   Write here a description
 See Also
@@ -231,86 +166,73 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.StartColor
 Summary
-  Write here a summary (1 line)
+  Determines the start color of the gradient.
 Description
-  Write here a description
+  Use StartColor to \read and change the start color of the gradient. The gradient is created as a color
+  starting with StartColor and shifting towards EndColor using the number of color bands determined
+  by Colors.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  EndColor, Style, Colors
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradient.Style
 Summary
-  Write here a summary (1 line)
+  Defines the origin of the gradient.
 Description
-  Write here a description
+  Use Style to change the origin of the gradient. Style determines where the
+  gradient's starts drawing with its StartColor.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  StartColor, EndColor, Colors
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradientColors
 <TITLE TJvXPGradientColors type>
 Summary
-  Write here a summary (1 line)
+  Defines the number of colors a gradient can contain
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-(Value = 2..255; - for reference)
+  TJvXPGradientColors is used for the Colors property of TJvXPGradient and
+  defines the allowable range of colors in the gradient.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPGradient
 ----------------------------------------------------------------------------------------------------
 @@TJvXPGradientStyle
 <TITLE TJvXPGradientStyle type>
 Summary
-  Write here a summary (1 line)
+  Defines the available styles for a gradient.
 Description
-  Write here a description
+  TJvXPGradientStyle is used for the Style property of the TJvXPGradient class. TJvXPGradientStyle describes
+  where the StartColor of the gradient have its origin.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPGradient
 @@TJvXPGradientStyle.gsLeft
-  Description for gsLeft
+  The gradient starts at the left edge of the image and moves to the right.
 @@TJvXPGradientStyle.gsTop
-  Description for gsTop
+  The gradient starts at the top edge of the image and moves down.
 @@TJvXPGradientStyle.gsRight
-  Description for gsRight
+  The gradient starts at the right edge of the image and moves left.
 @@TJvXPGradientStyle.gsBottom
-  Description for gsBottom
+  The gradient starts at the bottom edge of the image and moves upwards.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyle
 Summary
-  Write here a summary (1 line)
+  Class that is used to describe the way styles are handled in an XP style control.
 Description
-  Write here a description
-----------------------------------------------------------------------------------------------------
-@@TJvXPStyle.GetTheme
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-Return value
-  Describe here what the function returns
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPStyle is used by XP style controls to control how the style of the control i smanaged. Either the
+  control handles it's own style changes or the style i scontrolled from a style manager.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyle.Theme
 Summary
-  Write here a summary (1 line)
+  Defines the Theme of the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Theme to modify the visual appearance of a control.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyle.UseStyleManager
 Summary
-  Write here a summary (1 line)
+  Determines if the style and theme is controlled from a style manager.
 Description
-  Write here a description
+  Use UseStyleManager to control whether the style of a control is controlled from the control itself
+  or from a central StyleManager component. UseStylemanager only have any effect if the StyleManager property
+  of the control is set to a valid TJvXPStyleManager.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPStyleManager
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyleManager
 <TITLEIMG TJvXPStyleManager>
@@ -318,72 +240,70 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A component that manages the theme and style of any number o connected controls.
 Description
-  Write here a description
+  Use a TJvXPStyleManager when you want to control the visual appearance of several or all
+  XP style controls on a form. By setting each XP controls StyleManager to point to a
+  TJvXPStyleManager, you can change all associated controls from one central location.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyleManager.OnThemeChanged
 Summary
-  Write here a summary (1 line)
+  Called when the theme of the style manager changes.
 Description
-  Write here a description
+  Write a handler for the OnThemeChanged event when you want to take specific action when the
+  theme of the style manager changes. For example, use it to changethe visual appearance of other controls
+  that cannot be associated with the style manager but still need to synchronize their looks with
+  the XP controls.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Theme
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyleManager.RegisterControls
 Summary
-  Write here a summary (1 line)
+  Adds controls to the style manager.
 Description
-  Write here a description
+  RegisterControls is called automatically by XP controls when their StyleManager property is set to a valid
+  style manager. All registered controls changes together when the style manager's Theme property changes.
 Parameters
-  AControls - Description for this parameter
+  AControls - an array of XP style controls
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  UnregisterControls
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyleManager.Theme
 Summary
-  Write here a summary (1 line)
+  Defines the current theme.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use Theme to set and chnage the current theme for all connected controls.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPStyleManager.UnregisterControls
 Summary
-  Write here a summary (1 line)
+  Removes controls from the style manager.
 Description
-  Write here a description
+  Controls call UnregisterControls automatically when their StyleManager property is changed.
 Parameters
-  AControls - Description for this parameter
+  AControls - an array of controls to remove from the internal list of registered controls.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  RegisterControls
 ----------------------------------------------------------------------------------------------------
 @@TJvXPTheme
 <TITLE TJvXPTheme type>
 Summary
-  Write here a summary (1 line)
+  Defines the available styles for an XP control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvXPTheme defines th estyles availabel for an XP control.
 @@TJvXPTheme.WindowsXP
-  Description for WindowsXP
+  Use a visual style resembling Windows XP.
 @@TJvXPTheme.OfficeXP
-  Description for OfficeXP
+  Use a visual style resembling Office XP.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPUnlimitedControl
 Summary
-  Write here a summary (1 line)
+  Publishes properties.
 Description
-  Write here a description
+  TJvXPUnlimitedControl derives from TJvXPCustomControl and published many of its properties but doesn't
+  introduce any new behavior.
 ----------------------------------------------------------------------------------------------------
 @@TJvXPWinControl
 Summary
-  Write here a summary (1 line)
+  Base class for TWinCotrol descendants.
 Description
-  Write here a description
+  TJvXPCustomControl derives directly from TWinControl and only publishes the Color property
