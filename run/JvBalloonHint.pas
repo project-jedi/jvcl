@@ -281,7 +281,7 @@ const
   CTipHeight: array [TJvStemSize] of Integer = (8, 16, 24);
   CTipWidth: array [TJvStemSize] of Integer = (8, 16, 24);
   CTipDelta: array [TJvStemSize] of Integer = (16, 15, 17);
-  DefaultTextFlags:Cardinal = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
+  DefaultTextFlags:Longint = DT_LEFT or DT_WORDBREAK or DT_EXPANDTABS or DT_NOPREFIX;
 
 type
   TGlobalCtrl = class(TComponent)
