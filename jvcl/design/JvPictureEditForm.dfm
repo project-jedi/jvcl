@@ -174,7 +174,7 @@ object PictureEditDialog: TPictureEditDialog
   object FormStorage: TJvFormStorage
     AppStorage = AppStorage
     AppStoragePath = 'RX.ImageEditor\'
-    Options = [fpPosition]
+    Options = [fpSize, fpLocation]
     OnSavePlacement = FormStorageSavePlacement
     OnRestorePlacement = FormStorageRestorePlacement
     StoredProps.Strings = (
