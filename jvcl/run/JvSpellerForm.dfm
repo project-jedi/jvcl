@@ -1,4 +1,4 @@
-object JvSpellerFrm: TJvSpellerFrm
+object JvSpellerForm: TJvSpellerForm
   Left = 306
   Top = 251
   BorderStyle = bsDialog
@@ -14,19 +14,19 @@ object JvSpellerFrm: TJvSpellerFrm
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object lblcontext: TLabel
+  object LblContext: TLabel
     Left = 0
     Top = 33
     Width = 371
     Height = 86
     Hint = 'look ahead box'
     Align = alClient
-    Caption = 'lblcontext'
+    Caption = 'LblContext'
     ParentShowHint = False
     ShowHint = True
     WordWrap = True
   end
-  object Panel1: TPanel
+  object TextPanel: TPanel
     Left = 0
     Top = 0
     Width = 371
@@ -35,16 +35,16 @@ object JvSpellerFrm: TJvSpellerFrm
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 0
-    object txtspell: TEdit
+    object TxtSpell: TEdit
       Left = 7
       Top = 7
       Width = 293
       Height = 21
       TabOrder = 0
-      Text = 'txtspell'
+      Text = 'TxtSpell'
     end
   end
-  object Panel2: TPanel
+  object ButtonPanel: TPanel
     Left = 0
     Top = 119
     Width = 371
@@ -53,29 +53,29 @@ object JvSpellerFrm: TJvSpellerFrm
     BevelInner = bvRaised
     BevelOuter = bvLowered
     TabOrder = 1
-    object btnSkip: TButton
+    object BtnSkip: TButton
       Left = 13
       Top = 7
       Width = 61
       Height = 20
       Hint = 'Skip this word'
-      Caption = 'Skip'
+      Caption = '&Skip'
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
     end
-    object btnchange: TButton
+    object BtnChange: TButton
       Left = 228
       Top = 7
       Width = 60
       Height = 20
       Hint = 'Change to corrected word'
-      Caption = 'Change'
+      Caption = '&Change'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 1
+      TabOrder = 3
     end
-    object btncancel: TButton
+    object BtnCancel: TButton
       Left = 299
       Top = 7
       Width = 61
@@ -85,30 +85,30 @@ object JvSpellerFrm: TJvSpellerFrm
       ModalResult = 2
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 2
+      TabOrder = 4
     end
-    object btnAdd: TButton
+    object BtnAdd: TButton
       Left = 156
       Top = 7
       Width = 61
       Height = 20
       Hint = 'Add to user Dictionary'
-      Caption = 'Add'
+      Caption = '&Add'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 3
+      TabOrder = 2
     end
-    object btnskipall: TButton
+    object BtnSkipAll: TButton
       Left = 85
       Top = 7
       Width = 60
       Height = 20
       Hint = 'Skip all, update and finish'
-      Caption = 'Skip All'
+      Caption = 'S&kip All'
       ModalResult = 1
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 4
+      TabOrder = 1
     end
   end
 end

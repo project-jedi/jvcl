@@ -23,7 +23,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvSpellerForm;
 
 interface
@@ -36,76 +38,70 @@ uses
 type
   TJvSpeller = class;
 
-  TJvSpellerFrm = class(TJvForm)
-    Panel1: TPanel;
-    lblcontext: TLabel;
-    txtspell: TEdit;
-    Panel2: TPanel;
-    btnSkip: TButton;
-    btnchange: TButton;
-    btncancel: TButton;
-    btnAdd: TButton;
-    btnskipall: TButton;
+  TJvSpellerForm = class(TJvForm)
+    TextPanel: TPanel;
+    LblContext: TLabel;
+    TxtSpell: TEdit;
+    ButtonPanel: TPanel;
+    BtnSkip: TButton;
+    BtnChange: TButton;
+    BtnCancel: TButton;
+    BtnAdd: TButton;
+    BtnSkipAll: TButton;
   private
-    { Private declarations }
     FSpeller: TJvSpeller;
   public
-    { Public declarations }
   end;
+
+  TJvDicIndexArray = array [1..26] of Integer;
 
   TJvSpeller = class(TComponent)
   private
-    { Private declarations }
     FSourceText: string;
-    Dict: string;
-    UserDic: string;
-    UserDicChanged: boolean;
-    DicIndex: array[1..26] of integer;
-    UserDicIndex: array[1..26] of integer;
-    SpellerDlg: TJvSpellerFrm;
-    FWordBegin: integer;
-    FWordEnd: integer;
-    FDictionary: TFilename;
-    FUserDictionary: TFilename;
-    function WordBegin: boolean;
-    function WordEnd: boolean;
+    FDict: string;
+    FUserDic: string;
+    FUserDicChanged: Boolean;
+    FDicIndex: TJvDicIndexArray;
+    FUserDicIndex: TJvDicIndexArray;
+    FSpellerDialog: TJvSpellerForm;
+    FWordBegin: Integer;
+    FWordEnd: Integer;
+    FDictionary: TFileName;
+    FUserDictionary: TFileName;
+    function WordBegin: Boolean;
+    function WordEnd: Boolean;
     function ParseWord: string;
     procedure SpellNext;
     procedure Skip(Sender: TObject);
     procedure Add(Sender: TObject);
-    procedure Change(sender: Tobject);
+    procedure Change(Sender: TObject);
     procedure IndexDictionary;
     procedure IndexUserDictionary;
-    procedure SetDictionary(const Value: TFilename);
-    procedure SetUserDictionary(const Value: TFilename);
-  protected
-    { Protected declarations }
+    procedure SetDictionary(const Value: TFileName);
+    procedure SetUserDictionary(const Value: TFileName);
+    procedure CreateSpellerDialog(SpellWord: string);
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
-    procedure LoadDictionary(aFile: string);
-    procedure LoadUserDictionary(aFile: string);
+    procedure LoadDictionary(AFile: string);
+    procedure LoadUserDictionary(AFile: string);
     procedure Spell(var SourceText: string);
   published
-    { Published declarations }
-    property Dictionary:TFilename read FDictionary write SetDictionary;
-    property UserDictionary:TFilename read FUserDictionary write SetUserDictionary;
+    property Dictionary: TFileName read FDictionary write SetDictionary;
+    property UserDictionary: TFileName read FUserDictionary write SetUserDictionary;
   end;
-
-var
-  JvSpellerFrm: TJvSpellerFrm;
 
 implementation
 
-uses JvTypes;
+uses
+  JvTypes;
 
-{$R *.DFM}
+{$R *.dfm}
 
 resourcestring
-  sNoDictionaryLoaded = 'no dictionary loaded';
+  SNoDictionaryLoaded = 'No dictionary loaded';
 
 const
-  tab = chr(9);
+  Tab = Chr(9);
 
 function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm
@@ -157,140 +153,144 @@ asm
         POP     ESI
 end;
 
-procedure SaveString(aFile, aText: string);
+procedure SaveString(AFile, AText: string);
 begin
-  with TFileStream.Create(aFile, fmCreate) do
+  with TFileStream.Create(AFile, fmCreate) do
   try
-    writeBuffer(aText[1], length(aText));
-  finally free;
+    WriteBuffer(AText[1], Length(AText));
+  finally
+    Free;
   end;
 end;
 
-function LoadString(aFile: string): string;
-var
-  s: string;
+function LoadString(AFile: string): string;
 begin
-  with TFileStream.Create(aFile, fmOpenRead) do
+  with TFileStream.Create(AFile, fmOpenRead) do
   try
-    SetLength(s, Size);
-    ReadBuffer(s[1], Size);
-  finally free;
+    SetLength(Result, Size);
+    ReadBuffer(Result[1], Size);
+  finally
+    Free;
   end;
-  result := s;
 end;
 
-{ TJvSpeller }
-
-procedure TJvSpeller.Add(Sender: TObject);
-var
-  s: string;
-  list: Tstringlist;
-begin
-  s := SpellerDlg.txtspell.text;
-  if s = '' then exit;
-  UserDic := UserDic + lowercase(s) + cr;
-  UserDicChanged := true;
-  list := TStringlist.create;
-  list.text := UserDic;
-  list.Sort;
-  UserDic := list.text;
-  list.free;
-  IndexUserDictionary;
-  skip(sender);
-end;
-
-procedure TJvSpeller.Change(sender: Tobject);
-var
-  L: integer;
-  s: string;
-begin
-  s := SpellerDlg.txtspell.text;
-  if s = '' then exit;
-  L := length(s);
-  FSourceText := copy(FSourceText, 1, FWordBegin - 1) + s + copy(FSourceText, FWordEnd, length(FsourceText));
-  FWordEnd := FWordEnd + (L - (FWordEnd - FWordBegin));
-  Skip(sender);
-end;
+//=== TJvSpeller =============================================================
 
 constructor TJvSpeller.Create(AOwner: TComponent);
 var
-  i: integer;
+  I: Integer;
 begin
-  inherited;
-  for i := 1 to 26 do
+  inherited Create(AOwner);
+  for I := 1 to 26 do
   begin
-    DicIndex[i] := 1;
-    UserDicIndex[i] := 1;
+    FDicIndex[I] := 1;
+    FUserDicIndex[I] := 1;
   end;
+end;
+
+procedure TJvSpeller.Add(Sender: TObject);
+var
+  S: string;
+begin
+  S := FSpellerDialog.TxtSpell.Text;
+  if S = '' then
+    Exit;
+  FUserDic := FUserDic + LowerCase(S) + Cr;
+  FUserDicChanged := True;
+  with TStringList.Create do
+    try
+      Text := FUserDic;
+      Sort;
+      FUserDic := Text;
+    finally
+      Free;
+    end;
+  IndexUserDictionary;
+  Skip(Sender);
+end;
+
+procedure TJvSpeller.Change(Sender: TObject);
+var
+  S: string;
+begin
+  S := FSpellerDialog.TxtSpell.Text;
+  if S = '' then
+    Exit;
+  FSourceText := Copy(FSourceText, 1, FWordBegin - 1) + S +
+    Copy(FSourceText, FWordEnd, Length(FSourceText));
+  FWordEnd := FWordEnd + (Length(S) - (FWordEnd - FWordBegin));
+  Skip(Sender);
 end;
 
 procedure TJvSpeller.IndexDictionary;
 var
-  i, p, startpos: integer;
+  I, P, StartPos: Integer;
 begin
-  DicIndex[1] := 1;
-  for i := 2 to 26 do
+  FDicIndex[1] := 1;
+  for I := 2 to 26 do
   begin
-    if DicIndex[i - 1] <> 1 then
-      Startpos := DicIndex[i - 1]
+    if FDicIndex[I - 1] <> 1 then
+      Startpos := FDicIndex[I - 1]
     else
       StartPos := 1;
-    p := Q_PosStr(cr + chr(96 + i), Dict, startpos);
-    if p <> 0 then
-      DicIndex[i] := p
+    P := Q_PosStr(Cr + Chr(96 + I), FDict, StartPos);
+    if P <> 0 then
+      FDicIndex[I] := P
     else
-      DicIndex[i] := DicIndex[i - 1];
+      FDicIndex[I] := FDicIndex[I - 1];
   end;
 end;
 
 procedure TJvSpeller.IndexUserDictionary;
 var
-  i, p, startpos: integer;
+  I, P, StartPos: Integer;
 begin
-  UserDicIndex[1] := 1;
-  for i := 2 to 26 do
+  FUserDicIndex[1] := 1;
+  for I := 2 to 26 do
   begin
-    if UserDicIndex[i - 1] <> 1 then
-      Startpos := UserDicIndex[i - 1]
+    if FUserDicIndex[I - 1] <> 1 then
+      Startpos := FUserDicIndex[I - 1]
     else
       StartPos := 1;
-    p := Q_PosStr(cr + chr(96 + i), UserDic, startpos);
-    if p <> 0 then
-      UserDicIndex[i] := p
+    P := Q_PosStr(Cr + Chr(96 + I), FUserDic, StartPos);
+    if P <> 0 then
+      FUserDicIndex[I] := P
     else
-      UserDicIndex[i] := UserDicIndex[i - 1];
+      FUserDicIndex[I] := FUserDicIndex[I - 1];
   end;
 end;
 
-procedure TJvSpeller.LoadDictionary(aFile: string);
+procedure TJvSpeller.LoadDictionary(AFile: string);
 begin
-  if fileexists(aFile) then
-    Dict := LoadString(aFile)
+  if FileExists(AFile) then
+    FDict := LoadString(AFile)
   else
-    Dict := '';
+    FDict := '';
   IndexDictionary;
 end;
 
-procedure TJvSpeller.LoadUserDictionary(aFile: string);
+procedure TJvSpeller.LoadUserDictionary(AFile: string);
 begin
-  UserDictionary := aFile;
-  UserDicChanged := false;
-  if fileexists(aFile) then
-    UserDic := LoadString(afile)
+  UserDictionary := AFile;
+  FUserDicChanged := False;
+  if FileExists(AFile) then
+    FUserDic := LoadString(AFile)
   else
-    UserDic := '';
+    FUserDic := '';
   IndexUserDictionary;
 end;
 
 function TJvSpeller.ParseWord: string;
 begin
-  result := '';
-  if not WordBegin then exit;
-  if not WordEnd then exit;
-  result := copy(FSourceText, FWordBegin, FWordEnd - FWordBegin);
+  Result := '';
+  if not WordBegin then
+    Exit;
+  if not WordEnd then
+    Exit;
+  Result := Copy(FSourceText, FWordBegin, FWordEnd - FWordBegin);
 end;
 
-procedure TJvSpeller.SetDictionary(const Value: TFilename);
+procedure TJvSpeller.SetDictionary(const Value: TFileName);
 begin
   if FDictionary <> Value then
   begin
@@ -299,168 +299,159 @@ begin
   end;
 end;
 
-procedure TJvSpeller.SetUserDictionary(const Value: TFilename);
+procedure TJvSpeller.SetUserDictionary(const Value: TFileName);
 begin
   if FUserDictionary <> Value then
   begin
     FUserDictionary := Value;
-    LoadUserDictionary(FUserDictionary)
+    LoadUserDictionary(FUserDictionary);
   end;
 end;
 
 procedure TJvSpeller.Skip(Sender: TObject);
 begin
-  SpellerDlg.txtspell.text := '';
+  FSpellerDialog.TxtSpell.Text := '';
   SpellNext;
+end;
+
+procedure TJvSpeller.CreateSpellerDialog(SpellWord: string);
+begin
+  FSpellerDialog := TJvSpellerForm.Create(Application);
+  with FSpellerDialog do
+  begin
+    FSpeller := Self;
+    BtnSkip.OnClick := Skip;
+    BtnChange.OnClick := Change;
+    BtnAdd.OnClick := Add;
+    BtnAdd.Enabled := (UserDictionary <> '');
+    TxtSpell.Text := SpellWord;
+    LblContext.Caption := Copy(FSourceText, FWordBegin, 75);
+  end;
 end;
 
 procedure TJvSpeller.Spell(var SourceText: string);
 var
-  spw, s: string;
-  startpos, index: integer;
+  Spw, S: string;
+  StartPos, Index: Integer;
 begin
+  if FDict = '' then
+    raise EJVCLException.Create(SNoDictionaryLoaded);
+
   FSourceText := SourceText;
-  if Dict = '' then
-  begin
-    ShowMessage(sNoDictionaryLoaded);
-    exit;
-  end;
   FWordEnd := 1;
   repeat
-    spw := ParseWord;
-    s := lowercase(spw);
-    if spw <> '' then
+    Spw := ParseWord;
+    S := LowerCase(Spw);
+    if Spw <> '' then
     begin
-      index := ord(s[1]) - 96;
-      if (index > 0) and (index < 27) then
-        StartPos := DicIndex[index]
+      Index := Ord(S[1]) - 96;
+      if (Index > 0) and (Index < 27) then
+        StartPos := FDicIndex[Index]
       else
         StartPos := 1;
-      if Q_PosStr(s + cr, Dict, StartPos) = 0 then
-        if UserDic <> '' then
+      if Q_PosStr(S + Cr, FDict, StartPos) = 0 then
+        if FUserDic <> '' then
         begin
-          if (index > 0) and (index < 27) then
-            StartPos := UserDicIndex[index]
+          if (Index > 0) and (Index < 27) then
+            StartPos := FUserDicIndex[Index]
           else
             StartPos := 1;
-          if Q_PosStr(s + cr, UserDic, StartPos) = 0 then
+          if Q_PosStr(S + Cr, FUserDic, StartPos) = 0 then
           begin
-            SpellerDlg := TJvSpellerFrm.Create(application);
-            SpellerDlg.FSpeller := self;
-            SpellerDlg.btnSkip.OnClick := Skip;
-            SpellerDlg.btnchange.OnClick := Change;
-            SpellerDlg.btnAdd.OnClick := Add;
-            SpellerDlg.btnAdd.Visible := (UserDictionary <> '');
-            SpellerDlg.txtspell.text := spw;
-            SpellerDlg.lblcontext.caption := Copy(FSourceText, FWordbegin, 75);
-
+            CreateSpellerDialog(Spw);
             try
-              if SpellerDlg.showmodal = mrOk then
-              begin
+              if FSpellerDialog.ShowModal = mrOk then
                 SourceText := FSourceText;
-                if UserDicChanged then
-                  if UserDic <> '' then
-                    SaveString(UserDictionary, UserDic);
-              end;
+              // (rom) the user dictionary has to be saved always!
+              if FUserDicChanged then
+                if FUserDic <> '' then
+                  SaveString(UserDictionary, FUserDic);
             finally
-              SpellerDlg.free;
+              FSpellerDialog.Free;
             end;
-            exit;
+            Exit;
           end
         end
         else
         begin
-          SpellerDlg := TJvSpellerFrm.Create(application);
-          SpellerDlg.FSpeller := self;
-          SpellerDlg.btnSkip.OnClick := Skip;
-          SpellerDlg.btnchange.OnClick := Change;
-          SpellerDlg.btnAdd.OnClick := Add;
-          SpellerDlg.btnAdd.Visible := (UserDictionary <> '');
-          SpellerDlg.txtspell.text := spw;
-          SpellerDlg.lblcontext.caption := Copy(FSourceText, FWordbegin, 75);
+          CreateSpellerDialog(Spw);
           try
-            if SpellerDlg.showmodal = mrOk then
-            begin
+            if FSpellerDialog.ShowModal = mrOk then
               SourceText := FSourceText;
-              if UserDicChanged then
-                if UserDic <> '' then
-                  SaveString(UserDictionary, UserDic);
-            end;
+            // (rom) the user dictionary has to be saved always!
+            if FUserDicChanged then
+              if FUserDic <> '' then
+                SaveString(UserDictionary, FUserDic);
           finally
-            SpellerDlg.free;
+            FSpellerDialog.Free;
           end;
-          exit;
+          Exit;
         end;
     end;
-  until spw = '';
+  until Spw = '';
 end;
 
 procedure TJvSpeller.SpellNext;
 var
-  spw, s: string;
-  index, StartPos: integer;
+  Spw, S: string;
+  Index, StartPos: Integer;
 begin
   repeat
-    spw := ParseWord;
-    s := lowercase(spw);
-    if spw <> '' then
+    Spw := ParseWord;
+    S := LowerCase(Spw);
+    if Spw <> '' then
     begin
-      index := ord(s[1]) - 96;
-      if (index > 0) and (index < 27) then
-        StartPos := DicIndex[index]
+      Index := Ord(S[1]) - 96;
+      if (Index > 0) and (Index < 27) then
+        StartPos := FDicIndex[Index]
       else
         StartPos := 1;
-      if Q_PosStr(s + cr, Dict, StartPos) = 0 then
-        if UserDic <> '' then
+      if Q_PosStr(S + Cr, FDict, StartPos) = 0 then
+        if FUserDic <> '' then
         begin
-          if (index > 0) and (index < 27) then
-            StartPos := UserDicIndex[index]
+          if (Index > 0) and (Index < 27) then
+            StartPos := FUserDicIndex[Index]
           else
             StartPos := 1;
-          if Q_PosStr(s + cr, UserDic, StartPos) = 0 then
+          if Q_PosStr(S + Cr, FUserDic, StartPos) = 0 then
           begin
-            SpellerDlg.txtspell.text := spw;
-            SpellerDlg.lblcontext.caption := Copy(FSourceText, FWordbegin, 75);
-            exit;
+            FSpellerDialog.TxtSpell.Text := Spw;
+            FSpellerDialog.LblContext.Caption := Copy(FSourceText, FWordBegin, 75);
+            Exit;
           end;
         end
         else
         begin
-          SpellerDlg.txtspell.text := spw;
-          SpellerDlg.lblcontext.caption := Copy(FSourceText, FWordbegin, 75);
-          exit;
+          FSpellerDialog.TxtSpell.Text := Spw;
+          FSpellerDialog.LblContext.Caption := Copy(FSourceText, FWordBegin, 75);
+          Exit;
         end;
     end;
-  until spw = '';
-  SpellerDlg.ModalResult := mrOK;
+  until Spw = '';
+  FSpellerDialog.ModalResult := mrOk;
 end;
 
-function TJvSpeller.WordBegin: boolean;
+function TJvSpeller.WordBegin: Boolean;
 var
-  L: integer;
+  L: Integer;
 begin
-  L := length(FSourceText);
+  L := Length(FSourceText);
   FWordBegin := FWordEnd;
   while (FWordBegin <= L) and (not (FSourceText[FWordBegin] in ['a'..'z', 'A'..'Z'])) do
-    inc(FWordBegin);
-  if FWordbegin <= L then
-    result := true
-  else
-    result := false;
+    Inc(FWordBegin);
+  Result := (FWordBegin <= L);
 end;
 
-function TJvSpeller.WordEnd: boolean;
+function TJvSpeller.WordEnd: Boolean;
 var
-  L: integer;
+  L: Integer;
 begin
   FWordEnd := FWordBegin;
-  L := length(FSourceText);
+  L := Length(FSourceText);
   while (FWordEnd <= L) and (FSourceText[FWordEnd] in ['a'..'z', 'A'..'Z']) do
-    inc(FWordEnd);
-  if FWordEnd <= L then
-    result := true
-  else
-    result := false;
+    Inc(FWordEnd);
+  Result := (FWordEnd <= L);
 end;
 
 end.
+
