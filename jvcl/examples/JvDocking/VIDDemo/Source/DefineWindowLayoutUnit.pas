@@ -1,5 +1,20 @@
-unit DefineWindowLayoutUnit;
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+unit DefineWindowLayoutUnit;
+{$I jvcl.inc}
 interface
 
 uses
@@ -136,8 +151,11 @@ procedure TDefineWindowLayoutForm.Apply_ButtonClick(Sender: TObject);
 begin
   if Views_ListBox.ItemIndex <> -1 then
   begin
-//    LoadDocktreeFromFile(ExtractFilePath(Application.EXEName) + Views_ListBox.Items[Views_ListBox.ItemIndex] + '.ini');
+    {$IFDEF USEJVCL}
     LoadDockTreeFromAppStorage(MainForm.JvAppStorage, Views_ListBox.Items[Views_ListBox.ItemIndex]);
+    {$ELSE}
+    LoadDocktreeFromFile(ExtractFilePath(Application.EXEName) + Views_ListBox.Items[Views_ListBox.ItemIndex] + '.ini');
+    {$ENDIF}
     SelectItemIndex := Views_ListBox.ItemIndex;
     SetForegroundWindow(Handle);
   end;
@@ -149,8 +167,11 @@ begin
   begin
     Views_ListBox.Items.Add(Trim(ViewName_Edit.Text));
   end;
+  {$IFDEF USEJVCL}
   SaveDockTreeToAppStorage(MainForm.JvAppStorage, Trim(ViewName_Edit.Text));
-//  SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Trim(ViewName_Edit.Text) + '.ini');
+  {$ELSE}
+  SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Trim(ViewName_Edit.Text) + '.ini');
+  {$ENDIF}
   ViewName_EditChange(ViewName_Edit);
 end;
 

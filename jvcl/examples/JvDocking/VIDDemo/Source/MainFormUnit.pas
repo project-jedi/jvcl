@@ -1,12 +1,29 @@
-unit MainFormUnit;
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
 
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+unit MainFormUnit;
+{$I jvcl.inc}
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ImgList, ActnList, Menus, ToolWin, ComCtrls, ExtCtrls, StdCtrls,
-  JvDockControlForm, JvDockVIDStyle, JvComponent, JvAppStorage,
-  JvAppRegistryStorage;
+  JvDockControlForm, JvDockVIDStyle
+  {$IFDEF USEJVCL}
+  , JvComponent, JvAppStorage, JvAppRegistryStorage
+  {$ENDIF};
 
 type
   TMainForm = class(TForm)
@@ -453,7 +470,6 @@ type
     lbDockServer1: TJvDockServer;
     JvDockVIDStyle1: TJvDockVIDStyle;
     MainFormStatusBar: TStatusBar;
-    JvAppStorage: TJvAppRegistryStorage;
     procedure Action_FileExecute(Sender: TObject);
     procedure MainControlBarBandMove(Sender: TObject; Control: TControl;
       var ARect: TRect);
@@ -489,6 +505,7 @@ type
     procedure LoadDefaultLayout;
   public
     { Public declarations }
+    JvAppStorage:TJvAppRegistryStorage;
     procedure LoadDockInfo;
   end;
 
@@ -704,8 +721,11 @@ begin
     if Str <> 'ERROR' then
     begin
       Load_Save_WindowUI_ComboBox.ItemIndex := Load_Save_WindowUI_ComboBox.Items.IndexOf(Str);
-//      LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Str + '.ini');
+      {$IFDEF USEJVCL}
       LoadDockTreeFromAppStorage(JvAppStorage, Str);
+      {$ELSE}
+      LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Str + '.ini');
+      {$ENDIF}
     end;
   finally
     Sections.Free;
@@ -716,20 +736,25 @@ end;
 procedure TMainForm.SaveDefaultLayout;
 var IniFile: TIniFile;
 begin
+  {$IFDEF USEJVCL}
   SaveDockTreeToAppStorage(JvAppStorage, Load_Save_WindowUI_ComboBox.Text);
   JvAppStorage.WriteString(JvAppStorage.ConcatPaths([SectionString, DefaultLayout]), Load_Save_WindowUI_ComboBox.Text);
   IniFile := TIniFile.Create(ExtractFilePath(Application.EXEName) + DefineWindowLayoutFileName);
   try
     IniFile.WriteString(SectionString, DefaultLayout, Load_Save_WindowUI_ComboBox.Text);
-//    SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
   finally
     IniFile.Free;
   end;
+  {$ELSE}
+    SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
+  {$ENDIF}
 end;
 
 procedure TMainForm.Load_Save_WindowUI_ComboBoxChange(Sender: TObject);
 begin
-//  LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
+  {$IFNDEF USEJVCL}
+  LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
+  {$ENDIF}
 end;
 
 procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
@@ -762,7 +787,12 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-//  LoadDockInfo;
+  {$IFDEF USEJVCL}
+  JvAppStorage := TJvAppRegistryStorage.Create(self);
+  with JvAppStorage do
+    Root := 'Software\JVCL\Examples\JvDocking\VIDDemoPro';
+  {$ENDIF}
+  LoadDockInfo;
 end;
 
 end.
