@@ -215,11 +215,12 @@ type
 implementation
 
 uses
-  Math,
   {$IFDEF USEJVCL}
-  JvResources,
+  Math,
+  JvResources, JvConsts;
+  {$ELSE}
+  Math;
   {$ENDIF USEJVCL}
-  JvConsts;
 
 const
   S = 2;

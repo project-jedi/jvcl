@@ -32,11 +32,19 @@ unit JvgSingleInstance;
 interface
 
 uses
+  {$IFDEF USEJVCL}
   Windows, Classes, SyncObjs, SysUtils, Forms,
   JvComponent;
+  {$ELSE}
+  Windows, Classes, SyncObjs, SysUtils, Forms;
+  {$ENDIF USEJVCL}
 
 type
+  {$IFDEF USEJVCL}
   TJvgSingleInstance = class(TJvComponent)
+  {$ELSE}
+  TJvgSingleInstance = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FCheckEvent: TEvent;
   public
@@ -46,11 +54,10 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
 uses
-  {$IFDEF USEJVCL}
-  JvResources,
-  {$ENDIF USEJVCL}
-  JvConsts;
+  JvResources, JvConsts;
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring

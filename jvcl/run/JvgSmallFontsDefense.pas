@@ -36,14 +36,22 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
+  {$IFDEF USEJVCL}
   Controls, Forms, Dialogs, Grids,
   JvComponent;
+  {$ELSE}
+  Controls, Forms, Dialogs, Grids;
+  {$ENDIF USEJVCL}
 
 type
   TglSmallFontsDefenseOption = (fdoExcludeGrids);
   TglSmallFontsDefenseOptions = set of TglSmallFontsDefenseOption;
 
+  {$IFDEF USEJVCL}
   TJvgSmallFontsDefense = class(TJvComponent)
+  {$ELSE}
+  TJvgSmallFontsDefense = class(TComponent)
+  {$ENDIF USEJVCL}
   private
     FOptions: TglSmallFontsDefenseOptions;
     procedure UpdateFonts(Control: TWinControl);
@@ -60,9 +68,8 @@ implementation
 
 uses
   {$IFDEF USEJVCL}
-  JvResources,
+  JvResources, JvConsts,
   {$ENDIF USEJVCL}
-  JvConsts,
   JvgUtils;
 
 {$IFNDEF USEJVCL}

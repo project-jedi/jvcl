@@ -33,13 +33,20 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics,
   Forms, OleCtnrs, ExtCtrls, SysUtils,
-  JvComponent, JvgCommClasses, JvgUtils;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgCommClasses, JvgUtils;
 
 type
   TJvgSizeUnit = (fsuCentimeters, fsuInches, fsuPixels);
   TJvgOrientation = (goHorizontal, goVertical);
 
+  {$IFDEF USEJVCL}
   TJvgRuler = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgRuler = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FUseUnit: TJvgSizeUnit;
     FOrientation: TJvgOrientation;

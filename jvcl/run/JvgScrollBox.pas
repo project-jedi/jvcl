@@ -32,7 +32,9 @@ interface
 
 uses
   Windows, Messages, Classes, SysUtils, Controls, Graphics, Forms, ExtCtrls,
+  {$IFDEF USEJVCL}
   JVCLVer,
+  {$ENDIF USEJVCL}
   JvgTypes, JvgCommClasses, JvgUtils;
 
 type
@@ -40,7 +42,9 @@ type
 
   TJvgScrollBox = class(TScrollBox)
   private
+    {$IFDEF USEJVCL}
     FAboutJVCL: TJVCLAboutInfo;
+    {$ENDIF USEJVCL}
     FBackground: TBitmap;
     FBuffer: TBitmap;
     FBufferedDraw: Boolean;
@@ -52,7 +56,9 @@ type
     destructor Destroy; override;
     procedure ApplyBuffer(DC: HDC);
   published
+    {$IFDEF USEJVCL}
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    {$ENDIF USEJVCL}
     property Background: TBitmap read FBackground write SetBackground;
     property BufferedDraw: Boolean read FBufferedDraw write FBufferedDraw;
     property OnEraseBkgndEvent: TOnEraseBkgndEvent read FOnEraseBkgndEvent write FOnEraseBkgndEvent;

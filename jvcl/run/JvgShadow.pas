@@ -33,10 +33,17 @@ interface
 uses
   Windows, Messages, Classes, Controls, Graphics, Forms, Dialogs,
   StdCtrls, ExtCtrls, SysUtils, Mask,
-  JvgCommClasses, JvComponent, JvgTypes, Jvg3DColors;
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvgCommClasses, JvgTypes, Jvg3DColors;
 
 type
+  {$IFDEF USEJVCL}
   TJvgShadow = class(TJvGraphicControl)
+  {$ELSE}
+  TJvgShadow = class(TGraphicControl)
+  {$ENDIF USEJVCL}
   private
     FControl: TControl;
     FStyle: TJvgTextBoxStyle;
