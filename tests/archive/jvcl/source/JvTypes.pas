@@ -14,7 +14,10 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s):
+Michael Beck [mbeck@bigfoot.com].
+Peter Thornqvist
+Oliver Giesen
 
 Last Modified: 2000-02-28
 
@@ -200,6 +203,11 @@ type
 
   TJvLayout = (lTop, lCenter, lBottom);
   TJvBevelStyle = (bsShape, bsLowered, bsRaised);
+
+  {for OnLoseFocus the AFocusControl argument will point at the control that
+   receives focus while for OnGetFocus it is the control that lost the focus}
+  TJvFocusChangeEvent = procedure(const ASender: TObject;
+    const AFocusControl: TWinControl) of object;
 
 implementation
 
