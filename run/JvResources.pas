@@ -1848,6 +1848,7 @@ resourcestring
 //=== JvUrlListGrabber.pas ===================================================
 resourcestring
   RsENoGrabberForUrl = 'There is no grabber capable of handling URL: %s';
+  RsEGrabberNotStopped = 'The grabber is not stopped, you cannot change its URL.';
 
 //=== JvValidators.pas =======================================================
 resourcestring
