@@ -49,7 +49,7 @@ unit JvQJCLUtils;
     - Added Linux version of the Windows related functions. (testing needed)
       The following functions are Windows only:
         LZFileExpand()
-        TTFontSelected()
+        IsTTFontSelected()
         KeyPressed()  [ maybe we can use XQueryKeymap ]
         ResSaveToFile(), ResSaveToFileEx(), ResSaveToString()
         CopyIconToClipboard(), AssignClipboardIcon(), CreateIconFromClipboard(),
@@ -217,10 +217,6 @@ procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
 
 
 
-{$IFDEF MSWINDOWS}
-{ GetWinDir returns Windows folder name }
-function GetWinDir: TFileName;
-{$ENDIF MSWINDOWS}
 
 { GetTempDir returns Windows temporary folder name }
 function GetTempDir: string;
@@ -298,12 +294,6 @@ function VarToFloat(V: Variant): Double;
 
 { following functions are not documented
   because they are don't work properly sometimes, so don't use them }
-function ReplaceStrings1(S: string; const Word, Frase: string): string;
-{ ReplaceStrings1 is full equal to ReplaceString function
-  - only for compatibility - don't use }
-{ GetSubStr is full equal to SubStr function
-  - only for compatibility - don't use }
-function GetSubStr(const S: string; const Index: Integer; const Separator: Char): string;
 function GetParameter: string;
 function GetLongFileName(FileName: string): string;
 {* from unit FileCtrl}
@@ -317,8 +307,7 @@ function GetComputerName: string;
 {**** string routines }
 
 { ReplaceAllStrings searches for all substrings, Words,
-  in a string, S, and replaces them with Frases with the same Index.
-  Also see RAUtilsW.ReplaceStrings1 function }
+  in a string, S, and replaces them with Frases with the same Index. }
 function ReplaceAllStrings(S: string; Words, Frases: TStrings): string;
 { ReplaceStrings searches the Word in a string, S, on PosBeg position,
   in the list, Words, and if founds, replaces this Word
@@ -641,7 +630,6 @@ function DeleteFilesEx(const FileMasks: array of string): Boolean;
 function NormalDir(const DirName: string): string;
 function RemoveBackSlash(const DirName: string): string; // only for Windows/DOS Paths
 function ValidFileName(const FileName: string): Boolean;
-function DirExists(Name: string): Boolean;
 
 {$IFDEF MSWINDOWS}
 function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
@@ -1476,11 +1464,6 @@ begin
   Result := StrVsp;
 end;
 
-function GetSubStr(const S: string; const Index: Integer; const Separator: Char): string;
-begin
-  Result := SubStr(S, Index, Separator);
-end;
-
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
 { Returns a substring. Substrings are divided by Sep character [translated] }
 var
@@ -1595,11 +1578,6 @@ begin
     P := StrPosW(PWideChar(S) + Sm + Length(NewPattern), PWideChar(OldPattern));
   end;
   Result := S;
-end;
-
-function ReplaceStrings1(S: string; const Word, Frase: string): string;
-begin
-  Result := ReplaceString(S, Word, Frase);
 end;
 
 function ConcatSep(const S, S2, Separator: string): string;
@@ -5470,11 +5448,6 @@ begin
       Delete(Result, Length(Result), 1);
 end;
 
-function DirExists(Name: string): Boolean;
-begin
-  Result := DirectoryExists(Name);
-end;
-
 function FileDateTime(const FileName: string): TDateTime;
 var
   Age: Longint;
@@ -5523,10 +5496,6 @@ begin
   SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
 end;
 
-function GetWinDir: TFileName;
-begin
-  Result := GetWindowsDir;
-end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF LINUX}
@@ -5772,7 +5741,7 @@ var
 begin
   Result := False;
   I := 0;
-  Mask := Trim(GetSubStr(Masks, I, PathSep));
+  Mask := Trim(SubStr(Masks, I, PathSep));
   while Length(Mask) <> 0 do
     if FileEquMask(FileName, Mask, CaseSensitive) then
     begin
@@ -5782,7 +5751,7 @@ begin
     else
     begin
       Inc(I);
-      Mask := Trim(GetSubStr(Masks, I, PathSep));
+      Mask := Trim(SubStr(Masks, I, PathSep));
     end;
 end;
 

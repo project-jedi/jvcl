@@ -626,13 +626,6 @@ begin
   Value := DefStr(Args.Values[0], Args.Values[1]);
 end;
 
-{ function GetWinDir: TFileName; }
-
-procedure JvInterpreter_GetWinDir(var Value: Variant; Args: TJvInterpreterArgs);
-begin
-  Value := GetWinDir;
-end;
-
 { function GetTempDir: string; }
 
 procedure JvInterpreter_GetTempDir(var Value: Variant; Args: TJvInterpreterArgs);
@@ -789,11 +782,11 @@ begin
   Value := CopyDir(Args.Values[0], Args.Values[1]);
 end;
 
-{ function TTFontSelected(const DC: HDC): Boolean; }
+{ function IsTTFontSelected(const DC: HDC): Boolean; }
 
-procedure JvInterpreter_TTFontSelected(var Value: Variant; Args: TJvInterpreterArgs);
+procedure JvInterpreter_IsTTFontSelected(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  Value := TTFontSelected(Args.Values[0]);
+  Value := IsTTFontSelected(Args.Values[0]);
 end;
 
 { function TrueInflateRect(const R: TRect; const I: Integer): TRect; }
@@ -1034,7 +1027,6 @@ begin
     AddFunction(cJvStrUtil, 'GetWordOnPos', JvInterpreter_GetWordOnPos, 2, [varString, varInteger], varEmpty);
     AddFunction(cJvStrUtil, 'GetWordOnPosEx', JvInterpreter_GetWordOnPosEx, 4, [varString, varInteger, varInteger or
       varByRef, varInteger or varByRef], varEmpty);
-    AddFunction(cJvStrUtil, 'GetSubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varEmpty], varEmpty);
     AddFunction(cJvStrUtil, 'SubStr', JvInterpreter_SubStr, 3, [varString, varInteger, varString], varEmpty);
     AddFunction(cJvStrUtil, 'SubStrEnd', JvInterpreter_SubStrEnd, 3, [varString, varInteger, varString], varEmpty);
     AddFunction(cJvStrUtil, 'NumberByWord', JvInterpreter_NumberByWord, 1, [varEmpty], varEmpty);
@@ -1061,7 +1053,6 @@ begin
     AddFunction(cJvStrUtil, 'HasAnyChar', JvInterpreter_HasAnyChar, 2, [varString, varString], varEmpty);
     AddFunction(cJvStrUtil, 'CountOfChar', JvInterpreter_CountOfChar, 2, [varEmpty, varString], varEmpty);
     AddFunction(cJvStrUtil, 'DefStr', JvInterpreter_DefStr, 2, [varString, varString], varEmpty);
-    AddFunction(cJvUtils, 'GetWinDir', JvInterpreter_GetWinDir, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'GetTempDir', JvInterpreter_GetTempDir, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'GenTempFileName', JvInterpreter_GenTempFileName, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'GenTempFileNameExt', JvInterpreter_GenTempFileNameExt, 2, [varString, varString], varEmpty);
@@ -1090,7 +1081,7 @@ begin
     AddFunction(cJvUtils, 'Switch', JvInterpreter_Switch, 1, [varString], varEmpty);
     AddFunction(cJvUtils, 'ExePath', JvInterpreter_ExePath, 0, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'CopyDir', JvInterpreter_CopyDir, 2, [varEmpty, varEmpty], varEmpty);
-    AddFunction(cJvUtils, 'TTFontSelected', JvInterpreter_TTFontSelected, 1, [varEmpty], varEmpty);
+    AddFunction(cJvUtils, 'IsTTFontSelected', JvInterpreter_IsTTFontSelected, 1, [varEmpty], varEmpty);
     AddFunction(cJvUtils, 'TrueInflateRect', JvInterpreter_TrueInflateRect, 2, [varEmpty, varInteger], varEmpty);
     AddFunction(cJvUtils, 'SetWindowTop', JvInterpreter_SetWindowTop, 2, [varEmpty, varBoolean], varEmpty);
     AddFunction(cJvUtils, 'KeyPressed', JvInterpreter_KeyPressed, 1, [varInteger], varEmpty);

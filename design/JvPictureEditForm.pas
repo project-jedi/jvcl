@@ -448,7 +448,7 @@ end;
 procedure TPictureEditDialog.PathsMRUClick(Sender: TObject;
   const RecentName, Caption: string; UserData: Longint);
 begin
-  if DirExists(RecentName) then
+  if DirectoryExists(RecentName) then
     {SetCurrentDir(RecentName);}
     FileDialog.InitialDir := RecentName
   else
