@@ -69,7 +69,7 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CalcAutoSize; virtual;
     procedure Loaded; override;
@@ -245,9 +245,7 @@ procedure TJvRadioButton.SetAutoSize(Value: Boolean);
 begin
   if FAutoSize <> Value then
   begin
-    {$IFDEF COMPILER6_UP}
     // inherited SetAutoSize(Value);
-    {$ENDIF COMPILER6_UP}
     FAutoSize := Value;
     if Value then
       WordWrap := False;

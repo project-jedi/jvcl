@@ -53,9 +53,6 @@ type
     FOnParentColorChange: TNotifyEvent;
     FOver: Boolean;
     FPropagateEnable: Boolean;
-    {$IFDEF VisualCLX}
-    FCanvas: TCanvas;
-    {$ENDIF VisualCLX}
     procedure SetPropagateEnable(const Value: Boolean);
     procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   {$IFDEF JVCLThemesEnabledD56}
@@ -71,20 +68,10 @@ type
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
     procedure DoHotKey; dynamic;
-    {$IFDEF VCL}
     procedure Paint; override;
-    {$ELSE}
-    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
-    procedure Paint; virtual;
-    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
-    {$IFDEF VCL}
     property Canvas;
-    {$ELSE}
-    property Canvas: TCanvas read FCanvas;
-    {$ENDIF VCL}
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -106,39 +93,12 @@ uses
 constructor TJvGroupBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {$IFDEF VisualCLX}
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  {$ENDIF VisualCLX}
   FHintColor := clInfoBk;
   FOver := False;
   FPropagateEnable := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
   IncludeThemeStyle(Self, [csParentBackground]);
 end;
-
-destructor TJvGroupBox.Destroy;
-begin
-  inherited Destroy;
-  {$IFDEF VisualCLX}
-  // Keep FCanvas as long as possible because the destructor may handle a
-  // pending Invalidate.
-  FCanvas.Free;
-  {$ENDIF VisualCLX}
-end;
-
-{$IFDEF VisualCLX}
-procedure TJvGroupBox.Painting(Sender: QObjectH; EventRegion: QRegionH);
-begin
-  TControlCanvas(FCanvas).StartPaint;
-  try
-    QPainter_setClipRegion(FCanvas.Handle, EventRegion);
-    Paint;
-  finally
-    TControlCanvas(FCanvas).StopPaint;
-  end;
-end;
-{$ENDIF VisualCLX}
 
 procedure TJvGroupBox.Paint;
 {$IFDEF VisualCLX}

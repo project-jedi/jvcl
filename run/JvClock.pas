@@ -37,10 +37,10 @@ uses
   Forms, ExtCtrls, Menus,
   {$IFDEF COMPILER6}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6}
   {$IFDEF COMPILER7_UP}
   SysConst,
-  {$ENDIF}
+  {$ENDIF COMPILER7_UP}
   JvTimer, JvComponent, JvThemes;
 
 type
@@ -80,9 +80,6 @@ type
     procedure SetShowMode(Value: TShowClock);
     function GetAlarmElement(Index: Integer): Byte;
     procedure SetAlarmElement(Index: Integer; Value: Byte);
-    {$IFNDEF COMPILER6_UP} // Polaris
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF}
     procedure SetDotsColor(Value: TColor);
     procedure SetTwelveHour(Value: Boolean);
     procedure SetLeadingZero(Value: Boolean);
@@ -99,14 +96,12 @@ type
     procedure CheckAlarm;
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMTimeChange(var Msg: TMessage); message WM_TIMECHANGE;
-    procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
+    procedure CMDenySubClassing(var Msg: TCMDenySubClassing); message CM_DENYSUBCLASSING;
   protected
-    {$IFDEF COMPILER6_UP} // Polaris
+    procedure TextChanged; override;
+    procedure FontChanged; override;
     procedure SetAutoSize(Value: Boolean); override;
-    {$ENDIF}
     procedure Alarm; dynamic;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure CreateWnd; override;
@@ -411,14 +406,14 @@ begin
     Invalidate;
 end;
 
-procedure TJvClock.CMTextChanged(var Msg: TMessage);
+procedure TJvClock.TextChanged;
 begin
   { Skip this message, no repaint }
 end;
 
-procedure TJvClock.CMFontChanged(var Msg: TMessage);
+procedure TJvClock.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   Invalidate;
   if AutoSize then
     Realign;
@@ -431,7 +426,7 @@ begin
   CheckAlarm;
 end;
 
-procedure TJvClock.CMDenySubClassing(var Msg: TMessage);
+procedure TJvClock.CMDenySubClassing(var Msg: TCMDenySubClassing);
 begin
   Msg.Result := 1;
 end;

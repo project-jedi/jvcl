@@ -29,10 +29,10 @@ unit JvExControls;
 interface
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Forms, JclSysUtils,
+  Windows, Messages, Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QForms,
+  Qt, QGraphics, QControls, QWindows, QForms,  // order: QControls, QWindows
   {$ENDIF VisualCLX}
   Classes, SysUtils;
 
@@ -53,6 +53,9 @@ type
     function HitTest(X, Y: Integer): Boolean;
     procedure MouseEnter(AControl: TControl);
     procedure MouseLeave(AControl: TControl);
+    {$IFDEF VCL}
+    procedure SetAutoSize(Value: Boolean);
+    {$ENDIF VCL}
   end;
 
   IJvWinControlEvents = interface(IJvControlEvents)
@@ -65,10 +68,11 @@ type
   end;
 
 type
+  
   TJvExControl = class(TControl, IJvControlEvents)
   {$IFDEF VCL}
   protected
-   // TControl
+  { IJvControlEvents }
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -83,6 +87,11 @@ type
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
+  {$IFNDEF HASAUTOSIZE}
+  {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+  {$ENDIF !COMPILER6_UP}
+  {$ENDIF !HASAUTOSIZE}
   public
     procedure Dispatch(var Msg); override;
   private
@@ -93,6 +102,10 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -105,10 +118,11 @@ type
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
+  
   TJvExWinControl = class(TWinControl, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
-   // TControl
+  { IJvControlEvents }
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -123,8 +137,12 @@ type
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
-  protected
-   // TWinControl
+  {$IFNDEF HASAUTOSIZE}
+  {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+  {$ENDIF !COMPILER6_UP}
+  {$ENDIF !HASAUTOSIZE}
+  { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -140,8 +158,13 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-   {$IF not declared(PatchedVCLX)}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
   private
+    FCanvas: TCanvas;
+   {$IF not declared(PatchedVCLX)}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
@@ -150,13 +173,21 @@ type
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
    {$IFEND}
+  protected
+    procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   {$ENDIF VisualCLX}
   end;
 
+  
   TJvExGraphicControl = class(TGraphicControl, IJvControlEvents)
   {$IFDEF VCL}
   protected
-   // TControl
+  { IJvControlEvents }
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -171,6 +202,11 @@ type
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
+  {$IFNDEF HASAUTOSIZE}
+  {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+  {$ENDIF !COMPILER6_UP}
+  {$ENDIF !HASAUTOSIZE}
   public
     procedure Dispatch(var Msg); override;
   private
@@ -181,6 +217,10 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -193,10 +233,11 @@ type
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
+  
   TJvExCustomControl = class(TCustomControl, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
-   // TControl
+  { IJvControlEvents }
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -211,8 +252,12 @@ type
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
-  protected
-   // TWinControl
+  {$IFNDEF HASAUTOSIZE}
+  {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+  {$ENDIF !COMPILER6_UP}
+  {$ENDIF !HASAUTOSIZE}
+  { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -228,6 +273,10 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -240,10 +289,11 @@ type
    {$IFEND}
   {$ENDIF VisualCLX}
   end;
+  
   TJvExHintWindow = class(THintWindow, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
   protected
-   // TControl
+  { IJvControlEvents }
     procedure VisibleChanged; dynamic;
     procedure EnabledChanged; dynamic;
     procedure TextChanged; dynamic;
@@ -258,8 +308,12 @@ type
     function HitTest(X, Y: Integer): Boolean; dynamic;
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
-  protected
-   // TWinControl
+  {$IFNDEF HASAUTOSIZE}
+  {$IFNDEF COMPILER6_UP}
+    procedure SetAutoSize(Value: Boolean); virtual;
+  {$ENDIF !COMPILER6_UP}
+  {$ENDIF !HASAUTOSIZE}
+  { IJvWinControlEvents }
     procedure CursorChanged; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
@@ -275,6 +329,10 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
+    {$IFDEF REINTRODUCE_HITTEST}
+  protected
+    function HitTest(X, Y: Integer): Boolean; overload; dynamic;
+    {$ENDIF REINTRODUCE_HITTEST}
    {$IF not declared(PatchedVCLX)}
   private
     FOnMouseEnter: TNotifyEvent;
@@ -294,8 +352,11 @@ function ShiftStateToKeyData(Shift: TShiftState): Longint;
 
 function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer; overload;
 function InheritMsg(ASelf: TControl; Msg: Integer): Integer; overload;
-function DispatchMsg(ASelf: TControl; var Msg): Boolean;
+procedure DispatchMsg(ASelf: TControl; var Msg);
 
+{$IFNDEF COMPILER6_UP}
+procedure TOpenControl_SetAutoSize(ASelf: TControl; Value: Boolean);
+{$ENDIF !COMPILER6_UP}
 {$ENDIF VCL}
 
 implementation
@@ -311,11 +372,12 @@ begin
     Result := Result or AltMask;
 end;
 
-function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 type
-  TMessageHandler = procedure(Self: TObject; var Msg: TMessage);
+  TDisptachMethod = procedure(Self: TObject; var Msg: TMessage);
+
+function InheritMsg(ASelf: TControl; Msg: Integer; WParam, LParam: Integer): Integer;
 var
-  Proc: TMessageHandler;
+  Proc: TDisptachMethod;
   Mesg: TMessage;
 begin
   Mesg.Msg := Msg;
@@ -332,18 +394,20 @@ begin
   Result := InheritMsg(ASelf, Msg, 0, 0);
 end;
 
-function DispatchMsg(ASelf: TControl; var Msg): Boolean;
+procedure DispatchMsg(ASelf: TControl; var Msg);
 var
   IntfControl: IJvControlEvents;
   IntfWinControl: IJvWinControlEvents;
   PMsg: PMessage;
+  CallInherited: Boolean;
 begin
+  CallInherited := True;
   PMsg := @Msg;
   { GetInterface is no problem because ASelf is a TComponent derived class that
     is not released by an interface "Release". }
   if ASelf.GetInterface(IJvControlEvents, IntfControl) then
   begin
-    Result := True;
+    CallInherited := False;
     with IntfControl do
       case PMsg^.Msg of
         CM_VISIBLECHANGED:
@@ -375,17 +439,15 @@ begin
           with TCMDialogChar(PMsg^) do
             Result := Ord(WantKey(CharCode, KeyDataToShiftState(KeyData), WideChar(CharCode)));
       else
-        Result := False;
+        CallInherited := True;
       end;
-  end
-  else
-    Result := False;
+  end;
 
-  if not Result then
+  if CallInherited then
   begin
     if ASelf.GetInterface(IJvWinControlEvents, IntfWinControl) then
     begin
-      Result := True;
+      CallInherited := False;
       with IntfWinControl do
         case PMsg^.Msg of
           CM_CURSORCHANGED:
@@ -405,20 +467,21 @@ begin
             else
               ControlsListChanged(TControl(PMsg^.WParam), True);
         else
-          Result := False;
+          CallInherited := True;
         end;
-    end
-    else
-      Result := False;
+    end;
   end;
+
+  if CallInherited then
+    PMsg^.Result := InheritMsg(ASelf, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
 end;
 
 {$ENDIF VCL}
 
 // *****************************************************************************
 
-{$IFDEF VCL}
 
+{$IFDEF VCL}
 procedure TJvExControl.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -488,8 +551,25 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvExControl.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+end;
+ {$ENDIF COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+ {$IFDEF REINTRODUCE_HITTEST}
+function TJvExControl.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+ {$ENDIF REINTRODUCE_HITTEST}
+
  {$IF not declared(PatchedVCLX)}
 procedure TJvExControl.MouseEnter(Control: TControl);
 begin
@@ -509,12 +589,11 @@ end;
 {$IFDEF VCL}
 procedure TJvExControl.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Msg) then
-    inherited Dispatch(Msg);
+  DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
-{$IFDEF VCL}
 
+{$IFDEF VCL}
 procedure TJvExWinControl.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -584,8 +663,25 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvExWinControl.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+end;
+ {$ENDIF COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+ {$IFDEF REINTRODUCE_HITTEST}
+function TJvExWinControl.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+ {$ENDIF REINTRODUCE_HITTEST}
+
  {$IF not declared(PatchedVCLX)}
 procedure TJvExWinControl.MouseEnter(Control: TControl);
 begin
@@ -603,7 +699,6 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-
 procedure TJvExWinControl.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -634,16 +729,61 @@ begin
   else
     InheritMsg(Self, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
 end;
-procedure TJvExWinControl.Dispatch(var Msg);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+constructor TJvExWinControl.Create(AOwner: TComponent);
 begin
-  if not DispatchMsg(Self, Msg) then
-    inherited Dispatch(Msg);
+  inherited Create(AOwner);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
 end;
 
+destructor TJvExWinControl.Destroy;
+begin
+  FCanvas.Free;
+  inherited Destroy;
+end;
+
+procedure TJvExWinControl.Painting(Sender: QObjectH; EventRegion: QRegionH);
+begin
+  if not (csDestroying in ComponentState) then
+  begin
+    ControlState := ControlState + [csWidgetPainting];
+    try
+      TControlCanvas(FCanvas).StartPaint;
+      try
+        QPainter_setClipRegion(FCanvas.Handle, EventRegion);
+        Paint;
+      finally
+        TControlCanvas(FCanvas).StopPaint;
+      end;
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  end;
+end;
+
+procedure TJvExWinControl.Paint;
+var
+  Event: QPaintEventH;
+begin
+  Event := QPaintEvent_create(QPainter_clipRegion(FCanvas.Handle), False);
+  try
+    QObject_event(Handle, Event);
+  finally
+    QPaintEvent_destroy(Event);
+  end;
+end;
+{$ENDIF VisualCLX}
+{$IFDEF VCL}
+procedure TJvExWinControl.Dispatch(var Msg);
+begin
+  DispatchMsg(Self, Msg);
+end;
 {$ENDIF VCL}
 
-{$IFDEF VCL}
 
+{$IFDEF VCL}
 procedure TJvExGraphicControl.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -713,8 +853,25 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvExGraphicControl.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+end;
+ {$ENDIF COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+ {$IFDEF REINTRODUCE_HITTEST}
+function TJvExGraphicControl.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+ {$ENDIF REINTRODUCE_HITTEST}
+
  {$IF not declared(PatchedVCLX)}
 procedure TJvExGraphicControl.MouseEnter(Control: TControl);
 begin
@@ -734,12 +891,11 @@ end;
 {$IFDEF VCL}
 procedure TJvExGraphicControl.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Msg) then
-    inherited Dispatch(Msg);
+  DispatchMsg(Self, Msg);
 end;
 {$ENDIF VCL}
-{$IFDEF VCL}
 
+{$IFDEF VCL}
 procedure TJvExCustomControl.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -809,8 +965,25 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvExCustomControl.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+end;
+ {$ENDIF COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+ {$IFDEF REINTRODUCE_HITTEST}
+function TJvExCustomControl.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+ {$ENDIF REINTRODUCE_HITTEST}
+
  {$IF not declared(PatchedVCLX)}
 procedure TJvExCustomControl.MouseEnter(Control: TControl);
 begin
@@ -828,7 +1001,6 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-
 procedure TJvExCustomControl.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -861,13 +1033,11 @@ begin
 end;
 procedure TJvExCustomControl.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Msg) then
-    inherited Dispatch(Msg);
+  DispatchMsg(Self, Msg);
 end;
-
 {$ENDIF VCL}
-{$IFDEF VCL}
 
+{$IFDEF VCL}
 procedure TJvExHintWindow.VisibleChanged;
 begin
   InheritMsg(Self, CM_VISIBLECHANGED);
@@ -937,8 +1107,25 @@ begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
 end;
+
+{$IFNDEF HASAUTOSIZE}
+ {$IFNDEF COMPILER6_UP}
+procedure TJvExHintWindow.SetAutoSize(Value: Boolean);
+begin
+  TOpenControl_SetAutoSize(Self, Value); // do not call inherited here
+end;
+ {$ENDIF COMPILER6_UP}
+{$ENDIF !HASAUTOSIZE}
+
 {$ENDIF VCL}
 {$IFDEF VisualCLX}
+ {$IFDEF REINTRODUCE_HITTEST}
+function TJvExHintWindow.HitTest(X, Y: Integer): Boolean;
+begin
+  Result := (X >= 0) and (Y >= 0) and (X < Width) and (Y < Height);
+end;
+ {$ENDIF REINTRODUCE_HITTEST}
+
  {$IF not declared(PatchedVCLX)}
 procedure TJvExHintWindow.MouseEnter(Control: TControl);
 begin
@@ -956,7 +1143,6 @@ end;
  {$IFEND}
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
-
 procedure TJvExHintWindow.CursorChanged;
 begin
   InheritMsg(Self, CM_CURSORCHANGED);
@@ -989,10 +1175,163 @@ begin
 end;
 procedure TJvExHintWindow.Dispatch(var Msg);
 begin
-  if not DispatchMsg(Self, Msg) then
-    inherited Dispatch(Msg);
+  DispatchMsg(Self, Msg);
 end;
-
 {$ENDIF VCL}
 
+{$IFNDEF COMPILER6_UP}
+var
+  AutoSizeOffset: Cardinal;
+  TControl_SetAutoSize: Pointer;
+
+type
+  TOpenControl = class(TControl);
+  PBoolean = ^Boolean;
+  PPointer = ^Pointer;
+
+procedure TOpenControl_SetAutoSize(ASelf: TControl; Value: Boolean);
+begin
+  with TOpenControl(ASelf) do
+  begin
+    if AutoSize <> Value then
+    begin
+      PBoolean(Cardinal(ASelf) + AutoSizeOffset)^ := Value;
+      if Value then
+        AdjustSize;
+    end;
+  end;
+end;
+
+procedure SetAutoSizeHook(ASelf: TControl; Value: Boolean);
+var
+  IntfControl: IJvControlEvents;
+begin
+  if ASelf.GetInterface(IJvControlEvents, IntfControl) then
+    IntfControl.SetAutoSize(Value)
+  else
+    TOpenControl_SetAutoSize(ASelf, Value);
+end;
+
+type
+  TJumpCode = packed record
+    Pop: Byte; // pop xxx
+    Jmp: Byte; // jmp Offset
+    Offset: Integer;
+  end;
+
+  TRelocationRec = packed record
+    Jump: Word;
+    Address: PPointer;
+  end;
+
+var
+  SavedControlCode: TJumpCode;
+
+{$O-}
+procedure InitHookVars;
+label
+  Field, Proc, Leave;
+var
+  c: TControl;
+  b: Boolean;
+
+  Data: Byte;
+  Relocation: TRelocationRec;
+  n: Cardinal;
+begin
+  asm
+        MOV     EAX, OFFSET Field
+        ADD     EAX, 3
+        ADD     EAX, 2
+        XOR     EDX, EDX
+        MOV     DL, BYTE PTR [EAX]
+        MOV     AutoSizeOffset, EDX
+
+        MOV     EAX, OFFSET Proc
+        ADD     EAX, 2
+        ADD     EAX, 3
+        ADD     EAX, 1
+        MOV     EDX, [EAX]
+        ADD     EDX, EAX  // -> absolute address
+        ADD     EDX, 4
+        MOV     TControl_SetAutoSize, EDX
+
+        JMP     Leave
+  end;
+
+  c := nil;
+Field:
+  b := TOpenControl(c).AutoSize;
+  if b then ;
+Proc:
+  TOpenControl(c).AutoSize := True;
+
+Leave:
+  if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
+     @Data, SizeOf(Data), n) then
+  begin
+    if Data = $FF then // Proc is in a dll or package
+    begin
+      if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(TControl_SetAutoSize)),
+        @Relocation, SizeOf(Relocation), n) then
+      TControl_SetAutoSize := Relocation.Address^;
+    end;
+  end;
+end;
+{$O+}
+
+
+procedure InstallSetAutoSizeHook;
+var
+  Code: TJumpCode;
+  P: procedure;
+  n: Cardinal;
+begin
+  InitHookVars;
+  P := TControl_SetAutoSize;
+  if Assigned(P) then
+  begin
+    if PByte(@P)^ = $53 then // push ebx
+      Code.Pop := $5B // pop ebx
+    else
+    if PByte(@P)^ = $55 then // push ebp
+      Code.Pop := $5D // pop ebp
+    else
+      Exit;
+    Code.Jmp := $E9;
+    Code.Offset := Integer(@SetAutoSizeHook) - (Integer(@P) + 1) - SizeOf(Code);
+
+    if ReadProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
+         @SavedControlCode, SizeOf(SavedControlCode), n) then
+    begin
+     { The strange thing is that WriteProcessMemory does not want @P or something
+       overrides the $e9 with a "PUSH xxx"}
+      if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1), @Code,
+           SizeOf(Code), n) then
+        FlushInstructionCache(GetCurrentProcess, @P, SizeOf(Code));
+    end;
+  end;
+end;
+
+procedure UninstallSetAutoSizeHook;
+var
+  P: procedure;
+  n: Cardinal;
+begin
+  P := TControl_SetAutoSize;
+  if Assigned(P) then
+  begin
+    if WriteProcessMemory(GetCurrentProcess, Pointer(Cardinal(@P) + 1),
+         @SavedControlCode, SizeOf(SavedControlCode), n) then
+      FlushInstructionCache(GetCurrentProcess, @P, SizeOf(SavedControlCode));
+  end;
+end;
+
+initialization
+  InstallSetAutoSizeHook;
+
+finalization
+  UninstallSetAutoSizeHook;
+
+{$ENDIF !COMPILER6_UP}
 end.

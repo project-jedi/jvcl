@@ -197,7 +197,7 @@ type
     procedure SetWordWrap(Value: Boolean);
     function GetAutoSize: Boolean;
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override; 
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
   public
@@ -1275,7 +1275,7 @@ end;
 
 procedure TJvgStaticTextLabel.SetAutoSize(Value: Boolean);
 begin
-  inherited AutoSize := Value;
+  inherited AutoSize := Value; 
   AdjustBounds;
 end;
 //______

@@ -103,8 +103,7 @@ type
     procedure ParentColorChanged; override;
     procedure AdjustBounds; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    procedure SetAutoSize(Value: Boolean);
-      {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
     function GetTextDisplayInfo(aDC: HDC; var ARect: TRect): Cardinal;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -342,7 +341,7 @@ var
   SaveFont: HFont;
   TextSize: TSize;
 begin
-  if not (csReading in ComponentState) and FAutoSize and HandleAllocated then
+  if not (csReading in ComponentState) and AutoSize and HandleAllocated then
   begin
     DC := GetDC(0);
     if not WordWrap then
