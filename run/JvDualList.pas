@@ -30,7 +30,14 @@ unit JvDualList;
 interface
 
 uses
-  Classes, Controls, JvComponent;
+  Classes,
+  {$IFDEF VCL}
+  Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QTypes,
+  {$ENDIF VisualCLX}
+  JvComponent;
 
 type
 
@@ -84,7 +91,13 @@ type
 implementation
 
 uses
-  SysUtils, Forms, Consts,
+  SysUtils,
+  {$IFDEF VCL}
+  Forms, Consts,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QConsts,
+  {$ENDIF VisualCLX}
   JvDualListForm, JvResources, JvJVCLUtils;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
@@ -171,8 +184,10 @@ begin
   try
     with Form do
     begin
+      {$IFDEF VCL}
       if NewStyleControls then
         Font.Style := [];
+      {$ENDIF VCL}  
       ShowHelp := Self.ShowHelp;
       SrcList.Sorted := Sorted;
       DstList.Sorted := Sorted;
