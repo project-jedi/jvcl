@@ -230,8 +230,13 @@ begin
       end;
       Inc(AWidth, AGraphic.Width);
     end;
+    {$IFDEF VCL}
     BitBlt(ACanvas.Handle, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height,
       Bmp.Canvas.Handle, 0, 0, SRCCOPY);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BitBlt(ACanvas, ARect.Left, ARect.Top, Bmp.Width, Bmp.Height, Bmp.Canvas, 0, 0, SRCCOPY);
+    {$ENDIF VisualCLX}
   finally
     Bmp.Free;
   end;

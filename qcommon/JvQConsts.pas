@@ -30,20 +30,13 @@ interface
 
 uses
   SysUtils,
-  {$IFDEF VCL}
-  Controls, Graphics, Windows;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
   QControls, QGraphics;
-  {$ENDIF VisualCLX}
 
-{$IFDEF VisualCLX}
 const
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
   clCream = TColor($F0FBFF);
   clMedGray = TColor($A4A0A0);
-{$ENDIF VisualCLX}
 
 const
   { JvEditor }
