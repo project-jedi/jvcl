@@ -1955,6 +1955,7 @@ begin
   inherited Loaded;
   if FStreamedButtonWidth >= 0 then
     SetButtonWidth(FStreamedButtonWidth);
+  Resize; 
 end;
 
 procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;

@@ -64,6 +64,14 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
+  TResizeReason = (rrRestored, rrMinimized, rrMaximized, rrMaxShow, rrMaxHide);
+
+  TSizeChangedInfo = record
+    Reason: TResizeReason;
+    NewWidth: Integer;
+    NewHeight: Integer;
+  end;
+
 {$IFDEF VisualCLX}
   HWND = QWindows.HWND;
 {$ENDIF VisualCLX}
@@ -105,6 +113,7 @@ type
     procedure DoGetDlgCode(var Code: TDlgCodes); // WM_GETDLGCODE
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
+    procedure DoSizeChanged(var Info: TSizeChangedInfo); // WM_SIZE
   end;
 
   IJvCustomControlEvents = interface
@@ -241,6 +250,7 @@ var
   CallInherited: Boolean;
   Canvas: TCanvas;
   DlgCodes: TDlgCodes;
+  Info: TSizeChangedInfo;
 begin
   CallInherited := True;
   PMsg := @Msg;
@@ -374,6 +384,15 @@ begin
               with PMsg^ do
                 Result := InheritMsg(Instance, Msg, WParam, LParam);
               DoKillFocus(HWND(PMsg^.WParam));
+            end;
+
+          WM_SIZE:
+            with PMsg^ do
+            begin
+              Info.Reason := TResizeReason(WParam);
+              Info.NewWidth := Word(LParam);
+              Info.NewHeight := Word(LParam shr 16);
+              DoSizeChanged(Info);
             end;
         else
           CallInherited := True;
@@ -925,7 +944,7 @@ finalization
 
 {$IFDEF VisualCLX}
 
-// Handles DoSetFocus and DoKillFocus
+// Handles DoSetFocus and DoKillFocus, DoSizeChanged, DoMoved
 
 function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
 var
