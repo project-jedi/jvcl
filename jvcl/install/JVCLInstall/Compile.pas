@@ -362,7 +362,7 @@ begin
   end;
 
   try
-    if not LoadConfig(Data.JVCLDir + '\' + PackageGeneratorFile, Group, ErrMsg) then
+    if not LoadConfig(Data.JVCLDir + '\' + sPackageGeneratorFile, Group, ErrMsg) then
     begin
       CaptureLine(ErrMsg, FAborted);
       AbortReason := RsErrorLoadingPackageGeneratorConfigFile;
@@ -382,7 +382,7 @@ begin
     TargetList.CommaText := Targets;
     ExpandTargetsNoPerso(TargetList);
     EnumeratePackages(PackagesPath, List);
-    if not Generate(List, TargetList, WriteMsg, Data.JVCLDir + '\' + PackageGeneratorFile,
+    if not Generate(List, TargetList, WriteMsg, Data.JVCLDir + '\' + sPackageGeneratorFile,
                     Group, ErrMsg, PackagesPath, '', '', Data.JVCLConfig.Filename) then
     begin
       CaptureLine(ErrMsg, FAborted);
