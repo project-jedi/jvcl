@@ -108,6 +108,17 @@ uses
 
 {$R *.dfm}
 
+function IsUseJVCL(Info: TPackageInfo): Boolean;
+var
+  i: Integer;
+begin
+  Result := True;
+  for i := 0 to Info.RequireCount - 1 do
+    if CompareText(Info.Requires[i].Condition, 'USEJVCL') = 0 then
+      Exit;
+  Result := False;
+end;
+
 { TFramePackageSelection }
 
 class function TFramePackageSelection.Build(Installer: TInstaller;
@@ -461,6 +472,8 @@ begin
   ImageListPackages.Draw(Canvas, Rect.Left + 1, Rect.Top + 1, ImgIndex);
   Inc(Rect.Left, ImageListPackages.Width + 2);
 
+  if IsUseJVCL(Pkg.Info) then
+    Canvas.Font.Color := clGreen;
   R := Rect;
   R.Right := R.Left + 120;
   Canvas.TextRect(R, R.Left, R.Top + 2, Pkg.Info.DisplayName);
@@ -539,6 +552,8 @@ begin
       if (Pkg.RequireCount > 0) or (Pkg.ContainCount > 0) then
       begin
         Lines.Add('<b><c:red>' + Pkg.Info.BplName + '</b><c:black>');
+        if IsUseJVCL(Pkg.Info) then
+          Lines[Lines.Count - 1] := Lines[Lines.Count - 1] + ' (USEJVCL)';
         Lines.Add('<i>' + WordWrapString(Pkg.Info.Description) + '</i>');
         Lines.Add('');
       end;
@@ -569,6 +584,7 @@ begin
       Lines.Free;
     end;
   end;
+
   if (CheckListBoxPackages.Hint <> S) and (CheckListBoxPackages.Hint <> '') then
   begin
     Application.CancelHint;
@@ -578,9 +594,12 @@ begin
   end
   else
   begin
-    CheckListBoxPackages.Hint := S;
-    X := CheckListBoxPackages.BoundsRect.Right - 250;
-    Application.ActivateHint(CheckListBoxPackages.ClientToScreen(Point(X, Y)));
+    if CheckListBoxPackages.Hint <> S then
+    begin
+      CheckListBoxPackages.Hint := S;
+      X := CheckListBoxPackages.BoundsRect.Right - 250;
+      Application.ActivateHint(CheckListBoxPackages.ClientToScreen(Point(X, Y)));
+    end;
   end;
 end;
 

@@ -55,9 +55,8 @@ resourcestring
   RsDelphiBcbRunning = 'Delphi or C++Builder is running. Terminate the IDE and restart the installer.';
 
   RsInstallMode = 'New installation / Upgrade from an older version|Allows the selection of packages that should be installed.';
-  RsUpdateMode = 'Compile already installed packages / Update IDE|';
-  RsUninstallMode = 'Uninstall JVCL|Uninstall all JVCL packages and unregister'#10 +
-    'it from Delphi/C++ Builder';
+  RsUpdateMode = 'Compile already installed packages / Update IDE|Does not allow the selection of packages.';
+  RsUninstallMode = 'Uninstall JVCL|Uninstall all JVCL packages and unregister them from the Delphi/C++ Builder IDE.';
 
   RsShowMPL = 'Show MPL 1.1'; // the button's width is set to 8+TextWidth+8
 

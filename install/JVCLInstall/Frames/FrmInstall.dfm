@@ -79,7 +79,7 @@ object FrameInstall: TFrameInstall
     Top = 128
     Width = 81
     Height = 25
-    Caption = '&Details >'
+    Caption = '&Details >>'
     TabOrder = 3
     OnClick = BtnDetailsClick
   end

@@ -189,7 +189,7 @@ begin
          StartsWith(LText, 'Borland ', True) or // do not localize
          StartsWith(LText, 'Copyright ', True) then // do not localize
       begin
-        SetFont([fsItalic]);
+        SetFont([fsItalic], clGray);
       end
     end;
   end;
