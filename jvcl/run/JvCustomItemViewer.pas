@@ -180,8 +180,8 @@ type
     Canvas: TCanvas; ItemRect, TextRect: TRect) of object;
   TJvViewerItemChangingEvent = procedure(Sender: TObject; Item: TJvViewerItem; var Allow: Boolean) of object;
   TJvViewerItemChangedEvent = procedure(Sender: TObject; Item: TJvViewerItem) of object;
-  TJvViewerItemHintEvent = procedure (Sender:TObject; Index:integer; var HintInfo:THintInfo; var Handled:boolean) of object;
-
+  TJvViewerItemHintEvent = procedure(Sender: TObject; Index: Integer;
+    var HintInfo: THintInfo; var Handled: Boolean) of object;
 
   TJvCustomItemViewer = class(TJvExScrollingWinControl)
   private
@@ -207,16 +207,16 @@ type
     FOnItemHint: TJvViewerItemHintEvent;
     procedure DoScrollTimer(Sender: TObject);
 
-    procedure WMHScroll(var Message: TWMHScroll); message WM_HSCROLL;
-    procedure WMVScroll(var Message: TWMVScroll); message WM_VSCROLL;
+    procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
+    procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
     procedure WMNCPaint(var Messages: TWMNCPaint); message WM_NCPAINT;
-    procedure WMPaint(var Message: TWMPaint); message WM_PAINT;
-    procedure WMNCHitTest(var Message: TMessage); message WM_NCHITTEST;
-    procedure WMCancelMode(var Message: TWMCancelMode); message WM_CANCELMODE;
+    procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
+    procedure WMNCHitTest(var Msg: TMessage); message WM_NCHITTEST;
+    procedure WMCancelMode(var Msg: TWMCancelMode); message WM_CANCELMODE;
 
-    procedure CMUnselectItem(var Message: TMessage); message CM_UNSELECTITEMS;
-    procedure CMDeleteItem(var Message: TMessage); message CM_DELETEITEM;
-    procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
+    procedure CMUnselectItem(var Msg: TMessage); message CM_UNSELECTITEMS;
+    procedure CMDeleteItem(var Msg: TMessage); message CM_DELETEITEM;
+    procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
 
     procedure SetOptions(const Value: TJvCustomItemViewerOptions);
     function GetItems(Index: Integer): TJvViewerItem;
@@ -278,7 +278,7 @@ type
     procedure ItemChanging(Item: TJvViewerItem; var AllowChange: Boolean); virtual;
     procedure ItemChanged(Item: TJvViewerItem); virtual;
     function HintShow(var HintInfo: THintInfo): Boolean; override;
-    function DoItemHint(Index:integer; var HintInfo: THintInfo):boolean;virtual;
+    function DoItemHint(Index: Integer; var HintInfo: THintInfo): Boolean; virtual;
 
     property TopLeftIndex: Integer read FTopLeftIndex;
     property BottomRightIndex: Integer read FBottomRightIndex;
@@ -304,7 +304,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ScrollBy(DeltaX, DeltaY:integer);
+    procedure ScrollBy(DeltaX, DeltaY: Integer);
     procedure ScrollIntoView(Index: Integer);
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -444,9 +444,9 @@ end;
 function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: Integer;
   var R: TRect; Format: Cardinal; Alignment: TAlignment; Layout: TTextLayout; WordWrap: Boolean): Integer;
 const
-  Alignments: array[TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
-  Layouts: array[TTextLayout] of Cardinal = (DT_TOP, DT_VCENTER, DT_BOTTOM);
-  WordWraps: array[Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
+  Alignments: array [TAlignment] of Cardinal = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  Layouts: array [TTextLayout] of Cardinal = (DT_TOP, DT_VCENTER, DT_BOTTOM);
+  WordWraps: array [Boolean] of Cardinal = (DT_SINGLELINE, DT_WORDBREAK);
 var
   Flags: Cardinal;
 begin
@@ -462,7 +462,7 @@ begin
   Result := InnerRect;
 end;
 
-{ TJvBrushPattern }
+//=== TJvBrushPattern ========================================================
 
 constructor TJvBrushPattern.Create;
 begin
@@ -518,7 +518,32 @@ begin
   end;
 end;
 
-{ TJvCustomItemViewerOptions }
+//=== TJvCustomItemViewerOptions =============================================
+
+constructor TJvCustomItemViewerOptions.Create(AOwner: TJvCustomItemViewer);
+begin
+  inherited Create;
+  FOwner := AOwner;
+  FWidth := 120;
+  FHeight := 120;
+  FVertSpacing := 4;
+  FHorzSpacing := 4;
+  FScrollBar := tvVertical;
+  FSmooth := False;
+  FTracking := True;
+  FLazyRead := True;
+  FShowCaptions := False;
+  FAlignment := taCenter;
+  FLayout := tlBottom;
+  FDragAutoScroll := True;
+  FBrushPattern := TJvBrushPattern.Create;
+end;
+
+destructor TJvCustomItemViewerOptions.Destroy;
+begin
+  FBrushPattern.Free;
+  inherited Destroy;
+end;
 
 procedure TJvCustomItemViewerOptions.Assign(Source: TPersistent);
 begin
@@ -549,31 +574,6 @@ begin
     FOwner.OptionsChanged;
 end;
 
-constructor TJvCustomItemViewerOptions.Create(AOwner: TJvCustomItemViewer);
-begin
-  inherited Create;
-  FOwner := AOwner;
-  FWidth := 120;
-  FHeight := 120;
-  FVertSpacing := 4;
-  FHorzSpacing := 4;
-  FScrollBar := tvVertical;
-  FSmooth := False;
-  FTracking := True;
-  FLazyRead := True;
-  FShowCaptions := False;
-  FAlignment := taCenter;
-  FLayout := tlBottom;
-  FDragAutoScroll := True;
-  FBrushPattern := TJvBrushPattern.Create;
-end;
-
-destructor TJvCustomItemViewerOptions.Destroy;
-begin
-  FBrushPattern.Free;
-  inherited Destroy;
-end;
-
 procedure TJvCustomItemViewerOptions.SetAlignment(const Value: TAlignment);
 begin
   if FAlignment <> Value then
@@ -593,8 +593,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetBrushPattern(
-  const Value: TJvBrushPattern);
+procedure TJvCustomItemViewerOptions.SetBrushPattern(const Value: TJvBrushPattern);
 begin
   //  FBrushPattern := Value;
 end;
@@ -656,8 +655,7 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewerOptions.SetReduceMemoryUsage(
-  const Value: Boolean);
+procedure TJvCustomItemViewerOptions.SetReduceMemoryUsage(const Value: Boolean);
 begin
   if FReduceMemoryUsage <> Value then
   begin
@@ -730,7 +728,13 @@ begin
   end;
 end;
 
-{ TJvViewerItem }
+//=== TJvViewerItem ==========================================================
+
+constructor TJvViewerItem.Create(AOwner: TJvCustomItemViewer);
+begin
+  inherited Create;
+  FOwner := AOwner;
+end;
 
 procedure TJvViewerItem.Changed;
 begin
@@ -743,12 +747,6 @@ begin
   Result := True;
   if FOwner <> nil then
     FOwner.ItemChanging(Self, Result);
-end;
-
-constructor TJvViewerItem.Create(AOwner: TJvCustomItemViewer);
-begin
-  inherited Create;
-  FOwner := AOwner;
 end;
 
 procedure TJvViewerItem.Delete;
@@ -783,7 +781,41 @@ begin
   end;
 end;
 
-{ TJvCustomItemViewer }
+//=== TJvCustomItemViewer ====================================================
+
+constructor TJvCustomItemViewer.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ParentColor := False;
+  ControlStyle := [csCaptureMouse, csDisplayDragImage, csClickEvents, csOpaque, csDoubleClicks];
+  FItems := TList.Create;
+  FOptions := GetOptionsClass.Create(Self);
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
+  FSelectedIndex := -1;
+  FLastHotTrack := -1;
+  AutoScroll := False;
+  HorzScrollBar.Smooth := Options.Smooth;
+  HorzScrollBar.Tracking := Options.Tracking;
+  VertScrollBar.Smooth := Options.Smooth;
+  VertScrollBar.Tracking := Options.Tracking;
+  DoubleBuffered := True;
+  FBorderStyle := bsSingle;
+  Width := 185;
+  Height := 150;
+  TabStop := True;
+end;
+
+destructor TJvCustomItemViewer.Destroy;
+begin
+  StopScrollTimer;
+  Clear;
+  FItems.Free;
+  FOptions.Free;
+  inherited Destroy;
+  // (rom) destroy Canvas always after inherited
+  FCanvas.Free;
+end;
 
 function TJvCustomItemViewer.Add(AItem: TJvViewerItem): Integer;
 begin
@@ -802,10 +834,14 @@ begin
   FBottomRightIndex := ItemAtPos(ClientWidth, ClientHeight, True);
   if FBottomRightIndex < 0 then
     FBottomRightIndex := ItemAtPos(ClientWidth, ClientHeight, False) - 1;
-  if FTopLeftIndex < 0 then FTopLeftIndex := 0;
-  if FTopLeftIndex >= Count then FTopLeftIndex := Count - 1;
-  if FBottomRightIndex < 0 then FBottomRightIndex := 0;
-  if FBottomRightIndex >= Count then FBottomRightIndex := Count - 1;
+  if FTopLeftIndex < 0 then
+    FTopLeftIndex := 0;
+  if FTopLeftIndex >= Count then
+    FTopLeftIndex := Count - 1;
+  if FBottomRightIndex < 0 then
+    FBottomRightIndex := 0;
+  if FBottomRightIndex >= Count then
+    FBottomRightIndex := Count - 1;
   DoReduceMemory;
 end;
 
@@ -855,17 +891,18 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.CMCtl3DChanged(var Message: TMessage);
+procedure TJvCustomItemViewer.CMCtl3DChanged(var Msg: TMessage);
 begin
-  if NewStyleControls and (FBorderStyle = bsSingle) then RecreateWnd;
+  if NewStyleControls and (FBorderStyle = bsSingle) then
+    RecreateWnd;
   inherited;
 end;
 
-procedure TJvCustomItemViewer.CMDeleteItem(var Message: TMessage);
+procedure TJvCustomItemViewer.CMDeleteItem(var Msg: TMessage);
 var
   I: Integer;
 begin
-  I := FItems.IndexOf(TObject(Message.wParam));
+  I := FItems.IndexOf(TObject(Msg.WParam));
   if (I >= 0) and (I < Count) then
   begin
     Delete(I);
@@ -881,16 +918,16 @@ begin
   CheckHotTrack;
 end;
 
-procedure TJvCustomItemViewer.CMUnselectItem(var Message: TMessage);
+procedure TJvCustomItemViewer.CMUnselectItem(var Msg: TMessage);
 var
   I: Integer;
 begin
-  if Message.WParam = Integer(Self) then
+  if Msg.WParam = Integer(Self) then
   begin
     BeginUpdate;
     try
       for I := 0 to Count - 1 do
-        if (Integer(Items[I]) <> Message.LParam) and
+        if (Integer(Items[I]) <> Msg.LParam) and
           (cdsSelected in Items[I].State) then
           Items[I].State := Items[I].State - [cdsSelected];
     finally
@@ -904,32 +941,9 @@ begin
   Result := ACol + ARow * FCols
 end;
 
-constructor TJvCustomItemViewer.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner); 
-  ParentColor := False;
-  ControlStyle := [csCaptureMouse, csDisplayDragImage, csClickEvents, csOpaque, csDoubleClicks];
-  FItems := TList.Create;
-  FOptions := GetOptionsClass.Create(Self);
-  FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;
-  FSelectedIndex := -1;
-  FLastHotTrack := -1;
-  AutoScroll := False;
-  HorzScrollBar.Smooth := Options.Smooth;
-  HorzScrollBar.Tracking := Options.Tracking;
-  VertScrollBar.Smooth := Options.Smooth;
-  VertScrollBar.Tracking := Options.Tracking;
-  DoubleBuffered := True;
-  FBorderStyle := bsSingle;
-  Width := 185;
-  Height := 150;
-  TabStop := True;
-end;
-
 procedure TJvCustomItemViewer.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
+  BorderStyles: array [TBorderStyle] of DWORD = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -942,7 +956,7 @@ begin
     end;
   end;
   with Params.WindowClass do
-    Style := Style or (CS_HREDRAW or CS_VREDRAW) { or CS_SAVEBITS};
+    Style := Style or (CS_HREDRAW or CS_VREDRAW); { or CS_SAVEBITS}
 end;
 
 procedure TJvCustomItemViewer.Delete(Index: Integer);
@@ -952,16 +966,6 @@ begin
   FItems.Delete(Index);
   if SelectedIndex >= Count then
     SelectedIndex := Count - 1;
-end;
-
-destructor TJvCustomItemViewer.Destroy;
-begin
-  StopScrollTimer;
-  Clear;
-  FItems.Free;
-  FOptions.Free;
-  FCanvas.Free;
-  inherited Destroy;
 end;
 
 function TJvCustomItemViewer.DoMouseWheel(Shift: TShiftState;
@@ -1158,7 +1162,8 @@ function TJvCustomItemViewer.IndexOf(Item: TJvViewerItem): Integer;
 begin
   // (p3) need to do it like this because items aren't created until Items[] is called
   for Result := 0 to Count - 1 do
-    if Items[Result] = Item then Exit;
+    if Items[Result] = Item then
+      Exit;
   Result := -1;
 end;
 
@@ -1188,7 +1193,8 @@ var
   ARow, ACol: Integer;
 begin
   Result := -1;
-  if (FItemSize.cx < 1) or (FItemSize.cy < 1) then Exit;
+  if (FItemSize.cx < 1) or (FItemSize.cy < 1) then
+    Exit;
   Dec(X, FTopLeft.X);
   Dec(Y, FTopLeft.Y);
   ACol := X div FItemSize.cx;
@@ -1196,14 +1202,16 @@ begin
   if ((ACol < 0) or (ARow < 0) or (ACol >= FCols) or (ARow >= FRows)) and Existing then
     Exit;
   Result := ColRowToIndex(ACol, ARow);
-  if (Result >= Count) and Existing then Result := -1;
+  if (Result >= Count) and Existing then
+    Result := -1;
 end;
 
 procedure TJvCustomItemViewer.ItemChanged(Item: TJvViewerItem);
 var
   I: Integer;
 begin
-  if FUpdateCount <> 0 then Exit;
+  if FUpdateCount <> 0 then
+    Exit;
   if (Item <> nil) then
   begin
     I := FItems.IndexOf(Item);
@@ -1314,7 +1322,6 @@ begin
   OffsetRect(ItemRect, FTopLeft.X, FTopLeft.Y);
   //  Canvas.FillRect(Rect(Left, Top, Width, Height));
   for I := 0 to Count - 1 do
-  begin
     if not Items[I].Deleting then
     begin
       if not Options.LazyRead or IsRectVisible(ItemRect) then
@@ -1332,7 +1339,6 @@ begin
           OffsetRect(TextRect, ItemSize.cx, 0);
       end;
     end;
-  end;
 end;
 
 procedure TJvCustomItemViewer.PaintWindow(DC: HDC);
@@ -1363,7 +1369,8 @@ begin
   if Rect.Left < 0 then
     with HorzScrollBar do
       Position := Position + Rect.Left
-  else if Rect.Right > ClientWidth then
+  else
+  if Rect.Right > ClientWidth then
   begin
     if Rect.Right - Rect.Left > ClientWidth then
       Rect.Right := Rect.Left + ClientWidth;
@@ -1373,7 +1380,8 @@ begin
   if Rect.Top < 0 then
     with VertScrollBar do
       Position := Position + Rect.Top
-  else if Rect.Bottom > ClientHeight then
+  else
+  if Rect.Bottom > ClientHeight then
   begin
     if Rect.Bottom - Rect.Top > ClientHeight then
       Rect.Bottom := Rect.Top + ClientHeight;
@@ -1469,8 +1477,8 @@ begin
   end;
 end;
 
-procedure TJvCustomItemViewer.ToggleSelection(Index: Integer; SetSelection:
-  Boolean);
+procedure TJvCustomItemViewer.ToggleSelection(Index: Integer;
+  SetSelection: Boolean);
 begin
   if cdsSelected in Items[Index].State then
   begin
@@ -1487,6 +1495,11 @@ begin
 end;
 
 procedure TJvCustomItemViewer.ShiftSelection(Index: Integer; SetSelection: Boolean);
+var
+  I: Integer;
+  AFromCol, AFromRow: Integer;
+  AToCol, AToRow: Integer;
+  ACurrCol, ACurrRow: Integer;
 
   function InRange(Value, Min, Max: Integer): Boolean;
   begin
@@ -1502,11 +1515,6 @@ procedure TJvCustomItemViewer.ShiftSelection(Index: Integer; SetSelection: Boole
     Y := I;
   end;
 
-var
-  I,
-    AFromCol, AFromRow,
-    AToCol, AToRow,
-    ACurrCol, ACurrRow: Integer;
 begin
   BeginUpdate;
   try
@@ -1548,7 +1556,8 @@ begin
   if (csDestroying in ComponentState) or (Parent = nil) then
     Exit;
   HandleNeeded;
-  if not HandleAllocated then Exit;
+  if not HandleAllocated then
+    Exit;
 
   HorzScrollBar.Smooth := Options.Smooth;
   VertScrollBar.Smooth := Options.Smooth;
@@ -1559,19 +1568,23 @@ begin
   FItemSize.cy := Options.Height + Options.VertSpacing;
   if Options.ShowCaptions then
     Inc(FItemSize.cy, GetTextHeight);
-  if (FItemSize.cy < 1) or (FItemSize.cx < 1) or (Count < 1) then Exit;
+  if (FItemSize.cy < 1) or (FItemSize.cx < 1) or (Count < 1) then
+    Exit;
   if Options.ScrollBar = tvHorizontal then
   begin
     if Options.AutoCenter then
       FRows := ClientHeight div FItemSize.cy
     else
       FRows := (Height + FItemSize.cy div 3) div FItemSize.cy;
-    if FRows > Count then FRows := Count;
-    if FRows < 1 then FRows := 1;
+    if FRows > Count then
+      FRows := Count;
+    if FRows < 1 then
+      FRows := 1;
     //    if (ClientHeight mod FItemSize.cy > FItemSize.cy div 2) then
     //      Inc(FRows);
     FCols := Count div FRows;
-    if FCols < 1 then FCols := 1;
+    if FCols < 1 then
+      FCols := 1;
     while (FRows * FCols) < Count do
       Inc(FCols);
     HorzScrollbar.Visible := True;
@@ -1583,12 +1596,15 @@ begin
       FCols := ClientWidth div FItemSize.cx
     else
       FCols := (Width + FItemSize.cx div 3) div FItemSize.cx;
-    if FCols > Count then FCols := Count;
-    if FCols < 1 then FCols := 1;
+    if FCols > Count then
+      FCols := Count;
+    if FCols < 1 then
+      FCols := 1;
     //    if (ClientWidth mod FItemSize.cx > FItemSize.cx div 2) then
     //      Inc(FCols);
     FRows := Count div FCols;
-    if FRows < 1 then FRows := 1;
+    if FRows < 1 then
+      FRows := 1;
     while (FRows * FCols) < Count do
       Inc(FRows);
     HorzScrollbar.Visible := False;
@@ -1628,7 +1644,7 @@ begin
   Code := [dcWantArrows];
 end;
 
-procedure TJvCustomItemViewer.WMHScroll(var Message: TWMHScroll);
+procedure TJvCustomItemViewer.WMHScroll(var Msg: TWMHScroll);
 begin
   inherited;
   UpdateAll;
@@ -1646,7 +1662,8 @@ begin
     if CanFocus then
       SetFocus;
   end
-  else if Button = mbRight then
+  else
+  if Button = mbRight then
   begin
     StopScrollTimer;
     if Options.RightClickSelect then
@@ -1673,9 +1690,10 @@ begin
     begin
       if Options.MultiSelect then
       begin
-        if (ssCtrl in Shift) then
+        if ssCtrl in Shift then
           ToggleSelection(FTempSelected, True)
-        else if ssShift in Shift then
+        else
+        if ssShift in Shift then
           ShiftSelection(FTempSelected, True)
         else
         begin
@@ -1698,20 +1716,20 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
 end;
 
-procedure TJvCustomItemViewer.WMNCHitTest(var Message: TMessage);
+procedure TJvCustomItemViewer.WMNCHitTest(var Msg: TMessage);
 begin
   // enable scroll bars at design-time
-  DefaultHandler(Message);
+  DefaultHandler(Msg);
 end;
 
-procedure TJvCustomItemViewer.WMPaint(var Message: TWMPaint);
+procedure TJvCustomItemViewer.WMPaint(var Msg: TWMPaint);
 begin
   ControlState := ControlState + [csCustomPaint];
   inherited;
   ControlState := ControlState - [csCustomPaint];
 end;
 
-procedure TJvCustomItemViewer.WMVScroll(var Message: TWMVScroll);
+procedure TJvCustomItemViewer.WMVScroll(var Msg: TWMVScroll);
 begin
   inherited;
   UpdateAll;
@@ -1720,7 +1738,7 @@ begin
     FOnScroll(Self);
 end;
 
-procedure TJvCustomItemViewer.WMCancelMode(var Message: TWMCancelMode);
+procedure TJvCustomItemViewer.WMCancelMode(var Msg: TWMCancelMode);
 begin
   inherited;
   StopScrollTimer;
@@ -1795,17 +1813,21 @@ begin
   begin
     if X <= cEdgeSize then
       ScrollEdge := Ord(seLeft)
-    else if X >= ClientWidth - cEdgeSize then
+    else
+    if X >= ClientWidth - cEdgeSize then
       ScrollEdge := Ord(seRight)
-    else if Y <= cEdgeSize then
+    else
+    if Y <= cEdgeSize then
       ScrollEdge := Ord(seTop)
-    else if Y >= CLientHeight - cEdgeSize then
+    else
+    if Y >= CLientHeight - cEdgeSize then
       ScrollEdge := Ord(seBottom)
     else
       ScrollEdge := Ord(seNone);
     if (ScrollEdge = Ord(seNone)) and Assigned(FScrollTimer) then
       StopScrollTimer
-    else if (ScrollEdge <> Ord(seNone)) and not Assigned(FScrollTimer) then
+    else
+    if (ScrollEdge <> Ord(seNone)) and not Assigned(FScrollTimer) then
     begin
       FScrollTimer := TTimer.Create(nil);
       FScrollTimer.Enabled := False;
@@ -1891,41 +1913,43 @@ begin
 end;
 
 function TJvCustomItemViewer.HintShow(var HintInfo: THintInfo): Boolean;
-var i:integer;
+var
+  I: Integer;
 begin
   with HintInfo.CursorPos do
-    i := ItemAtPos(X,Y, true);
-  if i >= 0 then
+    I := ItemAtPos(X,Y, True);
+  if I >= 0 then
   begin
-    HintInfo.HintStr := Items[i].Hint;
-    HintInfo.CursorRect := ItemRect(i,true);
-    DoItemHint(i, HintInfo);
+    HintInfo.HintStr := Items[I].Hint;
+    HintInfo.CursorRect := ItemRect(I, True);
+    DoItemHint(I, HintInfo);
   end;
   if HintInfo.HintStr = '' then
     HintInfo.HintStr := Hint;
-  Result := false;
+  Result := False;
 end;
 
 procedure TJvCustomItemViewer.Deleted(Item: TJvViewerItem);
 begin
-  if Assigned(FOnDeletion) then FOnDeletion(Self, Item);
+  if Assigned(FOnDeletion) then
+    FOnDeletion(Self, Item);
 end;
 
 procedure TJvCustomItemViewer.Inserted(Item: TJvViewerItem);
 begin
-  if Assigned(FOnInsertion) then FOnInsertion(Self, Item);
+  if Assigned(FOnInsertion) then
+    FOnInsertion(Self, Item);
 end;
 
-
-function TJvCustomItemViewer.DoItemHint(Index: integer;
-  var HintInfo: THintInfo): boolean;
+function TJvCustomItemViewer.DoItemHint(Index: Integer;
+  var HintInfo: THintInfo): Boolean;
 begin
-  Result := false;
+  Result := False;
   if Assigned(FOnItemHint) then
     FOnItemHint(Self, Index, HintInfo, Result);
 end;
 
-procedure TJvCustomItemViewer.ScrollBy(DeltaX, DeltaY: integer);
+procedure TJvCustomItemViewer.ScrollBy(DeltaX, DeltaY: Integer);
 begin
   if DeltaX <> 0 then
     HorzScrollBar.Position := HorzScrollBar.Position + DeltaX;
@@ -1934,7 +1958,7 @@ begin
   UpdateAll;
 end;
 
-{ TViewerDrawImageList }
+//=== TViewerDrawImageList ===================================================
 
 procedure TViewerDrawImageList.Initialize;
 begin

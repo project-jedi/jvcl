@@ -56,7 +56,6 @@ Known Issues:
 
  -the control does (currently) not allow for time entry
   - it really is a control for date entry only.
-
 }
 
 unit JvDatePickerEdit;
@@ -628,7 +627,8 @@ var
   begin
     if lFigVal > AMax then
       SetActiveFigVal(AMax)
-    else if lFigVal < AMin then
+    else
+    if lFigVal < AMin then
       SetActiveFigVal(AMin);
   end;
 
@@ -654,7 +654,8 @@ begin
           EndInternalChange;
         end;
       end
-      else if (not FDeleting) and EnableValidation then
+      else
+      if (not FDeleting) and EnableValidation then
       begin
         lActFig := ActiveFigure;
 
@@ -1132,7 +1133,8 @@ var
   P: TPoint;
 begin
   GetCursorPos(P);
-  if PtInRect(BoundsRect, P) then Exit;
+  if PtInRect(BoundsRect, P) then
+    Exit;
   if Assigned(ANextControl) then
     Self.DoKillFocus(ANextControl.Handle)
   else

@@ -836,7 +836,8 @@ begin
     Shifted := (Theme = WindowsXP) and (dsClicked in DrawState);
     if ToolType = ttImage then
     begin
-      if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then Exit;
+      if (Images = nil) or (ImageIndex < 0) or (ImageIndex >= Images.Count) then
+        Exit;
       Images.Draw(Canvas,
         (Width - Images.Width) div 2 + Integer(Shifted),
         (Height - Images.Height) div 2 + Integer(Shifted),
@@ -857,9 +858,11 @@ begin
           Ord(FToolType)), 3, MAXINT)));
         if (dsClicked in DrawState) and (dsHighlight in DrawState) then
           JvXPColorizeBitmap(Bitmap, clWhite)
-        else if not Enabled then
+        else
+        if not Enabled then
           JvXPColorizeBitmap(Bitmap, clGray)
-        else if Color <> clBlack then
+        else
+        if Color <> clBlack then
           JvXPColorizeBitmap(Bitmap, Color);
         Bitmap.Transparent := True;
         Draw((Width - Bitmap.Width) div 2 + Integer(Shifted),
@@ -879,7 +882,8 @@ begin
   begin
     if AComponent = DropDownMenu then
       DropDownMenu := nil
-    else if AComponent = Images then
+    else
+    if AComponent = Images then
       Images := nil;
   end;
 end;

@@ -63,7 +63,6 @@ type
     procedure AFilterRecord(DataSet: TDataSet;
       var Accept: Boolean);
   protected
-    { Protected declarations }
     procedure Change; override;
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
@@ -72,12 +71,10 @@ type
     function GetDateDelimiter: string;
     function IsNumeric(s1: string): Boolean;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Find(AText: string);
     procedure ResetFilter;
-
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property DataField: string read GetDataField write SetDataField;
@@ -130,8 +127,6 @@ type
   end;
 
 implementation
-
-{ TJvDBFindEdit }
 
 constructor TJvDBFindEdit.Create(AOwner: TComponent);
 begin
@@ -193,18 +188,16 @@ end;
 
 function TJvDBFindEdit.GetDateDelimiter: string;
 var
-  s1: string;
-  i: Integer;
+  S1: string;
+  I: Integer;
 begin
-  s1 := DateTimeToStr(Now);
-  for i := 1 to Length(s1) do
-  begin
-    if not (s1[i] in ['0'..'9']) then
+  S1 := DateTimeToStr(Now);
+  for I := 1 to Length(S1) do
+    if not (S1[I] in ['0'..'9']) then
     begin
-      Result := s1[i];
+      Result := S1[I];
       Break;
     end;
-  end;
 end;
 
 function TJvDBFindEdit.IsDate(s1: string): Boolean;
@@ -283,12 +276,13 @@ begin
   FTimer.Enabled := False;
   ActiveChange(Self);
   if FSearchText = '' then
+  begin
     if FFindStyle = fsFilter then
     begin
       FDataLink.DataSet.OnFilterRecord := FOldFilterRecord;
       FDataLink.DataSet.Filtered := FOldFiltered;
-    end
-    else
+    end;
+  end
   else
   begin
     if not FDataLink.Active or (FDataLink.Field = nil) then
@@ -325,7 +319,8 @@ begin
         AnsiUpperCase(DataSet.FieldByName(DataField).AsString)) = 1
     else
       Accept := Pos(FSearchText, DataSet.FieldByName(DataField).AsString) = 1
-  else if IgnoreCase then
+  else
+  if IgnoreCase then
     Accept := Pos(AnsiUpperCase(FSearchText),
       AnsiUpperCase(DataSet.FieldByName(DataField).AsString)) > 0
   else
@@ -336,7 +331,8 @@ procedure TJvDBFindEdit.ActiveChange(Sender: TObject);
 var
   Func1, Func2: TFilterRecordEvent;
 begin
-  if (FFindStyle = fsNavigate) or (FDataLink.DataSet = nil) then Exit;
+  if (FFindStyle = fsNavigate) or (FDataLink.DataSet = nil) then
+    Exit;
   Func1 := FDataLink.DataSet.OnFilterRecord;
   Func2 := AFilterRecord;
   if FDataLink.Active and (@Func1 <> @Func2) and (FSearchText > '') then
@@ -397,10 +393,8 @@ procedure TJvDBFindEdit.Notification(AComponent: TComponent;
 begin
   inherited Notification(AComponent, Operation);
   if Operation = opRemove then
-  begin
     if (FDataLink <> nil) and (AComponent = DataSource) then
       DataSource := nil;
-  end;
 end;
 
 end.

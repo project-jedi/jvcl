@@ -119,7 +119,8 @@ function TJvZlibMultiple.CompressDirectory(Directory: string; Recursive: Boolean
         begin
           if (SearchRec.Attr and faDirectory) = 0 then
             AddFile(SearchRec.Name, SDirectory, Directory + SDirectory + SearchRec.Name, Result)
-          else if Recursive then
+          else
+          if Recursive then
             SearchDirectory(SDirectory + SearchRec.Name + PathDelim);
         end;
         Res := FindNext(SearchRec);
