@@ -3980,7 +3980,9 @@ function TJvCustomRichEdit.GetCharPos(CharIndex: Integer): TPoint;
 var
   Res: Longint;
 begin
-  FillChar(Result, SizeOf(Result), 0);
+  Result.X := 0;
+  Result.Y := 0;
+//  FillChar(Result, SizeOf(Result), 0);
   if HandleAllocated then begin
     if RichEditVersion = 2 then begin
       Res := SendMessage(Handle, Messages.EM_POSFROMCHAR, CharIndex, 0);
