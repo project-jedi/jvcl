@@ -958,8 +958,8 @@ function TJvProgramVersionHTTPLocation.LoadFileFromRemoteInt(
   iBaseThread: TJvBaseThread): string;
 begin
   Result := '';
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
+  if Assigned(FOnLoadFileFromRemote) then
+    Result := FOnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName);
 end;
 
@@ -970,8 +970,8 @@ function TJvProgramVersionFTPLocation.LoadFileFromRemoteInt(
   iBaseThread: TJvBaseThread): string;
 begin
   Result := '';
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
+  if Assigned(FOnLoadFileFromRemote) then
+    Result := FOnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName);
 end;
 
@@ -982,8 +982,8 @@ function TJvProgramVersionDatabaseLocation.LoadFileFromRemoteInt(
   iBaseThread: TJvBaseThread): string;
 begin
   Result := '';
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
+  if Assigned(FOnLoadFileFromRemote) then
+    Result := FOnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName);
 end;
 
@@ -1286,12 +1286,15 @@ begin
       ReleaseType := prtProduction;
       for I := High(I) downto Low(I) do
         if IsRemoteProgramVersionReleaseTypeNewer(I) then
-          if Assigned(ParameterList.ParameterByName('RadioButton' + IntToStr(Ord(I)))) then
-            if ParameterList.ParameterByName('RadioButton' + IntToStr(Ord(I))).AsBoolean then
+        begin
+          Parameter := ParameterList.ParameterByName('RadioButton' + IntToStr(Ord(I)));
+          if Assigned(Parameter) then
+            if Parameter.AsBoolean then
             begin
               ReleaseType := I;
               Break;
             end;
+        end;
     end;
   finally
     ParameterList.Free;
@@ -1466,8 +1469,8 @@ function TJvProgramVersionHTTPLocationIndy.LoadFileFromRemoteInt(
   iBaseThread: TJvBaseThread): string;
 begin
   Result := '';
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
+  if Assigned(FOnLoadFileFromRemote) then
+    Result := FOnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName)
   else
     Result := LoadFileFromRemoteIndy(iRemotePath, iRemoteFileName, iLocalPath,
@@ -1539,8 +1542,8 @@ function TJvProgramVersionFTPLocationIndy.LoadFileFromRemoteInt(
   iBaseThread: TJvBaseThread): string;
 begin
   Result := '';
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
+  if Assigned(FOnLoadFileFromRemote) then
+    Result := FOnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName)
   else
     Result := LoadFileFromRemoteIndy(iRemotePath, iRemoteFileName, iLocalPath,
@@ -1612,8 +1615,8 @@ function TJvProgramVersionHTTPLocationIcs.LoadFileFromRemoteInt(
   iBaseThread: TJvBaseThread): string;
 begin
   Result := '';
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
+  if Assigned(FOnLoadFileFromRemote) then
+    Result := FOnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName)
   else
     Result := LoadFileFromRemoteIcs(iRemotePath, iRemoteFileName, iLocalPath,
@@ -1655,7 +1658,7 @@ begin
         Get
       except
         on E: EHttpException do
-          DownloadError := 'Failed : ' + IntToStr(StatusCode) + ' ' + ReasonPhrase;
+          DownloadError := 'Failed: ' + IntToStr(StatusCode) + ' ' + ReasonPhrase;
         else
           raise;
       end;
@@ -1686,8 +1689,8 @@ function TJvProgramVersionFTPLocationIcs.LoadFileFromRemoteInt(
   iBaseThread: TJvBaseThread): string;
 begin
   Result := '';
-  if Assigned(OnLoadFileFromRemote) then
-    Result := OnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
+  if Assigned(FOnLoadFileFromRemote) then
+    Result := FOnLoadFileFromRemote(Self, iRemotePath, iRemoteFileName,
       iLocalPath, iLocalFileName)
   else
     Result := LoadFileFromRemoteIcs(iRemotePath, iRemoteFileName, iLocalPath,
