@@ -473,3 +473,18 @@ Changelog for JVCL 3.0
 
 2003-06-12:
 - Created new dev subfolder on SF for the files (jvcl/dev/JVCL3) // peter3
+
+2003-03-23:
+- JvRollOut: Several properties have changed and been put into nested sub-properties.
+  To update current usage do the following:
+   * Color: change to Colors.Color
+   * ButtonColor: change to Colors.ButtonColor
+   * ButtonColTop: change to Colors.ButtonTop
+   * ButtonColBtm: change to Colors.ButtonBottom
+   * ColHiText: change to Colors.HotTrackText
+   * FrameColTop: change to Colors.FrameTop
+   * FrameColBtm: change to Colors.FrameBottom
+   * ImageExpanded: change to ImageOptions.IndexExpanded
+   * ImageCollapsed: change to ImageOptions.IndexCollapsed
+   * ImageList: change to ImageOptions.Images
+   * ImageOffset: change to ImageOptions.Offset // peter3
