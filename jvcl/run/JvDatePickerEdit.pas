@@ -56,7 +56,7 @@ interface
 
 uses
   Classes, Controls, Graphics, Messages, ComCtrls, Buttons,
-  JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit;
+  JvTypes, JvCalendar, JvDropDownForm, JvCheckedMaskEdit, JvButton;
 
 type
   {Types used to handle and convert between date format strings and EditMasks:}
@@ -103,7 +103,7 @@ type
   TJvCustomDatePickerEdit = class(TJvCustomCheckedMaskEdit)
   private
     FAllowNoDate: Boolean;
-    FDropButton: TSpeedButton;
+    FDropButton: TJvDropDownButton;
     FButtonHolder:TWinControl;
     FCalAppearance: TJvMonthCalAppearance;
     FDate: TDateTime;
@@ -121,7 +121,7 @@ type
     FEmptyMaskText: string;
     //    FMinYear: Word;
     //    FMaxYear: Word;
-    procedure ButClick(Sender: TObject);
+    procedure ButtonClick(Sender: TObject);
     procedure CalChange(Sender: TObject);
     procedure CalDestroy(Sender: TObject);
     procedure CalSelect(Sender: TObject);
@@ -140,7 +140,6 @@ type
     function GetDropped: Boolean;
     procedure SetNoDateText(const AValue: string);
   protected
-
     function IsDateFormatStored: Boolean;
     function IsNoDateShortcutStored: Boolean;
     function IsNoDateTextStored: Boolean;
@@ -281,11 +280,11 @@ begin
   FButtonHolder := TWinControl.Create(Self);
   with FButtonHolder do
   begin
-    Parent := self;
+    Parent := Self;
     Align := alRight;
     Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
   end;
-  FDropButton := TSpeedButton.Create(Self);
+  FDropButton := TJvDropDownButton.Create(Self);
   with FDropButton do
   begin
     Parent := FButtonHolder;
@@ -293,8 +292,7 @@ begin
     Cursor := crArrow;
     Flat := True;
 //    Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
-    Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
-    OnClick := ButClick;
+    OnClick := ButtonClick;
     Visible := True;
   end;
 
@@ -315,7 +313,7 @@ begin
   UpdateDisplay;
 end;
 
-procedure TJvCustomDatePickerEdit.ButClick(Sender: TObject);
+procedure TJvCustomDatePickerEdit.ButtonClick(Sender: TObject);
 begin
   if Dropped then
     CloseUp
@@ -808,7 +806,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   if not (Self.Enabled) and Dropped then
     CloseUp;
   FDropButton.Enabled := Self.Enabled;
@@ -932,7 +930,7 @@ end;
 
 procedure TJvCustomDatePickerEdit.CreateWnd;
 begin
-  inherited;
+  inherited CreateWnd;
   SetDateFormat(ShortDateFormat);
 end;
 
