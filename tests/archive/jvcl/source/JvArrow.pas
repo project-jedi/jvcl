@@ -15,8 +15,7 @@ Portions created by Anthony Steele are Copyright (C) 1999-2001 Russell Fox.
 All Rights Reserved.
 
 Contributor(s):
-
-Last Modified: 2002-05-26
+Last Modified: 2003-06-11
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,7 +37,9 @@ type
   TArrowType = (atDownRight, atDownLeft, atUpRight, atUpLeft,
     atRightDown, atLeftDown, atRightUp, atLeftUp,
     atTopLeftBottomRight, atBottomRightTopLeft,
-    atTopRightBottomLeft, atBottomLeftTopRight);
+    atTopRightBottomLeft, atBottomLeftTopRight,
+    atLeftRight, atRightLeft, atUpDown, atDownUp
+  );
 
   TCustomArrow = class(TJvGraphicControl)
   private
@@ -252,6 +253,42 @@ begin
           ArrowPoints[3].x := ArrowPoints[2].x;
           ArrowPoints[3].y := ArrowPoints[2].y;
         end;
+      atLeftRight:
+        begin
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := (X + (W - GUI_PAD));
+          ArrowPoints[2].y := Y + GUI_PAD;
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := ArrowPoints[2].y;
+        end;
+      atRightLeft:
+        begin
+          ArrowPoints[1].x := (X + (W - GUI_PAD));
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := X + GUI_PAD;
+          ArrowPoints[2].y := ArrowPoints[1].y;
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := ArrowPoints[2].y;
+        end;
+      atUpDown:
+        begin
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y := Y + GUI_PAD;
+          ArrowPoints[2].x := X + GUI_PAD;
+          ArrowPoints[2].y := Y + GUI_PAD;
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := (Y + (H - GUI_PAD));
+        end;
+      atDownUp:
+        begin
+          ArrowPoints[1].x := X + GUI_PAD;
+          ArrowPoints[1].y :=(Y + (H - GUI_PAD));
+          ArrowPoints[2].x := X + GUI_PAD;
+          ArrowPoints[2].y := (Y + (H - GUI_PAD));
+          ArrowPoints[3].x := ArrowPoints[2].x;
+          ArrowPoints[3].y := Y + GUI_PAD;
+        end;
     else
       ArrowPoints[1].x := X + GUI_PAD;
       ArrowPoints[1].y := Y + GUI_PAD;
@@ -276,7 +313,7 @@ begin
       Arrow_FromY := ArrowPoints[3].y;
       Arrow_ToX   := ArrowPoints[3].x + (ArrowSize * liSign);
       Arrow_ToY   := ArrowPoints[3].y;
-    end 
+    end
     else
     if Shape in [atTopLeftBottomRight, atBottomLeftTopRight] then
     begin
@@ -293,7 +330,7 @@ begin
 
       Arrow_FromX := ArrowPoints[3].x;
       Arrow_FromY := ArrowPoints[3].y;
-    end 
+    end
     else if Shape in [atBottomRightTopLeft, atTopRightBottomLeft] then
     begin
 //      Arrow_FromX := 0;
@@ -306,11 +343,23 @@ begin
         Arrow_ToY := ArrowPoints[3].y + ArrowSize;
       Arrow_FromX := ArrowPoints[3].x;
       Arrow_FromY := ArrowPoints[3].y;
-    end 
+    end
+    else if Shape in [atLeftRight, atRightLeft] then
+    begin
+      {left or right}
+      if Shape in [atRightLeft] then
+        liSign := -1
+      else
+        liSign := +1;
+      Arrow_FromX := ArrowPoints[3].x;
+      Arrow_FromY := ArrowPoints[3].y;
+      Arrow_ToX   := ArrowPoints[3].x + (ArrowSize * liSign);
+      Arrow_ToY   := ArrowPoints[3].y;
+    end
     else
     begin
       {down or up}
-      if Shape in [atLeftUp, atRightUp] then
+      if Shape in [atLeftUp, atRightUp, atDownUp] then
         liSign := -1
       else
         liSign := +1;
@@ -434,3 +483,4 @@ begin
 end;
 
 end.
+
