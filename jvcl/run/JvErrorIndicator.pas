@@ -40,10 +40,7 @@ unit JvErrorIndicator;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows,
-  {$ENDIF VCL}
-  Classes, Graphics, Controls, ImgList,
+  Windows, Classes, Graphics, Controls, ImgList,
   JvComponent;
 
 type
