@@ -109,7 +109,7 @@ type
 
 procedure TJvContextRootItem.InitID;
 begin
-  SetID(SDataItemRootID);
+  SetID(RsDataItemRootID);
 end;
 
 function TJvContextRootItem.GetInterface(const IID: TGUID; out Obj): Boolean;
@@ -167,7 +167,7 @@ begin
     if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
       ViewList.RebuildView;
     ProviderImpl := (Provider as IInterfaceComponentReference).GetComponent;
-    Caption := Format(SDataProviderContextManCaption, [ProviderImpl.Name, PropName]);
+    Caption := Format(RsDataProviderContextManCaption, [ProviderImpl.Name, PropName]);
   end;
   if InternalProvider <> nil then
   begin
@@ -185,7 +185,7 @@ end;
 
 function TfrmJvDataContextManager.DesignerFormName: string;
 begin
-  Result := SDataProviderContextManager;
+  Result := RsDataProviderContextManager;
 end;
 
 procedure TfrmJvDataContextManager.FormDestroy(Sender: TObject);

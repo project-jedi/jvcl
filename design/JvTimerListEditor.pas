@@ -76,7 +76,7 @@ var
   PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName, 'Events') then
+  if SameText(PropName, 'Events') then // do not localize
   begin
     PropertyEditor.Edit;
     Cont := False;
@@ -95,7 +95,7 @@ end;
 function TJvTimerListDefaultEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SEventsEllipsis
+    Result := RsEventsEllipsis
   else
     Result := '';
 end;

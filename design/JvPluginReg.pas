@@ -49,15 +49,15 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteCustom, [TJvPluginManager]);
+  RegisterComponents(RsPaletteCustom, [TJvPluginManager]);
 
   // Bianconi
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvPluginCommand,
     'ShortCut', TShortCutProperty);
   // End of Bianconi
 
-  RegisterPackageWizard( TJvPluginWizard.Create );
-  //  RegisterLibraryExpert(TJvPluginWizard.Create)
+  RegisterPackageWizard(TJvPluginWizard.Create);
+  //  RegisterLibraryExpert(TJvPluginWizard.Create);
 end;
   
 

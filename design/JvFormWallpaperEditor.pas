@@ -90,17 +90,17 @@ end;
 
 function TJvFormWallpaperEditor.GetValue: string;
 begin
-  Result := SJvEditorString;
+  Result := RsJvEditorString;
 end;
 
 procedure TJvFormWallpaperEditor.GetValues(Proc: TGetStrProc);
 begin
-  SetStrValue(SJvEditorString);
+  SetStrValue(RsJvEditorString);
 end;
 
 procedure TJvFormWallpaperEditor.SetValue(const Value: string);
 begin
-  SetStrValue(SJvEditorString);
+  SetStrValue(RsJvEditorString);
 end;
 
 end.

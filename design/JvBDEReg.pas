@@ -58,7 +58,7 @@ const
   cSource = 'Source';
   cDestination = 'Destination';
 begin
-  RegisterComponents(SPaletteBDE, [TJvDBFilter, TJvDBIndexCombo,
+  RegisterComponents(RsPaletteBDE, [TJvDBFilter, TJvDBIndexCombo,
     TJvDatabaseItems, TJvTableItems,
     // TJvDBListDataSet, TJvDatabaseList, TJvLangDrivList, TJvTableList,
     // TJvStoredProcList, TJvFieldList,  TJvIndexList,

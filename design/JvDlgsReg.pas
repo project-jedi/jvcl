@@ -60,7 +60,7 @@ const
   cAppletName = 'AppletName';
   cAppletIndex = 'AppletIndex';
 begin
-  RegisterComponents(SPaletteDialog, [TJvSelectDirectory,
+  RegisterComponents(RsPaletteDialog, [TJvSelectDirectory,
     TJvOpenDialog, TJvSaveDialog, TJvTipOfDay, TJvFindReplace, TJvDSADialog,
     TJvPageSetupDialog, TJvPageSetupTitledDialog, TJvConnectNetwork,
     TJvDisconnectNetwork, TJvAddPrinterDialog, TJvFindFilesDialog,
@@ -87,7 +87,7 @@ begin
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
   {$IFNDEF BCB5}  // removed because BCB5 cannot compile/link JvDialogActns
-  RegisterActions(SJVCLActionsCategory, [TJvBrowseForFolderAction,
+  RegisterActions(RsJVCLActionsCategory, [TJvBrowseForFolderAction,
     TJvSelectDirectoryAction, TJvConnectNetworkAction, TJvFloppyFormatAction,
     TJvOrganizeFavoritesAction, TJvControlPanelAction, TJvOpenFileAction,
     TJvSaveFileAction, TJvPageSetupAction, TJvPageSetupTitledAction],

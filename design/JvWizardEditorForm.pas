@@ -285,17 +285,17 @@ function TJvWizardComponentEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SPageListEllipsis;
+      Result := RsPageListEllipsis;
     1:
-      Result := SNewWelcomePage;
+      Result := RsNewWelcomePage;
     2:
-      Result := SNewInteriorPage;
+      Result := RsNewInteriorPage;
     3:
-      Result := SNextPage;
+      Result := RsNextPage;
     4:
-      Result := SPreviousPage;
+      Result := RsPreviousPage;
     5:
-      Result := SDeletePage;
+      Result := RsDeletePage;
   end;
 end;
 
@@ -336,7 +336,7 @@ var
 begin
   APageList := TList(Pointer(GetOrdValue));
   if not Assigned(APageList) or (APageList.Count <= 0) then
-    Result := SNone
+    Result := RsNone
   else
     Result := Format('(%s)', [GetPropType^.Name]);
 end;

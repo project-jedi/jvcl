@@ -327,9 +327,9 @@ function TJvgReportCompEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SEditReport;
+      Result := RsEditReport;
     1:
-      Result := SPreviewReportEllipsis;
+      Result := RsPreviewReportEllipsis;
   end;
 end;
 
@@ -851,7 +851,7 @@ procedure TJvgReportEditorForm.N_DeleteObjectClick(Sender: TObject);
 begin
   if Assigned(FSelectedControl) then
   begin
-    if Windows.MessageBox(0, PChar(SDeleteObject), PChar(SConfirm), MB_OKCANCEL) <> IDOK then
+    if Windows.MessageBox(0, PChar(RsDeleteObject), PChar(RsConfirm), MB_OKCANCEL) <> IDOK then
       Exit;
     if FSelectedControl.ContainOLE then
       FScrollBox.RemoveControl(FSelectedControl.OLEContainer);
@@ -1219,7 +1219,7 @@ begin
   if not Assigned(Component) then
     Exit;
   Form := TForm.Create(nil);
-  Form.Caption := SPagePreview;
+  Form.Caption := RsPagePreview;
   Image := TImage.Create(Form);
   Bmp := TBitmap.Create;
   Image.Parent := Form;

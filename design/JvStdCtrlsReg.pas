@@ -64,31 +64,31 @@ const
   cText = 'Text';
   cOwnerDraw = 'OwnerDraw';
 begin
-  RegisterComponents(SPaletteVisual, [TJvShape]);
-  RegisterComponents(SPaletteNonVisual, [TJvMainMenu, TJvPopupMenu,
+  RegisterComponents(RsPaletteVisual, [TJvShape]);
+  RegisterComponents(RsPaletteNonVisual, [TJvMainMenu, TJvPopupMenu,
     TJvSystemPopup, TJvCalculator]);
-  RegisterComponents(SPaletteDialog, [TJvBrowseForFolderDialog]);
-  RegisterComponents(SPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
+  RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
+  RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
     TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvUpDown, TJvDomainUpDown,
     TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton,
     TJvFavoritesButton]);
-  RegisterComponents(SPaletteEdit, [TJvEdit, TJvMemo, TJvRichEdit,
+  RegisterComponents(RsPaletteEdit, [TJvEdit, TJvMemo, TJvRichEdit,
     TJvCheckedMaskEdit, TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit,
     TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit, TJvIPAddress]);
-  RegisterComponents(SPaletteImageAnimator, [TJvImage, TJvImageList]);
-  RegisterComponents(SPaletteBarPanel, [TJvPageControl,  TJvProgressBar,
+  RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
+  RegisterComponents(RsPaletteBarPanel, [TJvPageControl,  TJvProgressBar,
     TJvStatusBar, TJvTabControl, TJvToolBar, TJvControlBar, TJvCoolBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {TJvTransparentPanel}]);
-  RegisterComponents(SPaletteLabel, [TJvLabel, TJvStaticText]);
-  RegisterComponents(SPaletteListComboTree, [TJvComboBox,TJvListBox,
+  RegisterComponents(RsPaletteLabel, [TJvLabel, TJvStaticText]);
+  RegisterComponents(RsPaletteListComboTree, [TJvComboBox,TJvListBox,
     TJvCheckListBox, TJvTreeView, TJvListView, TJvCheckTreeView,
     TJvColorComboBox, TJvFontComboBox, TJvTextListBox, TJvxCheckListBox,
     TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,}
     TJvDrawGrid, TJvStringGrid]);
-  RegisterComponents(SPaletteScrollerTracker, [TJvScrollBar, TJvScrollBox,
+  RegisterComponents(RsPaletteScrollerTracker, [TJvScrollBar, TJvScrollBox,
     TJvTrackBar]);
-  RegisterComponents(SPaletteSliderSplitter, [TJvxSlider]);
+  RegisterComponents(RsPaletteSliderSplitter, [TJvxSlider]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'ProgressBar', TJvProgressControlProperty);

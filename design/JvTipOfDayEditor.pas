@@ -88,7 +88,7 @@ end;
 function TJvTipOfDayEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SPreviewEllipsis
+    Result := RsPreviewEllipsis
   else
     Result := '';
 end;

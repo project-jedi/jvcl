@@ -96,7 +96,7 @@ end;
 function TJvChangeNotifyEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SNotificationsEllipsis
+    Result := RsNotificationsEllipsis
   else
     Result := '';
 end;

@@ -63,7 +63,7 @@ begin
     0:
       begin
         OpenDialog := TOpenDialog.Create(nil);
-        OpenDialog.Filter := SRTFAndTextFilesrtftxtrtftxt;
+        OpenDialog.Filter := RsRTFAndTextFilesrtftxtrtftxt;
         if OpenDialog.Execute then
           (Component as TJvgHelpPanel).Strings.LoadFromFile(OpenDialog.FileName);
         OpenDialog.Free;
@@ -92,9 +92,9 @@ function TJvgHelpPanelEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SLoadRTFFile;
+      Result := RsLoadRTFFile;
     1:
-      Result := SPreviewRTFText;
+      Result := RsPreviewRTFText;
   end;
 end;
 

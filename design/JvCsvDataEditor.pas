@@ -172,9 +172,9 @@ procedure TJvFilenameProperty.Edit;
 begin
   with TOpenDialog.Create(Application) do
   begin
-    Title := SJvCsvDataSetSelectCSVFileToOpen;
+    Title := RsJvCsvDataSetSelectCSVFileToOpen;
     FileName := GetValue;
-    Filter := SCsvFilter;
+    Filter := RsCsvFilter;
     Options := Options + [ofPathMustExist];
     try
       if Execute then
@@ -204,7 +204,7 @@ begin
    Requires a working DSDESIGN.pas source that will compile. }
 // RegisterComponentEditor(TCSVDataSet, TCSVDataSetComponentEditor);
 
-  RegisterComponents(SPaletteDBNonVisual, [TJvCSVDataSet]);
+  RegisterComponents(RsPaletteDBNonVisual, [TJvCSVDataSet]);
 end;
 
 end.

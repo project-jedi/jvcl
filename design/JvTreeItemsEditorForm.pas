@@ -437,7 +437,7 @@ end;
 function TJvTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SItemsEditorEllipsis
+    Result := RsItemsEditorEllipsis
   else
     Result := '';
 end;
@@ -557,7 +557,7 @@ end;
 function TJvPageTreeViewComponentEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 1 then
-    Result := SLinksEditorEllipsis
+    Result := RsLinksEditorEllipsis
   else
     Result := inherited GetVerb(Index);
 end;

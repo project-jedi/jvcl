@@ -84,7 +84,7 @@ var
 begin
   I := GetOrdValue;
   if I = -1 then
-    Result := SNone
+    Result := RsNone
   else
     Result := (GetConsumerImpl.ProviderIntf as IJvColorProvider).Get_Mapping(I).Name;
 end;
@@ -93,7 +93,7 @@ procedure TJvColorProviderMappingProperty.SetValue(const Value: string);
 var
   I: Integer;
 begin
-  if AnsiSameStr(Value, SNone) or (Value = '') then
+  if AnsiSameStr(Value, RsNone) or (Value = '') then
     SetOrdValue(-1)
   else
   begin
@@ -101,7 +101,7 @@ begin
     begin
       I := IndexOfMappingName(Value);
       if I < 0 then
-        raise EPropertyError.Create(SMappingDoesNotExistForThisColorProv);
+        raise EPropertyError.Create(RsEMappingDoesNotExistForThisColorProv);
       SetOrdValue(I);
     end;
   end;
@@ -148,7 +148,7 @@ begin
     if I > -1 then
       SetOrdValue(I)
     else
-      raise EPropertyError.Create(SInvalidPropertyValue);
+      raise EPropertyError.Create(RsEInvalidPropertyValue);
   end;
 end;
 
@@ -178,7 +178,7 @@ end;
 function TJvColorProviderEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
-    Result := SDesignerEllipsis
+    Result := RsDesignerEllipsis
   else
    inherited GetVerb(Index);
 end;

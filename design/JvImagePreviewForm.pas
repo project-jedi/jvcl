@@ -102,7 +102,7 @@ begin
     begin
       if Length(Filter) > 0 then
         FilterCombo.Filter := Filter + '|';
-      FilterCombo.Filter := FilterCombo.Filter + SAllFilesFilter;
+      FilterCombo.Filter := FilterCombo.Filter + RsAllFilesFilter;
     end;
     ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX or SEM_FAILCRITICALERRORS);
     try
@@ -276,7 +276,7 @@ begin
   {$ENDIF BCB}
   with PreviewForm do
   try
-    Caption := SPreview;
+    Caption := RsPreview;
     BorderStyle := bsSizeToolWin;
     Icon := Self.Icon;
     KeyPreview := True;

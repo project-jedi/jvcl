@@ -206,7 +206,7 @@ begin
     if Value <> nil then
     begin
       if not Supports(Value, IInterfaceComponentReference, CompRef) then
-        raise EPropertyError.Create(SSpecifiedProviderIsNotATComponentDe);
+        raise EPropertyError.Create(RsESpecifiedProviderIsNotATComponentDe);
       ProvComp := CompRef.GetComponent;
     end
     else
@@ -280,7 +280,7 @@ begin
   if Supports(GetProviderIntf, IInterfaceComponentReference, ICR) then
     Result := ICR.GetComponent.Name
   else
-    raise EPropertyError.Create(SSpecifiedProviderIsNotATComponentDe);
+    raise EPropertyError.Create(RsESpecifiedProviderIsNotATComponentDe);
 end;
 
 procedure TJvDataConsumerProperty.SetValue(const Value: string);
@@ -305,7 +305,7 @@ begin
   begin
     with Comp do
       if not GetInterface(IInterfaceComponentReference, Ref) or not GetInterface(IJvDataProvider, ProvIntf) then
-        raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+        raise EPropertyError.Create(SInvalidPropertyValue);
   end
   else
     ProvIntf := nil;
@@ -380,7 +380,7 @@ begin
         Result := '[ID:' + Item.GetID + ']';
     end
     else
-      Result := SNone;
+      Result := RsNone;
   finally
     GetConsumerImpl.Leave;
   end;
@@ -514,11 +514,11 @@ function TJvProviderEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := STreeDesignerEllipsis;
+      Result := RsTreeDesignerEllipsis;
     1:
-      Result := SContextManagerEllipsis;
+      Result := RsContextManagerEllipsis;
     else
-      Result := Format(SInvalidVerbd, [Index]);
+      Result := Format(RsInvalidVerbd, [Index]);
   end;
 end;
 

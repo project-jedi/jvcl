@@ -51,7 +51,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteInterNetWork, [TJvFTPGrabber, TJvHTTPGrabber,
+  RegisterComponents(RsPaletteInterNetWork, [TJvFTPGrabber, TJvHTTPGrabber,
     TJvMultiHTTPGrabber, TJvMail, TJvHTMLParser, TJvStrToHTML,
     TJvStringListToHTML, TJvFormToHTML, TJvRichEditToHTML, TJvRGBToHTML,
     TJvUrlListGrabber]);

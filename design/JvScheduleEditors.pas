@@ -92,7 +92,7 @@ end;
 
 function TJvSchedEventComponentEditor.GetVerb(Index: Integer): string;
 begin
-  Result := SEventEditor;
+  Result := RsEventEditor;
 end;
 
 function TJvSchedEventComponentEditor.GetVerbCount: Integer;

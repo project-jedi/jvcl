@@ -78,7 +78,7 @@ function TJvgRepParamsEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SEditParamsEllipsis;
+      Result := RsEditParamsEllipsis;
   end;
 end;
 

@@ -69,9 +69,6 @@ uses
   Controls,
   JvVirtualKeyEditorForm, JvDsgnConsts;
 
-const
-  cSeparator = ' - ';
-
 //=== TJvDriverIndexEditor ===================================================
 
 constructor TJvDriverIndexEditor.Create(const ADesigner: IJvFormDesigner;
@@ -111,18 +108,18 @@ var
 begin
   Index := GetOrdValue;
   if Index = -1 then
-    Result := IntToStr(GetOrdValue) + cSeparator + SDisconnected
+    Result := Format(RsGetValueFmt, [GetOrdValue, RsDisconnected])
   else
-    Result := IntToStr(GetOrdValue) + cSeparator + FDrivers[GetOrdValue];
+    Result := Format(RsGetValueFmt, [GetOrdValue, FDrivers[GetOrdValue]]);
 end;
 
 procedure TJvDriverIndexEditor.GetValues(Proc: TGetStrProc);
 var
   I: Integer;
 begin
-  Proc('-1' + cSeparator + SDisconnected);
+  Proc(Format(RsGetValueFmt, [-1, RsDisconnected]));
   for I := 0 to FDrivers.Count - 1 do
-    Proc(IntToStr(I) + cSeparator + FDrivers[I]);
+    Proc(Format(RsGetValueFmt, [I, FDrivers[I]]));
 end;
 
 procedure TJvDriverIndexEditor.SetValue(const Value: string);
@@ -137,7 +134,7 @@ begin
   if (NewIndex >= -1) and (NewIndex < FDrivers.Count) then
     SetOrdValue(NewIndex)
   else
-    raise ERangeError.CreateFmt(SdIsNotWithinTheValidRangeOfdd,
+    raise ERangeError.CreateFmt(RsEdIsNotWithinTheValidRangeOfdd,
       [NewIndex, -1, FDrivers.Count - 1]);
 end;
 

@@ -141,7 +141,7 @@ type
 
 procedure TJvProviderRootItem.InitID;
 begin
-  SetID(SDataItemRootID);
+  SetID(RsDataItemRootID);
 end;
 
 function TJvProviderRootItem.GetInterface(const IID: TGUID; out Obj): Boolean;
@@ -266,7 +266,7 @@ begin
       fmeToolbar.cbContexts.Sorted := False;
     end;
     // (rom) is <Default> language dependent? Also needs explanation.
-    fmeToolbar.cbContexts.Items.InsertObject(0, '<Default>', TObject(-99));
+    fmeToolbar.cbContexts.Items.InsertObject(0, RsDefault, TObject(-99));
   finally
     fmeToolbar.cbContexts.Items.EndUpdate;
     if fmeToolbar.cbContexts.Items.Count > 0 then
@@ -311,7 +311,7 @@ begin
     if Supports(fmeTreeList.Provider as IJvDataConsumer, IJvDataConsumerViewList, ViewList) then
       ViewList.RebuildView;
     ProviderImpl := (Provider as IInterfaceComponentReference).GetComponent;
-    Caption := Format(SDataProviderDesignerCaption, [ProviderImpl.Name, PropName]);
+    Caption := Format(RsDataProviderDesignerCaption, [ProviderImpl.Name, PropName]);
   end;
   InitContexts;
   UpdateSelectedItem(Self);
@@ -349,7 +349,7 @@ end;
 
 function TfrmDataProviderDesigner.DesignerFormName: string;
 begin
-  Result := SDataProviderDesigner;
+  Result := RsDataProviderDesigner;
 end;
 
 function TfrmDataProviderDesigner.AutoStoreSettings: Boolean;
@@ -375,7 +375,7 @@ begin
     if Item <> nil then
       Item.QueryInterface(IJvDataItems, Items)
     else // should never occur
-      raise EJVCLException.Create(SDataItemNotFound);
+      raise EJVCLException.Create(RsEDataItemNotFound);
   end
   else
     Items := InternalProvider as IJvDataItems;
@@ -388,7 +388,7 @@ begin
     if Supports(Items, IJvDataItemsManagement, Mangr) then
       Item := Mangr.New
     else // should never occur
-      raise EJVCLException.CreateFmt(SDataProviderAddErrorReason, [SDataProviderNoManOrDsgn]);
+      raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoManOrDsgn]);
     if Item <> nil then
     begin
       fmeTreeList.SelectItemID(Item.GetID);
@@ -396,10 +396,10 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.Create(SDataProviderAddFailed);
+      raise EJVCLException.Create(RsEDataProviderAddFailed);
   end
   else // should never occur
-    raise EJVCLException.CreateFmt(SDataProviderAddErrorReason, [SDataProviderNoSubItems]);
+    raise EJVCLException.CreateFmt(RsEDataProviderAddErrorReason, [RsEDataProviderNoSubItems]);
 end;
 
 procedure TfrmDataProviderDesigner.aiDeleteItemExecute(Sender: TObject);
@@ -416,7 +416,7 @@ begin
     if Item <> nil then
       Items := Item.GetItems
     else
-      raise EJVCLException.Create(SDataItemNotFound);
+      raise EJVCLException.Create(RsEDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       ResetSelection;
@@ -425,7 +425,7 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
+      raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
   end;
 end;
 
@@ -441,10 +441,10 @@ begin
     if Item <> nil then
     begin
       if not Supports(Item, IJvDataItems, Items) then
-        raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoSubItems]);
+        raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoSubItems]);
     end
     else
-      raise EJVCLException.Create(SDataItemNotFound);
+      raise EJVCLException.Create(RsEDataItemNotFound);
     if Supports(Items, IJvDataItemsManagement, Mangr) then
     begin
       Mangr.Clear;
@@ -452,7 +452,7 @@ begin
         Designer.Modified;
     end
     else
-      raise EJVCLException.CreateFmt(SDataProviderDeleteErrorReason, [SDataProviderNoMan]);
+      raise EJVCLException.CreateFmt(RsEDataProviderDeleteErrorReason, [RsEDataProviderNoMan]);
   end;
 end;
 
@@ -470,7 +470,7 @@ begin
       if Supports(InternalProvider, IJvDataContexts, CtxList) then
         fmeTreeList.Provider.SetContextIntf(CtxList.GetContext(CtxIdx))
       else
-        raise EJVCLException.Create(SInternalErrorUnableToRetrieveContext);
+        raise EJVCLException.Create(RsEInternalErrorUnableToRetrieveContext);
     end
     else
       fmeTreeList.Provider.SetContextIntf(nil);

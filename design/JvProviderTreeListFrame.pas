@@ -484,9 +484,9 @@ begin
       else
       begin
         if DataItem = FVirtualRoot then
-          Item.Caption := SDataItemRootCaption
+          Item.Caption := RsDataItemRootCaption
         else
-          Item.Caption := SDataItemNoTextIntf;
+          Item.Caption := RsDataItemNoTextIntf;
       end;
     end
   finally

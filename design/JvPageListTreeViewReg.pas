@@ -125,7 +125,7 @@ const
   cPageList = 'PageList';
   cActivePage = 'ActivePage';
 begin
-  RegisterComponents(SPaletteListComboTree, [TJvSettingsTreeView,
+  RegisterComponents(RsPaletteListComboTree, [TJvSettingsTreeView,
     TJvPageListTreeView, TJvPageList]);
 
   RegisterPropertyEditor(TypeInfo(TTreeNodes), TCustomTreeView, cItems, TJvTreeItemsProperty);
@@ -188,13 +188,13 @@ function TJvCustomPageEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SNextPageAmp;
+      Result := RsNextPageAmp;
     1:
-      Result := SPrevPage;
+      Result := RsPrevPage;
     2:
-      Result := SNewPage;
+      Result := RsNewPage;
     3:
-      Result := SDelPage;
+      Result := RsDelPage;
   end;
 end;
 
@@ -347,7 +347,7 @@ begin
   begin
     Comp := Designer.GetComponent(Value);
     if not (Comp is GetTypeData(GetPropType)^.ClassType) and not IntfSupported(Comp) then
-      raise EPropertyError.CreateFmt(SFmtInterfaceNotSupported, [Comp.Name, GetInterfaceName]);
+      raise EPropertyError.CreateFmt(RsEFmtInterfaceNotSupported, [Comp.Name, GetInterfaceName]);
   end;
   SetOrdValue(Longint(Comp));
 end;

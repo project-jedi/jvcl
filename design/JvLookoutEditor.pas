@@ -144,17 +144,17 @@ begin
     Exit;
   case Index of
     0:
-      Result := SAddPage;
+      Result := RsAddPage;
     1:
-      Result := SActivate;
+      Result := RsActivate;
     2:
-      Result := SAddButton;
+      Result := RsAddButton;
     3:
       Result := '-'; // do not localize
     4:
-      Result := SScrollUp;
+      Result := RsScrollUp;
     5:
-      Result := SScrollDown;
+      Result := RsScrollDown;
   end;
 end;
 
@@ -260,11 +260,11 @@ function TJvLookOutEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SAddPage_;
+      Result := RsAddPage_;
     1:
-      Result := SNextPage;
+      Result := RsNextPage;
     2:
-      Result := SPreviousPage;
+      Result := RsPreviousPage;
   end;
 end;
 
@@ -318,7 +318,7 @@ function TJvExpressEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SAddButton;
+      Result := RsAddButton;
 //    1: Result := _('About...');
   end;
 end;

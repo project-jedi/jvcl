@@ -155,7 +155,7 @@ begin
   {Left := 354;
   Top := 338;}
   BorderStyle := bsDialog;
-  Caption := SItemEditor;
+  Caption := RsItemEditor;
   ClientHeight := 92;
   ClientWidth := 330;
   Font.Color := clWindowText;
@@ -231,7 +231,7 @@ begin
     Top := 40;
     Width := 70;
     Height := 17;
-    Caption := SEnabled;
+    Caption := RsEnabled;
     State := cbChecked;
     TabOrder := 4;
   end;

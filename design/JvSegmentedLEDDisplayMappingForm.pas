@@ -138,7 +138,7 @@ end;
 
 function TfrmJvSLDMappingEditor.DesignerFormName: string;
 begin
-  Result := SSegmentedLEDDisplayMappingEditor;
+  Result := RsSegmentedLEDDisplayMappingEditor;
 end;
 
 function TfrmJvSLDMappingEditor.AutoStoreSettings: Boolean;

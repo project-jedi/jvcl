@@ -38,7 +38,7 @@ uses
   {$ENDIF COMPILER6_UP}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  JvSpeedButton, JvSpeedBar, JvFormPlacement, JvJVCLUtils,
+  JvSpeedButton, JvSpeedBar, JvFormPlacement,
   JvConsts, JvComponent, JvAppStore, JvAppRegistryStore;
 
 type
@@ -170,11 +170,9 @@ implementation
 
 uses
   TypInfo, Math,
-  JvPropsStorage, JvDsgnConsts, JvDsgnTypes;
+  JvPropsStorage, JvDsgnConsts, JvDsgnTypes, JvJVCLUtils;
 
 {$R *.dfm}
-
-{$D-}
 
 //== Utility routines ========================================================
 
@@ -490,7 +488,7 @@ begin
     (FBar.BtnHeight + 2));
   ButtonsList.ClientHeight := Min(ButtonsList.DefaultRowHeight * Cnt,
     MaxHeight);
-  SectionList.DefaultRowHeight := Canvas.TextHeight('Wg') + 2;
+  SectionList.DefaultRowHeight := CanvasMaxTextHeight(Canvas) + 2;
 end;
 
 procedure TJvSpeedbarEditor.SetJvSpeedBar(Value: TJvSpeedBar);

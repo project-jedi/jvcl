@@ -73,7 +73,7 @@ end;
 function TJvHLEdPropDlgEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
-    Result := SExecute
+    Result := RsExecute
   else
     Result := inherited GetVerb(Index);
 end;
@@ -121,7 +121,7 @@ begin
       end;
     end
   else
-    MessageBox(HWND_DESKTOP, PChar(SHLEditorMsg), PChar(SHLEditorMsgTitle), MB_OK + MB_ICONERROR);
+    MessageBox(HWND_DESKTOP, PChar(RsHLEditorMsg), PChar(RsHLEditorMsgTitle), MB_OK + MB_ICONERROR);
 end;
 
 procedure TJvHLEditorColorProperty.Edit;

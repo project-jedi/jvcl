@@ -64,9 +64,9 @@ const
   cRowsHeight = 'RowsHeight';
   //cStartMasterValue = 'StartMasterValue';
 begin
-  RegisterComponents(SPaletteDBNonVisual, [TJvMemoryData,
+  RegisterComponents(RsPaletteDBNonVisual, [TJvMemoryData,
     TJvCSVDataSet {$IFDEF JV_MIDAS}, TJvDBRemoteLogin {$ENDIF}]);
-  RegisterComponents(SPaletteDBVisual, [TJvDBDatePickerEdit,
+  RegisterComponents(RsPaletteDBVisual, [TJvDBDatePickerEdit,
     TJvDBDateTimePicker, TJvDBProgressBar, TJvDBRichEdit, TJvDBSpinEdit,
     TJvDBLookupList, TJvDBLookupCombo, TJvDBLookupEdit, TJvDBRadioPanel,
     TJvDBCombobox, TJvDBTreeView, TJvDBLookupTreeViewCombo, TJvDBLookupTreeView,

@@ -138,7 +138,7 @@ function TJvgComponentListEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SEditComponentListEllipsis;
+      Result := RsEditComponentListEllipsis;
   end;
 end;
 

@@ -59,7 +59,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteInterpreter, [TJvInterpreterProgram,TJvInterpreterFm]);
+  RegisterComponents(RsPaletteInterpreter, [TJvInterpreterProgram, TJvInterpreterFm]);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   {$IFDEF JvInterpreter_INTEGERPROPERTY}
   RegisterPropertyEditor(TypeInfo(Integer), TObject, '', TJvIntegerProperty);

@@ -483,7 +483,7 @@ begin
                   edMonthlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.Create(SInvalidScheduleSettingsFound);
+              raise ESchedule.Create(RsEInvalidScheduleSettingsFound);
             end;
           end;
         end;
@@ -520,7 +520,7 @@ begin
                   edYearlyIndexInterval.Text := IntToStr(Interval);
                 end;
             else
-              raise ESchedule.Create(SInvalidScheduleSettingsFound);
+              raise ESchedule.Create(RsEInvalidScheduleSettingsFound);
             end;
           end;
         end;
@@ -635,7 +635,7 @@ begin
   begin
     try
       FBusy := True;
-      btnTest.Caption := SStop;
+      btnTest.Caption := RsStop;
       btnOk.Enabled := False;
       btnCancel.Enabled := False;
       InitSchedule(FTestSchedule);
@@ -656,7 +656,7 @@ begin
       end;
     finally
       FBusy := False;
-      btnTest.Caption := SRun;
+      btnTest.Caption := RsRun;
       btnOk.Enabled := True;
       btnCancel.Enabled := True;
     end;

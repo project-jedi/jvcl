@@ -59,7 +59,7 @@ end;
 function TJvScrollMaxEditor.GetVerb(Index: Integer): string;
 begin
   if Index = GetVerbCount - 1 then
-    Result := SAddBand
+    Result := RsAddBand
   else
     Result := inherited GetVerb(Index);
 end;

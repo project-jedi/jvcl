@@ -66,15 +66,15 @@ function TJvFooterEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SAddButtonText;
+      Result := RsAddButtonText;
     1:
       Result := '-'; // do not localize
     2:
-      Result := SMSOffice;
+      Result := RsMSOffice;
     3:
-      Result := SMSEnterpriseManagerWizard;
+      Result := RsMSEnterpriseManagerWizard;
     4:
-      Result := SDialogMode;
+      Result := RsDialogMode;
   end;
 end;
 
@@ -104,10 +104,10 @@ begin
     3:
       begin
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := SPrevious;
+        FButton.Caption := RsPrevious;
         FButton.SpaceInterval := 0;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
-        FButton.Caption := SNext;
+        FButton.Caption := RsNext;
         FButton.Default := True;
         FButton := TJvFooterBtn(Designer.CreateComponent(TJvFooterBtn, Component, 0, 0, 0, cButtonHeight));
         FButton.Caption := SCloseButton;

@@ -80,9 +80,9 @@ function TJvPreviewerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SCreatePreview;
+      Result := RsCreatePreview;
     1:
-      Result := SClearPreview;
+      Result := RsClearPreview;
   end;
 end;
 
@@ -93,7 +93,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents(SPalettePrintPreview, [TJvPreviewControl,
+  RegisterComponents(RsPalettePrintPreview, [TJvPreviewControl,
     TJvPreviewRenderRichEdit, TJvPreviewRenderStrings,
     TJvPreviewRenderGraphics, TJvPreviewRenderControl, TJvPreviewPrinter]);
   RegisterComponentEditor(TJvCustomPreviewRenderer, TJvPreviewerEditor);

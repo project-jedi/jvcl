@@ -216,7 +216,7 @@ end;
 
 function TfrmJvDataConsumerItemSelect.DesignerFormName: string;
 begin
-  Result := SDataProviderItemSelector;
+  Result := RsDataProviderItemSelector;
 end;
 
 function TfrmJvDataConsumerItemSelect.AutoStoreSettings: Boolean;

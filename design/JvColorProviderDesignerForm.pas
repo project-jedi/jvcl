@@ -153,19 +153,19 @@ begin
     with ColorSettings.SystemColorSettings do
     begin
       Active := True;
-      Caption := SSystemColors;
+      Caption := RsSystemColors;
       ShowHeader := True;
     end;
     with ColorSettings.StandardColorSettings do
     begin
       Active := True;
-      Caption := SStandardColors;
+      Caption := RsStandardColors;
       ShowHeader := True;
     end;
     with ColorSettings.CustomColorSettings do
     begin
       Active := True;
-      Caption := SCustomColorsEllipsis;
+      Caption := RsCustomColorsEllipsis;
       ShowHeader := True;
 //      AddColorSettings.Style := aisBorland;
       AddColorSettings.Location := ailUseHeader;
@@ -232,7 +232,7 @@ procedure TfrmJvColorProviderDesigner.BeforeNewContext(Sender: TObject; Kind: In
 begin
   if Kind = -1 then
   begin
-    FNewCtxResult := MessageDlg(SColorMsg, mtConfirmation, [mbYes, mbNo, mbCancel], 0);
+    FNewCtxResult := MessageDlg(RsColorMsg, mtConfirmation, [mbYes, mbNo, mbCancel], 0);
     Allow := FNewCtxResult in [mrYes, mrNo];
   end;
 end;

@@ -196,7 +196,7 @@ end;
 
 function TJvValidatorComponent.GetVerb(Index: Integer): string;
 begin
-  Result := SJvValidatorsItemsEditorEllipsis;
+  Result := RsJvValidatorsItemsEditorEllipsis;
 end;
 
 function TJvValidatorComponent.GetVerbCount: Integer;
@@ -407,7 +407,7 @@ end;
 
 procedure TfrmValidatorsEditor.UpdateCaption;
 begin
-  Caption := SJvValidatorItemsEditorEllipsis;
+  Caption := RsJvValidatorItemsEditorEllipsis;
 end;
 
 procedure TfrmValidatorsEditor.FormClose(Sender: TObject;

@@ -83,7 +83,7 @@ begin
         begin
           F.mnuDate.Visible := False;
           F.mnuTime.Visible := False;
-          F.Caption := SSelectDate;
+          F.Caption := RsSelectDate;
           F.lblTime.Visible := False;
           F.dtpTime.Visible := False;
           F.Height := F.Height - F.lblTime.Height - F.dtpTime.Height;
@@ -92,7 +92,7 @@ begin
         begin
           F.mnuTime.Visible := False;
           F.mnuDate.Visible := False;
-          F.Caption := SSelectTime;
+          F.Caption := RsSelectTime;
           F.lblDate.Visible := False;
           F.dtpDate.Visible := False;
           F.lblTime.Top := F.lblDate.Top;
@@ -110,7 +110,7 @@ end;
 
 procedure TFrmSelectDateTimeDlg.FormCreate(Sender: TObject);
 begin
-  Caption := SSelectDateTime;
+  Caption := RsSelectDateTime;
 end;
 
 procedure TFrmSelectDateTimeDlg.mnuNowClick(Sender: TObject);

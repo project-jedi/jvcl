@@ -81,9 +81,9 @@ function TJvMailEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := SSend;
+      Result := RsSend;
     1:
-      Result := SAddress;
+      Result := RsAddress;
   end;
 end;
 

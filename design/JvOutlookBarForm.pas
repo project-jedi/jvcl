@@ -154,9 +154,9 @@ procedure TFrmOLBEditor.Activated;
 begin
   UpdateItems;
   if OutlookBar <> nil then
-    Caption := Format(SFmtCaption, [GetFullPathName(OutlookBar)])
+    Caption := Format(RsFmtCaption, [GetFullPathName(OutlookBar)])
   else
-    Caption := SOutlookBarCaption;
+    Caption := RsOutlookBarCaption;
 end;
 
 function TFrmOLBEditor.GetEditState: TEditState;

@@ -7,7 +7,7 @@ object frmAddColor: TfrmAddColor
   ClientHeight = 95
   ClientWidth = 275
   Color = clBtnFace
-  Constraints.MaxHeight = 122
+  Constraints.MaxHeight = 125
   Constraints.MinHeight = 122
   Constraints.MinWidth = 283
   Font.Charset = DEFAULT_CHARSET
@@ -19,6 +19,9 @@ object frmAddColor: TfrmAddColor
   Position = poDesktopCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  DesignSize = (
+    275
+    95)
   PixelsPerInch = 96
   TextHeight = 13
   object btnColor: TSpeedButton

@@ -51,7 +51,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteAppForm,
+  RegisterComponents(RsPaletteAppForm,
     [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvApplicationHotKey, TJvTransparentForm,
      TJvFormAnimation, TJvFormWallpaper, TJvFormMagnet, TJvFormAutoSize, TJvGradientCaption]);
 
