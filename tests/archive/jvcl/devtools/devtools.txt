@@ -67,6 +67,13 @@ jtouch.exe [options] <filemask> where options can be:
 /S             recurse into subdirs, (default false)
 /F             force touch of read-only files (temporarily changes attributes to FILE_ATTRIBUTE_NORMAL)
 
+isu:
+===
+Removes unused entries from dfn files (used in translations). Operates on the current folder and all subfolders, creates no backup files and has no command line options
+
+ErrLook:
+=======
+A Delphi clone of Visual Studio's ErrLook utility (to look up error codes) with some enhancements. See the supplied help file for more info
 
 
 
