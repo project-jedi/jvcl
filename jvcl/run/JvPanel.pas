@@ -85,6 +85,9 @@ type
     property AutoArrange: Boolean read FAutoArrange write SetAutoArrange default False;
   end;
 
+  {$IFDEF VCL}
+  TJvPanelMoveEvent = procedure (Sender:TObject; X, Y:integer; var Allow:boolean) of object;
+  {$ENDIF}
   TJvPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
     FTransparent: Boolean;
@@ -104,7 +107,9 @@ type
     FArrangeHeight: Integer;
     FOnResizeParent: TJvPanelResizeParentEvent;
     {$IFDEF VCL}
-    FMovable: boolean;
+    FMovable, FWasMoved: boolean;
+    FOnAfterMove: TNotifyEvent;
+    FOnBeforeMove: TJvPanelMoveEvent;
     {$ENDIF VCL}
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -120,7 +125,7 @@ type
     procedure SetMultiLine(const Value: Boolean);
     procedure SetHotColor(const Value: TColor);
     procedure SetSizeable(const Value: Boolean);
-    
+
   protected
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
@@ -135,6 +140,9 @@ type
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
+    procedure WMExitSizeMove(var Message: TMessage); message WM_EXITSIZEMOVE;
+    function DoBeforeMove(X,Y:integer):boolean;dynamic;
+    procedure DoAfterMove;dynamic;
     {$ENDIF VCL}
     procedure Loaded; override;
     procedure Resize; override;
@@ -169,6 +177,10 @@ type
     property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
     property OnMouseEnter;
     property OnMouseLeave;
+    {$IFDEF VCL}
+    property OnBeforeMove:TJvPanelMoveEvent read FOnBeforeMove write FOnBeforeMove;
+    property OnAfterMove:TNotifyEvent Read FOnAfterMove write FOnAfterMove;
+    {$ENDIF VCL}
     property OnParentColorChange;
 
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
@@ -388,12 +400,39 @@ begin
 end;
 
 procedure TJvPanel.WMNCHitTest(var Message: TWMNCHitTest);
+var P:TPoint;
 begin
   inherited;
   if Movable then
-    with ScreenToClient(SmallPointToPoint(Message.Pos)) do
-      if (X > 5) and (Y > 5) and (X < Width - 5) and (Y < Height - 5) then
+  begin
+    P := ScreenToClient(SmallPointToPoint(Message.Pos));
+    with P do
+      if (X > 5) and (Y > 5) and (X < Width - 5) and (Y < Height - 5) and DoBeforeMove(P.X,P.Y) then
+      begin
          Message.Result := HTCAPTION;
+         FWasMoved := true;
+      end;
+  end;
+end;
+
+procedure TJvPanel.DoAfterMove;
+begin
+  if Assigned(FOnAfterMove) then FOnAfterMove(self);
+end;
+
+procedure TJvPanel.WMExitSizeMove(var Message: TMessage);
+begin
+  inherited;
+  if FWasMoved then
+    DoAfterMove;
+  FWasMoved := false;
+end;
+
+function TJvPanel.DoBeforeMove(X,Y:integer): boolean;
+begin
+  Result := true;
+  if Assigned(FOnBeforeMove) then
+    FOnBeforeMove(Self, X, Y, Result);
 end;
 
 {$ENDIF VCL}
@@ -920,7 +959,6 @@ begin
   if (Value <> nil) and (Value <> FArrangeSettings) then
     FArrangeSettings.Assign(Value);
 end;
-
 
 end.
 
