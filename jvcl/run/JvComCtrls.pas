@@ -2492,7 +2492,9 @@ begin
           FClearBeforeSelect := True;
       end;
     end;
-  end;
+  end
+  else
+    FSelectThisNode := True;
   inherited KeyDown(Key, Shift);
   if ((Key = VK_SPACE) or (Key = VK_RETURN)) and MenuDblClick and IsMenuItemClick(Selected) then
     TMenuItem(Selected.Data).OnClick(TMenuItem(Selected.Data));
@@ -2509,7 +2511,7 @@ end;
 procedure TJvTreeView.ResetPostOperationFlags;
 begin
   FClearBeforeSelect := False;
-  FSelectThisNode := False;
+  FSelectThisNode := not MultiSelect;
 end;
 
 procedure TJvTreeView.SetItemIndex(const Value: Integer);
