@@ -139,8 +139,10 @@ type
   end;
 
   TJvScrollingWindow = class(TJvCustomScrollPanel)
+  public
+    constructor Create(AComponent:TComponent);override;
   published
-    property AboutJVCL; 
+    property AboutJVCL;
     property AutoArrange;
     property AutoHide default true;
     property AutoRepeat default false;
@@ -697,6 +699,14 @@ begin
   inherited;
   FUpLeft.Visible := Visible;
   FDownRight.Visible := Visible;
+end;
+
+{ TJvScrollingWindow }
+
+constructor TJvScrollingWindow.Create(AComponent: TComponent);
+begin
+  inherited;
+  AutoHide := true;
 end;
 
 end.
