@@ -322,6 +322,26 @@ Description
   font from a drop-down list of the face names for all fonts supported by the
   screen /installed on the system.
 ----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.AddToMRU
+Summary
+  Adds the currently selected font to the MRU list.
+Description
+  Call AddToMRU to programmatically add the currently selected font to the MRU list. This method only
+  has effect if foMRU is in Options. 
+Return value
+  0 if the item was added (MRU items are always added at the top) or the index of an existing
+  item in the MRU list.
+See Also
+  ClearMRU, MaxMRUCount, MRUCount, Options
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.ClearMRU
+Summary
+  Clears the MRU list.
+Description
+  Call ClearMRU to remove all fonts from the MRU list.
+See Also
+  AddtoMRU
+----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.Device
 Summary
   Specifies the device from which to retrieve the list of available fonts.
@@ -380,7 +400,43 @@ Description
   Use HiliteText to specify the color of the text characters (as opposed to the background color) of
   the focused line. The focused text is painted using highlight colors, to make it stand out.
 See Also
+MaxMRUCount
   HiliteColor
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.MaxMRUCount
+Summary
+  Specifies the max number of MRU items to display in the control.
+Description
+  Use MaxMRUCount to specify the max number of recently selected fonts at the top of the control.
+  Setting MaxMRUCount to 0 (the default), means that the MRU list can contain any number of MRU items.
+  To active the MRU list, include foMRU in Options. The MRu items are delimited by a double gray line
+  beneath the last MRU item.
+See Also
+  AddToMRU, ClearMRU, MRUCount
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.MRUCount
+Summary
+  Specifies the number of MRU items in the control.
+Description
+  Use MRUCount to \read the number of items currently in the MRU list.
+See Also
+  AddToMRU, ClearMRU, MaxMRUCount
+----------------------------------------------------------------------------------------------------
+@@TJvFontComboBox.OnDrawPreviewEvent
+Summary
+  Occurs when the control is about to draw a font preview.
+Description
+  Write a handler for the OnDrawPreviewEvent to selectively supress drawing of the font preview in the
+  control. OnDrawPreviewEvent is only called if foPreviewFont is in Options.
+Parameters
+  Sender       - The control that triggered the event.
+  AFontName    - The name pf the fnt about to be drawn.
+  APreviewText - The text to use to draw the preview.
+  ATextWidth   - The approximate width required to draw the font name and the preview text.
+  DrawPreview  - Indicates whether to draw th epreview or not for this font. The default value is determined by
+                 comparing ATextWidth with ClientWidth.
+See Also
+  Options
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.Options
 Summary
@@ -389,9 +445,10 @@ Description
   Use the Options property to customize the appearance and functionality of the combo box.
 
   Use Options to
-
-  * Specify which type of fonts the combobox should contain.
-  * Display each font name in the combo box using the specific font.
+    * Specify which type of fonts the combobox should contain.
+    * Display each font name in the combo box using the specific font.
+    * Display a font preview in the control.
+    * Display a MRU list at the top of the control.
 See Also
   TJvFontComboOptions
 ----------------------------------------------------------------------------------------------------
@@ -403,15 +460,17 @@ Description
 
   When Sorted is changed from false to true, the original order of the items is lost. Setting
   Sorted back to false does not restore the original order.
+Note
+  If foMRU is in Options, Sorted is set to false and cannot be set to true.
 See Also
-  FontName
+  FontName, Options
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboBox.UseImages
 Summary
   Specifies whether to use images to indicate the font type.
 Description
   If UseImages is set to True, the combobox uses images to indicate the font type. Set UseImages to
-  False, to disable showing images.
+  False to disable showing images.
 
   The following table lists the possible images and their meaning.
   <TABLE>
@@ -452,6 +511,13 @@ See Also
   Displays each font name in the combo box using the specific font.
 @@TJvFontComboOption.foDisableVerify
   Allows you to insert a font name that doesn't exists in the combo box's list.
+@@TJvFontComboOption.foPreviewFont
+  Displays a font preview in the control. If set, the font name is drawn using the controls font and
+  a preview of the font is drawn using the string 'AbCdEfGhIj' right-aligned in the control. When this value is set,
+  foWysiWyg is disabled.
+@@TJvFontComboOption.foMRU
+  Displays a MRU list of the last selected fonts at the top of the control. This value works in
+  comjuction with the MaxMRUCount property. When this property is set, Sorted cannot be set to true.
 ----------------------------------------------------------------------------------------------------
 @@TJvFontComboOptions
 <TITLE TJvFontComboOptions type>
