@@ -32,9 +32,11 @@ Known Issues:
 unit JvPrvwRender;
 
 interface
+
 uses
   Windows, SysUtils, Messages, Classes, Controls, Graphics,
-  Dialogs, ComCtrls, JvComponent, JvPrvwDoc, RichEdit, JvRichEdit, Printers;
+  Dialogs, ComCtrls, RichEdit, Printers,
+  JvComponent, JvPrvwDoc, JvRichEdit;
 
 type
   EPrintPreviewError = Exception;

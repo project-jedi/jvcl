@@ -22,9 +22,9 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
-{$I windowsonly.inc}
 
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvUrlGrabbers;
 
