@@ -157,24 +157,24 @@ type
     property PlainText: TJvSymbolColor read FPlainText write FPlainText;
   end;
 
-  TOnReservedWord = procedure(Sender: TObject; Token: WideString;
+  TOnReservedWord = procedure(Sender: TObject; Token: string;
     var Reserved: Boolean) of object;
 
   TJvEditorHighlighter = class(TComponent)
   protected
-    procedure GetAttr(Editor: TJvHLEditor; Lines: TWideStrings; Line, ColBeg, ColEnd: Integer;
+    procedure GetAttr(Editor: TJvHLEditor; Lines: Tstrings; Line, ColBeg, ColEnd: Integer;
       LongToken: TLongTokenType; var LineAttrs: TLineAttrs); virtual; abstract;
-    procedure ScanLongTokens(Editor: TJvHLEditor; Lines: TWideStrings; Line: Integer;
+    procedure ScanLongTokens(Editor: TJvHLEditor; Lines: Tstrings; Line: Integer;
       var FLong: TLongTokenType); virtual; abstract;
     function GetRescanLongKeys(Editor: TJvHLEditor): string; virtual; abstract;
   end;
 
   TJvHLEditor = class(TJvEditor)
   private
-    Parser: TJvIParserW;
+    Parser: TJvIParser;
     FHighlighter: THighlighter;
     FColors: TJvColors;
-    FLine: WideString;
+    FLine: string;
     FLineNum: Integer;
     FLong: TLongTokenType;
     FLongTokens: Boolean;
@@ -196,8 +196,8 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure GetAttr(Line, ColBeg, ColEnd: Integer); override;
     procedure TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
-      const Text: WideString); override;
-    function GetReservedWord(const Token: WideString; var Reserved: Boolean): Boolean; virtual;
+      const Text: string); override;
+    function GetReservedWord(const Token: string; var Reserved: Boolean): Boolean; virtual;
     function UserReservedWords: Boolean; virtual;
     procedure SetSyntaxHighlighter(const Value: TJvEditorHighlighter);
   public
@@ -229,7 +229,7 @@ const
   lgPreproc         = TLongTokenType(6);
   lgUndefined       = High(TLongTokenType);
 
-function LastNonSpaceChar(const S: WideString): WideChar;
+function LastNonSpaceChar(const S: string): Char;
 var i: integer;
 begin
   Result := #0;
@@ -238,7 +238,7 @@ begin
   if i > 0 then Result := S[i];
 end;
 
-function GetTrimChar(const S: WideString; Index: Integer): WideChar;
+function GetTrimChar(const S: string; Index: Integer): Char;
 var LS, l: Integer;
 begin
   LS := Length(S);
@@ -255,13 +255,13 @@ begin
     Result := #0;
 end;
 
-function HasStringOpenEnd(Lines: TWideStrings; iLine: Integer): Boolean;
+function HasStringOpenEnd(Lines: Tstrings; iLine: Integer): Boolean;
 { find C/C++ "line breaker" '\' }
 var
   i: integer;
   IsOpen: Boolean;
-  P, F: PWideChar;
-  S: WideString;
+  P, F: PChar;
+  S: string;
 begin
   Result := False;
   if (iLine < 0) or (iLine >= Lines.Count) then exit;
@@ -270,10 +270,10 @@ begin
   if (i >= 0) and (LastNonSpaceChar(Lines[i]) = '\') then // check prior lines
     IsOpen := HasStringOpenEnd(Lines, i);
   S := Lines[iLine];
-  F := PWideChar(S);
+  F := PChar(S);
   P := F;
   repeat
-    P := StrScanW(P, WideChar('"'));
+    P := StrScan(P, Char('"'));
     if P <> nil then
     begin
       if (P = F) or (P[-1] <> '\') then
@@ -289,6 +289,23 @@ begin
     end;
   until P = nil;
   Result := IsOpen;
+end;
+
+function StrScan(P: PChar; Ch: Char): PChar;
+begin
+  Result := P;
+  while True do
+  begin
+    while Result[0] in LeadBytes do Inc(Result); // mbcs
+    if Result[0] = Ch then
+      Exit
+    else if Result[0] = #0 then
+    begin
+      Result := nil;
+      Exit;
+    end;
+    Inc(Result);
+  end;
 end;
 
 //=== TJvSymbolColor =========================================================
@@ -391,7 +408,7 @@ end;
 constructor TJvHLEditor.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  Parser := TJvIParserW.Create;
+  Parser := TJvIParser.Create;
   Parser.ReturnComments := True;
   FHighlighter := hlPascal;
   FColors := TJvColors.Create;
@@ -452,7 +469,7 @@ end;
 
 procedure TJvHLEditor.GetAttr(Line, ColBeg, ColEnd: Integer);
 var
-  Token: WideString;
+  Token: string;
   i: Integer;
 const
   Symbols = [',', ':', ';', '.', '[', ']', '(', ')', '=', '+',
@@ -485,13 +502,13 @@ const
     ' try typedef typename typeid union using unsigned virtual void volatile' +
     ' wchar_t while ';
 
-  NQCKeyWords: WideString = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
+  NQCKeyWords: string = {Not Quite C - a C similar language for programming LEGO MindStorm(R) robots }
     ' __event_src __type acquire break __sensor abs asm case catch const' +
     ' continue default do else false for if inline' +
     ' int monitor repeat return signed start stop sub switch task true' +
     ' until void while ';
 
-  SQLKeyWords: WideString =
+  SQLKeyWords: string =
     ' active as add asc after ascending all at alter auto' +
     ' and autoddl any avg based between basename blob' +
     ' base_name blobedit before buffer begin by cache  compiletime' +
@@ -610,131 +627,131 @@ const
     ' tokens create destroy errors comments from nested chr any ' +
     ' description ';
 
-  function PosI(const S1, S2: WideString): Boolean;
+  function PosI(const S1, S2: string): Boolean;
   var
-    F, P: PWideChar;
+    F, P: PChar;
     Len: Integer;
   begin
     Len := Length(S1);
     Result := True;
-    P := PWideChar(S2);
+    P := PChar(S2);
     while P[0] <> #0 do
     begin
       while P[0] = ' ' do Inc(P);
       F := P;
       while not (P[0] <= #32) do Inc(P);
       if (P - F) = Len then
-        if StrLICompW2(PWideChar(S1), F, Len) = 0 then
+        if StrLIComp(PChar(S1), F, Len) = 0 then
           Exit;
     end;
     Result := False;
   end;
 
-  function PosNI(const S1, S2: WideString): Boolean;
+  function PosNI(const S1, S2: string): Boolean;
   var
-    F, P: PWideChar;
+    F, P: PChar;
     Len: Integer;
   begin
     Len := Length(S1);
     Result := True;
-    P := PWideChar(S2);
+    P := PChar(S2);
     while P[0] <> #0 do
     begin
       while P[0] = ' ' do Inc(P);
       F := P;
       while not (P[0] <= #32) do Inc(P);
       if (P - F) = Len then
-        if StrLCompW(PWideChar(S1), F, Len) = 0 then
+        if StrLComp(PChar(S1), F, Len) = 0 then
           Exit;
     end;
     Result := False;
   end;
 
-  function IsDelphiKeyWord(const St: WideString): Boolean;
+  function IsDelphiKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + WideLowerCase(St) + ' ', DelphiKeyWords) <> 0;
     Result := PosI(St, DelphiKeyWords);
   end;
 
-  function IsBuilderKeyWord(const St: WideString): Boolean;
+  function IsBuilderKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + St + ' ', BuilderKeyWords) <> 0;
     Result := PosNI(St, BuilderKeyWords);
   end;
 
-  function IsNQCKeyWord(const St: WideString): Boolean;
+  function IsNQCKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + St + ' ', NQCKeyWords) <> 0;
     Result := PosNI(St, NQCKeyWords);
   end;
 
-  function IsJavaKeyWord(const St: WideString): Boolean;
+  function IsJavaKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + St + ' ', JavaKeyWords) <> 0;
     Result := PosNI(St, JavaKeyWords);
   end;
 
-  function IsVBKeyWord(const St: WideString): Boolean;
+  function IsVBKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + WideLowerCase(St) + ' ', VBKeyWords) <> 0;
     Result := PosI(St, VBKeyWords);
   end;
 
-  function IsVBStatement(const St: WideString): Boolean;
+  function IsVBStatement(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + WideLowerCase(St) + ' ', VBStatements) <> 0;
     Result := PosI(St, VBStatements);
   end;
 
-  function IsSQLKeyWord(const St: WideString): Boolean;
+  function IsSQLKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + WideLowerCase(St) + ' ', SQLKeyWords) <> 0;
     Result := PosI(St, SQLKeyWords);
   end;
 
-  function IsPythonKeyWord(const St: WideString): Boolean;
+  function IsPythonKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + St + ' ', PythonKeyWords) <> 0;
     Result := PosNI(St, PythonKeyWords);
   end;
 
-  function IsHtmlTag(const St: WideString): Boolean;
+  function IsHtmlTag(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + WideLowerCase(St) + ' ', HtmlTags) <> 0;
     Result := PosI(St, HtmlTags);
   end;
 
-  function IsHtmlSpecChar(const St: WideString): Boolean;
+  function IsHtmlSpecChar(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + WideLowerCase(St) + ' ', HtmlSpecChars) <> 0;
     Result := PosI(St, HtmlSpecChars);
   end;
 
-  function IsPerlKeyWord(const St: WideString): Boolean;
+  function IsPerlKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
     Result := PosNI(St, PerlKeyWords);
   end;
 
-  function IsPerlStatement(const St: WideString): Boolean;
+  function IsPerlStatement(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + St + ' ', PerlStatements) <> 0;
     Result := PosNI(St, PerlStatements);
   end;
 
-  function IsCocoKeyWord(const St: WideString): Boolean;
+  function IsCocoKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + WideLowerCase(St) + ' ', CocoKeyWords) <> 0;
     Result := PosI(St, CocoKeyWords);
   end;
 
-  function IsPhpKeyWord(const St: WideString): Boolean;
+  function IsPhpKeyWord(const St: string): Boolean;
   begin
 //    Result := Pos(' ' + St + ' ', PerlKeyWords) <> 0;
     Result := PosNI(St, PerlKeyWords);
   end;
 
-  function IsComment(const St: WideString): Boolean;
+  function IsComment(const St: string): Boolean;
   var
     LS: Integer;
   begin
@@ -763,7 +780,7 @@ const
     end;
   end;
 
-  function IsStringConstant(const St: WideString): Boolean;
+  function IsStringConstant(const St: string): Boolean;
   var
     LS: Integer;
   begin
@@ -799,12 +816,12 @@ const
     SetBlockColor(Parser.PosBeg[0] + 1, Parser.PosEnd[0], Color);
   end;
 
-  function NextSymbol: WideString;
+  function NextSymbol: string;
   var
     I: Integer;
   begin
     I := 0;
-    while (Parser.PCPos[I] <> #0) and CharInSetW(Parser.PCPos[I], [' ', #9, #13, #10]) do
+    while (Parser.PCPos[I] <> #0) and (Parser.PCPos[I] in [' ', #9, #13, #10]) do
       Inc(I);
     Result := Parser.PCPos[I];
   end;
@@ -812,7 +829,7 @@ const
   procedure TestHtmlSpecChars;
   var
     i, j, iBeg, iEnd: Integer;
-    S1: WideString;
+    S1: string;
     F1: Integer;
   begin
     i := 1;
@@ -851,7 +868,7 @@ const
   end;
 
 var
-  S: WideString;
+  S: string;
   LS: Integer;
 
   procedure SetIniColors;
@@ -888,10 +905,10 @@ var
   F: Boolean;
   C: TJvSymbolColor;
   Reserved: Boolean;
-  PrevToken: WideString;
-  PrevToken2: WideString;
-  NextToken: WideString;
-  Ch: WideChar;
+  PrevToken: string;
+  PrevToken2: string;
+  NextToken: string;
+  Ch: Char;
   InTag: Boolean;
   N: Integer;
 begin
@@ -912,7 +929,7 @@ begin
       Exit;
     end;
 
-    Parser.pcProgram := PWideChar(S);
+    Parser.pcProgram := PChar(S);
     Parser.pcPos := Parser.pcProgram;
 
     LS := Length(S);
@@ -1020,7 +1037,7 @@ begin
             if (PrevToken = 'def') or (PrevToken = 'class') then
               SetColor(FColors.FDeclaration)
             else
-            if (NextSymbol = '(') and IsIdentifierW(Token) then
+            if (NextSymbol = '(') and IsIdentifier(Token) then
               SetColor(FColors.FFunctionCall)
             else
               F := False;
@@ -1065,7 +1082,7 @@ begin
               if (Token = '/') and (PrevToken = '<') then
                 SetColor(FColors.FReserved)
               else
-              if (NextSymbol = '=') and IsIdentifierW(Token) then
+              if (NextSymbol = '=') and IsIdentifier(Token) then
                 SetColor(FColors.FIdentifier)
               else
               if PrevToken = '=' then
@@ -1086,7 +1103,7 @@ begin
             if IsPerlStatement(Token) then
               SetColor(FColors.FStatement)
             else
-            if CharInSetW(Token[1], ['$', '@', '%', '&']) then
+            if (Token[1] in ['$', '@', '%', '&']) then
               SetColor(FColors.FFunctionCall)
             else
               F := False;
@@ -1095,7 +1112,7 @@ begin
               SetColor(FColors.FReserved)
             else
             if (Parser.PosBeg[0] = 0) and (Line > ProductionsLine) and
-              IsIdentifierW(Token) then
+              IsIdentifier(Token) then
             begin
               NextToken := Parser.Token;
               Parser.RollBack(1);
@@ -1120,10 +1137,10 @@ begin
       if IsStringConstant(Token) then
         SetColor(FColors.FString)
       else
-      if (Length(Token) = 1) and CharInSetW(Token[1], Symbols) then
+      if (Length(Token) = 1) and (Token[1] in Symbols) then
         SetColor(FColors.FSymbol)
       else
-      if IsIntConstantW(Token) or IsRealConstantW(Token) then
+      if IsIntConstant(Token) or IsRealConstant(Token) then
         SetColor(FColors.FNumber)
       else
       if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) and
@@ -1173,9 +1190,9 @@ function TJvHLEditor.RescanLong(iLine: Integer): Boolean;
 const
   MaxScanLinesAtOnce = 5000;
 var
-  P, F: PWideChar;
+  P, F: PChar;
   MaxLine, MaxScanLine: Integer;
-  S: WideString;
+  S: string;
   i, i1, L1: Integer;
 begin
   FLong := lgNone;
@@ -1242,7 +1259,7 @@ begin
                 case S[i] of
                   '{':
                     begin
-                      P := StrScanW(F + i, WideChar('}'));
+                      P := StrScan(F + i, Char('}'));
                       if P = nil then
                       begin
                         FLong := lgComment1;
@@ -1255,7 +1272,7 @@ begin
                     if {S[i + 1]} F[i] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar(')'));
+                      P := StrScan(F + i + 2, Char(')'));
                       if P = nil then
                         Break
                       else
@@ -1267,7 +1284,7 @@ begin
                     end;
                   '''':
                     begin
-                      P := StrScanW(F + i + 1, WideChar(''''));
+                      P := StrScan(F + i + 1, Char(''''));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1282,7 +1299,7 @@ begin
                 end;
               lgComment1:
                 begin //  {
-                  P := StrScanW(F + i - 1, WideChar('}'));
+                  P := StrScan(F + i - 1, Char('}'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
@@ -1293,7 +1310,7 @@ begin
                 end;
               lgComment2:
                 begin //  (*
-                  P := StrScanW(F + i, WideChar(')'));
+                  P := StrScan(F + i, Char(')'));
                   if P = nil then
                     Break
                   else
@@ -1312,7 +1329,7 @@ begin
                     if {S[i + 1]} F[i] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar('/'));
+                      P := StrScan(F + i + 2, Char('/'));
                       if P = nil then
                         Break
                       else
@@ -1324,7 +1341,7 @@ begin
                     end;
                   '"':
                     begin
-                      P := StrScanW(F + i + 1, WideChar('"'));
+                      P := StrScan(F + i + 1, Char('"'));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1354,7 +1371,7 @@ begin
                 end;
               lgComment2:
                 begin //  /*
-                  P := StrScanW(F + i, WideChar('/'));
+                  P := StrScan(F + i, Char('/'));
                   if P = nil then
                     Break
                   else
@@ -1366,7 +1383,7 @@ begin
                 end;
               lgString:
                 begin
-                  P := StrScanW(F + i + 1, WideChar('"'));
+                  P := StrScan(F + i + 1, Char('"'));
                   if P <> nil then
                   begin
                     i1 := P - F;
@@ -1399,7 +1416,7 @@ begin
                     i := L1;
                   '"':
                     begin
-                      P := StrScanW(F + i, WideChar('"'));
+                      P := StrScan(F + i, Char('"'));
                       if P = nil then
                       begin
                         FLong := lgString;
@@ -1411,7 +1428,7 @@ begin
                 end;
               lgString: // python and perl long string
                 begin
-                  P := StrScanW(F + i - 1, WideChar('"'));
+                  P := StrScan(F + i - 1, Char('"'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
@@ -1427,7 +1444,7 @@ begin
                 case S[i] of
                   '<':
                     begin
-                      P := StrScanW(F + i, WideChar('>'));
+                      P := StrScan(F + i, Char('>'));
                       if P = nil then
                       begin
                         FLong := lgTag;
@@ -1439,7 +1456,7 @@ begin
                 end;
               lgTag: // html tag
                 begin
-                  P := StrScanW(F + i - 1, WideChar('>'));
+                  P := StrScan(F + i - 1, Char('>'));
                   if P <> nil then
                   begin
                     FLong := lgNone;
@@ -1457,7 +1474,7 @@ begin
                     if {S[i + 1]} F[i] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar(')'));
+                      P := StrScan(F + i + 2, Char(')'));
                       if P = nil then
                         Break
                       else
@@ -1469,7 +1486,7 @@ begin
                     end;
                   '"':
                     begin
-                      P := StrScanW(F + i + 1, WideChar('"'));
+                      P := StrScan(F + i + 1, Char('"'));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1483,7 +1500,7 @@ begin
                     end;
                   '''':
                     begin
-                      P := StrScanW(F + i + 1, WideChar(''''));
+                      P := StrScan(F + i + 1, Char(''''));
                       if P <> nil then
                       begin
                         i1 := P - F;
@@ -1499,7 +1516,7 @@ begin
                     if {S[i + 1]} F[i] = '*' then
                     begin
                       FLong := lgComment2;
-                      P := StrScanW(F + i + 2, WideChar('/'));
+                      P := StrScan(F + i + 2, Char('/'));
                       if P = nil then
                         Break
                       else
@@ -1512,7 +1529,7 @@ begin
                 end;
               lgComment2:
                 begin //  (*
-                  P := StrScanW(F + i, WideChar(')'));
+                  P := StrScan(F + i, Char(')'));
                   if P = nil then
                     Break
                   else
@@ -1528,7 +1545,7 @@ begin
       end;
 
       if (FHighlighter = hlCocoR) and
-        (StrLICompW2(PWideChar(S), 'productions', Length('productions')) = 0) then
+        (StrLIComp(PChar(S), 'productions', Length('productions')) = 0) then
       begin
         ProductionsLine := iLine;
       end;
@@ -1548,26 +1565,26 @@ end;
 
 function TJvHLEditor.FindLongEnd: Integer;
 var
-  P, F: PWideChar;
+  P, F: PChar;
   i: integer;
 begin
-  P := PWideChar(FLine);
+  P := PChar(FLine);
   Result := Length(FLine);
   case FHighlighter of
     hlPascal:
       case FLong of
         lgComment1:
           begin
-            P := StrScanW(P, WideChar('}'));
+            P := StrScan(P, Char('}'));
             if P <> nil then
-              Result := P - PWideChar(FLine);
+              Result := P - PChar(FLine);
           end;
         lgComment2:
           begin
             F := P;
             while True do
             begin
-              F := StrScanW(F, WideChar('*'));
+              F := StrScan(F, Char('*'));
               if F = nil then
                 Exit;
               if F[1] = ')' then
@@ -1575,7 +1592,7 @@ begin
               Inc(F);
             end;
             P := F + 1;
-            Result := P - PWideChar(FLine);
+            Result := P - PChar(FLine);
           end;
       end;
     hlCBuilder, hlSql, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
@@ -1586,7 +1603,7 @@ begin
               F := P;
               while True do
               begin
-                F := StrScanW(F, WideChar('*'));
+                F := StrScan(F, Char('*'));
                 if F = nil then
                   Exit;
                 if F[1] = '/' then
@@ -1594,13 +1611,13 @@ begin
                 Inc(F);
               end;
               P := F + 1;
-              Result := P - PWideChar(FLine);
+              Result := P - PChar(FLine);
             end;
           lgString:
             begin
               F := P;
               repeat
-                P := StrScanW(P, WideChar('"'));
+                P := StrScan(P, Char('"'));
                 if P <> nil then
                 begin
                   if (P = F) or (P[-1] <> '\') then
@@ -1629,27 +1646,27 @@ begin
       case FLong of
         lgString:
           begin
-            P := StrScanW(P, WideChar('"'));
+            P := StrScan(P, Char('"'));
             if P <> nil then
-              Result := P - PWideChar(FLine);
+              Result := P - PChar(FLine);
           end;
       end;
     hlHtml:
       case FLong of
         lgTag:
           begin
-            P := StrScanW(P, WideChar('>'));
+            P := StrScan(P, Char('>'));
             if P <> nil then
-              Result := P - PWideChar(FLine);
+              Result := P - PChar(FLine);
           end;
       end;
   end;
 end;
 
 procedure TJvHLEditor.TextModified(ACaretX, ACaretY: Integer; Action: TModifiedAction;
-  const Text: WideString);
+  const Text: string);
 var
-  S: WideString;
+  S: string;
 {  LP, i: Integer;
   P: PChar;
   OldProductionsLine: Integer; }
@@ -1693,8 +1710,8 @@ begin
     ProductionsLine := High(Integer);
     for i := 0 to Lines.Count - 1 do
     begin
-      P := PWideChar(Lines[i]);
-      if (StrLICompW2(P, 'productions', LP) = 0) and
+      P := PChar(Lines[i]);
+      if (StrLIComp(P, 'productions', LP) = 0) and
          ((Length(P) = LP) or (P[LP] = ' ')) then
       begin
         ProductionsLine := i;
@@ -1706,7 +1723,7 @@ begin
   end; }
 end;
 
-function TJvHLEditor.GetReservedWord(const Token: WideString;
+function TJvHLEditor.GetReservedWord(const Token: string;
   var Reserved: Boolean): Boolean;
 begin
   Result := Assigned(FOnReservedWord);
