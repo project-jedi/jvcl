@@ -857,10 +857,11 @@ begin
       end;
     end;
 
-    DccOpt := '-Q- -M';
+    { dcc32.exe crashes if the path is too long (> 123 + line number, ...}
+    if Length(JVCLPackagesDir) < 123 then DccOpt := '-Q- -M' else DccOpt := '-Q -M';
     // setup environment variables
     if TargetConfig.Build then
-      DccOpt := '-Q- -M -B';
+      if Length(JVCLPackagesDir) < 123 then DccOpt := '-Q- -M -B' else DccOpt := '-Q -M -B';
     if TargetConfig.GenerateMapFiles then
       DccOpt := DccOpt + ' -GD';
 
@@ -1141,7 +1142,7 @@ begin
     Lines.Add('ROOT = $(MAKEDIR)\..');
     Lines.Add('!endif');
     Lines.Add('!ifndef DCCOPT');
-    Lines.Add('DCCOPT = -Q- -M');
+    if Length(Data.JVCLPackagesDir) < 123 then Lines.Add('DCCOPT = -Q- -M') else Lines.Add('DCCOPT = -Q -M'); { dcc32.exe bug }
     Lines.Add('!endif');
     Lines.Add('');
     Lines.Add('BPR2MAK = "$(ROOT)\bin\bpr2mak" -t..\BCB.bmk');
