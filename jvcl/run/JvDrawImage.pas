@@ -31,8 +31,13 @@ unit JvDrawImage;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls, QWindows,
+  {$ENDIF VisualCLX}
   JvAirBrush, JvPaintFX, JvResample;
 
 type
@@ -233,7 +238,13 @@ type
 implementation
 
 uses
-  Math, Clipbrd,
+  {$IFDEF VCL}
+  Clipbrd,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QClipbrd,
+  {$ENDIF VisualCLX}
+  Math,
   JvTypes, JvPainterEffectsForm, JvQuickPreviewForm, JvPainterQBForm,
   JvResources;
 
@@ -3070,8 +3081,15 @@ begin
     SetClip(clwhite);
     CopyClip;
     myrect := rect(X, Y, X + Clip.Width - 1, Y + Clip.Height - 1);
+    {$IFDEF VCL}
     Canvas.brushcopy(myrect, Clip,
       rect(0, 0, Clip.Width, Clip.Height), RangeTransColor);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Clip.Transparent := true;
+    Clip.TransparentColor := RangeTransColor;
+    Canvas.Draw(X,Y, Clip);
+    {$ENDIF}
     myDraw := False;
   end;
   if Shape = 'cube1' then
@@ -3619,7 +3637,7 @@ begin
   if Shape = 'bezier1' then Shape := 'bezier2';
   if Shape = 'bezier' then Shape := 'bezier1';
   if Shape = 'bezier3' then Shape := 'bezier';
-
+  {$IFDEF VCL}
   if Shape = 'floodfill' then
   begin
     if ssalt in Shift then
@@ -3627,7 +3645,7 @@ begin
     else
       Canvas.floodfill(X, Y, Canvas.pixels[X, Y], fssurface);
   end;
-
+  {$ENDIF VCL}
   if Shape = 'snapshot' then
   begin
     with Canvas do
@@ -4766,7 +4784,12 @@ begin
   am := painterEffectsF.Ebar.position;
   w := Clip.Width;
   h := Clip.Height;
+  {$IFDEF VCL}
   if not clipboard.HasFormat(CF_BITMAP) then exit;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  if not clipboard.Provides('image/delphi.bitmap') then exit;
+  {$ENDIF VisualCLX}
   src2 := TBitmap.Create;
   src2.Assign(clipboard);
   src2.PixelFormat := pf24bit;
