@@ -36,7 +36,7 @@ uses
   Windows, SysUtils, Bde, Registry,
   {$IFDEF COMPILER6_UP}
   Variants, RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Classes, DB, DBTables, IniFiles,
   JvDBUtils;
 

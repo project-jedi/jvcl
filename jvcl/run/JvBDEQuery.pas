@@ -33,9 +33,9 @@ uses
   Bde,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Classes, SysUtils, DB, DBTables,
-  JvTypes, JvJCLUtils, JvBdeUtils {, JvComponent};
+  JvTypes, JvJCLUtils, JvBdeUtils, JvComponent, JVCLVer;
 
 {.$DEFINE DEBUG}
 
@@ -48,6 +48,7 @@ type
 
   TJvQuery = class(TQuery)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FDisconnectExpected: Boolean;
     FSaveQueryChanged: TNotifyEvent;
     FMacroChar: Char;
@@ -96,6 +97,7 @@ type
     property RealSQL: TStrings read GetRealSQL;
     {$ENDIF DEBUG}
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property MacroChar: Char read FMacroChar write SetMacroChar default DefaultMacroChar;
     property SQL: TStrings read FSQLPattern write SetSQL;
     {$IFDEF DEBUG}
@@ -128,7 +130,7 @@ type
   TScriptErrorEvent = procedure(Sender: TObject; E: EDatabaseError;
     LineNo, StatementNo: Integer; var Action: TScriptAction) of object;
 
-  TJvSQLScript = class(TComponent)
+  TJvSQLScript = class(TJvComponent)
   private
     FSQL: TStrings;
     FParams: TParams;

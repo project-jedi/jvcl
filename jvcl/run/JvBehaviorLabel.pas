@@ -42,20 +42,24 @@ Known Issues:
 unit JvBehaviorLabel;
 
 interface
+
 uses
+  SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QGraphics, QStdCtrls, QExtCtrls, QForms,
   {$ENDIF VisualCLX}
-  SysUtils, Classes, JVCLVer, JvExStdCtrls;
+  JVCLVer, JvExStdCtrls;
 
 type
-  TJvCustomBehaviorLabel = class; // forward
+  TJvCustomBehaviorLabel = class;
+
   TJvLabelBehaviorName = string;
   TJvLabelScrollDirection = (sdLeftToRight, sdRightToLeft);
   TJvAppearDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom);
+
   // TJvLabelBehavior is the base class for label behaviors
   // To create a new behavior, derive a new class from this base class,
   // add appropriate published properties, override the Start, Stop and possibly the OwnerResize methods.
@@ -63,8 +67,9 @@ type
   TJvLabelBehavior = class(TPersistent)
   private
     FLabel: TJvCustomBehaviorLabel;
-    FTmpActive, FActive, FTemporary: Boolean;
-
+    FTmpActive: Boolean;
+    FActive: Boolean;
+    FTemporary: Boolean;
     procedure SetActive(const Value: Boolean);
   protected
     // Call Suspend to store the current state of the Active property and
@@ -104,10 +109,9 @@ type
     FInterval: Cardinal;
     FTimer: TTimer;
     FToggled: Boolean;
-    FOldCaption: TCaption;
     procedure SetDelay(const Value: Cardinal);
     procedure SetInterval(const Value: Cardinal);
-    procedure DoTimerEvent(Sender: Tobject);
+    procedure DoTimerEvent(Sender: TObject);
   protected
     procedure Start; override;
     procedure Stop; override;
@@ -219,6 +223,7 @@ type
     property AppearFrom: TJvAppearDirection read FAppearFrom write FAppearFrom default drFromRight;
 
   end;
+
   // TJvLabelTyping implements a behavior where the label's original Caption is typed
   // into the label character by character
   TJvLabelTyping = class(TJvLabelBehavior)
@@ -244,6 +249,7 @@ type
     // Interval sets the speed of the typing in milliseconds
     property Interval: Cardinal read FInterval write SetInterval default 100;
   end;
+
   // TJvLabelSpecial implements a behavior where each character of the Caption is
   // started at #32 (space) and automatically incremented up to it's final value.
   // When the final value is reached, the next character of the original Caption is
@@ -251,7 +257,8 @@ type
   TJvLabelSpecial = class(TJvLabelBehavior)
   private
     FInterval: Cardinal;
-    FTextPos, FCharValue: Integer;
+    FTextPos: Integer;
+    FCharValue: Integer;
     FTimer: TTimer;
     FOriginalText: string;
     procedure SetInterval(const Value: Cardinal);
@@ -266,14 +273,17 @@ type
     // Interval sets the number of milliseconds that elapses between increments
     property Interval: Cardinal read FInterval write SetInterval default 20;
   end;
-  { TJvLabelCodeBreaker "decodes" the text in the label to the
-    text in DecodedText. Interval sets the number of milliseconds between
-    "decode attempts", i.e character changes }
 
+  // TJvLabelCodeBreaker "decodes" the text in the label to the
+  // text in DecodedText. Interval sets the number of milliseconds between
+  // "decode attempts", i.e character changes
   TJvLabelCodeBreaker = class(TJvLabelBehavior)
   private
-    FScratchPad, FOriginal, FDecodedText: string;
-    FInterval, FCurrentPos: Integer;
+    FScratchPad: string;
+    FOriginal: string;
+    FDecodedText: string;
+    FInterval: Integer;
+    FCurrentPos: Integer;
     FTimer: TTimer;
     procedure SetInterval(const Value: Integer);
     procedure DoTimer(Sender: TObject);
@@ -297,6 +307,8 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
+    FLocalText: string;
+    FUseLocalText: Boolean;
     function GetOptions: TJvLabelBehavior;
     function BehaviorStored: Boolean;
     procedure UpdateDesigner;
@@ -307,16 +319,16 @@ type
     procedure Resize; override;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
-  public
-    constructor Create(AComponent: TComponent); override;
-    destructor Destroy; override;
-  protected
+    function GetLabelText: string; override;
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-    property OnStart:TNotifyEvent read FOnStart write FOnStart;
-    property OnStop:TNotifyEvent read FOnStop write FOnStop;
+    property OnStart: TNotifyEvent read FOnStart write FOnStart;
+    property OnStop: TNotifyEvent read FOnStop write FOnStop;
+  public
+    constructor Create(AComponent: TComponent); override;
+    destructor Destroy; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
@@ -329,7 +341,7 @@ type
     property OnEndDock;
     property OnStartDock;
     property ParentBiDiMode;
-    {$ENDIF}
+    {$ENDIF VCL}
     property Behavior;
     property BehaviorOptions;
     property OnMouseEnter;
@@ -372,7 +384,7 @@ type
     property OnStartDrag;
   end;
 
-  // register a new behaviour
+// register a new behaviour
 procedure RegisterLabelBehaviorOptions(const Name: TJvLabelBehaviorName; BehaviorOptionsClass:
   TJvLabelBehaviorOptionsClass);
 // returns the class of the behaviour named Name or TJvLabelBehavior if Name not registered
@@ -389,55 +401,55 @@ uses
   JvTypes, JvResources;
 
 var
-  FBehaviorOptions: TStringList = nil;
+  AllBehaviorOptions: TStringList = nil;
 
 function GetLabelBehaviorOptionsClass(const Name: TJvLabelBehaviorName): TJvLabelBehaviorOptionsClass;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := TJvLabelBehavior;
-
-  if (FBehaviorOptions <> nil) then
+  if AllBehaviorOptions <> nil then
   begin
-    i := FBehaviorOptions.IndexOf(Name);
-    if i >= 0 then
-      Result := TJvLabelBehaviorOptionsClass(FBehaviorOptions.Objects[i])
+    I := AllBehaviorOptions.IndexOf(Name);
+    if I >= 0 then
+      Result := TJvLabelBehaviorOptionsClass(AllBehaviorOptions.Objects[I]);
   end;
 end;
 
 function GetLabelBehaviorName(BehaviorOptionsClass: TJvLabelBehaviorOptionsClass): string;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := '';
-  if (FBehaviorOptions <> nil) then
+  if AllBehaviorOptions <> nil then
   begin
-    i := FBehaviorOptions.IndexOfObject(TObject(BehaviorOptionsClass));
-    if i >= 0 then
-      Result := FBehaviorOptions[i];
+    I := AllBehaviorOptions.IndexOfObject(TObject(BehaviorOptionsClass));
+    if I >= 0 then
+      Result := AllBehaviorOptions[I];
   end;
 end;
 
 procedure GetRegisteredLabelBehaviorOptions(Strings: TStrings);
 begin
   if Strings <> nil then
-    Strings.Assign(FBehaviorOptions);
+    Strings.Assign(AllBehaviorOptions);
 end;
 
-procedure RegisterLabelBehaviorOptions(const Name: TJvLabelBehaviorName; BehaviorOptionsClass:
-  TJvLabelBehaviorOptionsClass);
+procedure RegisterLabelBehaviorOptions(const Name: TJvLabelBehaviorName;
+  BehaviorOptionsClass: TJvLabelBehaviorOptionsClass);
 begin
-  if FBehaviorOptions = nil then
+  if AllBehaviorOptions = nil then
   begin
-    FBehaviorOptions := TStringList.Create;
-    FBehaviorOptions.Sorted := True;
+    AllBehaviorOptions := TStringList.Create;
+    AllBehaviorOptions.Sorted := True;
   end;
-  if FBehaviorOptions.IndexOf(Name) >= 0 then Exit;
+  if AllBehaviorOptions.IndexOf(Name) >= 0 then
+    Exit;
   //    raise Exception.CreateFmt('Options %s already registered!',[Name]); // can't raise here: we are probably in an initialization section
-  FBehaviorOptions.AddObject(Name, TObject(BehaviorOptionsClass));
+  AllBehaviorOptions.AddObject(Name, TObject(BehaviorOptionsClass));
 end;
 
-{ TJvLabelBehavior }
+//=== TJvLabelBehavior =======================================================
 
 constructor TJvLabelBehavior.Create(ALabel: TJvCustomBehaviorLabel);
 begin
@@ -452,7 +464,7 @@ destructor TJvLabelBehavior.Destroy;
 begin
   FTemporary := True;
   Stop;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvLabelBehavior.OwnerResize;
@@ -470,9 +482,11 @@ procedure TJvLabelBehavior.SetActive(const Value: Boolean);
 begin
   if FActive <> Value then
   begin
-    if FActive then Stop;
+    if FActive then
+      Stop;
     FActive := Value;
-    if FActive then Start;
+    if FActive then
+      Start;
   end;
 end;
 
@@ -495,19 +509,13 @@ begin
   Active := False;
 end;
 
-{ TJvCustomBehaviorLabel }
-
-procedure TJvCustomBehaviorLabel.ParentColorChanged;
-begin
-  inherited ParentColorChanged;
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
-end;
+//=== TJvCustomBehaviorLabel =================================================
 
 constructor TJvCustomBehaviorLabel.Create(AComponent: TComponent);
 begin
   inherited Create(AComponent);
   FBehavior := RsNoneCaption;
+  FUseLocalText := False;
 end;
 
 destructor TJvCustomBehaviorLabel.Destroy;
@@ -516,16 +524,31 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvCustomBehaviorLabel.ParentColorChanged;
+begin
+  inherited ParentColorChanged;
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
+end;
+
 procedure TJvCustomBehaviorLabel.DoStart;
 begin
   if Assigned(FOnStart) then
-    FOnStart(self);
+    FOnStart(Self);
 end;
 
 procedure TJvCustomBehaviorLabel.DoStop;
 begin
   if Assigned(FOnStop) then
-    FOnStop(self);
+    FOnStop(Self);
+end;
+
+function TJvCustomBehaviorLabel.GetLabelText: string;
+begin
+  if FUseLocalText then
+    Result := FLocalText
+  else
+    Result := inherited GetLabelText;
 end;
 
 function TJvCustomBehaviorLabel.BehaviorStored: Boolean;
@@ -538,7 +561,7 @@ begin
   if FOptions = nil then
   begin
     // (p3) this doesn't update Options in the OI at DT (unless you collapse/expand the property)
-    FOptions := GetLabelBehaviorOptionsClass(FBehavior).Create(self);
+    FOptions := GetLabelBehaviorOptionsClass(FBehavior).Create(Self);
     UpdateDesigner;
   end;
   Result := FOptions;
@@ -546,7 +569,7 @@ end;
 
 procedure TJvCustomBehaviorLabel.Resize;
 begin
-  inherited;
+  inherited Resize;
   BehaviorOptions.OwnerResize;
 end;
 
@@ -559,7 +582,8 @@ begin
     S := TStringList.Create;
     try
       GetRegisteredLabelBehaviorOptions(S);
-      if S.IndexOf(Value) < 0 then Exit;
+      if S.IndexOf(Value) < 0 then
+        Exit;
     finally
       S.Free;
     end;
@@ -574,7 +598,8 @@ procedure TJvCustomBehaviorLabel.SetOptions(const Value: TJvLabelBehavior);
 begin
   if Value = nil then
     Behavior := ''
-  else if (FOptions = nil) or (FOptions.ClassType <> Value.ClassType) then
+  else
+  if (FOptions = nil) or (FOptions.ClassType <> Value.ClassType) then
     Behavior := GetLabelBehaviorName(TJvLabelBehaviorOptionsClass(Value.ClassType));
   UpdateDesigner;
 end;
@@ -585,30 +610,29 @@ var
 begin
   if csDesigning in ComponentState then
   begin
-    F := GetParentForm(self);
+    F := GetParentForm(Self);
     if (F <> nil) and (F.Designer <> nil) then
       F.Designer.Modified;
   end;
 end;
 
-{ TJvLabelBlink }
+//=== TJvLabelBlink ==========================================================
 
 constructor TJvLabelBlink.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  inherited;
+  inherited Create(ALabel);
   FDelay := 100;
   FInterval := 400;
+  OwnerLabel.FLocalText := '';
 end;
 
-procedure TJvLabelBlink.DoTimerEvent(Sender: Tobject);
+procedure TJvLabelBlink.DoTimerEvent(Sender: TObject);
 begin
   FTimer.Enabled := False;
   FTimer.Interval := FInterval;
-  if FToggled then
-    OwnerLabel.Caption := FOldCaption
-  else
-    OwnerLabel.Caption := '';
   FToggled := not FToggled;
+  OwnerLabel.FUseLocalText := FToggled;
+  OwnerLabel.Refresh;
   FTimer.Enabled := FInterval > 0;
 end;
 
@@ -634,8 +658,9 @@ end;
 
 procedure TJvLabelBlink.Start;
 begin
-  inherited;
-  if (csLoading in OwnerLabel.ComponentState) then Exit;
+  inherited Start;
+  if csLoading in OwnerLabel.ComponentState then
+    Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -643,10 +668,10 @@ begin
     FTimer.OnTimer := DoTimerEvent;
   end;
   FTimer.Interval := FDelay;
-  FOldCaption := OwnerLabel.Caption;
   FToggled := False;
-  if FDelay = 0 then FDelay := 1;
-  FTimer.Enabled := True; // not (csDesigning in Ownerlabel.ComponentState);
+  if FDelay = 0 then
+    FDelay := 1;
+  FTimer.Enabled := True; // not (csDesigning in OwnerLabel.ComponentState);
 end;
 
 procedure TJvLabelBlink.Stop;
@@ -654,17 +679,17 @@ begin
   if FTimer <> nil then
   begin
     FreeAndNil(FTimer);
-    if FToggled then
-      OwnerLabel.Caption := FOldCaption;
+    OwnerLabel.FUseLocalText := False;
+    OwnerLabel.Repaint;
   end;
-  inherited;
+  inherited Stop;
 end;
 
-{ TJvLabelBounce }
+//=== TJvLabelBounce =========================================================
 
 constructor TJvLabelBounce.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  inherited;
+  inherited Create(ALabel);
   FInterval := 20;
   FPixels := 6;
 end;
@@ -677,57 +702,49 @@ begin
   with OwnerLabel do
     case FDirection of
       0:
+        if (Left - Pixels <= 0) or (Top + Height + Pixels >= FParent.ClientHeight) then
         begin
-          if (Left - Pixels <= 0) or (Top + Height + Pixels >= FParent.ClientHeight) then
-          begin
-            FDirection := Random(4);
-            //            Pixels := Random(8);
-          end
-          else
-          begin
-            Left := Left - Pixels;
-            Top := Top + Pixels;
-          end;
+          FDirection := Random(4);
+          //            Pixels := Random(8);
+        end
+        else
+        begin
+          Left := Left - Pixels;
+          Top := Top + Pixels;
         end;
       1:
+        if (Top + Height + Pixels >= FParent.ClientHeight) or
+          (Left + Width + Pixels >= FParent.ClientWidth) then
         begin
-          if (Top + Height + Pixels >= FParent.ClientHeight)
-            or (Left + Width + Pixels >= FParent.ClientWidth) then
-          begin
-            FDirection := Random(4);
-            //            Pixels := Random(8);
-          end
-          else
-          begin
-            Top := Top + Pixels;
-            Left := Left + Pixels;
-          end;
+          FDirection := Random(4);
+          //            Pixels := Random(8);
+        end
+        else
+        begin
+          Top := Top + Pixels;
+          Left := Left + Pixels;
         end;
       2:
+        if (Left - Pixels <= 0) or (Top - Pixels <= 0) then
         begin
-          if (Left - Pixels <= 0) or (Top - Pixels <= 0) then
-          begin
-            FDirection := Random(4);
-            //            Pixels := Random(8);
-          end
-          else
-          begin
-            Left := Left - Pixels;
-            Top := Top - Pixels;
-          end;
+          FDirection := Random(4);
+          //            Pixels := Random(8);
+        end
+        else
+        begin
+          Left := Left - Pixels;
+          Top := Top - Pixels;
         end;
       3:
+        if (Left + Width + Pixels > FParent.ClientWidth) or (Top - Pixels <= 0) then
         begin
-          if (Left + Width + Pixels > FParent.ClientWidth) or (Top - Pixels <= 0) then
-          begin
-            FDirection := Random(4);
-            //            Pixels := Random(8);
-          end
-          else
-          begin
-            Left := Left + Pixels;
-            Top := Top - Pixels;
-          end;
+          FDirection := Random(4);
+          //            Pixels := Random(8);
+        end
+        else
+        begin
+          Left := Left + Pixels;
+          Top := Top - Pixels;
         end;
     end;
   FTimer.Enabled := True;
@@ -759,11 +776,12 @@ end;
 
 procedure TJvLabelBounce.Start;
 begin
-  if (csLoading in OwnerLabel.ComponentState) then Exit;
+  if (csLoading in OwnerLabel.ComponentState) then
+    Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
     raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
-  inherited;
+  inherited Start;
   FOriginalRect := OwnerLabel.BoundsRect;
   Randomize;
   if FTimer = nil then
@@ -781,31 +799,31 @@ begin
   FreeAndNil(FTimer);
   if not IsRectEmpty(FOriginalRect) then
     OwnerLabel.BoundsRect := FOriginalRect;
-  inherited;
+  inherited Stop;
 end;
 
-{ TJvLabelScroll }
+//=== TJvLabelScroll =========================================================
 
 constructor TJvLabelScroll.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  inherited;
+  inherited Create(ALabel);
   FInterval := 50;
   FDirection := sdLeftToRight;
 end;
 
 procedure TJvLabelScroll.DoTimerEvent(Sender: TObject);
 var
-  tmp: string;
+  Tmp: string;
 begin
   FTimer.Enabled := False;
-  if Length(OwnerLabel.Caption) > 0 then
+  if OwnerLabel.Caption <> '' then
   begin
-    tmp := OwnerLabel.Caption;
+    Tmp := OwnerLabel.Caption;
     if FDirection = sdLeftToRight then
-      tmp := tmp[Length(tmp)] + Copy(tmp, 1, Length(tmp) - 1)
+      Tmp := Tmp[Length(Tmp)] + Copy(Tmp, 1, Length(Tmp) - 1)
     else
-      tmp := Copy(tmp, 2, Length(tmp) - 1) + tmp[1];
-    OwnerLabel.Caption := tmp;
+      Tmp := Copy(Tmp, 2, Length(Tmp) - 1) + Tmp[1];
+    OwnerLabel.Caption := Tmp;
   end;
   FTimer.Enabled := True;
 end;
@@ -832,19 +850,20 @@ end;
 
 procedure TJvLabelScroll.DoPadding(Value: Boolean);
 var
-  tmp: string;
+  Tmp: string;
 begin
-  tmp := FOriginalText;
+  Tmp := FOriginalText;
   if Value and not (csDestroying in OwnerLabel.ComponentState) then
-    while OwnerLabel.Canvas.TextWidth(tmp) < OwnerLabel.Width do
-      tmp := tmp + ' ';
-  OwnerLabel.Caption := tmp;
+    while OwnerLabel.Canvas.TextWidth(Tmp) < OwnerLabel.Width do
+      Tmp := Tmp + ' ';
+  OwnerLabel.Caption := Tmp;
 end;
 
 procedure TJvLabelScroll.Start;
 begin
-  inherited;
-  if (csLoading in OwnerLabel.ComponentState) then Exit;
+  inherited Start;
+  if csLoading in OwnerLabel.ComponentState then
+    Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -865,14 +884,14 @@ begin
     OwnerLabel.Caption := FOriginalText;
     //    DoPadding(False);
   end;
-  inherited;
+  inherited Stop;
 end;
 
-{ TJvLabelAppear }
+//=== TJvLabelAppear =========================================================
 
 constructor TJvLabelAppear.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  inherited;
+  inherited Create(ALabel);
   FDelay := 100;
   FInterval := 20;
   FPixels := 3;
@@ -928,25 +947,21 @@ begin
         end;
       end;
     drFromLeft:
+      if Abs(OwnerLabel.Left - FOriginalRect.Left) < Pixels then
       begin
-        if Abs(OwnerLabel.Left - FOriginalRect.Left) < Pixels then
-        begin
-          OwnerLabel.Left := FOriginalRect.Left;
-          FSuspend := True;
-        end
-        else
-          OwnerLabel.Left := OwnerLabel.Left + Pixels;
-      end;
+        OwnerLabel.Left := FOriginalRect.Left;
+        FSuspend := True;
+      end
+      else
+        OwnerLabel.Left := OwnerLabel.Left + Pixels;
     drFromTop:
+      if Abs(OwnerLabel.Top - FOriginalRect.Top) < Pixels then
       begin
-        if Abs(OwnerLabel.Top - FOriginalRect.Top) < Pixels then
-        begin
-          OwnerLabel.Top := FOriginalRect.Top;
-          FSuspend := True;
-        end
-        else
-          OwnerLabel.Top := OwnerLabel.Top + Pixels;
-      end;
+        OwnerLabel.Top := FOriginalRect.Top;
+        FSuspend := True;
+      end
+      else
+        OwnerLabel.Top := OwnerLabel.Top + Pixels;
     drFromBottom:
       begin
         if Abs(OwnerLabel.Top - FOriginalRect.Top) < Pixels then
@@ -994,11 +1009,12 @@ end;
 
 procedure TJvLabelAppear.Start;
 begin
-  if (csLoading in OwnerLabel.ComponentState) then Exit;
+  if csLoading in OwnerLabel.ComponentState then
+    Exit;
   FParent := OwnerLabel.Parent;
   if FParent = nil then
     raise EJVCLException.CreateFmt(RsENoOwnerLabelParent, [ClassName]);
-  inherited;
+  inherited Start;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -1016,37 +1032,37 @@ begin
   FreeAndNil(FTimer);
   if not IsRectEmpty(FOriginalRect) then
     OwnerLabel.BoundsRect := FOriginalRect;
-  inherited;
+  inherited Stop;
 end;
 
-{ TJvLabelTyping }
+//=== TJvLabelTyping =========================================================
 
 constructor TJvLabelTyping.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  inherited;
+  inherited Create(ALabel);
   FInterval := 100;
   FMakeErrors := True;
 end;
 
 procedure TJvLabelTyping.DoTimerEvent(Sender: TObject);
 var
-  tmp: string;
-  i: Integer;
+  Tmp: string;
+  I: Integer;
 begin
   FTimer.Enabled := False;
   if FTextPos <= Length(FOriginalText) then
   begin
-    tmp := Copy(FOriginalText, 1, FTextPos - 1);
-    i := Random(10);
-    if (i = 7) and MakeErrors then
-      tmp := tmp + Char(Ord(FOriginalText[FTextPos]) - Random(10))
+    Tmp := Copy(FOriginalText, 1, FTextPos - 1);
+    I := Random(10);
+    if (I = 7) and MakeErrors then
+      Tmp := Tmp + Char(Ord(FOriginalText[FTextPos]) - Random(10))
     else
-      tmp := tmp + FOriginalText[FTextPos];
-    if (MakeErrors) and (i <> 7) then
+      Tmp := Tmp + FOriginalText[FTextPos];
+    if (MakeErrors) and (I <> 7) then
       FTimer.Interval := Interval
     else
       FTimer.Interval := Interval * 2;
-    OwnerLabel.Caption := tmp;
+    OwnerLabel.Caption := Tmp;
     Inc(FTextPos);
     FTimer.Enabled := True;
   end
@@ -1076,8 +1092,9 @@ end;
 
 procedure TJvLabelTyping.Start;
 begin
-  inherited;
-  if (csLoading in OwnerLabel.ComponentState) then Exit;
+  inherited Start;
+  if csLoading in OwnerLabel.ComponentState then
+    Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -1098,14 +1115,14 @@ begin
     FreeAndNil(FTimer);
     OwnerLabel.Caption := FOriginalText;
   end;
-  inherited;
+  inherited Stop;
 end;
 
-{ TJvLabelSpecial }
+//=== TJvLabelSpecial ========================================================
 
 constructor TJvLabelSpecial.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  inherited;
+  inherited Create(ALabel);
   FInterval := 20;
 end;
 
@@ -1119,7 +1136,7 @@ begin
       Inc(FTextPos);
       FCharValue := 32;
     end;
-    OwnerLabel.Caption := Copy(FOriginalText, 1, FTextPos) + char(FCharValue);
+    OwnerLabel.Caption := Copy(FOriginalText, 1, FTextPos) + Char(FCharValue);
     Inc(FCharValue);
     FTimer.Enabled := True;
   end
@@ -1139,8 +1156,9 @@ end;
 
 procedure TJvLabelSpecial.Start;
 begin
-  inherited;
-  if (csLoading in OwnerLabel.ComponentState) then Exit;
+  inherited Start;
+  if csLoading in OwnerLabel.ComponentState then
+    Exit;
   if FTimer = nil then
   begin
     FTimer := TTimer.Create(nil);
@@ -1161,14 +1179,14 @@ begin
     FreeAndNil(FTimer);
     OwnerLabel.Caption := FOriginalText;
   end;
-  inherited;
+  inherited Stop;
 end;
 
-{ TJvLabelCodeBreaker }
+//=== TJvLabelCodeBreaker ====================================================
 
 constructor TJvLabelCodeBreaker.Create(ALabel: TJvCustomBehaviorLabel);
 begin
-  inherited;
+  inherited Create(ALabel);
   FInterval := 10;
 end;
 
@@ -1185,18 +1203,20 @@ begin
     Active := False;
     Exit;
   end
-  else if FScratchPad[FCurrentPos] <> DecodedText[FCurrentPos] then
+  else
+  if FScratchPad[FCurrentPos] <> DecodedText[FCurrentPos] then
   begin
     FScratchPad[FCurrentPos] := Char(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));
     with OwnerLabel do
     begin
-      Caption := Copy(Caption, 1, FCurrentPos - 1) + FScratchPad[FCurrentPos] + Copy(Caption, FCurrentPos + 1, MaxInt);
+      Caption := Copy(Caption, 1, FCurrentPos - 1) +
+        FScratchPad[FCurrentPos] + Copy(Caption, FCurrentPos + 1, MaxInt);
 //      Repaint;
     end
   end
   else
     Inc(FCurrentPos);
-  sleep(FInterval);
+  Sleep(FInterval);
   FTimer.Enabled := True;
 end;
 
@@ -1212,10 +1232,10 @@ end;
 
 procedure TJvLabelCodeBreaker.Start;
 begin
-  inherited;
+  inherited Start;
   FOriginal := OwnerLabel.Caption;
   FCurrentPos := 1;
-  if (Interval > 0) and (Length(FOriginal) > 0) and (Length(DecodedText) > 0) then
+  if (Interval > 0) and (FOriginal <> '') and (DecodedText <> '') then
   begin
     FScratchPad := FOriginal;
     FTimer := TTimer.Create(nil);
@@ -1232,7 +1252,7 @@ procedure TJvLabelCodeBreaker.Stop;
 begin
   FreeAndNil(FTimer);
 //  OwnerLabel.Caption := FOriginal;
-  inherited;
+  inherited Stop;
 end;
 
 initialization
@@ -1245,7 +1265,7 @@ initialization
   RegisterLabelBehaviorOptions('CodeBreaker', TJvLabelCodeBreaker);
 
 finalization
-  FreeAndNil(FBehaviorOptions);
+  FreeAndNil(AllBehaviorOptions);
 
 end.
 

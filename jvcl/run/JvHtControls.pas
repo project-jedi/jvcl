@@ -220,7 +220,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     property PlainItems[Index: Integer]: string read GetPlainItems;
-    {$IFDEF VCl}
+    {$IFDEF VCL}
     procedure SetHeight(Value: Integer); // Kaczkowski
     function GetHeight: Integer; // Kaczkowski
     {$ENDIF VCL}

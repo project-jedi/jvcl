@@ -114,13 +114,12 @@ type
     procedure WMLMouseDown(var Message: TWMMouse); message WM_LBUTTONDOWN;
     procedure WMLMouseUp(var Message: TWMMouse); message WM_LBUTTONUP;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
-
-    {$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   protected
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override;
-    {$ELSE}
+  {$ELSE}
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
@@ -128,7 +127,7 @@ type
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
     procedure FontChanged; dynamic;
-    {$ENDIF USEJVCl}
+  {$ENDIF USEJVCL}
   public
     procedure Paint; override;
     procedure PaintTo(Canvas: TCanvas);
@@ -307,7 +306,7 @@ begin
   ParentFont := False;
   {$IFDEF GL_RUS}
   Font.CharSet := RUSSIAN_CHARSET;
-  {$ENDIF}
+  {$ENDIF GL_RUS}
   FontChanged;
 end;
 
@@ -657,8 +656,8 @@ begin
   // if Assigned(OnResize) then OnResize(self);
 end;
 
-{$IFDEF USEJVCL}
-{$ELSE}
+{$IFNDEF USEJVCL}
+
 procedure TJvgReportItem.CMMouseEnter(var Message: TMessage);
 begin
   inherited;
@@ -676,6 +675,7 @@ begin
   inherited;
   FontChanged;
 end;
+
 {$ENDIF USEJVCL}
 
 procedure TJvgReportItem.SetSelected(Value: Boolean);

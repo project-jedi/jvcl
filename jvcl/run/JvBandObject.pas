@@ -167,7 +167,7 @@ implementation
 uses
   {$IFDEF DEBUGINFO_ON}
   //zTrace,
-  {$ENDIF}
+  {$ENDIF DEBUGINFO_ON}
   Registry, SysUtils, Math, JvJVCLUtils;
 
 const

@@ -331,24 +331,24 @@ end;
 {$IFDEF VisualCLX}
 type
   TOpenWidgetControl = class(TWidgetControl);
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TJvImageControl.DoPaintControl;
 var
-{$IFDEF VCl}
+  {$IFDEF VCL}
   DC: HDC;
-{$ENDIF}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   DC: QPainterH;
   OrgDC: QPainterH;
-{$ENDIF}
+  {$ENDIF VisualCLX}
 begin
   if GetCurrentThreadID = MainThreadID then
   begin
     Repaint;
     Exit;
   end;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   DC := GetDC(Parent.Handle);
   try
     IntersectClipRect(DC, Left, Top, Left + Width, Top + Height);
@@ -357,8 +357,8 @@ begin
   finally
     ReleaseDC(Parent.Handle, DC);
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   DC := QPainter_create;
   try
     QPainter_begin(DC, TOpenWidgetControl(Parent).GetPaintDevice);
@@ -379,7 +379,7 @@ begin
   finally
     QPainter_destroy(DC);
   end;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
@@ -418,7 +418,7 @@ begin
   begin
     AdjustSize;
     if FGraphic <> nil then
-      if {$IFDEF VCL}DoPaletteChange and{$ENDIF} FDrawing then
+      if {$IFDEF VCL} DoPaletteChange and {$ENDIF} FDrawing then
         Update;
     if not FDrawing then
       Invalidate;
@@ -432,7 +432,7 @@ begin
   inherited Create(AOwner);
   {$IFDEF VisualCLX}
   FOpaque := True;
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   FTimer := TJvTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 100;
@@ -706,9 +706,9 @@ procedure TJvAnimatedImage.DoPaintImage;
 var
   BmpIndex: Integer;
   SrcRect, DstRect: TRect;
-{$IFDEF VisualCLX}
+  {$IFDEF VisualCLX}
   Bmp: TBitmap;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 begin
   if (not Active) and (FInactiveGlyph >= 0) and
     (FInactiveGlyph < FNumGlyphs) then

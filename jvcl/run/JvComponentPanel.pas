@@ -105,7 +105,7 @@ type
     {$IFDEF VCL}
     property UseDockManager default True;
     property DockSite;
-    {$ENDIF VCl}
+    {$ENDIF VCL}
     property DragKind;
     property ParentBiDiMode;
     property OnCanResize;
