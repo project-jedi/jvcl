@@ -1,5 +1,9 @@
 Changelog for JVCL 3.0
 ======================
+2003-07-25:
+- TJvThreadTimer: rewritten by Ivo Bauer to enable resetting the thread and handle exceptions better
+- TJvThreadTimer: renamed Delay to Interval and Active to Enabled to be name compatible with TTimer
+
 2003-07-12:
 - Added TJvBlinkingLED (derived from TJvTransLED) from Tomas Hensle
 
