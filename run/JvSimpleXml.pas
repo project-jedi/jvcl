@@ -1524,6 +1524,9 @@ begin
   St := '';
   lPos := 0;
 
+  // We read from a stream, thus replacing the existing items
+  Clear;
+
   repeat
     Count := Stream.Read(lBuf, SizeOf(lBuf));
     if AParent <> nil then
@@ -1866,6 +1869,9 @@ begin
   lName := '';
   lPropStart := ' ';
   lPos := ptWaiting;
+
+  // We read from a stream, thus replacing the existing properties
+  Clear;
 
   repeat
     Count := Stream.Read(lBuf, SizeOf(lBuf));
