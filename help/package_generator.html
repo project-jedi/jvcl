@@ -91,7 +91,8 @@ File</a><br>
       </td>
       <td style="vertical-align: top;">The Delphi packages are Pascal
 source files and as such can contain conditional compilation
-directives. In C++ Builder,&nbsp; package source files are XML files and
+directives. In C++ Builder,&nbsp; package source files are XML files
+and
 as a result do not support conditions. Hence when modifications are
 done to
 an include file that have impact on which files are to be included in a
@@ -105,7 +106,8 @@ generator.<br>
       </td>
       <td style="vertical-align: top;">If the files to be generated
 already exist, they will be used to determine if any change was done to
-them since the last time they were generated. If unchanged, the output files
+them since the last time they were generated. If unchanged, the output
+files
 will be left untouched.<br>
       </td>
     </tr>
@@ -117,7 +119,8 @@ generator<br>
 </h2>
 The package generator is released by the Jedi VCL group under the
 Mozilla Public License 1.1 and was originally written by <a
- href="mailto:obones@meloo.com">Olivier Sannier</a>. I have since benefitted from the contributions of various people in order to make it
+ href="mailto:obones@meloo.com">Olivier Sannier</a>. It has since
+benefitted from the contributions of various people in order to make it
 as generic as possible. Should you have any questions regarding this
 program, please feel free to contact the original author or the JVCL
 team.<br>
@@ -229,9 +232,11 @@ package as it will be displayed in the IDE.<br>
       <td style="vertical-align: top;">Package<br>
       </td>
       <td style="vertical-align: top;">The package files for C++
-Builder 5 contain a special node to allow for passing extra arguments to
+Builder 5 contain a special node to allow for passing extra arguments
+to
 the pascal compiler. This node indicates the value to use for the
-PFLAGS node in C++ Builder 5 packages. In the example above, we added -LUCJcl50 to indicate to link the file CJcl50.dcp into the package.
+PFLAGS node in C++ Builder 5 packages. In the example above, we added
+-LUCJcl50 to indicate to link the file CJcl50.dcp into the package.
 Options are separated by spaces and if followed by a string in
 parenthesis, the string is considered to be a condition. If the
 condition doesn't exist when the file is generated, the option is
@@ -299,7 +304,8 @@ current package. </td>
       <td style="vertical-align: top;">Requires<br>
       </td>
       <td style="vertical-align: top;">Each package node in a Require
-node indicates a package that the current package requires in order to be
+node indicates a package that the current package requires in order to
+be
 compiled. It must have the following three attributes:<br>
       <table style="text-align: left; width: 100%;" border="0"
  cellspacing="0" cellpadding="2">
@@ -460,7 +466,8 @@ node)<br>
       </td>
       <td style="vertical-align: top;">This is the root node of the XML
 file. It doesn't have to have any attributes and may be named
-differently, but doing so would mean that pgEdit.exe needs to be changed to
+differently, but doing so would mean that pgEdit.exe needs to be
+changed to
 cope with the modification. pg.exe doesn't care.<br>
       </td>
     </tr>
@@ -530,42 +537,45 @@ replaced:<br>
                 <tr>
                   <td style="vertical-align: top;">%e<br>
                   </td>
-                  <td style="vertical-align: top;">A single character indicating
-                    the environment. See below for more details.<br>
+                  <td style="vertical-align: top;">A single character
+indicating the environment. See below for more details.<br>
                   </td>
                 </tr>
                 <tr>
                   <td style="vertical-align: top;">%n<br>
                   </td>
                   <td style="vertical-align: top;">The package name
-without suffix. In the example above, it would be &quot;Core&quot;.</td>
+without suffix. In the example above, it would be "Core".</td>
                 </tr>
                 <tr>
                   <td style="vertical-align: top;">%p</td>
-                  <td style="vertical-align: top;">A fixed prefix. In the
-example above it would be &quot;Jv&quot;.<br>
+                  <td style="vertical-align: top;">A fixed prefix. In
+the
+example above it would be "Jv".<br>
                   </td>
                 </tr>
                 <tr>
                   <td style="vertical-align: top;">%t<br>
                   </td>
                   <td style="vertical-align: top;">The type of package.
-Simply the character after the dash. &quot;R&quot; for run-time packages,
-                    &quot;D&quot; for design time packages.
-                  </td>
+Simply the character after the dash. "R" for run-time packages, "D" for
+design time packages. </td>
                 </tr>
                 <tr>
                   <td style="vertical-align: top;">%v</td>
-                  <td style="vertical-align: top;">The target version. See below for more details<br>
+                  <td style="vertical-align: top;">The target version.
+See below for more details<br>
                   </td>
                 </tr>
               </tbody>
             </table>
-              <b>Note:</b><br>
+            <b>Note:</b><br>
 Delphi and C++ Builder prior to version 6 do not support the LibSuffix
-concept. If you want to emulate it with your packages, you may find this useful:<br>
+concept. If you want to emulate it with your packages, you may find
+this useful:<br>
 If there is a comma in the format string, then it is considered a
-separator. Anything before the comma is used for all versions from 6 and up,
+separator. Anything before the comma is used for all versions from 6
+and up,
 and anything after it is used for all versions prior to 6.<br>
             </td>
           </tr>
@@ -607,9 +617,10 @@ nodes, one node for each target your suite can support.<br>
       </td>
       <td style="vertical-align: top;">This node holds the alias nodes,
 one node for each target alias you want to provide. In the example
-above, using &quot;Delphi&quot; in a target node in a package XML source file is
-equivalent to using &quot;d7,d7p&quot;. The aliases are not resolved recursively
-and are not case sensitive. You don't have to define the 'all' alias, as it will be derived from the list of targets.<br>
+above, using "Delphi" in a target node in a package XML source file is
+equivalent to using "d7,d7p". The aliases are not resolved recursively
+and are not case sensitive. You don't have to define the 'all' alias,
+as it will be derived from the list of targets.<br>
       </td>
     </tr>
     <tr>
@@ -625,14 +636,16 @@ least the name attribute. All other attributes are optionnal:<br>
           <tr>
             <td style="vertical-align: top;">name<br>
             </td>
-            <td style="vertical-align: top;">The name of the target. Required.<br>
+            <td style="vertical-align: top;">The name of the target.
+Required.<br>
             </td>
           </tr>
           <tr>
             <td style="vertical-align: top;">dir<br>
             </td>
             <td style="vertical-align: top;">The directory where to
-generate the packages. Defaults to 'name'. It must exists in the packages
+generate the packages. Defaults to 'name'. It must exists in the
+packages
 directory before starting the generation of packages. If not, errors
 will occur and the error messages may not be self-explanatory.<br>
             </td>
@@ -641,9 +654,11 @@ will occur and the error messages may not be self-explanatory.<br>
             <td style="vertical-align: top;">pname<br>
             </td>
             <td style="vertical-align: top;">The name of the associated
-Personal target. A personal target is the target that will be used to force
+Personal target. A personal target is the target that will be used to
+force
 the generation of a different package for a version of the target that
-do not support some common features (database generally). Leave empty or do
+do not support some common features (database generally). Leave empty
+or do
 not define if there are no reason to use this feature. For instance,
 Delphi Personal Editions doesn't support databases. With the example
 above you could use the d7 target alone when specifying a file that is
@@ -664,8 +679,8 @@ associated personal target. Defaults to pname<br>
             </td>
             <td style="vertical-align: top;">A character to identify
 the development environment. Defaults to the first character of 'name'.
-Expected values are &quot;D&quot; for Delphi, &quot;C&quot; for C++ Builder and
-              &quot;K&quot; for Kylix.
+Expected values are "D" for Delphi, "C" for C++ Builder and "K" for
+Kylix.
 Any other value will most likely lead to errors while generating the
 packages.<br>
             </td>
@@ -674,8 +689,9 @@ packages.<br>
             <td style="vertical-align: top;">ver<br>
             </td>
             <td style="vertical-align: top;">A character to identify
-the version of the environment. Defaults to the second character of 'name'. The expected value is a number and errors will arise if it is
-not. For instance, for Delphi 7, it should be &quot;7&quot;.<br>
+the version of the environment. Defaults to the second character of
+'name'. The expected value is a number and errors will arise if it is
+not. For instance, for Delphi 7, it should be "7".<br>
             </td>
           </tr>
           <tr>
@@ -686,7 +702,8 @@ to indicate which Conditional Compilation symbols are defined as the
 result of using this target so that your include file can enclose some
 $DEFINE in $IFDEF that relate to the compiler being used. For instance,
 in the JVCL we have the JVCLThemesEnabled compilation directive. It
-can be turned on manually, but if the target compiler is version 7 or later, it is always turned on as the theme support is included in
+can be turned on manually, but if the target compiler is version 7 or
+later, it is always turned on as the theme support is included in
 Delphi 7. Hence in the include file, we have this:<br>
             <code><br>
             </code>
@@ -706,7 +723,8 @@ COMPILER7_UP}<br>
             </table>
             <code></code><br>
 Now, when a file is included with the JVCLThemesEnabled condition, it
-will only be included if the COMPILER7_UP condition is also available. But this
+will only be included if the COMPILER7_UP condition is also available.
+But this
 is only the case when compiling because it is derived from the version
 number of the compiler. However, you can specifically indicate that a
 given target will define a condition using this attribute, hence
@@ -741,7 +759,8 @@ two attributes:<br>
             </td>
             <td style="vertical-align: top;">A comma separated list
 of targets this alias will expand to. No recursion is done when
-resolving the aliases. If you defined any Personal targets, do not forget
+resolving the aliases. If you defined any Personal targets, do not
+forget
 to include them in the value for your alias.<br>
             </td>
           </tr>
@@ -935,8 +954,8 @@ without any path information and without the extension.<br>
       <td style="vertical-align: top;">%Unitname%<br>
       </td>
       <td style="vertical-align: top;">Same as %UNITNAME% but the
-replacement is all in lower case except for the first letter which is converted
-        to upper case.<br>
+replacement is all in lower case except for the first letter which is
+converted to upper case.<br>
       </td>
     </tr>
     <tr>
@@ -1044,7 +1063,8 @@ source file. The markers will be replaced before output is written.<br>
       </td>
       <td style="vertical-align: top;">The lines read while in this
 state will be replaced for every library to be included in the package
-being generated. That is, for every name in the space delimited value of
+being generated. That is, for every name in the space delimited value
+of
 the 'C5Libs' or 'C6Libs' node in the package XML source file. The node
 used depends on the target for which the generation takes place. If the
 target environment is not C and/or its version is not 5 or 6, the
@@ -1056,7 +1076,8 @@ generator will most likely trigger an Access Violation exception.<br>
       </td>
       <td style="vertical-align: top;">The lines read while in this
 state will be replaced for every file to be included in the package
-being generated. That is, for every 'file' node found in the package XML
+being generated. That is, for every 'file' node found in the package
+XML
 source file. The markers will be replaced before output is written.<br>
       </td>
     </tr>
@@ -1080,7 +1101,8 @@ others.
 <p><br>
 C++ Builder package files, however, are XML files and do not support
 conditional compilation directives. The only way to reproduce the
-behaviour supported by Delphi is to regenerate the packages every time the
+behaviour supported by Delphi is to regenerate the packages every time
+the
 include file is modified. This is because the package generator
 analyses the include file (if told to do so by the model) and outputs a
 conditioned line if the condition is defined in the include file.</p>
@@ -1136,7 +1158,8 @@ where the define was found. This ensure a behaviour similar to what the
 compiler does. A define provided by a target is considered to exist
 even before the first line of the file.<br>
 There is no limit to the number of tests that
-can be done before the definition of a symbol (except for available memory) .<br>
+can be done before the definition of a symbol (except for available
+memory) .<br>
 <br>
 <h2><a name="Detailed_Generation_process"></a>Detailed Generation
 process</h2>
@@ -1269,12 +1292,14 @@ to JvCoreC6R.bpk<br>
 byte comparison.<br>
 <sup>5.</sup> The difference is determined by doing a line by line
 comparison. The last %DATETIME% marker in the file will be ignored,
-thus allowing a file that is only different by the date time tag to be treated
+thus allowing a file that is only different by the date time tag to be
+treated
 as unmodified.<br>
 <sup>6.</sup> If no package or no file was found to be included in the
 generated package for the current target, no file will be written.<br>
 <sup>7.</sup> This is determined while processing 'package' and 'file'
-nodes. If a file or package is used by a target and not by its associated
+nodes. If a file or package is used by a target and not by its
+associated
 personal target (or vice-versa), then the two 'flavors' of the package
 being generated are different.<br>
 <sup>8.</sup> The output file will be placed in the directory set for
@@ -1369,7 +1394,8 @@ instead.<br>
 </table>
 <br>
 <h2><a name="Notes_to_developers"></a>Notes to developers</h2>
-Even if the package generator is considered to be fairly complete at the
+Even if the package generator is considered to be fairly complete at
+the
 time of writing, it may need some further refinements. If you want to
 suggest an improvement and provide the code for it, please be sure to
 have read this documentation entirely and to keep in mind that the
