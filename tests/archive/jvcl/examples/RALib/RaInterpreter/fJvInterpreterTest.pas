@@ -108,7 +108,7 @@ var
 
 implementation
 
-uses JvStrUtil, JvInterpreter_all, JvInterpreter_SysUtils{, JvInterpreter_iMTracer};
+uses JvStrUtil, JvUtils, JvInterpreter_all, JvInterpreter_SysUtils{, JvInterpreter_iMTracer};
 
 {$R *.DFM}
 

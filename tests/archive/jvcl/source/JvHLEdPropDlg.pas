@@ -15,9 +15,8 @@ Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
 Contributor(s):
-Andreas Hausladen [Andreas.Hausladen@gmx.de]
 
-Last Modified: 2003-03-23
+Last Modified: 2002-07-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -29,6 +28,7 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
+{$DEFINE HL_NOT_QUITE_C}
 
 unit JvHLEdPropDlg;
 
@@ -173,12 +173,17 @@ type
 const
   HighLighters: array [THighLighter] of string =
     ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
-     'Perl', 'Ini', 'CocoR', 'Php','NQC');
+     'Perl', 'Ini', 'CocoR', 'Php'
+{$IFDEF HL_NOT_QUITE_C}
+      ,'NQC'
+{$ENDIF HL_NOT_QUITE_C}
+     );
 
 implementation
 
 uses
-  Math, JvCtlConst, JvStrUtil;
+  Math,
+  JvCtlConst, JvUtils, JvStrUtil;
 
 {$R *.DFM}
 

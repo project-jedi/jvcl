@@ -118,7 +118,7 @@ var
 
 implementation
 
-uses JvStrUtil;
+uses JvStrUtil, JvUtils;
 
 {$R *.DFM}
 
