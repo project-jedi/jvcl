@@ -30,6 +30,11 @@ type
     Edit1: TMenuItem;
     Arrange1: TMenuItem;
     N2: TMenuItem;
+    byname1: TMenuItem;
+    byLinksTo1: TMenuItem;
+    byLinksFrom1: TMenuItem;
+    byLinksToinverted1: TMenuItem;
+    byLinksFrominverted1: TMenuItem;
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
     procedure SelectFiles1Click(Sender: TObject);
@@ -38,14 +43,14 @@ type
     procedure Clear1Click(Sender: TObject);
     procedure Add1Click(Sender: TObject);
     procedure Delete1Click(Sender: TObject);
-    procedure Arrange1Click(Sender: TObject);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
       WheelDelta: Integer; MousePos: TPoint; var Handled: Boolean);
+    procedure SelectArrangeClick(Sender: TObject);
   private
     { Private declarations }
     FFileShapes: TStringlist;
     FLeft, FTop: integer;
-    sb:TScrollBox;
+    sb: TScrollBox;
     procedure Clear;
     function GetFileShape(const Filename: string): TJvBitmapShape;
     procedure ParseUnits(Files, Errors: TStrings);
@@ -55,8 +60,9 @@ type
     procedure LoadSkipList;
     procedure SaveSkipList;
     function InSkipList(const Filename: string): boolean;
+    procedure Arrange(AList: TList);
+    procedure CreateScrollBox(AParent: TWinControl);
     procedure DoShapeClick(Sender: TObject);
-    procedure CreateScrollBox(AParent:TWinControl);
   public
     { Public declarations }
   end;
@@ -67,6 +73,11 @@ var
 implementation
 uses
   JCLParseUses, Clipbrd;
+const
+  FStartX = 50;
+  FStartY = 50;
+  FOffsetX = 100;
+  FOffsetY = 50;
 
 {$R *.dfm}
 
@@ -79,7 +90,7 @@ type
     destructor Destroy; override;
   end;
 
-  { TWaitCursor }
+{ TWaitCursor }
 
 constructor TWaitCursor.Create;
 begin
@@ -99,9 +110,16 @@ begin
   Result := TWaitCursor.Create;
 end;
 
+procedure SuspendRedraw(AControl: TWinControl; Suspend: boolean);
+begin
+  AControl.Perform(WM_SETREDRAW, Ord(not Suspend), 0);
+  if not Suspend then
+    RedrawWindow(AControl.Handle, nil, 0, RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE or RDW_UPDATENOW or RDW_ALLCHILDREN);
+end;
+
 { TfrmMain }
 
-procedure TfrmMain.DoShapeClick(Sender:TObject);
+procedure TfrmMain.DoShapeClick(Sender: TObject);
 begin
   if Sender is TJvBitmapShape then
   begin
@@ -116,9 +134,9 @@ begin
 end;
 
 function TfrmMain.GetFileShape(const Filename: string): TJvBitmapShape;
-var i: integer;AFilename:string;
+var i: integer; AFilename: string;
 begin
-  AFilename := ChangeFileExt(ExtractFilename(Filename),'');
+  AFilename := ChangeFileExt(ExtractFilename(Filename), '');
   i := FFileShapes.IndexOf(AFilename);
   if i < 0 then
   begin
@@ -139,13 +157,13 @@ begin
     Result.Caption.Text := AFilename;
     Result.Caption.AlignCaption(taLeftJustify);
     Result.BringToFront;
-    i := FFileShapes.AddObject(AFilename,Result);
+    i := FFileShapes.AddObject(AFilename, Result);
   end;
   Result := TJvBitmapShape(FFileShapes.Objects[i]);
 end;
 
 procedure TfrmMain.Connect(StartShape, EndShape: TJvCustomDiagramShape);
-var arr:TJvSingleHeadArrow;
+var arr: TJvSingleHeadArrow;
 begin
   arr := TJvSingleHeadArrow.Create(self);
   with arr do
@@ -209,19 +227,19 @@ begin
   if InSkipList(AFilename) then
     Exit;
   AUses := TStringlist.Create;
-  FTop := 10;
+  FTop := FStartY;
   try
     if not GetUses(Filename, AUses, ErrMsg) then
       Errors.Add(Format('%s: %s', [AFilename, ErrMsg]));
     // add the actual file
     FS := GetFileShape(AFilename);
     if AUses.Count > 0 then
-      Inc(FLeft, 100);
+      Inc(FLeft, FOffsetX);
     for i := 0 to AUses.Count - 1 do
     begin
       //add the used unit and connect to the parsed file
-      Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUses[i]),'')));
-      Inc(FTop, 50);
+      Connect(FS, GetFileShape(ChangeFileExt(ExtractFileName(AUses[i]), '')));
+      Inc(FTop, FOffsetY);
     end;
   finally
     AUses.Free;
@@ -233,20 +251,25 @@ procedure TfrmMain.ParseUnits(Files, Errors: TStrings);
 var i: integer;
 begin
   WaitCursor;
-  for i := 0 to Files.Count - 1 do
-  begin
-    StatusBar1.Panels[0].Text := Files[i];
-    StatusBar1.Update;
-    if i > 0 then
-      Inc(FLeft, 100);
-    ParseUnit(Files[i], Errors);
+  SuspendRedraw(sb, true);
+  try
+    for i := 0 to Files.Count - 1 do
+    begin
+      StatusBar1.Panels[0].Text := Files[i];
+      StatusBar1.Update;
+      if i > 0 then
+        Inc(FLeft, FOffsetX);
+      ParseUnit(Files[i], Errors);
+    end;
+  finally
+    SuspendRedraw(sb, false);
   end;
   StatusBar1.Panels[0].Text := Format('Done (%d units parsed, %d diagram units available)',
-    [Files.Count,FFileShapes.Count]);
+    [Files.Count, FFileShapes.Count]);
 end;
 
 procedure TfrmMain.Clear;
-var i: integer;
+// var i: integer;
 begin
   WaitCursor;
   FFileShapes.Clear;
@@ -256,8 +279,8 @@ begin
     if Components[i] is TJvBitmapShape then
       TJvBitmapShape(Components[i]).Free; // this will free both the caption and the connector(s)
 }
-  FLeft := 10;
-  FTop := 10;
+  FLeft := FStartX;
+  FTop := FStartY;
   StatusBar1.Panels[0].Text := '  Ready';
 end;
 
@@ -272,7 +295,7 @@ begin
 end;
 
 procedure TfrmMain.SelectFiles1Click(Sender: TObject);
-var Errors: TStringlist;S:string;
+var Errors: TStringlist; // S: string;
 begin
   if dlgSelectFiles.Execute then
   begin
@@ -296,8 +319,8 @@ begin
   FFileShapes := TStringlist.Create;
   FFileShapes.Sorted := true;
   FFileShapes.Duplicates := dupError;
-  FLeft := 10;
-  FTop := 10;
+  FLeft := FStartX;
+  FTop := FStartY;
   LoadSkipList;
   CreateScrollBox(Panel1);
 end;
@@ -358,28 +381,79 @@ begin
         Items.Delete(i);
 end;
 
-procedure TfrmMain.Arrange1Click(Sender: TObject);
-var X, Y, Cols, i: integer; FS: TJvCustomDiagramShape;
+procedure TfrmMain.Arrange(AList: TList);
+var Cols, i: integer; FS: TJvCustomDiagramShape;
 begin
-  WaitCursor;
-  sb.HorzScrollBar.Position := 0;
-  sb.VertScrollBar.Position := 0;
-  if FFileShapes.Count < 2 then
+  if AList.Count < 2 then
     Exit;
-  Cols := round(sqrt(FFileShapes.Count));
-  X := 10;
-  Y := -40;
-  for i := 0 to FFileShapes.Count - 1 do
+  Cols := round(sqrt(AList.Count));
+  FLeft := 0;
+  FTop := 0;
+  for i := 0 to AList.Count - 1 do
   begin
     if (i mod Cols = 0) then // new row
     begin
-      X := 10;
-      Inc(Y, 50);
+      FLeft := FStartX;
+      Inc(FTop, FOffsetY);
     end;
-    FS := TJvCustomDiagramShape(FFileShapes.Objects[i]);
-    FS.SetBounds(X, Y, FS.Width, FS.Height);
-    Inc(X, 100);
+    FS := TJvCustomDiagramShape(AList[i]);
+    FS.SetBounds(FLeft, FTop, FS.Width, FS.Height);
+    Inc(FLeft, FOffsetX);
   end;
+end;
+
+procedure CopyObjects(Strings: TStrings; AList: TList);
+var i: integer;
+begin
+  for i := 0 to Strings.COunt - 1 do
+    AList.Add(Strings.Objects[i]);
+end;
+
+function GetNumLinksTo(AShape: TJvCustomDiagramShape): integer;
+var i: integer;
+begin
+  Result := 0;
+  for i := 0 to AShape.Parent.ControlCount - 1 do
+    if (AShape.Parent.Controls[i] is TJvConnector) and
+      (TJvConnector(AShape.Parent.Controls[i]).EndConn.Shape = AShape) then
+      Inc(Result);
+end;
+
+function GetNumLinksFrom(AShape: TJvCustomDiagramShape): integer;
+var i: integer;
+begin
+  Result := 0;
+  for i := 0 to AShape.Parent.ControlCount - 1 do
+    if (AShape.Parent.Controls[i] is TJvConnector) and
+      (TJvConnector(AShape.Parent.Controls[i]).StartConn.Shape = AShape) then
+      Inc(Result);
+end;
+
+function NameCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := CompareText(
+    TJvCustomDiagramShape(Item1).Caption.Text,
+    TJvCustomDiagramShape(Item2).Caption.Text);
+end;
+
+function MinLinksToCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksTo(Item1) - GetNumLinksTo(Item2);
+end;
+
+function MinLinksFromCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksFrom(Item1) - GetNumLinksFrom(Item2);
+end;
+
+function MaxLinksToCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksTo(Item2) - GetNumLinksTo(Item1);
+end;
+
+function MaxLinksFromCompare(Item1, Item2: Pointer): integer;
+begin
+  Result := GetNumLinksFrom(Item2) - GetNumLinksFrom(Item1);
 end;
 
 procedure TfrmMain.SbMouseWheel(Sender: TObject;
@@ -406,6 +480,36 @@ begin
   sb.OnMouseWheel := SbMouseWheel;
   sb.Parent := AParent;
   sb.Color := clWindow;
+end;
+
+procedure TfrmMain.SelectArrangeClick(Sender: TObject);
+var AList: TList;
+begin
+  WaitCursor;
+  SuspendRedraw(sb, true);
+  AList := TList.Create;
+  try
+    sb.HorzScrollBar.Position := 0;
+    sb.VertScrollBar.Position := 0;
+    CopyObjects(FFileShapes, AList);
+    case TMenuItem(Sender).Tag of
+      1:
+        AList.Sort(MinLinksToCompare);
+      2:
+        AList.Sort(MinLinksFromCompare);
+      3:
+        AList.Sort(MaxLinksToCompare);
+      4:
+        AList.Sort(MaxLinksFromCompare);
+    else
+      AList.Sort(NameCompare);
+    end;
+    Arrange(AList);
+  finally
+    SuspendRedraw(sb, false);
+    AList.Free;
+  end;
+  TMenuItem(Sender).Checked := true;
 end;
 
 end.

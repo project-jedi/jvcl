@@ -23,6 +23,7 @@ object frmMain: TfrmMain
     Top = 0
     Width = 5
     Height = 435
+    Cursor = crHSplit
     Align = alRight
   end
   object StatusBar1: TStatusBar
@@ -34,6 +35,7 @@ object frmMain: TfrmMain
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object Panel1: TPanel
     Left = 0
@@ -849,7 +851,41 @@ object frmMain: TfrmMain
       Caption = 'Edit'
       object Arrange1: TMenuItem
         Caption = 'Arrange'
-        OnClick = Arrange1Click
+        object byname1: TMenuItem
+          Caption = 'by Name'
+          Checked = True
+          GroupIndex = 1
+          RadioItem = True
+          OnClick = SelectArrangeClick
+        end
+        object byLinksTo1: TMenuItem
+          Tag = 1
+          Caption = 'by Links To'
+          GroupIndex = 1
+          RadioItem = True
+          OnClick = SelectArrangeClick
+        end
+        object byLinksFrom1: TMenuItem
+          Tag = 2
+          Caption = 'by Links From'
+          GroupIndex = 1
+          RadioItem = True
+          OnClick = SelectArrangeClick
+        end
+        object byLinksToinverted1: TMenuItem
+          Tag = 3
+          Caption = 'by Links To (inverted)'
+          GroupIndex = 1
+          RadioItem = True
+          OnClick = SelectArrangeClick
+        end
+        object byLinksFrominverted1: TMenuItem
+          Tag = 4
+          Caption = 'by Links From (inverted)'
+          GroupIndex = 1
+          RadioItem = True
+          OnClick = SelectArrangeClick
+        end
       end
       object N2: TMenuItem
         Caption = '-'
@@ -873,7 +909,6 @@ object frmMain: TfrmMain
       'D:\Borland\Add\JEDI200\JVCL\examples\Diagram1WebSiteScanner\Main' +
       'Form.pas'
     Filter = 'Pascal files (*.pas)|*.pas|All files|*.*'
-    InitialDir = '.'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Title = 'Select file(s)'
     Left = 48
