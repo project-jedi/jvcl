@@ -5,7 +5,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, JvValidators, JvErrProvider, ImgList, JvComponent;
+  StdCtrls, ComCtrls, JvValidators, JvErrorIndicator, ImgList, JvComponent;
 
 type
   TfrmMain = class(TForm)
@@ -24,7 +24,7 @@ type
     reResults: TRichEdit;
     btnValSum: TButton;
     JvValidators1: TJvValidators;
-    JvErrorProvider1: TJvErrorProvider;
+    JvErrorIndicator1: TJvErrorIndicator;
     JvValidationSummary1: TJvValidationSummary;
     JvRequiredFieldValidator1: TJvRequiredFieldValidator;
     JvCustomValidator1: TJvCustomValidator;
@@ -68,9 +68,9 @@ procedure TfrmMain.btnCheckClick(Sender: TObject);
 begin
   reResults.Lines.Clear;
   reResults.WordWrap := false;
-  JvErrorProvider1.ClearErrors;
+  JvErrorIndicator1.ClearErrors;
   JvValidators1.ValidationSummary := nil;
-  JvValidators1.ErrorProvider := nil;
+  JvValidators1.ErrorIndicator := nil;
   JvValidators1.OnValidateFailed := JvValidators1ValidateFailed;
   JvValidators1.Validate;
 end;
@@ -80,15 +80,15 @@ begin
   reResults.Lines.Clear;
   reResults.WordWrap := false;
   // calling BeginUpdate/EndUpdate delays the error reporting until all controls have been validated
-  JvErrorProvider1.BeginUpdate;
+  JvErrorIndicator1.BeginUpdate;
   try
-    JvErrorProvider1.ClearErrors;
+    JvErrorIndicator1.ClearErrors;
     JvValidators1.ValidationSummary := nil;
     // custom error messages for this type of check
     JvValidators1.OnValidateFailed := ProviderErrorValidateFailed;
     JvValidators1.Validate;
   finally
-    JvErrorProvider1.EndUpdate;
+    JvErrorIndicator1.EndUpdate;
   end;
 end;
 
@@ -96,9 +96,9 @@ procedure TfrmMain.btnValSumClick(Sender: TObject);
 begin
   reResults.Lines.Clear;
   reResults.WordWrap := false;
-  JvErrorProvider1.ClearErrors;
+  JvErrorIndicator1.ClearErrors;
   JvValidators1.OnValidateFailed := nil;
-  JvValidators1.ErrorProvider := nil;
+  JvValidators1.ErrorIndicator := nil;
   // Setting the ValidationSummary for TJvValidators will delay
   // triggering the OnChange event until after Validate has completed
   JvValidationSummary1.Summaries.Clear;
@@ -128,7 +128,7 @@ end;
 procedure TfrmMain.ProviderErrorValidateFailed(Sender: TObject;
   BaseValidator: TJvBaseValidator; var Continue: Boolean);
 begin
-  JvErrorProvider1.Error[BaseValidator.ControlToValidate] := BaseValidator.ErrorMessage;
+  JvErrorIndicator1.Error[BaseValidator.ControlToValidate] := BaseValidator.ErrorMessage;
   reResults.Lines.Add(Format('PROVIDER: %s',[BaseValidator.ErrorMessage]));
 end;
 procedure TfrmMain.JvValidationSummary1Change(Sender: TObject);

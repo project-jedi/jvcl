@@ -35,6 +35,6 @@ requires
 
 contains
   JvValidators in '..\..\run\JvValidators.pas',
-  JvErrProvider in '..\..\run\JvErrProvider.pas';
+  JvErrorIndicator in '..\..\run\JvErrorIndicator.pas';
 
 end.

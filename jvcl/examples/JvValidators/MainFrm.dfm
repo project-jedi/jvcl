@@ -115,7 +115,7 @@ object frmMain: TfrmMain
     Width = 161
     Height = 25
     Anchors = [akLeft, akBottom]
-    Caption = 'Use JvErrorProvider'
+    Caption = 'Use JvErrorIndicator'
     TabOrder = 5
     OnClick = btnProviderCheckClick
   end
@@ -156,10 +156,10 @@ object frmMain: TfrmMain
       ''
       
         'Finally, you can combine the work of the validators with the use' +
-        ' of a TJvErrorProvider.'
+        ' of a TJvErrorIndicator.'
       ''
       
-        'For more info on TJvErrorProvider, see the demo for that compone' +
+        'For more info on TJvErrorIndicator, see the demo for that compone' +
         'nt (also included).'
       ''
       
@@ -187,7 +187,7 @@ object frmMain: TfrmMain
   end
   object JvValidators1: TJvValidators
     ValidationSummary = JvValidationSummary1
-    ErrorProvider = JvErrorProvider1
+    ErrorIndicator = JvErrorIndicator1
     OnValidateFailed = JvValidators1ValidateFailed
     Left = 258
     Top = 104
@@ -223,7 +223,7 @@ object frmMain: TfrmMain
       MaximumValue = 100
     end
   end
-  object JvErrorProvider1: TJvErrorProvider
+  object JvErrorIndicator1: TJvErrorIndicator
     ImageIndex = 0
     Left = 296
     Top = 104
