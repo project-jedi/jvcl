@@ -124,6 +124,7 @@ JvZLibMultipleDemo.exe \
 JvFormatEditDemo.exe \
 JvProgressDialogDemo.exe \
 JvAppInstDemo.exe \
+Balls.exe \
 
 #---------------------------------------------------------------------------------------------------
 
@@ -625,3 +626,8 @@ JvAppInstDemo.exe: JvAppInstances\JvAppInstDemo.dpr
   cd JvAppInstances
   $(DCC) $&.dpr
   cd ..
+
+Balls.exe: JvManagedThreads\Balls\Balls.dpr
+  cd JvManagedThreads\Balls
+  $(DCC) $&.dpr
+  cd ..\..
