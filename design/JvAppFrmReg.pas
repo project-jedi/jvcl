@@ -47,7 +47,7 @@ uses
   JvDsgnConsts,
   JvAppAnimatedIcon, JvAppEvent,
   JvFormAnimatedIcon, JvFormAnimation, JvFormWallpaper,
-  JvAnimTitle, JvFormAutoSize,
+  JvAnimTitle, JvFormAutoSize, JvEmbeddedForms,
   JvFormWallpaperEditor;
 
 {$IFDEF MSWINDOWS}
@@ -70,8 +70,9 @@ begin
       {$ENDIF VCL}
       TJvFormAutoSize
       {$IFDEF VCL}
-      , TJvGradientCaption
+      , TJvGradientCaption, 
       {$ENDIF VCL}
+      TJvEmbeddedFormPanel, TJvEmbeddedInstanceFormPanel, TJvEmbeddedFormLink
       ]);
 
   RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
