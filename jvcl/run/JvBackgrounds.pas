@@ -252,7 +252,10 @@ uses
   JvGIF,
   {$DEFINE RECOGNIZE_GIF}
   {$ENDIF USE_JvGIF}
-  JvResources;
+  JvResources, JvFinalize;
+
+const
+  sUnitName = 'JvBackgrounds';
 
 type
   TWinControlAccess = class(TWinControl);
@@ -274,9 +277,10 @@ type
   PColorGradation = ^TColorGradation;
 
 var
-  SysColorGradation: PColorGradation;
-  Hooked: TList;
-  Backgrounds: TList;
+  SysColorGradation: TColorGradation;
+  SysColorGradationInitialized: Boolean = False;
+  Hooked: TList = nil;
+  Backgrounds: TList = nil;
 
 procedure UpdateSysColorGradation;
 var
@@ -284,8 +288,6 @@ var
   FaceLum, MaxLum: THLSValue;
   I: Integer;
 begin
-  if SysColorGradation = nil then
-    New(SysColorGradation);
   SysHLS := RGBtoHLS(ColorToRGB(clBtnHighlight));
   MaxLum := SysHLS.Luminance;
   SysHLS := RGBtoHLS(ColorToRGB(clBtnFace));
@@ -307,8 +309,11 @@ end;
 
 procedure SysColorsNeeded;
 begin
-  if SysColorGradation = nil then
+  if not SysColorGradationInitialized then
+  begin
+    SysColorGradationInitialized := True;
     UpdateSysColorGradation;
+  end;
 end;
 
 procedure GetMappedGrays(var Shades: array of TColor; StartIntensity: Byte);
@@ -320,7 +325,7 @@ begin
   for I := Low(Shades) to High(Shades) do
   begin
     Shades[I] := SysColorGradation[Intensity];
-    if Intensity < High(SysColorGradation^) then
+    if Intensity < High(SysColorGradation) then
       Inc(Intensity);
   end;
 end;
@@ -356,7 +361,7 @@ begin
           Source.Transparent := SrcWasTransparent;
         end;
       end;
-      Handle := CreateMappedBmp(Handle, Grays^, SysColorGradation^);
+      Handle := CreateMappedBmp(Handle, Grays^, SysColorGradation);
     end;
   finally
     Dispose(Grays);
@@ -1233,6 +1238,7 @@ begin
   if Hooked = nil then
   begin
     Hooked := TList.Create;
+    AddFinalizeObjectNil(sUnitName, Hooked);
     Application.HookMainWindow(MainWindowHook);
   end;
   if Hooked.IndexOf(Self) = -1 then
@@ -1260,7 +1266,7 @@ procedure TJvBackgroundImage.SetGrayMapped(Value: Boolean);
 begin
   if Value <> FGrayMapped then
   begin
-    if Value = True then
+    if Value then
       SysColorsNeeded;
     FGrayMapped := Value;
     UpdateWorkingBmp;
@@ -1751,7 +1757,10 @@ begin
   FImage := TJvBackgroundImage.Create;
   FImage.FOnChange := WallpaperChanged;
   if Backgrounds = nil then
+  begin
     Backgrounds := TList.Create;
+    AddFinalizeObjectNil(sUnitName, Backgrounds);
+  end;
   Backgrounds.Add(Self);
   FClients := TJvBackgroundClients.Create(Self);
   if csDesigning in ComponentState then
@@ -1824,16 +1833,9 @@ begin
 end;
 
 initialization
-  Hooked := nil;
 
 finalization
-  if Assigned(SysColorGradation) then
-    Dispose(SysColorGradation);
-  SysColorGradation := nil;
-  Hooked.Free;
-  Hooked := nil;
-  Backgrounds.Free;
-  Backgrounds := nil;
+  FinalizeUnit(sUnitName);
 
 end.
 
