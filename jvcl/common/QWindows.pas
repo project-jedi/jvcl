@@ -197,9 +197,9 @@ function DrawTextBiDiModeFlags(Flags: Longint): Longint;
 { colors }
 function GetSysColor(Color: Integer): TColorRef;
 function RGB(Red, Green, Blue: Integer): TColorRef;
-function GetBValue(Col: TColorRef): Integer;
-function GetGValue(Col: TColorRef): Integer;
-function GetRValue(Col: TColorRef): Integer;
+function GetBValue(Col: TColorRef): Byte;
+function GetGValue(Col: TColorRef): Byte;
+function GetRValue(Col: TColorRef): Byte;
 function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
 function IsRectEmpty(R: TRect): LongBool;
 function EqualRect(R1, R2: TRect): LongBool;
@@ -258,6 +258,23 @@ type
     bmBitsPixel: Word;
     //bmBits: Pointer;
   end;
+
+  PBitmapInfoHeader = ^TBitmapInfoHeader;
+  tagBITMAPINFOHEADER = packed record
+    biSize: DWORD;
+    biWidth: Longint;
+    biHeight: Longint;
+    biPlanes: Word;
+    biBitCount: Word;
+    biCompression: DWORD;
+    biSizeImage: DWORD;
+    biXPelsPerMeter: Longint;
+    biYPelsPerMeter: Longint;
+    biClrUsed: DWORD;
+    biClrImportant: DWORD;
+  end;
+  TBitmapInfoHeader = tagBITMAPINFOHEADER;
+  BITMAPINFOHEADER = tagBITMAPINFOHEADER;
 
 
 { brushes }
@@ -2363,19 +2380,19 @@ begin
   Result := (Blue shl 16) or (Green shl 8) or Red;
 end;
 
-function GetBValue(Col: TColorRef): Integer;
+function GetBValue(Col: TColorRef): Byte;
 begin
-  Result := (Col shr 16) and $FF;
+  Result := Byte((Col shr 16) and $FF);
 end;
 
-function GetGValue(Col: TColorRef): Integer;
+function GetGValue(Col: TColorRef): Byte;
 begin
-  Result := (Col shr 8) and $FF;
+  Result := Byte((Col shr 8) and $FF);
 end;
 
-function GetRValue(Col: TColorRef): Integer;
+function GetRValue(Col: TColorRef): Byte;
 begin
-  Result := Col and $FF;
+  Result := Byte(Col and $FF);
 end;
 
 function SetRect(var R: TRect; Left, Top, Right, Bottom: Integer): LongBool;
