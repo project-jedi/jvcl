@@ -37,6 +37,14 @@ uses
   Classes, SysUtils,
   JvThemes;
 
+{$IFDEF VCL}
+ {$DEFINE NeedMouseEnterLeave}
+{$ELSE}
+ {$IF not declared(PatchedVCLX)}
+  {$DEFINE NeedMouseEnterLeave}
+ {$IFEND}
+{$ENDIF VCL}
+
 type
   IJvControlEvents = interface
     ['{61FC57FF-D4DA-4840-B871-63DE804E9921}']
@@ -96,13 +104,23 @@ function InheritMsg(Instance: TControl; Msg: Integer; WParam, LParam: Integer): 
 function InheritMsg(Instance: TControl; Msg: Integer): Integer; overload;
 procedure DispatchMsg(Instance: TControl; var Msg);
 
+procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
+  Inserting: Boolean);
+procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
+  Inserting: Boolean);
+
 {$IFNDEF COMPILER6_UP}
 procedure TOpenControl_SetAutoSize(Instance: TControl; Value: Boolean);
 {$ENDIF !COMPILER6_UP}
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
+function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
+  EventRegion: QRegionH): IInterface;
+  // - returns NIL if the Instance is in csDestroying.
+  // - enters the painting and returns an interface that leaves the painting when
+  //   is is released.
+procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 {$ENDIF VisualCLX}
 
 implementation
@@ -244,7 +262,90 @@ begin
     PMsg^.Result := InheritMsg(Instance, PMsg^.Msg, PMsg^.WParam, PMsg^.LParam);
 end;
 
+{ VCL sends CM_CONTROLLISTCHANGE and CM_CONTROLCHANGE in an other order that
+  the CLX methods are used. So we must correct it by evaluating "Inserting". } 
+procedure Control_ControlsListChanging(Instance: TControl; Control: TControl;
+  Inserting: Boolean);
+begin
+  if Inserting then
+    InheritMsg(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+
+procedure Control_ControlsListChanged(Instance: TControl; Control: TControl;
+  Inserting: Boolean);
+begin
+  if not Inserting then
+    InheritMsg(Instance, CM_CONTROLLISTCHANGE, Integer(Control), Integer(Inserting))
+  else
+    InheritMsg(Instance, CM_CONTROLCHANGE, Integer(Control), Integer(Inserting))
+end;
+
 {$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+type
+  TOpenWidgetControl = class(TWidgetControl);
+
+  TWidgetControlPainting = class(TInterfacedObject)
+  private
+    FCanvas: TCanvas;
+    FInstance: TWidgetControl;
+  public
+    constructor Create(Instance: TWidgetControl; Canvas: TCanvas;
+      EventRegion: QRegionH);
+    destructor Destroy; override;
+  end;
+
+constructor TWidgetControlPainting.Create(Instance: TWidgetControl; Canvas: TCanvas;
+  EventRegion: QRegionH);
+begin
+  inherited Create;
+  FCanvas := Canvas;
+  FInstance := Instance;
+
+  TControlCanvas(FCanvas).StartPaint;
+  QPainter_setClipRegion(FCanvas.Handle, EventRegion);
+end;
+
+destructor TWidgetControlPainting.Destroy;
+begin
+  TControlCanvas(FCanvas).StopPaint;
+  inherited Destroy;
+end;
+
+function WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
+  EventRegion: QRegionH): IInterface;
+begin
+  if csDestroying in Instance.ComponentState then
+    Result := nil
+  else
+    Result := TWidgetControlPainting.Create(Instance, Canvas, EventRegion);
+end;
+
+procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
+var
+  Event: QPaintEventH;
+begin
+  if not (csDestroying in Instance.ComponentState) then
+  begin
+    Event := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
+    try
+      Instance.ControlState := Instance.ControlState + [csWidgetPainting];
+      try
+        QObject_event(Instance.Handle, Event);
+      finally
+        Instance.ControlState := Instance.ControlState - [csWidgetPainting];
+      end;
+    finally
+      QPaintEvent_destroy(Event);
+    end;
+  end;
+end;
+
+{$ENDIF VisualCLX}
 
 // *****************************************************************************
 

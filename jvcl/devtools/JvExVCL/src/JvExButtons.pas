@@ -37,6 +37,14 @@ uses
   Classes, SysUtils,
   JvThemes, JvExControls;
 
+{$IFDEF VCL}
+ {$DEFINE NeedMouseEnterLeave}
+{$ELSE}
+ {$IF not declared(PatchedVCLX)}
+  {$DEFINE NeedMouseEnterLeave}
+ {$IFEND}
+{$ENDIF VCL}
+
 type
   JV_CONTROL_EVENTS(SpeedButton)
   JV_WINCONTROL_EVENTS(BitBtn)

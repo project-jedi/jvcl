@@ -37,6 +37,14 @@ uses
   Classes, SysUtils,
   JvThemes, JvExControls;
 
+{$IFDEF VCL}
+ {$DEFINE NeedMouseEnterLeave}
+{$ELSE}
+ {$IF not declared(PatchedVCLX)}
+  {$DEFINE NeedMouseEnterLeave}
+ {$IFEND}
+{$ENDIF VCL}
+
 {$DEFINE ANIMATE}
 {$IFDEF COMPILER6_UP}
  {$IF not declared(TAnimate)}

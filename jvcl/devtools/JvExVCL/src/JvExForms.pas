@@ -37,12 +37,13 @@ uses
   Classes, SysUtils,
   JvThemes, JvExControls;
 
-{$IFDEF VisualCLX}
-type
-  TToolWindow = class(TWidgetControl)
-  
-  end;
-{$ENDIF VisualCLX}
+{$IFDEF VCL}
+ {$DEFINE NeedMouseEnterLeave}
+{$ELSE}
+ {$IF not declared(PatchedVCLX)}
+  {$DEFINE NeedMouseEnterLeave}
+ {$IFEND}
+{$ENDIF VCL}
 
 type
   JV_WINCONTROL_EVENTS(ScrollingWinControl)

@@ -37,6 +37,14 @@ uses
   Classes, SysUtils,
   JvThemes, JvExControls, JvExButtons;
 
+{$IFDEF VCL}
+ {$DEFINE NeedMouseEnterLeave}
+{$ELSE}
+ {$IF not declared(PatchedVCLX)}
+  {$DEFINE NeedMouseEnterLeave}
+ {$IFEND}
+{$ENDIF VCL}
+
 type
   JV_WINCONTROL_EVENTS(DBEdit)
   JV_CONTROL_EVENTS(DBText)
