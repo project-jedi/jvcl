@@ -1032,11 +1032,15 @@ type
     function ReadInt(const AName: string): Int64;
     procedure ReadSet(const AName: string; out Value; const TypeInfo: PTypeInfo);
     function ReadStamp(const AName: string): TTimeStamp;
-    
+    function ReadStampDate(const AName: string): Integer;
+    function ReadStampTime(const AName: string): Integer;
+
     procedure WriteEnum(const AName: string; const Ordinal: Integer; const TypeInfo: PTypeInfo);
     procedure WriteInt(const AName: string; const Value: Int64);
     procedure WriteSet(const AName: string; const Value; const TypeInfo: PTypeInfo);
     procedure WriteStamp(const AName: string; const Stamp: TTimeStamp);
+    procedure WriteStampDate(const AName: string; const Date: Integer);
+    procedure WriteStampTime(const AName: string; const Time: Integer);
   public
     function GetAttributes: TSchedEvtStoreAttributes; override;
     constructor Create(const AStream: TStream; const AOwnsStream: Boolean = True);
@@ -1100,17 +1104,17 @@ end;
 
 procedure TTxtStore.RestoreFreqStart;
 begin
-  (Event.Schedule as IJclScheduleDayFrequency).StartTime := ReadInt(TxtIdentifiers[seikFreqStart]);
+  (Event.Schedule as IJclScheduleDayFrequency).StartTime := ReadStampTime(TxtIdentifiers[seikFreqStart]);
 end;
 
 procedure TTxtStore.RestoreFreqEnd;
 begin
-  (Event.Schedule as IJclScheduleDayFrequency).EndTime := ReadInt(TxtIdentifiers[seikFreqEnd]);
+  (Event.Schedule as IJclScheduleDayFrequency).EndTime := ReadStampTime(TxtIdentifiers[seikFreqEnd]);
 end;
 
 procedure TTxtStore.RestoreFreqInterval;
 begin
-  (Event.Schedule as IJclScheduleDayFrequency).StartTime := ReadInt(TxtIdentifiers[seikFreqInterval]);
+  (Event.Schedule as IJclScheduleDayFrequency).Interval := ReadStampTime(TxtIdentifiers[seikFreqInterval]);
 end;
 
 procedure TTxtStore.RestoreScheduleDailyWeekdays;
@@ -1216,17 +1220,17 @@ end;
 
 procedure TTxtStore.StoreFreqStart;
 begin
-  WriteInt(TxtIdentifiers[seikFreqStart], (Event.Schedule as IJclScheduleDayFrequency).StartTime);
+  WriteStampTime(TxtIdentifiers[seikFreqStart], (Event.Schedule as IJclScheduleDayFrequency).StartTime);
 end;
 
 procedure TTxtStore.StoreFreqEnd;
 begin
-  WriteInt(TxtIdentifiers[seikFreqEnd], (Event.Schedule as IJclScheduleDayFrequency).EndTime);
+  WriteStampTime(TxtIdentifiers[seikFreqEnd], (Event.Schedule as IJclScheduleDayFrequency).EndTime);
 end;
 
 procedure TTxtStore.StoreFreqInterval;
 begin
-  WriteInt(TxtIdentifiers[seikFreqInterval], (Event.Schedule as IJclScheduleDayFrequency).Interval);
+  WriteStampTime(TxtIdentifiers[seikFreqInterval], (Event.Schedule as IJclScheduleDayFrequency).Interval);
 end;
 
 procedure TTxtStore.StoreScheduleDailyWeekdays;
@@ -1463,31 +1467,48 @@ begin
 end;
 
 function TTxtStore.ReadStamp(const AName: string): TTimeStamp;
+begin
+  Result.Date := ReadStampDate(AName + '.Date');
+  Result.Time := ReadStampTime(AName + '.Time');
+end;
+
+function TTxtStore.ReadStampDate(const AName: string): Integer;
 var
   ItemName: string;
   Value: string;
   Y: Word;
   M: Word;
   D: Word;
+begin
+  Value := ReadItem(ItemName);
+  if not AnsiSameText(AName, ItemName) then
+    raise EJVCLException.Create('Incorrect identifier found.');
+  Y := StrToInt(Copy(Value, 1, 4));
+  M := StrToInt(Copy(Value, 6, 2));
+  D := StrToInt(Copy(Value, 9, 2));
+  Result := DateTimeToTimeStamp(EncodeDate(Y, M, D)).Date;
+end;
+
+function TTxtStore.ReadStampTime(const AName: string): Integer;
+var
+  ItemName: string;
+  Value: string;
   H: Word;
   Min: Word;
   MSecs: Integer;
 begin
   Value := ReadItem(ItemName);
-  if not AnsiSameText(AName + '.Date', ItemName) then
+  if not AnsiSameText(AName, ItemName) then
     raise EJVCLException.Create('Incorrect identifier found.');
-  Y := StrToInt(Copy(Value, 1, 4));
-  M := StrToInt(Copy(Value, 6, 2));
-  D := StrToInt(Copy(Value, 9, 2));
-  Result := DateTimeToTimeStamp(EncodeDate(Y, M, D));
-
-  Value := ReadItem(ItemName);
-  if not AnsiSameText(AName + '.Time', ItemName) then
-    raise EJVCLException.Create('Incorrect identifier found.');
-  H := StrToInt(Copy(Value, 1, 2));
-  Min := StrToInt(Copy(Value, 4, 2));
-  MSecs := StrToInt(Copy(Value, 7, 2)) * 1000 + StrToInt(Copy(Value, 10, 3));
-  Result.Time := H * 3600000 + MIn * 60000 + MSecs;
+  if (Length(Value) < 3) or (Value[3] in ['0' .. '9']) then
+    Result := StrToInt(Value)
+  else
+  begin
+    H := StrToInt(Copy(Value, 1, 2));
+    Min := StrToInt(Copy(Value, 4, 2));
+    MSecs := StrToInt(Copy(Value, 7, 2)) * 1000 + StrToInt(Copy(Value, 10, 3));
+    Result := H * 3600000 + MIn * 60000 + MSecs;
+  end;
 end;
 
 procedure TTxtStore.WriteEnum(const AName: string; const Ordinal: Integer; const TypeInfo: PTypeInfo);
@@ -1506,23 +1527,34 @@ begin
 end;
 
 procedure TTxtStore.WriteStamp(const AName: string; const Stamp: TTimeStamp);
+begin
+  WriteStampDate(AName + '.Date', Stamp.Date);
+  WriteStampTime(AName + '.Time', Stamp.Time);
+end;
+
+procedure TTxtStore.WriteStampDate(const AName: string; const Date: Integer);
 var
+  TmpStamp: TTimeStamp;
   TmpDate: TDateTime;
   Y: Word;
   M: Word;
   D: Word;
-  MSecs: Integer;
 begin
-  TmpDate := TimeStampToDateTime(Stamp);
+  TmpStamp.Date := Date;
+  TmpStamp.Time := 0;
+  TmpDate := TimeStampToDateTime(TmpStamp);
   DecodeDate(TmpDate, Y, M, D);
-  MSecs := Stamp.Time;
-  WriteLn(AName + '.Date = ' + Format('%.4d/%.2d/%.2d', [Y, M, D]));
-  WriteLn(AName + '.Time = ' + Format(
+  WriteLn(AName + ' = ' + Format('%.4d/%.2d/%.2d', [Y, M, D]));
+end;
+
+procedure TTxtStore.WriteStampTime(const AName: string; const Time: Integer);
+begin
+  WriteLn(AName + ' = ' + Format(
     '%.2d:%.2d:%.2d.%.3d',
-    [(MSecs div 3600000) mod 24,
-     (MSecs div 60000) mod 60,
-     (MSecs div 1000) mod 60,
-     MSecs mod 1000]));
+    [(Time div 3600000) mod 24,
+     (Time div 60000) mod 60,
+     (Time div 1000) mod 60,
+     Time mod 1000]));
 end;
 
 function TTxtStore.GetAttributes: TSchedEvtStoreAttributes;
