@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ExtCtrls, DBCtrls, Grids, DBGrids, Db, DBTables,
-  JvDBDateTimePicker;
+  JvDBDateTimePicker, StdCtrls;
 
 type
   TForm1 = class(TForm)
@@ -14,6 +14,7 @@ type
     DBGrid1: TDBGrid;
     DBNavigator1: TDBNavigator;
     JvDBDateTimePicker1: TJvDBDateTimePicker;
+    JvDBDateTimePicker2: TJvDBDateTimePicker;
   private
     { Private declarations }
   public
