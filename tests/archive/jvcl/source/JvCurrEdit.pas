@@ -17,8 +17,9 @@ All Rights Reserved.
 
 Contributor(s):
   Polaris Software
+  Andreas Hausladen
 
-Last Modified: 2002-07-04
+Last Modified: 2003-04-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net

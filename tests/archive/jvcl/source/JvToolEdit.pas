@@ -994,10 +994,6 @@ begin
     ACanvas.Handle := DC;
     try
       ACanvas.Font := Font;
-      if not Enabled and NewStyleControls and not
-        (csDesigning in ComponentState) and
-        (ColorToRGB(Color) <> ColorToRGB(clGrayText)) then
-        ACanvas.Font.Color := clGrayText;
       with ACanvas do
       begin
         R := ClientRect;
@@ -1007,7 +1003,6 @@ begin
           FrameRect(R);
           InflateRect(R, -1, -1);
         end;
-        Brush.Color := Color;
         S := AText;
         AWidth := TextWidth(S);
         Margins := EditorTextMargins(Editor);
@@ -1030,7 +1025,25 @@ begin
         if SysLocale.MiddleEast then
           UpdateTextFlags;
         {$ENDIF}
-        TextRect(R, ALeft, Margins.Y, S);
+        if not Enabled then
+        begin
+          if PS.fErase then
+            Perform(WM_ERASEBKGND, ACanvas.Handle, 0);
+
+          SaveDC(ACanvas.Handle);
+          try
+            ACanvas.Brush.Style := bsClear;
+            ACanvas.Font.Color := FDisabledTextColor;
+            ACanvas.TextRect(R, ALeft, Margins.Y, S);
+          finally
+            RestoreDC(ACanvas.Handle, -1);
+          end;
+        end
+        else
+        begin
+          Brush.Color := Color;
+          ACanvas.TextRect(R, ALeft, Margins.Y, S);
+        end;
       end;
     finally
       ACanvas.Handle := 0;
