@@ -6,35 +6,40 @@ Summary
 Author
   Peter Thörnqvist
 ----------------------------------------------------------------------------------------------------
-@@RegisterWndProcHook
+@@RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE RegisterWndProcHook function>
 Summary
   Registers a hook.
 Description
   Call RegisterWndProcHook to hook a control. Hooking a control allows you to respond to messages send
   to that control.
-  
+
   Use Order to specify whether you want to receive messages send to the hooked control, <i>before</i>
   or <i>after</i> the control handles them. By setting Order to hoBeforeMsg you can prevent the control
   to handle specific messages.
-  
-  TJvWindowHook calls this method when it wants to start hooking the control. An internal list is 
+
+  TJvWindowHook calls this method when it wants to start hooking the control. An internal list is
   maintained to prevent "broken links" when a hook is removed.
 
   Call UnRegisterWndProcHook to unregister the hook.
 Parameters
   AControl - Specifies the control to hook.
+  AHandle  - Specifies the handle to hook.
   Hook     - Specifies the control hook procedure.
   Order    - Specifies whether to receive messages before or after the control handles them.
 See Also
   TJvControlHook, TJvWindowHook, UnRegisterWndProcHook
+----------------------------------------------------------------------------------------------------
+@@RegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
+<TITLE RegisterWndProcHook function>
+<COMBINE RegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
 ----------------------------------------------------------------------------------------------------
 @@TJvControlHook
 <TITLE TJvControlHook type>
 Summary
   The type for a control hook procedure.
 Description
-  TJvControlHook is the type for a control hook procedure that acts like a window procedure of a 
+  TJvControlHook is the type for a control hook procedure that acts like a window procedure of a
   control. Like most window procedures, TJvControlHook takes a message record as an argument.
 
   The control hook should return True if it processes the message, and False if it does not. If the
@@ -69,13 +74,13 @@ Summary
   Enables you to receive messages send to a certain control.
 Description
   Use TJvWindowHook to receive and respond to messages send to a certain control.
-  
+
   Set Control to specify the control to hook and set Active to True to place a hook on that control.
   \Write BeforeMessage and AfterMessage event handlers to respond to messages before or after they
   are handled by the hooked control. Note that if you do not write a BeforeMessage and AfterMessage
   handler that the control won't be hooked.
-  
-  TJvWindowHook places and removes a hook on a control by a call to RegisterWndProcHook and 
+
+  TJvWindowHook places and removes a hook on a control by a call to RegisterWndProcHook and
   UnRegisterWndProcHook, resp. An internal list is maintained to prevent "broken links" when a hook
   is removed.
 ----------------------------------------------------------------------------------------------------
@@ -90,7 +95,7 @@ Description
   fired.
 
   At design time, set Active to True to make the control hooked when the application starts
-  running (the default value is False). At runtime, use the HookControl or UnhookControl method to 
+  running (the default value is False). At runtime, use the HookControl or UnhookControl method to
   hook the control or remove the hook.
 See Also
   Control, HookControl, UnHookControl
@@ -102,7 +107,7 @@ Summary
 Description
   Use AfterMessage to respond to messages send to the hooked control. The AfterMessage event is fired
   <i>after</i> the hooked control has handled the message.
-  
+
   Use parameter Handled to specify
   whether the message is handled; setting Handled to True will prevent other hooks to respond to this
   message.
@@ -123,11 +128,11 @@ Summary
 Description
   Use BeforeMessage to respond to messages send to the hooked control. The BeforeMessage event is
   fired <i>before</i> the hooked control has handled the message.
-  
+
   Use parameter Handled to specify whether the hooked control may respond to this message. setting
   Handled to True will prevent the hooked control or other hooks placed on the control to respond
   to this message.
-  
+
   This event is only triggered when Active is set to True.
 Parameters
   Sender  - The hook component that has send this message.
@@ -164,20 +169,39 @@ Description
 See Also
   Active, Control
 ----------------------------------------------------------------------------------------------------
-@@UnRegisterWndProcHook
+@@UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder
 <TITLE UnRegisterWndProcHook function>
 Summary
   Removes a registered hook.
 Description
-  Call UnRegisterWndProcHook to unhook a control. The hook must previously been registered by a 
+  Call UnRegisterWndProcHook to unhook a control. The hook must previously been registered by a
   call to RegisterWndProcHook.
-  
-  TJvWindowHook calls this method when it wants to stop hooking the control. An internal list is 
+
+  TJvWindowHook calls this method when it wants to stop hooking the control. An internal list is
   maintained to prevent "broken links" when a hook is removed.
 Parameters
   AControl - Specifies the hooked control.
+  AHandle  - Specifies the hooked handle.
   Hook     - Specifies the control hook procedure.
-  Order    - Specifies the kind of hook. It should be the same value as used by the call to 
+  Order    - Specifies the kind of hook. It should be the same value as used by the call to
               RegisterWndProcHook.
 See Also
   TJvControlHook, TJvWindowHook, RegisterWndProcHook
+----------------------------------------------------------------------------------------------------
+@@UnRegisterWndProcHook@HWND@TJvControlHook@TJvHookOrder
+<TITLE UnRegisterWndProcHook function>
+<COMBINE UnRegisterWndProcHook@TControl@TJvControlHook@TJvHookOrder>
+----------------------------------------------------------------------------------------------------
+@@ReleaseObj
+<TITLE ReleaseObj procedure>
+Summary
+  Destroys the object and frees its associated memory.
+Description
+  Use ReleaseObj to destroy an object and free its associated memory.
+
+  ReleaseObj does not destroy the object until all messages in the message queue are processed.
+Note
+  ReleaseObj returns immediately to the caller. It does not wait for the object to be freed before
+  returning.
+Parameters
+  AObject - Object that should be destroyed.
