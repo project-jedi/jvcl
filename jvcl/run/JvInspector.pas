@@ -197,7 +197,7 @@ type
 //  TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
 //    Boolean) of object;
   TJvInspConfKeyEvent = procedure(const SectionName: string; var ItemName: string; var ATypeInfo: PTypeInfo; var Allow:
-    Boolean; var Flags:TInspectorItemFlags) of object;
+    Boolean {; var Flags:TInspectorItemFlags}) of object;
 
   EJvInspector = class(EJVCLException);
   EJvInspectorItem = class(EJvInspector);
@@ -11025,16 +11025,16 @@ var
   KeyName: string;
   KeyTypeInfo: PTypeInfo;
   TmpItem: TJvCustomInspectorItem;
-  NewFlags : TInspectorItemFlags;
+  //NewFlags : TInspectorItemFlags;
 
   function AllowAddKey: Boolean;
   begin
     KeyName := SL[I];
     KeyTypeInfo := System.TypeInfo(string);
     Result := True;
-    NewFlags := [iifVisible];    
+    //NewFlags := [iifVisible];
     if Assigned(AOnAddKey) then
-      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result, NewFlags);
+      AOnAddKey(ASection, KeyName, KeyTypeInfo, Result {, NewFlags} );
   end;
 
 begin
@@ -11050,7 +11050,7 @@ begin
       begin
         TmpItem := TJvInspectorINIFileData.New(AParent, KeyName, ASection, SL[I], KeyTypeInfo,
           AINIFile);
-        TmpItem.FFlags := NewFlags;
+        //TmpItem.FFlags := NewFlags;
         // XXX Warren's first attempt to make inspector items know their data's names:
         //if (TmpItem.Parent.Name <> ASection) then
         //  TmpItem.Parent.Name := ASection;
