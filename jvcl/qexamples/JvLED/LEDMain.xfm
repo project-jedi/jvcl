@@ -1,0 +1,496 @@
+object LEDDemoMain: TLEDDemoMain
+  Left = 497
+  Top = 199
+  Width = 329
+  Height = 234
+  VertScrollBar.Range = 233
+  HorzScrollBar.Range = 329
+  ActiveControl = HexText
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = fbsSingle
+  Caption = 'Example for JvLED'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'MS Sans Serif'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  ParentFont = False
+  Position = poDesktopCenter
+  Scaled = False
+  OnActivate = FormActivate
+  PixelsPerInch = 96
+  object JvLED1: TJvLED
+    Left = 0
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED2: TJvLED
+    Left = 24
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED3: TJvLED
+    Left = 48
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED4: TJvLED
+    Left = 72
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED5: TJvLED
+    Left = 96
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED6: TJvLED
+    Left = 120
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED7: TJvLED
+    Left = 144
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED8: TJvLED
+    Left = 168
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED9: TJvLED
+    Left = 192
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED10: TJvLED
+    Left = 216
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED11: TJvLED
+    Left = 240
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED12: TJvLED
+    Left = 264
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED13: TJvLED
+    Left = 288
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED14: TJvLED
+    Left = 312
+    Top = 0
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED15: TJvLED
+    Left = 312
+    Top = 24
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED16: TJvLED
+    Left = 312
+    Top = 48
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED17: TJvLED
+    Left = 312
+    Top = 72
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED18: TJvLED
+    Left = 312
+    Top = 96
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED19: TJvLED
+    Left = 312
+    Top = 120
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED20: TJvLED
+    Left = 312
+    Top = 144
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED21: TJvLED
+    Left = 312
+    Top = 168
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED22: TJvLED
+    Left = 312
+    Top = 192
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED23: TJvLED
+    Left = 312
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED24: TJvLED
+    Left = 288
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED25: TJvLED
+    Left = 264
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED26: TJvLED
+    Left = 240
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED27: TJvLED
+    Left = 216
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED28: TJvLED
+    Left = 192
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED29: TJvLED
+    Left = 168
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED30: TJvLED
+    Left = 144
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED31: TJvLED
+    Left = 120
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED32: TJvLED
+    Left = 96
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED33: TJvLED
+    Left = 72
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED34: TJvLED
+    Left = 48
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED35: TJvLED
+    Left = 24
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED36: TJvLED
+    Left = 0
+    Top = 216
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED37: TJvLED
+    Left = 0
+    Top = 192
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED38: TJvLED
+    Left = 0
+    Top = 168
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED39: TJvLED
+    Left = 0
+    Top = 144
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED40: TJvLED
+    Left = 0
+    Top = 120
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED41: TJvLED
+    Left = 0
+    Top = 96
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED42: TJvLED
+    Left = 0
+    Top = 72
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object JvLED43: TJvLED
+    Left = 0
+    Top = 48
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+  end
+  object JvLED44: TJvLED
+    Left = 0
+    Top = 24
+    Active = True
+    AutoSize = True
+    ColorOff = clBlack
+    Interval = 200
+    Status = False
+  end
+  object Data7: TJvLED
+    Left = 72
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Data6: TJvLED
+    Left = 96
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Data5: TJvLED
+    Left = 120
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Data4: TJvLED
+    Left = 144
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Data3: TJvLED
+    Left = 168
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Data2: TJvLED
+    Left = 192
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Data1: TJvLED
+    Left = 216
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Data0: TJvLED
+    Left = 240
+    Top = 88
+    AutoSize = True
+    ColorOn = clRed
+    ColorOff = clBlack
+    Status = False
+  end
+  object Label1: TLabel
+    Left = 126
+    Top = 132
+    Width = 22
+    Height = 13
+    Caption = 'Hex:'
+  end
+  object Label2: TLabel
+    Left = 72
+    Top = 72
+    Width = 32
+    Height = 13
+    Caption = 'Binary:'
+  end
+  object HexText: TEdit
+    Left = 152
+    Top = 128
+    Width = 25
+    Height = 21
+    TabOrder = 0
+    Text = '00'
+    OnChange = HexTextChange
+  end
+end
