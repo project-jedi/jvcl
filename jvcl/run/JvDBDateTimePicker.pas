@@ -242,6 +242,7 @@ begin
   // Is it Delete key, insert key or shiftstate ...
   case Key of
     VK_DELETE:
+      if Shift * KeyboardShiftStates = [] then
       begin
         FDataLink.Edit;
         if Kind = dtkDate then
@@ -262,7 +263,7 @@ begin
         UpdateData(Self);
       end;
     VK_INSERT:
-      if ssShift in Shift then
+      if (Shift * KeyboardShiftStates = [ssShift]) then
         FDataLink.Edit;
     else
       FDataLink.Edit;
