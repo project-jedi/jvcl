@@ -5380,7 +5380,10 @@ begin
       TmpOnChange := TOpenEdit(EditCtrl).OnChange;
       TOpenEdit(EditCtrl).OnChange := nil;
       try
-        EditCtrl.Text := DisplayValue;
+        if Data.IsAssigned then
+          EditCtrl.Text := DisplayValue
+        else
+          EditCtrl.Text := '';
       finally
         TOpenEdit(EditCtrl).OnChange := TmpOnChange;
       end;
