@@ -69,6 +69,8 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Merge(AForm: TCustomForm; Show: Boolean);
+    procedure UnMergeMainMenu(AForm:TCustomForm);
+    procedure MergeMainMenu(AForm:TCustomForm;Force:boolean);
     function GotoForm(AForm: TCustomForm): Boolean;
     function GotoFormClass(AFormClass: TFormClass): Boolean;
     procedure GoBack;
@@ -244,6 +246,7 @@ begin
   GotoForm(AForm);
 end;
 
+
 function TJvMergeManager.GotoForm(AForm: TCustomForm): Boolean;
 var
   I: Integer;
@@ -253,11 +256,13 @@ begin
   OldActiveForm := ActiveForm;
   if MergeFrame = nil then
     Exit;
+  UnmergeMainMenu(OldActiveForm);
   for I := 0 to MergeFrame.ControlCount - 1 do
   begin
     if MergeFrame.Controls[I] = AForm then
     begin
       AForm.BringToFront;
+      MergeMainMenu(AForm,false);
       case HistoryCommand of
         hcNone:
           ;
@@ -272,6 +277,7 @@ begin
       end;
       HistoryCommand := hcAdd;
       DoReorder(OldActiveForm);
+
       DoChange;
       Result := True;
       Exit;
@@ -406,6 +412,22 @@ procedure TJvFormHistory.ResetHistory;
 begin
   Clear;
   Current := -1;
+end;
+
+procedure TJvMergeManager.MergeMainMenu(AForm: TCustomForm;Force:boolean);
+var F:TCustomForm;
+begin
+  F := GetParentForm(MergeFrame);
+  if (F <> nil) and (F.Menu <> nil) and (AForm <> nil) and (AForm.Menu <> nil) and (Force or AForm.Menu.AutoMerge) then
+      F.Menu.Merge(AForm.Menu);
+end;
+
+procedure TJvMergeManager.UnMergeMainMenu(AForm: TCustomForm);
+var F:TCustomForm;
+begin
+  F := GetParentForm(MergeFrame);
+  if (F <> nil) and (F.Menu <> nil) and (AForm <> nil) and (AForm.Menu <> nil) then
+    F.Menu.UnMerge(AForm.Menu);
 end;
 
 end.
