@@ -41,6 +41,7 @@ uses
 type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
   TJvComboListBoxDrawStyle = (dsOriginal, dsStretch, dsProportional);
+  TJvComboListDropDownEvent = procedure(Sender: TObject; Index: integer; X,Y:integer; var AllowDrop:boolean) of object;
   TJvComboListDrawTextEvent = procedure(Sender: TObject; Index: integer; const AText: string; R: TRect; var DefaultDraw:
     boolean) of object;
   TJvComboListDrawImageEvent = procedure(Sender: TObject; Index: integer; const APicture: TPicture; R: TRect; var
@@ -55,6 +56,7 @@ type
     FButtonWidth: integer;
     FHotTrackCombo: boolean;
     FLastHotTrack: integer;
+    FOnDropDown: TJvComboListDropDownEvent;
     procedure SetDrawStyle(const Value: TJvComboListBoxDrawStyle);
     function DestRect(Picture: TPicture; ARect: TRect): TRect;
     function GetOffset(OrigRect, ImageRect: TRect): TRect;
@@ -62,9 +64,11 @@ type
     procedure SetHotTrackCombo(const Value: boolean);
   protected
     procedure InvalidateItem(Index: integer);
-    procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed:boolean);
+    procedure DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: boolean);
     procedure DrawItem(Index: integer; Rect: TRect;
       State: TOwnerDrawState); override;
+    procedure CMMouseLeave(var Msg: TMessage); override;
+    procedure WMSize(var Message: TWMSize); message WM_SIZE;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X: integer; Y: integer); override;
     procedure MouseMove(Shift: TShiftState; X: integer; Y: integer);
@@ -75,8 +79,8 @@ type
       override;
     function DoDrawImage(Index: integer; APicture: TPicture; R: TRect): boolean; virtual;
     function DoDrawText(Index: integer; const AText: string; R: TRect): boolean; virtual;
-    procedure CMMouseLeave(var Msg: TMessage); override;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    function DoDropDown(Index,X,Y:integer):boolean;virtual;
+
   public
     constructor Create(AOwner: TComponent); override;
     function AddText(const S: string): integer;
@@ -86,12 +90,13 @@ type
     procedure InsertImage(Index: integer; P: TPicture);
     procedure Delete(Index: integer);
   published
-    property ButtonWidth: integer read FButtonWidth write SetButtonWidth default 26;
+    property ButtonWidth: integer read FButtonWidth write SetButtonWidth default 20;
     property HotTrackCombo: boolean read FHotTrackCombo write SetHotTrackCombo default false;
     property DropdownMenu: TPopupMenu read FDropdownMenu write FDropdownMenu;
     property DrawStyle: TJvComboListBoxDrawStyle read FDrawStyle write SetDrawStyle default dsOriginal;
     property OnDrawText: TJvComboListDrawTextEvent read FOnDrawText write FOnDrawText;
     property OnDrawImage: TJvComboListDrawImageEvent read FOnDrawImage write FOnDrawImage;
+    property OnDropDown:TJvComboListDropDownEvent read FOnDropDown write FOnDropDown;
 
     property Align;
     property Anchors;
@@ -195,8 +200,9 @@ begin
   Style := lbOwnerDrawFixed;
   ScrollBars := ssVertical;
   FDrawStyle := dsOriginal;
-  FButtonWidth := 26;
+  FButtonWidth := 20;
   FLastHotTrack := -1;
+//  ControlStyle := ControlStyle + [csCaptureMouse];
 end;
 
 procedure TJvComboListBox.Delete(Index: integer);
@@ -274,9 +280,16 @@ begin
   if Assigned(FOnDrawText) then FOnDrawText(Self, Index, AText, R, Result);
 end;
 
-procedure TJvComboListBox.DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed:boolean);
+function TJvComboListBox.DoDropDown(Index, X, Y: integer): boolean;
+begin
+  Result := true;
+  if Assigned(FOnDropDown) then
+    FOnDropDown(self, Index, X,Y,Result);
+end;
+
+procedure TJvComboListBox.DrawComboArrow(Canvas: TCanvas; R: TRect; Highlight, Pushed: boolean);
 var
-  uState:Cardinal;
+  uState: Cardinal;
 begin
 //  Canvas.Font.Style := [];
   (*
@@ -292,10 +305,10 @@ begin
   *)
   uState := DFCS_SCROLLDOWN;
   if not Highlight then
-    Inc(uState,DFCS_FLAT);
+    Inc(uState, DFCS_FLAT);
   if Pushed then
-    Inc(uState,DFCS_PUSHED);
-  DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, uState);
+    Inc(uState, DFCS_PUSHED);
+  DrawFrameControl(Canvas.Handle, R, DFC_SCROLL, uState or DFCS_ADJUSTRECT);
 end;
 
 procedure TJvComboListBox.DrawItem(Index: integer; Rect: TRect;
@@ -313,7 +326,10 @@ begin
   try
     Canvas.Brush.Color := Self.Color;
 
-    P := TPicture(Items.Objects[Index]);
+    if (Items.Objects[Index] is TPicture) then
+      P := TPicture(Items.Objects[Index])
+    else
+      P := nil;
     if (P = nil) or (DrawStyle <> dsStretch) then
       Canvas.FillRect(Rect);
     if (P <> nil) and (P.Graphic <> nil) then
@@ -384,8 +400,8 @@ begin
       if ButtonWidth > 2 then // 2 because Pen.Width is 2
       begin
         TmpRect := Classes.Rect(Rect.Right - ButtonWidth - 1,
-          Rect.Top + 1, Rect.Right - 3, Rect.Bottom - 3);
-        DrawComboArrow(Canvas, TmpRect, FMouseOver, FPushed);
+          Rect.Top + 1, Rect.Right - 2 - Ord(FPushed), Rect.Bottom - 2 - Ord(FPushed));
+        DrawComboArrow(Canvas, TmpRect, FMouseOver and Focused, FPushed);
       end;
     end;
     Canvas.Pen.Color := clBtnShadow;
@@ -456,7 +472,7 @@ var
   OldAlign: TPopupAlignment;
 begin
   inherited;
-  if (DropdownMenu <> nil) and (ItemIndex > -1) then
+  if (ItemIndex > -1) then
   begin
     P := Point(X, Y);
     i := ItemAtPos(P, true);
@@ -467,11 +483,16 @@ begin
       FMouseOver := true;
       FPushed := true;
       InvalidateItem(i);
-      P.X := R.Right;
-      OldAlign := DropdownMenu.Alignment;
-      try
-        // always right align (getting the actual width of a popup menu seems problematic...)
-        DropdownMenu.Alignment := paRight;
+      if (DropdownMenu <> nil) and DoDropDown(i, X, Y) then
+      begin
+        case DropdownMenu.Alignment of
+          paRight:
+            P.X := R.Right;
+          paLeft:
+            P.X := R.Left;
+          paCenter:
+            P.X := R.Left + (R.Right - R.Left) div 2;
+        end;
         P.Y := R.Top + ItemHeight;
         P := ClientToScreen(P);
         DropdownMenu.PopupComponent := Self;
@@ -479,10 +500,8 @@ begin
         // wait for popup to disappear
         while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
           ;
-        MouseUp(Button, Shift, X, Y);
-      finally
-        DropdownMenu.Alignment := OldAlign;
       end;
+      MouseUp(Button, Shift, X, Y);
     end;
   end;
 end;
