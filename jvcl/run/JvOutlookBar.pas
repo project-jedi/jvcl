@@ -127,7 +127,7 @@ type
     function GetDownButton: TJvOutlookBarButton;
     function GetDownIndex: Integer;
     procedure SetDownButton(Value: TJvOutlookBarButton);
-    procedure SetDownIndex(const Value: Integer);
+    procedure SetDownIndex(Value: Integer);
   protected
     function GetDisplayName: string; override;
     { TODO: implement ImageIndex and Alignment }
@@ -139,6 +139,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure EditCaption;
     property DownButton: TJvOutlookBarButton read GetDownButton write SetDownButton;
+    property DownIndex: Integer read GetDownIndex write SetDownIndex;
   published
     property Buttons: TJvOutlookBarButtons read FButtons write SetButtons;
     property Caption: TCaption read FCaption write SetCaption;
@@ -151,7 +152,6 @@ type
     property ParentFont: Boolean read FParentFont write SetParentFont default False;
     property ParentColor: Boolean read FParentColor write SetParentColor;
     property TopButtonIndex: Integer read FTopButtonIndex write SetTopButtonIndex;
-    property DownIndex: Integer read GetDownIndex write SetDownIndex stored False;
   end;
 
   TJvOutlookBarPages = class(TOwnedCollection)
@@ -962,15 +962,11 @@ begin
   Result := -1;
 end;
 
-procedure TJvOutlookBarPage.SetDownIndex(const Value: Integer);
-var
-  Index: Integer;
+procedure TJvOutlookBarPage.SetDownIndex(Value: Integer);
 begin
-  for Index := 0 to Buttons.Count - 1 do
-    Buttons[Index].Down := Index <> Value;
-  FParentFont := False;
- end;
-
+  if (Value >= 0) and (Value < Buttons.Count) then
+    Buttons[Value].Down := True;
+end;
 
 
 //=== TJvOutlookBarPages =====================================================
