@@ -48,7 +48,7 @@ type
   IJvDynControl = interface
     ['{E5A52F18-A7B2-4BE8-BAB6-D4F70A0999B3}']
     procedure ControlSetDefaultProperties;
-    procedure ControlSetCaption(Value: string);
+    procedure ControlSetCaption(const Value: string);
     procedure ControlSetTabOrder(Value: Integer);
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
@@ -79,7 +79,7 @@ type
   IJvDynControlEdit = interface
     ['{8E70DDD2-2D22-4EA9-B8E2-A25DE3162942}']
     procedure ControlSetPasswordChar(Value: Char);
-    procedure ControlSetEditMask(Value: string);
+    procedure ControlSetEditMask(const Value: string);
   end;
 
   IJvDynControlLabel = interface
@@ -92,19 +92,19 @@ type
 
   IJvDynControlFileName = interface
     ['{2F75D45F-6837-4482-9BE5-499450B7350A}']
-    procedure ControlSetInitialDir(Value: string);
-    procedure ControlSetDefaultExt(Value: string);
-    procedure ControlSetDialogTitle(Value: string);
+    procedure ControlSetInitialDir(const Value: string);
+    procedure ControlSetDefaultExt(const Value: string);
+    procedure ControlSetDialogTitle(const Value: string);
     procedure ControlSetDialogOptions(Value: TOpenOptions);
-    procedure ControlSetFilter(Value: string);
+    procedure ControlSetFilter(const Value: string);
     procedure ControlSetFilterIndex(Value: Integer);
     procedure ControlSetDialogKind(Value: TJvDynControlFileNameDialogKind);
   end;
 
   IJvDynControlDirectory = interface
     ['{1EAC8D4D-F839-43FD-B859-627874E41874}']
-    procedure ControlSetInitialDir(Value: string);
-    procedure ControlSetDialogTitle(Value: string); 
+    procedure ControlSetInitialDir(const Value: string);
+    procedure ControlSetDialogTitle(const Value: string); 
   end;
 
   IJvDynControlComboBox = interface
@@ -116,12 +116,12 @@ type
     ['{AB9EBBAB-5158-4371-A2CF-07F6D0AB86BB}']
     procedure ControlSetMinDate(Value: TDateTime);
     procedure ControlSetMaxDate(Value: TDateTime);
-    procedure ControlSetFormat(Value: string);
+    procedure ControlSetFormat(const Value: string);
   end;
 
   IJvDynControlTime = interface
     ['{E4FF3356-62C4-4C80-B9D6-2C956D21058F}']
-    procedure ControlSetFormat(Value: string);
+    procedure ControlSetFormat(const Value: string);
   end;
 
   IJvDynControlRadioGroup = interface
@@ -166,7 +166,7 @@ type
   IJvDynControlButtonEdit = interface
     ['{F5A108E0-0B89-4CD7-9FAE-1547F00CEF62}']
     procedure ControlSetOnButtonClick(Value: TNotifyEvent);
-    procedure ControlSetButtonCaption(Value: string);
+    procedure ControlSetButtonCaption(const Value: string);
   end;
 
   IJvDynControlMemo = interface

@@ -71,7 +71,7 @@ type
       const ReportListAsValue: Boolean = True); override;
     procedure EnumValues(const Path: string; const Strings: TStrings;
       const ReportListAsValue: Boolean = True); override;
-    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
+    function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
     procedure SplitKeyPath(const Path: string; out Key, ValueName: string); override;
     function PathExistsInt(const Path: string): Boolean; override;
     function ValueStoredInt(const Path: string): Boolean; override;
@@ -83,8 +83,8 @@ type
     procedure DoWriteInteger(const Path: string; Value: Integer); override;
     function DoReadFloat(const Path: string; Default: Extended): Extended; override;
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
-    function DoReadString(const Path: string; Default: string): string; override;
-    procedure DoWriteString(const Path: string; Value: string); override;
+    function DoReadString(const Path: string; const Default: string): string; override;
+    procedure DoWriteString(const Path: string; const Value: string); override;
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
 
@@ -187,6 +187,7 @@ begin
   begin
     StringReplace(Value, ' ', '_', [rfReplaceAll]);
     Xml.Root.Name := Value;
+    Root := Value;
   end;
 end;
 
@@ -351,7 +352,7 @@ begin
     Flush;
 end;
 
-function TJvCustomAppXMLStorage.DoReadString(const Path: string; Default: string): string;
+function TJvCustomAppXMLStorage.DoReadString(const Path: string; const Default: string): string;
 var
   ParentPath: string;
   ValueName: string;
@@ -381,7 +382,7 @@ begin
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [Path]);
 end;
 
-procedure TJvCustomAppXMLStorage.DoWriteString(const Path: string; Value: string);
+procedure TJvCustomAppXMLStorage.DoWriteString(const Path: string; const Value: string);
 var
   ParentPath: string;
   ValueName: string;
@@ -485,7 +486,7 @@ begin
     raise EJVCLException.CreateResFmt(@RsEPathDoesntExists, [RefPath]);
 end;
 
-function TJvCustomAppXMLStorage.IsFolderInt(Path: string;
+function TJvCustomAppXMLStorage.IsFolderInt(const Path: string;
   ListIsValue: Boolean): Boolean;
 var
   RefPath: string;

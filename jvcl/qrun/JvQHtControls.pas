@@ -345,9 +345,9 @@ function ItemHTWidth(Canvas: TCanvas; Rect: TRect;
 
 function ItemHTPlain(const Text: string): string;
 
-function ItemHTHeight(Canvas: TCanvas; const Text: string):Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string): Integer;
 
-function PrepareText(a: string):string;
+function PrepareText(a: string): string;
 
 implementation
 
@@ -480,7 +480,7 @@ var
         Canvas.Font.Style := Canvas.Font.Style - [Style];
   end;
 
-  function CalcPos(const Str: string):Integer;
+  function CalcPos(const Str: string): Integer;
   begin
     case Alignment of
       taRightJustify:
@@ -746,7 +746,7 @@ begin
 end;
 
 // Kaczkowski - begin
-function ItemHTHeight(Canvas: TCanvas; const Text: string):Integer;
+function ItemHTHeight(Canvas: TCanvas; const Text: string): Integer;
 var
   Str: TStringList;
 begin

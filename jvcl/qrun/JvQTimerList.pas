@@ -47,8 +47,9 @@ Known Issues:
 
 -----------------------------------------------------------------------------}
 // $Id$
-{$I windowsonly.inc}
+
 {$I jvcl.inc}
+{$I windowsonly.inc}
 
 unit JvQTimerList;
 
@@ -89,8 +90,8 @@ type
     procedure DeleteByHandle(AHandle: THandle); virtual;
     function ItemByHandle(AHandle: THandle): TJvTimerEvent;
     function ItemIndexByHandle(AHandle: THandle): Integer;
-    function IndexOfName(const AName:string):integer;
-    function ItemByName(const AName:string): TJvTimerEvent;
+    function IndexOfName(const AName: string): Integer;
+    function ItemByName(const AName: string): TJvTimerEvent;
     function NextHandle: THandle;
     procedure Sort;
     procedure Assign(Source: TPersistent); override;
@@ -127,7 +128,7 @@ type
     property TimerList: TJvTimerList read FParentList;
     procedure Assign(Source: TPersistent); override;
   published
-    property Name:string read FName write FName;
+    property Name: string read FName write FName;
     property Cycled: Boolean read FCycled write FCycled default True;
     property RepeatCount: Integer read FRepeatCount write SetRepeatCount default 0;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
@@ -142,12 +143,12 @@ type
     FOnFinish: TNotifyEvent;
     FOnTimers: TAllTimersEvent;
     FActive: Boolean;
-    FSorted: boolean;
+    FSorted: Boolean;
     procedure TimerWndProc(var Msg: TMessage);
     procedure UpdateTimer;
     procedure SetEvents(const Value: TJvTimerEvents);
     procedure SetActive(Value: Boolean);
-    procedure SetSorted(const Value: boolean);
+    procedure SetSorted(const Value: Boolean);
   protected
     procedure DoTimer(Event: TJvTimerEvent); dynamic;
   public
@@ -159,7 +160,7 @@ type
     property Active: Boolean read FActive write SetActive default False;
     property Events: TJvTimerEvents read FEvents write SetEvents;
     // NB! Setting sorted to true means that the index of the Events are changed!!!
-    property Sorted:boolean read FSorted write SetSorted default False;
+    property Sorted: Boolean read FSorted write SetSorted default False;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnTimers: TAllTimersEvent read FOnTimers write FOnTimers;
   end;
@@ -652,7 +653,7 @@ begin
     Result := inherited GetDisplayName;
 end;
 
-function TJvTimerEvents.IndexOfName(const AName: string): integer;
+function TJvTimerEvents.IndexOfName(const AName: string): Integer;
 begin
   for Result := 0 to Count - 1 do
     if AnsiSameText(AName, Items[Result].Name) then
@@ -671,7 +672,7 @@ begin
     Result := nil;
 end;
 
-procedure TJvTimerList.SetSorted(const Value: boolean);
+procedure TJvTimerList.SetSorted(const Value: Boolean);
 begin
   if FSorted <> Value then
   begin

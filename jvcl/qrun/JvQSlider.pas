@@ -284,8 +284,8 @@ end;
 procedure TJvSlider.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   Tmp: TBitmap;
-  R:TRect;
-  P:TPoint;
+  R: TRect;
+  P: TPoint;
 begin
   FTracking := True;
   MouseCapture := True;

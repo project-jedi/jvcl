@@ -274,7 +274,7 @@ function VarToFloat(V: Variant): Double;
   because they do not work properly sometimes, so do not use them }
 // (rom) ReplaceStrings1, GetSubStr removed
 function GetParameter: string;
-function GetLongFileName(FileName: string): string;
+function GetLongFileName(const FileName: string): string;
 {* from unit FileCtrl}
 function DirectoryExists(const Name: string): Boolean;
 procedure ForceDirectories(Dir: string);
@@ -292,7 +292,7 @@ function ReplaceAllStrings(S: string; Words, Frases: TStrings): string;
   in the list, Words, and if founds, replaces this Word
   with string from another list, Frases, with the same Index,
   and then update NewSelStart variable }
-function ReplaceStrings(S: string; PosBeg, Len: Integer; Words, Frases: TStrings; var NewSelStart: Integer): string;
+function ReplaceStrings(const S: string; PosBeg, Len: Integer; Words, Frases: TStrings; var NewSelStart: Integer): string;
 { CountOfLines calculates the lines count in a string, S,
   each line must be separated from another with CrLf sequence }
 function CountOfLines(const S: string): Integer;
@@ -677,14 +677,14 @@ function DiskInDrive(Drive: Char): Boolean;
 procedure PError(const Text: string);
 
 // execute a program without waiting
-procedure Exec(FileName, Parameters, Directory: string);
+procedure Exec(const FileName, Parameters, Directory: string);
 // execute a program and wait for it to finish
-procedure ExecuteAndWait(FileName: string; Visibility: Integer);
+procedure ExecuteAndWait(const FileName: string; Visibility: Integer);
 
 
 {$IFDEF MSWINDOWS}
 // associates an extension to a specific program
-procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
+procedure AssociateExtension(const IconPath, ProgramName, Path, Extension: string);
 
 function GetRecentDocs: TStringList;
 procedure AddToRecentDocs(const Filename: string);
@@ -952,7 +952,8 @@ end;}
 
 {$IFDEF MSWINDOWS}
 function GetRecentFolder: string;
-var ItemIDList:PItemIDList;
+var
+  ItemIDList: PItemIDList;
 begin
   OleCheck(SHGetSpecialFolderLocation(0, CSIDL_RECENT, ItemIDList));
   SetLength(Result, MAX_PATH);
@@ -1909,11 +1910,11 @@ end;
 
 function HasChar(const Ch: Char; const S: string): Boolean;
 var
-  i: Integer;
+  I: Integer;
 begin
   Result := True;
-  for i := 1 to Length(S) do
-    if S[i] = Ch then
+  for I := 1 to Length(S) do
+    if S[I] = Ch then
       Exit;
   Result := False;
 end;
@@ -2520,7 +2521,7 @@ end;
       SelStart := NewSelStart-1;
     end; }
 
-function ReplaceStrings(S: string; PosBeg, Len: Integer; Words, Frases: TStrings;
+function ReplaceStrings(const S: string; PosBeg, Len: Integer; Words, Frases: TStrings;
   var NewSelStart: Integer): string;
 var
   I, Beg, Ent, LS, F: Integer;
@@ -5588,7 +5589,7 @@ begin
     Result := GetLongFileName(Result);
 end;
 
-function GetLongFileName(FileName: string): string;
+function GetLongFileName(const FileName: string): string;
 {$IFDEF MSWINDOWS}
 var
   SearchRec: TSearchRec;
@@ -6031,7 +6032,7 @@ begin
   end;
 end;
 
-procedure Exec(FileName, Parameters, Directory: string);
+procedure Exec(const FileName, Parameters, Directory: string);
 var
   Operation: string;
 begin
@@ -6054,7 +6055,7 @@ end;
 
 { (rb) Duplicate of JclMiscel.WinExec32AndWait }
 
-procedure ExecuteAndWait(FileName: string; Visibility: Integer);
+procedure ExecuteAndWait(const FileName: string; Visibility: Integer);
 {$IFDEF MSWINDOWS}
 var
   zAppName: array [0..512] of Char;
@@ -6094,7 +6095,7 @@ begin
     Longint(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, Dummy);
 end;
 
-procedure AssociateFileExtension(IconPath, ProgramName, Path, Extension: string);
+procedure AssociateFileExtension(const IconPath, ProgramName, Path, Extension: string);
 begin
   with TRegistry.Create do
   begin
@@ -6124,7 +6125,7 @@ begin
   RebuildIconCache;
 end;
 
-procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
+procedure AssociateExtension(const IconPath, ProgramName, Path, Extension: string);
 begin
   AssociateFileExtension(IconPath, ProgramName, Path, Extension);
 end;
@@ -6245,12 +6246,12 @@ end;
 function StrToCurrDef(const Str: string; Def: Currency): Currency;
 var
   lStr: string;
-  i:integer;
+  I: Integer;
 begin
   lStr := '';
-  for i := 1 to Length(Str) do
-    if Str[i] in ['0'..'9','-','+', DecimalSeparator] then
-      lStr := LStr + Str[i];
+  for I := 1 to Length(Str) do
+    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+      lStr := LStr + Str[I];
   try
     if not TextToFloat(PChar(lStr), Result, fvCurrency) then
       Result := Def;
@@ -6262,11 +6263,11 @@ end;
 function StrToFloatDef(const Str: string; Def: Extended): Extended;
 var
   lStr: string;
-  i:integer;
+  I: Integer;
 begin
-  for i := 1 to Length(Str) do
-    if Str[i] in ['0'..'9','-','+', DecimalSeparator] then
-      lStr := LStr + Str[i];
+  for I := 1 to Length(Str) do
+    if Str[I] in ['0'..'9','-','+', DecimalSeparator] then
+      lStr := LStr + Str[I];
   Result := Def;
   if lStr <> '' then
   try
@@ -7281,7 +7282,8 @@ end;
 
 
 function TextToValText(const AValue: string): string;
-var i, j:integer;
+var
+  I, J: Integer;
 begin
   Result := DelRSpace(AValue);
   if DecimalSeparator <> ThousandSeparator then
@@ -7292,14 +7294,14 @@ begin
   if (DecimalSeparator <> ',') and (ThousandSeparator <> ',') then
     Result := ReplaceStr(Result, ',', DecimalSeparator);
 
-  j := 1;
-  for i := 1 to Length(Result) do
-    if Result[i] in ['-','+','0'..'9', DecimalSeparator, ThousandSeparator] then
+  J := 1;
+  for I := 1 to Length(Result) do
+    if Result[I] in ['-','+','0'..'9', DecimalSeparator, ThousandSeparator] then
     begin
-      Result[j] := Result[i];
-      Inc(j);
+      Result[J] := Result[I];
+      Inc(J);
     end;
-  SetLength(Result, j - 1);
+  SetLength(Result, J - 1);
 
   if Result = '' then
     Result := '0'

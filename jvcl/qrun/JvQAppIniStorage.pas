@@ -63,7 +63,7 @@ type
       const ReportListAsValue: Boolean = True); override;
     function PathExistsInt(const Path: string): boolean; override;
     function ValueExists(const Section, Key: string): Boolean;
-    function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; override;
+    function IsFolderInt(const Path: string; ListIsValue: Boolean = True): Boolean; override;
     function ReadValue(const Section, Key: string): string;
     procedure WriteValue(const Section, Key, Value: string); virtual;
     procedure RemoveValue(const Section, Key: string); virtual;
@@ -75,8 +75,8 @@ type
     procedure DoWriteInteger(const Path: string; Value: Integer); override;
     function DoReadFloat(const Path: string; Default: Extended): Extended; override;
     procedure DoWriteFloat(const Path: string; Value: Extended); override;
-    function DoReadString(const Path: string; Default: string): string; override;
-    procedure DoWriteString(const Path: string; Value: string); override;
+    function DoReadString(const Path: string; const Default: string): string; override;
+    procedure DoWriteString(const Path: string; const Value: string); override;
     function DoReadBinary(const Path: string; var Buf; BufSize: Integer): Integer; override;
     procedure DoWriteBinary(const Path: string; const Buf; BufSize: Integer); override;
     property DefaultSection: string read FDefaultSection write FDefaultSection;
@@ -261,7 +261,7 @@ begin
   WriteValue(Section, Key, FloatToStr(Value));
 end;
 
-function TJvCustomAppIniStorage.DoReadString(const Path: string; Default: string): string;
+function TJvCustomAppIniStorage.DoReadString(const Path: string; const Default: string): string;
 var
   Section: string;
   Key: string;
@@ -273,7 +273,7 @@ begin
     Result := Default;
 end;
 
-procedure TJvCustomAppIniStorage.DoWriteString(const Path: string; Value: string);
+procedure TJvCustomAppIniStorage.DoWriteString(const Path: string; const Value: string);
 var
   Section: string;
   Key: string;
@@ -371,7 +371,8 @@ end;
 
 
 function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean;
-var ASection:string;
+var
+  ASection: string;
 begin
   if IniFile <> nil then
   begin
@@ -501,7 +502,7 @@ begin
   Result := IniFile.SectionExists(Section + '\' + Key);
 end;
 
-function TJvCustomAppIniStorage.IsFolderInt(Path: string; ListIsValue: Boolean): Boolean;
+function TJvCustomAppIniStorage.IsFolderInt(const Path: string; ListIsValue: Boolean): Boolean;
 var
   RefPath: string;
   ValueNames: TStrings;

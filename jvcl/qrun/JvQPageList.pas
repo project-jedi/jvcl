@@ -61,7 +61,7 @@ type
   TJvCustomPage = class(TJvCustomControl)
   private
     FPageList: TJvCustomPageList;
-    FPageIndex:Integer;
+    FPageIndex: Integer;
     FOnBeforePaint: TJvPageCanPaintEvent;
     FOnPaint: TJvPagePaintEvent;
     FOnAfterPaint: TJvPagePaintEvent;
@@ -116,7 +116,7 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
-    FHiddenPages:TList; 
+    FHiddenPages: TList; 
     procedure UpdateEnabled;
     procedure SetPropagateEnable(const Value: Boolean);
     procedure SetShowDesignCaption(const Value: TJvShowDesignCaption);
@@ -142,7 +142,7 @@ type
     procedure InsertPage(APage: TJvCustomPage);virtual;
     procedure RemovePage(APage: TJvCustomPage);virtual;
     property PageList: TList read FPages;
-    property HiddenPageList:TList read FHiddenPages;
+    property HiddenPageList: TList read FHiddenPages;
     property PropagateEnable: Boolean read FPropagateEnable write SetPropagateEnable;
     property ShowDesignCaption: TJvShowDesignCaption read FShowDesignCaption write SetShowDesignCaption default sdcCenter;
 
@@ -154,15 +154,15 @@ type
     function FindNextPage(CurPage: TJvCustomPage; GoForward: Boolean; IncludeDisabled: Boolean): TJvCustomPage;
     procedure PrevPage;
     procedure NextPage;
-    function HidePage(Page:TJvCustomPage):TJvCustomPage; virtual;
-    function ShowPage(Page:TJvCustomPage; PageIndex:integer = -1):TJvCustomPage;virtual;
+    function HidePage(Page: TJvCustomPage): TJvCustomPage; virtual;
+    function ShowPage(Page: TJvCustomPage; PageIndex: Integer = -1): TJvCustomPage; virtual;
     function GetPageClass: TJvCustomPageClass;
     property Height default 200;
     property Width default 300;
 
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex;
     property ActivePage: TJvCustomPage read FActivePage write SetActivePage;
-    property Pages[Index:Integer]:TJvCustomPage read GetPage;default;
+    property Pages[Index: Integer]: TJvCustomPage read GetPage; default;
     property PageCount: Integer read GetPageCount;
   end;
 
@@ -617,7 +617,8 @@ begin
 end;
 
 function TJvCustomPageList.HidePage(Page: TJvCustomPage): TJvCustomPage;
-var I:Integer;
+var
+  I: Integer;
 begin
   if (Page <> nil) and (Page.PageList = Self) then
   begin
@@ -635,8 +636,9 @@ begin
     Result := nil;
 end;
 
-function TJvCustomPageList.ShowPage(Page: TJvCustomPage; PageIndex: integer): TJvCustomPage;
-var I:Integer;
+function TJvCustomPageList.ShowPage(Page: TJvCustomPage; PageIndex: Integer): TJvCustomPage;
+var
+  I: Integer;
 begin
   if (Page <> nil) and (Page.PageList = nil) then
   begin
@@ -645,7 +647,8 @@ begin
     Page.Parent := Self;
     if PageIndex > -1 then
       Page.PageIndex := PageIndex
-    else if I > -1 then
+    else
+    if I > -1 then
       Page.PageIndex := I;
     Result := Page;
     FHiddenPages.Remove(Result);

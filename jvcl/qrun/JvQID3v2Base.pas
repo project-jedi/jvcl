@@ -39,7 +39,7 @@ unit JvQID3v2Base;
 interface
 
 uses
-  Classes, SysUtils,
+  Classes, SysUtils, Windows, 
   JclUnicode,
   JvQComponent, JvQID3v2Types, JvQID3v1;
 
@@ -1197,7 +1197,7 @@ function NiceGenreToGenre(const ANiceGenre: string): string;
 implementation
 
 uses
-  Types, QGraphics, QWindows, Windows,
+  Types, QGraphics, QWindows, 
   JclBase, JclFileUtils, JclLogic, JclDateTime,
   JvQConsts, JvQResources;
 

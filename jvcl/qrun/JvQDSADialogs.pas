@@ -40,11 +40,8 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF VisualCLX}
-  Qt,
-  {$ENDIF VisualCLX}
-  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, QGraphics, QWindows, Types,
-  QClipbrd,
+  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, Types, QGraphics, 
+  QWindows, QClipbrd, 
   JclBase,
   JvQConsts, JvQComponent, JvQTypes, JvQDynControlEngine, JvQFinalize;
 
@@ -62,7 +59,7 @@ type
     procedure CustomShow(Sender: TObject);
     procedure HelpButtonClick(Sender: TObject);
     procedure TimerEvent(Sender: TObject);
-    procedure WriteToClipboard(Text: string);
+    procedure WriteToClipboard(const Text: string);
     function GetFormText: string;
     function TimeoutUnit(Secs: Integer): string;
     procedure CancelAutoClose;
@@ -111,7 +108,7 @@ type
     procedure EndWrite(const DSAInfo: TDSARegItem); virtual;
     function IsKeyNameAllowed(const Key: string): Boolean;
     function GetCheckMarkTextSuffix: string; virtual; abstract;
-    procedure SetCheckMarkTextSuffix(Value: string); virtual; abstract;
+    procedure SetCheckMarkTextSuffix(const Value: string); virtual; abstract;
   public
     constructor Create;
     destructor Destroy; override;
@@ -150,7 +147,7 @@ type
   protected
     procedure CreateKey(const DSAInfo: TDSARegItem); virtual;
     function GetCheckMarkTextSuffix: string; override;
-    procedure SetCheckMarkTextSuffix(Value: string); override;
+    procedure SetCheckMarkTextSuffix(const Value: string); override;
   public
     constructor Create(const ARootKey: HKEY; const AKey: string);
     function ReadBool(const DSAInfo: TDSARegItem; const Key: string): Boolean; override;
@@ -184,7 +181,7 @@ type
     function GetCheckMarkTextSuffix: string; override;
     function GetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: Integer): string;
     function HasDSAKey(const DSAInfo: TDSARegItem; const Key: string): Boolean;
-    procedure SetCheckMarkTextSuffix(Value: string); override;
+    procedure SetCheckMarkTextSuffix(const Value: string); override;
     procedure SetDSAValue(const DSAInfo: TDSARegItem; const Key: string; const Kind: Integer; const Value: string);
   public
     constructor Create;
@@ -220,18 +217,15 @@ const
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
 
+
 type
   TMsgDlgBtn =
-    (mbHelp, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
+    ( mbNone, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore, mbHelp,
      mbAll, mbNoToAll, mbYesToAll);
   TMsgDlgButtons = set of TMsgDlgBtn;
 
-
 const
-  mbNone = TMsgDlgBtn(-1);
   mbDefault = TMsgDlgBtn(-2);
-
-
 
 procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
@@ -257,17 +251,17 @@ function MessageDlg(const Caption, Msg: string; const Picture: TGraphic; const B
 function MessageDlgEx(const Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string;
   const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1;
+  const HelpButton: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const DlgType: TMsgDlgType; const Buttons: array of string;
   const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1;
+  const HelpButton: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 function MessageDlgEx(const Caption, Msg: string; const Picture: TGraphic; const Buttons: array of string;
   const Results: array of Integer; const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen;
   const Timeout: Integer = 0; const DefaultButton: Integer = 0; const CancelButton: Integer = 1;
-  const HelpButton: Integer = -1;
+  const HelpButton: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult; overload;
 
 //--------------------------------------------------------------------------------------------------
@@ -525,7 +519,7 @@ end;
 
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
-  CancelAutoClose;  
+  CancelAutoClose;
   Application.ContextHelp(HelpContext); 
 end;
 
@@ -559,7 +553,7 @@ end;
 
 
 
-procedure TDSAMessageForm.WriteToClipboard(Text: string);
+procedure TDSAMessageForm.WriteToClipboard(const Text: string);
 begin
   Clipboard.AsText := Text;
 end;
@@ -723,7 +717,7 @@ begin
       else
         SetRect(TextRect, 0, 0, Screen.Width div 2, 0);  
       DrawText(Canvas, Msg, Length(Msg) + 1, TextRect,
-        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly); 
+        DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
 
       IconTextWidth := TextRect.Right;
       IconTextHeight := TextRect.Bottom;
@@ -741,7 +735,7 @@ begin
         SetRect(TempRect, 0, 0, Screen.Width div 2, 0);  
         DrawText(Canvas, Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)]),
           Length(Format(RsCntdownText, [Timeout, TimeoutUnit(Timeout)])) + 1, TempRect,
-          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly); 
+          DT_EXPANDTABS or DT_CALCRECT or DT_WORDBREAK or DrawTextBiDiModeFlagsReadingOnly);
         TimeoutTextWidth := TempRect.Right;
       end
       else
@@ -1176,7 +1170,7 @@ begin
   Result := '';
 end;
 
-procedure TDSARegStorage.SetCheckMarkTextSuffix(Value: string);
+procedure TDSARegStorage.SetCheckMarkTextSuffix(const Value: string);
 begin
 end;
 
@@ -1205,12 +1199,12 @@ end;
 
 function TDSARegStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
 begin
-  Result := RegReadDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadInt64(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: Int64): Int64;
 begin
-  Result := RegReadDWORDDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadInt64Def(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
@@ -1256,7 +1250,7 @@ procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: strin
   const Value: Int64);
 begin
   CreateKey(DSAInfo);
-  RegWriteDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteInt64(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
@@ -1370,7 +1364,7 @@ begin
   end;
 end;
 
-procedure TDSAQueueStorage.SetCheckMarkTextSuffix(Value: string);
+procedure TDSAQueueStorage.SetCheckMarkTextSuffix(const Value: string);
 begin
   if Value <> CheckMarkTextSuffix then
     FCheckMarkSuffix := Value;
@@ -1527,13 +1521,14 @@ const
     (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
      QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
   {$ENDIF LINUX}
+  
   // TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
   ButtonCaptions: array [TMsgDlgBtn] of string =
-   (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
-    SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
+   ( '', SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
+    SMsgDlgNo, SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgHelp,
     SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
   ModalResults: array [TMsgDlgBtn] of Integer =
-   (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
+   (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, 0, mrAll, mrNoToAll,
     mrYesToAll);
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
@@ -1543,11 +1538,16 @@ end;
 
 function DlgPic(const DlgType: TMsgDlgType): TGraphic;
 begin
+  {$IFDEF MSWINDOWS}
   if IconIDs[DlgType] <> nil then
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  if IconIDs[DlgType] <> nil then
+  {$ENDIF LINUX}
   begin
     Result := TIcon.Create;
-    try
-      // TODO
+    try  
+      // TODO 
     except
       Result.Free;
       raise;

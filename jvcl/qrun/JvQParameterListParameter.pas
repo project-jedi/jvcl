@@ -46,7 +46,7 @@ uses
   JvQTypes, 
   JvQPanel, JvQPropertyStore, JvQParameterList, JvQDynControlEngine, JvQDSADialogs,
   JvQDynControlEngineIntf;
-
+  
 type
   TJvNoDataParameter = class(TJvBaseParameter)
   protected
@@ -126,7 +126,6 @@ type
   public
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
-    procedure Assign(Source: TPersistent); override;
   published
     property ArrangeSettings: TJvArrangeSettings read FArrangeSettings write SetArrangeSettings;
     property Color;
@@ -333,7 +332,7 @@ type
     procedure SetItemList(Value: TStrings);
     procedure SetItemIndex(Value: Integer);
   protected
-    procedure SetAsString(Value: string); override;
+    procedure SetAsString(const Value: string); override;
     function GetAsString: string; override;
     procedure SetAsInteger(Value: Integer); override;
     function GetAsInteger: Integer; override;
@@ -345,7 +344,7 @@ type
     constructor Create(AParameterList: TJvParameterList); override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
-    procedure SearchItemIndex(Search: string);
+    procedure SearchItemIndex(const Search: string);
     procedure GetData; override;
     procedure SetData; override;
   published
@@ -391,8 +390,6 @@ type
     FSorted: Boolean;
   protected
     function GetParameterNameExt: string; override;
-    function GetWinControlData: Variant; override;
-    procedure SetWinControlData(Value: Variant); override;
     procedure CreateWinControl(AParameterParent: TWinControl); override;
     procedure SetWinControlProperties; override;
   public
@@ -461,9 +458,6 @@ type
     procedure SetWinControlProperties; override;
   public
     constructor Create(AParameterList: TJvParameterList); override;
-    procedure GetData; override;
-    procedure SetData; override;
-    procedure Assign(Source: TPersistent); override;
   published
     property WordWrap: Boolean read FWordWrap write FWordWrap;
     property WantTabs: Boolean read FWantTabs write FWantTabs;
@@ -471,6 +465,7 @@ type
     property ScrollBars: TScrollStyle read FScrollBars write FScrollBars;
     property FontName: string read FFontName write FFontName;
   end;
+
 
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
@@ -489,8 +484,8 @@ function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; con
   const HelpButton: TMsgDlgBtn = mbHelp;
   const ADynControlEngine: TJvDynControlEngine = nil): TModalResult;
 begin
-  Result :=  
-  JvQDSADialogs. 
+  Result :=
+  JvQDSADialogs.
   MessageDlg(Msg, DlgType, Buttons, HelpCtx, Center, Timeout, DefaultButton,
     CancelButton, HelpButton, ADynControlEngine);
 end;
@@ -629,7 +624,8 @@ begin
       if FramePanel.Width <= 0 then
         FramePanel.Width := WinControl.Width;
     end
-    else if RightSpace > 0 then
+    else
+    if RightSpace > 0 then
       if FramePanel.Width > 0 then
         WinControl.Width := FramePanel.Width - RightSpace
       else
@@ -637,7 +633,8 @@ begin
         FramePanel.Width := WinControl.Width;
         WinControl.Width := WinControl.Width - RightSpace;
       end
-    else if FramePanel.Width > 0 then
+    else
+    if FramePanel.Width > 0 then
       WinControl.Width := FramePanel.Width
     else
       FramePanel.Width := WinControl.Width;
@@ -662,7 +659,8 @@ begin
       if FramePanel.Width <= 0 then
         FramePanel.Width := WinControl.Width;
     end
-    else if RightSpace > 0 then
+    else
+    if RightSpace > 0 then
       if FramePanel.Width > 0 then
         WinControl.Width := FramePanel.Width - RightSpace
       else
@@ -670,7 +668,8 @@ begin
         FramePanel.Width := WinControl.Width;
         WinControl.Width := WinControl.Width - RightSpace;
       end
-    else if FramePanel.Width > 0 then
+    else
+    if FramePanel.Width > 0 then
       WinControl.Width := FramePanel.Width
     else
       FramePanel.Width := WinControl.Width;
@@ -682,7 +681,8 @@ begin
         WinControl.Height := Height - (LabelControl.Height + 3)
       else
         WinControl.Height := Height
-    else if Assigned(LabelControl) then
+    else
+    if Assigned(LabelControl) then
       FramePanel.Height := WinControl.Height + LabelControl.Height + 3
     else
       FramePanel.Height := WinControl.Height;
@@ -858,11 +858,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvArrangeParameter.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-end;
-
 procedure TJvArrangeParameter.SetArrangeSettings(Value: TJvArrangeSettings);
 begin
   FArrangeSettings.Assign(Value);
@@ -985,7 +980,7 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvListParameter.SetAsString(Value: string);
+procedure TJvListParameter.SetAsString(const Value: string);
 var
   I: Integer;
 begin
@@ -1055,7 +1050,8 @@ begin
     FItemIndex := Value;
   if VariantAsItemIndex then
     inherited SetAsVariant(FItemIndex)
-  else if (Value >= 0) and (Value < ItemList.Count) then
+  else
+  if (Value >= 0) and (Value < ItemList.Count) then
     inherited SetAsVariant(ItemList[Value])
   else
     inherited SetAsVariant('');
@@ -1071,7 +1067,8 @@ begin
     Index := -1;
   if VariantAsItemIndex then
     Result := Index
-  else if (Index >= 0) and (Index < ItemList.Count) then
+  else
+  if (Index >= 0) and (Index < ItemList.Count) then
     Result := ItemList[Index]
   else
     Result := '';
@@ -1105,7 +1102,7 @@ begin
   end;
 end;
 
-procedure TJvListParameter.SearchItemIndex(Search: string);
+procedure TJvListParameter.SearchItemIndex(const Search: string);
 var
   I: Integer;
 begin
@@ -1246,16 +1243,6 @@ begin
   inherited SetWinControlProperties;
   if Supports(WinControl, IJvDynControlItems, ITmpItems) then
     ITmpItems.ControlSetSorted(Sorted);
-end;
-
-function TJvListBoxParameter.GetWinControlData: Variant;
-begin
-  Result := inherited GetWinControlData;
-end;
-
-procedure TJvListBoxParameter.SetWinControlData(Value: Variant);
-begin
-  inherited SetWinControlData(Value);
 end;
 
 //=== TJvTimeParameter ===================================================
@@ -1456,7 +1443,8 @@ var
 begin
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
-  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+  else
+  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
@@ -1542,7 +1530,8 @@ begin
   WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
   if (EditorType = netCalculate) and DynControlEngine.IsControlTypeRegistered(jctCalculateEdit) then
     WinControl := DynControlEngine.CreateCalculateControl(Self, AParameterParent, GetParameterName)
-  else if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
+  else
+  if (EditorType = netSpin) and DynControlEngine.IsControlTypeRegistered(jctSpinEdit) then
     WinControl := DynControlEngine.CreateSpinControl(Self, AParameterParent, GetParameterName)
   else
     WinControl := DynControlEngine.CreateEditControl(Self, AParameterParent, GetParameterName);
@@ -1758,11 +1747,6 @@ begin
   WordWrap := False;
 end;
 
-procedure TJvMemoParameter.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-end;
-
 function TJvMemoParameter.GetParameterNameExt: string;
 begin
   Result := 'Memo';
@@ -1786,16 +1770,6 @@ begin
       ControlSetWordWrap(WordWrap);
       ControlSetScrollbars(Scrollbars);
     end;
-end;
-
-procedure TJvMemoParameter.GetData;
-begin
-  inherited GetData;
-end;
-
-procedure TJvMemoParameter.SetData;
-begin
-  inherited SetData;
 end;
 
 end.

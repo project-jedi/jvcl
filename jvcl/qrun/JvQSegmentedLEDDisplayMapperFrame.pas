@@ -207,7 +207,7 @@ begin
   try
     InitialDir := LastSaveFolder;
     Options := [ofOverwritePrompt, ofNoChangeDir, ofPathMustExist,
-                    ofHideReadOnly, ofEnableSizing, ofViewList];
+       ofEnableSizing];
     Filter := RsSegmentedLEDDisplayMappingFilessdms;
     FilterIndex := 0;
     FileName := FLastSaveFileName;
@@ -343,7 +343,8 @@ begin
     with TOpenDialog.Create(Application) do
     try
       InitialDir := LastOpenFolder;
-      Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist, ofEnableSizing];
+      Options := [ofNoChangeDir, ofPathMustExist, ofFileMustExist,
+         ofEnableSizing];
       Filter := RsSegmentedLEDDisplayMappingFilessdms;
       FilterIndex := 0;
       if Execute then

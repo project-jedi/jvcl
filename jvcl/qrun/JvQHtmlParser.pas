@@ -72,9 +72,9 @@ type
     procedure Loaded; override;
     property TagList: TTagInfoList read FTagList write SetTagList;
   public
-    procedure AnalyseString(Str: string);
+    procedure AnalyseString(const Str: string);
     procedure AnalyseFile;
-    procedure AddCondition(Keyword, StartTag, EndTag: string;
+    procedure AddCondition(const Keyword, StartTag, EndTag: string;
       TextSelection: Integer = 0);
     procedure RemoveCondition(Index: Integer);
     constructor Create(AOwner: TComponent); override;
@@ -180,7 +180,7 @@ begin
   end;
 end;
 
-procedure TJvHTMLParser.AnalyseString(Str: string);
+procedure TJvHTMLParser.AnalyseString(const Str: string);
 var
   St2: string;
   I, J, K, Index: Integer;
@@ -248,7 +248,7 @@ begin
   end;
 end;
 
-procedure TJvHTMLParser.AddCondition(Keyword, StartTag, EndTag: string;
+procedure TJvHTMLParser.AddCondition(const Keyword, StartTag, EndTag: string;
   TextSelection: Integer = 0);
 var
   Obj: TJvParserInfo;

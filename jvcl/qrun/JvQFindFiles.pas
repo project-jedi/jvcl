@@ -65,7 +65,7 @@ type
     property UseSpecialFolder: Boolean read FUseSpecialFolder write FUseSpecialFolder;
   end;
 
-function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
+function FindFilesDlg(const StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
 
 implementation
 
@@ -88,7 +88,7 @@ begin
   Result := FindFilesDlg(FDirectory, FSpecial, FUseSpecialFolder);
 end;
 
-function FindFilesDlg(StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
+function FindFilesDlg(const StartIn: string; SpecialFolder: TJvSpecialFolder; UseFolder: Boolean): Boolean;
 var
   Pidl: PITEMIDLIST;
   PMalloc: IMalloc;

@@ -357,7 +357,6 @@ initialization
 
 finalization
   CloseHandle(SyncMtx);
-  SyncMtx := 0;
 
 end.
 

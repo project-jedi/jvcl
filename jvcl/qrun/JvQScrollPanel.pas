@@ -189,12 +189,12 @@ const
   cTimeDelay = 100;
 
 {
-procedure TileBitmap(Dest:TControl;Source:TBitmap);
+procedure TileBitmap(Dest: TControl; Source: TBitmap);
 var
   X, Y, W, H: LongInt;
-  DR,SR:TRect;
-  Tmp:TBitmap;
-  Canvas:TControlCanvas;
+  DR,SR: TRect;
+  Tmp: TBitmap;
+  Canvas: TControlCanvas;
 begin
   if not Source.Empty then
   begin

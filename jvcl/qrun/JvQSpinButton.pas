@@ -102,10 +102,10 @@ type
 implementation
 
 {$IFDEF MSWINDOWS}
-{$R ..\Resources\JvSpin.Res}
+{$R ..\Resources\JvQSpin.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-{$R ../Resources/JvSpin.Res}
+{$R ../Resources/JvQSpin.Res}
 {$ENDIF LINUX}
 
 { TJvSpinButton }
@@ -292,7 +292,7 @@ begin
     FUpButton.Glyph := Value
   else
   begin
-    FUpButton.Glyph.LoadFromResourceName(HInstance, 'JvSpinUpPole');
+    FUpButton.Glyph.LoadFromResourceName(HInstance, 'JvQSpinUpPole');
     FUpButton.NumGlyphs := 1;
     FUpButton.Invalidate;
   end;
@@ -319,7 +319,7 @@ begin
     FDownButton.Glyph := Value
   else
   begin
-    FDownButton.Glyph.LoadFromResourceName(HInstance, 'JvSpinDownPole');
+    FDownButton.Glyph.LoadFromResourceName(HInstance, 'JvQSpinDownPole');
     FUpButton.NumGlyphs := 1;
     FDownButton.Invalidate;
   end;

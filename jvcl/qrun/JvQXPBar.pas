@@ -20,25 +20,24 @@ Portions created by Marc Hoffman are Copyright (C) 2002 APRIORI business solutio
 Portions created by APRIORI business solutions AG are Copyright (C) 2002 APRIORI business solutions AG
 All Rights Reserved.
 
-Contributor(s):dejoy
+Contributor(s): dejoy
   //dejoy 2004-4-20
   --add GroupIndex,AutoCheck,Checked property in TJvXPBarItem.
   --add GetItemClass in TJvXPBarItems.
   --add GetBarItemsClass in TJvXPCustomWinXPBar.
 
-Contributor(s):dierk schmid
+Contributor(s): dierk schmid
   //dierk 2004-4-23
   --add property RoundedItemFrame in TJvXPCustomWinXPBar (Integer>0 is the edge radius)
   --add property ItemFrameColor in TJvXPBarColors
   //dejoy 2004-4-25
   -- splitt ItemFrameColor to CheckedFrameColor , FocusedFrameColor  in TJvXPBarColors.
 
-Contributors(s):matej golob
+Contributors(s): matej golob
   //matej 2004-5-3
   --add property BorderColor in TJvXPBarColors.
   --add property HeaderRounded
   --add property TopSpace
-
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -57,8 +56,8 @@ interface
 
 uses
   Classes, SysUtils,
-  QControls, QWindows, QMessages, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls,
-  Qt, JvQTypes, QTypes,
+  QWindows, QControls, Types, QGraphics, QForms, QImgList, QActnList, QExtCtrls,
+  Qt, JvQTypes, QTypes, QMessages,
   JvQConsts, JvQXPCore, JvQXPCoreUtils;
 
 type
@@ -86,13 +85,13 @@ const
   { color constants.
   }
 
-//        dxColor_CheckedColorXP :=  $00c9b4e2;
-//        dxColor_CheckedColorXP :=  $00d9c1bb;
-//        dxColor_CheckedColorXP :=  $00e8ccae;
+//        dxColor_CheckedColorXP :=  TColor($00c9b4e2);
+//        dxColor_CheckedColorXP :=  TColor($00d9c1bb);
+//        dxColor_CheckedColorXP :=  TColor($00e8ccae);
 
-  dxColor_FocusedColorXP = $00D8ACB0;
-  dxColor_CheckedColorXP = $00D9C1BB; 
-  clHotLight = clActiveHighLight; 
+  dxColor_FocusedColorXP = TColor($00D8ACB0);
+  dxColor_CheckedColorXP = TColor($00D9C1BB); 
+  clHotLight = clActiveHighlight; 
 
   dxColor_FocusedFrameColorXP = clHotLight;
   dxColor_CheckedFrameColorXP = clHighlight;
@@ -277,7 +276,7 @@ type
     procedure SetBodyColor(const Value: TColor);
     procedure SetGradientFrom(const Value: TColor);
     procedure SetGradientTo(const Value: TColor);
-    procedure SetSeperatorColor(const Value: TColor);
+    procedure SetSeparatorColor(const Value: TColor);
     procedure SetCheckedColor(const Value: TColor);
     procedure SetFocusedColor(const Value: TColor);
     procedure SetCheckedFrameColor(const Value: TColor);
@@ -292,10 +291,10 @@ type
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
     property CheckedFrameColor: TColor read FCheckedFrameColor write SetCheckedFrameColor default dxColor_CheckedFrameColorXP;
     property FocusedFrameColor: TColor read FFocusedFrameColor write SetFocusedFrameColor default dxColor_FocusedFrameColorXP;
-    property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
+    property BodyColor: TColor read FBodyColor write SetBodyColor default TColor($00F7DFD6);
     property GradientFrom: TColor read FGradientFrom write SetGradientFrom default clWhite;
-    property GradientTo: TColor read FGradientTo write SetGradientTo default $00F7D7C6;
-    property SeparatorColor: TColor read FSeparatorColor write SetSeperatorColor default $00F7D7C6;
+    property GradientTo: TColor read FGradientTo write SetGradientTo default TColor($00F7D7C6);
+    property SeparatorColor: TColor read FSeparatorColor write SetSeparatorColor default TColor($00F7D7C6);
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
 
@@ -812,7 +811,7 @@ begin
  
  
     DrawText(ACanvas, ItemCaption, -1, Rect, DT_SINGLELINE or
-      DT_VCENTER or DT_END_ELLIPSIS);
+      DT_VCENTER or DT_END_ELLIPSIS); 
   end;
 end;
 
@@ -1228,11 +1227,11 @@ constructor TJvXPBarColors.Create;
 
 begin
   inherited Create;
-  FBodyColor := $00F7DFD6;
+  FBodyColor := TColor($00F7DFD6);
   FBorderColor := clWhite;
   FGradientFrom := clWhite;
-  FGradientTo := $00F7D7C6;
-  FSeparatorColor := $00F7D7C6;
+  FGradientTo := TColor($00F7D7C6);
+  FSeparatorColor := TColor($00F7D7C6);
   FCheckedColor := dxColor_CheckedColorXP;
   FFocusedColor := dxColor_FocusedColorXP;
   FCheckedFrameColor := dxColor_CheckedFrameColorXP;
@@ -1290,7 +1289,7 @@ begin
   end;
 end;
 
-procedure TJvXPBarColors.SetSeperatorColor(const Value: TColor);
+procedure TJvXPBarColors.SetSeparatorColor(const Value: TColor);
 begin
   if FSeparatorColor <> Value then
   begin
@@ -1839,7 +1838,7 @@ begin
       FVisibleItems[Index].DrawItem(Self, Canvas, ItemRect, State, ShowItemFrame, Bitmap);
   finally
     Bitmap.Free; 
-    Stop; 
+    Stop;
   end;
 end;
 
@@ -1864,7 +1863,7 @@ begin
     FillRect(Rect);
     Dec(Rect.Top, FHeaderHeight);
 
-    { draw header }  
+    { draw header }
     FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
       32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal); 
 

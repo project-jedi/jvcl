@@ -172,13 +172,8 @@ begin
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
   try
-    {$IFDEF MSWINDOWS}
     RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
       @ThreadNameInfo);
-    {$ENDIF MSWINDOWS}
-    {$IFDEF LINUX}
-    // TODO !!
-    {$ENDIF LINUX}
   except
   end; 
 end;

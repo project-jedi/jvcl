@@ -61,173 +61,204 @@ procedure TJvFormToHtml.FormToHtml(const Form: TCustomForm; const Filename: stri
 var
   I, J: Integer;
   C: TComponent;
-  St: string;
+  S, S2, St: string;
   HTML: TStringList;
 begin
   HTML := TStringList.Create;
-  HTML.Add('<HTML><BODY>');
-  for I := 0 to Form.ComponentCount - 1 do
-  begin
-    C := Form.Components[I];
-    St := '';
-    if C is TLabel then
+  try
+    HTML.Add('<HTML><BODY>');
+    for I := 0 to Form.ComponentCount - 1 do
     begin
-      St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TLabel).Left, (C as TLabel).Top, (C as TLabel).Height, (C as TLabel).Width]);
-      St := St + FontToCss((C as TLabel).Font) + '"';
-      St := St + ' TITLE="' + (C as TLabel).Hint + '"';
-      St := St + ' NAME=' + (C as TLabel).Name;
-      St := St + '>';
-      St := St + (C as TLabel).Caption + '</LABEL>';
-    end
-    else
-    if C is TButton then
-    begin
-      St := Format('<BUTTON style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TButton).Left, (C as TButton).Top, (C as TButton).Height, (C as TButton).Width]);
-      St := St + FontToCss((C as TButton).Font) + '"';
-      St := St + ' TITLE="' + (C as TButton).Hint + '"';
-      St := St + ' TABORDER=' + IntToStr((C as TButton).TabOrder);
-      St := St + ' NAME=' + (C as TButton).Name;
-      if not (C as TButton).Enabled then
-        St := St + ' DISABLED';
-      St := St + '>';
-      St := St + (C as TButton).Caption + '</BUTTON>';
-    end
-    else
-    if C is TMemo then
-    begin
-      St := Format('<TEXTAREA style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TMemo).Left, (C as TMemo).Top, (C as TMemo).Height, (C as TMemo).Width]);
-      St := St + FontToCss((C as TMemo).Font) + '"';
-      St := St + ' TITLE="' + (C as TMemo).Hint + '"';
-      if (C as TMemo).ReadOnly then
-        St := St + ' ReadOnly';
-      if not (C as TMemo).Enabled then
-        St := St + ' DISABLED';
-      St := St + ' NAME=' + (C as TMemo).Name;
-      St := St + ' TABORDER=' + IntToStr((C as TMemo).TabOrder);
-      if (C as TMemo).WordWrap then
-        St := St + ' WRAP=PHYSICAL'
+      C := Form.Components[I];
+      St := '';
+      if C is TLabel then
+      begin
+        St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TLabel(C).Left, TLabel(C).Top, TLabel(C).Height, TLabel(C).Width]) +
+          FontToCss((C as TLabel).Font) + '"' +
+          ' TITLE="' + (C as TLabel).Hint + '"' +
+          ' NAME=' + (C as TLabel).Name +
+          '>' +
+          TLabel(C).Caption + '</LABEL>';
+      end
       else
-        St := St + ' WRAP=OFF';
-      St := St + '>';
-      St := St + (C as TMemo).Text + '</TEXTAREA>';
-    end
-    else
-    if C is TCheckBox then
-    begin
-      St := Format('<INPUT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TCheckBox).Left, (C as TCheckBox).Top, (C as TCheckBox).Height, 10]);
-      St := St + FontToCss((C as TCheckBox).Font) + '"';
-      St := St + ' TITLE="' + (C as TCheckBox).Hint + '"';
-      if not (C as TCheckBox).Enabled then
-        St := St + ' DISABLED';
-      if (C as TCheckBox).Checked then
-        St := St + ' CHECKED';
-      St := St + ' TABORDER=' + IntToStr((C as TCheckBox).TabOrder);
-      St := St + ' NAME=' + (C as TCheckBox).Name;
-      St := St + ' TYPE="CHECKBOX">';
-      HTML.Add(St);
-      St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d', [(C as TCheckBox).Left + 13, (C
-          as TCheckBox).Top, (C as TCheckBox).Height, (C as TCheckBox).Width]);
-      St := St + FontToCss((C as TCheckBox).Font) + '"';
-      St := St + ' TITLE="' + (C as TCheckBox).Hint + '"';
-      St := St + '>';
-      St := St + (C as TCheckBox).Caption + '</LABEL>';
-    end
-    else
-    if C is TRadioButton then
-    begin
-      St := Format('<INPUT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TRadioButton).Left, (C as TRadioButton).Top, (C as TRadioButton).Height, 10]);
-      St := St + FontToCss((C as TRadioButton).Font) + '"';
-      St := St + ' TITLE="' + (C as TRadioButton).Hint + '"';
-      if not (C as TRadioButton).Enabled then
-        St := St + ' DISABLED';
-      if (C as TRadioButton).Checked then
-        St := St + ' CHECKED';
-      St := St + ' NAME=' + (C as TRadioButton).Parent.Name;
-      St := St + ' TABORDER=' + IntToStr((C as TRadioButton).TabOrder);
-      St := St + ' TYPE="RADIO">';
-      HTML.Add(St);
-      St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TRadioButton).Left + 13, (C as TRadioButton).Top, (C as TRadioButton).Height, (C as
-          TRadioButton).Width]);
-      St := St + FontToCss((C as TRadioButton).Font) + '"';
-      St := St + ' TITLE="' + (C as TRadioButton).Hint + '"';
-      St := St + '>';
-      St := St + (C as TRadioButton).Caption + '</LABEL>';
-    end
-    else
-    if C is TEdit then
-    begin
-      St := Format('<INPUT TYPE="TEXT" style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TEdit).Left, (C as TEdit).Top, (C as TEdit).Height, (C as TEdit).Width]);
-      St := St + FontToCss((C as TEdit).Font) + '"';
-      St := St + ' TITLE="' + (C as TEdit).Hint + '"';
-      St := St + ' TABORDER=' + IntToStr((C as TEdit).TabOrder);
-      St := St + ' NAME=' + (C as TEdit).Name;
-      if (C as TEdit).ReadOnly then
-        St := St + ' ReadOnly';
-      if (C as TEdit).MaxLength <> 0 then
-        St := St + ' MAXLENGTH=' + IntToStr((C as TEdit).MaxLength);
-      if not (C as TEdit).Enabled then
-        St := St + ' DISABLED';
-      St := St + ' Value=' + (C as TEdit).Text;
-      St := St + '>';
-    end
-    else
-    if C is TComboBox then
-    begin
-      St := Format('<SELECT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TComboBox).Left, (C as TComboBox).Top, (C as TComboBox).Height, (C as TComboBox).Width]);
-      St := St + FontToCss((C as TComboBox).Font) + '"';
-      St := St + ' TITLE="' + (C as TComboBox).Hint + '"';
-      St := St + ' TABORDER=' + IntToStr((C as TComboBox).TabOrder);
-      St := St + ' NAME=' + (C as TComboBox).Name;
-      if not (C as TComboBox).Enabled then
-        St := St + ' DISABLED';
-      St := St + '>';
-      HTML.Add(St);
-      for J := 0 to (C as TComboBox).Items.Count - 1 do
+      if C is TButton then
       begin
-        if (C as TComboBox).ItemIndex = J then
-          HTML.Add('<OPTION SELECTED>' + (C as TComboBox).Items[J])
+        if not TButton(C).Enabled then
+          S := ' DISABLED'
         else
-          HTML.Add('<OPTION>' + (C as TComboBox).Items[J]);
-      end;
-      St := '</SELECT>';
-    end
-    else
-    if C is TListBox then
-    begin
-      St := Format('<SELECT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
-        [(C as TListBox).Left, (C as TListBox).Top, (C as TListBox).Height, (C as TListBox).Width]);
-      St := St + FontToCss((C as TListBox).Font) + '"';
-      St := St + ' MULTIPLE TITLE="' + (C as TListBox).Hint + '"';
-      St := St + ' TABORDER=' + IntToStr((C as TListBox).TabOrder);
-      St := St + ' NAME=' + (C as TListBox).Name;
-      if not (C as TListBox).Enabled then
-        St := St + ' DISABLED';
-      St := St + '>';
-      HTML.Add(St);
-      for J := 0 to (C as TListBox).Items.Count - 1 do
-      begin
-        if (C as TListBox).ItemIndex = J then
-          HTML.Add('<OPTION SELECTED>' + (C as TListBox).Items[J])
-        else
-          HTML.Add('<OPTION>' + (C as TListBox).Items[J]);
-      end;
-      St := '</SELECT>';
-    end;
+          S := '';
 
-    if St <> '' then
-      HTML.Add(St);
+        St := Format('<BUTTON style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TButton(C).Left, TButton(C).Top, TButton(C).Height, TButton(C).Width]) +
+          FontToCss(TButton(C).Font) + '"' +
+          ' TITLE="' + TButton(C).Hint + '"' +
+          ' TABORDER=' + IntToStr(TButton(C).TabOrder) +
+          ' NAME=' + TButton(C).Name +
+          S +
+          '>' +
+          TButton(C).Caption + '</BUTTON>';
+      end
+      else
+      if C is TMemo then
+      begin
+        S := '';
+        if TMemo(C).ReadOnly then
+          S := S + ' ReadOnly';
+        if not TMemo(C).Enabled then
+          S := S + ' DISABLED';
+
+        S2 := '';
+        if TMemo(C).WordWrap then
+          S2 := S2 + ' WRAP=PHYSICAL'
+        else
+          S2 := S2 + ' WRAP=OFF';
+
+        St := Format('<TEXTAREA style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TMemo(C).Left, TMemo(C).Top, TMemo(C).Height, TMemo(C).Width]) +
+          FontToCss(TMemo(C).Font) + '"' +
+          ' TITLE="' + TMemo(C).Hint + '"' +
+          S +
+          ' NAME=' + TMemo(C).Name +
+          ' TABORDER=' + IntToStr(TMemo(C).TabOrder) +
+          S2 +
+          '>' +
+          TMemo(C).Text + '</TEXTAREA>';
+      end
+      else
+      if C is TCheckBox then
+      begin
+        S := '';
+        if not TCheckBox(C).Enabled then
+          S := S + ' DISABLED';
+        if TCheckBox(C).Checked then
+          S := S + ' CHECKED';
+
+        St := Format('<INPUT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TCheckBox(C).Left, TCheckBox(C).Top, TCheckBox(C).Height, 10]) +
+          FontToCss(TCheckBox(C).Font) + '"' +
+          ' TITLE="' + TCheckBox(C).Hint + '"' +
+          S +
+          ' TABORDER=' + IntToStr(TCheckBox(C).TabOrder) +
+          ' NAME=' + TCheckBox(C).Name +
+          ' TYPE="CHECKBOX">';
+        HTML.Add(St);
+        St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TCheckBox(C).Left + 13, TCheckBox(C).Top, TCheckBox(C).Height, TCheckBox(C).Width]) +
+          FontToCss(TCheckBox(C).Font) + '"' +
+          ' TITLE="' + TCheckBox(C).Hint + '"' +
+          '>' +
+          TCheckBox(C).Caption + '</LABEL>';
+      end
+      else
+      if C is TRadioButton then
+      begin
+        S := '';
+        if not TRadioButton(C).Enabled then
+          S := S + ' DISABLED';
+        if TRadioButton(C).Checked then
+          S := S + ' CHECKED';
+
+        St := Format('<INPUT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TRadioButton(C).Left, TRadioButton(C).Top, TRadioButton(C).Height, 10]) +
+          FontToCss(TRadioButton(C).Font) + '"' +
+          ' TITLE="' + TRadioButton(C).Hint + '"' +
+          S +
+          ' NAME=' + TRadioButton(C).Parent.Name +
+          ' TABORDER=' + IntToStr(TRadioButton(C).TabOrder) +
+          ' TYPE="RADIO">';
+        HTML.Add(St);
+        St := Format('<LABEL style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TRadioButton(C).Left + 13, TRadioButton(C).Top,
+           TRadioButton(C).Height, TRadioButton(C).Width]) +
+          FontToCss(TRadioButton(C).Font) + '"' +
+          ' TITLE="' + TRadioButton(C).Hint + '"' +
+          '>' +
+          TRadioButton(C).Caption + '</LABEL>';
+      end
+      else
+      if C is TEdit then
+      begin
+        S := '';
+        if TEdit(C).ReadOnly then
+          S := S + ' ReadOnly';
+        if TEdit(C).MaxLength <> 0 then
+          S := S + ' MAXLENGTH=' + IntToStr(TEdit(C).MaxLength);
+        if not TEdit(C).Enabled then
+          S := S + ' DISABLED';
+
+        St := Format('<INPUT TYPE="TEXT" style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TEdit(C).Left, TEdit(C).Top, TEdit(C).Height, TEdit(C).Width]) +
+          FontToCss(TEdit(C).Font) + '"' +
+          ' TITLE="' + TEdit(C).Hint + '"' +
+          ' TABORDER=' + IntToStr(TEdit(C).TabOrder) +
+          ' NAME=' + TEdit(C).Name +
+          S +
+          ' Value=' + TEdit(C).Text +
+          '>';
+      end
+      else
+      if C is TComboBox then
+      begin
+        if not TComboBox(C).Enabled then
+          S := ' DISABLED'
+        else
+          S := '';
+
+        St := Format('<SELECT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TComboBox(C).Left, TComboBox(C).Top, TComboBox(C).Height, TComboBox(C).Width]) +
+          FontToCss(TComboBox(C).Font) + '"' +
+          ' TITLE="' + TComboBox(C).Hint + '"' +
+          ' TABORDER=' + IntToStr(TComboBox(C).TabOrder) +
+          ' NAME=' + TComboBox(C).Name +
+          S +
+          '>';
+        HTML.Add(St);
+        for J := 0 to TComboBox(C).Items.Count - 1 do
+        begin
+          if TComboBox(C).ItemIndex = J then
+            HTML.Add('<OPTION SELECTED>' + TComboBox(C).Items[J])
+          else
+            HTML.Add('<OPTION>' + TComboBox(C).Items[J]);
+        end;
+        St := '</SELECT>';
+      end
+      else
+      if C is TListBox then
+      begin
+        if not TListBox(C).Enabled then
+          S := ' DISABLED'
+        else
+          S := '';
+
+        St := Format('<SELECT style="position:absolute;Left:%d;Top:%d;Height:%d;Width:%d',
+          [TListBox(C).Left, TListBox(C).Top, TListBox(C).Height, TListBox(C).Width]) +
+          FontToCss(TListBox(C).Font) + '"' +
+          ' MULTIPLE TITLE="' + TListBox(C).Hint + '"' +
+          ' TABORDER=' + IntToStr(TListBox(C).TabOrder) +
+          ' NAME=' + TListBox(C).Name +
+          S + 
+          '>';
+        HTML.Add(St);
+        for J := 0 to TListBox(C).Items.Count - 1 do
+        begin
+          if TListBox(C).ItemIndex = J then
+            HTML.Add('<OPTION SELECTED>' + TListBox(C).Items[J])
+          else
+            HTML.Add('<OPTION>' + TListBox(C).Items[J]);
+        end;
+        St := '</SELECT>';
+      end;
+
+      if St <> '' then
+        HTML.Add(St);
+    end;
+    HTML.Add('</BODY></HTML>');
+
+    HTML.SaveToFile(Filename);
+  finally
+    HTML.Free;
   end;
-  HTML.Add('</BODY></HTML>');
-  HTML.SaveToFile(Filename);
-  HTML.Free;
 end;
 
 end.

@@ -136,7 +136,7 @@ function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
 
 { Execute executes other program and waiting for it
   terminating, then return its Exit Code }
-function Execute(const CommandLine: string; WorkingDirectory: string): Integer;
+function Execute(const CommandLine, WorkingDirectory: string): Integer;
 
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
@@ -233,7 +233,7 @@ function RBTag(Parent: TWinControl): Integer;
 { FindFormByClass returns first form with specified
   class, FormClass, owned by Application global variable }
 function FindFormByClass(FormClass: TFormClass): TForm;
-function FindFormByClassName(FormClassName: string): TForm;
+function FindFormByClassName(const FormClassName: string): TForm;
 { AppMinimized returns True, if Application is minimized }
 function AppMinimized: Boolean;
 function IsForegroundTask: Boolean;
@@ -832,7 +832,7 @@ end;
 
 // (rom) a thread to wait would be more elegant, also JCL function available
 
-function Execute(const CommandLine: string; WorkingDirectory: string): Integer;
+function Execute(const CommandLine, WorkingDirectory: string): Integer;
 {$IFDEF MSWINDOWS}
 var
   r: Boolean;
@@ -870,9 +870,11 @@ end;
 {$IFDEF LINUX}
 begin
   if WorkingDirectory = '' then
-    WorkingDirectory := GetCurrentDir;
-  Result := Libc.system(PChar(Format('cd "%s" ; %s',
-    [WorkingDirectory, CommandLine])));
+    Result := Libc.system(PChar(Format('cd "%s" ; %s',
+      [GetCurrentDir, CommandLine])))
+  else
+    Result := Libc.system(PChar(Format('cd "%s" ; %s',
+      [WorkingDirectory, CommandLine])));
 end;
 {$ENDIF LINUX}
 
@@ -1757,7 +1759,6 @@ begin
     Result := IDOK;
   end;
 end;
-
 (*
 function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons;
   HelpCtx: Longint): Word;
@@ -1778,7 +1779,7 @@ var
   ColorBand: TRect; { Color band rectangular coordinates }
   I, Delta: Integer;
   Brush: HBRUSH;
-  TmpColor:TCOlor;
+  TmpColor: TColor;
 begin 
   Canvas.Start;  
   try
@@ -2291,7 +2292,7 @@ begin
     end;
 end;
 
-function FindFormByClassName(FormClassName: string): TForm;
+function FindFormByClassName(const FormClassName: string): TForm;
 var
   I: Integer;
 begin
@@ -2300,7 +2301,7 @@ begin
     if Application.Components[I].ClassName = FormClassName then
     begin
       Result := Application.Components[I] as TForm;
-      break;
+      Break;
     end;
 end;
 

@@ -1,6 +1,7 @@
-{**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
-{**************************************************************************************************}
+{******************************************************************************}
+{* WARNING:  JEDI VCL To CLX Converter generated unit.                        *}
+{*           Manual modifications will be lost on next release.               *}
+{******************************************************************************}
 
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
@@ -41,25 +42,20 @@ unit JvQExDBGrids;
 
 interface
 
-uses
-
-
-  Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows,
-
+uses  
+  Types, Qt, QGraphics, QControls, QForms, QDBGrids, QWindows, 
   Classes, SysUtils,
   JvQTypes, JvQThemes, JVCLXVer, JvQExControls;
 
 
 
  {$IF not declared(PatchedVCLX)}
-  
+  {$DEFINE NeedMouseEnterLeave}
  {$IFEND}
 
   
 type
-  TJvExCustomDBGrid = class(TCustomDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExCustomDBGrid = class(TCustomDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -83,33 +79,29 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -121,13 +113,10 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubCustomDBGrid = class(TJvExCustomDBGrid)
-  
+  TJvExPubCustomDBGrid = class(TJvExCustomDBGrid) 
   end;
   
-  TJvExDBGrid = class(TDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
-  
-  
+  TJvExDBGrid = class(TDBGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)  
   public
     function Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
     function IsRightToLeft: Boolean;
@@ -151,33 +140,29 @@ type
     procedure ColorChanged; override;
     property Color: TColor read GetColor write SetColor;
   published // asn: change to public in final
-    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered;
-  
+    property DoubleBuffered: Boolean read GetDoubleBuffered write SetDoubleBuffered; 
   private
     FHintColor: TColor;
     FSavedHintColor: TColor;
     FMouseOver: Boolean;
     FOnParentColorChanged: TNotifyEvent;
-  
+  {$IFDEF NeedMouseEnterLeave}
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
   protected
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-  
+  {$ENDIF NeedMouseEnterLeave}
   protected
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure DoFocusChanged(Control: TWinControl); dynamic;
     property MouseOver: Boolean read FMouseOver write FMouseOver;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  private
-  
-  
+  private  
     FAboutJVCLX: TJVCLAboutInfo;
   published
-    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False;
-  
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCLX write FAboutJVCLX stored False; 
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); virtual;
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
@@ -189,8 +174,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
-  TJvExPubDBGrid = class(TJvExDBGrid)
-  
+  TJvExPubDBGrid = class(TJvExDBGrid) 
   end;
   
 
