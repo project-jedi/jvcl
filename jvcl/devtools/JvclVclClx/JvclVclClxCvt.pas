@@ -227,9 +227,9 @@ begin
                not IgnoredFile(Filename) then
             begin
               FileList.Add(Filename); // .pas file
-              Filename := ChangeFileExt(Filename, '.dfm');
+              {Filename := ChangeFileExt(Filename, '.dfm');
               if FileExists(Filename) then
-                FileList.Add(Filename); // .dfm file
+                FileList.Add(Filename); // .dfm file}
             end;
           end;
         end;
