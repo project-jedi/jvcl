@@ -47,6 +47,8 @@ uses
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
   QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
 
+//{$DEFINE DEBUG}
+
 const
   { Windows VK_ keycodes to Qt key }
   VK_BACK     = Key_Backspace;
@@ -723,6 +725,7 @@ function GetTextExtentPoint32W(Handle: QPainterH; pText: PWideChar; Len: Integer
 function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
 procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
 function DrawFocusRect(Handle: QPainterH; const R: TRect): LongBool;
+procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 function InvertRect(Handle: QPainterH; const R: TRect): LongBool;
 function Rectangle(Handle: QPainterH; Left, Top, Right, Bottom: Integer): LongBool;
 function RoundRect(Handle: QPainterH; Left, Top, Right, Bottom, X3, Y3: Integer): LongBool;
@@ -894,7 +897,8 @@ type
     SM_CXICON,    SM_CYICON,
     SM_CXBORDER,  SM_CYBORDER,
     SM_CXFRAME,   SM_CYFRAME,
-    SM_CYCAPTION
+    SM_CYCAPTION, SM_CXDLGFRAME,
+    SM_CYDLGFRAME
   );
 
 { limited implementation of }
@@ -1185,15 +1189,12 @@ function SetDoubleClickTime(Interval: Cardinal): LongBool;
 function ReleaseCapture: LongBool;
 function SetCapture(Widget: QWidgetH): QWidgetH;
 function GetCapture: QWidgetH;
-
-
+function SetCursor(Handle: QCursorH; Save: boolean = false): QCursorH;
 function Win2QtAlign(Flags: Integer): Integer;
 function QtStdAlign(Flags: Integer): Word;
 
-
 function IsCharAlpha(Ch: Char): LongBool;
 function IsCharAlphaNumeric(Ch: Char): LongBool;
-
 
 { Message }
 //  (ahuser) Do not rename PostMsg/SendMsg to PostMessage/SendMessage because
@@ -1203,7 +1204,8 @@ function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Lon
  { Limitation: Handle must be a TWidgetControl derived class handle }
 function PostMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
  { SendMsg synchronizes with the main thread }
-function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
+function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
+function SendMsg(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
 
 function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
@@ -1285,7 +1287,8 @@ function ReadProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesRead: Longword): LongBool;
 function WriteProcessMemory(hProcess: THandle; const lpBaseAddress: Pointer;
   lpBuffer: Pointer; nSize: LongWord; var lpNumberOfBytesWritten: Longword): LongBool;
-procedure FlushInstructionCache;
+procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: integer);
+
 
 { Limitations:
     - GetKeyState calls GetAsyncKeyState
@@ -1300,6 +1303,7 @@ const
 type
   PSecurityAttributes = Pointer;
 
+{$IFDEF DEBUG}
 // events are limited to the process
 function CreateEvent(EventAttributes: PSecurityAttributes;
   ManualReset, InitialState: LongBool; Name: PChar): THandle;
@@ -1337,7 +1341,7 @@ const
 
 // all Handles are TObject derived classes
 function CloseHandle(hObject: THandle): LongBool;
-
+{$ENDIF}
 
 // memory management
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
@@ -3687,6 +3691,14 @@ begin
   Result := QWidget_mouseGrabber;
 end;
 
+function SetCursor(Handle: QCursorH; Save: boolean): QCursorH;
+begin
+  Result := QApplication_overrideCursor;
+  if Handle <> nil then
+    QApplication_setOverrideCursor(Handle, Save)
+  else
+    QApplication_restoreOverrideCursor;
+end;
 
 // limited implementation of
 function GetSystemMetrics(PropItem: TSysMetrics): Integer;
@@ -3716,7 +3728,7 @@ begin
       Result := 1;
         // (ahuser) Windows returns "1"
         //QStyle_DefaultFrameWidth(QApplication_style); // (probably) wrong ?
-    SM_CXFRAME, SM_CYFRAME:
+    SM_CXFRAME, SM_CYFRAME, SM_CXDLGFRAME, SM_CYDLGFRAME:
       Result := QStyle_DefaultFrameWidth(QApplication_style); // or this one
     SM_CYCAPTION:
       Result := 19;
@@ -3785,6 +3797,8 @@ begin
     Result := pf8bit;
   16:
     Result := pf16bit;
+  24:
+    Result := pf24bit;
   32:
     Result := pf32bit;
   else
@@ -4321,7 +4335,7 @@ begin
     Flags := Flags and not ShowPrefix;
     Caption := HidePrefix(Caption);
   end;
-  if Flags and CalcRect = 0 then
+  if WinFlags and DT_CALCRECT = 0 then
   begin
     if Flags and ClipName <> 0 then
       Caption := NameEllipsis(Caption, Handle, R.Right - R.Left)
@@ -4736,6 +4750,24 @@ begin
     Result := False;
   end;
 end;
+
+procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
+var
+  DC: QPainterH;
+  i: Integer;
+begin
+  DC := GetDC(HWND_DESKTOP);
+  try
+    for i := 1 to Width do
+    begin
+      DrawFocusRect(DC, ScreenRect);
+      InflateRect(ScreenRect, -1, -1);
+    end;
+  finally
+    ReleaseDC(0, DC);
+  end;
+end;
+
 
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: Longword): LongBool;
 
@@ -6119,7 +6151,7 @@ begin
   end;
 end;
 
-procedure FlushInstructionCache;
+procedure FlushInstructionCache(PID: cardinal; OrgCalProc: Pointer; size: integer);
 asm
         JMP     @@Exit
 // 64 Bytes:
@@ -6156,6 +6188,8 @@ begin
         Result := $8000;
   end;
 end;
+
+{$IFDEF DEBUG}
 
 // Handle-Values and IPC
 type
@@ -6337,7 +6371,7 @@ end;
 
 function semtimedop(semid: Integer; sops: PSemaphoreBuffer;
    nsops: size_t; timeout: PTimeSpec): Integer; cdecl;
-   external libcmodulename name 'semtimedop';
+   external libpthreadmodulename name 'semtimedop';
 
 function GetIPCKey(const AName: string; What: Integer): Integer;
 var
@@ -6891,6 +6925,7 @@ begin
     WaitObjectList.Leave;
   end;
 end;
+{$ENDIF DEBUG}
 
 
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
@@ -7276,6 +7311,11 @@ begin
   except
     Result := False;
   end;
+end;
+
+function SendMsg(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
+begin
+  Result := SendMsg(AControl.Handle, Msg, WParam, LParam);
 end;
 
 function SendMsg(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
@@ -7789,7 +7829,9 @@ end;
 initialization
   {$IFDEF LINUX}
   InitGetTickCount;
+  {$IFDEF DEBUG}
   WaitObjectList := THandleObjectList.Create;
+  {$ENDIF DEBUG}
   {$ENDIF LINUX}
   GlobalCaret := TEmulatedCaret.Create;
   InitializeCriticalSection(SockObjectListCritSect);
@@ -7803,7 +7845,9 @@ finalization
   FreePainterInfos;
   DeleteCriticalSection(SockObjectListCritSect);
   {$IFDEF LINUX}
+  {$IFDEF DEBUG}
   WaitObjectList.Free;
+  {$ENDIF}
   {$ENDIF LINUX}
 
 end.
