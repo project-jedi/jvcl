@@ -45,7 +45,7 @@ type
   TScrollDirection = (sdVertical, sdHorizontal);
   TPanelDrawEvent = procedure(Sender: TObject; Canvas: TCanvas; Rect: TRect) of object;
 
-  TJvSecretPanel = class(TJvCustomPanel)
+  TJvSecretPanel = class(TJvPubCustomPanel)
   private
     FActive: Boolean;
     FAlignment: TAlignment;
@@ -117,14 +117,6 @@ type
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
     property Anchors;
-    {$IFDEF VCL}
-    property BiDiMode;
-    property DragKind;
-    property ParentBiDiMode;
-    property DragCursor;
-    property OnEndDock;
-    property OnStartDock;
-    {$ENDIF VCL}
     property Constraints;
     property Align;
     property BevelInner;
@@ -132,7 +124,6 @@ type
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
-    property DragMode;
     property Color;
     property Font;
     property ParentColor;
@@ -395,10 +386,16 @@ begin
     begin
       I := SaveDC(Handle);
       try
+        {$IFDEF VisualCLX}
+        Start;
+        {$ENDIF VisualCLX}
         with FTxtRect do
           MoveWindowOrg(Handle, -Left, -Top);
         Brush.Color := Self.Color;
         PaintClient(FMemoryImage.Canvas, FPaintRect);
+        {$IFDEF VisualCLX}
+        Stop;
+        {$ENDIF VisualCLX}
       finally
         RestoreDC(Handle, I);
         SetBkMode(Handle, Transparent);
