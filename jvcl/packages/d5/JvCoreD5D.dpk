@@ -40,6 +40,10 @@ contains
   JvIDEZoom in '..\..\design\JvIDEZoom.pas',
   JvPaintBoxEditor in '..\..\design\JvPaintBoxEditor.pas',
   JvBaseDlgEditor in '..\..\design\JvBaseDlgEditor.pas',
-  JvDesignerUtils in '..\..\design\JvDesignerUtils.pas';
+  JvDesignerUtils in '..\..\design\JvDesignerUtils.pas',
+  JvDataProviderItemDesign in '..\..\design\JvDataProviderItemDesign.pas',
+  JvDataProviderDesignerForm in '..\..\design\JvDataProviderDesignerForm.pas' {frmDataProviderDesigner},
+  JvDataProviderEditors in '..\..\design\JvDataProviderEditors.pas',
+  JvDsgnConsts in '..\..\design\JvDsgnConsts.pas';
 
 end.
