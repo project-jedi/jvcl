@@ -5,13 +5,12 @@
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JVCL200_R60C.bpl"/>
     <OBJFILES value="..\lib6\JVCL200_R60C.obj ..\lib6\JvAddPrinter.obj ..\lib6\JvAlarms.obj 
-      ..\lib6\JvAngleLabel.obj ..\lib6\JvAni.obj ..\lib6\JvAnimate.obj 
+      ..\lib6\JvAni.obj ..\lib6\JvAnimate.obj
       ..\lib6\JvAnimTitle.obj ..\lib6\JvAppAnimatedIcon.obj 
-      ..\lib6\JvAppearingLabel.obj ..\lib6\JvApplication.obj 
+      ..\lib6\JvApplication.obj
       ..\lib6\JvAutoSizeCompo.obj ..\lib6\JvBalloonHint.obj 
       ..\lib6\JvBaseDlg.obj ..\lib6\JvBevel.obj ..\lib6\JvBitBtn.obj 
-      ..\lib6\JvBlinkingLabel.obj ..\lib6\JvBouncingLabel.obj 
-      ..\lib6\JvBreatheSkin.obj ..\lib6\JvBrowseFolder.obj ..\lib6\JvButton.obj 
+      ..\lib6\JvBreatheSkin.obj ..\lib6\JvBrowseFolder.obj ..\lib6\JvButton.obj
       ..\lib6\JvButtonPersistent.obj ..\lib6\JvButtonShaped.obj 
       ..\lib6\JvCabFile.obj ..\lib6\JvCaesarCipher.obj ..\lib6\JvCheckBox.obj 
       ..\lib6\JvCheckListBox.obj ..\lib6\JvChrono.obj 
@@ -34,7 +33,7 @@
       ..\lib6\JvFormWallpaperEdit.obj ..\lib6\JvFtpGrabber.obj 
       ..\lib6\JvFunctions.obj ..\lib6\JvGammaPanel.obj ..\lib6\JvGenetic.obj 
       ..\lib6\JvGradient.obj ..\lib6\JvGradientCaption.obj 
-      ..\lib6\JvHeaderControl.obj ..\lib6\JvHotKey.obj ..\lib6\JvHotLink.obj 
+      ..\lib6\JvHeaderControl.obj ..\lib6\JvHotKey.obj
       ..\lib6\JvHtmlParser.obj ..\lib6\JvHttpGrabber.obj ..\lib6\JvId3v1.obj 
       ..\lib6\JvId3v2.obj ..\lib6\JvId3v2Types.obj ..\lib6\JvImage.obj 
       ..\lib6\JvImageDlg.obj ..\lib6\JvImageRotate.obj 
@@ -50,18 +49,18 @@
       ..\lib6\JvPlaylist.obj ..\lib6\JvPrint.obj ..\lib6\JvProgressBar.obj 
       ..\lib6\JvDBProgressBar.obj ..\lib6\JvProgressDlg.obj 
       ..\lib6\JvPropAutoSave.obj ..\lib6\JvRadioButton.obj 
-      ..\lib6\JvRadioGroup.obj ..\lib6\JvRas32.obj ..\lib6\JvRealLabel.obj 
+      ..\lib6\JvRadioGroup.obj ..\lib6\JvRas32.obj
       ..\lib6\JvRecentMenuBtn.obj ..\lib6\JvRegistry.obj 
-      ..\lib6\JvRenameError.obj ..\lib6\JvReversedLabel.obj 
+      ..\lib6\JvRenameError.obj
       ..\lib6\JvRgbToHtml.obj
       ..\lib6\JvRichEditToHtml.obj ..\lib6\JvRle.obj ..\lib6\JvScreenCanvas.obj 
       ..\lib6\JvScreenResolution.obj ..\lib6\JvScreenSaver.obj 
       ..\lib6\JvScrollBar.obj ..\lib6\JvScrollBox.obj 
-      ..\lib6\JvScrollingLabel.obj ..\lib6\JvScrollText.obj 
+      ..\lib6\JvScrollText.obj
       ..\lib6\JvSelectDirectory.obj ..\lib6\JvSerialDlg.obj 
       ..\lib6\JvSerialMaker.obj ..\lib6\JvShape.obj ..\lib6\JvSlider.obj 
       ..\lib6\JvSoundControl.obj ..\lib6\JvSpecialImage.obj 
-      ..\lib6\JvSpecialLabel.obj ..\lib6\JvSpecialProgress.obj 
+      ..\lib6\JvSpecialProgress.obj
       ..\lib6\JvSpeedButton.obj ..\lib6\JvSplitter.obj ..\lib6\JvStarfield.obj 
       ..\lib6\JvStartMenuBtn.obj ..\lib6\JvStaticText.obj 
       ..\lib6\JvStatusBar.obj ..\lib6\JvStringGrid.obj 
@@ -232,20 +231,16 @@
       <FILE FILENAME="C:\Program Files\Borland\CBuilder6\Projects\rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAddPrinter.pas" FORMNAME="" UNITNAME="JvAddPrinter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAlarms.pas" FORMNAME="" UNITNAME="JvAlarms" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvAngleLabel.pas" FORMNAME="" UNITNAME="JvAngleLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAni.pas" FORMNAME="" UNITNAME="JvAni" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAnimate.pas" FORMNAME="" UNITNAME="JvAnimate" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAnimTitle.pas" FORMNAME="" UNITNAME="JvAnimTitle" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAppAnimatedIcon.pas" FORMNAME="" UNITNAME="JvAppAnimatedIcon" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvAppearingLabel.pas" FORMNAME="" UNITNAME="JvAppearingLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvApplication.pas" FORMNAME="" UNITNAME="JvApplication" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAutoSizeCompo.pas" FORMNAME="" UNITNAME="JvAutoSizeCompo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBalloonHint.pas" FORMNAME="" UNITNAME="JvBalloonHint" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBaseDlg.pas" FORMNAME="" UNITNAME="JvBaseDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBevel.pas" FORMNAME="" UNITNAME="JvBevel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBitBtn.pas" FORMNAME="" UNITNAME="JvBitBtn" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvBlinkingLabel.pas" FORMNAME="" UNITNAME="JvBlinkingLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvBouncingLabel.pas" FORMNAME="" UNITNAME="JvBouncingLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBreatheSkin.pas" FORMNAME="" UNITNAME="JvBreatheSkin" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvBrowseFolder.pas" FORMNAME="" UNITNAME="JvBrowseFolder" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvButton.pas" FORMNAME="" UNITNAME="JvButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -304,7 +299,6 @@
       <FILE FILENAME="..\source\JvGradientCaption.pas" FORMNAME="" UNITNAME="JvGradientCaption" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHeaderControl.pas" FORMNAME="" UNITNAME="JvHeaderControl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHotKey.pas" FORMNAME="" UNITNAME="JvHotKey" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvHotLink.pas" FORMNAME="" UNITNAME="JvHotLink" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHtmlParser.pas" FORMNAME="" UNITNAME="JvHtmlParser" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvHttpGrabber.pas" FORMNAME="" UNITNAME="JvHttpGrabber" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvId3v1.pas" FORMNAME="" UNITNAME="JvId3v1" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -345,11 +339,9 @@
       <FILE FILENAME="..\source\JvRadioButton.pas" FORMNAME="" UNITNAME="JvRadioButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRadioGroup.pas" FORMNAME="" UNITNAME="JvRadioGroup" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRas32.pas" FORMNAME="" UNITNAME="JvRas32" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvRealLabel.pas" FORMNAME="" UNITNAME="JvRealLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRecentMenuBtn.pas" FORMNAME="" UNITNAME="JvRecentMenuBtn" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRegistry.pas" FORMNAME="" UNITNAME="JvRegistry" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRenameError.pas" FORMNAME="" UNITNAME="JvRenameError" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvReversedLabel.pas" FORMNAME="" UNITNAME="JvReversedLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRgbToHtml.pas" FORMNAME="" UNITNAME="JvRgbToHtml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRichEditToHtml.pas" FORMNAME="" UNITNAME="JvRichEditToHtml" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvRle.pas" FORMNAME="" UNITNAME="JvRle" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -358,7 +350,6 @@
       <FILE FILENAME="..\source\JvScreenSaver.pas" FORMNAME="" UNITNAME="JvScreenSaver" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScrollBar.pas" FORMNAME="" UNITNAME="JvScrollBar" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScrollBox.pas" FORMNAME="" UNITNAME="JvScrollBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvScrollingLabel.pas" FORMNAME="" UNITNAME="JvScrollingLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScrollText.pas" FORMNAME="" UNITNAME="JvScrollText" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSelectDirectory.pas" FORMNAME="" UNITNAME="JvSelectDirectory" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSerialDlg.pas" FORMNAME="" UNITNAME="JvSerialDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -367,7 +358,6 @@
       <FILE FILENAME="..\source\JvSlider.pas" FORMNAME="" UNITNAME="JvSlider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSoundControl.pas" FORMNAME="" UNITNAME="JvSoundControl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSpecialImage.pas" FORMNAME="" UNITNAME="JvSpecialImage" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvSpecialLabel.pas" FORMNAME="" UNITNAME="JvSpecialLabel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSpecialProgress.pas" FORMNAME="" UNITNAME="JvSpecialProgress" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSpeedButton.pas" FORMNAME="" UNITNAME="JvSpeedButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSplitter.pas" FORMNAME="" UNITNAME="JvSplitter" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

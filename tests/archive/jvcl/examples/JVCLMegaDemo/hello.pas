@@ -39,9 +39,9 @@ type
   TWelcomeForm = class(TForm)
     frmh_st: TJvScrollText;
     JvImage1: TJvImage;
-    JvHotLink2: TJvHotLink;
+    JvHotLink2: TJvLabel;
     JvJVCLAboutComponent1: TJvJVCLAboutComponent;
-    JvHotLink3: TJvHotLink;
+    JvHotLink3: TJvLabel;
     procedure FormShow(Sender: TObject);
     procedure JvHotLink3Click(Sender: TObject);
   end;

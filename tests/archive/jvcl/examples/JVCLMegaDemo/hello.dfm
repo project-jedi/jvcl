@@ -405,7 +405,7 @@ object WelcomeForm: TWelcomeForm
       301A6C622A5417507AED6C52726046BA45A2E76A364F53B8F34D4D8589A3B2B7
       8BEEC4B9F53CD0E6D8589C0C0C0A9016800A002800A002800A002803FFD9}
   end
-  object JvHotLink2: TJvHotLink
+  object JvHotLink2: TJvLabel
     Left = 0
     Top = 310
     Width = 531
@@ -430,7 +430,7 @@ object WelcomeForm: TWelcomeForm
     HotTrackFont.Style = [fsBold, fsUnderline]
     Url = 'mailto:RalfGSpam@gmx.de?subject=JVCL MegaDemo'
   end
-  object JvHotLink3: TJvHotLink
+  object JvHotLink3: TJvLabel
     Left = 0
     Top = 334
     Width = 531

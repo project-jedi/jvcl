@@ -17,7 +17,8 @@
       ..\lib5\JvBDEReg.obj ..\lib5\JvImagPrvw.obj ..\lib5\JvCheckItm.obj 
       ..\lib5\JvDirFrm.obj ..\lib5\JvFormWallpaperEditor.obj 
       ..\lib5\JvIColEdit.obj ..\lib5\JvGradedit.obj ..\lib5\JvMinMaxEd.obj 
-      ..\lib5\JvPgMngrEd.obj ..\lib5\JvPictEdit.obj ..\lib5\JvPresrDsn.obj 
+      ..\lib5\JvBehaviorLabelProperty.obj
+      ..\lib5\JvPgMngrEd.obj ..\lib5\JvPictEdit.obj ..\lib5\JvPresrDsn.obj
       ..\lib5\JvQBndDlg.obj ..\lib5\JvSbEdit.obj ..\lib5\JvSelDSFrm.obj 
       ..\lib5\JvTimLstEd.obj ..\lib5\JvActions.obj ..\lib5\JvActnRes.obj 
       ..\lib5\JvBandObjectDLLWizardForm.obj ..\lib5\JvBandObjectDLLWizard.obj 

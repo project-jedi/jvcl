@@ -1,7 +1,12 @@
+
 2003-03-24
-Merged JvMultilineListBox, JvReorderListBox, JvTextListBox, JvBMPListBox into JvListBox, updated examples, moved JvBmpListBox.pas, JvReorderListBox.pas and JvMultiLineListbox.pas to \archive // peter3
+- Merged JvMultilineListBox, JvReorderListBox, JvTextListBox, JvBMPListBox into JvListBox, updated examples, moved JvBmpListBox.pas, JvReorderListBox.pas and JvMultiLineListbox.pas to \archive // peter3
+- Merged JvHotLink and JvAngelLabel into JvLabel
+- Merged JvAppearingLabel, JvBlinkingLabel, JvBouncingLabel, JvRealLabel and JvSpecialLabel into JvBehaviorLabel. Use Nehavior property to control what label to simulate. // peter3
+- Removed JvReversedLabel - use (new) JvLabel with Angle set to 180 to simulate same behavior
+
 2003-03-23
-Replaced TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvxCurrencyEdit, TJvIntegerEdit and TJvYearEdit with TJvValidateEdit. JvFloatEdit.pas and JvTypedEdit.pas moved to \archive, examples updated. // peter3
+- Replaced TJvFloatEdit, TJvFloatEdit2, TJvCurrencyEdit, TJvxCurrencyEdit, TJvIntegerEdit and TJvYearEdit with TJvValidateEdit. JvFloatEdit.pas and JvTypedEdit.pas moved to \archive, examples updated. // peter3
 
 2003-03-23
 Merged TJvRichEdit with TJvxRichEdit. TJvxRichEdit renamed to TJvRichEdit. JvRichEdit.pas moved to \archive. // roko, peter3

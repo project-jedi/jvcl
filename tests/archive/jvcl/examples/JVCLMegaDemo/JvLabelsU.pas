@@ -32,22 +32,20 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvReversedLabel, JvAppearingLabel, JvBouncingLabel, JvAngleLabel,
-  JvSpecialLabel, JvRealLabel,  JvScrollingLabel, JvBlinkingLabel,
-  StdCtrls, JvLabel, JvHotLink;
+  StdCtrls, JvBehaviorLabel, JvLabel;
 
 type
   TJvLabelsFrm = class(TForm)
-    JvHotLink1: TJvHotLink;
-    JvBlinkingLabel1: TJvBlinkingLabel;
-    JvScrollingLabel1: TJvScrollingLabel;
-    JvRealLabel1: TJvRealLabel;
-    JvSpecialLabel1: TJvSpecialLabel;
-    JvAngleLabel1: TJvAngleLabel;
-    JvBouncingLabel1: TJvBouncingLabel;
-    JvAppearingLabel1: TJvAppearingLabel;
+    JvHotLink1: TJvLabel;
+    JvBlinkingLabel1: TJvBehaviorLabel;
+    JvScrollingLabel1: TJvBehaviorLabel;
+    JvRealLabel1: TJvBehaviorLabel;
+    JvSpecialLabel1: TJvBehaviorLabel;
+    JvAngleLabel1: TJvLabel;
+    JvBouncingLabel1: TJvBehaviorLabel;
+    JvAppearingLabel1: TJvBehaviorLabel;
     Label11: TLabel;
-    JvReversedLabel1: TJvReversedLabel;
+    JvReversedLabel1: TJvLabel;
     Label12: TLabel;
     procedure JvBouncingLabel1Click(Sender: TObject);
     procedure JvAppearingLabel1Click(Sender: TObject);
@@ -60,12 +58,12 @@ implementation
 
 procedure TJvLabelsFrm.JvBouncingLabel1Click(Sender: TObject);
 begin
- JvBouncingLabel1.Bouncing := true;
+  JvBouncingLabel1.BehaviorOptions.Active := true;
 end;
 
 procedure TJvLabelsFrm.JvAppearingLabel1Click(Sender: TObject);
 begin
- JvAppearingLabel1.Appear;
+  JvAppearingLabel1.BehaviorOptions.Active := true;
 end;
 
 procedure TJvLabelsFrm.JvAppearingLabel1Appeared(Sender: TObject);

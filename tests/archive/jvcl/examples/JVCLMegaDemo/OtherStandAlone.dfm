@@ -13,7 +13,7 @@ object OtherMainForm: TOtherMainForm
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object JvHotLink1: TJvHotLink
+  object JvHotLink1: TJvLabel
     Left = 24
     Top = 48
     Width = 286
@@ -54,7 +54,7 @@ object OtherMainForm: TOtherMainForm
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object JvHotLink2: TJvHotLink
+  object JvHotLink2: TJvLabel
     Left = 34
     Top = 404
     Width = 127
@@ -78,7 +78,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'CaptionButtonDemo.exe'
   end
-  object JvHotLink4: TJvHotLink
+  object JvHotLink4: TJvLabel
     Left = 34
     Top = 424
     Width = 92
@@ -102,7 +102,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'EnvironmentList.exe'
   end
-  object JvHotLink3: TJvHotLink
+  object JvHotLink3: TJvLabel
     Left = 34
     Top = 444
     Width = 94
@@ -126,7 +126,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'JvTrayIconDemo.exe'
   end
-  object JvHotLink5: TJvHotLink
+  object JvHotLink5: TJvLabel
     Left = 34
     Top = 105
     Width = 250
@@ -150,7 +150,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'RAControls.exe'
   end
-  object JvHotLink6: TJvHotLink
+  object JvHotLink6: TJvLabel
     Left = 34
     Top = 124
     Width = 48
@@ -174,7 +174,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'DBMove.exe'
   end
-  object JvHotLink7: TJvHotLink
+  object JvHotLink7: TJvLabel
     Left = 34
     Top = 155
     Width = 225
@@ -198,7 +198,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'LineNumbers.exe'
   end
-  object JvHotLink8: TJvHotLink
+  object JvHotLink8: TJvLabel
     Left = 34
     Top = 175
     Width = 56
@@ -222,7 +222,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'RAEditorTest.exe'
   end
-  object JvHotLink9: TJvHotLink
+  object JvHotLink9: TJvLabel
     Left = 34
     Top = 251
     Width = 68
@@ -246,7 +246,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'RAHLEdPropDlgTest.exe'
   end
-  object JvHotLink10: TJvHotLink
+  object JvHotLink10: TJvLabel
     Left = 34
     Top = 283
     Width = 98
@@ -283,7 +283,7 @@ object OtherMainForm: TOtherMainForm
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
-  object JvHotLink11: TJvHotLink
+  object JvHotLink11: TJvLabel
     Left = 34
     Top = 303
     Width = 119
@@ -307,7 +307,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'JvInterpreterEndUser.exe'
   end
-  object JvHotLink12: TJvHotLink
+  object JvHotLink12: TJvLabel
     Left = 34
     Top = 323
     Width = 50
@@ -331,7 +331,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'MDIApp.exe'
   end
-  object JvHotLink13: TJvHotLink
+  object JvHotLink13: TJvLabel
     Left = 34
     Top = 343
     Width = 70
@@ -394,7 +394,7 @@ object OtherMainForm: TOtherMainForm
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
-  object JvHotLink14: TJvHotLink
+  object JvHotLink14: TJvLabel
     Left = 395
     Top = 205
     Width = 169
@@ -418,7 +418,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'RxDemo.exe'
   end
-  object JvHotLink15: TJvHotLink
+  object JvHotLink15: TJvLabel
     Left = 395
     Top = 224
     Width = 67
@@ -442,7 +442,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'RxGIFAnm.exe'
   end
-  object JvHotLink16: TJvHotLink
+  object JvHotLink16: TJvLabel
     Left = 395
     Top = 243
     Width = 70
@@ -479,7 +479,7 @@ object OtherMainForm: TOtherMainForm
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
-  object JvHotLink17: TJvHotLink
+  object JvHotLink17: TJvLabel
     Left = 395
     Top = 285
     Width = 70
@@ -503,7 +503,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'WebMapper.exe'
   end
-  object JvHotLink18: TJvHotLink
+  object JvHotLink18: TJvLabel
     Left = 395
     Top = 302
     Width = 53
@@ -527,7 +527,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'UseCase.exe'
   end
-  object JvHotLink19: TJvHotLink
+  object JvHotLink19: TJvLabel
     Left = 395
     Top = 320
     Width = 113
@@ -577,7 +577,7 @@ object OtherMainForm: TOtherMainForm
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
-  object JvHotLink22: TJvHotLink
+  object JvHotLink22: TJvLabel
     Left = 395
     Top = 465
     Width = 95
@@ -601,7 +601,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'SimpleHIDWrite.exe'
   end
-  object JvHotLink23: TJvHotLink
+  object JvHotLink23: TJvLabel
     Left = 395
     Top = 430
     Width = 67
@@ -625,7 +625,7 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'BasicDemo.exe'
   end
-  object JvHotLink24: TJvHotLink
+  object JvHotLink24: TJvLabel
     Left = 395
     Top = 447
     Width = 91

@@ -57,7 +57,7 @@ contains
   JvTimeLineEdit in '..\Source\JvTimeLineEdit.pas',
   JvOutEdit in '..\Source\JvOutEdit.pas',
   JvStrLEdit in '..\Source\JvStrLEdit.pas' {JvStrEditDlg},
-  JvOLBEditor in '..\Source\JvOLBEditor.pas' {frmOLBEditor},
+  JvOLBEditor in '..\source\JvOLBEditor.pas' {frmOLBEditor},
   JvChNtfyProperty in '..\Source\JvChNtfyProperty.pas',
   JvLCProperty in '..\Source\JvLCProperty.pas',
   JvAppletProperty in '..\source\JvAppletProperty.pas',
@@ -85,10 +85,13 @@ contains
   JvActions in '..\source\JvActions.pas',
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
   JvDatePickerReg in '..\source\JvDatePickerReg.pas',
+  JvDialogActns in '..\source\JvDialogActns.pas',
+  JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
   ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
-  JvTipOfDayProp in '..\Source\JvTipOfDayProp.pas',
   JvTransLedReg in '..\source\JvTransLEDReg.pas',
+  JvTipOfDayProp in '..\Source\JvTipOfDayProp.pas',
+  JvBehaviorLabelProperty in '..\source\JvBehaviorLabelProperty.pas',
   JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
 
 end.

@@ -84,9 +84,10 @@ uses
   JvThumbImage, JvThumbnails, JvThumbViews, JvMovableBevel,
 
   // Labels
-  JvHotLink, JvBlinkingLabel, JvScrollingLabel, JvReversedLabel,
-  JvRealLabel, JvSpecialLabel, JvWinampLabel, JvAngleLabel, JvBouncingLabel,
-  JvAppearingLabel, JvLinkLabel,
+  JvWinampLabel, JvLinkLabel,
+  {JvHotLink, JvAngleLabel, JvBlinkingLabel, JvScrollingLabel, JvReversedLabel,
+  JvRealLabel, JvSpecialLabel, JvBouncingLabel, JvAppearingLabel, }
+
 
   // Forms
   JvFormWallpaper, JvAnimTitle, JvPerforated,
@@ -320,7 +321,7 @@ begin
 
   // Jv Internet
   RegisterComponents(srJvInternetPalette,
-    [TJvHotLink, TJvHtmlParser, TJvHttpGrabber, TJvMultiHttpGrabber,
+    [{TJvHotLink, }TJvHtmlParser, TJvHttpGrabber, TJvMultiHttpGrabber,
      TJvFtpGrabber, TJvSimpleXml, TJvStringListToHtml, TJvRichEditToHtml,
      TJvRgbToHtml, TJvStrToHtml, TJvFormToHtml, TJvMail, TJvRas32,
      TJvCommStatus]);
@@ -351,9 +352,9 @@ begin
      TJvInspectorBorlandPainter, TJvInspectorDotNetPainter, TJvBalloonHint]);
 
   // Jv Labels
-  RegisterComponents(srJvLabelsPalette,
-    [TJvBlinkingLabel, TJvScrollingLabel, TJvReversedLabel, TJvRealLabel,
-     TJvSpecialLabel, TJvAngleLabel, TJvBouncingLabel, TJvAppearingLabel]);
+{  RegisterComponents(srJvLabelsPalette,
+    [TJvAngleLabel, TJvBlinkingLabel, TJvScrollingLabel, TJvReversedLabel, TJvRealLabel,
+     TJvSpecialLabel, TJvBouncingLabel, TJvAppearingLabel]);}
 
   // Jv Multimedia
   RegisterComponents(srJvMultimediaPalette,

@@ -86,7 +86,8 @@ var
 
 implementation
 uses
-  TypInfo;
+  TypInfo,
+  JvFunctions; // for D5
   
 {$R *.DFM}
 

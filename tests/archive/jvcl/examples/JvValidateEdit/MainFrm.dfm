@@ -32,9 +32,6 @@ object frmValidateEditDemo: TfrmValidateEditDemo
     Height = 233
     Caption = 'Properties'
     TabOrder = 0
-    DesignSize = (
-      369
-      233)
     object Label1: TLabel
       Left = 8
       Top = 16

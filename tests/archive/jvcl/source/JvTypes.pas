@@ -57,7 +57,7 @@ type
   TOnLinkClick = procedure(Sender: TObject; Link: string) of object;
   TOnRegistryChangeKey = procedure(Sender: TObject; RootKey: HKEY; Path: string) of object;
   TLabelDirection = (sdLeftToRight, sdRightToLeft);
-  TAngle = 0..360;
+  TJvLabelRotateAngle = 0..360;
   TDirection = (drFromLeft, drFromRight, drFromTop, drFromBottom);
   TJvOutputMode = (omFile, omStream);
   TOnDoneFile = procedure(Sender: TObject; FileName: string; FileSize: Integer; Url: string) of object;

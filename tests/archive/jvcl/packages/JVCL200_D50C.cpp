@@ -31,6 +31,7 @@ USEUNIT("..\source\JvDsgn.pas");
 USEUNIT("..\source\JvCtlReg.pas");
 USEUNIT("..\source\JvDBReg.pas");
 USEUNIT("..\source\JvBDEReg.pas");
+USEUNIT("..\source\JvBehaviorLabelProperty.pas")
 USEFORMNS("..\source\JvImagPrvw.pas", Jvimagprvw, ImageForm);
 USEFORMNS("..\source\JvCheckItm.pas", Jvcheckitm, JvCheckItemsEditor);
 USEFORMNS("..\source\JvDirFrm.pas", Jvdirfrm, JvDirectoryListDialog);

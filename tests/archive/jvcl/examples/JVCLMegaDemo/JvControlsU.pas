@@ -8,7 +8,7 @@ uses
   JvClock, JvCombobox, JvGammaPanel, JvGradientCaption,
   Spin, JvZoom, JvWaitingGradient, JvControlPanel, JvRecentMenuBtn,
   ExtCtrls, JvShape, JvMultilineListbox, JvListComb, ImgList, JvComponent,
-  JvTimeLine;
+  JvTimeLine, JvListBox, JvCtrls;
 
 type
   TJvControls = class(TForm)
@@ -18,7 +18,7 @@ type
     Label4: TLabel;
     ImageList1: TImageList;
     JvImageListBox1: TJvImageListBox;
-    JvMultilineListbox1: TJvMultilineListbox;
+    JvMultilineListbox1: TJvListBox;
     JvTimeLine1: TJvTimeLine;
   end;
 

@@ -4,41 +4,41 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvLabel, JvHotLink, ComCtrls;
+  Dialogs, StdCtrls, JvLabel, ComCtrls;
 
 type
   TOtherMainForm = class(TForm)
-    JvHotLink1: TJvHotLink;
+    JvHotLink1: TJvLabel;
     Label1: TLabel;
-    JvHotLink2: TJvHotLink;
-    JvHotLink4: TJvHotLink;
-    JvHotLink3: TJvHotLink;
-    JvHotLink5: TJvHotLink;
-    JvHotLink6: TJvHotLink;
-    JvHotLink7: TJvHotLink;
-    JvHotLink8: TJvHotLink;
-    JvHotLink9: TJvHotLink;
-    JvHotLink10: TJvHotLink;
+    JvHotLink2: TJvLabel;
+    JvHotLink4: TJvLabel;
+    JvHotLink3: TJvLabel;
+    JvHotLink5: TJvLabel;
+    JvHotLink6: TJvLabel;
+    JvHotLink7: TJvLabel;
+    JvHotLink8: TJvLabel;
+    JvHotLink9: TJvLabel;
+    JvHotLink10: TJvLabel;
     Label2: TLabel;
-    JvHotLink11: TJvHotLink;
-    JvHotLink12: TJvHotLink;
-    JvHotLink13: TJvHotLink;
+    JvHotLink11: TJvLabel;
+    JvHotLink12: TJvLabel;
+    JvHotLink13: TJvLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    JvHotLink14: TJvHotLink;
-    JvHotLink15: TJvHotLink;
-    JvHotLink16: TJvHotLink;
+    JvHotLink14: TJvLabel;
+    JvHotLink15: TJvLabel;
+    JvHotLink16: TJvLabel;
     Label6: TLabel;
-    JvHotLink17: TJvHotLink;
-    JvHotLink18: TJvHotLink;
-    JvHotLink19: TJvHotLink;
+    JvHotLink17: TJvLabel;
+    JvHotLink18: TJvLabel;
+    JvHotLink19: TJvLabel;
     Label7: TLabel;
     StatusBar: TStatusBar;
     Label8: TLabel;
-    JvHotLink22: TJvHotLink;
-    JvHotLink23: TJvHotLink;
-    JvHotLink24: TJvHotLink;
+    JvHotLink22: TJvLabel;
+    JvHotLink23: TJvLabel;
+    JvHotLink24: TJvLabel;
     Label9: TLabel;
     Label10: TLabel;
     Label11: TLabel;
@@ -75,9 +75,9 @@ uses
 procedure TOtherMainForm.JvHotLinkMouseEnter(Sender: TObject);
 var
   fileName : String;
-  hotLnk : TJvHotLink;
+  hotLnk : TJvLabel;
 begin
- hotLnk := sender as TJvHotLink;
+ hotLnk := sender as TJvLabel;
 
  fileName := ExtractFilePath(Application.ExeName) + (hotLnk).Url;
 
@@ -95,9 +95,9 @@ end;
 
 procedure TOtherMainForm.JvHotLinkMouseLeave(Sender: TObject);
 var
-  hotLnk : TJvHotLink;
+  hotLnk : TJvLabel;
 begin
-  hotLnk := sender as TJvHotLink;
+  hotLnk := sender as TJvLabel;
   if hotLnk.Tag = 1 then // already visited
     hotLnk.font.color := clNavy
   else
@@ -107,9 +107,9 @@ end;
 procedure TOtherMainForm.JvHotLinkClick(Sender: TObject);
 var
   fileName : String;
-  hotLnk : TJvHotLink;
+  hotLnk : TJvLabel;
 begin
- hotLnk := sender as TJvHotLink;
+ hotLnk := sender as TJvLabel;
 
  fileName := ExtractFilePath(Application.ExeName) + (hotLnk).Url;
  if fileExists(fileName) then

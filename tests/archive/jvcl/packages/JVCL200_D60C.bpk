@@ -21,6 +21,7 @@
       ..\lib6\JvBDEReg.obj ..\lib6\JvImagPrvw.obj ..\lib6\JvCheckItm.obj 
       ..\lib6\JvDirFrm.obj ..\lib6\JvFormWallpaperEditor.obj 
       ..\lib6\JvIColEdit.obj ..\lib6\JvGradedit.obj ..\lib6\JvMinMaxEd.obj 
+      ..\lib6\JvBehaviorLabelProperty.obj
       ..\lib6\JvPgMngrEd.obj ..\lib6\JvPictEdit.obj ..\lib6\JvPresrDsn.obj 
       ..\lib6\JvQBndDlg.obj ..\lib6\JvSbEdit.obj ..\lib6\JvSelDSFrm.obj 
       ..\lib6\JvTimLstEd.obj ..\lib6\JvBandObjectDLLWizard.obj 

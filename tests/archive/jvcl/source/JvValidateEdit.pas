@@ -73,7 +73,7 @@ type
   end;
 
   TJvCustomTextValidateEvent = procedure(Sender: TObject; Key: Char;
-    const AText: string; const Posn: Integer; var IsValid: boolean) of object;
+    const AText: string; const Pos: Integer; var IsValid: boolean) of object;
 
   TJvCustomValidateEdit = class(TJvCustomEdit)
   private

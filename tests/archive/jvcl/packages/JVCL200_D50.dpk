@@ -96,6 +96,7 @@ contains
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
   ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
   JvTransLedReg in '..\source\JvTransLEDReg.pas',
+  JvBehaviorLabelProperty in '..\source\JvBehaviorLabelProperty.pas',
   JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
 
 end.

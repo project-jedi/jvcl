@@ -29,7 +29,7 @@ object RessourcesForm: TRessourcesForm
     Font.Style = [fsBold]
     ParentFont = False
   end
-  object JvHotLink5: TJvHotLink
+  object JvHotLink5: TJvLabel
     Left = 64
     Top = 86
     Width = 54
@@ -50,7 +50,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'http://sourceforge.net/projects/compbar'
   end
-  object JvHotLink9: TJvHotLink
+  object JvHotLink9: TJvLabel
     Left = 64
     Top = 162
     Width = 55
@@ -115,7 +115,7 @@ object RessourcesForm: TRessourcesForm
     Font.Style = []
     ParentFont = False
   end
-  object JvHotLink1: TJvHotLink
+  object JvHotLink1: TJvLabel
     Left = 64
     Top = 102
     Width = 120
@@ -149,7 +149,7 @@ object RessourcesForm: TRessourcesForm
     Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
-  object JvHotLink2: TJvHotLink
+  object JvHotLink2: TJvLabel
     Left = 64
     Top = 243
     Width = 136
@@ -170,7 +170,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'http://delphi-jedi.org/'
   end
-  object JvHotLink3: TJvHotLink
+  object JvHotLink3: TJvLabel
     Left = 64
     Top = 259
     Width = 212
@@ -220,7 +220,7 @@ object RessourcesForm: TRessourcesForm
     Font.Style = []
     ParentFont = False
   end
-  object JvHotLink4: TJvHotLink
+  object JvHotLink4: TJvLabel
     Left = 64
     Top = 317
     Width = 132
@@ -241,7 +241,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'http://www.turbopower.com/'
   end
-  object JvHotLink6: TJvHotLink
+  object JvHotLink6: TJvLabel
     Left = 64
     Top = 333
     Width = 161
@@ -291,7 +291,7 @@ object RessourcesForm: TRessourcesForm
     Font.Style = []
     ParentFont = False
   end
-  object JvHotLink7: TJvHotLink
+  object JvHotLink7: TJvLabel
     Left = 64
     Top = 429
     Width = 172
@@ -312,7 +312,7 @@ object RessourcesForm: TRessourcesForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'http://www.devexpress.com/index.shtm'
   end
-  object JvHotLink8: TJvHotLink
+  object JvHotLink8: TJvLabel
     Left = 64
     Top = 445
     Width = 283
