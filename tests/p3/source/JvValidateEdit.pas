@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvTimeLine.PAS, released on 2002-10-13.
+The Original Code is: JvValidateEdit.pas, released on yyyy-mm-dd
 
 The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-10-13
+Last Modified: yyyy-mm-dd
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -87,6 +87,7 @@ type
     procedure KeyPress(var Key:Char);override;
     function DoValidate(const Key:Char;const AText:string):boolean;dynamic;
     property CharType:TJvCharType read FCharType write SetCharType default efAny;
+    // Characters is used with the efValidChars and efInvalidChars types only!
     property Characters:TJvCharacters read FCharacters write FCharacters;
     property Text:TCaption read GetText write SetText;
     property OnCustomValidate:TJvCustomTextValidateEvent read FOnCustomValidate write FOnCustomValidate;
