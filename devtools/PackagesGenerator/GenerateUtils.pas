@@ -814,16 +814,21 @@ begin
   end;
 
   GCallBack := CallBack;
-  
-  if PathIsAbsolute(PackagesLocation) then
-    path := PackagesLocation
-  else
-    path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
-    
+
+  if path = '' then
+  begin
+    if PathIsAbsolute(PackagesLocation) then
+      path := PackagesLocation
+    else
+      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + PackagesLocation);
+  end;
+
   path := StrEnsureSuffix(PathSeparator, path);
 
-  Prefix := GPrefix;
-  Format := GFormat;
+  if prefix = '' then
+    Prefix := GPrefix;
+  if format = '' then
+    Format := GFormat;
   // for all targets
 //  EnsureTargets(targets);
   i := 0;
