@@ -2155,6 +2155,7 @@ begin
   inherited Loaded;
   FLCheckMinValue := True;
   FLCheckMaxValue := True;
+  FOldValue := Value;
 end;
 
 function TJvCustomSpinEdit.CheckDefaultRange(CheckMax: Boolean): Boolean;
