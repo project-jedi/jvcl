@@ -306,6 +306,7 @@ type
   protected
     class function MapperFileID: string; dynamic; abstract;
     function MaxSegments: Integer; dynamic;
+    function MapToSeparators: Boolean; dynamic;
     procedure PrimReadMapping(const HdrInfo: TSegCharMapHeader; Stream: TStream); dynamic;
     function UpdateStates(var Segments: Int64; SegMask: Int64): Boolean;
     procedure HandleDecimalSeparator(var Text: PChar; var Segments: Int64); virtual;
@@ -1408,6 +1409,11 @@ begin
   end;
 end;
 
+function TJvBaseSegmentedLEDCharacterMapper.MapToSeparators: Boolean;
+begin
+  Result := True;
+end;
+
 procedure TJvBaseSegmentedLEDCharacterMapper.PrimReadMapping(const HdrInfo: TSegCharMapHeader;
   Stream: TStream);
 var
@@ -1647,6 +1653,8 @@ var
   TmpID: string;
   MapSize: Byte;
   Chr: Char;
+  TmpDot: Int64;
+  TmpComma: Int64;
 begin
   FillChar(Hdr, SizeOf(Hdr), 0);
   TmpID := MapperFileID;
@@ -1654,15 +1662,30 @@ begin
   Hdr.Flags := MaxSegments;
   MapSize := (Hdr.Flags div 8) + Ord((Hdr.Flags mod 8) <> 0);
   Hdr.Flags := MapSize;
-  Hdr.Flags := Hdr.Flags or 16;
+  Hdr.Flags := Hdr.Flags or 16 * Ord(MapToSeparators);
   Hdr.MappedChars := [];
-  for Chr := #0 to #255 do
-    if FActiveMapping[Chr] <> 0 then
-      Include(Hdr.MappedChars, Chr);
-  Stream.WriteBuffer(Hdr, SizeOf(Hdr));
-  for Chr := #0 to #255 do
-    if FActiveMapping[Chr] <> 0 then
-      Stream.WriteBuffer(FActiveMapping[Chr], MapSize);
+  TmpDot := FActiveMapping['.'];
+  TmpComma := FActiveMapping[','];
+  if DecimalSeparator <> '.' then
+  begin
+    FActiveMapping['.'] := TmpComma;
+    FActiveMapping[','] := TmpDot;
+  end;
+  try
+    for Chr := #0 to #255 do
+      if FActiveMapping[Chr] <> 0 then
+        Include(Hdr.MappedChars, Chr);
+    Stream.WriteBuffer(Hdr, SizeOf(Hdr));
+    for Chr := #0 to #255 do
+      if FActiveMapping[Chr] <> 0 then
+        Stream.WriteBuffer(FActiveMapping[Chr], MapSize);
+  finally
+    if DecimalSeparator <> '.' then
+    begin
+      FActiveMapping['.'] := TmpDot;
+      FActiveMapping[','] := TmpComma;
+    end;
+  end;
 end;
 
 //===TJv7SegmentedLEDDigit==========================================================================
