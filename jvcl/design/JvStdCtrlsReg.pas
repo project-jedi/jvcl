@@ -11,7 +11,7 @@ uses
   Classes, Controls, DesignIntf, DesignEditors, FiltEdit,  
   JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit, JvCheckedMaskEdit,
   JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit, JvxCtrls,
-  JvxSlider, JvBevel, JvCheckBox, JvCheckListBox, JvCombobox,
+  JvxSlider, JvBevel, JvCheckBox, JvCheckListBox, JvCombobox, JvCheckTreeView,
   JvComCtrls, JvControlBar, JvCoolBar, JvCtrls, JvGroupBox, JvHeaderControl,
   JvHotKey, JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
   JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids, JvStringGrid,
@@ -39,7 +39,7 @@ begin
     TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvCheckListBox, TJvComboBox,
     TJvColorComboBox, TJvFontComboBox, TJvListBox, TJvBitBtn, TJvImgBtn, TJvScrollBox, TJvShape,
 
-    TJvStaticText, TJvIPAddress, TJvPageControl, TJvTreeView, TJvTrackBar,
+    TJvStaticText, TJvIPAddress, TJvPageControl, TJvTreeView, TJvCheckTreeView, TJvTrackBar,
     TJvControlBar, TJvCoolBar, TJvHotKey, TJvListView, TJvRichEdit, TJvProgressBar,
     TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,} TJvStatusBar, TJvTabControl, TJvToolBar,
     TJvUpDown, TJvDomainUpDown,
