@@ -96,7 +96,7 @@ JVCLRESDIRS=$(JVCLROOT)\Resources
 #-------------------------------------------------------------------------------
 
 default: \
-	Preprocess
+	Preprocess \
 	BuildJCLdcpFiles \
 	Resources \
 	pg.exe \
