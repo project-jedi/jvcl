@@ -57,6 +57,7 @@ type
     {$ENDIF COMPILER6_UP}
   protected
     procedure AdjustSize; override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -303,6 +304,14 @@ begin
     ClearTempMenu;
   Dec(FMenuShowingCount);
   inherited;
+end;
+
+procedure TJvToolBar.GetChildren(Proc: TGetChildProc; Root: TComponent);
+begin
+  // This is required by v5 VCL so that it doesn't save the buttons
+  // created because of the menu property. This is redundant
+  // under v6 VCL because it already does that check.
+  if not Assigned(Menu) then inherited;
 end;
 
 end.
