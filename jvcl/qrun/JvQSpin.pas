@@ -41,9 +41,9 @@ unit JvQSpin;
 interface
 
 uses
-  SysUtils, Classes, QWindows, QMessages, 
-  QComCtrls, QControls, QExtCtrls, QGraphics, QForms, 
-  QComboEdits, JvQExComboEdits, QComCtrlsEx, 
+  SysUtils, Classes, Qt, QWindows, QMessages,
+  QComCtrls, QControls, QExtCtrls, QGraphics, QForms,
+  QComboEdits, JvQExComboEdits, QComCtrlsEx,
   JvQEdit, JvQExMask, JvQMaskEdit, JvQComponent;
 
 type
@@ -57,7 +57,7 @@ type
     FDragging: Boolean;
     FUpBitmap: TBitmap; // Custom up arrow
     FDownBitmap: TBitmap; // Custom down arrow
-    FButtonBitmaps: Pointer; 
+    FButtonBitmaps: Pointer;
     FRepeatTimer: TTimer;
     FLastDown: TSpinButtonState;
     FFocusControl: TWinControl;
@@ -88,13 +88,13 @@ type
     procedure Notification(AComponent: TComponent;
       Operation: TOperation); override;
 
-    function MouseInBottomBtn(const P: TPoint): Boolean; 
+    function MouseInBottomBtn(const P: TPoint): Boolean;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Down: TSpinButtonState read FDown write SetDown default sbNotDown;
   published
-    property ButtonStyle: TJvSpinButtonStyle read FButtonStyle write SetButtonStyle default sbsDefault; 
+    property ButtonStyle: TJvSpinButtonStyle read FButtonStyle write SetButtonStyle default sbsDefault;
     property DragMode;
     property Enabled;
     property Visible;
@@ -112,15 +112,15 @@ type
     property OnEndDrag;
     property OnStartDrag;
   end;
- 
-  TValueType = (vtInteger, vtFloat, vtHex); 
+
+  TValueType = (vtInteger, vtFloat, vtHex);
 
   TSpinButtonKind = (bkStandard, bkDiagonal, bkClassic);
 
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
-  
-  TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit) 
+
+  TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit)
   private
     FShowButton: Boolean;
     FCheckMaxValue: Boolean;
@@ -903,12 +903,12 @@ var
   SaveFont: HFONT;
   SysMetrics, Metrics: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   GetTextMetrics(DC, SysMetrics);
   SaveFont := SelectObject(DC, Font.Handle);
   GetTextMetrics(DC, Metrics);
   SelectObject(DC, SaveFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
   SysHeight := SysMetrics.tmHeight;
   Height := Metrics.tmHeight;
 end;
@@ -1046,25 +1046,26 @@ begin
       begin
         Visible := True;
         //Polaris
-        SetBounds(0, 1, DefBtnWidth, Self.Height);
+//        SetBounds(0, 1, DefBtnWidth, Self.Height);
+        SetBounds(0, 0, DefBtnWidth, Self.Height);
         if BiDiMode = bdRightToLeft then
           Align := alLeft
         else
-          Align := alRight;  
-        Parent := Self.ClientArea; 
+          Align := alRight;
+        Parent := Self.ClientArea;
         OnClick := UpDownClick;
       end;
     end
     else
     begin
       FBtnWindow := TWinControl.Create(Self);
-      FBtnWindow.Visible := True;  
-      FBtnWindow.Parent := Self.ClientArea; 
+      FBtnWindow.Visible := True;
+      FBtnWindow.Parent := Self.ClientArea;
       if FButtonKind <> bkClassic then
         FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
       else
-        FBtnWindow.SetBounds(0, 0, Height, Height); 
-      FBtnWindow.Align := alRight; 
+        FBtnWindow.SetBounds(0, 0, Height, Height);
+      FBtnWindow.Align := alRight;
       FButton := TJvSpinButton.Create(Self);
       FButton.Visible := True;
       if FButtonKind = bkClassic then
@@ -1074,7 +1075,8 @@ begin
       FButton.OnTopClick := UpClick;
       FButton.OnBottomClick := DownClick;
       //Polaris
-      FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
+      //FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
+      FButton.SetBounds(0, 0, FBtnWindow.Width, FBtnWindow.Height);
     end;
 end;
 
@@ -1117,11 +1119,11 @@ begin
       end;
     end;
     with R do
-      FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top); 
+      FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
     if BiDiMode = bdRightToLeft then
       FBtnWindow.Align := alLeft
     else
-      FBtnWindow.Align := alRight; 
+      FBtnWindow.Align := alRight;
     //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
   end;
@@ -1131,8 +1133,8 @@ procedure TJvCustomSpinEdit.SetAlignment(Value: TAlignment);
 begin
   if FAlignment <> Value then
   begin
-    FAlignment := Value;  
-    Invalidate; 
+    FAlignment := Value;
+    Invalidate;
   end;
 end;
 
@@ -1217,13 +1219,14 @@ begin
   //Polaris
   if BiDiMode = bdRightToLeft then
   begin
-    SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1, ClientHeight + 1); 
+    SetRect(Loc, GetButtonWidth + 1, 0, ClientWidth - 1, ClientHeight + 1);
   end
   else
   begin
-    SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1); 
-  end;  
-  SetEditorRect(@Loc); 
+    SetRect(Loc, 0, 0, ClientWidth - GetButtonWidth - 2, ClientHeight + 1);
+  end;
+  SendMessage(Handle, EM_SETRECT, 0, Longint(@Loc));
+  //SetEditorRect(@Loc);
 end;
 
 procedure TJvCustomSpinEdit.SetFocused(Value: Boolean);
@@ -2016,6 +2019,7 @@ begin
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+//        DisabledBitmap := CreateMonoBitmap(AUpArrow, clWhite);//, clBlack);
       try
         BrushCopy( ACanvas,  Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
@@ -2034,6 +2038,7 @@ begin
     else
     begin
       DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
+//      DisabledBitmap := CreateMonoBitmap(ADownArrow, clWhite);
       try
         BrushCopy( ACanvas,  Dest, DisabledBitmap, Source, DisabledBitmap.TransparentColor);
       finally
@@ -2076,7 +2081,8 @@ begin
       Draw(X, Y, AUpArrow)
     else
     begin
-      DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+//      DisabledBitmap := CreateDisabledBitmap(AUpArrow, clBlack);
+      DisabledBitmap := CreateMonoBitmap(AUpArrow, clWhite);
       try
         Draw(X, Y, DisabledBitmap);
       finally
@@ -2084,7 +2090,6 @@ begin
       end;
     end;
     SelectClipRgn(Handle, 0);
-
     X := (Width - ADownArrow.Width) div 2;
     Y := R1.Top + (I - ADownArrow.Height) div 2;
     if I - ADownArrow.Height < 0 then
@@ -2098,7 +2103,7 @@ begin
       Draw(X, Y, ADownArrow)
     else
     begin
-      DisabledBitmap := CreateDisabledBitmap(ADownArrow, clBlack);
+      DisabledBitmap := CreateMonoBitmap(ADownArrow, clWhite);
       try
         Draw(X, Y, DisabledBitmap);
       finally
