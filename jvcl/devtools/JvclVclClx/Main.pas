@@ -100,7 +100,9 @@ begin
           end;
         end
         else
+        begin
           JVCLConverter.ParsePasFile(EditSingleFile.Text);
+        end;
         ShowMessage('Finished.');
       finally
         JVCLConverter.Free;
