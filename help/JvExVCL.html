@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html; charset=ISO-8859-1"
+ http-equiv="content-type">
+  <title>JVCL Localization</title>
+  <link rel="STYLESHEET" type="text/css" href="styles/default.css">
+</head>
+<body>
+<h1>JvExVCL<br>
+</h1>
+<hr style="width: 100%; height: 2px;"><br>
+<h2>What is it?</h2>
+The JvExVCL is an extension to most VCL classes that makes it easier to port VCL
+components to CLX. The VCL derived classes introduce the CLX way of event handlers
+to the VCL what makes coding more Delphi (without message handlers). The big advance
+is that you can write controls without the need to IFDEFed for VCL and VisualCLX.
+<br>&nbsp;
+
+<h2>How to use it?</h2>
+Just add the required <b>JvEx</b>XXXX (where XXXX is the VCL unit
+or the VisualCLX unit without the leading "Q"). Change the base class of the component
+by adding a leading <b>TJvEx</b>XXXX. Now you must replace the message handlers by the
+corresponding virtual and dynamic methods. By calling <i>inherited</i> in the first
+derived class the original message handler is executed (if not specified other in the
+following tables).
+
+<br />&nbsp;
+<br />for TControl/TGraphicControl derived VCL classes.
+<blockquote>
+<table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="2" cellpadding="2">
+<thead>
+<tr>
+ <td style="vertical-align: top; text-align: center; font-weight: bold; width: 10%;">message handler</td>
+ <td style="vertical-align: top; text-align: center; font-weight: bold; width: 10;">&nbsp;</td>
+ <td style="vertical-align: top; text-align: center; font-weight: bold;">corresponding virtual/dynamic method</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+ <td style="vertical-align: top;">CM_VISIBLECHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure VisibleChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_ENABLEDCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure EnabledChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_FONTCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure FontChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_COLORCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ColorChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_PARENTFONTCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ParentFontChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_PARENTCOLORCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ParentColorChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_PARENTSHOWHINTCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ParentShowHintChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_TEXTCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure TextChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_HINTSHOW</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">function HintShow(var HintInfo: THintInfo): Boolean;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_HITTEST</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">function HitTest(X, Y: Integer): Boolean;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_MOUSEENTER</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure MouseEnter(AControl: TControl);</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_MOUSELEAVE</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure MouseLeave(AControl: TControl);</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_DIALOGCHAR</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">function WantKey(Key: Integer; Shift: TShiftState;<br />
+   &nbsp;&nbsp;const KeyText: WideString): Boolean;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">WM_ERASEBKGND</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_FOCUSCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure DoFocusChanged(Sender: TWinControl);<br />
+   <i style="color: navy;">(inherited is called before DoFocusChanged)</i></td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+
+<br />&nbsp;
+<br />For TWinControl/TCustomControl derived VCL classes.
+The TControl/TGraphicControl table applies to these classes, too.	
+<blockquote>
+<table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
+ border="0" cellspacing="2" cellpadding="2">
+<thead>
+<tr>
+ <td style="vertical-align: top; text-align: center; font-weight: bold; width: 10%;">message handler</td>
+ <td style="vertical-align: top; text-align: center; font-weight: bold; width: 10;">&nbsp;</td>
+ <td style="vertical-align: top; text-align: center; font-weight: bold;">corresponding virtual/dynamic method</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+ <td style="vertical-align: top;">CM_CURSORCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure CursorChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_SHOWINGCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ShowingChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_SHOWHINTCHANGED</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ShowHintChanged;</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_CONTROLLISTCHANGE</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ControlsListChanging(Control: TControl; Inserting: Boolean);<br />
+procedure ControlsListChanged(Control: TControl; Inserting: Boolean);<br />
+  <i style="color: navy;">(ControlsListChanging is called before the actual change,
+  ControlListChanged is called after the change)</i></td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">CM_CONTROLCHANGE</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure ControlsListChanging(Control: TControl; Inserting: Boolean);<br />
+procedure ControlsListChanged(Control: TControl; Inserting: Boolean);<br />
+  <i style="color: navy;">(ControlsListChanging is called before the actual change, 
+  ControlListChanged is called after the change)</i></td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">WM_GETDLGCODE</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure DoGetDlgCode(var Code: TDlgCodes);<br />&nbsp;<br />
+  <code>TDlgCode = (<br />
+    &nbsp;&nbsp;dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,<br />
+    &nbsp;&nbsp;dcButton,<br />
+    &nbsp;&nbsp;dcNative <i style="color: navy;">{ if dcNative is in the set the native
+    functions are used and DoGetDlgCode is ignored }</i><br />
+  );<br />
+  TDlgCodes = set of TDlgCode;</code>
+</td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">WM_SETFOCUS</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure DoSetFocus(FocusedWnd: HWND);<br />
+   <i style="color: navy;">(inherited is called before DoSetFocus)</i></td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">WM_KILLFOCUS</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure DoKillFocus(FocusedWnd: HWND);<br />
+   <i style="color: navy;">(inherited is called before DoSetFocus)</i></td>
+</tr>
+<tr>
+ <td style="vertical-align: top;">WM_SIZE</td>
+ <td style="vertical-align: top;"></td>
+ <td style="vertical-align: top;">procedure DoBoundsChanged;<br />
+   <i style="color: navy;">(inherited is called after DoBoundsChanged)</i></td>
+</tr>
+</tbody>
+</table>
+
+</blockquote>
+<br>&nbsp;
+
+<h2>How does it work?</h2>
+For VCL components JvExVCL overrides the Dispatch method and redirects all messages to
+virtual und dynamic methods. As VisualCLX does not use Dispatch for event delivery the
+JvExVCL must patch some functions in memory.
+<br>&nbsp;
+
+<h2>How to extend the JvExVCL (developer)?</h2>
+The JvExVCL uses macros that are preprocessed by the
+<a target="_blank" href="http://www.sourceforge.net/projects/dpp32">Delphi Preprocessor</a>
+(The JVCL 3 contains a precompiled dpp32.exe). These macros allow easier modification because
+you must change only one file and all classes will use the new features.<br />
+The JvExVCL source (un-preprocessed files) are in <i>$(JVCL)\devtools\JvExVCL\src</i>
+
+
+<br>&nbsp;
+
+<br>
+</body>
+</html>
