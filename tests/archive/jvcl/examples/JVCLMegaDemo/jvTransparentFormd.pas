@@ -11,7 +11,6 @@ type
     JvTransparentForm1: TJvTransparentForm;
     Label1: TLabel;
     Button1: TButton;
-    procedure FormActivate(Sender: TObject);
     procedure FormDeactivate(Sender: TObject);
     procedure Button1Click(Sender: TObject);
    end;
@@ -19,11 +18,6 @@ type
 implementation
 
 {$R *.DFM}
-
-procedure TfrTransparentForm.FormActivate(Sender: TObject);
-begin
-  JvTransparentForm1.Active := true;
-end;
 
 procedure TfrTransparentForm.FormDeactivate(Sender: TObject);
 begin

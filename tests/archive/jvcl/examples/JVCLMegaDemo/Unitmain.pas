@@ -33,22 +33,28 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, JvComCtrls, JvComponent, JvOLBar, ExtCtrls, JvAutoSizeCompo,
-  JvCaptionPanel, ArrowButtonMainFormU, ImgList;
+  JvCaptionPanel, ArrowButtonMainFormU, ImgList, ToolWin, JvToolBar,
+  StdCtrls, JvBaseDlg, JvJVCLAbout;
 
 type
   TMainform = class(TForm)
-    JvOutlookBar1: TJvOutlookBar;
     JvCaptionPanel1: TJvCaptionPanel;
+    Panel1: TPanel;
+    JvOutlookBar1: TJvOutlookBar;
+    Panel2: TPanel;
+    btnLoadIde: TButton;
     procedure FormDestroy(Sender: TObject);
     procedure JvOutlookBar1ButtonClick(Sender: TObject; Index: Integer);
     procedure FormShow(Sender: TObject);
-  private
     procedure CreateDemoForm(const ID: integer);
+    procedure btnLoadIdeClick(Sender: TObject);
   end;
 
 var
-  Mainform : TMainform;
-  TheForm  : TForm;
+  Mainform         : TMainform;
+  TheForm          : TForm;
+  TheToolBar       : TJvToolBar;
+
 
 implementation
 
@@ -71,7 +77,9 @@ uses
   JvThumbnailMainFormU, JvTranslatorMainFormU, JvWndProcHookDemoMainFormU,
   RegTVMainFormU, RunDll32MainFormU, ScrollWinMainFormU, TimelineMainFormU,
   TipOfDayMainFormU, TMTimeLineMainFormU, TransBtnFormMainU,
-  JvZLibMultipleMainFormU, OtherStandAlone, Profiler32MainFormU;
+  JvZLibMultipleMainFormU, OtherStandAlone, Profiler32MainFormU,
+  FindReplaceMainFormU, JvPlayListMainFormU, ImageWindowMainFormU,
+  RessourcesFormMain, SearchingForm, JclDebug, JclStrings, JclFileUtils, ShellAPI;
 
 {$R *.DFM}
 
@@ -88,47 +96,48 @@ begin
     freeAndNil(TheForm);
 
   case ID of
-    65 : TheForm  := Tfrm_hello.Create(nil);
+
      1 : TheForm  := TJvFormsFrm.Create(nil);
      2 : TheForm  := TJvDialogs.Create(nil);
      3 : TheForm  := TJvUtilsFrm.Create(nil);
      4 : TheForm  := TJvLabelsFrm.Create(nil);
-    26 : TheForm  := TControlsExampleMainForm.Create(nil);
+     5 : TheForm := TRaHtHintsMainForm.Create(nil);
+     6 : TheForm := TJvZoomMainForm.Create(nil);
      7 : TheForm := TJvEdits.Create(nil);
+     8 : TheForm := TSearchingFormMain.Create(nil);
      9 : TheForm := TJvPanelsFrm.Create(nil);
+    10 : TheForm := TMonthCalendarMainForm.Create(nil);
+    11 : TheForm := TJvSearchFileMainForm.Create(nil);
     12 : TheForm := TJvDateTimeFrm.Create(nil);
     13 : TheForm := TJvChoosersFrm.Create(nil);
     14 : TheForm := TJvControls.Create(nil);
-    42 : TheForm := TJvButtons.Create(nil);
-    18 : TheForm := TBmpAnimMainForm.Create(nil);
-    19 : TheForm := TArrowButtonMainForm.Create(nil);
-    27 : TheForm := TChangeNotificationMainForm.Create(nil);
     15 : TheForm := TJvAniMainForm.Create(nil);
     16 : TheForm := TJvMousePositionnerMainForm.Create(nil);
     17 : TheForm := TJvDataEmbeddedMainForm.Create(nil);
-    10 : TheForm := TMonthCalendarMainForm.Create(nil);
-    35 : TheForm := TMailExampleMainForm.Create(nil);
-    25 : TheForm := TOLBarMainForm.Create(nil);
-    11 : TheForm := TJvSearchFileMainForm.Create(nil);
-    29 : TheForm := TJvNTEventLogMainForm.Create(nil);
-    40 : TheForm := TJvMruListMainForm.Create(nil);
-    24 : TheForm := TJvLogFileMainForm.Create(nil);
-    22 : TheForm := TInstallLabelMainForm.Create(nil);
-    30 : TheForm := TJvAppHotKeyDemoMainForm.Create(nil);
-    38 : TheForm := TJvDBDateTimePickerMainForm.Create(nil);
-    34 : TheForm := TContentScrollerMainForm.Create(nil);
-    21 : TheForm := TJvBrowseFolderMainForm.Create(nil);
-    28 : TheForm := TCreateProcessExampleMainForm.Create(nil);
+    18 : TheForm := TBmpAnimMainForm.Create(nil);
+    19 : TheForm := TArrowButtonMainForm.Create(nil);
     20 : TheForm := TJvClipboardViewerMainForm.Create(nil);
-     6 : TheForm := TJvZoomMainForm.Create(nil);
+    21 : TheForm := TJvBrowseFolderMainForm.Create(nil);
+    22 : TheForm := TInstallLabelMainForm.Create(nil);
+    24 : TheForm := TJvLogFileMainForm.Create(nil);
+    25 : TheForm := TOLBarMainForm.Create(nil);
+    26 : TheForm  := TControlsExampleMainForm.Create(nil);
+    27 : TheForm := TChangeNotificationMainForm.Create(nil);
+    28 : TheForm := TCreateProcessExampleMainForm.Create(nil);
+    29 : TheForm := TJvNTEventLogMainForm.Create(nil);
+    30 : TheForm := TJvAppHotKeyDemoMainForm.Create(nil);
+    31 : TheForm := TJvWindowsTitleMainForm.Create(nil);
     32 : TheForm := TJvSpecialProgressMainForm.Create(nil);
     33 : TheForm := TJvColorComboDemoMainForm.Create(nil);
-    39 : TheForm := TJvInspectorDBDemoMainForm.Create(nil);
-    31 : TheForm := TJvWindowsTitleMainForm.Create(nil);
-     5 : TheForm := TRaHtHintsMainForm.Create(nil);
-    41 : TheForm := TFileListBoxMainForm.Create(nil);
+    34 : TheForm := TContentScrollerMainForm.Create(nil);
+    35 : TheForm := TMailExampleMainForm.Create(nil);
     36 : TheForm := TJvTreeViewAsMenuMainForm.Create(nil);
     37 : TheForm := TListCombMainForm.Create(nil);
+    38 : TheForm := TJvDBDateTimePickerMainForm.Create(nil);
+    39 : TheForm := TJvInspectorDBDemoMainForm.Create(nil);
+    40 : TheForm := TJvMruListMainForm.Create(nil);
+    41 : TheForm := TFileListBoxMainForm.Create(nil);
+    42 : TheForm := TJvButtons.Create(nil);
     43 : TheForm := TJvBalloonHintMainForm.Create(nil);
     44 : TheForm := TDSADialogsMainForm.Create(nil);
     45 : TheForm := TfrmMessageDlgEditor.Create(nil);
@@ -151,30 +160,39 @@ begin
     62 : TheForm := TTMTimeLineMainForm.Create(nil);
     63 : TheForm := TTransBtnFormMain.Create(nil);
     64 : TheForm := TJvZLibMultipleMainForm.Create(nil);
+    65 : TheForm  := TWelcomeForm.Create(nil);
     66 : TheForm := TOtherMainForm.Create(nil);
     67 : TheForm := TProfiler32MainForm.Create(nil);
-//    59 : TheForm := T MainForm.Create(nil);
-//    59 : TheForm := T MainForm.Create(nil);
-//    59 : TheForm := T MainForm.Create(nil);
-//    59 : TheForm := T MainForm.Create(nil);
-//    59 : TheForm := T MainForm.Create(nil);
+    68 : TheForm := TFindReplaceMainForm.Create(nil);
+    69 : TheForm := TJvPlaylistMainForm.Create(nil);
+    70 : TheForm := TImageWindowMainForm.Create(nil);
+    71 : TheForm := TRessourcesForm.Create(nil);
 
   else
     TheForm := tfrEmpty.create(nil);
   end;
 
-
+  // embed the form in JvCaptionPanel1
   TheForm.Parent := JvCaptionPanel1;
-
-  JvCaptionPanel1.Caption := TheForm.Caption;
   TheForm.BorderStyle :=  bsNone;
+  TheForm.Scaled := false;
   TheForm.Visible := true;
   TheForm.left := 0;
   TheForm.top  := 25;
 
-  //adjust the with and heigth from the form
+  //take the with, heigth and caption from the form
   JvCaptionPanel1.width  := TheForm.Width + 5;
   JvCaptionPanel1.height := TheForm.height + 30;
+  JvCaptionPanel1.Caption:= TheForm.Caption;
+
+  // check if the form has a mainMenu and plug it in
+  if TheForm.Menu <> nil then
+  begin
+     TheToolBar := TjvToolBar.Create(TheForm);
+     TheToolBar.Parent := TheForm;
+     TheToolBar.Menu := TheForm.Menu;
+     TheToolBar.Flat := true;
+  end;
 
 end;
 
@@ -193,13 +211,30 @@ procedure TMainform.FormShow(Sender: TObject);
 begin
   //Show the Welcome-Frame
   CreateDemoForm(65);
-//  TheFrame := tfrm_hello.Create(self);
-//  TheFrame.parent := mainform;
-//  TheFrame.align := alClient;
-//  TheFrame.Visible := true;
+end;
 
- //Start the scrolling of the ScollText comp
-//  tfrm_hello(TheFrame).frmh_st.active := true;
+procedure TMainform.btnLoadIdeClick(Sender: TObject);
+var
+  aFileStringList : TStringList;
+  SearchPathExpr  : string;
+begin
+
+  // uses the function 'ModuleOfAddr' from JclDebug unit to get the unit name
+  SearchPathExpr := ExtractFilePath(Application.ExeName) +
+    ModuleOfAddr(TheForm.ClassInfo) + '.pas';
+  StrReplace(SearchPathExpr, '\bin', '\examples', [rfIgnoreCase]);
+
+  // uses AdvBuildFileList to get the file location in the example diretory tree
+  aFileStringList := TStringList.create;
+  AdvBuildFileList(SearchPathExpr, faAnyFile, aFileStringList, amAny,
+   [flFullNames, flRecursive], '', nil);
+
+ if aFileStringList.Count < 1 then
+   MessageDlg('File not found', mtError, [mbOK], 0)
+ else
+   ShellExecute(0, nil, PChar('"' +aFileStringList.Strings[0]+ '"'), nil, nil, SW_SHOWNORMAL);
+
+ aFileStringList.free;
 end;
 
 end.

@@ -167,8 +167,8 @@
       ..\lib6\JvDatePickerEdit.obj ..\lib6\JvCheckedMaskEdit.obj 
       ..\lib6\JvDropDownForm.obj ..\lib6\JvDBDatePickerEdit.obj 
       ..\lib6\JvScheduledEvents.obj ..\lib6\JvSchedEvtStore.obj 
-      ..\lib6\JvWndProcHook.obj ..\lib6\JvxRConst.obj ..\lib6\JvTransLED.obj
-      ..\lib6\JvJVCLAbout.obj"/>
+      ..\source\JvShellHook.obj ..\lib6\JvWndProcHook.obj ..\lib6\JvxRConst.obj 
+      ..\lib6\JvTransLED.obj ..\lib6\JvJVCLAbout.obj"/>
     <RESFILES value="jvcl200_R60C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -646,6 +646,7 @@
       <FILE FILENAME="..\source\JvDBDatePickerEdit.pas" FORMNAME="" UNITNAME="JvDBDatePickerEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvScheduledEvents.pas" FORMNAME="" UNITNAME="JvScheduledEvents" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSchedEvtStore.pas" FORMNAME="" UNITNAME="JvSchedEvtStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvShellHook.pas" FORMNAME="" UNITNAME="JvShellHook" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvWndProcHook.pas" FORMNAME="" UNITNAME="JvWndProcHook" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvxRConst.pas" FORMNAME="" UNITNAME="JvxRConst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransLED.pas" FORMNAME="" UNITNAME="JvTransLED" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>

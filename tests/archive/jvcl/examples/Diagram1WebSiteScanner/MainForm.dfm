@@ -19,7 +19,7 @@ object MainDlg: TMainDlg
     Left = 0
     Top = 41
     Width = 585
-    Height = 288
+    Height = 290
     Align = alClient
     Color = clWhite
     ParentColor = False
@@ -56,7 +56,7 @@ object MainDlg: TMainDlg
       Width = 305
       Height = 21
       TabOrder = 0
-      Text = 'http://localhost'
+      Text = 'SampleForWebMapper.htm'
     end
     object CancelBtn: TButton
       Left = 492
@@ -70,7 +70,7 @@ object MainDlg: TMainDlg
   end
   object Panel2: TPanel
     Left = 0
-    Top = 329
+    Top = 331
     Width = 585
     Height = 41
     Align = alBottom
@@ -102,8 +102,6 @@ object MainDlg: TMainDlg
       Top = 12
       Width = 153
       Height = 16
-      Min = 0
-      Max = 100
       TabOrder = 0
     end
   end

@@ -403,6 +403,7 @@ contains
   JvPluginMan in '..\source\JvPluginMan.pas',
   JvScheduledEvents in '..\source\JvScheduledEvents.pas',
   JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
+  JvShellHook in '..\source\JvShellHook.pas',
   JvWndProcHook in '..\source\JvWndProcHook.pas',
   JvxRConst in '..\source\JvxRConst.pas',
   JvTransLED in '..\source\JvTransLED.pas',

@@ -413,6 +413,7 @@ USEUNIT("..\source\JvSQLS.pas");
 USEUNIT("..\source\JvStrUtil.pas");
 USEUNIT("..\source\JvTipOfDay.pas");
 USEUNIT("..\source\JvUtils.pas");
+USEUNIT("..\source\JvShellHook.pas");
 USEUNIT("..\source\JvWndProcHook.pas");
 USERES("JVCL200_R50C.res");
 USEPACKAGE("vcl50.bpi");

@@ -13,6 +13,8 @@ object ImageWindowMainForm: TImageWindowMainForm
   Menu = MainMenu1
   OldCreateOrder = True
   Position = poScreenCenter
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object ImageWindow1: TJvImageWindow

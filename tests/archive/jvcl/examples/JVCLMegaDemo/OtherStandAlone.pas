@@ -33,14 +33,30 @@ type
     JvHotLink17: TJvHotLink;
     JvHotLink18: TJvHotLink;
     JvHotLink19: TJvHotLink;
-    JvHotLink20: TJvHotLink;
     Label7: TLabel;
-    JvHotLink21: TJvHotLink;
     StatusBar: TStatusBar;
+    Label8: TLabel;
+    JvHotLink22: TJvHotLink;
+    JvHotLink23: TJvHotLink;
+    JvHotLink24: TJvHotLink;
+    Label9: TLabel;
+    Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    JvLabel1: TJvLabel;
+    JvLabel2: TJvLabel;
+    Label13: TLabel;
+    JvLabel3: TJvLabel;
+    Label14: TLabel;
+    JvLabel4: TJvLabel;
+    Label15: TLabel;
     procedure JvHotLinkMouseEnter(Sender: TObject);
     procedure JvHotLinkMouseLeave(Sender: TObject);
     procedure JvHotLinkClick(Sender: TObject);
     procedure JvHotLinkBuildJVCLClick(Sender: TObject);
+    procedure JvLabelMouseEnter(Sender: TObject);
+    procedure JvLabelClick(Sender: TObject);
+    procedure JvLabelMouseLeave(Sender: TObject);
   end;
 
 var
@@ -53,29 +69,23 @@ uses
 
 {$R *.dfm}
 
-var
-  hotLinkCaption : string;
-
 procedure TOtherMainForm.JvHotLinkMouseEnter(Sender: TObject);
 var
   fileName : String;
   hotLnk : TJvHotLink;
 begin
  hotLnk := sender as TJvHotLink;
- hotLinkCaption := hotLnk.caption;
 
  fileName := ExtractFilePath(Application.ExeName) + (hotLnk).Url;
 
  if not fileExists(fileName) then
  begin
    hotLnk.font.Color := clred;
-   hotLnk.Caption := 'file not found';
-   StatusBar.SimpleText := 'file ''' + fileName + ''' not found';;
+   StatusBar.SimpleText := 'file ''' + fileName + ''' not found: run ''Build all JVCL examples now''';
  end
  else
  begin
    hotLnk.font.Color := clGreen;
-   hotLnk.Caption := 'click to start';
    StatusBar.SimpleText := 'click to start file ''' + fileName + '''';
  end;
 end;
@@ -85,8 +95,10 @@ var
   hotLnk : TJvHotLink;
 begin
   hotLnk := sender as TJvHotLink;
-  hotLnk.caption := hotLinkCaption;
-  hotLnk.font.color := clBlue;
+  if hotLnk.Tag = 1 then // already visited
+    hotLnk.font.color := clNavy
+  else
+    hotLnk.font.color := clBlue;
 end;
 
 procedure TOtherMainForm.JvHotLinkClick(Sender: TObject);
@@ -95,30 +107,88 @@ var
   hotLnk : TJvHotLink;
 begin
  hotLnk := sender as TJvHotLink;
- hotLnk.caption := hotLinkCaption;
 
  fileName := ExtractFilePath(Application.ExeName) + (hotLnk).Url;
  if fileExists(fileName) then
-   ShellExecute(0, Nil, pChar (fileName), Nil, Nil, SW_HIDE);
-
+ begin
+   hotLnk.font.Color := clNavy; // now it is visited
+   hotLnk.Tag := 1;
+ end
+ else
+   hotLnk.font.Color := clBlue;
 end;
 
 procedure TOtherMainForm.JvHotLinkBuildJVCLClick(Sender: TObject);
 var
   fileName : String;
-  hotLnk : TJvHotLink;
+  filePath : String;
 begin
- hotLnk := sender as TJvHotLink;
- hotLinkCaption := hotLnk.caption;
 
- fileName := ExtractFilePath(Application.ExeName);
+ fileName := ExtractFilePath(Application.ExeName) + 'examples\CompileExamples.bat';
  StrReplace(fileName, '\bin', '', [rfIgnoreCase]);
 
- fileName := fileName + 'examples\CompileExamples.bat';
- if fileExists(fileName) then
-   ShellExecute(0, Nil, pChar (fileName), Nil, Nil, SW_NORMAL);
+ filePath := extractFilePath(fileName);
+ ChDir(filePath);
 
+ if fileExists(fileName) then
+   ShellExecute(0, nil, pChar (fileName), nil, pCHar(filePath), SW_NORMAL);
 
 end;
 
+procedure TOtherMainForm.JvLabelMouseEnter(Sender: TObject);
+var
+  fileName : String;
+  aJvLbl : TJvLabel;
+begin
+ aJvLbl := sender as TJvLabel;
+
+ fileName := ExtractFilePath(Application.ExeName) + (aJvLbl).hint;
+ StrReplace(fileName, 'jvcl\bin\', '', [rfIgnoreCase]);
+
+ if not fileExists(fileName) then
+ begin
+   aJvLbl.font.Color := clred;
+   StatusBar.SimpleText := 'file ''' + fileName + ''' not found';
+ end
+ else
+ begin
+   aJvLbl.font.Color := clGreen;
+   StatusBar.SimpleText := 'click to start file ''' + fileName + '''';
+ end;
+
+end;
+
+procedure TOtherMainForm.JvLabelClick(Sender: TObject);
+var
+  fileOrDirName : String;
+  aJvLbl : TJvLabel;
+begin
+ aJvLbl := sender as TJvLabel;
+
+ fileOrDirName := ExtractFilePath(Application.ExeName) + (aJvLbl).hint;
+ StrReplace(fileOrDirName, 'jvcl\bin\', '', [rfIgnoreCase]);
+
+ if directoryExists(fileOrDirName) or fileExists(fileOrDirName) then
+ begin
+   aJvLbl.font.Color := clNavy; // now it is visited
+   aJvLbl.Tag := 1;
+   ShellExecute(0, nil, pChar (fileOrDirName), nil, nil, SW_NORMAL);
+ end
+ else
+   aJvLbl.font.Color := clBlue;
+end;
+
+procedure TOtherMainForm.JvLabelMouseLeave(Sender: TObject);
+var
+  aJvLbl : TJvLabel;
+begin
+  aJvLbl := sender as TJvLabel;
+  if aJvLbl.Tag = 1 then // already visited
+    aJvLbl.font.color := clNavy
+  else
+    aJvLbl.font.color := clBlue;
+end;
+
 end.
+
+

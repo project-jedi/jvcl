@@ -1,8 +1,8 @@
 object OtherMainForm: TOtherMainForm
-  Left = 184
-  Top = 35
-  Width = 802
-  Height = 529
+  Left = 431
+  Top = 95
+  Width = 745
+  Height = 555
   Caption = 'other Demos'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,12 +14,12 @@ object OtherMainForm: TOtherMainForm
   PixelsPerInch = 96
   TextHeight = 13
   object JvHotLink1: TJvHotLink
-    Left = 160
-    Top = 72
-    Width = 168
+    Left = 24
+    Top = 48
+    Width = 286
     Height = 16
     Cursor = crHandPoint
-    Caption = 'Build all JVCL examples now'
+    Caption = 'call the batch file to build all JVCL examples now!'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -35,26 +35,32 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
+    Url = ' '
   end
   object Label1: TLabel
-    Left = 40
-    Top = 16
-    Width = 450
-    Height = 39
+    Left = 23
+    Top = 12
+    Width = 664
+    Height = 32
     Caption = 
-      'Some of the demos of the JVCL are not suitible for integrating i' +
-      't in this MegaDemo.'#13#10'So I decided to link to them from here. But' +
-      ' first you have to build all demos  from'#13#10'the JVCL. This can be ' +
-      'done with the batch file. If the binarys exists the above links ' +
-      'are enabled.'
+      'Some of the included demos are not suitable for integrating them' +
+      ' in this MegaDemo. So I decided to link'#13#10'to their exe files from' +
+      ' here. But first you have to build all demos from the JVCL with ' +
+      'the batch below.'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
   end
   object JvHotLink2: TJvHotLink
-    Left = 80
-    Top = 410
-    Width = 116
+    Left = 34
+    Top = 404
+    Width = 127
     Height = 16
     Cursor = crHandPoint
-    Caption = 'CaptionButtonDemo'
+    Caption = 'JvCaptionButtonDemo'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -73,8 +79,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'CaptionButtonDemo.exe'
   end
   object JvHotLink4: TJvHotLink
-    Left = 80
-    Top = 434
+    Left = 34
+    Top = 424
     Width = 92
     Height = 16
     Cursor = crHandPoint
@@ -97,8 +103,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'EnvironmentList.exe'
   end
   object JvHotLink3: TJvHotLink
-    Left = 80
-    Top = 458
+    Left = 34
+    Top = 444
     Width = 94
     Height = 16
     Cursor = crHandPoint
@@ -121,12 +127,12 @@ object OtherMainForm: TOtherMainForm
     Url = 'JvTrayIconDemo.exe'
   end
   object JvHotLink5: TJvHotLink
-    Left = 96
-    Top = 128
-    Width = 66
+    Left = 34
+    Top = 105
+    Width = 250
     Height = 16
     Cursor = crHandPoint
-    Caption = 'RAControls'
+    Caption = 'RAControls (also some kind of MegaDemo)'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -145,8 +151,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'RAControls.exe'
   end
   object JvHotLink6: TJvHotLink
-    Left = 96
-    Top = 152
+    Left = 34
+    Top = 124
     Width = 48
     Height = 16
     Cursor = crHandPoint
@@ -169,12 +175,12 @@ object OtherMainForm: TOtherMainForm
     Url = 'DBMove.exe'
   end
   object JvHotLink7: TJvHotLink
-    Left = 96
-    Top = 176
-    Width = 76
+    Left = 34
+    Top = 155
+    Width = 225
     Height = 16
     Cursor = crHandPoint
-    Caption = 'LineNumbers'
+    Caption = 'how to draw  line numbers in a JvEditor'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -193,12 +199,12 @@ object OtherMainForm: TOtherMainForm
     Url = 'LineNumbers.exe'
   end
   object JvHotLink8: TJvHotLink
-    Left = 96
-    Top = 200
-    Width = 77
+    Left = 34
+    Top = 175
+    Width = 56
     Height = 16
     Cursor = crHandPoint
-    Caption = 'RAEditorTest'
+    Caption = 'RA Editor'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -217,12 +223,12 @@ object OtherMainForm: TOtherMainForm
     Url = 'RAEditorTest.exe'
   end
   object JvHotLink9: TJvHotLink
-    Left = 96
-    Top = 264
-    Width = 121
+    Left = 34
+    Top = 251
+    Width = 68
     Height = 16
     Cursor = crHandPoint
-    Caption = 'RAHLEdPropDlgTest'
+    Caption = 'RAHLEditor'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -241,8 +247,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'RAHLEdPropDlgTest.exe'
   end
   object JvHotLink10: TJvHotLink
-    Left = 96
-    Top = 288
+    Left = 34
+    Top = 283
     Width = 98
     Height = 16
     Cursor = crHandPoint
@@ -265,8 +271,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'JvInterpreterTest.exe'
   end
   object Label2: TLabel
-    Left = 48
-    Top = 104
+    Left = 20
+    Top = 87
     Width = 134
     Height = 16
     Caption = 'formerly RaLib stuff'
@@ -274,12 +280,12 @@ object OtherMainForm: TOtherMainForm
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
   object JvHotLink11: TJvHotLink
-    Left = 96
-    Top = 312
+    Left = 34
+    Top = 303
     Width = 119
     Height = 16
     Cursor = crHandPoint
@@ -302,8 +308,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'JvInterpreterEndUser.exe'
   end
   object JvHotLink12: TJvHotLink
-    Left = 96
-    Top = 336
+    Left = 34
+    Top = 323
     Width = 50
     Height = 16
     Cursor = crHandPoint
@@ -326,8 +332,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'MDIApp.exe'
   end
   object JvHotLink13: TJvHotLink
-    Left = 96
-    Top = 360
+    Left = 34
+    Top = 343
     Width = 70
     Height = 16
     Cursor = crHandPoint
@@ -350,8 +356,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'RANotepad.exe'
   end
   object Label3: TLabel
-    Left = 48
-    Top = 240
+    Left = 20
+    Top = 231
     Width = 209
     Height = 16
     Caption = 'formerly RaLib Interpreter stuff'
@@ -359,25 +365,25 @@ object OtherMainForm: TOtherMainForm
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
   object Label4: TLabel
-    Left = 48
-    Top = 392
-    Width = 68
+    Left = 20
+    Top = 386
+    Width = 108
     Height = 16
-    Caption = 'other stuff'
+    Caption = 'other JVCL stuff'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
   object Label5: TLabel
-    Left = 376
-    Top = 110
+    Left = 371
+    Top = 187
     Width = 111
     Height = 16
     Caption = 'formerly Rx stuff'
@@ -385,12 +391,12 @@ object OtherMainForm: TOtherMainForm
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
   object JvHotLink14: TJvHotLink
-    Left = 408
-    Top = 134
+    Left = 395
+    Top = 205
     Width = 169
     Height = 16
     Cursor = crHandPoint
@@ -413,8 +419,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'RxDemo.exe'
   end
   object JvHotLink15: TJvHotLink
-    Left = 408
-    Top = 158
+    Left = 395
+    Top = 224
     Width = 67
     Height = 16
     Cursor = crHandPoint
@@ -437,8 +443,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'RxGIFAnm.exe'
   end
   object JvHotLink16: TJvHotLink
-    Left = 408
-    Top = 182
+    Left = 395
+    Top = 243
     Width = 70
     Height = 16
     Cursor = crHandPoint
@@ -461,21 +467,21 @@ object OtherMainForm: TOtherMainForm
     Url = 'DBEXPL32.exe'
   end
   object Label6: TLabel
-    Left = 376
-    Top = 214
-    Width = 358
+    Left = 371
+    Top = 268
+    Width = 328
     Height = 16
-    Caption = 'Demos with Jim Cooper'#180's diagramming components'
+    Caption = 'demos using Jim Cooper'#39's diagramming comps'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
   object JvHotLink17: TJvHotLink
-    Left = 408
-    Top = 238
+    Left = 395
+    Top = 285
     Width = 70
     Height = 16
     Cursor = crHandPoint
@@ -498,8 +504,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'WebMapper.exe'
   end
   object JvHotLink18: TJvHotLink
-    Left = 408
-    Top = 262
+    Left = 395
+    Top = 302
     Width = 53
     Height = 16
     Cursor = crHandPoint
@@ -522,8 +528,8 @@ object OtherMainForm: TOtherMainForm
     Url = 'UseCase.exe'
   end
   object JvHotLink19: TJvHotLink
-    Left = 408
-    Top = 286
+    Left = 395
+    Top = 320
     Width = 113
     Height = 16
     Cursor = crHandPoint
@@ -545,50 +551,39 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Style = [fsUnderline]
     Url = 'DepWalk.exe'
   end
-  object JvHotLink20: TJvHotLink
-    Left = 408
-    Top = 334
-    Width = 182
-    Height = 16
-    Cursor = crHandPoint
-    Caption = 'Diagramming with Delphi Part 1'
-    Font.Charset = ANSI_CHARSET
-    Font.Color = clBlue
-    Font.Height = -13
-    Font.Name = 'Arial'
-    Font.Style = []
-    ParentFont = False
-    OnClick = JvHotLinkClick
-    OnMouseEnter = JvHotLinkMouseEnter
-    OnMouseLeave = JvHotLinkMouseLeave
-    HotTrack = True
-    HotTrackFont.Charset = ANSI_CHARSET
-    HotTrackFont.Color = clBlue
-    HotTrackFont.Height = -13
-    HotTrackFont.Name = 'Arial'
-    HotTrackFont.Style = [fsUnderline]
-    Url = '..\Diagram1WebSiteScanner\DiagrammingClassArticle.doc'
-  end
   object Label7: TLabel
-    Left = 384
-    Top = 310
+    Left = 371
+    Top = 348
     Width = 281
     Height = 16
-    Caption = 'there are also 3 articles from Jim Cooper'
+    Caption = 'there are also 2 articles from Jim Cooper'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
-    Font.Style = [fsBold]
+    Font.Style = [fsBold, fsUnderline]
     ParentFont = False
   end
-  object JvHotLink21: TJvHotLink
-    Left = 408
-    Top = 350
-    Width = 182
+  object Label8: TLabel
+    Left = 371
+    Top = 412
+    Width = 299
+    Height = 16
+    Caption = '3 HID Demos for the JvHidDeviceController'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold, fsUnderline]
+    ParentFont = False
+  end
+  object JvHotLink22: TJvHotLink
+    Left = 395
+    Top = 465
+    Width = 95
     Height = 16
     Cursor = crHandPoint
-    Caption = 'Diagramming with Delphi Part 1'
+    Caption = 'ReadWriteDemo'
     Font.Charset = ANSI_CHARSET
     Font.Color = clBlue
     Font.Height = -13
@@ -604,12 +599,247 @@ object OtherMainForm: TOtherMainForm
     HotTrackFont.Height = -13
     HotTrackFont.Name = 'Arial'
     HotTrackFont.Style = [fsUnderline]
-    Url = '..\Diagram2UseCaseEditor\Diagramming with Delphi Part 2.doc'
+    Url = 'SimpleHIDWrite.exe'
+  end
+  object JvHotLink23: TJvHotLink
+    Left = 395
+    Top = 430
+    Width = 67
+    Height = 16
+    Cursor = crHandPoint
+    Caption = 'BasicDemo'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = 'Arial'
+    Font.Style = []
+    ParentFont = False
+    OnClick = JvHotLinkClick
+    OnMouseEnter = JvHotLinkMouseEnter
+    OnMouseLeave = JvHotLinkMouseLeave
+    HotTrack = True
+    HotTrackFont.Charset = ANSI_CHARSET
+    HotTrackFont.Color = clBlue
+    HotTrackFont.Height = -13
+    HotTrackFont.Name = 'Arial'
+    HotTrackFont.Style = [fsUnderline]
+    Url = 'BasicDemo.exe'
+  end
+  object JvHotLink24: TJvHotLink
+    Left = 395
+    Top = 447
+    Width = 91
+    Height = 16
+    Cursor = crHandPoint
+    Caption = 'CollectionDemo'
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = 'Arial'
+    Font.Style = []
+    ParentFont = False
+    OnClick = JvHotLinkClick
+    OnMouseEnter = JvHotLinkMouseEnter
+    OnMouseLeave = JvHotLinkMouseLeave
+    HotTrack = True
+    HotTrackFont.Charset = ANSI_CHARSET
+    HotTrackFont.Color = clBlue
+    HotTrackFont.Height = -13
+    HotTrackFont.Name = 'Arial'
+    HotTrackFont.Style = [fsUnderline]
+    Url = 'CollectionDemo.exe'
+  end
+  object Label9: TLabel
+    Left = 52
+    Top = 192
+    Width = 228
+    Height = 26
+    Caption = 
+      'showing syntax highliging (JvHLEditor) and code'#13#10'completion for ' +
+      'various languages (TJvIParser)'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label10: TLabel
+    Left = 52
+    Top = 140
+    Width = 167
+    Height = 13
+    Caption = 'uses JvaSQLScript and JvDBMove'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label11: TLabel
+    Left = 52
+    Top = 362
+    Width = 268
+    Height = 13
+    Caption = 'Notepad with syntaxhighlighting (TJvEditor, TJvHLEditor)'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object Label12: TLabel
+    Left = 52
+    Top = 267
+    Width = 184
+    Height = 13
+    Caption = 'uses JvHLEdPropDlg and TJvHLEditor'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+  end
+  object JvLabel1: TJvLabel
+    Left = 395
+    Top = 365
+    Width = 185
+    Height = 16
+    Hint = 'jvcl\examples\Diagram1WebSiteScanner\DiagrammingClassArticle.doc'
+    Caption = 'Diagramming with Delphi Part 1'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    OnClick = JvLabelClick
+    OnMouseEnter = JvLabelMouseEnter
+    OnMouseLeave = JvLabelMouseLeave
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+  end
+  object JvLabel2: TJvLabel
+    Left = 395
+    Top = 381
+    Width = 185
+    Height = 16
+    Hint = 
+      'jvcl\examples\Diagram2UseCaseEditor\Diagramming with Delphi Part' +
+      ' 2.doc'
+    Caption = 'Diagramming with Delphi Part 2'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    OnClick = JvLabelClick
+    OnMouseEnter = JvLabelMouseEnter
+    OnMouseLeave = JvLabelMouseLeave
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+  end
+  object Label13: TLabel
+    Left = 20
+    Top = 467
+    Width = 323
+    Height = 16
+    Caption = 'There are several examples for JvPlugin comp'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold, fsUnderline]
+    ParentFont = False
+  end
+  object JvLabel3: TJvLabel
+    Left = 34
+    Top = 483
+    Width = 184
+    Height = 16
+    Hint = 'jvcl\examples\JvPlugin'
+    Caption = 'open JvPlugin examples folder'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    OnClick = JvLabelClick
+    OnMouseEnter = JvLabelMouseEnter
+    OnMouseLeave = JvLabelMouseLeave
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+  end
+  object Label14: TLabel
+    Left = 371
+    Top = 88
+    Width = 99
+    Height = 16
+    Caption = 'JCL Examples'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold, fsUnderline]
+    ParentFont = False
+  end
+  object JvLabel4: TJvLabel
+    Left = 387
+    Top = 105
+    Width = 198
+    Height = 16
+    Hint = '\JCL\examples'
+    Caption = 'open the sample folder of the JCL'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clBlue
+    Font.Height = -13
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
+    OnClick = JvLabelClick
+    OnMouseEnter = JvLabelMouseEnter
+    OnMouseLeave = JvLabelMouseLeave
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+  end
+  object Label15: TLabel
+    Left = 396
+    Top = 125
+    Width = 317
+    Height = 52
+    Caption = 
+      'The included JEDI Code Library (JCL) has also many examples.'#13#10'Es' +
+      'pecially examples for getting Source location infos. With'#13#10'this ' +
+      'you can get in case of exceptions the unit name, the procedure'#13#10 +
+      'name and even the line number! Very useful for error tracking.'
+    Font.Charset = DEFAULT_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = []
+    ParentFont = False
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 485
-    Width = 794
+    Top = 511
+    Width = 737
     Height = 19
     Panels = <>
     SimplePanel = True

@@ -1,13 +1,12 @@
 program FindReplaceDemo;
 
 uses
-  Forms,
-  Unit1 in 'Unit1.pas' {Form1};
+  Forms, FindReplaceMainFormU;
 
 {$R *.RES}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TFindReplaceMainForm, FindReplaceMainForm);
   Application.Run;
 end.

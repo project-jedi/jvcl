@@ -1,4 +1,4 @@
-object Form2: TForm2
+object ImageWindowChild1: TImageWindowChild1
   Left = 620
   Top = 317
   BorderIcons = [biMinimize, biMaximize]

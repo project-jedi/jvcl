@@ -1,4 +1,4 @@
-unit Unit3;
+unit ImageWindowChild2U;
 
 interface
 
@@ -7,33 +7,28 @@ uses
   ExtCtrls, StdCtrls, ImgList, JvImageWindow, JvComponent;
 
 type
-  TForm3 = class(TForm)
+  TImageWindowChild2 = class(TForm)
     Panel1: TPanel;
     ImageWindow1: TJvImageWindow;
     ImageList1: TImageList;
     Label1: TLabel;
     procedure ImageWindow1Click(Sender: TObject);
-    procedure FormKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
+    procedure FormKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
   end;
 
 var
-  Form3: TForm3;
+  ImageWindowChild2: TImageWindowChild2;
 
 implementation
 
 {$R *.DFM}
 
-procedure TForm3.ImageWindow1Click(Sender: TObject);
+procedure TImageWindowChild2.ImageWindow1Click(Sender: TObject);
 begin
   Caption := Format('Clicked image %d (ESC to quit)',[ImageWindow1.ImageIndex]);
 end;
 
-procedure TForm3.FormKeyUp(Sender: TObject; var Key: Word;
+procedure TImageWindowChild2.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = 27 then Close;

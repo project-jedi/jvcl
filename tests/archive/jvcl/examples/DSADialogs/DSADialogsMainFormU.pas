@@ -26,10 +26,8 @@ type
     procedure miResetClick(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
   private
-    { Private declarations }
     procedure SetStatus(Value: string);
   public
-    { Public declarations }
     procedure DoDlg1;
     procedure DoDlg2;
     procedure DoDlg3;

@@ -10,6 +10,7 @@ type
   TfrAnimatedFormIcon = class(TForm)
     JvFormAnimatedIcon1: TJvFormAnimatedIcon;
     ImageList1: TImageList;
+    procedure FormCreate(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -19,5 +20,10 @@ type
 implementation
 
 {$R *.DFM}
+
+procedure TfrAnimatedFormIcon.FormCreate(Sender: TObject);
+begin
+ JvFormAnimatedIcon1.Active := true;
+end;
 
 end.

@@ -1,8 +1,8 @@
-object Form1: TForm1
-  Left = 388
-  Top = 196
-  Width = 436
-  Height = 306
+object FindReplaceMainForm: TFindReplaceMainForm
+  Left = 374
+  Top = 141
+  Width = 473
+  Height = 363
   Caption = 'FindReplace test/demo program'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -18,9 +18,9 @@ object Form1: TForm1
   TextHeight = 13
   object Memo1: TMemo
     Left = 0
-    Top = 0
-    Width = 428
-    Height = 262
+    Top = 81
+    Width = 465
+    Height = 238
     Align = alClient
     Lines.Strings = (
       'LICENSE AGREEMENT'
@@ -108,6 +108,32 @@ object Form1: TForm1
     ScrollBars = ssBoth
     TabOrder = 0
   end
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 465
+    Height = 81
+    Align = alTop
+    BevelOuter = bvNone
+    Font.Charset = ANSI_CHARSET
+    Font.Color = clWindowText
+    Font.Height = -13
+    Font.Name = 'Arial'
+    Font.Style = [fsBold]
+    ParentFont = False
+    TabOrder = 1
+    object Label1: TLabel
+      Left = 24
+      Top = 8
+      Width = 388
+      Height = 64
+      Caption = 
+        'Test program for the FindReplace unit.'#13#10'Has two different Find s' +
+        'ystems: one using the built in dialogs;'#13#10'one using InputQuery to' +
+        ' handle user selection.'#13#10'See FindReplace.pas / readme.txt for mo' +
+        're details'
+    end
+  end
   object FindReplace1: TJvFindReplace
     Fast = True
     Options = [frDown, frShowHelp]
@@ -120,7 +146,7 @@ object Form1: TForm1
     Top = 104
   end
   object MainMenu1: TMainMenu
-    Left = 80
+    Left = 128
     Top = 104
     object Search1: TMenuItem
       Caption = 'Find (&Dialogs)'

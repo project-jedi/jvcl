@@ -1,8 +1,9 @@
 object FileListBoxMainForm: TFileListBoxMainForm
-  Left = 264
-  Top = 21
+  Left = 282
+  Top = 64
   Width = 604
   Height = 484
+  Caption = 'various file components'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -76,8 +77,7 @@ object FileListBoxMainForm: TFileListBoxMainForm
     Items.Strings = (
       'DRIVE_C (C:)'
       'DRIVE_D (D:)'
-      'DELPHI6DG (E:)'
-      'D auf "Firebird" (G:)')
+      'DELPHI6DG (E:)')
     ScrollWidth = 96
     TabOrder = 0
     DriveTypes = [dtFixed, dtRemote, dtCDROM]
@@ -98,9 +98,9 @@ object FileListBoxMainForm: TFileListBoxMainForm
     TabOrder = 1
     object JvFileListBox1: TJvFileListBox
       Left = 217
-      Top = 23
+      Top = 21
       Width = 329
-      Height = 227
+      Height = 229
       Align = alRight
       FileEdit = Edit1
       ItemHeight = 16
@@ -122,9 +122,9 @@ object FileListBoxMainForm: TFileListBoxMainForm
     end
     object JvDirectoryListBox1: TJvDirectoryListBox
       Left = 20
-      Top = 23
+      Top = 21
       Width = 197
-      Height = 227
+      Height = 229
       Style = lbOwnerDrawFixed
       Align = alClient
       ItemHeight = 17
@@ -137,18 +137,7 @@ object FileListBoxMainForm: TFileListBoxMainForm
         'c:\Programme\Borland\Delphi7\JEDI\jvcl'
         'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples'
         'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo'
-        
-          'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo\obs' +
-          'olet'
-        
-          'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo\sen' +
-          'dt'
-        
-          'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo\ver' +
-          's 0001'
-        
-          'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo\ver' +
-          's 0002')
+        'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo\shk')
       ScrollWidth = 387
       TabOrder = 2
       Directory = 'c:\Programme\Borland\Delphi7\JEDI\jvcl\examples\JVCLMegaDemo'

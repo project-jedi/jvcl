@@ -1,8 +1,8 @@
 object frAnimatedFormIcon: TfrAnimatedFormIcon
-  Left = 192
-  Top = 110
-  Width = 146
-  Height = 112
+  Left = 285
+  Top = 126
+  Width = 298
+  Height = 179
   Caption = 'Animated Formicon'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,12 +11,13 @@ object frAnimatedFormIcon: TfrAnimatedFormIcon
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object JvFormAnimatedIcon1: TJvFormAnimatedIcon
     Icons = ImageList1
     Active = False
-    Delay = 10
+    Delay = 200
     Left = 32
     Top = 24
   end

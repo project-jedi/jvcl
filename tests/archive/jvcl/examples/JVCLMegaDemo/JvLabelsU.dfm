@@ -1,9 +1,10 @@
 object JvLabelsFrm: TJvLabelsFrm
-  Left = 0
-  Top = 0
+  Left = 364
+  Top = 51
   Width = 621
   Height = 464
   HelpContext = 6
+  Caption = 'the labels from the '#39'Jv Labels'#39' tab'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -136,8 +137,10 @@ object JvLabelsFrm: TJvLabelsFrm
   object Label12: TLabel
     Left = 32
     Top = 424
-    Width = 343
+    Width = 346
     Height = 13
-    Caption = 'BTW all labels of the JVCL have OnMouseEnter/OnMouseLeave events'
+    Caption = 
+      'BTW: all labels of the JVCL have OnMouseEnter/OnMouseLeave event' +
+      's'
   end
 end

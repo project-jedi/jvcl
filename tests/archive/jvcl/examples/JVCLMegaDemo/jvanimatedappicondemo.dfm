@@ -1,6 +1,6 @@
 object frAnimatedApplicationicon: TfrAnimatedApplicationicon
-  Left = 192
-  Top = 110
+  Left = 337
+  Top = 135
   Width = 402
   Height = 284
   Caption = 'Application animated Icon'
@@ -11,18 +11,26 @@ object frAnimatedApplicationicon: TfrAnimatedApplicationicon
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Button1: TButton
+    Left = 64
+    Top = 104
+    Width = 201
+    Height = 25
+    Caption = 'do the animation ...'
+    TabOrder = 0
+    OnClick = Button1Click
+  end
   object JvAppAnimatedIcon1: TJvAppAnimatedIcon
     Icons = ImageList1
     Active = False
-    Left = 144
-    Top = 144
+    Left = 136
+    Top = 48
   end
   object ImageList1: TImageList
-    Left = 136
-    Top = 56
+    Left = 224
+    Top = 48
     Bitmap = {
       494C01010A000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001001000000000000020

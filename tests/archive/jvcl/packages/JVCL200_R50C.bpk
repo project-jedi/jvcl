@@ -164,7 +164,8 @@
       ..\lib5\JvNTEventLog.obj ..\lib5\JvPluginMan.obj ..\lib5\JvPlugCommon.obj 
       ..\lib5\JvPlugin.obj ..\lib5\JvRegAuto.obj ..\lib5\JvScrollMax.obj 
       ..\lib5\JvSQLS.obj ..\lib5\JvStrUtil.obj ..\lib5\JvTipOfDay.obj 
-      ..\lib5\JvUtils.obj ..\lib5\JvWndProcHook.obj ..\lib5\JVCL200_R50C.obj"/>
+      ..\lib5\JvUtils.obj ..\lib5\JvShellHook.obj ..\lib5\JvWndProcHook.obj 
+      ..\lib5\JVCL200_R50C.obj"/>
     <RESFILES value="JVCL200_R50C.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>

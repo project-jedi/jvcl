@@ -22,7 +22,7 @@ uses
   JvPanelsU in 'JvPanelsU.pas' {JvPanelsFrm: TFrame},
   JvDateTimeU in 'JvDateTimeU.pas' {JvDateTimeFrm: TFrame},
   JvControlsU in 'JvControlsU.pas' {JvControls: TFrame},
-  hello in 'hello.pas' {frm_hello: TFrame},
+  hello in 'hello.pas' {WelcomeForm: TFrame},
   JvZoomMainFormU in '..\JvZoom\JvZoomMainFormU.pas' {JvZoomMainForm},
   ContentScrollerMainFormU in '..\ContentScroller\ContentScrollerMainFormU.pas' {ContentScrollerMainForm},
   JvButtonsU in 'JvButtonsU.pas' {JvButtons: TFrame},
@@ -91,7 +91,14 @@ uses
   frmMemoEdit in '..\TMTimeLine\frmMemoEdit.pas' {MemoEditFrm},
   TransBtnFormMainU in '..\TransBtn\TransBtnFormMainU.pas' {TransBtnFormMain},
   JvZLibMultipleMainFormU in '..\JvZLibMultiple\JvZLibMultipleMainFormU.pas' {JvZLibMultipleMainForm},
-  Profiler32MainFormU in '..\Profiler32\Profiler32MainFormU.pas' {Profiler32MainForm};
+  Profiler32MainFormU in '..\Profiler32\Profiler32MainFormU.pas' {Profiler32MainForm},
+  FindReplaceMainFormU in '..\FindReplace\FindReplaceMainFormU.pas' {FindReplaceMainForm},
+  JvPlayListMainFormU in '..\JvPlayList\JvPlayListMainFormU.pas' {JvPlaylistMainForm},
+  ImageWindowMainFormU in '..\ImageWindow\ImageWindowMainFormU.pas' {ImageWindowMainForm},
+  ImageWindowChild2U in '..\ImageWindow\ImageWindowChild2U.pas' {ImageWindowChild2},
+  ImageWindowChild1U in '..\ImageWindow\ImageWindowChild1U.pas' {ImageWindowChild1},
+  RessourcesFormMain in 'RessourcesFormMain.pas' {RessourcesForm},
+  SearchingForm in 'SearchingForm.pas' {SearchingFormMain};
 
 {$R *.RES}
 

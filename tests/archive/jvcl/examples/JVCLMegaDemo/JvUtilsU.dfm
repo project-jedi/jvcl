@@ -17,8 +17,6 @@ object JvUtilsFrm: TJvUtilsFrm
     Top = 16
     Width = 329
     Height = 433
-    Lines.Strings = (
-      'Memo1')
     TabOrder = 0
   end
   object Button1: TButton
@@ -53,7 +51,7 @@ object JvUtilsFrm: TJvUtilsFrm
     Top = 256
     Width = 280
     Height = 25
-    Caption = 'launch a control panel unit  "desk"'
+    Caption = 'launch the control panel unit  "desk"'
     TabOrder = 4
     OnClick = Button5Click
   end

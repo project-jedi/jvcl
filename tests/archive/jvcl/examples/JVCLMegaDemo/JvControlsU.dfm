@@ -157,6 +157,9 @@ object JvControls: TJvControls
         Level = 3
       end>
     HorzSupports = True
+    DesignSize = (
+      648
+      148)
   end
   object ImageList1: TImageList
     Left = 312

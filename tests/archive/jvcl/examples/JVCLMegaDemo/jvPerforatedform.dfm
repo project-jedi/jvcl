@@ -1,6 +1,6 @@
 object frPerforatedForm: TfrPerforatedForm
-  Left = 192
-  Top = 110
+  Left = 435
+  Top = 273
   Width = 326
   Height = 250
   Caption = 'Perforated Form'
@@ -13,11 +13,18 @@ object frPerforatedForm: TfrPerforatedForm
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object Label1: TLabel
+    Left = 72
+    Top = 32
+    Width = 106
+    Height = 13
+    Caption = 'move the form around!'
+  end
   object JvPerforated1: TJvPerforated
     Left = 64
-    Top = 16
+    Top = 80
     Width = 161
-    Height = 169
+    Height = 105
     Transparent = True
   end
 end

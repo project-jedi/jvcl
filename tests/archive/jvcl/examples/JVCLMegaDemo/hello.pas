@@ -15,7 +15,7 @@
 
  The contents of this file are used with permission, subject to   
  the Mozilla Public License Version 1.1 (the "License"); you may  
- not use this file except in compliance with the License. You may 
+ not use this file except in compliance with the License. You may
  obtain a copy of the License at                                  
  http://www.mozilla.org/MPL/MPL-1_1Final.html                     
                                                                   
@@ -32,23 +32,33 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvLabel, JvHotLink, JvScrollText, jpeg, ExtCtrls, JvImage;
+  StdCtrls, JvLabel, JvHotLink, JvScrollText, jpeg, ExtCtrls, JvImage,
+  JvComponent, JvBaseDlg, JvJVCLAbout;
 
 type
-  Tfrm_hello = class(TForm)
+  TWelcomeForm = class(TForm)
     frmh_st: TJvScrollText;
-    JvHotLink0: TJvHotLink;
     JvImage1: TJvImage;
-    JvHotLink1: TJvHotLink;
     JvHotLink2: TJvHotLink;
-  private
-    { Private-Deklarationen }
-  public
-    { Public-Deklarationen }
+    JvJVCLAboutComponent1: TJvJVCLAboutComponent;
+    JvHotLink3: TJvHotLink;
+    procedure FormShow(Sender: TObject);
+    procedure JvHotLink3Click(Sender: TObject);
   end;
 
 implementation
 
 {$R *.DFM}
+
+procedure TWelcomeForm.FormShow(Sender: TObject);
+begin
+ //Start the scrolling of the ScollText comp
+ frmh_st.active := true;
+end;
+
+procedure TWelcomeForm.JvHotLink3Click(Sender: TObject);
+begin
+ JvJVCLAboutComponent1.Execute;
+end;
 
 end.

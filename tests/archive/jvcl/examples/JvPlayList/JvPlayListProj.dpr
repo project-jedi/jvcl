@@ -2,12 +2,12 @@ program JvPlayListProj;
 
 uses
   Forms,
-  fPlayList in 'fPlayList.pas' {Form1};
+  JvPlayListMainFormU in 'JvPlayListMainFormU.pas';
 
 {$R *.RES}
 
  begin
   Application.Initialize;
-  Application.CreateForm(TForm1, Form1);
+  Application.CreateForm(TJvPlayListMainForm, JvPlayListMainForm);
   Application.Run;
 end.

@@ -1,4 +1,4 @@
-object Form3: TForm3
+object ImageWindowChild2: TImageWindowChild2
   Left = 550
   Top = 226
   BorderStyle = bsToolWindow
@@ -24,6 +24,9 @@ object Form3: TForm3
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      203
+      65)
     object ImageWindow1: TJvImageWindow
       Left = 0
       Top = 0

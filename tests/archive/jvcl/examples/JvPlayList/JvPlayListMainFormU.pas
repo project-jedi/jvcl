@@ -1,4 +1,4 @@
-unit fPlayList;
+unit JvPlayListMainFormU;
 
 interface
 
@@ -7,7 +7,7 @@ uses
   StdCtrls, ActnList, Menus, JvPlaylist, JvListBox, JvCtrls;
 
 type
-  TForm1 = class(TForm)
+  TJvPlayListMainForm = class(TForm)
     JvPlaylist1: TJvPlaylist;
     OpenDialog1: TOpenDialog;
     Label1: TLabel;
@@ -76,42 +76,42 @@ type
   end;
 
 var
-  Form1: TForm1;
+  JvPlayListMainForm: TJvPlayListMainForm;
 
 implementation
 
 {$R *.DFM}
 
 
-procedure TForm1.JvPlaylist1Click(Sender: TObject);
+procedure TJvPlayListMainForm.JvPlaylist1Click(Sender: TObject);
 begin
   if JvPlayList1.ItemIndex<>-1 then
     Label1.Caption := JvPlayList1.Items[JvPlayList1.ItemIndex];
 end;
 
-procedure TForm1.OpenExecute(Sender: TObject);
+procedure TJvPlayListMainForm.OpenExecute(Sender: TObject);
 begin
   if OpenDialog1.Execute then
     JvPlayList1.AddItems(OpenDialog1.Files);
 end;
 
-procedure TForm1.ExitExecute(Sender: TObject);
+procedure TJvPlayListMainForm.ExitExecute(Sender: TObject);
 begin
   Application.Terminate;
 end;
 
-procedure TForm1.DeleteExecute(Sender: TObject);
+procedure TJvPlayListMainForm.DeleteExecute(Sender: TObject);
 begin
   JvPlayList1.DeleteSelected;
 end;
 
-procedure TForm1.Options1Click(Sender: TObject);
+procedure TJvPlayListMainForm.Options1Click(Sender: TObject);
 begin
   ShowNumbers1.Checked := JvPlayList1.ShowNumbers;
   ShowExtensions1.Checked := JvPlayList1.ShowExtension;
 end;
 
-procedure TForm1.ShowNumbers1Click(Sender: TObject);
+procedure TJvPlayListMainForm.ShowNumbers1Click(Sender: TObject);
 begin
   with Sender as TMenuItem do
   begin
@@ -120,7 +120,7 @@ begin
   end;
 end;
 
-procedure TForm1.ShowExtensions1Click(Sender: TObject);
+procedure TJvPlayListMainForm.ShowExtensions1Click(Sender: TObject);
 begin
   with Sender as TMenuItem do
   begin
@@ -129,62 +129,62 @@ begin
   end;
 end;
 
-procedure TForm1.SortSongExecute(Sender: TObject);
+procedure TJvPlayListMainForm.SortSongExecute(Sender: TObject);
 begin
   JvPlayList1.SortBySongName;
 end;
 
-procedure TForm1.SortPahExecute(Sender: TObject);
+procedure TJvPlayListMainForm.SortPahExecute(Sender: TObject);
 begin
   JvPlayList1.SortByPath;
 end;
 
-procedure TForm1.SortPathIExecute(Sender: TObject);
+procedure TJvPlayListMainForm.SortPathIExecute(Sender: TObject);
 begin
   JvPlayList1.SortByPathInverted;
 end;
 
-procedure TForm1.SortSongNameInvertedExecute(Sender: TObject);
+procedure TJvPlayListMainForm.SortSongNameInvertedExecute(Sender: TObject);
 begin
   JvPlayList1.SortBySongNameInverted;
 end;
 
-procedure TForm1.RandomOrderExecute(Sender: TObject);
+procedure TJvPlayListMainForm.RandomOrderExecute(Sender: TObject);
 begin
   JvPlayList1.RandomOrder;
 end;
 
-procedure TForm1.ReverseExecute(Sender: TObject);
+procedure TJvPlayListMainForm.ReverseExecute(Sender: TObject);
 begin
   JvPlayList1.ReverseOrder;
 end;
 
-procedure TForm1.DeleteDeadExecute(Sender: TObject);
+procedure TJvPlayListMainForm.DeleteDeadExecute(Sender: TObject);
 begin
   JvPlayList1.DeleteDeadFiles;
 end;
 
-procedure TForm1.SelectAllExecute(Sender: TObject);
+procedure TJvPlayListMainForm.SelectAllExecute(Sender: TObject);
 begin
   JvPlayList1.SelectAll;
 end;
 
-procedure TForm1.UnselectAllExecute(Sender: TObject);
+procedure TJvPlayListMainForm.UnselectAllExecute(Sender: TObject);
 begin
   JvPlayList1.UnselectAll;
 end;
 
-procedure TForm1.InvSelectExecute(Sender: TObject);
+procedure TJvPlayListMainForm.InvSelectExecute(Sender: TObject);
 begin
   JvPlayList1.InvertSelection;
 end;
 
-procedure TForm1.MoveUpExecute(Sender: TObject);
+procedure TJvPlayListMainForm.MoveUpExecute(Sender: TObject);
 begin
   JvPlayList1.MoveSelectedUp;
 end;
 
-procedure TForm1.MoveDownExecute(Sender: TObject);
+procedure TJvPlayListMainForm.MoveDownExecute(Sender: TObject);
 begin
   JvPlayList1.MoveSelectedDown;
 end;

@@ -2,17 +2,17 @@ program ImageWindowDemo;
 
 uses
   Forms,
-  Unit3 in 'Unit3.pas' {Form3},
-  Unit2 in 'Unit2.pas' {Form2},
-  ImageWindowMainFormU in 'ImageWindowMainFormU.pas' {ImageWindowMainForm};
+  ImageWindowMainFormU in 'ImageWindowMainFormU.pas' {ImageWindowMainForm},
+  ImageWindowChild2U in 'ImageWindowChild2U.pas' {ImageWindowChild2},
+  ImageWindowChild1U in 'ImageWindowChild1U.pas' {ImageWindowChild1};
 
 {$R *.RES}
 
 begin
   Application.Initialize;
   Application.CreateForm(TImageWindowMainForm, ImageWindowMainForm);
-  Application.CreateForm(TForm3, Form3);
-  Application.CreateForm(TForm2, Form2);
   Application.CreateForm(TImageWindowMainForm, ImageWindowMainForm);
+  Application.CreateForm(TImageWindowChild2, ImageWindowChild2);
+  Application.CreateForm(TImageWindowChild1, ImageWindowChild1);
   Application.Run;
 end.

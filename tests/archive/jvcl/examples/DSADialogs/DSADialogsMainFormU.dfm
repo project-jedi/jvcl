@@ -1,7 +1,7 @@
 object DSADialogsMainForm: TDSADialogsMainForm
-  Left = 384
-  Top = 191
-  Width = 763
+  Left = 200
+  Top = 189
+  Width = 652
   Height = 317
   Caption = 'Don'#39't Show Again (DSA) Examples and tests'
   Color = clBtnFace
@@ -15,12 +15,15 @@ object DSADialogsMainForm: TDSADialogsMainForm
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
+  DesignSize = (
+    644
+    292)
   PixelsPerInch = 96
   TextHeight = 13
   object lvDSAInfo: TListView
-    Left = 5
+    Left = 2
     Top = 5
-    Width = 745
+    Width = 628
     Height = 228
     Anchors = [akLeft, akTop, akRight, akBottom]
     Checkboxes = True
@@ -46,8 +49,8 @@ object DSADialogsMainForm: TDSADialogsMainForm
       item
         Caption = 'Description'
         MaxWidth = 521
-        MinWidth = 500
-        Width = 500
+        MinWidth = 400
+        Width = 400
       end>
     HideSelection = False
     RowSelect = True
@@ -61,14 +64,14 @@ object DSADialogsMainForm: TDSADialogsMainForm
   object stbMain: TStatusBar
     Left = 0
     Top = 273
-    Width = 755
+    Width = 644
     Height = 19
     Panels = <>
     SimplePanel = True
     SimpleText = 'Status:'
   end
   object btnClose: TButton
-    Left = 675
+    Left = 556
     Top = 240
     Width = 75
     Height = 25
