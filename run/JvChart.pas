@@ -97,13 +97,15 @@ type
 
   TJvChartLegend = (clChartLegendNone,clChartLegendRight,clChartLegendBelow);
 
+  TJvChartDataArray = array of array of Double;
+
   { TJvChartData : Holds NxN array of Reals, Resizes automatically within preset
     limits. Provides a functionality mix of dynamic memory use, but with
     a memory cap, so we don't thrash the system or leak forever.  -WAP.}
   TJvChartData = class(TObject)
   private
-    FData: array of array of Double;
-    FTimeStamp:array of TDateTime; // Time-series as a TDateTime   
+    FData: TJvChartDataArray;
+    FTimeStamp:array of TDateTime; // Time-series as a TDateTime
       // Dynamic array of dynamic array of Double.
       // is empty until data is stored in them.
       // *** Order of indexing: FData[ValueIndex,Pen] ***
@@ -122,10 +124,16 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    function DebugStr( ValueIndex:Integer ):String; // dump all pens for particular valueindex, as string.
     procedure Clear; // Resets to zero.
     property Value[Pen,  ValueIndex : Integer]: Double    read GetValue write SetValue; default;
-    property Timestamp[  ValueIndex : Integer]: TDateTime read GetTimestamp write SetTimestamp; 
+    property Timestamp[  ValueIndex : Integer]: TDateTime read GetTimestamp write SetTimestamp;
     property ValueCount: Integer                          read FValueCount write FValueCount;
+
+
+    
+    procedure Scroll;
+
   end;
 
   TJvChart = class;
@@ -155,24 +163,31 @@ type
     FLegendFont: TFont;
     FAxisFont: TFont;
     FTitle: string;
-    FXAxisHeader: string;
+
     FYAxisHeader: string;
-    FXAxisDivisionMarkers:Boolean;  // Do you want grid-paper look?
     FYAxisDivisionMarkers:Boolean;    // Do you want grid-paper look?
+    FYLegendDecimalPlaces: Integer;
+    FYLegends: TStringList;
+
+    FXAxisDivisionMarkers:Boolean;  // Do you want grid-paper look?
+    FXAxisHeader: string;
+    FXLegends: TStringList; // Text labels.
+    FXLegendMaxTextWidth: Integer; // runtime: display width (pixels) of widest string in FXLegends[1:x].
 
     FXAxisValuesPerDivision:Integer; // Number of Values (aka samples) in each vertical dotted lines that are divisision marker.
-    
+    FXAxisLegendSkipBy: Integer; //1=print every X axis label, 2=every other, and so on. default=1
+    FXAxisDateTimeMode:Boolean; // False=use custom text labels, true=Use Date/Time Stamps as X axis labels.
+    FXAxisDateTimeFormat:String; // Usually a short date-time label, hh:nn:ss is good.
+    FDateTimeFormat:String; // Usually a long date-time label, ISO standard yyyy-mm-dd hh:nn:ss is fine, as is Windows locale defaults.
+
 
     FXValueCount: Integer;
     FYValueCount: Integer; // WHAT THE HECK IS IT?
     FPenCount: Integer;
     FPenColors: array of TColor;
     FAverageValue: array of Double;
-    FXLegendSkipBy: Integer; //1=print every X axis label, 2=every other, and so on. default=1
-    FXLegends: TStringList; //
-    FXLegendMaxTextWidth: Integer; // display width (pixels) of widest string in FXLegends[1:x].
-    FYLegendDecimalPlaces: Integer;
-    FYLegends: TStringList;
+
+
     FPenLegends: TStringList;
     FPenUnit: TStringList;
     FYMax: Double;
@@ -233,8 +248,10 @@ type
     { runtime properties }
     property AverageValue[Index: Integer]: Double read GetAverageValue write SetAverageValue;
     property PenColor[Index: Integer]: TColor read GetPenColor write SetPenColor;
-    property YLegends: TStrings read GetYLegends write SetYLegends;
-    property XLegends: TStrings read GetXLegends write SetXLegends;
+
+    property YLegends: TStrings read GetYLegends write SetYLegends;     { Y Axis Legends as Strings }
+    property XLegends: TStrings read GetXLegends write SetXLegends;     { X Axis Legends as Strings }
+    
     { plot-canvas size, depends on size of control }
     property XEnd: Longint read FXEnd write FXEnd;
     property YEnd: Longint read FYEnd write FYEnd;
@@ -248,13 +265,21 @@ type
 
     { design time}
     property ChartKind: TJvChartKind read FChartKind write SetChartKind default ckChartLine;
-    property Title: string read FTitle write FTitle;
-    property XAxisHeader: string read FXAxisHeader write FXAxisHeader;
-    property YAxisHeader: string read FYAxisHeader write FYAxisHeader;
-    property XAxisDivisionMarkers:Boolean read FXAxisDivisionMarkers write FXAxisDivisionMarkers default true;  // Do you want grid-paper look?
-    property YAxisDivisionMarkers:Boolean read FYAxisDivisionMarkers write FYAxisDivisionMarkers default true;    // Do you want grid-paper look?
+    property Title: string                   read FTitle                   write FTitle;
 
-    property XAxisValuesPerDivision:Integer read FXAxisValuesPerDivision write FXAxisValuesPerDivision; // Number of Values (aka samples) in each vertical dotted lines that are divisision marker.
+    { X Axis Properties }
+    property YAxisHeader: string             read FYAxisHeader             write FYAxisHeader;
+    property YAxisDivisionMarkers:Boolean    read FYAxisDivisionMarkers    write FYAxisDivisionMarkers default true;    // Do you want grid-paper look?
+
+    { X Axis Properties }
+    property XAxisDivisionMarkers:Boolean    read FXAxisDivisionMarkers     write FXAxisDivisionMarkers default true;  // Do you want grid-paper look?
+    property XAxisValuesPerDivision:Integer  read FXAxisValuesPerDivision   write FXAxisValuesPerDivision; // Number of Values (aka samples) in each vertical dotted lines that are divisision marker.
+    property XAxisDateTimeMode   : Boolean   read FXAxisDateTimeMode        write FXAxisDateTimeMode;
+    property XAxisDateTimeFormat : String    read FXAxisDateTimeFormat      write FXAxisDateTimeFormat;
+    property XAxisHeader: string             read FXAxisHeader              write FXAxisHeader;
+    property XAxisLegendSkipBy: Integer      read FXAxisLegendSkipBy        write FXAxisLegendSkipBy default 1;
+
+    property DateTimeFormat:String read FDateTimeFormat write FDateTimeFormat; // Usually a long date-time label, ISO standard yyyy-mm-dd hh:nn:ss is fine, as is Windows locale defaults.
     
     property PenCount: Integer read FPenCount write SetPenCount default 1;
     property PenLegends: TStrings read GetPenLegends write SetPenLegends;
@@ -269,8 +294,11 @@ type
     property YMax: Double read FYMax write SetYMax;
     property YMin: Double read FYMin write FYMin;
     property PointSize: Integer read FPointSize write FPointSize;
-    { horizontal label placement }
-    property XLegendSkipBy: Integer read FXLegendSkipBy write FXLegendSkipBy default 1;
+
+
+
+
+
     //1=print every X axis label, 2=every other, and so on. default=1
     { vertical numeric decimal places }
     property YLegendDecimalPlaces: Integer read FYLegendDecimalPlaces write FYLegendDecimalPlaces;
@@ -575,6 +603,33 @@ begin
   FTimestamp[ValueIndex] := aValue;
 end;
 
+procedure TJvChartData.Scroll;
+var
+  I,J:Integer;
+  newArray:TJvChartDataArray;//  TJvChartDataArray = array of array of Double;
+begin
+  if FValueCount<2 then begin
+     Clear;
+     exit;
+  end;
+{ SLOW Version }
+  for I := 0 to Self.FValueCount-2 do begin
+      FData[I] := FData[I+1];
+      SetTimestamp(I, GetTimestamp(I+1));
+  end;
+
+  SetLength(newArray,1);
+  SetLength(newArray[0],1);
+  FData[FValueCount-1] := newArray[0];
+
+  FTimeStamp[FValueCount-1] := 0;
+
+  {for I := 0 to Length( FData[FValueCount-1] )-1 do begin
+     FData[FValueCount-1,I] := NaN; //clear.
+  end;}
+
+end;
+
 procedure TJvChartData.Grow(Pen, ValueIndex: Integer);
 begin
   if (Pen < 0) or (ValueIndex < 0) then
@@ -590,6 +645,27 @@ begin
 
   if Pen >= Length(FData[ValueIndex]) then
     SetLength(FData[ValueIndex], Pen +1);
+end;
+
+
+function TJvChartData.DebugStr( ValueIndex:Integer ):String; // dump all pens for particular valueindex, as string.
+var
+ s:String;
+ i,imax:integer;
+begin
+ if (ValueIndex<0) or (ValueIndex >= FDataAlloc) then exit;
+ imax := Length(FData[ValueIndex])-1;
+
+    if Timestamp[ValueIndex]>0.0 then
+         s := FormatDateTime( 'hh:nn:ss ', Timestamp[ValueIndex] );
+ for i := 0 to imax do begin
+
+
+     s := s + Format( '%5.2f', [ FData[ValueIndex,i] ] );
+     if i < imax then
+        s := s + ', '
+ end;
+ result := s;
 end;
 
 procedure TJvChartData.Clear; // Resets FValuesCount/FPenCount to zero. Zeroes everything too, just for good luck.
@@ -646,8 +722,6 @@ begin
   FPointSize := DEFAULT_POINT_SIZE;
   FXStartOffset := 45; {DEFAULT}
   FYStartOffset := 40;
-//   FXEnd           := 360; {canvas size, excluding margin}
-//   FYEnd           := 250;
   FTitle := '';
 //   FXAxisHeader := 'X';
 //   FYAxisHeader := 'Y';
@@ -667,7 +741,7 @@ begin
   FAxisLineWidth := 3;
 
   FDefaultYLegends := JvDefaultYLegends;
-  FXLegendSkipBy := 1;
+  FXAxisLegendSkipBy := 1;
 
   FHintColor := JvDefaultHintColor;
 end;
@@ -1158,7 +1232,10 @@ begin
       for J := 0 to Options.PenCount - 1 do
       begin
         V := FData.Value[J, I];
-        if IsNan(V) then continue; 
+        if IsNan(V) then begin
+             OutputDebugString('gap');
+             continue;
+        end;
         if nYMin > V then
           nYMin := V;
              //if (I>nMaxXValue) and (FData.Value[J,I]<>0) then
@@ -1258,8 +1335,8 @@ begin
   skipby := Data.ValueCount div maxfit;
   if skipby < 1 then
     skipby := 1;
-  //if skipby > Options.XLegendSkipBy then
-  Options.XLegendSkipBy := skipby;
+  //if skipby > Options.XAxisLegendSkipBy then
+  Options.XAxisLegendSkipBy := skipby;
 
       // Now do the graphing.
   CountGraphAverage;
@@ -1288,12 +1365,24 @@ end;
 
 
 
-// internal method
-procedure TJvChart.GraphSetup; // These set up variables used for all the rest of the plotting functions
+
+// These set up variables used for all the rest of the plotting functions.
+procedure TJvChart.GraphSetup;
 begin
-  Options.XPixelGap := ((Options.XEnd - Options.XStartOffset) /
-    (Options.XValueCount + 1));
+  Options.XValueCount := FData.ValueCount;
+  if (Options.XValueCount<1) then begin
+    Options.XPixelGap := 0.0;
+    Options.YPixelGap := 0.0;
+    exit;
+  end;
+
+  Options.XPixelGap := (( (Options.XEnd-1) - Options.XStartOffset) /
+    (Options.XValueCount {XXX -1} ));
+  OutputDebugString(PChar('Options.XPixelGap='+FloatToStr(Options.XPixelGap)));
+
   Options.YPixelGap := (Options.YEnd / (Options.YValueCount + 1));
+  OutputDebugString(PChar('Options.YPixelGap='+FloatToStr(Options.XPixelGap)));
+
 
   FXOrigin := Options.XStartOffset + Options.XPixelGap * (Options.XOrigin);
   FYOrigin := Options.YStartOffset +
@@ -1443,7 +1532,7 @@ var
     end; 
     Result := (yOrigin - ((v/ Options.YGap) * Options.YPixelGap));
     if Result >= (yOrigin - 1) then
-      Result := Round(yOrigin) - 1
+      Result := Round(yOrigin) - 1  // hit the top of the chart
     else
     if Result < 1 + (yOrigin - (Options.YEnd - Options.YPixelGap)) then
       Result := 1 + Round(yOrigin - (Options.YEnd - Options.YPixelGap));
@@ -1451,31 +1540,45 @@ var
 
   procedure PlotGraphBar;  {LOCAL to TJvChart.PlotGraph}
   var
-        I,J:integer;
+        I,J,N:integer;
+        BarCount : Double;
+        BarGap :Double;
+        function BarXPosition( index:Integer):Integer;
+        begin
+              result := Round( xOrigin + (index * BarGap) );
+        end;
   begin
+
+        BarCount := Options.PenCount * Options.XValueCount;
+        BarGap :=  ((( Options.XEnd-1) - Options.XStartOffset) /    BarCount );
+
         for I := 0 to Options.PenCount - 1 do
           for J := 0 to Options.XValueCount - 1 do
           begin
 
+             N := (J* Options.PenCount)+I; // Which Bar Number!?
+
                 // Plot a rectangle for each Bar in our bar chart...
-            X := Round(xOrigin + J * Options.XPixelGap + (I) * (Options.XPixelGap / (Options.PenCount+1) )
-              + (Options.XPixelGap / 4));
+
+            X := BarXPosition( N )+1;
+              
             // Make a space between groups, 4 pixels per XValue index:
-            Dec(X,4);
-            Inc(X, 2*J);
+            //Dec(X,4);
+            //Inc(X, 2*J);
 
             Y := yTempOrigin;
             Assert(Y<Height);
             Assert(Y>0);
             Assert(X>0);
+            if (X>=Width) then
+                OutputDebugString('foo!');
             Assert(X<Width);
 
-            X2 := Round(xOrigin + J * Options.XPixelGap + (I + 1) * (Options.XPixelGap / (Options.PenCount+1) )
-              + (Options.XPixelGap / 4));
+            X2 := BarXPosition(N+1)-3;
 
             // Make a space between groups, 4 pixels per XValue index:
-            Dec(X2,4);
-            Inc(X2, 2*J);
+            //Dec(X2,4);
+            //Inc(X2, 2*J);
 
 
             Y2 := Round(yOrigin - ((FData.Value[I, J] / Options.YGap) * Options.YPixelGap));
@@ -1487,7 +1590,9 @@ var
             Assert(Y2<Y);
 
             Assert(X2>0);
-            Assert(X2<Width);
+            //if (X2<Width) then
+              //  OutputDebugString('foo!');
+            //Assert(X2<Width);
             //Assert(X2>X);
             if (X2-X)<4 then
                 X2 := X + 4; // minimum bar width.
@@ -1549,7 +1654,7 @@ var
               Y := 0 // what else can we do?
           else
               Y := Round( V );
-          ChartCanvas.MoveTo(Round(xOrigin + 1 * Options.XPixelGap), Y );
+          ChartCanvas.MoveTo(Round(xOrigin {+ 1 * Options.XPixelGap}), Y );
           for J := 1 to Options.XValueCount - 1 do
           begin
             V := GraphConstrainedLineY(I,J);
@@ -1681,15 +1786,6 @@ begin
     Options.YEnd := Options.YEnd + (nOldY - Options.YStartOffset);
   end;
 
-   {Draw header and other stuff...}
-
-   // TODO: Make this a little nicer. Maybe no data should be a property set by user instead of a fixed resource string?
-  if Options.XValueCount = 0 then
-  begin
-    MyRightTextOut(Round(xOrigin), Round(yOrigin), RsNoData);
-    Invalidate;
-    Exit;
-  end;
 
    {Create texts for y-axis}
    //Options.YLegends.Clear;
@@ -1726,9 +1822,19 @@ begin
 
   MyAxisFont;
 
-  GraphSetup;
+
   YOldOrigin :=  Trunc(YOrigin);
 
+   {Draw header and other stuff...}
+  GraphSetup;
+   // TODO: Make this a little nicer. Maybe no data should be a property set by user instead of a fixed resource string?
+  if Options.XValueCount = 0 then
+  begin
+    MyRightTextOut(Round(xOrigin), Round(yOrigin), RsNoData);
+    Invalidate;
+    Exit;
+  end;
+  
 
   {Y Axis}
   GraphYAxis;
@@ -1889,33 +1995,73 @@ var
   //yTempOrigin        : Integer; // (ahuser) conflict with YTempOrigin property?
   myLabel            : string;
   XLegendHoriz       : Integer;
+  timestamp          : TDateTime;
+  timestampStr       : String;
+  XOverlap           : Integer;  
 begin
    {X-LEGEND: ...}
 //   DoSeparate := False; // not used (ahuser)
   XLegendGap := 0;
    {Count how many characters to show in the separate legend}
-  MySmallGraphFont;
-
-
-
-      {Put X legends (time scale, etc) in the actual graph...}
+  //
 
   SetLineColor(-3);
   MyAxisFont;
-  if Options.XValueCount > 0 then // is there data to plot?
-  begin
-    if Options.FXLegendSkipBy < 1 then
-      Options.FXLegendSkipBy := 1;
 
-    Count := (Options.XValueCount + (Options.FXLegendSkipBy - 1)) div Options.FXLegendSkipBy;
+
+  { datetime mode for X axis legends : follow the division markers }
+  if Options.XAxisDateTimeMode then begin { if DateTime mode then legends are painted where the division markers are painted }
+
+    // if not Options.XAxisDivisionMarkers then exit;
+    if (Options.XAxisValuesPerDivision <= 0) then exit;
+
+    FYTempOrigin := Options.YStartOffset + Round(Options.YPixelGap * (Options.YValueCount));
+
+    XOverlap := 0;
+    for I := 1 to ((Options.XValueCount div Options.XAxisValuesPerDivision))-1 do begin
+        XLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I * Options.XAxisValuesPerDivision);
+
+        timestamp := FData.Timestamp[ I * Options.XAxisValuesPerDivision ];
+
+        if Length(Options.FXAxisDateTimeFormat)=0 then // not specified, means use Locale defaults
+           timestampStr := TimeToStr( timestamp )
+        else
+           timestampStr := FormatDateTime( Options.FXAxisDateTimeFormat, timestamp );
+
+        // Check if writing this label would collide with previous label, if not, plot it
+        if (XLegendHoriz-( ChartCanvas.TextWidth(timestampStr) div 2 ))> XOverlap then begin
+            MyCenterTextOut( XLegendHoriz,
+                 {bottom:}   FXAxisPosition + Options.AxisLineWidth {top: Round(yTempOrigin - Options.YPixelGap)},
+                             timestampStr );
+
+            // draw a ticky-boo (technical term used by scientists the world over)
+            // so that we can see where on the chart the X axis datetime is pointing to.
+            ChartCanvas.Pen.Width := 1;
+            ChartCanvas.MoveTo( XLegendHoriz, FXAxisPosition );
+            ChartCanvas.LineTo(  XLegendHoriz, FXAxisPosition+Options.AxisLineWidth+2  );
+                                 
+            XOverlap := XLegendHoriz +   ( ChartCanvas.TextWidth(timestampStr) div 2 );
+        end;
+        
+    end;
+
+  end else if Options.XValueCount > 0 then // is there data to plot?
+  begin
+
+    {default X axis legend mode: use text legends}
+    
+    if Options.FXAxisLegendSkipBy < 1 then
+      Options.FXAxisLegendSkipBy := 1;
+
+    Count := (Options.XValueCount + (Options.FXAxisLegendSkipBy - 1)) div Options.FXAxisLegendSkipBy;
          // Skip the first (index 0) Axis Label, for visual reasons.
     for k := 0 to Count - 1 do
     begin
-      I := k * Options.FXLegendSkipBy;
+      I := k * Options.FXAxisLegendSkipBy;
       XLegendHoriz := Round(Options.XStartOffset + Options.XPixelGap * I);
 
       // Don't exceed right margin:
-      if (I<Options.XLegends.Count) then 
+      if (I<Options.XLegends.Count) then
         if ChartCanvas.TextWidth( Options.XLegends[I] )+ XLegendHoriz > Options.XEnd then
             break;
 
@@ -1925,7 +2071,7 @@ begin
           Options.YEnd + 3,
           Options.XLegends[I])
       else
-      if I < Options.XLegends.Count then
+        if I < Options.XLegends.Count then
         MyLeftTextOut( XLegendHoriz,
           {bottom:} FXAxisPosition + Options.AxisLineWidth {top: Round(yTempOrigin - Options.YPixelGap)},
           Options.XLegends[I])
@@ -1934,6 +2080,8 @@ begin
     end; {for k}
   end; // (XValueCount>0)
    //end;
+
+   MySmallGraphFont;
 
    {Pen Legend on Right Sid, only if Pen count is greater than one and we want them.}
   if  Options.Legend = clChartLegendRight then begin
@@ -2196,9 +2344,9 @@ begin
 
 
   if Options.Legend = clChartLegendRight then
-    Options.XEnd := Round((FBitmap.Width - 1.5 * Options.XStartOffset) - Options.LegendWidth)
+    Options.XEnd := Round(((FBitmap.Width-2) - 1.5 * Options.XStartOffset) - Options.LegendWidth)
   else
-    Options.XEnd := Round(FBitmap.Width - 0.5 * Options.XStartOffset);
+    Options.XEnd := Round((FBitmap.Width-2) - 0.5 * Options.XStartOffset);
   if Options.XEnd < 10 then
     Options.XEnd := 10;
   if Options.YEnd < 10 then
@@ -2481,7 +2629,14 @@ var
 begin
   FMouseDownHintStrs.Clear;
 
-  if Options.XLegends.Count > nMouseValue then
+  if Options.XAxisDateTimeMode then begin
+    if Length(Options.DateTimeFormat)=0 then
+      str := DateTimeToStr( FData.GetTimestamp(I))
+    else
+      str := FormatDateTime( Options.DateTimeFormat, FData.GetTimestamp(I) );
+      
+    FMouseDownHintStrs.Add( str );
+  end else if Options.XLegends.Count > nMouseValue then
     FMouseDownHintStrs.Add( Options.XLegends[nMouseValue] );
 
   for I := 0 to Options.PenCount- 1 do
