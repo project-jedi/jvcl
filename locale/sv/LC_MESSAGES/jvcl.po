@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
 "POT-Creation-Date: 2004-02-06 16:50\n"
-"PO-Revision-Date: 2004-02-16 20:33+0100\n"
+"PO-Revision-Date: 2004-02-16 21:55+0100\n"
 "Last-Translator: Peter Thornqvist <peter3@peter3.com>\n"
 "Language-Team: JVCL 3 <jvcl@delphi-jedi.org>\n"
 "MIME-Version: 1.0\n"
@@ -242,24 +242,24 @@ msgstr "Logo"
 #: JvGridPreviewForm.dfm:185
 #: JvGridPreviewForm.xfm:194
 msgid "Borders"
-msgstr ""
+msgstr "Ramar"
 
 #. JvGridPreviewForm..Panel1..cklive..Caption
 #. JvGridPreviewForm..Panel1..cklive..Caption
 #: JvGridPreviewForm.dfm:229
 #: JvGridPreviewForm.xfm:234
 msgid "Live"
-msgstr ""
+msgstr "Live"
 
 #. JvGridPreviewForm..OpenPictureDialog1..Filter
 #: JvGridPreviewForm.dfm:239
 msgid "Bitmap Files|*.bmp"
-msgstr ""
+msgstr "Bitmappfiler|*.bmp"
 
 #. JvGridPreviewForm..OpenPictureDialog1....DefaultExt
 #: JvGridPreviewForm.xfm:244
 msgid "Supported (*.bmp *.png *.xpm *.ico)|*.bmp;*.png;*.xpm*.ico|Bitmaps (*.bmp *.png *.xpm)|*.bmp;*.png;*.xpm|Icons (*.ico)|*.ico|All Files (*)|*"
-msgstr ""
+msgstr "Understödda (*.bmp *.png *.xpm *.ico)|*.bmp;*.png;*.xpm*.ico|Bitmappsfiler (*.bmp *.png *.xpm)|*.bmp;*.png;*.xpm|Ikoner (*.ico)|*.ico|Alla Filer (*)|*"
 
 #. JvHLEditorParamsForm..Caption
 #. === JvHLEditorPropertyForm.pas =============================================
@@ -267,14 +267,14 @@ msgstr ""
 #: JvHLEditorPropertyForm.dfm:6
 #: JvResources.pas:865
 msgid "Editor Properties"
-msgstr ""
+msgstr "Editoregenskaper"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..Caption
 #. Programmer's name for it: RsHLEdPropDlg_tsEditor
 #: JvHLEditorPropertyForm.dfm:29
 #: JvResources.pas:866
 msgid "Editor"
-msgstr ""
+msgstr "Editor"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..lblEditorSpeedSettings..Caption
 #. Programmer's name for it: RsHLEdPropDlg_lblEditorSpeedSettings
@@ -288,112 +288,112 @@ msgstr ""
 #: JvHLEditorPropertyForm.dfm:44
 #: JvResources.pas:880
 msgid "&Tab stops:"
-msgstr ""
+msgstr "&Tabbstoppar:"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..cbKeyboardLayout....Items.Strings
 #. Programmer's name for it: RsHLEdPropDlg_cbKeyboardLayoutDefault
 #: JvHLEditorPropertyForm.dfm:55
 #: JvResources.pas:869
 msgid "Default keymapping"
-msgstr ""
+msgstr "Standard tangentbordslayout"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..Caption
 #. Programmer's name for it: RsHLEdPropDlg_gbEditor
 #: JvHLEditorPropertyForm.dfm:62
 #: JvResources.pas:870
 msgid "Editor options:"
-msgstr ""
+msgstr "Editorinställningar:"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbUndoAfterSave..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbUndoAfterSave
 #: JvHLEditorPropertyForm.dfm:69
 #: JvResources.pas:876
 msgid "&Undo after sa&ve"
-msgstr ""
+msgstr "&Ångra efter spara"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbDoubleClickLine..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbDoubleClickLine
 #: JvHLEditorPropertyForm.dfm:80
 #: JvResources.pas:878
 msgid "&Double click line"
-msgstr ""
+msgstr "&Dubbelklikca rad"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbKeepTrailingBlanks..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbKeepTrailingBlanks
 #: JvHLEditorPropertyForm.dfm:88
 #: JvResources.pas:877
 msgid "&Keep trailing blanks"
-msgstr ""
+msgstr "&Behåll efterföljande mellanslag"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbSytaxHighlighting..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbSytaxHighlighting
 #: JvHLEditorPropertyForm.dfm:98
 #: JvResources.pas:879
 msgid "Use &syntax highlight"
-msgstr ""
+msgstr "&Använd syntaxfärger"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbAutoIndent..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbAutoIndent
 #: JvHLEditorPropertyForm.dfm:108
 #: JvResources.pas:871
 msgid "&Auto indent mode"
-msgstr ""
+msgstr "&Autoindentering"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbSmartTab..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbSmartTab
 #: JvHLEditorPropertyForm.dfm:118
 #: JvResources.pas:872
 msgid "S&mart tab"
-msgstr ""
+msgstr "S&marta tabbar"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbBackspaceUnindents..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbBackspaceUnindents
 #: JvHLEditorPropertyForm.dfm:128
 #: JvResources.pas:873
 msgid "Backspace &unindents"
-msgstr ""
+msgstr "Baksteg avindenterar"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbGroupUndo..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbGroupUndo
 #: JvHLEditorPropertyForm.dfm:138
 #: JvResources.pas:874
 msgid "&Group undo"
-msgstr ""
+msgstr "&Gruppera ångra"
 
 #. JvHLEditorParamsForm..Pages..tsEditor..gbEditor..cbCursorBeyondEOF..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbCursorBeyondEOF
 #: JvHLEditorPropertyForm.dfm:149
 #: JvResources.pas:875
 msgid "Cursor beyond &EOF"
-msgstr ""
+msgstr "Markör kan passera EOF"
 
 #. JvHLEditorParamsForm..Pages..tsColors..Caption
 #. Programmer's name for it: RsHLEdPropDlg_tsColors
 #: JvHLEditorPropertyForm.dfm:163
 #: JvResources.pas:867
 msgid "Colors"
-msgstr ""
+msgstr "Färger"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lblColorSpeedSettingsFor..Caption
 #. Programmer's name for it: RsHLEdPropDlg_lblColorSpeedSettingsFor
 #: JvHLEditorPropertyForm.dfm:170
 #: JvResources.pas:881
 msgid "Color SpeedSettings for"
-msgstr ""
+msgstr "Färginställningar för"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lblElement..Caption
 #. Programmer's name for it: RsHLEdPropDlg_lblElement
 #: JvHLEditorPropertyForm.dfm:177
 #: JvResources.pas:882
 msgid "&Element:"
-msgstr ""
+msgstr "&Element:"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lblColor..Caption
 #. Programmer's name for it: RsHLEdPropDlg_lblColor
 #: JvHLEditorPropertyForm.dfm:184
 #: JvResources.pas:883
 msgid "&Color:"
-msgstr ""
+msgstr "&Färger:"
 
 #. JvHLEditorParamsForm..Pages..tsColors..Label6..Caption
 #: JvHLEditorPropertyForm.dfm:191
@@ -403,126 +403,126 @@ msgstr ""
 #. JvHLEditorParamsForm..Pages..tsColors..cbColorSettings....Items.Strings
 #: JvHLEditorPropertyForm.dfm:204
 msgid "Default"
-msgstr ""
+msgstr "Standard"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:225
 msgid "Whitespace"
-msgstr ""
+msgstr "Mellanslag"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:226
 msgid "Comment"
-msgstr ""
+msgstr "Kommentar"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:227
 msgid "Reserved word"
-msgstr ""
+msgstr "Reserverade ord"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:228
 msgid "Identifer"
-msgstr ""
+msgstr "Identifierare"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:229
 msgid "Symbol"
-msgstr ""
+msgstr "Symboler"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:230
 msgid "String"
-msgstr ""
+msgstr "Strängar"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:231
 msgid "Number"
-msgstr ""
+msgstr "Tal"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:232
 msgid "Preprocessor"
-msgstr ""
+msgstr "Förprocessor"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:233
 msgid "Declaration"
-msgstr ""
+msgstr "Deklaration"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:234
 msgid "Function call"
-msgstr ""
+msgstr "Funktionsanrop"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:235
 msgid "Statement"
-msgstr ""
+msgstr "Uttryck"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:236
 msgid "Plain text"
-msgstr ""
+msgstr "Vanlig text"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:237
 msgid "Marked block"
-msgstr ""
+msgstr "Markerat block"
 
 #. JvHLEditorParamsForm..Pages..tsColors..lbElements....Items.Strings
 #: JvHLEditorPropertyForm.dfm:238
 msgid "Right margin"
-msgstr ""
+msgstr "Högermarginal"
 
 #. JvHLEditorParamsForm..Pages..tsColors..gbTextAttributes..Caption
 #. Programmer's name for it: RsHLEdPropDlg_gbTextAttributes
 #: JvHLEditorPropertyForm.dfm:248
 #: JvResources.pas:884
 msgid "Text attributes:"
-msgstr ""
+msgstr "Textattribut:"
 
 #. JvHLEditorParamsForm..Pages..tsColors..gbTextAttributes..cbBold..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbBold
 #: JvHLEditorPropertyForm.dfm:255
 #: JvResources.pas:886
 msgid "&Bold"
-msgstr ""
+msgstr "&Fet"
 
 #. JvHLEditorParamsForm..Pages..tsColors..gbTextAttributes..cbItalic..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbItalic
 #: JvHLEditorPropertyForm.dfm:264
 #: JvResources.pas:887
 msgid "&Italic"
-msgstr ""
+msgstr "&Kursiv"
 
 #. JvHLEditorParamsForm..Pages..tsColors..gbTextAttributes..cbUnderline..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbUnderline
 #: JvHLEditorPropertyForm.dfm:273
 #: JvResources.pas:888
 msgid "&Underline"
-msgstr ""
+msgstr "&Understruken"
 
 #. JvHLEditorParamsForm..Pages..tsColors..gbUseDefaultsFor..Caption
 #. Programmer's name for it: RsHLEdPropDlg_gbUseDefaultsFor
 #: JvHLEditorPropertyForm.dfm:283
 #: JvResources.pas:885
 msgid "Use defaults for:"
-msgstr ""
+msgstr "Använd standard för:"
 
 #. JvHLEditorParamsForm..Pages..tsColors..gbUseDefaultsFor..cbDefForeground..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbDefForeground
 #: JvHLEditorPropertyForm.dfm:290
 #: JvResources.pas:889
 msgid "&Foreground"
-msgstr ""
+msgstr "&Förgrund"
 
 #. JvHLEditorParamsForm..Pages..tsColors..gbUseDefaultsFor..cbDefBackground..Caption
 #. Programmer's name for it: RsHLEdPropDlg_cbDefBackground
 #: JvHLEditorPropertyForm.dfm:299
 #: JvResources.pas:890
 msgid "&Background"
-msgstr ""
+msgstr "&Bakgrund"
 
 #. Programmer's name for it: sGridCellNotFound
 #. Programmer's name for it: RsEHLEdPropDlg_GridCellNotFound
@@ -741,14 +741,14 @@ msgstr ""
 #. JvJVCLAboutForm..Caption
 #: JvJVCLAboutForm.dfm:7
 msgid "About JEDI-VCL"
-msgstr ""
+msgstr "Om JEDI-VCL"
 
 #. JvJVCLAboutForm..MainPanel..lblVisitJedi..Caption
 #. JvJVCLAboutForm..MainPanel..lblVisitJedi..Caption
 #: JvJVCLAboutForm.dfm:80
 #: JvJVCLAboutForm.xfm:181
 msgid "Visit JEDI-VCL on the Web:"
-msgstr ""
+msgstr "Besök JEDI-VCL på nätet:"
 
 #. JvJVCLAboutForm..MainPanel..lblMailingList..Caption
 #. JvJVCLAboutForm..MainPanel..lblMailingList..Caption
@@ -776,28 +776,28 @@ msgstr "Copyright (c) Project JEDI"
 #: JvJVCLAboutForm.dfm:186
 #: JvJVCLAboutForm.xfm:296
 msgid "All rights reserved."
-msgstr ""
+msgstr "Alla rättigheter förbehållna."
 
 #. JvJVCLAboutForm..MainPanel..lblBugs..Caption
 #. JvJVCLAboutForm..MainPanel..lblBugs..Caption
 #: JvJVCLAboutForm.dfm:193
 #: JvJVCLAboutForm.xfm:303
 msgid "Reporting a Bug/Issue:"
-msgstr ""
+msgstr "Rapportera Bug/Problem:"
 
 #. JvJVCLAboutForm..MainPanel..btnHelp..Hint
 #. JvJVCLAboutForm..MainPanel..btnHelp..Hint
 #: JvJVCLAboutForm.dfm:215
 #: JvJVCLAboutForm.xfm:69
 msgid "JVCL Help"
-msgstr ""
+msgstr "JVCL Hjälp"
 
 #. JvJVCLAboutForm..MainPanel..btnOptions..Hint
 #. JvJVCLAboutForm..MainPanel..btnOptions..Hint
 #: JvJVCLAboutForm.dfm:261
 #: JvJVCLAboutForm.xfm:115
 msgid "Set JVCL Help"
-msgstr ""
+msgstr "Ange JVCL Hjälp"
 
 #. JvJVCLAboutForm..MainPanel..Label4..Caption
 #. JvJVCLAboutForm..MainPanel..Label4..Caption
@@ -811,12 +811,12 @@ msgstr ""
 #: JvJVCLAboutForm.dfm:772
 #: JvJVCLAboutForm.xfm:1683
 msgid "Help files|*.chm; *.hlp"
-msgstr ""
+msgstr "Hjälpfiler|*.chm; *.hlp"
 
 #. JvJVCLAboutForm..Caption
 #: JvJVCLAboutForm.xfm:9
 msgid "About JEDI-VisualCLX"
-msgstr ""
+msgstr "Om JEDI-VisualCLX"
 
 #. TODO -cRESOURCESTRING -oJVCL: move to JvResources
 #. Programmer's name for it: RsEOwnerLinkError
@@ -829,7 +829,7 @@ msgstr ""
 #: JvLogForm.dfm:64
 #: JvLogForm.xfm:71
 msgid "Time"
-msgstr ""
+msgstr "Tid"
 
 #. FoLog..ListView1......Caption
 #. Programmer's name for it: RsTitle
@@ -840,14 +840,14 @@ msgstr ""
 #: JvResources.pas:1807
 #: JvWizard.pas:969
 msgid "Title"
-msgstr ""
+msgstr "Titel"
 
 #. FoLog..ListView1......Caption
 #. FoLog..ListView1......Caption
 #: JvLogForm.dfm:72
 #: JvLogForm.xfm:81
 msgid "Description"
-msgstr ""
+msgstr "Beskrivning"
 
 #. FoLog..ActionList1..Save..Caption
 #. FoLog..ActionList1..Save..Hint
@@ -864,7 +864,7 @@ msgstr ""
 #: JvLogForm.xfm:182
 #: JvYearGridEditForm.xfm:84
 msgid "Save"
-msgstr ""
+msgstr "Spara"
 
 #. FoLog..ActionList1..Print..Caption
 #. FoLog..ToolBar1..ToolButton1..Caption
@@ -873,21 +873,21 @@ msgstr ""
 #: JvLogForm.xfm:60
 #: JvLogForm.xfm:170
 msgid "&Print"
-msgstr ""
+msgstr "Skriv &ut"
 
 #. FoLog..ActionList1..Print..Hint
 #. FoLog..ActionList1..Print..Hint
 #: JvLogForm.dfm:238
 #: JvLogForm.xfm:171
 msgid "Print"
-msgstr ""
+msgstr "Skriv ut"
 
 #. FoLog..SaveDialog1..Filter
 #. FoLog..SaveDialog1..Filter
 #: JvLogForm.dfm:246
 #: JvLogForm.xfm:179
 msgid "CSV File (*.csv)|*.csv|Binary File (*.dat)|*.dat"
-msgstr ""
+msgstr "CSV filer (*.csv)|*.csv|Binära filer (*.dat)|*.dat"
 
 #. Programmer's name for it: RsENoThreadManager
 #. === JvMTComponents.pas =====================================================
@@ -1004,14 +1004,14 @@ msgstr ""
 #: JvPainterQBForm.dfm:100
 #: JvPainterQBForm.xfm:104
 msgid "Inner"
-msgstr ""
+msgstr "Inre"
 
 #. PainterQBForm..Panel1..QBList....Items.Strings
 #. PainterQBForm..Panel1..QBList....Items.Strings
 #: JvPainterQBForm.dfm:101
 #: JvPainterQBForm.xfm:105
 msgid "Outer"
-msgstr ""
+msgstr "Yttre"
 
 #. PainterQBForm..presetspop..AddBackdrop1..Caption
 #. PainterQBForm..presetspop..AddBackdrop1..Caption
@@ -1053,21 +1053,21 @@ msgstr "Egenskaper"
 #: JvParserForm.dfm:54
 #: JvParserForm.xfm:57
 msgid "Keyword"
-msgstr ""
+msgstr "Nyckelord"
 
 #. FormParsers..GroupBox1..Label2..Caption
 #. FormParsers..GroupBox1..Label2..Caption
 #: JvParserForm.dfm:61
 #: JvParserForm.xfm:64
 msgid "Start Tag"
-msgstr ""
+msgstr "Startord"
 
 #. FormParsers..GroupBox1..Label3..Caption
 #. FormParsers..GroupBox1..Label3..Caption
 #: JvParserForm.dfm:68
 #: JvParserForm.xfm:71
 msgid "End Tag"
-msgstr ""
+msgstr "Slutord"
 
 #. FormParsers..GroupBox1..Label4..Hint
 #. FormParsers..GroupBox1..Label4..Hint
@@ -1081,14 +1081,14 @@ msgstr ""
 #: JvParserForm.dfm:76
 #: JvParserForm.xfm:79
 msgid "Must be "
-msgstr ""
+msgstr "Måste vara"
 
 #. FormParsers..GroupBox1..Label5..Caption
 #. FormParsers..GroupBox1..Label5..Caption
 #: JvParserForm.dfm:83
 #: JvParserForm.xfm:86
 msgid "Take text"
-msgstr ""
+msgstr "Ta text"
 
 #. FormParsers..GroupBox1..Edit1....Height
 #. FormParsers..GroupBox1..Edit1....Height
@@ -1135,21 +1135,21 @@ msgstr ""
 #: JvParserForm.xfm:125
 #: JvParserForm.xfm:130
 msgid "Between limits"
-msgstr ""
+msgstr "Mellan gränser"
 
 #. FormParsers..GroupBox1..ComboBox1....Items.Strings
 #. FormParsers..GroupBox1..ComboBox1....Items.Strings
 #: JvParserForm.dfm:126
 #: JvParserForm.xfm:126
 msgid "All before start tag"
-msgstr ""
+msgstr "Allt före startord"
 
 #. FormParsers..GroupBox1..ComboBox1....Items.Strings
 #. FormParsers..GroupBox1..ComboBox1....Items.Strings
 #: JvParserForm.dfm:127
 #: JvParserForm.xfm:127
 msgid "All after start tag"
-msgstr ""
+msgstr "Allt efter startord"
 
 #. FormParsers..GroupBox1..ComboBox1....Items.Strings
 #. FormParsers..GroupBox1..ComboBox1....Items.Strings
@@ -1177,7 +1177,7 @@ msgstr ""
 #: JvParserForm.dfm:149
 #: JvParserForm.xfm:152
 msgid "Add an item to the list"
-msgstr ""
+msgstr "Lägg till i listan"
 
 #. FormParsers..AddBtn..Caption
 #. JvSpellerForm..ButtonPanel..BtnAdd..Caption
@@ -1188,7 +1188,7 @@ msgstr ""
 #: JvSpellerForm.dfm:96
 #: JvSpellerForm.xfm:98
 msgid "&Add"
-msgstr ""
+msgstr "&Lägg till"
 
 #. FormParsers..RemoveBtn..Hint
 #. FormParsers..RemoveBtn..Hint
@@ -1210,14 +1210,14 @@ msgstr "Ta &bort"
 #: JvParserForm.dfm:169
 #: JvParserForm.xfm:172
 msgid "Apply changes"
-msgstr ""
+msgstr "Verkställ ändringar"
 
 #. FormParsers..CancelBtn..Hint
 #. FormParsers..CancelBtn..Hint
 #: JvParserForm.dfm:180
 #: JvParserForm.xfm:183
 msgid "Cancel Changes"
-msgstr ""
+msgstr "Ångra ändringar"
 
 #. FormParsers..CancelBtn..Caption
 #. FoWallpaperChooser..Button2..Caption
@@ -1244,21 +1244,21 @@ msgstr ""
 #: JvPatchForm.dfm:27
 #: JvPatchForm.xfm:41
 msgid "Source"
-msgstr ""
+msgstr "Källa"
 
 #. FoPatch..GroupBox1..Label2..Caption
 #. FoPatch..GroupBox1..Label2..Caption
 #: JvPatchForm.dfm:34
 #: JvPatchForm.xfm:48
 msgid "Destination"
-msgstr ""
+msgstr "Mål"
 
 #. FoPatch..GroupBox1..Label3..Caption
 #. FoPatch..GroupBox1..Label3..Caption
 #: JvPatchForm.dfm:41
 #: JvPatchForm.xfm:55
 msgid "Password"
-msgstr ""
+msgstr "Lösenord"
 
 #. AlignForm..B_Ok..Caption
 #. FoPatch..OkBtn..Caption
@@ -1294,14 +1294,14 @@ msgstr ""
 #: JvYearGridEditForm.dfm:56
 #: JvYearGridEditForm.xfm:58
 msgid "&Save..."
-msgstr ""
+msgstr "&Spara..."
 
 #. ProfReport..Panel1..Panel2..OKBtn..Hint
 #. ProfReport..Panel1..Panel2..OKBtn..Hint
 #: JvProfilerForm.dfm:78
 #: JvProfilerForm.xfm:84
 msgid "Close report window"
-msgstr ""
+msgstr "Stäng rapportfönstret"
 
 #. ProfReport..Panel1..Panel2..OKBtn..Caption
 #. fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiFileClose..Caption
@@ -1313,56 +1313,56 @@ msgstr ""
 #: JvResources.pas:1596
 #: JvSegmentedLEDDisplayMapperFrame.dfm:120
 msgid "&Close"
-msgstr ""
+msgstr "St&äng"
 
 #. ProfReport..Panel1..TrimBtn..Hint
 #. ProfReport..Panel1..TrimBtn..Hint
 #: JvProfilerForm.dfm:93
 #: JvProfilerForm.xfm:99
 msgid "Remove unused calls from the list"
-msgstr ""
+msgstr "Ta bort rader utan anrop"
 
 #. ProfReport..Panel1..TrimBtn..Caption
 #. ProfReport..Panel1..TrimBtn..Caption
 #: JvProfilerForm.dfm:95
 #: JvProfilerForm.xfm:101
 msgid "&Trim"
-msgstr ""
+msgstr "&Trimma"
 
 #. ProfReport..lvReport..Hint
 #. ProfReport..lvReport..Hint
 #: JvProfilerForm.dfm:105
 #: JvProfilerForm.xfm:111
 msgid "Click the top column to sort the items"
-msgstr ""
+msgstr "Klicka kolumnen för att sortera"
 
 #. ProfReport..lvReport......Caption
 #. ProfReport..lvReport......Caption
 #: JvProfilerForm.dfm:110
 #: JvProfilerForm.xfm:116
 msgid "Function / Procedure "
-msgstr ""
+msgstr "Funktion/Procedur"
 
 #. ProfReport..lvReport......Caption
 #. ProfReport..lvReport......Caption
 #: JvProfilerForm.dfm:115
 #: JvProfilerForm.xfm:121
 msgid "Total time (ms)"
-msgstr ""
+msgstr "Total tid (ms)"
 
 #. ProfReport..lvReport......Caption
 #. ProfReport..lvReport......Caption
 #: JvProfilerForm.dfm:120
 #: JvProfilerForm.xfm:126
 msgid "Calls"
-msgstr ""
+msgstr "Anrop"
 
 #. ProfReport..lvReport......Caption
 #. ProfReport..lvReport......Caption
 #: JvProfilerForm.dfm:125
 #: JvProfilerForm.xfm:131
 msgid "Average time (ms)"
-msgstr ""
+msgstr "Snittid (ms)"
 
 #. ProfReport..lvReport......Caption
 #. ProfReport..lvReport......Caption
@@ -1438,46 +1438,46 @@ msgstr ""
 #: JvQuickPreviewForm.dfm:46
 #: JvQuickPreviewForm.xfm:61
 msgid "Use"
-msgstr ""
+msgstr "Använd"
 
 #. Programmer's name for it: RsBackButtonCaption
 #. Programmer's name for it: RsBackButtonCaption
 #: JvResources.pas:43
 #: JvWizard.pas:962
 msgid "< &Back"
-msgstr ""
+msgstr "< &Bakåt"
 
 #. Programmer's name for it: RsPrevButtonCaption
 #: JvResources.pas:44
 msgid "< &Prev"
-msgstr ""
+msgstr "< &Föregående"
 
 #. Programmer's name for it: RsNextButtonCaption
 #. Programmer's name for it: RsNextButtonCaption
 #: JvResources.pas:45
 #: JvWizard.pas:963
 msgid "&Next >"
-msgstr ""
+msgstr "&Nästa >"
 
 #. Programmer's name for it: RsDateDlgCaption
 #: JvResources.pas:46
 msgid "Select a Date"
-msgstr ""
+msgstr "Välj ett datun"
 
 #. Programmer's name for it: RsDetailsLeftCaption
 #: JvResources.pas:47
 msgid "<< &Details"
-msgstr ""
+msgstr "<< &Detaljer"
 
 #. Programmer's name for it: RsDetailsRightCaption
 #: JvResources.pas:48
 msgid "&Details >>"
-msgstr ""
+msgstr "&Detaljer >>"
 
 #. Programmer's name for it: RsUndoItem
 #: JvResources.pas:50
 msgid "&Undo"
-msgstr ""
+msgstr "&Ångra"
 
 #. Programmer's name for it: RsCutItem
 #: JvResources.pas:51
@@ -1613,7 +1613,7 @@ msgstr ""
 #. Programmer's name for it: RsESorryForOneDimensionalArraysOnly
 #: JvResources.pas:104
 msgid "Sorry, for one-dimensional arrays only"
-msgstr ""
+msgstr "Tyvärr, endast endimensionella vektorer stödjs"
 
 #. Programmer's name for it: RsELocalDatabase
 #: JvResources.pas:105
@@ -1671,12 +1671,12 @@ msgstr ""
 #. Programmer's name for it: RsEInvalidPath
 #: JvResources.pas:129
 msgid "Invalid path"
-msgstr ""
+msgstr "Ogiltig sökväg"
 
 #. Programmer's name for it: RsENotAUniqueRootPath
 #: JvResources.pas:130
 msgid "'%s' is not a unique root path"
-msgstr ""
+msgstr "'%s' är inte en unik rotsökväg"
 
 #. Programmer's name for it: RsECircularReferenceOfStorages
 #: JvResources.pas:131
@@ -1687,17 +1687,17 @@ msgstr ""
 #. Programmer's name for it: RsLoadSettings
 #: JvResources.pas:135
 msgid "Load Settings"
-msgstr ""
+msgstr "Ladda inställningar"
 
 #. Programmer's name for it: RsSaveSettings
 #: JvResources.pas:136
 msgid "Save Settings"
-msgstr ""
+msgstr "Spara inställningar"
 
 #. Programmer's name for it: RsDeleteSettings
 #: JvResources.pas:137
 msgid "Delete Settings"
-msgstr ""
+msgstr "Ta bort inställningar"
 
 #. Programmer's name for it: RsLoadCaption
 #. Programmer's name for it: RsHistoryLoadButton
@@ -1771,37 +1771,37 @@ msgstr ""
 #. Programmer's name for it: RsChangePassword
 #: JvResources.pas:168
 msgid "Change password"
-msgstr ""
+msgstr "Byta lösenord"
 
 #. Programmer's name for it: RsOldPasswordLabel
 #: JvResources.pas:169
 msgid "&Old password:"
-msgstr ""
+msgstr "&Gammalt lösenord:"
 
 #. Programmer's name for it: RsNewPasswordLabel
 #: JvResources.pas:170
 msgid "&New password:"
-msgstr ""
+msgstr "&Nytt lösenord:"
 
 #. Programmer's name for it: RsConfirmPasswordLabel
 #: JvResources.pas:171
 msgid "&Confirm password:"
-msgstr ""
+msgstr "&Bekräfta lösenord:"
 
 #. Programmer's name for it: RsPasswordChanged
 #: JvResources.pas:172
 msgid "Password has been changed"
-msgstr ""
+msgstr "Lösenordet har ändrats"
 
 #. Programmer's name for it: RsPasswordNotChanged
 #: JvResources.pas:173
 msgid "Password has not been changed"
-msgstr ""
+msgstr "Lösenordet har inte ändrats"
 
 #. Programmer's name for it: RsPasswordsMismatch
 #: JvResources.pas:174
 msgid "The new and confirmed passwords do not match"
-msgstr ""
+msgstr "Det nya lösenordet matchar inte det bekräftade"
 
 #. === JvBDEFilter.pas ========================================================
 #. Programmer's name for it: RsECaptureFilter
@@ -1839,13 +1839,13 @@ msgstr "Felmeddelande"
 #. Programmer's name for it: RsEInvalidUserName
 #: JvResources.pas:190
 msgid "Invalid user name or password"
-msgstr ""
+msgstr "Ogiltigt användarnamn eller lösenord"
 
 #. Also used by JvLoginForm
 #. Programmer's name for it: RsLastLoginUserName
 #: JvResources.pas:191
 msgid "Last Login User"
-msgstr ""
+msgstr "Senast inloggade användare"
 
 #. === JvBDEMove.pas ==========================================================
 #. Programmer's name for it: RsEInvalidReferenceDescriptor
@@ -1904,12 +1904,9 @@ msgstr ""
 
 #. === JvCalc.pas =============================================================
 #. Programmer's name for it: RsCalculatorCaption
-#: JvResources.pas:223
-msgid "Calculator"
-msgstr Kalkylator""
-
 #. === JvCalendar.pas =========================================================
 #. Programmer's name for it: RsEInvalidDateStr
+#: JvResources.pas:223
 #: JvResources.pas:227
 msgid "Invalid date specification to TMonthCalStrings (%s)"
 msgstr ""
@@ -1945,32 +1942,32 @@ msgstr ""
 #. Programmer's name for it: RsFileNameChange
 #: JvResources.pas:242
 msgid "Filename Change"
-msgstr ""
+msgstr "Filnamn ändrad"
 
 #. Programmer's name for it: RsDirectoryNameChange
 #: JvResources.pas:243
 msgid "Directory Name Change"
-msgstr ""
+msgstr "Mappnamn ändrad"
 
 #. Programmer's name for it: RsAttributesChange
 #: JvResources.pas:244
 msgid "Attributes Change"
-msgstr ""
+msgstr "Attribut ändrad"
 
 #. Programmer's name for it: RsSizeChange
 #: JvResources.pas:245
 msgid "Size Change"
-msgstr ""
+msgstr "Storlek ändrad"
 
 #. Programmer's name for it: RsWriteChange
 #: JvResources.pas:246
 msgid "Write Change"
-msgstr ""
+msgstr "Skrivändrad"
 
 #. Programmer's name for it: RsSecurityChange
 #: JvResources.pas:247
 msgid "Security Change"
-msgstr ""
+msgstr "Säkerhet ändrad"
 
 #. Programmer's name for it: RsEFmtCannotChangeName
 #: JvResources.pas:249
@@ -1993,14 +1990,9 @@ msgid "Invalid or empty path (\"%s\") at index %d"
 msgstr ""
 
 #. Programmer's name for it: RsENotifyErrorFmt
-#: JvResources.pas:253
-msgid "%s:\n"
-"%s"
-msgstr  "%s:\n"
-"%s"
-
 #. === JvChart.pas ============================================================
 #. Programmer's name for it: RsNoData
+#: JvResources.pas:253
 #: JvResources.pas:257
 msgid "No data."
 msgstr "Inga data."
@@ -2033,7 +2025,7 @@ msgstr ""
 #. Programmer's name for it: RsNoValuesHere
 #: JvResources.pas:263
 msgid "No values here!"
-msgstr ""
+msgstr "Inga värden här!"
 
 #. Programmer's name for it: RsEDataIndexCannotBeNegative
 #: JvResources.pas:265
@@ -2090,7 +2082,7 @@ msgstr ""
 #. Programmer's name for it: RsClipboardEmpty
 #: JvResources.pas:280
 msgid "Clipboard is empty"
-msgstr ""
+msgstr "Urklipp är tom"
 
 #. === JvClipbrd.pas ==========================================================
 #. Programmer's name for it: RsENoRenderFormatEventGiven
@@ -2129,22 +2121,22 @@ msgstr "Engleska namn"
 #. Programmer's name for it: RsCustomColors
 #: JvResources.pas:299
 msgid "Custom colors"
-msgstr ""
+msgstr "Anpassade färger"
 
 #. Programmer's name for it: RsStandardColors
 #: JvResources.pas:300
 msgid "Standard colors"
-msgstr ""
+msgstr "Standardfärger"
 
 #. Programmer's name for it: RsSystemColors
 #: JvResources.pas:301
 msgid "System colors"
-msgstr ""
+msgstr "Systemfärger"
 
 #. Programmer's name for it: RsNoSettings
 #: JvResources.pas:302
 msgid "(no settings)"
-msgstr ""
+msgstr "(inga inställningar)"
 
 #. Programmer's name for it: RsESpecifiedMappingError
 #: JvResources.pas:304
@@ -2191,12 +2183,12 @@ msgstr ""
 #. Programmer's name for it: RsEUnknownColor
 #: JvResources.pas:312
 msgid "Unknown color '%s'"
-msgstr ""
+msgstr "Okänd färg '%s'"
 
 #. Programmer's name for it: RsEInvalidColor
 #: JvResources.pas:313
 msgid "Invalid color (%d)"
-msgstr ""
+msgstr "Ogiltig färg (%d)"
 
 #. Programmer's name for it: RsEItemNotForList
 #: JvResources.pas:314
@@ -2228,7 +2220,7 @@ msgstr ""
 #. Programmer's name for it: RsIdle
 #: JvResources.pas:327
 msgid "Idle"
-msgstr ""
+msgstr "Tomgång"
 
 #. Programmer's name for it: RsNormal
 #: JvResources.pas:328
@@ -2238,7 +2230,7 @@ msgstr "Normal"
 #. Programmer's name for it: RsHigh
 #: JvResources.pas:329
 msgid "High"
-msgstr ""
+msgstr "Hög"
 
 #. Programmer's name for it: RsRealTime
 #: JvResources.pas:330
@@ -2274,29 +2266,29 @@ msgstr "CSV Databas"
 #. Programmer's name for it: RsFindText
 #: JvResources.pas:340
 msgid "Find Text:"
-msgstr ""
+msgstr "Sök text:"
 
 #. Programmer's name for it: RsFirstHint
 #: JvResources.pas:341
 msgid "First"
-msgstr ""
+msgstr "Första"
 
 #. Programmer's name for it: RsPreviousHint
 #: JvResources.pas:342
 msgid "Previous"
-msgstr ""
+msgstr "Föregående"
 
 #. Programmer's name for it: RsFindHint
 #. Programmer's name for it: RsFindCaption
 #: JvResources.pas:343
 #: JvResources.pas:575
 msgid "Find"
-msgstr ""
+msgstr "Sök"
 
 #. Programmer's name for it: RsNextHint
 #: JvResources.pas:344
 msgid "Next"
-msgstr ""
+msgstr "Nästa"
 
 #. Programmer's name for it: RsLastHint
 #: JvResources.pas:345
@@ -2306,7 +2298,7 @@ msgstr "Sista"
 #. Programmer's name for it: RsAddHint
 #: JvResources.pas:346
 msgid "Add"
-msgstr ""
+msgstr "Lägg till"
 
 #. Programmer's name for it: RsDeleteHint
 #: JvResources.pas:347
@@ -2648,7 +2640,7 @@ msgstr ""
 #. Programmer's name for it: RsDefaultNoDateShortcut
 #: JvResources.pas:429
 msgid "Alt+Del"
-msgstr ""
+msgstr "Alt+Del"
 
 #. Programmer's name for it: RsEMustHaveADate
 #: JvResources.pas:431
@@ -2665,7 +2657,7 @@ msgstr "(ingen)"
 #. Programmer's name for it: RsInactiveData
 #: JvResources.pas:439
 msgid "Closed"
-msgstr ""
+msgstr "Stängd"
 
 #. Programmer's name for it: RsBrowseData
 #. === JvToolEdit.pas =========================================================
@@ -2673,7 +2665,7 @@ msgstr ""
 #: JvResources.pas:440
 #: JvResources.pas:1605
 msgid "Browse"
-msgstr ""
+msgstr "Bläddra"
 
 #. Programmer's name for it: RsEditData
 #: JvResources.pas:441
@@ -2690,12 +2682,12 @@ msgstr "Infoga"
 #: JvResources.pas:443
 #: JvResources.pas:1055
 msgid "Search"
-msgstr ""
+msgstr "Sök"
 
 #. Programmer's name for it: RsCalcFieldsData
 #: JvResources.pas:444
 msgid "Calculate"
-msgstr ""
+msgstr "Beräkna"
 
 #. === JvDBLookup.pas =========================================================
 #. Programmer's name for it: RsEInvalidFormatNotAllowed
@@ -2727,7 +2719,7 @@ msgstr ""
 #. Programmer's name for it: RsKeyLastLoginUserName
 #: JvResources.pas:463
 msgid "Last User"
-msgstr ""
+msgstr "Senaste användare"
 
 #. === JvDBTreeView.pas =======================================================
 #. Programmer's name for it: RsDeleteNode
@@ -2848,7 +2840,7 @@ msgstr "Visa inte denna dialog igen"
 #. Programmer's name for it: RsDSActkAskText
 #: JvResources.pas:506
 msgid "Do not ask me again"
-msgstr ""
+msgstr "Fråga inte igen"
 
 #. Programmer's name for it: RsDSActkWarnText
 #: JvResources.pas:507
@@ -2984,12 +2976,12 @@ msgstr "string"
 #. Programmer's name for it: RsDualListSrcCaption
 #: JvResources.pas:542
 msgid "&Source"
-msgstr ""
+msgstr "&Källa"
 
 #. Programmer's name for it: RsDualListDestCaption
 #: JvResources.pas:543
 msgid "&Destination"
-msgstr ""
+msgstr "&Mål"
 
 #. Programmer's name for it: RsEUnsupportedControlClass
 #: JvResources.pas:548
@@ -3071,7 +3063,7 @@ msgstr ""
 #. Programmer's name for it: RsReplaceCaption
 #: JvResources.pas:574
 msgid "Replace"
-msgstr ""
+msgstr "ersätt"
 
 #. Programmer's name for it: RsENoEditAssigned
 #: JvResources.pas:577
@@ -3292,12 +3284,12 @@ msgstr "B : %3d"
 #. Programmer's name for it: RsHint1
 #: JvResources.pas:634
 msgid "Background Color"
-msgstr ""
+msgstr "Bakgrundsfärg"
 
 #. Programmer's name for it: RsHint2
 #: JvResources.pas:635
 msgid "Foreground Color"
-msgstr ""
+msgstr "Förgrundsfärg"
 
 #. Programmer's name for it: RsLabelCaption
 #: JvResources.pas:636
@@ -3307,7 +3299,7 @@ msgstr "X"
 #. Programmer's name for it: RsLabelHint
 #: JvResources.pas:637
 msgid "Exchange colors"
-msgstr ""
+msgstr "Växla färger"
 
 #. Programmer's name for it: RsDefaultB
 #: JvResources.pas:639
@@ -3424,7 +3416,7 @@ msgstr ""
 #: JvResources.pas:702
 #: JvgHelpPanel.pas:133
 msgid " help "
-msgstr ""
+msgstr " hjälp"
 
 #. Programmer's name for it: RsOpenContextMenuToLoadRTFTextControl
 #. Programmer's name for it: RsOpenContextMenuToLoadRTFTextControl
@@ -3508,7 +3500,7 @@ msgstr "lika med"
 #: JvResources.pas:735
 #: JvgLogics.pas:49
 msgid "starting with"
-msgstr ""
+msgstr "börjar med"
 
 #. Programmer's name for it: RsEndsWith
 #. Programmer's name for it: RsEndsWith
@@ -3522,14 +3514,14 @@ msgstr "slutar med"
 #: JvResources.pas:737
 #: JvgLogics.pas:51
 msgid "contains"
-msgstr ""
+msgstr "innehåller"
 
 #. Programmer's name for it: RsIsContainedWithin
 #. Programmer's name for it: RsIsContainedWithin
 #: JvResources.pas:738
 #: JvgLogics.pas:52
 msgid "is contained within"
-msgstr ""
+msgstr "finns inom"
 
 #. Programmer's name for it: RsNotEmpty
 #. Programmer's name for it: RsNotEmpty
@@ -3580,7 +3572,7 @@ msgstr ""
 #: JvResources.pas:755
 #: JvgProgress.pas:121
 msgid "Progress...[%d%%]"
-msgstr ""
+msgstr "Förlopp...[%d%%]"
 
 #. Programmer's name for it: RsPageOfPages
 #. === JvgQPrintPreviewForm.pas ===============================================
@@ -3871,7 +3863,7 @@ msgstr ""
 #. Programmer's name for it: RsENotReading
 #: JvResources.pas:930
 msgid "Not reading"
-msgstr ""
+msgstr "Läser inte"
 
 #. Programmer's name for it: RsEID3FrameNotFound
 #: JvResources.pas:932
@@ -3881,12 +3873,12 @@ msgstr ""
 #. Programmer's name for it: RsEID3UnknownEncoding
 #: JvResources.pas:933
 msgid "Unknown encoding"
-msgstr ""
+msgstr "Okänd kodning"
 
 #. Programmer's name for it: RsEID3UnknownVersion
 #: JvResources.pas:934
 msgid "Unknown version"
-msgstr ""
+msgstr "Okänd version"
 
 #. Programmer's name for it: RsEID3DuplicateFrame
 #: JvResources.pas:935
@@ -3911,7 +3903,7 @@ msgstr ""
 #. Programmer's name for it: RsEID3VersionNotSupported
 #: JvResources.pas:939
 msgid "Version not supported"
-msgstr ""
+msgstr "Versionen stödjs inte"
 
 #. Programmer's name for it: RsEID3InvalidLanguageValue
 #: JvResources.pas:940
@@ -3990,17 +3982,17 @@ msgstr "Undantag "
 #. Programmer's name for it: RsJvInspItemUnInitialized
 #: JvResources.pas:966
 msgid "(uninitialized)"
-msgstr ""
+msgstr "(oinitialiserad)"
 
 #. Programmer's name for it: RsJvInspItemUnassigned
 #: JvResources.pas:967
 msgid "(unassigned)"
-msgstr ""
+msgstr "(otilldelad)"
 
 #. Programmer's name for it: RsJvInspItemNoValue
 #: JvResources.pas:968
 msgid "(no value)"
-msgstr ""
+msgstr "(inget värde)"
 
 #. Programmer's name for it: RsStringListEditorCaption
 #: JvResources.pas:970
@@ -4065,7 +4057,7 @@ msgstr ""
 #. Programmer's name for it: RsEJvInspDataStrTooLong
 #: JvResources.pas:983
 msgid "String too long"
-msgstr ""
+msgstr "Sträng för lång"
 
 #. Programmer's name for it: RsEJvInspRegNoCompare
 #: JvResources.pas:984
@@ -4298,12 +4290,12 @@ msgstr ""
 #. Programmer's name for it: RsSearchFor
 #: JvResources.pas:1056
 msgid "Search for:"
-msgstr ""
+msgstr "Sök efter:"
 
 #. Programmer's name for it: RsNoMoresFound
 #: JvResources.pas:1057
 msgid "No more %s found"
-msgstr ""
+msgstr "Kan inte hitta fler %s"
 
 #. Programmer's name for it: RsEInvalidReduction
 #: JvResources.pas:1059
@@ -4452,22 +4444,22 @@ msgstr ""
 #. Programmer's name for it: RsUserNameLabel
 #: JvResources.pas:1115
 msgid "&User name:"
-msgstr ""
+msgstr "&Användarnamn:"
 
 #. Programmer's name for it: RsPasswordLabel
 #: JvResources.pas:1116
 msgid "&Password:"
-msgstr ""
+msgstr "&Lösenord:"
 
 #. Programmer's name for it: RsUnlockCaption
 #: JvResources.pas:1117
 msgid "Unlock application"
-msgstr ""
+msgstr "Lås upp programmet"
 
 #. Programmer's name for it: RsUnlockHint
 #: JvResources.pas:1118
 msgid "Type your password"
-msgstr ""
+msgstr "Skriv in ditt lösenord"
 
 #. === JvMail.pas =============================================================
 #. Programmer's name for it: RsAttachmentNotFound
@@ -4494,7 +4486,7 @@ msgstr ""
 #. Programmer's name for it: RsEMemNoRecords
 #: JvResources.pas:1129
 msgid "No data found"
-msgstr ""
+msgstr "Inga data funna"
 
 #. === JvMouseGesture.pas =====================================================
 #. Programmer's name for it: RsECannotHookTwice
@@ -4506,24 +4498,24 @@ msgstr ""
 #. Programmer's name for it: RsEErrorMRUCreating
 #: JvResources.pas:1137
 msgid "Unable to create MRU"
-msgstr ""
+msgstr "Kan inte skapa MRU"
 
 #. Programmer's name for it: RsEErrorMRUUnicode
 #: JvResources.pas:1138
 msgid "Windows NT required for Unicode in MRU"
-msgstr ""
+msgstr "Unicode MRU kräver Windows NT"
 
 #. === JvMRUManager.pas =======================================================
 #. Programmer's name for it: RsEDuplicatesNotAllowedInMRUList
 #: JvResources.pas:1142
 msgid "Duplicates not allowed in MRU list"
-msgstr ""
+msgstr "Dubletter ej tillåtna i MRU listan"
 
 #. === JvMultiHttpGrabber.pas =================================================
 #. Programmer's name for it: RsErrorConnection
 #: JvResources.pas:1171
 msgid "Unable to connect"
-msgstr ""
+msgstr "Kan inte ansluta"
 
 #. Programmer's name for it: RsMultiAgent
 #: JvResources.pas:1172
@@ -4533,22 +4525,22 @@ msgstr ""
 #. Programmer's name for it: RsLogWarning
 #: JvResources.pas:1177
 msgid "Warning"
-msgstr ""
+msgstr "Varning"
 
 #. Programmer's name for it: RsLogInformation
 #: JvResources.pas:1178
 msgid "Information"
-msgstr ""
+msgstr "Information"
 
 #. Programmer's name for it: RsLogSuccessAudit
 #: JvResources.pas:1179
 msgid "Success Audit"
-msgstr ""
+msgstr "Lyckade försök"
 
 #. Programmer's name for it: RsLogFailureAudit
 #: JvResources.pas:1180
 msgid "Failure Audit"
-msgstr ""
+msgstr "Misslyckade försök"
 
 #. === JvObjectPickerDialog.pas ===============================================
 #. Programmer's name for it: RsAttributeIndexOutOfBounds
@@ -4576,7 +4568,7 @@ msgstr ""
 #. Programmer's name for it: RsEnterName
 #: JvResources.pas:1202
 msgid "Enter Name:"
-msgstr ""
+msgstr "Ange namn:"
 
 #. Programmer's name for it: RsNoItemSelected
 #: JvResources.pas:1203
@@ -4597,17 +4589,17 @@ msgstr ""
 #. Programmer's name for it: RsHistorySelectPath
 #: JvResources.pas:1210
 msgid "History"
-msgstr ""
+msgstr "Historik"
 
 #. Programmer's name for it: RsOkButton
 #: JvResources.pas:1213
 msgid "&Ok"
-msgstr ""
+msgstr "&Ok"
 
 #. Programmer's name for it: RsHistoryClearButton
 #: JvResources.pas:1217
 msgid "Cl&ear"
-msgstr ""
+msgstr "&Rensa"
 
 #. Programmer's name for it: RsHistoryLoadCaption
 #: JvResources.pas:1218
@@ -4731,22 +4723,22 @@ msgstr ""
 #. Programmer's name for it: RsNextYearHint
 #: JvResources.pas:1261
 msgid "Next Year|"
-msgstr ""
+msgstr "Nästa år|"
 
 #. Programmer's name for it: RsNextMonthHint
 #: JvResources.pas:1262
 msgid "Next Month|"
-msgstr ""
+msgstr "Nästa månad|"
 
 #. Programmer's name for it: RsPrevYearHint
 #: JvResources.pas:1263
 msgid "Previous Year|"
-msgstr ""
+msgstr "Föregående år|"
 
 #. Programmer's name for it: RsPrevMonthHint
 #: JvResources.pas:1264
 msgid "Previous Month|"
-msgstr ""
+msgstr "Föregående månad|"
 
 #. === JvPlugin.pas ===========================================================
 #. Programmer's name for it: RsEFmtResNotFound
@@ -4846,17 +4838,17 @@ msgstr "(Standard)"
 #. Programmer's name for it: RsMyComputer
 #: JvResources.pas:1304
 msgid "My Computer"
-msgstr ""
+msgstr "Den här datorn"
 
 #. Programmer's name for it: RsDefaultNoValue
 #: JvResources.pas:1305
 msgid "(value not set)"
-msgstr ""
+msgstr "(värde ej angivet)"
 
 #. Programmer's name for it: RsUnknownCaption
 #: JvResources.pas:1306
 msgid "(Unknown)"
-msgstr ""
+msgstr "(okänd)"
 
 #. === JvRichEdit.pas =========================================================
 #. Programmer's name for it: RsRTFFilter
@@ -5759,37 +5751,37 @@ msgstr ""
 #. Programmer's name for it: RsNextCaption
 #: JvResources.pas:1597
 msgid "&Next Tip"
-msgstr ""
+msgstr "&Nästa tips"
 
 #. Programmer's name for it: RsTipsTitle
 #: JvResources.pas:1598
 msgid "Tips and Tricks"
-msgstr ""
+msgstr "Tips och tricks"
 
 #. Programmer's name for it: RsTipsHeaderText
 #: JvResources.pas:1599
 msgid "Did you know..."
-msgstr ""
+msgstr "Visste du att..."
 
 #. Programmer's name for it: RsTipsCheckBoxText
 #: JvResources.pas:1600
 msgid "&Show Tips on Startup"
-msgstr ""
+msgstr "&Visa tips vid start"
 
 #. Programmer's name for it: RsStoreShowOnStartUp
 #: JvResources.pas:1601
 msgid "Show On Startup"
-msgstr ""
+msgstr "Visa vid start"
 
 #. Programmer's name for it: RsDefaultFilter
 #: JvResources.pas:1607
 msgid "All files (*.*)|*.*"
-msgstr ""
+msgstr "Alla filer (*.*)|*.*"
 
 #. Programmer's name for it: RsDefaultFilter
 #: JvResources.pas:1610
 msgid "All files (*)|*"
-msgstr ""
+msgstr "Alla filer (*)|*"
 
 #. Programmer's name for it: RsEDateMinLimit
 #: JvResources.pas:1614
@@ -5936,108 +5928,108 @@ msgstr ""
 #. Programmer's name for it: RsClBlack
 #: JvResources.pas:1650
 msgid "Black"
-msgstr ""
+msgstr "Svart"
 
 #. Programmer's name for it: RsClMaroon
 #: JvResources.pas:1651
 msgid "Maroon"
-msgstr ""
+msgstr "Mörkröd"
 
 #. Programmer's name for it: RsClGreen
 #: JvResources.pas:1652
 msgid "Green"
-msgstr ""
+msgstr "Grön"
 
 #. Programmer's name for it: RsClOlive
 #: JvResources.pas:1653
 msgid "Olive green"
-msgstr ""
+msgstr "Olivgrön"
 
 #. Programmer's name for it: RsClNavy
 #: JvResources.pas:1654
 msgid "Navy blue"
-msgstr ""
+msgstr "Mörkblå"
 
 #. Programmer's name for it: RsClPurple
 #: JvResources.pas:1655
 msgid "Purple"
-msgstr ""
+msgstr "Lila"
 
 #. Programmer's name for it: RsClTeal
 #: JvResources.pas:1656
 msgid "Teal"
-msgstr ""
+msgstr "Mörk turkos"
 
 #. Programmer's name for it: RsClGray
 #: JvResources.pas:1657
 msgid "Gray"
-msgstr ""
+msgstr "Grå"
 
 #. Programmer's name for it: RsClSilver
 #: JvResources.pas:1658
 msgid "Silver"
-msgstr ""
+msgstr "Silver"
 
 #. Programmer's name for it: RsClRed
 #: JvResources.pas:1659
 msgid "Red"
-msgstr ""
+msgstr "Röd"
 
 #. Programmer's name for it: RsClLime
 #: JvResources.pas:1660
 msgid "Lime"
-msgstr ""
+msgstr "Ljusgrön"
 
 #. Programmer's name for it: RsClYellow
 #: JvResources.pas:1661
 msgid "Yellow"
-msgstr ""
+msgstr "Gul"
 
 #. Programmer's name for it: RsClBlue
 #: JvResources.pas:1662
 msgid "Blue"
-msgstr ""
+msgstr "Blå"
 
 #. Programmer's name for it: RsClFuchsia
 #: JvResources.pas:1663
 msgid "Fuchsia"
-msgstr ""
+msgstr "Magenta"
 
 #. Programmer's name for it: RsClAqua
 #: JvResources.pas:1664
 msgid "Aqua"
-msgstr ""
+msgstr "Turkos"
 
 #. Programmer's name for it: RsClWhite
 #: JvResources.pas:1665
 msgid "White"
-msgstr ""
+msgstr "Vit"
 
 #. Programmer's name for it: RsClMoneyGreen
 #: JvResources.pas:1666
 msgid "Money green"
-msgstr ""
+msgstr "Myntgrön"
 
 #. Programmer's name for it: RsClSkyBlue
 #: JvResources.pas:1667
 msgid "Sky blue"
-msgstr ""
+msgstr "Himmelsblå"
 
 #. Programmer's name for it: RsClCream
 #: JvResources.pas:1668
 msgid "Cream"
-msgstr ""
+msgstr "Krämvit"
 
 #. Programmer's name for it: RsClMedGray
 #: JvResources.pas:1669
 msgid "Medium gray"
-msgstr ""
+msgstr "Mellangrå"
 
 #. windows system colors
 #. Programmer's name for it: RsClScrollBar
 #: JvResources.pas:1672
 msgid "Scrollbar"
-msgstr ""
+msgstr "Rullningslist"
 
 #. Programmer's name for it: RsClBackground
 #. non standard colors introduced in QWindows.pas
@@ -6045,387 +6037,387 @@ msgstr ""
 #: JvResources.pas:1673
 #: JvResources.pas:1760
 msgid "Desktop background"
-msgstr ""
+msgstr "Skrivbord"
 
 #. Programmer's name for it: RsClActiveCaption
 #: JvResources.pas:1674
 msgid "Active window title bar"
-msgstr ""
+msgstr "Aktiv namnlist"
 
 #. Programmer's name for it: RsClInactiveCaption
 #: JvResources.pas:1675
 msgid "Inactive window title bar"
-msgstr ""
+msgstr "Inaktiv namnlist"
 
 #. Programmer's name for it: RsClMenu
 #: JvResources.pas:1676
 msgid "Menu background"
-msgstr ""
+msgstr "Menyrad"
 
 #. Programmer's name for it: RsClWindow
 #. Programmer's name for it: RsClBackground
 #: JvResources.pas:1677
 #: JvResources.pas:1706
 msgid "Window background"
-msgstr ""
+msgstr "Fönster"
 
 #. Programmer's name for it: RsClWindowFrame
 #: JvResources.pas:1678
 msgid "Window frame"
-msgstr ""
+msgstr "Fönsterram"
 
 #. Programmer's name for it: RsClMenuText
 #: JvResources.pas:1679
 msgid "Menu text"
-msgstr ""
+msgstr "Menytext"
 
 #. Programmer's name for it: RsClWindowText
 #. Programmer's name for it: RsClForeground
 #: JvResources.pas:1680
 #: JvResources.pas:1701
 msgid "Window text"
-msgstr ""
+msgstr "Fönstertext"
 
 #. Programmer's name for it: RsClCaptionText
 #: JvResources.pas:1681
 msgid "Active window title bar text"
-msgstr ""
+msgstr "Aktivt fönstertext"
 
 #. Programmer's name for it: RsClActiveBorder
 #: JvResources.pas:1682
 msgid "Active window border"
-msgstr ""
+msgstr "Aktiv fönsterram"
 
 #. Programmer's name for it: RsClInactiveBorder
 #: JvResources.pas:1683
 msgid "Inactive window border"
-msgstr ""
+msgstr "Inaktiv fönsterram"
 
 #. Programmer's name for it: RsClAppWorkSpace
 #: JvResources.pas:1684
 msgid "Application workspace"
-msgstr ""
+msgstr "Programmets arbetsyta"
 
 #. Programmer's name for it: RsClHighlight
 #. Programmer's name for it: RsClHighlight
 #: JvResources.pas:1685
 #: JvResources.pas:1705
 msgid "Selection background"
-msgstr ""
+msgstr "Markerad bakgrund"
 
 #. Programmer's name for it: RsClHighlightText
 #. Programmer's name for it: RsClHighlightedText
 #: JvResources.pas:1686
 #: JvResources.pas:1704
 msgid "Selection text"
-msgstr ""
+msgstr "Markerad text"
 
 #. Programmer's name for it: RsClBtnFace
 #. Programmer's name for it: RsClButton
 #: JvResources.pas:1687
 #: JvResources.pas:1710
 msgid "Button face"
-msgstr ""
+msgstr "Knappyta"
 
 #. Programmer's name for it: RsClBtnShadow
 #: JvResources.pas:1688
 msgid "Button shadow"
-msgstr ""
+msgstr "Knappskugga"
 
 #. Programmer's name for it: RsClGrayText
 #: JvResources.pas:1689
 msgid "Dimmed text"
-msgstr ""
+msgstr "Inaktiv text"
 
 #. Programmer's name for it: RsClBtnText
 #. Programmer's name for it: RsClButtonText
 #: JvResources.pas:1690
 #: JvResources.pas:1703
 msgid "Button text"
-msgstr ""
+msgstr "Knapptext"
 
 #. Programmer's name for it: RsClInactiveCaptionText
 #: JvResources.pas:1691
 msgid "Inactive window title bar text"
-msgstr ""
+msgstr "Inaktiv fönsterramtext"
 
 #. Programmer's name for it: RsClBtnHighlight
 #: JvResources.pas:1692
 msgid "Button highlight"
-msgstr ""
+msgstr "Knappglans"
 
 #. Programmer's name for it: RsCl3DDkShadow
 #: JvResources.pas:1693
 msgid "Dark shadow 3D elements"
-msgstr ""
+msgstr "3D-skugga, mörk"
 
 #. Programmer's name for it: RsCl3DLight
 #: JvResources.pas:1694
 msgid "Highlight 3D elements"
-msgstr ""
+msgstr "3D-glans"
 
 #. Programmer's name for it: RsClInfoText
 #: JvResources.pas:1695
 msgid "Tooltip text"
-msgstr ""
+msgstr "Hjälpfönstertext"
 
 #. Programmer's name for it: RsClInfoBk
 #. Programmer's name for it: RsClInfoBk
 #: JvResources.pas:1696
 #: JvResources.pas:1761
 msgid "Tooltip background"
-msgstr ""
+msgstr "Hjälfönster"
 
 #. VisualCLX system colors
 #. Programmer's name for it: RsClText
 #: JvResources.pas:1700
 msgid "Edit text"
-msgstr ""
+msgstr "Redigeringstext"
 
 #. Programmer's name for it: RsClBrightText
 #: JvResources.pas:1702
 msgid "Bright text"
-msgstr ""
+msgstr "Ljus text"
 
 #. Programmer's name for it: RsClBase
 #: JvResources.pas:1707
 msgid "Edit background"
-msgstr ""
+msgstr "Redigeringsfärg"
 
 #. Programmer's name for it: RsClLight
 #: JvResources.pas:1708
 msgid "Light 3D elements"
-msgstr ""
+msgstr "3D-ljus"
 
 #. Programmer's name for it: RsClMidlight
 #: JvResources.pas:1709
 msgid "Medium Light 3D elements"
-msgstr ""
+msgstr "3D-medium"
 
 #. Programmer's name for it: RsClMid
 #: JvResources.pas:1711
 msgid "Light Shadow 3D elements"
-msgstr ""
+msgstr "3D-skugga, ljus"
 
 #. Programmer's name for it: RsClShadow
 #: JvResources.pas:1712
 msgid "Shadow 3D elements"
-msgstr ""
+msgstr "3D-skugga"
 
 #. Programmer's name for it: RsClDark
 #: JvResources.pas:1713
 msgid "Dark Shadow 3D elements"
-msgstr ""
+msgstr "3d-skugga, mörk"
 
 #. Programmer's name for it: RsClNormalText
 #: JvResources.pas:1715
 msgid "Normal edit text"
-msgstr ""
+msgstr "Normal redigeringstext"
 
 #. Programmer's name for it: RsClNormalForeground
 #: JvResources.pas:1716
 msgid "Normal window text"
-msgstr ""
+msgstr "Normal fönstertext"
 
 #. Programmer's name for it: RsClNormalBrightText
 #: JvResources.pas:1717
 msgid "Normal bright text"
-msgstr ""
+msgstr "Normal ljus text"
 
 #. Programmer's name for it: RsClNormalButtonText
 #: JvResources.pas:1718
 msgid "Normal button text"
-msgstr ""
+msgstr "Normal knapptext"
 
 #. Programmer's name for it: RsClNormalHighlightedText
 #: JvResources.pas:1719
 msgid "Normal selection text"
-msgstr ""
+msgstr "Normal markerad text"
 
 #. Programmer's name for it: RsClNormalHighlight
 #: JvResources.pas:1720
 msgid "Normal selection background"
-msgstr ""
+msgstr "Normal markeringsbakgrund"
 
 #. Programmer's name for it: RsClNormalBackground
 #: JvResources.pas:1721
 msgid "Normal window background"
-msgstr ""
+msgstr "Normal fönsterbakgrund"
 
 #. Programmer's name for it: RsClNormalBase
 #: JvResources.pas:1722
 msgid "Normal edit background"
-msgstr ""
+msgstr "Normal redigeringsbakgrund"
 
 #. Programmer's name for it: RsClNormalLight
 #: JvResources.pas:1723
 msgid "Normal light 3D elements"
-msgstr ""
+msgstr "Normal 3D-ljus"
 
 #. Programmer's name for it: RsClNormalMidlight
 #: JvResources.pas:1724
 msgid "Normal medium light 3D elements"
-msgstr ""
+msgstr "Normal 3D-medium"
 
 #. Programmer's name for it: RsClNormalButton
 #: JvResources.pas:1725
 msgid "Normal button face"
-msgstr ""
+msgstr "Normal knappfärg"
 
 #. Programmer's name for it: RsClNormalMid
 #: JvResources.pas:1726
 msgid "Normal light shadow 3D elements"
-msgstr ""
+msgstr "Normal 3D-skugga, ljus"
 
 #. Programmer's name for it: RsClNormalShadow
 #: JvResources.pas:1727
 msgid "Normal shadow 3D elements"
-msgstr ""
+msgstr "Normal 3D-skugga"
 
 #. Programmer's name for it: RsClNormalDark
 #: JvResources.pas:1728
 msgid "Normal dark shadow 3D elements"
-msgstr ""
+msgstr "Normal 3D-skugga, mörk"
 
 #. Programmer's name for it: RsClDisabledText
 #: JvResources.pas:1730
 msgid "Disabled edit text"
-msgstr ""
+msgstr "Inaktiverad redigeringstext"
 
 #. Programmer's name for it: RsClDisabledForeground
 #: JvResources.pas:1731
 msgid "Disabled window text"
-msgstr ""
+msgstr "Inaktiverad fönstertext"
 
 #. Programmer's name for it: RsClDisabledBrightText
 #: JvResources.pas:1732
 msgid "Disabled bright text"
-msgstr ""
+msgstr "Inaktiverad ljus text"
 
 #. Programmer's name for it: RsClDisabledButtonText
 #: JvResources.pas:1733
 msgid "Disabled button text"
-msgstr ""
+msgstr "Inaktiverad knapptext"
 
 #. Programmer's name for it: RsClDisabledHighlightedText
 #: JvResources.pas:1734
 msgid "Disabled selection text"
-msgstr ""
+msgstr "Inaktiverad markerad text"
 
 #. Programmer's name for it: RsClDisabledHighlight
 #: JvResources.pas:1735
 msgid "Disabled selection background"
-msgstr ""
+msgstr "Inaktiverad markerinsbakgrund"
 
 #. Programmer's name for it: RsClDisabledBackground
 #: JvResources.pas:1736
 msgid "Disabled window background"
-msgstr ""
+msgstr "Inaktiverad fönsterbakgrund"
 
 #. Programmer's name for it: RsClDisabledBase
 #: JvResources.pas:1737
 msgid "Disabled edit background"
-msgstr ""
+msgstr "Inaktiverad redigeringsbakgrund"
 
 #. Programmer's name for it: RsClDisabledLight
 #: JvResources.pas:1738
 msgid "Disabled light 3D elements"
-msgstr ""
+msgstr "Inaktiverad 3D-ljus"
 
 #. Programmer's name for it: RsClDisabledMidlight
 #: JvResources.pas:1739
 msgid "Disabled medium light 3D elements"
-msgstr ""
+msgstr "Inaktiverad 3D-medium"
 
 #. Programmer's name for it: RsClDisabledButton
 #: JvResources.pas:1740
 msgid "Disabled button face"
-msgstr ""
+msgstr "Inaktiverad knappyta"
 
 #. Programmer's name for it: RsClDisabledMid
 #: JvResources.pas:1741
 msgid "Disabled light shadow 3D elements"
-msgstr ""
+msgstr "Inaktiverad 3D-skgga, ljus"
 
 #. Programmer's name for it: RsClDisabledShadow
 #: JvResources.pas:1742
 msgid "Disabled shadow 3D elements"
-msgstr ""
+msgstr "Inaktiverad 3D-skugga"
 
 #. Programmer's name for it: RsClDisabledDark
 #: JvResources.pas:1743
 msgid "Disabled dark shadow 3D elements"
-msgstr ""
+msgstr "Inaktiverad 3D-skugga, mörk"
 
 #. Programmer's name for it: RsClActiveText
 #: JvResources.pas:1745
 msgid "Active edit text"
-msgstr ""
+msgstr "Aktiv redigeringstext"
 
 #. Programmer's name for it: RsClActiveForeground
 #: JvResources.pas:1746
 msgid "Active window text"
-msgstr ""
+msgstr "Aktiv fönstertext"
 
 #. Programmer's name for it: RsClActiveBrightText
 #: JvResources.pas:1747
 msgid "Active bright text"
-msgstr ""
+msgstr "Aktiv ljus text"
 
 #. Programmer's name for it: RsClActiveButtonText
 #: JvResources.pas:1748
 msgid "Active button text"
-msgstr ""
+msgstr "Aktiv knapptext"
 
 #. Programmer's name for it: RsClActiveHighlightedText
 #: JvResources.pas:1749
 msgid "Active selection text"
-msgstr ""
+msgstr "Aktiv markerad text"
 
 #. Programmer's name for it: RsClActiveHighlight
 #: JvResources.pas:1750
 msgid "Active selection background"
-msgstr ""
+msgstr "Aktiv markeringbakgrund"
 
 #. Programmer's name for it: RsClActiveBackground
 #: JvResources.pas:1751
 msgid "Active window background"
-msgstr ""
+msgstr "Aktiv fönsterbakgrund"
 
 #. Programmer's name for it: RsClActiveBase
 #: JvResources.pas:1752
 msgid "Active edit background"
-msgstr ""
+msgstr "Aktiv redigeringsbakgrund"
 
 #. Programmer's name for it: RsClActiveLight
 #: JvResources.pas:1753
 msgid "Active light 3D elements"
-msgstr ""
+msgstr "Aktiv 3D-ljus"
 
 #. Programmer's name for it: RsClActiveMidlight
 #: JvResources.pas:1754
 msgid "Active medium light 3D elements"
-msgstr ""
+msgstr "Aktiv 3D-medium"
 
 #. Programmer's name for it: RsClActiveButton
 #: JvResources.pas:1755
 msgid "Active button face"
-msgstr ""
+msgstr "Aktiv knappyta"
 
 #. Programmer's name for it: RsClActiveMid
 #: JvResources.pas:1756
 msgid "Active light shadow 3D elements"
-msgstr ""
+msgstr "Aktiv 3D-skugga, ljus"
 
 #. Programmer's name for it: RsClActiveShadow
 #: JvResources.pas:1757
 msgid "Active shadow 3D elements"
-msgstr ""
+msgstr "Aktiv 3D-skugga"
 
 #. Programmer's name for it: RsClActiveDark
 #: JvResources.pas:1758
 msgid "Active dark shadow 3D elements"
-msgstr ""
+msgstr "Aktiv 3D-skugga, mörk"
 
 #. === JvUrlListGrabber.pas ===================================================
 #. Programmer's name for it: RsENoGrabberForUrl
@@ -6492,35 +6484,35 @@ msgstr ""
 #: JvResources.pas:1803
 #: JvWizard.pas:965
 msgid "To &Start Page"
-msgstr ""
+msgstr "Till första &sidan"
 
 #. Programmer's name for it: RsLastButtonCaption
 #. Programmer's name for it: RsLastButtonCaption
 #: JvResources.pas:1804
 #: JvWizard.pas:966
 msgid "To &Last Page"
-msgstr ""
+msgstr "Ti&ll sista sidan"
 
 #. Programmer's name for it: RsFinishButtonCaption
 #. Programmer's name for it: RsFinishButtonCaption
 #: JvResources.pas:1805
 #: JvWizard.pas:967
 msgid "&Finish"
-msgstr ""
+msgstr "&Avsluta"
 
 #. Programmer's name for it: RsWelcome
 #. Programmer's name for it: RsWelcome
 #: JvResources.pas:1806
 #: JvWizard.pas:968
 msgid "Welcome"
-msgstr ""
+msgstr "Välkommen"
 
 #. Programmer's name for it: RsSubtitle
 #. Programmer's name for it: RsSubtitle
 #: JvResources.pas:1808
 #: JvWizard.pas:970
 msgid "Subtitle"
-msgstr ""
+msgstr "Undertitel"
 
 #. Programmer's name for it: RsEInvalidParentControl
 #. Programmer's name for it: RsEInvalidParentControl
@@ -6550,21 +6542,21 @@ msgstr ""
 #: JvResources.pas:1819
 #: JvWizardRouteMapSteps.pas:92
 msgid "Step %d of %d"
-msgstr ""
+msgstr "Steg %d av %d"
 
 #. Programmer's name for it: RsBackTo
 #. Programmer's name for it: RsBackTo
 #: JvResources.pas:1820
 #: JvWizardRouteMapSteps.pas:93
 msgid "Back to"
-msgstr ""
+msgstr "Tillbaka till"
 
 #. Programmer's name for it: RsNextStep
 #. Programmer's name for it: RsNextStep
 #: JvResources.pas:1821
 #: JvWizardRouteMapSteps.pas:94
 msgid "Next Step"
-msgstr ""
+msgstr "Nästa steg"
 
 #. === JvXmlDatabase.pas ======================================================
 #. Programmer's name for it: RsEUnknownInstruction
@@ -6591,64 +6583,64 @@ msgstr ""
 #. Programmer's name for it: RsEnterYear
 #: JvResources.pas:1832
 msgid "Enter year (1999-2050):"
-msgstr ""
+msgstr "Ange år (1999-2050):"
 
 #. Programmer's name for it: RsInvalidYear
 #: JvResources.pas:1833
 msgid "invalid year"
-msgstr ""
+msgstr "ogiltigt år"
 
 #. Programmer's name for it: RsYear
 #: JvResources.pas:1834
 msgid "&Year..."
-msgstr ""
+msgstr "&År..."
 
 #. fmeJvSegmentedLEDDisplayMapper..mnuCharMapEdit..Edit1..Caption
 #. Programmer's name for it: RsEdit
 #: JvResources.pas:1835
 #: JvSegmentedLEDDisplayMapperFrame.dfm:68
 msgid "&Edit"
-msgstr ""
+msgstr "R&edigera"
 
 #. Programmer's name for it: RsColor
 #: JvResources.pas:1836
 msgid "&Color..."
-msgstr ""
+msgstr "&Färg..."
 
 #. Programmer's name for it: RsNoColor
 #: JvResources.pas:1837
 msgid "&No Color"
-msgstr ""
+msgstr "I&ngen färg"
 
 #. Programmer's name for it: RsSaveAllInfo
 #: JvResources.pas:1838
 msgid "&Save All Info"
-msgstr ""
+msgstr "&Spara allt"
 
 #. Programmer's name for it: RsSaveFoundInfo
 #: JvResources.pas:1839
 msgid "Save Found Info"
-msgstr ""
+msgstr "Spara funnen info"
 
 #. Programmer's name for it: RsBorderColor
 #: JvResources.pas:1840
 msgid "&Border Color..."
-msgstr ""
+msgstr "&ramfärg..."
 
 #. Programmer's name for it: RsBookMarkColor
 #: JvResources.pas:1841
 msgid "Book&Mark Color..."
-msgstr ""
+msgstr "Bok&märkesfärg..."
 
 #. Programmer's name for it: RsFindItem
 #: JvResources.pas:1842
 msgid "&Find..."
-msgstr ""
+msgstr "&Sök..."
 
 #. Programmer's name for it: RsClearFind
 #: JvResources.pas:1843
 msgid "Clear Find"
-msgstr ""
+msgstr "Rensa sökhistorik"
 
 #. Programmer's name for it: RsYearGridFind
 #: JvResources.pas:1844
@@ -6658,17 +6650,17 @@ msgstr ""
 #. Programmer's name for it: RsEnterSeachText
 #: JvResources.pas:1845
 msgid "Enter seach text:"
-msgstr ""
+msgstr "Ange söktext:"
 
 #. Programmer's name for it: RsFounds
 #: JvResources.pas:1846
 msgid "Found %s"
-msgstr ""
+msgstr "Hittade %s"
 
 #. Programmer's name for it: RsToday
 #: JvResources.pas:1847
 msgid "Today "
-msgstr ""
+msgstr "Idag"
 
 #. frmSLDMappingEditorDialog..Caption
 #: JvSLDMappingEditorDialog.dfm:5
@@ -6683,12 +6675,12 @@ msgstr ""
 #. frmSLDMappingEditorDialog..lblSegmentCountCaption..Caption
 #: JvSLDMappingEditorDialog.dfm:33
 msgid "# of segments:"
-msgstr ""
+msgstr "Antal segment:"
 
 #. frmSLDMappingEditorDialog..lblCharCaption..Caption
 #: JvSLDMappingEditorDialog.dfm:40
 msgid "Character:"
-msgstr ""
+msgstr "Tecken:"
 
 #. frmSLDMappingEditorDialog..lblMapperValueCaption..Caption
 #: JvSLDMappingEditorDialog.dfm:47
@@ -6698,22 +6690,22 @@ msgstr ""
 #. frmSLDMappingEditorDialog..lblSegmentsCaption..Caption
 #: JvSLDMappingEditorDialog.dfm:54
 msgid "Segments:"
-msgstr ""
+msgstr "Segment:"
 
 #. fmeJvSegmentedLEDDisplayMapper..mnuCharMapEdit..File1..Caption
 #: JvSegmentedLEDDisplayMapperFrame.dfm:47
 msgid "&File"
-msgstr ""
+msgstr "&Fil"
 
 #. fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiFileOpen..Caption
 #: JvSegmentedLEDDisplayMapperFrame.dfm:106
 msgid "&Open..."
-msgstr ""
+msgstr "&Öppna..."
 
 #. fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiFileLoadDefault..Caption
 #: JvSegmentedLEDDisplayMapperFrame.dfm:116
 msgid "&Default"
-msgstr ""
+msgstr "Stan&dard"
 
 #. fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiEditClear..Caption
 #: JvSegmentedLEDDisplayMapperFrame.dfm:135
@@ -6738,12 +6730,12 @@ msgstr ""
 #. fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiEditRevert..Caption
 #: JvSegmentedLEDDisplayMapperFrame.dfm:151
 msgid "&Revert"
-msgstr ""
+msgstr "&Återgå"
 
 #. fmeJvSegmentedLEDDisplayMapper..alCharMapEditor..aiEditApply..Caption
 #: JvSegmentedLEDDisplayMapperFrame.dfm:155
 msgid "&Apply"
-msgstr ""
+msgstr "&Verkställ"
 
 #. JvSpeedbarSetupWindow..ButtonsLabel..Caption
 #: JvSpeedbarSetupForm.dfm:61
@@ -7096,7 +7088,6 @@ msgstr ""
 msgid "Data type error."
 msgstr ""
 
-
 #. JvVirtualKeySelectionFrame..lblVirtualKey..Caption
 #: JvVirtualKeySelectionFrame.dfm:14
 msgid "Virtual key"
@@ -7114,19 +7105,19 @@ msgstr ""
 #: JvWallpaperEditForm.dfm:46
 #: JvWallpaperEditForm.xfm:56
 msgid "&Clear"
-msgstr ""
+msgstr "&Rensa"
 
 #. FoWallpaperChooser..GroupBox1..Label1..Caption
 #. FoWallpaperChooser..GroupBox1..Label1..Caption
 #: JvWallpaperEditForm.dfm:62
 #: JvWallpaperEditForm.xfm:71
 msgid "Directory"
-msgstr ""
+msgstr "Mapp"
 
 #. Programmer's name for it: RsUntitled
 #: JvXPBar.pas:431
 msgid "untitled"
-msgstr ""
+msgstr "namnlös"
 
 #. Programmer's name for it: SCopyright
 #: JvXPCore.pas:353
@@ -7156,7 +7147,7 @@ msgstr ""
 #: JvYearGridEditForm.dfm:47
 #: JvYearGridEditForm.xfm:49
 msgid "&Load..."
-msgstr ""
+msgstr "&Ladda..."
 
 #. YearGridEditForm..OpenDialog..Filter
 #. YearGridEditForm..SaveDialog..Filter
@@ -7167,7 +7158,7 @@ msgstr ""
 #: JvYearGridEditForm.xfm:72
 #: JvYearGridEditForm.xfm:81
 msgid "Text Files|*.txt|All Files|*.*"
-msgstr ""
+msgstr "Text filer|*.txt|Alla filer|*.*"
 
 #. AlignForm..Caption
 #: JvgAlignForm.dfm:6
