@@ -48,9 +48,9 @@ uses
   JvQJoystick, JvQSoundControl, JvQChangeNotifyEditor, JvQChangeNotify,
   {$ENDIF MSWINDOWS}
   JvQScreenSaver,
-  JvQSystemColors, JvQThread, JvQThreadTimer,
+  JvQSystemColors,
   JvQSimpleXml, JvQXMLDatabase, JvQTimer, JvQFormPlacement,
-  JvQMinMaxForm,
+  JvQMinMaxForm, JvQThread, JvQThreadTimer,
   JvQFormPropertiesForm, JvQDsgnEditors, JvQFormPlacementSelectList,
   JvQAppXMLStorage;
 
@@ -64,8 +64,8 @@ begin
       {$ENDIF MSWINDOWS}
       TJvSystemColors]);
   RegisterComponents(RsPaletteInternetWork, [TJvSimpleXML, TJvXMLDatabase]);
-  RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread, TJvThreadTimer]);
-  RegisterComponents(RsPalettePersistence, [TJvFormStorage, {TJvFormStorageSelectList,}
+  RegisterComponents(RsPaletteNonVisual, [TJvTimer, TJvThread , TJvThreadTimer]);
+  RegisterComponents(RsPalettePersistence, [TJvFormStorage, TJvFormStorageSelectList,
       TJvAppXMLFileStorage]);
 
   {$IFDEF MSWINDOWS}

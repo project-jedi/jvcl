@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-11-09
+Last Modified: 2004-03-22
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,8 +35,8 @@ procedure Register;
 implementation
 
 uses
-  Classes, QControls,
-  QImgList, QTypes,
+  Classes,
+  QControls, QImgList, QTypes,
 
   DesignEditors, DesignIntf,
 
