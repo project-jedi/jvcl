@@ -579,10 +579,10 @@ type
   TFilePathsSignerInfoA = FILEPATHS_SIGNERINFO_A;
   TFilePathsSignerInfoW = FILEPATHS_SIGNERINFO_W;
   {$IFDEF UNICODE}
-  TFilePathsSignerInfo = TFilePathsPathsSignerW;
+  TFilePathsSignerInfo = TFilePathsSignerInfoA;
   PFilePathsSignerInfo = PFilePathsSignerInfoW;
   {$ELSE}
-  TFilePathsSignerInfo = TFilePathsPathsSignerA;
+  TFilePathsSignerInfo = TFilePathsSignerInfoA;
   PFilePathsSignerInfo = PFilePathsSignerInfoA;
   {$ENDIF UNICODE}
   {$ENDIF WINXP_UP}
@@ -3104,28 +3104,44 @@ const
 
 {$IFDEF WINXP_UP}
 type
-  PSPInfSignerInfoA = TSPInfSignerInfoA;
-  PSPInfSignerInfoW = TSPInfSignerInfoW;
+  PSP_INF_SIGNER_INFO_A = ^SP_INF_SIGNER_INFO_A;
+  {$EXTERNALSYM PSP_INF_SIGNER_INFO_A}
   SP_INF_SIGNER_INFO_A = packed record
     cbSize: DWORD;
-    CatalogFile: array [0..MAX_PATH - 1] of AnsiChar;
-    DigitalSigner: array [0..MAX_PATH - 1] of AnsiChar;
-    DigitalSignerVersion: array [0..MAX_PATH - 1] of AnsiChar;
+    CatalogFile: array [0..MAX_PATH - 1] of Char;
+    DigitalSigner: array [0..MAX_PATH - 1] of Char;
+    DigitalSignerVersion: array [0..MAX_PATH - 1] of Char;
   end;
+  {$EXTERNALSYM SP_INF_SIGNER_INFO_A}
+
+  PSP_INF_SIGNER_INFO_W = ^SP_INF_SIGNER_INFO_W;
+  {$EXTERNALSYM PSP_INF_SIGNER_INFO_A}
   SP_INF_SIGNER_INFO_W = packed record
     cbSize: DWORD;
     CatalogFile: array [0..MAX_PATH - 1] of WideChar;
     DigitalSigner: array [0..MAX_PATH - 1] of WideChar;
     DigitalSignerVersion: array [0..MAX_PATH - 1] of WideChar;
   end;
+  {$EXTERNALSYM SP_INF_SIGNER_INFO_W}
+
   TSPInfSignerInfoA = SP_INF_SIGNER_INFO_A;
   TSPInfSignerInfoW = SP_INF_SIGNER_INFO_W;
+  PSPInfSignerInfoA = ^TSPInfSignerInfoA;
+  PSPInfSignerInfoW = ^TSPInfSignerInfoW;
   {$IFDEF UNICODE}
   TSPInfSignerInfo = TSPInfSignerInfoW;
-  PSPInfSignerInfo = TSPInfSignerInfoW;
+  PSPInfSignerInfo = PSPInfSignerInfoW;
+  SP_INF_SIGNER_INFO = SP_INF_SIGNER_INFO_W;
+  {$EXTERNALSYM SP_INF_SIGNER_INFO}
+  PSP_INF_SIGNER_INFO = PSP_INF_SIGNER_INFO_W;
+  {$EXTERNALSYM PSP_INF_SIGNER_INFO}
   {$ELSE}
   TSPInfSignerInfo = TSPInfSignerInfoA;
-  PSPInfSignerInfo = TSPInfSignerInfoA;
+  PSPInfSignerInfo = PSPInfSignerInfoA;
+  SP_INF_SIGNER_INFO = SP_INF_SIGNER_INFO_A;
+  {$EXTERNALSYM SP_INF_SIGNER_INFO}
+  PSP_INF_SIGNER_INFO = PSP_INF_SIGNER_INFO_A;
+  {$EXTERNALSYM PSP_INF_SIGNER_INFO}
   {$ENDIF UNICODE}
 
 //
@@ -6072,7 +6088,7 @@ type
     var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
   {$IFDEF WINXP_UP}
-  TSetupDiSetDeviceInterfaceDefault = function(DeviceInfoSet: HDEVINFO
+  TSetupDiSetDeviceInterfaceDefault = function(DeviceInfoSet: HDEVINFO;
     var DeviceInterfaceData: TSPDeviceInterfaceData; Flags: DWORD;
     Reserved: Pointer): BOOL; stdcall;
   {$ENDIF WINXP_UP}
@@ -7140,6 +7156,7 @@ end;
 function LoadSetupApi: Boolean;
 begin
   {$IFDEF SETUPAPI_LINKONREQUEST}
+  Result := True;
   Inc(SetupApiLoadCount);
   if SetupApiLoadCount > 1 then
     Exit;
@@ -8598,3 +8615,4 @@ function SetupDiGetCustomDeviceProperty; external SetupApiModuleName name 'Setup
 {$ENDIF !SETUPAPI_LINKONREQUEST}
 
 end.
+

@@ -1801,6 +1801,10 @@ resourcestring
   RsWeekOf = 'Week of %s';
 {$ENDIF USEJVCL}
 
+//=== JvThreadDialog.pas =====================================================
+resourcestring
+  RsENotATJvThread = 'TJvCustomThreadDialogForm.SetConnectedThread: A thread must be a TJvThread-Component';
+
 //=== JvThumbImage.pas =======================================================
 resourcestring
   RsEUnknownFileExtension = 'Unknown file extension %s';

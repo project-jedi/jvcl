@@ -99,7 +99,6 @@ type
     procedure EditButtonClick(Sender: TObject); dynamic; // NEW-WP
     procedure ListBoxCloseUp(Sender: TObject); dynamic;
     {$ENDIF COMPILER6_UP}
-
   protected
     function CreateEditor: TInplaceEdit; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -224,7 +223,7 @@ type
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
 
     {$IFDEF COMPILER6_UP}
-    property OnGetEditStyle : TJvOnGetEditStyleEvent read FOnGetEditStyle write FOnGetEditStyle; // NEW -WP (D6 UP)
+    property OnGetEditStyle: TJvOnGetEditStyleEvent read FOnGetEditStyle write FOnGetEditStyle; // NEW -WP (D6 UP)
     property OnEditButtonClick: TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick; // NEW-WP  - User clicks on Ellipsis button, get event fired!
     property OnListBoxCloseUp: TNotifyEvent read FOnListBoxCloseUp write FOnListBoxCloseUp; // Listbox close up.
     {$ENDIF COMPILER6_UP}
@@ -961,12 +960,11 @@ begin
      FPickListStrings.Clear;
      FOnGetEditStyle(Self, ACol, ARow, FPickListStrings, FCustomInplaceEditStyle);
    end;
-   Result :=FCustomInplaceEditStyle;
+   Result := FCustomInplaceEditStyle;
 end;
 {$ENDIF COMPILER6_UP}
 
-procedure TJvStringGrid.DrawCell(AColumn, ARow: Integer; Rect: TRect;
-  State: TGridDrawState);
+procedure TJvStringGrid.DrawCell(AColumn, ARow: Integer; Rect: TRect; State: TGridDrawState);
 begin
   if (AColumn < FixedCols) or (ARow < FixedRows) then
     Canvas.Font := FixedFont;

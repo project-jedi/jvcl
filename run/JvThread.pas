@@ -52,7 +52,7 @@ type
     FOnFinishAll: TNotifyEvent;
     FFreeOnTerminate: Boolean;
     FThreadDialog: TJvCustomThreadDialog;
-    fThreadDialogForm: TJvCustomThreadDialogForm;
+    FThreadDialogForm: TJvCustomThreadDialogForm;
     procedure DoCreate;
     procedure DoTerminate(Sender: TObject);
     function GetCount: Integer;
@@ -62,9 +62,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-
     property Count: Integer read GetCount;
     property Threads[Index: Integer]: TThread read GetThreads;
   published
@@ -84,14 +82,15 @@ type
     property Exclusive: Boolean read FExclusive write FExclusive;
     property RunOnCreate: Boolean read FRunOnCreate write FRunOnCreate;
     property FreeOnTerminate: Boolean read FFreeOnTerminate write FFreeOnTerminate;
+    property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
     property OnBegin: TNotifyEvent read FOnBegin write FOnBegin;
     property OnExecute: TJvNotifyParamsEvent read FOnExecute write FOnExecute;
     property OnFinish: TNotifyEvent read FOnFinish write FOnFinish;
     property OnFinishAll: TNotifyEvent read FOnFinishAll write FOnFinishAll;
-    property ThreadDialog: TJvCustomThreadDialog read FThreadDialog write FThreadDialog;
   end;
 
 // Cannot be synchronized to the MainThread (VCL)
+// (rom) why are these in the interface section?
 procedure Synchronize(Method: TNotifyEvent);
 procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 
@@ -125,6 +124,8 @@ begin
   end;
 end;
 
+//=== { TJvHideThread } ======================================================
+
 type
   TJvHideThread = class(TThread)
   private
@@ -135,10 +136,36 @@ type
     FExceptionAddr: Pointer;
     procedure ExceptionHandler;
   public
-    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-      Params: Pointer); virtual;
+    constructor Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer); virtual;
     procedure Execute; override;
   end;
+
+constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent; Params: Pointer);
+begin
+  inherited Create(True);
+  FSender := Sender;
+  FExecuteEvent := Event;
+  FParams := Params;
+end;
+
+procedure TJvHideThread.ExceptionHandler;
+begin
+  ShowException(FException, FExceptionAddr);
+end;
+
+procedure TJvHideThread.Execute;
+begin
+  try
+    FExecuteEvent(FSender, FParams);
+  except
+    on E: Exception do
+    begin
+      FException := E;
+      FExceptionAddr := ExceptAddr;
+      Self.Synchronize(ExceptionHandler);
+    end;
+  end;
+end;
 
 //=== { TJvThread } ==========================================================
 
@@ -170,11 +197,12 @@ end;
 
 procedure TJvThread.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  inherited Notification (AComponent, Operation);
+  inherited Notification(AComponent, Operation);
   if Operation = opRemove then
     if AComponent = FThreadDialog then
       FThreadDialog := nil
-    else if AComponent = FThreadDialogForm then
+    else
+    if AComponent = FThreadDialogForm then
       FThreadDialogForm:= nil
 end;
 
@@ -346,38 +374,8 @@ end;
 
 procedure TJvThread.CreateThreadDialogForm;
 begin
-  if Assigned(ThreadDialog) and
-     Not Assigned(fThreadDialogForm) then
-    fThreadDialogForm := ThreadDialog.CreateThreadDialogForm (self);
-end;
-//=== { TJvHideThread } ======================================================
-
-constructor TJvHideThread.Create(Sender: TObject; Event: TJvNotifyParamsEvent;
-  Params: Pointer);
-begin
-  inherited Create(True);
-  FSender := Sender;
-  FExecuteEvent := Event;
-  FParams := Params;
-end;
-
-procedure TJvHideThread.ExceptionHandler;
-begin
-  ShowException(FException, FExceptionAddr);
-end;
-
-procedure TJvHideThread.Execute;
-begin
-  try
-    FExecuteEvent(FSender, FParams);
-  except
-    on E: Exception do
-    begin
-      FException := E;
-      FExceptionAddr := ExceptAddr;
-      Self.Synchronize(ExceptionHandler);
-    end;
-  end;
+  if Assigned(ThreadDialog) and not Assigned(FThreadDialogForm) then
+    FThreadDialogForm := ThreadDialog.CreateThreadDialogForm(Self);
 end;
 
 {$IFDEF UNITVERSIONING}
@@ -394,7 +392,6 @@ initialization
   {$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
   {$ENDIF UNITVERSIONING}
-
   SyncMtx := CreateMutex(nil, False, 'VCLJvThreadMutex');
 
 finalization

@@ -49,6 +49,7 @@
     <File Name="..\..\run\JvSimpleXml.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSoundControl.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvThread.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvThreadDialog.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThreadTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimerList.pas" Targets="allbutclx" Formname="" Condition=""/>
