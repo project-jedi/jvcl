@@ -25,7 +25,7 @@ Known Issues:
 
 {$I jvcl.inc}
 
-unit JvRGBToHTML;
+unit JvRgbToHtml;
 
 interface
 
