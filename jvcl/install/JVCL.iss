@@ -228,9 +228,9 @@ Source: <$JCLFOLDER$>\source\*.*; DestDir: {app}\..\JCL\source; Components: JCLF
 [Dirs]
 Name: {app}\bin; Flags: uninsalwaysuninstall; Components: SOURCEFILES
 Name: {app}\dcu; Flags: uninsalwaysuninstall; Components: SOURCEFILES
-Name: {app}\lib5; Flags: uninsalwaysuninstall; Components: SOURCEFILES
-Name: {app}\lib6; Flags: uninsalwaysuninstall; Components: SOURCEFILES
-Name: {app}\lib7; Flags: uninsalwaysuninstall; Components: SOURCEFILES
+Name: {app}\lib\d5; Flags: uninsalwaysuninstall; Components: SOURCEFILES
+Name: {app}\lib\d6; Flags: uninsalwaysuninstall; Components: SOURCEFILES
+Name: {app}\lib\d7; Flags: uninsalwaysuninstall; Components: SOURCEFILES
 #if JVCLRELEASE = LARGE
 Name: <$JCLFOLDER$>\dcu; Flags: uninsalwaysuninstall; Components: JCLFILES
 Name: <$JCLFOLDER$>\bin; Flags: uninsalwaysuninstall; Components: JCLFILES
@@ -241,9 +241,9 @@ Name: <$JCLFOLDER$>\bin; Flags: uninsalwaysuninstall; Components: JCLFILES
 [UninstallDelete]
 Name: {app}\bin; Type: filesandordirs
 Name: {app}\dcu; Type: filesandordirs
-Name: {app}\lib5; Type: filesandordirs
-Name: {app}\lib6; Type: filesandordirs
-Name: {app}\lib7; Type: filesandordirs
+Name: {app}\lib\d5; Type: filesandordirs
+Name: {app}\lib\d6; Type: filesandordirs
+Name: {app}\lib\d7; Type: filesandordirs
 #if JVCLRELEASE != SMALL
 Name: {app}\examples\bin; Type: filesandordirs
 Name: {app}\examples\dcu; Type: filesandordirs
