@@ -1442,6 +1442,7 @@ begin
       FPopUpMenu.PopupComponent := Self;
       FPopUpMenu.Popup(Tmp.X, Tmp.Y);
       { wait 'til menu is Done }
+      // TODO
 //      while PeekMessage(Msg, 0, WM_MOUSEFIRST, WM_MOUSELAST, PM_REMOVE) do
 //        {nothing};
     end;

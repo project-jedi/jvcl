@@ -1095,7 +1095,7 @@ var
   Offset: TPoint;
   
 begin
-  if not Enabled {and not (csDesigning in ComponentState)} then
+  if not Enabled and not (csDesigning in ComponentState) then
   begin
     FState := rbsDisabled;
     FDragging := False;
@@ -2082,10 +2082,9 @@ begin
           with TmpImage.Canvas do
           begin
             FillRect(Rect(0, 0, iWidth, iHeight));
-            
-            
+
+
             Images.Draw(TmpImage.Canvas, 0, 0, Index, itImage);
-            
           end;
           Mask := TBitmap.Create;
           try

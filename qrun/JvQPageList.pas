@@ -332,9 +332,9 @@ begin
         InflateRect(ARect, -4, -4);
         if not Enabled then
         begin
-          
-          
-//          SetBkMode(Handle, QWindows.TRANSPARENT);
+
+
+          SetBkMode(Handle, QWindows.TRANSPARENT);
 
           Canvas.Font.Color := clHighlightText;
           SetPainterFont(Handle, Canvas.Font);

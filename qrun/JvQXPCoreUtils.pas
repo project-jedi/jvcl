@@ -156,13 +156,13 @@ begin
                   if (XX < AWidth) and (XX > -1) then
                     with Row[XX] do
                     begin
-                      
-                      
+
+
                       rgbRed := GetRValue(GBand[iLoop - 1]);
                       rgbGreen := GetGValue(GBand[iLoop - 1]);
                       rgbBlue := GetBValue(GBand[iLoop - 1]);
                       rgbReserved := 0;
-                      
+
                     end;
                 end;
             end;
@@ -178,7 +178,7 @@ begin
         iBndS := MulDiv(iLoop, AHeight, Colors);
         iBndE := MulDiv(iLoop + 1, AHeight, Colors);
         Brush.Color := GBand[iLoop];
-        PatBlt(Handle, 0, iBndS, AWidth, iBndE, PATCOPY);
+        PatBlt(Bitmap.Canvas, 0, iBndS, AWidth, iBndE, PATCOPY);
         if (iLoop > 0) and Dithered then
           for yLoop := 0 to AHeight div (Colors - 1) do
           begin
