@@ -46,9 +46,9 @@ uses
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   SysUtils, Classes,
   JvTypes, JvComponent;
 
@@ -213,9 +213,9 @@ begin
   {$IFDEF MSWINDOWS}
   FPriority := tpNormal;
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   FPriority := 0;
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 destructor TJvThreadTimer.Destroy;

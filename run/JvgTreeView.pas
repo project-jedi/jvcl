@@ -284,9 +284,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvgTreeView.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvgTreeView.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //=== { TJvgCustomTreeView } =================================================
 

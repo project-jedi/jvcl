@@ -139,9 +139,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvWinampLabel.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvWinampLabel.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   // (p3) fixed as suggested by Remko Bonte

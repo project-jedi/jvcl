@@ -66,9 +66,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSystemReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSystemReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin

@@ -33,9 +33,9 @@ interface
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPCtrlsReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvXPCtrlsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 

@@ -38,9 +38,9 @@ implementation
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvGlobusReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvGlobusReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 uses
   Classes,

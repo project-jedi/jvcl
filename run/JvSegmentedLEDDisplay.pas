@@ -404,9 +404,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSegmentedLEDDisplay.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvSegmentedLEDDisplay.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 var
   GDigitClassList: TThreadList = nil;
@@ -455,11 +455,11 @@ begin
 end;
 
 procedure UnregisterModuleSegmentedLEDDigitClasses(Module: HMODULE);
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 begin
   // ?
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 {$IFDEF MSWINDOWS}
 var
   I: Integer;

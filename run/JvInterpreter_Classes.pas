@@ -838,9 +838,9 @@ begin
   {$IFDEF MSWINDOWS}
   Value := O2V(TFileStream.Create(Args.Values[0], Args.Values[1]));
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Value := O2V(TFileStream.Create(VarToStr(Args.Values[0]), Args.Values[1]));
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 { TMemoryStream }

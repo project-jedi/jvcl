@@ -41,9 +41,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTimeFrameworkReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvTimeFrameworkReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 type
   {$IFDEF COMPILER5}

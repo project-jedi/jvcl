@@ -162,9 +162,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCSVBase.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCSVBase.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //=== { TJvCSVBase } =========================================================
 

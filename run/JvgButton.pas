@@ -221,9 +221,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvgButton.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvgButton.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -667,9 +667,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBControls.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvDBControls.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 //=== NEW IN JVCL 3.0 ==
 //=== { TJvDBMaskEdit } ======================================================

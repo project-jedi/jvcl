@@ -43,9 +43,9 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsAllFilesFilter = 'All Files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsAllFilesFilter = 'All Files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   RsNextPage = 'Next Page';
   RsPreviousPage = 'Previous Page';
   RsJVCLActionsCategory = 'JVCL';
@@ -262,9 +262,9 @@ resourcestring
   {$IFDEF MSWINDOWS}
   RsExecutableFilesExeExeAllFiles = 'Executable files (*.exe)|*.exe|All files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsExecutableFilesExeExeAllFiles = 'Executable files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   RsItems = 'Items';
   RsStrings = 'Strings';
   RsFmtEditEllipsis = '%s Editor...';
@@ -643,10 +643,10 @@ resourcestring
     'Text files (*.TXT)|*.TXT|Config files (*.SYS;*.INI)|*.SYS;*.INI|Batch files (*.BAT)|*.BAT|All files (*.*)|*.*';
   //  RsTextFilter = 'Text files (*.txt)|*.txt|Config files (*.sys;*.ini)|*.sys;*.ini|Batch files (*.bat)|*.bat|All files (*.*)|*.*';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   RsTextFilter =
     'Text files (*.txt)|*.txt|All files (*)|*';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   RsSingleLine = 'Line';
   RsMultipleLines = 'Lines';
 

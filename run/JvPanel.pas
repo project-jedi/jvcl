@@ -111,8 +111,8 @@ type
     FMoving: Boolean;
     FGripBmp: TBitmap;
     procedure CreateSizeGrip;
-    function GetBorderWidth: integer;
-    function IsInsideGrip(X, Y: integer): boolean;
+    function GetBorderWidth: Integer;
+    function IsInsideGrip(X, Y: Integer): Boolean;
     {$ENDIF VisualCLX}
     function GetHeight: Integer;
     procedure SetHeight(Value: Integer);
@@ -457,6 +457,7 @@ begin
     DoAfterMove;
   FWasMoved := False;
 end;
+
 {$ENDIF VCL}
 
 function TJvPanel.DoBeforeMove(X,Y: Integer): Boolean;
@@ -474,7 +475,8 @@ end;
 
 
 {$IFDEF VisualCLX}
-function TJvPanel.GetBorderWidth: integer;
+
+function TJvPanel.GetBorderWidth: Integer;
 begin
   if FFlatBorder then
     Result := 1
@@ -488,13 +490,13 @@ begin
   end;
 end;
 
-function TJvPanel.IsInsideGrip(X, Y: integer): boolean;
+function TJvPanel.IsInsideGrip(X, Y: Integer): Boolean;
 var
   R: TRect;
-  I: integer;
+  I: Integer;
 begin
   I := GetBorderWidth;
-  R := Bounds( Width - 12 - I, Height - 12 - I, 12, 12);
+  R := Bounds(Width - 12 - I, Height - 12 - I, 12, 12);
   Result := QWindows.PtInRect(R, X, Y);
 end;
 
@@ -513,21 +515,20 @@ begin
     ACanvas.Rectangle(R);
     InflateRect(R, -1, -1)
   end;
-  DrawCaptionTo(ACanvas, true);
+  DrawCaptionTo(ACanvas, True);
   if Sizeable then
   begin
     X := ClientWidth - FGripBmp.Width - I;
     Y := ClientHeight - FGripBmp.Height - I;
     for I := 0 to 2 do
-    begin
       for J := 0 to 2 do
       begin
         ACanvas.MoveTo(X + 4 * I + J, Y + FGripBmp.Height);
         ACanvas.LineTo(X + FGripBmp.Width, Y + 4 * I + J);
       end
-    end;
   end;
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvPanel.Paint;
@@ -906,7 +907,7 @@ begin
     if Movable and FMoving then
     begin
       SetBounds(Left + X - FLastPos.X, Top + Y - FLastPos.Y, Width, Height);
-      FWasMoved := true;
+      FWasMoved := True;
     end
     else
     begin

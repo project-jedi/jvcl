@@ -172,7 +172,7 @@ begin
   ModuleName := StrPas(ModName);
 end;
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 procedure TJvErrorDialog.ErrorInfo(var LogicalAddress: Pointer; var ModuleName: string);
 var
   Temp, ModName: array [0..MAX_PATH] of Char;
@@ -182,7 +182,7 @@ begin
   StrLCopy(ModName, AnsiStrRScan(Temp, PathDelim) + 1, SizeOf(ModName) - 1);
   ModuleName := StrPas(ModName);
 end;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure TJvErrorDialog.ShowError;
 var

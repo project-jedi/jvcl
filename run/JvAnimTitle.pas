@@ -125,11 +125,11 @@ begin
       FSens := True
     else
       SetLength(FCurrentTitle, Length(FCurrentTitle) - 1);
-    {$IFDEF LINUX}
+    {$IFDEF UNIX}
     if FCurrentTitle = '' then
       FForm.Caption := ' '   // else caption becomes <1>
     else
-    {$ENDIF LINUX}
+    {$ENDIF UNIX}
     FForm.Caption := FCurrentTitle;
   end;
 end;

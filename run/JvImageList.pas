@@ -257,10 +257,10 @@ resourcestring
   //       hopefully ikMappedResourceBitmap will be supported soon
   RsNotSupportedItemKind = 'The item kind %s is not supported so far.';
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 const
   RT_RCDATA = PChar(10);
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFDEF VCL}
 
@@ -838,7 +838,7 @@ begin
     Exit;
 
   if (FFileName <> '') and FileExists(FFileName)
-    {$IFDEF LINUX} and not DirectoryExists(FFileName) {$ENDIF} then
+    {$IFDEF UNIX} and not DirectoryExists(FFileName) {$ENDIF} then
   try
     FPicture.LoadFromFile(FFileName);
   except

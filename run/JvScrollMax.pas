@@ -333,9 +333,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvScrollMax.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvScrollMax.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 function PanelBorder(Panel: TCustomPanel): Integer;
 begin

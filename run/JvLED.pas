@@ -124,9 +124,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvLED.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvLED.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   cMaskLEDName = 'JVTR_MASK_LED';

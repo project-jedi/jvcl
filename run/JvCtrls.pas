@@ -210,9 +210,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCtrls.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCtrls.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   sUnitName = 'JvCtrls';

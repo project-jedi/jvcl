@@ -130,9 +130,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCalc.Res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCalc.Res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 type
   TCalcBtnKind =

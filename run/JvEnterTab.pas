@@ -73,9 +73,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvEnterTab.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvEnterTab.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 constructor TJvEnterAsTab.Create(AOwner: TComponent);
 begin

@@ -176,9 +176,9 @@ type
 implementation
 
 uses
-  {$IFDEF COMPILER6}
+  {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
-  {$ENDIF COMPILER6}
+  {$ENDIF HAS_UNIT_RTLCONSTS}
   {$IFDEF COMPILER7_UP}
   SysConst,
   {$ENDIF COMPILER7_UP}

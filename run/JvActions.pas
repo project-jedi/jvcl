@@ -40,9 +40,9 @@ uses
   {$IFDEF VisualCLX}
   QActnList,
   {$ENDIF VisualCLX}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   QWindows,
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   Classes;
 
 type

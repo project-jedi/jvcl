@@ -1582,11 +1582,11 @@ const
   IconIDs: array [TMsgDlgType] of PChar =
     (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   IconIDs: array [TMsgDlgType] of QMessageBoxIcon =
     (QMessageBoxIcon_Warning,  QMessageBoxIcon_Critical, QMessageBoxIcon_Information,
      QMessageBoxIcon_NoIcon, QMessageBoxIcon_NoIcon);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
   {$IFDEF VCL}
   ButtonCaptions: array [TMsgDlgBtn] of string =
@@ -1615,12 +1615,7 @@ end;
 
 function DlgPic(const DlgType: TMsgDlgType): TGraphic;
 begin
-  {$IFDEF MSWINDOWS}
   if IconIDs[DlgType] <> nil then
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  if IconIDs[DlgType] <> nil then
-  {$ENDIF LINUX}
   begin
     Result := TIcon.Create;
     try

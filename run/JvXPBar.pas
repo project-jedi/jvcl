@@ -579,9 +579,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvXPBar.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvXPBar.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFNDEF USEJVCL}
 resourcestring

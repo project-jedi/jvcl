@@ -58,9 +58,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCmpReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvCmpReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 procedure Register;
 begin

@@ -111,9 +111,9 @@ const
   {$IFDEF MSWINDOWS}
   cDefaultFontName = 'MS Sans Serif';
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   cDefaultFontName = 'Helvetica';
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 
 //=== { TJvCheckItemsProperty } ==============================================
 

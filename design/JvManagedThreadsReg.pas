@@ -40,9 +40,9 @@ implementation
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvManagedThreadsReg.dcr}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvManagedThreadsReg.dcr}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFNDEF USEJVCL}
 resourcestring

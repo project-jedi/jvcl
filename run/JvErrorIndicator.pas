@@ -212,9 +212,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvErrorIndicator.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvErrorIndicator.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 const
   cDefBlinkCount = 5;

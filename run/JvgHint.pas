@@ -93,9 +93,9 @@ uses
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvgHint.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvgHint.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 {$IFNDEF USEJVCL}
 resourcestring

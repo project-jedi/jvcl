@@ -4191,9 +4191,9 @@ begin
   {$IFDEF MSWINDOWS}  
   Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}  
+  {$IFDEF UNIX}  
   QWindows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
   Result := True;
 end;
 

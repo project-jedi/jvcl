@@ -300,9 +300,9 @@ uses
 {.$IFDEF MSWINDOWS}
 {$R ..\Resources\JvColorCombo.res}
 {.$ENDIF MSWINDOWS}
-{.$IFDEF LINUX}
+{.$IFDEF UNIX}
 {.$R ../Resources/JvColorCombo.res}
-{.$ENDIF LINUX}
+{.$ENDIF UNIX}
 
 function LoadInternalBitmap(ResName: string): TBitmap;
 begin

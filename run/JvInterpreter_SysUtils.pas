@@ -43,10 +43,10 @@ function Var2SearchRec(const SearchRec: Variant): TSearchRec;
 
 implementation
 
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 uses
   Variants;
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 { TSearchRec }
 
@@ -490,9 +490,9 @@ begin
   {$IFDEF MSWINDOWS}
   Value := FileCreate(Args.Values[0]);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Value := FileCreate(VarToStr(Args.Values[0]));
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 { function FileRead(Handle: Integer; var Buffer; Count: Integer): Integer; }
@@ -572,9 +572,9 @@ begin
   {$IFDEF MSWINDOWS}
   Value := FileSetDate(Args.Values[0], Args.Values[1]);
   {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
+  {$IFDEF UNIX}
   Value := FileSetDate(VarToStr(Args.Values[0]), Args.Values[1]);
-  {$ENDIF LINUX}
+  {$ENDIF UNIX}
 end;
 
 {$IFDEF MSWINDOWS}

@@ -1096,9 +1096,9 @@ const
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvToolEdit.res}
 {$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+{$IFDEF UNIX}
 {$R ../Resources/JvToolEdit.res}
-{$ENDIF LINUX}
+{$ENDIF UNIX}
 
 type
   TCustomEditAccessProtected = class(TCustomEdit);
