@@ -28,13 +28,13 @@ unit JvStringGrid;
 {$I jvcl.inc}
 
 //---------------------------------------------------------------
-// NEW: The inplace-edit-list feature is enabled dynamically when
+// NEW FOR COMPILER6_UP ONLY:
+//
+// The inplace-edit-list feature is enabled dynamically when
 // compiling JVCL, if the underlying JVCL and VCL base classes
-// support it.
+// support it. Look for COMPILER6_UP below for places where this
+// requires us to conditionally define this feature in or out.
 //---------------------------------------------------------------
-{$ifdef COMPILER6_UP}
-{$define HAVE_JVEXPUBINPLACEEDITLIST}
-{$endif}
 
 interface
 
@@ -63,7 +63,7 @@ type
   TJvSortType = (stNone, stAutomatic, stClassic, stCaseSensitive, stNumeric, stDate, stCurrency);
   TProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
   TJvOnGetEditStyleEvent = procedure(Sender:TJvStringGrid;  AColumn, ARow: Integer; PickListStrings:TStrings; var EditStyle:TEditStyle ) of object;
 {$endif}
 
@@ -80,7 +80,7 @@ type
     FOnHorizontalScroll: TNotifyEvent;
     FOnVerticalScroll: TNotifyEvent;
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
     FCustomInplaceEditStyle:TEditStyle; // NEW (ENABLED IN C6/D6 AND UP ONLY!)
     FOnGetEditStyle : TJvOnGetEditStyleEvent;
     FPickListStrings:TStringList;
@@ -97,7 +97,7 @@ type
     procedure SetFixedFont(const Value: TFont);
     procedure DoFixedFontChange(Sender: TObject);
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
     procedure EditButtonClick(Sender:TObject); dynamic; // NEW-WP 
     procedure ListboxCloseUp(Sender:TObject); dynamic;
 {$endif}
@@ -114,7 +114,7 @@ type
     procedure DrawCell(AColumn, ARow: Longint;
       Rect: TRect; State: TGridDrawState); override;
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
     // NEW: Override to provide dropdown list editing as an
     // event-handler in TJvStringGrid. only in C6/D6 and up.
     function GetEditStyle(ACol, ARow: Longint): TEditStyle; override;
@@ -223,7 +223,7 @@ type
     property OnVerticalScroll: TNotifyEvent read FOnVerticalScroll write FOnVerticalScroll;
     property OnHorizontalScroll: TNotifyEvent read FOnHorizontalScroll write FOnHorizontalScroll;
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
     // New event properties in C6/D6 and up only!
     property OnGetEditStyle : TJvOnGetEditStyleEvent read FOnGetEditStyle write FOnGetEditStyle; // NEW -WP (D6 UP)
     property OnEditButtonClick:TNotifyEvent read FOnEditButtonClick write FOnEditButtonClick; // NEW-WP  - User clicks on Ellipsis button, get event fired!
@@ -267,7 +267,7 @@ TExPopupListbox = class(TCustomListbox)
 // If the feature exists in the VCL base classes, we can enable the
 // feature here.
 type
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
   TExInplaceEditList = class(TJvExPubInplaceEditList) // was inheriting from TJvExInplaceEdit.-WAP
 {$else}
   TExInplaceEditList = class(TJvExInplaceEdit)
@@ -285,7 +285,7 @@ type
     FLastCol: Integer;
     FLastRow: Integer;
   protected
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
     procedure CloseUp(Accept: Boolean); override; // fire event on close up!
     procedure DoEditButtonClick; override;
     procedure UpdateContents; override;//WP-New! - Put items into listbox!
@@ -349,13 +349,13 @@ end;
 
 procedure TExPopupListbox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
 var
   accept:Boolean;
 {$endif}
 begin
   inherited MouseUp(Button, Shift, X, Y);
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
   accept := (X >= 0) and (Y >= 0) and
       (X < Width) and (Y < Height);
   TExInplaceEditList(Owner).CloseUp(accept);
@@ -374,7 +374,7 @@ begin
 end;
 
 //NEW!
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
 procedure TExInplaceEditList.UpdateContents;
 var
  ownerGrid:TJvStringGrid;
@@ -417,7 +417,7 @@ begin
   inherited DoSetFocus(FocusedWnd);
 end;
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
 // Only in C6/D6 and up!
 procedure TExInplaceEditList.CloseUp(Accept: Boolean); //override; // fire event on close up!
 begin
@@ -443,7 +443,7 @@ begin
   FFixedFont.Assign(Font);
   FFixedFont.OnChange := DoFixedFontChange;
   // ControlStyle := ControlStyle + [csAcceptsControls];
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
   // Only in C6/D6 and up!
   FPickListStrings:=TStringList.Create; //NEW -WP
 {$endif}
@@ -453,7 +453,7 @@ end;
 destructor TJvStringGrid.Destroy;
 begin
   FreeAndNil(FFixedFont);
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
   // Only in C6/D6 and up!
   FreeAndNil(FPickListStrings); //NEW-WP
 {$endif}
@@ -979,7 +979,7 @@ begin
   end;
 end;
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
 // Only in C6/D6 and up!
 function TJvStringGrid.GetEditStyle(ACol, ARow: Longint): TEditStyle; //override;
 begin
@@ -1240,7 +1240,7 @@ begin
   Invalidate;
 end;
 
-{$ifdef HAVE_JVEXPUBINPLACEEDITLIST}
+{$ifdef COMPILER6_UP}
 // NEW-WP - invoked dynamically from the TInplaceEditList (C6/D6 UP ONLY!)
 procedure TJvStringGrid.ListboxCloseUp(Sender:TObject);
 begin
