@@ -8,7 +8,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSlider
 <TITLEIMG TJvSlider>
@@ -20,11 +19,11 @@ Summary
 Description
   TJvSlider represents a slider displayed with user-defined images.
 
-  Use TJvSlider to display a slider control with your images. Set ImageRuler and ImageThumb to
-  specify bitmaps that appear on the ruler and thumb, respectively.
+  Use TJvSlider to display a slider control with your images. Set ImageRuler and ImageThumb to specify
+  bitmaps that appear on the ruler and thumb, respectively.
 
-  Use the events OnBeginChange, OnChanged and OnStopChanged to respond when the user changes the
-  thumb position.
+  Use the events OnBeginChange, OnChanged and OnStopChanged to respond when the user changes the thumb
+  position.
 
   Set Maximum to indicate an upper limit to the value that can be represented using the slider. Use
   Position to get the actual value the slider represents.
@@ -48,8 +47,8 @@ See Also
 Summary
   Creates and initializes an instance of TJvSlider.
 Description
-  Call \Create to create an instance of TJvSlider at runtime. A TJvSlider component placed on a form
-  at design time is created automatically.
+  Call \Create to create an instance of TJvSlider at runtime. A TJvSlider component placed on a form at
+  design time is created automatically.
 
   Pass a single Component as a parameter to provide the slider control with an Owner that is
   responsible for freeing it.
@@ -71,8 +70,8 @@ See Also
 Summary
   Destroys an instance of TJvSlider.
 Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
-  TJvSlider object is not nil and only then calls Destroy.
+  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the TJvSlider
+  object is not nil and only then calls Destroy.
 See Also
   TJvSlider.Create
 
@@ -109,11 +108,11 @@ Description
   each other in a row. The slider displays one of these images depending on its state.
 
   <TABLE>
-  Image position      Button state         Description
-  --------------      ------------         -----------
-  First               Up                   This image appears when the button is up (unselected).
-  Second              Down                 This image appears when the button stays down (indicating
-                                           that it remains selected).
+    Image position  Button state  Description
+    --------------  ------------  ------------------------------------------------------------
+    First           Up            This image appears when the button is up (unselected).
+    Second          Down          This image appears when the button stays down (indicating
+                                    that it remains selected).
   </TABLE>
 See Also
   TJvSlider.ImageRuler
@@ -134,12 +133,12 @@ Summary
   Responds when the user clicks the slider with the mouse.
 Description
   Do not call MouseDown. It is called automatically when the user clicks the sizeable panel with the
-  mouse. As implemented in TJvSlider, MouseDown renders the "down" image specified by ImageThumb on
-  the thumb, and triggers the OnBeginChange event.
+  mouse. As implemented in TJvSlider, MouseDown renders the "down" image specified by ImageThumb on the
+  thumb, and triggers the OnBeginChange event.
 Parameters
   Button - Determines which mouse button the user pressed.
   Shift  - Indicates which keys (Shift, Ctrl, and Alt) were down when the user pressed the mouse
-  button.
+            button.
   X      - Indicates the new x-coordinate of the mouse pointer.
   Y      - Indicates the new y-coordinate of the mouse pointer.
 See Also
@@ -152,8 +151,8 @@ Summary
   Responds when the user moves the mouse over the sliderl.
 Description
   Do not call MouseMove. It is called automatically when the user moves the mouse over the sizeable
-  panel, or when the sizeable panel has captured the mouse. As implemented in TJvSlider,
-  MouseMove changes the position of the thumb, and triggers the OnChanged event.
+  panel, or when the sizeable panel has captured the mouse. As implemented in TJvSlider, MouseMove
+  changes the position of the thumb, and triggers the OnChanged event.
 Parameters
   Shift - Indicates which keys (Shift, Ctrl, and Alt) were down when the mouse moved.
   X     - Indicates the new x-coordinate of the mouse pointer.
@@ -172,7 +171,7 @@ Description
 Parameters
   Button - Determines which mouse button the user pressed.
   Shift  - Indicates which keys (Shift, Ctrl, and Alt) were down when the user released the mouse
-  button.
+            button.
   X      - Indicates the new x-coordinate of the mouse pointer.
   Y      - Indicates the new y-coordinate of the mouse pointer.
 See Also
@@ -184,8 +183,8 @@ See Also
 Summary
   Occurs when the user starts changing the thumb position.
 Description
-  \Write an OnBeginChange event handler to take specific action when the user starts changing the
-  thumb position by pressing the mouse button.
+  \Write an OnBeginChange event handler to take specific action when the user starts changing the thumb
+  position by pressing the mouse button.
 See Also
   TJvSlider.OnChanged, TJvSlider.OnStopChanged
 
@@ -194,8 +193,8 @@ See Also
 Summary
   Occurs when the user starts changes the thumb position.
 Description
-  \Write an OnChanged event handler to take specific action when the user changes the thumb position
-  by moving the mouse button.
+  \Write an OnChanged event handler to take specific action when the user changes the thumb position by
+  moving the mouse button.
 See Also
   TJvSlider.OnBeginChange, TJvSlider.OnStopChanged
 
@@ -204,8 +203,8 @@ See Also
 Summary
   Occurs when the user stops changing the thumb position.
 Description
-  \Write an OnStopChanged event handler to take specific action when the user stops changing the
-  thumb position by releasing the mouse button.
+  \Write an OnStopChanged event handler to take specific action when the user stops changing the thumb
+  position by releasing the mouse button.
 See Also
   TJvSlider.OnBeginChange, TJvSlider.OnChanged
 
@@ -214,8 +213,8 @@ See Also
 Summary
   Renders the image of the slider.
 Description
-  Paint is called automatically in response to WM_PAINT messages. TJvSlider overrides Paint in order
-  to render the slider and thumb image.
+  Paint is called automatically in response to WM_PAINT messages. TJvSlider overrides Paint in order to
+  render the slider and thumb image.
 See Also
   TJvSlider.MouseDown, TJvSlider.MouseMove, TJvSlider.MouseUp
 
@@ -224,8 +223,8 @@ See Also
 Summary
   Specifies the current value represented by the slider.
 Description
-  Use Position to get or change the value the slider represents. Position must be a value between 0
-  and Maximum.
+  Use Position to get or change the value the slider represents. Position must be a value between 0 and
+  Maximum.
 
   Use the OnChanged event to respond to changes in the value of Position.
 See Also

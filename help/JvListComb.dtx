@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvListComb.pas
 Summary
@@ -8,13 +8,16 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@IJvResetItemHeight
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@IJvResetItemHeight.ResetItemHeight
 Summary
@@ -24,34 +27,35 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonColors
 <TITLE TJvButtonColors type>
 Summary
   Describes available button frame styles.
 Description
-  TJvButtonColors is used to specify the available color schemes for button frames in
-  TJvImageComboBox and TJvImageListBox components.
+  TJvButtonColors is used to specify the available color schemes for button frames in TJvImageComboBox
+  and TJvImageListBox components.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonColors.fsLighter
-A lighter frame with clBtnHighlight on top and clBtnFace on bottom.
+  A lighter frame with clBtnHighlight on top and clBtnFace on bottom.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonColors.fsLight
-A less light frame with clBtnHighlight on top and clBtnShadow on bottom.
+  A less light frame with clBtnHighlight on top and clBtnShadow on bottom.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonColors.fsMedium
-A monochromatic frame with clBtnHighlight on top and cl3DDkShadow on bottom.
+  A monochromatic frame with clBtnHighlight on top and cl3DDkShadow on bottom.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonColors.fsDark
-A darker frame with clBtnFace on top and cl3DDkShadow on bottom.
+  A darker frame with clBtnFace on top and cl3DDkShadow on bottom.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonColors.fsDarker
-The darkest frame with clBtnShadow on top and cl3DDkShadow on bottom.
+  The darkest frame with clBtnShadow on top and cl3DDkShadow on bottom.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox
@@ -90,8 +94,8 @@ See Also
 Summary
   Provides access to the canvas of the control.
 Description
-  Use Canvas when you need access to the drawing surface of the control. Canvas is a read-only
-  property but you can use the methods of TCanvas to draw on the surface.
+  Use Canvas when you need access to the drawing surface of the control. Canvas is a read-only property
+  but you can use the methods of TCanvas to draw on the surface.
 See Also
   TCanvas
 
@@ -100,8 +104,8 @@ See Also
 Summary
   Specifies the background color for the highlighted item.
 Description
-  Use ColorHighlight to specify the color to use for highlighted items. An item is highlighted when
-  the mouse hovers over it or when it is selected in the edit portion of the combobox.
+  Use ColorHighlight to specify the color to use for highlighted items. An item is highlighted when the
+  mouse hovers over it or when it is selected in the edit portion of the combobox.
 See Also
   TJvImageComboBox.ColorHighlightText
 
@@ -110,9 +114,8 @@ See Also
 Summary
   Specifies the text color for the highlighted item.
 Description
-  Use ColorHighlightText to specify the text color to use for highlighted items. An item is
-  highlighted when the mouse hovers over it or when it is selected in the edit portion of the
-  combobox.
+  Use ColorHighlightText to specify the text color to use for highlighted items. An item is highlighted
+  when the mouse hovers over it or when it is selected in the edit portion of the combobox.
 See Also
   TJvImageComboBox.ColorHighlight
 
@@ -121,8 +124,8 @@ See Also
 Summary
   Specifies the default indentation for new items.
 Description
-  Use DefaultIndent to set the amount of indentation of new items added to the list. You can change
-  the indentation of individual items with the Indent property of the TJvImageItem.
+  Use DefaultIndent to set the amount of indentation of new items added to the list. You can change the
+  indentation of individual items with the Indent property of the TJvImageItem.
 See Also
   TJvImageItem, TJvImageComboBox.IndentSelected, TJvImageComboBox.Items
 
@@ -131,8 +134,8 @@ See Also
 Summary
   Specifies the width of the drop-down list box.
 Description
-  Use DroppedWidth to specify the width of the drop-down listbox of the combobox. By default, the
-  width is set to the same width as the combobox.
+  Use DroppedWidth to specify the width of the drop-down listbox of the combobox. By default, the width
+  is set to the same width as the combobox.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageComboBox.ImageHeight
@@ -149,9 +152,9 @@ See Also
 Summary
   Specifies the image list from which images are retrieved.
 Description
-  Specify an available image list for the Images property to set the images that are displayed for
-  the items in the list. Change the images for individual items by assigning a new value to their
-  <LINK TJvImageItem.ImageIndex, ImageIndex> property.
+  Specify an available image list for the Images property to set the images that are displayed for the
+  items in the list. Change the images for individual items by assigning a new value to their <LINK
+  TJvImageItem.ImageIndex, ImageIndex> property.
 See Also
   TJvImageItem.ImageIndex
 
@@ -170,9 +173,10 @@ See Also
 Summary
   Specifies the indentation to use for a selected item.
 Description
-  Use IndentSelected to temporarily set the indentation for an item that is selected in the edit portion of the combobox. The normal indentation for the item is not affected: the item will sti
-  l be displayed using its <LINK TJvImageItem.Indent,Indent> property when it is rendered in the
-  drop-down list.
+  Use IndentSelected to temporarily set the indentation for an item that is selected in the edit
+  portion of the combobox. The normal indentation for the item is not affected: the item will sti l be
+  displayed using its <LINK TJvImageItem.Indent, Indent> property when it is rendered in the drop-down
+  list.
 See Also
   TJvImageComboBox.DefaultIndent
 
@@ -188,8 +192,8 @@ Description
 Summary
   Occurs when the selection in the combobox changes.
 Description
-  Write a handler for the \OnChange event to take specific action when the selected item in the
-  control changes.
+  Write a handler for the \OnChange event to take specific action when the selected item in the control
+  changes.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItem
@@ -197,8 +201,8 @@ Summary
   Class type used for items that can display images and text as well as be assigned an indentation
   value.
 Description
-  TJvImageItem is the type used for individual items in a TJvImageComboBox and TJvImageListBox. Use
-  the properties of TJvImageItem to set the Indent, Text and ImageIndex of the items displayed.
+  TJvImageItem is the type used for individual items in a TJvImageComboBox and TJvImageListBox. Use the
+  properties of TJvImageItem to set the Indent, Text and ImageIndex of the items displayed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItem.ColorHighlight
@@ -280,8 +284,8 @@ See Also
 Summary
   Contains a text string associated with the item.
 Description
-  Use the Text property to read the Text of the item or specify a new string for the Text value.
-  By default, Text is empty.
+  Use the Text property to read the Text of the item or specify a new string for the Text value. By
+  default, Text is empty.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItems
@@ -311,8 +315,8 @@ Summary
 Description
   This is an overloaded function/procedure, if possible you may combine the description of all these
   functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the
-  same name.
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
 Parameters
   Text - Description for this parameter
 Return value
@@ -326,13 +330,12 @@ See Also
 Summary
   Copies the properties and items of a compatible object into this object.
 Description
-  Call Assign to copy the properties and Items of another TJvImageItems or descendant object into
-  this object.
-  If Source is a TStrings object, the Items array is cleared and new items are created where the Text
-  of each item is assigned from the TStrings.
+  Call Assign to copy the properties and Items of another TJvImageItems or descendant object into this
+  object. If Source is a TStrings object, the Items array is cleared and new items are created where
+  the Text of each item is assigned from the TStrings.
 Parameters
   Source - The object to copy from. This can be a TJvImageItems or descendant or a TStrings or
-  descendant.
+            descendant.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageItems.Items
@@ -341,16 +344,17 @@ Summary
 Description
   Use Items to access the items in the list using an index. Since Items is the default property of
   TJvImageItems, you can access the items without the Items specifier.
-  
+
   \Example:
   <AUTOLINK OFF>
   <CODE>
     JvImageComboBox.Items.Items[i].Text := 'Hello'; 
   </CODE>
+  <AUTOLINK ON>
 
-  Equivalent: 
+  Equivalent:
+  <AUTOLINK OFF>
   <CODE>
-
     JvImageComboBox.Items[i].Text := 'Hello'; 
   </CODE>
   <AUTOLINK ON>
@@ -386,10 +390,10 @@ Summary
   Controls the horizontal placement of the text and images within the label.
 Description
   Set Alignment to specify how the text and images of the items are justified within the listbox.
-  
+
   When Alignment is set to taCenter, images are displayed above the text, when Alignment is either
   taLeftJustify or taRightJustify, images are displayed on either side of the text.
-  
+
   The height of items are automatically adjusted to make sure that the entire item is visible.
 
 ----------------------------------------------------------------------------------------------------
@@ -416,8 +420,8 @@ See Also
 Summary
   Provides access to the canvas of the control.
 Description
-  Use Canvas when you need access to the drawing surface of the control. Canvas is a read-only
-  property but you can use the methods of TCanvas to draw on the surface.
+  Use Canvas when you need access to the drawing surface of the control. Canvas is a read-only property
+  but you can use the methods of TCanvas to draw on the surface.
 See Also
   TCanvas
 
@@ -426,8 +430,8 @@ See Also
 Summary
   Specifies the background color for the highlighted item.
 Description
-  Use ColorHighlight to specify the color to use for highlighted items. An item is highlighted when
-  the mouse hovers over it or when it is selected in the control.
+  Use ColorHighlight to specify the color to use for highlighted items. An item is highlighted when the
+  mouse hovers over it or when it is selected in the control.
 See Also
   TJvImageListBox.ColorHighlightText
 
@@ -436,8 +440,8 @@ See Also
 Summary
   Specifies the text color for the highlighted item.
 Description
-  Use ColorHighlightText to specify the text color to use for highlighted items. An item is
-  highlighted when the mouse hovers over it or when it is selected.
+  Use ColorHighlightText to specify the text color to use for highlighted items. An item is highlighted
+  when the mouse hovers over it or when it is selected.
 See Also
   TJvImageListBox.ColorHighlight
 
@@ -456,9 +460,9 @@ See Also
 Summary
   Specifies the image list from which images are retrieved.
 Description
-  Specify an available image list for the Images property to set the images that are displayed for
-  the items in the list. Change the images for individual items by assigning a new value to their
-  <LINK TJvImageItem.ImageIndex, ImageIndex> property.
+  Specify an available image list for the Images property to set the images that are displayed for the
+  items in the list. Change the images for individual items by assigning a new value to their <LINK
+  TJvImageItem.ImageIndex, ImageIndex> property.
 See Also
   TJvImageItem.ImageIndex
 
@@ -485,10 +489,6 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = set of (puFont, puColorHighlight, puColorHighlightText); - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  set of (puFont, puColorHighlight, puColorHighlightText); - for reference)
 

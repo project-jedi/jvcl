@@ -8,7 +8,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSpellChecker
 Summary
@@ -16,9 +15,9 @@ Summary
 Description
   Use TJvSpellChecker when you want to add spell checking functionality to your application.
   TJvSpellChecker can spell check any text. TJvSpellChecker is a non-visual component and does not
-  display any dialogs. To to implement a spell checking dialog, see the demo included with JVCL for
-  an example on how to do that.
-  
+  display any dialogs. To to implement a spell checking dialog, see the demo included with JVCL for an
+  example on how to do that.
+
   TJvSpellChecker implements the IJvSpellIntf interface.
 
 ----------------------------------------------------------------------------------------------------
@@ -35,8 +34,8 @@ See Also
 Summary
   Defines the basic dictionary used to check spelling against.
 Description
-  Use Dictionary to set and \read the base dictionary used for spell checking. This value should
-  point to a file on disk. If no dictionary is set, no spell checking can take place.
+  Use Dictionary to set and \read the base dictionary used for spell checking. This value should point
+  to a file on disk. If no dictionary is set, no spell checking can take place.
 See Also
   TJvSpellChecker.UserDictionary
 
@@ -48,7 +47,7 @@ Description
   Ignores is used for words that should be ignored in the current session. To make an ignored word
   persistent, you should call UserDictionary.Add and then save/load the UserDictionary to storage as
   needed.
-  
+
   In a typical spell checking application, Ignores is used to implement "Ignore All" functionality.
 See Also
   TJvSpellChecker.Text, IJvSpellChecker.GetCurrentWord
@@ -60,8 +59,8 @@ Summary
 Description
   Write a handler for the OnCanIgnore event when you need to set up ignores for words that can't be
   easily captured using a simple table driven spell checker. For example, to ignore upper case words,
-  you could write an event handler that compares the current word with its upper cased variant and
-  set CanIgnore to true if they match.
+  you could write an event handler that compares the current word with its upper cased variant and set
+  CanIgnore to true if they match.
 Parameters
   Sender    - The IJvSpellChecker implementor
   Value     - The string to check.
@@ -72,11 +71,9 @@ Parameters
 Summary
   Reference to the implemented interface.
 Description
-  Use SpellChecker to access the IJvSpellChecker interface and its methods and properties. For
-  example,
+  Use SpellChecker to access the IJvSpellChecker interface and its methods and properties. For example,
   TJvSpellChecker does not surface any of the IJvSpellChecker methods like Seek, Next or
-  GetCurrentWord.
-  To access these in your application, use the SpellChecker property.
+  GetCurrentWord. To access these in your application, use the SpellChecker property.
 See Also
   IJvSpellChecker
 
@@ -96,10 +93,10 @@ Description
   UserDictionary is used to manage the users own words. The main difference between a dictionary and a
   user dictionary is that you cannot change the content of the main dictionary once loaded (without
   reloading it).
-  
+
   In addition, UserDictionary contains a list of sorted words, one per line, whereas the dictionary
   might be in any format.
-  
+
   Use UserDictionary to create a list of words that the user has chosen as his own word. For example,
   in a typical spell checking application, this property can be used to implement "Add" functionality.
 See Also

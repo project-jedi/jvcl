@@ -9,7 +9,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomStaticText
 Summary
@@ -27,11 +26,11 @@ Description
   The possible values of Alignment are
 
   <TABLE>
-  Value            Meaning
-  -----            -------
-  taLeftJustify    Text is aligned at the left of the control.
-  taCenter         Text is centered in the control.
-  taRightJustify   Text is aligned at the right of the control.
+    Value           Meaning
+    --------------  --------------------------------------------
+    taLeftJustify   Text is aligned at the left of the control.
+    taCenter        Text is centered in the control.
+    taRightJustify  Text is aligned at the right of the control.
   </TABLE>
 See Also
   TJvCustomStaticText.Layout
@@ -52,11 +51,11 @@ Description
   The possible values of BorderStyle are
 
   <TABLE>
-  Value      Meaning
-  -----      -------
-  sbsNone    No visible border.
-  sbsSingle  Single-line border.
-  sbsSunken  Raised border.
+    Value      Meaning
+    ---------  -------------------
+    sbsNone    No visible border.
+    sbsSingle  Single-line border.
+    sbsSunken  Raised border.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -64,10 +63,9 @@ Description
 Summary
   Links the component with another windowed control.
 Description
-  Use the FocusControl property to link the TJvCustomStaticText instance with another windowed
-  control.
-  If the text of Caption includes an accelerator key, the component specified by FocusControl
-  receives focus when the accelerator is pressed.
+  Use the FocusControl property to link the TJvCustomStaticText instance with another windowed control.
+  If the text of Caption includes an accelerator key, the component specified by FocusControl receives
+  focus when the accelerator is pressed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomStaticText.HotTrack
@@ -75,8 +73,8 @@ Summary
   Specifies whether the control is highlighted when the mouse passes over it.
 Description
   Set HotTrack to true to provide visual feedback about which item is under the mouse; the font
-  specified by HotTrackFont is used for the control's text. When HotTrack is false, there is no
-  visual feedback when the mouse passes over this control.
+  specified by HotTrackFont is used for the control's text. When HotTrack is false, there is no visual
+  feedback when the mouse passes over this control.
 See Also
   OnMouseEnter, OnMouseLeave
 
@@ -85,8 +83,8 @@ See Also
 Summary
   Specifies the font used when the mouse passes over the control, and HotTrack is true.
 Description
-  When the mouse passes over the control and HotTrack is set to true, HotTrackFont is used as the
-  font for the control text.
+  When the mouse passes over the control and HotTrack is set to true, HotTrackFont is used as the font
+  for the control text.
 
   To change to a new font, specify a new TFont object. To modify a font, change the value of the
   Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
@@ -99,23 +97,21 @@ Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
-  property changes in Font are copied to HotTrackFont except Color changes.
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
+  changes in Font are copied to HotTrackFont except Color changes.
 
   Note that hoFollowFont must be included for any properties to be copied at all.
 
   To implement the HotTrackFontOptions property in a new control, you should perform the following
   steps:
 
-    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
-      value
-      to be DefaultTrackFontOptions (defined in JvTypes).
-    * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-      JvJVCLUtils)
-      after calling inherited.
-    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
+    value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 See Also
   TJvCustomStaticText.HotTrack, TJvCustomStaticText.HotTrackFont
 
@@ -129,11 +125,11 @@ Description
 
   Layout can be one of the following values:
   <TABLE>
-  Value     Meaning
-  -----     -------
-  tlTop     The text appears at the top of the control.
-  tlCenter  The text is vertically centered in the control.
-  tlBottom  The text appears along the bottom of the control.
+    Value     Meaning
+    --------  -------------------------------------------------
+    tlTop     The text appears at the top of the control.
+    tlCenter  The text is vertically centered in the control.
+    tlBottom  The text appears along the bottom of the control.
   </TABLE>
 See Also
   TJvCustomStaticText.Alignment
@@ -144,8 +140,8 @@ Summary
   Enables accelerator characters.
 Description
   If ShowAccelChar is true, an ampersand in the component’s Caption text appears as an underline and
-  makes the character after it into an accelerator key. If ShowAccelChar is false, ampersands appear
-  as ampersands.
+  makes the character after it into an accelerator key. If ShowAccelChar is false, ampersands appear as
+  ampersands.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomStaticText.TextMargins
@@ -164,8 +160,8 @@ Description
   Set WordWrap to true to allow the control to display multiple line of text. When WordWrap is true,
   text that is too wide for the control wraps at the right margin and continues in additional lines.
 
-  Set WordWrap to false to limit the control to a single line. When WordWrap is false, text that is
-  too wide for the control appears truncated.
+  Set WordWrap to false to limit the control to a single line. When WordWrap is false, text that is too
+  wide for the control appears truncated.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvStaticText
@@ -179,8 +175,8 @@ Description
   TJvStaticText is a TJvCustomStaticText descendant that supports extended features such as hot
   tracking.
 
-  Set HotTrack to true, to provide visual feedback about when the text control is under the mouse.
-  Use HotGlyph, HotTrackFont to alter the appearance of the control when the mouse is over it.
+  Set HotTrack to true, to provide visual feedback about when the text control is under the mouse. Use
+  HotGlyph, HotTrackFont to alter the appearance of the control when the mouse is over it.
 
   Use property HintColor to change the color of the hint boxes for the control.
 
@@ -191,26 +187,23 @@ Summary
 Description
   Use TJvTextMargins to specify the indentation of the text on a control.
 
-  Property X specifies the
-  horizontally margin between the left or right edge of the caption and the control, depending on the
-  value of <LINK TJvCustomStaticText.Alignment,Alignment>.
-  Property Y specifies the
-  vertically margin between the top or bottom edge of the caption and the control, depending on the
-  value of <LINK TJvCustomStaticText.Layout,LayOut>.
+  Property X specifies the horizontally margin between the left or right edge of the caption and the
+  control, depending on the value of <LINK TJvCustomStaticText.Alignment, Alignment>. Property Y
+  specifies the vertically margin between the top or bottom edge of the caption and the control,
+  depending on the value of <LINK TJvCustomStaticText.Layout, LayOut>.
 See Also
   TJvCustomStaticText.Alignment, TJvCustomStaticText.Layout
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextMargins.X
 Summary
-  Specifies the horizontally number of pixels between the edge of the control and the caption drawn
-  on its surface.
+  Specifies the horizontally number of pixels between the edge of the control and the caption drawn on
+  its surface.
 Description
-  Use X to specify the indentation of the the text specified by the Caption property. The edges that
-  X separates depends on the <LINK TJvCustomStaticText.Alignment,Alignment> property. If Alignment is
+  Use X to specify the indentation of the the text specified by the Caption property. The edges that X
+  separates depends on the <LINK TJvCustomStaticText.Alignment, Alignment> property. If Alignment is
   taLeftJustify, the margin appears between the left edge of the caption and the left edge of the
-  control.
-  If Layout is taRightJustify, the margin separates the right edges.
+  control. If Layout is taRightJustify, the margin separates the right edges.
 
   If Layout is taCenter the value of X is ignored.
 See Also
@@ -222,10 +215,10 @@ Summary
   Specifies the vertically number of pixels between the edge of the control and the caption drawn on
   its surface.
 Description
-  Use Y to specify the indentation of the the text specified by the Caption property. The edges that
-  Y separates depends on the <LINK TJvCustomStaticText.Layout,LayOut> property. If Layout is tlTop,
-  the margin appears between the top edge of the caption and the top edge of the control.
-  If Layout is tlBottom, the margin separates the bottom edges.
+  Use Y to specify the indentation of the the text specified by the Caption property. The edges that Y
+  separates depends on the <LINK TJvCustomStaticText.Layout, LayOut> property. If Layout is tlTop, the
+  margin appears between the top edge of the caption and the top edge of the control. If Layout is
+  tlBottom, the margin separates the bottom edges.
 
   If Layout is tlCenter the value of Y is ignored.
 See Also

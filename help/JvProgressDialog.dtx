@@ -1,5 +1,5 @@
 ##Package: Dlgs
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvProgressDialog.pas
 Summary
@@ -8,25 +8,24 @@ Summary
 Author
   Peter Thörnqvist.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressDialog
 <TITLEIMG TJvProgressDialog>
 JVCLInfo
-  GROUP=JVCL.Dialogs.Custom
+  GROUP=JVCL.Bars.SlideAndProgress.Progress,JVCL.Dialogs.Custom
   FLAG=Component
 Summary
   A component that can display a progress dialog either modally or non-modally.
 Description
   Use a TJvProgressDialog when you need to display a progress dialog in your application. Progress
-  dialogs are mostly used to provide feedback to the user when the application is performing a
-  lengthy process and the program needs to be disabled until finished.
+  dialogs are mostly used to provide feedback to the user when the application is performing a lengthy
+  process and the program needs to be disabled until finished.
 
   Depending on your needs, the dialog can be shown either modally or non-modally. When shown modally,
-  the message loop of the program is actually taken over by the dialog and thus your program might
-  not be able to perform its intended work (unless it is done in a separate thread). For example, the
+  the message loop of the program is actually taken over by the dialog and thus your program might not
+  be able to perform its intended work (unless it is done in a separate thread). For example, the
   following code would not work when displaying the dialog modally.
- 
+
   <AUTOLINK OFF>
   <CODE>
     JvProgressDialog1.ShowModal;
@@ -37,10 +36,10 @@ Description
   called until the dialog is closed. When displaying the dialog modally, you must perform the
   processing in the OnProgress event instead.
 
-  When displaying the dialog non-modally, you don't need to have an OnProgress event handler
-  (actually, it isn't even called in this case). Instead you can update the components properties
-  directly while performing the process.
- 
+  When displaying the dialog non-modally, you don't need to have an OnProgress event handler (actually,
+  it isn't even called in this case). Instead you can update the components properties directly while
+  performing the process.
+
   <AUTOLINK OFF>
   <CODE>
     // set up the dialog:
@@ -59,20 +58,19 @@ Description
   </CODE>
   <AUTOLINK ON>
 Note
-  During execution of the dialog, the component properties reflects the <i>current</i> values in the
-  dialog (as changed in OnProgress or by direct assignment). After execution, the properties are
-  reset to their original values.
+  During execution of the dialog, the component properties reflects the <I>current</I> values in the
+  dialog (as changed in OnProgress or by direct assignment). After execution, the properties are reset
+  to their original values.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressDialog.Cancelled
 Summary
   Determines if the user cancelled the dialog before the process completed.
 Description
-  After the dialog is closed, Cancelled is set to true if the user closed the dialog before the
-  process completed.
-  A user can only close the dialog if the ShowCancel property is true. When showing the dialog
-  modally, you can use the return value of ShowModal to determine if the user cancelled the dialog
-  but when you use Show, Cancelled is the only way to determine what the user did.
+  After the dialog is closed, Cancelled is set to true if the user closed the dialog before the process
+  completed. A user can only close the dialog if the ShowCancel property is true. When showing the
+  dialog modally, you can use the return value of ShowModal to determine if the user cancelled the
+  dialog but when you use Show, Cancelled is the only way to determine what the user did.
 See Also
   TJvProgressDialog.Show, TJvProgressDialog.ShowCancel, TJvProgressDialog.ShowModal
 
@@ -82,8 +80,7 @@ Summary
   Specifies the text of the dialog caption.
 Description
   Use Caption to set the caption of the dialog. If Caption is empty, the entire caption area of the
-  form is removed.
-  To display the caption area without any text in it, set Caption to a single space.
+  form is removed. To display the caption area without any text in it, set Caption to a single space.
 
   The Caption property can be changed while the dialog is shown, either directly (if the dialog was
   shown using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
@@ -119,8 +116,8 @@ Description
   Assign an image to this property to have it displayed in the dialog. The form will automatically
   adjust its size to the image if it is larger than the default size of the dialog.
 
-  The Image property can be changed while the dialog is shown, either directly (if the dialog was
-  shown using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
+  The Image property can be changed while the dialog is shown, either directly (if the dialog was shown
+  using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
 See Also
   TJvProgressDialog.Caption, TJvProgressDialog.Show, TJvProgressDialog.ShowModal
 
@@ -147,12 +144,11 @@ Summary
   Specifies how often OnProgress is called.
 Description
   Use Interval to set the number of milliseconds between calls to OnProgress when the dialog is shown
-  using ShowModal.
-  When the dialog is displayed using Show, this property has no effect.
+  using ShowModal. When the dialog is displayed using Show, this property has no effect.
 
-  If Interval is less than or equal to 0, OnProgress is called once. If Interval is still less than
-  or equal to 0, the dialog will be closed. Interval can be changed inside the OnProgress event and
-  will be updated immediately.
+  If Interval is less than or equal to 0, OnProgress is called once. If Interval is still less than or
+  equal to 0, the dialog will be closed. Interval can be changed inside the OnProgress event and will
+  be updated immediately.
 See Also
   TJvProgressDialog.OnProgress, TJvProgressDialog.ShowModal
 
@@ -162,12 +158,11 @@ Summary
   Specifies the upper limit of the range of possible positions for the progress bar.
 Description
   Use \Max along with the Min property to establish the range of possible positions for the progress
-  bar.
-  Optimally, when the process tracked by the progress bar is complete, the value of Position should
-  equal \Max.
+  bar. Optimally, when the process tracked by the progress bar is complete, the value of Position
+  should equal \Max.
 
-  The \Max property can be changed while the dialog is shown, either directly (if the dialog was
-  shown using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
+  The \Max property can be changed while the dialog is shown, either directly (if the dialog was shown
+  using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
 See Also
   TJvProgressDialog.Min, TJvProgressDialog.OnProgress, TJvProgressDialog.Position,
   TJvProgressDialog.Show, TJvProgressDialog.ShowModal
@@ -178,12 +173,11 @@ Summary
   Specifies the lower limit of the range of possible positions for the progress bar.
 Description
   Use Max along with the \Min property to establish the range of possible positions for the progress
-  bar.
-  Optimally, when the process tracked by the progress bar is complete, the value of Position should
-  equal Max.
+  bar. Optimally, when the process tracked by the progress bar is complete, the value of Position
+  should equal Max.
 
-  The \Min property can be changed while the dialog is shown, either directly (if the dialog was
-  shown using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
+  The \Min property can be changed while the dialog is shown, either directly (if the dialog was shown
+  using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
 See Also
   TJvProgressDialog.Max, TJvProgressDialog.OnProgress, TJvProgressDialog.Position,
   TJvProgressDialog.Show, TJvProgressDialog.ShowModal
@@ -194,8 +188,7 @@ Summary
   Occurs when the user cancelled the dialog.
 Description
   Write a handler for the OnCancel event to take specific actions when the user cancels the progress
-  dialog.
-  The user can only cancel the dialog if the ShowCancel property is true.
+  dialog. The user can only cancel the dialog if the ShowCancel property is true.
 See Also
   TJvProgressDialog.OnClose, TJvProgressDialog.ShowCancel
 
@@ -204,8 +197,8 @@ See Also
 Summary
   Occurs when the dialog closes.
 Description
-  Write a handler for the OnClose event to take specific actions when the dialog is closed. OnClose
-  is called even if the user cancelled the dialog (which triggers the OnCancel event).
+  Write a handler for the OnClose event to take specific actions when the dialog is closed. OnClose is
+  called even if the user cancelled the dialog (which triggers the OnCancel event).
 See Also
   TJvProgressDialog.OnCancel, TJvProgressDialog.OnShow
 
@@ -215,11 +208,11 @@ Summary
   Occurs periodically while the dialog is shown modally.
 Description
   Write a handler for the OnProgress event to update the dialog when it was displayed using the
-  ShowModal method. To update the components on the dialog, you can assign new values to the Min,
-  Max, Position, Caption, Image and Text properties within the event handler.
+  ShowModal method. To update the components on the dialog, you can assign new values to the Min, Max,
+  Position, Caption, Image and Text properties within the event handler.
 
-  The time between calls to the OnProgress event is controlled by the Interval property.
-  OnProgress is not triggered if the dialog was displayed using the Show method.
+  The time between calls to the OnProgress event is controlled by the Interval property. OnProgress is
+  not triggered if the dialog was displayed using the Show method.
 Parameters
   Sender    - The object that triggered the event.
   AContinue - Set to false to close the dialog, set to true to keep it open.
@@ -243,14 +236,13 @@ Summary
   Specifies the current position of the progress bar.
 Description
   Read Position to determine how far the process tracked by the progress bar has advanced from Min
-  toward Max.
-  Set Position to cause the progress bar to display a position between Min and Max. For example, when
-  the process tracked by the progress bar completes, set Position to Max so that it appears
-  completely filled.
+  toward Max. Set Position to cause the progress bar to display a position between Min and Max. For
+  example, when the process tracked by the progress bar completes, set Position to Max so that it
+  appears completely filled.
 
   When a progress bar is created, Min and Max represent percentages, where Min is 0 (0% complete) and
-  Max is 100 (100% complete). If these values are not changed,
-  Position is the percentage of the process that has already been completed.
+  Max is 100 (100% complete). If these values are not changed, Position is the percentage of the
+  process that has already been completed.
 
   The Position property can be changed while the dialog is shown, either directly (if the dialog was
   shown using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
@@ -273,8 +265,8 @@ See Also
 Summary
   Displays the dialog non-modally.
 Description
-  Call Show when you want to display the dialog non-modally. Depending on your needs, you might want
-  to show the dialog either modally or non-modally. To display the dialog modally, call ShowModal
+  Call Show when you want to display the dialog non-modally. Depending on your needs, you might want to
+  show the dialog either modally or non-modally. To display the dialog modally, call ShowModal
   instead.
 See Also
   TJvProgressDialog.OnClose, TJvProgressDialog.OnShow, TJvProgressDialog.ShowModal
@@ -286,8 +278,8 @@ Summary
 Description
   Use ShowCancel to specify whether the dialog has a Cancel button or not. If ShowCancel is true, the
   user can abort the process either by clicking the Cancel button or by hitting Escape. If the dialog
-  has a
-  caption area, the system menu and the close button will also be activated if ShowCancel is true.
+  has a caption area, the system menu and the close button will also be activated if ShowCancel is
+  true.
 
   If the user cancels the process, the OnCancel event is triggered and Cancelled is set to true.
 See Also
@@ -300,18 +292,17 @@ Summary
   Displays the dialog modally.
 Description
   Call ShowModal when you want to display the dialog modally. When a dialog is displayed modally, you
-  cannot interact with it directly. To update the properties of the dialog, create an event handler
-  for the OnProgress event and perform any necessary updates within it. For example, you can change
-  Min, Max or Position to update the progress bar,
-  Text and Caption to update the visual cues or Image to create a simulation of an animation.
+  cannot interact with it directly. To update the properties of the dialog, create an event handler for
+  the OnProgress event and perform any necessary updates within it. For example, you can change Min,
+  Max or Position to update the progress bar, Text and Caption to update the visual cues or Image to
+  create a simulation of an animation.
 
   Use ShowModal when the process is performed in its own thread or when the process is suitable to be
   performed in short intervals (like attempting to connect to a service). If the process is
   time-intensive and executed within the main thread, consider using Show instead.
 Return value
   Returns false if the user cancelled the dialog, true otherwise. Users can only cancel the dialog if
-  the
-  ShowCancel property is true.
+  the ShowCancel property is true.
 See Also
   TJvProgressDialog.Caption, TJvProgressDialog.Image, TJvProgressDialog.Max, TJvProgressDialog.Min,
   TJvProgressDialog.Position, TJvProgressDialog.Show, TJvProgressDialog.Text
@@ -334,8 +325,8 @@ Description
   Use Text to display a text label above the progress bar. A text can be used to update the user on
   what part of the process is currently executing. To remove the label, set Text to an empty string.
 
-  The Text property can be changed while the dialog is shown, either directly (if the dialog was
-  shown using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
+  The Text property can be changed while the dialog is shown, either directly (if the dialog was shown
+  using Show) or in the OnProgress event (if the dialog was shown using ShowModal).
 See Also
   TJvProgressDialog.Caption
 

@@ -1,5 +1,5 @@
 ##Package: XPCtrls
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ##Skip: TJvXPBarColors.Change
 ##Skip: TJvXPBarColors.OnChange
 ##Skip: TJvXPBarItem.ActionLink
@@ -17,7 +17,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marc Hoffman.
-
 
 ----------------------------------------------------------------------------------------------------
 @@RoundedFrame
@@ -39,14 +38,14 @@ See Also
 @@TJvXPBar
 <TITLEIMG TJvXPBar>
 JVCLInfo
-  GROUP=JVCL.XPControls
+  GROUP=JVCL.XPControls,JVCL.Bars
   FLAG=Component
 Summary
   Control that can display an icon, a header and zero or more clickable items in its client area.
 Description
-  Use a TJvXPBar control on a form to display an XP style group box with items that can be clicked.
-  To create a navigation style control, drop several TJvXPBars on a TJvXPContainer and align them
-  to the top of the container.
+  Use a TJvXPBar control on a form to display an XP style group box with items that can be clicked. To
+  create a navigation style control, drop several TJvXPBars on a TJvXPContainer and align them to the
+  top of the container.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarColors
@@ -144,22 +143,22 @@ Description
 Summary
   Specifies the return values possible from the GetHitTestAt function of TJvXPCustomWinXPBar.
 Description
-  TJvXPBarHitTest is the type of the return value from <LINK
-  TJvXPCustomWinXPBar.GetHitTestAt,TJvXPBar.GetHitTestAt>.
+  TJvXPBarHitTest is the type of the return value from <LINK TJvXPCustomWinXPBar.GetHitTestAt,
+  TJvXPBar.GetHitTestAt>.
 See Also
   TJvXPBar, TJvXPCustomWinXPBar
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarHitTest.htNone
-Position is neither on header, nor on roll button.
+  Position is neither on header, nor on roll button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarHitTest.htHeader
-Position is on the header.
+  Position is on the header.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarHitTest.htRollButton
-Position is on the roll button.
+  Position is on the roll button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarItem
@@ -176,8 +175,8 @@ Summary
 Description
   Action is the action object that is associated with the item. Actions allow an application to
   centralize the response to user commands. When an item is associated with an action, the action
-  determines the appropriate properties and events of the item (such as whether the item is enabled
-  or how it responds to an OnClick event).
+  determines the appropriate properties and events of the item (such as whether the item is enabled or
+  how it responds to an OnClick event).
 See Also
   TJvXPBarItem.OnClick
 
@@ -215,9 +214,9 @@ See Also
 Summary
   Stores a pointer value as part of the item.
 Description
-  Data has no predefined meaning. The Data property is provided for the convenience of developers.
-  It can be used for storing an additional pointer value or it can be typecast to any 32-bit value
-  such as a component reference or an integer.
+  Data has no predefined meaning. The Data property is provided for the convenience of developers. It
+  can be used for storing an additional pointer value or it can be typecast to any 32-bit value such as
+  a component reference or an integer.
 See Also
   TJvXPBarItem.DataObject, TJvXPBarItem.Tag
 
@@ -227,9 +226,8 @@ Summary
   Stores an object value as part of the item.
 Description
   DataObject has no predefined meaning. The DataObject property is provided for the convenience of
-  developers.
-  It can be used for storing an additional TObject value or it can be typecast to any 32-bit value
-  such as a pointer or an integer.
+  developers. It can be used for storing an additional TObject value or it can be typecast to any
+  32-bit value such as a pointer or an integer.
 See Also
   TJvXPBarItem.Data, TJvXPBarItem.Tag
 
@@ -266,9 +264,8 @@ Description
 Summary
   Indicates the image to display for the item.
 Description
-  ImageIndex is an index into the image list of the item or of the TJvXPCustomWinXPBar owning the
-  item or of the Action associated with the item. It identifies an image that is shown next to the
-  item.
+  ImageIndex is an index into the image list of the item or of the TJvXPCustomWinXPBar owning the item
+  or of the Action associated with the item. It identifies an image that is shown next to the item.
 See Also
   TJvXPBar, TJvXPBarItem.ImageList, TJvXPBarItem.Images, TJvXPCustomWinXPBar
 
@@ -289,12 +286,12 @@ Summary
 Description
   Images is used internally to return the image list that is to be used by the item. An item can get
   its image list from three different sources: from its own ImageList property, from the Images
-  property of the associated Action or from the <LINK TJvXPCustomWinXPBar.ImageList,ImageList>
+  property of the associated Action or from the <LINK TJvXPCustomWinXPBar.ImageList, ImageList>
   property of the owning TJvXPCustomWinXPBar.
 
   The different image lists are checked in this order:
 
-    ImageList, Action.ActionList.Images and TJvXPBar.ImageList
+  ImageList, Action.ActionList.Images and TJvXPBar.ImageList
 
   The first non-nil image list found is returned.
 See Also
@@ -305,9 +302,9 @@ See Also
 Summary
   Occurs when the item is clicked.
 Description
-  Use the OnClick event handler to respond when the user clicks the item. If the item has an
-  associated action, and that action has an OnExecute method, the action’s OnExecute method responds
-  to click events unless it is superseded by an OnClick event handler.
+  Use the OnClick event handler to respond when the user clicks the item. If the item has an associated
+  action, and that action has an OnExecute method, the action’s OnExecute method responds to click
+  events unless it is superseded by an OnClick event handler.
 See Also
   TJvXPBarItem.Action
 
@@ -326,9 +323,9 @@ See Also
 Summary
   Stores an integer value as part of the item.
 Description
-  Tag has no predefined meaning. The Tag property is provided for the convenience of developers.
-  It can be used for storing an additional integer value or it can be typecast to any 32-bit value
-  such as a component reference or a pointer.
+  Tag has no predefined meaning. The Tag property is provided for the convenience of developers. It can
+  be used for storing an additional integer value or it can be typecast to any 32-bit value such as a
+  component reference or a pointer.
 See Also
   TJvXPBarItem.Data, TJvXPBarItem.DataObject
 
@@ -393,22 +390,20 @@ Summary
   Base class for options in a TJvXPCustomWinXPBar or descendant.
 Description
   This class is not used.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarOwnerDrawEvent
 <TITLE TJvXPBarOwnerDrawEvent type>
 Summary
   Write here a summary (1 line)
 Description
-  This type is used by (for reference):
-    TJvXPCustomWinXPBar.OnDrawBackground
-    TJvXPCustomWinXPBar.OnDrawHeader
+  This type is used by (for reference): TJvXPCustomWinXPBar.OnDrawBackground
+  TJvXPCustomWinXPBar.OnDrawHeader
 Parameters
   Sender  - Description for this parameter
   ACanvas - Description for this parameter
   ARect   - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollDelay
 <TITLE TJvXPBarRollDelay type>
@@ -427,11 +422,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollDirection.rdExpand
-Expands.
+  Expands.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollDirection.rdCollapse
-Collapses.
+  Collapses.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollMode
@@ -443,11 +438,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollMode.rmFixed
-The control is resized using a fixed value.
+  The control is resized using a fixed value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollMode.rmShrink
-The control is resized proportional to its current size.
+  The control is resized proportional to its current size.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPBarRollStep
@@ -481,15 +476,15 @@ Summary
 Description
   Use Items to access the items in the collection by index. Valid indices are between 0 and Count - 1.
   Items is the default property of TJvXPBarVisibleItems, which means you can call it either using
- 
+
   <AUTOLINK OFF>
   <CODE>
   JvXPBar1.Items.Items[Index] 
   </CODE>
-
-  or 
+  <AUTOLINK ON>
+  or
+  <AUTOLINK OFF>
   <CODE>
-
   JvXPBar1.Items[Index] 
   </CODE>
   <AUTOLINK ON>
@@ -504,9 +499,9 @@ Summary
   Base class for XP style group boxes with fixed items.
 Description
   Use TJvXPCustomWinXPBar as a base class when creating controls that should mimick the look and feel
-  of the navigation bar used in Windows XP. TJvXPCustomWinXPBar handles the basic tasks of creating
-  and managing the items that are displayed on its client area as well as the expanding and
-  collapsing of the control.
+  of the navigation bar used in Windows XP. TJvXPCustomWinXPBar handles the basic tasks of creating and
+  managing the items that are displayed on its client area as well as the expanding and collapsing of
+  the control.
 
   Do not create instances of TJvXPCustomWinXPBar. Instead, use a derived control, like TJvXPBar.
 
@@ -599,8 +594,8 @@ See Also
 Summary
   Specifies whether the items in the control are highlighted when the mouse passes over them.
 Description
-  Set HotTrack to True to provide visual feedback about which item is under the mouse. When
-  HotTrack is False, there is no visual feedback when the mouse passes over the items.
+  Set HotTrack to True to provide visual feedback about which item is under the mouse. When HotTrack is
+  False, there is no visual feedback when the mouse passes over the items.
 See Also
   TJvXPCustomWinXPBar.HotTrackColor, TJvXPCustomWinXPBar.Items
 
@@ -619,7 +614,7 @@ See Also
 Summary
   Specifies the icon to display on the control.
 Description
-   Point Icon to a TIcon object to display an icon at the top of the control.
+  Point Icon to a TIcon object to display an icon at the top of the control.
 See Also
   TJvXPCustomWinXPBar.ImageList
 
@@ -643,9 +638,9 @@ Description
 Summary
   Provides indexed access to the items in the control.
 Description
-  Use Items to access the items in the control using an index. Valid indices are between 0 and
-  Count - 1. Items contains all the items in the list. To iterate only the visible onces, use
-  VisibleItems instead.
+  Use Items to access the items in the control using an index. Valid indices are between 0 and Count -
+  1. Items contains all the items in the list. To iterate only the visible onces, use VisibleItems
+  instead.
 See Also
   Count
 
@@ -669,6 +664,7 @@ Description
   Write a handler for this event to be notified when the Collapsed state of the control changes.
 See Also
   TJvXPCustomWinXPBar.Collapsed
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OnDrawBackground
 Summary
@@ -678,6 +674,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OnDrawHeader
 Summary
@@ -687,6 +684,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OnDrawItem
 Summary
@@ -710,6 +708,7 @@ Description
 Parameters
   Sender - The control that triggered the event.
   Item   - The item that was clicked.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.OwnerDraw
 Summary
@@ -719,6 +718,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomWinXPBar.RollDelay
 Summary
@@ -756,10 +756,10 @@ See Also
 Summary
   Specifies how expanding and collapsing the control is performed.
 Description
-  Use RollMode to control how the control is expanded and collapsed when the Collapsed property
-  changes or the user clicks the RollButton. If RollMode is rmFixed, the control is expanded and
-  collapsed a fixed amount of pixels (using RollOffset) at each step. If RollMode is rmShrink, the
-  control is expanded and collapsed proportionally to the current size of the control.
+  Use RollMode to control how the control is expanded and collapsed when the Collapsed property changes
+  or the user clicks the RollButton. If RollMode is rmFixed, the control is expanded and collapsed a
+  fixed amount of pixels (using RollOffset) at each step. If RollMode is rmShrink, the control is
+  expanded and collapsed proportionally to the current size of the control.
 See Also
   TJvXPCustomWinXPBar.RollOffset, TJvXPCustomWinXPBar.RollStep
 
@@ -809,8 +809,8 @@ See Also
 Summary
   Indicates whether the cursor turns into a hand cursor when hovering over items.
 Description
-  Use ShowLinkCursor to specify the cursor to use when the mouse hovers over an item. If
-  ShowLinkCursor is false, the item displays the same cursor as the control.
+  Use ShowLinkCursor to specify the cursor to use when the mouse hovers over an item. If ShowLinkCursor
+  is false, the item displays the same cursor as the control.
 See Also
   Cursor
 
@@ -819,8 +819,8 @@ See Also
 Summary
   Indicates if the collapse/expand button is shown.
 Description
-  Use ShowRollButton to specify whether the control shows an expand/collapse button or not. Even if
-  the button is hidden, you can still expand and collapse the control from code, using Collapsed.
+  Use ShowRollButton to specify whether the control shows an expand/collapse button or not. Even if the
+  button is hidden, you can still expand and collapse the control from code, using Collapsed.
 See Also
   TJvXPCustomWinXPBar.Collapsed
 

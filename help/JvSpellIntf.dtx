@@ -8,7 +8,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@CreateSpellChecker
 <TITLE CreateSpellChecker variable>
@@ -16,8 +15,8 @@ Summary
   Creates and returns an IJvSpellChecker instance if assigned.
 Description
   Call CreateSpellChecker to create an IJvSpellChecker instance. Spell checkers that implements the
-  IJvSpellChecker, assign their own function to this pointer. If the pointer is nil, no
-  IJvSpellChecker implementor is registered.
+  IJvSpellChecker, assign their own function to this pointer. If the pointer is nil, no IJvSpellChecker
+  implementor is registered.
 
   Since this function is actually a pointer, you shoud first check if it is nil before using it, i.e
   use a call like if Assigned(CreateSpellChecker).
@@ -44,8 +43,8 @@ See Also
 Summary
   Defines the basic dictionary used to check spelling against.
 Description
-  Use Dictionary to set and \read the base dictionary used for spell checking. This value should
-  point to a file on disk. If no dictionary is set, no spell checking can take place.
+  Use Dictionary to set and \read the base dictionary used for spell checking. This value should point
+  to a file on disk. If no dictionary is set, no spell checking can take place.
 See Also
   IJvSpellChecker.UserDictionary
 
@@ -152,14 +151,14 @@ See Also
 Summary
   Tries to find a new misspelled word.
 Description
-   Next returns true if a misspelled word was found. If a misspelled word was found, StartIndex is  set to the s
-  art of the word in Text and WordLength is set to the length of the word. Note  that StartIndex is
-  1-based, i.e the first position in Text is 1. If Next returns false,  it means that no more
-  misspelled words can be found (i.e either when at end of Text or everything  from the current point
-  and onward is correctly spelled). Next should take Ignores as well as
-   UserDictionary into account when scanning for misspelled words.
+  Next returns true if a misspelled word was found. If a misspelled word was found, StartIndex is set
+  to the s art of the word in Text and WordLength is set to the length of the word. Note that
+  StartIndex is 1-based, i.e the first position in Text is 1. If Next returns false, it means that no
+  more misspelled words can be found (i.e either when at end of Text or everything from the current
+  point and onward is correctly spelled). Next should take Ignores as well as UserDictionary into
+  account when scanning for misspelled words.
 
-   Use GetCurrentWord to access the word that was found by Next. Next is used in a typcial spell
+  Use GetCurrentWord to access the word that was found by Next. Next is used in a typcial spell
   checking application to implement "Next" functionality.
 Parameters
   StartIndex - The index in Text where the misspelled word starts.
@@ -177,8 +176,8 @@ Summary
 Description
   Write a handler for the OnCanIgnore event when you need to set up ignores for words that can't be
   easily captured using a simple table driven spell checker. For example, to ignore upper case words,
-  you could write an event handler that compares the current word with its upper cased variant and
-  set CanIgnore to true if they match.
+  you could write an event handler that compares the current word with its upper cased variant and set
+  CanIgnore to true if they match.
 Parameters
   Sender    - The IJvSpellChecker implementor
   Value     - The string to check.
@@ -189,13 +188,13 @@ Parameters
 Summary
   Moves to another position in the text.
 Description
-  Seek moves the internal text pointer to the position in Text given by Position. If Position >=
+  Seek moves the internal text pointer to the position in Text given by Position. If Position > =
   Length(Text), calls to Next always returns false.
 Note
   Since positioning is 1-based, Seek(0) = Seek(1).
 Parameters
   Position - The 1-based index to move the internal pointer to. Values < 1 are interpreted as 1,
-  values >= Length(Text) are interpreted as Length(Text) - 1.
+              values > = Length(Text) are interpreted as Length(Text) - 1.
 See Also
   IJvSpellChecker.Next, IJvSpellChecker.Text
 
@@ -228,8 +227,8 @@ Summary
 Description
   SetDictionary is the set procedure for the Dictionary property.
 Parameters
-  Value - The new value of dictionary. Setting this value copies the content of Value into an
-  internal list.
+  Value - The new value of dictionary. Setting this value copies the content of Value into an internal
+           list.
 See Also
   IJvSpellChecker.Dictionary
 
@@ -241,7 +240,7 @@ Description
   SetIgnores is the set procedure for the Ignores property.
 Parameters
   Value - The new value of Ignores. Setting this value copies the content of Value into an internal
-  list.
+           list.
 See Also
   IJvSpellChecker.Ignores
 
@@ -264,7 +263,7 @@ Description
   SetUserDictionary is the set procedure for the UserDictionary property.
 Parameters
   Value - The new value of UserDictionary. Setting this value copies the content of Value into an
-  internal list.
+           internal list.
 See Also
   IJvSpellChecker.UserDictionary
 
@@ -297,8 +296,8 @@ Description
   user dictionary is that you cannot change the content of the main dictionary once loaded (without
   reloading it).
 
-  In addition, UserDictionary is presumed to contain a list of sorted words, one per line, whereas
-  the dictionary can be in any format determined by the actual implementation.
+  In addition, UserDictionary is presumed to contain a list of sorted words, one per line, whereas the
+  dictionary can be in any format determined by the actual implementation.
 
   Use UserDictionary to create a list of words that the user has chosen as his own word. For example,
   in a typical spell checking application, this property can be used to implement "Add" functionality.

@@ -1,5 +1,5 @@
 ##Package: XPCtrls
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvXPButtons.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marc Hoffman.
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPButton
@@ -19,7 +18,7 @@ Summary
   Button drawn in an XP style.
 Description
   Use TJvXPButton on your form when you need a button that has a themed XP look.
-  
+
   TJvXPButton introduces properties to display an image on the button and arrange the images and text
   on the button.
 
@@ -29,9 +28,9 @@ Summary
   Base class for buttons that are drawn in an XP style.
 Description
   Use TJvXPCustomButton as a base class for buttons that are drawn in an XP style.
-  
-  Do not create instances of TJvXPCustomButton. Use the generic descendant TJvXPButton, or create
-  your own descendant class.
+
+  Do not create instances of TJvXPCustomButton. Use the generic descendant TJvXPButton, or create your
+  own descendant class.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomButton.AutoGray
@@ -45,9 +44,9 @@ Description
 Summary
   Determines whether the button’s OnClick event handler executes when the Escape key is pressed.
 Description
-  If Cancel is True, the button’s OnClick event handler executes when the user presses Esc. Although
-  an application can have more than one Cancel button, the form calls the OnClick event handler only
-  for the first visible button in the tab order.
+  If Cancel is True, the button’s OnClick event handler executes when the user presses Esc. Although an
+  application can have more than one Cancel button, the form calls the OnClick event handler only for
+  the first visible button in the tab order.
 See Also
   OnClick
 
@@ -57,7 +56,7 @@ Summary
   Determines whether the button’s OnClick event handler executes when the Enter key is pressed.
 Description
   If Default is True, the button’s OnClick event handler executes when the user presses Enter.
-  
+
   Although an application can have more than one Default button, the form calls the OnClick event
   handler only for the first visible button in the tab order. Moreover, any button that has focus
   becomes the Default button temporarily; hence, if the user selects another button before pressing
@@ -70,9 +69,9 @@ See Also
 Summary
   Specifies the bitmap that appears on the button.
 Description
-  Use Glyph to specify the image to display on the button. The actual location of the image is controlled by the 
-  ayout property. In contrast to TBitBtn, Glyph can contain one image only but you can modify its
-  run-time appearance by setting AutoGray to true.
+  Use Glyph to specify the image to display on the button. The actual location of the image is
+  controlled by the ayout property. In contrast to TBitBtn, Glyph can contain one image only but you
+  can modify its run-time appearance by setting AutoGray to true.
 See Also
   TJvXPCustomButton.AutoGray, TJvXPCustomButton.Layout
 
@@ -92,10 +91,10 @@ Summary
 Description
   Set ShowAccelChar to True to allow the button to display an underlined accelerator key value. When
   ShowAccelChar is True, any character preceded by an ampersand (&) appears underlined.
-  
+
   To display an ampersand when ShowAccelChar is True, use two ampersands (&&) to stand for the single
   ampersand that is displayed.
-  
+
   Set ShowAccelChar to False to display the text with all ampersands appearing as ampersands.
 See Also
   Caption
@@ -115,8 +114,8 @@ See Also
 Summary
   Indicates how the edges are drawn.
 Description
-  Use SmoothEdges to specify whether the edges of the button are drawn in a standard way or with
-  color highlighting that makes the edges appear smoother.
+  Use SmoothEdges to specify whether the edges of the button are drawn in a standard way or with color
+  highlighting that makes the edges appear smoother.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomButton.Spacing
@@ -130,8 +129,8 @@ Description
 Summary
   Determines whether the control inserts soft carriage returns so text wraps at the right margin.
 Description
-  Use WordWrap to specify how the text is drawn when it doesn't fit inside the control. If WordWrap
-  is true, the text will be wrapped to as many lines as needed to fit the text inside the control.
+  Use WordWrap to specify how the text is drawn when it doesn't fit inside the control. If WordWrap is
+  true, the text will be wrapped to as many lines as needed to fit the text inside the control.
 See Also
   Caption
 
@@ -148,9 +147,9 @@ Summary
   Base class for buttons that are drawn like the border icon buttons (minimize, maximize etc) in XP
   style.
 Description
-  Derive a new class from TJvXPCustomToolButton when you need to create a button control that is
-  drawn like XP style border icon buttons. Don't create instances of TJvXPCustomToolButton. Instead
-  use a derived class like TJvXPToolButton that publishes the properties and events of
+  Derive a new class from TJvXPCustomToolButton when you need to create a button control that is drawn
+  like XP style border icon buttons. Don't create instances of TJvXPCustomToolButton. Instead use a
+  derived class like TJvXPToolButton that publishes the properties and events of
   TJvXPCustomToolButton.
 
 ----------------------------------------------------------------------------------------------------
@@ -200,19 +199,19 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPLayout.blGlyphLeft
-Image is drawn to the left of the text.
+  Image is drawn to the left of the text.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPLayout.blGlyphRight
-Image is drawn to the right of the text.
+  Image is drawn to the right of the text.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPLayout.blGlyphTop
-Image is drawn above the text.
+  Image is drawn above the text.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPLayout.blGlyphBottom
-Image is drawn below the text.
+  Image is drawn below the text.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolButton
@@ -237,31 +236,31 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttArrowLeft
-Displays a left pointing arrow.
+  Displays a left pointing arrow.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttArrowRight
-Displays a right pointing arrow.
+  Displays a right pointing arrow.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttClose
-Displays a standard close icon.
+  Displays a standard close icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttMaximize
-Displays a standard Maximize icon.
+  Displays a standard Maximize icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttMinimize
-Displays a standard Minimize icon.
+  Displays a standard Minimize icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttPopup
-Displays a standard Popup icon.
+  Displays a standard Popup icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttRestore
-Displays a standard Restore icon.
+  Displays a standard Restore icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPToolType.ttImage

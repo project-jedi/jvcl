@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvThreadTimer.pas
 Summary
@@ -8,12 +8,11 @@ Summary
 Author
   Sébastien Buysse, Ivo Bauer
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer
 <TITLEIMG TJvThreadTimer>
 JVCLInfo
-  GROUP=JVCL.System.AlarmsAndTimers.Timers
+  GROUP=JVCL.System.AlarmsAndTimers.Timers,JVCL.System.LibProcAndThread.Threads
   FLAG=Component
 Summary
   TTimer replacement that utilizes a thread and has a higher accuracy.
@@ -31,8 +30,8 @@ Summary
 Description
   Use \Create to create and initialize a new TJvThreadTimer object.
 
-  \Create calls the inherited \Create method, creates a thread and then sets the initial values for
-  the timer as follows:
+  \Create calls the inherited \Create method, creates a thread and then sets the initial values for the
+  timer as follows:
 
   * Interval is set to 100.
   * Enabled is set to false.
@@ -69,11 +68,11 @@ Summary
   Determines the amount of time, in milliseconds, that passes before the timer component initiates
   another OnTimer event.
 Description
-  Interval determines how frequently the OnTimer event occurs. Each time the specified interval
-  passes, the OnTimer event occurs.
+  Interval determines how frequently the OnTimer event occurs. Each time the specified interval passes,
+  the OnTimer event occurs.
 
-  Use Interval to specify any cardinal value as the interval between OnTimer events. The default
-  value is 100 (1/10 second).
+  Use Interval to specify any cardinal value as the interval between OnTimer events. The default value
+  is 100 (1/10 second).
 See Also
   TJvThreadTimer.OnTimer
 
@@ -86,8 +85,8 @@ Description
   Enabled is set to false.
 
   Set KeepAlive to false to destroy the thread when Enabled is set to false. When Enabled is set to
-  true again, the timer will create a new thread. Set KeepAlive to true to suspend but not destroy
-  the thread if Enabled is set to false.
+  true again, the timer will create a new thread. Set KeepAlive to true to suspend but not destroy the
+  thread if Enabled is set to false.
 See Also
   TJvThreadTimer.Enabled
 
@@ -106,12 +105,12 @@ Description
 Summary
   Determines the thread's scheduling priority relative to other threads in the process.
 Description
-  Priority indicates the priority used when scheduling the thread. Adjust the priority higher or
-  lower as needed.
+  Priority indicates the priority used when scheduling the thread. Adjust the priority higher or lower
+  as needed.
 Note
   Boosting the thread priority of a CPU intensive operation may "starve" the other threads in the
-  application. Only apply priority boosts to threads that spend most of their time waiting for
-  external events.
+  application. Only apply priority boosts to threads that spend most of their time waiting for external
+  events.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvThreadTimer.Thread

@@ -8,7 +8,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeLimit
 <TITLEIMG TJvTimeLimit>
@@ -20,9 +19,9 @@ Summary
 Description
   Use TJvTimeLimit to limit the possible execution of an application with an end date. Use EndDate to
   specify an expiration date after or on which the application won't start.
-  
-  Use the OnExpire event to take specific actions, if the current date is past or on the date
-  specified by EndDate.
+
+  Use the OnExpire event to take specific actions, if the current date is past or on the date specified
+  by EndDate.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeLimit.EndDate
@@ -40,12 +39,9 @@ See Also
 Summary
   Checks whether the EndDate is reached.
 Description
-  Loaded is called automatically when the form containing the TJvTimeLimit control has been loaded
-  into memory. TJvTimeLimit uses this method to check whether the date specified by EndDate is
-  reached.
-  If so, it triggers the OnExpire event and the terminates the application.
-Parameters
-  None.
+  Loaded is called automatically when the form containing the TJvTimeLimit control has been loaded into
+  memory. TJvTimeLimit uses this method to check whether the date specified by EndDate is reached. If
+  so, it triggers the OnExpire event and the terminates the application.
 See Also
   TJvTimeLimit.EndDate, TJvTimeLimit.OnExpire
 
@@ -57,7 +53,7 @@ Description
   \Write an OnExpire event handler to take specific action when the current date is equal or past the
   date specified by EndDate. For example, you can display a message box that notifies the user the
   application has expired.
-  
+
   After the event is handled the application is terminated. If no event handler is specified,
   TJvTimeLimit shows a default message.
 See Also

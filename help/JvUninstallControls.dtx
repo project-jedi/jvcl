@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvUninstallControls.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUCBDisplayMode
@@ -20,11 +19,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUCBDisplayMode.hkCurrentUser
-Read uninstall information from the HKEY_CURRENT_USER hive.
+  Read uninstall information from the HKEY_CURRENT_USER hive.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUCBDisplayMode.hkLocalMachine
-Read uninstall information from the HKEY_LOCAL_MACHINE hive.
+  Read uninstall information from the HKEY_LOCAL_MACHINE hive.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUCBDisplayModes
@@ -35,16 +34,15 @@ Read uninstall information from the HKEY_LOCAL_MACHINE hive.
 @@TJvUninstallComboBox
 <TITLEIMG TJvUninstallComboBox>
 JVCLInfo
-  GROUP=JVCL.EditAndCombos.Combos
+  GROUP=JVCL.EditsMemosAndCombos.Combos
   FLAG=Component
 Summary
   A combobox that displays uninstall information.
 Description
   Use a TJvUninstallComboBox when you need to display uninstall information to the end-user in a
-  compact, space efficient way. The TJvUninstallComboBox control has several properties to control
-  what do display. Modify DisplayMode to specify what registry hives to read uninstall information
-  from, set ShowAll as appropriate to show or hide "unfriendly" entries. Set Sorted to true to sort
-  the list.
+  compact, space efficient way. The TJvUninstallComboBox control has several properties to control what
+  do display. Modify DisplayMode to specify what registry hives to read uninstall information from, set
+  ShowAll as appropriate to show or hide "unfriendly" entries. Set Sorted to true to sort the list.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.DisplayMode
@@ -61,8 +59,7 @@ See Also
 Summary
   Contains the display name of the currently selected item in the control.
 Description
-  \Read DisplayName to retrieve the "user friendly" name of the currently selected item in the
-  control.
+  \Read DisplayName to retrieve the "user friendly" name of the currently selected item in the control.
   If no item is selected, this property returns an empty string.
 
 ----------------------------------------------------------------------------------------------------
@@ -90,10 +87,9 @@ See Also
 Summary
   Provides indexed access to the uninstall strings.
 Description
-  Use Items to access the retrieved uninstall information strings using an index. Each item in Items
-  is either the
-  user friendly name (same as DisplayName) or (if DisplayName is empty and ShowAll is true), the name
-  of the related registry folder. Valid values of the index is between 0 and Items.Count – 1.
+  Use Items to access the retrieved uninstall information strings using an index. Each item in Items is
+  either the user friendly name (same as DisplayName) or (if DisplayName is empty and ShowAll is true),
+  the name of the related registry folder. Valid values of the index is between 0 and Items.Count – 1.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallComboBox.Properties
@@ -120,8 +116,8 @@ See Also
 Summary
   Contains the section name of the currently selected item in the control.
 Description
-  \Read Section to retrieve the name of the currently selected section in the control.
-  If no item is selected, this property returns an empty string.
+  \Read Section to retrieve the name of the currently selected section in the control. If no item is
+  selected, this property returns an empty string.
 See Also
   ItemIndex
 
@@ -165,9 +161,9 @@ Description
   is selected, this property returns an empty string. Make sure you check the validity of the string
   before using it. The string might be invalid for several reasons:
 
-    * the information in the uninstall registry hive is incorrect
-    * there is no uninstall information
-    * there is no selected item
+  * the information in the uninstall registry hive is incorrect
+  * there is no uninstall information
+  * there is no selected item
 See Also
   ItemIndex
 
@@ -181,10 +177,9 @@ Summary
   A listbox that displays uninstall information.
 Description
   Use a TJvUninstallListBox when you need to display uninstall information to the end-user in a
-  compact, space efficient way. The TJvUninstallListBox control has several properties to control
-  what do display. Modify DisplayMode to specify what registry hives to read uninstall information
-  from, set ShowAll as appropriate to show or hide "unfriendly" entries. Set Sorted to true to sort
-  the list.
+  compact, space efficient way. The TJvUninstallListBox control has several properties to control what
+  do display. Modify DisplayMode to specify what registry hives to read uninstall information from, set
+  ShowAll as appropriate to show or hide "unfriendly" entries. Set Sorted to true to sort the list.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.DisplayMode
@@ -201,8 +196,7 @@ See Also
 Summary
   Contains the display name of the currently selected item in the control.
 Description
-  \Read DisplayName to retrieve the "user friendly" name of the currently selected item in the
-  control.
+  \Read DisplayName to retrieve the "user friendly" name of the currently selected item in the control.
   If no item is selected, this property returns an empty string.
 
 ----------------------------------------------------------------------------------------------------
@@ -230,10 +224,9 @@ See Also
 Summary
   Provides indexed access to the uninstall strings.
 Description
-  Use Items to access the retrieved uninstall information strings using an index. Each item in Items
-  is either the
-  user friendly name (same as DisplayName) or (if DisplayName is empty and ShowAll is true), the name
-  of the related registry folder. Valid values of the index is between 0 and Items.Count - 1
+  Use Items to access the retrieved uninstall information strings using an index. Each item in Items is
+  either the user friendly name (same as DisplayName) or (if DisplayName is empty and ShowAll is true),
+  the name of the related registry folder. Valid values of the index is between 0 and Items.Count - 1
 
 ----------------------------------------------------------------------------------------------------
 @@TJvUninstallListBox.Properties
@@ -270,8 +263,8 @@ See Also
 Summary
   Contains the section name of the currently selected item in the control.
 Description
-  \Read Section to retrieve the name of the currently selected section in the control.
-  If no item is selected, this property returns an empty string.
+  \Read Section to retrieve the name of the currently selected section in the control. If no item is
+  selected, this property returns an empty string.
 See Also
   ItemIndex
 
@@ -315,9 +308,9 @@ Description
   is selected, this property returns an empty string. Make sure you check the validity of the string
   before using it. The string might be invalid for several reasons:
 
-    * the information in the uninstall registry hive is incorrect
-    * there is no uninstall information
-    * there is no selected item
+  * the information in the uninstall registry hive is incorrect
+  * there is no uninstall information
+  * there is no selected item
 See Also
   ItemIndex
 

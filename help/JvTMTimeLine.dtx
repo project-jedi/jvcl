@@ -9,18 +9,16 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline
 Summary
   Base type for timeline view components that mimick the timeline in MS \Team Manager, including
   TJvTMTimeline.
 Description
-  Use TJvCustomTMTimeline as a base class when defining controls that show a timeline with images
-  below specific dates.
+  Use TJvCustomTMTimeline as a base class when defining controls that show a timeline with images below
+  specific dates.
 
-  Do not create instances of TJvCustomTMTimeline. To put a timeline view on a form, use a descendant
-  of
+  Do not create instances of TJvCustomTMTimeline. To put a timeline view on a form, use a descendant of
   TJvCustomTMTimeline, such as <LINK TJvTMTimeline>.
 See Also
   TJvTMTimeline
@@ -30,8 +28,8 @@ See Also
 Summary
   Specifies the border style for the timeline.
 Description
-  If BorderStyle is set to the default bsSingle, the timeline has a single-line border. If
-  BorderStyle is set to bsNone, no border appears around the timeline.
+  If BorderStyle is set to the default bsSingle, the timeline has a single-line border. If BorderStyle
+  is set to bsNone, no border appears around the timeline.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ButtonWidth
@@ -45,11 +43,10 @@ Description
 Summary
   Removes all associations of images with a date.
 Description
-  Call ClearImages to remove all associations of images with a date. By setting property ImageIndex
-  you
-  can associate a specific image with a date. The timeline view will display this image in the timeline view at the specific date. Calling Cle
-  rImages will remove all associations of images with a date by reseting all values of ImageIndex to
-  -1.
+  Call ClearImages to remove all associations of images with a date. By setting property ImageIndex you
+  can associate a specific image with a date. The timeline view will display this image in the timeline
+  view at the specific date. Calling Cle rImages will remove all associations of images with a date by
+  reseting all values of ImageIndex to -1.
 See Also
   TJvCustomTMTimeline.Images, TJvCustomTMTimeline.Objects
 
@@ -61,9 +58,9 @@ Description
   Call ClearObjects to free all objects that have been associated with a date by setting property
   Objects.
 
-  The date numbers of dates that have an associated object, are drawn with the font style as
-  specified by ObjectsFontStyle; thus, after calling ClearObjects all date numbers will be drawn with
-  the default font style as described by Font.
+  The date numbers of dates that have an associated object, are drawn with the font style as specified
+  by ObjectsFontStyle; thus, after calling ClearObjects all date numbers will be drawn with the default
+  font style as described by Font.
 See Also
   TJvCustomTMTimeline.Objects
 
@@ -72,8 +69,8 @@ See Also
 Summary
   Specifies the first visible date in the timeline view.
 Description
-  Use \Date to specify the date that will be the left most date visible in the timeline view. The
-  value of \Date must lie within the range specified by MaxDate and MinDate.
+  Use \Date to specify the date that will be the left most date visible in the timeline view. The value
+  of \Date must lie within the range specified by MaxDate and MinDate.
 See Also
   TJvCustomTMTimeline.MaxDate, TJvCustomTMTimeline.MinDate
 
@@ -92,11 +89,10 @@ Summary
   Specifies the image that represents the mouse pointer when the mouse passes over a date with an
   associated image.
 Description
-  Use ImageCursor to specify the appearance of the mouse pointer when the mouse passes over a date
-  with an associated image. Associate an image with a date by setting property ImageIndex with the
+  Use ImageCursor to specify the appearance of the mouse pointer when the mouse passes over a date with
+  an associated image. Associate an image with a date by setting property ImageIndex with the
   particular date as index. If you associate an image with a date the control will display that image
-  below that
-  date in the timeline view.
+  below that date in the timeline view.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ImageIndex
@@ -104,9 +100,9 @@ Summary
   Identifies the image displayed at a particular date in the timeline view.
 Description
   ImageIndex specifies an index into the Images property for a particular date; thus, associate an
-  image with a date by setting the ImageIndex property to an index into the Images
-  property using the specific date as index into ImageIndex. Look up the image associated with a date
-  by reading the ImageIndex property with the specific date as index.
+  image with a date by setting the ImageIndex property to an index into the Images property using the
+  specific date as index into ImageIndex. Look up the image associated with a date by reading the
+  ImageIndex property with the specific date as index.
 
   If you associate an image with a date the control will display that image below that date in the
   timeline view.
@@ -118,8 +114,8 @@ See Also
 Summary
   Specifies the images that appear on the timeline view.
 Description
-  Use Images to supply the list of images that appear on the timeline view. Use ImageIndex to
-  associate an image in the list to a specific date.
+  Use Images to supply the list of images that appear on the timeline view. Use ImageIndex to associate
+  an image in the list to a specific date.
 
   If you associate an image with a date the control will display that image below that date in the
   timeline view.
@@ -129,12 +125,12 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.LargeChange
 Summary
-  Determines how much Date changes when the user clicks the scroll buttons or presses the arrow keys
-  on the keyboard, while the Ctrl key is pressed.
+  Determines how much Date changes when the user clicks the scroll buttons or presses the arrow keys on
+  the keyboard, while the Ctrl key is pressed.
 Description
   Set LargeChange to specify how much to change the value of Date when the user clicks on the scroll
-  buttons on either side of the timeline or presses the arraow key on the keyboard, while the Ctrl
-  key is pressed.
+  buttons on either side of the timeline or presses the arraow key on the keyboard, while the Ctrl key
+  is pressed.
 
   When the user doesn't press the Ctrl key, the timeline's view changes with the amount specified by
   SmallChange
@@ -146,8 +142,8 @@ See Also
 Summary
   Indicates the last fully visible date in the timeline view.
 Description
-  \Read LastVisibleDate to retrieve the date that is the right most date fully visible in the
-  timeline view.
+  \Read LastVisibleDate to retrieve the date that is the right most date fully visible in the timeline
+  view.
 See Also
   TJvCustomTMTimeline.Date
 
@@ -175,8 +171,8 @@ See Also
 Summary
   Reads the file specified in FileName and loads the data into the timeline view.
 Description
-  Use the LoadFromFile method to retrieve timeline view items from a file and add them to the
-  timeline view. FileName should reference a file that was saved using the SaveToFile method.
+  Use the LoadFromFile method to retrieve timeline view items from a file and add them to the timeline
+  view. FileName should reference a file that was saved using the SaveToFile method.
 
   \Write an OnReadObject event handler to load objects associated with dates from the file.
 Parameters
@@ -239,22 +235,21 @@ Description
   Look up the object associated with a date by reading the Objects property with the specific date as
   index.
 
-  The date numbers of dates that have an associated object, are drawn with the font style as
-  specified by ObjectsFontStyle.
+  The date numbers of dates that have an associated object, are drawn with the font style as specified
+  by ObjectsFontStyle.
 Note
-  The control owns the objects in the Objects array; thus Objects added to the Objects array are
-  freed when the timeline control is destroyed.
+  The control owns the objects in the Objects array; thus Objects added to the Objects array are freed
+  when the timeline control is destroyed.
 See Also
   TJvCustomTMTimeline.ObjectsFontStyle
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ObjectsFontStyle
 Summary
-  Determines whether the font for displaying date numbers with an associated object, is normal,
-  italic, underlined, bold, and so on.
+  Determines whether the font for displaying date numbers with an associated object, is normal, italic,
+  underlined, bold, and so on.
 Description
-  Use Style to add special characteristics to date numbers that have an associated object. Use
-  property
+  Use Style to add special characteristics to date numbers that have an associated object. Use property
   Objects to associate an object to a date.
 See Also
   TJvCustomTMTimeline.Objects
@@ -274,11 +269,11 @@ Summary
   Occurs when an object associated with a date needs to be read from a stream.
 Description
   Use OnReadObject to write a handler that creates an object to be associated with a particular date.
-  The OnReadObject can initialize that new object by reading custom data from the specified stream
-  and setting the new object's properties accordingly.
+  The OnReadObject can initialize that new object by reading custom data from the specified stream and
+  setting the new object's properties accordingly.
 
-  When you call LoadFromStream or LoadFromFile, the component fires an OnReadObject event for each
-  date it reads from the stream that has an associated object.
+  When you call LoadFromStream or LoadFromFile, the component fires an OnReadObject event for each date
+  it reads from the stream that has an associated object.
 Parameters
   Sender  - The timeline view control that is reading the timeline data from the stream.
   Stream  - Specifies the stream from which to read the custom data.
@@ -292,10 +287,10 @@ See Also
 Summary
   Occurs when an object associated with a date needs to be written to a stream.
 Description
-  Use OnWriteObject to write a handler that writes an object associated with a particular date, to
-  the specified stream.
-  The OnWriteObject may save custom date, so an OnReadObject handler can initialize a new object by
-  reading that custom data from a stream and setting that new object's properties accordingly.
+  Use OnWriteObject to write a handler that writes an object associated with a particular date, to the
+  specified stream. The OnWriteObject may save custom date, so an OnReadObject handler can initialize a
+  new object by reading that custom data from a stream and setting that new object's properties
+  accordingly.
 
   When you call SaveToStream or SaveToFile, the component fires an OnWriteObject event for each date
   that has an associated object.
@@ -312,9 +307,9 @@ Summary
   Determines whether the user can scroll the timeline.
 Description
   Use ReadOnly to determine whether the user can scroll the timeline. If ReadOnly is True, no scroll
-  buttons are diplayed, and the user can't scroll the view with the keyboard arrow keys.
-  If ReadOnly is False, scroll buttons are displayed on the view and the user can scroll the timeline
-  view by either pressing these buttons or by pressing the keyboard arrow keys.
+  buttons are diplayed, and the user can't scroll the view with the keyboard arrow keys. If ReadOnly is
+  False, scroll buttons are displayed on the view and the user can scroll the timeline view by either
+  pressing these buttons or by pressing the keyboard arrow keys.
 See Also
   TJvCustomTMTimeline.LeftButton, TJvCustomTMTimeline.RightButton
 
@@ -332,9 +327,9 @@ See Also
 Summary
   Determines whether the user can use the right mouse button to select a date.
 Description
-  If RightClickSelect is set to True, the user can select a date by either clicking that date with
-  the right or left mouse button. If RightClickSelect is set to False, the user can only select a
-  date by clicking it with the left mouse button.
+  If RightClickSelect is set to True, the user can select a date by either clicking that date with the
+  right or left mouse button. If RightClickSelect is set to False, the user can only select a date by
+  clicking it with the left mouse button.
 See Also
   TJvCustomTMTimeline.SelDate
 
@@ -343,8 +338,8 @@ See Also
 Summary
   Saves the timeline view to the file specified in FileName.
 Description
-  Use the SaveToFile method to store timeline view data to a text file. The items can later be
-  reloaded from the file into a new timeline view object using the LoadFromFile method.
+  Use the SaveToFile method to store timeline view data to a text file. The items can later be reloaded
+  from the file into a new timeline view object using the LoadFromFile method.
 
   \Write an OnWriteObject event handler to save objects associated with dates to the stream.
 Parameters
@@ -393,8 +388,8 @@ See Also
 Summary
   \Controls the appearance of the selection frame.
 Description
-  To change to a new selection frame, specify a new TJvTLSelFrame object. To modify a selection
-  frame, change the value of the Pen or Visible property of the TJvTLSelFrame object.
+  To change to a new selection frame, specify a new TJvTLSelFrame object. To modify a selection frame,
+  change the value of the Pen or Visible property of the TJvTLSelFrame object.
 See Also
   TJvTLSelFrame
 
@@ -416,12 +411,13 @@ Summary
   Specifies whether today's date is shown in another color and with a double-diamond icon below the
   date.
 Description
-  Set ShowToday to True to show today's date (according to the system clock) in another color and
-  with a double-diamond icon below the date. Use TodayColor to specify the background color to make
-  today's date stand out.
+  Set ShowToday to True to show today's date (according to the system clock) in another color and with
+  a double-diamond icon below the date. Use TodayColor to specify the background color to make today's
+  date stand out.
 See Also
   TJvCustomTMTimeline.MonthFont, TJvCustomTMTimeline.ShowMonths, TJvCustomTMTimeline.ShowWeeks,
   TJvCustomTMTimeline.TodayColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ShowTodayIcon
 Summary
@@ -431,6 +427,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.ShowWeeks
 Summary
@@ -446,8 +443,8 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTMTimeline.SmallChange
 Summary
-  Determines how much Date changes when the user clicks the scroll buttons or presses the arrow keys
-  on the keyboard.
+  Determines how much Date changes when the user clicks the scroll buttons or presses the arrow keys on
+  the keyboard.
 Description
   Set SmallChange to specify how much to change the value of Date when the user clicks on the scroll
   buttons on either side of the timeline or presses the arrow key on the keyboard.
@@ -526,8 +523,8 @@ Summary
   Specifies whether the selection frame is visible in the timeline view.
 Description
   If Visible is True, and a date is selected by the user, the selection frame will appear in the
-  timeline view to outline the selected date.
-  Set Visible to False to disable drawing of the selection frame when the user selects a date.
+  timeline view to outline the selected date. Set Visible to False to disable drawing of the selection
+  frame when the user selects a date.
 See Also
   TJvCustomTMTimeline.SelDate, TJvCustomTMTimeline.Selection, TJvTLSelFrame.Pen
 
@@ -542,19 +539,19 @@ Summary
 Description
   Use TJvTMTimeline to display a timeline control that displays images below certain dates.
 
-  Use property <LINK TJvCustomTMTimeline.ImageIndex,ImageIndex> to associate images to certain dates.
-  These images will be displayed below that dates. Use property <LINK TJvCustomTMTimeline.Objects,Objects> to associate objects to certain dates. These dates will be displayed  wi
-  h another fontstyle - as specified by <LINK TJvCustomTMTimeline.ObjectsFontStyle,ObjectsFontStyle>
-  - than normal dates.
+  Use property <LINK TJvCustomTMTimeline.ImageIndex, ImageIndex> to associate images to certain dates.
+  These images will be displayed below that dates. Use property <LINK TJvCustomTMTimeline.Objects,
+  Objects> to associate objects to certain dates. These dates will be displayed with another fontstyle
+  - as specified by <LINK TJvCustomTMTimeline.ObjectsFontStyle, ObjectsFontStyle> - than normal dates.
 
-  Call <LINK TJvCustomTMTimeline.SaveToFile,SaveToFile> or <LINK TJvCustomTMTimeline.LoadFromFile,
+  Call <LINK TJvCustomTMTimeline.SaveToFile, SaveToFile> or <LINK TJvCustomTMTimeline.LoadFromFile,
   LoadFromFile> to write or read a timeline from a file.
 
-  Property <LINK TJvCustomTMTimeline.Date,Date> specifies the first visible date in the timeline view.
-  Use this property or method <LINK TJvCustomTMTimeline.ScrollDate,ScrollDate> to scroll the timeline
-  view. Use <LINK TJvCustomTMTimeline.MinDate,MinDate> and <LINK TJvCustomTMTimeline.MaxDate,MaxDate>
-  to specify a range within <LINK TJvCustomTMTimeline.Date,Date> must lie.
+  Property <LINK TJvCustomTMTimeline.Date, Date> specifies the first visible date in the timeline view.
+  Use this property or method <LINK TJvCustomTMTimeline.ScrollDate, ScrollDate> to scroll the timeline
+  view. Use <LINK TJvCustomTMTimeline.MinDate, MinDate> and <LINK TJvCustomTMTimeline.MaxDate, MaxDate>
+  to specify a range within <LINK TJvCustomTMTimeline.Date, Date> must lie.
 
-  TJvTMTimeline publishes many of the properties, events, and methods of TJvCustomTMTimeline, but
-  does not introduce any new behavior.
+  TJvTMTimeline publishes many of the properties, events, and methods of TJvCustomTMTimeline, but does
+  not introduce any new behavior.
 

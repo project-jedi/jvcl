@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete
+##Status: Completed, Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvSyncSplitter.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Below
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter
@@ -19,16 +18,15 @@ Summary
   Synchronizes two split controls.
 Description
   Use TJvSyncSplitter to synchronize the movements of two splitters.
-  
+
   Set Partner to specify another TJvSyncSplitter control which must be synchronized with the splitter.
-  
+
   If you specify a Partner and change the position of the splitter at runtime, the position of the
-  "partner"
-  splitter will change also.
-  
+  "partner" splitter will change also.
+
   If you also set the Partner property of the second splitter to the first splitter, then both
-  splitters will be synchronized. So if you move either of these TJvSyncSplitter controls at
-  run-time, the position of the other TJvSyncSplitter control will change also.
+  splitters will be synchronized. So if you move either of these TJvSyncSplitter controls at run-time,
+  the position of the other TJvSyncSplitter control will change also.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter.Notification
@@ -36,9 +34,9 @@ Summary
   Responds to notifications when objects are about to be created or destroyed.
 Description
   Notification is called automatically when components are created or destroyed. After calling the
-  inherited method, Notification checks whether the windowed control specified by the Partner
-  property is about to be destroyed. If the windowed control is going away, Notification sets the
-  Partner property to nil.
+  inherited method, Notification checks whether the windowed control specified by the Partner property
+  is about to be destroyed. If the windowed control is going away, Notification sets the Partner
+  property to nil.
 Parameters
   AComponent - Identifies the component that is about to be created or destroyed.
   Operation  - Specifies whether the component is about to be created or destroyed.
@@ -49,10 +47,8 @@ Summary
   Specifies the partner splitter control.
 Description
   Use Partner to link the splitter to another splitter (the "partner") so that the position of the
-  partner will be synchronized with the splitters position.
-  Thus if you specify a Partner and change the position of the splitter at runtime, the position of
-  the "partner"
-  splitter will change also.
+  partner will be synchronized with the splitters position. Thus if you specify a Partner and change
+  the position of the splitter at runtime, the position of the "partner" splitter will change also.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSyncSplitter.ResizeStyle
@@ -69,8 +65,8 @@ See Also
 Summary
   Provides specific message responses for the splitter control.
 Description
-  WndProc overrides the WndProc for TWinControl to handle mouse messages, and sends all messages to
-  the inherited WndProc.
+  WndProc overrides the WndProc for TWinControl to handle mouse messages, and sends all messages to the
+  inherited WndProc.
 Parameters
   Msg - Represents the Windows message.
 

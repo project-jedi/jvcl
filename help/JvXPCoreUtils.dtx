@@ -8,7 +8,6 @@ Summary
 Author
   Marc Hoffman.
 
-
 ----------------------------------------------------------------------------------------------------
 @@JvXPAdjustBoundRect
 <TITLE JvXPAdjustBoundRect procedure>
@@ -16,16 +15,14 @@ Summary
   Adjust a TRect based on several parameters.
 Description
   JvXPAdjustBoundRect is used to modify the size of a TRect based on the current value of several
-  properties.
-  When entering the procedure, Rect should be set to the current bounding rect of the control. When
-  returning,
-  Rect has been modified with the new values.
+  properties. When entering the procedure, Rect should be set to the current bounding rect of the
+  control. When returning, Rect has been modified with the new values.
 Parameters
   BorderWidth    - Width of the controls borders.
   ShowBoundLines - Determines if BoundLines is valid.
   BoundLines     - Contains a set of edges that are showing in the control.
-  Rect           - At entry, contains the bounding rect of the control. At exit, contains the
-  modified values.
+  Rect           - At entry, contains the bounding rect of the control. At exit, contains the modified
+                    values.
 
 ----------------------------------------------------------------------------------------------------
 @@JvXPColorizeBitmap
@@ -102,7 +99,7 @@ Description
 Parameters
   ACanvas     - The canvas to draw on.
   Rect        - The rect to draw in. This is adjusted to the dimensions of the rectangle that lies
-  inside the frame.
+                 inside the frame.
   TopColor    - The color for the top and left edges.
   BottomColor - The color for the bottom and right edges.
   Swapped     - Set to true if TopColor and BottomColor should swap places.
@@ -156,8 +153,8 @@ Parameters
   AShowAccelChar - Draw accelerators or not.
   Rect           - The rect to draw in or adjust according to the parameters.
   Flags          - Additional flags to use. These are the same flags as used by DrawText.
-  Specifically,                  if you include DT_CALCRECT in flags, the Rect is adjusted but
-  nothing is drawn.
+                    Specifically, if you include DT_CALCRECT in flags, the Rect is adjusted but nothing
+                    is drawn.
 
 ----------------------------------------------------------------------------------------------------
 @@JvXPSetDrawFlags
@@ -165,9 +162,9 @@ Parameters
 Summary
   Adjusts Flags according to the values of the parameters.
 Description
-  Use JvXPSetDrawFlags as an easy way to set Flags with the alignment and wordwrap values.
-  The DT_ENDELLIPSIS value is always included in Flags. Flags can be used in calls to DrawText and
-  <LINK JvXPRenderText>.
+  Use JvXPSetDrawFlags as an easy way to set Flags with the alignment and wordwrap values. The
+  DT_ENDELLIPSIS value is always included in Flags. Flags can be used in calls to DrawText and <LINK
+  JvXPRenderText>.
 Parameters
   AAlignment - The alignment to include in Flags
   AWordWrap  - The wordwrap value to include in Flags.

@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Locked by peter3
+##Status: Completed, Locked by peter3
 ----------------------------------------------------------------------------------------------------
 @@JvLinkLabelTree.pas
 Summary
@@ -8,11 +8,12 @@ Summary
 Author
   David Polberger
 
-
 ----------------------------------------------------------------------------------------------------
 @@ENodeError
 Summary
   Exception class used by the utility classes in JvLinkLabelTree.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@INodeEnumerator
@@ -26,8 +27,8 @@ Description
 Summary
   Returns the next node in the list.
 Description
-  Call GetNext to return the next node in the list of nodes. If there are no more nodes, GetNext
-  raises an ENodeError exception.
+  Call GetNext to return the next node in the list of nodes. If there are no more nodes, GetNext raises
+  an ENodeError exception.
 Return value
   The next node or nil.
 See Also
@@ -62,10 +63,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@IRectEnumerator.GetNext
-Returns the next rect in the list.
+Summary
+  Returns the next rect in the list.
 Description
-  Call GetNext to return the next rect in the list of rects. If there are no more rects, GetNext
-  raises an INodeError exception..
+  Call GetNext to return the next rect in the list of rects. If there are no more rects, GetNext raises
+  an INodeError exception..
 Return value
   The next rect in the list.
 See Also
@@ -125,11 +127,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TActionType.atLineBreak
-The action is a line break.
+  The action is a line break.
 
 ----------------------------------------------------------------------------------------------------
 @@TActionType.atParagraphBreak
-The action is a paragraph break
+  The action is a paragraph break
 
 ----------------------------------------------------------------------------------------------------
 @@TAreaNode
@@ -144,9 +146,6 @@ Summary
   Defines the color
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TAreaNode.GetNodeAtPointOfClass
@@ -294,6 +293,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TLinkNode.Param
 Summary
@@ -303,6 +303,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TLinkNode.ResetCount
 Summary
@@ -336,15 +337,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TLinkState.lsNormal
-Description for lsNormal
+  Description for lsNormal
 
 ----------------------------------------------------------------------------------------------------
 @@TLinkState.lsClicked
-Description for lsClicked
+  Description for lsClicked
 
 ----------------------------------------------------------------------------------------------------
 @@TLinkState.lsHot
-Description for lsHot
+  Description for lsHot
 
 ----------------------------------------------------------------------------------------------------
 @@TNode
@@ -391,8 +392,8 @@ See Also
 Summary
   Defines the metaclass for TNode.
 Description
-  TNodeClass is the metaclass for TNode. Its value is the class reference for
-  TNode or for one of its descendants.
+  TNodeClass is the metaclass for TNode. Its value is the class reference for TNode or for one of its
+  descendants.
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeList
@@ -581,47 +582,47 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntNode
-Description for ntNode
+  Description for ntNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntParentNode
-Description for ntParentNode
+  Description for ntParentNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntAreaNode
-Description for ntAreaNode
+  Description for ntAreaNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntStyleNode
-Description for ntStyleNode
+  Description for ntStyleNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntColorNode
-Description for ntColorNode
+  Description for ntColorNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntLinkNode
-Description for ntLinkNode
+  Description for ntLinkNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntDynamicNode
-Description for ntDynamicNode
+  Description for ntDynamicNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntRootNode
-Description for ntRootNode
+  Description for ntRootNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntStringNode
-Description for ntStringNode
+  Description for ntStringNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntActionNode
-Description for ntActionNode
+  Description for ntActionNode
 
 ----------------------------------------------------------------------------------------------------
 @@TNodeType.ntUnknownNode
-Description for ntUnknownNode
+  Description for ntUnknownNode
 
 ----------------------------------------------------------------------------------------------------
 @@TParentNode
@@ -736,12 +737,8 @@ See Also
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = array of TRect; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  array of TRect; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TRootNode
@@ -755,8 +752,8 @@ Description
 Summary
   Write here a summary (1 line)
 Description
-  This is an overridden method, you don't have to describe these  if it does the same as the
-  inherited method
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   P         - Description for this parameter
   NodeClass - Description for this parameter
@@ -789,11 +786,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TSpaceInfo.LastWordEndsWithSpace
-Description for LastWordEndsWithSpace
+  Description for LastWordEndsWithSpace
 
 ----------------------------------------------------------------------------------------------------
 @@TSpaceInfo.SpaceWidth
-Description for SpaceWidth
+  Description for SpaceWidth
 
 ----------------------------------------------------------------------------------------------------
 @@TStringNode
@@ -966,11 +963,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TWordInfo.SpaceInfo
-Description for SpaceInfo
+  Description for SpaceInfo
 
 ----------------------------------------------------------------------------------------------------
 @@TWordInfo.Width
-Description for Width
+  Description for Width
 
 ----------------------------------------------------------------------------------------------------
 @@TWordInfoArray
@@ -978,10 +975,6 @@ Description for Width
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = array of TWordInfo; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  array of TWordInfo; - for reference)
 

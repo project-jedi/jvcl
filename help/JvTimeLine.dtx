@@ -13,15 +13,14 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine
 Summary
   Base type for timeline view components, including TJvTimeLine.
 Description
   Use TJvCustomTimeLine as a base class when defining controls that show a timeline with date items.
-  TJvCustomTimeLine allows a list of date items to be displayed on a timeline view, with small or
-  large icons.
+  TJvCustomTimeLine allows a list of date items to be displayed on a timeline view, with small or large
+  icons.
 
   Do not create instances of TJvCustomTimeLine. To put a timeline view on a form, use a descendant of
   TJvCustomTimeLine, such as TJvTimeLine.
@@ -39,7 +38,7 @@ Parameters
   Complete    - Specifies whether to do a complete evaluation of the items. If ResetLevels is set to
                  True then it isn't necessary to set Complete to True.
   ResetLevels - Specifies whether to reset the vertical positions of the items before to the
-  calculation                starts.
+                 calculation starts.
 See Also
   TJvTimeItem.Level
 
@@ -65,8 +64,8 @@ Description
   call EndUpdate so that the changes can be reflected on screen. BeginUpdate and EndUpdate prevent
   excessive redraws and speed processing time when items are added, deleted, or moved.
 
-  BeginUpdate/EndUpdate sequences can be nested. TJvCustomTimeLine tracks the nesting level and
-  delays screen updates until the outermost EndUpdate is called.
+  BeginUpdate/EndUpdate sequences can be nested. TJvCustomTimeLine tracks the nesting level and delays
+  screen updates until the outermost EndUpdate is called.
 See Also
   TJvCustomTimeLine.EndUpdate
 
@@ -75,8 +74,8 @@ See Also
 Summary
   Specifies the border style for the timeline.
 Description
-  If BorderStyle is set to the default bsSingle, the timeline has a single-line border. If
-  BorderStyle is set to bsNone, no border appears around the timeline.
+  If BorderStyle is set to the default bsSingle, the timeline has a single-line border. If BorderStyle
+  is set to bsNone, no border appears around the timeline.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.DateAtPos
@@ -86,7 +85,7 @@ Description
   Use DateAtPos to retrieve the date at a position indicated by \Pos on the control.
 Parameters
   Pos - Indicates the x-coordinate of the position to search a date for.
-  Returns
+Return value
   The date at a position on the control indicated by \Pos.
 See Also
   TJvCustomTimeLine.ItemAtPos, TJvCustomTimeLine.LevelAtPos, TJvCustomTimeLine.PosAtDate
@@ -96,8 +95,8 @@ See Also
 Summary
   Specifies whether to show a vertical drag line when the user drags an item.
 Description
-  If DragLine is set to True, the timeline control shows a vertical drag line when the presses the
-  left button while the mouse cursor is on the timeline view, or drags an item.
+  If DragLine is set to True, the timeline control shows a vertical drag line when the presses the left
+  button while the mouse cursor is on the timeline view, or drags an item.
 See Also
   TJvCustomTimeLine.OnItemClick, TJvCustomTimeLine.OnItemMoved, TJvCustomTimeLine.OnItemMoving
 
@@ -117,8 +116,8 @@ Summary
   Specifies the first visible date in the timeline view.
 Description
   Use FirstVisibleDate to specify the date that will be the left most date visible in the timeline
-  view.
-  The timeline component ensures that the first visible date is always the first day of the month.
+  view. The timeline component ensures that the first visible date is always the first day of the
+  month.
 See Also
   TJvCustomTimeLine.NextMonth, TJvCustomTimeLine.NextYear, TJvCustomTimeLine.PrevMonth,
   TJvCustomTimeLine.PrevYear, TJvCustomTimeLine.TopLevel
@@ -148,8 +147,8 @@ See Also
 Summary
   Specifies whether horizontal support lines are displayed.
 Description
-  If HorzSupports is set to True, horizontal support lines appear in the timeline. One support line
-  is drawn for each level.
+  If HorzSupports is set to True, horizontal support lines appear in the timeline. One support line is
+  drawn for each level.
 See Also
   TJvCustomTimeLine.HelperYears, TJvCustomTimeLine.VertSupports
 
@@ -158,9 +157,9 @@ See Also
 Summary
   Specifies the images that appear next to items in the timeline view.
 Description
-  Use Images to supply the list of images that appear above items in the timeline view.
-  Each timeline item has an <LINK TJvTimeItem.ImageIndex,ImageIndex> property that identifies an
-  image in this list.
+  Use Images to supply the list of images that appear above items in the timeline view. Each timeline
+  item has an <LINK TJvTimeItem.ImageIndex, ImageIndex> property that identifies an image in this
+  list.
 See Also
   TJvTimeItem.ImageIndex
 
@@ -173,7 +172,7 @@ Description
 Parameters
   X - Indicates the x-coordinate of the point in the control in window coordinates.
   Y - Indicates the y-coordinate of the point in the control in window coordinates.
-  Returns
+Return value
   The timeline item placed at the point indicated by X and Y on the control. If no timeline item is
   placed at that point then ItemAtPos returns nil.
 See Also
@@ -184,12 +183,12 @@ See Also
 Summary
   Specifies the height, in pixels, of the items in the timeline view.
 Description
-  Set ItemHeight to control the height of the items that appear on the timeline control. The
-  ItemHeight property is the vertical size in pixels of the individual items.
+  Set ItemHeight to control the height of the items that appear on the timeline control. The ItemHeight
+  property is the vertical size in pixels of the individual items.
 
-  Note that an image associated with an item is placed above the caption of that item; thus, if you
-  use images to display with the items, make sure that ItemHeight is big enough to hold both the
-  image and the caption.
+  Note that an image associated with an item is placed above the caption of that item; thus, if you use
+  images to display with the items, make sure that ItemHeight is big enough to hold both the image and
+  the caption.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTimeLine.Items
@@ -211,7 +210,7 @@ Description
   Use LevelAtPos to retrieve the level at a particular position on the control.
 Parameters
   Pos - Indicates the y-coordinate of a position on the control.
-  Returns
+Return value
   The level at a position on the control indicated by \Pos.
 See Also
   TJvCustomTimeLine.DateAtPos, TJvCustomTimeLine.ItemAtPos, TJvCustomTimeLine.PosAtDate,
@@ -222,8 +221,8 @@ See Also
 Summary
   Reads the file specified in FileName and loads the data into the timeline view.
 Description
-  Use the LoadFromFile method to retrieve timeline view items from a file and add them to the
-  timeline view. FileName should reference a file that was saved using the SaveToFile method.
+  Use the LoadFromFile method to retrieve timeline view items from a file and add them to the timeline
+  view. FileName should reference a file that was saved using the SaveToFile method.
 
   \Write an OnLoadItem event handler to load data associated with an item from the file.
 Parameters
@@ -283,8 +282,8 @@ See Also
 Summary
   Scrolls the timeline view right by 1 year.
 Description
-  Call NextYear to scroll the timeline view right by 1 year. This will increase the first visible
-  date by 1 year.
+  Call NextYear to scroll the timeline view right by 1 year. This will increase the first visible date
+  by 1 year.
 See Also
   TJvCustomTimeLine.FirstVisibleDate, TJvCustomTimeLine.NextMonth, TJvCustomTimeLine.PrevMonth,
   TJvCustomTimeLine.PrevYear
@@ -294,13 +293,13 @@ See Also
 Summary
   Occurs when an item in an owner-draw timeline view needs to be redisplayed.
 Description
-  Use OnDrawItem to write a handler for drawing of the items in timeline views with the Style values lbOwnerDrawFixed or lbOwnerDrawVariable.
-  OnDrawItem occurs when the timeline view needs to display an item. OnDrawItem occurs only for
-  owner-draw timeline views.
+  Use OnDrawItem to write a handler for drawing of the items in timeline views with the Style values
+  lbOwnerDrawFixed or lbOwnerDrawVariable. OnDrawItem occurs when the timeline view needs to display an
+  item. OnDrawItem occurs only for owner-draw timeline views.
 
-  The size of the rectangle that contains the item is determined either by the ItemHeight property
-  or fixed owner-draw timeline views or by the response to the OnMeasureItem event for variable
-  owner-draw timeline views.
+  The size of the rectangle that contains the item is determined either by the ItemHeight property or
+  fixed owner-draw timeline views or by the response to the OnMeasureItem event for variable owner-draw
+  timeline views.
 Parameters
   Sender - The timeline view control in which an item is about to be drawn.
   Canvas - Provides a drawing surface on which to draw the menu item.
@@ -314,8 +313,8 @@ See Also
 Summary
   Occurs when the user scrolls the timeline view horizontally with the mouse or keyboard.
 Description
-  \Write an OnHorzScroll event handler to take specific action when the user scrolls the timeline
-  view horizontally.
+  \Write an OnHorzScroll event handler to take specific action when the user scrolls the timeline view
+  horizontally.
 See Also
   TJvCustomTimeLine.OnVertScroll, TJvCustomTimeLine.ScrollArrows
 
@@ -343,8 +342,8 @@ Summary
   Occurs after the user has moved an item.
 Description
   \Write an OnItemMoved event handler to take specific action when the user finishes dragging an item.
-  For example, after moving an item, use an OnItemMoved event handler to ask the user whether the
-  move really must be done.
+  For example, after moving an item, use an OnItemMoved event handler to ask the user whether the move
+  really must be done.
 Parameters
   Sender       - The timeline view control in which an item is moved.
   Item         - The item that the user has moved.
@@ -375,14 +374,9 @@ Summary
   Occurs after the application loads an item from a stream.
 Description
   Use OnLoadItem to write a handler to load custom data associated with an item from the specified
-  stream.
-  When you call LoadFromStream or LoadFromFile, the component fires an OnLoadItem event for each item
-  it loads from the stream. For example, you can use this event to read data from the stream, that
-  will be stored in the <LINK TJvTimeItem.Data,Data> property of an item.
-  ##Parameters
-  ##  Sender - The timeline view control that has read the item.
-  ##  Item   - The item that the user wants to move.
-  ##  Stream - Specifies the stream from which to read the custom data.
+  stream. When you call LoadFromStream or LoadFromFile, the component fires an OnLoadItem event for
+  each item it loads from the stream. For example, you can use this event to read data from the stream,
+  that will be stored in the <LINK TJvTimeItem.Data, Data> property of an item.
 See Also
   TJvCustomTimeLine.OnSaveItem
 
@@ -396,10 +390,10 @@ Description
   property value of lbOwnerDrawVariable.
 
   The ItemHeight parameter should specify the height in pixels that the given item will occupy in the
-  control. The ItemHeight parameter is passed by reference (a var parameter), which initially
-  contains the default height of the item or the height of the item text in the control’s font. The
-  handler can set ItemHeight to a value appropriate to the contents of the item, such as the height
-  of a graphical image to be displayed within the item.
+  control. The ItemHeight parameter is passed by reference (a var parameter), which initially contains
+  the default height of the item or the height of the item text in the control’s font. The handler can
+  set ItemHeight to a value appropriate to the contents of the item, such as the height of a graphical
+  image to be displayed within the item.
 
   After the OnMeasureItem event occurs, the OnDrawItem event occurs, rendering the item with the
   measured size.
@@ -416,14 +410,9 @@ Summary
   Occurs after the application saves an item to a stream.
 Description
   Use OnSaveItem to write a handler to save custom data associated with an item to the specified
-  stream.
-  When you call SaveToStream or SaveToFile, the component fires an OnSaveItem event for each item it
-  saves to the stream. For example, you can use this event to write data to the stream, that is
-  stored in the <LINK TJvTimeItem.Data,Data> property of an item.
-  ##Parameters
-  ##  Sender - The timeline view control that has written the item to the stream.
-  ##  Item   - The item that the user wants to move.
-  ##  Stream - Specifies the stream where to write the custom data.
+  stream. When you call SaveToStream or SaveToFile, the component fires an OnSaveItem event for each
+  item it saves to the stream. For example, you can use this event to write data to the stream, that is
+  stored in the <LINK TJvTimeItem.Data, Data> property of an item.
 See Also
   TJvCustomTimeLine.OnLoadItem
 
@@ -443,8 +432,8 @@ See Also
 Summary
   Occurs when the user scrolls the timeline view vertically with the mouse or keyboard.
 Description
-  \Write an OnVertScroll event handler to take specific action when the user scrolls the timeline
-  view vertically.
+  \Write an OnVertScroll event handler to take specific action when the user scrolls the timeline view
+  vertically.
 See Also
   TJvCustomTimeLine.OnHorzScroll, TJvCustomTimeLine.ScrollArrows
 
@@ -457,7 +446,7 @@ Description
   specified by \Date.
 Parameters
   Date - Indicates the date to search.
-  Returns
+Return value
   The x-coordinate of a position on the control with a date as specified by \Date.
 See Also
   TJvCustomTimeLine.DateAtPos, TJvCustomTimeLine.ItemAtPos, TJvCustomTimeLine.LevelAtPos
@@ -489,8 +478,8 @@ See Also
 Summary
   Saves the timeline view to the file specified in FileName.
 Description
-  Use the SaveToFile method to store timeline view data to a text file. The items can later be
-  reloaded from the file into a new timeline view object using the LoadFromFile method.
+  Use the SaveToFile method to store timeline view data to a text file. The items can later be reloaded
+  from the file into a new timeline view object using the LoadFromFile method.
 
   \Write an OnSaveItem event handler to save data associated with an item to the stream.
 Parameters
@@ -521,13 +510,14 @@ Description
   buttons out of the ScrollArrows set to hide those buttons. Note that the user can still scroll the
   timeline view with the cursor buttons.
   <TABLE>
-  Button        Value         Action
-  ------        -------      ------
-  Left          scrollLeft    Scrolls left by 1 month. If pressed with Ctrl it scrolls left by 1 year.
-  Right         scrollRight   Scrolls right by 1 month. If pressed with Ctrl it scrolls right by 1
-                               year.
-  Up            scrollUp      Scrolls one level up.
-  Down          scrollDown    Scrolls one level down.
+    Button  Value        Action
+    ------  -----------  ---------------------------------------------------------------------
+    Left    scrollLeft   Scrolls left by 1 month. If pressed with Ctrl it scrolls left by 1
+                           year.
+    Right   scrollRight  Scrolls right by 1 month. If pressed with Ctrl it scrolls right by 1
+                           year.
+    Up      scrollUp     Scrolls one level up.
+    Down    scrollDown   Scrolls one level down.
   </TABLE>
 See Also
   TJvCustomTimeLine.OnHorzScroll, TJvCustomTimeLine.OnVertScroll, TJvScrollArrows
@@ -559,9 +549,9 @@ See Also
 Summary
   Specifies whether to show hints that indicate whether all items are visible in the current view.
 Description
-  Set ShowHiddenItemHints to True, to show hints in the view that indicate whether there are items
-  with a date before the left most date visible in the view, or with a date after the right most
-  visible date.
+  Set ShowHiddenItemHints to True, to show hints in the view that indicate whether there are items with
+  a date before the left most date visible in the view, or with a date after the right most visible
+  date.
 Note
   This is a protected property.
 
@@ -591,8 +581,8 @@ Summary
   Determines whether the timeline view is standard or owner-draw.
 Description
   Use Style to specify whether the timeline view displays the items in a standard way or displays the
-  items in some nonstandard way. In the latter, you must write the code to paint items in the
-  timeline view.
+  items in some nonstandard way. In the latter, you must write the code to paint items in the timeline
+  view.
 See Also
   TJvCustomTimeLine.ItemHeight, TJvCustomTimeLine.Items, TJvCustomTimeLine.OnDrawItem,
   TJvCustomTimeLine.OnMeasureItem
@@ -602,12 +592,12 @@ See Also
 Summary
   Specifies the level of the first visible row with date items in the timeline view.
 Description
-  \Items can only be placed at certain vertical positions, called levels. \Items placed on the top
-  row have Level value 0, items on the second row have value 1, and so on.
+  \Items can only be placed at certain vertical positions, called levels. \Items placed on the top row
+  have Level value 0, items on the second row have value 1, and so on.
 
-  \Read TopLevel to determine the level of the first row with date items in the scrollable region
-  that is visible. Set TopLevel to scroll the timeline view so that the items with level TopLevel are
-  on the first visible row with date items.
+  \Read TopLevel to determine the level of the first row with date items in the scrollable region that
+  is visible. Set TopLevel to scroll the timeline view so that the items with level TopLevel are on the
+  first visible row with date items.
 See Also
   TJvCustomTimeLine.FirstVisibleDate, TJvTimeItem.Level
 
@@ -635,8 +625,8 @@ Summary
   Specifies the year of the first visible date in the timeline view.
 Description
   Use Year to specify the year of the date that will be the left most date visible in the timeline
-  view.
-  The timeline component ensures that the first visible date is always the first day of the month.
+  view. The timeline component ensures that the first visible date is always the first day of the
+  month.
 Note
   This is a protected property.
 See Also
@@ -661,13 +651,13 @@ Description
 
   YearWidth determines whether specific data is displayed:
 
-    * The day numbers are only displayed if YearWidth is greater than or equal to 4320, and ShowDays
-      is set to True.
-    * If YearWidth is greater than 1440, long names of months are shown (e.g. "februari"), otherwise
-      \short names are shown (e.g. "feb"). If ShowMonthNames is set to false then no month names are
-      shown.
-    * If VertSupports is set to True, then one support line is drawn for each month unless YearWidth
-      is smaller than 160, then one support line is drawn for each quarter year.
+  * The day numbers are only displayed if YearWidth is greater than or equal to 4320, and ShowDays is
+    set to True.
+  * If YearWidth is greater than 1440, long names of months are shown (e.g. "februari"), otherwise
+    \short names are shown (e.g. "feb"). If ShowMonthNames is set to false then no month names are
+    shown.
+  * If VertSupports is set to True, then one support line is drawn for each month unless YearWidth is
+    smaller than 160, then one support line is drawn for each quarter year.
 See Also
   TJvCustomTimeLine.ShowDays, TJvCustomTimeLine.ShowMonthNames, TJvCustomTimeLine.VertSupports
 
@@ -698,24 +688,24 @@ Summary
   Represents different kinds of scroll buttons.
 Description
   The TJvScrollArrow type is used to represent different kinds of scroll button.
+See Also
+  TJvCustomTimeLine.ScrollArrows
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollArrow.scrollLeft
-Button to scroll left.
+  Button to scroll left.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollArrow.scrollRight
-Button to scroll right.
+  Button to scroll right.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollArrow.scrollUp
-Button to scroll up.
+  Button to scroll up.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollArrow.scrollDown
-Button to scroll down.
-See Also
-  TJvCustomTimeLine.ScrollArrows
+  Button to scroll down.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollArrows
@@ -763,9 +753,9 @@ See Also
 Summary
   Specifies the background color for the item's caption.
 Description
-  The Color property determines the background color of the item's caption. You can set Color to one
-  of the constants defined in the Graphics unit (such as clBlue), or to an explicit RGB integer value.
-  The default value is clWindow.
+  The Color property determines the background color of the item's caption. You can set Color to one of
+  the constants defined in the Graphics unit (such as clBlue), or to an explicit RGB integer value. The
+  default value is clWindow.
 See Also
   TJvTimeItem.Caption, TJvTimeItem.TextColor
 
@@ -791,9 +781,8 @@ See Also
 Summary
   Specifies whether the timeline item is enabled.
 Description
-  Use Enabled to enable or disable a timeline item. If Enabled is True, the Click method is called
-  when the user selects the item with the mouse. If Enabled is False, the timeline item appears
-  dimmed and
+  Use Enabled to enable or disable a timeline item. If Enabled is True, the Click method is called when
+  the user selects the item with the mouse. If Enabled is False, the timeline item appears dimmed and
   the user cannot select it, but calling the Click method works even when Enabled is False.
 
 ----------------------------------------------------------------------------------------------------
@@ -807,8 +796,8 @@ Description
   timeline item if Help Hints are enabled (that is, if the Form’s and the \Application’s ShowHint
   properties are True). It is also available for the code in the application’s OnHint event handler.
 
-  The value of Hint can specify both a short value for the Help Hint window and a longer \string to
-  be used by the OnHint event handler. To provide both a short and a long hint, set Hint to the short
+  The value of Hint can specify both a short value for the Help Hint window and a longer \string to be
+  used by the OnHint event handler. To provide both a short and a long hint, set Hint to the short
   \string, followed by a vertical bar (|), followed by the long \string.
 
 ----------------------------------------------------------------------------------------------------
@@ -847,11 +836,11 @@ See Also
 Summary
   Indicates the level of an item within the timeline view control.
 Description
-  Use Level to specify the vertically position of the timeline item in the timeline view.
-  Items can only be placed at certain vertical positions, called levels. The value of Level is 0 for
-  items on the top row.
+  Use Level to specify the vertically position of the timeline item in the timeline view. Items can
+  only be placed at certain vertical positions, called levels. The value of Level is 0 for items on the
+  top row.
 
-  Property <LINK TJvCustomTimeLine.TopLevel,TopLevel> of a timeline control determines the level of
+  Property <LINK TJvCustomTimeLine.TopLevel, TopLevel> of a timeline control determines the level of
   the first row with timeline items that is visible in the view.
 See Also
   TJvCustomTimeLine.TopLevel, TJvTimeItem.Date, TJvTimeItem.Left, TJvTimeItem.Top, TJvTimeItem.Width
@@ -902,8 +891,8 @@ See Also
 Summary
   Specifies the width of the item.
 Description
-  The Width property determines the width of the item. Property WidthAs determines whether the value
-  of Width is in pixels or in days.
+  The Width property determines the width of the item. Property WidthAs determines whether the value of
+  Width is in pixels or in days.
 See Also
   TJvTimeItem.Top, TJvTimeItem.WidthAs
 
@@ -920,11 +909,11 @@ See Also
 @@TJvTimeItemClickEvent
 <TITLE TJvTimeItemClickEvent type>
 Summary
-  Type of event handlers that respond when the user clicks or double-clicks an item in a timeline
-  view control.
+  Type of event handlers that respond when the user clicks or double-clicks an item in a timeline view
+  control.
 Description
-  Use TJvTimeItemClickEvent to respond when the user clicks or double-clicks an item in a timeline
-  view control.
+  Use TJvTimeItemClickEvent to respond when the user clicks or double-clicks an item in a timeline view
+  control.
 Parameters
   Sender - The timeline view control in which an item is clicked.
   Item   - The item the user clicked or double-clicked.
@@ -934,10 +923,10 @@ Parameters
 Summary
   TJvTimeItems maintains the collection of items that appear in a timeline view control.
 Description
-  Each TJvTimeItems represents a collection of TJvTimeItem objects in a TTimeLine.
-  At design time, use the timeline control’s Columns editor to add, remove, or modify columns. At
-  run-time, use the properties and methods of TJvTimeItems to manipulate the list of items displayed
-  by a timeline view control.
+  Each TJvTimeItems represents a collection of TJvTimeItem objects in a TTimeLine. At design time, use
+  the timeline control’s Columns editor to add, remove, or modify columns. At run-time, use the
+  properties and methods of TJvTimeItems to manipulate the list of items displayed by a timeline view
+  control.
 See Also
   TJvTimeItem, TJvTimeLine
 
@@ -947,7 +936,7 @@ Summary
   Creates a new timeline item and adds it to the timeline view control.
 Description
   Call Add to add a new timeline item to the end of the list.
-  Returns
+Return value
   Returns the newly created TJvTimeItem object.
 See Also
   TJvTimeItem.Remove
@@ -968,8 +957,8 @@ Summary
   Updates the display to reflect the current values of the Items.
 Description
   Call Refresh to ensure that the timeitem view accurately reflects the value of the <LINK
-  TJvTimeItems.Items,Items> property. For example, call Refresh after programmatically editing the
-  value of the <LINK TJvTimeItems.Items,Items> property.
+  TJvTimeItems.Items, Items> property. For example, call Refresh after programmatically editing the
+  value of the <LINK TJvTimeItems.Items, Items> property.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItemType
@@ -981,11 +970,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItemType.asPixels
-The value is in pixels.
+  The value is in pixels.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeItemType.asDays
-The value is in days.
+  The value is in days.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeLine
@@ -999,19 +988,17 @@ Description
   Use TJvTimeLine to manage and display a list of date items on a timeline control. The items can be
   displayed with small or large icons.
 
-  Property <LINK TJvTimeItem.Date,Date> specifies the horizontally position of a date item on the
-  timeline view. Use <LINK TJvTimeItem.Level,Level> to specify the vertically position of the item in
-  the timeline
-  view. Items can only be placed at certain vertical positions, called levels. \Items placed on the
-  top row have Level value 0, items on the second row have value 1, and so on.
+  Property <LINK TJvTimeItem.Date, Date> specifies the horizontally position of a date item on the
+  timeline view. Use <LINK TJvTimeItem.Level, Level> to specify the vertically position of the item in
+  the timeline view. Items can only be placed at certain vertical positions, called levels. \Items
+  placed on the top row have Level value 0, items on the second row have value 1, and so on.
 
   You can scroll the view with the keyboard cursor buttons or by pressing the scroll buttons in the
-  view.
-  Use <LINK TJvCustomTimeLine.ScrollArrows,ScrollArrows> to select which scroll buttons appear on the
-  timeline view.
+  view. Use <LINK TJvCustomTimeLine.ScrollArrows, ScrollArrows> to select which scroll buttons appear
+  on the timeline view.
 
-  TJvTimeLine publishes many of the properties, events, and methods of TJvCustomTimeLine, but does
-  not introduce any new behavior.
+  TJvTimeLine publishes many of the properties, events, and methods of TJvCustomTimeLine, but does not
+  introduce any new behavior.
 See Also
   TJvTimeItem, TJvTimeItems
 
@@ -1025,19 +1012,27 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeLineStyle.tlDefault
-For each item the control displays the \string specified by <LINK TJvTimeItem.Caption,
-Caption> and an icon specified by <LINK TJvTimeItem.ImageIndex,ImageIndex>.
-Each item has the same height as specified by <LINK TJvCustomTimeLine.ItemHeight,ItemHeight>.
+  For each item the control displays the \string specified by <LINK TJvTimeItem.Caption, Caption> and
+  an icon specified by <LINK TJvTimeItem.ImageIndex, ImageIndex>. Each item has the same height as
+  specified by <LINK TJvCustomTimeLine.ItemHeight, ItemHeight>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeLineStyle.tlOwnerDrawFixed
-The timeline view is owner-drawn, but each item in the timeline view has the height specified by the <LINK TJvCustomTimeLine.ItemHeight,ItemHeight> property. Each time an item is displayed in a tlOwnerDrawFixed timeline control, the <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> event occurs. The event handler for <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> draws the specified item. The <LINK TJvCustomTimeLine.ItemHeight,ItemHeight> property determines the height of each of the
-items.
+  The timeline view is owner-drawn, but each item in the timeline view has the height specified by the
+  <LINK TJvCustomTimeLine.ItemHeight, ItemHeight> property. Each time an item is displayed in a
+  tlOwnerDrawFixed timeline control, the <LINK TJvCustomTimeLine.OnDrawItem, OnDrawItem> event occurs.
+  The event handler for <LINK TJvCustomTimeLine.OnDrawItem, OnDrawItem> draws the specified item. The
+  <LINK TJvCustomTimeLine.ItemHeight, ItemHeight> property determines the height of each of the items.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTimeLineStyle.tlOwnerDrawVariable
-The timeline view is owner-drawn, and items in the timeline control can be of varying heights. Each time an item is displayed in a tlOwnerDrawVariable
-timeline control, two events occur. The first is the <LINK TJvCustomTimeLine.OnMeasureItem,OnMeasureItem> event. The code for the <LINK TJvCustomTimeLine.OnMeasureItem,OnMeasureItem> handler can set the height of each item. Then the <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> event occurs. The code for the <LINK TJvCustomTimeLine.OnDrawItem,OnDrawItem> handler draws each item in the timeline control using the size specified by the <LINK TJvCustomTimeLine.OnMeasureItem,OnMeasureItem> handler.
+  The timeline view is owner-drawn, and items in the timeline control can be of varying heights. Each
+  time an item is displayed in a tlOwnerDrawVariable timeline control, two events occur. The first is
+  the <LINK TJvCustomTimeLine.OnMeasureItem, OnMeasureItem> event. The code for the <LINK
+  TJvCustomTimeLine.OnMeasureItem, OnMeasureItem> handler can set the height of each item. Then the
+  <LINK TJvCustomTimeLine.OnDrawItem, OnDrawItem> event occurs. The code for the <LINK
+  TJvCustomTimeLine.OnDrawItem, OnDrawItem> handler draws each item in the timeline control using the
+  size specified by the <LINK TJvCustomTimeLine.OnMeasureItem, OnMeasureItem> handler.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvYearWidth

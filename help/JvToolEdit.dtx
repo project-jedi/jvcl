@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Incomplete
+##Status: Completed, Incomplete
 ##Skip: EComboEditError
 ##Skip: IAutoComplete
 ##Skip: IAutoComplete2
@@ -19,7 +19,6 @@ Summary
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 
-
 ----------------------------------------------------------------------------------------------------
 @@DateFormatChanged
 <TITLE DateFormatChanged procedure>
@@ -27,8 +26,8 @@ Summary
   Updates all combo date edit control's masks.
 Description
   Call DateFormatChanged to update the masks of all combo date edit control's. By using TJvDateEdit
-  controls in an application, the DateFormatChanged procedure is automatically called upon changing
-  of the date format by the user.
+  controls in an application, the DateFormatChanged procedure is automatically called upon changing of
+  the date format by the user.
 
 ----------------------------------------------------------------------------------------------------
 @@EditorTextMargins
@@ -36,8 +35,8 @@ Description
 Summary
   Returns the text margins of the edit box of a control.
 Description
-  Call EditorTextmargins to determine the text margins of the edit box of the edit control as
-  specified by the Editor parameter.
+  Call EditorTextmargins to determine the text margins of the edit box of the edit control as specified
+  by the Editor parameter.
 Parameters
   Editor - The edit control.
 
@@ -49,9 +48,8 @@ Summary
 Description
   Call PaintComboEdit to paint the edit box of a combo edit control.
 
-  If parameter ACanvas is nil then ACanvas
-  is set to a newly created TCanvas object. It is the responsibility of the caller of PaintComboEdit
-  to free that object.
+  If parameter ACanvas is nil then ACanvas is set to a newly created TCanvas object. It is the
+  responsibility of the caller of PaintComboEdit to free that object.
 
   PaintComboEdit returns the value of parameter StandardPaint. If StandardPaint is set to true, then
   only some initialization is done but no painting; thus, in this case the caller should call the
@@ -74,9 +72,8 @@ Summary
 Description
   Call PaintEdit to paint the edit box of an edit control.
 
-  If parameter ACanvas is nil then ACanvas
-  is set to a newly created TCanvas object. It is the responsibility of the caller of PaintEdit to
-  free that object.
+  If parameter ACanvas is nil then ACanvas is set to a newly created TCanvas object. It is the
+  responsibility of the caller of PaintEdit to free that object.
 
   PaintEdit returns the value of parameter StandardPaint. If StandardPaint is set to true, then only
   some initialization is done but no painting; thus, in this case the caller should call the standard
@@ -105,11 +102,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TCalendarStyle.csPopup
-The calendar is a pop-up window.
+  The calendar is a pop-up window.
 
 ----------------------------------------------------------------------------------------------------
 @@TCalendarStyle.csDialog
-The calendar is a modal dialog.
+  The calendar is a modal dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TDirDialogKind
@@ -123,11 +120,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TDirDialogKind.dkVCL
-VCL Select Directory dialog box.
+  VCL Select Directory dialog box.
 
 ----------------------------------------------------------------------------------------------------
 @@TDirDialogKind.dkWin32
-Windows directory browser.
+  Windows directory browser.
 
 ----------------------------------------------------------------------------------------------------
 @@TExecDateDialog
@@ -145,12 +142,12 @@ Description
   alter the result of a file selection process.
 
   You can alter both Name and Action. For example, by setting Action to false in an <LINK
-  TJvFileDirEdit.OnBeforeDialog,OnBeforeDialog> event handler, you will prevent the dialog from being
+  TJvFileDirEdit.OnBeforeDialog, OnBeforeDialog> event handler, you will prevent the dialog from being
   shown.
 Parameters
   Sender - The object that represents the combo edit control.
-  Name   - The name of the file or directory that will initally be selected in the dialog or
-   the name of the file or directory that is selected by the user in the dialog.
+  Name   - The name of the file or directory that will initally be selected in the dialog or the name
+            of the file or directory that is selected by the user in the dialog.
   Action - The result of the initialization or file selection process.
 See Also
   TJvFileDirEdit.OnAfterDialog, TJvFileDirEdit.OnBeforeDialog
@@ -167,19 +164,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TFileDialogKind.dkOpen
-File-selection dialog.
+  File-selection dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TFileDialogKind.dkSave
-"Save As" dialog for saving files.
+  "Save As" dialog for saving files.
 
 ----------------------------------------------------------------------------------------------------
 @@TFileDialogKind.dkOpenPicture
-Graphics-file selection dialog.
+  Graphics-file selection dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TFileDialogKind.dkSavePicture
-"Save As" dialog for saving graphics files.
+  "Save As" dialog for saving graphics files.
 
 ----------------------------------------------------------------------------------------------------
 @@TFileExt
@@ -201,19 +198,20 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphKind.gkCustom
-A custom glyph.
+  A custom glyph.
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphKind.gkDefault
-The default glyph. When specifying gkDefault the actual glyph shown depends on the combo edit control. For example, a TJvDateEdit will display a calendar glyph.
+  The default glyph. When specifying gkDefault the actual glyph shown depends on the combo edit
+  control. For example, a TJvDateEdit will display a calendar glyph.
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphKind.gkDropDown
-A dropdown button.
+  A dropdown button.
 
 ----------------------------------------------------------------------------------------------------
 @@TGlyphKind.gkEllipsis
-Ellipsis.
+  Ellipsis.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteFileOption
@@ -225,18 +223,28 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteFileOption.acfFileSystem
   Description for acfFileSystem
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteFileOption.acfFileSysDirs
   Description for acfFileSysDirs
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteFileOption.acfURLHistory
   Description for acfURLHistory
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteFileOption.acfURLMRU
   Description for acfURLMRU
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteFileOptions
 <TITLE TJvAutoCompleteFileOptions type>
 <COMBINE TJvAutoCompleteFileOption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption
 <TITLE TJvAutoCompleteOption type>
@@ -247,24 +255,40 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoAutoSuggest
   Description for acoAutoSuggest
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoAutoAppend
   Description for acoAutoAppend
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoSearch
   Description for acoSearch
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoFilterPrefixes
   Description for acoFilterPrefixes
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoUseTab
   Description for acoUseTab
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoUpDownKeyDropsList
   Description for acoUpDownKeyDropsList
+
+----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOption.acoRTLReading
   Description for acoRTLReading
+
 ----------------------------------------------------------------------------------------------------
 @@TJvAutoCompleteOptions
 <TITLE TJvAutoCompleteOptions type>
 <COMBINE TJvAutoCompleteOption>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvComboEdit
 <TITLEIMG TJvComboEdit>
@@ -277,9 +301,8 @@ Description
   Use a TJvComboEdit object to put a standard Windows edit control with an associated button on a
   form.
 
-  TJvComboEdit implements the generic behavior introduced in TJvCustomComboEdit. TJvComboEdit
-  publishes many of the properties inherited from TJvCustomComboEdit, but does not introduce any new
-  behavior.
+  TJvComboEdit implements the generic behavior introduced in TJvCustomComboEdit. TJvComboEdit publishes
+  many of the properties inherited from TJvCustomComboEdit, but does not introduce any new behavior.
   For specialized edit controls, use other descendant classes of TJvCustomComboEdit (such as
   TJvFilenameEdit, TJvDateEdit etc.) or derive from it.
 
@@ -288,17 +311,17 @@ Description
 Summary
   Base class for edit controls with a button.
 Description
-  TJvCustomComboEdit encapsulates the behavior common to all components for editing text by
-  introducing methods and properties that provide:
+  TJvCustomComboEdit encapsulates the behavior common to all components for editing text by introducing
+  methods and properties that provide:
 
   * Basic text editing functions such as selecting text, modifying selected text, and case
     conversions.
   * Ability to respond to changes in the contents of the text.
-  * Access control of the text for making it read-only or introducing a password character to hide
-    the actual value.
+  * Access control of the text for making it read-only or introducing a password character to hide the
+    actual value.
 
-  Do not create instances of TJvCustomComboEdit. Use TJvCustomComboEdit as a base class when
-  declaring control objects that permit the user to enter or modify text. Properties and methods of
+  Do not create instances of TJvCustomComboEdit. Use TJvCustomComboEdit as a base class when declaring
+  control objects that permit the user to enter or modify text. Properties and methods of
   TJvCustomComboEdit provide basic behavior that descendant classes inherit as well as behavior that
   components can override to customize their behavior.
 
@@ -310,11 +333,11 @@ Description
   Use Alignment to indicate text alignment in the edit box. These are the possible values:
 
   <TABLE>
-  Value           Meaning
-  -----           -------
-  taLeftJustify   Align text on the left side in the edit control.
-  taCenter        Center the text in the edit control.
-  taRightJustify  Align text on the right side in the edit control.
+    Value           Meaning
+    --------------  -------------------------------------------------
+    taLeftJustify   Align text on the left side in the edit control.
+    taCenter        Center the text in the edit control.
+    taRightJustify  Align text on the right side in the edit control.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -322,11 +345,11 @@ Description
 Summary
   Specifies whether the button is always enabled.
 Description
-  If you set AlwaysEnableButton to true, a user can always click the button of the combo edit
-  control, even if ReadOnly is set to true.
+  If you set AlwaysEnableButton to true, a user can always click the button of the combo edit control,
+  even if ReadOnly is set to true.
 
-  If AlwaysEnableButton is set to false, then no OnButtonClick event is fired when the user clicks
-  the button.
+  If AlwaysEnableButton is set to false, then no OnButtonClick event is fired when the user clicks the
+  button.
 See Also
   TJvCustomComboEdit.AlwaysShowPopup, TJvCustomComboEdit.ReadOnly
 
@@ -338,11 +361,13 @@ Description
   If you set AlwaysShowPopup to true, a popup is always shown when the user clicks the button of the
   combo edit control, even if ReadOnly is set to true. Note that AlwaysEnableButton must also be true.
 
-  For data-aware controls the associated dataset does <i>not</i> immediately go to edit-mode when the popup is shown, when AlwaysS
-  owPopup is set to true. If AwaysShowPopup is set to false and either the associated dataset is
-  read-only or the controls ReadOnly property is set to true, then no popup is shown.
+  For data-aware controls the associated dataset does <I>not</I> immediately go to edit-mode when the
+  popup is shown, when AlwaysShowPopup is set to true. If AlwaysShowPopup is set to false and either
+  the associated dataset is read-only or the controls ReadOnly property is set to true, then no popup
+  is shown.
 See Also
   TJvCustomComboEdit.AlwaysEnableButton
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.AutoCompleteItems
 Summary
@@ -352,6 +377,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.AutoCompleteOptions
 Summary
@@ -361,6 +387,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.Button
 Summary
@@ -380,7 +407,7 @@ Description
   Set ButtonFlat to true to remove the raised border when the button is unselected and the lowered
   border when the button is clicked or selected.
 See Also
-  <LINK TJvCustomComboEdit.Button,Button>
+  <LINK TJvCustomComboEdit.Button, Button>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ButtonHint
@@ -390,7 +417,7 @@ Description
   Use the ButtonHint property to provide a string of help text as a Help Hint for the combo edit
   control's button.
 See Also
-  <LINK TJvCustomComboEdit.Button,Button>
+  <LINK TJvCustomComboEdit.Button, Button>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ButtonWidth
@@ -401,7 +428,7 @@ Description
   ImageKind can change the ButtonWidth. For example, ButtonWidth is set to the default width of a
   dropdown button if ImageKind is set to ikDropDown.
 See Also
-  <LINK TJvCustomComboEdit.Button,Button>
+  <LINK TJvCustomComboEdit.Button, Button>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ClickKey
@@ -410,11 +437,10 @@ Summary
 Description
   Use ClickKey to allow the user to type a key combination instead of clicking the control's button.
 
-  When setting shortcuts at design time, the Object Inspector provides a long list of key
-  combinations to choose from. To create shortcuts at runtime, use the global ShortCut or
-  TextToShortCut function from Menus.pas. For example, the following line creates a shortcut,
-  Ctrl+C and assigns it to a combo edit control named JvComboEdit1.
-
+  When setting shortcuts at design time, the Object Inspector provides a long list of key combinations
+  to choose from. To create shortcuts at runtime, use the global ShortCut or TextToShortCut function
+  from Menus.pas. For example, the following line creates a shortcut, Ctrl+C and assigns it to a combo
+  edit control named JvComboEdit1.
 
   <AUTOLINK OFF>
   <CODE>
@@ -451,12 +477,11 @@ See Also
 Summary
   Specifies whether the user can use the edit box of the combo edit.
 Description
-  Use DirectInput to read or change whether the user can use the edit box of the combo edit. By
-  setting
-  DirectInput to false, the edit box of the combo edit will become read-only, and the user can only
-  use the button of the combo edit.
+  Use DirectInput to read or change whether the user can use the edit box of the combo edit. By setting
+  DirectInput to false, the edit box of the combo edit will become read-only, and the user can only use
+  the button of the combo edit.
 See Also
-  <LINK TJvCustomComboEdit.AlwaysEnable,AlwaysEnable>
+  <LINK TJvCustomComboEdit.AlwaysEnable, AlwaysEnable>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.DisabledColor
@@ -486,10 +511,10 @@ See Also
 Summary
   Simulates a mouse click, as if the user had clicked the button.
 Description
-  Call DoClick to simulate a mouse click on the button. If the combo edit control has an
-  OnButtonClick event handler, DoClick allows an application to simulate a click on the button.
+  Call DoClick to simulate a mouse click on the button. If the combo edit control has an OnButtonClick
+  event handler, DoClick allows an application to simulate a click on the button.
 See Also
-  <LINK TJvCustomComboEdit.OnButtonClick,OnButtonClick>
+  <LINK TJvCustomComboEdit.OnButtonClick, OnButtonClick>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.Flat
@@ -522,9 +547,9 @@ Summary
 Description
   When GroupIndex is set to -1, the edit control behaves as normal.
 
-  Edit controls with the same GroupIndex property value (other than -1), work together as a group.
-  When the user enters one of these edit controls, the text on the other edits belonging to the same
-  group will be cleared.
+  Edit controls with the same GroupIndex property value (other than -1), work together as a group. When
+  the user enters one of these edit controls, the text on the other edits belonging to the same group
+  will be cleared.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ImageIndex
@@ -537,7 +562,7 @@ Description
 Note
   This property is not stored if it is supplied by a TAction object.
 See Also
-  <LINK TJvCustomComboEdit.Images,Images>, <LINK TJvCustomComboEdit.ImageKind,ImageKind>
+  <LINK TJvCustomComboEdit.Images, Images>, <LINK TJvCustomComboEdit.ImageKind, ImageKind>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ImageKind
@@ -546,18 +571,18 @@ Summary
 Description
   Use ImageKind to specify the appearance of the button of the edit button control.
 See Also
-  <LINK TJvCustomComboEdit.ImageIndex,ImageIndex>, <LINK TJvCustomComboEdit.Images,Images>
+  <LINK TJvCustomComboEdit.ImageIndex, ImageIndex>, <LINK TJvCustomComboEdit.Images, Images>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.Images
 Summary
   Lists the images that can appear on the button.
 Description
-  Images contains a list of images that can appear on the button of the combo button control.
-  If Images is unassigned, no images are displayed on the button unless ImageKind is set to a value
-  other than ikCustom.
+  Images contains a list of images that can appear on the button of the combo button control. If Images
+  is unassigned, no images are displayed on the button unless ImageKind is set to a value other than
+  ikCustom.
 See Also
-  <LINK TJvCustomComboEdit.ImageIndex,ImageIndex>, <LINK TJvCustomComboEdit.ImageKind,ImageKind>
+  <LINK TJvCustomComboEdit.ImageIndex, ImageIndex>, <LINK TJvCustomComboEdit.ImageKind, ImageKind>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.NumGlyphs
@@ -595,16 +620,15 @@ Description
   OnKeyDown handler can respond to all keyboard keys, including function keys and keys combined with
   the Shift, Alt, and Ctrl keys, and pressed mouse buttons.
 See Also
-  <LINK TJvCustomComboEdit.OnButtonClick,OnButtonClick>
+  <LINK TJvCustomComboEdit.OnButtonClick, OnButtonClick>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.PopupAlign
 Summary
   Specifies how the pop-up window is aligned relative to its edit box.
 Description
-  Use PopupAlign to specify the position of the pop-up window relative to the edit region of the
-  lookup combo box. The pop-up window can be aligned to the left or right, or centered with the edit
-  box.
+  Use PopupAlign to specify the position of the pop-up window relative to the edit region of the lookup
+  combo box. The pop-up window can be aligned to the left or right, or centered with the edit box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.PopupVisible
@@ -627,7 +651,8 @@ Description
   select text. The selected text can then be manipulated by the application, or copied to the
   Clipboard.
 See Also
-  <LINK TJvCustomComboEdit.AlwaysEnable,AlwaysEnable>
+  <LINK TJvCustomComboEdit.AlwaysEnable, AlwaysEnable>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.SettingCursor
 Summary
@@ -637,6 +662,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomComboEdit.ShowButton
 Summary
@@ -649,9 +675,9 @@ Description
 Summary
   Base class for the TJvDateEdit control.
 Description
-  Use TJvCustomDateEdit as a base class when creating custom combo edits that can be used for
-  entering dates. Do not create instances of TJvCustomDateEdit. Instead, to put a combo edit control
-  for entering dates on a form, use a TJvCustomDateEdit descendant such as TJvDateEdit.
+  Use TJvCustomDateEdit as a base class when creating custom combo edits that can be used for entering
+  dates. Do not create instances of TJvCustomDateEdit. Instead, to put a combo edit control for
+  entering dates on a form, use a TJvCustomDateEdit descendant such as TJvDateEdit.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.BlanksChar
@@ -669,15 +695,13 @@ See Also
 Summary
   Provides a way to customize the Help Hints for the buttons on the pop-up calendar window.
 Description
-  Use the CalendarHints property to supply Help Hints of your choosing for the individual buttons.
-  Each button has a default Help Hint. CalendarHints allow the values of any or all of these default
-  Help Hints to be replaced by customized hints.
+  Use the CalendarHints property to supply Help Hints of your choosing for the individual buttons. Each
+  button has a default Help Hint. CalendarHints allow the values of any or all of these default Help
+  Hints to be replaced by customized hints.
 
   CalendarHints is a string list. Each hint is a string. The first string in the string list becomes
-  the
-  Help Hint for the first button on the navigator (the Previous Year button). The fourth hint becomes
-  the
-  Help Hint for the fourth button (the Next Year button).
+  the Help Hint for the first button on the navigator (the Previous Year button). The fourth hint
+  becomes the Help Hint for the fourth button (the Next Year button).
 
   When specifying CalendarHints at runtime, enter an empty string for any Help Hint that should keep
   the default value. Simply leave the line blank when using the string list property editor of the
@@ -688,9 +712,8 @@ Description
 Summary
   Specifies the style of the pop-up calendar.
 Description
-  Use CalendarStyle to specify the style of the pop-up calendar, that is displayed when the user
-  clicks the button of the combo edit control. The calendar can either be a pop-up window or a modal
-  dialog.
+  Use CalendarStyle to specify the style of the pop-up calendar, that is displayed when the user clicks
+  the button of the combo edit control. The calendar can either be a pop-up window or a modal dialog.
 See Also
   TJvCustomComboEdit.PopupAlign, TJvCustomDateEdit.DialogTitle, TJvCustomDateEdit.PopupColor
 
@@ -699,10 +722,10 @@ See Also
 Summary
   Specifies whether to check the control's text when the user attempts to leave the control.
 Description
-  Use CheckOnExit to specify whether to validate the control's text when the user attemps to leave
-  the combo control. If set to true, the control calls <LINK CheckValidDate> on exit of the control.
+  Use CheckOnExit to specify whether to validate the control's text when the user attemps to leave the
+  combo control. If set to true, the control calls <LINK CheckValidDate> on exit of the control.
 See Also
-  <LINK CheckValidDate>, <LINK TJvCustomDateEdit.Date,Date>
+  <LINK CheckValidDate>, <LINK TJvCustomDateEdit.Date, Date>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.CheckValidDate
@@ -715,7 +738,7 @@ Description
   Call <LINK GetDateMask> to retrieve the date mask. Use CheckOnExit to specify whether to check the
   text on exit of the control.
 See Also
-  <LINK TJvCustomDateEdit.Date,Date>
+  <LINK TJvCustomDateEdit.Date, Date>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.Date
@@ -732,14 +755,14 @@ Summary
   Specifies whether to automatically alter the entered date to ensure it is between MinDate and
   MaxDate.
 Description
-  Set DateAutoBetween to true to let the control alter the entered date to ensure it is between
-  MinDate and MaxDate. Set DateAutoBetween to false to let the control raise an exception when the
-  entered date is not between MinDate and MaxDate.
+  Set DateAutoBetween to true to let the control alter the entered date to ensure it is between MinDate
+  and MaxDate. Set DateAutoBetween to false to let the control raise an exception when the entered date
+  is not between MinDate and MaxDate.
 Note
   If you specify the value 0 for MinDate, then the control won't check whether the entered date is
   equal or after the MinDate. Same for MaxDate.
 See Also
-  <LINK TJvCustomDateEdit.Date,Date>
+  <LINK TJvCustomDateEdit.Date, Date>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.DefaultToday
@@ -747,10 +770,10 @@ Summary
   Specifies whether to use todays day as default.
 Description
   Set DefaultToday to true to use todays date as default. For example, if the Text of the control is
-  empty then <LINK TJvCustomDateEdit.Date,Date> will return todays date. Set DefaultToday to false to
+  empty then <LINK TJvCustomDateEdit.Date, Date> will return todays date. Set DefaultToday to false to
   use the null value (12/30/1899 12:00 am) as default.
 See Also
-  <LINK TJvCustomDateEdit.Date,Date>
+  <LINK TJvCustomDateEdit.Date, Date>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.DialogTitle
@@ -777,8 +800,8 @@ Summary
 Description
   Call GetDateMask to retrieve the mask that represents what text is valid for the control.
 
-  The value of the mask depends on the values of BlanksChar and YearDigits, and on
-  the date format specified in the Windows control panel.
+  The value of the mask depends on the values of BlanksChar and YearDigits, and on the date format
+  specified in the Windows control panel.
 Return value
   Returns the mask that represents what text is valid for the control.
 See Also
@@ -789,22 +812,22 @@ See Also
 Summary
   Indicates the maximum date the user can enter.
 Description
-  Use MaxDate to get or set the maximum date the user can enter in the edit box and to which users
-  can scroll the calendar. The value of the <LINK TJvCustomDateEdit.Date,Date> property cannot exceed
+  Use MaxDate to get or set the maximum date the user can enter in the edit box and to which users can
+  scroll the calendar. The value of the <LINK TJvCustomDateEdit.Date, Date> property cannot exceed
   MaxDate.
 See Also
-  <LINK TJvCustomDateEdit.Date,Date>
+  <LINK TJvCustomDateEdit.Date, Date>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.MinDate
 Summary
   Indicates the minimum date the user can enter.
 Description
-  Use MinDate to get or set the maximum date the user can enter in the edit box and to which users
-  can scroll the calendar. The value of the <LINK TJvCustomDateEdit.Date,Date> property cannot be
-  before MaxDate.
+  Use MinDate to get or set the maximum date the user can enter in the edit box and to which users can
+  scroll the calendar. The value of the <LINK TJvCustomDateEdit.Date, Date> property cannot be before
+  MaxDate.
 See Also
-  <LINK TJvCustomDateEdit.Date,Date>
+  <LINK TJvCustomDateEdit.Date, Date>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomDateEdit.OnAcceptDate
@@ -865,8 +888,8 @@ See Also
 Summary
   Updates the current mask.
 Description
-  Call UpdateMask to update the current date mask. UpdateMask is automatically called if BlanksChar
-  or YearDigits is changed.
+  Call UpdateMask to update the current date mask. UpdateMask is automatically called if BlanksChar or
+  YearDigits is changed.
 See Also
   TJvCustomDateEdit.ValidateEdit
 
@@ -875,8 +898,8 @@ See Also
 Summary
   Validates the text of the combo control against the current date mask.
 Description
-  ValidateEdit validates the combo control's text. If the text does not match the specifications of
-  the date mask, ValidateEdit raises an exception.
+  ValidateEdit validates the combo control's text. If the text does not match the specifications of the
+  date mask, ValidateEdit raises an exception.
 
   Call <LINK GetDateMask> to retrieve the date mask. Use CheckOnExit to specify whether to check the
   text on exit of the control.
@@ -901,8 +924,8 @@ Summary
 Description
   Use Weekends to specify the days marked as weekend days in the pop-up calendar.
 
-  Weekend days are displayed in the color specified by WeekendColor.
-  The default value of Weekends is [Sun] (i.e., only Sunday)
+  Weekend days are displayed in the color specified by WeekendColor. The default value of Weekends is
+  [Sun] (i.e., only Sunday)
 See Also
   TJvCustomDateEdit.StartOfWeek, TJvCustomDateEdit.WeekendColor
 
@@ -911,8 +934,8 @@ See Also
 Summary
   Specifies the number of digits used for the year.
 Description
-  Use YearDigits to specify the number of digits used for the year part of the date displayed in
-  combo edit control.
+  Use YearDigits to specify the number of digits used for the year part of the date displayed in combo
+  edit control.
 See Also
   <LINK GetDateMask>
 
@@ -927,8 +950,8 @@ Summary
 Description
   TJvDateEdit is a button edit control designed specifically for entering dates.
 
-  Pressing the button of the combo edit control displays a calendar, where users can select a date.
-  But the user can also type a specific date in the edit box.
+  Pressing the button of the combo edit control displays a calendar, where users can select a date. But
+  the user can also type a specific date in the edit box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDirectoryEdit
@@ -941,8 +964,8 @@ Summary
 Description
   TJvDirectoryEdit is a button edit control designed specifically for entering directories.
 
-  Pressing the button of the combo edit control displays a directory selection dialog, where users
-  can select a directory. But the user can also type a specific directory name in the edit box.
+  Pressing the button of the combo edit control displays a directory selection dialog, where users can
+  select a directory. But the user can also type a specific directory name in the edit box.
 See Also
   TJvFilenameEdit
 
@@ -951,8 +974,8 @@ See Also
 Summary
   Specifies the kind of the dialog associated with the combo edit control.
 Description
-  Use the DialogKind property to specify the kind of dialog that is displayed when the user presses
-  the button of the edit control.
+  Use the DialogKind property to specify the kind of dialog that is displayed when the user presses the
+  button of the edit control.
 See Also
   TJvDirectoryEdit.DialogOptions, TJvDirectoryEdit.DialogText
 
@@ -962,9 +985,9 @@ Summary
   Determines the appearance and behavior of the directory selection dialog box.
 Description
   The Options parameter is a set of values. If Options is the empty set, the user can only select a
-  directory that already exists. No edit box is provided for the user to enter a new directory name.
-  If Options is not empty, the included values determine how the dialog responds when the user types
-  a nonexistent directory name.
+  directory that already exists. No edit box is provided for the user to enter a new directory name. If
+  Options is not empty, the included values determine how the dialog responds when the user types a
+  nonexistent directory name.
 Note
   Only used if Dialogkind is dkVCL.
 See Also
@@ -989,10 +1012,10 @@ Description
   To make an item selected by default in the dialog’s box, assign a value to InitialDir in the Object
   Inspector or in program code.
 
-  If the user selects a directory in the dialog and clicks OK, then InitialDir directory is set to
-  that directory.
+  If the user selects a directory in the dialog and clicks OK, then InitialDir directory is set to that
+  directory.
 Note
-  Only used if the edit text is empty when the dialog is shown. If the edit text is <i>not</i> empty
+  Only used if the edit text is empty when the dialog is shown. If the edit text is <I>not</I> empty
   then that text determines the to be selected directory.
 
 ----------------------------------------------------------------------------------------------------
@@ -1002,8 +1025,8 @@ Summary
 Description
   Set MultipleDirs to true to allow the user to enter more than one directory in the edit box.
   Directories are seperated by the ';' character. If the user selects a directory from the dialog, or
-  drops directories on the edit box, than those directories are added to the already entered
-  directory names.
+  drops directories on the edit box, than those directories are added to the already entered directory
+  names.
 
   Set MultipleDirs to false to only allow one directory to be entered.
 See Also
@@ -1030,6 +1053,7 @@ Description
   files.
 See Also
   TJvDirectoryEdit.MultipleDirs, TJvFileDirEdit.OnDropFiles
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit.AutoCompleteFileOptions
 Summary
@@ -1039,6 +1063,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvFileDirEdit.LongName
 Summary
@@ -1047,7 +1072,7 @@ Description
   Use LongName to retrieve the name of the file or directory displayed in the edit box of the combo
   edit control, in the long file name format.
 Note
-  The file entered in the combo edit control <i>must</i> exist, otherwise an empty string is returned.
+  The file entered in the combo edit control <I>must</I> exist, otherwise an empty string is returned.
 See Also
   TJvFileDirEdit.ShortName, TJvFilenameEdit.FileName
 
@@ -1061,9 +1086,9 @@ Description
   directory and pressed OK or cancelled it by pressing Cancel).
 
   By altering Action you can alter the result of the file or directory selection (i.e., if the user
-  pressed the Cancel button then Action will be initially false. By setting it to true, the combo
-  edit control will act as if the user selected the OK button). By changing Name you can alter the
-  selected name.
+  pressed the Cancel button then Action will be initially false. By setting it to true, the combo edit
+  control will act as if the user selected the OK button). By changing Name you can alter the selected
+  name.
 See Also
   TJvFileDirEdit.OnBeforeDialog
 
@@ -1097,7 +1122,7 @@ Description
   Use ShortName to retrieve the name of the file or directory displayed in the edit box of the combo
   edit control, in the 8.3 (filename.ext) file name format.
 Note
-  The file entered in the combo edit control <i>must</i> exist, otherwise an empty string is returned.
+  The file entered in the combo edit control <I>must</I> exist, otherwise an empty string is returned.
 See Also
   TJvFileDirEdit.LongName, TJvFilenameEdit.FileName
 
@@ -1122,13 +1147,13 @@ See Also
 Summary
   Specifies whether to enclose entered file names in quotes.
 Description
-  Use AddQuotes to specify whether the file name entered or selected by the user should be enclosed
-  in quotes (using the double quote char: ").
-  Only file names that have spaces in their names are enclosed in quotes.
+  Use AddQuotes to specify whether the file name entered or selected by the user should be enclosed in
+  quotes (using the double quote char: "). Only file names that have spaces in their names are enclosed
+  in quotes.
 
   It may be useful to automatically add quotes to file names with spaces in their names, because the
-  way properties like <LINK TJvFileDirEdit.LongName,LongName>, <LINK
-  TJvFileDirEdit.ShortName,ShortName> and FileName work. See property FileName for more details.
+  way properties like <LINK TJvFileDirEdit.LongName, LongName>, <LINK TJvFileDirEdit.ShortName,
+  ShortName> and FileName work. See property FileName for more details.
 See Also
   TJvFilenameEdit.FileName
 
@@ -1142,8 +1167,8 @@ Description
   file name with an extension that is unregistered, DefaultExt is appended to the unregistered
   extension.
 
-  Extensions longer than three characters are not supported. Do not include the period (.) that
-  divides the file name and its extension.
+  Extensions longer than three characters are not supported. Do not include the period (.) that divides
+  the file name and its extension.
 See Also
   TJvFilenameEdit.Dialog
 
@@ -1164,8 +1189,8 @@ See Also
 Summary
   Returns a list of the file names selected in the dialog.
 Description
-  DialogFiles is a string list that contains each selected file name with its full directory path.
-  (To let users select multiple file names, set the ofAllowMultiSelect flag in DialogOptions.) Use
+  DialogFiles is a string list that contains each selected file name with its full directory path. (To
+  let users select multiple file names, set the ofAllowMultiSelect flag in DialogOptions.) Use
   properties and methods for string lists to traverse this list of files and read individual items.
 
   The example below assigns the list of files in DialogFiles to the Items property of a TListBox
@@ -1184,8 +1209,8 @@ See Also
 Summary
   Specifies the kind of the dialog associated with the combo edit control.
 Description
-  Use the DialogKind property to specify the kind of dialog that is displayed when the user presses
-  the button of the edit control.
+  Use the DialogKind property to specify the kind of dialog that is displayed when the user presses the
+  button of the edit control.
 See Also
   TJvFilenameEdit.Dialog, TJvFilenameEdit.DialogOptions, TJvFilenameEdit.DialogTitle
 
@@ -1194,8 +1219,8 @@ See Also
 Summary
   Determines the appearance and behavior of the file-selection dialog.
 Description
-  Use the DialogOptions property to customize the appearance and functionality of the dialog
-  displayed when the user presses the button of the edit control.
+  Use the DialogOptions property to customize the appearance and functionality of the dialog displayed
+  when the user presses the button of the edit control.
 
   The type of DialogOptions is the same as that of TOpenDialog.Options.
 See Also
@@ -1222,30 +1247,30 @@ Description
 Summary
   Indicates the file name displayed in the edit portion of the combo edit control.
 Description
-  Set FileName to initialize the combo edit to a particular file name. Read FileName to obtain the
-  name of the file that was selected by the user.
+  Set FileName to initialize the combo edit to a particular file name. Read FileName to obtain the name
+  of the file that was selected by the user.
 
   When the user uses the File-selection dialog to select a new file, the selected file becomes the
-  value of the FileName property. The value of the Text property also changes to the new file when
-  the FileName property value changes.
+  value of the FileName property. The value of the Text property also changes to the new file when the
+  FileName property value changes.
 
-  Property FileName does <i>not</i> return entered parameters, thus:
+  Property FileName does <I>not</I> return entered parameters, thus:
 
   <TABLE>
-  Text entered in edit box                FileName returns
-  ------------------------                ----------------
-  C:\\Temp\\MyProgram Param1 Param2       C:\\Temp\\MyProgram
-  C:\\Program Files\\MyExe.exe            C:\\Program
-  "C:\\Program Files\\MyExe.exe"          C:\\Program Files\\MyExe.exe
-  "C:\\Program Files\\MyExe.exe" Param1   C:\\Program Files\\MyExe.exe
-  "C:\\Program Files\\MyExe.exe Param1"   C:\\Program Files\\MyExe.exe Param1
+    Text entered in edit box               FileName returns
+    -------------------------------------  -----------------------------------
+    C:\\Temp\\MyProgram Param1 Param2      C:\\Temp\\MyProgram
+    C:\\Program Files\\MyExe.exe           C:\\Program
+    "C:\\Program Files\\MyExe.exe"         C:\\Program Files\\MyExe.exe
+    "C:\\Program Files\\MyExe.exe" Param1  C:\\Program Files\\MyExe.exe
+    "C:\\Program Files\\MyExe.exe Param1"  C:\\Program Files\\MyExe.exe Param1
   </TABLE>
 
   Use AddQuotes to automatically add quotes to file names with spaces in their name.
 Note
-  The file entered in the combo edit control <i>must</i> exist, otherwise an empty string is returned.
+  The file entered in the combo edit control <I>must</I> exist, otherwise an empty string is returned.
 See Also
-  <LINK TJvFileDirEdit.LongName,LongName>, <LINK TJvFileDirEdit.ShortName,ShortName>
+  <LINK TJvFileDirEdit.LongName, LongName>, <LINK TJvFileDirEdit.ShortName, ShortName>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFilenameEdit.Filter
@@ -1294,19 +1319,20 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageKind.ikCustom
-A custom image.
+  A custom image.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageKind.ikDefault
-The default image. When specifying ikDefault the actual image shown depends on the combo edit control. For example, a TJvDateEdit will display a calendar glyph.
+  The default image. When specifying ikDefault the actual image shown depends on the combo edit
+  control. For example, a TJvDateEdit will display a calendar glyph.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageKind.ikDropDown
-A dropdown button.
+  A dropdown button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvImageKind.ikEllipsis
-Ellipsis.
+  Ellipsis.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvInvalidDateEvent
@@ -1325,11 +1351,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TPopupAlign.epaRight
-The pop-up menu appears with its top right corner under the mouse.
+  The pop-up menu appears with its top right corner under the mouse.
 
 ----------------------------------------------------------------------------------------------------
 @@TPopupAlign.epaLeft
-The pop-up menu appears with its top left corner under the mouse.
+  The pop-up menu appears with its top left corner under the mouse.
 
 ----------------------------------------------------------------------------------------------------
 @@TYearDigits
@@ -1344,13 +1370,14 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TYearDigits.dyDefault
-Uses either 2 or 4 digits for the year, depending on the number of digits used to display the year in the short date format specified in the Windows control panel.
+  Uses either 2 or 4 digits for the year, depending on the number of digits used to display the year in
+  the short date format specified in the Windows control panel.
 
 ----------------------------------------------------------------------------------------------------
 @@TYearDigits.dyFour
-Uses 4 digits for the year (e.g., 1999, 2000, 2001 etc.)
+  Uses 4 digits for the year (e.g., 1999, 2000, 2001 etc.)
 
 ----------------------------------------------------------------------------------------------------
 @@TYearDigits.dyTwo
-Uses 2 digits for the year (e.g. 99, 00, 01 etc.)
+  Uses 2 digits for the year (e.g. 99, 00, 01 etc.)
 

@@ -9,7 +9,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@EPageListError
 Summary
@@ -17,23 +16,21 @@ Summary
 Description
   EPageListError is raised by the components TJvPageListTreeView, TJvPageList and the
   TJvSettingsTreeView when an error occurs. For example, when you try to assign a component to the
-  PageList property of the
-  TJvPageListTreeview that doesn't implement the IPageList interface.
+  PageList property of the TJvPageListTreeview that doesn't implement the IPageList interface.
 
 ----------------------------------------------------------------------------------------------------
 @@IPageList
 Summary
-  An interface that must be implemented by controls that want to be assignable to the PageList
-  property of other controls.
+  An interface that must be implemented by controls that want to be assignable to the PageList property
+  of other controls.
 Description
   IPageList should be implemented by controls that should be assignment compatible with the PageList
-  property of other controls. For example, the TJvPageList control implements this interface making
-  it possible to use it in combination with the TJvSettingsTreeview and TJvPageListTreeView controls.
+  property of other controls. For example, the TJvPageList control implements this interface making it
+  possible to use it in combination with the TJvSettingsTreeview and TJvPageListTreeView controls.
 
   The methods of IPageList is called by the IPageList consumer (any component that have a writeable
-  IPageList property). For example, TJvPageListTreeView calls the methods of the IPageList assigned
-  to its
-  PageList property when the selected node is changed.
+  IPageList property). For example, TJvPageListTreeView calls the methods of the IPageList assigned to
+  its PageList property when the selected node is changed.
 
 ----------------------------------------------------------------------------------------------------
 @@IPageList.CanChange
@@ -53,9 +50,9 @@ Return value
 Summary
   Returns the caption for a page.
 Description
-  getPageCaption is called by the IPageList user to retrieve the display name of a specific page.
-  The getPageCaption is only called at design-time when the IPageList consumer needs to display the
-  pages in the IPageList implementation in its own design editor(s).
+  getPageCaption is called by the IPageList user to retrieve the display name of a specific page. The
+  getPageCaption is only called at design-time when the IPageList consumer needs to display the pages
+  in the IPageList implementation in its own design editor(s).
 Parameters
   AIndex - The 0-based index of the page whose caption is to be returned.
 Return value
@@ -68,8 +65,8 @@ Return value
 Summary
   Returns the number of available pages.
 Description
-  getPageCount is called by the IPageList consumer when it needs to know how many pages are in the
-  page list.
+  getPageCount is called by the IPageList consumer when it needs to know how many pages are in the page
+  list.
 Return value
   Returns the number of pages in the IPageList implementation or 0 if it is empty.
 
@@ -79,12 +76,11 @@ Summary
   Changes the currently active page.
 Description
   SetActivePageIndex is called by the IPageList consumer when it wants to change the currently active
-  page. A call to
-  SetActivePageIndex is mostly preceded by a call to CanChange and SetActivePageIndex is only called
-  if CanChange returns true.
+  page. A call to SetActivePageIndex is mostly preceded by a call to CanChange and SetActivePageIndex
+  is only called if CanChange returns true.
 Parameters
   AIndex - The new 0-based index of the page to make the active page. If AIndex is outside the range
-  of the page list,          the IPageList implementation should do nothing.
+            of the page list, the IPageList implementation should do nothing.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage
@@ -100,10 +96,9 @@ Description
 Summary
   Specifies the vertical size of the page in pixels.
 Description
-  Use the Height property to read or change the height of the page. Pages are ordinarily client
-  aligned to the parent page list control and changing the height has no effect. In page list
-  descendants that doesn't client align the pages, changing the height will probably have effect on
-  the page.
+  Use the Height property to read or change the height of the page. Pages are ordinarily client aligned
+  to the parent page list control and changing the height has no effect. In page list descendants that
+  doesn't client align the pages, changing the height will probably have effect on the page.
 See Also
   TJvCustomPage.Left, TJvCustomPage.Top, TJvCustomPage.Width
 
@@ -113,11 +108,10 @@ Summary
   Specifies the horizontal coordinate of the left edge of the page relative to its parent.
 Description
   Use the Left property to determine where the left side of the page begins or to reposition the left
-  side of the page.
-  Pages are ordinarily client aligned to the parent page list control and changing the Left property
-  has no effect. In page list descendants that doesn't client align the pages, changing the Left
-  property will have effect on the page.
-  The Left and Top properties are relative to the parent page list control.
+  side of the page. Pages are ordinarily client aligned to the parent page list control and changing
+  the Left property has no effect. In page list descendants that doesn't client align the pages,
+  changing the Left property will have effect on the page. The Left and Top properties are relative to
+  the parent page list control.
 See Also
   TJvCustomPage.Height, TJvCustomPage.Top, TJvCustomPage.Width
 
@@ -126,13 +120,9 @@ See Also
 Summary
   Called after the page has been painted.
 Description
-  OnAfterPaint is of type TJvPagePaintEvent and is called after the control has painted itself.
-  Assign an event handler to this event to perform any special drawing after the default painting has
+  OnAfterPaint is of type TJvPagePaintEvent and is called after the control has painted itself. Assign
+  an event handler to this event to perform any special drawing after the default painting has
   completed.
-  ##Parameters
-  ##  Sender - the page that called this event
-  ##  ACanvas - the canvas to draw on
-  ##  ARect - the rect area to draw within
 See Also
   TJvCustomPage.OnBeforePaint
 
@@ -149,7 +139,7 @@ Parameters
   ACanvas     - The canvas to draw on.
   ARect       - The rect area to draw within.
   DefaultDraw - Variable that determines if the default drawing is to be performed after the event
-              returns. Set this to false to suppress normal drawing of the page.
+                 returns. Set this to false to suppress normal drawing of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.OnHide
@@ -177,9 +167,9 @@ Description
 Summary
   The index of this page.
 Description
-  Read PageIndex to determine where the page is placed in the parents Pages array.
-  Set PageIndex to change the place of the page in the Pages array. PageIndex is 0-based, that is,
-  the first page in the Pages array has Index 0 and the last page has index PageCount - 1
+  Read PageIndex to determine where the page is placed in the parents Pages array. Set PageIndex to
+  change the place of the page in the Pages array. PageIndex is 0-based, that is, the first page in the
+  Pages array has Index 0 and the last page has index PageCount - 1
 See Also
   TJvCustomPageList.PageCount, TJvCustomPageList.Pages
 
@@ -191,8 +181,8 @@ Description
   Specifies the PageList that owns this page. Change PageList to move the page to another page list
   control.
 
-  To create and add a page to a page list at run-time, create the page and set its PageList property
-  to the page list control that should contain it.
+  To create and add a page to a page list at run-time, create the page and set its PageList property to
+  the page list control that should contain it.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPage.Top
@@ -200,9 +190,9 @@ Summary
   Specifies the Y coordinate of the upper left corner of a page, relative to its parent or containing
   control in pixels.
 Description
-  Use Top to locate the top of the control or reposition the page to a different Y coordinate.
-  The Top property, like the Left property, is the position of the page relative to its container.
-  Thus, if a control is contained in a TPanel, the Left and Top properties are relative to the panel.
+  Use Top to locate the top of the control or reposition the page to a different Y coordinate. The Top
+  property, like the Left property, is the position of the page relative to its container. Thus, if a
+  control is contained in a TPanel, the Left and Top properties are relative to the panel.
 Note
   If the page is client aligned (the default), changing the Top property will have no effect.
 See Also
@@ -221,33 +211,33 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageClass
+<TITLE TJvCustomPageClass type>
 Summary
   The class type of TJvCustomPage classes.
 Description
-  TJvCustomPageClass is the class type for TJvCustomPage and descendants.
-  This type is returned by the <LINK TJvCustomPageList.GetPageClass, GetPageClass> function.
+  TJvCustomPageClass is the class type for TJvCustomPage and descendants. This type is returned by the
+  <LINK TJvCustomPageList.GetPageClass, GetPageClass> function.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList
 Summary
   Base class for page list components.
 Description
-  Use TJvCustomPageList as a base class when defining a control that should contain a series of
-  pages where only one page is visible at a time. A page list is very similar to a TPageControl but
-  its \pages do not have any tabs.
+  Use TJvCustomPageList as a base class when defining a control that should contain a series of pages
+  where only one page is visible at a time. A page list is very similar to a TPageControl but its
+  \pages do not have any tabs.
 
-  Do not create instances of TJvCustomPageList. To put a page list on a form,
-  use a descendant of TJvCustomPageList, such as TJvPageList.
+  Do not create instances of TJvCustomPageList. To put a page list on a form, use a descendant of
+  TJvCustomPageList, such as TJvPageList.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPageList.ActivePage
 Summary
   Specifies the page currently displayed by the page list control.
 Description
-  \Read ActivePage to determine which page is selected by the user.
-  Set ActivePage to bring a page to the foreground. Only one page can be active at a time.
-  To change the ActivePage to the page that precedes or follows the active page, use the
-  FindNextPage method.
+  \Read ActivePage to determine which page is selected by the user. Set ActivePage to bring a page to
+  the foreground. Only one page can be active at a time. To change the ActivePage to the page that
+  precedes or follows the active page, use the FindNextPage method.
 See Also
   TJvCustomPageList.ActivePageIndex, TJvCustomPageList.FindNextPage
 
@@ -256,14 +246,14 @@ See Also
 Summary
   Specifies the page currently displayed by the page list control.
 Description
-  Use ActivePageIndex to get or set the active page by index rather than by object.
-  The value of ActivePageIndex identifies a page in the Pages property array.
-  Changing the value of ActivePageIndex changes the ActivePage property, and vice versa.
+  Use ActivePageIndex to get or set the active page by index rather than by object. The value of
+  ActivePageIndex identifies a page in the Pages property array. Changing the value of ActivePageIndex
+  changes the ActivePage property, and vice versa.
 
   If there is no active page, reading ActivePageIndex gives a value of –1.
 
-  Setting ActivePageIndex to a value that is out of bounds (less than 0 or greater than PageCount -
-  1) results in the page list control having no active page.
+  Setting ActivePageIndex to a value that is out of bounds (less than 0 or greater than PageCount - 1)
+  results in the page list control having no active page.
 See Also
   TJvCustomPageList.ActivePage
 
@@ -273,25 +263,22 @@ Summary
   Returns the page in the page list control before or after a specified page.
 Description
   Call FindNextPage to locate a page in the page list control by its position relative to the page
-  specified by the CurPage parameter. If the GoForward parameter is true, FindNextPage returns the
-  next page in the page list control after CurPage. If GoForward is false, FindNextPage returns the
-  previous page.
+  specified by the CurPage parameter. If the GoForward parameter is true, FindNextPage returns the next
+  page in the page list control after CurPage. If GoForward is false, FindNextPage returns the previous
+  page.
 
-  If CurPage is not a page in the page list control, FindNextPage returns the first page when
-  GoForward is true or the last page when GoForward is false. If GoForward is true and CurPage is the
-  last page in the page list control,
-  FindNextPage returns the first page. If GoForward is false and CurPage is the first page in the
-  page list control,
-  FindNextPage returns the last page.
+  If CurPage is not a page in the page list control, FindNextPage returns the first page when GoForward
+  is true or the last page when GoForward is false. If GoForward is true and CurPage is the last page
+  in the page list control, FindNextPage returns the first page. If GoForward is false and CurPage is
+  the first page in the page list control, FindNextPage returns the last page.
 
   When IncludeDisabled is true, FindNextPage returns the next page even if it is disabled, if
-  IncludeDisabled is false,
-  FindNextPage returns the next enabled page.
+  IncludeDisabled is false, FindNextPage returns the next enabled page.
 Parameters
   CurPage         - The page where the search starts.
   GoForward       - Set to true to search forward or to false to search backwards in the Pages array.
   IncludeDisabled - Set to true if you want to include disabled pages in the search, set to false to
-  only include enabled pages.
+                     only include enabled pages.
 Return value
   Returns the found page or nil if no matching page was found.
 See Also
@@ -302,8 +289,8 @@ See Also
 Summary
   Returns the class type for the pages in the page list control.
 Description
-  GetPageClass returns the class used to create pages in the page list. Override this method to
-  return your own TJvCustomPage class in descendants of TJvCustomPageList.
+  GetPageClass returns the class used to create pages in the page list. Override this method to return
+  your own TJvCustomPage class in descendants of TJvCustomPageList.
 Return value
   The class type of pages created by the page list.
 
@@ -337,8 +324,7 @@ Summary
   Activates the page after the active page.
 Description
   Call NextPage to activate the next page after the active page. If the last page is active, NextPage
-  moves to the first page.
-  If there are no pages in the list or only one page, NextPage does nothing.
+  moves to the first page. If there are no pages in the list or only one page, NextPage does nothing.
 See Also
   TJvCustomPageList.PrevPage
 
@@ -347,8 +333,8 @@ See Also
 Summary
   Occurs immediately after a new page has been selected.
 Description
-  Write an OnChange event handler to take specific actions when the active page has changed.
-  To access the new active page, access either the ActivePage or ActivePageIndex properties.
+  Write an OnChange event handler to take specific actions when the active page has changed. To access
+  the new active page, access either the ActivePage or ActivePageIndex properties.
 See Also
   TJvCustomPageList.ActivePage, TJvCustomPageList.ActivePageIndex, TJvCustomPageList.OnChanging
 
@@ -358,13 +344,11 @@ Summary
   Occurs immediately before a new page is selected.
 Description
   Write an \OnChanging event handler to take specific action immediately before the selected page
-  changes.
-  Set the AllowChange parameter to false to prevent the change.
+  changes. Set the AllowChange parameter to false to prevent the change.
 
   Use an \OnChanging event handler to prevent the user from leaving a page until certain conditions
-  have been met.
-  An \OnChanging event handler can also be used to save information about the current state of the
-  page before it is changed by a new page selection.
+  have been met. An \OnChanging event handler can also be used to save information about the current
+  state of the page before it is changed by a new page selection.
 
   To access the currently active page, access either the ActivePage or ActivePageIndex properties.
 Parameters
@@ -384,9 +368,9 @@ Description
   To add a new page at design-time, right-click the page list and select "New page". To delete a page
   at design-time, right-click the control and select "Delete".
 
-  To add a new page at run-time, create the page dynamically and set its PageList property to the
-  page list control that should contain it. To remove a page at run-time, set its PageList property
-  to nil and then Free the page.
+  To add a new page at run-time, create the page dynamically and set its PageList property to the page
+  list control that should contain it. To remove a page at run-time, set its PageList property to nil
+  and then Free the page.
 See Also
   TJvCustomPageList.Pages
 
@@ -395,9 +379,9 @@ See Also
 Summary
   Specifies the internal TList that holds the page instances at run-time.
 Description
-  PageList is a reference to the internal TList that at run-time holds the TJvCustomPage instances
-  that are owned by the control. You should normally not use this property. Instead, use the Pages
-  property to directly access the pages in the list.
+  PageList is a reference to the internal TList that at run-time holds the TJvCustomPage instances that
+  are owned by the control. You should normally not use this property. Instead, use the Pages property
+  to directly access the pages in the list.
 See Also
   TJvCustomPageList.Pages
 
@@ -406,20 +390,19 @@ See Also
 Summary
   Lists all the pages in the page list control.
 Description
-  Use Pages to gain direct access to a particular page in the page list control.
-  For example, use Pages to disable individual pages. Specify which page to access using Index, where
-  an Index of 0 specifies the first page, an Index of 1 specifies the second page, and so on.
-  Each page is a TJvCustomPage or descendant object.
+  Use Pages to gain direct access to a particular page in the page list control. For example, use Pages
+  to disable individual pages. Specify which page to access using Index, where an Index of 0 specifies
+  the first page, an Index of 1 specifies the second page, and so on. Each page is a TJvCustomPage or
+  descendant object.
 
   To locate a page in the page list by its position relative to another page, use the FindNextPage
   method.
 Note
-  Pages is a read-only property. To add a page to a page control at design time, right click and
-  select "New Page".
-  To add a page to a page list control at runtime, create the page and set its PageList property to
-  the page list control.
-  To delete a page at design time, right click and selected "Delete". To delete a page at runtime,
-  set its PageList property to nil and then destroy it by calling its Free method.
+  Pages is a read-only property. To add a page to a page control at design time, right click and select
+  "New Page". To add a page to a page list control at runtime, create the page and set its PageList
+  property to the page list control. To delete a page at design time, right click and selected
+  "Delete". To delete a page at runtime, set its PageList property to nil and then destroy it by
+  calling its Free method.
 See Also
   TJvCustomPageList.ActivePage, TJvCustomPageList.FindNextPage, TJvCustomPageList.PageList
 
@@ -440,14 +423,13 @@ Summary
   Specifies if changes to the Enabled property is propagated to the controls parented by the page
   list.
 Description
-  Use PropagateEnable to read or specify if child controls are disabled and enabled automatically
-  when the Enabled property of the page list changes.
+  Use PropagateEnable to read or specify if child controls are disabled and enabled automatically when
+  the Enabled property of the page list changes.
 
   You cannot access child controls when the parent control is disabled but this is not normally
   reflected visually in Delphi controls. By setting PropagateEnabled to true, the Enabled property of
   the child controls is automatically changed in synch with the Parent component, making it visually
-  obvious that the control
-  is disabled or enabled.
+  obvious that the control is disabled or enabled.
 See Also
   Enabled
 
@@ -456,10 +438,9 @@ See Also
 Summary
   Specifies if page captions are visible at design-time.
 Description
-  Use ShowDesignCaption to specify how the caption of contained pages are shown at design-time.
-  Showing the caption can help keep track of which page is currently active without having to select
-  the page list and look at its ActivePage property in the
-  Object Inspector.
+  Use ShowDesignCaption to specify how the caption of contained pages are shown at design-time. Showing
+  the caption can help keep track of which page is currently active without having to select the page
+  list and look at its ActivePage property in the Object Inspector.
 
   Page captions are always hidden at run-time.
 
@@ -492,7 +473,7 @@ See Also
 @@TJvPageList
 <TITLEIMG TJvPageList>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.PagesAndTabs
   FLAG=Component
 Summary
   Write here a summary (1 line)
@@ -505,8 +486,8 @@ Description
 Summary
   The type of event handlers that allow you to paint in a specific area on a canvas.
 Description
-  The TJvPagePaintEvent type is the type for events that allows custom painting on a specified area
-  of a canvas. For example, the OnAfterPaint and OnPaint events of TJvCustomPage are of this type.
+  The TJvPagePaintEvent type is the type for events that allows custom painting on a specified area of
+  a canvas. For example, the OnAfterPaint and OnPaint events of TJvCustomPage are of this type.
 Parameters
   Sender  - The class that triggered the event.
   ACanvas - The canvas to draw on.
@@ -518,50 +499,50 @@ See Also
 @@TJvShowDesignCaption
 <TITLE TJvShowDesignCaption type>
 Summary
-  The type of the <LINK TJvCustomPageList.ShowDesignCaption,ShowDesignCaption> property of the
+  The type of the <LINK TJvCustomPageList.ShowDesignCaption, ShowDesignCaption> property of the
   TJvCustomPageList component.
 Description
   TJvShowDesignCaption can have one of the following values:
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcNone
-Don't show any caption.
+  Don't show any caption.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcTopLeft
-Show the caption in the top left corner of the page.
+  Show the caption in the top left corner of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcTopCenter
-Show the caption in the center of the page.
+  Show the caption in the center of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcTopRight
-Show the caption in the top right of the page.
+  Show the caption in the top right of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcLeftCenter
-Show the caption in the left center of the page.
+  Show the caption in the left center of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcCenter
-Show the caption in the center of the page.
+  Show the caption in the center of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcRightCenter
-Show the caption in the right center of the page.
+  Show the caption in the right center of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcBottomLeft
-Show the caption in the bottom left corner of the page.
+  Show the caption in the bottom left corner of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcBottomCenter
-Show the caption in the bottom center of the page.
+  Show the caption in the bottom center of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcBottomRight
-Show the caption in the bottom right corner of the page.
+  Show the caption in the bottom right corner of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvShowDesignCaption.sdcRunTime

@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Incomplete
+##Status: Completed, Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvLabel.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
-
 
 ----------------------------------------------------------------------------------------------------
 @@DrawShadowText
@@ -58,18 +57,17 @@ Summary
   Controls the horizontal placement of the text within the label.
 Description
   Set Alignment to specify how the text of the label is justified within the ClientRect of the label
-  control.
-  The effect of the Alignment property is more obvious if the WordWrap property is true and the label
-  includes more than one line of text.
+  control. The effect of the Alignment property is more obvious if the WordWrap property is true and
+  the label includes more than one line of text.
 
   These are the possible values:
 
   <TABLE>
-  Value           Meaning
-  -----           -------
-  taLeftJustify   Align text on the left side in the edit control.
-  taCenter        Center the text in the edit control.
-  taRightJustify  Align text on the right side in the edit control.
+    Value           Meaning
+    --------------  -------------------------------------------------
+    taLeftJustify   Align text on the left side in the edit control.
+    taCenter        Center the text in the edit control.
+    taRightJustify  Align text on the right side in the edit control.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -101,9 +99,9 @@ Description
   true, the size of the label readjusts whenever the text changes. The size of the label is also
   readjusts when the Font property changes.
 
-  When WordWrap is true, the width of the label is fixed. If AutoSize is also true, changes to the
-  text cause the label to change in height. When AutoSize is true and WordWrap is false, the font
-  determines the height of the label, and changes to the text cause the label to change in width.
+  When WordWrap is true, the width of the label is fixed. If AutoSize is also true, changes to the text
+  cause the label to change in height. When AutoSize is true and WordWrap is false, the font determines
+  the height of the label, and changes to the text cause the label to change in width.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.FocusControl
@@ -141,9 +139,8 @@ Summary
   Specifies the font used when the mouse passes over the label and HotTrack is true.
 Description
   When the mouse passes over the label and HotTrack is set to true, HotTrackFont is used as the font
-  for the label text.
-  To change to a new font, specify a new TFont object. To modify a font, change the value of the
-  Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
+  for the label text. To change to a new font, specify a new TFont object. To modify a font, change the
+  value of the Charset, Color, Height, Name, Pitch, Size, or Style of the TFont object.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.HotTrackFontOptions
@@ -151,31 +148,29 @@ Summary
   Specifies how changes to the Font affects HotTrackFont.
 Description
   HotTrackFontOptions defines a set of options that controls how changes to the Font property affects
-  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all
-  property changes in Font are copied to HotTrackFont except Color changes.
+  the HotTrackFont object. For example, when HotTrackFontOptions includes hoPreserveColor, all property
+  changes in Font are copied to HotTrackFont except Color changes.
 
   Note that hoFollowFont must be included for any properties to be copied at all.
 
   To implement the HotTrackFontOptions property in a new control, you should perform the following
   steps:
 
-    * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
-      value
-      to be DefaultTrackFontOptions (defined in JvTypes).
-    * Set the default value in the constructor.
-    * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
-      JvJVCLUtils)
-      after calling inherited.
-    * Add a call to UpdateTrackFont in SetHotTrackFontOptions
+  * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
+  * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default
+    value to be DefaultTrackFontOptions (defined in JvTypes).
+  * Set the default value in the constructor.
+  * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in
+    JvJVCLUtils) after calling inherited.
+  * Add a call to UpdateTrackFont in SetHotTrackFontOptions
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ImageIndex
 Summary
   Indicates which image appears on the label.
 Description
-  Set ImageIndex to designate an image that should appear on the label.
-  ImageIndex specifies a zero-offset index into the Images property.
+  Set ImageIndex to designate an image that should appear on the label. ImageIndex specifies a
+  zero-offset index into the Images property.
 See Also
   TJvCustomLabel.Images
 
@@ -184,8 +179,8 @@ See Also
 Summary
   Lists the images that can appear on the label.
 Description
-  Images contains a list of images that can appear on the label.
-  If Images is unassigned, no images are displayed on the button.
+  Images contains a list of images that can appear on the label. If Images is unassigned, no images are
+  displayed on the button.
 See Also
   TJvCustomLabel.ImageIndex
 
@@ -194,8 +189,7 @@ See Also
 Summary
   Specifies the vertical placement of the text within the label.
 Description
-  Set Layout to specify how the text of the label is placed within the ClientRect of the label
-  control.
+  Set Layout to specify how the text of the label is placed within the ClientRect of the label control.
   Layout is the vertical analog to the Alignment property.
 See Also
   TJvCustomLabel.Alignment
@@ -218,6 +212,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginLeft
 Summary
@@ -227,6 +222,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginRight
 Summary
@@ -236,6 +232,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.MarginTop
 Summary
@@ -245,6 +242,8 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.NeedsResize
 Summary
   Write here a summary (1 line)
@@ -310,9 +309,6 @@ Summary
   Determines how an ampersand in the label text is displayed.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.ShowFocus
@@ -320,9 +316,6 @@ Summary
   Indicates whether to draw a focus rectangle around the label when FocusControl has input focus.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.Spacing
@@ -349,21 +342,21 @@ See Also
 Summary
   Specifies whether controls that sit below the label on a form can be seen through the label.
 Description
-  Set Transparent to true to prevent the label from obscuring other controls on the form. For
-  example, if the label is used to add text to a graphic, set Transparent to true so that the label
-  does not stand out as a separate object.
+  Set Transparent to true to prevent the label from obscuring other controls on the form. For example,
+  if the label is used to add text to a graphic, set Transparent to true so that the label does not
+  stand out as a separate object.
 
   Writing text so that the background is transparent is slower than writing text when Transparent is
-  false. If the label is not obscuring a complicated image, performance can be improved by setting
-  the background color of the label to match the object beneath it and setting Transparent to false.
+  false. If the label is not obscuring a complicated image, performance can be improved by setting the
+  background color of the label to match the object beneath it and setting Transparent to false.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLabel.URL
 Summary
   Specifies a URL associated with the label.
 Description
-  Use URL to associate a URL, an executable file, a document file, or a folder with the label.
-  If AutoOpenURL is set to true and the user clicks on the label, then the object specified by URL is
+  Use URL to associate a URL, an executable file, a document file, or a folder with the label. If
+  AutoOpenURL is set to true and the user clicks on the label, then the object specified by URL is
   opened.
 
   You might want to adjust property HotTrackFont to visually simulate a clickable link.
@@ -386,9 +379,8 @@ Note
 Summary
   Specifies whether the label text wraps when it is too long for the width of the label.
 Description
-  Set WordWrap to true to allow the label to display multiple line of text. When WordWrap is true,
-  text that is too wide for the label control wraps at the right margin and continues in additional
-  lines.
+  Set WordWrap to true to allow the label to display multiple line of text. When WordWrap is true, text
+  that is too wide for the label control wraps at the right margin and continues in additional lines.
 
   Set WordWrap to false to limit the label to a single line. When WordWrap is false, text that is too
   wide for the label appears truncated.
@@ -406,8 +398,8 @@ Description
 
   * Set AutoOpenURL to true.
   * Set URL to a specific \URL or object, that will be opened when the user clicks the label.
-  * Set HotTrack to true, and change HotTrackFont so the user gets feedback when the mouse   passes
-    over the label.
+  * Set HotTrack to true, and change HotTrackFont so the user gets feedback when the mouse passes over
+    the label.
 
   Use property Angle to display the label text at a specific angle.
 
@@ -435,19 +427,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.teNone
-Description for teNone
+  Description for teNone
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.teWordEllipsis
-Description for teWordEllipsis
+  Description for teWordEllipsis
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.tePathEllipsis
-Description for tePathEllipsis
+  Description for tePathEllipsis
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextEllipsis.teEndEllipsis
-Description for teEndEllipsis
+  Description for teEndEllipsis
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition
@@ -462,17 +454,17 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spLeftTop
-Description for spLeftTop
+  Description for spLeftTop
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spLeftBottom
-Description for spLeftBottom
+  Description for spLeftBottom
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spRightBottom
-Description for spRightBottom
+  Description for spRightBottom
 
 ----------------------------------------------------------------------------------------------------
 @@TShadowPosition.spRightTop
-Description for spRightTop
+  Description for spRightTop
 

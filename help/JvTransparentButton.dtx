@@ -9,7 +9,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle
 <TITLE TJvFrameStyle type>
@@ -21,32 +20,32 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle.fsRegular
-Button frame is drawn as a raised border (white/dark gray).
+  Button frame is drawn as a raised border (white/dark gray).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle.fsIndent
-Button frame is drawn as a sunken border (dark gray/white).
+  Button frame is drawn as a sunken border (dark gray/white).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle.fsExplorer
-Button frame is drawn as a raised border but only when the mouse cursor is
-inside the button (white/dark gray).
+  Button frame is drawn as a raised border but only when the mouse cursor is inside the button
+  (white/dark gray).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle.fsNone
-Button has no frame.
+  Button has no frame.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle.fsLight
-Button frame uses a light color scheme (white/gray).
+  Button frame uses a light color scheme (white/gray).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle.fsDark
-Button frame uses a dark color scheme (dark gray/black).
+  Button frame uses a dark color scheme (dark gray/black).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFrameStyle.fsMono
-Button frame uses a monochrome color scheme (white/black)
+  Button frame uses a monochrome color scheme (white/black)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign
@@ -59,39 +58,39 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaTopLeft
-Text is aligned to the top/left of the button.
+  Text is aligned to the top/left of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaTop
-Text is aligned to the top/center of the button.
+  Text is aligned to the top/center of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaTopRight
-Text is aligned to the top/right of the button.
+  Text is aligned to the top/right of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaRight
-Text is aligned to the right/center of the button.
+  Text is aligned to the right/center of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaBottomRight
-Text is aligned to the bottom/right of the button.
+  Text is aligned to the bottom/right of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaBottom
-Text is aligned to the bottom/center of the button.
+  Text is aligned to the bottom/center of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaBottomLeft
-Text is aligned to the bottom/left of the button.
+  Text is aligned to the bottom/left of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaLeft
-Text is aligned to the left/center of the button.
+  Text is aligned to the left/center of the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAlign.ttaCenter
-Text is centered on the button.
+  Text is centered on the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton
@@ -104,12 +103,12 @@ Summary
 Description
   Use TJvTransparentButton when you need a button that can:
 
-    * display an image as well as text.
-    * align the text and image in several positions.
-    * use different frame colors.
-    * be transparent or opaque.
-    * display multi-line strings.
-    * automatically create disabled and "hot" images.
+  * display an image as well as text.
+  * align the text and image in several positions.
+  * use different frame colors.
+  * be transparent or opaque.
+  * display multi-line strings.
+  * automatically create disabled and "hot" images.
 
   TJvTransparentButton is very similar to TJvTransparentButton2 but uses a bitmap instead of image
   lists for its image. Using image lists is more resource friendly but can be more laborious to set
@@ -156,37 +155,43 @@ Description
   You can provide up to four images within a single bitmap. All images must be the same size and next
   to each other in a row. Bit buttons display one of these images depending on their state.
 
-  Image position        Button state    Description
+  <TABLE>
+    Image position  Button state  Description
+    --------------  ------------  ------------------------------------------------------------
+    First           Up            This image appears when the button is up (unselected). This
+                                    image is also used when the button has focus (for
+                                    example, if the user tabs to it); in this case, a focus
+                                    rectangle is drawn around the button. If no other images
+                                    exist in the bitmap, bit buttons also use this image for
+                                    all other states.
+    Second          Disabled      This image usually appears dimmed to indicate that the
+                                    button can't be selected.
+    Third           Clicked       This image appears when the button is clicked. The Up image
+                                    reappears when the user releases the mouse button.
+    Fourth          Down          This image appears when the button stays down (indicating
+                                    that it remains selected).
+  </TABLE>
 
-  First Up      This image appears when the button is up (unselected). This image is also used when the
-  button has focus (for example, if the user tabs to it); in this case, a focus rectangle is drawn
-  around the button. If no other images exist in the bitmap, bit buttons also use this image for all
-  other states.
-  Second        Disabled        This image usually appears dimmed to indicate that the button can't be selected.
-  Third Clicked This image appears when the button is clicked. The Up image reappears when the user
-  releases the mouse button.
-  Fourth        Down    This image appears when the button stays down (indicating that it remains selected).
+  If only one image is present, bit buttons attempt to represent the other states by altering the image
+  slightly for the different states, although the Down state is always the same as the Up state. If you
+  aren't satisfied with the results, you can provide additional images in the bitmap.
 
-  If only one image is present, bit buttons attempt to represent the other states by altering the
-  image slightly for the different states, although the Down state is always the same as the Up
-  state. If you aren't satisfied with the results, you can provide additional images in the bitmap.
-
-  If you have multiple images in a bitmap, you must specify the number of images that are in the
-  bitmap with the NumGlyphs property.
+  If you have multiple images in a bitmap, you must specify the number of images that are in the bitmap
+  with the NumGlyphs property.
 Note
-  The lower left pixel of the bitmap is reserved for the "transparent" color. Any pixel in
-  the bitmap which matches that lower left pixel will be transparent.
+  The lower left pixel of the bitmap is reserved for the "transparent" color. Any pixel in the bitmap
+  which matches that lower left pixel will be transparent.
 See Also
   TJvTransparentButton.NumGlyphs
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.NumGlyphs
 Summary
-  Indicates the number of images that are in the graphic specified in the
-  Glyph property for use on the button.
+  Indicates the number of images that are in the graphic specified in the Glyph property for use on the
+  button.
 Description
-  If you have multiple images in a bitmap, you must specify the number of images that are in the
-  bitmap with the NumGlyphs property. Valid NumGlyphs values are 1 to 4. The default value is 1.
+  If you have multiple images in a bitmap, you must specify the number of images that are in the bitmap
+  with the NumGlyphs property. Valid NumGlyphs values are 1 to 4. The default value is 1.
 See Also
   TJvTransparentButton.Glyph
 
@@ -195,9 +200,9 @@ See Also
 Summary
   Determines how far the image and text is shifted when the button is pressed.
 Description
-  Use Offset to specify how far the image and text is moved on the button when the button is pressed.
-  A value of 1 (the default) will shift the image and text one pixel to the right and 1 pixel down
-  when the button is pressed. To achieve other effects, alter this value.
+  Use Offset to specify how far the image and text is moved on the button when the button is pressed. A
+  value of 1 (the default) will shift the image and text one pixel to the right and 1 pixel down when
+  the button is pressed. To achieve other effects, alter this value.
 
   This property only has meaning if ShowPressed is set to true.
 See Also
@@ -206,13 +211,13 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton.ShowPressed
 Summary
-  Specifies if the button is drawn in its depressed state when the left mouse button is clicked on
-  the button.
+  Specifies if the button is drawn in its depressed state when the left mouse button is clicked on the
+  button.
 Description
   Use ShowPressed to set whether the button is drawn as a depressed button when the left mouse is
-  clicked and held on the button. The normal behavior for a button is to show the user that it has
-  been pressed by moving the image and text down and right 1 pixel but you can achieve other effects
-  by setting this value to false.
+  clicked and held on the button. The normal behavior for a button is to show the user that it has been
+  pressed by moving the image and text down and right 1 pixel but you can achieve other effects by
+  setting this value to false.
 See Also
   TJvTransparentButton.Offset
 
@@ -249,10 +254,9 @@ Description
   example, if the control is used on top of a background image, set Transparent to true so that the
   control does not obscure the image more than necessary.
 
-  Writing text so that the background is transparent is slower than writing text when
-  Transparent is false. If the control is not obscuring a complicated image, performance can be
-  improved by setting the background color of the control to match the object beneath it and setting
-  Transparent to false.
+  Writing text so that the background is transparent is slower than writing text when Transparent is
+  false. If the control is not obscuring a complicated image, performance can be improved by setting
+  the background color of the control to match the object beneath it and setting Transparent to false.
 See Also
   Color, Parent
 
@@ -261,9 +265,8 @@ See Also
 Summary
   Specifies whether the text wraps when it is too long for the width of the control.
 Description
-  Set WordWrap to true to allow the control to display multiple line of text. When
-  WordWrap is true, text that is too wide for the control wraps at the right margin and continues in
-  additional lines.
+  Set WordWrap to true to allow the control to display multiple line of text. When WordWrap is true,
+  text that is too wide for the control wraps at the right margin and continues in additional lines.
 
   Set WordWrap to false to limit the text to a single line. When WordWrap is false, text that is too
   wide for the control appears truncated.
@@ -281,31 +284,31 @@ Summary
 Description
   Use TJvTransparentButton2 when you need a button that can:
 
-    * display an image from an imagelist as well as text.
-    * display different images depending on its state
-    * align the text and image in several positions.
-    * use different frame colors.
-    * be transparent or opaque.
-    * display multi-line strings.
-    * automatically create disabled and "hot" images.
+  * display an image from an imagelist as well as text.
+  * display different images depending on its state
+  * align the text and image in several positions.
+  * use different frame colors.
+  * be transparent or opaque.
+  * display multi-line strings.
+  * automatically create disabled and "hot" images.
 
-  TJvTransparentButton2 is very similar to TJvTransparentButton but uses imagelists instead of a
-  bitmap image for its image. Using imagelists is more resource friendly but can be more difficult to
-  set up.
+  TJvTransparentButton2 is very similar to TJvTransparentButton but uses imagelists instead of a bitmap
+  image for its image. Using imagelists is more resource friendly but can be more difficult to set up.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.ActiveImage
 Summary
   Specifies the imagelist to get the active image from.
 Description
-  Use ActiveImage to specify the imagelist to extract the active image from. This is the only
-  imagelist you need to set to be able to display an image in the button. If none of the other
-  imagelists are set, the other three images are created automatically.
+  Use ActiveImage to specify the imagelist to extract the active image from. This is the only imagelist
+  you need to set to be able to display an image in the button. If none of the other imagelists are
+  set, the other three images are created automatically.
 Note
-  The button has four different imagelist properties you can assign to but they can all point to the same imagelist. The button also has four different image index properties to mat
-  h the imagelists but these can also be set to the same value. Internally, the button creates a
-  read-only imagelist (InternalList) that contains the selected images or the auto created images for
-  the three other states (down, disabled, gray).
+  The button has four different imagelist properties you can assign to but they can all point to the
+  same imagelist. The button also has four different image index properties to match the imagelists but
+  these can also be set to the same value. Internally, the button creates a read-only imagelist
+  (InternalList) that contains the selected images or the auto created images for the three other
+  states (down, disabled, gray).
 See Also
   TJvTransparentButton2.ActiveIndex, TJvTransparentButton2.DisabledImage,
   TJvTransparentButton2.DisabledIndex, TJvTransparentButton2.DownImage,
@@ -388,8 +391,8 @@ See Also
 Summary
   Specifies the index of the down image.
 Description
-  Use DownIndex to set the index of the image to use in DownImage. If DownIndex is -1,
-  ActiveImage is used for the down state as well.
+  Use DownIndex to set the index of the image to use in DownImage. If DownIndex is -1, ActiveImage is
+  used for the down state as well.
 See Also
   TJvTransparentButton2.ActiveImage, TJvTransparentButton2.ActiveIndex,
   TJvTransparentButton2.DisabledImage, TJvTransparentButton2.DisabledIndex,
@@ -408,8 +411,8 @@ Description
 Summary
   Specifies the imagelist to get the grayed image from.
 Description
-  Use GrayImage to specify the imagelist to extract the gray image from. If this property is not set,
-  a gray image is created automatically using ActiveImage as a template.
+  Use GrayImage to specify the imagelist to extract the gray image from. If this property is not set, a
+  gray image is created automatically using ActiveImage as a template.
 See Also
   TJvTransparentButton2.ActiveImage, TJvTransparentButton2.ActiveIndex,
   TJvTransparentButton2.DisabledImage, TJvTransparentButton2.DisabledIndex,
@@ -433,24 +436,24 @@ Summary
   References the internal imagelist used by the button.
 Description
   When an imagelist is assigned to either of the four imagelist properties, the button creates an
-  internal imagelist that contains the images that are actually used. Depending on the settings of
-  the imagelist properties, some of the images in InternalList are created automatically.
+  internal imagelist that contains the images that are actually used. Depending on the settings of the
+  imagelist properties, some of the images in InternalList are created automatically.
 See Also
-  TJvTransparentButton2.ActiveImage, TJvTransparentButton2.ActiveIndex,
-  TJvTransparentButton2.AutoGray, TJvTransparentButton2.DisabledImage,
-  TJvTransparentButton2.DisabledIndex, TJvTransparentButton2.DownImage,
-  TJvTransparentButton2.DownIndex, TJvTransparentButton2.GrayImage, TJvTransparentButton2.GrayIndex
+  TJvTransparentButton2.ActiveImage, TJvTransparentButton2.ActiveIndex, TJvTransparentButton2.AutoGray,
+  TJvTransparentButton2.DisabledImage, TJvTransparentButton2.DisabledIndex,
+  TJvTransparentButton2.DownImage, TJvTransparentButton2.DownIndex, TJvTransparentButton2.GrayImage,
+  TJvTransparentButton2.GrayIndex
 
 ----------------------------------------------------------------------------------------------------
 @@TJvTransparentButton2.ShowPressed
 Summary
-  Specifies if the button is drawn in its depressed state when the left mouse button is clicked on
-  the button.
+  Specifies if the button is drawn in its depressed state when the left mouse button is clicked on the
+  button.
 Description
   Use ShowPressed to set whether the button is drawn as a depressed button when the left mouse is
-  clicked and held on the button. The normal behavior for a button is to show the user that it has
-  been pressed by moving the image and text down and right 1 pixel but you can achieve other effects
-  by setting this value to false.
+  clicked and held on the button. The normal behavior for a button is to show the user that it has been
+  pressed by moving the image and text down and right 1 pixel but you can achieve other effects by
+  setting this value to false.
 See Also
   Offset
 
@@ -459,8 +462,8 @@ See Also
 Summary
   Determines where the image and text appear on the button.
 Description
-  Spacing determines the number of pixels between the image (specified using the imagelist
-  properties) and the text (specified in the Caption property). The default value is 4 pixels.
+  Spacing determines the number of pixels between the image (specified using the imagelist properties)
+  and the text (specified in the Caption property). The default value is 4 pixels.
 
   If Spacing is a positive number, its value is the number of pixels between the image and text. If
   Spacing is 0, no pixels will be between the image and text. If Spacing is -1, the text appears
@@ -487,10 +490,9 @@ Description
   example, if the control is used on top of a background image, set Transparent to true so that the
   control does not obscure the image more than necessary.
 
-  Writing text so that the background is transparent is slower than writing text when
-  Transparent is false. If the control is not obscuring a complicated image, performance can be
-  improved by setting the background color of the control to match the object beneath it and setting
-  Transparent to false.
+  Writing text so that the background is transparent is slower than writing text when Transparent is
+  false. If the control is not obscuring a complicated image, performance can be improved by setting
+  the background color of the control to match the object beneath it and setting Transparent to false.
 See Also
   Color, Parent
 
@@ -499,9 +501,8 @@ See Also
 Summary
   Specifies whether the text wraps when it is too long for the width of the control.
 Description
-  Set WordWrap to true to allow the control to display multiple line of text. When
-  WordWrap is true, text that is too wide for the control wraps at the right margin and continues in
-  additional lines.
+  Set WordWrap to true to allow the control to display multiple line of text. When WordWrap is true,
+  text that is too wide for the control wraps at the right margin and continues in additional lines.
 
   Set WordWrap to false to limit the text to a single line. When WordWrap is false, text that is too
   wide for the control appears truncated.

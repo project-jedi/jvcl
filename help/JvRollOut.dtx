@@ -1,5 +1,5 @@
 ##Package: Ctrls
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ----------------------------------------------------------------------------------------------------
 @@JvRollOut.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRollOut
@@ -24,10 +23,9 @@ Summary
   Specifies the size of the button at the top (left) of the rollout.
 Description
   Use ButtonHeight to specify the size of the button at the top (left) of the rollout. The size is
-  applied to the button depending on the value of the Placement property. If the button is displayed
-  at the top,
-  ButtonHeight adjusts the height, if the button is displayed on the left, ButtonHeight adjusts the
-  width of the button instead.
+  applied to the button depending on the value of the Placement property. If the button is displayed at
+  the top, ButtonHeight adjusts the height, if the button is displayed on the left, ButtonHeight
+  adjusts the width of the button instead.
 See Also
   TJvCustomRollOut.Placement
 
@@ -36,8 +34,8 @@ See Also
 Summary
   Specifies the top/left margin of the control.
 Description
-  Use ChildOffset to specify the top/left edge of the control. Child controls placed outside this
-  edge, will be realigned to be placed inside the edge.
+  Use ChildOffset to specify the top/left edge of the control. Child controls placed outside this edge,
+  will be realigned to be placed inside the edge.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRollOut.Collapse
@@ -45,11 +43,9 @@ Summary
   Collapses the rollout.
 Description
   Call Collapse to collapse the rollout to its collapsed height or width (depending on the value of
-  Placement).
-  The height or width of the collapsed rollout is controlled by the height or width set when it is
-  collapsed,
-  that is, if you change the height or width when the rollout is collapsed, the new values are used
-  as the height and width for the collapsed state.
+  Placement). The height or width of the collapsed rollout is controlled by the height or width set
+  when it is collapsed, that is, if you change the height or width when the rollout is collapsed, the
+  new values are used as the height and width for the collapsed state.
 
   When you all Collapse, Collapsed is set to true.
 See Also
@@ -60,8 +56,8 @@ See Also
 Summary
   Specifies whether the rollout is collapsed or not.
 Description
-  Use Collapsed to specify if the rollout is collapsed or not. Setting Collapsed to true is the same
-  as calling Collapse.
+  Use Collapsed to specify if the rollout is collapsed or not. Setting Collapsed to true is the same as
+  calling Collapse.
 See Also
   TJvCustomRollOut.Collapse, TJvCustomRollOut.Expand
 
@@ -70,8 +66,8 @@ See Also
 Summary
   Specifies the colors for various parts of the control.
 Description
-  Use Colors to customize the way the rollout looks. Colors controls such aspects of the rollout as
-  the colors of the edges, the color of the button and the background color of the control.
+  Use Colors to customize the way the rollout looks. Colors controls such aspects of the rollout as the
+  colors of the edges, the color of the button and the background color of the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRollOut.Expand
@@ -90,8 +86,7 @@ Summary
 Description
   GroupIndex holds the index of the group this rollout is part of. If several rollouts have a
   GroupIndex > 0, they will behave as a radio group: when one rollout is expanded, the others are
-  collapsed. To disable
-  the radio group behavior, set GroupIndex to 0.
+  collapsed. To disable the radio group behavior, set GroupIndex to 0.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRollOut.ImageOptions
@@ -138,9 +133,9 @@ Summary
   Specifies where the button is located and how the rollout is expanded and collapsed.
 Description
   Use Placement to control how the rollout expands and collapses as you call Collapse and Expand. To
-  place the button on the left edge and make the rollout \expand and \collapse its width, set
-  Placement to plLeft. To place the button at the top and make the rollout \expand and \collapse its
-  height, set Placement to plTop.
+  place the button on the left edge and make the rollout \expand and \collapse its width, set Placement
+  to plLeft. To place the button at the top and make the rollout \expand and \collapse its height, set
+  Placement to plTop.
 See Also
   TJvCustomRollOut.Collapse, TJvCustomRollOut.Collapsed, TJvCustomRollOut.Expand
 
@@ -174,11 +169,14 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPlacement.plTop
-Places the rollout button at the top (covering the entire width of the rollout) and makes the rollout alter its height when collapsed and expanded.
+  Places the rollout button at the top (covering the entire width of the rollout) and makes the rollout
+  alter its height when collapsed and expanded.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPlacement.plLeft
-Places the rollout button at the left (covering the entire height of the rollout) and makes the rollout alter its width when collapsed and expanded. This also rotates the text if the font used is a true-type font (non true-type fonts cannot be rotated).
+  Places the rollout button at the left (covering the entire height of the rollout) and makes the
+  rollout alter its width when collapsed and expanded. This also rotates the text if the font used is a
+  true-type font (non true-type fonts cannot be rotated).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRollOut
@@ -196,14 +194,12 @@ Description
 
   To use a TJvRollOut, drop it on a form and:
 
-    * Set Placement to specify in what direction the
-      control expands and collapses and where the button is
-      located.
-    * Set Collapsed to true and adjust the rollout's width and height to define its collapsed size.
-    * Set Collapsed to false and adjust the rollout's width and height to define its expanded size.
-    * When Collapsed is false, drop other visual controls on the surface of the rollout. These
-      controls
-      will only be visible while the rollout is expanded.
+  * Set Placement to specify in what direction the control expands and collapses and where the button
+    is located.
+  * Set Collapsed to true and adjust the rollout's width and height to define its collapsed size.
+  * Set Collapsed to false and adjust the rollout's width and height to define its expanded size.
+  * When Collapsed is false, drop other visual controls on the surface of the rollout. These controls
+    will only be visible while the rollout is expanded.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvRollOut.Caption
@@ -349,8 +345,7 @@ Summary
   Specifies the button image to use when the rollout is collapsed.
 Description
   Use IndexCollapsed to set the index of the image in Images that is used when the rollout is
-  collapsed.
-  The image is displayed next to the button's text. If no image is to be displayed, set
+  collapsed. The image is displayed next to the button's text. If no image is to be displayed, set
   IndexCollapsed to -1.
 See Also
   TJvRollOutImageOptions.Images, TJvRollOutImageOptions.IndexExpanded

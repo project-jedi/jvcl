@@ -8,7 +8,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory
 <TITLEIMG TJvSelectDirectory>
@@ -30,8 +29,8 @@ Description
 Summary
   Specifies whether to show the Windows directory browser or the classic Select \Directory dialog box.
 Description
-  Set ClassicDialog to True to show the classic Select \Directory dialog box when you call Execute.
-  Set ClassicDialog to False to show the Windows directory browser when you call Execute.
+  Set ClassicDialog to True to show the classic Select \Directory dialog box when you call Execute. Set
+  ClassicDialog to False to show the Windows directory browser when you call Execute.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.Directory
@@ -54,20 +53,20 @@ Summary
 Description
   Execute opens the file-selection dialog.
 
-  Property ClassicDialog determines whether to show the Windows directory browser or the classic
-  Select \Directory dialog box.
-  Returns
-  Returns True when the user selects a file and clicks Open. If the user clicks Cancel, Execute
-  returns False.
+  Property ClassicDialog determines whether to show the Windows directory browser or the classic Select
+  \Directory dialog box.
+Return value
+  Returns True when the user selects a file and clicks Open. If the user clicks Cancel, Execute returns
+  False.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSelectDirectory.HelpContext
 Summary
   Specifies the context number for online Help.
 Description
-  The HelpContext property is an integer value that determines which Help screen appears when the
-  user requests context-sensitive online Help. If HelpContext is set to the default value of 0, the
-  dialog inherits the Help context of its parent.
+  The HelpContext property is an integer value that determines which Help screen appears when the user
+  requests context-sensitive online Help. If HelpContext is set to the default value of 0, the dialog
+  inherits the Help context of its parent.
 Note
   ClassicDialog must be set to True, otherwise the component ignores the value of this property.
 See Also
@@ -107,8 +106,8 @@ See Also
 Summary
   Specifies the text in the dialog’s title bar.
 Description
-  Use Title to specify the text that appears in the directory selection dialog’s title bar. If no
-  value is assigned to Title, the dialog has the title "Open".
+  Use Title to specify the text that appears in the directory selection dialog’s title bar. If no value
+  is assigned to Title, the dialog has the title "Open".
 Note
   ClassicDialog must be set to False, otherwise the component ignores the value of this property.
 See Also

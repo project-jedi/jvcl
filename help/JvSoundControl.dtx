@@ -1,5 +1,5 @@
 ##Package: System
-##Status: Incomplete
+##Status: Completed, Incomplete
 ----------------------------------------------------------------------------------------------------
 @@JvSoundControl.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
-
 
 ----------------------------------------------------------------------------------------------------
 @@TBalance
@@ -31,13 +30,13 @@ Description
   Use TJvSoundControl to change the balance or volume of output devices. TJvSoundControl has three
   properties that describe output devices:
 
-  * Cd, the first auxiliary output device available on your system, usually the CD audio   output
-    from a CD-ROM drive.
+  * Cd, the first auxiliary output device available on your system, usually the CD audio output from a
+    CD-ROM drive.
   * Midi, the first MIDI output device available on your system.
   * Wave, the first waveform device available on your system.
 
-  These properties all have a Balance and Volume property, which can be used to change the balance
-  and volume of these devices.
+  These properties all have a Balance and Volume property, which can be used to change the balance and
+  volume of these devices.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundControl.Cd
@@ -59,8 +58,8 @@ See Also
 Summary
   Creates and initializes an instance of TJvSoundControl.
 Description
-  Call \Create to create an instance of TJvSoundControl at runtime. A TJvSoundControl component
-  placed on a form at design time is created automatically.
+  Call \Create to create an instance of TJvSoundControl at runtime. A TJvSoundControl component placed
+  on a form at design time is created automatically.
 
   Pass a single Component as a parameter to provide the control with an Owner that is responsible for
   freeing it.
@@ -85,15 +84,15 @@ Summary
   \Read LastError to determine if the last operation was successfull.
 Description
   \Read LastError after getting or setting a value to property Balance or Volume, to determine if the
-  operation was successfull. LastError returns MMSYSERR_NOERROR if the last operation was successful
-  or an error otherwise. Possible error values include the following:
+  operation was successfull. LastError returns MMSYSERR_NOERROR if the last operation was successful or
+  an error otherwise. Possible error values include the following:
   <TABLE>
-    Value                   Description
-    -----                   -----------
-    MMSYSERR_INVALHANDLE    Specified device handle is invalid.
-    MMSYSERR_NODRIVER       No device driver is present.
-    MMSYSERR_NOMEM          Unable to allocate or lock memory.
-    MMSYSERR_NOTSUPPORTED   Function isn't supported.
+    Value                  Description
+    ---------------------  -----------------------------------
+    MMSYSERR_INVALHANDLE   Specified device handle is invalid.
+    MMSYSERR_NODRIVER      No device driver is present.
+    MMSYSERR_NOMEM         Unable to allocate or lock memory.
+    MMSYSERR_NOTSUPPORTED  Function isn't supported.
   </TABLE>
 See Also
   TJvSoundValue.Balance, TJvSoundValue.Volume
@@ -133,8 +132,8 @@ Description
 Summary
   Specifies the balance between the left and right volume of a device.
 Description
-  Use Balance to find or set the balance between the left and right volume. The value for this
-  property must be a number from 0 (only right) to 100 (only left).
+  Use Balance to find or set the balance between the left and right volume. The value for this property
+  must be a number from 0 (only right) to 100 (only left).
 
   Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successfull.
 See Also
@@ -148,8 +147,6 @@ Description
   Applications should not call \Create directly. A TJvSoundValue is created automatically by a
   TJvSoundControl for the first auxiliary output device, the first MIDI output device and the first
   waveform device available on your system.
-  Params
-  AOwner - The owner for the instance of TJvSoundValue.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoundValue.GetValue
@@ -195,11 +192,11 @@ Parameters
 Summary
   Specifies the volume of a device.
 Description
-  Use Volume to find or set the volume of a device. The value for this property must be a number from
-  0 (silence) to 255 (maximum volume).
+  Use Volume to find or set the volume of a device. The value for this property must be a number from 0
+  (silence) to 255 (maximum volume).
 
-  Volume settings are interpreted logarithmically. This means the perceived volume increase is the
-  same when increasing the volume level from 50 to 60 as it is from 40 to 50.
+  Volume settings are interpreted logarithmically. This means the perceived volume increase is the same
+  when increasing the volume level from 50 to 60 as it is from 40 to 50.
 
   Use <LINK TJvSoundControl.LastError, LastError> to determine if the operation was successfull.
 See Also
@@ -218,13 +215,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVolumeRec.LongVolume
-Description for LongVolume
+  Description for LongVolume
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVolumeRec.LeftVolume
-Description for LeftVolume
+  Description for LeftVolume
 
 ----------------------------------------------------------------------------------------------------
 @@TJvVolumeRec.RightVolume
-Description for RightVolume
+  Description for RightVolume
 

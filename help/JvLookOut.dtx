@@ -1,5 +1,5 @@
 ##Package: Custom
-##Status: Incomplete (peter3)
+##Status: Completed, Incomplete (peter3)
 ##Skip: TJvDwnArrowBtn
 ##Skip: TJvUpArrowBtn
 ----------------------------------------------------------------------------------------------------
@@ -9,7 +9,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Peter Thörnqvist
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonBorder
@@ -21,15 +20,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonBorder.bbDark
-A dark frame using clBtnFace and cl3DDkShadow.
+  A dark frame using clBtnFace and cl3DDkShadow.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonBorder.bbLight
-A light frame using clBtnHighlight and clBtnFace.
+  A light frame using clBtnHighlight and clBtnFace.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvButtonBorder.bbMono
-A "monochromatic" frame using clBtnHighlight and cl3DDkShadow.
+  A "monochromatic" frame using clBtnHighlight and cl3DDkShadow.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLookOutButton
@@ -53,11 +52,11 @@ Summary
   Specifies a text string that is displayed on the button.
 Description
   Use Caption to specify the text string that labels the control.
-  
+
   To underline a character in a Caption that labels a component, include an ampersand (&) before the
-  character. This type of character is called an accelerator character.
-  The user can then select the component by pressing Alt while typing the underlined character. To
-  display an ampersand character in the caption, use two ampersands (&&).
+  character. This type of character is called an accelerator character. The user can then select the
+  component by pressing Alt while typing the underlined character. To display an ampersand character in
+  the caption, use two ampersands (&&).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLookOutButton.Centered
@@ -72,17 +71,17 @@ Description
 Summary
   Specifies any application-specific data associated with the button.
 Description
-  Use Data to associate any arbitrary data structure with the button. When the user selects or
-  deletes the button, Data allows the application to quickly access information about the meaning of
-  the button to implement the appropriate response.
+  Use Data to associate any arbitrary data structure with the button. When the user selects or deletes
+  the button, Data allows the application to quickly access information about the meaning of the button
+  to implement the appropriate response.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLookOutButton.Down
 Summary
   Specifies if the button appears pressed.
 Description
-  Use the Down property to specify whether the button is displayed as being in its down state or in
-  its up state. Setting the value of Down to true affects other buttons with the same GroupIndex.
+  Use the Down property to specify whether the button is displayed as being in its down state or in its
+  up state. Setting the value of Down to true affects other buttons with the same GroupIndex.
 See Also
   TJvCustomLookOutButton.GroupIndex
 
@@ -91,10 +90,10 @@ See Also
 Summary
   Allows runtime editing of the button's Caption property.
 Description
-  Call EditCaption to set the button into edit mode. When in edit mode, the user can type directly
-  into the button to change the Caption. When the user presses Enter, the OnEdited event is called
-  and the Caption is changed.
-  If the user presses Escape, or clicks outside the button, editing ends without changing the Caption.
+  Call EditCaption to set the button into edit mode. When in edit mode, the user can type directly into
+  the button to change the Caption. When the user presses Enter, the OnEdited event is called and the
+  Caption is changed. If the user presses Escape, or clicks outside the button, editing ends without
+  changing the Caption.
 See Also
   TJvCustomLookOutButton.OnEdited
 
@@ -103,12 +102,10 @@ See Also
 Summary
   Specifies the color used to fill the interior of the button.
 Description
-  Use FillColor to specify a color to use to fill the interior of the button when the mouse hovers
-  over it.
-  By default, a button is transparent and the color of the underlying control shows through the
-  button.
-  By setting FillCilor to something else than clNone, the button will be filled with the specified
-  color when the user hovers the mouse over the button.
+  Use FillColor to specify a color to use to fill the interior of the button when the mouse hovers over
+  it. By default, a button is transparent and the color of the underlying control shows through the
+  button. By setting FillCilor to something else than clNone, the button will be filled with the
+  specified color when the user hovers the mouse over the button.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLookOutButton.GroupIndex
@@ -116,20 +113,19 @@ Summary
   Allows lookout buttons to work together as a group.
 Description
   Set GroupIndex to determine how the button behaves when clicked.
-  
-  When GroupIndex is 0, the button behaves independently of all other buttons on the form.
-  When the user clicks such a button, the button appears pressed (in its clicked state) and then
-  returns to its normal up state when the user releases the mouse button.
-  
+
+  When GroupIndex is 0, the button behaves independently of all other buttons on the form. When the
+  user clicks such a button, the button appears pressed (in its clicked state) and then returns to its
+  normal up state when the user releases the mouse button.
+
   When GroupIndex is greater than 0, the button remains selected (in its down state) when clicked by
-  the user. When the user clicks a selected button, it returns to the up state.
-  Setting the GroupIndex property of a single button to a value greater than 0 causes the button to
-  behave as a two-state button.
-  
-  Buttons with the same GroupIndex property value (other than 0), work together as a group.
-  When the user clicks one of these buttons, it remains selected until the user clicks another button
-  belonging to the same group. Buttons used in this way can present mutually exclusive choices to the
-  user.
+  the user. When the user clicks a selected button, it returns to the up state. Setting the GroupIndex
+  property of a single button to a value greater than 0 causes the button to behave as a two-state
+  button.
+
+  Buttons with the same GroupIndex property value (other than 0), work together as a group. When the
+  user clicks one of these buttons, it remains selected until the user clicks another button belonging
+  to the same group. Buttons used in this way can present mutually exclusive choices to the user.
 See Also
   TJvCustomLookOutButton.Down
 
@@ -138,16 +134,16 @@ See Also
 Summary
   Specifies the font to use when the button is highlighted.
 Description
-  Use the properties of HighlightFont to specify different text options for the button when the
-  user hovers the mouse above the button as compared to when the button is in its default state.
+  Use the properties of HighlightFont to specify different text options for the button when the user
+  hovers the mouse above the button as compared to when the button is in its default state.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLookOutButton.ImageIndex
 Summary
   Specifies the image to display on the button.
 Description
-  ImageIndex is used to set the image to display on the button. Depending on the value of
-  ImageSize, the button displays an image either from LargeImages or from SmallImages.
+  ImageIndex is used to set the image to display on the button. Depending on the value of ImageSize,
+  the button displays an image either from LargeImages or from SmallImages.
 See Also
   TJvCustomLookOutButton.ImageSize, TJvCustomLookOutButton.LargeImages,
   TJvCustomLookOutButton.SmallImages
@@ -157,8 +153,8 @@ See Also
 Summary
   Specifies the imagelist to retrieve images from.
 Description
-  Use ImageSize to specify which image list to display images from. If ImageSize is isSmall, images
-  are retrieved from the SmallImages list. If ImageSize is isLarge, images are retrieved from the
+  Use ImageSize to specify which image list to display images from. If ImageSize is isSmall, images are
+  retrieved from the SmallImages list. If ImageSize is isLarge, images are retrieved from the
   LargeImages list instead.
 See Also
   TJvCustomLookOutButton.ImageIndex, TJvCustomLookOutButton.LargeImages,
@@ -176,9 +172,9 @@ Description
 Summary
   Specifies the number of pixels to shift the button's image and text when it is in its down state.
 Description
-  Use Offset to specify how much the image and text of the button is shifted when the button is in
-  its down state. If Offset is set to 0, the image and text will not be moved at all, making it
-  appear as if the user didn't click the button.
+  Use Offset to specify how much the image and text of the button is shifted when the button is in its
+  down state. If Offset is set to 0, the image and text will not be moved at all, making it appear as
+  if the user didn't click the button.
 See Also
   Click
 
@@ -187,9 +183,9 @@ See Also
 Summary
   Occurs after the user has edited the Caption at run-time and accepted the changes.
 Description
-  Write a handler for the OnEdited event to take specific action after the user has edited the
-  button's Caption and accepted the changes. For example, you can check the Caption for invalid
-  characters and change it if they are not accepted.
+  Write a handler for the OnEdited event to take specific action after the user has edited the button's
+  Caption and accepted the changes. For example, you can check the Caption for invalid characters and
+  change it if they are not accepted.
 See Also
   TJvCustomLookOutButton.EditCaption
 
@@ -198,9 +194,9 @@ See Also
 Summary
   Specifies where the button gets its ImageSize information from.
 Description
-  Use ParentImageSize to specify where the button reads its ImageSize from. If ParentImageSize is
-  true, the button's ImageSize is set to match the parent's ImageSize property. When the ImageSize
-  property of the button is changed, the ParentImageSize property is automatically set to false.
+  Use ParentImageSize to specify where the button reads its ImageSize from. If ParentImageSize is true,
+  the button's ImageSize is set to match the parent's ImageSize property. When the ImageSize property
+  of the button is changed, the ParentImageSize property is automatically set to false.
 See Also
   TJvCustomLookOutButton.ImageSize
 
@@ -209,10 +205,10 @@ See Also
 Summary
   Identifies the pop-up menu associated with the control.
 Description
-  Assign a value to PopupMenu to make a pop-up menu appear when the user selects the control and
-  clicks the right mouse button. If the TPopupMenu’s AutoPopup property is true, the pop-up menu
-  appears automatically. If the menu’s AutoPopup property is false, display the menu with a call to
-  its Popup method from the control’s OnContextPopup event handler.
+  Assign a value to PopupMenu to make a pop-up menu appear when the user selects the control and clicks
+  the right mouse button. If the TPopupMenu’s AutoPopup property is true, the pop-up menu appears
+  automatically. If the menu’s AutoPopup property is false, display the menu with a call to its Popup
+  method from the control’s OnContextPopup event handler.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomLookOutButton.SmallImages
@@ -227,10 +223,10 @@ Summary
   Determines where the image and text appear on a speed button.
 Description
   Set Spacing to the number of pixels that should appear between the image and the text.
-  
-  If Spacing is a positive number, its value is the number of pixels between the image and text.
-  If Spacing is 0, the image and text appear flush with each other. If Spacing is -1, the text
-  appears centered between the image and the button edge.
+
+  If Spacing is a positive number, its value is the number of pixels between the image and text. If
+  Spacing is 0, the image and text appear flush with each other. If Spacing is -1, the text appears
+  centered between the image and the button edge.
 See Also
   TJvCustomLookOutButton.Offset
 
@@ -243,15 +239,14 @@ JVCLInfo
 Summary
   A control that mimics the look of the sidebar in Microsoft® Outlook Express®.
 Description
-  Use a TJvExpress control when you need a sidebar control that displays a list of buttons in a
-  manner similar to Microsoft® Outlook Express®. In a TJvExpress, buttons are arranged as a single
-  list of buttons.
-  When the number of buttons exceed the height of the control, scroll arrows are displayed as needed.
-  The buttons in the control share a common size (set this with the ButtonHeight) property and they
-  are always sized to fill the entire width of the TJvExpress.
-  
-  TJvExpress is derived from TJvCustomOutlookPage and share many of its methods and properties but
-  also adds support for displaying buttons and scroll arrows in another style.
+  Use a TJvExpress control when you need a sidebar control that displays a list of buttons in a manner
+  similar to Microsoft® Outlook Express®. In a TJvExpress, buttons are arranged as a single list of
+  buttons. When the number of buttons exceed the height of the control, scroll arrows are displayed as
+  needed. The buttons in the control share a common size (set this with the ButtonHeight) property and
+  they are always sized to fill the entire width of the TJvExpress.
+
+  TJvExpress is derived from TJvCustomOutlookPage and share many of its methods and properties but also
+  adds support for displaying buttons and scroll arrows in another style.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExpress.AddButton
@@ -259,8 +254,7 @@ Summary
   Adds a new button to the control.
 Description
   Call AddButton to add a new button to the control. The button is added to the end of the list of
-  available buttons.
-  Use the returned instance to set the properties of the button.
+  available buttons. Use the returned instance to set the properties of the button.
 Return value
   The newly created button.
 
@@ -270,8 +264,8 @@ Summary
   Specifies the height of the buttons in the control.
 Description
   Use ButtonHeight to set the height of all the buttons on the control. When TJvExpressButton objects
-  are used on a TJvExpress, don't use their Height property to set the height of the button(s).
-  Instead use the ButtonHeight property to set the height of all the buttons in the control.
+  are used on a TJvExpress, don't use their Height property to set the height of the button(s). Instead
+  use the ButtonHeight property to set the height of all the buttons in the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExpressButton
@@ -282,8 +276,8 @@ JVCLInfo
 Summary
   Buttons used on a TJvExpress control.
 Description
-  TJvExpressButton is the button class used on a TJvExpress control but it can also be used directly
-  on a form. TJvExpressButton is derived from TJvCustomLookoutButton and changes some of the default
+  TJvExpressButton is the button class used on a TJvExpress control but it can also be used directly on
+  a form. TJvExpressButton is derived from TJvCustomLookoutButton and changes some of the default
   properties as well as exposing some of its properties and events.
 
 ----------------------------------------------------------------------------------------------------
@@ -296,24 +290,23 @@ Summary
   A sidebar control that displays pages and buttons in a manner similar to the outlook bar in
   Microsoft® Outlook®.
 Description
-  Use a TJvLookout when you want to display buttons logically separated into pages without using up
-  too much screen real estate. The TJvLookout groups buttons on pages and only one page is visible at
-  a time. To display a page, click the page button at the top of the page. The currently active page
-  is "collapsed" and the newly selected page is "expanded" to fill the available screen area within
-  the
-  TJvLookout's ClientRect. Each page has its own set of buttons and you can specify different
-  settings for the background color and background image, image sizes, button frame color for each
-  page. When the available screen space isn't enough to display all the buttons on a page, scroll
-  arrows are displayed as needed at the top and/or bottom of the page.
+  Use a TJvLookout when you want to display buttons logically separated into pages without using up too
+  much screen real estate. The TJvLookout groups buttons on pages and only one page is visible at a
+  time. To display a page, click the page button at the top of the page. The currently active page is
+  "collapsed" and the newly selected page is "expanded" to fill the available screen area within the
+  TJvLookout's ClientRect. Each page has its own set of buttons and you can specify different settings
+  for the background color and background image, image sizes, button frame color for each page. When
+  the available screen space isn't enough to display all the buttons on a page, scroll arrows are
+  displayed as needed at the top and/or bottom of the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOut.ActivePage
 Summary
   Specifies the page currently displayed by the lookout control.
 Description
-  Read ActivePage to determine which page is selected by the user. The user selects a page by
-  clicking the mouse on its top button. Set ActivePage to bring a page to the foreground. Only one
-  page can be active at a time.
+  Read ActivePage to determine which page is selected by the user. The user selects a page by clicking
+  the mouse on its top button. Set ActivePage to bring a page to the foreground. Only one page can be
+  active at a time.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOut.AddPage
@@ -346,18 +339,18 @@ See Also
 Summary
   Specifies whether page buttons are drawn in a flat style or not.
 Description
-  Use FlatButtons to specify how page buttons are drawn. If FlatButtons is true, page buttons are
-  drawn in a "flat" style, appearing to overlap the border of the lookout. If FlatButtons is false,
-  the page buttons are drawn in the same manner as a normal TButton.
+  Use FlatButtons to specify how page buttons are drawn. If FlatButtons is true, page buttons are drawn
+  in a "flat" style, appearing to overlap the border of the lookout. If FlatButtons is false, the page
+  buttons are drawn in the same manner as a normal TButton.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOut.ImageSize
 Summary
   Specifies where page and button objects gets their images from.
 Description
-  Use ImageSize to specify if the pages and buttons should get their images from the LargeImages or
-  the SmallImages image list. ImageSize only affects pages and buttons that have their
-  ParentImageSize property set to true
+  Use ImageSize to specify if the pages and buttons should get their images from the LargeImages or the
+  SmallImages image list. ImageSize only affects pages and buttons that have their ParentImageSize
+  property set to true
 See Also
   ParentImageSize
 
@@ -376,8 +369,8 @@ See Also
 Summary
   Provides information about the number of pages in the control.
 Description
-  \Read PageCount to determine how many pages are in the control. Use PageCount when iterating over
-  the pages using the Pages property and an index.
+  \Read PageCount to determine how many pages are in the control. Use PageCount when iterating over the
+  pages using the Pages property and an index.
 See Also
   TJvLookOut.Pages
 
@@ -397,8 +390,8 @@ Summary
   Specifies how buttons and pages are scrolled.
 Description
   Use Smooth to set whether pages and buttons are scrolled smoothly or if they jump directly to their
-  final position. When Smooth is true, the items move slower to their final destination but many
-  users find it visually more pleasing than the default behavior.
+  final position. When Smooth is true, the items move slower to their final destination but many users
+  find it visually more pleasing than the default behavior.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOutButton
@@ -409,8 +402,8 @@ JVCLInfo
 Summary
   Button used on lookout pages or stand-alone.
 Description
-  TJvLookOutButton is derived from TJvCustomLookOutButton and exposes most of its properties and
-  events but does not introduce any new behavior.
+  TJvLookOutButton is derived from TJvCustomLookOutButton and exposes most of its properties and events
+  but does not introduce any new behavior.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOutEditedEvent
@@ -423,8 +416,8 @@ Description
   TJvOutlookPage.
 Parameters
   Sender  - The object that called the event.
-  Caption - The new caption for the object. Change the value of Caption to discard or modify the
-  value entered by the user.
+  Caption - The new caption for the object. Change the value of Caption to discard or modify the value
+             entered by the user.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOutPage
@@ -434,9 +427,9 @@ Description
   A TJvLookOutPage represents a page in a TJvLookOut. A collection of pages are maintained by the
   TJvLookOut in its <LINK TJvLookOut.Pages, Pages> property. A TJvLookOutPage maintains a set of
   buttons in its Buttons property and also have properties to change its visual appearance.
-  
-  Don't create instances of TJvLookOutPage. Instead, use the methods of TJvLookOut.Pages to add,
-  remove and modify the pages in a TJvLookOut.
+
+  Don't create instances of TJvLookOutPage. Instead, use the methods of TJvLookOut.Pages to add, remove
+  and modify the pages in a TJvLookOut.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOutPage.ActiveButton
@@ -473,14 +466,12 @@ See Also
 Summary
   Specifies if the user must click the scroll arrows repeatedly to scroll.
 Description
-  Change AutoRepeat to specify how the scroll arrows behave when the user clicks them: if AutoRepeat
-  is true, the user can click and hold the left mouse button on the arrow to scroll to the start or
-  end.
+  Change AutoRepeat to specify how the scroll arrows behave when the user clicks them: if AutoRepeat is
+  true, the user can click and hold the left mouse button on the arrow to scroll to the start or end.
   If AutoRepeat is false, the user must click once for each scroll event.
-  
+
   The AutoRepeat scroll is controlled by two internal constants, the initial delay and the repeat
-  delay.
-  The initial delay (before auto-repeating) is approximately 400 ms and the repeat delay is
+  delay. The initial delay (before auto-repeating) is approximately 400 ms and the repeat delay is
   approximately 100ms.
 
 ----------------------------------------------------------------------------------------------------
@@ -488,8 +479,8 @@ Description
 Summary
   Specifies an image to use as a background on the page.
 Description
-  Use Bitmap to specify an image to display as the background on the page. The specified image will
-  be tiled across the page to fill it completely.
+  Use Bitmap to specify an image to display as the background on the page. The specified image will be
+  tiled across the page to fill it completely.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOutPage.ButtonCount
@@ -548,8 +539,7 @@ Description
   Call EditCaption to allow the user to change the page button's text at runtime. When EditCaption is
   called, the user can type directly into the page button to change the text. If the user clicks
   outside the page button or presses Escape, the changes are discarded automatically. If the user
-  enters a new text and presses Enter, the
-  OnEdited event is called and the edit field is removed.
+  enters a new text and presses Enter, the OnEdited event is called and the edit field is removed.
 See Also
   TJvLookOutPage.OnEdited
 
@@ -586,8 +576,8 @@ Description
 Summary
   Specifies the imagelist to retrieve images from.
 Description
-  Use ImageSize to specify which image list to display images from. If ImageSize is isSmall, images
-  are retrieved from the SmallImages list. If ImageSize is isLarge, images are retrieved from the
+  Use ImageSize to specify which image list to display images from. If ImageSize is isSmall, images are
+  retrieved from the SmallImages list. If ImageSize is isLarge, images are retrieved from the
   LargeImages list instead.
 See Also
   LargeImages, SmallImages, ImageIndex
@@ -636,18 +626,18 @@ See Also
 Summary
   Identifies the pop-up menu associated with the control.
 Description
-  Assign a value to PopupMenu to make a pop-up menu appear when the user selects the control and
-  clicks the right mouse button. If the TPopupMenu’s AutoPopup property is true, the pop-up menu
-  appears automatically. If the menu’s AutoPopup property is false, display the menu with a call to
-  its Popup method from the control’s OnContextPopup event handler.
+  Assign a value to PopupMenu to make a pop-up menu appear when the user selects the control and clicks
+  the right mouse button. If the TPopupMenu’s AutoPopup property is true, the pop-up menu appears
+  automatically. If the menu’s AutoPopup property is false, display the menu with a call to its Popup
+  method from the control’s OnContextPopup event handler.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOutPage.ShowPressed
 Summary
   Specifies if the page button is visually pressed when the user clicks it.
 Description
-  Use ShowPressed to specify if the page button appears to be pushed down when the user clicks the
-  left mouse button on it.
+  Use ShowPressed to specify if the page button appears to be pushed down when the user clicks the left
+  mouse button on it.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLookOutPage.UpArrow

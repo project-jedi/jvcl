@@ -1,5 +1,6 @@
 ##Package: Dlgs
 ##Status: Completed,Checked
+##Skip: _tagSOFTDISTINFO
 ##Skip: EShellOleError
 ##Skip: FreePIDL
 ##Skip: FreePIDLProc
@@ -55,7 +56,6 @@
 ##Skip: URLAssociationDialogA
 ##Skip: URLAssociationDialogProcA
 ##Skip: URLAssociationDialogProcW
-##Skip: _tagSOFTDISTINFO
 ----------------------------------------------------------------------------------------------------
 @@JvWinDialogs.pas
 Summary
@@ -63,7 +63,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Serhiy Perevoznyk.
-
 
 ----------------------------------------------------------------------------------------------------
 @@AddToRecentDocs
@@ -73,12 +72,12 @@ Summary
 Description
   Call AddToRecentDocs to add a document to the Shell's list of recently used documents.
 
-  In addition to updating its list of recent documents, the Shell adds a shortcut to the user's
-  Recent directory and the Start menu's Documents submenu.
-Parameters
-  FileName - Path and file name of the document to be added.
+  In addition to updating its list of recent documents, the Shell adds a shortcut to the user's Recent
+  directory and the Start menu's Documents submenu.
 Note
   Only shell32.dll version 4.0 or later.
+Parameters
+  FileName - Path and file name of the document to be added.
 See Also
   ClearRecentDocs
 
@@ -113,14 +112,14 @@ See Also
 Summary
   Creates a Shell link.
 Description
-  Call CreateShellLink to create a shell link for an application or document as specified in
-  AppName with description Desc.
+  Call CreateShellLink to create a shell link for an application or document as specified in AppName
+  with description Desc.
 Parameters
   AppName - The path and file name of the Shell link object.
   Desc    - The description for the Shell link object. The description can be any application-defined
-  string.
+             string.
   Dest    - The folder where the link will be located in.
-Return Value
+Return value
   Returns the full path name of the link file.
 
 ----------------------------------------------------------------------------------------------------
@@ -134,11 +133,11 @@ Description
 @@ExtractIconFromFile
 <TITLE ExtractIconFromFile function>
 Summary
-  Retrieves a handle to an icon from the specified executable file, dynamic-link library (DLL), or
-  icon file.
+  Retrieves a handle to an icon from the specified executable file, dynamic-link library (DLL), or icon
+  file.
 Description
-  ExtractIconFromFile is a wrapper for the ExtractIcon API. Use it to retrieve a handle to an icon
-  from the specified executable file, dynamic-link library (DLL), or icon file.
+  ExtractIconFromFile is a wrapper for the ExtractIcon API. Use it to retrieve a handle to an icon from
+  the specified executable file, dynamic-link library (DLL), or icon file.
 Parameters
   FileName - The name of an executable file, DLL, or icon file.
   Index    - The zero-based index of the icon to retrieve. For example, if this value is 0, the
@@ -166,7 +165,7 @@ Description
   Call RecycleFile to delete a file, but preserve Undo information, if possible.
 Parameters
   FileToRecycle - The file to delete. If FileToRecycle does not contain a fully qualified path and
-                file name, then no Undo information is preserved.
+                   file name, then no Undo information is preserved.
 See Also
   TJvSHFileOperation
 
@@ -197,8 +196,8 @@ Description
   The Add Hardware Wizard enables you to add new hardware or troubleshoot any hardware-related
   problems.
 
-  To manually open the Add Hardware Wizard, click Start, click Control Panel, and then click "
-  Printers and Other Hardware". Under "See Also", click "Add Hardware".
+  To manually open the Add Hardware Wizard, click Start, click Control Panel, and then click " Printers
+  and Other Hardware". Under "See Also", click "Add Hardware".
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -222,11 +221,11 @@ JVCLInfo
 Summary
   Displays a Control Panel window.
 Description
-  Control Panel applications are special-purpose dynamic-link libraries (DLLs) that let users
-  configure the environment of Windows.
+  Control Panel applications are special-purpose dynamic-link libraries (DLLs) that let users configure
+  the environment of Windows.
 
-  Use TJvAppletDialog to show a specific dialog box from such a Control Panel application.
-  Do this by calling the Execute method.
+  Use TJvAppletDialog to show a specific dialog box from such a Control Panel application. Do this by
+  calling the Execute method.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -246,11 +245,11 @@ See Also
 Summary
   Returns information about a dialog box that the applet supports.
 Description
-  Use AppletInfo to retrieve information about a specific subprogram or dialog box. You may change
-  the lData field of the returned record; changing other fields has no effect.
+  Use AppletInfo to retrieve information about a specific subprogram or dialog box. You may change the
+  lData field of the returned record; changing other fields has no effect.
 Parameters
-  Index - Specifies the index of the dialog box. Index must be in the range zero through          one
-  less than Count.
+  Index - Specifies the index of the dialog box. Index must be in the range zero through one less than
+           Count.
 See Also
   TJvAppletDialog.AppletIndex, TJvAppletDialog.Count
 
@@ -264,15 +263,16 @@ Description
   Some examples are:
 
   <TABLE>
-  Value          Meaning
-  -----          -------
-  ACCESS.CPL     Accessibility Properties
-  APPWIZ.CPL     Add/Remove Programs Property Page
-  SYSDM.CPL      Add New Hardware Wizard
-  TIMEDATE.CPL   Date & Time Properties
+    Value         Meaning
+    ------------  ---------------------------------
+    ACCESS.CPL    Accessibility Properties
+    APPWIZ.CPL    Add/Remove Programs Property Page
+    SYSDM.CPL     Add New Hardware Wizard
+    TIMEDATE.CPL  Date & Time Properties
   </TABLE>
 
-  See <EXTLINK http://vbnet.mvps.org/index.html?code/system/controlpnl.htm> for more examples.
+  Look <EXTLINK http://vbnet.mvps.org/index.html?code/system/controlpnl.htm>here</EXTLINK> for more
+  examples.
 See Also
   TJvAppletDialog.AppletIndex
 
@@ -294,8 +294,8 @@ Description
   Call Execute to display the dialog box specified by AppletIndex of the Control Panel application
   specified by AppletName.
 
-  If AppletName or AppletIndex is invalid, shows the control panel explorer window instead and
-  returns false.
+  If AppletName or AppletIndex is invalid, shows the control panel explorer window instead and returns
+  false.
 Return value
   Returns true on success, false otherwise.
 See Also
@@ -318,8 +318,8 @@ See Also
 Summary
   Displays a dialog box enabling the user to select a Shell folder.
 Description
-  TJvBrowseFolderDialog is a wrapper for the SHBrowseForFolder windows API. It can display the
-  Browse dialog box, do this by calling the Execute method.
+  TJvBrowseFolderDialog is a wrapper for the SHBrowseForFolder windows API. It can display the Browse
+  dialog box, do this by calling the Execute method.
 
   Use the TJvBrowseForFolderDialog component instead if you want to have more control.
 See Also
@@ -330,8 +330,8 @@ See Also
 Summary
   Specifies the \string that is displayed above the tree view control in the dialog box.
 Description
-  Use Caption to specify a \string that is displayed above the tree view
-  control in the dialog box. This \string can be used to specify instructions to the user.
+  Use Caption to specify a \string that is displayed above the tree view control in the dialog box.
+  This \string can be used to specify instructions to the user.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvBrowseFolderDialog.FolderName
@@ -350,8 +350,7 @@ Summary
   Displays a dialog that allows a user to select an icon from a module.
 Description
   The TJvChangeIconDialog component is a wrapper for the Windows PickIconDlg API. Use it to show a
-  dialog
-  that allows a user to select an icon from a module. Do this by calling the Execute method.
+  dialog that allows a user to select an icon from a module. Do this by calling the Execute method.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -362,7 +361,7 @@ Summary
   Shows a dialog that allows a user to select an icon from a module.
 Description
   Call Execute to show a dialog that allows a user to select an icon from a module.
-Return Value
+Return value
   If the user selects an icon, the return value is true. It is false if the user chooses the Cancel
   button, or the Close command on the System menu.
 See Also
@@ -446,30 +445,30 @@ See Also
 @@TJvCplInfo
 <TITLE TJvCplInfo type>
 Summary
-  Contains information and an application-defined value for a dialog box supported by a
-  Control Panel application.
+  Contains information and an application-defined value for a dialog box supported by a Control Panel
+  application.
 Description
   The TJvCplInfo record type contains information about a dialog box supported by a Control Panel
-  application.
-  Use the <LINK TJvAppletDialog.AppletInfo,AppletInfo> property of a TJvAppletDialog component to
-  retrieve such a record.
+  application. Use the <LINK TJvAppletDialog.AppletInfo, AppletInfo> property of a TJvAppletDialog
+  component to retrieve such a record.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCplInfo.Icon
-The icon that represents the dialog box.
+  The icon that represents the dialog box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCplInfo.Name
-The short name for the dialog box. This name is intended to be displayed below the icon.
+  The short name for the dialog box. This name is intended to be displayed below the icon.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCplInfo.Info
-The description for the dialog box that is intended to
-be displayed when the application icon is selected.
+  The description for the dialog box that is intended to be displayed when the application icon is
+  selected.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCplInfo.lData
-Pointer to data defined by the application. When the Control Panel sends the CPL_DBLCLK and CPL_STOP messages, it passes this value back to your application.
+  Pointer to data defined by the application. When the Control Panel sends the CPL_DBLCLK and CPL_STOP
+  messages, it passes this value back to your application.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDiskFullDialog
@@ -512,15 +511,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCapacity.dcDefault
-Default drive capacity.
+  Default drive capacity.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCapacity.dcSize360kB
-(Windows 95, 98 and ME) 360KB, applies to 5.25" drives only.
+  (Windows 95, 98 and ME) 360KB, applies to 5.25" drives only.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDriveCapacity.dcSize720kB
-(Windows 95, 98 and ME) 720KB, applies to 3.5" drives only.
+  (Windows 95, 98 and ME) 720KB, applies to 3.5" drives only.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvExitWindowsDialog
@@ -532,8 +531,8 @@ Summary
   Displays a dialog that prompts the user to restart Windows.
 Description
   Use TJvExitWindowsDialog to show a dialog that prompts the user to restart Windows. Do this by
-  calling the Execute method. When the user clicks the button,
-  the function calls the ExitWindowsEx API to attempt to restart Windows.
+  calling the Execute method. When the user clicks the button, the function calls the ExitWindowsEx API
+  to attempt to restart Windows.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -579,8 +578,8 @@ Summary
 Description
   Use Capacity to specify the formatted capacity of the drive.
 Note
-  The dcSize360kB and dcSize720kB values are only supported on Windows 95, 98 and ME. On Windows NT
-  and XP systems, the value of Capacity is ignored.
+  The dcSize360kB and dcSize720kB values are only supported on Windows 95, 98 and ME. On Windows NT and
+  XP systems, the value of Capacity is ignored.
 See Also
   Execute, TJvFormatDriveDialog.Drive, TJvFormatDriveDialog.FormatType
 
@@ -612,8 +611,8 @@ See Also
 Summary
   Specifies the type of format operation.
 Description
-  Use FormatType to specify which option button is selected in the \Format type group box of the
-  format dialog.
+  Use FormatType to specify which option button is selected in the \Format type group box of the format
+  dialog.
 Note
   The ftBootable value is only supported on Windows 95, 98 and ME. On Windows NT and XP systems, if
   FormatType is set to ftBootable, Execute behaves as if FormatType was set to ftStandard.
@@ -625,8 +624,8 @@ See Also
 Summary
   Occurs when the format operation fails or when the user cancels the format dialog.
 Description
-  \Write an OnError event handler to take specific actions when the format operation fails or when
-  the user cancels the format dialog.
+  \Write an OnError event handler to take specific actions when the format operation fails or when the
+  user cancels the format dialog.
 Parameters
   Sender - The TJvFormatDrive component that has sent this event.
   Error  - Indicates the type of error that occurred.
@@ -643,23 +642,23 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveError.errParams
-The Windows API was called with invalid parameters.
+  The Windows API was called with invalid parameters.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveError.errSysError
-An error occurred during the format.
+  An error occurred during the format.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveError.errAborted
-The format was canceled by the user.
+  The format was canceled by the user.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveError.errCannotFormat
-The drive cannot be formatted.
+  The drive cannot be formatted.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveError.errOther
-Other errors, for example if the user cancels the format dialog.
+  Other errors, for example if the user cancels the format dialog.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveErrorEvent
@@ -676,15 +675,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveKind.ftQuick
-Performs a quick format.
+  Performs a quick format.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveKind.ftStandard
-Performs a full format.
+  Performs a full format.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFormatDriveKind.ftBootable
-(Windows 95, 98, me) Copies system files only.
+  (Windows 95, 98, me) Copies system files only.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog
@@ -692,14 +691,14 @@ Summary
   Displays the unregistered MIME content type dialog.
 Description
   TJvMIMEAssociationDialog is a wrapper for the MIMEAssociationDialog Windows API. It can display the
-  unregistered Multipurpose Internet Mail Extensions (MIME) content type dialog, do this by calling
-  the Execute method. This dialog allows the user to select an application to associate with a
-  previously unknown MIME content type.
+  unregistered Multipurpose Internet Mail Extensions (MIME) content type dialog, do this by calling the
+  Execute method. This dialog allows the user to select an application to associate with a previously
+  unknown MIME content type.
 
-  You have to specify a name of file - by using property FileName - that contains data of
-  ContentType's content type. The function will return a value in ReturnValue that indicates whether
-  the MIME content type is associated with the extension, and if so AssociatedApp indicates the path
-  of the application selected by the user.
+  You have to specify a name of file - by using property FileName - that contains data of ContentType's
+  content type. The function will return a value in ReturnValue that indicates whether the MIME content
+  type is associated with the extension, and if so AssociatedApp indicates the path of the application
+  selected by the user.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -742,7 +741,7 @@ Description
   Use FileName to specify the name of a file. The file must conform to the content type described by
   property ContentType.
 Note
-  FileName <i>must</i> contain an extension.
+  FileName <I>must</I> contain an extension.
 See Also
   Execute, TJvMIMEAssociationDialog.ContentType
 
@@ -751,30 +750,30 @@ See Also
 Summary
   Specifies options for the dialog.
 Description
-  Use the Options property to customize the appearance and functionality of the dialog. By default,
-  all options are off.
+  Use the Options property to customize the appearance and functionality of the dialog. By default, all
+  options are off.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationDialog.ReturnValue
 Summary
   Indicates the value returned by the function called by Execute.
 Description
-  The TJvMIMEAssociationDialog component is a wrapper for the MIMEAssociationDialog Windows API.
-  When you call Execute, this Windows API is executed, and the return value of that function is
-  stored in ReturnValue.
+  The TJvMIMEAssociationDialog component is a wrapper for the MIMEAssociationDialog Windows API. When
+  you call Execute, this Windows API is executed, and the return value of that function is stored in
+  ReturnValue.
 
   Possible return values are:
 
   <TABLE>
-  Value           Meaning
-  -----           -------
-  S_OK            If the MIME content type is associated with the extension. The extension is
-                   associated as the default extension for the content type.
-  S_FALSE         If nothing is registered.
-  E_ABORT         The user cancelled the operation.
-  E_FLAGS         The options specified by Options are invalid.
-  E_OUTOFMEMORY   Not enough memory to complete the operation.
-  E_POINTER       One of the values of the properties is invalid.
+    Value          Meaning
+    -------------  ---------------------------------------------------------------------------
+    S_OK           If the MIME content type is associated with the extension. The extension
+                     is associated as the default extension for the content type.
+    S_FALSE        If nothing is registered.
+    E_ABORT        The user cancelled the operation.
+    E_FLAGS        The options specified by Options are invalid.
+    E_OUTOFMEMORY  Not enough memory to complete the operation.
+    E_POINTER      One of the values of the properties is invalid.
   </TABLE>
 See Also
   Execute
@@ -785,15 +784,18 @@ See Also
 Summary
   Enumerates options for a TJvMIMEAssociationDialog component.
 Description
-  TJvMIMEAssociationOption and TJvMIMEAssociationOptions specify options for a
-  TJvMIMEAssociationDialog component.
+  TJvMIMEAssociationOption and TJvMIMEAssociationOptions specify options for a TJvMIMEAssociationDialog
+  component.
 
   TJvMIMEAssociationOptions is a set of TJvMIMEAssociationOption values.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationOption.maRegisterAssoc
-The application selected is to be registered as the handler for files of the given MIME type.
-When maRegisterAssoc is excluded from <LINK TJvMIMEAssociationDialog.Options,Options>, no association is to be registered. An application is only registered if this flag is set, and the user indicates that a persistent association is to be made. Registration is only possible if <LINK TJvMIMEAssociationDialog.FileName,FileName> contains an extension.
+  The application selected is to be registered as the handler for files of the given MIME type. When
+  maRegisterAssoc is excluded from <LINK TJvMIMEAssociationDialog.Options, Options>, no association is
+  to be registered. An application is only registered if this flag is set, and the user indicates that
+  a persistent association is to be made. Registration is only possible if <LINK
+  TJvMIMEAssociationDialog.FileName, FileName> contains an extension.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMIMEAssociationOptions
@@ -865,8 +867,8 @@ See Also
 Summary
   Specifies the name of the page that will initially be selected.
 Description
-  Use InitialTab to specify the name of the page that will initially be selected. Set InitialTab to
-  an empty string, to display the first page on the property sheet.
+  Use InitialTab to specify the name of the page that will initially be selected. Set InitialTab to an
+  empty string, to display the first page on the property sheet.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvObjectPropertiesDialog.ObjectName
@@ -874,8 +876,7 @@ Summary
   Specifies the file, folder or printer name whose properties will be displayed.
 Description
   Use ObjectName to specify the name of the object whose properties will be displayed by calling
-  Execute. Use
-  ObjectType to specify the type of the object.
+  Execute. Use ObjectType to specify the type of the object.
 See Also
   TJvObjectPropertiesDialog.ObjectType
 
@@ -898,12 +899,11 @@ JVCLInfo
 Summary
   Displays the Open With... dialog.
 Description
-  Use TJvOpenWithDialog to show the Open With... dialog. Do this by calling the
-  Execute method.
+  Use TJvOpenWithDialog to show the Open With... dialog. Do this by calling the Execute method.
 
-  To see an example the dialog, right-click an object, such as a file, that is displayed in
-  Windows Explorer or on the desktop and choose "Open With..." from the shortcut menu. You can also
-  preview this dialog at design-time, by right-clicking the component and clicking "Preview...".
+  To see an example the dialog, right-click an object, such as a file, that is displayed in Windows
+  Explorer or on the desktop and choose "Open With..." from the shortcut menu. You can also preview
+  this dialog at design-time, by right-clicking the component and clicking "Preview...".
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOpenWithDialog.Execute
@@ -931,12 +931,12 @@ JVCLInfo
 Summary
   Displays the Organize Favorites dialog.
 Description
-  Use TJvOrganizeFavoritesDialog to show the Organize Favorites dialog. Do this by calling the
-  Execute method.
+  Use TJvOrganizeFavoritesDialog to show the Organize Favorites dialog. Do this by calling the Execute
+  method.
 
   To see an example the dialog, choose "Organize Favorites..." from the Favorites menu drop-down list
-  in Windows Explorer. You can also preview this dialog at
-  design-time, by right-clicking the component and clicking "Preview...".
+  in Windows Explorer. You can also preview this dialog at design-time, by right-clicking the component
+  and clicking "Preview...".
 
   This component is a wrapper for an undocumented Windows function that may not be implemented on all
   Windows platforms.
@@ -1035,8 +1035,8 @@ See Also
 Summary
   Specifies the icon that appears in the Run dialog.
 Description
-  Set the Icon property to provide an icon for the Run Dialog. If Icon is not set, the system
-  provides a default icon.
+  Set the Icon property to provide an icon for the Run Dialog. If Icon is not set, the system provides
+  a default icon.
 See Also
   Execute, TJvRunDialog.Caption, TJvRunDialog.Description
 
@@ -1052,8 +1052,8 @@ Description
   TJvShellAboutDialog is a wrapper for the ShellAbout Windows API. It can display the ShellAbout
   dialog, do this by calling the Execute method.
 
-  To see an example of a ShellAbout dialog, choose "About Windows" from the "Help" menu drop-down
-  list in Windows Explorer.
+  To see an example of a ShellAbout dialog, choose "About Windows" from the "Help" menu drop-down list
+  in Windows Explorer.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -1116,19 +1116,19 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateAdState.asNone
-??
+  ??
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateAdState.asAvailable
-Update-available dialog box has not been presented to the user.
+  Update-available dialog box has not been presented to the user.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateAdState.asDownloaded
-Files-downloaded dialog box has not been presented to the user.
+  Files-downloaded dialog box has not been presented to the user.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateAdState.asInstalled
-Program-installed dialog box has not been presented to the user.
+  Program-installed dialog box has not been presented to the user.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateDialog
@@ -1137,11 +1137,11 @@ Summary
   updated.
 Description
   TJvSoftwareUpdateDialog is a wrapper for the SoftwareUpdateMessageBox Windows API. It can display a
-  standard message box that can be used to notify a user that an application has been updated, do
-  this by calling the Execute method.
+  standard message box that can be used to notify a user that an application has been updated, do this
+  by calling the Execute method.
 
-  No dialog box will be displayed if there is no update available or if the available update version
-  is less than or equal to the Advertised update version.
+  No dialog box will be displayed if there is no update available or if the available update version is
+  less than or equal to the Advertised update version.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -1160,9 +1160,9 @@ See Also
 Summary
   Specifies the identifier for the code distribution unit.
 Description
-  Use DistributionUnit to specify the identifier for the code distribution unit.
-  For ActiveX controls and Active Setup installed components, DistributionUnit is typically a
-  globally unique identifier (GUID).
+  Use DistributionUnit to specify the identifier for the code distribution unit. For ActiveX controls
+  and Active Setup installed components, DistributionUnit is typically a globally unique identifier
+  (GUID).
 See Also
   TJvSoftwareUpdateDialog.DistInfo
 
@@ -1182,29 +1182,27 @@ Return value
 Summary
   Indicates the value returned by the function called by Execute.
 Description
-  The TJvSoftwareUpdateDialog component is a wrapper for the SoftwareUpdateMessageBox Windows API.
-  When you call Execute, this Windows API is executed, and the return value of that function is
-  stored in ReturnValue.
+  The TJvSoftwareUpdateDialog component is a wrapper for the SoftwareUpdateMessageBox Windows API. When
+  you call Execute, this Windows API is executed, and the return value of that function is stored in
+  ReturnValue.
 
   Possible return values are:
 
   <TABLE>
-  Value           Meaning
-  -----           -------
-  IDNO            The user clicked the "Don't Update" button on the dialog box. The caller should
-                   save the update version from the SOFTDISTINFO and pass it in as the Advertised
-                   version in future calls.
-  IDYES           The user clicked the "Update Now" or "About Update" button. The application should
-                   navigate to the HTML page referred to by the <LINK
-                   TJvSoftwareUpdateInfo.HREF,HREF> property of DistInfo to
-                   initiate the install or learn about it. The caller should save the update version
-                   from DistInfo
-                   and pass it in as the Advertised version in future calls.
-  IDIGNORE        There is no pending software update. This occurs if the available version is less
-                   than the installed version or is not present or if the Advertised version is
-                   greater than or equal to
-                   the update version.
-  IDABORT         An error occurred.
+    Value     Meaning
+    --------  --------------------------------------------------------------------------------
+    IDNO      The user clicked the "Don't Update" button on the dialog box. The caller should
+                save the update version from the SOFTDISTINFO and pass it in as the
+                Advertised version in future calls.
+    IDYES     The user clicked the "Update Now" or "About Update" button. The application
+                should navigate to the HTML page referred to by the <LINK
+                TJvSoftwareUpdateInfo.HREF, HREF> property of DistInfo to initiate the
+                install or learn about it. The caller should save the update version from
+                DistInfo and pass it in as the Advertised version in future calls.
+    IDIGNORE  There is no pending software update. This occurs if the available version is
+                less than the installed version or is not present or if the Advertised
+                version is greater than or equal to the update version.
+    IDABORT   An error occurred.
   </TABLE>
 See Also
   Execute
@@ -1221,19 +1219,19 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateFlags.ufEmail
-??
+  ??
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateFlags.ufPreCache
-??
+  ??
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateFlags.ufAutoInstall
-??
+  ??
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateFlags.ufDeleteSubscription
-??
+  ??
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSoftwareUpdateInfo
@@ -1267,8 +1265,8 @@ See Also
 Summary
   Specifies the most-significant unsigned long integer value of the advertised version number.
 Description
-  Use AdvertisedVersionMS to specify the most-significant unsigned long integer value of the
-  advertised version number.
+  Use AdvertisedVersionMS to specify the most-significant unsigned long integer value of the advertised
+  version number.
 
   The most-significant unsigned long integer of a version number contains the major and minor version
   numbers.
@@ -1301,8 +1299,8 @@ Description
 Summary
   Contains the least-significant unsigned long integer value of the installed version number.
 Description
-  Use InstalledVersionLS to specify the least-significant unsigned long integer value of the
-  installed version number.
+  Use InstalledVersionLS to specify the least-significant unsigned long integer value of the installed
+  version number.
 
   The least-significant unsigned long integer of the version number contains the custom version and
   build numbers.
@@ -1354,8 +1352,8 @@ See Also
 Summary
   Specifies the most-significant unsigned long integer value of the update version number.
 Description
-  Use UpdateVersionMS to specify the most-significant unsigned long integer value of the update
-  version number.
+  Use UpdateVersionMS to specify the most-significant unsigned long integer value of the update version
+  number.
 
   The most-significant unsigned long integer of a version number contains the major and minor version
   numbers.
@@ -1368,8 +1366,8 @@ Summary
   Displays the unregistered \URL protocol dialog.
 Description
   TJvURLAssociationDialog is a wrapper for the URLAssociationDialog Windows API. It can display the
-  unregistered \URL protocol dialog, do this by calling the Execute method. This dialog allows the
-  user to select an application to associate with a previously unknown protocol.
+  unregistered \URL protocol dialog, do this by calling the Execute method. This dialog allows the user
+  to select an application to associate with a previously unknown protocol.
 
   You can preview this dialog at design-time, by right-clicking the component and clicking
   "Preview...".
@@ -1401,9 +1399,9 @@ Summary
 Description
   Call Execute to show the unregistered \URL protocol dialog.
 Return value
-  Returns true if the application specified by AssociatedApp is registered with the \URL protocol specifie
-   by URL. Returns false if nothing is registered (For example, when the user elects to perform a
-  one-time execution via the selected application.)
+  Returns true if the application specified by AssociatedApp is registered with the \URL protocol
+  specifie by URL. Returns false if nothing is registered (For example, when the user elects to perform
+  a one-time execution via the selected application.)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialog.FileName
@@ -1418,7 +1416,7 @@ Description
 
   FileName is only used for displaying purpose in the dialog.
 Note
-  FileName <i>must</i> contain an extension.
+  FileName <I>must</I> contain an extension.
 See Also
   TJvURLAssociationDialog.Options, TJvURLAssociationDialog.URL
 
@@ -1427,23 +1425,23 @@ See Also
 Summary
   Specifies options for the dialog.
 Description
-  Use the Options property to customize the appearance and functionality of the dialog. By default,
-  all options are off.
+  Use the Options property to customize the appearance and functionality of the dialog. By default, all
+  options are off.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialog.ReturnValue
 Summary
   Indicates the value returned by the function called by Execute.
 Description
-  The TJvURLAssociationDialog component is a wrapper for the URLAssociationDialog Windows API.
-  When you call Execute, this Windows API is executed, and the return value of that function is
-  stored in ReturnValue.
+  The TJvURLAssociationDialog component is a wrapper for the URLAssociationDialog Windows API. When you
+  call Execute, this Windows API is executed, and the return value of that function is stored in
+  ReturnValue.
 
   Possible return values are:
 
   * S_OK: If the application is registered with the \URL protocol.
   * S_FALSE: If nothing is registered. For example, when the user elects to perform a one-time
-    execution via   the selected application.
+    execution via the selected application.
 See Also
   Execute
 
@@ -1455,8 +1453,7 @@ Description
   Use URL to specify a \URL whose unregistered protocol requires a handler.
 
   You have to provide a \URL with a protocol, otherwise calling Execute fails, without displaying a
-  dialog.
-  A URL typical takes this form:
+  dialog. A URL typical takes this form:
   <AUTOLINK OFF>
   <CODE>
   protocol://host.domainname/directory/filename.filetype 
@@ -1475,12 +1472,14 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialogOption.uaDefaultName
-Use the default file name (that is, "Internet Shortcut"). When this flag is set, property <LINK TJvURLAssociationDialog.FileName,FileName> is ignored.
+  Use the default file name (that is, "Internet Shortcut"). When this flag is set, property <LINK
+  TJvURLAssociationDialog.FileName, FileName> is ignored.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialogOption.uaRegisterAssoc
-Register the selected application as the handler for the protocol specified in <LINK TJvURLAssociationDialog.URL,URL>.
-The application is registered only if this flag is set and the user indicates that a persistent association is desired.
+  Register the selected application as the handler for the protocol specified in <LINK
+  TJvURLAssociationDialog.URL, URL>. The application is registered only if this flag is set and the
+  user indicates that a persistent association is desired.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvURLAssociationDialogOptions
@@ -1499,35 +1498,35 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.PathName
-The path and file name of the Shell link object.
+  The path and file name of the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.Arguments
-The command-line arguments associated with the Shell link object.
+  The command-line arguments associated with the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.Description
-The description string for the Shell link object.
+  The description string for the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.WorkingDirectory
-Name of the working directory for the Shell link object.
+  Name of the working directory for the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.IconLocation
-The path of the icon for the Shell link object.
+  The path of the icon for the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.IconIndex
-The index of the icon for the Shell link object.
+  The index of the icon for the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.ShowCmd
-The show command for the Shell link object.
+  The show command for the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellLinkInfo.HotKey
-The hot key for the Shell link object.
+  The hot key for the Shell link object.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellObjectType
@@ -1541,11 +1540,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TShellObjectType.sdPathObject
-The object is a file or a folder.
+  The object is a file or a folder.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellObjectType.sdPrinterObject
-The object is a printer.
+  The object is a printer.
 
 ----------------------------------------------------------------------------------------------------
 @@TShellObjectTypes

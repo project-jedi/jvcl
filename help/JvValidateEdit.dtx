@@ -10,7 +10,6 @@ Summary
 Author
   Christopher Latta
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomTextValidateEvent
 <TITLE TJvCustomTextValidateEvent type>
@@ -22,16 +21,16 @@ Summary
   Edit control that can restrict its content to only accept valid input.
 Description
   TJvCustomValidateEdit is a base class for edit controls that can restrict user input and format its
-  content. To put a validating edit control on a form, don't use TJvCustomValidateEdit.
-  Instead, use a derived component like TJvValidateEdit.
+  content. To put a validating edit control on a form, don't use TJvCustomValidateEdit. Instead, use a
+  derived component like TJvValidateEdit.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.AsCurrency
 Summary
   Represents the Text property as a Currency value.
 Description
-  Use AsCurrency to read the value of the Text property into an object or variable of type Currency
-  or to assign a Currency value to the Text property.
+  Use AsCurrency to read the value of the Text property into an object or variable of type Currency or
+  to assign a Currency value to the Text property.
 Note
   If the current value of Text cannot be represented as a currency value, AsCurrency returns 0.
 See Also
@@ -54,8 +53,8 @@ See Also
 Summary
   Represents the text property as a 32-bit integer.
 Description
-  Use AsInteger to read the value of the Text property into an object or variable of type integer or
-  to assign a 32-bit integer value to the Text property.
+  Use AsInteger to read the value of the Text property into an object or variable of type integer or to
+  assign a 32-bit integer value to the Text property.
 Note
   If the current value of Text cannot be represented as an integer value, AsInteger returns 0.
 See Also
@@ -92,8 +91,7 @@ Summary
   Specifies the character to check.
 Description
   Use CheckChars to specify the characters to check in the control. When the value of DisplayFormat
-  changes,
-  CheckChars also changes.
+  changes, CheckChars also changes.
 See Also
   Text
 
@@ -113,8 +111,8 @@ See Also
 Summary
   Specifies the number of decimals to display.
 Description
-  Use DecimalPlaces to specify the number of decimals to display in the control. DecimalPlaces only
-  has effect when using floating type DisplayFormats.
+  Use DecimalPlaces to specify the number of decimals to display in the control. DecimalPlaces only has
+  effect when using floating type DisplayFormats.
 See Also
   TJvCustomValidateEdit.DisplayFormat
 
@@ -133,8 +131,8 @@ See Also
 Summary
   Specifies a prefix to display when the edit doesn't have focus.
 Description
-  Use DisplayPrefix to set a set of characters to display to the right of the text in the control.
-  Note that some of the DisplayFormats sets this property automatically.
+  Use DisplayPrefix to set a set of characters to display to the right of the text in the control. Note
+  that some of the DisplayFormats sets this property automatically.
 See Also
   TJvCustomValidateEdit.DisplaySuffix
 
@@ -143,8 +141,8 @@ See Also
 Summary
   Specifies a suffix to display when the edit doesn't have focus.
 Description
-  Use DisplaySuffix to set a set of characters to display to the left of the text in the control.
-  Note that some of the DisplayFormats sets this property automatically.
+  Use DisplaySuffix to set a set of characters to display to the left of the text in the control. Note
+  that some of the DisplayFormats sets this property automatically.
 See Also
   TJvCustomValidateEdit.DisplayPrefix
 
@@ -163,8 +161,8 @@ See Also
 Summary
   Specifies if the MaxValue property is used.
 Description
-  Set HasMaxValue to true to check the entered values in the control against the MaxValue property.
-  If the entered value is more than MaxValue, it will be forced to be no larger than MaxValue.
+  Set HasMaxValue to true to check the entered values in the control against the MaxValue property. If
+  the entered value is more than MaxValue, it will be forced to be no larger than MaxValue.
 See Also
   Text
 
@@ -173,8 +171,8 @@ See Also
 Summary
   Specifies if the MinValue property is used.
 Description
-  Set HasMinValue to true to check the entered values in the control against the MinValue property.
-  If the entered value is less than MinValue, it will be forced to be at least MinValue.
+  Set HasMinValue to true to check the entered values in the control against the MinValue property. If
+  the entered value is less than MinValue, it will be forced to be at least MinValue.
 See Also
   Text
 
@@ -204,8 +202,8 @@ Summary
   Occurs when the control needs to validate input and DisplayFormat is dfCustom.
 Description
   Write a handler for this event when DisplayFormat is set to dfCustom. To allow a character to be
-  entered into the control, set IsValid to true. To prevent a character from being entered, set
-  IsValid to false.
+  entered into the control, set IsValid to true. To prevent a character from being entered, set IsValid
+  to false.
 Parameters
   Sender  - The TJvCustomValidateEdit that called the event.
   Key     - The key that was pressed last.
@@ -222,6 +220,7 @@ Description
   changed.
 See Also
   OnChange
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.TrimDecimals
 Summary
@@ -231,6 +230,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomValidateEdit.Value
 Summary
@@ -259,26 +259,23 @@ JVCLInfo
 Summary
   Edit control that can restrict its content to only accept valid input.
 Description
-  Use a TJvValidateEdit when you need to restrict what the user
-  can type into the control. A TJvValidateEdit can both format
-  the text in the control as well as restrict the allowable
-  characters the user can type into it. For example, to
-  restrict the user to only type integer values, set
+  Use a TJvValidateEdit when you need to restrict what the user can type into the control. A
+  TJvValidateEdit can both format the text in the control as well as restrict the allowable characters
+  the user can type into it. For example, to restrict the user to only type integer values, set
   DisplayFormat to dfInteger.
 
-  TJvValidateEdit is derived from TJvCustomValidateEdit,
-  publishes most of its properties but doesn't add any new
-  functionality.
+  TJvValidateEdit is derived from TJvCustomValidateEdit, publishes most of its properties but doesn't
+  add any new functionality.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints
 Summary
-  Used to check a value in TJvValidateEdit against a minimum and maximum value and mark invalid
-  values accordingly.
+  Used to check a value in TJvValidateEdit against a minimum and maximum value and mark invalid values
+  accordingly.
 Description
-  TJvValidateEditCriticalPoints is the type of the CriticalPoints property in a TJvValidateEdit
-  control and defines the properties used to check the value of the edit against a minimum value and
-  a maximum value.
+  TJvValidateEditCriticalPoints is the type of the CriticalPoints property in a TJvValidateEdit control
+  and defines the properties used to check the value of the edit against a minimum value and a maximum
+  value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPoints.CheckPoints
@@ -341,15 +338,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck.cpNone
-Don't use critical points.
+  Don't use critical points.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck.cpMaxValue
-Check only the maximum value.
+  Check only the maximum value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditCriticalPointsCheck.cpBoth
-Check both minimum and maximum value.
+  Check both minimum and maximum value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat
@@ -358,66 +355,66 @@ Summary
   Defines available display formats.
 Description
   TJvValidateEditDisplayFormat is used as the type for the DisplayFormat property in TJvValidateEdit.
-  Changing DisplayFormat might change the Alignment of the text if AutoAlignment is true and the
-  prefix or suffix used when the control doesn't have focus.
+  Changing DisplayFormat might change the Alignment of the text if AutoAlignment is true and the prefix
+  or suffix used when the control doesn't have focus.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfAlphabetic
-Only displays characters A-Z, a-z.
+  Only displays characters A-Z, a-z.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfAlphaNumeric
-Only displays characters A-Z, a-z, 0-9.
+  Only displays characters A-Z, a-z, 0-9.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfBinary
-Only displays binary characters (0,1).
+  Only displays binary characters (0,1).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfCheckChars
-Only displays characters in CheckCars.
+  Only displays characters in CheckCars.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfCurrency
-Only displays currency characters (0-9, decimal).
+  Only displays currency characters (0-9, decimal).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfCustom
-Only displays characters where OnCustomValidate sets IsValid to true.
+  Only displays characters where OnCustomValidate sets IsValid to true.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfFloat
-Only displays float characters (0-9, decimal).
+  Only displays float characters (0-9, decimal).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfHex
-Only displays hexadecimal characters (0-9,A-F,a-f).
+  Only displays hexadecimal characters (0-9,A-F,a-f).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfInteger
-Only displays integer characters (0-9).
+  Only displays integer characters (0-9).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfNonCheckChars
-Only displays chacraters not in CheckCars.
+  Only displays chacraters not in CheckCars.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfNone
-Displays any character.
+  Displays any character.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfOctal
-Only displays octal characters (0-7).
+  Only displays octal characters (0-7).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfPercent
-Only displays percentage characters (0-9).
+  Only displays percentage characters (0-9).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfScientific
-Only displays integer characters (0-9, e, E).
+  Only displays integer characters (0-9, e, E).
 
 ----------------------------------------------------------------------------------------------------
 @@TJvValidateEditDisplayFormat.dfYear
-Only displays integer characters (0-9) and also sets max length to 4.
+  Only displays integer characters (0-9) and also sets max length to 4.
 

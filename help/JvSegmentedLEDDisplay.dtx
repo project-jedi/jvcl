@@ -1,5 +1,5 @@
 ##Package: HMI
-##Status: Locked by marcelb
+##Status: Completed, Locked by marcelb
 ----------------------------------------------------------------------------------------------------
 @@JvSegmentedLEDDisplay.pas
 Summary
@@ -7,7 +7,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Marcel Bestebroer
-
 
 ----------------------------------------------------------------------------------------------------
 @@DigitClassList
@@ -45,8 +44,8 @@ Description
   for two additional values which should be accesible from the Object Inspector this method is needed
   to perform the translation from the string literal into the actual value.
 
-  If the string literal does not represent one of the two additional values, the IdentToColor
-  function is called.
+  If the string literal does not represent one of the two additional values, the IdentToColor function
+  is called.
 Parameters
   Ident - String literal representing a color
   Int   - Ordinal value of the color represented by the Ident value.
@@ -114,19 +113,21 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@T7SegColonUsage.scuNone
-No colon is rendered.
+  No colon is rendered.
 
 ----------------------------------------------------------------------------------------------------
 @@T7SegColonUsage.scuLowOnly
-Only the low dot of the colon is rendered. This can be used to simulate certain HP calculators that used this dot as a decimal separator symbol.
+  Only the low dot of the colon is rendered. This can be used to simulate certain HP calculators that
+  used this dot as a decimal separator symbol.
 
 ----------------------------------------------------------------------------------------------------
 @@T7SegColonUsage.scuFull
-Renders the entire colon. Note that each colon dot can be set on or off individual.
+  Renders the entire colon. Note that each colon dot can be set on or off individual.
 
 ----------------------------------------------------------------------------------------------------
 @@T7SegColonUsage.scuColonOnly
-Renders the entire colon but hides the other segments. Can be used to render a colon digit in a clock for example.
+  Renders the entire colon but hides the other segments. Can be used to render a colon digit in a clock
+  for example.
 
 ----------------------------------------------------------------------------------------------------
 @@TCharSet
@@ -138,6 +139,7 @@ Description
   streaming system.
 See Also
   TSegCharMapHeader
+
 ----------------------------------------------------------------------------------------------------
 @@TJv7SegmentedLEDDigit
 Summary
@@ -152,7 +154,8 @@ Description
   colon only, the entire colon or the entire colon without any of the other segments.
 
   The digit layout is the same as for TJvBaseSegmentedLEDDigit but two dots are added (named CH and
-  CL): <PRE>
+  CL):
+  <PRE>
                 A
               -----
              |     |
@@ -163,20 +166,22 @@ Description
             E|  .CL|C
              |     |
               -----  .DP
-                D </PRE>
+                D
+  </PRE>
 
 ----------------------------------------------------------------------------------------------------
 @@TJv7SegmentedLEDDigit.UseColon
 Summary
   Specifies if and how the colon should be rendered.
 Description
-  UseColon specifies if and how the colon should be rendered. Read UseColon to determine that state
-  or set it to a new value.
+  UseColon specifies if and how the colon should be rendered. Read UseColon to determine that state or
+  set it to a new value.
 
-  The colon is made up of two separately controllable segments. You can specify if the colon should
-  not be shows, only the low point of the colon, the entire colon or the entire colon without any of
-  the other segments (the latter is commonly used in digital alarm clocks to separate the hours from
-  the minutes).
+  The colon is made up of two separately controllable segments. You can specify if the colon should not
+  be shows, only the low point of the colon, the entire colon or the entire colon without any of the
+  other segments (the latter is commonly used in digital alarm clocks to separate the hours from the
+  minutes).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDDigit
 Summary
@@ -188,16 +193,21 @@ Description
   it's descendants.
 
   The base class provides the classic 7-segmented layout and an optional DP segment used as a decimal
-  point. The segments and their names have the following layout: <PRE>
+  point. The segments and their names have the following layout:
+  <PRE>
                 A
-                           |     |
+              -----
+             |     |
             F|     |B
              |  G  |
-                           |     |
+              -----
+             |     |
             E|     |C
              |     |
               -----  .DP
-                D </PRE>
+                D
+  </PRE>
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDDigit.DPWidth
 Summary
@@ -216,27 +226,30 @@ Description
   If the DP is not visible, DPWidth will be 0 at all times.
 See Also
   Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvBaseSegmentedLEDDigit.UseDP
 Summary
   Determines if the DP segment is visible.
 Description
-  UseDP specifies if the DP segment (dot point in the lower right corner) is visible or not. Read
-  UseDP to determine if the DP segment is rendered or set it to a new state.
+  UseDP specifies if the DP segment (dot point in the lower right corner) is visible or not. Read UseDP
+  to determine if the DP segment is rendered or set it to a new state.
 
   Setting UseDP may result in a change of the width of the digit. See DPWidth for more information.
 See Also
   Width
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit
 Summary
   Base segmented LED digit.
 Description
-  TJvCustomSegmentedLEDDigit is the base segmented LED digit class. It provides a common interface
-  for communication between the display and it's digits as well as basic rendering and sizing.
+  TJvCustomSegmentedLEDDigit is the base segmented LED digit class. It provides a common interface for
+  communication between the display and it's digits as well as basic rendering and sizing.
 
   You should not use TJvCustomSegmentedLEDDigit as a digit class, but rather use one of it's
   descendants.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.BaseTop
 Summary
@@ -245,22 +258,23 @@ Description
   BaseTop specifies the vertical position of the top main segment.
 
   BaseTop is used to properly align the digits vertically. Some digit types may require additional
-  markings above the main digit segments. Those classes will set BaseTop to a value > 0 to have it
-  line up properly.
+  markings above the main digit segments. Those classes will set BaseTop to a value > 0 to have it line
+  up properly.
 
-  The default behaviour of BaseTop is to always return 0. Classes that require a different BaseTop
-  will override GetBaseTop to return another value.
+  The default behaviour of BaseTop is to always return 0. Classes that require a different BaseTop will
+  override GetBaseTop to return another value.
 See Also
   TJvCustomSegmentedLEDDigit.Height, TJvCustomSegmentedLEDDigit.VertAdjust
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetHitInfo@Integer@Integer
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
 Parameters
   X - Description for this parameter
   Y - Description for this parameter
@@ -269,6 +283,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetHitInfo@Integer@Integer@Integer
 Summary
@@ -280,15 +295,16 @@ Description
   GetHitInfo will determine if the position lies within the digit in which case it will iterate over
   the segments until it finds a hit or no more segments are present.
 
-  There are two overloaded versions of GetHitInfo: one that will only return the area type and one
-  that will additionally return the segment involved.
+  There are two overloaded versions of GetHitInfo: one that will only return the area type and one that
+  will additionally return the segment involved.
 Parameters
   X            - X-coordinate of the point to retrieve information from.
   Y            - Y-coordinate of the point to retrieve information from.
-  SegmentIndex - Receives the segment index involved (if applicable; i.e. when the result
-      indicates a segment is at the specified position).
+  SegmentIndex - Receives the segment index involved (if applicable; i.e. when the result indicates a
+                  segment is at the specified position).
 See Also
   TJvCustomSegmentedLEDDisplay.GetHitInfo
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetSegmentIndex
 Summary
@@ -300,9 +316,10 @@ Description
   If certain segments are not used (due to property settings) they are still searchable with this
   method.
 Parameters
-  Name  - Name of the segment to retrieve the index of.
+  Name - Name of the segment to retrieve the index of.
 See Also
   TJvCustomSegmentedLEDDigit.GetSegmentName, TJvCustomSegmentedLEDDigit.SegmentCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetSegmentName
 Summary
@@ -310,15 +327,16 @@ Summary
 Description
   GetSegmentName retrieves the name of the specified segment.
 
-  Each segment (individually controllable shapes) has a name assigned to it. For the main segments
-  the names are usually A through Z (depending on the number of segments). Additional markers are
-  named differently.
+  Each segment (individually controllable shapes) has a name assigned to it. For the main segments the
+  names are usually A through Z (depending on the number of segments). Additional markers are named
+  differently.
 
   This method will return the proper name for any segment.
 Parameters
   Index - 0-based index of segment to retrieve the name for.
 See Also
   TJvCustomSegmentedLEDDigit.GetSegmentIndex, TJvCustomSegmentedLEDDigit.SegmentCount
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetSegmentStates
 Summary
@@ -326,6 +344,7 @@ Summary
 Description
   GetSegmentStates retrieves a bit mask representing the states of all segments. Bits set to '1'
   represent lit segments. The segment's index is also the bit position (i.e. segment 0 = bit 0).
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.GetSegmentString
 Summary
@@ -337,6 +356,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.Height
 Summary
@@ -353,6 +373,7 @@ Description
   another value.
 See Also
   Display
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.Left
 Summary
@@ -365,6 +386,7 @@ Description
   recalculated upon the first redraw.
 See Also
   Display
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.PtInSegment
 Summary
@@ -376,8 +398,9 @@ Description
   Although the index parameter may refer to any segment the digit may support, segments that are not
   rendered are not considered and the function will return False for these segments.
 Parameters
-  SegmentIndex  - 0-based index of the segment to check.
-  Pt            - Coordinate to check.
+  SegmentIndex - 0-based index of the segment to check.
+  Pt           - Coordinate to check.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.RecalcNeeded
 Summary
@@ -386,9 +409,9 @@ Description
   RecalcNeeded determines if the layout and position of the segments needs to be recalculated.
 
   To speed up the rendering of digits, each segment's layout and position is precalculated and stored
-  internally. Whenever a digit needs to render it self, it will first check if the layout and
-  positions should be recalculated. After that the rendering of the segments takes places according
-  the calculated values.
+  internally. Whenever a digit needs to render it self, it will first check if the layout and positions
+  should be recalculated. After that the rendering of the segments takes places according the
+  calculated values.
 
   Recalculation is needed if at least one of the following conditions apply:
 
@@ -401,15 +424,17 @@ Description
   * <LINK TJvCustomSegmentedLEDDisplay.Slant, Display.Slant> is changed
 
   Based on the digit class in use other conditions may apply as well.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.SegmentCount
 Summary
   Indicates the number of available segments.
 Description
-  SegmentCount indicates the number of segments the digit supports. It ignores any settings that
-  would hide segments and will thus always return the same value, regardless of any property settings.
+  SegmentCount indicates the number of segments the digit supports. It ignores any settings that would
+  hide segments and will thus always return the same value, regardless of any property settings.
 See Also
   TJvCustomSegmentedLEDDigit.GetSegmentName, TJvCustomSegmentedLEDDigit.GetSegmentIndex
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.Text
 Summary
@@ -421,14 +446,15 @@ Description
   The value of Text is used to calculate the <LINK TJvCustomSegmentedLEDDisplay.Text, Display.Text>
   property value.
 
-  If <LINK TJvCustomSegmentedLEDDisplay.CharacterMapper, Display.CharacterMapper> is assigned,
-  setting Text will pass to the value to the character mapper. The resulting value of this mapping is
-  then placed into the property.
+  If <LINK TJvCustomSegmentedLEDDisplay.CharacterMapper, Display.CharacterMapper> is assigned, setting
+  Text will pass to the value to the character mapper. The resulting value of this mapping is then
+  placed into the property.
 
   If a mapper is not assigned, setting Text will store the new value without parsing it. Assigning a
   character mapper later will then execute the mapping and the result will be stored in this property.
 See Also
   TJvBaseSegmentedLEDCharacterMapper.MapText, TJvCustomSegmentedLEDDisplay.CharacterMapper
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.VertAdjust
 Summary
@@ -440,6 +466,7 @@ Description
   VertAdjust is calculated and adjusted by the <LINK TJvCustomSegmentedLEDDisplay, display control>.
 See Also
   TJvCustomSegmentedLEDDigit.BaseTop, TJvCustomSegmentedLEDDigit.Height
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDigit.Width
 Summary
@@ -448,15 +475,16 @@ Description
   Width determines the width of digit.
 
   Width is used to help auto sizing the display control horizontally. Some digit types may require
-  additional markings to the left or right of the main digit segments. Those classes will set Width
-  to a value larger than the default value (<LINK TJvCustomSegmentedLEDDisplay.DigitWidth,
+  additional markings to the left or right of the main digit segments. Those classes will set Width to
+  a value larger than the default value (<LINK TJvCustomSegmentedLEDDisplay.DigitWidth,
   Display.DigitDigitWidth>).
 
   The default behaviour for Width is to return <LINK TJvCustomSegmentedLEDDisplay.DigitWidth,
-  Display.DigitWidth>. Classes that require a different Width will override GetWidth to return
-  another value.
+  Display.DigitWidth>. Classes that require a different Width will override GetWidth to return another
+  value.
 See Also
   Display
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay
 Summary
@@ -472,10 +500,10 @@ Description
   display').
 
   The control simulates this by rendering the bars. It allows to use any color for the segments and
-  allows to render both lit and unlit segments in two different colors (conventional LED displays
-  often show unlit segments due to a backlight is being used (as sometimes used with LCD displays) or
-  because a neighbouring segment is lit and the optical separation is not good enough). The unlit
-  segments are generally the same color as the lit segment but a lot darker.
+  allows to render both lit and unlit segments in two different colors (conventional LED displays often
+  show unlit segments due to a backlight is being used (as sometimes used with LCD displays) or because
+  a neighbouring segment is lit and the optical separation is not good enough). The unlit segments are
+  generally the same color as the lit segment but a lot darker.
 
   The control allows to use any layout by specifying a digit class. Each digit class can provide it's
   own layout and number of segments as well as specifying how to map characters to these segments.
@@ -484,26 +512,28 @@ Description
   descendants.
 See Also
   TJvSegmentedLEDDisplay
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.CharacterMapper
 Summary
   Specifies which character mapper to use.
 Description
-  CharacterMapper indicates which mapper is used to translate characters into the proper segments.
-  Read CharacterMapper to retrieve which mapper is used or set it to a different mapper.
+  CharacterMapper indicates which mapper is used to translate characters into the proper segments. Read
+  CharacterMapper to retrieve which mapper is used or set it to a different mapper.
 
-  Not all mappers can be used for any digit type. Which mappers can be used depend on the currently
-  set <LINK DigitClass, digit style> and which mapper class it specifies. Setting CharacterMapper to
-  a new mapper will result in Text being reparsed and remapped. Setting it to nil will have no effect
-  other than removing the mapper from the display.
+  Not all mappers can be used for any digit type. Which mappers can be used depend on the currently set
+  <LINK DigitClass, digit style> and which mapper class it specifies. Setting CharacterMapper to a new
+  mapper will result in Text being reparsed and remapped. Setting it to nil will have no effect other
+  than removing the mapper from the display.
 
   Note that you need to specify the <LINK DigitClass, digit style> before specifying the mapper to
   use.
 
-  If you do not specify a mapper you can't change which segments are lit of any digit. Setting the
-  Text property of the control or a single digit will have no effect until a mapper is assigned.
+  If you do not specify a mapper you can't change which segments are lit of any digit. Setting the Text
+  property of the control or a single digit will have no effect until a mapper is assigned.
 See Also
   TJvCustomSegmentedLEDDisplay.DigitClass, TJvCustomSegmentedLEDDisplay.Text
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.DigitClass
 Summary
@@ -513,40 +543,42 @@ Description
   style) is used or set it to another class.
 
   If no digit style is specified you can't add new digits to the display nor can you specify which
-  <LINK CharacterMapper, character mapper> to use. Changing DigitClass will recreate the same number
-  of digits currently present (unless the new class is set to nil in which case any digits present
-  are removed). If the active <LINK CharacterMapper, character mapper> is not allowed for the new
-  digit style it will be set to nil, otherwise the Text property will be remapped.
-
-  Note: The Object Inspector does not allow class references to be edited. To circumvent that problem
-  an additional property, DigitClassName, has been added. DigitClassName is the property you should
+  <LINK CharacterMapper, character mapper> to use. Changing DigitClass will recreate the same number of
+  digits currently present (unless the new class is set to nil in which case any digits present are
+  removed). If the active <LINK CharacterMapper, character mapper> is not allowed for the new digit
+  style it will be set to nil, otherwise the Text property will be remapped.
+Note
+  The Object Inspector does not allow class references to be edited. To circumvent that problem an
+  additional property, DigitClassName, has been added. DigitClassName is the property you should
   publish on any derivative, not DigitClass. The property editor for DigitClassName will fake the
   actual property name by removing the 'Name' part of the actual property name used.
 See Also
   TJvCustomSegmentedLEDDisplay.CharacterMapper, TJvCustomSegmentedLEDDisplay.DigitClassName,
   TJvCustomSegmentedLEDDisplay.Text
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.DigitClassName
 Summary
   Specifies the digit style to use.
 Description
-  DigitClassName specifies which digit style to use. Read DigitClassName to determine which class
-  (and thus style) is used or set it to another class name.
+  DigitClassName specifies which digit style to use. Read DigitClassName to determine which class (and
+  thus style) is used or set it to another class name.
 
   If no digit style is specified you can't add new digits to the display nor can you specify which
   <LINK CharacterMapper, character mapper> to use. Changing DigitClassName will recreate the same
-  number of digits currently present (unless the new class name is set to an empty string in which
-  case any digits present are removed). If the active <LINK CharacterMapper, character mapper> is not
+  number of digits currently present (unless the new class name is set to an empty string in which case
+  any digits present are removed). If the active <LINK CharacterMapper, character mapper> is not
   allowed for the new digit style it will be set to nil, otherwise the Text property will be remapped.
 
-  The sole purpose of this property is to overcome a problem at design time: the Object Inspector
-  does not allow class references to be edited. To circumvent that problem an this property has been
-  added. DigitClassName is the property you should publish on any derivative, not DigitClass. The
-  property editor for DigitClassName will fake the actual property name by removing the 'Name' part
-  of the actual property name used.
+  The sole purpose of this property is to overcome a problem at design time: the Object Inspector does
+  not allow class references to be edited. To circumvent that problem an this property has been added.
+  DigitClassName is the property you should publish on any derivative, not DigitClass. The property
+  editor for DigitClassName will fake the actual property name by removing the 'Name' part of the
+  actual property name used.
 See Also
   TJvCustomSegmentedLEDDisplay.CharacterMapper, TJvCustomSegmentedLEDDisplay.DigitClass,
   TJvCustomSegmentedLEDDisplay.Text
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.DigitHeight
 Summary
@@ -562,18 +594,20 @@ Description
 See Also
   TJvCustomSegmentedLEDDigit.Height, TJvCustomSegmentedLEDDisplay.DigitSpacing,
   TJvCustomSegmentedLEDDisplay.DigitWidth, TJvCustomSegmentedLEDDisplay.Slant
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.Digits
 Summary
   Collection of digits.
 Description
-  Digits is the collection of digits displayable. As a TCollection derivative it allows you to use
-  the normal TCollection methods to add or remove digits.
+  Digits is the collection of digits displayable. As a TCollection derivative it allows you to use the
+  normal TCollection methods to add or remove digits.
 
   At design time it allows you to add or remove digits or select the individual digits and control
   their appearance (provided the digit style allows such control).
 See Also
   TJvCustomSegmentedLEDDigit, TJvCustomSegmentedLEDDisplay.DigitClass
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.DigitSpacing
 Summary
@@ -587,6 +621,7 @@ Description
 See Also
   TJvCustomSegmentedLEDDisplay.DigitClass, TJvCustomSegmentedLEDDisplay.DigitHeight,
   TJvCustomSegmentedLEDDisplay.DigitWidth, TJvCustomSegmentedLEDDisplay.Slant
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.DigitWidth
 Summary
@@ -602,6 +637,7 @@ Description
 See Also
   TJvCustomSegmentedLEDDigit.Width, TJvCustomSegmentedLEDDisplay.DigitHeight,
   TJvCustomSegmentedLEDDisplay.DigitSpacing, TJvCustomSegmentedLEDDisplay.Slant
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.DotSize
 Summary
@@ -617,15 +653,16 @@ Description
   DotSize will be rounded down to an even value (i.e. 3 will become 2, 5 will become 4, ...).
 See Also
   TJvCustomSegmentedLEDDisplay.SegmentSpacing, TJvCustomSegmentedLEDDisplay.SegmentThickness
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.GetHitInfo@Integer@Integer
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
 Parameters
   X - Description for this parameter
   Y - Description for this parameter
@@ -634,15 +671,16 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.GetHitInfo@Integer@Integer@TJvCustomSegmentedLEDDigit@Integer
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
 Parameters
   X            - Description for this parameter
   Y            - Description for this parameter
@@ -653,6 +691,7 @@ Return value
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.RemapText
 Summary
@@ -662,33 +701,36 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.SegmentLitColor
 Summary
   Specifies the color to use for lit segments.
 Description
-  SegmentLitColor specifies the color to use for lit segments. Read SegmentLitColor to determine
-  which color is used for segments that are lit or set it to a new value.
+  SegmentLitColor specifies the color to use for lit segments. Read SegmentLitColor to determine which
+  color is used for segments that are lit or set it to a new value.
 See Also
   TJvCustomSegmentedLEDDisplay.SegmentUnlitColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.SegmentSpacing
 Summary
   Specifies the spacing between segments.
 Description
-  SegmentSpacing specifies the distance between two adjacent segments. Read SegmentSpacing to
-  determine the current distance between segments or set it to a new value.
+  SegmentSpacing specifies the distance between two adjacent segments. Read SegmentSpacing to determine
+  the current distance between segments or set it to a new value.
 
   SegmentSpacing will be rounded down to an even value (i.e. 3 will become 2, 5 will become 4, ...).
 See Also
   TJvCustomSegmentedLEDDisplay.DotSize, TJvCustomSegmentedLEDDisplay.SegmentThickness
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.SegmentThickness
 Summary
   Specifies the width of the normal type segments.
 Description
-  SegmentThickness determines the width of the normal type (polygon) segments. Read SegmentThickness
-  to retrieve the current width used or set it to a new value.
+  SegmentThickness determines the width of the normal type (polygon) segments. Read SegmentThickness to
+  retrieve the current width used or set it to a new value.
 
   A digit is made up of different type of segments: polygons, rectangles and/or dots. The size of
   polygon type segments (generally filled polygon shapes) is controlled by this property.
@@ -696,6 +738,7 @@ Description
   SegmentThickness will be rounded down to an even value (i.e. 3 will become 2, 5 will become 4, ...).
 See Also
   TJvCustomSegmentedLEDDisplay.DotSize, TJvCustomSegmentedLEDDisplay.SegmentSpacing
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.SegmentUnlitColor
 Summary
@@ -704,20 +747,21 @@ Description
   SegmentUnlitColor specifies the color to use for unlit segments. Read SegmentUnlitColor to retrieve
   which color is used for segments that are not lit or set it to a new value.
 
-  SegmentUnlitColor can be set to any color value. In addition two extra color constants are added
-  and the meaning of one predefined constance has changed:
+  SegmentUnlitColor can be set to any color value. In addition two extra color constants are added and
+  the meaning of one predefined constance has changed:
 
   <TABLE>
-    Constant                  Value       Meaning
-    ========                  =====       =======
-    clDefaultBackground       $20100001   Unlit color is calculated based on the current background
-                                            color.
-    clDefaultLitColor         $20100002   Unlit color is calculated based on the difference between
-                                            the lit color and background color.
-    clNone                    $1FFFFFFF   Unlit color is not used; unlit segments are not rendered.
+    Constant             Value      Meaning
+    ===================  =========  ==========================================================
+    clDefaultBackground  $20100001  Unlit color is calculated based on the current background
+                                      color.
+    clDefaultLitColor    $20100002  Unlit color is calculated based on the difference between
+                                      the lit color and background color.
+    clNone               $1FFFFFFF  Unlit color is not used; unlit segments are not rendered.
   </TABLE>
 See Also
   TJvCustomSegmentedLEDDisplay.SegmentLitColor
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.Slant
 Summary
@@ -730,13 +774,14 @@ Description
 See Also
   TJvCustomSegmentedLEDDigit.Width, TJvCustomSegmentedLEDDisplay.DigitHeight,
   TJvCustomSegmentedLEDDisplay.DigitSpacing, TJvCustomSegmentedLEDDisplay.DigitWidth
+
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSegmentedLEDDisplay.Text
 Summary
   Specifies the text of the display.
 Description
-  Text specifies the text to render. Read Text to determine the currently rendered text or set it to
-  a new value.
+  Text specifies the text to render. Read Text to determine the currently rendered text or set it to a
+  new value.
 
   If CharacterMapper is not assigned changing Text will just store the new value, otherwise the new
   value is parsed by the mapper and the resulting value is stored.
@@ -746,12 +791,14 @@ Description
 See Also
   TJvCustomSegmentedLEDDigit, TJvCustomSegmentedLEDDisplay.CharacterMapper,
   TJvCustomSegmentedLEDDisplay.Digits
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper
 Summary
   Write here a summary (1 line)
 Description
   Write here a description
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.CharMapping
 Summary
@@ -763,6 +810,7 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.Clear
 Summary
@@ -779,6 +827,7 @@ Summary
   Current digit for which we are mapping.
 Description
   CurDigit is a reference to the digit we are currently mapping text for.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.Display
 Summary
@@ -788,6 +837,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.LoadDefaultMapping
 Summary
@@ -797,6 +847,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.LoadFromFile
 Summary
@@ -816,22 +867,23 @@ See Also
 Summary
   Reads a character mapping from a stream.
 Description
-  LoadFromStream will read a character mapping from the specified stream and applies it to the
-  mapping table.
+  LoadFromStream will read a character mapping from the specified stream and applies it to the mapping
+  table.
 
   If the current position of the stream does not refer to a valid mapping for this mapper class, an
   exception is raised (the stream position will not have changed nor will the mapping table be
   changed).
 
-  Before reading of the actual mapping, the table is first cleared with a call to Clear. Next the
-  data from the stream is read for each mapped character and applies to the mapping table.
+  Before reading of the actual mapping, the table is first cleared with a call to Clear. Next the data
+  from the stream is read for each mapped character and applies to the mapping table.
 Parameters
-  Stream - Stream from which to read the mapping table. Reading starts at the current position of
-        the stream. If the stream points to an invalid mapping, the position will not have
-            changed. After reading the stream's position is updated to point to the first byte
-            following the mapping.
+  Stream - Stream from which to read the mapping table. Reading starts at the current position of the
+            stream. If the stream points to an invalid mapping, the position will not have changed.
+            After reading the stream's position is updated to point to the first byte following the
+            mapping.
 See Also
   TJvBaseSegmentedLEDCharacterMapper.LoadFromFile, TJvBaseSegmentedLEDCharacterMapper.SaveToStream
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.MappingChanged
 Summary
@@ -841,6 +893,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDCharacterMapper.MapText
 Summary
@@ -857,41 +910,41 @@ Description
 
   The mapping string can contain:
 
-  * a single character, except for [. The mapping for this character
-    is applied to the digit.
-  * control string between []. Between these two brackets you can modify the segment modifier flag,
-    map a character and control individual segments.
+  * a single character, except for [. The mapping for this character is applied to the digit.
+  * control string between []. Between these two brackets you can modify the segment modifier flag, map
+    a character and control individual segments.
 
   List of control items:
   <TABLE>
     Control item            Description
-    ============            ===========
-    &<I>Character</I>       Maps a single character and adds/removes the segments to/from the digit.
-                              Note that you are allowed to specify multiple & and # items for a
-                              single digit to "merge" two or more characters.
-    #<I>ASCII value</I>     Maps the character specified by the ordinal value and add/removes the
-                              segments to/from the digit. Note that you allowed to specify multiple
-                              # and & items for a single digit to "merge" two or more characters.
-    +                       Sets the segment modifier to "add": merge new segments with existing
-                              segments.
-    -                       Sets the segment modifier to "remove": remove new segments from the
+    ======================  ==================================================================
+    &<I>Character</I>       Maps a single character and adds/removes the segments to/from the
+                              digit. Note that you are allowed to specify multiple & and #
+                              items for a single digit to "merge" two or more characters.
+    #<I>ASCII value</I>     Maps the character specified by the ordinal value and add/removes
+                              the segments to/from the digit. Note that you allowed to
+                              specify multiple # and & items for a single digit to "merge"
+                              two or more characters.
+    +                       Sets the segment modifier to "add": merge new segments with
                               existing segments.
-    <I>Segment name(s)</I>  Adds/removes the specified segments to/from the digit. Segment names may
-                              be separated by a comma.
+    -                       Sets the segment modifier to "remove": remove new segments from
+                              the existing segments.
+    <I>Segment name(s)</I>  Adds/removes the specified segments to/from the digit. Segment
+                              names may be separated by a comma.
   </TABLE>
 
   Control items may be separated by a semicolon.
+Note
+  since the open bracket "[" is used to signal the start of a control items, you can only map it by
+  specifying <B>[&[]</B> in the map text.
 
-  Note: since the open bracket "[" is used to signal the start of a control items, you can only map
-  it by specifying <B>[&[]</B> in the map text.
-
-  Note: characters that can not be mapped are interpreted as an empty digit (i.e. has no influence on
-  the digit) and will effectively be skipped.
+  characters that can not be mapped are interpreted as an empty digit (i.e. has no influence on the
+  digit) and will effectively be skipped.
 Parameters
   Text   - Points to the text to map. On exit of the method, Text will point to the text to map for
-          the next digit.
-  ADigit - Reference to the digit to map for. In some cases certain digit properties may influence
-         the actual mapping applied.
+            the next digit.
+  ADigit - Reference to the digit to map for. In some cases certain digit properties may influence the
+            actual mapping applied.
 See Also
   PrimMapText
 
@@ -915,11 +968,11 @@ Summary
 Description
   SaveToStream will write the mapping table to the specified stream.
 
-  The mapping table will be stored at the current position of the stream and will only contain data
-  for the actual mapped characters.
+  The mapping table will be stored at the current position of the stream and will only contain data for
+  the actual mapped characters.
 Parameters
   Stream - Stream to which to write the mapping table. After writing the stream's position is updated
-  to point to the first byte following the mapping.
+            to point to the first byte following the mapping.
 See Also
   TJvBaseSegmentedLEDCharacterMapper.LoadFromStream, TJvBaseSegmentedLEDCharacterMapper.SaveToFile
 
@@ -928,8 +981,8 @@ See Also
 Summary
   Flag indicating if new segments are added or removed from the segment list.
 Description
-  The SegMapRemoves indicates if new segments are added (default) or removed from the segment list
-  for the digit.
+  The SegMapRemoves indicates if new segments are added (default) or removed from the segment list for
+  the digit.
 
   This flag is manipulated by the mapping string when it detects a + or - symbol within the control
   item markers ([ and ]).
@@ -942,8 +995,8 @@ Summary
   Contains the mapping text for the digit.
 Description
   TextForDigit keeps track of the applied mapping texts. Upon completion of the mapping this property
-  will contain a slightly optimized version of the original mapping text (i.e. a #65 control item
-  will be rewritten as a &A; mappings that did not result in any change will not be present in this
+  will contain a slightly optimized version of the original mapping text (i.e. a #65 control item will
+  be rewritten as a &A; mappings that did not result in any change will not be present in this
   property).
 See Also
   TJvBaseSegmentedLEDCharacterMapper.MapText
@@ -954,8 +1007,9 @@ See Also
 Summary
   Defines the metaclass for TJvCustomSegmentedLEDDigit.
 Description
-  TJvSegmentedLEDDigitClass is the metaclass for TJvCustomSegmentedLEDDigit. Its value is the class reference for
-  TJvCustomSegmentedLEDDigit or for one of its descendants.
+  TJvSegmentedLEDDigitClass is the metaclass for TJvCustomSegmentedLEDDigit. Its value is the class
+  reference for TJvCustomSegmentedLEDDigit or for one of its descendants.
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDDigitClassName
 <TITLE TJvSegmentedLEDDigitClassName type>
@@ -966,6 +1020,7 @@ Description
   to attach a property editor to it.
 See Also
   TJvCustomSegmentedLEDDisplay.DigitClassName
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDDigits
 Summary
@@ -973,12 +1028,13 @@ Summary
 Description
   TJvSegmentedLEDDigits is a TOwnedCollection derivative used to hold the list of digits used by a
   <LINK TJvCustomSegmentedLEDDisplay, segmented LED display>.
+Note
+  upon changing the <LINK TJvCustomSegmentedLEDDisplay.DigitClass, digit style> of the display control,
+  the collection will be destroyed and recreated (specifying the new digit class to use). Any reference
+  to a TJvSegmentedLEDDigits might become invalid in such occasion. Generally you will not need to keep
+  a reference to the collection but rather use the <LINK TJvCustomSegmentedLEDDisplay.Digits, Digits>
+  property of the display control.
 
-  Note: upon changing the <LINK TJvCustomSegmentedLEDDisplay.DigitClass, digit style> of the display
-  control, the collection will be destroyed and recreated (specifying the new digit class to use).
-  Any reference to a TJvSegmentedLEDDigits might become invalid in such occasion. Generally you will
-  not need to keep a reference to the collection but rather use the <LINK
-  TJvCustomSegmentedLEDDisplay.Digits, Digits> property of the display control.
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDDigits.Items
 Summary
@@ -990,9 +1046,10 @@ Parameters
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvSegmentedLEDDisplay
-<TITLEIMG TJvCustomSegmentedLEDDisplay>
+<TITLEIMG TJvSegmentedLEDDisplay>
 JVCLInfo
   GROUP=JVCL.HMI.Indicators
   FLAG=Component
@@ -1008,9 +1065,9 @@ Description
   display').
 
   The control simulates this by rendering the bars and dots. It allows to use any color for the
-  segments and allows to render both lit and unlit segments in two different colors (conventional
-  LED displays often show unlit segments due to either a backlight is being used (as sometimes used
-  with LCD displays) or because a neighbouring segment is lit and the optical separation is not good
+  segments and allows to render both lit and unlit segments in two different colors (conventional LED
+  displays often show unlit segments due to either a backlight is being used (as sometimes used with
+  LCD displays) or because a neighbouring segment is lit and the optical separation is not good
   enough). The unlit segments are generally the same color as the lit segment but a lot darker.
 
   The control allows to use any layout by specifying a digit class. Each digit class can provide it's
@@ -1037,15 +1094,18 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TSegCharMapHeader.ID
-Identification string of the header. Each mapper class will define it's own ID string.
+  Identification string of the header. Each mapper class will define it's own ID string.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegCharMapHeader.MappedChars
-Bit array of characters actually mapped. Characters that are not present in this set are not stored at all.
+  Bit array of characters actually mapped. Characters that are not present in this set are not stored
+  at all.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegCharMapHeader.Flags
-Flags. Bits 0 through 15 represent the size in bytes stored for each character. If bit 16 is set to 1 the '.' and ',' should be remapped to the actual DecimalSeparator and ThousandSeparator respectively upon reading.
+  Flags. Bits 0 through 15 represent the size in bytes stored for each character. If bit 16 is set to 1
+  the '.' and ',' should be remapped to the actual DecimalSeparator and ThousandSeparator respectively
+  upon reading.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderInfo
@@ -1053,16 +1113,16 @@ Flags. Bits 0 through 15 represent the size in bytes stored for each character. 
 Summary
   Represents the rendering info for a segment.
 Description
-  TSegmentRenderInfo represents the rendering info for a segment. It consists of a render type flag
-  and an array of TPoint values. How this point array is interpreted depends on the render type flag.
+  TSegmentRenderInfo represents the rendering info for a segment. It consists of a render type flag and
+  an array of TPoint values. How this point array is interpreted depends on the render type flag.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderInfo.RenderType
-Specifies the segment render type.
+  Specifies the segment render type.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderInfo.Points
-Array of TPoint values. How these TPoint values are used depends on the render type flag.
+  Array of TPoint values. How these TPoint values are used depends on the render type flag.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderInfoArray
@@ -1083,21 +1143,23 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderType.srtNone
-Segment is not rendered. The TSegmentRenderInfo.Points array is not used.
+  Segment is not rendered. The TSegmentRenderInfo.Points array is not used.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderType.srtPolygon
-Segment is rendered as a polygon. The TSegmentRenderInfo.Points array are the points used in a call to TCanvas.Polygon.
+  Segment is rendered as a polygon. The TSegmentRenderInfo.Points array are the points used in a call
+  to TCanvas.Polygon.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderType.srtRect
-Segment is rendered as a rectangle. Only the first two items of the TSegmentRenderInfo.Points array are used. THe first TPoint is the upper left corner and the second TPoint is the lower right corner.
+  Segment is rendered as a rectangle. Only the first two items of the TSegmentRenderInfo.Points array
+  are used. THe first TPoint is the upper left corner and the second TPoint is the lower right corner.
 
 ----------------------------------------------------------------------------------------------------
 @@TSegmentRenderType.srtCircle
-Segment is rendered as a circle or ellipse. Only the first two items of the
-TSegmentRenderInfo.Points array are used. THe first TPoint is the upper left corner and the second
-TPoint is the lower right corner of the bounding rectangle.
+  Segment is rendered as a circle or ellipse. Only the first two items of the TSegmentRenderInfo.Points
+  array are used. THe first TPoint is the upper left corner and the second TPoint is the lower right
+  corner of the bounding rectangle.
 
 ----------------------------------------------------------------------------------------------------
 @@TSlantAngle
@@ -1105,8 +1167,8 @@ TPoint is the lower right corner of the bounding rectangle.
 Summary
   Represents the slant angle of a digit.
 Description
-  The TSlantAngle type is used to represent the slant angle of a digit. It's limited to 0 (up right)
-  to 44 degrees
+  The TSlantAngle type is used to represent the slant angle of a digit. It's limited to 0 (up right) to
+  44 degrees
 
 ----------------------------------------------------------------------------------------------------
 @@TSLDHitInfo
@@ -1119,19 +1181,19 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TSLDHitInfo.shiNowhere
-Specified coordinate does not belong to the control or digit.
+  Specified coordinate does not belong to the control or digit.
 
 ----------------------------------------------------------------------------------------------------
 @@TSLDHitInfo.shiDigit
-Specified coordinate belongs to a/the digit.
+  Specified coordinate belongs to a/the digit.
 
 ----------------------------------------------------------------------------------------------------
 @@TSLDHitInfo.shiDigitSegment
-Specified coordinate belongs to a segment of a/the digit.
+  Specified coordinate belongs to a segment of a/the digit.
 
 ----------------------------------------------------------------------------------------------------
 @@TSLDHitInfo.shiClientArea
-Specified coordinate belongs to the client area of the control.
+  Specified coordinate belongs to the client area of the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TUnlitColor
@@ -1143,12 +1205,12 @@ Description
   additional constants are registered for it:
 
   <TABLE>
-    Constant                  Value       Meaning
-    ========                  =====       =======
-    clDefaultBackground       $20100001   Unlit color is calculated based on the current background
-                                            color.
-    clDefaultLitColor         $20100002   Unlit color is calculated based on the difference between
-                                            the lit color and background color.
+    Constant             Value      Meaning
+    ===================  =========  ==========================================================
+    clDefaultBackground  $20100001  Unlit color is calculated based on the current background
+                                      color.
+    clDefaultLitColor    $20100002  Unlit color is calculated based on the difference between
+                                      the lit color and background color.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -1175,9 +1237,9 @@ See Also
 Summary
   Translates a \TUnlitColor value into it's string representation.
 Description
-  UnlitColorToString translates a TUnLitColor value into it's string representation.
-  UnlitColorToString behaves exactly the same as ColorToString but will also recognise and translate
-  the additional color values defined for TUnlitColor.
+  UnlitColorToString translates a TUnLitColor value into it's string representation. UnlitColorToString
+  behaves exactly the same as ColorToString but will also recognise and translate the additional color
+  values defined for TUnlitColor.
 Parameters
   Color - Color value to be translated into a string.
 See Also
@@ -1189,8 +1251,8 @@ See Also
 Summary
   Unregisters segmented LED digit classes belonging to a specific module from the system.
 Description
-  UnregisterModuleSegmentedLEDDigitClasses unregisters all segmented LED digit classes declared in
-  the specified module (DLL or package) from the system.
+  UnregisterModuleSegmentedLEDDigitClasses unregisters all segmented LED digit classes declared in the
+  specified module (DLL or package) from the system.
 
   This method is called upon termination/unloading of a module.
 Parameters

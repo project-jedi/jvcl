@@ -8,7 +8,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewer
 <TITLEIMG TJvOwnerDrawViewer>
@@ -18,8 +17,8 @@ JVCLInfo
 Summary
   Add a TJvOwnerDrawViewer control to a form to present arbitrary information in a grid.
 Description
-  TJvOwnerDrawViewer provides the Options property to control the
-  appearance of the items in the grid, as well as the OnDrawItem event to draw the items.
+  TJvOwnerDrawViewer provides the Options property to control the appearance of the items in the grid,
+  as well as the OnDrawItem event to draw the items.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewer.OnDrawItem
@@ -44,8 +43,8 @@ See Also
 Summary
   Class that defines the available options for a TJvOwnerDrawViewer.
 Description
-  TJvOwnerDrawViewerOptions derives from TJvViewerOptions and publishes many of its properties but
-  does not add any new functionality. See the documentation for TJvViewerOptions for more details.
+  TJvOwnerDrawViewerOptions derives from TJvViewerOptions and publishes many of its properties but does
+  not add any new functionality. See the documentation for TJvViewerOptions for more details.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.Alignment
@@ -53,23 +52,21 @@ Summary
   Controls the horizontal placement of the text within an item.
 Description
   Set Alignment to specify how the text of the items in the grid should be justified.
-  
+
   This property has no effect in an owner draw viewer and is only provided as a convenience to the
-  user.
-  You are still responsible for drawing any text with the correct justification.
+  user. You are still responsible for drawing any text with the correct justification.
 See Also
   TJvOwnerDrawViewerOptions.Layout, TJvOwnerDrawViewerOptions.ShowCaptions
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.AutoCenter
 Summary
-  Determines whether the grid items are centered in the control or if they are calculated from the
-  top, left edge of the control.
+  Determines whether the grid items are centered in the control or if they are calculated from the top,
+  left edge of the control.
 Description
   Set AutoCenter to true to adjust the items in the grid so they appear in the middle of the control.
-  AutoCenter is calcualted differently depending on which scrollbar is currently visible. For
-  example, when the horizontal scrollbar is used (ie ScrollBar = tvHorizontal), items are centered
-  vertically.
+  AutoCenter is calcualted differently depending on which scrollbar is currently visible. For example,
+  when the horizontal scrollbar is used (ie ScrollBar = tvHorizontal), items are centered vertically.
 See Also
   TJvOwnerDrawViewerOptions.ScrollBar
 
@@ -78,16 +75,16 @@ See Also
 Summary
   Defines the color pattern used for selected items.
 Description
-  Use the properties and methods of BrushPattern to define how the background of selected items
-  should be drawn.
+  Use the properties and methods of BrushPattern to define how the background of selected items should
+  be drawn.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.DragAutoScroll
 Summary
   Defines whether the control automatically scrolls when an item is draged near the edge.
 Description
-  Set DragAutoScroll to true to make the control automatically scroll when an item is dragged near
-  the edge of the control and the contrl can be scrolled in that direction.
+  Set DragAutoScroll to true to make the control automatically scroll when an item is dragged near the
+  edge of the control and the contrl can be scrolled in that direction.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.Height
@@ -102,9 +99,9 @@ Description
 Summary
   Defines the horizontal spacing between items in the grid.
 Description
-  Use HorzSpacing to \read and change the horizontal spacing between items in the grid. HorzSpacing
-  is expressed in pixels. HorzSpacing combined with Width defines the total width an item occupies in
-  the control.
+  Use HorzSpacing to \read and change the horizontal spacing between items in the grid. HorzSpacing is
+  expressed in pixels. HorzSpacing combined with Width defines the total width an item occupies in the
+  control.
 See Also
   TJvOwnerDrawViewerOptions.Height, TJvOwnerDrawViewerOptions.VertSpacing,
   TJvOwnerDrawViewerOptions.Width
@@ -114,8 +111,8 @@ See Also
 Summary
   Defines whether the control keeps track of the current location of the mouse pointer.
 Description
-  Set HotTrack to True to provide visual feedback to the user about which item would be selected if
-  the mouse button is clicked.
+  Set HotTrack to True to provide visual feedback to the user about which item would be selected if the
+  mouse button is clicked.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.Layout
@@ -124,10 +121,9 @@ Summary
 Description
   Set Layout to specify how the text of an item is placed within the control. Layout is the vertical
   analog to the Alignment property.
-  
+
   This property has no effect in an owner draw viewer and is only provided as a convenience to the
-  user.
-  You are still responsible for drawing any text with the correct justification and placement.
+  user. You are still responsible for drawing any text with the correct justification and placement.
 See Also
   TJvOwnerDrawViewerOptions.Alignment, TJvOwnerDrawViewerOptions.ShowCaptions
 
@@ -137,22 +133,22 @@ Summary
   Specifies whether items are read into the control as needed or all at once.
 Description
   If LazyRead is true, only items that are currently visible are passed to the OnDrawItem event. When
-  LazyRead is false, all items are pased to onDrawItem regardless of whether they are currently
-  visible or not.
+  LazyRead is false, all items are pased to onDrawItem regardless of whether they are currently visible
+  or not.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.MultiSelect
 Summary
   Determines whether the user can select more than one element at a time.
 Description
-  Set MultiSelect to True to allow the user to select multiple items. If MultiSelect if False,
-  multiple items cannot be selected in the list box at the same time.
-  
+  Set MultiSelect to True to allow the user to select multiple items. If MultiSelect if False, multiple
+  items cannot be selected in the list box at the same time.
+
   MultiSelect allows users to select multiple non-sequential items. It also allows users to select a
-  range of items in one operation. To select non-sequential items, hold the Ctrl key while clicking
-  on the items. To select a range of items, select the first item, hold the Shift key and select the
-  last item.
-  
+  range of items in one operation. To select non-sequential items, hold the Ctrl key while clicking on
+  the items. To select a range of items, select the first item, hold the Shift key and select the last
+  item.
+
   When MultiSelect is True and multiple items are selected, the value of the SelectedIndex property,
   which indicates the index of the selected item, is the index item that was selected first.
 
@@ -162,9 +158,8 @@ Summary
   Determines whether right-clicks changes the SelectedIndex property.
 Description
   Use RightClickSelect to allow the SelectedINdex property to indicate items the user clicks with the
-  right mouse button.  If RightClickSelect is True, the value of SelectedIndex is the value of the
-  item last clicked with either the right or left mouse button.  If RightClickSelect is False, the
-  value of
+  right mouse button. If RightClickSelect is True, the value of SelectedIndex is the value of the item
+  last clicked with either the right or left mouse button. If RightClickSelect is False, the value of
   SelectedIndex is the item last clicked using the left mouse button.
 
 ----------------------------------------------------------------------------------------------------
@@ -176,7 +171,7 @@ Description
   the items don't fit in the current ClientRect. When ScrollBar is tvHorizontal, the control displays
   as many rows as possible and determines the number of columns based on the numberof rows. If all
   items can't fit into the current ClientRect, a horizontal scrollbar is displayed.
-  
+
   When ScrollBar is tvVertical, the control displays as many columns as possible and determines the
   number of rows based on this value. If all items can't fit into the current ClientRect, a vertical
   scrollbar is displayed.
@@ -187,7 +182,7 @@ Summary
   Sepcifies whether captions should be shown or not.
 Description
   Set ShowCaptions to true to adjust the TRects passed to OnDrawItem to make room for a caption.
-  
+
   Since the owner draw viewer doesn't have its own Caption, it is up to you to draw the text of each
   item in the OnDrawItem.
 See Also
@@ -200,13 +195,13 @@ Summary
 Description
   Set Smooth to True to specify that the scroll bar should dynamically adjust its scrolling increment
   based on the size of the associated control’s client area.
-  
+
   When Smooth is True, clicking the end arrows of the scrollbar scrolls the associated control by
   approximately one tenth of its client area, and clicking the scrollbar beside the thumb tab scrolls
-  the control by the length of the client area minus the amount scrolled by the end arrows. When
-  Smooth is False, the
-  Increment property controls the amount of scrolling when the user clicks the end arrows, and
-  clicking beside the thumb tab scrolls the control by the entire length of the client area.
+  the control by the length of the client area minus the amount scrolled by the end arrows. When Smooth
+  is False, the Increment property controls the amount of scrolling when the user clicks the end
+  arrows, and clicking beside the thumb tab scrolls the control by the entire length of the client
+  area.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOwnerDrawViewerOptions.Tracking
@@ -214,9 +209,9 @@ Summary
   Determines whether the scroll box moves before the thumb tab is released.
 Description
   Use Tracking to control whether the scrollbar and associated control repaint while the thumb tab is
-  dragged with the mouse.  If Tracking is True, the images moves as the user drags the thumb tab. If
+  dragged with the mouse. If Tracking is True, the images moves as the user drags the thumb tab. If
   Tracking is False, the image remains static until the thumb tab is released.
-  
+
   Repainting while the thumb tab is dragged can provide useful feedback to the user about how far the
   control has scrolled, but slows performance.
 
@@ -237,8 +232,8 @@ See Also
 Summary
   Defines the Width of an item in the grid.
 Description
-  Use Width to read and change the width of an item in the grid. Width is expressed in pixels.
-  Width combined with HorzSpacing defines the total width an item occupies in the control.
+  Use Width to read and change the width of an item in the grid. Width is expressed in pixels. Width
+  combined with HorzSpacing defines the total width an item occupies in the control.
 See Also
   TJvOwnerDrawViewerOptions.Height, TJvOwnerDrawViewerOptions.HorzSpacing,
   TJvOwnerDrawViewerOptions.VertSpacing

@@ -8,7 +8,6 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvPositionInMenu
 <TITLE TJvPositionInMenu type>
@@ -19,11 +18,11 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPositionInMenu.pmTop
-Inserts the menu items of the popup menu at the top of the system menu.
+  Inserts the menu items of the popup menu at the top of the system menu.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvPositionInMenu.pmBottom
-Inserts the menu items of the popup menu at the bottom of the system menu.
+  Inserts the menu items of the popup menu at the bottom of the system menu.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSystemPopup
@@ -34,8 +33,8 @@ JVCLInfo
 Summary
   Adds menu items to the system menu.
 Description
-  Use TJvSystemPopup to add menu items to the system menu (also known as the system menu or the
-  control menu).
+  Use TJvSystemPopup to add menu items to the system menu (also known as the system menu or the control
+  menu).
 
   Use Popup to associate a pop-up menu with TJvSystemPopup. TJvSystemPopup adds the menu items of the
   pop-up menu to the system menu.
@@ -68,8 +67,6 @@ Summary
 Description
   Do not call Destroy directly in an application. Instead, call Free. Free verifies that the
   TJvSystemPopup object is not nil and only then calls Destroy.
-Parameters
-  None.
 See Also
   TJvSystemPopup.Create
 
@@ -79,8 +76,8 @@ Summary
   Responds to notifications when objects are about to be created or destroyed.
 Description
   Notification is called automatically when components are created or destroyed. After calling the
-  inherited method, Notification checks whether the component specified by the Popup property is
-  about to be destroyed. If the component is going away, Notification sets the Popup property to nil.
+  inherited method, Notification checks whether the component specified by the Popup property is about
+  to be destroyed. If the component is going away, Notification sets the Popup property to nil.
 Parameters
   AComponent - Identifies the component that is about to be created or destroyed.
   Operation  - Specifies whether the component is about to be created or destroyed.
@@ -107,15 +104,15 @@ Description
 
   These are the possible values of Position:
   <TABLE>
-  Value          Meaning
-  -----          -------
+    Value          Meaning
+    -------------  ---------------------------------------------------------------------------
 
-  ppNone         The popup menu isn't inserted in a system menu.
-  ppForm         The popup menu is inserted in the system menu of the form. Access this system menu
-                  by right-clicking on the forms title bar.
-  ppApplication  The popup menu is inserted in the system menu of the application. Access this system
-                  menu by right-clicking the window button on the taskbar that is associated with the
-                  application.
+    ppNone         The popup menu isn't inserted in a system menu.
+    ppForm         The popup menu is inserted in the system menu of the form. Access this
+                     system menu by right-clicking on the forms title bar.
+    ppApplication  The popup menu is inserted in the system menu of the application. Access
+                     this system menu by right-clicking the window button on the taskbar that
+                     is associated with the application.
   </TABLE>
 See Also
   TJvSystemPopup.Popup, TJvSystemPopup.PositionInMenu

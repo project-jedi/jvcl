@@ -1,51 +1,41 @@
 ##Package: System
-##Status: Locked to Olivier
+##Status: Completed, Locked to Olivier
 ----------------------------------------------------------------------------------------------------
 @@JvXmlDatabase.pas
 Summary
-  Contains the TJvXmlDatabase component.
+  Contains the TJvXMLDatabase component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLDatabase
 <TITLEIMG TJvXMLDatabase>
 JVCLInfo
-  GROUP=JVCL.Internet.XML
+  GROUP=JVCL.Internet.ConvertersAndParsers.XML,JVCL.DBAware
   FLAG=Component
 Summary
   A component to access the content of an XML file using SQL like syntax.
 Description
-  TJvXMLDatabase is a component to retrieve data from an XML
-  file using SQL like syntax. Specify the SQL string by
-  assigning to the Query property. This component also has
-  limited support for update statements.
-
-
-  Note
-
-    * All columns in the WHERE clause must be part of the
-      SELECT clause as well
-    * WHERE conditions must be enclosed in parenthesizes (i.e
-      WHERE (Col1=5) AND Col2='Noodles')
-    * Update statements are limited to simple operations (i.e
-      SET Col1 = Col1 + 1, Col2 = 'FooBar')
+  TJvXMLDatabase is a component to retrieve data from an XML file using SQL like syntax. Specify the
+  SQL string by assigning to the Query property. This component also has limited support for update
+  statements.
+Note
+  * All columns in the WHERE clause must be part of the SELECT clause as well
+  * WHERE conditions must be enclosed in parenthesizes (i.e WHERE (Col1=5) AND Col2='Noodles')
+  * Update statements are limited to simple operations (i.e SET Col1 = Col1 + 1, Col2 = 'FooBar')
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLDatabase.Query
 Summary
-  Specifies the SQL like string to use to retrieve data from
-  the XML file.
+  Specifies the SQL like string to use to retrieve data from the XML file.
 Description
-  Call Query to send an SQL statement to the XML file or files
-  and optionally retrieve any results
+  Call Query to send an SQL statement to the XML file or files and optionally retrieve any results
 Parameters
-  AQuery :  The SQL string to send to the XML file or files.
-  Returns
-  A TJvXMLQuery instance that describes any returned values.
-  Use the return value to iterate over all found nodes.
+  AQuery - The SQL string to send to the XML file or files.
+Return value
+  A TJvXMLQuery instance that describes any returned values. Use the return value to iterate over all
+  found nodes.
 See Also
   TJvXMLQuery
 
@@ -54,11 +44,9 @@ See Also
 Summary
   Saves changes made to all loaded tables (XML files).
 Description
-  Call SaveTables to save modifications done to any loaded
-  table. Tables are loaded as required by queries. If your
-  queries makes changes to the loaded XML files (using update
-  statements like SET), the changes will not be saved back to
-  file unless SaveTables is called.
+  Call SaveTables to save modifications done to any loaded table. Tables are loaded as required by
+  queries. If your queries makes changes to the loaded XML files (using update statements like SET),
+  the changes will not be saved back to file unless SaveTables is called.
 See Also
   TJvXMLDatabase.Query
 
@@ -67,11 +55,10 @@ See Also
 Summary
   Specifies where XML files are located.
 Description
-  Use TablePath to specify the path to the data (XML) files.
-  This path is used in conjuction with filenames in the SQL
-  statement sent in Query to determine what file or files to
-  read from. For example, if TablePath is set to 'C:\\temp\\tables' and Query contains 'SELECT * FROM
-  data1.xml', the component will look for the file C:\\temp\\tables\\data1.xml.
+  Use TablePath to specify the path to the data (XML) files. This path is used in conjuction with
+  filenames in the SQL statement sent in Query to determine what file or files to read from. For
+  example, if TablePath is set to 'C:\\temp\\tables' and Query contains 'SELECT * FROM data1.xml', the
+  component will look for the file C:\\temp\\tables\\data1.xml.
 See Also
   TJvXMLDatabase.Query
 
@@ -79,10 +66,12 @@ See Also
 @@TJvXMLDatabaseException
 Summary
   Exception class used by the XML database components
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLInstruction
-<TITLE TJvXmlInstruction type>
+<TITLE TJvXMLInstruction type>
 Summary
   Represents the requested query instruction.
 Description
@@ -90,23 +79,23 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLInstruction.xiSelect
-The query represents a SELECT statement.
+  The query represents a SELECT statement.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLInstruction.xiUpdate
-The query represents an UPDATE statement.
+  The query represents an UPDATE statement.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLInstruction.xiInsert
-The query represents an INSERT statement.
+  The query represents an INSERT statement.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLInstruction.xiDelete
-The query represents a  DELETE statement.
+  The query represents a DELETE statement.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLOrderConvertion
-<TITLE TJvXmlOrderConvertion type>
+<TITLE TJvXMLOrderConvertion type>
 Summary
   Represents how to order a result set.
 Description
@@ -116,24 +105,26 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLOrderConvertion.ocNone
-No preferences.
+  No preferences.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLOrderConvertion.ocDate
-Order by date.
+  Order by date.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLOrderConvertion.ocInteger
-Order by integer value.
+  Order by integer value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLOrderConvertion.ocFloat
-Order by float value.
+  Order by float value.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQuery
 Summary
   Class that is used to return query information.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQuery.LastId
@@ -159,8 +150,8 @@ See Also
 Summary
   Used internally to update the result sets with new values.
 Description
-  Don't create instances of TJvXmlQueryAssignement: it is used internally to update and validate
-  result sets with new values.
+  Don't create instances of TJvXmlQueryAssignement: it is used internally to update and validate result
+  sets with new values.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryAssignement.Column
@@ -181,6 +172,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryAssignement.SecondKind
 Summary
@@ -190,6 +182,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryAssignement.SecondValue
 Summary
@@ -199,6 +192,7 @@ Description
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryAssignement.UpdateElem
 Summary
@@ -332,6 +326,8 @@ Description
 @@TJvXMLQueryParser.CheckConditions
 Summary
   Checks an XML element (and sub-elements, if available) for correct syntax.
+Description
+  Write here a description
 Parameters
   AXMLElem - The XML element to check.
 Return value
@@ -341,31 +337,43 @@ Return value
 @@TJvXMLQueryParser.Columns
 Summary
   Provides indexed access to the columns in the query.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryParser.ColumnsCount
 Summary
   Returns the number of columns in the query.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryParser.Condition
 Summary
   Provides indexed access to query conditions.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryParser.ConditionsCount
 Summary
   Returns the number of conditions in the query.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryParser.Instruction
 Summary
   Specifies the type of query.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryParser.LimitTable
 Summary
   Limits the number of rows in a table based on the use of the 'LIMIT' keyword.
+Description
+  Write here a description
 Parameters
   ATable - The table to limit the rows in.
 
@@ -373,6 +381,8 @@ Parameters
 @@TJvXMLQueryParser.OrderTable
 Summary
   Applies sort order on a table based on the use of the 'ORDER' keyword.
+Description
+  Write here a description
 Parameters
   ATable - The table to order the rows in.
 
@@ -380,6 +390,8 @@ Parameters
 @@TJvXMLQueryParser.Parse
 Summary
   Parses a statement and create the parse tree as necessary.
+Description
+  Write here a description
 Parameters
   AQuery - The statement to parse.
 
@@ -387,6 +399,8 @@ Parameters
 @@TJvXMLQueryParser.Tables
 Summary
   Provides indexed access to all tables in the query.
+Description
+  Write here a description
 See Also
   TableCount
 
@@ -394,6 +408,8 @@ See Also
 @@TJvXMLQueryParser.TablesCount
 Summary
   Returns the number of available tables.
+Description
+  Write here a description
 See Also
   TJvXMLQueryParser.Tables
 
@@ -401,6 +417,8 @@ See Also
 @@TJvXMLQueryParser.UpdateRow
 Summary
   Updates a row with new or modified data.
+Description
+  Write here a description
 Parameters
   ARow - The row to update.
 
@@ -408,6 +426,8 @@ Parameters
 @@TJvXMLQueryParser.Value
 Summary
   Provides indexed access to maintained values.
+Description
+  Write here a description
 See Also
   ValueCount
 
@@ -415,6 +435,8 @@ See Also
 @@TJvXMLQueryParser.ValuesCount
 Summary
   Returns the number of available values.
+Description
+  Write here a description
 See Also
   Values
 
@@ -422,6 +444,8 @@ See Also
 @@TJvXMLQueryTable
 Summary
   Represents a table name and an optional alias.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLQueryTable.Alias
@@ -445,7 +469,7 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetKind
-<TITLE TJvXmlSetKind type>
+<TITLE TJvXMLSetKind type>
 Summary
   Describes the type of SET statement.
 Description
@@ -453,15 +477,15 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetKind.skConstant
-Clause is a constant assignment.
+  Clause is a constant assignment.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetKind.skColumn
-Clause is a column update.
+  Clause is a column update.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetOperator
-<TITLE TJvXmlSetOperator type>
+<TITLE TJvXMLSetOperator type>
 Summary
   Describes allowable operators in SET queries.
 Description
@@ -469,27 +493,27 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetOperator.soNone
-Unknown operator.
+  Unknown operator.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetOperator.soAdd
-'+' operator.
+  '+' operator.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetOperator.soMultiply
-'*' operator.
+  '*' operator.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetOperator.soDivide
-'/' operator.
+  '/' operator.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSetOperator.soSubstract
-'-' operator.
+  '-' operator.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator
-<TITLE TJvXmlSQLOperator type>
+<TITLE TJvXMLSQLOperator type>
 Summary
   Describes allowable SQL compare operators.
 Description
@@ -497,72 +521,74 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opEquals
-'=' sign.
+  '=' sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opGreater
-'>' sign.
+  '> ' sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opSmaller
-'<' sign.
+  ' <' sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opGreaterEquals
-'>=' sign.
+  '> =' sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opSmallerEquals
-'<=' sign.
+  ' <=' sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opLike
-'LIKE' keyword
+  'LIKE' keyword
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opNot
-'NOT' keyword.
+  'NOT' keyword.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opOr
-'OR' keyword.
+  'OR' keyword.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opAnd
-'AND' keyword.
+  'AND' keyword.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opXor
-'XOR' keyword.
+  'XOR' keyword.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opLeftParenthesis
-'(' sign.
+  '(' sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opRightParenthesis
-')' sign.
+  ')' sign.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opConstant
-Operator is a constant.
+  Operator is a constant.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opColumn
-Operator is a column name.
+  Operator is a column name.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opNull
-'NULL' keyword.
+  'NULL' keyword.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLSQLOperator.opNone
-Unknown operator.
+  Unknown operator.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLTable
 Summary
   Represents a table (xml file).
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXMLTable.FileName

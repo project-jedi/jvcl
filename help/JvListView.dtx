@@ -8,19 +8,14 @@ Summary
 Author
   Sébastien Buysse
 
-
 ----------------------------------------------------------------------------------------------------
 @@EJvListViewError
 <TITLE EJvListViewError type>
 Summary
   Write here a summary (1 line)
 Description
-  You don't have to document already described items such as sets,
-  pointers to records etc.
-  (Value = EJVCLException; - for reference)
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  You don't have to document already described items such as sets, pointers to records etc. (Value =
+  EJVCLException; - for reference)
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListItem
@@ -53,10 +48,32 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
+@@TJvListItems
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+
+----------------------------------------------------------------------------------------------------
+@@TJvListItems.QueryInterface
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  IID - Description for this parameter
+  Obj - Description for this parameter
+Return value
+  Describe here what the function returns
+See Also
+  List here other properties, methods (comma seperated)
+  Remove the 'See Also' section if there are no references
+
+----------------------------------------------------------------------------------------------------
 @@TJvListView
 <TITLEIMG TJvListView>
 JVCLInfo
-  GROUP=JVCL.Lists
+  GROUP=JVCL.CommCtrl,JVCL.ListsAndTrees.Lists
   FLAG=Component
 Summary
   Enhanced list view component.
@@ -78,8 +95,8 @@ Description
 Summary
   Specifies whether the control automatically selects the first item in the list.
 Description
-  Set AutoSelect to true to have the list view automatically select the first item in the list when
-  the list gains focus and no item is previously is selected.
+  Set AutoSelect to true to have the list view automatically select the first item in the list when the
+  list gains focus and no item is previously is selected.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.ColumnsOrder
@@ -87,9 +104,6 @@ Summary
   Specifies the column order as a string.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.HeaderImages
@@ -99,8 +113,8 @@ Description
   Assign an existing TImagelist to this property to specify the images to draw on the column headers.
   You also need to set the ImageIndex of individual column headers to display the images.
 Note
-  Due to a limitation of the header control its height is fixed. Always use images that fit within
-  the fixed height of the header.
+  Due to a limitation of the header control its height is fixed. Always use images that fit within the
+  fixed height of the header.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.InvertSelection
@@ -108,9 +122,6 @@ Summary
   Inverts the selection in the list view.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.ItemPopup
@@ -118,9 +129,6 @@ Summary
   Provides access to each nodes popup menu.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.LoadFromCSV
@@ -131,9 +139,6 @@ Description
 Parameters
   FileName  - Description for this parameter
   Separator - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.LoadFromFile
@@ -143,9 +148,6 @@ Description
   Write here a description
 Parameters
   FileName - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.LoadFromStream
@@ -155,6 +157,16 @@ Description
   Write here a description
 Parameters
   Stream - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.LoadFromStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Strings   - Description for this parameter
+  Separator - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -191,9 +203,6 @@ Summary
   Occurs when the list is sorted due to a header click.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.OnHorizontalScroll
@@ -201,9 +210,6 @@ Summary
   Occurs when the control is scrolled horizontally.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.OnLoadProgress
@@ -211,9 +217,6 @@ Summary
   Occurs when a load is in progress.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.OnSaveProgress
@@ -221,9 +224,6 @@ Summary
   Occurs when a save is in progress.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.OnVerticalScroll
@@ -231,22 +231,16 @@ Summary
   Occurs when the control is scrolled vertically.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SaveToCSV
 Summary
-    Saves the listview content to a CSV file.
+  Saves the listview content to a CSV file.
 Description
   Write here a description
 Parameters
   FileName  - Description for this parameter
   Separator - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SaveToFile
@@ -257,9 +251,6 @@ Description
 Parameters
   FileName      - Description for this parameter
   ForceOldStyle - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SaveToStream
@@ -270,6 +261,16 @@ Description
 Parameters
   Stream        - Description for this parameter
   ForceOldStyle - Description for this parameter
+
+----------------------------------------------------------------------------------------------------
+@@TJvListView.SaveToStrings
+Summary
+  Write here a summary (1 line)
+Description
+  Write here a description
+Parameters
+  Strings   - Description for this parameter
+  Separator - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
@@ -293,8 +294,8 @@ See Also
 Summary
   Selects the previous item in the list.
 Description
-  Call SelectPrevItem to select the previous item in the list view. If no item is selected, this
-  method does nothing.
+  Call SelectPrevItem to select the previous item in the list view. If no item is selected, this method
+  does nothing.
 Parameters
   Focus - Set to true to make the new item both selected (default) and focused.
 Return value
@@ -330,9 +331,6 @@ Summary
   Specifies the sort method to use.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.SortOnClick
@@ -340,9 +338,6 @@ Summary
   Specifies whether clicking on a header column sorts the list.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListView.UnselectAll
@@ -350,9 +345,6 @@ Summary
   Removes the selection from selected items.
 Description
   Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvOnProgress
@@ -360,14 +352,9 @@ See Also
 Summary
   Event type used when saving and loading data in a list view.
 Description
-  This type is used by (for reference):
-    TJvListView.OnLoadProgress
-    TJvListView.OnSaveProgress
+  This type is used by (for reference): TJvListView.OnLoadProgress TJvListView.OnSaveProgress
 Parameters
   Sender      - Description for this parameter
   Progression - Description for this parameter
   Total       - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
 

@@ -1,5 +1,5 @@
 ##Package: StdCtrls
-##Status: Incomplete
+##Status: Completed, Incomplete
 ##Skip: TJvListBoxStrings
 ##Skip: TJvListBoxStringsClass
 ----------------------------------------------------------------------------------------------------
@@ -9,7 +9,6 @@ Summary
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
-
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox
@@ -21,8 +20,8 @@ Description
 
   <INCLUDE JvListBox_Features.inc.dtx>
 
-  Do not create instances of TJvCustomListBox. Use TJvCustomListBox as a base class when declaring
-  list boxes, that will use the new behavior introduced in TJvCustomListBox.
+  Do not create instances of TJvCustomListBox. Use TJvCustomListBox as a base class when declaring list
+  boxes, that will use the new behavior introduced in TJvCustomListBox.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.Alignment
@@ -33,11 +32,11 @@ Description
   possible values:
 
   <TABLE>
-  Value           Meaning
-  -----           -------
-  taLeftJustify   Align text on the left side in the list box control.
-  taCenter        Center the text in the list box control.
-  taRightJustify  Align text on the right side in the list box control.
+    Value           Meaning
+    --------------  -----------------------------------------------------
+    taLeftJustify   Align text on the left side in the list box control.
+    taCenter        Center the text in the list box control.
+    taRightJustify  Align text on the right side in the list box control.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -45,8 +44,8 @@ Description
 Summary
   Specifies the bitmap and fill mode to use for the background of the list box.
 Description
-  Use Background to specify the bitmap, fill mode used as background for the list box, and whether
-  the bitmap should actually be drawn.
+  Use Background to specify the bitmap, fill mode used as background for the list box, and whether the
+  bitmap should actually be drawn.
 See Also
   TJvListBoxBackground.FillMode, TJvListBoxBackground.Image, TJvListBoxBackground.Visible
 
@@ -68,39 +67,36 @@ Description
   CreateDragImage is called whenever the user begins to drag an item in the list box by left-clicking
   \on that item and holding the mouse button down, and no OnStartDrag handler is specified.
 
-  It creates a drag image of the string specified by the S parameter. The image will appear next to
-  the mouse cursor during the drag operation.
+  It creates a drag image of the string specified by the S parameter. The image will appear next to the
+  mouse cursor during the drag operation.
 
   You can call CreateDragImage in an OnStartDrag event handler to let the list box handle the start
   drag event in a default way.
 Parameters
   S - Specifies the item being dragged.
 See Also
-  <LINK TJvCustomListBox.DefaultDragDrop, DefaultDragDrop>,
-  <LINK TJvCustomListBox.DefaultDragOver, DefaultDragOver>,
-  <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>
+  <LINK TJvCustomListBox.DefaultDragDrop, DefaultDragDrop>, <LINK TJvCustomListBox.DefaultDragOver,
+  DefaultDragOver>, <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DefaultDragDrop
 Summary
   Handles a drop event.
 Description
-  DefaultDragDrop is called whenever the user drops an object being dragged, and no OnDragDrop
-  handler is specified.
+  DefaultDragDrop is called whenever the user drops an object being dragged, and no OnDragDrop handler
+  is specified.
 
   It moves the item being dragged to its drop position.
 
-  You can call DefaultDragDrop in an OnDragDrop event handler to let the list box handle the drop
-  event in a default way.
+  You can call DefaultDragDrop in an OnDragDrop event handler to let the list box handle the drop event
+  in a default way.
 Parameters
   Source - The object being dropped.
   X      - Horizon screen coordinate of the mouse in pixels.
   Y      - Vertical screen coordinate of the mouse in pixels.
 See Also
-  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>,
-  <LINK TJvCustomListBox.DefaultStartDrag, DefaultDragOver>,
-  <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>,
-  TControl.OnDragDrop
+  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>, <LINK TJvCustomListBox.DefaultStartDrag,
+  DefaultDragOver>, <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>, TControl.OnDragDrop
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DefaultDragOver
@@ -110,8 +106,8 @@ Description
   DefaultDragOver is called whenever the user drags an object over the list box, and no OnDragOver
   handler is specified.
 
-  You can call DefaultDragOver in an OnDragOver event handler to let the list box handle the drag
-  over event in a default way.
+  You can call DefaultDragOver in an OnDragOver event handler to let the list box handle the drag over
+  event in a default way.
 Parameters
   Source - The object being dragged.
   X      - Horizon screen coordinate of the mouse in pixels.
@@ -119,10 +115,8 @@ Parameters
   State  - Specifies how the dragged object is moving over the control.
   Accept - Specifies whether to accept the dragged object.
 See Also
-  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>,
-  <LINK TJvCustomListBox.DefaultDragDrop, DefaultDragDrop>,
-  <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>,
-  TControl.OnDragOver
+  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>, <LINK TJvCustomListBox.DefaultDragDrop,
+  DefaultDragDrop>, <LINK TJvCustomListBox.DefaultStartDrag, DefaultStartDrag>, TControl.OnDragOver
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DefaultDrawItem
@@ -138,9 +132,9 @@ Description
 
   You can call DefaultDrawItem in your own OnDrawItem event handler.
 Parameters
-  Index  - The index of the item.
-  ARect   - The rectangle of the item.
-  State  - Indicates the state of the item.
+  Index - The index of the item.
+  ARect - The rectangle of the item.
+  State - Indicates the state of the item.
 See Also
   TControl.OnDrawItem
 
@@ -160,10 +154,8 @@ Description
 Parameters
   DragObject - Not used.
 See Also
-  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>,
-  <LINK TJvCustomListBox.DefaultDragDrop, DefaultDragDrop>,
-  <LINK TJvCustomListBox.DefaultDragOver, DefaultDragOver>,
-  TControl.OnStartDrag
+  <LINK TJvCustomListBox.CreateDragImage, CreateDragImage>, <LINK TJvCustomListBox.DefaultDragDrop,
+  DefaultDragDrop>, <LINK TJvCustomListBox.DefaultDragOver, DefaultDragOver>, TControl.OnStartDrag
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DeleteAllButSelected
@@ -174,8 +166,7 @@ Description
 Note
   MultiSelect must be set to True.
 See Also
-  <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected,
-  SelectAll
+  <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected, SelectAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.DeleteExactString
@@ -196,9 +187,9 @@ See Also
 Summary
   Specifies the color of the text when the control isn't enabled.
 Description
-  Use DisabledTextColor to specify the color of the text characters (as opposed to the background color), when the control
-  isn't enabled. If DisabledTextColor is set to a dithered color, the text appears in the closest
-  non-dithered value.
+  Use DisabledTextColor to specify the color of the text characters (as opposed to the background
+  color), when the control isn't enabled. If DisabledTextColor is set to a dithered color, the text
+  appears in the closest non-dithered value.
 
   Set Enabled to False to disable the control.
 
@@ -239,8 +230,7 @@ Description
 
   If the MultiSelect property is False, InvertSelection does nothing.
 See Also
-  <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected,
-  SelectAll
+  <LINK TJvCustomListBox.DeleteExactString, DeleteExactString>, DeleteSelected, SelectAll
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.ItemRect
@@ -259,16 +249,14 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.ItemsShowing
 Summary
-        The list of strings the list box currently displays.
+  The list of strings the list box currently displays.
 Description
-        ItemsShowing contains all the strings of the items the list box will display. The method
-  either
-        returns the same reference as the Items property or a reference to a virtual TStrings instance
-        that references the currently selected provider.
+  ItemsShowing contains all the strings of the items the list box will display. The method either
+  returns the same reference as the Items property or a reference to a virtual TStrings instance that
+  references the currently selected provider.
 
-        If a provider is selected, ItemsShowing should be considered read-only (and in fact does not
-  allow
-        any changes at all), otherwise it's the same as using the Items property.
+  If a provider is selected, ItemsShowing should be considered read-only (and in fact does not allow
+  any changes at all), otherwise it's the same as using the Items property.
 See Also
   Items
 
@@ -287,10 +275,10 @@ See Also
 Summary
   Specifies the horizontally scrollable width of the list box, in pixels.
 Description
-  Use MaxWidth to specify the number of pixels by which the list box can be scrolled horizontally.
-  If the actual width of the list box is smaller than MaxWidth, and ScrollBars equals ssHorizontal or
-  ssBoth, the list box displays the horizontal scroll bar. If the actual width of the list box is
-  equal to or greater than MaxWidth, the horizontal scroll bar is hidden.
+  Use MaxWidth to specify the number of pixels by which the list box can be scrolled horizontally. If
+  the actual width of the list box is smaller than MaxWidth, and ScrollBars equals ssHorizontal or
+  ssBoth, the list box displays the horizontal scroll bar. If the actual width of the list box is equal
+  to or greater than MaxWidth, the horizontal scroll bar is hidden.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.MeasureProviderItem
@@ -346,9 +334,9 @@ Summary
   Determines whether the list box items can appear on more than one row.
 Description
   Use MultiLine to determine how the list box items are displayed. If MultiLine is True, an item is
-  displayed on more than one row if that item contains a cariage return (#13) symbol.
-  If ScrollBars is set to ssNone or ssVertical then the lines are wrapped if they are longer than the
-  client width of the list box.
+  displayed on more than one row if that item contains a cariage return (#13) symbol. If ScrollBars is
+  set to ssNone or ssVertical then the lines are wrapped if they are longer than the client width of
+  the list box.
 
   If MultiLine is False, the items are displayed on one row only.
 See Also
@@ -405,8 +393,7 @@ See Also
 Summary
   Occurs when the user scrolls the horizontal scroll bar with the mouse or keyboard.
 Description
-  Write an OnHorizontalScroll event handler to respond when the user scrolls the horizontal scroll
-  bar.
+  Write an OnHorizontalScroll event handler to respond when the user scrolls the horizontal scroll bar.
   Set parameter DontScroll to False to prevent the list box's horizontal scroll bar to scroll in
   response of this event. Set DontScroll to True to allow the list box's horizontal scroll bar to
   scroll.
@@ -420,19 +407,18 @@ See Also
 Summary
   Occurs when the selection in the list box is cancelled.
 Description
-  Write an OnSelectCancel event handler to respond when the selection in the list box is cancelled.
-  For example, if you change property MultiSelect or Sorted, the list box cancels the selection in
-  the list box, and triggers an OnSelectCancel event.
+  Write an OnSelectCancel event handler to respond when the selection in the list box is cancelled. For
+  example, if you change property MultiSelect or Sorted, the list box cancels the selection in the list
+  box, and triggers an OnSelectCancel event.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.OnVerticalScroll
 Summary
   Occurs when the user scrolls the vertical scroll bar with the mouse or keyboard.
 Description
-  Write an OnVerticalScroll event handler to respond when the user scrolls the vertical scroll bar.
-  Set parameter DontScroll to False to prevent the list box's vertical scroll bar to scroll in
-  response of this event. Set DontScroll to True to allow the list box's vertical scroll bar to
-  scroll.
+  Write an OnVerticalScroll event handler to respond when the user scrolls the vertical scroll bar. Set
+  parameter DontScroll to False to prevent the list box's vertical scroll bar to scroll in response of
+  this event. Set DontScroll to True to allow the list box's vertical scroll bar to scroll.
 
   Use parameter Msg to determine whether to set DontScroll to True or False.
 See Also
@@ -446,15 +432,13 @@ Description
   <INCLUDE JVCL.Provider.Description.dtx>
 
   When a provider has been selected, the Items property will retain its list of strings. Once you
-  manipulate them (i.e. add or delete strings) the provider will be deselected automatically. Note
-  that the Items property is also manipulated when you use DeleteExactString. You can read the Items
+  manipulate them (i.e. add or delete strings) the provider will be deselected automatically. Note that
+  the Items property is also manipulated when you use DeleteExactString. You can read the Items
   property without the provider being deselected.
 
-        Besides the Items property, you can also use the ItemsShowing method to retrieve a reference
-  to
-        either the normal Items (if no provider is selected) or a dummy list that references the
-  provider
-        items.
+  Besides the Items property, you can also use the ItemsShowing method to retrieve a reference to
+  either the normal Items (if no provider is selected) or a dummy list that references the provider
+  items.
 See Also
   TJvCustomListBox.ItemsShowing
 
@@ -463,19 +447,18 @@ See Also
 Summary
   Determines whether the list box control has scroll bars.
 Description
-  Use ScrollBars to give a list box control horizontal or vertical scroll bars. ScrollBars can take
-  one of the following values:
+  Use ScrollBars to give a list box control horizontal or vertical scroll bars. ScrollBars can take one
+  of the following values:
   <TABLE>
-  Value          Meaning
-  -----          -------
-  ssNone         The control has no scroll bars. If MultiLine is set to
-                  True, the items are wrapped if they are longer than the client width of the list
-                  box.
-  ssHorizontal   The control may have a single scroll bar on the bottom edge.
-  ssVertical     The control has a single scroll bar on the right edge. If MultiLine is
-                  set to True, the items are wrapped if they are longer than the client width of the
-                  list box.
-  ssBoth         The control may have a scroll bar on both the bottom and right edges.
+    Value         Meaning
+    ------------  ----------------------------------------------------------------------------
+    ssNone        The control has no scroll bars. If MultiLine is set to True, the items are
+                    wrapped if they are longer than the client width of the list box.
+    ssHorizontal  The control may have a single scroll bar on the bottom edge.
+    ssVertical    The control has a single scroll bar on the right edge. If MultiLine is set
+                    to True, the items are wrapped if they are longer than the client width
+                    of the list box.
+    ssBoth        The control may have a scroll bar on both the bottom and right edges.
   </TABLE>
 See Also
   TJvCustomListBox.MultiLine
@@ -485,19 +468,16 @@ See Also
 Summary
   \Returns the position of a string in the list.
 Description
-  Call SearchExactString to obtain the position of the first occurrence of a string that matches
-  Value.
-  A string matches Value if it is identical to Value or, if CaseSensitive is False, if it differs
-  only in case.
+  Call SearchExactString to obtain the position of the first occurrence of a string that matches Value.
+  A string matches Value if it is identical to Value or, if CaseSensitive is False, if it differs only
+  in case.
 Parameters
   Value         - The string to search for.
   CaseSensitive - Indicates whether the match must be case\-sensitive.
   StartIndex    - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
-  <LINK TJvCustomListBox.SearchPrefix, SearchPrefix>,
-  <LINK TJvCustomListBox.SearchSubString, SearchSubString>
+  <LINK TJvCustomListBox.SearchPrefix, SearchPrefix>, <LINK TJvCustomListBox.SearchSubString,
+  SearchSubString>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.SearchPrefix
@@ -511,39 +491,33 @@ Parameters
   Value         - The prefix to search for.
   CaseSensitive - Indicates whether the match must be case\-sensitive.
   StartIndex    - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
-  <LINK TJvCustomListBox.SearchExactString, SearchExactString>,
-  <LINK TJvCustomListBox.SearchSubString, SearchSubString>
+  <LINK TJvCustomListBox.SearchExactString, SearchExactString>, <LINK TJvCustomListBox.SearchSubString,
+  SearchSubString>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.SearchSubString
 Summary
   \Returns the position of a string in the list.
 Description
-  Call SearchSubString to obtain the position of the first occurrence of a string that has a
-  substring that matches Value. A substring matches Value if it is identical to Value or, if
-  CaseSensitive is
+  Call SearchSubString to obtain the position of the first occurrence of a string that has a substring
+  that matches Value. A substring matches Value if it is identical to Value or, if CaseSensitive is
   False, if it differs only in case.
 Parameters
   Value         - The substring to search for.
   CaseSensitive - Indicates whether the match must be case\-sensitive.
   StartIndex    - Description for this parameter
-Return value
-  Describe here what the function returns
 See Also
-  <LINK TJvCustomListBox.SearchExactString, SearchExactString>,
-  <LINK TJvCustomListBox.SearchPrefix, SearchPrefix>
+  <LINK TJvCustomListBox.SearchExactString, SearchExactString>, <LINK TJvCustomListBox.SearchPrefix,
+  SearchPrefix>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.SelectedColor
 Summary
   \Background color for selected items.
 Description
-  SelectedColor indicates the background color for selected items. Read
-  SelectedColor to find out which color is used as a background when an item is
-  selected or set it to another value to change it.
+  SelectedColor indicates the background color for selected items. Read SelectedColor to find out which
+  color is used as a background when an item is selected or set it to another value to change it.
 See Also
   TJvCustomListBox.SelectedTextColor, TJvCustomListBox.ShowFocusRect
 
@@ -552,20 +526,19 @@ See Also
 Summary
   Font color for selected items.
 Description
-  SelectedTextColor indicates the font color for selected items. Read
-  SelectedTextColor to find out which color is used for the font when an item is
-  selected or set it to another value to change it.
+  SelectedTextColor indicates the font color for selected items. Read SelectedTextColor to find out
+  which color is used for the font when an item is selected or set it to another value to change it.
 See Also
   TJvCustomListBox.SelectedColor, TJvCustomListBox.ShowFocusRect
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomListBox.ShowFocusRect
 Summary
-  Indicates whether to draw a focus rectangle around the current item in the list box when it has
-  input focus.
+  Indicates whether to draw a focus rectangle around the current item in the list box when it has input
+  focus.
 Description
-  Set ShowFocusRect to True to have TJvCustomListBox draw a focus rectangle around the item when it
-  has input focus. Set ShowFocusRect to False when providing visual feedback of focus in some other
+  Set ShowFocusRect to True to have TJvCustomListBox draw a focus rectangle around the item when it has
+  input focus. Set ShowFocusRect to False when providing visual feedback of focus in some other
   manner.
 See Also
   TJvCustomListBox.SelectedColor, TJvCustomListBox.SelectedTextColor
@@ -595,8 +568,7 @@ Summary
   Updates the horizontally scrollable width of the list box.
 Description
   UpdateHorizontalExtent is called automatically when the list box's horizontally scrollable width is
-  changed.
-  Call UpdateHorizontalExtent to explicitly set the list box's horizontally scrollable width.
+  changed. Call UpdateHorizontalExtent to explicitly set the list box's horizontally scrollable width.
 See Also
   TJvCustomListBox.MaxWidth
 
@@ -635,11 +607,9 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvListBoxBackground.FillMode
 Summary
-  Specifies how the bitmap, which is stored in Image, is drawn into the
-  background.
+  Specifies how the bitmap, which is stored in Image, is drawn into the background.
 Description
-  Assign one of the values of FillMode to change the appearance of
-  the background.
+  Assign one of the values of FillMode to change the appearance of the background.
 Note
   Set Visible to True to display the image.
 See Also
@@ -650,8 +620,8 @@ See Also
 Summary
   Contains a bitmap, which is drawn into the background of the list box.
 Description
-  Assign a TBitmap to be drawn into the background. Specify FillMode
-  to change the appearance of the background.
+  Assign a TBitmap to be drawn into the background. Specify FillMode to change the appearance of the
+  background.
 Note
   Set Visible to True to display the image.
 See Also
@@ -679,8 +649,8 @@ See Also
 @@TJvListboxChange
 <TITLE TJvListboxChange type>
 Summary
-  Type for event handlers that let an application respond when an item is added or deleted in the
-  list box.
+  Type for event handlers that let an application respond when an item is added or deleted in the list
+  box.
 Description
   Use TJvListboxChange to respond when an item is added or deleted in the list box.
 Parameters
@@ -701,19 +671,19 @@ Summary
   Specifies how the background of a list box is filled.
 Description
   Use the TJvListboxFillMode type to specify how the background of a list box is filled.
+See Also
+  TJvCustomListBox.Background, TJvListBoxBackground.FillMode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListboxFillMode.bfmTile
-The bitmap is drawn without changing its size, but the whole canvas will
-be filled with it. So it may be drawn several times next to each other.
-Use this setting if you use a texture bitmap, for example.
+  The bitmap is drawn without changing its size, but the whole canvas will be filled with it. So it may
+  be drawn several times next to each other. Use this setting if you use a texture bitmap, for
+  example.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvListboxFillMode.bfmStretch
-This mode stretches the bitmap to the size of the canvas, which means that
-the bitmap will only be drawn once on the background.
-See Also
-  TJvCustomListBox.Background, TJvListBoxBackground.FillMode
+  This mode stretches the bitmap to the size of the canvas, which means that the bitmap will only be
+  drawn once on the background.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvScrollEvent
@@ -725,8 +695,8 @@ Description
 Parameters
   Sender     - The object that triggered the event.
   Msg        - Represents the parameters of the Windows message.
-  DontScroll - Determines whether the list box will respond to the scroll event, and adjust the
-         scroll bar.
+  DontScroll - Determines whether the list box will respond to the scroll event, and adjust the scroll
+                bar.
 See Also
   TJvCustomListBox.OnHorizontalScroll, TJvCustomListBox.OnVerticalScroll
 

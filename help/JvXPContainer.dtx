@@ -8,7 +8,6 @@ Summary
 Author
   Marc Hoffman.
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvXPContainer
 <TITLEIMG TJvXPContainer>
@@ -29,8 +28,8 @@ Summary
   Base class for panel style controls.
 Description
   TJvXPCustomContainer is a base class for panel style controls with additional properties to control
-  the visual appearance of the panel. Do not create instances of TJvXPCustomContainer. Instead, drop
-  a control like TJvXPContainer on your form.
+  the visual appearance of the panel. Do not create instances of TJvXPCustomContainer. Instead, drop a
+  control like TJvXPContainer on your form.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.Alignment
@@ -40,8 +39,8 @@ Description
   Set Alignment to specify how the text of the control is justified within the ClientRect of the
   control.
 
-  The effect of the Alignment property is more obvious if the WordWrap property is True and the
-  control includes more than one line of text.
+  The effect of the Alignment property is more obvious if the WordWrap property is True and the control
+  includes more than one line of text.
 See Also
   Caption
 
@@ -78,9 +77,9 @@ See Also
 Summary
   Indicates how changing Enabled affects child controls.
 Description
-  Use EnabledMode to control how child controls are affected when the control's Enabled state
-  changes. If EnabledMode is emAffectChilds, the Enabled state of child controls are changed to match
-  the control's Enabled state.
+  Use EnabledMode to control how child controls are affected when the control's Enabled state changes.
+  If EnabledMode is emAffectChilds, the Enabled state of child controls are changed to match the
+  control's Enabled state.
 See Also
   Enabled
 
@@ -99,8 +98,8 @@ See Also
 Summary
   Specifies an image to display on the control.
 Description
-  Use Glyph to specify an image to display on the control. When Glyph contains an image, the Caption
-  is adjusted so it appears to the right of the image.
+  Use Glyph to specify an image to display on the control. When Glyph contains an image, the Caption is
+  adjusted so it appears to the right of the image.
 See Also
   TJvXPCustomContainer.GlyphLayout
 
@@ -128,8 +127,8 @@ See Also
 Summary
   Occurs when the Enabled state changes.
 Description
-  Write a handler for the OnEnabledChanged to take specific action when the control's Enabled state
-  has changed.
+  Write a handler for the OnEnabledChanged to take specific action when the control's Enabled state has
+  changed.
 See Also
   Enabled
 
@@ -139,14 +138,14 @@ Summary
   Occurs when the control needs to be painted.
 Description
   Use OnPaint to perform special processing when the control is redrawn. Any special painting on the
-  control should be done in this event. OnPaint occurs after the borders are drawn but before the
-  image and text of the control.
+  control should be done in this event. OnPaint occurs after the borders are drawn but before the image
+  and text of the control.
 Parameters
   Sender  - The control that triggered the event.
   Rect    - The area to draw in.
   ACanvas - The canvas to draw on.
-  AFont   - The font to use for text drawing. You can change the properties of AFont to change the
-         way the default text is drawn.
+  AFont   - The font to use for text drawing. You can change the properties of AFont to change the way
+             the default text is drawn.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPCustomContainer.ShowBoundLines
@@ -174,22 +173,24 @@ Description
 Summary
   Determines whether the control inserts soft carriage returns so text wraps at the right margin.
 Description
-  Use WordWrap to specify how the text is drawn when it doesn't fit inside the control. If WordWrap
-  is true, the text will be wrapped to as many lines as needed to fit the text inside the control.
+  Use WordWrap to specify how the text is drawn when it doesn't fit inside the control. If WordWrap is
+  true, the text will be wrapped to as many lines as needed to fit the text inside the control.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPEnabledMode
 <TITLE TJvXPEnabledMode type>
 Summary
   Specifies how changes to the Enabled property propagates to child controls.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPEnabledMode.emAffectChilds
-Changing Enabled also changes Enabled of all child controls.
+  Changing Enabled also changes Enabled of all child controls.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPEnabledMode.emNormal
-Changing Enabled does not affect child controls.
+  Changing Enabled does not affect child controls.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvXPPaintEvent

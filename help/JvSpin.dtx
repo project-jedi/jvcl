@@ -9,7 +9,6 @@ Summary
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckOption
 <TITLE TJvCheckOption type>
@@ -24,15 +23,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckOption.coCheckOnChange
-Checks whether the entered value is in range upon changing of the value of the spin edit.
+  Checks whether the entered value is in range upon changing of the value of the spin edit.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckOption.coCheckOnExit
-Checks whether the entered value is in range on exit of the spin edit.
+  Checks whether the entered value is in range on exit of the spin edit.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckOption.coCropBeyondLimit
-Automatically crops out of range values so they are in range.
+  Automatically crops out of range values so they are in range.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCheckOptions
@@ -45,11 +44,11 @@ Summary
   Base class for spin boxes that enable users to choose a number.
 Description
   Use TJvCustomSpinEdit as a base class for defining spin box controls. Spin boxes allow the user to
-  choose from a range of numeric values by clicking on special "spin buttons", or by pressing
-  vertical arrow keys. Users can also enter the value in a text box, as with an edit control.
+  choose from a range of numeric values by clicking on special "spin buttons", or by pressing vertical
+  arrow keys. Users can also enter the value in a text box, as with an edit control.
 
-  Do not create instance of TJvCustomSpinEdit. Use its generic descendant, TJvSpinEdit, or create
-  your own descendant class.
+  Do not create instance of TJvCustomSpinEdit. Use its generic descendant, TJvSpinEdit, or create your
+  own descendant class.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpinEdit.Alignment
@@ -59,11 +58,11 @@ Description
   Use Alignment to indicate text alignment in the edit box. These are the possible values:
 
   <TABLE>
-  \Value              Meaning
-  -----               -------
-  taLeftJustify       Align text on the left side in the edit control.
-  taCenter            Center the text in the edit control.
-  taRightJustify      Align text on the right side in the edit control.
+    \Value          Meaning
+    --------------  -------------------------------------------------
+    taLeftJustify   Align text on the left side in the edit control.
+    taCenter        Center the text in the edit control.
+    taRightJustify  Align text on the right side in the edit control.
   </TABLE>
 
 ----------------------------------------------------------------------------------------------------
@@ -107,8 +106,8 @@ Summary
   Specifies whether to use the MaxValue as maximum value the user can enter into the spin edit
   control.
 Description
-  Use CheckMaxValue to specify whether to use the MaxValue as maximum value the user can enter into
-  the spin edit control.
+  Use CheckMaxValue to specify whether to use the MaxValue as maximum value the user can enter into the
+  spin edit control.
 See Also
   TJvCustomSpinEdit.CheckMinValue, TJvCustomSpinEdit.CheckOptions
 
@@ -118,8 +117,8 @@ Summary
   Specifies whether to use the MinValue as minimum value the user can enter into the spin edit
   control.
 Description
-  Use CheckMinValue to specify whether to use the MinValue as minimum value the user can enter into
-  the spin edit control.
+  Use CheckMinValue to specify whether to use the MinValue as minimum value the user can enter into the
+  spin edit control.
 See Also
   TJvCustomSpinEdit.CheckMaxValue, TJvCustomSpinEdit.CheckOptions
 
@@ -132,8 +131,8 @@ Description
 
   The range is specified by the MinValue, MaxValue, CheckMinValue and CheckMaxValue properties.
 Note
-  If coCropBeyondLimit is <i>not</i> included in CheckOptions, an exception is raised when the value
-  of the spin edit is out of range. (But either coCheckOnChange or coCheckOnExit must be included,
+  If coCropBeyondLimit is <I>not</I> included in CheckOptions, an exception is raised when the value of
+  the spin edit is out of range. (But either coCheckOnChange or coCheckOnExit must be included,
   otherwise no checking is done at all)
 See Also
   TJvCustomSpinEdit.CheckMaxValue, TJvCustomSpinEdit.CheckMinValue, TJvCustomSpinEdit.MaxValue,
@@ -144,20 +143,19 @@ See Also
 Summary
   Specifies the precision for the floating-point value.
 Description
-  Use Decimal to set the number of digits beyond the decimal point that the floating-point value of
-  the control should be formatted to before rounding begins.
+  Use Decimal to set the number of digits beyond the decimal point that the floating-point value of the
+  control should be formatted to before rounding begins.
 
-  Use DisplayFormat to change the
-  format of the floating-point value when it is displayed as a text string in the edit box, but note
-  that Decimal may also affect that displayed text string:
+  Use DisplayFormat to change the format of the floating-point value when it is displayed as a text
+  string in the edit box, but note that Decimal may also affect that displayed text string:
 
   <TABLE>
-  Entered value     DisplayFormat     Decimal         Displayed text string   Stored value
-  -------------     -------------     -------         ---------------------   ------------
-  0.1234            0.###             2               0.12                    0.12
-  0.1234            0.###             3               0.123                   0.123
-  0.1234            0.###             4               0.123                   0.1234
-  0.1234            0.####            4               0.1234                  0.1234
+    Entered value  DisplayFormat  Decimal  Displayed text string  Stored value
+    -------------  -------------  -------  ---------------------  ------------
+    0.1234         0.###          2        0.12                   0.12
+    0.1234         0.###          3        0.123                  0.123
+    0.1234         0.###          4        0.123                  0.1234
+    0.1234         0.####         4        0.1234                 0.1234
   </TABLE>
 Note
   Decimal affects the actual floating-point value that is stored in the control.
@@ -172,8 +170,8 @@ Description
   Use DisplayFormat to specify a custom format string for the number display. Note that DisplayFormat
   is only used when the control has no focus.
 
-  The value of DisplayFormat does not affect the actual stored floating-point value.
-  See Delphi help at FormatFloat to view which format specifiers are supported in the format string.
+  The value of DisplayFormat does not affect the actual stored floating-point value. See Delphi help at
+  FormatFloat to view which format specifiers are supported in the format string.
 Note
   Ensure that Decimal is large enough for the DisplayFormat. For example, if DisplayFormat is '0.###'
   then Decimal must be minimal 3.
@@ -186,15 +184,14 @@ Summary
   Determines whether the user can use the edit box of the spin edit.
 Description
   Use EditorEnabled to read or change whether the user can use the edit box of the spin edit. By
-  setting
-  EditorEnabled to false, the edit box of the spin edit will become read-only, and the user can only
-  use the spin buttons.
+  setting EditorEnabled to false, the edit box of the spin edit will become read-only, and the user can
+  only use the spin buttons.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomSpinEdit.Increment
 Summary
-  Specifies the amount by which the number increments or decrements when the user clicks the buttons
-  on the spin edit control.
+  Specifies the amount by which the number increments or decrements when the user clicks the buttons on
+  the spin edit control.
 Description
   Increment specifies the value that is added or subtracted from Value when the user spins the
   control.
@@ -220,8 +217,8 @@ Summary
   Specifies the minimum value the user can enter into the spin edit control.
 Description
   The MinValue property specifies the minimum for the Value property. If the user enters a number less
-  than MinValue, the number is changed to MinValue. This also happens if the user attempts to spin
-  past MinValue.
+  than MinValue, the number is changed to MinValue. This also happens if the user attempts to spin past
+  MinValue.
 Note
   CheckMinValue must be set to true, otherwise MinValue is ignored.
 See Also
@@ -261,9 +258,9 @@ See Also
 Summary
   Determines whether a thousands separator appears between every three digits of a decimal string.
 Description
-  Use Thousands to control the formatting of the text of spin edit control.
-  If Thousands is true, a separator appears between every three digits. The numeric value that is
-  displayed is given by the Value property.
+  Use Thousands to control the formatting of the text of spin edit control. If Thousands is true, a
+  separator appears between every three digits. The numeric value that is displayed is given by the
+  Value property.
 See Also
   TJvCustomSpinEdit.Value
 
@@ -291,7 +288,7 @@ See Also
 @@TJvSpinButton
 <TITLEIMG TJvSpinButton>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Buttons.Push
   FLAG=Component
 Summary
   Spin buttons for choosing from a numeric range.
@@ -324,9 +321,8 @@ Summary
   Specifies the bitmap that appears on the down spin button.
 Description
   Set DownGlyph to a bitmap object that contains the image that should appear on the face of the down
-  spin button.
-  Bring up the Open dialog box from the Object Inspector to choose a bitmap file (with a .BMP
-  extension), or specify a bitmap file at runtime.
+  spin button. Bring up the Open dialog box from the Object Inspector to choose a bitmap file (with a
+  .BMP extension), or specify a bitmap file at runtime.
 
   If DownGlyph is not assigned then the default down button glyph is used.
 See Also
@@ -364,9 +360,8 @@ See Also
 Summary
   Specifies the bitmap that appears on the up spin button.
 Description
-  Set UpGlyph to a bitmap object that contains the image that should appear on the face of the up
-  spin button.
-  Bring up the Open dialog box from the Object Inspector to choose a bitmap file (with a .BMP
+  Set UpGlyph to a bitmap object that contains the image that should appear on the face of the up spin
+  button. Bring up the Open dialog box from the Object Inspector to choose a bitmap file (with a .BMP
   extension), or specify a bitmap file at runtime.
 
   If UpGlyph is not assigned then the default up button glyph is used.
@@ -385,11 +380,11 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpinButtonStyle.sbsDefault
-Default spin buttons
+  Default spin buttons
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpinButtonStyle.sbsClassic
-Classis spin buttons.
+  Classis spin buttons.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSpinEdit
@@ -401,9 +396,8 @@ Summary
   Spin boxes for choosing from a numeric range
 Description
   TJvSpinEdit is a generic implementation of spin boxes, as defined in TJvCustomSpinEdit. Spin boxes
-  allow the user to choose from a range of numeric values by clicking on special "spin buttons", or
-  by pressing vertical arrow keys. Users can also enter the value in a text box, as with an edit
-  control.
+  allow the user to choose from a range of numeric values by clicking on special "spin buttons", or by
+  pressing vertical arrow keys. Users can also enter the value in a text box, as with an edit control.
 
 ----------------------------------------------------------------------------------------------------
 @@TSpinButtonKind
@@ -417,15 +411,15 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TSpinButtonKind.bkStandard
-TUpDown like spin buttons.
+  TUpDown like spin buttons.
 
 ----------------------------------------------------------------------------------------------------
 @@TSpinButtonKind.bkDiagonal
-Diagonal buttons.
+  Diagonal buttons.
 
 ----------------------------------------------------------------------------------------------------
 @@TSpinButtonKind.bkClassic
-Classis spin buttons.
+  Classis spin buttons.
 
 ----------------------------------------------------------------------------------------------------
 @@TValueType
@@ -439,13 +433,13 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TValueType.vtInteger
-Integer value.
+  Integer value.
 
 ----------------------------------------------------------------------------------------------------
 @@TValueType.vtFloat
-Float value. The user is allowed to enter a decimal seperator char and the 'e' char.
+  Float value. The user is allowed to enter a decimal seperator char and the 'e' char.
 
 ----------------------------------------------------------------------------------------------------
 @@TValueType.vtHex
-Hexadecimal value. The user is allowed to enter 'a' to 'f' chars.
+  Hexadecimal value. The user is allowed to enter 'a' to 'f' chars.
 

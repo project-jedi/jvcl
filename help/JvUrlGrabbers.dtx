@@ -1,5 +1,5 @@
 ##Package: Net
-##Status: Needs review
+##Status: Completed, Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvUrlGrabbers.pas
 Summary
@@ -8,14 +8,12 @@ Summary
 Author
   Olivier Sannier
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpDownloadMode
 <TITLE TJvFtpDownloadMode type>
 Summary
   The mode in which to do the FTP transfers. For more details on what Mode means in the FTP context,
-  please refer to this website:
-  http://slacksite.com/other/ftp.html
+  please refer to this website: http://slacksite.com/other/ftp.html
 Description
   Either ASCII or Binary
 See Also
@@ -23,17 +21,17 @@ See Also
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpDownloadMode.hmBinary
-FTP transfer in Binary mode
+  FTP transfer in Binary mode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpDownloadMode.hmAscii
-FTP transfer in ASCII mode
+  FTP transfer in ASCII mode
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabber
 <TITLEIMG TJvFtpUrlGrabber>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Internet
   FLAG=Component
 Summary
   This is the grabber for FTP URLs
@@ -44,6 +42,9 @@ Description
 @@TJvFtpUrlGrabber.CanGrab
 Summary
   Returns true if the URL is a FTP URL
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   Url - The URL to test
 Return value
@@ -53,6 +54,9 @@ Return value
 @@TJvFtpUrlGrabber.GetDefaultPropertiesClass
 Summary
   Returns the class to use to display default properties for this type of grabber
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Return value
   Returns TJvFtpUrlGrabberDefaultProperties
 
@@ -70,8 +74,8 @@ See Also
 Summary
   If true, the FTP transfer will be done in passive mode
 Description
-  There are two modes for a FTP transfer: Active or Passive. Use this property to indicate which one
-  to use
+  There are two modes for a FTP transfer: Active or Passive. Use this property to indicate which one to
+  use
 See Also
   TJvFtpUrlGrabber.Mode
 
@@ -80,8 +84,8 @@ See Also
 Summary
   A class that holds default properties for TJvFtpUrlGrabber
 Description
-  This class is used by TJvUrlGrabber to display the default properties of the TJvFtpUrlGrabber
-  objects it may create
+  This class is used by TJvUrlGrabber to display the default properties of the TJvFtpUrlGrabber objects
+  it may create
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberDefaultProperties.Mode
@@ -95,17 +99,21 @@ Description
 @@TJvFtpUrlGrabberThread
 Summary
   The thread used to grab FTP URLs
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvFtpUrlGrabberThread.Grabber
 Summary
   Provides an easy access to the grabber associated with the thread
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabber
 <TITLEIMG TJvHttpUrlGrabber>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Internet
   FLAG=Component
 Summary
   This a grabber for HTPP URLs
@@ -116,6 +124,9 @@ Description
 @@TJvHttpUrlGrabber.CanGrab
 Summary
   Returns True if the URL is a HTTP URL
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   Url - The URL to test
 Return value
@@ -125,6 +136,9 @@ Return value
 @@TJvHttpUrlGrabber.GetDefaultPropertiesClass
 Summary
   Returns the class to use to display default properties for this type of grabber
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Return value
   Returns TJvHttpUrlGrabberDefaultProperties
 
@@ -134,9 +148,9 @@ Summary
   The URL to indicate as the referer to grab the current URL.
 Description
   In the HTTP protocol, most navigators indicate the page the user was before moving to another page.
-  This is known as the Referer. Some web sites check that the Referer is set to a correct value and
-  if it is not a value they expect, they refuse to serve the page.
-  By using this property, you can emulate the correct behavior and get the page.
+  This is known as the Referer. Some web sites check that the Referer is set to a correct value and if
+  it is not a value they expect, they refuse to serve the page. By using this property, you can emulate
+  the correct behavior and get the page.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberDefaultProperties
@@ -154,29 +168,36 @@ Description
 @@TJvHttpUrlGrabberThread
 Summary
   The thread used to grad HTTP URLs
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvHttpUrlGrabberThread.Grabber
 Summary
   Provides an easy access to the grabber associated with the thread
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber
 <TITLEIMG TJvLocalFileUrlGrabber>
 JVCLInfo
-  GROUP=JVCL.??
+  GROUP=JVCL.Internet
   FLAG=Component
 Summary
   This a grabber for Local File URLs
 Description
-  This grabber handles Local File URLs, that is URLs that start with 'file://', '?:\' or '\\'
-  Local is in opposition to Internet and refers to files on a computer as well as to files on the
-  local network.
+  This grabber handles Local File URLs, that is URLs that start with 'file://', '?:\' or '\\' Local is
+  in opposition to Internet and refers to files on a computer as well as to files on the local
+  network.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.CanGrab
 Summary
   Return true if the URL is a Local File URL
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Parameters
   Url - The URL to test
 Return value
@@ -187,28 +208,35 @@ Return value
 @@TJvLocalFileUrlGrabber.GetDefaultPropertiesClass
 Summary
   Returns the class to use to display default properties for this type of grabber
+Description
+  This is an overridden method, you don't have to describe these if it does the same as the inherited
+  method
 Return value
   Returns TJvLocalFileUrlGrabberDefaultProperties
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.ParseUrl@string@string
 Summary
   Write here a summary (1 line)
 Description
-  This is an overloaded function/procedure, if possible you may combine the description
-  of all these functions into 1 general description. If you do so, combine all "Parameter" 
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all
-  other overloaded functions with the same name.
+  This is an overloaded function/procedure, if possible you may combine the description of all these
+  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
+  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
+  name.
 Parameters
   Url      - Description for this parameter
   FileName - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
+
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabber.PreserveAttributes
 Summary
-  If True, the attributes of the source file will be copied to the destination file. Attributes are
-  the date, the read-only and hidden properties.
+  If True, the attributes of the source file will be copied to the destination file. Attributes are the
+  date, the read-only and hidden properties.
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabberProperties
@@ -226,9 +254,13 @@ Description
 @@TJvLocalFileUrlGrabberThread
 Summary
   The thread used to grab Local File URLs
+Description
+  Write here a description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvLocalFileUrlGrabberThread.Grabber
 Summary
   Provides an easy access to the grabber associated with the thread
+Description
+  Write here a description
 

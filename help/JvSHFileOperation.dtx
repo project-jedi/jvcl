@@ -8,7 +8,6 @@ Summary
 Author
   Peter Thörnqvist
 
-
 ----------------------------------------------------------------------------------------------------
 @@TJvShFileMappingEvent
 <TITLE TJvShFileMappingEvent type>
@@ -26,8 +25,8 @@ Description
   TJvSHFileOperation is a wrapper for the windows SHFileOperation function.
 
   This Windows API function provides the ability to perform a copy, move, rename, or delete operation
-  on files, while displaying a dialog box with an animation and an animated progress bar that
-  indicates the progress of the operation.
+  on files, while displaying a dialog box with an animation and an animated progress bar that indicates
+  the progress of the operation.
 
   Use TJvSHFileOperation to get access to the functionality of the SHFileOperation API function in an
   easier to use way. TJvSHFileOperation implements all the functionality of SHFileOperation.
@@ -42,9 +41,8 @@ Description
   DestFiles must meet the following specifications:
 
   * Wildcard characters are not supported.
-  * \Copy and move operations can specify destination directories that do not exist and the system
-    will   attempt to create them. The system normally displays a dialog box to ask the user if they
-    want to
+  * \Copy and move operations can specify destination directories that do not exist and the system will
+    attempt to create them. The system normally displays a dialog box to ask the user if they want to
     create the new directory. To suppress this dialog box and have the directories created silently,
     include fofNoConfirmMkDir in Options.
   * For copy and move operations, DestFiles can contain multiple destination file names if
@@ -62,9 +60,9 @@ Summary
   Performs the file operation.
 Description
   Call Execute to perform the operation as specified by Operation.
-  Returns
-  Execute returns True if no errors occurred and no file operations were aborted by the user, or
-  False otherwise.
+Return value
+  Execute returns True if no errors occurred and no file operations were aborted by the user, or False
+  otherwise.
 See Also
   TJvSHFileOperation.Operation
 
@@ -76,8 +74,8 @@ Description
   \Write an OnFileMapping event handler to respond after the file operation when any files were
   renamed.
 
-  Only when you include fofRenameOnCollision in Options then the system will give a file a new name
-  in a move, copy, or rename operation if a file with the target name already exists. Otherwise, the
+  Only when you include fofRenameOnCollision in Options then the system will give a file a new name in
+  a move, copy, or rename operation if a file with the target name already exists. Otherwise, the
   system shows a dialog box that asks for confirmation to replace the already existing target file.
 Note
   This event will only occur if you include both fofRenameOnCollision and fofWantMappingHandle in
@@ -116,9 +114,9 @@ Description
 Summary
   Contains one or more source file names.
 Description
-  Set each item in SourceFiles to a filename which can contain
-  wildcard characters (* and ?). The asterisk (*) is a wildcard which matches any number of arbitrary
-  characters. The question mark (?) is a wildcard which matches a single arbitrary character.
+  Set each item in SourceFiles to a filename which can contain wildcard characters (* and ?). The
+  asterisk (*) is a wildcard which matches any number of arbitrary characters. The question mark (?) is
+  a wildcard which matches a single arbitrary character.
 
   Use SourceFiles to add, insert, delete and move source file names. Use properties and methods for
   string lists to manipulate the items in the list.
@@ -127,10 +125,10 @@ Description
   path, the name of the current drive and directory will be merged with the specified file name to
   determine the full path and file name of the specified file.
 
-  \Include fofFilesOnly in Options to perform the operation as specified by Operation on files only,
-  if a wildcard file name is specified.
-  \Include fofNoRecursion in Options to operate only in the local directory; thus, the operation will
-  not operate recursively into subdirectories if this flag is included in Options.
+  \Include fofFilesOnly in Options to perform the operation as specified by Operation on files only, if
+  a wildcard file name is specified. \Include fofNoRecursion in Options to operate only in the local
+  directory; thus, the operation will not operate recursively into subdirectories if this flag is
+  included in Options.
 See Also
   TJvSHFileOperation.DestFiles
 
@@ -158,74 +156,82 @@ Description
   \TJvSHFileOptions is a set of TJvSHFileOption values.
 Note
   Some flags are not supported on all Shell32.dll versions, these flags are marked with a version
-  number.
-  This version number indicates that the programming element was first implemented in that version
-  and will also be found in all subsequent versions of the DLL. If no version number is specified,
-  the programming element is implemented in all versions.
+  number. This version number indicates that the programming element was first implemented in that
+  version and will also be found in all subsequent versions of the DLL. If no version number is
+  specified, the programming element is implemented in all versions.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofAllowUndo
-Preserves Undo information, if possible.
+  Preserves Undo information, if possible.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofConfirmMouse
-Not currently used.
+  Not currently used.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofFilesOnly
-Performs the operation on files only, if a wildcard file name is specified.
+  Performs the operation on files only, if a wildcard file name is specified.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofMultiDestFiles
-Indicates that the <LINK TJvSHFileOperation.DestFiles,DestFiles> property specifies multiple destination files (one for each source file) rather than one directory where all source files are to be deposited.
+  Indicates that the <LINK TJvSHFileOperation.DestFiles, DestFiles> property specifies multiple
+  destination files (one for each source file) rather than one directory where all source files are to
+  be deposited.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofNoConfirmation
-Does not display confimation dialog boxes and responds with "Yes to All" for any dialog box that would be displayed.
+  Does not display confimation dialog boxes and responds with "Yes to All" for any dialog box that
+  would be displayed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofNoConfirmMkDir
-Does not ask for confirmation before creating a new directory if the operation requires one to be created.
+  Does not ask for confirmation before creating a new directory if the operation requires one to be
+  created.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofRenameOnCollision
-Gives the file being operated on a new name in a move, copy, or rename operation if a file with the target name already exists. If this flag is not set, the component shows a dialog box that asks for confirmation to replace the already existing target file.
+  Gives the file being operated on a new name in a move, copy, or rename operation if a file with the
+  target name already exists. If this flag is not set, the component shows a dialog box that asks for
+  confirmation to replace the already existing target file.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofSilent
-Does not display a progress dialog box.
+  Does not display a progress dialog box.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofSimpleProgress
-Displays a progress dialog box but does not show the file names.
+  Displays a progress dialog box but does not show the file names.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofWantMappingHandle
-Enables the triggering of <LINK TJvSHFileOperation.OnFileMapping,OnFileMapping> events, if fofRenameOnCollision is included in <LINK TJvSHFileOperation.Options,Options> and any files were renamed.
+  Enables the triggering of <LINK TJvSHFileOperation.OnFileMapping, OnFileMapping> events, if
+  fofRenameOnCollision is included in <LINK TJvSHFileOperation.Options, Options> and any files were
+  renamed.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofNoErrorUI
-Does not display a user interface if an error occurs.
+  Does not display a user interface if an error occurs.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofNoCopySecurityAttributes
-Version 4.71. Does not copy the security attributes of the file.
+  Version 4.71. Does not copy the security attributes of the file.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofNoRecursion
-Only operates in the local directory. Does not operate recursively into subdirectories.
+  Only operates in the local directory. Does not operate recursively into subdirectories.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofNoConnectedElements
-Version 5.0. Does not move connected files as a group. Only moves the specified files.
+  Version 5.0. Does not move connected files as a group. Only moves the specified files.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofNoRecurseParse
-Version 5.0. Treats reparse points as objects, not containers.
+  Version 5.0. Treats reparse points as objects, not containers.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOption.fofWantNukeWarning
-Version 5.0. Sends a warning if a file is being destroyed during a delete operation rather than recycled. This flag partially overrides fofNoConfirmation.
+  Version 5.0. Sends a warning if a file is being destroyed during a delete operation rather than
+  recycled. This flag partially overrides fofNoConfirmation.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOptions
@@ -243,17 +249,20 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOpType.foCopy
-Copies the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles> to the location specified by <LINK TJvSHFileOperation.DestFiles,DestFiles>.
+  Copies the files specified by <LINK TJvSHFileOperation.SourceFiles, SourceFiles> to the location
+  specified by <LINK TJvSHFileOperation.DestFiles, DestFiles>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOpType.foDelete
-Deletes the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles>.
+  Deletes the files specified by <LINK TJvSHFileOperation.SourceFiles, SourceFiles>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOpType.foMove
-Moves the files specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles> to the location specified by <LINK TJvSHFileOperation.DestFiles,DestFiles>.
+  Moves the files specified by <LINK TJvSHFileOperation.SourceFiles, SourceFiles> to the location
+  specified by <LINK TJvSHFileOperation.DestFiles, DestFiles>.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSHFileOpType.foRename
-Renames the file specified by <LINK TJvSHFileOperation.SourceFiles,SourceFiles>. This operation cannot rename multiple files with a single function call. Use foMove instead.
+  Renames the file specified by <LINK TJvSHFileOperation.SourceFiles, SourceFiles>. This operation
+  cannot rename multiple files with a single function call. Use foMove instead.
 
