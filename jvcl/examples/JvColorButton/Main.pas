@@ -29,9 +29,9 @@ unit Main;
 interface
 
 uses
-  QWindows, QMessages, SysUtils, Classes, QGraphics, QControls, QForms, QDialogs,
-  QStdCtrls, JvQColorBox, QMenus, QButtons, QExtCtrls,
-  JvQComponent, JvQExControls, JvQColorButton;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, JvColorBox, Menus, Buttons, ExtCtrls,
+  JvComponent, JvExControls, JvColorButton;
 
 type
   TColorDemoMainForm = class(TForm)
@@ -45,9 +45,9 @@ var
 
 implementation
 
-uses JvQColorForm;
+uses JvColorForm;
 
-{$R *.xfm}
+{$R *.dfm}
 
 
 procedure TColorDemoMainForm.ColorButton1Change(Sender: TObject);

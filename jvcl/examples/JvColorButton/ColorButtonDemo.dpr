@@ -1,10 +1,10 @@
 program ColorButtonDemo;
 
 uses
-  QForms,
+  Forms,
   Main in 'Main.pas' {ColorDemoMainForm};
 
-{$R *.res}
+{$R *.RES}
 
 begin
   Application.Initialize;
