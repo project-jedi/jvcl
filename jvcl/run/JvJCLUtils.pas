@@ -1009,7 +1009,7 @@ uses
   {$ELSE}
   QConsts,
   {$ENDIF VCL}
-  JclStrings,
+  JclStrings, JclSysInfo,
   JvTypes;
 
 const
