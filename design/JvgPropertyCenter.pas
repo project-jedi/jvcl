@@ -63,7 +63,7 @@ type
     procedure SetFontProperty(Value: TFont);
     procedure UpdateProperties(Properties: Tgl_Properties);
   protected
-    procedure Notification(Component: TComponent; Operation: TOperation);
+    procedure Notification(Component: TComponent; Operation: TOperation);override;
     procedure Loaded; override;
   public
     CompList: TList;

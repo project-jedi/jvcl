@@ -15,7 +15,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-
+  JvConsts,
   JvSpin, JvEdit, JvRichEdit, JvProgressBar, JvDateTimePicker, JvDatePickerEdit, JvCheckedMaskEdit,
   JvMaskEdit, JvCalendar, JvBaseEdits, JvCalc, JvToolEdit, JvxCtrls,
   JvxSlider, JvBevel, JvCheckBox, JvCheckListBox, JvCombobox, JvCheckTreeView,
@@ -23,7 +23,7 @@ uses
   JvHotKey, JvImage, JvLabel, JvListView, JvMemo, JvMenus, JvRadioButton, JvRadioGroup,
   JvScrollBar, JvScrollBox, JvShape, JvStaticText, JvStatusBar, JvGrids, JvStringGrid,
   JvSystemPopup, JvTabControl, JvToolBar, JvUpDown, JvBitBtn, JvPanel, JvMonthCalendar,
-  JvFindReplace, JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton, JvFavoritesButton,
+  JvControlPanelButton, JvStartMenuButton, JvRecentMenuButton, JvFavoritesButton,
   
   JvBrowseFolder, JvTransparentPanel, JvCheckedItemsForm, JvColorCombo,
 
@@ -37,25 +37,54 @@ procedure Register;
 const
   BaseClass:TClass = TComponent;
 begin
-  RegisterComponents('Jv Standard',[
-    TJvMainMenu, TJvPopupMenu, TJvSystemPopup, TJvEdit, TJvCheckedMaskEdit,
-    TJvMaskEdit, TJvCalcEdit, TJvCalculator, TJvComboEdit, TJvFileDirEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit,
-    TJvMemo, TJvPanel, TJvxSlider, TJvBevel, TJvDrawGrid, TJvStringGrid,
-    // TJvTextListBox, TJvxCheckListBox, TJvTransparentPanel,
-    TJvCheckBox, TJvRadioButton, TJvRadioGroup, TJvCheckListBox, TJvComboBox,
-    TJvColorComboBox, TJvFontComboBox, TJvListBox, TJvBitBtn, TJvImgBtn, TJvScrollBox, TJvShape,
+  RegisterComponents(SPaletteVisual,[TJvShape]);
 
-    TJvStaticText, TJvIPAddress, TJvPageControl, TJvTreeView, TJvCheckTreeView, TJvTrackBar,
-    TJvControlBar, TJvCoolBar, TJvHotKey, TJvListView, TJvRichEdit, TJvProgressBar,
-    TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,} TJvStatusBar, TJvTabControl, TJvToolBar,
-    TJvUpDown, TJvDomainUpDown,
-
-    TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton, TJvFavoritesButton,
-    TJvGroupBox, TJvHeaderControl, TJvImage, TJvLabel, TJvFindReplace
+  RegisterComponents(SPaletteNonVisual,[
+    TJvMainMenu, TJvPopupMenu,TJvSystemPopup, TJvCalculator
     ]);
-  RegisterComponents('Jv Dialogs',[
+  RegisterComponents(SPaletteDialog,[
     TJvBrowseForFolderDialog
+    ]);
+
+  RegisterComponents(SPaletteButton,[
+    TJvBitBtn, TJvImgBtn,
+    TJvCheckBox, TJvRadioButton, TJvRadioGroup,
+    TJvUpDown, TJvDomainUpDown,
+    TJvControlPanelButton, TJvStartMenuButton, TJvRecentMenuButton, TJvFavoritesButton
+    ]);
+  RegisterComponents(SPaletteEdit,[
+    TJvEdit, TJvMemo, TJvRichEdit, TJvCheckedMaskEdit,
+    TJvMaskEdit, TJvHotKey, TJvCalcEdit, TJvComboEdit, TJvFileDirEdit,
+    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvSpinEdit,
+    TJvIPAddress]);
+
+  RegisterComponents(SPaletteImageAnimator,
+    [TJvImage]);
+
+  RegisterComponents(SPaletteBarPanel,[
+    TJvPageControl,  TJvProgressBar,
+    TJvStatusBar, TJvTabControl, TJvToolBar,
+    TJvControlBar, TJvCoolBar,
+    TJvGroupBox, TJvHeaderControl,
+    TJvPanel, TJvBevel {TJvTransparentPanel}
+    ]);
+
+  RegisterComponents(SPaletteLabel,[
+    TJvLabel, TJvStaticText]);
+
+  RegisterComponents(SPaletteListComboTree,[
+    TJvComboBox,TJvListBox, TJvCheckListBox,
+    TJvTreeView, TJvListView, TJvCheckTreeView,
+    TJvColorComboBox, TJvFontComboBox,
+    { TJvTextListBox, TJvxCheckListBox,}
+    TJvDateTimePicker, TJvMonthCalendar, {TJvMonthCalendar2,}
+    TJvDrawGrid, TJvStringGrid
+    ]);
+  RegisterComponents(SPaletteScrollerTracker,[
+    TJvScrollBox, TJvTrackBar
+    ]);
+  RegisterComponents(SPaletteSliderSplitter,[
+    TJvxSlider
     ]);
 
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);

@@ -328,30 +328,26 @@ resourcestring
   srSamplesPalette = 'Samples';
   {$ENDIF}
 
-  { JVCL versions of standard IDE palettes }
-  srJvStandardPalette     = 'Jv Standard';
-  srJvAdditionalPalette   = 'Jv Additional';
-  srJvWin32Palette        = 'Jv Win32';
-  srJvSystemPalette       = 'Jv System';
-  srJvDataAccessPalette   = 'Jv Data Access';
-  srJvDataControlsPalette = 'Jv Data Controls';
-  srJvBDEPalette          = 'Jv BDE';
-  srJvInternetPalette     = 'Jv Internet';
-  srJvDialogsPalette      = 'Jv Dialogs';
+  { JVCL IDE palettes }
+  SPaletteSystem = 'Jv System';
+  SPaletteDialog = 'Jv Dialogs';
+  SPaletteButton = 'Jv Buttons';
+  SPaletteEdit = 'Jv Edits';
+  SPaletteBarPanel = 'Jv Bars and Panels';
+  SPaletteLabel = 'Jv Labels';
+  SPaletteListComboTree = 'Jv Lists, Combos and Trees';
+  SPaletteScrollerTracker = 'Jv Scrollers and Trackers';
+  SPaletteSliderSplitter = 'Jv Sliders and Splitters';
+  SPaletteImageAnimator = 'Jv Images and Animators';
+  SPaletteVisual = 'Jv Visual';
+  SPaletteNonVisual = 'Jv Non-Visual';
+  SPaletteAppForm = 'Jv Application and Forms';
+  SPaletteInterNetWork = 'Jv Internet and Network';
+  SPaletteEncryptCompress = 'Jv Encrypt and Compress';
+  SPaletteDBVisual = 'Jv Data Controls';
+  SPaletteDBNonVisual = 'Jv Data Access';
 
-  { other JVCL palettes }
-  srJvCustomPalette       = 'Jv Custom';
-  srJvLabelsPalette       = 'Jv Labels';
-  srJvMultimediaPalette   = 'Jv Multimedia';
-  srJvFormsPalette        = 'Jv Forms';
-  srJvUtilsPalette        = 'Jv Utils';
-  srJvConvertPalette      = 'Jv Convert';
-  srJvPluginPalette       = 'Jv Plugin';
-  srJvCompositesPalette   = 'Jv Composites';
-  srJvControlsPalette     = 'Jv Controls';
-  srJvInterpreterPalette  = 'Jv Interpreter';
-  srJvXToolsPalette       = 'JvX Tools';
-  srJvJFreeVCSPalette     = 'Jv JFreeVCS';
+  SPaletteBDE = 'Jv BDE Components';
 
   { for RegisterActions }
   srJVCLActions     = 'JVCL';

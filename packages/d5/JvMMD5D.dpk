@@ -1,7 +1,7 @@
 package JvMMD5D;
 
-{$R *.res}
-
+{$R *.RES}
+{$ALIGN ON}
 {$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
 {$DEBUGINFO OFF}
@@ -28,7 +28,6 @@ package JvMMD5D;
 
 requires
   JvMMD5R,
-  
   DJCL50,
   JvCmpD5R;
 
@@ -41,6 +40,7 @@ contains
   JvID3v2EditorForm in '..\..\design\JvID3v2EditorForm.pas' {JvID3FramesEditor},
   JvID3v2DefineForm in '..\..\design\JvID3v2DefineForm.pas' {JvID3DefineDlg},
   JvIconListForm in '..\..\design\JvIconListForm.pas',
-  JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor};
+  JvGradientCaptionForm in '..\..\design\JvGradientCaptionForm.pas' {GradCaptionsEditor},
+  JvGradientCaption in '..\..\run\JvGradientCaption.pas';
 
 end.

@@ -14,7 +14,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvTypes,
+  JvTypes, JvConsts,
   JvStringListToHtml, JvFormToHtml, JvFtpGrabber, JvHtmlParser, JvHttpGrabber,
   JvMultiHttpGrabber, JvRgbToHtml, JvRichEditToHtml, JvStrToHtml, JvMail,
   JvMailEditor, JvHTMLParserEditor;
@@ -23,10 +23,11 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents('Jv Network',[
-    TJvStringListToHtml, TJvFormToHtml, TJvHtmlParser, TJvRgbToHtml,
+  RegisterComponents(SPaletteInterNetWork,[
     TJvFtpGrabber, TJvHttpGrabber, TJvMultiHttpGrabber,
-    TJvRichEditToHtml, TJvStrToHtml, TJvMail
+    TJvMail, TJvHtmlParser,
+    TJvStrToHtml, TJvStringListToHtml, TJvFormToHtml,
+    TJvRichEditToHtml, TJvRgbToHtml
     ]);
 
   RegisterPropertyEditor(TypeInfo(TJvParserInfoList), TJvHtmlParser, 'Parser', TJvHtmlParserEditor);

@@ -66,12 +66,12 @@ type
     procedure AdjustBounds;
 
     procedure SetAlignment(Value: TglAlignment);
-    procedure SetAutoSize(Value: boolean);
     procedure SetTransparent(Value: boolean);
     procedure SetWordWrap(Value: boolean);
 
   protected
     procedure CMFontChanged(var Message: TMessage);
+    procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure Loaded; override;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;

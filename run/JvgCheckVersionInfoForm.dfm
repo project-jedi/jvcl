@@ -15,9 +15,6 @@ object JvgfCheckVersionInfo: TJvgfCheckVersionInfo
   OldCreateOrder = False
   Position = poMainFormCenter
   Scaled = False
-  DesignSize = (
-    428
-    298)
   PixelsPerInch = 96
   TextHeight = 13
   object JvgWizardHeader: TJvgWizardHeader

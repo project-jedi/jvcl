@@ -14,13 +14,13 @@ uses
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
   ExptIntf, ToolsApi,
-  JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
+  JvConsts, JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
 
 {$R ..\resources\JvPluginReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents('Jv Custom',[
+  RegisterComponents(SPaletteNonVisual,[
     TJvPluginManager
     ]);
   RegisterLibraryExpert(TJvPluginWizard.Create)

@@ -229,13 +229,13 @@ type
     procedure SetAlignment(Value: TglAlignment);
     procedure SetOptions(Value: TglStTextOptions);
     procedure SetWordWrap(Value: boolean);
-    procedure SetAutoSize(Value: boolean);
     function GetAutoSize: boolean;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure CallMouseEnter; override;
     procedure CallMouseLeave; override;
   protected
+    procedure SetAutoSize(Value: boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
   public
     procedure Paint; override;
     property Canvas;
@@ -975,7 +975,8 @@ var
   r: TRect;
 begin
   R := Bounds(Left, Top, Width, Height);
-  InvalidateRect(Parent.Handle, @r, UpdateBackgr);
+  if not (csDestroying in ComponentState) then
+    InvalidateRect(Parent.Handle, @r, UpdateBackgr);
 end;
 //______
 

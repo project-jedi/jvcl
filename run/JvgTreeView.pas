@@ -209,8 +209,8 @@ type
          WM_LBUTTONDOWN;
    protected
       procedure Loaded; override;
-      procedure Assign(Source: TPersistent); override;
    public
+      procedure Assign(Source: TPersistent); override;
       function CheckedItem: TTreeNode;
       function Checked(Node: TTreeNode): boolean;
       procedure SetChecked(Node: TTreeNode; Value: boolean);

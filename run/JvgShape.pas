@@ -40,14 +40,14 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     FWallpaper: TBitmap;
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     function GetWallpaper: TBitmap;
   protected
     procedure Paint; override;
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     property Wallpaper: TBitmap read GetWallpaper write FWallpaper;
   published
     property PopupMenu;

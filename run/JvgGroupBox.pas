@@ -81,7 +81,6 @@ type
       fScrolling: boolean;
       FAboutJVCL: TJVCLAboutInfo;
 
-      procedure SetEnabled(Value: boolean);
       procedure SetCaptionAlignment(Value: TCaptionAlignment);
       procedure SetCaptionTextStyle(Value: TglTextStyle);
       procedure SetCollapsed(Value: boolean);
@@ -97,6 +96,7 @@ type
       procedure Collapse_(fCollapse: boolean);
       procedure SmthChanged(Sender: TObject);
    protected
+      procedure SetEnabled(Value: boolean); override;
       procedure ReadFullHeight(Reader: TReader);
       procedure WriteFullHeight(Writer: TWriter);
       procedure Paint; override;

@@ -54,14 +54,15 @@ type
       FActiveSectionNo: integer;
       procedure ResizeColumns;
    protected
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
       procedure Loaded; override;
       procedure Resize; override;
       procedure SetSections(Value: THeaderSections);
       procedure SetJoinColumns(Value: TStringList);
       procedure SetEqualSize(Value: boolean);
       procedure SectionResize(Section: THeaderSection); override;
+   public
+      constructor Create(AOwner: TComponent); override;
+      destructor Destroy; override;
    published
       property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
          False;

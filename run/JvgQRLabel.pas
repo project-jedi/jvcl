@@ -43,7 +43,8 @@ type
     fPrinting: boolean;
     procedure SetDirection(Value: TglLabelDir);
     procedure SetEscapment(Value: integer);
-    procedure SetAlignment(Value: TAlignment);
+  protected
+    procedure SetAlignment(Value: TAlignment);override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

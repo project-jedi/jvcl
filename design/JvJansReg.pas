@@ -13,7 +13,6 @@ uses Classes, JvMarkupLabel, JvMarkupViewer, JvSAL, JvSticker, JvSALCORE, JvSALM
   {$ELSE}
    DsgnIntf
   {$ENDIF COMPILER6_UP}
-
   ;
 
 procedure Register;

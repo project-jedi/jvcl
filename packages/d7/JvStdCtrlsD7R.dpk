@@ -86,7 +86,6 @@ contains
   JvBoxProcs in '..\..\run\JvBoxProcs.pas',
   JvPanel in '..\..\run\JvPanel.pas',
   JvMonthCalendar in '..\..\run\JvMonthCalendar.pas',
-  JvFindReplace in '..\..\run\JvFindReplace.pas',
   JvControlPanelButton in '..\..\run\JvControlPanelButton.pas',
   JvStartMenuButton in '..\..\run\JvStartMenuButton.pas',
   JvRecentMenuButton in '..\..\run\JvRecentMenuButton.pas',
@@ -95,6 +94,7 @@ contains
   JvTransparentPanel in '..\..\run\JvTransparentPanel.pas',
   JvColorCombo in '..\..\run\JvColorCombo.pas',
   JvGrids in '..\..\run\JvGrids.pas',
-  JvCheckTreeView in '..\..\run\JvCheckTreeView.pas';
+  JvCheckTreeView in '..\..\run\JvCheckTreeView.pas',
+  JvFixedEditPopUp in '..\..\run\JvFixedEditPopUp.pas';
 
 end.
