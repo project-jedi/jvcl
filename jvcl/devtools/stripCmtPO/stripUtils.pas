@@ -13,7 +13,7 @@ begin
   writeln('Strips comments from PO files (except the first)');
   writeln('Usage:');
   writeln(' stripCmtPO input.po output.po');
-  writeln(' if output.po isn not given output is written to input.new.po');
+  writeln(' if output.po is not given, output is written to input.new.po');
 end;
 
 procedure Run;
