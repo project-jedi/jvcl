@@ -21,9 +21,10 @@ Contributor(s):dejoy
   --add GetItemClass in TJvXPBarItems.
   --add GetBarItemsClass in TJvXPCustomWinXPBar.
 
-Contributor(s):dierk
+Contributor(s):dierk schmid
   //dierk 2004-4-23
-  --add RoundedItemFrame property TJvXPCustomWinXPBar (Integer>0 is the edge radius)
+  --add property RoundedItemFrame in TJvXPCustomWinXPBar (Integer>0 is the edge radius)
+  --add property ItemFrameColor in TJvXPBarColors
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -270,6 +271,7 @@ type
 
   TJvXPBarColors = class(TPersistent)
   private
+    FItemFrameColor: TColor;
     FCheckedColor: TColor;
     FFocusedColor: TColor;
     FBodyColor: TColor;
@@ -283,12 +285,13 @@ type
     procedure SetSeperatorColor(const Value: TColor);
     procedure SetCheckedColor(const Value: TColor);
     procedure SetFocusedColor(const Value: TColor);
+    procedure SetItemFrameColor(const Value: TColor);
   public
     constructor Create;
     procedure Assign(Source: TPersistent); override;
     procedure Change;
   published
-
+    property ItemFrameColor: TColor read FItemFrameColor write SetItemFrameColor default clHighlight;
     property CheckedColor: TColor read FCheckedColor write SetCheckedColor default dxColor_CheckedColorXP;
     property FocusedColor: TColor read FFocusedColor write SetFocusedColor default dxColor_FocusedColorXP;
     property BodyColor: TColor read FBodyColor write SetBodyColor default $00F7DFD6;
@@ -820,11 +823,14 @@ begin
         begin
           Brush.Color := lBar.Colors.FocusedColor;
           if lBar.RoundedItemFrame>0 then
-            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
+//            RoundedFrame(ACanvas, Rect, clHighlight, lBar.RoundedItemFrame)
+            RoundedFrame(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.RoundedItemFrame)
           else
           begin
             FillRect(Rect);
-            Frame3D(ACanvas, Rect, clHighlight, clHighlight, 1)
+//            Frame3D(ACanvas, Rect, clHighlight, clHighlight, 1)
+            Frame3D(ACanvas, Rect, lBar.Colors.ItemFrameColor, lBar.Colors.ItemFrameColor, 1)
+
           end;
         end;
       end
@@ -1396,6 +1402,16 @@ begin
     Change;
   end;
 end;
+
+procedure TJvXPBarColors.SetItemFrameColor(const Value: TColor);
+begin
+  if FItemFrameColor <> Value then
+  begin
+    FItemFrameColor := Value;
+    Change;
+  end;
+end;
+
 
 //=== TJvXPCustomWinXPBar ====================================================
 
