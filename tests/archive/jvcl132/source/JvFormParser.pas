@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls,
-  JvButton;
+  JvButton, JvTypes;
 
 type
   TFormParsers = class(TForm)
@@ -72,13 +72,6 @@ implementation
 
 {$R *.DFM}
 
-type
-  TParserInf = class
-    StartTag: string;
-    EndTag: string;
-    MustBe: Integer;
-    Take: Integer;
-  end;
 
 {*********************************************************************}
 
@@ -98,7 +91,7 @@ begin
   ob.StartTag := '';
   ob.EndTag := '';
   ob.MustBe := -1;
-  ob.Take := 0;
+  ob.TakeText := 0;
   ListBox1.ItemIndex := ListBox1.Items.AddObject('New', TObject(ob));
   ListBox1Click(Sender);
 end;
@@ -115,7 +108,7 @@ begin
   Edit2.text := ob.StartTag;
   Edit3.text := ob.EndTag;
   Edit4.text := IntToStr(ob.MustBe);
-  ComboBox1.ItemIndex := ob.Take;
+  ComboBox1.ItemIndex := ob.TakeText;
 end;
 
 {*********************************************************************}
@@ -176,7 +169,7 @@ begin
       Inc(i);
       ob.MustBe := StrToInt(Value[i]);
       Inc(i);
-      ob.Take := StrToInt(Value[i]);
+      ob.TakeText := StrToInt(Value[i]);
       Inc(i);
     finally
       ListBox1.Items.AddObject(cap, TObject(ob));
@@ -197,7 +190,7 @@ begin
     Result.Add(TParserInf(ListBox1.Items.Objects[i]).StartTag);
     Result.Add(TParserInf(ListBox1.Items.Objects[i]).EndTag);
     Result.Add(IntToStr(TParserInf(ListBox1.Items.Objects[i]).MustBe));
-    Result.Add(IntToStr(TParserInf(ListBox1.Items.Objects[i]).Take));
+    Result.Add(IntToStr(TParserInf(ListBox1.Items.Objects[i]).TakeText));
   end;
 end;
 
@@ -206,7 +199,7 @@ end;
 procedure TFormParsers.ComboBox1Change(Sender: TObject);
 begin
   if ListBox1.ItemIndex <> -1 then
-    TParserInf(ListBox1.Items.Objects[ListBox1.ItemIndex]).Take := (Sender as TComboBox).ItemIndex;
+    TParserInf(ListBox1.Items.Objects[ListBox1.ItemIndex]).TakeText := (Sender as TComboBox).ItemIndex;
 end;
 
 {*********************************************************************}
@@ -242,4 +235,3 @@ begin
 end;
 
 end.
-
