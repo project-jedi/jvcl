@@ -291,7 +291,7 @@ begin
   P := FpcPos;
   { Firstly skip spaces and remarks }
   repeat
-    while CharInSet(P[0], StSkip) do
+    while P[0] in StSkip do
       Inc(P);
     F1 := P;
     try
@@ -310,35 +310,35 @@ begin
       Return;
       Exit;
     end;
-    while CharInSet(P[0], StSkip) do
+    while P[0] in StSkip do
       Inc(P);
   until F1 = P;
 
   F := P;
   if FStyle <> psHtml then
   begin
-    if CharInSet(P[0], StIdFirstSymbols) then
+    if P[0] in StIdFirstSymbols then
     { token }
     begin
-      while CharInSet(P[0], StIdSymbols) do
+      while P[0] in StIdSymbols do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
-    if CharInSet(P[0], StConstSymbols10) then
+    if P[0] in StConstSymbols10 then
     { number }
     begin
-      while CharInSet(P[0], StConstSymbols10) or (P[0] = '.') do
+      while (P[0] in StConstSymbols10) or (P[0] = '.') do
         Inc(P);
       SetString(Result, F, P - F);
     end
     else
     if (Style = psPascal) and (P[0] = '$') and
-      CharInSet(P[1], StConstSymbols) then
+      (P[1] in StConstSymbols) then
     { pascal hex number }
     begin
       Inc(P);
-      while CharInSet(P[0], StConstSymbols) do
+      while (P[0] in StConstSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
@@ -347,7 +347,7 @@ begin
     { perl identifier }
     begin
       Inc(P);
-      while CharInSet(P[0], StIdSymbols) do
+      while (P[0] in StIdSymbols) do
         Inc(P);
       SetString(Result, F, P - F);
     end
@@ -1014,7 +1014,7 @@ end;
 function IsIntConstant(const St: string): Boolean;
 var
   i, j: Integer;
-  Sym: TSetOfChar;
+  Sym: TSysCharSet;
 begin
   Result := False;
   if (Length(St) = 0) or ((Length(St) = 1) and (St[1] = '$')) then
@@ -1032,7 +1032,7 @@ begin
   else
     j := 1;
   for i := j to Length(St) do
-    if not CharInSet(St[i], Sym) then
+    if not (St[i] in Sym) then
       Exit;
   Result := True;
 end;
@@ -1040,7 +1040,7 @@ end;
 function IsIntConstantW(const St: WideString): Boolean;
 var
   i, j: Integer;
-  Sym: TSetOfChar;
+  Sym: TSysCharSet;
 begin
   Result := False;
   if (Length(St) = 0) or ((Length(St) = 1) and (St[1] = '$')) then
@@ -1071,11 +1071,11 @@ begin
   L := Length(ID);
   if L = 0 then
     Exit;
-  if not CharInSet(ID[1], StIdFirstSymbols) then
+  if not (ID[1] in StIdFirstSymbols) then
     Exit;
   for i := 1 to L do
   begin
-    if not CharInSet(ID[1], StIdSymbols) then
+    if not (ID[1] in StIdSymbols) then
       Exit;
   end;
   Result := True;
