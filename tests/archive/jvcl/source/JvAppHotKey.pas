@@ -76,6 +76,9 @@ uses
 
 { $R HotKey.dcr }
 
+var
+  HotKeyInstances:integer = 0;
+
 procedure TJvApplicationHotKey.GetKeys;
 var aShift: TShiftState;
 begin
@@ -115,21 +118,29 @@ procedure TJvApplicationHotKey.SetActive(Value: boolean);
 begin
   if FActive <> Value then
   begin
-    FActive := Value;
-    if csDesigning in ComponentState then
-      Exit;
-    if FActive then
+    if csDesigning in ComponentState then Exit;
+    if Value then
     begin
       GetWndProc;
-      FID := GlobalAddAtom(PChar(Application.Exename));
+      if FHandle = 0 then Exit;
+      if IsLibrary then
+        FID := GlobalAddAtom(PChar(Application.Exename))
+      else
+      begin
+        FID := HotKeyInstances;
+        Inc(HotKeyInstances);
+      end;
       GetKeys;
-      RegisterHotKey(FHandle, FID, FMods, FVirtKey);
+      RegisterHotKey(FHandle,FID,FMods,FVirtKey);
     end
     else
     begin
-      UnRegisterHotKey(FHandle, FID);
+      UnRegisterHotKey(FHandle,FID);
       ResetWndProc;
+      if IsLibrary then
+        GlobalDeleteAtom (FID);
     end;
+    FActive := Value;
   end;
 end;
 
@@ -155,14 +166,13 @@ begin
   if FHandle <> 0 then
   begin
     UnregisterWndProcHook(TWinControl(Owner), WndProc, hoAfterMsg);
-    GlobalDeleteAtom(FID);
     FHandle := 0;
   end
 end;
 
 function TJvApplicationHotKey.WndProc(var Msg: TMessage): boolean;
 begin
-  if Msg.Msg = WM_HOTKEY then
+  if (Msg.Msg = WM_HOTKEY) and (FID = Msg.WParam) then
     DoHotKey;
   Result := false;
 end;
