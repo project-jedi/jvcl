@@ -42,8 +42,6 @@ type
     procedure SetPartner(const Value: TJvSyncSplitter);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    property ForcedSize: Boolean read FForcedSize write FForcedSize;
-  public
     procedure WndProc(var Msg: TMessage); override;
   published
     property Partner: TJvSyncSplitter read FPartner write SetPartner;
@@ -71,19 +69,19 @@ end;
 
 procedure TJvSyncSplitter.WndProc(var Msg: TMessage);
 begin
-  if Assigned(FPartner) and not ForcedSize then
+  if Assigned(FPartner) and not FForcedSize then
     case Msg.Msg of
       WM_MOUSEFIRST..WM_MOUSELAST:
         begin
-          Partner.ForcedSize := True;
+          Partner.FForcedSize := True;
           try
             Partner.Perform(Msg.Msg, Msg.WParam, Msg.LParam);
           finally
-            Partner.ForcedSize := False;
+            Partner.FForcedSize := False;
           end;
         end;
     end;
-  inherited;
+  inherited WndProc(Msg);
 end;
 
 end.

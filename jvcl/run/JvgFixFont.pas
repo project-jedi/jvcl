@@ -32,7 +32,13 @@ unit JvgFixFont;
 interface
 
 uses
-  Windows, Classes, Graphics, Controls,
+  Classes,
+  {$IFDEF VCL}
+  Windows, Graphics, Controls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

@@ -31,8 +31,14 @@ unit JvYearGridEditForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
   Forms, Dialogs, StdCtrls, Buttons, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms, QDialogs, QStdCtrls, QButtons, QExtCtrls,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -48,7 +54,6 @@ type
     procedure BtnLoadClick(Sender: TObject);
     procedure BtnSaveClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
-  private
   public
   end;
 

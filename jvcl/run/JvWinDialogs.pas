@@ -138,7 +138,7 @@ type
     FDrive: Char;
     FFormatType: TJvFormatDriveKind;
     FCapacity: TJvDriveCapacity;
-    FHandle: Integer;
+    FHandle: HWND;
     FOnError: TJvFormatDriveErrorEvent;
     procedure SetDrive(Value: Char);
   protected
@@ -982,7 +982,7 @@ begin
   if AOwner is TCustomForm then
     FHandle := TCustomForm(AOwner).Handle
   else
-    FHandle := 0;
+    FHandle := HWND_DESKTOP;
 end;
 
 function TJvFormatDriveDialog.Execute: Boolean;
