@@ -451,6 +451,7 @@ contains
   JvPluginMan in '..\source\JvPluginMan.pas',
   JvPlugCommon in '..\source\JvPlugCommon.pas',
   JvScheduledEvents in '..\source\JvScheduledEvents.pas',
+  JvSchedEvtStore in '..\source\JvSchedEvtStore.pas',
   JvWndProcHook in '..\source\JvWndProcHook.pas';
 
 end.
