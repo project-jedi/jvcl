@@ -361,6 +361,7 @@ end;
 procedure TJvCustomEdit.Change;
 var
   St: string;
+  Sel: Integer;
 begin
   inherited Change;
   if not HasParent then
@@ -369,8 +370,9 @@ begin
   FMaxPixel.Test(St, Font);
   if St <> Text then
   begin
+    Sel := SelStart;
     Text := St;
-    SelStart := Min(SelStart, Length(Text));
+    SelStart := Min(Sel, Length(Text));
   end;
 end;
 
