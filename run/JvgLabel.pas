@@ -915,9 +915,12 @@ begin
   Gradient.Active := OldGradientFActive;
 
   if (Assigned(FTextureBmp) or (floTransparentFont in Options)) and
-    (CurrTextStyle <> fstPushed) then
-    BitBlt(FTargetCanvas.Handle, 0, 0, FTextureMask.Width, FTextureMask.Height,
+    (CurrTextStyle <> fstPushed) then begin
+      if Assigned(FTextureMask) then begin {fix access violation! WPostma.}
+        BitBlt(FTargetCanvas.Handle, 0, 0, FTextureMask.Width, FTextureMask.Height,
       FTextureMask.Canvas.Handle, 0, 0, SRCPAINT);
+      end;
+    end;
 
   if FImg.Canvas = FTargetCanvas then
     BitBlt(Canvas.Handle, 0, 0, FImg.Width, FImg.Height,
