@@ -126,6 +126,12 @@ type
     property FrameDescription[const FrameID: TJvID3FrameID]: string read GetFrameDescription;
   end;
 
+  TJvID3FileInfoEditor = class(TClassProperty)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
 procedure ShowFramesEditor(
   {$IFDEF COMPILER6_UP}
   Designer: IDesigner;
@@ -140,6 +146,7 @@ function CreateFramesEditor(
   Designer: IFormDesigner;
   {$ENDIF}
   AController: TJvID3Controller; var Shared: Boolean): TJvID3FramesEditor;
+procedure ShowFileInfo(AController: TJvID3Controller);
 
 implementation
 
@@ -148,6 +155,9 @@ uses
   JvID3v2DefineForm, JvConsts;
 
 {$R *.dfm}
+
+type
+  TJvID3ControllerAccess = class(TJvID3Controller);
 
 const
   CFrameDescriptions: array [TJvID3FrameID] of PChar = (
@@ -285,6 +295,83 @@ begin
     Result.Designer := Designer;
     Result.Controller := AController;
     Shared := False;
+  end;
+end;
+
+procedure ShowFileInfo(AController: TJvID3Controller);
+const
+  CVersion: array[TJvMPEGVersion] of string = ('MPEG 2.5', '??', 'MPEG 2.0', 'MPEG 1.0');
+  CLayer: array[TJvMPEGLayer] of string = ('??', 'layer 3', 'layer 2', 'layer 1');
+  CChannelMode: array[TJvMPEGChannelMode] of string = ('Stereo', 'Joint Stereo', 'Dual Channel', 'Mono');
+  CEmphasis: array[TJvMPEGEmphasis] of string = ('None', '50/15 microsec', '??', 'CCIT J.17');
+  CBool: array[Boolean] of string = ('No', 'Yes');
+  CVbr: array[Boolean] of string = ('', ' (VBR)');
+  CFileInfo =
+    'Size: %d bytes'#13 +
+    'Header found at: %d bytes'#13 +
+    'Length: %d seconds'#13 +
+    '%s %s'#13 +
+    '%dkbit%s, %d frames'#13 +
+    '%dHz %s'#13 +
+    'CRCs: %s'#13 +
+    'Copyrighted: %s'#13 +
+    'Original: %s'#13 +
+    'Emphasis: %s';
+var
+  Msg: string;
+  SavedActive: Boolean;
+begin
+  SavedActive := AController.Active;
+  try
+    with TJvID3ControllerAccess(AController) do
+    begin
+      if FileName = '' then
+      begin
+        MessageDlg(SID3Err_NoFileSpecified, mtError, [mbOK], 0);
+        Exit;
+      end;
+
+      if not FileExists(FileName) then
+      begin
+        MessageDlg(Format(SID3Err_FileDoesNotExists, [FileName]),
+          mtError, [mbOK], 0);
+        Exit;
+      end;
+
+      Active := True;
+
+      with FileInfo do
+      begin
+        if not IsValid then
+        begin
+          MessageDlg(SID3Err_NoValidMPEGTag, mtError, [mbOK], 0);
+          Exit;
+        end;
+
+        Msg := Format(CFileInfo, [
+          FileSize,
+            HeaderFoundAt,
+            LengthInSec,
+            CVersion[Version], CLayer[Layer],
+            Bitrate, CVbr[IsVbr], FrameCount,
+            SamplingRateFrequency, CChannelMode[ChannelMode],
+            CBool[mbProtection in Bits], CBool[mbCopyrighted in Bits], CBool[mbOriginal in Bits],
+            CEmphasis[Emphasis]
+            ]);
+      end;
+    end;
+
+    { We don't use MessageDlg now, because we want a custom caption }
+    with CreateMessageDialog(Msg, mtCustom, [mbOK]) do
+    try
+      Position := poScreenCenter;
+      Caption := 'File info';
+      ShowModal;
+    finally
+      Free;
+    end;
+  finally
+    AController.Active := SavedActive;
   end;
 end;
 
@@ -517,7 +604,8 @@ var
   I: Integer;
 begin
   with FrameListBox do
-    for I := 0 to Items.Count - 1 do Selected[I] := True;
+    for I := 0 to Items.Count - 1 do
+      Selected[I] := True;
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -709,22 +797,24 @@ begin
   case Index of
     0: ShowFramesEditor(Designer, TJvID3Controller(Component));
     1: RemoveTag;
-    2: Commit;
+    2: ShowFileInfo(TJvID3Controller(Component));
+    3: Commit;
   end;
 end;
 
 function TJvID3ControllerEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-    0: Result := SID3FrameEditor;
+    0: Result := SID3FrameEditorTag;
     1: Result := SID3RemoveTag;
-    2: Result := SID3CommitTag;
+    2: Result := SID3FileInfoTag;
+    3: Result := SID3CommitTag;
   end;
 end;
 
 function TJvID3ControllerEditor.GetVerbCount: Integer;
 begin
-  Result := 2;
+  Result := 3;
 
   with TJvID3Controller(Component) do
     if Active and Modified then
@@ -743,18 +833,17 @@ begin
   begin
     if FileName = '' then
     begin
-      MessageDlg('Couldn''t remove tag: No file specified', mtError, [mbOK], 0);
+      MessageDlg(SID3Err_NoFileSpecified, mtError, [mbOK], 0);
       Exit;
     end;
 
     if not FileExists(FileName) then
     begin
-      MessageDlg(Format('Couldn''t remove tag: File %s does not exist', [FileName]),
-        mtError, [mbOK], 0);
+      MessageDlg(Format(SID3Err_FileDoesNotExists, [FileName]), mtError, [mbOK], 0);
       Exit;
     end;
 
-    if MessageDlg('Remove tag?', mtConfirmation, mbOKCancel, 0) = mrOk then
+    if MessageDlg(SID3RemoveTagConfirmation, mtConfirmation, mbOKCancel, 0) = mrOk then
       Erase;
   end;
 end;
@@ -907,6 +996,22 @@ procedure TJvID3FramesEditor.SelectAllClick(Sender: TObject);
 begin
   SelectAll;
   UpdateSelection;
+end;
+
+{ TJvID3FileInfoEditor }
+
+procedure TJvID3FileInfoEditor.Edit;
+var
+  P: TPersistent;
+begin
+  P := TPersistent(GetComponent(0));
+  if P is TJvID3Controller then
+    ShowFileInfo(TJvID3Controller(P));
+end;
+
+function TJvID3FileInfoEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog];
 end;
 
 end.
