@@ -44,6 +44,7 @@ type
 constructor Create(AComponent: TComponent; ADesigner: IFormDesigner); override;
 {$ENDIF}
     procedure AddButton;virtual;
+    procedure AddPage;virtual;
     procedure SetActive; virtual;
     procedure Edit; override;
     procedure ExecuteVerb(Index: Integer); override;
@@ -118,19 +119,7 @@ end;
 procedure TLookOutPageEditor.Edit;
 begin
   if Component <> nil then
-    inherited Edit;
-end;
-
-procedure TLookOutPageEditor.ExecuteVerb(Index: Integer);
-begin
-  case Index of
-    0: SetActive;
-    1: AddButton;
-    2: ;
-    3: TJvLookOutPage(Component).UpArrow;
-    4: TJvLookOutPage(Component).DownArrow;
-    5: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
-  end;
+    ExecuteVerb(1);
 end;
 
 procedure TLookOutPageEditor.SetActive;
@@ -159,18 +148,39 @@ function TLookOutPageEditor.GetVerb(Index: Integer): string;
 begin
   if Component = nil then Exit;
   case Index of
-    0: Result := 'Activate';
-    1: Result := 'Add Button';
-    2: Result := '-';
-    3: Result := 'Scroll Up';
-    4: Result := 'Scroll Down';
-    5: Result := 'About...';
+    0: Result := 'Add page';
+    1: Result := 'Activate';
+    2: Result := 'Add Button';
+    3: Result := '-';
+    4: Result := 'Scroll Up';
+    5: Result := 'Scroll Down';
+  end;
+end;
+
+procedure TLookOutPageEditor.ExecuteVerb(Index: Integer);
+begin
+  case Index of
+    0: AddPage;
+    1: SetActive;
+    2: AddButton;
+    3: ;
+    4: TJvLookOutPage(Component).UpArrow;
+    5: TJvLookOutPage(Component).DownArrow;
   end;
 end;
 
 function TLookOutPageEditor.GetVerbCount: Integer;
 begin
   Result := 6;
+end;
+
+procedure TLookOutPageEditor.AddPage;
+var Page:TJvLookOutPage;
+begin
+  if not (Component is TJvLookOutPage) then Exit;
+  Page := TJvLookOut(TJvLookOutPage(Component).Parent).AddPage;
+  Page.Name := Designer.UniqueName('LookOutPage');
+  Page.Caption := Page.Name;
 end;
 
 { TLookOutEditor }
@@ -228,7 +238,6 @@ begin
              Break;
            end;
     end;
-    3: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
   end;
 end;
 
@@ -247,13 +256,12 @@ begin
     0: Result := 'Add Page';
     1: Result := 'Next Page';
     2: Result := 'Previous Page';
-    3: Result := 'About...';
   end;
 end;
 
 function TLookOutEditor.GetVerbCount: Integer;
 begin
-  Result := 4;
+  Result := 3;
 end;
 
 { TExpressEditor }
@@ -295,22 +303,22 @@ end;
 procedure TExpressEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
-  0: AddButton;
-  1: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
+    0: AddButton;
+//  1: ShowMessage('Lookout components'#13'Copyright © 1997 by Peter Thornqvist; all rights reserved');
   end;
 end;
 
 function TExpressEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
-  0: Result := 'Add Button';
-  1: Result := 'About...';
+    0: Result := 'Add Button';
+//    1: Result := 'About...';
   end;
 end;
 
 function TExpressEditor.GetVerbCount: Integer;
 begin
-  Result := 2;
+  Result := 1;
 end;
 
 { TLookOutImageIndexProperty }

@@ -2366,6 +2366,7 @@ function TJvLookOut.AddPage: TJvLookOutPage;
 begin
   Result := TJvLookOutPage.Create(self.Owner);
   Result.Parent := self;
+  ActivePage := Result;
 end;
 
 procedure TJvLookOut.Notification(AComponent: TComponent; Operation: TOperation);
