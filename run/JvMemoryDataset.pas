@@ -30,9 +30,9 @@ interface
 
 uses
   SysUtils, Classes, DB,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   JvDBUtils;
 
 type
@@ -42,7 +42,7 @@ type
   TRecordStatus = (rsOriginal, rsUpdated, rsInserted, rsDeleted);
   //------------------------------------------------------------
   TMemBlobData = string;
-  TMemBlobArray = array[0..0] of TMemBlobData;
+  TMemBlobArray = array [0..0] of TMemBlobData;
   PMemBlobArray = ^TMemBlobArray;
   TJvMemoryRecord = class;
   TLoadMode = (lmCopy, lmAppend);
@@ -326,7 +326,8 @@ function CalcFieldLen(FieldType: TFieldType; Size: Word): Word;
 begin
   if not (FieldType in ftSupported) then
     Result := 0
-  else if FieldType in ftBlobTypes then
+  else
+  if FieldType in ftBlobTypes then
     Result := SizeOf(Longint)
   else
   begin
@@ -405,7 +406,7 @@ type
     BookmarkFlag: TBookmarkFlag;
   end;
 
-  //=== TJvMemoryRecord ========================================================
+//=== TJvMemoryRecord ========================================================
 
 constructor TJvMemoryRecord.Create(MemoryData: TJvMemoryData);
 begin
@@ -500,6 +501,18 @@ begin
   //---------------------------------------
 end;
 
+destructor TJvMemoryData.Destroy;
+begin
+  //------- Added by CFZ 2004/03/03 -------
+  FreeAndNil(FDeletedValues);
+  //---------------------------------------
+  FreeIndexList;
+  ClearRecords;
+  FRecords.Free;
+  ReallocMem(FOffsets, 0);
+  inherited Destroy;
+end;
+
 function TJvMemoryData.CompareFields(Data1, Data2: Pointer; FieldType: TFieldType;
   CaseInsensitive: Boolean): Integer;
 begin
@@ -513,32 +526,38 @@ begin
     ftSmallint:
       if SmallInt(Data1^) > SmallInt(Data2^) then
         Result := 1
-      else if SmallInt(Data1^) < SmallInt(Data2^) then
+      else
+      if SmallInt(Data1^) < SmallInt(Data2^) then
         Result := -1;
     ftInteger, ftDate, ftTime, ftAutoInc:
       if Longint(Data1^) > Longint(Data2^) then
         Result := 1
-      else if Longint(Data1^) < Longint(Data2^) then
+      else
+      if Longint(Data1^) < Longint(Data2^) then
         Result := -1;
     ftWord:
       if Word(Data1^) > Word(Data2^) then
         Result := 1
-      else if Word(Data1^) < Word(Data2^) then
+      else
+      if Word(Data1^) < Word(Data2^) then
         Result := -1;
     ftBoolean:
       if WordBool(Data1^) and not WordBool(Data2^) then
         Result := 1
-      else if not WordBool(Data1^) and WordBool(Data2^) then
+      else
+      if not WordBool(Data1^) and WordBool(Data2^) then
         Result := -1;
     ftFloat, ftCurrency:
       if Double(Data1^) > Double(Data2^) then
         Result := 1
-      else if Double(Data1^) < Double(Data2^) then
+      else
+      if Double(Data1^) < Double(Data2^) then
         Result := -1;
     ftDateTime:
       if TDateTime(Data1^) > TDateTime(Data2^) then
         Result := 1
-      else if TDateTime(Data1^) < TDateTime(Data2^) then
+      else
+      if TDateTime(Data1^) < TDateTime(Data2^) then
         Result := -1;
     ftFixedChar:
       if CaseInsensitive then
@@ -555,25 +574,14 @@ begin
     ftLargeint:
       if Int64(Data1^) > Int64(Data2^) then
         Result := 1
-      else if Int64(Data1^) < Int64(Data2^) then
+      else
+      if Int64(Data1^) < Int64(Data2^) then
         Result := -1;
     ftVariant:
       Result := 0;
     ftGuid:
       Result := AnsiCompareText(PChar(Data1), PChar(Data2));
   end;
-end;
-
-destructor TJvMemoryData.Destroy;
-begin
-  //------- Added by CFZ 2004/03/03 -------
-  FreeAndNil(FDeletedValues);
-  //---------------------------------------
-  FreeIndexList;
-  ClearRecords;
-  FRecords.Free;
-  ReallocMem(FOffsets, 0);
-  inherited Destroy;
 end;
 
 function TJvMemoryData.GetCapacity: Integer;
@@ -785,7 +793,8 @@ begin
     gmCurrent:
       if (FRecordPos < 0) or (FRecordPos >= RecordCount) then
         Result := grError
-      else if Filtered then
+      else
+      if Filtered then
         if not RecordFilter then
           Result := grError;
     gmNext:
@@ -807,7 +816,8 @@ begin
   end;
   if Result = grOk then
     RecordToBuffer(Records[FRecordPos], Buffer)
-  else if (Result = grError) and DoCheck then
+  else
+  if (Result = grError) and DoCheck then
     Error(RsEMemNoRecords);
 end;
 
@@ -849,7 +859,7 @@ begin
     Data := FindFieldData(RecBuf, Field);
     if Data <> nil then
     begin
-      Result := Boolean(Data[0]);
+      Result := Data[0] <> #0;
       Inc(Data);
       if Field.DataType in [ftString, ftFixedChar, ftWideString, ftGuid] then
         Result := Result and (StrLen(Data) > 0);
@@ -863,10 +873,11 @@ begin
           Move(Data^, Buffer^, CalcFieldLen(Field.DataType, Field.Size));
     end;
   end
-  else if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
+  else
+  if State in [dsBrowse, dsEdit, dsInsert, dsCalcFields] then
   begin
     Inc(RecBuf, FRecordSize + Field.Offset);
-    Result := Boolean(RecBuf[0]);
+    Result := RecBuf[0] <> #0;
     if Result and (Buffer <> nil) then
       Move(RecBuf[1], Buffer^, Field.DataSize);
   end;
@@ -900,9 +911,9 @@ begin
               VarData := PVariant(Buffer)^
             else
               VarData := EmptyParam;
-            Boolean(Data[0]) := LongBool(Buffer) and not
-              (VarIsNull(VarData) or VarIsEmpty(VarData));
-            if Boolean(Data[0]) then
+            Data[0] := Char(Ord((Buffer <> nil) and not
+              (VarIsNull(VarData) or VarIsEmpty(VarData))));
+            if Data[0] <> #0 then
             begin
               Inc(Data);
               PVariant(Data)^ := VarData;
@@ -912,9 +923,9 @@ begin
           end
           else
           begin
-            Boolean(Data[0]) := LongBool(Buffer);
+            Data[0] := Char(Ord(Buffer <> nil));
             Inc(Data);
-            if LongBool(Buffer) then
+            if Buffer <> nil then
               Move(Buffer^, Data^, CalcFieldLen(DataType, Size))
             else
               FillChar(Data^, CalcFieldLen(DataType, Size), 0);
@@ -925,8 +936,8 @@ begin
     else {fkCalculated, fkLookup}
     begin
       Inc(RecBuf, FRecordSize + Offset);
-      Boolean(RecBuf[0]) := LongBool(Buffer);
-      if Boolean(RecBuf[0]) then
+      RecBuf[0] := Char(Ord(Buffer <> nil));
+      if RecBuf[0] <> #0 then
         Move(Buffer^, RecBuf[1], DataSize);
     end;
     if not (State in [dsCalcFields, dsFilter, dsNewValue]) then
@@ -1025,13 +1036,17 @@ function TJvMemoryData.CompareBookmarks(Bookmark1, Bookmark2: TBookmark): Intege
 begin
   if (Bookmark1 = nil) and (Bookmark2 = nil) then
     Result := 0
-  else if (Bookmark1 <> nil) and (Bookmark2 = nil) then
+  else
+  if (Bookmark1 <> nil) and (Bookmark2 = nil) then
     Result := 1
-  else if (Bookmark1 = nil) and (Bookmark2 <> nil) then
+  else
+  if (Bookmark1 = nil) and (Bookmark2 <> nil) then
     Result := -1
-  else if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
+  else
+  if TBookmarkData(Bookmark1^) > TBookmarkData(Bookmark2^) then
     Result := 1
-  else if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
+  else
+  if TBookmarkData(Bookmark1^) < TBookmarkData(Bookmark2^) then
     Result := -1
   else
     Result := 0;
@@ -1144,7 +1159,7 @@ begin
       Data := FindFieldData(Buffer, Fields[I]);
       if Data <> nil then
       begin
-        Boolean(Data[0]) := True;
+        Data[0] := Char(Ord(True));
         Inc(Data);
         Move(FAutoInc, Data^, SizeOf(Longint));
         Inc(Count);
@@ -1817,16 +1832,18 @@ begin
         Data2 := FindFieldData(Item2.Data, F);
         if Data2 <> nil then
         begin
-          if Boolean(Data1[0]) and Boolean(Data2[0]) then
+          if (Data1[0] <> #0) and (Data2[0] <> #0) then
           begin
             Inc(Data1);
             Inc(Data2);
             Result := CompareFields(Data1, Data2, F.DataType,
               FCaseInsensitiveSort);
           end
-          else if Boolean(Data1[0]) then
+          else
+          if Data1[0] <> #0 then
             Result := 1
-          else if Boolean(Data2[0]) then
+          else
+          if Data2[0] <> #0 then
             Result := -1;
           if FDescendingSort then
             Result := -Result;
@@ -1840,7 +1857,8 @@ begin
   begin
     if Item1.ID > Item2.ID then
       Result := 1
-    else if Item1.ID < Item2.ID then
+    else
+    if Item1.ID < Item2.ID then
       Result := -1;
     if FDescendingSort then
       Result := -Result;
@@ -2246,13 +2264,12 @@ begin
       begin
         ValRow := KeyValues[J];
         ValDel := xKey[J];
-{$IFDEF COMPILER6_UP}
+        {$IFDEF COMPILER6_UP}
         if (VarCompareValue(ValRow, ValDel) = vrEqual) then
-        begin
-{$ELSE}
+        {$ELSE}
         if (ValRow = ValDel) then
+        {$ENDIF COMPILER6_UP}
         begin
-{$ENDIF}
           Inc(Equals);
           if Equals = (Len - 1) then
             Break;
@@ -2289,11 +2306,13 @@ function TJvMemoryData.IsOriginal: Boolean;
 begin
   Result := TRecordStatus(FieldByName(FStatusName).AsInteger) = rsOriginal;
 end;
-//---------------------------------------------------------------------------
+
 //=== TJvMemBlobStream =======================================================
 
 constructor TJvMemBlobStream.Create(Field: TBlobField; Mode: TBlobStreamMode);
 begin
+  // (rom) added inherited Create;
+  inherited Create;
   FMode := Mode;
   FField := Field;
   FDataSet := FField.DataSet as TJvMemoryData;
@@ -2319,11 +2338,13 @@ begin
   if FOpened and FModified then
     FField.Modified := True;
   if FModified then
-  try
-    FDataSet.DataEvent(deFieldChange, Longint(FField));
-  except
-    Application.HandleException(Self);
-  end;
+    try
+      FDataSet.DataEvent(deFieldChange, Longint(FField));
+    except
+      Application.HandleException(Self);
+    end;
+  // (rom) added inherited Destroy;
+  inherited Destroy;
 end;
 
 function TJvMemBlobStream.GetBlobFromRecord(Field: TField): TMemBlobData;
@@ -2335,7 +2356,8 @@ begin
   Pos := FDataSet.FRecordPos;
   if (Pos < 0) and (FDataSet.RecordCount > 0) then
     Pos := 0
-  else if Pos >= FDataSet.RecordCount then
+  else
+  if Pos >= FDataSet.RecordCount then
     Pos := FDataSet.RecordCount - 1;
   if (Pos >= 0) and (Pos < FDataSet.RecordCount) then
   begin

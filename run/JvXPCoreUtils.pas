@@ -31,14 +31,14 @@ unit JvXPCoreUtils;
 interface
 
 uses
-  SysUtils, Classes,
+  SysUtils, Classes, TypInfo,
   {$IFDEF VCL}
   Windows, Graphics, Controls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QTypes, QWindows,
   {$ENDIF VisualCLX}
-  TypInfo, JvXPCore;
+  JvXPCore;
 
 function JvXPMethodsEqual(const Method1, Method2: TMethod): Boolean;
 procedure JvXPDrawLine(const ACanvas: TCanvas; const X1, Y1, X2, Y2: Integer);
@@ -366,9 +366,9 @@ begin
       {$IFDEF VisualCLX}
       FillRect(Rect);
       Bitmap.TransparentColor := clBlack;
-      Bitmap.Transparent := true;
+      Bitmap.Transparent := True;
       Draw(0,0, Bitmap);
-      {$ENDIF}
+      {$ENDIF VisualCLX}
     end;
     {$IFDEF VisualCLX}
     Bitmap.FreeImage;

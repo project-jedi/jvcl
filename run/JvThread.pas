@@ -191,7 +191,7 @@ begin
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Result := 0;
-  {$ENDIF}
+  {$ENDIF LINUX}
   if Thread <> 0 then
     Result := TThreadPriority(GetThreadPriority(Thread));
 end;

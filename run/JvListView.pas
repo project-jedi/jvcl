@@ -33,6 +33,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ComCtrls, CommCtrl, Menus, ImgList, Clipbrd,
   JvTypes, JvExComCtrls;
+
 const
   WM_AUTOSELECT = WM_USER + 1;
 
@@ -67,13 +68,13 @@ type
     FOnVerticalScroll: TNotifyEvent;
     FImageChangeLink: TChangeLink;
     FHeaderImages: TCustomImageList;
-    FAutoSelect: boolean;
+    FAutoSelect: Boolean;
     procedure SetHeaderImages(const Value: TCustomImageList);
     procedure UpdateHeaderImages(HeaderHandle: Integer);
-    procedure WmAutoSelect(var Message:TMessage); message WM_AUTOSELECT;
+    procedure WmAutoSelect(var Message: TMessage); message WM_AUTOSELECT;
     {$IFNDEF COMPILER6_UP}
-    function GetItemIndex: integer;
-    procedure SetItemIndex(const Value: integer);
+    function GetItemIndex: Integer;
+    procedure SetItemIndex(const Value: Integer);
     {$ENDIF !COMPILER6_UP}
   protected
     function CreateListItem: TListItem; override;
@@ -108,20 +109,20 @@ type
     {$ENDIF COMPILER6_UP}
     procedure UnselectAll;
     procedure InvertSelection;
-    function MoveUp(Index:integer;Focus:boolean=true):integer;
-    function MoveDown(Index:integer;Focus:boolean=true):integer;
-    function SelectNextItem(Focus:boolean = true):integer;
-    function SelectPrevItem(Focus:boolean = true):integer;
+    function MoveUp(Index: Integer; Focus: Boolean = True): Integer;
+    function MoveDown(Index: Integer; Focus: Boolean = True): Integer;
+    function SelectNextItem(Focus: Boolean = True): Integer;
+    function SelectPrevItem(Focus: Boolean = True): Integer;
 
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
     procedure SetBounds(ALeft: Integer; ATop: Integer; AWidth: Integer;
       AHeight: Integer); override;
     procedure SetFocus; override;
     {$IFNDEF COMPILER6_UP}
-    property ItemIndex:integer read GetItemIndex write SetItemIndex;
-    {$ENDIF}
+    property ItemIndex: Integer read GetItemIndex write SetItemIndex;
+    {$ENDIF !COMPILER6_UP}
   published
-    property AutoSelect:boolean read FAutoSelect write FAutoSelect default True;
+    property AutoSelect: Boolean read FAutoSelect write FAutoSelect default True;
     property ColumnsOrder: string read GetColumnsOrder write SetColumnsOrder;
     property HintColor;
     property HeaderImages: TCustomImageList read FHeaderImages write SetHeaderImages;
@@ -177,7 +178,7 @@ begin
   FAutoClipboardCopy := True;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := DoHeaderImagesChange;
-  FAutoSelect := true;
+  FAutoSelect := True;
 end;
 
 destructor TJvListView.Destroy;
@@ -912,11 +913,9 @@ begin
       Selected := Items[I];
   end
   else
-  begin
     for I := Items.Count - 1 downto 0 do
       if Items[I].Selected then
         Items[I].Delete;
-  end;
   Items.EndUpdate;
 end;
 {$ENDIF COMPILER6_UP}
@@ -993,7 +992,8 @@ begin
   if Operation = opRemove then
     if AComponent = HeaderImages then
       HeaderImages := nil
-    else if not (csDestroying in ComponentState) and (AComponent is TPopupMenu) then
+    else
+    if not (csDestroying in ComponentState) and (AComponent is TPopupMenu) then
       for I := 0 to Items.Count - 1 do
         if TJvListItem(Items[I]).PopupMenu = AComponent then
           TJvListItem(Items[I]).PopupMenu := nil;
@@ -1067,29 +1067,30 @@ end;
 
 procedure TJvListView.InsertItem(Item: TListItem);
 begin
-  inherited;
+  inherited InsertItem(Item);
   if AutoSelect and (Selected = nil) and (Items.Count < 2) then
-    PostMessage(Handle, WM_AUTOSELECT, integer(Item), 1);
+    PostMessage(Handle, WM_AUTOSELECT, Integer(Item), 1);
 end;
 
 procedure TJvListView.WmAutoSelect(var Message: TMessage);
-var lv:TListItem;
+var
+  lv: TListItem;
 begin
   with Message do
   begin
     lv := TListItem(WParam);
     if (lv <> nil) and (LParam = 1) then
     begin
-      lv.Selected := true;
-      lv.Focused := true;
+      lv.Selected := True;
+      lv.Focused := True;
     end;
   end;
 end;
 
-function TJvListView.MoveDown(Index: integer;Focus:boolean=true): integer;
+function TJvListView.MoveDown(Index: Integer; Focus: Boolean = True): Integer;
 var
-  lv, lv2:TListItem;
-  FOnInsert, FOnDeletion:TLVDeletedEvent;
+  lv, lv2: TListItem;
+  FOnInsert, FOnDeletion: TLVDeletedEvent;
 begin
   Result := Index;
   if (Index >= 0) and (Index < Items.Count) then
@@ -1109,17 +1110,17 @@ begin
     end;
     if Focus then
     begin
-      lv.Selected := true;
-      lv.Focused := true;
+      lv.Selected := True;
+      lv.Focused := True;
     end;
     Result := lv.Index;
   end;
 end;
 
-function TJvListView.MoveUp(Index: integer; Focus:boolean=true): integer;
+function TJvListView.MoveUp(Index: Integer; Focus: Boolean = True): Integer;
 var
-  lv, lv2:TListItem;
-  FOnInsert, FOnDeletion:TLVDeletedEvent;
+  lv, lv2: TListItem;
+  FOnInsert, FOnDeletion: TLVDeletedEvent;
 begin
   Result := Index;
   if (Index > 0) and (Index < Items.Count) then
@@ -1139,14 +1140,14 @@ begin
     end;
     if Focus then
     begin
-      lv.Selected := true;
-      lv.Focused := true;
+      lv.Selected := True;
+      lv.Focused := True;
     end;
     Result := lv.Index;
   end;
 end;
 
-function TJvListView.SelectNextItem(Focus:boolean=true): integer;
+function TJvListView.SelectNextItem(Focus: Boolean = True): Integer;
 begin
   Result := ItemIndex + 1;
   if Result < Items.Count then
@@ -1159,7 +1160,7 @@ begin
   end;
 end;
 
-function TJvListView.SelectPrevItem(Focus:boolean=true): integer;
+function TJvListView.SelectPrevItem(Focus: Boolean = True): Integer;
 begin
   Result := ItemIndex - 1;
   if Result >= 0 then
@@ -1174,12 +1175,14 @@ end;
 
 procedure TJvListView.SetFocus;
 begin
-  inherited;
+  inherited SetFocus;
   if AutoSelect and (Selected = nil) and (Items.Count > 0) then
-    PostMessage(Handle, WM_AUTOSELECT, integer(Items[0]), 1);
+    PostMessage(Handle, WM_AUTOSELECT, Integer(Items[0]), 1);
 end;
+
 {$IFNDEF COMPILER6_UP}
-function TJvListView.GetItemIndex: integer;
+
+function TJvListView.GetItemIndex: Integer;
 begin
   if Selected <> nil then
     Result := Selected.Index
@@ -1187,11 +1190,12 @@ begin
     Result := -1;
 end;
 
-procedure TJvListView.SetItemIndex(const Value: integer);
+procedure TJvListView.SetItemIndex(const Value: Integer);
 begin
   if (Value >= 0) and (Value < Items.Count) then
     Items[Value].Selected := True;
 end;
+
 {$ENDIF !COMPILER6_UP}
 
 end.

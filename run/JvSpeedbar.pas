@@ -2245,7 +2245,7 @@ begin
     if sfOffsetY in Flags then
       FOffset.Y := MulDiv(FOffset.Y, M, D);
     UpdateGridSize;
-    inherited ChangeScale(M, D{$IFDEF VisualCLX}, MH, DH{$ENDIF});
+    inherited ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF});
     ApplyButtonSize;
     AlignItemsToGrid;
     FScaleFlags := [];

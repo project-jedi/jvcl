@@ -30,17 +30,18 @@ unit JvXPCore;
 
 interface
 
-{$IFDEF VCL}
 uses
-  Classes, Windows, Messages, Controls, Graphics, Forms
-  {$IFDEF USEJVCL},JvComponent{$ENDIF};
-{$ENDIF VCL}
-
-{$IFDEF VisualCLX}
-uses
-  Classes, QControls, Types, QGraphics, QForms, Qt, QWindows,
-  JvQComponent;
-{$ENDIF VisualCLX}
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Graphics, Forms,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QControls, QGraphics, QForms, Qt, QWindows,
+  JvQComponent,
+  {$ENDIF VisualCLX}
+  Classes;
 
 const
   { color constants.

@@ -282,7 +282,7 @@ type
     function DoPageChanging(Index: Integer): Boolean; virtual;
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
-    procedure DoContextPopup({$IFDEF VisualCLX}const {$ENDIF}MousePos: TPoint; var Handled: Boolean); override;
+    procedure DoContextPopup({$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint; var Handled: Boolean); override;
     function DoDrawBackGround: boolean;
     function DoDrawPage(ARect: TRect; Index: integer): boolean;
     function DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
@@ -2184,7 +2184,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.DoContextPopup({$IFDEF VisualCLX}const {$ENDIF}MousePos: TPoint;
+procedure TJvCustomOutlookBar.DoContextPopup({$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint;
   var Handled: Boolean);
 var
   P: TPersistent;

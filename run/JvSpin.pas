@@ -215,7 +215,7 @@ type
     procedure DoClipboardCut; override;
     procedure DoKillFocus(FocusedWnd: HWND); override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-      {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean; override;
+      {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean; override;
     procedure DoBoundsChanged; override;
     procedure EnabledChanged; override;
     procedure DoEnter; override;
@@ -265,7 +265,7 @@ type
     property CheckMinValue: Boolean read FCheckMinValue write SetCheckMinValue stored StoreCheckMinValue;
     property CheckMaxValue: Boolean read FCheckMaxValue write SetCheckMaxValue stored StoreCheckMaxValue;
     property ValueType: TValueType read FValueType write SetValueType
-      default{$IFDEF BCB}vtInt{$ELSE}vtInteger{$ENDIF};
+      default {$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF};
     property Value: Extended read GetValue write SetValue stored IsValueStored;
     property Thousands: Boolean read FThousands write SetThousands default False;
     property OnBottomClick: TNotifyEvent read FOnBottomClick write FOnBottomClick;
@@ -884,7 +884,7 @@ begin
 end;
 
 function TJvCustomSpinEdit.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
-  {$IFDEF VisualCLX}const{$ENDIF}MousePos: TPoint): Boolean;
+  {$IFDEF VisualCLX} const {$ENDIF} MousePos: TPoint): Boolean;
 begin
   if WheelDelta > 0 then
     UpClick(nil)
@@ -1378,7 +1378,7 @@ begin
   begin
     FValueType := NewType;
     Value := GetValue;
-    if FValueType in [{$IFDEF BCB}vtInt{$ELSE}vtInteger{$ENDIF}, vtHex] then
+    if FValueType in [{$IFDEF BCB} vtInt {$ELSE} vtInteger {$ENDIF}, vtHex] then
     begin
       FIncrement := Round(FIncrement);
       if FIncrement = 0 then

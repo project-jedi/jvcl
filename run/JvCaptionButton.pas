@@ -539,7 +539,7 @@ begin
 
   {$IFDEF JVCLThemesEnabled}
   GlobalXPData.AddClient;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   Hook;
 end;
@@ -559,7 +559,7 @@ begin
 
   {$IFDEF JVCLThemesEnabled}
   GlobalXPData.RemoveClient;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   inherited Destroy;
 end;
@@ -785,7 +785,7 @@ begin
     if Assigned(FOnClick) and (Action <> nil) and (@FOnClick <> @Action.OnExecute) then
       FOnClick(Self)
     else
-    if {not (csDesigning in ComponentState) and}  Assigned(ActionLink) then
+    if {not (csDesigning in ComponentState) and} Assigned(ActionLink) then
       FActionLink.Execute{$IFDEF COMPILER6_UP}(Self){$ENDIF}
     else
     if Assigned(FOnClick) then

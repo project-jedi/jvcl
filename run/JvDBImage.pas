@@ -658,14 +658,14 @@ initialization
   RegisterGraphicSignature('JFIF', 6, TJPEGImage);
   // NB! Registering these will add a requirement on having the JvMM package installed
   // Let users register these manually
-//  RegisterGraphicSignature([$0A], 0, TJvPcx);
-//  RegisterGraphicSignature('ACON', 8, TJvAni);
+  // RegisterGraphicSignature([$0A], 0, TJvPcx);
+  // RegisterGraphicSignature('ACON', 8, TJvAni);
   // JvCursorImage cannot be registered because it doesn't support
   // LoadFromStream/SaveToStream but here's the signature for future reference:
-//  RegisterGraphicSignature([0, 0, 2, 0], 0, TJvCursorImage);
-{$IFDEF USE_JV_GIF}
-//  RegisterGraphicSignature('GIF', 0, TJvGIFImage);
-{$ENDIF}
+  // RegisterGraphicSignature([0, 0, 2, 0], 0, TJvCursorImage);
+  {$IFDEF USE_JV_GIF}
+  // RegisterGraphicSignature('GIF', 0, TJvGIFImage);
+  {$ENDIF USE_JV_GIF}
 
 finalization
   FreeAndNil(GraphicSignatures);

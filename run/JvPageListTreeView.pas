@@ -19,6 +19,11 @@ Contributor(s):
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Changes:
+2002-10-22:
+  Changed TJvPageIndexNode.SetPageIndex to only set the parent PageIndex if the Treeview is a
+  TJvCustomSettingsTreeView since this is the first class implementing this behaviour
+
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
@@ -26,13 +31,9 @@ Known Issues:
 {$I jvcl.inc}
 
 unit JvPageListTreeView;
-{
-Changes:
-2002-10-22:
-  Changed TJvPageIndexNode.SetPageIndex to only set the parent PageIndex if the Treeview is a
-  TJvCustomSettingsTreeView since this is the first class implementing this behaviour
-}
+
 interface
+
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
@@ -62,7 +63,6 @@ type
   protected
     procedure DefineProperties(Filer: TFiler); override;
   end;
-
 
   // this is  a "fake" class so we have something to anchor the design-time editor with
   TJvPageLinks = class(TPersistent)
@@ -98,14 +98,12 @@ type
     procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
-
     function GetItems: TJvPageIndexNodes;
     procedure SetItems(const Value: TJvPageIndexNodes);
   protected
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function CreateNode: TTreeNode; override;
     function CreateNodes: TTreeNodes; {$IFDEF COMPILER6_UP} override; {$ENDIF}
-
     function CanChange(Node: TTreeNode): Boolean; override;
     procedure Change(Node: TTreeNode); override;
   public
@@ -235,7 +233,7 @@ type
     property ParentBiDiMode;
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property BorderStyle;
     property BorderWidth;
     property ChangeDelay;

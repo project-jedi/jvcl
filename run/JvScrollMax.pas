@@ -104,7 +104,7 @@ type
 
     procedure Loaded; override;
     procedure Paint; override;
-    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -113,7 +113,7 @@ type
     procedure UpdateSize(ATop: Integer);
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     function CollapsedHeight: Integer;
-    procedure ChangeScale(M, D{$IFDEF VisualCLX}, MH, DH {$ENDIF}: Integer); override;
+    procedure ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF}: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -834,7 +834,7 @@ begin
   DesignerModified(Self);
 end;
 
-procedure TJvScrollMaxBand.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
+procedure TJvScrollMaxBand.SetParent({$IFDEF VisualCLX} const {$ENDIF} AParent: TWinControl);
 begin
   if not ((AParent is TJvScrollMaxBands) or (AParent = nil)) then
     raise EJvScrollMaxError.Create(RsETJvScrollMaxBandCanBePutOnlyIntoTJv);
@@ -972,9 +972,9 @@ begin
   end;
 end;
 
-procedure TJvScrollMaxBand.ChangeScale(M, D{$IFDEF VisualCLX}, MH, DH {$ENDIF}: Integer);
+procedure TJvScrollMaxBand.ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF}: Integer);
 begin
-  inherited ChangeScale(M, D{$IFDEF VisualCLX}, MH, DH {$ENDIF});
+  inherited ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF});
   ExpandedHeight := FExpandedHeight * M div D;
 end;
 
