@@ -941,6 +941,13 @@ begin
   FFourDigitYear := FourDigitYear;
   Height := Max(PopupCalendarSize.Y, 120);
   Width := Max(PopupCalendarSize.X, 180);
+  {$IFDEF VisuaLCLX}
+  Constraints.MaxWidth := Width;
+  Constraints.MaxHeight := Height;
+  Constraints.MinWidth := Constraints.MaxWidth;
+  Constraints.MinHeight := Constraints.MaxHeight;
+  {$ENDIF VisualCLX}
+
   Color := clBtnFace;
   FontSetDefault(Font);
   if AOwner is TControl then
