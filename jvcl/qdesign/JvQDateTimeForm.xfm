@@ -1,0 +1,107 @@
+object frmSelectDateTimeDlg: TfrmSelectDateTimeDlg
+  Left = 512
+  Top = 361
+  Width = 254
+  Height = 144
+  VertScrollBar.Range = 78
+  HorzScrollBar.Range = 149
+  ActiveControl = btnOK
+  BorderIcons = [biSystemMenu]
+  BorderStyle = fbsDialog
+  Caption = 'Select date time'
+  Color = clButton
+  Font.Color = clText
+  Font.Height = 11
+  Font.Name = 'Helvetica'
+  Font.Pitch = fpVariable
+  Font.Style = []
+  Font.Weight = 40
+  Icon.Data = {
+    0000010001001010100001001000280100001600000028000000100000002000
+    00000100040000000000C0000000000000000000000000000000000000000000
+    0000000080000080000000808000800000008000800080800000C0C0C0008080
+    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
+    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
+    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
+    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
+    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
+    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
+    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
+  ParentFont = False
+  PopupMenu = PopupMenu1
+  Scaled = False
+  OnCreate = FormCreate
+  PixelsPerInch = 96
+  object lblDate: TLabel
+    Left = 8
+    Top = 8
+    Width = 25
+    Height = 14
+    Caption = '&Date:'
+  end
+  object lblTime: TLabel
+    Left = 8
+    Top = 56
+    Width = 25
+    Height = 14
+    Caption = '&Time:'
+  end
+  object btnOK: TButton
+    Left = 27
+    Top = 107
+    Width = 75
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Caption = '&OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 2
+  end
+  object btnCancel: TButton
+    Left = 147
+    Top = 107
+    Width = 75
+    Height = 25
+    Anchors = [akRight, akBottom]
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object dtpDate: TJvDateEdit
+    Left = 48
+    Top = 5
+    Width = 101
+    Height = 22
+    DoubleBuffered = False
+    ButtonFlat = False
+    PopupColor = clBase
+    TabOrder = 5
+  end
+  object dtpTime: TJvTimeSpin
+    Left = 48
+    Top = 56
+    Width = 101
+    Height = 22
+    BorderStyle = bsSingle
+    FlatButtons = False
+    TabOrder = 6
+    Time = 0.500000000000000000
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 120
+    Top = 40
+    object mnuNow: TMenuItem
+      Caption = 'Now'
+      OnClick = mnuNowClick
+    end
+    object mnuDate: TMenuItem
+      Caption = 'Date'
+      OnClick = mnuDateClick
+    end
+    object mnuTime: TMenuItem
+      Caption = 'Time'
+      OnClick = mnuTimeClick
+    end
+  end
+end
