@@ -1,16 +1,45 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvAnimatedEditor.PAS, released on 2002-05-26.
+
+The Initial Developer of the Original Code is John Doe
+Portions created by John Doe are Copyright (C) 2003 John Doe.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: 2003-11-09
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
 {$I WINDOWSONLY.INC}
+
 unit JvAnimatedEditor;
 
 interface
+
 uses
-  Windows, Forms, Graphics, ImgList, JvAnimatedImage, JvAniFile, 
+  Windows, Forms, Graphics, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  SysUtils, Classes, Dialogs, Controls;
+  SysUtils, Classes, Dialogs, Controls,
+  JvAnimatedImage, JvAniFile;
 
 type
   TJvAnimatedEditor = class(TComponentEditor)
@@ -30,8 +59,14 @@ type
   end;
 
 implementation
+
 uses
-  JvConsts, TypInfo;
+  TypInfo,
+  JvConsts;
+
+const
+  cGlyphName = 'GLYPH';
+  cAniFileExtension = 'ani';
 
 //=== TJvAnimatedEditor ======================================================
   
@@ -43,16 +78,16 @@ procedure TJvAnimatedEditor.CheckEdit(PropertyEditor: TPropertyEditor);
 begin
   try
 {$ENDIF}
-    if FContinue and (CompareText(PropertyEditor.GetName, 'GLYPH') = 0) then
+    if FContinue and (CompareText(PropertyEditor.GetName, cGlyphName) = 0) then
     begin
       PropertyEditor.Edit;
       FContinue := False;
     end;
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   finally
     PropertyEditor.Free;
   end;
-{$ENDIF}
+  {$ENDIF}
 end;
 
 {$IFDEF COMPILER6_UP}
@@ -94,7 +129,7 @@ begin
     with Dialog do
     begin
       Options := [ofHideReadOnly, ofFileMustExist];
-      DefaultExt := 'ani';
+      DefaultExt := cAniFileExtension;
       Filter := srAniCurFilter;
       if Execute then
       begin

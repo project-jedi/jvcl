@@ -8,13 +8,13 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: JvAppletProperty.PAS, released on 2002-05-26.
+The Original Code is: JvAppletEditor.PAS, released on 2002-05-26.
 
 The Initial Developer of the Original Code is Peter Thörnqvist [peter3@peter3.com]
 Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
-Contributor(s):            
+Contributor(s):
 
 Last Modified: 2002-05-26
 
@@ -45,8 +45,9 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: String); override;
+    procedure SetValue(const Value: string); override;
   end;
+
   TJvAppletIndexProperty = class(TIntegerProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
@@ -54,70 +55,79 @@ type
   end;
 
 implementation
+
 uses
-  SysUtils, JvWinDialogs, JclSysInfo, JvJCLUtils, JvJVCLUtils;
+  SysUtils,
+  JvWinDialogs, JclSysInfo, JvJCLUtils, JvJVCLUtils;
 
 var
-  FApplets:TStringlist = nil;
+  FApplets: TStringList = nil;
 
 procedure Refresh;
-var S:string;
+var
+  S: string;
 begin
   if FApplets = nil then
-    FApplets := TStringlist.Create;
+    FApplets := TStringList.Create;
   FApplets.Clear;
   S := IncludeTrailingPathDelimiter(GetWindowsSystemFolder);
-  GetControlPanelApplets(S,'*.cpl',FApplets,nil);
+  GetControlPanelApplets(S, '*.cpl', FApplets, nil);
 end;
 
+//=== TJvAppletNameProperty ===================================================
 
 function TJvAppletNameProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList,paSortList,paMultiSelect,paRevertable];
+  Result := [paValueList, paSortList, paMultiSelect, paRevertable];
 end;
 
 procedure TJvAppletNameProperty.GetValues(Proc: TGetStrProc);
-var i:integer;
+var
+  I: Integer;
 begin
   if FApplets = nil then
     Refresh;
-  for i := 0 to FApplets.Count - 1 do
-    Proc(FApplets.Names[i]);
+  for I := 0 to FApplets.Count - 1 do
+    Proc(FApplets.Names[I]);
 end;
 
-procedure TJvAppletNameProperty.SetValue(const Value: String);
-var i:integer;S:string;
+procedure TJvAppletNameProperty.SetValue(const Value: string);
+var
+  I: Integer;
+  S: string;
 begin
   if FApplets = nil then
     Refresh;
-  i := FApplets.IndexOfName(Value);
-  if i >= 0 then
+  I := FApplets.IndexOfName(Value);
+  if I >= 0 then
   begin
     S := FApplets.Values[Value];
-    inherited SetValue(Copy(S,1,Pos(',',S)-1));
+    inherited SetValue(Copy(S, 1, Pos(',', S) - 1));
   end
   else
     inherited SetValue(Value);
 end;
 
-{ TJvAppletIndexProperty }
+//=== TJvAppletIndexProperty ==================================================
 
 function TJvAppletIndexProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paValueList,paMultiSelect,paRevertable];
+  Result := [paValueList, paMultiSelect, paRevertable];
 end;
 
 procedure TJvAppletIndexProperty.GetValues(Proc: TGetStrProc);
-var i,j:integer;
+var
+  I, J: Integer;
 begin
-  j := (GetComponent(0) as TJvAppletDialog).Count;
-  for i := 0 to j - 1 do
-    Proc(IntToStr(i));
+  J := (GetComponent(0) as TJvAppletDialog).Count;
+  for I := 0 to J - 1 do
+    Proc(IntToStr(I));
 end;
 
 initialization
-  Refresh;
+
 finalization
   FreeAndNil(FApplets);
 
 end.
+

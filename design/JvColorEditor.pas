@@ -40,14 +40,14 @@ uses
   {$ENDIF}
   JvTypes, JvJVCLUtils;
 
-// === TJvColorProperty ======================================================
 type
   TJvColorProperty = class(TColorProperty)
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
-    procedure ListDrawValue(const Value: string; ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
+    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
+      const ARect: TRect; ASelected: Boolean);
     {$IFDEF COMPILER5} override {$ELSE} virtual {$ENDIF};
   end;
 
@@ -134,6 +134,8 @@ begin
   Result := JvColorToString(Color);
 end;
 
+// === TJvColorProperty ======================================================
+
 procedure TJvColorProperty.GetValues(Proc: TGetStrProc);
 begin
   JvGetColorValues(Proc);
@@ -153,9 +155,11 @@ var
   function ColorToBorderColor(AColor: TColor): TColor;
   type
     TColorQuad = record
-      Red, Green, Blue, Alpha: Byte;
+      Red: Byte;
+      Green: Byte;
+      Blue: Byte;
+      Alpha: Byte;
     end;
-
   begin
     if (TColorQuad(AColor).Red > 192) or (TColorQuad(AColor).Green > 192) or
       (TColorQuad(AColor).Blue > 192) then

@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvChangeNotifyEditor;
 
-{ Property editor for the TJvChangeNotify component }
-
 interface
 
 uses
@@ -48,15 +46,15 @@ type
     procedure EditProperty(const Prop: IProperty; var Cont: Boolean); override;
     {$ELSE}
     procedure EditProperty(PropertyEditor: TPropertyEditor; var Cont, FreeEditor: Boolean); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
+implementation
+
 resourcestring
   SEditProperty = 'Notifications...';
-
-implementation
 
 {$IFDEF COMPILER6_UP}
 procedure TJvChangeNotifyEditor.EditProperty(const Prop: IProperty; var Cont: Boolean);

@@ -38,17 +38,17 @@ uses
 
 type
   TzWizardForm = class(TJvForm)
-    Button1: TButton;
-    Button2: TButton;
+    OK: TButton;
+    Cancel: TButton;
     Label1: TLabel;
     EditBandName: TEdit;
     RgBandType: TRadioGroup;
     Bevel1: TBevel;
     Label2: TLabel;
     EditBandDesc: TEdit;
-    Button3: TButton;
-    procedure Button1Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    Help: TButton;
+    procedure OKClick(Sender: TObject);
+    procedure HelpClick(Sender: TObject);
   end;
 
 
@@ -74,7 +74,7 @@ resourcestring
     'Select the type of band object to create.';
 
 
-procedure TzWizardForm.Button1Click(Sender: TObject);
+procedure TzWizardForm.OKClick(Sender: TObject);
 begin
   with EditBandName do
   begin
@@ -97,7 +97,7 @@ begin
   ModalResult := mrOK;
 end;
 
-procedure TzWizardForm.Button3Click(Sender: TObject);
+procedure TzWizardForm.HelpClick(Sender: TObject);
 var
   HelpForm: TForm;
   HelpText: TMemo;

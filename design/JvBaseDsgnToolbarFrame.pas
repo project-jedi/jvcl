@@ -33,7 +33,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvBaseDsgnFrame, ActnList, Menus, ImgList, ToolWin, ComCtrls, ExtCtrls;
+  ActnList, Menus, ImgList, ToolWin, ComCtrls, ExtCtrls,
+  JvBaseDsgnFrame;
 
 type
   TfmeJvBaseToolbarDesign = class(TfmeJvBaseDesign)
@@ -49,12 +50,9 @@ type
     procedure aiShowToolbarExecute(Sender: TObject);
     procedure spToolbarCanResize(Sender: TObject; var NewSize: Integer;
       var Accept: Boolean);
-  private
-    { Private declarations }
   protected
     procedure Loaded; override;
   public
-    { Public declarations }
     function SettingsStored: Boolean; override;
     procedure StoreSettings; override;
     procedure RestoreSettings; override;
@@ -70,6 +68,10 @@ uses
 
 {$R *.DFM}
 
+const
+  cLargeButton = 'LargeButton';
+  cToolbar = 'Toolbar';
+
 procedure TfmeJvBaseToolbarDesign.Loaded;
 begin
   inherited Loaded;
@@ -84,40 +86,36 @@ end;
 procedure TfmeJvBaseToolbarDesign.StoreSettings;
 begin
   if RegKey <> '' then
-  begin
     with TRegistry.Create do
     try
       LazyWrite := False;
       if OpenKey(RegKey, True) then
-      try
-        WriteBool('LargeButton', aiTextLabels.Checked);
-        WriteBool('Toolbar', aiShowToolbar.Checked);
-      finally
-        CloseKey;
-      end;
+        try
+          WriteBool(cLargeButton, aiTextLabels.Checked);
+          WriteBool(cToolbar, aiShowToolbar.Checked);
+        finally
+          CloseKey;
+        end;
     finally
       Free;
     end;
-  end;
 end;
 
 procedure TfmeJvBaseToolbarDesign.RestoreSettings;
 begin
   if RegKey <> '' then
-  begin
     with TRegistry.Create do
     try
       if OpenKey(RegKey, False) then
-      try
-        EnableLargeButtons(not ValueExists('LargeButton') or ReadBool('LargeButton'));
-        ShowToolbar(not ValueExists('Toolbar') or ReadBool('Toolbar'));
-      finally
-        CloseKey;
-      end;
+        try
+          EnableLargeButtons(not ValueExists(cLargeButton) or ReadBool(cLargeButton));
+          ShowToolbar(not ValueExists(cToolbar) or ReadBool(cToolbar));
+        finally
+          CloseKey;
+        end;
     finally
       Free;
     end;
-  end;
 end;
 
 procedure TfmeJvBaseToolbarDesign.UpdateToolbarSeparators;
@@ -139,9 +137,11 @@ begin
         LastVisibleSep := I;
       ButtonSinceLastSep := False;
     end
-    else if (CurItem is TToolButton) and (TToolButton(CurItem).Style <> tbsDivider) then
+    else
+    if (CurItem is TToolButton) and (TToolButton(CurItem).Style <> tbsDivider) then
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible
-    else if not (CurItem is TToolButton) then
+    else
+    if not (CurItem is TToolButton) then
       ButtonSinceLastSep := ButtonSinceLastSep or CurItem.Visible;
   end;
   if (LastVisibleSep >= 0) and not ButtonSinceLastSep then

@@ -36,15 +36,11 @@ uses
 
 type
   TfmeJvBaseDesign = class(TFrame)
-  private
-    { Private declarations }
   protected
-    { Protected declarations }
     { Retrieve the registry key to store settings in. Get's the info from the owning form; provided
       it's a TJvBaseDesign form. }
     function RegKey: string;
   public
-    { Public declarations }
     { Determines if the settings for this frame class should be stored/restored upon
       storing/restoring TfrmJvBaseDesign form settings. Defaults to False. }
     function SettingsStored: Boolean; dynamic;
