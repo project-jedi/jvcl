@@ -122,6 +122,8 @@ type
     function DoToggling(Node: TTreeNode): Boolean; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     // get / set whether Node is checked
     property Checked[Node: TTreeNode]: Boolean read GetChecked write SetChecked;
     // get / set whether Node is a checkbox
@@ -257,6 +259,12 @@ begin
   FCheckBoxOptions.FTreeView := Self;
 end;
 
+destructor TJvCheckTreeView.Destroy;
+begin
+  FCheckBoxOptions.Free;
+  inherited Destroy;
+end;
+
 procedure TJvCheckTreeView.Click;
 var
   P: TPoint;
@@ -390,6 +398,7 @@ begin
     DoToggled(Node);
   end;
 end;
+
 
 end.
 
