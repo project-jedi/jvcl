@@ -75,6 +75,7 @@ type
     FColorHighlightText: TColor;
     FGlyph: TBitmap;
     FLinkedObject: TObject;
+    FNoTextAssign: Boolean;
     procedure SetImageIndex(const Value: Integer);
     procedure SetText(const Value: string);
     procedure SetIndent(const Value: Integer);
@@ -128,7 +129,10 @@ type
     procedure Update(Item: TCollectionItem); override;
   public
     function Add: TJvImageItem; overload;
-    function Add(Text: string): Integer; overload;
+    function Add(const Text: string): Integer; overload;
+    function Insert(Index: Integer): TJvImageItem; overload;
+    procedure Insert(Index: Integer; const Text: string); overload;
+    procedure Move(CurIndex, NewIndex: Integer);
     procedure Assign(Source: TPersistent); override;
     constructor Create(AOwner: TPersistent);
     property Items[Index: Integer]: TJvImageItem read GetItems write SetItems; default;
@@ -408,9 +412,19 @@ procedure TJvImageItem.Assign(Source: TPersistent);
 begin
   if Source is TJvImageItem then
   begin
-    Text := TJvImageItem(Source).Text;
+    if not FNoTextAssign then
+      Text := TJvImageItem(Source).Text;
     FImageIndex := TJvImageItem(Source).ImageIndex;
     FIndent := TJvImageItem(Source).Indent;
+    FLinkedObject := TJvImageItem(Source).LinkedObject;
+    Glyph := TJvImageItem(Source).Glyph;
+    FColorHighlight := TJvImageItem(Source).ColorHighlight;
+    FColorHighlightText := TJvImageItem(Source).ColorHighlightText;
+    if TJvImageItem(Source).FFont <> nil then
+      Font := TJvImageItem(Source).Font
+    else
+      FreeAndNil(FFont);
+    ListPropertiesUsed := TJvImageItem(Source).ListPropertiesUsed;
     Change;
   end
   else
@@ -528,7 +542,11 @@ begin
   inherited SetIndex(Value);
   S := GetOwnerStrings;
   if (S <> nil) and (I >= 0) and (Value >= 0) and (I <> Value) then
-    S.Exchange(I, Value);
+  begin
+    while I >= S.Count do
+      S.Add('');
+    S.Move(I, Value);
+  end;
 end;
 
 //=== { TJvImageItems } ======================================================
@@ -541,15 +559,82 @@ end;
 function TJvImageItems.Add: TJvImageItem;
 begin
   Result := TJvImageItem(inherited Add);
+  while FStrings.Count < Count do
+    FStrings.Add('');
 end;
 
-function TJvImageItems.Add(Text: string): Integer;
+function TJvImageItems.Add(const Text: string): Integer;
 var
   Item: TJvImageItem;
 begin
   Item := Add;
   Item.Text := Text;
   Result := Item.Index;
+end;
+
+function TJvImageItems.Insert(Index: Integer): TJvImageItem;
+begin
+  Result := TJvImageItem(inherited Insert(Index));;
+end;
+
+procedure TJvImageItems.Insert(Index: Integer; const Text: string);
+begin
+  Insert(Index).Text := Text;
+end;
+
+procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
+var
+  Item, NewItem: TJvImageItem;
+  ItemText: string;
+  ItemObject: TObject;
+begin
+  if NewIndex < 0 then
+    NewIndex := 0;
+  if NewIndex > Count then
+    NewIndex := Count;
+
+  if CurIndex <> NewIndex then
+  begin
+    BeginUpdate;
+    try
+      while FStrings.Count < Count do
+        FStrings.Add('');
+      { Save object data }
+      ItemText := FStrings.Strings[CurIndex];
+      ItemObject := FStrings.Objects[CurIndex];
+      Item := TJvImageItem.Create(nil);
+      try
+        Item.FNoTextAssign := True;
+        Item.Assign(Items[CurIndex]);
+        { Delete item }
+        Delete(CurIndex);
+
+        { Add new item on NewIndex }
+        if NewIndex < Count then
+          NewItem := Insert(NewIndex)
+        else
+          NewItem := Add;
+        { restore data except property Text which is linked to FStrings[] }
+        NewItem.FNoTextAssign := True;
+        try
+          NewItem.Assign(Item);
+        finally
+          NewItem.FNoTextAssign := False;
+        end;
+
+        { restore property Text } 
+        NewItem.Text := ItemText;
+        while FStrings.Count < Count do
+          FStrings.Add('');
+        FStrings.Objects[NewIndex] := ItemObject;
+      finally
+        Item.Free;
+      end;
+    finally
+      EndUpdate;
+    end;
+    Changed;
+  end;
 end;
 
 procedure TJvImageItems.Assign(Source: TPersistent);
@@ -1539,16 +1624,16 @@ var
   I: Integer;
 begin
   MaxImageHeight := GetImageHeight(-1);
-  for I := 0 to FItems.Count-1 do
+  for I := 0 to FItems.Count - 1 do
   begin
     if GetImageHeight(I) > MaxImageHeight then
       MaxImageHeight := GetImageHeight(I);
   end;
   case FAlignment of
     taLeftJustify, taRightJustify:
-      ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 4);
+      ItemHeight := Max(ItemHeight, Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 4));
     taCenter:
-      ItemHeight := Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 8);
+      ItemHeight := Max(ItemHeight, Max(GetItemHeight(Font) + 4, MaxImageHeight + Ord(ButtonFrame) * 8));
   end;
   Invalidate;
 end;
@@ -1633,13 +1718,15 @@ end;
 procedure TJvImageItem.SetGlyph(const Value: TBitmap);
 begin
   FGlyph.Assign(Value);
-  GetWinControl.Invalidate;
+  if FOwner <> nil then
+    GetWinControl.Invalidate;
 end;
 
 procedure TJvImageItem.FontChange(Sender: TObject);
 begin
   if not (puFont in FListPropertiesUsed) then
-    GetWinControl.Invalidate;
+    if FOwner <> nil then
+      GetWinControl.Invalidate;
 end;
 
 function TJvImageItems.GetObjects(Index: Integer): TObject;
@@ -1659,7 +1746,7 @@ end;
 
 function TJvImageItem.GetColorHighlight: TColor;
 begin
-  if (puColorHighlight in FListPropertiesUsed) then
+  if (puColorHighlight in FListPropertiesUsed) and (FOwner <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       Result := TJvImageListBox(GetWinControl).ColorHighlight
@@ -1672,7 +1759,7 @@ end;
 
 function TJvImageItem.GetColorHighlightText: TColor;
 begin
-  if (puColorHighlightText in FListPropertiesUsed) then
+  if (puColorHighlightText in FListPropertiesUsed) and (FOwner <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       Result := TJvImageListBox(GetWinControl).ColorHighlightText
@@ -1685,7 +1772,7 @@ end;
 
 procedure TJvImageItem.SetColorHighlight(const Value: TColor);
 begin
-  if puColorHighlight in FListPropertiesUsed then
+  if (puColorHighlight in FListPropertiesUsed) and (FOwner <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       TJvImageListBox(GetWinControl).ColorHighlight := Value
@@ -1698,7 +1785,7 @@ end;
 
 procedure TJvImageItem.SetColorHighlightText(const Value: TColor);
 begin
-  if puColorHighlightText in FListPropertiesUsed then
+  if (puColorHighlightText in FListPropertiesUsed) and (FOwner <> nil) then
   begin
     if GetWinControl is TJvImageListBox then
       TJvImageListBox(GetWinControl).ColorHighlightText := Value
@@ -1732,6 +1819,36 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+
+function TJvImageItems.GetObjects(Index: Integer): TObject;
+begin
+
+end;
+
+procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
+begin
+
+end;
+
+procedure TJvImageItems.SetObjects(Index: Integer; const Value: TObject);
+begin
+
+end;
+
+function TJvImageItems.GetObjects(Index: Integer): TObject;
+begin
+
+end;
+
+procedure TJvImageItems.Move(CurIndex, NewIndex: Integer);
+begin
+
+end;
+
+procedure TJvImageItems.SetObjects(Index: Integer; const Value: TObject);
+begin
+
+end;
 
 initialization
   RegisterUnitVersion(HInstance, UnitVersioning);
