@@ -229,11 +229,8 @@ begin
   begin
     if S^ = #0 then
     begin
-      if Start <> nil then
-      begin
-        SetString(Word, Start, S - Start);
-        Result := True;
-      end;
+      Word := Start;
+      Result := Start <> nil;
       Exit;
     end
     else
@@ -245,7 +242,7 @@ begin
         Exit;
       end
       else
-        while S^ in Delimiters do
+        while (S^ in Delimiters) and (S^ <> #0) do
           Inc(S);
     end
     else
@@ -432,7 +429,7 @@ begin
   if FPosition >= Length(FText) then
     Exit;
   S := PChar(Text) + FPosition - 1;
-  if (S = nil) or (S^ = #0) then
+  if (S = nil) or (S^ = #0) or (trim(S) = '') then
     Exit;
   while True do
   begin
@@ -441,8 +438,6 @@ begin
     WordLength := Length(FCurrentWord);
     StartIndex := S - PChar(Text) - WordLength + 1;
     FPosition := StartIndex + WordLength;
-    if (S = nil) or (S^ = #0) then
-      Break;
     if (FCurrentWord <> '') and not CanIgnore(FCurrentWord) then
     begin
       FSuggestions.Clear;
@@ -452,6 +447,11 @@ begin
         GetWordSuggestions(FCurrentWord, FSuggestions);
         Break;
       end;
+    end;
+    if (S = nil) or (S^ = #0) or (trim(S) = '') then
+    begin
+      Result := False;
+      Break;
     end;
   end;
 end;
