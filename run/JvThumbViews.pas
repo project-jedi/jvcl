@@ -529,10 +529,10 @@ begin
         ReadFileList.Assign(FFileList);
       EmptyList;
       FDirectory := Value;
+      if Assigned(FOnStartScanning) then
+        FOnStartScanning(Self, ReadFileList.Count - 1);
       if ReadFileList.Count > 0 then
       begin
-        if Assigned(FOnStartScanning) then
-          FOnStartScanning(Self, ReadFileList.Count - 1);
         Cancel := False;
         for Counter1 := 0 to ReadFileList.Count - 1 do
         begin
@@ -546,9 +546,9 @@ begin
           if (Cursor <> crHourGlass) and (GetTickCount - FStartTime > 1000) then
             Cursor := crHourGlass;
         end;
-        if Assigned(FOnStopScanning) then
-          FOnStopScanning(Self);
       end;
+      if Assigned(FOnStopScanning) then
+        FOnStopScanning(Self);
     finally
       FreeAndNil(ReadFileList);
       FFilling := False;
