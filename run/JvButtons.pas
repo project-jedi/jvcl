@@ -858,9 +858,9 @@ end;
 
 procedure TJvHTButtonGlyph.DrawButtonText(Canvas: TCanvas; const Caption: string;
   TextBounds: TRect; State: TButtonState);
-var cap: String;
+var Cap: String;
 begin
-cap := '<ALIGN CENTER>'+Caption; // Kaczkowski
+  Cap := '<ALIGN CENTER>'+Caption; // Kaczkowski
   with Canvas do
   begin
     Brush.Style := bsClear;

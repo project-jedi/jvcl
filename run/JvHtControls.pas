@@ -426,8 +426,7 @@ end;
 
 procedure ItemHTDrawEx;
 var
-  vText, vM,
-    TagPrp, Prp: string;
+  vText, vM, TagPrp, Prp: string;
   vCount: Integer;
   vStr: TStrings;
   Selected: Boolean;
@@ -457,7 +456,7 @@ var
   var
     W: Integer;
   begin
-    if not Assigned(Canvas) then Exit;
+    if (not Assigned(Canvas)) or (M = '') then Exit;
     if not CalcWidth then
     begin
       case Alignment of
@@ -496,15 +495,17 @@ var
   OldFontStyles: TFontStyles;
   OldFontColor: TColor;
   OldBrushColor: TColor;
+  OldBrushStyle: TBrushStyle;
   OldAlignment: TAlignment;
 
   // for font style
   RemFontColor,
-    RemBrushColor: TColor;
+  RemBrushColor: TColor;
 begin
   // (p3) remove warnings
   OldFontColor := 0;
   OldBrushColor := 0;
+  OldBrushStyle := bsSolid;
   RemFontColor := 0;
   RemBrushColor := 0;
   OldAlignment := taLeftJustify;
@@ -514,6 +515,7 @@ begin
     OldFontStyles := Canvas.Font.Style;
     OldFontColor := Canvas.Font.Color;
     OldBrushColor := Canvas.Brush.Color;
+    OldBrushStyle := Canvas.Brush.Style;
     OldAlignment := Alignment;
     RemFontColor := Canvas.Font.Color;
     RemBrushColor := Canvas.Brush.Color;
@@ -538,7 +540,7 @@ begin
       Canvas.Font.Color := HighlightText;
     end;
 
-    if Assigned(Canvas) then
+    if Assigned(Canvas) and (Canvas.Brush.Style <> bsClear) then
       Canvas.FillRect(Rect);
 
     Width := 2;
@@ -623,9 +625,10 @@ begin
       Canvas.Font.Style := OldFontStyles;
       Canvas.Font.Color := OldFontColor;
       Canvas.Brush.Color := OldBrushColor;
+      Canvas.Brush.Style := OldBrushStyle;
       Alignment := OldAlignment;
-      Canvas.Font.Color := RemFontColor;
-      Canvas.Brush.Color := RemBrushColor;
+{      Canvas.Font.Color := RemFontColor;
+      Canvas.Brush.Color := RemBrushColor;}
     end;
     FreeAndNil(vStr);
   end;
