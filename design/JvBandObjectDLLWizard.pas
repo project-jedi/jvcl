@@ -313,7 +313,7 @@ begin
     '  DllRegisterServer,' + CrLf +
     '  DllUnregisterServer;' + CrLf2 +
 
-    '{$R *.RES}' + CrLf2 +
+    '{$R *.res}' + CrLf2 +
 
     'begin' + CrLf +
     'end.';

@@ -192,29 +192,13 @@ end;
 
 procedure TIconListDialog.LoadAniFile;
 var
-  Dialog: TOpenDialog;
   AniCursor: TJvAnimatedCursorImage;
 begin
-  Dialog := TOpenDialog.Create(Application);
+  AniCursor := LoadJvAnimatedCursorImageDialog;
   try
-    with Dialog do
-    begin
-      Options := [ofHideReadOnly, ofFileMustExist];
-      DefaultExt := 'ani';
-      Filter := srAniCurFilter;
-      if Execute then
-      begin
-        AniCursor := TJvAnimatedCursorImage.Create;
-        try
-          AniCursor.LoadFromFile(FileName);
-          FIcons.Assign(AniCursor);
-        finally
-          AniCursor.Free;
-        end;
-      end;
-    end;
+    FIcons.Assign(AniCursor);
   finally
-    Dialog.Free;
+    AniCursor.Free;
   end;
 end;
 

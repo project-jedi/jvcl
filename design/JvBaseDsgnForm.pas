@@ -75,7 +75,7 @@ implementation
 
 uses
   Registry,
-  JvBaseDsgnFrame, JvConsts;
+  JvBaseDsgnFrame, JvConsts, JvDsgnConsts;
 
 {$R *.dfm}
 
@@ -119,7 +119,7 @@ end;
 
 function TJvBaseDesign.GetRegKey: string;
 begin
-  Result := SDelphiKey + '\Property Editors\' + Trim(DesignerFormName) + '\' + ClassName
+  Result := SDelphiKey + SPropertyEditors + '\' + Trim(DesignerFormName) + '\' + ClassName
 end;
 
 function TJvBaseDesign.DesignerFormName: string;

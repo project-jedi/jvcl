@@ -35,12 +35,12 @@ uses
   RTLConsts,
   {$ENDIF}
   {$IFDEF COMPLIB_VCL}
-  Windows, Graphics,
+  Windows, Graphics, Forms, Dialogs,
   {$ENDIF}
   {$IFDEF COMPLIB_CLX}
-  QGraphics, Types,
+  QGraphics, QForms, QDialogs, Types,
   {$ENDIF}
-  JvTypes;
+  JvTypes, JvConsts;
 
 type
   TJvIconFrame = class(TPersistent)
@@ -91,7 +91,7 @@ type
     procedure Clear;
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
-    procedure LoadFromFile(const Filename: string); virtual;
+    procedure LoadFromFile(const FileName: string); virtual;
     procedure AssignToBitmap(Bitmap: TBitmap; BackColor: TColor;
       DecreaseColors, Vertical: Boolean);
     property DefaultRate: Longint read GetDefaultRate;
@@ -102,6 +102,8 @@ type
     property Creator: string read GetCreator;
     property OriginalColors: Word read FOriginalColors;
   end;
+
+function LoadJvAnimatedCursorImageDialog: TJvAnimatedCursorImage;
 
 implementation
 
@@ -257,6 +259,37 @@ begin
   end
   else
     inherited Assign(Source);
+end;
+
+//=== TJvAnimatedCursorImage helper ==========================================
+
+// (rom) created because JvAnimatedEditor.pas and JvIconListForm.pas contained the same code
+
+function LoadJvAnimatedCursorImageDialog: TJvAnimatedCursorImage;
+var
+  CurDir: string;
+begin
+  Result := nil;
+  CurDir := GetCurrentDir;
+  with TOpenDialog.Create(Application) do
+    try
+      Options := [ofHideReadOnly, ofFileMustExist];
+      DefaultExt := 'ani';
+      Filter := srAniCurFilter;
+      if Execute then
+      begin
+        Result := TJvAnimatedCursorImage.Create;
+        try
+          Result.LoadFromFile(FileName);
+        except
+          FreeAndNil(Result);
+          raise;
+        end;
+      end;
+    finally
+      Free;
+      SetCurrentDir(CurDir);
+    end;
 end;
 
 //=== TJvAnimatedCursorImage =================================================
@@ -462,7 +495,7 @@ begin
   end;
 end;
 
-{ Loads an animatied cursor from a RIFF file. The RIFF file format for
+{ Loads an animated cursor from a RIFF file. The RIFF file format for
   animated cursors looks like this:
 
   RIFF('ACON'
@@ -677,11 +710,11 @@ begin
   WriteStream(Stream, False);
 end;
 
-procedure TJvAnimatedCursorImage.LoadFromFile(const Filename: string);
+procedure TJvAnimatedCursorImage.LoadFromFile(const FileName: string);
 var
   Stream: TStream;
 begin
-  Stream := TFileStream.Create(Filename, fmOpenRead + fmShareDenyNone);
+  Stream := TFileStream.Create(FileName, fmOpenRead + fmShareDenyNone);
   try
     try
       LoadFromStream(Stream);
