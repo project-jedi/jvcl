@@ -158,7 +158,7 @@ type
 
   TJvDockBasicStyle = class;
 
-  { Maintained by a TJvDockBasicStyle anchestor. That anchestor ensures that
+  { Maintained by a TJvDockBasicStyle ancestor. That ancestor ensures that
     FDockStyle is set (to itself) }
   TJvDockBasicServerOption = class(TPersistent)
   private
@@ -285,7 +285,6 @@ type
     procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); virtual;
 
     procedure AssignTabServerOption(APage: TJvDockTabPageControl); virtual;
-    procedure Loaded; override;
     property DockBaseControlList: TList read FDockBaseControlList;
   public
     constructor Create(AOwner: TComponent); override;
@@ -2302,29 +2301,34 @@ procedure TJvDockBaseControl.SetDockStyle(ADockStyle: TJvDockBasicStyle);
 begin
   if ADockStyle <> FDockStyle then
   begin
-    if FDockStyle <> nil then
-    begin
-      { Remove Self from the internal list of the dock style component }
-      FDockStyle.RemoveDockBaseControl(Self);
+    ParentForm.DisableAlign;
+    try
+      if FDockStyle <> nil then
+      begin
+        { Remove Self from the internal list of the dock style component }
+        FDockStyle.RemoveDockBaseControl(Self);
 
-      { Give the anchestors a change to respond }
-      RemoveDockStyle(FDockStyle);
-    end;
+        { Give the ancestors a change to respond }
+        RemoveDockStyle(FDockStyle);
+      end;
 
-    FDockStyle := ADockStyle;
+      FDockStyle := ADockStyle;
 
-    if FDockStyle <> nil then
-    begin
-      { Let the style initialize the TJvDockClient/TJvDockServer }
-      FDockStyle.SetDockBaseControl([csLoading, csDesigning] * ComponentState <> [], Self);
+      if FDockStyle <> nil then
+      begin
+        { Let the style initialize the TJvDockClient/TJvDockServer }
+        FDockStyle.SetDockBaseControl([csLoading, csDesigning] * ComponentState <> [], Self);
 
-      { Add Self to the internal list of the dock style component }
-      FDockStyle.AddDockBaseControl(Self);
+        { Add Self to the internal list of the dock style component }
+        FDockStyle.AddDockBaseControl(Self);
 
-      { Give the anchestors a change to respond }
-      AddDockStyle(FDockStyle);
+        { Give the ancestors a change to respond }
+        AddDockStyle(FDockStyle);
 
-      FDockStyle.FreeNotification(Self);
+        FDockStyle.FreeNotification(Self);
+      end;
+    finally
+      ParentForm.EnableAlign;
     end;
   end;
 end;
@@ -2906,11 +2910,6 @@ begin
     ADockClient.ParentForm.Visible := False;
     ADockClient.MakeHideEvent;
   end;
-end;
-
-procedure TJvDockBasicStyle.Loaded;
-begin
-  inherited Loaded;
 end;
 
 procedure TJvDockBasicStyle.ParentFormWindowProc(var Msg: TMessage);
