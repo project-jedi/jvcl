@@ -1769,7 +1769,22 @@ begin
 end;
 
 procedure TJvCustomSpinEdit.KeyPress(var Key: Char);
+var I: Integer;
 begin
+ // andreas
+  if (Key = DecimalSeparator) and (ValueType = vtFloat) then
+  begin
+   { If the key is the decimal separator move the caret behind it. }
+    I := Pos(DecimalSeparator, Text);
+    if I <> 0 then
+    begin
+      Key := #0;
+      SelLength := 0;
+      SelStart := I;
+      Exit;
+    end;
+  end;
+
   if not IsValidChar(Key) then
   begin
     Key := #0;
