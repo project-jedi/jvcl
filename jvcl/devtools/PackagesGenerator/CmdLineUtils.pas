@@ -41,7 +41,7 @@ begin
   WriteLn(#9'-d'#9#9'Generates the DOFs files where applicable');
 end;
 
-procedure Error(Msg : string);
+procedure Error(const Msg : string);
 begin
   WriteLn('Error !!!');
   WriteLn(Msg);
@@ -49,7 +49,7 @@ begin
   Help;
 end;
 
-procedure WriteMsg(Msg : string);
+procedure WriteMsg(const Msg : string);
 begin
   WriteLn(Msg);
 end;
