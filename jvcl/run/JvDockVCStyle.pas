@@ -326,6 +326,7 @@ var
   VCSource: TJvDockVCDragDockObject;
   SysCaptionHeight: Integer;
   PanelScreenRect: TRect;
+  R: TRect;
 begin
   inherited CustomDockOver(Source, X, Y, State, Accept);
 
@@ -358,15 +359,17 @@ begin
     if ((Source.DropOnControl <> nil) and (Source.DropOnControl <> Source.Control)) and
       (Source.DropOnControl.HostDockSite <> Source.Control.HostDockSite) then
     begin
+      R := Source.DockRect;
       if DropAlign in [alTop, alBottom] then
       begin
         if ((Source.Control.DockOrientation = doVertical) or (Source.Control.HostDockSite = nil)) then
-          Source.DockRect.Bottom := Source.DockRect.Top + Source.Control.UnDockHeight - SysCaptionHeight;
+          R.Bottom := Source.DockRect.Top + Source.Control.UnDockHeight - SysCaptionHeight;
       end
       else
       if DropAlign in [alLeft, alRight] then
         if (Source.Control.DockOrientation = doHorizontal) or (Source.Control.HostDockSite = nil) then
-          Source.DockRect.Right := Source.DockRect.Left + Source.Control.UnDockWidth - SysCaptionHeight;
+          R.Right := Source.DockRect.Left + Source.Control.UnDockWidth - SysCaptionHeight;
+      Source.DockRect := R;
     end;
   end;
 end;

@@ -157,6 +157,41 @@ implementation
 uses
   JvDockGlobals, JvDockVSNetStyle;
 
+const
+  cBorderStyle = 'BorderStyle';
+  cBottomDocked = 'BottomDocked';
+  cBottomDockPanel = 'BottomDockPanel';
+  cCanDocked = 'CanDocked';
+  cDockBottom = 'DockBottom';
+  cDockClientData = 'DockClientData';
+  cDockFormStyle = 'DockFormStyle';
+  cDockLeft = 'DockLeft';
+  cDockRight = 'DockRight';
+  cDockTop = 'DockTop';
+  cEachOtherDocked = 'EachOtherDocked';
+  cERROR = 'ERROR';
+  cFormNames = 'FormNames';
+  cForms = 'Forms';
+  cFormStyle = 'FormStyle';
+  cLastDockSiteName = 'LastDockSiteName';
+  cLeftDocked = 'LeftDocked';
+  cLeftDockPanel = 'LeftDockPanel';
+  cLRDockWidth = 'LRDockWidth';
+  cParentName = 'ParentName';
+  cPopupPanel = 'PopupPanel';
+  cRightDocked = 'RightDocked';
+  cRightDockPanel = 'RightDockPanel';
+  cTBDockHeight = 'TBDockHeight';
+  cTopDocked = 'TopDocked';
+  cTopDockPanel = 'TopDockPanel';
+  cUnDockHeight = 'UnDockHeight';
+  cUnDockLeft = 'UnDockLeft';
+  cUnDockTop = 'UnDockTop';
+  cUnDockWidth = 'UnDockWidth';
+  cVisible = 'Visible';
+  cVSPaneWidth = 'VSPaneWidth';
+  cWindowState = 'WindowState';
+
 function FindDockForm(FormName: string): TCustomForm;
 begin
   if Pos(RsDockJvDockInfoSplitter, FormName) > 0 then
@@ -181,18 +216,18 @@ begin
     if DockServer <> nil then
       with DockServer do
       begin
-        if Pos('TopDockPanel', ControlName) > Index then
+        if Pos(cTopDockPanel, ControlName) > Index then
           Result := TopDockPanel
         else
-        if Pos('LeftDockPanel', ControlName) > Index then
+        if Pos(cLeftDockPanel, ControlName) > Index then
           Result := LeftDockPanel
         else
-        if Pos('BottomDockPanel', ControlName) > Index then
+        if Pos(cBottomDockPanel, ControlName) > Index then
           Result := BottomDockPanel
         else
-        if Pos('RightDockPanel', ControlName) > Index then
+        if Pos(cRightDockPanel, ControlName) > Index then
           Result := RightDockPanel;
-        if (Result <> nil) and (Pos('PopupPanel', ControlName) > 20) then
+        if (Result <> nil) and (Pos(cPopupPanel, ControlName) > 20) then
           Result := TJvDockVSNETPanel(Result).VSChannel.VSPopupPanel;
       end;
   end;
@@ -489,45 +524,45 @@ var
     TreeZone: TJvDockInfoZone;
     OldPath: string;
   begin
-    if FAppStorage.PathExists(FAppStorage.ConcatPaths([AppStoragePath,'Forms', FormList[Index]])) then
+    if FAppStorage.PathExists(FAppStorage.ConcatPaths([AppStoragePath, cForms, FormList[Index]])) then
     begin
       TreeZone := TJvDockInfoZone(AddChildZone(CurrTreeZone, nil));
       with TreeZone, FAppStorage do
       begin
         try
           OldPath := Path;
-          Path := AppStorage.ConcatPaths([OldPath,AppStoragePath,'Forms', FormList[Index]]);
+          Path := AppStorage.ConcatPaths([OldPath,AppStoragePath, cForms, FormList[Index]]);
           DockFormName := FormList[Index];
-          ParentName := ReadString('ParentName');
-          DockRect := Rect(ReadInteger('DockLeft'), ReadInteger('DockTop'),
-                           ReadInteger('DockRight'), ReadInteger('DockBottom'));
-          LRDockWidth := ReadInteger('LRDockWidth');
-          LastDockSiteName := ReadString('LastDockSiteName');
-          UnDockLeft := ReadInteger('UnDockLeft');
-          UnDockTop := ReadInteger('UnDockTop');
-          TBDockHeight := ReadInteger('TBDockHeight');
-          UnDockWidth := ReadInteger('UnDockWidth');
-          UnDockHeight := ReadInteger('UnDockHeight');
-          VSPaneWidth := ReadInteger('VSPaneWidth');
-          Visible := ReadBoolean('Visible');
-          BorderStyle := TBorderStyle(ReadInteger('BorderStyle'));
-          FormStyle := TFormStyle(ReadInteger('FormStyle'));
-          WindowState := TWindowState(ReadInteger('WindowState'));
-          DockFormStyle := TJvDockFormStyle(ReadInteger('DockFormStyle'));
-          CanDocked := ReadBoolean('CanDocked');
-          EachOtherDocked := ReadBoolean('EachOtherDocked');
-          LeftDocked := ReadBoolean('LeftDocked');
-          TopDocked := ReadBoolean('TopDocked');
-          RightDocked := ReadBoolean('RightDocked');
-          BottomDocked := ReadBoolean('BottomDocked');
-          DockClientData := ReadString('DockClientData');
+          ParentName := ReadString(cParentName);
+          DockRect := Rect(ReadInteger(cDockLeft), ReadInteger(cDockTop),
+                           ReadInteger(cDockRight), ReadInteger(cDockBottom));
+          LRDockWidth := ReadInteger(cLRDockWidth);
+          LastDockSiteName := ReadString(cLastDockSiteName);
+          UnDockLeft := ReadInteger(cUnDockLeft);
+          UnDockTop := ReadInteger(cUnDockTop);
+          TBDockHeight := ReadInteger(cTBDockHeight);
+          UnDockWidth := ReadInteger(cUnDockWidth);
+          UnDockHeight := ReadInteger(cUnDockHeight);
+          VSPaneWidth := ReadInteger(cVSPaneWidth);
+          Visible := ReadBoolean(cVisible);
+          BorderStyle := TBorderStyle(ReadInteger(cBorderStyle));
+          FormStyle := TFormStyle(ReadInteger(cFormStyle));
+          WindowState := TWindowState(ReadInteger(cWindowState));
+          DockFormStyle := TJvDockFormStyle(ReadInteger(cDockFormStyle));
+          CanDocked := ReadBoolean(cCanDocked);
+          EachOtherDocked := ReadBoolean(cEachOtherDocked);
+          LeftDocked := ReadBoolean(cLeftDocked);
+          TopDocked := ReadBoolean(cTopDocked);
+          RightDocked := ReadBoolean(cRightDocked);
+          BottomDocked := ReadBoolean(cBottomDocked);
+          DockClientData := ReadString(cDockClientData);
         finally
           FAppStorage.Path := OldPath;
         end;
       end;
       for I := Index - 1 downto 0 do
       begin
-        if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[I], 'ParentName'])) = FormList[Index] then
+        if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, cForms, FormList[I], cParentName])) = FormList[Index] then
         begin
           CurrTreeZone := TreeZone;
           CreateZoneAndAddInfo(I);
@@ -540,9 +575,9 @@ var
 begin
   FormList := TStringList.Create;
   try
-    if FAppStorage.ValueStored(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames'])) then
+    if FAppStorage.ValueStored(FAppStorage.ConcatPaths([AppStoragePath, cForms, cFormNames])) then
     begin
-      S := FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', 'FormNames']));
+      S := FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, cForms, cFormNames]));
       cp := PChar(S);
       cp1 := StrPos(cp, ';');
       while cp1 <> nil do
@@ -554,7 +589,7 @@ begin
       end;
       FJvDockInfoStyle := isReadInfo;
       for I := FormList.Count - 1 downto 0 do
-        if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, 'Forms', FormList[I], 'ParentName'])) = '' then
+        if FAppStorage.ReadString(FAppStorage.ConcatPaths([AppStoragePath, cForms, FormList[I], cParentName])) = '' then
           CreateZoneAndAddInfo(I);
       FJvDockInfoStyle := isNone;
     end;
@@ -582,31 +617,31 @@ var
       with TempDockInfoZoneArray[I], DockInfoIni do
       begin
         DockFormName := Sections[I];
-        ParentName := ReadString(DockFormName, 'ParentName', 'ERROR');
-        DockRect := Rect(ReadInteger(DockFormName, 'DockLeft', 0),
-          ReadInteger(DockFormName, 'DockTop', 0),
-          ReadInteger(DockFormName, 'DockRight', 100),
-          ReadInteger(DockFormName, 'DockBottom', 100));
-        LastDockSiteName := ReadString(DockFormName, 'LastDockSiteName', 'ERROR');
-        UnDockLeft := ReadInteger(DockFormName, 'UnDockLeft', 100);
-        UnDockTop := ReadInteger(DockFormName, 'UnDockTop', 100);
-        LRDockWidth := ReadInteger(DockFormName, 'LRDockWidth', 100);
-        TBDockHeight := ReadInteger(DockFormName, 'TBDockHeight', 100);
-        UnDockWidth := ReadInteger(DockFormName, 'UndockWidth', 100);
-        UnDockHeight := ReadInteger(DockFormName, 'UndockHeight', 100);
-        VSPaneWidth := ReadInteger(DockFormName, 'VSPaneWidth', 100);
-        Visible := ReadBool(DockFormName, 'Visible', True);
-        BorderStyle := TBorderStyle(ReadInteger(DockFormName, 'BorderStyle', 0));
-        FormStyle := TFormStyle(ReadInteger(DockFormName, 'FormStyle', 0));
-        WindowState := TWindowState(ReadInteger(DockFormName, 'WindowState', 0));
-        DockFormStyle := TJvDockFormStyle(ReadInteger(DockFormName, 'DockFormStyle', 0));
-        CanDocked := ReadBool(DockFormName, 'CanDocked', True);
-        EachOtherDocked := ReadBool(DockFormName, 'EachOtherDocked', True);
-        LeftDocked := ReadBool(DockFormName, 'LeftDocked', LeftDocked);
-        TopDocked := ReadBool(DockFormName, 'TopDocked', True);
-        RightDocked := ReadBool(DockFormName, 'RightDocked', True);
-        BottomDocked := ReadBool(DockFormName, 'BottomDocked', True);
-        DockClientData := ReadString(DockFormName, 'DockClientData', '');
+        ParentName := ReadString(DockFormName, cParentName, cERROR);
+        DockRect := Rect(ReadInteger(DockFormName, cDockLeft, 0),
+          ReadInteger(DockFormName, cDockTop, 0),
+          ReadInteger(DockFormName, cDockRight, 100),
+          ReadInteger(DockFormName, cDockBottom, 100));
+        LastDockSiteName := ReadString(DockFormName, cLastDockSiteName, cERROR);
+        UnDockLeft := ReadInteger(DockFormName, cUnDockLeft, 100);
+        UnDockTop := ReadInteger(DockFormName, cUnDockTop, 100);
+        LRDockWidth := ReadInteger(DockFormName, cLRDockWidth, 100);
+        TBDockHeight := ReadInteger(DockFormName, cTBDockHeight, 100);
+        UnDockWidth := ReadInteger(DockFormName, cUndockWidth, 100);
+        UnDockHeight := ReadInteger(DockFormName, cUndockHeight, 100);
+        VSPaneWidth := ReadInteger(DockFormName, cVSPaneWidth, 100);
+        Visible := ReadBool(DockFormName, cVisible, True);
+        BorderStyle := TBorderStyle(ReadInteger(DockFormName, cBorderStyle, 0));
+        FormStyle := TFormStyle(ReadInteger(DockFormName, cFormStyle, 0));
+        WindowState := TWindowState(ReadInteger(DockFormName, cWindowState, 0));
+        DockFormStyle := TJvDockFormStyle(ReadInteger(DockFormName, cDockFormStyle, 0));
+        CanDocked := ReadBool(DockFormName, cCanDocked, True);
+        EachOtherDocked := ReadBool(DockFormName, cEachOtherDocked, True);
+        LeftDocked := ReadBool(DockFormName, cLeftDocked, LeftDocked);
+        TopDocked := ReadBool(DockFormName, cTopDocked, True);
+        RightDocked := ReadBool(DockFormName, cRightDocked, True);
+        BottomDocked := ReadBool(DockFormName, cBottomDocked, True);
+        DockClientData := ReadString(DockFormName, cDockClientData, '');
       end;
     end;
   end;
@@ -696,34 +731,34 @@ var
       with TreeZone, DockInfoReg do
       begin
         DockFormName := FormList[Index];
-        ParentName := ReadString('ParentName');
-        DockRect := Rect(ReadInteger('DockLeft'), ReadInteger('DockTop'),
-          ReadInteger('DockRight'), ReadInteger('DockBottom'));
-        LRDockWidth := ReadInteger('LRDockWidth');
-        LastDockSiteName := ReadString('LastDockSiteName');
-        UnDockLeft := ReadInteger('UnDockLeft');
-        UnDockTop := ReadInteger('UnDockTop');
-        TBDockHeight := ReadInteger('TBDockHeight');
-        UnDockWidth := ReadInteger('UnDockWidth');
-        UnDockHeight := ReadInteger('UnDockHeight');
-        VSPaneWidth := ReadInteger('VSPaneWidth');
-        Visible := ReadBool('Visible');
-        BorderStyle := TBorderStyle(ReadInteger('BorderStyle'));
-        FormStyle := TFormStyle(ReadInteger('FormStyle'));
-        WindowState := TWindowState(ReadInteger('WindowState'));
-        DockFormStyle := TJvDockFormStyle(ReadInteger('DockFormStyle'));
-        CanDocked := ReadBool('CanDocked');
-        EachOtherDocked := ReadBool('EachOtherDocked');
-        LeftDocked := ReadBool('LeftDocked');
-        TopDocked := ReadBool('TopDocked');
-        RightDocked := ReadBool('RightDocked');
-        BottomDocked := ReadBool('BottomDocked');
-        DockClientData := ReadString('DockClientData');
+        ParentName := ReadString(cParentName);
+        DockRect := Rect(ReadInteger(cDockLeft), ReadInteger(cDockTop),
+          ReadInteger(cDockRight), ReadInteger(cDockBottom));
+        LRDockWidth := ReadInteger(cLRDockWidth);
+        LastDockSiteName := ReadString(cLastDockSiteName);
+        UnDockLeft := ReadInteger(cUnDockLeft);
+        UnDockTop := ReadInteger(cUnDockTop);
+        TBDockHeight := ReadInteger(cTBDockHeight);
+        UnDockWidth := ReadInteger(cUnDockWidth);
+        UnDockHeight := ReadInteger(cUnDockHeight);
+        VSPaneWidth := ReadInteger(cVSPaneWidth);
+        Visible := ReadBool(cVisible);
+        BorderStyle := TBorderStyle(ReadInteger(cBorderStyle));
+        FormStyle := TFormStyle(ReadInteger(cFormStyle));
+        WindowState := TWindowState(ReadInteger(cWindowState));
+        DockFormStyle := TJvDockFormStyle(ReadInteger(cDockFormStyle));
+        CanDocked := ReadBool(cCanDocked);
+        EachOtherDocked := ReadBool(cEachOtherDocked);
+        LeftDocked := ReadBool(cLeftDocked);
+        TopDocked := ReadBool(cTopDocked);
+        RightDocked := ReadBool(cRightDocked);
+        BottomDocked := ReadBool(cBottomDocked);
+        DockClientData := ReadString(cDockClientData);
       end;
       for I := Index - 1 downto 0 do
       begin
         DockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
-        if DockInfoReg.ReadString('ParentName') = FormList[Index] then
+        if DockInfoReg.ReadString(cParentName) = FormList[Index] then
         begin
           CurrTreeZone := TreeZone;
           CreateZoneAndAddInfo(I);
@@ -738,7 +773,7 @@ begin
   try
     if DockInfoReg.OpenKey(FRegName, False) then
     begin
-      S := DockInfoReg.ReadString('FormNames');
+      S := DockInfoReg.ReadString(cFormNames);
       cp := PChar(S);
       cp1 := StrPos(cp, '\');
       while cp1 <> nil do
@@ -752,7 +787,7 @@ begin
       for I := FormList.Count - 1 downto 0 do
       begin
         DockInfoReg.OpenKey(FRegName + '\' + FormList[I], False);
-        if DockInfoReg.ReadString('ParentName') = '' then
+        if DockInfoReg.ReadString(cParentName) = '' then
           CreateZoneAndAddInfo(I);
       end;
       FJvDockInfoStyle := isNone;
@@ -804,35 +839,35 @@ begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), FAppStorage do
       begin
-        WriteString(ConcatPaths([FAppStoragePath, 'Forms', 'FormNames']), ReadString(ConcatPaths([FAppStoragePath, 'Forms', 'FormNames'])) + DockFormName + ';');
+        WriteString(ConcatPaths([FAppStoragePath, cForms, cFormNames]), ReadString(ConcatPaths([FAppStoragePath, cForms, cFormNames])) + DockFormName + ';');
         try
           OldPath := Path;
-          Path := ConcatPaths([OldPath, FAppStoragePath, 'Forms', DockFormName]);
-          WriteString('ParentName', ParentName);
-          WriteInteger('DockLeft', DockRect.Left);
-          WriteInteger('DockTop', DockRect.Top);
-          WriteInteger('DockRight', DockRect.Right);
-          WriteInteger('DockBottom', DockRect.Bottom);
-          WriteString('LastDockSiteName', LastDockSiteName);
-          WriteInteger('UnDockLeft', UnDockLeft);
-          WriteInteger('UnDockTop', UnDockTop);
-          WriteInteger('LRDockWidth', LRDockWidth);
-          WriteInteger('TBDockHeight', TBDockHeight);
-          WriteInteger('UnDockWidth', UnDockWidth);
-          WriteInteger('UnDockHeight', UnDockHeight);
-          WriteInteger('VSPaneWidth', VSPaneWidth);
-          WriteBoolean('Visible', Visible);
-          WriteInteger('BorderStyle', Integer(BorderStyle));
-          WriteInteger('FormStyle', Integer(FormStyle));
-          WriteInteger('WindowState', Integer(WindowState));
-          WriteInteger('DockFormStyle', Integer(DockFormStyle));
-          WriteBoolean('CanDocked', CanDocked);
-          WriteBoolean('EachOtherDocked', EachOtherDocked);
-          WriteBoolean('LeftDocked', LeftDocked);
-          WriteBoolean('TopDocked', TopDocked);
-          WriteBoolean('RightDocked', RightDocked);
-          WriteBoolean('BottomDocked', BottomDocked);
-          WriteString('DockClientData', DockClientData);
+          Path := ConcatPaths([OldPath, FAppStoragePath, cForms, DockFormName]);
+          WriteString(cParentName, ParentName);
+          WriteInteger(cDockLeft, DockRect.Left);
+          WriteInteger(cDockTop, DockRect.Top);
+          WriteInteger(cDockRight, DockRect.Right);
+          WriteInteger(cDockBottom, DockRect.Bottom);
+          WriteString(cLastDockSiteName, LastDockSiteName);
+          WriteInteger(cUnDockLeft, UnDockLeft);
+          WriteInteger(cUnDockTop, UnDockTop);
+          WriteInteger(cLRDockWidth, LRDockWidth);
+          WriteInteger(cTBDockHeight, TBDockHeight);
+          WriteInteger(cUnDockWidth, UnDockWidth);
+          WriteInteger(cUnDockHeight, UnDockHeight);
+          WriteInteger(cVSPaneWidth, VSPaneWidth);
+          WriteBoolean(cVisible, Visible);
+          WriteInteger(cBorderStyle, Integer(BorderStyle));
+          WriteInteger(cFormStyle, Integer(FormStyle));
+          WriteInteger(cWindowState, Integer(WindowState));
+          WriteInteger(cDockFormStyle, Integer(DockFormStyle));
+          WriteBoolean(cCanDocked, CanDocked);
+          WriteBoolean(cEachOtherDocked, EachOtherDocked);
+          WriteBoolean(cLeftDocked, LeftDocked);
+          WriteBoolean(cTopDocked, TopDocked);
+          WriteBoolean(cRightDocked, RightDocked);
+          WriteBoolean(cBottomDocked, BottomDocked);
+          WriteString(cDockClientData, DockClientData);
         finally
           FAppStorage.Path := OldPath;
         end;
@@ -891,31 +926,31 @@ begin
     if TreeZone <> TopTreeZone then
       with TJvDockInfoZone(TreeZone), DockInfoIni do
       begin
-        WriteString(DockFormName, 'ParentName', ParentName);
-        WriteInteger(DockFormName, 'DockLeft', DockRect.Left);
-        WriteInteger(DockFormName, 'DockTop', DockRect.Top);
-        WriteInteger(DockFormName, 'DockRight', DockRect.Right);
-        WriteInteger(DockFormName, 'DockBottom', DockRect.Bottom);
-        WriteString(DockFormName, 'LastDockSiteName', LastDockSiteName);
-        WriteInteger(DockFormName, 'UnDockLeft', UnDockLeft);
-        WriteInteger(DockFormName, 'UnDockTop', UnDockTop);
-        WriteInteger(DockFormName, 'LRDockWidth', LRDockWidth);
-        WriteInteger(DockFormName, 'TBDockHeight', TBDockHeight);
-        WriteInteger(DockFormName, 'UnDockWidth', UnDockWidth);
-        WriteInteger(DockFormName, 'UnDockHeight', UnDockHeight);
-        WriteInteger(DockFormName, 'VSPaneWidth', VSPaneWidth);
-        WriteBool(DockFormName, 'Visible', Visible);
-        WriteInteger(DockFormName, 'BorderStyle', Integer(BorderStyle));
-        WriteInteger(DockFormName, 'WindowState', Integer(WindowState));
-        WriteInteger(DockFormName, 'FormStyle', Integer(FormStyle));
-        WriteInteger(DockFormName, 'DockFormStyle', Integer(DockFormStyle));
-        WriteBool(DockFormName, 'CanDocked', CanDocked);
-        WriteBool(DockFormName, 'EachOtherDocked', EachOtherDocked);
-        WriteBool(DockFormName, 'LeftDocked', LeftDocked);
-        WriteBool(DockFormName, 'TopDocked', TopDocked);
-        WriteBool(DockFormName, 'RightDocked', RightDocked);
-        WriteBool(DockFormName, 'BottomDocked', BottomDocked);
-        WriteString(DockFormName, 'DockClientData', DockClientData);
+        WriteString(DockFormName, cParentName, ParentName);
+        WriteInteger(DockFormName, cDockLeft, DockRect.Left);
+        WriteInteger(DockFormName, cDockTop, DockRect.Top);
+        WriteInteger(DockFormName, cDockRight, DockRect.Right);
+        WriteInteger(DockFormName, cDockBottom, DockRect.Bottom);
+        WriteString(DockFormName, cLastDockSiteName, LastDockSiteName);
+        WriteInteger(DockFormName, cUnDockLeft, UnDockLeft);
+        WriteInteger(DockFormName, cUnDockTop, UnDockTop);
+        WriteInteger(DockFormName, cLRDockWidth, LRDockWidth);
+        WriteInteger(DockFormName, cTBDockHeight, TBDockHeight);
+        WriteInteger(DockFormName, cUnDockWidth, UnDockWidth);
+        WriteInteger(DockFormName, cUnDockHeight, UnDockHeight);
+        WriteInteger(DockFormName, cVSPaneWidth, VSPaneWidth);
+        WriteBool(DockFormName, cVisible, Visible);
+        WriteInteger(DockFormName, cBorderStyle, Integer(BorderStyle));
+        WriteInteger(DockFormName, cWindowState, Integer(WindowState));
+        WriteInteger(DockFormName, cFormStyle, Integer(FormStyle));
+        WriteInteger(DockFormName, cDockFormStyle, Integer(DockFormStyle));
+        WriteBool(DockFormName, cCanDocked, CanDocked);
+        WriteBool(DockFormName, cEachOtherDocked, EachOtherDocked);
+        WriteBool(DockFormName, cLeftDocked, LeftDocked);
+        WriteBool(DockFormName, cTopDocked, TopDocked);
+        WriteBool(DockFormName, cRightDocked, RightDocked);
+        WriteBool(DockFormName, cBottomDocked, BottomDocked);
+        WriteString(DockFormName, cDockClientData, DockClientData);
       end;
   end
   else
@@ -925,33 +960,33 @@ begin
       with TJvDockInfoZone(TreeZone), DockInfoReg do
       begin
         OpenKey(FRegName, True);
-        WriteString('FormNames', ReadString('FormNames') + DockFormName + '\');
+        WriteString(cFormNames, ReadString(cFormNames) + DockFormName + '\');
         OpenKey(FRegName + '\' + DockFormName, True);
-        WriteString('ParentName', ParentName);
-        WriteInteger('DockLeft', DockRect.Left);
-        WriteInteger('DockTop', DockRect.Top);
-        WriteInteger('DockRight', DockRect.Right);
-        WriteInteger('DockBottom', DockRect.Bottom);
-        WriteString('LastDockSiteName', LastDockSiteName);
-        WriteInteger('UnDockLeft', UnDockLeft);
-        WriteInteger('UnDockTop', UnDockTop);
-        WriteInteger('LRDockWidth', LRDockWidth);
-        WriteInteger('TBDockHeight', TBDockHeight);
-        WriteInteger('UnDockWidth', UnDockWidth);
-        WriteInteger('UnDockHeight', UnDockHeight);
-        WriteInteger('VSPaneWidth', VSPaneWidth);
-        WriteBool('Visible', Visible);
-        WriteInteger('BorderStyle', Integer(BorderStyle));
-        WriteInteger('FormStyle', Integer(FormStyle));
-        WriteInteger('WindowState', Integer(WindowState));
-        WriteInteger('DockFormStyle', Integer(DockFormStyle));
-        WriteBool('CanDocked', CanDocked);
-        WriteBool('EachOtherDocked', EachOtherDocked);
-        WriteBool('LeftDocked', LeftDocked);
-        WriteBool('TopDocked', TopDocked);
-        WriteBool('RightDocked', RightDocked);
-        WriteBool('BottomDocked', BottomDocked);
-        WriteString('DockClientData', DockClientData);
+        WriteString(cParentName, ParentName);
+        WriteInteger(cDockLeft, DockRect.Left);
+        WriteInteger(cDockTop, DockRect.Top);
+        WriteInteger(cDockRight, DockRect.Right);
+        WriteInteger(cDockBottom, DockRect.Bottom);
+        WriteString(cLastDockSiteName, LastDockSiteName);
+        WriteInteger(cUnDockLeft, UnDockLeft);
+        WriteInteger(cUnDockTop, UnDockTop);
+        WriteInteger(cLRDockWidth, LRDockWidth);
+        WriteInteger(cTBDockHeight, TBDockHeight);
+        WriteInteger(cUnDockWidth, UnDockWidth);
+        WriteInteger(cUnDockHeight, UnDockHeight);
+        WriteInteger(cVSPaneWidth, VSPaneWidth);
+        WriteBool(cVisible, Visible);
+        WriteInteger(cBorderStyle, Integer(BorderStyle));
+        WriteInteger(cFormStyle, Integer(FormStyle));
+        WriteInteger(cWindowState, Integer(WindowState));
+        WriteInteger(cDockFormStyle, Integer(DockFormStyle));
+        WriteBool(cCanDocked, CanDocked);
+        WriteBool(cEachOtherDocked, EachOtherDocked);
+        WriteBool(cLeftDocked, LeftDocked);
+        WriteBool(cTopDocked, TopDocked);
+        WriteBool(cRightDocked, RightDocked);
+        WriteBool(cBottomDocked, BottomDocked);
+        WriteString(cDockClientData, DockClientData);
         CloseKey;
       end;
   end;

@@ -2993,7 +2993,7 @@ begin
   begin
     Result := Control.BoundsRect;
     ALeft := Result.Left;
-    Atop := Result.Top;
+    ATop := Result.Top;
     AdjustDockRect(Control, Result);
     Dec(Result.Left, 2 * (Result.Left - Control.Left) + 1);
     Dec(Result.Top, 2 * (Result.Top - Control.Top));
