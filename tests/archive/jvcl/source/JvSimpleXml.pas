@@ -2531,7 +2531,7 @@ begin
               lElem := TJvSimpleXmlElemComment.Create(nil)
             else if st='<?xml-stylesheet' then
               lElem := TJvSimpleXmlElemSheet.Create(nil)
-            else if st='<?' then
+            else if st='<?xml ' then
               lElem := TJvSimpleXmlElemHeader.Create
             else if st='<!DOCTYPE' then
               lElem := TJvSimpleXmlElemDoctype.Create(nil)
