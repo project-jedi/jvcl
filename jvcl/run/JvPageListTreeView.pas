@@ -89,10 +89,10 @@ type
     FPageList: IPageList;
     FPageDefault: Integer;
     FLinks: TJvPageLinks;
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     FPageListComponent: TComponent;
     procedure SetPageListComponent(const Value: TComponent);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     procedure SetPageDefault(const Value: Integer);
     procedure SetLinks(const Value: TJvPageLinks);
     procedure SetPageList(const Value: IPageList);
@@ -427,10 +427,12 @@ const
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
-  JvResources,
-  {$ENDIF !COMPILER6_UP}
+  {$IFDEF COMPILER5}
+  Forms,
+  JvResources;
+  {$ELSE}
   Forms;
+  {$ENDIF COMPILER5}
 
 (* (ahuser) make Delphi 5 compiler happy
 procedure ResetAllNonParentNodes(Items: TTreeNodes; ImageIndex, SelectedIndex: Integer);
@@ -525,10 +527,10 @@ end;
 destructor TJvCustomPageListTreeView.Destroy;
 begin
   FLinks.Free;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   // TreeNodes are destroyed by TCustomTreeview in D6 and above!!!
   FreeAndNil(FItems);
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   inherited Destroy;
 end;
 
@@ -627,7 +629,7 @@ begin
   end;
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 procedure TJvCustomPageListTreeView.SetPageListComponent(const Value: TComponent);
 var
   Obj: IPageList;
@@ -649,7 +651,7 @@ begin
     FPageListComponent.FreeNotification(Self);
   end;
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 function TJvCustomPageListTreeView.GetItems: TJvPageIndexNodes;
 begin

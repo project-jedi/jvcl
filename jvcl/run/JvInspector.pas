@@ -5709,9 +5709,9 @@ var
   TempList: TList;
   I: Integer;
   Item: TJvCustomInspectorItem;
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   J: Integer;
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
 begin
   TempList := TList.Create;
   try
@@ -5726,13 +5726,13 @@ begin
       else
       begin
         Item.BuildDisplayableList(TempList);
-        {$IFDEF COMPILER6_UP}
-        ItemList.Assign(TempList, laOr);
-        {$ELSE}
+        {$IFDEF COMPILER5}
         for J := 0 to TempList.Count - 1 do
           if ItemList.IndexOf(TempList[J]) = -1 then
             ItemList.Add(TempList[J]);
-        {$ENDIF COMPILER6_UP}
+        {$ELSE}
+        ItemList.Assign(TempList, laOr);
+        {$ENDIF COMPILER5}
         TempList.Clear;
       end;
       Inc(I);

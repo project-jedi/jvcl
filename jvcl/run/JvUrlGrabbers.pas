@@ -262,10 +262,10 @@ const
   cHTTPPrefix = 'http://';
   cFTPPrefix = 'ftp://';
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function FtpGetFileSize(hFile: HINTERNET; lpdwFileSizeHigh: LPDWORD): DWORD; stdcall;
   external 'wininet.dll' name 'FtpGetFileSize';
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 // global download callback
 

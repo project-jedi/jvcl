@@ -57,9 +57,9 @@ const
 implementation
 
 uses
-  {$IFDEF COMPILER6_UP}
+  {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
-  {$ENDIF COMPILER6_UP}
+  {$ENDIF HAS_UNIT_VARIANTS}
   JvJCLUtils;
 
 { TSearchRec }
@@ -235,7 +235,7 @@ begin
   Value := P2V(AllocMem(Args.Values[0]));
 end;
 
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 
 { function NewStr(const S: string): PString; }
 
@@ -265,7 +265,7 @@ begin
   AppendStr(string(TVarData(Args.Values[0]).vString), Args.Values[1]);
 end;
 
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 
 { function UpperCase(const S: string): string; }
 
@@ -1822,10 +1822,10 @@ begin
     AddClass(cSysUtils, EAccessViolation, 'EAccessViolation');
     { EPrivilege }
     AddClass(cSysUtils, EPrivilege, 'EPrivilege');
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     { EStackOverflow }
     AddClass(cSysUtils, EStackOverflow, 'EStackOverflow');
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     { EControlC }
     AddClass(cSysUtils, EControlC, 'EControlC');
     { EVariantError }
@@ -1863,12 +1863,12 @@ begin
     {$ENDIF COMPILER6_UP}
     
     AddFunction(cSysUtils, 'AllocMem', JvInterpreter_AllocMem, 1, [varEmpty], varEmpty);
-    {$IFNDEF COMPILER6_UP}
+    {$IFDEF COMPILER5}
     AddFunction(cSysUtils, 'NewStr', JvInterpreter_NewStr, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'DisposeStr', JvInterpreter_DisposeStr, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AssignStr', JvInterpreter_AssignStr, 2, [varByRef, varEmpty], varEmpty);
     AddFunction(cSysUtils, 'AppendStr', JvInterpreter_AppendStr, 2, [varByRef, varEmpty], varEmpty);
-    {$ENDIF !COMPILER6_UP}
+    {$ENDIF COMPILER5}
     AddFunction(cSysUtils, 'UpperCase', JvInterpreter_UpperCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'LowerCase', JvInterpreter_LowerCase, 1, [varEmpty], varEmpty);
     AddFunction(cSysUtils, 'CompareStr', JvInterpreter_CompareStr, 2, [varEmpty, varEmpty], varEmpty);

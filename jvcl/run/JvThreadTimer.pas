@@ -102,13 +102,14 @@ const
 
 implementation
 
-{$IFDEF VCL}
 uses
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF VCL}
+  {$IFDEF COMPILER5}
   Forms,
-  {$ENDIF !COMPILER6_UP}
-  Messages;
-{$ENDIF VCL}
+  {$ENDIF COMPILER5}
+  Messages,
+  {$ENDIF VCL}
+  JvJCLUtils;
 
 type
   TJvTimerThread = class(TThread)
@@ -147,11 +148,7 @@ begin
   { Manually reset = false; Initial State = false }
   FEvent := CreateEvent(nil, False, False, nil);
   if FEvent = 0 then
-    {$IFDEF COMPILER6_UP}
     RaiseLastOSError;
-    {$ELSE}
-    RaiseLastWin32Error;
-    {$ENDIF COMPILER6_UP}
   FInterval := ATimer.FInterval;
   FTimer := ATimer;
   Priority := ATimer.Priority;

@@ -175,9 +175,9 @@ type
     //property OnUnDock;
     property OnClick;
     property OnConstrainedResize;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property OnContextPopup;
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -275,9 +275,9 @@ type
     //property OnUnDock;
     property OnClick;
     property OnConstrainedResize;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property OnContextPopup;
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;

@@ -433,7 +433,7 @@ begin
     on E: EMTTerminateError do
       {nothing};
     on E: Exception do
-      Log('OnExecute Exception: "' + E.Message+'"'); // do not localize
+      Log('OnExecute Exception: "' + E.Message + '"'); // do not localize
   end;
   
   // make sure terminate flag is set
@@ -445,7 +445,7 @@ begin
       FOnTerminating(Self);
   except
     on E: Exception do
-      Log('OnTerminate Exception: "' + E.Message+'"'); // do not localize
+      Log('OnTerminate Exception: "' + E.Message + '"'); // do not localize
   end;
   {$IFDEF COMPILER5}
   FIntThread.OnTerminate := nil;

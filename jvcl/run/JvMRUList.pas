@@ -185,7 +185,7 @@ implementation
 
 uses
   Registry,
-  JvResources;
+  JvJCLUtils, JvResources;
 
 var
   hComCtlDll: HMODULE = 0;
@@ -754,11 +754,7 @@ begin
       end;
     end
     else
-      {$IFDEF COMPILER6_UP}
       RaiseLastOSError;
-      {$ELSE}
-      RaiseLastWin32Error;
-      {$ENDIF COMPILER6_UP}
   end;
 end;
 

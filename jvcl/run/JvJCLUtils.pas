@@ -1765,6 +1765,7 @@ begin
 end;
 
 {$IFDEF COMPILER5}
+
 function DirectoryExists(const Name: string): Boolean;
 var
   Code: Cardinal;
@@ -1787,6 +1788,7 @@ function SameFileName(const FN1, FN2: string): Boolean;
 begin
   Result := CompareText(FN1, FN2) = 0;
 end;
+
 {$ENDIF COMPILER5}
 
 {$IFDEF MSWINDOWS}
@@ -6026,6 +6028,7 @@ begin
 end;
 
 {$IFDEF COMPILER5}
+
 function AnsiStartsText(const SubText, Text: string): Boolean;
 var
   SubTextLen: Integer;
@@ -6071,6 +6074,7 @@ begin
   else
     Result := False;
 end;
+
 {$ENDIF COMPILER5}
 
 function RemoveBackSlash(const DirName: string): string;

@@ -585,13 +585,13 @@ begin
 end;
 
 //PRY 2002.06.04
-{$IFNDEF COMPILER6_UP}
+{$IFDEF COMPILER5}
 function IncYear(const AValue: TDateTime;
   const ANumberOfYears: Integer): TDateTime;
 begin
   Result := IncMonth(AValue, ANumberOfYears * 12);
 end;
-{$ENDIF !COMPILER6_UP}
+{$ENDIF COMPILER5}
 // PRY END
 
 //=== { TJvTimeItem } ========================================================

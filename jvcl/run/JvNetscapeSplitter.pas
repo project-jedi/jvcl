@@ -876,7 +876,7 @@ begin
     inherited Align := Value;
     Invalidate; // Direction changing, redraw arrows.
     {$IFNDEF COMPILER4_UP}
-  // D4 does this already
+    // D4 does this already
     if (Cursor <> crVSplit) and (Cursor <> crHSplit) then
       Exit;
     if Align in [alBottom, alTop] then

@@ -195,9 +195,9 @@ const
 implementation
 
 uses
-  {$IFNDEF COMPILER6_UP}
+  {$IFDEF COMPILER5}
   JvJCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
-  {$ENDIF !COMPILER6_UP}
+  {$ENDIF COMPILER5}
   JvResources;
 
 const
