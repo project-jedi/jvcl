@@ -1,8 +1,20 @@
 Changelog for JVCL 3.0
 ======================
+2003-07-29:
+- Renamed properties and events in TJvImageSquare:
+    BackColor -> Color
+    OnEnter -> OnMouseEnter
+    OnExit -> OnMouseLeave
+2003-07-28:
+- Removed JVCL components from (mainly) design-time forms to minimize inter-package dependencies. When writing 
+  property editors for components in the future, please try to keep the number of JVCL components used as low
+  as is absolutely possible (TODO: put this in the docs as well).
 2003-07-25:
-- TJvThreadTimer: rewritten by Ivo Bauer to enable resetting the thread and handle exceptions better
-- TJvThreadTimer: renamed Delay to Interval and Active to Enabled to be name compatible with TTimer
+- TJvThreadTimer
+  * rewritten by Ivo Bauer to enable resetting the thread and handle exceptions better
+  * renamed properties to be name compatible with TTimer: 
+      Delay -> Interval 
+      Active -> Enabled 
 
 2003-07-12:
 - Added TJvBlinkingLED (derived from TJvTransLED) from Tomas Hensle

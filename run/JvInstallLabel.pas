@@ -48,7 +48,7 @@ type
     FTextOffset: Integer;
     FImageOffset: Integer;
     FLineSpacing: Integer;
-    FIndex: Integer;
+    FDefaultImage: Integer;
     procedure SetIndex(Value: Integer);
     procedure SetStyles(Index: Integer; Value: TFontStyles);
     function GetStyles(Index: Integer): TFontStyles;
@@ -76,7 +76,7 @@ type
     property Align;
     property Font;
     property Color default clBtnFace;
-    property DefaultImage: Integer read FIndex write SetIndex default -1;
+    property DefaultImage: Integer read FDefaultImage write SetIndex default -1;
     property ImageList: TImageList read FImageList write SetImageList;
     property Lines: TStrings read FLines write SetLines;
     property LineSpacing: Integer read FLineSpacing write SetLineSpacing default 10;
@@ -128,7 +128,7 @@ begin
   FTextOffset := 24;
   FImageOffset := 2;
   FLineSpacing := 10;
-  FIndex := -1;
+  FDefaultImage := -1;
   SetBounds(0, 0, 180, 120);
 end;
 
@@ -162,7 +162,7 @@ begin
   begin
     New(aStyle);
     aStyle^.Style := Font.Style; { default }
-    aStyle^.Index := FIndex;
+    aStyle^.Index := FDefaultImage;
     FStyles.Add(aStyle);
   end;
 end;
@@ -171,19 +171,19 @@ procedure TJvInstallLabel.SetIndex(Value: Integer);
 var
   I: Integer;
 begin
-  if FIndex <> Value then
+  if FDefaultImage <> Value then
   begin
     for I := 0 to FStyles.Count - 1 do
-      if PStyles(FStyles[I])^.Index = FIndex then
+      if PStyles(FStyles[I])^.Index = FDefaultImage then
         PStyles(FStyles[I])^.Index := Value;
-    FIndex := Value;
+    FDefaultImage := Value;
     Invalidate;
   end;
 end;
 
 procedure TJvInstallLabel.SetStyles(Index: Integer; Value: TFontStyles);
 begin
-  SetStyle(Index, FIndex, Value);
+  SetStyle(Index, FDefaultImage, Value);
 end;
 
 function TJvInstallLabel.GetStyles(Index: Integer): TFontStyles;
@@ -320,7 +320,7 @@ begin
   for I := 0 to FStyles.Count - 1 do
   begin
     PStyles(FStyles[I])^.Style := Font.Style;
-    PStyles(FStyles[I])^.Index := FIndex;
+    PStyles(FStyles[I])^.Index := FDefaultImage;
   end;
 
   PStyles(FStyles[LineIndex])^.Style := LineStyle;
