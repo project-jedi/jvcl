@@ -31,7 +31,10 @@ unit JvPageList;
 interface
 
 uses
-  SysUtils, Classes, Windows, Messages, Graphics, Controls,
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  {$IFDEF COMPILER9_UP}
+  Types,
+  {$ENDIF COMPILER9_UP}
   {$IFDEF VisualCLX}
   Qt,
   {$ENDIF VisualCLX}
@@ -67,7 +70,6 @@ type
     FOnShow: TNotifyEvent;
   protected
     {$IFDEF VCL}
-    procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure CreateParams(var Params: TCreateParams); override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
@@ -458,8 +460,8 @@ end;
 function TJvCustomPage.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   {$IFDEF JVCLThemesEnabled}
-  if ThemeServices.ThemesEnabled and ParentBackground then
-    DrawThemedBackground(Self, Canvas.Handle, ClientRect, Parent.Brush.Handle);
+  if ThemeServices.ThemesEnabled then
+    DrawThemedBackground(Self, Canvas, ClientRect, Color, ParentBackground);
   {$ENDIF JVCLThemesEnabled}
   Result := True;
 end;
@@ -500,13 +502,6 @@ begin
       Application.HandleException(Self);
     end;
 end;
-
-{$IFDEF VCL}
-procedure TJvCustomPage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
-begin
-  Msg.Result := 1;
-end;
-{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 function TJvCustomPage.WidgetFlags: Integer;
