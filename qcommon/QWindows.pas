@@ -3544,7 +3544,7 @@ var
   p: PPoint;
 begin
   SetLength(pts, Count);
-  p := PPoint(Points);
+  p := PPoint(@Points);
   for i := 0 to Count - 1 do
   begin
     pts[i].X := p.X;
@@ -4067,6 +4067,7 @@ begin
   if Handle <> nil then
   begin
     QWidget_releaseMouse(Handle);
+    SetMouseGrabControl(nil);  // inform CLX
     Result := True;
   end
   else
