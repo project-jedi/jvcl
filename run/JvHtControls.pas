@@ -855,7 +855,7 @@ end;
 {$IFDEF VisualCLX}
 procedure TJvCustomHTListBox.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   Style := lbOwnerDrawVariable;
 end;
 {$ENDIF VisualCLX}
@@ -1037,14 +1037,18 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomHTComboBox.CreateWnd;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomHTComboBox.CreateWidget;
-{$ENDIF VisualCLX}
 var
   Tmp: Integer;
 begin
-  inherited;
+  inherited CreateWnd;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomHTComboBox.CreateWidget;
+var
+  Tmp: Integer;
+begin
+  inherited CreateWidget;
+{$ENDIF VisualCLX}
   if DropWidth = 0 then
     DropWidth := Width
   else

@@ -106,8 +106,6 @@ type
     procedure CreateDfmStream(const UnitName: string; var Stream: TStream); dynamic;
     procedure FreeDfmStream(Stream: TStream); dynamic;
   public
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     procedure Run; override;
     function MakeForm(const FileName: TFileName): TForm;
     function MakeInheritedForm(F: TJvInterpreterForm; const FileName: TFileName): TForm;
@@ -308,16 +306,6 @@ begin
 end;
 
 //=== TJvInterpreterFm =======================================================
-
-constructor TJvInterpreterFm.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
-
-destructor TJvInterpreterFm.Destroy;
-begin
-  inherited Destroy;
-end;
 
 function TJvInterpreterFm.MakeForm(const FileName: TFileName): TForm;
 var

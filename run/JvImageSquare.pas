@@ -42,7 +42,9 @@ uses
 type
   TJvImageSquare = class(TJvGraphicControl)
   private
-    FHiColor, TmpColor, FBackColor: TColor;
+    FHiColor: TColor;
+    FTmpColor: TColor;
+    FBackColor: TColor;
     FBorderStyle: TBorderStyle;
     FImageList: TCustomImageList;
     FIndex: Integer;
@@ -53,7 +55,7 @@ type
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetIndex(Value: Integer);
     procedure SetImageList(Value: TCustomImageList);
-    procedure ImageListChange(Sender: Tobject);
+    procedure ImageListChange(Sender: TObject);
   protected
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -120,7 +122,7 @@ begin
   inherited Create(AOwner);
   FHiColor := clActiveCaption;
   Color := clWindow;
-  TmpColor := clWindow;
+  FTmpColor := clWindow;
   FBackColor := clWindow;
   FIndex := 0;
   FDown := False;
@@ -138,14 +140,14 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvImageSquare.ImageListChange(Sender: Tobject);
+procedure TJvImageSquare.ImageListChange(Sender: TObject);
 begin
   Repaint;
 end;
 
 procedure TJvImageSquare.Notification(AComponent: TComponent; Operation: TOperation);
 begin
-  if (aComponent = FImageList) and (Operation = opRemove) then
+  if (AComponent = FImageList) and (Operation = opRemove) then
     FImageList := nil;
 end;
 
@@ -156,9 +158,9 @@ begin
   R := GetClientRect;
   if FDown and FShowClick then
   begin
-    Frame3d(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
-    Frame3d(Canvas, R, clBtnHighLight, clBtnHighLight, 1);
-    Frame3d(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
+    Frame3D(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
+    Frame3D(Canvas, R, clBtnHighLight, clBtnHighLight, 1);
+    Frame3D(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
   end
   else
   {$IFDEF JVCLThemesEnabled}
@@ -168,12 +170,12 @@ begin
   {$ENDIF JVCLThemesEnabled}
   if FBorderStyle = bsSingle then
   begin
-    Frame3d(Canvas, R, clBtnFace, clBtnFace, 1);
-    Frame3d(Canvas, R, clBtnShadow, clBtnHighLight, 1);
-    Frame3d(Canvas, R, cl3DDkShadow, clBtnFace, 1);
+    Frame3D(Canvas, R, clBtnFace, clBtnFace, 1);
+    Frame3D(Canvas, R, clBtnShadow, clBtnHighLight, 1);
+    Frame3D(Canvas, R, cl3DDkShadow, clBtnFace, 1);
   end
   else
-    Frame3d(Canvas, R, FHiColor, FHiColor, 3);
+    Frame3D(Canvas, R, FHiColor, FHiColor, 3);
 end;
 
 procedure TJvImageSquare.Paint;
@@ -192,7 +194,7 @@ begin
   { fill in the rest }
   with Canvas do
   begin
-    Brush.Color := TmpColor;
+    Brush.Color := FTmpColor;
     Brush.Style := bsSolid;
     FillRect(R);
   end;
@@ -203,7 +205,8 @@ begin
     dX := (Width - FImageList.Width) div 2;
     dY := (Height - FImageList.Height) div 2;
     {$IFDEF VCL}
-    ImageList_DrawEx(FImageList.Handle, FIndex, Canvas.Handle, dx, dy, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
+    ImageList_DrawEx(FImageList.Handle, FIndex, Canvas.Handle,
+      dx, dy, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     FImageList.Draw(Canvas, dX, dY, FIndex);
@@ -250,7 +253,7 @@ end;
 
 procedure TJvImageSquare.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  inherited MouseUp(Button, Shift, X, y);
+  inherited MouseUp(Button, Shift, X, Y);
   FDown := False;
   if FShowClick then
     PaintFrame;
@@ -269,9 +272,9 @@ begin
   if csDesigning in ComponentState then
     Exit;
   inherited MouseEnter(Control);
-  if ColorToRGB(TmpColor) <> ColorToRGB(FHiColor) then
+  if ColorToRGB(FTmpColor) <> ColorToRGB(FHiColor) then
   begin
-    TmpColor := FHiColor;
+    FTmpColor := FHiColor;
     Repaint;
   end;
 end;
@@ -282,9 +285,9 @@ begin
   if csDesigning in ComponentState then
     Exit;
   inherited MouseLeave(Control);
-  if ColorToRGB(TmpColor) <> ColorToRGB(FBackColor) then
+  if ColorToRGB(FTmpColor) <> ColorToRGB(FBackColor) then
   begin
-    TmpColor := FBackColor;
+    FTmpColor := FBackColor;
     Repaint;
   end;
 end;
@@ -293,7 +296,7 @@ procedure TJvImageSquare.ColorChanged;
 begin
   inherited ColorChanged;
   FBackColor := Color;
-  TmpColor := Color;
+  FTmpColor := Color;
   Repaint;
 end;
 

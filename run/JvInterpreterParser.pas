@@ -45,8 +45,6 @@ type
     function GetPos: Integer;
     procedure SetPos(Value: Integer);
   public
-    constructor Create;
-    destructor Destroy; override;
     { Token - returns next token }
     function Token: string;
     procedure Init;
@@ -537,16 +535,6 @@ begin
 end;
 
 //=== TJvInterpreterParser ===================================================
-
-constructor TJvInterpreterParser.Create;
-begin
-  inherited Create;
-end;
-
-destructor TJvInterpreterParser.Destroy;
-begin
-  inherited Destroy;
-end;
 
 procedure TJvInterpreterParser.SetSource(Value: string);
 begin

@@ -1300,6 +1300,24 @@ end;
 
 //=== TJvID3TermFinder =======================================================
 
+constructor TJvID3TermFinder.Create;
+var
+  ListType: TJvListType;
+begin
+  inherited Create;
+  for ListType := Low(TJvListType) to High(TJvListType) do
+    FLists[ListType] := nil;
+end;
+
+destructor TJvID3TermFinder.Destroy;
+var
+  ListType: TJvListType;
+begin
+  for ListType := Low(TJvListType) to High(TJvListType) do
+    FLists[ListType].Free;
+  inherited Destroy;
+end;
+
 procedure TJvID3TermFinder.BuildList_ID3Genres;
 var
   I: Integer;
@@ -1395,24 +1413,6 @@ begin
     for I := Low(CISO_639_2Data) to High(CISO_639_2Data) do
       AddObject(CISO_639_2Data[I].L, TObject(I));
   end;
-end;
-
-constructor TJvID3TermFinder.Create;
-var
-  ListType: TJvListType;
-begin
-  inherited Create;
-  for ListType := Low(TJvListType) to High(TJvListType) do
-    FLists[ListType] := nil;
-end;
-
-destructor TJvID3TermFinder.Destroy;
-var
-  ListType: TJvListType;
-begin
-  for ListType := Low(TJvListType) to High(TJvListType) do
-    FLists[ListType].Free;
-  inherited Destroy;
 end;
 
 procedure TJvID3TermFinder.ID3Genres(AStrings: TStrings;

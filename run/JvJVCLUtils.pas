@@ -3723,6 +3723,7 @@ type
 
 constructor TJvProcItem.Create(AProcObj: TProcObj);
 begin
+  inherited Create;
   FProcObj := AProcObj;
 end;
 

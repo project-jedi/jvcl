@@ -24,6 +24,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
     Width = 419
     Height = 321
     ActivePage = tsColors
+    TabIndex = 1
     TabOrder = 0
     object tsEditor: TTabSheet
       Caption = 'Editor'
@@ -221,6 +222,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Top = 48
         Width = 153
         Height = 121
+        Style = lbOwnerDrawFixed
         ExtendedSelect = False
         ItemHeight = 13
         Items.Strings = (
@@ -238,7 +240,6 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           'Plain text'
           'Marked block'
           'Right margin')
-        Style = lbOwnerDrawFixed
         TabOrder = 1
         OnClick = lbElementsClick
         OnDrawItem = lbElementsDrawItem
