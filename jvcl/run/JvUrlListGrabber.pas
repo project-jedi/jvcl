@@ -783,7 +783,7 @@ end;
 
 destructor TJvCustomUrlGrabber.Destroy;
 begin
-  FUrlGrabberThread.Free;
+  Stop;  // Stop grabbing
   inherited Destroy;
 end;
 
@@ -874,8 +874,8 @@ end;
 
 procedure TJvCustomUrlGrabber.Start;
 begin
-  // Delete the existing thread, if any. Will ask it to terminate
-  FreeAndNil(FUrlGrabberThread);
+  // Stop the grabbing before restarting
+  Stop;
 
   // Create a new thread
   FUrlGrabberThread := GetGrabberThreadClass.Create(Self);
@@ -884,7 +884,13 @@ end;
 
 procedure TJvCustomUrlGrabber.Stop;
 begin
-  FUrlGrabberThread.Terminate;
+  if Assigned(FUrlGrabberThread) then
+  begin
+    // If there is a thread, terminate it and let it destroy
+    // itself as we don't need it anymore
+    FUrlGrabberThread.FreeOnTerminate := True;
+    FUrlGrabberThread.Terminate;
+  end;
 end;
 
 procedure TJvCustomUrlGrabber.SetSize(Value: Int64);
