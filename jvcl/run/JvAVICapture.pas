@@ -504,7 +504,7 @@ type
     property DriverName: string read GetDriverName;
     property DriverVersion: string read GetDriverVersion;
     property Drivers: TStringList read FDrivers;
-    property HWND: HWND read FHWnd;
+    property Handle: HWND read FHWnd;
     property Palette: TJvPalette read FPalette;
     property SingleFrameCapturing: Boolean read FSingleFrameCapturing write SetSingleFrameCapturing;
     property VideoFormat: TJvVideoFormat read FVideoFormat;
