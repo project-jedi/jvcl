@@ -11,7 +11,7 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
 PROJECTS = crlf.exe MakePNG.exe MakeRC.exe Res2Bmp.exe jconvert.exe dc.exe MakeDOF.exe \
   MakeCFG.exe jtouch.exe isu.exe ErrLook.exe stripCmtPO.exe pg.exe pgEdit.exe \
-  dxgettextResstr.exe NoQuotes.exe
+  dxgettextResstr.exe NoQuotes.exe JVCLConvert.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -65,4 +65,7 @@ pgEdit.exe: PackagesGenerator\pgEdit.dpr
   $(DCC)
 
 NoQuotes.exe: NoQuotes\NoQuotes.dpr
+  $(DCC)
+
+JVCLConvert.exe: JVCLConvert\JVCLConvert.dpr
   $(DCC)
