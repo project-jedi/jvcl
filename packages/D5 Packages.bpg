@@ -27,130 +27,130 @@ PROJECTS = JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl JvSystemD5D.bpl \
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
-JvCoreD5D.bpl: D5\JvCoreD5D.dpk
+JvCoreD5D.bpl: d5\JvCoreD5D.dpk
   $(DCC)
 
-JvCoreD5R.bpl: D5\JvCoreD5R.dpk
+JvCoreD5R.bpl: d5\JvCoreD5R.dpk
   $(DCC)
 
-JvAppFrmD5R.bpl: D5\JvAppFrmD5R.dpk
+JvAppFrmD5R.bpl: d5\JvAppFrmD5R.dpk
   $(DCC)
 
-JvBDED5R.bpl: D5\JvBDED5R.dpk
+JvBDED5R.bpl: d5\JvBDED5R.dpk
   $(DCC)
 
-JvCmpD5R.bpl: D5\JvCmpD5R.dpk
+JvCmpD5R.bpl: d5\JvCmpD5R.dpk
   $(DCC)
 
-JvCryptD5R.bpl: D5\JvCryptD5R.dpk
+JvCryptD5R.bpl: d5\JvCryptD5R.dpk
   $(DCC)
 
-JvCtrlsD5R.bpl: D5\JvCtrlsD5R.dpk
+JvCtrlsD5R.bpl: d5\JvCtrlsD5R.dpk
   $(DCC)
 
-JvCustomD5R.bpl: D5\JvCustomD5R.dpk
+JvCustomD5R.bpl: d5\JvCustomD5R.dpk
   $(DCC)
 
-JvDBD5R.bpl: D5\JvDBD5R.dpk
+JvDBD5R.bpl: d5\JvDBD5R.dpk
   $(DCC)
 
-JvDlgsD5R.bpl: D5\JvDlgsD5R.dpk
+JvDlgsD5R.bpl: d5\JvDlgsD5R.dpk
   $(DCC)
 
-JvInterpreterD5R.bpl: D5\JvInterpreterD5R.dpk
+JvInterpreterD5R.bpl: d5\JvInterpreterD5R.dpk
   $(DCC)
 
-JvMMD5R.bpl: D5\JvMMD5R.dpk
+JvMMD5R.bpl: d5\JvMMD5R.dpk
   $(DCC)
 
-JvNetD5R.bpl: D5\JvNetD5R.dpk
+JvNetD5R.bpl: d5\JvNetD5R.dpk
   $(DCC)
 
-JvStdCtrlsD5R.bpl: D5\JvStdCtrlsD5R.dpk
+JvStdCtrlsD5R.bpl: d5\JvStdCtrlsD5R.dpk
   $(DCC)
 
-JvSystemD5R.bpl: D5\JvSystemD5R.dpk
+JvSystemD5R.bpl: d5\JvSystemD5R.dpk
   $(DCC)
 
-JvSystemD5D.bpl: D5\JvSystemD5D.dpk
+JvSystemD5D.bpl: d5\JvSystemD5D.dpk
   $(DCC)
 
-JvAppFrmD5D.bpl: D5\JvAppFrmD5D.dpk
+JvAppFrmD5D.bpl: d5\JvAppFrmD5D.dpk
   $(DCC)
 
-JvStdCtrlsD5D.bpl: D5\JvStdCtrlsD5D.dpk
+JvStdCtrlsD5D.bpl: d5\JvStdCtrlsD5D.dpk
   $(DCC)
 
-JvNetD5D.bpl: D5\JvNetD5D.dpk
+JvNetD5D.bpl: d5\JvNetD5D.dpk
   $(DCC)
 
-JvMMD5D.bpl: D5\JvMMD5D.dpk
+JvMMD5D.bpl: d5\JvMMD5D.dpk
   $(DCC)
 
-JvInterpreterD5D.bpl: D5\JvInterpreterD5D.dpk
+JvInterpreterD5D.bpl: d5\JvInterpreterD5D.dpk
   $(DCC)
 
-JvDlgsD5D.bpl: D5\JvDlgsD5D.dpk
+JvDlgsD5D.bpl: d5\JvDlgsD5D.dpk
   $(DCC)
 
-JvDBD5D.bpl: D5\JvDBD5D.dpk
+JvDBD5D.bpl: d5\JvDBD5D.dpk
   $(DCC)
 
-JvCustomD5D.bpl: D5\JvCustomD5D.dpk
+JvCustomD5D.bpl: d5\JvCustomD5D.dpk
   $(DCC)
 
-JvCtrlsD5D.bpl: D5\JvCtrlsD5D.dpk
+JvCtrlsD5D.bpl: d5\JvCtrlsD5D.dpk
   $(DCC)
 
-JvCryptD5D.bpl: D5\JvCryptD5D.dpk
+JvCryptD5D.bpl: d5\JvCryptD5D.dpk
   $(DCC)
 
-JvBDED5D.bpl: D5\JvBDED5D.dpk
+JvBDED5D.bpl: d5\JvBDED5D.dpk
   $(DCC)
 
-JvCmpD5D.bpl: D5\JvCmpD5D.dpk
+JvCmpD5D.bpl: d5\JvCmpD5D.dpk
   $(DCC)
 
-JvBandsD5D.bpl: D5\JvBandsD5D.dpk
+JvBandsD5D.bpl: d5\JvBandsD5D.dpk
   $(DCC)
 
-JvPluginD5D.bpl: D5\JvPluginD5D.dpk
+JvPluginD5D.bpl: d5\JvPluginD5D.dpk
   $(DCC)
 
-JvPluginD5R.bpl: D5\JvPluginD5R.dpk
+JvPluginD5R.bpl: d5\JvPluginD5R.dpk
   $(DCC)
 
-JvBandsD5R.bpl: D5\JvBandsD5R.dpk
+JvBandsD5R.bpl: d5\JvBandsD5R.dpk
   $(DCC)
 
-JvJansD5D.bpl: D5\JvJansD5D.dpk
+JvJansD5D.bpl: d5\JvJansD5D.dpk
   $(DCC)
 
-JvJansD5R.bpl: D5\JvJansD5R.dpk
+JvJansD5R.bpl: d5\JvJansD5R.dpk
   $(DCC)
 
-JvGlobusD5D.bpl: D5\JvGlobusD5D.dpk
+JvGlobusD5D.bpl: d5\JvGlobusD5D.dpk
   $(DCC)
 
-JvGlobusD5R.bpl: D5\JvGlobusD5R.dpk
+JvGlobusD5R.bpl: d5\JvGlobusD5R.dpk
   $(DCC)
 
-JvPrintPreviewD5D.bpl: D5\JvPrintPreviewD5D.dpk
+JvPrintPreviewD5D.bpl: d5\JvPrintPreviewD5D.dpk
   $(DCC)
 
-JvPageCompsD5R.bpl: D5\JvPageCompsD5R.dpk
+JvPageCompsD5R.bpl: d5\JvPageCompsD5R.dpk
   $(DCC)
 
-JvPageCompsD5D.bpl: D5\JvPageCompsD5D.dpk
+JvPageCompsD5D.bpl: d5\JvPageCompsD5D.dpk
   $(DCC)
 
-JvPrintPreviewD5R.bpl: D5\JvPrintPreviewD5R.dpk
+JvPrintPreviewD5R.bpl: d5\JvPrintPreviewD5R.dpk
   $(DCC)
 
-JvValidatorsD5D.bpl: D5\JvValidatorsD5D.dpk
+JvValidatorsD5D.bpl: d5\JvValidatorsD5D.dpk
   $(DCC)
 
-JvValidatorsD5R.bpl: D5\JvValidatorsD5R.dpk
+JvValidatorsD5R.bpl: d5\JvValidatorsD5R.dpk
   $(DCC)
 
 JvUIBD5D.bpl: d5\JvUIBD5D.dpk
