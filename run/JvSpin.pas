@@ -396,8 +396,9 @@ implementation
 uses
   Consts,
   CommCtrl,
+  JvThemes,
   {$IFDEF JVCLThemesEnabled}
-  Themes, UxTheme,
+  UxTheme, {$IFNDEF COMPILER7_UP}TmSchema,{$ENDIF}
   {$ENDIF}
   JvJCLUtils;
 

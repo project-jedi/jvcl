@@ -1110,7 +1110,7 @@ implementation
 
 uses
   Consts, Math,
-  JvConsts, JvTypes;
+  JvThemes, JvConsts, JvTypes;
 
 type
   TJvCaretUndo = class(TUndo)
@@ -1790,9 +1790,7 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents {, csOpaque}, csDoubleClicks,
     csReplicatable];
-  {$IFDEF JVCLThemesEnabled}
-  ControlStyle := ControlStyle + [csNeedsBorderPaint];
-  {$ENDIF}
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   FInsertMode := True;
   FLines := TJvEditorStrings.Create;
   FLines.FJvEditor := Self;

@@ -267,10 +267,7 @@ implementation
 uses
   SysUtils, CommCtrl, Registry, Math, MMSystem, // needed for sndPlaySound
   ComCtrls, // needed for GetComCtlVersion
-  {$IFDEF JVCLThemesEnabled}
-  Themes,
-  {$ENDIF}
-  JvWndProcHook;
+  JvThemes, JvWndProcHook;
 
 const
   { TJvStemSize = (ssSmall, ssNormal, ssLarge);

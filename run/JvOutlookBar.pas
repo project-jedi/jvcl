@@ -42,8 +42,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Controls,
   Buttons, Graphics, ImgList, Forms, StdCtrls,
+  JvThemes,
   {$IFDEF JVCLThemesEnabled}
-  Themes, UxTheme,
+  UxTheme, {$IFNDEF COMPILER7_UP}TmSchema,{$ENDIF}
   {$ENDIF}
   JvComponent;
 
@@ -1023,9 +1024,7 @@ begin
   inherited Create(AOwner);
   DoubleBuffered := True;
   ControlStyle := ControlStyle - [csAcceptsControls] + [csOpaque];
-  {$IFDEF JVCLThemesEnabled}
-  ControlStyle := ControlStyle + [csNeedsBorderPaint];
-  {$ENDIF}
+  IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   Bmp := TBitmap.Create;
   try
     {$IFDEF JVCLThemesEnabled}

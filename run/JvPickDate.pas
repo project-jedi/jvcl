@@ -75,10 +75,7 @@ implementation
 
 uses
   Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls, Math,
-  {$IFDEF JVCLThemesEnabled}
-  Themes,
-  {$ENDIF}
-  JvxCtrls, JvConsts, JvToolEdit, JvJVCLUtils;
+  JvThemes, JvxCtrls, JvConsts, JvToolEdit, JvJVCLUtils;
 
 {$R ..\resources\JvPickDate.res}
 
