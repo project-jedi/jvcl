@@ -5776,7 +5776,6 @@ procedure TAnsiToWideStrings.Clear;
 begin
   if not FDestroying then
     FWideStrings.Clear;
-  Clear; // should do nothing
 end;
 
 procedure TAnsiToWideStrings.Delete(Index: Integer);
