@@ -3562,12 +3562,4 @@ begin
     Integer(WidgetFlags_WStyle_Tool);  // WS_EX_TOOLWINDOW
 end;
 
-
-
-
-initialization
-
-finalization
-  FinalizeUnit(sUnitName);
-
 end.
