@@ -953,13 +953,16 @@ const
 
 type
   TCustomEditHack = class(TCustomEdit);
-  TCustomFormHack = class(TCustomForm);
+  TCustomFormHack = class(TCustomForm);    
   TWinControlHack = class(TWinControl);
 
 const
   sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
   sFileBmp = 'JV_FEDITBMP';  { Filename editor button glyph }
   sDateBmp = 'JV_DEDITBMP';  { Date editor button glyph }
+
+  sDirXPBmp = 'JV_SEDITXPBMP';
+  sFileXPBmp = 'JV_FEDITXPBMP';
 
 
   { TDateHook is used to only have 1 hook per application for monitoring
@@ -3545,13 +3548,19 @@ end;
 class function TJvDirectoryEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
+  ResName: string;
 begin
   if GDirImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
-      Bmp.LoadFromResourceName(HInstance, sDirBmp);
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+        ResName := sDirXPBmp
+      else
+      {$ENDIF JVCLThemesEnabled}
+        ResName := sDirBmp;
+      Bmp.LoadFromResourceName(HInstance, ResName);
       GDirImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;
@@ -4065,13 +4074,19 @@ end;
 class function TJvFilenameEdit.DefaultImageIndex: TImageIndex;
 var
   Bmp: TBitmap;
+  ResName: string;
 begin
   if GFileImageIndex < 0 then
   begin
     Bmp := TBitmap.Create;
     try
-      //Bmp.Handle := LoadBitmap(HInstance, sFileBmp);
-      Bmp.LoadFromResourceName(HInstance, sFileBmp);
+      {$IFDEF JVCLThemesEnabled}
+      if ThemeServices.ThemesEnabled then
+        ResName := sFileXPBmp
+      else
+      {$ENDIF JVCLThemesEnabled}
+        ResName := sFileBmp;
+      Bmp.LoadFromResourceName(HInstance, ResName);
       GFileImageIndex := DefaultImages.AddMasked(Bmp, clFuchsia);
     finally
       Bmp.Free;
