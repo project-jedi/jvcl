@@ -2155,6 +2155,19 @@ var
       ACanvas.Draw(2, 1, FIcon);
       Inc(ARect.Left, 16);
     end;
+    SetBkMode(ACanvas.Handle, TRANSPARENT);
+    ACanvas.Font.Assign(FHeaderFont);
+    if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
+      ACanvas.Font.Color := FHotTrackColor;
+    ARect.Bottom := ARect.Top + FHeaderHeight;
+    Dec(ARect.Right, 3);
+    {$IFDEF USEJVCL}
+    DrawText(ACanvas, Caption, -1, ARect, DT_SINGLELINE or DT_VCENTER or
+      DT_END_ELLIPSIS or DT_NOPREFIX);
+    {$ELSE}
+    DrawText(ACanvas.Handle, PChar(Caption), -1, ARect, DT_SINGLELINE or DT_VCENTER or
+      DT_END_ELLIPSIS or DT_NOPREFIX);
+    {$ENDIF USEJVCL}
   end;
 begin
   { get client rect }
