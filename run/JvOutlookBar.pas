@@ -40,9 +40,8 @@ interface
 
 uses
   SysUtils, Classes, ActnList,
+  Windows, Messages, Buttons, Controls, Graphics, ImgList, Forms, StdCtrls, ExtCtrls,
   {$IFDEF VCL}
-  Windows, Messages, Controls, Buttons, Graphics,
-  ImgList, Forms, StdCtrls, ExtCtrls,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
   {$IFNDEF COMPILER7_UP}
@@ -50,10 +49,6 @@ uses
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QControls, QButtons, QGraphics, QTypes, QImgList, QForms, QStdCtrls,
-  QExtCtrls, Types, QWindows,
-  {$ENDIF VisualCLX}
   JvThemes, JvComponent, JvExButtons;
 
 const
