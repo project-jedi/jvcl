@@ -151,6 +151,8 @@ type
     flExeFile,      // Store in same folder as application's exe file; only use file name part of FileName property.
     flUserFolder);  // Store in %USER%\Application Data. Use the FileName property if it's a relative path or only the file name part of FileName property.
 
+
+
   TJvCustomAppStorage = class(TJvComponent)
   private
     FRoot: string;
@@ -772,6 +774,24 @@ type
     property ReadOnly;
   end;
 
+  { This Engine implements the possibility to implement special property handlers
+    for TObject-based properties for storing/restoring them with the
+    functions read/writeproperty.
+    New engines could be registered using the method RegisterAppStoragePropertyEngine
+  }
+  TJvAppStoragePropertyBaseEngine = class(TObject)
+  public
+    function Supports (AObject : TObject; AProperty : TObject) : Boolean; virtual;
+    procedure ReadProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject; const Recursive, ClearFirst: Boolean); virtual;
+    procedure WriteProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject; const Recursive: Boolean); virtual;
+  end;
+  TJvAppStoragePropertyBaseEngineClass = class of TJvAppStoragePropertyBaseEngine;
+
+  procedure RegisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+
+
 // (marcelb) moved back; the constants are useful to the outside world after a call to GetStoredValues
 // (rom) give it better names and delete these comments :-)
 const
@@ -794,6 +814,22 @@ uses
   {$ENDIF COMPILER5}
   JclFileUtils, JclStrings, JclSysInfo, JclRTTI, JclMime,
   JvPropertyStore, JvConsts, JvResources;
+
+type
+  TJvAppStoragePropertyEngineList = class(TList)
+  public
+    destructor Destroy; override;
+    procedure RegisterEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+    function GetEngine(AObject : TObject; AProperty : TObject): TJvAppStoragePropertyBaseEngine;
+    function ReadProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject;const Recursive, ClearFirst: Boolean) : boolean;
+    function WriteProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject; const Recursive: Boolean) : boolean;
+  end;
+
+var
+  RegisteredAppStoragePropertyEngineList: TJvAppStoragePropertyEngineList;
+
 
 const
   // (rom) this name is shared in several units and should be made global
@@ -913,6 +949,7 @@ begin
       Result := -1;
   end;
 end;
+
 
 //=== { TJvCustomAppStorageOptions } =========================================
 
@@ -2246,6 +2283,11 @@ begin
     tkClass:
       begin
         SubObj := GetObjectProp(PersObj, PropName);
+        if Assigned(RegisteredAppStoragePropertyEngineList) and
+          Recursive and
+          RegisteredAppStoragePropertyEngineList.ReadProperty(Self, Path, PersObj, SubObj, Recursive, ClearFirst) then
+        // Do nothing else, the handling is done in the ReadProperty procedure
+        else
         if SubObj is TStrings then
           ReadStringList(Path, TStrings(SubObj), ClearFirst)
         else
@@ -2310,6 +2352,11 @@ begin
     tkClass:
       begin
         SubObj := GetObjectProp(PersObj, PropName);
+        if Assigned(RegisteredAppStoragePropertyEngineList) and
+          Recursive and
+          RegisteredAppStoragePropertyEngineList.WriteProperty(Self, Path, PersObj, SubObj, Recursive) then
+        // Do nothing else, the handling is done in the WriteProperty procedure
+        else
         if SubObj is TStrings then
           WriteStringList(Path, TStrings(SubObj))
         else
@@ -2482,6 +2529,34 @@ end;
 function TJvCustomAppStorage.IsPropertyValueCryptEnabled: Boolean;
 begin
   Result := (FCryptEnabledStatus > 0);
+end;
+
+procedure TJvCustomAppStorage.Loaded;
+begin
+  inherited Loaded;
+  if not IsUpdating then
+    Reload;
+end;
+
+procedure TJvCustomAppStorage.BeginUpdate;
+begin
+  if  not IsUpdating and AutoReload then
+    Reload;
+  Inc(FUpdateCount);
+end;
+
+procedure TJvCustomAppStorage.EndUpdate;
+begin
+  Dec(FUpdateCount);
+  if not IsUpdating and AutoFlush then
+    Flush;
+  if FUpdateCount < 0 then
+    FUpdateCount := 0;
+end;
+
+function TJvCustomAppStorage.GetUpdating: Boolean;
+begin
+  Result := FUpdateCount <> 0;
 end;
 
 //=== { TJvAppStorage } ======================================================
@@ -2895,33 +2970,107 @@ begin
   Result := '';
 end;
 
-procedure TJvCustomAppStorage.Loaded;
+
+//=== { TJvAppStoragePropertyBaseEngine } =========================================
+
+function TJvAppStoragePropertyBaseEngine.Supports (AObject : TObject; AProperty : TObject) : Boolean;
 begin
-  inherited Loaded;
-  if not IsUpdating then
-    Reload;
+  Result := False;
 end;
 
-procedure TJvCustomAppStorage.BeginUpdate;
+procedure TJvAppStoragePropertyBaseEngine.ReadProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject; const Recursive, ClearFirst: Boolean);
 begin
-  if  not IsUpdating and AutoReload then
-    Reload;
-  Inc(FUpdateCount);
 end;
 
-procedure TJvCustomAppStorage.EndUpdate;
+procedure TJvAppStoragePropertyBaseEngine.WriteProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject; const Recursive: Boolean);
 begin
-  Dec(FUpdateCount);
-  if not IsUpdating and AutoFlush then
-    Flush;
-  if FUpdateCount < 0 then
-    FUpdateCount := 0;
 end;
 
-function TJvCustomAppStorage.GetUpdating: Boolean;
+//=== { TJvAppStoragePropertyEngineList } ========================================
+
+destructor TJvAppStoragePropertyEngineList.Destroy;
+var
+  I: Integer;
 begin
-  Result := FUpdateCount <> 0;
+  for I := Count-1 Downto 0 do
+  begin
+    TJvAppStoragePropertyBaseEngine(Items[I]).Free;
+    Delete(I);
+  end;
+  inherited Destroy;
 end;
+
+procedure TJvAppStoragePropertyEngineList.RegisterEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+begin
+  Add(AEngineClass.Create);
+end;
+
+function TJvAppStoragePropertyEngineList.GetEngine(AObject : TObject; AProperty : TObject): TJvAppStoragePropertyBaseEngine;
+var
+  Ind: Integer;
+begin
+  Result := nil;
+  for Ind := 0 to Count - 1 do
+    if TJvAppStoragePropertyBaseEngine(Items[Ind]).Supports(AObject, AProperty) then
+    begin
+      Result := TJvAppStoragePropertyBaseEngine(Items[Ind]);
+      Break;
+    end;
+end;
+
+function TJvAppStoragePropertyEngineList.ReadProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject; const Recursive, ClearFirst: Boolean) : boolean;
+var
+  Engine : TJvAppStoragePropertyBaseEngine;
+begin
+  Engine := GetEngine (AObject, AProperty);
+  if Assigned(Engine) then
+  begin
+    Engine.ReadProperty (AStorage, APath, AObject, AProperty, Recursive, ClearFirst);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+function TJvAppStoragePropertyEngineList.WriteProperty (AStorage : TJvCustomAppStorage; const APath : string;
+        AObject : TObject; AProperty : TObject; const Recursive: Boolean) : boolean;
+var
+  Engine : TJvAppStoragePropertyBaseEngine;
+begin
+  Engine := GetEngine (AObject, AProperty);
+  if Assigned(Engine) then
+  begin
+    Engine.WriteProperty (AStorage, APath, AObject, AProperty, Recursive);
+    Result := True;
+  end
+  else
+    Result := False;
+end;
+
+
+//=== { Global Engine Handling } =============================================================
+
+procedure RegisterAppStoragePropertyEngine(AEngineClass: TJvAppStoragePropertyBaseEngineClass);
+begin
+  if Assigned(RegisteredAppStoragePropertyEngineList) then
+    RegisteredAppStoragePropertyEngineList.RegisterEngine(AEngineClass);
+end;
+
+procedure CreateAppStoragePropertyEngineList;
+begin
+  RegisteredAppStoragePropertyEngineList := TJvAppStoragePropertyEngineList.Create;
+end;
+
+procedure DestroyAppStoragePropertyEngineList;
+begin
+  if Assigned(RegisteredAppStoragePropertyEngineList) then
+    RegisteredAppStoragePropertyEngineList.Free;
+end;
+
+
 
 {$IFDEF UNITVERSIONING}
 const
@@ -2931,11 +3080,17 @@ const
     Date: '$Date$';
     LogPath: 'JVCL\run'
   );
+{$ENDIF UNITVERSIONING}
 
 initialization
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
+{$ENDIF UNITVERSIONING}
+  CreateAppStoragePropertyEngineList;
 
 finalization
+  DestroyAppStoragePropertyEngineList;
+{$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
 
