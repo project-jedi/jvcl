@@ -37,7 +37,6 @@ uses
 
 type
   TDlgCenterKind = (dckScreen, dckMainForm, dckActiveForm);
-//=== TDSAMessageForm ========================================================
 
   TDSAMessageForm = class (TForm)
   private

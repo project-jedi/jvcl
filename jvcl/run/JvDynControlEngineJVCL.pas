@@ -37,78 +37,78 @@ uses
   JvDynControlEngine, JvDynControlEngineIntf;
 
 type
-  TJvDynControlJVCLMaskEdit = class (TJvMaskEdit, IUnknown, IJvDynControl,
+  TJvDynControlJVCLMaskEdit = class(TJvMaskEdit, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLCalcEdit = class (TJvCalcEdit, IUnknown, IJvDynControl,
+  TJvDynControlJVCLCalcEdit = class(TJvCalcEdit, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLSpinEdit = class (TJvSpinEdit, IUnknown, IJvDynControl,
+  TJvDynControlJVCLSpinEdit = class(TJvSpinEdit, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlSpin, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlSpin
-    procedure ControlSetIncrement(Value: integer);
+    procedure ControlSetIncrement(Value: Integer);
     procedure ControlSetMinValue(Value: double);
     procedure ControlSetMaxValue(Value: double);
-    procedure ControlSetUseForInteger(Value: boolean);
+    procedure ControlSetUseForInteger(Value: Boolean);
   end;
 
-  TJvDynControlJVCLFileNameEdit = class (TJvFileNameEdit, IUnknown,
+  TJvDynControlJVCLFileNameEdit = class(TJvFileNameEdit, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlFileName, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlFileName
     procedure ControlSetInitialDir(Value: string);
@@ -116,25 +116,25 @@ type
     procedure ControlSetDialogTitle(Value: string);
     procedure ControlSetDialogOptions(Value: TOpenOptions);
     procedure ControlSetFilter(Value: string);
-    procedure ControlSetFilterIndex(Value: integer);
+    procedure ControlSetFilterIndex(Value: Integer);
     procedure ControlSetDialogKind(Value: TJvDynControlFileNameDialogKind);
   end;
 
-  TJvDynControlJVCLDirectoryEdit = class (TJvDirectoryEdit, IUnknown,
+  TJvDynControlJVCLDirectoryEdit = class(TJvDirectoryEdit, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlDirectory, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlDirectory
     procedure ControlSetInitialDir(Value: string);
@@ -142,7 +142,7 @@ type
     procedure ControlSetDialogOptions(Value: TSelectDirOpts);
   end;
 
-  TJvDynControlJVCLDateTimeEdit = class (TJvPanel, IUnknown,
+  TJvDynControlJVCLDateTimeEdit = class(TJvPanel, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlDate)
   private
     FDatePicker: TJvDateTimePicker;
@@ -150,20 +150,20 @@ type
   protected
     procedure ControlResize(Sender: TObject);
   public
-    constructor Create(aOwner: TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure ControlSetDefaultProperties;
 
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlDate
     procedure ControlSetMinDate(Value: TDateTime);
@@ -171,21 +171,21 @@ type
     procedure ControlSetFormat(Value: string);
   end;
 
-  TJvDynControlJVCLDateEdit = class (TJvDateTimePicker, IUnknown,
+  TJvDynControlJVCLDateEdit = class(TJvDateTimePicker, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlDate)
   public
     procedure ControlSetDefaultProperties;
 
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     // IJvDynControlDate
     procedure ControlSetMinDate(Value: TDateTime);
@@ -193,222 +193,221 @@ type
     procedure ControlSetFormat(Value: string);
   end;
 
-  TJvDynControlJVCLTimeEdit = class (TJvDateTimePicker, IUnknown,
+  TJvDynControlJVCLTimeEdit = class(TJvDateTimePicker, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlTime)
   public
     procedure ControlSetDefaultProperties;
 
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
     procedure ControlSetFormat(Value: string);
   end;
 
-  TJvDynControlJVCLCheckBox = class (TJvCheckBox, IUnknown,
+  TJvDynControlJVCLCheckBox = class(TJvCheckBox, IUnknown,
     IJvDynControl, IJvDynControlData, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
-    procedure ControlSetReadonly(Value: boolean);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetReadonly(Value: Boolean);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
   end;
 
-  TJvDynControlJVCLMemo = class (TJvMemo, IUnknown, IJvDynControl,
+  TJvDynControlJVCLMemo = class(TJvMemo, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlMemo, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
-    procedure ControlSetReadonly(Value: boolean);
+    procedure ControlSetTabOrder(Value: Integer);
+    procedure ControlSetReadonly(Value: Boolean);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
-    procedure ControlSetSorted(Value: boolean);
+    procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
 
-    procedure ControlSetWantTabs(Value: boolean);
-    procedure ControlSetWantReturns(Value: boolean);
-    procedure ControlSetWordWrap(Value: boolean);
+    procedure ControlSetWantTabs(Value: Boolean);
+    procedure ControlSetWantReturns(Value: Boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
     procedure ControlSetScrollBars(Value: TScrollStyle);
   end;
 
-  TJvDynControlJVCLRadioGroup = class (TJvRadioGroup, IUnknown, IJvDynControl,
+  TJvDynControlJVCLRadioGroup = class(TJvRadioGroup, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlRadioGroup, IJvDynControlReadOnly)
   public
     procedure ControlSetDefaultProperties;
-    procedure ControlSetReadOnly(Value: boolean);
+    procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
-    procedure ControlSetSorted(Value: boolean);
+    procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
 
-    procedure ControlSetColumns(Value: integer);
+    procedure ControlSetColumns(Value: Integer);
   end;
 
-  TJvDynControlJVCLListBox = class (TJvListBox, IUnknown, IJvDynControl,
+  TJvDynControlJVCLListBox = class(TJvListBox, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlDblClick)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
-    procedure ControlSetSorted(Value: boolean);
+    procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
 
     procedure ControlSetOnDblClick(Value: TNotifyEvent);
   end;
 
-  TJvDynControlJVCLComboBox = class (TJvComboBox, IUnknown, IJvDynControl,
+  TJvDynControlJVCLComboBox = class(TJvComboBox, IUnknown, IJvDynControl,
     IJvDynControlData, IJvDynControlItems, IJvDynControlComboBox)
   public
     procedure ControlSetDefaultProperties;
-    //procedure ControlSetReadOnly(Value: boolean);
+    //procedure ControlSetReadOnly(Value: Boolean);
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnChange(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetValue(Value: variant);
-    function ControlGetValue: variant;
+    procedure ControlSetValue(Value: Variant);
+    function ControlGetValue: Variant;
 
-    procedure ControlSetSorted(Value: boolean);
+    procedure ControlSetSorted(Value: Boolean);
     procedure ControlSetItems(Value: TStrings);
     function ControlGetItems: TStrings;
 
-    procedure ControlSetNewEntriesAllowed(Value: boolean);
+    procedure ControlSetNewEntriesAllowed(Value: Boolean);
   end;
 
-  TJvDynControlJVCLPanel = class (TJvPanel, IUnknown, IJvDynControl,
+  TJvDynControlJVCLPanel = class(TJvPanel, IUnknown, IJvDynControl,
     IJvDynControlPanel)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel; ABevelWidth: integer; ABorderStyle: TBorderStyle; ABorderWidth: integer);
+    procedure ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel; ABevelWidth: Integer; ABorderStyle: TBorderStyle; ABorderWidth: Integer);
   end;
 
-  TJvDynControlJVCLImage = class (TJvImage, IUnknown, IJvDynControl, IJvDynControlImage)
+  TJvDynControlJVCLImage = class(TJvImage, IUnknown, IJvDynControl, IJvDynControlImage)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
-    procedure ControlSetAutoSize(Value: boolean);
-    procedure ControlSetIncrementalDisplay(Value: boolean);
-    procedure ControlSetCenter(Value: boolean);
-    procedure ControlSetProportional(Value: boolean);
-    procedure ControlSetStretch(Value: boolean);
-    procedure ControlSetTransparent(Value: boolean);
+    procedure ControlSetAutoSize(Value: Boolean);
+    procedure ControlSetIncrementalDisplay(Value: Boolean);
+    procedure ControlSetCenter(Value: Boolean);
+    procedure ControlSetProportional(Value: Boolean);
+    procedure ControlSetStretch(Value: Boolean);
+    procedure ControlSetTransparent(Value: Boolean);
     procedure ControlSetPicture(Value: TPicture);
     procedure ControlSetGraphic(Value: TGraphic);
     function ControlGetPicture: TPicture;
   end;
 
-  TJvDynControlJVCLScrollBox = class (TJvScrollbox, IUnknown, IJvDynControl)
+  TJvDynControlJVCLScrollBox = class(TJvScrollbox, IUnknown, IJvDynControl)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
-
   end;
 
-  TJvDynControlJVCLLabel = class (TJvLabel, IUnknown, IJvDynControl,
+  TJvDynControlJVCLLabel = class(TJvLabel, IUnknown, IJvDynControl,
     IJvDynControlLabel)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
     procedure ControlSetFocusControl(Value: TWinControl);
-    procedure ControlSetWordWrap(Value: boolean);
+    procedure ControlSetWordWrap(Value: Boolean);
   end;
 
-  TJvDynControlJVCLStaticText = class (TJvStaticText, IUnknown, IJvDynControl)
+  TJvDynControlJVCLStaticText = class(TJvStaticText, IUnknown, IJvDynControl)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
   end;
 
-  TJvDynControlJVCLButton = class (TJvBitBtn, IUnknown, IJvDynControl,
+  TJvDynControlJVCLButton = class(TJvBitBtn, IUnknown, IJvDynControl,
     IJvDynControlButton)
   public
     procedure ControlSetDefaultProperties;
     procedure ControlSetCaption(Value: string);
-    procedure ControlSetTabOrder(Value: integer);
+    procedure ControlSetTabOrder(Value: Integer);
 
     procedure ControlSetOnEnter(Value: TNotifyEvent);
     procedure ControlSetOnExit(Value: TNotifyEvent);
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
     procedure ControlSetGlyph(Value: TBitmap);
-    procedure ControlSetNumGlyphs(Value: integer);
+    procedure ControlSetNumGlyphs(Value: Integer);
     procedure ControlSetLayout(Value: TButtonLayout);
   end;
 
@@ -417,10 +416,11 @@ function DynControlEngineJVCL: TJvDynControlEngine;
 implementation
 
 uses
+  SysUtils,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  JvDynControlEngineVCL, SysUtils;
+  JvDynControlEngineVCL;
 
 var
   IntDynControlEngineJVCL: TJvDynControlEngine;
@@ -431,7 +431,7 @@ procedure TJvDynControlJVCLMaskEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLMaskEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
@@ -440,7 +440,7 @@ procedure TJvDynControlJVCLMaskEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLMaskEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -465,12 +465,12 @@ begin
 
 end;
 
-procedure TJvDynControlJVCLMaskEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLMaskEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLMaskEdit.ControlGetValue: variant;
+function TJvDynControlJVCLMaskEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -482,7 +482,7 @@ procedure TJvDynControlJVCLCalcEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLCalcEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLCalcEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
@@ -491,7 +491,7 @@ procedure TJvDynControlJVCLCalcEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLCalcEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLCalcEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -516,12 +516,12 @@ begin
 
 end;
 
-procedure TJvDynControlJVCLCalcEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLCalcEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLCalcEdit.ControlGetValue: variant;
+function TJvDynControlJVCLCalcEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -533,7 +533,7 @@ begin
   ButtonKind := bkDiagonal;
 end;
 
-procedure TJvDynControlJVCLSpinEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLSpinEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
@@ -542,7 +542,7 @@ procedure TJvDynControlJVCLSpinEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLSpinEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLSpinEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -564,39 +564,38 @@ end;
 
 procedure TJvDynControlJVCLSpinEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-
 end;
 
-procedure TJvDynControlJVCLSpinEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLSpinEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLSpinEdit.ControlGetValue: variant;
+function TJvDynControlJVCLSpinEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLSpinEdit.ControlSetIncrement(Value: integer);
+procedure TJvDynControlJVCLSpinEdit.ControlSetIncrement(Value: Integer);
 begin
   Increment := Value;
 end;
 
 procedure TJvDynControlJVCLSpinEdit.ControlSetMinValue(Value: double);
 begin
-  MinValue      := Value;
+  MinValue := Value;
   CheckMinValue := (MaxValue <> 0) and (MinValue <> 0);
   CheckMaxValue := CheckMinValue;
 end;
 
 procedure TJvDynControlJVCLSpinEdit.ControlSetMaxValue(Value: double);
 begin
-  MaxValue      := Value;
+  MaxValue := Value;
   CheckMinValue := (MaxValue <> 0) and (MinValue <> 0);
   CheckMaxValue := CheckMinValue;
 end;
 
-procedure TJvDynControlJVCLSpinEdit.ControlSetUseForInteger(Value: boolean);
+procedure TJvDynControlJVCLSpinEdit.ControlSetUseForInteger(Value: Boolean);
 begin
   if Value then
     ValueType := vtInteger
@@ -610,7 +609,7 @@ procedure TJvDynControlJVCLFileNameEdit.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
@@ -619,7 +618,7 @@ procedure TJvDynControlJVCLFileNameEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -643,12 +642,12 @@ procedure TJvDynControlJVCLFileNameEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLFileNameEdit.ControlGetValue: variant;
+function TJvDynControlJVCLFileNameEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -678,7 +677,7 @@ begin
   Filter := Value;
 end;
 
-procedure TJvDynControlJVCLFileNameEdit.ControlSetFilterIndex(Value: integer);
+procedure TJvDynControlJVCLFileNameEdit.ControlSetFilterIndex(Value: Integer);
 begin
   FilterIndex := Value;
 end;
@@ -704,7 +703,7 @@ begin
   DialogKind := dkWin32;
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
@@ -713,7 +712,7 @@ procedure TJvDynControlJVCLDirectoryEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -737,12 +736,12 @@ procedure TJvDynControlJVCLDirectoryEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLDirectoryEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLDirectoryEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLDirectoryEdit.ControlGetValue: variant;
+function TJvDynControlJVCLDirectoryEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -766,33 +765,33 @@ end;
 
 //=== TJvDynControlJVCLDateTimeEdit ==========================================
 
-constructor TJvDynControlJVCLDateTimeEdit.Create(aOwner: TComponent);
+constructor TJvDynControlJVCLDateTimeEdit.Create(AOwner: TComponent);
 begin
-  inherited Create(aOwner);
-  Caption  := '';
+  inherited Create(AOwner);
+  Caption := '';
   BorderStyle := bsNone;
   BevelInner := bvNone;
   BevelOuter := bvNone;
-  FDatePicker := TJvDateTimePicker.Create(self);
-  FDatePicker.Parent := self;
+  FDatePicker := TJvDateTimePicker.Create(Self);
+  FDatePicker.Parent := Self;
   FDatePicker.Align := alLeft;
   FDatePicker.Top := 0;
   FDatePicker.Left := 0;
-  FTimePicker := TJvDateTimePicker.Create(self);
+  FTimePicker := TJvDateTimePicker.Create(Self);
   FTimePicker.Align := alClient;
-  FTimePicker.Parent := self;
+  FTimePicker.Parent := Self;
   FTimePicker.Top := 0;
   FTimePicker.Left := 0;
-  Height   := FDatePicker.Height;
-  Width    := FDatePicker.Width + FTimePicker.Width;
+  Height := FDatePicker.Height;
+  Width := FDatePicker.Width + FTimePicker.Width;
   OnResize := ControlResize;
   ControlResize(nil);
   FDatePicker.DateFormat := dfShort;
   FDatePicker.DateMode := dmComboBox;
-  FDatePicker.Kind     := dtkDate;
+  FDatePicker.Kind := dtkDate;
   FTimePicker.DateFormat := dfShort;
   FTimePicker.DateMode := dmUpDown;
-  FTimePicker.Kind     := dtkTime;
+  FTimePicker.Kind := dtkTime;
 end;
 
 destructor TJvDynControlJVCLDateTimeEdit.Destroy;
@@ -804,9 +803,10 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlResize(Sender: TObject);
 begin
-  FDatePicker.Height := round(Height / 2);
+  // (rom) how about div 2 ?
+  FDatePicker.Height := Round(Height / 2);
   FTimePicker.Height := Height;
-  FDatePicker.Width  := round(Width / 2);
+  FDatePicker.Width := Round(Width / 2);
 end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetDefaultProperties;
@@ -819,7 +819,7 @@ begin
   //Caption := Value;
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -844,21 +844,21 @@ end;
 
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
-
 end;
 
-procedure TJvDynControlJVCLDateTimeEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLDateTimeEdit.ControlSetValue(Value: Variant);
 begin
   FDatePicker.Date := Value;
   FTimePicker.Time := Value;
 end;
 
-function TJvDynControlJVCLDateTimeEdit.ControlGetValue: variant;
+function TJvDynControlJVCLDateTimeEdit.ControlGetValue: Variant;
 begin
   Result := trunc(FDatePicker.Date) + (trunc(FTimePicker.Time) - FTimePicker.Time);
 end;
 
 // IJvDynControlDate
+
 procedure TJvDynControlJVCLDateTimeEdit.ControlSetMinDate(Value: TDateTime);
 begin
   FDatePicker.MinDate := Value;
@@ -891,7 +891,7 @@ procedure TJvDynControlJVCLDateEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLDateEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLDateEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -915,17 +915,18 @@ procedure TJvDynControlJVCLDateEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLDateEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLDateEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLDateEdit.ControlGetValue: variant;
+function TJvDynControlJVCLDateEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
 // IJvDynControlDate
+
 procedure TJvDynControlJVCLDateEdit.ControlSetMinDate(Value: TDateTime);
 begin
   MinDate := Value;
@@ -948,7 +949,7 @@ end;
 procedure TJvDynControlJVCLTimeEdit.ControlSetDefaultProperties;
 begin
   DateFormat := dfShort;
-  Kind     := dtkTime;
+  Kind := dtkTime;
   DateMode := dmUpDown;
 end;
 
@@ -956,7 +957,7 @@ procedure TJvDynControlJVCLTimeEdit.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLTimeEdit.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLTimeEdit.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -980,12 +981,12 @@ procedure TJvDynControlJVCLTimeEdit.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLTimeEdit.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLTimeEdit.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLTimeEdit.ControlGetValue: variant;
+function TJvDynControlJVCLTimeEdit.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
@@ -997,16 +998,15 @@ begin
   {$ENDIF COMPILER6_UP}
 end;
 
-
 //=== TJvDynControlJVCLCheckBox ==============================================
 
 procedure TJvDynControlJVCLCheckBox.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLCheckBox.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLCheckBox.ControlSetReadOnly(Value: Boolean);
 begin
-  Enabled := false;
+  Enabled := False;
 end;
 
 procedure TJvDynControlJVCLCheckBox.ControlSetCaption(Value: string);
@@ -1014,7 +1014,7 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLCheckBox.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLCheckBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1039,7 +1039,7 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLCheckBox.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLCheckBox.ControlSetValue(Value: Variant);
 begin
   if VarType(Value) = varBoolean then
     Checked := Value
@@ -1047,7 +1047,7 @@ begin
     Checked := UpperCase(Value) = 'TRUE';
 end;
 
-function TJvDynControlJVCLCheckBox.ControlGetValue: variant;
+function TJvDynControlJVCLCheckBox.ControlGetValue: Variant;
 begin
   Result := Checked;
 end;
@@ -1058,7 +1058,7 @@ procedure TJvDynControlJVCLMemo.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLMemo.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
@@ -1067,7 +1067,7 @@ procedure TJvDynControlJVCLMemo.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLMemo.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1092,17 +1092,17 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLMemo.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLMemo.ControlGetValue: variant;
+function TJvDynControlJVCLMemo.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetSorted(Value: boolean);
+procedure TJvDynControlJVCLMemo.ControlSetSorted(Value: Boolean);
 begin
 end;
 
@@ -1116,17 +1116,17 @@ begin
   Result := Lines;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetWantTabs(Value: boolean);
+procedure TJvDynControlJVCLMemo.ControlSetWantTabs(Value: Boolean);
 begin
   WantTabs := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetWantReturns(Value: boolean);
+procedure TJvDynControlJVCLMemo.ControlSetWantReturns(Value: Boolean);
 begin
   WantReturns := Value;
 end;
 
-procedure TJvDynControlJVCLMemo.ControlSetWordWrap(Value: boolean);
+procedure TJvDynControlJVCLMemo.ControlSetWordWrap(Value: Boolean);
 begin
   WordWrap := Value;
 end;
@@ -1142,7 +1142,7 @@ procedure TJvDynControlJVCLRadioGroup.ControlSetDefaultProperties;
 begin
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetReadOnly(Value: boolean);
+procedure TJvDynControlJVCLRadioGroup.ControlSetReadOnly(Value: Boolean);
 begin
   ReadOnly := Value;
 end;
@@ -1151,7 +1151,7 @@ procedure TJvDynControlJVCLRadioGroup.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLRadioGroup.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1176,25 +1176,24 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLRadioGroup.ControlSetValue(Value: Variant);
 begin
   if VarType(Value) in [varSmallint, varInteger] then
     ItemIndex := Value
   else
     try
-      ItemIndex := Value
+      ItemIndex := Value;
     except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
+      ItemIndex := Items.IndexOf(Value);
     end;
 end;
 
-function TJvDynControlJVCLRadioGroup.ControlGetValue: variant;
+function TJvDynControlJVCLRadioGroup.ControlGetValue: Variant;
 begin
   Result := ItemIndex;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetSorted(Value: boolean);
+procedure TJvDynControlJVCLRadioGroup.ControlSetSorted(Value: Boolean);
 begin
 end;
 
@@ -1208,7 +1207,7 @@ begin
   Result := Items;
 end;
 
-procedure TJvDynControlJVCLRadioGroup.ControlSetColumns(Value: integer);
+procedure TJvDynControlJVCLRadioGroup.ControlSetColumns(Value: Integer);
 begin
   Columns := Value;
 end;
@@ -1223,7 +1222,7 @@ procedure TJvDynControlJVCLListBox.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLListBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1248,25 +1247,24 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLListBox.ControlSetValue(Value: Variant);
 begin
   if VarType(Value) in [varSmallint, varInteger] then
     ItemIndex := Value
   else
     try
-      ItemIndex := Value
+      ItemIndex := Value;
     except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
+      ItemIndex := Items.IndexOf(Value);
     end;
 end;
 
-function TJvDynControlJVCLListBox.ControlGetValue: variant;
+function TJvDynControlJVCLListBox.ControlGetValue: Variant;
 begin
   Result := ItemIndex;
 end;
 
-procedure TJvDynControlJVCLListBox.ControlSetSorted(Value: boolean);
+procedure TJvDynControlJVCLListBox.ControlSetSorted(Value: Boolean);
 begin
   Sorted := Value;
 end;
@@ -1292,7 +1290,7 @@ procedure TJvDynControlJVCLComboBox.ControlSetDefaultProperties;
 begin
 end;
 
- //procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value: boolean);
+ //procedure TJvDynControlJVCLComboBox.ControlSetReadOnly(Value: Boolean);
  //begin
  //  ReadOnly := Value;
  //end;
@@ -1301,7 +1299,7 @@ procedure TJvDynControlJVCLComboBox.ControlSetCaption(Value: string);
 begin
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLComboBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1326,17 +1324,17 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetValue(Value: variant);
+procedure TJvDynControlJVCLComboBox.ControlSetValue(Value: Variant);
 begin
   Text := Value;
 end;
 
-function TJvDynControlJVCLComboBox.ControlGetValue: variant;
+function TJvDynControlJVCLComboBox.ControlGetValue: Variant;
 begin
   Result := Text;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetSorted(Value: boolean);
+procedure TJvDynControlJVCLComboBox.ControlSetSorted(Value: Boolean);
 begin
   Sorted := Value;
 end;
@@ -1351,7 +1349,7 @@ begin
   Result := Items;
 end;
 
-procedure TJvDynControlJVCLComboBox.ControlSetNewEntriesAllowed(Value: boolean);
+procedure TJvDynControlJVCLComboBox.ControlSetNewEntriesAllowed(Value: Boolean);
 begin
   if Value then
     Style := csDropDown
@@ -1372,7 +1370,7 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLPanel.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1391,18 +1389,18 @@ procedure TJvDynControlJVCLPanel.ControlSetOnClick(Value: TNotifyEvent);
 begin
 end;
 
-procedure TJvDynControlJVCLPanel.ControlSetBorder(ABevelInner: TPanelBevel; ABevelOuter: TPanelBevel; ABevelWidth: integer; ABorderStyle: TBorderStyle; ABorderWidth: integer);
+procedure TJvDynControlJVCLPanel.ControlSetBorder(ABevelInner: TPanelBevel;
+  ABevelOuter: TPanelBevel; ABevelWidth: Integer;
+  ABorderStyle: TBorderStyle; ABorderWidth: Integer);
 begin
   BorderWidth := ABorderWidth;
   BorderStyle := ABorderStyle;
-  BevelInner  := ABevelInner;
-  BevelOuter  := ABevelOuter;
-  BevelWidth  := ABevelWidth;
+  BevelInner := ABevelInner;
+  BevelOuter := ABevelOuter;
+  BevelWidth := ABevelWidth;
 end;
 
- //****************************************************************************
- // TJvDynControlJVCLImage
- //****************************************************************************
+//=== TJvDynControlJVCLImage =================================================
 
 procedure TJvDynControlJVCLImage.ControlSetDefaultProperties;
 begin
@@ -1413,7 +1411,7 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLImage.ControlSetTabOrder(Value: Integer);
 begin
 //  TabOrder := Value;
 end;
@@ -1433,34 +1431,34 @@ begin
   OnClick := Value;
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetAutoSize(Value: boolean);
+procedure TJvDynControlJVCLImage.ControlSetAutoSize(Value: Boolean);
 begin
   AutoSize := Value;
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetIncrementalDisplay(Value: boolean);
+procedure TJvDynControlJVCLImage.ControlSetIncrementalDisplay(Value: Boolean);
 begin
   IncrementalDisplay := Value;
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetCenter(Value: boolean);
+procedure TJvDynControlJVCLImage.ControlSetCenter(Value: Boolean);
 begin
   Center := Value;
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetProportional(Value: boolean);
+procedure TJvDynControlJVCLImage.ControlSetProportional(Value: Boolean);
 begin
   {$IFDEF COMPILER6_UP}
   Proportional := Value;
   {$ENDIF COMPILER6_UP}
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetStretch(Value: boolean);
+procedure TJvDynControlJVCLImage.ControlSetStretch(Value: Boolean);
 begin
   Stretch := Value;
 end;
 
-procedure TJvDynControlJVCLImage.ControlSetTransparent(Value: boolean);
+procedure TJvDynControlJVCLImage.ControlSetTransparent(Value: Boolean);
 begin
   Transparent := Value;
 end;
@@ -1491,7 +1489,7 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLScrollBox.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLScrollBox.ControlSetTabOrder(Value: Integer);
 begin
   TabOrder := Value;
 end;
@@ -1521,7 +1519,7 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLLabel.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
@@ -1542,7 +1540,7 @@ begin
   FocusControl := Value;
 end;
 
-procedure TJvDynControlJVCLLabel.ControlSetWordWrap(Value: boolean);
+procedure TJvDynControlJVCLLabel.ControlSetWordWrap(Value: Boolean);
 begin
   WordWrap := Value;
 end;
@@ -1558,7 +1556,7 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLStaticText.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLStaticText.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
@@ -1585,7 +1583,7 @@ begin
   Caption := Value;
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetTabOrder(Value: integer);
+procedure TJvDynControlJVCLButton.ControlSetTabOrder(Value: Integer);
 begin
 end;
 
@@ -1607,7 +1605,7 @@ begin
   Glyph.Assign(Value);
 end;
 
-procedure TJvDynControlJVCLButton.ControlSetNumGlyphs(Value: integer);
+procedure TJvDynControlJVCLButton.ControlSetNumGlyphs(Value: Integer);
 begin
   NumGlyphs := Value;
 end;

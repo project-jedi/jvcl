@@ -37,11 +37,13 @@ uses
   JvTypes;
 
 type
-  TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy,
+  TDataProviderChangeReason =
+   (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy,
     pcrContextAdd, pcrContextDelete, pcrContextUpdate, pcrFullRefresh);
   TDataItemState = (disFalse, disTrue, disIndetermined, disNotUsed);
-  TProviderDrawState = (pdsSelected, pdsGrayed, pdsDisabled, pdsChecked, pdsFocused, pdsDefault,
-    pdsHot);
+  TProviderDrawState =
+   (pdsSelected, pdsGrayed, pdsDisabled, pdsChecked,
+    pdsFocused, pdsDefault, pdsHot);
   TProviderDrawStates = set of TProviderDrawState;
   TClassArray = array of TClass;
   TJvDataContextID = type string;
@@ -258,7 +260,7 @@ type
     ['{E28B1858-EC86-4559-8FCD-6B4F824151ED}']
     function GetComponent: TComponent;
   end;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 
   IJvDataConsumer = interface
     ['{B2F18D03-F615-4AA2-A51A-74D330C05C0E}']
