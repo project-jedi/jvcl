@@ -291,7 +291,7 @@ type
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   THintString = WideString;
-  THintStringList = TWStringList;
+  THintStringList = TWideStringList;
   {$ENDIF VisualCLX}
 
 type

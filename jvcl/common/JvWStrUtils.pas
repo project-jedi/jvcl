@@ -187,6 +187,11 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TNotifyEvent read FOnChanging write FOnChanging;
   end;
+{$IFDEF VisualCLX}
+  TWideStringList = TWStringList;
+  TWideStrings = TWStrings;
+{$ENDIF VisualCLX}
+
 
 // WideChar functions
 function CharToWideChar(Ch: AnsiChar): WideChar;
