@@ -439,7 +439,7 @@ begin
     With AppStorage Do
     begin
       nPath := ConcatPaths([APath, TranslatePropertyName(PersObj, AStorageName, True)]);
-      if ValueStored (nPath) or ListStored (nPath) then
+      if ValueStored (nPath) or IsFolder(nPath, False) then
         ReadProperty(nPath, PersObj, PropName, True, True);
     end;
 end;
