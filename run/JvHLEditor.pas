@@ -293,7 +293,7 @@ begin
     case FHighlighter of
       hlPascal:
         Parser.Style := psPascal;
-      hlCBuilder, hlSql, hlJava, hlNQC:
+      hlCBuilder, hlSql, hlJava, hlNQC, hlCSharp:
         Parser.Style := psCpp;
       hlPython:
         Parser.Style := psPython;
@@ -473,6 +473,16 @@ const
     ' tokens create destroy errors comments from nested chr any ' +
     ' description ';
 
+  CSharpKeyWords =
+    ' abstract as base bool break byte case catch char checked class ' +
+    ' const continue decimal default delegate do double else enum event ' +
+    ' explicit extern false finally fixed float for foreach goto if ' +
+    ' implicit in int interface internal is lock long namespace new null ' +
+    ' object operator out override params private protected public readonly ' +
+    ' ref return sbyte sealed short sizeof stackalloc static string struct ' +
+    ' switch this throw true try typeof uint ulong unchecked unsafe ushort ' +
+    ' using virtual void volatile while ';
+
   function PosI(const S1, S2: string): Boolean;
   var
     F, P: PChar;
@@ -583,6 +593,11 @@ const
     Result := PosNI(St, PerlKeyWords);
   end;
 
+  function IsCSharpKeyWord(const St: string): Boolean;
+  begin
+    Result := PosNI(St, CSharpKeyWords);
+  end;
+
   function IsComment(const St: string): Boolean;
   var
     LS: Integer;
@@ -593,7 +608,7 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC:
+      hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC, hlCSharp:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
       hlVB:
@@ -637,7 +652,8 @@ const
   begin
     LS := Length(St);
     case FHighlighter of
-      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp, hlNQC:
+      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp,
+        hlNQC, hlCSharp:
         Result := (LS > 0) and ((St[1] = '''') or (St[1] = '"'));
       hlVB:
         Result := (LS > 0) and (St[1] = '"');
@@ -804,7 +820,7 @@ begin
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
       case Highlighter of
-        hlCBuilder, hlPython, hlPerl, hlNQC:
+        hlCBuilder, hlPython, hlPerl, hlNQC, hlCSharp:
           case FLong of
             lgString:
               C := Colors.Strings;
@@ -989,6 +1005,11 @@ begin
               SetColor(Colors.Reserved)
             else
               F := False;
+          hlCSharp:
+            if IsCSharpKeyWord(Token) then
+              SetColor(Colors.Reserved)
+            else
+              F := False;
         else
           F := False;
         end;
@@ -1010,7 +1031,8 @@ begin
       if IsIntConstant(Token) or IsRealConstant(Token) then
         SetColor(Colors.Number)
       else
-      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC]) and
+      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC,
+        hlCSharp]) and
         (PrevToken = '0') and ((Token[1] = 'x') or (Token[1] = 'X')) then
         SetColor(Colors.Number)
       else
@@ -1207,7 +1229,7 @@ begin
                   end;
                 end;
             end;
-          hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
+          hlCBuilder, hlSql, hlJava, hlPhp, hlNQC, hlCSharp:
             case FLong of
               lgNone: //  not in comment
                 case S[i] of
@@ -1481,7 +1503,7 @@ begin
             Result := P - PChar(FLine);
           end;
       end;
-    hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
+    hlCBuilder, hlSql, hlJava, hlPhp, hlNQC, hlCSharp:
       begin
         case FLong of
           lgComment2:
@@ -1563,7 +1585,7 @@ begin
   case FHighlighter of
     hlPascal:
       S := #13'{}*()/';
-    hlCBuilder, hlJava, hlSql, hlPhp, hlNQC:
+    hlCBuilder, hlJava, hlSql, hlPhp, hlNQC, hlCSharp:
       S := #13'*/\';
     hlVB:
       S := #13'''';

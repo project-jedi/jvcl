@@ -211,7 +211,10 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           'Html'
           'Perl'
           'Ini'
-          'Coco/R')
+          'Coco/R'
+          'PHP'
+          'NQC'
+          'C#')
       end
       object lbElements: TListBox
         Left = 8

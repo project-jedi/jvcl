@@ -987,7 +987,8 @@ const
 
 type
   TJvHighlighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
-    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, hlNQC, hlSyntaxHighlighter);
+    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, hlNQC, hlCSharp,
+    hlSyntaxHighlighter);
   TLongTokenType = 0..255;
 
 const

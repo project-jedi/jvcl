@@ -236,7 +236,7 @@ begin
     case FHighlighter of
       hlPascal:
         Parser.Style := psPascal;
-      hlCBuilder, hlSql, hlJava, hlNQC:
+      hlCBuilder, hlSql, hlJava, hlNQC, hlCSharp:
         Parser.Style := psCpp;
       hlPython:
         Parser.Style := psPython;
