@@ -31,42 +31,42 @@ Known Issues:
 unit JvgExport;
 
 interface
-uses Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
-  JvgTypes, QuickRpt, QRExport, DB;
+
+uses
+  Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
+  QuickRpt, QRExport, DB,
+  JclUnitConv,
+  JvgTypes;
 
 type
-  TOnExportProgress = procedure(Progress: integer) of object;
+  TOnExportProgress = procedure(Progress: Integer) of object;
 
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 
 implementation
+
 uses
   ComObj, JvgUtils;
-//_________________________________________________________________\\
 
 procedure ExportToExcel(QuickRep: TCustomQuickRep);
-const
-  TEMP_FILE = 'c:\temp_REPORT.txt';
-type
-  PPChar = ^Char;
-  TParr = ^Tarr;
-  Tarr = array[0..0] of char;
 var
-  Parr: TParr;
-  XL: variant;
-  Sheet: variant;
-  i, j, RecNo: integer;
-  sl, sl2: TStringList;
+  P: PChar;
+  XL: Variant;
+  Sheet: Variant;
+  I, J, RecNo: Integer;
+  SL1, SL2: TStringList;
   AExportFilter: TQRCommaSeparatedFilter;
-  ms: TMemoryStream;
+  MemStream: TMemoryStream;
+  TempFileName: string;
+  Buffer: array [0..MAX_PATH] of Char;
 
   function DeleteEOLs(str: string): string;
   var
-    i: integer;
+    I: Integer;
   begin
-    for i := 1 to Length(str) do
-      if (str[i] = #13) then str[i] := ' ';
+    for I := 1 to Length(str) do
+      if (str[I] = #13) then str[I] := ' ';
     Result := str;
   end;
 begin
@@ -77,20 +77,22 @@ begin
     XL := CreateOleObject('Excel.Application');
   end;
 
-  AExportFilter := TQRCommaSeparatedFilter.Create(TEMP_FILE);
+  GetTempPath(SizeOf(Buffer), Buffer);
+  TempFileName := Buffer + 'JvgExportToExcelTemp.txt';
+  AExportFilter := TQRCommaSeparatedFilter.Create(TempFileName);
   try
     QuickRep.ExportToFilter(AExportFilter);
   finally
     AExportFilter.Free;
   end;
 
-  XL.Visible := true;
+  XL.Visible := True;
   XL.WorkBooks.Add;
   XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
   Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
 
-  sl := TStringList.Create;
-  sl2 := TStringList.Create;
+  SL1 := TStringList.Create;
+  SL2 := TStringList.Create;
   try
     //  Sheet.SetBackgroundPicture(FileName:=ExtractFilePath(ParamStr(0))+'data\bg.JPG');
     //  Sheet.Cells[1, 1] := 'Biblio'; Sheet.Cells[1, 1].Font.Color := $FFFFFF;
@@ -98,51 +100,48 @@ begin
     //  Sheet.Columns[1].ColumnWidth := 11;
 
     RecNo := 1;
-    Sheet.Cells[RecNo, 1] := 'Report created on ' + DateToStr(date);
+    Sheet.Cells[RecNo, 1] := 'Report created on ' + DateToStr(Date);
     Sheet.Cells[RecNo, 1].Font.Italic := True;
-    inc(RecNo);
+    Inc(RecNo);
     Sheet.Cells[RecNo, 1] := 'User ' + UserName;
     Sheet.Cells[RecNo, 1].Font.Italic := True;
 
-    inc(RecNo, 2);
+    Inc(RecNo, 2);
     Sheet.Cells[RecNo, 1] := '';
-    Sheet.Cells[RecNo, 1].Font.Bold := true;
+    Sheet.Cells[RecNo, 1].Font.Bold := True;
     Sheet.Cells[RecNo, 1].Font.Size := 14;
 
-    inc(RecNo, 2);
+    Inc(RecNo, 2);
 
-    ms := TMemoryStream.Create;
-    ms.LoadFromFile(TEMP_FILE);
-    Parr := ms.Memory;
-    {$R-}
-    for i := 0 to ms.Size - 1 do
-      if Parr[i] = chr(0) then Parr[i] := ',';
+    MemStream := TMemoryStream.Create;
+    MemStream.LoadFromFile(TempFileName);
+    P := MemStream.Memory;
+    for I := 0 to MemStream.Size - 1 do
+      if P[I] = Chr(0) then
+        P[I] := ',';
 
-    sl.LoadFromStream(ms);
-    ms.Free;
-    for i := 0 to sl.Count - 1 do
+    SL1.LoadFromStream(MemStream);
+    MemStream.Free;
+    for I := 0 to SL1.Count - 1 do
     begin
-      sl2.CommaText := sl[i];
-      for j := 0 to sl2.Count - 1 do
-        Sheet.Cells[RecNo, 1 + j] := sl2[j];
-
-      inc(RecNo);
+      SL2.CommaText := SL1[I];
+      for J := 0 to SL2.Count - 1 do
+        Sheet.Cells[RecNo, 1 + J] := SL2[J];
+      Inc(RecNo);
     end;
-
   finally
-    sl.Free;
-    sl2.Free;
-    if FileExists(TEMP_FILE) then
-      DeleteFile(TEMP_FILE);
+    SL1.Free;
+    SL2.Free;
+    if FileExists(TempFileName) then
+      DeleteFile(TempFileName);
   end;
 end;
-//------------------------------------------------------------------------------
 
 procedure ExportDataSetToExcel(DataSet: TDataSet; OnExportProgress: TOnExportProgress);
 var
-  XL: variant;
-  Sheet: variant;
-  i, RecNo, ColIndex: integer;
+  XL: Variant;
+  Sheet: Variant;
+  I, RecNo, ColIndex: Integer;
 begin
   try
     XL := GetActiveOleObject('Excel.Application');
@@ -150,7 +149,7 @@ begin
     XL := CreateOleObject('Excel.Application');
   end;
 
-  XL.Visible := true;
+  XL.Visible := True;
   XL.WorkBooks.Add;
   XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
   Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
@@ -160,48 +159,49 @@ begin
   //  Sheet.Cells[2, 1] := 'Globus'; Sheet.Cells[2, 1].Font.Bold := True; Sheet.Cells[2, 1].Font.Color := clWhite;
 
   RecNo := 1;
-  Sheet.Cells[RecNo, 2] := 'Document created on ' + DateToStr(date) + '   ' + TimeToStr(time);
+  Sheet.Cells[RecNo, 2] := 'Document created on ' + DateToStr(Date) + '   ' + TimeToStr(Time);
   Sheet.Cells[RecNo, 2].Font.Italic := True;
-  inc(RecNo);
+  Inc(RecNo);
   Sheet.Cells[RecNo, 2] := 'User: ' + ComputerName + ' / ' + UserName;
   Sheet.Cells[RecNo, 2].Font.Italic := True;
-  inc(RecNo);
+  Inc(RecNo);
   Sheet.Cells[RecNo, 2] := 'Program: ' + ExtractFileName(ParamStr(0));
   Sheet.Cells[RecNo, 2].Font.Italic := True;
 
   // Шапка
   { Header [translated] }
-  inc(RecNo, 3);
+  Inc(RecNo, 3);
   ColIndex := 0;
-  for i := 0 to DataSet.FieldCount - 1 do
-  begin
-    if not DataSet.Fields[i].Visible then continue;
-
-    if DataSet.Fields[i].DisplayLabel <> '' then
-      Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[i].DisplayLabel
-    else
-      Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[i].FieldName;
-    Sheet.Cells[RecNo, 2 + ColIndex].Font.Bold := true;
-    Sheet.Cells[RecNo, 2 + ColIndex].Font.Size := 10;
-    inc(ColIndex);
-  end;
+  for I := 0 to DataSet.FieldCount - 1 do
+    if DataSet.Fields[I].Visible then
+    begin
+      if DataSet.Fields[I].DisplayLabel <> '' then
+        Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[I].DisplayLabel
+      else
+        Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[I].FieldName;
+      Sheet.Cells[RecNo, 2 + ColIndex].Font.Bold := True;
+      Sheet.Cells[RecNo, 2 + ColIndex].Font.Size := 10;
+      Inc(ColIndex);
+    end;
 
   // Данные пошли
   { Data has begun to pass in [translated] }
   DataSet.First;
-  inc(RecNo, 3);
-  while not DataSet.EOF do
+  Inc(RecNo, 3);
+  while not DataSet.Eof do
   begin
     ColIndex := 0;
-    for i := 0 to DataSet.FieldCount - 1 do
-    begin
-      if not DataSet.Fields[i].Visible then continue;
-      Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[i].AsString;
-      inc(ColIndex);
-    end;
+    for I := 0 to DataSet.FieldCount - 1 do
+      if DataSet.Fields[I].Visible then
+      begin
+        Sheet.Cells[RecNo, 2 + ColIndex] := DataSet.Fields[I].AsString;
+        Inc(ColIndex);
+      end;
     DataSet.Next;
-    if Assigned(OnExportProgress) then OnExportProgress(trunc((DataSet.RecNo / DataSet.RecordCount) * 100));
-    inc(RecNo);
+    // (rom) using HowAOneLinerCanBiteYou as my easter egg ;-)
+    if Assigned(OnExportProgress) then
+      OnExportProgress(HowAOneLinerCanBiteYou(DataSet.RecNo, DataSet.RecordCount));
+    Inc(RecNo);
   end;
 end;
 

@@ -32,44 +32,44 @@ unit JvgGraphicButton;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, JvComponent, Graphics, controls,
-  JvgTypes, JvgUtils;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  JvgTypes, JvgUtils, JvComponent;
   
 type
-
-  TGButtonState = (bsActive, bsPassive, bsPushed);
+  TJvgButtonState = (bsActive, bsPassive, bsPushed);
 
   TJvgGraphicButton = class(TJvGraphicControl)
   private
-    FAutoSize: boolean;
-    FGlyphActive: TBitmap;
-    FGlyphPassive: TBitmap;
-    FGlyphPushed: TBitmap;
-    State: TGButtonState;
+    FAutoSize: Boolean;
+    FGlyphActive: TPicture;
+    FGlyphPassive: TPicture;
+    FGlyphPushed: TPicture;
+    FState: TJvgButtonState;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
-    procedure SetGlyphActive(Value: TBitmap);
-    procedure SetGlyphPassive(Value: TBitmap);
-    procedure SetGlyphPushed(Value: TBitmap);
+    procedure SetGlyphActive(Value: TPicture);
+    procedure SetGlyphPassive(Value: TPicture);
+    procedure SetGlyphPushed(Value: TPicture);
   protected
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
-      Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-      override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+       X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
     //    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
-
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   public
-    procedure Paint; override;
-    property Canvas;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure Paint; override;
+    property Canvas;
   published
     property Enabled;
+    property Height default 105;
     property PopupMenu;
     property ShowHint;
     property Visible;
+    property Width default 105;
     property OnClick;
     property OnDblClick;
     property OnDragDrop;
@@ -78,15 +78,11 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-
-    property GlyphActive: TBitmap read FGlyphActive write SetGlyphActive;
-    property GlyphPassive: TBitmap read FGlyphPassive write SetGlyphPassive;
-    property GlyphPushed: TBitmap read FGlyphPushed write SetGlyphPushed;
-
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
-      FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write
-      FOnMouseLeave;
+    property GlyphActive: TPicture read FGlyphActive write SetGlyphActive;
+    property GlyphPassive: TPicture read FGlyphPassive write SetGlyphPassive;
+    property GlyphPushed: TPicture read FGlyphPushed write SetGlyphPushed;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   end;
 
 implementation
@@ -94,46 +90,42 @@ implementation
 uses
   JvThemes;
 
-//*****************************************_____________LowLevel METHODS
-//________________________________________________________
-
 constructor TJvgGraphicButton.Create(AOwner: TComponent);
 begin
-
   inherited Create(AOwner);
   //  ControlStyle := ControlStyle + [{csReplicatable,}csOpaque];
-    {inherited } Width := 105;
-  {inherited } Height := 105;
+  Width := 105;
+  Height := 105;
   IncludeThemeStyle(Self, [csParentBackground]);
 
-  FGlyphActive := TBitmap.create;
-  FGlyphPassive := TBitmap.create;
-  FGlyphPushed := TBitmap.create;
+  FGlyphActive := TPicture.Create;
+  FGlyphPassive := TPicture.Create;
+  FGlyphPushed := TPicture.Create;
   //...defaults
   FAutoSize := false;
-  State := bsPassive;
+  FState := bsPassive;
 end;
-//________________________________________________________
 
 destructor TJvgGraphicButton.Destroy;
 begin
   FGlyphActive.Free;
   FGlyphPassive.Free;
   FGlyphPushed.Free;
-  inherited;
+  inherited Destroy;
 end;
-//________________________________________________________
 
 procedure TJvgGraphicButton.Paint;
 var
-  Glyph: TBitmap;
+  Glyph: TPicture;
 begin
-  case State of
-    bsActive: if Assigned(FGlyphActive) then
+  case FState of
+    bsActive:
+      if Assigned(FGlyphActive) then
         Glyph := FGlyphActive
       else
         Glyph := FGlyphPassive;
-    bsPassive: Glyph := FGlyphPassive;
+    bsPassive:
+      Glyph := FGlyphPassive;
   else {bsPushed}
     begin
       if Assigned(FGlyphPushed) then
@@ -146,78 +138,75 @@ begin
   end;
   if Assigned(Glyph) then
     BitBlt(Canvas.Handle, 0, 0, Glyph.Width, Glyph.Height,
-      Glyph.Canvas.Handle, 0, 0, SRCCOPY);
-  if (csDesigning in ComponentState) and (tag <> 9999) then
+      Glyph.Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+  if csDesigning in ComponentState then
     with Canvas do
     begin
       Pen.Color := clBlack;
       Pen.Style := psDash;
       Brush.Style := bsClear;
-      Rectangle(0, 0, width, height);
+      Rectangle(0, 0, Width, Height);
     end;
 
 end;
-//________________________________________________________
 
-procedure TJvgGraphicButton.SetGlyphActive(Value: TBitmap);
+procedure TJvgGraphicButton.SetGlyphActive(Value: TPicture);
 begin
   FGlyphActive.Assign(Value);
-  Repaint;
+  Invalidate;
 end;
 
-procedure TJvgGraphicButton.SetGlyphPassive(Value: TBitmap);
+procedure TJvgGraphicButton.SetGlyphPassive(Value: TPicture);
 begin
   FGlyphPassive.Assign(Value);
-  Repaint;
+  Invalidate;
 end;
 
-procedure TJvgGraphicButton.SetGlyphPushed(Value: TBitmap);
+procedure TJvgGraphicButton.SetGlyphPushed(Value: TPicture);
 begin
   FGlyphPushed.Assign(Value);
-  Repaint;
+  Invalidate;
 end;
 
-//________________________________________________________
-
-procedure TJvgGraphicButton.CMMouseEnter(var Message: TMessage);
+procedure TJvgGraphicButton.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
-  State := bsActive;
+  FState := bsActive;
   Paint;
   if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(self);
+    FOnMouseEnter(Self);
 end;
 
-procedure TJvgGraphicButton.CMMouseLeave(var Message: TMessage);
+procedure TJvgGraphicButton.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
-  State := bsPassive;
+  FState := bsPassive;
   Paint;
   if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(self);
+    FOnMouseLeave(Self);
 end;
 
 procedure TJvgGraphicButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if (Button <> mbLeft) or (not Enabled) or (State = bsPassive) then
-    exit;
-  State := bsPushed;
-  Paint;
+  if (Button <> mbLeft) or (not Enabled) or (FState = bsPassive) then
+    Exit;
+  FState := bsPushed;
+  Invalidate;
 end;
 
-procedure TJvgGraphicButton.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
+procedure TJvgGraphicButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if (State = bsPushed) and Assigned(OnClick) then
-    OnClick(self);
-  if State = bsPushed then
-    State := bsActive
+  if FState = bsPushed then
+    Click;
+  if FState = bsPushed then
+    FState := bsActive
   else
-    State := bsPassive;
-  Paint;
+    FState := bsPassive;
+  Invalidate;
 end;
 
 end.
