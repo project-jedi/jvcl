@@ -174,10 +174,11 @@ object MainFormDlg: TMainFormDlg
       item
       end>
     Left = 200
-    Top = 72
+    Top = 87
   end
   object JvFormStorage1: TJvFormStorage
-    AppStorage = JvAppIniFileStorage1
+    AppStorage = JvAppRegistryStorage1
+    AppStoragePath = 'Test\'
     StoredProps.Strings = (
       'Option1.Checked'
       'YetAnotherOption1.Checked'
@@ -185,21 +186,26 @@ object MainFormDlg: TMainFormDlg
       'RadioButton1.Checked'
       'RadioButton2.Checked'
       'RadioButton3.Checked'
-      'CheckBox1.Checked'
-      'CheckBox2.Checked'
       'DateTimePicker1.Date'
       'Edit1.Text'
       'OpenDialog1.InitialDir'
       'OpenDialog1.FileName'
       'TrackBar1.Position'
       'Memo2.Lines')
-    StoredValues = <>
+    StoredValues = <
+      item
+        Name = 'Name'
+      end
+      item
+        Name = 'TestBoolean'
+        Value = False
+      end>
     Left = 200
     Top = 40
   end
   object PopupMenu1: TPopupMenu
-    Left = 193
-    Top = 103
+    Left = 138
+    Top = 163
     object Option1: TMenuItem
       Caption = 'Option'
       OnClick = YetAnotherOption1Click
@@ -219,10 +225,19 @@ object MainFormDlg: TMainFormDlg
     Top = 8
   end
   object JvFormStorageSelectList1: TJvFormStorageSelectList
-    AppStorage = JvAppIniFileStorage1
+    AppStorage = JvAppRegistryStorage1
     SelectPath = 'something'
     FormStorage = JvFormStorage1
     Left = 393
     Top = 18
+  end
+  object JvAppRegistryStorage1: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    StorageOptions.BooleanAsString = False
+    Root = 'Software\JVCL\Examples\Appstorage Sample1'
+    SubStorages = <>
+    Left = 206
+    Top = 131
   end
 end
