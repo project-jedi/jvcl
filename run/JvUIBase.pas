@@ -157,14 +157,16 @@ type
 //typedef int (*FPTR_INT) ();
 //typedef int (*FPTR_INT_VOID_PTR) (void *);
 
+const
 (* Number of elements in an arry *)
 {$IFDEF FB15_UP}
 { TODO -oHG : TRANSLATE }
 //#define FB_NELEM(x) ((int)(sizeof(x) / sizeof(x[0])))
 //#define FB_ALIGN(n,b) ((n+b-1)&~(b-1))
+
+  FB_API_VER = 15;
 {$ENDIF FB15_UP}
 
-const
   GDS_TRUE = 1;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM GDS_TRUE}{$ENDIF}
   GDS_FALSE = 0;
@@ -1052,7 +1054,7 @@ const
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_total}{$ENDIF}
 
   (* count 2
-  #define blr_count2  32
+  define blr_count2  32
   *)
   blr_add = 34;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_add}{$ENDIF}
@@ -1397,6 +1399,8 @@ const
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_nullsfirst}{$ENDIF}
   blr_writelock = 179;
   {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_writelock}{$ENDIF}
+  blr_nullslast = 180;
+  {$IFDEF USE_IBASE_H}{$EXTERNALSYM blr_nullslast}{$ENDIF}
 
   (* This codes reuse BLR code space *)
   blr_post_arg = 163;

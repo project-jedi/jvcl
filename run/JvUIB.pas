@@ -403,6 +403,7 @@ TJvUIBComponent = class(TComponent)
     function GetFields: TSQLResult;
     function GetEof: boolean;
     function FindDataBase: TJvUIBDataBase;
+    function GetRowsAffected: Cardinal;
   protected
     procedure SetTransaction(const Transaction: TJvUIBTransaction); virtual;
     procedure SetDataBase(ADataBase: TJvUIBDataBase);
@@ -427,9 +428,11 @@ TJvUIBComponent = class(TComponent)
     function  ParamsClass: TSQLParamsClass; virtual;
     function  ResultClass: TSQLResultClass; virtual;
 
+    procedure InternalGetBlobSize(sqlda: TSQLDA; const Index: Word; out Size: Cardinal);
     procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; Stream: TStream); overload;
     procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; var str: string); overload;
     procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; var Value: Variant); overload;
+    procedure InternalReadBlob(sqlda: TSQLDA; const Index: Word; Buffer: Pointer); overload;
 
     property QuickScript: boolean read FQuickScript write FQuickScript  default False;
 
@@ -441,7 +444,7 @@ TJvUIBComponent = class(TComponent)
 
     procedure Close(const Mode: TEndTransMode = etmStayIn); virtual;
     procedure FetchAll;
-    procedure Open;
+    procedure Open(FetchFirst: boolean = True);
     procedure Prepare;
     procedure Execute;
     procedure ExecSQL;
@@ -453,9 +456,11 @@ TJvUIBComponent = class(TComponent)
     procedure ReadBlob(const Index: Word; Stream: TStream); overload;
     procedure ReadBlob(const Index: Word; var str: string); overload;
     procedure ReadBlob(const Index: Word; var Value: Variant); overload;
+    procedure ReadBlob(const Index: Word; Buffer: Pointer); overload;
     procedure ReadBlob(const name: string; Stream: TStream); overload;
     procedure ReadBlob(const name: string; var str: string); overload;
     procedure ReadBlob(const name: string; var Value: Variant); overload;
+    procedure ReadBlob(const name: string; Buffer: Pointer); overload;
 
     procedure ParamsSetBlob(const Index: Word; Stream: TStream); overload;
     procedure ParamsSetBlob(const Index: Word; var str: string); overload;
@@ -464,6 +469,9 @@ TJvUIBComponent = class(TComponent)
     procedure ParamsSetBlob(const Name: string; Stream: TStream); overload;
     procedure ParamsSetBlob(const Name: string; var str: string); overload;
     procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word); overload;
+
+    function FieldBlobSize(const Index: Word): Cardinal;
+    function ParamBlobSize(const Index: Word): Cardinal;
 
     property StHandle: IscStmtHandle read FStHandle;
     property Fields: TSQLResult read GetFields;
@@ -475,6 +483,7 @@ TJvUIBComponent = class(TComponent)
 
     property Plan: string read GetPlan;
     property StatementType: TUIBStatementType read GetStatementType;
+    property RowsAffected: Cardinal read GetRowsAffected;
 
   published
     property SQL: TStrings read FSQL write SetSQL;
@@ -1079,7 +1088,7 @@ begin
   InternalClose(Mode, False);
 end;
 
-procedure TJvUIBStatement.Open;
+procedure TJvUIBStatement.Open(FetchFirst: boolean = True);
 begin
   // if you reopen the same query I Close
   // the cursor, clean sql result and
@@ -1097,13 +1106,15 @@ begin
         InternalClose(FOnError, False);
         raise;
       end;
-      BeginExecute;
+      FCurrentState := qsPrepare; 
     finally
       UnLock;
     end;
   end else
     InternalClose(etmStayIn, False);
-  InternalNext;
+  if FetchFirst then
+    InternalNext else
+    BeginExecute;
 end;
 
 procedure TJvUIBStatement.Next;
@@ -1710,6 +1721,95 @@ begin
   end;
 end;
 
+procedure TJvUIBStatement.InternalGetBlobSize(sqlda: TSQLDA; const Index: Word; out Size: Cardinal);
+var
+  BlobHandle: IscBlobHandle;
+begin
+  if (not sqlda.IsBlob[Index]) then
+    raise EUIBConvertError.Create(EUIB_CASTERROR);
+  if (not sqlda.IsNull[Index]) then
+  begin
+    Lock;
+    with FindDataBase.FLibrary do
+    try
+      BlobHandle := nil;
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTrHandle,
+        BlobHandle, sqlda.AsQuad[Index]);
+      try
+        BlobSize(BlobHandle, Size);
+      finally
+        BlobClose(BlobHandle);
+      end;
+    finally
+      UnLock;
+    end;
+  end;
+end;
+
+function TJvUIBStatement.FieldBlobSize(const Index: Word): Cardinal;
+begin
+  if Fields.FetchBlobs then
+    Result := Fields.GetBlobSize(Index) else
+    InternalGetBlobSize(Fields, Index, Result);
+end;
+
+function TJvUIBStatement.ParamBlobSize(const Index: Word): Cardinal;
+begin
+  InternalGetBlobSize(Params, Index, Result);
+end;
+
+procedure TJvUIBStatement.ReadBlob(const Index: Word; Buffer: Pointer);
+begin
+  if Fields.FetchBlobs then
+    Fields.ReadBlob(Index, Buffer) else
+    InternalReadBlob(Fields, Index, Buffer);
+end;
+
+procedure TJvUIBStatement.ReadBlob(const name: string; Buffer: Pointer);
+begin
+  ReadBlob(Fields.GetFieldIndex(name), Buffer);
+end;
+
+procedure TJvUIBStatement.InternalReadBlob(sqlda: TSQLDA;
+  const Index: Word; Buffer: Pointer);
+var
+  BlobHandle: IscBlobHandle;
+begin
+  if (not sqlda.IsBlob[Index]) then
+    raise EUIBConvertError.Create(EUIB_CASTERROR);
+  if sqlda.IsNull[Index] then
+     Exit else
+  begin
+    Lock;
+    with FindDataBase.FLibrary do
+    try
+      BlobHandle := nil;
+      BlobOpen(FindDataBase.FDbHandle, FTransaction.FTrHandle,
+        BlobHandle, sqlda.AsQuad[Index]);
+      try
+        BlobReadSizedBuffer(BlobHandle, Buffer);
+      finally
+        BlobClose(BlobHandle);
+      end;
+    finally
+      UnLock;
+    end;
+  end;
+end;
+
+function TJvUIBStatement.GetRowsAffected: Cardinal;
+begin
+  Result := 0;
+  Lock;
+  try
+    if (FCurrentState < qsPrepare) then
+      Raise Exception.Create(EUIB_MUSTBEPREPARED)else
+      Result := FindDataBase.FLibrary.DSQLInfoRowsAffected(FStHandle, FStatementType);
+  finally
+    UnLock
+  end;
+end;
+
 { TJvUIBQuery }
 
 procedure TJvUIBQuery.BuildStoredProc(const StoredProc: string);
@@ -2126,19 +2226,19 @@ end;
 procedure TJvUIBTransaction.SavepointRelease(const Name: string);
 begin
   BeginTransaction;
-  FDataBase.FLibrary.SavepointRelease(FTransaction, Name);
+  FDataBase.FLibrary.SavepointRelease(FTrHandle, Name);
 end;
 
 procedure TJvUIBTransaction.SavepointRollback(const Name: string; Option: Word = 0);
 begin
   BeginTransaction;
-  FDataBase.FLibrary.SavepointRollback(FTransaction, Name, Option);
+  FDataBase.FLibrary.SavepointRollback(FTrHandle, Name, Option);
 end;
 
 procedure TJvUIBTransaction.SavepointStart(const Name: string);
 begin
   BeginTransaction;
-  FDataBase.FLibrary.SavepointStart(FTransaction, Name);
+  FDataBase.FLibrary.SavepointStart(FTrHandle, Name);
 end;
 {$ENDIF}
 
