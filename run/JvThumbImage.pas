@@ -712,8 +712,8 @@ begin
           if AAngle = AT90 then
           begin
             Rotate90;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
           if AAngle = AT180 then
           begin
@@ -723,8 +723,8 @@ begin
           if AAngle = AT270 then
           begin
             Rotate270;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
         end;
         if FAngle = AT90 then
@@ -732,8 +732,8 @@ begin
           if AAngle = AT180 then
           begin
             Rotate90;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
           if AAngle = AT270 then
           begin
@@ -743,8 +743,8 @@ begin
           if AAngle = at0 then
           begin
             Rotate270;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
         end;
         if FAngle = AT180 then
@@ -752,8 +752,8 @@ begin
           if AAngle = AT90 then
           begin
             Rotate270;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
           if AAngle = AT0 then
           begin
@@ -763,8 +763,8 @@ begin
           if AAngle = AT270 then
           begin
             Rotate90;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
         end;
         if FAngle = AT270 then
@@ -777,14 +777,14 @@ begin
           if AAngle = AT0 then
           begin
             Rotate90;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
           if AAngle = AT180 then
           begin
             Rotate270;
-            if Parent is TJVThumbnail then
-              SendMessage(TJVThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
+            if Parent is TJvThumbnail then
+              SendMessage(TJvThumbnail(Parent).Handle, TH_IMAGESIZECHANGED, 0, 0);
           end;
         end;
         FAngle := AAngle;

@@ -18,6 +18,7 @@ Contributor(s):
 Mike Kolter (original code)
 
 Last Modified: 2003-08-01
+  Modified 1/26/2002 12:59:29 PM by the CDK, Version 5.14 Rev. E (Professional Version)
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -28,31 +29,37 @@ Known Issues:
 {$I JVCL.INC}
 
 unit JvTFAlarm;
-{ Modified 1/26/2002 12:59:29 PM by the CDK, Version 5.14 Rev. E (Professional Version) }
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, StdCtrls, ExtCtrls, JvTFManager;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Controls, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QExtCtrls,
+  {$ENDIF VisualCLX}
+  JvTFManager;
 
 {$HPPEMIT '#define TDate Controls::TDate'}
 {$HPPEMIT '#define TTime Controls::TTime'}
+
 type
   TJvTFAlarm = class;
 
-  TJvTFAlarmInfo = class
+  TJvTFAlarmInfo = class(TObject)
   private
     FAppt: TJvTFAppt;
     FSnoozeMins: Integer;
     FDismiss: Boolean;
-    FNextAlarmTime : TTime;
+    FNextAlarmTime: TTime;
   protected
-    property NextAlarmTime : TTime read FNextAlarmTime write FNextAlarmTime;
+    property NextAlarmTime: TTime read FNextAlarmTime write FNextAlarmTime;
   public
-    constructor Create(aAppt: TJvTFAppt); virtual;
-    property Appt : TJvTFAppt read FAppt;
-    property SnoozeMins : Integer read FSnoozeMins write FSnoozeMins;
+    constructor Create(AAppt: TJvTFAppt); virtual;
+    property Appt: TJvTFAppt read FAppt;
+    property SnoozeMins: Integer read FSnoozeMins write FSnoozeMins;
     property Dismiss: Boolean read FDismiss write FDismiss;
   end;
 
@@ -61,33 +68,34 @@ type
     FOwner: TJvTFAlarm;
   public
     procedure Clear; override;
-    function GetAlarmForAppt(aAppt: TJvTFAppt): TJvTFAlarmInfo;
-    function GetAlarmForApptID(ID: String): TJvTFAlarmInfo;
-    function IndexOfAppt(aAppt: TJvTFAppt): Integer;
-    procedure AddAppt(aAppt: TJvTFAppt);
-    procedure DeleteAppt(aAppt: TJvTFAppt);
+    function GetAlarmForAppt(AAppt: TJvTFAppt): TJvTFAlarmInfo;
+    function GetAlarmForApptID(ID: string): TJvTFAlarmInfo;
+    function IndexOfAppt(AAppt: TJvTFAppt): Integer;
+    procedure AddAppt(AAppt: TJvTFAppt);
+    procedure DeleteAppt(AAppt: TJvTFAppt);
     property Owner: TJvTFAlarm read FOwner write FOwner;
   end;
 
-  TJvTFAlarmEvent = procedure(Sender: TObject; aAppt: TJvTFAppt;
+  TJvTFAlarmEvent = procedure(Sender: TObject; AAppt: TJvTFAppt;
     var SnoozeMins: Integer; var Dismiss: Boolean) of object;
 
   TJvTFAlarm = class(TJvTFComponent)
   private
-    FResources : TStrings;
-    FTimer : TTimer;
-    FCurrentDate : TDate;
-    FAlarmList : TJvTFAlarmList;
-    FOnAlarm : TJvTFAlarmEvent;
-    FDefaultSnoozeMins : Integer;
+    FResources: TStringList;
+    FTimer: TTimer;
+    FCurrentDate: TDate;
+    FAlarmList: TJvTFAlarmList;
+    FOnAlarm: TJvTFAlarmEvent;
+    FDefaultSnoozeMins: Integer;
+    function GetResources: TStrings;
     procedure SetResources(Value: TStrings);
     function GetTimerInterval: Integer;
     procedure SetTimerInterval(Value: Integer);
-    function GetEnabled : Boolean;
+    function GetEnabled: Boolean;
     procedure SetEnabled(Value: Boolean);
-    procedure OnTimer(Sender: TObject);
+    procedure InternalTimer(Sender: TObject);
   protected
-    procedure DestroyApptNotification(anAppt: TJvTFAppt); override;
+    procedure DestroyApptNotification(AAppt: TJvTFAppt); override;
     procedure ConnectSchedules; virtual;
     procedure DisconnectSchedules; virtual;
     procedure TimerCheck; virtual;
@@ -97,11 +105,11 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Resources: TStrings read FResources write SetResources;
+    property Resources: TStrings read GetResources write SetResources;
     property TimerInterval: Integer read GetTimerInterval write SetTimerInterval default 30000;
-    property Enabled : Boolean read GetEnabled write SetEnabled default True;
-    property DefaultSnoozeMins : Integer read FDefaultSnoozeMins write FDefaultSnoozeMins default 5;
-    property OnAlarm : TJvTFAlarmEvent read FOnAlarm write FOnAlarm;
+    property Enabled: Boolean read GetEnabled write SetEnabled default True;
+    property DefaultSnoozeMins: Integer read FDefaultSnoozeMins write FDefaultSnoozeMins default 5;
+    property OnAlarm: TJvTFAlarmEvent read FOnAlarm write FOnAlarm;
   end;
 
 {$HPPEMIT '#undef TDate'}
@@ -109,100 +117,21 @@ type
 
 implementation
 
-uses JvTFUtils;
+uses
+  JvTFUtils;
 
-{ TJvTFAlarm }
-
-procedure TJvTFAlarm.AlarmCheck;
-var
-  I,
-  J,
-  SnoozeMins : Integer;
-  Dismiss : Boolean;
-  Sched : TJvTFSched;
-  Appt : TJvTFAppt;
-  AlarmInfo : TJvTFAlarmInfo;
-  AlarmTime : TTime;
-begin
-  // 1. Roll through all schedules and add an alarm for each appt with a start
-  //    time that is less than the current time.  (Duplicate appts will be ignored.)
-  // 2. Roll through the alarm list and fire an OnAlarm event when appropriate.
-
-  // 1.
-  For I := 0 to ScheduleCount - 1 do
-    Begin
-      Sched := Schedules[I];
-      For J := 0 to Sched.ApptCount - 1 do
-        Begin
-          Appt := Sched.Appts[J];
-          AlarmTime := Appt.StartTime - Appt.AlarmAdvance * ONE_MINUTE;
-          If (AlarmTime < Frac(Time)) and Appt.AlarmEnabled Then
-            FAlarmList.AddAppt(Appt);
-        End;
-    End;
-
-  // 2.
-  For I := 0 to FAlarmList.Count - 1 do
-    Begin
-      AlarmInfo := TJvTFAlarmInfo(FAlarmList.Objects[I]);
-      If not AlarmInfo.Dismiss and (AlarmInfo.NextAlarmTime < Frac(Time)) Then
-        Begin
-          SnoozeMins := AlarmInfo.SnoozeMins;
-          Dismiss := False;
-          If Assigned(FOnAlarm) Then
-            Begin
-              FOnAlarm(Self, AlarmInfo.Appt, SnoozeMins, Dismiss);
-              AlarmInfo.SnoozeMins := SnoozeMins;
-              AlarmInfo.Dismiss := Dismiss;
-            End;
-          AlarmInfo.NextAlarmTime := Time + SnoozeMins * ONE_MINUTE;
-        End;
-    End;
-end;
-
-procedure TJvTFAlarm.ConnectSchedules;
-var
-  I : Integer;
-  CurrentSchedules : TStringList;
-  Schedule : TJvTFSched;
-begin
-  CurrentSchedules := TStringList.Create;
-
-  Try
-    FTimer.Enabled := False;
-
-    // request all appropriate schedules.  Store in temporary list so that
-    // we can release all schedules no longer needed.
-    For I := 0 to Resources.Count - 1 do
-      Begin
-        Schedule := RetrieveSchedule(Resources[I], Date);
-        CurrentSchedules.AddObject('', Schedule);
-      End;
-
-    // Now release all schedules no longer needed.  (Cross check CurrentSchedules
-    // against Schedules list.)
-    For I := 0 to ScheduleCount - 1 do
-      Begin
-        Schedule := Schedules[I];
-        If CurrentSchedules.IndexOfObject(Schedule) = -1 Then
-          ReleaseSchedule(Schedule.SchedName, Schedule.SchedDate);
-      End;
-  Finally
-    CurrentSchedules.Free;
-    FTimer.Enabled := True;
-  End;
-end;
+//=== TJvTFAlarm =============================================================
 
 constructor TJvTFAlarm.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   FDefaultSnoozeMins := 5;
   FCurrentDate := Date;
   FResources := TStringList.Create;
   FTimer := TTimer.Create(Self);
   FTimer.Interval := 30000;
   FTimer.Enabled := True;
-  FTimer.OnTimer := OnTimer;
+  FTimer.OnTimer := InternalTimer;
   FAlarmList := TJvTFAlarmList.Create;
   FAlarmList.Owner := Self;
 end;
@@ -214,13 +143,95 @@ begin
   FResources.Free;
   FAlarmList.Create;
   FAlarmList.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-procedure TJvTFAlarm.DestroyApptNotification(anAppt: TJvTFAppt);
+procedure TJvTFAlarm.Loaded;
 begin
-  FAlarmList.DeleteAppt(anAppt);
-  inherited;
+  inherited Loaded;
+  ConnectSchedules;
+end;
+
+procedure TJvTFAlarm.AlarmCheck;
+var
+  I, J, SnoozeMins: Integer;
+  Dismiss: Boolean;
+  Sched: TJvTFSched;
+  Appt: TJvTFAppt;
+  AlarmInfo: TJvTFAlarmInfo;
+  AlarmTime: TTime;
+begin
+  // 1. Roll through all schedules and add an alarm for each appt with a start
+  //    time that is less than the current time.  (Duplicate appts will be ignored.)
+  // 2. Roll through the alarm list and fire an OnAlarm event when appropriate.
+
+  // 1.
+  for I := 0 to ScheduleCount - 1 do
+  begin
+    Sched := Schedules[I];
+    for J := 0 to Sched.ApptCount - 1 do
+    begin
+      Appt := Sched.Appts[J];
+      AlarmTime := Appt.StartTime - Appt.AlarmAdvance * ONE_MINUTE;
+      if (AlarmTime < Frac(Time)) and Appt.AlarmEnabled then
+        FAlarmList.AddAppt(Appt);
+    end;
+  end;
+
+  // 2.
+  for I := 0 to FAlarmList.Count - 1 do
+  begin
+    AlarmInfo := TJvTFAlarmInfo(FAlarmList.Objects[I]);
+    if not AlarmInfo.Dismiss and (AlarmInfo.NextAlarmTime < Frac(Time)) then
+    begin
+      SnoozeMins := AlarmInfo.SnoozeMins;
+      Dismiss := False;
+      if Assigned(FOnAlarm) then
+      begin
+        FOnAlarm(Self, AlarmInfo.Appt, SnoozeMins, Dismiss);
+        AlarmInfo.SnoozeMins := SnoozeMins;
+        AlarmInfo.Dismiss := Dismiss;
+      end;
+      AlarmInfo.NextAlarmTime := Time + SnoozeMins * ONE_MINUTE;
+    end;
+  end;
+end;
+
+procedure TJvTFAlarm.ConnectSchedules;
+var
+  I: Integer;
+  CurrentSchedules: TStringList;
+  Schedule: TJvTFSched;
+begin
+  CurrentSchedules := TStringList.Create;
+  try
+    FTimer.Enabled := False;
+    // request all appropriate schedules.  Store in temporary list so that
+    // we can release all schedules no longer needed.
+    for I := 0 to Resources.Count - 1 do
+    begin
+      Schedule := RetrieveSchedule(Resources[I], Date);
+      CurrentSchedules.AddObject('', Schedule);
+    end;
+
+    // Now release all schedules no longer needed.  (Cross check CurrentSchedules
+    // against Schedules list.)
+    for I := 0 to ScheduleCount - 1 do
+    begin
+      Schedule := Schedules[I];
+      if CurrentSchedules.IndexOfObject(Schedule) = -1 then
+        ReleaseSchedule(Schedule.SchedName, Schedule.SchedDate);
+    end;
+  finally
+    CurrentSchedules.Free;
+    FTimer.Enabled := True;
+  end;
+end;
+
+procedure TJvTFAlarm.DestroyApptNotification(AAppt: TJvTFAppt);
+begin
+  FAlarmList.DeleteAppt(AAppt);
+  inherited DestroyApptNotification(AAppt);
 end;
 
 procedure TJvTFAlarm.DisconnectSchedules;
@@ -238,19 +249,18 @@ begin
   Result := FTimer.Interval;
 end;
 
-procedure TJvTFAlarm.Loaded;
+function TJvTFAlarm.GetResources: TStrings;
 begin
-  inherited;
-  ConnectSchedules;
+  Result := FResources;
 end;
 
-procedure TJvTFAlarm.OnTimer(Sender: TObject);
+procedure TJvTFAlarm.InternalTimer(Sender: TObject);
 begin
-  If Trunc(Date) <> Trunc(FCurrentDate) Then
-    Begin
-      FCurrentDate := Date;
-      ConnectSchedules;
-    End;
+  if Trunc(Date) <> Trunc(FCurrentDate) then
+  begin
+    FCurrentDate := Date;
+    ConnectSchedules;
+  end;
   TimerCheck;
 end;
 
@@ -275,66 +285,68 @@ begin
   AlarmCheck;
 end;
 
-{ TJvTFAlarmInfo }
-constructor TJvTFAlarmInfo.Create(aAppt: TJvTFAppt);
+//=== TJvTFAlarmInfo =========================================================
+
+constructor TJvTFAlarmInfo.Create(AAppt: TJvTFAppt);
 begin
-  FAppt := aAppt;
+  inherited Create;
+  FAppt := AAppt;
 end;
 
-{ TJvTFAlarmList }
+//=== TJvTFAlarmList =========================================================
 
-procedure TJvTFAlarmList.AddAppt(aAppt: TJvTFAppt);
+procedure TJvTFAlarmList.AddAppt(AAppt: TJvTFAppt);
 var
-  AlarmInfo : TJvTFAlarmInfo;
+  AlarmInfo: TJvTFAlarmInfo;
 begin
-  If Assigned(aAppt) and (IndexOfAppt(aAppt) = -1) Then
-    Begin
-      AlarmInfo := TJvTFAlarmInfo.Create(aAppt);
-      AlarmInfo.SnoozeMins := Owner.DefaultSnoozeMins;
-      AlarmInfo.NextAlarmTime := aAppt.StartTime - aAppt.AlarmAdvance * ONE_MINUTE;
-      AddObject(aAppt.ID, AlarmInfo);
-    End;
+  if Assigned(AAppt) and (IndexOfAppt(AAppt) = -1) then
+  begin
+    AlarmInfo := TJvTFAlarmInfo.Create(AAppt);
+    AlarmInfo.SnoozeMins := Owner.DefaultSnoozeMins;
+    AlarmInfo.NextAlarmTime := AAppt.StartTime - AAppt.AlarmAdvance * ONE_MINUTE;
+    AddObject(AAppt.ID, AlarmInfo);
+  end;
 end;
 
 procedure TJvTFAlarmList.Clear;
 var
-  I : Integer;
+  I: Integer;
 begin
-  For I := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
     Objects[I].Free;
-  inherited;
+  inherited Clear;
 end;
 
-procedure TJvTFAlarmList.DeleteAppt(aAppt: TJvTFAppt);
+procedure TJvTFAlarmList.DeleteAppt(AAppt: TJvTFAppt);
 var
-  I : Integer;
+  I: Integer;
 begin
-  I := IndexOfAppt(aAppt);
-  If I > -1 Then
-    Begin
-      Objects[I].Free;
-      Delete(I);
-    End;
+  I := IndexOfAppt(AAppt);
+  if I > -1 then
+  begin
+    Objects[I].Free;
+    Delete(I);
+  end;
 end;
 
-function TJvTFAlarmList.GetAlarmForAppt(aAppt: TJvTFAppt): TJvTFAlarmInfo;
+function TJvTFAlarmList.GetAlarmForAppt(AAppt: TJvTFAppt): TJvTFAlarmInfo;
 begin
-  Result := GetAlarmForApptID(aAppt.ID);
+  Result := GetAlarmForApptID(AAppt.ID);
 end;
 
-function TJvTFAlarmList.GetAlarmForApptID(ID: String): TJvTFAlarmInfo;
+function TJvTFAlarmList.GetAlarmForApptID(ID: string): TJvTFAlarmInfo;
 var
-  I : Integer;
+  I: Integer;
 begin
   Result := nil;
   I := IndexOf(ID);
-  If I > -1 Then
+  if I > -1 then
     Result := TJvTFAlarmInfo(Objects[I]);
 end;
 
-function TJvTFAlarmList.IndexOfAppt(aAppt: TJvTFAppt): Integer;
+function TJvTFAlarmList.IndexOfAppt(AAppt: TJvTFAppt): Integer;
 begin
-  Result := IndexOf(aAppt.ID);
+  Result := IndexOf(AAppt.ID);
 end;
 
 end.

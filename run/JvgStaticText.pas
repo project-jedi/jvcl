@@ -33,41 +33,32 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvgTypes, JVComponent, JvgCommClasses, JvgUtils;
+  StdCtrls, ExtCtrls,
+  JvgTypes, JVComponent, JvgCommClasses, JvgUtils;
 
 type
   TJvgStaticText = class(TJvGraphicControl)
   private
     FActiveColor: TColor;
     FAlignment: TglAlignment;
-    FAutoSize: boolean;
-    FTransparent: boolean;
-    FWordWrap: boolean;
+    FAutoSize: Boolean;
+    FTransparent: Boolean;
+    FWordWrap: Boolean;
     FOnMouseEnter: TNotifyEvent;
-    FOnMouseleave: TNotifyEvent;
-
-    FActive: boolean;
-    //    Image: TBitmap;
-    procedure CreateImage;
+    FOnMouseLeave: TNotifyEvent;
+    FActive: Boolean;
     procedure DrawTextBroadwise;
     procedure AdjustBounds;
-
     procedure SetAlignment(Value: TglAlignment);
-    procedure SetTransparent(Value: boolean);
-    procedure SetWordWrap(Value: boolean);
-
+    procedure SetTransparent(Value: Boolean);
+    procedure SetWordWrap(Value: Boolean);
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
   protected
-    procedure CMFontChanged(var Message: TMessage);
-    procedure SetAutoSize(Value: boolean);
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF}
-    procedure Loaded; override;
-    procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure Paint; override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
   published
     property Align;
     property Caption;
@@ -91,113 +82,70 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
-    property ActiveColor: TColor read FActiveColor write FActiveColor
-      default clWhite;
-    property Alignment: TglAlignment read FAlignment write SetAlignment
-      default ftaBroadwise;
-    property AutoSize: boolean read FAutoSize write SetAutoSize
-      default true;
-    property Transparent: boolean read FTransparent write SetTransparent
-      default true;
-    property WordWrap: boolean read FWordWrap write SetWordWrap
-      default true;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write
-      FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write
-      FOnMouseLeave;
-
+    property ActiveColor: TColor read FActiveColor write FActiveColor default clWhite;
+    property Alignment: TglAlignment read FAlignment write SetAlignment default ftaBroadwise;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property Transparent: Boolean read FTransparent write SetTransparent default True;
+    property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
   end;
 
-procedure Register;
-
 implementation
-
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-//________________________________________________________ Methods _
 
 constructor TJvgStaticText.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Width := 100;
   Height := 100;
-  //  Image := TBitmap.Create;
-  FTransparent := true;
+  FTransparent := True;
   FActiveColor := clWhite;
-  FAutoSize := true;
+  FAutoSize := True;
   FAlignment := ftaBroadwise;
-  FWordWrap := true;
-  if not (csLoading in ComponentState) then
-    CreateImage;
+  FWordWrap := True;
 end;
-//______
 
-destructor TJvgStaticText.Destroy;
+procedure TJvgStaticText.CMMouseEnter(var Msg: TMessage);
 begin
-  //  Image.Free;
-  inherited Destroy;
-end;
-//______
-
-procedure TJvgStaticText.CMFontChanged(var Message: TMessage);
-begin
-  inherited;
-end;
-//______
-
-procedure TJvgStaticText.Loaded;
-begin
-  inherited;
-  CreateImage;
-end;
-//______
-
-procedure TJvgStaticText.CMMouseEnter(var Message: TMessage);
-begin
-  FActive := true;
-  paint;
+  FActive := True;
+  Repaint;
   if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(self);
+    FOnMouseEnter(Self);
 end;
 
-procedure TJvgStaticText.CMMouseLeave(var Message: TMessage);
+procedure TJvgStaticText.CMMouseLeave(var Msg: TMessage);
 begin
-  FActive := false;
-  paint;
+  FActive := False;
+  Repaint;
   if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(self);
+    FOnMouseLeave(Self);
 end;
-//______
 
 procedure TJvgStaticText.Paint;
 const
-  Alignments: array[TglAlignment] of Word = (DT_LEFT,
-    DT_RIGHT, DT_CENTER, 0);
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
+  Alignments: array [TglAlignment] of Word =
+    (DT_LEFT, DT_RIGHT, DT_CENTER, 0);
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 var
   Alignment_: TglAlignment;
   Rect: TRect;
 begin
-  if length(Caption) = 0 then
-    exit;
+  if Length(Caption) = 0 then
+    Exit;
   Alignment_ := FAlignment;
-  SetBkMode(Canvas.Handle, integer(FTransparent));
+  SetBkMode(Canvas.Handle, Ord(FTransparent));
   if FActive then
     SetTextColor(Canvas.Handle, ColorToRGB(ActiveColor))
   else
     SetTextColor(Canvas.Handle, ColorToRGB(Font.Color));
   //  TextOut( Canvas.Handle, 0, 0, 'lpszString', 10);
   //  BitBlt( Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, Width, Height, SRCCOPY );
-  if (Alignment = ftaBroadwise) then
+  if Alignment = ftaBroadwise then
   begin
     if FWordWrap then
     begin
       DrawTextBroadwise;
-      exit;
+      Exit;
     end
     else
       Alignment_ := ftaLeftJustify;
@@ -205,69 +153,62 @@ begin
   Rect := ClientRect;
   DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
     DT_EXPANDTABS or WordWraps[FWordWrap] or Alignments[Alignment_]);
-
 end;
-//______
-
-procedure TJvgStaticText.CreateImage;
-begin
-  //  DrawTextBroadwise;
-end;
-//______
 
 procedure TJvgStaticText.DrawTextBroadwise;
 var
-  DrawPos, Pos1, Pos2, LineWidth,
-    LineNo, LexemCount, TextHeight: integer;
+  DrawPos, Pos1, Pos2, LineWidth, LineNo, LexemCount, TextHeight: Integer;
   Lexem: string;
-  Size: TSIZE;
+  Size: TSize;
 
-  function GetNextLexem(var Pos1, Pos2: integer; fTrimleft: boolean): string;
+  function GetNextLexem(var Pos1, Pos2: Integer; TrimLeft: Boolean): string;
   var
-    Pos: integer;
+    Pos: Integer;
   begin
-    pos := pos1;
+    Pos := Pos1;
     if Caption[Pos] = ' ' then
-      repeat inc(Pos);
+      repeat
+        Inc(Pos);
       until (Pos > Length(Caption)) or (Caption[Pos] <> ' ');
     Pos2 := Pos;
-    if fTrimleft and (LineNo > 0) then
+    if TrimLeft and (LineNo > 0) then
       Pos1 := Pos;
-    repeat inc(Pos2);
-    until (Pos2 > length(Caption)) or (Caption[Pos2] = ' ');
-
-    Result := copy(Caption, Pos1, Pos2 - Pos1);
+    repeat
+      Inc(Pos2);
+    until (Pos2 > Length(Caption)) or (Caption[Pos2] = ' ');
+    Result := Copy(Caption, Pos1, Pos2 - Pos1);
   end;
 
-  procedure DrawLine(AdditSpace: integer);
+  procedure DrawLine(AdditSpace: Integer);
   var
-    i, DrawPos1, DrawPos2: integer;
+    i, DrawPos1, DrawPos2: Integer;
     Lexem: string;
-    Size: TSIZE;
-    X, X_: single;
+    Size: TSize;
+    X, X_: Single;
   begin
     DrawPos1 := DrawPos;
     DrawPos2 := DrawPos;
-    X := 0;
-    X_ := 0;
+    X := 0.0;
+    X_ := 0.0;
     LineWidth := 0;
     for i := 1 to LexemCount do
     begin
       Lexem := GetNextLexem(DrawPos1, DrawPos2, i = 1);
       //      if LexemCount=1 then Lexem:=Lexem+' ';
-      GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
-      inc(LineWidth, trunc(X));
+      GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), Length(Lexem), Size);
+      Inc(LineWidth, Trunc(X));
       X := X + Size.cx;
       if (X > Width) and (LexemCount > 1) then
-        exit;
+        Exit;
       if LexemCount > 1 then
         X := X + AdditSpace / (LexemCount - 1);
-      TextOut(Canvas.Handle, trunc(X_), LineNo * TextHeight, PChar(Lexem),
-        length(Lexem));
+      TextOut(Canvas.Handle, Trunc(X_), LineNo * TextHeight, PChar(Lexem),
+        Length(Lexem));
       X_ := X;
       DrawPos1 := DrawPos2;
     end;
   end;
+
 begin
   LineWidth := 0;
   LineNo := 0;
@@ -279,39 +220,39 @@ begin
   repeat
     Lexem := GetNextLexem(Pos1, Pos2, LexemCount = 0);
     //    if LexemCount=0 then Lexem:=Lexem+' ';
-    GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
-    inc(LineWidth, Size.cx);
-    inc(LexemCount);
+    GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), Length(Lexem), Size);
+    Inc(LineWidth, Size.cx);
+    Inc(LexemCount);
     if TextHeight < Size.cy then
       TextHeight := Size.cy;
-    if (LineWidth > Width) or (Pos2 > length(Caption)) then
+    if (LineWidth > Width) or (Pos2 > Length(Caption)) then
     begin
       if LexemCount = 1 then
         Pos1 := Pos2;
-      if (Pos2 <= length(Caption)) then
+      if (Pos2 <= Length(Caption)) then
       begin
         if LexemCount > 1 then
-          dec(LexemCount);
+          Dec(LexemCount);
         DrawLine(Width - (LineWidth - Size.cx));
       end
       else
-        DrawLine(Width - (LineWidth));
+        DrawLine(Width - LineWidth);
 
       DrawPos := Pos1;
-      inc(LineNo);
+      Inc(LineNo);
       LexemCount := 0;
       LineWidth := 0; //TextHeight := 0;
     end
     else
       Pos1 := Pos2;
-  until Pos2 > length(Caption);
+  until Pos2 > Length(Caption);
   if FAutoSize then
-    Height := max(12, LineNo * TextHeight);
+    Height := Max(12, LineNo * TextHeight);
 end;
 
 procedure TJvgStaticText.AdjustBounds;
 const
-  WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 var
   DC: HDC;
   X: Integer;
@@ -335,27 +276,39 @@ end;
 
 procedure TJvgStaticText.SetAlignment(Value: TglAlignment);
 begin
-  FAlignment := Value;
-  Invalidate;
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    Invalidate;
+  end;
 end;
 
-procedure TJvgStaticText.SetAutoSize(Value: boolean);
+procedure TJvgStaticText.SetAutoSize(Value: Boolean);
 begin
-  FAutoSize := Value;
-  AdjustBounds;
-  Repaint;
+  if FAutoSize <> Value then
+  begin
+    FAutoSize := Value;
+    AdjustBounds;
+    Repaint;
+  end;
 end;
 
-procedure TJvgStaticText.SetTransparent(Value: boolean);
+procedure TJvgStaticText.SetTransparent(Value: Boolean);
 begin
-  FTransparent := Value;
-  Repaint;
+  if FTransparent <> Value then
+  begin
+    FTransparent := Value;
+    Repaint;
+  end;
 end;
 
-procedure TJvgStaticText.SetWordWrap(Value: boolean);
+procedure TJvgStaticText.SetWordWrap(Value: Boolean);
 begin
-  FWordWrap := Value;
-  Invalidate;
+  if FWordWrap <> Value then
+  begin
+    FWordWrap := Value;
+    Invalidate;
+  end;
 end;
 
 end.

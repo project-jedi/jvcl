@@ -726,11 +726,11 @@ type
     property Shift: TShiftState read FShift write FShift;
   end;
 
-{$IFDEF USEJVCL}
-  TJvTFComponent = class(TJVComponent)
-{$ELSE}
+  {$IFDEF USEJVCL}
+  TJvTFComponent = class(TJvComponent)
+  {$ELSE}
   TJvTFComponent = class(TComponent)
-{$ENDIF}
+  {$ENDIF}
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringlist;

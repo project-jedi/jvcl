@@ -28,12 +28,20 @@ History:
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvWizardRouteMapSteps;
 
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms,
+  {$ENDIF VisualCLX}
   JvWizard;
 
 type
@@ -44,18 +52,18 @@ type
     FPreviousStepText: string;
     FShowDivider: Boolean;
     FShowNavigators: Boolean;
-    function  GetActiveStepRect: TRect;
-    function  GetPreviousStepRect: TRect;
-    function  GetNextStepRect: TRect;
-    function  GetPreviousArrowRect: TRect;
-    function  GetNextArrowRect: TRect;
+    function GetActiveStepRect: TRect;
+    function GetPreviousStepRect: TRect;
+    function GetNextStepRect: TRect;
+    function GetPreviousArrowRect: TRect;
+    function GetNextArrowRect: TRect;
     procedure SetIndent(const Value: Integer);
     procedure SetNextStepText(const Value: string);
     procedure SetPreviousStepText(const Value: string);
     procedure SetShowDivider(const Value: Boolean);
     procedure SetShowNavigators(const Value: Boolean);
-    function  DetectPageCount(var ActivePageIndex: Integer): Integer; // Add by Yu Wei
-    function  DetectPage(const Pt: TPoint): TJvWizardCustomPage; // Add by Yu Wei
+    function DetectPageCount(var ActivePageIndex: Integer): Integer; // Add by Yu Wei
+    function DetectPage(const Pt: TPoint): TJvWizardCustomPage; // Add by Yu Wei
   protected
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     function PageAtPos(Pt: TPoint): TJvWizardCustomPage; override;
@@ -63,7 +71,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
-    property Color;
+    property Color default clBackground;
     property Font;
     property Indent: Integer read FIndent write SetIndent default 5;
     property PreviousStepText: string read FPreviousStepText write SetPreviousStepText;
@@ -75,7 +83,7 @@ type
 implementation
 
 uses
-  JvJVCLUtils, JvResources;
+  JvClxUtils, JvJVCLUtils, JvResources;
 
 constructor TJvWizardRouteMapSteps.Create(AOwner: TComponent);
 begin
@@ -85,8 +93,8 @@ begin
   Font.Color := clWhite;
   FPreviousStepText := RsBackTo;
   FNextStepText := RsNextStep;
-  FShowNavigators := True;
   FShowDivider := True;
+  FShowNavigators := True;
 end;
 
 function TJvWizardRouteMapSteps.DetectPage(const Pt: TPoint): TJvWizardCustomPage;
@@ -177,6 +185,7 @@ var
   ActivePageIndex, TotalPageCount: Integer;
   StepHeight: Integer;
   APage: TJvWizardCustomPage;
+  S: string;
 begin
   ARect := ClientRect;
   TotalPageCount := DetectPageCount(ActivePageIndex);
@@ -186,15 +195,16 @@ begin
   Canvas.Font.Style:= [fsBold];
   Canvas.Brush.Style:= bsClear;
 
-  StepHeight := DrawText(Canvas.Handle, PChar(Format(RsActiveStepFormat,
-     [ActivePageIndex, TotalPageCount])), -1, TextRect,
+  S := Format(RsActiveStepFormat, [ActivePageIndex, TotalPageCount]);
+  StepHeight := ClxDrawText(Canvas, S, TextRect,
      DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
 
   // Display Active Page Description
   Canvas.Font.Style:= [];
   OffsetRect(TextRect, 0, StepHeight);
-  DrawText(Canvas.Handle, PChar(Pages[PageIndex].Caption), -1, TextRect,
-           DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
+  S := Pages[PageIndex].Caption;
+  ClxDrawText(Canvas, S, TextRect,
+    DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
   Canvas.Font.Style:= [];
   if FShowDivider then
   begin
@@ -203,7 +213,7 @@ begin
     DrawEdge(Canvas.Handle, DividerRect, EDGE_RAISED, BF_FLAT OR BF_BOTTOM);
   end;
 
-  { do the prevous step}
+  { do the previous step }
   
   // YW - Ignore all disabled pages at run time
   APage := Wizard.FindNextPage(PageIndex, -1, not (csDesigning in ComponentState));
@@ -219,14 +229,16 @@ begin
       DrawFrameControl(Canvas.Handle, ArrowRect, DFC_SCROLL,
         DFCS_SCROLLLEFT or DFCS_FLAT);
     end;
-    StepHeight := DrawText(Canvas.Handle, PChar(FPreviousStepText), -1, TextRect,
+    S := FPreviousStepText;
+    StepHeight := ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
     OffsetRect(TextRect, 0, StepHeight);
-    DrawText(Canvas.Handle, PChar(APage.Caption), -1, TextRect,
+    S := APage.Caption;
+    ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
   end;
 
-  { do the next step}
+  { do the next step }
 
   // YW - Ignore all disabled pages at run time
   APage := Wizard.FindNextPage(PageIndex, 1, not (csDesigning in ComponentState));
@@ -241,10 +253,12 @@ begin
       DrawFrameControl(Canvas.Handle, ArrowRect, DFC_SCROLL,
         DFCS_SCROLLRIGHT or DFCS_FLAT);
     end;
-    StepHeight := DrawText(Canvas.Handle, PChar(FNextStepText), -1, TextRect,
+    S := FNextStepText;
+    StepHeight := ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
     OffsetRect(TextRect, 0, StepHeight);
-    DrawText(Canvas.Handle, PChar(APage.Caption), -1, TextRect,
+    S := APage.Caption;
+    ClxDrawText(Canvas, S, TextRect,
       DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS or DT_VCENTER);
   end;
 end;

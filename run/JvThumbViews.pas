@@ -346,7 +346,7 @@ begin
   end;
 end;
 
-procedure TJVThumbview.ScrollTo(const number: longint);
+procedure TJvThumbview.ScrollTo(const number: longint);
 begin
 // if AutoScrolling then if (number>-1) then
   if (number < 0) or (number > FThumbList.count - 1) then exit;
@@ -355,50 +355,50 @@ begin
       begin
         if TJvThumbnail(FThumbList.objects[number]).top < 0 then
           vertscrollbar.position := vertscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).top -
-            (TJVThumbNail(FThumbList.objects[number]).width div 2));
-        if TJVThumbNail(FThumbList.objects[number]).top +
-          TJVThumbNail(FThumbList.objects[number]).height > height then
+            (TJvThumbnail(FThumbList.objects[number]).top -
+            (TJvThumbnail(FThumbList.objects[number]).width div 2));
+        if TJvThumbnail(FThumbList.objects[number]).top +
+          TJvThumbnail(FThumbList.objects[number]).height > height then
           vertscrollbar.position := vertscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).top -
-            (height - TJVThumbNail(FThumbList.objects[number]).height -
-            (TJVThumbNail(FThumbList.objects[number]).height div 2)));
+            (TJvThumbnail(FThumbList.objects[number]).top -
+            (height - TJvThumbnail(FThumbList.objects[number]).height -
+            (TJvThumbnail(FThumbList.objects[number]).height div 2)));
       end;
     smhorizontal:
       begin
-        if TJVThumbNail(FThumbList.objects[number]).left < 0 then
+        if TJvThumbnail(FThumbList.objects[number]).left < 0 then
           horzscrollbar.position := Horzscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).left -
-            (TJVThumbNail(FThumbList.objects[number]).width div 2));
-        if TJVThumbNail(FThumbList.objects[number]).left +
-          TJVThumbNail(FThumbList.objects[number]).width > width then
+            (TJvThumbnail(FThumbList.objects[number]).left -
+            (TJvThumbnail(FThumbList.objects[number]).width div 2));
+        if TJvThumbnail(FThumbList.objects[number]).left +
+          TJvThumbnail(FThumbList.objects[number]).width > width then
           Horzscrollbar.position := Horzscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).left -
-            (width - TJVThumbNail(FThumbList.objects[number]).width -
-            (TJVThumbNail(FThumbList.objects[number]).width div 2)));
+            (TJvThumbnail(FThumbList.objects[number]).left -
+            (width - TJvThumbnail(FThumbList.objects[number]).width -
+            (TJvThumbnail(FThumbList.objects[number]).width div 2)));
       end;
     smBoth:
       begin
-        if TJVThumbNail(FThumbList.objects[number]).top < 0 then
+        if TJvThumbnail(FThumbList.objects[number]).top < 0 then
           vertscrollbar.position := vertscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).top -
-            (TJVThumbNail(FThumbList.objects[number]).width div 2));
-        if TJVThumbNail(FThumbList.objects[number]).top +
-          TJVThumbNail(FThumbList.objects[number]).height > height then
+            (TJvThumbnail(FThumbList.objects[number]).top -
+            (TJvThumbnail(FThumbList.objects[number]).width div 2));
+        if TJvThumbnail(FThumbList.objects[number]).top +
+          TJvThumbnail(FThumbList.objects[number]).height > height then
           vertscrollbar.position := vertscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).top -
-            (TJVThumbNail(FThumbList.objects[number]).height -
-            (TJVThumbNail(FThumbList.objects[number]).height div 2)));
-        if TJVThumbNail(FThumbList.objects[number]).left < 0 then
+            (TJvThumbnail(FThumbList.objects[number]).top -
+            (TJvThumbnail(FThumbList.objects[number]).height -
+            (TJvThumbnail(FThumbList.objects[number]).height div 2)));
+        if TJvThumbnail(FThumbList.objects[number]).left < 0 then
           horzscrollbar.position := Horzscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).left -
-            (TJVThumbNail(FThumbList.objects[number]).width div 2));
-        if TJVThumbNail(FThumbList.objects[number]).left +
-          TJVThumbNail(FThumbList.objects[number]).width > width then
+            (TJvThumbnail(FThumbList.objects[number]).left -
+            (TJvThumbnail(FThumbList.objects[number]).width div 2));
+        if TJvThumbnail(FThumbList.objects[number]).left +
+          TJvThumbnail(FThumbList.objects[number]).width > width then
           Horzscrollbar.position := Horzscrollbar.position +
-            (TJVThumbNail(FThumbList.objects[number]).left -
-            (width - TJVThumbNail(FThumbList.objects[number]).width -
-            (TJVThumbNail(FThumbList.objects[number]).width div 2)));
+            (TJvThumbnail(FThumbList.objects[number]).left -
+            (width - TJvThumbnail(FThumbList.objects[number]).width -
+            (TJvThumbnail(FThumbList.objects[number]).width div 2)));
       end;
   end;
   if FSelected <> Number then

@@ -42,10 +42,10 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
+    FOver: Boolean;
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
-    FOver: Boolean;
     FPopupControl: Boolean;
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
@@ -59,10 +59,15 @@ type
     function GetParentBackground: Boolean;
     {$ENDIF JVCLThemesEnabledD56}
   protected
+    procedure MouseEnter(AControl: TControl); dynamic;
+    procedure MouseLeave(AControl: TControl); dynamic;
+    procedure ParentColorChanged; dynamic;
     {$IFDEF JVCLThemesEnabledD56}
     procedure SetParentBackground(Value: Boolean); virtual;
     {$ENDIF JVCLThemesEnabledD56}
+    {$IFDEF VCL}
     procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+    {$ENDIF VCL}
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure PopupMenuClick(Sender: TObject);
     procedure Loaded; override;
@@ -73,15 +78,15 @@ type
     procedure LoadPositions(const Value: string);
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-    property PopupControl: Boolean read FPopupControl write FPopupControl default True;
-    property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground default True;
     {$ENDIF JVCLThemesEnabledD56}
+    property PopupControl: Boolean read FPopupControl write FPopupControl default True;
+    property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
+    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
+    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
 implementation
@@ -124,9 +129,55 @@ end;
 
 {$ENDIF JVCLThemesEnabledD56}
 
+procedure TJvControlBar.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvControlBar.MouseEnter(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if not FOver then
+  begin
+    FSaved := Application.HintColor;
+    Application.HintColor := FHintColor;
+    FOver := True;
+  end;
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvControlBar.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvControlBar.MouseLeave(AControl: TControl);
+begin
+  // for D7...
+  if csDesigning in ComponentState then
+    Exit;
+  if FOver then
+  begin
+    FOver := False;
+    Application.HintColor := FSaved;
+  end;
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
 procedure TJvControlBar.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
+  ParentColorChanged;
+end;
+
+procedure TJvControlBar.ParentColorChanged;
+begin
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -143,32 +194,6 @@ begin
   else
     DrawThemedBackground(Self, Msg.DC, ClientRect, Parent.Brush.Handle);
   Msg.Result := 1;
-end;
-
-procedure TJvControlBar.CMMouseEnter(var Msg: TMessage);
-begin
-  if not FOver then
-  begin
-    FOver := True;
-    FSaved := Application.HintColor;
-    // for D7...
-    if csDesigning in ComponentState then
-      Exit;
-    Application.HintColor := FHintColor;
-  end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvControlBar.CMMouseLeave(var Msg: TMessage);
-begin
-  if FOver then
-  begin
-    Application.HintColor := FSaved;
-    FOver := False;
-  end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 procedure TJvControlBar.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -296,7 +321,8 @@ begin
       Result := Result + cTrue + ','
     else
       Result := Result + cFalse + ',';
-    Result := Result + IntToStr(TControl(FList[I]).Left) + ',' + IntToStr(TControl(Flist[I]).Top);
+    Result := Result + IntToStr(TControl(FList[I]).Left) + ',' +
+      IntToStr(TControl(FList[I]).Top);
     if TControl(FList[I]).Parent <> Self then
       Result := Result + ',' + cUndocked;
     Result := Result + ';';
@@ -312,12 +338,14 @@ begin
     FList.Add(Controls[I]);
 end;
 
+{$IFDEF VCL}
 procedure TJvControlBar.DoAddDockClient(Client: TControl; const ARect: TRect);
 begin
   inherited DoAddDockClient(Client, ARect);
   if FList.IndexOf(Client) = -1 then
     FList.Add(Client);
 end;
+{$ENDIF VCL}
 
 end.
 
