@@ -47,7 +47,7 @@ type
   public
     procedure Solarize(Src, Dst: TBitmap; Amount: Integer);
     procedure Posterize(Src, Dst: TBitmap; Amount: Integer);
-    procedure Blend(Src1, Src2, Dst: TBitmap; Amount: Extended);
+    procedure Blend(Src1, Src2, Dst: TBitmap; Amount: Single);
     procedure ExtractColor(Src: TBitmap; AColor: TColor);
     procedure ExcludeColor(Src: TBitmap; AColor: TColor);
     procedure Turn(Src, Dst: TBitmap);
@@ -59,7 +59,7 @@ type
     procedure RippleTooth(Src: TBitmap; Amount: Integer);
     procedure RippleTriangle(Src: TBitmap; Amount: Integer);
     procedure Triangles(Src: TBitmap; Amount: Integer);
-    procedure DrawMandelJulia(Src: TBitmap; x0, y0, x1, y1: Extended;
+    procedure DrawMandelJulia(Src: TBitmap; x0, y0, x1, y1: Single;
       Niter: Integer; Mandel: Boolean);
     procedure FilterXBlue(Src: TBitmap; Min, Max: Integer);
     procedure FilterXGreen(Src: TBitmap; Min, Max: Integer);
@@ -68,15 +68,15 @@ type
     procedure FilterGreen(Src: TBitmap; Min, Max: Integer);
     procedure FilterRed(Src: TBitmap; Min, Max: Integer);
     procedure Emboss(var Bmp: TBitmap);
-    procedure Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Extended);
-    procedure Shake(Src, Dst: TBitmap; Factor: Extended);
-    procedure ShakeDown(Src, Dst: TBitmap; Factor: Extended);
-    procedure KeepBlue(Src: TBitmap; Factor: Extended);
-    procedure KeepGreen(Src: TBitmap; Factor: Extended);
-    procedure KeepRed(Src: TBitmap; Factor: Extended);
+    procedure Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Single);
+    procedure Shake(Src, Dst: TBitmap; Factor: Single);
+    procedure ShakeDown(Src, Dst: TBitmap; Factor: Single);
+    procedure KeepBlue(Src: TBitmap; Factor: Single);
+    procedure KeepGreen(Src: TBitmap; Factor: Single);
+    procedure KeepRed(Src: TBitmap; Factor: Single);
     procedure Mandelbrot(Src: TBitmap; Factor: Integer);
     procedure MaskMandelbrot(Src: TBitmap; Factor: Integer);
-    procedure FoldRight(Src1, Src2, Dst: TBitmap; Amount: Extended);
+    procedure FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
     procedure QuartoOpaque(Src, Dst: TBitmap);
     procedure SemiOpaque(Src, Dst: TBitmap);
     procedure ShadowDownLeft(Src: TBitmap);
@@ -93,7 +93,7 @@ type
     procedure Wave(const Clip: TBitmap; Amount, Inference, Style: Integer);
     procedure Mosaic(const Bm: TBitmap; Size: Integer);
     procedure SmoothRotate(var Src, Dst: TBitmap; CX, CY: Integer;
-      Angle: Extended);
+      Angle: Single);
     procedure SmoothResize(var Src, Dst: TBitmap);
     procedure Twist(var Bmp, Dst: TBitmap; Amount: Integer);
     procedure SplitBlur(const Clip: TBitmap; Amount: Integer);
@@ -109,21 +109,21 @@ type
     procedure AntiAlias(const Clip: TBitmap);
     procedure AntiAliasRect(const Clip: TBitmap; XOrigin, YOrigin, XFinal, YFinal: Integer);
     procedure SmoothPoint(const Clip: TBitmap; XK, YK: Integer);
-    procedure FishEye(var Bmp, Dst: TBitmap; Amount: Extended);
-    procedure Marble(var Src, Dst: TBitmap; Scale: Extended; Turbulence: Integer);
-    procedure Marble2(var Src, Dst: TBitmap; Scale: Extended;
+    procedure FishEye(var Bmp, Dst: TBitmap; Amount: Single);
+    procedure Marble(const Src: TBitmap; var Dst: TBitmap; Scale: Single; Turbulence: Integer);
+    procedure Marble2(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
       Turbulence: Integer);
-    procedure Marble3(var Src, Dst: TBitmap; Scale: Extended;
+    procedure Marble3(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
       Turbulence: Integer);
-    procedure Marble4(var Src, Dst: TBitmap; Scale: Extended;
+    procedure Marble4(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
       Turbulence: Integer);
-    procedure Marble5(var Src, Dst: TBitmap; Scale: Extended;
+    procedure Marble5(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
       Turbulence: Integer);
-    procedure Marble6(var Src, Dst: TBitmap; Scale: Extended;
+    procedure Marble6(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
       Turbulence: Integer);
-    procedure Marble7(var Src, Dst: TBitmap; Scale: Extended;
+    procedure Marble7(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
       Turbulence: Integer);
-    procedure Marble8(var Src, Dst: TBitmap; Scale: Extended;
+    procedure Marble8(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
       Turbulence: Integer);
     procedure SqueezeHor(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
     procedure SplitRound(Src, Dst: TBitmap; Amount: Integer; Style: TLightBrush);
@@ -135,7 +135,7 @@ type
     // Filter:	Weight calculation filter
     // AWidth:	Relative sample radius
     procedure Strecth(Src, Dst: TBitmap; Filter: TFilterProc; AWidth: Single);
-    procedure Grow(Src1, Src2, Dst: TBitmap; Amount: Extended; x, y: Integer);
+    procedure Grow(Src1, Src2, Dst: TBitmap; Amount: Single; x, y: Integer);
     procedure Invert(Src: TBitmap);
     procedure MirrorRight(Src: TBitmap);
     procedure MirrorDown(Src: TBitmap);
@@ -461,7 +461,7 @@ begin
   Clip.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.FishEye(var Bmp, Dst: TBitmap; Amount: Extended);
+procedure TJvPaintFX.FishEye(var Bmp, Dst: TBitmap; Amount: Single);
 var
   xmid, ymid: Single;
   fx, fy: Single;
@@ -576,9 +576,13 @@ end;
 procedure TJvPaintFX.GaussianBlur(const Clip: TBitmap; Amount: Integer);
 var
   I: Integer;
+  OPF: TPixelFormat;
 begin
+  OPF := Clip.PixelFormat;
+  Clip.PixelFormat := pf24bit;
   for I := Amount downto 0 do
     SplitBlur(Clip, 3);
+  Clip.PixelFormat := OPF;
 end;
 
 procedure TJvPaintFX.GrayScale(const Clip: TBitmap);
@@ -651,288 +655,327 @@ begin
   Clip.PixelFormat := OPF;
 end;
 
-procedure TJvPaintFX.Marble(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.Width := w;
-  Dst.Height := h;
-  Dst.Canvas.Draw(0, 0, Src);
   for y := 0 to h - 1 do
   begin
     yy := Scale * Cos((y mod Turbulence) / Scale);
-
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := 0 to w - 1 do
     begin
       xx := -Scale * Sin((x mod Turbulence) / Scale);
       xm := Round(Abs(x + xx + yy));
       ym := Round(Abs(y + yy + xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble2(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble2(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.assign(Src);
   for y := 0 to h - 1 do
   begin
     yy := Scale * Cos((y mod Turbulence) / Scale);
-
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := 0 to w - 1 do
     begin
       xx := -Scale * Sin((x mod Turbulence) / Scale);
       xm := Round(Abs(x + xx - yy));
       ym := Round(Abs(y + yy - xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble3(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble3(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.assign(Src);
   for y := 0 to h - 1 do
   begin
     yy := Scale * Cos((y mod Turbulence) / Scale);
-
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := 0 to w - 1 do
     begin
       xx := -Scale * Sin((x mod Turbulence) / Scale);
       xm := Round(Abs(x - xx + yy));
       ym := Round(Abs(y - yy + xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble4(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble4(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.assign(Src);
   for y := 0 to h - 1 do
   begin
     yy := Scale * Sin((y mod Turbulence) / Scale);
-
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := 0 to w - 1 do
     begin
       xx := -Scale * Cos((x mod Turbulence) / Scale);
       xm := Round(Abs(x + xx + yy));
       ym := Round(Abs(y + yy + xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble5(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble5(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.assign(Src);
   for y := h - 1 downto 0 do
   begin
     yy := Scale * Cos((y mod Turbulence) / Scale);
-
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := w - 1 downto 0 do
     begin
       xx := -Scale * Sin((x mod Turbulence) / Scale);
       xm := Round(Abs(x + xx + yy));
       ym := Round(Abs(y + yy + xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble6(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble6(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.assign(Src);
   for y := 0 to h - 1 do
   begin
     yy := Scale * Cos((y mod Turbulence) / Scale);
-
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := 0 to w - 1 do
     begin
       xx := -tan((x mod Turbulence) / Scale) / Scale;
       xm := Round(Abs(x + xx + yy));
       ym := Round(Abs(y + yy + xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble7(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble7(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.assign(Src);
   for y := 0 to h - 1 do
   begin
     yy := Scale * Sin((y mod Turbulence) / Scale);
-
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := 0 to w - 1 do
     begin
       xx := -tan((x mod Turbulence) / Scale) / (Scale * Scale);
       xm := Round(Abs(x + xx + yy));
       ym := Round(Abs(y + yy + xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
-procedure TJvPaintFX.Marble8(var Src, Dst: TBitmap; Scale: Extended;
+procedure TJvPaintFX.Marble8(const Src: TBitmap; var Dst: TBitmap; Scale: Single;
   Turbulence: Integer);
 var
   x, xm, y, ym: Integer;
-  xx, yy: Extended;
-  p1, p2: pbytearray;
+  xx, yy: Single;
+  Line1, Line2: PJvRGBArray;
   w, h: Integer;
-  ax: Extended;
+  ax: Single;
+  Source: TBitmap;
 begin
+  if Src = nil then
+    Exit;
+  if Dst = nil then
+    Dst := TBitmap.Create;
+  Dst.Assign(Src);
+  Source := TBitmap.Create;
+  Source.Assign(Src);
+  Dst.PixelFormat := pf24bit;
+  Source.PixelFormat := pf24bit;
   h := Src.Height;
   w := Src.Width;
-  Dst.assign(Src);
   for y := 0 to h - 1 do
   begin
     ax := (y mod Turbulence) / Scale;
     yy := Scale * Sin(ax) * Cos(1.5 * ax);
-    p1 := Src.ScanLine[y];
+    Line1 := Source.ScanLine[y];
     for x := 0 to w - 1 do
     begin
       ax := (x mod Turbulence) / Scale;
       xx := -Scale * Sin(2 * ax) * Cos(ax);
       xm := Round(Abs(x + xx + yy));
       ym := Round(Abs(y + yy + xx));
-      if ym < h then
+      if (ym < h) and (xm < w) then
       begin
-        p2 := Dst.ScanLine[ym];
-        if xm < w then
-        begin
-          p2[xm * 3] := p1[x * 3];
-          p2[xm * 3 + 1] := p1[x * 3 + 1];
-          p2[xm * 3 + 2] := p1[x * 3 + 2];
-        end;
+        Line2 := Dst.ScanLine[ym];
+        Line2[xm] := Line1[x];
       end;
     end;
   end;
+  Source.Free;
+  Dst.PixelFormat := Src.PixelFormat;
 end;
 
 procedure TJvPaintFX.Saturation(const Clip: TBitmap; Amount: Integer);
@@ -1065,7 +1108,7 @@ begin
 end;
 
 procedure TJvPaintFX.SmoothRotate(var Src, Dst: TBitmap; CX, CY: Integer;
-  Angle: Extended);
+  Angle: Single);
 type
   TFColor = record b, g, r: Byte
   end;
@@ -1076,7 +1119,7 @@ var
     Right,
     eww, nsw,
     fx, fy,
-    wx, wy: Extended;
+    wx, wy: Single;
   cAngle,
     sAngle: Double;
   xDiff,
@@ -1991,7 +2034,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Grow(Src1, Src2, Dst: TBitmap; Amount: Extended; x, y: Integer);
+procedure TJvPaintFX.Grow(Src1, Src2, Dst: TBitmap; Amount: Single; x, y: Integer);
 var
   bm: TBitmap;
   h, w, hr, wr: Integer;
@@ -2432,7 +2475,7 @@ begin
   b.Free;
 end;
 
-procedure TJvPaintFX.FoldRight(Src1, Src2, Dst: TBitmap; Amount: Extended);
+procedure TJvPaintFX.FoldRight(Src1, Src2, Dst: TBitmap; Amount: Single);
 var
   w, h, x, y, xf, xf0: Integer;
   ps1, ps2, pd: pbytearray;
@@ -2548,7 +2591,7 @@ begin
   bm.Free;
 end;
 
-procedure TJvPaintFX.KeepBlue(Src: TBitmap; Factor: Extended);
+procedure TJvPaintFX.KeepBlue(Src: TBitmap; Factor: Single);
 var
   x, y, w, h: Integer;
   Line: pbytearray;
@@ -2568,7 +2611,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.KeepGreen(Src: TBitmap; Factor: Extended);
+procedure TJvPaintFX.KeepGreen(Src: TBitmap; Factor: Single);
 var
   x, y, w, h: Integer;
   Line: pbytearray;
@@ -2588,7 +2631,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.KeepRed(Src: TBitmap; Factor: Extended);
+procedure TJvPaintFX.KeepRed(Src: TBitmap; Factor: Single);
 var
   x, y, w, h: Integer;
   Line: pbytearray;
@@ -2608,7 +2651,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Shake(Src, Dst: TBitmap; Factor: Extended);
+procedure TJvPaintFX.Shake(Src, Dst: TBitmap; Factor: Single);
 var
   x, y, h, w, dx: Integer;
   p: pbytearray;
@@ -2644,7 +2687,7 @@ begin
 
 end;
 
-procedure TJvPaintFX.ShakeDown(Src, Dst: TBitmap; Factor: Extended);
+procedure TJvPaintFX.ShakeDown(Src, Dst: TBitmap; Factor: Single);
 var
   x, y, h, w, dy: Integer;
   p, p2, p3: pbytearray;
@@ -2685,7 +2728,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Extended);
+procedure TJvPaintFX.Plasma(Src1, Src2, Dst: TBitmap; Scale, Turbulence: Single);
 var
   cval, sval: array[0..255] of Integer;
   i, x, y, w, h, xx, yy: Integer;
@@ -2925,7 +2968,7 @@ begin
   end;
 end;
 
-procedure TJvPaintFX.DrawMandelJulia(Src: TBitmap; x0, y0, x1, y1: Extended; Niter: Integer; Mandel: Boolean);
+procedure TJvPaintFX.DrawMandelJulia(Src: TBitmap; x0, y0, x1, y1: Single; Niter: Integer; Mandel: Boolean);
 const
   //Number if colors. If this is changed, the number of mapped colors must also be changed
   nc = 16;
@@ -3408,7 +3451,7 @@ begin
   Src.TransparentColor := clBlack;
 end;
 
-procedure TJvPaintFX.Blend(Src1, Src2, Dst: TBitmap; Amount: Extended);
+procedure TJvPaintFX.Blend(Src1, Src2, Dst: TBitmap; Amount: Single);
 var
   w, h, x, y: Integer;
   ps1, ps2, pd: pbytearray;
