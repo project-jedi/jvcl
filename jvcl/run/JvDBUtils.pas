@@ -433,9 +433,10 @@ function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
 var
   FieldCount: Integer;
   Fields: TList;
+  Fld : TField;                    {BG}   //else BAD mem leak on 'Field.asString'
   Bookmark: TBookmarkStr;
 
-  function CompareField(Field: TField; Value: Variant): Boolean;
+  function CompareField(var Field: TField; Value: Variant): Boolean; {BG}
   var
     S: string;
   begin
@@ -463,12 +464,18 @@ var
     I: Integer;
   begin
     if FieldCount = 1 then
-      Result := CompareField(TField(Fields.First), KeyValues)
+    begin
+      Fld := TField(Fields.First);      {BG}
+      Result := CompareField(Fld, KeyValues)  {BG}
+    end
     else
     begin
       Result := True;
       for I := 0 to FieldCount - 1 do
-        Result := Result and CompareField(TField(Fields[I]), KeyValues[I]);
+      begin
+        Fld := TField(Fields[I]);                  {BG}
+        Result := Result and CompareField(Fld, KeyValues[I]);  {BG}
+      end;
     end;
   end;
 
