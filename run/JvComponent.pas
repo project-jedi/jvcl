@@ -98,24 +98,32 @@ type
 
 implementation
 
+{$IFDEF USE_DXGETTEXT}
+const
+  cDomainName = 'jvcl';
+{$ENDIF USE_DXGETTEXT}
+
 //=== TJvForm ================================================================
 
 {$IFDEF USE_DXGETTEXT}
+
 constructor TJvForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  TranslateComponent(Self, 'jvcl');
+  TranslateComponent(Self, cDomainName);
 end;
 
 procedure TJvForm.RefreshTranslation;
 begin
-  ReTranslateComponent(Self, 'jvcl');
+  ReTranslateComponent(Self, cDomainName);
 end;
 
 {$ENDIF USE_DXGETTEXT}
 
 //=== TJvPopupListBox ========================================================
+
 {$IFDEF VCL}
+
 procedure TJvPopupListBox.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -134,9 +142,11 @@ begin
   Windows.SetParent(Handle, 0);
   CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
+
 procedure TJvPopupListBox.CreateWidget;
 begin
   inherited CreateWidget;
@@ -145,11 +155,13 @@ end;
 
 function TJvPopupListBox.WidgetFlags: Integer;
 begin
-  Result := Integer(WidgetFlags_WType_Popup) or         // WS_POPUPWINDOW 
-            Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
-            Integer(WidgetFlags_WStyle_Tool) or         // WS_EX_TOOLWINDOW
-            Integer(WidgetFlags_WStyle_StaysOnTop);     // WS_EX_TOPMOST
+  Result :=
+    Integer(WidgetFlags_WType_Popup) or         // WS_POPUPWINDOW
+    Integer(WidgetFlags_WStyle_NormalBorder) or // WS_BORDER
+    Integer(WidgetFlags_WStyle_Tool) or         // WS_EX_TOOLWINDOW
+    Integer(WidgetFlags_WStyle_StaysOnTop);     // WS_EX_TOPMOST
 end;
+
 {$ENDIF VisualCLX}
 
 procedure TJvPopupListBox.KeyPress(var Key: Char);
@@ -180,10 +192,8 @@ begin
 end;
 
 {$IFDEF USE_DXGETTEXT}
-
 initialization
-  AddDomainForResourceString('jvcl');
-
+  AddDomainForResourceString(cDomainName);
 {$ENDIF USE_DXGETTEXT}
 
 end.
