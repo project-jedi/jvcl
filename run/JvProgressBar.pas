@@ -119,6 +119,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvProgressBar.CreateWnd;
 begin
   inherited CreateWnd;
@@ -138,7 +139,8 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF VCL}
 
 end.
 

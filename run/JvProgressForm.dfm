@@ -16,6 +16,9 @@ object frmProgress: TfrmProgress
   Position = poScreenCenter
   Scaled = False
   OnPaint = FormPaint
+  DesignSize = (
+    316
+    165)
   PixelsPerInch = 96
   TextHeight = 13
   object imProgress: TImage

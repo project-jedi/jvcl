@@ -617,7 +617,7 @@ type
     FEditCtrl: TCustomEdit;
     {$IFDEF VCL}
     FEditWndPrc: TWndMethod;
-    {$ENDIF}
+    {$ENDIF VCL}
     FEditing: Boolean;
     FFlags: TInspectorItemFlags;
     FHeight: Integer;
@@ -759,7 +759,7 @@ type
     property EditCtrl: TCustomEdit read GetEditCtrl;
     {$IFDEF VCL}
     property EditWndPrc: TWndMethod read FEditWndPrc;
-    {$ENDIF}
+    {$ENDIF VCL}
     property IsCompoundColumn: Boolean read GetIsCompoundColumn;
     property LastPaintGeneration: Integer read FLastPaintGen;
     property ListBox: TCustomListBox read GetListBox;
@@ -6205,13 +6205,13 @@ begin
       ListBox.Visible := False;
       {$IFDEF VCL}
       ListBox.Parent := EditCtrl;
-      {$ELSE}
-      ListBox.Parent := EditCtrl.parent;
-      {$ENDIF}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      ListBox.Parent := EditCtrl.Parent;
+      {$ENDIF VisualCLX}
       TListBox(ListBox).OnMouseUp := ListMouseUp;
       {$IFDEF VCL}
-      TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in
-        Flags);
+      TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in Flags);
       {$ENDIF VCL}
       TListBox(ListBox).ItemHeight := 11;
       if iifOwnerDrawListFixed in Flags then

@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvSALHashList, JvStrings, JvComponent;
 
 const

@@ -299,10 +299,10 @@ begin
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoImagesChange;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
     ControlStyle := ControlStyle - [csOpaque];
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   FHotTrack := False;
   // (rom) needs better font handling
   FHotTrackFont := TFont.Create;
@@ -692,10 +692,10 @@ procedure TJvCustomLabel.SetTransparent(Value: Boolean);
 begin
   if Transparent <> Value then
   begin
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
      Value := True; // themes aware Label are always transparent transparent
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     if Value then
       ControlStyle := ControlStyle - [csOpaque]
     else

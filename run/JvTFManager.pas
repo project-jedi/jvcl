@@ -35,11 +35,14 @@ uses
   Classes, SysUtils,
   {$IFDEF VCL}
   Windows, Controls, Messages, Graphics, ImgList, ExtCtrls, Printers,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QWindows, QControls, QGraphics, QImgList, QExtCtrls, QPrinters,
-  {$ENDIF}
-  JvTFUtils
-{$IFDEF USEJVCL}, JvComponent{$ENDIF};
+  {$ENDIF VisualCLX}
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  JvTFUtils;
 
 const
   CN_REQUESTREFRESH = $BD01;
@@ -736,7 +739,7 @@ type
   TJvTFComponent = class(TJvComponent)
   {$ELSE}
   TJvTFComponent = class(TComponent)
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   private
     FScheduleManager: TJvTFScheduleManager;
     FSchedules: TStringlist;
@@ -1050,8 +1053,12 @@ type
 implementation
 
 uses
-  Dialogs, Forms
-  {$IFDEF USEJVCL}, JvConsts, JvResources {$ENDIF};
+  {$IFDEF USEJVCL}
+  Dialogs, Forms,
+  JvConsts, JvResources;
+  {$ELSE}
+  Dialogs, Forms;
+  {$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -1094,7 +1101,7 @@ resourcestring
     'because aPrinter must be assigned';
   RsEInvalidFooterHeightd = 'Invalid Footer Height (%d)';
   RsEInvalidHeaderHeightd = 'Invalid Header Height (%d)';
-{$ENDIF}
+{$ENDIF USEJVCL}
   
 function AdjustEndTime(ATime: TTime): TTime;
 begin

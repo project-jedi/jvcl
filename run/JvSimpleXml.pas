@@ -2896,7 +2896,8 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF COMPILER6_UP}
 
 procedure TJvSimpleXMLElemsProlog.Error(const S: string);
 begin

@@ -34,10 +34,10 @@ uses
   SysUtils, Classes, IniFiles,
   {$IFDEF VCL}
   Forms, ComCtrls, Menus, Dialogs,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QForms, QComCtrls, QMenus, QDialogs,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvSimpleXml, JvComponent;
 
 type
@@ -112,16 +112,16 @@ uses
 function InternalGetWideStrProp(Instance: TObject; const PropName: string): WideString; overload;
 begin
   {$IFDEF COMPILER6_UP}
-  Result := GetWideStrProp(Instance,PropName);
+  Result := GetWideStrProp(Instance, PropName);
   {$ELSE}
   Result := GetStrProp(Instance, PropName);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function InternalGetPropList(AObject: TObject; out PropList: PPropList): Integer;
 begin
   {$IFDEF COMPILER6_UP}
-  Result := GetPropList(AObject,PropList);
+  Result := GetPropList(AObject, PropList);
   {$ELSE}
   Result := GetTypeData(AObject.ClassInfo)^.PropCount;
   if Result > 0 then
@@ -129,9 +129,10 @@ begin
     GetMem(PropList, Result * SizeOf(Pointer));
     GetPropInfos(AObject.ClassInfo, PropList);
   end;
-  Result := GetPropList(AObject.ClassInfo,[tkUnknown..tkDynArray],PropList);
-  {$ENDIF}
+  Result := GetPropList(AObject.ClassInfo, [tkUnknown..tkDynArray], PropList);
+  {$ENDIF COMPILER6_UP}
 end;
+
 //=== TJvTranslator ==========================================================
 
 constructor TJvTranslator.Create(AOwner: TComponent);

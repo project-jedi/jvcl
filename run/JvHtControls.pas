@@ -295,7 +295,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure FontChanged; override;
-    procedure AdjustBounds; {$IFDEF VCL}override;{$ENDIF}
+    procedure AdjustBounds; {$IFDEF VCL} override; {$ENDIF}
     procedure SetAutoSize(Value: Boolean); override;
     {$IFDEF VCL}
     procedure Paint; override;

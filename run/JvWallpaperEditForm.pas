@@ -34,9 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Controls, Forms, Buttons, StdCtrls, Mask,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QButtons, QStdCtrls, QMask, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvToolEdit, JvComponent, JvSearchFiles, JvButton;
 
 type
@@ -69,10 +70,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TFoWallpaperChooser.FormCreate(Sender: TObject);
 begin

@@ -61,10 +61,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
 begin

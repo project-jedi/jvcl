@@ -69,7 +69,7 @@ type
     FBottomHotBtn: TBitmap;
     FMouseInTopBtn: Boolean;
     FMouseInBottomBtn: Boolean;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
 
     FRepeatTimer: TTimer;
     FLastDown: TSpinButtonState;
@@ -95,7 +95,7 @@ type
     {$IFDEF JVCLThemesEnabled}
     procedure DrawAllBitmapClassicThemed;
     procedure DrawAllBitmapDiagonalThemed;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
 
     procedure TimerExpired(Sender: TObject);
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
@@ -378,7 +378,7 @@ type
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     (* ++ RDB ++ *)
     property ClipboardCommands;
     property DisabledTextColor;
@@ -392,8 +392,11 @@ uses
   Consts, CommCtrl,
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
-  UxTheme, {$IFNDEF COMPILER7_UP}TmSchema,{$ENDIF}
-  {$ENDIF}
+  UxTheme,
+  {$IFNDEF COMPILER7_UP}
+  TmSchema,
+  {$ENDIF COMPILER7_UP}
+  {$ENDIF JVCLThemesEnabled}
   JvJCLUtils, JvConsts, JvResources;
 
 {$R ..\resources\JvSpin.Res}
@@ -475,7 +478,7 @@ begin
   inherited Create(AOwner);
   {$IFDEF POLESPIN}
   FButtonStyle := sbsDefault;
-  {$ENDIF}
+  {$ENDIF POLESPIN}
   FUpBitmap := TBitmap.Create;
   FDownBitmap := TBitmap.Create;
   //FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn); // Polaris
@@ -490,7 +493,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   FTopHotBtn := TBitmap.Create;
   FBottomHotBtn := TBitmap.Create;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   DrawAllBitmap;
   FLastDown := sbNotDown;
 end;
@@ -503,7 +506,7 @@ begin
   {$IFDEF JVCLThemesEnabled}
   FTopHotBtn.Free;
   FBottomHotBtn.Free;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   FUpBitmap.Free;
   FDownBitmap.Free;
   FRepeatTimer.Free;
@@ -519,11 +522,11 @@ begin
     if FButtonStyle = sbsClassic then
       DrawAllBitmapClassicThemed
     else
-    {$ENDIF}
+    {$ENDIF POLESPIN}
       DrawAllBitmapDiagonalThemed;
     Exit;
   end;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   DrawBitmap(FTopDownBtn, sbTopDown);
   DrawBitmap(FBottomDownBtn, sbBottomDown);
@@ -973,7 +976,7 @@ var
       SelectClipRgn(Handle, 0);
     end;
   end;
-  {$ENDIF}
+  {$ENDIF POLESPIN}
 begin
   LGlyph[0] := FUpBitmap.Handle = 0;
   LGlyph[1] := FDownBitmap.Handle = 0;
@@ -993,7 +996,7 @@ begin
     if FButtonStyle = sbsClassic then
       PoleDraw
     else
-    {$ENDIF}
+    {$ENDIF POLESPIN}
       JvDraw;
   finally
     if LGlyph[0] then
@@ -1039,7 +1042,7 @@ begin
       if ((FButtonStyle = sbsDefault) and (Y > (-(Height / Width) * X + Height))) or
         ((FButtonStyle = sbsClassic) and (Y > (Height div 2))) then
       begin
-      {$ENDIF}
+      {$ENDIF POLESPIN}
         FDown := sbBottomDown;
         BottomClick;
       end
@@ -1072,7 +1075,7 @@ begin
     Result :=
       ((FButtonStyle = sbsDefault)) and (Y > (-(Width / Height) * X + Height)) or
       ((FButtonStyle = sbsClassic) and (Y > (Height div 2)));
-    {$ENDIF}
+    {$ENDIF POLESPIN}
 end;
 
 procedure TJvSpinButton.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -1141,7 +1144,7 @@ begin
       end;
     end;
   end;
-  {$ENDIF}
+  {$ENDIF POLESPIN}
 end;
 
 procedure TJvSpinButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
@@ -1186,7 +1189,7 @@ begin
         if FMouseInBottomBtn then
           Draw(0, 0, FBottomHotBtn)
         else
-        {$ENDIF}
+        {$ENDIF JVCLThemesEnabled}
           Draw(0, 0, FNotDownBtn);
       sbTopDown:
         Draw(0, 0, FTopDownBtn);
@@ -1655,7 +1658,7 @@ begin
       Result := bkClassic;
   end;
   //<Polaris
-  {$ENDIF}
+  {$ENDIF POLESPIN}
 end;
 
 function TJvCustomSpinEdit.GetButtonWidth: Integer;
@@ -1846,7 +1849,7 @@ begin
     if FButtonKind <> bkClassic then
       FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
     else
-    {$ENDIF}
+    {$ENDIF POLESPIN}
       FBtnWindow.SetBounds(0, 0, Height, Height);
 
     FButton := TJvSpinButton.Create(Self);
@@ -1854,7 +1857,7 @@ begin
     {$IFDEF POLESPIN}
     if FButtonKind = bkClassic then
       FButton.FButtonStyle := sbsClassic;
-    {$ENDIF}
+    {$ENDIF POLESPIN}
     FButton.Parent := FBtnWindow;
     FButton.FocusControl := Self;
     FButton.OnTopClick := UpClick;
@@ -1884,14 +1887,14 @@ begin
         if FButtonKind = bkClassic then
           R := Bounds(Width - DefBtnWidth - 4, -1, DefBtnWidth, Height - 3)
         else
-        {$ENDIF}
+        {$ENDIF POLESPIN}
           R := Bounds(Width - Height - 1, -1, Height - 3, Height - 3)
       else
         {$IFDEF POLESPIN}
         if FButtonKind = bkClassic then
           R := Bounds(Width - DefBtnWidth, 0, DefBtnWidth, Height)
         else
-        {$ENDIF}
+        {$ENDIF POLESPIN}
           R := Bounds(Width - Height, 0, Height, Height);
       if BiDiMode = bdRightToLeft then
       begin
@@ -2193,7 +2196,7 @@ begin
   inherited Create(AOwner);
   //{$IFDEF MSWINDOWS}
   //  FButtonKind := bkDiagonal;
-  //{$ENDIF}
+  //{$ENDIF MSWINDOWS}
   Text := '0';
   //  RecreateButton;
 end;

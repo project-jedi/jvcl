@@ -33,10 +33,10 @@ interface
 uses
   {$IFDEF VCL}
   Controls, Forms, Dialogs, ComCtrls, ActnList, ImgList, ToolWin,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QDialogs, QComCtrls, QActnList, QImgList,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type
@@ -58,18 +58,20 @@ type
 
 implementation
 
-{$IFDEF VCL}
 uses
+  {$IFDEF VCL}
   Printers;
-
-{$R *.dfm}
-{$ENDIF}
-{$IFDEF VisualCLX}
-uses
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QPrinters;
+  {$ENDIF VisualCLX}
 
+{$IFDEF VCL}
+{$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TFoLog.SaveExecute(Sender: TObject);
 var

@@ -52,12 +52,15 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ImgList,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QWindows, QGraphics, QControls, QForms, QDialogs,
   QStdCtrls, QImgList,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTFManager, JvTFSparseMatrix,
-  {$IFDEF USEJVCL}JvTypes, {$ENDIF}
+  {$IFDEF USEJVCL}
+  JvTypes,
+  {$ENDIF USEJVCL}
   JvTFUtils;
 
 const
@@ -883,10 +886,10 @@ type
     FOnFocusedColChanged: TNotifyEvent;
 
     {$IFDEF VCL}
-   // internal stuff
+    // internal stuff
     procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
-    {$ENDIF}
+    {$ENDIF VCL}
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SeTJvTFVisibleScrollBars(Value: TJvTFVisibleScrollBars);
     procedure AlignScrollBars;
@@ -894,7 +897,7 @@ type
     procedure SetOnShowHint(Value: TJvTFShowHintEvent);
     function GetOnShowHint: TJvTFShowHintEvent;
     {$IFDEF TIMEBLOCKS}
-   // ok
+    // ok
     procedure UpdateWeekendFillPic;
     {$ENDIF TIMEBLOCKS}
 
@@ -2326,7 +2329,7 @@ begin
    {$IFDEF VCL}
    ParentCtl3D := False;
    Ctl3D := False;
-   {$ENDIF}
+   {$ENDIF VCL}
 end;
 
 procedure TJvTFInPlaceApptEditor.DoExit;

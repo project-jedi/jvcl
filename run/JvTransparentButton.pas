@@ -49,7 +49,7 @@ type
     {$IFDEF COMPILER6_UP}
     function IsGroupIndexLinked: Boolean; override;
     procedure SetGroupIndex(Value: Integer); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure SetChecked(Value: Boolean); override;
   end;
 
@@ -378,14 +378,14 @@ end;
 
 function TJvTransparentButtonActionLink.IsGroupIndexLinked: Boolean;
 begin
-  Result := false;
+  Result := False;
 end;
 
 procedure TJvTransparentButtonActionLink.SetGroupIndex(Value: Integer);
 begin
   //
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvTransparentButtonActionLink.SetChecked(Value: Boolean);
 begin

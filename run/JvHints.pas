@@ -32,11 +32,11 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, Types, QWindows,
-  {$ENDIF}
-  Classes ;
+  {$ENDIF VisualCLX}
+  Classes;
 
 type
   THintStyle = (hsRectangle, hsRoundRect, hsEllipse);
@@ -55,7 +55,7 @@ type
     {$IFDEF VCL}
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
-    {$ENDIF}
+    {$ENDIF VCL}
     function CreateRegion(Shade: Boolean): HRGN;
     procedure FillRegion(Rgn: HRGN; Shade: Boolean);
   protected
@@ -141,7 +141,7 @@ begin
   end;
   AFont.Color := clInfoText;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 {$IFDEF VisualCLX}
 procedure StandardHintFont(AFont: TFont);
@@ -150,7 +150,7 @@ begin
   AFont.Height := 13;
   AFont.Color := clInfoText;
 end;
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 constructor TJvHintWindow.Create(AOwner: TComponent);
 begin
@@ -168,6 +168,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvHintWindow.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -182,7 +183,8 @@ procedure TJvHintWindow.WMEraseBkgnd(var Msg: TMessage);
 begin
   Msg.Result := 1;
 end;
-{$ENDIF}
+
+{$ENDIF VCL}
 
 function TJvHintWindow.CreateRegion(Shade: Boolean): HRGN;
 var

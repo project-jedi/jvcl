@@ -475,7 +475,7 @@ begin
     Results.CharSet := RUSSIAN_CHARSET;
     IntermediateResults.CharSet := RUSSIAN_CHARSET;
   end;
-  {$ENDIF}
+  {$ENDIF FR_RUS}
   FIndentsInSantim := TJvgPrintCrossTableIndents.Create;
 
   with FIndentsInSantim do

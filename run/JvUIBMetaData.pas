@@ -84,8 +84,8 @@ const
 
   FieldTypes: array[TUIBFieldType] of string = ('', 'NUMERIC', 'CHAR', 'VARCHAR',
     'CSTRING', 'SMALLINT', 'INTEGER', 'QUAD', 'FLOAT', 'DOUBLE PRECISION',
-    'TIMESTAMP', 'BLOB', 'BLOBID', 'DATE', 'TIME', 'INT64' {$IFDEF IB7_UP}
-    ,'BOOLEAN' {$ENDIF});
+    'TIMESTAMP', 'BLOB', 'BLOBID', 'DATE', 'TIME', 'INT64'
+    {$IFDEF IB7_UP} , 'BOOLEAN' {$ENDIF});
 
   QRYGenerators =
     'SELECT RDB$GENERATOR_NAME FROM RDB$GENERATORS GEN WHERE ' +
@@ -1262,9 +1262,9 @@ begin
       blr_sql_date  : FFieldType := uftDate;
       blr_sql_time  : FFieldType := uftTime;
       blr_int64     : FFieldType := uftInt64;
-  {$IFDEF IB7_UP}
+      {$IFDEF IB7_UP}
       blr_boolean_dtype: FFieldType := uftBoolean;
-  {$ENDIF}
+      {$ENDIF IB7_UP}
     end;
   If (FFieldType in [uftChar, uftVarchar, uftCstring]) and
     not QField.Fields.IsNull[4] then

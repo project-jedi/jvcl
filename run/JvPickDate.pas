@@ -36,7 +36,7 @@ uses
   Windows, Classes,
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Controls, SysUtils, Graphics,
   JvTypes, JvSpeedButton, JvJCLUtils, JvExGrids;
 
@@ -900,7 +900,7 @@ var
   BtnSide: Integer;
   VertOffset: Integer;
   HorzOffset: Integer;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
   Control, BackPanel: TWinControl;
 begin
   inherited Create(AOwner);
@@ -929,7 +929,7 @@ begin
     HorzOffset := 1;
     BtnSide := 14;
   end;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   BackPanel := TPanel.Create(Self);
   with BackPanel as TPanel do

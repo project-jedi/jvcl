@@ -35,11 +35,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls, ComCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs,
   QStdCtrls, QExtCtrls, QComCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvDrawImage, JvComponent;
 
 type
@@ -66,10 +66,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TPainterEffectsForm.Bar(AMax, AMin, APos: Integer);
 begin

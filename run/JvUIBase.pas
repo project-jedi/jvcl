@@ -37,7 +37,7 @@
 
 {$IFDEF USE_IBASE_H}
 (*$HPPEMIT '#include<ibase.h>'*)
-{$ENDIF}
+{$ENDIF USE_IBASE_H}
 
 unit JvUIBase;
 

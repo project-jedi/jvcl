@@ -42,7 +42,7 @@ type
   TFixedCellClickEvent = procedure(Sender: TObject; ACol, ARow: Longint) of object;
   TFixedCellCheckEvent = procedure(Sender: TObject; ACol, ARow: Longint;
     var Enabled: Boolean) of object;
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   TInplaceEditStyle = TEditStyle; //(ieSimple, ieEllipsis, iePickList);
 const
   ieSimple = esSimple;
@@ -50,9 +50,9 @@ const
   iePickList = esPickList;
 
 type
-  {$ELSE}
+{$ELSE}
   TInplaceEditStyle = (ieSimple, ieEllipsis, iePickList);
-  {$ENDIF}
+{$ENDIF COMPILER6_UP}
   TEditAlignEvent = procedure(Sender: TObject; ACol, ARow: Longint;
     var Alignment: TAlignment) of object;
   TPicklistEvent = procedure(Sender: TObject; ACol, ARow: Longint;
@@ -143,9 +143,11 @@ type
       var Enabled: Boolean); dynamic;
     procedure EditButtonClick; dynamic;
     function GetEditAlignment(ACol, ARow: Longint): TAlignment; dynamic;
-    function GetEditStyle(ACol, ARow: Longint):
-      {$IFDEF COMPILER6_UP}TEditStyle; override;{$ELSE}TInplaceEditStyle; dynamic;
-    {$ENDIF}
+    {$IFDEF COMPILER6_UP}
+    function GetEditStyle(ACol, ARow: Longint): TEditStyle; override;
+    {$ELSE}
+    function GetEditStyle(ACol, ARow: Longint): TInplaceEditStyle; dynamic;
+    {$ENDIF COMPILER6_UP}
     procedure GetPicklist(ACol, ARow: Longint; Picklist: TStrings); dynamic;
   public
     constructor Create(AOwner: TComponent); override;

@@ -33,7 +33,7 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ComCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QForms, QComCtrls,
   {$ENDIF VisualCLX}

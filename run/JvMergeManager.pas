@@ -33,10 +33,10 @@ uses
   Classes,
   {$IFDEF VCL}
   Controls, Forms,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvJVCLUtils, JvComponent;
 
 type

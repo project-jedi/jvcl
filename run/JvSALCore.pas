@@ -112,8 +112,8 @@ uses
   {$IFDEF BCB}
   {$IFNDEF BCB5}
   Variants,
-  {$ENDIF}
-  {$ENDIF}
+  {$ENDIF BCB5}
+  {$ENDIF BCB}
   JvConsts, JvResources;
 
 procedure TJvSALCore.AddProcedures(ASal: TJvSAL);

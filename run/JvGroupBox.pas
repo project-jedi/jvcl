@@ -108,7 +108,12 @@ var
   CaptionRect: TRect;
   {$ENDIF JVCLThemesEnabledD56}
   LastBkMode: Integer;
-  Txt: {$IFDEF VCL} PChar; {$ELSE} WideString; {$ENDIF}
+  {$IFDEF VCL}
+  Txt: PChar;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Txt: WideString;
+  {$ENDIF VisualCLX}
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then

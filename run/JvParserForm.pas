@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Controls, Forms, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type
@@ -77,9 +77,10 @@ implementation
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 procedure TFormParsers.Edit1Change(Sender: TObject);
 begin

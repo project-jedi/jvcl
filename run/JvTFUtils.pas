@@ -562,9 +562,10 @@ begin
   LogFont.lfEscapement := aAngle;
   LogFont.lfOrientation := LogFont.lfEscapement;
   aCanvas.Font.Handle := CreateFontIndirect(LogFont);
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
 
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   Flags := DT_NOPREFIX or DT_LEFT or DT_TOP or DT_NOCLIP or DT_SINGLELINE;
 
   PTxt := StrAlloc((Length(aTxt) + 4) * SizeOf(Char));

@@ -34,10 +34,11 @@ interface
 const
   {$IFDEF VCL}
   JVCL_VERSIONSTRING = '3.00';
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   JVCLX_VERSIONSTRING = '1.00';
-  {$ENDIF}
+  {$ENDIF VisualCLX}
+
 type
   TJVCLAboutInfo = (JVCLAbout);
 

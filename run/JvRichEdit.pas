@@ -180,13 +180,13 @@ type
    4    Thick line leader
    5    Double line leader
 }
-{$IFDEF TABINFO}
+  {$IFDEF TABINFO}
   TJvTabAlignment = ( taOrdinary, taCenter, taRight, taDecimal,
     taVertical ); // added by J.G. Boerema
     // Note: if taVertical then tableader should be disabled according to Word
   TJvTabLeader = ( tlNone, tlDotted, tlDashed, tlUnderlined, tlThick,
     tlDouble);  // added by J.G. Boerema
-{$ENDIF}
+  {$ENDIF TABINFO}
 
   TJvParaAttributes = class(TPersistent)
   private
@@ -209,10 +209,10 @@ type
     function GetTab(Index: Byte): Longint;
     function GetTabCount: Integer;
     function GetTableStyle: TParaTableStyle;
-{$IFDEF TABINFO}
+    {$IFDEF TABINFO}
     function GetTabAlignment(Index: Byte): TJvTabAlignment;
     function GetTabLeader(Index: Byte): TJvTabLeader;
-{$ENDIF}
+    {$ENDIF TABINFO}
     procedure SetAlignment(Value: TParaAlignment);
     procedure SetAttributes(var Paragraph: TParaFormat2);
     procedure SetFirstIndent(Value: Longint);
@@ -230,10 +230,10 @@ type
     procedure SetTab(Index: Byte; Value: Longint);
     procedure SetTabCount(Value: Integer);
     procedure SetTableStyle(Value: TParaTableStyle);
-{$IFDEF TABINFO}
+    {$IFDEF TABINFO}
     procedure SetTabAlignment(Index: Byte; Value: TJvTabAlignment);
     procedure SetTabLeader(Index: Byte; Value: TJvTabLeader);
-{$ENDIF}
+    {$ENDIF TABINFO}
   protected
     procedure InitPara(var Paragraph: TParaFormat2);
     procedure AssignTo(Dest: TPersistent); override;
@@ -258,10 +258,10 @@ type
     property Tab[Index: Byte]: Longint read GetTab write SetTab;
     property TabCount: Integer read GetTabCount write SetTabCount;
     property TableStyle: TParaTableStyle read GetTableStyle write SetTableStyle;
-{$IFDEF TABINFO}
+    {$IFDEF TABINFO}
     property TabAlignment[Index: Byte]: TJvTabAlignment read GetTabAlignment write SetTabAlignment;
     property TabLeader[Index: Byte]: TJvTabLeader read GetTabLeader write SetTabLeader;
-{$ENDIF}
+    {$ENDIF TABINFO}
   end;
 
   TJvConversionKind = (ckImport, ckExport);
@@ -1246,7 +1246,7 @@ const
   EM_GETZOOM = (WM_USER + 224);
   EM_SETZOOM = (WM_USER + 225);
 
-{$IFDEF TABINFO}
+  {$IFDEF TABINFO}
   // Some masks for tab alignment and leader handling
   // Note: not the official names which I don't know
 
@@ -1256,7 +1256,7 @@ const
   TA_TAB       = $00FFFFFF; // Tab: bits 0-23
   TA_TAB_LEADER    = (TA_TAB or TA_LEADER);
   TA_TAB_ALIGNMENT = (TA_TAB or TA_ALIGNMENT);
-{$ENDIF}
+  {$ENDIF TABINFO}
   { Flags to specify which interfaces should be returned in the structure above }
 
   REO_GETOBJ_NO_INTERFACES  = $00000000;
@@ -4271,7 +4271,7 @@ begin
   FExtensions.DelimitedText := AExtensions;
   {$ELSE}
   StrTokenize(AExtensions, ' ', FExtensions);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   FConverterFileName := AConverterFileName;
   FDescription := ADescription;
   FConverterKind := AKind;
@@ -4940,11 +4940,11 @@ var
   Paragraph: TParaFormat2;
 begin
   GetAttributes(Paragraph);
-{$IFDEF TABINFO}
+  {$IFDEF TABINFO}
   Result := (Paragraph.rgxTabs[Index] and TA_TAB) div CTwipsPerPoint;
-{$ELSE}
+  {$ELSE}
   Result := Paragraph.rgxTabs[Index] div CTwipsPerPoint;
-{$ENDIF}
+  {$ENDIF TABINFO}
 end;
 
 function TJvParaAttributes.GetTabCount: Integer;
@@ -5316,7 +5316,7 @@ begin
   GetAttributes(Paragraph);
   with Paragraph do
   begin
-{$IFDEF TABINFO}
+    {$IFDEF TABINFO}
     // Note: the first part is a bugfix
     if cTabCount <= Index then
     begin
@@ -5328,12 +5328,12 @@ begin
     rgxTabs[Index] := (rgxTabs[Index] and Longint(TA_ALIGNMENT or TA_LEADER))
       or (Value * CTwipsPerPoint);
     dwMask := PFM_TABSTOPS;
-{$ELSE}
+    {$ELSE}
     rgxTabs[Index] := Value * CTwipsPerPoint;
     dwMask := PFM_TABSTOPS;
     if cTabCount < Index then
       cTabCount := Index;
-{$ENDIF}
+    {$ENDIF TABINFO}
     SetAttributes(Paragraph);
   end;
 end;
@@ -7019,7 +7019,7 @@ begin
       GLibHandle := 0;
     {$ELSE}
     GLibHandle := 0;
-    {$ENDIF}
+    {$ENDIF RICHEDIT_VER_10}
     if GLibHandle = 0 then
     begin
       GLibHandle := LoadLibrary(RichEdit10ModuleName);

@@ -95,7 +95,7 @@ type
     property Width default 200;
     {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 
 implementation

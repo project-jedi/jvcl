@@ -33,10 +33,10 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Controls, Forms, Grids, Printers,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QForms, QGrids, QPrinters,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   SysUtils, Classes;
 
 type

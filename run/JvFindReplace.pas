@@ -21,14 +21,15 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  Wrapper for the TFind / TReplace dialogs and a stand-alone full
+  text search engine with support for all available dialog options:
+  Search up/down, whole word only, case sensitive, replace all etc.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
-
-{ Wrapper for the TFind / TReplace dialogs and a stand-alone full
-     text search engine with support for all available dialog options:
-     Search up/down, whole word only, case sensitive, replace all etc. }
 
 unit JvFindReplace;
 
@@ -38,10 +39,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Controls, Dialogs, StdCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QDialogs, QStdCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

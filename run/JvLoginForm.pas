@@ -33,10 +33,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QStdCtrls, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent, JvBaseDlg, JvAppStorage;
 
 type
@@ -172,17 +172,19 @@ implementation
 uses
   {$IFDEF VCL}
   Consts,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QConsts,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   IniFiles,
   JvJCLUtils, JvJVCLUtils, JvResources, JvConsts;
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 function CreateLoginDialog(UnlockMode, ASelectDatabase: Boolean;
   FormShowEvent, OkClickEvent: TNotifyEvent): TJvLoginForm;

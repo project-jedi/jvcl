@@ -257,9 +257,9 @@ type
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property Anchors;
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property Align;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property BorderStyle;

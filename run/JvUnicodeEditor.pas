@@ -39,9 +39,11 @@ Known Issues:
 unit JvUnicodeEditor;
 
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Menus,
-  ExtCtrls, StdCtrls, Clipbrd, JvJCLUtils, JvFixedEditPopup, JclUnicode,
+  ExtCtrls, StdCtrls, Clipbrd,
+  JvJCLUtils, JvFixedEditPopup, JclUnicode,
   JvUnicodeCanvas, JvComponent, JvExControls;
 
 const
@@ -495,7 +497,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       const MousePos: TPoint): Boolean; override;
-    {$ENDIF}
+    {$ENDIF VisualCLX}
     procedure Paint; override;
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var
       ScrollPos: Integer);

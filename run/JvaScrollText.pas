@@ -35,7 +35,7 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Controls, ExtCtrls, Forms, Graphics,
   {$ENDIF VCL}

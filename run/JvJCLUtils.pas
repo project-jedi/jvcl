@@ -237,12 +237,12 @@ function DeleteDir(const Dir: string): Boolean;
 { FileEquMask returns True if file, FileName,
   is compatible with given dos file mask, Mask }
 function FileEquMask(FileName, Mask: TFileName;
-  CaseSensitive: Boolean = {$IFDEF MSWINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+  CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
 { FileEquMasks returns True if file, FileName,
   is compatible with given Masks.
   Masks must be separated with SepPath (MSW: ';' / LINUX: ':') }
 function FileEquMasks(FileName, Masks: TFileName;
-  CaseSensitive: Boolean = {$IFDEF MSWINDOWS}False{$ELSE}True{$ENDIF}): Boolean;
+  CaseSensitive: Boolean = {$IFDEF MSWINDOWS} False {$ELSE} True {$ENDIF}): Boolean;
 function DeleteFiles(const Folder: TFileName; const Masks: string):boolean;
 
 {$IFDEF MSWINDOWS}
@@ -2162,9 +2162,9 @@ begin
     comment this function implementation, compile,
     then uncomment and compile again. }
   {$IFDEF MSWINDOWS}
-   {$IFDEF COMPILER6_UP}
-    {$WARN SYMBOL_DEPRECATED OFF}
-   {$ENDIF}
+  {$IFDEF COMPILER6_UP}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$ENDIF COMPILER6_UP}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -4948,6 +4948,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
+
 function CompStr(const S1, S2: string): Integer;
 begin
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT, PChar(S1),
@@ -4959,8 +4960,11 @@ begin
   Result := CompareString(GetThreadLocale, SORT_STRINGSORT or NORM_IGNORECASE,
     PChar(S1), Length(S1), PChar(S2), Length(S2)) - 2;
 end;
-{$ENDIF}
+
+{$ENDIF MSWINDOWS}
+
 {$IFDEF LINUX}
+
 function CompStr(const S1, S2: string): Integer;
 begin
   Result := AnsiCompareStr(S1, S2);
@@ -4970,6 +4974,7 @@ function CompText(const S1, S2: string): Integer;
 begin
   Result := AnsiCompareText(S1, S2);
 end;
+
 {$ENDIF LINUX}
 
 function Copy2Symb(const S: string; Symb: Char): string;
@@ -6459,7 +6464,8 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
-    St := Format({$IFDEF COMPILER6_UP}SOSError{$ELSE}SWin32Error{$ENDIF}, [LastError, SysErrorMessage(LastError)]);
+    St := Format({$IFDEF COMPILER6_UP} SOSError {$ELSE} SWin32Error {$ENDIF},
+      [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
     raise EOSError.Create(St);

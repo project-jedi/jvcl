@@ -600,7 +600,7 @@ begin
   if csDesigning in ComponentState then
     Exit;
   FOver := True;
-  if FFlat {$IFDEF JVCLThemesEnabled}or ThemeServices.ThemesEnabled{$ENDIF} then
+  if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
     Invalidate;
 end;
 
@@ -610,7 +610,7 @@ begin
     Exit;
   FOver := False;
   //  FDown := False;
-  if FFlat {$IFDEF JVCLThemesEnabled}or ThemeServices.ThemesEnabled{$ENDIF} then
+  if FFlat {$IFDEF JVCLThemesEnabled} or ThemeServices.ThemesEnabled {$ENDIF} then
     Invalidate;
 end;
 

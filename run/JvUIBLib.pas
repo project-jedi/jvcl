@@ -37,17 +37,23 @@ unit JvUIBLib;
 {$MINENUMSIZE 4}
 
 interface
+
 uses
-{$IFDEF MSWINDOWS}Windows, {$ENDIF}
-{$IFDEF COMPILER6_UP} Variants, {$ENDIF}
-{$IFDEF FPC} Variants, {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
+  {$IFDEF FPC}
+  Variants,
+  {$ENDIF FPC}
   JvUIBase, JvUIBError, Classes, SysUtils;
 
 type
-
   TUIBFieldType = (uftUnKnown, uftNumeric, uftChar, uftVarchar, uftCstring, uftSmallint,
     uftInteger, uftQuad, uftFloat, uftDoublePrecision, uftTimestamp, uftBlob, uftBlobId,
-    uftDate, uftTime, uftInt64 {$IFDEF IB7_UP}, uftBoolean{$ENDIF});
+    uftDate, uftTime, uftInt64 {$IFDEF IB7_UP}, uftBoolean {$ENDIF});
 
   TScale = 1..15;
 
@@ -108,14 +114,14 @@ type
   csDOS852, csDOS857, csDOS860, csDOS861, csDOS863, csDOS865, csEUCJ_0208,
   csGB_2312, csISO8859_1, csISO8859_2, csKSC_5601, csNEXT, csOCTETS, csSJIS_0208,
   csUNICODE_FSS, csWIN1250, csWIN1251, csWIN1252, csWIN1253, csWIN1254
-{$IFDEF FB15_UP}
+  {$IFDEF FB15_UP}
   ,csDOS737, csDOS775, csDOS858, csDOS862, csDOS864, csDOS866, csDOS869, csWIN1255,
   csWIN1256, csWIN1257, csISO8859_3, csISO8859_4, csISO8859_5, csISO8859_6, csISO8859_7,
   csISO8859_8, csISO8859_9, csISO8859_13
-{$ENDIF}
-{$IFDEF IB71_UP}
+  {$ENDIF FB15_UP}
+  {$IFDEF IB71_UP}
   ,csISO8859_15 ,csKOI8R
-{$ENDIF}
+  {$ENDIF IB71_UP}
   );
 
 
@@ -125,19 +131,19 @@ const
     'DOS860', 'DOS861', 'DOS863', 'DOS865', 'EUCJ_0208', 'GB_2312', 'ISO8859_1',
     'ISO8859_2', 'KSC_5601', 'NEXT', 'OCTETS', 'SJIS_0208', 'UNICODE_FSS',
     'WIN1250', 'WIN1251', 'WIN1252', 'WIN1253', 'WIN1254'
-{$IFDEF FB15_UP}
+    {$IFDEF FB15_UP}
     ,'DOS737', 'DOS775', 'DOS858', 'DOS862', 'DOS864', 'DOS866', 'DOS869',
     'WIN1255', 'WIN1256', 'WIN1257', 'ISO8859_3', 'ISO8859_4', 'ISO8859_5',
     'ISO8859_6', 'ISO8859_7', 'ISO8859_8', 'ISO8859_9', 'ISO8859_13'
-{$ENDIF}
-{$IFDEF IB71_UP}
+    {$ENDIF FB15_UP}
+    {$IFDEF IB71_UP}
     ,'ISO8859_15', 'KOI8R'
-{$ENDIF}
+    {$ENDIF IB71_UP}
     );
 
-{$IFDEF DLLREGISTRY}
+  {$IFDEF DLLREGISTRY}
   FBINSTANCES = 'SOFTWARE\Firebird Project\Firebird Server\Instances';
-{$ENDIF}
+  {$ENDIF DLLREGISTRY}
 
   function StrToCharacterSet(const CharacterSet: string): TCharacterSet;
   function CreateDBParams(Params: String; Delimiter: Char = ';'): string;
@@ -160,20 +166,20 @@ const
   //****************************************
 
 const
-{$IFDEF IB7_UP}
+  {$IFDEF IB7_UP}
   MaxParamLength = 274;
-{$ELSE}
+  {$ELSE}
   MaxParamLength = 125;
-{$ENDIF}
+  {$ENDIF IB7_UP}
 
 type
   PUIBSQLVar = ^TUIBSQLVar;
   TUIBSQLVar = record
     SqlType      : Smallint;
     SqlScale     : Smallint;
-{$IFDEF IB7_UP}
+    {$IFDEF IB7_UP}
     SqlPrecision : Smallint;
-{$ENDIF}
+    {$ENDIF IB7_UP}
     SqlSubType   : Smallint;
     SqlLen       : Smallint;
     SqlData      : Pchar;
@@ -221,9 +227,9 @@ type
     stRollback,           //  rollback               ROLLBACK [WORK]
     stSelectForUpdate,    //                         SELECT ... FOR UPDATE
     stSetGenerator
-  {$IFDEF FB15_UP}
+    {$IFDEF FB15_UP}
     ,stSavePoint          //  user_savepoint | undo_savepoint       SAVEPOINT | ROLLBACK [WORK] TO
-  {$ENDIF}
+    {$ENDIF FB15_UP}
   );
 
 // TODO
@@ -563,13 +569,13 @@ type
       isc_info_sql_get_plan : (PlanDesc     : array[0..255] of Char);
   end;
 
-{$IFDEF IB7_UP}
+  {$IFDEF IB7_UP}
   TArrayDesc = TISCArrayDescV2;
   TBlobDesc = TISCBlobDescV2;
-{$ELSE}
+  {$ELSE}
   TArrayDesc = TISCArrayDesc;
   TBlobDesc = TISCBlobDesc;
-{$ENDIF}
+  {$ENDIF IB7_UP}
 
   TUIBLibrary = class;
 
@@ -678,11 +684,11 @@ type
     function StreamBlobOpen(var BlobId: TISCQuad; var Database: IscDbHandle;
       var Transaction: IscTrHandle; mode: Char): PBStream;
     function StreamBlobClose(Stream: PBStream): integer;
-{$IFDEF IB71_UP}
+    {$IFDEF IB71_UP}
     procedure SavepointRelease(var TrHandle: IscTrHandle; const Name: string);
     procedure SavepointRollback(var TrHandle: IscTrHandle; const Name: string; Option: Word);
     procedure SavepointStart(var TrHandle: IscTrHandle; const Name: string);
-{$ENDIF}
+    {$ENDIF IB71_UP}
 
     property SegMentSize: Word read GetSegmentSize write SetSegmentSize;
   end;
@@ -757,12 +763,12 @@ type
 //    procedure isc_vtov
 //  {$IFDEF FB15}
 //    function isc_reset_fpe
-//  {$ENDIF}
+//  {$ENDIF FB15}
 //  {$IFDEF IB7_UP}
 //    procedure isc_get_client_version
 //    function  isc_get_client_major_version
 //    function isc_get_client_minor_version
-//  {$ENDIF}
+//  {$ENDIF IB7_UP}
 
 
 type
@@ -855,30 +861,30 @@ const
     (Name: 'set_db_sql_dialect';     ParamType: prCard), // ok Change sqldialect (1,2,3))
     (Name: 'gfix_attach';            ParamType: prNone), // ok FB15: don't work
     (Name: 'gstat_attach';           ParamType: prNone)  // ok FB15: don't work
-{$IFDEF IB65ORYF867}
+   {$IFDEF IB65ORYF867}
    ,(Name: 'gbak_ods_version';       ParamType: prCard) // ??
    ,(Name: 'gbak_ods_minor_version'; ParamType: prCard) // ??
-{$ENDIF}
+   {$ENDIF IB65ORYF867}
 
-{$IFDEF YF867_UP}
+   {$IFDEF YF867_UP}
    ,(Name: 'numeric_scale_reduction';ParamType: prNone)
-{$ENDIF}
+   {$ENDIF YF867_UP}
 
-{$IFDEF IB7_UP}
+   {$IFDEF IB7_UP}
    ,(Name: 'set_group_commit';       ParamType: prNone) // ??
-{$ENDIF}
-{$IFDEF IB71_UP}
+   {$ENDIF IB7_UP}
+   {$IFDEF IB71_UP}
    ,(Name: 'gbak_validate';          ParamType: prNone) // ??
-{$ENDIF}
-{$IFDEF FB103_UP}
+   {$ENDIF IB71_UP}
+   {$IFDEF FB103_UP}
    ,(Name: 'set_db_charset';         ParamType: prStrg) // ok
-{$ENDIF}
+   {$ENDIF FB103_UP}
    );
 
 
 {$IFNDEF COMPILER6_UP}
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 implementation
 uses JvUIBConst;
@@ -897,7 +903,6 @@ end;
 //******************************************************************************
 
 {$IFNDEF COMPILER6_UP}
-
 function TryStrToInt(const S: string; out Value: Integer): Boolean;
 var
   E: Integer;
@@ -905,8 +910,7 @@ begin
   Val(S, Value, E);
   Result := E = 0;
 end;
-
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 const
   ISC_MASK   = $14000000; // Defines the code as a valid ISC code
@@ -1017,9 +1021,9 @@ const
     Key: HKEY;
     Size: Cardinal;
     HR: Integer;
-  {$ENDIF}
+  {$ENDIF DLLREGISTRY}
   begin
-  {$IFDEF DLLREGISTRY}
+    {$IFDEF DLLREGISTRY}
     HR := RegOpenKeyEx(HKEY_LOCAL_MACHINE, FBINSTANCES, 0, KEY_READ, Key);
     if (HR = ERROR_SUCCESS) then
     begin
@@ -1034,7 +1038,7 @@ const
       RegCloseKey(Key);
     end;
     if (HR <> ERROR_SUCCESS) then
-  {$ENDIF}
+    {$ENDIF DLLREGISTRY}
     Result := GDS32DLL;
   end;
 
@@ -1638,12 +1642,12 @@ const
     Lock;
     try
       {$IFDEF IB7_UP}
-        CheckUIBApiCall(isc_array_lookup_bounds2(@FStatusVector, @DBHandle, @TransHandle,
-          PChar(RelationName), PChar(FieldName), @Result));
+      CheckUIBApiCall(isc_array_lookup_bounds2(@FStatusVector, @DBHandle, @TransHandle,
+        PChar(RelationName), PChar(FieldName), @Result));
       {$ELSE}
-        CheckUIBApiCall(isc_array_lookup_bounds(@FStatusVector, @DBHandle, @TransHandle,
-          PChar(RelationName), PChar(FieldName), @Result));
-      {$ENDIF}
+      CheckUIBApiCall(isc_array_lookup_bounds(@FStatusVector, @DBHandle, @TransHandle,
+        PChar(RelationName), PChar(FieldName), @Result));
+      {$ENDIF IB7_UP}
     finally
       UnLock;
     end;
@@ -1655,12 +1659,12 @@ const
     Lock;
     try
       {$IFDEF IB7_UP}
-        CheckUIBApiCall(isc_array_get_slice2(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
-          @desc, DestArray, @SliceLength));
+      CheckUIBApiCall(isc_array_get_slice2(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
+        @desc, DestArray, @SliceLength));
       {$ELSE}
-        CheckUIBApiCall(isc_array_get_slice(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
-          @desc, DestArray, @SliceLength));
-      {$ENDIF}
+      CheckUIBApiCall(isc_array_get_slice(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
+        @desc, DestArray, @SliceLength));
+      {$ENDIF IB7_UP}
     finally
       UnLock;
     end;
@@ -1672,12 +1676,12 @@ const
     Lock;
     try
       {$IFDEF IB7_UP}
-        CheckUIBApiCall(isc_array_put_slice2(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
-          @desc, DestArray, @SliceLength));
+      CheckUIBApiCall(isc_array_put_slice2(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
+        @desc, DestArray, @SliceLength));
       {$ELSE}
-        CheckUIBApiCall(isc_array_put_slice(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
-          @desc, DestArray, @SliceLength));
-      {$ENDIF}
+      CheckUIBApiCall(isc_array_put_slice(@FStatusVector, @DBHandle, @TransHandle, @ArrayId,
+        @desc, DestArray, @SliceLength));
+      {$ENDIF IB7_UP}
     finally
       UnLock;
     end;
@@ -1887,10 +1891,10 @@ type
     Lock;
     try
       {$IFDEF IB7_UP}
-        isc_blob_default_desc2(@Desc, PChar(RelationName), PChar(FieldName));
+      isc_blob_default_desc2(@Desc, PChar(RelationName), PChar(FieldName));
       {$ELSE}
-        isc_blob_default_desc(@Desc, PChar(RelationName), PChar(FieldName));
-      {$ENDIF}
+      isc_blob_default_desc(@Desc, PChar(RelationName), PChar(FieldName));
+      {$ENDIF IB7_UP}
     finally
       UnLock;
     end;
@@ -2119,7 +2123,8 @@ type
     end;
   end;
 
-{$IFDEF IB71_UP}
+  {$IFDEF IB71_UP}
+  
   procedure TUIBLibrary.SavepointRelease(var TrHandle: IscTrHandle;
     const Name: string);
   begin
@@ -2152,7 +2157,8 @@ type
       UnLock;
     end;
   end;
-{$ENDIF}
+
+  {$ENDIF IB71_UP}
 
   function TUIBLibrary.GetSegmentSize: Word;
   begin
@@ -2223,8 +2229,8 @@ const
   MonthDays: array [Boolean] of TDayTable =
     ((31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),
      (31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31));
-{$ENDIF}
-{$ENDIF}
+{$ENDIF LINUX}
+{$ENDIF FPC}
 
   procedure EncodeDate(const Year: Smallint; const Month: Word; Day: Word; out Date: Integer);
   var
@@ -2504,9 +2510,9 @@ const
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := PSingle(sqldata)^;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToFloat(DecodeString(SQL_TEXT, Index));
@@ -2547,9 +2553,9 @@ const
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := Trunc(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToInt64(DecodeString(SQL_TEXT, Index));
@@ -2590,9 +2596,9 @@ const
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := Trunc(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToInt(DecodeString(SQL_TEXT, Index));
@@ -2633,9 +2639,9 @@ const
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := PSingle(sqldata)^;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToFloat(DecodeString(SQL_TEXT, Index));
@@ -2676,9 +2682,9 @@ const
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := Trunc(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToInt(DecodeString(SQL_TEXT, Index));
@@ -2721,9 +2727,9 @@ const
           SQL_LONG      : Result := IntToStr(PInteger(sqldata)^);
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := FloatToStr(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN   : Result := BoolToStr(PSmallint(sqldata)^ = 1);
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := IntToStr(PSmallint(sqldata)^);
           SQL_INT64     : Result := IntToStr(PInt64(sqldata)^);
           SQL_TEXT      : DecodeString(SQL_TEXT, Index, Result);
@@ -2852,15 +2858,15 @@ const
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := PSingle(sqldata)^;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN   : Result := PSmallint(sqldata)^ = 1;
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
-{$IFDEF COMPILER6_UP}
+          {$IFDEF COMPILER6_UP}
           SQL_INT64     : Result := PInt64(sqldata)^;
-{$ELSE}
+          {$ELSE}
           SQL_INT64     : Result := Integer(PInt64(sqldata)^);
-{$ENDIF}
+          {$ENDIF COMPILER6_UP}
           SQL_TEXT      : Result := DecodeString(SQL_TEXT, Index);
           SQL_VARYING   : Result := DecodeString(SQL_VARYING, Index);
         else
@@ -3212,9 +3218,9 @@ const
           SQL_LONG      : Result := IntToStr(PInteger(sqldata)^);
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := FloatToStr(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN   : Result := BoolToStr(PSmallint(sqldata)^ = 1);
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := IntToStr(PSmallint(sqldata)^);
           SQL_INT64     : Result := IntToStr(PInt64(sqldata)^);
           SQL_TEXT      : DecodeString(SQL_TEXT, Index, Result);
@@ -3258,9 +3264,9 @@ const
           SQL_LONG      : Result := IntToStr(PInteger(sqldata)^);
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := FloatToStr(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN   : Result := BoolToStr(PSmallint(sqldata)^ = 1);
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := IntToStr(PSmallint(sqldata)^);
           SQL_INT64     : Result := IntToStr(PInt64(sqldata)^);
           SQL_TEXT      : DecodeWideString(SQL_TEXT, Index, Result);
@@ -3308,15 +3314,15 @@ const
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := PSingle(sqldata)^;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN   : Result :=  WordBool(PSmallint(sqldata)^);
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
-{$IFDEF COMPILER6_UP}
+          {$IFDEF COMPILER6_UP}
           SQL_INT64     : Result := PInt64(sqldata)^;
-{$ELSE}
+          {$ELSE}
           SQL_INT64     : Result := Integer(PInt64(sqldata)^);
-{$ENDIF}
+          {$ENDIF COMPILER6_UP}
           SQL_TEXT      : Result := DecodeString(SQL_TEXT, Index);
           SQL_VARYING   : Result := DecodeString(SQL_VARYING, Index);
           SQL_BLOB      : ReadBlob(Index, Result);
@@ -3366,9 +3372,9 @@ end;
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := PSingle(sqldata)^;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToDateTime(DecodeString(SQL_TEXT, Index));
@@ -3425,9 +3431,9 @@ function TSQLDA.GetAsCurrency(const Index: Word): Currency;
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := PSingle(sqldata)^;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToFloat(DecodeString(SQL_TEXT, Index));
@@ -3470,9 +3476,9 @@ function TSQLDA.GetAsBoolean(const Index: Word): boolean;
           SQL_LONG      : Result := PInteger(sqldata)^ <> 0;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := Trunc(PSingle(sqldata)^) <> 0;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^ <> 0;
           SQL_INT64     : Result := PInt64(sqldata)^ <> 0;
           SQL_TEXT      : Result := StrToInt(DecodeString(SQL_TEXT, Index)) <> 0;
@@ -3531,9 +3537,9 @@ function TSQLDA.GetAsBoolean(const Index: Word): boolean;
           SQL_LONG      : Result := IntToStr(PInteger(sqldata)^);
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := FloatToStr(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN   : Result := BoolToStr(PSmallint(sqldata)^ = 1);
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := IntToStr(PSmallint(sqldata)^);
           SQL_INT64     : Result := IntToStr(PInt64(sqldata)^);
           SQL_TEXT      : DecodeWideString(SQL_TEXT, Index, Result);
@@ -3569,9 +3575,9 @@ begin
     SQL_TYPE_TIME   : Result := uftTime;
     SQL_TYPE_DATE   : Result := uftDate;
     SQL_INT64       : Result := uftInt64;
-  {$IFDEF IB7_UP}
+    {$IFDEF IB7_UP}
     SQL_BOOLEAN     : Result := uftBoolean;
-  {$ENDIF}
+    {$ENDIF IB7_UP}
   else
     Result := uftUnKnown;
   end;
@@ -3607,9 +3613,9 @@ end;
           SQL_LONG      : Result := PInteger(sqldata)^;
           SQL_D_FLOAT,
           SQL_FLOAT     : Result := Trunc(PSingle(sqldata)^);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := Trunc(StrToDate(DecodeString(SQL_TEXT, Index)));
@@ -3658,7 +3664,7 @@ end;
           SQL_FLOAT     : Result := Trunc(PSingle(sqldata)^);
           {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-          {$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : Result := PSmallint(sqldata)^;
           SQL_INT64     : Result := PInt64(sqldata)^;
           SQL_TEXT      : Result := StrToInt(DecodeString(SQL_TEXT, Index));
@@ -3684,17 +3690,24 @@ var
   RealItemSize, TestSize: Integer;
 const
   MinItemSize = SizeOf(Word) + SizeOf(Pointer);
+
   function Max(a, b : Integer) : Integer;
-{$IFDEF FPC}
-  begin if a > b then Result := a else Result := b; end;
-{$ELSE}
+  {$IFDEF FPC}
+  begin
+    if a > b then
+      Result := a
+    else
+    Result := b;
+  end;
+  {$ELSE}
   asm
     cmp eax, edx
     jge @@Exit
     mov eax, edx
   @@Exit:
   end;
-{$ENDIF}
+  {$ENDIF FPC}
+
 begin
   FList := TList.Create;
   FItemSize := Max(ItemSize, MinItemSize);
@@ -3757,9 +3770,9 @@ begin
     uftDate            : SetFieldType(AddField(name), SizeOf(Integer)      , SQL_TYPE_DATE + 1, 0);
     uftTime            : SetFieldType(AddField(name), SizeOf(Cardinal)     , SQL_TYPE_TIME + 1, 0);
     uftInt64           : SetFieldType(AddField(name), SizeOf(Int64)        , SQL_INT64     + 1, 0);
-{$IFDEF IB7_UP}
+    {$IFDEF IB7_UP}
     uftBoolean         : SetFieldType(AddField(name), SizeOf(Smallint)     , SQL_BOOLEAN   + 1, 0);
-{$ENDIF}
+    {$ENDIF IB7_UP}
   end;
 end;
 
@@ -3817,7 +3830,7 @@ var
     dec(c);
     result := c^;
   end;
-  {$ENDIF}
+  {$ENDIF FPC}
 begin
   Clear;
   Src := PChar(SQL);
@@ -3852,7 +3865,7 @@ begin
                 inc(Src);
             end else
               next;
-      {.$ENDIF}
+      {.$ENDIF FB15_UP}
       // text ''
       '''': Skip('''');
       // text ""
@@ -3877,7 +3890,7 @@ begin
       // in procedures
       'b','B':
         begin
-          if not ((dest > 0) and ({$IFDEF FPC}PrevChar(src){$ELSE}src[-1]{$ENDIF}
+          if not ((dest > 0) and ({$IFDEF FPC} PrevChar(src) {$ELSE} src[-1] {$ENDIF}
             in Identifiers)) and (CompareText(copy(Src, 0, 5), 'begin') = 0) and
              not (Src[5] in Identifiers) then
                while (Src^ <> #0) do Next else next;
@@ -4334,9 +4347,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Trunc(Value);
           SQL_INT64     : PInt64(sqldata)^ := Trunc(Value);
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, DateTimeToStr(Value));
@@ -4376,9 +4389,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Value;
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Value;
           SQL_INT64     : PInt64(sqldata)^ := Value;
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, DateToStr(Value));
@@ -4418,9 +4431,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Value;
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Value;
           SQL_INT64     : PInt64(sqldata)^ := Value;
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, TimeToStr(Value));
@@ -4436,11 +4449,11 @@ end;
   procedure TSQLParams.SetAsBoolean(const Index: Word; const Value: Boolean);
   var ASQLCode: SmallInt;
   begin
-{$IFDEF IB7_UP}
+    {$IFDEF IB7_UP}
     SetFieldType(Index, SizeOf(Smallint), SQL_BOOLEAN + 1);
-{$ELSE}
+    {$ELSE}
     SetFieldType(Index, SizeOf(Smallint), SQL_SHORT + 1);
-{$ENDIF}
+    {$ENDIF IB7_UP}
     with FXSQLDA.sqlvar[Index] do
     begin
       ASQLCode := (sqltype and not(1));
@@ -4462,9 +4475,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := ord(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := ord(Value);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := ord(Value);
           SQL_INT64     : PInt64(sqldata)^ := ord(Value);
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, IntToStr(ord(Value)));
@@ -4504,9 +4517,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Value;
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Value;
           SQL_INT64     : PInt64(sqldata)^ := Value;
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, IntToStr(Value));
@@ -4546,9 +4559,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Trunc(Value);
           SQL_INT64     : PInt64(sqldata)^ := Trunc(Value);
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, FloatToStr(Value));
@@ -4588,9 +4601,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Value;
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Value;
           SQL_INT64     : PInt64(sqldata)^ := Value;
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, IntToStr(Value));
@@ -4631,9 +4644,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := StrToFloat(Value);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_INT64     : PInt64(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, Value);
@@ -4676,9 +4689,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := StrToFloat(Value);
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_INT64     : PInt64(sqldata)^ := Trunc(StrToFloat(Value));
           SQL_TEXT      : EncodeWideString(SQL_TEXT, Index, Value);
@@ -4719,9 +4732,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Value;
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP} 
           SQL_SHORT     : PSmallint(sqldata)^ := Value;
           SQL_INT64     : PInt64(sqldata)^ := Value;
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, IntToStr(Value));
@@ -4761,9 +4774,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Trunc(Value);
           SQL_INT64     : PInt64(sqldata)^ := Trunc(Value);
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, FloatToStr(Value));
@@ -4804,9 +4817,9 @@ end;
           SQL_LONG      : PInteger(sqldata)^ := Trunc(Value);
           SQL_D_FLOAT,
           SQL_FLOAT     : PSingle(sqldata)^ := Value;
-{$IFDEF IB7_UP}
+          {$IFDEF IB7_UP}
           SQL_BOOLEAN,
-{$ENDIF}
+          {$ENDIF IB7_UP}
           SQL_SHORT     : PSmallint(sqldata)^ := Trunc(Value);
           SQL_INT64     : PInt64(sqldata)^ := Trunc(Value);
           SQL_TEXT      : EncodeString(SQL_TEXT, Index, FloatToStr(Value));

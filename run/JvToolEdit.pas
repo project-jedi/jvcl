@@ -40,7 +40,7 @@ uses
   Menus, Buttons, Dialogs, FileCtrl, Mask, ImgList, ActnList,
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvComponent, JvSpeedButton, JvJCLUtils, JvTypes, JvExMask;
 
 const
@@ -81,7 +81,7 @@ type
   protected
     {$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     FStandard: Boolean; // Polaris
     FDrawGlyph: Boolean;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -1767,7 +1767,7 @@ begin
           FButton.Invalidate;
         end
         else
-        {$ENDIF}
+        {$ENDIF JVCLThemesEnabled}
         begin
           TJvxButtonGlyph(FButton.ButtonGlyph).Glyph.Handle := LoadBitmap(0, PChar(OBM_COMBO));
           FButton.Invalidate;
@@ -1814,7 +1814,7 @@ begin
     in this special case }
   if ThemeServices.ThemesEnabled and (ImageKind = ikDropDown) then
     RecreateGlyph;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvCustomComboEdit.SetButtonHint(const Value: string);
@@ -1922,7 +1922,7 @@ begin
       end;
     end;
   end;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 
   if NewStyleControls and (BorderStyle = bsSingle) then
   begin
@@ -3037,7 +3037,7 @@ var
   ThemedState: TThemedComboBox;
   Details: TThemedElementDetails;
   R: TRect;
-{$ENDIF}
+{$ENDIF JVCLThemesEnabled}
 begin
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
@@ -3062,7 +3062,7 @@ begin
       inherited Paint;
   end
   else
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   begin
     inherited Paint;
     if FState <> rbsDown then

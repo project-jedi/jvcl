@@ -797,7 +797,7 @@ function IsMouseOver(Control: TControl): Boolean;
 function GetParentBackground(Control: TWinControl): Boolean;
 { SetParentBackground sets the Control's csParentPackground ControlStyle }
 procedure SetParentBackground(Control: TWinControl; Value: Boolean);
-{$ENDIF}
+{$ENDIF VCL}
 
 implementation
 
@@ -1092,6 +1092,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 function GetParentBackground(Control: TWinControl): Boolean;
 begin
   Result := csParentBackground in GetThemeStyle(Control);
@@ -1108,7 +1109,8 @@ begin
     Control.Invalidate;
   end;
 end;
-{$ENDIF}
+
+{$ENDIF VCL}
 
 {$IFDEF JVCLThemesEnabled}
 

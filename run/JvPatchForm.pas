@@ -34,9 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Controls, Forms, StdCtrls, Mask,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QControls, QForms, QStdCtrls, QMask, JvQToolEdit,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvToolEdit, JvComponent;
 
 type

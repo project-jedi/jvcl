@@ -34,10 +34,10 @@ uses
   Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QGraphics, QControls, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent, JvTypes;
 
 type
@@ -83,7 +83,7 @@ type
     {$IFDEF VCL}
     procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    {$ENDIF}
+    {$ENDIF VCL}
     procedure StyleChanged(Sender: TObject);
     procedure BevelLine(C: TColor; X, Y, Width: Integer);
     procedure DoDrawText(var Rect: TRect; Flags: Longint);
@@ -93,7 +93,7 @@ type
     {$IFDEF VisualCLX}
     procedure TextChanged; override;
     procedure FontChanged; override;
-    {$ENDIF}
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     property Canvas;
@@ -107,7 +107,7 @@ type
     property DragCursor;
     property DragKind;
     property ParentBiDiMode;
-    {$ENDIF}
+    {$ENDIF VCL}
     property Caption;
     property Color;
     property Constraints;
@@ -133,7 +133,7 @@ type
     {$IFDEF VCL}
     property OnEndDock;
     property OnStartDock;
-    {$ENDIF}
+    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -214,7 +214,7 @@ begin
   IncludeThemeStyle(Self, [csParentBackground]);
   {$IFDEF VCL}
   Font.Name := 'Tahoma';
-  {$ENDIF}
+  {$ENDIF VCL}
   Width := 200;
   Height := 17;
 
@@ -446,27 +446,36 @@ begin
   end;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvGroupHeader.TextChanged;
-{$ENDIF}
 {$IFDEF VCL}
+
 procedure TJvGroupHeader.CMTextChanged(var Msg: TMessage);
-{$ENDIF}
 begin
   inherited;
   Invalidate;
 end;
 
-{$IFDEF VisualCLX}
-procedure TJvGroupHeader.FontChanged;
-{$ENDIF}
-{$IFDEF VCL}
 procedure TJvGroupHeader.CMFontChanged(var Msg: TMessage);
-{$ENDIF}
 begin
   inherited;
   Invalidate;
 end;
+
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+
+procedure TJvGroupHeader.TextChanged;
+begin
+  inherited TextChanged;
+  Invalidate;
+end;
+procedure TJvGroupHeader.FontChanged;
+begin
+  inherited FontChanged;
+  Invalidate;
+end;
+
+{$ENDIF VisualCLX}
 
 procedure TJvGroupHeader.SetBevelSpace(Value: Integer);
 begin

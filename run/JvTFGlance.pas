@@ -35,14 +35,14 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QGraphics, QControls, QForms, QDialogs, QImgList, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvTFUtils, JvTFManager;
 
-{$I jvcl.inc}
-
 {$HPPEMIT '#define TDate Controls::TDate'}
+
 type
   EJvTFGlanceError = class(Exception);
   EGlanceViewerError = class(EJvTFGlanceError);
@@ -769,10 +769,11 @@ type
 {$HPPEMIT '#undef TDate'}
 
 implementation
+
 {$IFDEF USEJVCL}
 uses
   JvConsts, JvResources;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -784,7 +785,7 @@ resourcestring
   RsEApptIndexOutOfBoundsd = 'Appt index out of bounds (%d)';
   RsECellCannotBeSplit = 'Cell cannot be split';
   RsEASubcellCannotBeSplit = 'A subcell cannot be split';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 { TJvTFGlanceCell }
 { TODO 3 -cMisc: Complete TGlance.Assign }
@@ -1410,7 +1411,7 @@ begin
     RecreateWnd;
   inherited;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 constructor TJvTFCustomGlance.Create(AOwner: TComponent);
 begin
@@ -1471,7 +1472,7 @@ end;
 {$IFDEF VCL}
 procedure TJvTFCustomGlance.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
+  BorderStyles: array [TBorderStyle] of DWORD = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
   with Params do
@@ -1484,7 +1485,7 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+{$ENDIF VCL}
 
 function TJvTFCustomGlance.DateIsSelected(aDate: TDate): Boolean;
 begin

@@ -34,10 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, ImgList, Forms,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QGraphics, QControls, QImgList, QForms, QWindows, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -85,7 +85,7 @@ type
     property Enabled;
     {$IFDEF VCL}
     property DragCursor;
-    {$ENDIF}
+    {$ENDIF VCL}
     property DragMode;
     property PopupMenu;
     property ParentShowHint;
@@ -108,11 +108,11 @@ implementation
 uses
   {$IFDEF VCL}
   ExtCtrls, CommCtrl,
-  {$ELSE}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvThemes, JvResources;
-
 
 //=== TJvImageSquare =========================================================
 
@@ -162,11 +162,11 @@ begin
     Frame3d(Canvas, R, cl3DDkShadow, cl3DDkShadow, 1);
   end
   else
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if (FBorderStyle = bsSingle) and ThemeServices.ThemesEnabled then
     DrawThemedBorder(Self)
   else
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   if FBorderStyle = bsSingle then
   begin
     Frame3d(Canvas, R, clBtnFace, clBtnFace, 1);
@@ -204,11 +204,11 @@ begin
     dX := (Width - FImageList.Width) div 2;
     dY := (Height - FImageList.Height) div 2;
     {$IFDEF VCL}
-    ImageList_DrawEx(Fimagelist.Handle, FIndex, Canvas.Handle, dx, dy, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
-    {$ENDIF}
+    ImageList_DrawEx(FImageList.Handle, FIndex, Canvas.Handle, dx, dy, 0, 0, CLR_NONE, CLR_NONE, ILD_TRANSPARENT);
+    {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    FImageList.Draw(Canvas,dX,dY,FIndex);
-    {$ENDIF}
+    FImageList.Draw(Canvas, dX, dY, FIndex);
+    {$ENDIF VisualCLX}
   end;
 end;
 

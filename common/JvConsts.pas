@@ -75,45 +75,45 @@ const
 
   { RALib 1.55 }
 
-{$IFDEF DELPHI2}
+  {$IFDEF DELPHI2}
   SDelphiKey = 'Software\Borland\Delphi\2.0';
-{$ENDIF}
-{$IFDEF BCB1}
+  {$ENDIF DELPHI2}
+  {$IFDEF BCB1}
   SDelphiKey = 'Software\Borland\C++Builder\1.0';
-{$ENDIF}
-{$IFDEF DELPHI3}
+  {$ENDIF BCB1}
+  {$IFDEF DELPHI3}
   SDelphiKey = 'Software\Borland\Delphi\3.0';
-{$ENDIF}
-{$IFDEF BCB3}
+  {$ENDIF DELPHI3}
+  {$IFDEF BCB3}
   SDelphiKey = 'Software\Borland\C++Builder\3.0';
-{$ENDIF}
-{$IFDEF DELPHI4}
+  {$ENDIF BCB3}
+  {$IFDEF DELPHI4}
   SDelphiKey = 'Software\Borland\Delphi\4.0';
-{$ENDIF}
-{$IFDEF BCB4}
+  {$ENDIF DELPHI4}
+  {$IFDEF BCB4}
   SDelphiKey = 'Software\Borland\C++Builder\4.0';
-{$ENDIF}
-{$IFDEF DELPHI5}
+  {$ENDIF BCB4}
+  {$IFDEF DELPHI5}
   SDelphiKey = 'Software\Borland\Delphi\5.0';
-{$ENDIF}
-{$IFDEF BCB5}
+  {$ENDIF DELPHI5}
+  {$IFDEF BCB5}
   SDelphiKey = 'Software\Borland\C++Builder\5.0';
-{$ENDIF}
-{$IFDEF DELPHI6}
+  {$ENDIF BCB5}
+  {$IFDEF DELPHI6}
   SDelphiKey = 'Software\Borland\Delphi\6.0';
-{$ENDIF}
-{$IFDEF BCB6}
+  {$ENDIF DELPHI6}
+  {$IFDEF BCB6}
   SDelphiKey = 'Software\Borland\C++Builder\6.0';
-{$ENDIF}
-{$IFDEF DELPHI7}
+  {$ENDIF BCB6}
+  {$IFDEF DELPHI7}
   SDelphiKey = 'Software\Borland\Delphi\7.0';
-{$ENDIF}
-{$IFDEF BCB7} // will it ever be released?
+  {$ENDIF DELPHI7}
+  {$IFDEF BCB7} // will it ever be released?
   SDelphiKey = 'Software\Borland\C++Builder\7.0';
-{$ENDIF}
-{$IFDEF DELPHI8}
+  {$ENDIF BCB7}
+  {$IFDEF DELPHI8}
   SDelphiKey = 'Software\Borland\Delphi\8.0';
-{$ENDIF}
+  {$ENDIF DELPHI8}
 
   { JvDataProvider constants }
   { Consumer attributes }
@@ -144,18 +144,18 @@ const
   PaletteMask = $02000000;
 
   // (rom) unused
-{$IFDEF COMPILER7_UP}
+  {$IFDEF COMPILER7_UP}
   DEFAULT_SYSCOLOR_MASK = $000000FF;
-{$ELSE}
+  {$ELSE}
   DEFAULT_SYSCOLOR_MASK = $80000000;
-{$ENDIF COMPILER7_UP}
+  {$ENDIF COMPILER7_UP}
 
-{$IFNDEF COMPILER6_UP}
+  {$IFNDEF COMPILER6_UP}
   { Standard Windows colors that are not defined in Delphi 5}
   COLOR_MENUHILIGHT = 29;
-{$EXTERNALSYM COLOR_MENUHILIGHT}
+  {$EXTERNALSYM COLOR_MENUHILIGHT}
   COLOR_MENUBAR = 30;
-{$EXTERNALSYM COLOR_MENUBAR}
+  {$EXTERNALSYM COLOR_MENUBAR}
 
   clMoneyGreen = TColor($C0DCC0);
   clSkyBlue = TColor($F0CAA6);
@@ -166,16 +166,16 @@ const
   clHotLight = TColor(COLOR_HOTLIGHT or $80000000);
   clMenuHighlight = TColor(COLOR_MENUHILIGHT or $80000000);
   clMenuBar = TColor(COLOR_MENUBAR or $80000000);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 
-{$IFNDEF COMPILER6_UP}
-{$IFDEF MSWINDOWS}
+  {$IFNDEF COMPILER6_UP}
+  {$IFDEF MSWINDOWS}
   sLineBreak = #13#10;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   sLineBreak = #10;
-{$ENDIF LINUX}
-{$ENDIF COMPILER6_UP}
+  {$ENDIF LINUX}
+  {$ENDIF COMPILER6_UP}
   sLineBreakLen = Length(sLineBreak);
 
   CrLf = #13#10;
@@ -186,15 +186,17 @@ const
   Esc = #27;
   CtrlC = ^C;
   CtrlV = ^V;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   RegPathDelim = '\';
   PathDelim = '\';
   DriveDelim = ':';
   PathSep = ';';
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  AllFilePattern = '*.*';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   PathDelim = '/';
-{$ENDIF LINUX}
+  AllFilePattern = '*';
+  {$ENDIF LINUX}
 
   {const Separators is used in GetWordOnPos, JvUtils.ReplaceStrings and SubWord}
   Separators: TSysCharSet = [#00, ' ', '-', #13, #10, '.', ',', '/', '\', '#', '"', '''',

@@ -40,7 +40,7 @@ uses
   Windows,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Graphics, StdCtrls, Forms,
   JvAppStorage, JvFormPlacement, JvComponent;
 
@@ -794,8 +794,8 @@ type
 const
   BorderStyles: array[TBorderStyle] of Longword = (0, WS_BORDER);
   Styles: array[TListBoxStyle] of Longword =
-  (0, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE
-    {$IFDEF COMPILER6_UP}, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWFIXED{$ENDIF});
+    (0, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWVARIABLE
+    {$IFDEF COMPILER6_UP}, LBS_OWNERDRAWFIXED, LBS_OWNERDRAWFIXED {$ENDIF});
   Sorteds: TSelects = (0, LBS_SORT);
   MultiSelects: TSelects = (0, LBS_MULTIPLESEL);
   ExtendSelects: TSelects = (0, LBS_EXTENDEDSEL);

@@ -230,9 +230,9 @@ type
     property OnMouseWheelUp;
     property OnEndDock;
     property OnStartDock;
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 
   TJvSliderImages = class;

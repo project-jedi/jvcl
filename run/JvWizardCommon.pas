@@ -47,10 +47,10 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Controls, Graphics,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QControls, QGraphics, QWindows, Types,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Types,
   {$ENDIF COMPILER6_UP}
@@ -80,12 +80,12 @@ implementation
 {$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
   RsETilingError = 'Tiling only works on images with dimensions > 0';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 
 const

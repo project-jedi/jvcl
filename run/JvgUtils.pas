@@ -154,7 +154,7 @@ function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 
 {$IFDEF glDEBUG}
 function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
-{$ENDIF}
+{$ENDIF glDEBUG}
 
 implementation
 
@@ -174,18 +174,18 @@ resourcestring
   RsEExpressionStringIsEmpty = 'Expression string is empty.';
 {$IFDEF glDEBUG}
   RsEObjectMemoryLeak = 'object memory leak';
-{$ENDIF}
+{$ENDIF glDEBUG}
 {$ENDIF USEJVCL}
 
 { debug func }
 {$IFDEF glDEBUG}
-function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
+function DeleteObject(P1: HGDIOBJ): BOOL; stdcall;
 begin
-  Result := Windows.DeleteObject(p1);
-  if Result = false then
+  Result := Windows.DeleteObject(P1);
+  if not Result then
     raise Exception.Create(RsEObjectMemoryLeak);
 end;
-{$ENDIF}
+{$ENDIF glDEBUG}
 
 procedure TJvgPublicWinControl.PaintWindow(DC: HDC);
 begin

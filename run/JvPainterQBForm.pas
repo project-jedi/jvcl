@@ -35,11 +35,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls,
   Forms, Dialogs, StdCtrls, ExtCtrls, Menus, ComCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QTypes, QGraphics, QControls,
   QForms, QDialogs, QStdCtrls, QExtCtrls, QMenus, QComCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvDrawImage, JvComponent;
 
 type
@@ -104,10 +104,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 type
   TColorProc = function(OutLoop, InLoop: Integer): Integer;

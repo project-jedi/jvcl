@@ -60,8 +60,8 @@ type
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
-    function GetBackColor: TColor;{$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-    procedure SetBackColor(const Value: TColor);{$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+    function GetBackColor: TColor; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
+    procedure SetBackColor(const Value: TColor); {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
     procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
@@ -70,7 +70,7 @@ type
   protected
     {$IFDEF COMPILER7_UP}
     procedure FontChanged; override;
-    {$ENDIF}
+    {$ENDIF COMPILER7_UP}
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
     {$ENDIF VCL}
@@ -211,13 +211,14 @@ procedure TJvMarkupLabel.Paint;
 begin
   RenderHTML;
 end;
+
 {$IFDEF COMPILER7_UP}
 procedure TJvMarkupLabel.FontChanged;
 begin
   inherited FontChanged;
   Refresh;
 end;
-{$ENDIF}
+{$ENDIF COMPILER7_UP}
 
 procedure TJvMarkupLabel.ParseHTML(S: string);
 var

@@ -34,7 +34,7 @@ uses
   SysUtils, Classes, SyncObjs, Consts,
   {$IFDEF USEJVCL}
   JvComponent,
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   JvMTThreading, JvMTConsts, JvMTData, JvMTSync, JvMTSyncMon;
 
 type
@@ -42,7 +42,7 @@ type
   TJvMTComponent = class(TJvComponent);
   {$ELSE}
   TJvMTComponent = class(TComponent);
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   TJvMTSingleThread = class(TMTThread);
   TJvMTThread = class;
 
@@ -246,7 +246,7 @@ implementation
 {$IFDEF USEJVCL}
 uses
   JvResources;
-{$ENDIF}  
+{$ENDIF USEJVCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -254,7 +254,7 @@ resourcestring
   RsEOperatorNotAvailable = 'Operation not available while thread is active';
   RsECannotChangePropertySection = 'Cannot change property of active section';
   RsECannotChangePropertyBuffer = 'Cannot change property of active buffer';
-{$ENDIF}
+{$ENDIF USEJVCL}
 
 constructor TJvMTManager.Create(aOwner: TComponent);
 begin

@@ -35,11 +35,11 @@ uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QWindows, QGraphics, QControls, QForms, QDialogs,
   QStdCtrls, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -103,10 +103,10 @@ uses
 
 {$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF}
+{$ENDIF VCL}
 {$IFDEF VisualCLX}
 {$R *.xfm}
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 function Q_PosStr(const FindString, SourceString: string; StartPos: Integer): Integer;
 asm

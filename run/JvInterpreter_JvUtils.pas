@@ -44,7 +44,7 @@ uses
   Dialogs, Menus, Math,
   {$IFNDEF COMPILER6_UP}
   FileCtrl,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   JvJVCLUtils, JvJCLUtils, JvInterpreter_Windows;
 
 { function ReplaceAllStrings(S: string; Words, Frases: TStrings): string; }

@@ -317,10 +317,10 @@ begin
   Bmp := TBitmap.Create;
   try
     Bmp.PixelFormat := Bitmap.PixelFormat;
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     TempImageList.Handle := CreateImageListHandle(Width, Height,
       Bitmap.PixelFormat, ImgList.Masked, Result);
-  {$ENDIF}
+    {$ENDIF VCL}
 
    // split Bitmap and add all bitmaps to ImgList
     for i := 0 to Result - 1 do
@@ -332,14 +332,13 @@ begin
       Bmp.Width := 0; // clear bitmap
       Bmp.Width := Width;
       Bmp.Height := Height;
-    {$IFDEF VCL}
+      {$IFDEF VCL}
       BitBlt(Bmp.Canvas.Handle, 0, 0, Width, Height,
         Bitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
-    {$ELSE}
+      {$ELSE}
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
-                          Bitmap.Canvas,
-                          Rect(i * Width, 0, (i + 1) * Width, Height));
-    {$ENDIF VCL}
+        Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
+      {$ENDIF VCL}
 
       TempImageList.AddMasked(Bmp, MaskColor);
     end;
@@ -375,10 +374,10 @@ begin
     Bmp.PixelFormat := Bitmap.PixelFormat;
     MaskBmp.PixelFormat := MaskBitmap.PixelFormat;
 
-  {$IFDEF VCL}
+    {$IFDEF VCL}
     TempImageList.Handle := CreateImageListHandle(Width, Height,
       Bitmap.PixelFormat, ImgList.Masked, Result);
-  {$ENDIF}
+    {$ENDIF VCL}
 
    // split Bitmap and add all bitmaps to ImgList
     for i := 0 to Result - 1 do
@@ -386,26 +385,24 @@ begin
       Bmp.Width := 0; // clear bitmap
       Bmp.Width := Width;
       Bmp.Height := Height;
-    {$IFDEF VCL}
+      {$IFDEF VCL}
       BitBlt(Bmp.Canvas.Handle, 0, 0, Width, Height,
         Bitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
-    {$ELSE}
+      {$ELSE}
       Bmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
-                          Bitmap.Canvas,
-                          Rect(i * Width, 0, (i + 1) * Width, Height));
-    {$ENDIF VCL}
+        Bitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
+      {$ENDIF VCL}
 
       MaskBmp.Width := 0; // clear bitmap
       MaskBmp.Width := Width;
       MaskBmp.Height := Height;
-    {$IFDEF VCL}
+      {$IFDEF VCL}
       BitBlt(MaskBmp.Canvas.Handle, 0, 0, Width, Height,
         MaskBitmap.Canvas.Handle, i * Width, 0, SRCCOPY);
-    {$ELSE}
+      {$ELSE}
       MaskBmp.Canvas.CopyRect(Rect(0, 0, Width, Height),
-                              MaskBitmap.Canvas,
-                              Rect(i * Width, 0, (i + 1) * Width, Height));
-    {$ENDIF VCL}
+        MaskBitmap.Canvas, Rect(i * Width, 0, (i + 1) * Width, Height));
+      {$ENDIF VCL}
 
       TempImageList.Add(Bmp, MaskBmp);
     end;
@@ -423,19 +420,19 @@ begin
   inherited;
   FModified := False;
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   if not (csDesigning in ComponentState) and not HandleNeededHookInstalled then
     InstallHandleNeededHook;
-{$ENDIF}
+  {$ENDIF VCL}
 
   FUpdateLock := 0;
 
   FMode := imPicture;
   FTransparentMode := tmColor;
   FTransparentColor := clFuchsia;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   FPixelFormat := pfDevice;
-{$ENDIF}
+  {$ENDIF VCL}
 
   FFileName := '';
   FPicture := TPicture.Create;
@@ -472,9 +469,9 @@ begin
       // Do not assign Filename here.
       TransparentMode := ImageList.TransparentMode;
       TransparentColor := ImageList.TransparentColor;
-    {$IFDEF VCL}
+      {$IFDEF VCL}
       PixelFormat := ImageList.FPixelFormat;
-    {$ENDIF}
+      {$ENDIF VCL}
     end;
 
     inherited Assign(Source);
@@ -539,11 +536,12 @@ end;
 
 procedure TJvImageList.SetFileName(const Value: TFileName);
 begin
-{$IFDEF LINUX}
-  if Value <> FFileName then
-{$ELSE}
+  {$IFDEF MSWINDOWS}
   if not SameText(Value, FFileName) then
-{$ENDIF}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  if Value <> FFileName then
+  {$ENDIF LINUX}
   begin
     FFileName := Value;
     DoLoadFromFile;
@@ -556,7 +554,7 @@ begin
     Exit;
 
   if (FFileName <> '') and FileExists(FFilename)
-   {$IFDEF LINUX}and not DirectoryExists(FFilename){$ENDIF} then
+   {$IFDEF LINUX} and not DirectoryExists(FFilename) {$ENDIF} then
   try
     FPicture.LoadFromFile(FFileName);
   except
@@ -820,6 +818,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvImageList.LoadFromStream(Stream: TStream);
 var Adapter: IStream;
 begin
@@ -850,8 +849,11 @@ begin
   end;
   ImageList_Write(Handle, Adapter);
 end;
+
 {$ENDIF VCL}
+
 {$IFDEF VisualCLX}
+
 procedure TJvImageList.LoadFromStream(Stream: TStream);
 begin
   ReadData(Stream);
@@ -861,15 +863,18 @@ procedure TJvImageList.SaveToStream(Stream: TStream);
 begin
   WriteData(Stream);
 end;
+
 {$ENDIF VisualCLX}
 
 {$IFDEF VCL}
+
 initialization
   HandleNeededHookInstalled := False;
 
 finalization
   if HandleNeededHookInstalled then
     UninstallHandleNeededHook;
-{$ENDIF}    
+
+{$ENDIF VCL}
 
 end.

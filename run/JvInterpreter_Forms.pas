@@ -481,7 +481,7 @@ begin
   Value := O2V(TForm.CreateNew(V2O(Args.Values[0]) as TComponent));
   {$ELSE}
   Value := O2V(TForm.CreateNew(V2O(Args.Values[0]) as TComponent, 1));
-  {$ENDIF}
+  {$ENDIF DELPHI}
 end;
 
 { procedure ArrangeIcons; }
@@ -538,7 +538,7 @@ begin
   Value := O2V(TDataModule.CreateNew(V2O(Args.Values[0]) as TComponent));
   {$ELSE}
   Value := O2V(TDataModule.CreateNew(V2O(Args.Values[0]) as TComponent, 1));
-  {$ENDIF}
+  {$ENDIF DELPHI}
 end;
 
 { TScreen }
@@ -1411,7 +1411,7 @@ begin
     AddGet(TForm, 'CreateNew', TForm_CreateNew, 1, [varEmpty], varEmpty);
     {$ELSE}
     AddGet(TForm, 'CreateNew', TForm_CreateNew, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF}
+    {$ENDIF DELPHI}
     {$IFDEF VCL}
     AddGet(TForm, 'ArrangeIcons', TForm_ArrangeIcons, 0, [varEmpty], varEmpty);
     {$ENDIF VCL}
@@ -1426,7 +1426,7 @@ begin
     AddGet(TDataModule, 'CreateNew', TDataModule_CreateNew, 1, [varEmpty], varEmpty);
     {$ELSE}
     AddGet(TDataModule, 'CreateNew', TDataModule_CreateNew, 2, [varEmpty, varEmpty], varEmpty);
-    {$ENDIF}
+    {$ENDIF DELPHI}
     { TScreen }
     AddClass(cForms, TScreen, 'TScreen');
     AddGet(TScreen, 'Create', TScreen_Create, 1, [varEmpty], varEmpty);

@@ -56,9 +56,7 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear;
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF}
+    procedure Clear; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     property Items: TStrings read GetItems;
     property Section: string read GetSection;
     property HKey: HKEY read GetHKey;
@@ -129,9 +127,7 @@ type
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
-    procedure Clear;
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF}
+    procedure Clear; {$IFDEF COMPILER6_UP} override; {$ENDIF}
     procedure Rebuild;
     property Items: TStrings read GetItems;
     property Section: string read GetSection;

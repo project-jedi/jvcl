@@ -93,7 +93,7 @@ type
     {$IFNDEF COMPILER6_UP}
     procedure SelectAll;
     procedure DeleteSelected;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure UnselectAll;
     procedure InvertSelection;
     property ItemPopup[Item: TListItem]: TPopupMenu read GetItemPopup write SetItemPopup;
@@ -870,7 +870,7 @@ begin
     Items[I].Selected := True;
   Items.EndUpdate;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 procedure TJvListView.UnselectAll;
 var
@@ -930,7 +930,7 @@ begin
   end;
   Items.EndUpdate;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
 
 function TJvListView.GetColumnsOrder: string;
 var
