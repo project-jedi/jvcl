@@ -358,6 +358,7 @@ begin
     if FThread <> nil then
     begin
       FThread.Terminate;
+      FThread.WaitFor;
       FreeAndNil(FThread);
     end;
     FThread := TJvChangeThread.Create(FNotifyArray, FCollection.Count, FInterval);
@@ -368,6 +369,7 @@ begin
   if FThread <> nil then
   begin
     FThread.Terminate;
+    FThread.WaitFor;
     FreeAndNil(FThread);
   end;
 
