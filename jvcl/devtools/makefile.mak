@@ -37,6 +37,7 @@ MakePNG.exe \
 Res2BMP.exe \
 ErrLook.exe \
 stripCmtPO.exe \
+dxgettextResstr \
 
 #---------------------------------------------------------------------------------------------------
 
@@ -82,6 +83,11 @@ crlf.exe: JvAdjustLineBreaks\crlf.dpr
 
 stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
   cd stripCmtPO
+  $(DCC) $&.dpr
+  cd ..
+
+dxgettextResstr.exe: dxgettextResstr\dxgettextResstr.dpr
+  cd dxgettextResstr
   $(DCC) $&.dpr
   cd ..
 

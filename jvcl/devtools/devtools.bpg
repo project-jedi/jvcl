@@ -54,3 +54,6 @@ crlf.exe: JvAdjustLineBreaks\crlf.dpr
 stripCmtPO.exe: stripCmtPO\stripCmtPO.dpr
   $(DCC)
 
+dxgettextResstr.exe: dxgettextResstr\dxgettextResstr.dpr
+  $(DCC)
+
