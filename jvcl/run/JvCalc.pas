@@ -38,7 +38,7 @@ uses
   {$ENDIF COMPILER6_UP}
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Menus, ExtCtrls, Buttons, Clipbrd,
-  JvToolEdit, JvSpeedButton, JvBaseDlg;
+  JvToolEdit, JvSpeedButton, JvBaseDlg, JvExExtCtrls;
 
 const
   DefCalcPrecision = 15;
@@ -315,7 +315,7 @@ end;
 //=== TJvCalculatorPanel =====================================================
 
 type
-  TJvCalculatorPanel = class(TPanel)
+  TJvCalculatorPanel = class(TJvExPanel)
   private
     FText: string;
     FStatus: TJvCalcState;
@@ -346,7 +346,7 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure BtnClick(Sender: TObject);
   protected
-    procedure TextChanged; virtual;
+    procedure TextChange; virtual;
   public
     constructor CreateLayout(AOwner: TComponent; ALayout: TCalcPanelLayout);
     procedure CalcKeyPress(Sender: TObject; var Key: Char);
@@ -472,23 +472,23 @@ begin
   if FText <> Value then
   begin
     FText := Value;
-    TextChanged;
+    TextChange;
   end;
 end;
 
 type
   TAccessLabel = class(TCustomLabel);
 
-procedure TJvCalculatorPanel.TextChanged;
+procedure TJvCalculatorPanel.TextChange;
 begin
   if Assigned(FControl) then
   begin
     if FControl is TCustomLabel then
-      TAccessLabel(FControl).Caption := FText
+      TAccessLabel(FControl).Caption := Text
     else
     { (rb) Fix to update the text of a TJvCalcEdit }
     if FControl is TCustomEdit then
-      TCustomEdit(FControl).Text := FText;
+      TCustomEdit(FControl).Text := Text;
   end;
   if Assigned(FOnTextChange) then
     FOnTextChange(Self);
@@ -509,7 +509,7 @@ var
   S: string;
 begin
   S := FloatToStrF(R, ffGeneral, Max(2, FPrecision), 0);
-  if FText <> S then
+  if Text <> S then
   begin
     SetText(S);
     if Assigned(FOnDisplayChange) then
@@ -522,7 +522,7 @@ begin
   if FStatus = csError then
     Result := 0.0
   else
-    Result := StrToFloat(Trim(FText));
+    Result := StrToFloat(Trim(Text));
 end;
 
 procedure TJvCalculatorPanel.CheckFirst;
@@ -577,8 +577,8 @@ begin
   if Key in [DecimalSeparator, '.', ','] then
   begin
     CheckFirst;
-    if Pos(DecimalSeparator, FText) = 0 then
-      SetText(FText + DecimalSeparator);
+    if Pos(DecimalSeparator, Text) = 0 then
+      SetText(Text + DecimalSeparator);
     Exit;
   end;
   case Key of
@@ -603,12 +603,12 @@ begin
     '0'..'9':
       begin
         CheckFirst;
-        if FText = '0' then
+        if Text = '0' then
           SetText('');
-        if Pos('E', FText) = 0 then
+        if Pos('E', Text) = 0 then
         begin
-          if Length(FText) < Max(2, FPrecision) + Ord(Boolean(Pos('-', FText))) then
-            SetText(FText + Key)
+          if Length(Text) < Max(2, FPrecision) + Ord(Boolean(Pos('-', Text))) then
+            SetText(Text + Key)
           else
           if FBeepOnError then
             MessageBeep(0);
@@ -617,10 +617,10 @@ begin
     Backspace:
       begin
         CheckFirst;
-        if (Length(FText) = 1) or ((Length(FText) = 2) and (FText[1] = '-')) then
+        if (Length(Text) = 1) or ((Length(Text) = 2) and (Text[1] = '-')) then
           SetText('0')
         else
-          SetText(System.Copy(FText, 1, Length(FText) - 1));
+          SetText(System.Copy(Text, 1, Length(Text) - 1));
       end;
     '_':
       SetDisplay(-GetDisplay);
@@ -783,7 +783,7 @@ end;
 
 procedure TJvCalculatorPanel.Copy;
 begin
-  Clipboard.AsText := FText;
+  Clipboard.AsText := Text;
 end;
 
 procedure TJvCalculatorPanel.Paste;
@@ -801,9 +801,8 @@ end;
 
 type
   TJvLocCalculator = class(TJvCalculatorPanel)
-  private
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
+    procedure EnabledChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -818,8 +817,9 @@ begin
   TabStop := False;
 end;
 
-procedure TJvLocCalculator.CMEnabledChanged(var Msg: TMessage);
+procedure TJvLocCalculator.EnabledChanged;
 begin
+  inherited EnabledChanged;
   if HandleAllocated and not (csDesigning in ComponentState) then
     EnableWindow(Handle, True);
 end;

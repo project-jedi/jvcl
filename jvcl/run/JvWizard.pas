@@ -333,9 +333,16 @@ interface
 
 {$I jvcl.inc}
 
-uses Windows, {$IFDEF COMPILER6_UP}Types, {$ENDIF}Classes, Messages, SysUtils,
-  Controls, Forms, Graphics, Buttons, ImgList, JvWizardCommon
-  {$IFDEF USEJVCL}, JvComponent{$ENDIF};
+uses
+  Windows, Messages,
+  {$IFDEF COMPILER6_UP}
+  Types,
+  {$ENDIF COMPILER6_UP}
+  SysUtils, Controls, Forms, Graphics, Buttons, ImgList, JvWizardCommon,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF USEJVCL}
+  Classes;
 
 type
   TJvWizardAboutInfoForm = (JvWizardAbout); // Added by <Steve Forbes>
@@ -653,9 +660,12 @@ type
     procedure SetVisibleButtons(Value: TJvWizardButtonSet);
     procedure ImageChanged(Sender: TObject);
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
+
+    // (ahuser) Do not convert to JvExVCL: This package is USEJVCL'ed
     procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CMTextChanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+
     function GetSubtitle: TJvWizardPageTitle;
     function GetTitle: TJvWizardPageTitle;
     procedure SetSubtitle(const Value: TJvWizardPageTitle);
@@ -762,11 +772,11 @@ type
   end;
 
   { YW - JvWizard Control }
-{$IFDEF USEJVCL}
+  {$IFDEF USEJVCL}
   TJvWizard = class(TJvCustomControl)
-{$ELSE}
+  {$ELSE}
   TJvWizard = class(TCustomControl)
-{$ENDIF}
+  {$ENDIF USEJVCL}
   private
     FPages: TJvWizardPageList;
     FActivePage: TJvWizardCustomPage;
@@ -780,9 +790,9 @@ type
     FOnSelectLastPage: TJvWizardSelectPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
-{$IFNDEF USEJVCL}
+    {$IFNDEF USEJVCL}
     FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
-{$ENDIF}
+    {$ENDIF !USEJVCL}
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -850,10 +860,10 @@ type
     property PageCount: Integer read GetPageCount;
   published
     property Pages: TJvWizardPageList read FPages;
-{$IFNDEF USEJVCL}
+    {$IFNDEF USEJVCL}
     property About: TJvWizardAboutInfoForm // Add by Steve Forbes
       read FAboutInfo write FAboutInfo stored False;
-{$ENDIF}
+    {$ENDIF !USEJVCL}
     property ActivePage: TJvWizardCustomPage
       read FActivePage write SetActivePage;
     property ButtonStart: TJvWizardNavigateButton
@@ -905,10 +915,10 @@ type
 implementation
 
 uses
-  Consts
   {$IFDEF USEJVCL}
-  ,JvResources
-  {$ENDIF};
+  JvResources,
+  {$ENDIF USEJVCL}
+  Consts;
 
 const
   ciButtonWidth = 75;
@@ -930,7 +940,7 @@ resourcestring
 
   RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
   RsEInvalidWizardPage = 'The pages belong to another wizard';
-{$ENDIF}
+{$ENDIF !USEJVCL}
 
 type
   { YW - First Button }
@@ -989,12 +999,12 @@ begin
   inherited;
   if csDesigning in ComponentState then
   begin
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
       { !!! YW - Add csClickEvents in order to fired the Click method
          at design time. It does NOT need at run time, otherwise it cause
         the OnClick event to be called twice. }
     ControlStyle := ControlStyle + [csClickEvents];
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
     ControlStyle := ControlStyle + [csNoDesignVisible];
   end;
   Kind := bkCustom;

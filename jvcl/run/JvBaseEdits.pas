@@ -77,13 +77,13 @@ type
     function TextToValText(const AValue: string): string;
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
+    procedure EnabledChanged; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure FontChanged; override;
     //Polaris up to protected
     function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     procedure AcceptValue(const Value: Variant); override;
@@ -817,15 +817,15 @@ begin
   end;
 end;
 
-procedure TJvCustomNumEdit.CMEnter(var Msg: TCMEnter);
+procedure TJvCustomNumEdit.DoEnter;
 begin
   SetFocused(True);
   if FFormatOnEditing then
     ReformatEditText;
-  inherited;
+  inherited DoEnter;
 end;
 
-procedure TJvCustomNumEdit.CMExit(var Msg: TCMExit);
+procedure TJvCustomNumEdit.DoExit;
 begin
   try
     CheckRange;
@@ -838,12 +838,12 @@ begin
   end;
   SetFocused(False);
   SetCursor(0);
-  DoExit;
+  inherited DoExit;
 end;
 
-procedure TJvCustomNumEdit.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomNumEdit.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   if NewStyleControls and not FFocused then
     Invalidate;
 end;
@@ -861,9 +861,9 @@ begin
     inherited;
 end;
 
-procedure TJvCustomNumEdit.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomNumEdit.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   Invalidate;
 end;
 

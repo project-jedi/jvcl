@@ -32,10 +32,11 @@ unit JvDBRadioPanel;
 interface
 
 uses
-  Forms, Windows, Classes, Controls, ExtCtrls, StdCtrls, Messages, DBCtrls, DB;
+  Forms, Windows, Classes, Controls, ExtCtrls, StdCtrls, Messages, DBCtrls, DB,
+  JvComponent;
 
 type
-  TJvDBRadioPanel = class(TCustomPanel)
+  TJvDBRadioPanel = class(TJvCustomPanel)
   private
     { Private declarations }
     FButtons: TList;
@@ -62,7 +63,6 @@ type
     procedure SetValue(const Value: string);
     procedure SetItems(Value: TStrings);
     procedure SetValues(Value: TStrings);
-    procedure CMExit(var Message: TCMExit); message CM_EXIT;
     procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
 
     function GetButtons(Index: Integer): TRadioButton;
@@ -74,11 +74,12 @@ type
     procedure SetItemIndex(Value: Integer);
 
     procedure UpdateButtons;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure WMSize(var Message: TWMSize); message WM_SIZE;
   protected
     { Protected declarations }
+    procedure DoExit; override;
+    procedure EnabledChanged; override;
+    procedure FontChanged; override;
     procedure Change; dynamic;
     procedure Click; override;
     procedure KeyPress(var Key: Char); override;
@@ -292,16 +293,16 @@ begin
   end;
 end;
 
-procedure TJvDBRadioPanel.CMEnabledChanged(var Message: TMessage);
+procedure TJvDBRadioPanel.EnabledChanged;
 var
   I: Integer;
 begin
-  inherited;
+  inherited EnabledChanged;
   for I := 0 to FButtons.Count - 1 do
     TGroupButton(FButtons[I]).Enabled := Enabled;
 end;
 
-procedure TJvDBRadioPanel.CMExit(var Message: TCMExit);
+procedure TJvDBRadioPanel.DoExit;
 begin
   try
     FDataLink.UpdateRecord;
@@ -312,12 +313,12 @@ begin
       TRadioButton(Controls[0]).SetFocus;
     raise;
   end;
-  inherited;
+  inherited DoExit;
 end;
 
-procedure TJvDBRadioPanel.CMFontChanged(var Message: TMessage);
+procedure TJvDBRadioPanel.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ArrangeButtons;
 end;
 

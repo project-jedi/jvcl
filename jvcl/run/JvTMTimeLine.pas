@@ -125,8 +125,6 @@ type
       Shift: TShiftState; X, Y: Integer);
     // this is needed so we receive the arrow keys
     procedure WMGetDlgCode(var Msg: TWmGetDlgCode); message WM_GETDLGCODE;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMCursorChanged(var Message: TMessage); message CM_CURSORCHANGED;
 
     procedure DrawFrame(ACanvas: TCanvas; AColor: TColor;
       ALineWidth: Integer; ARect: TRect);
@@ -149,6 +147,8 @@ type
     procedure StopTimer;
 
   protected
+    procedure CursorChanged; override;
+    procedure EnabledChanged; override;
     procedure Paint; override;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -996,9 +996,9 @@ begin
   Msg.Result := Msg.Result or DLGC_WANTARROWS;
 end;
 
-procedure TJvCustomTMTimeline.CMEnabledChanged(var Message: TMessage);
+procedure TJvCustomTMTimeline.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   FLeftBtn.Enabled := Enabled;
   FRightBtn.Enabled := Enabled;
   Invalidate;
@@ -1308,10 +1308,9 @@ begin
   end;
 end;
 
-
-procedure TJvCustomTMTimeline.CMCursorChanged(var Message: TMessage);
+procedure TJvCustomTMTimeline.CursorChanged;
 begin
-  inherited;
+  inherited CursorChanged;
   FRealCursor := Cursor;
 end;
 

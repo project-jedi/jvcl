@@ -110,7 +110,6 @@ type
     function GetValueByOffset(Offset: Integer): Longint;
     function GetOffsetByValue(Value: Longint): Integer;
     function GetRulerLength: Integer;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
@@ -118,6 +117,7 @@ type
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
   protected
+    procedure EnabledChanged; override;
     procedure AlignControls(AControl: TControl; var Rect: TRect); override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -1069,9 +1069,9 @@ begin
   TimerTrack;
 end;
 
-procedure TJvCustomSlider.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomSlider.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   InvalidateThumb;
 end;
 

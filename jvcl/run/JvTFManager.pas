@@ -31,9 +31,13 @@ unit JvTFManager;
 
 interface
 
-uses Windows, Classes, Controls, SysUtils, Messages, Graphics, ImgList,
-  ExtCtrls, Printers, JvTFUtils
-{$IFDEF USEJVCL}, JvComponent{$ENDIF};
+uses
+  Windows, Controls, SysUtils, Messages, Graphics, ImgList,
+  ExtCtrls, Printers, JvTFUtils,
+  {$IFDEF USEJVCL}
+  JvComponent,
+  {$ENDIF}
+  Classes;
 
 const
   CN_REQUESTREFRESH = $BD01;

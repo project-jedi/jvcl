@@ -42,7 +42,7 @@ uses
   Variants, VDBConsts,
   {$ENDIF}
   Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask, StdCtrls,
-  JvDBUtils, JvToolEdit;
+  JvDBUtils, JvToolEdit, JvComponent;
 
 const
   // (rom) renamed
@@ -73,7 +73,7 @@ type
     procedure DataSetChanged; override;
   end;
 
-  TJvLookupControl = class(TCustomControl)
+  TJvLookupControl = class(TJvCustomControl)
   private
     FLookupSource: TDataSource;
     FDataLink: TJvDataSourceLink;
@@ -232,12 +232,12 @@ type
     procedure UpdateScrollBar;
     procedure UpdateBufferCount(Rows: Integer);
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMNCHitTest(var Msg: TWMNCHitTest); message WM_NCHITTEST;
     procedure WMTimer(var Msg: TMessage); message WM_TIMER;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
   protected
+    procedure FontChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
     procedure KeyValueChanged; override;
@@ -378,12 +378,6 @@ type
     procedure CNKeyDown(var Msg: TWMKeyDown); message CN_KEYDOWN;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    {$IFDEF JVCLThemesEnabled}
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    {$ENDIF}
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
     procedure WMGetDlgCode(var Msg: TMessage); message WM_GETDLGCODE;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
@@ -391,6 +385,12 @@ type
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
   protected
+    procedure EnabledChanged; override;
+    procedure FontChanged; override;
+    {$IFDEF JVCLThemesEnabled}
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    {$ENDIF JVCLThemesEnabled}
     procedure Click; override;
     procedure CreateParams(var Params: TCreateParams); override;
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
@@ -2140,9 +2140,9 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupList.CMFontChanged(var Msg: TMessage);
+procedure TJvDBLookupList.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   if not (csReading in ComponentState) then
     Height := Height;
 end;
@@ -3162,17 +3162,19 @@ begin
   inherited;
 end;
 
-procedure TJvDBLookupCombo.CMFontChanged(var Msg: TMessage);
+procedure TJvDBLookupCombo.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   if not (csReading in ComponentState) then
     Height := Max(Height, GetMinHeight);
 end;
 
 {$IFDEF JVCLThemesEnabled}
-procedure TJvDBLookupCombo.CMMouseEnter(var Msg: TMessage);
+procedure TJvDBLookupCombo.MouseEnter(Control: TControl);
 begin
-  inherited;
+  if csDesigning in Component then
+    Exit;
+  inherited MouseEnter(Control);
   {Windows XP themes use hot track states, hence we have to update the drop down button.}
   if ThemeServices.ThemesEnabled and not FOver and not (csDesigning in ComponentState) then
   begin
@@ -3181,9 +3183,11 @@ begin
   end;
 end;
 
-procedure TJvDBLookupCombo.CMMouseLeave(var Msg: TMessage);
+procedure TJvDBLookupCombo.MouseLeave(Control: TControl);
 begin
-  inherited;
+  if csDesigning in ComponentState then
+    Exit;
+  inherited MouseLeave(Control);
   if ThemeServices.ThemesEnabled and FOver then
   begin
     FOver := False;
@@ -3192,9 +3196,9 @@ begin
 end;
 {$ENDIF JVCLThemesEnabled}
 
-procedure TJvDBLookupCombo.CMEnabledChanged(var Msg: TMessage);
+procedure TJvDBLookupCombo.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   Invalidate;
 end;
 

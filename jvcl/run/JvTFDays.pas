@@ -1065,13 +1065,16 @@ type
     procedure Resize; override;
 
     procedure WMEraseBkgnd(var Message: TMessage); message WM_ERASEBKGND;
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
     procedure WMSetCursor(var Message: TWMSetCursor); message WM_SETCURSOR;
     procedure WMNCHitTest(var Message: TWMNCHitTest); message WM_NCHITTEST;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure CNRequestRefresh(var Msg: TCNRequestRefresh); message CN_REQUESTREFRESH;
     procedure WMTimer(var Message: TWMTimer); message WM_TIMER;
+
+    // (ahuser) do not convert to JvExVCL. This package is USEJVCL'ed
+    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
+    procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
 
    // internal routines
     procedure Loaded; override;
@@ -1130,7 +1133,6 @@ type
     function DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     function DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; override;
     procedure DestroyApptNotification(anAppt: TJvTFAppt); override;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
     procedure Navigate(aControl: TJvTFControl; SchedNames: TStringList;
        Dates: TJvTFDateList); override;
 
