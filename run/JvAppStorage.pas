@@ -2203,6 +2203,7 @@ var
   //Index: Integer;
   TmpValue: Integer;
   SubObj: TObject;
+  P:PPropInfo;
 begin
   if not Assigned(PersObj) then
     Exit;
@@ -2231,7 +2232,13 @@ begin
       SetInt64Prop(PersObj, PropName, StrToInt64(ReadString(Path,
         IntToStr(GetInt64Prop(PersObj, PropName)))));
     tkFloat:
-      SetFloatProp(PersObj, PropName, ReadFloat(Path, GetFloatProp(PersObj, PropName)));
+      begin
+        P := GetPropInfo(PersObj,PropName,tkAny);
+        if (P <> nil) and (P^.PropType <> nil) and (P^.PropType^ = TypeInfo(TDateTime)) then
+          SetFloatProp(PersObj, PropName, ReadDateTime(Path, GetFloatProp(PersObj, PropName)))
+        else
+          SetFloatProp(PersObj, PropName, ReadFloat(Path, GetFloatProp(PersObj, PropName)));
+      end;
     tkClass:
       begin
         SubObj := GetObjectProp(PersObj, PropName);
@@ -2257,6 +2264,7 @@ procedure TJvCustomAppStorage.WriteProperty(const Path: string;
 var
   TmpValue: Integer;
   SubObj: TObject;
+  P:PPropInfo;
 begin
   if not Assigned(PersObj) then
     Exit;
@@ -2286,7 +2294,13 @@ begin
     tkInt64:
       WriteString(Path, IntToStr(GetInt64Prop(PersObj, PropName)));
     tkFloat:
-      WriteFloat(Path, GetFloatProp(PersObj, PropName));
+      begin
+        P := GetPropInfo(PersObj,PropName,tkAny);
+        if (P <> nil) and (P^.PropType <> nil) and (P^.PropType^ = TypeInfo(TDateTime)) then
+          WriteDateTime(Path, GetFloatProp(PersObj, PropName))
+        else
+          WriteFloat(Path, GetFloatProp(PersObj, PropName));
+      end;
     tkClass:
       begin
         SubObj := GetObjectProp(PersObj, PropName);
