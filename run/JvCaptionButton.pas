@@ -311,7 +311,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   CommCtrl, Buttons, SysUtils,
-  JvThemes, 
+  JvThemes,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
   {$IFNDEF COMPILER7_UP}
@@ -319,7 +319,7 @@ uses
   {$ENDIF COMPILER7_UP}
   JvJVCLUtils,
   {$ENDIF JVCLThemesEnabled}
-  JvDsgnIntf, JvTypes, JvJCLUtils, JvResources, JvWndProcHook;
+  JvDsgnIntf, JvConsts, JvTypes, JvJCLUtils, JvResources, JvWndProcHook;
 
 const
   { Msimg32.dll is included in Windows 98 and later }
@@ -766,7 +766,7 @@ var
 begin
   FreeHandle;
 
-  H := CreateCompatibleDC(0);
+  H := CreateCompatibleDC(HDC_DESKTOP);
   FDIBHandle := CreateDIB(H, AWidth, AHeight);
   if FDIBHandle <> 0 then
     FOldBitmap := SelectObject(H, FDIBHandle)

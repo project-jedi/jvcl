@@ -322,13 +322,13 @@ var
   AFont: HFONT;
   TM: TTextMetric;
 begin
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   try
     AFont := SelectObject(DC, Font.Handle);
     GetTextMetrics(DC, TM);
     SelectObject(DC, AFont);
   finally
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
   Result := TM.tmHeight + 1;
 end;
@@ -886,7 +886,7 @@ begin
       for I := 0 to MRUCount - 1 do
         MRUItems.AddObject(Items[I], Items.Objects[I]);
     Clear;
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     try
       if FDevice in [fdScreen, fdBoth] then
         EnumFonts(DC, nil, @EnumFontsProc, Pointer(Self));
@@ -897,7 +897,7 @@ begin
         // (p3) exception might be raised if no printer is installed, but ignore it here
       end;
     finally
-      ReleaseDC(0, DC);
+      ReleaseDC(HWND_DESKTOP, DC);
     end;
     if FShowMRU then
       for I := MRUCount - 1 downto 0 do

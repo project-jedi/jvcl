@@ -3894,7 +3894,7 @@ begin
     Result := CreateBitmap(Size.X, Size.Y, 1, 1, nil)
   else
   begin
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     if DC = NullHandle then
       OutOfResources;
     try
@@ -3902,7 +3902,7 @@ begin
       if Result = NullHandle then
         OutOfResources;
     finally
-      ReleaseDC(0, DC);
+      ReleaseDC(HWND_DESKTOP, DC);
     end;
   end;
   if Result <> NullHandle then
@@ -3941,7 +3941,7 @@ begin
     biSizeImage := WidthBytes(Longint(biWidth) * biBitCount) * biHeight;
     NumColors := GetDInColors(biBitCount);
   end;
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   if DC = NullHandle then
     OutOfResources;
   try
@@ -3977,7 +3977,7 @@ begin
       DeleteObject(Temp);
     end;
   finally
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
   end;
 end;
 
@@ -4007,7 +4007,7 @@ begin
     Stream.Read(List^, HeaderLen);
     IconSize.X := GetSystemMetrics(SM_CXICON);
     IconSize.Y := GetSystemMetrics(SM_CYICON);
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     if DC = NullHandle then
       OutOfResources;
     try
@@ -4017,7 +4017,7 @@ begin
       else
         Colors := 1 shl BitsPerPixel;
     finally
-      ReleaseDC(0, DC);
+      ReleaseDC(HWND_DESKTOP, DC);
     end;
     Index := -1;
     { the following code determines which image most closely matches the

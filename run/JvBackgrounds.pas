@@ -257,7 +257,7 @@ uses
   JvGIF,
   {$DEFINE RECOGNIZE_GIF}
   {$ENDIF USE_JvGIF}
-  JvResources;
+  JvConsts, JvResources;
 
 type
   TWinControlAccessProtected = class(TWinControl);
@@ -551,11 +551,11 @@ begin
   if FEnabled and FPictureValid then
     if TWinControlAccessProtected(AClient).FDoubleBuffered and (TWMPaint(Msg).DC = 0) then
     begin
-      DC := GetDC(0);
+      DC := GetDC(HWND_DESKTOP);
       ClientRect := AClient.ClientRect;
       MemBitmap := CreateCompatibleBitmap(DC, ClientRect.Right, ClientRect.Bottom);
-      ReleaseDC(0, DC);
-      MemDC := CreateCompatibleDC(0);
+      ReleaseDC(HWND_DESKTOP, DC);
+      MemDC := CreateCompatibleDC(HDC_DESKTOP);
       OldBitmap := SelectObject(MemDC, MemBitmap);
       try
         DC := BeginPaint(AClient.Handle, PS);

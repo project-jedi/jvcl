@@ -638,7 +638,7 @@ var
 begin
   if not FSelection then
     Exit;
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   DrawFocusRect(DC, FSelectionRect);
   Pt.X := X - FScrollBox.HorzScrollBar.Position;
   Pt.Y := Y - FScrollBox.VertScrollBar.Position;
@@ -646,7 +646,7 @@ begin
   FSelectionRect := Bounds(Min(FSelPt.X, Pt.X), Min(FSelPt.Y, Pt.Y),
     Abs(FSelPt.X - Pt.X), Abs(FSelPt.Y - Pt.Y));
   DrawFocusRect(DC, FSelectionRect);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
 end;
 
 procedure TJvgReportEditorForm.ScrollBox_MouseUp(Sender: TObject;
@@ -658,9 +658,9 @@ var
 begin
   if FSelection then
   begin
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     DrawFocusRect(DC, FSelectionRect);
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
     FSelection := False;
     //...select all in rect
     with Component.ParentWnd do

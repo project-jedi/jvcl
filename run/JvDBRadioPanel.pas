@@ -266,11 +266,11 @@ var
 begin
   if (FButtons.Count <> 0) and not FReading then
   begin
-    DC := GetDC(0);
+    DC := GetDC(HWND_DESKTOP);
     SaveFont := SelectObject(DC, Font.Handle);
     GetTextMetrics(DC, Metrics);
     SelectObject(DC, SaveFont);
-    ReleaseDC(0, DC);
+    ReleaseDC(HWND_DESKTOP, DC);
     ButtonsPerCol := (FButtons.Count + FColumns - 1) div FColumns;
     ButtonWidth := (Width - 10) div FColumns;
     ButtonHeight := Height div ButtonsPerCol;

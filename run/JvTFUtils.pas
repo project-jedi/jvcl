@@ -474,7 +474,7 @@ begin
   StrPCopy(PTxt, ATxt);
 
   //StrPCopy(cStr, ATxt);
-  DC := GetDC(0);
+  DC := GetDC(HWND_DESKTOP);
   hSavFont := SelectObject(DC, AFont.Handle);
   //GetTextExtentPoint32(DC, cStr, Length(ATxt), Size);
   {$IFDEF VCL}
@@ -485,7 +485,7 @@ begin
   {$ENDIF VisualCLX}
   StrDispose(PTxt);
   SelectObject(DC, hSavFont);
-  ReleaseDC(0, DC);
+  ReleaseDC(HWND_DESKTOP, DC);
 
   X := 0;
   Y := 0;

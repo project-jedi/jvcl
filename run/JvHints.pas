@@ -409,7 +409,7 @@ begin
       if Screen.ActiveForm <> nil then
         UpdateWindow(Screen.ActiveForm.Handle);
     end;
-    ScreenDC := GetDC(0);
+    ScreenDC := GetDC(HWND_DESKTOP);
     try
       with FSrcImage do
       begin
@@ -419,7 +419,7 @@ begin
           Rect.Left, Rect.Top, SRCCOPY);
       end;
     finally
-      ReleaseDC(0, ScreenDC);
+      ReleaseDC(HWND_DESKTOP, ScreenDC);
     end;
   end;
   SetWindowPos(Handle, HWND_TOPMOST, Rect.Left, Rect.Top, 0, 0,
