@@ -80,9 +80,6 @@ object Form1: TForm1
     Height = 203
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 2
-    DesignSize = (
-      305
-      203)
     object lbFoundFiles: TJvListBox
       Left = 8
       Top = 16
