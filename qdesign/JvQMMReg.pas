@@ -52,8 +52,12 @@ uses
   {$IFDEF _LINUX}, JvQPictureEditors,  JvQPictureEditForm {$ENDIF}
   ;
 
-
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvMMReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvMMReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

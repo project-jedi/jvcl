@@ -53,7 +53,12 @@ uses
   JvQValidateEdit,
   JvQOutlookBarEditors, JvQLookoutEditor, JvQChart;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCustomReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCustomReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 const

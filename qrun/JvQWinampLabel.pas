@@ -137,7 +137,12 @@ implementation
 uses
   JvQTypes, JvQResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvWinampLabel.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvWinampLabel.res}
+{$ENDIF LINUX}
 
 const
   // (p3) fixed as suggested by Remko Bonte

@@ -40,7 +40,7 @@ implementation
 
 uses
   Classes,
-  
+
   DesignEditors, DesignIntf,
 
   {$IFDEF MSWINDOWS}
@@ -53,7 +53,12 @@ uses
 
 
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvNetReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvNetReg.dcr}
+{$ENDIF LINUX}
 
 
 procedure Register;
@@ -63,8 +68,7 @@ begin
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
     TJvLocalFileURLGrabber, {TJvMail,}
     {$ENDIF MSWINDOWS}
-    TJvHTMLParser,
-    TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
+    TJvHTMLParser, TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML
     {$IFDEF MSWINDOWS}
     ,TJvUrlListGrabber
     {$ENDIF MSWINDOWS}

@@ -313,8 +313,12 @@ uses
 { Cursors resources }
 
 
+{$IFDEF VCL}
+{$R ..\Resources\JvScrollMax.res}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 {$R ../Resources/JvScrollMax.res}
-
+{$ENDIF VisualCLX}
 
 function PanelBorder(Panel: TCustomPanel): Integer;
 begin

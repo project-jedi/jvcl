@@ -72,7 +72,12 @@ uses
   JvQButtons, JvQCaptionPanel, JvQMovableBevel
   ;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvCtrlsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvCtrlsReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin

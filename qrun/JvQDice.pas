@@ -143,7 +143,12 @@ uses
 
 
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvDice.Res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvDice.Res}
+{$ENDIF LINUX}
 
 
 constructor TJvDice.Create(AOwner: TComponent);

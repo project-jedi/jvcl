@@ -289,7 +289,13 @@ uses
   
   Math, JvQJCLUtils, JvQCalc, JvQConsts, JvQResources;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvBaseEdits.Res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvBaseEdits.Res}
+{$ENDIF LINUX}
+
 
 const
   sCalcBmp = 'JV_CEDITBMP'; { Numeric editor button glyph }

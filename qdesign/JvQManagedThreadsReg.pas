@@ -42,7 +42,12 @@ procedure Register;
 
 implementation
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvManagedThreadsReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvManagedThreadsReg.dcr}
+{$ENDIF LINUX}
 
 {$IFNDEF USEJVCL}
 resourcestring

@@ -52,7 +52,12 @@ uses
   JvQFormAnimatedIcon, JvQFormAnimation, JvQFormWallpaper,
   JvQAnimTitle;
 
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvAppFrmReg.dcr}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvAppFrmReg.dcr}
+{$ENDIF LINUX}
 
 procedure Register;
 begin
