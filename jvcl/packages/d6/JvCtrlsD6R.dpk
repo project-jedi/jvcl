@@ -87,6 +87,7 @@ contains
   JvCaptionPanel in '..\..\run\JvCaptionPanel.pas' ,
   JvOfficeColorButton in '..\..\run\JvOfficeColorButton.pas' ,
   JvOfficeColorPanel in '..\..\run\JvOfficeColorPanel.pas' ,
+  JvOfficeColorForm in '..\..\run\JvOfficeColorForm.pas' ,
   JvNetscapeSplitter in '..\..\run\JvNetscapeSplitter.pas' 
   ;
 
