@@ -303,7 +303,7 @@ const
     (Token: kwOR; TTyp: ttOr),
     (Token: kwAND; TTyp: ttAnd),
     (Token: kwNOT; TTyp: ttNot),
-    (Token: kwDIV; TTyp: ttDiv),
+    (Token: kwDIV; TTyp: ttIntDiv),
     (Token: kwMOD; TTyp: ttMod),
     (Token: kwBEGIN; TTyp: ttBegin),
     (Token: kwEND; TTyp: ttEnd),
