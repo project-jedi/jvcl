@@ -36,6 +36,8 @@ package %NAME%;
 {$DEFINE D5Standard}
 {$DEFINE DelphiPersonalEdition}
 
+{$I JVCL.INC}
+
 requires
 <%%% START REQUIRES %%%>
   %NAME%,

@@ -34,6 +34,8 @@ package %NAME%;
 {$%TYPE%ONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
 <%%% START REQUIRES %%%>
   %NAME%,
