@@ -64,6 +64,8 @@ type
     FIniFile: TMemIniFile;
     FDefaultSection: string;
     function CalcDefaultSection(Section: string): string;
+    function GetStorageOptions : TJvAppIniStorageOptions;
+    procedure SetStorageOptions (Value: TJvAppIniStorageOptions);
   protected
     class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
 
@@ -107,6 +109,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  published
+    property StorageOptions: TJvAppIniStorageOptions read GetStorageOptions write SetStorageOptions;
   end;
 
   // This class handles the flushing into a disk file
@@ -462,14 +466,22 @@ end;
 
 function TJvCustomAppIniStorage.CalcDefaultSection(Section: string): string;
 begin
-  // Changed by Jens Fudickar to support DefaultSections; Similar to ReadValue
-  // (rom) made it a private method
   if (Section = '') or (Section[1] = '.') then
     Result := DefaultSection + Section
   else
     Result := Section;
   if (Result = '') or (Result[1] = '.') then
     raise EJVCLAppStorageError.CreateRes(@RsEReadValueFailed);
+end;
+
+function TJvCustomAppIniStorage.GetStorageOptions : TJvAppIniStorageOptions;
+begin
+  Result := TJvAppIniStorageOptions(inherited StorageOptions);
+end;
+
+procedure TJvCustomAppIniStorage.SetStorageOptions (Value: TJvAppIniStorageOptions);
+begin
+  (Inherited StorageOptions).Assign(Value);
 end;
 
 function TJvCustomAppIniStorage.ValueExists(const Section, Key: string): Boolean;

@@ -74,8 +74,8 @@ type
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   private
-    function GetWhiteSpaceReplacement: string;
-    procedure SetWhiteSpaceReplacement(const Value: string);
+    function GetStorageOptions : TJvAppXMLStorageOptions;
+    procedure SetStorageOptions (Value: TJvAppXMLStorageOptions);
   protected
     FXml: TJvSimpleXML;
 
@@ -92,7 +92,7 @@ type
     function GetOnEncodeValue: TJvSimpleXMLEncodeEvent;
     procedure SetOnDecodeValue(const Value: TJvSimpleXMLEncodeEvent);
     procedure SetOnEncodeValue(const Value: TJvSimpleXMLEncodeEvent);
-    
+
     function GetRootNodeName: string;
     procedure SetRootNodeName(const Value: string);
     // Returns the last node in path, if it exists.
@@ -130,9 +130,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    // Just here for legacy reasons, use the Options.WhiteSpaceReplacement
-    property WhiteSpaceReplacement: string read GetWhiteSpaceReplacement write SetWhiteSpaceReplacement;
+  published
+    property StorageOptions: TJvAppXMLStorageOptions read GetStorageOptions write SetStorageOptions;
   end;
 
   // This class handles the flushing into a disk file
@@ -787,15 +786,14 @@ begin
   FXml.OnEncodeValue := Value;
 end;
 
-function TJvCustomAppXMLStorage.GetWhiteSpaceReplacement: string;
+function TJvCustomAppXMLStorage.GetStorageOptions : TJvAppXMLStorageOptions;
 begin
-  Result := TJvAppXMLStorageOptions(StorageOptions).WhiteSpaceReplacement; 
+  Result := TJvAppXMLStorageOptions(inherited StorageOptions);
 end;
 
-procedure TJvCustomAppXMLStorage.SetWhiteSpaceReplacement(
-  const Value: string);
+procedure TJvCustomAppXMLStorage.SetStorageOptions (Value: TJvAppXMLStorageOptions);
 begin
-  TJvAppXMLStorageOptions(StorageOptions).WhiteSpaceReplacement := Value;
+  (Inherited StorageOptions).Assign(Value);
 end;
 
 //=== { TJvAppXMLFileStorage } ===============================================
