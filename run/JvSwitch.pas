@@ -61,12 +61,13 @@ type
     procedure CreateDisabled(Index: Integer);
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
-    procedure CMDialogChar(var Msg: TCMDialogChar); message CM_DIALOGCHAR;
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
-    procedure CMTextChanged(var Msg: TMessage); message CM_TEXTCHANGED;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
   protected
+    function WantKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure TextChanged; override;
+    procedure EnabledChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DefineProperties(Filer: TFiler); override;
     function GetPalette: HPALETTE; override;
@@ -296,25 +297,24 @@ begin
   inherited;
 end;
 
-procedure TJvSwitch.CMEnabledChanged(var Msg: TMessage);
+procedure TJvSwitch.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   Invalidate;
 end;
 
-procedure TJvSwitch.CMTextChanged(var Msg: TMessage);
+procedure TJvSwitch.TextChanged;
 begin
-  inherited;
+  inherited TextChanged;
   Invalidate;
 end;
 
-procedure TJvSwitch.CMDialogChar(var Msg: TCMDialogChar);
+function TJvSwitch.WantKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
 begin
-  if IsAccel(Msg.CharCode, Caption) and CanFocus then
-  begin
+  Result := IsAccel(Key, Caption) and CanFocus and (ssAlt in Shift);
+  if Result then
     SetFocus;
-    Msg.Result := 1;
-  end;
 end;
 
 procedure TJvSwitch.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
@@ -417,7 +417,7 @@ begin
         Bottom := Top + FontHeight;
       end;
       StrPCopy(Text, Caption);
-      Windows.DrawText(Handle, Text, StrLen(Text), ARect, DT_EXPANDTABS or
+      DrawText(Handle, Text, StrLen(Text), ARect, DT_EXPANDTABS or
         DT_VCENTER or DT_CENTER);
     end;
   end;

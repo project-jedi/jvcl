@@ -38,7 +38,7 @@ uses
   Variants,
   {$ENDIF}
   Controls, SysUtils, Graphics,
-  JvTypes, JvSpeedButton, JvJCLUtils;
+  JvTypes, JvSpeedButton, JvJCLUtils, JvExGrids;
 
 { Calendar dialog }
 
@@ -127,7 +127,7 @@ end;
 type
   TDayOfWeek = 0..6;
 
-  TJvCalendar = class(TCustomGrid)
+  TJvCalendar = class(TJvExCustomGrid)
   private
     FMinDate: TDateTime; // Polaris
     FMaxDate: TDateTime; // Polaris
@@ -723,10 +723,9 @@ end;
 
 type
   TJvLocCalendar = class(TJvCalendar)
-  private
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   protected
+    procedure EnabledChanged; override;
+    procedure ParentColorChanged; override;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
   public
@@ -753,15 +752,16 @@ begin
   TabStop := False;
 end;
 
-procedure TJvLocCalendar.CMParentColorChanged(var Msg: TMessage);
+procedure TJvLocCalendar.ParentColorChanged;
 begin
-  inherited;
+  inherited ParentColorChanged;
   if ParentColor then
     FixedColor := Self.Color;
 end;
 
-procedure TJvLocCalendar.CMEnabledChanged(var Msg: TMessage);
+procedure TJvLocCalendar.EnabledChanged;
 begin
+  inherited EnabledChanged;
   if HandleAllocated and not (csDesigning in ComponentState) then
     EnableWindow(Handle, True);
 end;

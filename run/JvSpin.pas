@@ -41,17 +41,16 @@ unit JvSpin;
 interface
 
 uses
-  Windows, ComCtrls,
-  Controls, ExtCtrls, Classes, Graphics, Messages, Forms, StdCtrls, Menus,
-  SysUtils,
-  JvEdit, JvMaskEdit;
+  Windows, ComCtrls, Controls, ExtCtrls, Classes, Graphics, Messages, Forms,
+  StdCtrls, Menus, SysUtils,
+  JvEdit, JvMaskEdit, JvComponent;
 
 type
   TSpinButtonState = (sbNotDown, sbTopDown, sbBottomDown);
 
   TJvSpinButtonStyle = (sbsDefault, sbsClassic); // Polaris
 
-  TJvSpinButton = class(TGraphicControl)
+  TJvSpinButton = class(TJvGraphicControl)
   private
     FDown: TSpinButtonState;
     FDragging: Boolean;
@@ -99,9 +98,9 @@ type
     {$ENDIF}
 
     procedure TimerExpired(Sender: TObject);
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CMSysColorChange(var Msg: TMessage); message CM_SYSCOLORCHANGE;
   protected
+    procedure EnabledChanged; override;
     procedure Paint; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -113,8 +112,9 @@ type
 
     function MouseInBottomBtn(const P: TPoint): Boolean;
     {$IFDEF JVCLThemesEnabled}
-    procedure WndProc(var Message: TMessage); override;
-    {$ENDIF}
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
+    {$ENDIF JVCLThemesEnabled}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -226,10 +226,6 @@ type
     procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMEnter(var Msg: TMessage); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
@@ -238,6 +234,10 @@ type
   protected
     //Polaris up to protected
     FButtonKind: TSpinButtonKind;
+    procedure EnabledChanged; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
+    procedure FontChanged; override;
     function CheckValue(NewValue: Extended): Extended;
     function CheckValueRange(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function GetValue: Extended; virtual; abstract;
@@ -452,9 +452,9 @@ begin
   end;
 end;
 
-procedure TJvSpinButton.CMEnabledChanged(var Msg: TMessage);
+procedure TJvSpinButton.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   //>Polaris
   //  FInvalidate := True;
   //  Invalidate;
@@ -1271,36 +1271,33 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
-procedure TJvSpinButton.WndProc(var Message: TMessage);
-var
-  P: TPoint;
+procedure TJvSpinButton.MouseEnter(Control: TControl);
 begin
-  inherited WndProc(Message);
-
-  if ThemeServices.ThemesEnabled then
+  if csDesigning in ComponentState then
+    Exit;
+  if not FMouseInTopBtn and not FMouseInBottomBtn then
   begin
-    if Message.Msg = CM_MOUSEENTER then
-    begin
-      if not FMouseInTopBtn and not FMouseInBottomBtn then
-      begin
-        GetCursorPos(P);
-        if MouseInBottomBtn(ScreenToClient(P)) then
-          FMouseInBottomBtn := True
-        else
-          FMouseInTopBtn := True;
-        Repaint;
-      end;
-    end
+    if MouseInBottomBtn(ScreenToClient(Mouse.CursorPos)) then
+      FMouseInBottomBtn := True
     else
-      if Message.Msg = CM_MOUSELEAVE then
-    begin
-      if FMouseInTopBtn or FMouseInBottomBtn then
-      begin
-        FMouseInTopBtn := False;
-        FMouseInBottomBtn := False;
-        Repaint;
-      end;
-    end;
+      FMouseInTopBtn := True;
+    if ThemeServices.ThemesEnabled then
+      Repaint;
+    inherited MouseEnter(Control);
+  end;
+end;
+
+procedure TJvSpinButton.MouseLeave(Control: TControl);
+begin
+  if csDesigning in ComponentState then
+    Exit;
+  if FMouseInTopBtn or FMouseInBottomBtn then
+  begin
+    FMouseInTopBtn := False;
+    FMouseInBottomBtn := False;
+    if ThemeServices.ThemesEnabled then
+      Repaint;
+    inherited MouseLeave(Control);
   end;
 end;
 {$ENDIF JVCLThemesEnabled}
@@ -1462,9 +1459,9 @@ begin
   SetEditRect;
 end;
 
-procedure TJvCustomSpinEdit.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomSpinEdit.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   if FUpDown <> nil then
   begin
     FUpDown.Enabled := Enabled;
@@ -1474,15 +1471,15 @@ begin
     FButton.Enabled := Enabled;
 end;
 
-procedure TJvCustomSpinEdit.CMEnter(var Msg: TMessage);
+procedure TJvCustomSpinEdit.DoEnter;
 begin
   SetFocused(True);
   if AutoSelect and not (csLButtonDown in ControlState) then
     SelectAll;
-  inherited;
+  inherited DoEnter;
 end;
 
-procedure TJvCustomSpinEdit.CMExit(var Msg: TCMExit);
+procedure TJvCustomSpinEdit.DoExit;
 begin
   SetFocused(False);
   try
@@ -1498,12 +1495,12 @@ begin
       SetFocus;
     raise;
   end;
-  inherited;
+  inherited DoExit;
 end;
 
-procedure TJvCustomSpinEdit.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomSpinEdit.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   ResizeButton;
   SetEditRect;
 end;

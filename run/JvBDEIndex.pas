@@ -31,12 +31,12 @@ interface
 
 uses
   SysUtils, Messages, Classes, Controls, Graphics, Menus, StdCtrls,
-  DB, DBTables;
+  DB, DBTables, JvExStdCtrls;
 
 type
   TJvIdxDisplayMode = (dmFieldLabels, dmFieldNames, dmIndexName);
 
-  TJvDBIndexCombo = class(TCustomComboBox)
+  TJvDBIndexCombo = class(TJvExCustomComboBox)
   private
     FDataLink: TDataLink;
     FUpdate: Boolean;
@@ -52,8 +52,8 @@ type
     procedure SetEnableNoIndex(Value: Boolean);
     procedure SetDisplayMode(Value: TJvIdxDisplayMode);
     procedure ActiveChanged;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   protected
+    procedure EnabledChanged; override;
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure FillIndexList(List: TStrings);
@@ -253,9 +253,9 @@ begin
     DataSource := nil;
 end;
 
-procedure TJvDBIndexCombo.CMEnabledChanged(var Msg: TMessage);
+procedure TJvDBIndexCombo.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   if not (csLoading in ComponentState) then
     ActiveChanged;
 end;

@@ -41,7 +41,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
   {$ENDIF}
-  JvComponent, JvSpeedButton, JvJCLUtils, JvTypes;
+  JvComponent, JvSpeedButton, JvJCLUtils, JvTypes, JvExMask;
 
 const
   scAltDown = scAlt + VK_DOWN;
@@ -53,7 +53,7 @@ type
   TCloseUpEvent = procedure(Sender: TObject; Accept: Boolean) of object;
   TPopupAlign = (epaRight, epaLeft);
 
-  TJvPopupWindow = class(TCustomControl)
+  TJvPopupWindow = class(TJvCustomControl)
   private
     FEditor: TWinControl;
     FCloseUp: TCloseUpEvent;
@@ -87,14 +87,14 @@ type
     FStandard: Boolean; // Polaris
     {$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
   end;
 
   TGlyphKind = (gkCustom, gkDefault, gkDropDown, gkEllipsis);
 
-  TJvCustomComboEdit = class(TCustomMaskEdit)
+  TJvCustomComboEdit = class(TJvExCustomMaskEdit)
   private
     //    FButton: TJvEditButton; // Polaris
     FBtnControl: TWinControl;
@@ -144,9 +144,6 @@ type
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCancelMode(var Msg: TCMCancelMode); message CM_CANCELMODE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMEnter(var Msg: TMessage); message CM_ENTER;
-    procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
     procedure CNCtlColor(var Msg: TMessage); message CN_CTLCOLOREDIT;
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
@@ -168,6 +165,9 @@ type
     FFocused: Boolean; // Polaris
     FPopup: TCustomControl;
     FDefNumGlyphs: TNumGlyphs;
+    procedure EnabledChanged; override;
+    procedure FontChanged; override;
+    procedure DoEnter; override;
     procedure AdjustHeight;
     function GetDefaultBitmap(var DestroyNeeded: Boolean): TBitmap; virtual;
     procedure PopupDropDown(DisableEdit: Boolean); virtual;
@@ -243,7 +243,6 @@ type
     property Button;
   published
     //Polaris
-
     property Align;
     property Alignment;
     property AutoSelect;
@@ -621,7 +620,6 @@ type
     // Polaris
     function FourDigitYear: Boolean;
     //    function FormatSettingsChange(var Msg: TMessage): Boolean;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure WMContextMenu(var Message: TWMContextMenu); message WM_CONTEXTMENU;
   protected
     // Polaris
@@ -630,6 +628,7 @@ type
     procedure SetDateAutoBetween(Value: Boolean); virtual;
     procedure TestDateBetween(var Value: TDateTime); virtual;
     // Polaris
+    procedure DoExit; override;
     procedure Change; override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -1227,25 +1226,23 @@ begin
   UpdateBtnBounds;
 end;
 
-procedure TJvCustomComboEdit.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomComboEdit.EnabledChanged;
 begin
-  inherited;
-  (* ++ RDB ++ *)
+  inherited EnabledChanged;
   Invalidate;
-  (* -- RDB -- *)
   FButton.Enabled := Enabled;
 end;
 
-procedure TJvCustomComboEdit.CMEnter(var Msg: TMessage);
+procedure TJvCustomComboEdit.DoEnter;
 begin
   if AutoSelect and not (csLButtonDown in ControlState) then
     SelectAll;
-  inherited;
+  inherited DoEnter;
 end;
 
-procedure TJvCustomComboEdit.CMFontChanged(var Msg: TMessage);
+procedure TJvCustomComboEdit.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   if HandleAllocated then
     SetEditRect;
 end;
@@ -2259,11 +2256,11 @@ begin
   end;
 end;
 
-procedure TJvCustomDateEdit.CMExit(var Msg: TCMExit);
+procedure TJvCustomDateEdit.DoExit;
 begin
   if not (csDesigning in ComponentState) and CheckOnExit then
     CheckValidDate;
-  inherited;
+  inherited DoExit;
 end;
 
 constructor TJvCustomDateEdit.Create(AOwner: TComponent);
