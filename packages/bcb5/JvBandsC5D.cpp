@@ -1,10 +1,11 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvBandObjectDLLWizardForm.pas", Jvbandobjectdllwizardform, zWizardForm);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvBandsC5D.res");
+USEUNIT("..\..\design\JvBandsReg.pas");
+USEUNIT("..\..\design\JvBandObjectDLLWizard.pas");
+USEUNIT("..\..\design\JvBandObjectDLLWizardForm.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("JvBandsC5R.bpi");
 USEPACKAGE("CJCL50.bpi");

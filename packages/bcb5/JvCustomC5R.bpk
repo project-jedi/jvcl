@@ -4,17 +4,31 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvCustomC5R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvHLEditorPropertyForm.obj ..\..\dcu\JvCustomC5R.obj"/>
-    <RESFILES value=""/>
+    <OBJFILES value="..\..\dcu\JvBalloonHint.obj ..\..\dcu\JvBaseThumbnail.obj 
+      ..\..\dcu\JvChart.obj ..\..\dcu\JvDiagramShape.obj ..\..\dcu\JvEditor.obj 
+      ..\..\dcu\JvGammaPanel.obj ..\..\dcu\JvHLEditor.obj 
+      ..\..\dcu\JvHLEditorPropertyForm.obj ..\..\dcu\JvHLParser.obj 
+      ..\..\dcu\JvInspector.obj ..\..\dcu\JvInspExtraEditors.obj 
+      ..\..\dcu\JvLinkLabel.obj ..\..\dcu\JvLinkLabelDebug.obj 
+      ..\..\dcu\JvLinkLabelParser.obj ..\..\dcu\JvLinkLabelRenderer.obj 
+      ..\..\dcu\JvLinkLabelTextHandler.obj ..\..\dcu\JvLinkLabelTools.obj 
+      ..\..\dcu\JvLinkLabelTree.obj ..\..\dcu\JvLookOut.obj 
+      ..\..\dcu\JvOutlookBar.obj ..\..\dcu\JvSchedEvtStore.obj 
+      ..\..\dcu\JvScheduledEvents.obj ..\..\dcu\JvThumbImage.obj 
+      ..\..\dcu\JvThumbnails.obj ..\..\dcu\JvThumbViews.obj 
+      ..\..\dcu\JvTimeLine.obj ..\..\dcu\JvTMTimeLine.obj 
+      ..\..\dcu\JvTrayIcon.obj ..\..\dcu\JvUnicodeCanvas.obj 
+      ..\..\dcu\JvValidateEdit.obj ..\..\dcu\JvCustomC5R.obj"/>
+    <RESFILES value="JvCustomC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\run\JvHLEditorPropertyForm.dfm"/>
+    <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="vcl50.bpi vclx50.bpi CJCL50.bpi JvCoreC5R.bpi JvCtrlsC5R.bpi 
-      JvSystemC5R.bpi bcbsmp50.bpi bcbie50.bpi JvStdCtrlsC5R.bpi"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="vcl50.bpi vcljpg50.bpi CJCL50.bpi JvCoreC5R.bpi JvCtrlsC5R.bpi 
+      JvSystemC5R.bpi bcbsmp50.bpi bcbie50.bpi JvStdCtrlsC5R.bpi vclx50.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\run"/>
     <PATHRC value=".;"/>
@@ -25,19 +39,21 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCustomC5R.cpp"/>
-    <INCLUDEPATH value="..\..\run;"/>
-    <LIBPATH value="$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\run;"/>
+    <INCLUDEPATH value="..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -I..\..\run -boa"/>
+    <IDLCFLAGS value="-I..\..\run -I..\..\common -I$(BCB)\include -I$(BCB)\include\vcl 
+      -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
+      -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Custom Controls Runtime Package&quot; -aa -Tpp -Gpr -x -Gn 
-      -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu 
+      -D&quot;JVCL Custom Controls Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
@@ -57,7 +73,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1035
 CodePage=1252
 
 [Version Info Keys]
@@ -81,7 +97,7 @@ Item2=C:\Prog\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl
 [HistoryLists\hlLibraryPath]
 Count=5
 Item0=..\..\dcu;..\..\resources;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib
-Item1=C:\Prog\Delphi5\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\run;..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
+Item1=C:\Prog\delphi5\Lib\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;..\..\run;..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
 Item2=..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
 Item3=..\..\run;C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
 Item4=C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
@@ -103,9 +119,14 @@ DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
 RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
 HostApplication=
 RemoteHost=
 RemotePath=
+RemoteLauncher=
+RemoteCWD=
 RemoteDebug=0
 
 [Compiler]
@@ -122,5 +143,10 @@ PrecompiledHeaders=1
 ActiveLang=
 ProjectLang=
 RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
   </IDEOPTIONS>
 </PROJECT>

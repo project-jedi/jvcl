@@ -4,19 +4,28 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvDBC5R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvDBQueryParamsForm.obj ..\..\dcu\JvDBC5R.obj"/>
-    <RESFILES value=""/>
+    <OBJFILES value="..\..\dcu\JvMemoryDataset.obj ..\..\dcu\JvCsvData.obj 
+      ..\..\dcu\JvCsvParse.obj ..\..\dcu\JvDBCombobox.obj 
+      ..\..\dcu\JvDBControls.obj ..\..\dcu\JvDBDatePickerEdit.obj 
+      ..\..\dcu\JvDBDateTimePicker.obj ..\..\dcu\JvDBLookup.obj 
+      ..\..\dcu\JvDBLookupTreeView.obj ..\..\dcu\JvDBProgressBar.obj 
+      ..\..\dcu\JvDBQueryParamsForm.obj ..\..\dcu\JvDBRadioPanel.obj 
+      ..\..\dcu\JvDBRemoteLogin.obj ..\..\dcu\JvDBRichEdit.obj 
+      ..\..\dcu\JvDBSpinEdit.obj ..\..\dcu\JvDBTreeView.obj 
+      ..\..\dcu\JvDBUtils.obj ..\..\dcu\JvDBLookupComboEdit.obj 
+      ..\..\dcu\JvDBConsts.obj ..\..\dcu\JvDBC5R.obj"/>
+    <RESFILES value="JvDBC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\run\JvDBQueryParamsForm.dfm"/>
+    <RESDEPEN value="$(RESFILES)"/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
-    <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="vcl50.bpi db vcldb50.bpi CJCL50.bpi vclx50.bpi JvStdCtrlsC5R.bpi 
-      bcbsmp50.bpi bcbie50.bpi JvCoreC5R.bpi JvSystemC5R.bpi"/>
+    <SPARELIBS value=""/>
+    <PACKAGES value="CJCL50.bpi JvStdCtrlsC5R.bpi JvSystemC5R.bpi JvCoreC5R.bpi vcl50.bpi 
+      vcldb50.bpi bcbsmp50.bpi bcbie50.bpi"/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\run"/>
+    <PATHPAS value=".;..\..\run;..\..\common"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -25,19 +34,21 @@
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvDBC5R.cpp"/>
-    <INCLUDEPATH value="..\..\run;"/>
-    <LIBPATH value="$(BCB)\Lib;$(BCB)\Projects\Lib;..\..\run;"/>
+    <INCLUDEPATH value="..\..\common;..\..\run;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\common;..\..\run;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -I..\..\run -boa"/>
+    <IDLCFLAGS value="-I..\..\common -I..\..\run -I$(BCB)\include -I$(BCB)\include\vcl 
+      -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-LUvcl50 -LUvcldb50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD 
+      -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Database Components Runtime Package&quot; -aa -Tpp -Gpr -x 
-      -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu 
+      -D&quot;JVCL Database Components Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
@@ -57,7 +68,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1035
 CodePage=1252
 
 [Version Info Keys]
@@ -81,7 +92,7 @@ Item2=C:\Prog\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl
 [HistoryLists\hlLibraryPath]
 Count=5
 Item0=..\..\run;..\..\dcu;..\..\resources;$(BCB)\lib\debug;$(BCB)\lib\obj;$(BCB)\lib
-Item1=C:\Prog\Delphi5\Lib\JCL\dcu;$(BCB)\lib\debug;..\..\common;..\..\run;..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
+Item1=C:\Prog\delphi5\Lib\JCL\dcu;$(BCB)\lib\debug;..\..\common;..\..\run;..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
 Item2=..\..\run;..\..\dcu;$(BCB)\lib\obj;$(BCB)\lib
 Item3=..\..\common;..\..\run;C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
 Item4=C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
@@ -103,9 +114,14 @@ DebugSourceDirs=$(BCB)\source\vcl
 
 [Parameters]
 RunParams=
+Launcher=
+UseLauncher=0
+DebugCWD=
 HostApplication=
 RemoteHost=
 RemotePath=
+RemoteLauncher=
+RemoteCWD=
 RemoteDebug=0
 
 [Compiler]
@@ -122,5 +138,10 @@ PrecompiledHeaders=1
 ActiveLang=
 ProjectLang=
 RootDir=
+
+[Linker]
+LibPrefix=
+LibSuffix=
+LibVersion=
   </IDEOPTIONS>
 </PROJECT>

@@ -1,13 +1,14 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
-USEPACKAGE("");
-USEPACKAGE("JvCoreC5R.bpi");
+USERES("JvBandsC5R.res");
+USEUNIT("..\..\run\JvBandObject.pas");
+USEUNIT("..\..\run\JvBandForms.pas");
 USEPACKAGE("CJCL50.bpi");
-//---------------------------------------------------------------------------
+USEPACKAGE("JvCoreC5R.bpi");
+USEPACKAGE("vcl50.bpi");
+
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
 
@@ -20,4 +21,4 @@ int WINAPI DllEntryPoint(HINSTANCE hinst, unsigned long reason, void*)
         return 1;
 }
 //---------------------------------------------------------------------------
- 
+

@@ -1,12 +1,12 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvCheckedItemsForm.pas", Jvcheckeditemsform, JvCheckItemsEditor);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvStdCtrlsC5D.res");
+USEUNIT("..\..\design\JvStdCtrlsReg.pas");
+USEUNIT("..\..\design\JvCheckedItemsForm.pas");
+USEUNIT("..\..\design\JvProgressEditor.pas");
 USEPACKAGE("vcl50.bpi");
-USEPACKAGE("vclx50.bpi");
 USEPACKAGE("dclstd50.bpi");
 USEPACKAGE("JvCoreC5D.bpi");
 USEPACKAGE("JvStdCtrlsC5R.bpi");

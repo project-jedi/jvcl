@@ -1,17 +1,20 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvFormPropertiesForm.pas", Jvformpropertiesform, JvFormPropsDlg);
-USEFORMNS("..\..\design\JvMinMaxForm.pas", Jvminmaxform, MinMaxInfoEditDialog);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvSystemC5D.res");
+USEPACKAGE("JvSystemC5R.bpi");
+USEPACKAGE("JvCoreC5D.bpi");
+USEPACKAGE("CJCL50.bpi");
+USEUNIT("..\..\design\JvTimerListEditor.pas");
+USEUNIT("..\..\design\JvChangeNotifyEditor.pas");
+USEUNIT("..\..\design\JvFormPropertiesForm.pas");
+USEUNIT("..\..\design\JvMinMaxForm.pas");
+USEUNIT("..\..\design\JvPerfStatEditor.pas");
+USEUNIT("..\..\design\JvSystemReg.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("dclstd50.bpi");
-USEPACKAGE("JvSystemC5R.bpi");
-USEPACKAGE("vclx50.bpi");
-USEPACKAGE("CJCL50.bpi");
-USEPACKAGE("JvCoreC5D.bpi");
+
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------

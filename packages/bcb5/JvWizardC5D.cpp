@@ -1,14 +1,13 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvWizardAboutInfoForm.pas", Jvwizardaboutinfoform, JvWizardAboutDialog);
-USEFORMNS("..\..\design\JvWizardEditorForm.pas", Jvwizardeditorform, JvWizardPageListEditor);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
+USERES("JvWizardC5D.res");
+USEUNIT("..\..\design\JvWizardReg.pas");
+USEUNIT("..\..\design\JvWizardAboutInfoForm.pas");
+USEUNIT("..\..\design\JvWizardEditorForm.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("JvWizardC5R.bpi");
-USEPACKAGE("vclx50.bpi");
 USEPACKAGE("JvCoreC5R.bpi");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)

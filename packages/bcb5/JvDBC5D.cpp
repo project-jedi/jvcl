@@ -1,21 +1,21 @@
 //---------------------------------------------------------------------------
 
-#include <basepch.h>
+#include <vcl.h>
 #pragma hdrstop
-USEFORMNS("..\..\design\JvSelectDataSetForm.pas", Jvselectdatasetform, JvSelectDataSetForm);
-USEFORMNS("..\..\design\JvCsvDataForm.pas", Jvcsvdataform, JvCsvDefStrDialog);
-USEPACKAGE("");
-USEPACKAGE("dsnide50.bpi");
-USEPACKAGE("CJCL50.bpi");
+USERES("JvDBC5D.res");
+USEUNIT("..\..\design\JvSelectDataSetForm.pas");
+USEUNIT("..\..\design\JvCsvDataEditor.pas");
+USEUNIT("..\..\design\JvCsvDataForm.pas");
+USEUNIT("..\..\design\JvDBEditors.pas");
+USEUNIT("..\..\design\JvDBReg.pas");
+USEPACKAGE("JvStdCtrlsC5R.bpi");
+USEPACKAGE("JvSystemC5R.bpi");
 USEPACKAGE("JvDBC5R.bpi");
+USEPACKAGE("JvCoreC5R.bpi");
+USEPACKAGE("CJCL50.bpi");
 USEPACKAGE("dcldb50.bpi");
 USEPACKAGE("vcl50.bpi");
-USEPACKAGE("db");
 USEPACKAGE("vcldb50.bpi");
-USEPACKAGE("vclx50.bpi");
-USEPACKAGE("JvCoreC5R.bpi");
-USEPACKAGE("JvSystemC5R.bpi");
-USEPACKAGE("JvStdCtrlsC5R.bpi");
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------
