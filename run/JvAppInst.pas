@@ -238,10 +238,11 @@ begin
 
        // terminate this process (Form.OnCreate is not executed yet)
 
-        { DoneApplication destroys the forms in the Forms unit's finalization
-          section. At that moment the OnDestroy events are fired. To prevent
-          this we set the Application variable to nil. Because KillInstance
-          uses halt() to terminate this does not procude any access violation. }
+        { DoneApplication destroys the all formulars in the Forms unit's
+          finalization section. At that moment the OnDestroy events are fired.
+          To prevent this we set the Application variable to nil. Because
+          KillInstance uses halt() to terminate this does not raise any access
+          violation. }
         Application := nil;
         AppInstances.KillInstance;
       end;
