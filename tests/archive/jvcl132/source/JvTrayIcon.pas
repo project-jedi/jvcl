@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck@bigfoot.com].
 
-Last Modified: 2000-02-28
+Last Modified: 2002-06-03
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,18 +33,36 @@ unit JvTrayIcon;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls, Menus, ShellApi, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
+  Menus, ShellApi, JvTypes, JvComponent, DateUtils;
 
 // (rom) Heavily modified this one. Mouse and Click events completely redesigned.
 
 type
+  TBalloonType = (btNone, btError, btInfo, btWarning);
+  TNotifyIconDataXP = record
+    cbSize: DWORD;
+    Wnd: HWND;
+    uID: UINT;
+    uFlags: UINT;
+    uCallbackMessage: UINT;
+    hIcon: HICON;
+    szTip: array [0..127] of AnsiChar;
+    dwState: DWORD;
+    dwStateMask: DWORD;
+    szInfo: array[0..255] of AnsiChar;
+    uTimeOut: DWORD;
+    szInfoTitle: array[0..63] of AnsiChar;
+    dwInfoFlags: DWORD;
+  end;
+
   TRegisterServiceProcess = function(dwProcessID, dwType: Integer): Integer; stdcall;
 
   TJvTrayIcon = class(TJvComponent)
   private
     FActive: Boolean;
     FIcon: TIcon;
-    FIc: TNotifyIconData;
+    FIc: TNotifyIconDataXP;
     FHandle: THandle;
     FHint: string;
     FPopupMenu: TPopupMenu;
@@ -63,6 +81,12 @@ type
     FTask: Boolean;
     FRegisterServiceProcess: TRegisterServiceProcess;
     FDllHandle: THandle;
+    FOnBalloonHide: TNotifyEvent;
+    FOnBalloonShow: TNotifyEvent;
+    FOnBalloonClick: TNotifyEvent;
+    FTime: TDateTime;
+    FTimeDelay: Integer;
+    FOldTray: HWND;
     procedure SetActive(Value: Boolean);
     procedure SetHint(Value: string);
     procedure SetIcon(Icon: TIcon);
@@ -77,7 +101,14 @@ type
     procedure WndProc(var Mesg: TMessage);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure DoCheckCrash; //sb
   published
+    procedure HideApplication;
+    procedure ShowApplication;
+    procedure BalloonHint(Title,Value: string;BalloonType:
+      TBalloonType = btNone;Delay: Integer = 5000); //sb
+    function AcceptBalloons: Boolean; //sb
+
     property Active: Boolean read FActive write SetActive default False;
     property Icon: TIcon read FIcon write SetIcon;
     property Hint: string read FHint write SetHint;
@@ -86,23 +117,84 @@ type
     property Animated: Boolean read FAnimated write SetAnimated default False;
     property Icons: TImageList read FImgList write SetImgList;
     property Delay: Cardinal read FDelay write SetDelay default 100;
+    property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
+    property VisibleInTaskList: Boolean read FTask write SetTask default True;
+
     property OnClick: TMouseEvent read FOnClick write FOnClick;
     property OnDblClick: TMouseEvent read FOnDblClick write FOnDblClick;
     property OnMouseMove: TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown: TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
-    procedure HideApplication;
-    procedure ShowApplication;
-    property DropDownMenu: TPopupMenu read FDropDown write FDropDown;
-    property VisibleInTaskList: Boolean read FTask write SetTask default True;
+    property OnBalloonShow:TNotifyEvent read FOnBalloonShow write FOnBalloonShow; //sb
+    property OnBalloonHide:TNotifyEvent read FOnBalloonHide write FOnBalloonHide; //sb
+    property OnBalloonClick:TNotifyEvent read FOnBalloonClick write FOnBalloonClick; //sb
   end;
 
 implementation
 
 const
-  WM_CALLBACKMESSAGE = WM_USER + 1;
+  WM_CALLBACKMESSAGE            = WM_USER + 1;
+  NOTIFYICON_VERSION            = 3;
+  NIM_ADD                       = $00000000;
+  NIM_MODIFY                    = $00000001;
+  NIM_DELETE                    = $00000002;
+  NIM_SETFOCUS                  = $00000003;
+  NIM_SETVERSION                = $00000004;
 
-  {**************************************************}
+  NIF_MESSAGE                   = $00000001;
+  NIF_ICON                      = $00000002;
+  NIF_TIP                       = $00000004;
+  NIF_STATE                     = $00000008;
+  NIF_INFO                      = $00000010;
+
+  NIS_HIDDEN                    = $00000001;
+  NIS_SHAREDICON                = $00000002;
+
+  NIIF_NONE                     = $00000000;
+  NIIF_INFO                     = $00000001;
+  NIIF_WARNING                  = $00000002;
+  NIIF_ERROR                    = $00000003;
+
+  NIN_SELECT                    = (WM_USER + 2);
+  NINF_KEY                      = 1;
+  NIN_KEYSELECT                 = (NIN_SELECT or NINF_KEY);
+
+  NIN_BALLOONSHOW               = WM_USER + 2;
+  NIN_BALLOONHIDE               = WM_USER + 3;
+  NIN_BALLOONTIMEOUT            = WM_USER + 4;
+  NIN_BALLOONUSERCLICK          = WM_USER + 5;
+
+{**************************************************}
+
+function TJvTrayIcon.AcceptBalloons: Boolean;
+var
+ Info: Pointer;
+ InfoSize: DWORD;
+ FileInfo: PVSFixedFileInfo;
+ FileInfoSize: DWORD;
+ Tmp: DWORD;
+ Major: Integer;
+begin
+  //Balloons are only accepted with shell32.dll 5.0+ 
+  result := false;
+  try
+    InfoSize := GetFileVersionInfoSize('shell32.dll', Tmp);
+    if InfoSize = 0 then
+      Exit;
+    GetMem(Info, InfoSize);
+    try
+      GetFileVersionInfo('shell32.dll', 0, InfoSize, Info);
+      VerQueryValue(Info, '\', Pointer(FileInfo), FileInfoSize);
+      Major := FileInfo.dwFileVersionMS shr 16;
+      result := Major>=5;
+    finally
+      FreeMem(Info, FileInfoSize);
+    end;
+  except
+  end;
+end;
+
+{**************************************************}
 
 constructor TJvTrayIcon.Create(AOwner: TComponent);
 begin
@@ -112,7 +204,7 @@ begin
     FIcon.Assign(Application.Icon);
   FIcon.OnChange := IconChanged;
   FVisible := True;
-  FHandle := AllocateHWnd(WndProc);
+  FHandle := Classes.AllocateHWnd(WndProc);
   FAnimated := False;
   FDelay := 100;
   FNumber := 0;
@@ -141,7 +233,7 @@ begin
   begin
     FTask := Value;
     if not (csDesigning in ComponentState) then
-      if @FRegisterServiceProcess <> nil then
+      if Assigned(FRegisterServiceProcess) then
         if FTask then
           FRegisterServiceProcess(GetCurrentProcessID, 0)
         else
@@ -158,7 +250,7 @@ begin
   FTimer.Free;
   SetActive(False);
   FIcon.Free;
-  DeallocateHWnd(FHandle);
+  Classes.DeallocateHWnd(FHandle);
   if not (csDesigning in ComponentState) then
     if FDllHandle <> 0 then
       FreeLibrary(FDllHandle);
@@ -169,6 +261,7 @@ end;
 
 procedure TJvTrayIcon.WndProc(var Mesg: TMessage);
 var
+  i: Integer;
   po: TPoint;
   ShState: TShiftState;
 begin
@@ -241,6 +334,27 @@ begin
           WM_MBUTTONDBLCLK:
             if Assigned(FOnDblClick) then
               FOnDblClick(Self, mbMiddle, ShState, po.x, po.y);
+          NIN_BALLOONHIDE: //sb
+            begin
+              if Assigned(FOnBalloonHide) then
+                FOnBalloonHide(self);
+              result := Integer(true);
+            end;
+          NIN_BALLOONTIMEOUT: //sb
+            begin
+              i := SecondsBetween(Now,FTime);
+              if i>FTimeDelay then
+                BalloonHint('','');
+              result := Integer(true);
+            end;
+          NIN_BALLOONUSERCLICK: //sb
+            begin
+              if Assigned(FOnBalloonClick) then
+                FOnBalloonClick(self);
+              result := Integer(true);
+              //Result := DefWindowProc(FHandle, Msg, wParam, lParam);
+              BalloonHint('','');
+            end;
         end;
       end
       else
@@ -254,6 +368,7 @@ end;
 
 procedure TJvTrayIcon.IconChanged(Sender: TObject);
 begin
+  DoCheckCrash;
   with FIc do
     hIcon := FIcon.Handle;
   if FActive then
@@ -264,9 +379,11 @@ end;
 
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
+  DoCheckCrash;
   FHint := Value;
   with FIc do
     StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+  Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP; 
   if FActive then
     Shell_NotifyIcon(NIM_MODIFY, @fic);
 end;
@@ -275,6 +392,7 @@ end;
 
 procedure TJvTrayIcon.SetIcon(Icon: TIcon);
 begin
+  DoCheckCrash;
   FIcon.Assign(ICon);
   with FIc do
     hIcon := FIcon.Handle;
@@ -285,6 +403,7 @@ end;
 {**************************************************}
 
 procedure TJvTrayIcon.SetActive(Value: Boolean);
+//http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/Structures/NOTIFYICONDATA.asp
 begin
   FActive := Value;
   if not (csDesigning in ComponentState) then
@@ -295,18 +414,28 @@ begin
         FIcon.Assign(Application.Icon);
       with FIc do
       begin
-        cbSize := SizeOf(FIc);
-        Wnd := FHandle;
-        Uid := 1;
+        if AcceptBalloons then
+        begin
+          cbsize := SizeOf(Fic);
+          fic.uTimeOut := NOTIFYICON_VERSION;
+        end
+        else
+          cbsize := SizeOf(TNotifyIconData);
+        wnd := Fhandle;
+        uId := 1;
         uCallBackMessage := WM_CALLBACKMESSAGE;
-        if FIcon <> nil then
-          hicon := Ficon.Handle
+        if FIcon<>nil then
+          hIcon := FIcon.Handle
         else
           FIcon := Application.Icon;
         StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
-        uflags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+        uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
       end;
-      Shell_NotifyIcon(NIM_ADD, @FIc);
+      Shell_NotifyIcon(NIM_ADD,@Fic);
+      if AcceptBalloons then
+        Shell_NotifyIcon(NIM_SETVERSION,@Fic);
+
+      FOldTray := FindWindow('Shell_TrayWnd',nil);
     end
     else
       Shell_NotifyIcon(NIM_DELETE, @FIc);
@@ -377,6 +506,55 @@ end;
 procedure TJvTrayIcon.SetImgList(const Value: TImageList);
 begin
   FImgList := Value;
+end;
+
+
+{**************************************************}
+
+procedure TJvTrayIcon.BalloonHint(Title, Value: string;
+  BalloonType: TBalloonType; Delay: Integer);
+//http://msdn.microsoft.com/library/default.asp?url=/library/en-us/shellcc/platform/Shell/reference/functions/shell_notifyicon.asp
+begin
+  if AcceptBalloons then
+  begin
+    FTime := Now;
+    FTimeDelay := Delay div 1000;
+    Fic.uFlags := NIF_INFO;
+    with Fic do
+      StrPLCopy(szInfoTitle, Title, SizeOf(szInfoTitle) - 1);
+    with Fic do
+      StrPLCopy(szInfo, Value, SizeOf(szInfo) - 1);
+    Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_INFO or NIF_TIP;
+    Fic.uTimeOut := Delay;
+    case BalloonType of
+      btError: Fic.dwInfoFlags := NIIF_ERROR;
+      btInfo: Fic.dwInfoFlags := NIIF_INFO;
+      btNone: Fic.dwInfoFlags := NIIF_NONE;
+      btWarning: Fic.dwInfoFlags := NIIF_WARNING;
+    end;
+    Shell_NotifyIcon(NIM_MODIFY,@Fic);
+
+    if Assigned(FOnBalloonShow) then
+      FOnBalloonShow(self);
+  end;
+end;
+
+{**************************************************}
+
+procedure TJvTrayIcon.DoCheckCrash;
+var
+ hwndTray:HWND;
+begin
+  if Active then
+  begin
+    hwndTray := FindWindow('Shell_TrayWnd',nil);
+    if FOldTray<>hWndTray then
+    begin
+      FOldTray := hWndTray;
+      Active := false;
+      Active := true;
+    end;
+  end;
 end;
 
 end.
