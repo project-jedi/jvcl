@@ -212,9 +212,34 @@ type
     property ScaleMode: TJvPreviewScaleMode read FScaleMode write SetScaleMode default smFullPage;
   end;
 
+  // properties for the SelectedPage property
+  TJvPreviewSelection = class(TPersistent)
+  private
+    FVisible: boolean;
+    FWidth: integer;
+    FColor: TColor;
+    FOnChange: TNotifyEvent;
+    procedure SetColor(const Value: TColor);
+    procedure SetWidth(const Value: integer);
+    procedure SetVisible(const Value: boolean);
+  protected
+    procedure Change; virtual;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  public
+    constructor Create;
+    procedure Assign(Source: TPersistent); override;
+  published
+    // frame color
+    property Color: TColor read FColor write SetColor default clNavy;
+    // frame width
+    property Width: integer read FWidth write SetWidth default 4;
+    // frame visibility
+    property Visible: boolean read FVisible write SetVisible default true;
+  end;
+
   TJvCustomPreviewControl = class(TJvCustomControl)
   private
-//    FDummy: Integer;
+    //    FDummy: Integer;
     FBuffer: TBitmap;
     FOptions: TJvPreviewPageOptions;
     FPages: TList;
@@ -241,6 +266,7 @@ type
     FOnScaleModeChange: TNotifyEvent;
     FOnOptionsChange: TNotifyEvent;
     FOnScrollHint: TJvScrollHintEvent;
+    FSelection: TJvPreviewSelection;
     procedure DoOptionsChange(Sender: TObject);
     procedure DoDeviceInfoChange(Sender: TObject);
     procedure DoScaleModeChange(Sender: TObject);
@@ -267,7 +293,10 @@ type
     procedure SetScrollBars(const Value: TScrollStyle);
     procedure SetHideScrollBars(const Value: Boolean);
     function IsPageMode: Boolean;
+    procedure SetSelection(const Value: TJvPreviewSelection);
   protected
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
+      X: Integer; Y: Integer); override;
     procedure DoBoundsChanged; override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
@@ -291,6 +320,7 @@ type
     property DeviceInfo: TJvDeviceInfo read FDeviceInfo write SetDeviceInfo;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
     property HideScrollBars: Boolean read FHideScrollBars write SetHideScrollBars default False;
+    property Selection: TJvPreviewSelection read FSelection write SetSelection;
 
     property Options: TJvPreviewPageOptions read FOptions write SetOptions;
     property OnAddPage: TJvDrawPageEvent read FOnAddPage write FOnAddPage;
@@ -305,11 +335,10 @@ type
     property OnOptionsChange: TNotifyEvent read FOnOptionsChange write FOnOptionsChange;
     property OnScaleModeChange: TNotifyEvent read FOnScaleModeChange write FOnScaleModeChange;
 
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X: Integer; Y: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    // if Existing is False, returns the page that should have been at Pos
     function ItemAtPos(Pos: TPoint; Existing: Boolean): Integer;
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -341,6 +370,7 @@ type
     property DeviceInfo;
 
     property Options;
+    property Selection;
     property OnChange;
     property OnDeviceInfoChange;
     property OnOptionsChange;
@@ -435,7 +465,7 @@ type
     constructor Create(Delay: Integer; HintWindow: THintWindow);
   end;
 
-// use our own InRange since D5 doesn't have it
+  // use our own InRange since D5 doesn't have it
 
 function InRange(const AValue, AMin, AMax: Integer): Boolean;
 begin
@@ -956,6 +986,9 @@ begin
   FDeviceInfo := TJvDeviceInfo.Create;
   FDeviceInfo.OnChange := DoDeviceInfoChange;
 
+  FSelection := TJvPreviewSelection.Create;
+  FSelection.OnChange := DoOptionsChange;
+
   Color := clAppWorkSpace;
   ControlStyle := [csOpaque, csAcceptsControls, csCaptureMouse, csClickEvents, csDoubleClicks];
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
@@ -994,6 +1027,8 @@ destructor TJvCustomPreviewControl.Destroy;
 begin
   Clear;
   FDeviceInfo.Free;
+  FSelection.Free;
+  FOptions.Free;
   FPages.Free;
   FBuffer.Free;
   inherited Destroy;
@@ -1067,7 +1102,7 @@ procedure TJvCustomPreviewControl.DrawPages(ACanvas: TCanvas; Offset: TPoint);
 var
   I, J, K, M, AOffsetX, AOffsetY, APageIndex: Integer;
   APageRect, APrintRect: TRect;
-//  si: TScrollInfo;
+  //  si: TScrollInfo;
   tmp: Boolean;
 
   function CanDrawPage(APageIndex: Integer; APageRect: TRect): Boolean;
@@ -1140,10 +1175,10 @@ begin
           Brush.Style := bsClear;
           Pen.Color := clWindowText;
           Rectangle(APageRect);
-          if APageIndex = FSelectedPage then
+          if (APageIndex = FSelectedPage) and Selection.Visible then
           begin
-            Pen.Color := clNavy;
-            Pen.Width := 2;
+            Pen.Color := Selection.Color;
+            Pen.Width := Selection.Width;
             Rectangle(APageRect);
             Pen.Color := clWindowText;
             Pen.Width := 1;
@@ -1498,8 +1533,7 @@ begin
         GetDeviceCaps(DC, LOGPIXELSY), DeviceInfo.LogPixelsY));
     if (AHeight > 0) and (AWidth > 0) then
       Result := Min(AWidth, AHeight)
-    else
-    if AHeight > 0 then
+    else if AHeight > 0 then
       Result := AHeight
     else
       Result := AWidth;
@@ -1516,7 +1550,7 @@ end;
 procedure TJvCustomPreviewControl.SetTopRow(Value: Integer);
 var
   ARow, tmp: Integer;
-//  si: TScrollInfo;
+  //  si: TScrollInfo;
 begin
   ARow := Max(Min(Value, TotalRows - 1), 0);
   tmp := (FPageHeight + Integer(Options.VertSpacing)) * ARow;
@@ -1594,8 +1628,8 @@ begin
 
     // TODO: this just isn't right...
     FMaxHeight := TotalRows * (FPageHeight + Integer(Options.VertSpacing)) + Integer(Options.VertSpacing);
-//    if (FMaxHeight > ClientHeight) and (TotalRows > 1) then
-//      Dec(FMaxHeight,FPageHeight - Integer(Options.VertSpacing));
+    //    if (FMaxHeight > ClientHeight) and (TotalRows > 1) then
+    //      Dec(FMaxHeight,FPageHeight - Integer(Options.VertSpacing));
     FMaxWidth := TotalCols * (FPageWidth + Integer(Options.HorzSpacing)) + Integer(Options.HorzSpacing);
   finally
     ReleaseDC(0, DC);
@@ -1629,12 +1663,40 @@ begin
   TopRow := TopRow - 1;
 end;
 
-function TJvCustomPreviewControl.ItemAtPos(Pos: TPoint;
-  Existing: Boolean): Integer;
+function TJvCustomPreviewControl.ItemAtPos(Pos: TPoint; Existing: Boolean): Integer;
+var
+  APageRect: TRect;
+  ARow, ACol, AOffsetX, AOffsetY: Integer;
 begin
-  // TODO: return the page at Pos or -1 if no page or outside range
-  // if Existing is False, returns the page that should have been at Pos
   Result := -1;
+  // initial top/left offset
+  AOffsetX := -FScrollPos.X + Max((ClientWidth - ((FPageWidth + Integer(Options.HorzSpacing)) * TotalCols)) div 2, FOptions.HorzSpacing);
+  if IsPageMode then
+    AOffsetY := -FScrollPos.Y + Max((ClientHeight - ((FPageHeight + Integer(Options.VertSpacing)) * VisibleRows)) div 2,
+      FOptions.VertSpacing)
+  else
+    AOffsetY := -FScrollPos.Y + Integer(Options.VertSpacing);
+  ARow := 0;
+  // walk the pages, comparing as we go along
+  while true do
+  begin
+    APageRect := FPreviewRect;
+    OffsetRect(APageRect, AOffsetX, AOffsetY + (FPageHeight + Integer(Options.VertSpacing)) * ARow);
+    for ACol := 0 to TotalCols - 1 do
+    begin
+      if PtInRect(APageRect, Pos) then
+      begin
+        Result := ARow * TotalCols + ACol;
+        if Existing and (Result >= PageCount) then
+          Result := -1;
+        Exit;
+      end;
+      OffsetRect(APageRect, FPageWidth + Integer(Options.HorzSpacing), 0);
+    end;
+    Inc(ARow);
+    if (APageRect.Left > ClientWidth) or (APageRect.Top > ClientHeight) then
+      Exit;
+  end;
 end;
 
 procedure TJvCustomPreviewControl.SetScrollBars(const Value: TScrollStyle);
@@ -1659,10 +1721,17 @@ function TJvCustomPreviewControl.DoMouseWheel(Shift: TShiftState;
   WheelDelta: Integer; MousePos: TPoint): Boolean;
 var
   Msg: TWMScroll;
+  si: TScrollInfo;
 begin
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
   if not Result then
   begin
+    FillChar(si, SizeOf(TScrollInfo), 0);
+    si.cbSize := SizeOf(TScrollInfo);
+    si.fMask := SIF_ALL;
+    GetScrollInfo(Handle, SB_VERT, si);
+    if (si.nMax = 0) then
+      Exit;
     Msg.Msg := WM_VSCROLL;
     if WheelDelta > 0 then
       Msg.ScrollCode := SB_PAGEUP
@@ -1672,16 +1741,23 @@ begin
     Msg.Result := 0;
     WMVScroll(Msg);
     Refresh;
+    TDeactiveHintThread.Create(500, HintWindow);
+    HintWindow := nil;
     Result := True;
   end;
 end;
 
 procedure TJvCustomPreviewControl.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
+var
+  i: integer;
 begin
   inherited MouseDown(Button, Shift, X, Y);
   if CanFocus then
     SetFocus;
+  i := ItemAtPos(Point(X, Y), True);
+  if i >= 0 then
+    SelectedPage := i;
 end;
 
 function TJvCustomPreviewControl.IsPageMode: Boolean;
@@ -1778,9 +1854,8 @@ begin
         OffsetRect(tmpRect, Options.Shadow.Offset, Options.Shadow.Offset);
         ACanvas.FillRect(tmpRect);
       end
-      // draw two smaller rects (does this *really* reduce flicker?)
-      else
-      if Options.Shadow.Offset < 0 then
+        // draw two smaller rects (does this *really* reduce flicker?)
+      else if Options.Shadow.Offset < 0 then
       begin
         // left side
         tmpRect := APageRect;
@@ -1836,6 +1911,67 @@ begin
     FHintWindow := nil;
   end;
   Terminate;
+end;
+
+procedure TJvCustomPreviewControl.SetSelection(const Value: TJvPreviewSelection);
+begin
+  FSelection.Assign(Value);
+end;
+
+{ TJvPreviewSelection }
+
+procedure TJvPreviewSelection.Change;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+procedure TJvPreviewSelection.SetColor(const Value: TColor);
+begin
+  if FColor <> Value then
+  begin
+    FColor := Value;
+    Change;
+  end;
+end;
+
+procedure TJvPreviewSelection.SetWidth(const Value: integer);
+begin
+  if FWidth <> Value then
+  begin
+    FWidth := Value;
+    Change;
+  end;
+end;
+
+procedure TJvPreviewSelection.SetVisible(const Value: boolean);
+begin
+  if FVisible <> Value then
+  begin
+    FVisible := Value;
+    Change;
+  end;
+end;
+
+constructor TJvPreviewSelection.Create;
+begin
+  inherited Create;
+  FColor := clNavy;
+  FWidth := 4;
+  FVisible := true;
+end;
+
+procedure TJvPreviewSelection.Assign(Source: TPersistent);
+begin
+  if (Source is TJvPreviewSelection) then
+  begin
+    if (Source = Self) then Exit;
+    FColor := TJvPreviewSelection(Source).Color;
+    FWidth := TJvPreviewSelection(Source).Width;
+    FVisible := TJvPreviewSelection(Source).Visible;
+    Change;
+  end
+  else
+    inherited
 end;
 
 end.
