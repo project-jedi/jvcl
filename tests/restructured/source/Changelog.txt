@@ -1,0 +1,2 @@
+2002-MM-DD (2.00 Alpha)
+- New restructured version released: for more details on changes, see restruct_changelog.txt; for more info on demo changes, see restruct_demochanges.txt
