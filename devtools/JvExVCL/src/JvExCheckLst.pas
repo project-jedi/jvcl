@@ -52,10 +52,10 @@ uses
 {$ENDIF VisualCLX}
 
 type
-  JV_WINCONTROL_EVENTS(CheckListBox)
+  JV_STDCONTROL_EVENTS(CheckListBox)
 
 implementation
 
-JV_WINCONTROL_EVENTS_IMPL(CheckListBox)
+JV_STDCONTROL_EVENTS_IMPL(CheckListBox)
 
 end.
