@@ -32,6 +32,9 @@ interface
 
 uses
   SysUtils, Classes, Windows, Messages, Graphics, Controls,
+  {$IFDEF VisualCLX}
+  Qt,
+  {$ENDIF VisualCLX}
   JvComponent, JvThemes;
 
 type
