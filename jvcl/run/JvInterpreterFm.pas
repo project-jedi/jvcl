@@ -207,7 +207,7 @@ end;
 constructor TJvInterpreterForm.CreateNew(AOwner: TComponent; Dummy: Integer = 0);
 begin
   FMethodList := TList.Create;
-  {$IFDEF Delphi}
+  {$IFDEF DELPHI}
   inherited CreateNew(AOwner);
   {$ELSE}
   inherited CreateNew(AOwner, Dummy);

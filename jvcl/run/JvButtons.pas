@@ -1570,6 +1570,7 @@ end;
 
 // == TJvNoFrameButton =======================================================
 
+// (rom) seems silly
 {$IFDEF OPTIMIZATION_ON}
 {$O+}
 {$ENDIF OPTIMIZATION_ON}

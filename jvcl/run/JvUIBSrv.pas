@@ -174,7 +174,7 @@ begin
     Result := FFactoryList;
     while Result <> nil do
     begin
-{$IFDEF DELPHI_UP}
+{$IFDEF DELPHI6_UP}
       if IsEqualGUID(Result.ClassID, ClassID) then Exit;
 {$ELSE}
       if CompareMem(@Result.ClassID, @ClassID, SizeOf(TGUID)) then Exit;

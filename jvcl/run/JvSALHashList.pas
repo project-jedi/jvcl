@@ -30,7 +30,7 @@ unit JvSALHashList;
 interface
 
 uses
-  {$IFDEF WINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF}
   {$IFDEF LINUX}
