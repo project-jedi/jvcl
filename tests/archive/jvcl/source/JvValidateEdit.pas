@@ -128,8 +128,8 @@ type
     function GetEditText: string;
     procedure SetEditText(const NewValue: string);
     procedure ChangeText(NewValue: string);
-    function BaseToInt(BaseValue: string; Base: Cardinal): Integer;
-    function IntToBase(NewValue, Base: Cardinal): string;
+    function BaseToInt(BaseValue: string; Base: Byte): Integer;
+    function IntToBase(NewValue, Base: Byte): string;
     procedure DoValueChanged;
     procedure SetDisplayPrefix(const NewValue: string);
     procedure SetDisplaySuffix(const NewValue: string);
@@ -783,11 +783,11 @@ begin
   end;
 end;
 
-function TJvCustomValidateEdit.BaseToInt(BaseValue: string; Base: Cardinal): Integer;
+function TJvCustomValidateEdit.BaseToInt(BaseValue: string; Base: Byte): Integer;
 var
   i: Cardinal;
 
-  function BaseCharToInt(BaseChar: Char): Integer;
+  function BaseCharToInt(BaseChar: Char): integer;
   begin
     case Ord(BaseChar) of
       Ord('0')..Ord('9'): Result := Ord(BaseChar) - Ord('0');
@@ -805,7 +805,7 @@ begin
     Result := Result + Trunc(BaseCharToInt(BaseValue[i]) * Power(Base, Length(BaseValue)-i));
 end;
 
-function TJvCustomValidateEdit.IntToBase(NewValue, Base: Cardinal):
+function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte):
     string;
 var
   iDivisor, iRemainder, i: Cardinal;
