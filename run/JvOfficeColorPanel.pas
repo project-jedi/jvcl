@@ -35,12 +35,9 @@ interface
 
 uses
   SysUtils, Classes,
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, QWindows, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls,
-  QDialogs,
+  Qt,
   {$ENDIF VisualCLX}
   JvComponent, JvSpeedButton;
 

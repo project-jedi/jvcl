@@ -31,13 +31,7 @@ unit JvInspDB;
 interface
 
 uses
-  SysUtils, Classes, DB, TypInfo, 
-  {$IFDEF VCL}
-  DBCtrls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QDBCtrls,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, DB, TypInfo, DBCtrls,
   JvInspector, JvFinalize;
 
 type
@@ -113,12 +107,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvResources;
 
 const

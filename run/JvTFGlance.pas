@@ -31,13 +31,7 @@ unit JvTFGlance;
 interface
 
 uses
-  SysUtils, Classes,
-  {$IFDEF VCL}
-  Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QForms, QDialogs, QImgList, Types, QWindows,
-  {$ENDIF VisualCLX}
+  SysUtils, Classes, Windows, Messages, Graphics, Controls, Forms, Dialogs, ImgList,
   {$IFDEF BCB}
   JvTypes, // TDate/TTime
   {$ENDIF BCB}

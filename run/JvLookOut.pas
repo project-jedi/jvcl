@@ -1314,12 +1314,8 @@ begin
   if csDesigning in ComponentState then
   begin
     Canvas.Brush.Color := clBlack;
-    {$IFDEF VCL}
-    Canvas.FrameRect(R);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FrameRect(Canvas, R);
-    {$ENDIF VisualCLX}
+    with Canvas do
+      FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF} R);
     Canvas.Brush.Color := Color;
   end;
 

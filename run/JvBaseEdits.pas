@@ -37,9 +37,6 @@ interface
 
 uses
   Windows, Messages, Classes, Controls, ImgList,
-  {$IFDEF VisualCLX}
-  QTypes,
-  {$ENDIF VisualCLX}
   JvToolEdit;
 
 type

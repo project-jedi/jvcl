@@ -144,13 +144,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  {$IFDEF VCL}
-  Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
-  SysUtils, TypInfo;
+  Consts, SysUtils, TypInfo;
 
 const
   cLastSaveTime = 'Last Save Time';

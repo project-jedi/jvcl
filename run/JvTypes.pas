@@ -36,8 +36,7 @@ uses
   SysUtils, Classes,
   Windows, Messages, Controls, Forms, Graphics,
   {$IFDEF VisualCLX}
-  Qt, QTypes,
-  JclWideStrings,
+  Qt, JclWideStrings,
   {$ENDIF VisualCLX}
   JvConsts, JvResources;
 

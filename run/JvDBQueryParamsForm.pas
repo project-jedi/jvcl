@@ -73,12 +73,7 @@ uses
   DbConsts,
   JvTypes, JvResources;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 var
   FieldTypes: array [TFieldType] of string;

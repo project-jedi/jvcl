@@ -283,12 +283,7 @@ begin
   end
   else
   begin
-    {$IFDEF VCL}
-    FBitmaps[Index <> 0].Handle := LoadBitmap(HInstance, ResName[Index <> 0]);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     FBitmaps[Index <> 0].LoadFromResourceName(HInstance, ResName[Index <> 0]);
-    {$ENDIF VisualCLX}
     Exclude(FUserBitmaps, Index <> 0);
   end;
 end;
@@ -471,12 +466,7 @@ begin
   if FBorderStyle <> Value then
   begin
     FBorderStyle := Value;
-    {$IFDEF VCL}
     RecreateWnd;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    RecreateWidget;
-    {$ENDIF VisualCLX}
   end;
 end;
 

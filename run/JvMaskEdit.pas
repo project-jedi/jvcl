@@ -33,13 +33,8 @@ unit JvMaskEdit;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF MSWINDOWS}
   SysUtils, Classes, Graphics, Controls, Mask, Forms,
-  {$IFDEF VisualCLX}
-  QWindows, QTypes,
-  {$ENDIF VisualCLX}
   JvComponent, JvTypes, JvCaret, JvToolEdit, JvExMask;
 
 type

@@ -31,13 +31,7 @@ unit JvTFUtils;
 interface
 
 uses
-  {$IFDEF VCL}
-  Windows, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, Types, QWindows,
-  {$ENDIF VisualCLX}
-  Classes, SysUtils;
+  Windows, Graphics, Controls, Classes, SysUtils;
 
 {$HPPEMIT '#ifndef TDate'}
 {$IFDEF VCL}

@@ -187,19 +187,12 @@ begin
   {$ENDIF VisualCLX}
   OffsetRect(DestRect, (ClientWidth - FImgPict.Width) div 2, (ClientHeight - FImgPict.Height) div 2);
   Canvas.CopyMode := cmSrcAnd;
-  {$IFDEF VCL}
-  Canvas.CopyRect(DestRect, FImgMask.Canvas, SrcRect);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  CopyRect(Canvas, DestRect, FImgMask.Canvas, SrcRect);
-  {$ENDIF VisualCLX}
-  Canvas.CopyMode := cmSrcPaint;
-  {$IFDEF VCL}
-  Canvas.CopyRect(DestRect, FImgPict.Canvas, SrcRect);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  CopyRect(Canvas, DestRect, FImgPict.Canvas, SrcRect);
-  {$ENDIF VisualCLX}
+  with Canvas do
+  begin
+    CopyRect({$IFDEF VisualCLX}Canvas,{$ENDIF} DestRect, FImgMask.Canvas, SrcRect);
+    CopyMode := cmSrcPaint;
+    CopyRect({$IFDEF VisualCLX}Canvas,{$ENDIF}DestRect, FImgPict.Canvas, SrcRect);
+  end;
 end;
 
 procedure TJvCustomLED.SetColorOn(Value: TColor);

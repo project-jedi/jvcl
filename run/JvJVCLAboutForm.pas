@@ -36,9 +36,7 @@ uses
   {$ENDIF MSWINDOWS}
   SysUtils, Classes, IniFiles, Messages, Controls, Forms, StdCtrls, ExtCtrls,
   Dialogs, Buttons,
-  {$IFDEF VCL}
   Jpeg,
-  {$ENDIF VCL}
   JclSysInfo,
   JVCLVer, JvBaseDlg, JvComponent;
 
@@ -107,12 +105,7 @@ uses
   JvJVCLUtils, JvJCLUtils;
 
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 
 const

@@ -1044,12 +1044,7 @@ uses
   {$IFDEF USEJVCL}
   JvConsts, JvResources,
   {$ENDIF USEJVCL}
-  {$IFDEF VisualCLX}
-  QDialogs, QForms;
-  {$ENDIF VisualCLX}
-  {$IFDEF VCL}
   Dialogs, Forms;
-  {$ENDIF VCL}
 
 {$IFNDEF USEJVCL}
 resourcestring
@@ -2052,12 +2047,7 @@ begin
   if (FConControls.Count = 0) and (FConComponents.Count = 0) then
   begin
     FCached := True;
-    {$IFDEF VCL}
     FCachedTime := Windows.GetTickCount;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FCachedTime := GetTickCount;
-    {$ENDIF VisualCLX}
   end
   else
     FCached := False;
@@ -3344,14 +3334,8 @@ begin
       while I < ScheduleCount do
       begin
         Sched := Schedules[I];
-        {$IFDEF VCL}
         CacheTimeUp := Windows.GetTickCount - Sched.CachedTime >=
           UINT(Cache.TimedDelay);
-        {$ENDIF VCL}
-        {$IFDEF VisualCLX}
-        CacheTimeUp := GetTickCount - Sched.CachedTime >=
-          UINT(Cache.TimedDelay);
-        {$ENDIF VisualCLX}
         if Sched.Cached and CacheTimeUp then
         begin
           if not FlushObject(Sched) then
@@ -4368,18 +4352,10 @@ const
 var
   PPI: Integer;
 begin
-  {$IFDEF VCL}
   if Horizontal then
     PPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
     PPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Horizontal then
-    PPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX)
-  else
-    PPI := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  {$ENDIF VisualCLX}
   if (FromMeasure = pmPixels) and (ToMeasure = pmInches) then
     Result := round(Value / PPI * 100)
   else
@@ -4554,12 +4530,7 @@ var
     LeftMarginPels,
     RightMarginPels: Integer;
 begin
-  {$IFDEF VCL}
   PhysWidth := Windows.GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  PhysWidth := GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
-  {$ENDIF VisualCLX}
   LeftMarginPels := ConvertMeasure(PageLayout.MarginLeft, Measure, pmPixels, True);
   RightMarginPels := ConvertMeasure(PageLayout.MarginRight, Measure, pmPixels, True);
 
@@ -4635,18 +4606,10 @@ var
     WidthPrintable,
     HeightPrintable: Integer;
 begin
-  {$IFDEF VCL}
   LeftMarg := Windows.GetDeviceCaps(Printer.Handle, PHYSICALOFFSETX);
   TopMarg := Windows.GetDeviceCaps(Printer.Handle, PHYSICALOFFSETY);
   WidthPaper := Windows.GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
   HeightPaper := Windows.GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  LeftMarg := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETX);
-  TopMarg := GetDeviceCaps(Printer.Handle, PHYSICALOFFSETY);
-  WidthPaper := GetDeviceCaps(Printer.Handle, PHYSICALWIDTH);
-  HeightPaper := GetDeviceCaps(Printer.Handle, PHYSICALHEIGHT);
-  {$ENDIF VisualCLX}
   WidthPrintable := Printer.PageWidth;
   HeightPrintable := Printer.PageHeight;
 
@@ -4731,7 +4694,6 @@ begin
     aCanvas := TMetafileCanvas.Create(aMetafile, Printer.Handle);
   end;
   FBodies.AddObject('', aCanvas);
-  {$IFDEF VCL}
   aCanvas.Font.PixelsPerInch := Windows.GetDeviceCaps(Printer.Handle,
     LOGPIXELSX);
 
@@ -4739,16 +4701,6 @@ begin
   DrawBody(aCanvas, Rect(BodyLeft, BodyTop, BodyWidth - BodyLeft,
     BodyHeight - BodyTop), FPages.Count);
   Windows.SetViewPortOrgEx(aCanvas.Handle, 0, 0, nil);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  aCanvas.Font.PixelsPerInch := GetDeviceCaps(Printer.Handle,
-    LOGPIXELSX);
-
-  SetViewPortOrgEx(aCanvas.Handle, BodyLeft, BodyTop, nil);
-  DrawBody(aCanvas, Rect(BodyLeft, BodyTop, BodyWidth - BodyLeft,
-    BodyHeight - BodyTop), FPages.Count);
-  SetViewPortOrgEx(aCanvas.Handle, 0, 0, nil);
-  {$ENDIF VisualCLX}
   if DirectPrint then
   begin
     GetHeaderFooterRects(HeaderRect, FooterRect);
@@ -4806,18 +4758,10 @@ var
     PrinterPPI: Integer;
 begin
   ScreenPPI := Screen.PixelsPerInch;
-  {$IFDEF VCL}
   if Horizontal then
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Horizontal then
-    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX)
-  else
-    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  {$ENDIF VisualCLX}
   Result := Trunc(ScreenPPI / PrinterPPI * Value);
 end;
 
@@ -4839,18 +4783,10 @@ var
     PrinterPPI: Integer;
 begin
   ScreenPPI := Screen.PixelsPerInch;
-  {$IFDEF VCL}
   if Horizontal then
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSX)
   else
     PrinterPPI := Windows.GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  if Horizontal then
-    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSX)
-  else
-    PrinterPPI := GetDeviceCaps(Printer.Handle, LOGPIXELSY);
-  {$ENDIF VisualCLX}
   Result := Trunc(PrinterPPI / ScreenPPI * Value);
 end;
 

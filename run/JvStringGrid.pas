@@ -30,10 +30,7 @@ unit JvStringGrid;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids,
-  {$IFDEF VisualCLX}
-  QStdCtrls,
-  {$ENDIF VisualCLX}
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Grids, StdCtrls,
   JvTypes, JvJCLUtils, JvExGrids;
 
 const

@@ -80,19 +80,9 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Consts;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts;
-  {$ENDIF VisualCLX}
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 class function TfrmProgress.Execute(Frm: TfrmProgress; const ACaption, ALabel: string;
   AImage: TPicture; ATransparent: Boolean; AMin, AMax, APosition, AInterval: Integer;

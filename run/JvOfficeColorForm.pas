@@ -35,9 +35,9 @@ interface
 
 uses
   SysUtils, Classes,
-  Windows, Messages, Graphics, Controls, Forms,
+  Windows, Messages, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
   {$IFDEF VisualCLX}
-  Qt, QStdCtrls, QExtCtrls,
+  Qt,
   {$ENDIF VisualCLX}
   JvComponent, JvLabel, JvOfficeColorPanel;
 

@@ -36,9 +36,7 @@ uses
   {$IFDEF HAS_UNIT_RTLCONSTS}
   RTLConsts,
   {$ENDIF HAS_UNIT_RTLCONSTS}
-  SysUtils, Classes,
-  Windows, Messages,
-  Controls, Forms,
+  SysUtils, Classes, Windows, Messages, Controls, Forms,
   {$IFDEF VCL}
   JvWndProcHook,
   {$ENDIF VCL}
@@ -262,12 +260,7 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvJCLUtils, JvPropertyStorage;
 
 const

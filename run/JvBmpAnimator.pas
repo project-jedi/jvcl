@@ -34,14 +34,7 @@ unit JvBmpAnimator;
 interface
 
 uses
-  Classes,
-  {$IFDEF VCL}
-  Windows, Messages,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QWindows,
-  {$ENDIF VisualCLX}
-  Graphics, Controls, ExtCtrls, ImgList,
+  Classes, Windows, Messages, Graphics, Controls, ExtCtrls, ImgList,
   JvComponent;
 
 type
@@ -405,12 +398,7 @@ begin
     with Canvas do
     begin
       Brush.Color := clBlack;
-      {$IFDEF VCL}
-      FrameRect(GetClientRect);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      FrameRect(Canvas, GetClientRect);
-      {$ENDIF VisualCLX}
+      FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF} GetClientRect);
     end;
 end;
 

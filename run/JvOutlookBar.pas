@@ -49,7 +49,7 @@ uses
   {$ENDIF COMPILER7_UP}
   {$ENDIF JVCLThemesEnabled}
   {$ENDIF VCL}
-  JvThemes, JvComponent, JvExButtons;
+  JvJCLUtils, JvThemes, JvComponent, JvExButtons;
 
 const
   CM_CAPTION_EDITING = CM_BASE + 756;
@@ -1569,21 +1569,11 @@ begin
     begin
       OffsetRect(R, 1, 1);
       Canvas.Font.Color := clWhite;
-      {$IFDEF VCL}
-      DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags or DT_END_ELLIPSIS);
-      {$ENDIF VCL}
-      {$IFDEF VisualCLX}
       DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
-      {$ENDIF VisualCLX}
       OffsetRect(R, -1, -1);
       Canvas.Font.Color := clGrayText;
     end;
-    {$IFDEF VCL}
-    DrawText(Canvas.Handle, PChar(Pages[Index].Caption), -1, R, Flags or DT_END_ELLIPSIS);
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
     DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
-    {$ENDIF VisualCLX}
   finally
     Canvas.Font.Color := SavedColor;
   end;
