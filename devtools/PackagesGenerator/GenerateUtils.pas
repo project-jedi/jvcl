@@ -49,7 +49,7 @@ uses
   {$ELSE}
   JclDateTime, JclStrings, JclFileUtils, JclSysUtils, JclLogic,
   {$ENDIF NO_JCL}
-  JvSimpleXml, PackageInformation;
+  JvSimpleXml, PackageInformation, ConditionParser;
 
 
 type
@@ -736,53 +736,52 @@ begin
   end;
 end;
 
+type
+  TDefinesConditionParser = class (TConditionParser)
+  protected
+    FTarget: string;
+    procedure MissingRightParenthesis; override;
+    function GetIdentValue(const Ident: String): Boolean; override;
+  public
+    constructor Create(Target: string);
+  end;
+
+constructor TDefinesConditionParser.Create(Target: string);
+begin
+  inherited Create;
+  FTarget := Target;
+end;
+
+procedure TDefinesConditionParser.MissingRightParenthesis;
+begin
+  raise Exception.Create('Missing ")" in conditional expression');
+end;
+
+function TDefinesConditionParser.GetIdentValue(const Ident: String): Boolean;
+begin
+  Result := DefinesList.IsDefined(Ident, FTarget);
+end;
+
 procedure EnsureCondition(lines: TStrings; Condition: string; const target : string);
+var
+  ConditionParser : TDefinesConditionParser;
 begin
   // if there is a condition
   if (Condition <> '') then
   begin
-    if Condition[1] <> '!' then
-    begin
-      // Only Delphi targets directly support conditions
-      if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'D')) then
-      begin
-        lines.Insert(0, '{$IFDEF ' + Condition + '}');
-        lines.Add('{$ENDIF}');
-      end
-      // if we have a C++ Builder target, the only way to enforce the
-      // condition is by looking for it in the DefinesList. If it
-      // is there, the line is left untouched. If not, the line
-      // is emptied, thus enforcing the absence of the condition
-      else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
-      begin
-        if not DefinesList.IsDefined(Condition, target) then
-          lines.Clear;
-      end;
-      // The last possibility is a Kylix target and we are yet to decide
-      // what to do with that. For now, don't touch the line
-    end
-    else
-    begin
-      // "not" condition
-      Delete(Condition, 1, 1);
-
-      // Only Delphi targets directly support conditions
-      if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'D')) then
-      begin
-        lines.Insert(0, '{$IFNDEF ' + Condition + '}');
-        lines.Add('{$ENDIF}');
-      end
-      // if we have a C++ Builder target, the only way to enforce the
-      // condition is by looking for it in the DefinesList. If it
-      // is there, the line is left untouched. If not, the line
-      // is emptied, thus enforcing the absence of the condition
-      else if (SameText(TargetList[GetNonPersoTarget(target)].Env, 'C')) then
-      begin
-        if DefinesList.IsDefined(Condition, target) then
-          lines.Clear;
-      end;
-      // The last possibility is a Kylix target and we are yet to decide
-      // what to do with that. For now, don't touch the line
+    // Then parse it. If the result of the parsing says that
+    // it is not True for the given target, then remove the content
+    // of the lines.
+    // Note: we used to enclose Delphi lines with IFDEFs, but because
+    // the parser allows complex conditions, this is no longer possible.
+    // Thus all platform behave the same: if the condition is True, the
+    // line is left untouched, else it is cleared.
+    ConditionParser := TDefinesConditionParser.Create(Target);
+    try
+      if not ConditionParser.Parse(Condition) then
+        lines.Clear;
+    finally
+      ConditionParser.Free;
     end;
   end;
 end;

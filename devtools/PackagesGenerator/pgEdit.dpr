@@ -11,7 +11,10 @@ uses
   FormTypeDialog in 'FormTypeDialog.pas' {frmFormType},
   AdvancedBCBForm in 'AdvancedBCBForm.pas' {frmAdvancedBCB},
   GenerationMessagesForm in 'GenerationMessagesForm.pas' {frmGenMessages},
-  ModelsForm in 'ModelsForm.pas' {frmModels};
+  ModelsForm in 'ModelsForm.pas' {frmModels},
+  ConditionParser in 'ConditionParser.pas',
+  PackageInformation in '..\Common\PackageInformation.pas',
+  PackageModels in '..\Common\PackageModels.pas';
 
 {$R *.res}
 
