@@ -78,11 +78,7 @@ folder structure should look like this:</p>
 &nbsp;&nbsp;&nbsp; &lt;JVCL subfolders&gt;<br>
 </font></p>
 <p>Start Delphi, open the package group file (bpg) for your version of
-Delphi that is located in the jvcl\packages folder. Next, go to <b>Tools
-- Environment Options - Library - Library Path</b> and add the paths to
-JCL\source, JVCL\run and JVCL\common to the list of library paths.</p>
-<p>&nbsp;</p>
-<p>Select <b>Project - Build All Projects</b> from the Delphi menu. Go
+Delphi that is located in the jvcl\packages folder. Select <b>Project - Build All Projects</b> from the Delphi menu. Go
 get a cup of coffee (this takes a while). After Delphi has compiled all
 the packages, open the <b>Project Manager</b> (Ctrl+Alt+F11) and
 right-click each of the packages ending with D?D (where ? is the version
@@ -103,6 +99,28 @@ to save the changes to the package. You can answer "No" to this question
 since saving only updates the dof file and that is not necessary. <br>
 </div>
 <br>
+<h3>Adding JVCL paths to Delphi</h3>
+<p>To make your applications find the JVCL code when you compile, you need to
+add the paths to JVCL to Delphi's environment paths. You have two options:
+either add the paths to the JVCL source files or add the paths to the
+precompiled DCU files. Both have their drawbacks and benefits.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Adding the source paths means you can easily make changes to the source and
+see it at run-time but be aware that if you build with run-time packages, you
+need to recompile the packages to see the changes in the application. To add the
+source folder locations to Delphi, select <b>Tools-Environment Options-Library</b>
+and add the paths to JCL\source, JVCL\run and JVCL\common to the Library path.</p>
+<p>&nbsp;</p>
+<p>Adding the pre-compiled DCU paths means that Delphi won't recompile the DCU's
+unless you recompile the packages so compiling your application should be
+faster. To add the DCU folder location, select <b>Tools-Environment
+Options-Library</b> and add JCL\dcu, JVCL\libX (where X is your version of
+Delphi, i.e for Delphi 6, it's &quot;6&quot;) and JVCL\common (for the INC
+files) to the Library path. If you still want to be able to open the JVCL source
+files in the IDE, add JVCL\run (and maybe even JVCL\design) to the Browsing Path
+list.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
 <h3><font size="2">Reinstalling and updating for Delphi<br>
 </font></h3>
 <p>To reinstall or update a package, use the same approach as in the <b>Manual
