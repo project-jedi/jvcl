@@ -37,7 +37,7 @@ uses
   JvComponent;
   {$ELSE}
   Windows, Messages, Classes, Controls, Graphics, Forms;
-  {$ENDIF USEJVCL};
+  {$ENDIF USEJVCL}
 
 const
   { color constants.
@@ -387,10 +387,12 @@ end;
   Result:    None
 -----------------------------------------------------------------------------}
 
+{$IFNDEF USEJVCL}
 procedure TJvXPCustomComponent.SetVersion(Value: string);
 begin
   // do not enable overwriting this constant.
 end;
+{$ENDIF USEJVCL}
 
 //=== TJvXPCustomControl =====================================================
 
@@ -428,10 +430,12 @@ end;
   Result:    None
 -----------------------------------------------------------------------------}
 
+{$IFNDEF USEJVCL}
 procedure TJvXPCustomControl.SetVersion(Value: string);
 begin
   // disallow changing this property.
 end;
+{$ENDIF USEJVCL}
 
 {-----------------------------------------------------------------------------
   Procedure: TJvXPCustomControl.BeginUpdate
