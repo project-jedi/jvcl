@@ -39,14 +39,14 @@ uses
 {$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF COMPILER6_UP}
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Windows, Messages, Controls, Forms, Grids, Graphics, Menus, StdCtrls,
   ExtCtrls, DBGrids,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   QControls, QForms, QGrids, QGraphics, QMenus, QStdCtrls,
   QExtCtrls, QDBGrids,
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
   JvAppStorage, JvFormPlacement, JvJCLUtils, JvDBLookup, JvExDBGrids,
   JvFinalize;
 
@@ -148,7 +148,7 @@ type
     FSortMarker: TSortMarker;
     FShowCellHint: Boolean;
     FOnShowCellHint: TJvCellHintEvent;
-    function GetImageIndex(Field: TField): Integer; 
+    function GetImageIndex(Field: TField): Integer;
     procedure SetShowGlyphs(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
     function GetRowsHeight: Integer;
@@ -219,7 +219,7 @@ type
     procedure LayoutChanged; override;
     procedure TopLeftChanged; override;
     procedure DrawColumnCell(const Rect: TRect; DataCol: Integer;
-      Column: TColumn; State: TGridDrawState); override; 
+      Column: TColumn; State: TGridDrawState); override;
     procedure ColWidthsChanged; override;
     procedure Paint; override;
     // Polaris
@@ -252,8 +252,8 @@ type
     procedure DoGetBtnParams(Field: TField; AFont: TFont; var Background: TColor; var ASortMarker: TSortMarker; IsDown:
       Boolean); virtual;
   public
-    constructor Create(AOwner: TComponent); override; 
-    destructor Destroy; override; 
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
     procedure DefaultDataCellDraw(const Rect: TRect; Field: TField;
       State: TGridDrawState);
     procedure DisableScroll;
@@ -338,12 +338,12 @@ implementation
 
 uses
   SysUtils, DbConsts, Math, TypInfo,
-  {$IFDEF VCL}
+{$IFDEF VCL}
   Dialogs,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
   QDialogs,
-  {$ENDIF VisualCLX}
+{$ENDIF VisualCLX}
   JvConsts, JvResources, JvTypes,
   JvDBUtils, JvJVCLUtils, JvDBGridSelectColumnForm;
 
@@ -1005,7 +1005,7 @@ var
   F: TField;
 begin
   Result := inherited CanEditShow;
-  F := nil;
+{  F := nil;
   if Result and (DataLink <> nil) and DataLink.Active and (FieldCount > 0) and
     (SelectedIndex < FieldCount) and (SelectedIndex >= 0) and
     (FieldCount <= DataSource.DataSet.FieldCount) then
@@ -1014,6 +1014,8 @@ begin
     if F <> nil then
       Result := GetImageIndex(F) < 0;
   end;
+  }
+  F := Fields[SelectedIndex];
   if Result and Assigned(FOnShowEditor) then
     FOnShowEditor(Self, F, Result);
 end;
@@ -1961,14 +1963,13 @@ begin
     (SelectedRows.IndexOf(DataSource.DataSet.Bookmark) > -1) then
     Include(State, gdSelected);
   NewBackgrnd := Canvas.Brush.Color;
-  Highlight := (gdSelected in State) and ((dgAlwaysShowSelection in Options) or
-    Focused);
+  Highlight := (gdSelected in State) and ((dgAlwaysShowSelection in Options) or Focused);
   GetCellProps(Field, Canvas.Font, NewBackgrnd, Highlight or ActiveRowSelected);
   Canvas.Brush.Color := NewBackgrnd;
-  if FDefaultDrawing then
+  if DefaultDrawing then
   begin
     I := GetImageIndex(Field);
-    if I >= 0 then
+    if (I >= 0) and not EditorMode then
     begin
       if Field.DataType = ftBoolean then
         if Field.AsBoolean then
@@ -1983,10 +1984,10 @@ begin
     else
       DefaultDrawColumnCell(Rect, DataCol, Column, State);
   end;
-  if Columns.State = csDefault then
+  if (Columns.State = csDefault) or not DefaultDrawing or (csDesigning in ComponentState) then
     inherited DrawDataCell(Rect, Field, State);
   inherited DrawColumnCell(Rect, DataCol, Column, State);
-  if FDefaultDrawing and Highlight and not (csDesigning in ComponentState) and
+  if DefaultDrawing and Highlight and not (csDesigning in ComponentState) and
     not (dgRowSelect in Options) and
     (ValidParentForm(Self).ActiveControl = Self) then
     Canvas.DrawFocusRect(Rect);
@@ -2232,7 +2233,6 @@ begin
   inherited EditButtonClick;
 end;
 
-
 procedure TJvDBGrid.MouseLeave(Control: TControl);
 begin
   if csDesigning in ComponentState then
@@ -2253,7 +2253,6 @@ begin
   FWord := '';
   inherited ColEnter;
 end;
-
 
 function TJvDBGrid.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
   MousePos: TPoint): Boolean;
@@ -2790,8 +2789,8 @@ begin
     self.MouseToCell(CursorPos.X, CursorPos.Y, ACol, ARow);
 
     //-------------------------------------------------------------------------
-    // ARow = -1 if 'outside' a valid cell; 
-    // Adjust CursorRect 
+    // ARow = -1 if 'outside' a valid cell;
+    // Adjust CursorRect
     //-------------------------------------------------------------------------
     if (FShowTitleHint or FShowCellHint) then
     begin
@@ -2799,24 +2798,24 @@ begin
       begin
         if FShowCellHint then
         begin
-          CursorRect.Left := CellRect(0,self.RowCount -1).Left;
-          CursorRect.top  := CellRect(0,self.RowCount -1).Bottom;
-        end  
+          CursorRect.Left := CellRect(0, self.RowCount - 1).Left;
+          CursorRect.top := CellRect(0, self.RowCount - 1).Bottom;
+        end
         else
         begin
-          CursorRect.Left := CellRect(0,0).Left;
-          CursorRect.top  := CellRect(0,0).Bottom;
-        end;  
-      end                                    
+          CursorRect.Left := CellRect(0, 0).Left;
+          CursorRect.top := CellRect(0, 0).Bottom;
+        end;
+      end
       else
         CursorRect := CellRect(ACol, ARow);
     end;
-      
+
     if dgIndicator in Options then
       Dec(ACol);
     if dgTitles in Options then
       Dec(ARow);
-      
+
     if FShowTitleHint and (ACol >= 0) and (ARow = -1) then
     begin
       AtCursorPosition := false;
@@ -2826,38 +2825,41 @@ begin
         FOnShowTitleHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
       HideTimeOut := ATimeOut;
     end;
-    
+
     if FShowCellHint and (ACol >= 0) and DataLink.Active and
       ((ARow >= 0) or (not FShowTitleHint)) then
     begin
       AtCursorPosition := false;
       HintStr := Hint;
-
-      if (ARow = -1) then
-        HintStr := Columns[ACol].Title.Caption
-      else
-      begin
-        SaveRow := DataLink.ActiveRecord;
-        DataLink.ActiveRecord := ARow;
-        if Columns[ACol].Field <> nil then
+      SaveRow := DataLink.ActiveRecord;
+      try
+        if (ARow = -1) then
+          HintStr := Columns[ACol].Title.Caption
+        else
         begin
-          if Columns[ACol].Field.IsBlob then
-            HintStr := Columns[ACol].Field.AsString
-          else
-            HintStr := Columns[ACol].Field.DisplayText;
+          DataLink.ActiveRecord := ARow;
+          if Columns[ACol].Field <> nil then
+          begin
+            if Columns[ACol].Field.IsBlob then
+              HintStr := Columns[ACol].Field.AsString
+            else
+              HintStr := Columns[ACol].Field.DisplayText;
+          end;
         end;
-        DataLink.ActiveRecord := SaveRow;
+
+        if (Canvas.TextWidth(HintStr) < Columns[ACol].Width) then
+          HintStr := '';
+
+        ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
+        if Assigned(FOnShowCellHint) and DataLink.Active then
+          FOnShowCellHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
+        HideTimeOut := ATimeOut;
+      finally
+        if DataLink.ActiveRecord <> SaveRow then
+          DataLink.ActiveRecord := SaveRow;
       end;
-
-      if (Canvas.TextWidth(HintStr) < Columns[ACol].Width) then
-        HintStr := '';
-
-      ATimeOut := max(ATimeOut, Length(HintStr) * C_TIMEOUT);
-      if Assigned(FOnShowCellHint) and DataLink.Active then
-        FOnShowCellHint(Self, Columns[ACol].Field, HintStr, ATimeOut);
-      HideTimeOut := ATimeOut;
     end;
-    
+
     if not AtCursorPosition and HintWindowClass.ClassNameIs('THintWindow') then
     begin
       HintPos := ClientToScreen(CursorRect.TopLeft);
