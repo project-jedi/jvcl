@@ -23,11 +23,10 @@ Description:
 
 This file contains macro's needed to build the JvExVCL classes.
 You need the Pascal PreProcessor (dpp) from Andreas Hausladen [Andreas dott Hausladen att gmx dott de]
-to process these files.
-It is included in JVCL 3: devtools\dpp32
+to process these files. It is included with JVCL 3 (devtools\dpp32).
 
 Known Issues:
-  UNDER CONSTRUCTION !!
+
 -----------------------------------------------------------------------------}
 
 // This comment is inserted into every JvExXxx.pas file
@@ -94,7 +93,7 @@ EMPTYLINE
     procedure VisibleChanged; dynamic;
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; dynamic;
-    property MouseOver: Boolean read FMouseOver write FMouseOver;  
+    property MouseOver: Boolean read FMouseOver write FMouseOver;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
@@ -147,7 +146,7 @@ EMPTYLINE
 (*$DEFINE JV_DECL_WINCONTROL
   { WinControl }
   private
-    FInputKeys: TInputKeys;
+    FInputKeys: TJvInputKeys;
   protected
     procedure BoundsChanged; {$IFNDEF HASBOUNDSCHANGED} dynamic {$ELSE} override {$ENDIF};
     procedure CursorChanged; dynamic;
@@ -156,18 +155,18 @@ EMPTYLINE
     function DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean; dynamic;
     procedure ShowingChanged; dynamic;
     procedure ShowHintChanged; dynamic;
-    property InputKeys: TInputKeys read FInputKeys write FInputKeys;
+    property InputKeys: TJvInputKeys read FInputKeys write FInputKeys;
 *)
 
 (*$DEFINE JV_WINCONTROL_BEGIN(ClassName)
-  { WinCustomControl }
+  { WinControl }
   TJvEx##ClassName = class(T##ClassName)
   JV_DECL_CONTROL
   JV_DECL_WINCONTROL
 *)
 
-(*$DEFINE JV_WINCONTROL_END(ClassName)
-  { WinControl }
+(*$DEFINE JV_CUSTOMCONTROL_END(ClassName)
+  { CustomControl }
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -186,9 +185,32 @@ EMPTYLINE
   EMPTYLINE
 *)
 
-(*$DEFINE JV_WINCUSTOMCONTROL(ClassName)
-  JV_WINCUSTOMCONTROL_BEGIN(ClassName)
-  JV_WINCUSTOMCONTROL_END(ClassName)
+(*$DEFINE JV_WINCONTROL_END(ClassName)
+  { WinControl }
+  private
+    FCanvas: TControlCanvas;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    property Canvas: TControlCanvas read FCanvas;
+  end;
+
+  TJvExPub##ClassName = class(TJvEx##ClassName)
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  end;
+  EMPTYLINE
+*)
+
+(*$DEFINE JV_CUSTOMCONTROL(ClassName)
+  JV_WINCONTROL_BEGIN(ClassName)
+  JV_CUSTOMCONTROL_END(ClassName)
 *)
 
 (*$DEFINE JV_WINCONTROL(ClassName)
@@ -214,9 +236,13 @@ EMPTYLINE
 *)
 
 (*$DEFINE JV_EDITCONTROL_END(ClassName)
+  { EditControl End }
+  private
+    FCanvas: TControlCanvas;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    property Canvas: TControlCanvas read FCanvas;
   end;
 
   { EditControl }
@@ -459,33 +485,29 @@ JV_IMPL_CONTROL_COMMON(ClassName)
 
 (*$DEFINE JV_IMPL_WINCONTROL_MESSAGES
       { WinControl Messages }
-      WM_SETFOCUS           : DoSetFocus(FocusedWnd);
-      WM_KILLFOCUS          : if not (csFocusing in ControlState) then
-                                DoKillFocus(FocusedWnd);
-      WM_GETDLGCODE         : if not (ikNative in FInputKeys) then
-                                Result := InputKeysToDlgCodes(FInputKeys);
+      WM_SETFOCUS   : DoSetFocus(FocusedWnd);
+      WM_KILLFOCUS  : if not (csFocusing in ControlState) then
+                        DoKillFocus(FocusedWnd);
+      WM_GETDLGCODE : if not (ikNative in FInputKeys) then
+                        Result := InputKeysToDlgCodes(FInputKeys);
       WM_ERASEBKGND :
       begin
-        ACanvas := GetCanvas(Self);
-        if Assigned(ACanvas) then
-          Handled := DoEraseBackGround(ACanvas, LParam)
-        else
-        begin
-          ACanvas := TControlCanvas.Create;
-          with TControlCanvas(ACanvas) do
-          begin
-            Control := Self;
-            Handled := DoEraseBackGround(ACanvas, LParam);
-            Destroy;
+        Canvas.Lock;
+        try
+          Canvas.Handle := DC;
+          try
+            Handled := DoEraseBackGround(Canvas, LParam);
+          finally
+            Canvas.Handle := 0;
           end;
+        finally
+          Canvas.Unlock;
         end;
       end;
 *)
 
 (*$DEFINE JV_IMPL_WINCONTROL(ClassName)
 procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
-var
-  ACanvas: TControlCanvas;
 begin
   with TJvMessage(Mesg) do
   begin
@@ -503,12 +525,12 @@ end;
 (*$DEFINE JV_IMPL_WINCONTROL_COMMON(ClassName)
 procedure TJvEx##ClassName.DoSetFocus(PreviousWnd: HWND);
 begin
-  Perform(CM_GOTFOCUS, 0, 0);
+
 end;
 
 procedure TJvEx##ClassName.DoKillFocus(NextWnd: HWND);
 begin
-  Perform(CM_LOSTFOCUS, 0, 0);
+
 end;
 
 function TJvEx##ClassName.DoEraseBackground(ACanvas: TCanvas; LParam: Integer): Boolean;
@@ -548,12 +570,15 @@ begin
   inherited Create(AOwner);
   FHintColor := clDefault;
   FInputKeys := [ikNative];
+  FCanvas := TControlCanvas.Create;
+  FCanvas.Control := Self;
   CREATE_CUSTOMCODE
 end;
 
 destructor TJvEx##ClassName.Destroy;
 begin
   DESTROY_CUSTOMCODE
+  FCanvas.Free;
   inherited Destroy;
 end;
  EMPTYLINE
@@ -566,11 +591,35 @@ JV_IMPL_WINCONTROL_COMMON(ClassName)
 JV_IMPL_CONTROL_COMMON(ClassName)
 *)
 
+(*$DEFINE JV_IMPL_CUSTOMCONTROL_CREATE(ClassName)
+{ CustomControl Create }
+constructor TJvEx##ClassName.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FHintColor := clDefault;
+  FInputKeys := [ikNative];
+  CREATE_CUSTOMCODE
+end;
+
+destructor TJvEx##ClassName.Destroy;
+begin
+  DESTROY_CUSTOMCODE
+  inherited Destroy;
+end;
+ EMPTYLINE
+*)
+
+(*$DEFINE JV_CUSTOMCONTROL_IMPL(ClassName)
+JV_IMPL_CUSTOMCONTROL_CREATE(ClassName)
+JV_IMPL_WINCONTROL(ClassName)
+JV_IMPL_WINCONTROL_COMMON(ClassName)
+JV_IMPL_CONTROL_COMMON(ClassName)
+*)
+
+
 (*$DEFINE JV_IMPL_EDITCONTROL(ClassName)
 { EditControl }
 procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
-var
-  ACanvas: TControlCanvas;
 begin
   with TJvMessage(Mesg) do
   begin
@@ -611,7 +660,7 @@ end;
 *) // MACRO END JV_IMPL_CUSTOMFORM
 
 (*$DEFINE JV_CUSTOMFORM_IMPL(ClassName)
-JV_IMPL_WINCONTROL_CREATE(ClassName)
+JV_IMPL_CUSTOMCONTROL_CREATE(ClassName)
 JV_IMPL_CUSTOMFORM(ClassName)
 JV_IMPL_WINCONTROL(ClassName)
 JV_IMPL_WINCONTROL_COMMON(ClassName)
