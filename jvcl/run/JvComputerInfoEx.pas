@@ -36,6 +36,8 @@ Known Issues:
 {$I jvcl.inc}
 unit JvComputerInfoEx;
 
+{$HPPEMIT '#pragma link "wininet.lib"'}
+
 interface
 uses
   Windows, Messages, Classes, SysUtils, Controls, Graphics, ShlObj,
