@@ -43,7 +43,7 @@ uses
   JvgLogics, JvgGroupBox;
 
 type
-  TJvgLogicsComponentEditor = class(TComponentEditor)
+  TJvgLogicsEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
@@ -70,7 +70,7 @@ type
     procedure Paint; override;
   end;
 
-  TJvgLogicsEditor = class(TForm)
+  TJvgLogicsEditorMain = class(TForm)
     SB: TScrollBox;
     Panel1: TPanel;
     iPKey: TImage;
@@ -188,9 +188,9 @@ resourcestring
   RsEditComponentEllipsis = 'Edit component...';
 {$ENDIF !USEJVCL}
 
-//=== { TJvgLogicsEditor } ===================================================
+//=== { TJvgLogicsEditorMain } ===============================================
 
-function TJvgLogicsEditor.Execute(ALogicProducer: TJvgLogicProducer): Boolean;
+function TJvgLogicsEditorMain.Execute(ALogicProducer: TJvgLogicProducer): Boolean;
 var
   I: Integer;
 begin
@@ -223,7 +223,7 @@ begin
   //  pLeft.Dock(pLog, Rect(1, 1, 1, 1));
 end;
 
-procedure TJvgLogicsEditor.AddBox(ALogicElement: TJvgLogicElement);
+procedure TJvgLogicsEditorMain.AddBox(ALogicElement: TJvgLogicElement);
 var
   Box: TJvgGroupBoxPlus;
 begin
@@ -257,7 +257,7 @@ begin
   end;
 end;
 
-procedure TJvgLogicsEditor.AddShape(CommentArea: TJvgCommentArea);
+procedure TJvgLogicsEditorMain.AddShape(CommentArea: TJvgCommentArea);
 var
   Shape: TJvgShapePlus;
 begin
@@ -280,7 +280,7 @@ begin
   end;
 end;
 
-procedure TJvgLogicsEditor.MouseDown_(Sender: TObject; Button: TMouseButton;
+procedure TJvgLogicsEditorMain.MouseDown_(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   I: Integer;
@@ -327,7 +327,7 @@ begin
         end;
 end;
 
-procedure TJvgLogicsEditor.MouseMove_(Sender: TObject; Shift: TShiftState;
+procedure TJvgLogicsEditorMain.MouseMove_(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 var
   NewPt: TPoint;
@@ -389,7 +389,7 @@ begin
   end;
 end;
 
-procedure TJvgLogicsEditor.UpdateView;
+procedure TJvgLogicsEditorMain.UpdateView;
 var
   DC: HDC;
 begin
@@ -398,7 +398,7 @@ begin
   ReleaseDC(SB.Handle, DC);
 end;
 
-procedure TJvgLogicsEditor.MouseUp_(Sender: TObject; Button: TMouseButton;
+procedure TJvgLogicsEditorMain.MouseUp_(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 var
   I: Integer;
@@ -409,7 +409,7 @@ begin
       (SB.Controls[I] as TJvgShapePlus).Paint;
 end;
 
-procedure TJvgLogicsEditor.DblClick_(Sender: TObject);
+procedure TJvgLogicsEditorMain.DblClick_(Sender: TObject);
 var
   S: string;
 begin
@@ -428,7 +428,7 @@ begin
   PostMessage(TWinControl(Sender).Handle, WM_LBUTTONUP, 1, 1);
 end;
 
-procedure TJvgLogicsEditor.SetActiveBox(const Value: TJvgGroupBoxPlus);
+procedure TJvgLogicsEditorMain.SetActiveBox(const Value: TJvgGroupBoxPlus);
 var
   Index: Integer;
 begin
@@ -450,7 +450,7 @@ begin
   eStepName.Text := FActiveBox.LogicElement.Caption;
 end;
 
-procedure TJvgLogicsEditor.OnTraceMessage(Sender: TJvgLogics;
+procedure TJvgLogicsEditorMain.OnTraceMessage(Sender: TJvgLogics;
   AStepResult: Boolean; const StepResult, ParsedResult, Msg: string);
 begin
   mLog.Lines.Add(Msg);
@@ -485,8 +485,8 @@ var
   S: string;
 begin
   inherited Paint;
-  //  ChangeBitmapColor((Owner as TJvgLogicsEditor).iLink.Picture.Bitmap, GetPixel((Owner as TJvgLogicsEditor).iLink.Picture.Bitmap.Canvas.Handle, 0,0), IIF(LogicElement.NextElement<>nil, clGreen, clRed));
-  //  BitBlt(Canvas.Handle, 100-14-3, 3, 14, 13, (Owner as TJvgLogicsEditor).iLink.Picture.Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
+  //  ChangeBitmapColor((Owner as TJvgLogicsEditorMain).iLink.Picture.Bitmap, GetPixel((Owner as TJvgLogicsEditorMain).iLink.Picture.Bitmap.Canvas.Handle, 0,0), IIF(LogicElement.NextElement<>nil, clGreen, clRed));
+  //  BitBlt(Canvas.Handle, 100-14-3, 3, 14, 13, (Owner as TJvgLogicsEditorMain).iLink.Picture.Bitmap.Canvas.Handle, 0, 0, SRCCOPY);
 
   Canvas.Font.Color := clTeal; //clBlue;
   Canvas.Font.Style := [];
@@ -497,7 +497,7 @@ begin
     DT_WORDBREAK or DT_END_ELLIPSIS or DT_MODIFYSTRING);
 end;
 
-procedure TJvgLogicsEditor.SBEraseBkgndEvent(Sender: TObject; DC: HDC);
+procedure TJvgLogicsEditorMain.SBEraseBkgndEvent(Sender: TObject; DC: HDC);
 var
   LogicElement: TJvgLogicElement;
   I: Integer;
@@ -640,7 +640,7 @@ begin
   //    if (SB.Controls[I] is TJvgShapePlus) then (SB.Controls[I] as TJvgShapePlus).Paint;
 end;
 
-procedure TJvgLogicsEditor.cbNextChange(Sender: TObject);
+procedure TJvgLogicsEditorMain.cbNextChange(Sender: TObject);
 begin
   if FActiveBox <> nil then
   begin
@@ -651,21 +651,21 @@ begin
   end;
 end;
 
-procedure TJvgLogicsEditor.cbModeChange(Sender: TObject);
+procedure TJvgLogicsEditorMain.cbModeChange(Sender: TObject);
 begin
   if FActiveBox <> nil then
     FActiveBox.LogicElement.IsFirst := cbMode.ItemIndex = 1;
 end;
 
-//=== { TJvgLogicsComponentEditor } ==========================================
+//=== { TJvgLogicsEditor } ===================================================
 
-procedure TJvgLogicsComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvgLogicsEditor.ExecuteVerb(Index: Integer);
 begin
   if Index = 0 then
     ShowEditor(TJvgLogicProducer(Component));
 end;
 
-function TJvgLogicsComponentEditor.GetVerb(Index: Integer): string;
+function TJvgLogicsEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
@@ -673,14 +673,14 @@ begin
   end;
 end;
 
-function TJvgLogicsComponentEditor.GetVerbCount: Integer;
+function TJvgLogicsEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
 
-procedure TJvgLogicsComponentEditor.ShowEditor(LogicProducer: TJvgLogicProducer);
+procedure TJvgLogicsEditor.ShowEditor(LogicProducer: TJvgLogicProducer);
 var
-  glLogicsEditor: TJvgLogicsEditor;
+  glLogicsEditor: TJvgLogicsEditorMain;
 //  Logics: TJvgLogics;
 begin
 //  Logics := LogicProducer.Logics;
@@ -704,14 +704,14 @@ begin
     end;
   }
   try
-    glLogicsEditor := TJvgLogicsEditor.Create(nil);
+    glLogicsEditor := TJvgLogicsEditorMain.Create(nil);
     glLogicsEditor.Execute(LogicProducer);
   finally
     FreeAndNil(glLogicsEditor);
   end;
 end;
 
-procedure TJvgLogicsEditor.tbNewClick(Sender: TObject);
+procedure TJvgLogicsEditorMain.tbNewClick(Sender: TObject);
 var
   LogicElement: TJvgLogicElement;
 begin
@@ -724,7 +724,7 @@ begin
   end;
 end;
 
-procedure TJvgLogicsEditor.cbNextFalseChange(Sender: TObject);
+procedure TJvgLogicsEditorMain.cbNextFalseChange(Sender: TObject);
 begin
   if FActiveBox <> nil then
   begin
@@ -737,7 +737,7 @@ begin
   end;
 end;
 
-procedure TJvgLogicsEditor.eStepNameChange(Sender: TObject);
+procedure TJvgLogicsEditorMain.eStepNameChange(Sender: TObject);
 begin
   if Assigned(ActiveBox) then
   begin
@@ -747,7 +747,7 @@ begin
 end;
 
 
-procedure TJvgLogicsEditor.ToolButton5Click(Sender: TObject);
+procedure TJvgLogicsEditorMain.ToolButton5Click(Sender: TObject);
 var
   I: Integer;
 begin
@@ -764,7 +764,7 @@ begin
         TJvgGroupBoxPlus(SB.Controls[I]).Colors.Caption := clGreen;
 end;
 
-procedure TJvgLogicsEditor.ToolButton7Click(Sender: TObject);
+procedure TJvgLogicsEditorMain.ToolButton7Click(Sender: TObject);
 var
   CommentArea: TJvgCommentArea;
 begin
@@ -794,24 +794,24 @@ begin
   Windows.DrawText(Canvas.Handle, PChar(S), Length(S), R, DT_WORDBREAK);
 end;
 
-procedure TJvgLogicsEditor.cbIgnoreSpacesClick(Sender: TObject);
+procedure TJvgLogicsEditorMain.cbIgnoreSpacesClick(Sender: TObject);
 begin
   LogicProducer.IgnoreSpaces := cbIgnoreSpaces.Checked;
 end;
 
-procedure TJvgLogicsEditor.pLeftDockOver(Sender: TObject; Source:
+procedure TJvgLogicsEditorMain.pLeftDockOver(Sender: TObject; Source:
   TDragDockObject; X, Y: Integer; State: TDragState; var Accept: Boolean);
 begin
   Accept := True;
 end;
 
-procedure TJvgLogicsEditor.pLeftUnDock(Sender: TObject; Client: TControl;
+procedure TJvgLogicsEditorMain.pLeftUnDock(Sender: TObject; Client: TControl;
   NewTarget: TWinControl; var Allow: Boolean);
 begin
   (Sender as TWinControl).Height := 6;
 end;
 
-procedure TJvgLogicsEditor.pLeftDockDrop(Sender: TObject; Source:
+procedure TJvgLogicsEditorMain.pLeftDockDrop(Sender: TObject; Source:
   TDragDockObject; X, Y: Integer);
 begin
   (Sender as TWinControl).Height := 100;
@@ -819,7 +819,7 @@ begin
   SBar.Top := 1500;
 end;
 
-procedure TJvgLogicsEditor.ToolButton8Click(Sender: TObject);
+procedure TJvgLogicsEditorMain.ToolButton8Click(Sender: TObject);
 var
   I: Integer;
 begin
@@ -838,7 +838,7 @@ begin
         TJvgGroupBoxPlus(SB.Controls[I]).Colors.Caption := clGreen;
 end;
 
-procedure TJvgLogicsEditor.tbStopClick(Sender: TObject);
+procedure TJvgLogicsEditorMain.tbStopClick(Sender: TObject);
 var
   I: Integer;
 begin
@@ -851,7 +851,7 @@ begin
         TJvgGroupBoxPlus(SB.Controls[I]).Colors.Caption := clBtnShadow;
 end;
 
-procedure TJvgLogicsEditor.TabSet1Change(Sender: TObject; NewTab: Integer;
+procedure TJvgLogicsEditorMain.TabSet1Change(Sender: TObject; NewTab: Integer;
   var AllowChange: Boolean);
 begin
   PC.ActivePageIndex := NewTab;

@@ -1,4 +1,4 @@
-object JvSpeedbarEditor: TJvSpeedbarEditor
+object JvSpeedbarEditorMain: TJvSpeedbarEditorMain
   Left = 378
   Top = 221
   ActiveControl = SectionList
@@ -246,6 +246,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   end
   object FormPlacement1: TJvFormStorage
     AppStorage = AppStorage
+    AppStoragePath = '%FORM_NAME%\'
     StoredValues = <>
     Left = 44
     Top = 103
@@ -253,6 +254,7 @@ object JvSpeedbarEditor: TJvSpeedbarEditor
   object AppStorage: TJvAppRegistryStorage
     StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
     StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = '%NONE%'
     SubStorages = <>
     Left = 44
     Top = 53

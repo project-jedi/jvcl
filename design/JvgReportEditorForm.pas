@@ -45,7 +45,7 @@ uses
   JvgReport, JvgRuler, JvgReportParamEditorForm;
 
 type
-  TJvgRepProperty = class(TPropertyEditor)
+  TJvgReportProperty = class(TPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
@@ -320,19 +320,19 @@ begin
   end;
 end;
 
-//=== { TJvgComponentListProperty } ==========================================
+//=== { TJvgReportProperty } =================================================
 
-function TJvgRepProperty.GetAttributes: TPropertyAttributes;
+function TJvgReportProperty.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog];
 end;
 
-function TJvgRepProperty.GetValue: string;
+function TJvgReportProperty.GetValue: string;
 begin
   Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
-procedure TJvgRepProperty.Edit;
+procedure TJvgReportProperty.Edit;
 begin
   ShowReportEditor(TJvgReport(GetComponent(0)), True);
 end;

@@ -125,10 +125,10 @@ begin
 
   RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter,
     'ComponentList', TJvgComponentListProperty);
-  RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report', TJvgRepProperty);
+  RegisterPropertyEditor(TypeInfo(TStringList), TJvgReport, 'Report', TJvgReportProperty);
   RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
   RegisterComponentEditor(TJvgReportParamsEditor, TJvgRepParamsEditor);
-  RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsComponentEditor);
+  RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsEditor);
   RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
   RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
   RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
