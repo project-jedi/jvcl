@@ -60,7 +60,7 @@ Description
   Use Attachment before calling <LINK SendMail> to add, insert, delete and move filenames of attachments for
   the to be send message. The number of attachments per message can be limited in some messaging systems.
   If the limit is exceeded, an EJclMapiError exception is raised when <LINK SendMail> is called. File attachments
-  are copied to the message before <LINK SendMail> returns; therefore, later changes to the files do not affect
+  are copied to the message before <LINK SendMail> returns; thus, later changes to the files do not affect
   the contents of the message. The files must be closed when they are copied.
 
   After calling ReadMail use Attachment to retrieve the filenames of temporary files where to
@@ -391,8 +391,8 @@ Summary
 Description
   Call SendMail to send a standard message, with or without any user interaction. The profile
   must be configured so that SendMail can open the default service providers without requiring user
-  interaction. However, if loNewSession is included in LogonOptions thus disallowing the use of a
-  shared session, and the profile requires a password, loLogonUI must be set or the function will fail.
+  interaction. But if loNewSession is included in LogonOptions (thus disallowing the use of a
+  shared session) and the profile requires a password, then loLogonUI must be set or the function will fail.
   Avoid this situation by using an explicit profile without a password or by using the default profile
   without a password. Use property SimpleMAPI to retrieve a default profile.
 
@@ -406,7 +406,7 @@ Description
   not have been sent to all recipients. Depending on the transport provider, recipient validation can be a
   lengthy process.
 
-  Applications that send messages to custom recipients (ie recipients not listed in the address book)
+  Applications that send messages to custom recipients (i.e., recipients not listed in the address book)
   can avoid name resolution by setting the Address property of the recipient TJvMailRecipient object to
   the custom address.
 
@@ -499,7 +499,7 @@ Summary
 Description
   The TJvMailReadedData type is a wrapper for data received after a <LINK TJvMail.ReadMail,ReadMail> function call.
 @@TJvMailReadedData.RecipientAddress
-  The sender's address; this address is provider-specific message delivery data. The format of an
+  The sender's address: this address is provider-specific message delivery data. The format of an
   address specified by RecipientAddress is <b>[address type][e-mail address]</b>. Examples of valid addresses
   are <b>FAX:206-555-1212</b> and <b>SMTP:M@X.COM</b>.
 @@TJvMailReadedData.RecipientName
@@ -635,9 +635,9 @@ Description
   Information        Action
   -----------        ------
   name               Name resolved using the Simple MAPI resolution rules.
-  address            No name resolution; address is used for both message delivery and for displaying the
+  address            No name resolution: address is used for both message delivery and for displaying the
                       recipient name.
-  name and address   No name resolution; name used only for displaying the recipient name.
+  name and address   No name resolution: name used only for displaying the recipient name.
   </TABLE>
 
   The following example adds a recipient to the <LINK TJvMail.Recipient,Recipient> list.

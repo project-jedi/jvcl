@@ -88,43 +88,43 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter
 Summary
-  This painter is the ancestor of all menu item painters
+  This painter is the ancestor of all menu item painters.
 Description
   Starting with JVCL3, the concept of menu item painters has been introduced.
   Each JvMainMenu or JvPopupMenu is assigned an item painter according to the Style property.
   When a menu item is about to be painted, the painter is called and does the painting job.
-  Do not instanciate a TJvCustomMenuItemPainter but use one of its descendents.
-  However, unles you are using the msOwnerDraw style and want to base your drawings on one the
-  available painters, you shouldn't have to instanciate one of the
-  descendants of TJvCustomMenuItemPainter.
+  Do not instantiate a TJvCustomMenuItemPainter but use one of its descendents, unless you are 
+  using the msOwnerDraw style and want to base your drawings on one the available painters.
+##  you shouldn't have to instantiate one of the
+##  descendants of TJvCustomMenuItemPainter.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.Canvas
 Summary
-  The canvas in which the menu items will be painted
+  The canvas in which the menu items will be painted.
 Description
-  Returns the canvas from the TJvMainMenu or TJvPopupMenu to which this painter is assigned
+  Returns the canvas from the TJvMainMenu or TJvPopupMenu to which this painter is assigned.
 See Also
   Paint
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.CheckMarkHeight
 Summary
-  The height of a check mark
+  The height of a check mark.
 
 Description
   Returns the system size for a check mark if ShowCheckMarks is true.
   Returns 0 otherwize.
-  Some descendants may change the values returned by this method
+  Some descendants may change the values returned by this method.
 See Also
   CheckMarkWidth
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMenuItemPainter.CheckMarkWidth
 Summary
-  The width of a check mark
+  The width of a check mark.
 
 Description
   Returns the system size for a check mark if ShowCheckMarks is true.
   Returns 0 otherwize.
-  Some descendants may change the values returned by this method
+  Some descendants may change the values returned by this method.
 See Also
   CheckMarkHeight
 ----------------------------------------------------------------------------------------------------

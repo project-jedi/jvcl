@@ -51,7 +51,7 @@ Description
   The Commands property is a collection of commands provided by the plugin. A single plugin can
   provide zero or more commands.
 
-  For each command you can specify a bitmap (the icon for the menu or button), it's caption, hint,
+  For each command you can specify a bitmap (the icon for the menu or button), its caption, hint,
   custom data and the handler to execute when the command is requested by the host application.
 See Also
   TJvPluginCommand
@@ -94,7 +94,7 @@ Description
 Summary
   Holds the filename of the plugin.
 Description
-  Filename holds the filename of the plugin after it is loaded. This can be usefull to check if the
+  Filename holds the filename of the plugin after it is loaded. This can be useful to check if the
   plugin hasn't been renamed.
 ----------------------------------------------------------------------------------------------------
 @@TJvPlugIn.HostApplication
@@ -227,7 +227,7 @@ Description
   SendPluginMessage is called by the host application to send a message to the plugin.
 
   As a plugin developer you should respond to the OnPluginMessage, rather than overriding this
-  method. The meaning of the various message IDs are specified by the host application (check it's
+  method. The meaning of the various message IDs are specified by the host application (check its
   documentation to see which message you could receive and what the meaning of the second parameter
   is).
 
