@@ -120,13 +120,15 @@ type
     fPlugin: TJvPlugin;
   protected
     function GetOwner: TPersistent; override;
+    procedure SetItemName(AItem: TCollectionItem); override;
   public
     constructor Create(APlugin: TJvPlugin);
   end; // TJvPluginCommands
 
 implementation
 
-uses JvPlugCommon;
+uses
+  SysUtils, JvPlugCommon;
 
 // ###################################
 // ######  Create, Free...
@@ -285,6 +287,13 @@ end;
 function TJvPluginCommands.GetOwner: TPersistent;
 begin
   Result := fPlugin;
+end;
+
+procedure TJvPluginCommands.SetItemName(AItem: TCollectionItem);
+begin
+  with TJvPluginCommand(AItem) do
+    if Name = '' then
+      Name := TJvPlugin(Self.GetOwner).Name + 'Command' + IntToStr(ID+1);
 end;
 
 end.
