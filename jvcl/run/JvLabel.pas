@@ -785,7 +785,7 @@ end;
 
 procedure TJvCustomLabel.AdjustBounds;
 var
-  DC: HDC;
+//  DC: HDC;
   X: Integer;
   Rect: TRect;
   AAlignment: TAlignment;
