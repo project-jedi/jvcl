@@ -340,6 +340,8 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
+// ahuser: TExPopupListBox is not used anywhere
+(*
 //=== { TExPopupListBox } ====================================================
 
 type
@@ -409,6 +411,8 @@ begin
   TExInplaceEditList(Owner).CloseUp(Accept);
 end;
 {$ENDIF COMPILER6_UP}
+
+*)
 
 //=== { TJvStringGrid } ======================================================
 
