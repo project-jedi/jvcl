@@ -31,6 +31,8 @@
 |   |- NavAndStatus=Navigational and status management=JVCL provides a number of navigational and status management controls.
 |   |   |- Navigational=Navigational controls=JVCL provides a number of navigational controls.
 |   |   |- Status=Status management=JVCL provides a number of dataset status displaying/controlling components and controls.
+|- Docking=Docking=JVCL provides a number of controls and components that allows you to add docking support to your application with virtually no code at all. Several docking styles are supported (standard Delphi, Visual C++, Visual InterDev and the auto-hiding docking forms of Visual Studio.NET.
+|- DotNet=DotNet=JVCL provides a number of controls with a visual look similar to the hot tracking style of the VS.NET components. There are both standard as well as data-aware controls.
 |- DateTime=Date and time controls=JVCL provides a number of controls to work with dates and times.
 |   |- EditsCombos=Date and time edit and comboboxes=JVCL provides a number of date and time edit controls and combo boxes.
 |   |- Other=Other date and time controls=This group contains datetime controls that do not fit in the other sub categories.
@@ -91,11 +93,13 @@
 |   |- AlarmsAndTimers=Alarms and timers=JVCL provides a number of components and controls to schedule and/or time events.
 |   |   |- Alarms=Alarms=JVCL provides a number of components to schedule events.
 |   |   |- Timers=Timers=JVCL provides a number of components to time events.
-|   |- FilesAndFolders=Files and folders=JVCL provides a number of components to manage files and folders.
 |   |- Encryption=Encryption and encoding=JVCL provides a number of components that allow you to encrypt/decrypt or encode/decode strings or data.
+|   |- FilesAndFolders=Files and folders=JVCL provides a number of components to manage files and folders.
 |   |- LibProcAndThread=Libraries, processes and threads=JVCL provides a number of components and controls to control/manage libraries, processes and threads.
-|       |- Libraries=Libraries=JVCL provides a number of components to control library files (.DLLs).
-|       |- Processes=Processes=JVCL provides a number of components and controls to create and/or control processes.
-|       |- Threads=Threads=JVCL provides a number of components and controls to create and/or control threads.
-|-Wizards=Wizards=Components for creating wizard style dialogs and applications.
-  |-RouteMaps=RouteMaps=Components to extend wizards with alternative page navigation or for displaying the wizard pages in an alternate way.
+|   |   |- Libraries=Libraries=JVCL provides a number of components to control library files (.DLLs).
+|   |   |- Processes=Processes=JVCL provides a number of components and controls to create and/or control processes.
+|   |   |- Threads=Threads=JVCL provides a number of components and controls to create and/or control threads.
+|   |- Menus=Menus=JVCL provides a number of components that enhance the standard menu components found in Delphi
+|- XPControls=XP controls=JVCL provides a number of controls that have a distinct XP/Office XP look-and-feel.
+|- Wizards=Wizards=Components for creating wizard style dialogs and applications.
+    |- RouteMaps=RouteMaps=Components to extend wizards with alternative page navigation or for displaying the wizard pages in an alternate way.
