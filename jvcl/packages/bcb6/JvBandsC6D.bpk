@@ -14,7 +14,7 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvBandsC6R.bpi CJCL60.bpi"/>
+    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvBandsC6R.bpi CJCL60.bpi vclx.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\design"/>
     <PATHRC value=".;"/>
@@ -56,6 +56,7 @@
       <FILE FILENAME="..\..\design\JvBandObjectDLLWizard.pas" FORMNAME="" UNITNAME="JvBandObjectDLLWizard" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBandObjectDLLWizardForm.pas" FORMNAME="zWizardForm" UNITNAME="JvBandObjectDLLWizardForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvBandsC6R.bpi" FORMNAME="" UNITNAME="JvBandsC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
