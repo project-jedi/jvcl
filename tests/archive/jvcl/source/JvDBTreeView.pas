@@ -150,7 +150,12 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DataLink: TJvDBTreeViewDataLink read FDataLink;
     property MasterField: string read FMasterField write SetMasterField;
+    // alias for MasterField
+    property ParentField:string read FMasterField write SetMasterField;
     property DetailField: string read FDetailField write SetDetailField;
+    // alias for DetailField
+    property KeyField: string read FDetailField write SetDetailField;
+
     property ItemField: string read FItemField write SetItemField;
     property IconField: string read FIconField write SetIconField;
     property StartMasterValue: string read GetStartMasterValue write SetStartMasterValue;
@@ -437,32 +442,44 @@ end;
 
 procedure TCustomJvDBTreeView.SetMasterField(Value: String);
 begin
-  if ValidField(Value, [ftSmallInt, ftInteger, ftWord, ftString]) then
-    FMasterField := Value
+  if ValidField(Value, [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString]) then
+  begin
+    FMasterField := Value;
+    RefreshChild(nil);
+  end
   else
     Warning(SMasterFieldError);
 end;
 
 procedure TCustomJvDBTreeView.SetDetailField(Value: String);
 begin
-  if ValidField(Value, [ftSmallInt, ftInteger, ftWord, ftString]) then
-    FDetailField := Value
+  if ValidField(Value, [ftSmallInt, ftInteger, ftAutoInc, ftWord, ftString]) then
+  begin
+    FDetailField := Value;
+    RefreshChild(nil);
+  end
   else
     Warning(SDetailFieldError);
 end;
 
 procedure TCustomJvDBTreeView.SetItemField(Value: String);
 begin
-  if ValidField(Value, [ftString, ftMemo, ftSmallInt, ftInteger, ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime]) then
-    FItemField := Value
+  if ValidField(Value, [ftString, ftMemo, ftSmallInt, ftInteger, ftAutoInc, ftWord, ftBoolean, ftFloat, ftCurrency, ftDate, ftTime, ftDateTime]) then
+  begin
+    FItemField := Value;
+    RefreshChild(nil);
+  end
   else
     Warning(SItemFieldError);
 end;
 
 procedure TCustomJvDBTreeView.SetIconField(Value: String);
 begin
-  if ValidField(Value, [ftSmallInt, ftInteger, ftWord]) then
-    FIconField := Value
+  if ValidField(Value, [ftSmallInt, ftAutoInc, ftInteger, ftWord]) then
+  begin
+    FIconField := Value;
+    RefreshChild(nil);
+  end
   else
     Warning(SIconFieldError);
 end;
@@ -741,7 +758,7 @@ begin
         if not GetDetailValue(V, V) then exit;
         Node := FindNode(V);
         if Node <> nil then begin
-          {раскрыть все ветки от найденной до нужной}
+//           {раскрыть все ветки от найденной до нужной}
           //..
           Node.Expand(false);
           while i > 0 do begin
@@ -750,7 +767,7 @@ begin
           end;
           Result := FindNode(AMasterValue);
         end else begin
-          {добавить в массив родителей}
+//           {добавить в массив родителей}
           inc(i);
           VarArrayRedim(Parents, i);
           Parents[i] := V;
@@ -767,7 +784,7 @@ procedure TCustomJvDBTreeView.UpdateTree;
   var
     Node, ParentNode : TJvDBTreeNode;
   begin
-    {если текущая запись отсутствует в дереве, но должна быть в нем, то добавить}
+//     {если текущая запись отсутствует в дереве, но должна быть в нем, то добавить}
     Node := FindNode(FDataLink.DataSet[FMasterField]);
     if (Node = nil) then begin
       ParentNode := FindNode(FDataLink.DataSet[FDetailField]);
@@ -789,7 +806,7 @@ procedure TCustomJvDBTreeView.UpdateTree;
           HasChildren := Lookup(FDetailField, FMasterValue, FDetailField) <> null
         end;
       end;
-    end;  
+    end;
   end;
 var
   i : integer;
@@ -805,7 +822,7 @@ begin
       BK := GetBookmark;
       DisableControls;
       try
-       {*** удалить из дерева удаленные записи}
+//        {*** удалить из дерева удаленные записи}
         repeat
           AllChecked := true;
           for i :=0 to Items.Count -1 do
@@ -817,13 +834,13 @@ begin
               Items[i].HasChildren := Lookup(FDetailField, (Items[i] as TJvDBTreeNode).FMasterValue, FDetailField) <> null;
         until AllChecked;
        {###}
-       {*** добавить новые}
+//        {*** добавить новые}
         First;
         while not Eof do begin
           AddRecord;
           Next;
         end;
-       {###} 
+       {###}
       finally
         GotoBookmark(BK);
         FreeBookmark(BK);
@@ -857,7 +874,7 @@ begin
         RecCount := FDataLink.DataSet.RecordCount;
         if (RecCount = -1) or (RecCount <> oldRecCount) then
           UpdateTree;
-        oldRecCount := RecCount;            
+        oldRecCount := RecCount;
       end;
     dsInsert : oldRecCount := -1; { TQuery don't change RecordCount value after insert new record }
   end;
@@ -1021,8 +1038,8 @@ begin
       end;
     end;
     Result.Selected := Select;
-    Result.Selected := Select; {эта строка очень нужна, ну не понимает он с первого раза}
-  finally                                
+    Result.Selected := Select; // {эта строка очень нужна, ну не понимает он с первого раза}
+  finally
     dec(FUpdateLock);
   end;
 end;
