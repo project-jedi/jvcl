@@ -18,7 +18,7 @@ All Rights Reserved.
 Contributor(s):
   Jay Dubal
 
-Last Modified: 2003-07-19
+Last Modified: 2003-08-27
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -58,6 +58,7 @@ type
   TJvSegmentedLEDDigitClassName = type string;
   TUnlitColor = type TColor;
   TSlantAngle = 0 .. 44;
+  TSLDHitInfo= (shiNowhere, shiDigit, shiDigitSegment, shiClientArea);
 
   TJvCustomSegmentedLEDDisplay = class(TJvGraphicControl)
   private
@@ -113,38 +114,24 @@ type
     property DigitClass: TJvSegmentedLEDDigitClass read FDigitClass write SetDigitClass;
     // Solely needed for design time support of DigitClass
     property DigitClassName: TJvSegmentedLEDDigitClassName read GetDigitClassName write SetDigitClassName;
-    { Height of the digit. This is the height needed for the main segments. Actual height may be
-      greater due to margin and/or special markers above/below the digit. }
     property DigitHeight: Integer read FDigitHeight write SetDigitHeight default 30;
-    { Access to the digit collection. }
     property Digits: TJvSegmentedLEDDigits read FDigits write SetDigits;
-    { Distance between two digits. }
     property DigitSpacing: Integer read FDigitSpacing write SetDigitSpacing default 2;
-    { Width of the digit. This is the width needed for the main segments. Actual width may be
-      greater due to margin and/or special markers to the left/right of the digit. }
     property DigitWidth: Integer read FDigitWidth write SetDigitWidth default 20;
-    { Size of the DP type segments }
     property DotSize: Integer read FDotSize write SetDotSize default 4;
-    { Specifies the color to use for a segment that is lit. }
     property SegmentLitColor: TColor read FSegmentLitColor write SetSegmentLitColor default clWindowText;
-    { Specifies the spacing between adjacent segments. Rounded down to an even value. }
     property SegmentSpacing: Integer read FSegmentSpacing write SetSegmentSpacing default 2;
-    { Specifies the thickness of each segment. Rounded down to an even value. }
     property SegmentThickness: Integer read FSegmentThickness write SetSegmentThickness default 2;
-    { Specifies the color to use for a segment that is unlit. Specify clNone to use the background
-      color of the control (i.e. no unlit segments are rendered), clDefaultLitColor to
-      automatically determine the unlit color (i.e. 10% of the lit color w/respect to the background
-      color of the control) or clDefaultBackground to automatically determine the color based on
-      the background. }
     property SegmentUnlitColor: TUnlitColor read FSegmentUnlitColor write SetSegmentUnlitColor default clDefaultLitColor;
-    { Slanting angle of the digits. 0 is upright, 0..44 is angle in degrees the the top is shifted
-      to the right. Note that depending on the size of the digit and/or the thickness of the
-      segments not all values may result in a nice looking digit. }
     property Slant: TSlantAngle read FSlant write SetSlant default 0;
     property Text: string read GetText write SetText;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
+    function GetHitInfo(X, Y: Integer): TSLDHitInfo; overload;
+    function GetHitInfo(X, Y: Integer; out Digit: TJvCustomSegmentedLEDDigit;
+      out SegmentIndex: Integer): TSLDHitInfo; overload;
   published
   end;
 
@@ -212,7 +199,7 @@ type
     SegmentWidth: Integer;
     SlantAngle: Integer;
     Spacing: Integer;
-    MaxSlantDif: Integer; // Max slant difference. Protected field to make access to it easier.
+    MaxSlantDif: Integer;
     function GetBaseTop: Integer; virtual;
     procedure SetBaseTop(Value: Integer); virtual;
     function GetHeight: Integer; virtual;
@@ -224,7 +211,10 @@ type
     function GetWidth: Integer; virtual;
     procedure SetText(Value: string); virtual;
 
-    procedure SetSegmentRenderInfo(Index: Integer; RenderType: TSegmentRenderType; Points: array of TPoint);
+    function GetSegmentRenderInfo(Index: Integer; out RenderType: TSegmentRenderType;
+      out Points: TPointArray): Boolean;
+    procedure SetSegmentRenderInfo(Index: Integer; RenderType: TSegmentRenderType;
+      Points: array of TPoint);
     function GetSegmentState(Index: Integer): Boolean;
     procedure SetSegmentState(Index: Integer; Value: Boolean);
     procedure SetSegmentStates(Value: Int64);
@@ -253,10 +243,12 @@ type
     property Width: Integer read GetWidth;
     property Text: string read FText write SetText stored False;
 
-    { Needs to recalculate all reference points and refresh the entire view }
     property RecalcNeeded: Boolean read FRecalcNeeded;
   public
     constructor Create(Collection: TCollection); override;
+    function GetHitInfo(X, Y: Integer): TSLDHitInfo; overload;
+    function GetHitInfo(X, Y: Integer; out SegmentIndex: Integer): TSLDHitInfo; overload;
+    function PtInSegment(SegmentIndex: Integer; Pt: TPoint): Boolean; virtual;
   end;
 
   TJvBaseSegmentedLEDDigit = class(TJvCustomSegmentedLEDDigit)
@@ -318,7 +310,7 @@ type
   end;
 
   // 7-segmented digit
-  T7SegColonUsage = (scuNone { No Colon }, scuLowOnly { Low part only }, scuFull {Entire colon}, scuColonOnly);
+  T7SegColonUsage = (scuNone, scuLowOnly, scuFull, scuColonOnly);
   TJv7SegmentedLEDDigit = class(TJvBaseSegmentedLEDDigit)
   private
     FUseColon: T7SegColonUsage;
@@ -351,6 +343,8 @@ type
 
 function IdentToUnlitColor(const Ident: string; var Int: Longint): Boolean;
 function UnlitColorToIdent(Int: Longint; var Ident: string): Boolean;
+function StringToUnlitColor(const S: string): TUnlitColor;
+function UnlitColorToString(const Color: TUnlitColor): string;
 { Design time support to retrieve a list of digit classes available. Do not change the list in your
   own code! }
 function DigitClassList: TThreadList;
@@ -832,6 +826,36 @@ begin
   inherited Destroy;
 end;
 
+function TJvCustomSegmentedLEDDisplay.GetHitInfo(X, Y: Integer): TSLDHitInfo;
+var
+  DummyDigit: TJvCustomSegmentedLEDDigit;
+  DummyIndex: Integer;
+begin
+  Result := GetHitInfo(X, Y, DummyDigit, DummyIndex);
+end;
+
+function TJvCustomSegmentedLEDDisplay.GetHitInfo(X, Y: Integer;
+  out Digit: TJvCustomSegmentedLEDDigit; out SegmentIndex: Integer): TSLDHitInfo;
+var
+  I: Integer;
+begin
+  Result := shiNowhere;
+  if PtInRect(ClientRect, Point(X, Y)) then
+  begin
+    // Iterate over each digit and get the hit info from them
+    I := Digits.Count;
+    while (I > 0) and (Result = shiNowhere) do
+    begin
+      Dec(I);
+      Result := Digits[I].GetHitInfo(X, Y, SegmentIndex);
+    end;
+    if Result <> shiNowhere then
+      Digit := Digits[I]
+    else // Result = shiNowhere, but we are in fact in the client area of the control (see outer if) 
+      Result := shiClientArea;
+  end;
+end;
+
 //===TJvSegmentedLEDDigits==========================================================================
 
 function TJvSegmentedLEDDigits.GetItem(Index: Integer): TJvCustomSegmentedLEDDigit;
@@ -929,6 +953,17 @@ begin
     else
       UpdateText(Value);
     Display.UpdateText;
+  end;
+end;
+
+function TJvCustomSegmentedLEDDigit.GetSegmentRenderInfo(Index: Integer;
+  out RenderType: TSegmentRenderType; out Points: TPointArray): Boolean;
+begin
+  Result := (Index >= 0) and (Index < SegmentCount);
+  if Result then
+  begin
+    RenderType := FSegmentRenderInfo[Index].RenderType;
+    Points := FSegmentRenderInfo[Index].Points;
   end;
 end;
 
@@ -1068,6 +1103,74 @@ constructor TJvCustomSegmentedLEDDigit.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
   InvalidateRefPoints;
+end;
+
+function TJvCustomSegmentedLEDDigit.GetHitInfo(X, Y: Integer): TSLDHitInfo;
+var
+  DummyIndex: Integer;
+begin
+  Result := GetHitInfo(X, Y, DummyIndex);
+end;
+
+function TJvCustomSegmentedLEDDigit.GetHitInfo(X, Y: Integer;
+  out SegmentIndex: Integer): TSLDHitInfo;
+begin
+  Result := shiNowhere;
+  if PtInRect(Rect(Left, 0, Width, Height + BaseTop), Point(X, Y)) then
+  begin
+    SegmentIndex := SegmentCount - 1;
+    while (SegmentIndex >= 0) and not PtInSegment(SegmentIndex, Point(X, Y)) do
+      Dec(SegmentIndex);
+    if SegmentIndex > -1 then
+      Result := shiDigitSegment
+    else
+      Result := shiDigit;
+  end;
+end;
+
+function TJvCustomSegmentedLEDDigit.PtInSegment(SegmentIndex: Integer; Pt: TPoint): Boolean;
+var
+  SegType: TSegmentRenderType;
+  SegPts: TPointArray;
+  Rgn: HRGN;
+begin
+  if GetSegmentRenderInfo(SegmentIndex, SegType, SegPts) then
+  begin
+    case SegType of
+      srtNone:
+        Result := False;
+      srtPolygon:
+        begin
+          Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
+          try
+            if Rgn <> NULL then
+              Result := PtInRegion(Rgn, Pt.x, Pt.y)
+            else
+              Result := False;
+          finally
+            DeleteObject(Rgn);
+          end;
+        end;
+      srtRect:
+        Result := PtInRect(Rect(SegPts[0].x, SegPts[0].y, SegPts[1].x, SegPts[1].y), Pt);
+      srtCircle:
+        begin
+          Rgn := CreateEllipticRgn(SegPts[0].x, SegPts[0].y, SegPts[1].x, SegPts[1].y);
+          try
+            if Rgn <> NULL then
+              Result := PtInRegion(Rgn, Pt.x, Pt.y)
+            else
+              Result := False;
+          finally
+            DeleteObject(Rgn);
+          end;
+        end;
+      else
+        Result := False; // Call method to check additional render types?
+    end;
+  end
+  else
+    Result := False;
 end;
 
 //===TJvBaseSegmentedLEDDigit=======================================================================
@@ -1580,10 +1683,7 @@ begin
   if Result then
     Inc(Int, clDefaultBackground)
   else
-  begin
-    Result := True;
-    Int := StringToColor(Ident);
-  end;
+    Result := IdentToColor(Ident, Int);
 end;
 
 function UnlitColorToIdent(Int: Longint; var Ident: string): Boolean;
@@ -1595,8 +1695,20 @@ begin
     clDefaultLitColor:
       Ident := 'clDefaultLitColor';
     else
-      Ident := ColorToString(Int);
+      Result := ColorToIdent(Int, Ident);
   end;
+end;
+
+function StringToUnlitColor(const S: string): TUnlitColor;
+begin
+  if not IdentToUnlitColor(S, LongInt(Result)) then
+    Result := StrToInt(S);
+end;
+
+function UnlitColorToString(const Color: TUnlitColor): string;
+begin
+  if not ColorToIdent(Color, Result) then
+    FmtStr(Result, '%s%.8x', [HexDisplayPrefix, Color]);
 end;
 
 initialization
