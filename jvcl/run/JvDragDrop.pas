@@ -132,19 +132,44 @@ type
     property OnDrop: TJvDropEvent read FOnDrop write FOnDrop;
   end;
 
-var
-  CF_FILEDESCRIPTOR: DWORD;
-  CF_FILECONTENTS: DWORD;
-  Malloc: IMalloc;
-
-  FileDropFormatEtc: FORMATETC;
-  FileContentFormatEtc: FORMATETC;
-  FileDescriptorFormatEtc: FORMATETC;
+function CF_FILEDESCRIPTOR: DWORD;
+function CF_FILECONTENTS: DWORD;
+function Malloc: IMalloc;
 
 implementation
 
 uses
   JvWndProcHook, JvJCLUtils;
+
+var
+  GlobalCF_FILEDESCRIPTOR: DWORD = $FFFFFFF;
+  GlobalCF_FILECONTENTS: DWORD = $FFFFFFF;
+  GlobalMalloc: IMalloc = nil;
+
+  FileDropFormatEtc: FORMATETC;
+  FileContentFormatEtc: FORMATETC;
+  FileDescriptorFormatEtc: FORMATETC;
+
+function CF_FILEDESCRIPTOR: DWORD;
+begin
+  if GlobalCF_FILEDESCRIPTOR = $FFFFFFF then
+    GlobalCF_FILEDESCRIPTOR := RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
+  Result := GlobalCF_FILEDESCRIPTOR;
+end;
+
+function CF_FILECONTENTS: DWORD;
+begin
+  if GlobalCF_FILECONTENTS = $FFFFFFF then
+    GlobalCF_FILECONTENTS := RegisterClipboardFormat(CFSTR_FILECONTENTS);
+  Result := GlobalCF_FILECONTENTS;
+end;
+
+function Malloc: IMalloc;
+begin
+  if not Assigned(GlobalMalloc) then
+    ShGetMalloc(GlobalMalloc);
+  Result := GlobalMalloc;
+end;
 
 //=== TJvDragDrop ============================================================
 
@@ -376,6 +401,8 @@ end;
 constructor TJvDropTarget.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Malloc; // a simple call prevents Delphi from crashing
+
   FAcceptDrag := True;
   FStreamedAcceptDrag := True;
 
@@ -724,10 +751,6 @@ end;
 
 initialization
   OleInitialize(nil);
-  CF_FILECONTENTS := RegisterClipboardFormat(CFSTR_FILECONTENTS);
-  CF_FILEDESCRIPTOR := RegisterClipboardFormat(CFSTR_FILEDESCRIPTOR);
-
-  ShGetMalloc(Malloc); // otherwise Delphi will crash
 
 finalization
   OleUninitialize;
