@@ -4,14 +4,15 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvCmpC5R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvWinHelp.obj ..\..\dcu\JvAlarms.obj ..\..\dcu\JvConverter.obj 
+    <OBJFILES value="..\..\dcu\JvAlarms.obj ..\..\dcu\JvConverter.obj 
       ..\..\dcu\JvCreateProcess.obj ..\..\dcu\JvDataEmbedded.obj 
-      ..\..\dcu\JvEasterEgg.obj ..\..\dcu\JvEnterTab.obj 
-      ..\..\dcu\JvMergeManager.obj ..\..\dcu\JvMouseGesture.obj 
-      ..\..\dcu\JvPageManager.obj ..\..\dcu\JvPatchFile.obj 
-      ..\..\dcu\JvPrint.obj ..\..\dcu\JvProfilerForm.obj 
-      ..\..\dcu\JvStringHolder.obj ..\..\dcu\JvTimeLimit.obj 
-      ..\..\dcu\JvTranslator.obj ..\..\dcu\JvCmpC5R.obj"/>
+      ..\..\dcu\JvEasterEgg.obj ..\..\dcu\JvEnterTab.obj ..\..\dcu\JvLogFile.obj 
+      ..\..\dcu\JvLogForm.obj ..\..\dcu\JvMergeManager.obj 
+      ..\..\dcu\JvMouseGesture.obj ..\..\dcu\JvPageManager.obj 
+      ..\..\dcu\JvPatchFile.obj ..\..\dcu\JvPrint.obj 
+      ..\..\dcu\JvProfilerForm.obj ..\..\dcu\JvStringHolder.obj 
+      ..\..\dcu\JvTimeLimit.obj ..\..\dcu\JvTranslator.obj 
+      ..\..\dcu\JvWinHelp.obj ..\..\dcu\JvCmpC5R.obj"/>
     <RESFILES value="JvCmpC5R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -41,12 +42,12 @@
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value=" -U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
-      -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu 
+      -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Components Runtime Package&quot; -aa 
-      -Tpp -Gpr -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Components Runtime Package&quot; -aa -Tpp -Gpr -x -Gn -Gl 
+      -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>

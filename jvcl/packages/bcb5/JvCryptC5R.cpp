@@ -10,6 +10,7 @@ USEUNIT("..\..\run\JvGenetic.pas");
 USEUNIT("..\..\run\JvSerialMaker.pas");
 USEUNIT("..\..\run\JvVigenereCipher.pas");
 USEUNIT("..\..\run\JvXorCipher.pas");
+// requires ZLib.dcu which is not shipped w/BCB5 USEUNIT("..\..\run\JvZlibMultiple.pas");
 USEPACKAGE("vcl50.bpi");
 USEPACKAGE("JvCoreC5R.bpi");
 USEPACKAGE("CJCL50.bpi");

@@ -6,6 +6,7 @@ USERES("JvDBC5D.res");
 USEUNIT("..\..\design\JvSelectDataSetForm.pas");
 USEUNIT("..\..\design\JvCsvDataEditor.pas");
 USEUNIT("..\..\design\JvCsvDataForm.pas");
+USEUNIT("..\..\design\JvDBMemDatasetEditor.pas");
 USEUNIT("..\..\design\JvDBEditors.pas");
 USEUNIT("..\..\design\JvDBReg.pas");
 USEPACKAGE("JvStdCtrlsC5R.bpi");

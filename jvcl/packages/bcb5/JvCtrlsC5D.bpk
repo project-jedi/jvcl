@@ -4,10 +4,10 @@
   <MACROS>
     <VERSION value="BCB.05.03"/>
     <PROJECT value="JvCtrlsC5D.bpl"/>
-    <OBJFILES value="..\..\dcu\JvSpeedbarForm.obj ..\..\dcu\JvBehaviorLabelEditor.obj 
-      ..\..\dcu\JvCtrlsReg.obj ..\..\dcu\JvFooterEditor.obj 
+    <OBJFILES value="..\..\dcu\JvBehaviorLabelEditor.obj ..\..\dcu\JvCtrlsReg.obj 
+      ..\..\dcu\JvFooterEditor.obj ..\..\dcu\JvGroupHeaderEditor.obj 
       ..\..\dcu\JvHTHintForm.obj ..\..\dcu\JvScrollMaxEditor.obj 
-      ..\..\dcu\JvCtrlsC5D.obj"/>
+      ..\..\dcu\JvSpeedbarForm.obj ..\..\dcu\JvCtrlsC5D.obj"/>
     <RESFILES value="JvCtrlsC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
@@ -37,12 +37,11 @@
       -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value=" -U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- 
-      -$A8 -v -JPHNE -M"/>
+    <PFLAGS value="-U&quot;$(PATH)&quot; -LUvcl50 -LUdclstd50 -LUdsnide50 -N2..\..\dcu -N0..\..\dcu 
+      -$YD -$W -$O- -$A8 -v -JPHNE -M"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Visual Controls&quot; -aa -Tpp -Gpd 
-      -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Visual Controls&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
   </OPTIONS>
   <LINKER>
     <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
