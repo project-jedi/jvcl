@@ -255,6 +255,7 @@ type
     FLegendFont: TFont;
     FAxisFont: TFont;
     FTitle: string;
+    FNoDataMessage:String;
     FYAxisHeader: string;
     FYAxisDivisionMarkers: Boolean; // Do you want grid-paper look?
     FXAxisDivisionMarkers: Boolean; // Do you want grid-paper look?
@@ -339,6 +340,8 @@ type
     property PenUnit: TStrings read GetPenUnit write SetPenUnit;
     property ChartKind: TJvChartKind read FChartKind write SetChartKind default ckChartLine;
     property Title: string read FTitle write FTitle;
+    property NoDataMessage:String read FNoDataMessage write FNoDataMessage; //NEW! NOV 2004. Optionally display this instead of fixed resource string rsNoData
+
     { X Axis Properties }
     property YAxisHeader: string read FYAxisHeader write FYAxisHeader;
     property YAxisDivisionMarkers: Boolean read FYAxisDivisionMarkers write FYAxisDivisionMarkers default True;
@@ -2468,7 +2471,11 @@ begin { Enough local functions for ya? -WP }
     GraphYAxisDivisionMarkers;
 
     ChartCanvas.Font.Color := clRed;
-    MyLeftTextOut(Round(XOrigin), Round(YOrigin) + 4, RsNoData);
+    if Length(Options.NoDataMessage)=0 then
+      MyLeftTextOut(Round(XOrigin), Round(YOrigin) + 4, RsNoData)
+    else
+      MyLeftTextOut(Round(XOrigin), Round(YOrigin) + 4, Options.NoDataMessage); // NEW! NOV 2004. WP.
+
     Invalidate;
     Exit;
   end;
