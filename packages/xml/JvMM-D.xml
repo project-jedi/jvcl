@@ -24,7 +24,7 @@
   <Contains>
     <File Name="..\..\design\JvPictureEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvVirtualKeyEditorForm.pas" Targets="allbutclx" Formname="frmJvVirtualKeyEditor" Condition=""/>
-    <File Name="..\..\qdesign\JvQQtEditorForm.pas" Targets="allclx" Formname="frmJvQtKeyEditor" Condition=""/>
+    <File Name="..\..\qdesign\JvQQtKeyEditorForm.pas" Targets="allclx" Formname="frmJvQtKeyEditor" Condition=""/>
     <File Name="..\..\design\JvAnimatedEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvAVICaptureEditors.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\design\JvDirectoryListForm.pas" Targets="allbutclx" Formname="JvDirectoryListDialog" Condition=""/>
