@@ -353,7 +353,7 @@ function XmlCreate: Variant; overload;
 function VarXml: TVarType;
 
 {$ENDIF}
-
+                 
 resourcestring
   RS_INVALID_SimpleXml = 'Invalid XML file';
   {$IFNDEF COMPILER6_UP}

@@ -37,7 +37,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF}
-  JvVCLUtils, JvxCtrls, JvPlacemnt, JvProps;
+  JvVCLUtils, JvxCtrls, JvPlacemnt, JvProps, JvListBox, JvCtrls;
 
 type
   {$IFNDEF COMPILER4_UP}
@@ -60,9 +60,9 @@ type
     ClearButton: TButton;
     OkBtn: TButton;
     CancelBtn: TButton;
-    ComponentsList: TJvTextListBox;
-    PropertiesList: TJvTextListBox;
-    StoredList: TJvTextListBox;
+    ComponentsList: TJvListBox;
+    PropertiesList: TJvListBox;
+    StoredList: TJvListBox;
     procedure AddButtonClick(Sender: TObject);
     procedure ClearButtonClick(Sender: TObject);
     procedure ListClick(Sender: TObject);
@@ -234,8 +234,8 @@ procedure TJvFormPropsDlg.ListToIndex(List: TCustomListBox; Idx: Integer);
 
   procedure SetItemIndex(Index: Integer);
   begin
-    if TJvTextListBox(List).MultiSelect then
-      TJvTextListBox(List).Selected[Index] := True;
+    if TJvListBox(List).MultiSelect then
+      TJvListBox(List).Selected[Index] := True;
     List.ItemIndex := Index;
   end;
 

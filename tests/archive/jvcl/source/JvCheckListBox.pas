@@ -95,6 +95,7 @@ type
     procedure SaveToStream(Stream: TStream);
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property MultiSelect;
     property HotTrack: Boolean read FEffect write SetEffect default False;
     property HorScrollbar: Boolean read FScroll write SetHScroll default True;
     property HintColor: TColor read FColor write FColor default clInfoBk;

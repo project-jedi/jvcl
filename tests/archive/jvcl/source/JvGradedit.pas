@@ -37,7 +37,7 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  JvxCtrls, JvPlacemnt, JvToolEdit, JvGrdCpt;
+  JvxCtrls, JvPlacemnt, JvToolEdit, JvGrdCpt, JvListBox, JvCtrls;
 
 {$IFNDEF COMPILER4_UP}
 type
@@ -65,7 +65,7 @@ type
     ColorDialog: TColorDialog;
     GradientCaption: TJvxGradientCaption;
     FormStorage: TJvFormStorage;
-    CaptionList: TJvTextListBox;
+    CaptionList: TJvListBox;
     CaptionFont: TJvComboEdit;
     procedure FormCreate(Sender: TObject);
     procedure CaptionListClick(Sender: TObject);

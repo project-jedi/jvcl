@@ -175,7 +175,7 @@ object GradCaptionsEditor: TGradCaptionsEditor
       TabOrder = 0
       OnClick = DeleteButtonClick
     end
-    object CaptionList: TJvTextListBox
+    object CaptionList: TJvListBox
       Left = 8
       Top = 16
       Width = 121

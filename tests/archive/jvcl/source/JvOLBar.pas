@@ -1111,8 +1111,8 @@ begin
   TopButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and (Pages[Index].TopButtonIndex > 0);
   BtmButton.Visible := (Pages.Count > 0) and (R.Top < R.Bottom - 20) and
     (R.Bottom - R.Top < (Pages[Index].Buttons.Count - Pages[Index].TopButtonIndex) * H);
-      // remove the last - H to show arrow
-                                                                                             // button when the bottom of the last button is beneath the edge
+  // remove the last - H to show arrow
+  // button when the bottom of the last button is beneath the edge
   if TopButton.Visible then
     TopButton.SetBounds(ClientWidth - 20, R.Top + 4, 16, 16)
   else

@@ -165,6 +165,8 @@ type
     property Width default 36;
     property Height default 36;
     property Align;
+    property Anchors;
+    property Action;
     property Text;
     property Visible;
     property Enabled;

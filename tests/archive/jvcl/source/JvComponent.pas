@@ -88,6 +88,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
+  // (p3) obsolete - MultiSelect is already published in JvCheckListBox
   TJvMultiselectCheckListBox = class(TCheckListBox)
   private
     FAboutJVCL: TJVCLAboutInfo;

@@ -31,7 +31,7 @@ object JvDirectoryListDialog: TJvDirectoryListDialog
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object DirectoryList: TJvTextListBox
+  object DirectoryList: TJvListBox
     Left = 8
     Top = 12
     Width = 245

@@ -50,7 +50,7 @@ object JvDualListForm: TJvDualListForm
     Width = 3
     Height = 13
   end
-  object SrcList: TJvTextListBox
+  object SrcList: TJvListBox
     Left = 12
     Top = 30
     Width = 164
@@ -67,8 +67,9 @@ object JvDualListForm: TJvDualListForm
     OnDragDrop = SrcListDragDrop
     OnDragOver = SrcListDragOver
     OnKeyDown = SrcListKeyDown
+    ScrollBars = ssNone
   end
-  object DstList: TJvTextListBox
+  object DstList: TJvListBox
     Left = 216
     Top = 30
     Width = 164
@@ -85,6 +86,7 @@ object JvDualListForm: TJvDualListForm
     OnDragDrop = DstListDragDrop
     OnDragOver = DstListDragOver
     OnKeyDown = DstListKeyDown
+    ScrollBars = ssNone
   end
   object IncBtn: TButton
     Left = 183

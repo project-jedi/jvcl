@@ -444,8 +444,7 @@ begin
 
 //  RegisterComponents(srJvConvertPalette, [TJvxCurrencyEdit]);
 
-  RegisterComponents(srJvControlsPalette, [TJvTextListBox,
-    TJvxCheckListBox, TJvxSplitter, TJvxSlider,
+  RegisterComponents(srJvControlsPalette, [TJvxCheckListBox, TJvxSplitter, TJvxSlider,
     TJvxLabel,
     TJvRichEdit,
     TJvxClock, TJvAnimatedImage, TJvxDrawGrid, TJvxSpeedButton,

@@ -30,15 +30,12 @@ unit JvDirFrm;
 interface
 
 uses
-  {$IFNDEF WIN32}
-  WinTypes, WinProcs,
-  {$ENDIF}
-  SysUtils, Classes, Controls, Forms, StdCtrls,
-  JvxCtrls, JvPlacemnt, JvComponent;
+  Windows, SysUtils, Classes, Controls, Forms, StdCtrls,
+  JvxCtrls, JvPlacemnt, JvComponent, JvListBox, JvCtrls;
 
 type
   TJvDirectoryListDialog = class(TJvForm)
-    DirectoryList: TJvTextListBox;
+    DirectoryList: TJvListBox;
     AddBtn: TButton;
     RemoveBtn: TButton;
     ModifyBtn: TButton;
@@ -154,16 +151,11 @@ end;
 
 procedure TJvDirectoryListDialog.FormCreate(Sender: TObject);
 begin
-  {$IFDEF WIN32}
   with Storage do
   begin
     UseRegistry := True;
     IniFileName := SDelphiKey;
   end;
-  {$ELSE}
-  if not NewStyleControls then
-    Font.Style := [fsBold];
-  {$ENDIF}
 end;
 
 end.

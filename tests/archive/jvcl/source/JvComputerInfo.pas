@@ -14,14 +14,38 @@ The Initial Developer of the Original Code is Sébastien Buysse [sbuysse@buypin.c
 Portions created by Sébastien Buysse are Copyright (C) 2001 Sébastien Buysse.
 All Rights Reserved.
 
-Contributor(s): Michael Beck [mbeck@bigfoot.com].
+Contributor(s):
+Michael Beck [mbeck@bigfoot.com].
+p3 [peter3@peter3.com] - changed property writers to dummy methods - call SetXX methods directly to change values
 
-Last Modified: 2000-02-28
+Last Modified: 2003-03-20
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
+  PLEASE NOTE!
+    In previous versions of this component, published properties could be used to change the
+    computer info values in the registry. These published properties were also stored in the DFM file.
+    At start-up, the registry values on the end-users computer could be changed (silently) to the
+    developers values. The current implementation uses another scheme: the published properties all have
+    a dummy property setter (this is so you can see the value at design-time) but to actually change any value,
+    you must call the SetXXX methods explicitly to change the values. This change also means that if you used
+    a previous version of this component, you only need to recompile the application using it to remove any risk
+    of modifying the end users computer.
+
+    There is one problem though. Using code like
+
+      JvComputerInfo1.Company := 'New company';
+
+    to update a registry value, will not work anymore (the value is just ignored) and
+    you will not recieve any error messages telling you so. You must check
+    through your code and manually change the code to
+
+      JvComputerInfo1.SetCompany('New company');
+
+    instead.
+
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
@@ -37,9 +61,9 @@ uses
 type
   TJvComputerInfo = class(TJvComponent)
   private
-    FDayRunning: Integer;
-    FTimeRunning: TTime;
-    FAllowPropertyChange: boolean;
+    FDummyStr:string;
+    FDummyInt:integer;
+    FDummyTime: TTime;
     function GetCompany: string;
     function GetComputerName: string;
     function GetUsername: string;
@@ -57,6 +81,7 @@ type
     function ReadReg(Base: HKEY; KeyName, ValueName: string): string;
     function GetLoggedOnUser: string;
     function GetRealComputerName: string;
+  public
     procedure SetCompany(const Value: string);
     procedure SetComputerName(const Value: string);
     procedure SetUsername(const Value: string);
@@ -68,28 +93,27 @@ type
     procedure SetProductName(const Value: string);
     procedure SetVersion(const Value: string);
     procedure SetVersionNumber(const Value: string);
-    procedure CheckCanChange;
   published
     // (p3)
-    property RealComputerName: string read GetRealComputerName;
-    property LoggedOnUser: string read GetLoggedOnUser;
-    // set AllowPropertyChange to allow changing computer values at deisgn or run-time
-    // NB! changing any of th evalues reported y this component can potentially cause severe problems with
-    // the computer!!! You have been warned!
-    property AllowPropertyChange:boolean read FAllowPropertyChange write FAllowPropertyChange default false;
-    property ComputerName: string read GetComputerName write SetComputerName stored false;
-    property Username: string read GetUsername write SetUsername stored false;
-    property Company: string read GetCompany write SetCompany stored false;
-    property Comment: string read GetComment write SetComment stored false;
-    property WorkGroup: string read GetWorkGroup write SetWorkGroup stored false;
-    property ProductID: string read GetProductID write SetProductID stored false;
-    property ProductKey: string read GetProductKey write SetProductKey stored false;
-    property ProductName: string read GetProductName write SetProductName stored false;
-    property DVDRegion: Integer read GetDVDRegion write SetDVDRegion stored false;
-    property VersionNumber: string read GetVersionNumber write SetVersionNumber stored false;
-    property Version: string read GetVersion write SetVersion stored false;
-    property TimeRunning: TTime read GetTime write FTimeRunning stored false;
-    property DayRunning: Integer read GetDay write FDayRunning stored false;
+    property RealComputerName: string read GetRealComputerName write FDummyStr;
+    property LoggedOnUser: string read GetLoggedOnUser write FDummyStr;
+
+    // This is the same as RealComputerName if you are running on NT
+    property ComputerName: string read GetComputerName write FDummyStr;
+    // this is really RegisteredOwner
+    property Username: string read GetUsername write FDummyStr;
+    // this is really RegisteredOrganization
+    property Company: string read GetCompany write FDummyStr;
+    property Comment: string read GetComment write FDummyStr;
+    property WorkGroup: string read GetWorkGroup write FDummyStr;
+    property ProductID: string read GetProductID write FDummyStr;
+    property ProductKey: string read GetProductKey write FDummyStr;
+    property ProductName: string read GetProductName write FDummyStr;
+    property DVDRegion: Integer read GetDVDRegion write FDummyInt;
+    property VersionNumber: string read GetVersionNumber write FDummyStr;
+    property Version: string read GetVersion write FDummyStr;
+    property TimeRunning: TTime read GetTime write FDummyTime stored false;
+    property DayRunning: Integer read GetDay write FDummyInt stored false;
   end;
 
 implementation
@@ -232,7 +256,8 @@ end;
 
 procedure TJvComputerInfo.SetComment(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Comment', Value);
+  if not IsNT then
+    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Comment', Value);
 end;
 
 procedure TJvComputerInfo.SetCompany(const Value: string);
@@ -242,13 +267,12 @@ end;
 
 procedure TJvComputerInfo.SetComputerName(const Value: string);
 begin
-  if not isNT then
+  if not IsNT then
     WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'ComputerName', Value);
 end;
 
 procedure TJvComputerInfo.SetDVDRegion(const Value: Integer);
 begin
-  CheckCanChange;
   with TRegistry.Create do
   begin
     RootKey := HKEY_LOCAL_MACHINE;
@@ -290,7 +314,6 @@ end;
 
 procedure TJvComputerInfo.WriteReg(Base: HKEY; KeyName, ValueName, Value: string);
 begin
-  CheckCanChange;
   with TRegistry.Create do
   begin
     RootKey := Base;
@@ -302,7 +325,8 @@ end;
 
 procedure TJvComputerInfo.SetWorkGroup(const Value: string);
 begin
-  WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Workgroup', Value);
+  if not IsNT then
+    WriteReg(HKEY_LOCAL_MACHINE, RC_VNetKey, 'Workgroup', Value);
 end;
 
 function TJvComputerInfo.GetLoggedOnUser: string;
@@ -335,12 +359,6 @@ begin
   Buf[0] := #0;
   Windows.GetComputerName(Buf, Size);
   Result := buf;
-end;
-
-procedure TJvComputerInfo.CheckCanChange;
-begin
-  if not AllowPropertyChange then
-    raise Exception.Create('Cannot change properties unless AllowPropertyChange is true!');
 end;
 
 end.

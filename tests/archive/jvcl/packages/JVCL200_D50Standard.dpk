@@ -84,6 +84,7 @@ contains
   JvPluginParams in '..\source\JvPluginParams.pas' {frmPluginParams},
   JvActions in '..\source\JvActions.pas',
   JvActnRes in '..\source\JvActnRes.pas' {JvStandardActions: TDataModule},
+  JvDatePickerReg in '..\source\JvDatePickerReg.pas',
   JvSchedEvntReg in '..\source\JvSchedEvntReg.pas',
   ScheduleEditor in '..\source\ScheduleEditor.pas' {frmScheduleEditor},
   JvTipOfDayProp in '..\Source\JvTipOfDayProp.pas',

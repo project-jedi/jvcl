@@ -36,12 +36,12 @@ uses
   WinTypes, WinProcs,
   {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls,
-  JvxCtrls;
+  JvListBox, JvCtrls;
 
 type
   TJvDualListForm = class(TForm)
-    SrcList: TJvTextListBox;
-    DstList: TJvTextListBox;
+    SrcList: TJvListBox;
+    DstList: TJvListBox;
     SrcLabel: TLabel;
     DstLabel: TLabel;
     IncBtn: TButton;
@@ -162,9 +162,9 @@ procedure TJvDualListForm.SrcListDragOver(Sender, Source: TObject;
 begin
   BoxDragOver(SrcList, Source, X, Y, State, Accept, SrcList.Sorted);
   if State = dsDragLeave then
-    (Source as TJvTextListBox).DragCursor := crDrag;
-  if (State = dsDragEnter) and ((Source as TJvTextListBox).SelCount > 1) then
-    (Source as TJvTextListBox).DragCursor := crMultiDrag;
+    (Source as TJvListBox).DragCursor := crDrag;
+  if (State = dsDragEnter) and ((Source as TJvListBox).SelCount > 1) then
+    (Source as TJvListBox).DragCursor := crMultiDrag;
 end;
 
 procedure TJvDualListForm.DstListDragOver(Sender, Source: TObject;
@@ -172,9 +172,9 @@ procedure TJvDualListForm.DstListDragOver(Sender, Source: TObject;
 begin
   BoxDragOver(DstList, Source, X, Y, State, Accept, DstList.Sorted);
   if State = dsDragLeave then
-    (Source as TJvTextListBox).DragCursor := crDrag;
-  if (State = dsDragEnter) and ((Source as TJvTextListBox).SelCount > 1) then
-    (Source as TJvTextListBox).DragCursor := crMultiDrag;
+    (Source as TJvListBox).DragCursor := crDrag;
+  if (State = dsDragEnter) and ((Source as TJvListBox).SelCount > 1) then
+    (Source as TJvListBox).DragCursor := crMultiDrag;
 end;
 
 procedure TJvDualListForm.SrcListDragDrop(Sender, Source: TObject;

@@ -57,12 +57,19 @@ type
     property Enabled;
     property ExtendedSelect;
     property Font;
-    property HorizontalExtent;
     property ImeMode;
     property ImeName;
     property IntegralHeight;
     property ItemHeight;
     property Items;
+
+    property Multiline;
+    property SelectedColor;
+    property SelectedTextColor;
+    property DisabledTextColor;
+    property ShowFocusRect;
+    property Background;
+
     property MultiSelect;
     property OwnerData;
     property ParentBiDiMode;

@@ -143,11 +143,10 @@ uses
   JvArrow,
 
   // Peter Below Goodies
-  JvBMPListBox, JvButtonDrawGrid,
-  JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvMultilineListbox, JvObserverLabel,
+  JvButtonDrawGrid,
+  JvCoupler, JvHighlighter, JvMLButton, JvMousePanel, JvObserverLabel,
   JvObservibleCheckBox, JvOneSizeFitsAllButton, JvGroupBox,
-  JvReorderListBox, JvPopupMemo,
-  JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
+  JvPopupMemo, JvSizeablePanel, JvSpacer, JvSyncSplitter, JvTransparentPanel,
 
   // Petr Vones Components
   JVCLMiscal,
@@ -269,7 +268,6 @@ begin
 
      TJvPopupMemo, TJvStringGrid, TJvDrawGrid, TJvButtonDrawGrid,
 
-     TJvMultilineListbox, TJvReorderListBox, TJvBMPListBox,
      TJvCheckListBox, TJvImageListBox, TJvFontComboBox,
      TJvColorComboBox, TJvImageComboBox,
 
