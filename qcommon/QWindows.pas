@@ -1175,7 +1175,7 @@ function SetWindowPos(Wnd: QWidgetH; WndInsertAfter: Cardinal; X, Y, cx, cy: Int
 
 
 { Controls.pas implements, so we need it, too }
-procedure MoveWindowOrg(DC: HDC; DX, DY: Integer);
+procedure MoveWindowOrg(DC: QPainterH; DX, DY: Integer);
 
 const
   { SetWindowPos Flags }
@@ -1415,6 +1415,8 @@ const
   HINSTANCE_OK    = HINSTANCE_ERROR + 1;
   {$ENDIF LINUX}
 
+{ wrappers for Windows, implemantations for Linux}
+
 function ShellExecute(Handle: QWidgetH; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
 
@@ -1427,6 +1429,13 @@ function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
 function GetTickCount: Cardinal;
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
+procedure OutputDebugString(lpOutputString: PChar);
+
+// wrappers
+function InterlockedIncrement(var I: Integer): Integer;
+function InterlockedDecrement(var I: Integer): Integer;
+function InterlockedExchange(var A: Integer; B: Integer): Integer;
+function InterlockedExchangeAdd(var A: Integer; B: Integer): Integer;
 
 //
 // Taken from QControls
@@ -1500,10 +1509,6 @@ function CoCreateGUID(out Guid: TGUID): HResult;
 function Succeeded(Res: HResult): Boolean;
 function Failed(Res: HResult): Boolean;
 function ResultCode(Res: HResult): Integer;
-
-// writes the string to ErrOutput
-procedure OutputDebugString(lpOutputString: PChar);
-
 
 function GetCurrentProcess: THandle;
 
@@ -2554,7 +2559,7 @@ begin
   Result := SetWindowPos(Wnd, QWidgetH(WndInsertAfter), X, Y, cx, cy, uFlags);
 end;
 
-procedure MoveWindowOrg(DC: HDC; DX, DY: Integer);
+procedure MoveWindowOrg(DC: QPainterH; DX, DY: Integer);
 var
   P: TPoint;
 begin
@@ -2851,11 +2856,10 @@ begin
     AControl := TControlCanvas(Canvas).Control;
     if AControl = nil then
       Exit;
-    while not aControl.InheritsFrom(TWidgetControl) do
+    if not (AControl is TWidgetControl) then
     begin
-      Result.X := aControl.Left + Result.X;
-      Result.Y := aControl.Top + Result.Y;
-      aControl := aControl.Parent;
+      Result.X := aControl.Left;
+      Result.Y := aControl.Top;
     end;
   end;
 end;
@@ -8001,7 +8005,48 @@ begin
     end;
 end;
 
+function InterlockedIncrement(var I: Integer): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := Windows.InterlockedIncrement(I);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := SysUtils.InterlockedIncrement(I);
+  {$ENDIF LINUX}
+end;
+
+function InterlockedDecrement(var I: Integer): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := Windows.InterlockedDecrement(I);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := SysUtils.InterlockedDecrement(I);
+  {$ENDIF LINUX}
+end;
+
+function InterlockedExchange(var A: Integer; B: Integer): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := Windows.InterlockedExchange(A, B);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := SysUtils.InterlockedExchange(A, B);
+  {$ENDIF LINUX}
+end;
+
+function InterlockedExchangeAdd(var A: Integer; B: Integer): Integer;
+begin
+  {$IFDEF MSWINDOWS}
+  Result := Windows.InterlockedExchangeAdd(A, B);
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := SysUtils.InterlockedExchangeAdd(A, B);
+  {$ENDIF LINUX}
+end;
+
 {$IFDEF MSWINDOWS}
+{ windows wrappers }
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 begin
   Result := Windows.GetUserName(Buffer,Size);
@@ -8016,6 +8061,13 @@ function GetTickCount: Cardinal;
 begin
   Result := Windows.GetTickCount;
 end;
+
+procedure OutputDebugString(lpOutputString: PChar);
+begin
+  Windows.OutputDebugString(lpOutputString);
+end;
+
+{ ----------- }
 
 function GetKeyState(nVirtKey: Integer): SmallInt;
 begin
@@ -8090,9 +8142,7 @@ begin
   end;
 end;
 
-
 {$ENDIF MSWINDOWS}
-
 
 constructor TQtObject.Create(const AName: string = '');
 var
