@@ -1284,12 +1284,12 @@ end;
 
 function TDSARegStorage.ReadInt64(const DSAInfo: TDSARegItem; const Key: string): Int64;
 begin
-  Result := RegReadDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
+  Result := RegReadInt64(RootKey, Self.Key + '\' + DSAInfo.Name, Key);
 end;
 
 function TDSARegStorage.ReadInt64Def(const DSAInfo: TDSARegItem; const Key: string; const Default: Int64): Int64;
 begin
-  Result := RegReadDWORDDef(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
+  Result := RegReadInt64Def(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Default);
 end;
 
 function TDSARegStorage.ReadInteger(const DSAInfo: TDSARegItem; const Key: string): Integer;
@@ -1335,7 +1335,7 @@ procedure TDSARegStorage.WriteInt64(const DSAInfo: TDSARegItem; const Key: strin
   const Value: Int64);
 begin
   CreateKey(DSAInfo);
-  RegWriteDWORD(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
+  RegWriteInt64(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
 
 procedure TDSARegStorage.WriteInteger(const DSAInfo: TDSARegItem; const Key: string;
