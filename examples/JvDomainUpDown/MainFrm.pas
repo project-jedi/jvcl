@@ -31,17 +31,25 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, JvPanel, ExtCtrls, ComCtrls, StdCtrls, Mask,
-  JvUpDown, JvJCLUtils;
+  JvUpDown, JvJCLUtils, OleCtrls, SHDocVw, JvExComCtrls;
 
 type
-  TForm1 = class(TForm)
+  TfrmMain = class(TForm)
+    StatusBar1: TStatusBar;
+    WebBrowser1: TWebBrowser;
+    Panel1: TPanel;
+    Label2: TLabel;
     Edit1: TEdit;
     JvDomainUpDown1: TJvDomainUpDown;
-    Label1: TLabel;
     Button1: TButton;
-    Label2: TLabel;
-    procedure Edit1Change(Sender: TObject);
     procedure Button1Click(Sender: TObject);
+    procedure WebBrowser1StatusTextChange(Sender: TObject;
+      const Text: WideString);
+    procedure WebBrowser1TitleChange(Sender: TObject;
+      const Text: WideString);
+    procedure WebBrowser1NavigateComplete2(Sender: TObject;
+      const pDisp: IDispatch; var URL: OleVariant);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -49,20 +57,42 @@ type
   end;
 
 var
-  Form1: TForm1;
+  frmMain: TfrmMain;
 
 implementation
 
 {$R *.dfm}
 
-procedure TForm1.Edit1Change(Sender: TObject);
+procedure TfrmMain.Button1Click(Sender: TObject);
 begin
-  Label1.Caption := Format('%d',[JvDomainUpDown1.Position]);
+  WebBrowser1.Navigate(Edit1.Text);
 end;
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TfrmMain.WebBrowser1StatusTextChange(Sender: TObject;
+  const Text: WideString);
 begin
-  OpenObject(Edit1.Text);
+  StatusBar1.Panels[0].Text := Text;
+end;
+
+procedure TfrmMain.WebBrowser1TitleChange(Sender: TObject;
+  const Text: WideString);
+begin
+  Caption := Text + ' - JvDomainUpDown Demo';
+end;
+
+procedure TfrmMain.WebBrowser1NavigateComplete2(Sender: TObject;
+  const pDisp: IDispatch; var URL: OleVariant);
+begin
+  if string(URL) <> 'about:blank' then
+  begin
+    if JvDomainUpDown1.Items.IndexOf(URL) < 0 then
+      JvDomainUpDown1.Items.Insert(0,URL);
+  end;
+end;
+
+procedure TfrmMain.FormCreate(Sender: TObject);
+begin
+  WebBrowser1.Navigate('about:blank');
 end;
 
 end.
