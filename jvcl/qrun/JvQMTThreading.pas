@@ -131,10 +131,10 @@ type
     procedure WaitThreads;
   end;
 
-
 function CurrentMTThread: TMTThread;
 
 implementation
+
 
 uses
   JvQResources;
@@ -172,12 +172,13 @@ begin
   ThreadNameInfo.FName := PChar(FName);
   ThreadNameInfo.FThreadID := $FFFFFFFF;
   ThreadNameInfo.FFlags := 0;
+  {$IFDEF MSWINDOWS}
   try
-//    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
-//      @ThreadNameInfo);
+    RaiseException($406D1388, 0, SizeOf(ThreadNameInfo) div SizeOf(LongWord),
+      @ThreadNameInfo);
   except
   end;
-  
+  {$ENDIF MSWINDOWS}
 end;
 
 //=== TMTThread ==============================================================

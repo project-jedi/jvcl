@@ -168,8 +168,6 @@ uses
   
   JvQButton, JvQResources;
 
-
-
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvTipOfDay.res}
 {$ENDIF MSWINDOWS}
@@ -180,7 +178,6 @@ uses
 
 const
   psInsideFrame: TPenStyle = psSolid;
-  
 
 
 
@@ -301,8 +298,8 @@ begin
 
       UpdateTip;
 
-
-
+  
+  
       OnHide := FormHide ;  // onclose
       Show ;  // Shown non modal
     except
@@ -311,24 +308,23 @@ begin
   except
     FRunning := False;
   end;
-
+  
 end;
 
 
-procedure TJvTipOfDay.FormHide(Sender : TObject);
+procedure TJvTipOfDay.FormHide(Sender: TObject);
 begin
   with Sender as TForm do
   begin
     if TButtonControlAccess(FCheckBox).Checked then
       Include(FOptions, toShowOnStartUp)
     else
-      Exclude(FOptions, toShowOnStartUp) ;
-    Release ;   // destroy it
+      Exclude(FOptions, toShowOnStartUp);
+    Release;   // destroy it
     FRunning := False;
   end;
-  inherited
+  //inherited FormHide(Sender);
 end;
-
 
 
 procedure TJvTipOfDay.Notification(AComponent: TComponent; Operation: TOperation);

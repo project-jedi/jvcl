@@ -243,7 +243,7 @@ end;
 {**********************************************************************}
 function TJvXMLDatabase.Query(AQuery: string): TJvXMLQuery;
 begin
-  result := TJvXMLQuery.Create(self);
+  result := TJvXMLQuery.Create(Self);
   result.Query(AQuery);
 end;
 {**********************************************************************}
@@ -1163,8 +1163,8 @@ end;
 constructor TJvXMLQueryCondition.Create(AOperator: TJvXMLSQLOperator;
   ACondition: string);
 begin
-  self.Operator := AOperator;
-  self.Condition := ACondition;
+  Self.Operator := AOperator;
+  Self.Condition := ACondition;
 end;
 {**********************************************************************}
 

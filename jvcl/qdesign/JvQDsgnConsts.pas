@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2004-02-01
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -71,8 +70,8 @@ resourcestring
   RsPaletteBarPanel = 'Jv Bars and Panels';
   RsPaletteLabel = 'Jv Labels';
   RsPaletteListComboTree = 'Jv Lists, Combos and Trees';
-  RsPaletteScrollerTracker = 'Jv Scrollers and Trackers';
-  RsPaletteSliderSplitter = 'Jv Sliders and Splitters';
+  RsPaletteScrollerTracker = 'Jv Scrollers';
+  RsPaletteSliderSplitter = 'Jv Trackers, Sliders and Splitters';
   RsPaletteImageAnimator = 'Jv Images and Animators';
   RsPaletteVisual = 'Jv Visual';
   RsPaletteNonVisual = 'Jv Non-Visual';
@@ -82,15 +81,14 @@ resourcestring
   RsPaletteEncryptCompress = 'Jv Encrypt and Compress';
   RsPaletteDBVisual = 'Jv Data Controls';
   RsPaletteDBNonVisual = 'Jv Data Access';
-  RsPaletteHMIIndicator = 'Jv HMI Indicators';
-  RsPaletteHMINonVisual = 'Jv HMI Non-Visual';
-  RsPaletteHMIControls = 'Jv HMI Controls';
+  RsPaletteHMIComponents = 'Jv HMI Components';
   RsPaletteBDE = 'Jv BDE Components';
   RsPalettePrintPreview = 'Jv Print Preview';
   RsPaletteInterpreter = 'Jv Interpreter';
   RsPaletteGlobusComponents1 = 'JVCL Globus Components 1';
   RsPaletteGlobusComponents2 = 'JVCL Globus Components 2';
   RsPaletteValidators = 'Jv Validators';
+  RsPaletteEDI = 'Jv EDI';
   {$IFDEF USEJVCL}
   RsPaletteUIB = 'Jv UIB';
   RsPaletteMTThreads = 'Jv Threading';
@@ -547,6 +545,11 @@ resourcestring
   RsPageProxies = '%s Page Proxies';
   RsProxyName = 'Page Proxy Name';
   RsPageName = 'Page Name';
+
+//=== JvPatcherEditor.pas ====================================================
+resourcestring
+  RsDiff = '(diff)';
+  RsEqual = '(equal)';
 
 //=== JvPictureEditForm.pas ==================================================
 resourcestring

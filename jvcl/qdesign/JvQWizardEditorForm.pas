@@ -92,7 +92,10 @@ type
     procedure Edit; override;
   end;
 
+  
+  
   TJvWizardPageListEditor = class(TClxDesignWindow)
+  
     tbrWizardPages: TToolBar;
     lbxWizardPages: TListBox;
     btnAddWelcomePage: TToolButton;

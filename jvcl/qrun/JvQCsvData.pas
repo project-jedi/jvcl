@@ -36,7 +36,7 @@ Description:
       using any other data aware components.
 
     KEY PROPERTIES:
-      You must set the filename to a valid CSV Filename
+      You must set the filename to a valid CSV FileName
       such as "MyCsvFile.csv", and you must define the
       CSV Fields, using the CSVFieldDef property.
       If you don't set those properties, the component
@@ -554,8 +554,8 @@ type
       // Along with GetRowAsString, easy way to copy a dataset to another dataset!
 
     function IsKeyUnique: Boolean; // Checks current row's key uniqueness. Note that FCsvKeyDef MUST be set!
-    procedure SaveToFile(const Filename:string);
-    procedure LoadFromFile(const Filename:string);
+    procedure SaveToFile(const FileName: string);
+    procedure LoadFromFile(const FileName: string);
   protected
     property InternalData: TJvCsvRows read FData write FData;
     property AppendedFieldCount: Integer read FAppendedFieldCount;
@@ -2019,7 +2019,7 @@ begin
     {$IFDEF DEBUGINFO_ON}
     if Self.FData.Count>0 then
       OutputDebugString( 'TJvCustomCsvDataSet.GetFieldData: GetActiveRecordBuffer is nil but table is not empty. (Internal Fault Condition).');
-    {$ENDIF}
+    {$ENDIF DEBUGINFO_ON}
     Exit;
   end;
 
@@ -2727,7 +2727,7 @@ begin
      // Design-time local paths that don't move if the current working
      // directory moves.  These paths reference the directory the program
      // starts in.  To use this at design time you have to enter the
-     // table name as '.\Subdirectory\Filename.csv' (or './subdir/...' on Kylix)
+     // table name as '.\Subdirectory\FileName.csv' (or './subdir/...' on Kylix)
      Result := IncludeTrailingPathDelimiter(FInitialWorkingDirectory) +   FTableName;  // SPECIAL CASE.
    end else begin
      Result := ExpandUNCFilename(FTableName); // Expand using current working directory to full path name. DEFAULT BEHAVIOR.
@@ -2897,9 +2897,9 @@ begin
         or ((State = dsEdit) and (keyIndex <> FRecordPos)) then
       begin
         {$IFDEF DEBUGINFO_ON}
-       OutputDebugString(PChar('JvCsvDataSet Uniqueness: keyIndex='+IntToStr(keyIndex)+' '+GetRowAsString(keyIndex) ));
-       OutputDebugString(PChar('JvCsvDataSet Uniqueness: recordPos='+IntToStr(FRecordPos)+' '+GetRowAsString(FRecordPos) ));
-        {$ENDIF}
+        OutputDebugString(PChar('JvCsvDataSet Uniqueness: keyIndex='+IntToStr(keyIndex)+' '+GetRowAsString(keyIndex) ));
+        OutputDebugString(PChar('JvCsvDataSet Uniqueness: recordPos='+IntToStr(FRecordPos)+' '+GetRowAsString(FRecordPos) ));
+        {$ENDIF DEBUGINFO_ON}
         raise EJvCsvKeyError.CreateFmt(RsEKeyNotUnique, [FTableName]);
         Exit; // never get here, since normally JvCsvDatabaseError raises an exception.
       end;
@@ -4266,24 +4266,24 @@ begin
   end;
 end;
 
-procedure TJvCustomCsvDataSet.LoadFromFile(const Filename: string);
+procedure TJvCustomCsvDataSet.LoadFromFile(const FileName: string);
 var
-  tmp: Boolean;
+  Tmp: Boolean;
 begin
   Close;
-  tmp := LoadsFromFile;
+  Tmp := LoadsFromFile;
   try
     LoadsFromFile := True;
-    self.Filename := Filename;
+    Self.FileName := FileName;
     Open;
   finally
-    LoadsFromFile := tmp;
+    LoadsFromFile := Tmp;
   end;
 end;
 
-procedure TJvCustomCsvDataSet.SaveToFile(const Filename: string);
+procedure TJvCustomCsvDataSet.SaveToFile(const FileName: string);
 begin
-  ExportCsvFile(Filename);
+  ExportCsvFile(FileName);
 end;
 
 { Extremely ugly hack to copy a JvCsvRow binary record from

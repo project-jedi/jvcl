@@ -22,13 +22,12 @@ All Rights Reserved.
 Contributor(s):
   Polaris Software
 
-Last Modified: 2004-02-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -65,7 +64,7 @@ type
     FOnStart: TNotifyEvent;
     FOnStop: TNotifyEvent;
     
-    FAutoSize: boolean;
+    FAutoSize: Boolean;
     
     procedure SetInterval(Value: Cardinal);
     procedure SetRotate(Value: Boolean);
@@ -76,7 +75,7 @@ type
   protected
     procedure DoFocusChanged(Control: TWinControl); override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure SetAutoSize(Value: Boolean);
+    procedure SetAutoSize(Value: Boolean); 
     
     procedure AdjustSize; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -93,7 +92,7 @@ type
     property Align;
     
     
-    property AutoSize: boolean read FAutoSize write SetAutosize default True;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
     property Color;
@@ -141,15 +140,12 @@ uses
   QImgList;
   
 
-
-
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDice.Res}
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
 {$R ../Resources/JvDice.Res}
 {$ENDIF LINUX}
-
 
 constructor TJvDice.Create(AOwner: TComponent);
 var

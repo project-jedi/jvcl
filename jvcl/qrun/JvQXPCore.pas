@@ -34,13 +34,13 @@ unit JvQXPCore;
 
 interface
 
-
-
-
 uses
-  Classes, QControls, Types, QGraphics, QForms, Qt, QWindows,
-  JvQComponent;
-
+  
+  
+  Types, QControls, QGraphics, QForms, Qt, QWindows,
+  JvQComponent,
+  
+  Classes;
 
 const
   { color constants.
@@ -342,12 +342,17 @@ type
 implementation
 
 uses
+  
+  JvQResources,
+  
   JvQXPCoreUtils;
 
-
-
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvXPCore.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
 {$R ../Resources/JvXPCore.res}
-
+{$ENDIF LINUX}
 
 
 
@@ -407,6 +412,7 @@ end;
 
 
 
+
 function TJvXPCustomControl.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
@@ -426,87 +432,88 @@ end;
 
 procedure TJvXPCustomControl.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   AdjustSize;
 end;
 
 procedure TJvXPCustomControl.BorderChanged;
 begin
   // delegate message "BorderChanged" to hook.
-  inherited;
+//  inherited BorderChanged;
   HookBorderChanged;
 end;
 
 procedure TJvXPCustomControl.EnabledChanged;
 begin
   // delegate message "EnabledChanged" to hook.
-  inherited;
+  inherited EnabledChanged;
   HookEnabledChanged;
 end;
 
 procedure TJvXPCustomControl.FocusChanged;
 begin
   // delegate message "FocusChanged" to hook.
-  inherited;
+//  inherited FocusChanged;
   HookFocusedChanged;
 end;
 
 procedure TJvXPCustomControl.MouseEnter(AControl: TControl);
 begin
   // delegate message "MouseEnter" to hook.
-  inherited;
+  inherited MouseEnter(AControl);
   HookMouseEnter;
 end;
 
 procedure TJvXPCustomControl.MouseLeave(AControl: TControl);
 begin
   // delegate message "MouseLeave" to hook.
-  inherited;
+  inherited MouseLeave(AControl);
   HookMouseLeave;
 end;
 
 procedure TJvXPCustomControl.ParentColorChanged;
 begin
   // delegate message "ParentColorChanged" to hook.
-  inherited;
+  inherited ParentColorChanged;
   HookParentColorChanged;
 end;
 
 procedure TJvXPCustomControl.ParentFontChanged;
 begin
   // delegate message "ParentFontChanged" to hook.
-  inherited;
+  inherited ParentFontChanged;
   HookParentFontChanged;
 end;
 
 procedure TJvXPCustomControl.TextChanged;
 begin
   // delegate message "TextChanged" to hook.
-  inherited;
+  inherited TextChanged;
   HookTextChanged;
 end;
 
 procedure TJvXPCustomControl.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   // delegate message "MouseMove" to hook.
-  inherited;
+  inherited MouseMove(Shift, X, Y);
   HookMouseMove(X, Y);
 end;
 
 procedure TJvXPCustomControl.AdjustSize;
 begin
   // delegate message "Size" to hook.
-  inherited;
+  inherited AdjustSize;
   HookResized;
 end;
-(*)
+(*
 procedure TJvXPCustomControl.WMWindowPosChanged(var Msg: TWMWindowPosChanged);
 begin
   // delegate message "WindowPosChanged" to hook.
   inherited;
   HookPosChanged;
 end;
-(*)
+*)
+
 
 
 procedure TJvXPCustomControl.MouseDown(Button: TMouseButton;

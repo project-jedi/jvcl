@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,8 +20,6 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2002-07-04
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -32,6 +30,7 @@ Known Issues:
   Some russian comments were translated to english; these comments are marked
   with [translated]
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -290,6 +289,7 @@ end;
 
 
 
+
 procedure TJvComponentPanel.SetText(const Value: TCaption);
 begin
   inherited SetText('');
@@ -302,8 +302,9 @@ var
   VisibleCount: Integer;
   I: Integer;
 begin
-  if FButtonPointer = nil then exit; // asn: for visualclx
   Height := FButtonHeight;
+  if FButtonPointer = nil then
+    Exit; // asn: for visualclx
   FButtonPointer.Height := FButtonHeight;
   FButtonPointer.Width := FButtonWidth;
   FButtonLeft.Height := FButtonHeight;

@@ -67,7 +67,7 @@ uses
   QGraphics, QControls, QForms, QDialogs, QExtCtrls, QPrinters, QClipbrd,
   Types, QWindows,
   
-  JvQComponent, JvQJCLUtils;
+  JvQComponent, JvQJCLUtils, JvQResources;
 
 const
   JvChartVersion = 300; // ie, version 3.00
@@ -87,9 +87,6 @@ const
   jvChartPaperColorIndex = -1;
 
   JvChartDefaultMarkerSize = 3;
-
-resourcestring
-  JvChartDesigntimeLabel = ': JEDI JVCL Charting Component';
 
 type
   { CHART TYPES }
@@ -565,7 +562,7 @@ implementation
 uses
   Math, // VCL math: function isNan, constant NaN.
   
-  JvQJVCLUtils, JvQConsts, JvQResources;
+  JvQJVCLUtils, JvQConsts;
 
 const
   CHART_SANITY_LIMIT = 30000;
@@ -1332,7 +1329,7 @@ begin
   ChartCanvas.Brush.Color := Options.PaperColor;
   ChartCanvas.Rectangle(0, 0, Width, Height);
 
-  DesignStr := ClassName + JvChartDesigntimeLabel;
+  DesignStr := ClassName + RsChartDesigntimeLabel;
 
   if (Abs(Options.PrimaryYAxis.YMax) < 0.000001) and (Abs(Options.PrimaryYAxis.YMin) < 0.000001) then
     Options.PrimaryYAxis.YMax := 10.0; // Reasonable non-zero default, so that charting works!
@@ -3025,27 +3022,26 @@ begin
       (X > Options.XStartOffset) and
       (X < Options.XStartOffset + Options.XEnd + 10) then
     begin
-        {Legend resize...}
+      {Legend resize...}
       if X > (Options.XStartOffset + Options.XEnd) - 5 then
       begin
         FStartDrag := True;
         Screen.Cursor := crSizeWE;
       end;
-        {Inside the actual graph...}
+      {Inside the actual graph...}
       if (X <= (Options.XStartOffset + Options.XEnd) - 5) and
         (Options.ChartKind <> ckChartPieChart) and
         (Options.ChartKind <> ckChartDeltaAverage) then
       begin
-        XPixelGap := ((Options.XEnd - Options.XStartOffset) /
-          (Options.XValueCount + 1));
-           //if XPixelGap <1 then
-            //  XPixelGal := 1;
+        XPixelGap := ((Options.XEnd - Options.XStartOffset) / (Options.XValueCount + 1));
+        //if XPixelGap <1 then
+        //  XPixelGal := 1;
         if XPixelGap > 0.001 then
           FMouseValue := Round((X - Options.XStartOffset) / (XPixelGap))
         else
           FMouseValue := 0; // can't figure it out.
 
-        case (Options.ChartKind) of
+        case Options.ChartKind of
           ckChartBar, ckChartBarAverage:
             if Options.PenCount = 1 then {check for Pen count}
               FMousePen := Round(((X + (XPixelGap / 2)) -
@@ -3067,14 +3063,14 @@ begin
         if FMousePen > Options.PrimaryYAxis.YDivisions then
           FMousePen := 0;
 
-          // New: Allow user to do custom hints, or else do other things
-          // when a chart is clicked.
+        // New: Allow user to do custom hints, or else do other things
+        // when a chart is clicked.
         if Assigned(FOnChartClick) then
         begin
           FMouseDownShowHint := False;
           FMouseDownHintBold := False;
-          FOnChartClick(Self, Button, Shift, X, Y, FMouseValue, FMousePen, FMouseDownShowHint, FMouseDownHintBold,
-            FMouseDownHintStrs);
+          FOnChartClick(Self, Button, Shift, X, Y, FMouseValue,
+            FMousePen, FMouseDownShowHint, FMouseDownHintBold, FMouseDownHintStrs);
         end
         else
         begin
@@ -3085,15 +3081,11 @@ begin
             AutoHint;
           end
           else
-          begin
             FMouseDownShowHint := False; { don't show }
-          end;
         end;
 
-        if ((FMouseDownHintStrs.Count > 0) and FMouseDownShowHint) then
-        begin
+        if (FMouseDownHintStrs.Count > 0) and FMouseDownShowHint then
           ShowMouseMessage(X, Y);
-        end;
       end;
     end;
   end;
@@ -3110,7 +3102,7 @@ end;
 procedure TJvChart.AutoHint; // Make the automatic hint message showing all pens and their values.
 var
   I: Integer;
-  str: string;
+  Str: string;
   Val: Double;
 begin
   FMouseDownHintStrs.Clear;
@@ -3118,11 +3110,11 @@ begin
   if Options.XAxisDateTimeMode then
   begin
     if Length(Options.DateTimeFormat) = 0 then
-      str := DateTimeToStr(FData.GetTimestamp(FMouseValue))
+      Str := DateTimeToStr(FData.GetTimestamp(FMouseValue))
     else
-      str := FormatDateTime(Options.DateTimeFormat, FData.GetTimestamp(FMouseValue));
+      Str := FormatDateTime(Options.DateTimeFormat, FData.GetTimestamp(FMouseValue));
 
-    FMouseDownHintStrs.Add(str);
+    FMouseDownHintStrs.Add(Str);
   end
   else
   if Options.XLegends.Count > FMouseValue then
@@ -3132,23 +3124,23 @@ begin
   begin
     if Options.PenLegends.Count <= I then
       Break; // Exception fixed. WP
-    str := Options.PenLegends[I];
+    Str := Options.PenLegends[I];
     Val := FData.Value[I, FMouseValue];
-    if Length(str) = 0 then
-      str := IntToStr(I + 1);
-    str := str + ' : ';
+    if Length(Str) = 0 then
+      Str := IntToStr(I + 1);
+    Str := Str + ' : ';
     if IsNan(Val) then
-      str := str + ' n/a '
+      Str := Str + ' n/a '
     else
     begin
-      str := str + FloatToStrF(Val, ffFixed, REALPREC, 3);
-      str := str + ' ' + Options.PenUnit[I];
+      Str := Str + FloatToStrF(Val, ffFixed, REALPREC, 3);
+      Str := Str + ' ' + Options.PenUnit[I];
     end;
 
-    FMouseDownHintStrs.Add(str);
+    FMouseDownHintStrs.Add(Str);
     {$IFDEF DEBUGINFO_ON}
-    OutputDebugString(PChar('TJvChart.AutoHint: ' + str));
-    {$ENDIF}
+    OutputDebugString(PChar('TJvChart.AutoHint: ' + Str));
+    {$ENDIF DEBUGINFO_ON}
   end;
 end;
 
@@ -3194,37 +3186,35 @@ var
   nLineH: Integer;
   nLineCount: Integer;
   I: Integer;
-
-  strWidth, strHeight: Integer;
+  StrWidth, StrHeight: Integer;
 begin
-
   ChartCanvas.Font.Color := Font.Color; // March 2004 Fixed.
 
-    // scan and set nWidth,nLineH
+  // scan and set nWidth,nLineH
   nWidth := 100; // minimum 100 pixel hint box width.
   nLineH := 8; // minimum 8 pixel line height for hints.
   nLineCount := FMouseDownHintStrs.Count;
 
   for I := 0 to nLineCount - 1 do
   begin
-    strWidth := ChartCanvas.TextWidth(FMouseDownHintStrs[I]);
-    if strWidth > nWidth then
-      nWidth := strWidth;
-    strHeight := ChartCanvas.TextHeight(FMouseDownHintStrs[I]);
-    if (strHeight > nLineH) then
-      nLineH := strHeight;
+    StrWidth := ChartCanvas.TextWidth(FMouseDownHintStrs[I]);
+    if StrWidth > nWidth then
+      nWidth := StrWidth;
+    StrHeight := ChartCanvas.TextHeight(FMouseDownHintStrs[I]);
+    if StrHeight > nLineH then
+      nLineH := StrHeight;
   end;
 
-    // bump height of text in hint box,
-    // leaving a little extra pixel space between rows.
+  // bump height of text in hint box,
+  // leaving a little extra pixel space between rows.
   nLineH := Round(nLineH * 1.07) + 1;
 
-    {RsNoValuesHere}
-  if (FMouseDownHintStrs.Count = 0) then
+  {RsNoValuesHere}
+  if FMouseDownHintStrs.Count = 0 then
   begin
-    strWidth := ChartCanvas.TextWidth(RsNoValuesHere);
-    if strWidth > nWidth then
-      nWidth := strWidth;
+    StrWidth := ChartCanvas.TextWidth(RsNoValuesHere);
+    if StrWidth > nWidth then
+      nWidth := StrWidth;
     MyColorRectangle(jvChartHintColorIndex, X + 3, Y + 3, X + nWidth + 3 + 5, Y + nLineH + 3);
     MyColorRectangle(jvChartPaperColorIndex, X, Y, X + nWidth + 5, Y + nLineH);
     Canvas.Font.Color := Self.Font.Color;
@@ -3233,43 +3223,40 @@ begin
     Exit;
   end;
 
-    // Get hint box height/width, size to contents:
+  // Get hint box height/width, size to contents:
   nWidth := nWidth + 25;
   nHeight := (nLineH * (nLineCount)) + 8;
 
-    // keep hint from clipping at bottom and right.
+  // keep hint from clipping at bottom and right.
   if (Y + nHeight) > Self.Height then
     Y := (Self.Height - nHeight);
   if (X + nWidth) > Self.Width then
     X := (Self.Width - nWidth);
 
-    // Draw hint box:
+  // Draw hint box:
   MyColorRectangle(jvChartPaperColorIndex, X + 3, Y + 3, X + nWidth + 3, Y + nHeight + 3);
   MyColorRectangle(jvChartHintColorIndex, X, Y, X + nWidth, Y + nHeight);
 
-    //MyLeftTextOut( X + 3, Y + 3, 'Foo');
+  //MyLeftTextOut( X + 3, Y + 3, 'Foo');
 
-    // Draw text inside the hint box:
+  // Draw text inside the hint box:
   Canvas.Font.Color := Self.Font.Color;
-    //Canvas.Font.Style :=
+  //Canvas.Font.Style :=
 
   if FMouseDownHintBold then
-  begin
     Canvas.Font.Style := [fsBold];
-  end;
 
   for I := 0 to nLineCount - 1 do
   begin
     if (I = 1) and FMouseDownHintBold then
       Canvas.Font.Style := [];
-
     MyLeftTextOut(X + 2, 4 + Y + (I * nLineH), FMouseDownHintStrs[I]); // draw text for each line.
   end;
 
   FMouseLegend := True;
 
   Invalidate;
-   //ResizeChartCanvas;
+  //ResizeChartCanvas;
 end;
 
 {***************************************************************************}
@@ -3288,7 +3275,7 @@ var
 begin
   ClearScreen;
 
-   {Main Header}
+  {Main Header}
   MyHeader(Options.Title);
   MyPieLegend(NPen);
   if Options.XEnd < Options.YEnd then
@@ -3301,16 +3288,15 @@ begin
     nSize := Options.YEnd;
     nXExtra := Round((Options.XEnd - Options.YEnd) / 2);
   end;
-   {Count total sum...}
+  {Count total sum...}
   n100Sum := 0;
   for I := 1 to MAX_VALUES do
     n100Sum := n100Sum + FData.Value[NPen, I];
-   {Show background pie....}
+  {Show background pie....}
   SetRectangleColor(jvChartAxisColorIndex); {black...}
   MyPiePercentage(Options.XStartOffset + nXExtra + 2,
-    Options.YStartOffset + 2,
-    nSize, 100);
-   {Show pie if not zero...}
+    Options.YStartOffset + 2, nSize, 100);
+  {Show pie if not zero...}
   if n100Sum <> 0 then
   begin
     nSum := n100Sum;
@@ -3323,8 +3309,7 @@ begin
       nP := 100 * (nSum / n100Sum);
       SetRectangleColor(I - 1);
       MyPiePercentage(Options.XStartOffset + nXExtra,
-        Options.YStartOffset,
-        nSize, nP);
+        Options.YStartOffset, nSize, nP);
     end;
   end;
 end;
@@ -3352,13 +3337,13 @@ procedure TJvChart.MyPieLegend(NPen: Integer);
 var
   I: Integer;
   nTextHeight: Longint;
-{   nChars      : Integer;}// not used (ahuser)
-  xLegendStr: string;
+  {nChars: Integer;}// not used (ahuser)
+  XLegendStr: string;
 begin
-   {Count how many characters to show in the separate legend}
-{   nChars := Round(Options.LegendWidth / ChartCanvas.TextWidth('1'));}// not used (ahuser)
-   {Decrease the value due to the color box shown}
-{   if (nChars>4) then nChars := nChars-4;}// not used (ahuser)
+  {Count how many characters to show in the separate legend}
+  {nChars := Round(Options.LegendWidth / ChartCanvas.TextWidth('1'));}// not used (ahuser)
+  {Decrease the value due to the color box shown}
+  {if (nChars>4) then nChars := nChars-4;}// not used (ahuser)
 
   MySmallGraphFont;
   nTextHeight := Round(CanvasMaxTextHeight(ChartCanvas) * 1.2);
@@ -3383,15 +3368,17 @@ begin
         Options.YStartOffset + I * nTextHeight + 9);
       SetFontColor(jvChartAxisColorIndex);
       if I - 1 < Options.XLegends.Count then
-        xLegendStr := Options.XLegends[I - 1]
+        XLegendStr := Options.XLegends[I - 1]
       else
-        xLegendStr := IntToStr(I);
+        XLegendStr := IntToStr(I);
       MyLeftTextOut(Options.XStartOffset + Options.XEnd + 7 + ChartCanvas.TextWidth('12'),
         Options.YStartOffset + I * nTextHeight + 7,
-        xLegendStr);
+        XLegendStr);
     end;
   end;
 end;
+
+// (rom) Point(AX, AY) is good enough
 
 function TJvChart.MyPt(AX, AY: Integer): TPoint;
 begin
@@ -3474,7 +3461,7 @@ var
   XOrigin: Longint;
   YOrigin: Longint;
   I, J: Longint;
-  TempYorigin: Longint;
+  TempYOrigin: Longint;
 begin
    {new type of chart...}
   ClearScreen;
@@ -3498,20 +3485,20 @@ begin
   YPixelGap := Round((Options.XEnd - Options.XStartOffset) /
     (Options.PrimaryYAxis.YDivisions + 1)); // SPECIALIZED.
 
-  TempYorigin := Options.YOrigin;
+  TempYOrigin := Options.YOrigin;
   Options.YOrigin := Options.PrimaryYAxis.YDivisions div 2;
 
   YOrigin := Options.XStartOffset + (YPixelGap * Options.YOrigin);
   XOrigin := Options.YStartOffset;
 
-   {Create texts for Y-axis}
+  {Create texts for Y-axis}
 //   Options.PrimaryYAxis.YLegends.Clear;
 //   for I := 0 to MAX_Y_LEGENDS-1 do
   //    Options.PrimaryYAxis.YLegends.Add( IntToStr(Round(((I-1)-Options.YOrigin)*Options.PrimaryYAxis.YGap)) );
 
-   {Y-axis legends and lines...}
+  {Y-axis legends and lines...}
   MyAxisFont;
-  for I := 1 to (Options.PrimaryYAxis.YDivisions + 1) do
+  for I := 1 to Options.PrimaryYAxis.YDivisions + 1 do
   begin
     if I >= Options.PrimaryYAxis.YLegends.Count then
       Exit;
@@ -3521,30 +3508,29 @@ begin
     MyDrawDotLine(YOrigin - (YPixelGap * ((I - 1) - Options.YOrigin)),
       XOrigin,
       YOrigin - (YPixelGap * ((I - 1) - Options.YOrigin)),
-      XOrigin + (XPixelGap * (Options.XValueCount))
-      );
+      XOrigin + (XPixelGap * (Options.XValueCount)));
   end;
 
-   {Draw Y-axis}
+  {Draw Y-axis}
   ChartCanvas.MoveTo(Options.XStartOffset, XOrigin);
   MyAxisLineTo(Options.XEnd, XOrigin);
-   {Draw second Y-axis}
+  {Draw second Y-axis}
   ChartCanvas.MoveTo(Options.XStartOffset, XOrigin + XPixelGap * Options.XValueCount + 1);
   MyAxisLineTo(Options.XEnd, XOrigin + XPixelGap * Options.XValueCount + 1);
-   {Draw X-axis}
+  {Draw X-axis}
   ChartCanvas.MoveTo(YOrigin, XOrigin);
   MyAxisLineTo(YOrigin, XOrigin + XPixelGap * Options.XValueCount + 1);
 
-   {X-axis legends...}
+  {X-axis legends...}
   GraphXAxisLegend;
 
-   {Main Header}
+  {Main Header}
   MyHeader(Options.Title);
 
-   {X axis header}
+  {X axis header}
   MyXHeader(Options.XAxisHeader);
 
-    // Now draw the delta average...
+  // Now draw the delta average...
   for I := 0 to Options.PenCount - 1 do
     for J := 0 to Options.XValueCount - 1 do
       if Options.PenCount = 1 then
@@ -3561,7 +3547,7 @@ begin
           YOrigin + Round(((FData.Value[I, J] - Options.AverageValue[J]) /
           Options.PrimaryYAxis.YGap) * YPixelGap),
           XOrigin + J * XPixelGap + (I + 1) * Round(XPixelGap / (Options.PenCount + 0.5)) - XPixelGap);
-  Options.YOrigin := TempYorigin;
+  Options.YOrigin := TempYOrigin;
 end;
 
 {***************************************************************************}
@@ -3766,7 +3752,7 @@ end;
 
 procedure TJvChart.GraphToClipboard;
 begin
-   {This works with bitmaps at least...how to do it as a metafile?}
+  {This works with bitmaps at least...how to do it as a metafile?}
   Clipboard.Assign(FPicture);
 end;
 
@@ -3775,33 +3761,33 @@ end;
 procedure TJvChart.PivotData;
 var
   I, J: Integer;
-  pencount, xvaluecount: Integer;
+  PenCount, XValueCount: Integer;
   TempData: TJvChartData;
   TempStrings: TStringList;
 begin
   TempData := TJvChartData.Create;
-  pencount := Options.PenCount;
-  xvaluecount := Options.XValueCount;
+  PenCount := Options.PenCount;
+  XValueCount := Options.XValueCount;
   try
-       {Move data to temp }
-    for I := 0 to pencount - 1 do
-      for J := 0 to xvaluecount - 1 do
+    { Move data to temp }
+    for I := 0 to PenCount - 1 do
+      for J := 0 to XValueCount - 1 do
         TempData.Value[I, J] := FData.Value[I, J];
     FData.Clear;
-       {copy back, pivot X/Y axis }
-    for I := 0 to pencount - 1 do
-      for J := 0 to xvaluecount - 1 do
+    { copy back, pivot X/Y axis }
+    for I := 0 to PenCount - 1 do
+      for J := 0 to XValueCount - 1 do
         TempData.Value[I, J] := FData.Value[J, I];
 
-       {swap labels}
+    {swap labels}
     TempStrings := Options.FXLegends;
     Options.FXLegends := Options.FPenLegends;
     Options.FPenLegends := TempStrings;
 
-    Options.XValueCount := pencount;
-    Options.PenCount := xvaluecount;
+    Options.XValueCount := PenCount;
+    Options.PenCount := XValueCount;
 
-       {recalc average}
+    {recalc average}
     CountGraphAverage;
     PlotGraph;
   finally

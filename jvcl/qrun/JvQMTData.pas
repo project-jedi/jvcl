@@ -108,6 +108,7 @@ type
 
 implementation
 
+
 uses
   JvQResources;
 

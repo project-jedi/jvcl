@@ -1,5 +1,5 @@
 {**************************************************************************************************}
-{  WARNING:  JEDI preprocessor generated unit. Manual modifications will be lost on next release.  }
+{  WARNING:  JEDI preprocessor generated unit.  Do not edit.                                       }
 {**************************************************************************************************}
 
 {-----------------------------------------------------------------------------
@@ -20,13 +20,12 @@ All Rights Reserved.
 
 Contributor(s): Michael Beck [mbeck att bigfoot dott com].
 
-Last Modified: 2000-02-28
-
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+// $Id$
 
 {$I jvcl.inc}
 
@@ -49,10 +48,9 @@ type
   TJvPatcherEditor = class(TClassProperty)
   public
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
     procedure Edit; override;
+    procedure SetValue(const Value: string); override;
+    function GetValue: string; override;
   end;
 
 implementation
@@ -65,28 +63,13 @@ begin
   Result := [paMultiSelect, paDialog, paSortList];
 end;
 
-function TJvPatcherEditor.GetValue: string;
-begin
-  Result := GetStrValue;
-end;
-
-procedure TJvPatcherEditor.SetValue(const Value: string);
-begin
-  SetStrValue(Value);
-end;
-
-procedure TJvPatcherEditor.GetValues(Proc: TGetStrProc);
-begin
-  SetStrValue(RsJvEditorString);
-end;
-
 procedure TJvPatcherEditor.Edit;
 var
-  Dlg: TFoPatch;
+  Dlg: TPatchFrm;
   Res: TStringList;
 begin
   Res := TStringList(GetOrdValue);
-  Dlg := TFoPatch.Create(Application);
+  Dlg := TPatchFrm.Create(Application);
   Dlg.LoadFromStr(Res);
   try
     if Dlg.ShowModal = mrOk then
@@ -97,6 +80,24 @@ begin
   finally
     Dlg.Free;
   end;
+end;
+
+procedure TJvPatcherEditor.SetValue(const Value: string);
+begin
+  inherited SetValue(Value);
+  if Value = '' then
+    TStrings(GetOrdValue).Clear;
+end;
+
+function TJvPatcherEditor.GetValue: string;
+begin
+  if TStrings(GetOrdValue).Count = 0 then
+    Result := RsNone
+  else
+  if TStrings(GetOrdValue).Count > 4 then // first four items are filenames and file sizes
+    Result := RsDiff
+  else
+    Result := RsEqual;
 end;
 
 end.

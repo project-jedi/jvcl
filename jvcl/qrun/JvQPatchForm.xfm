@@ -1,118 +1,113 @@
-object FoPatch: TFoPatch
+object PatchFrm: TPatchFrm
   Left = 419
-  Top = 323
-  Width = 300
-  Height = 147
-  VertScrollBar.Range = 136
-  HorzScrollBar.Range = 296
-  ActiveControl = FileNameBox1
+  Top = 183
+  BorderStyle = fbsDialog
   Caption = 'Patcher Editor'
-  Color = clButton
-  Font.Color = clText
-  Font.Height = 11
-  Font.Name = 'adobe-helvetica'
-  Font.Pitch = fpVariable
+  ClientHeight = 144
+  ClientWidth = 401
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
   Font.Style = []
-  Font.Weight = 0
-  Icon.Data = {
-    0000010001001010100001001000280100001600000028000000100000002000
-    00000100040000000000C0000000000000000000000000000000000000000000
-    0000000080000080000000808000800000008000800080800000C0C0C0008080
-    80000000FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF000000
-    00000000000000000BBBB0000000000BB000BB000000000BB0000B000000000B
-    BB000BB00000000BBB000BB00000000000000BB00000000000000BB000000000
-    00000BB00000000000000BB00000000000000BB00000000000000BB000000000
-    00000BB0000000000000BBBB00000000000BBBBBB0000000000000000000FFFF
-    0000F87F0000E73F0000E7BF0000E39F0000E39F0000FF9F0000FF9F0000FF9F
-    0000FF9F0000FF9F0000FF9F0000FF9F0000FF0F0000FE070000FFFF0000}
-  ParentFont = False
+  OldCreateOrder = False
   Scaled = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
+  TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 4
-    Top = 5
-    Width = 292
+    Top = 2
+    Width = 392
     Height = 97
+    Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 0
     object Label1: TLabel
-      Left = 8
-      Top = 15
-      Width = 59
+      Left = 9
+      Top = 18
+      Width = 37
       Height = 13
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = 'Source'
-      Masked = True
-      Transparent = True
+      Caption = '&Source:'
+      FocusControl = edSource
     end
     object Label2: TLabel
-      Left = 0
-      Top = 41
-      Width = 67
+      Left = 9
+      Top = 44
+      Width = 56
       Height = 13
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = 'Destination'
-      Masked = True
-      Transparent = True
+      Caption = '&Destination:'
+      FocusControl = edDest
     end
     object Label3: TLabel
-      Left = 0
-      Top = 67
-      Width = 67
+      Left = 9
+      Top = 70
+      Width = 49
       Height = 13
-      Alignment = taRightJustify
-      AutoSize = False
-      Caption = 'Password'
-      Masked = True
-      Transparent = True
+      Caption = '&Password:'
+      FocusControl = edPassword
     end
-    object Edit1: TEdit
-      Left = 74
-      Top = 63
-      Width = 207
+    object edPassword: TEdit
+      Left = 68
+      Top = 66
+      Width = 315
       Height = 21
+      Anchors = [akLeft, akTop, akRight]
       TabOrder = 2
     end
-    object FileNameBox1: TJvFilenameEdit
-      Left = 74
-      Top = 11
-      Width = 207
+    object edSource: TJvFilenameEdit
+      Left = 68
+      Top = 14
+      Width = 315
       Height = 21
       AddQuotes = False
-      FilterIndex = 0
       ButtonFlat = False
-      ClickKey = 20501
+      Anchors = [akLeft, akTop, akRight]
       TabOrder = 0
     end
-    object FileNameBox2: TJvFilenameEdit
-      Left = 74
-      Top = 35
-      Width = 207
+    object edDest: TJvFilenameEdit
+      Left = 68
+      Top = 40
+      Width = 315
       Height = 21
       AddQuotes = False
-      FilterIndex = 0
       ButtonFlat = False
-      ClickKey = 20501
+      Anchors = [akLeft, akTop, akRight]
       TabOrder = 1
     end
   end
   object OkBtn: TButton
-    Left = 54
-    Top = 111
+    Left = 223
+    Top = 110
     Width = 75
     Height = 25
-    Caption = 'Ok'
+    Anchors = [akRight, akBottom]
+    Caption = 'OK'
     Default = True
-    TabOrder = 1
+    ModalResult = 1
+    TabOrder = 2
     OnClick = OkBtnClick
   end
   object CancelBtn: TButton
-    Left = 174
-    Top = 111
+    Left = 307
+    Top = 110
     Width = 75
     Height = 25
+    Anchors = [akRight, akBottom]
+    Cancel = True
     Caption = 'Cancel'
-    TabOrder = 2
+    ModalResult = 2
+    TabOrder = 3
+  end
+  object ClearBtn: TButton
+    Left = 16
+    Top = 112
+    Width = 75
+    Height = 25
+    Caption = '&Clear'
+    ModalResult = 1
+    TabOrder = 1
+    OnClick = ClearBtnClick
   end
 end

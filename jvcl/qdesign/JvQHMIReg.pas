@@ -58,8 +58,7 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteHMIControls, [TJvLED]);
-  RegisterComponents(RsPaletteHMIControls, [TJvDialButton]);
+  RegisterComponents(RsPaletteHMIComponents, [TJvLED, TJvDialButton]);
 end;
 
 end.

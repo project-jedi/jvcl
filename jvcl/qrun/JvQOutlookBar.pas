@@ -44,13 +44,11 @@ interface
 
 uses
   SysUtils, Classes,
-
-
-
-
+  
+  
   Types, QControls, QButtons, QGraphics, QTypes,
   QImgList, QForms, QStdCtrls, QExtCtrls, QWindows,
-
+  
   JvQThemes, JvQComponent, JvQExButtons;
 
 const
@@ -67,12 +65,13 @@ type
     FCaption: TCaption;
     FTag: Integer;
     FDown: Boolean;
-    FEnabled: boolean;
+    FEnabled: Boolean;
+    FAutoToggle: Boolean;
     procedure SetCaption(const Value: TCaption);
     procedure SetImageIndex(const Value: TImageIndex);
     procedure SetDown(const Value: Boolean);
     procedure Change;
-    procedure SetEnabled(const Value: boolean);
+    procedure SetEnabled(const Value: Boolean);
   protected
     function GetDisplayName: string; override;
   public
@@ -85,7 +84,8 @@ type
     property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
     property Tag: Integer read FTag write FTag;
     property Down: Boolean read FDown write SetDown default False;
-    property Enabled: boolean read FEnabled write SetEnabled default True;
+    property AutoToggle: Boolean read FAutoToggle write FAutoToggle;
+    property Enabled: Boolean read FEnabled write SetEnabled default True;
   end;
 
   TJvOutlookBarButtons = class(TOwnedCollection)
@@ -93,7 +93,7 @@ type
     function GetItem(Index: Integer): TJvOutlookBarButton;
     procedure SetItem(Index: Integer; const Value: TJvOutlookBarButton);
   protected
-
+    
     procedure Update(Item: TCollectionItem); override;
   public
     constructor Create(AOwner: TPersistent);
@@ -118,7 +118,7 @@ type
     FDownFont: TFont;
     FImageIndex: TImageIndex;
     FAlignment: TAlignment;
-    FEnabled: boolean;
+    FEnabled: Boolean;
     procedure SetButtonSize(const Value: TJvBarButtonSize);
     procedure SetCaption(const Value: TCaption);
     procedure SetColor(const Value: TColor);
@@ -138,7 +138,7 @@ type
     function GetDownIndex: Integer;
     procedure SetDownButton(Value: TJvOutlookBarButton);
     procedure SetDownIndex(Value: Integer);
-    procedure SetEnabled(const Value: boolean);
+    procedure SetEnabled(const Value: Boolean);
   protected
     procedure DoPictureChange(Sender: TObject);
     function GetDisplayName: string; override;
@@ -163,7 +163,7 @@ type
     property ParentFont: Boolean read FParentFont write SetParentFont default False;
     property ParentColor: Boolean read FParentColor write SetParentColor;
     property TopButtonIndex: Integer read FTopButtonIndex write SetTopButtonIndex;
-    property Enabled: boolean read FEnabled write SetEnabled default True;
+    property Enabled: Boolean read FEnabled write SetEnabled default True;
   end;
 
   TJvOutlookBarPages = class(TOwnedCollection)
@@ -172,7 +172,7 @@ type
     procedure SetItem(Index: Integer; const Value: TJvOutlookBarPage);
   protected
     procedure Update(Item: TCollectionItem); override;
-
+    
   public
     constructor Create(AOwner: TPersistent);
     function Add: TJvOutlookBarPage;
@@ -189,7 +189,7 @@ type
 
   TJvOutlookBarCustomDrawStage = (odsBackground, odsPageButton, odsPage, odsButton, odsButtonFrame);
   TJvOutlookBarCustomDrawEvent = procedure(Sender: TObject; ACanvas: TCanvas; ARect: TRect;
-    AStage: TJvOutlookBarCustomDrawStage; AIndex: integer; ADown, AInside: boolean; var DefaultDraw: boolean) of object;
+    AStage: TJvOutlookBarCustomDrawStage; AIndex: Integer; ADown, AInside: Boolean; var DefaultDraw: Boolean) of object;
 
   TJvCustomOutlookBar = class(TJvCustomControl)
   private
@@ -207,7 +207,7 @@ type
     FBorderStyle: TBorderStyle;
     FNextActivePage: Integer;
     FPressedPageBtn: Integer;
-
+    
     FOnPageChange: TOutlookBarPageChange;
     FOnPageChanging: TOutlookBarPageChanging;
     FButtonRect: TRect;
@@ -229,10 +229,10 @@ type
     procedure SetPageImages(const Value: TCustomImageList);
     procedure SetPageButtonHeight(const Value: Integer);
     procedure SetBorderStyle(const Value: TBorderStyle);
-
+    
     function DrawTopPages: Integer;
     procedure DrawCurrentPage(PageIndex: Integer);
-    procedure DrawPageButton(R: TRect; Index: integer; Pressed: Boolean);
+    procedure DrawPageButton(R: TRect; Index: Integer; Pressed: Boolean);
     procedure DrawBottomPages(StartIndex: Integer);
     procedure DrawButtons(Index: Integer);
     procedure DrawArrowButtons(Index: Integer);
@@ -244,19 +244,19 @@ type
     procedure CMCaptionEditing(var Msg: TMessage); message CM_CAPTION_EDITING;
     procedure CMCaptionEditAccept(var Msg: TMessage); message CM_CAPTION_EDIT_ACCEPT;
     procedure CMCaptionEditCancel(var Msg: TMessage); message CM_CAPTION_EDIT_CANCEL;
-
-
-
+    
     procedure DoButtonEdit(NewText: string; B: TJvOutlookBarButton);
     procedure DoPageEdit(NewText: string; P: TJvOutlookBarPage);
     function GetActivePage: TJvOutlookBarPage;
     function GetActivePageIndex: Integer;
   protected
-    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
-    procedure FontChanged; override;
+    
     function WantKey(Key: Integer; Shift: TShiftState;
       const KeyText: WideString): Boolean; override;
-
+    
+    function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    procedure FontChanged; override;
+    
     function GetButtonHeight(PageIndex: Integer): Integer;
     function GetButtonFrameRect(PageIndex, ButtonIndex: Integer): TRect;
     function GetButtonTextRect(PageIndex, ButtonIndex: Integer): TRect;
@@ -275,13 +275,13 @@ type
     function DoPageChanging(Index: Integer): Boolean; virtual;
     procedure DoPageChange(Index: Integer); virtual;
     procedure DoButtonClick(Index: Integer); virtual;
-    procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); override;
-    function DoDrawBackGround: boolean;
-    function DoDrawPage(ARect: TRect; Index: integer): boolean;
-    function DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
-    function DoDrawButton(ARect: TRect; Index: integer; Down, Inside: boolean): boolean;
-    function DoDrawButtonFrame(ARect: TRect; Index: integer; Down, Inside: boolean): boolean;
-    function DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage; Index: integer; Down, Inside: boolean): boolean; virtual;
+    procedure DoContextPopup( const  MousePos: TPoint; var Handled: Boolean); override;
+    function DoDrawBackGround: Boolean;
+    function DoDrawPage(ARect: TRect; Index: Integer): Boolean;
+    function DoDrawPageButton(ARect: TRect; Index: Integer; Down: Boolean): Boolean;
+    function DoDrawButton(ARect: TRect; Index: Integer; Down, Inside: Boolean): Boolean;
+    function DoDrawButtonFrame(ARect: TRect; Index: Integer; Down, Inside: Boolean): Boolean;
+    function DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage; Index: Integer; Down, Inside: Boolean): Boolean; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -303,7 +303,7 @@ type
     property ButtonSize: TJvBarButtonSize read FButtonSize write SetButtonSize default olbsLarge;
     property PageButtonHeight: Integer read FPageButtonHeight write SetPageButtonHeight default 19;
     property ActivePageIndex: Integer read GetActivePageIndex write SetActivePageIndex default 0;
-
+    
     property OnPageChanging: TOutlookBarPageChanging read FOnPageChanging write FOnPageChanging;
     property OnPageChange: TOutlookBarPageChange read FOnPageChange write FOnPageChange;
     property OnButtonClick: TOutlookBarButtonClick read FOnButtonClick write FOnButtonClick;
@@ -326,7 +326,7 @@ type
     property ButtonSize;
     property PageButtonHeight;
     property ActivePageIndex;
-
+    
     property OnButtonClick;
     property OnCustomDraw;
     property OnEditButton;
@@ -335,7 +335,7 @@ type
     property OnEditPage;
     property Action;
     property Anchors;
-
+    
     property BorderStyle;
     property Color;
     property Constraints;
@@ -345,10 +345,10 @@ type
     property Height;
     property HelpContext;
     //PRY 2002.06.04
-
+    
     property HelpKeyword;
     property HelpType;
-
+    
     // PRY END
     property Hint;
     property ParentFont;
@@ -388,7 +388,7 @@ type
   TJvOutlookBarEdit = class(TCustomEdit)
   private
     FCanvas: TControlCanvas;
-
+    
     procedure EditAccept;
     procedure EditCancel;
     function GetCanvas: TCanvas;
@@ -517,6 +517,7 @@ begin
 end;
 
 
+
 //=== TJvRepeatButton ========================================================
 
 type
@@ -535,25 +536,22 @@ type
     destructor Destroy; override;
   end;
 
-{ TJvRepeatButton }
-
 procedure TJvRepeatButton.VisibleChanged;
 begin
-  inherited;
+  inherited VisibleChanged;
   if not Visible then
     FreeAndNil(FRepeatTimer);
 end;
 
 destructor TJvRepeatButton.Destroy;
 begin
-
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvRepeatButton.MouseDown(Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  inherited;
+  inherited MouseDown(Button, Shift, X, Y);
   if FRepeatTimer = nil then
     FRepeatTimer := TTimer.Create(Self);
   FRepeatTimer.OnTimer := TimerExpired;
@@ -564,7 +562,7 @@ end;
 procedure TJvRepeatButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  inherited;
+  inherited MouseUp(Button, Shift, X, Y);
   FreeAndNil(FRepeatTimer);
 end;
 
@@ -572,14 +570,12 @@ procedure TJvRepeatButton.TimerExpired(Sender: TObject);
 begin
   FRepeatTimer.Interval := cRepeatPause;
   if (FState = bsDown) and MouseCapture then
-  begin
     try
       Click;
     except
       FRepeatTimer.Enabled := False;
       raise;
     end;
-  end;
 end;
 
 //=== TJvOutlookBarButton ====================================================
@@ -615,6 +611,7 @@ begin
     Caption := TJvOutlookBarButton(Source).Caption;
     ImageIndex := TJvOutlookBarButton(Source).ImageIndex;
     Down := TJvOutlookBarButton(Source).Down;
+    AutoToggle := TJvOutlookBarButton(Source).AutoToggle;
     Tag := TJvOutlookBarButton(Source).Tag;
     Enabled := TJvOutlookBarButton(Source).Enabled;
     Change;
@@ -665,20 +662,20 @@ end;
 
 procedure TJvOutlookBarButton.SetDown(const Value: Boolean);
 var
-  i: Integer;
+  I: Integer;
 begin
   if Value <> FDown then
   begin
     FDown := Value;
     if FDown then
-      for i := 0 to TJvOutlookBarButtons(Collection).Count - 1 do
-        if TJvOutlookBarButtons(Collection).Items[i] <> Self then
-          TJvOutlookBarButtons(Collection).Items[i].Down := False;
+      for I := 0 to TJvOutlookBarButtons(Collection).Count - 1 do
+        if TJvOutlookBarButtons(Collection).Items[I] <> Self then
+          TJvOutlookBarButtons(Collection).Items[I].Down := False;
     Change;
   end;
 end;
 
-procedure TJvOutlookBarButton.SetEnabled(const Value: boolean);
+procedure TJvOutlookBarButton.SetEnabled(const Value: Boolean);
 begin
   if FEnabled <> Value then
   begin
@@ -786,7 +783,7 @@ end;
 
 procedure TJvOutlookBarPage.Assign(Source: TPersistent);
 var
-  i: integer;
+  I: Integer;
 begin
   if Source is TJvOutlookBarPage then
   begin
@@ -799,8 +796,8 @@ begin
     ParentColor := TJvOutlookBarPage(Source).ParentColor;
     Enabled := TJvOutlookBarPage(Source).Enabled;
     Buttons.Clear;
-    for i := 0 to TJvOutlookBarPage(Source).Buttons.Count - 1 do
-      Buttons.Add.Assign(TJvOutlookBarPage(Source).Buttons[i]);
+    for I := 0 to TJvOutlookBarPage(Source).Buttons.Count - 1 do
+      Buttons.Add.Assign(TJvOutlookBarPage(Source).Buttons[I]);
     Change;
   end
   else
@@ -864,7 +861,7 @@ begin
   FParentFont := False;
 end;
 
-procedure TJvOutlookBarPage.SetEnabled(const Value: boolean);
+procedure TJvOutlookBarPage.SetEnabled(const Value: Boolean);
 begin
   if FEnabled <> Value then
   begin
@@ -980,7 +977,8 @@ end;
 function TJvOutlookBarPage.GetDownIndex: Integer;
 begin
   for Result := 0 to Buttons.Count - 1 do
-    if Buttons[Result].Down then Exit;
+    if Buttons[Result].Down then
+      Exit;
   Result := -1;
 end;
 
@@ -1046,25 +1044,11 @@ begin
     TJvCustomOutlookBar(Owner).Repaint;
 end;
 
+//=== TJvThemedTopBottomButton =================================================
+
 
 
 //=== TJvCustomOutlookBar ====================================================
-
-procedure TJvCustomOutlookBar.DoDwnClick(Sender: TObject);
-begin
-  if FBtmButton.Visible then
-    with Pages[ActivePageIndex] do
-      if TopButtonIndex < Buttons.Count then
-        TopButtonIndex := TopButtonIndex + 1;
-end;
-
-procedure TJvCustomOutlookBar.DoUpClick(Sender: TObject);
-begin
-  if FTopButton.Visible then
-    with Pages[ActivePageIndex] do
-      if TopButtonIndex > 0 then
-        TopButtonIndex := TopButtonIndex - 1;
-end;
 
 constructor TJvCustomOutlookBar.Create(AOwner: TComponent);
 var
@@ -1076,9 +1060,9 @@ begin
   IncludeThemeStyle(Self, [csNeedsBorderPaint]);
   Bmp := TBitmap.Create;
   try
-
+    
     FTopButton := TJvRepeatButton.Create(Self);
-
+    
     with FTopButton do
     begin
       Parent := Self;
@@ -1091,9 +1075,9 @@ begin
         Top := -1000;
     end;
 
-
+    
     FBtmButton := TJvRepeatButton.Create(Self);
-
+    
     with FBtmButton do
     begin
       Parent := Self;
@@ -1130,7 +1114,7 @@ begin
   FNextActivePage := -1;
   FLastButtonIndex := -1;
   FPressedButtonIndex := -1;
-
+  
   ActivePageIndex := 0;
 end;
 
@@ -1142,6 +1126,22 @@ begin
   FPageChangeLink.Free;
   FPages.Free;
   inherited Destroy;
+end;
+
+procedure TJvCustomOutlookBar.DoDwnClick(Sender: TObject);
+begin
+  if FBtmButton.Visible then
+    with Pages[ActivePageIndex] do
+      if TopButtonIndex < Buttons.Count then
+        TopButtonIndex := TopButtonIndex + 1;
+end;
+
+procedure TJvCustomOutlookBar.DoUpClick(Sender: TObject);
+begin
+  if FTopButton.Visible then
+    with Pages[ActivePageIndex] do
+      if TopButtonIndex > 0 then
+        TopButtonIndex := TopButtonIndex - 1;
 end;
 
 
@@ -1158,22 +1158,24 @@ begin
   if Operation = opRemove then
   begin
     if AComponent = FLargeImages then
-      LargeImages := nil;
+      LargeImages := nil
+    else
     if AComponent = FSmallImages then
-      SmallImages := nil;
+      SmallImages := nil
+    else
     if AComponent = FPageImages then
       PageImages := nil;
   end;
 end;
 
-procedure TJvCustomOutlookBar.DrawPageButton(R: TRect; Index: integer; Pressed: Boolean);
+procedure TJvCustomOutlookBar.DrawPageButton(R: TRect; Index: Integer; Pressed: Boolean);
 var
   SavedDC, ATop: Integer;
   SavedColor: TColor;
   Flags: Cardinal;
+  HasImage: Boolean;
 begin
-  ATop := R.Top;
-  Flags := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
+  ATop := R.Top + 1;
   if Pressed then
   begin
     if BorderStyle = bsNone then
@@ -1194,44 +1196,45 @@ begin
       Frame3D(Canvas, R, clBtnFace, clBtnShadow, 1);
     end;
   end;
-  if Assigned(PageImages) and (Pages[Index].ImageIndex >= 0) and (Pages[Index].ImageIndex < PageImages.Count) then
-  begin
-    SavedDC := SaveDC(Canvas.Handle);
-    try
-      case Pages[Index].Alignment of
-        taLeftJustify:
-          begin
-            PageImages.Draw(Canvas, 4, ATop + 1, Pages[Index].ImageIndex, itImage, Pages[Index].Enabled);
-            Inc(R.Left, PageImages.Width + 8);
-          end;
-        taCenter: // draw images to the left but don't offset the text
-          begin
-            PageImages.Draw(Canvas, 4, ATop + 2, Pages[Index].ImageIndex, itImage, Pages[Index].Enabled);
-          end;
-        taRightJustify:
-          begin
-            PageImages.Draw(Canvas, R.Right - PageImages.Width - 4, ATop + 2,
-              Pages[Index].ImageIndex, itImage, Pages[Index].Enabled);
-            Dec(R.Right, PageImages.Width + 8);
-          end;
-      end;
-    finally
-      RestoreDC(Canvas.Handle, SavedDC);
-    end;
-  end
-  else
+  Flags := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
+  HasImage := Assigned(PageImages) and (Pages[Index].ImageIndex >= 0) and (Pages[Index].ImageIndex < PageImages.Count);
+  SavedDC := SaveDC(Canvas.Handle);
+  try
     case Pages[Index].Alignment of
       taLeftJustify:
         begin
+          if HasImage then
+          begin
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+              itImage, Pages[Index].Enabled);
+            Inc(R.Left, PageImages.Width + 8);
+          end
+          else
+            Inc(R.Left, 4);
           Flags := DT_LEFT or DT_VCENTER or DT_SINGLELINE;
-          Inc(R.Left, 2);
+        end;
+      taCenter:
+        if HasImage then
+        begin
+          PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+            itImage, Pages[Index].Enabled);
+          Inc(R.Left, PageImages.Width + 4);
         end;
       taRightJustify:
         begin
+          if HasImage then
+          begin
+            PageImages.Draw(Canvas, 4, ATop, Pages[Index].ImageIndex,
+              itImage, Pages[Index].Enabled);
+            Inc(R.Left, PageImages.Width + 8);
+          end;
+          Dec(R.Right, 4);
           Flags := DT_RIGHT or DT_VCENTER or DT_SINGLELINE;
-          Dec(R.Right, 2);
         end;
     end;
+  finally
+    RestoreDC(Canvas.Handle, SavedDC);
+  end;
   SetBkMode(Canvas.Handle, TRANSPARENT);
   OffsetRect(R, 0, -1);
   SavedColor := Canvas.Font.Color;
@@ -1240,11 +1243,17 @@ begin
     begin
       OffsetRect(R, 1, 1);
       Canvas.Font.Color := clWhite;
-      DrawTextW(Canvas.Handle, PWideChar(Pages[Index].Caption), -1, R, Flags);
+      
+      
+      DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
+      
       OffsetRect(R, -1, -1);
       Canvas.Font.Color := clGrayText;
     end;
-    DrawTextW(Canvas, PWideChar(Pages[Index].Caption), -1, R, Flags);
+    
+    
+    DrawText(Canvas, Pages[Index].Caption, -1, R, Flags or DT_END_ELLIPSIS);
+    
   finally
     Canvas.Font.Color := SavedColor;
   end;
@@ -1254,7 +1263,7 @@ function TJvCustomOutlookBar.DrawTopPages: Integer;
 var
   R: TRect;
   I: Integer;
-
+  
 begin
   Result := -1;
   if csDestroying in ComponentState then
@@ -1265,7 +1274,7 @@ begin
   begin
     if DoDrawPageButton(R, I, FPressedPageBtn = I) then
     begin
-
+      
       begin
         Canvas.Brush.Color := clBtnFace;
         Canvas.FillRect(R);
@@ -1287,9 +1296,9 @@ var
   I, H: Integer;
   R, R2, R3: TRect;
   C: TColor;
-  SavedDC: integer;
+  SavedDC: Integer;
   SavedColor: TColor;
-
+  
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1302,14 +1311,14 @@ begin
   C := Canvas.Pen.Color;
   Canvas.Font := Pages[Index].Font;
 
-
+  
   try
     Canvas.Brush.Style := bsClear;
     for I := Pages[Index].TopButtonIndex to Pages[Index].Buttons.Count - 1 do
     begin
       Canvas.Font := Pages[Index].Font;
 //      Canvas.Rectangle(R);  // DEBUG
-
+      
       if Pages[Index].Buttons[I].Down then
       begin
         Canvas.Font := Pages[Index].DownFont;
@@ -1325,7 +1334,8 @@ begin
                 try
                   if LargeImages <> nil then
                     LargeImages.Draw(Canvas, R.Left + ((R.Right - R.Left) - LargeImages.Width) div 2, R.Top + 4,
-                      Pages[Index].Buttons[I].ImageIndex, itImage,
+                      Pages[Index].Buttons[I].ImageIndex,
+                      itImage, 
                       Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
@@ -1339,8 +1349,11 @@ begin
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
-                DrawTextW(Canvas.Handle, PWideChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                
+                
+                DrawText(Canvas, Pages[Index].Buttons[I].Caption, -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+                
               finally
                 Canvas.Font.Color := SavedColor;
               end;
@@ -1352,8 +1365,10 @@ begin
                 SavedDC := SaveDC(Canvas.Handle);
                 try
                   if SmallImages <> nil then
-                    SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2, Pages[Index].Buttons[I].ImageIndex,
-                     itImage, Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
+                    SmallImages.Draw(Canvas, R.Left + 2, R.Top + 2,
+                      Pages[Index].Buttons[I].ImageIndex,
+                      itImage, 
+                      Pages[Index].Enabled and Pages[Index].Buttons[I].Enabled);
                 finally
                   RestoreDC(Canvas.Handle, SavedDC);
                 end;
@@ -1366,8 +1381,12 @@ begin
                   else
                     Canvas.Font.Color := clGrayText;
                 end;
-                DrawTextW(Canvas.Handle, PWideChar(Pages[Index].Buttons[I].Caption), -1, R3,
+                InflateRect(R3, -4, 0);
+                
+                
+                DrawText(Canvas, Pages[Index].Buttons[I].Caption, -1, R3,
                   DT_EXPANDTABS or DT_SINGLELINE or DT_LEFT or DT_VCENTER or DT_NOCLIP);
+                
               finally
                 Canvas.Font.Color := SavedColor;
               end;
@@ -1406,11 +1425,13 @@ begin
   // button when the bottom of the last button is beneath the edge
   if TopButton.Visible then
     TopButton.SetBounds(ClientWidth - 20, R.Top + 4, 16, 16)
-  else if csDesigning in ComponentState then
+  else
+  if csDesigning in ComponentState then
     TopButton.Top := -1000;
   if BtmButton.Visible then
     BtmButton.SetBounds(ClientWidth - 20, R.Bottom - 20, 16, 16)
-  else if csDesigning in ComponentState then
+  else
+  if csDesigning in ComponentState then
     BtmButton.Top := -1000;
   TopButton.Enabled := TopButton.Visible and Pages[Index].Enabled;
   BtmButton.Enabled := BtmButton.Visible and Pages[Index].Enabled;
@@ -1455,7 +1476,7 @@ begin
     begin
       if not DrawPicture(R, Pages[PageIndex].Picture) then
       begin
-
+        
           Canvas.FillRect(R);
       end;
     end;
@@ -1473,7 +1494,7 @@ procedure TJvCustomOutlookBar.DrawBottomPages(StartIndex: Integer);
 var
   R: TRect;
   I: Integer;
-
+  
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1482,7 +1503,7 @@ begin
   begin
     if DoDrawPageButton(R, I, FPressedPageBtn = I) then
     begin
-
+      
       begin
         Canvas.Brush.Color := clBtnFace;
         Canvas.FillRect(R);
@@ -1529,11 +1550,11 @@ end;
 
 function TJvCustomOutlookBar.GetPageRect(Index: Integer): TRect;
 begin
-  Result := Rect(0, 0, 0, 0);
   if (Index < 0) or (Index >= Pages.Count) then
-    Exit;
-  Result := Rect(0, PageButtonHeight * Index + PageButtonHeight, ClientWidth, ClientHeight - (Pages.Count - Index) *
-    PageButtonHeight + PageButtonHeight);
+    Result := Rect(0, 0, 0, 0)
+  else
+    Result := Rect(0, PageButtonHeight * Index + PageButtonHeight, ClientWidth, ClientHeight - (Pages.Count - Index) *
+      PageButtonHeight + PageButtonHeight);
 end;
 
 function TJvCustomOutlookBar.GetButtonAtPos(P: TPoint): TJvOutlookBarButton;
@@ -1664,7 +1685,7 @@ end;
 procedure TJvCustomOutlookBar.Paint;
 var
   I: Integer;
-
+  
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1672,7 +1693,7 @@ begin
   Canvas.Brush.Color := Self.Color;
   if Pages.Count = 0 then // we only need to draw the background when there are no pages
   begin
-
+    
     begin
       if DoDrawBackGround then
         Canvas.FillRect(ClientRect);
@@ -1700,8 +1721,14 @@ end;
 
 procedure TJvCustomOutlookBar.DoButtonClick(Index: Integer);
 begin
-  if (Index > -1) and Assigned(FOnButtonClick) then
-    FOnButtonClick(Self, Index);
+  if (Index > -1) then
+  begin
+    with ActivePage.Buttons[Index] do
+      if AutoToggle then
+        Down := not Down;
+    if Assigned(FOnButtonClick) then
+      FOnButtonClick(Self, Index);
+  end;
 end;
 
 procedure TJvCustomOutlookBar.SetActivePageIndex(const Value: Integer);
@@ -1797,7 +1824,7 @@ end;
 procedure TJvCustomOutlookBar.DrawButtonFrame(PageIndex, ButtonIndex, PressedIndex: Integer);
 var
   R: TRect;
-
+  
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -1805,9 +1832,9 @@ begin
     (ButtonIndex < Pages[PageIndex].TopButtonIndex) then
     Exit;
   R := GetButtonFrameRect(PageIndex, ButtonIndex);
-  if DoDrawButtonFrame(R, ButtonIndex, PressedIndex = ButtonIndex, True) then
+  if DoDrawButtonFrame(R, ButtonIndex, (PressedIndex = ButtonIndex) or Pages[PageIndex].Buttons[ButtonIndex].Down, True) then
   begin
-
+    
     begin
       if (PressedIndex = ButtonIndex) or (Pages[PageIndex].Buttons[ButtonIndex].Down) then
         Frame3D(Canvas, R, clBlack, clWhite, 1)
@@ -1862,10 +1889,10 @@ var
 begin
   inherited MouseMove(Shift, X, Y);
   { TODO -oJv :
-1. check whether the mouse is down on a page button and whether the mouse has moved from
+    1. check whether the mouse is down on a page button and whether the mouse has moved from
     the currently pressed page button }
   P := GetPageButtonAtPos(Point(X, Y));
-
+  
 
   if FPressedPageBtn > -1 then
   begin
@@ -1876,7 +1903,8 @@ begin
       FPressedPageBtn := -1;
     end;
   end
-  else if (P <> nil) and (P.Index <> ActivePageIndex) and P.Enabled then
+  else
+  if (P <> nil) and (P.Index <> ActivePageIndex) and P.Enabled then
   begin
     if P.Index = FNextActivePage then
     begin
@@ -1959,7 +1987,7 @@ begin
   RedrawRect(FButtonRect);
   FPressedPageBtn := -1;
   FLastButtonIndex := -1;
-
+  
 end;
 
 function TJvCustomOutlookBar.GetButtonHeight(PageIndex: Integer): Integer;
@@ -1997,10 +2025,7 @@ end;
 
 procedure TJvCustomOutlookBar.RedrawRect(R: TRect; Erase: Boolean = False);
 begin
-  
-  QWindows.
-  
-  InvalidateRect(Handle, @R, Erase);
+   QWindows.InvalidateRect(Handle, @R, Erase);
 end;
 
 procedure TJvCustomOutlookBar.CMCaptionEditing(var Msg: TMessage);
@@ -2030,7 +2055,7 @@ begin
   end;
 end;
 
-procedure TJvCustomOutlookBar.DoContextPopup(const MousePos: TPoint;
+procedure TJvCustomOutlookBar.DoContextPopup( const  MousePos: TPoint;
   var Handled: Boolean);
 var
   P: TPersistent;
@@ -2077,7 +2102,8 @@ begin
   begin
     if TObject(LParam) is TJvOutlookBarButton then
       DoButtonEdit(TJvOutlookBarEdit(WParam).Text, TJvOutlookBarButton(LParam))
-    else if TObject(LParam) is TJvOutlookBarPage then
+    else
+    if TObject(LParam) is TJvOutlookBarPage then
       DoPageEdit(TJvOutlookBarEdit(WParam).Text, TJvOutlookBarPage(LParam));
   end;
 end;
@@ -2141,10 +2167,11 @@ end;
 
 
 
+
 function TJvCustomOutlookBar.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 var
-  I:integer;
+  I:Integer;
 begin
   if CanFocus and (ActivePage <> nil) then
   begin
@@ -2161,35 +2188,35 @@ end;
 
 
 function TJvCustomOutlookBar.DoCustomDraw(ARect: TRect; Stage: TJvOutlookBarCustomDrawStage;
-  Index: integer; Down, Inside: boolean): boolean;
+  Index: Integer; Down, Inside: Boolean): Boolean;
 begin
   Result := True;
   if Assigned(FOnCustomDraw) then
     FOnCustomDraw(Self, Canvas, ARect, Stage, Index, Down, Inside, Result);
 end;
 
-function TJvCustomOutlookBar.DoDrawBackGround: boolean;
+function TJvCustomOutlookBar.DoDrawBackGround: Boolean;
 begin
   Result := DoCustomDraw(ClientRect, odsBackground, -1, False, False);
 end;
 
-function TJvCustomOutlookBar.DoDrawButton(ARect: TRect; Index: integer; Down, Inside: boolean): boolean;
+function TJvCustomOutlookBar.DoDrawButton(ARect: TRect; Index: Integer; Down, Inside: Boolean): Boolean;
 begin
   Result := DoCustomDraw(ARect, odsButton, Index, Down, Inside);
 end;
 
-function TJvCustomOutlookBar.DoDrawButtonFrame(ARect: TRect; Index: integer;
-  Down, Inside: boolean): boolean;
+function TJvCustomOutlookBar.DoDrawButtonFrame(ARect: TRect; Index: Integer;
+  Down, Inside: Boolean): Boolean;
 begin
   Result := DoCustomDraw(ARect, odsButtonFrame, Index, Down, Inside);
 end;
 
-function TJvCustomOutlookBar.DoDrawPage(ARect: TRect; Index: integer): boolean;
+function TJvCustomOutlookBar.DoDrawPage(ARect: TRect; Index: Integer): Boolean;
 begin
   Result := DoCustomDraw(ARect, odsPage, Index, False, Index = ActivePageIndex);
 end;
 
-function TJvCustomOutlookBar.DoDrawPageButton(ARect: TRect; Index: integer; Down: boolean): boolean;
+function TJvCustomOutlookBar.DoDrawPageButton(ARect: TRect; Index: Integer; Down: Boolean): Boolean;
 begin
   Result := DoCustomDraw(ARect, odsPageButton, Index, Down, Index = ActivePageIndex);
 end;
