@@ -179,7 +179,7 @@ uses
 var
   JvgLogicItemEditor: TJvgLogicItemEditor;
 
-//=== TJvgLogicsEditor =======================================================
+//=== { TJvgLogicsEditor } ===================================================
 
 function TJvgLogicsEditor.Execute(ALogicProducer: TJvgLogicProducer): Boolean;
 var
@@ -469,7 +469,7 @@ begin
   //  reReslt.Lines.EndUpdate;
 end;
 
-//=== TJvgGroupBoxPlus =======================================================
+//=== { TJvgGroupBoxPlus } ===================================================
 
 procedure TJvgGroupBoxPlus.Paint;
 var
@@ -650,7 +650,7 @@ begin
     FActiveBox.LogicElement.IsFirst := cbMode.ItemIndex = 1;
 end;
 
-//=== TJvgLogicsComponentEditor ==============================================
+//=== { TJvgLogicsComponentEditor } ==========================================
 
 procedure TJvgLogicsComponentEditor.ExecuteVerb(Index: Integer);
 begin
@@ -776,7 +776,7 @@ begin
   end;
 end;
 
-//=== TJvgShapePlus ==========================================================
+//=== { TJvgShapePlus } ======================================================
 
 procedure TJvgShapePlus.Paint;
 var

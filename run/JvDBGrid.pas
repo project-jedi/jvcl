@@ -407,7 +407,7 @@ begin
     Grid.InvalidateCell(I, Row);
 end;
 
-//=== TInternalInplaceEdit ===================================================
+//=== { TInternalInplaceEdit } ===============================================
 
 {$IFDEF COMPILER6_UP}
 
@@ -619,7 +619,7 @@ end;
 
 {$ENDIF COMPILER6_UP}
 
-//=== TJvDBGrid ==============================================================
+//=== { TJvDBGrid } ==========================================================
 
 constructor TJvDBGrid.Create(AOwner: TComponent);
 var
@@ -2793,7 +2793,7 @@ begin
   inherited;
 end;
 
-//=== TJvSelectDialogColumnStrings ===========================================
+//=== { TJvSelectDialogColumnStrings } =======================================
 
 constructor TJvSelectDialogColumnStrings.Create;
 begin

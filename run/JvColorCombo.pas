@@ -376,7 +376,7 @@ begin
     Include(Result, odSelected);
 end;
 
-//=== TJvColorComboBox =======================================================
+//=== { TJvColorComboBox } ===================================================
 
 constructor TJvColorComboBox.Create(AOwner: TComponent);
 begin
@@ -834,7 +834,7 @@ begin
     GetColors;
 end;
 
-//=== TJvFontComboBox ========================================================
+//=== { TJvFontComboBox } ====================================================
 
 constructor TJvFontComboBox.Create(AOwner: TComponent);
 begin

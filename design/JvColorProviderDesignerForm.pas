@@ -131,7 +131,7 @@ begin
   Form.BringToFront;
 end;
 
-//=== TfrmJvColorProviderDesigner ============================================
+//=== { TfrmJvColorProviderDesigner } ========================================
 
 function TfrmJvColorProviderDesigner.GetProvider: IJvDataProvider;
 begin

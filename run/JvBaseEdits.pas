@@ -362,7 +362,7 @@ begin
     Result := S[1] + Result;
 end;
 
-//=== TJvCustomNumEdit =======================================================
+//=== { TJvCustomNumEdit } ===================================================
 
 constructor TJvCustomNumEdit.Create(AOwner: TComponent);
 begin
@@ -905,7 +905,7 @@ begin
   Invalidate;
 end;
 
-//=== TJvxCurrencyEdit =======================================================
+//=== { TJvxCurrencyEdit } ===================================================
 
 constructor TJvxCurrencyEdit.Create(AOwner: TComponent);
 begin
@@ -948,7 +948,7 @@ begin
   Result := Format('%s;-%s', [Result, Result]);
 end;
 
-//=== TJvCustomCalcEdit ======================================================
+//=== { TJvCustomCalcEdit } ==================================================
 
 constructor TJvCustomCalcEdit.Create(AOwner: TComponent);
 begin

@@ -196,7 +196,7 @@ begin
   end;
 end;
 
-//=== TJvValidatorComponent ==================================================
+//=== { TJvValidatorComponent } ==============================================
 
 procedure TJvValidatorComponent.ExecuteVerb(Index: Integer);
 begin
@@ -533,7 +533,7 @@ begin
   ToolBar1.Width := 0;
 end;
 
-//=== TJvPropertyValidateProperty ============================================
+//=== { TJvPropertyValidateProperty } ========================================
 
 function TJvPropertyValidateProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -577,7 +577,7 @@ end;
 
 {$IFNDEF COMPILER6_UP}
 
-//=== TJvValidationSummaryProperty ===========================================
+//=== { TJvValidationSummaryProperty } =======================================
 
 procedure TJvValidationSummaryProperty.GetValues(Proc: TGetStrProc);
 var
@@ -590,7 +590,7 @@ begin
       Proc(Designer.Form.Components[I].Name);
 end;
 
-//=== TJvErrorIndicatorProperty ==============================================
+//=== { TJvErrorIndicatorProperty } ==========================================
 
 procedure TJvErrorIndicatorProperty.GetValues(Proc: TGetStrProc);
 var

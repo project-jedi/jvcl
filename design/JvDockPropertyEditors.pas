@@ -82,7 +82,7 @@ resourcestring
 
 {$IFNDEF USEJVCL}
 
-//=== TJvDockControlEditor ===================================================
+//=== { TJvDockControlEditor } ===============================================
 
 procedure TJvDockControlEditor.ExecuteVerb(Index: Integer);
 var
@@ -124,7 +124,7 @@ begin
   Result := 1;
 end;
 
-//=== TJvDockStyleEditor =====================================================
+//=== { TJvDockStyleEditor } =================================================
 
 procedure TJvDockStyleEditor.ExecuteVerb(Index: Integer);
 begin
@@ -151,7 +151,7 @@ end;
 
 {$ENDIF USEJVCL}
 
-//=== TJvDockVIDTabPageControlEditor =========================================
+//=== { TJvDockVIDTabPageControlEditor } =====================================
 
 procedure TJvDockVIDTabPageControlEditor.ExecuteVerb(Index: Integer);
 var

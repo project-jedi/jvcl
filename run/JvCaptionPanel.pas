@@ -196,7 +196,7 @@ implementation
 uses
   JvConsts;
 
-//=== TJvCapBtn ==============================================================
+//=== { TJvCapBtn } ==========================================================
 
 constructor TJvCapBtn.Create(AOwner: TComponent);
 begin
@@ -381,7 +381,7 @@ begin
   {$ENDIF VisualCLX}
 end;
 
-//=== TJvCaptionPanel ========================================================
+//=== { TJvCaptionPanel } ====================================================
 
 constructor TJvCaptionPanel.Create(AOwner: TComponent);
 var

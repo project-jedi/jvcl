@@ -462,7 +462,7 @@ begin
   Result := InnerRect;
 end;
 
-//=== TJvBrushPattern ========================================================
+//=== { TJvBrushPattern } ====================================================
 
 constructor TJvBrushPattern.Create;
 begin
@@ -518,7 +518,7 @@ begin
   end;
 end;
 
-//=== TJvCustomItemViewerOptions =============================================
+//=== { TJvCustomItemViewerOptions } =========================================
 
 constructor TJvCustomItemViewerOptions.Create(AOwner: TJvCustomItemViewer);
 begin
@@ -731,7 +731,7 @@ begin
   end;
 end;
 
-//=== TJvViewerItem ==========================================================
+//=== { TJvViewerItem } ======================================================
 
 constructor TJvViewerItem.Create(AOwner: TJvCustomItemViewer);
 begin
@@ -784,7 +784,7 @@ begin
   end;
 end;
 
-//=== TJvCustomItemViewer ====================================================
+//=== { TJvCustomItemViewer } ================================================
 
 constructor TJvCustomItemViewer.Create(AOwner: TComponent);
 begin
@@ -1961,7 +1961,7 @@ begin
   UpdateAll;
 end;
 
-//=== TViewerDrawImageList ===================================================
+//=== { TViewerDrawImageList } ===============================================
 
 procedure TViewerDrawImageList.Initialize;
 begin

@@ -296,7 +296,7 @@ begin
   until CurChar = #0;
 end;
 
-//=== TJvQuery ===============================================================
+//=== { TJvQuery } ===========================================================
 
 constructor TJvQuery.Create(AOwner: TComponent);
 begin
@@ -659,7 +659,7 @@ begin
 end;
 {$ENDIF DEBUG}
 
-//=== TJvQueryThread =========================================================
+//=== { TJvQueryThread } =====================================================
 
 constructor TJvQueryThread.Create(Data: TBDEDataSet; RunMode: TRunQueryMode;
   Prepare, CreateSuspended: Boolean);
@@ -752,7 +752,7 @@ begin
   end;
 end;
 
-//=== TJvSQLScript ===========================================================
+//=== { TJvSQLScript } =======================================================
 
 constructor TJvSQLScript.Create(AOwner: TComponent);
 begin

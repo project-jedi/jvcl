@@ -309,7 +309,7 @@ begin
     Result := Value;
 end;
 
-//=== TJvThumbTitle ==========================================================
+//=== { TJvThumbTitle } ======================================================
 
 constructor TJvThumbTitle.Create(AOwner: TComponent);
 begin
@@ -420,7 +420,7 @@ begin
     inherited KeyPress(Key);
 end;
 
-//=== TJvBaseThumbImage ======================================================
+//=== { TJvBaseThumbImage } ==================================================
 
 constructor TJvBaseThumbImage.Create(AOwner: TComponent);
 begin
@@ -488,7 +488,7 @@ begin
     //Msg.Result := Hits[IgnoreMouse];
 end;
 
-//=== TJvBaseThumbnail =======================================================
+//=== { TJvBaseThumbnail } ===================================================
 
 constructor TJvBaseThumbnail.Create(AOwner: TComponent);
 begin
@@ -599,7 +599,7 @@ begin
     inherited DblClick;
 end;
 
-//=== TJvBaseThumbView =======================================================
+//=== { TJvBaseThumbView } ===================================================
 
 constructor TJvBaseThumbView.Create(AOwner: TComponent);
 begin
@@ -617,7 +617,7 @@ begin
 end;
 }
 
-//=== TFileName ==============================================================
+//=== { TFileName } ==========================================================
 
 procedure TFileName.SetName(NewName: string);
 begin

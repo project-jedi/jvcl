@@ -220,7 +220,7 @@ begin
   end;
 end;
 
-//=== TJvSpeedbarCompEditor ==================================================
+//=== { TJvSpeedbarCompEditor } ==============================================
 
 procedure TJvSpeedbarCompEditor.ExecuteVerb(Index: Integer);
 begin
@@ -243,7 +243,7 @@ begin
   Result := 1;
 end;
 
-//=== TJvSpeedbarEditor ======================================================
+//=== { TJvSpeedbarEditor } ==================================================
 
 const
   MaxBtnListHeight = 158;

@@ -874,7 +874,7 @@ begin
   end;
 end;
 
-{ TJvBrowseForFolderDialog }
+//=== { TJvBrowseForFolderDialog } ===========================================
 
 constructor TJvBrowseForFolderDialog.Create(AOwner: TComponent);
 begin

@@ -120,7 +120,7 @@ begin
   Form.BringToFront;
 end;
 
-//=== TfrmJvDataConsumerItemSelect ===========================================
+//=== { TfrmJvDataConsumerItemSelect } =======================================
 
 function TfrmJvDataConsumerItemSelect.GetConsumer: TJvDataConsumer;
 begin

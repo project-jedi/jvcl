@@ -76,7 +76,7 @@ type
 
 implementation
 
-//=== TJvCommStatus ==========================================================
+//=== { TJvCommStatus } ======================================================
 
 constructor TJvCommStatus.Create(AOwner: TComponent);
 begin
@@ -166,7 +166,7 @@ begin
   OnChange(Self);
 end;
 
-//=== TJvCommWatcher =========================================================
+//=== { TJvCommWatcher } =====================================================
 
 procedure TJvCommWatcher.Changed;
 begin

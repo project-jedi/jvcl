@@ -56,7 +56,7 @@ implementation
 uses
   Forms, Dialogs;
 
-//=== TCSVFileNameProperty ===================================================
+//=== { TCSVFileNameProperty } ===============================================
 
 procedure TCSVFileNameProperty.Edit;
 begin
@@ -75,7 +75,7 @@ begin
   Result := [paDialog];
 end;
 
-//=== TCSVFieldProperty ======================================================
+//=== { TCSVFieldProperty } ==================================================
 
 function TCSVFieldProperty.GetAttributes: TPropertyAttributes;
 begin

@@ -110,7 +110,7 @@ implementation
 uses
   JvBdeUtils;
 
-//=== TJvKeyDataLink =========================================================
+//=== { TJvKeyDataLink } =====================================================
 
 type
   TJvKeyDataLink = class(TDataLink)
@@ -154,7 +154,7 @@ begin
   { ignore this data event }
 end;
 
-//=== TJvDBIndexCombo ========================================================
+//=== { TJvDBIndexCombo } ====================================================
 
 constructor TJvDBIndexCombo.Create(AOwner: TComponent);
 begin

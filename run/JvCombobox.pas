@@ -268,7 +268,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvConsts, JvResources;
 
-//=== TJvComboBoxStrings =====================================================
+//=== { TJvComboBoxStrings } =================================================
 
 constructor TJvComboBoxStrings.Create;
 begin
@@ -503,7 +503,7 @@ begin
   end;
 end;
 
-//=== TJvCustomComboBox ======================================================
+//=== { TJvCustomComboBox } ==================================================
 
 type
   PStrings = ^TStrings;

@@ -189,7 +189,7 @@ uses
   {$ENDIF COMPILER6_UP}
   SysUtils;
 
-//=== TJvCustomDBDatePickerEdit ==============================================
+//=== { TJvCustomDBDatePickerEdit } ==========================================
 
 procedure TJvCustomDBDatePickerEdit.Change;
 begin

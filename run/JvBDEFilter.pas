@@ -299,7 +299,7 @@ begin
   TBDENastyDataSet(DataSet).FCanModify := Value;
 end;
 
-//=== TJvFilterDataLink ======================================================
+//=== { TJvFilterDataLink } ==================================================
 
 type
   TJvFilterDataLink = class(TDataLink)
@@ -330,7 +330,7 @@ begin
     FFilter.ActiveChanged;
 end;
 
-//=== TJvDBFilter ============================================================
+//=== { TJvDBFilter } ========================================================
 
 constructor TJvDBFilter.Create(AOwner: TComponent);
 begin

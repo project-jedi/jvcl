@@ -105,7 +105,7 @@ begin
   Dialog.Free;
 end;
 
-//=== TJvgComponentListProperty ==============================================
+//=== { TJvgComponentListProperty } ==========================================
 
 function TJvgComponentListProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -123,7 +123,7 @@ begin
   //  GetComponent(0).Owner.Name
 end;
 
-//=== TJvgComponentListEditor ================================================
+//=== { TJvgComponentListEditor } ============================================
 
 procedure TJvgComponentListEditor.ExecuteVerb(Index: Integer);
 begin
@@ -146,7 +146,7 @@ begin
   Result := 1;
 end;
 
-//=== TJvgCompListEditor =====================================================
+//=== { TJvgCompListEditor } =================================================
 
 procedure TJvgCompListEditor.FormCreate(Sender: TObject);
 begin

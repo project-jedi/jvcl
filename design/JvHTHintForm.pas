@@ -75,7 +75,7 @@ implementation
 {$R *.xfm}
 {$ENDIF VisualCLX}
 
-//=== TJvHintProperty ========================================================
+//=== { TJvHintProperty } ====================================================
 
 procedure TJvHintProperty.Edit;
 var
@@ -102,7 +102,7 @@ begin
   Result := inherited GetAttributes + [paDialog];
 end;
 
-//=== TJvHintEditor ==========================================================
+//=== { TJvHintEditor } ======================================================
 
 procedure TJvHintEditor.HintMemoChange(Sender: TObject);
 begin

@@ -65,7 +65,7 @@ uses
 const
   cGlyphName = 'GLYPH';
 
-//=== TJvAnimatedEditor ======================================================
+//=== { TJvAnimatedEditor } ==================================================
   
 {$IFDEF COMPILER6_UP}
 procedure TJvAnimatedEditor.CheckEdit(const PropertyEditor: IProperty);

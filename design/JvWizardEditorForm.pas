@@ -228,7 +228,7 @@ begin
   end;
 end;
 
-//=== TJvWizardActivePageProperty ============================================
+//=== { TJvWizardActivePageProperty } ========================================
 
 function TJvWizardActivePageProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -249,7 +249,7 @@ begin
   end;
 end;
 
-//=== TJvWizardComponentEditor ===============================================
+//=== { TJvWizardComponentEditor } ===========================================
 
 procedure TJvWizardComponentEditor.AddPage(Page: TJvWizardCustomPage);
 begin
@@ -356,7 +356,7 @@ begin
   end;
 end;
 
-//=== TJvWizardPageListEditor ================================================
+//=== { TJvWizardPageListEditor } ============================================
 
 procedure TJvWizardPageListProperty.Edit;
 begin
@@ -379,7 +379,7 @@ begin
     Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
-//=== TJvWizardPageList Dialog Form ==========================================
+//=== { TJvWizardPageList Dialog Form } ======================================
 
 procedure TJvWizardPageListEditor.UpdatePageList(const CurrItemIndex: Integer);
 var

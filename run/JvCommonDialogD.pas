@@ -95,7 +95,7 @@ begin
     Result := Result or IDF_WARNIFSKIP;
 end;
 
-//=== TJvCommonDialogD =======================================================
+//=== { TJvCommonDialogD } ===================================================
 
 constructor TJvCommonDialogD.Create(AOwner: TComponent);
 begin

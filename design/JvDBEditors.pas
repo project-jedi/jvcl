@@ -70,7 +70,7 @@ implementation
 uses
   DB, TypInfo;
 
-//=== TJvDBStringProperty ====================================================
+//=== { TJvDBStringProperty } ================================================
 
 function TJvDBStringProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -92,7 +92,7 @@ begin
   end;
 end;
 
-//=== TJvDataFieldProperty ===================================================
+//=== { TJvDataFieldProperty } ===============================================
 
 function TJvDataFieldProperty.GetDataSourcePropName: string;
 begin
@@ -115,14 +115,14 @@ begin
   end;
 end;
 
-//=== TJvListFieldProperty ===================================================
+//=== { TJvListFieldProperty } ===============================================
 
 function TJvListFieldProperty.GetDataSourcePropName: string;
 begin
   Result := 'ListSource';
 end;
 
-//=== TJvLookupSourceProperty =======================================================
+//=== { TJvLookupSourceProperty } ===================================================
 
 function TJvLookupSourceProperty.GetDataSourcePropName: string;
 begin

@@ -153,7 +153,7 @@ begin
     Result := AColor;
 end;
 
-// === TJvColorProperty ======================================================
+//=== { TJvColorProperty } ===================================================
 
 function TJvColorProperty.GetValue: string;
 var

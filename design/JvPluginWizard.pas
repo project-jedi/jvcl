@@ -184,7 +184,7 @@ begin
 end;
 *)
 
-//=== TJvPluginWizard ========================================================
+//=== { TJvPluginWizard } ====================================================
 
 function TJvPluginWizard.GetIDString: string;
 begin
@@ -262,7 +262,7 @@ begin
   end;
 end;
 
-//=== TJvPluginProjectCreator ================================================
+//=== { TJvPluginProjectCreator } ============================================
 
 // left empty this makes problems !!
 
@@ -398,7 +398,7 @@ begin
   Result := True;
 end;
 
-//=== TJvOTAFile =============================================================
+//=== { TJvOTAFile } =========================================================
 
 // TJvOTAFile - from Stefaan Lesage
 
@@ -424,7 +424,7 @@ begin
   RegisterCustomModule(TJvPlugIn, TCustomModule);
 end;
 
-//=== TJvPluginModuleCreator =================================================
+//=== { TJvPluginModuleCreator } =============================================
 
 {*****************************************************************************
   Name           : TJvPluginModuleCreator.FormCreated

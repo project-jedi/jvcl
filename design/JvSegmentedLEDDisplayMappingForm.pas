@@ -121,7 +121,7 @@ begin
   Form.BringToFront;
 end;
 
-//=== TfrmJvSLDMappingEditor =================================================
+//=== { TfrmJvSLDMappingEditor } =============================================
 
 function TfrmJvSLDMappingEditor.GetDisplay: TJvCustomSegmentedLEDDisplay;
 begin

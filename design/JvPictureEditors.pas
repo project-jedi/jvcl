@@ -121,7 +121,7 @@ begin
   end;
 end;
 
-//=== TJvPictProperty ========================================================
+//=== { TJvPictProperty } ====================================================
 
 procedure TJvPictProperty.Edit;
 var
@@ -163,7 +163,7 @@ begin
     SetOrdValue(0);
 end;
 
-//=== TJvGraphicPropertyEditor ===============================================
+//=== { TJvGraphicPropertyEditor } ===========================================
 
 procedure TJvGraphicPropertyEditor.Edit;
 var
@@ -212,7 +212,7 @@ begin
     SetOrdValue(0);
 end;
 
-//=== TJvGraphicsEditor ======================================================
+//=== { TJvGraphicsEditor } ==================================================
 
 {$IFDEF COMPILER6_UP}
 procedure TJvGraphicsEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
@@ -232,7 +232,7 @@ begin
   end;
 end;
 
-//=== TJvPictEditor ==========================================================
+//=== { TJvPictEditor } ======================================================
 
 constructor TJvPictEditor.Create(AOwner: TComponent);
 begin

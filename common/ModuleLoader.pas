@@ -327,7 +327,7 @@ end;
 
 {$ENDIF LINUX}
 
-//=== TModuleLoader ==========================================================
+//=== { TModuleLoader } ======================================================
 
 constructor TModuleLoader.Create(const ADLLName: string; LoadMethods: TModuleLoadMethods = []);
 begin

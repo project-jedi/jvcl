@@ -68,7 +68,7 @@ uses
   Controls,
   JvVirtualKeyEditorForm, JvDsgnConsts;
 
-//=== TJvDriverIndexEditor ===================================================
+//=== { TJvDriverIndexEditor } ===============================================
 
 constructor TJvDriverIndexEditor.Create(const ADesigner: IJvFormDesigner;
   APropCount: Integer);
@@ -137,7 +137,7 @@ begin
       [NewIndex, -1, FDrivers.Count - 1]);
 end;
 
-//=== TJvVirtualKeyEditor ====================================================
+//=== { TJvVirtualKeyEditor } ================================================
 
 procedure TJvVirtualKeyEditor.Edit;
 begin

@@ -68,7 +68,7 @@ implementation
 uses
   JvAppStorage, JvAppIniStorage, JvDsgnConsts;
 
-//=== TJvHLEdPropDlgEditor ===================================================
+//=== { TJvHLEdPropDlgEditor } ===============================================
 
 function TJvHLEdPropDlgEditor.GetVerbCount: Integer;
 begin

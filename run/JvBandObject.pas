@@ -191,14 +191,14 @@ begin
   Result := (Sev shl 31) or (Fac shl 16) or Code;
 end;
 
-//=== TzCustomBandObjectFactory ==============================================
+//=== { TzCustomBandObjectFactory } ==========================================
 
 function TzCustomBandObjectFactory.GetClassIDString: string;
 begin
   Result := GUIDToString(ClassID);
 end;
 
-//=== TzToolBandObjectFactory ================================================
+//=== { TzToolBandObjectFactory } ============================================
 
 function MethodToProcedure(Self: TObject; MethodAddr: Pointer): Pointer;
 type
@@ -257,7 +257,7 @@ begin
     inherited UpdateRegistry(Reg);
 end;
 
-//=== TzCatBandObjectFactory =================================================
+//=== { TzCatBandObjectFactory } =============================================
 
 procedure TzCatBandObjectFactory.UpdateRegistry(Reg: Boolean);
 var
@@ -282,14 +282,14 @@ begin
     inherited UpdateRegistry(Reg);
 end;
 
-//=== TzDeskBandObjectFactory ================================================
+//=== { TzDeskBandObjectFactory } ============================================
 
 function TzDeskBandObjectFactory.GetImplCatID: TGUID;
 begin
   Result := StringToGUID(CATID_DESKBAND);
 end;
 
-//=== TzExplorerBarObjectFactory =============================================
+//=== { TzExplorerBarObjectFactory } =========================================
 
 function TzExplorerBarObjectFactory.BarSize: string;
 var
@@ -365,21 +365,21 @@ begin
   end;
 end;
 
-//=== TzInfoBandObjectFactory ================================================
+//=== { TzInfoBandObjectFactory } ============================================
 
 function TzInfoBandObjectFactory.GetImplCatID: TGUID;
 begin
   Result := StringToGUID(CATID_INFOBAND);
 end;
 
-//=== TzCommBandObjectFactory ================================================
+//=== { TzCommBandObjectFactory } ============================================
 
 function TzCommBandObjectFactory.GetImplCatID: TGUID;
 begin
   Result := StringToGUID(CATID_COMMBAND);
 end;
 
-//=== TzCustomBandObject =====================================================
+//=== { TzCustomBandObject } =================================================
 
 procedure TzCustomBandObject.AfterConstruction;
 begin
@@ -886,7 +886,7 @@ begin
   Result := CallNextHookEx(FHook, nCode, wParam, lParam);
 end;
 
-//=== TzContextMenuBandObject ================================================
+//=== { TzContextMenuBandObject } ============================================
 
 // IContextMenu
 

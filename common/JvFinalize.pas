@@ -110,7 +110,7 @@ type
 var
   FinalizeUnitList: TFinalizeUnitItem = nil;
 
-//=== TFinalizeItem ==========================================================
+//=== { TFinalizeItem } ======================================================
 
 constructor TFinalizeItem.Create(const AUnitName: string);
 var
@@ -134,7 +134,7 @@ begin
 end;
 
 
-//=== TFinalizeUnitItem ======================================================
+//=== { TFinalizeUnitItem } ==================================================
 
 constructor TFinalizeUnitItem.Create(AUnitName: string; ANext: TFinalizeUnitItem);
 begin
@@ -256,7 +256,7 @@ type
     destructor Destroy; override;
   end;
 
-//=== TFinalizeProcItem ======================================================
+//=== { TFinalizeProcItem } ==================================================
 
 constructor TFinalizeProcItem.Create(const AUnitName: string;
   AFinalizeProc: TFinalizeProc);
@@ -272,7 +272,7 @@ begin
 end;
 
 
-//=== TFinalizeObjectItem ====================================================
+//=== { TFinalizeObjectItem } ================================================
 
 constructor TFinalizeObjectItem.Create(const AUnitName: string;
   AInstance: TObject);
@@ -288,7 +288,7 @@ begin
 end;
 
 
-//=== TFinalizeObjectNilItem =================================================
+//=== { TFinalizeObjectNilItem } =============================================
 
 constructor TFinalizeObjectNilItem.Create(const AUnitName: string;
   var AReference: TObject);
@@ -305,7 +305,7 @@ begin
 end;
 
 
-//=== TFinalizeFreeAndNilItem ================================================
+//=== { TFinalizeFreeAndNilItem } ============================================
 
 constructor TFinalizeFreeAndNilItem.Create(const AUnitName: string;
   var AReference: TObject);
@@ -325,7 +325,7 @@ begin
 end;
 
 
-//=== TFinalizeMemoryItem ====================================================
+//=== { TFinalizeMemoryItem } ================================================
 
 constructor TFinalizeMemoryItem.Create(const AUnitName: string; APtr: Pointer);
 begin
@@ -341,7 +341,7 @@ begin
 end;
 
 
-//=== TFinalizeMemoryNilItem =================================================
+//=== { TFinalizeMemoryNilItem } =============================================
 
 constructor TFinalizeMemoryNilItem.Create(const AUnitName: string;
   var APtr: Pointer);

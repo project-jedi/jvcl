@@ -50,7 +50,7 @@ type
 
 implementation
 
-//=== TJvUserTableNameProperty ===============================================
+//=== { TJvUserTableNameProperty } ===========================================
 
 procedure TJvUserTableNameProperty.GetValueList(List: TStrings);
 var
@@ -62,7 +62,7 @@ begin
       '*.*', True, False, List);
 end;
 
-//=== TLoginNameFieldProperty ================================================
+//=== { TLoginNameFieldProperty } ============================================
 
 procedure TLoginNameFieldProperty.GetValueList(List: TStrings);
 var

@@ -132,7 +132,7 @@ begin
   end;
 end;
 
-//=== TMinMaxProperty ========================================================
+//=== { TMinMaxProperty } ====================================================
 
 function TMinMaxProperty.GetValue: string;
 var
@@ -161,7 +161,7 @@ begin
     Modified;
 end;
 
-//=== TMinMaxInfoEditDialog ==================================================
+//=== { TMinMaxInfoEditDialog } ==============================================
 
 procedure TMinMaxInfoEditDialog.SetWinMinMaxInfo(Value: TJvWinMinMaxInfo);
 begin

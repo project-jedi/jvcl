@@ -198,7 +198,7 @@ begin
   end;
 end;
 
-//=== TIconListProperty ======================================================
+//=== { TIconListProperty } ==================================================
 
 procedure TIconListProperty.Edit;
 var
@@ -252,7 +252,7 @@ begin
     SetOrdValue(0);
 end;
 
-//=== TIconListDialog ========================================================
+//=== { TIconListDialog } ====================================================
 
 procedure TIconListDialog.LoadAniFile;
 var

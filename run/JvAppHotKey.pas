@@ -93,7 +93,7 @@ begin
 end;
 
 
-//=== TJvApplicationHotKey ===================================================
+//=== { TJvApplicationHotKey } ===============================================
 
 destructor TJvApplicationHotKey.Destroy;
 begin

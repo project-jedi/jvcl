@@ -590,7 +590,7 @@ uses
 const
   TVIS_CHECKED = $2000;
 
-//=== TJvIPAddressRange ======================================================
+//=== { TJvIPAddressRange } ==================================================
 
 constructor TJvIPAddressRange.Create(Control: TWinControl);
 var
@@ -659,7 +659,7 @@ begin
   Change(Index);
 end;
 
-//=== TJvIPEditControlHelper =================================================
+//=== { TJvIPEditControlHelper } =============================================
 
 constructor TJvIPEditControlHelper.Create(AIPAddress: TJvIPAddress);
 begin
@@ -715,7 +715,7 @@ begin
   Dispatch(Msg);
 end;
 
-//=== TJvIPAddress ===========================================================
+//=== { TJvIPAddress } =======================================================
 
 constructor TJvIPAddress.Create(AOwner: TComponent);
 var
@@ -1067,7 +1067,7 @@ begin
   end;
 end;
 
-//=== TJvTabControlPainter ===================================================
+//=== { TJvTabControlPainter } ===============================================
 
 destructor TJvTabControlPainter.Destroy;
 begin
@@ -1117,7 +1117,7 @@ begin
   end;
 end;
 
-//=== TJvTabDefaultPainter ===================================================
+//=== { TJvTabDefaultPainter } ===============================================
 
 constructor TJvTabDefaultPainter.Create(AOwner: TComponent);
 begin
@@ -1368,7 +1368,7 @@ begin
   Result := True;
 end;
 
-//=== TJvTabControl ==========================================================
+//=== { TJvTabControl } ======================================================
 
 constructor TJvTabControl.Create(AOwner: TComponent);
 begin
@@ -1511,7 +1511,7 @@ begin
   end;
 end;
 
-//=== TJvPageControl =========================================================
+//=== { TJvPageControl } =====================================================
 
 constructor TJvPageControl.Create(AOwner: TComponent);
 begin
@@ -1800,7 +1800,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 
-//=== TJvTrackBar ============================================================
+//=== { TJvTrackBar } ========================================================
 
 constructor TJvTrackBar.Create(AOwner: TComponent);
 begin
@@ -1905,7 +1905,7 @@ begin
       inherited;
 end;
 
-//=== TJvTreeNode ============================================================
+//=== { TJvTreeNode } ========================================================
 
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
@@ -1986,7 +1986,7 @@ begin
   end;
 end;
 
-//=== TJvTreeView ============================================================
+//=== { TJvTreeView } ========================================================
 
 const
   AutoScrollMargin = 20;
@@ -2652,7 +2652,7 @@ begin
 end;
 
 
-//=== TJvIPAddressValues =====================================================
+//=== { TJvIPAddressValues } =================================================
 
 procedure TJvIPAddressValues.Change;
 begin

@@ -140,7 +140,7 @@ begin
     Result := cbrUSEDEF;
 end;
 
-//=== TJvDBCallback ==========================================================
+//=== { TJvDBCallback } ======================================================
 
 constructor TJvDBCallback.Create(AOwner: TObject; CBType: CBType;
   CBBufSize: Cardinal; CallbackEvent: TJvDBCallbackEvent;
@@ -227,7 +227,7 @@ begin
   end;
 end;
 
-//=== TJvSessionLink =========================================================
+//=== { TJvSessionLink } =====================================================
 
 type
   TJvSessionLink = class(TDatabase)
@@ -248,7 +248,7 @@ begin
   inherited Destroy;
 end;
 
-//=== TJvDBProgress ==========================================================
+//=== { TJvDBProgress } ======================================================
 
 constructor TJvDBProgress.Create(AOwner: TComponent);
 begin

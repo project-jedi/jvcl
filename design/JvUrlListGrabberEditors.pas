@@ -72,7 +72,7 @@ uses
 const
   None: string = '(none)';
 
-//=== TJvUrlGrabberDefaultPropertiesListEditor ===============================
+//=== { TJvUrlGrabberDefaultPropertiesListEditor } ===========================
 
 function TJvUrlGrabberDefaultPropertiesListEditor.GetAttributes: TPropertyAttributes;
 begin
@@ -115,7 +115,7 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-//=== TJvUrlGrabberDefaultPropertiesEditor ===================================
+//=== { TJvUrlGrabberDefaultPropertiesEditor } ===============================
 
 function TJvUrlGrabberDefaultPropertiesEditor.GetName: string;
 var

@@ -293,7 +293,7 @@ begin
   end;
 end;
 
-//=== TJvDataProviderItem ====================================================
+//=== { TJvDataProviderItem } ================================================
 
 constructor TJvDataProviderItem.Create(AnItem: IJvDataItem);
 var
@@ -340,7 +340,7 @@ begin
     Result := Result + ': ' + RsNoItem;
 end;
 
-//=== TJvDataItemTextPropView ================================================
+//=== { TJvDataItemTextPropView } ============================================
 
 type
   TJvDataItemTextPropView = class(TJvDataProviderItem)
@@ -361,7 +361,7 @@ begin
   (Item as IJvDataItemText).Caption := Value;
 end;
 
-//=== TJvDataItemImagePropView ===============================================
+//=== { TJvDataItemImagePropView } ===========================================
 
 type
   TJvDataItemImagePropView = class(TJvDataProviderItem)
@@ -408,7 +408,7 @@ begin
   (Item as IJvDataItemImage).SelectedIndex := Value;
 end;
 
-//=== TJvDataItemsImagesPropView =============================================
+//=== { TJvDataItemsImagesPropView } =========================================
 
 type
   TJvDataItemsImagesPropView = class(TJvDataProviderItem)

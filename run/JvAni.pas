@@ -152,7 +152,7 @@ uses
   Math,
   JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
 
-//=== TJvAnimatedCursorImage helper ==========================================
+//=== { TJvAnimatedCursorImage helper } ======================================
 
 // (rom) created because JvAnimatedEditor.pas and JvIconListForm.pas contained the same code
 
@@ -285,7 +285,7 @@ type
     DIBOffset: Longint;
   end;
 
-//=== TJvIconFrame ===========================================================
+//=== { TJvIconFrame } =======================================================
 
 constructor TJvIconFrame.Create(JifRate: Longint);
 begin
@@ -316,7 +316,7 @@ begin
     inherited Assign(Source);
 end;
 
-//=== TJvAni =================================================================
+//=== { TJvAni } =============================================================
 
 constructor TJvAni.Create;
 begin

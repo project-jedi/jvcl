@@ -98,7 +98,7 @@ begin
   end;
 end;
 
-//=== TJvSelectDataSetForm ===================================================
+//=== { TJvSelectDataSetForm } ===============================================
 
 procedure TJvSelectDataSetForm.AddDataSet(const S: string);
 begin

@@ -129,7 +129,7 @@ uses
 {$R *.xfm}
 {$ENDIF VisualCLX}
 
-//=== TJvFormStorageEditor ===================================================
+//=== { TJvFormStorageEditor } ===============================================
 
 procedure TJvFormStorageEditor.ExecuteVerb(Index: Integer);
 var
@@ -164,7 +164,7 @@ begin
   Result := 1;
 end;
 
-//=== TJvStoredPropsProperty =================================================
+//=== { TJvStoredPropsProperty } =============================================
 
 function TJvStoredPropsProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -194,7 +194,7 @@ begin
   end;
 end;
 
-//=== TJvFormPropsDlg ========================================================
+//=== { TJvFormPropsDlg } ====================================================
 
 function ShowStorageDesigner(ACompOwner: TComponent; ADesigner: IDesigner;
   AStoredList: TStrings; var Options: TPlacementOptions): Boolean;

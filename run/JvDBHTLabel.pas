@@ -149,7 +149,7 @@ begin
   Result := Result + Str;
 end;
 
-//=== TJvDBHTLabel ===========================================================
+//=== { TJvDBHTLabel } =======================================================
 
 constructor TJvDBHTLabel.Create(AOwner: TComponent);
 begin

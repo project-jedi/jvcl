@@ -217,7 +217,7 @@ begin
   end;
 end;
 
-//=== TJvActivePageProperty ==================================================
+//=== { TJvActivePageProperty } ==============================================
 
 function TJvActivePageProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -238,7 +238,7 @@ begin
   end;
 end;
 
-//=== TJvSettingsTreeImagesProperty ==========================================
+//=== { TJvSettingsTreeImagesProperty } ======================================
 
 function TJvSettingsTreeImagesProperty.ImageList: TCustomImageList;
 var
@@ -254,7 +254,7 @@ begin
     Result := nil;
 end;
 
-//=== TJvShowDesignCaptionProperty ===========================================
+//=== { TJvShowDesignCaptionProperty } =======================================
 
 function TJvShowDesignCaptionProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -264,7 +264,7 @@ end;
 
 {$IFNDEF COMPILER6_UP}
 
-//=== TJvInterfaceProperty ===================================================
+//=== { TJvInterfaceProperty } ===============================================
 
 function TJvInterfaceProperty.IntfSupported(AComponent: TComponent): Boolean;
 var
@@ -303,7 +303,7 @@ begin
   SetOrdValue(Longint(Comp));
 end;
 
-//=== TJvPageListProperty ====================================================
+//=== { TJvPageListProperty } ================================================
 
 function TJvPageListProperty.GetInterfaceGUID: TGUID;
 begin

@@ -597,7 +597,7 @@ begin
   end;
 end;
 
-//=== TJvCloneDataset ========================================================
+//=== { TJvCloneDataset } ====================================================
 
 procedure TJvCloneDataset.SetSourceHandle(ASourceHandle: HDBICur);
 begin
@@ -621,7 +621,7 @@ begin
   FReadOnly := Value;
 end;
 
-//=== TJvCloneDbDataset ======================================================
+//=== { TJvCloneDbDataset } ==================================================
 
 procedure TJvCloneDbDataset.InitFromDataSet(Source: TDBDataSet; Reset: Boolean);
 begin
@@ -664,7 +664,7 @@ begin
   FReadOnly := Value;
 end;
 
-//=== TJvCloneTable ==========================================================
+//=== { TJvCloneTable } ======================================================
 
 procedure TJvCloneTable.InitFromTable(SourceTable: TTable; Reset: Boolean);
 begin
@@ -720,7 +720,7 @@ begin
   Check(DbiCloneCursor(FSourceHandle, FReadOnly, False, Result));
 end;
 
-//=== TJvDBLocate ============================================================
+//=== { TJvDBLocate } ========================================================
 
 function CreateDbLocate: TJvLocateObject;
 begin

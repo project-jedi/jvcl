@@ -60,7 +60,7 @@ type
 
 implementation
 
-//=== TJvRollOutOptionsImagesProperty ========================================
+//=== { TJvRollOutOptionsImagesProperty } ====================================
 
 function TJvRollOutOptionsImagesProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -72,7 +72,7 @@ begin
   Result := TJvRollOutImageOptions(GetComponent(0)).Images;
 end;
 
-//=== TJvRollOutDefaultEditor ================================================
+//=== { TJvRollOutDefaultEditor } ============================================
 
 procedure TJvRollOutDefaultEditor.Edit;
 var

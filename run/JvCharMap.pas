@@ -482,7 +482,7 @@ begin
 end;
 
 {$IFDEF MSWINDOWS}
-//=== TShadowWindow ==========================================================
+//=== { TShadowWindow } ======================================================
 
 type
   TDynamicSetLayeredWindowAttributes = function(HWnd: THandle; crKey: COLORREF; bAlpha: Byte; dwFlags: DWORD): Boolean; stdcall;
@@ -594,7 +594,7 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-//=== TJvCustomCharMap =======================================================
+//=== { TJvCustomCharMap } ===================================================
 
 constructor TJvCustomCharMap.Create(AOwner: TComponent);
 begin
@@ -1204,7 +1204,7 @@ begin
 end;
 {$ENDIF VCL}
 
-//=== TCharZoomPanel =========================================================
+//=== { TCharZoomPanel } =====================================================
 
 constructor TCharZoomPanel.Create(AOwner: TComponent);
 begin
@@ -1453,7 +1453,7 @@ begin
   end;
 end;
 
-//=== TJvCharMapRange ========================================================
+//=== { TJvCharMapRange } ====================================================
 
 constructor TJvCharMapRange.Create;
 begin
