@@ -23,184 +23,189 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
 {$I JVCL.INC}
+
 unit JvTurtle;
 
 interface
-uses Windows, Messages, math, SysUtils, Classes, Graphics, Controls;
+
+uses
+  Windows, Messages, Math, SysUtils, Classes, Graphics, Controls;
 
 type
-  TRequestBackGroundEvent = procedure(sender: Tobject; background: string) of object;
-  TRequestFilterEvent = procedure(sender: Tobject; filter: string) of object;
-  TRequestImageSizeEvent = procedure(sender: Tobject; var Arect: Trect) of object;
+  TRequestBackGroundEvent = procedure(Sender: TObject; Background: string) of object;
+  TRequestFilterEvent = procedure(Sender: TObject; Filter: string) of object;
+  TRequestImageSizeEvent = procedure(Sender: TObject; var ARect: TRect) of object;
 
 type
   TJvTurtle = class(TComponent)
   private
-    FPosition: Tpoint;
-    FHeading: real;
-    FCanvas: Tcanvas;
-    FPenDown: boolean;
+    FPosition: TPoint;
+    FHeading: Real;
+    FCanvas: TCanvas;
+    FPenDown: Boolean;
+    FMark: TPoint;
+    FArea: TRect;
+    FPot: TStringList;
     FOnRepaintRequest: TNotifyEvent;
-    FMark: Tpoint;
-    FArea: trect;
     FOnRequestBackGround: TRequestBackGroundEvent;
     FOnRequestImageSize: TRequestImageSizeEvent;
     FOnRequestFilter: TRequestFilterEvent;
-    function gettoken(var token: string): boolean;
-    function getnum(var num: integer): boolean;
-    function inpot(token: string; var num: integer): boolean;
-    function gettex(var tex: string): boolean;
-    function getcol(var col: Tcolor): boolean;
-//    function skipblock: boolean;
-    function push(num: integer): boolean;
-    function pop(var num: integer): boolean;
-    function Npush(var msg: string; num: integer): boolean;
-    function Npop(var msg: string; var num: integer): boolean;
-    function IsNum(tex: string): boolean;
-    function IsCol(tex: string): boolean;
-    function IsVar(tex: string): boolean;
-    procedure SetPosition(const Value: Tpoint);
-    procedure SetHeading(const Value: real);
-    procedure SetCanvas(const Value: Tcanvas);
-    procedure SetPenDown(const Value: boolean);
-    procedure SetWidth(const Value: integer);
-    function GetWidth: integer;
-    function txUser(sym: string): string;
-    function txcomment: string;
-    function txin: string;
-    function txinadd: string;
-    function txinsub: string;
-    function txinmult: string;
-    function txindiv: string;
-    function txininc: string;
-    function txindec: string;
-    function txblock: string;
-    function txreturn: string;
-    function txpos: string;
-    function txdefault: string;
-    function txmove: string;
-    function txlineto: string;
-    function txangle: string;
-    function txdown: string;
-    function txup: string;
-    function txpensize: string;
-    function txpencolor: string;
-    function txaddpencolor: string;
-    function txaddbrushcolor: string;
-    function txturn: string;
-    function txleft: string;
-    function txright: string;
-    function txgo: string;
-    function txtext: string;
-    function txtextout: string;
-    function txtextfont: string;
-    function txtextsize: string;
-    function txtextcolor: string;
-    function txtextbold: string;
-    function txtextitalic: string;
-    function txtextunderline: string;
-    function txtextnormal: string;
-    function txbssolid: string;
-    function txbsclear: string;
-    function txbrushcolor: string;
-    function txrectangle: string;
-    function txroundrect: string;
-    function txellipse: string;
-    function txdiamond: string;
-    function txpolygon: string;
-    function txstar: string;
-    function txcurve: string;
-    function txmark: string;
-    function txgomark: string;
-    function txmarkangle: string;
-    function txgomarkangle: string;
+    function GetToken(var Token: string): Boolean;
+    function GetNum(var Num: Integer): Boolean;
+    function InPot(Token: string; var Num: Integer): Boolean;
+    function GetTex(var Tex: string): Boolean;
+    function GetCol(var Col: TColor): Boolean;
+    // function SkipBlock: Boolean;
+    function Push(Num: Integer): Boolean;
+    function Pop(var Num: Integer): Boolean;
+    function NPush(var Msg: string; Num: Integer): Boolean;
+    function NPop(var Msg: string; var Num: Integer): Boolean;
+    function IsNum(Tex: string): Boolean;
+    function IsCol(Tex: string): Boolean;
+    function IsVar(Tex: string): Boolean;
+    procedure SetPosition(const Value: TPoint);
+    procedure SetHeading(const Value: Real);
+    procedure SetCanvas(const Value: TCanvas);
+    procedure SetPenDown(const Value: Boolean);
+    procedure SetPenWidth(const Value: Integer);
+    function GetWidth: Integer;
+    procedure DoGo(Dest: TPoint);
+    function txUser(Sym: string): string;
+    function txComment: string;
+    function txIn: string;
+    function txInAdd: string;
+    function txInSub: string;
+    function txInMult: string;
+    function txInDiv: string;
+    function txInInc: string;
+    function txInDec: string;
+    function txBlock: string;
+    function txReturn: string;
+    function txPos: string;
+    function txDefault: string;
+    function txMove: string;
+    function txLineTo: string;
+    function txAngle: string;
+    function txDown: string;
+    function txUp: string;
+    function txPenSize: string;
+    function txPenColor: string;
+    function txAddPenColor: string;
+    function txAddBrushColor: string;
+    function txTurn: string;
+    function txLeft: string;
+    function txRight: string;
+    function txGo: string;
+    function txText: string;
+    function txTextOut: string;
+    function txTextFont: string;
+    function txTextSize: string;
+    function txTextColor: string;
+    function txTextBold: string;
+    function txTextItalic: string;
+    function txTextUnderline: string;
+    function txTextNormal: string;
+    function txBsSolid: string;
+    function txBsClear: string;
+    function txBrushColor: string;
+    function txRectangle: string;
+    function txRoundRect: string;
+    function txEllipse: string;
+    function txDiamond: string;
+    function txPolygon: string;
+    function txStar: string;
+    function txCurve: string;
+    function txMark: string;
+    function txGoMark: string;
+    function txMarkAngle: string;
+    function txGoMarkAngle: string;
     function txArea: string;
     function txCopy: string;
-    function txpenmode: string;
-    function txcopymode: string;
-    function txflood: string;
-    function txdo: string;
-    function txloop: string;
-    function txIleft: string;
-    function txItop: string;
-    function txIright: string;
-    function txIbottom: string;
-    function txIcenter: string;
-    function txsum: string;
-    function txsub: string;
-    function txmul: string;
-    function txdiv: string;
-    function txdup: string;
-    function txdrop: string;
-    function tx_posx: string;
-    function tx_posy: string;
-    function tx_pencolor: string;
-    function tx_brushcolor: string;
-    function tx_textcolor: string;
-    function tx_pensize: string;
-    function tx_textsize: string;
-    function tx_angle: string;
-    function tx_markx: string;
-    function tx_marky: string;
-    function tx_loop: string;
-    function tx_right: string;
-    function tx_left: string;
-    function tx_top: string;
-    function tx_bottom: string;
-    function txif: string;
-    function txgt: string;
-    function txge: string;
-    function txlt: string;
-    function txle: string;
-    function txeq: string;
-    function txne: string;
-    function txnot: string;
-    function txand: string;
-    function txor: string;
-    function txneg: string;
-    function txabs: string;
-    function txswap: string;
-    function txmax: string;
-    function txmin: string;
-    function txsqr: string;
-    function txsqrt: string;
-    function txinc: string;
-    function txdec: string;
-    function txbackground: string;
-    function txfilter: string;
-    function strtoPenMode(var pm: Tpenmode; s: string): boolean;
-    function strtoCopyMode(var cm: Tcopymode; s: string): boolean;
+    function txPenMode: string;
+    function txCopyMode: string;
+    function txFlood: string;
+    function txDo: string;
+    function txLoop: string;
+    function txGoLeft: string;
+    function txGoTop: string;
+    function txGoRight: string;
+    function txGoBottom: string;
+    function txGoCenter: string;
+    function txAdd: string;
+    function txSub: string;
+    function txMul: string;
+    function txDiv: string;
+    function txDup: string;
+    function txDrop: string;
+    function tx_PosX: string;
+    function tx_PosY: string;
+    function tx_PenColor: string;
+    function tx_BrushColor: string;
+    function tx_TextColor: string;
+    function tx_PenSize: string;
+    function tx_TextSize: string;
+    function tx_Angle: string;
+    function tx_MarkX: string;
+    function tx_MarkY: string;
+    function tx_Loop: string;
+    function tx_Right: string;
+    function tx_Left: string;
+    function tx_Top: string;
+    function tx_Bottom: string;
+    function txIf: string;
+    function txGt: string;
+    function txGe: string;
+    function txLt: string;
+    function txLe: string;
+    function txEq: string;
+    function txNe: string;
+    function txNot: string;
+    function txAnd: string;
+    function txOr: string;
+    function txNeg: string;
+    function txAbs: string;
+    function txSwap: string;
+    function txMax: string;
+    function txMin: string;
+    function txSqr: string;
+    function txSqrt: string;
+    function txInc: string;
+    function txDec: string;
+    function txBackground: string;
+    function txFilter: string;
+    function StrToPenMode(var Pm: TPenMode; S: string): Boolean;
+    function StrToCopyMode(var Cm: TCopyMode; S: string): Boolean;
 
-    procedure TextRotate(x, y, angle: integer; atext: string;
-      afont: tfont);
+    procedure TextRotate(X, Y, Angle: Integer; AText: string;
+      AFont: TFont);
     procedure SetOnRepaintRequest(const Value: TNotifyEvent);
-    procedure SetMark(const Value: Tpoint);
-    procedure SetArea(const Value: trect);
+    procedure SetMark(const Value: TPoint);
+    procedure SetArea(const Value: TRect);
     procedure SetOnRequestBackGround(const Value: TRequestBackGroundEvent);
     procedure SetOnRequestImageSize(const Value: TRequestImageSizeEvent);
     procedure SetOnRequestFilter(const Value: TRequestFilterEvent);
-
   protected
     procedure DoRepaintRequest; virtual;
     procedure DoRequestBackground; virtual;
     procedure DoRequestFilter; virtual;
-    function DoRequestImageSize: boolean; virtual;
+    function DoRequestImageSize: Boolean; virtual;
   public
-    property Canvas: Tcanvas read FCanvas write SetCanvas;
-    property Position: Tpoint read FPosition write SetPosition;
-    property Mark: Tpoint read FMark write SetMark;
-    property Area: trect read FArea write SetArea;
-    property Heading: real read FHeading write SetHeading;
-    property PenDown: boolean read FPenDown write SetPenDown;
-    property Width: integer read GetWidth write SetWidth;
+    property Canvas: TCanvas read FCanvas write SetCanvas;
+    property Position: TPoint read FPosition write SetPosition;
+    property Mark: TPoint read FMark write SetMark;
+    property Area: TRect read FArea write SetArea;
+    property Heading: Real read FHeading write SetHeading;
+    property PenDown: Boolean read FPenDown write SetPenDown;
+    property PenWidth: Integer read GetWidth write SetPenWidth;
     function DoCom: string;
-    procedure Turn(Aangle: real);
-    procedure Right(AAngle: real);
-    procedure MoveForward(Adistance: real);
-    procedure MoveBackward(ADistance: real);
-    function Interpret(var Epos: integer; s: string): string;
-    constructor Create(AOwner: Tcomponent); override;
+    procedure Turn(AAngle: Real);
+    procedure Right(AAngle: Real);
+    procedure MoveForward(ADistance: Real);
+    procedure MoveBackward(ADistance: Real);
+    function Interpret(out APos: Integer; S: string): string;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property OnRepaintRequest: TNotifyEvent read FOnRepaintRequest write SetOnRepaintRequest;
@@ -208,7 +213,6 @@ type
     property OnRequestFilter: TRequestFilterEvent read FOnRequestFilter write SetOnRequestFilter;
     property OnRequestImageSize: TRequestImageSizeEvent read FOnRequestImageSize write SetOnRequestImageSize;
   end;
-
 
 resourcestring
   sErrorCanvasNotAssigned = '#Error: Canvas not assigned';
@@ -245,484 +249,580 @@ implementation
 uses
   JvConsts, JvTypes;
 
-{ TJvTurtle }
 const
-  tab = chr(9);
-  nspmax = 255;
+  cStackMax = 255;
+  cNStackMax = 255;
 
 var
-  scrip: string;
-  ip, ipmax, sp, nsp: integer;
-  stack: array[0..255] of integer;
-  Nstack: array[0..nspmax] of integer;
-  background: string;
-  pot: tstringlist;
-  filter: string;
-  anglemark: integer;
-  ImageRect: Trect;
+  Script: string;
+  IP, IPMax, SP, NSP: Integer;
+  Stack: array [0..cStackMax] of Integer;
+  NStack: array [0..cNStackMax] of Integer;
+  Background: string;
+  Filter: string;
+  AngleMark: Integer;
+  ImageRect: TRect;
 
-function TJvTurtle.docom: string;
-var
-  com: string;
+constructor TJvTurtle.Create(AOwner: TComponent);
 begin
-  Result := 'ready';
-  if not gettoken(com) then Exit;
-  if com = 'pos' then
-    Result := txpos
-  else if com = 'in' then
-    Result := txin
-  else if com = 'inadd' then
-    Result := txinadd
-  else if com = 'insub' then
-    Result := txinsub
-  else if com = 'inmul' then
-    Result := txinmult
-  else if com = 'indiv' then
-    Result := txindiv
-  else if com = 'ininc' then
-    Result := txininc
-  else if com = 'indec' then
-    Result := txindec
-  else if com = 'default' then
-    Result := txdefault
-  else if com = 'angle' then
-    Result := txangle
-  else if com = 'down' then
-    Result := txdown
-  else if com = 'up' then
-    Result := txup
-  else if com = 'pensize' then
-    Result := txpensize
-  else if com = 'pencolor' then
-    Result := txpencolor
-  else if com = 'turn' then
-    Result := txturn
-  else if com = 'right' then
-    Result := txright
-  else if com = 'left' then
-    Result := txleft
-  else if com = 'go' then
-    Result := txgo
-  else if com = 'move' then
-    Result := txmove
-  else if com = 'lineto' then
-    Result := txlineto
-  else if com = 'textfont' then
-    Result := txtextfont
-  else if com = 'textsize' then
-    Result := txtextsize
-  else if com = 'textcolor' then
-    Result := txtextcolor
-  else if com = 'addbrushcolor' then
-    Result := txaddbrushcolor
-  else if com = 'addpencolor' then
-    Result := txaddpencolor
-  else if com = 'text' then
-    Result := txtext
-  else if com = 'bold' then
-    Result := txtextbold
-  else if com = 'italic' then
-    Result := txtextitalic
-  else if com = 'underline' then
-    Result := txtextunderline
-  else if com = 'normal' then
-    Result := txtextnormal
-  else if com = 'textout' then
-    Result := txtextout
-  else if com = 'bssolid' then
-    Result := txbssolid
-  else if com = 'bsclear' then
-    Result := txbsclear
-  else if com = 'brushcolor' then
-    Result := txbrushcolor
-  else if com = 'rectangle' then
-    Result := txrectangle
-  else if com = 'roundrect' then
-    Result := txroundrect
-  else if com = 'ellipse' then
-    Result := txellipse
-  else if com = 'diamond' then
-    Result := txdiamond
-  else if com = 'polygon' then
-    Result := txpolygon
-  else if com = 'star' then
-    Result := txstar
-  else if com = 'curve' then
-    Result := txcurve
-  else if com = 'mark' then
-    Result := txmark
-  else if com = 'gomark' then
-    Result := txgomark
-  else if com = 'markangle' then
-    Result := txmarkangle
-  else if com = 'gomarkangle' then
-    Result := txgomarkangle
-  else if com = 'penmode' then
-    Result := txpenmode
-  else if com = 'copymode' then
-    Result := txcopymode
-  else if com = 'area' then
-    Result := txArea
-  else if com = 'copy' then
-    Result := txcopy
-  else if com = 'do' then
-    Result := txdo
-  else if com = 'loop' then
-    Result := txloop
-  else if com = 'flood' then
-    Result := txflood
-  else if com = 'background' then
-    Result := txbackground
-  else if com = 'filter' then
-    Result := txfilter
-  else if com = '{' then
-    Result := txcomment
-  else if com = '[' then
-    Result := txblock
-  else if com = ']' then
-    Result := txreturn
-  else if com = 'goleft' then
-    Result := txIleft
-  else if com = 'gotop' then
-    Result := txItop
-  else if com = 'goright' then
-    Result := txIright
-  else if com = 'gobottom' then
-    Result := txIbottom
-  else if com = 'gocenter' then
-    Result := txIcenter
-  else if com = '+' then
-    Result := txsum
-  else if com = '-' then
-    Result := txsub
-  else if com = '*' then
-    Result := txmul
-  else if com = '/' then
-    Result := txdiv
-  else if com = '.gt' then
-    Result := txgt
-  else if com = '.ge' then
-    Result := txge
-  else if com = '.lt' then
-    Result := txlt
-  else if com = '.le' then
-    Result := txle
-  else if com = '.eq' then
-    Result := txeq
-  else if com = '.ne' then
-    Result := txne
-  else if com = '.not' then
-    Result := txnot
-  else if com = '.and' then
-    Result := txand
-  else if com = '.or' then
-    Result := txor
-  else if com = 'neg' then
-    Result := txneg
-  else if com = 'abs' then
-    Result := txabs
-  else if com = 'swap' then
-    Result := txswap
-  else if com = 'max' then
-    Result := txmax
-  else if com = 'min' then
-    Result := txmin
-  else if com = 'sqr' then
-    Result := txsqr
-  else if com = 'sqrt' then
-    Result := txsqrt
-  else if com = 'inc' then
-    Result := txinc
-  else if com = 'dec' then
-    Result := txdec
-  else if com = 'if' then
-    Result := txif
-  else if com = 'drop' then
-    Result := txdrop
-  else if com = 'dup' then
-    Result := txdup
-  else if com = '=posx' then
-    Result := tx_posx
-  else if com = '=posy' then
-    Result := tx_posy
-  else if com = '=pencolor' then
-    Result := tx_pencolor
-  else if com = '=pensize' then
-    Result := tx_pensize
-  else if com = '=brushcolor' then
-    Result := tx_brushcolor
-  else if com = '=textcolor' then
-    Result := tx_textcolor
-  else if com = '=textsize' then
-    Result := tx_textsize
-  else if com = '=angle' then
-    Result := tx_angle
-  else if com = '=markx' then
-    Result := tx_markx
-  else if com = '=marky' then
-    Result := tx_marky
-  else if com = '=loop' then
-    Result := tx_loop
-  else if com = '=right' then
-    Result := tx_right
-  else if com = '=left' then
-    Result := tx_left
-  else if com = '=top' then
-    Result := tx_top
-  else if com = '=bottom' then
-    Result := tx_bottom
-  else if IsNum(com) then
-    Result := ''
-  else if IsCol(com) then
-    Result := ''
-  else if IsVar(com) then
-    Result := ''
-  else
-    Result := txUser(com);
-
-end;
-
-constructor TJvTurtle.Create(AOwner: Tcomponent);
-begin
-  inherited create(Aowner);
-  fPosition := point(0, 0);
-  fMark := fPosition;
-  fHeading := 0;
-  fPenDown := false;
-  fArea := rect(0, 0, 0, 0);
+  inherited Create(AOwner);
+  FPot := TStringList.Create;
+  txDefault;
 end;
 
 destructor TJvTurtle.Destroy;
 begin
-  inherited destroy;
+  FPot.Free;
+  inherited Destroy;
+end;
+
+function TJvTurtle.DoCom: string;
+var
+  Com: string;
+begin
+  Result := 'ready';
+  if not GetToken(Com) then
+    Exit;
+  if Com = 'pos' then
+    Result := txPos
+  else
+  if Com = 'in' then
+    Result := txIn
+  else
+  if Com = 'inadd' then
+    Result := txInAdd
+  else
+  if Com = 'insub' then
+    Result := txInSub
+  else
+  if Com = 'inmul' then
+    Result := txInMult
+  else
+  if Com = 'indiv' then
+    Result := txInDiv
+  else
+  if Com = 'ininc' then
+    Result := txInInc
+  else
+  if Com = 'indec' then
+    Result := txInDec
+  else
+  if Com = 'default' then
+    Result := txDefault
+  else
+  if Com = 'angle' then
+    Result := txAngle
+  else
+  if Com = 'down' then
+    Result := txDown
+  else
+  if Com = 'up' then
+    Result := txUp
+  else
+  if Com = 'pensize' then
+    Result := txPenSize
+  else
+  if Com = 'pencolor' then
+    Result := txPenColor
+  else
+  if Com = 'turn' then
+    Result := txTurn
+  else
+  if Com = 'right' then
+    Result := txRight
+  else
+  if Com = 'left' then
+    Result := txLeft
+  else
+  if Com = 'go' then
+    Result := txGo
+  else
+  if Com = 'move' then
+    Result := txMove
+  else
+  if Com = 'lineto' then
+    Result := txLineTo
+  else
+  if Com = 'textfont' then
+    Result := txTextFont
+  else
+  if Com = 'textsize' then
+    Result := txTextSize
+  else
+  if Com = 'textcolor' then
+    Result := txTextColor
+  else
+  if Com = 'addbrushcolor' then
+    Result := txAddBrushColor
+  else
+  if Com = 'addpencolor' then
+    Result := txAddPenColor
+  else
+  if Com = 'text' then
+    Result := txText
+  else
+  if Com = 'bold' then
+    Result := txTextBold
+  else
+  if Com = 'italic' then
+    Result := txTextItalic
+  else
+  if Com = 'underline' then
+    Result := txTextUnderline
+  else
+  if Com = 'normal' then
+    Result := txTextNormal
+  else
+  if Com = 'textout' then
+    Result := txTextOut
+  else
+  if Com = 'bssolid' then
+    Result := txBsSolid
+  else
+  if Com = 'bsclear' then
+    Result := txBsClear
+  else
+  if Com = 'brushcolor' then
+    Result := txBrushColor
+  else
+  if Com = 'rectangle' then
+    Result := txRectangle
+  else
+  if Com = 'roundrect' then
+    Result := txRoundRect
+  else
+  if Com = 'ellipse' then
+    Result := txEllipse
+  else
+  if Com = 'diamond' then
+    Result := txDiamond
+  else
+  if Com = 'polygon' then
+    Result := txPolygon
+  else
+  if Com = 'star' then
+    Result := txStar
+  else
+  if Com = 'curve' then
+    Result := txCurve
+  else
+  if Com = 'mark' then
+    Result := txMark
+  else
+  if Com = 'gomark' then
+    Result := txGoMark
+  else
+  if Com = 'markangle' then
+    Result := txMarkAngle
+  else
+  if Com = 'gomarkangle' then
+    Result := txGoMarkAngle
+  else
+  if Com = 'penmode' then
+    Result := txPenMode
+  else
+  if Com = 'copymode' then
+    Result := txCopyMode
+  else
+  if Com = 'area' then
+    Result := txArea
+  else
+  if Com = 'copy' then
+    Result := txCopy
+  else
+  if Com = 'do' then
+    Result := txDo
+  else
+  if Com = 'loop' then
+    Result := txLoop
+  else
+  if Com = 'flood' then
+    Result := txFlood
+  else
+  if Com = 'background' then
+    Result := txBackground
+  else
+  if Com = 'filter' then
+    Result := txFilter
+  else
+  if Com = '{' then
+    Result := txComment
+  else
+  if Com = '[' then
+    Result := txBlock
+  else
+  if Com = ']' then
+    Result := txReturn
+  else
+  if Com = 'goleft' then
+    Result := txGoLeft
+  else
+  if Com = 'gotop' then
+    Result := txGoTop
+  else
+  if Com = 'goright' then
+    Result := txGoRight
+  else
+  if Com = 'gobottom' then
+    Result := txGoBottom
+  else
+  if Com = 'gocenter' then
+    Result := txGoCenter
+  else
+  if Com = '+' then
+    Result := txAdd
+  else
+  if Com = '-' then
+    Result := txSub
+  else
+  if Com = '*' then
+    Result := txMul
+  else
+  if Com = '/' then
+    Result := txDiv
+  else
+  if Com = '.gt' then
+    Result := txGt
+  else
+  if Com = '.ge' then
+    Result := txGe
+  else
+  if Com = '.lt' then
+    Result := txLt
+  else
+  if Com = '.le' then
+    Result := txLe
+  else
+  if Com = '.eq' then
+    Result := txEq
+  else
+  if Com = '.ne' then
+    Result := txNe
+  else
+  if Com = '.not' then
+    Result := txNot
+  else
+  if Com = '.and' then
+    Result := txAnd
+  else
+  if Com = '.or' then
+    Result := txOr
+  else
+  if Com = 'neg' then
+    Result := txNeg
+  else
+  if Com = 'abs' then
+    Result := txAbs
+  else
+  if Com = 'swap' then
+    Result := txSwap
+  else
+  if Com = 'max' then
+    Result := txMax
+  else
+  if Com = 'min' then
+    Result := txMin
+  else
+  if Com = 'sqr' then
+    Result := txSqr
+  else
+  if Com = 'sqrt' then
+    Result := txSqrt
+  else
+  if Com = 'inc' then
+    Result := txInc
+  else
+  if Com = 'dec' then
+    Result := txDec
+  else
+  if Com = 'if' then
+    Result := txIf
+  else
+  if Com = 'drop' then
+    Result := txDrop
+  else
+  if Com = 'dup' then
+    Result := txDup
+  else
+  if Com = '=posx' then
+    Result := tx_PosX
+  else
+  if Com = '=posy' then
+    Result := tx_PosY
+  else
+  if Com = '=pencolor' then
+    Result := tx_PenColor
+  else
+  if Com = '=pensize' then
+    Result := tx_PenSize
+  else
+  if Com = '=brushcolor' then
+    Result := tx_BrushColor
+  else
+  if Com = '=textcolor' then
+    Result := tx_TextColor
+  else
+  if Com = '=textsize' then
+    Result := tx_TextSize
+  else
+  if Com = '=angle' then
+    Result := tx_Angle
+  else
+  if Com = '=markx' then
+    Result := tx_MarkX
+  else
+  if Com = '=marky' then
+    Result := tx_MarkY
+  else
+  if Com = '=loop' then
+    Result := tx_Loop
+  else
+  if Com = '=right' then
+    Result := tx_Right
+  else
+  if Com = '=left' then
+    Result := tx_Left
+  else
+  if Com = '=top' then
+    Result := tx_Top
+  else
+  if Com = '=bottom' then
+    Result := tx_Bottom
+  else
+  if IsNum(Com) then
+    Result := ''
+  else
+  if IsCol(Com) then
+    Result := ''
+  else
+  if IsVar(Com) then
+    Result := ''
+  else
+    Result := txUser(Com);
+
 end;
 
 procedure TJvTurtle.DoRepaintRequest;
 begin
-  if assigned(FonRepaintRequest) then
-    FonRepaintRequest(self);
+  if Assigned(FOnRepaintRequest) then
+    FOnRepaintRequest(Self);
 end;
 
-function TJvTurtle.getcol(var col: Tcolor): boolean;
+function TJvTurtle.GetCol(var Col: TColor): Boolean;
 var
-  token, msg: string;
-  num: integer;
+  Token, Msg: string;
+  Num: Integer;
 begin
-  Result := false;
-  if gettoken(token) then
-  begin
-    if token = '=' then
+  Result := False;
+  if GetToken(Token) then
+    if Token = '=' then
     begin
-      Result := true;
-      if Npop(msg, num) then
-        col := num
+      Result := True;
+      if NPop(Msg, Num) then
+        Col := Num
       else
-        Result := false;
+        Result := False;
     end
     else
+      try
+        Col := StringToColor(Variant(Token));
+        Result := True;
+      except
+        Result := False;
+      end;
+end;
+
+function TJvTurtle.InPot(Token: string; var Num: Integer): Boolean;
+var
+  S: string;
+begin
+  Result := False;
+  S := FPot.Values[Token];
+  if S <> '' then
     try
-      col := stringtocolor(variant(token));
-      Result := true
+      Num := StrToInt(S);
+      Result := True;
     except
-      Result := false;
+      Result := False;
     end;
-  end;
 end;
 
-function TJvTurtle.inpot(token: string; var num: integer): boolean;
+function TJvTurtle.GetNum(var Num: Integer): Boolean;
 var
-//  i: integer;
-  s: string;
+  Token, Msg: string;
 begin
-  Result := false;
-  s := pot.Values[token];
-  if s = '' then Exit;
-  try
-    num := strtoint(s);
-    Result := true;
-  except
-    Result := false;
-  end;
-
-end;
-
-function TJvTurtle.getnum(var num: integer): boolean;
-var
-  token, msg: string;
-//  Anum: integer;
-begin
-  Result := false;
-  if gettoken(token) then
-  begin
-    if token = '=' then
-    begin
-      Result := npop(msg, num);
-    end
-    else if inpot(token, num) then
-    begin
-      Result := true;
-    end
+  Result := False;
+  if GetToken(Token) then
+    if Token = '=' then
+      Result := NPop(Msg, Num)
     else
-    try
-      num := strtoint(token);
-      Result := true;
-    except
-      Result := false;
-    end;
-  end;
+    if InPot(Token, Num) then
+      Result := True
+    else
+      try
+        Num := StrToInt(Token);
+        Result := True;
+      except
+        Result := False;
+      end;
 end;
 
-function TJvTurtle.gettex(var tex: string): boolean;
+function TJvTurtle.GetTex(var Tex: string): Boolean;
 begin
-  tex := '';
-  Result := false;
-  while (ip <= ipmax) and (scrip[ip] <> '"') do
-    inc(ip);
-  if ip > ipmax then Exit;
-  inc(ip);
-  while (ip <= ipmax) and (scrip[ip] <> '"') do
+  Tex := '';
+  Result := False;
+  while (IP <= IPMax) and (Script[IP] <> '"') do
+    Inc(IP);
+  if IP > IPMax then
+    Exit;
+  Inc(IP);
+  while (IP <= IPMax) and (Script[IP] <> '"') do
   begin
-    tex := tex + scrip[ip];
-    inc(ip);
+    Tex := Tex + Script[IP];
+    Inc(IP);
   end;
-  if ip > ipmax then Exit;
-  inc(ip);
-  Result := tex <> '';
+  if IP > IPMax then
+    Exit;
+  Inc(IP);
+  Result := Tex <> '';
 end;
 
-function TJvTurtle.gettoken(var token: string): boolean;
+function TJvTurtle.GetToken(var Token: string): Boolean;
 begin
-  token := '';
-  while (ip <= ipmax) and (scrip[ip] = ' ') do
-    inc(ip);
-  while (ip <= ipmax) and (scrip[ip] <> ' ') do
+  Token := '';
+  while (IP <= IPMax) and (Script[IP] = ' ') do
+    Inc(IP);
+  while (IP <= IPMax) and (Script[IP] <> ' ') do
   begin
-    token := token + scrip[ip];
-    inc(ip)
+    Token := Token + Script[IP];
+    Inc(IP);
   end;
-  Result := token <> '';
+  Result := Token <> '';
 end;
 
-function TJvTurtle.GetWidth: integer;
+function TJvTurtle.GetWidth: Integer;
 begin
-  if assigned(FCanvas) then
-    Result := FCanvas.pen.Width
+  if Assigned(FCanvas) then
+    Result := FCanvas.Pen.Width
   else
     Result := 1;
 end;
 
-function TJvTurtle.Interpret(var Epos: integer; s: string): string;
+function TJvTurtle.Interpret(out APos: Integer; S: string): string;
 var
-  msg: string;
+  Msg: string;
 begin
   Result := sErrorCanvasNotAssigned;
-  if not assigned(FCanvas) then Exit;
-  s := stringreplace(s, tab, ' ', [rfreplaceall]);
-  s := stringreplace(s, cr, '  ', [rfreplaceall]);
-  scrip := s;
-  sp := 0;
-  ip := 1;
-  ipmax := length(scrip);
-  if ipmax > 0 then
+  if not Assigned(FCanvas) then
+    Exit;
+  S := StringReplace(S, Tab, ' ', [rfReplaceAll]);
+  S := StringReplace(S, Cr,  ' ', [rfReplaceAll]);
+  S := StringReplace(S, Lf,  ' ', [rfReplaceAll]);
+  Script := S;
+  SP := 0;
+  IP := 1;
+  IPMax := Length(Script);
+  if IPMax > 0 then
   begin
-    pot := tstringlist.Create;
+    FPot.Clear;
     repeat
-      msg := docom;
-    until msg <> '';
-    Result := msg;
-    Epos := ip;
-    pot.free;
+      Msg := DoCom;
+    until Msg <> '';
+    Result := Msg;
+    APos := IP;
   end
   else
     Result := sEmptyScript;
 end;
 
-procedure TJvTurtle.Turn(Aangle: real);
+procedure TJvTurtle.DoGo(Dest: TPoint);
 begin
-  fHeading := fHeading + Aangle;
-end;
-
-procedure TJvTurtle.MoveBackward(ADistance: real);
-var
-  Rangle: real;
-  dx, dy: real;
-  newpoint: Tpoint;
-begin
-  if not assigned(FCanvas) then Exit;
-  Rangle := fHeading * 2 * pi / 360;
-  dx := Adistance * cos(Rangle);
-  dy := Adistance * sin(Rangle);
-  newpoint := point(variant(fPosition.x - dx), variant(fPosition.y + dy));
-  FCanvas.MoveTo(fPosition.x, fPosition.y);
-  if FPenDown then
-    FCanvas.LineTo(newpoint.x, newpoint.y)
+  Canvas.MoveTo(Position.X, Position.Y);
+  if PenDown then
+    Canvas.LineTo(Dest.X, Dest.Y)
   else
-    FCanvas.MoveTo(newpoint.x, newpoint.y);
-  fPosition := newpoint;
+    Canvas.MoveTo(Dest.X, Dest.Y);
+  Position := Dest;
 end;
 
-procedure TJvTurtle.MoveForward(Adistance: real);
+procedure TJvTurtle.Turn(AAngle: Real);
+begin
+  Heading := Heading + AAngle;
+end;
+
+procedure TJvTurtle.MoveBackward(ADistance: Real);
 var
-  Rangle: real;
-  dx, dy: real;
-  newpoint: Tpoint;
+  RAngle: Real;
+  dX, dY: Real;
+  NewPoint: TPoint;
 begin
-  if not assigned(FCanvas) then Exit;
-  Rangle := fHeading * 2 * pi / 360;
-  dx := Adistance * cos(Rangle);
-  dy := Adistance * sin(Rangle);
-  newpoint := point(variant(fPosition.x + dx), variant(fPosition.y - dy));
-  FCanvas.MoveTo(fPosition.x, fPosition.y);
-  if FPenDown then
-    FCanvas.LineTo(newpoint.x, newpoint.y)
-  else
-    FCanvas.MoveTo(newpoint.x, newpoint.y);
-  fPosition := newpoint;
+  if not Assigned(FCanvas) then
+    Exit;
+  RAngle := Heading * 2 * Pi / 360;
+  dX := ADistance * Cos(RAngle);
+  dY := ADistance * Sin(RAngle);
+  NewPoint := Point(Variant(Position.X - dX), Variant(Position.Y + dY));
+  DoGo(NewPoint);
 end;
 
-function TJvTurtle.pop(var num: integer): boolean;
+procedure TJvTurtle.MoveForward(ADistance: Real);
+var
+  RAngle: Real;
+  dX, dY: Real;
+  NewPoint: TPoint;
 begin
-  Result := false;
-  if sp > 0 then
+  if not Assigned(FCanvas) then
+    Exit;
+  RAngle := Heading * 2 * pi / 360;
+  dX := ADistance * Cos(RAngle);
+  dY := ADistance * Sin(RAngle);
+  NewPoint := Point(Variant(Position.X + dX), Variant(Position.Y - dY));
+  DoGo(NewPoint);
+end;
+
+function TJvTurtle.Pop(var Num: Integer): Boolean;
+begin
+  Result := False;
+  if SP > 0 then
   begin
-    dec(sp);
-    num := stack[sp];
-    Result := true;
+    Dec(SP);
+    Num := Stack[SP];
+    Result := True;
   end;
 end;
 
-function TJvTurtle.push(num: integer): boolean;
+function TJvTurtle.Push(Num: Integer): Boolean;
 begin
-  Result := false;
-  if sp < 255 then
+  Result := False;
+  if SP < cStackMax then
   begin
-    stack[sp] := num;
-    inc(sp);
-    Result := true;
+    Stack[SP] := Num;
+    Inc(SP);
+    Result := True;
   end;
 end;
 
-procedure TJvTurtle.Right(AAngle: real);
+procedure TJvTurtle.Right(AAngle: Real);
 begin
-  fHeading := fHeading - Aangle;
+  Heading := Heading - AAngle;
 end;
 
-procedure TJvTurtle.SetArea(const Value: trect);
+procedure TJvTurtle.SetArea(const Value: TRect);
 begin
   FArea := Value;
 end;
 
-procedure TJvTurtle.SetCanvas(const Value: Tcanvas);
+procedure TJvTurtle.SetCanvas(const Value: TCanvas);
 begin
   FCanvas := Value;
 end;
 
-procedure TJvTurtle.SetHeading(const Value: real);
+procedure TJvTurtle.SetHeading(const Value: Real);
 begin
   FHeading := Value;
 end;
 
-procedure TJvTurtle.SetMark(const Value: Tpoint);
+procedure TJvTurtle.SetMark(const Value: TPoint);
 begin
   FMark := Value;
 end;
@@ -732,870 +832,885 @@ begin
   FOnRepaintRequest := Value;
 end;
 
-procedure TJvTurtle.SetPenDown(const Value: boolean);
+procedure TJvTurtle.SetPenDown(const Value: Boolean);
 begin
   FPenDown := Value;
 end;
 
-procedure TJvTurtle.SetPosition(const Value: Tpoint);
+procedure TJvTurtle.SetPosition(const Value: TPoint);
 begin
   FPosition := Value;
 end;
 
-procedure TJvTurtle.SetWidth(const Value: integer);
+procedure TJvTurtle.SetPenWidth(const Value: Integer);
 begin
-  if assigned(FCanvas) then
-    FCanvas.pen.width := Value;
+  if Assigned(FCanvas) then
+    FCanvas.Pen.Width := Value;
 end;
 
-function TJvTurtle.strtoCopyMode(var cm: Tcopymode; s: string): boolean;
+function TJvTurtle.StrToCopyMode(var Cm: TCopyMode; S: string): Boolean;
 begin
-  Result := true;
-  if s = 'cmblackness' then
-    cm := cmblackness
-  else if s = 'cmdstinvert' then
-    cm := cmDstInvert
-  else if s = 'cmmergecopy' then
-    cm := cmMergeCopy
-  else if s = 'cmmergepaint' then
-    cm := cmMergePaint
-  else if s = 'cmnotsrccopy' then
-    cm := cmNotSrcCopy
-  else if s = 'cmnotsrcerase' then
-    cm := cmNotSrcErase
-  else if s = 'cmpatcopy' then
-    cm := cmPatCopy
-  else if s = 'cmpatinvert' then
-    cm := cmPatInvert
-  else if s = 'cmpatpaint' then
-    cm := cmPatPaint
-  else if s = 'cmsrcand' then
-    cm := cmSrcAnd
-  else if s = 'cmsrccopy' then
-    cm := cmSrcCopy
-  else if s = 'cmsrcerase' then
-    cm := cmSrcErase
-  else if s = 'cmsrcinvert' then
-    cm := cmSrcInvert
-  else if s = 'cmscrpaint' then
-    cm := cmSrcPaint
-  else if s = 'cmwhiteness' then
-    cm := cmWhiteness
+  Result := True;
+  if S = 'cmblackness' then
+    Cm := cmBlackness
   else
-    Result := false;
-end;
-
-function TJvTurtle.strtoPenMode(var pm: Tpenmode; s: string): boolean;
-begin
-  Result := true;
-  if s = 'pmBlack' then
-    pm := pmblack
-  else if s = 'pmwhite' then
-    pm := pmwhite
-  else if s = 'pmnop' then
-    pm := pmnop
-  else if s = 'pmnot' then
-    pm := pmnot
-  else if s = 'pmcopy' then
-    pm := pmcopy
-  else if s = 'pmnotcopy' then
-    pm := pmnotcopy
-  else if s = 'pmmergepennot' then
-    pm := pmmergepennot
-  else if s = 'pmmaskpennot' then
-    pm := pmmaskpennot
-  else if s = 'pmmergenotpen' then
-    pm := pmmergenotpen
-  else if s = 'pmmasknotpen' then
-    pm := pmmasknotpen
-  else if s = 'pmmerge' then
-    pm := pmmerge
-  else if s = 'pmnotmerge' then
-    pm := pmnotmerge
-  else if s = 'pmmask' then
-    pm := pmmask
-  else if s = 'pmnotmask' then
-    pm := pmnotmask
-  else if s = 'pmxor' then
-    pm := pmxor
-  else if s = 'pmnotxor' then
-    pm := pmnotxor
+  if S = 'cmdstinvert' then
+    Cm := cmDstInvert
   else
-    Result := false;
+  if S = 'cmmergecopy' then
+    Cm := cmMergeCopy
+  else
+  if S = 'cmmergepaint' then
+    Cm := cmMergePaint
+  else
+  if S = 'cmnotsrccopy' then
+    Cm := cmNotSrcCopy
+  else
+  if S = 'cmnotsrcerase' then
+    Cm := cmNotSrcErase
+  else
+  if S = 'cmpatcopy' then
+    Cm := cmPatCopy
+  else
+  if S = 'cmpatinvert' then
+    Cm := cmPatInvert
+  else
+  if S = 'cmpatpaint' then
+    Cm := cmPatPaint
+  else
+  if S = 'cmsrcand' then
+    Cm := cmSrcAnd
+  else
+  if S = 'cmsrccopy' then
+    Cm := cmSrcCopy
+  else
+  if S = 'cmsrcerase' then
+    Cm := cmSrcErase
+  else
+  if S = 'cmsrcinvert' then
+    Cm := cmSrcInvert
+  else
+  if S = 'cmscrpaint' then
+    Cm := cmSrcPaint
+  else
+  if S = 'cmwhiteness' then
+    Cm := cmWhiteness
+  else
+    Result := False;
 end;
 
-procedure TJvTurtle.TextRotate(x, y, angle: integer; atext: string;
-  afont: tfont);
+function TJvTurtle.StrToPenMode(var Pm: TPenMode; S: string): Boolean;
+begin
+  Result := True;
+  if S = 'pmBlack' then
+    Pm := pmBlack
+  else
+  if S = 'pmwhite' then
+    Pm := pmWhite
+  else
+  if S = 'pmnop' then
+    Pm := pmNop
+  else
+  if S = 'pmnot' then
+    Pm := pmNot
+  else
+  if S = 'pmcopy' then
+    Pm := pmCopy
+  else
+  if S = 'pmnotcopy' then
+    Pm := pmNotCopy
+  else
+  if S = 'pmmergepennot' then
+    Pm := pmMergePenNot
+  else
+  if S = 'pmmaskpennot' then
+    Pm := pmMaskPenNot
+  else
+  if S = 'pmmergenotpen' then
+    Pm := pmMergeNotPen
+  else
+  if S = 'pmmasknotpen' then
+    Pm := pmMaskNotPen
+  else
+  if S = 'pmmerge' then
+    Pm := pmMerge
+  else
+  if S = 'pmnotmerge' then
+    Pm := pmNotMerge
+  else
+  if S = 'pmmask' then
+    Pm := pmMask
+  else
+  if S = 'pmnotmask' then
+    Pm := pmNotMask
+  else
+  if S = 'pmxor' then
+    Pm := pmXor
+  else
+  if S = 'pmnotxor' then
+    Pm := pmNotXor
+  else
+    Result := False;
+end;
+
+procedure TJvTurtle.TextRotate(X, Y, Angle: Integer; AText: string;
+  AFont: TFont);
 var
-  dc: hdc;
-  fnt: LogFont;
-//  plf: PLogFont;
-  hfnt, hfntPrev: hfont;
-  i: integer;
-  fname, s: string;
+  DC: HDC;
+  Fnt: LOGFONT;
+  HFnt, HFntPrev: HFONT;
+  I: Integer;
+  FontName: string;
 begin
-  s := atext;
-  fnt.lfEscapement := angle * 10;
-  fnt.lfOrientation := angle * 10;
-  if fsbold in afont.Style then
-    fnt.lfWeight := FW_Bold
+  if AText = '' then
+    Exit;
+  Fnt.lfEscapement := Angle * 10;
+  Fnt.lfOrientation := Angle * 10;
+  if fsBold in AFont.Style then
+    Fnt.lfWeight := FW_BOLD
   else
-    fnt.lfWeight := FW_NORMAL;
-  if fsitalic in afont.style then
-    fnt.lfItalic := 1
+    Fnt.lfWeight := FW_NORMAL;
+  if fsItalic in AFont.Style then
+    Fnt.lfItalic := 1
   else
-    fnt.lfItalic := 0;
-  if fsunderline in afont.style then
-    fnt.lfUnderline := 1
+    Fnt.lfItalic := 0;
+  if fsUnderline in AFont.Style then
+    Fnt.lfUnderline := 1
   else
-    fnt.lfUnderline := 0;
-  fnt.lfStrikeOut := 0;
-  fnt.lfHeight := abs(afont.Height);
-  fname := afont.Name;
-  for i := 1 to length(fname) do
-    fnt.lffacename[i - 1] := fname[i];
-  fnt.lfFaceName[length(fname)] := #0;
-  hfnt := CreateFontIndirect(fnt);
-  dc := Fcanvas.handle;
-  SetBkMode(dc, TRANSPARENT);
-  SetTextColor(dc, afont.color);
-  hfntPrev := SelectObject(dc, hfnt);
-  //textout(dc,x,y,@atext[1],length(atext));
-  textout(dc, x, y, @s[1], length(s));
-  SelectObject(dc, hfntPrev);
-  DeleteObject(hfnt);
-  //mypaint.repaint;
+    Fnt.lfUnderline := 0;
+  Fnt.lfStrikeOut := 0;
+  Fnt.lfHeight := Abs(AFont.Height);
+  FontName := AFont.Name;
+  for I := 1 to Length(FontName) do
+    Fnt.lfFaceName[I - 1] := FontName[I];
+  Fnt.lfFaceName[Length(FontName)] := #0;
+  HFnt := CreateFontIndirect(Fnt);
+  DC := Canvas.Handle;
+  SetBkMode(DC, Transparent);
+  SetTextColor(DC, AFont.Color);
+  HFntPrev := SelectObject(DC, HFnt);
+  TextOut(DC, X, Y, PChar(AText), Length(AText));
+  SelectObject(DC, HFntPrev);
+  DeleteObject(HFnt);
 end;
 
-function TJvTurtle.txangle: string;
+function TJvTurtle.txAngle: string;
 var
-  x: integer;
+  X: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['angle']);
-  if getnum(x) then
+  if GetNum(X) then
   begin
-    SetHeading(x);
+    SetHeading(X);
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['angle']);
 end;
 
 function TJvTurtle.txArea: string;
 var
-  x1, y1, x2, y2: integer;
+  X1, Y1, X2, Y2: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['area']);
-  if getnum(x1) and getnum(y1) and getnum(x2) and getnum(y2) then
+  if GetNum(X1) and GetNum(Y1) and GetNum(X2) and GetNum(Y2) then
   begin
-    FArea := rect(x1, y1, x2, y2);
+    Area := Rect(X1, Y1, X2, Y2);
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['area']);
 end;
 
-function TJvTurtle.txbrushcolor: string;
+function TJvTurtle.txBrushColor: string;
 var
-  col: Tcolor;
+  Col: TColor;
 begin
-  Result := Format(sInvalidColorIns, ['brushcolor']);
-  if getcol(col) then
+  if GetCol(Col) then
   begin
-    Fcanvas.Brush.Color := col;
+    Canvas.Brush.Color := Col;
     Result := '';
-  end;
-
+  end
+  else
+    Result := Format(sInvalidColorIns, ['brushcolor']);
 end;
 
-function TJvTurtle.txbsclear: string;
+function TJvTurtle.txBsClear: string;
 begin
-  FCanvas.brush.Style := bsclear;
+  Canvas.Brush.Style := bsClear;
   Result := '';
 end;
 
-function TJvTurtle.txbssolid: string;
+function TJvTurtle.txBsSolid: string;
 begin
-  FCanvas.brush.Style := bssolid;
+  Canvas.Brush.Style := bsSolid;
   Result := '';
 end;
 
 function TJvTurtle.txCopy: string;
 var
-  dest: trect;
-  x, y: integer;
+  X, Y: Integer;
 begin
-  x := fPosition.x;
-  y := fposition.y;
-  dest := rect(x, y, x + FArea.right - FArea.left, y + FArea.bottom - Farea.top);
-  FCanvas.CopyRect(dest, FCanvas, Farea);
+  X := Position.X;
+  Y := Position.Y;
+  with Area do
+    Canvas.CopyRect(Rect(X, Y, X + Right - Left, Y + Bottom - Top), Canvas, Area);
   Result := '';
 end;
 
-function TJvTurtle.txcopymode: string;
+function TJvTurtle.txCopyMode: string;
 var
-  s: string;
-  Acopymode: TCopyMode;
+  S: string;
+  CopyMode: TCopyMode;
 begin
   Result := sInvalidCopyMode;
-  if gettoken(s) then
+  if GetToken(S) then
   begin
-    s := 'cm' + lowercase(s);
-    if strtocopymode(Acopymode, s) then
+    S := 'cm' + LowerCase(S);
+    if StrToCopyMode(CopyMode, S) then
     begin
-      FCanvas.copymode := Acopymode;
+      Canvas.CopyMode := CopyMode;
       Result := '';
     end;
   end;
 end;
 
-function TJvTurtle.txdown: string;
+function TJvTurtle.txDown: string;
 begin
-  FPenDown := true;
+  PenDown := True;
   Result := '';
 end;
 
-function TJvTurtle.txellipse: string;
+function TJvTurtle.txEllipse: string;
 var
-  x1, y1, x2, y2: integer;
+  X2, Y2: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['ellipse']);
-  if getnum(x2) and getnum(y2) then
+  if GetNum(X2) and GetNum(Y2) then
   begin
-    x1 := Fposition.x;
-    y1 := Fposition.y;
-    x2 := x1 + x2;
-    y2 := y1 + y2;
-    FCanvas.ellipse(x1, y1, x2, y2);
+    X2 := Position.X + X2;
+    Y2 := Position.Y + Y2;
+    Canvas.Ellipse(Position.X, Position.Y, X2, Y2);
     Result := '';
-  end;
-end;
-
-function TJvTurtle.txgo: string;
-var
-  x: integer;
-begin
-  Result := Format(sInvalidIntegerIns, ['go']);
-  if getnum(x) then
-  begin
-    MoveForward(x);
-    Result := '';
-  end;
-end;
-
-function TJvTurtle.txgomark: string;
-begin
-  FCanvas.MoveTo(fPosition.x, fPosition.y);
-  if FPenDown then
-    FCanvas.LineTo(fmark.x, fmark.y)
+  end
   else
-    FCanvas.MoveTo(fmark.x, fmark.y);
-  fPosition := fmark;
+    Result := Format(sInvalidIntegerIns, ['ellipse']);
+end;
+
+function TJvTurtle.txGo: string;
+var
+  X: Integer;
+begin
+  if GetNum(X) then
+  begin
+    MoveForward(X);
+    Result := '';
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['go']);
+end;
+
+function TJvTurtle.txGoMark: string;
+begin
+  DoGo(Mark);
   Result := '';
 end;
 
-function TJvTurtle.txturn: string;
+function TJvTurtle.txTurn: string;
 var
-  x: integer;
+  X: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['turn']);
-  if getnum(x) then
+  if GetNum(X) then
   begin
-    turn(x);
+    Turn(X);
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['turn']);
 end;
 
-function TJvTurtle.txleft: string;
+function TJvTurtle.txLeft: string;
 var
-  x: integer;
+  X: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['left']);
-  if getnum(x) then
+  if GetNum(X) then
   begin
-    fHeading := fHeading + x;
+    Heading := Heading + X;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['left']);
 end;
 
-function TJvTurtle.txright: string;
+function TJvTurtle.txRight: string;
 var
-  x: integer;
+  X: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['right']);
-  if getnum(x) then
+  if GetNum(X) then
   begin
-    fHeading := fHeading - x;
+    Heading := Heading - X;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['right']);
 end;
 
-function TJvTurtle.txmark: string;
+function TJvTurtle.txMark: string;
 begin
-  fmark := fPosition;
+  Mark := Position;
   Result := '';
-
 end;
 
-function TJvTurtle.txpencolor: string;
+function TJvTurtle.txPenColor: string;
 var
-  col: tcolor;
+  Col: TColor;
 begin
-  Result := Format(sInvalidColorIns, ['pencolor']);
-  if getcol(col) then
+  if GetCol(Col) then
   begin
-    FCanvas.pen.color := col;
+    Canvas.Pen.Color := Col;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidColorIns, ['pencolor']);
 end;
 
-function TJvTurtle.txpenmode: string;
+function TJvTurtle.txPenMode: string;
 var
-  s: string;
-  Apenmode: TPenMode;
+  S: string;
+  PenMode: TPenMode;
 begin
   Result := sInvalidPenMode;
-  if gettoken(s) then
+  if GetToken(S) then
   begin
-    s := 'pm' + lowercase(s);
-    if strtopenmode(Apenmode, s) then
+    S := 'pm' + LowerCase(S);
+    if StrToPenMode(PenMode, S) then
     begin
-      FCanvas.pen.Mode := Apenmode;
+      Canvas.Pen.Mode := PenMode;
       Result := '';
     end;
   end;
 end;
 
-function TJvTurtle.txpensize: string;
+function TJvTurtle.txPenSize: string;
 var
-  x: integer;
+  Width: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['pensize']);
-  if getnum(x) then
+  if GetNum(Width) then
   begin
-    FCanvas.pen.Width := x;
+    Canvas.Pen.Width := Width;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['pensize']);
 end;
 
-function TJvTurtle.txpos: string;
+function TJvTurtle.txPos: string;
 var
-  x, y: integer;
+  X, Y: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['pos']);
-  if getnum(x) and getnum(y) then
+  if GetNum(X) and GetNum(Y) then
   begin
-    SetPosition(point(x, y));
+    Position := Point(X, Y);
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['pos']);
 end;
 
-function TJvTurtle.txrectangle: string;
+function TJvTurtle.txRectangle: string;
 var
-  x1, y1, x2, y2: integer;
+  X2, Y2: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['rectangle']);
-  if getnum(x2) and getnum(y2) then
+  if GetNum(X2) and GetNum(Y2) then
   begin
-    x1 := Fposition.x;
-    y1 := Fposition.y;
-    x2 := x1 + x2;
-    y2 := y1 + y2;
-    FCanvas.rectangle(x1, y1, x2, y2);
+    X2 := Position.X + X2;
+    Y2 := Position.Y + Y2;
+    Canvas.Rectangle(Position.X, Position.Y, X2, Y2);
     Result := '';
-  end;
-
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['rectangle']);
 end;
 
-function TJvTurtle.txtext: string;
+function TJvTurtle.txText: string;
 var
-  s: string;
-  a: integer;
+  S: string;
+  A: Integer;
 begin
-  Result := Format(sInvalidTextIns, ['text']);
-  if gettex(s) then
+  if GetTex(S) then
   begin
-    a := variant(fHeading);
-    Textrotate(Fposition.x, Fposition.y, a, s, Fcanvas.font);
+    A := Variant(Heading);
+    TextRotate(Position.X, Position.Y, A, S, Canvas.Font);
     Result := '';
     DoRepaintRequest;
-  end;
+  end
+  else
+    Result := Format(sInvalidTextIns, ['text']);
 end;
 
-function TJvTurtle.txtextbold: string;
+function TJvTurtle.txTextBold: string;
 begin
-  FCanvas.Font.Style := FCanvas.Font.style + [fsbold];
+  Canvas.Font.Style := Canvas.Font.Style + [fsBold];
   Result := '';
 end;
 
-function TJvTurtle.txtextcolor: string;
+function TJvTurtle.txTextColor: string;
 var
-  col: tcolor;
+  Col: TColor;
 begin
-  Result := Format(sInvalidColorIns, ['textcolor']);
-  if getcol(col) then
+  if GetCol(Col) then
   begin
-    Fcanvas.Font.Color := col;
+    Canvas.Font.Color := Col;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidColorIns, ['textcolor']);
 end;
 
-function TJvTurtle.txtextfont: string;
+function TJvTurtle.txTextFont: string;
 var
-  token: string;
+  FontName: string;
 begin
-  Result := sMissingFontname;
-  if gettex(token) then
+  if GetTex(FontName) then
   begin
-    FCanvas.font.name := token;
+    Canvas.Font.Name := FontName;
     Result := '';
-  end;
+  end
+  else
+    Result := sMissingFontname;
 end;
 
-function TJvTurtle.txtextitalic: string;
+function TJvTurtle.txTextItalic: string;
 begin
-  FCanvas.Font.Style := FCanvas.Font.style + [fsitalic];
+  Canvas.Font.Style := Canvas.Font.Style + [fsItalic];
   Result := '';
 end;
 
-function TJvTurtle.txtextnormal: string;
+function TJvTurtle.txTextNormal: string;
 begin
-  FCanvas.Font.Style := [];
+  Canvas.Font.Style := [];
   Result := '';
 end;
 
-function TJvTurtle.txtextsize: string;
+function TJvTurtle.txTextSize: string;
 var
-  x: integer;
+  FontSize: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['fontsize']);
-  if getnum(x) then
+  if GetNum(FontSize) then
   begin
-    FCanvas.font.size := x;
+    Canvas.Font.Size := FontSize;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['fontsize']);
 end;
 
-function TJvTurtle.txtextunderline: string;
+function TJvTurtle.txTextUnderline: string;
 begin
-  FCanvas.Font.Style := FCanvas.Font.style + [fsunderline];
+  Canvas.Font.Style := Canvas.Font.Style + [fsUnderline];
   Result := '';
 end;
 
-function TJvTurtle.txup: string;
+function TJvTurtle.txUp: string;
 begin
-  FPenDown := false;
+  PenDown := False;
   Result := '';
 end;
 
-function TJvTurtle.txdo: string;
+function TJvTurtle.txDo: string;
 var
-  num: integer;
+  Num: Integer;
 begin
   Result := Format(sNumberExpectedIns, ['do']);
-  if not getnum(num) then Exit;
+  if not GetNum(Num) then
+    Exit;
   Result := sStackOverflow;
-  if not push(ip) then Exit;
-  if not push(num) then Exit;
+  if not Push(IP) then
+    Exit;
+  if not Push(Num) then
+    Exit;
   Result := '';
 end;
 
-function TJvTurtle.txloop: string;
+function TJvTurtle.txLoop: string;
 var
-  reps, ret: integer;
+  Reps, Ret: Integer;
 begin
   Result := sStackUnderflow;
-  if not pop(reps) then Exit;
-  if not pop(ret) then Exit;
-  dec(reps);
-  if reps <> 0 then
+  if not Pop(Reps) then
+    Exit;
+  if not Pop(Ret) then
+    Exit;
+  Dec(Reps);
+  if Reps <> 0 then
   begin
-    ip := ret;
-    push(ret);
-    push(reps);
+    IP := Ret;
+    Push(Ret);
+    Push(Reps);
   end;
   Result := '';
 end;
 
-function TJvTurtle.txflood: string;
+function TJvTurtle.txFlood: string;
 var
-  x, y, xf, yf: integer;
-  floodcolor: Tcolor;
+  X, Y, XF, YF: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['flood']);
-  if getnum(x) and getnum(y) then
+  if GetNum(X) and GetNum(Y) then
   begin
-    xf := Fposition.x + x;
-    yf := Fposition.y + y;
-    floodcolor := FCanvas.Pixels[xf, yf];
-    FCanvas.FloodFill(xf, yf, floodcolor, fssurface);
+    XF := Position.X + X;
+    YF := Position.Y + Y;
+    Canvas.FloodFill(XF, YF, Canvas.Pixels[XF, YF], fsSurface);
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['flood']);
 end;
 
-procedure TJvTurtle.SetOnRequestBackGround(
-  const Value: TRequestBackGroundEvent);
+procedure TJvTurtle.SetOnRequestBackGround(const Value: TRequestBackGroundEvent);
 begin
   FOnRequestBackGround := Value;
 end;
 
 procedure TJvTurtle.DoRequestBackground;
 begin
-  if assigned(FonRequestBackGround) then
-    FonRequestBackground(self, background);
-
+  if Assigned(FOnRequestBackGround) then
+    FOnRequestBackground(Self, Background);
 end;
 
-function TJvTurtle.txbackground: string;
+function TJvTurtle.txBackground: string;
 var
-  aname: string;
+  Name: string;
 begin
-  Result := Format(sInvalidTextIns, ['background']);
-  if gettex(aname) then
+  if GetTex(Name) then
   begin
-    background := aname;
+    Background := Name;
     DoRequestBackground;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidTextIns, ['background']);
 end;
 
-function TJvTurtle.txtextout: string;
+function TJvTurtle.txTextOut: string;
 var
-  s: string;
+  Text: string;
 begin
-  Result := Format(sInvalidTextIns, ['text']);
-  if gettex(s) then
+  if GetTex(Text) then
   begin
-    FCanvas.TextOut(Fposition.x, Fposition.y, s);
+    Canvas.TextOut(Position.X, Position.Y, Text);
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidTextIns, ['text']);
 end;
 
-function TJvTurtle.txaddbrushcolor: string;
+function TJvTurtle.txAddBrushColor: string;
 var
-  Acolor: tcolor;
+  Color: TColor;
 begin
-  Result := Format(sInvalidColorIns, ['addbrushcolor']);
-  if getcol(Acolor) then
+  if GetCol(Color) then
   begin
-    Fcanvas.brush.color := Fcanvas.brush.color + Acolor;
+    Canvas.Brush.Color := Canvas.Brush.Color + Color;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidColorIns, ['addbrushcolor']);
 end;
 
-function TJvTurtle.txaddpencolor: string;
+function TJvTurtle.txAddPenColor: string;
 var
-  Acolor: tcolor;
+  Color: TColor;
 begin
-  Result := Format(sInvalidColorIns, ['addbrushcolor']);
-  if getcol(Acolor) then
+  if GetCol(Color) then
   begin
-    FCanvas.pen.color := FCanvas.pen.color + Acolor;
+    Canvas.Pen.Color := Canvas.Pen.Color + Color;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidColorIns, ['addbrushcolor']);
 end;
 
-function TJvTurtle.txgomarkangle: string;
+function TJvTurtle.txGoMarkAngle: string;
 begin
-  Fheading := anglemark;
+  Heading := AngleMark;
   Result := '';
 end;
 
-function TJvTurtle.txmarkangle: string;
+function TJvTurtle.txMarkAngle: string;
 begin
-  anglemark := variant(FHeading);
+  AngleMark := Variant(Heading);
   Result := '';
 end;
 
-function TJvTurtle.IsCol(tex: string): boolean;
+function TJvTurtle.IsCol(Tex: string): Boolean;
 var
-  col: tcolor;
-  msg: string;
+  Msg: string;
 begin
   try
-    col := stringtocolor(variant(tex));
-    Result := Npush(msg, col);
+    Result := NPush(Msg, StringToColor(Tex));
   except
-    Result := false;
+    Result := False;
   end;
 end;
 
-function TJvTurtle.IsNum(tex: string): boolean;
+function TJvTurtle.IsNum(Tex: string): Boolean;
 var
-  num: integer;
-  msg: string;
+  Msg: string;
 begin
   try
-    num := strtoint(tex);
-    Result := Npush(msg, num);
+    Result := NPush(Msg, StrToInt(Tex));
   except
-    Result := false;
+    Result := False;
   end;
 end;
 
-function TJvTurtle.Npop(var msg: string; var num: integer): boolean;
+function TJvTurtle.NPop(var Msg: string; var Num: Integer): Boolean;
 begin
-  msg := sNumberStackUnderflow;
-  Result := false;
-  if nsp = 0 then Exit;
-  dec(nsp);
-  num := nstack[nsp];
-  msg := '';
-  Result := true;
-end;
-
-function TJvTurtle.Npush(var msg: string; num: integer): boolean;
-begin
-  msg := sNumberStackOverflow;
-  Result := false;
-  if nsp >= nspmax then Exit;
-  nstack[nsp] := num;
-  inc(nsp);
-  msg := '';
-  Result := true;
-end;
-
-function TJvTurtle.txcomment: string;
-begin
-  Result := sMissingAfterComment;
-  while (ip <= ipmax) and (scrip[ip] <> '}') do
-    inc(ip);
-  if ip <= ipmax then
+  Result := NSP > Low(NStack);
+  if Result then
   begin
-    inc(ip);
-    Result := '';
-  end;
+    Dec(NSP);
+    Num := NStack[NSP];
+    Msg := '';
+  end
+  else
+    Msg := sNumberStackUnderflow;
 end;
-(*)
-function TJvTurtle.skipblock: boolean;
+
+function TJvTurtle.NPush(var Msg: string; Num: Integer): Boolean;
 begin
-  Result := false;
-  while (ip <= ipmax) and (scrip[ip] <> '[') do
-    inc(ip);
-  if ip > ipmax then Exit;
-  inc(ip);
-  while (ip <= ipmax) and (scrip[ip] <> ']') do
-    inc(ip);
-  if ip > ipmax then Exit;
-  inc(ip);
-  Result := true;
+  Result := NSP < High(NStack);
+  if Result then
+  begin
+    NStack[NSP] := Num;
+    Inc(NSP);
+    Msg := '';
+  end
+  else
+    Msg := sNumberStackOverflow;
+end;
+
+function TJvTurtle.txComment: string;
+begin
+  while (IP <= IPMax) and (Script[IP] <> '}') do
+    Inc(IP);
+  if IP <= IPMax then
+  begin
+    Inc(IP);
+    Result := '';
+  end
+  else
+    Result := sMissingAfterComment;
 end;
 (*)
+
+function TJvTurtle.SkipBlock: Boolean;
+begin
+  Result := False;
+  while (IP <= IPMax) and (Script[IP] <> '[') do
+    Inc(IP);
+  if IP > IPMax then
+    Exit;
+  Inc(IP);
+  while (IP <= IPMax) and (Script[IP] <> ']') do
+    Inc(IP);
+  if IP > IPMax then
+    Exit;
+  Inc(IP);
+  Result := True;
+end;
+(*)
+
 procedure TJvTurtle.SetOnRequestImageSize(const Value: TRequestImageSizeEvent);
 begin
   FOnRequestImageSize := Value;
 end;
 
-function TJvTurtle.DoRequestImageSize: boolean;
+function TJvTurtle.DoRequestImageSize: Boolean;
 begin
-  if assigned(FonRequestImagesize) then
+  Result := Assigned(FOnRequestImageSize);
+  if Result then
+    FOnRequestImageSize(Self, ImageRect);
+end;
+
+function TJvTurtle.txGoBottom: string;
+var
+  NewPoint: TPoint;
+begin
+  if DoRequestImageSize then
   begin
-    FonRequestImageSize(self, Imagerect);
-    Result := true;
+    NewPoint := Point(Position.X, ImageRect.Bottom);
+    DoGo(NewPoint);
+    Result := '';
   end
   else
-    Result := false;
+    Result := Format(sErrorIns, ['gobottom']);
 end;
 
-function TJvTurtle.txIbottom: string;
+function TJvTurtle.txGoLeft: string;
 var
-  newpoint: tpoint;
+  NewPoint: TPoint;
 begin
-  Result := Format(sErrorIns, ['gobottom']);
-  if DorequestImageSize then
+  if DoRequestImageSize then
   begin
-    newpoint := point(Fposition.x, ImageRect.bottom);
-    FCanvas.MoveTo(fPosition.x, fPosition.y);
-    if FPenDown then
-      FCanvas.LineTo(newpoint.x, newpoint.y)
-    else
-      FCanvas.MoveTo(newpoint.x, newpoint.y);
-    fPosition := newpoint;
+    NewPoint := Point(ImageRect.Left, Position.Y);
+    DoGo(NewPoint);
     Result := '';
-  end;
-end;
-
-function TJvTurtle.txIleft: string;
-var
-  newpoint: tpoint;
-begin
-  Result := Format(sErrorIns, ['goleft']);
-  if DorequestImageSize then
-  begin
-    newpoint := point(ImageRect.left, fPosition.y);
-    FCanvas.MoveTo(fPosition.x, fPosition.y);
-    if FPenDown then
-      FCanvas.LineTo(newpoint.x, newpoint.y)
-    else
-      FCanvas.MoveTo(newpoint.x, newpoint.y);
-    fPosition := newpoint;
-    Result := '';
-  end;
-end;
-
-function TJvTurtle.txIright: string;
-var
-  newpoint: tpoint;
-begin
-  Result := Format(sErrorIns, ['goright']);
-  if DorequestImageSize then
-  begin
-    newpoint := point(ImageRect.right, fPosition.y);
-    FCanvas.MoveTo(fPosition.x, fPosition.y);
-    if FPenDown then
-      FCanvas.LineTo(newpoint.x, newpoint.y)
-    else
-      FCanvas.MoveTo(newpoint.x, newpoint.y);
-    fPosition := newpoint;
-    Result := '';
-  end;
-end;
-
-function TJvTurtle.txItop: string;
-var
-  newpoint: tpoint;
-begin
-  Result := Format(sErrorIns, ['gotop']);
-  if DorequestImageSize then
-  begin
-    newpoint := point(Fposition.x, ImageRect.top);
-    FCanvas.MoveTo(fPosition.x, fPosition.y);
-    if FPenDown then
-      FCanvas.LineTo(newpoint.x, newpoint.y)
-    else
-      FCanvas.MoveTo(newpoint.x, newpoint.y);
-    fPosition := newpoint;
-    Result := '';
-  end;
-end;
-
-function TJvTurtle.txdiv: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if b <> 0 then
-    Npush(Result, a div b)
+  end
   else
-    Result := sDivisionByZero;
+    Result := Format(sErrorIns, ['goleft']);
 end;
 
-function TJvTurtle.txdrop: string;
+function TJvTurtle.txGoRight: string;
 var
-  a: integer;
+  NewPoint: TPoint;
 begin
-  Npop(Result, a);
-end;
-
-function TJvTurtle.txdup: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  Npush(Result, a);
-  Npush(Result, a);
-end;
-
-function TJvTurtle.txmul: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  Npush(Result, a * b);
-end;
-
-function TJvTurtle.txsub: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  Npush(Result, a - b);
-end;
-
-function TJvTurtle.txsum: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  Npush(Result, a + b);
-end;
-
-function TJvTurtle.txIcenter: string;
-var
-  cx, cy: integer;
-  newpoint: tpoint;
-begin
-  Result := Format(sErrorIns, ['gocenter']);
-  if DorequestImageSize then
+  if DoRequestImageSize then
   begin
-    cx := (Imagerect.Right - Imagerect.Left) div 2;
-    cy := (Imagerect.bottom - Imagerect.Top) div 2;
-    newpoint := point(cx, cy);
-    FCanvas.MoveTo(fPosition.x, fPosition.y);
-    if FPenDown then
-      FCanvas.LineTo(newpoint.x, newpoint.y)
-    else
-      FCanvas.MoveTo(newpoint.x, newpoint.y);
-    fPosition := newpoint;
+    NewPoint := Point(ImageRect.Right, Position.Y);
+    DoGo(NewPoint);
     Result := '';
+  end
+  else
+    Result := Format(sErrorIns, ['goright']);
+end;
+
+function TJvTurtle.txGoTop: string;
+var
+  NewPoint: TPoint;
+begin
+  if DoRequestImageSize then
+  begin
+    NewPoint := Point(Position.X, ImageRect.Top);
+    DoGo(NewPoint);
+    Result := '';
+  end
+  else
+    Result := Format(sErrorIns, ['gotop']);
+end;
+
+function TJvTurtle.txDiv: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    if B <> 0 then
+      NPush(Result, A div B)
+    else
+      Result := sDivisionByZero;
+end;
+
+function TJvTurtle.txDrop: string;
+var
+  A: Integer;
+begin
+  NPop(Result, A);
+end;
+
+function TJvTurtle.txDup: string;
+var
+  A: Integer;
+begin
+  if NPop(Result, A) then
+  begin
+    NPush(Result, A);
+    NPush(Result, A);
   end;
 end;
 
-function TJvTurtle.txdiamond: string;
+function TJvTurtle.txMul: string;
 var
-  i, x: integer;
-  tdown: boolean;
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, A * B);
+end;
+
+function TJvTurtle.txSub: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, A - B);
+end;
+
+function TJvTurtle.txAdd: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, A + B);
+end;
+
+function TJvTurtle.txGoCenter: string;
+var
+  CX, CY: Integer;
+begin
+  if DoRequestImageSize then
+  begin
+    CX := (ImageRect.Right - ImageRect.Left) div 2;
+    CY := (ImageRect.Bottom - ImageRect.Top) div 2;
+    DoGo(Point(CX, CY));
+    Result := '';
+  end
+  else
+    Result := Format(sErrorIns, ['gocenter']);
+end;
+
+function TJvTurtle.txDiamond: string;
+var
+  I, X: Integer;
+  OldDown: Boolean;
 begin
   Result := Format(sInvalidIntegerIns, ['diamond']);
-  if getnum(x) then
+  if GetNum(X) then
   begin
-    tdown := Fpendown;
-    Fpendown := true;
-    turn(45);
-    for i := 1 to 4 do
+    OldDown := PenDown;
+    PenDown := True;
+    Turn(45);
+    for I := 1 to 4 do
     begin
-      moveforward(x);
-      turn(-90);
+      MoveForward(X);
+      Turn(-90);
     end;
-    turn(-45);
-    Fpendown := tdown;
+    Turn(-45);
+    PenDown := OldDown;
     Result := '';
   end;
 end;
 
-function TJvTurtle.txcurve: string;
+function TJvTurtle.txCurve: string;
 var
-  pts: array[0..3] of Tpoint;
-  i, px, py: integer;
+  Pts: array [0..3] of TPoint;
+  I: Integer;
 begin
-  Result := Format(sInvalidParameterIns, ['curve']);
-  if getnum(pts[1].x) and getnum(pts[1].y)
-    and getnum(pts[2].x) and getnum(pts[2].y)
-    and getnum(pts[3].x) and getnum(pts[3].y) then
+  if GetNum(Pts[1].X) and GetNum(Pts[1].Y) and
+    GetNum(Pts[2].X) and GetNum(Pts[2].Y) and
+    GetNum(Pts[3].X) and GetNum(Pts[3].Y) then
   begin
-    px := Fposition.x;
-    py := Fposition.y;
-    pts[0].x := px;
-    pts[0].y := py;
-    for i := 1 to 3 do
+    Pts[0].X := Position.X;
+    Pts[0].Y := Position.Y;
+    for I := 1 to 3 do
     begin
-      pts[i].x := px + pts[i].x;
-      pts[i].y := py + pts[i].y;
+      Pts[I].X := Position.X + Pts[I].X;
+      Pts[I].Y := Position.Y + Pts[I].Y;
     end;
-    FCanvas.PolyBezier(pts);
-    FPosition := pts[3];
+    Canvas.PolyBezier(Pts);
+    Position := Pts[3];
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidParameterIns, ['curve']);
 end;
 
-function TJvTurtle.txmove: string;
+function TJvTurtle.txMove: string;
 var
-  x, y, x0, y0: integer;
+  X, Y: Integer;
 begin
-  Result := Format(sInvalidIntegerIns, ['move']);
-  if getnum(x) and getnum(y) then
+  if GetNum(X) and GetNum(Y) then
   begin
-    x0 := Fposition.x;
-    y0 := Fposition.y;
-    SetPosition(point(x0 + x, y0 + y));
+    Position := Point(Position.X + X, Position.Y + Y);
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['move']);
 end;
 
 procedure TJvTurtle.SetOnRequestFilter(const Value: TRequestFilterEvent);
@@ -1605,614 +1720,611 @@ end;
 
 procedure TJvTurtle.DoRequestFilter;
 begin
-  if assigned(FonRequestFilter) then
-    FonRequestFilter(self, Filter);
-
+  if Assigned(FOnRequestFilter) then
+    FOnRequestFilter(Self, Filter);
 end;
 
-function TJvTurtle.txfilter: string;
+function TJvTurtle.txFilter: string;
 var
-  aname: string;
+  AName: string;
 begin
-  Result := Format(sInvalidTextIns, ['filter']);
-  if gettex(aname) then
+  if GetTex(AName) then
   begin
-    filter := aname;
+    Filter := AName;
     DoRequestFilter;
     Result := '';
-  end;
+  end
+  else
+    Result := Format(sInvalidTextIns, ['filter']);
 end;
 
-function TJvTurtle.txUser(sym: string): string;
+function TJvTurtle.txUser(Sym: string): string;
 var
-  p: integer;
+  P: Integer;
 begin
-  Result := Format(sSymbolsIsNotDefined, [sym]);
-  p := pos(sym, scrip);
-  if p = 0 then Exit;
-  Result := sStackOverflow;
-  if push(ip) then
+  P := Pos(Sym, Script);
+  if P <> 0 then
   begin
-    ip := p + length(sym);
+    if Push(IP) then
+    begin
+      IP := P + Length(Sym);
+      Result := '';
+    end
+    else
+      Result := sStackOverflow;
+  end
+  else
+    Result := Format(sSymbolsIsNotDefined, [Sym]);
+end;
+
+function TJvTurtle.txBlock: string;
+begin
+  while (IP <= IPMax) and (Script[IP] <> ']') do
+    Inc(IP);
+  if IP <= IPMax then
+  begin
+    Inc(IP);
     Result := '';
-  end;
+  end
+  else
+    Result := sMissingAfterBlock;
 end;
 
-function TJvTurtle.txblock: string;
+function TJvTurtle.txReturn: string;
+var
+  Num: Integer;
 begin
-  Result := sMissingAfterBlock;
-  while (ip <= ipmax) and (scrip[ip] <> ']') do
-    inc(ip);
-  if ip <= ipmax then
+  if Pop(Num) then
   begin
-    inc(ip);
+    IP := Num;
     Result := '';
-  end;
+  end
+  else
+    Result := sStackUnderflow;
 end;
 
-function TJvTurtle.txreturn: string;
+function TJvTurtle.tx_Angle: string;
 var
-  num: integer;
+  Num: Integer;
 begin
-  Result := sStackUnderflow;
-  if pop(num) then
+  Num := Variant(Heading);
+  NPush(Result, Num);
+end;
+
+function TJvTurtle.tx_Bottom: string;
+begin
+  if DoRequestImageSize then
+    NPush(Result, ImageRect.Bottom)
+  else
+    Result := Format(sErrorIns, ['=bottom']);
+end;
+
+function TJvTurtle.tx_BrushColor: string;
+begin
+  NPush(Result, Canvas.Brush.Color);
+end;
+
+function TJvTurtle.tx_Left: string;
+begin
+  if DoRequestImageSize then
+    NPush(Result, ImageRect.Left)
+  else
+    Result := Format(sErrorIns, ['=left']);
+end;
+
+function TJvTurtle.tx_Loop: string;
+var
+  Num: Integer;
+begin
+  if Pop(Num) then
   begin
-    ip := num;
-    Result := '';
-  end;
+    Push(Num);
+    NPush(Result, Num);
+  end
+  else
+    Result := Format(sStackUnderflowIns, ['=loop']);
 end;
 
-function TJvTurtle.tx_angle: string;
+function TJvTurtle.tx_MarkX: string;
+begin
+  NPush(Result, Mark.X);
+end;
+
+function TJvTurtle.tx_MarkY: string;
+begin
+  NPush(Result, Mark.Y);
+end;
+
+function TJvTurtle.tx_PenColor: string;
+begin
+  NPush(Result, Canvas.Pen.Color);
+end;
+
+function TJvTurtle.tx_PosX: string;
+begin
+  NPush(Result, Position.X);
+end;
+
+function TJvTurtle.tx_PosY: string;
+begin
+  NPush(Result, Position.Y);
+end;
+
+function TJvTurtle.tx_Right: string;
+begin
+  if DoRequestImageSize then
+    NPush(Result, ImageRect.Right)
+  else
+    Result := Format(sErrorIns, ['=right']);
+end;
+
+function TJvTurtle.tx_Top: string;
+begin
+  if DoRequestImageSize then
+    NPush(Result, ImageRect.Top)
+  else
+    Result := Format(sErrorIns, ['=top']);
+end;
+
+function TJvTurtle.tx_PenSize: string;
+begin
+  NPush(Result, Canvas.Pen.Width);
+end;
+
+function TJvTurtle.tx_TextColor: string;
+begin
+  NPush(Result, Canvas.Font.Color);
+end;
+
+function TJvTurtle.tx_TextSize: string;
+begin
+  NPush(Result, Canvas.Font.Size);
+end;
+
+function TJvTurtle.txIf: string;
 var
-  num: integer;
+  Num: Integer;
+  Token: string;
 begin
-  num := variant(Fheading);
-  npush(Result, num);
+  if NPop(Result, Num) then
+    if Num = 0 then
+      if GetToken(Token) then
+        Result := ''
+      else
+        Result := sSymbolExpectedAfterIf;
 end;
 
-function TJvTurtle.tx_bottom: string;
+function TJvTurtle.txAnd: string;
+var
+  A, B: Integer;
 begin
-  Result := Format(sErrorIns, ['=bottom']);
-  if DorequestImageSize then
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord((A <> 0) and (B <> 0)));
+end;
+
+function TJvTurtle.txEq: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord(A = B));
+end;
+
+function TJvTurtle.txGe: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord(A >= B));
+end;
+
+function TJvTurtle.txGt: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord(A > B));
+end;
+
+function TJvTurtle.txLe: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord(A <= B));
+end;
+
+function TJvTurtle.txLt: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord(A < B));
+end;
+
+function TJvTurtle.txNe: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord(A <> B));
+end;
+
+function TJvTurtle.txNot: string;
+var
+  A: Integer;
+begin
+  if NPop(Result, A) then
+    NPush(Result, Ord(A = 0))
+end;
+
+function TJvTurtle.txOr: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Ord((A <> 0) or (B <> 0)));
+end;
+
+function TJvTurtle.txAbs: string;
+var
+  A: Integer;
+begin
+  if NPop(Result, A) then
+    NPush(Result, Abs(A))
+end;
+
+function TJvTurtle.txNeg: string;
+var
+  A: Integer;
+begin
+  if NPop(Result, A) then
+    NPush(Result, -A);
+end;
+
+function TJvTurtle.txSwap: string;
+var
+  A, B: Integer;
+begin
+  if NPop(Result, B) and NPop(Result, A) then
   begin
-    npush(Result, ImageRect.bottom);
+    NPush(Result, B);
+    NPush(Result, A);
   end;
 end;
 
-function TJvTurtle.tx_brushcolor: string;
-begin
-  npush(Result, FCanvas.brush.color);
-end;
-
-function TJvTurtle.tx_left: string;
-begin
-  Result := Format(sErrorIns, ['=left']);
-  if DorequestImageSize then
-  begin
-    npush(Result, ImageRect.left);
-  end;
-
-end;
-
-function TJvTurtle.tx_loop: string;
+function TJvTurtle.txMax: string;
 var
-  num: integer;
+  A, B: Integer;
 begin
-  Result := Format(sStackUnderflowIns, ['=loop']);
-  if not pop(num) then Exit;
-  push(num);
-  npush(Result, num);
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Max(A, B));
 end;
 
-function TJvTurtle.tx_markx: string;
-begin
-  npush(Result, mark.x);
-end;
-
-function TJvTurtle.tx_marky: string;
-begin
-  npush(Result, mark.y);
-end;
-
-function TJvTurtle.tx_pencolor: string;
-begin
-  npush(Result, FCanvas.pen.color);
-end;
-
-function TJvTurtle.tx_posx: string;
-begin
-  npush(Result, Fposition.x);
-end;
-
-function TJvTurtle.tx_posy: string;
-begin
-  npush(Result, Fposition.y);
-end;
-
-function TJvTurtle.tx_right: string;
-begin
-  Result := Format(sErrorIns, ['=right']);
-  if DorequestImageSize then
-    npush(Result, ImageRect.right);
-end;
-
-function TJvTurtle.tx_top: string;
-begin
-  Result := Format(sErrorIns, ['=top']);
-  if DorequestImageSize then
-    npush(Result, ImageRect.top);
-end;
-
-function TJvTurtle.tx_pensize: string;
-begin
-  npush(Result, FCanvas.pen.Width);
-end;
-
-function TJvTurtle.tx_textcolor: string;
-begin
-  npush(Result, FCanvas.font.color);
-end;
-
-function TJvTurtle.tx_textsize: string;
-begin
-  npush(Result, FCanvas.font.size);
-end;
-
-function TJvTurtle.txif: string;
+function TJvTurtle.txMin: string;
 var
-  num: integer;
-  token: string;
+  A, B: Integer;
 begin
-  if not npop(Result, num) then Exit;
-  if num <> 0 then Exit;
-  if gettoken(token) then
-    Result := ''
-  else
-    Result := sSymbolExpectedAfterIf;
+  if NPop(Result, B) and NPop(Result, A) then
+    NPush(Result, Min(A, B));
 end;
 
-function TJvTurtle.txand: string;
+function TJvTurtle.txSqr: string;
 var
-  b, a: integer;
+  A: Integer;
 begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if (a <> 0) and (b <> 0) then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
+  if NPop(Result, A) then
+    NPush(Result, Variant(Sqr(A)));
 end;
 
-function TJvTurtle.txeq: string;
+function TJvTurtle.txSqrt: string;
 var
-  b, a: integer;
+  A: Integer;
 begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if a = b then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
+  if NPop(Result, A) then
+    if A <> 0 then
+      NPush(Result, Variant(Sqrt(A)))
+    else
+      Result := sCanNotTakeSqrtOf;
 end;
 
-function TJvTurtle.txge: string;
+function TJvTurtle.txDec: string;
 var
-  b, a: integer;
+  A: Integer;
 begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if a >= b then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
+  if NPop(Result, A) then
+    NPush(Result, A-1);
 end;
 
-function TJvTurtle.txgt: string;
+function TJvTurtle.txInc: string;
 var
-  b, a: integer;
+  A: Integer;
 begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if a > b then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
+  if NPop(Result, A) then
+    NPush(Result, A+1);
 end;
 
-function TJvTurtle.txle: string;
+function TJvTurtle.txPolygon: string;
 var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if a <= b then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
-end;
-
-function TJvTurtle.txlt: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if a < b then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
-end;
-
-function TJvTurtle.txne: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if a <> b then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
-end;
-
-function TJvTurtle.txnot: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  if a = 0 then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
-end;
-
-function TJvTurtle.txor: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  if (a <> 0) or (b <> 0) then
-    Npush(Result, 1)
-  else
-    Npush(Result, 0)
-end;
-
-function TJvTurtle.txabs: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  Npush(Result, -a)
-end;
-
-function TJvTurtle.txneg: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  Npush(Result, abs(a));
-end;
-
-function TJvTurtle.txswap: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  Npush(Result, b);
-  Npush(Result, a);
-end;
-
-function TJvTurtle.txmax: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  Npush(Result, max(a, b));
-end;
-
-function TJvTurtle.txmin: string;
-var
-  b, a: integer;
-begin
-  if not (npop(Result, b) and npop(Result, a)) then Exit;
-  Npush(Result, min(a, b));
-end;
-
-function TJvTurtle.txsqr: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  Npush(Result, variant(sqr(a)));
-end;
-
-function TJvTurtle.txsqrt: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  if a <> 0 then
-    Npush(Result, variant(sqrt(a)))
-  else
-    Result := sCanNotTakeSqrtOf;
-end;
-
-function TJvTurtle.txdec: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  dec(a);
-  Npush(Result, a);
-end;
-
-function TJvTurtle.txinc: string;
-var
-  a: integer;
-begin
-  if not npop(Result, a) then Exit;
-  inc(a);
-  Npush(Result, a);
-end;
-
-function TJvTurtle.txpolygon: string;
-var
-  i, s, n: integer;
-  tdown: boolean;
-  ta, a: real;
-  pt: tpoint;
+  I, S, N: Integer;
+  OldDown: Boolean;
+  OldHeading, A: Real;
+  Pt: TPoint;
 begin
   Result := Format(sInvalidIntegerIns, ['polygon']);
-  if not (getnum(n) and getnum(s)) then Exit;
+  if not (GetNum(N) and GetNum(S)) then
+    Exit;
   Result := Format(sNotAllowedIns, ['polygon']);
-  if (n = 0) or (s = 0) then Exit;
+  if (N = 0) or (S = 0) then
+    Exit;
   Result := Format(sNeedMinimumOfSidesIns, ['polygon']);
-  if (n < 3) then Exit;
-  ta := Fheading;
-  pt := Fposition;
-  tdown := Fpendown;
-  Fpendown := true;
-  a := 360 / n;
-  for i := 1 to n - 1 do
+  if N < 3 then
+    Exit;
+  OldHeading := Heading;
+  Pt := Position;
+  OldDown := PenDown;
+  PenDown := True;
+  A := 360 / N;
+  for I := 1 to N - 1 do
   begin
-    moveforward(s);
-    turn(a);
+    MoveForward(S);
+    Turn(A);
   end;
-  Fcanvas.LineTo(pt.x, pt.y);
-  Fpendown := tdown;
-  FHeading := ta;
-  Fposition := pt;
+  Canvas.LineTo(Pt.X, Pt.Y);
+  PenDown := OldDown;
+  Heading := OldHeading;
+  Position := Pt;
   Result := '';
 end;
 
-function TJvTurtle.txstar: string;
+function TJvTurtle.txStar: string;
 var
-  i, s, am, n: integer;
-  tdown: boolean;
-  a, ta: real;
-  pt: tpoint;
+  I, S, am, N: Integer;
+  OldDown: Boolean;
+  A, OldHeading: Real;
+  Pt: TPoint;
 begin
   Result := Format(sInvalidIntegerIns, ['star']);
-  if not (getnum(n) and getnum(s)) then Exit;
-  Result := Format(sNotAllowedIns, ['star']);
-  if (n = 0) or (s = 0) then Exit;
-  Result := Format(sNeedMinimumOfSidesIns, ['star']);
-  if (n < 3) then Exit;
-  Result := Format(sMaximumSidesExceededIns, ['star']);
-  if (n > 12) then Exit;
-  am := 1;
-  case n of
-    5: am := 2;
-    7: am := 3;
-    9: am := 4;
-    11: am := 5;
-  end;
-  ta := Fheading;
-  pt := Fposition;
-  tdown := Fpendown;
-  Fpendown := true;
-  a := am * 360 / n;
-  for i := 1 to n - 1 do
-  begin
-    moveforward(s);
-    turn(a);
-  end;
-  Fcanvas.LineTo(pt.x, pt.y);
-  Fpendown := tdown;
-  FHeading := ta;
-  Fposition := pt;
-  Result := '';
-end;
-
-function TJvTurtle.txlineto: string;
-var
-  x, y, x0, y0: integer;
-begin
-  Result := Format(sInvalidIntegerIns, ['lineto']);
-  if getnum(x) and getnum(y) then
-  begin
-    x0 := Fposition.x;
-    y0 := Fposition.y;
-    SetPosition(point(x0 + x, y0 + y));
-    Fcanvas.MoveTo(x0, y0);
-    Fcanvas.LineTo(x0 + x, y0 + y);
-    Result := '';
-  end;
-end;
-
-function TJvTurtle.txroundrect: string;
-var
-  x1, y1, x2, y2, rx, ry: integer;
-begin
-  Result := Format(sInvalidIntegerIns, ['roundrect']);
-  if getnum(x2) and getnum(y2) and getnum(rx) and getnum(ry) then
-  begin
-    x1 := Fposition.x;
-    y1 := Fposition.y;
-    x2 := x1 + x2;
-    y2 := y1 + y2;
-    FCanvas.roundrect(x1, y1, x2, y2, rx, ry);
-    Result := '';
-  end;
-
-end;
-
-function TJvTurtle.txdefault: string;
-begin
-  Result := '';
-  Fheading := 0;
-  Fposition := point(0, 0);
-  Fpendown := false;
-  Fcanvas.Pen.color := clblack;
-  Fcanvas.Brush.color := clwhite;
-  Fcanvas.CopyMode := cmsrccopy;
-  Fmark := Fposition;
-  Farea := rect(0, 0, 0, 0);
-end;
-
-function TJvTurtle.txin: string;
-var
-  token: string;
-  index, num: integer;
-begin
-  if not npop(Result, num) then Exit;
-  if gettoken(token) then
-  begin
-    index := pot.IndexOfName(token);
-    if index < 0 then
-      {index := }pot.Add(token + '=' + inttostr(num)) { TODO -oJVCL -cPOSSIBLEBUG : (p3) index is never used... }
-    else
-      pot.Values[token] := inttostr(num);
-    Result := '';
-  end
-  else
-    Result := sTokenExpected;
-end;
-
-function TJvTurtle.IsVar(tex: string): boolean;
-var
-  num: integer;
-  msg, s: string;
-begin
-  Result := false;
-  s := pot.values[tex];
-  if s = '' then Exit;
-  try
-    num := strtoint(s);
-    Result := Npush(msg, num);
-  except
-    Result := false;
-  end;
-end;
-
-function TJvTurtle.txinadd: string;
-var
-  token: string;
-  index, num: integer;
-begin
-  if not npop(Result, num) then Exit;
-  if gettoken(token) then
-  begin
-    index := pot.IndexOfName(token);
-    Result := '';
-    if index >= 0 then
-      pot.values[token] := inttostr(strtoint(pot.values[token]) + num)
-    else
-      Result := Format(ssDoesNotExist, [token]);
-  end
-  else
-    Result := sTokenExpected;
-end;
-
-function TJvTurtle.txindiv: string;
-var
-  token: string;
-  index, num: integer;
-begin
-  if not npop(Result, num) then Exit;
-  if gettoken(token) then
-  begin
-    index := pot.IndexOfName(token);
-    Result := '';
-    if index >= 0 then
-      pot.values[token] := inttostr(strtoint(pot.values[token]) - num)
-    else
-      Result := Format(ssDoesNotExist, [token]);
-  end
-  else
-    Result := sTokenExpected;
-end;
-
-function TJvTurtle.txinmult: string;
-var
-  token: string;
-  index, num: integer;
-begin
-  if not npop(Result, num) then Exit;
-  if gettoken(token) then
-  begin
-    index := pot.IndexOfName(token);
-    Result := '';
-    if index >= 0 then
-      pot.values[token] := inttostr(strtoint(pot.values[token]) * num)
-    else
-      Result := Format(ssDoesNotExist, [token]);
-  end
-  else
-    Result := sTokenExpected;
-end;
-
-function TJvTurtle.txinsub: string;
-var
-  token: string;
-  index, num: integer;
-begin
-  if not npop(Result, num) then Exit;
-  if num = 0 then
-  begin
-    Result := sDivisionByZeroNotAllowedInIn;
+  if not (GetNum(N) and GetNum(S)) then
     Exit;
+  Result := Format(sNotAllowedIns, ['star']);
+  if (N = 0) or (S = 0) then
+    Exit;
+  Result := Format(sNeedMinimumOfSidesIns, ['star']);
+  if N < 3 then
+    Exit;
+  Result := Format(sMaximumSidesExceededIns, ['star']);
+  if N > 12 then
+    Exit;
+  case N of
+    5:
+      am := 2;
+    7:
+      am := 3;
+    9:
+      am := 4;
+    11:
+      am := 5;
+  else
+    am := 1;
   end;
-  if gettoken(token) then
+  OldHeading := Heading;
+  Pt := Position;
+  OldDown := PenDown;
+  PenDown := True;
+  A := am * 360 / N;
+  for I := 1 to N - 1 do
   begin
-    index := pot.IndexOfName(token);
+    MoveForward(S);
+    Turn(A);
+  end;
+  Canvas.LineTo(Pt.X, Pt.Y);
+  PenDown := OldDown;
+  Heading := OldHeading;
+  Position := Pt;
+  Result := '';
+end;
+
+function TJvTurtle.txLineTo: string;
+var
+  X, Y: Integer;
+begin
+  if GetNum(X) and GetNum(Y) then
+  begin
+    Canvas.MoveTo(Position.X, Position.Y);
+    Canvas.LineTo(Position.X + X, Position.Y + Y);
+    Position := Point(Position.X + X, Position.Y + Y);
     Result := '';
-    if index >= 0 then
-      pot.values[token] := inttostr(strtoint(pot.values[token]) div num)
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['lineto']);
+end;
+
+function TJvTurtle.txRoundRect: string;
+var
+  X2, Y2, RX, RY: Integer;
+begin
+  if GetNum(X2) and GetNum(Y2) and GetNum(RX) and GetNum(RY) then
+  begin
+    X2 := Position.X + X2;
+    Y2 := Position.Y + Y2;
+    Canvas.RoundRect(Position.X, Position.Y, X2, Y2, RX, RY);
+    Result := '';
+  end
+  else
+    Result := Format(sInvalidIntegerIns, ['roundrect']);
+end;
+
+function TJvTurtle.txDefault: string;
+begin
+  Result := '';
+  Heading := 0;
+  Position := Point(0, 0);
+  PenDown := False;
+  Canvas.Pen.Color := clWindowText;  // (rom) from clBlack
+  Canvas.Brush.Color := clWindow;    // (rom) from clWhite
+  Canvas.Font.Color := clWindowText; // (rom) added
+  Canvas.CopyMode := cmSrcCopy;
+  Mark := Position;
+  Area := Rect(0, 0, 0, 0);
+end;
+
+function TJvTurtle.txIn: string;
+var
+  Token: string;
+  Num: Integer;
+begin
+  if NPop(Result, Num) then
+    if GetToken(Token) then
+    begin
+      if FPot.IndexOfName(Token) < 0 then
+        FPot.Add(Token + '=' + IntToStr(Num))
+      else
+        FPot.Values[Token] := IntToStr(Num);
+      Result := '';
+    end
     else
-      Result := Format(ssDoesNotExist, [token]);
+      Result := sTokenExpected;
+end;
+
+function TJvTurtle.IsVar(Tex: string): Boolean;
+var
+  Num: Integer;
+  Msg, S: string;
+begin
+  S := FPot.Values[Tex];
+  if S <> '' then
+    try
+      Num := StrToInt(S);
+      Result := NPush(Msg, Num);
+    except
+      Result := False;
+    end
+  else
+    Result := False;
+end;
+
+function TJvTurtle.txInAdd: string;
+var
+  Token: string;
+  Index, Num: Integer;
+begin
+  if NPop(Result, Num) then
+    if GetToken(Token) then
+    begin
+      Index := FPot.IndexOfName(Token);
+      if Index >= 0 then
+      begin
+        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) + Num);
+        Result := '';
+      end
+      else
+        Result := Format(ssDoesNotExist, [Token]);
+    end
+    else
+      Result := sTokenExpected;
+end;
+
+function TJvTurtle.txInDiv: string;
+var
+  Token: string;
+  Num: Integer;
+begin
+  if NPop(Result, Num) then
+    if GetToken(Token) then
+    begin
+      if FPot.IndexOfName(Token) >= 0 then
+      begin
+        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) - Num);
+        Result := '';
+      end
+      else
+        Result := Format(ssDoesNotExist, [Token]);
+    end
+    else
+      Result := sTokenExpected;
+end;
+
+function TJvTurtle.txInMult: string;
+var
+  Token: string;
+  Num: Integer;
+begin
+  if NPop(Result, Num) then
+    if GetToken(Token) then
+    begin
+      if FPot.IndexOfName(Token) >= 0 then
+      begin
+        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) * Num);
+        Result := '';
+      end
+      else
+        Result := Format(ssDoesNotExist, [Token]);
+    end
+    else
+      Result := sTokenExpected;
+end;
+
+function TJvTurtle.txInSub: string;
+var
+  Token: string;
+  Num: Integer;
+begin
+  if NPop(Result, Num) then
+  begin
+    if Num = 0 then
+      Result := sDivisionByZeroNotAllowedInIn
+    else
+    if GetToken(Token) then
+    begin
+      if FPot.IndexOfName(Token) >= 0 then
+      begin
+        FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) div Num);
+        Result := '';
+      end
+      else
+        Result := Format(ssDoesNotExist, [Token]);
+    end
+    else
+      Result := sTokenExpected;
+  end;
+end;
+
+function TJvTurtle.txInDec: string;
+var
+  Token: string;
+begin
+  if GetToken(Token) then
+  begin
+    if FPot.IndexOfName(Token) >= 0 then
+    begin
+      FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) - 1);
+      Result := '';
+    end
+    else
+      Result := Format(ssDoesNotExist, [Token]);
   end
   else
     Result := sTokenExpected;
 end;
 
-function TJvTurtle.txindec: string;
+function TJvTurtle.txInInc: string;
 var
-  token: string;
-  index: integer;
+  Token: string;
 begin
-  if gettoken(token) then
+  if GetToken(Token) then
   begin
-    index := pot.IndexOfName(token);
-    Result := '';
-    if index >= 0 then
-      pot.values[token] := inttostr(strtoint(pot.values[token]) - 1)
+    if FPot.IndexOfName(Token) >= 0 then
+    begin
+      FPot.Values[Token] := IntToStr(StrToInt(FPot.Values[Token]) + 1);
+      Result := '';
+    end
     else
-      Result := Format(ssDoesNotExist, [token]);
-  end
-  else
-    Result := sTokenExpected;
-end;
-
-function TJvTurtle.txininc: string;
-var
-  token: string;
-  index: integer;
-begin
-  if gettoken(token) then
-  begin
-    index := pot.IndexOfName(token);
-    Result := '';
-    if index >= 0 then
-      pot.values[token] := inttostr(strtoint(pot.values[token]) + 1)
-    else
-      Result := Format(ssDoesNotExist, [token]);
+      Result := Format(ssDoesNotExist, [Token]);
   end
   else
     Result := sTokenExpected;
 end;
 
 end.
+
