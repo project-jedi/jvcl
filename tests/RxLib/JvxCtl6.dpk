@@ -1,0 +1,126 @@
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvxCtl6.dpk, released on 2002-07-04.
+
+The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
+Copyright (c) 2001,2002 SGB Software          
+All Rights Reserved.
+
+Last Modified: 2002-07-04
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://JVCL.sourceforge.net
+
+Known Issues:
+-----------------------------------------------------------------------------}
+{$A+,B-,C+,D+,E-,F-,G+,H+,I+,J+,K-,L+,M-,N+,O+,P+,Q-,R-,S-,T-,U-,V+,W-,X+,Y+,Z1}
+{$I JEDI.INC}
+
+package JvxCtl6;
+
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE ON}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'Jvx Library Component and Tools Package'}
+{$RUNONLY}
+{$IMPLICITBUILD ON}
+
+requires
+  vcl,
+  vclsmp,
+  vclx;
+
+contains
+  JvxCtrls in 'JvxCtrls.pas',
+  JvxGrids in 'JvxGrids.pas',
+  JvxCurrEdit in 'JvxCurrEdit.pas',
+  JvxToolEdit in 'JvxToolEdit.pas',
+  JvxDateUtil in 'JvxDateUtil.pas',
+  JvxSplit in 'JvxSplit.pas',
+  JvxSlider in 'JvxSlider.pas',
+  JvxClock in 'JvxClock.pas',
+  JvxAnimate in 'JvxAnimate.pas',
+  JvxSpin in 'JvxSpin.pas',
+  JvxRichEd in 'JvxRichEd.pas',
+  JvxSwitch in 'JvxSwitch.pas',
+  JvxDice in 'JvxDice.pas',
+  JvxVCLUtils in 'JvxVCLUtils.pas',
+  JvxAniFile in 'JvxAniFile.pas',
+  JvxIcoList in 'JvxIcoList.pas',
+  JvxObjStr in 'JvxObjStr.pas',
+  JvxCombos in 'JvxCombos.pas',
+  JvxPickDate in 'JvxPickDate.pas',
+  JvxMaxMin in 'JvxMaxMin.pas',
+  JvxConst in 'JvxConst.pas',
+  JvxCConst in 'JvxCConst.pas',
+  JvxAppUtils in 'JvxAppUtils.pas',
+  JvxStrUtils in 'JvxStrUtils.pas',
+  JvxFileUtil in 'JvxFileUtil.pas',
+  JvxTimer in 'JvxTimer.pas',
+  JvxHook in 'JvxHook.pas',
+  JvxPlacemnt in 'JvxPlacemnt.pas',
+  JvxProps in 'JvxProps.pas',
+  JvxPrgrss in 'JvxPrgrss.pas',
+  JvxHints in 'JvxHints.pas',
+  JvxCalc in 'JvxCalc.pas',
+  JvxExcptDlg in 'JvxExcptDlg.pas',
+  JvxBoxProcs in 'JvxBoxProcs.pas',
+  JvxClipIcon in 'JvxClipIcon.pas',
+  JvxClipMon in 'JvxClipMon.pas',
+  JvxParsing in 'JvxParsing.pas',
+  JvxGraph in 'JvxGraph.pas',
+  JvxGConst in 'JvxGConst.pas',
+  JvxGIF in 'JvxGIF.pas',
+  JvxGIFCtrl in 'JvxGIFCtrl.pas',
+  JvxPicClip in 'JvxPicClip.pas',
+  JvxDualList in 'JvxDualList.pas',
+  JvxFDualLst in 'JvxFDualLst.pas',
+  JvxClipView in 'JvxClipView.pas',
+  JvxSpeedbar in 'JvxSpeedbar.pas',
+  JvxSbSetup in 'JvxSbSetup.pas',
+  JvxPageMngr in 'JvxPageMngr.pas',
+  JvxMrgMngr in 'JvxMrgMngr.pas',
+  JvxStrHlder in 'JvxStrHlder.pas',
+  JvxAppEvent in 'JvxAppEvent.pas',
+  JvxTimerLst in 'JvxTimerLst.pas',
+  JvxMRUList in 'JvxMRUList.pas',
+  JvxIni in 'JvxIni.pas',
+  JvxShell in 'JvxShell.pas',
+  JvxMenus in 'JvxMenus.pas',
+  JvxNotify in 'JvxNotify.pas',
+  JvxGrdCpt in 'JvxGrdCpt.pas',
+  JvxSplshWnd in 'JvxSplshWnd.pas',
+  JvxDataConv in 'JvxDataConv.pas',
+  JvxTConst in 'JvxTConst.pas',
+  JvxOle2Auto in 'JvxOle2Auto.pas',
+  JvxVerInf in 'JvxVerInf.pas';
+
+end.
