@@ -185,6 +185,9 @@ const
 
 implementation
 
+uses
+  JvJCLUtils;
+
 type
   TRGBTripleArray = array[0..MaxPixelCount - 1] of
     TRGBTriple;
@@ -377,45 +380,13 @@ end;
 
 procedure TJvPaintFX.AntiAlias(clip: tbitmap);
 begin
-  AntiAliasRect(clip, 0, 0, clip.width, clip.height);
+  JvJCLUtils.AntiAlias(clip);
 end;
 
 procedure TJvPaintFX.AntiAliasRect(clip: tbitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
-var
-  Memo, x, y: Integer; (* Composantes primaires des points environnants *)
-  p0, p1, p2: pbytearray;
-
 begin
-  if XFinal < XOrigin then
-  begin
-    Memo := XOrigin;
-    XOrigin := XFinal;
-    XFinal := Memo;
-  end; (* Inversion des valeurs   *)
-  if YFinal < YOrigin then
-  begin
-    Memo := YOrigin;
-    YOrigin := YFinal;
-    YFinal := Memo;
-  end; (* si diff‚rence n‚gative*)
-  XOrigin := max(1, XOrigin);
-  YOrigin := max(1, YOrigin);
-  XFinal := min(clip.width - 2, XFinal);
-  YFinal := min(clip.height - 2, YFinal);
-  clip.PixelFormat := pf24bit;
-  for y := YOrigin to YFinal do
-  begin
-    p0 := clip.ScanLine[y - 1];
-    p1 := clip.scanline[y];
-    p2 := clip.ScanLine[y + 1];
-    for x := XOrigin to XFinal do
-    begin
-      p1[x * 3] := (p0[x * 3] + p2[x * 3] + p1[(x - 1) * 3] + p1[(x + 1) * 3]) div 4;
-      p1[x * 3 + 1] := (p0[x * 3 + 1] + p2[x * 3 + 1] + p1[(x - 1) * 3 + 1] + p1[(x + 1) * 3 + 1]) div 4;
-      p1[x * 3 + 2] := (p0[x * 3 + 2] + p2[x * 3 + 2] + p1[(x - 1) * 3 + 2] + p1[(x + 1) * 3 + 2]) div 4;
-    end;
-  end;
+  JvJCLUtils.AntiAliasRect(clip, XOrigin, YOrigin, XFinal, YFinal);
 end;
 
 procedure TJvPaintFX.Contrast(var clip: tbitmap; Amount: Integer);
