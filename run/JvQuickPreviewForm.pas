@@ -50,7 +50,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TQuickPreviewForm.BtnUseClick(Sender: TObject);
 

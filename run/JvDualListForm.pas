@@ -81,7 +81,7 @@ uses
   Consts,
   JvJVCLUtils, JvBoxProcs;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvDualListForm.CreateParams(var Params: TCreateParams);
 begin

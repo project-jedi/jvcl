@@ -136,7 +136,7 @@ const
   DefHeader2 =
     'Profiler 32 - (C) 1996 Certified Software Corp, portions Copyright (C) 1997 by Peter Thörnqvist; all rights reserved.';
 
-{$R *.DFM}
+{$R *.dfm}
 
 type
   PProfType = ^TProfType;

@@ -60,7 +60,7 @@ implementation
 uses
   JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 resourcestring
   sJvPatcherEditorComparingFilesd = 'Jv - Patcher Editor: Comparing files %d%%';

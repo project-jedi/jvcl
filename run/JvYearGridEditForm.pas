@@ -54,7 +54,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
 begin

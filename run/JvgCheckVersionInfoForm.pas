@@ -71,7 +71,7 @@ uses
   ShellApi,
   JvConsts, JvgHTTPVersionInfo;
 
-{$R *.DFM}
+{$R *.dfm}
 
 resourcestring
   sNoNewerVersionOfProgramAvailable = 'No newer version of program available';

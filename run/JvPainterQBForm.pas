@@ -89,7 +89,7 @@ implementation
 uses
   JvConsts;
 
-{$R *.DFM}
+{$R *.dfm}
 
 resourcestring
   sPainterQuickBackdrops = 'Painter Quick Backdrops';

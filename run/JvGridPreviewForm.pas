@@ -109,7 +109,7 @@ implementation
 uses
   JvTypes;
 
-{$R *.DFM}
+{$R *.dfm}
 
 { TJvGridPreviewF }
 

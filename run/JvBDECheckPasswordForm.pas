@@ -49,7 +49,7 @@ uses
   Consts,
   JvConsts, JvJVCLUtils;
 
-{$R *.DFM}
+{$R *.dfm}
 
 type
   // (rom) moved to implementation for security reasons
@@ -132,8 +132,8 @@ end;
 
 procedure TJvChPswdForm.OkEnabled;
 begin
-  OkBtn.Enabled := FEnableEmpty or ((OldPswd.Text <> '') and (NewPswd.Text <> '')
-    and (ConfirmNewPswd.Text <> ''));
+  OkBtn.Enabled := FEnableEmpty or
+    ((OldPswd.Text <> '') and (NewPswd.Text <> '') and (ConfirmNewPswd.Text <> ''));
 end;
 
 procedure TJvChPswdForm.OkBtnClick(Sender: TObject);

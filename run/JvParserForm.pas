@@ -69,7 +69,7 @@ type
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TFormParsers.Edit1Change(Sender: TObject);
 begin
