@@ -1054,12 +1054,12 @@ end;}
 
 {$IFDEF MSWINDOWS}
 function GetRecentFolder: string;
+var ItemIDList:PItemIDList;
 begin
+  OleCheck(SHGetSpecialFolderLocation(0, CSIDL_RECENT, ItemIDList));
   SetLength(Result, MAX_PATH);
-  if SHGetSpecialFolderPath(0, PChar(Result), CSIDL_RECENT, False) then // requires IE 4 on Win95
-    SetLength(Result, StrLen(PChar(Result)))
-  else
-    Result := '';
+  SHGetPathFromIDList(ItemIDList, PChar(Result));
+  SetLength(Result, Length(PChar(Result)));
 end;
 {$ENDIF MSWINDOWS}
 
@@ -7377,7 +7377,7 @@ begin
   if DrawText(Canvas.Handle, PChar(b), -1, R,
     DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or
     DT_CALCRECT or DT_NOPREFIX) > 0 then
-    Result := b
+    Result := string(PChar(b))
   else
     Result := Filename;
 end;
