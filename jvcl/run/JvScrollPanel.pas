@@ -165,7 +165,7 @@ type
     property ShowHint;
     property Hint;
     property ParentShowHint;
-    property PopUpMenu;
+    property PopupMenu;
     property ImeMode;
     property ImeName;
     property Color;
