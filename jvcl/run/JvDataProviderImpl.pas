@@ -1,3 +1,5 @@
+{.$DEFINE DEBUG}
+
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -35,6 +37,7 @@ interface
 
 uses
   Windows, Classes, SysUtils, Graphics, ImgList, Contnrs,
+  JclBase,
   JvConsts, JvComponent, JvDataProvider;
 
 type
@@ -76,6 +79,7 @@ type
     procedure WriteImplementer(Writer: TWriter; Instance: TAggregatedPersistentEx);
   public
     constructor Create;
+    destructor Destroy; override;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
@@ -103,10 +107,33 @@ type
   protected
     property Owner: TExtensibleInterfacedPersistent read FOwner;
   public
-    constructor Create(AOwner: TExtensibleInterfacedPersistent);
+    constructor Create(AOwner: TExtensibleInterfacedPersistent); virtual;
     procedure AfterConstruction; override;
     procedure BeforeDestruction; override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; virtual;
+  end;
+
+  TProviderNotifyEvent = procedure(ADataProvider: IJvDataProvider;
+    AReason: TDataProviderChangeReason; Source: IUnknown) of object;
+
+  // Generic event based provider notification
+  TJvProviderNotification = class(TObject, IUnknown, IJvDataProviderNotify)
+  private
+    FOnChanging: TProviderNotifyEvent;
+    FOnChanged: TProviderNotifyEvent;
+  protected
+    { IUnknown }
+    function _AddRef: Integer; virtual; stdcall;
+    function _Release: Integer; virtual; stdcall;
+    function QueryInterface(const IID: TGUID; out Obj): HResult; virtual; stdcall;
+    { IJvDataProviderNotify }
+    procedure DataProviderChanging(const ADataProvider: IJvDataProvider;
+      AReason: TDataProviderChangeReason; Source: IUnknown);
+    procedure DataProviderChanged(const ADataProvider: IJvDataProvider;
+      AReason: TDataProviderChangeReason; Source: IUnknown);
+  public
+    property OnChanging: TProviderNotifyEvent read FOnChanging write FOnChanging;
+    property OnChanged: TProviderNotifyEvent read FOnChanged write FOnChanged;
   end;
 
   // Item implementation classes
@@ -195,6 +222,7 @@ type
   end;
 
   TJvBaseDataItems = class(TExtensibleInterfacedPersistent, IJvDataItems, IJvDataIDSearch)
+    function IJvDataIDSearch.Find = FindByID;
   private
     FParent: Pointer;
     FParentIntf: IJvDataItem;
@@ -220,7 +248,6 @@ type
     function GetImplementer: TObject;
     function IsDynamic: Boolean; virtual;
     { IJvDataIDSearch methods }
-    function IJvDataIDSearch.Find = FindByID;
     function FindByID(ID: string; const Recursive: Boolean = False): IJvDataItem;
   public
     constructor Create; virtual;
@@ -299,7 +326,7 @@ type
   protected
     property Items: IJvDataItems read FItems implements IJvDataItems;
   public
-    constructor Create(AOwner: TExtensibleInterfacedPersistent; AItems: TJvBaseDataItems); virtual;
+    constructor Create(AOwner: TExtensibleInterfacedPersistent; AItems: TJvBaseDataItems); reintroduce; virtual;
     destructor Destroy; override;
     procedure BeforeDestruction; override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; override;
@@ -521,8 +548,6 @@ type
     property Alignment: TAlignment read FAlignment write FAlignment;
   end;
 
-  TJvDataContextID = type string;
-  TJvDataItemID = type string;
   TJvDataConsumerAggregatedObject = class;
   TJvDataConsumerAggregatedObjectClass = class of TJvDataConsumerAggregatedObject;
   TJvDataConsumer = class(TExtensibleInterfacedPersistent, IJvDataConsumer, IJvDataProviderNotify)
@@ -539,7 +564,6 @@ type
     function GetProviderComp: TComponent;
     procedure SetProviderComp(Value: TComponent);
     {$ENDIF COMPILER6_UP}
-    procedure SetContextIntf(Value: IJvDataContext);
   protected
     function _AddRef: Integer; override; stdcall;
     function _Release: Integer; override; stdcall;
@@ -550,10 +574,13 @@ type
     { Misc. }
     procedure DoAddAttribute(Attr: Integer);
     procedure Changed;
+    procedure ProviderChanging;
     procedure ProviderChanged;
+    procedure ContextChanging;
     procedure ContextChanged;
     procedure UpdateExtensions; virtual;
     procedure FixupExtensions;
+    procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
     function ExtensionCount: Integer;
     function Extension(Index: Integer): TJvDataConsumerAggregatedObject;
     { Property access }
@@ -571,7 +598,9 @@ type
     { Direct link to actual provider interface. This is done to aid in the implementation (less
       IFDEF's in the code; always refer to ProviderIntf and it's working in all Delphi versions). }
     function ProviderIntf: IJvDataProvider;
+    procedure SetProviderIntf(Value: IJvDataProvider);
     function ContextIntf: IJvDataContext;
+    procedure SetContextIntf(Value: IJvDataContext);
     procedure Enter;
     procedure Leave;
 
@@ -587,17 +616,48 @@ type
 
   TJvDataConsumerAggregatedObject = class(TAggregatedPersistentEx)
   protected
+    { Called when the Provider/Context are set and NotifyFixups has been called earlier. It doesn't
+      matter which sub service called NotifyFixups, all services are notified if the
+      provider/context are set. }
     procedure Fixup; virtual;
+    { Called after a new provider is selected to determine if the sub service can stay around.
+      Return False to have the sub service removed (the default implementation) or set to True to
+      keep it around. Note that on entry to this method the new provider is already selected. }
     function KeepOnProviderChange: Boolean; virtual;
+    { Called after a new context is selected to determine if the sub service can stay around.
+      Return False to have the sub service removed or set to True to keep it around (default
+      implementation). Note that on entry to this method the new context is already selected. }
     function KeepOnContextChange: Boolean; virtual;
+    { Notifies the consumer service a change has taken place. Sub services should call this method
+      when something has changed. }
     procedure Changed;
+    { Notifies the consumer service (and other extensions) a change has taken place that might have
+      influenced the view list. }
+    procedure NotifyViewChanged;
+    { Called after the view has changed by another extension. }
+    procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject); virtual;
+    { Signal to the consumer service that settings need to be applies but the provider/context was
+      not yet available. This may occur during streaming in from the DFM. As soon as the provider is
+      known, the context is also set and Fixup is called for all sub services. }
     procedure NotifyFixups;
+    { Called when the provider is about to be changed. }
+    procedure ProviderChanging; virtual;
+    { Called when the provider has changed but only after KeepOnProviderChange returned True. }
     procedure ProviderChanged; virtual;
+    { Called when the context is about to be changed. }
+    procedure ContextChanging; virtual;
+    { Called when the context has changed but only after KeepOnContextChange returned True. }
     procedure ContextChanged; virtual;
+    { Reference to the consumer service interface. }
     function Consumer: IJvDataConsumer;
+    { Reference to the consumer service implementation. }
     function ConsumerImpl: TJvDataConsumer;
+    { Retrieve the root IJvDataItems reference. }
+    function RootItems: IJvDataItems;
   end;
 
+  { Consumer sub service to select the context to use for the consumer. Only needed for design time
+    purposes; use TJvDataConsumer.Context to change it directly. }
   TJvDataConsumerContext = class(TJvDataConsumerAggregatedObject)
   protected
     function GetContext: IJvDataContext;
@@ -606,6 +666,7 @@ type
     property Context: IJvDataContext read GetContext write SetContext;
   end;
 
+  { Consumer sub service to select the item to display or item that serves as the root. }
   TJvDataConsumerItemSelect = class(TJvDataConsumerAggregatedObject, IJvDataConsumerItemSelect)
     { Method resolutions }
     function IJvDataConsumerItemSelect.GetItem = GetItemIntf;
@@ -623,7 +684,135 @@ type
   published
     property Item: TJvDataItemID read GetItem write SetItem;
   end;
-  
+
+  { Consumer sub service to maintain a flat list of the data tree. }
+  TJvCustomDataConsumerViewList = class(TJvDataConsumerAggregatedObject, IJvDataConsumerViewList)
+  private
+    FAutoExpandLevel: Integer;
+    FExpandOnNewItem: Boolean;
+    FNotifier: TJvProviderNotification;
+  protected
+    function KeepOnProviderChange: Boolean; override;
+    procedure ProviderChanging; override;
+    procedure ProviderChanged; override;
+    procedure ContextChanged; override;
+    procedure ViewChanged(AExtension: TJvDataConsumerAggregatedObject); override;
+    procedure DataProviderChanging(ADataProvider: IJvDataProvider;
+      AReason: TDataProviderChangeReason; Source: IUnknown);
+    procedure DataProviderChanged(ADataProvider: IJvDataProvider;
+      AReason: TDataProviderChangeReason; Source: IUnknown);
+    function InternalItemSibling(ParentIndex: Integer; var ScanIndex: Integer): Integer;
+    function Get_AutoExpandLevel: Integer;
+    procedure Set_AutoExpandLevel(Value: Integer);
+    function Get_ExpandOnNewItem: Boolean;
+    procedure Set_ExpandOnNewItem(Value: Boolean);
+    { Add an item as the sub item of the item specified. The parent item will be marked as being
+      expanded. }
+    procedure AddItem(Index: Integer; Item: IJvDataItem; ExpandToLevel: Integer = 0); virtual; abstract;
+    { Add a list of items at the specified Index. The item preceding that index will be handled as
+      if it was the parent of all items to be inserted. This will also mark that item as being
+      expanded. }
+    procedure AddItems(var Index: Integer; Items: IJvDataItems; ExpandToLevel: Integer = 0); virtual; abstract;
+    procedure AddChildItem(ParentIndex: Integer; Item: IJvDataItem); virtual; abstract;
+    procedure InsertItem(InsertIndex, ParentIndex: Integer; Item: IJvDataItem); virtual; abstract;
+    { Delete the specified item and the items sub tree. }
+    procedure DeleteItem(Index: Integer); virtual; abstract;
+    { Deletes the specified items sub tree and mark the item as not-expanded }
+    procedure DeleteItems(Index: Integer); virtual; abstract;
+    procedure ClearView; virtual;
+    procedure RebuildView; virtual;
+
+    property AutoExpandLevel: Integer read FAutoExpandLevel write FAutoExpandLevel;
+    property ExpandOnNewItem: Boolean read FExpandOnNewItem write FExpandOnNewItem;
+  public
+    constructor Create(AOwner: TExtensibleInterfacedPersistent); override;
+    destructor Destroy; override;
+    procedure ExpandTreeTo(Item: IJvDataItem); virtual;
+    { Toggles an item's expanded state. If an item becomes expanded, the item's sub item as present
+      in the IJvDataItems instance will be added; if an item becomes collapsed the sub items are
+      removed from the view. }
+    procedure ToggleItem(Index: Integer); virtual; abstract;
+    { Locate an item in the view list, returning it's absolute index. }
+    function IndexOfItem(Item: IJvDataItem): Integer; virtual; abstract;
+    { Locate an item ID in the view list, returning it's absolute index. }
+    function IndexOfID(ID: TJvDataItemID): Integer; virtual; abstract;
+    { Locate an item in the view list, returning it's index in the parent item. }
+    function ChildIndexOfItem(Item: IJvDataItem): Integer; virtual; abstract;
+    { Locate an item ID in the view list, returning it's index in the parent item. }
+    function ChildIndexOfID(ID: TJvDataItemID): Integer; virtual; abstract;
+    { Retrieve the IJvDataItem reference given the absolute index into the view list. }
+    function Item(Index: Integer): IJvDataItem; virtual; abstract;
+    { Retrieve an items level given the absolute index into the view list. }
+    function ItemLevel(Index: Integer): Integer; virtual; abstract;
+    { Retrieve an items expanded state given the absolute index into the view list. }
+    function ItemIsExpanded(Index: Integer): Boolean; virtual; abstract;
+    { Determine if an item has children given the absolute index into the view list. }
+    function ItemHasChildren(Index: Integer): Boolean; virtual; abstract;
+    { Retrieve an items parent given the absolute index into the view list. }
+    function ItemParent(Index: Integer): IJvDataItem; virtual; abstract;
+    { Retrieve an items parent absolute index given the absolute index into the view list. }
+    function ItemParentIndex(Index: Integer): Integer; virtual; abstract;
+    { Retrieve an items sibling given an absolute index. }
+    function ItemSibling(Index: Integer): IJvDataItem; virtual; abstract;
+    { Retrieve the index of an items sibling given an absolute index. }
+    function ItemSiblingIndex(Index: Integer): Integer; virtual; abstract;
+    { Retrieve the IJvDataItem reference given the child index and a parent item. }
+    function SubItem(Parent: IJvDataItem; Index: Integer): IJvDataItem; overload; virtual; abstract;
+    { Retrieve the IJvDataItem reference given the child index and a parent absolute index. }
+    function SubItem(Parent, Index: Integer): IJvDataItem; overload; virtual; abstract;
+    { Retrieve the absolute index given a child index and a parent item. }
+    function SubItemIndex(Parent: IJvDataItem; Index: Integer): Integer; overload; virtual; abstract;
+    { Retrieve the absolute index given a child index and a parent absolute index. }
+    function SubItemIndex(Parent, Index: Integer): Integer; overload; virtual; abstract;
+    { Retrieve info on grouping; each bit represents a level, if the bit is set the item at that
+      level has another sibling. Can be used to render tree lines. Note that this is very generic
+      implementation that is not the fastest. To make this info readily available will require
+      a descendant that stores and updates this info on a per item basis. This method can then be
+      adpated to use that info directly. }
+    function ItemGroupInfo(Index: Integer): TDynIntegerArray; virtual;
+    { Retrieve the number of viewable items. }
+    function Count: Integer; virtual; abstract;
+  end;
+
+  { View list; uses the least possible amount of memory but may be slow to find sibling/child
+    items. }
+  TViewListItem = record
+    ItemID: string;
+    Flags: Integer; // lower 24 bits contain item level
+  end;
+  TViewListItems = array of TViewListItem;
+
+  TJvDataConsumerViewList = class(TJvCustomDataConsumerViewList)
+  private
+    FViewItems: TViewListItems;
+  protected
+    procedure AddItem(Index: Integer; Item: IJvDataItem; ExpandToLevel: Integer = 0); override;
+    procedure AddChildItem(ParentIndex: Integer; Item: IJvDataItem); override;
+    procedure AddItems(var Index: Integer; Items: IJvDataItems; ExpandToLevel: Integer = 0); override;
+    procedure InsertItem(InsertIndex, ParentIndex: Integer; Item: IJvDataItem); override;
+    procedure DeleteItem(Index: Integer); override;
+    procedure DeleteItems(Index: Integer); override;
+  public
+    procedure ToggleItem(Index: Integer); override;
+    function IndexOfItem(Item: IJvDataItem): Integer; override;
+    function IndexOfID(ID: TJvDataItemID): Integer; override;
+    function ChildIndexOfItem(Item: IJvDataItem): Integer; override;
+    function ChildIndexOfID(ID: TJvDataItemID): Integer; override;
+    function Item(Index: Integer): IJvDataItem; override;
+    function ItemLevel(Index: Integer): Integer; override;
+    function ItemIsExpanded(Index: Integer): Boolean; override;
+    function ItemHasChildren(Index: Integer): Boolean; override;
+    function ItemParent(Index: Integer): IJvDataItem; override;
+    function ItemParentIndex(Index: Integer): Integer; override;
+    function ItemSibling(Index: Integer): IJvDataItem; override;
+    function ItemSiblingIndex(Index: Integer): Integer; override;
+    function SubItem(Parent: IJvDataItem; Index: Integer): IJvDataItem; override;
+    function SubItem(Parent, Index: Integer): IJvDataItem; override;
+    function SubItemIndex(Parent: IJvDataItem; Index: Integer): Integer; override;
+    function SubItemIndex(Parent, Index: Integer): Integer; override;
+    function Count: Integer; override;
+  end;
+
 // Rename and move to JvFunctions? Converts a buffer into a string of hex digits.
 function HexBytes(const Buf; Length: Integer): string;
 // Move to other unit? Render text in a disabled way (much like TLabel does)
@@ -633,7 +822,16 @@ implementation
 
 uses
   ActiveX, Consts, {$IFDEF COMPILER6_UP}RTLConsts, {$ENDIF}Controls, TypInfo,
+  {$IFDEF DEBUG}
+  Dialogs, 
+  DBugIntf,
+  {$ENDIF}
   JvTypes;
+
+const
+  vifHasChildren = Integer($80000000);
+  vifCanHaveChildren = Integer($40000000);
+  vifExpanded = Integer($20000000);
 
 function HexBytes(const Buf; Length: Integer): string;
 var
@@ -701,7 +899,7 @@ begin
     spRightBottom);
 end;
 
-procedure AddItems(AItems: IJvDataItems; ItemList: TStrings; Level: Integer);
+procedure AddItemsToList(AItems: IJvDataItems; ItemList: TStrings; Level: Integer);
 var
   I: Integer;
   ThisItem: IJvDataItem;
@@ -712,7 +910,7 @@ begin
     ThisItem := AItems.Items[I];
     ItemList.AddObject(ThisItem.GetID, TObject(Level));
     if Supports(ThisItem, IJvDataItems, SubItems) then
-      AddItems(SubItems, ItemList, Level + 1);
+      AddItemsToList(SubItems, ItemList, Level + 1);
   end;
 end;
 
@@ -736,7 +934,7 @@ end;
 procedure DP_GenItemsList(RootList: IJvDataItems; ItemList: TStrings);
 begin
   ItemList.Clear;
-  AddItems(RootList, ItemList, 0);
+  AddItemsToList(RootList, ItemList, 0);
 end;
 
 function DP_OwnerDrawStateToProviderDrawState(State: TOwnerDrawState): TProviderDrawStates;
@@ -1237,9 +1435,15 @@ end;
 procedure TExtensibleInterfacedPersistent.ClearIntfImpl;
 var
   I: Integer;
+  Obj: TObject;
 begin
   for I := FAdditionalIntfImpl.Count - 1 downto 0 do
-    TObject(FAdditionalIntfImpl[I]).Free;
+  begin
+    Obj := TObject(FAdditionalIntfImpl[I]);
+    FAdditionalIntfImpl[I] := nil;
+    Obj.Free;
+    FAdditionalIntfImpl.Delete(I);
+  end;
   FAdditionalIntfImpl.Clear;
 end;
 
@@ -1349,6 +1553,13 @@ begin
   FAdditionalIntfImpl := TList.Create;
 end;
 
+destructor TExtensibleInterfacedPersistent.Destroy;
+begin
+  ClearIntfImpl;
+  FreeAndNil(FAdditionalIntfImpl);
+  inherited Destroy;
+end;
+
 procedure TExtensibleInterfacedPersistent.AfterConstruction;
 begin
   inherited AfterConstruction;
@@ -1361,8 +1572,6 @@ procedure TExtensibleInterfacedPersistent.BeforeDestruction;
 begin
   if RefCount <> 0 then RunError(2);
   inherited BeforeDestruction;
-  ClearIntfImpl;
-  FreeAndNil(FAdditionalIntfImpl);
 end;
 
 function TExtensibleInterfacedPersistent.GetInterface(const IID: TGUID; out Obj): Boolean;
@@ -1442,6 +1651,42 @@ end;
 function TAggregatedPersistentEx.GetInterface(const IID: TGUID; out Obj): Boolean;
 begin
   Result := inherited GetInterface(IID, Obj);
+end;
+
+//===TJvProviderNotification========================================================================
+
+function TJvProviderNotification._AddRef: Integer;
+begin
+  Result := -1;
+end;
+
+function TJvProviderNotification._Release: Integer;
+begin
+  Result := -1;
+end;
+
+function TJvProviderNotification.QueryInterface(const IID: TGUID; out Obj): HResult;
+const
+  E_NOINTERFACE = HResult($80004002);
+begin
+  if GetInterface(IID, Obj) then
+    Result := S_OK
+  else
+    Result := E_NOINTERFACE;
+end;
+
+procedure TJvProviderNotification.DataProviderChanging(const ADataProvider: IJvDataProvider;
+  AReason: TDataProviderChangeReason; Source: IUnknown);
+begin
+  if @FOnChanging <> nil then
+    FOnChanging(ADataProvider, AReason, Source);
+end;
+
+procedure TJvProviderNotification.DataProviderChanged(const ADataProvider: IJvDataProvider;
+  AReason: TDataProviderChangeReason; Source: IUnknown);
+begin
+  if @FOnChanged <> nil then
+    FOnChanged(ADataProvider, AReason, Source);
 end;
 
 { TJvBaseDataItems }
@@ -1556,17 +1801,17 @@ var
   SubItems: IJvDataItems;
   Search: IJvDataIDSearch;
 begin
-  I := getCount - 1;
-  while (I >= 0) and (getItem(I).GetID <> ID) do
+  I := GetCount - 1;
+  while (I >= 0) and (GetItem(I).GetID <> ID) do
     Dec(I);
   if I >= 0 then
-    Result := getItem(I)
+    Result := GetItem(I)
   else
   begin
     Result := nil;
     if Recursive then
     begin
-      I := getCount - 1;
+      I := GetCount - 1;
       while (I >= 0) and (Result = nil) do
       begin
         if Supports(GetItem(I), IJvDataItems, SubItems) then
@@ -2261,6 +2506,8 @@ begin
     // Generic consumer based extensions
     if SelectedConsumer.AttributeApplies(DPA_RendersSingleItem) or IsTreeProvider then
       AddToArray(Result, TJvDataConsumerItemSelect);
+    if SelectedConsumer.AttributeApplies(DPA_ConsumerDisplaysList) then
+      AddToArray(Result, TJvDataConsumerViewList);
   end;
 end;
 
@@ -2351,6 +2598,7 @@ begin
   begin
     if FProvider <> nil then
       FProvider.UnregisterChangeNotify(Self);
+    ProviderChanging;
     FProvider := Value;
     if FProvider <> nil then
       FProvider.RegisterChangeNotify(Self);
@@ -2409,18 +2657,6 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-procedure TJvDataConsumer.SetContextIntf(Value: IJvDataContext);
-begin
-  if Value <> ContextIntf then
-  begin
-    if (Value <> nil) and (Value.Contexts.Provider <> ProviderIntf) then
-      raise EJVCLException.Create('The specified context is not part of the same provider.');
-    FContext := Value;
-    ContextChanged;
-    Changed;
-  end;
-end;
-
 function TJvDataConsumer._AddRef: Integer;
 begin
   Result := -1;
@@ -2463,6 +2699,24 @@ begin
   DoChanged;
 end;
 
+procedure TJvDataConsumer.ProviderChanging;
+var
+  I: Integer;
+begin
+  if FAdditionalIntfImpl <> nil then
+  begin
+    if not FNeedFixups then
+    begin
+      I := 0;
+      while I < ExtensionCount do
+      begin
+        Extension(I).ProviderChanging;
+        Inc(I);
+      end
+    end;
+  end;
+end;
+
 procedure TJvDataConsumer.ProviderChanged;
 var
   I: Integer;
@@ -2472,19 +2726,36 @@ begin
     if not FNeedFixups then
     begin
       I := 0;
-      while I < FAdditionalIntfImpl.Count do
+      while I < ExtensionCount do
       begin
-        if (ProviderIntf <> nil) and TJvDataConsumerAggregatedObject(FAdditionalIntfImpl[I]).KeepOnProviderChange then
+        if Extension(I).KeepOnProviderChange then
         begin
-          TJvDataConsumerAggregatedObject(FAdditionalIntfImpl[I]).ProviderChanged;
+          Extension(I).ProviderChanged;
           Inc(I);
         end
         else
-          RemoveIntfImpl(TJvDataConsumerAggregatedObject(FAdditionalIntfImpl[I]));
-  //        FAdditionalIntfImpl.Delete(I);
+          RemoveIntfImpl(Extension(I));
       end;
     end;
     UpdateExtensions;
+  end;
+end;
+
+procedure TJvDataConsumer.ContextChanging;
+var
+  I: Integer;
+begin
+  if FAdditionalIntfImpl <> nil then
+  begin
+    if not FNeedFixups then
+    begin
+      I := 0;
+      while I < ExtensionCount do
+      begin
+        Extension(I).ContextChanging;
+        Inc(I);
+      end
+    end;
   end;
 end;
 
@@ -2492,21 +2763,24 @@ procedure TJvDataConsumer.ContextChanged;
 var
   I: Integer;
 begin
-  if not FNeedFixups then
+  if FAdditionalIntfImpl <> nil then
   begin
-    I := 0;
-    while I < FAdditionalIntfImpl.Count do
+    if not FNeedFixups then
     begin
-      if TJvDataConsumerAggregatedObject(FAdditionalIntfImpl[I]).KeepOnContextChange then
+      I := 0;
+      while I < ExtensionCount do
       begin
-        TJvDataConsumerAggregatedObject(FAdditionalIntfImpl[I]).ContextChanged;
-        Inc(I);
-      end
-      else
-        FAdditionalIntfImpl.Delete(I);
+        if Extension(I).KeepOnContextChange then
+        begin
+          Extension(I).ContextChanged;
+          Inc(I);
+        end
+        else
+          RemoveIntfImpl(Extension(I));
+      end;
     end;
+    UpdateExtensions;
   end;
-  UpdateExtensions;
 end;
 
 procedure TJvDataConsumer.UpdateExtensions;
@@ -2528,6 +2802,8 @@ begin
       if IndexOfImplClass(TAggregatedPersistentExClass(ImplArray[I])) < 0 then
         TJvDataConsumerAggregatedObjectClass(ImplArray[I]).Create(Self);
     end;
+    if AttributeApplies(DPA_ConsumerDisplaysList) and (IndexOfImplClass(TJvDataConsumerViewList) < 0) then
+      TJvDataConsumerViewList.Create(Self);
   end
   else
     ClearIntfImpl;
@@ -2537,8 +2813,18 @@ procedure TJvDataConsumer.FixupExtensions;
 var
   I: Integer;
 begin
-  for I := 0 to FAdditionalIntfImpl.Count - 1 do
-    TJvDataConsumerAggregatedObject(FAdditionalIntfImpl[I]).Fixup;
+  for I := 0 to ExtensionCount - 1 do
+    Extension(I).Fixup;
+end;
+
+procedure TJvDataConsumer.ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
+var
+  I: Integer;
+begin
+  for I := 0 to ExtensionCount - 1 do
+    if Extension(I) <> AExtension then
+    Extension(I).ViewChanged(AExtension);
+  Changed;
 end;
 
 function TJvDataConsumer.ExtensionCount: Integer;
@@ -2649,9 +2935,27 @@ begin
   Result := FProvider;
 end;
 
+procedure TJvDataConsumer.SetProviderIntf(Value: IJvDataProvider);
+begin
+  SetProvider(Value);
+end;
+
 function TJvDataConsumer.ContextIntf: IJvDataContext;
 begin
   Result := FContext;
+end;
+
+procedure TJvDataConsumer.SetContextIntf(Value: IJvDataContext);
+begin
+  if Value <> ContextIntf then
+  begin
+    if (Value <> nil) and (Value.Contexts.Provider <> ProviderIntf) then
+      raise EJVCLException.Create('The specified context is not part of the same provider.');
+    ContextChanging;
+    FContext := Value;
+    ContextChanged;
+    Changed;
+  end;
 end;
 
 procedure TJvDataConsumer.Enter;
@@ -2685,12 +2989,29 @@ begin
   ConsumerImpl.Changed;
 end;
 
+procedure TJvDataConsumerAggregatedObject.NotifyViewChanged;
+begin
+  ConsumerImpl.ViewChanged(Self);
+end;
+
+procedure TJvDataConsumerAggregatedObject.ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
+begin
+end;
+
 procedure TJvDataConsumerAggregatedObject.NotifyFixups;
 begin
   ConsumerImpl.FNeedFixups := True;
 end;
 
+procedure TJvDataConsumerAggregatedObject.ProviderChanging;
+begin
+end;
+
 procedure TJvDataConsumerAggregatedObject.ProviderChanged;
+begin
+end;
+
+procedure TJvDataConsumerAggregatedObject.ContextChanging;
 begin
 end;
 
@@ -2706,6 +3027,23 @@ end;
 function TJvDataConsumerAggregatedObject.ConsumerImpl: TJvDataConsumer;
 begin
   Result := Owner as TJvDataConsumer;
+end;
+
+function TJvDataConsumerAggregatedObject.RootItems: IJvDataItems;
+var
+  RootSelect: IJvDataConsumerItemSelect;
+begin
+try
+  if Supports(Consumer, IJvDataConsumerItemSelect, RootSelect) and (RootSelect.GetItem <> nil) then
+    RootSelect.GetItem.QueryInterface(IJvDataItems, Result)
+  else
+    ConsumerImpl.ProviderIntf.QueryInterface(IJvDataItems, Result);
+finally
+  {$IFDEF DEBUG}
+  if Result = nil then
+    DBugIntf.SendDebugEx('RootItems returns nil!', mtError);
+  {$ENDIF DEBUG}
+end;
 end;
 
 //===TJvDataConsumerContext=========================================================================
@@ -2784,8 +3122,594 @@ begin
   if Value <> GetItemIntf then
   begin
     FItem := Value;
+    NotifyViewChanged;
     Changed;
   end;
+end;
+
+//===TJvCustomDataConsumerViewList==================================================================
+
+function TJvCustomDataConsumerViewList.KeepOnProviderChange: Boolean;
+begin
+  Result := True;
+end;
+
+procedure TJvCustomDataConsumerViewList.ProviderChanging;
+begin
+  if ConsumerImpl.ProviderIntf <> nil then
+    ConsumerImpl.ProviderIntf.UnregisterChangeNotify(FNotifier);
+  ClearView;
+end;
+
+procedure TJvCustomDataConsumerViewList.ProviderChanged;
+begin
+  if ConsumerImpl.ProviderIntf <> nil then
+    ConsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+//  RebuildView;
+end;
+
+procedure TJvCustomDataConsumerViewList.ContextChanged;
+begin
+//  RebuildView;
+end;
+
+procedure TJvCustomDataConsumerViewList.ViewChanged(AExtension: TJvDataConsumerAggregatedObject);
+begin
+//  RebuildView;
+end;
+
+procedure TJvCustomDataConsumerViewList.DataProviderChanging(ADataProvider: IJvDataProvider;
+  AReason: TDataProviderChangeReason; Source: IUnknown);
+var
+  ItemIdx: Integer;
+begin
+  case AReason of
+    pcrDelete:
+      begin
+        // Source is a reference to the item being deleted
+        if (Source <> nil) then
+        begin
+          ItemIdx := IndexOfItem(IJvDataItem(Source));
+          if ItemIdx >= 0 then
+            DeleteItem(ItemIdx);
+        end;
+      end;
+  end;
+end;
+
+procedure TJvCustomDataConsumerViewList.DataProviderChanged(ADataProvider: IJvDataProvider;
+  AReason: TDataProviderChangeReason; Source: IUnknown);
+var
+  ParItem: IJvDataItem;
+  ParIdx: Integer;
+begin
+  case AReason of
+    pcrAdd:
+      begin
+        // Source is a reference to the new item
+        if (Source <> nil) then
+        begin
+          ParItem := IJvDataItem(Source).GetItems.GetParent;
+          if ParItem <> nil then
+          begin
+            ParIdx := IndexOfItem(ParItem);
+            if (ParIdx < 0) and ExpandOnNewItem then
+            begin
+              // Make sure the tree is expanded up to the parent item
+              ExpandTreeTo(ParItem);
+              ParIdx := IndexOfItem(ParItem);
+            end;
+            if ParIdx >= 0 then
+            begin
+              if not ItemIsExpanded(ParIdx) and ExpandOnNewItem then
+                // Expand parent item; will retrieve all sub items, including the newly added item
+                ToggleItem(ParIdx)
+              else if ItemIsExpanded(ParIdx) then
+                // parent is expanded, add the new item to the view.
+                AddChildItem(ParIdx, IJvDataItem(Source));
+            end;
+          end
+          else
+            // Item at the root; always add it
+            AddChildItem(-1, IJvDataItem(Source));
+        end;
+      end;
+  end;
+end;
+
+function TJvCustomDataConsumerViewList.InternalItemSibling(ParentIndex: Integer;
+  var ScanIndex: Integer): Integer;
+var
+  Lvl: Integer;
+begin
+  Lvl := ItemLevel(ParentIndex);
+  if ScanIndex <= ParentIndex then
+    ScanIndex := ParentIndex + 1;
+  while (ScanIndex < Count) and (ItemLevel(ScanIndex) > Lvl) do
+    Inc(ScanIndex);
+  if (ScanIndex >= Count) or (ItemLevel(ScanIndex) < Lvl) then
+    Result := -1
+  else
+    Result := ScanIndex;
+  if ScanIndex > Count then
+    ScanIndex := Count;
+end;
+
+function TJvCustomDataConsumerViewList.Get_AutoExpandLevel: Integer;
+begin
+  Result := FAutoExpandLevel;
+end;
+
+procedure TJvCustomDataConsumerViewList.Set_AutoExpandLevel(Value: Integer);
+begin
+  FAutoExpandLevel := Value;
+end;
+
+function TJvCustomDataConsumerViewList.Get_ExpandOnNewItem: Boolean;
+begin
+  Result := FExpandOnNewItem;
+end;
+
+procedure TJvCustomDataConsumerViewList.Set_ExpandOnNewItem(Value: Boolean);
+begin
+  FExpandOnNewItem := Value;
+end;
+
+procedure TJvCustomDataConsumerViewList.ClearView;
+begin
+  // override if the implementation can be optimized
+  while Count > 0 do
+    DeleteItem(0);
+end;
+
+procedure TJvCustomDataConsumerViewList.RebuildView;
+var
+  Idx: Integer;
+begin
+  {$IFDEF DEBUG}
+  DBugIntf.SendMethodEnter('TJvCustomDataConsumerViewList.RebuildView');
+  {$ENDIF DEBUG}
+  ClearView;
+  {$IFDEF DEBUG}
+    DBugIntf.SendDebug('View has been cleared.');
+  {$ENDIF DEBUG}
+  if (ConsumerImpl <> nil) and (ConsumerImpl.ProviderIntf <> nil) then
+  begin
+    Idx := 0;
+  {$IFDEF DEBUG}
+    DBugIntf.SendDebug('Calling AddItems...');
+  {$ENDIF DEBUG}
+    AddItems(Idx, RootItems, AutoExpandLevel);
+  end;
+  {$IFDEF DEBUG}
+  DBugIntf.SendMethodExit('TJvCustomDataConsumerViewList.RebuildView');
+  {$ENDIF DEBUG}
+end;
+
+constructor TJvCustomDataConsumerViewList.Create(AOwner: TExtensibleInterfacedPersistent);
+begin
+  inherited Create(AOwner);
+  FNotifier := TJvProviderNotification.Create;
+  if ConsumerImpl.ProviderIntf <> nil then
+    COnsumerImpl.ProviderIntf.RegisterChangeNotify(FNotifier);
+end;
+
+destructor TJvCustomDataConsumerViewList.Destroy;
+begin
+  if FNotifier <> nil then
+  begin
+    if (ConsumerImpl <> nil) and (ConsumerImpl.ProviderIntf <> nil) then
+      COnsumerImpl.ProviderIntf.UnregisterChangeNotify(FNotifier);
+    FreeAndNil(FNotifier);
+  end;
+  inherited Destroy;
+end;
+
+procedure TJvCustomDataConsumerViewList.ExpandTreeTo(Item: IJvDataItem);
+var
+  ParIdx: Integer;
+begin
+  if IndexOfID(Item.GetID) < 0 then
+  begin
+    ExpandTreeTo(Item.Items.GetParent);
+    ParIdx := IndexOfID(Item.Items.GetParent.GetID);
+    if ItemIsExpanded(ParIdx) then // we have a big problem <g>
+      raise EJVCLException.Create('ViewList out of sync');
+    ToggleItem(ParIdx);
+  end;
+end;
+
+procedure SetBit(var IntArray: array of Integer; BitNo: Integer);
+var
+  ArrayOffset: Integer;
+  BitOffset: Integer;
+begin
+  ArrayOffset := BitNo div 32;
+  BitOffset := BitNo mod 32;
+  IntArray[ArrayOffset] := IntArray[ArrayOffset] or (1 shl BitOffset);
+end;
+
+function TJvCustomDataConsumerViewList.ItemGroupInfo(Index: Integer): TDynIntegerArray;
+var
+  LvlIdx: Integer;
+  LastScanIndex: Integer;
+begin
+  LvlIdx := ItemLevel(Index) - 1;
+  SetLength(Result, LvlIdx div 32 + LvlIdx mod 32);
+  LastScanIndex := Index;
+  { Keep using the last scanned item as a start point to find a sibling for the next parent. Reduces
+    the number of compares to make. }
+  while LvlIdx >= 0 do
+  begin
+    Index := ItemParentIndex(Index);
+    if InternalItemSibling(Index, LastScanIndex) <> -1 then
+      SetBit(Result, LvlIdx); // There's another sibling at this level; set the corresponding bit
+    Dec(LvlIdx);
+  end;
+end;
+
+//===TJvDataConsumerViewList========================================================================
+
+procedure TJvDataConsumerViewList.AddItem(Index: Integer; Item: IJvDataItem; ExpandToLevel: Integer);
+var
+  Lvl: Integer;
+  Idx: Integer;
+  SubItems: IJvDataItems;
+begin
+  if Index < 0 then
+  begin
+    Lvl := 0;
+    Idx := Count;
+  end
+  else
+  begin
+    Lvl := Succ(ItemLevel(Index));
+    Idx := Index + 1;
+    if FViewItems[Index].Flags and (vifHasChildren + vifExpanded) = vifHasChildren then
+    begin
+      ToggleItem(Index);
+      Exit;
+    end;
+  end;
+  while (Idx < Count) and (ItemLevel(Idx) >= Lvl) do
+    Inc(Idx);
+  SetLength(FViewItems, Length(FViewItems) + 1);
+  if Idx < High(FViewItems) then
+  begin
+    Move(FViewItems[Idx], FViewItems[Idx + 1], (High(FViewItems) - Idx) * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[Idx], SizeOf(FViewItems[0]), 0);
+  end;
+  with FViewItems[Idx] do
+  begin
+    ItemID := Item.GetID;
+    if Supports(Item, IJvDataItems, SubItems) then
+    begin
+      if SubItems.Count > 0 then
+        Flags := Lvl + vifHasChildren + vifCanHaveChildren
+      else
+        Flags := Lvl + vifCanHaveChildren
+    end
+    else
+      Flags := Lvl;
+  end;
+  if Index > -1 then
+    with FViewItems[Index] do
+      Flags := Flags or vifHasChildren or vifCanHaveChildren or vifExpanded;
+  if (ExpandToLevel <> 0) and (SubItems <> nil) and (SubItems.Count > 0) then
+  begin
+    Inc(Index);
+    AddItems(Index, SubItems, ExpandToLevel - 1);
+  end;
+end;
+
+procedure TJvDataConsumerViewList.AddChildItem(ParentIndex: Integer; Item: IJvDataItem);
+var
+  InsertIndex: Integer;
+begin
+  if ParentIndex > -1 then
+  begin
+    if not ItemIsExpanded(ParentIndex) then
+      ToggleItem(ParentIndex);
+    if IndexOfItem(Item) < 0 then
+    begin
+      InternalItemSibling(ParentIndex, InsertIndex);
+    end;
+  end
+  else
+    InsertIndex := Count;
+  InsertItem(ParentIndex, InsertIndex, Item);
+end;
+
+procedure TJvDataConsumerViewList.AddItems(var Index: Integer; Items: IJvDataItems; ExpandToLevel: Integer);
+var
+  I: Integer;
+  J: Integer;
+  SubItems: IJvDataItems;
+begin
+  J := Count;
+  SetLength(FViewItems, Count + Items.Count);
+  if Index < J then
+  begin
+    Move(FViewItems[Index], FViewItems[Index + Items.Count], (J - Index) * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[Index], Items.Count * SizeOf(FViewItems[0]), 0);
+  end;
+  J := 0;
+  if Index > 0 then
+  begin
+    J := 1 + FViewItems[Index - 1].Flags and $00FFFFFF;
+    FViewItems[Index - 1].Flags := FViewItems[Index - 1].Flags or vifExpanded;
+  end;
+  for I  := 0 to Items.Count - 1 do
+  begin
+    with FViewItems[Index] do
+    begin
+      ItemID := Items.Items[I].GetID;
+      Flags := J;
+      if Supports(Items.Items[I], IJvDataItems, SubItems) then
+      begin
+        Flags := Flags + vifCanHaveChildren;
+        if SubItems.Count > 0 then
+        begin
+          Flags := Flags + vifHasChildren;
+          if ExpandToLevel <> 0 then
+          begin
+            Inc(Index);
+            AddItems(Index, SubItems, ExpandToLevel - 1);
+            Dec(Index);
+          end;
+        end;
+      end;
+    end;
+    Inc(Index);
+  end;
+end;
+
+procedure TJvDataConsumerViewList.InsertItem(InsertIndex, ParentIndex: Integer; Item: IJvDataItem);
+var
+  Level: Integer;
+  SubItems: IJvDataItems;
+begin
+  if ParentIndex < 0 then
+    Level := 0
+  else
+    Level := Succ(ItemLevel(ParentIndex));
+  SetLength(FViewItems, Count + 1);
+  if InsertIndex < High(FViewItems) then
+  begin
+    Move(FViewItems[InsertIndex], FViewItems[InsertIndex + 1], (High(FViewItems) - InsertIndex) * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[InsertIndex], SizeOf(FViewItems[0]), 0);
+  end;
+  with FViewItems[InsertIndex] do
+  begin
+    ItemID := Item.GetID;
+    if Supports(Item, IJvDataItems, SubItems) then
+    begin
+      Level := Level + vifCanHaveChildren;
+      if SubItems.Count > 0 then
+        Level := Level + vifHasChildren;
+    end;
+    Flags := Level;
+  end;
+  if ParentIndex >= 0 then
+    FViewItems[ParentIndex].Flags := FViewItems[ParentIndex].Flags or (vifCanHaveChildren +
+      vifHasChildren + vifExpanded);
+end;
+
+procedure TJvDataConsumerViewList.DeleteItem(Index: Integer);
+var
+  PrevIsParent: Boolean;
+begin
+  DeleteItems(Index);
+  PrevIsParent := (Index > 0) and (ItemLevel(Index - 1) = (Itemlevel(Index) - 1));
+  FViewItems[Index].ItemID := '';
+  if Index < High(FViewItems) then
+    Move(FViewItems[Index + 1], FViewItems[Index], (Length(FViewItems) - Index) * SizeOf(FViewItems[0]));
+  FillChar(FViewItems[High(FViewItems)], SizeOf(FViewItems[0]), 0);
+  SetLength(FViewItems, High(FViewItems));
+  if PrevIsParent and ((Index = High(FViewItems)) or (ItemLevel(Index - 1) <> (ItemLevel(Index) - 1))) then
+    FViewItems[Index - 1].Flags := FViewItems[Index - 1].Flags and not (vifHasChildren or vifExpanded);
+end;
+
+procedure TJvDataConsumerViewList.DeleteItems(Index: Integer);
+var
+  Idx: Integer;
+  Lvl: Integer;
+begin
+  if FViewItems[Index].Flags and (vifExpanded + vifHasChildren) = (vifExpanded + vifHasChildren) then
+  begin
+    Lvl := ItemLevel(Index) + 1;
+    Idx := Index + 1;
+    while (Idx < Length(FViewItems)) and (ItemLevel(Idx) >= Lvl) do
+    begin
+      FViewItems[Idx].ItemID := '';
+      Inc(Idx);
+    end;
+    // Idx points to next item that is not a child
+    if Idx < Count then
+      Move(FViewItems[Idx], FViewItems[Index + 1], (Length(FViewItems) - Idx) * SizeOf(FViewItems[0]));
+    FillChar(FViewItems[Length(FViewItems) - Pred(Idx - Index)], Pred(Idx - Index) * SizeOf(FViewItems[0]), 0);
+    SetLength(FViewItems, Length(FViewItems) - (Idx - Index - 1));
+    FViewItems[Index].Flags := FViewItems[Index].Flags and not vifExpanded;
+  end;
+end;
+
+procedure TJvDataConsumerViewList.ToggleItem(Index: Integer);
+var
+  TmpItem: IJvDataItem;
+  Items: IJvDataItems;
+begin
+  if ItemHasChildren(Index) then
+  begin
+    if ItemIsExpanded(Index) then
+      DeleteItems(Index)
+    else
+    begin
+      TmpItem := Item(Index);
+      if (TmpItem <> nil) and Supports(TmpItem, IJvDataItems, Items) then
+      begin
+        Inc(Index);
+        AddItems(Index, Items);
+      end;
+    end;
+    NotifyViewChanged;
+  end;
+end;
+
+function TJvDataConsumerViewList.IndexOfItem(Item: IJvDataItem): Integer;
+begin
+  Result := IndexOfID(Item.GetID);
+end;
+
+function TJvDataConsumerViewList.IndexOfID(ID: TJvDataItemID): Integer;
+begin
+  Result := Count - 1;
+  while (Result >= 0) and not AnsiSameText(FViewItems[Result].ItemID, ID) do
+    Dec(Result);
+end;
+
+function TJvDataConsumerViewList.ChildIndexOfItem(Item: IJvDataItem): Integer;
+begin
+  Result := ChildIndexOfID(Item.GetID);
+end;
+
+function TJvDataConsumerViewList.ChildIndexOfID(ID: TJvDataItemID): Integer;
+var
+  Index: Integer;
+  ChildLevel: Integer;
+begin
+  Result := -1;
+  Index := IndexOfID(ID);
+  if Index >= 0 then
+  begin
+    Inc(Result);
+    if Index > 0 then
+    begin
+      ChildLevel := ItemLevel(Index);
+      Dec(Index);
+      while (Index >= 0) and (ItemLevel(Index) >= ChildLevel) do
+      begin
+        if ItemLevel(Index) = ChildLevel then
+          Inc(Result);
+        Dec(Index);
+      end;
+    end;
+  end;
+end;
+
+function TJvDataConsumerViewList.Item(Index: Integer): IJvDataItem;
+var
+  Items: IJvDataItems;
+  {$IFDEF ViewList_UseFinder}
+  Finder: IJvDataIDSearch;
+  {$ELSE}
+  ItemIdx: Integer;
+  ParIdx: Integer;
+  {$ENDIF ViewList_UseFinder}
+begin
+  {$IFDEF ViewList_UseFinder}
+  { The easiest way: use IJvDataIDSearch to locate the item given it's ID value. Scans all items
+    recursively until it finds a match or nothing at all. Could be rather slow on larger trees. }
+  Items := RootItems;
+  if Supports(RootItems, IJvDataIDSearch, Finder) then
+    Result := Finder.Find(FViewItems[Index].ItemID, True);
+  {$ELSE}
+  { This should be faster, especially with larger trees. Determine the child index, retrieve the
+    parent item (using this same method) and then get the specified sub item directly.
+    Saves a huge number of ID comparisons and for dynamic items also an enormous amount of
+    creation/destruction of items. }
+  ItemIdx := ChildIndexOfID(FViewItems[Index].ItemID);
+  ParIdx := ItemParentIndex(Index);
+  if ParIdx >= 0 then
+    // Parent found, retrieve the IJVDataItems reference
+    Item(ParIdx).QueryInterface(IJvDataItems, Items)
+  else
+    // Apparantly this item is at the root of the view; retrieve the proper IJvDataItems reference
+    Items := RootItems;
+  // Retrieve the child item.
+  Result := Items.GetItem(ItemIdx);
+  {$ENDIF ViewList_UseFinder}
+end;
+
+function TJvDataConsumerViewList.ItemLevel(Index: Integer): Integer;
+begin
+  Result := FViewItems[Index].Flags and $00FFFFFF;
+end;
+
+function TJvDataConsumerViewList.ItemIsExpanded(Index: Integer): Boolean;
+begin
+  Result := FViewItems[Index].Flags and vifExpanded <> 0;
+end;
+
+function TJvDataConsumerViewList.ItemHasChildren(Index: Integer): Boolean;
+begin
+  Result := FViewItems[Index].Flags and vifHasChildren <> 0;
+end;
+
+function TJvDataConsumerViewList.ItemParent(Index: Integer): IJvDataItem;
+begin
+end;
+
+function TJvDataConsumerViewList.ItemParentIndex(Index: Integer): Integer;
+var
+  ParLevel: Integer;
+begin
+  ParLevel := ItemLevel(Index) - 1;
+  Result := Index - 1;
+  while (Result >= 0) and (ItemLevel(Result) > ParLevel) do
+    Dec(Result);
+end;
+
+function TJvDataConsumerViewList.ItemSibling(Index: Integer): IJvDataItem;
+var
+  Idx: Integer;
+begin
+  Idx := ItemSiblingIndex(Index);
+  if Idx > -1 then
+    Result := Item(Idx)
+  else
+    Result := nil;
+end;
+
+function TJvDataConsumerViewList.ItemSiblingIndex(Index: Integer): Integer;
+begin
+  Result := InternalItemSibling(Index, Index);
+end;
+
+function TJvDataConsumerViewList.SubItem(Parent: IJvDataItem; Index: Integer): IJvDataItem;
+begin
+  Result := SubItem(IndexOfItem(Parent), Index);
+end;
+
+function TJvDataConsumerViewList.SubItem(Parent, Index: Integer): IJvDataItem;
+var
+  Idx: Integer;
+begin
+  Idx := SubItemIndex(Parent, Index);
+  if Idx > -1 then
+    Result := Item(Idx)
+  else
+    Result := nil;
+end;
+
+function TJvDataConsumerViewList.SubItemIndex(Parent: IJvDataItem; Index: Integer): Integer;
+begin
+  Result := SubItemIndex(IndexOfItem(Parent), Index);
+end;
+
+function TJvDataConsumerViewList.SubItemIndex(Parent, Index: Integer): Integer;
+begin
+  Result := Parent + 1;
+  while (Result >= 0) and (Index >= 0) do
+  begin
+    Dec(Index);
+    if Index >= 0 then
+      Result := ItemSiblingIndex(Result);
+  end;
+end;
+
+function TJvDataConsumerViewList.Count: Integer;
+begin
+  Result := Length(FViewItems);
 end;
 
 initialization

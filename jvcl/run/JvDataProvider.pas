@@ -32,7 +32,8 @@ unit JvDataProvider;
 interface
 
 uses
-  Windows, ImgList, Classes, Graphics;
+  Windows, ImgList, Classes, Graphics,
+  JclBase;
 
 type
   TDataProviderChangeReason = (pcrAdd, pcrDelete, pcrUpdateItem, pcrUpdateItems, pcrDestroy);
@@ -41,6 +42,8 @@ type
     pdsHot);
   TProviderDrawStates = set of TProviderDrawState;
   TClassArray = array of TClass;
+  TJvDataContextID = type string;
+  TJvDataItemID = type string;
 
   // forwards
   IJvDataProvider = interface;
@@ -348,7 +351,60 @@ type
     procedure SetItem(Value: IJvDataItem);
   end;
 
-  { Provider context management interface. Note that there is always an implicit (nameless) context
+  IJvDataConsumerViewList = interface
+    ['{F3A78F68-D998-4877-8C73-1E0D2987808D}']
+    function Get_AutoExpandLevel: Integer;
+    procedure Set_AutoExpandLevel(Value: Integer);
+    function Get_ExpandOnNewItem: Boolean;
+    procedure Set_ExpandOnNewItem(Value: Boolean);
+    procedure RebuildView; 
+    procedure ExpandTreeTo(Item: IJvDataItem);
+    { Toggles an item's expanded state. If an item becomes expanded, the item's sub item as present
+      in the IJvDataItems instance will be added; if an item becomes collapsed the sub items are
+      removed from the view. }
+    procedure ToggleItem(Index: Integer); 
+    { Locate an item in the view list, returning it's absolute index. }
+    function IndexOfItem(Item: IJvDataItem): Integer;
+    { Locate an item ID in the view list, returning it's absolute index. }
+    function IndexOfID(ID: TJvDataItemID): Integer; 
+    { Locate an item in the view list, returning it's index in the parent item. }
+    function ChildIndexOfItem(Item: IJvDataItem): Integer;
+    { Locate an item ID in the view list, returning it's index in the parent item. }
+    function ChildIndexOfID(ID: TJvDataItemID): Integer;
+    { Retrieve the IJvDataItem reference given the absolute index into the view list. }
+    function Item(Index: Integer): IJvDataItem;
+    { Retrieve an items level given the absolute index into the view list. }
+    function ItemLevel(Index: Integer): Integer;
+    { Retrieve an items expanded state given the absolute index into the view list. }
+    function ItemIsExpanded(Index: Integer): Boolean;
+    { Determine if an item has children given the absolute index into the view list. }
+    function ItemHasChildren(Index: Integer): Boolean;
+    { Retrieve an items parent given the absolute index into the view list. }
+    function ItemParent(Index: Integer): IJvDataItem;
+    { Retrieve an items parent absolute index given the absolute index into the view list. }
+    function ItemParentIndex(Index: Integer): Integer;
+    { Retrieve an items sibling given an absolute index. }
+    function ItemSibling(Index: Integer): IJvDataItem; 
+    { Retrieve the index of an items sibling given an absolute index. }
+    function ItemSiblingIndex(Index: Integer): Integer;
+    { Retrieve the IJvDataItem reference given the child index and a parent item. }
+    function SubItem(Parent: IJvDataItem; Index: Integer): IJvDataItem; overload;
+    { Retrieve the IJvDataItem reference given the child index and a parent absolute index. }
+    function SubItem(Parent, Index: Integer): IJvDataItem; overload;
+    { Retrieve the absolute index given a child index and a parent item. }
+    function SubItemIndex(Parent: IJvDataItem; Index: Integer): Integer; overload;
+    { Retrieve the absolute index given a child index and a parent absolute index. }
+    function SubItemIndex(Parent, Index: Integer): Integer; overload;
+    { Retrieve info on grouping; each bit represents a level, if the bit is set the item at that
+      level has another sibling. Can be used to render tree lines. }
+    function ItemGroupInfo(Index: Integer): TDynIntegerArray;
+    { Retrieve the number of viewable items. }
+    function Count: Integer;
+    property AutoExpandLevel: Integer read Get_AutoExpandLevel write Set_AutoExpandLevel;
+    property ExpandOnNewItem: Boolean read Get_ExpandOnNewItem write Set_ExpandOnNewItem;
+  end;
+
+  { Provider context list interface. Note that there is always an implicit (nameless) context
     at the provider, even if there is no IJvDataContexts interface available. }
   IJvDataContexts = interface
     ['{BA5DC787-29C6-40FA-9542-F0A1E92A2B30}']
@@ -360,6 +416,11 @@ type
     function GetContext(Index: Integer): IJvDataContext;
     { Retrieve a context by name. Returns nil if the context does not exist. }
     function GetContextByName(Name: string): IJvDataContext;
+  end;
+
+  { Support interface for IJvDataContexts to allow adding/deleting contexts. }
+  IJvDataContextsManager = interface
+    ['{A94D62CA-F9B4-4DAA-9091-86D01A962BB1}']
     { Add a context. }
     function Add(Context: IJvDataContext): IJvDataContext;
     { Create a new context and add it to the list. }
