@@ -28,7 +28,8 @@ package JvNetD7D;
 
 requires
   JvNetD7R,
-  designide;
+  designide,
+  JvCoreD7D;
 
 contains
   JvNetReg in '..\..\design\JvNetReg.pas',
