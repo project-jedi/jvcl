@@ -6,7 +6,7 @@ uses
   SysUtils, WinTypes, WinProcs, Messages, Classes, Graphics, Controls,
   Forms, Dialogs, StdCtrls, TabNotBk, JvxSlider, ExtCtrls,
   JvSwitch, Mask, JvToolEdit, Spin, FileCtrl, JvSplit, Grids,
-  Outline, DirOutln, JvDice, JvxClock, JvSpin, JvLabel,
+  Outline, DirOutln, JvDice, JvClock, JvSpin, JvLabel,
   ComCtrls, JvComponent, JvColorCombo, JvCombobox, JvEdit, JvValidateEdit,
   JvMaskEdit, JvFormPlacement, JvTextListBox, JvAnimatedImage, JvBaseEdits;
 
@@ -83,10 +83,9 @@ type
     GroupBox13: TGroupBox;
     GroupBox14: TGroupBox;
     GroupBox15: TGroupBox;
-    AnimatedImage1: TJvAnimatedImage ;
     TextListBox1: TJvTextListBox ;
-    rxClock1: TJvxClock ;
-    rxDice1: TjvDice;
+    JvClock: TJvClock;
+    JvDice: TJvDice;
     Label30: TLabel;
     RunnerImage: TImage;
     Label31: TLabel;
@@ -172,11 +171,11 @@ type
     procedure SpinEdit5Change(Sender: TObject);
     procedure SpinEdit6Change(Sender: TObject);
     procedure SpinEdit7Change(Sender: TObject);
-    procedure rxClock1Alarm(Sender: TObject);
+    procedure JvClockAlarm(Sender: TObject);
     procedure Button4Click(Sender: TObject);
     procedure SpinEdit8Change(Sender: TObject);
     procedure SpinEdit9Change(Sender: TObject);
-    procedure rxDice1Change(Sender: TObject);
+    procedure JvDiceChange(Sender: TObject);
     procedure Button5Click(Sender: TObject);
     procedure ComboBox9Change(Sender: TObject);
     procedure SpinEdit1Change(Sender: TObject);
@@ -195,7 +194,7 @@ implementation
 {$R *.DFM}
 
 uses
-  JvAniFile, JvJVCLUtils, JvJCLUtils, JvPickDate;
+  JvAniFile, JvJVCLUtils, JvJCLUtils, JvPickDate, Main;
 
 procedure TControlsForm.FormCreate(Sender: TObject);
 begin
@@ -394,96 +393,96 @@ end;
 
 procedure TControlsForm.ComboBox7Change(Sender: TObject);
 begin
-  case ComboBox7.ItemIndex of
-    0:
-      begin
-        AnimatedImage1.Glyph := RunnerImage.Picture.Bitmap;
-        AnimatedImage1.GlyphNum := 12;
-      end;
-    1:
-      begin
-        AnimatedImage1.Glyph := FlagImage.Picture.Bitmap;
-        AnimatedImage1.GlyphNum := 4;
-      end;
-    2:
-      begin
-        AnimatedImage1.Glyph := SearchImage.Picture.Bitmap;
-        AnimatedImage1.GlyphNum := 12;
-      end;
-    3:
-      begin
-        AnimatedImage1.Glyph := BookImage.Picture.Bitmap;
-        AnimatedImage1.GlyphNum := 5;
-      end;
-  end;
+//  case ComboBox7.ItemIndex of
+//    0:
+//      begin
+//        AnimatedImage1.Glyph := RunnerImage.Picture.Bitmap;
+//        AnimatedImage1.GlyphNum := 12;
+//      end;
+//    1:
+//      begin
+//        AnimatedImage1.Glyph := FlagImage.Picture.Bitmap;
+//        AnimatedImage1.GlyphNum := 4;
+//      end;
+//    2:
+//      begin
+//        AnimatedImage1.Glyph := SearchImage.Picture.Bitmap;
+//        AnimatedImage1.GlyphNum := 12;
+//      end;
+//    3:
+//      begin
+//        AnimatedImage1.Glyph := BookImage.Picture.Bitmap;
+//        AnimatedImage1.GlyphNum := 5;
+//      end;
+//  end;
 end;
 
 procedure TControlsForm.Button2Click(Sender: TObject);
 begin
-  AnimatedImage1.Active := not AnimatedImage1.Active;
+//  AnimatedImage1.Active := not AnimatedImage1.Active;
 end;
 
 procedure TControlsForm.SpinEdit3Change(Sender: TObject);
 begin
-  AnimatedImage1.Interval := SpinEdit3.Value;
+//  AnimatedImage1.Interval := SpinEdit3.Value;
 end;
 
 procedure TControlsForm.SpinEdit4Change(Sender: TObject);
 begin
-  AnimatedImage1.GlyphNum := SpinEdit4.Value;
+//  AnimatedImage1.GlyphNum := SpinEdit4.Value;
 end;
 
 procedure TControlsForm.AnimatedImage1StartStop(Sender: TObject);
 begin
-  SpinEdit4.Value := AnimatedImage1.GlyphNum;
-  SpinEdit3.Value := AnimatedImage1.Interval;
-  if AnimatedImage1.Active then
-    Button2.Caption := 'Stop'
-  else
-    Button2.Caption := 'Start';
+//  SpinEdit4.Value := AnimatedImage1.GlyphNum;
+//  SpinEdit3.Value := AnimatedImage1.Interval;
+//  if AnimatedImage1.Active then
+//    Button2.Caption := 'Stop'
+//  else
+//    Button2.Caption := 'Start';
 end;
 
 procedure TControlsForm.ComboBox8Change(Sender: TObject);
 begin
-  rxClock1.ShowMode := TShowClock(ComboBox8.ItemIndex);
+  JvClock.ShowMode := TShowClock(ComboBox8.ItemIndex);
 end;
 
 procedure TControlsForm.Button3Click(Sender: TObject);
 begin
-  FontDialog1.Font := rxClock1.Font;
+  FontDialog1.Font := JvClock.Font;
   if FontDialog1.Execute then
-    rxClock1.Font := FontDialog1.Font;
+    JvClock.Font := FontDialog1.Font;
 end;
 
 procedure TControlsForm.CheckBox6Click(Sender: TObject);
 begin
-  rxClock1.AlarmEnabled := CheckBox6.Checked;
+  JvClock.AlarmEnabled := CheckBox6.Checked;
 end;
 
 procedure TControlsForm.SpinEdit5Change(Sender: TObject);
 begin
-  rxClock1.AlarmHour := SpinEdit5.Value;
+  JvClock.AlarmHour := SpinEdit5.Value;
 end;
 
 procedure TControlsForm.SpinEdit6Change(Sender: TObject);
 begin
-  rxClock1.AlarmMinute := SpinEdit6.Value;
+  JvClock.AlarmMinute := SpinEdit6.Value;
 end;
 
 procedure TControlsForm.SpinEdit7Change(Sender: TObject);
 begin
-  rxClock1.AlarmSecond := SpinEdit7.Value;
+  JvClock.AlarmSecond := SpinEdit7.Value;
 end;
 
-procedure TControlsForm.rxClock1Alarm(Sender: TObject);
+procedure TControlsForm.JvClockAlarm(Sender: TObject);
 begin
   MessageDlg('Alarm!', mtInformation, [mbOk], 0);
 end;
 
 procedure TControlsForm.Button4Click(Sender: TObject);
 begin
-  rxDice1.Rotate := not rxDice1.Rotate;
-  if rxDice1.Rotate then
+  JvDice.Rotate := not JvDice.Rotate;
+  if JvDice.Rotate then
     Button4.Caption := 'Stop'
   else
     Button4.Caption := 'Start';
@@ -491,17 +490,17 @@ end;
 
 procedure TControlsForm.SpinEdit8Change(Sender: TObject);
 begin
-  rxDice1.Interval := SpinEdit8.Value;
+  JvDice.Interval := SpinEdit8.Value;
 end;
 
 procedure TControlsForm.SpinEdit9Change(Sender: TObject);
 begin
- rxDice1.Value := SpinEdit9.Value;
+ JvDice.Value := SpinEdit9.Value;
 end;
 
-procedure TControlsForm.rxDice1Change(Sender: TObject);
+procedure TControlsForm.JvDiceChange(Sender: TObject);
 begin
-  SpinEdit9.Value := rxDice1.Value;
+  SpinEdit9.Value := JvDice.Value;
 end;
 
 procedure TControlsForm.Button5Click(Sender: TObject);
@@ -537,26 +536,26 @@ begin
 end;
 
 procedure TControlsForm.Button6Click(Sender: TObject);
-var
-  Image: TJvAnimatedCursorImage ;
+//var
+//  Image: TJvAnimatedCursorImage ;
 begin
-  if OpenDialog.Execute then begin
-    OpenDialog.InitialDir := ExtractFilePath(OpenDialog.FileName);
-    Image := TJvAnimatedCursorImage .Create;
-    try
-      AnimatedImage1.Active := False;
-      Image.LoadFromFile(OpenDialog.FileName);
-      Image.AssignToBitmap(AnimatedImage1.Glyph, clFuchsia, True,
-        AnimatedImage1.Orientation = goVertical);
-      ComboBox7.ItemIndex := -1;
-      AnimatedImage1.Interval := Image.DefaultRate;
-      SpinEdit3.Value := AnimatedImage1.Interval;
-      AnimatedImage1.TransparentColor := clFuchsia;
-      AnimatedImage1.Active := True;
-    finally
-      Image.Free;
-    end;
-  end;
+//  if OpenDialog.Execute then begin
+//    OpenDialog.InitialDir := ExtractFilePath(OpenDialog.FileName);
+//    Image := TJvAnimatedCursorImage .Create;
+//    try
+//      AnimatedImage1.Active := False;
+//      Image.LoadFromFile(OpenDialog.FileName);
+//      Image.AssignToBitmap(AnimatedImage1.Glyph, clFuchsia, True,
+//        AnimatedImage1.Orientation = goVertical);
+//      ComboBox7.ItemIndex := -1;
+//      AnimatedImage1.Interval := Image.DefaultRate;
+//      SpinEdit3.Value := AnimatedImage1.Interval;
+//      AnimatedImage1.TransparentColor := clFuchsia;
+//      AnimatedImage1.Active := True;
+//    finally
+//      Image.Free;
+//    end;
+//  end;
 end;
 
 initialization

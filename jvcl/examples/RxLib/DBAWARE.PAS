@@ -150,7 +150,7 @@ type
 
 implementation
 
-uses JvDBUtils;
+uses JvDBUtils, Main;
 
 {$R *.DFM}
 

@@ -969,6 +969,8 @@ object DBAwareForm: TDBAwareForm
     Top = 12
   end
   object FormStorage1: TJvFormStorage
+    AppStorage = MainForm.JvAppRegistryStore
+    AppStoragePath = 'Data Aware Components\'
     Options = [fpPosition]
     StoredProps.Strings = (
       'TabbedNotebook1.PageIndex'
