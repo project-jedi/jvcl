@@ -3,9 +3,9 @@
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.05.03"/>
-    <PROJECT value="JvGlobusC5.bpl"/>
-    <OBJFILES value="JvgRegLibCBB5.obj JvGlobusC5.obj"/>
-    <RESFILES value="JvGlobusC5.res JvGlobusReg.dcr"/>
+    <PROJECT value="JvPrintPreviewC5D.bpl"/>
+    <OBJFILES value="..\..\dcu\JvPrintPreviewC5D.obj"/>
+    <RESFILES value=""/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
@@ -13,34 +13,36 @@
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value="Vcl50.lib"/>
-    <PACKAGES value="vcl50.bpi vclx50.bpi vcljpg50.bpi"/>
+    <PACKAGES value="dsnide50.bpi vcl50.bpi JvPrintPreviewC5R.bpi CJCL50.bpi vclx50.bpi 
+      JvCoreC5R.bpi"/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
     <RELEASELIBPATH value="$(BCB)\lib\release"/>
-    <LINKER value="tlink32"/>
+    <LINKER value="ilink32"/>
     <USERDEFINES value="_DEBUG"/>
-    <SYSDEFINES value="NO_STRICT;USEPACKAGES"/>
-    <MAINSOURCE value="JvGlobusC5.cpp"/>
-    <INCLUDEPATH value="$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="$(BCB)\lib\obj;$(BCB)\lib"/>
+    <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
+    <MAINSOURCE value="JvPrintPreviewC5D.cpp"/>
+    <INCLUDEPATH value=""/>
+    <LIBPATH value="$(BCB)\Lib;$(BCB)\Projects\Lib;"/>
     <WARNINGS value="-w-par"/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <IDLCFLAGS value="-src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl50.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
       -tWM"/>
-    <PFLAGS value="-$YD -$W -$O- -v -JPHNE -M"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -LUDesignIde"/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-D&quot;GLOBUS Library&quot; -aa -Tpp -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Print Preview Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi 
+      -v"/>
   </OPTIONS>
   <LINKER>
-    <ALLOBJ value="c0pkg32.obj $(PACKAGES) sysinit.obj $(OBJFILES)"/>
+    <ALLOBJ value="c0pkg32.obj $(PACKAGES) Memmgr.Lib sysinit.obj $(OBJFILES)"/>
     <ALLRES value="$(RESFILES)"/>
-    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mt.lib"/>
+    <ALLLIB value="$(LIBFILES) $(LIBRARIES) import32.lib cp32mti.lib"/>
   </LINKER>
   <IDEOPTIONS>
 [Version Info]
@@ -55,8 +57,8 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1049
-CodePage=1251
+Locale=1036
+CodePage=1252
 
 [Version Info Keys]
 CompanyName=
@@ -69,6 +71,28 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
+
+[HistoryLists\hlIncludePath]
+Count=2
+Item0=$(BCB)\include;$(BCB)\include\vcl;..\..\design;..\..\common
+Item1=C:\Prog\CBuilder5\Projects;$(BCB)\include;$(BCB)\include\vcl
+
+[HistoryLists\hlLibraryPath]
+Count=2
+Item0=$(BCB)\lib\obj;$(BCB)\lib;..\..\resources;..\..\dcu
+Item1=C:\Prog\CBuilder5\Projects;$(BCB)\lib\obj;$(BCB)\lib
+
+[HistoryLists\hlDebugSourcePath]
+Count=1
+Item0=$(BCB)\source\vcl
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=_DEBUG
+
+[HistoryLists\hlIntOutputDir]
+Count=1
+Item0=..\..\dcu
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
