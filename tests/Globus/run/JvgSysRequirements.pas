@@ -157,34 +157,34 @@ begin
 
   case MinVideoVRefreshRate of
     frr70Hertz: Test(GetDeviceCaps(DC, VREFRESH) >= 70,
-        Format(ERR_VideoVRefreshRate, [70]));
+        Format(RsVideoVRefreshRate, [70]));
     frr75Hertz: Test(GetDeviceCaps(DC, VREFRESH) >= 75,
-        Format(ERR_VideoVRefreshRate, [75]));
+        Format(RsVideoVRefreshRate, [75]));
     frr85Hertz: Test(GetDeviceCaps(DC, VREFRESH) >= 85,
-        Format(ERR_VideoVRefreshRate, [85]));
+        Format(RsVideoVRefreshRate, [85]));
   end;
 
   case MinGraphicResolution of
     fgr800x600: Test((GetDeviceCaps(DC, HORZRES) >= 800) and
-        (GetDeviceCaps(DC, VERTRES) >= 600), Format(ERR_GraphicResolution,
+        (GetDeviceCaps(DC, VERTRES) >= 600), Format(RsGraphicResolution,
         ['800x600']));
     fgr1024x768: Test((GetDeviceCaps(DC, HORZRES) >= 1024) and
-        (GetDeviceCaps(DC, VERTRES) >= 768), Format(ERR_GraphicResolution,
+        (GetDeviceCaps(DC, VERTRES) >= 768), Format(RsGraphicResolution,
         ['1024x768']));
   end;
 
   case MinColorDepth of
     fcd16BitColor: Test(GetDeviceCaps(DC, BITSPIXEL) >= 16,
-        Format(ERR_ColorDepth, ['65 536 (hi color)']));
+        Format(RsColorDepth, ['65 536 (hi color)']));
     fcd32BitColor: Test(GetDeviceCaps(DC, BITSPIXEL) >= 32,
-        Format(ERR_ColorDepth, ['4 294 967 296 (true color)']));
+        Format(RsColorDepth, ['4 294 967 296 (true color)']));
   end;
 
   case SystemFont of
     fsfSmallFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 96,
-        Format(ERR_SystemFont, ['мелкий']));
+        Format(RsSystemFont, ['мелкий']));
     fsfBigFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 120,
-        Format(ERR_SystemFont, ['крупный']));
+        Format(RsSystemFont, ['крупный']));
   end;
 
   OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
@@ -193,10 +193,10 @@ begin
 
   if OSPlatform = [fosWindowsNT] then
     Test(OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT,
-      Format(ERR_OSPlatform, ['Windows NT/2000']));
+      Format(RsOSPlatform, ['Windows NT/2000']));
   if OSPlatform = [fosWindows95] then
     Test(OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS,
-      Format(ERR_OSPlatform, ['Windows 95/98']));
+      Format(RsOSPlatform, ['Windows 95/98']));
 
   {  fHalt := fHalt or fsrVideoVRefreshRate in HaltOptions;
     fHalt := fHalt or fsrGraphicResolution in HaltOptions;
