@@ -47,7 +47,7 @@ uses
   JvQGroupBox, JvQHeaderControl,
   JvQImage, JvQRadioButton, JvQRadioGroup,
   JvQLabel,
-  JvQGauges, JvQTimeEdit,
+  JvQGauges, JvQTimeEdit, JvQStdDsgnEditors, JvQJCLUtils,
   JvQScrollBar, JvQShape, JvQControlBar, JvQGrids,
   JvQTabControl, JvQBitBtn, JvQPickDate, JvQStringGrid,
   JvQPanel, JvQImageList, JvQProgressEditor, JvQDsgnEditors;
@@ -66,7 +66,7 @@ begin
     TJvCheckBox, TJvRadioButton, TJvRadioGroup]);
   RegisterComponents(RsPaletteEdit, [TJvEdit,
     TJvMaskEdit, TJvCalcEdit, TJvComboEdit,
-    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit]);
+    TJvFilenameEdit, TJvDirectoryEdit, TJvDateEdit, TJvTimeSpin]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [TJvGauge, TJvTabControl, TJvControlBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
@@ -90,6 +90,10 @@ begin
 //  RegisterPropertyEditor(TypeInfo(Boolean), TJvPopupMenu, cOwnerDraw, nil);
   RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedButton, 'Caption', TJvHintProperty);
 //  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvCustomLabel, 'ImageIndex',TJvDefaultImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
+  RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
+  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
+
 
 end;
 
