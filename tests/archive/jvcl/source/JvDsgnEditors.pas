@@ -38,7 +38,7 @@ uses
   Controls, Graphics, ExtCtrls, Tabs, Dialogs, 
   ExtDlgs, Menus, StdCtrls, DsnConst, 
   {$IFDEF COMPILER6_UP}
-  DsnConst, FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors
+  FiltEdit, RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors
   {$ELSE}
   LibIntf, DsgnIntf
   {$ENDIF}
@@ -182,7 +182,7 @@ type
     function GetValue: string; override;
     procedure SetValue(const Value: string); override;
   end;
-
+                  
 {$IFNDEF DelphiPersonalEdition}
 type
   TJvImageListEditor = class(TComponentEditor)
