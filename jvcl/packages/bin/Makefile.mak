@@ -100,20 +100,10 @@ JVCLRESDIRS=$(JVCLROOT)\Resources
 #-------------------------------------------------------------------------------
 
 default: \
-	BuildJCLdcpFiles \
 	Resources \
 	pg.exe \
 	Compile \
 	Clean
-
-################################################################################
-BuildJCLdcpFiles:
-	IF NOT EXIST "$(DCPDIR)\CJcl*.dcp" $(MAKE) $(QUIET) BuildJCLdcpFilesForce
-
-################################################################################
-BuildJCLdcpFilesForce:
-	# for C++ targets compile JCL .dcp files
-	IF EXIST "$(ROOT)\bin\bcc32.exe" $(MAKE) $(QUIET) -f MakeJCLDcp4BCB.mak
 
 ################################################################################
 Resources:
