@@ -68,6 +68,7 @@
         <alias name="Kylix" value="k3"/>
         <alias name="Windows" value="c5,c6,c6p,d5,d5s,d6,d6p,d7,d7p,d7clx"/>
         <alias name="Linux" value="k3"/>
+        <alias name="allclx" value="d7clx,k3,k3p"/>
       </aliases>
     </model>
     <Model Name="JCL" format="%e%p%n,%e%p%n%v0" prefix="Jcl" packages="" incfile="">
@@ -86,9 +87,9 @@
       <aliases>
         <alias name="Delphi" value="d5,d6,d7"/>
         <alias name="Bcb" value="c5,c6"/>
-        <alias name="Kylix" value="k2,k3"/>
+        <alias name="Kylix" value="k2,k3,k3p"/>
         <alias name="Windows" value="c5,c6,d5,d6,d7"/>
-        <alias name="Linux" value="k2,k3"/>
+        <alias name="Linux" value="k2,k3,k3p"/>
       </aliases>
     </Model>
   </models>
