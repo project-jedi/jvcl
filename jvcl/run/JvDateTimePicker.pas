@@ -56,6 +56,8 @@ type
     FDropDownDate: TDate;
     FWeekNumbers: Boolean;
     FKeepNullText: string;
+    FShowTodayCircle: Boolean;
+    FShowToday: Boolean;
     {$IFDEF COMPILER5}
     FFormat: string;
     procedure SetFormat(const Value: string);
@@ -63,7 +65,7 @@ type
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
     procedure SetNullText(const Value: string);
-    procedure UpdateWeekNumbers(CalHandle: THandle);
+    procedure UpdateCalendar(CalHandle: THandle);
   protected
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
     // returns True if NullDate matches Date or frac(NullDate) matches frac(Time) depending on Kind
@@ -84,6 +86,8 @@ type
     // The text to display when NullDate = Date/Time
     property NullText: string read FNullText write SetNullText;
     property WeekNumbers: Boolean read FWeekNumbers write FWeekNumbers default False;
+    property ShowToday: Boolean read FShowToday write FShowToday default True;
+    property ShowTodayCircle: Boolean read FShowTodayCircle write FShowTodayCircle default True;
     property HintColor;
     property OnMouseEnter;
     property OnMouseLeave;
@@ -102,11 +106,26 @@ uses
   {$ENDIF COMPILER5}
   JvResources;
 
+procedure SetCalendarStyle(AHandle:THandle; Value: Integer; UseStyle: Boolean);
+var
+  Style: Integer;
+begin
+  if AHandle <> 0 then
+  begin
+    Style := GetWindowLong(AHandle, GWL_STYLE);
+    if not UseStyle then Style := Style and not Value
+    else Style := Style or Value;
+    SetWindowLong(AHandle, GWL_STYLE, Style);
+  end;
+end;
+
 constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 //   FNullText := RsNoneCaption;  XXX Don't do this unless you also set the 'default' specifier in the property declaration above! Causes problems. -WP
   FDropDownDate := SysUtils.Date;
+  FShowToday := True;
+  FShowTodayCircle := True;
 end;
 
 function TJvDateTimePicker.WithinDelta(Val1, Val2: TDateTime): Boolean;
@@ -185,18 +204,13 @@ begin
       (wSecond = 0) and (wMilliseconds = 0);
 end;
 
-procedure TJvDateTimePicker.UpdateWeekNumbers(CalHandle: THandle);
-var
-  AStyle: Cardinal;
+procedure TJvDateTimePicker.UpdateCalendar(CalHandle: THandle);
 begin
   if CalHandle <> 0 then
   begin
-    AStyle := GetWindowLong(CalHandle, GWL_STYLE);
-    if not WeekNumbers then
-      AStyle := AStyle and not MCS_WEEKNUMBERS
-    else
-      AStyle := AStyle or MCS_WEEKNUMBERS;
-    SetWindowLong(CalHandle, GWL_STYLE, AStyle);
+    SetCalendarStyle(CalHandle,MCS_WEEKNUMBERS, WeekNumbers);
+    SetCalendarStyle(CalHandle,MCS_NOTODAY, not ShowToday);
+    SetCalendarStyle(CalHandle,MCS_NOTODAYCIRCLE, not ShowTodayCircle);
   end;
 end;
 
@@ -213,7 +227,7 @@ begin
         begin
           inherited;
           ACal := DateTime_GetMonthCal(Handle);
-          UpdateWeekNumbers(ACal);
+          UpdateCalendar(ACal);
           if CheckNullValue and (ACal <> 0) then
           begin
             DateTimeToSystemTime(FDropDownDate, St);
