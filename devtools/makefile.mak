@@ -60,21 +60,15 @@ pg2want.exe
 
 # configfile requires symbol "CFG=path\filename.cfg"
 configfile:
-	-@IF EXIST "$(CFG) del /q "$(CFG)" >NUL
+	-@IF EXIST "$(CFG)" del /q "$(CFG)" >NUL
 	-@IF EXIST "$(ROOT)\bin\dcc32.cfg" type "$(ROOT)\bin\dcc32.cfg" >>"$(CFG)"
 	@echo. >>"$(CFG)"
-	@echo. >>"$(CFG)"
-	@echo -e"$(BIN)">>$(CFG)
-	@echo. >>"$(CFG)"
-	@echo -i"$(SRCP)">>$(CFG)
-	@echo. >>"$(CFG)"
-	@echo -n"$(DCU)">>$(CFG)
-	@echo. >>"$(CFG)"
-	@echo -r"$(SRCP)">>$(CFG)
-	@echo. >>"$(CFG)"
-	@echo -u"$(SRCP)">>$(CFG)
-	@echo. >>"$(CFG)"
-	@echo -u"$(ROOT)\Lib\Obj">>$(CFG)
+	@echo -E"$(BIN)">>"$(CFG)"
+	@echo -I"$(SRCP)">>"$(CFG)"
+	@echo -N"$(DCU)">>"$(CFG)"
+	@echo -R"$(SRCP)">">$(CFG)"
+	@echo -U"$(SRCP)">>"$(CFG)"
+	@echo -U"$(ROOT)\Lib\Obj">">$(CFG)"
 
 isu.exe: ITEStrip\isu.dpr
   cd ITEStrip
