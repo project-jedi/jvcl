@@ -12,16 +12,17 @@ uses
   JvAlarms, JvConverter, JvDataEmbedded, JvCreateProcess,
   JvEnterTab, JvMergeManager, JvPageManager, JvPatchFile,
   JvStringHolder, JvTimeLimit, JvWinHelp, JvTranslator, JvPrint, JvEasterEgg,
-  JvDataEmbeddedEditor, JvPatcherEditor, JvAlarmsEditor, JvPageManagerForm,
+  JvDataEmbeddedEditor, JvPatcherEditor, JvProfiler32,
+  JvAlarmsEditor, JvPageManagerForm,
   JvDsgnEditors;
 
 {.$R ..\resources\JvCmpReg.dcr}
-
+                            
 procedure Register;
 begin
-  RegisterComponents('Jv Components',[
+  RegisterComponents('Jv Components',[                           
     TJvAlarms, TJvConverter, TJvDataEmbedded, TJvCreateProcess,
-    TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile,
+    TJvEnterAsTab, TJvMergeManager, TJvPageManager, TJvPatchFile, TJvProfiler,
     TJvStrHolder, TJvTimeLimit, TJvWinHelp, TJvTranslator, TJvPrint, TJvEasterEgg
     ]);
 

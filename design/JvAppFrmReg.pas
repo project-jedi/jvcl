@@ -14,7 +14,7 @@ uses
   JvFormMagnet, JvAnimTitle, JvFormAutoSize,
   JvFormWallpaperEditor;
 
-{.$R ..\resources\JvAppFrmeg.dcr}
+{.$R ..\resources\JvAppFrmReg.dcr}
 
 procedure Register;
 begin
