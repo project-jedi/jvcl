@@ -481,7 +481,8 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils;
+  SysUtils,
+  JvJCLUtils;
 
 var
   IntDynControlEngineVCL: TJvDynControlEngine = nil;
@@ -1373,15 +1374,10 @@ end;
 
 procedure TJvDynControlVCLRadioGroup.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
 end;
 
 function TJvDynControlVCLRadioGroup.ControlGetValue: Variant;
@@ -1445,15 +1441,10 @@ end;
 
 procedure TJvDynControlVCLListBox.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
 end;
 
 function TJvDynControlVCLListBox.ControlGetValue: Variant;
@@ -1518,15 +1509,10 @@ end;
 
 procedure TJvDynControlVCLCheckListBox.ControlSetValue(Value: Variant);
 begin
-  if VarType(Value) in [varSmallInt, varInteger] then
+  if VarIsInt(Value) then
     ItemIndex := Value
   else
-    try
-      ItemIndex := Value
-    except
-      on E: Exception do
-        ItemIndex := Items.IndexOf(Value);
-    end;
+    ItemIndex := Items.IndexOf(Value);
 end;
 
 function TJvDynControlVCLCheckListBox.ControlGetValue: Variant;

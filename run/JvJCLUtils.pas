@@ -94,6 +94,9 @@ function StrToFloatUS(const Text: string): Extended;
 // StrToFloatUS uses US '.' as decimal seperator and ',' as thousand separator
 function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
 
+function VarIsInt(Value: Variant): Boolean;
+ // VarIsInt returns VarIsOrdinal-[varBoolean]
+
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
 function GetWordOnPosW(const S: WideString; const P: Integer): WideString;
@@ -1168,6 +1171,12 @@ end;
 function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
 begin
   Result := StrToFloatDef(USToLocalFloatStr(Text), Default);
+end;
+
+function VarIsInt(Value: Variant): Boolean;
+begin
+  Result := FindVarData(Value)^.VType in [varSmallInt, varInteger, varShortInt,
+    varByte, varWord, varLongWord, varInt64];
 end;
 
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
