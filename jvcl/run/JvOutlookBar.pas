@@ -112,7 +112,7 @@ type
 
   TJvOutlookBarPage = class(TCollectionItem)
   private
-    FImage: TBitmap;
+    FPicture: TPicture;
     FCaption: TCaption;
     FColor: TColor;
     FButtonSize: TJvBarButtonSize;
@@ -128,7 +128,7 @@ type
     procedure SetButtonSize(const Value: TJvBarButtonSize);
     procedure SetCaption(const Value: TCaption);
     procedure SetColor(const Value: TColor);
-    procedure SetImage(const Value: TBitmap);
+    procedure SetPicture(const Value: TPicture);
     procedure Change;
     procedure SetParentButtonSize(const Value: Boolean);
     procedure SetParentColor(const Value: Boolean);
@@ -145,6 +145,7 @@ type
     procedure SetDownButton(Value: TJvOutlookBarButton);
     procedure SetDownIndex(Value: Integer);
   protected
+    procedure DoPictureChange(Sender:TObject);
     function GetDisplayName: string; override;
     { TODO: implement ImageIndex and Alignment }
     property ImageIndex: Integer read FImageIndex write SetImageIndex default -1;
@@ -159,7 +160,7 @@ type
   published
     property Buttons: TJvOutlookBarButtons read FButtons write SetButtons;
     property Caption: TCaption read FCaption write SetCaption;
-    property Image: TBitmap read FImage write SetImage;
+    property Picture: TPicture read FPicture write SetPicture;
     property Color: TColor read FColor write SetColor;
     property Font: TFont read FFont write SetFont;
     property DownFont: TFont read FDownFont write SetDownFont;
@@ -248,7 +249,7 @@ type
     procedure DrawButtons(Index: Integer);
     procedure DrawArrowButtons(Index: Integer);
     procedure DrawButtonFrame(PageIndex, ButtonIndex, PressedIndex: Integer);
-    function DrawBitmap(R: TRect; Bmp: TBitmap): Boolean;
+    function DrawPicture(R: TRect; Picture: TPicture): Boolean;
     procedure DoDwnClick(Sender: TObject);
     procedure DoUpClick(Sender: TObject);
     procedure RedrawRect(R: TRect; Erase: Boolean = False);
@@ -527,6 +528,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvOutlookBarEdit.WMNCPaint(var Msg: TMessage);
 //var
 //  DC: HDC;
@@ -800,7 +802,8 @@ begin
   FDownFont := TFont.Create;
   FDownFont.OnChange := DoFontChange;
   FParentColor := True;
-  FImage := TBitmap.Create;
+  FPicture := TPicture.Create;
+  FPicture.OnChange := DoPictureChange;
   FAlignment := taCenter;
   FImageIndex := -1;
   if (Collection <> nil) and (TJvOutlookBarPages(Collection).Owner <> nil) then
@@ -822,7 +825,7 @@ end;
 destructor TJvOutlookBarPage.Destroy;
 begin
   FButtons.Free;
-  FImage.Free;
+  FPicture.Free;
   FFont.Free;
   FDownFont.Free;
   inherited Destroy;
@@ -835,7 +838,7 @@ begin
   if Source is TJvOutlookBarPage then
   begin
     Caption := TJvOutlookBarPage(Source).Caption;
-    Image := TJvOutlookBarPage(Source).Image;
+    Picture := TJvOutlookBarPage(Source).Picture;
     Color := TJvOutlookBarPage(Source).Color;
     DownFont.Assign(TJvOutlookBarPage(Source).DownFont);
     ButtonSize := TJvOutlookBarPage(Source).ButtonSize;
@@ -907,10 +910,9 @@ begin
   FParentFont := False;
 end;
 
-procedure TJvOutlookBarPage.SetImage(const Value: TBitmap);
+procedure TJvOutlookBarPage.SetPicture(const Value: TPicture);
 begin
-  FImage.Assign(Value);
-  Change;
+  FPicture.Assign(Value);
 end;
 
 procedure TJvOutlookBarPage.SetParentButtonSize(const Value: Boolean);
@@ -1239,6 +1241,7 @@ begin
 end;
 
 {$IFDEF VCL}
+
 procedure TJvCustomOutlookBar.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
@@ -1483,16 +1486,24 @@ begin
     BtmButton.Top := -1000;
 end;
 
-function TJvCustomOutlookBar.DrawBitmap(R: TRect; Bmp: TBitmap): Boolean;
+function TJvCustomOutlookBar.DrawPicture(R: TRect; Picture: TPicture): Boolean;
+var
+  Bmp: TBitmap;
 begin
-  Result := Assigned(Bmp) and not Bmp.Empty;
+  Result := Assigned(Picture) and Assigned(Picture.Graphic) and not Picture.Graphic.Empty;
   if csDestroying in ComponentState then
     Exit;
   if Result then
   begin
-    Canvas.Brush.Bitmap := Bmp;
-    Canvas.FillRect(R);
-    Canvas.Brush.Bitmap := nil;
+    Bmp := TBitmap.Create;
+    try
+      Bmp.Assign(Picture.Graphic);
+      Canvas.Brush.Bitmap := Bmp;
+      Canvas.FillRect(R);
+      Canvas.Brush.Bitmap := nil;
+    finally
+      Bmp.Free;
+    end;
   end;
 end;
 
@@ -1512,7 +1523,7 @@ begin
     Canvas.Font := Self.Font;
     if DoDrawPage(R, PageIndex) then
     begin
-      if not DrawBitmap(R, Pages[PageIndex].Image) then
+      if not DrawPicture(R, Pages[PageIndex].Picture) then
       begin
 {$IFDEF JVCLThemesEnabled}
         if not ThemedBackground or not ThemeServices.ThemesEnabled then
@@ -2304,7 +2315,8 @@ begin
 end;
 
 procedure TJvCustomOutlookBar.CMDialogChar(var Message: TCMDialogChar);
-var I:integer;
+var
+  I: integer;
 begin
   if CanFocus and (ActivePage <> nil) then
   begin
@@ -2354,6 +2366,10 @@ begin
   Result := DoCustomDraw(ARect, odsPageButton, Index, Down, Index = ActivePageIndex);
 end;
 
+procedure TJvOutlookBarPage.DoPictureChange(Sender: TObject);
+begin
+  Change;
+end;
 
 end.
 
