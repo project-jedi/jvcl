@@ -1,3 +1,6 @@
+2002-07-10
+- Added packages for Delphi 6 Personal
+- Modified JvProgressBar to support D6 Personal
 2002-07-08
 - Modified Files for D5 support:
 	JvAppHotKey.pas JvCaptionButton.pas JvChangeNotify.pas 
