@@ -8,27 +8,30 @@ ARCH = ..\..\archive
 COM = ..\..\common
 BIN = ..\..\bin
 DCU = ..\..\dcu
-JCL = ..\..\..\JCL\source;..\..\..\JCL\source\common;..\..\..\JCL\source\windows;..\..\..\JCL\source\vcl
-DRC = $&.drc
-SRCP = $(RUN);$(DSGN);$(COM);$(JCL);$(ARCH);$(DCU)
-SRCH = ..\$(RUN);..\$(DSGN);..\$(COM);..\$(JCL);..\$(ARCH);..\$(DCU)
-SRCHH = ..\..\$(RUN);..\..\$(DSGN);..\..\$(COM);..\..\$(JCL);..\..\$(ARCH);..\..\$(DCU)
-SRCHHH = ..\..\..\$(RUN);..\..\..\$(DSGN);..\..\..\$(COM);..\..\..\$(JCL);..\..\..\$(ARCH);..\..\..\$(DCU)
+JCLSRC=..\..\..\JCL\source
+JCL = $(JCLSRC);$(JCLSRC)\common;$(JCLSRC)\windows;$(JCLSRC)\vcl
+JCLH = ..\$(JCLSRC);..\$(JCLSRC)\common;..\$(JCLSRC)\windows;..\$(JCLSRC)\vcl
+JCLHH = ..\..\$(JCLSRC);..\..\$(JCLSRC)\common;..\..\$(JCLSRC)\windows;..\..\$(JCLSRC)\vcl
+JCLHHH = ..\..\..\$(JCLSRC);..\..\..\$(JCLSRC)\common;..\..\..\$(JCLSRC)\windows;..\..\..\$(JCLSRC)\vcl
+SRC = $(RUN);$(COM);$(JCL);
+SRCH = ..\$(RUN);..\$(COM);$(JCLH);
+SRCHH = ..\..\$(RUN);..\..\$(COM);$(JCLHH);
+SRCHHH = ..\..\..\$(RUN);..\..\..\$(COM);$(JCLHHH);
 #---------------------------------------------------------------------------------------------------
 MAKE = $(ROOT)\make.exe -$(MAKEFLAGS) -f$**
-DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRCP) -n$(DCU) -r$(SRCP) -u$(SRCP) -q -w -m
-DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -m
-DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -m
-DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -m
+DCC  = $(ROOT)\dcc32.exe -e$(BIN) -i$(SRC) -n$(DCU) -r$(SRC) -u$(SRC) -q -w -B
+DCCH = $(ROOT)\dcc32.exe -e..\$(BIN) -i$(SRCH) -n..\$(DCU) -r$(SRCH) -u$(SRCH) -q -w -B
+DCCHH = $(ROOT)\dcc32.exe -e..\..\$(BIN) -i$(SRCHH) -n..\..\$(DCU) -r$(SRCHH) -u$(SRCHH) -q -w -B
+DCCHHH = $(ROOT)\dcc32.exe -e..\..\..\$(BIN) -i$(SRCHHH) -n..\..\..\$(DCU) -r$(SRCHHH) -u$(SRCHHH) -q -w -B
 BRCC = $(ROOT)\brcc32.exe $**
 #---------------------------------------------------------------------------------------------------
 default: \
+jsb.exe \
+jsr.exe \
+sc.exe \
+js.exe \
 Gl_demo.exe \
 _glXMLSerializer_demo.exe \
-#jsb.exe \
-#jsr.exe \
-#sc.exe \
-#js.exe \
 JvAniProj.exe \
 AppDdeCmdExample.exe \
 JvAppHotKeyDemo.exe \
@@ -45,7 +48,7 @@ JvCharMapDemo.exe \
 JvChartDemo.exe \
 CheckTVDemo.exe \
 JvClipboardViewerProj.exe \
-#JVCLDemo.exe \
+JVCLDemo.exe \
 ColorButtonDemo.exe \
 ColorComboDemo.exe \
 JvComboListBoxDemo.exe \
@@ -62,14 +65,14 @@ WebMapper.exe \
 UseCase.exe \
 DepWalk.exe \
 JvDialogsDemo.exe \
-#AdvancePro.exe \
+AdvancePro.exe \
 DockOptionDemo.exe \
 HowToUse.exe \
 MSDN2002Pro.exe \
-#VCDemoPro_D5.exe \
-#VCDemoPro_D6.exe \
-#VIDDemoPro_D5.exe \
-#VIDDemoPro_D6.exe \
+VCDemoPro_D5.exe \
+VCDemoPro_D6.exe \
+VIDDemoPro_D5.exe \
+VIDDemoPro_D6.exe \
 JvDomainUpDownDemo.exe \
 JvDotNetDemo.exe \
 DSAExamples.exe \
@@ -215,9 +218,9 @@ RANotepad.exe \
 Rxdemo.exe 
 #---------------------------------------------------------------------------------------------------
 Gl_demo.exe: "Globus\Visual Components Demo\Gl_demo.dpr"
-  cd Globus\Visual Components Demo
+  @cd Globus\Visual Components Demo
   $(DCCH) $&.dpr
-  cd ..\..
+  @cd ..\..
 
 _glXMLSerializer_demo.exe: "Globus\XMLSerializer\_glXMLSerializer_demo.dpr"
   @cd Globus\XMLSerializer

@@ -15,9 +15,6 @@ object JvAniMainForm: TJvAniMainForm
   OldCreateOrder = False
   Position = poScreenCenter
   OnActivate = FormActivate
-  DesignSize = (
-    488
-    320)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -51,7 +48,7 @@ object JvAniMainForm: TJvAniMainForm
     Top = 34
     Width = 145
     Height = 155
-    Directory = 'E:\Daten\dev\JVCL3\examples\JvAni'
+    Directory = 'C:\'
     FileList = FileListBox1
     DriveCombo = DriveComboBox1
     ItemHeight = 16
