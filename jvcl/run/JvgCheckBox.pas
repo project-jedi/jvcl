@@ -230,7 +230,7 @@ begin
   if not FSuppressCMFontChanged then
   begin
     FImg.Canvas.Font.Assign(Font);
-    Repaint;
+    Invalidate;
     inherited FontChanged;
   end;
 end;
@@ -250,12 +250,15 @@ begin
   with TextStyles, Colors do
     if (Passive <> Active) or (fcoUnderlinedActive in Options) then
       Repaint
-    else if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
+    else
+    if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
       Repaint
-    else if (not Transparent) and (Colors.Background <>
+    else
+    if (not Transparent) and (Colors.Background <>
       Colors.BackgroundActive) then
       Repaint
-    else if (TextActive <> Text) or (fcoUnderlinedActive in Options) then
+    else
+    if (TextActive <> Text) or (fcoUnderlinedActive in Options) then
     begin
       FNeedUpdateOnlyMainText := True;
       Repaint;
@@ -276,12 +279,15 @@ begin
   with TextStyles, Colors do
     if (Passive <> Active) or (fcoUnderlinedActive in Options) then
       Repaint
-    else if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
+    else
+    if (fcoDelineatedText in Options) and (DelineateActive <> Delineate) then
       Repaint
-    else if (not Transparent) and (Colors.Background <>
+    else
+    if (not Transparent) and (Colors.Background <>
       Colors.BackgroundActive) then
       Repaint
-    else if TextActive <> Text then
+    else
+    if TextActive <> Text then
     begin
       FNeedUpdateOnlyMainText := True;
       Repaint;
@@ -631,11 +637,11 @@ begin
   if GroupIndex <> 0 then
   begin
     for i := 0 to Owner.ComponentCount - 1 do
-      if (OWner.Components[i] is TJvgCheckBox)
-        and (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
-        and (TJvgCheckBox(OWner.Components[i]).Checked) then
+      if (Owner.Components[i] is TJvgCheckBox)
+        and (TJvgCheckBox(Owner.Components[i]).GroupIndex = GroupIndex)
+        and (TJvgCheckBox(Owner.Components[i]).Checked) then
       begin
-        Result := TJvgCheckBox(OWner.Components[i]);
+        Result := TJvgCheckBox(Owner.Components[i]);
         break;
       end;
   end;
@@ -648,11 +654,11 @@ begin
   if GroupIndex <> 0 then
   begin
     for i := 0 to Owner.ComponentCount - 1 do
-      if (OWner.Components[i] is TJvgCheckBox)
-        and (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
-        and (TJvgCheckBox(OWner.Components[i]).Tag = TagNo) then
+      if (Owner.Components[i] is TJvgCheckBox)
+        and (TJvgCheckBox(Owner.Components[i]).GroupIndex = GroupIndex)
+        and (TJvgCheckBox(Owner.Components[i]).Tag = TagNo) then
       begin
-        TJvgCheckBox(OWner.Components[i]).Checked := True;
+        TJvgCheckBox(Owner.Components[i]).Checked := True;
         break;
       end;
   end;
@@ -671,21 +677,21 @@ begin
     if not FChecked then
     begin
       for i := 0 to Owner.ComponentCount - 1 do
-        if (OWner.Components[i] is TJvgCheckBox)
-          and (TJvgCheckBox(OWner.Components[i]).GroupIndex = GroupIndex)
-          and (TJvgCheckBox(OWner.Components[i]).Checked)
-          and (OWner.Components[i] <> Self) then
+        if (Owner.Components[i] is TJvgCheckBox)
+          and (TJvgCheckBox(Owner.Components[i]).GroupIndex = GroupIndex)
+          and (TJvgCheckBox(Owner.Components[i]).Checked)
+          and (Owner.Components[i] <> Self) then
         begin
-          TJvgCheckBox(OWner.Components[i]).FChecked := False;
-          TJvgCheckBox(OWner.Components[i]).FNeedRebuildBackground := True;
-          TJvgCheckBox(OWner.Components[i]).Repaint;
+          TJvgCheckBox(Owner.Components[i]).FChecked := False;
+          TJvgCheckBox(Owner.Components[i]).FNeedRebuildBackground := True;
+          TJvgCheckBox(Owner.Components[i]).Invalidate;
         end;
       FChecked := True;
     end;
   end
   else
     FChecked := Value;
-  Repaint;
+  Invalidate;
 end;
 
 procedure TJvgCheckBox.SetGlyph(Value: TBitmap);
