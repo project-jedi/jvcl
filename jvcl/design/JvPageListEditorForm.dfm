@@ -1,6 +1,6 @@
 object frmPageListEditor: TfrmPageListEditor
-  Left = 192
-  Top = 107
+  Left = 446
+  Top = 114
   Width = 158
   Height = 283
   Caption = 'PageList Editor'
@@ -32,11 +32,13 @@ object frmPageListEditor: TfrmPageListEditor
     object btnAdd: TToolButton
       Left = 0
       Top = 0
+      Hint = 'Add page'
       Action = acAdd
     end
     object btnDelete: TToolButton
       Left = 23
       Top = 0
+      Hint = 'Delete page'
       Action = acDelete
     end
     object ToolButton1: TToolButton
@@ -65,6 +67,7 @@ object frmPageListEditor: TfrmPageListEditor
     Height = 214
     Align = alClient
     ItemHeight = 13
+    PopupMenu = popEditor
     TabOrder = 1
     OnClick = lbPagesClick
     OnKeyPress = lbPagesKeyPress
@@ -326,5 +329,25 @@ object frmPageListEditor: TfrmPageListEditor
       00008000F01FF83F00010001F83FF83F81FF11FFFC7FF83F24FFF8FFFEFFF83F
       66FFFC7FFFFFFFFFE7FFFFFFFFFFFFFF00000000000000000000000000000000
       000000000000}
+  end
+  object popEditor: TPopupMenu
+    Images = ilButtons
+    Left = 54
+    Top = 120
+    object Add1: TMenuItem
+      Action = acAdd
+    end
+    object Delete1: TMenuItem
+      Action = acDelete
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object MoveUp1: TMenuItem
+      Action = acMoveUp
+    end
+    object MoveDown1: TMenuItem
+      Action = acMoveDown
+    end
   end
 end
