@@ -222,6 +222,7 @@ type
     function GetDoubleBuffered: Boolean;
     procedure SetDoubleBuffered(Value: Boolean);
   protected
+//    function WidgetFlags: integer; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     procedure ColorChanged; override;
   published // asn: change to public in final
@@ -557,11 +558,13 @@ begin
 //        QPixmap_fill(Pixmap, Instance.Parent.Handle, QWidget_x(Instance.Handle), QWidget_y(Instance.Handle));
       OriginalPainter := Canvas.Handle;
       Canvas.Handle := QPainter_create(Pixmap);
+      R := Rect(0, 0, 0, 0);
+      QRegion_boundingRect(EventRegion, @R);
+//      SetRect(R, 0, 0, Instance.Width, Instance.Height);
       TControlCanvas(Canvas).StartPaint;
       QPainter_setClipRegion(Canvas.Handle, EventRegion);
       QPainter_setClipping(Canvas.Handle, True);
-      R := Rect(0, 0, 0, 0);
-      QRegion_boundingRect(EventRegion, @R);
+      Canvas.FillRect(R);
     end;
 
     try
@@ -582,9 +585,7 @@ begin
             QPixmap_fill(Pixmap, Handle, 0, 0)
           else
           begin
-            TC := QColor(Brush.Color, Instance.Handle);
-            QPixmap_fill(Pixmap, TC);
-            QColor_destroy(TC);
+            Canvas.FillRect(Rect( 0, 0, Width, Height));
           end;
         end;
       end
@@ -619,14 +620,17 @@ begin
         QPainter_destroy(Canvas.Handle);
         Canvas.Handle := OriginalPainter;
         QPainter_setClipRegion(Canvas.Handle, EventRegion);
-        if (R.Right - R.Left > 0) or (R.Bottom - R.Top > 0) then
+//        SetRect(R, 0, 0, Instance.Width, Instance.Height);
+        if (R.Right - R.Left <> 0) and (R.Bottom - R.Top <> 0) then
           bitBlt(QPainter_device(Canvas.Handle), R.Left, R.Top,
             Pixmap, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
-            RasterOp_CopyROP, True)
+            RasterOp_CopyROP, True);
+        (*
         else
           bitBlt(QPainter_device(Canvas.Handle), 0, 0,
             Pixmap, 0, 0, QPixmap_width(Pixmap), QPixmap_height(Pixmap),
             RasterOp_CopyROP, True);
+        *)
         QPixmap_destroy(Pixmap);
       end;
       TControlCanvas(Canvas).StopPaint;
@@ -725,10 +729,10 @@ begin
     Instance.GetInterface(IJvWinControlEvents, Intf);
     if Bitmap.Empty then
     begin
-      Palette.Color := Color;
-      Brush.Color := Color;
       if not Intf.GetDoubleBuffered then
       begin
+      Brush.Color := Color;
+        Palette.Color := Color;
         TC := QColor(Color);
         QWidget_setBackgroundColor(Handle, TC);
         QColor_destroy(TC);
