@@ -2899,11 +2899,31 @@ end;
 procedure TJvOwnerDrawMenuItemPainter.Measure(Item: TMenuItem; var Width,
   Height: Integer);
 begin
+  if Assigned(FMainMenu) then
+  begin
+    if Assigned(FMainMenu.OnMeasureItem) then
+      FMainMenu.OnMeasureItem(FMainMenu, Item, Width, Height);
+  end
+  else
+  begin
+    if Assigned(FPopupMenu.OnMeasureItem) then
+      FPopupMenu.OnMeasureItem(FMainMenu, Item, Width, Height);
+  end;
 end;
 
 procedure TJvOwnerDrawMenuItemPainter.Paint(Item: TMenuItem; ItemRect: TRect;
   State: TMenuOwnerDrawState);
 begin
+  if Assigned(FMainMenu) then
+  begin
+    if Assigned(FMainMenu.OnDrawItem) then
+      FMainMenu.OnDrawItem(FMainMenu, Item, ItemRect, State);
+  end
+  else
+  begin
+    if Assigned(FPopupMenu.OnDrawItem) then
+      FPopupMenu.OnDrawItem(FMainMenu, Item, ItemRect, State);
+  end;
 end;
 
 { TJvImageMargin }
