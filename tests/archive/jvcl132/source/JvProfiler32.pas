@@ -14,7 +14,7 @@ The Initial Developer of the Original Code is Certified Software Corp. [certsoft
 Portions created by Peter Thörnqvist are Copyright (C) 1996 Certified Software Corp.
 All Rights Reserved.
 
-Contributor(s): Peter Thörnqvist [peter3@peter3.com]           
+Contributor(s): Peter Thörnqvist [peter3@peter3.com]
 
 Last Modified: 2002-05-26
 
@@ -122,7 +122,7 @@ const
   DefCaption = 'Profiler 32 Report';
   EmptyLine = '0.00';
   DefHeader = 'Profiler 32 run %s by "%s" (machine %s).';
-  DefHeader2 = 'Profiler 32 - Copyright © 1997 by Peter Thörnqvist; all rights reserved.';
+  DefHeader2 = 'Profiler 32 - (C) 1996 Certified Software Corp, portions Copyright (C) 1997 by Peter Thörnqvist; all rights reserved.';
 
 {$R *.DFM}
 
@@ -413,9 +413,10 @@ begin
     begin
       OutList := TStringList.Create;
       OutList.Add(Format(DefHeader, [DateToStr(Now), GetUserNamePas, GetComputerNamePas]));
-      OutLIst.Add(DefHeader2);
+      OutList.Add(DefHeader2);
+      S := '';
       for i := 0 to lvReport.Columns.Count - 1 do
-        AppendStr(S, lvReport.Columns[i].Caption + #9);
+        S := S + lvReport.Columns[i].Caption + #9;
       OutList.Add(S);
       S := '';
       with lvReport do
@@ -423,9 +424,9 @@ begin
         begin
           with Items[i] do
           begin
-            AppendStr(S, Caption + #9);
+            S := S + Caption + #9;
             for j := 0 to SubItems.Count - 1 do
-              AppendStr(S, SubItems[j] + #9);
+              S := S + SubItems[j] + #9;
             OutList.Add(S);
           end;
           S := '';
