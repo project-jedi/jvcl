@@ -7,7 +7,8 @@
     <OBJFILES value="..\..\dcu\JvCtrlsC6R.obj ..\..\dcu\JvZoom.obj ..\..\dcu\JvAnalogClock.obj 
       ..\..\dcu\JvArrowButton.obj ..\..\dcu\JvaScrollText.obj 
       ..\..\dcu\JvBehaviorLabel.obj ..\..\dcu\JvButtons.obj 
-      ..\..\dcu\JvCaptionButton.obj ..\..\dcu\JvCaptionPanel.obj 
+      ..\..\dcu\JvCaptionButton.obj ..\..\dcu\JvCaptionPanel.obj
+      ..\..\dcu\JvComboListBox.obj
       ..\..\dcu\JvClock.obj ..\..\dcu\JvColorBox.obj ..\..\dcu\JvColorButton.obj 
       ..\..\dcu\JvColorForm.obj ..\..\dcu\JvComponentPanel.obj 
       ..\..\dcu\JvContentScroller.obj ..\..\dcu\JvDice.obj 
@@ -84,6 +85,7 @@
       <FILE FILENAME="..\..\run\JvColorBox.pas" FORMNAME="" UNITNAME="JvColorBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvColorButton.pas" FORMNAME="" UNITNAME="JvColorButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvColorForm.pas" FORMNAME="JvClrFrm" UNITNAME="JvColorForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvComboListBox.pas" FORMNAME="" UNITNAME="JvComboListBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvComponentPanel.pas" FORMNAME="" UNITNAME="JvComponentPanel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvContentScroller.pas" FORMNAME="" UNITNAME="JvContentScroller" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvDice.pas" FORMNAME="" UNITNAME="JvDice" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
