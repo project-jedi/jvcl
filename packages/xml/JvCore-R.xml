@@ -37,7 +37,8 @@
     <File Name="..\..\run\JvMaxPixel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvMouseTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProgressUtils.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPropsStorage.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStore.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPropertyStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvThemes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTypes.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvVersionInfo.pas" Targets="all" Formname="" Condition=""/>
@@ -51,8 +52,6 @@
     <File Name="..\..\run\JVCLVer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvClxUtils.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvActnResForm.pas" Targets="all" Formname="JvStandardActions: TDataModule" Condition=""/>
-    <File Name="..\..\run\JvPropertyStore.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPropertyStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvResources.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>
