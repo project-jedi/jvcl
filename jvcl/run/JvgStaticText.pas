@@ -51,7 +51,7 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure SetWordWrap(Value: Boolean);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override; 
     procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -132,8 +132,8 @@ var
 begin
   if Length(Caption) = 0 then
     Exit;
-  Alignment_ := FAlignment;
-  SetBkMode(Canvas.Handle, Ord(FTransparent));
+  Alignment_ := Alignment;
+  SetBkMode(Canvas.Handle, Ord(Transparent));
   if FActive then
     SetTextColor(Canvas.Handle, ColorToRGB(ActiveColor))
   else
@@ -142,7 +142,7 @@ begin
   //  BitBlt( Canvas.Handle, 0, 0, Width, Height, Image.Canvas.Handle, Width, Height, SRCCOPY );
   if Alignment = ftaBroadwise then
   begin
-    if FWordWrap then
+    if WordWrap then
     begin
       DrawTextBroadwise;
       Exit;
@@ -152,7 +152,7 @@ begin
   end;
   Rect := ClientRect;
   DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
-    DT_EXPANDTABS or WordWraps[FWordWrap] or Alignments[Alignment_]);
+    DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[Alignment_]);
 end;
 
 procedure TJvgStaticText.DrawTextBroadwise;
@@ -246,7 +246,7 @@ begin
     else
       Pos1 := Pos2;
   until Pos2 > Length(Caption);
-  if FAutoSize then
+  if AutoSize then
     Height := Max(12, LineNo * TextHeight);
 end;
 
@@ -258,17 +258,17 @@ var
   X: Integer;
   Rect: TRect;
 begin
-  if not (csReading in ComponentState) and FAutoSize then
+  if not (csReading in ComponentState) and AutoSize then
   begin
     Rect := ClientRect;
     DC := GetDC(0);
     Canvas.Handle := DC;
     DrawText(Canvas.Handle, PChar(Caption), Length(Caption), Rect,
-      DT_EXPANDTABS or DT_CALCRECT or WordWraps[FWordWrap]);
+      DT_EXPANDTABS or DT_CALCRECT or WordWraps[WordWrap]);
     Canvas.Handle := 0;
     ReleaseDC(0, DC);
     X := Left;
-    if FAlignment = ftaRightJustify then
+    if Alignment = ftaRightJustify then
       Inc(X, Width - Rect.Right);
     SetBounds(X, Top, Rect.Right, Rect.Bottom);
   end;

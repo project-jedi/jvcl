@@ -144,7 +144,7 @@ type
     function ReadOnly: Boolean;
     function GetTextLen: Integer;
     function SelLength: Integer;
-    function GetPopupMenu: TPopupMenu;
+    //function GetPopupMenu: TPopupMenu;
     function GetPopupMenuEx(Update: Boolean): TPopupMenu;
     procedure SetEdit(const Value: TWinControl);
     function GetClipboardCommands: TJvClipboardCommands;
@@ -153,7 +153,7 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     property Edit: TWinControl read FEdit write SetEdit;
-    property PopupMenu: TPopupMenu read GetPopupMenu;
+    // property PopupMenu: TPopupMenu read GetPopupMenu;
   end;
 
 var
@@ -306,10 +306,10 @@ begin
   end;
 end;
 
-function THiddenPopupObject.GetPopupMenu: TPopupMenu;
+{function THiddenPopupObject.GetPopupMenu: TPopupMenu;
 begin
   Result := GetPopupMenuEx(True);
-end;
+end;}
 
 function THiddenPopupObject.GetPopupMenuEx(Update: Boolean): TPopupMenu;
 var

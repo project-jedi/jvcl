@@ -77,11 +77,9 @@ type
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure FontChanged; override;
-    procedure SetAutoSize(Value: Boolean);
-      {$IFDEF VCL}{$IFDEF COMPILER6_UP} override;{$ENDIF}{$ENDIF}
+    procedure SetAutoSize(Value: Boolean);{$IFDEF VCL} override; {$ELSE} virtual; {$ENDIF}
     {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
-    procedure Toggle; override;
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     procedure AdjustSize; override;
@@ -95,9 +93,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    {$IFDEF VisualCLX}
     procedure Toggle; override;
-    {$ENDIF VisualCLX}
     property Canvas: TCanvas read GetCanvas;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
@@ -321,9 +317,7 @@ begin
   if FAutoSize <> Value then
   begin
     {$IFDEF VCL}
-    {$IFDEF COMPILER6_UP}
-    // inherited SetAutoSize(Value);
-    {$ENDIF COMPILER6_UP}
+    //inherited SetAutoSize(Value);
     {$ENDIF VCL}
     FAutoSize := Value;
     if Value then

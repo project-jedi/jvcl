@@ -303,7 +303,7 @@ type
     procedure SelectItems(StartItem, EndItem: TJvTimeItem; AddOnly: Boolean);
     procedure RemoveFromSelection(AItem: TJvTimeItem);
     procedure ClearSelection;
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP}override;{$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     function ItemMoving(Item: TJvTimeItem): Boolean; virtual;
     procedure ItemMoved(Item: TJvTimeItem; var NewDate: TDateTime; var NewLevel: Integer); virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -343,13 +343,10 @@ type
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
       default bsSingle;
     property DragLine: Boolean read FDragLine write FDragLine default True;
-    property ShowItemHint: Boolean read FShowItemHint write FShowItemHint default
-      False;
+    property ShowItemHint: Boolean read FShowItemHint write FShowItemHint default False;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
-    property HelperYears: Boolean read FHelperYears write SetHelperYears default
-      True;
-    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default
-      False;
+    property HelperYears: Boolean read FHelperYears write SetHelperYears default True;
+    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Hint: string read GetHint write SetHint;
     property YearFont: TFont read FYearFont write SetYearFont;
@@ -2141,7 +2138,7 @@ begin
   FNewHeight := 0;
   for I := 0 to FTimeItems.Count - 1 do
     UpdateItem(I, FCanvas);
-  if FAutoSize and (Align in [alTop, alBottom, alNone]) and
+  if AutoSize and (Align in [alTop, alBottom, alNone]) and
     (Height <> FNewHeight + FScrollHeight + 2) and (Items.Count > 0) then
   begin
     Height := FNewHeight + FScrollHeight + 2;

@@ -38,24 +38,24 @@ uses
 type
   TJvgBitmapImage = class(TJvGraphicControl)
   private
-    FAutoSize: boolean;
+    FAutoSize: Boolean;
     FImageAlign: TJvg2DAlign;
     FBitmapOption: TglWallpaperOption;
     FDrawState: TglDrawState;
-    FTransparent: boolean;
+    FTransparent: Boolean;
     FTransparentColor: TColor;
-    FMasked: boolean;
+    FMasked: Boolean;
     FMaskedColor: TColor;
     FMaskedToColor: TColor;
     FDisabledMaskColor: TColor;
     FBitmap: TBitmap;
     FImage: TImage;
     FAutoTrColor: TglAutoTransparentColor;
-    FFastDraw: boolean;
+    FFastDraw: Boolean;
     Bmp: TBitmap;
-    fChanged: boolean;
+    fChanged: Boolean;
     OldClientRect: TRect;
-    OldWidth, OldHeight: integer;
+    OldWidth, OldHeight: Integer;
     procedure CreateResBitmap;
     procedure Changed;
     procedure SmthChanged(Sender: TObject);
@@ -66,23 +66,18 @@ type
     procedure SetImage(Value: TImage);
     procedure SetBitmapOption(Value: TglWallpaperOption);
     procedure SetDrawState(Value: TglDrawState);
-    procedure SetTransparent(Value: boolean);
+    procedure SetTransparent(Value: Boolean);
     procedure SetTransparentColor(Value: TColor);
-    procedure SetMasked(Value: boolean);
+    procedure SetMasked(Value: Boolean);
     procedure SetMaskedColor(Value: TColor);
     procedure SetMaskedToColor(Value: TColor);
     procedure SetDisabledMaskColor(Value: TColor);
     procedure SetAutoTrColor(Value: TglAutoTransparentColor);
-    procedure SetFastDraw(Value: boolean);
-
+    procedure SetFastDraw(Value: Boolean);
   protected
-    procedure SetAutoSize(Value: boolean);
-    {$IFDEF COMPILER6_UP} override;
-    {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     procedure Loaded; override;
-    procedure Notification(AComponent: TComponent; Operation: TOperation);
-      override;
-
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     OnChangeParams: TNotifyEvent;
     FResBitmap: TBitmap; //...you can use it!
@@ -93,7 +88,6 @@ type
     destructor Destroy; override;
     procedure RemakeBackground; //...for users
     //    procedure RepaintBackground;//...for users
-
   published
     property Anchors;
     property Align;
@@ -118,31 +112,24 @@ type
     property OnMouseUp;
     property OnStartDrag;
 
-    property AutoSize: boolean read FAutoSize write SetAutoSize
-      default false;
+    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Image: TImage read FImage write SetImage;
     property ImageAlign: TJvg2DAlign read FImageAlign write FImageAlign;
     property BitmapOption: TglWallpaperOption read FBitmapOption
       write SetBitmapOption default fwoNone;
-    property DrawState: TglDrawState read FDrawState write SetDrawState
-      default fdsDefault;
-    property Transparent: boolean read FTransparent write SetTransparent
-      default false;
+    property DrawState: TglDrawState read FDrawState write SetDrawState default fdsDefault;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
     property TransparentColor: TColor read FTransparentColor
       write SetTransparentColor default clOlive;
-    property Masked: boolean read FMasked write SetMasked
-      default false;
-    property MaskedColor: TColor read FMaskedColor
-      write SetMaskedColor default clOlive;
-    property MaskedToColor: TColor read FMaskedToColor
-      write SetMaskedToColor default clBtnFace;
+    property Masked: Boolean read FMasked write SetMasked default False;
+    property MaskedColor: TColor read FMaskedColor write SetMaskedColor default clOlive;
+    property MaskedToColor: TColor read FMaskedToColor write SetMaskedToColor default clBtnFace;
     property DisabledMaskColor: TColor read FDisabledMaskColor
       write SetDisabledMaskColor default clBlack;
     property AutoTransparentColor: TglAutoTransparentColor
       read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
-    property FastDraw: boolean read FFastDraw write SetFastDraw
-      default false;
+    property FastDraw: Boolean read FFastDraw write SetFastDraw default False;
 
   end;
 
@@ -169,19 +156,19 @@ begin
   FImageAlign := TJvg2DAlign.create;
   FImageAlign.OnChanged := SmthChanged;
   fChanged := true;
-  OldClientRect := Rect(left, top, left + width, top + height);
+  OldClientRect := Rect(left, top, left + Width, top + Height);
   //...defaults
-  FAutoSize := false;
+  FAutoSize := False;
   FBitmapOption := fwoNone;
   FDrawState := fdsDefault;
-  FTransparent := false;
+  FTransparent := False;
   FTransparentColor := clOlive;
-  FMasked := false;
+  FMasked := False;
   FMaskedColor := clOlive;
   FMaskedToColor := clBtnFace;
   FDisabledMaskColor := clBlack;
   FAutoTrColor := ftcLeftBottomPixel;
-  FFastDraw := false;
+  FFastDraw := False;
   OnChangeParams := nil;
 end;
 //________________________________________________________
@@ -230,9 +217,9 @@ begin
       fChanged := true;
       {if (OldLeft=Left)and(OldTop=Top) then
       begin
-        R:=Rect( left, top, left+width, top+height );
+        R:=Rect( left, top, left+Width, top+Height );
         IntersectRect( IntersectR, OldClientRect, R );
-        InvalidateRect( Parent.Handle, @R, false );
+        InvalidateRect( Parent.Handle, @R, False );
         ValidateRect( Parent.Handle, @IntersectR );
         OldClientRect := R;
        end;}
@@ -243,7 +230,7 @@ begin
     if fChanged or not FFastDraw then
     begin
       CreateResBitmap;
-      fChanged := false;
+      fChanged := False;
     end;
     pt := CalcAlignOffset;
     BitBlt(Canvas.Handle, pt.x, pt.y, FResBitmap.Width, FResBitmap.Height,
@@ -255,7 +242,7 @@ begin
       Pen.Color := clBlack;
       Pen.Style := psDash;
       Brush.Style := bsClear;
-      Rectangle(0, 0, width, height);
+      Rectangle(0, 0, Width, Height);
     end;
 
 end;
@@ -269,14 +256,14 @@ end;
 //procedure TJvgBitmapImage.WMSize(var Message: TWMSize);
 //var R,IntersectR: TRect;
 //begin
-{  exit;
+{  Exit;
   if FAutoSize then
   begin Width:=FResBitmap.Width; Height:=FResBitmap.Height; end;
   if not FTransparent then
   begin
-    R:=Rect( left, top, left+width, top+height );
+    R:=Rect( left, top, left+Width, top+Height );
     IntersectRect( IntersectR, OldClientRect, R );
-    InvalidateRect( Parent.Handle, @R, false );
+    InvalidateRect( Parent.Handle, @R, False );
     ValidateRect( Parent.Handle, @IntersectR );
     OldClientRect := R;
   end else Invalidate;
@@ -332,7 +319,7 @@ begin
    asm
     inc BmpInfo.bmBits
    end;
-   byte(bmBits^):=1;
+   Byte(bmBits^):=1;
         end;
     end;}
 
@@ -386,10 +373,10 @@ end;
 //*****************************************_____________PROPERTY METHODS
 //________________________________________________________
 
-procedure TJvgBitmapImage.SetAutoSize(Value: boolean);
+procedure TJvgBitmapImage.SetAutoSize(Value: Boolean);
 begin
   if (FAutoSize = Value) or not Assigned(Bmp) then
-    exit;
+    Exit;
   FAutoSize := Value;
   if FAutoSize and (FBitmapOption = fwoNone)
     and ((Bmp.Width and Bmp.Height) <> 0) then
@@ -448,7 +435,7 @@ end;
 procedure TJvgBitmapImage.SetBitmapOption(Value: TglWallpaperOption);
 begin
   if FBitmapOption = Value then
-    exit;
+    Exit;
   FBitmapOption := Value;
   Changed;
   Invalidate;
@@ -458,17 +445,17 @@ end;
 procedure TJvgBitmapImage.SetDrawState(Value: TglDrawState);
 begin
   if FDrawState = Value then
-    exit;
+    Exit;
   FDrawState := Value;
   Changed;
   Invalidate;
 end;
 //________________________________________________________
 
-procedure TJvgBitmapImage.SetTransparent(Value: boolean);
+procedure TJvgBitmapImage.SetTransparent(Value: Boolean);
 begin
   if FTransparent = Value then
-    exit;
+    Exit;
   FTransparent := Value;
   Changed;
   Invalidate;
@@ -478,17 +465,17 @@ end;
 procedure TJvgBitmapImage.SetTransparentColor(Value: TColor);
 begin
   if (FAutoTrColor <> ftcUser) or (FTransparentColor = Value) then
-    exit;
+    Exit;
   FTransparentColor := Value;
   Changed;
   Invalidate;
 end;
 //________________________________________________________
 
-procedure TJvgBitmapImage.SetMasked(Value: boolean);
+procedure TJvgBitmapImage.SetMasked(Value: Boolean);
 begin
   if FMasked = Value then
-    exit;
+    Exit;
   FMasked := Value;
   Changed;
   Invalidate;
@@ -498,7 +485,7 @@ end;
 procedure TJvgBitmapImage.SetMaskedColor(Value: TColor);
 begin
   if FMaskedColor = Value then
-    exit;
+    Exit;
   FMaskedColor := Value;
   Changed;
   Invalidate;
@@ -507,7 +494,7 @@ end;
 procedure TJvgBitmapImage.SetMaskedToColor(Value: TColor);
 begin
   if FMaskedToColor = Value then
-    exit;
+    Exit;
   FMaskedToColor := Value;
   Changed;
   Invalidate;
@@ -516,7 +503,7 @@ end;
 procedure TJvgBitmapImage.SetDisabledMaskColor(Value: TColor);
 begin
   if FDisabledMaskColor = Value then
-    exit;
+    Exit;
   FDisabledMaskColor := Value;
   Changed;
   Invalidate;
@@ -528,7 +515,7 @@ procedure TJvgBitmapImage.SetAutoTrColor(Value: TglAutoTransparentColor);
 begin
   FAutoTrColor := Value;
   if not Assigned(bmp) then
-    exit;
+    Exit;
   if Value <> ftcUser then
     FTransparentColor := GetTransparentColor(bmp, Value);
   Changed;
@@ -536,24 +523,24 @@ begin
 end;
 //________________________________________________________
 
-procedure TJvgBitmapImage.SetFastDraw(Value: boolean);
+procedure TJvgBitmapImage.SetFastDraw(Value: Boolean);
 begin
   if FFastDraw = Value then
-    exit;
+    Exit;
   FFastDraw := Value;
   Changed;
   Invalidate;
 end;
 //________________________________________________________
-{procedure TJvgBitmapImage.SetWidth(Value: integer);
+{procedure TJvgBitmapImage.SetWidth(Value: Integer);
 begin
-  if FWidth = Value then exit;
+  if FWidth = Value then Exit;
   FWidth := Value; Invalidate;
 end;
 //________________________________________________________
-procedure TJvgBitmapImage.SetHeight(Value: integer);
+procedure TJvgBitmapImage.SetHeight(Value: Integer);
 begin
-  if FHeight = Value then exit;
+  if FHeight = Value then Exit;
   FHeight := Value; Invalidate;
 end;}
 //________________________________________________________

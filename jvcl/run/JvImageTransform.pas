@@ -49,7 +49,6 @@ type
   private
     FPicture1: TPicture;
     FPicture2: TPicture;
-    FAutoSize: Boolean;
     FTimer: TTimer;
     FInterval: Integer;
     FImageShown: Byte;
@@ -64,7 +63,7 @@ type
     procedure SetInterval(Value: Integer);
     procedure SetType(Value: TJvTransformationKind);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     {$IFDEF VCL}
     function GetPalette: HPALETTE; override;
     {$ENDIF VCL}
@@ -74,7 +73,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default False;
+    property AutoSize;
     {$IFDEF VCL}
     property DragCursor;
     {$ENDIF VCL}
@@ -142,7 +141,7 @@ end;
 
 procedure TJvImageTransform.SetAutoSize(Value: Boolean);
 begin
-  FAutoSize := Value;
+  inherited SetAutoSize(Value);
   PictureChanged(Self);
 end;
 

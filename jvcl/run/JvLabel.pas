@@ -93,9 +93,6 @@ type
     function GetTransparent: Boolean;
     procedure UpdateTracking;
     procedure SetAlignment(Value: TAlignment);
-    {$IFNDEF COMPILER6_UP} // Polaris
-    procedure SetAutoSize(Value: Boolean);
-    {$ENDIF}
     procedure SetFocusControl(Value: TWinControl);
     procedure SetLayout(Value: TTextLayout);
     procedure SetLeftMargin(Value: Integer);
@@ -130,9 +127,7 @@ type
     procedure DoDrawCaption(var Rect: TRect; Flags: Word); virtual;
     procedure DoDrawText(var Rect: TRect; Flags: Word); virtual;
     procedure AdjustBounds;
-    {$IFDEF COMPILER6_UP}
     procedure SetAutoSize(Value: Boolean); override;
-    {$ENDIF}
     function GetDefaultFontColor: TColor; virtual;
     function GetLabelCaption: string; virtual;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -608,9 +603,7 @@ end;
 
 procedure TJvCustomLabel.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
-  {$ENDIF}
   FAutoSize := Value;
   AdjustBounds;
 end;

@@ -47,8 +47,6 @@ type
     FMarginRight: integer;
     FMarginTop: integer;
     FAlignment: TAlignment;
-    FOnMouseLeave: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     procedure Refresh;
     procedure ParseHTML(s: string);
     procedure RenderHTML;
@@ -60,9 +58,9 @@ type
     procedure SetMarginRight(const Value: integer);
     procedure SetMarginTop(const Value: integer);
     procedure SetAlignment(const Value: TAlignment);
-    procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
   protected
-    procedure SetAutoSize(Value: Boolean); override; 
+    procedure FontChanged; override;
+    procedure SetAutoSize(Value: Boolean); override;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -82,20 +80,16 @@ type
     property Font;
 
     property Anchors;
-    {$IFDEF MSWINDOWS}
-    property BiDiMode;
-    {$ENDIF}
+    property Enabled;
 //    property Color;   // Replace by BackColor
     property Constraints;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF VCL}
+    property BiDiMode;
     property DragCursor;
     property DragKind;
     property DragMode;
-    {$ENDIF}
-    property Enabled;
-    {$IFDEF MSWINDOWS}
     property ParentBiDiMode;
-    {$ENDIF}
+    {$ENDIF VCL}
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -107,18 +101,16 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    {$IFDEF MSWINDOWS}
+    {$IFDEF VCL}
     property OnEndDock;
-    {$ENDIF}
+    property OnStartDock;
+    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    {$IFDEF MSWINDOWS}
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    property OnStartDock;
-    {$ENDIF}
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnStartDrag;
   end;
 
@@ -207,9 +199,9 @@ begin
   RenderHTML;
 end;
 
-procedure TJvMarkupLabel.CMFontChanged(var Message: TMessage);
+procedure TJvMarkupLabel.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   Refresh;
 end;
 
@@ -505,7 +497,7 @@ begin
           end
           else
           begin
-            inc(I);
+            Inc(I);
           end
         end
         else
@@ -573,7 +565,7 @@ end;
 
 procedure TJvMarkupLabel.SetAutoSize(Value: Boolean);
 begin
-  inherited;
+  inherited SetAutoSize(Value);
   Invalidate;
 end;
 

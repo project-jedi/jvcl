@@ -64,7 +64,6 @@ type
     FOnChanged: TNotifyEvent;
     FOnStopChanged: TNotifyEvent;
     FOnBeginChange: TNotifyEvent;
-    FAutoSize: Boolean;
     FTimer: TTimer;
     procedure SetImageThumb(Value: TBitmap);
     procedure SetImageRuler(Value: TBitmap);
@@ -75,7 +74,7 @@ type
     procedure SetPosition(Value: Integer);
     procedure Loading(Sender: TObject);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -97,7 +96,7 @@ type
     property TabOrder;
     property Width default 191;
     property Height default 11;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property AutoSize default True;
     property Horizontal: Boolean read FHorizontal write FHorizontal default True;
     property Maximum: Integer read FMaximum write SetMaximum default 100;
     property Position: Integer read FPosition write SetPosition default 0;
@@ -153,6 +152,7 @@ begin
   FTimer.Interval := 10;
   FTimer.OnTimer := Loading;
   FTimer.Enabled := True;
+  AutoSize := True;
 end;
 
 destructor TJvSlider.Destroy;
@@ -358,7 +358,7 @@ end;
 procedure TJvSlider.SetImageRuler(Value: TBitmap);
 begin
   FImageRuler.Assign(Value);
-  if (Value.Width > 0) and (Value.Height > 0) and FAutoSize then
+  if (Value.Width > 0) and (Value.Height > 0) and AutoSize then
   begin
     Height := Value.Height;
     Width := Value.Width;
@@ -369,7 +369,7 @@ end;
 
 procedure TJvSlider.SetAutoSize(Value: Boolean);
 begin
-  FAutoSize := Value;
+  inherited SetAutoSize(Value);
   if Value then
   begin
     if (FImageRuler.Width > 0) and (FImageRuler.Height > 0) then

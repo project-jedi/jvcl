@@ -42,7 +42,6 @@ type
   TJvDice = class(TJvCustomControl)
   private
     FActive: Boolean;
-    FAutoSize: Boolean;
     FBitmap: array [TJvDiceValue] of TBitmap;
     FInterval: Cardinal;
     FAutoStopInterval: Cardinal;
@@ -64,11 +63,10 @@ type
     procedure TimerFires(Sender: TObject);
     procedure NewRandomValue;
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean); override;
     function GetPalette: HPALETTE; override;
     procedure AdjustSize; override;
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
-      X, Y: Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure Paint; override;
     procedure Change; dynamic;
     procedure DoStart; dynamic;
@@ -82,7 +80,7 @@ type
     property ParentBackground default True;
     {$ENDIF JVCLThemesEnabled}
     property Align;
-    property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
+    property AutoSize default True;
     property AutoStopInterval: Cardinal read FAutoStopInterval write FAutoStopInterval default 0;
     property Color;
     property Cursor;
@@ -148,7 +146,7 @@ begin
     FBitmap[I] := TBitmap.Create;
     FBitmap[I].Handle := LoadBitmap(HInstance, PChar(Format('JV_DICE%d', [Ord(I)])));
   end;
-  FAutoSize := True;
+  AutoSize := True;
   Width := FBitmap[Value].Width + 2;
   Height := FBitmap[Value].Height + 2;
 end;
@@ -328,10 +326,7 @@ end;
 
 procedure TJvDice.SetAutoSize(Value: Boolean);
 begin
-  {$IFDEF COMPILER6_UP}
   inherited SetAutoSize(Value);
-  {$ENDIF COMPILER6_UP}
-  FAutoSize := Value;
   AdjustSize;
   Invalidate;
 end;

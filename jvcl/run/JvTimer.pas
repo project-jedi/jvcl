@@ -111,22 +111,23 @@ procedure TJvTimerThread.Execute;
 
 begin
   repeat
-    if not ThreadClosed then
-      if SleepEx(FInterval, False) = 0 then
-        if not ThreadClosed and FOwner.FEnabled then
-          with FOwner do
-            if SyncEvent then
-              Synchronize(Timer)
-            else
-              try
-                Timer;
-              except
-                on E: Exception do
-                begin
-                  FException := E;
-                  HandleException;
-                end;
-              end;
+    if (not ThreadClosed) and (SleepEx(FInterval, False) = 0) and
+       (not ThreadClosed) and FOwner.FEnabled then
+      with FOwner do
+      begin
+        if SyncEvent then
+          Synchronize(Timer)
+        else
+          try
+            Timer;
+          except
+            on E: Exception do
+            begin
+              FException := E;
+              HandleException;
+            end;
+          end;
+      end;
   until Terminated;
 end;
 
