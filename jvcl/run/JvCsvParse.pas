@@ -621,10 +621,10 @@ begin
   if L = 0 then
     Result := FileName
   else
-  if PathName[L] = '\' then
+  if PathName[L] = PathDelim then
     Result := PathName + FileName
   else
-    Result := PathName + '\' + FileName;
+    Result := PathName + PathDelim + FileName;
 end;
 
 function HexDigitVal(C: Char): Integer;
