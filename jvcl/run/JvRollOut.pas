@@ -16,7 +16,7 @@ All Rights Reserved.
 
 Contributor(s):
 
-Last Modified: 2003-03-23
+Last Modified: 2004-03-09
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -51,7 +51,13 @@ unit JvRollOut;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, ImgList, Controls, ExtCtrls, ACtnList,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, ImgList, Controls, ExtCtrls, ACtnList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QImgList, QControls, QExtCtrls,  QActnList, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent, JvThemes;
 
 const
@@ -292,14 +298,20 @@ type
   end;
 
 implementation
+{$IFDEF VCL}
 uses
   Forms; // for IsAccel()
-
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QForms; 
+{$ENDIF VisualCLX}
 // (p3) not used
 // const
 //  cIncrement = 24;
 //  cSmooth = False;
 
+{$IFDEF VCL}
 procedure SetTextAngle(Cnv: TCanvas; Angle: Integer);
 var
   FntLogRec: TLogFont;
@@ -309,6 +321,7 @@ begin
   FntLogRec.lfOutPrecision := OUT_TT_ONLY_PRECIS;
   Cnv.Font.Handle := CreateFontIndirect(FntLogRec);
 end;
+{$ENDIF VCL}
 
 procedure InternalFrame3D(Canvas: TCanvas; var Rect: TRect; TopColor, BottomColor: TColor; Width: Integer);
   procedure DoRect;
@@ -603,9 +616,15 @@ end;
 procedure TJvCustomRollOut.RedrawControl(DrawAll: Boolean);
 begin
   if DrawAll then
-    Invalidate
+  begin
+    {$IFDEF VisualCLX}Canvas.Brush.style := bsSolid;{$ENDIF}
+    Invalidate;
+  end
   else
+  begin
+    {$IFDEF VisualCLX}Canvas.Brush.style := bsClear;{$ENDIF}
     DrawButtonFrame;
+  end;
 end;
 
 procedure TJvCustomRollOut.SetGroupIndex(Value: Integer);
@@ -854,6 +873,9 @@ var
   R: TRect;
   TopC, BottomC: TColor;
   FIndex: Integer;
+{$IFDEF VisualCLX}
+  ws: widestring;
+{$ENDIF VisualCLX}
 begin
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
@@ -924,13 +946,22 @@ begin
   if Length(Caption) > 0 then
   begin
     SetBkMode(Canvas.Handle, Transparent);
-    if Placement = plLeft then
-      SetTextAngle(Canvas, 270);
     if FMouseDown and FInsideButton then
       OffsetRect(R, 1, 1);
+    {$IFDEF VCL}
+    if Placement = plLeft then
+      SetTextAngle(Canvas, 270);
     DrawText(Canvas.Handle, PChar(Caption), -1, R, DT_NOCLIP);
     if Placement = plLeft then
       SetTextAngle(Canvas, 0);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    ws := Caption;
+    if Placement = plLeft then
+      DrawText(Canvas.Handle, ws , -1, FButtonHeight , BevelWidth + 2, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 270)
+    else
+      DrawText(Canvas.Handle, ws , -1, BevelWidth + 2, 0, Canvas.Textwidth(ws), FButtonHeight, DT_VCENTER, 0)
+    {$ENDIF VisualCLX}
   end;
   if ShowFocus and Focused then
   begin
