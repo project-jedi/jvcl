@@ -442,7 +442,7 @@ const
     ((DT_LEFT, DT_RIGHT, DT_CENTER), (DT_RIGHT, DT_LEFT, DT_CENTER));
   cLayout: array [TTextLayout] of DWORD = (DT_TOP, DT_VCENTER, DT_BOTTOM);
   cDrawAccel: array [Boolean] of DWORD = (DT_NOPREFIX, 0);
-  cWordWrap: array [Boolean] of DWORD = (DT_SINGLELINE, DT_WORDBREAK);
+  cWordWrap: array [Boolean] of DWORD = (0{DT_SINGLELINE}, DT_WORDBREAK);
 begin
   Result := DT_EXPANDTABS or cAlignment[UseRightToLeftAlignment, Alignment] or
     cLayout[Layout] or cDrawAccel[ShowAccelChar] or cWordWrap[WordWrap];
