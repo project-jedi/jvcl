@@ -1,9 +1,10 @@
 object frmMain: TfrmMain
-  Left = 197
-  Top = 104
-  Width = 400
-  Height = 300
+  Left = 198
+  Top = 148
+  BorderStyle = bsSingle
   Caption = 'JvMenus Example'
+  ClientHeight = 273
+  ClientWidth = 446
   Color = clBtnFace
   Constraints.MinHeight = 300
   Constraints.MinWidth = 400
@@ -15,24 +16,24 @@ object frmMain: TfrmMain
   Font.Style = []
   Menu = jmnMain
   OldCreateOrder = False
-  Position = poDesktopCenter
+  Position = poScreenCenter
   Scaled = False
-  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object pnlPopup: TPanel
-    Left = 168
-    Top = 56
+    Left = 20
+    Top = 219
     Width = 201
     Height = 41
+    Anchors = [akLeft, akBottom]
     Caption = 'Right click here for XP Style popup'
     PopupMenu = jpmPopup
     TabOrder = 0
   end
-  object JvToolBar1: TJvToolBar
+  object jtbMenus: TJvToolBar
     Left = 0
     Top = 0
-    Width = 392
+    Width = 446
     Height = 29
     ButtonHeight = 21
     ButtonWidth = 39
@@ -43,42 +44,70 @@ object frmMain: TfrmMain
     TabOrder = 1
   end
   object btnAddItems: TButton
-    Left = 8
-    Top = 56
+    Left = 240
+    Top = 40
     Width = 129
     Height = 25
     Caption = 'Add items to menu'
     TabOrder = 2
     OnClick = btnAddItemsClick
   end
-  object Button1: TButton
-    Left = 8
-    Top = 88
+  object btnChangeCaption: TButton
+    Left = 84
+    Top = 40
     Width = 129
     Height = 25
     Caption = 'Change caption'
     TabOrder = 3
-    OnClick = Button1Click
+    OnClick = btnChangeCaptionClick
   end
-  object Panel1: TPanel
-    Left = 168
-    Top = 116
+  object pnlMarginPopup: TPanel
+    Left = 232
+    Top = 219
     Width = 201
     Height = 41
+    Anchors = [akLeft, akBottom]
     Caption = 'Right click here for popup with margin'
     PopupMenu = jpmMarginPopup
     TabOrder = 4
   end
+  object memExplanation: TMemo
+    Left = 16
+    Top = 76
+    Width = 417
+    Height = 125
+    Lines.Strings = (
+      'This is the demo for TJvMainMenu and TJvMenu.'
+      'It shows the interaction between TJvMainMenu and TJvToolbar.'
+      
+        'It also shows the concept of Item Painters introduced in the JVC' +
+        'L 3. By default, a JVCL '
+      
+        'menu will use the Style property to create an internal painter a' +
+        'nd use it.'
+      
+        'However, you cannot access the properties of the painter at runt' +
+        'ime. To do that, use a '
+      
+        'Painter component and associate it with the menu you wish it to ' +
+        'paint. '
+      
+        'This also allows you to write your own Item Painter to suit your' +
+        ' needs. To see an '
+      'example of this, please see the JvRichEdit demo.')
+    ReadOnly = True
+    TabOrder = 5
+  end
   object jmnMain: TJvMainMenu
     Images = imlImages
+    Style = msOffice
     ImageMargin.Left = 1
     ImageMargin.Top = 1
     ImageMargin.Right = 1
     ImageMargin.Bottom = 1
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msOffice
-    Left = 180
+    Left = 12
     Top = 28
     object File1: TMenuItem
       Caption = '&File'
@@ -152,7 +181,7 @@ object frmMain: TfrmMain
     end
   end
   object imlImages: TImageList
-    Left = 236
+    Left = 40
     Top = 28
     Bitmap = {
       494C010106000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
@@ -562,15 +591,15 @@ object frmMain: TfrmMain
     BiDiMode = bdLeftToRight
     Images = imlImages
     ParentBiDiMode = False
+    Style = msXP
     ImageMargin.Left = 0
     ImageMargin.Top = 0
     ImageMargin.Right = 0
     ImageMargin.Bottom = 0
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Style = msXP
-    Left = 208
-    Top = 28
+    Left = 12
+    Top = 212
     object Popup11: TMenuItem
       Caption = 'Popup1'
       ImageIndex = 2
@@ -602,19 +631,26 @@ object frmMain: TfrmMain
   end
   object jpmMarginPopup: TJvPopupMenu
     Images = imlImages
+    Style = msItemPainter
     ImageMargin.Left = 2
     ImageMargin.Top = 2
     ImageMargin.Right = 2
     ImageMargin.Bottom = 2
     ImageSize.Height = 0
     ImageSize.Width = 0
-    Left = 276
-    Top = 28
+    ItemPainter = jipMarginPainter
+    Left = 232
+    Top = 204
     object Test1: TMenuItem
       Caption = 'Test'
     end
     object Testagain1: TMenuItem
       Caption = 'Test again'
     end
+  end
+  object jipMarginPainter: TJvStandardMenuItemPainter
+    LeftMargin = 15
+    Left = 260
+    Top = 204
   end
 end

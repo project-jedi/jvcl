@@ -71,6 +71,8 @@ const
 begin
   RegisterComponents(RsPaletteVisual, [TJvShape]);
   RegisterComponents(RsPaletteNonVisual, [TJvMainMenu, TJvPopupMenu,
+    TJvOfficeMenuItemPainter,TJvBtnMenuItemPainter, TJvStandardMenuItemPainter,
+    TJvOwnerDrawMenuItemPainter, TJvXPMenuItemPainter,
     TJvSystemPopup, TJvCalculator]);
   RegisterComponents(RsPaletteDialog, [TJvBrowseForFolderDialog]);
   RegisterComponents(RsPaletteButton, [TJvBitBtn, TJvImgBtn, TJvSpeedButton,
