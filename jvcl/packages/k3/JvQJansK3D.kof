@@ -45,12 +45,12 @@ DynamicLoader=/lib/ld-linux.so.2
 
 [Directories]
 OutputDir=
-UnitOutputDir=
-PackageDLLOutputDir=
-PackageDCPOutputDir=
-SearchPath=
+UnitOutputDir=../../lib/k3
+PackageDLLOutputDir=$(DELPHI)/bin
+PackageDCPOutputDir=$(DELPHI)/lib
+SearchPath=../../common:../../qcommon:../../qrun
 Packages=rtl:visualclx:visualdbclx:dataclx:xmlrtl:netdataclx:netclx:indy:soaprtl:ACS:JvCLX:JclLinux
-Conditionals=K3:VisualCLX
+Conditionals=
 DebugSourceDirs=
 UsePackages=0
 
@@ -62,5 +62,21 @@ UseLauncher=0
 DebugCWD=
 
 [Excluded Packages]
-/home/asnepvangers/kylix3/components/VirtualTree/dclVTClx_K3.so=Virtual Treeview
+/mnt/win_c/CVSCheckout/dev/jvcl3/packages/k3/bplJvQWizardK3D.so=JVCLX Wizard Design Time Package
+
+[HistoryLists\hlConditionals]
+Count=1
+Item0=K3:VisualCLX
+
+[HistoryLists\hlSearchPath]
+Count=1
+Item0=../../common:../../qcommon:../../qrun
+
+[HistoryLists\hlBPLOutput]
+Count=1
+Item0=$(DELPHI)/bin
+
+[HistoryLists\hlDCPOutput]
+Count=1
+Item0=$(DELPHI)/lib
 

@@ -50,7 +50,7 @@ PackageDLLOutputDir=$(DELPHI)/bin
 PackageDCPOutputDir=$(DELPHI)/lib
 SearchPath=../../qcommon:../../qrun:../../qdesign:../../common
 Packages=rtl:visualclx:visualdbclx:dataclx:xmlrtl:netdataclx:netclx:indy:soaprtl:ACS:JvCLX:JclLinux
-Conditionals=K3:VisualCLX
+Conditionals=
 DebugSourceDirs=
 UsePackages=0
 
@@ -60,6 +60,9 @@ HostApplication=
 Launcher=/usr/X11R6/bin/xterm -T KylixDebuggerOutput -e bash -i -c %debuggee%
 UseLauncher=0
 DebugCWD=
+
+[Excluded Packages]
+/mnt/win_c/CVSCheckout/dev/jvcl3/packages/k3/bplJvQWizardK3D.so=JVCLX Wizard Design Time Package
 
 [HistoryLists\hlConditionals]
 Count=1

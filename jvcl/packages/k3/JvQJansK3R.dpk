@@ -24,8 +24,6 @@ package JvQJansK3R;
 {$DESCRIPTION 'JVCLX Jans Components'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
-{$DEFINE K3}
-{$DEFINE VisualCLX}
 
 requires
   rtl,

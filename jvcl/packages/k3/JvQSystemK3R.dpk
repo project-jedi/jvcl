@@ -24,16 +24,13 @@ package JvQSystemK3R;
 {$DESCRIPTION 'JVCLX System Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
-{$DEFINE K3}
-{$DEFINE VisualCLX}
 
 requires
   JvQCoreK3R,
   rtl,
   visualclx,
   DJclVClx,
-  DJcl,
-  vcl;
+  DJcl;
 
 contains
   JvQXmlDatabase in '../../qrun/JvQXmlDatabase.pas',

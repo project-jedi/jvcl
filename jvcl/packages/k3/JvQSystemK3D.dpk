@@ -33,7 +33,6 @@ requires
   designide,
   JvQSystemK3R,
   designhooks,
-  DJclVClx,
   DJcl,
   JvQCoreK3D;
 
