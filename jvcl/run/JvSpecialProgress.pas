@@ -35,14 +35,13 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   ExtCtrls, // for Frame3D
-  JVCLVer;
+  JvComponent;
 
 type
   TJvTextOption = (toCaption, toFormat, toNoText, toPercent);
 
-  TJvSpecialProgress = class(TGraphicControl)
+  TJvSpecialProgress = class(TJvGraphicControl)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FBorderStyle: TBorderStyle;
     FEndColor: TColor;
     FHintColor: TColor;
@@ -55,9 +54,7 @@ type
     FStep: Integer;
     FTextCentered: Boolean;
     FTextOption: TJvTextOption;
-    FOnMouseEnter: TNotifyEvent;
     FOnParentColorChange: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FBuffer: TBitmap;
     FSavedHintColor: TColor;
     FTaille: Integer;
@@ -90,8 +87,6 @@ type
     procedure SetStartColor(const Value: TColor);
     procedure SetTextCentered(const Value: Boolean);
     procedure SetTextOption(const Value: TJvTextOption);
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMColorChanged(var Msg: TMessage); message CM_COLORCHANGED;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
@@ -104,6 +99,8 @@ type
   protected
     procedure Paint; override;
     procedure Loaded; override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure UpdateBuffer;
     procedure UpdateTaille;
   public
@@ -112,7 +109,6 @@ type
     procedure StepIt;
     property PercentDone: Longint read GetPercentDone;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property Anchors;
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
@@ -146,8 +142,8 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChange write FOnParentColorChange;
   end;
 
@@ -237,22 +233,17 @@ begin
   UpdateBuffer;
 end;
 
-procedure TJvSpecialProgress.MouseEnter(var Msg: TMessage);
+procedure TJvSpecialProgress.MouseEnter(Control: TControl);
 begin
   FSavedHintColor := Application.HintColor;
-  // for D7...
-  if csDesigning in ComponentState then
-    Exit;
   Application.HintColor := FHintColor;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited; // trigger event
 end;
 
-procedure TJvSpecialProgress.MouseLeave(var Msg: TMessage);
+procedure TJvSpecialProgress.MouseLeave(Control: TControl);
 begin
   Application.HintColor := FSavedHintColor;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited; // trigger event
 end;
 
 procedure TJvSpecialProgress.Paint;

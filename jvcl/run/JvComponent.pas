@@ -102,9 +102,11 @@ type
     FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
+    procedure ColorChanged; dynamic;
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -127,9 +129,11 @@ type
     FOnMouseEnter, FOnMouseLeave: TNotifyEvent;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
   protected
     procedure MouseEnter(Control: TControl); dynamic;
     procedure MouseLeave(Control: TControl); dynamic;
+    procedure ColorChanged; dynamic;
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -225,12 +229,6 @@ end;
 
 { TJvGraphicControl }
 
-procedure TJvGraphicControl.CMColorChanged(var Message: TMessage);
-begin
-  inherited;
-  ColorChanged;
-end;
-
 procedure TJvGraphicControl.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
@@ -243,9 +241,10 @@ begin
   MouseLeave(Self);
 end;
 
-procedure TJvGraphicControl.ColorChanged;
+procedure TJvGraphicControl.CMColorChanged(var Message: TMessage);
 begin
-  // do nothing
+  inherited;
+  ColorChanged;
 end;
 
 procedure TJvGraphicControl.MouseEnter(Control: TControl);
@@ -260,30 +259,9 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{ TJvWinControl }
-
-procedure TJvWinControl.CMMouseEnter(var Msg: TMessage);
+procedure TJvGraphicControl.ColorChanged;
 begin
-  inherited;
-  MouseEnter(Self);
-end;
-
-procedure TJvWinControl.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
-end;
-
-procedure TJvWinControl.MouseEnter(Control: TControl);
-begin
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvWinControl.MouseLeave(Control: TControl);
-begin
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  // do nothing
 end;
 
 { TJvCustomControl }
@@ -302,6 +280,12 @@ begin
     MouseLeave(Self);
 end;
 
+procedure TJvCustomControl.CMColorChanged(var Message: TMessage);
+begin
+  inherited;
+  ColorChanged;
+end;
+
 procedure TJvCustomControl.MouseEnter(Control: TControl);
 begin
   if Assigned(FOnMouseEnter) then
@@ -312,6 +296,48 @@ procedure TJvCustomControl.MouseLeave(Control: TControl);
 begin
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
+end;
+
+procedure TJvCustomControl.ColorChanged;
+begin
+  // do nothing
+end;
+
+{ TJvWinControl }
+
+procedure TJvWinControl.CMMouseEnter(var Msg: TMessage);
+begin
+  inherited;
+  MouseEnter(Self);
+end;
+
+procedure TJvWinControl.CMMouseLeave(var Msg: TMessage);
+begin
+  inherited;
+  MouseLeave(Self);
+end;
+
+procedure TJvWinControl.CMColorChanged(var Message: TMessage);
+begin
+  inherited;
+  ColorChanged;
+end;
+
+procedure TJvWinControl.MouseEnter(Control: TControl);
+begin
+  if Assigned(FOnMouseEnter) then
+    FOnMouseEnter(Self);
+end;
+
+procedure TJvWinControl.MouseLeave(Control: TControl);
+begin
+  if Assigned(FOnMouseLeave) then
+    FOnMouseLeave(Self);
+end;
+
+procedure TJvWinControl.ColorChanged;
+begin
+  // do nothing
 end;
 
 {$ENDIF VCL}

@@ -82,16 +82,12 @@ type
     FOnAfterPaint: TJvPagePaintEvent;
     FOnHide: TNotifyEvent;
     FOnShow: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     procedure WMEraseBkgnd(var Message: TWmEraseBkgnd); message WM_ERASEBKGND;
     procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
     procedure CMShowingChanged(var Message: TMessage); message CM_SHOWINGCHANGED;
 
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
 
@@ -107,14 +103,11 @@ type
     procedure DoPaint(ACanvas: TCanvas; ARect: TRect); virtual;
     procedure DoShow; virtual;
     procedure DoHide; virtual;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property PageList: TJvCustomPageList read FPageList write SetPageList;
   protected
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
 
@@ -147,14 +140,10 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TJvPageChangingEvent;
     FShowDesignCaption: TJvShowDesignCaption;
-    FOnMouseLeave: TNotifyEvent;
     FOnCtl3DChanged: TNotifyEvent;
-    FOnMouseEnter: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     procedure CMDesignHitTest(var Message: TCMDesignHitTest); message CM_DESIGNHITTEST;
     procedure CMEnabledChanged(var Message: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure UpdateEnabled;
@@ -186,8 +175,6 @@ type
 
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TJvPageChangingEvent read FOnChanging write FOnChanging;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
@@ -870,7 +857,7 @@ procedure TJvCustomPageListTreeView.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(self);
+    FOnMouseEnter(Self);
 end;
 
 procedure TJvCustomPageListTreeView.CMMouseLeave(var Msg: TMessage);
@@ -1203,20 +1190,6 @@ begin
     FOnCtl3DChanged(self);
 end;
 
-procedure TJvCustomPage.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(self);
-end;
-
-procedure TJvCustomPage.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
 procedure TJvCustomPage.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
@@ -1512,20 +1485,6 @@ begin
   inherited;
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(self);
-end;
-
-procedure TJvCustomPageList.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(self);
-end;
-
-procedure TJvCustomPageList.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
 end;
 
 procedure TJvCustomPageList.CMParentColorChanged(var Msg: TMessage);

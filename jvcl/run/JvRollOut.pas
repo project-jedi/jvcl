@@ -740,12 +740,16 @@ end;
 procedure TJvCustomRollOut.CMMouseEnter(var Msg: TMessage);
 begin
   inherited;
+  if csDesigning in ComponentState then
+    Exit;
   RedrawControl(False);
 end;
 
 procedure TJvCustomRollOut.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
+  if csDesigning in ComponentState then
+    Exit;
   if FInsideButton then
   begin
     FInsideButton := False;

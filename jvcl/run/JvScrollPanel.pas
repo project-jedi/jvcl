@@ -75,8 +75,6 @@ type
     FKind: TJvScrollKind;
     procedure SetKind(Value: TJvScrollKind);
     procedure SetFlat(Value: Boolean);
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure OnTime(Sender: TObject);
   protected
     procedure SetPosition; virtual;
@@ -85,6 +83,8 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
+    procedure MouseEnter(Control: TControl); override;
+    procedure MouseLeave(Control: TControl); override;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
@@ -324,17 +324,19 @@ begin
   end;
 end;
 
-procedure TJvScrollButton.CMMouseEnter(var Msg: TMessage);
+procedure TJvScrollButton.MouseEnter(Control: TControl);
 begin
   FOver := True;
+  inherited;
   if FFlat then
     Invalidate;
 end;
 
-procedure TJvScrollButton.CMMouseLeave(var Msg: TMessage);
+procedure TJvScrollButton.MouseLeave(Control: TControl);
 begin
   FOver := False;
   FDown := False;
+  inherited;
   if FFlat then
     Invalidate;
 end;
