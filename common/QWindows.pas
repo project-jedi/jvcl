@@ -676,9 +676,9 @@ const
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType,
   uState: Longword): LongBool;
   { missing DrawFrameControl flags:
-      DFC_SCROLL: all
+      DFC_SCROLL: DFCS_SCROLLCOMBOBOX, DFCS_SCROLLSIZEGRIP, DFCS_SCROLLSIZEGRIPRIGHT
       DFC_BUTTON: all except DFCS_PUSHBUTTON
-      DFC_POPUPMENU: all  }
+      DFC_POPUPMENU: all }
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
   Flags: Cardinal): LongBool;
 
@@ -4629,8 +4629,7 @@ begin
                 end;
               DFCS_SCROLLUP:
                 begin
-                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0
-                  then
+                  if uState and (DFCS_TRANSPARENT {or DFCS_FLAT}) = 0 then
                     QStyle_drawArrow(Application.Style.Handle, Handle,
                                    ArrowType_UpArrow,
                                    uState and DFCS_PUSHED <> 0,
@@ -4774,10 +4773,6 @@ begin
   DFC_BUTTON = 4;
   DFC_POPUPMENU = 5;
 
-  DFCS_SCROLLUP = 0;
-  DFCS_SCROLLDOWN = 1;
-  DFCS_SCROLLLEFT = 2;
-  DFCS_SCROLLRIGHT = 3;
   DFCS_SCROLLCOMBOBOX = 5;
   DFCS_SCROLLSIZEGRIP = 8;
   DFCS_SCROLLSIZEGRIPRIGHT = $10;
@@ -4803,17 +4798,88 @@ end;
 function DrawEdge(Handle: QPainterH; var Rect: TRect; Edge: Cardinal;
   Flags: Cardinal): LongBool;
 var
-  PenOuter, PenInner: QPenH; // references to PenDark or PenLight
+  PenDark, PenLight: QPenH;
   Brush: QBrushH;
   ColorDark, ColorLight: TColor;
   ClientRect: TRect;
-  X1, Y1, X2, Y2: Integer;
 
-  procedure DrawLine(X1, Y1, X2, Y2: Integer; Pen: QPenH);
+  procedure DrawLine(X1, Y1, X2, Y2: Integer);
   begin
-    QPainter_setPen(Handle, Pen);
     QPainter_moveTo(Handle, X1, Y1);
     QPainter_lineTo(Handle, X2, Y2);
+  end;
+
+  procedure DoDrawEdge(Outer: Boolean; const R: TRect);
+  var
+    X1, Y1, X2, Y2: Integer;
+    PenLeftTop, PenRightBottom: QPenH;
+  begin
+    X1 := R.Left;
+    Y1 := R.Top;
+    X2 := R.Right;
+    Y2 := R.Bottom;
+
+    PenLeftTop := nil;
+    PenRightBottom := nil;
+    if Outer then
+    begin
+      if Edge and BDR_RAISEDOUTER <> 0 then
+      begin
+        PenLeftTop := PenLight;
+        PenRightBottom := PenDark;
+      end
+      else if Edge and BDR_SUNKENOUTER <> 0 then
+      begin
+        PenLeftTop := PenDark;
+        PenRightBottom := PenLight;
+      end;
+    end
+    else
+    begin
+      if Edge and BDR_RAISEDINNER <> 0 then
+      begin
+        PenLeftTop := PenLight;
+        PenRightBottom := PenDark;
+      end
+      else if Edge and BDR_SUNKENINNER <> 0 then
+      begin
+        PenLeftTop := PenDark;
+        PenRightBottom := PenLight;
+      end;
+    end;
+
+    if Flags and BF_DIAGONAL = 0 then
+    begin
+      if PenLeftTop <> nil then
+      begin
+        QPainter_setPen(Handle, PenLeftTop);
+        if Flags and BF_LEFT <> 0 then
+          DrawLine(X1, Y1, X1, Y2);
+        if Flags and BF_TOP <> 0 then
+          DrawLine(X1, Y1, X2, Y1);
+      end;
+
+      if PenRightBottom <> nil then
+      begin
+        QPainter_setPen(Handle, PenRightBottom);
+        if Flags and BF_RIGHT <> 0 then
+          DrawLine(X2, Y1, X2, Y2);
+        if Flags and BF_BOTTOM <> 0 then
+          DrawLine(X1, Y2, X2, Y2);
+      end;
+    end
+    else
+    begin
+      // diagonal (does not realy work properly with Qt's line alogrithm)
+      QPainter_setPen(Handle, PenLeftTop);
+      if (Flags and BF_DIAGONAL_ENDTOPLEFT = BF_DIAGONAL_ENDTOPLEFT) or
+         (Flags and BF_DIAGONAL_ENDBOTTOMRIGHT = BF_DIAGONAL_ENDBOTTOMRIGHT) then
+        DrawLine(X1, Y1, X2, Y2)
+      else
+      {if (Flags and BF_DIAGONAL_ENDBOTTOMLEFT = BF_DIAGONAL_ENDBOTTOMLEFT) or
+         (Flags and BF_DIAGONAL_ENDTOPRIGHT = BF_DIAGONAL_ENDTOPRIGHT) then} // default 
+        DrawLine(X1, Y2, X2, Y1);
+    end;
   end;
 
 begin
@@ -4822,7 +4888,6 @@ begin
     Exit;
   try
     ClientRect := Rect;
-    InflateRect(ClientRect, -2, -2);
     QPainter_save(Handle);
     try
       ColorDark := clGray;
@@ -4835,52 +4900,18 @@ begin
         ColorLight := clWhite;
       end;
 
-      if Edge and BDR_RAISEDOUTER <> 0 then
-        PenOuter := CreatePen(PS_SOLID, 1, ColorDark)
-      else if Edge and BDR_SUNKENOUTER <> 0 then
-        PenOuter := CreatePen(PS_SOLID, 1, ColorLight)
-      else
-        PenOuter := nil;
-
-      if Edge and BDR_RAISEDINNER <> 0 then
-        PenInner := CreatePen(PS_SOLID, 1, ColorDark)
-      else if Edge and BDR_SUNKENINNER <> 0 then
-        PenInner := CreatePen(PS_SOLID, 1, ColorLight)
-      else
-        PenInner := nil;
-
+      PenDark := CreatePen(PS_SOLID, 1, ColorDark);
+      PenLight := CreatePen(PS_SOLID, 1, ColorLight);
       try
-        X1 := Rect.Left;
-        Y1 := Rect.Top;
-        X2 := Rect.Right;
-        Y2 := Rect.Bottom - 1;
-
-{        if Flags and BF_DIAGONAL = 0 then
-        begin
-          if Flags and BF_LEFT <> 0 then
-          begin
-            DrawLine(X1, Y1,
-          end;
-          if Flags and BF_RIGHT <> 0 then
-          begin
-            DrawLine(Rect.Right - Offset, Rect.Top + 1 - Offset, Rect.Right - Offset, Rect.Bottom - Offset, Pen);
-          end;
-          if Flags and BF_TOP <> 0 then
-          begin
-          end;
-          if Flags and BF_BOTTOM <> 0 then
-          begin
-          end;
-        end
-        else
-        begin
-          // diagonal
-        end;}
+        InflateRect(ClientRect, -1, -1); // remove outer rect
+        DoDrawEdge(True, Rect); // outer
+        DoDrawEdge(False, ClientRect); // inner
+        InflateRect(ClientRect, -1, -1); // remove inner rect
       finally
-        if Assigned(PenOuter) then
-          DeleteObject(PenOuter);
-        if Assigned(PenInner) then
-          DeleteObject(PenInner);
+        if Assigned(PenDark) then
+          DeleteObject(PenDark);
+        if Assigned(PenLight) then
+          DeleteObject(PenLight);
       end;
 
       if Flags and BF_MIDDLE <> 0 then
