@@ -11,7 +11,7 @@ uses
   JvDynControlEngine_VCLRed in 'JvDynControlEngine_VCLRed.pas',
   JvFormPlacementSelectList in '..\..\JvFormPlacementSelectList.pas',
   JvParameterList in '..\..\JvParameterList.pas',
-  JvDynControlEngine_DevExpCx in '..\..\JvDynControlEngine_DevExpCx.pas',
+  JvDynControlEngine_DevExpCx in 'JvDynControlEngine_DevExpCx.pas',
   JvDSADialogs in '..\..\JvDSADialogs.pas',
   JvDynControlEngine_VCL in '..\..\JvDynControlEngine_VCL.pas';
 
