@@ -46,6 +46,7 @@ type
     FOnCtl3DChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
+    FReadOnly: Boolean;
   {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
   protected
@@ -60,6 +61,7 @@ type
     {$IFDEF JVCLThemesEnabledD56}
     procedure Paint; override;
     {$ENDIF JVCLThemesEnabledD56}
+    function CanModify: Boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
   published
@@ -72,6 +74,7 @@ type
     {$IFDEF JVCLThemesEnabledD56}
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
     {$ENDIF JVCLThemesEnabledD56}
+    property ReadOnly: Boolean read FReadOnly write FReadOnly;
   end;
 
 implementation
@@ -177,6 +180,14 @@ begin
 end;
 
 {$ENDIF JVCLThemesEnabledD56}
+
+function TJvRadioGroup.CanModify: Boolean; 
+begin
+  if FReadOnly then
+    Result := False
+  else
+    Result := Inherited CanModify;
+end;
 
 end.
 
