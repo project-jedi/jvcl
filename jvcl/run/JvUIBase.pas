@@ -2103,6 +2103,7 @@ const
 
   {$IFDEF FB15_UP}
   isc_info_db_impl_linux_sparc = 65;
+  isc_info_db_impl_linux_amd64 = 66; // FB151
   {$ENDIF FB15_UP}
 
   isc_info_db_impl_isc_a = isc_info_db_impl_isc_apl_68K;

@@ -538,7 +538,7 @@ TJvUIBComponent = class(TComponent)
     procedure Prior;
     { Get the last record. }
     procedure Last;
-    { Get the firdt record. }
+    { Get the first record. }
     procedure First;
     { Read a the blob in a stream by index. }
     procedure ReadBlob(const Index: Word; Stream: TStream); overload;
@@ -562,14 +562,14 @@ TJvUIBComponent = class(TComponent)
     { The the blob value of a parametter using a string. }
     procedure ParamsSetBlob(const Index: Word; var str: string); overload;
     { The the blob value of a parametter using a Buffer. }
-    procedure ParamsSetBlob(const Index: Word; Buffer: Pointer; Size: Word); overload;
+    procedure ParamsSetBlob(const Index: Word; Buffer: Pointer; Size: Cardinal); overload;
 
     { The the blob value of a parametter using a Stream. }
     procedure ParamsSetBlob(const Name: string; Stream: TStream); overload;
     { The the blob value of a parametter using a string. }
     procedure ParamsSetBlob(const Name: string; var str: string); overload;
     { The the blob value of a parametter using a Buffer. }
-    procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word); overload;
+    procedure ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Cardinal); overload;
 
     { Get the the blob size of the current record. }
     function FieldBlobSize(const Index: Word): Cardinal;
@@ -1234,7 +1234,9 @@ end;
 
 procedure TJvUIBStatement.Close(const Mode: TEndTransMode);
 begin
-  InternalClose(Mode, False);
+  if Mode = etmStayIn then
+    CloseCursor else
+    InternalClose(Mode, False);
 end;
 
 procedure TJvUIBStatement.Open(FetchFirst: boolean = True);
@@ -1244,8 +1246,8 @@ begin
   // execute the query again to save
   // the prepare time !
   if (FCurrentState = qsExecute) then
-    CloseCursor else
-    InternalClose(etmStayIn, False);
+    CloseCursor;
+
   if FetchFirst then
     InternalNext else
     BeginExecute;
@@ -1580,6 +1582,8 @@ begin
   inherited Notification(AComponent, Operation);
   if ((AComponent = FTransaction) and (Operation = opRemove)) then
     SetTransaction(nil);
+  if ((AComponent = FDataBase) and (Operation = opRemove)) then
+    SetDataBase(nil);    
 end;
 
 constructor TJvUIBStatement.Create(AOwner: TComponent);
@@ -1690,7 +1694,7 @@ begin
 end;
 
 procedure TJvUIBStatement.ParamsSetBlob(const Index: Word; Buffer: Pointer;
-  Size: Word);
+  Size: Cardinal);
 var BlobHandle: IscBlobHandle;
 begin
   if (FCurrentState < qsTransaction) then
@@ -1753,7 +1757,8 @@ begin
   end;
 end;
 
-procedure TJvUIBStatement.ParamsSetBlob(const Name: string; Buffer: Pointer; Size: Word);
+procedure TJvUIBStatement.ParamsSetBlob(const Name: string; Buffer: Pointer;
+  Size: Cardinal);
 var BlobHandle: IscBlobHandle;
 begin
   if (FCurrentState < qsTransaction) then

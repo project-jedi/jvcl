@@ -44,7 +44,7 @@ implementation
 uses
   Classes, Controls,
   {$IFDEF USEJVCL}
-  JvDsgnConsts,
+  //JvDsgnConsts,
   {$ENDIF USEJVCL}
   {$IFNDEF DelphiPersonalEdition}
   JvUIBDataSet,
@@ -72,7 +72,7 @@ begin
   {$ENDIF !DelphiPersonalEdition}
   {$ENDIF COMPILER7_UP}
 
-  RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
+  RegisterComponents('Jv UIB', [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}
     TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);
 end;
