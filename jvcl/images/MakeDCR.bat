@@ -20,3 +20,4 @@ brc32 JvPageListTreeViewReg.rc -r -fo..\Resources\JvPageListTreeViewReg.dcr
 brc32 JvPreviewReg.rc -r -fo..\Resources\JvPreviewReg.dcr
 brc32 JvValidatorsReg.rc -r -fo..\Resources\JvValidatorsReg.dcr
 brc32 JvWizardReg.rc -r -fo..\Resources\JvWizardReg.dcr
+brc32 JvTimeFrameWorkReg.rc -r -fo..\Resources\JvTimeFrameWorkReg.dcr

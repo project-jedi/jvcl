@@ -111,6 +111,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Font.Name = 'MS Shell Dlg 2'
       Font.Style = [fsUnderline]
       ParentFont = False
+      OnClick = OpenURLClick
     end
     object JvHotLink4: TLabel
       Left = 185
@@ -125,6 +126,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Font.Name = 'MS Shell Dlg 2'
       Font.Style = [fsUnderline]
       ParentFont = False
+      OnClick = OpenURLClick
     end
     object lblNews: TLabel
       Left = 183
@@ -139,6 +141,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Font.Name = 'MS Shell Dlg 2'
       Font.Style = [fsUnderline]
       ParentFont = False
+      OnClick = OpenURLClick
     end
     object Label1: TLabel
       Left = 162
@@ -201,6 +204,7 @@ object JvJVCLAboutForm: TJvJVCLAboutForm
       Font.Name = 'MS Shell Dlg 2'
       Font.Style = [fsUnderline]
       ParentFont = False
+      OnClick = OpenURLClick
     end
     object btnHelp: TSpeedButton
       Left = 304

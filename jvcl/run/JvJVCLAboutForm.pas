@@ -71,6 +71,7 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure btnOptionsClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure OpenURLClick(Sender: TObject);
   private
     FHelpFile: string;
     FHelpDirectory: string;
@@ -219,6 +220,11 @@ begin
   finally
     Free;
   end;
+end;
+
+procedure TJvJVCLAboutForm.OpenURLClick(Sender: TObject);
+begin
+  OpenObject((Sender as TLabel).Caption);
 end;
 
 end.
