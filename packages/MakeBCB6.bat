@@ -1,44 +1,34 @@
 @echo off
+: ---------------------------------------------------------------------
+:    WARNING   WARNING    WARNING    WARNING    WARNING    WARNING
+:
+: Please read the help before using this batch file as there are
+: some compulsory parameters
+:
+: ---------------------------------------------------------------------
+if %1!==! goto help
 
-rem NB! Change this path to reflect the location of make.exe:
-SET ROOT=C:\Prog\CBuilder6
-SET MAKE=%ROOT%\bin\make.exe
+MakeBCB "BCB6 Packages" Bcb6 %1
 
+goto end
 
-
-
-SET PACKAGE=BCB6 Packages
-SET DIR=BCB6
-
-REM ------- Generic --------
-
-if NOT EXIST "%MAKE%" SET MAKE=make
-
-cd ..\devtools
-if NOT EXIST bin\MakeDOF.exe  %MAKE% MakeDOF.exe
-if NOT EXIST bin\MakeCFG.exe  %MAKE% MakeCFG.exe
-if NOT EXIST bin\Bpg2Make.exe %MAKE% Bpg2Make.exe
-cd bin
-
-REM echo.
-REM echo Creating .dof files
-REM call makedofs.bat
-
-rem echo.
-rem echo Creating .cfg files
-rem MakeCFG "..\..\packages\%DIR%\*.bpk" %DIR%packscfg.tmpl
-
-
+:help
+echo MakeBCB6.bat - Builds the JVCL for BCB6
 echo.
-cd ..\..\packages
-
-..\devtools\bin\Bpg2Make.exe "%PACKAGE%.bpg"
-
-%MAKE% -f "%PACKAGE%.mak" %1 %2 %3 %4 %5 %6 %7 %8 %9
-
-
-
+echo Usage:    MakeBCB6 BCBDirectory [JCLDirectory] [LIBDirectory] [BPLDirectory]
 echo.
-echo Cleaning
-rem del "%PACKAGE%.mak"
-rem del %DIR%\*.cfg
+echo     BCBDirectory   The place where BCB6 is installed.
+echo                    e.g. "C:\Program Files\CBuilder6"
+echo     JCLDirectory   The place where the JCL is installed. You must specify 
+echo                    this value if the JCL is not in ..\..\JCL
+echo     LIBDirectory   The place where to put the BPI and LIB files.
+echo                    Defaults to $(BCB)\Projects\Lib
+echo                    You MUST ensure that this directory is in the
+echo                    PATH environment variable
+echo     BPLDirectory   The place where to put the BPL and TDS files.
+echo                    Defaults to $(BCB)\Projects\Bpl
+echo.
+echo Any additional argument will be ignored
+echo.
+:end
+
