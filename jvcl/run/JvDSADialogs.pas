@@ -32,8 +32,17 @@ unit JvDSADialogs;
 interface
 
 uses
-  Classes, Contnrs, Controls, StdCtrls, Dialogs, ExtCtrls,
-  Forms, Graphics, SysUtils, Windows,
+  SysUtils, Classes, Contnrs,
+  {$IFDEF MSWINDOWS}
+  Windows,
+  {$ENDIF MSWINDOWS}
+  {$IFDEF VCL}
+  Controls, StdCtrls, Dialogs, ExtCtrls, Forms, Graphics,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QStdCtrls, QDialogs, QExtCtrls, QForms, QGraphics, QWindows, Types,
+  QClipBrd,
+  {$ENDIF VisualCLX}
   JclBase, JvConsts, JvComponent, JvTypes, JvDynControlEngine;
 
 type
@@ -130,6 +139,7 @@ type
     property CheckMarkTextSuffix: string read GetCheckMarkTextSuffix;
   end;
 
+  {$IFDEF WINDOWS}
   TDSARegStorage = class(TDSAStorage)
   private
     FRootKey: HKEY;
@@ -158,6 +168,7 @@ type
     property RootKey: HKEY read FRootKey write FRootKey;
     property Key: string read FKey write FKey;
   end;
+  {$ENDIF WINDOWS}
 
   TDSAQueueStorage = class(TDSAStorage)
   private
@@ -205,9 +216,19 @@ const
 //--------------------------------------------------------------------------------------------------
 
 // Additional values for DefaultButton, CancelButton and HelpButton parameters
+{$IFDEF VisualCLX}
+type
+  TMsgDlgBtn =
+    (mbHelp, mbOk, mbCancel, mbYes, mbNo, mbAbort, mbRetry, mbIgnore,
+     mbAll, mbNoToAll, mbYesToAll);
+  TMsgDlgButtons = set of TMsgDlgBtn;
+{$ENDIF VisualCLX}
+
 const
   mbNone = TMsgDlgBtn(-1);
   mbDefault = TMsgDlgBtn(-2);
+
+
 
 procedure ShowMessage(const Msg: string; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const ADynControlEngine: TJvDynControlEngine = nil);
@@ -333,8 +354,9 @@ function GetDSACheckMarkText(const ID: TDSACheckTextKind): string;
 //----------------------------------------------------------------------------
 // Standard DSA storage devices
 //----------------------------------------------------------------------------
-
+{$IFDEF VCL}
 function DSARegStore: TDSARegStorage;
+{$ENDIF VCL}
 function DSAQueueStore: TDSAQueueStorage;
 
 //----------------------------------------------------------------------------
@@ -445,13 +467,17 @@ begin
 end;
 
 constructor TDSAMessageForm.CreateNew(AOwner: TComponent; Dummy: Integer);
+{$IFDEF VCL}
 var
   NonClientMetrics: TNonClientMetrics;
+{$ENDIF VCL}
 begin
   inherited CreateNew(AOwner, Dummy);
+  {$IFDEF VCL}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     Font.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont);
+  {$ENDIF VCL}
   FTimer := TTimer.Create(Self);
   FTimer.Enabled := False;
   FTimer.Interval := 1000;
@@ -495,7 +521,12 @@ end;
 procedure TDSAMessageForm.HelpButtonClick(Sender: TObject);
 begin
   CancelAutoClose;
+  {$IFDEF VCL}
   Application.HelpContext(HelpContext);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Application.ContextHelp(HelpContext);
+  {$ENDIF VisualCLX}
 end;
 
 procedure TDSAMessageForm.TimerEvent(Sender: TObject);
@@ -525,6 +556,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TDSAMessageForm.WriteToClipboard(Text: string);
 var
   Data: THandle;
@@ -554,6 +586,14 @@ begin
   else
     raise EJVCLException.Create(SCannotOpenClipboard);
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TDSAMessageForm.WriteToClipboard(Text: string);
+begin
+  Clipboard.AsText := Text;
+end;
+{$ENDIF VisualCLX}
 
 function TDSAMessageForm.GetFormText: string;
 var
@@ -684,8 +724,13 @@ begin
   try
     with Result do
     begin
+      {$IFDEF VCL}
       BiDiMode := Application.BiDiMode;
       BorderStyle := bsDialog;
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      BorderStyle := fbsDialog;
+      {$ENDIF VisualCLX}
       Canvas.Font := Font;
       KeyPreview := True;
       OnKeyDown := CustomKeyDown;
@@ -701,7 +746,7 @@ begin
       for I := Low(Buttons) to High(Buttons) do
       begin
         TextRect := Rect(0, 0, 0, 0);
-        Windows.DrawText(Canvas.Handle, PChar(Buttons[I]), -1, TextRect,
+        {Windows.}DrawText(Canvas.Handle, PChar(Buttons[I]), -1, TextRect,
           DT_CALCRECT or DT_LEFT or DT_SINGLELINE or DrawTextBiDiModeFlagsReadingOnly);
         with TextRect do
           if (Right - Left + 8) > ButtonWidth then
@@ -776,7 +821,9 @@ begin
       with MessageLabel do
       begin
         BoundsRect := TextRect;
+        {$IFDEF VCL}
         BiDiMode := Result.BiDiMode;
+        {$ENDIF VCL}
         ALeft := IconTextWidth - TextRect.Right + HorzMargin;
         if UseRightToLeftAlignment then
           ALeft := Result.ClientWidth - ALeft - Width;
@@ -802,7 +849,9 @@ begin
       if CheckCaption <> '' then
         with DynControlEngine.CreateCheckboxControl(Result, Panel, 'DontShowAgain', CheckCaption) do
         begin
+          {$IFDEF VCL}
           BiDiMode := Result.BiDiMode;
+          {$ENDIF VCL}
           SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
             Result.ClientWidth - 2 * HorzMargin, Height);
         end;
@@ -812,7 +861,9 @@ begin
           [Timeout, TimeoutUnit(Timeout)]), nil);
         with CountDownlabel do
         begin
+          {$IFDEF VCL}
           BiDiMode := Result.BiDiMode;
+          {$ENDIF VCL}
           if CheckCaption = '' then
             SetBounds(HorzMargin, IconTextHeight + VertMargin + VertSpacing * 2 + ButtonHeight,
               Result.ClientWidth - 2 * HorzMargin, Height)
@@ -1132,6 +1183,7 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 //=== TDSARegStorage =========================================================
 
 constructor TDSARegStorage.Create(const ARootKey: HKEY; const AKey: string);
@@ -1249,6 +1301,7 @@ begin
   CreateKey(DSAInfo);
   RegWriteString(RootKey, Self.Key + '\' + DSAInfo.Name, Key, Value);
 end;
+{$ENDIF VCL}
 
 //=== TDSAValues =============================================================
 
@@ -1495,6 +1548,8 @@ const
     (SMsgDlgWarning, SMsgDlgError, SMsgDlgInformation, SMsgDlgConfirm, '');
   IconIDs: array [TMsgDlgType] of PChar =
     (IDI_EXCLAMATION, IDI_HAND, IDI_ASTERISK, IDI_QUESTION, nil);
+
+{$IFDEF VCL}
   ButtonCaptions: array [TMsgDlgBtn] of string =
    (SMsgDlgYes, SMsgDlgNo, SMsgDlgOK, SMsgDlgCancel, SMsgDlgAbort,
     SMsgDlgRetry, SMsgDlgIgnore, SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll,
@@ -1502,6 +1557,20 @@ const
   ModalResults: array [TMsgDlgBtn] of Integer =
    (mrYes, mrNo, mrOk, mrCancel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
     mrYesToAll, 0);
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+//  TMsgDlgType = (mtCustom, mtInformation, mtWarning, mtError, mtConfirmation);
+//
+  ButtonCaptions: array [TMsgDlgBtn] of string =
+  (SMsgDlgHelp, SMsgDlgOK, SMsgDlgCancel, SMsgDlgYes,
+   SMsgDlgNo,  SMsgDlgAbort, SMsgDlgRetry, SMsgDlgIgnore,
+   SMsgDlgAll, SMsgDlgNoToAll, SMsgDlgYesToAll);
+
+  ModalResults: array [TMsgDlgBtn] of Integer =
+  (0, mrOk, mrCancel, mrYes, mrNo, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll,
+   mrYesToAll);
+
+{$ENDIF VisualCLX}
 
 function DlgCaption(const DlgType: TMsgDlgType): string;
 begin
@@ -1514,7 +1583,12 @@ begin
   begin
     Result := TIcon.Create;
     try
+      {$IFDEF VCL}
       TIcon(Result).Handle := LoadIcon(0, IconIDs[DlgType]);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      // TODO
+      {$ENDIF VisualCLX}
     except
       Result.Free;
       raise;
@@ -1971,7 +2045,7 @@ end;
 
 var
   GlobalRegStore: TDSAStorage = nil;
-
+{$IFDEF WINDOWS}
 function DSARegStore: TDSARegStorage;
 begin
   if GlobalRegStore = nil then
@@ -1979,6 +2053,7 @@ begin
       TDSARegStorage.Create(HKEY_CURRENT_USER, 'Software\' + Application.Title + '\DSA');
   Result := TDSARegStorage(GlobalRegStore);
 end;
+{$ENDIF WINDOWS}
 
 var
   GlobalQueueStore: TDSAStorage = nil;
