@@ -90,6 +90,7 @@ JvTimeLimit
 JvTimerList
 JvTipOfDay
 JvTMTimeLine
+JvToolBar
 JvTranslator
 JvTransLED
 JvTransparentButton

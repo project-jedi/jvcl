@@ -26,7 +26,6 @@ JvStatusBar
 JvTFDays
 JvTFManager
 JvTimeLine
-JvToolBar
 JvTypes
 JvValidateEdit
 JvValidators
