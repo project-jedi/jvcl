@@ -1,0 +1,71 @@
+package JvQCtrlsD7R;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX Controls Runtime Package'}
+{$RUNONLY}
+{$IMPLICITBUILD OFF}
+
+requires
+  JvQCoreD7R,
+  JvQStdCtrlsD7R,
+  JvQSystemD7R,
+  rtl,
+  visualclx,
+  DJcl;
+
+contains
+  JvQClock in '..\..\qrun\JvQClock.pas',
+  JvQColorBox in '..\..\qrun\JvQColorBox.pas',
+  JvQColorButton in '..\..\qrun\JvQColorButton.pas',
+  JvQColorForm in '..\..\qrun\JvQColorForm.pas',
+  JvQComponentPanel in '..\..\qrun\JvQComponentPanel.pas',
+  JvQContentScroller in '..\..\qrun\JvQContentScroller.pas',
+  JvQDice in '..\..\qrun\JvQDice.pas',
+  JvQFooter in '..\..\qrun\JvQFooter.pas',
+  JvQGroupHeader in '..\..\qrun\JvQGroupHeader.pas',
+  JvQHint in '..\..\qrun\JvQHint.pas',
+  JvQHtControls in '..\..\qrun\JvQHtControls.pas',
+  JvQImageDrawThread in '..\..\qrun\JvQImageDrawThread.pas',
+  JvQInstallLabel in '..\..\qrun\JvQInstallLabel.pas',
+  JvQItemsPanel in '..\..\qrun\JvQItemsPanel.pas',
+  JvQMovableBevel in '..\..\qrun\JvQMovableBevel.pas',
+  JvQRollOut in '..\..\qrun\JvQRollOut.pas',
+  JvQScrollText in '..\..\qrun\JvQScrollText.pas',
+  JvQSpacer in '..\..\qrun\JvQSpacer.pas',
+  JvQSwitch in '..\..\qrun\JvQSwitch.pas',
+  JvQWinampLabel in '..\..\qrun\JvQWinampLabel.pas',
+  JvQZoom in '..\..\qrun\JvQZoom.pas',
+  JvQArrowButton in '..\..\qrun\JvQArrowButton.pas',
+  JvQBehaviorLabel in '..\..\qrun\JvQBehaviorLabel.pas',
+  JvQButtons in '..\..\qrun\JvQButtons.pas',
+  JvQCaptionPanel in '..\..\qrun\JvQCaptionPanel.pas',
+  JvQaScrollText in '..\..\qrun\JvQaScrollText.pas',
+  JvQLabel in '..\..\qrun\JvQLabel.pas',
+  JvQNetscapeSplitter in '..\..\qrun\JvQNetscapeSplitter.pas',
+  JvQOfficeColorButton in '..\..\qrun\JvQOfficeColorButton.pas',
+  JvQOfficeColorForm in '..\..\qrun\JvQOfficeColorForm.pas',
+  JvQOfficeColorPanel in '..\..\qrun\JvQOfficeColorPanel.pas',
+  JvQSplitter in '..\..\qrun\JvQSplitter.pas',
+  JvQTransparentButton in '..\..\qrun\JvQTransparentButton.pas';
+
+end.

@@ -1,0 +1,66 @@
+package JvQCoreD7D;
+{$R *.res}
+{$ALIGN 8}
+{$ASSERTIONS OFF}
+{$BOOLEVAL OFF}
+{$DEBUGINFO OFF}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS OFF}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS ON}
+{$REFERENCEINFO OFF}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'JVCLX Core Components'}
+{$DESIGNONLY}
+{$IMPLICITBUILD OFF}
+{$DEFINE VisualCLX}
+
+requires
+  JvQCoreD7R,
+  rtl,
+  visualclx,
+  designide;
+
+contains
+  JvQProviderTreeListDsgnFrame in '..\..\qdesign\JvQProviderTreeListDsgnFrame.pas' {fmeJvProviderTreeListDsgn: TFrame},
+  JvQProviderTreeListFrame in '..\..\qdesign\JvQProviderTreeListFrame.pas' {fmeJvProviderTreeList: TFrame},
+  JvQStdToolbarDsgnFrame in '..\..\qdesign\JvQStdToolbarDsgnFrame.pas' {fmeJvStdToolbarDesign: TFrame},
+  JvQStringsForm in '..\..\qdesign\JvQStringsForm.pas' {JvStrEditDlg},
+  JvQBaseDlgEditor in '..\..\qdesign\JvQBaseDlgEditor.pas',
+  JvQBaseDsgnForm in '..\..\qdesign\JvQBaseDsgnForm.pas' {JvBaseDesign},
+  JvQBaseDsgnFrame in '..\..\qdesign\JvQBaseDsgnFrame.pas' {fmeJvBaseDesign: TFrame},
+  JvQBaseDsgnToolbarFrame in '..\..\qdesign\JvQBaseDsgnToolbarFrame.pas' {fmeJvBaseToolbarDesign: TFrame},
+  JvQColorProviderDesignerForm in '..\..\qdesign\JvQColorProviderDesignerForm.pas' {frmJvColorProviderDesigner},
+  JvQColorProviderEditors in '..\..\qdesign\JvQColorProviderEditors.pas',
+  JvQCoreReg in '..\..\qdesign\JvQCoreReg.pas',
+  JvQDataConsumerContextSelectForm in '..\..\qdesign\JvQDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect},
+  JvQDataConsumerItemSelectForm in '..\..\qdesign\JvQDataConsumerItemSelectForm.pas' {frmJvDataConsumerItemSelect},
+  JvQDataContextManagerForm in '..\..\qdesign\JvQDataContextManagerForm.pas' {frmJvDataContextManager},
+  JvQDataProviderDesignerForm in '..\..\qdesign\JvQDataProviderDesignerForm.pas' {frmDataProviderDesigner},
+  JvQDataProviderEditors in '..\..\qdesign\JvQDataProviderEditors.pas',
+  JvQDataProviderItemDesign in '..\..\qdesign\JvQDataProviderItemDesign.pas',
+  JvQDateTimeForm in '..\..\qdesign\JvQDateTimeForm.pas' {frmSelectDateTimeDlg},
+  JvQDesignerUtils in '..\..\qdesign\JvQDesignerUtils.pas',
+  JvQDsgnConsts in '..\..\qdesign\JvQDsgnConsts.pas',
+  JvQDsgnEditors in '..\..\qdesign\JvQDsgnEditors.pas',
+  JvQIDEZoom in '..\..\qdesign\JvQIDEZoom.pas',
+  JvQJVCLAboutEditor in '..\..\qdesign\JvQJVCLAboutEditor.pas',
+  JvQPaintBoxEditor in '..\..\qdesign\JvQPaintBoxEditor.pas',
+  JvQProviderToolbarFrame in '..\..\qdesign\JvQProviderToolbarFrame.pas' {fmeJvProviderToolbar: TFrame},
+  JvQDsgnTypes in '..\..\qdesign\JvQDsgnTypes.pas',
+  JvQColorProviderDsgnTreeFrame in '..\..\qdesign\JvQColorProviderDsgnTreeFrame.pas' {fmeJvColorProviderDsgnTree: TFrame},
+  JvQColorProviderAddDialogForm in '..\..\qdesign\JvQColorProviderAddDialogForm.pas' {frmAddColor},
+  JvQActnResForm in '..\..\qdesign\JvQActnResForm.pas' {JvStandardActions: TDataModule};
+
+end.
