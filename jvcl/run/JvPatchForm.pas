@@ -35,9 +35,9 @@ uses
   {$IFDEF VCL}
   Controls, Forms, StdCtrls, Mask,
   {$ELSE}
-  QControls, QForms, QStdCtrls, QMask,
+  QControls, QForms, QStdCtrls, QMask, JvQToolEdit,
   {$ENDIF}
-  JvToolEdit, JvComponent, JvQToolEdit;
+  JvToolEdit, JvComponent;
 
 type
   TFoPatch = class(TJvForm)
