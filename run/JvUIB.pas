@@ -1002,8 +1002,6 @@ begin
       UnLock;
     end;
   end;
-  if eof then
-    beep;
 end;
 
 procedure TJvUIBStatement.InternalPrior;
