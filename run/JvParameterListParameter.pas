@@ -535,6 +535,28 @@ type
     property FontName: string read FFontName write FFontName;
   end;
 
+  TJvRichEditParameter = class(TJvBasePanelEditParameter)
+  private
+    FWordWrap: Boolean;
+    FWantTabs: Boolean;
+    FWantReturns: Boolean;
+    FScrollBars: TScrollStyle;
+    FFontName: string;
+  protected
+    function GetParameterNameExt: string; override;
+    procedure CreateWinControl(AParameterParent: TWinControl); override;
+    procedure SetWinControlProperties; override;
+  public
+    constructor Create(AParameterList: TJvParameterList); override;
+  published
+    property WordWrap: Boolean read FWordWrap write FWordWrap;
+    property WantTabs: Boolean read FWantTabs write FWantTabs;
+    property WantReturns: Boolean read FWantReturns write FWantReturns;
+    property ScrollBars: TScrollStyle read FScrollBars write FScrollBars;
+    property FontName: string read FFontName write FFontName;
+  end;
+
+
 function DSADialogsMessageDlg(const Msg: string; const DlgType: TMsgDlgType; const Buttons: TMsgDlgButtons;
   const HelpCtx: Longint; const Center: TDlgCenterKind = dckScreen; const Timeout: Integer = 0;
   const DefaultButton: TMsgDlgBtn = mbDefault; const CancelButton: TMsgDlgBtn = mbDefault;
@@ -2245,6 +2267,42 @@ begin
 end;
 
 procedure TJvMemoParameter.SetWinControlProperties;
+var
+  ITmpMemo: IJvDynControlMemo;
+begin
+  inherited SetWinControlProperties;
+  if Supports(WinControl, IJvDynControlMemo, ITmpMemo) then
+    with ITmpMemo do
+    begin
+      ControlSetWantTabs(WantTabs);
+      ControlSetWantReturns(WantReturns);
+      ControlSetWordWrap(WordWrap);
+      ControlSetScrollbars(ScrollBars);
+    end;
+end;
+
+///=== { TJvRichEditParameter } ==================================================
+
+constructor TJvRichEditParameter.Create(AParameterList: TJvParameterList);
+begin
+  inherited Create(AParameterList);
+  ScrollBars := ssNone;
+  WantTabs := False;
+  WantReturns := True;
+  WordWrap := False;
+end;
+
+function TJvRichEditParameter.GetParameterNameExt: string;
+begin
+  Result := 'RichEdit';
+end;
+
+procedure TJvRichEditParameter.CreateWinControl(AParameterParent: TWinControl);
+begin
+  WinControl := DynControlEngine.CreateRichEditControl(Self, AParameterParent, GetParameterName);
+end;
+
+procedure TJvRichEditParameter.SetWinControlProperties;
 var
   ITmpMemo: IJvDynControlMemo;
 begin

@@ -31,6 +31,26 @@ uses
   Classes, Controls, DB,
   JvDynControlEngine, JvDynControlEngineDBIntf;
 
+const
+    jctDBEdit              : TJvDynControlType = 'DBEdit';
+    jctDBText              : TJvDynControlType = 'DBText';
+    jctDBListBox           : TJvDynControlType = 'DBListBox';
+    jctDBCheckBox          : TJvDynControlType = 'DBCheckBox';
+    jctDBComboBox          : TJvDynControlType = 'DBComboBox';
+    jctDBImage             : TJvDynControlType = 'DBImage';
+    jctDBRadioGroup        : TJvDynControlType = 'DBRadioGroup';
+    jctDBMemo              : TJvDynControlType = 'DBMemo';
+    jctDBDateTimeEdit      : TJvDynControlType = 'DBDateTimeEdit';
+    jctDBDateEdit          : TJvDynControlType = 'DBDateEdit';
+    jctDBTimeEdit          : TJvDynControlType = 'DBTimeEdit';
+    jctDBCalculateEdit     : TJvDynControlType = 'DBCalculateEdit';
+    jctDBSpinEdit          : TJvDynControlType = 'DBSpinEdit';
+    jctDBDirectoryEdit     : TJvDynControlType = 'DBDirectoryEdit';
+    jctDBFileNameEdit      : TJvDynControlType = 'DBFileNameEdit';
+    jctDBGrid              : TJvDynControlType = 'DBGrid';
+    jctDBButtonEdit        : TJvDynControlType = 'DBButtonEdit';
+    jctDBNavigator         : TJvDynControlType = 'DBNavigator';
+
 type
   TJvDynControlEngineDB = class(TJvCustomDynControlEngine)
   private

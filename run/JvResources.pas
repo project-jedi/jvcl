@@ -627,8 +627,8 @@ resourcestring
 //=== JvDynControlEngine.pas =================================================
 resourcestring
   RsEIntfCastError = 'SIntfCastError';
-  RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass';
-  RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass';
+  RsEUnsupportedControlClass = 'TJvDynControlEngine.RegisterControl: Unsupported ControlClass "%s"';
+  RsENoRegisteredControlClass = 'TJvDynControlEngine.CreateControl: No Registered ControlClass "%s"';
   RsENoFocusControl = 'TJvDynControlEngine.CreateLabelControlPanel: AFocusControl must be assigned';
 
 //=== JvDynControlEngineDB.pas ===============================================
