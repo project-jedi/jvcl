@@ -1,5 +1,5 @@
 ##Package: Globus
-##Status: Locked to Olivier
+##Status: Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvgXMLSerializer.pas
 Summary
@@ -12,33 +12,27 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLCloseTagNotFoundException
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Exception triggered when a closing tag has not been found
 
 
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLOpenTagNotFoundException
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Exception triggered when an opening tag has not been found
 
 
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLSerializerException
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This exception class doesn't seem to be used
 
 
 ----------------------------------------------------------------------------------------------------
 @@EJvgXMLUncknownPropertyException
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Exception triggered when an unknown property is found in the XML data
+See Also
+  IgnoreUnknownTags
 
 
 ----------------------------------------------------------------------------------------------------
@@ -67,175 +61,137 @@ Description
   The following types are supported: integers, floats, enumerations,  sets, strings and chars,
   variants, classes, stringlists and collections.
   
+  Limitations:
+  - Each object can have only one collection of any given collection item class
+  - TStrings derivatives must not have any published properties
+  - Procedure types (events) are not supported
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.BeforeParsing
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Event triggered just before deserializing a component
 Parameters
-  Sender - Description for this parameter
-  Buffer - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Sender - The TJvgXMLSerialize component about to deserialize
+  Buffer - The raw data as read from the stream
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.DefaultXMLHeader
 Summary
-  Write here a summary (1 line)
+  The XML header to output if no handler is given for OnGetXMLHeader
 Description
-  Write here a description
+  A typical value would be:
+  <?xml version="1" standalone="yes"?>
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnGetXMLHeader
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.DeSerialize
 Summary
-  Write here a summary (1 line)
+  Reads a component from a given XML stream
 Description
-  Write here a description
+  The component must have been created before calling this function
 Parameters
-  Component - Description for this parameter
-  Stream    - Description for this parameter
+  Component - The component to read the properties for
+  Stream    - The stream that contains the XML data
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Serialize
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.ExcludeDefaultValues
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If True, skip properties with default values
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.ExcludeEmptyValues
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If True, skip properties with empty values
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.GenerateDTD
 Summary
-  Write here a summary (1 line)
+  Generates the DTD for a given component
 Description
-  Write here a description
+  The DTD is written in the stream
 Parameters
-  Component - Description for this parameter
-  Stream    - Description for this parameter
+  Component - The component to generate the DTD for
+  Stream    - The stream to write the DTD into
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Serialize
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.GenerateFormattedXML
 Summary
-  Write here a summary (1 line)
+  Determines if the output XML is formatted
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Formatted means indented and with carriage returns
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.IgnoreUnknownTags
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Ignore unknown tags when loading XML
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.OnGetXMLHeader
 Summary
-  Write here a summary (1 line)
+  Event triggered when about to write the XML header
 Description
-  Write here a description
+  The header is the a string that will be written as the first thing in the output file.
+  Usually, you would give something like this:
+  <?xml version="1" standalone="yes"?>
+  
+  If you don't provide an event handler or give an empty string, the default header will be used
 Parameters
-  Sender - Description for this parameter
-  Value  - Description for this parameter
+  Sender - The object asking for the header
+  Value  - Put the header you want to ouput in this variable
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DefaultXMLHeader
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.ReplaceReservedSymbols
 Summary
-  Write here a summary (1 line)
+  If true, replaces special characters in the property values
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Special characters are '<' and '>' and get replaced by '&lt;' and '&gt;' respectively
+  The replacement happens either at loading or saving time
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.Serialize
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Writes a component into the given stream
 Parameters
-  Component - Description for this parameter
-  Stream    - Description for this parameter
+  Component - The component to write into the stream
+  Stream    - The stream to write into
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  DeSerialize
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.StrongConformity
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Requires XML to have all the corresponding tags for all class types
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.tickCounter
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  This public variable is not used in the component
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvgXMLSerializer.WrapCollections
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  If True, collections are stored in individual XML nodes
 
 
 ----------------------------------------------------------------------------------------------------
@@ -258,8 +214,6 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@XMLSerializerException
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This is the ancestor for all exceptions that TJvgXMLSerializer can trigger
 
 
