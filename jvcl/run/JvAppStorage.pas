@@ -2215,7 +2215,7 @@ begin
   end;
 end;
 
-// === TJvAppStorageFileName ===================================================
+//=== TJvAppStorageFileName ==================================================
 
 {procedure TJvAppStorageFileName.SetLocation(Value: TFileLocation);
 begin

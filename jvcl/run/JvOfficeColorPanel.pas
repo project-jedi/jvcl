@@ -39,7 +39,7 @@ uses
   Windows, Messages, Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls,
+  Types, QWindows, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls,
   QDialogs,
   {$ENDIF VisualCLX}
   JvComponent, JvSpeedButton;
@@ -60,7 +60,7 @@ const
   MinColorSpaceBottom = 4;
   MinTopMargin = 2;
   MinBottomMargin = 4;
-  MinHoriMargin = 7;
+  MinHorizontalMargin = 7;
 
   Tag_ButtonHeight = 0;
   Tag_ButtonWidth = 1;
@@ -70,12 +70,12 @@ const
   Tag_ColorSpaceBottom = 5;
   Tag_TopMargin = 6;
   Tag_BottomMargin = 7;
-  Tag_HoriMargin = 8;
+  Tag_HorizontalMargin = 8;
 
   LineColorButtonCount = 8;
 
-  SubColorButtonColors: array[0..MaxColorButtonNumber - 1] of TColor = (
-    $000000, $003399, $003333, $003300, $663300, $800000, $993333, $333333,
+  SubColorButtonColors: array [0..MaxColorButtonNumber - 1] of TColor =
+   ($000000, $003399, $003333, $003300, $663300, $800000, $993333, $333333,
     $000080, $0066FF, $008080, $008000, $808000, $FF0000, $996666, $808080,
     $0000FF, $0099FF, $00CC99, $669933, $CCCC33, $FF6633, $800080, $999999,
     $FF00FF, $00CCFF, $00FFFF, $00FF00, $FFFF00, $FFCC00, $663399, $C0C0C0,
@@ -116,7 +116,7 @@ type
     FShowOtherButton: Boolean;
     FTopMargin: Integer;
     FColorSpaceBottom: Integer;
-    FHoriMargin: Integer;
+    FHorizontalMargin: Integer;
     FColorSpace: Integer;
     FColorSpaceTop: Integer;
     FButtonHeight: Integer;
@@ -142,26 +142,31 @@ type
     procedure Changed(PropName: string); virtual;
     procedure CreateDefaultText; virtual;
   public
-    constructor Create(); virtual;
+    constructor Create; virtual;
     procedure Assign(Source: TPersistent); override;
+    property AutoColor: TColor read FAutoColor write SetAutoColor default clDefault;
     property OnPropertiesChanged: TJvPropertiesChangedEvent read FOnPropertiesChanged write FOnPropertiesChanged;
-    property AutoColor:TColor read FAutoColor write SetAutoColor default clDefault;
   published
     property ShowAutoButton: Boolean read FShowAutoButton write SetShowAutoButton default True;
     property ShowOtherButton: Boolean read FShowOtherButton write SetShowOtherButton default True;
     property ShowColorHint: Boolean read FShowColorHint write SetShowColorHint default True;
 
-    property TopMargin: Integer index Tag_TopMargin read FTopMargin write SetMeasure default MinTopMargin;
-    property BottomMargin: Integer index Tag_BottomMargin read FBottomMargin write SetMeasure default MinBottomMargin;
-    property HoriMargin: Integer index Tag_HoriMargin read FHoriMargin write SetMeasure default MinHoriMargin;
-    property ColorSpace: Integer index Tag_ColorSpace read FColorSpace write SetMeasure default MinColorSpace;
-    property ColorSpaceTop: Integer index Tag_ColorSpaceTop read FColorSpaceTop write SetMeasure default
-      MinColorSpaceTop;
-    property ColorSpaceBottom: Integer index Tag_ColorSpaceBottom read FColorSpaceBottom write SetMeasure default
-      MinColorSpaceBottom;
-    property ColorSize: Integer index Tag_ColorSize read FColorSize write SetMeasure default MinColorSize;
-    property ButtonHeight: Integer index Tag_ButtonHeight read FButtonHeight write SetMeasure default MinButtonHeight;
-
+    property TopMargin: Integer index Tag_TopMargin read FTopMargin write SetMeasure
+      default MinTopMargin;
+    property BottomMargin: Integer index Tag_BottomMargin read FBottomMargin write SetMeasure
+      default MinBottomMargin;
+    property HorizontalMargin: Integer index Tag_HorizontalMargin read FHorizontalMargin write SetMeasure
+      default MinHorizontalMargin;
+    property ColorSpace: Integer index Tag_ColorSpace read FColorSpace write SetMeasure
+       default MinColorSpace;
+    property ColorSpaceTop: Integer index Tag_ColorSpaceTop read FColorSpaceTop write SetMeasure
+      default MinColorSpaceTop;
+    property ColorSpaceBottom: Integer index Tag_ColorSpaceBottom read FColorSpaceBottom write SetMeasure
+      default MinColorSpaceBottom;
+    property ColorSize: Integer index Tag_ColorSize read FColorSize write SetMeasure
+      default MinColorSize;
+    property ButtonHeight: Integer index Tag_ButtonHeight read FButtonHeight write SetMeasure
+      default MinButtonHeight;
     property AutoCaption: string index Tag_AutoCaption read GetStringValue write SetStringValue;
     property OtherCaption: string index Tag_OtherCaption read GetStringValue write SetStringValue;
     property AutoHint: string index Tag_AutoHint read GetStringValue write SetStringValue;
@@ -173,32 +178,27 @@ type
     FColorButtons: array [0..MaxColorButtonNumber - 1] of TJvSubColorButton;
     FAutoButton: TJvSubColorButton;
     FOtherButton: TJvColorSpeedButton;
-
     FProperties: TJvOfficeColorPanelProperties;
-
     FOwner: TControl;
     FColorDialog: TJvOfficeColorDialog;
     FSelectedColor: TColor;
     FWordStyle: Boolean;
     FFlat: Boolean;
-    Inited: Boolean;
+    FInited: Boolean;
     FOnColorChange: TNotifyEvent;
     FOnColorButtonClick: TNotifyEvent;
     FClickColorButton: TJvClickColorButtonType;
-
     {$IFDEF VCL}
     FColorDialogOptions: TColorDialogOptions;
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
     {$ENDIF VCL}
-
     procedure ColorButtonClick(Sender: TObject);
     procedure SetFlat(const Value: Boolean);
     procedure SetSelectedColor(const Value: TColor);
     function GetCustomColors: TStrings;
     procedure SetCustomColors(const Value: TStrings);
-
-    function GetProperties: TJvOfficeColorPanelProperties; virtual;
-    procedure SetProperties(const Value: TJvOfficeColorPanelProperties); virtual;
+    function GetProperties: TJvOfficeColorPanelProperties;
+    procedure SetProperties(const Value: TJvOfficeColorPanelProperties);
   protected
     {$IFDEF VCL}
     procedure CreateWnd; override;
@@ -206,16 +206,13 @@ type
     {$IFDEF VisualCLX}
     procedure InitWidget; override;
     {$ENDIF VisualCLX}
-
     procedure Resize; override;
     procedure Paint; override;
     procedure ShowHintChanged; override;
     procedure PropertiesChanged(Sender: TObject; PropName: string); virtual;
-
     procedure SetWordStyle(const Value: Boolean);
     procedure MakeColorButtons;
-    procedure AdjustColorButtons();
-
+    procedure AdjustColorButtons;
     procedure SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -225,18 +222,14 @@ type
     property ColorDialog: TJvOfficeColorDialog read FColorDialog write FColorDialog;
     property SelectedColor: TColor read FSelectedColor write SetSelectedColor default clBlack;
 
-    property ClickColorButton:TJvClickColorButtonType read FClickColorButton;
-
+    property ClickColorButton: TJvClickColorButtonType read FClickColorButton;
     property Color: TColor read FSelectedColor write SetSelectedColor default clBlack;
-
     property Flat: Boolean read FFlat write SetFlat default True;
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
-
     property Properties: TJvOfficeColorPanelProperties read GetProperties write SetProperties;
     {$IFDEF VCL}
     property Options: TColorDialogOptions read FColorDialogOptions write SetColorDialogOptions default [];
     {$ENDIF VCL}
-
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
     property OnColorButtonClick: TNotifyEvent read FOnColorButtonClick write FOnColorButtonClick;
   end;
@@ -292,41 +285,9 @@ type
 implementation
 
 uses
-  JvJCLUtils;
+  JvJCLUtils, JvResources;
 
-{ TJvOfficeColorPanelProperties }
-
-procedure TJvOfficeColorPanelProperties.Assign(Source: TPersistent);
-begin
-  if Source is TJvOfficeColorPanelProperties then
-    with TJvOfficeColorPanelProperties(Source) do
-    begin
-      Self.FShowAutoButton := ShowAutoButton;
-      Self.FShowOtherButton := ShowOtherButton;
-      Self.FShowColorHint := ShowColorHint;
-      Self.FTopMargin := TopMargin;
-      Self.FColorSpaceBottom := ColorSpaceBottom;
-      Self.FHoriMargin := HoriMargin;
-      Self.FColorSpace := ColorSpace;
-      Self.FColorSpaceTop := ColorSpaceTop;
-      Self.FButtonHeight := ButtonHeight;
-      Self.FColorSize := ColorSize;
-      Self.FBottomMargin := BottomMargin;
-
-      Self.FAutoCaption := AutoCaption;
-      Self.FOtherCaption := OtherCaption;
-      Self.FAutoHint := AutoHint;
-      Self.FOtherHint := OtherHint;
-      Self.FAutoColor := AutoColor;
-
-    end;
-end;
-
-procedure TJvOfficeColorPanelProperties.Changed(PropName: string);
-begin
-  if Assigned(FOnPropertiesChanged) then
-    FOnPropertiesChanged(Self, PropName);
-end;
+//=== TJvOfficeColorPanelProperties ==========================================
 
 constructor TJvOfficeColorPanelProperties.Create;
 begin
@@ -336,7 +297,7 @@ begin
   FShowColorHint := True;
   FAutoColor := clDefault;
 
-  FHoriMargin := MinHoriMargin;
+  FHorizontalMargin := MinHorizontalMargin;
   FTopMargin := MinTopMargin;
   FColorSpace := MinColorSize;
   FColorSpaceTop := MinColorSpaceTop;
@@ -348,16 +309,48 @@ begin
   CreateDefaultText;
 end;
 
-procedure TJvOfficeColorPanelProperties.CreateDefaultText;
+procedure TJvOfficeColorPanelProperties.Assign(Source: TPersistent);
 begin
-  FAutoCaption := 'Automatic';
-  FOtherCaption := 'Other Colors...';
+  if Source is TJvOfficeColorPanelProperties then
+    with TJvOfficeColorPanelProperties(Source) do
+    begin
+      Self.FShowAutoButton := ShowAutoButton;
+      Self.FShowOtherButton := ShowOtherButton;
+      Self.FShowColorHint := ShowColorHint;
+      Self.FTopMargin := TopMargin;
+      Self.FColorSpaceBottom := ColorSpaceBottom;
+      Self.FHorizontalMargin := HorizontalMargin;
+      Self.FColorSpace := ColorSpace;
+      Self.FColorSpaceTop := ColorSpaceTop;
+      Self.FButtonHeight := ButtonHeight;
+      Self.FColorSize := ColorSize;
+      Self.FBottomMargin := BottomMargin;
+
+      Self.FAutoCaption := AutoCaption;
+      Self.FOtherCaption := OtherCaption;
+      Self.FAutoHint := AutoHint;
+      Self.FOtherHint := OtherHint;
+      Self.FAutoColor := AutoColor;
+    end
+  else
+    inherited Assign(Source);
 end;
 
-function TJvOfficeColorPanelProperties.GetStringValue(
-  const Index: Integer): string;
+procedure TJvOfficeColorPanelProperties.Changed(PropName: string);
 begin
-  case index of
+  if Assigned(FOnPropertiesChanged) then
+    FOnPropertiesChanged(Self, PropName);
+end;
+
+procedure TJvOfficeColorPanelProperties.CreateDefaultText;
+begin
+  FAutoCaption := RsAutoCaption;
+  FOtherCaption := RsOtherColorCaption;
+end;
+
+function TJvOfficeColorPanelProperties.GetStringValue(const Index: Integer): string;
+begin
+  case Index of
     Tag_AutoCaption:
       Result := FAutoCaption;
     Tag_OtherCaption:
@@ -367,7 +360,6 @@ begin
     Tag_OtherHint:
       Result := FOtherHint;
   end;
-
 end;
 
 procedure TJvOfficeColorPanelProperties.SetAutoColor(const Value: TColor);
@@ -398,11 +390,11 @@ begin
         MeasureConst := MinBottomMargin;
         LName := 'BottomMargin';
       end;
-    Tag_HoriMargin:
+    Tag_HorizontalMargin:
       begin
-        MeasureItem := @FHoriMargin;
-        MeasureConst := MinHoriMargin;
-        LName := 'HoriMargin';
+        MeasureItem := @FHorizontalMargin;
+        MeasureConst := MinHorizontalMargin;
+        LName := 'HorizontalMargin';
       end;
     Tag_ColorSpace:
       begin
@@ -437,24 +429,25 @@ begin
   else
     Exit;
   end;
-  if MeasureItem^ = Value then Exit;
+  if MeasureItem^ = Value then
+    Exit;
 
   MeasureItem^ := Value;
-  if MeasureItem^ < MeasureConst then MeasureItem^ := MeasureConst;
+  if MeasureItem^ < MeasureConst then
+    MeasureItem^ := MeasureConst;
   Changed(LName);
 end;
 
 procedure TJvOfficeColorPanelProperties.SetShowAutoButton(const Value: Boolean);
 begin
-  if FShowAutoButton<>Value then
+  if FShowAutoButton <> Value then
   begin
     FShowAutoButton := Value;
     Changed('ShowAutoButton');
   end;
 end;
 
-procedure TJvOfficeColorPanelProperties.SetShowColorHint(
-  const Value: Boolean);
+procedure TJvOfficeColorPanelProperties.SetShowColorHint(const Value: Boolean);
 begin
   if FShowColorHint <> Value then
   begin
@@ -465,7 +458,7 @@ end;
 
 procedure TJvOfficeColorPanelProperties.SetShowOtherButton(const Value: Boolean);
 begin
-  if FShowOtherButton<>Value then
+  if FShowOtherButton <> Value then
   begin
     FShowOtherButton := Value;
     Changed('ShowOtherButton');
@@ -475,22 +468,18 @@ end;
 procedure TJvOfficeColorPanelProperties.SetStringValue(const Index: Integer;
   const Value: string);
 begin
-  case index of
+  case Index of
     Tag_AutoCaption:
+      if FAutoCaption <> Value then
       begin
-        if FAutoCaption <> Value then
-        begin
-          FAutoCaption := Value;
-          Changed('AutoCaption');
-        end;
+        FAutoCaption := Value;
+        Changed('AutoCaption');
       end;
     Tag_OtherCaption:
+      if FOtherCaption <> Value then
       begin
-        if FOtherCaption <> Value then
-        begin
-          FOtherCaption := Value;
-          Changed('OtherCaption');
-        end;
+        FOtherCaption := Value;
+        Changed('OtherCaption');
       end;
     Tag_AutoHint:
       if FAutoHint <> Value then
@@ -507,7 +496,7 @@ begin
   end;
 end;
 
-{ TJvSubColorButton }
+//=== TJvSubColorButton ======================================================
 
 constructor TJvSubColorButton.Create(AOwner: TComponent);
 begin
@@ -539,7 +528,7 @@ begin
     B := Height div 5;
   with Canvas do
   begin
-    if (not Glyph.Empty) then
+    if not Glyph.Empty then
     begin
       Glyph.Transparent := True;
       X := (Width div 2) - 9 + Integer(FState in [TJvButtonState(bsDown)]);
@@ -553,18 +542,18 @@ begin
     begin
       if Caption = '' then
       begin
-        Pen.Color := clgray;
+        Pen.Color := clGray;
         Brush.Color := FColor;
         Brush.Style := bsSolid;
         Rectangle(B, B, Width - B, Height - B);
       end
       else
       begin
-        Pen.Color := clgray;
+        Pen.Color := clGray;
         Brush.Style := bsClear;
         Polygon([Point(B - 1, B - 1), Point(Width - (B - 1), B - 1),
           Point(Width - (B - 1), Height - (B - 1)), Point(B - 1, Height - (B - 1))]);
-        Pen.Color := clgray;
+        Pen.Color := clGray;
         Brush.Color := FColor;
         Brush.Style := bsSolid;
         Rectangle(B + 1, B + 1, Height, Height - B);
@@ -582,13 +571,13 @@ begin
   end;
 end;
 
-//=== TJvCustomOfficeColorPanel ===========================================================
+//=== TJvCustomOfficeColorPanel ==============================================
 
 constructor TJvCustomOfficeColorPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle - [csAcceptsControls];
-  Inited := False;
+  FInited := False;
   FSelectedColor := clBlack;
   {$IFDEF VCL}
   FColorDialogOptions := [];
@@ -623,7 +612,6 @@ begin
     Hint := ColorToString(Color);
     AllowAllUp := True;
     Visible := False;
-
     OnClick := ColorButtonClick;
   end;
 
@@ -640,7 +628,7 @@ begin
 
   MakeColorButtons;
 
-  Inited := True;
+  FInited := True;
 end;
 
 destructor TJvCustomOfficeColorPanel.Destroy;
@@ -660,8 +648,7 @@ var
 begin
   for I := 0 to MaxColorButtonNumber - 1 do
   begin
-    if FColorButtons[I] <> nil then
-      FColorButtons[I].Free;
+    FColorButtons[I].Free;
     FColorButtons[I] := TJvSubColorButton.Create(Self);
     with FColorButtons[I] do
     begin
@@ -678,29 +665,31 @@ begin
   Invalidate;
 end;
 
-procedure TJvCustomOfficeColorPanel.AdjustColorButtons();
+procedure TJvCustomOfficeColorPanel.AdjustColorButtons;
 var
   I: Integer;
   ButtonLine: Integer;
   TempHeight: Integer;
   LButtonCount, LColorsButtonTop, LColorsButtonLeft: Integer;
 begin
-  if (not Inited) or (Parent = nil) then Exit;
+  if (not FInited) or (Parent = nil) then
+    Exit;
   DisableAlign;
   TempHeight := 0;
   LButtonCount := 0;
   ButtonLine := (MaxColorButtonNumber + LineColorButtonCount - 1) div LineColorButtonCount;
 
   if Properties.ShowAutoButton then
-    inc(LButtonCount);
+    Inc(LButtonCount);
   if Properties.ShowOtherButton then
-    inc(LButtonCount);
+    Inc(LButtonCount);
 
   with Properties do
   begin
-    Width := HoriMargin * 2 + ColorSize * LineColorButtonCount + ColorSpace * (LineColorButtonCount - 1);
-    Height := TopMargin + BottomMargin + ColorSpaceTop + ColorSpaceBottom + ColorSize * ButtonLine + ColorSpace *
-      (ButtonLine - 1) + ButtonHeight * LButtonCount + TempHeight;
+    Width := HorizontalMargin * 2 + ColorSize * LineColorButtonCount +
+      ColorSpace * (LineColorButtonCount - 1);
+    Height := TopMargin + BottomMargin + ColorSpaceTop + ColorSpaceBottom + ColorSize * ButtonLine +
+      ColorSpace * (ButtonLine - 1) + ButtonHeight * LButtonCount + TempHeight;
   end;
 
   with Properties do
@@ -708,14 +697,15 @@ begin
     begin
       FAutoButton.Visible := False;
       LColorsButtonTop := 0;
-      LColorsButtonLeft := HoriMargin;
+      LColorsButtonLeft := HorizontalMargin;
     end
     else
     begin
       FAutoButton.Visible := True;
       FAutoButton.Caption := AutoCaption;
       LColorsButtonTop := FAutoButton.Top + FAutoButton.Height;
-      FAutoButton.SetBounds(HoriMargin, TopMargin + TempHeight, ClientWidth - HoriMargin * 2, ButtonHeight);
+      FAutoButton.SetBounds(HorizontalMargin, TopMargin + TempHeight,
+        ClientWidth - HorizontalMargin * 2, ButtonHeight);
       LColorsButtonLeft := FAutoButton.Left;
     end;
 
@@ -723,8 +713,7 @@ begin
     for I := 0 to MaxColorButtonNumber - 1 do
       FColorButtons[I].SetBounds(LColorsButtonLeft + (I mod LineColorButtonCount) * (ColorSpace + ColorSize),
         LColorsButtonTop + ColorSpaceTop + (I div LineColorButtonCount) * (ColorSpace + ColorSize),
-        ColorSize,
-        ColorSize);
+        ColorSize, ColorSize);
 
   with Properties do
     if not Properties.ShowOtherButton then
@@ -735,8 +724,7 @@ begin
       FOtherButton.Caption := OtherCaption;
       FOtherButton.SetBounds(FAutoButton.Left,
         FColorButtons[MaxColorButtonNumber - 1].Top + ColorSize + ColorSpaceBottom,
-        FAutoButton.Width,
-        ButtonHeight);
+        FAutoButton.Width, ButtonHeight);
     end;
 end;
 
@@ -754,7 +742,7 @@ begin
     if TComponent(Sender).Tag = FOtherButton.Tag then
        FClickColorButton := cbctOtherButton
     else
-         FClickColorButton := cbctColorsButton;
+      FClickColorButton := cbctColorsButton;
   end
   else
     FClickColorButton := cbctNone;
@@ -781,13 +769,11 @@ begin
   begin
     TJvSubColorButton(Sender).Down := True;
     {$IFDEF VisualCLX}
-   //in clx have bug
+    //in clx have bug
     FAutoButton.Down := FAutoButton = Sender;
     FOtherButton.Down := FOtherButton = Sender;
     for I := 0 to MaxColorButtonNumber - 1 do
-    begin
       FColorButtons[I].Down := FColorButtons[I] = Sender;
-    end;
     {$ENDIF VisualCLX}
     SetSelectedColor(TJvSubColorButton(Sender).Color);
   end;
@@ -810,8 +796,7 @@ begin
         ColorSpaceBottom := MinColorSpaceBottom;
         TopMargin := MinTopMargin;
         BottomMargin := MinBottomMargin;
-        HoriMargin := MinHoriMargin;
-
+        HorizontalMargin := MinHorizontalMargin;
       end;
   end;
 end;
@@ -866,8 +851,8 @@ end;
 procedure TJvCustomOfficeColorPanel.Resize;
 begin
   inherited Resize;
-  if Inited then
-    AdjustColorButtons();
+  if FInited then
+    AdjustColorButtons;
 end;
 
 procedure TJvCustomOfficeColorPanel.Paint;
@@ -884,8 +869,8 @@ begin
     {$ENDIF VisualCLX}
     Canvas.Brush.Color := Color;
   end;
-  if Inited then
-    AdjustColorButtons();
+  if FInited then
+    AdjustColorButtons;
 end;
 
 procedure TJvCustomOfficeColorPanel.SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean);
@@ -914,8 +899,7 @@ end;
 
 procedure TJvCustomOfficeColorPanel.SetColorDialogOptions(const Value: TColorDialogOptions);
 begin
-  if FColorDialogOptions <> Value then
-    FColorDialogOptions := Value;
+  FColorDialogOptions := Value;
 end;
 
 procedure TJvCustomOfficeColorPanel.CreateWnd;
@@ -927,13 +911,11 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
-
 procedure TJvCustomOfficeColorPanel.InitWidget;
 begin
   inherited InitWidget;
   AdjustColorButtons;
 end;
-
 {$ENDIF VisualCLX}
 
 function TJvCustomOfficeColorPanel.GetProperties: TJvOfficeColorPanelProperties;
@@ -941,8 +923,7 @@ begin
   Result := FProperties;
 end;
 
-procedure TJvCustomOfficeColorPanel.SetProperties(
-  const Value: TJvOfficeColorPanelProperties);
+procedure TJvCustomOfficeColorPanel.SetProperties(const Value: TJvOfficeColorPanelProperties);
 begin
   if FProperties <> Value then
     FProperties.Assign(Value);
@@ -955,46 +936,39 @@ var
   I: Integer;
 begin
   LFlag := False;
-  if cmp(PropName, 'ShowAutoButton') or cmp(PropName, 'ShowOtherButton') then
+  if Cmp(PropName, 'ShowAutoButton') or cmp(PropName, 'ShowOtherButton') then
     LFlag := True
   else
-  if cmp(PropName, 'AutoCaption') then
+  if Cmp(PropName, 'AutoCaption') then
   begin
     if Properties.AutoCaption = '' then
       Properties.ShowAutoButton := False;
   end
   else
-  if cmp(PropName, 'OtherCaption') then
+  if Cmp(PropName, 'OtherCaption') then
   begin
     if Properties.OtherCaption = '' then
       Properties.ShowOtherButton := False;
   end
   else
-  if cmp(PropName, 'AutoHint') then
-  begin
-    FAutoButton.Hint := Properties.AutoHint;
-  end
+  if Cmp(PropName, 'AutoHint') then
+    FAutoButton.Hint := Properties.AutoHint
   else
-  if cmp(PropName, 'OtherHint') then
-  begin
-    FOtherButton.Hint := Properties.OtherHint;
-  end
+  if Cmp(PropName, 'OtherHint') then
+    FOtherButton.Hint := Properties.OtherHint
   else
-  if cmp(PropName, 'AutoColor') then
+  if Cmp(PropName, 'AutoColor') then
     FAutoButton.Color := Properties.AutoColor
   else
-  if cmp(PropName, 'ShowColorHint') then
+  if Cmp(PropName, 'ShowColorHint') then
   begin
     FAutoButton.ShowHint :=  Properties.ShowColorHint;
     FOtherButton.ShowHint :=  Properties.ShowColorHint;
     for I := 0 to MaxColorButtonNumber - 1 do
-    begin
       FColorButtons[I].ShowHint := Properties.ShowColorHint;
-    end;
   end
   else
-    LFlag := True
-      ;
+    LFlag := True;
   if LFlag then
     AdjustColorButtons;
 end;

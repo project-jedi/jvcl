@@ -192,7 +192,7 @@ const
 var
   P, F: PChar;
   F1: PChar;
-  i: Integer;
+  I: Integer;
 
   function SkipComments: Boolean;
   begin
@@ -382,12 +382,12 @@ begin
       if P[0] <> #0 then
         Inc(P);
       SetString(Result, F, P - F);
-      i := 2;
-      while i < Length(Result) - 1 do
+      I := 2;
+      while I < Length(Result) - 1 do
       begin
-        if Result[i] = '''' then
-          Delete(Result, i, 1);
-        Inc(i);
+        if Result[I] = '''' then
+          Delete(Result, I, 1);
+        Inc(I);
       end;
     end
     else
@@ -402,9 +402,11 @@ begin
         if (P[0] = '"') and (P[-1] = '\') then
         begin
          // count the backslashes, on even backslahses it is a string end
-          i := 1;
-          while (P - 1 - i > F) and (P[-1 - i] = '\') do inc(i);
-          if i and $01 = 0 then Break;  { same but faster than: if i mod 2 = 0 then Break; }
+          I := 1;
+          while (P - 1 - I > F) and (P[-1 - I] = '\') do
+            Inc(I);
+          if I and $01 = 0 then
+            Break;  { same but faster than: if I mod 2 = 0 then Break; }
         end;
         Inc(P);
       end;
@@ -489,17 +491,17 @@ end;
 
 function TJvIParser.GetPosBeg(Index: Integer): Integer;
 var
-  i: Integer;
+  I: Integer;
   S: string;
 begin
-  i := HistoryInd(Index);
-  S := FHistory[i];
-  Result := Integer(FHistory.Objects[i]) - Length(S) + 1;
+  I := HistoryInd(Index);
+  S := FHistory[I];
+  Result := Integer(FHistory.Objects[I]) - Length(S) + 1;
   case FStyle of
     psPascal:
       if S[1] = '''' then
-        for i := 2 to Length(S) - 1 do
-          if S[i] = '''' then
+        for I := 2 to Length(S) - 1 do
+          if S[I] = '''' then
             Dec(Result);
   end;
 end;
@@ -554,7 +556,7 @@ const
 var
   P, F: PWideChar;
   F1: PWideChar;
-  i: Integer;
+  I: Integer;
 
   function SkipComments: Boolean;
   begin
@@ -744,12 +746,12 @@ begin
       if P[0] <> #0 then
         Inc(P);
       SetString(Result, F, P - F);
-      i := 2;
-      while i < Length(Result) - 1 do
+      I := 2;
+      while I < Length(Result) - 1 do
       begin
-        if Result[i] = '''' then
-          Delete(Result, i, 1);
-        Inc(i);
+        if Result[I] = '''' then
+          Delete(Result, I, 1);
+        Inc(I);
       end;
     end
     else
@@ -764,9 +766,11 @@ begin
         if (P[0] = '"') and (P[-1] = '\') then
         begin
          // count the backslashes, on even backslahses it is a string end
-          i := 1;
-          while (P - 1 - i > F) and (P[-1 - i] = '\') do inc(i);
-          if i and $01 = 0 then Break;  { same but faster than: if i mod 2 = 0 then Break; }
+          I := 1;
+          while (P - 1 - I > F) and (P[-1 - I] = '\') do
+            Inc(I);
+          if I and $01 = 0 then
+            Break;  { same but faster than: if I mod 2 = 0 then Break; }
         end;
         Inc(P);
       end;
@@ -851,17 +855,17 @@ end;
 
 function TJvIParserW.GetPosBeg(Index: Integer): Integer;
 var
-  i: Integer;
+  I: Integer;
   S: WideString;
 begin
-  i := HistoryInd(Index);
-  S := FHistory[i];
-  Result := Integer(FHistory.Objects[i]) - Length(S) + 1;
+  I := HistoryInd(Index);
+  S := FHistory[I];
+  Result := Integer(FHistory.Objects[I]) - Length(S) + 1;
   case FStyle of
     psPascal:
       if S[1] = '''' then
-        for i := 2 to Length(S) - 1 do
-          if S[i] = '''' then
+        for I := 2 to Length(S) - 1 do
+          if S[I] = '''' then
             Dec(Result);
   end;
 end;
@@ -894,7 +898,7 @@ begin
     FHistoryPtr := FHistorySize + FHistoryPtr;
 end;
 
-// =============================================================================
+//============================================================================
 
 procedure ParseString(const S: string; Ss: TStrings);
 var
@@ -962,7 +966,7 @@ end;
 
 function IsRealConstant(const St: string): Boolean;
 var
-  i, j: Integer;
+  I, J: Integer;
   Point: Boolean;
 begin
   Result := False;
@@ -972,25 +976,25 @@ begin
     if Length(St) = 1 then
       Exit
     else
-      j := 2
+      J := 2
   else
-    j := 1;
+    J := 1;
   Point := False;
-  for i := j to Length(St) do
-    if St[i] = '.' then
+  for I := J to Length(St) do
+    if St[I] = '.' then
       if Point then
         Exit
       else
         Point := True
     else
-    if not (St[i] in DigitSymbols) then
+    if not (St[I] in DigitSymbols) then
       Exit;
   Result := True;
 end;
 
 function IsRealConstantW(const St: WideString): Boolean;
 var
-  i, j: Integer;
+  I, J: Integer;
   Point: Boolean;
 begin
   Result := False;
@@ -1000,25 +1004,25 @@ begin
     if Length(St) = 1 then
       Exit
     else
-      j := 2
+      J := 2
   else
-    j := 1;
+    J := 1;
   Point := False;
-  for i := j to Length(St) do
-    if St[i] = '.' then
+  for I := J to Length(St) do
+    if St[I] = '.' then
       if Point then
         Exit
       else
         Point := True
     else
-    if (St[i] < WideChar('0')) or (St[i] > WideChar('9')) then
+    if (St[I] < WideChar('0')) or (St[I] > WideChar('9')) then
       Exit;
   Result := True;
 end;
 
 function IsIntConstant(const St: string): Boolean;
 var
-  i, j: Integer;
+  I, J: Integer;
   Sym: TSysCharSet;
 begin
   Result := False;
@@ -1030,21 +1034,21 @@ begin
     if Length(St) = 1 then
       Exit
     else
-      j := 2;
+      J := 2;
     if St[1] = '$' then
       Sym := HexadecimalSymbols;
   end
   else
-    j := 1;
-  for i := j to Length(St) do
-    if not (St[i] in Sym) then
+    J := 1;
+  for I := J to Length(St) do
+    if not (St[I] in Sym) then
       Exit;
   Result := True;
 end;
 
 function IsIntConstantW(const St: WideString): Boolean;
 var
-  i, j: Integer;
+  I, J: Integer;
   Sym: TSysCharSet;
 begin
   Result := False;
@@ -1056,21 +1060,21 @@ begin
     if Length(St) = 1 then
       Exit
     else
-      j := 2;
+      J := 2;
     if St[1] = '$' then
       Sym := HexadecimalSymbols;
   end
   else
-    j := 1;
-  for i := j to Length(St) do
-    if not CharInSetW(St[i], Sym) then
+    J := 1;
+  for I := J to Length(St) do
+    if not CharInSetW(St[I], Sym) then
       Exit;
   Result := True;
 end;
 
 function IsIdentifier(const ID: string): Boolean;
 var
-  i, L: Integer;
+  I, L: Integer;
 begin
   Result := False;
   L := Length(ID);
@@ -1078,7 +1082,7 @@ begin
     Exit;
   if not (ID[1] in IdentifierFirstSymbols) then
     Exit;
-  for i := 1 to L do
+  for I := 1 to L do
   begin
     if not (ID[1] in IdentifierSymbols) then
       Exit;
@@ -1088,7 +1092,7 @@ end;
 
 function IsIdentifierW(const ID: WideString): Boolean;
 var
-  i, L: Integer;
+  I, L: Integer;
 begin
   Result := False;
   L := Length(ID);
@@ -1096,7 +1100,7 @@ begin
     Exit;
   if not CharInSetW(ID[1], IdentifierFirstSymbols) then
     Exit;
-  for i := 1 to L do
+  for I := 1 to L do
   begin
     if not CharInSetW(ID[1], IdentifierSymbols) then
       Exit;

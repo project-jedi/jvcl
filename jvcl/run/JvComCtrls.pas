@@ -1780,7 +1780,7 @@ begin
       inherited;
 end;
 
-// === TJvTreeNode ===========================================================
+//=== TJvTreeNode ============================================================
 
 class function TJvTreeNode.CreateEnh(AOwner: TTreeNodes): TJvTreeNode;
 begin
@@ -2527,7 +2527,7 @@ begin
 end;
 
 
-// === TJvIPAddressValues ====================================================
+//=== TJvIPAddressValues =====================================================
 
 procedure TJvIPAddressValues.Change;
 begin

@@ -1341,6 +1341,21 @@ resourcestring
   RsEAttributeIndexOutOfBounds = '%d is not a valid attribute index';
   RsESelectionIndexOutOfBounds = '%d is not a valid selection index';
 
+//=== JvOfficeColorButton.pas ================================================
+resourcestring
+  RsDragToFloating = 'Drag to floating';
+
+//=== JvOfficeColorForm.pas ==================================================
+resourcestring
+  RsColorWindow = 'Color Window';
+  // (rom) probably the same as RsDragToFloating
+  RsDragToFloat = 'Drag to float';
+
+//=== JvOfficeColorPanel.pas =================================================
+resourcestring
+  RsAutoCaption = 'Automatic';
+  RsOtherColorCaption = 'Other Colors...';
+
 //=== JvPageSetup.pas ========================================================
 resourcestring
   RsEInvalidValue = 'Value must be greater than zero';
