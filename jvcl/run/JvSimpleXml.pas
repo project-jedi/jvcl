@@ -151,15 +151,8 @@ type
     procedure SetEncoding(const Value: string);
     procedure SetStandAlone(const Value: boolean);
     procedure SetVersion(const Value: string);
-    { TODO -oJVCL -cPOST_JVCL3 : Make protected }
-    function FindHeader:TJvSimpleXMLElem;
-    { TODO -oJVCL -cPOST_JVCL3 : Make public }
-    property Encoding:string read GetEncoding write SetEncoding;
-    { TODO -oJVCL -cPOST_JVCL3 : Make public }
-    property StandAlone:boolean read GetStandAlone write SetStandAlone;
-    { TODO -oJVCL -cPOST_JVCL3 : Make public }
-    property Version:string read GetVersion write SetVersion;
   protected
+    function FindHeader:TJvSimpleXMLElem;
     procedure Error(const S: string);
     procedure FmtError(const S: string; const Args: array of const);
   public
@@ -170,6 +163,9 @@ type
     procedure SaveToStream(const Stream: TStream; Parent: TJvSimpleXML = nil);
     property Item[const Index: integer]: TJvSimpleXMLElem read GetItem; default;
     property Count: integer read GetCount;
+    property Encoding:string read GetEncoding write SetEncoding;
+    property StandAlone:boolean read GetStandAlone write SetStandAlone;
+    property Version:string read GetVersion write SetVersion;
   end;
 
   TJvSimpleXMLElemCompare = function(Elems: TJvSimpleXMLElems; Index1, Index2: integer): integer of object;
