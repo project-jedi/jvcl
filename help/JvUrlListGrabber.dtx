@@ -10,9 +10,7 @@ Author
 ----------------------------------------------------------------------------------------------------
 @@EGrabberNotStopped
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Exception triggered if someone tries to set the Url property while the grabber is not stopped
 ----------------------------------------------------------------------------------------------------
 @@ENoGrabberForUrl
 Summary
@@ -73,6 +71,11 @@ Summary
 See Also
   OutputMode
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.Id
+Summary
+  An Integer value to be freely used by the user of that class, usually to identify the grabber in 
+  a list
+----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.GetDefaultPropertiesClass
 Summary
   This function returns the class of a property holder to be displayed in the object inspector.
@@ -83,6 +86,18 @@ Description
   compatibility issues
 Return value
   A class derived from TJvCustomUrlGrabberDefaultProperties
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.GetSupportedProtocolMarker
+Summary
+  This function returns the marker that indicates the protocol in a URL. 
+Description
+  For instance, for an HTTP grabber, this would return 'http://'
+  This function MUST be overriden in the derived classes but cannot be abstract because of C++
+  Builder compatibility issues
+Return value
+  A string indicating the marker for protocol supported by the class
+See Also
+  GetSupportedURLName
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.GetSupportedURLName
 Summary
@@ -95,6 +110,27 @@ Description
   Builder compatibility issues
 Return value
   A string indicating the type of URL supported by the class
+See Also
+  GetSupportedProtocolMarker
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.ParseUrl
+Summary
+  Splits the given URL into its various parts, if indicated
+Description
+  A URL respects this format:
+  
+    protocol [username[:password]@] host [:port] [/filename]
+    
+  When a non compulsory part is missing the exit value of the associated parameter will be an 
+  empty string or 0
+Parameters
+  Url - The Url to parse
+  Protocol - The protocol marker to find in the Url
+  Host - Upon exit, contains the host part of the Url
+  FileName - Upon exit, contains the \filename part of the Url (including the leading slash)
+  UserName - Upon exit, contains the \username part of the Url
+  PassWord - Upon exit, contains the \password part of the Url
+  Port - Upon exit, contains the \port part of the Url
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.OnClosingConnection
 Summary
@@ -145,8 +181,6 @@ See Also
 @@TJvCustomUrlGrabber.OnProgress
 Summary
   This event is triggered while the grabbing is in progress
-Description
-  Write here a description
 Parameters
   Sender    - The grabber object that has made some progress
   Position  - The position in the object where the grabbing process is at the moment
@@ -218,6 +252,14 @@ Description
 See Also
   UserName
 ----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabber.Port
+Summary
+  The port to connect onto the host
+Description
+  If you want to specifically connect to a given port, indicate it here
+See Also
+  Url
+----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.Size
 Summary
   The size of the object being grabbed. If the protocol cannot provide the size of the object this
@@ -244,6 +286,11 @@ See Also
 @@TJvCustomUrlGrabber.Url
 Summary
   The URL to grab
+Description
+  When you set this property, the value will be parsed using ParseUrl and if the various non compulsory
+  parts are indicated, they will be the new value of their respective properties.
+See Also
+  Port, UserName, PassWord
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabber.UserName
 Summary
@@ -312,21 +359,35 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.DoProgress
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  This procedure calls Synchronize UpdateGrabberProgress, which in turn calls FGrabber.DoProgress
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  TJvCustomUrlGrabber.DoProgress
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.DoStatus
+Summary
+  This procedure calls Synchronize UpdateGrabberStatus, which in turn calls FGrabber.DoStatus
+See Also
+  TJvCustomUrlGrabber.DoStatus
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.UpdateGrabberProgress
+Summary
+  Calls FGrabber.DoProgress
+See Also
+  FGrabber
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.UpdateGrabberStatus
+Summary
+  Calls FGrabber.DoStatus
+See Also
+  FGrabber
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThread.Status
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  The Status value, used internally by the thread to signal different states to its grabber
+----------------------------------------------------------------------------------------------------
+@@TJvCustomUrlGrabberThread.FGrabber
+Summary
+  This value holds a reference to the grabber to which the thread belongs
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomUrlGrabberThreadClass
 <TITLE TJvUrlGrabberThreadClass type>
@@ -424,82 +485,53 @@ Parameters
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  A list of default properties for grabbers
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList.Add
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Adds the given item in the list.
 Parameters
-  Item - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Item - The item to add
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList.Clear
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Clears the items in the list
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList.Count
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the number of items in the list
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Items
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList.Items
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the items in the list as an indexed property
 Parameters
-  Index - Description for this parameter
+  Index - The index of the element
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Count, ItemsNamed
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList.ItemsNamed
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Returns the items in the list as an indexed by name property or nil if no item with that name exists
 Parameters
-  Name - Description for this parameter
+  Name - The name of the index to find.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Count, Items
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList.Read
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Reads the list from a DFM stream
 Parameters
-  Reader - Description for this parameter
+  Reader - The object to use to read from the DFM stream
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Write
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefaultPropertiesList.Write
 Summary
-  Write here a summary (1 line)
-Description
-  Write here a description
+  Writes the list into a DFM stream
 Parameters
-  Writer - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Writer - The object to use to write into the DFM stream
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlGrabberDefPropEdTrick
 Summary
@@ -646,11 +678,39 @@ Summary
 See Also
   OnClosingConnection
 ----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnDoneFile
+Summary
+  This event is triggered when a grabber has finished its write operation in a file
+See Also
+  OnDoneStream
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnDoneStream
+Summary
+  This event is triggered when a grabber has finished its write operation in a stream
+See Also
+  OnDoneFile
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnError
+Summary
+  This event is triggered when an error has occured in a grabber
+----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnNameResolved
 Summary
   Event triggered when a name has been resolved by a grabber
 See Also
   OnResolvingName
+----------------------------------------------------------------------------------------------------
+@@TJvUrlListGrabber.OnProgress
+Summary
+  This event is triggered while the grabbing is in progress for a grabber
+Parameters
+  Sender    - The TJvUrlListGrabber object to which the grabber belongs
+  Grabber   - The grabber object that has made some progress
+  Position  - The position in the object where the grabbing process is at the moment
+  TotalSize - The total size of the object being grabbed. It may be 0 if the protocol could not give
+              the size of the object
+  Url       - The URL of the object being grabbed
+  Continue  - If you set this value to False, the grabbing will be canceled
 ----------------------------------------------------------------------------------------------------
 @@TJvUrlListGrabber.OnReceivingResponse
 Summary

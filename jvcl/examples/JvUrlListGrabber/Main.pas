@@ -34,10 +34,8 @@ uses
 
 type
   TfrmMain = class(TForm)
-    btnGoDynamic: TButton;
     julGrabber: TJvUrlListGrabber;
     memExplanation: TMemo;
-    grbDynamic: TGroupBox;
     grbDesign: TGroupBox;
     memUrls: TMemo;
     lblExpl: TLabel;
@@ -45,20 +43,32 @@ type
     btnClear: TButton;
     btnStop: TButton;
     StatusBar1: TStatusBar;
-    procedure btnGoDynamicClick(Sender: TObject);
     procedure btnClearClick(Sender: TObject);
     procedure btnGoDesignClick(Sender: TObject);
     procedure btnStopClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure julGrabberConnectedToServer(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber);
+    procedure julGrabberStatusChange(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber);
+    procedure julGrabberError(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber; ErrorMsg: String);
+    procedure julGrabberProgress(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber; Position, TotalSize: Int64;
+      Url: String; var Continue: Boolean);
+    procedure julGrabberConnectionClosed(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber);
+    procedure julGrabberRequestSent(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber);
+    procedure julGrabberSendingRequest(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber);
+    procedure julGrabberDoneFile(Sender: TJvUrlListGrabber;
+      Grabber: TJvCustomUrlGrabber; FileName: String; FileSize: Integer;
+      Url: String);
   private
     { Private declarations }
-    grabber : TJvUrlListGrabber;
-    procedure DoHandleError(Sender: TObject; ErrorMsg: string);
-    procedure DoProgressEvent(Sender: TObject; Position, TotalSize: Int64;
-      Url: string; var Continue: Boolean);
   public
     { Public declarations }
-    procedure grabberConnectionClosed(Sender : TJvUrlListGrabber; Grabber : TJvCustomUrlGrabber);
   end;
 
 var
@@ -68,29 +78,6 @@ implementation
 
 {$R *.dfm}
 uses JvTypes;
-
-procedure TfrmMain.btnGoDynamicClick(Sender: TObject);
-begin
-
-  grabber := TJvUrlListGrabber.Create(Self);
-  grabber.URLs.Add(InputBox('Url to grab', 'Please give a url to grab', 'http://jvcl.sf.net/'));
-  memExplanation.Lines.Clear;
-  with grabber.Grabbers[0] do
-  begin
-    OutputMode := omFile;
-    OnError := DoHandleError;
-    OnProgress := DoProgressEvent;
-    FileName := ExtractFilePath(Application.Exename)+'\test.txt';
-    Start;
-  end;
-  grabber.OnConnectionClosed := grabberConnectionClosed;
-end;
-
-procedure TfrmMain.grabberConnectionClosed(Sender: TJvUrlListGrabber; Grabber : TJvCustomUrlGrabber);
-begin
-  Application.messagebox('Finished', '', 0);
-  grabber.Free;
-end;
 
 procedure TfrmMain.btnClearClick(Sender: TObject);
 begin
@@ -119,24 +106,13 @@ begin
     begin
       with julGrabber.Grabbers[i] do
       begin
-        OnError := DoHandleError;
-        OnProgress := DoProgressEvent;
+        Id := i;
         OutputMode := omFile;
         FileName := ExtractFilePath(Application.ExeName) + '\result' + IntToStr(i) + '.txt';
       end;
     end;
     julGrabber.StartAll;
   end;
-end;
-
-procedure TfrmMain.DoProgressEvent(Sender: TObject; Position, TotalSize: Int64; Url: string; var Continue: Boolean);
-begin
-  memExplanation.Lines.Add(Format('Url: %s, Position: %d',[Url, Position]));
-end;
-
-procedure TfrmMain.DoHandleError(Sender: TObject; ErrorMsg: string);
-begin
-  memExplanation.Lines.Add(Format('Error: %s',[ErrorMsg]));
 end;
 
 procedure TfrmMain.btnStopClick(Sender: TObject);
@@ -147,6 +123,56 @@ end;
 procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   memExplanation.WordWrap := true;
+end;
+
+procedure TfrmMain.julGrabberConnectedToServer(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Connected to server',[Grabber.Id]));
+end;
+
+procedure TfrmMain.julGrabberStatusChange(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Status change',[Grabber.Id]));
+end;
+
+procedure TfrmMain.julGrabberError(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber; ErrorMsg: String);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Error: %s',[Grabber.Id, ErrorMsg]));
+end;
+
+procedure TfrmMain.julGrabberProgress(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber; Position, TotalSize: Int64; Url: String;
+  var Continue: Boolean);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Url: %s, Position: %d of %d',[Grabber.Id, Url, Position, TotalSize]));
+end;
+
+procedure TfrmMain.julGrabberConnectionClosed(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Connection closed',[Grabber.Id]));
+end;
+
+procedure TfrmMain.julGrabberRequestSent(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Request sent',[Grabber.Id]));
+end;
+
+procedure TfrmMain.julGrabberSendingRequest(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Sending request',[Grabber.Id]));
+end;
+
+procedure TfrmMain.julGrabberDoneFile(Sender: TJvUrlListGrabber;
+  Grabber: TJvCustomUrlGrabber; FileName: String; FileSize: Integer;
+  Url: String);
+begin
+  memExplanation.Lines.Add(Format('Grabber %d: Done file %s of size %d from %s',[Grabber.Id, FileName, FileSize, Url]));
 end;
 
 end.

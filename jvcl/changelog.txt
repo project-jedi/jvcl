@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2004-08-06
+- The JvUrlGrabbers now have a Port property and more events that can be triggered. /// obones
 2004-07-27
 - run/JvZlibMultiple.pas: Added support for selective extraction and listing archive contents without 
   writing any files to disk. Parameters added to OnDecompressingFile and OnDecompressedFile events. // WPOstma 
