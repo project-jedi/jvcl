@@ -1,7 +1,9 @@
 2002-11-02
 - Added TStrings item editor to JvInspector //marcelb
+2002-11-01
+- Added JvWndProcHook unit. This unit implements a method of safe subclassing of the WndProc of any TControl and makes sure the WndProc link can't be broken. Also modified JvHook, JvButtons, JvCaptionButton, JvaCpationButton, JvAppHotKey, JvDragDrop, JvEasterEgg, JvPlacemnt, JvMagnet, Jvgrdcpt to use JvWndProcHook instead if subclassing directly. Moved JvHooks to \Archive. Moved TJvWindowHook class from JvHook to JvWndProcHook and modified it to use the JvWndProc subclassing method.  //peter3, remkobonte
 2002-10-15
-- Fixed JvScrollText - If you had lines longer than the width of the component, not all of the text would get scrolled. fixed. Fix provide by Michael Freislich. //MBeck 
+- Fixed JvScrollText - If you had lines longer than the width of the component, not all of the text would get scrolled. Fix provide by Michael Freislich. //MBeck 
 
 2002-10-13
 - Fixed some memory leaks in JvInspector //marcelb
