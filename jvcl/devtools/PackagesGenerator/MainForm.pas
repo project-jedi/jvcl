@@ -88,6 +88,14 @@ type
     N3: TMenuItem;
     Exit1: TMenuItem;
     btnAdvancedBCB: TButton;
+    pnlParameters: TPanel;
+    shHideParameters: TShape;
+    lblPrefix: TLabel;
+    cmbPrefix: TComboBox;
+    lblFormat: TLabel;
+    cmbFormat: TComboBox;
+    actParameters: TAction;
+    Parameters1: TMenuItem;
     procedure actExitExecute(Sender: TObject);
     procedure actNewExecute(Sender: TObject);
     procedure aevEventsHint(Sender: TObject);
@@ -131,6 +139,8 @@ type
       var Value: String);
     procedure btnAdvancedBCBClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure actParametersExecute(Sender: TObject);
+    procedure actParametersUpdate(Sender: TObject);
   private
     { Private declarations }
     Changed : Boolean; // true if current file has changed
@@ -155,7 +165,8 @@ implementation
 
 uses
   FileUtils, JvSimpleXml, JclFileUtils, JclStrings, TargetDialog,
-  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedBCBForm;
+  GenerateUtils, KnownTagsForm, FormTypeDialog, ShellApi, AdvancedBCBForm,
+  GenerationMessagesForm;
 {$R *.dfm}
 
 procedure TfrmMain.actExitExecute(Sender: TObject);
@@ -365,9 +376,14 @@ begin
     path := jdePackagesLocation.Text
   else
     path := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir)+jdePackagesLocation.Text);
-    
+
   EnumeratePackages(path, jlbList.Items);
-  jlbList.ItemIndex := 0;
+  path := StrEnsureSuffix('\', path);
+  if FileExists(path+'Default-D.xml') then
+    jlbList.Items.Add('Default-D');
+  if FileExists(path+'Default-R.xml') then
+    jlbList.Items.Add('Default-R');
+  jlbList.ItemIndex := 2;
   LoadPackage;
 end;
 
@@ -389,6 +405,7 @@ begin
     FileName := jdePackagesLocation.Text
   else
     FileName := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + jdePackagesLocation.Text);
+
   FileName := FileName + '\xml\' + ledName.Text;
   if rbtDesign.Checked then
     FileName := FileName + '-D.xml'
@@ -578,7 +595,8 @@ begin
           end;
         end;
 
-        Generate(jlbList.Items, targets, path, nil, frmTargets.chkGenDof.Checked);
+        frmGenMessages.Show;
+        Generate(jlbList.Items, targets, path, cmbPrefix.Text, cmbFormat.Text, AddMessage, frmTargets.chkGenDof.Checked);
       finally
         targets.Free;
       end;
@@ -731,9 +749,9 @@ end;
 procedure TfrmMain.mnuAboutClick(Sender: TObject);
 begin
   ShowMessage(
-    'JVCL Package Generator'#13#10+
+    'Jedi Package Generator'#13#10+
     #13#10+
-    '(c) 2003 Olivier Sannier for the JVCL group');
+    '(c) 2003 Olivier Sannier for the Jedi group');
 end;
 
 procedure TfrmMain.jsgFilesGetEditText(Sender: TObject; ACol,
@@ -761,6 +779,16 @@ procedure TfrmMain.FormShow(Sender: TObject);
 begin
   // Load the list of packages
   LoadPackagesList;
+end;
+
+procedure TfrmMain.actParametersExecute(Sender: TObject);
+begin
+  pnlParameters.Visible := actParameters.Checked;
+end;
+
+procedure TfrmMain.actParametersUpdate(Sender: TObject);
+begin
+  actParameters.Checked := pnlParameters.Visible;
 end;
 
 end.

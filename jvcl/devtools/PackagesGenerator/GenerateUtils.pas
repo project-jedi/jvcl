@@ -7,11 +7,13 @@ uses Classes;
 type
   TGenerateCallback = procedure (msg : string);
 
-procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback; makeDof : Boolean = False);
+procedure Generate(packages : TStrings; targets : TStrings; path, prefix, format : string; callback : TGenerateCallback; makeDof : Boolean = False);
 
 procedure EnumerateTargets(Path : string; targets : TStrings);
 
 procedure EnumeratePackages(Path : string; packages : TStrings);
+
+procedure ExpandTargets(targets : TStrings);
 
 var
   StartupDir : string;
@@ -93,18 +95,36 @@ begin
   else if target = 'K3' then Result := 'k3';
 end;
 
-function BuildPackageName(packageNode : TJvSimpleXmlElem; target : string) : string;
+function ExpandPackageName(Name, target, prefix, format : string) : string;
+var
+  Suffix : string;
+  Env : string;
+  Ver : string;
+  Typ : string;
+begin
+  Suffix := TargetToSuffix(target);
+  Env := Suffix[1];
+  Ver := Suffix[2];
+  Typ := Copy(Name, Length(Name), 1);
+  Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1);
+
+  StrReplace(Format, '%p', Prefix, [rfReplaceAll]);
+  StrReplace(Format, '%n', Name, [rfReplaceAll]);
+  StrReplace(Format, '%e', Env, [rfReplaceAll]);
+  StrReplace(Format, '%v', Ver, [rfReplaceAll]);
+  StrReplace(Format, '%t', Typ, [rfReplaceAll]);
+  Result := Format;
+end;
+
+function BuildPackageName(packageNode : TJvSimpleXmlElem; target : string; prefix : string; Format : string) : string;
 var
   Name : string;
-  Suffix : string;
 begin
   Name := packageNode.Properties.ItemNamed['Name'].Value;
-  if (Copy(Name, 1, 2) = 'Jv') and
+  if (Copy(Name, 1, Length(Prefix)) = Prefix) and
      (Pos('-', Name) <> 0)  then
   begin
-    Suffix := TargetToSuffix(target);
-    Result := Copy(Name, 1, Length(Name)-2)+Suffix;
-  Result := Result+Copy(Name, Length(Name), 1);
+    Result := ExpandPackageName(Name, target, prefix, Format);
   end
   else
   begin
@@ -218,10 +238,6 @@ begin
 
   if formName = '' then
   begin
-    //StrReplace(Lines, '{', '', [rfReplaceAll]);
-    //StrReplace(Lines, '}', '', [rfReplaceAll]);
-    //StrReplace(Lines, '/*', '', [rfReplaceAll]);
-    //StrReplace(Lines, '*/', '', [rfReplaceAll]);
     openPos := Pos('{', Lines);
     if openPos > 0 then
     begin
@@ -244,6 +260,67 @@ begin
   end;
 end;
 
+procedure ExpandTargets(targets : TStrings);
+var
+  expandedTargets : TStringList;
+  i : Integer;
+begin
+  expandedTargets := TStringList.Create;
+  try
+    // ensure uniqueness in expanded list
+    expandedTargets.Sorted := True;
+    expandedTargets.CaseSensitive := False;
+    expandedTargets.Duplicates := dupIgnore;
+
+    for i := 0 to targets.Count - 1 do
+    begin
+      if SameText(targets[i], 'all') then
+        StrToStrings('c5,c6,d5,d5s,d6,d6p,d7,d7p,k2,k3', ',', expandedTargets)
+      else if SameText(targets[i], 'windows') then
+      begin
+        expandedTargets.Add('c5');
+        expandedTargets.Add('c6');
+        expandedTargets.Add('c6p');
+        expandedTargets.Add('d5');
+        expandedTargets.Add('d5s');
+        expandedTargets.Add('d6');
+        expandedTargets.Add('d6p');
+        expandedTargets.Add('d7');
+        expandedTargets.Add('d7p');
+      end
+      else if SameText(targets[i], 'linux') or
+              SameText(targets[i], 'kylix') then
+      begin
+        expandedTargets.Add('k2');
+        expandedTargets.Add('k3');
+      end
+      else if SameText(targets[i], 'delphi') then
+      begin
+        expandedTargets.Add('d5');
+        expandedTargets.Add('d5s');
+        expandedTargets.Add('d6');
+        expandedTargets.Add('d6p');
+        expandedTargets.Add('d7');
+        expandedTargets.Add('d7p');
+      end
+      else if SameText(targets[i], 'bcb') then
+      begin
+        expandedTargets.Add('c5');
+        expandedTargets.Add('c6');
+        expandedTargets.Add('c6p');
+      end
+      else
+        expandedTargets.Add(targets[i]);
+    end;
+
+    // assign the values back into the caller
+    targets.Clear;
+    targets.Assign(expandedTargets);
+  finally
+    expandedTargets.Free;
+  end;
+end;
+
 function IsIncluded(Node : TJvSimpleXmlElem; target : string) : Boolean;
 var
   targets : TStringList;
@@ -252,8 +329,8 @@ begin
   try
     StrToStrings(Node.Properties.ItemNamed['Targets'].Value,
                  ',', targets);
-    Result := (targets.IndexOf(ShortTarget(target)) > -1) or
-              (StrLower(targets[0]) = 'all');
+    ExpandTargets(targets);
+    Result := (targets.IndexOf(ShortTarget(target)) > -1);
   finally
     targets.Free;
   end;
@@ -269,7 +346,7 @@ begin
   Result := FileTimeToDateTime(fileTime);
 end;
 
-function ApplyTemplateAndSave(path, target, package, extension : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime) : string;
+function ApplyTemplateAndSave(path, target, package, extension, prefix, format : string; template : TStrings; xml : TJvSimpleXml; templateDate, xmlDate : TDateTime; xmlName : string) : string;
 var
   OutFileName : string;
   packSuffix : string;
@@ -289,23 +366,27 @@ var
   tmpStr : string;
   bcblibs : string;
   bcblibsList : TStringList;
+  containsSomething : Boolean; // true if package will contain something
+
 begin
   packSuffix := targetToSuffix(target);
   outFile := TStringList.Create;
   bcblibsList := TStringList.Create;
   Result := '';
+  containsSomething := False;
 
   try
     // read the xml file
     rootNode := xml.Root;
+    OutFileName := rootNode.Properties.ItemNamed['Name'].Value;
     if rootNode.Properties.ItemNamed['Design'].BoolValue then
-      NameSuffix := 'D'
+      OutFileName := OutFileName + '-D'
     else
-      NameSuffix := 'R';
+      OutFileName := OutFileName + '-R';
 
     OutFileName := path + target + '\' +
-                   rootNode.Properties.ItemNamed['Name'].Value +
-                   PackSuffix + NameSuffix + Extension;
+                   ExpandPackageName(OutFileName, target, prefix, format)+
+                   Extension;
 
     // Process the file, only if the template or the xml are newer
     // than the output file. If that output file doesn't exist,
@@ -341,8 +422,9 @@ begin
             if IsIncluded(packageNode, target) then
             begin
               tmpStr := repeatLines;
-              reqPackName := BuildPackageName(packageNode, target);
+              reqPackName := BuildPackageName(packageNode, target, prefix, format);
               StrReplace(tmpStr, '%NAME%', reqPackName, [rfReplaceAll]);
+              containsSomething := True;
               outFile.Text := outFile.Text +
                               EnsureCondition(tmpStr, packageNode, target);
             end;
@@ -382,6 +464,7 @@ begin
               tmpStr := repeatLines;
               incFileName := fileNode.Properties.ItemNamed['Name'].Value;
               ApplyFormName(fileNode, tmpStr);
+              containsSomething := True;
               outFile.Text := outFile.Text +
                               EnsureCondition(tmpStr, fileNode, target);
             end;
@@ -417,13 +500,15 @@ begin
             fileNode := containsNode.Items[j];
             // if this included file is to be included for this target
             // and there is a form associated to the file
-            if IsIncluded(fileNode, target) and
-              (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
+            if IsIncluded(fileNode, target) then
             begin
-              tmpStr := repeatLines;
-              ApplyFormName(fileNode, tmpStr);
-              outFile.Text := outFile.Text +
-                              EnsureCondition(tmpStr, fileNode, target);
+              containsSomething := True;
+              if (fileNode.Properties.ItemNamed['FormName'].Value <> '') then
+              begin
+                tmpStr := repeatLines;
+                ApplyFormName(fileNode, tmpStr);
+                outFile.Text := outFile.Text + tmpStr;
+              end;
             end;
           end;
         end
@@ -454,8 +539,10 @@ begin
         else
         begin
           StrReplace(curLine, '%NAME%',
-                     rootNode.Properties.ItemNamed['Name'].Value+
-                     PackSuffix + NameSuffix,
+                     PathExtractFileNameNoExt(OutFileName),
+                     [rfReplaceAll]);
+          StrReplace(curLine, '%XMLNAME%',
+                     ExtractFileName(xmlName),
                      [rfReplaceAll]);
           StrReplace(curLine, '%DESCRIPTION%',
                      rootNode.Items.ItemNamed['Description'].Value,
@@ -479,7 +566,8 @@ begin
         Inc(i);
       end;
 
-      outFile.SaveToFile(OutFileName)
+      if containsSomething then
+        outFile.SaveToFile(OutFileName);
     end;
   finally
     bcblibsList.Free;
@@ -487,13 +575,14 @@ begin
   end;
 end;
 
-procedure Generate(packages : TStrings; targets : TStrings; path : string; callback : TGenerateCallback; makeDof : Boolean);
+procedure Generate(packages : TStrings; targets : TStrings; path, prefix, format : string; callback : TGenerateCallback; makeDof : Boolean);
 var
   rec : TSearchRec;
   i : Integer;
   j : Integer;
   templateFileName : string;
   xml : TJvSimpleXml;
+  xmlName : string;
   template : TStringList;
   persoTarget : string;
 begin
@@ -519,16 +608,20 @@ begin
             xml := TJvSimpleXml.Create(nil);
             try
               xml.Options := [sxoAutoCreate];
-              xml.LoadFromFile(path+'xml\'+packages[j]+'.xml');
+              xmlName := path+'xml\'+packages[j]+'.xml';
+              xml.LoadFromFile(xmlName);
               persoTarget := ApplyTemplateAndSave(
                                    path,
                                    targets[i],
                                    packages[j],
                                    ExtractFileExt(rec.Name),
+                                   prefix,
+                                   Format,
                                    template,
                                    xml,
                                    FileDateToDateTime(rec.Time),
-                                   FileDateToDateTime(FileAge(path+'xml\'+packages[j]+'.xml')));
+                                   FileDateToDateTime(FileAge(xmlName)),
+                                   xmlName);
 
               // if the generation requested a perso target to be done
               // then generate it now. If we find a template file
@@ -548,10 +641,13 @@ begin
                    persoTarget,
                    packages[j],
                    ExtractFileExt(rec.Name),
+                   prefix,
+                   Format,
                    template,
                    xml,
                    FileDateToDateTime(rec.Time),
-                   FileDateToDateTime(FileAge(path+'xml\'+packages[j]+'.xml')));
+                   FileDateToDateTime(FileAge(xmlName)),
+                   xmlName);
               end;
             finally
               xml.Free;

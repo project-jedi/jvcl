@@ -163,7 +163,7 @@ object frmMain: TfrmMain
     object pnlPackagesLocation: TPanel
       Left = 198
       Top = 28
-      Width = 231
+      Width = 219
       Height = 22
       BevelOuter = bvNone
       Caption = 'Packages location'
@@ -176,10 +176,10 @@ object frmMain: TfrmMain
         Width = 105
         Height = 13
         AutoSize = False
-        Caption = 'Packages location :'
+        Caption = 'Packages location '
       end
       object jdePackagesLocation: TJvDirectoryEdit
-        Left = 104
+        Left = 96
         Top = 0
         Width = 121
         Height = 21
@@ -189,6 +189,64 @@ object frmMain: TfrmMain
         NumGlyphs = 1
         TabOrder = 0
         Text = '..\..\packages'
+      end
+    end
+    object pnlParameters: TPanel
+      Left = 430
+      Top = 28
+      Width = 255
+      Height = 22
+      BevelOuter = bvNone
+      Caption = 'Parameters'
+      DragKind = dkDock
+      DragMode = dmAutomatic
+      TabOrder = 3
+      object shHideParameters: TShape
+        Left = 0
+        Top = 0
+        Width = 255
+        Height = 22
+        Align = alClient
+        Brush.Color = clBtnFace
+        Pen.Style = psClear
+      end
+      object lblPrefix: TLabel
+        Left = 0
+        Top = 4
+        Width = 26
+        Height = 13
+        Caption = 'Prefix'
+      end
+      object lblFormat: TLabel
+        Left = 112
+        Top = 4
+        Width = 32
+        Height = 13
+        Caption = 'Format'
+      end
+      object cmbPrefix: TComboBox
+        Left = 32
+        Top = 0
+        Width = 61
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 0
+        Text = 'Jv'
+        Items.Strings = (
+          'Jv'
+          'Jcl')
+      end
+      object cmbFormat: TComboBox
+        Left = 148
+        Top = 0
+        Width = 105
+        Height = 21
+        ItemHeight = 13
+        TabOrder = 1
+        Text = '%p%n%e%v%t'
+        Items.Strings = (
+          '%p%n%e%v%t'
+          '%p%n')
       end
     end
   end
@@ -407,6 +465,7 @@ object frmMain: TfrmMain
     ImageSize.Width = 0
     Style = msOffice
     Left = 760
+    Top = 116
     object mnuFile: TMenuItem
       Caption = '&File'
       object mnuOpen: TMenuItem
@@ -448,6 +507,10 @@ object frmMain: TfrmMain
       object mnuLocationBar: TMenuItem
         Action = actLocation
       end
+      object Parameters1: TMenuItem
+        Action = actParameters
+        AutoCheck = True
+      end
     end
     object mnuHelp: TMenuItem
       Caption = '&Help'
@@ -463,6 +526,7 @@ object frmMain: TfrmMain
   object aclActions: TActionList
     Images = imlActive
     Left = 732
+    Top = 116
     object actLocation: TAction
       Category = 'View'
       Caption = '&Location bar'
@@ -543,9 +607,17 @@ object frmMain: TfrmMain
       Caption = '&Known replacement tags'
       OnExecute = actKnownExecute
     end
+    object actParameters: TAction
+      Category = 'View'
+      AutoCheck = True
+      Caption = '&Parameters'
+      OnExecute = actParametersExecute
+      OnUpdate = actParametersUpdate
+    end
   end
   object imlActive: TImageList
     Left = 704
+    Top = 116
     Bitmap = {
       494C010108000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
@@ -952,6 +1024,7 @@ object frmMain: TfrmMain
   end
   object imlDisabled: TImageList
     Left = 676
+    Top = 116
     Bitmap = {
       494C010104000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
@@ -1363,12 +1436,12 @@ object frmMain: TfrmMain
       'Please indicate below the directory where the package sources ar' +
       'e located'
     Left = 760
-    Top = 28
+    Top = 144
   end
   object aevEvents: TApplicationEvents
     OnHint = aevEventsHint
     Left = 732
-    Top = 28
+    Top = 144
   end
   object odlAddFiles: TOpenDialog
     DefaultExt = '*.pas'
@@ -1376,7 +1449,7 @@ object frmMain: TfrmMain
     InitialDir = '..\..\run'
     Options = [ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Left = 704
-    Top = 28
+    Top = 144
   end
   object jpmGridPopup: TJvPopupMenu
     ImageMargin.Left = 0
@@ -1386,7 +1459,7 @@ object frmMain: TfrmMain
     ImageSize.Height = 0
     ImageSize.Width = 0
     Left = 676
-    Top = 28
+    Top = 144
     object mnuUp: TMenuItem
       Caption = '&Up'
       OnClick = mnuUpClick
@@ -1403,14 +1476,20 @@ object frmMain: TfrmMain
       'pnlList.Width'
       'jsgDependencies.Height'
       'pnlEdit.Width'
-      'jsgFiles.Height')
+      'jsgFiles.Height'
+      'cmbPrefix.Text'
+      'cmbFormat.Text')
     StoredValues = <>
     Left = 648
+    Top = 116
   end
   object jaiIniStore: TJvAppINIFileStore
+    StoreOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StoreOptions.BooleanStringFalseValues = 'FALSE, NO, N'
     Buffered = False
     FileName = 'pgEdit.ini'
+    SubStores = <>
     Left = 648
-    Top = 28
+    Top = 144
   end
 end
