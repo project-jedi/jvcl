@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Partially documented
+##Status: Completed
 ##Skip: TJvExPubButton
 ##Skip: TJvExPubButtonControl
 ##Skip: TJvExPubCheckBox
@@ -33,7 +33,10 @@ Author
 Summary
   Base class for extended buttons.
 Description
-  Write here a description
+  TJvExButton is a base class for classes in the JVCL library that descend from TButton.
+
+  Do not create instances of TJvExButton. Use a descendant of TJvExButton or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExButton.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -42,7 +45,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the button.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   button.
 See Also
   OnMouseLeave
@@ -61,7 +64,10 @@ See Also
 Summary
   Base class for extended Windows button controls.
 Description
-  Write here a description
+  TJvExButtonControl is a base class for classes in the JVCL library that descend from TButtonControl.
+
+  Do not create instances of TJvExButtonControl. Use a descendant of TJvExButtonControl or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExButtonControl.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -70,7 +76,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the button.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   button.
 See Also
   OnMouseLeave
@@ -89,7 +95,10 @@ See Also
 Summary
   Base class for extended Windows check boxes.
 Description
-  Write here a description
+  TJvExCheckBox is a base class for classes in the JVCL library that descend from TCheckBox.
+
+  Do not create instances of TJvExCheckBox. Use a descendant of TJvExCheckBox or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCheckBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -98,7 +107,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the check box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   check box.
 See Also
   OnMouseLeave
@@ -117,7 +126,10 @@ See Also
 Summary
   Base class for extended Windows combo boxes.
 Description
-  Write here a description
+  TJvExComboBox is a base class for classes in the JVCL library that descend from TComboBox.
+
+  Do not create instances of TJvExComboBox. Use a descendant of TJvExComboBox or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExComboBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -126,7 +138,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the combo box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
   OnMouseLeave
@@ -145,7 +157,10 @@ See Also
 Summary
   Base class for extended Windows check boxes.
 Description
-  Write here a description
+  TJvExCustomCheckBox is a base class for classes in the JVCL library that descend from TCustomCheckBox.
+
+  Do not create instances of TJvExCustomCheckBox. Use a descendant of TJvExCustomCheckBox or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCheckBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -154,7 +169,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the check box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   check box.
 See Also
   OnMouseLeave
@@ -173,7 +188,10 @@ See Also
 Summary
   Base class for extended Windows combo boxes.
 Description
-  Write here a description
+  TJvExCustomCombo is a base class for classes in the JVCL library that descend from TCustomCombo.
+
+  Do not create instances of TJvExCustomCombo. Use a descendant of TJvExCustomCombo or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomCombo.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -182,7 +200,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the combo box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
   OnMouseLeave
@@ -201,7 +219,10 @@ See Also
 Summary
   Base class for extended Windows combo boxes.
 Description
-  Write here a description
+  TJvExCustomComboBox is a base class for classes in the JVCL library that descend from TCustomComboBox.
+
+  Do not create instances of TJvExCustomComboBox. The TJvComboBox class provides a generic implementation
+  of TJvExCustomComboBox. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomComboBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -210,7 +231,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the combo box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   combo box.
 See Also
   OnMouseLeave
@@ -229,25 +250,28 @@ See Also
 Summary
   Base class for extended Windows edit boxes.
 Description
-  Write here a description
+  TJvExCustomEdit is a base class for classes in the JVCL library that descend from TCustomEdit.
+
+  Do not create instances of TJvExCustomEdit. The TJvEdit class provides a generic implementation
+  of TJvExCustomEdit. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.ClipboardCommands
 Summary
-  Write here a summary (1 line)
+  Specifies the clipboard commands that are enabled for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
+
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomEdit.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the edit box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   edit box.
 See Also
   OnMouseLeave
@@ -266,7 +290,10 @@ See Also
 Summary
   Base class for extended Windows group boxes.
 Description
-  Write here a description
+  TJvExCustomGroupBox is a base class for classes in the JVCL library that descend from TCustomGroupBox.
+
+  Do not create instances of TJvExCustomGroupBox. Use a descendant of TJvExCustomGroupBox or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomGroupBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -275,7 +302,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -294,7 +321,10 @@ See Also
 Summary
   Base class for extended labels.
 Description
-  Write here a description
+  TJvExCustomLabel is a base class for classes in the JVCL library that descend from TCustomLabel.
+
+  Do not create instances of TJvExCustomLabel. Use a descendant of TJvExCustomLabel or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomLabel.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -303,7 +333,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the label.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   label.
 See Also
   OnMouseLeave
@@ -322,7 +352,10 @@ See Also
 Summary
   Base class for extended Windows list boxes.
 Description
-  Write here a description
+  TJvExCustomListBox is a base class for classes in the JVCL library that descend from TCustomListBox.
+
+  Do not create instances of TJvExCustomListBox. The TJvListBox class provides a generic implementation
+  of TJvExCustomListBox. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomListBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -331,7 +364,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the list box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   list box.
 See Also
   OnMouseLeave
@@ -350,25 +383,28 @@ See Also
 Summary
   Base class for extended Windows multiline edit boxes.
 Description
-  Write here a description
+  TJvExCustomMemo is a base class for classes in the JVCL library that descend from TCustomMemo.
+
+  Do not create instances of TJvExCustomMemo. The TJvMemo class provides a generic implementation
+  of TJvExCustomMemo. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.ClipboardCommands
 Summary
-  Write here a summary (1 line)
+  Specifies the clipboard commands that are enabled for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
+
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMemo.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -387,7 +423,10 @@ See Also
 Summary
   Base class for extended windowed labels.
 Description
-  Write here a description
+  TJvExCustomStaticText is a base class for classes in the JVCL library that descend from TCustomStaticText.
+
+  Do not create instances of TJvExCustomStaticText. Use a descendant of TJvExCustomStaticText or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomStaticText.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -396,7 +435,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -415,25 +454,28 @@ See Also
 Summary
   Base class for extended Windows edit boxes.
 Description
-  Write here a description
+  TJvExEdit is a base class for classes in the JVCL library that descend from TEdit.
+
+  Do not create instances of TJvExEdit. Use a descendant of TJvExEdit or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.ClipboardCommands
 Summary
-  Write here a summary (1 line)
+  Specifies the clipboard commands that are enabled for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
+
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvExEdit.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the edit box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   edit box.
 See Also
   OnMouseLeave
@@ -452,7 +494,10 @@ See Also
 Summary
   Base class for extended Windows group boxes.
 Description
-  Write here a description
+  TJvExGroupBox is a base class for classes in the JVCL library that descend from TGroupBox.
+
+  Do not create instances of TJvExGroupBox. Use a descendant of TJvExGroupBox or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExGroupBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -461,7 +506,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -480,7 +525,10 @@ See Also
 Summary
   Base class for extended labels.
 Description
-  Write here a description
+  TJvExLabel is a base class for classes in the JVCL library that descend from TLabel.
+
+  Do not create instances of TJvExLabel. Use a descendant of TJvExLabel or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExLabel.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -489,7 +537,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the label.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   label.
 See Also
   OnMouseLeave
@@ -508,7 +556,10 @@ See Also
 Summary
   Base class for extended Windows list boxes.
 Description
-  Write here a description
+  TJvExListBox is a base class for classes in the JVCL library that descend from TListBox.
+
+  Do not create instances of TJvExListBox. Use a descendant of TJvExListBox or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExListBox.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -517,7 +568,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the list box.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   list box.
 See Also
   OnMouseLeave
@@ -536,25 +587,28 @@ See Also
 Summary
   Base class for extended Windows multiline edit boxes.
 Description
-  Write here a description
+  TJvExMemo is a base class for classes in the JVCL library that descend from TMemo.
+
+  Do not create instances of TJvExMemo. Use a descendant of TJvExMemo or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.ClipboardCommands
 Summary
-  Write here a summary (1 line)
+  Specifies the clipboard commands that are enabled for the control.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
+
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvExMemo.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -573,7 +627,10 @@ See Also
 Summary
   Base class for extended Windows radio button.
 Description
-  Write here a description
+  TJvExRadioButton is a base class for classes in the JVCL library that descend from TRadioButton.
+
+  Do not create instances of TJvExRadioButton. Use a descendant of TJvExRadioButton or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExRadioButton.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -582,7 +639,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -601,7 +658,10 @@ See Also
 Summary
   Base class for extended Windows scroll bars.
 Description
-  Write here a description
+  TJvExScrollBar is a base class for classes in the JVCL library that descend from TScrollBar.
+
+  Do not create instances of TJvExScrollBar. Use a descendant of TJvExScrollBar or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExScrollBar.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -610,7 +670,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the scroll bar.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   scroll bar.
 See Also
   OnMouseLeave
@@ -629,7 +689,10 @@ See Also
 Summary
   Base class for extended windowed labels.
 Description
-  Write here a description
+  TJvExStaticText is a base class for classes in the JVCL library that descend from TStaticText.
+
+  Do not create instances of TJvExStaticText. Use a descendant of TJvExStaticText or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExStaticText.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
@@ -638,7 +701,7 @@ Description
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave

@@ -1,5 +1,5 @@
 ##Package: DB
-##Status: Partially documented
+##Status: Completed
 ##Skip: TJvExPubCustomDBGrid
 ##Skip: TJvExPubDBGrid
 ----------------------------------------------------------------------------------------------------
@@ -14,16 +14,19 @@ Author
 Summary
   Base class for extended data-aware grids.
 Description
-  Write here a description
+  TJvExCustomDBGrid is a base class for classes in the JVCL library that descend from TCustomDBGrid.
+
+  Do not create instances of TJvExCustomDBGrid. Use a descendant of TJvExCustomDBGrid or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomDBGrid.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the grid.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
   OnMouseLeave
@@ -42,16 +45,19 @@ See Also
 Summary
   Base class for extended data-aware grids.
 Description
-  Write here a description
+  TJvExDBGrid is a base class for classes in the JVCL library that descend from TDBGrid.
+
+  Do not create instances of TJvExDBGrid. The TJvDBGrid class provides a generic implementation
+  of TJvExDBGrid. You can also create your own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.AboutJVCL
-<INCLUDE JVCL.Main.AboutJVCL.dtx>
+  <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExDBGrid.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the grid.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   grid.
 See Also
   OnMouseLeave

@@ -1,5 +1,5 @@
 ##Package: Core
-##Status: Partially documented
+##Status: Completed
 ##Skip: TJvExPubCustomMaskEdit
 ##Skip: TJvExPubMaskEdit
 ----------------------------------------------------------------------------------------------------
@@ -14,28 +14,34 @@ Author
 Summary
   Base class for extended masked edit controls.
 Description
-  Write here a description
+  TJvExCustomMaskEdit is a base class for classes in the JVCL library that descend from TCustomMaskEdit.
+
+  Do not create instances of TJvExCustomMaskEdit. Use a descendant of TJvExCustomMaskEdit or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.BeepOnError
 Summary
-  Write here a summary (1 line)
+  Specifies whether the edit control beeps when the user tries to enter text that does not match the mask.
 Description
-  Write here a description
+  If BeepOnError is true (the default), the application beeps when a validation error occurs.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.ClipboardCommands
 Summary
-  Write here a summary (1 line)
+  Specifies the clipboard commands that are enabled for the control.
 Description
-  Write here a description
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
+
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvExCustomMaskEdit.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
@@ -54,28 +60,34 @@ See Also
 Summary
   Base class for extended masked edit controls.
 Description
-  Write here a description
+  TJvExMaskEdit is a base class for classes in the JVCL library that descend from TMaskEdit.
+
+  Do not create instances of TJvExMaskEdit. Use a descendant of TJvExMaskEdit or create your
+  own descendant class.
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.AboutJVCL
 <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.BeepOnError
 Summary
-  Write here a summary (1 line)
+  Specifies whether the edit control beeps when the user tries to enter text that does not match the mask.
 Description
-  Write here a description
+  If BeepOnError is true (the default), the application beeps when a validation error occurs.
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.ClipboardCommands
 Summary
-  Write here a summary (1 line)
+  Specifies the clipboard commands that are enabled for the control.
 Description
-  Write here a description
+  Use ClipboardCommands to specify which clipboard commands are allowed for the edit control.
+
+  * ClipboardCommands can't be set to [].
+  * If ClipboardCommands is set to [caCopy] then property ReadOnly is set to True.
 ----------------------------------------------------------------------------------------------------
 @@TJvExMaskEdit.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the 
+  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   OnMouseLeave
