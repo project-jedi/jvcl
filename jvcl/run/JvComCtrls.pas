@@ -1800,8 +1800,8 @@ begin
     for I := 0 to PageCount - 1 do
       Pages[I].TabVisible := Pages[I].TabVisible and not FHideAllTabs;
     ActivePage := SaveActivePage;
-    if FHideAllTabs then
-      TabStop := False;
+    if FHideAllTabs and (SaveActivePage <> nil) then
+      SaveActivePage.TabStop := False;
   end;
 end;
 
