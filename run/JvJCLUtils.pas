@@ -58,7 +58,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, Classes, Graphics, Clipbrd, Controls,
+  SysUtils, Classes, Contnrs, Graphics, Clipbrd, Controls,
   {$IFDEF VisualCLX}
   Qt, QWindows, QStdCtrls, 
   {$ENDIF VisualCLX}
@@ -3455,8 +3455,9 @@ var
 begin
   if Assigned(List) then
   begin
-    for I := 0 to List.Count - 1 do
-      TObject(List[I]).Free;
+    if not (List is TObjectList) then
+      for I := 0 to List.Count - 1 do
+        TObject(List[I]).Free;
     List.Clear;
   end;
 end;
