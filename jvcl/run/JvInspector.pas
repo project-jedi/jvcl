@@ -259,7 +259,7 @@ type
     FVertScrollBar: TScrollBar;
     {$ENDIF VisualCLX}
     { Standard TCustomControl events -WAP}
-    FOnEnter: TNotifyEvent;
+    //FOnEnter: TNotifyEvent;
     FOnContextPopup: TContextPopupEvent;
     FOnKeyDown: TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
@@ -417,7 +417,7 @@ type
 
     { Standard TCustomControl events - these are really events fired by
       the TEdit control used when editing in a cell! -WAP}
-    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
+    //property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
     property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
@@ -481,7 +481,7 @@ type
     property OnItemValueChanged;
     property OnItemEdit; // NEW!       
 
-    property OnEnter;
+    //property OnEnter;
     property OnContextPopup;
     property OnKeyDown;
     property OnKeyPress;
