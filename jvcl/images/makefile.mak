@@ -102,7 +102,8 @@ JvTimeFrameWorkReg.dcr \
 JvUIBReg.dcr \
 JvValidatorsReg.dcr \
 JvWizardReg.dcr \
-JvXPCtrlsReg.dcr
+JvXPCtrlsReg.dcr \
+JvInspectorReg.dcr
 
 Display:
 	@echo [Generating: Resources]
@@ -181,3 +182,4 @@ JvManagedThreadsReg.dcr: JvManagedThreadsReg.rc
 JvXPCtrlsReg.dcr: JvXPCtrlsReg.rc
 JvDotNetCtrlsReg.dcr: JvDotNetCtrlsReg.rc
 JvDockingReg.dcr: JvDockingReg.rc
+JvInspectorReg.dcr: JvInspectorReg.rc
