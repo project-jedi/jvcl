@@ -817,8 +817,8 @@ begin
   if Assigned(AppStorage) then
   begin
     WriteInteger(siVersion, FVersion);
-    SavePlacement;
     Save;
+    SavePlacement;
     FSaved := True;
   end;
 end;
