@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-09-28:
+- Added ButtonDown status properties to JvOutlookBar // andreas
+- Theme support for most components // andreas
 2003-09-26:
 - unicode UJvEditor moved to JvUnicodeEditor/JvUnicodeHLEditor, restored the ANSI JvEditor without MBCS support // andreas
 - Moved TJvgReportParamsEditor from /design/JvgReportParamsForm to /run/JvgReportParamsEditor //peter3
