@@ -167,7 +167,7 @@ object frmMain: TfrmMain
           Height = 125
           Anchors = [akLeft, akTop, akRight]
           ScrollBars = ssVertical
-          TabOrder = 1
+          TabOrder = 2
           OnChange = memDescriptionChange
         end
         object memAuthor: TMemo
@@ -176,7 +176,7 @@ object frmMain: TfrmMain
           Width = 449
           Height = 21
           Anchors = [akLeft, akTop, akRight]
-          TabOrder = 2
+          TabOrder = 1
           OnChange = memAuthorChange
         end
         object memReturnValue: TMemo
@@ -186,7 +186,7 @@ object frmMain: TfrmMain
           Height = 37
           Anchors = [akLeft, akTop, akRight]
           ScrollBars = ssVertical
-          TabOrder = 3
+          TabOrder = 4
           OnChange = memReturnValueChange
         end
         object memParameters: TMemo
@@ -196,7 +196,7 @@ object frmMain: TfrmMain
           Height = 69
           Anchors = [akLeft, akTop, akRight]
           ScrollBars = ssVertical
-          TabOrder = 4
+          TabOrder = 3
           OnChange = memParametersChange
         end
         object memSeeAlso: TMemo
@@ -276,7 +276,7 @@ object frmMain: TfrmMain
       Left = 11
       Top = 2
       Width = 115
-      Height = 21
+      Height = 22
       Align = alNone
       ButtonHeight = 21
       ButtonWidth = 56
@@ -521,7 +521,7 @@ object frmMain: TfrmMain
     Left = 700
     Top = 28
     Bitmap = {
-      494C010105000900040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010105000900040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000003000000001002000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -921,13 +921,14 @@ object frmMain: TfrmMain
       0000000080010000000000008021000000000000800100000000000080010000
       0000000080010000000000008001000000000000800100000000000080010000
       000000008001000000000000800100000000000080010001000000008001807F
-      000000008001C0FF80018001FFFFFFFF}
+      000000008001C0FF80018001FFFFFFFF00000000000000000000000000000000
+      000000000000}
   end
   object imlDisabledImages: TImageList
     Left = 672
     Top = 28
     Bitmap = {
-      494C010103000400040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010103000400040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000001000000001002000000000000010
       00000000000000000000000000000000000000000000CBCBCB00B2B2B200B4B4
       B400B4B4B400B5B5B500B6B6B600B7B7B700B6B6B600B7B7B700B6B6B600B6B6
@@ -1063,7 +1064,8 @@ object frmMain: TfrmMain
       0000000080010000000000008021000000000000800100000000000080010000
       0000000080010000001000008001000000000000800100000000000080010000
       0000000080010000000000008001000000000000800100000000000080010000
-      000000008001000080018001FFFF0000}
+      000000008001000080018001FFFF000000000000000000000000000000000000
+      000000000000}
   end
   object odlOpen: TOpenDialog
     Filter = 'Help source file (*.dtx)|*.dtx|All files (*.*)|*.*'
