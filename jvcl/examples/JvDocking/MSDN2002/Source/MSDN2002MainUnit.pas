@@ -24,7 +24,7 @@ uses
   ActnList, Menus, ImgList, JvDockControlForm, JvDockVIDStyle,
   JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, shdocvw
   {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppRegistryStorage
+  , JvComponent, JvAppStorage, JvAppIniStorage
   {$ENDIF};
 
 type
@@ -223,7 +223,7 @@ type
   private
     { Private declarations }
     {$IFDEF USEJVCL}
-    JvAppStorage:TJvAppRegistryStorage;
+    JvAppStorage:TJvAppIniFileStorage;
     {$ENDIF}
     procedure CreateXPMenu;          //
     procedure CreateToolForm;        // create everything
@@ -280,6 +280,7 @@ end;
 procedure TMSDN2002.LoadToolFormLayout;
 begin
   {$IFDEF USEJVCL}
+  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockLayout.ini';
   LoadDockTreeFromAppStorage(JvAppStorage);
   {$ELSE}
   LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
@@ -289,6 +290,7 @@ end;
 procedure TMSDN2002.SaveToolFormLayout;
 begin
   {$IFDEF USEJVCL}
+  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockLayout.ini';
   SaveDockTreeToAppStorage(JvAppStorage);
   {$ELSE}
   SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
@@ -310,11 +312,8 @@ end;
 procedure TMSDN2002.FormCreate(Sender: TObject);
 begin
   {$IFDEF USEJVCL}
-  JvAppStorage := TJvAppRegistryStorage.Create(self);
-  with JvAppStorage do
-    Root := 'Software\JVCL\Examples\JvDocking\MSDN2002Pro';
+  JvAppStorage := TJvAppIniFileStorage.Create(self);
   {$ENDIF}
-  
   CreateVSNETPageControl;
   LoadDockInfo;
 end;

@@ -22,7 +22,7 @@ uses
   ImgList, ActnList, Menus, ToolWin, ComCtrls, ExtCtrls, StdCtrls,
   JvDockControlForm, JvDockVIDStyle
   {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppRegistryStorage
+  , JvComponent, JvAppStorage, JvAppIniStorage
   {$ENDIF};
 
 type
@@ -505,7 +505,9 @@ type
     procedure LoadDefaultLayout;
   public
     { Public declarations }
-    JvAppStorage:TJvAppRegistryStorage;
+    {$IFDEF USEJVCL}
+    JvAppStorage:TJvAppIniFileStorage;
+    {$ENDIF}
     procedure LoadDockInfo;
   end;
 
@@ -722,7 +724,8 @@ begin
     begin
       Load_Save_WindowUI_ComboBox.ItemIndex := Load_Save_WindowUI_ComboBox.Items.IndexOf(Str);
       {$IFDEF USEJVCL}
-      LoadDockTreeFromAppStorage(JvAppStorage, Str);
+      JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + Str + '.ini';
+      LoadDockTreeFromAppStorage(JvAppStorage);
       {$ELSE}
       LoadDockTreeFromFile(ExtractFilePath(Application.EXEName) + Str + '.ini');
       {$ENDIF}
@@ -734,17 +737,18 @@ begin
 end;
 
 procedure TMainForm.SaveDefaultLayout;
-var IniFile: TIniFile;
+//var IniFile: TIniFile;
 begin
   {$IFDEF USEJVCL}
+  JvAppStorage.Filename := ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini';
   SaveDockTreeToAppStorage(JvAppStorage, Load_Save_WindowUI_ComboBox.Text);
-  JvAppStorage.WriteString(JvAppStorage.ConcatPaths([SectionString, DefaultLayout]), Load_Save_WindowUI_ComboBox.Text);
+{  JvAppStorage.WriteString(JvAppStorage.ConcatPaths([SectionString, DefaultLayout]), Load_Save_WindowUI_ComboBox.Text);
   IniFile := TIniFile.Create(ExtractFilePath(Application.EXEName) + DefineWindowLayoutFileName);
   try
     IniFile.WriteString(SectionString, DefaultLayout, Load_Save_WindowUI_ComboBox.Text);
   finally
     IniFile.Free;
-  end;
+  end;}
   {$ELSE}
     SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Load_Save_WindowUI_ComboBox.Text + '.ini');
   {$ENDIF}
@@ -788,9 +792,7 @@ end;
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
   {$IFDEF USEJVCL}
-  JvAppStorage := TJvAppRegistryStorage.Create(self);
-  with JvAppStorage do
-    Root := 'Software\JVCL\Examples\JvDocking\VIDDemoPro';
+  JvAppStorage := TJvAppIniFileStorage.Create(self);
   {$ENDIF}
   LoadDockInfo;
 end;

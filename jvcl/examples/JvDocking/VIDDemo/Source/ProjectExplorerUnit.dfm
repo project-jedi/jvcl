@@ -12,12 +12,12 @@ object ProjectExplorerForm: TProjectExplorerForm
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
   Font.Height = -12
-  Font.Name = 'ËÎÌו'
+  Font.Name = #203#206#204#229
   Font.Style = []
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   PixelsPerInch = 96
-  TextHeight = 12
+  TextHeight = 15
   object ToolBar1: TToolBar
     Left = 0
     Top = 0
@@ -32,7 +32,7 @@ object ProjectExplorerForm: TProjectExplorerForm
     object ToolButton1: TToolButton
       Left = 0
       Top = 0
-      Action = MainForm.Action_Open
+      ImageIndex = 19
     end
     object ToolButton3: TToolButton
       Left = 23
@@ -45,14 +45,14 @@ object ProjectExplorerForm: TProjectExplorerForm
     object ToolButton2: TToolButton
       Left = 31
       Top = 0
-      Action = MainForm.Action_Properties_Window
+      ImageIndex = 20
     end
   end
   object Panel1: TPanel
     Left = 0
     Top = 24
     Width = 212
-    Height = 218
+    Height = 219
     Align = alClient
     BevelInner = bvRaised
     BevelOuter = bvLowered
@@ -62,7 +62,7 @@ object ProjectExplorerForm: TProjectExplorerForm
       Left = 2
       Top = 2
       Width = 208
-      Height = 214
+      Height = 215
       Align = alClient
       BorderStyle = bsNone
       Indent = 19
@@ -74,6 +74,7 @@ object ProjectExplorerForm: TProjectExplorerForm
     TBDockHeight = 100
     DirectDrag = False
     ShowHint = True
+    EnableCloseButton = True
     DockStyle = MainForm.JvDockVIDStyle1
     Left = 64
     Top = 88

@@ -24,7 +24,7 @@ uses
   JvDockControlForm, JvDockVCStyle, Grids, StdActns, JVHLEditor,
   JvDockDelphiStyle, JvDockVIDStyle
   {$IFDEF USEJVCL}
-  , JvComponent, JvAppStorage, JvAppRegistryStorage
+  , JvComponent, JvAppStorage, JvAppIniStorage
   {$ENDIF};
 
 type
@@ -470,7 +470,7 @@ type
     procedure FormCreate(Sender: TObject);
   private
     {$IFDEF USEJVCL}
-    JvAppStorage:TJvAppRegistryStorage;
+    JvAppStorage:TJvAppIniFileStorage;
     {$ENDIF}
     procedure GetToolbarWidthArr;
     function GetCloseButtonRect: TRect;
@@ -637,6 +637,7 @@ begin
   for i := MDIChildCount - 1 downto 0 do
     MDIChildren[i].Close;
   {$IFDEF USEJVCL}
+  JvAppStorage.FileName := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
   SaveDockTreeToAppStorage(JvAppStorage);
   {$ELSE}
   SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
@@ -965,9 +966,8 @@ begin
   CreateDockableForm;
   GetToolbarWidthArr;
   {$IFDEF USEJVCL}
-  JvAppStorage := TJvAppRegistryStorage.Create(self);
-  with JvAppStorage do
-    Root := 'Software\JVCL\Examples\JvDocking\MSDN2002Pro';
+  JvAppStorage := TJvAppIniFileStorage.Create(self);
+  JvAppStorage.Filename := ExtractFilePath(Application.ExeName) + 'DockInfo.ini';
   LoadDockTreeFromAppStorage(JvAppStorage);
   {$ELSE}
   LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');

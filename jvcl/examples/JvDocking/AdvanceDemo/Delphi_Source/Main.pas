@@ -14,7 +14,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit Main;
 
@@ -310,6 +310,8 @@ procedure TMainForm.SaveToXmlFileClick(Sender: TObject);
 begin
   {$IFDEF USEJVCL}
   SaveDockTreeToAppStorage(FJvAppXMLStorage);
+  {$ELSE}
+  ShowMessage('Not supported unless USEJVCL is defined');
   {$ENDIF}
 end;
 
@@ -317,6 +319,8 @@ procedure TMainForm.LoadFromXmlFileClick(Sender: TObject);
 begin
   {$IFDEF USEJVCL}
   LoadDockTreeFromAppStorage(FJvAppXMLStorage);
+  {$ELSE}
+  ShowMessage('Not supported unless USEJVCL is defined');
   {$ENDIF}
 end;
 

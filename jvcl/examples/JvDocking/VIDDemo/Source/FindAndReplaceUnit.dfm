@@ -41,6 +41,7 @@ object FindAndReplaceForm: TFindAndReplaceForm
     EdgeBorders = [ebLeft, ebTop, ebRight, ebBottom]
     EdgeOuter = esNone
     Flat = True
+    Images = MainForm.ImageList1
     TabOrder = 0
     object ToolButton1: TToolButton
       Left = 0
