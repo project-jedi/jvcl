@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvInspector, IniFiles, TypInfo;
+  JvInspector, IniFiles, TypInfo, JvComponent;
 
 type
   TfrmInspector = class(TForm)
@@ -29,6 +29,7 @@ type
     procedure AddCompoundTest;
     procedure AddCtrl(const Parent: TJvCustomInspectorItem; const Ctrl: TControl);
     procedure AddINIFile;
+    procedure AddVarious;
     procedure ChangeChkState(const Item: TJvCustomInspectorItem);
   public
     { Public declarations }
@@ -58,6 +59,7 @@ var
   Initial: string;
   LastName: string = 'Bestebroer';
   VerInfoStr: string = JVCL_VERSIONSTRING;
+  ADate: TDateTime;
 
 { TfrmInspector }
 
@@ -75,8 +77,8 @@ begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'JvInspector Settings';
   for I := Low(PropArray) to High(PropArray) do
-    TJvInspectorPropData.Create(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).Name := PropArray[I, 1];
-  TJvInspectorVarData.Create('AboutJVCL', TypeInfo(string), InspCat, VerInfoStr).Name := 'About JVCL';
+    TJvInspectorPropData.New(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).Data.Name := PropArray[I, 1];
+  TJvInspectorVarData.New(InspCat, 'AboutJVCL', TypeInfo(string), VerInfoStr).Data.Name := 'About JVCL';
   InspCat.Expanded := True;
 end;
 
@@ -86,7 +88,7 @@ var
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Global Settings (event based data)';
-  with TJvInspectorEventData.Create(InspCat, 'Use check marks', System.TypeInfo(Boolean)) do
+  with TJvInspectorEventData(TJvInspectorEventData.New(InspCat, 'Use check marks', System.TypeInfo(Boolean)).Data) do
   begin
     OnGetAsOrdinal := GetBoolsAsChecks;
     OnSetAsOrdinal := SetBoolsAsChecks;
@@ -116,9 +118,9 @@ begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Compound items test (variable or heap data).';
   CompItem := TJvInspectorCompoundItem.Create(InspCat, nil);
-  CompItem.AddColumn(TJvInspectorVarData.Create('First', TypeInfo(string), CompItem, FirstName).Item);
-  CompItem.AddColumn(TJvInspectorVarData.Create('Initial', TypeInfo(string), CompItem, Initial).Item);
-  CompItem.AddColumn(TJvInspectorVarData.Create('Last', TypeInfo(string), CompItem, LastName).Item);
+  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'First', TypeInfo(string), FirstName));
+  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'Initial', TypeInfo(string), Initial));
+  CompItem.AddColumn(TJvInspectorVarData.New(CompItem, 'Last', TypeInfo(string), LastName));
   CompItem.Columns[0].Width := 25;
   CompItem.Columns[1].Width := 15;
 end;
@@ -129,7 +131,7 @@ var
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(Parent, nil);
   InspCat.DisplayName := Ctrl.Name + ': ' + Ctrl.ClassName;
-  TJvInspectorPropData.Create(InspCat, Ctrl);
+  TJvInspectorPropData.New(InspCat, Ctrl);
 end;
 
 procedure TfrmInspector.AddINIFile;
@@ -139,7 +141,25 @@ begin
   INI := TIniFile.Create(ExtractFilePath(Application.ExeName) + 'demo.ini');
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'INI files (INI-file data layer).';
-  TJvInspectorINIFileData.Create(InspCat, INI, OnINISection, OnINIKey);
+  TJvInspectorINIFileData.New(InspCat, INI, OnINISection, OnINIKey);
+end;
+
+procedure TfrmInspector.AddVarious;
+var
+  InspCat: TJvInspectorCustomCategoryItem;
+begin
+  InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
+  InspCat.DisplayName := 'Various tests.';
+  TJvInspectorVarData.New(InspCat, 'Date/time', TypeInfo(TDateTime), ADate);
+  { Duplicate the columns of the compound items test. This will return the same data instance as
+    used by the columns; a new item will be added to it. We change the name of this item, but the
+    name of the data instance and the columns remain what they were. If we would change the Name
+    of the data instance, this will result in all items that have the same name as the data instance
+    to be renamed as well. }
+  TJvInspectorVarData.New(InspCat, 'First', TypeInfo(string), FirstName).DisplayName := 'Copy of first name';
+  TJvInspectorVarData.New(InspCat, 'Initial', TypeInfo(string), Initial).DisplayName := 'Copy of initial';
+  TJvInspectorVarData.New(InspCat, 'Last', TypeInfo(string), LastName).DisplayName := 'Copy of last name';
+  InspCat.Expanded := True;
 end;
 
 procedure TfrmInspector.ChangeChkState(const Item: TJvCustomInspectorItem);
@@ -164,6 +184,7 @@ begin
   AddInspectorSettings;
   AddCompoundTest;
   AddINIFile;
+  AddVarious;
   JvInspector1.SelectedIndex := 0;
 end;
 
@@ -301,6 +322,7 @@ end;
 initialization
   GeneratedTestEnum := JclGenerateEnumType('TestEnum',
     ['me, myself and I', 'Marcel Bestebroer', 'Project JEDI', 'JEDI-VCL Inspector']);
+  ADate := Now;
 
 finalization
   RemoveTypeInfo(GeneratedTestEnum);

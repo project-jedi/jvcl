@@ -1,4 +1,4 @@
-{ NOTE: this demo requires that the Borland sample data is installed and that the 
+{ NOTE: this demo requires that the Borland sample data is installed and that the
   DBDEMOS folder is available }
 unit InspectorDBExampleMain;
 
@@ -6,7 +6,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, DB, DBTables, Grids, DBGrids, JvInspector, JvInspDB, StdCtrls;
+  Dialogs, DB, DBTables, Grids, DBGrids, JvInspector, JvInspDB, StdCtrls,
+  JvComponent;
 
 type
   TForm1 = class(TForm)
@@ -42,7 +43,7 @@ implementation
 
 procedure TForm1.FormShow(Sender: TObject);
 begin
-  TJvInspectorDBData.Create(JvInspector1.Root, DataSource1, ['LastName', 'FirstName', 'Salary']);
+  TJvInspectorDBData.New(JvInspector1.Root, DataSource1, ['LastName', 'FirstName', 'Salary']);
 end;
 
 procedure TForm1.btnOpenCloseDSClick(Sender: TObject);
@@ -56,7 +57,7 @@ end;
 
 procedure TForm1.btnCloseClick(Sender: TObject);
 begin
-Close;
+  Close;
 end;
 
 end.

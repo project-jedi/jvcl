@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 233
-  Top = 227
+  Left = 397
+  Top = 218
   Width = 759
   Height = 481
   Caption = 'Form1'
@@ -101,7 +101,7 @@ object Form1: TForm1
     Top = 32
   end
   object Table1: TTable
-    DatabaseName = 'InspDemo'
+    DatabaseName = 'DBDEMOS'
     TableName = 'employee.db'
     Left = 96
     Top = 32
