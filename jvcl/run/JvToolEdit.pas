@@ -383,6 +383,13 @@ type
   TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
     var Action: Boolean) of object;
 
+  {$IFDEF VCL}
+  TJvAutoCompleteOption = (acoAutoappendForceOff, acoAutoappendForceOn,
+    acoAutosuggestForceOff, acoAutosuggestForceOn, acoDefault, acoFileSystem,
+    acoFileSysDirs, acoURLAll, acoURLHistory, acoURLMRU, acoUseTab);
+  TJvAutoCompleteOptions = set of TJvAutoCompleteOption;
+  {$ENDIF VCL}
+
   TJvFileDirEdit = class(TJvCustomComboEdit)
   private
     FErrMode: Cardinal;
@@ -392,8 +399,13 @@ type
     FOnAfterDialog: TExecOpenDialogEvent;
     {$IFDEF VCL}
     FAcceptFiles: Boolean;
+    FAutoComplete: Boolean;
+    FAutoCompleteOptions: TJvAutoCompleteOptions;
     procedure SetDragAccept(Value: Boolean);
+    procedure SetAutoComplete(Value: Boolean);
     procedure SetAcceptFiles(Value: Boolean);
+    procedure SetAutoCompleteOptions(const Value: TJvAutoCompleteOptions);
+    procedure UpdateAutoComplete;
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     {$ENDIF VCL}
   protected
@@ -409,6 +421,10 @@ type
     procedure ClearFileList; virtual;
     procedure DisableSysErrors;
     procedure EnableSysErrors;
+    {$IFDEF VCL}
+    property AutoComplete: Boolean read FAutoComplete write SetAutoComplete default True;
+    property AutoCompleteOptions: TJvAutoCompleteOptions read FAutoCompleteOptions write SetAutoCompleteOptions;
+    {$ENDIF VCL}
     property ImageKind default ikDefault;
     property MaxLength;
   public
@@ -487,6 +503,8 @@ type
       default dkOpen;
     property DefaultExt: TFileExt read GetDefaultExt write SetDefaultExt;
     {$IFDEF VCL}
+    property AutoComplete;
+    property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem];
     { (rb) Obsolete; added 'stored False', eventually remove }
     property FileEditStyle: TFileEditStyle read GetFileEditStyle write SetFileEditStyle stored False;
     {$ENDIF VCL}
@@ -584,6 +602,8 @@ type
     property DialogKind: TDirDialogKind read FDialogKind write FDialogKind default dkVCL;
     property DialogText: string read FDialogText write FDialogText;
     {$IFDEF VCL}
+    property AutoComplete;
+    property AutoCompleteOptions default [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
     property DialogOptions: TSelectDirOpts read FOptions write FOptions default [];
     {$ENDIF VCL}
     property InitialDir: string read FInitialDir write FInitialDir;
@@ -899,7 +919,7 @@ implementation
 uses
   ShellAPI, Math,
   {$IFDEF VCL}
-  Consts, JvBrowseFolder,
+  Consts, JvBrowseFolder, ActiveX,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QConsts,
@@ -3356,6 +3376,7 @@ begin
   inherited Create(AOwner);
   {$IFDEF VCL}
   FOptions := [];
+  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem, acoFileSysDirs];
   {$ENDIF VCL}
 end;
 
@@ -3603,6 +3624,7 @@ begin
   {$IFDEF VCL}
   OEMConvert := True;
   FAcceptFiles := True;
+  FAutoComplete := True;
   {$ENDIF VCL}
   ControlState := ControlState + [csCreating];
   try
@@ -3622,6 +3644,9 @@ begin
   inherited CreateHandle;
   if FAcceptFiles then
     SetDragAccept(True);
+
+  if FAutoComplete then
+    UpdateAutoComplete;
 end;
 {$ENDIF VCL}
 
@@ -3712,6 +3737,9 @@ end;
 constructor TJvFilenameEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  {$IFDEF VCL}
+  FAutoCompleteOptions := [acoAutosuggestForceOn, acoFileSystem];
+  {$ENDIF VCL}
   CreateEditDialog;
 end;
 
@@ -4119,9 +4147,150 @@ begin
 end;
 {$ENDIF VCL}
 
+{$IFDEF VCL}
+const
+  SHACF_DEFAULT                  = $00000000;  // Currently (SHACF_FILESYSTEM | SHACF_URLALL)
+  SHACF_FILESYSTEM               = $00000001;  // This includes the File System as well as the rest of the shell (Desktop\My Computer\Control Panel\)
+  SHACF_URLHISTORY               = $00000002;  // URLs in the User's History
+  SHACF_URLMRU                   = $00000004;  // URLs in the User's Recently Used list.
+  SHACF_URLALL                   = (SHACF_URLHISTORY or SHACF_URLMRU);
+  SHACF_USETAB                   = $00000008;  // Use the tab to move thru the autocomplete possibilities instead of to the next dialog/window control.
+  SHACF_FILESYS_ONLY             = $00000010;  // This includes the File System
+  // WIN32_IE >= 0x0600)
+  SHACF_FILESYS_DIRS             = $00000020;  // Same as SHACF_FILESYS_ONLY except it only includes directories, UNC servers, and UNC server shares.
+
+  SHACF_AUTOSUGGEST_FORCE_ON     = $10000000;  // Ignore the registry default and force the feature on.
+  SHACF_AUTOSUGGEST_FORCE_OFF    = $20000000;  // Ignore the registry default and force the feature off.
+  SHACF_AUTOAPPEND_FORCE_ON      = $40000000;  // Ignore the registry default and force the feature on. (Also know as AutoComplete)
+  SHACF_AUTOAPPEND_FORCE_OFF     = $80000000;  // Ignore the registry default and force the feature off. (Also know as AutoComplete)
+
+const
+  ShlwapiDLLName  = 'Shlwapi.dll';
+  SHAutoCompleteName = 'SHAutoComplete';
+
+type
+  TSHAutoComplete = function (hwndEdit: HWnd; dwFlags: DWORD): HResult; stdcall;
+
+var
+  GShlwapiHandle: THandle = 0;
+  GTriedLoadShlwapiDll: Boolean = False;
+  GNeedToUninitialize: Boolean = False;
+  SHAutoComplete: TSHAutoComplete = nil;
+
+procedure UnloadShlwapiDll;
+begin
+  SHAutoComplete := nil;
+  if GShlwapiHandle > 0 then
+    FreeLibrary(GShlwapiHandle);
+  GShlwapiHandle := 0;
+  if GNeedToUninitialize then
+    CoUninitialize;
+end;
+
+procedure LoadShlwapiDll;
+begin
+  if not GTriedLoadShlwapiDll then
+  begin
+    GTriedLoadShlwapiDll := True;
+
+    GShlwapiHandle := Windows.LoadLibrary(ShlwapiDLLName);
+    if GShlwapiHandle > 0 then
+    begin
+      AddFinalizeProc(sUnitName, UnloadShlwapiDll);
+
+      SHAutoComplete := GetProcAddress(GShlwapiHandle, SHAutoCompleteName);
+
+      if Assigned(SHAutoComplete) then
+        GNeedToUninitialize := Succeeded(CoInitialize(nil));
+    end;
+  end;
+end;
+
+procedure TJvFileDirEdit.UpdateAutoComplete;
+const
+  cAutoCompleteOptionValues: array [TJvAutoCompleteOption] of DWORD =
+    (SHACF_AUTOAPPEND_FORCE_OFF, SHACF_AUTOAPPEND_FORCE_ON,
+     SHACF_AUTOSUGGEST_FORCE_OFF, SHACF_AUTOSUGGEST_FORCE_ON, SHACF_DEFAULT, SHACF_FILESYSTEM,
+     SHACF_FILESYS_DIRS, SHACF_URLALL, SHACF_URLHISTORY, SHACF_URLMRU, SHACF_USETAB);
+var
+  Flags: DWORD;
+  AutoCompleteOption: TJvAutoCompleteOption;
+begin
+  if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
+  begin
+    LoadShlwapiDll;
+
+    if Assigned(SHAutoComplete) then
+    begin
+      Flags := 0;
+      for AutoCompleteOption := Low(TJvAutoCompleteOption) to High(TJvAutoCompleteOption) do
+        if AutoCompleteOption in AutoCompleteOptions then
+          Inc(Flags, cAutoCompleteOptionValues[AutoCompleteOption]);
+
+      SHAutoComplete(Handle, Flags);
+    end;
+  end;
+end;
+
+procedure TJvFileDirEdit.SetAutoComplete(Value: Boolean);
+begin
+  if Value <> FAutoComplete then
+  begin
+    FAutoComplete := Value;
+    if HandleAllocated and not (csDesigning in ComponentState) then
+      if AutoComplete then
+        UpdateAutoComplete
+      else
+        RecreateWnd;
+  end;
+end;
+
+procedure TJvFileDirEdit.SetAutoCompleteOptions(
+  const Value: TJvAutoCompleteOptions);
+const
+  cListFillMethods = [acoFileSystem, acoFileSysDirs, acoURLAll, acoURLHistory, acoURLMRU];
+  cOptions = [acoAutoappendForceOff, acoAutoappendForceOn, acoAutosuggestForceOff,
+    acoAutosuggestForceOn, acoUseTab];
+var
+  AddedOptions, RemovedOptions: TJvAutoCompleteOptions;
+begin
+  if FAutoCompleteOptions <> Value then
+  begin
+    AddedOptions := Value - (FAutoCompleteOptions * Value);
+    RemovedOptions := FAutoCompleteOptions - (FAutoCompleteOptions * Value);
+
+    FAutoCompleteOptions := Value;
+
+    { Force correct options }
+    if acoAutoappendForceOff in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutoappendForceOn)
+    else if acoAutoappendForceOn in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutoappendForceOff);
+    if acoAutosuggestForceOff in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutosuggestForceOn)
+    else if acoAutosuggestForceOn in AddedOptions then
+      Exclude(FAutoCompleteOptions, acoAutosuggestForceOff);
+    if acoDefault in AddedOptions then
+      FAutoCompleteOptions := [acoDefault]
+    else if AddedOptions <> [] then
+      Exclude(FAutoCompleteOptions, acoDefault);
+    if (cListFillMethods * FAutoCompleteOptions = []) and
+       (cListFillMethods * RemovedOptions <> []) then
+       FAutoCompleteOptions := FAutoCompleteOptions - cOptions;
+
+    { Last check }
+    if (cOptions * FAutoCompleteOptions <> []) and
+       (cListFillMethods * FAutoCompleteOptions = []) then
+      FAutoCompleteOptions := FAutoCompleteOptions + [acoFileSystem];
+
+    if HandleAllocated and AutoComplete and not (csDesigning in ComponentState) then
+      RecreateWnd;
+  end;
+end;
+{$ENDIF VCL}
+
 initialization
 
 finalization
   FinalizeUnit(sUnitName);
-
 end.
