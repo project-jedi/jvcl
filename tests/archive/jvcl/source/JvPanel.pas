@@ -160,7 +160,6 @@ const
   WordWrap:array[boolean] of Longint = (DT_SINGLELINE,DT_WORDBREAK);
 var
   ATextRect: TRect;
-  Buff: array[0..255] of Char;
   BevelSize:integer;
   Flags:Longint;
 begin
