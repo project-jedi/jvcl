@@ -1395,10 +1395,11 @@ begin
   if FGradientWidth <> Width then
   begin
     FGradientWidth := Width;
-
+    {$IFDEF VCL}
     // recreate gradient rect
-    JvXPCreateGradientRect(Width, FHeaderHeight, clWhite, $00F7D7C6, 32, gsLeft, True,
+    JvXPCreateGradientRect(Width, FHeaderHeight, clWhite, $00F7D7C6, 32, gsLeft, False,
       FGradient);
+    {$ENDIF VCL}
   end;
 
   // resize to maximum height
@@ -1574,7 +1575,12 @@ end;
 procedure TJvXPCustomWinXPBar.DoDrawItem(const Index: Integer; State: TJvXPDrawState);
 var
   Bitmap: TBitmap;
+  {$IFDEF VCL}
   ItemCaption: string;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  ItemCaption: TCaption;
+  {$ENDIF VisualCLX}
   ItemRect: TRect;
   HasImages: Boolean;
 begin
@@ -1606,8 +1612,15 @@ begin
       if (ItemCaption = '') and ((csDesigning in ComponentState) or (ControlCount = 0)) then
         ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
       Inc(ItemRect.Left, 20);
+      {$IFDEF VCL}
       DrawText(Handle, PChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
         DT_VCENTER or DT_END_ELLIPSIS);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      SetPenColor(Handle, Canvas.Font.Color);
+      DrawTextW(Handle, PWideChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
+        DT_VCENTER or DT_END_ELLIPSIS);
+      {$ENDIF VisualCLX}
     end;
   finally
     Bitmap.Free;
@@ -1627,18 +1640,26 @@ begin
     Rect := GetClientRect;
 
     { fill non-client area }
-    Inc(Rect.Top, 5);
+
+    Inc(Rect.Top, 5 + FHeaderHeight);
     Brush.Color := FColors.BodyColor; //$00F7DFD6;
     FillRect(Rect);
+    Dec(Rect.Top, FHeaderHeight);
 
     { draw header }
+    {$IFDEF VCL}
     JvXPCreateGradientRect(Width, FHeaderHeight, FColors.GradientFrom,
       FColors.GradientTo, 32, gsLeft, True, FGradient);
     Draw(0, Rect.Top, FGradient);
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FillGradient(Handle, Bounds(0, Rect.Top, Width, FHeaderHeight),
+      32, FColors.GradientFrom, FColors.GradientTo, gdHorizontal);
+    {$ENDIF VisualCLX}
 
     { draw frame... }
     Brush.Color := clWhite;
-    FrameRect({$IFDEF VisualCLX}Canvas,{$ENDIF}   Rect);
+    FrameRect({$IFDEF VisualCLX}Canvas, {$ENDIF}Rect);
 
     { ...with cutted edges }
     OwnColor := TJvXPWinControl(Parent).Color;
@@ -1726,6 +1747,7 @@ begin
       DT_END_ELLIPSIS);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
+    SetPenColor(Handle, Font.Color);
     DrawTextW(Handle, PWideChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
     {$ENDIF VisualCLX}
