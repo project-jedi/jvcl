@@ -712,6 +712,7 @@ end;
 
 procedure TJvCustomDialButton.Paint;
 begin
+  if csCreating in ControlState then exit;
   Canvas.Brush.Color := Parent.Brush.Color;
   DrawThemedBackground(Self, Canvas, ClientRect);
   BitmapNeeded;
