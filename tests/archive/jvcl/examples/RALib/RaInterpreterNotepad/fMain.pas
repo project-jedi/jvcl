@@ -195,7 +195,7 @@ begin
     end;
   end
   else
-    { сообщить, что мол файл надо бы куда-нибудь сохранить }
+    { To inform, that the user should save the file somewhere [translated] }
     MessageDlg('File removed from disk.'#13 +
       'Choose File|SaveAs menu item to save file.',
        mtWarning, [mbOK], 0);

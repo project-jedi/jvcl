@@ -1,5 +1,6 @@
 var
   S: string;
 begin
-  Result := 'Привет' + #13;
+  //[translated]:
+  Result := 'Greetings' + #13;
 end;

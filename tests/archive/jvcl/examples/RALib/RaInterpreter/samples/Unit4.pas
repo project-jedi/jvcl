@@ -57,7 +57,7 @@ begin
 //  QRLabel1.Enabled := False;
   DataSet := Application.FindComponent('Test').FindComponent('Table1');
 //  MessageBox(0, DataSet.Name, 'Information', 0);
-  QRLabel1.Caption := 'Привет';
+  QRLabel1.Caption := 'Greetings'; // [translated]
   L := QRExpr2.Left;
   M := 0;
 end;

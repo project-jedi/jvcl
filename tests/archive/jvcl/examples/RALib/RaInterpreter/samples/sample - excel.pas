@@ -3,28 +3,31 @@ Var ExcelWindow, NewWorkBooks, WorkBook, Cell, Range, Border, WorkSheet,
     Line, Column, LineCount, ColumnCount : Integer;
 begin
 ExcelWindow := CreateOleObject('Excel.Application');
-// сделаем окно Excel видимым и активным
+// Let's make the Excel window visible and active [translated]
 ExcelWindow.Visible := 1;
-// устанавливаем имя окна Excel
-ExcelWindow.Caption := 'Отчет';
-// создадим новую рабочую книгу
+// We set a name of the Excel window [translated]
+// [translated]:
+ExcelWindow.Caption := 'Report';
+// Let us create the new working book [translated]
 NewWorkBooks := ExcelWindow.Workbooks;
 WorkBook := NewWorkBooks.Add;
 LineCount := 10;
 ColumnCount := 5;
-// проставим названия строк
+// Let's put down names of lines [translated]
 For Line := 1 to LineCount do
 begin
    Cell := ExcelWindow.Cells(Line + 1, 1);
-   Cell.Value := 'Строка ' + Line;
+   // [translated]:
+   Cell.Value := 'Line ' + Line;
 end;
-// проставим названия столбцов
+// Let's put down names of columns [translated]
 for column := 1 to ColumnCount do
 begin
    Cell := ExcelWindow.Cells(1, Column + 1);
-   Cell.Value := 'Столбец ' + Column;
+   // [translated]:
+   Cell.Value := 'Column ' + Column;
 end;
-// заполним ячейки таблицы значениями
+// let us fill the cells of table with values [translated]
 for Line := 1 to LineCount do
    for Column := 1 to ColumnCount do
    begin
@@ -32,21 +35,23 @@ for Line := 1 to LineCount do
       Cell.Value := Line + Column;
    end;
 
-// выделим область в таблице и присвоим ее переменной языка
+// Isolate range in the table and set to its variable of the language [translated]
 Range := ExcelWindow.Range(ExcelWindow.Cells(1, 1),
                           ExcelWindow.Cells(LineCount + 1, ColumnCount + 1));
-// зададим имя выделенной области
-Range.Name := 'ОбластьДанных';
-// определим рамку выделенной области и присвоим ее переменной языка
+// let us assign the name of the chosen region [translated]
+// [translated]:
+Range.Name := 'Oblast Dannyh';
+// Let's define a framework of the selected area and we shall assign its variable of the language [translated]
 Border := Range.Borders;
-// установим стили для рамки выделенной области
+// Let's set styles for a framework of the selected area [translated]
 Border.LineStyle := 1;
 Border.ColorIndex := 3;
-// построим диаграмму 
+// Let's construct the diagram [translated]
 WorkSheet := WorkBook.Worksheets(1);
 Diagram := WorkSheet.ChartObjects;
 Diagram := Diagram.Add(5, 5 + Range.Top + Range.Height,
                           Range.Width, Range.Height);
 MyDiagram := Diagram.Chart;
-MyDiagram.ChartWizard('ОбластьДанных ', -4102, 6, 1, 1, 1, 1, 'Отчет');
+// [translated]:
+MyDiagram.ChartWizard('Oblast Dannyh ', -4102, 6, 1, 1, 1, 1, 'Report');
 end;
