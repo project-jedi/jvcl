@@ -44,17 +44,15 @@ uses
 {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QMask, QForms,
 {$ENDIF}
-  JvComponent, JvTypes, JVCLVer, JvCaret, JvToolEdit;
+  JvComponent, JvTypes, JVCLVer, JvCaret, JvToolEdit, JvExMask;
 
 type
-  TJvCustomMaskEdit = class(TCustomMaskEdit)
+  TJvCustomMaskEdit = class(TJvExCustomMaskEdit)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FOnEnabledChanged: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     {$IFDEF VCL}
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnSetFocus: TJvFocusChangeEvent;
     FOnKillFocus: TJvFocusChangeEvent;
     {$ENDIF}
@@ -78,12 +76,8 @@ type
     procedure SetPasswordChar(const Value: Char);
     procedure SetText(const Value: string);
   protected
-    {$IFDEF VCL}
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CaretChanged(Sender: TObject); dynamic;
+    {$IFDEF VCL}
     procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
     procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
@@ -93,28 +87,20 @@ type
     procedure WMCut(var Msg: TWMCut); message WM_CUT;
     procedure WMUndo(var Msg: TWMUndo); message WM_UNDO;
     {$ENDIF}
-    {$IFDEF VisualCLX}
-  protected
     procedure EnabledChanged; override;
     procedure MouseEnter(Control :TControl); override;
     procedure MouseLeave(Control :TControl); override;
     procedure ParentColorChanged; override;
-    procedure CaretChanged;
+    {$IFDEF VisualCLX}
     procedure DoEnter; override;
     procedure DoExit; override;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
     {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     {$IFDEF VCL}
-    procedure MouseEnter(Control: TControl); dynamic;
-    procedure MouseLeave(Control: TControl); dynamic;
-    procedure EnabledChanged; virtual;
-    procedure ParentColorChanged; dynamic;
-    {$ENDIF}
-    {$IFDEF VCL}
     procedure DoKillFocus(const ANextControl: TWinControl); virtual;
     procedure DoSetFocus(const APreviousControl: TWinControl); virtual;
-    {$ENDIF}
+    {$ENDIF VCL}
     procedure SetCaret(const Value: TJvCaret);
     procedure SetDisabledColor(const Value: TColor); virtual;
     procedure SetDisabledTextColor(const Value: TColor); virtual;
@@ -127,14 +113,13 @@ type
     procedure CopyToClipboard; override;
     procedure CutToClipboard; override;
     procedure PasteFromClipboard; override;
-    {$ENDIF}
-
+    {$ENDIF VisualCLX}
     {$IFDEF VCL}
     procedure DefaultHandler(var Msg); override;
-    {$ENDIF}
-
+    {$ENDIF VCL}
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+
     property Entering: Boolean read FEntering;
     property Leaving: Boolean read FLeaving;
   protected
@@ -155,16 +140,7 @@ type
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default -1;
 
     property OnEnabledChanged: TNotifyEvent read FOnEnabledChanged write FOnEnabledChanged;
-    {$IFDEF VCL}
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
-    {$ENDIF}
-    {$IFDEF VisualCLX}
-    property OnMouseEnter;
-    property OnMouseLeave;
-    {$ENDIF}
-    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write
-      FOnParentColorChanged;
+    property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
     {$IFDEF VCL}
     property OnSetFocus: TJvFocusChangeEvent read FOnSetFocus write FOnSetFocus;
     property OnKillFocus: TJvFocusChangeEvent read FOnKillFocus write FOnKillFocus;
@@ -244,16 +220,9 @@ type
 
 implementation
 
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
-end;
-{$ENDIF}
-
 procedure TJvCustomMaskEdit.ParentColorChanged;
 begin
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -282,32 +251,18 @@ begin
   inherited Destroy;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.CMEnabledChanged(var Msg: TMessage);
-begin
-  inherited;
-  EnabledChanged;
-end;
-{$ENDIF}
-
 procedure TJvCustomMaskEdit.EnabledChanged;
 begin
+  inherited EnabledChanged; 
   Invalidate;
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  if not (csDesigning in ComponentState) then
-    MouseEnter(Self);
-end;
-{$ENDIF}
-
 procedure TJvCustomMaskEdit.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -320,21 +275,13 @@ begin
       {$ENDIF}
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
+  inherited MouseEnter(Control);
 end;
-
-{$IFDEF VCL}
-procedure TJvCustomMaskEdit.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  if not (csDesigning in ComponentState) then
-    MouseLeave(Self);
-end;
-{$ENDIF}
 
 procedure TJvCustomMaskEdit.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -346,9 +293,7 @@ begin
       {$ENDIF}
     FOver := False;
   end;
-
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvCustomMaskEdit.SetHotTrack(Value: Boolean);
@@ -674,8 +619,7 @@ begin
     FOnKillFocus(Self, ANextControl);
 end;
 
-procedure TJvCustomMaskEdit.DoSetFocus(
-  const APreviousControl: TWinControl);
+procedure TJvCustomMaskEdit.DoSetFocus(const APreviousControl: TWinControl);
 begin
   if Assigned(FOnSetFocus) then
     FOnSetFocus(Self, APreviousControl);

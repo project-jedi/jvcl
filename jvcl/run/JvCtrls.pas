@@ -93,7 +93,6 @@ type
     procedure SetOwnerDraw(const Value: Boolean);
     procedure SetMargin(const Value: Integer);
     procedure SetSpacing(const Value: Integer);
-    procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
     procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
     procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
     procedure WMDestroy(var Msg: TWMDestroy); message WM_DESTROY;
@@ -121,6 +120,7 @@ type
     procedure RestartAnimate;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
+    procedure EnabledChanged; override;
     procedure FontChanged; override;
     class procedure InitializeDefaultImageList;
   public
@@ -345,24 +345,26 @@ begin
   end;
 end;
 
-procedure TJvCustomImageButton.CMEnabledChanged(var Msg: TMessage);
+procedure TJvCustomImageButton.EnabledChanged;
 begin
-  inherited;
+  inherited EnabledChanged;
   Invalidate;
 end;
 
 procedure TJvCustomImageButton.FontChanged;
 begin
-  inherited;
+  inherited FontChanged;
   Invalidate;
 end;
 
 procedure TJvCustomImageButton.MouseEnter(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if not FMouseInControl and Enabled and (GetCapture = 0) then
   begin
     FMouseInControl := True;
-    inherited;
+    inherited MouseEnter(Control);
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
       Repaint;
@@ -372,10 +374,12 @@ end;
 
 procedure TJvCustomImageButton.MouseLeave(Control: TControl);
 begin
+  if csDesigning in ComponentState then
+    Exit;
   if FMouseInControl and Enabled and not Dragging then
   begin
     FMouseInControl := False;
-    inherited;
+    inherited MouseLeave(Control);
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
       Repaint;

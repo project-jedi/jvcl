@@ -24,7 +24,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
-{$I JVCL.INC}
+{$I jvcl.inc}
 
 unit JvCombobox;
 
@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs, JVCLVer;
+  JvDataProvider, JvDataProviderIntf, JvMaxPixel, JvItemsSearchs, JVCLVer,
+  JvExStdCtrls;
 
 type
   TJvCustomComboBox = class;
@@ -83,14 +84,12 @@ type
 
   TJvComboBoxMeasureStyle = (cmsStandard, cmsAfterCreate, cmsBeforeDraw);
 
-  TJvCustomComboBox = class(TCustomComboBox)
+  TJvCustomComboBox = class(TJvExCustomComboBox)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     {$IFNDEF COMPILER6_UP}
     FAutoComplete: Boolean;
@@ -116,13 +115,10 @@ type
     procedure WMInitDialog(var Msg: TWMInitDialog); message WM_INITDIALOG;
     procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN; // ain
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK; // ain
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
   protected
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
     procedure CreateWnd; override; // ain
     {$IFDEF COMPILER6_UP}
     function GetItemsClass: TCustomComboBoxStringsClass; override;
@@ -163,8 +159,6 @@ type
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property MaxPixel: TJvMaxPixel read FMaxPixel write FMaxPixel;
     property ReadOnly: Boolean read FReadOnly write SetReadOnly default False; // ain
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1065,27 +1059,15 @@ begin
     Result := Items[Index];
 end;
 
-procedure TJvCustomComboBox.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
-end;
-
 procedure TJvCustomComboBox.ParentColorChanged;
 begin
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvCustomComboBox.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-
 procedure TJvCustomComboBox.MouseEnter(AControl: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -1094,19 +1076,11 @@ begin
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvCustomComboBox.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
+  inherited MouseEnter(AControl);
 end;
 
 procedure TJvCustomComboBox.MouseLeave(AControl: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -1114,8 +1088,7 @@ begin
     FOver := False;
     Application.HintColor := FSaved;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
+  inherited MouseLeave(AControl);
 end;
 
 function TJvCustomComboBox.SearchSubString(Value: string;

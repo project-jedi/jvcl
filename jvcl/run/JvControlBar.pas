@@ -33,35 +33,30 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics,
   ExtCtrls, Controls, Forms, Menus,
-  JVCLVer, JvThemes;
+  JVCLVer, JvThemes, JvExExtCtrls;
 
 type
   TPopupNames = (pnHint, pnName);
-  TJvControlBar = class(TControlBar)
+  TJvControlBar = class(TJvExControlBar)
   private
     FAboutJVCL: TJVCLAboutInfo;
     FHintColor: TColor;
     FSaved: TColor;
     FOver: Boolean;
-    FOnMouseEnter: TNotifyEvent;
-    FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
     FPopupControl: Boolean;
     FPopup: TPopupMenu;
     FPopupNames: TPopupNames;
     FList: TList;
-    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
-    procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CMDenySubClassing(var Msg: TMessage); message CM_DENYSUBCLASSING;
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     {$IFDEF JVCLThemesEnabledD56}
     function GetParentBackground: Boolean;
     {$ENDIF JVCLThemesEnabledD56}
   protected
-    procedure MouseEnter(AControl: TControl); dynamic;
-    procedure MouseLeave(AControl: TControl); dynamic;
-    procedure ParentColorChanged; dynamic;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
+    procedure ParentColorChanged; override;
     {$IFDEF JVCLThemesEnabledD56}
     procedure SetParentBackground(Value: Boolean); virtual;
     {$ENDIF JVCLThemesEnabledD56}
@@ -84,8 +79,8 @@ type
     {$ENDIF JVCLThemesEnabledD56}
     property PopupControl: Boolean read FPopupControl write FPopupControl default True;
     property PopupNames: TPopupNames read FPopupNames write FPopupNames default pnHint;
-    property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
-    property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
   end;
 
@@ -129,15 +124,8 @@ end;
 
 {$ENDIF JVCLThemesEnabledD56}
 
-procedure TJvControlBar.CMMouseEnter(var Msg: TMessage);
-begin
-  inherited;
-  MouseEnter(Self);
-end;
-
 procedure TJvControlBar.MouseEnter(AControl: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if not FOver then
@@ -146,19 +134,11 @@ begin
     Application.HintColor := FHintColor;
     FOver := True;
   end;
-  if Assigned(FOnMouseEnter) then
-    FOnMouseEnter(Self);
-end;
-
-procedure TJvControlBar.CMMouseLeave(var Msg: TMessage);
-begin
-  inherited;
-  MouseLeave(Self);
+  inherited MouseEnter(AControl);
 end;
 
 procedure TJvControlBar.MouseLeave(AControl: TControl);
 begin
-  // for D7...
   if csDesigning in ComponentState then
     Exit;
   if FOver then
@@ -166,18 +146,12 @@ begin
     FOver := False;
     Application.HintColor := FSaved;
   end;
-  if Assigned(FOnMouseLeave) then
-    FOnMouseLeave(Self);
-end;
-
-procedure TJvControlBar.CMParentColorChanged(var Msg: TMessage);
-begin
-  inherited;
-  ParentColorChanged;
+  inherited MouseLeave(AControl);
 end;
 
 procedure TJvControlBar.ParentColorChanged;
 begin
+  inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;

@@ -59,8 +59,8 @@ type
     FNullText: string;
     FNullDate: TDateTime;
     FDropDownDate: TDate;
-    procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
-    procedure MouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure CNNotify(var Msg: TWMNotify); message CN_NOTIFY;
     procedure SetNullDate(const Value: TDateTime);
@@ -108,7 +108,7 @@ begin
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvDateTimePicker.MouseEnter(var Msg: TMessage);
+procedure TJvDateTimePicker.CMMouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
@@ -119,7 +119,7 @@ begin
     FOnMouseEnter(Self);
 end;
 
-procedure TJvDateTimePicker.MouseLeave(var Msg: TMessage);
+procedure TJvDateTimePicker.CMMouseLeave(var Msg: TMessage);
 begin
   Application.HintColor := FSaved;
   if Assigned(FOnMouseLeave) then
