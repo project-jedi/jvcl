@@ -1,5 +1,8 @@
+2002-07-05
+- TJvStatusBar: Fixed a refresh bug causing some troubles under XP //Sebastien Buysse
+
 2002-07-01
-- TJvTrayIcon: Fixed the problem of non closing popup menus
+- TJvTrayIcon: Fixed the problem of non closing popup menus //Sebastien Buysse
 
 2002-06-28
 - TJvAlarms - fixed "OnAlarm never fires" bug
