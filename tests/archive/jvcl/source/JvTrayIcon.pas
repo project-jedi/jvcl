@@ -96,6 +96,7 @@ type
     FOldTray: HWND;
     FOnAnimate: TAnimateEvent;
     FVisibility: TTrayVisibilities;
+    FOldHint: string;
     procedure OnAnimateTimer(Sender: TObject);
     procedure IconChanged(Sender: TObject);
     procedure SetActive(Value: Boolean);
@@ -154,7 +155,8 @@ type
 
 implementation
 
-
+uses
+ Unit1;
 
 const
   WM_CALLBACKMESSAGE            = WM_USER + 1;
@@ -394,15 +396,12 @@ end;
 procedure TJvTrayIcon.SetHint(Value: string);
 begin
   DoCheckCrash;
-  if FHint<>Value then
-  begin
-    FHint := Value;
+  FHint := Value;
     with FIc do
       StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
     Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
     if FActive then
       Shell_NotifyIcon(NIM_MODIFY, @fic);
-  end;
 end;
 
 {**************************************************}
@@ -592,6 +591,15 @@ end;
 
 procedure TJvTrayIcon.DoMouseMove(Shift: TShiftState; X, Y: Integer);
 begin
+  if FOldHint<>FHint then
+  begin
+    FOldHint := FHint;
+    with FIc do
+      StrPLCopy(szTip, GetShortHint(FHint), SizeOf(szTip) - 1);
+    Fic.uFlags := NIF_MESSAGE or NIF_ICON or NIF_TIP;
+    if FActive then
+      Shell_NotifyIcon(NIM_MODIFY, @fic);
+  end;
   if Assigned(FOnMouseMove) then
     FOnMouseMove(Self, Shift, X, Y);
 end;
