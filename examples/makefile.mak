@@ -917,8 +917,9 @@ WndProcHookDemo.exe: "JvWndProcHook\WndProcHookDemo.dpr"
   @cd ..
 
 Hospital.exe: "JvXMLDatabase\Sources\Hospital.dpr"
+  @echo ---This demo requires Indy to be installed---
   @cd JvXMLDatabase\Sources
-  $(DCCH) $&.dpr
+  -$(DCCH) $&.dpr
   @cd ..\..
 
 WinXPBarDemo.exe: "JvXPControls\JvXPBar\WinXPBarDemo.dpr"
@@ -1021,7 +1022,7 @@ Rxdemo.exe: "RxLib\Rxdemo.dpr"
   $(DCC) $&.dpr
   @cd ..
 #---------------------------------------------------------------------------------------------------
-clean: $(NULL)
+clean: $(<<NULL)
   -@del /q /f "..\dcu\*.dcu" "..\bin\*.exe" "..\bin\*.dll" "..\bin\*.bpl" "..\bin\*.dcp"
 #---------------------------------------------------------------------------------------------------
 
