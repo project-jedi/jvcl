@@ -2055,13 +2055,16 @@ begin
       Inc(BevelSize, BevelWidth);
     InflateRect(Rect, -BevelSize, -BevelSize);
     inherited Paint;
+    Canvas.Brush.Color := Color;
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled and ParentBackground then
     begin
       Canvas.Brush.Color := Parent.Brush.Color;
       DrawThemedBackground(Self, Canvas, Rect);
-    end;
-    {$ENDIF JVCLThemesEnabled}    
+    end
+    else
+    {$ENDIF JVCLThemesEnabled}
+      Canvas.FillRect(Rect);
     if (FWallpaper.Graphic <> nil) and (FWallpaper.Width > 0) and
       (FWallpaper.Height > 0) then
     begin
