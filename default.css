@@ -10,34 +10,33 @@ h1, h2, h3, h4
 	{
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	margin-left: -6px;
+	margin-top: .5em;
+	margin-bottom: .5em; 
 	}
 h1
 	{
-	font-size: 145%;
-	margin-top: .5em;
-	margin-bottom: .5em; 
+	font-size: 160%;
 	}
 	
 h2
 	{
-	font-size: 130%;
-	margin-top: 1em;
-	margin-bottom: .6em; 
+	font-size: 145%;
 	}
 	
 h3
 	{
-	font-size: 115%;
-	margin-top: 1em;
-	margin-bottom: .6em;
+	font-size: 130%;
 	}
 	
 h4
 	{
-	font-size: 100%;
-	margin-top: 1em;
-	margin-bottom: .6em; 
+	font-size: 115%;
 	}
+h5
+	{
+	font-size: 105%;
+	}
+
 
 hr 	{
   	align:"right";
