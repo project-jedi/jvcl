@@ -621,9 +621,9 @@ implementation
 uses
   Forms, Controls,
   {$IFNDEF COMPILER6_UP}
-  JvJVCLUtils, JvJCLUtils,
+  JvJVCLUtils,
   {$ENDIF COMPILER6_UP}
-  JvCsvParse, JvConsts, JvResources;
+  JvJCLUtils, JvCsvParse, JvConsts, JvResources;
 
 var
   CallCount: integer;
@@ -1853,7 +1853,7 @@ begin
         // Standard Double-precision Float conversion:
       ftFloat:
         begin
-          PDouble(Buffer)^ := StrToFloat(TempString)
+          PDouble(Buffer)^ := StrToFloatUS(TempString)
         end;
 
       ftBoolean:
@@ -2686,8 +2686,8 @@ begin
   case Column^.FFlag of
     jcsvNumeric:
       begin
-        numLeft := StrToFloatDef(strLeft, -99999.9);
-        numRight := StrToFloatDef(strRight, -99999.9);
+        numLeft := StrToFloatUSDef(strLeft, -99999.9);
+        numRight := StrToFloatUSDef(strRight, -99999.9);
         diff := numLeft - numRight;
         if (diff < -0.02) then
           Result := -1

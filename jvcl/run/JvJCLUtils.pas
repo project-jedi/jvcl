@@ -102,6 +102,11 @@ const
   CenturyOffset: Byte = 60;
   NullDate: TDateTime = {-693594} 0;
 
+function USToLocalFloatStr(const Text: string): string;
+function StrToFloatUS(const Text: string): Extended;
+// StrToFloatUS uses US '.' as decimal seperator and ',' as thousand separator
+function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
+
 { GetWordOnPos returns Word from string, S, on the cursor position, P}
 function GetWordOnPos(const S: string; const P: Integer): string;
 function GetWordOnPosW(const S: WideString; const P: Integer): WideString;
@@ -985,6 +990,36 @@ resourcestring
 
   RsPivotLessThanZero = 'JvFunctions.MakeYear4Digit: Pivot < 0';
 
+// StrToFloatUS uses US '.' as decimal seperator and ',' as thousand separator
+function USToLocalFloatStr(const Text: string): string;
+var i: Integer;
+begin
+  Result := Text;
+  if (DecimalSeparator <> '.') or (ThousandSeparator <> ',') then
+  begin
+    for i := 0 to Length(Result) do
+      case Result[i] of
+        '.': Result[i] := DecimalSeparator;
+        ',': Result[i] := ThousandSeparator;
+      end;
+  end;
+end;
+
+function StrToFloatUS(const Text: string): Extended;
+begin
+  try
+    Result := StrToFloat(USToLocalFloatStr(Text));
+  except
+    Result := StrToFloat(Text); // try it with local settings
+  end;
+end;
+
+function StrToFloatUSDef(const Text: string; Default: Extended): Extended;
+begin
+  Result := StrToFloatDef(USToLocalFloatStr(Text), Default);
+end;
+
+
 function GetLineByPos(const S: string; const Pos: Integer): Integer;
 var
   I: Integer;
@@ -1052,7 +1087,7 @@ begin
   end;
 end;
 
-function GetWordOnPos(const S: string; const P: Integer): string; 
+function GetWordOnPos(const S: string; const P: Integer): string;
 var
   I, Beg: Integer;
 begin
