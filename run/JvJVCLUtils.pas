@@ -192,10 +192,6 @@ procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 procedure Delay(MSecs: Longint);
 procedure CenterControl(Control: TControl);
 
-function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
-function MsgDlg(const Msg: string; AType: TMsgDlgType;
-  AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
-
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
 function GetAveCharSize(Canvas: TCanvas): TPoint;
@@ -299,13 +295,41 @@ function IsForegroundTask: Boolean;
 {$IFDEF VCL}
 { MessageBox is Application.MessageBox with string (not PChar) parameters.
   if Caption parameter = '', it replaced with Application.Title }
-function MessageBox(const Msg: string; Caption: string;
-  const Flags: Integer): Integer;
+function MessageBox(const Msg: string; Caption: string; const Flags: Integer): Integer;
+function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
+function MsgDlg(const Msg: string; AType: TMsgDlgType; AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
 function MsgDlg2(const Msg, ACaption: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpContext: Integer; Control: TWinControl): Integer;
 function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; DefButton: TMsgDlgBtn; HelpContext: Integer;
   Control: TWinControl): Integer;
+
+  
+(***** Utility MessageBox based dialogs *)
+// returns true if user clicked Yes
+function MsgYesNo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+// returns true if user clicked Retry
+function MsgRetryCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+// returns IDABORT, IDRETRY or IDIGNORE 
+function MsgAbortRetryIgnore(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
+// returns IDYES, IDNO or IDCANCEL
+function MsgYesNoCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
+// returns true if user clicked OK
+function MsgOKCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+
+// dialog without icon
+procedure MsgOK(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+// dialog with info icon
+procedure MsgInfo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+// dialog with warning icon
+procedure MsgWarn(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+// dialog with question icon
+procedure MsgQuestion(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+// dialog with error icon
+procedure MsgError(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+// dialog with custom icon (must be available in the app resource) 
+procedure MsgAbout(Handle:integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
+
 {**** Windows routines }
 
 { LoadIcoToImage loads two icons from resource named NameRes,
@@ -3214,6 +3238,120 @@ function MsgDlg2(const Msg, ACaption: string; DlgType: TMsgDlgType;
 begin
   Result := MsgDlgDef1(Msg, ACaption, DlgType, Buttons, mbHelp, False,
     HelpContext, Control);
+end;
+
+function MsgYesNo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+begin
+  Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_YESNO or Flags) = IDYES;
+end;
+
+function MsgRetryCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+begin
+  Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_RETRYCANCEL or Flags) = IDRETRY;
+end;
+
+function MsgAbortRetryIgnore(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
+begin
+  Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_ABORTRETRYIGNORE or Flags);
+end;
+
+function MsgYesNoCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):integer;
+begin
+  Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_YESNOCANCEL or Flags);
+end;
+
+function MsgOKCancel(Handle:integer;const Msg, Caption:string; Flags:DWORD=0):boolean;
+begin
+  Result := Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_OKCANCEL or Flags) = IDOK;
+end;
+
+procedure MsgOK(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+begin
+  Windows.MessageBox(Handle, PChar(Msg), PChar(Caption), MB_OK or Flags);
+end;
+
+procedure MsgInfo(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+begin
+  MsgOK(Handle, Msg, Caption, MB_ICONINFORMATION or Flags);
+end;
+
+procedure MsgWarn(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+begin
+  MsgOK(Handle, Msg, Caption, MB_ICONWARNING or Flags);
+end;
+
+procedure MsgQuestion(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+begin
+  MsgOK(Handle, Msg, Caption, MB_ICONQUESTION or Flags);
+end;
+
+procedure MsgError(Handle:integer;const Msg, Caption:string; Flags:DWORD=0);
+begin
+  MsgOK(Handle, Msg, Caption, MB_ICONERROR or Flags);
+end;
+
+function FindIcon(hInstance:DWORD;const IconName:string):boolean;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+    Result := (IconName <> '') and (FindResourceW(hInstance,PWideChar(WideString(IconName)),PWideChar(RT_GROUP_ICON)) <> 0)
+      or (FindResourceW(hInstance,PWideChar(WideString(IconName)),PWideChar(RT_ICON)) <> 0)
+  else
+    Result := (IconName <> '') and (FindResourceA(hInstance,PChar(IconName),RT_GROUP_ICON) <> 0)
+      or (FindResourceA(hInstance,PChar(IconName),RT_ICON) <> 0)
+end;
+
+
+type
+  TMsgBoxParamsRec = record
+  case boolean of
+    false:(ParamsA:TMsgBoxParamsA);
+    true:(ParamsW:TMsgBoxParamsW);
+  end;
+
+procedure MsgAbout(Handle:integer;const Msg, Caption, IcoName:string;Flags:DWORD=0);
+var Params: TMsgBoxParamsRec;
+begin
+  if Win32Platform = VER_PLATFORM_WIN32_NT then
+    with Params.ParamsW do
+    begin
+      cbSize := sizeof(TMsgBoxParamsW);
+      hwndOwner := Handle;
+      Params.ParamsW.hInstance := SysInit.hInstance;
+      lpszText := PWideChar(WideString(Msg));
+      lpszCaption := PWideChar(WideString(Caption));
+      dwStyle := MB_OK or Flags;
+      if FindIcon(hInstance, IcoName) then
+      begin
+        dwStyle := dwStyle or MB_USERICON;
+        lpszIcon := PWideChar(WideString(IcoName));
+      end
+      else
+        dwStyle := dwStyle or MB_ICONINFORMATION;
+      dwContextHelpId := 0;
+      lpfnMsgBoxCallback := nil;
+      dwLanguageId := GetUserDefaultLangID;
+      MessageBoxIndirectW(Params.ParamsW);
+    end
+  else with Params.ParamsA do
+    begin
+      cbSize := sizeof(TMsgBoxParamsA);
+      hwndOwner := Handle;
+      Params.ParamsA.hInstance := SysInit.hInstance;
+      lpszText := PChar(Msg);
+      lpszCaption := PChar(Caption);
+      dwStyle := MB_OK or Flags;
+      if FindIcon(hInstance, IcoName) then
+      begin
+        dwStyle := dwStyle or MB_USERICON;
+        lpszIcon := PChar(IcoName);
+      end
+      else
+        dwStyle := dwStyle or MB_ICONINFORMATION;
+      dwContextHelpId := 0;
+      lpfnMsgBoxCallback := nil;
+      dwLanguageId := GetUserDefaultLangID;
+      MessageBoxIndirectA(Params.ParamsA);
+    end;
 end;
 
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList;
