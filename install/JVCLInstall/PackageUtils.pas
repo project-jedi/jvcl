@@ -33,14 +33,12 @@ interface
 uses
   SysUtils, Classes, Contnrs,
   JvSimpleXml,
-  Utils, DelphiData, Intf, GenerateUtils;
+  Utils, DelphiData, Intf, GenerateUtils, PackageInformation;
 
 type
   TPackageTarget = class;
   TProjectGroup = class;
   TPackageInfo = class;
-  TRequiredPackage = class;
-  TContainedFile = class;
 
   TPackageGroupArray = array[{Personal:}Boolean, {Kind:}TPackageGroupKind] of TProjectGroup;
 
@@ -133,7 +131,7 @@ type
   /// <summary>
   /// TProjectGroup contains the data from a .bpg (Borland Package Group) file.
   /// </summary>
-  TProjectGroup = class(TObject)
+  TProjectGroup = class(TInterfacedObject, IPackageXmlInfoOwner)
   private
     FPackages: TObjectList;
     FTargetConfig: ITargetConfig;
@@ -146,6 +144,9 @@ type
     function GetBpgName: string;
     function GetTarget: TCompileTarget;
     function GetIsVCLX: Boolean;
+
+    function _AddRef: Integer; stdcall;
+    function _Release: Integer; stdcall;
   protected
     function Add(const TargetName, SourceName: string): TPackageTarget;
     procedure LoadFile;
@@ -158,6 +159,7 @@ type
     function FindPackageByXmlName(const XmlName: string): TPackageTarget;
       { FindPackageByXmlName returns the TPackageTarget object that contains
         the specified .xml file. }
+    function GetBplNameOf(Package: TRequiredPackage): string;
 
     property Count: Integer read GetCount;
     property Packages[Index: Integer]: TPackageTarget read GetPackages; default;
@@ -172,74 +174,8 @@ type
   end;
 
   /// <summary>
-  /// TRequiredPackage contains one package that is requried by a TPackageInfo
-  /// object and it's inclusion conditions.
-  /// </summary>
-  TRequiredPackage = class(TObject)
-  private
-    FName: string;
-    FTargets: TStrings;
-    FCondition: string;
-  public
-    constructor Create(const AName, ATargets, ACondition: string);
-    destructor Destroy; override;
-
-    function IsRequiredByTarget(TargetConfig: ITargetConfig): Boolean;
-    function GetBplName(ProjectGroup: TProjectGroup): string;
-
-    property Name: string read FName;
-    property Targets: TStrings read FTargets;
-    property Condition: string read FCondition;
-  end;
-
-  /// <summary>
-  /// TContainedFile contains one file name that is contained in the the
-  /// TPackageInfo object and it's inclusion conditions.
-  /// </summary>
-  TContainedFile = class(TObject)
-  private
-    FName: string;
-    FTargets: TStrings;
-    FFormName: string;
-    FCondition: string;
-  public
-    constructor Create(const AName, ATargets, AFormName, ACondition: string);
-    destructor Destroy; override;
-
-    function IsUsedByTarget(TargetConfig: ITargetConfig): Boolean;
-
-    property Name: string read FName;
-    property Targets: TStrings read FTargets;
-    property FormName: string read FFormName;
-    property Condition: string read FCondition;
-  end;
-
-  TPackageXmlInfo = class(TObject)
-  protected
-    FName: string;
-    FDisplayName: string;
-    FDescription: string;
-    FRequires: TObjectList;
-    FContains: TObjectList;
-    FRequiresDB: Boolean;
-    FIsDesign: Boolean;
-
-    procedure LoadFromFile(const Filename: string);
-  public
-    constructor Create(const Filename: string);
-    destructor Destroy; override;
-
-    property Name: string read FName;
-    property DisplayName: string read FDisplayName;
-    property Description: string read FDescription;
-    property Requires: TObjectList read FRequires;
-    property Contains: TObjectList read FContains;
-    property RequiresDB: Boolean read FRequiresDB;
-    property IsDesign: Boolean read FIsDesign;
-  end;
-
-  /// <summary>
-  /// TPackageInfo contains the generic .xml file for a bpl target.
+  /// TPackageInfo is a wrapper for TPackageXmlInfo objects that contains the
+  /// generic .xml file for a bpl target.
   /// </summary>
   TPackageInfo = class(TObject)
   private
@@ -278,11 +214,6 @@ type
 
 implementation
 
-
-var
-  XmlFileCache: TObjectList; // cache for .xml files ( TPackageXmlInfo )
-
-
 function BplNameToGenericName(const BplName: string): string;
 begin
    // obtain package name used in the xml file
@@ -291,28 +222,6 @@ begin
   Result[Length(Result) - 1] := '-';
   if Result[3] = 'Q' then
     Delete(Result, 3, 1);
-end;
-
-/// <summary>
-/// GetPackageXmlInfo returns a cached TPackageXmlInfo instance.
-/// </summary>
-function GetPackageXmlInfo(const TargetName, XmlDir: string): TPackageXmlInfo;
-var
-  i: Integer;
-  Name: string;
-begin
-  Name := BplNameToGenericName(TargetName);
- // already in the cache
-  for i := 0 to XmlFileCache.Count - 1 do
-    if CompareText(TPackageXmlInfo(XmlFileCache[i]).Name, Name) = 0 then
-    begin
-      Result := TPackageXmlInfo(XmlFileCache[i]);
-      Exit;
-    end;
-
- // create a new one and add it to the cache
-  Result := TPackageXmlInfo.Create(XmlDir + '\' + Name + '.xml');
-  XmlFileCache.Add(Result);
 end;
 
 { TJVCLFrameworks }
@@ -413,6 +322,22 @@ begin
   Result := ExtractFileName(Filename);
 end;
 
+function TProjectGroup.GetBplNameOf(Package: TRequiredPackage): string;
+var
+  Pkg: TPackageTarget;
+begin
+  if StartsWith(Package.Name, 'Jv', True) then
+  begin
+    Pkg := FindPackagebyXmlName(Package.Name);
+    if Pkg <> nil then
+      Result := Pkg.TargetName
+    else
+      Result := Package.Name;
+  end
+  else
+    Result := Package.Name;
+end;
+
 function TProjectGroup.GetCount: Integer;
 begin
   Result := FPackages.Count;
@@ -502,6 +427,16 @@ begin
     Packages[i].GetDependencies;
 end;
 
+function TProjectGroup._AddRef: Integer;
+begin
+  Result := 1;
+end;
+
+function TProjectGroup._Release: Integer;
+begin
+  Result := 1;
+end;
+
 { TPackageTarget }
 
 constructor TPackageTarget.Create(AOwner: TProjectGroup; const ATargetName,
@@ -569,7 +504,7 @@ begin
     begin
       if FileExists(Info.FXmlDir + '\' + Info.Requires[i].Name + '.xml') and // do not localize
          (Owner.FindPackagebyXmlName(Info.Requires[i].Name) <> nil) and
-         Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig) then
+         Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig.TargetSymbol) then
       begin
         FJvDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
       end;
@@ -579,7 +514,7 @@ begin
     if StartsWith(Info.Requires[i].Name, 'DJcl', True) or // do not localize
        StartsWith(Info.Requires[i].Name, 'CJcl', True) then // do not localize
     begin
-      if Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig) then
+      if Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig.TargetSymbol) then
         FJclDependencies.AddObject(Info.Requires[i].Name, Info.Requires[i]);
     end;
   end;
@@ -679,7 +614,7 @@ begin
     Exit;
   for i := 0 to Info.ContainCount - 1 do
   begin
-    if Info.Contains[i].IsUsedByTarget(Owner.TargetConfig) then
+    if Info.Contains[i].IsUsedByTarget(Owner.TargetConfig.TargetSymbol) then
       FContaineList.Add(Info.Contains[i]);
   end;
 end;
@@ -692,75 +627,9 @@ begin
     Exit;
   for i := 0 to Info.RequireCount - 1 do
   begin
-    if Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig) then
+    if Info.Requires[i].IsRequiredByTarget(Owner.TargetConfig.TargetSymbol) then
       FRequireList.Add(Info.Requires[i]);
   end;
-end;
-
-{ TRequiredPackage }
-
-constructor TRequiredPackage.Create(const AName, ATargets, ACondition: string);
-begin
-  inherited Create;
-  FName := AName;
-  FTargets := TStringList.Create;
-  TStringList(FTargets).Duplicates := dupIgnore;
-  FTargets.CommaText := ATargets;
-  ExpandTargets(FTargets);
-  FCondition := ACondition;
-end;
-
-destructor TRequiredPackage.Destroy;
-begin
-  FTargets.Free;
-  inherited Destroy;
-end;
-
-function TRequiredPackage.GetBplName(ProjectGroup: TProjectGroup): string;
-var
-  Pkg: TPackageTarget;
-begin
-  if StartsWith(Name, 'Jv', True) then
-  begin
-    Pkg := ProjectGroup.FindPackagebyXmlName(Name);
-    if Pkg <> nil then
-      Result := Pkg.TargetName
-    else
-      Result := Name;
-  end
-  else
-    Result := Name;
-end;
-
-function TRequiredPackage.IsRequiredByTarget(TargetConfig: ITargetConfig): Boolean;
-begin
-  Result := Targets.IndexOf(TargetConfig.TargetSymbol) <> -1;
-end;
-
-{ TContainedFile }
-
-constructor TContainedFile.Create(const AName, ATargets, AFormName,
-  ACondition: string);
-begin
-  inherited Create;
-  FName := AName;
-  FTargets := TStringList.Create;
-  TStringList(FTargets).Duplicates := dupIgnore;
-  FTargets.CommaText := ATargets;
-  ExpandTargets(FTargets);
-  FFormName := AFormName;
-  FCondition := ACondition;
-end;
-
-destructor TContainedFile.Destroy;
-begin
-  FTargets.Free;
-  inherited Destroy;
-end;
-
-function TContainedFile.IsUsedByTarget(TargetConfig: ITargetConfig): Boolean;
-begin
-  Result := Targets.IndexOf(TargetConfig.TargetSymbol) <> -1;
 end;
 
 { TPackageInfo }
@@ -785,22 +654,22 @@ end;
 
 function TPackageInfo.GetContainCount: Integer;
 begin
-  Result := FXmlInfo.Contains.Count;
+  Result := FXmlInfo.ContainCount;
 end;
 
 function TPackageInfo.GetContains(Index: Integer): TContainedFile;
 begin
-  Result := TContainedFile(FXmlInfo.Contains.Items[Index]);
+  Result := FXmlInfo.Contains[Index];
 end;
 
 function TPackageInfo.GetRequireCount: Integer;
 begin
-  Result := FXmlInfo.Requires.Count;
+  Result := FXmlInfo.RequireCount;
 end;
 
 function TPackageInfo.GetRequires(Index: Integer): TRequiredPackage;
 begin
-  Result := TRequiredPackage(FXmlInfo.Requires[Index]);
+  Result := FXmlInfo.Requires[Index];
 end;
 
 function TPackageInfo.GetDescription: string;
@@ -828,98 +697,8 @@ begin
   Result := FXmlInfo.RequiresDB;
 end;
 
-{ TPackageXmlInfo }
-
-constructor TPackageXmlInfo.Create(const Filename: string);
-begin
-  FName := ChangeFileExt(ExtractFileName(Filename), '');
-  FRequires := TObjectList.Create;
-  FContains := TObjectList.Create;
-  FIsDesign := EndsWith(Name, '-D', True); // do not localize
-  LoadFromFile(Filename);
-end;
-
-destructor TPackageXmlInfo.Destroy;
-begin
-  FRequires.Free;
-  FContains.Free;
-  inherited Destroy;
-end;
-
-procedure TPackageXmlInfo.LoadFromFile(const Filename: string);
-var
-  i: Integer;
-  RequirePkgName, RequireTarget,
-  ContainsFileName, FormName, Condition: string;
-  xml: TJvSimpleXML;
-  RootNode : TJvSimpleXmlElemClassic;
-  RequiredNode: TJvSimpleXmlElem;
-  PackageNode: TJvSimpleXmlElem;
-  ContainsNode: TJvSimpleXmlElem;
-  FileNode: TJvSimpleXmlElem;
-begin
-  FRequires.Clear;
-  FRequiresDB := False;
-  FContains.Clear;
-
-  xml := TJvSimpleXML.Create(nil);
-  try
-    xml.LoadFromFile(Filename);
-    RootNode := xml.Root;
-    RequiredNode := RootNode.Items.ItemNamed['Requires'];               // do not localize
-    ContainsNode := RootNode.Items.ItemNamed['Contains'];               // do not localize
-
-    FDisplayName := RootNode.Properties.ItemNamed['Name'].Value;        // do not localize
-    if RootNode.Items.ItemNamed['Description'] <> nil then              // do not localize
-      FDescription := RootNode.Items.ItemNamed['Description'].Value     // do not localize
-    else
-      FDescription := '';
-
-   // requires
-    for i := 0 to RequiredNode.Items.Count -1 do
-    begin
-      PackageNode := RequiredNode.Items[i];
-      RequirePkgName := PackageNode.Properties.ItemNamed['Name'].Value; // do not localize
-      if Pos('dcldb', AnsiLowerCase(RequirePkgName)) > 0 then           // do not localize
-        FRequiresDB := True;
-
-     // require only designtime packages
-      RequireTarget := PackageNode.Properties.ItemNamed['Targets'].Value; // do not localize
-      if RequireTarget = '' then
-        RequireTarget := 'all';                                           // do not localize
-
-      Condition := PackageNode.Properties.ItemNamed['Condition'].Value;   // do not localize
-
-     // add new require item
-      FRequires.Add(TRequiredPackage.Create(RequirePkgName, RequireTarget, Condition));
-    end;
-
-   // contains
-    for i := 0 to ContainsNode.Items.Count -1 do
-    begin
-      FileNode := ContainsNode.Items[i];
-      ContainsFileName := FileNode.Properties.ItemNamed['Name'].Value;    // do not localize
-
-      RequireTarget := FileNode.Properties.ItemNamed['Targets'].Value;    // do not localize
-      if RequireTarget = '' then
-        RequireTarget := 'all';                                           // do not localize
-
-      FormName := FileNode.Properties.ItemNamed['Formname'].Value;        // do not localize
-      Condition := FileNode.Properties.ItemNamed['Condition'].Value;      // do not localize
-
-     // add new require item
-      FContains.Add(TContainedFile.Create(ContainsFileName, RequireTarget, FormName, Condition));
-    end;
-  finally
-    xml.Free;
-  end;
-end;
-
-
 initialization
-  XmlFileCache := TObjectList.Create;
-
-finalization
-  XmlFileCache.Free;
+  BplNameToGenericNameHook := BplNameToGenericName;
+  ExpandPackageTargets := ExpandTargets;
 
 end.
