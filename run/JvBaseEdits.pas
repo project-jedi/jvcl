@@ -234,7 +234,6 @@ type
     property Font;
     property FormatOnEditing;
     property GlyphKind;
-    { Ensure GlyphKind is published before Glyph and ButtonWidth }
     property Glyph;
     property ButtonWidth;
     property HideSelection;
