@@ -119,6 +119,7 @@ type
     procedure MeasureItem(Index: Integer; var Height: Integer); virtual;
     function GetItemData(Index: Integer): Longint; dynamic;
     procedure SetItemData(Index: Integer; AData: Longint); dynamic;
+    function GetItems: TStrings; virtual;
     procedure SetItems(Value: TStrings); virtual;
     procedure ResetContent; dynamic;
     procedure DeleteString(Index: Integer); dynamic;
@@ -145,7 +146,7 @@ type
     function ItemAtPos(Pos: TPoint; Existing: Boolean): Integer;
     function ItemRect(Index: Integer): TRect;
     property Canvas: TCanvas read GetCanvas;
-    property Items: TStrings read FItems write SetItems;
+    property Items: TStrings read GetItems write SetItems;
     property ItemIndex: Integer read GetItemIndex write SetItemIndex;
     property SelCount: Integer read GetSelCount;
     property Selected[Index: Integer]: Boolean read GetSelected write SetSelected;
@@ -736,6 +737,11 @@ begin
     if not Focused then
       Invalidate;
   end;
+end;
+
+function TJvxCustomListBox.GetItems: TStrings;
+begin
+  Result := FItems;
 end;
 
 procedure TJvxCustomListBox.SetItems(Value: TStrings);

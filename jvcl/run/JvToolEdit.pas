@@ -606,7 +606,7 @@ type
     FPopupColor: TColor;
     FCheckOnExit: Boolean;
     FBlanksChar: Char;
-    FCalendarHints: TStrings;
+    FCalendarHints: TStringList;
     FStartOfWeek: TDayOfWeekName;
     FWeekends: TDaysOfWeek;
     FWeekendColor: TColor;
@@ -627,6 +627,7 @@ type
     function IsCustomTitle: Boolean;
     function GetCalendarStyle: TCalendarStyle;
     procedure SetCalendarStyle(Value: TCalendarStyle);
+    function GetCalendarHints: TStrings;
     procedure SetCalendarHints(Value: TStrings);
     procedure CalendarHintsChanged(Sender: TObject);
     procedure SetWeekendColor(Value: TColor);
@@ -664,7 +665,7 @@ type
     procedure UpdatePopup;
     procedure ButtonClick; override;
     property BlanksChar: Char read FBlanksChar write SetBlanksChar default ' ';
-    property CalendarHints: TStrings read FCalendarHints write SetCalendarHints;
+    property CalendarHints: TStrings read GetCalendarHints write SetCalendarHints;
     property CheckOnExit: Boolean read FCheckOnExit write FCheckOnExit default False;
     property DefaultToday: Boolean read FDefaultToday write FDefaultToday
       default False;
@@ -2369,9 +2370,9 @@ begin
   if CalendarStyle = csDialog then
   begin
     d := Self.Date;
-    Action := SelectDate(Self, d, DialogTitle, FStartOfWeek, FWeekends, // Polaris (Self added)
-      FWeekendColor, FCalendarHints,
-      FMinDate, FMaxDate); // Polaris
+    Action := SelectDate(Self, d, DialogTitle, StartOfWeek, Weekends, // Polaris (Self added)
+      WeekendColor, CalendarHints,
+      MinDate, MaxDate); // Polaris
     if CanFocus then
       SetFocus;
     if Action then
@@ -2390,12 +2391,12 @@ end;
 
 procedure TJvCustomDateEdit.CalendarHintsChanged(Sender: TObject);
 begin
-  TStringList(FCalendarHints).OnChange := nil;
+  FCalendarHints.OnChange := nil;
   try
-    while FCalendarHints.Count > 4 do
-      FCalendarHints.Delete(FCalendarHints.Count - 1);
+    while CalendarHints.Count > 4 do
+      CalendarHints.Delete(CalendarHints.Count - 1);
   finally
-    TStringList(FCalendarHints).OnChange := CalendarHintsChanged;
+    FCalendarHints.OnChange := CalendarHintsChanged;
   end;
   if not (csDesigning in ComponentState) then
     UpdatePopup;
@@ -2443,7 +2444,7 @@ begin
   FWeekendColor := clRed;
   FYearDigits := dyDefault;
   FCalendarHints := TStringList.Create;
-  TStringList(FCalendarHints).OnChange := CalendarHintsChanged;
+  FCalendarHints.OnChange := CalendarHintsChanged;
   DateHook.Add;
 
   ControlState := ControlState + [csCreating];
@@ -2495,7 +2496,7 @@ begin
     TJvPopupWindow(FPopup).OnCloseUp := nil;
   FPopup.Free;
   FPopup := nil;
-  TStringList(FCalendarHints).OnChange := nil;
+  FCalendarHints.OnChange := nil;
   FCalendarHints.Free;
   FCalendarHints := nil;
   inherited Destroy;
@@ -2617,6 +2618,11 @@ begin
     FBlanksChar := Value;
     UpdateMask;
   end;
+end;
+
+function TJvCustomDateEdit.GetCalendarHints: TStrings;
+begin
+  Result := FCalendarHints;
 end;
 
 procedure TJvCustomDateEdit.SetCalendarHints(Value: TStrings);
@@ -2832,9 +2838,9 @@ end;
 procedure TJvCustomDateEdit.UpdatePopup;
 begin
   if FPopup <> nil then
-    SetupPopupCalendar(FPopup, FStartOfWeek,
-      FWeekends, FWeekendColor, FCalendarHints, FourDigitYear,
-      FMinDate, FMaxDate); // Polaris
+    SetupPopupCalendar(FPopup, StartOfWeek,
+      Weekends, WeekendColor, CalendarHints, FourDigitYear,
+      MinDate, MaxDate); // Polaris
 end;
 
 procedure TJvCustomDateEdit.ValidateEdit;

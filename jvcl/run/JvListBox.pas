@@ -100,10 +100,11 @@ type
   TJvListBoxStrings = class(TStrings)
   private
     FListBox: TJvCustomListBox;
-    FInternalList: TStrings;
+    FInternalList: TStringList;
     FUseInternal: Boolean;
     FUpdating: Boolean;
     FDestroyCnt: Integer;
+    function GetInternalList: TStrings;
   public
     function Get(Index: Integer): string; override;
     function GetCount: Integer; override;
@@ -115,7 +116,7 @@ type
     function GetListBox: TJvCustomListBox;
     procedure SetListBox(Value: TJvCustomListBox);
     property ListBox: TJvCustomListBox read GetListBox write SetListBox;
-    property InternalList: TStrings read FInternalList;
+    property InternalList: TStrings read GetInternalList;
     property UseInternal: Boolean read FUseInternal write FUseInternal;
     property Updating: Boolean read FUpdating;
     property DestroyCount: Integer read FDestroyCnt;
@@ -407,7 +408,7 @@ var
   Len: Integer;
 begin
   if UseInternal then
-    Result := FInternalList[Index]
+    Result := InternalList[Index]
   else
   {$IFDEF COMPILER6_UP}
   if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
@@ -434,7 +435,7 @@ begin
   else
   begin
     if UseInternal then
-      Result := FInternalList.Count
+      Result := InternalList.Count
     else
       Result := SendMessage(ListBox.Handle, LB_GETCOUNT, 0, 0);
   end;
@@ -443,7 +444,7 @@ end;
 function TJvListBoxStrings.GetObject(Index: Integer): TObject;
 begin
   if UseInternal then
-    Result := FInternalList.Objects[Index]
+    Result := InternalList.Objects[Index]
   else
   {$IFDEF COMPILER6_UP}
   if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
@@ -462,7 +463,7 @@ var
   TempData: Longint;
 begin
   if UseInternal then
-    FInternalList[Index] := S
+    InternalList[Index] := S
   else
   begin
     ListBox.DeselectProvider;
@@ -480,7 +481,7 @@ end;
 procedure TJvListBoxStrings.PutObject(Index: Integer; AObject: TObject);
 begin
   if UseInternal then
-    FInternalList.Objects[Index] := AObject
+    InternalList.Objects[Index] := AObject
   else
   begin
     if (Index <> -1) {$IFDEF COMPILER6_UP}and not (ListBox.Style in [lbVirtual, lbVirtualOwnerDraw]){$ENDIF COMPILER6_UP} then
@@ -532,10 +533,15 @@ begin
   inherited Destroy;
 end;
 
+function TJvListBoxStrings.GetInternalList: TStrings;
+begin
+  Result := FInternalList;
+end;
+
 function TJvListBoxStrings.Add(const S: string): Integer;
 begin
   if (csLoading in ListBox.ComponentState) and UseInternal then
-    Result := FInternalList.Add(S)
+    Result := InternalList.Add(S)
   else
   begin
     {$IFDEF COMPILER6_UP}
@@ -555,7 +561,7 @@ begin
   if (FDestroyCnt <> 0) and UseInternal then
     Exit;
   if (csLoading in ListBox.ComponentState) and UseInternal then
-    FInternalList.Clear
+    InternalList.Clear
   else
   begin
     ListBox.DeselectProvider;
@@ -566,7 +572,7 @@ end;
 procedure TJvListBoxStrings.Delete(Index: Integer);
 begin
   if (csLoading in ListBox.ComponentState) and UseInternal then
-    FInternalList.Delete(Index)
+    InternalList.Delete(Index)
   else
   begin
     ListBox.DeselectProvider;
@@ -577,7 +583,7 @@ end;
 function TJvListBoxStrings.IndexOf(const S: string): Integer;
 begin
   if UseInternal then
-    Result := FInternalList.IndexOf(S)
+    Result := InternalList.IndexOf(S)
   else
   {$IFDEF COMPILER6_UP}
   if ListBox.Style in [lbVirtual, lbVirtualOwnerDraw] then
@@ -590,7 +596,7 @@ end;
 procedure TJvListBoxStrings.Insert(Index: Integer; const S: string);
 begin
   if (csLoading in ListBox.ComponentState) and UseInternal then
-    FInternalList.Insert(Index, S)
+    InternalList.Insert(Index, S)
   else
   begin
     ListBox.DeselectProvider;
@@ -609,7 +615,7 @@ var
   TempString: string;
 begin
   if (csLoading in ListBox.ComponentState) and UseInternal then
-    FInternalList.Move(CurIndex, NewIndex)
+    InternalList.Move(CurIndex, NewIndex)
   else
   begin
     {$IFDEF COMPILER6_UP}
@@ -648,7 +654,7 @@ begin
   if ListBox.HandleAllocated then
     SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(False), 0);
   try
-    FInternalList.Clear;
+    InternalList.Clear;
     if ListBox.HandleAllocated then
       Cnt := SendMessage(ListBox.Handle, LB_GETCOUNT, 0, 0)
     else
@@ -659,7 +665,7 @@ begin
       SetString(S, Text, Len);
       Obj := TObject(SendMessage(ListBox.Handle, LB_GETITEMDATA, 0, 0));
       SendMessage(ListBox.Handle, LB_DELETESTRING, 0, 0);
-      FInternalList.AddObject(S, Obj);
+      InternalList.AddObject(S, Obj);
       Dec(Cnt);
     end;
   finally
@@ -677,21 +683,21 @@ var
 begin
   SendMessage(ListBox.Handle, WM_SETREDRAW, Ord(False), 0);
   try
-    FInternalList.BeginUpdate;
+    InternalList.BeginUpdate;
     try
       SendMessage(ListBox.Handle, LB_RESETCONTENT, 0, 0);
-      while FInternalList.Count > 0 do
+      while InternalList.Count > 0 do
       begin
-        S := FInternalList[0];
-        Obj := FInternalList.Objects[0];
+        S := InternalList[0];
+        Obj := InternalList.Objects[0];
         Index := SendMessage(ListBox.Handle, LB_ADDSTRING, 0, Longint(PChar(S)));
         if Index < 0 then
           raise EOutOfResources.Create(SInsertLineError);
         SendMessage(ListBox.Handle, LB_SETITEMDATA, Index, Longint(Obj));
-        FInternalList.Delete(0);
+        InternalList.Delete(0);
       end;
     finally
-      FInternalList.EndUpdate;
+      InternalList.EndUpdate;
     end;
   finally
     if not Updating then

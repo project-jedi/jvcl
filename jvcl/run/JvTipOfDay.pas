@@ -58,7 +58,7 @@ type
     FButtonNext: TJvButtonPersistent;
     FButtonClose: TJvButtonPersistent;
     FOptions: TJvTipOfDayOptions;
-    FTips: TStrings;
+    FTips: TStringList;
     FStyle: TJvTipOfDayStyle;
     FCurrentTip: Integer;
     FOnAfterExecute: TNotifyEvent;
@@ -79,6 +79,7 @@ type
     FDummyMsgSend: Boolean;
     procedure FontChanged(Sender: TObject);
     // function GetRegKey: string;
+    function GetTips: TStrings;
     function IsFontStored: Boolean;
     procedure SetButtonClose(const Value: TJvButtonPersistent);
     procedure SetButtonNext(const Value: TJvButtonPersistent);
@@ -146,7 +147,7 @@ type
     property Options: TJvTipOfDayOptions read FOptions write FOptions default [toShowOnStartUp];
     property Style: TJvTipOfDayStyle read FStyle write SetStyle default tsVC;
     property TipFont: TFont read FTipFont write SetTipFont stored IsFontStored;
-    property Tips: TStrings read FTips write SetTips;
+    property Tips: TStrings read GetTips write SetTips;
     property Title: string read FTitle write FTitle;
   end;
 
@@ -675,6 +676,11 @@ end;
 procedure TJvTipOfDay.SetTipFont(const Value: TFont);
 begin
   FTipFont.Assign(Value);
+end;
+
+function TJvTipOfDay.GetTips: TStrings;
+begin
+  Result := FTips;
 end;
 
 procedure TJvTipOfDay.SetTips(const Value: TStrings);

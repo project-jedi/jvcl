@@ -227,12 +227,13 @@ type
 
   TJvObjectPickerDialog = class(TJvCommonDialog)
   private
-    FAttributes: TStrings;
+    FAttributes: TStringList;
     FObjectPicker: IDsObjectPicker;
     FOptions: TObjectPickerOptions;
     FScopes: TObjectPickerScopes;
     FSelection: TObjectPickerSelections;
     FTargetComputer: string;
+    function GetAttributes: TStrings;
     procedure SetAttributes(Value: TStrings);
     procedure SetScopes(Value: TObjectPickerScopes);
   public
@@ -246,7 +247,7 @@ type
     property Selection: TObjectPickerSelections read FSelection;
   published
     // list of additional attributes the Object Picker should retrieve for all selected objects
-    property Attributes: TStrings read FAttributes write SetAttributes;
+    property Attributes: TStrings read GetAttributes write SetAttributes;
     // global options, see TObjectPickerOptions
     property Options: TObjectPickerOptions read FOptions write FOptions default [];
     // the available scopes and their filters
@@ -734,6 +735,11 @@ begin
   Options := [];
   Scopes.Clear;
   Selection.FreeSelection;
+end;
+
+function TJvObjectPickerDialog.GetAttributes: TStrings;
+begin
+  Result := FAttributes;
 end;
 
 procedure TJvObjectPickerDialog.SetAttributes(Value: TStrings);

@@ -95,10 +95,10 @@ type
 
   TJvMail = class(TJvComponent)
   private
-    FAttachment: TStrings;
+    FAttachment: TStringList;
     FAttachArray: array of TMapiFileDesc;
     FBlindCopy: TJvMailRecipients;
-    FBody: TStrings;
+    FBody: TStringList;
     FBodyText: string;
     FCarbonCopy: TJvMailRecipients;
     FRecipient: TJvMailRecipients;
@@ -121,8 +121,10 @@ type
     procedure SetBlindCopy(const Value: TJvMailRecipients);
     procedure SetCarbonCopy(const Value: TJvMailRecipients);
     procedure SetRecipient(const Value: TJvMailRecipients);
+    function GetBody: TStrings;
     procedure SetBody(const Value: TStrings);
     function GetUserLogged: Boolean;
+    function GetAttachment: TStrings;
     procedure SetAttachment(const Value: TStrings);
     function GetSimpleMapi: TJclSimpleMapi;
     procedure SetSeedMessageID(const Value: string);
@@ -158,9 +160,9 @@ type
     property SimpleMAPI: TJclSimpleMapi read GetSimpleMapi;
     property UserLogged: Boolean read GetUserLogged;
   published
-    property Attachment: TStrings read FAttachment write SetAttachment;
+    property Attachment: TStrings read GetAttachment write SetAttachment;
     property BlindCopy: TJvMailRecipients read FBlindCopy write SetBlindCopy;
-    property Body: TStrings read FBody write SetBody;
+    property Body: TStrings read GetBody write SetBody;
     property CarbonCopy: TJvMailRecipients read FCarbonCopy write SetCarbonCopy;
     property LogonOptions: TJvMailLogonOptions read FLogonOptions write FLogonOptions
       default [loLogonUI, loNewSession];
@@ -333,11 +335,11 @@ end;
 
 procedure TJvMail.Clear;
 begin
-  FBody.Clear;
-  FBlindCopy.Clear;
-  FCarbonCopy.Clear;
-  FRecipient.Clear;
-  FSubject := '';
+  Body.Clear;
+  BlindCopy.Clear;
+  CarbonCopy.Clear;
+  Recipient.Clear;
+  Subject := '';
   with FReadedMail do
   begin
     RecipientAddress := '';
@@ -367,19 +369,19 @@ procedure TJvMail.CreateMapiMessage;
   var
     I: Integer;
   begin
-    if FAttachment.Count > 0 then
+    if Attachment.Count > 0 then
     begin
-      SetLength(FAttachArray, FAttachment.Count);
-      for I := 0 to FAttachment.Count - 1 do
+      SetLength(FAttachArray, Attachment.Count);
+      for I := 0 to Attachment.Count - 1 do
       begin
-        if not FileExists(FAttachment[I]) then
+        if not FileExists(Attachment[I]) then
           {$TYPEDADDRESS OFF}
-          raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [FAttachment[I]]);
+          raise EJclMapiError.CreateResRecFmt(@RsAttachmentNotFound, [Attachment[I]]);
           {$TYPEDADDRESS ON}
         FillChar(FAttachArray[I], SizeOf(TMapiFileDesc), #0);
         FAttachArray[I].nPosition := $FFFFFFFF;
-        FAttachArray[I].lpszFileName := PChar(FAttachment[I]);
-        FAttachArray[I].lpszPathName := PChar(FAttachment[I]);
+        FAttachArray[I].lpszFileName := PChar(Attachment[I]);
+        FAttachArray[I].lpszPathName := PChar(Attachment[I]);
       end;
     end
     else
@@ -390,7 +392,7 @@ begin
   try
     CreateRecips;
     MakeAttachments;
-    FBodyText := FBody.Text;
+    FBodyText := Body.Text;
     FillChar(FMapiMessage, SizeOf(FMapiMessage), #0);
     FMapiMessage.lpszSubject := PChar(FSubject);
     FMapiMessage.lpszNoteText := PChar(FBodyText);
@@ -444,12 +446,12 @@ procedure TJvMail.DecodeAttachments(Attachments: PMapiFileDesc; AttachCount: Int
 var
   I: Integer;
 begin
-  FAttachment.Clear;
+  Attachment.Clear;
   if Attachments = nil then
     Exit;
   for I := 0 to AttachCount - 1 do
   begin
-    FAttachment.Add(Attachments^.lpszPathName);
+    Attachment.Add(Attachments^.lpszPathName);
     Inc(Attachments);
   end;
 end;
@@ -624,7 +626,7 @@ begin
     end;
     DecodeRecipients(lpRecips, nRecipCount);
     FSubject := lpszSubject;
-    FBody.Text := lpszNoteText;
+    Body.Text := lpszNoteText;
     //    FDateReceived := StrToDateTime(lpszDateReceived);
     FReadedMail.ConversationID := lpszConversationID;
     DecodeAttachments(lpFiles, nFileCount);
@@ -726,6 +728,11 @@ begin
   end;
 end;
 
+function TJvMail.GetAttachment: TStrings;
+begin
+  Result := FAttachment;
+end;
+
 procedure TJvMail.SetAttachment(const Value: TStrings);
 begin
   FAttachment.Assign(Value);
@@ -734,6 +741,11 @@ end;
 procedure TJvMail.SetBlindCopy(const Value: TJvMailRecipients);
 begin
   FBlindCopy.Assign(Value);
+end;
+
+function TJvMail.GetBody: TStrings;
+begin
+  Result := FBody;
 end;
 
 procedure TJvMail.SetBody(const Value: TStrings);

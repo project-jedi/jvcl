@@ -43,8 +43,8 @@ type
     FEnabled: Boolean;
     FDeleteBeforeStore: Boolean;
     FClearBeforeLoad: Boolean;
-    FIntIgnoreProperties: TStrings;
-    FIgnoreProperties: TStrings;
+    FIntIgnoreProperties: TStringList;
+    FIgnoreProperties: TStringList;
     FAutoLoad: Boolean;
     FLastLoadTime: TDateTime;
     FIgnoreLastLoadTime: Boolean;
@@ -54,6 +54,7 @@ type
     FOnBeforeStoreProperties: TNotifyEvent;
     FOnAfterStoreProperties: TNotifyEvent;
     procedure SetAutoLoad(Value: Boolean);
+    function GetIgnoreProperties: TStrings;
     procedure SetIgnoreProperties(Value: TStrings);
     function GetPropCount(Instance: TPersistent): Integer;
     function GetPropName(Instance: TPersistent; Index: Integer): string;
@@ -86,7 +87,7 @@ type
     property ClearBeforeLoad: Boolean read FClearBeforeLoad write fClearBeforeLoad default False;
     property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write fIgnoreLastLoadTime
       default False;
-    property IgnoreProperties: TStrings read FIgnoreProperties write SetIgnoreProperties;
+    property IgnoreProperties: TStrings read GetIgnoreProperties write SetIgnoreProperties;
     property OnBeforeLoadProperties: TNotifyEvent read FOnBeforeLoadProperties
       write FOnBeforeLoadProperties;
     property OnAfterLoadProperties: TNotifyEvent read FOnAfterLoadProperties
@@ -100,9 +101,10 @@ type
 
   TJvCustomPropertyListStore = class(TJvCustomPropertyStore)
   private
-    FItems: TStrings;
+    FItems: TStringList;
     FFreeObjects: boolean;
     FCreateListEntries: boolean;
+    function GetItems: TStrings;
   protected
     function GetString(Index: Integer): string;
     function GetObject(Index: Integer): TObject;
@@ -122,7 +124,7 @@ type
     function CreateObject: TObject; virtual;
     property Strings [Index: Integer]: string read GetString write SetString;
     property Objects[Index: Integer]: TObject read GetObject write SetObject;
-    property Items: TStrings read FItems;
+    property Items: TStrings read GetItems;
     property Count: Integer read GetCount;
   published
     { Defines if the Items.Objects- Objects will be freeded inside the clear procedure }
@@ -272,15 +274,18 @@ begin
   FCombinedIgnoreList := TCombinedStrings.Create;
   FCombinedIgnoreList.AddStrings(FIntIgnoreProperties);
   FCombinedIgnoreList.AddStrings(FIgnoreProperties);
-  FIntIgnoreProperties.Add('AboutJVCL');
-  FIntIgnoreProperties.Add('AppStoragePath');
-  FIntIgnoreProperties.Add('AutoLoad');
-  FIntIgnoreProperties.Add('Name');
-  FIntIgnoreProperties.Add('Tag');
-  FIntIgnoreProperties.Add('Enabled');
-  FIntIgnoreProperties.Add('DeleteBeforeStore');
-  FIntIgnoreProperties.Add('IgnoreLastLoadTime');
-  FIntIgnoreProperties.Add('IgnoreProperties');
+  with FIntIgnoreProperties do
+  begin
+    Add('AboutJVCL');
+    Add('AppStoragePath');
+    Add('AutoLoad');
+    Add('Name');
+    Add('Tag');
+    Add('Enabled');
+    Add('DeleteBeforeStore');
+    Add('IgnoreLastLoadTime');
+    Add('IgnoreProperties');
+  end;
 end;
 
 destructor TJvCustomPropertyStore.Destroy;
@@ -404,13 +409,11 @@ begin
   for Index := 0 to GetPropCount(Self) - 1 do
   begin
     PropName := GetPropName(Self, Index);
-    if (FIgnoreProperties.IndexOf(Propname) >= 0) then
-      Continue;
-    if (FIntIgnoreProperties.IndexOf(Propname) >= 0) then
-      Continue;
-    if PropType(Self, GetPropName(Self, Index)) = tkClass then
-      if (TPersistent(GetOrdProp(Self, PropName)) is tJvCustomPropertyStore) then
-        TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AutoLoad := False;
+    if IgnoreProperties.IndexOf(Propname) < 0 then
+      if FIntIgnoreProperties.IndexOf(Propname) < 0 then
+        if PropType(Self, GetPropName(Self, Index)) = tkClass then
+          if (TPersistent(GetOrdProp(Self, PropName)) is tJvCustomPropertyStore) then
+            TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AutoLoad := False;
   end;
 end;
 
@@ -426,9 +429,9 @@ begin
   begin
     PropName := GetPropName(Self, Index);
     VisPropName := AppStorage.TranslatePropertyName(Self, PropName, False);
-    if (FIgnoreProperties.Indexof(PropName) >= 0) then
+    if IgnoreProperties.Indexof(PropName) >= 0 then
       Continue;
-    if (FIntIgnoreProperties.Indexof(PropName) >= 0) then
+    if FIntIgnoreProperties.Indexof(PropName) >= 0 then
       Continue;
     if PropType(Self, GetPropName(Self, Index)) = tkClass then
       if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
@@ -460,6 +463,11 @@ begin
     if Components[Index] is TJvCustomPropertyStore then
       TJvCustomPropertyStore(Components[Index]).AppStorage := Value;
   FAppStorage := Value;
+end;
+
+function TJvCustomPropertyStore.GetIgnoreProperties: TStrings;
+begin
+  Result := FIgnoreProperties;
 end;
 
 procedure TJvCustomPropertyStore.SetIgnoreProperties(Value: TStrings);
@@ -549,6 +557,11 @@ begin
   inherited Destroy;
 end;
 
+function TJvCustomPropertyListStore.GetItems: TStrings;
+begin
+  Result := FItems;
+end;
+
 procedure TJvCustomPropertyListStore.StoreData;
 begin
   inherited StoreData;
@@ -565,14 +578,11 @@ procedure TJvCustomPropertyListStore.Clear;
 var
   I: Integer;
 begin
-  if Assigned(FItems) then
-  begin
-    if FreeObjects then
-      for I := 0 to Count - 1 do
-        if Assigned(Objects[I]) then
-          Objects[I].Free;
-    Items.Clear;
-  end;
+  if FreeObjects then
+    for I := 0 to Count - 1 do
+      if Assigned(Objects[I]) then
+        Objects[I].Free;
+  Items.Clear;
   inherited Clear;
 end;
 

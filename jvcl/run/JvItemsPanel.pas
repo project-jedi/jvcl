@@ -49,7 +49,7 @@ type
 
   TJvItemsPanel = class(TJvCustomPanel, IJvDenySubClassing)
   private
-    FItems: TStrings;
+    FItems: TStringList;
     FItemHeight: Integer;
     FAutoSize: Boolean;
     FAutoGrow: Boolean;
@@ -61,6 +61,7 @@ type
     FOnItemClick: TJvPanelItemClickEvent;
     FOrientation: TJvPanelOrientation;
     function GetCaption: TCaption;
+    function GetItems: TStrings;
     procedure SetItems(const Value: TStrings);
     procedure SetItemHeight(const Value: Integer);
     procedure SetAutoGrow(const Value: Boolean);
@@ -98,7 +99,7 @@ type
   published
     property AutoGrow: Boolean read FAutoGrow write SetAutoGrow;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
-    property Items: TStrings read FItems write SetItems;
+    property Items: TStrings read GetItems write SetItems;
     property ItemHeight: Integer read FItemHeight write SetItemHeight default 16;
     property HotTrack: Boolean read FHotTrack write SetHotTrack;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default clHighLight;
@@ -200,27 +201,27 @@ begin
 //  inherited Paint;
   Canvas.Brush.Color := Self.Color;
   DrawThemedBackground(Self, Canvas, ClientRect);
-  if FItems.Count = 0 then
+  if Items.Count = 0 then
     Exit;
   Rest := 0;
   if AutoSize then
   begin
     if Orientation = poVertical then
     begin
-      ItemHeight := Height div FItems.Count;
-      Rest := Height - ItemHeight * FItems.Count
+      ItemHeight := Height div Items.Count;
+      Rest := Height - ItemHeight * Items.Count
     end
     else
     begin
-      ItemHeight := Width div FItems.Count;
-      Rest := Width - ItemHeight * FItems.Count
+      ItemHeight := Width div Items.Count;
+      Rest := Width - ItemHeight * Items.Count
     end;
   end;
 
-  for I := 0 to FItems.Count - 1 do
+  for I := 0 to Items.Count - 1 do
   begin
     R := GetItemRect(I);
-    if I = FItems.Count - 1 then
+    if I = Items.Count - 1 then
     begin
       if Orientation = poVertical then
         R.Bottom := R.Bottom + Rest
@@ -237,7 +238,7 @@ procedure TJvItemsPanel.DrawItemText(Index: Integer; R: TRect; HighLight: Boolea
 var
   Flags: Integer;
 begin
-  if (Index < 0) or (Index >= FItems.Count) then
+  if (Index < 0) or (Index >= Items.Count) then
     Exit;
   Flags := DT_VCENTER or DT_SINGLELINE or DT_NOPREFIX or DT_END_ELLIPSIS or DT_EDITCONTROL;
   case Alignment of
@@ -257,7 +258,7 @@ begin
   if ThemeServices.ThemesEnabled then
     SetBkMode(Canvas.Handle, TRANSPARENT);
   {$ENDIF JVCLThemesEnabled}
-  DrawText(Canvas.Handle, PChar(FItems[Index]), -1, R, Flags);
+  DrawText(Canvas.Handle, PChar(Items[Index]), -1, R, Flags);
 end;
 
 procedure TJvItemsPanel.SetAutoGrow(const Value: Boolean);
@@ -282,9 +283,9 @@ begin
     if AutoSize then
     begin
       if Orientation = poVertical then
-        ItemHeight := Height div (FItems.Count + 1)
+        ItemHeight := Height div (Items.Count + 1)
       else
-        ItemHeight := Width div (FItems.Count + 1);
+        ItemHeight := Width div (Items.Count + 1);
     end;
     Grow;
   end;
@@ -297,6 +298,11 @@ begin
     FItemHeight := Value;
     Grow;
   end;
+end;
+
+function TJvItemsPanel.GetItems: TStrings;
+begin
+  Result := FItems;
 end;
 
 procedure TJvItemsPanel.SetItems(const Value: TStrings);

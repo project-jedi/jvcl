@@ -50,7 +50,7 @@ type
   private
     FActive: boolean;
     FAlignment: TAlignment;
-    FLines: TStrings;
+    FLines: TStringList;
     FCycled: boolean;
     FScrollCnt: integer;
     FMaxScroll: integer;
@@ -73,6 +73,7 @@ type
     procedure SetAsyncDrawing(Value: boolean);
     function GetInflateWidth: integer;
     function GetInterval: Cardinal;
+    function GetLines: TStrings;
     procedure SetInterval(Value: Cardinal);
     procedure SetGlyph(Value: TBitmap);
     procedure SetLines(Value: TStrings);
@@ -112,7 +113,7 @@ type
     property GlyphLayout: TGlyphLayout read FGlyphLayout write SetGlyphLayout
       default glGlyphLeft;
     property Interval: Cardinal read GetInterval write SetInterval default 30;
-    property Lines: TStrings read FLines write SetLines;
+    property Lines: TStrings read GetLines write SetLines;
     property ScrollDirection: TScrollDirection read FDirection write SetDirection
       default sdVertical;
     property TextStyle: TPanelBevel read FTextStyle write SetTextStyle default bvNone;
@@ -182,7 +183,7 @@ begin
   BevelOuter := bvLowered;
   FTextStyle := bvNone;
   FLines := TStringlist.Create;
-  TStringlist(FLines).OnChange := LinesChanged;
+  FLines.OnChange := LinesChanged;
   FGlyph := TBitmap.Create;
   FGlyph.OnChange := GlyphChanged;
   FHiddenList := TList.Create;
@@ -202,7 +203,7 @@ begin
   SetActive(false);
   FGlyph.OnChange := nil;
   FGlyph.Free;
-  TStringlist(FLines).OnChange := nil;
+  FLines.OnChange := nil;
   FLines.Free;
   FHiddenList.Free;
   inherited Destroy;
@@ -348,8 +349,8 @@ begin
   end;
   if FDirection = sdHorizontal then
   begin
-    LastLine := FLines.Count - 1;
-    while (LastLine >= 0) and (Trim(FLines[LastLine]) = '') do
+    LastLine := Lines.Count - 1;
+    while (LastLine >= 0) and (Trim(Lines[LastLine]) = '') do
       Dec(LastLine);
     InflateWidth := RectHeight(FTxtRect) -
       (LastLine + 1 - FFirstLine) * FTxtDivider;
@@ -378,7 +379,7 @@ var
   I: integer;
   Flags: Longint;
 begin
-  if (FLines.Count = 0) or IsRectEmpty(FTxtRect) or not HandleAllocated then
+  if (Lines.Count = 0) or IsRectEmpty(FTxtRect) or not HandleAllocated then
     Exit;
   FMemoryImage.Canvas.Lock;
   try
@@ -417,12 +418,12 @@ begin
     Flags := DT_EXPANDTABS or Alignments[FAlignment] or DT_SINGLELINE or
       DT_NOCLIP or DT_NOPREFIX;
     Flags := DrawTextBiDiModeFlags(Flags);
-    for I := FFirstLine to FLines.Count do
+    for I := FFirstLine to Lines.Count do
     begin
-      if I = FLines.Count then
+      if I = Lines.Count then
         StrCopy(STmp, ' ')
       else
-        StrPLCopy(STmp, FLines[I], SizeOf(STmp) - 1);
+        StrPLCopy(STmp, Lines[I], SizeOf(STmp) - 1);
       if R.Top >= RectHeight(FTxtRect) then
         break
       else if R.Bottom > 0 then
@@ -559,7 +560,7 @@ begin
   FMemoryImage.Canvas.Lock;
   try
     FFirstLine := 0;
-    while (FFirstLine < FLines.Count) and (Trim(FLines[FFirstLine]) = '') do
+    while (FFirstLine < Lines.Count) and (Trim(Lines[FFirstLine]) = '') do
       Inc(FFirstLine);
     Canvas.Font := Self.Font;
     GetTextMetrics(Canvas.Handle, Metrics);
@@ -570,13 +571,13 @@ begin
     if FDirection = sdHorizontal then
     begin
       FMaxScroll := 0;
-      for I := FFirstLine to FLines.Count - 1 do
-        FMaxScroll := Max(FMaxScroll, Canvas.TextWidth(FLines[I]));
+      for I := FFirstLine to Lines.Count - 1 do
+        FMaxScroll := Max(FMaxScroll, Canvas.TextWidth(Lines[I]));
       Inc(FMaxScroll, RectWidth(FTxtRect));
     end
     else
     begin { sdVertical }
-      FMaxScroll := ((FLines.Count - FFirstLine) * FTxtDivider) +
+      FMaxScroll := ((Lines.Count - FFirstLine) * FTxtDivider) +
         RectHeight(FTxtRect);
     end;
     FMemoryImage.Width := RectWidth(FTxtRect);
@@ -722,6 +723,11 @@ begin
       Invalidate;
     end;
   end;
+end;
+
+function TJvSecretPanel.GetLines: TStrings;
+begin
+  Result := FLines;
 end;
 
 procedure TJvSecretPanel.SetLines(Value: TStrings);
