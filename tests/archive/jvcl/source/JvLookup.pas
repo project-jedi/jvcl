@@ -818,16 +818,18 @@ end;
 {$ENDIF}
 
 constructor TJvLookupControl.Create(AOwner: TComponent);
+const
+  {$IFDEF JVCLThemesEnabled}
+  LookupStyle = [csOpaque, csNeedsBorderPaint];
+  {$ELSE}
+  LookupStyle = [csOpaque];
+  {$ENDIF}
 begin
   inherited Create(AOwner);
   if NewStyleControls then
-    {$IFDEF JVCLThemesEnabled}
-    ControlStyle := [csOpaque, csNeedsBorderPaint]
-    {$ELSE}
-    ControlStyle := [csOpaque]
-    {$ENDIF}
+    ControlStyle := LookupStyle
   else
-    ControlStyle := [csOpaque, csFramed];
+    ControlStyle := LookupStyle + [csFramed];
   ParentColor := False;
   TabStop := True;
   FFieldsDelimiter := DefFieldsDelimiter;
@@ -854,10 +856,12 @@ destructor TJvLookupControl.Destroy;
 begin
   FListFields.Free;
   FListFields := nil;
-  FLookupLink.FDataControl := nil;
+  if FLookupLink <> nil then
+    FLookupLink.FDataControl := nil;
   FLookupLink.Free;
   FLookupLink := nil;
-  FDataLink.FDataControl := nil;
+  if FDataLink <> nil then
+    FDataLink.FDataControl := nil;
   FDataLink.Free;
   FDataLink := nil;
   FLocate.Free;
@@ -1588,12 +1592,14 @@ end;
 procedure TJvLookupControl.WMKillFocus(var Msg: TMessage);
 begin
   FFocused := False;
+  inherited;
   Invalidate;
 end;
 
 procedure TJvLookupControl.WMSetFocus(var Msg: TMessage);
 begin
   FFocused := True;
+  inherited;
   Invalidate;
 end;
 
@@ -2241,8 +2247,8 @@ begin
     StopTimer
   else
   begin
-    FLookupLink.DataSet.MoveBy(Delta);
-    SelectCurrent;
+    if FLookupLink.DataSet.MoveBy(Delta) <> 0 then
+      SelectCurrent;
     Interval := 200 - Distance * 15;
     if Interval < 0 then
       Interval := 0;
@@ -2384,6 +2390,9 @@ begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
   begin
+    if FLookupLink.DataSet = nil then
+      Exit;
+
     with FLookupLink.DataSet do
       { FRecordCount - FRecordIndex - 1  = #records till end of visible list
         FRecordCount div 2               = half visible list.
@@ -2403,6 +2412,9 @@ begin
   Result := inherited DoMouseWheelUp(Shift, MousePos);
   if not Result then
   begin
+    if FLookupLink.DataSet = nil then
+      Exit;
+
     with FLookupLink.DataSet do
       { -FRecordIndex        = #records till begin of visible list
         FRecordCount div 2   = half visible list.
@@ -2419,6 +2431,9 @@ end;
 procedure TJvDBLookupList.WMVScroll(var Msg: TWMVScroll);
 begin
   FSearchText := '';
+  if FLookupLink.DataSet = nil then
+    Exit;
+
   with Msg, FLookupLink.DataSet do
     case ScrollCode of
       SB_LINEUP:
@@ -2602,6 +2617,9 @@ begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
   begin
+    if FLookupLink.DataSet = nil then
+      Exit;
+
     { Simulate up or down key, see code in KeyDown }
     if FListActive then
       if ssAlt in Shift then
@@ -2632,6 +2650,9 @@ begin
   Result := inherited DoMouseWheelDown(Shift, MousePos);
   if not Result then
   begin
+    if FLookupLink.DataSet = nil then
+      Exit;
+
     { Simulate up or down key, see code in KeyDown }
     if FListActive then
       if ssAlt in Shift then
@@ -2662,6 +2683,10 @@ var
   P: TPoint;
   I, Y: Integer;
   S: string;
+  {$IFDEF COMPILER6_UP}
+  Animate: BOOL;
+  SlideStyle: Integer;
+  {$ENDIF}
 begin
   if not FListVisible and {FListActive} CanModify then
   begin
@@ -2715,8 +2740,30 @@ begin
     end;
     if P.X + FDataList.Width > Screen.Width then
       P.X := Screen.Width - FDataList.Width;
+
+    {$IFDEF COMPILER6_UP}
+    { Use slide-open effect for combo boxes if wanted. This is also possible
+      for D5<, but D5< does not define AnimateWindowProc in Controls.pas. See
+      TJvBalloonHint.pas to solve this }
+    SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
+      SWP_NOSIZE or SWP_NOACTIVATE {or SWP_SHOWWINDOW});
+
+    SystemParametersInfo(SPI_GETCOMBOBOXANIMATION, 0, @Animate, 0);
+    if Animate then
+    begin
+      if Y < P.Y then
+        SlideStyle := AW_VER_NEGATIVE
+      else
+        SlideStyle := AW_VER_POSITIVE;
+      AnimateWindowProc(FDataList.Handle, 150, SlideStyle or AW_SLIDE);
+    end;
+
+    ShowWindow(FDataList.Handle, SW_SHOWNOACTIVATE);
+    {$ELSE}
     SetWindowPos(FDataList.Handle, HWND_TOP, Max(P.X, 0), Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
+    {$ENDIF COMPILER6_UP}
+
     FListVisible := True;
     InvalidateText;
     Repaint;
