@@ -1249,11 +1249,7 @@ end;
 
 procedure DestroyLocals;
 begin
-  if GCheckBitmap <> nil then
-  begin
-    GCheckBitmap.Free;
-    GCheckBitmap := nil;
-  end;
+  FreeAndNil(GCheckBitmap);
 end;
 
 const
@@ -1973,7 +1969,6 @@ begin
 end;
 
 initialization
-  GCheckBitmap := nil;
 
 finalization
   DestroyLocals;

@@ -109,8 +109,8 @@ type
   end;
 
 var
-  GlobalHashTable: array[#0..#255] of Byte;
-  GlobalInsensitiveHashTable: array[#0..#255] of Byte;
+  GlobalHashTable: array [#0..#255] of Byte;
+  GlobalInsensitiveHashTable: array [#0..#255] of Byte;
 
 procedure InitTables;
 var

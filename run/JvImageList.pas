@@ -198,7 +198,7 @@ type
   end;
 
 var
-  HandleNeededHookInstalled: Boolean;
+  HandleNeededHookInstalled: Boolean = False;
   SavedNeededHookCode: TJumpCode;
 
 procedure HandleNeededHook(Self: TImageList);
@@ -869,7 +869,6 @@ end;
 {$IFDEF VCL}
 
 initialization
-  HandleNeededHookInstalled := False;
 
 finalization
   if HandleNeededHookInstalled then

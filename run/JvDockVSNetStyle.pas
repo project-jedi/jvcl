@@ -3119,11 +3119,12 @@ end;
 initialization
 
 finalization
-  PopupPanelAnimate.Free;
+  GlobalPopupPanelAnimate.Free;
+  GlobalPopupPanelAnimate := nil;
   { (ahuser) Do not create if the instance does not exist. Else the application
              will crash. }
-  if GlobalApplicationEvents <> nil then
-    ApplicationEvents.Free;
+  GlobalApplicationEvents.Free;
+  GlobalApplicationEvents := nil;
 
 end.
 

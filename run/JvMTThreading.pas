@@ -739,6 +739,7 @@ finalization
   begin
     CheckSynchronize;
     SyncRequestList.Free;
+    SyncRequestList := nil;
   end;
 
 {$ENDIF COMPILER5}

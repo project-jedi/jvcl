@@ -171,29 +171,33 @@ const
   JvBtnLineSeparator = '|';
 
 var
-  APattern: TBitmap = nil;
+  GlobalPattern: TBitmap = nil;
 
 function CreateBrushPattern: TBitmap;
 var
   X, Y: Integer;
 begin
-  if APattern = nil then
+  if GlobalPattern = nil then
   begin
-    APattern := TBitmap.Create;
-    APattern.Width := 8; { must have this size }
-    APattern.Height := 8;
-    with APattern.Canvas do
-    begin
-      Brush.Style := bsSolid;
-      Brush.Color := clBtnFace;
-      FillRect(Rect(0, 0, APattern.Width, APattern.Height));
-      for Y := 0 to 7 do
-        for X := 0 to 7 do
-          if (Y mod 2) = (X mod 2) then { toggles between even/odd pixles }
-            Pixels[X, Y] := clWhite; { on even/odd rows }
+    GlobalPattern := TBitmap.Create;
+    try
+      GlobalPattern.Width := 8; { must have this size }
+      GlobalPattern.Height := 8;
+      with GlobalPattern.Canvas do
+      begin
+        Brush.Style := bsSolid;
+        Brush.Color := clBtnFace;
+        FillRect(Rect(0, 0, GlobalPattern.Width, GlobalPattern.Height));
+        for Y := 0 to 7 do
+          for X := 0 to 7 do
+            if (Y mod 2) = (X mod 2) then { toggles between even/odd pixels }
+              Pixels[X, Y] := clWhite; { on even/odd rows }
+      end;
+    except
+      FreeAndNil(GlobalPattern);
     end;
   end;
-  Result := APattern;
+  Result := GlobalPattern;
 end;
 
 // == TJvCustomGraphicButton ===================================================
@@ -708,7 +712,7 @@ end;
 initialization
 
 finalization
-  FreeAndNil(APattern);
+  FreeAndNil(GlobalPattern);
 
 end.
 

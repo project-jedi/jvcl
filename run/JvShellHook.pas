@@ -292,29 +292,29 @@ type
 var
   RegisterShellHookWindow: TRegisterShellHookWindowFunc = nil;
   DeregisterShellHookWindow: TRegisterShellHookWindowFunc = nil;
-  FLibHandle: Cardinal = 0;
+  GlobalLibHandle: HMODULE = 0;
 
 function InitJvShellHooks: Boolean;
 begin
   Result := True;
-  if FLibHandle <> 0 then
+  if GlobalLibHandle > 0 then
     Exit; // already done this
-  FLibHandle := LoadLibrary(cUser32);
-  if FLibHandle <> 0 then
+  GlobalLibHandle := LoadLibrary(cUser32);
+  if GlobalLibHandle > 0 then
   begin
-    RegisterShellHookWindow := GetProcAddress(FLibHandle, 'RegisterShellHookWindow');
-    DeregisterShellHookWindow := GetProcAddress(FLibHandle, 'DeregisterShellHookWindow');
+    RegisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'RegisterShellHookWindow');
+    DeregisterShellHookWindow := GetProcAddress(GlobalLibHandle, 'DeregisterShellHookWindow');
   end;
-  Result := (FLibHandle <> 0) and Assigned(RegisterShellHookWindow) and Assigned(DeregisterShellHookWindow);
+  Result := (GlobalLibHandle > 0) and Assigned(RegisterShellHookWindow) and Assigned(DeregisterShellHookWindow);
 end;
 
 procedure UnInitJvShellHooks;
 begin
   RegisterShellHookWindow := nil;
   DeregisterShellHookWindow := nil;
-  if FLibHandle <> 0 then
-    FreeLibrary(FLibHandle);
-  FLibHandle := 0;
+  if GlobalLibHandle > 0 then
+    FreeLibrary(GlobalLibHandle);
+  GlobalLibHandle := 0;
 end;
 
 destructor TJvShellHook.Destroy;

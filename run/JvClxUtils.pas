@@ -676,7 +676,7 @@ end;
 initialization
 
 finalization
-  SysColorPalette.Free;
+  FreeAndNil(SysColorPalette);
 {$ENDIF VisualCLX}
 
 end.

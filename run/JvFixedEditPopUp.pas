@@ -487,7 +487,7 @@ end;
 initialization
 
 finalization
-  GlobalHiddenPopup.Free;
+  FreeAndNil(GlobalHiddenPopup);
 
 end.
 

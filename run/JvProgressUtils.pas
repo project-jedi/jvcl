@@ -199,8 +199,7 @@ end;
 
 procedure UnRegisterProgressControl(AClass: TControlClass);
 begin
-  if ProgressList <> nil then
-    ProgressList.Remove(AClass);
+  GetProgressList.Remove(AClass);
 end;
 
 procedure SetProgressMax(Control: TControl; MaxValue: Longint);

@@ -1671,9 +1671,9 @@ type
   TOpenEdit = class(TCustomEdit);
 
 var
-  FGenItemReg: TJvInspectorRegister;
-  FVarItemReg: TJvInspectorRegister;
-  FPropItemReg: TJvInspectorRegister;
+  GlobalGenItemReg: TJvInspectorRegister = nil;
+  GlobalVarItemReg: TJvInspectorRegister = nil;
+  GlobalPropItemReg: TJvInspectorRegister = nil;
 
 //=== TCanvasStack ===========================================================
 
@@ -1681,15 +1681,15 @@ type
   TCanvasStack = class(TObjectList)
   private
     FTop: Integer;
+    procedure SetCapacity(const Value: Integer);
   protected
-    procedure ChangeCapacity(const Value: Integer);
   public
     constructor Create(const ACapacity: Integer);
     function Push(const Canvas: TCanvas): Integer;
     procedure Pop(const Canvas: TCanvas; Index: Integer = -2);
     //    procedure Peek(const Canvas: TCanvas; Index: Integer = -2); make Delphi 5 compiler happy // andreas
 
-    property Capacity write ChangeCapacity;
+    property Capacity write SetCapacity;
     property Top: Integer read FTop write FTop;
   end;
 
@@ -1706,9 +1706,9 @@ type
   end;
 
 var
-  CanvasStack: TCanvasStack;
+  GlobalCanvasStack: TCanvasStack = nil;
 
-procedure TCanvasStack.ChangeCapacity(const Value: Integer);
+procedure TCanvasStack.SetCapacity(const Value: Integer);
 var
   I: Integer;
 begin
@@ -1718,13 +1718,13 @@ begin
     begin
       inherited Capacity := Value;
       if FTop >= Capacity then
-        FTop := Pred(Capacity);
+        FTop := Capacity-1;
     end
     else
     begin
       I := Capacity;
       inherited Capacity := Value;
-      for I := I to Pred(Value) do
+      for I := I to Value - 1 do
         Add(TCanvasState.Create(nil));
     end;
   end;
@@ -1797,6 +1797,13 @@ begin
   FFont.Assign(Canvas.Font);
 end;
 
+function CanvasStack: TCanvasStack;
+begin
+  if GlobalCanvasStack = nil then
+    GlobalCanvasStack := TCanvasStack.Create(512);
+  Result := GlobalCanvasStack;
+end;
+
 function SaveCanvasState(const Canvas: TCanvas): Integer;
 begin
   Result := CanvasStack.Push(Canvas);
@@ -1844,7 +1851,7 @@ type
   end;
 
 var
-  InspReg: TInspReg;
+  GlobalInspReg: TInspReg = nil;
 
 function TInspReg.ApplicationDeactivate(var Msg: TMessage): Boolean;
 var
@@ -2030,9 +2037,10 @@ begin
   end;
 end;
 
+//=== TJvCustomInspector =====================================================
+
 var
-  DataRegister: TJvInspDataReg;
-  //=== TJvCustomInspector =====================================================
+  DataRegister: TJvInspDataReg = nil;
 
 {$IFDEF VisualCLX}
 
@@ -3529,14 +3537,14 @@ begin
   BandWidth := 150;
 
   if not (csDesigning in ComponentState) then
-    InspReg.RegInspector(Self);
+    GlobalInspReg.RegInspector(Self);
 end;
 
 procedure TJvCustomInspector.BeforeDestruction;
 begin
   inherited BeforeDestruction;
   if not (csDesigning in ComponentState) then
-    InspReg.UnRegInspector(Self);
+    GlobalInspReg.UnRegInspector(Self);
   Painter := nil;
   FRoot.Free;
   FBandStartsSB.Free;
@@ -9221,9 +9229,9 @@ end;
 
 class function TJvCustomInspectorData.ItemRegister: TJvInspectorRegister;
 begin
-  if FGenItemReg = nil then
-    FGenItemReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
-  Result := FGenItemReg;
+  if GlobalGenItemReg = nil then
+    GlobalGenItemReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
+  Result := GlobalGenItemReg;
 end;
 
 class function TJvCustomInspectorData.New: TJvCustomInspectorData;
@@ -9553,9 +9561,9 @@ end;
 
 class function TJvInspectorVarData.ItemRegister: TJvInspectorRegister;
 begin
-  if FVarItemReg = nil then
-    FVarItemReg := TJvInspectorRegister.Create(TJvInspectorVarData);
-  Result := FVarItemReg;
+  if GlobalVarItemReg = nil then
+    GlobalVarItemReg := TJvInspectorRegister.Create(TJvInspectorVarData);
+  Result := GlobalVarItemReg;
 end;
 
 class function TJvInspectorVarData.New(const AParent: TJvCustomInspectorItem; const AName: string; const ATypeInfo:
@@ -9796,9 +9804,9 @@ end;
 
 class function TJvInspectorPropData.ItemRegister: TJvInspectorRegister;
 begin
-  if FPropItemReg = nil then
-    FPropItemReg := TJvInspectorRegister.Create(TJvInspectorPropData);
-  Result := FPropItemReg;
+  if GlobalPropItemReg = nil then
+    GlobalPropItemReg := TJvInspectorRegister.Create(TJvInspectorPropData);
+  Result := GlobalPropItemReg;
 end;
 
 class function TJvInspectorPropData.New(const AParent: TJvCustomInspectorItem;
@@ -11262,8 +11270,7 @@ end;
 {$ENDIF VisualCLX}
 
 initialization
-  CanvasStack := TCanvasStack.Create(512);
-  InspReg := TInspReg.Create;
+  GlobalInspReg := TInspReg.Create;
   RegisterTypeKinds;
   RegisterConsts;
   DataRegister := TJvInspDataReg.Create;
@@ -11271,11 +11278,15 @@ initialization
 finalization
   DataRegister.Free; // Can't use FreeAndNil as it will set DataRegister to nil before it's destroyed.
   DataRegister := nil;
-  TJvCustomInspectorData.ItemRegister.Free;
-  TJvInspectorPropData.ItemRegister.Free;
-  TJvInspectorVarData.ItemRegister.Free;
-  InspReg.Free;
-  CanvasStack.Free;
+  GlobalGenItemReg.Free;
+  GlobalGenItemReg := nil;
+  GlobalPropItemReg.Free;
+  GlobalPropItemReg := nil;
+  GlobalVarItemReg.Free;
+  GlobalVarItemReg := nil;
+  GlobalInspReg.Free;
+  GlobalInspReg := nil;
+  FreeAndNil(GlobalCanvasStack);
 
 end.
 

@@ -860,7 +860,7 @@ const
   EmptyItem: TDSARegItem = (ID: High(Integer); Name: ''; Storage: nil);
 
 var
-  DSARegister: TDSARegister;
+  DSARegister: TDSARegister = nil;
 
 destructor TDSARegister.Destroy;
 begin
@@ -2319,6 +2319,7 @@ initialization
 
 finalization
   DSARegister.Free;
+  DSARegister := nil;
   FreeAndNil(GlobalRegStore);
   FreeAndNil(GlobalQueueStore);
   FreeAndNil(GlobalCheckMarkTexts);

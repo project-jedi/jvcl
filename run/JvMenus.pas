@@ -2981,6 +2981,8 @@ end;
 
 initialization
   PopupList := nil;
+
 finalization
-  if PopupList <> nil then PopupList.Free;
+  FreeAndNil(PopupList);
+
 end.

@@ -465,7 +465,7 @@ uses
   JvDynControlEngineVCL;
 
 var
-  IntDynControlEngineJVCL: TJvDynControlEngine;
+  IntDynControlEngineJVCL: TJvDynControlEngine = nil;
 
 //=== TJvDynControlJVCLMaskEdit ==============================================
 

@@ -74,7 +74,7 @@ type
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle; APalette: HPALETTE); override;
     procedure SaveToClipboardFormat(var Format: Word; var Data: THandle; var APalette: HPALETTE); override;
     {$ENDIF VCL}
-    procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
+    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
 
     property Author: string read GetAuthor;
     property Title: string read GetTitle;
@@ -187,15 +187,9 @@ begin
   FIconData.SaveToStream(Stream);
 end;
 
-procedure TJvAni.Draw(ACanvas: TCanvas; const Rect: TRect);
+procedure TJvAni.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
-  {$IFDEF VCL}
-  if not Icon.Empty then
-    DrawIcon(ACanvas.Handle, Rect.Left, Rect.Top, Icon.Handle);
-  {$ELSE}
-  if not Icon.Empty then
-    ACanvas.Draw(Rect.Left, Rect.Top, Icon);
-  {$ENDIF VCL}
+  FIconData.Draw(ACanvas, ARect);
 end;
 
 procedure TJvAni.SetIndex(const Value: Integer);
@@ -204,6 +198,7 @@ begin
     (Cardinal(Value) < FramesCount) and (FIndex <> Value) then
   begin
     FIndex := Value;
+    FIconData.Index := Value;
     Changed(Self);
   end;
 end;

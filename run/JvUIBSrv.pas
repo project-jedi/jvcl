@@ -86,7 +86,7 @@ type
   end;
 
 var
-  JvUIBServer: TJvUIBServer;
+  JvUIBServer: TJvUIBServer = nil;
 
 implementation
 
@@ -333,5 +333,6 @@ initialization
 
 finalization
   JvUIBServer.Free;
+  JvUIBServer := nil;
 
 end.

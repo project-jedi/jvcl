@@ -335,7 +335,8 @@ const
 type
   TScrollEdge = (seNone, seLeft, seTop, seRight, seBottom);
   TColorPattern = record
-    EvenColor, OddColor: TColor;
+    EvenColor: TColor;
+    OddColor: TColor;
     UsageCount: Integer;
     Bitmap: TBitmap;
   end;
@@ -346,52 +347,52 @@ type
   end;
 
 var
-  __Patterns: array of TColorPattern;
+  GlobalPatterns: array of TColorPattern;
 
 procedure ReleasePattern(EvenColor, OddColor: TColor);
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Length(__Patterns) - 1 do
-    if (__Patterns[i].EvenColor = EvenColor) and (__Patterns[i].OddColor = OddColor) then
+  for I := 0 to Length(GlobalPatterns) - 1 do
+    if (GlobalPatterns[I].EvenColor = EvenColor) and (GlobalPatterns[I].OddColor = OddColor) then
     begin
-      if __Patterns[i].UsageCount > 0 then
-        Dec(__Patterns[i].UsageCount);
-      if __Patterns[i].UsageCount = 0 then
-        FreeAndNil(__Patterns[i].Bitmap);
+      if GlobalPatterns[I].UsageCount > 0 then
+        Dec(GlobalPatterns[I].UsageCount);
+      if GlobalPatterns[I].UsageCount = 0 then
+        FreeAndNil(GlobalPatterns[I].Bitmap);
       Break;
     end;
 end;
 
 procedure ClearBrushPatterns;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to Length(__Patterns) - 1 do
-    __Patterns[i].Bitmap.Free;
-  SetLength(__Patterns, 0);
+  for I := 0 to Length(GlobalPatterns) - 1 do
+    GlobalPatterns[I].Bitmap.Free;
+  SetLength(GlobalPatterns, 0);
 end;
 
 function CreateBrushPattern(const EvenColor: TColor = clWhite; const OddColor: TColor = clBtnFace):
   TBitmap;
 var
-  i, X, Y: Integer;
+  I, X, Y: Integer;
   Found: Boolean;
 begin
   Found := False;
   Result := nil;
-  for i := 0 to Length(__Patterns) - 1 do
-    if (__Patterns[i].EvenColor = EvenColor) and (__Patterns[i].OddColor = OddColor) then
+  for I := 0 to Length(GlobalPatterns) - 1 do
+    if (GlobalPatterns[I].EvenColor = EvenColor) and (GlobalPatterns[I].OddColor = OddColor) then
     begin
-      Result := __Patterns[i].Bitmap;
+      Result := GlobalPatterns[I].Bitmap;
       Found := True;
       Break;
     end;
 
   if not Found then
   begin
-    i := Length(__Patterns);
-    SetLength(__Patterns, i + 1);
+    I := Length(GlobalPatterns);
+    SetLength(GlobalPatterns, I + 1);
   end;
   if Result = nil then
   begin
@@ -409,11 +410,11 @@ begin
           if (Y mod 2) = (X mod 2) then { toggles between even/odd pixles }
             Pixels[X, Y] := OddColor; { on even/odd rows }
     end;
-    __Patterns[i].EvenColor := EvenColor;
-    __Patterns[i].OddColor := OddColor;
-    __Patterns[i].Bitmap := Result;
+    GlobalPatterns[I].EvenColor := EvenColor;
+    GlobalPatterns[I].OddColor := OddColor;
+    GlobalPatterns[I].Bitmap := Result;
   end;
-  Inc(__Patterns[i].UsageCount);
+  Inc(GlobalPatterns[I].UsageCount);
 end;
 
 function ViewerDrawText(Canvas: TCanvas; S: PChar; aLength: Integer;
@@ -793,22 +794,22 @@ end;
 procedure TJvCustomItemViewer.CheckHotTrack;
 var
   P: TPoint;
-  i: Integer;
+  I: Integer;
 begin
   if Options.HotTrack and GetCursorPos(P) then
   begin
     P := ScreenToClient(P);
     if not PtInRect(ClientRect, P) then
-      i := -1
+      I := -1
     else
-      i := ItemAtPos(P.X, P.Y, True);
+      I := ItemAtPos(P.X, P.Y, True);
     // remove hot track state from previous item
-    if (FLastHotTrack >= 0) and (FLastHotTrack < Count) and (i <> FLastHotTrack) then
+    if (FLastHotTrack >= 0) and (FLastHotTrack < Count) and (I <> FLastHotTrack) then
       Items[FLastHotTrack].State := Items[FLastHotTrack].State - [cdsHot];
-    if (i >= 0) and (i < Count) then
+    if (I >= 0) and (I < Count) then
     begin
-      Items[i].State := Items[i].State + [cdsHot];
-      FLastHotTrack := i;
+      Items[I].State := Items[I].State + [cdsHot];
+      FLastHotTrack := I;
     end
     else
       FLastHotTrack := -1;
@@ -817,12 +818,12 @@ end;
 
 procedure TJvCustomItemViewer.Clear;
 var
-  i: Integer;
+  I: Integer;
 begin
   BeginUpdate;
   try
-    for i := 0 to FItems.Count - 1 do
-      TObject(FItems[i]).Free;
+    for I := 0 to FItems.Count - 1 do
+      TObject(FItems[I]).Free;
     FItems.Count := 0;
   finally
     EndUpdate;
@@ -837,12 +838,12 @@ end;
 
 procedure TJvCustomItemViewer.CMDeleteItem(var Message: TMessage);
 var
-  i: Integer;
+  I: Integer;
 begin
-  i := FItems.IndexOf(TObject(Message.wParam));
-  if (i >= 0) and (i < Count) then
+  I := FItems.IndexOf(TObject(Message.wParam));
+  if (I >= 0) and (I < Count) then
   begin
-    Delete(i);
+    Delete(I);
     InvalidateClipRect(ClientRect);
   end;
 end;
@@ -857,16 +858,16 @@ end;
 
 procedure TJvCustomItemViewer.CMUnselectItem(var Message: TMessage);
 var
-  i: Integer;
+  I: Integer;
 begin
   if (Message.WParam = Integer(self)) then
   begin
     BeginUpdate;
     try
-      for i := 0 to Count - 1 do
-        if (Integer(Items[i]) <> Message.LParam) and (cdsSelected in
-          Items[i].State) then
-          Items[i].State := Items[i].State - [cdsSelected];
+      for I := 0 to Count - 1 do
+        if (Integer(Items[I]) <> Message.LParam) and (cdsSelected in
+          Items[I].State) then
+          Items[I].State := Items[I].State - [cdsSelected];
     finally
       EndUpdate;
     end;
@@ -960,16 +961,16 @@ end;
 
 procedure TJvCustomItemViewer.DoReduceMemory;
 var
-  i: Integer;
+  I: Integer;
 begin
   if Options.ReduceMemoryUsage then
   begin
-    for i := 0 to FTopLeftIndex - 1 do
-      if FItems[i] <> nil then
-        Items[i].ReduceMemoryUsage;
-    for i := FBottomRightIndex + 1 to Count - 1 do
-      if FItems[i] <> nil then
-        Items[i].ReduceMemoryUsage;
+    for I := 0 to FTopLeftIndex - 1 do
+      if FItems[I] <> nil then
+        Items[I].ReduceMemoryUsage;
+    for I := FBottomRightIndex + 1 to Count - 1 do
+      if FItems[I] <> nil then
+        Items[I].ReduceMemoryUsage;
   end;
 end;
 
@@ -1016,14 +1017,14 @@ function TJvCustomItemViewer.GetDragImages: TDragImageList;
 var
   B: TBitmap;
   P: TPoint;
-  i: Integer;
+  I: Integer;
   ItemRect, TextRect: TRect;
 begin
   GetCursorPos(P);
   P := ScreenToClient(P);
-  i := ItemAtPos(P.X, P.Y, True);
+  I := ItemAtPos(P.X, P.Y, True);
   // create an image of the currently selected item
-  if i >= 0 then
+  if I >= 0 then
   begin
     if FDragImages = nil then
       FDragImages := TViewerDrawImageList.Create(self);
@@ -1038,7 +1039,7 @@ begin
         TextRect := GetTextRect('Wg', ItemRect)
       else
         TextRect := Rect(0, 0, 0, 0);
-      DrawItem(i, Items[i].State + [cdsSelected, cdsFocused, cdsHot], B.Canvas, ItemRect, TextRect);
+      DrawItem(I, Items[I].State + [cdsSelected, cdsFocused, cdsHot], B.Canvas, ItemRect, TextRect);
       FDragImages.Width := ItemSize.cx;
       FDragImages.Height := ItemSize.cy;
       FDragImages.AddMasked(B, B.TransparentColor);
@@ -1046,10 +1047,10 @@ begin
       B.Free;
     end;
     //    FDragImages.SetDragImage(0, 0, 0);
-    ItemRect := self.ItemRect(i, True);
+    ItemRect := self.ItemRect(I, True);
     FDragImages.SetDragImage(0, P.X - ItemRect.Left, P.Y - ItemRect.Top);
     Result := FDragImages;
-    SelectedIndex := i;
+    SelectedIndex := I;
     Paint;
   end
   else
@@ -1173,17 +1174,17 @@ end;
 
 procedure TJvCustomItemViewer.ItemChanged(Item: TJvViewerItem);
 var
-  i: Integer;
+  I: Integer;
 begin
   if FUpdateCount <> 0 then Exit;
   if (Item <> nil) then
   begin
-    i := FItems.IndexOf(Item);
-    if i > -1 then
+    I := FItems.IndexOf(Item);
+    if I > -1 then
     begin
       if (cdsSelected in Item.State) and not Options.MultiSelect then
-        FSelectedIndex := i;
-      InvalidateClipRect(ItemRect(i, True));
+        FSelectedIndex := I;
+      InvalidateClipRect(ItemRect(I, True));
     end;
   end
   else
@@ -1253,7 +1254,7 @@ end;
 
 procedure TJvCustomItemViewer.Paint;
 var
-  i: Integer;
+  I: Integer;
   ItemRect, TextRect, AClientRect: TRect;
 
   function IsRectVisible(const R: TRect): Boolean;
@@ -1285,13 +1286,13 @@ begin
     TextRect := Rect(0, 0, 0, 0);
   OffsetRect(ItemRect, FTopLeft.X, FTopLeft.Y);
   //  Canvas.FillRect(Rect(Left, Top, Width, Height));
-  for i := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    if not Items[i].Deleting then
+    if not Items[I].Deleting then
     begin
       if not Options.LazyRead or IsRectVisible(ItemRect) then
-        DrawItem(i, GetItemState(i), Canvas, ItemRect, TextRect);
-      if (i + 1) mod FCols = 0 then
+        DrawItem(I, GetItemState(I), Canvas, ItemRect, TextRect);
+      if (I + 1) mod FCols = 0 then
       begin
         OffsetRect(ItemRect, -ItemRect.Left + Options.HorzSpacing + FTopLeft.X, ItemSize.cy);
         if Options.ShowCaptions then
@@ -1367,7 +1368,7 @@ end;
 
 procedure TJvCustomItemViewer.SetCount(const Value: Integer);
 var
-  i: Integer;
+  I: Integer;
   Obj: TJvViewerItem;
 begin
   if Value <> Count then
@@ -1378,10 +1379,10 @@ begin
         Clear
       else
       begin
-        for i := FItems.Count - 1 downto Value - 1 do
+        for I := FItems.Count - 1 downto Value - 1 do
         begin
-          Obj := TJvViewerItem(FItems[i]);
-          FItems[i] := nil; // avoid concurrent access to a destroying item
+          Obj := TJvViewerItem(FItems[I]);
+          FItems[I] := nil; // avoid concurrent access to a destroying item
           FreeAndNil(Obj);
         end;
         FItems.Count := Value;
@@ -1467,15 +1468,15 @@ procedure TJvCustomItemViewer.ShiftSelection(Index: Integer; SetSelection: Boole
 
   procedure Swap(var X, Y: Integer);
   var
-    i: Integer;
+    I: Integer;
   begin
-    i := X;
+    I := X;
     X := Y;
-    Y := i;
+    Y := I;
   end;
 
 var
-  i,
+  I,
     AFromCol, AFromRow,
     AToCol, AToRow,
     ACurrCol, ACurrRow: Integer;
@@ -1490,14 +1491,14 @@ begin
       Swap(AFromCol, AToCol);
     if AFromRow > AToRow then
       Swap(AFromRow, AToRow);
-    for i := 0 to Count - 1 do
+    for I := 0 to Count - 1 do
     begin
-      IndexToColRow(i, ACurrCol, ACurrRow);
+      IndexToColRow(I, ACurrCol, ACurrRow);
       // access private variables so we don't trigger any OnChange event(s) by accident
       if InRange(ACurrCol, AFromCol, AToCol) and InRange(ACurrRow, AFromRow, AToRow) then
-        Items[i].FState := Items[i].FState + [cdsSelected]
+        Items[I].FState := Items[I].FState + [cdsSelected]
       else
-        Items[i].FState := Items[i].FState - [cdsSelected];
+        Items[I].FState := Items[I].FState - [cdsSelected];
     end;
   finally
     EndUpdate;
@@ -1635,12 +1636,12 @@ end;
 procedure TJvCustomItemViewer.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   if Button = mbLeft then
   begin
-    i := ItemAtPos(X, Y, True);
-    if (i = FTempSelected) and (i >= 0) and (i < Count) then
+    I := ItemAtPos(X, Y, True);
+    if (I = FTempSelected) and (I >= 0) and (I < Count) then
     begin
       if Options.MultiSelect then
       begin
@@ -1659,7 +1660,7 @@ begin
         SelectedIndex := FTempSelected;
     end
     else
-    if i < 0 then
+    if I < 0 then
       //    begin
       DoUnSelectItems(-1);
     //      SelectedIndex := -1;
@@ -1817,15 +1818,15 @@ end;
 procedure TJvCustomItemViewer.SelectItems(StartIndex, EndIndex: Integer;
   AppendSelection: Boolean);
 var
-  i, AIndex: Integer;
+  I, AIndex: Integer;
 begin
   AIndex := SelectedIndex;
   BeginUpdate;
   if not AppendSelection then
     DoUnselectItems(-1);
   try
-    for i := Max(StartIndex, 0) to Min(Count - 1, EndIndex) do
-      Items[i].FState := Items[i].FState + [cdsSelected];
+    for I := Max(StartIndex, 0) to Min(Count - 1, EndIndex) do
+      Items[I].FState := Items[I].FState + [cdsSelected];
     if (AIndex >= StartIndex) and (AIndex <= EndIndex) then
       FSelectedIndex := AIndex
     else
@@ -1837,12 +1838,12 @@ end;
 
 procedure TJvCustomItemViewer.UnselectItems(StartIndex, EndIndex: Integer);
 var
-  i: Integer;
+  I: Integer;
 begin
   BeginUpdate;
   try
-    for i := Max(0, StartIndex) to Min(EndIndex, Count - 1) do
-      Items[i].FState := Items[i].FState - [cdsSelected];
+    for I := Max(0, StartIndex) to Min(EndIndex, Count - 1) do
+      Items[I].FState := Items[I].FState - [cdsSelected];
     if (SelectedIndex >= StartIndex) and (Selectedindex <= EndIndex) then
       FSelectedIndex := FindFirstSelected;
   finally
@@ -1859,7 +1860,8 @@ begin
 end;
 
 initialization
-  LoadOLeDragCursors;
+  SetLength(GlobalPatterns, 0);
+  LoadOLEDragCursors;
 
 finalization
   ClearBrushPatterns;

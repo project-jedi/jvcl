@@ -80,7 +80,7 @@ procedure SynchronizeParams(Method: TJvNotifyParamsEvent; P: Pointer);
 implementation
 
 var
-  SyncMtx: THandle;
+  SyncMtx: THandle = 0;
 
 procedure Synchronize(Method: TNotifyEvent);
 begin
@@ -246,6 +246,7 @@ initialization
 
 finalization
   CloseHandle(SyncMtx);
+  SyncMtx := 0;
 
 end.
 

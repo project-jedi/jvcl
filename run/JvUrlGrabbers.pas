@@ -953,13 +953,13 @@ end;
 initialization
   // create the object
   GJvUrlGrabberClassList := TJvUrlGrabberClassList.Create;
-
   // register the classes
   GJvUrlGrabberClassList.Add(TJvFtpUrlGrabber);
   GJvUrlGrabberClassList.Add(TJvHttpUrlGrabber);
 
 finalization
   GJvUrlGrabberClassList.Free;
+  GJvUrlGrabberClassList := nil;
 
 end.
 

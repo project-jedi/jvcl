@@ -2743,17 +2743,18 @@ begin
     Handle := GetModuleHandle(cOle32DLL);
     if Handle = 0 then
       Handle := LoadLibraryEx(cOle32DLL, 0, LOAD_LIBRARY_AS_DATAFILE);
-    if (Handle <> 0) then // (p3) don't free the lib handle!
-    begin
-      Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
-      Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
-      Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
-      Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
-      Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
-      Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
-      Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
-      Result := True;
-    end;
+    if Handle <> 0 then // (p3) don't free the lib handle!
+      try
+        Screen.Cursors[crNoDrop] := LoadCursor(Handle, PChar(1));
+        Screen.Cursors[crDrag] := LoadCursor(Handle, PChar(2));
+        Screen.Cursors[crMultiDrag] := LoadCursor(Handle, PChar(3));
+        Screen.Cursors[crMultiDragLink] := LoadCursor(Handle, PChar(4));
+        Screen.Cursors[crDragAlt] := LoadCursor(Handle, PChar(5));
+        Screen.Cursors[crMultiDragAlt] := LoadCursor(Handle, PChar(6));
+        Screen.Cursors[crMultiDragLinkAlt] := LoadCursor(Handle, PChar(7));
+        Result := True;
+      except
+      end;
   end;
 end;
 {$ENDIF MSWINDOWS}
@@ -4555,13 +4556,17 @@ procedure InitTruncTables;
 var
   i: Integer;
 begin
-  { For 7 Red X 8 Green X 4 Blue palettes etc. }
-  for i := 0 to 255 do
-  begin
-    TruncIndex04[i] := NearestIndex(byte(i), Scale04);
-    TruncIndex06[i] := NearestIndex(byte(i), Scale06);
-    TruncIndex07[i] := NearestIndex(byte(i), Scale07);
-    TruncIndex08[i] := NearestIndex(byte(i), Scale08);
+  // (rom) secured because it is called in initialization section
+  try
+    { For 7 Red X 8 Green X 4 Blue palettes etc. }
+    for i := 0 to 255 do
+    begin
+      TruncIndex04[i] := NearestIndex(byte(i), Scale04);
+      TruncIndex06[i] := NearestIndex(byte(i), Scale06);
+      TruncIndex07[i] := NearestIndex(byte(i), Scale07);
+      TruncIndex08[i] := NearestIndex(byte(i), Scale08);
+    end;
+  except
   end;
 end;
 
@@ -6106,29 +6111,37 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
+procedure InitScreenCursors;
+begin
+  try
+    if Screen <> nil then
+    begin
+      { begin RxLib }
+      { (rom) deactivated  can cause problems
+      Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
+      Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
+      }
+      { end RxLib }
+      {$IFDEF VCL}
+      { (ahuser) if used in VisualCLX mode Application.Destroy crashes }
+      Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
+      Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
+      Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
+      Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
+      {$ENDIF VCL}
+    end;
+  except
+  end;
+end;
+
 initialization
   { begin JvGraph }
   InitTruncTables;
   { end JvGraph }
-  if Screen <> nil then
-  begin
-    { begin RxLib }
-    { (rom) deactivated  can cause problems
-    Screen.Cursors[crHand] := LoadCursor(hInstance, 'JV_HANDCUR');
-    Screen.Cursors[crDragHand] := LoadCursor(hInstance, 'JV_DRAGCUR');
-    }
-    { end RxLib }
-    {$IFDEF VCL}
-    { (ahuser) if used in VisualCLX mode Application.Destroy crashes }
-    Screen.Cursors[crMultiDragLink] := Screen.Cursors[crMultiDrag];
-    Screen.Cursors[crDragAlt] := Screen.Cursors[crDrag];
-    Screen.Cursors[crMultiDragAlt] := Screen.Cursors[crMultiDrag];
-    Screen.Cursors[crMultiDragLinkAlt] := Screen.Cursors[crMultiDrag];
-    {$ENDIF VCL}
-  end;
+  InitScreenCursors;
 
-  { begin JvVCLUtils }
 finalization
+  { begin JvVCLUtils }
   ReleaseBitmap;
   { end from JvVCLUtils }
 

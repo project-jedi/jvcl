@@ -102,7 +102,7 @@ uses
   JvConsts, JvResources, JvTypes;
 
 var
-  TokenCount: Integer;
+  TokenCount: Integer = 0;
 
   { Returns true for literals like '123.456', '78', or '-35.1231231' }
 function ValidNumericLiteral(s1: PChar): Boolean;
@@ -590,9 +590,8 @@ begin
   end;
 end;
 
-
-
 { debugging and performance tuning information }
+
 function GetTokenCount: Integer;
 begin
   Result := TokenCount;
@@ -862,10 +861,6 @@ begin
   Inc(SplitCounter);
   Result := SplitCounter;
 end;
-
-
-initialization
-  TokenCount := 0;
 
 end.
 

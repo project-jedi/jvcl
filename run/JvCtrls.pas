@@ -236,6 +236,7 @@ begin
   FMargin := -1;
   FSpacing := 4;
   Color := clBtnFace;
+  InitializeDefaultImageList;
 end;
 
 destructor TJvCustomImageButton.Destroy;
@@ -510,12 +511,10 @@ begin
     Exit;
   with ImageBounds do
     if IsImageVisible then
-    begin
       if Assigned(FImages) then
         FImages.Draw(FCanvas, Left, Top, GetImageIndex, Enabled)
       else
         DefaultImgBtnImagesList.Draw(FCanvas, Left, Top, GetKindImageIndex, Enabled);
-    end;
 end;
 
 procedure TJvCustomImageButton.DrawButtonText(TextBounds: TRect; TextEnabled: Boolean);
@@ -749,7 +748,6 @@ begin
   begin
     if Value <> bkCustom then
     begin
-      InitializeDefaultImageList;
       Default := Value in [bkOK, bkYes];
       Cancel := Value in [bkCancel, bkNo];
       if not (csLoading in ComponentState) and (FKind = bkCustom) then

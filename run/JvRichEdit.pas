@@ -6996,7 +6996,7 @@ end;
 { Initialization part }
 
 var
-  GLibHandle: THandle;
+  GLibHandle: THandle = 0;
 
 procedure InitRichEditDll;
 var
@@ -7054,8 +7054,11 @@ end;
 
 procedure FinalRichEditDll;
 begin
-  if GLibHandle <> 0 then
+  if GLibHandle > 0 then
+  begin
     FreeLibrary(GLibHandle);
+    GLibHandle := 0;
+  end;
 end;
 
 initialization

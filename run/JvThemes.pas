@@ -1260,9 +1260,9 @@ type
 
 // global ThemeHook list
 var
-  ThemeHooks: TThemeHookList;
-  ThemeHookComponent: TThemeHookComponent;
-  WinControlHookInstalled: Boolean;
+  ThemeHooks: TThemeHookList = nil;
+  ThemeHookComponent: TThemeHookComponent = nil;
+  WinControlHookInstalled: Boolean = False;
 
 procedure InstallWinControlHook; forward;
 procedure UninstallWinControlHook; forward;
@@ -1671,13 +1671,13 @@ end;
 initialization
   ThemeHooks := TThemeHookList.Create;
   ThemeHookComponent := TThemeHookComponent.Create(nil);
-  WinControlHookInstalled := False;
 
 finalization
   if WinControlHookInstalled then
     UninstallWinControlHook;
   FreeAndNil(ThemeHooks);
   ThemeHookComponent.Free;
+  ThemeHookComponent := nil;
 
 {$ENDIF COMPILER7_UP}
 

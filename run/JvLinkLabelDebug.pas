@@ -22,10 +22,10 @@ Current Version: 2.00
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
-  Please see the accompanying documentation.
 Description:
   LinkDebug.pas provides utility routines designed to aid debugging.
+Known Issues:
+  Please see the accompanying documentation.
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}

@@ -601,7 +601,7 @@ var
 procedure LoadJvDialogs;
 begin
   ShellHandle := Windows.LoadLibrary(PChar(Shell32));
-  if ShellHandle <> 0 then
+  if ShellHandle > 0 then
   begin
     if Win32Platform = VER_PLATFORM_WIN32_NT then
       SHChangeIconW := GetProcAddress(ShellHandle, PChar(62))
@@ -622,17 +622,17 @@ begin
   end;
 
   CommHandle := Windows.LoadLibrary('comdlg32.dll');
-  if CommHandle <> 0 then
+  if CommHandle > 0 then
   begin
     GetOpenFileNameEx := GetProcAddress(CommHandle, PChar('GetOpenFileNameA'));
     GetSaveFileNameEx := GetProcAddress(CommHandle, PChar('GetSaveFileNameA'));
   end;
 
   AppWizHandle := Windows.LoadLibrary('appwiz.cpl');
-  if AppWizHandle <> 0 then
+  if AppWizHandle > 0 then
     NewLinkHere := GetProcAddress(AppWizHandle, PChar('NewLinkHereA'));
   URLHandle := Windows.LoadLibrary('url.dll');
-  if URLHandle <> 0 then
+  if URLHandle > 0 then
   begin
     @URLAssociationDialogA := GetProcAddress(URLHandle, 'URLAssociationDialogA');
     @MIMEAssociationDialogA := GetProcAddress(URLHandle, 'MIMEAssociationDialogA');
@@ -641,22 +641,27 @@ begin
 //    @MIMEAssociationDialogW := GetProcAddress(URLHandle,'MIMEAssociationDialogW');
   end;
   SHDocvwHandle := Windows.LoadLibrary('shdocvw.dll');
-  if SHDocvwHandle <> 0 then
+  if SHDocvwHandle > 0 then
     SoftwareUpdateMessageBox := GetProcAddress(SHDocvwHandle, 'SoftwareUpdateMessageBox');
 end;
 
 procedure UnloadJvDialogs;
 begin
-  if ShellHandle <> 0 then
+  if ShellHandle > 0 then
     FreeLibrary(ShellHandle);
-  if CommHandle <> 0 then
+  if CommHandle > 0 then
     FreeLibrary(CommHandle);
-  if AppWizHandle <> 0 then
+  if AppWizHandle > 0 then
     FreeLibrary(AppWizHandle);
-  if URLHandle <> 0 then
+  if URLHandle > 0 then
     FreeLibrary(URLHandle);
-  if SHDocvwHandle <> 0 then
+  if SHDocvwHandle > 0 then
     FreeLibrary(SHDocvwHandle);
+  ShellHandle := 0;
+  CommHandle := 0;
+  AppWizHandle := 0;
+  URLHandle := 0;
+  SHDocvwHandle := 0;
 end;
 
 {  Although most Win32 applications do not need to be able

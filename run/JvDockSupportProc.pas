@@ -367,7 +367,7 @@ end;
 initialization
 
 finalization
-  JvDockTitleFont.Free;
+  FreeAndNil(JvDockTitleFont);
 
 end.
 
