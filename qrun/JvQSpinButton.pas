@@ -149,6 +149,7 @@ begin
   if W < 15 then W := 15;
   FUpButton.SetBounds(0, 0, W, H div 2);
   FDownButton.SetBounds(0, FUpButton.Height - 1, W, H - FUpButton.Height + 1);
+  Invalidate;
 end;
 
 procedure TJvSpinButton.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
