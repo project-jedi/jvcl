@@ -3399,7 +3399,7 @@ begin
     else
       Temp := '\';
   end;
-  if not DirExists(Temp) then
+  if not DirectoryExists(Temp) then
     Temp := '\';
   DisableSysErrors;
   try
@@ -3429,7 +3429,7 @@ begin
       Text := Temp
     else
       Text := Text + ';' + Temp;
-    if (Temp <> '') and DirExists(Temp) then
+    if (Temp <> '') and DirectoryExists(Temp) then
       InitialDir := Temp;
   end;
 end;
@@ -3756,7 +3756,7 @@ begin
     Exit;
   if ValidFileName(Temp) then
   try
-    if DirExists(ExtractFilePath(Temp)) then
+    if DirectoryExists(ExtractFilePath(Temp)) then
       SetInitialDir(ExtractFilePath(Temp));
     if (ExtractFileName(Temp) = '') or
       not ValidFileName(ExtractFileName(Temp)) then

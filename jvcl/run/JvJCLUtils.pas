@@ -45,7 +45,7 @@ unit JvJCLUtils;
     - Added Linux version of the Windows related functions. (testing needed)
       The following functions are Windows only:
         LZFileExpand()
-        TTFontSelected()
+        IsTTFontSelected()
         KeyPressed()  [ maybe we can use XQueryKeymap ]
         ResSaveToFile(), ResSaveToFileEx(), ResSaveToString()
         CopyIconToClipboard(), AssignClipboardIcon(), CreateIconFromClipboard(),
@@ -59,14 +59,14 @@ interface
 // and no JVCL units!
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, Messages, ShlObj, ActiveX,
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Libc, Xlib, QStdCtrls, StrUtils,
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Graphics, Clipbrd,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
@@ -74,7 +74,7 @@ uses
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   TypInfo;
 
 const
@@ -83,25 +83,25 @@ const
   DriveDelim = ':';
   PathSep = ';';
   AllFilesMask = '*.*';
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   PathDelim = '/';
   AllFilesMask = '*';
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   NullHandle = 0;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   NullHandle = nil;
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 
 {$IFDEF LINUX}
 type
   TFileTime = Integer;
 {$ENDIF LINUX}
 
-  // (p3) duplicated from JvTypes since this unit should not rely on JVCL at all
+// (p3) duplicated from JvTypes since this unit should not rely on JVCL at all
 type
   TDateOrder = (doMDY, doDMY, doYMD);
 const
@@ -157,16 +157,16 @@ procedure GetXYByPosW(const S: WideString; const Pos: Integer; var X, Y: Integer
   in a string, S, and replaces them with NewPattern }
 function ReplaceString(S: string; const OldPattern, NewPattern: string): string;
 function ReplaceStringW(S: WideString; const OldPattern, NewPattern: WideString): WideString;
-{ ConcatSep concatenate S and S2 strings with Separator.
-  if S = '', separator don't included }
-function ConcatSep(const S, S2, Separator: string): string;
+{ ConcatSep concatenate S1 and S2 strings with Separator.
+  if S = '' then separator not included }
+function ConcatSep(const S1, S2, Separator: string): string;
 { ConcatLeftSep is same to previous function, but
   strings concatenate right to left }
-function ConcatLeftSep(const S, S2, Separator: string): string;
+function ConcatLeftSep(const S1, S2, Separator: string): string;
 
 { Next 4 function for russian chars transliterating.
   This functions are needed because Oem2Ansi and Ansi2Oem functions
-  sometimes works sucks }
+  sometimes suck }
 procedure Dos2Win(var S: string);
 procedure Win2Dos(var S: string);
 function Dos2WinRes(const S: string): string;
@@ -181,16 +181,15 @@ procedure MoveWideChar(const Source; var Dest; Count: Integer);
 { Spaces returns string consists on N space chars }
 function Spaces(const N: Integer): string;
 function SpacesW(const N: Integer): WideString;
-{ AddSpaces add spaces to string, S, if it Length is smaller than N }
+{ AddSpaces adds spaces to string S, if its Length is smaller than N }
 function AddSpaces(const S: string; const N: Integer): string;
 function AddSpacesW(const S: WideString; const N: Integer): WideString;
 { function LastDateRUS for russian users only }
-//  { returns date relative to current date: 'два дня назад' }
+{ returns date relative to current date: 'два дня назад' }
 function LastDateRUS(const Dat: TDateTime): string;
 { CurrencyToStr format currency, Cur, using ffCurrency float format}
 function CurrencyToStr(const Cur: currency): string;
-{ Cmp compares two strings and returns True if they
-  are equal. Case-insensitive.}
+{ Cmp compares two strings and returns True if they are equal. Case-insensitive.}
 function Cmp(const S1, S2: string): Boolean;
 { StringCat add S2 string to S1 and returns this string }
 function StringCat(var S1: string; S2: string): string;
@@ -240,11 +239,6 @@ const
   DefaultCaseSensitivity = True;
   {$ENDIF LINUX}
 
-{$IFDEF MSWINDOWS}
-{ GetWinDir returns Windows folder name }
-function GetWinDir: TFileName;
-{$ENDIF MSWINDOWS}
-
 { GetTempDir returns Windows temporary folder name }
 function GetTempDir: string;
 { GenTempFileName returns temporary file name on
@@ -266,7 +260,7 @@ function FileEquMask(FileName, Mask: TFileName;
   Masks must be separated with SepPath (MSW: ';' / LINUX: ':') }
 function FileEquMasks(FileName, Masks: TFileName;
   CaseSensitive: Boolean = DefaultCaseSensitivity): Boolean;
-function DeleteFiles(const Folder: TFileName; const Masks: string): boolean;
+function DeleteFiles(const Folder: TFileName; const Masks: string): Boolean;
 
 {$IFDEF MSWINDOWS}
 { LZFileExpand expand file, FileSource,
@@ -305,9 +299,9 @@ function MakeValidFileName(const FileName: TFileName; ReplaceBadChar: Char): TFi
 {**** Graphic routines }
 
 {$IFDEF VCL}
-{ TTFontSelected returns True, if True Type font
+{ IsTTFontSelected returns True, if True Type font
   is selected in specified device context }
-function TTFontSelected(const DC: HDC): Boolean;
+function IsTTFontSelected(const DC: HDC): Boolean;
 function KeyPressed(VK: Integer): Boolean;
 {$ENDIF VCL}
 { TrueInflateRect inflates rect in other method, than InflateRect API function }
@@ -327,13 +321,8 @@ function VarIsStr(const V: Variant): Boolean;
 {$ENDIF !COMPILER6_UP}
 
 { following functions are not documented
-  because they are don't work properly sometimes, so don't use them }
-function ReplaceStrings1(S: string; const Word, Frase: string): string;
-{ ReplaceStrings1 is full equal to ReplaceString function
-  - only for compatibility - don't use }
-{ GetSubStr is full equal to SubStr function
-  - only for compatibility - don't use }
-function GetSubStr(const S: string; const Index: Integer; const Separator: Char): string;
+  because they do not work properly sometimes, so do not use them }
+// (rom) ReplaceStrings1, GetSubStr removed
 function GetParameter: string;
 function GetLongFileName(FileName: string): string;
 {* from unit FileCtrl}
@@ -347,8 +336,7 @@ function GetComputerName: string;
 {**** string routines }
 
 { ReplaceAllStrings searches for all substrings, Words,
-  in a string, S, and replaces them with Frases with the same Index.
-  Also see RAUtilsW.ReplaceStrings1 function }
+  in a string, S, and replaces them with Frases with the same Index. }
 function ReplaceAllStrings(S: string; Words, Frases: TStrings): string;
 { ReplaceStrings searches the Word in a string, S, on PosBeg position,
   in the list, Words, and if founds, replaces this Word
@@ -539,7 +527,7 @@ function OemToAnsiStr(const OemStr: string): string;
 { OemToAnsiStr translates a string from the OEM character set into the
   Windows character set. }
 function IsEmptyStr(const S: string; const EmptyChars: TSysCharSet): Boolean;
-{ EmptyStr returns true if the given string contains only character
+{ EmptyStr returns True if the given string contains only character
   from the EmptyChars. }
 function ReplaceStr(const S, Srch, Replace: string): string;
 { Returns string with every occurrence of Srch string replaced with
@@ -686,7 +674,6 @@ function DeleteFilesEx(const FileMasks: array of string): Boolean;
 function NormalDir(const DirName: string): string;
 function RemoveBackSlash(const DirName: string): string; // only for Windows/DOS Paths
 function ValidFileName(const FileName: string): Boolean;
-function DirExists(Name: string): Boolean;
 
 {$IFDEF MSWINDOWS}
 function FileLock(Handle: Integer; Offset, LockSize: Longint): Integer; overload;
@@ -711,7 +698,7 @@ procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 {$IFNDEF COMPILER6_UP}
 { begin JvXMLDatabase D5 compatiblility functions }
 function StrToDateTimeDef(const S: string; Default: TDateTime): TDateTime;
-function CompareDateTime(const A, B: TDateTime): integer;
+function CompareDateTime(const A, B: TDateTime): Integer;
 // function StrToFloatDef(const Str:String;Default:Extended):Extended;
 { end JvXMLDatabase D5 compatiblility functions }
 
@@ -846,11 +833,11 @@ function StrDelete(const psSub, psMain: string): string;
 
 type
   TTime = TDateTime;
-{$EXTERNALSYM TTime}
+  {$EXTERNALSYM TTime}
   TDate = TDateTime;
-{$EXTERNALSYM TDate}
+  {$EXTERNALSYM TDate}
 
-  { returns the fractional value of pcValue}
+{ returns the fractional value of pcValue}
 function TimeOnly(pcValue: TDateTime): TTime;
 { returns the integral value of pcValue }
 function DateOnly(pcValue: TDateTime): TDate;
@@ -995,19 +982,18 @@ procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
 {$IFDEF VCL}
 procedure CopyRectDIBits(ACanvas: TCanvas; const DestRect: TRect;
   ABitmap: TBitmap; const SourceRect: TRect);
-function IsTrueType(const FontName: string): boolean;
-
+function IsTrueType(const FontName: string): Boolean;
 {$ENDIF VCL}
 
 implementation
 
 uses
   Math,
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   RTLConsts,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   SysConst,
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   ComObj, ShellAPI, MMSystem, Registry,
   {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
@@ -1026,7 +1012,7 @@ const
   RC_CloseCDDrive = 'set cdaudio door closed wait';
   RC_ShellName = 'Shell_TrayWnd';
   RC_DefaultIcon = 'DefaultIcon';
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 
 resourcestring
   // (p3) duplicated from JvConsts since this unit should not rely on JVCL at all
@@ -1584,11 +1570,6 @@ begin
   Result := StrVsp;
 end;
 
-function GetSubStr(const S: string; const Index: Integer; const Separator: Char): string;
-begin
-  Result := SubStr(S, Index, Separator);
-end;
-
 function SubStr(const S: string; const Index: Integer; const Separator: string): string;
 { Returns a substring. Substrings are divided by Sep character [translated] }
 var
@@ -1705,22 +1686,17 @@ begin
   Result := S;
 end;
 
-function ReplaceStrings1(S: string; const Word, Frase: string): string;
+function ConcatSep(const S1, S2, Separator: string): string;
 begin
-  Result := ReplaceString(S, Word, Frase);
-end;
-
-function ConcatSep(const S, S2, Separator: string): string;
-begin
-  Result := S;
+  Result := S1;
   if Result <> '' then
     Result := Result + Separator;
   Result := Result + S2;
 end;
 
-function ConcatLeftSep(const S, S2, Separator: string): string;
+function ConcatLeftSep(const S1, S2, Separator: string): string;
 begin
-  Result := S;
+  Result := S1;
   if Result <> '' then
     Result := Separator + Result;
   Result := S2 + Result;
@@ -1750,28 +1726,28 @@ var
 begin
   Result := False;
   Path := ExtractFilePath(ExpandFileName(FileName)) + AllFilesMask;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   FileName := AnsiUpperCase(ExtractFileName(FileName));
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   FileName := ExtractFileName(FileName);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   DosError := FindFirst(Path, faAnyFile, SearchRec);
   while DosError = 0 do
   begin
-{$IFDEF MSWINDOWS}
-{$WARNINGS OFF}
+    {$IFDEF MSWINDOWS}
+    {$WARNINGS OFF}
     if (AnsiCompareText(SearchRec.FindData.cFileName, FileName) = 0) or
       (AnsiCompareText(SearchRec.FindData.cAlternateFileName, FileName) = 0) then
-{$WARNINGS ON}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-      if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
-{$ENDIF LINUX}
-      begin
-        Result := True;
-        Break;
-      end;
+    {$WARNINGS ON}
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    if AnsiCompareStr(SearchRec.Name, FileName) = 0 then
+    {$ENDIF LINUX}
+    begin
+      Result := True;
+      Break;
+    end;
     DosError := FindNext(SearchRec);
   end;
   FindClose(SearchRec);
@@ -1838,10 +1814,10 @@ procedure ForceDirectories(Dir: string);
 begin
   if Dir[Length(Dir)] = PathDelim then
     Delete(Dir, Length(Dir), 1);
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if (Length(Dir) < 3) or DirectoryExists(Dir) or (ExtractFilePath(Dir) = Dir) then
     Exit; { avoid 'xyz:\' problem.}
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   ForceDirectories(ExtractFilePath(Dir));
   CreateDir(Dir);
 end;
@@ -2136,7 +2112,7 @@ function GetComputerID: string;
 var
   SN: DWORD;
   Nul: DWORD;
-  WinDir: array[0..MAX_PATH] of Char;
+  WinDir: array [0..MAX_PATH] of Char;
 begin
   GetWindowsDirectory(WinDir, MAX_PATH);
   WinDir[3] := #0;
@@ -2226,14 +2202,14 @@ end;
 
 function DeleteReadOnlyFile(const FileName: TFileName): Boolean;
 begin
-{$IFDEF MSWINDOWS}
-{$WARNINGS OFF}
+  {$IFDEF MSWINDOWS}
+  {$WARNINGS OFF}
   FileSetAttr(FileName, 0); {clear Read Only Flag}
-{$WARNINGS ON}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$WARNINGS ON}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   FileSetReadOnly(FileName, False);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   Result := DeleteFile(FileName);
 end;
 
@@ -2341,10 +2317,10 @@ begin
   { if linker error occured with message "unresolved external 'System::RaiseList'" try
     comment this function implementation, compile,
     then uncomment and compile again. }
-{$IFDEF MSWINDOWS}
-{$IFDEF COMPILER6_UP}
-{$WARN SYMBOL_DEPRECATED OFF}
-{$ENDIF COMPILER6_UP}
+  {$IFDEF MSWINDOWS}
+  {$IFDEF COMPILER6_UP}
+  {$WARN SYMBOL_DEPRECATED OFF}
+  {$ENDIF COMPILER6_UP}
   if RaiseList <> nil then
   begin
     Result := PRaiseFrame(RaiseList)^.ExceptObject;
@@ -2352,23 +2328,15 @@ begin
   end
   else
     Result := nil;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   // XXX: changing exception in stack frame is not supported on Kylix
   Writeln(ErrOutput, 'ChangeTopException');
   Result := E;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
 {$IFDEF VCL}
-
-function TTFontSelected(const DC: HDC): Boolean;
-var
-  TM: TTEXTMETRIC;
-begin
-  GetTextMetrics(DC, TM);
-  Result := TM.tmPitchAndFamily and TMPF_TRUETYPE <> 0;
-end;
 
 function KeyPressed(VK: Integer): Boolean;
 begin
@@ -2413,7 +2381,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 function VarIsStr(const V: Variant): Boolean;
 var
   VarType: TVarType;
@@ -2502,11 +2469,11 @@ var
 begin
   SetString(P1, S1, Min(MaxLen, StrLenW(S1)));
   SetString(P2, S2, Min(MaxLen, StrLenW(S2)));
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Result := SysUtils.WideCompareText(P1, P2);
-{$ELSE}
+  {$ELSE}
   Result := WideCompareText(P1, P2);
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 function StrPosW(S, SubStr: PWideChar): PWideChar;
@@ -2635,14 +2602,14 @@ end;
 
 procedure SetDelimitedText(List: TStrings; const Text: string; Delimiter: Char);
 var
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Ch: Char;
-{$ELSE}
+  {$ELSE}
   S: string;
   F, P: PChar;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 begin
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Ch := List.Delimiter;
   try
     List.Delimiter := Delimiter;
@@ -2650,7 +2617,7 @@ begin
   finally
     List.Delimiter := Ch;
   end;
-{$ELSE}
+  {$ELSE}
   List.BeginUpdate;
   try
     List.Clear;
@@ -2690,7 +2657,7 @@ begin
   finally
     List.EndUpdate;
   end;
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
 end;
 
 {$IFNDEF COMPILER6_UP}
@@ -2736,15 +2703,15 @@ var
 begin
   nSize := MAX_COMPUTERNAME_LENGTH + 1;
   SetLength(Result, nSize);
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if Windows.GetComputerName(PChar(Result), nSize) then
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-    if QWindows.GetComputerName(PChar(Result), nSize) then
-{$ENDIF LINUX}
-      SetLength(Result, nSize)
-    else
-      Result := '';
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  if QWindows.GetComputerName(PChar(Result), nSize) then
+  {$ENDIF LINUX}
+    SetLength(Result, nSize)
+  else
+    Result := '';
 end;
 
 function StrToBool(const S: string): Boolean;
@@ -3243,8 +3210,7 @@ begin
     RhRsrc); // resource handle
   if RhGlobal = 0 then
     Exit;
-  RAddr := LockResource(
-    RhGlobal); // handle to resource to lock
+  RAddr := LockResource(RhGlobal); // handle to resource to lock
   FreeResource(RhGlobal);
   if RAddr = nil then
     Exit;
@@ -3762,9 +3728,9 @@ begin
           SetClipboardData(Format, Data);
           if Palette <> 0 then
             SetClipboardData(CF_PALETTE, Palette);
-{$WARNINGS OFF}
+          {$WARNINGS OFF}
           Data := GlobalAlloc(HeapAllocFlags, Stream.Size);
-{$WARNINGS ON}
+          {$WARNINGS ON}
           try
             if Data <> 0 then
             begin
@@ -3928,7 +3894,7 @@ end;
 procedure TwoBitsFromDIB(var BI: TBitmapInfoHeader; var XorBits, AndBits: HBITMAP);
 type
   PLongArray = ^TLongArray;
-  TLongArray = array[0..1] of Longint;
+  TLongArray = array [0..1] of Longint;
 var
   Temp: HBITMAP;
   NumColors: Integer;
@@ -3992,7 +3958,7 @@ procedure ReadIcon(Stream: TStream; var Icon: HICON; ImageCount: Integer;
   StartOffset: Integer);
 type
   PIconRecArray = ^TIconRecArray;
-  TIconRecArray = array[0..300] of TIconRec;
+  TIconRecArray = array [0..300] of TIconRec;
 var
   List: PIconRecArray;
   HeaderLen, Length: Integer;
@@ -4181,8 +4147,8 @@ end;
 procedure RleCompressTo(InStream, OutStream: TStream);
 var
   Count, Count2, Count3, I: Integer;
-  Buf1: array[0..1024] of Byte;
-  Buf2: array[0..60000] of Byte;
+  Buf1: array [0..1024] of Byte;
+  Buf2: array [0..60000] of Byte;
   B: Byte;
 begin
   InStream.Position := 0;
@@ -4234,8 +4200,8 @@ end;
 procedure RleDecompressTo(InStream, OutStream: TStream);
 var
   Count, Count2, Count3, I: Integer;
-  Buf1: array[0..1024] of Byte;
-  Buf2: array[0..60000] of Byte;
+  Buf1: array [0..1024] of Byte;
+  Buf2: array [0..60000] of Byte;
   B: Byte;
 begin
   InStream.Position := 0;
@@ -4839,7 +4805,6 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
-
 function TryStrToDateTime(const S: string; out Date: TDateTime): Boolean;
 begin
   Result := True;
@@ -5004,26 +4969,26 @@ end;
 
 function StrToOem(const AnsiStr: string): string;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   SetLength(Result, Length(AnsiStr));
   if Length(Result) > 0 then
     CharToOemBuff(PChar(AnsiStr), PChar(Result), Length(Result));
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Result := AnsiStrToOem(AnsiStr);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
 function OemToAnsiStr(const OemStr: string): string;
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   SetLength(Result, Length(OemStr));
   if Length(Result) > 0 then
     OemToCharBuff(PChar(OemStr), PChar(Result), Length(Result));
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Result := OemStrToAnsi(OemStr);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
 function IsEmptyStr(const S: string; const EmptyChars: TSysCharSet): Boolean;
@@ -5978,13 +5943,13 @@ begin
   if L > L2 then
     Result := False
   else
-{$IFDEF MSWINDOWS}
+    {$IFDEF MSWINDOWS}
     Result := CompareString(LOCALE_USER_DEFAULT, NORM_IGNORECASE,
       P, L, PChar(SubStr), L) = 2;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-  Result := AnsiStartsText(SubStr, Str);
-{$ENDIF LINUX}
+    {$ENDIF MSWINDOWS}
+    {$IFDEF LINUX}
+    Result := AnsiStartsText(SubStr, Str);
+    {$ENDIF LINUX}
 end;
 
 function StringEndsWith(const Str, SubStr: string): Boolean;
@@ -6023,14 +5988,14 @@ end;
 function NormalDir(const DirName: string): string;
 begin
   Result := DirName;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if (Result <> '') and
     not (AnsiLastChar(Result)^ in [':', '\']) then
     if (Length(Result) = 1) and (UpCase(Result[1]) in ['A'..'Z']) then
       Result := Result + ':\'
     else
       Result := Result + '\';
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 
 function RemoveBackSlash(const DirName: string): string;
@@ -6043,22 +6008,17 @@ begin
       Delete(Result, Length(Result), 1);
 end;
 
-function DirExists(Name: string): Boolean;
-begin
-  Result := DirectoryExists(Name);
-end;
-
 function FileDateTime(const FileName: string): TDateTime;
 var
   Age: Longint;
 begin
   Age := FileAge(FileName);
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   // [roko] -1 is valid FileAge value on Linux
   if Age = -1 then
     Result := NullDate
   else
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
     Result := FileDateToDateTime(Age);
 end;
 
@@ -6066,9 +6026,9 @@ function HasAttr(const FileName: string; Attr: Integer): Boolean;
 var
   FileAttr: Integer;
 begin
-{$WARNINGS OFF}
+  {$WARNINGS OFF}
   FileAttr := FileGetAttr(FileName);
-{$WARNINGS ON}
+  {$WARNINGS ON}
   Result := (FileAttr >= 0) and (FileAttr and Attr = Attr);
 end;
 
@@ -6085,27 +6045,21 @@ end;
 
 function GetWindowsDir: string;
 var
-  Buffer: array[0..MAX_PATH] of Char;
+  Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetWindowsDirectory(Buffer, SizeOf(Buffer)));
 end;
 
 function GetSystemDir: string;
 var
-  Buffer: array[0..MAX_PATH] of Char;
+  Buffer: array [0..MAX_PATH] of Char;
 begin
   SetString(Result, Buffer, GetSystemDirectory(Buffer, SizeOf(Buffer)));
-end;
-
-function GetWinDir: TFileName;
-begin
-  Result := GetWindowsDir;
 end;
 
 {$ENDIF MSWINDOWS}
 
 {$IFDEF LINUX}
-
 function GetTempFileName(const Prefix: string): string;
 var
   P: PChar;
@@ -6120,12 +6074,12 @@ end;
 function GenTempFileName(FileName: string): string;
 var
   TempDir: string;
-{$IFDEF MSWINDOWS}
-  TempFile: array[0..MAX_PATH] of Char;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$IFDEF MSWINDOWS}
+  TempFile: array [0..MAX_PATH] of Char;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   TempFile: string;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   STempDir: TFileName;
   Res: Integer;
 begin
@@ -6142,17 +6096,17 @@ begin
       Move(STempDir[1], TempDir, Length(STempDir) + 1);
     end;
   end;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Res := GetTempFileName(
     PChar(TempDir), { address of directory name for temporary file}
     '~JV', { address of filename prefix}
     0, { number used to create temporary filename}
     TempFile); { address of buffer that receives the new filename}
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   TempFile := GetTempFileName('~JV');
   Res := 1;
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
   if Res <> 0 then
     Result := TempFile
   else
@@ -6168,7 +6122,7 @@ end;
 function GetTempDir: string;
 {$IFDEF MSWINDOWS}
 var
-  TempDir: array[0..MAX_PATH] of Char;
+  TempDir: array [0..MAX_PATH] of Char;
 begin
   TempDir[GetTempPath(260, TempDir)] := #0;
   Result := TempDir;
@@ -6213,13 +6167,13 @@ begin
   Result := RemoveDir(Dir);
 end;
 
-function DeleteFiles(const Folder: TFileName; const Masks: string): boolean;
+function DeleteFiles(const Folder: TFileName; const Masks: string): Boolean;
 var
   SearchRec: TSearchRec;
   DosError: Integer;
   Path: TFileName;
 begin
-  Result := false;
+  Result := False;
   Path := AddSlash2(Folder);
   DosError := FindFirst(Path + AllFilesMask, faAnyFile and not faDirectory, SearchRec);
   while DosError = 0 do
@@ -6278,17 +6232,17 @@ var
   SearchRec: TSearchRec;
 {$ENDIF MSWINDOWS}
 begin
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if FileGetInfo(FileName, SearchRec) then
-{$WARNINGS OFF}
+    {$WARNINGS OFF}
     Result := ExtractFilePath(ExpandFileName(FileName)) + SearchRec.FindData.cFileName
-{$WARNINGS ON}
+    {$WARNINGS ON}
   else
     Result := FileName;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   Result := ExpandFileName(FileName);
-{$ENDIF LINUX}
+  {$ENDIF LINUX}
 end;
 
 function FileEquMask(FileName, Mask: TFileName; CaseSensitive: Boolean): Boolean;
@@ -6303,10 +6257,10 @@ begin
     Mask := AnsiUpperCase(Mask);
   end;
   Result := False;
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   if Pos('.', FileName) = 0 then
     FileName := FileName + '.';
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   I := 1;
   P := PChar(FileName);
   while I <= Length(Mask) do
@@ -6348,7 +6302,7 @@ var
 begin
   Result := False;
   I := 0;
-  Mask := Trim(GetSubStr(Masks, I, PathSep));
+  Mask := Trim(SubStr(Masks, I, PathSep));
   while Length(Mask) <> 0 do
     if FileEquMask(FileName, Mask, CaseSensitive) then
     begin
@@ -6358,7 +6312,7 @@ begin
     else
     begin
       Inc(I);
-      Mask := Trim(GetSubStr(Masks, I, PathSep));
+      Mask := Trim(SubStr(Masks, I, PathSep));
     end;
 end;
 
@@ -6537,8 +6491,8 @@ var
   ShellLink: IShellLink;
   PersistFile: IPersistFile;
   ItemIDList: PItemIDList;
-  FileDestPath: array[0..MAX_PATH] of Char;
-  FileNameW: array[0..MAX_PATH] of WideChar;
+  FileDestPath: array [0..MAX_PATH] of Char;
+  FileNameW: array [0..MAX_PATH] of WideChar;
 begin
   CoInitialize(nil);
   try
@@ -6569,7 +6523,7 @@ procedure DeleteFileLink(const DisplayName: string; Folder: Integer);
 var
   ShellLink: IShellLink;
   ItemIDList: PItemIDList;
-  FileDestPath: array[0..MAX_PATH] of Char;
+  FileDestPath: array [0..MAX_PATH] of Char;
 begin
   CoInitialize(nil);
   try
@@ -6610,7 +6564,7 @@ end;
 const
   OneMillisecond = 1 / 24 / 60 / 60 / 1000; // as TDateTime
 
-function CompareDateTime(const A, B: TDateTime): integer;
+function CompareDateTime(const A, B: TDateTime): Integer;
 begin
   if Abs(A - B) < OneMillisecond then
     Result := 0
@@ -6762,17 +6716,16 @@ begin
   LastError := GetLastError;
   if LastError <> 0 then
   begin
-    St := Format({$IFDEF COMPILER6_UP}SOSError{$ELSE}SWin32Error{$ENDIF},
+    St := Format({$IFDEF COMPILER6_UP} SOSError {$ELSE} SWin32Error {$ENDIF},
       [LastError, SysErrorMessage(LastError)]);
     if Text <> '' then
       St := Text + ':' + St;
-    raise{$IFDEF COMPILER6_UP}EOSError{$ELSE}EWin32Error{$ENDIF}.Create(St);
+    raise {$IFDEF COMPILER6_UP} EOSError{$ELSE} EWin32Error{$ENDIF}.Create(St);
   end;
 end;
 
 {$IFDEF LINUX}
 // for Exec function
-
 function GetForegroundWindow: QWidgetH;
 begin
   Result := nil; // QWindows ShellExececute ignores handle under linux
@@ -7044,7 +6997,7 @@ var
 {$ENDIF VCL}
 begin
   Result := TStringList.Create;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Path := IncludeTrailingPathDelimiter(GetRecentFolder);
   //search for all files
   Res := FindFirst(Path + '*.*', faAnyFile, t);
@@ -7058,7 +7011,7 @@ begin
   finally
     FindClose(t);
   end;
-{$ENDIF VCL}
+  {$ENDIF VCL}
 end;
 
 { (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
@@ -7070,7 +7023,7 @@ end;
 
 function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;
 var
-  St: array[0..256] of Char;
+  St: array [0..256] of Char;
   St2: string;
 begin
   if Windows.IsWindowVisible(Handle) then
@@ -7760,7 +7713,6 @@ end;
 {$ENDIF MSWINDOWS}
 
 {$IFDEF MSWINDOWS}
-
 function GetEnvVar(const VarName: string): string;
 var
   S: array [0..2048] of Char;
@@ -7772,7 +7724,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 {$IFDEF LINUX}
-
 function GetEnvVar(const VarName: string): string;
 begin
   Result := getenv(PChar(VarName));
@@ -7784,18 +7735,18 @@ end;
 function AllocMemo(Size: Longint): Pointer;
 begin
   if Size > 0 then
-{$WARNINGS OFF} // HeapAllocFlags is platform
+    {$WARNINGS OFF} // HeapAllocFlags is platform
     Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-{$WARNINGS ON}
+    {$WARNINGS ON}
   else
     Result := nil;
 end;
 
 function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
 begin
-{$WARNINGS OFF} // HeapAllocFlags is platform
+  {$WARNINGS OFF} // HeapAllocFlags is platform
   Result := GlobalReallocPtr(fpBlock, Size, HeapAllocFlags or GMEM_ZEROINIT);
-{$WARNINGS ON}
+  {$WARNINGS ON}
 end;
 
 procedure FreeMemo(var fpBlock: Pointer);
@@ -8074,11 +8025,9 @@ begin
 end;
 
 {$IFDEF BCB}
-
 function FindPrevInstance(const MainFormClass: ShortString;
   const ATitle: string): HWND;
 {$ELSE}
-
 function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
 {$ENDIF BCB}
 var
@@ -8113,11 +8062,9 @@ begin
 end;
 
 {$IFDEF BCB}
-
 function ActivatePrevInstance(const MainFormClass: ShortString;
   const ATitle: string): Boolean;
 {$ELSE}
-
 function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
 {$ENDIF BCB}
 var
@@ -8167,7 +8114,6 @@ end;
 {$ENDIF VCL}
 
 {$IFDEF MSWINDOWS}
-
 function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 var
   BrowseInfo: TBrowseInfo;
@@ -8176,12 +8122,12 @@ var
 begin
   with BrowseInfo do
   begin
-{$IFDEF VCL}
+    {$IFDEF VCL}
     hwndOwner := Handle;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     hwndOwner := QWidget_WinID(handle);
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     pidlRoot := nil;
     pszDisplayName := FN;
     lpszTitle := PChar(Title);
@@ -8247,11 +8193,10 @@ begin
 end;
 
 {$IFDEF VCL}
-
-procedure KillMessage(Wnd: HWND; Msg: Cardinal);
 { Delete the requested message from the queue, but throw back }
 { any WM_QUIT msgs that PeekMessage may also return.          }
 { Copied from DbGrid.pas                                      }
+procedure KillMessage(Wnd: HWND; Msg: Cardinal);
 var
   M: TMsg;
 begin
@@ -8334,13 +8279,13 @@ type
     rgbGreen: Byte;
     rgbRed: Byte;
   end;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   TJvRGBTriple = TRGBQuad; // VisualCLX does not support pf24bit
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
 
   PJvRGBArray = ^TJvRGBArray;
-  TJvRGBArray = array[0..32766] of TJvRGBTriple;
+  TJvRGBArray = array [0..32766] of TJvRGBTriple;
 
 procedure AntiAliasRect(Clip: TBitmap;
   XOrigin, YOrigin, XFinal, YFinal: Integer);
@@ -8427,20 +8372,28 @@ begin
   end;
 end;
 
-// http://msdn.microsoft.com/library/default.asp?url=/library/en-us/gdi/fontext_6rlf.asp
-function IsTrueType(const FontName: string): boolean;
+function IsTTFontSelected(const DC: HDC): Boolean;
 var
   Metrics: TTextMetric;
-  ACanvas: TCanvas;
 begin
-  ACanvas := TCanvas.Create;
+  GetTextMetrics(DC, Metrics);
+  Result := (Metrics.tmPitchAndFamily and TMPF_TRUETYPE) <> 0;
+end;
+
+// http://msdn.microsoft.com/library/default.asp?url=/library/en-us/gdi/fontext_6rlf.asp
+function IsTrueType(const FontName: string): Boolean;
+var
+  Canvas: TCanvas;
+begin
+  Canvas := TCanvas.Create;
   try
-    ACanvas.Handle := GetDC(0);
-    ACanvas.Font.Name := FontName;
-    GetTextMetrics(ACanvas.Handle, Metrics);
-    Result := (Metrics.tmPitchAndFamily and TMPF_TRUETYPE) = TMPF_TRUETYPE;
+    Canvas.Handle := GetDC(HWND_DESKTOP);
+    Canvas.Font.Name := FontName;
+    Result := IsTTFontSelected(Canvas.Handle);
+    ReleaseDC(HWND_DESKTOP, Canvas.Handle);
+    Canvas.Handle := NullHandle;
   finally
-    ACanvas.Free;
+    Canvas.Free;
   end;
 end;
 
