@@ -34,18 +34,20 @@ unit JvTipOfDay;
 interface
 
 uses
-  Classes, Graphics, Controls, Messages, Forms,
+  Classes, Graphics, Controls, Messages, Forms, JvAppStore,
   JvBaseDlg, JvButtonPersistent, JvSpeedButton, JvTypes, StdCtrls;
 
 type
   TJvCanShowEvent = procedure(Sender: TObject; var CanShow: Boolean) of object;
-  TJvTipOfDayOption = (toShowOnStartUp, toUseRegistry, toShowWhenFormShown);
+  TJvTipOfDayOption = (toShowOnStartUp, toUseAppStore, toShowWhenFormShown);
   TJvTipOfDayOptions = set of TJvTipOfDayOption;
 
   TJvTipOfDayStyle = (tsVC, tsStandard);
 
   TJvTipOfDay = class(TJvCommonDialogP)
   private
+    FAppStore: TJvCustomAppStore;
+    FAppStorePath: string;
     FTitle: string;
     FCheckBoxText: string;
     FHeaderText: string;
@@ -86,8 +88,9 @@ type
     procedure SetTips(const Value: TStrings);
     procedure SetStyle(const Value: TJvTipOfDayStyle);
   protected
+    procedure SetAppStore(Value: TJvCustomAppStore);
     { Called after the dialog has been shown. Fires the OnAfterExecute
-      event, thus enabling the user to update the registry or other
+      event, thus enabling the user to update the appstorage or other
       persistent data: }
     procedure DoAfterExecute; virtual;
     { Determines whether the dialog can be shown; user can write an
@@ -104,8 +107,8 @@ type
       determines whether the dialog must be shown; if the user wants
       to store this value in another location he must write an OnCanShow
       and an OnAfterExecute event handler: }
-    function ReadRegistry: Boolean; virtual;
-    procedure WriteRegistry(DoShowOnStartUp: Boolean); virtual;
+    function ReadFromAppStore: Boolean; virtual;
+    procedure WriteToAppStore(DoShowOnStartUp: Boolean); virtual;
     { Sets the fonts (HeaderFont and TipFont) to the default fonts
       associated with Style: }
     procedure UpdateFonts;
@@ -124,10 +127,13 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute; override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure LoadFromFile(const AFileName: string);
     procedure SaveToFile(const AFileName: string);
     property IsAutoExecute: Boolean read FIsAutoExecute;
   published
+    property AppStore: TJvCustomAppStore read FAppStore write SetAppStore;
+    property AppStorePath: string read FAppStorePath write FAppStorePath;
     property ButtonNext: TJvButtonPersistent read FButtonNext write SetButtonNext;
     property ButtonClose: TJvButtonPersistent read FButtonClose write SetButtonClose;
     property CheckBoxText: string read FCheckBoxText write FCheckBoxText;
@@ -147,14 +153,14 @@ type
 implementation
 
 uses
-  Windows, ExtCtrls, JvButton, Dialogs, SysUtils, Registry,
+  Windows, ExtCtrls, JvButton, Dialogs, SysUtils,
   JvWndProcHook, JvResources;
 
 {$R ..\resources\JvTipOfDay.res}
 
-const
+//const
   // (rom) Jedi registry keys need rework
-  RsKeyStartup = 'Software\JEDI-VCL\TipsStartup';
+//  RsKeyStartup = 'Software\JEDI-VCL\TipsStartup';
 
 type
   TControlAccess = class(TControl);
@@ -204,6 +210,11 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvTipOfDay.SetAppStore(Value: TJvCustomAppStore);
+begin
+  FAppStore := Value;
+end;
+
 procedure TJvTipOfDay.AutoExecute;
 begin
   FIsAutoExecute := True;
@@ -242,9 +253,9 @@ begin
     Exit;
   FRunning := True;
   try
-    if toUseRegistry in Options then
+    if toUseAppStore in Options then
     begin
-      if ReadRegistry then
+      if ReadFromAppStore then
         Include(FOptions, toShowOnStartUp)
       else
         Exclude(FOptions, toShowOnStartUp);
@@ -280,11 +291,18 @@ begin
 
     DoAfterExecute;
 
-    if toUseRegistry in Options then
-      WriteRegistry(toShowOnStartUp in Options);
+    if toUseAppStore in Options then
+      WriteToAppStore(toShowOnStartUp in Options);
   finally
     FRunning := False;
   end;
+end;
+
+procedure TJvTipOfDay.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FAppStore) then
+    FAppStore := nil;
 end;
 
 procedure TJvTipOfDay.FontChanged(Sender: TObject);
@@ -599,15 +617,10 @@ begin
     Tips.LoadFromFile(AFileName);
 end;
 
-function TJvTipOfDay.ReadRegistry: Boolean;
+function TJvTipOfDay.ReadFromAppStore: Boolean;
 begin
-  with TRegistry.Create do
-  try
-    OpenKey(RsKeyStartup, True);
-    Result := not ValueExists(GetRegKey) or ReadBool(GetRegKey);
-  finally
-    Free;
-  end;
+  if Assigned (AppStore) then
+    Result := AppStore.ReadBoolean(AppStore.ConcatPaths([AppStorePath,RsStoreShowOnStartUp]), toShowOnStartUp in Options)
 end;
 
 procedure TJvTipOfDay.SaveToFile(const AFileName: string);
@@ -720,15 +733,10 @@ begin
     TControlAccess(FNextTipButton).Enabled := False;
 end;
 
-procedure TJvTipOfDay.WriteRegistry(DoShowOnStartUp: Boolean);
+procedure TJvTipOfDay.WriteToAppStore(DoShowOnStartUp: Boolean);
 begin
-  with TRegistry.Create do
-  try
-    OpenKey(RsKeyStartup, True);
-    WriteBool(GetRegKey, DoShowOnStartUp);
-  finally
-    Free;
-  end;
+  if Assigned(AppStore) then
+    AppStore.WriteBoolean(AppStore.ConcatPaths([AppStorePath,RsStoreShowOnStartUp]), DoShowOnStartUp);
 end;
 
 end.
