@@ -840,10 +840,11 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 function TJvCustomHTListBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 begin
   if odSelected in State then
   begin
@@ -958,10 +959,11 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState);
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 function TJvCustomHTComboBox.DrawItem(Index: Integer; Rect: TRect;
   State: TOwnerDrawState): Boolean;
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 begin
   if odSelected in State then
   begin
@@ -975,9 +977,10 @@ begin
   ItemHTDraw(Canvas, Rect, State, Items[Index]);
   {$IFDEF VCL}
   SendMessage(Self.Handle, CB_SETITEMHEIGHT, Index, ItemHTHeight(Canvas, Items[Index])); // Kaczkowski
-  {$ELSE}
-  Result := True;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Result := True;
+  {$ENDIF VisualCLX}
 end;
 
 {$IFDEF VCL}
@@ -1007,9 +1010,10 @@ end;
 
 {$IFDEF VCL}
 procedure TJvCustomHTComboBox.CreateWnd;
-{$ELSE}
-procedure TJvCustomHTComboBox.CreateWidget;
 {$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvCustomHTComboBox.CreateWidget;
+{$ENDIF VisualCLX}
 var
   Tmp: Integer;
 begin
@@ -1114,11 +1118,12 @@ begin
       Canvas.Handle := 0;
       ReleaseDC(0, DC);
     end;
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     Canvas.Font.Assign(Font);
     Rect.Bottom := ItemHTHeight(Canvas, Caption);
     MaxWidth := ItemHTWidth(Canvas, Bounds(0, 0, 0, 0), [], Caption)+2;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     Rect.Right := Rect.Left + MaxWidth;
     X := Left;
     if Alignment = taRightJustify then

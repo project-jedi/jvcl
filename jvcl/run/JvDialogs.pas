@@ -57,7 +57,7 @@ type
     FParentWnd: HWND;
     {$IFNDEF COMPILER6_UP}
     FShowPlacesBar: Boolean;
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
     FOnShareViolation: TCloseQueryEvent;
     FHeight: Integer;
     FWidth: Integer;
@@ -405,7 +405,7 @@ const
   PlacesBar: array [Boolean] of DWORD = (OFN_EX_NOPLACESBAR, 0);
 var
   DialogData2000: TOpenFileName2000;
-{$ENDIF COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
 begin
   TOpenFileName(DialogData).hInstance := FindClassHInstance(Self.ClassType);
   FActiveSettingDone := False;
@@ -421,7 +421,7 @@ begin
     Result := inherited TaskModalDialog(DialogFunc, DialogData2000);
     {$ELSE}
     Result := inherited TaskModalDialog(DialogFunc, DialogData);
-    {$ENDIF COMPILER6_UP}
+    {$ENDIF !COMPILER6_UP}
   end
   else
     Result := inherited TaskModalDialog(DialogFunc, DialogData);

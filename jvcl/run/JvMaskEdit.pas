@@ -245,9 +245,10 @@ begin
     if HotTrack then
       {$IFDEF VCL}
       Ctl3D := True;
-      {$ELSE}
-      BorderStyle := bsSingle;
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      BorderStyle := bsSingle;
+      {$ENDIF VisualCLX}
     FOver := True;
   end;
   inherited MouseEnter(Control);
@@ -263,9 +264,10 @@ begin
     if FHotTrack then
       {$IFDEF VCL}
       Ctl3D := False;
-      {$ELSE}
-      BorderStyle := bsSingle; // maybe bsNone
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      BorderStyle := bsSingle; // maybe bsNone
+      {$ENDIF VisualCLX}
     FOver := False;
   end;
   inherited MouseLeave(Control);
@@ -278,17 +280,19 @@ begin
   begin
     {$IFDEF VCL}
     Ctl3D := False;
-    {$ELSE}
-    BorderStyle := bsSingle; // maybe bsNone
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := bsSingle; // maybe bsNone
+    {$ENDIF VisualCLX}
   end
   else
   begin
     {$IFDEF VCL}
     Ctl3D := True;
-    {$ELSE}
-    BorderStyle := bsSingle; 
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    BorderStyle := bsSingle;
+    {$ENDIF VisualCLX}
   end;
 end;
 

@@ -41,9 +41,10 @@ uses
   SysUtils,
   {$IFDEF VCL}
   Forms, Graphics,
-  {$ELSE}
-  QForms, QGraphics,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QForms, QGraphics,
+  {$ENDIF VisualCLX}
   Classes;
 
 type

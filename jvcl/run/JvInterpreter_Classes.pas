@@ -40,11 +40,10 @@ procedure RegisterJvInterpreterAdapter(JvInterpreterAdapter: TJvInterpreterAdapt
 implementation
 
 uses
-  {$IFDEF LINUX}
-  Classes, Variants;
-  {$ELSE}
+  {$IFDEF COMPILER6_UP}
+  Variants,
+  {$ENDIF COMPILER6_UP}
   Classes;
-  {$ENDIF LINUX}
 
 { TList }
 { constructor }

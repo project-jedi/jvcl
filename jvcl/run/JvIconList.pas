@@ -275,14 +275,15 @@ begin
   try
     {$IFDEF VCL}
     Ico.Handle := LoadIcon(Instance, ResId);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
     try
       Ico.LoadFromStream(ResStream);
     finally
       ResStream.Free;
     end;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     Result := AddIcon(Ico);
   except
     Ico.Free;
@@ -373,14 +374,15 @@ begin
   try
     {$IFDEF VCL}
     Ico.Handle := LoadIcon(Instance, ResId);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     ResStream := TResourceStream.CreateFromID(Instance, Integer(ResID), RT_RCDATA);
     try
       Ico.LoadFromStream(ResStream);
     finally
       ResStream.Free;
     end;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     FList.Insert(Index, Ico);
     Ico.OnChange := IconChanged;
   except

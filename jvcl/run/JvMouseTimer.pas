@@ -39,9 +39,10 @@ interface
 uses
   {$IFDEF VCL}
   Windows, Controls, ExtCtrls,
-  {$ELSE}
-  Types, QWindows, QControls, QExtCtrls,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QWindows, QControls, QExtCtrls,
+  {$ENDIF VisualCLX}
   SysUtils;
 
 type
@@ -106,9 +107,10 @@ begin
   try
     {$IFDEF VCL}
     FCurrentControl.Perform(CM_MOUSELEAVE, 0, 0);
-    {$ELSE}
-    FCurrentControl.MouseLeave(FCurrentControl);
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    FCurrentControl.MouseLeave(FCurrentControl);
+    {$ENDIF VisualCLX}
   except
     { Ignore exception in case control has been destroyed already }
   end;
@@ -145,9 +147,10 @@ begin
       if not PtInRect(R, Pt) then
         {$IFDEF VCL}
         FCurrentControl.Perform(CM_MOUSELEAVE, 0, 0);
-        {$ELSE}
-        FCurrentControl.MouseLeave(FCurrentControl);
         {$ENDIF VCL}
+        {$IFDEF VisualCLX}
+        FCurrentControl.MouseLeave(FCurrentControl);
+        {$ENDIF VisualCLX}
     end;
   except
     Detach(FCurrentControl);

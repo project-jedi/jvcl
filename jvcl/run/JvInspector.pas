@@ -58,7 +58,8 @@ uses
   Windows, Messages, Graphics, Controls, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows, JvExExtCtrls,
+  Qt, QTypes, Types, QGraphics, QControls, QStdCtrls, QExtCtrls, QWindows,
+  JvExExtCtrls,
   {$ENDIF VisualCLX}
   JvComponent, JvTypes, JvExControls;
 
@@ -208,9 +209,10 @@ type
 
   {$IFDEF VCL}
   TJvCustomInspector = class(TJvCustomControl)
-  {$ELSE}
-  TJvCustomInspector = class(TJvExCustomPanel)
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvCustomInspector = class(TJvExCustomPanel)
+  {$ENDIF VisualCLX}
   private
     FAfterDataCreate: TInspectorDataEvent;
     FAfterItemCreate: TInspectorItemEvent;
@@ -679,10 +681,11 @@ type
     {$IFDEF VCL}
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); virtual;
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
       State: TOwnerDrawState; var Handled: Boolean); virtual;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState); virtual;
     procedure DoGetValueList(const Strings: TStrings); virtual;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -1108,10 +1111,11 @@ type
     {$IFDEF VCL}
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
       State: TOwnerDrawState; var Handled: Boolean); override;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer;
       var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer;
@@ -2076,7 +2080,8 @@ begin
       if FInspectors[I].HandleAllocated then
         PostMessage(FInspectors[I].Handle, CM_DEACTIVATE, 0, 0);
 end;
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 var
   A: TCMActivate;
 begin
@@ -2089,7 +2094,7 @@ begin
     if FInspectors[I].HandleAllocated then
       FInspectors[I].CMDeactivate(A);
 end;
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 
 function TInspReg.IndexOf(const Inspector: TJvCustomInspector): Integer;
 begin
@@ -3502,7 +3507,8 @@ begin
       nTrackPos := 0;
     end;
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     with FVertScrollBar do
     begin
       Min := 0;
@@ -3518,7 +3524,7 @@ begin
         on E: Exception do ShowMessage(E.Message);
       end;
     end;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
   end
   else
   begin
@@ -3540,7 +3546,8 @@ begin
       nTrackPos := 0;
     end;
     SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     with FHorzScrollBar do
     begin
       Min := 0;
@@ -3548,7 +3555,7 @@ begin
       LargeChange := BPerPage;
       Position := GetBandFor(TopIndex);
     end;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
   end;
   Invalidate;
 end;
@@ -4906,17 +4913,19 @@ begin
     {$IFDEF VCL}
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
-    {$ELSE}
-    Mouse.Capture := nil;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Mouse.Capture := nil;
+    {$ENDIF VisualCLX}
     if ListBox.ItemIndex > -1 then
       ListValue := ListBox.Items[ListBox.ItemIndex];
     {$IFDEF VCL}
     SetWindowPos(ListBox.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
-    {$ELSE}
-    ListBox.Hide;
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    ListBox.Hide;
+    {$ENDIF VisualCLX}
     FDroppedDown := False;
     InvalidateItem;
     if Accept then
@@ -4965,10 +4974,11 @@ end;
 {$IFDEF VCL}
 procedure TJvCustomInspectorItem.DoDrawListItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 procedure TJvCustomInspectorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
   State: TOwnerDrawState; var Handled: Boolean);
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 begin
   with (Control as TListBox) do
     Canvas.TextOut(Rect.Left, Rect.Top, Items[Index]);
@@ -5071,7 +5081,8 @@ begin
     {$IFDEF VCL}
     SetWindowPos(ListBox.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     ListBox.Left := Rects[iprValueArea].Left;
     if (Rects[iprValueArea].Bottom + ListBox.Height) <= ListBox.parent.Height
     then
@@ -5080,14 +5091,15 @@ begin
       ListBox.Top := Rects[iprValueArea].Top - ListBox.Height-1;
     ListBox.Show;
     ListBox.BringToFront;
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     FDroppedDown := True;
     InvalidateItem;
     {$IFDEF VCL}
     Windows.SetFocus(EditCtrl.Handle);
-    {$ELSE}
+    {$ENDIF}
+    {$IFDEF VisualCLX}
     EditCtrl.SetFocus;
-    {$ENDIF VCL} 
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -5618,7 +5630,8 @@ begin
         {$IFDEF VCL}
         MousePos := PointToSmallPoint(ListPos);
         SendMessage(ListBox.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
-        {$ELSE}
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
         Event := QMouseEvent_create(QEventType_MouseButtonPress,
           @ListPos, Integer(ButtonState_LeftButton), Integer(ButtonState_LeftButton));
         try
@@ -5626,7 +5639,7 @@ begin
         finally
           QMouseEvent_destroy(Event);
         end;
-        {$ENDIF VCL}
+        {$ENDIF VisualCLX}
         Exit;
       end;
     end;
@@ -5976,9 +5989,10 @@ begin
     Pressed := NewState;
     {$IFDEF VCL}
     InvalidateRect(Inspector.Handle, @R, False);
-    {$ELSE}
-    Inspector.InvalidateRect(R, False);
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    Inspector.InvalidateRect(R, False);
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -6163,9 +6177,10 @@ begin
         BFlags := DFCS_FLAT or DFCS_PUSHED;
       {$IFDEF VCL}
       DrawThemedFrameControl(Inspector, ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
-      {$ELSE}
-      DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLDOWN);
       {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawFrameControl(ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLDOWN);
+      {$ENDIF VisuaLCLX}
     end
     else
     if iifEditButton in Flags then
@@ -6247,12 +6262,13 @@ begin
         {$IFDEF VCL}
         DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
           DT_WORDBREAK, nil);
-        {$ELSE}
+        {$ENDIF VCL}
+        {$IFDEF VisualCLX}
         ACanvas.Start;
         DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
           DT_WORDBREAK, nil);
         ACanvas.Stop;
-        {$ENDIF VCL}
+        {$ENDIF VisualCLX}
     end
     else
     begin
@@ -6360,20 +6376,17 @@ begin
     begin
       {$IFDEF VCL}
       FListBox := TJvPopupListBox.Create(Inspector);
-      {$ELSE}
-      FListBox := TListBox.Create(Inspector);
-      {$ENDIF VCL}
       ListBox.Visible := False;
-      {$IFDEF VCL}
       ListBox.Parent := EditCtrl;
+      TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in Flags);
       {$ENDIF VCL}
       {$IFDEF VisualCLX}
+      FListBox := TListBox.Create(Inspector);
+      ListBox.Visible := False;
       ListBox.Parent := EditCtrl.Parent;
       {$ENDIF VisualCLX}
       TListBox(ListBox).OnMouseUp := ListMouseUp;
-      {$IFDEF VCL}
-      TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in Flags);
-      {$ENDIF VCL}
+
       TListBox(ListBox).ItemHeight := 11;
       if iifOwnerDrawListFixed in Flags then
         TListBox(ListBox).Style := lbOwnerDrawFixed
@@ -8002,10 +8015,11 @@ end;
 {$IFDEF VCL}
 procedure TJvInspectorFontNameItem.DoDrawListItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
-{$ELSE}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
 procedure TJvInspectorFontNameItem.DoDrawListItem(Control: TObject;
   Index: Integer; Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
-{$ENDIF VCL}
+{$ENDIF VisualCLX}
 var
   FontName: string;
 begin
@@ -8134,9 +8148,10 @@ var
   ARect: TRect;
   {$IFDEF VCL}
   Rgn, SaveRgn: HRGN;
-  {$ELSE}
-  Rgn, SaveRgn: QRegionH;
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Rgn, SaveRgn: QRegionH;
+  {$ENDIF VisualCLX}
   HasRgn: Boolean;
   ClipRect: TRect;
 begin
@@ -8167,7 +8182,8 @@ begin
       Rgn := CreateRectRgn(Left, Top, Right, Bottom);
     SelectClipRgn(ACanvas.Handle, Rgn);
     DeleteObject(Rgn);
-    {$ELSE}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     SaveRgn := QPainter_clipRegion(ACanvas.Handle);
     HasRgn := QPainter_hasClipping(ACanvas.Handle);
     IntersectRect(ClipRect, ARect, Rects[iprValue]);
@@ -8175,7 +8191,7 @@ begin
     Rgn := QRegion_create(@ClipRect, QRegionRegionType_Rectangle);
     QPainter_setClipRegion(ACanvas.Handle, Rgn);
     QPainter_setClipping(ACanvas.Handle, True);
-    {$ENDIF VCL}
+    {$ENDIF VisualCLX}
     try
       { Paint the 3d checkbox: Frame }
 {      Frame3D(ACanvas, ARect, clBlack, clWhite, 1);
@@ -8205,11 +8221,12 @@ begin
       else
         SelectClipRgn(ACanvas.Handle, 0);
       DeleteObject(SaveRgn);
-      {$ELSE}
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
       QPainter_setClipRegion(ACanvas.Handle, SaveRgn);
       QPainter_setClipping(ACanvas.Handle, HasRgn);
       QRegion_destroy(Rgn);
-      {$ENDIF VCL}
+      {$ENDIF VisualCLX}
     end;
   end;
 end;
@@ -11372,11 +11389,7 @@ begin
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorInt64Item, tkInt64));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorClassItem, tkClass));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorTMethodItem, tkMethod));
-    {$IFDEF VCL}
     Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(TCaption)));
-    {$ELSE}
-    Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(WideString)));
-    {$ENDIF VCL}
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorFontItem, TypeInfo(TFont)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(Boolean)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(BYTEBOOL)));

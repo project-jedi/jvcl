@@ -96,6 +96,7 @@ type
     FLastTime: Cardinal;      // SPM - Ported backward from Delphi 7
     FFilter: string;          // SPM - ditto
     FIsDropping: Boolean;
+    FOnCloseUp: TNotifyEvent;
     {$ENDIF COMPILER6_UP}
     FKey: Word;
     FSearching: Boolean;
@@ -135,6 +136,7 @@ type
     procedure MeasureItem(Index: Integer; var Height: Integer); override;
     {$IFNDEF COMPILER6_UP}
     function SelectItem(const AnItem: string): Boolean;  // SPM - Ported from D7
+    procedure CloseUp; dynamic;
     {$ENDIF COMPILER6_UP}
     procedure SetConsumerService(Value: TJvDataConsumer);
     procedure ConsumerServiceChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason);
@@ -153,6 +155,7 @@ type
     property MeasureStyle: TJvComboBoxMeasureStyle read GetMeasureStyle write SetMeasureStyle
       default cmsStandard;
     {$IFNDEF COMPILER6_UP}
+    property OnCloseUp: TNotifyEvent read FOnCloseUp write FOnCloseUp;
     property AutoComplete: Boolean read FAutoComplete write FAutoComplete default True;
     {$ENDIF COMPILER6_UP}
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
@@ -218,9 +221,7 @@ type
     property Visible;
     property OnChange;
     property OnClick;
-    {$IFDEF COMPILER6_UP}
     property OnCloseUp;
-    {$ENDIF COMPILER6_UP}
     property OnContextPopup;
     property OnDblClick;
     property OnDragDrop;
@@ -866,6 +867,12 @@ begin
     Click;
     Change;
   end;
+end;
+
+procedure TJvCustomComboBox.CloseUp;
+begin
+  if Assigned(FOnCloseUp) then
+    FOnCloseUp(Self);
 end;
 
 {$ENDIF COMPILER6_UP}

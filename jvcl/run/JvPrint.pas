@@ -34,9 +34,10 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Printers,
-  {$ELSE}
-  QGraphics, QPrinters,
   {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QPrinters,
+  {$ENDIF VisualCLX}
   JvTypes, JvComponent;
 
 type

@@ -218,9 +218,10 @@ begin
   begin
     {$IFDEF VCL}
     if Windows.DestroyCaret then
-    {$ELSE}
-    if QWindows.DestroyCaret then
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    if QWindows.DestroyCaret then
+    {$ENDIF VisuaLCLX}
       FCaretCreated := False;
   end;
 end;
