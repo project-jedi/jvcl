@@ -38,11 +38,11 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Messages, CommCtrl, ComCtrls, Controls, ExtCtrls, Graphics, Forms,
+  Windows, Messages, CommCtrl,
   {$ENDIF VCL}
+  ComCtrls, Controls, ExtCtrls, Graphics, Forms,
   {$IFDEF VisualCLX}
-  QComCtrls, QControls, QExtCtrls, QGraphics, QForms, Types, QWindows,
-  QComCtrlsEx,
+  QComboEdits, QWindows, JvQExComboEdits, QComCtrlsEx,
   {$ENDIF VisualCLX}
   JvEdit, JvExMask, JvMaskEdit, JvComponent;
 
@@ -140,7 +140,12 @@ type
   TJvCheckOption = (coCheckOnChange, coCheckOnExit, coCropBeyondLimit);
   TJvCheckOptions = set of TJvCheckOption;
 
+  {$IFDEF VCL}
   TJvCustomSpinEdit = class(TJvExCustomMaskEdit)
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  TJvCustomSpinEdit = class(TJvExCustomComboMaskEdit)
+  {$ENDIF VisualCLX}
   private
     FCheckMaxValue: Boolean;
     FCheckMinValue: Boolean;
@@ -345,7 +350,6 @@ type
     property OnMouseWheelDown;
     property OnMouseWheelUp;
     property HideSelection;
-//    property HotTrack;
     {$IFDEF VCL}
     {$IFDEF COMPILER6_UP}
     property BevelEdges;
@@ -355,19 +359,12 @@ type
     {$ENDIF COMPILER6_UP}
     {$ENDIF VCL}
     property ClipboardCommands;
-//    property DisabledTextColor;
-//    property DisabledColor;
   end;
 
 implementation
 
 uses
-  {$IFDEF VCL}
   Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QConsts,
-  {$ENDIF VisualCLX}
   JvThemes,
   {$IFDEF JVCLThemesEnabled}
   UxTheme,
@@ -1159,7 +1156,7 @@ begin
         Align := alLeft
       else
         Align := alRight;
-      Parent := Self;
+      Parent := Self {$IFDEF VisualCLX}.ClientArea{$ENDIF};
       OnClick := UpDownClick;
     end;
   end
@@ -1167,12 +1164,14 @@ begin
   begin
     FBtnWindow := TWinControl.Create(Self);
     FBtnWindow.Visible := True;
-    FBtnWindow.Parent := Self;
+    FBtnWindow.Parent := Self {$IFDEF VisualCLX}.ClientArea{$ENDIF};
     if FButtonKind <> bkClassic then
       FBtnWindow.SetBounds(0, 0, DefBtnWidth, Height)
     else
       FBtnWindow.SetBounds(0, 0, Height, Height);
-
+    {$IFDEF VisualCLX}
+    FBtnWindow.Align := alRight;
+    {$ENDIF VisualCLX}
     FButton := TJvSpinButton.Create(Self);
     FButton.Visible := True;
     if FButtonKind = bkClassic then
@@ -1226,6 +1225,13 @@ begin
     end;
     with R do
       FBtnWindow.SetBounds(Left, Top, Right - Left, Bottom - Top);
+    {$IFDEF VisualCLX}
+    if BiDiMode = bdRightToLeft then
+    begin
+      FBtnWindow.Align := alLeft
+    else
+      FBtnWindow.Align := alRight;
+    {$ENDIF VisualCLX}
     //Polaris
     FButton.SetBounds(1, 1, FBtnWindow.Width - 1, FBtnWindow.Height - 1);
   end;
