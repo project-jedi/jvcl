@@ -812,7 +812,7 @@ begin
   FOptions.Free;
   inherited Destroy;
   // (rom) destroy Canvas always after inherited
-  FCanvas.Free;
+  FreeAndNil(FCanvas);
 end;
 
 function TJvCustomItemViewer.Add(AItem: TJvViewerItem): Integer;

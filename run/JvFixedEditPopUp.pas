@@ -183,7 +183,7 @@ end;
 
 function THiddenPopupObject.CanUndo: Boolean;
 begin
-  if (Edit <> nil) and Edit.HandleAllocated then
+  if Assigned(Edit) and Edit.HandleAllocated then
     Result := SendMessage(Edit.Handle, EM_CANUNDO, 0, 0) <> 0
   else
     Result := False;
