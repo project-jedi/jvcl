@@ -495,12 +495,15 @@ end;
 
 function TJvBaseEditListAutoComplete.FindItemPrefix(IndexStart: Integer; const Prefix: string): Integer;
 begin
-  for Result := IndexStart + 1 to List.Count - 1 do
-    if StringStartsWith(List[Result], Prefix) then
-      Exit;
-  for Result := 0 to IndexStart do
-    if StringStartsWith(List[Result], Prefix) then
-      Exit;
+  if List <> nil then
+  begin
+    for Result := IndexStart + 1 to List.Count - 1 do
+      if StringStartsWith(List[Result], Prefix) then
+        Exit;
+    for Result := 0 to IndexStart do
+      if StringStartsWith(List[Result], Prefix) then
+        Exit;
+  end;
   Result := -1;
 end;
 
@@ -651,7 +654,6 @@ end;
 function TJvComboBoxAutoComplete.FindItemPrefix(IndexStart: Integer;
   const Prefix: string): Integer;
 begin
-  //Result := SendMessage(ComboBox.Handle, CB_FINDSTRING, IndexStart, Integer(PChar(Prefix)));
   for Result := IndexStart + 1 to ComboBox.Items.Count - 1 do
     if StringStartsWith(ComboBox.Items[Result], Prefix) then
       Exit;
