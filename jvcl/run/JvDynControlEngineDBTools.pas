@@ -23,6 +23,8 @@ Known Issues:
 
 unit JvDynControlEngineDBTools;
 
+{$I jvcl.inc}
+
 interface
 
 uses
@@ -82,12 +84,11 @@ function ShowDatasourceEditDialog(ADataSource: TDataSource;
 implementation
 
 uses
-  StdCtrls, SysUtils;
+{$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+{$ENDIF UNITVERSIONING}
+  JvResources, StdCtrls, SysUtils;
 
-resourcestring
-  RSSRWPostButtonCaption = '&Post';
-  RSSRWCancelButtonCaption = '&Cancel';
-  RSSRWCloseButtonCaption = 'C&lose';
 
 function TJvDynControlDataSourceEditDialog.CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
 var
@@ -282,6 +283,24 @@ begin
     Dialog.Free;
   end;
 end;
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
+
+initialization
+{$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.
 
