@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Maciej Kaczkowski
 
-Last Modified: 2003-10-10
+Last Modified: 2004-01-06
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,6 +35,9 @@ Some information about coding:
 
 Changes:
 ========
+André Snepvangers:
+  2004-01-06
+      VisualCLX compatible version
 Maciej Kaczkowski:
   2003-09-16
   [+] <BR> - new line
@@ -1009,12 +1012,14 @@ end;
 
 procedure TJvHTLabel.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
-  TControlCanvas(FCanvas).StartPaint;
+//  TControlCanvas(FCanvas).StartPaint;
+  FCanvas.Start;
   try
     QPainter_setClipRegion(FCanvas.Handle, EventRegion);
     Paint;
   finally
-    TControlCanvas(FCanvas).StopPaint;
+  FCanvas.Stop;
+//    TControlCanvas(FCanvas).StopPaint;
   end;
 end;
 {$ENDIF VisualCLX}

@@ -31,7 +31,13 @@ unit JvSplitter;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Forms, ExtCtrls, Controls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  QGraphics, QForms, QExtCtrls, QControls, Types,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  Windows, Messages, Graphics, Forms, ExtCtrls, Controls,
+  {$ENDIF}
   JVCLVer, JvExExtCtrls;
 
 type

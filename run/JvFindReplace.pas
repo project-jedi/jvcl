@@ -35,7 +35,13 @@ unit JvFindReplace;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Controls, Dialogs, StdCtrls,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Dialogs, StdCtrls,
+  {$ENDIF}
+  {$IFDEF VisualCLX}
+  QControls, QDialogs, QStdCtrls,
+  {$ENDIF}
   JvComponent;
 
 type
