@@ -403,7 +403,7 @@ function PrepareText(a: string):string;
 implementation
 
 uses
-  JclLogic,
+  Math,
   JvJVCLUtils, JvConsts;
 
 const
