@@ -50,7 +50,7 @@
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="%NAME%.cpp"/>
     <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl"/>
-    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug;&quot;$(PATH)&quot;"/>
+    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\lib\c6\obj;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
@@ -61,7 +61,7 @@
       -tWM"/>
     <PFLAGS value="-N2..\..\lib\c6\obj -N0..\..\lib\c6\obj -$YD -$W -$O- -$A8 -v -JPHNE -M
                    -DDelphiPersonalEdition
-                   -U&quot;$(PATH)&quot; %C6PFLAGS%
+                   %C6PFLAGS%
                    -U$(BCB)\Projects\Bpl
                   "/>
     <RFLAGS value=""/>
