@@ -14,14 +14,23 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object Work: TButton
+  object Compress: TButton
     Left = 88
-    Top = 24
+    Top = 8
     Width = 113
     Height = 25
     Caption = 'Compress'
     TabOrder = 0
-    OnClick = WorkClick
+    OnClick = CompressClick
+  end
+  object Uncompress: TButton
+    Left = 88
+    Top = 48
+    Width = 113
+    Height = 25
+    Caption = 'Uncompress'
+    TabOrder = 1
+    OnClick = UncompressClick
   end
   object OpenDialog1: TOpenDialog
     DefaultExt = 'dic'

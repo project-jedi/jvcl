@@ -8,10 +8,12 @@ uses
 
 type
   TForm1 = class(TForm)
-    Work: TButton;
+    Compress: TButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
-    procedure WorkClick(Sender: TObject);
+    Uncompress: TButton;
+    procedure CompressClick(Sender: TObject);
+    procedure UncompressClick(Sender: TObject);
   private
   public
   end;
@@ -26,7 +28,7 @@ uses
 
 {$R *.dfm}
 
-procedure TForm1.WorkClick(Sender: TObject);
+procedure TForm1.CompressClick(Sender: TObject);
 var
   I: Integer;
   J: Integer;
@@ -35,6 +37,8 @@ var
   List1: TStringList;
   List2: TStringList;
   Digit: Integer;
+  Ch: Char;
+  Stream: TFileStream;
 begin
   if OpenDialog1.Execute then
   begin
@@ -63,10 +67,56 @@ begin
       end;
     end;
     if SaveDialog1.Execute then
-      List2.SaveToFile(SaveDialog1.FileName);
+    begin
+      Ch := #10;
+      Stream := TFileStream.Create(SaveDialog1.FileName, fmCreate);
+      for I := 0 to List2.Count-1 do
+      begin
+        Stream.Write(PChar(List2[I])^, Length(List2[I]));
+        Stream.Write(Ch, 1);
+      end;
+      Stream.Free;
+    end;
+      // List2.SaveToFile(SaveDialog1.FileName);
     List1.Free;
     List2.Free;
   end;
+end;
+
+procedure TForm1.UncompressClick(Sender: TObject);
+var
+  AFile: TextFile;
+  Value: string;
+  LastValue: string;
+  N: Integer;
+  List: TStringList;
+begin
+  List := TStringList.Create;
+  if OpenDialog1.Execute then
+  begin
+    System.AssignFile(AFile, OpenDialog1.FileName);
+    System.Reset(AFile);
+    try
+      repeat
+        Readln(AFile, Value);
+        if Value <> '' then
+        begin
+          // (rom) simple compession for dictionary
+          N := Ord(Value[1]) - Ord('0');
+          Value := Copy(Value, 2, Length(Value) - 1);
+          if N > 0 then
+            Value := Copy(LastValue, 1, N) + Value;
+          LastValue := Value;
+          List.Add(Value);
+        end;
+      until Eof(AFile);
+    finally
+      System.Close(AFile);
+    end;
+    if SaveDialog1.Execute then
+      List.SaveToFile(SaveDialog1.FileName);
+  end;
+  List.Free;
 end;
 
 end.
