@@ -71,7 +71,6 @@ type
     property Background;
 
     property MultiSelect;
-    property OwnerData;
     property ParentBiDiMode;
     property ParentColor;
     property ParentCtl3D;
