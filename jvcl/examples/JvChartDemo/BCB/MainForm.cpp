@@ -87,7 +87,8 @@ void __fastcall TfrmMain::ButtonNewValuesClick(TObject *Sender)
     opts->PenUnit->Add("ug/m3");
     opts->PenUnit->Add("ug/m3");
 
-    opts->ShowLegend = true;
+    //opts->ShowLegend = true;
+    
     opts->ChartKind = ckChartLine;
   }
   Chart->AutoFormatGraph();
