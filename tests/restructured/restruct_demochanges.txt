@@ -1,7 +1,23 @@
 What: changes that needs to be done to make the examples compile
 Who: Peter Thörnqvist [peter3@peter3.com]
-When: 2002-06-24
 
+2002-07-29 added following demos to the makefiles.mak:
+RxDBexpl32.exe 
+RxDemo.exe 
+RxGIFAnm.exe 
+JvThumbnailDemo.exe 
+BasicDemo.exe 
+CollectionDemo.exe 
+SimpleHIDWrite.exe 
+GreyMouser.exe 
+InspectorDBExample.exe 
+InspExample.exe 
+JvOutlookPanelProj.exe 
+RunDLL32Demo.exe 
+SpecialProgressTestPrj.exe 
+SystemPopupTest.exe
+
+2002-06-24
 JvSystemPopup2 - added demo from Remko Bonte to show off new capabilities of the TJvSystemPopup component
 ObjectPickerDemo - added demo from Marcel van Brackel that shows what can be done with the new TJvObjectPickerDialog (also from Marcel van Brackel)
 ImageWindowDemo - TJvImageBox2 renamed to TJvImageSquare
