@@ -102,11 +102,16 @@ DONE - TreeView w. Checkbox and RadioButton support (peter3) - already compliant
 DONE - VS.NET style TreeView and JvPageList (peter3) - already compliant 
   LED control (marcelb)
 DONE - XML Database (sebastien) - already compliant 
-  JvAviCAP (obones)
+DONE - JvAviCAP (obones)
   TreeViewCombo and DirPathCombo (mbeck)
   ExpressionEdit (rbarre) (?)
   GoogleSearcher (Basri Kanca)(?)
   JvStructStorage (peter3) (?) - already compliant
   ManagedThreads (Erwin Molendijk)(?) 
   TDBRadioGroup based on TPanel (anonymous)
-  
+- Make all icons have color coded "J" insert according to:
+  * blue - visual control
+  * green - non-visual
+  * red - provider
+  * black - consumer
+  * purple - db aware  
