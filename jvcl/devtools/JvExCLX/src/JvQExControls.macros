@@ -79,7 +79,6 @@ EMPTYLINE
     FOnParentColorChanged: TNotifyEvent;
     FWindowProc: TWndMethod;
     procedure SetDesktopFont(Value: Boolean);
-    procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
     procedure CMHitTest(var Mesg: TJvMessage); message CM_HITTEST;
     procedure CMHintShow(var Mesg: TJvMessage); message CM_HINTSHOW;
     procedure CMSysFontChanged(var Mesg: TMessage); message CM_SYSFONTCHANGED;
@@ -88,6 +87,8 @@ EMPTYLINE
     procedure EnabledChanged; override;
     procedure FocusChanged; dynamic;
     function HitTest(X, Y: integer): Boolean; HITTEST_DECL;
+    procedure MouseEnter(AControl: TControl); override;
+    procedure MouseLeave(AControl: TControl); override;
     procedure ParentColorChanged; override;
     procedure TextChanged; override;
     procedure VisibleChanged; override;
@@ -108,13 +109,13 @@ EMPTYLINE
     property HintColor: TColor read FHintColor write FHintColor default clDefault;
 *)
 
-(*$DEFINE JV_CONTROL_BEGIN(ClassName)
+(*$DEFINE JV_CONTROL_BEGIN(NameOfClass)
   { QControl begin }
-  TJvEx##ClassName = class(T##ClassName)
+  TJvEx##NameOfClass = class(T##NameOfClass)
   JV_DECL_CONTROL
 *)
 
-(*$DEFINE JV_CONTROL_END(ClassName)
+(*$DEFINE JV_CONTROL_END(NameOfClass)
   protected
     procedure FontChanged; override;
   public
@@ -123,13 +124,13 @@ EMPTYLINE
   end;
 
   { QControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName);
+  TJvExPub##NameOfClass = class(TJvEx##NameOfClass);
   EMPTYLINE
 *)
 
-(*$DEFINE JV_CONTROL(ClassName)
-  JV_CONTROL_BEGIN(ClassName)
-  JV_CONTROL_END(ClassName)
+(*$DEFINE JV_CONTROL(NameOfClass)
+  JV_CONTROL_BEGIN(NameOfClass)
+  JV_CONTROL_END(NameOfClass)
 *)
 
 //
@@ -139,7 +140,9 @@ EMPTYLINE
   { QWinControl }
   private
     FInternalFontChanged: TNotifyEvent;
+    FOnEvent: TEventEvent;
     procedure DoOnFontChanged(Sender: TObject);
+    procedure CMDesignHitTest(var Mesg: TJvMessage); message CM_DESIGNHITTEST;
   protected
     procedure CreateWidget; override;
     procedure CreateWnd; virtual;
@@ -149,7 +152,7 @@ EMPTYLINE
     procedure DoExit; override;
     procedure DoKillFocus(NextWnd: HWND); dynamic;
     procedure DoSetFocus(PreviousWnd: HWND); dynamic;
-    function EventFilter(Receiver: QObjectH; Event: QEventH): Boolean; override;
+    function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     procedure PaintWindow(PaintDevice: QPaintDeviceH);
     procedure RecreateWnd;
     procedure ShowingChanged; override;
@@ -157,13 +160,14 @@ EMPTYLINE
   public
     function ColorToRGB(Value: TColor): TColor;
     procedure PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
-    procedure SetFocus; override;
+  published
+    property OnEvent: TEventEvent read FOnEvent write FOnEvent;
 *)
 //
 // WidgetControls without a Canvas property.
 // used by WinControl & EditControl
 //
-(*$DEFINE JV_WINCONTROL_END(ClassName)
+(*$DEFINE JV_WINCONTROL_END(NameOfClass)
   { QWinControl }
   private
     FCanvas: TControlCanvas;
@@ -172,26 +176,24 @@ EMPTYLINE
   protected
     procedure Paint; virtual;
     procedure Painting(Sender: QObjectH; EventRegion: QRegionH); override;
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Canvas: TCanvas read GetCanvas;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QWinControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName)
+  TJvExPub##NameOfClass = class(TJvEx##NameOfClass)
   end;
   EMPTYLINE
 *)
 
 //
 // ListViews, TreeViews, IconViews, Forms with a Canvas.
-// - No Doublebuffering
 // - No Paint override;
 //
-(*$DEFINE JV_WINCUSTOMCONTROL_END(ClassName)
+(*$DEFINE JV_WINCUSTOMCONTROL_END(NameOfClass)
   { QWinCustomControl }
   public
     constructor Create(AOwner: TComponent); override;
@@ -199,30 +201,29 @@ EMPTYLINE
   end;
 
   { QWinCustomControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName);
+  TJvExPub##NameOfClass = class(TJvEx##NameOfClass);
   EMPTYLINE
 *)
 
 //
 // CustomControls do not require Paint & Canvas
-// but have doublebuffered paint
 //
-(*$DEFINE JV_CUSTOMCONTROL_END(ClassName)
-  protected
+(*$DEFINE JV_CUSTOMCONTROL_END(NameOfClass)
+  private
     FDoubleBuffered: Boolean;
+  protected
+    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
   end;
 
   { QCustomControl }
-  TJvExPub##ClassName = class(TJvEx##ClassName);
+  TJvExPub##NameOfClass = class(TJvEx##NameOfClass);
   EMPTYLINE
 *)
 
-(*$DEFINE JV_CUSTOMFORM_END(ClassName)
+(*$DEFINE JV_CUSTOMFORM_END(NameOfClass)
   { QCustomForm }
   public
     constructor Create(AOwner: TComponent); override;
@@ -230,53 +231,53 @@ EMPTYLINE
     destructor Destroy; override;
   end;
 
-  TJvExPub##ClassName = class(TJvEx##ClassName)
+  TJvExPub##NameOfClass = class(TJvEx##NameOfClass)
   end;
   EMPTYLINE
 *)
 
 
-(*$DEFINE JV_WINCONTROL_BEGIN(ClassName)
+(*$DEFINE JV_WINCONTROL_BEGIN(NameOfClass)
   { QWinControl Begin }
-  TJvEx##ClassName = class(T##ClassName)
+  TJvEx##NameOfClass = class(T##NameOfClass)
   JV_DECL_CONTROL
   JV_DECL_WINCONTROL
 *)
 
-(*$DEFINE JV_WINCUSTOMCONTROL_BEGIN(ClassName)
+(*$DEFINE JV_WINCUSTOMCONTROL_BEGIN(NameOfClass)
   { QWinCustomControl }
-  JV_WINCONTROL_BEGIN(ClassName)
+  JV_WINCONTROL_BEGIN(NameOfClass)
 *)
 
-(*$DEFINE JV_CUSTOMCONTROL_BEGIN(ClassName)
+(*$DEFINE JV_CUSTOMCONTROL_BEGIN(NameOfClass)
   { QCustomControl Begin }
-  JV_WINCONTROL_BEGIN(ClassName)
+  JV_WINCONTROL_BEGIN(NameOfClass)
 *)
 
-(*$DEFINE JV_CUSTOMFORM_BEGIN(ClassName)
+(*$DEFINE JV_CUSTOMFORM_BEGIN(NameOfClass)
   { QCustomForm }
-  JV_WINCONTROL_BEGIN(ClassName)
+  JV_WINCONTROL_BEGIN(NameOfClass)
 *)
 
-(*$DEFINE JV_WINCONTROL(ClassName)
-  JV_WINCONTROL_BEGIN(ClassName)
-  JV_WINCONTROL_END(ClassName)
+(*$DEFINE JV_WINCONTROL(NameOfClass)
+  JV_WINCONTROL_BEGIN(NameOfClass)
+  JV_WINCONTROL_END(NameOfClass)
 *)
 
-(*$DEFINE JV_WINCUSTOMCONTROL(ClassName)
-  JV_WINCONTROL_BEGIN(ClassName)
-  JV_WINCUSTOMCONTROL_END(ClassName)
+(*$DEFINE JV_WINCUSTOMCONTROL(NameOfClass)
+  JV_WINCONTROL_BEGIN(NameOfClass)
+  JV_WINCUSTOMCONTROL_END(NameOfClass)
 *)
 
 
-(*$DEFINE JV_CUSTOMCONTROL(ClassName)
-  JV_WINCONTROL_BEGIN(ClassName)
-  JV_CUSTOMCONTROL_END(ClassName)
+(*$DEFINE JV_CUSTOMCONTROL(NameOfClass)
+  JV_WINCONTROL_BEGIN(NameOfClass)
+  JV_CUSTOMCONTROL_END(NameOfClass)
 *)
 
-(*$DEFINE JV_CUSTOMFORM(ClassName)
-  JV_WINCONTROL_BEGIN(ClassName)
-  JV_CUSTOMFORM_END(ClassName)
+(*$DEFINE JV_CUSTOMFORM(NameOfClass)
+  JV_WINCONTROL_BEGIN(NameOfClass)
+  JV_CUSTOMFORM_END(NameOfClass)
 *)
 
 
@@ -340,17 +341,17 @@ EMPTYLINE
     property CharCase: TEditCharCase read GetCharCase write SetCharCase default ecNormal;
 *)
 
-(*$DEFINE JV_EDITCONTROL_BEGIN(ClassName)
+(*$DEFINE JV_EDITCONTROL_BEGIN(NameOfClass)
   { QEditControl Begin }
-  TJvEx##ClassName = class(T##ClassName)
+  TJvEx##NameOfClass = class(T##NameOfClass)
   JV_DECL_CONTROL
   JV_DECL_WINCONTROL
   JV_DECL_EDITCONTROL
 *)
 
-(*$DEFINE JV_CUSTOMEDIT_BEGIN(ClassName)
+(*$DEFINE JV_CUSTOMEDIT_BEGIN(NameOfClass)
   { QCustomEdit Begin }
-  TJvEx##ClassName = class(T##ClassName)
+  TJvEx##NameOfClass = class(T##NameOfClass)
   JV_DECL_CONTROL
   JV_DECL_WINCONTROL
   JV_DECL_EDITCONTROL
@@ -358,22 +359,22 @@ EMPTYLINE
 *)
 
 
-(*$DEFINE JV_EDITCONTROL_END(ClassName)
-JV_WINCONTROL_END(ClassName)
+(*$DEFINE JV_EDITCONTROL_END(NameOfClass)
+JV_WINCONTROL_END(NameOfClass)
 *)
 
-(*$DEFINE JV_CUSTOMEDIT_END(ClassName)
-JV_WINCONTROL_END(ClassName)
+(*$DEFINE JV_CUSTOMEDIT_END(NameOfClass)
+JV_WINCONTROL_END(NameOfClass)
 *)
 
-(*$DEFINE JV_EDITCONTROL(ClassName)
-  JV_EDITCONTROL_BEGIN(ClassName)
-  JV_WINCONTROL_END(ClassName)
+(*$DEFINE JV_EDITCONTROL(NameOfClass)
+  JV_EDITCONTROL_BEGIN(NameOfClass)
+  JV_WINCONTROL_END(NameOfClass)
 *)
 
-(*$DEFINE JV_CUSTOMEDIT(ClassName)
-  JV_CUSTOMEDIT_BEGIN(ClassName)
-  JV_WINCONTROL_END(ClassName)
+(*$DEFINE JV_CUSTOMEDIT(NameOfClass)
+  JV_CUSTOMEDIT_BEGIN(NameOfClass)
+  JV_WINCONTROL_END(NameOfClass)
 *)
 
 
@@ -382,9 +383,9 @@ JV_WINCONTROL_END(ClassName)
 // *************************************************************************
 {$DEFINE HITTEST_CODE Handled := inherited HitTest(XPos, YPos);}
 
-(*$DEFINE JV_IMPL_CONTROL_CREATE(ClassName)
+(*$DEFINE JV_IMPL_CONTROL_CREATE(NameOfClass)
 { QControl Create }
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
+constructor TJvEx##NameOfClass.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clDefault;
@@ -392,7 +393,7 @@ begin
   CREATE_CUSTOMCODE
 end;
 
-destructor TJvEx##ClassName.Destroy;
+destructor TJvEx##NameOfClass.Destroy;
 begin
   DESTROY_CUSTOMCODE
   inherited Destroy;
@@ -404,14 +405,14 @@ end;
     { Control Messages }
       CM_FOCUSCHANGED: FocusChanged;
       CM_MOUSEENTER: FMouseOver := True;
-      CM_MOUSELEAVE: FMouseOver := True;
+      CM_MOUSELEAVE: FMouseOver := False;
 
 *)
 
-(*$DEFINE JV_IMPL_CONTROL(ClassName)
-procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
+(*$DEFINE JV_IMPL_CONTROL(NameOfClass)
+procedure TJvEx##NameOfClass.WndProc(var Mesg: TMessage);
 begin
-  // OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
+  //OutputDebugString(PAnsiChar(Format('JV_CONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -431,59 +432,44 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.ColorChanged;
+procedure TJvEx##NameOfClass.CMHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    Handled := inherited HitTest(XPos, YPos);
+    if Handled then
+      Result := HTCLIENT;
+  end;
+end;
+
+procedure TJvEx##NameOfClass.ColorChanged;
 begin
   Perform(CM_COLORCHANGED, 0, 0);
   inherited ColorChanged;
 end;
 
-procedure TJvEx##ClassName.FontChanged;
+procedure TJvEx##NameOfClass.FontChanged;
 begin
   Perform(CM_FONTCHANGED, 0, 0);
   inherited FontChanged;
 end;
 
-procedure TJvEx##ClassName.FocusChanged;
+procedure TJvEx##NameOfClass.FocusChanged;
 begin
   { notification }
 end;
  EMPTYLINE
 *)
 
-(*$DEFINE JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_IMPL_CONTROL_COMMON(NameOfClass)
 { QControl Common}
 
-function TJvEx##ClassName.HitTest(X, Y: integer): Boolean;
+function TJvEx##NameOfClass.HitTest(X, Y: integer): Boolean;
 begin
    Result := Perform(CM_HITTEST, 0, 0) <> HTNOWHERE;
 end;
 
-procedure TJvEx##ClassName.CMHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    if csDesigning in ComponentState then
-      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
-    else
-    begin
-      HITTEST_CODE
-      if Handled then
-        Result := HTCLIENT;
-    end;
-  end;
-end;
-
-procedure TJvEx##ClassName.CMDesignHitTest(var Mesg: TJvMessage);
-begin
-  with Mesg do
-  begin
-    HITTEST_CODE
-    if Handled then
-      Result := HTCLIENT;
-  end;
-end;
-
-procedure TJvEx##ClassName.CMHintShow(var Mesg: TJvMessage);
+procedure TJvEx##NameOfClass.CMHintShow(var Mesg: TJvMessage);
 begin
   with Mesg do
   begin
@@ -491,7 +477,7 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.CMSysFontChanged(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.CMSysFontChanged(var Mesg: TMessage);
 begin
   if FDesktopFont then
   begin
@@ -500,37 +486,49 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.EnabledChanged;
+procedure TJvEx##NameOfClass.EnabledChanged;
 begin
   Perform(CM_ENABLEDCHANGED, 0, 0);
   inherited EnabledChanged;
 end;
 
-procedure TJvEx##ClassName.TextChanged;
+procedure TJvEx##NameOfClass.TextChanged;
 begin
   Perform(CM_TEXTCHANGED, 0, 0);
   inherited TextChanged;
 end;
 
-procedure TJvEx##ClassName.VisibleChanged;
+procedure TJvEx##NameOfClass.VisibleChanged;
 begin
   Perform(CM_VISIBLECHANGED, 0, 0);
   inherited VisibleChanged;
 end;
 
-function TJvEx##ClassName.HintShow(var HintInfo : THintInfo): Boolean;
+function TJvEx##NameOfClass.HintShow(var HintInfo : THintInfo): Boolean;
 begin
   Result := Perform(CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
-procedure TJvEx##ClassName.ParentColorChanged;
+procedure TJvEx##NameOfClass.MouseEnter(AControl: TControl);
+begin
+  Perform(CM_MOUSEENTER, 0, 0);
+  inherited MouseEnter(AControl);
+end;
+
+procedure TJvEx##NameOfClass.MouseLeave(AControl: TControl);
+begin
+  Perform(CM_MOUSELEAVE, 0, 0);
+  inherited MouseLeave(AControl);
+end;
+
+procedure TJvEx##NameOfClass.ParentColorChanged;
 begin
   inherited ParentColorChanged;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
 
-procedure TJvEx##ClassName.SetDesktopFont(Value: Boolean);
+procedure TJvEx##NameOfClass.SetDesktopFont(Value: Boolean);
 begin
   if FDesktopFont <> Value then
   begin
@@ -539,7 +537,7 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.Dispatch(var Mesg);
+procedure TJvEx##NameOfClass.Dispatch(var Mesg);
 begin
   if Assigned(FWindowProc) then
     FWindowProc(TMessage(Mesg))
@@ -547,7 +545,7 @@ begin
     WndProc(TMessage(Mesg))
 end;
 
-function TJvEx##ClassName.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
+function TJvEx##NameOfClass.Perform(Msg: Cardinal; WParam, LParam: Longint): Longint;
 var
   Mesg: TMessage;
 begin
@@ -559,24 +557,24 @@ begin
   Result := Mesg.Result;
 end;
 
-function TJvEx##ClassName.IsRightToLeft: Boolean;
+function TJvEx##NameOfClass.IsRightToLeft: Boolean;
 begin
   Result := False;
 end;
   EMPTYLINE
 *) // MACRO END JV_IMPL_CONTROL
 
-(*$DEFINE JV_CONTROL_IMPL(ClassName)
-JV_IMPL_CONTROL_CREATE(ClassName)
-JV_IMPL_CONTROL(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_CONTROL_IMPL(NameOfClass)
+JV_IMPL_CONTROL_CREATE(NameOfClass)
+JV_IMPL_CONTROL(NameOfClass)
+JV_IMPL_CONTROL_COMMON(NameOfClass)
 *)
 
 
-(*$DEFINE JV_IMPL_WINCONTROL_CREATE(ClassName)
+(*$DEFINE JV_IMPL_WINCONTROL_CREATE(NameOfClass)
 { QWinControl Create }
 
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
+constructor TJvEx##NameOfClass.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FWindowProc := WndProc;
@@ -587,7 +585,7 @@ begin
   CREATE_CUSTOMCODE
 end;
 
-destructor TJvEx##ClassName.Destroy;
+destructor TJvEx##NameOfClass.Destroy;
 begin
   DESTROY_CUSTOMCODE
   FCanvas.Free;
@@ -596,10 +594,10 @@ end;
   EMPTYLINE
 *) // end macro JV_IMPL_WINCONTROL_CREATE
 
-(*$DEFINE JV_IMPL_CUSTOMCONTROL_CREATE(ClassName)
+(*$DEFINE JV_IMPL_CUSTOMCONTROL_CREATE(NameOfClass)
 { QCustomControl Create }
 
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
+constructor TJvEx##NameOfClass.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FWindowProc := WndProc;
@@ -610,7 +608,7 @@ begin
   CREATE_CUSTOMCODE
 end;
 
-destructor TJvEx##ClassName.Destroy;
+destructor TJvEx##NameOfClass.Destroy;
 begin
   DESTROY_CUSTOMCODE
   inherited Destroy;
@@ -622,10 +620,10 @@ end;
 // used by WinCustomControl & CustomForm
 //
 
-(*$DEFINE JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
+(*$DEFINE JV_IMPL_WINCUSTOMCONTROL_CREATE(NameOfClass)
 { QWinCustomControl Create }
 
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
+constructor TJvEx##NameOfClass.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FWindowProc := WndProc;
@@ -635,7 +633,7 @@ begin
   CREATE_CUSTOMCODE
 end;
 
-destructor TJvEx##ClassName.Destroy;
+destructor TJvEx##NameOfClass.Destroy;
 begin
   DESTROY_CUSTOMCODE
   inherited Destroy;
@@ -643,20 +641,18 @@ end;
 EMPTYLINE
 *)
 
-(*$DEFINE JV_IMPL_CUSTOMFORM_CREATE(ClassName)
+(*$DEFINE JV_IMPL_CUSTOMFORM_CREATE(NameOfClass)
 
 { QWinCustomControl Create }
-constructor TJvEx##ClassName.CreateNew(AOwner: TComponent; Dummy: Integer);
+constructor TJvEx##NameOfClass.CreateNew(AOwner: TComponent; Dummy: Integer);
 begin
   inherited CreateNew(AOwner, Dummy);
   FWindowProc := WndProc;
   FHintColor := clDefault;
-  FInternalFontChanged := Font.OnChange;
-  Font.OnChange := DoOnFontChanged;
   CREATE_CUSTOMCODE
 end;
 
-JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
+JV_IMPL_WINCUSTOMCONTROL_CREATE(NameOfClass)
 EMPTYLINE
 *)
 
@@ -673,7 +669,6 @@ EMPTYLINE
       CM_HINTSHOW:
       begin
         HintInfo^.HintColor := GetHintcolor(Self);
-        Handled := HintShow(HintInfo^);
       end;
 
       WM_ERASEBKGND:
@@ -687,10 +682,10 @@ EMPTYLINE
       end;
 *)
 
-(*$DEFINE JV_IMPL_WINCONTROL(ClassName)
-procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
+(*$DEFINE JV_IMPL_WINCONTROL(NameOfClass)
+procedure TJvEx##NameOfClass.WndProc(var Mesg: TMessage);
 begin
-//  OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
+  //OutputDebugString(PAnsiChar(Format('WINCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -705,120 +700,131 @@ end;
 
 *)
 
-(*$DEFINE JV_IMPL_WINCONTROL_COMMON(ClassName)
+(*$DEFINE JV_IMPL_WINCONTROL_COMMON(NameOfClass)
 { QWinControl Common }
+procedure TJvEx##NameOfClass.CMDesignHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    HITTEST_CODE
+    if Handled then
+      Result := HTCLIENT;
+  end;
+end;
 
-function TJvEx##ClassName.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+procedure TJvEx##NameOfClass.CMHitTest(var Mesg: TJvMessage);
+begin
+  with Mesg do
+  begin
+    if csDesigning in ComponentState then
+      Result := Perform(CM_DESIGNHITTEST, XPos, YPos)
+    else
+    begin
+      HITTEST_CODE
+      if Handled then
+        Result := HTCLIENT;
+    end;
+  end;
+end;
+
+function TJvEx##NameOfClass.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := false;
 end;
 
-procedure TJvEx##ClassName.ShowingChanged;
+procedure TJvEx##NameOfClass.ShowingChanged;
 begin
   Perform(CM_SHOWINGCHANGED, 0 ,0);
   inherited;
 end;
 
-procedure TJvEx##ClassName.ColorChanged;
+procedure TJvEx##NameOfClass.ColorChanged;
 begin
-  if HandleAllocated and Bitmap.Empty then
-    Palette.Color := Brush.Color;
   Perform(CM_COLORCHANGED, 0, 0);
   inherited;
 end;
 
-procedure TJvEx##ClassName.CursorChanged;
+procedure TJvEx##NameOfClass.CursorChanged;
 begin
   Perform(CM_CURSORCHANGED, 0, 0);
   inherited;
 end;
 
-procedure TJvEx##ClassName.DoSetFocus(PreviousWnd: QWidgetH);
+procedure TJvEx##NameOfClass.DoSetFocus(PreviousWnd: QWidgetH);
 begin
   { notification }
 end;
 
-procedure TJvEx##ClassName.DoKillFocus(NextWnd: QWidgetH);
+procedure TJvEx##NameOfClass.DoKillFocus(NextWnd: QWidgetH);
 begin
   { notification }
 end;
 
-procedure TJvEx##ClassName.DoEnter;
+procedure TJvEx##NameOfClass.DoEnter;
 begin
   Perform(CM_ENTER, 0 ,0);
   inherited DoEnter;
 end;
 
-procedure TJvEx##ClassName.DoExit;
+procedure TJvEx##NameOfClass.DoExit;
 begin
   Perform(CM_EXIT, 0 ,0);
   inherited DoExit;
 end;
 
-function TJvEx##ClassName.EventFilter(Receiver: QObjectH; Event: QEventH): Boolean;
+function TJvEx##NameOfClass.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
-  if JvEventFilter(Self, Receiver, Event) then
-    Result := True
-  else
-    Result := inherited EventFilter(Receiver, Event);
+  Result := False;
+  if Assigned(FOnEvent) then
+    FOnEvent(Sender, Event, Result);
+  if not Result then
+    Result := inherited EventFilter(Sender, Event); 
 end;
 
-procedure TJvEx##ClassName.FocusChanged;
+procedure TJvEx##NameOfClass.FocusChanged;
 begin
   NotifyControls(CM_FOCUSCHANGED);
 end;
 
-procedure TJvEx##ClassName.SetFocus;
-var
-  PreviousWnd: QWidgetH;
-begin
-  PreviousWnd := GetFocusedWnd(Self);
-  inherited SetFocus;
-  if Assigned(PreviousWnd) and (PreviousWnd <> Handle) and Focused then
-    SendMessage(PreviousWnd, WM_KILLFOCUS, Integer(Handle), 0);
-  if Focused and (PreviousWnd <> Handle) then
-    SendMessage(Handle, WM_SETFOCUS, Integer(PreviousWnd), 0);
-end;
-
-procedure TJvEx##ClassName.DoOnFontChanged(Sender: TObject);
+procedure TJvEx##NameOfClass.DoOnFontChanged(Sender: TObject);
 begin
   ParentFont := False;
   PostMessage(Self, CM_FONTCHANGED, 0, 0);
 end;
 
-procedure TJvEx##ClassName.CreateWidget;
+procedure TJvEx##NameOfClass.CreateWidget;
 begin
   CreateWnd;
 end;
 
-procedure TJvEx##ClassName.CreateWnd;
+procedure TJvEx##NameOfClass.CreateWnd;
 begin
   inherited CreateWidget;
 end;
 
-procedure TJvEx##ClassName.RecreateWnd;
+procedure TJvEx##NameOfClass.RecreateWnd;
 begin
   RecreateWidget;
 end;
 
-procedure TJvEx##ClassName.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
+procedure TJvEx##NameOfClass.PaintTo(PaintDevice: QPaintDeviceH; X, Y: Integer);
 begin
   WidgetControl_PaintTo(self, PaintDevice, X, Y);
 end;
 
-procedure TJvEx##ClassName.PaintWindow(PaintDevice: QPaintDeviceH);
+procedure TJvEx##NameOfClass.PaintWindow(PaintDevice: QPaintDeviceH);
 begin
   PaintTo(PaintDevice, 0, 0);
 end;
 
-function TJvEx##ClassName.WidgetFlags: Integer;
+function TJvEx##NameOfClass.WidgetFlags: Integer;
 begin
   Result := inherited WidgetFlags or
     Integer(WidgetFlags_WRepaintNoErase) or
     Integer(WidgetFlags_WMouseNoMask);
 end;
 
-function TJvEx##ClassName.ColorToRGB(Value: TColor): TColor;
+function TJvEx##NameOfClass.ColorToRGB(Value: TColor): TColor;
 begin
   Result := QWindows.ColorToRGB(Value, self);
 end;
@@ -828,33 +834,56 @@ end;
 //
 // implement paint for native Qt Widgets.
 //
-(*$DEFINE JV_IMPL_WINCONTROL_PAINT(ClassName)
+(*$DEFINE JV_IMPL_WINCONTROL_PAINT(NameOfClass)
 { WinControl Paint }
 
-function TJvEx##ClassName.GetCanvas: TCanvas;
+function TJvEx##NameOfClass.GetCanvas: TCanvas;
 begin
   if not Assigned(FCanvas) then
   begin
-    FCanvas:= TControlCanvas.Create;
+    FCanvas := TControlCanvas.Create;
     FCanvas.Control := self;
   end;
   Result := FCanvas;
 end;
 
-procedure TJvEx##ClassName.Paint;
+
+//procedure TJvEx##NameOfClass.Paint;
+//begin
+//  TControlCanvas(Canvas).StopPaint;
+//  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
+//  TControlCanvas(Canvas).StartPaint;
+//end;
+
+
+procedure TJvEx##NameOfClass.Paint;
+var
+  ForcedPaintEvent: QPaintEventH;
 begin
-  TControlCanvas(Canvas).StopPaint;
-  inherited Painting(Handle, QPainter_clipRegion(Canvas.Handle));
-  TControlCanvas(Canvas).StartPaint;
+//  ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), False);
+    ForcedPaintEvent := QPaintEvent_create(QPainter_clipRegion(Canvas.Handle), True);
+  try
+    ControlState := ControlState + [csWidgetPainting];
+    TControlCanvas(Canvas).StopPaint;
+    try
+      QObject_event(Handle, ForcedPaintEvent);
+    finally
+      ControlState := ControlState - [csWidgetPainting];
+    end;
+  finally
+    QPaintEvent_destroy(ForcedPaintEvent);
+    TControlCanvas(Canvas).StartPaint;
+  end;
 end;
 
-procedure TJvEx##ClassName.Painting(Sender: QObjectH; EventRegion: QRegionH);
+procedure TJvEx##NameOfClass.Painting(Sender: QObjectH; EventRegion: QRegionH);
 begin
   TControlCanvas(Canvas).StartPaint;
   try
     Canvas.Brush.Assign(Brush);
     Canvas.Font.Assign(Font);
     RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
+    QPainter_setClipping(Canvas.Handle, True);
     Paint;
   finally
     TControlCanvas(Canvas).StopPaint;
@@ -864,36 +893,36 @@ end;
 *)
 
 
-(*$DEFINE JV_CUSTOMCONTROL_IMPL(ClassName)
-JV_IMPL_CUSTOMCONTROL_CREATE(ClassName)
-JV_IMPL_WINCONTROL(ClassName)
-JV_IMPL_WINCONTROL_COMMON(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_CUSTOMCONTROL_IMPL(NameOfClass)
+JV_IMPL_CUSTOMCONTROL_CREATE(NameOfClass)
+JV_IMPL_WINCONTROL(NameOfClass)
+JV_IMPL_WINCONTROL_COMMON(NameOfClass)
+JV_IMPL_CONTROL_COMMON(NameOfClass)
  EMPTYLINE
 *)
 
-(*$DEFINE JV_WINCONTROL_IMPL(ClassName)
-JV_IMPL_WINCONTROL_CREATE(ClassName)
-JV_IMPL_WINCONTROL_PAINT(ClassName)
-JV_IMPL_WINCONTROL(ClassName)
-JV_IMPL_WINCONTROL_COMMON(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_WINCONTROL_IMPL(NameOfClass)
+JV_IMPL_WINCONTROL_CREATE(NameOfClass)
+JV_IMPL_WINCONTROL_PAINT(NameOfClass)
+JV_IMPL_WINCONTROL(NameOfClass)
+JV_IMPL_WINCONTROL_COMMON(NameOfClass)
+JV_IMPL_CONTROL_COMMON(NameOfClass)
  EMPTYLINE
 *)
 
-(*$DEFINE JV_WINCUSTOMCONTROL_IMPL(ClassName)
-JV_IMPL_WINCUSTOMCONTROL_CREATE(ClassName)
-JV_IMPL_WINCONTROL(ClassName)
-JV_IMPL_WINCONTROL_COMMON(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_WINCUSTOMCONTROL_IMPL(NameOfClass)
+JV_IMPL_WINCUSTOMCONTROL_CREATE(NameOfClass)
+JV_IMPL_WINCONTROL(NameOfClass)
+JV_IMPL_WINCONTROL_COMMON(NameOfClass)
+JV_IMPL_CONTROL_COMMON(NameOfClass)
  EMPTYLINE
 *)
 
-(*$DEFINE JV_CUSTOMFORM_IMPL(ClassName)
-JV_IMPL_CUSTOMFORM_CREATE(ClassName)
-JV_IMPL_WINCONTROL(ClassName)
-JV_IMPL_WINCONTROL_COMMON(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_CUSTOMFORM_IMPL(NameOfClass)
+JV_IMPL_CUSTOMFORM_CREATE(NameOfClass)
+JV_IMPL_WINCONTROL(NameOfClass)
+JV_IMPL_WINCONTROL_COMMON(NameOfClass)
+JV_IMPL_CONTROL_COMMON(NameOfClass)
 *)
 
 
@@ -909,12 +938,12 @@ JV_IMPL_CONTROL_COMMON(ClassName)
       EM_UNDO:  Result := Perform(WM_UNDO, 0, 0);
 *)
 
-(*$DEFINE JV_IMPL_EDITCONTROL_COMMON(ClassName)
+(*$DEFINE JV_IMPL_EDITCONTROL_COMMON(NameOfClass)
 { QEditControl Common}
 
-procedure TJvEx##ClassName.WndProc(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WndProc(var Mesg: TMessage);
 begin
-  //OutputDebugString(PAnsiChar(Format('%s: Message $%x',[Name, Mesg.Msg])));
+  //OutputDebugString(PAnsiChar(Format('EDITCONTROL %s: %s Msg $%x',[Name, ClassName, Mesg.Msg])));
   with TJvMessage(Mesg) do
   begin
     case Msg of
@@ -927,29 +956,29 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.Undo;
+procedure TJvEx##NameOfClass.Undo;
 begin
   SendMessage(Handle, WM_UNDO, 0, 0);
 end;
 
-procedure TJvEx##ClassName.CopyToClipboard;
+procedure TJvEx##NameOfClass.CopyToClipboard;
 begin
   SendMessage(Handle, WM_COPY, 0, 0);
 end;
 
-procedure TJvEx##ClassName.CutToClipboard;
+procedure TJvEx##NameOfClass.CutToClipboard;
 begin
   if not ReadOnly then
     SendMessage(Handle, WM_CUT, 0, 0);
 end;
 
-procedure TJvEx##ClassName.Clear;
+procedure TJvEx##NameOfClass.Clear;
 begin
   if not ReadOnly then
     SendMessage(Handle, WM_CLEAR, 0, 0);
 end;
 
-procedure TJvEx##ClassName.PasteFromClipboard;
+procedure TJvEx##NameOfClass.PasteFromClipboard;
 begin
   if not ReadOnly then
     SendMessage(Handle, WM_PASTE, 0, 0);
@@ -957,62 +986,62 @@ end;
  EMPTYLINE
 *)
 
-(*$DEFINE JV_IMPL_EDITCONTROL(ClassName)
-procedure TJvEx##ClassName.WMClear(var Mesg: TMessage);
+(*$DEFINE JV_IMPL_EDITCONTROL(NameOfClass)
+procedure TJvEx##NameOfClass.WMClear(var Mesg: TMessage);
 begin
   inherited Clear;
 end;
 
-procedure TJvEx##ClassName.WMCopy(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMCopy(var Mesg: TMessage);
 begin
   inherited CopyToClipBoard;
 end;
 
-procedure TJvEx##ClassName.WMCut(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMCut(var Mesg: TMessage);
 begin
   inherited CutToClipBoard;
 end;
 
-procedure TJvEx##ClassName.WMPaste(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMPaste(var Mesg: TMessage);
 begin
   inherited PasteFromClipBoard;
 end;
 
-procedure TJvEx##ClassName.WMUndo(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMUndo(var Mesg: TMessage);
 begin
   inherited Undo;
 end;
  EMPTYLINE
 *)
 
-(*$DEFINE JV_IMPL_CUSTOMEDIT(ClassName)
-procedure TJvEx##ClassName.WMClear(var Mesg: TMessage);
+(*$DEFINE JV_IMPL_CUSTOMEDIT(NameOfClass)
+procedure TJvEx##NameOfClass.WMClear(var Mesg: TMessage);
 begin
   inherited Clear;
   FEdit.Clear;
 end;
 
-procedure TJvEx##ClassName.WMCopy(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMCopy(var Mesg: TMessage);
 begin
   FEdit.CopyToClipBoard;
 end;
 
-procedure TJvEx##ClassName.WMCut(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMCut(var Mesg: TMessage);
 begin
   FEdit.CutToClipBoard;
 end;
 
-procedure TJvEx##ClassName.WMPaste(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMPaste(var Mesg: TMessage);
 begin
   FEdit.PasteFromClipBoard;
 end;
 
-procedure TJvEx##ClassName.WMUndo(var Mesg: TMessage);
+procedure TJvEx##NameOfClass.WMUndo(var Mesg: TMessage);
 begin
   FEdit.Undo;
 end;
 
-procedure TJvEx##ClassName.ClearSelection;
+procedure TJvEx##NameOfClass.ClearSelection;
 begin
   if not ReadOnly then
   begin
@@ -1021,12 +1050,12 @@ begin
   end;
 end;
 
-procedure TJvEx##ClassName.EMGetRect(var Msg: TJvMessage);
+procedure TJvEx##NameOfClass.EMGetRect(var Msg: TJvMessage);
 begin
   Msg.Rect := FEdit.BoundsRect;
 end;
 
-procedure TJvEx##ClassName.EMSetRect(var Msg: TJvMessage);
+procedure TJvEx##NameOfClass.EMSetRect(var Msg: TJvMessage);
 begin
   FEdit.BoundsRect := Msg.Rect^;
 end;
@@ -1043,33 +1072,33 @@ begin
   FEdit.AutoSelect := Value;
 end;
 
-function TJvEx##ClassName.GetSelStart: Integer;
+function TJvEx##NameOfClass.GetSelStart: Integer;
 begin
   Result := FEdit.SelStart;
 end;
 
-function TJvEx##ClassName.GetSelText: WideString;
+function TJvEx##NameOfClass.GetSelText: WideString;
 begin
   Result := FEdit.SelText;
 end;
 
-function TJvEx##ClassName.GetText: TCaption;
+function TJvEx##NameOfClass.GetText: TCaption;
 begin
   Result := FEdit.Text;
 end;
 
-function TJvEx##ClassName.GetModified: Boolean;
+function TJvEx##NameOfClass.GetModified: Boolean;
 begin
   Result := FEdit.Modified;
 end;
 
-procedure TJvEx##ClassName.SelectAll;
+procedure TJvEx##NameOfClass.SelectAll;
 begin
   inherited;
   FEdit.SelectAll;
 end;
 
-function TJvEx##ClassName.GetEchoMode: TEchoMode;
+function TJvEx##NameOfClass.GetEchoMode: TEchoMode;
 begin
   Result := FEdit.EchoMode;
 end;
@@ -1080,43 +1109,43 @@ begin
   FEdit.CursorPos := Value;
 end;
 
-procedure TJvEx##ClassName.SetEchoMode(const Value: TEchoMode);
+procedure TJvEx##NameOfClass.SetEchoMode(const Value: TEchoMode);
 begin
   inherited;
   FEdit.EchoMode := Value;
 end;
 
-procedure TJvEx##ClassName.SetText(const Value: TCaption);
+procedure TJvEx##NameOfClass.SetText(const Value: TCaption);
 begin
   FEdit.Text := Value;
   inherited;
 end;
 
-procedure TJvEx##ClassName.SetMaxLength(const Value: Integer);
+procedure TJvEx##NameOfClass.SetMaxLength(const Value: Integer);
 begin
   FEdit.MaxLenght := Value;
   inherited;
 end;
 
-procedure TJvEx##ClassName.SetModified(const Value: Boolean);
+procedure TJvEx##NameOfClass.SetModified(const Value: Boolean);
 begin
   inherited;
   FEdit.Modified := Value;
 end;
 
-procedure TJvEx##ClassName.SetSelLength(Value: Integer);
+procedure TJvEx##NameOfClass.SetSelLength(Value: Integer);
 begin
   inherited;
   FEdit.SelLenght := Value;
 end;
 
-procedure TJvEx##ClassName.SetSelStart(Value: Integer);
+procedure TJvEx##NameOfClass.SetSelStart(Value: Integer);
 begin
   inherited;
   FEdit.SelStart := Value;
 end;
 
-procedure TJvEx##ClassName.SetSelText(const Value: WideString);
+procedure TJvEx##NameOfClass.SetSelText(const Value: WideString);
 begin
   inherited;
   FEdit.SelText := Value;
@@ -1135,10 +1164,10 @@ end;
 
 *) // end of JV_IMPL_CUSTOMEDIT
 
-(*$DEFINE JV_IMPL_EDITCONTROL_CREATE(ClassName)
+(*$DEFINE JV_IMPL_EDITCONTROL_CREATE(NameOfClass)
 { QEditControl Create }
 
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
+constructor TJvEx##NameOfClass.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInternalFontChanged := Font.OnChange;
@@ -1149,7 +1178,7 @@ begin
   CREATE_CUSTOMCODE
 end;
 
-destructor TJvEx##ClassName.Destroy;
+destructor TJvEx##NameOfClass.Destroy;
 begin
   DESTROY_CUSTOMCODE
   FCanvas.Free;
@@ -1158,10 +1187,10 @@ end;
  EMPTYLINE
 *) // end of JV_IMPL_EDITCONTROL_CREATE
 
-(*$DEFINE JV_IMPL_CUSTOMEDIT_CREATE(ClassName)
+(*$DEFINE JV_IMPL_CUSTOMEDIT_CREATE(NameOfClass)
 { QCustomEdit Create }
 
-constructor TJvEx##ClassName.Create(AOwner: TComponent);
+constructor TJvEx##NameOfClass.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FInternalFontChanged := Font.OnChange;
@@ -1189,22 +1218,22 @@ end;
 
 *)
 
-(*$DEFINE JV_EDITCONTROL_IMPL(ClassName)
-JV_IMPL_EDITCONTROL_CREATE(ClassName)
-JV_IMPL_EDITCONTROL(ClassName)
-JV_IMPL_EDITCONTROL_COMMON(ClassName)
-JV_IMPL_WINCONTROL_PAINT(ClassName)
-JV_IMPL_WINCONTROL_COMMON(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_EDITCONTROL_IMPL(NameOfClass)
+JV_IMPL_EDITCONTROL_CREATE(NameOfClass)
+JV_IMPL_EDITCONTROL(NameOfClass)
+JV_IMPL_EDITCONTROL_COMMON(NameOfClass)
+JV_IMPL_WINCONTROL_PAINT(NameOfClass)
+JV_IMPL_WINCONTROL_COMMON(NameOfClass)
+JV_IMPL_CONTROL_COMMON(NameOfClass)
 *)
 
-(*$DEFINE JV_CUSTOMEDIT_IMPL(ClassName)
-JV_IMPL_CUSTOMEDIT_CREATE(ClassName)
-JV_IMPL_CUSTOMEDIT(ClassName)
-JV_IMPL_EDITCONTROL_COMMON(ClassName)
-JV_IMPL_WINCONTROL_PAINT(ClassName)
-JV_IMPL_WINCONTROL_COMMON(ClassName)
-JV_IMPL_CONTROL_COMMON(ClassName)
+(*$DEFINE JV_CUSTOMEDIT_IMPL(NameOfClass)
+JV_IMPL_CUSTOMEDIT_CREATE(NameOfClass)
+JV_IMPL_CUSTOMEDIT(NameOfClass)
+JV_IMPL_EDITCONTROL_COMMON(NameOfClass)
+JV_IMPL_WINCONTROL_PAINT(NameOfClass)
+JV_IMPL_WINCONTROL_COMMON(NameOfClass)
+JV_IMPL_CONTROL_COMMON(NameOfClass)
 *)
 
 
