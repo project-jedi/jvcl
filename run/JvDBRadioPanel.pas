@@ -332,7 +332,7 @@ constructor TJvDBRadioPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 //  ControlStyle := [csSetCaption, csDoubleClicks, csParentBackground];
-  ControlStyle := [csDoubleClicks, csParentBackground];
+  ControlStyle := [csDoubleClicks{$IFDEF COMPILER7_UP}, csParentBackground{$ENDIF}];
   FButtons     := TList.Create;
   FItems       := TStringList.Create;
   TStringList(FItems).OnChange := ItemsChange;
