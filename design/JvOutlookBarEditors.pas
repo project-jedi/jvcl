@@ -24,19 +24,26 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvOutlookBarEditors;
 
 interface
 uses
-  Windows, SysUtils, Classes, Controls, Forms, ToolWin,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Controls, Forms, ToolWin,
   Menus, ActnList, ComCtrls, ImgList,
   {$IFDEF COMPILER6_UP}
   DesignEditors, DesignIntf, DesignMenus, DesignWindows,
   {$ELSE}
   DsgnIntf, DsgnWnds,
   {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, QControls, QForms, QToolWin,
+  QMenus, QActnList, QComCtrls, QImgList,
+  DesignEditors, DesignIntf, DesignMenus, ClxDesignWindows,
+  {$ENDIF VisualCLX}
   JvDsgnEditors, JvOutlookBar;
 
 type

@@ -35,7 +35,7 @@ uses
   Controls, Forms, StdCtrls, Buttons, ExtCtrls, Consts,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types, ClxEditors,
+  QControls, QForms, QStdCtrls, QButtons, QExtCtrls, QConsts, Types,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
