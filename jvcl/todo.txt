@@ -1,5 +1,7 @@
 TODO for JVCL 3.0
 ======================
+- Add JvAppStorage support to JvMRUList // (obones)
+
 - add BeginUpdate and EndUpdate to all TStrings parameters // (rom)
 - Separate out a TJvRecentPopupMenu from JvRecentMenuButton.pas // (rom)
 
