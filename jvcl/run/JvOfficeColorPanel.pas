@@ -35,16 +35,17 @@ unit JvOfficeColorPanel;
 interface
 
 uses
-{$IFDEF MSWINDOWS}
+  {$IFDEF MSWINDOWS}
   Windows, Messages,
-{$ENDIF MSWINDOWS}
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Graphics, Controls, Forms, Buttons, ExtCtrls, Dialogs,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-  QWindows, Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls, QDialogs,
-{$ENDIF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QWindows, Types, Qt, QGraphics, QControls, QForms, QButtons, QExtCtrls,
+  QDialogs,
+  {$ENDIF VisualCLX}
   JvComponent, JvSpeedButton;
 
 const
@@ -171,7 +172,6 @@ type
 
   TJvCustomOfficeColorPanel = class(TJvCustomPanel)
   private
-
     FColorButtons: array[0..MaxColorButtonNumber - 1] of TJvSubColorButton;
     FAutoButton: TJvSubColorButton;
     FOtherButton: TJvColorSpeedButton;
@@ -186,10 +186,10 @@ type
     Inited: boolean;
     FOnColorChange: TNotifyEvent;
 
-{$IFDEF VCL}
+    {$IFDEF VCL}
     FColorDialogOptions: TColorDialogOptions;
     procedure SetColorDialogOptions(const Value: TColorDialogOptions);
-{$ENDIF VCL}
+    {$ENDIF VCL}
 
     procedure ColorButtonClick(Sender: TObject);
     procedure SetFlat(const Value: boolean);
@@ -201,12 +201,12 @@ type
     procedure SetProperties(const Value: TJvOfficeColorPanelProperties); virtual;
 
   protected
-{$IFDEF VCL}
+    {$IFDEF VCL}
     procedure CreateWnd; override;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     procedure InitWidget; override;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
 
     procedure Loaded; override;
     procedure Resize; override;
@@ -233,12 +233,11 @@ type
     property CustomColors: TStrings read GetCustomColors write SetCustomColors;
 
     property Properties: TJvOfficeColorPanelProperties read GetProperties write SetProperties;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     property Options: TColorDialogOptions read FColorDialogOptions write SetColorDialogOptions default [];
-{$ENDIF VCL}
+    {$ENDIF VCL}
 
     property OnColorChange: TNotifyEvent read FOnColorChange write FOnColorChange;
-
   end;
 
   TJvOfficeColorPanel = class(TJvCustomOfficeColorPanel)
@@ -246,7 +245,7 @@ type
     property Flat;
     property Color;
     property CustomColors;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     property Options;
     property BiDiMode;
     property DragCursor;
@@ -255,7 +254,7 @@ type
     property OnCanResize;
     property OnEndDock;
     property OnGetSiteInfo;
-{$ENDIF VCL}
+    {$ENDIF VCL}
 
     property Align;
     property Anchors;
@@ -555,11 +554,12 @@ end;
 constructor TJvCustomOfficeColorPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  //ControlStyle := ControlStyle - [csAcceptsControls];
   Inited := false;
   FSelectedColor := clBlack;
-{$IFDEF VCL}
+  {$IFDEF VCL}
   FColorDialogOptions := [];
-{$ENDIF VCL}
+  {$ENDIF VCL}
 
   FProperties := TJvOfficeColorPanelProperties.Create;
   FProperties.OnPropertiesChanged := PropertiesChanged;
@@ -592,9 +592,9 @@ begin
   end;
 
   FColorDialog := TJvOfficeColorDialog.Create(Self);
-{$IFDEF VCL}
+  {$IFDEF VCL}
   FColorDialog.Options := FColorDialogOptions;
-{$ENDIF VCL}
+  {$ENDIF VCL}
 
   Font.Name := 'MS Shell Dlg 2';
   FAutoButton.Flat := True;
@@ -605,7 +605,6 @@ begin
   MakeColorButtons;
 
   Inited := True;
-
 end;
 
 destructor TJvCustomOfficeColorPanel.Destroy;
@@ -702,7 +701,6 @@ begin
         FAutoButton.Width,
         ButtonHeight);
     end;
-
 end;
 
 procedure TJvCustomOfficeColorPanel.ColorButtonClick(Sender: TObject);
@@ -713,9 +711,9 @@ var
 begin
   if TComponent(Sender).Tag = FOtherButton.Tag then
   begin
-{$IFDEF VCL}
+    {$IFDEF VCL}
     FColorDialog.Options := FColorDialogOptions;
-{$ENDIF VCL}
+    {$ENDIF VCL}
     FColorDialog.Color := FSelectedColor;
     if FColorDialog.Execute then
     begin
@@ -728,15 +726,15 @@ begin
   else
   begin
     TJvSubColorButton(Sender).Down := true;
-{$IFDEF VisualCLX}
-  //in clx have bug
+    {$IFDEF VisualCLX}
+   //in clx have bug
     FAutoButton.Down := FAutoButton = Sender;
     FOtherButton.Down := FOtherButton = Sender;
     for I := 0 to MaxColorButtonNumber - 1 do
     begin
       FColorButtons[I].Down := FColorButtons[I] = Sender;
     end;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     SetSelectedColor(TJvSubColorButton(Sender).Color);
   end;
 end;
@@ -824,17 +822,16 @@ begin
   if FFlat then
   begin
     Canvas.Brush.Color := clBtnFace;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     Canvas.FrameRect(ClientRect);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     FrameRect(Canvas, ClientRect);
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     Canvas.Brush.Color := Color;
   end;
   if Inited then
     AdjustColorButtons();
-
 end;
 
 procedure TJvCustomOfficeColorPanel.SetEnabled({$IFDEF VisualCLX} const {$ENDIF} Value: Boolean);
@@ -868,6 +865,7 @@ begin
   if FColorDialogOptions <> Value then
     FColorDialogOptions := Value;
 end;
+
 {$ENDIF VCL}
 
 procedure TJvCustomOfficeColorPanel.Loaded;
@@ -882,6 +880,7 @@ begin
   inherited CreateWnd;
   AdjustColorButtons;
 end;
+
 {$ENDIF VCL}
 
 {$IFDEF VisualCLX}
@@ -891,6 +890,7 @@ begin
   inherited;
   AdjustColorButtons;
 end;
+
 {$ENDIF VisualCLX}
 
 function TJvCustomOfficeColorPanel.GetProperties: TJvOfficeColorPanelProperties;
@@ -936,7 +936,6 @@ begin
       ;
   if LFlag then
     AdjustColorButtons;
-
 end;
 
 end.

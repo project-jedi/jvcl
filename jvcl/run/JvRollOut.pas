@@ -59,6 +59,7 @@ const
 
 type
   TJvPlacement = (plTop, plLeft);
+
   TJvRollOutColors = class(TPersistent)
   private
     FFrameBottom: TColor;
@@ -854,7 +855,6 @@ var
   TopC, BottomC: TColor;
   FIndex: Integer;
 begin
-
   if FPlacement = plTop then
     FButtonRect := Rect(BevelWidth, BevelWidth, Width - BevelWidth, FButtonHeight + BevelWidth)
   else

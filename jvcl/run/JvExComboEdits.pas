@@ -597,66 +597,66 @@ implementation
 }
 {$IFDEF VCL}
 procedure TJvExCustomComboEdit.Dispatch(var Msg);
-begin
-  DispatchMsg(Self, Msg);
+asm
+    JMP   DispatchMsg
 end;
 
 procedure TJvExCustomComboEdit.VisibleChanged;
-begin
-  InheritMsg(Self, CM_VISIBLECHANGED);
+asm
+    MOV  EDX, CM_VISIBLECHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.EnabledChanged;
-begin
-  InheritMsg(Self, CM_ENABLEDCHANGED);
+asm
+    MOV  EDX, CM_ENABLEDCHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.TextChanged;
-begin
-  InheritMsg(Self, CM_TEXTCHANGED);
+asm
+    MOV  EDX, CM_TEXTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.FontChanged;
-begin
-  InheritMsg(Self, CM_FONTCHANGED);
+asm
+    MOV  EDX, CM_FONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.ColorChanged;
-begin
-  InheritMsg(Self, CM_COLORCHANGED);
-end;
-
-procedure TJvExCustomComboEdit.ParentColorChanged;
-begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+asm
+    MOV  EDX, CM_COLORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.ParentFontChanged;
-begin
-  InheritMsg(Self, CM_PARENTFONTCHANGED);
+asm
+    MOV  EDX, CM_PARENTFONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.ParentShowHintChanged;
-begin
-  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_PARENTSHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 function TJvExCustomComboEdit.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
 end;
 
 function TJvExCustomComboEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
 function TJvExCustomComboEdit.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 procedure TJvExCustomComboEdit.MouseEnter(Control: TControl);
@@ -668,7 +668,7 @@ begin
     if FHintColor <> clNone then
       Application.HintColor := FHintColor;
   end;
-  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSEENTER, 0, Integer(Control));
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -680,9 +680,16 @@ begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
   end;
-  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSELEAVE, 0, Integer(Control));
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
+end;
+
+procedure TJvExCustomComboEdit.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
 {$IFNDEF HASAUTOSIZE}
@@ -694,39 +701,42 @@ end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExCustomComboEdit.CursorChanged;
-begin
-  InheritMsg(Self, CM_CURSORCHANGED);
+asm
+    MOV  EDX, CM_CURSORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.ShowHintChanged;
-begin
-  InheritMsg(Self, CM_SHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_SHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.ShowingChanged;
-begin
-  InheritMsg(Self, CM_SHOWINGCHANGED);
+asm
+    MOV  EDX, CM_SHOWINGCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanging(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanging
 end;
 
 procedure TJvExCustomComboEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanged(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExCustomComboEdit.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
+asm
+    JMP   JvThemes.GetParentBackground
 end;
 
 procedure TJvExCustomComboEdit.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
+asm
+    JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
@@ -815,13 +825,8 @@ begin
 end;
 
 function TJvExCustomComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VisualCLX}
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 {$IFDEF VCL}
@@ -865,7 +870,7 @@ begin
  // (ahuser) there is no caClear so we restrict it to caCut
   if caCut in ClipboardCommands then
     {$IFDEF VCL}
-    InheritMsg(Self, WM_CLEAR, 0, 0);
+    InheritMsg(Self, WM_CLEAR);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     inherited Clear;
@@ -938,66 +943,66 @@ end;
 
 {$IFDEF VCL}
 procedure TJvExComboEdit.Dispatch(var Msg);
-begin
-  DispatchMsg(Self, Msg);
+asm
+    JMP   DispatchMsg
 end;
 
 procedure TJvExComboEdit.VisibleChanged;
-begin
-  InheritMsg(Self, CM_VISIBLECHANGED);
+asm
+    MOV  EDX, CM_VISIBLECHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.EnabledChanged;
-begin
-  InheritMsg(Self, CM_ENABLEDCHANGED);
+asm
+    MOV  EDX, CM_ENABLEDCHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.TextChanged;
-begin
-  InheritMsg(Self, CM_TEXTCHANGED);
+asm
+    MOV  EDX, CM_TEXTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.FontChanged;
-begin
-  InheritMsg(Self, CM_FONTCHANGED);
+asm
+    MOV  EDX, CM_FONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.ColorChanged;
-begin
-  InheritMsg(Self, CM_COLORCHANGED);
-end;
-
-procedure TJvExComboEdit.ParentColorChanged;
-begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+asm
+    MOV  EDX, CM_COLORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.ParentFontChanged;
-begin
-  InheritMsg(Self, CM_PARENTFONTCHANGED);
+asm
+    MOV  EDX, CM_PARENTFONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.ParentShowHintChanged;
-begin
-  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_PARENTSHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 function TJvExComboEdit.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
 end;
 
 function TJvExComboEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
 function TJvExComboEdit.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 procedure TJvExComboEdit.MouseEnter(Control: TControl);
@@ -1009,7 +1014,7 @@ begin
     if FHintColor <> clNone then
       Application.HintColor := FHintColor;
   end;
-  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSEENTER, 0, Integer(Control));
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -1021,9 +1026,16 @@ begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
   end;
-  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSELEAVE, 0, Integer(Control));
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
+end;
+
+procedure TJvExComboEdit.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
 {$IFNDEF HASAUTOSIZE}
@@ -1035,39 +1047,42 @@ end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExComboEdit.CursorChanged;
-begin
-  InheritMsg(Self, CM_CURSORCHANGED);
+asm
+    MOV  EDX, CM_CURSORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.ShowHintChanged;
-begin
-  InheritMsg(Self, CM_SHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_SHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.ShowingChanged;
-begin
-  InheritMsg(Self, CM_SHOWINGCHANGED);
+asm
+    MOV  EDX, CM_SHOWINGCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanging(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanging
 end;
 
 procedure TJvExComboEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanged(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExComboEdit.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
+asm
+    JMP   JvThemes.GetParentBackground
 end;
 
 procedure TJvExComboEdit.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
+asm
+    JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
@@ -1156,13 +1171,8 @@ begin
 end;
 
 function TJvExComboEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VisualCLX}
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 {$IFDEF VCL}
@@ -1206,7 +1216,7 @@ begin
  // (ahuser) there is no caClear so we restrict it to caCut
   if caCut in ClipboardCommands then
     {$IFDEF VCL}
-    InheritMsg(Self, WM_CLEAR, 0, 0);
+    InheritMsg(Self, WM_CLEAR);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     inherited Clear;
@@ -1287,66 +1297,66 @@ end;
 }
 {$IFDEF VCL}
 procedure TJvExCustomComboMaskEdit.Dispatch(var Msg);
-begin
-  DispatchMsg(Self, Msg);
+asm
+    JMP   DispatchMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.VisibleChanged;
-begin
-  InheritMsg(Self, CM_VISIBLECHANGED);
+asm
+    MOV  EDX, CM_VISIBLECHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.EnabledChanged;
-begin
-  InheritMsg(Self, CM_ENABLEDCHANGED);
+asm
+    MOV  EDX, CM_ENABLEDCHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.TextChanged;
-begin
-  InheritMsg(Self, CM_TEXTCHANGED);
+asm
+    MOV  EDX, CM_TEXTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.FontChanged;
-begin
-  InheritMsg(Self, CM_FONTCHANGED);
+asm
+    MOV  EDX, CM_FONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.ColorChanged;
-begin
-  InheritMsg(Self, CM_COLORCHANGED);
-end;
-
-procedure TJvExCustomComboMaskEdit.ParentColorChanged;
-begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+asm
+    MOV  EDX, CM_COLORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.ParentFontChanged;
-begin
-  InheritMsg(Self, CM_PARENTFONTCHANGED);
+asm
+    MOV  EDX, CM_PARENTFONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.ParentShowHintChanged;
-begin
-  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_PARENTSHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 function TJvExCustomComboMaskEdit.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
 end;
 
 function TJvExCustomComboMaskEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
 function TJvExCustomComboMaskEdit.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 procedure TJvExCustomComboMaskEdit.MouseEnter(Control: TControl);
@@ -1358,7 +1368,7 @@ begin
     if FHintColor <> clNone then
       Application.HintColor := FHintColor;
   end;
-  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSEENTER, 0, Integer(Control));
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -1370,9 +1380,16 @@ begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
   end;
-  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSELEAVE, 0, Integer(Control));
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
+end;
+
+procedure TJvExCustomComboMaskEdit.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
 {$IFNDEF HASAUTOSIZE}
@@ -1384,39 +1401,42 @@ end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExCustomComboMaskEdit.CursorChanged;
-begin
-  InheritMsg(Self, CM_CURSORCHANGED);
+asm
+    MOV  EDX, CM_CURSORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.ShowHintChanged;
-begin
-  InheritMsg(Self, CM_SHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_SHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.ShowingChanged;
-begin
-  InheritMsg(Self, CM_SHOWINGCHANGED);
+asm
+    MOV  EDX, CM_SHOWINGCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExCustomComboMaskEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanging(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanging
 end;
 
 procedure TJvExCustomComboMaskEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanged(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExCustomComboMaskEdit.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
+asm
+    JMP   JvThemes.GetParentBackground
 end;
 
 procedure TJvExCustomComboMaskEdit.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
+asm
+    JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
@@ -1505,13 +1525,8 @@ begin
 end;
 
 function TJvExCustomComboMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VisualCLX}
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 {$IFDEF VCL}
@@ -1557,7 +1572,7 @@ begin
  // (ahuser) there is no caClear so we restrict it to caCut
   if caCut in ClipboardCommands then
     {$IFDEF VCL}
-    InheritMsg(Self, WM_CLEAR, 0, 0);
+    InheritMsg(Self, WM_CLEAR);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     inherited Clear;
@@ -1642,66 +1657,66 @@ end;
 
 {$IFDEF VCL}
 procedure TJvExComboMaskEdit.Dispatch(var Msg);
-begin
-  DispatchMsg(Self, Msg);
+asm
+    JMP   DispatchMsg
 end;
 
 procedure TJvExComboMaskEdit.VisibleChanged;
-begin
-  InheritMsg(Self, CM_VISIBLECHANGED);
+asm
+    MOV  EDX, CM_VISIBLECHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.EnabledChanged;
-begin
-  InheritMsg(Self, CM_ENABLEDCHANGED);
+asm
+    MOV  EDX, CM_ENABLEDCHANGED 
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.TextChanged;
-begin
-  InheritMsg(Self, CM_TEXTCHANGED);
+asm
+    MOV  EDX, CM_TEXTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.FontChanged;
-begin
-  InheritMsg(Self, CM_FONTCHANGED);
+asm
+    MOV  EDX, CM_FONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.ColorChanged;
-begin
-  InheritMsg(Self, CM_COLORCHANGED);
-end;
-
-procedure TJvExComboMaskEdit.ParentColorChanged;
-begin
-  InheritMsg(Self, CM_PARENTCOLORCHANGED);
-  if Assigned(FOnParentColorChanged) then
-    FOnParentColorChanged(Self);
+asm
+    MOV  EDX, CM_COLORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.ParentFontChanged;
-begin
-  InheritMsg(Self, CM_PARENTFONTCHANGED);
+asm
+    MOV  EDX, CM_PARENTFONTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.ParentShowHintChanged;
-begin
-  InheritMsg(Self, CM_PARENTSHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_PARENTSHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 function TJvExComboMaskEdit.WantKey(Key: Integer; Shift: TShiftState;
   const KeyText: WideString): Boolean;
 begin
-  Result := InheritMsg(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
+  Result := InheritMsgEx(Self, CM_DIALOGCHAR, Word(Key), ShiftStateToKeyData(Shift)) <> 0;
 end;
 
 function TJvExComboMaskEdit.HintShow(var HintInfo: THintInfo): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
+  Result := InheritMsgEx(Self, CM_HINTSHOW, 0, Integer(@HintInfo)) <> 0;
 end;
 
 function TJvExComboMaskEdit.HitTest(X, Y: Integer): Boolean;
 begin
-  Result := InheritMsg(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
+  Result := InheritMsgEx(Self, CM_HITTEST, 0, Integer(PointToSmallPoint(Point(X, Y)))) <> 0;
 end;
 
 procedure TJvExComboMaskEdit.MouseEnter(Control: TControl);
@@ -1713,7 +1728,7 @@ begin
     if FHintColor <> clNone then
       Application.HintColor := FHintColor;
   end;
-  InheritMsg(Self, CM_MOUSEENTER, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSEENTER, 0, Integer(Control));
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
 end;
@@ -1725,9 +1740,16 @@ begin
     FMouseOver := False;
     Application.HintColor := FSavedHintColor;
   end;
-  InheritMsg(Self, CM_MOUSELEAVE, 0, Integer(Control));
+  InheritMsgEx(Self, CM_MOUSELEAVE, 0, Integer(Control));
   if Assigned(FOnMouseLeave) then
     FOnMouseLeave(Self);
+end;
+
+procedure TJvExComboMaskEdit.ParentColorChanged;
+begin
+  InheritMsg(Self, CM_PARENTCOLORCHANGED);
+  if Assigned(FOnParentColorChanged) then
+    FOnParentColorChanged(Self);
 end;
 
 {$IFNDEF HASAUTOSIZE}
@@ -1739,39 +1761,42 @@ end;
  {$ENDIF !COMPILER6_UP}
 {$ENDIF !HASAUTOSIZE}
 procedure TJvExComboMaskEdit.CursorChanged;
-begin
-  InheritMsg(Self, CM_CURSORCHANGED);
+asm
+    MOV  EDX, CM_CURSORCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.ShowHintChanged;
-begin
-  InheritMsg(Self, CM_SHOWHINTCHANGED);
+asm
+    MOV  EDX, CM_SHOWHINTCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.ShowingChanged;
-begin
-  InheritMsg(Self, CM_SHOWINGCHANGED);
+asm
+    MOV  EDX, CM_SHOWINGCHANGED
+    JMP  InheritMsg
 end;
 
 procedure TJvExComboMaskEdit.ControlsListChanging(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanging(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanging
 end;
 
 procedure TJvExComboMaskEdit.ControlsListChanged(Control: TControl; Inserting: Boolean);
-begin
-  Control_ControlsListChanged(Self, Control, Inserting);
+asm
+    JMP   Control_ControlsListChanged
 end;
 
 {$IFDEF JVCLThemesEnabledD56}
 function TJvExComboMaskEdit.GetParentBackground: Boolean;
-begin
-  Result := JvThemes.GetParentBackground(Self);
+asm
+    JMP   JvThemes.GetParentBackground
 end;
 
 procedure TJvExComboMaskEdit.SetParentBackground(Value: Boolean);
-begin
-  JvThemes.SetParentBackground(Self, Value);
+asm
+    JMP   JvThemes.SetParentBackground
 end;
 {$ENDIF JVCLThemesEnabledD56}
 {$ENDIF VCL}
@@ -1860,13 +1885,8 @@ begin
 end;
 
 function TJvExComboMaskEdit.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
-begin
-  {$IFDEF VCL}
-  Result := InheritMsg(Self, WM_ERASEBKGND, Canvas.Handle, Param) <> 0;
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Result := False; // Qt allways paints the background
-  {$ENDIF VisualCLX}
+asm
+  JMP   JvExDoPaintBackground
 end;
 
 {$IFDEF VCL}
@@ -1912,7 +1932,7 @@ begin
  // (ahuser) there is no caClear so we restrict it to caCut
   if caCut in ClipboardCommands then
     {$IFDEF VCL}
-    InheritMsg(Self, WM_CLEAR, 0, 0);
+    InheritMsg(Self, WM_CLEAR);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
     inherited Clear;

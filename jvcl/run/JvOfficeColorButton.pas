@@ -15,7 +15,7 @@ Portions created by Peter Thörnqvist are Copyright (C) 2002 Peter Thörnqvist.
 All Rights Reserved.
 
 Contributor(s):
-dejoy(dejoy@ynl.gov.cn)
+  dejoy(dejoy@ynl.gov.cn)
 
 Last Modified: 2004-02-26
 

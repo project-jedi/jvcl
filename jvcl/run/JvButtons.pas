@@ -277,7 +277,7 @@ implementation
 
 uses
   Math,
-  JvHtControls, JvDsgnIntf, JvConsts, JvResources, JvTypes;
+  JvHtControls, JvDsgnIntf, JvConsts, JvResources, JvTypes, JvThemes;
 
 type
   TJvGlyphList = class(TImageList)
@@ -1121,9 +1121,9 @@ begin
     Inc(R.Top, 2);
     Dec(R.Bottom, 2);
     if FPress then
-      DrawFrameControl(DC, R, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_PUSHED)
+      DrawThemedFrameControl(WHook.Control, DC, R, DFC_BUTTON, DFCS_BUTTONPUSH or DFCS_PUSHED)
     else
-      DrawFrameControl(DC, R, DFC_BUTTON, DFCS_BUTTONPUSH);
+      DrawThemedFrameControl(WHook.Control, DC, R, DFC_BUTTON, DFCS_BUTTONPUSH);
 
     R := Rect(R.Left + 1, R.Top + 1, R.Right - 2, R.Bottom - 2);
     if FPress then
@@ -1605,36 +1605,49 @@ begin
   if State = bsDisabled then
     Flags := Flags or DFCS_INACTIVE;
 
-  { DrawFrameControl doesn't allow for drawing a button as the
-      default button, so it must be done here. }
-  if IsFocused or IsDefault then
+  {$IFDEF JVCLThemesEnabled}
+  if ThemeServices.ThemesEnabled then
   begin
-    FCanvas.Pen.Color := clWindowFrame;
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Style := bsClear;
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-
-    { DrawFrameControl must draw within this border }
-    InflateRect(R, -1, -1);
-  end;
-
-  { DrawFrameControl does not draw a pressed button correctly }
-  if IsDown then
-  begin
-    FCanvas.Pen.Color := clBtnShadow;
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Color := Color {clBtnFace};
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
-    InflateRect(R, -1, -1);
+    if IsFocused or IsDefault then
+      Flags := Flags or DFCS_MONO; // mis-used
+    if MouseOver then
+      Flags := Flags or DFCS_HOT;
+    DrawThemedFrameControl(Self, FCanvas.Handle, R, DFC_BUTTON, Flags);
   end
   else
+  {$ENDIF JVCLThemesEnabled}
   begin
-    DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
-    FCanvas.Pen.Style := psSolid;
-    FCanvas.Pen.Color := Color {clBtnShadow};
-    FCanvas.Pen.Width := 1;
-    FCanvas.Brush.Color := Color;
-    FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+    { DrawFrameControl doesn't allow for drawing a button as the
+        default button, so it must be done here. }
+    if IsFocused or IsDefault then
+    begin
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Style := bsClear;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+
+      { DrawFrameControl must draw within this border }
+      InflateRect(R, -1, -1);
+    end;
+
+    { DrawFrameControl does not draw a pressed button correctly }
+    if IsDown then
+    begin
+      FCanvas.Pen.Color := clBtnShadow;
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := Color {clBtnFace};
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+      InflateRect(R, -1, -1);
+    end
+    else
+    begin
+      DrawFrameControl(FCanvas.Handle, R, DFC_BUTTON, Flags);
+      FCanvas.Pen.Style := psSolid;
+      FCanvas.Pen.Color := Color {clBtnShadow};
+      FCanvas.Pen.Width := 1;
+      FCanvas.Brush.Color := Color;
+      FCanvas.Rectangle(R.Left, R.Top, R.Right, R.Bottom);
+    end;
   end;
 
   if IsFocused then
@@ -1650,14 +1663,17 @@ begin
   FGlyphDrawer.DrawExternal(Glyph, NumGlyphs, Color, True, FCanvas, R, Point(0, 0), Caption, Layout, Margin,
     Spacing, State, False {True});
 
-  if IsFocused and IsDefault then
-  begin
-    R := ClientRect;
-    InflateRect(R, -4, -4);
-    FCanvas.Pen.Color := clWindowFrame;
-    FCanvas.Brush.Color := Color;  {clBtnFace}
-    DrawFocusRect(FCanvas.Handle, R);
-  end;
+  {$IFDEF JVCLThemesEnabled}
+  if not ThemeServices.ThemesEnabled then
+  {$ENDIF JVCLThemesEnabled}
+    if IsFocused and IsDefault then
+    begin
+      R := ClientRect;
+      InflateRect(R, -4, -4);
+      FCanvas.Pen.Color := clWindowFrame;
+      FCanvas.Brush.Color := Color;  {clBtnFace}
+      DrawFocusRect(FCanvas.Handle, R);
+    end;
 end;
 
 //=== TJvNoFrameButton =======================================================
