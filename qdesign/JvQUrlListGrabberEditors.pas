@@ -35,7 +35,7 @@ unit JvQUrlListGrabberEditors;
 interface
 
 uses
-  QWindows, 
+  Types, QWindows, 
   DesignIntf, DesignEditors, DesignMenus, CLXEditors, 
   Classes;
 
@@ -69,7 +69,7 @@ uses
 const
   None: string = '(none)';
 
-//=== TJvUrlGrabberDefaultPropertiesListEditor ===============================
+//=== { TJvUrlGrabberDefaultPropertiesListEditor } ===========================
 
 function TJvUrlGrabberDefaultPropertiesListEditor.GetAttributes: TPropertyAttributes;
 begin
@@ -95,7 +95,7 @@ begin
 end;
 
 
-//=== TJvUrlGrabberDefaultPropertiesEditor ===================================
+//=== { TJvUrlGrabberDefaultPropertiesEditor } ===============================
 
 function TJvUrlGrabberDefaultPropertiesEditor.GetName: string;
 var

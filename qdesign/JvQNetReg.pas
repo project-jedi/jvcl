@@ -44,8 +44,8 @@ procedure Register;
 implementation
 
 uses
-  Classes, 
-  DesignEditors, DesignIntf,  
+  Classes,
+  DesignEditors, DesignIntf,
   {$IFDEF USEWINDOWS}
   JvQUrlListGrabber, JvQUrlGrabbers, JvQUrlListGrabberEditors,
   {$ENDIF USEWINDOWS}
@@ -62,17 +62,13 @@ uses
 
 procedure Register;
 begin
-  RegisterComponents(RsPaletteInterNetWork, [
-    {$IFDEF USEWINDOWS}
+  RegisterComponents(RsPaletteInterNetWork, [TJvHTMLParser,
+    {$IFDEF MSWINDOWS}
     TJvFTPURLGrabber, TJvHTTPURLGrabber,
-    TJvLocalFileURLGrabber,
-    {$ENDIF USEWINDOWS} 
-    TJvHTMLParser, 
-    {$IFDEF USEWINDOWS}
-    TJvUrlListGrabber,
-    {$ENDIF USEWINDOWS}
+    TJvLocalFileURLGrabber, TJvUrlListGrabber,
+    {$ENDIF MSWINDOWS} 
     TJvStrToHTML, TJvStringListToHTML, TJvFormToHTML, TJvRGBToHTML]);
-  {$IFDEF USEWINDOWS}
+  {$IFDEF MSWINDOWS}
   RegisterPropertyEditor(TypeInfo(TStrings),
     TJvHTMLParser, 'Parser', TJvHTMLParserEditor);
   RegisterPropertyEditor(TypeInfo(TJvUrlGrabberIndex),
@@ -81,7 +77,7 @@ begin
     TJvUrlListGrabber, '', TJvUrlGrabberDefaultPropertiesListEditor);
   RegisterPropertyEditor(TypeInfo(TJvCustomUrlGrabberDefaultProperties),
     TJvUrlGrabberDefPropEdTrick, '', TJvUrlGrabberDefaultPropertiesEditor); 
-  {$ENDIF USEWINDOWS}
+  {$ENDIF MSWINDOWS}
 end;
 
 end.

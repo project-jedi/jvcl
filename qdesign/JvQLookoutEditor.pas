@@ -40,7 +40,7 @@ uses
   Classes, SysUtils,  
   QForms, QImgList,  
   DesignIntf, DesignEditors, 
-  JvQTypes, JvQLookOut, JvQStdDsgnEditors, JvQDsgnTypes;
+  JvQTypes, JvQLookOut, JvQDsgnEditors, JvQDsgnTypes;
 
 type
   TJvLookOutPageEditor = class(TComponentEditor)

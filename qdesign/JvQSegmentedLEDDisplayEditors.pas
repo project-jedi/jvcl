@@ -35,10 +35,10 @@ unit JvQSegmentedLEDDisplayEditors;
 interface
 
 uses
-  Classes, Types, QGraphics, QMenus, QWindows, 
+  Classes, QGraphics, QMenus, Types, QWindows, 
   DesignEditors, DesignIntf, DesignMenus, CLXEditors,   
   JvQDsgnEditors, 
-  JvQSegmentedLEDDisplay;
+  JvQColorEditor, JvQSegmentedLEDDisplay;
 
 type
   TJvTClassProperty = class(TStringProperty)
@@ -65,30 +65,30 @@ type
     procedure PrepareItem(Index: Integer; const AItem: IMenuItem); override; 
   end;
 
-  TUnlitColorProperty = class(TColorProperty )//, ICustomPropertyDrawing, ICustomPropertyListDrawing )
-//    procedure ICustomPropertyListDrawing.ListDrawValue = ListDrawValue;
-//    procedure ICustomPropertyDrawing.PropDrawValue = PropDrawValue;
+
+
+
+  TUnlitColorProperty = class(TJvColorProperty)
   public
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
-//    procedure ListDrawValue(const Value: string; ACanvas: TCanvas;
-//      const ARect: TRect; ASelected: Boolean);
-//    procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
   end;
+
+
 
 implementation
 
 uses
   SysUtils,
   JclRTTI,
-  JvQSegmentedLEDDisplayMappingForm, JvQDsgnConsts, JvQColorEditor;
+  JvQSegmentedLEDDisplayMappingForm, JvQDsgnConsts;
 
 const
   cDefaultBackground = 'clDefaultBackground';
   cDefaultLitColor = 'clDefaultLitColor';
 
-//=== TJvTClassProperty ======================================================
+//=== { TJvTClassProperty } ==================================================
 
 function TJvTClassProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -102,7 +102,7 @@ begin
     SetLength(Result, Length(Result) - 4);
 end;
 
-//=== TJvSegmentedLEDDigitClassProperty ======================================
+//=== { TJvSegmentedLEDDigitClassProperty } ==================================
 
 procedure TJvSegmentedLEDDigitClassProperty.GetValues(Proc: TGetStrProc);
 var
@@ -117,7 +117,7 @@ begin
   end;
 end;
 
-//=== TJvSegmentedLEDDisplayEditor ===========================================
+//=== { TJvSegmentedLEDDisplayEditor } =======================================
 
 type
   TOpenDisplay = class(TJvCustomSegmentedLEDDisplay);
@@ -185,7 +185,7 @@ begin
     AItem.Enabled := False;
 end;
 
-//=== TUnlitColorProperty ====================================================
+//=== { TUnlitColorProperty } ================================================
 
 function TUnlitColorProperty.GetValue: string;
 begin
@@ -215,43 +215,7 @@ begin
   else
     inherited SetValue(Value);
 end;
-(*
-procedure TUnlitColorProperty.ListDrawValue(const Value: string; ACanvas: TCanvas;
-  const ARect: TRect; ASelected: Boolean);
-var
-  vRight: Integer;
-  vOldPenColor, vOldBrushColor, TmpColor: TColor;
-  TmpRect: TRect;
-begin
-  vRight := (ARect.Bottom - ARect.Top) + ARect.Left;
-  with ACanvas do
-  try
-    vOldPenColor := Pen.Color;
-    vOldBrushColor := Brush.Color;
-    Pen.Color := Brush.Color;
-    Rectangle(ARect.Left, ARect.Top, vRight, ARect.Bottom);
-    IdentToUnlitColor(Value, Integer(TmpColor));
-    Brush.Color := TMpColor;
-    Pen.Color := JvColorToBorderColor(ColorToRGB(Brush.Color), ASelected);
-    Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, ARect.Bottom - 1);
-    Brush.Color := vOldBrushColor;
-    Pen.Color := vOldPenColor;
-  finally
-    TmpRect := ARect;
-    TmpRect.Left := vRight;
-    ACanvas.TextRect(TmpRect, TmpRect.Left + 1, TmpRect.Top + 1, Value);
-  end;
-end;
 
 
-procedure TUnlitColorProperty.PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-  ASelected: Boolean);
-begin
-  if GetVisualValue <> '' then
-    ListDrawValue(GetVisualValue, ACanvas, ARect, True {ASelected})
-  else
-    DefaultPropertyDrawValue(Self, ACanvas, ARect);
-end;
-*)
 
 end.

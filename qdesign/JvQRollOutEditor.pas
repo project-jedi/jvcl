@@ -36,7 +36,7 @@ interface
 uses 
   DesignIntf, DesignEditors,      
   QImgList, 
-  JvQStdDsgnEditors,
+  JvQDsgnEditors,
   JvQRollOut;
 
 type
