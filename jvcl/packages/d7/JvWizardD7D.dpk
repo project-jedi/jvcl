@@ -34,6 +34,8 @@ package JvWizardD7D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   JvWizardD7R,
   rtl,

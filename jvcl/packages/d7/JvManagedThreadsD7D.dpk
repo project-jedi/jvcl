@@ -34,6 +34,8 @@ package JvManagedThreadsD7D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   JvManagedThreadsD7R,
   vcl

@@ -34,6 +34,8 @@ package JvGlobusD7R;
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   vcldb,
   qrpt,

@@ -34,6 +34,8 @@ package JvGlobusD7D;
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
 
+{$I JVCL.INC}
+
 requires
   JvGlobusD7R,
   rtl,
