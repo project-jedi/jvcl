@@ -169,7 +169,7 @@ begin
 end;
 
 type
-  TOpenWidgetControl = class(TWidgetControl);
+  TWidgetControlAccessProtected = class(TWidgetControl);
 
 function TJvColorForm.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
@@ -180,7 +180,7 @@ begin
       FormDeactivate(Self);
     QEventType_Hide:
       if FOwner is TJvColorButton then
-        TOpenWidgetControl(FOwner).MouseUp(mbLeft, [ssLeft], 0, 0);
+        TWidgetControlAccessProtected(FOwner).MouseUp(mbLeft, [ssLeft], 0, 0);
     QEventType_Close:
       begin
         QCloseEvent_ignore(QCloseEventH(Event)); // do not close

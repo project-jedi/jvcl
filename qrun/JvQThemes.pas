@@ -33,12 +33,10 @@ Known Issues:
 unit JvQThemes;
 
 interface
-uses
-  SysUtils, Classes,
- 
- 
-  QControls, QForms, QGraphics, QButtons, Types, QWindows, 
 
+uses
+  SysUtils, Classes,  
+  QControls, QForms, QGraphics, QButtons, Types, QWindows, 
   JvQFinalize;
 
 const
@@ -46,7 +44,7 @@ const
  // should not be themed.
   CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
 
-type  
+type   
   TCMDenySubClassing = record
     Msg: Integer;
     Result: Integer;
@@ -118,15 +116,15 @@ end;
 procedure DrawThemedBackground(Control: TControl; Canvas: TCanvas;
   const R: TRect; Color: TColor; NeedsParentBackground: Boolean = True);
 var
-  cl: TColor;
+  Cl: TColor;
 begin 
   begin
-    cl := Canvas.Brush.Color;
-    if cl <> Color then
+    Cl := Canvas.Brush.Color;
+    if Cl <> Color then
       Canvas.Brush.Color := Color;
     Canvas.FillRect(R);
-    if cl <> Canvas.Brush.Color then
-      Canvas.Brush.Color := cl;
+    if Cl <> Canvas.Brush.Color then
+      Canvas.Brush.Color := Cl;
   end;
 end;
 
@@ -148,9 +146,9 @@ end;
 
 
 
-function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas; const Client: TRect;
-  BevelWidth: Integer; Style: TButtonStyle; IsRounded, IsDown,
-  IsFocused, IsHot: Boolean): TRect;
+function DrawThemedButtonFace(Control: TControl; Canvas: TCanvas;
+  const Client: TRect; BevelWidth: Integer; Style: TButtonStyle;
+  IsRounded, IsDown, IsFocused, IsHot: Boolean): TRect;
 
 begin   
   Result := DrawButtonFace(Canvas, Client, BevelWidth, IsDown, IsFocused); 
@@ -179,6 +177,9 @@ end;
 function GetThemeStyle(Control: TControl): TThemeStyle;
 begin
 end;
+
+
+
 
 
 

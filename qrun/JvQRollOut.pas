@@ -934,9 +934,9 @@ begin
     WS := Caption;
     SetPenColor(Canvas.Handle, Font.Color);
     if Placement = plLeft then
-      DrawText(Canvas.Handle, WS, -1, FButtonHeight , BevelWidth + 2, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 270)
+      DrawText(Canvas.Handle, WS, -1, R, 0, 270)
     else
-      DrawText(Canvas.Handle, WS, -1, BevelWidth + 2, 0, Canvas.TextWidth(WS), FButtonHeight, DT_VCENTER, 0) 
+      DrawText(Canvas.Handle, WS, -1, R, 0, 0);
   end;
   if ShowFocus and Focused then
   begin

@@ -310,7 +310,7 @@ type
 
     function EncryptPropertyValue(Value: string): string;
     function DecryptPropertyValue(Value: string): string;
-    
+
     property SubStorages: TJvAppSubStorages read FSubStorages write SetSubStorages;
     procedure Loaded; override;
   public
@@ -319,7 +319,7 @@ type
     // (p3) moved Flush, Reload and AutoFlush to the base storage because users
     // should be able to call Flush and Reload as needed without being dependant on whether
     // the spcific storage implements it or not. Also made them virtual - if Flush and Reload
-    // doesn't make sense for a specific storage, it shouldn't have to implement them 
+    // doesn't make sense for a specific storage, it shouldn't have to implement them
     procedure Flush; virtual;
     procedure Reload; virtual;
     procedure BeginUpdate;
@@ -1509,7 +1509,7 @@ var
   TgtPath: string;
 begin
   SL.BeginUpdate;
-  try                                
+  try
     ResolvePath(Path + '\*', TgtStore, TgtPath);
     Delete(TgtPath, Length(TgtPath) - 1, 2);
     if ClearFirst then

@@ -804,9 +804,9 @@ const
 {$ENDIF LINUX}
 
 type
-  TCustomEditHack = class(TCustomEdit);
-  TCustomFormHack = class(TCustomForm);    
-  TWinControlHack = class(TWinControl);
+  TCustomEditAccessProtected = class(TCustomEdit);
+  TCustomFormAccessProtected = class(TCustomForm);    
+  TWinControlAccessProtected = class(TWinControl);
 
 const
   sDirBmp = 'JV_SEDITBMP';  { Directory editor button glyph }
@@ -952,9 +952,9 @@ end;
 function EditorTextMargins(Editor: TCustomEdit): TPoint;
 var
   I: Integer;
-  ed: TCustomEditHack;
+  ed: TCustomEditAccessProtected;
 begin
-  ed := TCustomEditHack(Editor);
+  ed := TCustomEditAccessProtected(Editor);
   if ed.BorderStyle = bsNone then
     I := 0
   else
@@ -1043,7 +1043,7 @@ var
   LTextWidth, X: Integer;
   EditRect: TRect;
   S: WideString;
-  ed: TCustomEditHack;
+  ed: TCustomEditAccessProtected;
   SavedFont: TFontRecall;
   SavedBrush: TBrushRecall;
   Offset: Integer;
@@ -1053,7 +1053,7 @@ begin
   Result := True;
   if csDestroying in Editor.ComponentState then
     Exit;
-  ed := TCustomEditHack(Editor);
+  ed := TCustomEditAccessProtected(Editor);
   if StandardPaint and not (csPaintCopy in ed.ControlState) then
   begin
     Result := False;
@@ -1571,13 +1571,13 @@ begin
       VK_RETURN:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TWinControlHack(Form).KeyDown(Key, Shift);
+          TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
       VK_TAB:
         if (Form <> nil) {and Form.KeyPreview} then
         begin
-          TWinControlHack(Form).KeyDown(Key, Shift);
+          TWinControlAccessProtected(Form).KeyDown(Key, Shift);
           Key := 0;
         end;
     end;
@@ -1609,7 +1609,7 @@ begin
     else
     begin
       { must catch and remove this, since is actually multi-line }  
-      TCustomFormHack(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key)); 
+      TCustomFormAccessProtected(GetParentForm(Self)).NeedKey(Integer(Key), [], WideChar(Key)); 
       if Key = Cr then
       begin
         inherited KeyPress(Key);
@@ -1623,7 +1623,7 @@ begin
   begin
     Key := #0;
     if (Form <> nil) {and Form.KeyPreview} then
-      TWinControlHack(Form).KeyPress(Key);
+      TWinControlAccessProtected(Form).KeyPress(Key);
   end;
   //Polaris
   inherited KeyPress(Key);

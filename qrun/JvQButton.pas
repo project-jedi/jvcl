@@ -70,8 +70,8 @@ type
     procedure SetHotFont(const Value: TFont);
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
-    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: integer);
-    procedure ForceSize(Sender: TControl; AWidth, AHeight: integer);
+    procedure ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: Integer);
+    procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
     function DoDropDownMenu(Button: TMouseButton; Shift: TShiftState; X, Y: Integer): Boolean; virtual;
     procedure UpdateExclusive;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -130,7 +130,7 @@ type
     procedure CMForceSize(var Msg: TCMForceSize); message CM_FORCESIZE;
     procedure SetHotTrackFontOptions(const Value: TJvTrackFontOptions);
   protected
-    procedure ForceSize(Sender: TControl; AWidth, AHeight: integer);
+    procedure ForceSize(Sender: TControl; AWidth, AHeight: Integer);
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
     procedure FontChanged; override; 
@@ -523,13 +523,13 @@ end;
 
 procedure TJvCustomGraphicButton.TextChanged;
 begin
-  inherited;
+  inherited TextChanged;
   RepaintBackground;
 end;
 
 procedure TJvCustomGraphicButton.Click;
 begin
-  inherited;
+  inherited Click;
   if GroupIndex <> 0 then
   begin
     if AllowAllUp then
@@ -539,10 +539,10 @@ begin
   end;
 end;
 
-procedure TJvCustomGraphicButton.ButtonPressed(Sender: TJvCustomGraphicButton; AGroupIndex: integer);
+procedure TJvCustomGraphicButton.ButtonPressed(Sender: TJvCustomGraphicButton;
+  AGroupIndex: Integer);
 begin
   if AGroupIndex = GroupIndex then
-  begin
     if Sender <> Self then
     begin
       if Sender.Down and Down then
@@ -553,10 +553,9 @@ begin
       end;
       FAllowAllUp := Sender.AllowAllUp;
     end;
-  end;
 end;
 
-procedure TJvCustomGraphicButton.ForceSize(Sender: TControl; AWidth, AHeight: integer);
+procedure TJvCustomGraphicButton.ForceSize(Sender: TControl; AWidth, AHeight: Integer);
 begin
   if Sender <> Self then
     inherited SetBounds(Left, Top, AWidth, AHeight);
@@ -727,7 +726,7 @@ begin
   Repaint;
 end;
 
-procedure TJvCustomButton.ForceSize(Sender: TControl; AWidth, AHeight: integer);
+procedure TJvCustomButton.ForceSize(Sender: TControl; AWidth, AHeight: Integer);
 begin
   if Sender <> Self then
     inherited SetBounds(Left, Top, AWidth, AHeight);
@@ -746,11 +745,11 @@ procedure TJvDropDownButton.Paint;
 var
   PaintRect: TRect;
   DrawFlags: Integer;
-  dc: HDC;
+  DC: HDC;
   Bmp: TBitmap;
 begin
   // adjust FState and FDragging
-  dc := Canvas.Handle;
+  DC := Canvas.Handle;
   Bmp := TBitmap.Create;
   try
     Bmp.Width := 1;
@@ -759,7 +758,7 @@ begin
     try
       inherited Paint;
     finally
-      Canvas.Handle := dc;
+      Canvas.Handle := DC;
     end;
   finally
     Bmp.Free;

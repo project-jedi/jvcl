@@ -204,6 +204,11 @@ uses
 const
   BkModeTransparent = TRANSPARENT;
 
+function IsThemed: Boolean;
+begin 
+  Result := False; 
+end;
+
 //=== TJvArrangeSettings =====================================================
 
 constructor TJvArrangeSettings.Create(APanel: TJvPanel);
@@ -341,7 +346,7 @@ begin
     Exit;
   end;
   Canvas.Brush.Color := Color;
-  if not Transparent then
+  if not Transparent or IsThemed then
     DrawThemedBackground(Self, Canvas, ClientRect)
   else
     Canvas.Brush.Style := bsClear;
@@ -366,7 +371,7 @@ begin
         Brush.Style := bsClear;
         X := ClientWidth - GetSystemMetrics(SM_CXVSCROLL) - BevelWidth - 2;
         Y := ClientHeight - GetSystemMetrics(SM_CYHSCROLL) - BevelWidth - 2;
-        if Transparent then
+        if Transparent and not IsThemed then
           SetBkMode(Handle, BkModeTransparent);
         TextOut(X, Y, 'o');
       end;
@@ -375,7 +380,7 @@ end;
 procedure TJvPanel.AdjustSize;
 begin
   inherited AdjustSize;
-  if Transparent then
+  if Transparent and not IsThemed then
   begin
    // (ahuser) That is the only way to draw the border of the contained controls.
     Width := Width + 1;
@@ -452,7 +457,7 @@ begin
       if not Enabled then
         Font.Color := clGrayText;
       //draw text
-      if Transparent then
+      if Transparent and not IsThemed then
         SetBkMode(Canvas.Handle, BkModeTransparent);  
       DrawText(Canvas, Caption, -1, ATextRect, Flags); 
     end;
@@ -469,37 +474,42 @@ procedure TJvPanel.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
     Exit;
-  if not MouseOver then
+  if not MouseOver and (Control = nil) then
   begin
     FOldColor := Color;
-    if not Transparent then
+    if not Transparent or IsThemed then
     begin
       Color := HotColor;
       MouseTimer.Attach(Self);
     end;
-    inherited MouseEnter(Control);
   end;
+  inherited MouseEnter(Control);
 end;
 
 procedure TJvPanel.MouseLeave(Control: TControl);
 begin
-  if MouseOver then
+  if csDesigning in ComponentState then
+    Exit;
+  if MouseOver and (Control = nil) then
   begin
-    if not Transparent then
+    if not Transparent or IsThemed then
     begin
       Color := FOldColor;
       MouseTimer.Detach(Self);
     end;
-    inherited MouseLeave(Control);
   end;
+  inherited MouseLeave(Control);
 end;
 
 procedure TJvPanel.SetTransparent(const Value: Boolean);
 begin
   if Value <> FTransparent then
   begin
-    FTransparent := Value;  
-    Masked := FTransparent; 
+    FTransparent := Value;
+    if not IsThemed then
+    begin  
+      Masked := FTransparent; 
+    end;
   end;
 end;
 
@@ -523,7 +533,7 @@ end;
 
 function TJvPanel.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;
 begin
-  if Transparent then
+  if Transparent and not IsThemed then
     Result := True
   else
     Result := inherited DoPaintBackground(Canvas, Param);
@@ -557,7 +567,7 @@ begin
   if FHotColor <> Value then
   begin
     FHotColor := Value;
-    if not Transparent then
+    if not Transparent or IsThemed then
       Invalidate;
   end;
 end;
@@ -597,7 +607,7 @@ begin
     Y1 := R.Bottom - R.Top + Y - FLastPos.Y;
     if (X1 > 1) and (Y1 > 1) then
     begin
-      if (X1 >= 0) then
+      if X1 >= 0 then
         FLastPos.X := X;
       if Y1 >= 0 then
         FLastPos.Y := Y;
@@ -632,7 +642,7 @@ end;
 procedure TJvPanel.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
 begin
   inherited SetBounds(ALeft, ATop, AWidth, AHeight);
-  if Transparent then
+  if Transparent and not IsThemed then
     Invalidate;
 end;
 
@@ -717,7 +727,7 @@ begin
           TJvPanel(Controls[I]).ArrangeSettings.Rearrange;
         if Controls[I].Width + 2 * FArrangeSettings.BorderLeft > Width then
           Width := Controls[I].Width + 2 * FArrangeSettings.BorderLeft;
-      end;    {*** if Controls[I] is TWinControl then ***}
+      end;
 
     while CurrControlCount < ControlCount do
     begin
@@ -744,7 +754,7 @@ begin
                 MaxY := -1;
                 NewX := AktX;
                 NewY := AktY;
-              end;   {*** if ... ***}
+              end;
               AktX := AktX + CurrControl.Width;
               if AktX > ControlMaxX then
                 ControlMaxX := AktX;

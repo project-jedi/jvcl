@@ -391,7 +391,7 @@ end;
 
 
 type
-  TOpenWidgetControl = class(TWidgetControl);
+  TWidgetControlAccessProtected = class(TWidgetControl);
 
 
 procedure TJvInplaceEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -409,7 +409,7 @@ begin
       begin
         StopTracking;
         MousePos := PointToSmallPoint(ListPos);  
-        TOpenWidgetControl(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y); 
+        TWidgetControlAccessProtected(FActiveList).MouseDown(mbLeft, Shift, MousePos.X , MousePos.Y); 
         Exit;
       end;
     end;

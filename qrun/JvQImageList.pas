@@ -758,7 +758,7 @@ begin
 end;
 
 type
-  TOpenComponent = class(TComponent);
+  TComponentAccessProtected = class(TComponent);
   TDefineProperties = procedure(Self: TComponent; Filer: TFiler);
 
 procedure TJvImageList.DefineProperties(Filer: TFiler);
@@ -772,7 +772,7 @@ begin
       (((FMode = imPicture) and (FPicture.Graphic <> nil) and (not FPicture.Graphic.Empty)) or
       ((FMode = imResourceIds) and (FResourceIds.Count > 0)) or
       ((FMode = imItemList) and (FItems.Count > 0))) then
-      TDefineProperties(@TOpenComponent.DefineProperties)(Self, Filer)
+      TDefineProperties(@TComponentAccessProtected.DefineProperties)(Self, Filer)
     else
       inherited DefineProperties(Filer);
   finally

@@ -182,11 +182,11 @@ begin
 
   // clicked.
   JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_CkFrom_WXP,
-    dxColor_Btn_Enb_CkTo_WXP, 16, gsTop, True, FCkGradient);
+    dxColor_Btn_Enb_CkTo_WXP, 16, gsTop, true, FCkGradient);
 
   // highlight.
   JvXPCreateGradientRect(FCheckSize - 2, FCheckSize - 2, dxColor_Btn_Enb_HlFrom_WXP,
-    dxColor_Btn_Enb_HlTo_WXP, 16, gsTop, True, FHlGradient);
+    dxColor_Btn_Enb_HlTo_WXP, 16, gsTop, true, FHlGradient);
 
   LockedInvalidate;
 end;

@@ -42,7 +42,7 @@ uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
   {$ENDIF MSWINDOWS}
-  Ras32, // Messages must be after QControls
+  QRas32, // Messages must be after QControls
   JvQComponent, JvQTypes;
 
 type

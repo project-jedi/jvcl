@@ -340,8 +340,10 @@ interface
 
 uses
   SysUtils, Classes,
-  QWindows, QMessages, QControls, QForms, Types, QGraphics, QButtons, QImgList,  
-  JvQComponent, 
+  QWindows, QMessages, QControls, QForms, Types, QGraphics, QButtons, QImgList, 
+  {$IFDEF USEJVCL}
+  JvQComponent, JvQThemes,
+  {$ENDIF USEJVCL}
   JvQWizardCommon;
 
 type
@@ -756,8 +758,12 @@ type
     property Items[Index: Integer]: TJvWizardCustomPage read GetItems; default;
   end;
 
-  { YW - JvWizard Control } 
-  TJvWizard = class(TJvCustomControl) 
+  { YW - JvWizard Control }
+  {$IFDEF USEJVCL}
+  TJvWizard = class(TJvCustomControl)
+  {$ELSE}
+  TJvWizard = class(TCustomControl)
+  {$ENDIF USEJVCL}
   private
     FPages: TJvWizardPageList;
     FActivePage: TJvWizardCustomPage;
@@ -773,7 +779,10 @@ type
     FOnActivePageChanging: TJvWizardChangingPageEvent;
     FHeaderImages: TCustomImageList;
     FImageChangeLink: TChangeLink;
-    FAutoHideButtonBar: Boolean; 
+    FAutoHideButtonBar: Boolean;
+    {$IFNDEF USEJVCL}
+    FAboutInfo: TJvWizardAboutInfoForm; // Add by Steve Forbes
+    {$ENDIF !USEJVCL}
     procedure SetShowDivider(Value: Boolean);
     function GetShowRouteMap: Boolean;
     procedure SetShowRouteMap(Value: Boolean);
@@ -826,7 +835,11 @@ type
     property PageCount: Integer read GetPageCount;
     property WizardPages[Index: Integer]: TJvWizardCustomPage read GetWizardPages;
   published
-    property Pages: TJvWizardPageList read FPages; 
+    property Pages: TJvWizardPageList read FPages;
+    {$IFNDEF USEJVCL}
+    // Add by Steve Forbes
+    property About: TJvWizardAboutInfoForm read FAboutInfo write FAboutInfo stored False;
+    {$ENDIF !USEJVCL}
     property ActivePage: TJvWizardCustomPage read FActivePage write SetActivePage;
     property AutoHideButtonBar: Boolean read FAutoHideButtonBar write SetAutoHideButtonBar default True;
     property ButtonBarHeight: Integer read FButtonBarHeight write SetButtonBarHeight;
@@ -865,8 +878,10 @@ type
 
 implementation
 
-uses 
-  JvQResources, 
+uses
+  {$IFDEF USEJVCL}
+  JvQResources,
+  {$ENDIF USEJVCL}
   QConsts;
 
 const
@@ -875,7 +890,21 @@ const
   ciButtonBarHeight = 42;
   ciButtonPlacement = (ciButtonBarHeight - ciButtonHeight) div 2;
 
+{$IFNDEF USEJVCL}
+resourcestring
+  RsBackButtonCaption = '< &Back';
+  RsNextButtonCaption = '&Next >';
 
+  RsFirstButtonCaption = 'To &Start Page';
+  RsLastButtonCaption = 'To &Last Page';
+  RsFinishButtonCaption = '&Finish';
+  RsWelcome = 'Welcome';
+  RsTitle = 'Title';
+  RsSubtitle = 'Subtitle';
+
+  RsEInvalidParentControl = 'The Parent should be TJvWizard or a descendant';
+  RsEInvalidWizardPage = 'The pages belong to another wizard';
+{$ENDIF USEJVCL}
 
 type
   // (ahuser) introduced for refactoring the WizardButtons

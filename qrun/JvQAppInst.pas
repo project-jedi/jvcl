@@ -117,8 +117,8 @@ const
   AI_GETACTIVE = $0004;
   AI_SETACTIVE = $0005;
 
+
 type
-  TOpenJclAppInstances = class(TJclAppInstances); 
   TPrivateComponent = class(TPersistent, IInterface, IInterfaceComponentReference)
   protected
     FOwner: TComponent;
@@ -130,7 +130,8 @@ type
     function _Release: Integer; virtual; stdcall; abstract;
     function GetComponent: TComponent; virtual; abstract;
     function QueryInterface(const IID: TGUID; out Obj): HRESULT; virtual; stdcall; abstract;
-  end; 
+  end;
+
 
 var
   FirstJvAppInstance: Boolean = True;

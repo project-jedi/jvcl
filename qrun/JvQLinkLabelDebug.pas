@@ -51,9 +51,10 @@ type
       const Tree: TTreeNodes);
   end;
 
-  TJvLinkLabelAccess = class(TJvLinkLabel);
-
 implementation
+
+type
+  TJvLinkLabelAccessProtected = class(TJvLinkLabel);
 
 class procedure TDebugLinkLabelTools.NodeTreeToTreeNodes(const LinkLabel: TJvLinkLabel;
   const Tree: TTreeNodes);
@@ -99,10 +100,10 @@ class procedure TDebugLinkLabelTools.NodeTreeToTreeNodes(const LinkLabel: TJvLin
   end;
 
 begin
-  if Assigned(TJvLinkLabelAccess(LinkLabel).FNodeTree) and Assigned(Tree) then
+  if Assigned(TJvLinkLabelAccessProtected(LinkLabel).FNodeTree) and Assigned(Tree) then
   begin
     Tree.Clear;
-    Recurse(nil, TJvLinkLabelAccess(LinkLabel).FNodeTree.Root);
+    Recurse(nil, TJvLinkLabelAccessProtected(LinkLabel).FNodeTree.Root);
   end;
 end;
 

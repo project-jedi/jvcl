@@ -802,7 +802,10 @@ function TJvComputerNameDialog.Execute: Boolean;
 var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char; 
+  NameBuffer: array[0..MAX_PATH] of Char;
+  {$IFDEF MSWINDOWS}
+  WindowList: Pointer;
+  {$ENDIF MSWINDOWS}
 begin
   Result := False;
 
@@ -815,10 +818,16 @@ begin
   BrowseInfo.pidlRoot := ItemIDList;
   BrowseInfo.pszDisplayName := NameBuffer;
   BrowseInfo.lpszTitle := PChar(FCaption);
-  BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER; 
+  BrowseInfo.ulFlags := BIF_BROWSEFORCOMPUTER;
+  {$IFDEF MSWINDOWS}
+  WindowList := DisableTaskWindows(0);
+  {$ENDIF MSWINDOWS}
   try
     Result := SHBrowseForFolder(BrowseInfo) <> nil;
-  finally 
+  finally
+    {$IFDEF MSWINDOWS}
+    EnableTaskWindows(WindowList);
+    {$ENDIF MSWINDOWS}
     FreePidl(BrowseInfo.pidlRoot);
   end;
   if Result then
@@ -838,7 +847,10 @@ var
   BrowseInfo: TBrowseInfo;
   ItemIDList: PItemIDList;
   ItemSelected: PItemIDList;
-  NameBuffer: array[0..MAX_PATH] of Char; 
+  NameBuffer: array[0..MAX_PATH] of Char;
+  {$IFDEF MSWINDOWS}
+  WindowList: Pointer;
+  {$ENDIF MSWINDOWS}
 begin
   ItemIDList := nil;
   FillChar(BrowseInfo, SizeOf(BrowseInfo), 0);

@@ -52,7 +52,7 @@ uses
   Qt, QControls, QGraphics, 
   Windows, Messages, ShlObj,
   JclWin32, JclSysInfo,
-  JvQJCLUtils, JvQDataProvider, JvQTypes, JvQComponent;
+  JvQJCLUtils, JvQJVCLUtils, JvQDataProvider, JvQComponent, JvQTypes;
 
 {$HPPEMIT '#include <dbt.h>'}
 // these are defined here to avoid including DBT.pas
@@ -140,6 +140,8 @@ const
  
 
 type
+  EJVCLComputerInfoEx = class(EJVCLException);
+
   {$EXTERNALSYM PDevBroadcastHdr}
   PDevBroadcastHdr = ^TDevBroadcastHdr;
   {$EXTERNALSYM DEV_BROADCAST_HDR}
@@ -222,7 +224,10 @@ type
     procedure SetWinVersionCSDString(const Value: string);
     function GetWinServicePackVersion: DWORD;
     procedure SetWinServicePackVersion(const Value: DWORD);
+    function GetOSVersion: TWindowsVersion;
+    procedure SetOSVersion(const Value: TWindowsVersion);
   published
+    property OSVersion: TWindowsVersion read GetOSVersion write SetOSVersion stored False;
     property ProductType: TNtProductType read GetProductType write SetProductType stored False;
     property ProductID: string read GetWinProductID write SetWinProductID stored False;
     property ProductName: string read GetWinProductName write SetWinProductName stored False;
@@ -323,6 +328,7 @@ type
   TJvSystemFolders = class(TJvWriteableInfo)
     // writeable: Current
   private
+    FTrailingPathDelimiter: Boolean;
     function GetCurrent: string;
     function Get(const Index: Integer): string;
     function GetProgramFiles: string;
@@ -337,7 +343,9 @@ type
     procedure SetSystem(const Value: string);
     procedure SetTemp(const Value: string);
     function GetCommonFiles: string;
+    function AdjustPathDelimiter(const S:String):String;
   published
+    property TrailingPathDelimiter:Boolean read FTrailingPathDelimiter write FTrailingPathDelimiter default False;
     property CommonFiles: string read GetCommonFiles write SetCommonFiles stored False;
     property Current: string read GetCurrent write SetCurrent stored False;
     property ProgramFiles: string read GetProgramFiles write SetProgramFiles stored False;
@@ -428,7 +436,7 @@ type
   end;
 
   TJvIdentification = class(TJvWriteableInfo)
-    // writeable: ComputerName (reboot needed), RegisteredCompany, RegisteredOwner
+    // writeable: ComputerName (reboot needed), RegisteredCompany, RegisteredOwner, Comment (Win95, 98 and XP only)
   private
     function GetDomainName: string;
     function GetLocalComputerName: string;
@@ -449,6 +457,8 @@ type
     procedure SetRegisteredCompany(const Value: string);
     procedure SetRegisteredOwner(const Value: string);
     procedure SetIPAddress(const Value: string);
+    function GetComment: string;
+    procedure SetComment(const Value: string);
   public
     property VolumeName[const Drive: string]: string read GetVolumeName;
     property VolumeSerialNumber[const Drive: string]: string read GetVolumeSerialNumber;
@@ -463,6 +473,8 @@ type
     property DomainName: string read GetDomainName write SetDomainName stored False;
     property RegisteredCompany: string read GetRegisteredCompany write SetRegisteredCompany stored False;
     property RegisteredOwner: string read GetRegisteredOwner write SetRegisteredOwner stored False;
+    // NB!!! "Comment" property only supported on Win95, 96 and some NT OS's!
+    property Comment:string read GetComment write SetComment stored False;
   end;
 
   TJvDisplayFlags = set of (dmGrayScale, dmInterlaced);
@@ -1337,9 +1349,9 @@ type
 implementation
 
 uses
-  WinInet, Registry, ShellAPI, ActiveX,
+  WinInet, Registry, ShellAPI, ActiveX, Math,
   JclShell, JclRegistry, JclFileUtils,
-  JvQJVCLUtils, JvQResources, Math;
+  JvQResources;
 
 var
   IsDesigning: Boolean = False;
@@ -1377,7 +1389,7 @@ end;
 procedure RaiseReadOnly(AlwaysRaise: Boolean = False);
 begin
   if not IsDesigning or AlwaysRaise then
-    raise EJVCLException.CreateRes(@RsEReadOnlyProperty);
+    raise EJVCLComputerInfoEx.CreateRes(@RsEReadOnlyProperty);
 end;
 
 function ArrangeToWindowsArrange(Value: DWORD): TJvWindowsArrange;
@@ -1529,6 +1541,11 @@ begin
     Result := HKLM_CURRENT_VERSION_WINDOWS;
 end;
 
+function TJvOSVersionInfo.GetOSVersion: TWindowsVersion;
+begin
+  Result := JclSysInfo.GetWindowsVersion;
+end;
+
 function TJvOSVersionInfo.GetProductType: TNtProductType;
 begin
   Result := JclSysInfo.NtProductType;
@@ -1567,6 +1584,11 @@ end;
 function TJvOSVersionInfo.GetWinVersionCSDString: string;
 begin
   Result := Win32CSDVersion;
+end;
+
+procedure TJvOSVersionInfo.SetOSVersion(const Value: TWindowsVersion);
+begin
+  RaiseReadOnly;
 end;
 
 procedure TJvOSVersionInfo.SetProductType(const Value: TNtProductType);
@@ -1860,34 +1882,42 @@ end;
 
 //=== TJvSystemFolders =======================================================
 
+function TJvSystemFolders.AdjustPathDelimiter(const S: String): String;
+begin
+  if TrailingPathDelimiter then
+    Result := IncludeTrailingPathDelimiter(S)
+  else
+    Result := ExcludeTrailingPathDelimiter(S);
+end;
+
 function TJvSystemFolders.GetCommonFiles: string;
 begin
-  Result := JclSysInfo.GetCommonFilesFolder;
+  Result := AdjustPathDelimiter(JclSysInfo.GetCommonFilesFolder);
 end;
 
 function TJvSystemFolders.GetCurrent: string;
 begin
-  Result := JclSysInfo.GetCurrentFolder;
+  Result := AdjustPathDelimiter(JclSysInfo.GetCurrentFolder);
 end;
 
 function TJvSystemFolders.Get(const Index: Integer): string;
 begin
-  Result := JclShell.GetSpecialFolderLocation(Index);
+  Result := AdjustPathDelimiter(JclShell.GetSpecialFolderLocation(Index));
 end;
 
 function TJvSystemFolders.GetProgramFiles: string;
 begin
-  Result := JclSysInfo.GetProgramFilesFolder;
+  Result := AdjustPathDelimiter(JclSysInfo.GetProgramFilesFolder);
 end;
 
 function TJvSystemFolders.GetWindows: string;
 begin
-  Result := JclSysInfo.GetWindowsFolder;
+  Result := AdjustPathDelimiter(JclSysInfo.GetWindowsFolder);
 end;
 
 function TJvSystemFolders.GetSystem: string;
 begin
-  Result := JclSysInfo.GetWindowsSystemFolder;
+  Result := AdjustPathDelimiter(JclSysInfo.GetWindowsSystemFolder);
 end;
 
 function TJvSystemFolders.GetTemp: string;
@@ -1896,7 +1926,7 @@ begin
     Result := GetCurrentDir;
   if Result <> '' then
     // the temp folder is usually in 8.3 format, so try to convert
-    Result := PathGetLongName(Result);
+    Result := AdjustPathDelimiter(PathGetLongName(Result));
 end;
 
 procedure TJvSystemFolders.SetCommonFiles(const Value: string);
@@ -2129,6 +2159,19 @@ end;
 
 //=== TJvIdentification ======================================================
 
+const
+  cCommentRegPath = 'System\CurrentControlSet\Services\VxD\VNETSUP';
+  cCommentRegPathNT = 'SYSTEM\CurrentControlSet\Services\lanmanserver\parameters';
+
+function TJvIdentification.GetComment: string;
+begin
+  if IsWinNT then
+    // (p3) should return empty string on unsupported NT OS's
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE,cCommentRegPathNT, 'srvcomment','')
+  else
+    Result := RegReadStringDef(HKEY_LOCAL_MACHINE,cCommentRegPath, 'Comment','')
+end;
+
 function TJvIdentification.GetDomainName: string;
 begin
   Result := JclSysInfo.GetDomainName;
@@ -2256,6 +2299,26 @@ end;
 function TJvIdentification.GetVolumeSerialNumber(const Drive: string): string;
 begin
   Result := JclSysInfo.GetVolumeSerialNumber(Drive);
+end;
+
+procedure TJvIdentification.SetComment(const Value: string);
+begin
+  if not IsDesigning and not ReadOnly then
+  begin
+    // (p3) implementation dilemma: either allow the user to write the value regardless of
+    // whether the OS supports it or not, or only write value if it is known to be supported?
+    // Currently, only allow to write if known to be supported and raise error if not supported,
+    // but maybe that's a bad idea?
+    if IsWinXP then // "srvcomment" property only supported on WinXP AFAIK
+      RegWriteString(HKEY_LOCAL_MACHINE, cCommentRegPathNT, 'srvcomment',Value)
+    else if not IsWinNT then
+      // Win95/98 both support Comment
+      RegWriteString(HKEY_LOCAL_MACHINE,cCommentRegPath, 'Comment',Value)
+    else
+      RaiseReadOnly; // ?? - or just let it pass unnoticed?
+  end
+  else
+    RaiseReadOnly;
 end;
 
 procedure TJvIdentification.SetDomainName(const Value: string);
@@ -5496,6 +5559,8 @@ begin
     SendMessage(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS, 0);
   end;
 end;
+
+
 
 initialization
 

@@ -50,21 +50,35 @@ type
     EndContext: Integer;
     Key: Integer;
   end;
+  
+  // (rom) definitely needs improvement
+  TJvParserInfo = class(TObject)
+  public
+    StartTag: string;
+    EndTag: string;
+    MustBe: Integer;
+    TakeText: Integer;
+  end;
 
   TTagInfoList = class(TList)
   public
     procedure AddValue(const Value: TTagInfo);
     procedure Clear; override;
   end;
+  TJvKeyFoundEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string) of object;
+  TJvKeyFoundExEvent = procedure(Sender: TObject; Key, Results, OriginalLine: string; TagInfo:TTagInfo; Attributes:TStrings) of object;
 
   TJvHTMLParser = class(TJvComponent)
   private
-    FOnKeyFound: TJvKeyFoundEvent;
-    FParser: TJvParserInfoList;
+    FParser: TStringList;
     FKeys: TStringList;
     FFile: TFileName;
     FTagList: TTagInfoList;
-    procedure SetParser(Value: TJvParserInfoList);
+    FContent: string;
+    FOnKeyFound: TJvKeyFoundEvent;
+    FOnKeyFoundEx: TJvKeyFoundExEvent;
+    function GetParser: TStrings;
+    procedure SetParser(Value: TStrings);
     procedure SetFile(Value: TFileName);
     procedure SetTagList(const Value: TTagInfoList);
     function GetConditionsCount: Integer;
@@ -74,22 +88,28 @@ type
   public
     procedure AnalyseString(const Str: string);
     procedure AnalyseFile;
-    procedure AddCondition(const Keyword, StartTag, EndTag: string;
-      TextSelection: Integer = 0);
+    procedure AddCondition(const Keyword: string; const StartTag: string = '<';
+      const EndTag: string = '>'; TextSelection: Integer = 0);
     procedure RemoveCondition(Index: Integer);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property ConditionsCount: Integer read GetConditionsCount;
     procedure ClearConditions;
     procedure GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string); overload;
-    procedure GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string; var TextSelection: Integer); overload;
+    procedure GetCondition(Index: Integer; var Keyword, StartTag, EndTag: string;
+      var TextSelection: Integer); overload;
+    property Content: string read FContent;
   published
     property OnKeyFound: TJvKeyFoundEvent read FOnKeyFound write FOnKeyFound;
+    property OnKeyFoundEx: TJvKeyFoundExEvent read FOnKeyFoundEx write FOnKeyFoundEx;
     property FileName: TFileName read Ffile write SetFile;
-    property Parser: TJvParserInfoList read FParser write SetParser;
+    property Parser: TStrings read GetParser write SetParser;
   end;
 
 implementation
+
+uses
+  JvQConsts;
 
 {Comparison function. Used internally for observance of the sequences tags}
 function CompareTags(Item1, Item2: Pointer): Integer;
@@ -131,13 +151,18 @@ begin
   end;
 end;
 
-procedure TJvHTMLParser.SetParser(Value: TJvParserInfoList);
+function TJvHTMLParser.GetParser: TStrings;
+begin
+  Result := FParser;
+end;
+
+procedure TJvHTMLParser.SetParser(Value: TStrings);
 var
   I: Integer;
   Obj: TJvParserInfo;
   Cap: string;
 begin
-  FParser := Value;
+  FParser.Assign(Value);
   FKeys.Clear;
   I := 0;
   while I < FParser.Count do
@@ -166,7 +191,6 @@ procedure TJvHTMLParser.AnalyseFile;
 var
   List: TStringList;
 begin
-  begin
     List := TStringList.Create;
     try
       if FileExists(FileName) then
@@ -177,17 +201,96 @@ begin
     finally
       List.Free;
     end;
-  end;
 end;
 
 procedure TJvHTMLParser.AnalyseString(const Str: string);
 var
-  St2: string;
+  Str2: string;
   I, J, K, Index: Integer;
   TagInfo: TTagInfo;
+  AttributesList: TStringList;
+
+  procedure InnerParseAttributes(Content: PChar;  Strings: TStrings);
+  var
+    Head, Tail: PChar;
+    EOS, InQuote, LeadQuote: Boolean;
+    QuoteChar: Char;
+  begin
+    if (Content = nil) or (Content^ = #0) then
+      Exit;
+    Tail := Content;
+    QuoteChar := #0;
+    repeat
+      while Tail^ in [Cr, Lf, ' '] do
+        Inc(Tail);
+      Head := Tail;
+      InQuote := False;
+      LeadQuote := False;
+      while True do
+      begin
+        while (InQuote and not (Tail^ in [#0, '"'])) or
+          not (Tail^ in [#0, Cr, Lf, ' ', '"']) do
+          Inc(Tail);
+        if Tail^ = '"' then
+        begin
+          if (QuoteChar <> #0) and (QuoteChar = Tail^) then
+            QuoteChar := #0
+          else
+          begin
+            LeadQuote := Head = Tail;
+            QuoteChar := Tail^;
+            if LeadQuote then
+              Inc(Head);
+          end;
+          InQuote := QuoteChar <> #0;
+          if InQuote then
+            Inc(Tail)
+          else
+            Break;
+        end
+        else
+          Break;
+      end;
+      if not LeadQuote and (Tail^ <> #0) and (Tail^ = '"') then
+        Inc(Tail);
+      EOS := Tail^ = #0;
+      Tail^ := #0;
+      if Head^ <> #0 then
+        Strings.Add(Head);
+      Inc(Tail);
+    until EOS;
+  end;
+
+  procedure ParseAttributes(Strings: TStrings; const Value: string);
+  var
+    P: PChar;
+    Tmp: string;
+  begin
+    Strings.Clear;
+    Tmp := Value;
+    UniqueString(Tmp);
+    P := PChar(Tmp);
+    if P^ in [#0, '<', '>'] then
+      Exit;
+    // skip first word (the tag) and any whitespace
+    while (P^ <> #0) and (P <> nil) do
+    begin
+      if P^ = ' ' then
+      begin
+        Inc(P);
+        Break;
+      end;
+      Inc(P);
+    end;
+    InnerParseAttributes(P, Strings);
+  end;
+
 begin
   if (FKeys.Count = 0) and (FParser.Count <> 0) then
     SetParser(FParser);
+  FContent := Str;
+  AttributesList := TStringList.Create;
+  try
   if FKeys.Count > 0 then
   begin
     FTagList.Clear;
@@ -224,8 +327,7 @@ begin
             3: //The whole line if containing start tag
               begin
                 TagInfo.BeginContext := J;
-                // (rom) #1310 or #13#10?
-                TagInfo.EndContext := StrSearch('#1310', Str, J);
+                TagInfo.EndContext := StrSearch(Lf, Str, J);
               end;
           end;
           FTagList.AddValue(TagInfo);
@@ -237,19 +339,27 @@ begin
   FTagList.Sort(CompareTags);
   with FTagList do
   begin
-    for Index := 0 to (Count - 1) do
+    for Index := 0 to Count - 1 do
     begin
-      St2 := Copy(Str, PTagInfo(Items[Index]).BeginContext,
-        PTagInfo(Items[Index]).EndContext -
-        PTagInfo(Items[Index]).BeginContext);
+      Str2 := Copy(Str, PTagInfo(Items[Index]).BeginContext,
+        PTagInfo(Items[Index]).EndContext - PTagInfo(Items[Index]).BeginContext);
       if Assigned(FOnKeyFound) then
-        FOnKeyFound(Self, FKeys[PTagInfo(Items[Index]).Key], St2, Str);
+        FOnKeyFound(Self, FKeys[PTagInfo(Items[Index]).Key], Str2, Str);
+      if Assigned(FOnKeyFoundEx) then
+      begin
+        ParseAttributes(AttributesList, Str2);
+        FOnKeyFoundEx(Self, FKeys[PTagInfo(Items[Index]).Key], Str2, Str,
+          PTagInfo(Items[Index])^, AttributesList);
+      end;
     end;
+  end;
+  finally
+    AttributesList.Free;
   end;
 end;
 
-procedure TJvHTMLParser.AddCondition(const Keyword, StartTag, EndTag: string;
-  TextSelection: Integer = 0);
+procedure TJvHTMLParser.AddCondition(const Keyword: string;
+  const StartTag: string; const EndTag: string; TextSelection: Integer);
 var
   Obj: TJvParserInfo;
 begin

@@ -262,7 +262,7 @@ begin
   FPageIndex := -1;
   Align := alClient;
   ControlStyle := ControlStyle + [csOpaque, csAcceptsControls, csNoDesignVisible];
-  IncludeThemeStyle(Self, [csParentBackground]);
+//  IncludeThemeStyle(Self, [csParentBackground]);
   Visible := False; 
 end;
 
@@ -465,7 +465,7 @@ constructor TJvCustomPageList.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csAcceptsControls];
-  IncludeThemeStyle(Self, [csParentBackground]);
+//  IncludeThemeStyle(Self, [csParentBackground]);
   FPages := TList.Create;
   FHiddenPages := TList.Create;
   Height := 200;

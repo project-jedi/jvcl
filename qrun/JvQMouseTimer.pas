@@ -42,7 +42,7 @@ interface
 
 uses  
   Types, QWindows, QControls, QExtCtrls, 
-  SysUtils;
+  SysUtils, Classes;
 
 type
   IMouseTimer = interface
@@ -52,16 +52,23 @@ type
   end;
 
 function MouseTimer: IMouseTimer;
+function IsValidMouseTimer: Boolean;
 
 implementation
 
 type
-  TOpenControl = class(TControl);
+  TControlAccessProtected = class(TControl);
+
+  TJvMouseTimerNotify = class(TComponent)
+  protected
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+  end;
 
   TJvMouseTimer = class(TInterfacedObject, IMouseTimer)
   private
     FTimer: TTimer;
-    FCurrentControl: TOpenControl;
+    FCurrentControl: TControlAccessProtected;
+    FNotify: TJvMouseTimerNotify;
     procedure TimerTick(Sender: TObject);
   protected
     { Methods of the IMouseTimer interface }
@@ -84,6 +91,18 @@ begin
   Result := InternalMouseTimer;
 end;
 
+function IsValidMouseTimer: Boolean;
+begin
+  Result := Assigned(InternalMouseTimer);
+end;
+
+procedure TJvMouseTimerNotify.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  if IsValidMouseTimer and (Operation = opRemove) and (AComponent is TControl) then
+    MouseTimer.Detach(TControl(AComponent));
+end;
+
+
 constructor TJvMouseTimer.Create;
 begin
   inherited Create;
@@ -96,6 +115,7 @@ end;
 destructor TJvMouseTimer.Destroy;
 begin
   FTimer.Free;
+  FNotify.Free;
   inherited Destroy;
 end;
 
@@ -103,14 +123,20 @@ procedure TJvMouseTimer.Attach(AControl: TControl);
 begin
   FTimer.Enabled := False;
   if FCurrentControl <> nil then
-  try  
+  try
+    FCurrentControl.RemoveFreeNotification(FNotify);  
     FCurrentControl.MouseLeave(FCurrentControl); 
   except
     { Ignore exception in case control has been destroyed already }
   end;
-  FCurrentControl := TOpenControl(AControl);
+  FCurrentControl := TControlAccessProtected(AControl);
   if FCurrentControl <> nil then
+  begin
+    if not Assigned(FNotify) then
+      FNotify := TJvMouseTimerNotify.Create(nil);
+    FCurrentControl.FreeNotification(FNotify);
     FTimer.Enabled := True;
+  end;
 end;
 
 procedure TJvMouseTimer.Detach(AControl: TControl);
@@ -118,6 +144,8 @@ begin
   if AControl = FCurrentControl then
   begin
     FTimer.Enabled := False;
+    if Assigned(FNotify) and (FCurrentControl <> nil) then
+      FCurrentControl.RemoveFreeNotification(FNotify);
     FCurrentControl := nil;
   end;
 end;
