@@ -1258,9 +1258,9 @@ begin
       Add(TJvTFCustomImageMap(Source).ImageNames[I],
         TJvTFCustomImageMap(Source).Images[I]);
     Change;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 { TJvTFStateImageMap }
@@ -1660,9 +1660,9 @@ begin
     AlarmEnabled := TJvTFAppt(Source).AlarmEnabled;
     AlarmAdvance := TJvTFAppt(Source).AlarmAdvance;
     Data := TJvTFAppt(Source).Data;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvTFAppt.SetStartEnd(NewStartDate: TDate; NewStartTime: TTime;

@@ -4140,9 +4140,9 @@ begin
     FInactiveFont.Assign(TJvDockVIDTabServerOption(Source).FInactiveFont);
     FInactiveSheetColor := TJvDockVIDTabServerOption(Source).FInactiveSheetColor;
     FShowTabImages := TJvDockVIDTabServerOption(Source).FShowTabImages;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 function TJvDockVIDTabServerOption.GetActiveFont: TFont;
@@ -4282,9 +4282,9 @@ begin
     FActiveFont.Assign(TJvDockVIDConjoinServerOption(Source).FActiveFont);
     FInactiveFont.Assign(TJvDockVIDConjoinServerOption(Source).FInactiveFont);
     FSystemInfo := TJvDockVIDConjoinServerOption(Source).FSystemInfo;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvDockVIDConjoinServerOption.SetActiveTitleEndColor(const Value: TColor);

@@ -2314,6 +2314,41 @@ begin
   inherited Destroy;
 end;
 
+procedure TJvCustomEditorBase.Assign(Source: TPersistent);
+var
+  Src: TJvCustomEditorBase;
+begin
+  if Source is TJvCustomEditorBase then
+  begin
+    BeginUpdate;
+    try
+      Src := TJvCustomEditorBase(Source);
+
+      FSelForeColor := Src.SelForeColor;
+      FSelBackColor := Src.SelBackColor;
+      Color := Src.Color;
+      RightMarginColor := Src.RightMarginColor;
+      { The following options are set directly by JvHLEditorPropertyForm
+      FKeyboard.Assign(Src.Keyboard);
+      FGroupUndo := Src.GroupUndo;
+      FUndoAfterSave := Src.UndoAfterSave;
+      FTabStops := Src.TabStops;
+      FDoubleClickLine := Src.DoubleClickLine;
+      FSmartTab := Src.SmartTab;
+      FBackSpaceUnindents := Src.BackSpaceUnindents;
+      FAutoIndent := Src.AutoIndent;
+      FKeepTrailingBlanks := Src.KeepTrailingBlanks;
+      FCursorBeyondEOF := Src.CursorBeyondEOF;
+      FBlockOverwrite := Src.BlockOverwrite;
+      FPersistentBlocks := Src.PersistentBlocks;}
+    finally
+      EndUpdate;
+    end;
+  end
+  else
+    inherited Assign(Source);
+end;
+
 procedure TJvCustomEditorBase.WMEditCommand(var Msg: TMessage);
 begin
   Command(Msg.WParam);
@@ -5278,41 +5313,6 @@ begin
   end
   else
     inherited Assign(Source);
-end;
-
-procedure TJvCustomEditorBase.Assign(Source: TPersistent);
-var
-  Src: TJvCustomEditorBase;
-begin
-  if Source is TJvCustomEditorBase then
-  begin
-    BeginUpdate;
-    try
-      Src := TJvCustomEditorBase(Source);
-
-      FSelForeColor := Src.SelForeColor;
-      FSelBackColor := Src.SelBackColor;
-      Color := Src.Color;
-      RightMarginColor := Src.RightMarginColor;
-      { The following options are set directly by JvHLEditorPropertyForm
-      FKeyboard.Assign(Src.Keyboard);
-      FGroupUndo := Src.GroupUndo;
-      FUndoAfterSave := Src.UndoAfterSave;
-      FTabStops := Src.TabStops;
-      FDoubleClickLine := Src.DoubleClickLine;
-      FSmartTab := Src.SmartTab;
-      FBackSpaceUnindents := Src.BackSpaceUnindents;
-      FAutoIndent := Src.AutoIndent;
-      FKeepTrailingBlanks := Src.KeepTrailingBlanks;
-      FCursorBeyondEOF := Src.CursorBeyondEOF;
-      FBlockOverwrite := Src.BlockOverwrite;
-      FPersistentBlocks := Src.PersistentBlocks;}
-    finally
-      EndUpdate;
-    end;
-    Exit;
-  end;
-  inherited Assign(Source);
 end;
 
 end.

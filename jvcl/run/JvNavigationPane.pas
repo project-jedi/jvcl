@@ -2276,26 +2276,29 @@ end;
 
 procedure TJvNavPanelColors.Assign(Source: TPersistent);
 begin
-  if (Source is TJvNavPanelColors) and (Source <> Self) then
+  if Source is TJvNavPanelColors then
   begin
-    FButtonColorFrom := TJvNavPanelColors(Source).ButtonColorFrom;
-    FButtonColorTo := TJvNavPanelColors(Source).ButtonColorTo;
-    FButtonHotColorFrom := TJvNavPanelColors(Source).ButtonHotColorFrom;
-    FButtonHotColorTo := TJvNavPanelColors(Source).ButtonHotColorTo;
-    FButtonSelectedColorFrom := TJvNavPanelColors(Source).ButtonSelectedColorFrom;
-    FButtonSelectedColorTo := TJvNavPanelColors(Source).ButtonSelectedColorTo;
-    FFrameColor := TJvNavPanelColors(Source).FrameColor;
-    FHeaderColorFrom := TJvNavPanelColors(Source).HeaderColorFrom;
-    FHeaderColorTo := TJvNavPanelColors(Source).HeaderColorTo;
-    FDividerColorFrom := TJvNavPanelColors(Source).DividerColorFrom;
-    FDividerColorTo := TJvNavPanelColors(Source).DividerColorTo;
-    FSplitterColorFrom := TJvNavPanelColors(Source).SplitterColorFrom;
-    FSplitterColorTo := TJvNavPanelColors(Source).SplitterColorTo;
-    FButtonSeparatorColor := TJvNavPanelColors(Source).ButtonSeparatorColor;
-    Change;
-    Exit;
-  end;
-  inherited Assign(Source);
+    if Source <> Self then
+    begin
+      FButtonColorFrom := TJvNavPanelColors(Source).ButtonColorFrom;
+      FButtonColorTo := TJvNavPanelColors(Source).ButtonColorTo;
+      FButtonHotColorFrom := TJvNavPanelColors(Source).ButtonHotColorFrom;
+      FButtonHotColorTo := TJvNavPanelColors(Source).ButtonHotColorTo;
+      FButtonSelectedColorFrom := TJvNavPanelColors(Source).ButtonSelectedColorFrom;
+      FButtonSelectedColorTo := TJvNavPanelColors(Source).ButtonSelectedColorTo;
+      FFrameColor := TJvNavPanelColors(Source).FrameColor;
+      FHeaderColorFrom := TJvNavPanelColors(Source).HeaderColorFrom;
+      FHeaderColorTo := TJvNavPanelColors(Source).HeaderColorTo;
+      FDividerColorFrom := TJvNavPanelColors(Source).DividerColorFrom;
+      FDividerColorTo := TJvNavPanelColors(Source).DividerColorTo;
+      FSplitterColorFrom := TJvNavPanelColors(Source).SplitterColorFrom;
+      FSplitterColorTo := TJvNavPanelColors(Source).SplitterColorTo;
+      FButtonSeparatorColor := TJvNavPanelColors(Source).ButtonSeparatorColor;
+      Change;
+    end;
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvNavPanelColors.Change;
@@ -2481,9 +2484,9 @@ begin
       DividerFont := TJvNavPanelFonts(Source).DividerFont;
       HeaderFont := TJvNavPanelFonts(Source).HeaderFont;
     end;
-    Exit;
-  end;
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 procedure TJvNavPanelFonts.Change;
@@ -3448,15 +3451,20 @@ begin
     else
       Exit;
   end
-  else if Source is TJvIconPanel then
+  else
+  if Source is TJvIconPanel then
     SourceColors := TJvIconPanel(Source).Colors
-  else if Source is TJvNavIconButton then
+  else
+  if Source is TJvNavIconButton then
     SourceColors := TJvNavIconButton(Source).Colors
-  else if Source is TJvNavPanelButton then
+  else
+  if Source is TJvNavPanelButton then
     SourceColors := TJvNavPanelButton(Source).Colors
-  else if Source is TJvNavPanelPage then
+  else
+  if Source is TJvNavPanelPage then
     SourceColors := TJvNavPanelPage(Source).Colors
-  else if Source is TJvCustomNavigationPane then
+  else
+  if Source is TJvCustomNavigationPane then
     SourceColors := TJvCustomNavigationPane(Source).Colors
   else
   begin
