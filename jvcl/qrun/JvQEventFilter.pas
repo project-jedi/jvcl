@@ -53,12 +53,12 @@ implementation
 
 procedure TJvEventFilter.SetParent(const Value: TWinControl);
 var
-  wasActive: Boolean;
+  WasActive: Boolean;
   Method: TMethod;
 begin
   if Value <> Parent then
   begin
-    wasActive := Active;
+    WasActive := Active;
     Active := false;
     if Assigned(FHook) then
       QObject_hook_destroy(FHook);
@@ -70,7 +70,7 @@ begin
       TEventFilterMethod(Method) := EventFilter;
       Qt_hook_hook_events(FHook, Method);
     end;
-    Active := wasActive;
+    Active := WasActive;
   end;
 end;
 

@@ -32,14 +32,14 @@ unit JvUIBLib;
 {$MINENUMSIZE 4}
 
 interface
+
 uses
-{$IFDEF MSWINDOWS}Windows, {$ENDIF}
-{$IFDEF COMPILER6_UP} Variants, {$ENDIF}
-{$IFDEF FPC} Variants, {$ENDIF}
+  {$IFDEF MSWINDOWS} Windows, {$ENDIF}
+  {$IFDEF COMPILER6_UP} Variants, {$ENDIF}
+  {$IFDEF FPC} Variants, {$ENDIF}
   JvUIBase, JvUIBError, Classes, SysUtils;
 
 type
-
   TUIBFieldType = (uftUnKnown, uftNumeric, uftChar, uftVarchar, uftCstring, uftSmallint,
     uftInteger, uftQuad, uftFloat, uftDoublePrecision, uftTimestamp, uftBlob, uftBlobId,
     uftDate, uftTime, uftInt64 {$IFDEF IB7_UP}, uftBoolean{$ENDIF});
@@ -878,7 +878,14 @@ function TryStrToInt(const S: string; out Value: Integer): Boolean;
 {$ENDIF}
 
 implementation
-uses JvUIBConst;
+
+uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
+  JvUIBConst;
 
 { EUIBParser }
 
@@ -5016,6 +5023,24 @@ end;
     ReallocMem(FXSQLDA, XSQLDA_LENGTH(0));
     FParamCount := 0;
   end;
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

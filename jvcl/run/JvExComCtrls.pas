@@ -47,7 +47,6 @@ uses
 
  {$DEFINE NeedMouseEnterLeave}
 
-
 type
   {$IFDEF COMPILER6_UP}
   TJvExCustomHeaderControl = class(TCustomHeaderControl, IJvWinControlEvents, IJvControlEvents, IPerformControl)
@@ -3707,6 +3706,11 @@ type
   
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 {$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
@@ -12390,5 +12394,21 @@ begin
   inherited Destroy;
 end;
  
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

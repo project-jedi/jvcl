@@ -285,6 +285,10 @@ resourcestring
 resourcestring
   RsStorageDesigner = 'Form Storage Designer...';
 
+//=== JvFullColorListForm.pas ================================================
+resourcestring
+  RsUnnamedColorFmt = '%s : Unnamed color $%.8x';
+
 //=== JvgComponentListEditorForm.pas =========================================
 {$IFDEF USEJVCL}
 resourcestring

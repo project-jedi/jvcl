@@ -51,9 +51,6 @@ type
 implementation
 
 uses
-  {$IFDEF UNITVERSIONING}
-  JclUnitVersioning,
-  {$ENDIF UNITVERSIONING}
   SysUtils, TypInfo,
   JvFullColorSpaces;
 
@@ -62,10 +59,7 @@ uses
 function TJvColorIDEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paValueList, paSortList, paRevertable, paRevertable,
-             {$IFDEF COMPILER6_UP}
-             paNotNestable,
-             {$ENDIF COMPILER6_UP}
-             paMultiSelect];
+    {$IFDEF COMPILER6_UP} paNotNestable, {$ENDIF} paMultiSelect];
 end;
 
 function TJvColorIDEditor.GetValue: string;
@@ -98,22 +92,6 @@ begin
       end;
     end;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\design'
-    );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -315,6 +315,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 JV_WINCONTROL_EVENTS_IMPL(CustomGroupBox)
 {$DEFINE HASAUTOSIZE}
 {$IFDEF VCL}
@@ -353,6 +358,22 @@ JV_WINCONTROL_EVENTS_IMPL(CheckBox)
 JV_WINCONTROL_EVENTS_IMPL(CustomStaticText)
 JV_WINCONTROL_EVENTS_IMPL(StaticText)
 {$ENDIF VCL}
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 {$UNDEF CONSTRUCTOR_CODE} // undefine at file end
 

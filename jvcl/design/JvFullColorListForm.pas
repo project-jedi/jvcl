@@ -97,12 +97,10 @@ var
 
 implementation
 
-{$R *.dfm}
-
-{$IFDEF UNITVERSIONING}
 uses
-  JclUnitVersioning;
-{$ENDIF UNITVERSIONING}
+  JvDsgnConsts;
+
+{$R *.dfm}
 
 constructor TJvFullColorListFrm.Create(AOwner: TComponent);
 begin
@@ -299,22 +297,23 @@ begin
 
       if AColorSpace.ID = csDEF then
         with TJvDEFColorSpace(AColorSpace) do
-      begin
-        AColor := ConvertToColor(AFullColor);
-        AText := Format('%s : Unamed color $%.8x',[Name,AFullColor]);
-        for ColorIndex := 0 to ColorCount-1 do
-          if AColor = ColorValue[ColorIndex] then
         begin
-          AText := Format('%s : %s (%s)',[Name,ColorName[ColorIndex],ColorPrettyName[ColorIndex]]);
-          Break;
-        end;
-      end
-      else with AColorSpace do
-        AText := Format('%s : %s = $%.2x; %s = $%.2x; %s = $%.2x',
-                        [Name,
-                         AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
-                         AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
-                         AxisName[axIndex2], GetAxisValue(AFullColor, axIndex2)]);
+          AColor := ConvertToColor(AFullColor);
+          AText := Format('%s : Unamed color $%.8x', [Name, AFullColor]);
+          for ColorIndex := 0 to ColorCount - 1 do
+            if AColor = ColorValue[ColorIndex] then
+            begin
+              AText := Format(RsUnnamedColorFmt, [Name, ColorName[ColorIndex], ColorPrettyName[ColorIndex]]);
+              Break;
+            end;
+        end
+      else
+        with AColorSpace do
+          AText := Format('%s : %s = $%.2x; %s = $%.2x; %s = $%.2x',
+            [Name,
+             AxisName[axIndex0], GetAxisValue(AFullColor, axIndex0),
+             AxisName[axIndex1], GetAxisValue(AFullColor, axIndex1),
+             AxisName[axIndex2], GetAxisValue(AFullColor, axIndex2)]);
 
       TextOut(Rect.Left + Rect.Bottom - Rect.Top + 2, Rect.Top + 2, AText);
     end;
@@ -324,22 +323,6 @@ begin
     Rectangle(Rect.Left + 2, Rect.Top + 2, Rect.Left + Rect.Bottom - Rect.Top - 2, Rect.Bottom - 2);
   end;
 end;
-
-{$IFDEF UNITVERSIONING}
-const
-  UnitVersioning: TUnitVersionInfo = (
-    RCSfile: '$RCSfile$';
-    Revision: '$Revision$';
-    Date: '$Date$';
-    LogPath: 'JVCL\design'
-    );
-
-initialization
-  RegisterUnitVersion(HInstance, UnitVersioning);
-
-finalization
-  UnregisterUnitVersion(HInstance);
-{$ENDIF UNITVERSIONING}
 
 end.
 

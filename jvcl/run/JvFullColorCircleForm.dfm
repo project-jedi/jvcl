@@ -1,6 +1,6 @@
 object JvFullColorCircleFrm: TJvFullColorCircleFrm
-  Left = 271
-  Top = 141
+  Left = 108
+  Top = 135
   BorderStyle = bsDialog
   Caption = 'Color circle configurations'
   ClientHeight = 660
@@ -118,7 +118,7 @@ object JvFullColorCircleFrm: TJvFullColorCircleFrm
       Top = 312
       Width = 21
       Height = 276
-      FullColor = 67108864
+      FullColor = 83820544
       AxisConfig = acYZX
       TabOrder = 5
       ArrowColor = clBlue
@@ -131,7 +131,7 @@ object JvFullColorCircleFrm: TJvFullColorCircleFrm
       Top = 312
       Width = 21
       Height = 276
-      FullColor = 67108864
+      FullColor = 67174144
       AxisConfig = acYZX
       TabOrder = 4
       ArrowColor = clLime
@@ -144,7 +144,7 @@ object JvFullColorCircleFrm: TJvFullColorCircleFrm
       Top = 312
       Width = 21
       Height = 276
-      FullColor = 67108864
+      FullColor = 67109119
       AxisConfig = acYZX
       TabOrder = 3
       ArrowColor = clRed

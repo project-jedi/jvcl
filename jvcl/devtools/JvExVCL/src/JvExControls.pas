@@ -55,7 +55,6 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
-
 const
   dcWantMessage = dcWantAllKeys;
 
@@ -125,7 +124,6 @@ type
     ['{76942BC0-2A6E-4DC4-BFC9-8E110DB7F601}']
   end;
 
-
 type
   JV_CONTROL_EVENTS(Control)
   JV_WINCONTROL_EVENTS(WinControl)
@@ -165,6 +163,11 @@ procedure TCustomEdit_Paste(Instance: TWinControl);
 procedure TCustomEdit_Cut(Instance: TWinControl);
 
 implementation
+
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
 
 function ShiftStateToKeyData(Shift: TShiftState): Longint;
 const
@@ -807,19 +810,32 @@ end;
 
 {$ENDIF COMPILER5}
 
-
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+{$ENDIF UNITVERSIONING}
 
 initialization
+  {$IFDEF UNITVERSIONING}
+  RegisterUnitVersion(HInstance, UnitVersioning);
+  {$ENDIF UNITVERSIONING}
   {$IFDEF COMPILER5}
   InitHookVars;
   InstallProcHook(TControl_SetAutoSize, @SetAutoSizeHook, @OrgSetAutoSize);
   {$ENDIF COMPILER5}
 
-
 finalization
   {$IFDEF COMPILER5}
   UninstallProcHook(@OrgSetAutoSize);
   {$ENDIF COMPILER5}
+  {$IFDEF UNITVERSIONING}
+  UnregisterUnitVersion(HInstance);
+  {$ENDIF UNITVERSIONING}
 
 end.
 

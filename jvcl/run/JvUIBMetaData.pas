@@ -553,6 +553,13 @@ type
 
 implementation
 
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
+
 //   Database Tree
 //------------------------
 //  OIDDomains   = 0;
@@ -2899,6 +2906,24 @@ begin
   WriteString(Stream, FOwner);
   inherited SaveToStream(Stream);
 end;
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
 

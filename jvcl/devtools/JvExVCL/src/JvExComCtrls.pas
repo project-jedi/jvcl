@@ -42,7 +42,6 @@ uses
 
  {$DEFINE NeedMouseEnterLeave}
 
-
 type
   {$IFDEF COMPILER6_UP}
   JV_WINCONTROL_EVENTS(CustomHeaderControl)
@@ -81,6 +80,11 @@ type
 
 implementation
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 {$IFDEF COMPILER6_UP}
 JV_WINCONTROL_EVENTS_IMPL(CustomComboBoxEx)
 JV_WINCONTROL_EVENTS_IMPL(CustomStatusBar)
@@ -115,5 +119,21 @@ JV_WINCONTROL_EVENTS_IMPL(TabSheet)
 JV_WINCONTROL_EVENTS_IMPL(ToolBar)
 JV_WINCONTROL_EVENTS_IMPL(StatusBar)
 JV_CONTROL_EVENTS_IMPL(ToolButton)
+
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
 
 end.

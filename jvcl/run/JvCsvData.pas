@@ -22,7 +22,7 @@ Description:
   TJvCsvDataSet in-memory-dataset component usable by any
     VCL Data Aware Controls.
               TJvCsvDataSet appears in the 'Jv Data Access' tab of the
-    Component Pallette.
+    Component Palette.
 
     USAGE:
       Drop this component onto a form, connect it to
@@ -326,7 +326,7 @@ type
     FCsvColumns: TJvCsvColumns; // Column information
     FData: TJvCsvRows; // Rows are a Collection of Data pointers.
 
-    { temporary holding space only, for a tstringlist of the file contents }
+    { temporary holding space only, for a TStringList of the file contents }
     FCsvFileAsStrings: TStringList;
 
     {  event pointers }

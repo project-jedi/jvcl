@@ -37,7 +37,6 @@ const
 {$ENDIF BCB}
 {$ENDIF DELPHI6_UP}
 
-
 type
   // JvUIB Server Commands
   TServerCommand = (scGetClassObject, scInvokeMethod);
@@ -341,5 +340,26 @@ resourcestring
   {$ENDIF UIBLANG_ES}
 
 implementation
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.

@@ -28,10 +28,10 @@ unit JvUIBDataSet;
 interface
 
 uses
-  SysUtils, Classes, DB, JvUIB, JvUIBLib, JvUIBase, JvUIBConst;
+  SysUtils, Classes, DB,
+  JvUIB, JvUIBLib, JvUIBase;
 
 type
-
   TUIBBookMark = record
     Bookmark: Longint;
     BookmarkFlag: TBookmarkFlag;
@@ -168,9 +168,17 @@ type
   end;
 
 implementation
-{$IFDEF COMPILER6_UP}
-uses fmtbcd;
-{$ENDIF}
+
+uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
+  {$IFDEF COMPILER6_UP}
+  fmtbcd,
+  {$ENDIF COMPILER6_UP}
+  JvUIBConst;
 
 procedure TJvUIBCustomDataSet.InternalOpen;
 begin
@@ -906,15 +914,33 @@ procedure TJvUIBCustomDataSet.InternalRefresh;
 var RecCount: Integer;
 begin
   if FStatement.Fields <> nil then
-    RecCount := FStatement.Fields.RecordCount else
+    RecCount := FStatement.Fields.RecordCount
+  else
     RecCount := 0;
   FStatement.Open;
-  While (RecCount > 1) and not FStatement.Eof do
+  while (RecCount > 1) and not FStatement.Eof do
   begin
     FStatement.Next;
     dec(RecCount);
   end;
-
 end;
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.       

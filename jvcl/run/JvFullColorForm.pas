@@ -31,8 +31,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
-  Dialogs, StdCtrls, ExtCtrls,
-  JvFullColorCtrls, JvFullColorSpaces, JvFullColorDialogs, Mask, JvExMask,
+  Dialogs, StdCtrls, ExtCtrls, Mask,
+  JvFullColorCtrls, JvFullColorSpaces, JvFullColorDialogs, JvExMask,
   JvSpin, JvExStdCtrls, JvCombobox, JvColorCombo;
 
 type

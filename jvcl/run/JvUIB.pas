@@ -751,7 +751,15 @@ TJvUIBComponent = class(TComponent)
   end;
 
 implementation
-uses JvUIBMetaData, Math;
+
+uses
+  {$IFDEF USEJVCL}
+  {$IFDEF UNITVERSIONING}
+  JclUnitVersioning,
+  {$ENDIF UNITVERSIONING}
+  {$ENDIF USEJVCL}
+  Math,
+  JvUIBMetaData;
 
 type
   PExceptionInfo = ^TExceptionInfo;
@@ -2994,5 +3002,23 @@ begin
   FUDFs := ALLUDFs;
   FSysInfos := False;
 end;
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.

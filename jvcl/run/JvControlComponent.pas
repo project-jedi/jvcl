@@ -28,18 +28,17 @@ Known Issues:
 
 unit JvControlComponent;
 
+{$I jvcl.inc}
+
 interface
 
-{$IFDEF USEJVCL}
-{$UNDEF USEJVCL}
-{$ENDIF USEJVCL}
-
 uses
-  SysUtils, Classes, Windows, Messages, Controls, Forms
   {$IFDEF USEJVCL}
-  , JvComponent
+  SysUtils, Classes, Windows, Messages, Controls, Forms,
+  JvComponent;
+  {$ELSE}
+  SysUtils, Classes, Windows, Messages, Controls, Forms;
   {$ENDIF USEJVCL}
-  ;
 
 type
   {$IFDEF USEJVCL}
@@ -48,28 +47,30 @@ type
   TJvCustomControlComponent = class(TComponent)
   {$ENDIF USEJVCL}
   private
-    { Private declarations }
     FActive: Boolean;
     FParent: TWinControl;
     function GetDesignInfo: Longint;
     procedure SetDesignInfo(Value: Longint);
   protected
-    { Protected declarations }
     procedure SetParent(const Value: TWinControl); virtual;
     function GetParent: TWinControl; virtual;
     procedure Loaded; override;
     procedure SetParentComponent(Value: TComponent); override;
     property Active: Boolean read FActive write FActive;
   public
-    { Public declarations }
     function GetParentComponent: TComponent; override;
     property DesignInfo: Longint read GetDesignInfo write SetDesignInfo;
     property Parent: TWinControl read GetParent write SetParent;
-  published
-    { Published declarations }
   end;
 
 implementation
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 procedure TJvCustomControlComponent.SetParentComponent(Value: TComponent);
 begin
@@ -79,9 +80,7 @@ end;
 procedure TJvCustomControlComponent.SetParent(const Value: TWinControl);
 begin
   if Value <> Parent then
-  begin
     FParent := Value;
-  end;
 end;
 
 function TJvCustomControlComponent.GetParentComponent: TComponent;
@@ -97,18 +96,16 @@ end;
 procedure TJvCustomControlComponent.Loaded;
 begin
   inherited Loaded;
-  if not (csDesigning in ComponentState) and
-     Assigned(Parent) and
-     (Parent <> Owner) then
+  if not (csDesigning in ComponentState) and Assigned(Parent) and (Parent <> Owner) then
   begin
-  { Changing the owner to the parent, has the advantage that
-    it gets destroyed by the Parent. At the right time thus.
-    To access a component with the Object Inspector
-    Owner property should remain unchanged.
-  }
+    { Changing the owner to the parent, has the advantage that
+      it gets destroyed by the Parent. At the right time thus.
+      To access a component with the Object Inspector
+      Owner property should remain unchanged.
+    }
     if Assigned(Owner) then
-      Owner.RemoveComponent(self);
-    Parent.InsertComponent(self); { owner := parent }
+      Owner.RemoveComponent(Self);
+    Parent.InsertComponent(Self); { owner := parent }
   end;
 end;
 
@@ -122,25 +119,41 @@ var
   Pos: TPoint;
   FControl: TControl;
 begin
-  if (csDesigning in ComponentState) and
-     (Owner is TWinControl) then
+  if (csDesigning in ComponentState) and (Owner is TWinControl) then
   begin
     Pos.X := TSmallPoint(Value).X; { left }
     Pos.Y := TSmallPoint(Value).Y; { top }
-    if not Assigned(Parent) or
-       (Parent = Owner) then { find the wincontrol where it is dropped }
+    if not Assigned(Parent) or (Parent = Owner) then { find the TWinControl where it is dropped }
     begin
-      FControl := TWinControl(Owner).ControlAtPos(Pos, true, true);
+      FControl := TWinControl(Owner).ControlAtPos(Pos, True, True);
       if not Assigned(FControl) then
-         Parent := TWinControl(Owner)
+        Parent := TWinControl(Owner)
       else
-        if FControl is TControl then
-          Parent := FControl.Parent
-        else
-          Parent := TWinControl(Parent);
+      if FControl is TControl then
+        Parent := FControl.Parent
+      else
+        Parent := TWinControl(Parent);
     end;
   end;
   inherited DesignInfo := Value;
 end;
+
+{$IFDEF USEJVCL}
+{$IFDEF UNITVERSIONING}
+const
+  UnitVersioning: TUnitVersionInfo = (
+    RCSfile: '$RCSfile$';
+    Revision: '$Revision$';
+    Date: '$Date$';
+    LogPath: 'JVCL\run'
+  );
+
+initialization
+  RegisterUnitVersion(HInstance, UnitVersioning);
+
+finalization
+  UnregisterUnitVersion(HInstance);
+{$ENDIF UNITVERSIONING}
+{$ENDIF USEJVCL}
 
 end.
