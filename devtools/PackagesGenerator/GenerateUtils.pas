@@ -63,6 +63,7 @@ type
     FVer    : string;
     FDefines: TStringList;
     FPathSep: string;
+    FIsCLX  : Boolean;
     function GetDir: string;
     function GetEnv: string;
     function GetPDir: string;
@@ -71,14 +72,15 @@ type
     constructor Create(Node : TJvSimpleXmlElem); overload;
     destructor Destroy; override;
 
-    property Name   : string read FName;
-    property Dir    : string read GetDir;
-    property PName  : string read FPName;
-    property PDir   : string read GetPDir;
-    property Env    : string read GetEnv;
-    property Ver    : string read GetVer;
+    property Name   : string      read FName;
+    property Dir    : string      read GetDir;
+    property PName  : string      read FPName;
+    property PDir   : string      read GetPDir;
+    property Env    : string      read GetEnv;
+    property Ver    : string      read GetVer;
     property Defines: TStringList read FDefines;
-    property PathSep: string read FPathSep;
+    property PathSep: string      read FPathSep;
+    property IsCLX  : Boolean     read FIsCLX;
   end;
 
   TTargetList = class (TObjectList)
@@ -148,7 +150,11 @@ var
   GPackagesLocation : string;
   GIncFileName      : string;
   GPrefix           : string;
+  GNoLibSuffixPrefix: string;
+  GClxPrefix        : string;
   GFormat           : string;
+  GNoLibSuffixFormat: string;
+  GClxFormat        : string;
   TargetList        : TTargetList;
   AliasList         : TAliasList;
   DefinesList       : TDefinesList;
@@ -213,7 +219,7 @@ begin
   end;
 end;
 
-function StartsWidth(const SubStr, S: string): Boolean;
+function StartsWith(const SubStr, S: string): Boolean;
 var
   i, Len: Integer;
 begin
@@ -479,6 +485,21 @@ begin
       GFormat           := Node.Properties.ItemNamed['format'].Value;
       GPrefix           := Node.Properties.ItemNamed['prefix'].Value;
 
+      GNoLibSuffixPrefix  := GPrefix;
+      GClxPrefix          := GPrefix;
+      GNoLibSuffixFormat  := GFormat;
+      GClxFormat          := GFormat;
+
+      if Assigned(Node.Properties.ItemNamed['NoLibSuffixprefix']) then
+        GNoLibSuffixPrefix := Node.Properties.ItemNamed['NoLibSuffixprefix'].Value;
+      if Assigned(Node.Properties.ItemNamed['clxprefix']) then
+        GClxPrefix         := Node.Properties.ItemNamed['clxprefix'].Value;
+      if Assigned(Node.Properties.ItemNamed['NoLibSuffixformat']) then
+        GNoLibSuffixFormat := Node.Properties.ItemNamed['NoLibSuffixformat'].Value;
+      if Assigned(Node.Properties.ItemNamed['clxformat']) then
+        GClxFormat         := Node.Properties.ItemNamed['clxformat'].Value;
+
+
       // create the 'all' alias
       all := '';
       for i := 0 to TargetList.Count-1 do
@@ -567,49 +588,42 @@ begin
     raise Exception.CreateFmt('Target "%s" not found.', [target]);
 end;
 
-function ExpandPackageName(Name: string; const target, prefix, format : string) : string;
+function ExpandPackageName(Name: string; const target : string) : string;
 var
-  Env : string;
-  Ver : string;
-  Typ : string;
-  formatGeneral : string;
-  formatNoLibsuffix : string;
-  ps: Integer;
+  Env   : string;
+  Ver   : string;
+  Typ   : string;
+  Prefix: string;
 begin
-  // split the format string if there are two formats
-  // this is done because Delphi 5 and under don't support
-  // the LIBSUFFIX compilation directive. If such a target
-  // is built, the second format will be used instead of
-  // the first, thus allowing a different naming scheme
-  formatGeneral := Format;
-  ps := Pos(',', formatGeneral);
-  if ps > 0 then
-  begin
-    formatNoLibsuffix := Copy(formatGeneral, ps+1, length(formatGeneral));
-    Delete(formatGeneral, ps, MaxInt);
-  end
-  else
-    formatNoLibsuffix := formatGeneral;
 
   Env := TargetList[GetNonPersoTarget(target)].Env;
   Ver := TargetList[GetNonPersoTarget(target)].Ver;
   Typ := Copy(Name, Length(Name), 1);
-  Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1);
 
   if ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (Ver < '6') then
-    Result := FormatNoLibSuffix
-  else
-    Result := FormatGeneral;
-
-{  if Pos('%', Result) > 0 then
   begin
-    StrReplace(Result, '%p', Prefix, [rfReplaceAll]);
-    StrReplace(Result, '%n', Name, [rfReplaceAll]);
-    StrReplace(Result, '%e', Env, [rfReplaceAll]);
-    StrReplace(Result, '%v', Ver, [rfReplaceAll]);
-    StrReplace(Result, '%t', Typ, [rfReplaceAll]);
-  end;}
+    Result := GNoLibSuffixFormat;
+    Prefix := GNoLibSuffixPrefix;
+  end
+  else if (TargetList[GetNonPersoTarget(target)].IsCLX) then
+  begin
+    Result := GClxFormat;
+    Prefix := GClxPrefix;
+  end
+  else
+  begin
+    Result := GFormat;
+    Prefix := GPrefix;
+  end;
 
+  // If we find Prefix in the Name, then use it first, else, fall back
+  // to GPrefix.
+  if Pos(Prefix, Name) > 0 then
+    Name := Copy(Name, Length(Prefix)+1, Pos('-', Name)-Length(Prefix)-1)
+  else
+    Name := Copy(Name, Length(GPrefix)+1, Pos('-', Name)-Length(GPrefix)-1);
+
+  // Always use Prefix as the replacement string for %p
   MacroReplace(Result, '%',
     ['p', Prefix,
      'n', Name,
@@ -618,15 +632,47 @@ begin
      't', Typ]);
 end;
 
+function HasModelPrefix(Name : string; const target:string): Boolean;
+var
+  Env   : string;
+  Ver   : string;
+begin
+  Env := TargetList[GetNonPersoTarget(target)].Env;
+  Ver := TargetList[GetNonPersoTarget(target)].Ver;
+  Result := False;
+
+  // We first try a CLX prefix
+  // If this failed, then we try a NoLibSuffix prefix
+  // If this failed too, then we go back to the standard prefix.
+  // This methods is employed mostly for CLX targets as this allows
+  // to have a single xml source file for both CLX and non CLX
+  // targets. For instance, in the JVCL, we would have a source file
+  // called JvSystem-R.xml which requires JvCore-R. Using this method
+  // when generating a CLX package which has a JvQ prefix, we still can
+  // recognize JvCore-R has being one of the package names that needs
+  // to be modified and thus will end up being JvQCoreD7R in the case
+  // of the Delphi 7 CLX target while still being JvCoreD7R for a
+  // regular Delphi 7 target (non CLX)
+
+  if (TargetList[GetNonPersoTarget(target)].IsCLX) then
+    Result := StartsWith(GClxPrefix, Name);
+
+  if not Result and ((AnsiLowerCase(Env) = 'd') or (AnsiLowerCase(Env) = 'c')) and (Ver < '6') then
+    Result := StartsWith(GNoLibSuffixPrefix, Name);
+
+  if not Result then
+    Result := StartsWith(GPrefix, Name);
+end;
+
 function BuildPackageName(packageNode : TJvSimpleXmlElem;
-  const target, prefix, Format : string) : string;
+  const target : string) : string;
 var
   Name : string;
 begin
   Name := packageNode.Properties.ItemNamed['Name'].Value;
-  if StartsWidth(Prefix, Name) and (Pos('-', Name) <> 0) then
+  if HasModelPrefix(Name, target) then
   begin
-    Result := ExpandPackageName(Name, target, prefix, Format);
+    Result := ExpandPackageName(Name, target);
   end
   else
   begin
@@ -1074,8 +1120,8 @@ begin
   end;
 end;
 
-function ApplyTemplateAndSave(const path, target, package, extension,
-  prefix, format : string; template : TStrings; xml : TJvSimpleXml;
+function ApplyTemplateAndSave(const path, target, package, extension
+ : string; template : TStrings; xml : TJvSimpleXml;
   const templateName, xmlName : string) : string;
 var
   OutFileName : string;
@@ -1125,7 +1171,7 @@ begin
     end;
 
     OutFileName := path + TargetToDir(target) + PathSeparator +
-                   ExpandPackageName(OutFileName, target, prefix, format)+
+                   ExpandPackageName(OutFileName, target)+
                    Extension;
 
     // The time stamp hasn't been found yet
@@ -1162,7 +1208,7 @@ begin
             if IsIncluded(packageNode, target) then
             begin
               tmpLines.Assign(repeatLines);
-              reqPackName := BuildPackageName(packageNode, target, prefix, format);
+              reqPackName := BuildPackageName(packageNode, target);
               StrReplaceLines(tmpLines, '%NAME%', reqPackName);
               // We do not say that the package contains something because
               // a package is only interesting if it contains files for
@@ -1535,10 +1581,10 @@ begin
 
   path := StrEnsureSuffix(PathSeparator, path);
 
-  if prefix = '' then
-    Prefix := GPrefix;
-  if format = '' then
-    Format := GFormat;
+  if prefix <> '' then
+    GPrefix := Prefix;
+  if format <> '' then
+    GFormat := Format;
 
   XmlFileCache := TObjectList.Create;
   try
@@ -1592,8 +1638,6 @@ begin
                                    target,
                                    packages[j],
                                    ExtractFileExt(rec.Name),
-                                   prefix,
-                                   Format,
                                    template,
                                    xml,
                                    templateName,
@@ -1610,8 +1654,6 @@ begin
                    persoTarget,
                    packages[j],
                    ExtractFileExt(rec.Name),
-                   prefix,
-                   Format,
                    template,
                    xml,
                    templateName,
@@ -1694,6 +1736,9 @@ begin
   FPathSep := '\';
   if Assigned(Node.Properties.ItemNamed['pathsep']) then
     FPathSep := Node.Properties.ItemNamed['pathsep'].Value;
+  FIsCLX := False;
+  if Assigned(Node.Properties.ItemNamed['IsCLX']) then
+    FIsCLX := Node.Properties.ItemNamed['IsCLX'].BoolValue;
 end;
 
 destructor TTarget.Destroy;
