@@ -100,7 +100,9 @@ dc.exe: DFMCleaner\dc.dpr
   $(DCC) $&.dpr
   cd ..
   
-pg.exe: PackagesGenerator\pg.dpr
+pg.exe: bin\pg.exe
+
+bin\pg.exe: PackagesGenerator\pg.dpr
   @cd PackagesGenerator
   $(DCC) $&.dpr
   @cd ..
