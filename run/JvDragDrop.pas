@@ -677,11 +677,11 @@ begin
             begin
               Len := DragQueryFile(DragH, I, nil, 0);
               if Len > 0 then
-                Inc(Len);
-              SetLength(Name, Len);
-              if Len > 0 then
+              begin
+                SetLength(Name, Len);
                 DragQueryFile(DragH, I, PChar(Name), Len);
-              List.Add(Name);
+                List.Add(Name);
+              end;
             end;
           Result := Count;
         finally
