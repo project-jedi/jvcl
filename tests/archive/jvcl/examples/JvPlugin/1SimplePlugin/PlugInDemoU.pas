@@ -27,6 +27,7 @@ type
     About1: TMenuItem;
     SendMessagetoPlugins1: TMenuItem;
     N1: TMenuItem;
+    Splitter1: TSplitter;
     procedure FormCreate(Sender: TObject);
     procedure uilPluginManagerBeforeLoad(Sender: TObject; Filename: String;
       var AllowLoad: Boolean);
@@ -71,13 +72,14 @@ end;
 
 procedure TForm1.uilPluginManagerAfterLoading(Sender: TObject);
 begin
+//   uilPluginManager.GetLoadedPlugins(clbPlugins.Items);
    lbStatus.Items.Add('Finished loading Plug-ins');
-   uilPluginManager.GetLoadedPlugins(clbPlugins.Items);
 end;
 
 procedure TForm1.uilPluginManagerAfterLoad(Sender: TObject;
   Filename: String);
 begin
+   uilPluginManager.GetLoadedPlugins(clbPlugins.Items);
    lbStatus.Items.Add('Finished loading Plug-in: ' + Filename);
 end;
 
@@ -100,7 +102,7 @@ end;
 
 procedure TForm1.About1Click(Sender: TObject);
 begin
-   ShowMessage('A simple host application for demoing JEDI Plug-ins.'#13#10#13#10'(c) 1999, Unlimited Intelligence Limited.');
+   ShowMessage('A simple host application for demoing JEDI Plug-ins.'#13#10#13#10'(c) 2002, Project JEDI.');
 end;
 
 procedure TForm1.uilPluginManagerNewCommand(Sender: TObject; ACaption,

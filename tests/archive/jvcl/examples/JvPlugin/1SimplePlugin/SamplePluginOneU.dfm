@@ -66,6 +66,7 @@ object SampleUILPlugin: TSampleUILPlugin
     ' respond (simply) to messages.'
   Copyright = '(c) 1999, Unlimited Intelligence Limited'
   PluginID = 'UIL.Sample Plugin One'
+  PluginVersion = '2.0'
   OnPluginMessage = uilPlugin1PluginMessage
   OnConfigure = uilPlugin1Configure
   Left = 228
