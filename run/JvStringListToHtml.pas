@@ -40,6 +40,7 @@ type
     FStrings, FHTML: TStrings;
     FHTMLTitle: string;
     FHTMLLineBreak: string;
+    FIncludeHeader: boolean;
     function GetHTML: TStrings;
     procedure SetStrings(const Value: TStrings);
     procedure DoStringsChange(Sender: TObject);
@@ -62,26 +63,26 @@ procedure ConvertStringsToHTML(Source,Destination:TStrings;const HTMLTitle, HTML
 var
   I: integer;
 begin
-  if (Result = nil) or (Value = nil) then Exit;
-  Result.BeginUpdate;
-  Value.BeginUpdate;
+  if (Source = nil) or (Destination = nil) then Exit;
+  Destination.BeginUpdate;
+  Source.BeginUpdate;
   try
     if IncludeHeader then
     begin
-      Result.Add('<HTML><HEAD>');
-      Result.Add('<TITLE>' + HTMLTitle + '</TITLE></HEAD>');
-      Result.Add('<BODY>');
+      Destination.Add('<HTML><HEAD>');
+      Destination.Add('<TITLE>' + HTMLTitle + '</TITLE></HEAD>');
+      Destination.Add('<BODY>');
     end;
-    for I := 0 to Value.Count - 1 do
-      Result.Add(Value[I] + HTMLLineBreak);
+    for I := 0 to Source.Count - 1 do
+      Destination.Add(Source[I] + HTMLLineBreak);
     if IncludeHeader then
     begin
-      Result.Add('</BODY>');
-      Result.Add('</HTML>');
+      Destination.Add('</BODY>');
+      Destination.Add('</HTML>');
     end;
   finally
-    Value.EndUpdate;
-    Result.EndUpdate;
+    Source.EndUpdate;
+    Destination.EndUpdate;
   end;
 end;
 
@@ -92,7 +93,7 @@ begin
   if Source = nil then Exit;
   Dest := TStringlist.Create;
   try
-    ConvertStringsToHTML(Source, Dest, HTMLTitile, HTMLLineBreak, true);
+    ConvertStringsToHTML(Source, Dest, HTMLTitle, HTMLLineBreak, true);
     Dest.SaveToFile(Filename);
   finally
     Dest.Free;
