@@ -47,6 +47,7 @@ resourcestring
   SNextPage = 'Next Page';
   SPreviousPage = 'Previous Page';
   SJVCLActionsCategory = 'JVCL';
+  SPropertyEditors = '\Property Editors';
 
   //=== JvAVICaptureEditors.pas ==============================================
   SDisconnected = 'Disconnected';

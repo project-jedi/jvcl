@@ -39,7 +39,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvAnimatedImage, JvAniFile;
+  JvAnimatedImage;
 
 type
   TJvAnimatedEditor = class(TComponentEditor)
@@ -62,11 +62,10 @@ implementation
 
 uses
   TypInfo,
-  JvConsts;
+  JvConsts, JvAniFile;
 
 const
   cGlyphName = 'GLYPH';
-  cAniFileExtension = 'ani';
 
 //=== TJvAnimatedEditor ======================================================
   
@@ -119,36 +118,17 @@ end;
 
 procedure TJvAnimatedEditor.LoadAniFile(Image: TJvAnimatedImage);
 var
-  Dialog: TOpenDialog;
   AniCursor: TJvAnimatedCursorImage;
-  CurDir: string;
 begin
-  CurDir := GetCurrentDir;
-  Dialog := TOpenDialog.Create(Application);
+  AniCursor := LoadJvAnimatedCursorImageDialog;
   try
-    with Dialog do
-    begin
-      Options := [ofHideReadOnly, ofFileMustExist];
-      DefaultExt := cAniFileExtension;
-      Filter := srAniCurFilter;
-      if Execute then
-      begin
-        AniCursor := TJvAnimatedCursorImage.Create;
-        try
-          AniCursor.LoadFromFile(FileName);
-          AniCursor.AssignToBitmap(Image.Glyph, clFuchsia, True,
-            Image.Orientation = goVertical);
-          Image.Interval := AniCursor.DefaultRate;
-          Image.TransparentColor := clFuchsia;
-          Designer.Modified;
-        finally
-          AniCursor.Free;
-        end;
-      end;
-    end;
+    AniCursor.AssignToBitmap(Image.Glyph, clFuchsia, True,
+      Image.Orientation = goVertical);
+    Image.Interval := AniCursor.DefaultRate;
+    Image.TransparentColor := clFuchsia;
+    Designer.Modified;
   finally
-    Dialog.Free;
-    SetCurrentDir(CurDir);
+    AniCursor.Free;
   end;
 end;
 

@@ -596,13 +596,13 @@ end;
 
 function TFrmOLBEditor.GetRegPath: string;
 const
-  cRegKey = '\Property Editors\JVCL\OutlookBar Editor';
+  cRegKey = '\JVCL\OutlookBar Editor';
 begin
   {$IFDEF COMPILER6_UP}
   Result := Designer.GetBaseRegKey + cRegKey;
   {$ELSE}
   // (rom) simplified and bugfixed
-  Result := SDelphiKey + cRegKey;
+  Result := SDelphiKey + SPropertyEditors + cRegKey;
   {$ENDIF COMPILER6_UP}
 end;
 
