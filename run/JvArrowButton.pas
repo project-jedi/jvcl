@@ -105,7 +105,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Click; override;
   published
     property Align;
     property Anchors;
@@ -1050,11 +1049,6 @@ begin
   Repaint;
 end;
 
-procedure TJvArrowButton.Click;
-begin
-  inherited Click;
-end;
-
 {$IFDEF VCL}
 function TJvArrowButton.GetPalette: HPALETTE;
 begin
@@ -1222,6 +1216,9 @@ end;
 procedure TJvArrowButton.CMButtonPressed(var Msg: TJvCMButtonPressed);
 var
   Sender: TJvArrowButton;
+  {$IFDEF JVCLThemesEnabled}
+  R: TRect;
+  {$ENDIF JVCLThemesEnabled}
 begin
   if Msg.Index = GroupIndex then
   begin
@@ -1232,7 +1229,15 @@ begin
       begin
         FDown := False;
         FState := bsUp;
-        Invalidate;
+        {$IFDEF JVCLThemesEnabled}
+        if ThemeServices.ThemesEnabled and Enabled and not Flat then
+        begin
+          R := BoundsRect;
+          InvalidateRect(Parent.Handle, @R, True);
+        end
+        else
+        {$ENDIF JVCLThemesEnabled}
+          Invalidate;
       end;
       FAllowAllUp := Sender.AllowAllUp;
     end;
@@ -1282,6 +1287,10 @@ end;
 {$ENDIF VCL}
 
 procedure TJvArrowButton.MouseEnter(Control: TControl);
+{$IFDEF JVCLThemesEnabled}
+var
+  R: TRect;
+{$ENDIF JVCLThemesEnabled}
 begin
   inherited MouseEnter(Control);
   if Flat and not FMouseInControl and Enabled then
@@ -1291,11 +1300,18 @@ begin
   end;
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
-    Repaint;
+  begin
+    R := BoundsRect;
+    InvalidateRect(Parent.Handle, @R, True);
+  end;
   {$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvArrowButton.MouseLeave(Control: TControl);
+{$IFDEF JVCLThemesEnabled}
+var
+  R: TRect;
+{$ENDIF JVCLThemesEnabled}
 begin
   inherited MouseLeave(Control);
   if Flat and FMouseInControl and Enabled then
@@ -1305,7 +1321,10 @@ begin
   end;
   {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled and Enabled and not Flat then
-    Invalidate;
+  begin
+    R := BoundsRect;
+    InvalidateRect(Parent.Handle, @R, True);
+  end;
   {$ENDIF JVCLThemesEnabled}
 end;
 
