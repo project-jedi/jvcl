@@ -3009,6 +3009,11 @@ end;
 
 initialization
   CF_GIF := RegisterClipboardFormat('GIF Image');
+
+  {$IFDEF VisualCLX}
+  GroupDescendentsWith(TJvGIFFrame, TControl);
+  GroupDescendentsWith(TJvGIFImage, TControl);
+  {$ENDIF VisualCLX}
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
 {$IFDEF USE_JV_GIF}
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);

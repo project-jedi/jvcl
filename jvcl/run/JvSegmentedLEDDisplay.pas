@@ -1910,6 +1910,9 @@ begin
 end;
 
 initialization
+  {$IFDEF VisualCLX}
+  GroupDescendentsWith(TJvCustomSegmentedLEDDigit, TControl);
+  {$ENDIF VisualCLX}
   AddModuleUnloadProc(ModuleUnload);
   RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit]);
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
@@ -1923,7 +1926,4 @@ finalization
   RemoveModuleUnloadProc(ModuleUnload);
 
 end.
-
-
-
 

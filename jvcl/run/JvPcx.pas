@@ -41,7 +41,7 @@ uses
   Graphics, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Types, Qt, QGraphics,
+  Types, Qt, QGraphics, QControls,
   {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvTypes, JvJCLUtils;
@@ -615,6 +615,9 @@ end;
 
 
 initialization
+  {$IFDEF VisualCLX}
+  GroupDescendentsWith(TJvPcx, TControl);
+  {$ENDIF VisualCLX}
   RegisterClass(TJvPcx);
   TPicture.RegisterFileFormat(RsPcxExtension, RsPcxFilterName, TJvPcx);
 
