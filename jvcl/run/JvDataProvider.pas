@@ -427,11 +427,14 @@ type
     ['{BA5DC787-29C6-40FA-9542-F0A1E92A2B30}']
     { Reference to the provider. }
     function Provider: IJvDataProvider;
+    { Reference to the parent context (ancestor context). }
+    function Ancestor: IJvDataContext;
     { Number of contexts. }
     function GetCount: Integer;
     { Array of available contexts. }
     function GetContext(Index: Integer): IJvDataContext;
-    { Retrieve a context by name. Returns nil if the context does not exist. }
+    { Retrieve a context by name. Returns nil if the context does not exist. Name may be a path to
+      the context (e.g.: 'Context1\Context1.1\Context1.1.3' or '..\Context1.2') }
     function GetContextByName(Name: string): IJvDataContext;
   end;
 
