@@ -36,16 +36,17 @@ interface
 
 uses
   Classes,
-  {$IFDEF USE_DXGETTEXT}
-  JvGnugettext,
-  {$ENDIF USE_DXGETTEXT}
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
-  
-  
+
+
   Qt, QWindows,
-  
+
+  {$IFDEF USE_DXGETTEXT}
+  JvQGnugettext,
+  {$ENDIF USE_DXGETTEXT}
+
   JvQCLVer, JvQExControls, JvQExExtCtrls, JvQExComCtrls, JvQExForms, JvQExStdCtrls;
 
 type
