@@ -1365,7 +1365,7 @@ begin
   if Assigned(Node.Properties.ItemNamed['pdir']) then
     FPDir := Node.Properties.ItemNamed['pdir'].Value;
   if Assigned(Node.Properties.ItemNamed['env']) then
-    FEnv := AnsiLowerCase(Node.Properties.ItemNamed['env'].Value)[1];
+    FEnv := AnsiUpperCase(Node.Properties.ItemNamed['env'].Value)[1];
   if Assigned(Node.Properties.ItemNamed['ver']) then
     FVer := AnsiLowerCase(Node.Properties.ItemNamed['ver'].Value)[1];
 
@@ -1396,7 +1396,7 @@ begin
   if FEnv <> '' then
     Result := FEnv
   else
-    Result := AnsiLowerCase(Name[1]);
+    Result := AnsiUpperCase(Name[1]);
 end;
 
 function TTarget.GetPDir: string;
