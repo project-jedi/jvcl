@@ -47,7 +47,7 @@ Summary
   Base component that serves as a wrapper around the MicroSoft® MonthCalendar control.
 Description
   TJvCustomMonthCalendar is the base component for MicroSoft® MonthCalendar control wrappers. Never
-  use a TJvCustomMonthCalendar control directly but rather one of it's descendants. Currently
+  use a TJvCustomMonthCalendar control directly but rather one of its descendants. Currently
   JEDI-VCL provides you with one descendant: TJvMonthCalendar2.
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomMonthCalendar.Bold
@@ -124,7 +124,7 @@ Parameters
 Summary
   Indicates if today should be circled.
 Description
-  CircleToday indicates wether or not today's date should be circled in the control.
+  CircleToday indicates whether or not today's date should be circled in the control.
 
   When set to True today's date will be circled in the control if the today's date is visible.
 
@@ -176,7 +176,7 @@ Summary
   Determines the last date selected for multiselect controls.
 Description
   DateLast indicates the last date selected. If MultiSelect is set to False, this property has no
-  effect when changing it's value.
+  effect when changing its value.
 See Also
   DateFirst, MaxSelCount, MultiSelect
 ----------------------------------------------------------------------------------------------------
@@ -329,7 +329,7 @@ Description
 Summary
   Determines if multiple days can be selected.
 Description
-  MultiSelect determines if multiple days at a time can be selected. When set to True, upto
+  MultiSelect determines if multiple days at a time can be selected. When set to True, up to
   MaxSelCount days can be selected in the control.
 See Also
   DateFirst, DateLast, MaxSelCount
@@ -464,7 +464,7 @@ Description
   1. 0000mm=daylist
   2. yyyymm=daylist
 
-  daylist is a comma separated string denoting the days to be set to the bold state.
+  Daylist is a comma separated string denoting the days to be set to the bold state.
 
   The first format denotes a recurring item, for which the specified days are set to the bold state
   for every year accessed.
@@ -489,7 +489,7 @@ Description
 Summary
   Indicates if today should be circled.
 Description
-  CircleToday indicates wether or not today's date should be circled in the control.
+  CircleToday indicates whether or not today's date should be circled in the control.
 
   When set to True today's date will be circled in the control if today's date is visible.
 
@@ -588,8 +588,8 @@ Summary
   The color for day numbers not belonging to the current month.
 Description
   TrailingTextColor sets the font color used for day numbers that don't belong to the current month.
-  These are the days that are part of a the month preceding or succeeding the month they are
-  displayed in at the start and/or end of the calendar.
+  These are the days that are part of the month preceding or succeeding the month; they are
+  displayed at the start and/or end of the calendar.
 See Also
   TextColor, TitleTextColor
 ----------------------------------------------------------------------------------------------------
@@ -609,8 +609,8 @@ Description
   months as this is automatically calculated from the controls size. If the window is larger than
   the displayed months, they are centered in the window.
 
-  Sizing the window programatically for best fit is problematic: the control needs one size for
-  dispaying one month but a different (and smaller value) for each subsequent one. This value
+  Sizing the window programmatically for best fit is problematic: the control needs one size for
+  displaying one month but a different (and smaller value) for each subsequent one. This value
   varies depending on the currently used font.
 
   MinSize returns a TRect that contains the minimum size for a one month calendar.
@@ -644,18 +644,18 @@ Description
   The first day of the week is determined by the system locale. This usually is Monday as specified
   by the ISO 8601 specification.
 @@TJvMonthCalWeekDay.mcMonday
-  The first day of the week is monday.
+  The first day of the week is Monday.
 @@TJvMonthCalWeekDay.mcTuesday
-  The first day of the week is tuesday.
+  The first day of the week is Tuesday.
 @@TJvMonthCalWeekDay.mcWednesday
-  The first day of the week is wednesday.
+  The first day of the week is Wednesday.
 @@TJvMonthCalWeekDay.mcThursday
-  The first day of the week is thursday.
+  The first day of the week is Thursday.
 @@TJvMonthCalWeekDay.mcFriday
-  The first day of the week is friday.
+  The first day of the week is Friday.
 @@TJvMonthCalWeekDay.mcSaturday
-  The first day of the week is saturday.
+  The first day of the week is Saturday.
 @@TJvMonthCalWeekDay.mcSunday
-  The first day of the week is sunday.
+  The first day of the week is Sunday.
 See Also
   TJvCustomMonthCalendar.FirstDayOfWeek

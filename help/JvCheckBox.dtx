@@ -108,7 +108,7 @@ Description
 
   To implement the HotTrackFontOptions property in a new control, you should perform the following steps:
     * Add JvTypes and JvJVCLUtils to the uses clause of the control's unit.
-    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set it's default value
+    * Add a HotTrackFontOptions property of type TJvTrackFontOptions to the control. Set its default value
       to be DefaultTrackFontOptions (defined in JvTypes).
     * Set the default value in the constructor.
     * Add a handler for the CM_FONTCHANGED message. Add a call to UpdateTrackFont (defined in JvJVCLUtils)
