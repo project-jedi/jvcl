@@ -230,6 +230,7 @@ type
     (*      property GroupIndex: Integer read FGroupIndex write SetGroupIndex; *)
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     (* -- RDB -- *)
+    procedure Loaded; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -261,7 +262,6 @@ type
     property Enabled;
     property Font;
     property GlyphKind;
-    { Ensure GlyphKind is published before Glyph and ButtonWidth }
     property Glyph;
     property ButtonWidth;
     property HideSelection;
@@ -444,7 +444,6 @@ type
     property Enabled;
     property Font;
     property GlyphKind;
-    { Ensure GlyphKind is declared before Glyph and ButtonWidth }
     property Glyph;
     property ButtonWidth;
     property HideSelection;
@@ -527,7 +526,6 @@ type
     property Enabled;
     property Font;
     property GlyphKind;
-    { Ensure GlyphKind is declared before Glyph and ButtonWidth }
     property Glyph;
     property NumGlyphs;
     property ButtonWidth;
@@ -723,7 +721,6 @@ type
     property Enabled;
     property Font;
     property GlyphKind;
-    { Ensure GlyphKind is declared before Glyph and ButtonWidth }
     property Glyph;
     property ButtonWidth;
     property HideSelection;
@@ -1512,6 +1509,24 @@ begin
   inherited KeyPress(Key);
 end;
 
+procedure TJvCustomComboEdit.Loaded;
+var
+  StreamedGlyphKind: TGlyphKind;
+  StreamedButtonWidth: Integer;
+begin
+  inherited Loaded;
+  if FGlyphKind <> gkCustom then
+  begin
+    StreamedGlyphKind := FGlyphKind;
+    StreamedButtonWidth := GetButtonWidth;
+
+    FGlyphKind := gkCustom;
+    GlyphKind := StreamedGlyphKind;
+
+    ButtonWidth := StreamedButtonWidth;
+  end;
+end;
+
 procedure TJvCustomComboEdit.LocalKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -1845,19 +1860,26 @@ end;
 
 procedure TJvCustomComboEdit.SetGlyph(Value: TBitmap);
 begin
-  FButton.Glyph := Value;
-  FGlyphKind := gkCustom;
+  if Value <> FButton.Glyph then
+  begin
+    FButton.Glyph := Value;
+    FGlyphKind := gkCustom;
+  end;
 end;
 
 procedure TJvCustomComboEdit.SetGlyphKind(Value: TGlyphKind);
 begin
+  if csLoading in ComponentState then
+  begin
+    FGlyphKind := Value;
+    Exit;
+  end;
+
   if FGlyphKind <> Value then
   begin
     FGlyphKind := Value;
     if (FGlyphKind = gkCustom) and (csReading in ComponentState) then
-    begin
       Glyph := nil;
-    end;
     RecreateGlyph;
     if (FGlyphKind = gkDefault) and (Glyph <> nil) then
       ButtonWidth := Max(Glyph.Width div FButton.NumGlyphs + 6, FButton.Width)
