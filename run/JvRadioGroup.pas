@@ -105,12 +105,12 @@ var
   H: Integer;
   R: TRect;
   Flags: Longint;
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
   ClipRect, CaptionRect: TRect;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabled}
 begin
-  {$IFDEF JVCLThemesEnabledD56}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     if Enabled then
@@ -122,9 +122,10 @@ begin
 
     if EdgeBorders <> [] then
     begin
+      ClipRect := R;
       if EdgeBorders <> [ebLeft, ebTop, ebRight, ebBottom] then
       begin
-        ClipRect := R;
+        //ClipRect := R;
         if not (ebLeft in EdgeBorders) then
           Inc(ClipRect.Left, 3);
         if not (ebRight in EdgeBorders) then
@@ -140,13 +141,24 @@ begin
     begin
       CaptionRect := Rect(8, 0, Min(Canvas.TextWidth(Caption) + 8, ClientWidth - 8), Canvas.TextHeight(Caption));
 
-      Canvas.Brush.Color := Self.Color;
-      DrawThemedBackground(Self, Canvas, CaptionRect);
+      if ParentBackground then
+        DrawThemedBackground(Self, Canvas.Handle, CaptionRect, Parent.Brush.Handle, True)
+      else
+      begin
+        Canvas.Brush.Color := Self.Color;
+        DrawThemedBackground(Self, Canvas, CaptionRect, False);
+      end;
+
+      { Theme functions may delete the font, so need to refresh
+        (see also remark at TCustomActionControl.Paint) }
+      Canvas.Font.Assign(Font);
+      Canvas.Refresh;
+
       ThemeServices.DrawText(Canvas.Handle, Details, Caption, CaptionRect, DT_LEFT, 0);
     end;
     Exit;
   end;
-  {$ENDIF JVCLThemesEnabledD56}
+  {$ENDIF JVCLThemesEnabled}
   with Canvas do
   begin
     Font := Self.Font;
