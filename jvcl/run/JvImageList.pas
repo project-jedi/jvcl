@@ -112,7 +112,7 @@ type
     property PixelFormat: TPixelFormat read FPixelFormat write SetPixelFormat default pfDevice;
       // PixelFormat is the color resolution of the image list. pf1bit and
       // pfCustom are not supported.
-      // WARNING: pf32bit works only under Windows XP.
+      // WARNING: pf32bit works under Windows XP only.
     {$ENDIF VCL}
     property TransparentMode: TJvImageListTransparentMode read FTransparentMode write SetTransparentMode default tmColor;
       // TransparentMode is used for adding the bitmaps from Picture or
