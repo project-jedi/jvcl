@@ -352,6 +352,7 @@ end;
 
 procedure TJvThumbTitle.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
+  inherited;
   Msg.Result := 1;
 end;
 
@@ -461,6 +462,7 @@ end;
 
 procedure TJvBaseThumbImage.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
+  inherited;
   Msg.Result := 1;
 end;
 
@@ -539,6 +541,7 @@ end;
 
 procedure TJvBaseThumbnail.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
+  inherited;
   Msg.Result := 1;
 end;
 
@@ -636,8 +639,9 @@ end;
 {
 procedure TJvBaseThumbview.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
-  message.Result := 0;
-end;{}
+  inherited;
+  Msg.Result := 0;
+end;}
 
 //=== TFileName ==============================================================
 
