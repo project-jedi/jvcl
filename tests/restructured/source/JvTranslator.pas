@@ -32,7 +32,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Forms, TypInfo, ComCtrls, JvSimpleXml,
-  JvComponent, IniFiles, Dialogs;
+  Menus, JvComponent, IniFiles, Dialogs;
 
 type
   TJvTranslator = class(TJvComponent)
@@ -218,7 +218,10 @@ var
              SetOrdProp(Obj, Prop, j);
            end;
          tkInteger:
-           SetOrdProp(Obj, Prop, Elem.Properties[i].IntValue);
+           if prop^.Name='ShortCut' then
+             SetOrdProp(Obj, Prop, TextToShortcut(Elem.Properties[i].Value))
+           else
+             SetOrdProp(Obj, Prop, Elem.Properties[i].IntValue);
        end;
     except
     end;
@@ -256,7 +259,7 @@ var
           tkEnumeration, tkSet, tkString, tkLString, tkClass]);
         if prop<>nil then
          case Prop^.PropType^.Kind of
-           tkstring, tkLString:
+           tkString, tkLString:
              SetStrProp(Obj, Prop, StringReplace(Elem.Items[i].Value,'\n',#13#10,[]));
            tkSet:
              SetSetProp(Obj, Prop, Elem.Items[i].Value);
