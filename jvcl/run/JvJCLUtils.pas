@@ -8033,7 +8033,7 @@ function PixelsToDialogUnitsY(PixUnits: Word): Word;
 begin
   Result := PixUnits * 8 div HiWord(GetDialogBaseUnits);
 end;
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 var
@@ -8059,6 +8059,15 @@ end;
 
 procedure AntiAliasRect(Clip: TBitmap; XOrigin, YOrigin,
   XFinal, YFinal: Integer);
+const
+{$IFDEF VCL}
+  EditPixelFormat = pf24bit;
+  bpp = 3;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+  EditPixelFormat = pf32bit;
+  bpp = 4;
+{$ENDIF VisualCLX}
 var
   Tmp, X, Y: Integer;
   P0, P1, P2: PByteArray;
@@ -8081,7 +8090,7 @@ begin
   XFinal := Min(Clip.Width - 2, XFinal);
   YFinal := Min(Clip.Height - 2, YFinal);
   // (rom) this change of pixel format has to be documented or reversed afterwards
-  Clip.PixelFormat := pf24bit;
+  Clip.PixelFormat := EditPixelFormat;
   for Y := YOrigin to YFinal do
   begin
     P0 := Clip.ScanLine[Y - 1];
@@ -8089,9 +8098,9 @@ begin
     P2 := Clip.ScanLine[Y + 1];
     for X := XOrigin to XFinal do
     begin
-      P1[X * 3] := (P0[X * 3] + P2[X * 3] + P1[(X - 1) * 3] + P1[(X + 1) * 3]) div 4;
-      P1[X * 3 + 1] := (P0[X * 3 + 1] + P2[X * 3 + 1] + P1[(X - 1) * 3 + 1] + P1[(X + 1) * 3 + 1]) div 4;
-      P1[X * 3 + 2] := (P0[X * 3 + 2] + P2[X * 3 + 2] + P1[(X - 1) * 3 + 2] + P1[(X + 1) * 3 + 2]) div 4;
+      P1[X * bpp    ] := (P0[X * bpp    ] + P2[X * bpp    ] + P1[(X - 1) * bpp    ] + P1[(X + 1) * bpp    ]) div 4;
+      P1[X * bpp + 1] := (P0[X * bpp + 1] + P2[X * bpp + 1] + P1[(X - 1) * bpp + 1] + P1[(X + 1) * bpp + 1]) div 4;
+      P1[X * bpp + 2] := (P0[X * bpp + 2] + P2[X * bpp + 2] + P1[(X - 1) * bpp + 2] + P1[(X + 1) * bpp + 2]) div 4;
     end;
   end;
 end;
