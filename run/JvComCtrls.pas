@@ -157,6 +157,7 @@ type
     procedure SetAddressValues(const Value: TJvIPAddressValues);
   protected
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
+    procedure EnabledChanged; override;
     procedure ColorChanged; override;
     procedure FontChanged; override;
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
@@ -575,37 +576,13 @@ begin
 end;
 
 procedure TJvIPEditControlHelper.WndProc(var Msg: TMessage);
-var
-  R: TRect;
 begin
   case Msg.Msg of
     WM_DESTROY:
       Handle := 0;
-      
+
     WM_KEYFIRST..WM_KEYLAST:
-      begin
-        FIPAddress.Dispatch(Msg);
-        if csDesigning in FIPAddress.ComponentState then
-          Exit;
-      end;
-
-    WM_SETFOCUS, WM_ACTIVATE, WM_MOUSEACTIVATE:
-      if csDesigning in FIPAddress.ComponentState then
-      begin
-        FIPAddress.Dispatch(Msg);
-        Exit;
-      end;
-
-    CM_DESIGNHITTEST, WM_MOUSEFIRST..WM_MOUSELAST, WM_NCHITTEST:
-      if (Msg.Msg = CM_DESIGNHITTEST) or
-         (csDesigning in FIPAddress.ComponentState) then
-      begin
-        GetWindowRect(FHandle, R);
-        Inc(TWMMouse(Msg).XPos, R.Left);
-        Inc(TWMMouse(Msg).YPos, R.Top);
-        FIPAddress.Dispatch(Msg);
-        Exit;
-      end;
+      FIPAddress.Dispatch(Msg);
 
     // mouse messages are sent through TJvIPAddress.WMParentNotify
   end;
@@ -735,11 +712,11 @@ end;
 
 procedure TJvIPAddress.ClearEditControls;
 var
-  i: Integer;
+  I: Integer;
 begin
-  for i := 0 to High(FEditControls) do
-    if FEditControls[i] <> nil then
-      FEditControls[i].Handle := 0;
+  for I := 0 to High(FEditControls) do
+    if FEditControls[I] <> nil then
+      FEditControls[I].Handle := 0;
   FEditControlCount := 0;
 end;
 
@@ -754,6 +731,17 @@ begin
   inherited FontChanged;
   AdjustHeight;
   Invalidate;
+end;
+
+procedure TJvIPAddress.EnabledChanged;
+var
+  I: Integer;
+begin
+  inherited EnabledChanged;
+  for i := 0 to High(FEditControls) do
+    if (FEditControls[I] <> nil) and (FEditControls[I].Handle <> 0) then
+      EnableWindow(FEditControls[I].Handle,
+        Enabled and not (csDesigning in ComponentState));
 end;
 
 procedure TJvIPAddress.CNCommand(var Msg: TWMCommand);
@@ -862,6 +850,7 @@ begin
              (FEditControls[FEditControlCount] <> nil) then
           begin
             FEditControls[FEditControlCount].Handle := ChildWnd;
+            EnableWindow(ChildWnd, Enabled and not (csDesigning in ComponentState));
             Inc(FEditControlCount);
           end;
         end;
@@ -874,7 +863,7 @@ begin
 end;
 
 procedure TJvIPAddress.WMSetFont(var Msg: TWMSetFont);
-var
+var                   
   LF: TLogFont;
 begin
   FillChar(LF, SizeOf(TLogFont), #0);
