@@ -77,7 +77,7 @@
     <File Name="..\..\run\JvControlBar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvControlPanelButton.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvCoolBar.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCtrls.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCtrls.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvDatePickerEdit.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDateTimePicker.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvDropDownForm.pas" Targets="all" Formname="" Condition=""/>
