@@ -41,8 +41,7 @@ uses
   {$ENDIF VCL}
   ImgEdit, DsnConst,
   {$IFDEF COMPILER6_UP}
-  RTLConsts, DesignIntf, DesignEditors, DesignMenus,
-  VCLEditors,
+  RTLConsts, DesignIntf, DesignEditors, DesignMenus, VCLEditors,
   {$IFDEF VCL}
   FiltEdit,
   {$ENDIF VCL}
@@ -307,7 +306,7 @@ uses
   Dlgs, JvDateTimeForm,
   {$ENDIF VCL}
   {$IFDEF LINUX}
-  JvQRegistryIniFile,
+	JvQRegistryIniFile,
   {$ENDIF LINUX}
   JvTypes, JvStringsForm, JvDsgnConsts, JvConsts;
 
@@ -1170,11 +1169,11 @@ var
     I, P: Integer;
     S: string;
   begin
+    {$IFDEF LINUX}
     if IniFile <> nil then
-      {$IFDEF LINUX}
-      if IniFile.OpenKey(SCustomColors, true) then
+    with IniFile, ColorDialog do
+      if OpenKey(SCustomColors, true) then
       begin
-      {$ENDIF LINUX}
         for I := 0 to CustomColors.Count - 1 do
         begin
           S := CustomColors.Strings[I];
@@ -1182,20 +1181,26 @@ var
           if P <> 0 then
           begin
             S := Copy(S, 1, P - 1);
-            {$IFDEF MSWINDOWS}
-            IniFile.WriteString(SCustomColors, S,
-              CustomColors.Values[S]);
-            {$ENDIF MSWINDOWS}
-            {$IFDEF LINUX}
-            IniFile.WriteString( S,
-              CustomColors.Values[S]);
-            {$ENDIF LINUX}
+            WriteString( S, CustomColors.Values[S]);
           end;
         end;
-      {$IFDEF LINUX}
-        IniFile.CloseKey;
+        CloseKey;
       end;
-      {$ENDIF LINUX}
+    {$ENDIF LINUX}
+    {$IFDEF MSWINDOWS}
+    if IniFile <> nil then
+    with IniFile, ColorDialog do
+        for I := 0 to CustomColors.Count - 1 do
+        begin
+          S := CustomColors.Strings[I];
+          P := Pos('=', S);
+          if P <> 0 then
+          begin
+            S := Copy(S, 1, P - 1);
+            WriteString(SCustomColors, S, CustomColors.Values[S]);
+          end;
+        end;
+     {$ENDIF MSWINDOWS}
   end;
 
 begin
