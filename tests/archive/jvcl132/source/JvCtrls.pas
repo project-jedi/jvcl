@@ -416,19 +416,24 @@ begin
     with Message do
       case Msg of
         LB_GETTEXT:
-          if Assigned(FOnGetText) then
+          if Assigned(FOnGetText) and (wParam > -1) and (wParam < Count) then
           begin
-            if (WParam < 0) or (WParam >= FCount) then
-              Result := LB_ERR
-            else
-            begin
-              FOnGetText(Self, WParam, Text);
-              Result := Length(Text);
-              StrPCopy(PChar(LParam), Text);
-            end;
+            Text := '';
+            OnGetText(Self, WParam, Text);
+            Result := Length(Text);
+            StrPCopy(PChar(LParam), Text);
           end
           else
-            Result := LB_OKAY;
+            Result := LB_ERR;
+        LB_GETTEXTLEN:
+          if Assigned(FOnGetText) and (wParam > -1) and (wParam < Count) then
+          begin
+            Text := '';
+            OnGetText(Self, WParam, Text);
+            Result := Length(Text);
+          end
+          else
+            Result := LB_ERR;
         LB_ADDSTRING, LB_INSERTSTRING, LB_SETITEMDATA:
           Result := LB_ERR;
       else
@@ -1058,3 +1063,4 @@ finalization
   FreeAndNil(DefaultImgBtnImagesList);
 
 end.
+
