@@ -32,11 +32,11 @@ uses
   SysUtils, Classes,
   {$IFDEF VCL}
   Windows, Controls, Forms, Menus, Graphics,
-  StdCtrls, CheckLst,
+  StdCtrls, CheckLst, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QControls, QForms, QMenus, QGraphics,
-  QStdCtrls, QCheckLst, QWindows, Types, ClxEditors,
+  QWindows, QControls, QForms, QMenus, QGraphics,
+  QStdCtrls, QCheckLst, Types, QExtCtrls, ClxEditors,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
@@ -46,7 +46,7 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  JvComponent, ExtCtrls;
+  JvComponent;
 
 type
   TJvCheckItemEditor = class(TJvForm)
@@ -118,20 +118,20 @@ implementation
 
 uses
   {$IFDEF VCL}
-  {$ENDIF VCL}
   Consts,
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   QConsts,
   {$ENDIF VisualCLX}
   JvStringsForm, JvConsts, JvDsgnConsts, JvJVCLUtils, JvBoxProcs;
 
 const
-  {$IFDEF VCL}
+  {$IFDEF MSWINDOWS}
   cDefaultFontName = 'MS Sans Serif';
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
   cDefaultFontName = 'Helvetica';
-  {$ENDIF VisualCLX}
+  {$ENDIF LINUX}
 
 //=== TJvCheckItemsProperty ==================================================
 
