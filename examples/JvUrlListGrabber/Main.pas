@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvHTTPGrabber, JvFTPGrabber, JvUrlListGrabber, JvUrlGrabbers, StdCtrls, JvComponent, ComCtrls;
+  Dialogs, JvUrlListGrabber, StdCtrls, JvComponent, ComCtrls;
 
 type
   TfrmMain = class(TForm)
@@ -58,7 +58,7 @@ type
       Url: string);
   public
     { Public declarations }
-    procedure grabberConnectionClosed(Sender : TJvUrlListGrabber; Grabber : TJvUrlGrabber);
+    procedure grabberConnectionClosed(Sender : TJvUrlListGrabber; Grabber : TJvCustomUrlGrabber);
   end;
 
 var
@@ -86,7 +86,7 @@ begin
   grabber.OnConnectionClosed := grabberConnectionClosed;
 end;
 
-procedure TfrmMain.grabberConnectionClosed(Sender: TJvUrlListGrabber; Grabber : TJvUrlGrabber);
+procedure TfrmMain.grabberConnectionClosed(Sender: TJvUrlListGrabber; Grabber : TJvCustomUrlGrabber);
 begin
   Application.messagebox('Finished', '', 0);
   grabber.Free;

@@ -1,6 +1,6 @@
 object frmMain: TfrmMain
-  Left = 267
-  Top = 113
+  Left = 274
+  Top = 73
   Width = 543
   Height = 393
   Caption = 'TJvUrlListGrabber demo'
@@ -142,5 +142,23 @@ object frmMain: TfrmMain
   object julGrabber: TJvUrlListGrabber
     Left = 384
     Top = 156
+    DefaultGrabbersPropertiesList = <
+      item
+        UrlType = 'FTP'
+        Value.FileName = 'output.txt'
+        Value.OutputMode = omFile
+        Value.Agent = 'JEDI-VCL'
+      end
+      item
+        UrlType = 'HTTP'
+        Value.FileName = 'output.txt'
+        Value.OutputMode = omFile
+        Value.Agent = 'JEDI-VCL'
+      end
+      item
+        UrlType = 'LocalFile'
+        Value.FileName = 'output.txt'
+        Value.OutputMode = omFile
+      end>
   end
 end
