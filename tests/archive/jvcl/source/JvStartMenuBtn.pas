@@ -155,7 +155,7 @@ end;
 procedure TJvStartMenuBtn.AddIconFrom(Path: string);
 var
   FileInfo: SHFILEINFO;
-  bmp, bmp2: TBitmap;
+  bmp2: TBitmap;
 begin
 {  bmp := TBitmap.Create;
   bmp.Width := 32;
