@@ -1,13 +1,15 @@
-  The Provider property is used to link a <LINK TJvCustomDataProvider, data provider> to the
+  The Provider property is used to link a <LINK IJvDataProvider, data provider> to the
   control.
 
-  The Provider property refers to a <LINK TJvDataConsumer, consumer service> which provides methods
-  and properties to select a provider and optionally a context. In addition it will support a number
-  of consumer service extentions as determined by the both the provider as well as the attributes
-  used when the consumer service was created (which happened internally for the control).
+  Although you can select a provider directly in the Object Inspector, in code you should use the
+  methods and/ or properties provided by the <LINK TJvDataConsumer, consumer service> the Provider
+  property actually refers to.
 
-  To be able to set other properties and/or invoke methods of these consumer service extensions, one
-  should query the consumer service (this Provider property) for the interface needed:
+  If the selected provider (in combination with the attributes that apply for control) generates
+  consumer services extensions (such as the IJvDataConsumerViewList but also provider specific
+  settings for the control), any published properties for those will be added as sub properties of
+  the Provider property in the Object Inspector. In code you should query for the extensions
+  interface:
   <CODE>
   <AUTOLINK OFF>
   <B>if</B> Supports(Provider <B>as</B> IJvDataConsumer, <I><interface GUID or type></I>, <I><variable></I>) <B>then</B>
