@@ -666,7 +666,8 @@ type
     FOnCompletionTemplate: TOnCompletion;
     FOnCompletionDrawItem: TDrawItemEvent;
     FOnCompletionMeasureItem: TMeasureItemEvent;
-    
+    FCurrentLineHighlight: TColor;
+
     {$IFDEF VCL}
     { internal message processing }
     procedure WMEditCommand(var Msg: TMessage); message WM_EDITCOMMAND;
@@ -788,6 +789,7 @@ type
     procedure SetSelBackColor(const Value: TColor);
     procedure SetSelForeColor(const Value: TColor);
     procedure SetBracketHighlighting(Value: TJvBracketHighlighting);
+    procedure SetCurrentLineHighlight(const Value: TColor);
     function GetPopupMenu: TPopupMenu; override;
 
     function GetLineCount: Integer; virtual; abstract;
@@ -954,6 +956,7 @@ type
     property SelForeColor: TColor read FSelForeColor write SetSelForeColor;
     property SelBackColor: TColor read FSelBackColor write SetSelBackColor;
     property HideCaret: Boolean read FHideCaret write FHideCaret default False;
+    property CurrentLineHighlight: TColor read FCurrentLineHighlight write SetCurrentLineHighlight default clNone;
 
     property OnChangeStatus: TNotifyEvent read FOnChangeStatus write FOnChangeStatus;
     property OnScroll: TNotifyEvent read FOnScroll write FOnScroll;
@@ -2348,6 +2351,7 @@ begin
   FUndoBuffer.FJvEditor := Self;
   FGroupUndo := True;
   FBracketHighlighting := TJvBracketHighlighting.Create;
+  FCurrentLineHighlight := clNone;
 
   FRightMarginVisible := True;
   FRightMargin := 80;
@@ -2788,7 +2792,102 @@ begin
 end;
 
 procedure TJvCustomEditorBase.ChangeAttr(Line, ColBeg, ColEnd: Integer);
+
+  procedure ChangeSelectedAttr(LineStyle: TJvLineSelectStyle);
+
+    procedure DoChange(const iBeg, iEnd: Integer);
+    var
+      I: Integer;
+      Color: TColor;
+    begin
+      if LineStyle = lssUnselected then
+        for I := iBeg to iEnd do
+        begin
+          LineAttrs[I+1].FC := SelForeColor;
+          LineAttrs[I+1].BC := SelBackColor;
+          LineAttrs[I+1].Border := clNone;
+        end
+      else
+       // exchange fore and background color
+        for I := iBeg to iEnd do
+        begin
+          Color := LineAttrs[I+1].FC;
+          LineAttrs[I+1].FC := LineAttrs[I+1].BC;
+          LineAttrs[I+1].BC := Color;
+          LineAttrs[I+1].Border := clNone;
+        end;
+    end;
+
+  begin
+    with FSelection do
+    begin
+      if SelBlockFormat = bfColumn then
+      begin
+        if (Line >= SelBegY) and (Line <= SelEndY) then
+          DoChange(SelBegX, SelEndX - 1 + Ord(True)); {always Inclusive}
+      end
+      else
+      begin
+        if (Line = SelBegY) and (Line = SelEndY) then
+          DoChange(SelBegX, SelEndX - 1 + Ord(SelBlockFormat = bfInclusive))
+        else
+        begin
+          if Line = SelBegY then
+            DoChange(SelBegX, LeftCol + SelBegX + VisibleColCount);
+          if (Line > SelBegY) and (Line < SelEndY) then
+            DoChange(ColBeg, ColEnd);
+          if Line = SelEndY then
+            DoChange(ColBeg, SelEndX - 1 + Ord(SelBlockFormat = bfInclusive));
+        end;
+      end;
+    end;
+  end;
+
+var
+  I, TmpI: Integer;
+  LineStyle: TJvLineSelectStyle;
 begin
+  // line style
+  LineStyle := LineInformations.SelectStyle[Line];
+  case LineStyle of
+    lssBreakpoint:
+      begin
+        LineAttrs[ColBeg].FC := LineInformations.BreakpointTextColor;
+        LineAttrs[ColBeg].BC := LineInformations.BreakpointColor;
+      end;
+    lssDebugPoint:
+      begin
+        LineAttrs[ColBeg].FC := LineInformations.DebugPointTextColor;
+        LineAttrs[ColBeg].BC := LineInformations.DebugPointColor;
+      end;
+    lssErrorPoint:
+      begin
+        LineAttrs[ColBeg].FC := LineInformations.ErrorPointTextColor;
+        LineAttrs[ColBeg].BC := LineInformations.ErrorPointColor;
+      end;
+  end;
+  if LineStyle <> lssUnselected then
+  begin
+    TmpI := ColEnd;
+    if TmpI < Max_X then
+      Inc(TmpI);
+    for I := ColBeg + 1 to TmpI do
+    begin
+      LineAttrs[I].FC := LineAttrs[ColBeg].FC;
+      LineAttrs[I].BC := LineAttrs[ColBeg].BC;
+      LineAttrs[I].Border := LineAttrs[ColBeg].Border;
+    end;
+  end;
+
+  GetBracketHighlightAttr(Line, LineAttrs);
+
+  if (Line = CaretY) and (CurrentLineHighlight <> clNone) and (CurrentLineHighlight <> clDefault) then
+    for I := ColBeg to ColEnd do
+      if LineAttrs[I].BC = Color then
+        LineAttrs[I].BC := CurrentLineHighlight;
+
+  if FSelection.IsSelected then
+    ChangeSelectedAttr(LineStyle); { we change the attributes of the chosen block [translated] }
 end;
 
 procedure TJvCustomEditorBase.GutterPaint(Canvas: TCanvas);
@@ -4035,11 +4134,14 @@ begin
   ColEnd := Min(ColEnd, Max_X - 1);
 
   ColPainted := ColBeg;
-  if (Line > -1) and (Line < LineCount) then
+  if (Line >= 0) and (Line < LineCount) then
     PaintLineText(Line, ColBeg, ColEnd, ColPainted)
   else
   begin
-    FEditorClient.Canvas.Brush.Color := Color;
+    if (Line = CaretY) and (CurrentLineHighlight <> clNone) and (CurrentLineHighlight <> clDefault) then
+      FEditorClient.Canvas.Brush.Color := CurrentLineHighlight
+    else
+      FEditorClient.Canvas.Brush.Color := Color;
     FEditorClient.Canvas.FillRect(Bounds(FEditorClient.Left, (Line - FTopRow) *
       CellRect.Height, 1, CellRect.Height));
   end;
@@ -4052,6 +4154,9 @@ begin
   if FSelection.IsSelected and (FSelection.SelBlockFormat in [bfInclusive, bfLine, bfNonInclusive]) and
     (Line >= FSelection.SelBegY) and (Line < FSelection.SelEndY) then
     FEditorClient.Canvas.Brush.Color := FSelBackColor
+  else
+  if (Line = CaretY) and (CurrentLineHighlight <> clNone) and (CurrentLineHighlight <> clDefault) then
+    FEditorClient.Canvas.Brush.Color := CurrentLineHighlight
   else
     FEditorClient.Canvas.Brush.Color := Color;
   FEditorClient.Canvas.FillRect(R);
@@ -4451,6 +4556,7 @@ end;
 procedure TJvCustomEditorBase.SetCaretInternal(X, Y: Integer);
 var
   R: TRect;
+  LastCaretY: Integer;
 begin
   if (X = FCaretX) and (Y = FCaretY) then
     Exit;
@@ -4481,8 +4587,14 @@ begin
 
   if (FCaretX <> X) or (FCaretY <> Y) then
   begin
+    LastCaretY := FCaretY;
     FCaretX := X;
     FCaretY := Y;
+    if (CurrentLineHighlight <> clNone) and (CurrentLineHighlight <> clDefault) then
+    begin
+      PaintLine(LastCaretY);
+      PaintLine(FCaretY);
+    end;
     StatusChanged;
   end;
 end;
@@ -5774,5 +5886,15 @@ initialization
 finalization
   UnregisterUnitVersion(HInstance);
 {$ENDIF UNITVERSIONING}
+
+procedure TJvCustomEditorBase.SetCurrentLineHighlight(const Value: TColor);
+begin
+  if Value <> FCurrentLineHighlight then
+  begin
+    FCurrentLineHighlight := Value;
+    if not (csLoading in ComponentState) and (CaretY >= 0) and (CaretY < LineCount) then
+      PaintLine(CaretY);
+  end;
+end;
 
 end.
