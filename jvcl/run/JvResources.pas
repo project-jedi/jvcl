@@ -722,26 +722,6 @@ resourcestring
   RsNoNewerVersionOfProgramAvailable = 'No newer version of program available';
 {$ENDIF USEJVCL}
 
-//=== JvgConstSysRequirements.pas ============================================
-{$IFDEF USEJVCL}
-resourcestring
-  { RUSSIAN
-  RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
-  RsGraphicResolution = 'Разрешение экрана должно быть %s точек или выше. Измените разрешение в свойствах экрана.';
-  RsColorDepth = 'Количество цветов экрана должно быть %s цветов или выше. Измените число цветов в свойствах экрана.';
-  RsSystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
-  RsOSPlatform = 'Для работы программы необходима операционная система %s.';
-  }
-  RsVideoVRefreshRate =
-    'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
-  RsGraphicResolution =
-    'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
-  RsColorDepth =
-    'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
-  RsSystemFont = 'In system small fonts should be established. Change to small fonts in Monitor Control Panel.';
-  RsOSPlatform = 'The program requires %s or better.';
-{$ENDIF USEJVCL}
-
 //=== JvGenetic.pas ==========================================================
 resourcestring
   RsENoTest = 'TJvGenetic: OnTestMember must be assigned';
@@ -854,6 +834,26 @@ resourcestring
 {$IFDEF USEJVCL}
 resourcestring
   RsTJvgSmallFontsDefenseCannotBeUsedWi = 'TJvgSmallFontsDefense cannot be used with large fonts.';
+{$ENDIF USEJVCL}
+
+//=== JvgSysRequirements.pas =================================================
+{$IFDEF USEJVCL}
+resourcestring
+  { RUSSIAN
+  RsVideoVRefreshRate = 'Частота обновления экрана должна быть %d герц или выше. Измените частоту обновления в свойствах экрана.';
+  RsGraphicResolution = 'Разрешение экрана должно быть %s точек или выше. Измените разрешение в свойствах экрана.';
+  RsColorDepth = 'Количество цветов экрана должно быть %s цветов или выше. Измените число цветов в свойствах экрана.';
+  RsSystemFont = 'В системе должен быть установлен %s шрифт. Измените вид шрифта в свойствах экрана.';
+  RsOSPlatform = 'Для работы программы необходима операционная система %s.';
+  }
+  RsVideoVRefreshRate =
+    'The monitor refresh rate should be %d Hertz or higher. Change monitor refresh rate in Monitor Control Panel.';
+  RsGraphicResolution =
+    'The screen resolution should be equal %s pixels or higher. Change screen resolution in Monitor Control Panel.';
+  RsColorDepth =
+    'The number of colors of the screen should be equal to %s colors or higher. Change screen colors in Monitor Control Panel.';
+  RsSystemFont = 'In system small fonts should be established. Change to small fonts in Monitor Control Panel.';
+  RsOSPlatform = 'The program requires %s or better.';
 {$ENDIF USEJVCL}
 
 //=== JvgUtils.pas ===========================================================
