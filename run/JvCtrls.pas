@@ -150,7 +150,6 @@ type
     property Spacing: Integer read FSpacing write SetSpacing default 4;
     property OnButtonDraw: TJvImgBtnDrawEvent read FOnButtonDraw write FOnButtonDraw;
     property OnGetAnimateIndex: TJvImgBtnAnimIndexEvent read FOnGetAnimateIndex write FOnGetAnimateIndex;
-
   end;
 
   TJvImgBtn = class(TJvCustomImageButton)

@@ -109,7 +109,6 @@ type
     property Down: Boolean read FDown write SetDown default False;
     property DropDown: TPopUpMenu read FPopUp write FPopUp;
     property Caption;
-
     property Enabled;
     property Flat: Boolean read FFlat write SetFlat default False;
     property Font;
@@ -135,12 +134,13 @@ type
 implementation
 
 uses
-  Consts, JvConsts, JvThemes;
+  Consts,
+  JvConsts, JvThemes;
 
 type
   TGlyphList = class(TImageList)
   private
-    Used: TBits;
+    FUsed: TBits;
     FCount: Integer;
     function AllocateIndex: Integer;
   public
@@ -153,7 +153,7 @@ type
 
   TGlyphCache = class(TObject)
   private
-    GlyphLists: TList;
+    FGlyphLists: TList;
   public
     constructor Create;
     destructor Destroy; override;
@@ -233,24 +233,24 @@ end;
 constructor TGlyphList.CreateSize(AWidth, AHeight: Integer);
 begin
   inherited CreateSize(AWidth, AHeight);
-  Used := TBits.Create;
+  FUsed := TBits.Create;
 end;
 
 destructor TGlyphList.Destroy;
 begin
-  Used.Free;
+  FUsed.Free;
   inherited Destroy;
 end;
 
 function TGlyphList.AllocateIndex: Integer;
 begin
-  Result := Used.OpenBit;
-  if Result >= Used.Size then
+  Result := FUsed.OpenBit;
+  if Result >= FUsed.Size then
   begin
     Result := inherited Add(nil, nil);
-    Used.Size := Result + 1;
+    FUsed.Size := Result + 1;
   end;
-  Used[Result] := True;
+  FUsed[Result] := True;
 end;
 
 function TGlyphList.AddMasked(Image: TBitmap; MaskColor: TColor): Integer;
@@ -262,10 +262,10 @@ end;
 
 procedure TGlyphList.Delete(Index: Integer);
 begin
-  if Used[Index] then
+  if FUsed[Index] then
   begin
     Dec(FCount);
-    Used[Index] := False;
+    FUsed[Index] := False;
   end;
 end;
 
@@ -274,12 +274,12 @@ end;
 constructor TGlyphCache.Create;
 begin
   inherited Create;
-  GlyphLists := TList.Create;
+  FGlyphLists := TList.Create;
 end;
 
 destructor TGlyphCache.Destroy;
 begin
-  GlyphLists.Free;
+  FGlyphLists.Free;
   inherited Destroy;
 end;
 
@@ -287,29 +287,28 @@ function TGlyphCache.GetList(AWidth, AHeight: Integer): TGlyphList;
 var
   I: Integer;
 begin
-  for I := GlyphLists.Count - 1 downto 0 do
+  for I := FGlyphLists.Count - 1 downto 0 do
   begin
-    Result := GlyphLists[I];
-    with Result do
-      if (AWidth = Width) and (AHeight = Height) then
-        Exit;
+    Result := FGlyphLists[I];
+    if (AWidth = Result.Width) and (AHeight = Result.Height) then
+      Exit;
   end;
   Result := TGlyphList.CreateSize(AWidth, AHeight);
-  GlyphLists.Add(Result);
+  FGlyphLists.Add(Result);
 end;
 
 procedure TGlyphCache.ReturnList(var List: TGlyphList);
 begin
   if (List <> nil) and (List.Count = 0) then
   begin
-    GlyphLists.Remove(List);
+    FGlyphLists.Remove(List);
     FreeAndNil(List);
   end;
 end;
 
 function TGlyphCache.Empty: Boolean;
 begin
-  Result := GlyphLists.Count = 0;
+  Result := FGlyphLists.Count = 0;
 end;
 
 var
@@ -974,7 +973,7 @@ begin
 
   if FGroupIndex = 0 then
   begin
-    { Redraw face in-case mouse is captured }
+    { Redraw face in case mouse is captured }
     FState := bsUp;
     FMouseInControl := False;
     if DoClick and not (FState in [bsExclusive, bsDown]) then

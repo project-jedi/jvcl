@@ -73,7 +73,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
   private
-    function GetParentBackground: Boolean; virtual;
+    function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
@@ -87,7 +87,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
   private
-    function GetParentBackground: Boolean; virtual;
+    function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;
@@ -101,7 +101,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   {$IFDEF JVCLThemesEnabledD56}
   private
-    function GetParentBackground: Boolean; virtual;
+    function GetParentBackground: Boolean;
   protected
     procedure SetParentBackground(Value: Boolean); virtual;
     property ParentBackground: Boolean read GetParentBackground write SetParentBackground;

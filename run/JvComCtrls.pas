@@ -810,15 +810,15 @@ end;
 procedure TJvPageControl.CMDialogKey(var Msg: TWMKey);
 var
   thistab, tab: TTabSheet;
-  forward: Boolean;
+  forwrd: Boolean;
 begin
   if HandleGlobalTab and not FormKeyPreview and (Msg.CharCode = VK_TAB) and (GetKeyState(VK_CONTROL) < 0) then
   begin
     thistab := ActivePage;
-    forward := GetKeyState(VK_SHIFT) >= 0;
+    forwrd := GetKeyState(VK_SHIFT) >= 0;
     tab := thistab;
     repeat
-      tab := FindNextPage(tab, forward, True);
+      tab := FindNextPage(tab, forwrd, True);
     until (tab = nil) or tab.Enabled or (tab = thistab);
     if tab <> thistab then
     begin

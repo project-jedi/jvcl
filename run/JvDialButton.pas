@@ -22,15 +22,15 @@ Last Modified: 2002-07-16
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  TJvDialButton component, a button like the dial on a radio.
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
 
-
 unit JvDialButton;
-
-{ TJvDialButton component, a button like the dial on a radio. }
 
 interface
 
@@ -238,11 +238,11 @@ type
     property OnStartDrag;
   end;
 
-
 implementation
 
 uses
-  Consts, Math, JvThemes;
+  Consts, Math,
+  JvThemes;
 
 const
   dAngleToRadian = Pi / 1800;
@@ -840,11 +840,11 @@ begin
     FBitmap := TBitmap.Create;
     FBitmapInvalid := True;
   end;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if FBitmapInvalid or ThemeServices.ThemesEnabled then
-{$ELSE}
+  {$ELSE}
   if FBitmapInvalid then
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   begin
     if FBitmap.Width <> FSize + 1 then
     begin
@@ -853,10 +853,10 @@ begin
       FBitmapRect := Bounds(0, 0, FSize + 1, FSize + 1);
     end;
 
-{$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
       FBitmap.Canvas.CopyRect(FBitmapRect, Canvas, FBitmapRect);
-{$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
 
     // Draw on bitmap.
     DrawButton;
@@ -895,9 +895,9 @@ begin
   C := FBitmap.Canvas;
   C.Brush.Color := Parent.Brush.Color;
   C.Brush.Style := bsSolid;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if not ThemeServices.ThemesEnabled then
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   C.FillRect(FBitmapRect);
   SetViewPortOrgEx(C.Handle, FSize div 2 - FRadius, FSize div 2 - FRadius,
     @OldOrg);
@@ -956,11 +956,11 @@ begin
   ARect := ClientRect;
   InflateRect(ARect, -1, -1);
   Canvas.Brush.Style := bsClear;
-{$IFDEF JVCLThemesEnabled}
+  {$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
     Canvas.Pen.Color := FBitmap.Canvas.Pixels[0, 0]
   else
-{$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
   Canvas.Pen.Color := Parent.Brush.Color;
   Canvas.Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
   Canvas.Brush.Style := bsSolid;
@@ -1123,7 +1123,7 @@ end;
 
 procedure TJvCustomDialButton.CreateParams(var Params: TCreateParams);
 const
-  BorderStyles: array[TBorderStyle] of Cardinal = (0, WS_BORDER);
+  BorderStyles: array [TBorderStyle] of Cardinal = (0, WS_BORDER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or BorderStyles[FBorderStyle];
@@ -1199,14 +1199,11 @@ begin
     VK_END:
       Position := FMax;
   else
-    begin
-      inherited KeyDown(Key, Shift);
-      Exit;
-    end;
+    inherited KeyDown(Key, Shift);
+    Exit;
   end;
-  // (rom) unreachable code
-  //Key := 0;
-  //inherited KeyDown(Key, Shift);
+  Key := 0;
+  inherited KeyDown(Key, Shift);
 end;
 
 procedure TJvCustomDialButton.WndProc(var Msg: TMessage);
