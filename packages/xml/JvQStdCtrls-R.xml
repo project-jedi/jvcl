@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<Package Name="JvQStdCtrls" Design="0">
+  <Description>JVCL Standard Controls Runtime Package</Description>
+  <C5PFlags>-LUCJcl50 -LUCJclVcl50</C5PFlags>
+  <C6PFlags>-LUCJcl -LUCJclVcl</C6PFlags>
+  <C5Libs/>
+  <C6Libs/>
+  <Requires>
+    <Package Name="JvQSystem-R" Targets="D7,K3" Condition=""/>
+    <Package Name="JvQCore-R" Targets="D7,K3" Condition=""/>
+    <Package Name="rtl" Targets="D7,K3" Condition=""/>
+    <Package Name="visualclx" Targets="D7,K3" Condition=""/>
+    <Package Name="vclx" Targets="D7,K3" Condition=""/>
+  </Requires>
+  <Contains>
+    <File Name="..\..\qrun\JvQDynControlEngineJVCL.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQItemsSearchs.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQLabel.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQListBox.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQListView.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQMaskEdit.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPanel.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQPickDate.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQProgressBar.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQRadioButton.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQScrollBar.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQScrollBox.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSecretPanel.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQShape.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQSpeedButton.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQStaticText.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQStatusBar.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQStringGrid.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTabControl.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTextListBox.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQToolBar.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQToolEdit.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQTransparentPanel.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQxCheckListBox.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQxSlider.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBaseEdits.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBevel.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBitBtn.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBoxProcs.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQBrowseFolder.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQButton.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQButtonPersistent.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCalc.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCalendar.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCheckBox.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCheckListBox.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCheckTreeView.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQControlBar.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQCtrls.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDatePickerEdit.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDateTimePicker.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQDropDownForm.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQEdit.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQFixedEditPopUp.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQGroupBox.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQHeaderControl.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQHints.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQHotKey.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQImage.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQRadioGroup.pas" Targets="D7,K3" Formname="" Condition=""/>
+    <File Name="..\..\qrun\JvQLinkedControls.pas" Targets="D7,K3" Formname="" Condition=""/>
+  </Contains>
+</Package>
