@@ -193,11 +193,13 @@ begin
       FindClose(F);
     end;
     AFiles.Sort;
-//    Dst.Add('<target name="separate" description="Build separate zip files">');
+    Dst.Add('<project name="JVCL Separate Zips" default="separate">');
+    Dst.Add('<target name="separate">');
     for i := 0 to AFiles.Count - 1 do
       Inc(Result, ParseFile(AFiles[i], XML, Dst, AFixed));
-//    Dst.Add('</target>');
-    if (Dst.Count > 2) and (Result > 0) then
+    Dst.Add('</target>');
+    Dst.Add('</project>');
+    if (Result > 0) then
       Dst.SaveToFile(Dest);
   finally
     XML.Free;
