@@ -56,6 +56,9 @@ uses
 {$R ..\resources\JvDlgsReg.dcr}
 
 procedure Register;
+const
+  cAppletName = 'AppletName';
+  cAppletIndex = 'AppletIndex';
 begin
   RegisterComponents(SPaletteDialog, [TJvSelectDirectory,
     TJvOpenDialog, TJvSaveDialog, TJvTipOfDay, TJvFindReplace, TJvDSADialog,
@@ -70,8 +73,8 @@ begin
     TJvProgressDialog, TJvProgressComponent, TJvDiskPrompt, TJvCopyError,
     TJvDeleteError, TJvRenameError]);
 
-  RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);
-  RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, 'AppletIndex', TJvAppletIndexProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, cAppletName, TJvAppletNameProperty);
+  RegisterPropertyEditor(TypeInfo(Integer), TJvAppletDialog, cAppletIndex, TJvAppletIndexProperty);
 
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
   RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);

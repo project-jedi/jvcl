@@ -594,16 +594,19 @@ begin
 end;
 
 procedure TFrmScheduleEditor.FormCreate(Sender: TObject);
+const
+  cTimeFormat = 'HH:mm:ss';
+  cDateFormat = 'dd-MM-yyyy';
 begin
   FTestSchedule := CreateSchedule;
   {$IFDEF COMPILER6_UP}
-  dtpStartDate.Format := 'dd-MM-yyyy';
-  dtpStartTime.Format := 'HH:mm:ss';
-  dtpEndDate.Format := 'dd-MM-yyyy';
-  dtpEndTime.Format := 'HH:mm:ss';
-  dtpDayFreqOneshot.Format := 'HH:mm:ss';
-  dtpFreqFrom.Format := 'HH:mm:ss';
-  dtpFreqTo.Format := 'HH:mm:ss';
+  dtpStartDate.Format := cDateFormat;
+  dtpStartTime.Format := cTimeFormat;
+  dtpEndDate.Format := cDateFormat;
+  dtpEndTime.Format := cTimeFormat;
+  dtpDayFreqOneshot.Format := cTimeFormat;
+  dtpFreqFrom.Format := cTimeFormat;
+  dtpFreqTo.Format := cTimeFormat;
   {$ELSE}
   dtpStartDate.DateFormat := dfShort;
   dtpEndDate.DateFormat := dfShort;

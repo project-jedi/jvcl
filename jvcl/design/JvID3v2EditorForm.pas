@@ -147,106 +147,106 @@ type
   TJvID3ControllerAccess = class(TJvID3Controller);
 
 const
-  // (rom) needs localization through resourcestrings
-  CFrameDescriptions: array [TJvID3FrameID] of PChar = (
-    'Error', {fiErrorFrame}
-    'Padding', {fiPaddingFrame}
-    'No known frame', {fiNoFrame}
-    'Audio encryption', {fiAudioCrypto}
-    'Attached picture', {fiPicture}
-    'Audio seek point index', {fiAudioSeekPoint}
-    'Comments', {fiComment}
-    'Commercial frame', {fiCommercial}
-    'Encryption method registration', {fiCryptoReg}
-    'Equalization (2)', {fiEqualization2}
-    'Equalization', {fiEqualization}
-    'Event timing codes', {fiEventTiming}
-    'General encapsulated object', {fiGeneralObject}
-    'Group identification registration', {fiGroupingReg}
-    'Involved people list', {fiInvolvedPeople}
-    'Linked information', {fiLinkedInfo}
-    'Music CD identifier', {fiCDID}
-    'MPEG location lookup table', {fiMPEGLookup}
-    'Ownership frame', {fiOwnership}
-    'Private frame', {fiPrivate}
-    'Play counter', {fiPlayCounter}
-    'Popularimeter', {fiPopularimeter}
-    'Position synchronisation frame', {fiPositionsync}
-    'Recommended buffer size', {fiBufferSize}
-    'Relative volume adjustment (2)', {fiVolumeAdj2}
-    'Relative volume adjustment', {fiVolumeAdj}
-    'Reverb', {fiReverb}
-    'Seek frame', {fiSeekFrame}
-    'Signature frame', {fiSignature}
-    'Synchronized lyric/text', {fiSyncedLyrics}
-    'Synchronized tempo codes', {fiSyncedTempo}
-    'Album/Movie/Show title', {fiAlbum}
-    'BPM (beats per minute)', {fiBPM}
-    'Composer', {fiComposer}
-    'Content type', {fiContentType}
-    'Copyright message', {fiCopyright}
-    'Date', {fiDate}
-    'Encoding time', {fiEncodingTime}
-    'Playlist delay', {fiPlaylistDelay}
-    'Original release time', {fiOrigReleaseTime}
-    'Recording time', {fiRecordingTime}
-    'Release time', {fiReleaseTime}
-    'Tagging time', {fiTaggingTime}
-    'Involved people list', {fiInvolvedPeople2}
-    'Encoded by', {fiEncodedBy}
-    'Lyricist/Text writer', {fiLyricist}
-    'File type', {fiFileType}
-    'Time', {fiTime}
-    'Content group description', {fiContentGroup}
-    'Title/songname/content description', {fiTitle}
-    'Subtitle/Description refinement', {fiSubTitle}
-    'Initial key', {fiInitialKey}
-    'Language(s)', {fiLanguage}
-    'Length', {fiSongLen}
-    'Musician credits list', {fiMusicianCreditList}
-    'Media type', {fiMediaType}
-    'Mood', {fiMood}
-    'Original album/movie/show title', {fiOrigAlbum}
-    'Original filename', {fiOrigFileName}
-    'Original lyricist(s)/text writer(s)', {fiOrigLyricist}
-    'Original artist(s)/performer(s)', {fiOrigArtist}
-    'Original release year', {fiOrigYear}
-    'File owner/licensee', {fiFileOwner}
-    'Lead performer(s)/Soloist(s)', {fiLeadArtist}
-    'Band/orchestra/accompaniment', {fiBand}
-    'Conductor/performer refinement', {fiConductor}
-    'Interpreted, remixed, or otherwise modified by', {fiMixArtist}
-    'Part of a set', {fiPartInSet}
-    'Produced notice', {fiProducedNotice}
-    'Publisher', {fiPublisher}
-    'Track number/Position in set', {fiTrackNum}
-    'Recording dates', {fiRecordingDates}
-    'Internet radio station name', {fiNetRadioStation}
-    'Internet radio station owner', {fiNetRadioOwner}
-    'Size', {fiSize}
-    'Album sort order', {fiAlbumSortOrder}
-    'Performer sort order', {fiPerformerSortOrder}
-    'Title sort order', {fiTitleSortOrder}
-    'ISRC (international standard recording code)', {fiISRC}
-    'Software/Hardware and settings used for encoding', {fiEncoderSettings}
-    'Set subtitle', {fiSetSubTitle}
-    'User defined text information', {fiUserText}
-    'Year', {fiYear}
-    'Unique file identifier', {fiUniqueFileID}
-    'Terms of use', {fiTermsOfUse}
-    'Unsynchronized lyric/text transcription', {fiUnsyncedLyrics}
-    'Commercial information', {fiWWWCommercialInfo}
-    'Copyright/Legal information', {fiWWWCopyright}
-    'Official audio file webpage', {fiWWWAudioFile}
-    'Official artist/performer webpage', {fiWWWArtist}
-    'Official audio source webpage', {fiWWWAudioSource}
-    'Official internet radio station homepage', {fiWWWRadioPage}
-    'Payment', {fiWWWPayment}
-    'Official publisher webpage', {fiWWWPublisher}
-    'User defined URL link', {fiWWWUser}
-    'Encrypted meta frame', {fiMetaCrypto}
-    'Compressed meta frame' {fiMetaCompression}
-    );
+  cFrameDescriptions: array [TJvID3FrameID] of string =
+   (
+    SfiErrorFrame,
+    SfiPaddingFrame,
+    SfiNoFrame,
+    SfiAudioCrypto,
+    SfiPicture,
+    SfiAudioSeekPoint,
+    SfiComment,
+    SfiCommercial,
+    SfiCryptoReg,
+    SfiEqualization2,
+    SfiEqualization,
+    SfiEventTiming,
+    SfiGeneralObject,
+    SfiGroupingReg,
+    SfiInvolvedPeople,
+    SfiLinkedInfo,
+    SfiCDID,
+    SfiMPEGLookup,
+    SfiOwnership,
+    SfiPrivate,
+    SfiPlayCounter,
+    SfiPopularimeter,
+    SfiPositionsync,
+    SfiBufferSize,
+    SfiVolumeAdj2,
+    SfiVolumeAdj,
+    SfiReverb,
+    SfiSeekFrame,
+    SfiSignature,
+    SfiSyncedLyrics,
+    SfiSyncedTempo,
+    SfiAlbum,
+    SfiBPM,
+    SfiComposer,
+    SfiContentType,
+    SfiCopyright,
+    SfiDate,
+    SfiEncodingTime,
+    SfiPlaylistDelay,
+    SfiOrigReleaseTime,
+    SfiRecordingTime,
+    SfiReleaseTime,
+    SfiTaggingTime,
+    SfiInvolvedPeople2,
+    SfiEncodedBy,
+    SfiLyricist,
+    SfiFileType,
+    SfiTime,
+    SfiContentGroup,
+    SfiTitle,
+    SfiSubTitle,
+    SfiInitialKey,
+    SfiLanguage,
+    SfiSongLen,
+    SfiMusicianCreditList,
+    SfiMediaType,
+    SfiMood,
+    SfiOrigAlbum,
+    SfiOrigFileName,
+    SfiOrigLyricist,
+    SfiOrigArtist,
+    SfiOrigYear,
+    SfiFileOwner,
+    SfiLeadArtist,
+    SfiBand,
+    SfiConductor,
+    SfiMixArtist,
+    SfiPartInSet,
+    SfiProducedNotice,
+    SfiPublisher,
+    SfiTrackNum,
+    SfiRecordingDates,
+    SfiNetRadioStation,
+    SfiNetRadioOwner,
+    SfiSize,
+    SfiAlbumSortOrder,
+    SfiPerformerSortOrder,
+    SfiTitleSortOrder,
+    SfiISRC,
+    SfiEncoderSettings,
+    SfiSetSubTitle,
+    SfiUserText,
+    SfiYear,
+    SfiUniqueFileID,
+    SfiTermsOfUse,
+    SfiUnsyncedLyrics,
+    SfiWWWCommercialInfo,
+    SfiWWWCopyright,
+    SfiWWWAudioFile,
+    SfiWWWArtist,
+    SfiWWWAudioSource,
+    SfiWWWRadioPage,
+    SfiWWWPayment,
+    SfiWWWPublisher,
+    SfiWWWUser,
+    SfiMetaCrypto,
+    SfiMetaCompression
+   );
 
 procedure ShowFramesEditor(Designer: IJvFormDesigner; AController: TJvID3Controller);
 var
@@ -689,7 +689,7 @@ begin
           FrameName := Frame.FrameName;
           if FrameName = '' then
             FrameName := Format('<%s>', [Controller.Frames[I].Name]);
-          FrameName := FrameName + ' - ' + CFrameDescriptions[Frame.FrameID];
+          FrameName := FrameName + ' - ' + cFrameDescriptions[Frame.FrameID];
           FrameListbox.Items.AddObject(FrameName, Frame);
         end;
       end;
@@ -852,7 +852,7 @@ end;
 
 function TFSDesigner.GetFrameDescription(const FrameID: TJvID3FrameID): string;
 begin
-  Result := CFrameDescriptions[FrameID];
+  Result := cFrameDescriptions[FrameID];
 end;
 
 procedure TFSDesigner.ID3Event(Event: TJvID3Event; Info: Longint);
