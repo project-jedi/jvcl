@@ -203,7 +203,7 @@ end;
 constructor TfrmMain.Create(AOwner: TComponent);
 begin
   inherited;
-  jaiIniStore.FileName := StrEnsureSuffix('\', ExtractFilePath(Application.exename)) + 'pgEdit.ini';
+  jaiIniStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.ini';
 
   with jsgDependencies do
   begin
@@ -281,13 +281,13 @@ begin
     if PathIsAbsolute(jdePackagesLocation.Text) then
       PackagesDir := jdePackagesLocation.Text
     else
-      PackagesDir := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir)+jdePackagesLocation.Text);
+      PackagesDir := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+jdePackagesLocation.Text);
     for i := 0 to odlAddFiles.Files.Count-1 do
     begin
       row := jsgFiles.InsertRow(jsgFiles.RowCount-1);
       Name := odlAddFiles.Files[i];
       Dir := GetRelativePath(PackagesDir, ExtractFilePath(Name));
-      row[0] := '..\' + StrEnsureSuffix('\', Dir) + ExtractFileName(Name);
+      row[0] := '..' +PathSeparator+ StrEnsureSuffix(PathSeparator, Dir) + ExtractFileName(Name);
       row[1] := 'all';
 
       // try to find if there is a dfm associated with the file
@@ -329,7 +329,7 @@ begin
           row[2] := FormName + ': ' + FormType;
       end;
     end;
-    odlAddFiles.InitialDir := '..\'+Dir;
+    odlAddFiles.InitialDir := '..'+PathSeparator+Dir;
     Changed := True;
   end;
 end;
@@ -382,10 +382,10 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     path := jdePackagesLocation.Text
   else
-    path := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir)+jdePackagesLocation.Text);
+    path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+jdePackagesLocation.Text);
 
   EnumeratePackages(path, jlbList.Items);
-  path := StrEnsureSuffix('\', path);
+  path := StrEnsureSuffix(PathSeparator, path);
 {  if FileExists(path+'Default-D.xml') then
     jlbList.Items.Add('Default-D');
   if FileExists(path+'Default-R.xml') then
@@ -411,9 +411,9 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     FileName := jdePackagesLocation.Text
   else
-    FileName := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + jdePackagesLocation.Text);
+    FileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + jdePackagesLocation.Text);
 
-  FileName := FileName + '\xml\' + ledName.Text;
+  FileName := FileName + PathSeparator+'xml'+PathSeparator + ledName.Text;
   if rbtDesign.Checked then
     FileName := FileName + '-D.xml'
   else
@@ -513,8 +513,8 @@ begin
   if PathIsAbsolute(jdePackagesLocation.Text) then
     xmlFileName := jdePackagesLocation.Text
   else
-    xmlFileName := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + jdePackagesLocation.Text);
-  xmlFileName := xmlFileName + '\xml\';
+    xmlFileName := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + jdePackagesLocation.Text);
+  xmlFileName := xmlFileName + PathSeparator+'xml'+PathSeparator;
   if rbtDesign.Checked then
     xmlFileName := xmlFileName + jlbList.Items[jlbList.ItemIndex] + '.xml'
   else
@@ -594,7 +594,7 @@ begin
     if PathIsAbsolute(jdePackagesLocation.Text) then
       path := jdePackagesLocation.Text
     else
-      path := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir) + jdePackagesLocation.Text);
+      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir) + jdePackagesLocation.Text);
 
     frmTargets.Path := path;
     if frmTargets.ShowModal = mrOk then
@@ -875,9 +875,9 @@ begin
     if PathIsAbsolute(jdePackagesLocation.Text) then
       path := jdePackagesLocation.Text
     else
-      path := PathNoInsideRelative(StrEnsureSuffix('\', StartupDir)+jdePackagesLocation.Text);
+      path := PathNoInsideRelative(StrEnsureSuffix(PathSeparator, StartupDir)+jdePackagesLocation.Text);
 
-    path := StrEnsureSuffix('\', path) + 'xml\' + jlbList.Items[jlbList.ItemIndex]+'.xml';
+    path := StrEnsureSuffix(PathSeparator, path) + 'xml'+PathSeparator + jlbList.Items[jlbList.ItemIndex]+'.xml';
     if not DeleteFile(path) then
       Application.MessageBox(PChar('Unable to delete ' + path),
                              'Error',
