@@ -230,7 +230,7 @@ var
   AName: string;
   AElem: TJvSimpleXMLElem;
 
-  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem); forward;
+  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem; Recurse:Boolean); forward;
 
   procedure TreeNodesToXML(Nodes: TTreeNodes; Elem: TJvSimpleXMLElem);
   var
@@ -240,12 +240,16 @@ var
     // format: <Items>
     //           <Item Index="" Value="" />
     // TODO
+    if InSkipList(Nodes) then Exit;
     N := Nodes.GetFirstNode;
     while Assigned(N) do
     begin
-      AElem := Elem.Items.Add(cItem);
-      AElem.Properties.Add(cIndex, N.Index);
-      AElem.Properties.Add(cValue, N.Text);
+      if not InSkipList(N) then
+      begin
+        AElem := Elem.Items.Add(cItem);
+        AElem.Properties.Add(cIndex, N.Index);
+        AElem.Properties.Add(cValue, N.Text);
+      end;
       {
             AElem.Properties.Add('ImageIndex',N.ImageIndex);
             AElem.Properties.Add('SelectedIndex',N.SelectedIndex);
@@ -262,18 +266,22 @@ var
     // format: <Items>
     //           <Item Index="" Column="" Value="" />
     // TODO
+    if InSkipList(Items) then Exit;
     for I := 0 to Items.Count - 1 do
     begin
-      AElem := Elem.Items.Add(cItem);
-      AElem.Properties.Add(cIndex, I);
-      AElem.Properties.Add(cColumn, 0);
-      AElem.Properties.Add(cValue, Items[I].Caption);
-      for J := 0 to Items[I].SubItems.Count - 1 do
+      if not InSkipList(Items[i]) then
       begin
         AElem := Elem.Items.Add(cItem);
         AElem.Properties.Add(cIndex, I);
-        AElem.Properties.Add(cColumn, J + 1);
-        AElem.Properties.Add(cValue, Items[I].SubItems[J]);
+        AElem.Properties.Add(cColumn, 0);
+        AElem.Properties.Add(cValue, Items[I].Caption);
+        for J := 0 to Items[I].SubItems.Count - 1 do
+        begin
+          AElem := Elem.Items.Add(cItem);
+          AElem.Properties.Add(cIndex, I);
+          AElem.Properties.Add(cColumn, J + 1);
+          AElem.Properties.Add(cValue, Items[I].SubItems[J]);
+        end;
       end;
     end;
   end;
@@ -285,6 +293,7 @@ var
   begin
     // format: <Items>
     //           <Item Index="" Value="" />
+    if InSkipList(Strings) then Exit;
     for I := 0 to Strings.Count - 1 do
     begin
       AElem := Elem.Items.Add(cItem);
@@ -299,6 +308,11 @@ var
     AElem: TJvSimpleXMLElem;
   begin
     // I'm not sure how to create a translation template for this component, so this is just a guess...
+    // format:
+    // <Variables>
+    //   <Item Name="" Value="" />
+    // </Variables>
+    if InSkipList(AStrings) then Exit;
     Elem.Name := cVariables;
     for I := 0 to AStrings.Count - 1 do
     begin
@@ -307,7 +321,7 @@ var
       AElem.Properties.Add(cValue, AStrings.Value[I]);
     end;
   end;
-
+(*
   procedure ObjectToXML(AnObject: TObject; Elem: TJvSimpleXMLElem);
   var
     J, Count: Integer;
@@ -316,7 +330,6 @@ var
     PropInfo: PPropInfo;
     AnObj: TObject;
   begin
-
     if (AnObject <> nil) and not InSkipList(AnObject) then
     begin
       Count := InternalGetPropList(AnObject, PropList);
@@ -365,16 +378,8 @@ var
       end;
     end;
   end;
-
-  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem);
-  var
-    I: Integer;
-  begin
-    for I := 0 to Collection.Count - 1 do
-      ObjectToXML(Collection.Items[I], Elem.Items.Add(Collection.Items[I].DisplayName));
-  end;
-
-  procedure InnerComponentToXML(AComponent: TComponent; Elem: TJvSimpleXMLElem; Recurse: Boolean);
+*)
+  procedure InnerComponentToXML(AComponent: TObject; Elem: TJvSimpleXMLElem; Recurse: Boolean);
   var
     I, Count: Integer;
     PropList: PPropList;
@@ -382,7 +387,6 @@ var
     PropInfo: PPropInfo;
     AnObj: TObject;
   begin
-
     if AComponent = nil then
       Exit;
     if not InSkipList(AComponent) then
@@ -408,7 +412,7 @@ var
             tkSet:
               Elem.Properties.Add(PropName, GetSetProp(AComponent, PropName));
             tkString, tkLString, tkWString:
-              Elem.Properties.Add(PropName, InternalGetWideStrProp(AComponent, PropName));
+              Elem.Properties.Add(PropName, XMLEncode(InternalGetWideStrProp(AComponent, PropName)));
             tkClass:
               begin
                 AnObj := GetObjectProp(AComponent, PropName);
@@ -422,14 +426,14 @@ var
                   StringsToXML(TStrings(AnObj), Elem.Items.Add(PropName))
                 else
                 if IsObject(AnObj.ClassType, cTCollection) then
-                  CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName))
+                  CollectionToXML(TCollection(AnObj), Elem.Items.Add(PropName), Recurse)
                 else
                 if not IsObject(AnObj.ClassType, cTComponent) then
                   // NB! TComponents are excluded because most of the time, a published TComponent
                   // property references another component on the form. In some cases, however, a TComponent
                   // *can* be an internal component and this code won't list it.
                   // No known solution yet (no, HasParent/GetparentComponent doesn't work here)
-                  ObjectToXML(AnObj, Elem.Items.Add(PropName));
+                  InnerComponentToXML(AnObj, Elem.Items.Add(PropName), Recurse);
               end;
           end;
         except
@@ -437,10 +441,19 @@ var
         end;
       end;
     end;
-    if Recurse then
-      for I := 0 to AComponent.ComponentCount - 1 do
-        if AComponent.Components[I].Name <> '' then
-          InnerComponentToXML(AComponent.Components[I], Elem.Items.Add(AComponent.Components[I].Name), True);
+    if Recurse and (AComponent is TComponent) then
+      for I := 0 to TComponent(AComponent).ComponentCount - 1 do
+        if TComponent(AComponent).Components[I].Name <> '' then
+          InnerComponentToXML(TComponent(AComponent).Components[I], Elem.Items.Add(TComponent(AComponent).Components[I].Name), True);
+  end;
+  procedure CollectionToXML(Collection: TCollection; Elem: TJvSimpleXMLElem; Recurse:Boolean);
+  var
+    I: Integer;
+  begin
+    if not InSkipList(Collection) then
+      for I := 0 to Collection.Count - 1 do
+        if not InSkipList(Collection.Items[I]) then
+          InnerComponentToXML(Collection.Items[I], Elem.Items.Add(Collection.Items[I].DisplayName), Recurse);
   end;
 
 begin
