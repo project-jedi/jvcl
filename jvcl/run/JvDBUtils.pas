@@ -477,7 +477,7 @@ begin
   with DataSet do
   begin
     CheckBrowseMode;
-    if Bof and Eof then
+    if IsEmpty then
       Exit;
   end;
   Fields := TList.Create;
