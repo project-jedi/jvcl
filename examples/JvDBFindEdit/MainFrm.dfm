@@ -14,6 +14,7 @@ object Form1: TForm1
   Font.Style = []
   OldCreateOrder = False
   Position = poDesktopCenter
+  OnClose = FormClose
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -104,10 +105,10 @@ object Form1: TForm1
       Top = 28
       Width = 217
       Height = 21
+      TabOrder = 4
       DataField = 'Event_Date'
       DataSource = DataSource1
       FindStyle = fsFilter
-      TabOrder = 4
     end
   end
   object DataSource1: TDataSource
@@ -116,7 +117,6 @@ object Form1: TForm1
     Top = 288
   end
   object Table1: TTable
-    Active = True
     DatabaseName = 'DBDEMOS'
     TableName = 'events.db'
     Left = 144
