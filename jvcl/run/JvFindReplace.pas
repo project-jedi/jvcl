@@ -333,7 +333,8 @@ begin
   SLen := Length(SearchText);
   RLen := Length(ReplaceText);
   TLen := Length(Txt);
-  FoundPos := FindInText(Txt, SearchText, 0, TLen, True);
+  FoundPos := FindInText(Txt, SearchText, EditControl.SelStart + EditControl.SelLength, TLen, True);
+//  FoundPos := FindInText(Txt, SearchText, 0, TLen, True);
 
   if FoundPos.StartAt > -1 then
   begin
