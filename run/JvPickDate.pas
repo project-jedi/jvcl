@@ -33,11 +33,18 @@ unit JvPickDate;
 interface
 
 uses
-  Windows, Classes,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  Controls, SysUtils, Graphics,
+  {$IFDEF VCL}
+  Windows, Messages,
+  Controls, Graphics, Forms, Buttons, StdCtrls, Grids, ExtCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QTypes, QControls, QGraphics, QForms, QButtons, QStdCtrls, QGrids, QExtCtrls,
+  Types, QWindows,
+  {$ENDIF VisualCLX}
+  SysUtils, Classes,
   JvTypes, JvSpeedButton, JvJCLUtils, JvExGrids;
 
 { Calendar dialog }
@@ -74,27 +81,41 @@ const
 implementation
 
 uses
-  Messages, Consts, Forms, Buttons, StdCtrls, Grids, ExtCtrls, Math,
+  Consts, Math,
   JvThemes, JvConsts, JvResources, JvToolEdit, JvJVCLUtils;
 
-{$R ..\resources\JvPickDate.res}
+{$IFDEF MSWINDOWS}
+{$R ..\Resources\JvPickDate.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvPickDate.res}
+{$ENDIF LINUX}
 
 const
   SBtnGlyphs: array [0..3] of PChar =
     ('JV_PREV2', 'JV_PREV1', 'JV_NEXT1', 'JV_NEXT2');
 
 procedure FontSetDefault(AFont: TFont);
+{$IFDEF VCL}
 var
   NonClientMetrics: TNonClientMetrics;
+{$ENDIF VCL}  
 begin
+  {$IFDEF VCL}
   NonClientMetrics.cbSize := SizeOf(NonClientMetrics);
   if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NonClientMetrics, 0) then
     AFont.Handle := CreateFontIndirect(NonClientMetrics.lfMessageFont)
   else
+  {$ENDIF VCL}
     with AFont do
     begin
       Color := clWindowText;
+      {$IFDEF MSWINDOWS}
       Name := 'MS Sans Serif';
+      {$ENDIF MSWINDOWS}
+      {$IFDEF LINUX}
+      Name := 'Verdana';
+      {$ENDIF LINUX}
       Size := 8;
       Style := [];
     end;
@@ -161,7 +182,9 @@ type
     function CellInRange(ACol, ARow: Integer): Boolean;
     function DateInRange(ADate: TDateTime): Boolean;
     //<Polaris
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure Change; dynamic;
     procedure ChangeMonth(Delta: Integer);
     procedure Click; override;
@@ -218,6 +241,7 @@ begin
   UpdateCalendar;
 end;
 
+{$IFDEF VCL}
 procedure TJvCalendar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -225,6 +249,7 @@ begin
   Params.ExStyle := Params.ExStyle and not WS_EX_CLIENTEDGE;
   AddBiDiModeExStyle(Params.ExStyle);
 end;
+{$ENDIF VCL}
 
 procedure TJvCalendar.Change;
 begin
@@ -727,7 +752,9 @@ type
   protected
     procedure EnabledChanged; override;
     procedure ParentColorChanged; override;
+    {$IFDEF VCL}
     procedure CreateParams(var Params: TCreateParams); override;
+    {$ENDIF VCL}
     procedure DrawCell(ACol, ARow: Longint; ARect: TRect; AState: TGridDrawState); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -742,7 +769,9 @@ begin
   inherited Create(AOwner);
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks];
   ControlStyle := ControlStyle + [csReplicatable];
+  {$IFDEF VCL}
   Ctl3D := False;
+  {$ENDIF VCL}
   Enabled := False;
   BorderStyle := bsNone;
   ParentColor := True;
@@ -767,12 +796,14 @@ begin
     EnableWindow(Handle, True);
 end;
 
+{$IFDEF VCL}
 procedure TJvLocCalendar.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
   with Params do
     Style := Style and not (WS_BORDER or WS_TABSTOP or WS_DISABLED);
 end;
+{$ENDIF VCL}
 
 procedure TJvLocCalendar.MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
 var
@@ -851,7 +882,9 @@ begin
     TJvPopupCalendar(Result).FCalendar.MinDate := MinDate;
     TJvPopupCalendar(Result).FCalendar.MaxDate := MaxDate;
     FontSetDefault(TJvPopupCalendar(Result).Font);
+    {$IFDEF VCL}
     Result.BiDiMode := ABiDiMode;
+    {$ENDIF VCL}
   end;
 end;
 
@@ -967,7 +1000,8 @@ begin
   begin
     Parent := Control;
     SetBounds(0 - HorzOffset, VertOffset, BtnSide, BtnSide);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
     Hint := RsPrevYearHint;
   end;
@@ -977,7 +1011,8 @@ begin
   begin
     Parent := Control;
     SetBounds(BtnSide - 1 - HorzOffset, VertOffset, BtnSide, BtnSide);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
     Hint := RsPrevMonthHint;
   end;
@@ -999,7 +1034,8 @@ begin
   begin
     Parent := Control;
     SetBounds(Control.Width - 2 * BtnSide + 1 + HorzOffset, VertOffset, BtnSide, BtnSide);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
     Hint := RsNextMonthHint;
   end;
@@ -1009,7 +1045,8 @@ begin
   begin
     Parent := Control;
     SetBounds(Control.Width - BtnSide + HorzOffset, VertOffset, BtnSide, BtnSide);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
     Hint := RsNextYearHint;
   end;
@@ -1218,7 +1255,12 @@ begin
   inherited CreateNew(AOwner);
   {$ENDIF BCB}
   Caption := RsDateDlgCaption;
+  {$IFDEF VCL}
   BorderStyle := bsToolWindow;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  BorderStyle := fbsToolWindow;
+  {$ENDIF VisualCLX}
   BorderIcons := [biSystemMenu];
   ClientHeight := 158; // Polaris
   ClientWidth := 222;
@@ -1259,7 +1301,8 @@ begin
   begin
     Parent := Control;
     SetBounds(3, 3, 16, 16);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[0]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[0]);
     OnClick := PrevYearBtnClick;
     Hint := RsPrevYearHint;
   end;
@@ -1269,7 +1312,8 @@ begin
   begin
     Parent := Control;
     SetBounds(18, 3, 16, 16);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[1]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[1]);
     OnClick := PrevMonthBtnClick;
     Hint := RsPrevMonthHint;
   end;
@@ -1279,7 +1323,8 @@ begin
   begin
     Parent := Control;
     SetBounds(188, 3, 16, 16);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[2]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[2]);
     OnClick := NextMonthBtnClick;
     Hint := RsNextMonthHint;
   end;
@@ -1289,7 +1334,8 @@ begin
   begin
     Parent := Control;
     SetBounds(203, 3, 16, 16);
-    Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
+    //Glyph.Handle := LoadBitmap(HInstance, SBtnGlyphs[3]);
+    Glyph.LoadFromResourceName(HInstance, SBtnGlyphs[3]);
     OnClick := NextYearBtnClick;
     Hint := RsNextYearHint;
   end;

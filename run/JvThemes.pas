@@ -741,7 +741,11 @@ procedure DrawThemedBorder(Control: TControl);
 
 type
   {$IFDEF COMPILER7_UP}
+   {$IFDEF VCL}
   TThemeStyle = TControlStyle;
+   {$ELSE}
+  TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
+   {$ENDIF VCL}
   {$ELSE}
   TThemeStyle = set of (csNeedsBorderPaint, csParentBackground);
   {$ENDIF COMPILER7_UP}
