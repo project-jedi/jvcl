@@ -23,6 +23,8 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
+// TColorBox is implemented in ExtCtrls in Delphi and BCB version 6 and +
+
 unit JvFullColorSpaces;
 
 {$I jvcl.inc}
@@ -37,7 +39,6 @@ type
   TJvAxisIndex = (axIndex0, axIndex1, axIndex2);
   TJvFullColorSpaceID = type Byte;
   TJvFullColor = type Cardinal;
-
 
 const
   JvSystemColorMask =
@@ -252,18 +253,18 @@ type
     function GetShortName: string; override;
     function GetNumberOfColors: Cardinal; override;
     function GetColorName(Index: Integer): string;
-    function GetPretyName(Index: Integer): string;
+    function GetPrettyName(Index: Integer): string;
     function GetColorValue(Index: Integer): TColor;
   public
     constructor Create(ColorID: TJvFullColorSpaceID); override;
     destructor Destroy; override;
     function ConvertFromColor(AColor: TColor): TJvFullColor; override;
     function ConvertToColor(AColor: TJvFullColor): TColor; override;
-    procedure AddCustomColor(AColor:TColor; ShortName:string; PretyName:string);
+    procedure AddCustomColor(AColor:TColor; ShortName:string; PrettyName:string);
     procedure AddDelphiColor(Value:TColor);
     property ColorCount:Cardinal read GetNumberOfColors;
     property ColorName[Index:Integer]:string read GetColorName;
-    property ColorPretyName[Index:Integer]:string read GetPretyName;
+    property ColorPrettyName[Index:Integer]:string read GetPrettyName;
     property ColorValue[Index:Integer]:TColor read GetColorValue; default;
   end;
 
@@ -295,10 +296,13 @@ function ColorSpaceManager: TJvColorSpaceManager;
 function GetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex): Byte;
 function SetAxisValue(AColor: TJvFullColor; AAxis: TJvAxisIndex; NewValue: Byte): TJvFullColor;
 
-// (outchy) move to another unit
-function IsClassInModule(Module:HMODULE; ObjectClass:TClass):Boolean;
+function ColorToPrettyName(Value: TColor): string;
+function PrettyNameToColor(Value: string): TColor;
 
-function RGBToBGR(Value: Cardinal):Cardinal;
+// (outchy) move to another unit
+function IsClassInModule(Module:HMODULE; ObjectClass:TClass): Boolean;
+
+function RGBToBGR(Value: Cardinal): Cardinal;
 
 procedure SplitColorParts(AColor: TJvFullColor; var Part1, Part2, Part3: Integer);
 function JoinColorParts(const Part1, Part2, Part3: Integer): TJvFullColor;
@@ -309,10 +313,16 @@ uses
   {$IFDEF UNITVERSIONING}
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
-  TypInfo, Math, ExtCtrls, StdCtrls;
+  {$IFDEF COMPILER6_UP}
+  Controls, StdCtrls, ExtCtrls,
+  {$ENDIF COMPILER6_UP}
+  TypInfo, Math;
 
 var
   GlobalColorSpaceManager: TJvColorSpaceManager = nil;
+{$IFDEF COMPILER6_UP}
+  GlobalPrettyNameStrings: TStrings = nil;
+{$ENDIF COMPILER6_UP}
 
 resourcestring
   RsErr_NoTypeInfo         = 'The class %s contains no run time type info'+sLineBreak+
@@ -447,6 +457,143 @@ begin
     ((Part2 and $000000FF) shl 8) or
     ((Part3 and $000000FF) shl 16);
 end;
+
+// (outchy) Hook of TColorBox to have access to color's pretty names.
+// Shame on me but that's the only way to access ColorToPrettyName array in the
+// ExtCtrls unit. Thanks Borland.
+
+{$IFDEF COMPILER6_UP}
+type
+  TJvHookColorBox = class (TCustomColorBox)
+  protected
+    function GetItemsClass: TCustomComboBoxStringsClass; override;
+    procedure DestroyWindowHandle; override;
+  public
+    constructor Create; reintroduce;
+    procedure CreateWnd; override;
+    procedure DestroyWnd; override;
+  end;
+
+  TJvHookComboBoxStrings = class (TCustomComboBoxStrings)
+  protected
+    function GetCount: Integer; override;
+  public
+    procedure Clear; override;
+    function AddObject(const S: string; AObject: TObject): Integer; override;
+  end;
+
+function PrettyNameStrings: TStrings;
+var
+  AHookColorBox:TJvHookColorBox;
+begin
+  if (GlobalPrettyNameStrings = nil) then
+  begin
+    GlobalPrettyNameStrings := TStringList.Create;
+    AHookColorBox:=TJvHookColorBox.Create;
+    try
+      AHookColorBox.CreateWnd;
+      AHookColorBox.PopulateList;
+    finally
+      AHookColorBox.Free;
+    end;
+  end;
+
+  Result := GlobalPrettyNameStrings;
+end;
+{$ENDIF COMPILER6_UP}
+
+function ColorToPrettyName(Value: TColor): string;
+{$IFDEF COMPILER6_UP}
+var
+  AIndex: Integer;
+begin
+  AIndex := PrettyNameStrings.IndexOfObject(TObject(Value));
+  if AIndex <> -1 then
+    Result := PrettyNameStrings.Strings[AIndex]
+  else
+    Result := ColorToString(Value);
+end;
+{$ELSE COMPILER6_UP}
+begin
+  Result := ColorToString(Value);
+end;
+{$ENDIF COMPILER6_UP}
+
+function PrettyNameToColor(Value: string): TColor;
+{$IFDEF COMPILER6_UP}
+var
+  AIndex: Integer;
+  TempResult: Longint;
+begin
+  AIndex := PrettyNameStrings.IndexOf(Value);
+  if AIndex <> -1 then
+    Result := TColor(PrettyNameStrings.Objects[AIndex])
+  else if IdentToColor(Value,TempResult) then
+    Result := TempResult
+  else
+    Result := clNone;
+end;
+{$ELSE COMPILER6_UP}
+var
+  TempResult: LongInt;
+begin
+  if IdentToColor(Value,TempResult) then
+    Result := TempResult
+  else
+    Result := clNone;
+end;
+{$ENDIF COMPILER6_UP}
+
+
+{$IFDEF COMPILER6_UP}
+//=== { TJvHookColorBox } ====================================================
+
+constructor TJvHookColorBox.Create;
+begin
+  inherited Create(nil);
+  Style := [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone,
+            cbIncludeDefault, cbPrettyNames];
+end;
+
+procedure TJvHookColorBox.DestroyWnd;
+begin
+  WindowHandle := 0;
+end;
+
+procedure TJvHookColorBox.DestroyWindowHandle;
+begin
+  WindowHandle := 0;
+end;
+
+function TJvHookColorBox.GetItemsClass: TCustomComboBoxStringsClass;
+begin
+  Result:=TJvHookComboBoxStrings;
+end;
+
+procedure TJvHookColorBox.CreateWnd;
+begin
+  WindowHandle := 1;
+end;
+
+//=== { TJvHookComboBoxStrings } =============================================
+
+procedure TJvHookComboBoxStrings.Clear;
+begin
+  PrettyNameStrings.Clear;
+end;
+
+function TJvHookComboBoxStrings.AddObject(const S: string;
+  AObject: TObject): Integer;
+begin
+  Result := PrettyNameStrings.AddObject(S,AObject);
+end;
+
+function TJvHookComboBoxStrings.GetCount: Integer;
+begin
+  Result := PrettyNameStrings.Count;
+end;
+
+{$ENDIF COMPILER6_UP}
 
 //=== { TJvColorSpace } ======================================================
 
@@ -1400,60 +1547,6 @@ begin
   Result := RsLAB_ShortName;
 end;
 
-//=== { TJvHookColorBox } ====================================================
-
-// (outchy) Hook of TColorBox to have access to color's prety names.
-// Shame on me but that's the only way to access ColorToPretyName array in the
-// ExtCtrls unit. Thanks Borland.
-
-{type
-  TJvHookColorBox = class (TColorBox)
-  protected
-    procedure CreateWindowHandle; override;
-    procedure DestroyWindowHandle; override;
-    function GetItemsClass: TCustomComboBoxStringsClass; override;
-  public
-    constructor Create; reintroduce;
-  end;
-
-constructor TJvHookColorBox.Create;
-begin
-  inherited Create(nil);
-  Styles := [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone,
-             cbIncludeDefault, cbPrettyNames];
-  Items.Free;
-end;
-
-procedure CreateWindowHandle; override;
-begin
-  WindowHandle := 1;
-end;
-
-procedure DestroyWindowHandle; override;
-begin
-  WindowHandle := 0;
-end;
-
-var
-  GlobalHookColorBox: TJvHookColorBox = nil;
-
-function HookColorBox: TJvHookColorBox;
-begin
-  if GlobalHookColorBox = nil then
-    GlobalHookColorBox := TJvHookColorBox.Create;
-  Result:=GlobalHookColorBox;
-end;
-
-function ColorToPretyName(Value: TColor):string;
-begin
-
-end;
-
-function PretyNameToString(Value: string):TColor;
-begin
-  Result:=clNone;
-end; }
-
 //=== { TJvDEFColorSpace } ===================================================
 
 constructor TJvDEFColorSpace.Create(ColorID: TJvFullColorSpaceID);
@@ -1473,21 +1566,26 @@ begin
 end;
 
 procedure TJvDEFColorSpace.GetColorValuesCallBack(const S: String);
+var
+  AColor: TColor;
 begin
-  AddCustomColor(StringToColor(S),S,'');
+  AColor := StringToColor(S);
+  AddCustomColor(AColor,Copy(S,3,Length(S)-2),ColorToPrettyName(AColor));
 end;
 
 procedure TJvDEFColorSpace.AddDelphiColor(Value: TColor);
 begin
-  AddCustomColor(Value,ColorToString(Value),'');//ColorToPretyName(Value));
+  AddCustomColor(Value,ColorToString(Value),ColorToPrettyName(Value));
 end;
 
 procedure TJvDEFColorSpace.AddCustomColor(AColor: TColor; ShortName,
-  PretyName: string);
+  PrettyName: string);
 begin
-  //FDelphiColors.ValueFromIndex[
-  FDelphiColors.AddObject(ShortName,TObject(AColor));
-  //]:=PretyName;
+  if FDelphiColors.IndexOfObject(TObject(AColor)) = -1 then
+  begin
+    FDelphiColors.Values[ShortName] := PrettyName;
+    FDelphiColors.Objects[FDelphiColors.IndexOfName(ShortName)] := TObject(AColor);
+  end;
 end;
 
 function TJvDEFColorSpace.ConvertFromColor(AColor: TColor): TJvFullColor;
@@ -1544,14 +1642,14 @@ end;
 function TJvDEFColorSpace.GetColorName(Index: Integer): string;
 begin
   if (Index >= 0) and (Index < FDelphiColors.Count) then
-    Result := FDelphiColors.Strings[Index]
+    Result := FDelphiColors.Names[Index]
   else
     Result := '';
 end;
 
-function TJvDEFColorSpace.GetPretyName(Index: Integer): string;
+function TJvDEFColorSpace.GetPrettyName(Index: Integer): string;
 begin
-
+  Result := FDelphiColors.ValueFromIndex[Index];
 end;
 
 function TJvDEFColorSpace.GetColorValue(Index: Integer): TColor;
@@ -1701,7 +1799,7 @@ begin
     then UnitNames.Add(Name);
 end;
 
-function IsClassInModule(Module:HMODULE; ObjectClass:TClass):Boolean;
+function IsClassInModule(Module:HMODULE; ObjectClass:TClass): Boolean;
 var
   PackageFlags:Integer;
   AClassTypeInfo:PTypeInfo;
@@ -1766,18 +1864,21 @@ initialization
   ColorSpaceManager.RegisterColorSpace(TJvLABColorSpace.Create(csLAB));
   ColorSpaceManager.RegisterColorSpace(TJvDEFColorSpace.Create(csDEF));
 
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   RegisterUnitVersion(HInstance, UnitVersioning);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 finalization
   RemoveModuleUnloadProc(ModuleUnloadProc);
   FreeAndNil(GlobalColorSpaceManager);
+{$IFDEF COMPILER6_UP}
+  FreeAndNil(GlobalPrettyNameStrings);
+{$ENDIF COMPILER6_UP}
   CurrentModule:=0;
   FreeAndNil(UnitNames);
-  {$IFDEF UNITVERSIONING}
+{$IFDEF UNITVERSIONING}
   UnregisterUnitVersion(HInstance);
-  {$ENDIF UNITVERSIONING}
+{$ENDIF UNITVERSIONING}
 
 end.
 

@@ -528,8 +528,8 @@ begin
     AColor := GetOrdValue
   else
     AColor := ColorSpaceManager.ConvertToColor(TJvFullColor(GetOrdValue));
-  if ((AColor and $FF000000) <> 0) xor (PredefinedFamily = pfConstant) then
-    ColorToIdent(AColor, Result)
+  if ((AColor and JvSystemColorMask) <> 0) xor (PredefinedFamily = pfConstant) then
+    Result := ColorToPrettyName(AColor)
   else
     Result := '';
 end;
@@ -544,15 +544,15 @@ begin
   for I:=0 to CS.ColorCount-1 do
   begin
     AColor:=CS.ColorValue[I];
-    if ((AColor and $FF000000) <> 0) xor (PredefinedFamily = pfConstant)
-      then Proc(CS.ColorName[I]);
+    if ((AColor and JvSystemColorMask) <> 0) xor (PredefinedFamily = pfConstant)
+      then Proc(CS.ColorPrettyName[I]);
   end;
 end;
 
 procedure TJvDEFColorSpaceIndentProperty.ListDrawValue(const Value: string;
   ACanvas: TCanvas; const ARect: TRect; ASelected: Boolean);
 begin
-  ColorPropertyListDrawValue(StringToColor(Value), Value, ACanvas, ARect, ASelected);
+  ColorPropertyListDrawValue(PrettyNameToColor(Value), Value, ACanvas, ARect, ASelected);
 end;
 
 procedure TJvDEFColorSpaceIndentProperty.ListMeasureHeight(const Value: string;
@@ -571,18 +571,23 @@ procedure TJvDEFColorSpaceIndentProperty.SetValue(const Value: string);
 var
   I:Integer;
   CS: TJvDEFColorSpace;
+  clPrefix: string;
 begin
+  clPrefix := Copy(ColorToString(clBlack),1,2);
   CS := TJvDEFColorSpace(Parent.ColorSpace);
   for I:=0 to CS.ColorCount-1 do
-    if (CompareText(Value,CS.ColorName[I])=0) then
+    if   (CompareText(Value,CS.ColorName[I])=0)
+      or (CompareText(Value,clPrefix+CS.ColorName[I])=0)
+      or (CompareText(Value,CS.ColorPrettyName[I])=0) then
   begin
     if Parent.Parent.IsColorProperty then
       SetOrdValue(CS.ColorValue[I])
-    else if ((CS.ColorValue[I] and JvSystemColorMask)=JvSystemColorMask) then
+    else if ((CS.ColorValue[I] and JvSystemColorMask)<>0) then
       SetOrdValue(CS.ConvertFromColor(CS.ColorValue[I]))
     else with ColorSpaceManager do
       SetOrdValue(ConvertToID(ConvertFromColor(CS.ColorValue[I]),
                               GetColorSpaceID(GetOrdValue)));
+    Break;
   end;
 end;
 
