@@ -28,12 +28,11 @@ Known Issues:
 
 unit JvWinHelp;
 
-
-
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, Menus, JvTypes, JvComponent;
+  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+  Forms, Dialogs, Menus, JvTypes, JvComponent;
 
 type
   TJvWinHelp = class(TJvComponent)
@@ -41,11 +40,11 @@ type
     FHelpFile: string;
     FOwner: TComponent;
     function GetHelpFile: PChar;
+  protected
+    function GetOwnerHandle: THandle;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-  published
-    property HelpFile: string read FHelpFile write FHelpFile;
     function ShowContextualHelp(Control: TWinControl): Boolean;
     function ExecuteCommand(MacroCommand: string): Boolean;
     function ShowHelp(Control: TWinControl): Boolean;
@@ -55,6 +54,8 @@ type
     function ShowKeyword(Keyword: string): Boolean;
     function ShowPartialKeyWord(Keyword: string): Boolean;
     function SetWindowPos(Left, Top, Width, Height: Integer; Visibility: Integer): Boolean;
+  published
+    property HelpFile: string read FHelpFile write FHelpFile;
   end;
 
 implementation
@@ -69,7 +70,6 @@ begin
   inherited;
   FHelpFile := '';
   FOwner := AOwner;
-
   while FOwner.GetParentComponent <> nil do
     FOwner := FOwner.GetParentComponent;
   if not (FOwner is TForm) then
@@ -80,7 +80,7 @@ end;
 
 destructor TJvWinHelp.Destroy;
 begin
-  WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_QUIT, 0);
+  WinHelp(GetOwnerHandle, GetHelpFile, HELP_QUIT, 0);
   inherited;
 end;
 
@@ -88,20 +88,36 @@ end;
 
 function TJvWinHelp.ExecuteCommand(MacroCommand: string): Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_COMMAND, Longint(PChar(MacroCommand)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_COMMAND, Longint(PChar(MacroCommand)));
 end;
 
 {**************************************************}
 
 function TJvWinHelp.GetHelpFile: PChar;
 begin
-  if FHelpFile = '' then
-    Result := PChar((FOwner as TForm).HelpFile)
+  if (FHelpFile = '') and (FOwner is TForm) and not (csDestroying in TForm(FOwner).ComponentState) then
+    Result := PChar(TForm(FOwner).HelpFile)
   else
     Result := PChar(FHelpFile);
 end;
 
 {**************************************************}
+
+function TJvWinHelp.GetOwnerHandle: THandle;
+begin
+  Result := 0;
+  if (FOwner is TWinControl) and not (csDestroying in TWinControl(FOwner).ComponentState) then
+    Result := TWinControl(FOwner).Handle
+  else if (Application <> nil) then
+  begin
+    if (Screen <> nil) and (Screen.ActiveForm <> nil) then
+      Result := Screen.ActiveForm.Handle
+    else if Application.MainForm <> nil then
+      Result := Application.MainForm.Handle
+    else if not (csDestroying in Application.ComponentState) then
+      Result := Application.Handle;
+  end;
+end;
 
 function TJvWinHelp.SetWindowPos(Left, Top, Width, Height,
   Visibility: Integer): Boolean;
@@ -115,56 +131,57 @@ begin
   HelpInfo.dy := Height;
   HelpInfo.wMax := Visibility;
 
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_SETWINPOS, Longint(@HelpInfo));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_SETWINPOS, Longint(@HelpInfo));
 end;
 
 {**************************************************}
 
 function TJvWinHelp.ShowContents: Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_CONTENTS, 0);
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_CONTENTS, 0);
 end;
 
 {**************************************************}
 
 function TJvWinHelp.ShowContextualHelp(Control: TWinControl): Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_CONTEXTPOPUP, Control.HelpContext);
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_CONTEXTPOPUP, Control.HelpContext);
 end;
 
 {**************************************************}
 
 function TJvWinHelp.ShowHelp(Control: TWinControl): Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_CONTEXT, Control.HelpContext);
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_CONTEXT, Control.HelpContext);
 end;
 
 {**************************************************}
 
 function TJvWinHelp.ShowHelpOnHelp: Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_HELPONHELP, 0);
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_HELPONHELP, 0);
 end;
 
 {**************************************************}
 
 function TJvWinHelp.ShowIndex: Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_INDEX, 0);
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_INDEX, 0);
 end;
 
 {**************************************************}
 
 function TJvWinHelp.ShowKeyword(Keyword: string): Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_KEY, Longint(PChar(KeyWord)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_KEY, Longint(PChar(KeyWord)));
 end;
 
 {**************************************************}
 
 function TJvWinHelp.ShowPartialKeyWord(Keyword: string): Boolean;
 begin
-  Result := WinHelp(TWinControl(FOwner).Handle, GetHelpFile, HELP_PARTIALKEY, Longint(PChar(KeyWord)));
+  Result := WinHelp(GetOwnerHandle, GetHelpFile, HELP_PARTIALKEY, Longint(PChar(KeyWord)));
 end;
 
 end.
+
