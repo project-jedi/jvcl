@@ -37,8 +37,8 @@ interface
 uses
   
   
-  Types, QControls, QForms, QExtCtrls, QImgList,
-  
+  Types, QControls, QForms, QExtCtrls, QImgList, QGraphics, QWindows,
+
   SysUtils, Classes,
   JvQComponent;
 
@@ -94,7 +94,7 @@ begin
     FNumber := (FNumber + 1) mod FIcons.Count;
     
     
-    TmpBmp := TBitmap.Create;
+    TmpBmp := THackBitmap.Create;
     try
       FIcons.GetBitmap(FNumber, TmpBmp);
       Application.Icon.Assign(TmpBmp);
