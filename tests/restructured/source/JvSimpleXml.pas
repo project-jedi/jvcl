@@ -33,7 +33,7 @@ unit JvSimpleXml;
 interface
 
 uses
-  SysUtils, Classes, IniFiles, JvComponent;
+  SysUtils, Classes, IniFiles, JvComponent{$IFDEF COMPILER6_UP}, Dialogs, Variants{$ENDIF};
 
 type
 {$IFNDEF COMPILER6_UP}
@@ -185,6 +185,38 @@ type
     property OnValueParsed: TJvOnValueParsed read FOnValue write FOnValue;
   end;
 
+  {$IFDEF COMPILER6_UP}
+  TXmlVariant = class(TInvokeableVariantType)
+  public
+    procedure Clear(var V: TVarData); override;
+    function IsClear(const V: TVarData): Boolean; override;
+    procedure Copy(var Dest: TVarData; const Source: TVarData;
+      const Indirect: Boolean); override;
+    procedure CastTo(var Dest: TVarData; const Source: TVarData;
+      const AVarType: TVarType); override;
+
+    function DoFunction(var Dest: TVarData; const V: TVarData;
+      const Name: string; const Arguments: TVarDataArray): Boolean;override;
+    function GetProperty(var Dest: TVarData; const V: TVarData;
+      const Name: string): Boolean;override;
+    function SetProperty(const V: TVarData; const Name: string;
+      const Value: TVarData): Boolean;override;
+  end;
+
+  TXmlVarData = packed record
+    VType: TVarType;
+    Reserved1, Reserved2, Reserved3: Word;
+    Xml: TJvSimpleXmlElem;
+    Reserved4: LongInt;
+  end;
+
+  procedure XmlCreateInto(var ADest: Variant; const AXml: TJvSimpleXmlElem);
+  function XmlCreate(const AXml: TJvSimpleXmlElem): Variant;overload;
+  function XmlCreate: Variant;overload;
+  function VarXml: TVarType;
+  {$ENDIF}
+
+
 resourcestring
   RS_INVALID_SimpleXml = 'Invalid XML file';
 {$IFNDEF COMPILER6_UP}
@@ -192,9 +224,15 @@ resourcestring
 {$ENDIF COMPILER6_UP}
 
 implementation
+
 uses
   JvTypes;
 
+{$IFDEF COMPILER6_UP}
+var
+  XmlVariant: TXmlVariant = nil;
+{$ENDIF}
+  
 {$IFNDEF COMPILER6_UP}
 var
   TrueBoolStrs: array of string;
@@ -1251,5 +1289,187 @@ begin
 end;
 {*************************************************}
 
+{ TXmlVariant }
+{$IFDEF COMPILER6_UP}
+
+{*************************************************}
+function VarXml: TVarType;
+begin
+  Result := XmlVariant.VarType;
+end;
+
+{*************************************************}
+procedure XmlCreateInto(var ADest: Variant; const AXml: TJvSimpleXmlElem);
+begin
+  TXmlVarData(ADest).VType := VarXml;
+  TXmlVarData(ADest).Xml := AXml;
+end;
+
+{*************************************************}
+function XmlCreate(const AXml: TJvSimpleXmlElem): Variant;
+begin
+  XmlCreateInto(result, AXml);
+end;
+
+{*************************************************}
+function XmlCreate: Variant;
+begin
+  XmlCreateInto(result,TJvSimpleXmlElem.Create(nil));
+end;
+
+{*************************************************}
+procedure TXmlVariant.CastTo(var Dest: TVarData; const Source: TVarData;
+  const AVarType: TVarType);
+begin
+  if Source.VType = VarType then
+  begin
+    case AVarType of
+      varOleStr:
+        VarDataFromOleStr(Dest, TXmlVarData(Source).Xml.SaveToString);
+      varString:
+        VarDataFromStr(Dest, TXmlVarData(Source).Xml.SaveToString);
+    else
+      RaiseCastError;
+    end;
+  end
+  else
+    inherited;
+end;
+
+{*************************************************}
+procedure TXmlVariant.Clear(var V: TVarData);
+begin
+  V.VType := varEmpty;
+  TXmlVarData(V).Xml := nil;
+end;
+
+{*************************************************}
+procedure TXmlVariant.Copy(var Dest: TVarData; const Source: TVarData;
+  const Indirect: Boolean);
+begin
+  if Indirect and VarDataIsByRef(Source) then
+    VarDataCopyNoInd(Dest, Source)
+  else
+    with TXmlVarData(Dest) do
+    begin
+      VType := VarType;
+      Xml := TXmlVarData(Source).Xml;
+    end;
+end;
+
+{*************************************************}
+function TXmlVariant.DoFunction(var Dest: TVarData; const V: TVarData;
+  const Name: string; const Arguments: TVarDataArray): Boolean;
+var
+  lXml: TJvSimpleXmlElem;
+  lProp: TJvSimpleXmlProp;
+  i,j,k: Integer;
+begin
+  if (Length(Arguments) = 1) and (Arguments[0].VType in [vtInteger,vtExtended]) then
+    with TXmlVarData(V) do
+    begin
+      k := Arguments[0].vInteger;
+      j := 0;
+
+      if k>0 then
+       for i:=0 to Xml.Items.Count-1 do
+         if UpperCase(Xml.Items[i].Name) = Name then
+         begin
+           inc(j);
+           if j=k then
+             Break;
+         end;
+
+      if (j=k) and (j<Xml.Items.Count) then
+      begin
+        lXml := Xml.Items[j];
+        if lXml<>nil then
+        begin
+          Dest.VType := VarXml;
+          TXmlVarData(Dest).Xml := lXml;
+          result := true;
+        end
+      end;
+    end;
+end;
+
+{*************************************************}
+function TXmlVariant.GetProperty(var Dest: TVarData; const V: TVarData;
+  const Name: string): Boolean;
+var
+  lXml: TJvSimpleXmlElem;
+  lProp: TJvSimpleXmlProp;
+begin
+  with TXmlVarData(V) do
+  begin
+    lXml := Xml.Items.ItemNamed[Name];
+    if lXml<>nil then
+    begin
+      Dest.VType := VarXml;
+      TXmlVarData(Dest).Xml := lXml;
+      result := true;
+    end
+    else
+    begin
+      lProp := Xml.Properties.ItemNamed[Name];
+      if lProp<>nil then
+      begin
+        VarDataFromOleStr(Dest, lProp.Value);
+        result := true;
+      end;
+    end;
+  end;
+end;
+
+{*************************************************}
+function TXmlVariant.IsClear(const V: TVarData): Boolean;
+begin
+  Result := (TXmlVarData(V).Xml = nil) or
+            (TXmlVarData(V).Xml.Items.Count = 0);
+end;
+
+{*************************************************}
+function TXmlVariant.SetProperty(const V: TVarData; const Name: string;
+  const Value: TVarData): Boolean;
+var
+  lXml: TJvSimpleXmlElem;
+  lProp: TJvSimpleXmlProp;
+
+  function GetStrValue: string;
+  begin
+    try
+      result := Value.VOleStr;
+    except
+      result := '';
+    end;
+  end;
+
+begin
+  with TXmlVarData(V) do
+  begin
+    lXml := Xml.Items.ItemNamed[Name];
+    if lXml=nil then
+    begin
+      lProp := Xml.Properties.ItemNamed[Name];
+      if lProp<>nil then
+      begin
+        lProp.Value := GetStrValue;
+        result := true;
+      end;
+    end
+    else
+    begin
+      lXml.Value := GetStrValue;
+      result := true;
+    end;
+  end;
+end;
+
+
+initialization
+  XmlVariant := TXmlVariant.Create;
+finalization
+  FreeAndNil(XmlVariant);
+{$ENDIF}
 end.
 
