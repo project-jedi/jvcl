@@ -39,7 +39,8 @@ type
   private
     FForm: TCustomForm;
     FDynControlEngineDB: TJvDynControlEngineDB;
-    FDataSource: TDataSource;
+    FDataSource: TDatasource;
+    FDataComponent: TComponent;
     FDialogCaption: string;
     FPostButtonCaption: string;
     FCancelButtonCaption: string;
@@ -59,27 +60,29 @@ type
     FNavigatorPanel: TJvPanel;
     FButtonPanel: TWinControl;
   protected
+    function GetDynControlEngineDB : TJvDynControlEngineDB;
+    procedure SetDataComponent(Value : TComponent);
     procedure OnPostButtonClick(Sender: TObject);
     procedure OnCancelButtonClick(Sender: TObject);
     procedure OnCloseButtonClick(Sender: TObject);
-    function IntDynControlEngineDB: TJvDynControlEngineDB;
     function CreateDynControlDialog(var AMainPanel: TWinControl): TCustomForm;
     procedure SetArrangeSettings (Value : TJvArrangeSettings);
     procedure SetArrangeConstraints (Value : TSizeConstraints);
     procedure SetFieldCreateOptions(Value : TJvCreateDBFieldsOnControlOptions);
     procedure ArrangePanelChangedWidth (Sender: TObject; ChangedSize : Integer);
     procedure ArrangePanelChangedHeight (Sender: TObject; ChangedSize : Integer);
+    property Datasource : TDatasource read FDatasource;
   public
     constructor Create;
     destructor Destroy; override;
     function ShowDialog: TModalResult;
   published
-    property DataSource: TDataSource read FDataSource write FDataSource;
+    property DataComponent: TComponent read FDataComponent write SetDataComponent;
     property PostButtonCaption: string read FPostButtonCaption write FPostButtonCaption;
     property CancelButtonCaption: string read FCancelButtonCaption write FCancelButtonCaption;
     property CloseButtonCaption: string read FCloseButtonCaption write FCloseButtonCaption;
     property DialogCaption: string read FDialogCaption write FDialogCaption;
-    property DynControlEngineDB: TJvDynControlEngineDB read FDynControlEngineDB write FDynControlEngineDB;
+    property DynControlEngineDB: TJvDynControlEngineDB read GetDynControlEngineDB write FDynControlEngineDB;
     property IncludeNavigator: Boolean read FIncludeNavigator write FIncludeNavigator;
     property BorderStyle: TFormBorderStyle read FBorderStyle write FBorderStyle default bsDialog;
     property Position: TPosition read FPosition write FPosition default poScreenCenter;
@@ -94,7 +97,7 @@ type
     property FieldCreateOptions : TJvCreateDBFieldsOnControlOptions read FFieldCreateOptions write SetFieldCreateOptions;
   end;
 
-function ShowDatasourceEditDialog(ADataSource: TDataSource;
+function ShowDatasourceEditDialog(ADataComponent: TComponent;
   const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
   AIncludeNavigator: Boolean;
   AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions = nil;
@@ -110,6 +113,20 @@ uses
   {$ENDIF UNITVERSIONING}
   StdCtrls, SysUtils,
   JvResources;
+
+procedure TJvDynControlDataSourceEditDialog.SetDataComponent(Value : TComponent);
+begin
+  FDataComponent := Value;
+  FDataSource := DynControlengineDB.GetDatasourceFromDataComponent(Value);
+end;
+
+function TJvDynControlDataSourceEditDialog.GetDynControlEngineDB : TJvDynControlEngineDB;
+begin
+  if Assigned(FDynControlEngineDB) then
+    Result := DynControlEngineDB
+  else
+    Result := DefaultDynControlEngineDB;
+end;
 
 procedure TJvDynControlDataSourceEditDialog.OnPostButtonClick(Sender: TObject);
 begin
@@ -132,14 +149,6 @@ end;
 procedure TJvDynControlDataSourceEditDialog.OnCloseButtonClick(Sender: TObject);
 begin
   FForm.ModalResult := mrAbort;
-end;
-
-function TJvDynControlDataSourceEditDialog.IntDynControlEngineDB: TJvDynControlEngineDB;
-begin
-  if Assigned(DynControlEngineDB) then
-    Result := DynControlEngineDB
-  else
-    Result := DefaultDynControlEngineDB;
 end;
 
 constructor TJvDynControlDataSourceEditDialog.Create;
@@ -219,10 +228,7 @@ var
   PostButton, CancelButton, CloseButton: TButtonControl;
   LeftPos: Integer;
 begin
-  if Assigned(IntDynControlEngineDB.DynControlEngine) then
-    DynControlEngine := IntDynControlEngineDB.DynControlEngine
-  else
-    DynControlEngine := DefaultDynControlEngine;
+  DynControlEngine:= DynControlEngineDB.DynControlEngine;
   Form := DynControlEngine.CreateForm(DialogCaption, '');
   TForm(Form).Position := Position;
   TForm(Form).BorderStyle := BorderStyle;
@@ -306,7 +312,7 @@ begin
     if IncludeNavigator then
     begin
       FNavigatorPanel := TJvPanel.Create(FForm);
-      Navigator := IntDynControlEngineDB.CreateDBNavigatorControl(FForm, FNavigatorPanel, '', DataSource);
+      Navigator := DynControlEngineDB.CreateDBNavigatorControl(FForm, FNavigatorPanel, '', DataSource);
       Navigator.Left := 3;
       Navigator.Top := 3;
       with FNavigatorPanel do
@@ -321,9 +327,9 @@ begin
     else
       FNavigatorPanel := nil;
     if Assigned(OnCreateDataControlsEvent) then
-      OnCreateDataControlsEvent(IntDynControlEngineDB, ArrangePanel, FieldCreateOptions)
+      OnCreateDataControlsEvent(DynControlEngineDB, ArrangePanel, FieldCreateOptions)
     else
-      IntDynControlEngineDB.CreateControlsFromDatasourceOnControl(DataSource, ArrangePanel, FieldCreateOptions);
+      DynControlEngineDB.CreateControlsFromDataComponentOnControl(DataComponent, ArrangePanel, FieldCreateOptions);
 //    ArrangePanel.ArrangeControls;
     ArrangePanel.ArrangeSettings.AutoArrange := True;
     Result := FForm.ShowModal;
@@ -332,7 +338,7 @@ begin
   end;
 end;
 
-function ShowDatasourceEditDialog(ADataSource: TDataSource;
+function ShowDatasourceEditDialog(ADataComponent: TComponent;
   const ADialogCaption, APostButtonCaption, ACancelButtonCaption, ACloseButtonCaption: string;
   AIncludeNavigator: Boolean;
   AFieldCreateOptions : TJvCreateDBFieldsOnControlOptions = nil;
@@ -344,7 +350,7 @@ var
 begin
   Dialog := TJvDynControlDataSourceEditDialog.Create;
   try
-    Dialog.DataSource := ADataSource;
+    Dialog.DataComponent := ADataComponent;
     Dialog.DialogCaption := ADialogCaption;
     Dialog.PostButtonCaption := APostButtonCaption;
     Dialog.CancelButtonCaption := ACancelButtonCaption;

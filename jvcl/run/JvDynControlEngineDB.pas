@@ -130,8 +130,12 @@ type
       const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
     function CreateDBNavigatorControl(AOwner: TComponent; AParentControl: TWinControl;
       const AControlName: string; ADataSource: TDataSource): TWinControl; virtual;
-    procedure CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
-      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
+    function CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean; virtual;
+    function CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
+      AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean; virtual;
+    function GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource; virtual;
+    function SupportsDataComponent (ADataComponent : TComponent) : Boolean;
     property DynControlEngine: TJvDynControlEngine read GetDynControlEngine write SetDynControlEngine;
   end;
 
@@ -266,6 +270,7 @@ begin
   if not Assigned(AField) then
     raise EJVCLException.CreateRes(@RsEUnassignedField);
   case AField.Datatype of
+    ftOraClob,
     ftMemo:
       Result := jctDBMemo;
     ftGraphic:
@@ -471,14 +476,15 @@ end;
 type
   TAccessCustomControl = class(TCustomControl);
 
-procedure TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
-  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions);
+function TJvDynControlEngineDB.CreateControlsFromDatasourceOnControl(ADataSource: TDataSource;
+  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
 var
   I: Integer;
   Control: TWinControl;
   LabelControl: TWinControl;
   CreateOptions : TJvCreateDBFieldsOnControlOptions;
 begin
+  Result := False;
   if not Assigned(ADataSource) or not Assigned(ADataSource.DataSet) or not Assigned(AControl) then
     raise EJVCLException.CreateRes(@RsEUnassignedMultiple);
   if not ADataSource.DataSet.Active then
@@ -499,7 +505,7 @@ begin
           begin
             if ADataSource.DataSet.Fields[I].Size > 0 then
               Control.Width :=
-                TAccessCustomControl(AControl).Canvas.TextWidth(' ') * ADataSource.DataSet.Fields[I].Size;
+                TAccessCustomControl(AControl).Canvas.TextWidth('X') * ADataSource.DataSet.Fields[I].Size;
             if (FieldMaxWidth > 0) and (Control.Width > FieldMaxWidth) then
               Control.Width := FieldMaxWidth
             else if (FieldMinWidth > 0) and (Control.Width < FieldMinWidth) then
@@ -515,6 +521,33 @@ begin
     if not Assigned(AOptions) then
       CreateOptions.Free;
   end;
+  Result := True;
+end;
+
+function TJvDynControlEngineDB.GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource;
+begin
+  if ADatacomponent is TDatasource then
+    Result := TDatasource(ADataComponent)
+  else
+    Result := nil;
+end;
+
+function TJvDynControlEngineDB.SupportsDataComponent (ADataComponent : TComponent) : Boolean;
+begin
+  Result := Assigned(ADataComponent) and
+            Assigned(GetDatasourceFromDataComponent(ADataComponent));
+end;
+
+function TJvDynControlEngineDB.CreateControlsFromDataComponentOnControl(ADataComponent: TComponent;
+  AControl: TWinControl; AOptions: TJvCreateDBFieldsOnControlOptions) : Boolean;
+var
+  ds : TDatasource;
+begin
+  ds:= GetDataSourceFromDataComponent(ADataComponent);
+  if Assigned(ds) THEN
+    Result := CreateControlsFromDataSourceOnControl (ds, AControl, AOptions)
+  else
+    Result := False;
 end;
 
 procedure SetDefaultDynControlEngineDB(AEngine: TJvDynControlEngineDB);

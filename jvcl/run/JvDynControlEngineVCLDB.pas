@@ -1783,7 +1783,9 @@ end;
 
 type
   TJvDynControlEngineVCLDB = class(TJvDynControlEngineDB)
+  protected
   public
+    function GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource; override;
     procedure RegisterControls; override;
   end;
 
@@ -1807,6 +1809,38 @@ begin
   RegisterControlType(jctDBButtonEdit, TJvDynControlVCLDBButtonEdit);
   RegisterControlType(jctDBGrid, TJvDynControlVCLDBGrid);
   RegisterControlType(jctDBNavigator, TJvDynControlVCLDBNavigator);
+end;
+type TAccessDBLookupControl = class(TDBLookupControl);
+
+function TJvDynControlEngineVCLDB.GetDatasourceFromDataComponent (ADataComponent : TComponent) : TDatasource;
+begin
+  if not Assigned(ADatacomponent) then
+    Result := nil
+  else
+  if ADatacomponent is TCustomDBGrid then
+    Result := TCustomDBGrid (ADataComponent).Datasource
+  else if ADatacomponent is TDBEdit then
+    Result := TDBEdit(ADataComponent).Datasource
+  else if ADatacomponent is TDBNavigator then
+    Result := TDBNavigator(ADataComponent).Datasource
+  else if ADatacomponent is TDBListbox then
+    Result := TDBListbox(ADataComponent).Datasource
+  else if ADatacomponent is TDBLookupControl then
+    Result := TAccessDBLookupControl(ADataComponent).Datasource
+  else if ADatacomponent is TDBImage then
+    Result := TDBImage   (ADataComponent).Datasource
+  else if ADatacomponent is TDBMemo then
+    Result := TDBMemo(ADataComponent).Datasource
+  else if ADatacomponent is TDBRadioGroup then
+    Result := TDBRadioGroup(ADataComponent).Datasource
+  else if ADatacomponent is TDBRichEdit then
+    Result := TDBRichEdit(ADataComponent).Datasource
+  else if ADatacomponent is TDBText then
+    Result := TDBText(ADataComponent).Datasource
+  else if ADatacomponent is TDBCheckBox then
+    Result := TDBCheckBox(ADataComponent).Datasource
+  else
+    Result := Inherited GetDatasourceFromDataComponent (ADataComponent);
 end;
 
 {$IFDEF UNITVERSIONING}
