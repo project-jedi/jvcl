@@ -179,6 +179,9 @@ type
     { Invokes the OnTranslatePropertyName event if one is assigned. }
     procedure DoTranslatePropertyName(Instance: TPersistent; var Name: string;
       const Reading: Boolean);
+    { Determines if the specified is a sub store of this storage (will scan the entire sub storage
+      hierarchie. }
+    function HasSubStore(AStore: TJvCustomAppStore): Boolean;
 
     { Determines if the path represents a folder (ignores sub stores) }
     function IsFolderInt(Path: string; ListIsValue: Boolean = True): Boolean; virtual; abstract;
@@ -576,6 +579,7 @@ resourcestring
   SUnknownBaseType = 'Unknown base type for given set';
   SInvalidPath = 'Invalid path';
   SNotAUniqueRootPath = '''%s'' is not a unique root path';
+  SCircularReference = 'Circular reference of storages';
 
 procedure UpdateGlobalPath(GlobalPaths, NewPaths: TStrings);
 var
@@ -960,6 +964,20 @@ procedure TJvCustomAppStore.DoTranslatePropertyName(Instance: TPersistent; var N
 begin
   if Assigned(FOnTranslatePropertyName) then
     FOnTranslatePropertyName(Self, Instance, Name, Reading);
+end;
+
+function TJvCustomAppStore.HasSubStore(AStore: TJvCustomAppStore): Boolean;
+var
+  I: Integer;
+begin
+  I := SubStores.Count - 1;
+  Result := False;
+  while not Result and (I >= 0) do
+  begin
+    Result := (SubStores[I].AppStore = AStore) or
+      ((SubStores[I].AppStore <> nil) and SubStores[I].AppStore.HasSubStore(AStore));
+    Dec(I);
+  end;
 end;
 
 function TJvCustomAppStore.ListStoredInt(const Path: string): Boolean;
@@ -2043,6 +2061,8 @@ procedure TJvAppSubStore.SetAppStore(Value: TJvCustomAppStore);
 begin
   if Value <> AppStore then
   begin
+    if (Value <> nil) and (Value.HasSubStore(OwnerStore) or (Value = OwnerStore)) then
+      raise EJVCLAppStoreError.Create(SCircularReference);
     if AppStore <> nil then
       AppStore.RemoveFreeNotification(OwnerStore);
     FAppStore := Value;
