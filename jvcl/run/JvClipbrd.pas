@@ -33,7 +33,7 @@ unit JvClipbrd;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Contnrs, Clipbrd;  
+  Windows, Messages, SysUtils, Classes, Contnrs, Clipbrd, JvFinalize;
 
 type
   // the type of the event fired when a format has been added with delayed
@@ -675,14 +675,12 @@ var
 function JvClipboard: TJvClipboard;
 begin
   if GlobalClipboard = nil then
+  begin
     GlobalClipboard := TJvClipboard.Create;
+    AddFinalizeObjectNil(TObject(GlobalClipboard));
+  end;
   Result := GlobalClipboard;
 end;
-
-initialization
-
-finalization
-  FreeAndNil(GlobalClipboard);
 
 end.
 
