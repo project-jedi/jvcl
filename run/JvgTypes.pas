@@ -104,8 +104,8 @@ type
     fwSEMIBOLD, fwBOLD, fwEXTRABOLD, fwHEAVY);
   TglGlyphKind = (fgkCustom, fgkDefault);
   TglFileType = (fftUndefined, fftGif, fftJpeg, fftBmp);
-  //  TglProgressBorderStyle = ( fbsFlat, fbsCtl3D, fbsStatusControl,
-  //			       fbsRaised, fbsRaisedFrame, fbsRecessedFrame );
+  // TglProgressBorderStyle = (fbsFlat, fbsCtl3D, fbsStatusControl,
+  //   fbsRaised, fbsRaisedFrame, fbsRecessedFrame);
   TPercentRange = 0..100;
   TglLabelOption = (floActiveWhileControlFocused, floBufferedDraw,
     floDelineatedText, floIgnoreMouse, {floQuality3D,} floTransparentFont);

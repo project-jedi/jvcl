@@ -1844,12 +1844,12 @@ function BitmapToRTF2(ABitmap: TBitmap; AStream: TStream): Boolean;
 
 {
 
-  \wmetafileN	 - Source of the picture is a Windows metafile. The N argument
+  \wmetafileN  - Source of the picture is a Windows metafile. The N argument
                  identifies the metafile type (the default type is 1).
   \picwN       - xExt field if the picture is a Windows metafile; picture
                  width in pixels if the picture is a bitmap or from QuickDraw.
                  The N argument is a long integer.
-  \pichN	     - yExt field if the picture is a Windows metafile; picture
+  \pichN       - yExt field if the picture is a Windows metafile; picture
                  height in pixels if the picture is a bitmap or from QuickDraw.
                  The N argument is a long integer.
   \picwgoalN   - Desired width of the picture in twips. The N argument is a

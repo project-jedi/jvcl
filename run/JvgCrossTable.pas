@@ -57,35 +57,35 @@ Known Issues:
 //     fcoIntermediateRightIndent, fcoIntermediateBottomIndent,
 //     fcoShowPageNumbers, fcoVertColCaptionsFont );
 //
-//   fcoIntermediateColResults		- вывод промежуточных итогов по столбцам;
-//   fcoIntermediateRowResults		- вывод промежуточных итогов по строкам;
-//   fcoColResults			- вывод итогов по столбцам;
-//   fcoRowResults			- вывод итогов по строкам;
-//   fcoIntermediateColCaptions		- отображение заголовков столбцов на каждой странице или только на первой;
-//   fcoIntermediateRowCaptions		- отображение заголовков строк на каждой странице;
-//   fcoIntermediateLeftIndent		- использовать левый отступ на каждой странице;
-//   fcoIntermediateTopIndent		- соотв-но;
-//   fcoIntermediateRightIndent		- соотв-но;
-//   fcoIntermediateBottomIndent		- соотв-но;
-//   fcoShowPageNumbers		- отображение номера страницы в соответствии с разбиением;
-//   fcoVertColCaptionsFont		- вывод заголовков столбцов вертикальным шрифтом;
+//   fcoIntermediateColResults   - вывод промежуточных итогов по столбцам;
+//   fcoIntermediateRowResults   - вывод промежуточных итогов по строкам;
+//   fcoColResults               - вывод итогов по столбцам;
+//   fcoRowResults               - вывод итогов по строкам;
+//   fcoIntermediateColCaptions  - отображение заголовков столбцов на каждой странице или только на первой;
+//   fcoIntermediateRowCaptions  - отображение заголовков строк на каждой странице;
+//   fcoIntermediateLeftIndent   - использовать левый отступ на каждой странице;
+//   fcoIntermediateTopIndent    - соотв-но;
+//   fcoIntermediateRightIndent  - соотв-но;
+//   fcoIntermediateBottomIndent - соотв-но;
+//   fcoShowPageNumbers          - отображение номера страницы в соответствии с разбиением;
+//   fcoVertColCaptionsFont      - вывод заголовков столбцов вертикальным шрифтом;
 //
 //--------------
 //
 //___СОБЫТИЯ___
 //
-//  OnPrintQuery	- информирует о необходимом кол-ве страниц для вывода таблицы;
-//                  позволяет отменить печать;
+//  OnPrintQuery        - информирует о необходимом кол-ве страниц для вывода таблицы;
+//                        позволяет отменить печать;
 //
-//  OnPrintNewPage	- информирует о начале печати очередной страницы; позволяет отменить печать;
+//  OnPrintNewPage      - информирует о начале печати очередной страницы; позволяет отменить печать;
 //
-//  OnPrintTableElement	- информирует о печати каждого элемента таблицы ( заголовка, очередной ячейки );
+//  OnPrintTableElement - информирует о печати каждого элемента таблицы ( заголовка, очередной ячейки );
 //                                       позволяет изменить значение ячейки, задать индивидуальный шрифт и цвет фона,
 //                                       установить параметры выравнивания текста, отменить печать;
 //                                       Параметр TableElement: TPCTableElement = ( teTitle, teCell, teColCapt, teRowCapt,  TeColIRes, teRowIRes, teColRes,
 //                                        teRowRes ); указывает на тип выводимого элемента.
 //
-//  OnCalcResult	- если данное событие назначено, то расчет итогов осуществляется Вами. Событие передает  значение текущей ячейки и
+//  OnCalcResult - если данное событие назначено, то расчет итогов осуществляется Вами. Событие передает  значение текущей ячейки и
 //                                       значения итогов для данного столбца и строки. Если событие OnCalcResult не назначено, расчет выполняется
 //                                       компонентом,   причем предполагается, что значение ячейки можно преобразовать в значение single и итоги
 //                                       рассчитываются как суммы соответствующих столбцов и строк.
@@ -132,27 +132,27 @@ Known Issues:
     fcoIntermediateLeftIndent, fcoIntermediateTopIndent, fcoIntermediateRightIndent,
     fcoIntermediateBottomIndent, fcoShowPageNumbers, fcoVertColCaptionsFont );
 
-  fcoIntermediateColResults	  - Showing intermediate results (summaries, totals, agregates) by columns
-  fcoIntermediateRowResults		- Showing intermediate results by rows
-  fcoColResults			          - Showing results (summaries, totals, agregates) by columns
-  fcoRowResults			          - Showing results by rows
-  fcoIntermediateColCaptions	- showing Column Headers(Titles) on each page or the 1st only.
-  fcoIntermediateRowCaptions	- showing Row Headers on each page.
-  fcoIntermediateLeftIndent		- Use left indent(margin) on each page.
-  fcoIntermediateTopIndent		- Use top indent(margin) on each page.
-  fcoIntermediateRightIndent	- Use right indent(margin) on each page.
-  fcoIntermediateBottomIndent	- Use bottom indent(margin) on each page.
-  fcoShowPageNumbers		      - Showing pages numbers according to splitting ( of the whole report to pages)
-  fcoVertColCaptionsFont		  - Showing column headers by vertical font (text? alignment?)
+  fcoIntermediateColResults   - Showing intermediate results (summaries, totals, agregates) by columns
+  fcoIntermediateRowResults   - Showing intermediate results by rows
+  fcoColResults               - Showing results (summaries, totals, agregates) by columns
+  fcoRowResults               - Showing results by rows
+  fcoIntermediateColCaptions  - showing Column Headers(Titles) on each page or the 1st only.
+  fcoIntermediateRowCaptions  - showing Row Headers on each page.
+  fcoIntermediateLeftIndent   - Use left indent(margin) on each page.
+  fcoIntermediateTopIndent    - Use top indent(margin) on each page.
+  fcoIntermediateRightIndent  - Use right indent(margin) on each page.
+  fcoIntermediateBottomIndent - Use bottom indent(margin) on each page.
+  fcoShowPageNumbers          - Showing pages numbers according to splitting ( of the whole report to pages)
+  fcoVertColCaptionsFont      - Showing column headers by vertical font (text? alignment?)
 
   Events
   ------
 
-  OnPrintQuery	       - Tells (informs of) required pages number(count) for
+  OnPrintQuery         - Tells (informs of) required pages number(count) for
                          printing the table. Allows to cancel printing
-  OnPrintNewPage	     - Notifies about every new page starting printing (and
+  OnPrintNewPage       - Notifies about every new page starting printing (and
                          allows to cancel printing)
-  OnPrintTableElement	 - Notifies about every new table element (Caption(header,
+  OnPrintTableElement  - Notifies about every new table element (Caption(header,
                          title), each cell) (and allows to cancel printing).
                          Allows to change cell's value, or assign specific color
                          and font to it, to set(customise) parameters of text
@@ -160,7 +160,7 @@ Known Issues:
                          Parameter TableElement: TPCTableElement = (teTitle, teCell,
                          teColCapt, teRowCapt,  TeColIRes, teRowIRes, teRowRes)
                          specifies type of element being printed.
-  OnCalcResult	       - If the event is assigned, it is You to process calculation
+  OnCalcResult         - If the event is assigned, it is You to process calculation
                          of totals(agregates). Event gives You values of current
                          cell and totals for column and row. If event is not
                          assigned, the component proceeds it, assuming cell value
@@ -977,8 +977,8 @@ begin
           Brush.Color := clWhite;
           FillRect(CaptR);
           Brush.Color := 0;
-          //	  Brush.Color := $0080FFFF; if not fPrint then FillRect(DataR); Brush.Color := 0;
-          //	  FrameRect(CaptR);
+          // Brush.Color := $0080FFFF; if not fPrint then FillRect(DataR); Brush.Color := 0;
+          // FrameRect(CaptR);
           SetBkMode(TargetCanvas.Handle, TRANSPARENT);
           if fcoShowPageNumbers in Options then
             TextOut(10, 10, '[ ' + IntToStr(RowPageNo + 1) + ' / ' +
@@ -1036,8 +1036,8 @@ begin
                   Next;
                   continue;
                 end;
-                //	  if not((RowNo >= RowPageNo*(RowsOnCurrPage))and(RowNo <= (RowPageNo+1)*(RowsOnPage)-1))then
-                //	  begin Next; continue; end;
+                // if not((RowNo >= RowPageNo*(RowsOnCurrPage))and(RowNo <= (RowPageNo+1)*(RowsOnPage)-1))then
+                // begin Next; continue; end;
 
                 fUseDuplicateValue := false;
                 if FilledRowNo[RowNo] then //...duplicate

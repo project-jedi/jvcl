@@ -27,8 +27,8 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ PageControl  component  that can  display  its  pages	captions  in
- 3D styles with 3D borders.  Component	can display  glyphs  on  own
+{ PageControl  component  that can  display  its  pages captions  in
+ 3D styles with 3D borders.  Component  can display  glyphs  on  own
  captions and fill background with bitmap.  You  can  set  different
  fonts for selected page caption and for other captions.}
 

@@ -85,7 +85,7 @@ type
     FTextStyles: TJvgLabelTextStyles;
     FColors: TJvgLabelColors;
     FFontWeight: TFontWeight;
-    //    FActiveTextColor	  :TColor;
+    // FActiveTextColor: TColor;
     FOptions: TglLabelOptions;
     FSupressPaint: Boolean;
     FGradient: TJvgGradient;

@@ -105,19 +105,19 @@ begin
       Image.Canvas.Handle);
     for J := 0 to Height-1 do
       for I := 0 to Width-1 do
-        //	if Image.Canvas.Pixels[I, J] > cShiftColor then
+        // if Image.Canvas.Pixels[I, J] > cShiftColor then
       begin
         if N <> Image.Canvas.Pixels[I, J] then
         begin
           //N := Image.Canvas.Pixels[I, J];
           //Form1.Memo1.Lines.Add(Format('%x', [N]));
         end;
-        //	  if Image.Canvas.Pixels[I, J] = $C8B8A0 then
+        // if Image.Canvas.Pixels[I, J] = $C8B8A0 then
 //            RGB := Image.Canvas.Pixels[I, J];
 //            R := Byte(RGB shr 16);
 //            G := Byte(RGB shr 8);
 //            B := Byte(RGB);
-        //	  RShift := $
+        // RShift := $
         Image.Canvas.Pixels[I, J] := Image.Canvas.Pixels[I, J] + cShiftColor;
       end;
     FNeedRebuildImage := False;

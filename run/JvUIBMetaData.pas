@@ -2037,7 +2037,7 @@ begin
   for slot := 1 to 3 do
   begin
     v := ((value + 1) shr (slot * 2 - 1)) and 3;
-	  if v > 0 then include(Result, TTriggerSuffix(v-1));
+    if v > 0 then include(Result, TTriggerSuffix(v-1));
   end;
 end;
 

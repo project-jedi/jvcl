@@ -179,11 +179,10 @@ begin
     DrawText( Canvas.Handle, PChar(S), length(S), R, aAlignments[FAlignment] or DT_WORDBREAK or
        DT_CALCRECT );
     ARect.Top := max( ARect.Top, ARect.Top+(ARect.Bottom-ARect.Top-(R.Bottom-R.Top)) div 2 );
-    DrawText( Canvas.Handle, PChar(S), length(S), ARect, aAlignments[FAlignment] or DT_WORDBREAK );
-//		DT_CENTER or DT_WORDBREAK );
+    DrawText( Canvas.Handle, PChar(S), length(S), ARect, aAlignments[FAlignment] or DT_WORDBREAK);
+    //  DT_CENTER or DT_WORDBREAK);
  end
  else inherited;
-
 end;
 }
 
@@ -272,7 +271,7 @@ begin
   if Assigned(FDataSet) then
     with FDataSet do
     begin
-      RowCount := FieldCount; //	 RowCount := min( FieldCount - ShowFromFieldNo, NumFieldsToShow );
+      RowCount := FieldCount; // RowCount := min( FieldCount - ShowFromFieldNo, NumFieldsToShow );
       J := 0;
       for I := 0 {ShowFromFieldNo} to RowCount - 1 {+ShowFromFieldNo} do //max( FieldCount-1, RowCount-1 ) do
       begin

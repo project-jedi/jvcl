@@ -45,7 +45,7 @@ type
     FIconBox: TJvgBevelOptions;
     FPrevWndProc: Pointer;
     FNewWndProc: Pointer;
-    //    FParent		  : TForm;
+    // FParent: TForm;
     FCaptionColor: TColor;
     FTextStyle: TglTextStyle;
     FFont: TFont;
@@ -259,14 +259,14 @@ begin //_______________________________________________________
   OwnerWidth := TForm(Owner).Width;
   with Msg_ do
     case Msg of
-      //	WM_CREATE: if TForm(Owner)<>nil then FreeParentWindowHook;
+      // WM_CREATE: if TForm(Owner)<>nil then FreeParentWindowHook;
       WM_NCPAINT,
-        //	WM_MOUSEMOVE,
-//WM_MOUSEACTIVATE,
+        // WM_MOUSEMOVE,
+        //WM_MOUSEACTIVATE,
       WM_MOUSEACTIVATE,
         WM_NCACTIVATE,
         WM_SYSCOLORCHANGE,
-        //	WM_NCLBUTTONUP,
+        // WM_NCLBUTTONUP,
       WM_NCLBUTTONDBLCLK,
         WM_SIZE:
         begin
@@ -309,8 +309,8 @@ begin //_______________________________________________________
             DrawCaption(false);
           end;
         end;
-      //	WM_SETTEXT: DrawCaption( false );
-      //	WM_ACTIVATE: DrawCaption;
+      // WM_SETTEXT: DrawCaption( false );
+      // WM_ACTIVATE: DrawCaption;
       WM_DESTROY:
         begin
           FreeParentWindowHook;
@@ -431,7 +431,7 @@ begin
           IWidth := r.right - x_;
         while y_ < r.bottom do
         begin
-          //	    IHeight:=SavedIHeight; SavedIHeight:=IHeight;
+          // IHeight := SavedIHeight; SavedIHeight:=IHeight;
           if y_ + IHeight > r.bottom then
             IHeight := r.bottom - y_;
           BitBlt(DC, x_, y_, min(IWidth, bmp.Width), min(IHeight,

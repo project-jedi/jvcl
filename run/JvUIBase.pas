@@ -160,7 +160,7 @@ type
 (* Number of elements in an arry *)
 {$IFDEF FB15_UP}
 { TODO -oHG : TRANSLATE }
-//#define FB_NELEM(x)	((int)(sizeof(x) / sizeof(x[0])))
+//#define FB_NELEM(x) ((int)(sizeof(x) / sizeof(x[0])))
 //#define FB_ALIGN(n,b) ((n+b-1)&~(b-1))
 {$ENDIF FB15_UP}
 

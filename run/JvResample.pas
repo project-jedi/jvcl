@@ -1,15 +1,15 @@
 unit JvResample;
 // -----------------------------------------------------------------------------
-// Project:	bitmap resampler
-// Module:	resample
+// Project: bitmap resampler
+// Module: resample
 // Description: Interpolated Bitmap Resampling using filters.
-// Version:	01.02
-// Release:	3
-// Date:	15-MAR-1998
-// Target:	Win32, Delphi 2 & 3
-// Author(s):	anme: Anders Melander, anders@melander.dk
-// Copyright	(c) 1997,98 by Anders Melander
-// Formatting:	2 space indent, 8 space tabs, 80 columns.
+// Version: 01.02
+// Release: 3
+// Date: 15-MAR-1998
+// Target: Win32, Delphi 2 & 3
+// Author(s): anme: Anders Melander, anders@melander.dk
+// Copyright (c) 1997,98 by Anders Melander
+// Formatting: 2 space indent, no tabs, 80 columns.
 // -----------------------------------------------------------------------------
 // This software is copyrighted as noted above.  It may be freely copied,
 // modified, and redistributed, provided that the copyright notice(s) is
@@ -41,22 +41,22 @@ unit JvResample;
 // -----------------------------------------------------------------------------
 // Revision history:
 //
-// 0100	110997	anme	- Adapted from fzoom v0.20 by Dale Schumacher.
+// 0100 110997  anme - Adapted from fzoom v0.20 by Dale Schumacher.
 //
-// 0101	110198	anme	- Added Lanczos3 and Mitchell filters.
-//			- Fixed range bug.
-//			  Min value was not checked on conversion from Single to
-//			  byte.
-//			- Numerous optimizations.
-//			- Added TImage stretch on form resize.
-//			- Added support for Delphi 2 via TCanvas.Pixels.
-//			- Renamed module from stretch to resample.
-//			- Moved demo code to separate module.
+// 0101 110198 anme  - Added Lanczos3 and Mitchell filters.
+//      - Fixed range bug.
+//        Min value was not checked on conversion from Single to
+//        byte.
+//      - Numerous optimizations.
+//      - Added TImage stretch on form resize.
+//      - Added support for Delphi 2 via TCanvas.Pixels.
+//      - Renamed module from stretch to resample.
+//      - Moved demo code to separate module.
 //
-// 0102 150398	anme	- Fixed a problem that caused all pixels to be shifted
-//			  1/2 pixel down and to the right (in source
-//			  coordinates). Thanks to David Ullrich for the
-//			  solution.
+// 0102 150398 anme - Fixed a problem that caused all pixels to be shifted
+//        1/2 pixel down and to the right (in source
+//        coordinates). Thanks to David Ullrich for the
+//        solution.
 // -----------------------------------------------------------------------------
 // Credits:
 // The algorithms and methods used in this library are based on the article
@@ -98,17 +98,15 @@ function Lanczos3Filter(Value: Single): Single;
 function MitchellFilter(Value: Single): Single;
 
 // Interpolator
-// Src:	Source bitmap
-// Dst:	Destination bitmap
-// filter:	Weight calculation filter
-// fwidth:	Relative sample radius
+// Src: Source bitmap
+// Dst: Destination bitmap
+// filter: Weight calculation filter
+// fwidth: Relative sample radius
 procedure ImgStretch(Src, Dst: TBitmap; filter: TFilterProc; fwidth: single);
 
-// -----------------------------------------------------------------------------
-//
-//			List of Filters
-//
-// -----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+// List of Filters
+//----------------------------------------------------------------------------
 
 const
   ResampleFilters: array[0..6] of record
@@ -131,11 +129,9 @@ uses
   Math,
   JvTypes, JvResources;
 
-// -----------------------------------------------------------------------------
-//
-//			Filter functions
-//
-// -----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+// Filter functions
+//----------------------------------------------------------------------------
 
 // Hermite filter
 
@@ -267,11 +263,10 @@ begin
     Result := 0.0;
 end;
 
-// -----------------------------------------------------------------------------
-//
-//			Interpolator
-//
-// -----------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+// Interpolator
+//----------------------------------------------------------------------------
+
 type
   // Contributor for a pixel
   TContributor = record

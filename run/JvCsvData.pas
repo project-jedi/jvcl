@@ -18,64 +18,65 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 ii
 
-description : TJvCsvDataSet in-memory-dataset component usable by any 
-		VCL Data Aware Controls.
+Description:
+  TJvCsvDataSet in-memory-dataset component usable by any 
+    VCL Data Aware Controls.
               TJvCsvDataSet appears in the 'Jv Data Access' tab of the 
-		Component Pallette.
-		
-		USAGE:
-			Drop this component onto a form, connect it to
-			a standard VCL DataSource, then connect any
-			data aware control to that datasource, using
-			the standard method you would use if you were
-			using any other data aware components.
+    Component Pallette.
+    
+    USAGE:
+      Drop this component onto a form, connect it to
+      a standard VCL DataSource, then connect any
+      data aware control to that datasource, using
+      the standard method you would use if you were
+      using any other data aware components.
 
-		KEY PROPERTIES:
-			You must set the filename to a valid CSV Filename
-			such as "MyCsvFile.csv", and you must define the
-			CSV Fields, using the CSVFieldDef property.
-			If you don't set those properties, the component
-			won't work. It is also *recommended* but not 
-			required to right-click on the component and
-			let the Delphi IDE define the field objects
-			so that you can access them in your program.
+    KEY PROPERTIES:
+      You must set the filename to a valid CSV Filename
+      such as "MyCsvFile.csv", and you must define the
+      CSV Fields, using the CSVFieldDef property.
+      If you don't set those properties, the component
+      won't work. It is also *recommended* but not 
+      required to right-click on the component and
+      let the Delphi IDE define the field objects
+      so that you can access them in your program.
 
-		MORE HELP, DOCUMENTATION:
-			This object works just like the VCL BDE TTable, 
-			so consult
-			the Delphi help file about TTable if you want
-			more information.
+    MORE HELP, DOCUMENTATION:
+      This object works just like the VCL BDE TTable, 
+      so consult
+      the Delphi help file about TTable if you want
+      more information.
 
 Known Issues and Updates:
   Nov 17, 2003 - Now implements TDataSet.Locate!!! (needs more testing)
   Sept 26, 2003 - Obones made C++Builder fixes.
   Sept 24, 2003 - 
-	MERGE ALERT: This version is merged with Peter's version, minus 
-	his case changes, since I think they make the code less readable, 
-	and since the case changes are the only changes of his I could find, 
-	this is essentially a one-side merge, where I dropped all his changes
-	None appear to cause any functional change in the program. If I missed
-	any real changes, I apologize. 
-	CRITICAL FIX: Length 1 character field bug fixed.
-	NEW IMPORT AND APPEND NEW FIELDS:
-	New Handy Dandy Import-and-Upgrade feature: If you add fields to your
-	dataset definition, you can still load your old file (that is missing
-	those columns) and it will add them the next time you save the file.
-	New columns are always appended to the physical last position (end of
-	 existing lines) in the data file.
+  MERGE ALERT: This version is merged with Peter's version, minus 
+  his case changes, since I think they make the code less readable, 
+  and since the case changes are the only changes of his I could find, 
+  this is essentially a one-side merge, where I dropped all his changes
+  None appear to cause any functional change in the program. If I missed
+  any real changes, I apologize. 
+  CRITICAL FIX: Length 1 character field bug fixed.
+  NEW IMPORT AND APPEND NEW FIELDS:
+  New Handy Dandy Import-and-Upgrade feature: If you add fields to your
+  dataset definition, you can still load your old file (that is missing
+  those columns) and it will add them the next time you save the file.
+  New columns are always appended to the physical last position (end of
+   existing lines) in the data file.
 
-	NEW WORKING-DIRECTORY-CHANGE FIX:
-	If your program uses the File Open Dialog it can sometimes change your
-	app's current working directory. If your CsvDataSets have filenames 
-	without a full path name (C:\MyFolder\MyFile.csv is absoluete, 
-	MyFile.csv is relative), then you could have problems. This component 
-	fixes these problems like this: It gets and stores the current working
-	directory at startup, and for all filenames where the absolute path
-	is not stored, the local startup directory is used.  This prevents 
-	the problem where complex apps could load a CSV from one directory
-	and save it to another, and then next time the app runs, the CSV
-	file is the old version, since the new version was stored in a 
-	different directory.
+  NEW WORKING-DIRECTORY-CHANGE FIX:
+  If your program uses the File Open Dialog it can sometimes change your
+  app's current working directory. If your CsvDataSets have filenames 
+  without a full path name (C:\MyFolder\MyFile.csv is absoluete, 
+  MyFile.csv is relative), then you could have problems. This component 
+  fixes these problems like this: It gets and stores the current working
+  directory at startup, and for all filenames where the absolute path
+  is not stored, the local startup directory is used.  This prevents 
+  the problem where complex apps could load a CSV from one directory
+  and save it to another, and then next time the app runs, the CSV
+  file is the old version, since the new version was stored in a 
+  different directory.
   -----
   May 26, 2003 - Fixed errors handling null date values.
                - Fixed improper memory access for ftBoolean.

@@ -321,8 +321,8 @@ begin
     end; //...end draw glyph_
 
     //   case Position of
-   //	fsdTop,fsdBottom: begin inc(r_.Left,2); dec(r_.Right,2); end;
-   //    end;
+    //     fsdTop, fsdBottom: begin inc(r_.Left,2); dec(r_.Right,2); end;
+    //   end;
 
     if not (ftoExcludeGlyphs in Options) then r_ := r;
     SetBkMode(HDC, TRANSPARENT);

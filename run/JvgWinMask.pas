@@ -99,7 +99,7 @@ var
     SendMessage(Control.Handle, WM_PAINT, FMaskBuff.Canvas.Handle, 0);
     //    GetWindowImageFrom(Control, 0, 0, true, false, FMaskBuff.Canvas.handle);
     //    GetParentImageRect( self, Bounds(Left,Top,Width,Height),
-    //			  FMaskBuff.Canvas.Handle );
+    //      FMaskBuff.Canvas.Handle );
 
     //    BitBlt( FMaskBuff.Canvas.Handle, 0, 0, Width, Height,
     //            FMask.Canvas.Handle, 0, 0, SRCPAINT );

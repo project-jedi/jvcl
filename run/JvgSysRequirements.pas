@@ -189,7 +189,7 @@ begin
     fHalt := fHalt or fsrSystemFont in HaltOptions;
     fHalt := fHalt or fsrOSPlatform in HaltOptions;
   }
-  //  IsProcessorFeaturePresent(PF_MMX_INSTRUCTIONS_AVAILABLE	)
+  //  IsProcessorFeaturePresent(PF_MMX_INSTRUCTIONS_AVAILABLE)
 
   ReleaseDC(HWND_DESKTOP, DC);
 end;
