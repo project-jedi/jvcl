@@ -172,14 +172,20 @@ var
   APage: TJvWizardCustomPage;
 begin
   inherited MouseMove(Shift, X, Y);
-  Pt := Point(X, Y);
-  if PtInRect(ClientRect, Pt) and ShowNavigators then
+  if ShowNavigators and not (csDesigning in ComponentState) then
   begin
-    APage := DetectPage(Pt);
-    if Assigned(APage) then
-      Screen.Cursor := crHandPoint
+    Pt := Point(X, Y);
+    if PtInRect(ClientRect, Pt) then
+    begin
+      APage := DetectPage(Pt);
+      if Assigned(APage) then
+        Screen.Cursor := crHandPoint
+      else
+        Screen.Cursor := crDefault;
+    end
     else
-      Screen.Cursor := crDefault;
+      if Screen.Cursor = crHandPoint then
+        Screen.Cursor := crDefault;
   end;
 end;
 
@@ -342,6 +348,8 @@ procedure TJvWizardRouteMapSteps.SetShowNavigators(const Value: Boolean);
 begin
   if FShowNavigators <> Value then
   begin
+    if Screen.Cursor = crHandPoint then
+      Screen.Cursor := crDefault;
     FShowNavigators := Value;
     Invalidate;
   end;
