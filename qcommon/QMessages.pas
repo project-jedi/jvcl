@@ -48,8 +48,8 @@ const
 
   EM_GETRECT          = $00B2;
   EM_SETRECT          = $00B3;
-
-// taken from QControls
+//
+// Standard VisualCLX Messages
 //
   CM_BASE = $B000;
   CM_PARENTSHOWHINTCHANGED = CM_BASE + 1;
@@ -58,27 +58,28 @@ const
   CM_RECREATEWINDOW        = CM_BASE + 4;
   CM_KEYDOWN               = CM_BASE + 5;
   CM_WANTKEY               = CM_BASE + 6;
+  CM_BUTTONPRESSED         = CM_BASE + 100;
 
-// VCL Messages
-// taken from Controls (VCL)
+// Support
+  WM_HSCROLL                = CM_BASE + 8; // differs with VCL !!
+  WM_VSCROLL                = CM_BASE + 9; // differs with VCL !!
+
+// Standard VCL Messages
   CM_FOCUSCHANGED           = CM_BASE + 7;
-//  CM_PARENTFONTCHANGED      = CM_BASE + 8;
-//  CM_PARENTCOLORCHANGED     = CM_BASE + 9;
+
   CM_HITTEST                = CM_BASE + 10;
   CM_VISIBLECHANGED         = CM_BASE + 11;
   CM_ENABLEDCHANGED         = CM_BASE + 12;
   CM_COLORCHANGED           = CM_BASE + 13;
   CM_FONTCHANGED            = CM_BASE + 14;
   CM_CURSORCHANGED          = CM_BASE + 15;
-//  CM_CTL3DCHANGED           = CM_BASE + 16;
-//  CM_PARENTCTL3DCHANGED     = CM_BASE + 17;
   CM_TEXTCHANGED            = CM_BASE + 18;
   CM_MOUSEENTER             = CM_BASE + 19;
   CM_MOUSELEAVE             = CM_BASE + 20;
   CM_MENUCHANGED            = CM_BASE + 21;
   CM_APPKEYDOWN             = CM_BASE + 22;
   CM_APPSYSCOMMAND          = CM_BASE + 23;
-  CM_BUTTONPRESSED          = CM_BASE + 24;
+//  CM_BUTTONPRESSED          = CM_BASE + 24;
   CM_SHOWINGCHANGED         = CM_BASE + 25;
   CM_ENTER                  = CM_BASE + 26;
   CM_EXIT                   = CM_BASE + 27;
@@ -91,7 +92,6 @@ const
   CM_SHOWHINTCHANGED        = CM_BASE + 34;
 //  CM_PARENTSHOWHINTCHANGED  = CM_BASE + 35;
   CM_SYSCOLORCHANGE         = CM_BASE + 36;
-//  CM_WININICHANGE           = CM_BASE + 37;
   CM_FONTCHANGE             = CM_BASE + 38;
   CM_TIMECHANGE             = CM_BASE + 39;
   CM_TABSTOPCHANGED         = CM_BASE + 40;
@@ -114,13 +114,9 @@ const
 //  CM_UNDOCKCLIENT           = CM_BASE + 57;
   CM_FLOAT                  = CM_BASE + 58;
   CM_BORDERCHANGED          = CM_BASE + 59;
-//  CM_BIDIMODECHANGED        = CM_BASE + 60;
-//  CM_PARENTBIDIMODECHANGED  = CM_BASE + 61;
-//  CM_ALLCHILDRENFLIPPED     = CM_BASE + 62;
   CM_ACTIONUPDATE           = CM_BASE + 63;
   CM_ACTIONEXECUTE          = CM_BASE + 64;
   CM_HINTSHOWPAUSE          = CM_BASE + 65;
-//  CM_DOCKNOTIFICATION       = CM_BASE + 66;
   CM_MOUSEWHEEL             = CM_BASE + 67;
   CM_ISSHORTCUT             = CM_BASE + 68;
 {$IFDEF LINUX}
@@ -134,10 +130,9 @@ const
   CM_CANCELMODE             = CM_BASE + 74;
   CM_DIALOGKEY              = CM_BASE + 75;
   CM_DIALOGCHAR             = CM_BASE + 76;
-
 // windows messages
-  WM_HSCROLL                = CM_BASE + 100;
-  WM_VSCROLL                = CM_BASE + 101;
+//  WM_HSCROLL                = CM_BASE + 100;  // Differs from  changed
+//  WM_VSCROLL                = CM_BASE + 101;
   WM_COMMAND                = CM_BASE + 102;
 
   WM_USER             = $0400;

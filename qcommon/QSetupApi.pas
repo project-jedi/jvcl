@@ -136,8 +136,56 @@ type
 // Define structure for passing alternate platform info into
 // SetupSetFileQueueAlternatePlatform and SetupQueryInfOriginalFileInformation.
 //
-  PSPAltPlatformInfo = ^TSPAltPlatformInfo;
-  SP_ALTPLATFORM_INFO = packed record
+  PSPAltPlatformInfoV2 = ^SP_ALTPLATFORM_INFO_V2;
+  SP_ALTPLATFORM_INFO_V2 = packed record
+    cbSize: DWORD;
+    //
+    // platform to use (VER_PLATFORM_WIN32_WINDOWS or VER_PLATFORM_WIN32_NT)
+    //
+    Platform: DWORD;
+    //
+    // major and minor version numbers to use
+    //
+    MajorVersion: DWORD;
+    MinorVersion: DWORD;
+    //
+    // processor architecture to use (PROCESSOR_ARCHITECTURE_INTEL,
+    // PROCESSOR_ARCHITECTURE_ALPHA, PROCESSOR_ARCHITECTURE_IA64, or
+    // PROCESSOR_ARCHITECTURE_ALPHA64)
+    //
+    ProcessorArchitecture: WORD;
+
+    Flags: WORD;
+    (*
+    union {
+        WORD  Reserved; // for compatibility with V1 structure
+        WORD  Flags;    // indicates validity of non V1 fields
+    };
+    *)
+
+    //
+    // specify SP_ALTPLATFORM_FLAGS_VERSION_RANGE in Flags
+    // to use FirstValidatedMajorVersion and FirstValidatedMinorVersion
+    //
+    // Major and minor versions of the oldest previous OS for which this
+    // package's digital signature may be considered valid.  For example, say
+    // the alternate platform is VER_PLATFORM_WIN32_NT, version 5.1.  However,
+    // it is wished that driver packages signed with a 5.0 osattr also be
+    // considered valid.  In this case, you'd have a  MajorVersion/MinorVersion
+    // of 5.1, and a FirstValidatedMajorVersion/FirstValidatedMinorVersion of
+    // 5.0.  To validate packages signed for any previous OS release, specify
+    // 0 for these fields.  To only validate against the target alternate
+    // platform, specify the same values as those in the MajorVersion and
+    // MinorVersion fields.
+    //
+    FirstValidatedMajorVersion: DWORD;
+    FirstValidatedMinorVersion: DWORD;
+  end;
+  {$EXTERNALSYM SP_ALTPLATFORM_INFO_V2}
+  TSPAltPlatformInfoV2 = SP_ALTPLATFORM_INFO_V2;
+
+  PSPAltPlatformInfoV1 = ^TSPAltPlatformInfoV1;
+  SP_ALTPLATFORM_INFO_V1 = packed record
     cbSize: DWORD;
     //
     // platform to use (VER_PLATFORM_WIN32_WINDOWS or VER_PLATFORM_WIN32_NT)
@@ -156,14 +204,30 @@ type
     ProcessorArchitecture: Word;
     Reserved: Word; // must be zero.
   end;
-  {$EXTERNALSYM SP_ALTPLATFORM_INFO}
-  TSPAltPlatformInfo = SP_ALTPLATFORM_INFO;
+  {$EXTERNALSYM SP_ALTPLATFORM_INFO_V1}
+  TSPAltPlatformInfoV1 = SP_ALTPLATFORM_INFO_V1;
+
+  {$IFDEF WINXP}
+  PSPAltPlatformInfo = PSPAltPlatformInfoV2;
+  TSPAltPlatformInfo = TSPAltPlatformInfoV2;
+  {$ELSE}
+  PSPAltPlatformInfo = PSPAltPlatformInfoV1;
+  TSPAltPlatformInfo = TSPAltPlatformInfoV1;
+  {$ENDIF WINXP}
+
+//
+// the following flags are available to SP_ALTPLATFORM_INFO_V2
+//
+const
+  SP_ALTPLATFORM_FLAGS_VERSION_RANGE = $0001;  // FirstValidatedMajor/MinorVersion
+  {$EXTERNALSYM SP_ALTPLATFORM_FLAGS_VERSION_RANGE}
 
 //
 // Define structure that is filled in by SetupQueryInfOriginalFileInformation
 // to indicate the INF's original name and the original name of the (potentially
 // platform-specific) catalog file specified by that INF.
 //
+type
   PSPOriginalFileInfoA = ^TSPOriginalFileInfoA;
   PSPOriginalFileInfoW = ^TSPOriginalFileInfoW;
   PSPOriginalFileInfo = PSPOriginalFileInfoA;
@@ -376,6 +440,14 @@ const
   SPFILENOTIFY_QUEUESCAN_EX = $00000018;
   {$EXTERNALSYM SPFILENOTIFY_QUEUESCAN_EX}
 
+  SPFILENOTIFY_STARTREGISTRATION = $00000019;
+  SPFILENOTIFY_ENDREGISTRATION   = $00000020;
+
+//
+// Extended notification for SetupScanFileQueue(Flags=SPQ_SCAN_USE_CALLBACK_SIGNERINFO)
+//
+  SPFILENOTIFY_QUEUESCAN_SIGNERINFO = $00000040;
+
 //
 // Copy notification. These are bit flags that may be combined.
 //
@@ -470,6 +542,35 @@ type
   TFilePathsW = FILEPATHS_W;
   TFilePaths = TFilePathsA;
 
+  {$IFDEF WINXP}
+  PFilePathsSignerInfoA = ^TFilePathsSignerInfoA;
+  PFilePathsSignerInfoW = ^TFilePathsSignerInfoW;
+  PFilePathsSignerInfo = PFilePathsSignerInfoA;
+  FILEPATHS_SIGNERINFO_A = packed record
+    Target: PChar;
+    Source: PChar;  // not used for delete operations
+    Win32Error: UINT;
+    Flags: DWORD;   // such as SP_COPY_NOSKIP for copy errors
+    DigitalSigner: PChar;
+    Version: PChar;
+    CatalogFile: PChar;
+  end;
+  {$EXTERNALSYM FILEPATHS_SIGNERINFO_A}
+  FILEPATHS_SIGNERINFO_W = packed record
+    Target: PWideChar;
+    Source: PWideChar;  // not used for delete operations
+    Win32Error: UINT;
+    Flags: DWORD;   // such as SP_COPY_NOSKIP for copy errors
+    DigitalSigner: PWideChar;
+    Version: PWideChar;
+    CatalogFile: PWideChar;
+  end;
+  {$EXTERNALSYM FILEPATHS_SIGNERINFO_W}
+  TFilePathsSignerInfoA = FILEPATHS_SIGNERINFO_A;
+  TFilePathsSignerInfoW = FILEPATHS_SIGNERINFO_W;
+  TFilePathsSignerInfo = TFilePathsPathsSignerA;
+  {$ENDIF WINXP}
+
 //
 // Structure used with SPFILENOTIFY_NEEDMEDIA
 //
@@ -563,9 +664,56 @@ type
   TFileInCabinetInfoW = FILE_IN_CABINET_INFO_W;
   TFileInCabinetInfo = TFileInCabinetInfoA;
 
+  //
+  // Structure used for SPFILENOTIFY_***REGISTRATION
+  // callback
+  //
+  {$IFDEF WINXP}
+  PSPRegisterControlStatusA = ^TSPRegisterControlStatusA;
+  PSPRegisterControlStatusW = ^TSPRegisterControlStatusW;
+  PSPRegisterControlStatus = PSPRegisterControlStatusA;
+  SP_REGISTER_CONTROL_STATUSA = packed record
+    cbSize: DWORD;
+    FileName: PChar;
+    Win32Error: DWORD;
+    FailureCode: DWORD;
+  end;
+  {$EXTERNALSYM SP_REGISTER_CONTROL_STATUSA}
+  SP_REGISTER_CONTROL_STATUSW = packed record
+    cbSize: DWORD;
+    FileName: PWideChar;
+    Win32Error: DWORD;
+    FailureCode: DWORD;
+  end;
+  {$EXTERNALSYM SP_REGISTER_CONTROL_STATUSW}
+  TSPRegisterControlStatusA = SP_REGISTER_CONTROL_STATUSA;
+  TSPRegisterControlStatusW = SP_REGISTER_CONTROL_STATUSW;
+  TSPRegisterControlStatus = TSPRegisterControlStatusA;
+  {$ENDIF WINXP}
+
+//
+// valid values for SP_REGISTER_CONTROL_STATUS.FailureCode field
+//
+const
+  SPREG_SUCCESS     = $00000000;
+  {$EXTERNALSYM SPREG_SUCCESS}
+  SPREG_LOADLIBRARY = $00000001;
+  {$EXTERNALSYM SPREG_LOADLIBRARY}
+  SPREG_GETPROCADDR = $00000002;
+  {$EXTERNALSYM SPREG_GETPROCADDR}
+  SPREG_REGSVR      = $00000003;
+  {$EXTERNALSYM SPREG_REGSVR}
+  SPREG_DLLINSTALL  = $00000004;
+  {$EXTERNALSYM SPREG_DLLINSTALL}
+  SPREG_TIMEOUT     = $00000005;
+  {$EXTERNALSYM SPREG_TIMEOUT}
+  SPREG_UNKNOWN     = $FFFFFFFF;
+  {$EXTERNALSYM SPREG_UNKNOWN}
+
 //
 // Define type for setup file queue
 //
+type
   HSPFILEQ = Pointer;
   {$EXTERNALSYM HSPFILEQ}
 
@@ -814,6 +962,12 @@ const
   {$EXTERNALSYM DIF_TROUBLESHOOTER}
   DIF_POWERMESSAGEWAKE              = $00000027;
   {$EXTERNALSYM DIF_POWERMESSAGEWAKE}
+  DIF_ADDREMOTEPROPERTYPAGE_ADVANCED = $00000028;
+  {$EXTERNALSYM DIF_ADDREMOTEPROPERTYPAGE_ADVANCED}
+  DIF_UPDATEDRIVER_UI                = $00000029;
+  {$EXTERNALSYM DIF_UPDATEDRIVER_UI}
+  DIF_RESERVED2                      = $00000030;
+  {$EXTERNALSYM DIF_RESERVED2}
 
 type
   DI_FUNCTION = UINT;    // Function type for device installer
@@ -1023,6 +1177,19 @@ const
                                                    // a driver list.
   DI_FLAGSEX_POWERPAGE_ADDED          = $01000000; // class installer added their own power page
   {$EXTERNALSYM DI_FLAGSEX_POWERPAGE_ADDED}
+
+  DI_FLAGSEX_FILTERSIMILARDRIVERS     = $02000000;  // only include similar drivers in class list
+  {$EXTERNALSYM DI_FLAGSEX_FILTERSIMILARDRIVERS}
+  DI_FLAGSEX_INSTALLEDDRIVER          = $04000000;  // only add the installed driver to the class or compat
+  {$EXTERNALSYM DI_FLAGSEX_INSTALLEDDRIVER}
+                                                    // driver list.  Used in calls to SetupDiBuildDriverInfoList
+  DI_FLAGSEX_NO_CLASSLIST_NODE_MERGE  = $08000000;  // Don't remove identical driver nodes from the class list
+  {$EXTERNALSYM DI_FLAGSEX_NO_CLASSLIST_NODE_MERGE}
+  DI_FLAGSEX_ALTPLATFORM_DRVSEARCH    = $10000000;  // Build driver list based on alternate platform information
+  {$EXTERNALSYM DI_FLAGSEX_ALTPLATFORM_DRVSEARCH}
+                                                    // specified in associated file queue
+  DI_FLAGSEX_RESTART_DEVICE_ONLY      = $20000000;  // only restart the device drivers are being installed on as
+  {$EXTERNALSYM DI_FLAGSEX_RESTART_DEVICE_ONLY}
 
 //
 // Class installation parameters header.  This must be the first field of any
@@ -1520,21 +1687,21 @@ type
   TSPDrvInfoDataV1W = SP_DRVINFO_DATA_V1_W;
   TSPDrvInfoDataV1 = TSPDrvInfoDataV1A;
 
-{$IFDEF USE_SP_DRVINFO_DATA_V1}
+  {$IFDEF USE_SP_DRVINFO_DATA_V1}
   TSPDrvInfoDataA = TSPDrvInfoDataV1A;
   TSPDrvInfoDataW = TSPDrvInfoDataV1W;
   TSPDrvInfoData = TSPDrvInfoDataA;
   PSPDrvInfoDataA = PSPDrvInfoDataV1A;
   PSPDrvInfoDataW = PSPDrvInfoDataV1W;
   PSPDrvInfoData = PSPDrvInfoDataA;
-{$ELSE}
+  {$ELSE}
   TSPDrvInfoDataA = TSPDrvInfoDataV2A;
   TSPDrvInfoDataW = TSPDrvInfoDataV2W;
   TSPDrvInfoData = TSPDrvInfoDataA;
   PSPDrvInfoDataA = PSPDrvInfoDataV2A;
   PSPDrvInfoDataW = PSPDrvInfoDataV2W;
   PSPDrvInfoData = PSPDrvInfoDataA;
-{$ENDIF}
+  {$ENDIF USE_SP_DRVINFO_DATA_V1}
 
 //
 // Driver information details structure (provides detailed information about a
@@ -1618,11 +1785,62 @@ const
   DNF_DUPPROVIDER       = $00001000; // Multiple drivers have the same provider and desc
   {$EXTERNALSYM DNF_DUPPROVIDER}
 
+  DNF_INF_IS_SIGNED     = $00002000;  // If file is digitally signed
+  {$EXTERNALSYM DNF_INF_IS_SIGNED}
+  DNF_OEM_F6_INF        = $00004000;  // INF specified from F6 during textmode setup.
+  {$EXTERNALSYM DNF_OEM_F6_INF}
+  DNF_DUPDRIVERVER      = $00008000;  // Multipe drivers have the same desc, provider, and DriverVer values
+  {$EXTERNALSYM DNF_DUPDRIVERVER}
+  DNF_BASIC_DRIVER      = $00010000;  // Driver provides basic functionality, but should
+  {$EXTERNALSYM DNF_BASIC_DRIVER}
+                                      // not be chosen if other signed drivers exist.
 //
-//Rank values (the lower the Rank number, the better the Rank)
+// Rank values (the lower the Rank number, the better the Rank)
 //
   DRIVER_HARDWAREID_RANK = $00000FFF;   // Any rank less than or equal to
-  {$EXTERNALSYM DRIVER_HARDWAREID_RANK} // this value is a HardwareID match
+  {$EXTERNALSYM DRIVER_HARDWAREID_RANK} // this value is a trusted
+                                        // HardwareID match
+
+  DRIVER_COMPATID_RANK   = $00003FFF;  // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_COMPATID_RANK}  // this (and greater than
+                                       // DRIVER_HARDWAREID_RANK) is a
+                                       // trusted CompatibleID match
+
+  DRIVER_UNTRUSTED_RANK  = $00008000;  // Any rank with this bit set is an
+  {$EXTERNALSYM DRIVER_UNTRUSTED_RANK} // "untrusted" rank, meaning that
+                                       // the INF was unsigned.
+
+  DRIVER_UNTRUSTED_HARDWAREID_RANK   = $00008FFF;  // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_UNTRUSTED_HARDWAREID_RANK}  // this value (and greater than
+                                                   // or equal to DRIVER_UNTRUSTED_RANK)
+                                                   // is an untrusted HardwareID match
+
+  DRIVER_UNTRUSTED_COMPATID_RANK     = $0000BFFF;  // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_UNTRUSTED_COMPATID_RANK}    // this value (and greater than
+                                                   // DRIVER_UNTRUSTED_HARDWAREID_RANK)
+                                                   // is an untrusted CompatibleID match
+
+  DRIVER_W9X_SUSPECT_RANK            = $0000C000; // Any rank that is greater than
+  {$EXTERNALSYM DRIVER_W9X_SUSPECT_RANK}          // or equal to this value, and lesser
+                                                  // than or equal to 0xFFFF is suspected
+                                                  // to be a Win9x-only driver, because
+                                                  // (a) it isn't signed, and (b) there
+                                                  // is no NT-specific decoration to
+                                                  // explicitly indicate that the INF
+                                                  // supports Windows NT/200x
+
+  DRIVER_W9X_SUSPECT_HARDWAREID_RANK = $0000CFFF; // Any rank less than or equal to this
+  {$EXTERNALSYM DRIVER_W9X_SUSPECT_HARDWAREID_RANK} // (and greater than or equal to
+                                                  // DRIVER_W9X_SUSPECT_RANK) is a
+                                                  // hardware ID match suspected of being
+                                                  // only for Windows 9x platforms.
+
+  DRIVER_W9X_SUSPECT_COMPATID_RANK   = $0000FFFF; // Any rank less than or equal to
+  {$EXTERNALSYM DRIVER_W9X_SUSPECT_COMPATID_RANK} // this (and greater than
+                                                  // DRIVER_W9X_SUSPECT_HARDWAREID_RANK)
+                                                  // is a compatible ID match suspected
+                                                  // of being only for Windows 9x
+                                                  // platforms.
 
 //
 // Setup callback routine for comparing detection signatures
@@ -1683,27 +1901,64 @@ const
   {$EXTERNALSYM SPPSR_ENUM_ADV_DEVICE_PROPERTIES}
 
 //
-// Structure used with SetupGetBackupQueue
+// Structure used with SetupGetBackupInformation/SetupSetBackupInformation
 //
 type
-  PSPBackupQueueParamsA = ^TSPBackupQueueParamsA;
-  PSPBackupQueueParamsW = ^TSPBackupQueueParamsW;
-  PSPBackupQueueParams = PSPBackupQueueParamsA;
-  SP_BACKUP_QUEUE_PARAMS_A = packed record
+  PSPBackupQueueParamsV2A = ^TSPBackupQueueParamsV2A;
+  PSPBackupQueueParamsV2W = ^TSPBackupQueueParamsV2W;
+  PSPBackupQueueParamsV2 = PSPBackupQueueParamsV2A;
+  SP_BACKUP_QUEUE_PARAMS_V2_A = packed record
+    cbSize: DWORD;
+    FullInfPath: array [0..MAX_PATH - 1] of AnsiChar; // buffer to hold ANSI pathname of INF file
+    FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
+    ReinstallInstance: array [0..MAX_PATH - 1] of AnsiChar;  // Instance ID (if present)
+  end;
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V2_A}
+  SP_BACKUP_QUEUE_PARAMS_V2_W = packed record
+    cbSize: DWORD;
+    FullInfPath: array [0..MAX_PATH - 1] of WideChar;  // buffer to hold ANSI pathname of INF file
+    FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
+    ReinstallInstance: array [0..MAX_PATH - 1] of WideChar;  // Instance ID (if present)
+  end;
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V2_W}
+  TSPBackupQueueParamsV2A = SP_BACKUP_QUEUE_PARAMS_V2_A;
+  TSPBackupQueueParamsV2W = SP_BACKUP_QUEUE_PARAMS_V2_W;
+  TSPBackupQueueParamsV2 = TSPBackupQueueParamsV2A;
+
+  PSPBackupQueueParamsV1A = ^TSPBackupQueueParamsV1A;
+  PSPBackupQueueParamsV1W = ^TSPBackupQueueParamsV1W;
+  PSPBackupQueueParamsV1 = PSPBackupQueueParamsV1A;
+  SP_BACKUP_QUEUE_PARAMS_V1_A = packed record
     cbSize: DWORD;
     FullInfPath: array [0..MAX_PATH - 1] of AnsiChar; // buffer to hold ANSI pathname of INF file
     FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
   end;
-  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_A}
-  SP_BACKUP_QUEUE_PARAMS_W = packed record
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V1_A}
+  SP_BACKUP_QUEUE_PARAMS_V1_W = packed record
     cbSize: DWORD;
     FullInfPath: array [0..MAX_PATH - 1] of WideChar; // buffer to hold ANSI pathname of INF file
     FilenameOffset: Integer; // offset in CHAR's of filename part (after '\')
   end;
-  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_W}
-  TSPBackupQueueParamsA = SP_BACKUP_QUEUE_PARAMS_A;
-  TSPBackupQueueParamsW = SP_BACKUP_QUEUE_PARAMS_W;
-  TSPBackupQueueParams = TSPBackupQueueParamsA;
+  {$EXTERNALSYM SP_BACKUP_QUEUE_PARAMS_V1_W}
+  TSPBackupQueueParamsV1A = SP_BACKUP_QUEUE_PARAMS_V1_A;
+  TSPBackupQueueParamsV1W = SP_BACKUP_QUEUE_PARAMS_V1_W;
+  TSPBackupQueueParamsV1 = TSPBackupQueueParamsV1A;
+
+  {$IFDEF USE_SP_BACKUP_QUEUE_PARAMS_V1}
+  TSPBackupQueueParamsA = TSPBackupQueueParamsV1A;
+  TSPBackupQueueParamsW = TSPBackupQueueParamsV1W;
+  TSPBackupQueueParams = TSPBackupQueueParamsV1;
+  PSPBackupQueueParamsA = PSPBackupQueueParamsV1A;
+  PSPBackupQueueParamsW = PSPBackupQueueParamsV1W;
+  PSPBackupQueueParams = PSPBackupQueueParamsV1;
+  {$ELSE}
+  TSPBackupQueueParamsA = TSPBackupQueueParamsV2A;
+  TSPBackupQueueParamsW = TSPBackupQueueParamsV2W;
+  TSPBackupQueueParams = TSPBackupQueueParamsV2;
+  PSPBackupQueueParamsA = PSPBackupQueueParamsV2A;
+  PSPBackupQueueParamsW = PSPBackupQueueParamsV2W;
+  PSPBackupQueueParams = PSPBackupQueueParamsV2;
+  {$ENDIF USE_SP_BACKUP_QUEUE_PARAMS_V1}
 
 //
 // Setupapi-specific error codes
@@ -1842,6 +2097,18 @@ const
   {$EXTERNALSYM ERROR_NOT_DISABLEABLE}
   ERROR_CANT_REMOVE_DEVINST         = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $232);
   {$EXTERNALSYM ERROR_CANT_REMOVE_DEVINST}
+  ERROR_INVALID_TARGET              = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $233);
+  {$EXTERNALSYM ERROR_INVALID_TARGET}
+  ERROR_DRIVER_NONNATIVE            = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $234);
+  {$EXTERNALSYM ERROR_DRIVER_NONNATIVE}
+  ERROR_IN_WOW64                    = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $235);
+  {$EXTERNALSYM ERROR_IN_WOW64}
+  ERROR_SET_SYSTEM_RESTORE_POINT    = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $236);
+  {$EXTERNALSYM ERROR_SET_SYSTEM_RESTORE_POINT}
+  ERROR_INCORRECTLY_COPIED_INF      = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $237);
+  {$EXTERNALSYM ERROR_INCORRECTLY_COPIED_INF}
+  ERROR_SCE_DISABLED                = DWORD(APPLICATION_ERROR_MASK or ERROR_SEVERITY_ERROR or $238);
+  {$EXTERNALSYM ERROR_SCE_DISABLED}
 
 //
 // Backward compatibility--do not use.
@@ -1917,23 +2184,27 @@ const
 // SetupRenameError, SetupDeleteError
 //
 const
-  IDF_NOBROWSE     = $00000001;
+  IDF_NOBROWSE               = $00000001;
   {$EXTERNALSYM IDF_NOBROWSE}
-  IDF_NOSKIP       = $00000002;
+  IDF_NOSKIP                 = $00000002;
   {$EXTERNALSYM IDF_NOSKIP}
-  IDF_NODETAILS    = $00000004;
+  IDF_NODETAILS              = $00000004;
   {$EXTERNALSYM IDF_NODETAILS}
-  IDF_NOCOMPRESSED = $00000008;
+  IDF_NOCOMPRESSED           = $00000008;
   {$EXTERNALSYM IDF_NOCOMPRESSED}
-  IDF_CHECKFIRST   = $00000100;
+  IDF_CHECKFIRST             = $00000100;
   {$EXTERNALSYM IDF_CHECKFIRST}
-  IDF_NOBEEP       = $00000200;
+  IDF_NOBEEP                 = $00000200;
   {$EXTERNALSYM IDF_NOBEEP}
-  IDF_NOFOREGROUND = $00000400;
+  IDF_NOFOREGROUND           = $00000400;
   {$EXTERNALSYM IDF_NOFOREGROUND}
-  IDF_WARNIFSKIP   = $00000800;
+  IDF_WARNIFSKIP             = $00000800;
   {$EXTERNALSYM IDF_WARNIFSKIP}
-  IDF_OEMDISK      = DWORD($80000000);
+  IDF_NOREMOVABLEMEDIAPROMPT = $00001000;
+  {$EXTERNALSYM IDF_NOREMOVABLEMEDIAPROMPT}
+  IDF_USEDISKNAMEASPROMPT    = $00002000;
+  {$EXTERNALSYM IDF_USEDISKNAMEASPROMPT}
+  IDF_OEMDISK                = DWORD($80000000);
   {$EXTERNALSYM IDF_OEMDISK}
 
 //
@@ -1971,6 +2242,14 @@ const
   {$EXTERNALSYM SRCINFO_DESCRIPTION}
   SRCINFO_FLAGS       = 4;
   {$EXTERNALSYM SRCINFO_FLAGS}
+  // SRC_FLAGS allow special treatment of source
+  // lower 4 bits are reserved for OS use
+  // the flags may determine what other parameters exist
+  //
+  SRCINFO_TAGFILE2    = 5;  // alternate tagfile, when SRCINFO_TAGFILE is a cabfile
+  {$EXTERNALSYM SRCINFO_TAGFILE2}
+  SRC_FLAGS_CABFILE   = $0010; // if set, treat SRCINFO_TAGFILE as a cabfile and specify alternate tagfile
+  {$EXTERNALSYM SRC_FLAGS_CABFILE}
 
 //
 // CopyStyle values for copy and queue-related APIs
@@ -2020,29 +2299,66 @@ const
   {$EXTERNALSYM SP_COPY_REPLACE_BOOT_FILE}// needed by the loader); this flag implies a reboot
   SP_COPY_NOPRUNE             = $0100000; // never prune this file
   {$EXTERNALSYM SP_COPY_NOPRUNE}
+  SP_COPY_OEM_F6_INF           = $0200000;   // Used when calling SetupCopyOemInf
+  {$EXTERNALSYM SP_COPY_OEM_F6_INF}
+  //
+  // Flags passed to Backup notification
+  //
+  SP_BACKUP_BACKUPPASS          = $00000001;  // file backed up during backup pass
+  {$EXTERNALSYM SP_BACKUP_BACKUPPASS}
+  SP_BACKUP_DEMANDPASS          = $00000002;  // file backed up on demand
+  {$EXTERNALSYM SP_BACKUP_DEMANDPASS}
+  SP_BACKUP_SPECIAL             = $00000004;  // if set, special type of backup
+  {$EXTERNALSYM SP_BACKUP_SPECIAL}
+  SP_BACKUP_BOOTFILE            = $00000008;  // file marked with COPYFLG_REPLACE_BOOT_FILE
+  {$EXTERNALSYM SP_BACKUP_BOOTFILE}
 
 //
 // Define flags for SetupScanFileQueue.
 //
 const
-  SPQ_SCAN_FILE_PRESENCE    = $00000001;
+  SPQ_SCAN_FILE_PRESENCE           = $00000001;
   {$EXTERNALSYM SPQ_SCAN_FILE_PRESENCE}
-  SPQ_SCAN_FILE_VALIDITY    = $00000002;
+  SPQ_SCAN_FILE_VALIDITY           = $00000002;
   {$EXTERNALSYM SPQ_SCAN_FILE_VALIDITY}
-  SPQ_SCAN_USE_CALLBACK     = $00000004;
+  SPQ_SCAN_USE_CALLBACK            = $00000004;
   {$EXTERNALSYM SPQ_SCAN_USE_CALLBACK}
-  SPQ_SCAN_USE_CALLBACKEX   = $00000008;
+  SPQ_SCAN_USE_CALLBACKEX          = $00000008;
   {$EXTERNALSYM SPQ_SCAN_USE_CALLBACKEX}
-  SPQ_SCAN_INFORM_USER      = $00000010;
+  SPQ_SCAN_INFORM_USER             = $00000010;
   {$EXTERNALSYM SPQ_SCAN_INFORM_USER}
-  SPQ_SCAN_PRUNE_COPY_QUEUE = $00000020;
+  SPQ_SCAN_PRUNE_COPY_QUEUE        = $00000020;
   {$EXTERNALSYM SPQ_SCAN_PRUNE_COPY_QUEUE}
+  SPQ_SCAN_USE_CALLBACK_SIGNERINFO = $00000040;
+  {$EXTERNALSYM SPQ_SCAN_USE_CALLBACK_SIGNERINFO}
+  SPQ_SCAN_PRUNE_DELREN            = $00000080; // remote Delete/Rename queue
+  {$EXTERNALSYM SPQ_SCAN_PRUNE_DELREN}
 
 //
 // Define flags used with Param2 for SPFILENOTIFY_QUEUESCAN
 //
-  SPQ_DELAYED_COPY = $00000001; // file was in use; registered for delayed copy
+  SPQ_DELAYED_COPY                 = $00000001; // file was in use; registered for delayed copy
   {$EXTERNALSYM SPQ_DELAYED_COPY}
+
+//
+// Flags/FlagMask for use with SetupSetFileQueueFlags and returned by SetupGetFileQueueFlags
+//
+const
+  SPQ_FLAG_BACKUP_AWARE      = $00000001;  // If set, SetupCommitFileQueue will
+  {$EXTERNALSYM SPQ_FLAG_BACKUP_AWARE}     // issue backup notifications.
+
+  SPQ_FLAG_ABORT_IF_UNSIGNED = $00000002;  // If set, SetupCommitFileQueue will
+  {$EXTERNALSYM SPQ_FLAG_ABORT_IF_UNSIGNED}// fail with ERROR_SET_SYSTEM_RESTORE_POINT
+                                           // if the user elects to proceed with an
+                                           // unsigned queue committal.  This allows
+                                           // the caller to set a system restore point,
+                                           // then re-commit the file queue.
+
+  SPQ_FLAG_FILES_MODIFIED    = $00000004;  // If set, at least one file was
+  {$EXTERNALSYM SPQ_FLAG_FILES_MODIFIED}   // replaced by a different version
+
+  SPQ_FLAG_VALID             = $00000007;  // mask of valid flags (can be passed as FlagMask)
+  {$EXTERNALSYM SPQ_FLAG_VALID}
 
 //
 // Define OEM Source Type values for use in SetupCopyOEMInf.
@@ -2056,6 +2372,10 @@ const
   SPOST_MAX  = 3;
   {$EXTERNALSYM SPOST_MAX}
 
+//
+// Flags used by SetupUninstallOEMInf
+//
+  SUOI_FORCEDELETE = $00000001;
 //
 // Flags for SetupCreateDiskSpaceList
 //
@@ -2087,7 +2407,12 @@ const
 // identify the data type of the registry value.  The high word is ignored
 // by the 16-bit Windows 95 SETUPX APIs.
 //
+// If <ValueType> has FLG_ADDREG_DELREG_BIT set, it will be ignored by AddReg
+// (not supported by SetupX).
+//
 const
+  FLG_ADDREG_DELREG_BIT     = $00008000;   // if set, interpret as DELREG, see below
+  {$EXTERNALSYM FLG_ADDREG_DELREG_BIT}
   FLG_ADDREG_BINVALUETYPE   = $00000001;
   {$EXTERNALSYM FLG_ADDREG_BINVALUETYPE}
   FLG_ADDREG_NOCLOBBER      = $00000002;
@@ -2100,6 +2425,18 @@ const
   {$EXTERNALSYM FLG_ADDREG_KEYONLY}
   FLG_ADDREG_OVERWRITEONLY  = $00000020;   // Set only if value already exists
   {$EXTERNALSYM FLG_ADDREG_OVERWRITEONLY}
+  FLG_ADDREG_64BITKEY       = $00001000;   // make this change in the 64 bit registry.
+  {$EXTERNALSYM FLG_ADDREG_64BITKEY}
+  FLG_ADDREG_KEYONLY_COMMON = $00002000;   // same as FLG_ADDREG_KEYONLY but also works for DELREG
+  {$EXTERNALSYM FLG_ADDREG_KEYONLY_COMMON}
+  FLG_ADDREG_32BITKEY       = $00004000;   // make this change in the 32 bit registry.
+  {$EXTERNALSYM FLG_ADDREG_OVERWRITEONLY}
+  //
+  // The INF may supply any arbitrary data type ordinal in the highword except
+  // for the following: REG_NONE, REG_SZ, REG_EXPAND_SZ, REG_MULTI_SZ.  If this
+  // technique is used, then the data is given in binary format, one byte per
+  // field.
+  //
   FLG_ADDREG_TYPE_MASK      = DWORD($FFFF0000 or FLG_ADDREG_BINVALUETYPE);
   {$EXTERNALSYM FLG_ADDREG_TYPE_MASK}
   FLG_ADDREG_TYPE_SZ        = $00000000;
@@ -2115,6 +2452,57 @@ const
   FLG_ADDREG_TYPE_NONE      = $00020000 or FLG_ADDREG_BINVALUETYPE;
   {$EXTERNALSYM FLG_ADDREG_TYPE_NONE}
 
+  //
+  // Flags for DelReg section lines in INF.  The corresponding value
+  // is <Operation> in the extended DelReg line format given below:
+  //
+  // <RegRootString>,<SubKey>,<ValueName>,<Operation>[,...]
+  //
+  // In SetupX and some versions of SetupAPI, <Operation> will be ignored and <ValueName> will
+  // be deleted. Use with care.
+  //
+  // The bits determined by mask FLG_DELREG_TYPE_MASK indicates type of data expected.
+  // <Operation> must have FLG_ADDREG_DELREG_BIT set, otherwise it is ignored and specified
+  // value will be deleted (allowing an AddReg section to also be used as a DelReg section)
+  // if <Operation> is not specified, <ValueName> will be deleted (if specified) otherwise
+  // <SubKey> will be deleted.
+  //
+  // the compatability flag
+  //
+  FLG_DELREG_VALUE            = $00000000;
+  {$EXTERNALSYM FLG_DELREG_VALUE}
+
+  FLG_DELREG_TYPE_MASK        = FLG_ADDREG_TYPE_MASK;        // 0xFFFF0001
+  {$EXTERNALSYM FLG_DELREG_TYPE_MASK}
+  FLG_DELREG_TYPE_SZ          = FLG_ADDREG_TYPE_SZ;          // 0x00000000
+  {$EXTERNALSYM FLG_DELREG_TYPE_SZ}
+  FLG_DELREG_TYPE_MULTI_SZ    = FLG_ADDREG_TYPE_MULTI_SZ;    // 0x00010000
+  {$EXTERNALSYM FLG_DELREG_TYPE_MULTI_SZ}
+  FLG_DELREG_TYPE_EXPAND_SZ   = FLG_ADDREG_TYPE_EXPAND_SZ;   // 0x00020000
+  {$EXTERNALSYM FLG_DELREG_TYPE_EXPAND_SZ}
+  FLG_DELREG_TYPE_BINARY      = FLG_ADDREG_TYPE_BINARY;      // 0x00000001
+  {$EXTERNALSYM FLG_DELREG_TYPE_BINARY}
+  FLG_DELREG_TYPE_DWORD       = FLG_ADDREG_TYPE_DWORD;       // 0x00010001
+  {$EXTERNALSYM FLG_DELREG_TYPE_DWORD}
+  FLG_DELREG_TYPE_NONE        = FLG_ADDREG_TYPE_NONE;        // 0x00020001
+  {$EXTERNALSYM FLG_DELREG_TYPE_NONE}
+  FLG_DELREG_64BITKEY         = FLG_ADDREG_64BITKEY;         // 0x00001000
+  {$EXTERNALSYM FLG_DELREG_64BITKEY}
+  FLG_DELREG_KEYONLY_COMMON   = FLG_ADDREG_KEYONLY_COMMON;   // 0x00002000
+  {$EXTERNALSYM FLG_DELREG_KEYONLY_COMMON}
+  FLG_DELREG_32BITKEY         = FLG_ADDREG_32BITKEY;         // 0x00004000
+  {$EXTERNALSYM FLG_DELREG_32BITKEY}
+
+  //
+  // <Operation> = FLG_DELREG_MULTI_SZ_DELSTRING
+  //               <RegRootString>,<SubKey>,<ValueName>,0x00018002,<String>
+  //               removes all entries matching <String> (case ignored) from multi-sz registry value
+  //
+  FLG_DELREG_OPERATION_MASK = $000000FE;
+  {$EXTERNALSYM FLG_DELREG_OPERATION_MASK}
+  FLG_DELREG_MULTI_SZ_DELSTRING = FLG_DELREG_TYPE_MULTI_SZ or FLG_ADDREG_DELREG_BIT or $00000002;  // 0x00018002
+  {$EXTERNALSYM FLG_DELREG_MULTI_SZ_DELSTRING}
+
 //
 // Flags for BitReg section lines in INF.
 //
@@ -2122,6 +2510,18 @@ const
   {$EXTERNALSYM FLG_BITREG_CLEARBITS}
   FLG_BITREG_SETBITS   = $00000001;
   {$EXTERNALSYM FLG_BITREG_SETBITS}
+  FLG_BITREG_64BITKEY  = $00001000;
+  {$EXTERNALSYM FLG_BITREG_64BITKEY}
+  FLG_BITREG_32BITKEY  = $00004000;
+  {$EXTERNALSYM FLG_BITREG_32BITKEY}
+
+//
+// Flags for Ini2Reg section lines in INF.
+//
+  FLG_INI2REG_64BITKEY = $00001000;
+  {$EXTERNALSYM FLG_INI2REG_64BITKEY}
+  FLG_INI2REG_32BITKEY = $00004000;
+  {$EXTERNALSYM FLG_INI2REG_32BITKEY}
 
 //
 // Flags for RegSvr section lines in INF
@@ -2164,14 +2564,23 @@ const
   {$EXTERNALSYM SPINST_UNREGSVR}
   SPINST_PROFILEITEMS             = $00000100;
   {$EXTERNALSYM SPINST_PROFILEITEMS}
+  {$IFDEF WINXP}
+  SPINST_COPYINF                  = $00000200;
+  {$EXTERNALSYM SPINST_COPYINF}
+  SPINST_ALL                      = $000003ff;
+  {$EXTERNALSYM SPINST_ALL}
+  {$ELSE}
   SPINST_ALL                      = $000001ff;
   {$EXTERNALSYM SPINST_ALL}
+  {$ENDIF WINXP}
   SPINST_SINGLESECTION            = $00010000;
   {$EXTERNALSYM SPINST_SINGLESECTION}
   SPINST_LOGCONFIG_IS_FORCED      = $00020000;
   {$EXTERNALSYM SPINST_LOGCONFIG_IS_FORCED}
   SPINST_LOGCONFIGS_ARE_OVERRIDES = $00040000;
   {$EXTERNALSYM SPINST_LOGCONFIGS_ARE_OVERRIDES}
+  SPINST_REGISTERCALLBACKAWARE    = $00080000;
+  {$EXTERNALSYM SPINST_REGISTERCALLBACKAWARE}
 
 //
 // Flags for SetupInstallServicesFromInfSection(Ex).  These flags are also used
@@ -2243,6 +2652,12 @@ const
 //
   SPSVCINST_STOPSERVICE = $00000200;
   {$EXTERNALSYM SPSVCINST_STOPSERVICE}
+
+//
+// (AddService) force overwrite of security settings
+//
+  SPSVCINST_CLOBBER_SECURITY = $00000400;
+  {$EXTERNALSYM SPSVCINST_CLOBBER_SECURITY}
 
 //
 // Flags for SetupInitializeFileLog
@@ -2405,6 +2820,8 @@ const
 // These values should cover the same set of registry properties
 // as defined by the CM_DRP codes in cfgmgr32.h.
 //
+// Note that SPDRP codes are zero based while CM_DRP codes are one based!
+//
 const
   SPDRP_DEVICEDESC                  = $00000000; // DeviceDesc (R/W)
   {$EXTERNALSYM SPDRP_DEVICEDESC}
@@ -2464,10 +2881,28 @@ const
   {$EXTERNALSYM SPDRP_CHARACTERISTICS}
   SPDRP_ADDRESS                     = $0000001C; // Device Address (R)
   {$EXTERNALSYM SPDRP_ADDRESS}
+  {$IFDEF WINXP}
+  SPDRP_UI_NUMBER_DESC_FORMAT       = $0000001D;  // UiNumberDescFormat (R/W)
+  {$EXTERNALSYM SPDRP_UI_NUMBER_DESC_FORMAT}
+  SPDRP_DEVICE_POWER_DATA           = $0000001E;  // Device Power Data (R)
+  {$EXTERNALSYM SPDRP_DEVICE_POWER_DATA}
+  SPDRP_REMOVAL_POLICY              = $0000001F;  // Removal Policy (R)
+  {$EXTERNALSYM SPDRP_REMOVAL_POLICY}
+  SPDRP_REMOVAL_POLICY_HW_DEFAULT   = $00000020;  // Hardware Removal Policy (R)
+  {$EXTERNALSYM SPDRP_REMOVAL_POLICY_HW_DEFAULT}
+  SPDRP_REMOVAL_POLICY_OVERRIDE     = $00000021;  // Removal Policy Override (RW)
+  {$EXTERNALSYM SPDRP_REMOVAL_POLICY_OVERRIDE}
+  SPDRP_INSTALL_STATE               = $00000022;  // Device Install State (R)
+  {$EXTERNALSYM SPDRP_INSTALL_STATE}
+
+  SPDRP_MAXIMUM_PROPERTY            = $00000023;  // Upper bound on ordinals
+  {$EXTERNALSYM SPDRP_MAXIMUM_PROPERTY}
+  {$ELSE}
   SPDRP_UI_NUMBER_DESC_FORMAT       = $0000001E; // UiNumberDescFormat (R/W)
   {$EXTERNALSYM SPDRP_UI_NUMBER_DESC_FORMAT}
   SPDRP_MAXIMUM_PROPERTY            = $0000001F; // Upper bound on ordinals
   {$EXTERNALSYM SPDRP_MAXIMUM_PROPERTY}
+  {$ENDIF WINXP}
 //
 // Class registry property codes
 // (Codes marked as read-only (R) may only be used for
@@ -2506,10 +2941,14 @@ const
 // PropertySheetType values for the SetupDiGetClassDevPropertySheets API
 //
 const
-  DIGCDP_FLAG_BASIC    = $00000001;
+  DIGCDP_FLAG_BASIC           = $00000001;
   {$EXTERNALSYM DIGCDP_FLAG_BASIC}
-  DIGCDP_FLAG_ADVANCED = $00000002;
+  DIGCDP_FLAG_ADVANCED        = $00000002;
   {$EXTERNALSYM DIGCDP_FLAG_ADVANCED}
+  DIGCDP_FLAG_REMOTE_BASIC    = $00000003;
+  {$EXTERNALSYM DIGCDP_FLAG_REMOTE_BASIC}
+  DIGCDP_FLAG_REMOTE_ADVANCED = $00000004;
+  {$EXTERNALSYM DIGCDP_FLAG_REMOTE_ADVANCED}
 
 //
 // Define ICON IDs publicly exposed from setupapi.
@@ -2552,67 +2991,103 @@ const
   SPWP_USE_DEVINFO_DATA = $00000001;
 {$EXTERNALSYM SPWP_USE_DEVINFO_DATA}
 
+{$IFDEF WINXP}
+type
+  PSPInfSignerInfoA = TSPInfSignerInfoA;
+  PSPInfSignerInfoW = TSPInfSignerInfoW;
+  PSPInfSignerInfo = TSPInfSignerInfoA;
+  SP_INF_SIGNER_INFO_A = packed record
+    cbSize: DWORD;
+    CatalogFile: array [0..MAX_PATH - 1] of AnsiChar;
+    DigitalSigner: array [0..MAX_PATH - 1] of AnsiChar;
+    DigitalSignerVersion: array [0..MAX_PATH - 1] of AnsiChar;
+  end;
+  SP_INF_SIGNER_INFO_W = packed record
+    cbSize: DWORD;
+    CatalogFile: array [0..MAX_PATH - 1] of WideChar;
+    DigitalSigner: array [0..MAX_PATH - 1] of WideChar;
+    DigitalSignerVersion: array [0..MAX_PATH - 1] of WideChar;
+  end;
+  TSPInfSignerInfoA = SP_INF_SIGNER_INFO_A;
+  TSPInfSignerInfoW = SP_INF_SIGNER_INFO_W;
+  TSPInfSignerInfo = TSPOriginalFileInfoA;
+
+//
+// Flags for use by SetupDiGetCustomDeviceProperty
+//
+const
+  DICUSTOMDEVPROP_MERGE_MULTISZ = $00000001;
+{$ENDIF WINXP}
+
 {$IFNDEF SETUPAPI_LINKONREQUEST}
 
+{$IFDEF WINXP}
+function SetupGetFileQueueCount(FileQueue: HSPFILEQ; SubQueueFileOp: UINT; var NumOperations: UINT): BOOL; stdcall;
+{$EXTERNALSYM SetupGetFileQueueCount}
+function SetupGetFileQueueFlags(FileQueue: HSPFILEQ; var Flags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupGetFileQueueFlags}
+function SetupSetFileQueueFlags(FileQueue: HSPFILEQ; FlagMask: DWORD; Flags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupSetFileQueueFlags}
+{$ENDIF WINXP}
 function SetupGetInfInformationA(InfSpec: Pointer; SearchControl: DWORD;
-  ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetInfInformationA}
 function SetupGetInfInformationW(InfSpec: Pointer; SearchControl: DWORD;
-  ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetInfInformationW}
 function SetupGetInfInformation(InfSpec: Pointer; SearchControl: DWORD;
-  ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetInfInformation}
 
 function SetupQueryInfFileInformationA(var InfInformation: TSPInfInformation;
   InfIndex: UINT; ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfFileInformationA}
 function SetupQueryInfFileInformationW(var InfInformation: TSPInfInformation;
   InfIndex: UINT; ReturnBuffer: PWideChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfFileInformationW}
 function SetupQueryInfFileInformation(var InfInformation: TSPInfInformation;
   InfIndex: UINT; ReturnBuffer: PChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfFileInformation}
 
 {$IFDEF WIN2000}
 function SetupQueryInfOriginalFileInformationA(var InfInformation: TSPInfInformation;
   InfIndex: UINT; AlternatePlatformInfo: PSPAltPlatformInfo;
-  var OriginalFileInfo: TSPOriginalFileInfoA): LongBool; stdcall;
+  var OriginalFileInfo: TSPOriginalFileInfoA): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfOriginalFileInformationA}
 function SetupQueryInfOriginalFileInformationW(var InfInformation: TSPInfInformation;
   InfIndex: UINT; AlternatePlatformInfo: PSPAltPlatformInfo;
-  var OriginalFileInfo: TSPOriginalFileInfoW): LongBool; stdcall;
+  var OriginalFileInfo: TSPOriginalFileInfoW): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfOriginalFileInformationW}
 function SetupQueryInfOriginalFileInformation(var InfInformation: TSPInfInformation;
   InfIndex: UINT; AlternatePlatformInfo: PSPAltPlatformInfo;
-  var OriginalFileInfo: TSPOriginalFileInfoA): LongBool; stdcall;
+  var OriginalFileInfo: TSPOriginalFileInfoA): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfOriginalFileInformation}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupQueryInfVersionInformationA(var InfInformation: TSPInfInformation;
   InfIndex: UINT; const Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfVersionInformationA}
 function SetupQueryInfVersionInformationW(var InfInformation: TSPInfInformation;
   InfIndex: UINT; const Key, ReturnBuffer: PWideChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfVersionInformationW}
 function SetupQueryInfVersionInformation(var InfInformation: TSPInfInformation;
   InfIndex: UINT; const Key, ReturnBuffer: PChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryInfVersionInformation}
 
 function SetupGetInfFileListA(const DirectoryPath: PAnsiChar; InfStyle: DWORD;
-  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetInfFileListA}
 function SetupGetInfFileListW(const DirectoryPath: PWideChar; InfStyle: DWORD;
-  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetInfFileListW}
 function SetupGetInfFileList(const DirectoryPath: PChar; InfStyle: DWORD;
-  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetInfFileList}
 
 function SetupOpenInfFileA(const FileName: PAnsiChar; const InfClass: PAnsiChar;
@@ -2629,49 +3104,49 @@ function SetupOpenMasterInf: HINF; stdcall;
 {$EXTERNALSYM SetupOpenMasterInf}
 
 function SetupOpenAppendInfFileA(const FileName: PAnsiChar; InfHandle: HINF;
-  ErrorLine: PUINT): LongBool; stdcall;
+  ErrorLine: PUINT): BOOL; stdcall;
 {$EXTERNALSYM SetupOpenAppendInfFileA}
 function SetupOpenAppendInfFileW(const FileName: PWideChar; InfHandle: HINF;
-  ErrorLine: PUINT): LongBool; stdcall;
+  ErrorLine: PUINT): BOOL; stdcall;
 {$EXTERNALSYM SetupOpenAppendInfFileW}
 function SetupOpenAppendInfFile(const FileName: PChar; InfHandle: HINF;
-  ErrorLine: PUINT): LongBool; stdcall;
+  ErrorLine: PUINT): BOOL; stdcall;
 {$EXTERNALSYM SetupOpenAppendInfFile}
 
 procedure SetupCloseInfFile(InfHandle: HINF); stdcall;
 {$EXTERNALSYM SetupCloseInfFile}
 
 function SetupFindFirstLineA(InfHandle: HINF; Section, Key: PAnsiChar;
-  var Context: TInfContext): LongBool; stdcall;
+  var Context: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupFindFirstLineA}
 function SetupFindFirstLineW(InfHandle: HINF; Section, Key: PWideChar;
-  var Context: TInfContext): LongBool; stdcall;
+  var Context: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupFindFirstLineW}
 function SetupFindFirstLine(InfHandle: HINF; Section, Key: PChar;
-  var Context: TInfContext): LongBool; stdcall;
+  var Context: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupFindFirstLine}
 
-function SetupFindNextLine(var ContextIn, ContextOut: TInfContext): LongBool; stdcall;
+function SetupFindNextLine(var ContextIn, ContextOut: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupFindNextLine}
 
 function SetupFindNextMatchLineA(var ContextIn: TInfContext; Key: PAnsiChar;
-  var ContextOut: TInfContext): LongBool; stdcall;
+  var ContextOut: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupFindNextMatchLineA}
 function SetupFindNextMatchLineW(var ContextIn: TInfContext; Key: PWideChar;
-  var ContextOut: TInfContext): LongBool; stdcall;
+  var ContextOut: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupFindNextMatchLineW}
 function SetupFindNextMatchLine(var ContextIn: TInfContext; Key: PChar;
-  var ContextOut: TInfContext): LongBool; stdcall;
+  var ContextOut: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupFindNextMatchLine}
 
 function SetupGetLineByIndexA(InfHandle: HINF; Section: PAnsiChar; Index: DWORD;
-  var Context: TInfContext): LongBool; stdcall;
+  var Context: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupGetLineByIndexA}
 function SetupGetLineByIndexW(InfHandle: HINF; Section: PWideChar; Index: DWORD;
-  var Context: TInfContext): LongBool; stdcall;
+  var Context: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupGetLineByIndexW}
 function SetupGetLineByIndex(InfHandle: HINF; Section: PChar; Index: DWORD;
-  var Context: TInfContext): LongBool; stdcall;
+  var Context: TInfContext): BOOL; stdcall;
 {$EXTERNALSYM SetupGetLineByIndex}
 
 function SetupGetLineCountA(InfHandle: HINF; Section: PAnsiChar): Integer; stdcall;
@@ -2682,46 +3157,54 @@ function SetupGetLineCount(InfHandle: HINF; Section: PChar): Integer; stdcall;
 {$EXTERNALSYM SetupGetLineCount}
 
 function SetupGetLineTextA(Context: PInfContext; InfHandle: HINF; Section,
-  Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetLineTextA}
 function SetupGetLineTextW(Context: PInfContext; InfHandle: HINF; Section,
-  Key, ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  Key, ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetLineTextW}
 function SetupGetLineText(Context: PInfContext; InfHandle: HINF; Section,
-  Key, ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  Key, ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetLineText}
 
 function SetupGetFieldCount(var Context: TInfContext): DWORD; stdcall;
 {$EXTERNALSYM SetupGetFieldCount}
 
 function SetupGetStringFieldA(var Context: TInfContext; FieldIndex: DWORD;
-  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetStringFieldA}
 function SetupGetStringFieldW(var Context: TInfContext; FieldIndex: DWORD;
-  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetStringFieldW}
 function SetupGetStringField(var Context: TInfContext; FieldIndex: DWORD;
-  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetStringField}
 
 function SetupGetIntField(var Context: TInfContext; FieldIndex: DWORD;
-  var IntegerValue: Integer): LongBool; stdcall;
+  var IntegerValue: Integer): BOOL; stdcall;
 {$EXTERNALSYM SetupGetIntField}
 
 function SetupGetMultiSzFieldA(var Context: TInfContext; FieldIndex: DWORD;
-  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetMultiSzFieldA}
 function SetupGetMultiSzFieldW(var Context: TInfContext; FieldIndex: DWORD;
-  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetMultiSzFieldW}
 function SetupGetMultiSzField(var Context: TInfContext; FieldIndex: DWORD;
-  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetMultiSzField}
 
 function SetupGetBinaryField(var Context: TInfContext; FieldIndex: DWORD;
-  ReturnBuffer: PBYTE; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PBYTE; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetBinaryField}
 
+//
+// SetupGetFileCompressionInfo is depreciated
+// use SetupGetFileCompressionInfoEx instead
+//
+// ActualSourceFileName returned by SetupGetFileCompressionInfo
+// must be freed by the export setupapi!MyFree (NT4+ Win95+)
+// or LocalFree (Win2k+)
+//
 function SetupGetFileCompressionInfoA(const SourceFileName: PAnsiChar;
   var ActualSourceFileName: PAnsiChar; var SourceFileSize: DWORD;
   var TargetFileSize: DWORD; var CompressionType: UINT): DWORD; stdcall;
@@ -2735,6 +3218,30 @@ function SetupGetFileCompressionInfo(const SourceFileName: PChar;
   var TargetFileSize: DWORD; var CompressionType: UINT): DWORD; stdcall;
 {$EXTERNALSYM SetupGetFileCompressionInfo}
 
+{$IFDEF WINXP}
+//
+// SetupGetFileCompressionInfoEx is the preferred API over
+// SetupGetFileCompressionInfo. It follows the normal
+// conventions of returning BOOL and writing to user-supplied
+// buffer.
+//
+function SetupGetFileCompressionInfoExA(const SourceFileName: PAnsiChar;
+  ActualSourceFileNameBuffer: PAnsiChar; var ActualSourceFileNameBufferLen: DWORD;
+  RequiredBufferLen: PDWORD; var SourceFileSize: DWORD;
+  var TargetFileSize: DWORD; var CompressionType: UINT): BOOL; stdcall;
+{$EXTERNALSYM SetupGetFileCompressionInfoExA}
+function SetupGetFileCompressionInfoExW(const SourceFileName: PWideChar;
+  ActualSourceFileNameBuffer: PWideChar; var ActualSourceFileNameBufferLen: DWORD;
+  RequiredBufferLen: PDWORD; var SourceFileSize: DWORD;
+  var TargetFileSize: DWORD; var CompressionType: UINT): BOOL; stdcall;
+{$EXTERNALSYM SetupGetFileCompressionInfoExW}
+function SetupGetFileCompressionInfoEx(const SourceFileName: PAnsiChar;
+  ActualSourceFileNameBuffer: PAnsiChar; var ActualSourceFileNameBufferLen: DWORD;
+  RequiredBufferLen: PDWORD; var SourceFileSize: DWORD;
+  var TargetFileSize: DWORD; var CompressionType: UINT): BOOL; stdcall;
+{$EXTERNALSYM SetupGetFileCompressionInfoEx}
+{$ENDIF WINXP}
+
 function SetupDecompressOrCopyFileA(const SourceFileName, TargetFileName: PAnsiChar;
   var CompressionType: UINT): DWORD; stdcall;
 {$EXTERNALSYM SetupDecompressOrCopyFileA}
@@ -2747,85 +3254,85 @@ function SetupDecompressOrCopyFile(const SourceFileName, TargetFileName: PChar;
 
 function SetupGetSourceFileLocationA(InfHandle: HINF; InfContext: PInfContext;
   const FileName: PAnsiChar; var SourceId: UINT; ReturnBuffer: PAnsiChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceFileLocationA}
 function SetupGetSourceFileLocationW(InfHandle: HINF; InfContext: PInfContext;
   const FileName: PWideChar; var SourceId: UINT; ReturnBuffer: PWideChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceFileLocationW}
 function SetupGetSourceFileLocation(InfHandle: HINF; InfContext: PInfContext;
   const FileName: PChar; var SourceId: UINT; ReturnBuffer: PChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceFileLocation}
 
 function SetupGetSourceFileSizeA(InfHandle: HINF; InfContext: PInfContext;
   const FileName: PAnsiChar; const Section: PAnsiChar; var FileSize: DWORD;
-  RoundingFactor: UINT): LongBool; stdcall;
+  RoundingFactor: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceFileSizeA}
 function SetupGetSourceFileSizeW(InfHandle: HINF; InfContext: PInfContext;
   const FileName: PWideChar; const Section: PWideChar; var FileSize: DWORD;
-  RoundingFactor: UINT): LongBool; stdcall;
+  RoundingFactor: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceFileSizeW}
 function SetupGetSourceFileSize(InfHandle: HINF; InfContext: PInfContext;
   const FileName: PChar; const Section: PChar; var FileSize: DWORD;
-  RoundingFactor: UINT): LongBool; stdcall;
+  RoundingFactor: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceFileSize}
 
 function SetupGetTargetPathA(InfHandle: HINF; InfContext: PInfContext;
   const Section: PAnsiChar; ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetTargetPathA}
 function SetupGetTargetPathW(InfHandle: HINF; InfContext: PInfContext;
   const Section: PWideChar; ReturnBuffer: PWideChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetTargetPathW}
 function SetupGetTargetPath(InfHandle: HINF; InfContext: PInfContext;
   const Section: PChar; ReturnBuffer: PChar; ReturnBufferSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetTargetPath}
 
 function SetupSetSourceListA(Flags: DWORD; SourceList: PPASTR;
-  SourceCount: UINT): LongBool; stdcall;
+  SourceCount: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupSetSourceListA}
 function SetupSetSourceListW(Flags: DWORD; SourceList: PPWSTR;
-  SourceCount: UINT): LongBool; stdcall;
+  SourceCount: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupSetSourceListW}
 function SetupSetSourceList(Flags: DWORD; SourceList: PPSTR;
-  SourceCount: UINT): LongBool; stdcall;
+  SourceCount: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupSetSourceList}
 
-function SetupCancelTemporarySourceList: LongBool; stdcall;
+function SetupCancelTemporarySourceList: BOOL; stdcall;
 {$EXTERNALSYM SetupCancelTemporarySourceList}
 
-function SetupAddToSourceListA(Flags: DWORD; const Source: PAnsiChar): LongBool; stdcall;
+function SetupAddToSourceListA(Flags: DWORD; const Source: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupAddToSourceListA}
-function SetupAddToSourceListW(Flags: DWORD; const Source: PWideChar): LongBool; stdcall;
+function SetupAddToSourceListW(Flags: DWORD; const Source: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupAddToSourceListW}
-function SetupAddToSourceList(Flags: DWORD; const Source: PChar): LongBool; stdcall;
+function SetupAddToSourceList(Flags: DWORD; const Source: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupAddToSourceList}
 
-function SetupRemoveFromSourceListA(Flags: DWORD; const Source: PAnsiChar): LongBool; stdcall;
+function SetupRemoveFromSourceListA(Flags: DWORD; const Source: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFromSourceListA}
-function SetupRemoveFromSourceListW(Flags: DWORD; const Source: PWideChar): LongBool; stdcall;
+function SetupRemoveFromSourceListW(Flags: DWORD; const Source: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFromSourceListW}
-function SetupRemoveFromSourceList(Flags: DWORD; const Source: PChar): LongBool; stdcall;
+function SetupRemoveFromSourceList(Flags: DWORD; const Source: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFromSourceList}
 
 function SetupQuerySourceListA(Flags: DWORD; var List: PPASTR;
-  var Count: UINT): LongBool; stdcall;
+  var Count: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupQuerySourceListA}
 function SetupQuerySourceListW(Flags: DWORD; var List: PPWSTR;
-  var Count: UINT): LongBool; stdcall;
+  var Count: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupQuerySourceListW}
 function SetupQuerySourceList(Flags: DWORD; var List: PPSTR;
-  var Count: UINT): LongBool; stdcall;
+  var Count: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupQuerySourceList}
 
-function SetupFreeSourceListA(var List: PPWSTR; Count: UINT): LongBool; stdcall;
+function SetupFreeSourceListA(var List: PPWSTR; Count: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupFreeSourceListA}
-function SetupFreeSourceListW(var List: PPASTR; Count: UINT): LongBool; stdcall;
+function SetupFreeSourceListW(var List: PPASTR; Count: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupFreeSourceListW}
-function SetupFreeSourceList(var List: PPSTR; Count: UINT): LongBool; stdcall;
+function SetupFreeSourceList(var List: PPSTR; Count: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupFreeSourceList}
 
 function SetupPromptForDiskA(hwndParent: HWND; const DialogTitle, DiskName,
@@ -2875,215 +3382,226 @@ function SetupDeleteError(hwndParent: HWND; const DialogTitle, File_: PChar;
 {$EXTERNALSYM SetupDeleteError}
 
 {$IFDEF WIN2000}
-function SetupBackupErrorA(hwndParent: HWND; const DialogTitle, BackupFile,
+function SetupBackupErrorA(hwndParent: HWND; const DialogTitle, SourceFile,
   TargetFile: PAnsiChar; Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
 {$EXTERNALSYM SetupBackupErrorA}
-function SetupBackupErrorW(hwndParent: HWND; const DialogTitle, BackupFile,
+function SetupBackupErrorW(hwndParent: HWND; const DialogTitle, SourceFile,
   TargetFile: PWideChar; Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
 {$EXTERNALSYM SetupBackupErrorW}
-function SetupBackupError(hwndParent: HWND; const DialogTitle, BackupFile,
+function SetupBackupError(hwndParent: HWND; const DialogTitle, SourceFile,
   TargetFile: PChar; Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
 {$EXTERNALSYM SetupBackupError}
-{$ENDIF}
+{$ENDIF WIN2000}
 
-function SetupSetDirectoryIdA(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar): LongBool; stdcall;
+function SetupSetDirectoryIdA(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetDirectoryIdA}
-function SetupSetDirectoryIdW(InfHandle: HINF; Id: DWORD; const Directory: PWideChar): LongBool; stdcall;
+function SetupSetDirectoryIdW(InfHandle: HINF; Id: DWORD; const Directory: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetDirectoryIdW}
-function SetupSetDirectoryId(InfHandle: HINF; Id: DWORD; const Directory: PChar): LongBool; stdcall;
+function SetupSetDirectoryId(InfHandle: HINF; Id: DWORD; const Directory: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetDirectoryId}
 
 function SetupSetDirectoryIdExA(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar;
-  Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): LongBool; stdcall;
+  Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupSetDirectoryIdExA}
 function SetupSetDirectoryIdExW(InfHandle: HINF; Id: DWORD; const Directory: PWideChar;
-  Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): LongBool; stdcall;
+  Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupSetDirectoryIdExW}
 function SetupSetDirectoryIdEx(InfHandle: HINF; Id: DWORD; const Directory: PChar;
-  Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): LongBool; stdcall;
+  Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupSetDirectoryIdEx}
 
 function SetupGetSourceInfoA(InfHandle: HINF; SourceId, InfoDesired: UINT;
-  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceInfoA}
 function SetupGetSourceInfoW(InfHandle: HINF; SourceId, InfoDesired: UINT;
-  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceInfoW}
 function SetupGetSourceInfo(InfHandle: HINF; SourceId, InfoDesired: UINT;
-  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBuffer: PChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupGetSourceInfo}
 
 function SetupInstallFileA(InfHandle: HINF; InfContext: PInfContext;
   const SourceFile, SourcePathRoot, DestinationName: PAnsiChar; CopyStyle: DWORD;
-  CopyMsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+  CopyMsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFileA}
 function SetupInstallFileW(InfHandle: HINF; InfContext: PInfContext;
   const SourceFile, SourcePathRoot, DestinationName: PWideChar; CopyStyle: DWORD;
-  CopyMsgHandler: TSPFileCallbackW; Context: Pointer): LongBool; stdcall;
+  CopyMsgHandler: TSPFileCallbackW; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFileW}
 function SetupInstallFile(InfHandle: HINF; InfContext: PInfContext;
   const SourceFile, SourcePathRoot, DestinationName: PChar; CopyStyle: DWORD;
-  CopyMsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+  CopyMsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFile}
 
 function SetupInstallFileExA(InfHandle: HINF; InfContext: PInfContext;
   const SourceFile, SourcePathRoot, DestinationName: PAnsiChar; CopyStyle: DWORD;
-  CopyMsgHandler: TSPFileCallbackA; Context: Pointer; var FileWasInUse: LongBool): LongBool; stdcall;
+  CopyMsgHandler: TSPFileCallbackA; Context: Pointer; var FileWasInUse: BOOL): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFileExA}
 function SetupInstallFileExW(InfHandle: HINF; InfContext: PInfContext;
   const SourceFile, SourcePathRoot, DestinationName: PWideChar; CopyStyle: DWORD;
-  CopyMsgHandler: TSPFileCallbackW; Context: Pointer; var FileWasInUse: LongBool): LongBool; stdcall;
+  CopyMsgHandler: TSPFileCallbackW; Context: Pointer; var FileWasInUse: BOOL): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFileExW}
 function SetupInstallFileEx(InfHandle: HINF; InfContext: PInfContext;
   const SourceFile, SourcePathRoot, DestinationName: PChar; CopyStyle: DWORD;
-  CopyMsgHandler: TSPFileCallbackA; Context: Pointer; var FileWasInUse: LongBool): LongBool; stdcall;
+  CopyMsgHandler: TSPFileCallbackA; Context: Pointer; var FileWasInUse: BOOL): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFileEx}
 
 function SetupOpenFileQueue: HSPFILEQ; stdcall;
 {$EXTERNALSYM SetupOpenFileQueue}
 
-function SetupCloseFileQueue(QueueHandle: HSPFILEQ): LongBool; stdcall;
+function SetupCloseFileQueue(QueueHandle: HSPFILEQ): BOOL; stdcall;
 {$EXTERNALSYM SetupCloseFileQueue}
 
 {$IFDEF WIN2000}
 function SetupSetFileQueueAlternatePlatformA(QueueHandle: HSPFILEQ;
   AlternatePlatformInfo: PSPAltPlatformInfo;
-  const AlternateDefaultCatalogFile: PAnsiChar): LongBool; stdcall;
+  const AlternateDefaultCatalogFile: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetFileQueueAlternatePlatformA}
 function SetupSetFileQueueAlternatePlatformW(QueueHandle: HSPFILEQ;
   AlternatePlatformInfo: PSPAltPlatformInfo;
-  const AlternateDefaultCatalogFile: PWideChar): LongBool; stdcall;
+  const AlternateDefaultCatalogFile: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetFileQueueAlternatePlatformW}
 function SetupSetFileQueueAlternatePlatform(QueueHandle: HSPFILEQ;
   AlternatePlatformInfo: PSPAltPlatformInfo;
-  const AlternateDefaultCatalogFile: PChar): LongBool; stdcall;
+  const AlternateDefaultCatalogFile: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetFileQueueAlternatePlatform}
-{$ENDIF}
+{$ENDIF WIN2000}
 
-function SetupSetPlatformPathOverrideA(const Override_: PAnsiChar): LongBool; stdcall;
+function SetupSetPlatformPathOverrideA(const Override_: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetPlatformPathOverrideA}
-function SetupSetPlatformPathOverrideW(const Override_: PWideChar): LongBool; stdcall;
+function SetupSetPlatformPathOverrideW(const Override_: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetPlatformPathOverrideW}
-function SetupSetPlatformPathOverride(const Override_: PChar): LongBool; stdcall;
+function SetupSetPlatformPathOverride(const Override_: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupSetPlatformPathOverride}
 
 function SetupQueueCopyA(QueueHandle: HSPFILEQ; const SourceRootPath, SourcePath,
   SourceFilename, SourceDescription, SourceTagfile, TargetDirectory,
-  TargetFilename: PAnsiChar; CopyStyle: DWORD): LongBool; stdcall;
+  TargetFilename: PAnsiChar; CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopyA}
 function SetupQueueCopyW(QueueHandle: HSPFILEQ; const SourceRootPath, SourcePath,
   SourceFilename, SourceDescription, SourceTagfile, TargetDirectory,
-  TargetFilename: PWideChar; CopyStyle: DWORD): LongBool; stdcall;
+  TargetFilename: PWideChar; CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopyW}
 function SetupQueueCopy(QueueHandle: HSPFILEQ; const SourceRootPath, SourcePath,
   SourceFilename, SourceDescription, SourceTagfile, TargetDirectory,
-  TargetFilename: PChar; CopyStyle: DWORD): LongBool; stdcall;
+  TargetFilename: PChar; CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopy}
 
 {$IFDEF WIN2000}
-function SetupQueueCopyIndirectA(var CopyParams: TSPFileCopyParamsA): LongBool; stdcall;
+function SetupQueueCopyIndirectA(var CopyParams: TSPFileCopyParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopyIndirectA}
-function SetupQueueCopyIndirectW(var CopyParams: TSPFileCopyParamsW): LongBool; stdcall;
+function SetupQueueCopyIndirectW(var CopyParams: TSPFileCopyParamsW): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopyIndirectW}
-function SetupQueueCopyIndirect(var CopyParams: TSPFileCopyParamsA): LongBool; stdcall;
+function SetupQueueCopyIndirect(var CopyParams: TSPFileCopyParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopyIndirect}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupQueueDefaultCopyA(QueueHandle: HSPFILEQ; InfHandle: HINF;
   const SourceRootPath, SourceFilename, TargetFilename: PAnsiChar;
-  CopyStyle: DWORD): LongBool; stdcall;
+  CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDefaultCopyA}
 function SetupQueueDefaultCopyW(QueueHandle: HSPFILEQ; InfHandle: HINF;
   const SourceRootPath, SourceFilename, TargetFilename: PWideChar;
-  CopyStyle: DWORD): LongBool; stdcall;
+  CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDefaultCopyW}
 function SetupQueueDefaultCopy(QueueHandle: HSPFILEQ; InfHandle: HINF;
   const SourceRootPath, SourceFilename, TargetFilename: PChar;
-  CopyStyle: DWORD): LongBool; stdcall;
+  CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDefaultCopy}
 
 function SetupQueueCopySectionA(QueueHandle: HSPFILEQ; const SourceRootPath: PAnsiChar;
-  InfHandle: HINF; ListInfHandle: HINF; const Section: PAnsiChar; CopyStyle: DWORD): LongBool; stdcall;
+  InfHandle: HINF; ListInfHandle: HINF; const Section: PAnsiChar; CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopySectionA}
 function SetupQueueCopySectionW(QueueHandle: HSPFILEQ; const SourceRootPath: PWideChar;
-  InfHandle: HINF; ListInfHandle: HINF; const Section: PWideChar; CopyStyle: DWORD): LongBool; stdcall;
+  InfHandle: HINF; ListInfHandle: HINF; const Section: PWideChar; CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopySectionW}
 function SetupQueueCopySection(QueueHandle: HSPFILEQ; const SourceRootPath: PChar;
-  InfHandle: HINF; ListInfHandle: HINF; const Section: PChar; CopyStyle: DWORD): LongBool; stdcall;
+  InfHandle: HINF; ListInfHandle: HINF; const Section: PChar; CopyStyle: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueCopySection}
 
-function SetupQueueDeleteA(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PAnsiChar): LongBool; stdcall;
+function SetupQueueDeleteA(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDeleteA}
-function SetupQueueDeleteW(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PWideChar): LongBool; stdcall;
+function SetupQueueDeleteW(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDeleteW}
-function SetupQueueDelete(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PChar): LongBool; stdcall;
+function SetupQueueDelete(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDelete}
 
 function SetupQueueDeleteSectionA(QueueHandle: HSPFILEQ; InfHandle: HINF;
-  ListInfHandle: HINF; const Section: PAnsiChar): LongBool; stdcall;
+  ListInfHandle: HINF; const Section: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDeleteSectionA}
 function SetupQueueDeleteSectionW(QueueHandle: HSPFILEQ; InfHandle: HINF;
-  ListInfHandle: HINF; const Section: PWideChar): LongBool; stdcall;
+  ListInfHandle: HINF; const Section: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDeleteSectionW}
 function SetupQueueDeleteSection(QueueHandle: HSPFILEQ; InfHandle: HINF;
-  ListInfHandle: HINF; const Section: PChar): LongBool; stdcall;
+  ListInfHandle: HINF; const Section: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueDeleteSection}
 
 function SetupQueueRenameA(QueueHandle: HSPFILEQ; const SourcePath,
-  SourceFilename, TargetPath, TargetFilename: PAnsiChar): LongBool; stdcall;
+  SourceFilename, TargetPath, TargetFilename: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueRenameA}
 function SetupQueueRenameW(QueueHandle: HSPFILEQ; const SourcePath,
-  SourceFilename, TargetPath, TargetFilename: PWideChar): LongBool; stdcall;
+  SourceFilename, TargetPath, TargetFilename: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueRenameW}
 function SetupQueueRename(QueueHandle: HSPFILEQ; const SourcePath,
-  SourceFilename, TargetPath, TargetFilename: PChar): LongBool; stdcall;
+  SourceFilename, TargetPath, TargetFilename: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueRename}
 
 function SetupQueueRenameSectionA(QueueHandle: HSPFILEQ; InfHandle: HINF;
-  ListInfHandle: HINF; const Section: PAnsiChar): LongBool; stdcall;
+  ListInfHandle: HINF; const Section: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueRenameSectionA}
 function SetupQueueRenameSectionW(QueueHandle: HSPFILEQ; InfHandle: HINF;
-  ListInfHandle: HINF; const Section: PWideChar): LongBool; stdcall;
+  ListInfHandle: HINF; const Section: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueRenameSectionW}
 function SetupQueueRenameSection(QueueHandle: HSPFILEQ; InfHandle: HINF;
-  ListInfHandle: HINF; const Section: PChar): LongBool; stdcall;
+  ListInfHandle: HINF; const Section: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupQueueRenameSection}
 
 function SetupCommitFileQueueA(Owner: HWND; QueueHandle: HSPFILEQ;
-  MsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+  MsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupCommitFileQueueA}
 function SetupCommitFileQueueW(Owner: HWND; QueueHandle: HSPFILEQ;
-  MsgHandler: TSPFileCallbackW; Context: Pointer): LongBool; stdcall;
+  MsgHandler: TSPFileCallbackW; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupCommitFileQueueW}
 function SetupCommitFileQueue(Owner: HWND; QueueHandle: HSPFILEQ;
-  MsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+  MsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupCommitFileQueue}
 
 function SetupScanFileQueueA(FileQueue: HSPFILEQ; Flags: DWORD; Window: HWND;
-  CallbackRoutine: TSPFileCallbackA; CallbackContext: Pointer; var Result: DWORD): LongBool; stdcall;
+  CallbackRoutine: TSPFileCallbackA; CallbackContext: Pointer; var Result: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupScanFileQueueA}
 function SetupScanFileQueueW(FileQueue: HSPFILEQ; Flags: DWORD; Window: HWND;
-  CallbackRoutine: TSPFileCallbackW; CallbackContext: Pointer; var Result: DWORD): LongBool; stdcall;
+  CallbackRoutine: TSPFileCallbackW; CallbackContext: Pointer; var Result: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupScanFileQueueW}
 function SetupScanFileQueue(FileQueue: HSPFILEQ; Flags: DWORD; Window: HWND;
-  CallbackRoutine: TSPFileCallbackA; CallbackContext: Pointer; var Result: DWORD): LongBool; stdcall;
+  CallbackRoutine: TSPFileCallbackA; CallbackContext: Pointer; var Result: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupScanFileQueue}
 
 function SetupCopyOEMInfA(const SourceInfFileName, OEMSourceMediaLocation: PAnsiChar;
   OEMSourceMediaType, CopyStyle: DWORD; DestinationInfFileName: PAnsiChar;
   DestinationInfFileNameSize: DWORD; RequiredSize: PDWORD;
-  DestinationInfFileNameComponent: PPASTR): LongBool; stdcall;
+  DestinationInfFileNameComponent: PPASTR): BOOL; stdcall;
 {$EXTERNALSYM SetupCopyOEMInfA}
 function SetupCopyOEMInfW(const SourceInfFileName, OEMSourceMediaLocation: PWideChar;
   OEMSourceMediaType, CopyStyle: DWORD; DestinationInfFileName: PWideChar;
   DestinationInfFileNameSize: DWORD; RequiredSize: PDWORD;
-  DestinationInfFileNameComponent: PPWSTR): LongBool; stdcall;
+  DestinationInfFileNameComponent: PPWSTR): BOOL; stdcall;
 {$EXTERNALSYM SetupCopyOEMInfW}
 function SetupCopyOEMInf(const SourceInfFileName, OEMSourceMediaLocation: PChar;
   OEMSourceMediaType, CopyStyle: DWORD; DestinationInfFileName: PChar;
   DestinationInfFileNameSize: DWORD; RequiredSize: PDWORD;
-  DestinationInfFileNameComponent: PPSTR): LongBool; stdcall;
+  DestinationInfFileNameComponent: PPSTR): BOOL; stdcall;
 {$EXTERNALSYM SetupCopyOEMInf}
+
+{$IFDEF WINXP}
+function SetupUninstallOEMInfA(const InfFileName: PAnsiChar; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+{$EXTERNALSYM SetupUninstallOEMInfA}
+function SetupUninstallOEMInfW(const InfFileName: PWideChar; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+{$EXTERNALSYM SetupUninstallOEMInfW}
+function SetupUninstallOEMInf(const InfFileName: PAnsiChar; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+{$EXTERNALSYM SetupUninstallOEMInf}
+function SetupUninstallNewlyCopiedInfs(FileQueue: HSPFILEQ; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+{$EXTERNALSYM SetupUninstallNewlyCopiedInfs}
+{$ENDIF WINXP}
 
 //
 // Disk space list APIs
@@ -3108,109 +3626,109 @@ function SetupDuplicateDiskSpaceList(DiskSpace: HDSKSPC; Reserved1: Pointer;
   Reserved2: DWORD; Flags: UINT): HDSKSPC; stdcall;
 {$EXTERNALSYM SetupDuplicateDiskSpaceList}
 
-function SetupDestroyDiskSpaceList(DiskSpace: HDSKSPC): LongBool; stdcall;
+function SetupDestroyDiskSpaceList(DiskSpace: HDSKSPC): BOOL; stdcall;
 {$EXTERNALSYM SetupDestroyDiskSpaceList}
 
 function SetupQueryDrivesInDiskSpaceListA(DiskSpace: HDSKSPC; ReturnBuffer: PAnsiChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryDrivesInDiskSpaceListA}
 function SetupQueryDrivesInDiskSpaceListW(DiskSpace: HDSKSPC; ReturnBuffer: PWideChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryDrivesInDiskSpaceListW}
 function SetupQueryDrivesInDiskSpaceList(DiskSpace: HDSKSPC; ReturnBuffer: PChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryDrivesInDiskSpaceList}
 
 function SetupQuerySpaceRequiredOnDriveA(DiskSpace: HDSKSPC; const DriveSpec: PAnsiChar;
-  var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupQuerySpaceRequiredOnDriveA}
 function SetupQuerySpaceRequiredOnDriveW(DiskSpace: HDSKSPC; const DriveSpec: PWideChar;
-  var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupQuerySpaceRequiredOnDriveW}
 function SetupQuerySpaceRequiredOnDrive(DiskSpace: HDSKSPC; const DriveSpec: PChar;
-  var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupQuerySpaceRequiredOnDrive}
 
 function SetupAdjustDiskSpaceListA(DiskSpace: HDSKSPC; const DriveRoot: PAnsiChar;
-  Amount: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Amount: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAdjustDiskSpaceListA}
 function SetupAdjustDiskSpaceListW(DiskSpace: HDSKSPC; const DriveRoot: PWideChar;
-  Amount: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Amount: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAdjustDiskSpaceListW}
 function SetupAdjustDiskSpaceList(DiskSpace: HDSKSPC; const DriveRoot: PChar;
-  Amount: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Amount: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAdjustDiskSpaceList}
 
 function SetupAddToDiskSpaceListA(DiskSpace: HDSKSPC; const TargetFilespec: PAnsiChar;
-  FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddToDiskSpaceListA}
 function SetupAddToDiskSpaceListW(DiskSpace: HDSKSPC; const TargetFilespec: PWideChar;
-  FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddToDiskSpaceListW}
 function SetupAddToDiskSpaceList(DiskSpace: HDSKSPC; const TargetFilespec: PChar;
-  FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddToDiskSpaceList}
 
 function SetupAddSectionToDiskSpaceListA(DiskSpace: HDSKSPC; InfHandle: HINF;
   ListInfHandle: HINF; const SectionName: PAnsiChar; Operation: UINT;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddSectionToDiskSpaceListA}
 function SetupAddSectionToDiskSpaceListW(DiskSpace: HDSKSPC; InfHandle: HINF;
   ListInfHandle: HINF; const SectionName: PWideChar; Operation: UINT;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddSectionToDiskSpaceListW}
 function SetupAddSectionToDiskSpaceList(DiskSpace: HDSKSPC; InfHandle: HINF;
   ListInfHandle: HINF; const SectionName: PChar; Operation: UINT;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddSectionToDiskSpaceList}
 
 function SetupAddInstallSectionToDiskSpaceListA( DiskSpace: HDSKSPC;
   InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PAnsiChar;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddInstallSectionToDiskSpaceListA}
 function SetupAddInstallSectionToDiskSpaceListW( DiskSpace: HDSKSPC;
   InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PWideChar;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddInstallSectionToDiskSpaceListW}
 function SetupAddInstallSectionToDiskSpaceList( DiskSpace: HDSKSPC;
   InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PChar;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupAddInstallSectionToDiskSpaceList}
 
 function SetupRemoveFromDiskSpaceListA(DiskSpace: HDSKSPC; const TargetFilespec: PAnsiChar;
-  Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFromDiskSpaceListA}
 function SetupRemoveFromDiskSpaceListW(DiskSpace: HDSKSPC; const TargetFilespec: PWideChar;
-  Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFromDiskSpaceListW}
 function SetupRemoveFromDiskSpaceList(DiskSpace: HDSKSPC; const TargetFilespec: PChar;
-  Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFromDiskSpaceList}
 
 function SetupRemoveSectionFromDiskSpaceListA(DiskSpace: HDSKSPC; InfHandle: HINF;
   ListInfHandle: HINF; const SectionName: PAnsiChar; Operation: UINT; Reserved1: Pointer;
-  Reserved2: UINT): LongBool; stdcall;
+  Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveSectionFromDiskSpaceListA}
 function SetupRemoveSectionFromDiskSpaceListW(DiskSpace: HDSKSPC; InfHandle: HINF;
   ListInfHandle: HINF; const SectionName: PWideChar; Operation: UINT; Reserved1: Pointer;
-  Reserved2: UINT): LongBool; stdcall;
+  Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveSectionFromDiskSpaceListW}
 function SetupRemoveSectionFromDiskSpaceList(DiskSpace: HDSKSPC; InfHandle: HINF;
   ListInfHandle: HINF; const SectionName: PChar; Operation: UINT; Reserved1: Pointer;
-  Reserved2: UINT): LongBool; stdcall;
+  Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveSectionFromDiskSpaceList}
 
 function SetupRemoveInstallSectionFromDiskSpaceListA(DiskSpace: HDSKSPC;
   InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PAnsiChar;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveInstallSectionFromDiskSpaceListA}
 function SetupRemoveInstallSectionFromDiskSpaceListW(DiskSpace: HDSKSPC;
   InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PWideChar;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveInstallSectionFromDiskSpaceListW}
 function SetupRemoveInstallSectionFromDiskSpaceList(DiskSpace: HDSKSPC;
   InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PChar;
-  Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+  Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveInstallSectionFromDiskSpaceList}
 
 //
@@ -3218,16 +3736,16 @@ function SetupRemoveInstallSectionFromDiskSpaceList(DiskSpace: HDSKSPC;
 //
 
 function SetupIterateCabinetA(const CabinetFile: PAnsiChar; Reserved: DWORD;
-  MsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+  MsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupIterateCabinetA}
 function SetupIterateCabinetW(const CabinetFile: PWideChar; Reserved: DWORD;
-  MsgHandler: TSPFileCallbackW; Context: Pointer): LongBool; stdcall;
+  MsgHandler: TSPFileCallbackW; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupIterateCabinetW}
 function SetupIterateCabinet(const CabinetFile: PChar; Reserved: DWORD;
-  MsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+  MsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupIterateCabinet}
 
-function SetupPromptReboot(FileQueue: HSPFILEQ; Owner: HWND; ScanOnly: LongBool): Integer; stdcall;
+function SetupPromptReboot(FileQueue: HSPFILEQ; Owner: HWND; ScanOnly: BOOL): Integer; stdcall;
 {$EXTERNALSYM SetupPromptReboot}
 
 function SetupInitDefaultQueueCallback(OwnerWindow: HWND): Pointer; stdcall;
@@ -3260,54 +3778,74 @@ function SetupDefaultQueueCallback(Context: Pointer; Notification: UINT;
 function SetupInstallFromInfSectionA(Owner: HWND; InfHandle: HINF;
   const SectionName: PAnsiChar; Flags: UINT; RelativeKeyRoot: HKEY;
   const SourceRootPath: PAnsiChar; CopyFlags: UINT; MsgHandler: TSPFileCallbackA;
-  Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): LongBool; stdcall;
+  Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFromInfSectionA}
 function SetupInstallFromInfSectionW(Owner: HWND; InfHandle: HINF;
   const SectionName: PWideChar; Flags: UINT; RelativeKeyRoot: HKEY;
   const SourceRootPath: PWideChar; CopyFlags: UINT; MsgHandler: TSPFileCallbackW;
-  Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): LongBool; stdcall;
+  Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFromInfSectionW}
 function SetupInstallFromInfSection(Owner: HWND; InfHandle: HINF;
   const SectionName: PChar; Flags: UINT; RelativeKeyRoot: HKEY;
   const SourceRootPath: PChar; CopyFlags: UINT; MsgHandler: TSPFileCallbackA;
-  Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): LongBool; stdcall;
+  Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFromInfSection}
 
 function SetupInstallFilesFromInfSectionA(InfHandle: HINF; LayoutInfHandle: HINF;
   FileQueue: HSPFILEQ; const SectionName, SourceRootPath: PAnsiChar;
-  CopyFlags: UINT): LongBool; stdcall;
+  CopyFlags: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFilesFromInfSectionA}
 function SetupInstallFilesFromInfSectionW(InfHandle: HINF; LayoutInfHandle: HINF;
   FileQueue: HSPFILEQ; const SectionName, SourceRootPath: PWideChar;
-  CopyFlags: UINT): LongBool; stdcall;
+  CopyFlags: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFilesFromInfSectionW}
 function SetupInstallFilesFromInfSection(InfHandle: HINF; LayoutInfHandle: HINF;
   FileQueue: HSPFILEQ; const SectionName, SourceRootPath: PChar;
-  CopyFlags: UINT): LongBool; stdcall;
+  CopyFlags: UINT): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallFilesFromInfSection}
 
 function SetupInstallServicesFromInfSectionA(InfHandle: HINF;
-  const SectionName: PAnsiChar; Flags: DWORD): LongBool; stdcall;
+  const SectionName: PAnsiChar; Flags: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallServicesFromInfSectionA}
 function SetupInstallServicesFromInfSectionW(InfHandle: HINF;
-  const SectionName: PWideChar; Flags: DWORD): LongBool; stdcall;
+  const SectionName: PWideChar; Flags: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallServicesFromInfSectionW}
 function SetupInstallServicesFromInfSection(InfHandle: HINF;
-  const SectionName: PChar; Flags: DWORD): LongBool; stdcall;
+  const SectionName: PChar; Flags: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallServicesFromInfSection}
 
 function SetupInstallServicesFromInfSectionExA(InfHandle: HINF;
   const SectionName: PAnsiChar; Flags: DWORD; DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): LongBool; stdcall;
+  DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallServicesFromInfSectionExA}
 function SetupInstallServicesFromInfSectionExW(InfHandle: HINF;
   const SectionName: PWideChar; Flags: DWORD; DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): LongBool; stdcall;
+  DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallServicesFromInfSectionExW}
 function SetupInstallServicesFromInfSectionEx(InfHandle: HINF;
   const SectionName: PChar; Flags: DWORD; DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): LongBool; stdcall;
+  DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupInstallServicesFromInfSectionEx}
+
+{$IFDEF WINXP}
+//
+// High level routine, usually used via rundll32.dll
+// to perform right-click install action on INFs
+// May be called directly:
+//
+// wsprintf(CmdLineBuffer,TEXT("DefaultInstall 132 %s"),InfPath);
+// InstallHinfSection(NULL,NULL,CmdLineBuffer,0);
+//
+procedure InstallHinfSectionA(Window: HWND; ModuleHandle: HINSTANCE;
+  CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+{$EXTERNALSYM InstallHinfSectionA}
+procedure InstallHinfSectionW(Window: HWND; ModuleHandle: HINSTANCE;
+  CommandLine: PWideChar; ShowCommand: Integer); stdcall;
+{$EXTERNALSYM InstallHinfSectionW}
+procedure InstallHinfSection(Window: HWND; ModuleHandle: HINSTANCE;
+  CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+{$EXTERNALSYM InstallHinfSection}
+{$ENDIF WINXP}
 
 //
 // Define handle type for Setup file log.
@@ -3324,77 +3862,99 @@ function SetupInitializeFileLogW(const LogFileName: PWideChar; Flags: DWORD): HS
 function SetupInitializeFileLog(const LogFileName: PChar; Flags: DWORD): HSPFILELOG; stdcall;
 {$EXTERNALSYM SetupInitializeFileLog}
 
-function SetupTerminateFileLog(FileLogHandle: HSPFILELOG): LongBool; stdcall;
+function SetupTerminateFileLog(FileLogHandle: HSPFILELOG): BOOL; stdcall;
 {$EXTERNALSYM SetupTerminateFileLog}
 
 function SetupLogFileA(FileLogHandle: HSPFILELOG; const LogSectionName,
   SourceFilename, TargetFilename: PAnsiChar; Checksum: DWORD; DiskTagfile,
-  DiskDescription, OtherInfo: PAnsiChar; Flags: DWORD): LongBool; stdcall;
+  DiskDescription, OtherInfo: PAnsiChar; Flags: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupLogFileA}
 function SetupLogFileW(FileLogHandle: HSPFILELOG; const LogSectionName,
   SourceFilename, TargetFilename: PWideChar; Checksum: DWORD; DiskTagfile,
-  DiskDescription, OtherInfo: PWideChar; Flags: DWORD): LongBool; stdcall;
+  DiskDescription, OtherInfo: PWideChar; Flags: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupLogFileW}
 function SetupLogFile(FileLogHandle: HSPFILELOG; const LogSectionName,
   SourceFilename, TargetFilename: PChar; Checksum: DWORD; DiskTagfile,
-  DiskDescription, OtherInfo: PChar; Flags: DWORD): LongBool; stdcall;
+  DiskDescription, OtherInfo: PChar; Flags: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupLogFile}
 
 function SetupRemoveFileLogEntryA(FileLogHandle: HSPFILELOG;
-  const LogSectionName: PAnsiChar; const TargetFilename: PAnsiChar): LongBool; stdcall;
+  const LogSectionName: PAnsiChar; const TargetFilename: PAnsiChar): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFileLogEntryA}
 function SetupRemoveFileLogEntryW(FileLogHandle: HSPFILELOG;
-  const LogSectionName: PWideChar; const TargetFilename: PWideChar): LongBool; stdcall;
+  const LogSectionName: PWideChar; const TargetFilename: PWideChar): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFileLogEntryW}
 function SetupRemoveFileLogEntry(FileLogHandle: HSPFILELOG;
-  const LogSectionName: PChar; const TargetFilename: PChar): LongBool; stdcall;
+  const LogSectionName: PChar; const TargetFilename: PChar): BOOL; stdcall;
 {$EXTERNALSYM SetupRemoveFileLogEntry}
 
 function SetupQueryFileLogA(FileLogHandle: HSPFILELOG; const LogSectionName,
   TargetFilename: PAnsiChar; DesiredInfo: SETUPFILELOGINFO; DataOut: PAnsiChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryFileLogA}
 function SetupQueryFileLogW(FileLogHandle: HSPFILELOG; const LogSectionName,
   TargetFilename: PWideChar; DesiredInfo: SETUPFILELOGINFO; DataOut: PWideChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryFileLogW}
 function SetupQueryFileLog(FileLogHandle: HSPFILELOG; const LogSectionName,
   TargetFilename: PChar; DesiredInfo: SETUPFILELOGINFO; DataOut: PChar;
-  ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupQueryFileLog}
 
 //
 // Text logging APIs
 //
 
-function SetupOpenLog(Erase: LongBool): LongBool; stdcall;
+function SetupOpenLog(Erase: BOOL): BOOL; stdcall;
 {$EXTERNALSYM SetupOpenLog}
 
-function SetupLogErrorA(const MessageString: PAnsiChar; Severity: LOGSEVERITY): LongBool; stdcall;
+function SetupLogErrorA(const MessageString: PAnsiChar; Severity: LOGSEVERITY): BOOL; stdcall;
 {$EXTERNALSYM SetupLogErrorA}
-function SetupLogErrorW(const MessageString: PWideChar; Severity: LOGSEVERITY): LongBool; stdcall;
+function SetupLogErrorW(const MessageString: PWideChar; Severity: LOGSEVERITY): BOOL; stdcall;
 {$EXTERNALSYM SetupLogErrorW}
-function SetupLogError(const MessageString: PChar; Severity: LOGSEVERITY): LongBool; stdcall;
+function SetupLogError(const MessageString: PChar; Severity: LOGSEVERITY): BOOL; stdcall;
 {$EXTERNALSYM SetupLogError}
 
 procedure SetupCloseLog; stdcall;
 {$EXTERNALSYM SetupCloseLog}
 
 //
-// Backup Information API
+// Backup Information API's
 //
 
 {$IFDEF WIN2000}
 function SetupGetBackupInformationA(QueueHandle: HSPFILEQ;
-  var BackupParams: TSPBackupQueueParamsA): LongBool; stdcall;
+  var BackupParams: TSPBackupQueueParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupGetBackupInformationA}
 function SetupGetBackupInformationW(QueueHandle: HSPFILEQ;
-  var BackupParams: TSPBackupQueueParamsW): LongBool; stdcall;
+  var BackupParams: TSPBackupQueueParamsW): BOOL; stdcall;
 {$EXTERNALSYM SetupGetBackupInformationW}
 function SetupGetBackupInformation(QueueHandle: HSPFILEQ;
-  var BackupParams: TSPBackupQueueParamsA): LongBool; stdcall;
+  var BackupParams: TSPBackupQueueParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupGetBackupInformation}
-{$ENDIF}
+{$ENDIF WIN2000}
+
+{$IFDEF WINXP}
+function SetupPrepareQueueForRestoreA(QueueHandle: HSPFILEQ;
+  BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupPrepareQueueForRestoreA}
+function SetupPrepareQueueForRestoreW(QueueHandle: HSPFILEQ;
+  BackupPath: PWideChar; RestoreFlags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupPrepareQueueForRestoreW}
+function SetupPrepareQueueForRestore(QueueHandle: HSPFILEQ;
+  BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+{$EXTERNALSYM SetupPrepareQueueForRestore}
+
+//
+// Control forcing of Non-Interactive Mode
+// Overridden if SetupAPI is run in non-interactive window session
+//
+
+function SetupSetNonInteractiveMode(NonInteractiveFlag: BOOL): BOOL; stdcall;
+{$EXTERNALSYM SetupSetNonInteractiveMode}
+function SetupGetNonInteractiveMode: BOOL; stdcall;
+{$EXTERNALSYM SetupGetNonInteractiveMode}
+{$ENDIF WINXP}
 
 //
 // Device Installer APIs
@@ -3414,75 +3974,75 @@ function SetupDiCreateDeviceInfoListEx(ClassGuid: PGUID; hwndParent: HWND;
 {$EXTERNALSYM SetupDiCreateDeviceInfoListEx}
 
 function SetupDiGetDeviceInfoListClass(DeviceInfoSet: HDEVINFO;
-  var ClassGuid: TGUID): LongBool; stdcall;
+  var ClassGuid: TGUID): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInfoListClass}
 
 function SetupDiGetDeviceInfoListDetailA(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoSetDetailData: TSPDevInfoListDetailDataA): LongBool; stdcall;
+  var DeviceInfoSetDetailData: TSPDevInfoListDetailDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInfoListDetailA}
 function SetupDiGetDeviceInfoListDetailW(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoSetDetailData: TSPDevInfoListDetailDataW): LongBool; stdcall;
+  var DeviceInfoSetDetailData: TSPDevInfoListDetailDataW): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInfoListDetailW}
 function SetupDiGetDeviceInfoListDetail(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoSetDetailData: TSPDevInfoListDetailDataA): LongBool; stdcall;
+  var DeviceInfoSetDetailData: TSPDevInfoListDetailDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInfoListDetail}
 
 function SetupDiCreateDeviceInfoA(DeviceInfoSet: HDEVINFO; const DeviceName: PAnsiChar;
   var ClassGuid: TGUID; const DeviceDescription: PAnsiChar; hwndParent: HWND;
-  CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateDeviceInfoA}
 
 function SetupDiCreateDeviceInfoW(DeviceInfoSet: HDEVINFO; const DeviceName: PWideChar;
   var ClassGuid: TGUID; const DeviceDescription: PWideChar; hwndParent: HWND;
-  CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateDeviceInfoW}
 
 function SetupDiCreateDeviceInfo(DeviceInfoSet: HDEVINFO; const DeviceName: PChar;
   var ClassGuid: TGUID; const DeviceDescription: PChar; hwndParent: HWND;
-  CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateDeviceInfo}
 
 
 function SetupDiOpenDeviceInfoA(DeviceInfoSet: HDEVINFO;
   const DeviceInstanceId: PAnsiChar; hwndParent: HWND; OpenFlags: DWORD;
-  DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenDeviceInfoA}
 function SetupDiOpenDeviceInfoW(DeviceInfoSet: HDEVINFO;
   const DeviceInstanceId: PWideChar; hwndParent: HWND; OpenFlags: DWORD;
-  DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenDeviceInfoW}
 function SetupDiOpenDeviceInfo(DeviceInfoSet: HDEVINFO;
   const DeviceInstanceId: PChar; hwndParent: HWND; OpenFlags: DWORD;
-  DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenDeviceInfo}
 
 function SetupDiGetDeviceInstanceIdA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; DeviceInstanceId: PAnsiChar;
-  DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInstanceIdA}
 function SetupDiGetDeviceInstanceIdW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; DeviceInstanceId: PWideChar;
-  DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInstanceIdW}
 function SetupDiGetDeviceInstanceId(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; DeviceInstanceId: PChar;
-  DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInstanceId}
 
 function SetupDiDeleteDeviceInfo(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDeleteDeviceInfo}
 
 function SetupDiEnumDeviceInfo(DeviceInfoSet: HDEVINFO;
-  MemberIndex: DWORD; var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  MemberIndex: DWORD; var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiEnumDeviceInfo}
 
-function SetupDiDestroyDeviceInfoList(DeviceInfoSet: HDEVINFO): LongBool; stdcall;
+function SetupDiDestroyDeviceInfoList(DeviceInfoSet: HDEVINFO): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDestroyDeviceInfoList}
 
 function SetupDiEnumDeviceInterfaces(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; const InterfaceClassGuid: TGUID;
-  MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiEnumDeviceInterfaces}
 
 //
@@ -3491,23 +4051,23 @@ function SetupDiEnumDeviceInterfaces(DeviceInfoSet: HDEVINFO;
 
 function SetupDiEnumInterfaceDevice(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; const InterfaceClassGuid: TGUID;
-  MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiEnumDeviceInterfaces}
 
 function SetupDiCreateDeviceInterfaceA(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
   const ReferenceString: PAnsiChar; CreationFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateDeviceInterfaceA}
 function SetupDiCreateDeviceInterfaceW(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
   const ReferenceString: PWideChar; CreationFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateDeviceInterfaceW}
 function SetupDiCreateDeviceInterface(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
   const ReferenceString: PChar; CreationFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateDeviceInterface}
 
 //
@@ -3517,30 +4077,30 @@ function SetupDiCreateDeviceInterface(DeviceInfoSet: HDEVINFO;
 function SetupDiCreateInterfaceDeviceA(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
   const ReferenceString: PAnsiChar; CreationFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateInterfaceDeviceA}
 function SetupDiCreateInterfaceDeviceW(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
   const ReferenceString: PWideChar; CreationFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateInterfaceDeviceW}
 function SetupDiCreateInterfaceDevice(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
   const ReferenceString: PChar; CreationFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCreateInterfaceDevice}
 
 function SetupDiOpenDeviceInterfaceA(DeviceInfoSet: HDEVINFO;
   const DevicePath: PAnsiChar; OpenFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenDeviceInterfaceA}
 function SetupDiOpenDeviceInterfaceW(DeviceInfoSet: HDEVINFO;
   const DevicePath: PWideChar; OpenFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenDeviceInterfaceW}
 function SetupDiOpenDeviceInterface(DeviceInfoSet: HDEVINFO;
   const DevicePath: PChar; OpenFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenDeviceInterface}
 
 //
@@ -3549,20 +4109,20 @@ function SetupDiOpenDeviceInterface(DeviceInfoSet: HDEVINFO;
 
 function SetupDiOpenInterfaceDeviceA(DeviceInfoSet: HDEVINFO;
   const DevicePath: PAnsiChar; OpenFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenInterfaceDeviceA}
 function SetupDiOpenInterfaceDeviceW(DeviceInfoSet: HDEVINFO;
   const DevicePath: PWideChar; OpenFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenInterfaceDeviceW}
 function SetupDiOpenInterfaceDevice(DeviceInfoSet: HDEVINFO;
   const DevicePath: PChar; OpenFlags: DWORD;
-  DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+  DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiOpenInterfaceDevice}
 
 function SetupDiGetDeviceInterfaceAlias(DeviceInfoSet: HDEVINFO;
   var DeviceInterfaceData: TSPDeviceInterfaceData; var AliasInterfaceClassGuid: TGUID;
-  var AliasDeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  var AliasDeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInterfaceAlias}
 
 //
@@ -3572,11 +4132,11 @@ function SetupDiGetDeviceInterfaceAlias(DeviceInfoSet: HDEVINFO;
 function SetupDiGetInterfaceDeviceAlias(DeviceInfoSet: HDEVINFO;
   var DeviceInterfaceData: TSPDeviceInterfaceData;
   var AliasInterfaceClassGuid: TGUID;
-  var AliasDeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  var AliasDeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetInterfaceDeviceAlias}
 
 function SetupDiDeleteDeviceInterfaceData(DeviceInfoSet: HDEVINFO;
-  var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDeleteDeviceInterfaceData}
 
 //
@@ -3584,11 +4144,11 @@ function SetupDiDeleteDeviceInterfaceData(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiDeleteInterfaceDeviceData(DeviceInfoSet: HDEVINFO;
-  var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDeleteInterfaceDeviceData}
 
 function SetupDiRemoveDeviceInterface(DeviceInfoSet: HDEVINFO;
-  var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiRemoveDeviceInterface}
 
 //
@@ -3596,26 +4156,26 @@ function SetupDiRemoveDeviceInterface(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiRemoveInterfaceDevice(DeviceInfoSet: HDEVINFO;
-  var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+  var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiRemoveInterfaceDevice}
 
 function SetupDiGetDeviceInterfaceDetailA(DeviceInfoSet: HDEVINFO;
   DeviceInterfaceData: PSPDeviceInterfaceData;
   DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataA;
   DeviceInterfaceDetailDataSize: DWORD; var RequiredSize: DWORD;
-  Device: PSPDevInfoData): LongBool; stdcall;
+  Device: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInterfaceDetailA}
 function SetupDiGetDeviceInterfaceDetailW(DeviceInfoSet: HDEVINFO;
   DeviceInterfaceData: PSPDeviceInterfaceData;
   DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataW;
   DeviceInterfaceDetailDataSize: DWORD; var RequiredSize: DWORD;
-  Device: PSPDevInfoData): LongBool; stdcall;
+  Device: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInterfaceDetailW}
 function SetupDiGetDeviceInterfaceDetail(DeviceInfoSet: HDEVINFO;
   DeviceInterfaceData: PSPDeviceInterfaceData;
   DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataA;
   DeviceInterfaceDetailDataSize: DWORD; var RequiredSize: DWORD;
-  Device: PSPDevInfoData): LongBool; stdcall;
+  Device: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInterfaceDetail}
 
 //
@@ -3626,19 +4186,19 @@ function SetupDiGetInterfaceDeviceDetailA(DeviceInfoSet: HDEVINFO;
   DeviceInterfaceData: PSPDeviceInterfaceData;
   DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataA;
   DeviceInterfaceDetailDataSize: DWORD; RequiredSize: PDWORD;
-  Device: PSPDevInfoData): LongBool; stdcall;
+  Device: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetInterfaceDeviceDetailA}
 function SetupDiGetInterfaceDeviceDetailW(DeviceInfoSet: HDEVINFO;
   DeviceInterfaceData: PSPDeviceInterfaceData;
   DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataW;
   DeviceInterfaceDetailDataSize: DWORD; RequiredSize: PDWORD;
-  Device: PSPDevInfoData): LongBool; stdcall;
+  Device: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetInterfaceDeviceDetailW}
 function SetupDiGetInterfaceDeviceDetail(DeviceInfoSet: HDEVINFO;
   DeviceInterfaceData: PSPDeviceInterfaceData;
   DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataA;
   DeviceInterfaceDetailDataSize: DWORD; RequiredSize: PDWORD;
-  Device: PSPDevInfoData): LongBool; stdcall;
+  Device: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetInterfaceDeviceDetail}
 
 //
@@ -3646,7 +4206,7 @@ function SetupDiGetInterfaceDeviceDetail(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiInstallDeviceInterfaces(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallDeviceInterfaces}
 
 //
@@ -3654,8 +4214,15 @@ function SetupDiInstallDeviceInterfaces(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiInstallInterfaceDevices(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallInterfaceDevices}
+
+{$IFDEF WINXP}
+function SetupDiSetDeviceInterfaceDefault(DeviceInfoSet: HDEVINFO
+  var DeviceInterfaceData: TSPDeviceInterfaceData; Flags: DWORD;
+  Reserved: Pointer): BOOL; stdcall;
+{$EXTERNALSYM SetupDiSetDeviceInterfaceDefault}
+{$ENDIF WINXP}
 
 //
 // Default install handler for DIF_REGISTERDEVICE
@@ -3663,67 +4230,67 @@ function SetupDiInstallInterfaceDevices(DeviceInfoSet: HDEVINFO;
 
 function SetupDiRegisterDeviceInfo(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; Flags: DWORD; CompareProc: TSPDetSigCmpProc;
-  CompareContext: Pointer; DupDeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  CompareContext: Pointer; DupDeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiRegisterDeviceInfo}
 
 function SetupDiBuildDriverInfoList(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; DriverType: DWORD): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; DriverType: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiBuildDriverInfoList}
 
-function SetupDiCancelDriverInfoSearch(DeviceInfoSet: HDEVINFO): LongBool; stdcall;
+function SetupDiCancelDriverInfoSearch(DeviceInfoSet: HDEVINFO): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCancelDriverInfoSearch}
 
 function SetupDiEnumDriverInfoA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; DriverType: DWORD; MemberIndex: DWORD;
-  var DriverInfoData: TSPDrvInfoDataA): LongBool; stdcall;
+  var DriverInfoData: TSPDrvInfoDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiEnumDriverInfoA}
 function SetupDiEnumDriverInfoW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; DriverType: DWORD; MemberIndex: DWORD;
-  var DriverInfoData: TSPDrvInfoDataW): LongBool; stdcall;
+  var DriverInfoData: TSPDrvInfoDataW): BOOL; stdcall;
 {$EXTERNALSYM SetupDiEnumDriverInfoW}
 function SetupDiEnumDriverInfo(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; DriverType: DWORD; MemberIndex: DWORD;
-  var DriverInfoData: TSPDrvInfoDataA): LongBool; stdcall;
+  var DriverInfoData: TSPDrvInfoDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiEnumDriverInfo}
 
 function SetupDiGetSelectedDriverA(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetSelectedDriverA}
 function SetupDiGetSelectedDriverW(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetSelectedDriverW}
 function SetupDiGetSelectedDriver(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetSelectedDriver}
 
 function SetupDiSetSelectedDriverA(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataA): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetSelectedDriverA}
 function SetupDiSetSelectedDriverW(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataW): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataW): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetSelectedDriverW}
 function SetupDiSetSelectedDriver(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataA): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetSelectedDriver}
 
 function SetupDiGetDriverInfoDetailA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
   DriverInfoDetailData: PSPDrvInfoDetailDataA; DriverInfoDetailDataSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDriverInfoDetailA}
 function SetupDiGetDriverInfoDetailW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW;
   DriverInfoDetailData: PSPDrvInfoDetailDataW; DriverInfoDetailDataSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDriverInfoDetailW}
 function SetupDiGetDriverInfoDetail(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
   DriverInfoDetailData: PSPDrvInfoDetailDataA; DriverInfoDetailDataSize: DWORD;
-  RequiredSize: PDWORD): LongBool; stdcall;
+  RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDriverInfoDetail}
 
 function SetupDiDestroyDriverInfoList(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData; DriverType: DWORD): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData; DriverType: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDestroyDriverInfoList}
 
 function SetupDiGetClassDevsA(ClassGuid: PGUID; const Enumerator: PAnsiChar;
@@ -3750,57 +4317,57 @@ function SetupDiGetClassDevsEx(ClassGuid: PGUID; const Enumerator: PChar;
 {$EXTERNALSYM SetupDiGetClassDevsEx}
 
 function SetupDiGetINFClassA(const InfName: PAnsiChar; var ClassGuid: TGUID;
-  ClassName: PAnsiChar; ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassName: PAnsiChar; ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetINFClassA}
 function SetupDiGetINFClassW(const InfName: PWideChar; var ClassGuid: TGUID;
-  ClassName: PWideChar; ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassName: PWideChar; ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetINFClassW}
 function SetupDiGetINFClass(const InfName: PChar; var ClassGuid: TGUID;
-  ClassName: PChar; ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassName: PChar; ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetINFClass}
 
 function SetupDiBuildClassInfoList(Flags: DWORD; ClassGuidList: PGUID;
-  ClassGuidListSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+  ClassGuidListSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiBuildClassInfoList}
 
 function SetupDiBuildClassInfoListExA(Flags: DWORD; ClassGuidList: PGUID;
   ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PAnsiChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiBuildClassInfoListExA}
 function SetupDiBuildClassInfoListExW(Flags: DWORD; ClassGuidList: PGUID;
   ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PWideChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiBuildClassInfoListExW}
 function SetupDiBuildClassInfoListEx(Flags: DWORD; ClassGuidList: PGUID;
   ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiBuildClassInfoListEx}
 
 function SetupDiGetClassDescriptionA(var ClassGuid: TGUID; ClassDescription: PAnsiChar;
-  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionA}
 function SetupDiGetClassDescriptionW(var ClassGuid: TGUID; ClassDescription: PWideChar;
-  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionW}
 function SetupDiGetClassDescription(var ClassGuid: TGUID; ClassDescription: PChar;
-  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+  ClassDescriptionSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescription}
 
 function SetupDiGetClassDescriptionExA(var ClassGuid: TGUID;
   ClassDescription: PAnsiChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
-  const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionExA}
 function SetupDiGetClassDescriptionExW(var ClassGuid: TGUID;
   ClassDescription: PWideChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
-  const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionExW}
 function SetupDiGetClassDescriptionEx(var ClassGuid: TGUID;
   ClassDescription: PChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
-  const MachineName: PChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDescriptionEx}
 
 function SetupDiCallClassInstaller(InstallFunction: DI_FUNCTION;
-  DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiCallClassInstaller}
 
 //
@@ -3808,7 +4375,7 @@ function SetupDiCallClassInstaller(InstallFunction: DI_FUNCTION;
 //
 
 function SetupDiSelectDevice(DeviceInfoSet:  HDEVINFO;
-  DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSelectDevice}
 
 //
@@ -3816,14 +4383,14 @@ function SetupDiSelectDevice(DeviceInfoSet:  HDEVINFO;
 //
 
 function SetupDiSelectBestCompatDrv(DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSelectBestCompatDrv}
 
 //
 // Default install handler for DIF_INSTALLDEVICE
 //
 function SetupDiInstallDevice(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallDevice}
 
 //
@@ -3831,14 +4398,14 @@ function SetupDiInstallDevice(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiInstallDriverFiles(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallDriverFiles}
 
 //
 // Default install handler for DIF_REGISTER_COINSTALLERS
 //
 function SetupDiRegisterCoDeviceInstallers(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiRegisterCoDeviceInstallers}
 
 //
@@ -3846,7 +4413,7 @@ function SetupDiRegisterCoDeviceInstallers(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiRemoveDevice(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiRemoveDevice}
 
 //
@@ -3854,44 +4421,44 @@ function SetupDiRemoveDevice(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiUnremoveDevice(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiUnremoveDevice}
 
 //
 // Default install handler for DIF_MOVEDEVICE
 //
 function SetupDiMoveDuplicateDevice(DeviceInfoSet: HDEVINFO;
-  var DestinationDeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DestinationDeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiMoveDuplicateDevice}
 
 //
 // Default install handler for DIF_PROPERTYCHANGE
 //
 function SetupDiChangeState(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiChangeState}
 
 function SetupDiInstallClassA(hwndParent: HWND; const InfFileName: PAnsiChar;
-  Flags: DWORD; FileQueue: HSPFILEQ): LongBool; stdcall;
+  Flags: DWORD; FileQueue: HSPFILEQ): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallClassA}
 function SetupDiInstallClassW(hwndParent: HWND; const InfFileName: PWideChar;
-  Flags: DWORD; FileQueue: HSPFILEQ): LongBool; stdcall;
+  Flags: DWORD; FileQueue: HSPFILEQ): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallClassW}
 function SetupDiInstallClass(hwndParent: HWND; const InfFileName: PChar;
-  Flags: DWORD; FileQueue: HSPFILEQ): LongBool; stdcall;
+  Flags: DWORD; FileQueue: HSPFILEQ): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallClass}
 
 function SetupDiInstallClassExA(hwndParent: HWND; const InfFileName: PAnsiChar;
   Flags: DWORD; FileQueue: HSPFILEQ; InterfaceClassGuid: PGUID; Reserved1,
-  Reserved2: Pointer): LongBool; stdcall;
+  Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallClassExA}
 function SetupDiInstallClassExW(hwndParent: HWND; const InfFileName: PWideChar;
   Flags: DWORD; FileQueue: HSPFILEQ; InterfaceClassGuid: PGUID; Reserved1,
-  Reserved2: Pointer): LongBool; stdcall;
+  Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallClassExW}
 function SetupDiInstallClassEx(hwndParent: HWND; const InfFileName: PChar;
   Flags: DWORD; FileQueue: HSPFILEQ; InterfaceClassGuid: PGUID; Reserved1,
-  Reserved2: Pointer): LongBool; stdcall;
+  Reserved2: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiInstallClassEx}
 
 function SetupDiOpenClassRegKey(ClassGuid: PGUID; samDesired: REGSAM): HKEY; stdcall;
@@ -3952,7 +4519,7 @@ function SetupDiOpenInterfaceDeviceRegKey(DeviceInfoSet: HDEVINFO;
 {$EXTERNALSYM SetupDiOpenInterfaceDeviceRegKey}
 
 function SetupDiDeleteDeviceInterfaceRegKey(DeviceInfoSet: HDEVINFO;
-  var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): LongBool; stdcall;
+  var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDeleteDeviceInterfaceRegKey}
 
 //
@@ -3960,7 +4527,7 @@ function SetupDiDeleteDeviceInterfaceRegKey(DeviceInfoSet: HDEVINFO;
 //
 
 function SetupDiDeleteInterfaceDeviceRegKey(DeviceInfoSet: HDEVINFO;
-  var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): LongBool; stdcall;
+  var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDeleteInterfaceDeviceRegKey}
 
 function SetupDiCreateDevRegKeyA(DeviceInfoSet: HDEVINFO;
@@ -3986,171 +4553,171 @@ function SetupDiOpenDevRegKey(DeviceInfoSet: HDEVINFO;
 
 function SetupDiDeleteDevRegKey(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; Scope, HwProfile,
-  KeyType: DWORD): LongBool; stdcall;
+  KeyType: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDeleteDevRegKey}
 
 function SetupDiGetHwProfileList(HwProfileList: PDWORD; HwProfileListSize: DWORD;
-  var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD): LongBool; stdcall;
+  var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileList}
 
 function SetupDiGetHwProfileListExA(HwProfileList: PDWORD;
   HwProfileListSize: DWORD; var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD;
-  const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileListExA}
 function SetupDiGetHwProfileListExW(HwProfileList: PDWORD;
   HwProfileListSize: DWORD; var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD;
-  const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileListExW}
 function SetupDiGetHwProfileListEx(HwProfileList: PDWORD;
   HwProfileListSize: DWORD; var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD;
-  const MachineName: PChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileListEx}
 
 function SetupDiGetDeviceRegistryPropertyA(DeviceInfoSet: HDEVINFO;
   const DeviceInfoData: TSPDevInfoData; Property_: DWORD;
   var PropertyRegDataType: DWORD; PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-  var RequiredSize: DWORD): LongBool; stdcall;
+  var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceRegistryPropertyA}
 function SetupDiGetDeviceRegistryPropertyW(DeviceInfoSet: HDEVINFO;
   const DeviceInfoData: TSPDevInfoData; Property_: DWORD;
   var PropertyRegDataType: DWORD; PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-  var RequiredSize: DWORD): LongBool; stdcall;
+  var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceRegistryPropertyW}
 function SetupDiGetDeviceRegistryProperty(DeviceInfoSet: HDEVINFO;
   const DeviceInfoData: TSPDevInfoData; Property_: DWORD;
   var PropertyRegDataType: DWORD; PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-  var RequiredSize: DWORD): LongBool; stdcall;
+  var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceRegistryProperty}
 
 {$IFDEF WIN2000}
-function SetupDiGetClassRegistryPropertyA(var ClassGuid: TGUID;
+function SetupDiGetClassRegistryPropertyA(const ClassGuid: TGUID;
   Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PAnsiChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassRegistryPropertyA}
-function SetupDiGetClassRegistryPropertyW(var ClassGuid: TGUID;
+function SetupDiGetClassRegistryPropertyW(const ClassGuid: TGUID;
   Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassRegistryPropertyW}
-function SetupDiGetClassRegistryProperty(var ClassGuid: TGUID;
+function SetupDiGetClassRegistryProperty(const ClassGuid: TGUID;
   Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
   PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassRegistryProperty}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupDiSetDeviceRegistryPropertyA(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; Property_: DWORD;
-  const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): LongBool; stdcall;
+  const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDeviceRegistryPropertyA}
 function SetupDiSetDeviceRegistryPropertyW(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; Property_: DWORD;
-  const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): LongBool; stdcall;
+  const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDeviceRegistryPropertyW}
 function SetupDiSetDeviceRegistryProperty(DeviceInfoSet: HDEVINFO;
   var DeviceInfoData: TSPDevInfoData; Property_: DWORD;
-  const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): LongBool; stdcall;
+  const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDeviceRegistryProperty}
 
 {$IFDEF WIN2000}
-function SetupDiSetClassRegistryPropertyA(var ClassGuid: TGUID;
+function SetupDiSetClassRegistryPropertyA(const ClassGuid: TGUID;
   Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-  const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassRegistryPropertyA}
-function SetupDiSetClassRegistryPropertyW(var ClassGuid: TGUID;
+function SetupDiSetClassRegistryPropertyW(const ClassGuid: TGUID;
   Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-  const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassRegistryPropertyW}
-function SetupDiSetClassRegistryProperty(var ClassGuid: TGUID;
+function SetupDiSetClassRegistryProperty(const ClassGuid: TGUID;
   Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-  const MachineName: PChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassRegistryProperty}
-{$ENDIF}
+{$ENDIF WIN2000}
 
 function SetupDiGetDeviceInstallParamsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData;
-  var DeviceInstallParams: TSPDevInstallParamsA): LongBool; stdcall;
+  var DeviceInstallParams: TSPDevInstallParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInstallParamsA}
 
 function SetupDiGetDeviceInstallParamsW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData;
-  var DeviceInstallParams: TSPDevInstallParamsW): LongBool; stdcall;
+  var DeviceInstallParams: TSPDevInstallParamsW): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInstallParamsW}
 
 function SetupDiGetDeviceInstallParams(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData;
-  var DeviceInstallParams: TSPDevInstallParamsA): LongBool; stdcall;
+  var DeviceInstallParams: TSPDevInstallParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDeviceInstallParams}
 
 
 function SetupDiGetClassInstallParamsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-  ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassInstallParamsA}
 function SetupDiGetClassInstallParamsW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-  ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassInstallParamsW}
 function SetupDiGetClassInstallParams(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-  ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassInstallParams}
 
 function SetupDiSetDeviceInstallParamsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData;
-  var DeviceInstallParams: TSPDevInstallParamsA): LongBool; stdcall;
+  var DeviceInstallParams: TSPDevInstallParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDeviceInstallParamsA}
 function SetupDiSetDeviceInstallParamsW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData;
-  var DeviceInstallParams: TSPDevInstallParamsW): LongBool; stdcall;
+  var DeviceInstallParams: TSPDevInstallParamsW): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDeviceInstallParamsW}
 function SetupDiSetDeviceInstallParams(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData;
-  var DeviceInstallParams: TSPDevInstallParamsA): LongBool; stdcall;
+  var DeviceInstallParams: TSPDevInstallParamsA): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDeviceInstallParams}
 
 function SetupDiSetClassInstallParamsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-  ClassInstallParamsSize: DWORD): LongBool; stdcall;
+  ClassInstallParamsSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassInstallParamsA}
 function SetupDiSetClassInstallParamsW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-  ClassInstallParamsSize: DWORD): LongBool; stdcall;
+  ClassInstallParamsSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassInstallParamsW}
 function SetupDiSetClassInstallParams(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-  ClassInstallParamsSize: DWORD): LongBool; stdcall;
+  ClassInstallParamsSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetClassInstallParams}
 
 function SetupDiGetDriverInstallParamsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
-  var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+  var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDriverInstallParamsA}
 function SetupDiGetDriverInstallParamsW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW;
-  var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+  var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDriverInstallParamsW}
 function SetupDiGetDriverInstallParams(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
-  var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+  var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetDriverInstallParams}
 
 function SetupDiSetDriverInstallParamsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
-  var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+  var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDriverInstallParamsA}
 function SetupDiSetDriverInstallParamsW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW;
-  var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+  var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDriverInstallParamsW}
 function SetupDiSetDriverInstallParams(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
-  var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+  var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetDriverInstallParams}
 
 function SetupDiLoadClassIcon(var ClassGuid: TGUID; LargeIcon: PHICON;
-  MiniIconIndex: PINT): LongBool; stdcall;
+  MiniIconIndex: PINT): BOOL; stdcall;
 {$EXTERNALSYM SetupDiLoadClassIcon}
 
 function SetupDiDrawMiniIcon(hdc: HDC; rc: TRect; MiniIconIndex: Integer;
@@ -4158,121 +4725,121 @@ function SetupDiDrawMiniIcon(hdc: HDC; rc: TRect; MiniIconIndex: Integer;
 {$EXTERNALSYM SetupDiDrawMiniIcon}
 
 function SetupDiGetClassBitmapIndex(ClassGuid: PGUID;
-  var MiniIconIndex: Integer): LongBool; stdcall;
+  var MiniIconIndex: Integer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassBitmapIndex}
 
 function SetupDiGetClassImageList(
-  var ClassImageListData: TSPClassImageListData): LongBool; stdcall;
+  var ClassImageListData: TSPClassImageListData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassImageList}
 
 function SetupDiGetClassImageListExA(var ClassImageListData: TSPClassImageListData;
-  const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassImageListExA}
 function SetupDiGetClassImageListExW(var ClassImageListData: TSPClassImageListData;
-  const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassImageListExW}
 function SetupDiGetClassImageListEx(var ClassImageListData: TSPClassImageListData;
-  const MachineName: PChar; Reserved: Pointer): LongBool; stdcall;
+  const MachineName: PChar; Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassImageListEx}
 
 function SetupDiGetClassImageIndex(var ClassImageListData: TSPClassImageListData;
-  var ClassGuid: TGUID; var ImageIndex: Integer): LongBool; stdcall;
+  var ClassGuid: TGUID; var ImageIndex: Integer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassImageIndex}
 
 function SetupDiDestroyClassImageList(
-  var ClassImageListData: TSPClassImageListData): LongBool; stdcall;
+  var ClassImageListData: TSPClassImageListData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiDestroyClassImageList}
 
 function SetupDiGetClassDevPropertySheetsA(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var PropertySheetHeader: TPropSheetHeaderA;
   PropertySheetHeaderPageListSize: DWORD; RequiredSize: PDWORD;
-  PropertySheetType: DWORD): LongBool; stdcall;
+  PropertySheetType: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDevPropertySheetsA}
 function SetupDiGetClassDevPropertySheetsW(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var PropertySheetHeader: TPropSheetHeaderW;
   PropertySheetHeaderPageListSize: DWORD; RequiredSize: PDWORD;
-  PropertySheetType: DWORD): LongBool; stdcall;
+  PropertySheetType: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDevPropertySheetsW}
 function SetupDiGetClassDevPropertySheets(DeviceInfoSet: HDEVINFO;
   DeviceInfoData: PSPDevInfoData; var PropertySheetHeader: TPropSheetHeaderA;
   PropertySheetHeaderPageListSize: DWORD; RequiredSize: PDWORD;
-  PropertySheetType: DWORD): LongBool; stdcall;
+  PropertySheetType: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetClassDevPropertySheets}
 
-function SetupDiAskForOEMDisk(DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+function SetupDiAskForOEMDisk(DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiAskForOEMDisk}
 
 function SetupDiSelectOEMDrv(hwndParent: HWND; DeviceInfoSet: HDEVINFO;
-  DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSelectOEMDrv}
 
 function SetupDiClassNameFromGuidA(var ClassGuid: TGUID; ClassName: PAnsiChar;
-  ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassNameFromGuidA}
 function SetupDiClassNameFromGuidW(var ClassGuid: TGUID; ClassName: PWideChar;
-  ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassNameFromGuidW}
 function SetupDiClassNameFromGuid(var ClassGuid: TGUID; ClassName: PChar;
-  ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassNameFromGuid}
 
 function SetupDiClassNameFromGuidExA(var ClassGuid: TGUID; ClassName: PAnsiChar;
   ClassNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PAnsiChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassNameFromGuidExA}
 function SetupDiClassNameFromGuidExW(var ClassGuid: TGUID; ClassName: PWideChar;
   ClassNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassNameFromGuidExW}
 function SetupDiClassNameFromGuidEx(var ClassGuid: TGUID; ClassName: PChar;
   ClassNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassNameFromGuidEx}
 
 function SetupDiClassGuidsFromNameA(const ClassName: PAnsiChar; ClassGuidList: PGUID;
-  ClassGuidListSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+  ClassGuidListSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassGuidsFromNameA}
 function SetupDiClassGuidsFromNameW(const ClassName: PWideChar; ClassGuidList: PGUID;
-  ClassGuidListSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+  ClassGuidListSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassGuidsFromNameW}
 function SetupDiClassGuidsFromName(const ClassName: PChar; ClassGuidList: PGUID;
-  ClassGuidListSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+  ClassGuidListSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassGuidsFromName}
 
 function SetupDiClassGuidsFromNameExA(const ClassName: PAnsiChar; ClassGuidList: PGUID;
   ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PAnsiChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassGuidsFromNameExA}
 function SetupDiClassGuidsFromNameExW(const ClassName: PWideChar; ClassGuidList: PGUID;
   ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PWideChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassGuidsFromNameExW}
 function SetupDiClassGuidsFromNameEx(const ClassName: PChar; ClassGuidList: PGUID;
   ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiClassGuidsFromNameEx}
 
 function SetupDiGetHwProfileFriendlyNameA(HwProfile: DWORD; FriendlyName: PAnsiChar;
-  FriendlyNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  FriendlyNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileFriendlyNameA}
 function SetupDiGetHwProfileFriendlyNameW(HwProfile: DWORD; FriendlyName: PWideChar;
-  FriendlyNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  FriendlyNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileFriendlyNameW}
 function SetupDiGetHwProfileFriendlyName(HwProfile: DWORD; FriendlyName: PChar;
-  FriendlyNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+  FriendlyNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileFriendlyName}
 
 function SetupDiGetHwProfileFriendlyNameExA(HwProfile: DWORD; FriendlyName: PAnsiChar;
   FriendlyNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PAnsiChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileFriendlyNameExA}
 function SetupDiGetHwProfileFriendlyNameExW(HwProfile: DWORD; FriendlyName: PWideChar;
   FriendlyNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileFriendlyNameExW}
 function SetupDiGetHwProfileFriendlyNameEx(HwProfile: DWORD; FriendlyName: PChar;
   FriendlyNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PChar;
-  Reserved: Pointer): LongBool; stdcall;
+  Reserved: Pointer): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetHwProfileFriendlyNameEx}
 
 function SetupDiGetWizardPage(DeviceInfoSet: HDEVINFO;
@@ -4281,25 +4848,70 @@ function SetupDiGetWizardPage(DeviceInfoSet: HDEVINFO;
 {$EXTERNALSYM SetupDiGetWizardPage}
 
 function SetupDiGetSelectedDevice(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetSelectedDevice}
 
 function SetupDiSetSelectedDevice(DeviceInfoSet: HDEVINFO;
-  var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+  var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 {$EXTERNALSYM SetupDiSetSelectedDevice}
 
 function SetupDiGetActualSectionToInstallA(InfHandle: HINF;
   const InfSectionName: PAnsiChar; InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
-  RequiredSize: PDWORD; Extension: PPASTR): LongBool; stdcall;
+  RequiredSize: PDWORD; Extension: PPASTR): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetActualSectionToInstallA}
 function SetupDiGetActualSectionToInstallW(InfHandle: HINF;
   const InfSectionName: PWideChar; InfSectionWithExt: PWideChar; InfSectionWithExtSize: DWORD;
-  RequiredSize: PDWORD; Extension: PPWSTR): LongBool; stdcall;
+  RequiredSize: PDWORD; Extension: PPWSTR): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetActualSectionToInstallW}
 function SetupDiGetActualSectionToInstall(InfHandle: HINF;
   const InfSectionName: PChar; InfSectionWithExt: PChar; InfSectionWithExtSize: DWORD;
-  RequiredSize: PDWORD; Extension: PPSTR): LongBool; stdcall;
+  RequiredSize: PDWORD; Extension: PPSTR): BOOL; stdcall;
 {$EXTERNALSYM SetupDiGetActualSectionToInstall}
+
+{$IFDEF WINXP}
+function SetupDiGetActualSectionToInstallExA(InfHandle: HINF;
+  InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+  InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+  RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+function SetupDiGetActualSectionToInstallExW(InfHandle: HINF;
+  InfSectionName: PWideChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+  InfSectionWithExt: PWideChar; InfSectionWithExtSize: DWORD;
+  RequiredSize: PDWORD; Extension: PPWideChar; Reserved: Pointer): BOOL; stdcall;
+function SetupDiGetActualSectionToInstallEx(InfHandle: HINF;
+  InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+  InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+  RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+
+//
+// SetupEnumInfSections is for low-level parsing of an INF
+//
+function SetupEnumInfSectionsA(InfHandle: HINF; Index: UINT;
+  Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+function SetupEnumInfSectionsW(InfHandle: HINF; Index: UINT;
+  Buffer: PWideChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+function SetupEnumInfSections(InfHandle: HINF; Index: UINT;
+  Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+
+function SetupVerifyInfFileA(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+  var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+function SetupVerifyInfFileW(InfName: PWideChar; AltPlatformInfo: PSPAltPlatformInfo;
+  var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+function SetupVerifyInfFile(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+  var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+
+function SetupDiGetCustomDevicePropertyA(DeviceInfoSet: HDEVINFO;
+  const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+  Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+  PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+function SetupDiGetCustomDevicePropertyW(DeviceInfoSet: HDEVINFO;
+  const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PWideChar;
+  Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+  PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+function SetupDiGetCustomDeviceProperty(DeviceInfoSet: HDEVINFO;
+  const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+  Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+  PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+{$ENDIF WINXP}
 
 {$ELSE}
 
@@ -4321,6 +4933,9 @@ function SetupDiGetActualSectionToInstall(InfHandle: HINF;
 (*$HPPEMIT '#undef SetupGetStringField'*)
 (*$HPPEMIT '#undef SetupGetMultiSzField'*)
 (*$HPPEMIT '#undef SetupGetFileCompressionInfo'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef SetupGetFileCompressionInfoEx'*)
+{$ENDIF WINXP}
 (*$HPPEMIT '#undef SetupDecompressOrCopyFile'*)
 (*$HPPEMIT '#undef SetupGetSourceFileLocation'*)
 (*$HPPEMIT '#undef SetupGetSourceFileSize'*)
@@ -4353,6 +4968,9 @@ function SetupDiGetActualSectionToInstall(InfHandle: HINF;
 (*$HPPEMIT '#undef SetupCommitFileQueue'*)
 (*$HPPEMIT '#undef SetupScanFileQueue'*)
 (*$HPPEMIT '#undef SetupCopyOEMInf'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef SetupUninstallOEMInf'*)
+{$ENDIF WINXP}
 (*$HPPEMIT '#undef SetupCreateDiskSpaceList'*)
 (*$HPPEMIT '#undef SetupDuplicateDiskSpaceList'*)
 (*$HPPEMIT '#undef SetupQueryDrivesInDiskSpaceList'*)
@@ -4370,12 +4988,18 @@ function SetupDiGetActualSectionToInstall(InfHandle: HINF;
 (*$HPPEMIT '#undef SetupInstallFilesFromInfSection'*)
 (*$HPPEMIT '#undef SetupInstallServicesFromInfSection'*)
 (*$HPPEMIT '#undef SetupInstallServicesFromInfSectionEx'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef InstallHinfSection'*)
+{$ENDIF WINXP}
 (*$HPPEMIT '#undef SetupInitializeFileLog'*)
 (*$HPPEMIT '#undef SetupLogFile'*)
 (*$HPPEMIT '#undef SetupRemoveFileLogEntry'*)
 (*$HPPEMIT '#undef SetupQueryFileLog'*)
 (*$HPPEMIT '#undef SetupLogError'*)
 (*$HPPEMIT '#undef SetupGetBackupInformation'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef SetupPrepareQueueForRestore'*)
+{$ENDIF WINXP}
 (*$HPPEMIT '#undef SetupDiCreateDeviceInfoListEx'*)
 (*$HPPEMIT '#undef SetupDiGetDeviceInfoListDetail'*)
 (*$HPPEMIT '#undef SetupDiCreateDeviceInfo'*)
@@ -4438,44 +5062,55 @@ function SetupDiGetActualSectionToInstall(InfHandle: HINF;
 (*$HPPEMIT '#undef SetupDiGetHwProfileFriendlyName'*)
 (*$HPPEMIT '#undef SetupDiGetHwProfileFriendlyNameEx'*)
 (*$HPPEMIT '#undef SetupDiGetActualSectionToInstall'*)
+{$IFDEF WINXP}
+(*$HPPEMIT '#undef SetupDiGetActualSectionToInstallEx'*)
+(*$HPPEMIT '#undef SetupEnumInfSections'*)
+(*$HPPEMIT '#undef SetupVerifyInfFile'*)
+(*$HPPEMIT '#undef SetupDiGetCustomDeviceProperty'*)
+{$ENDIF WINXP}
 
 type
+  {$IFDEF WINXP}
+  TSetupGetFileQueueCount = function(FileQueue: HSPFILEQ; SubQueueFileOp: UINT; var NumOperations: UINT): BOOL; stdcall;
+  TSetupGetFileQueueFlags = function(FileQueue: HSPFILEQ; var Flags: DWORD): BOOL; stdcall;
+  TSetupSetFileQueueFlags = function(FileQueue: HSPFILEQ; FlagMask: DWORD; Flags: DWORD): BOOL; stdcall;
+  {$ENDIF WINXP}
   TSetupGetInfInformationA = function(InfSpec: Pointer; SearchControl: DWORD;
-    ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetInfInformationW = function(InfSpec: Pointer; SearchControl: DWORD;
-    ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PSPInfInformation; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetInfInformation = TSetupGetInfInformationA;
 
   TSetupQueryInfFileInformationA = function(var InfInformation: TSPInfInformation;
     InfIndex: UINT; ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryInfFileInformationW = function(var InfInformation: TSPInfInformation;
     InfIndex: UINT; ReturnBuffer: PWideChar; ReturnBufferSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryInfFileInformation = TSetupQueryInfFileInformationA;
 
   {$IFDEF WIN2000}
   TSetupQueryInfOriginalFileInformationA = function(var InfInformation: TSPInfInformation;
     InfIndex: UINT; AlternatePlatformInfo: PSPAltPlatformInfo;
-    var OriginalFileInfo: TSPOriginalFileInfoA): LongBool; stdcall;
+    var OriginalFileInfo: TSPOriginalFileInfoA): BOOL; stdcall;
   TSetupQueryInfOriginalFileInformationW = function(var InfInformation: TSPInfInformation;
     InfIndex: UINT; AlternatePlatformInfo: PSPAltPlatformInfo;
-    var OriginalFileInfo: TSPOriginalFileInfoW): LongBool; stdcall;
+    var OriginalFileInfo: TSPOriginalFileInfoW): BOOL; stdcall;
   TSetupQueryInfOriginalFileInformation = TSetupQueryInfOriginalFileInformationA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupQueryInfVersionInformationA = function(var InfInformation: TSPInfInformation;
     InfIndex: UINT; const Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryInfVersionInformationW = function(var InfInformation: TSPInfInformation;
     InfIndex: UINT; const Key, ReturnBuffer: PWideChar; ReturnBufferSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryInfVersionInformation = TSetupQueryInfVersionInformationA;
 
   TSetupGetInfFileListA = function(const DirectoryPath: PAnsiChar; InfStyle: DWORD;
-    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetInfFileListW = function(const DirectoryPath: PWideChar; InfStyle: DWORD;
-    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetInfFileList = TSetupGetInfFileListA;
 
   TSetupOpenInfFileA = function(const FileName: PAnsiChar; const InfClass: PAnsiChar;
@@ -4487,31 +5122,31 @@ type
   TSetupOpenMasterInf = function: HINF; stdcall;
 
   TSetupOpenAppendInfFileA = function(const FileName: PAnsiChar; InfHandle: HINF;
-    ErrorLine: PUINT): LongBool; stdcall;
+    ErrorLine: PUINT): BOOL; stdcall;
   TSetupOpenAppendInfFileW = function(const FileName: PWideChar; InfHandle: HINF;
-    ErrorLine: PUINT): LongBool; stdcall;
+    ErrorLine: PUINT): BOOL; stdcall;
   TSetupOpenAppendInfFile = TSetupOpenAppendInfFileA;
 
   TSetupCloseInfFile = procedure(InfHandle: HINF); stdcall;
 
   TSetupFindFirstLineA = function(InfHandle: HINF; Section, Key: PAnsiChar;
-    var Context: TInfContext): LongBool; stdcall;
+    var Context: TInfContext): BOOL; stdcall;
   TSetupFindFirstLineW = function(InfHandle: HINF; Section, Key: PWideChar;
-    var Context: TInfContext): LongBool; stdcall;
+    var Context: TInfContext): BOOL; stdcall;
   TSetupFindFirstLine = TSetupFindFirstLineA;
 
-  TSetupFindNextLine = function(var ContextIn, ContextOut: TInfContext): LongBool; stdcall;
+  TSetupFindNextLine = function(var ContextIn, ContextOut: TInfContext): BOOL; stdcall;
 
   TSetupFindNextMatchLineA = function(var ContextIn: TInfContext; Key: PAnsiChar;
-    var ContextOut: TInfContext): LongBool; stdcall;
+    var ContextOut: TInfContext): BOOL; stdcall;
   TSetupFindNextMatchLineW = function(var ContextIn: TInfContext; Key: PWideChar;
-    var ContextOut: TInfContext): LongBool; stdcall;
+    var ContextOut: TInfContext): BOOL; stdcall;
   TSetupFindNextMatchLine = TSetupFindNextMatchLineA;
 
   TSetupGetLineByIndexA = function(InfHandle: HINF; Section: PAnsiChar; Index: DWORD;
-    var Context: TInfContext): LongBool; stdcall;
+    var Context: TInfContext): BOOL; stdcall;
   TSetupGetLineByIndexW = function(InfHandle: HINF; Section: PWideChar; Index: DWORD;
-    var Context: TInfContext): LongBool; stdcall;
+    var Context: TInfContext): BOOL; stdcall;
   TSetupGetLineByIndex = TSetupGetLineByIndexA;
 
   TSetupGetLineCountA = function(InfHandle: HINF; Section: PAnsiChar): Integer; stdcall;
@@ -4519,30 +5154,30 @@ type
   TSetupGetLineCount = TSetupGetLineCountA;
 
   TSetupGetLineTextA = function(Context: PInfContext; InfHandle: HINF; Section,
-    Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    Key, ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetLineTextW = function(Context: PInfContext; InfHandle: HINF; Section,
-    Key, ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    Key, ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetLineText = TSetupGetLineTextA;
 
   TSetupGetFieldCount = function(var Context: TInfContext): DWORD; stdcall;
 
   TSetupGetStringFieldA = function(var Context: TInfContext; FieldIndex: DWORD;
-    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetStringFieldW = function(var Context: TInfContext; FieldIndex: DWORD;
-    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetStringField = TSetupGetStringFieldA;
 
   TSetupGetIntField = function(var Context: TInfContext; FieldIndex: DWORD;
-    var IntegerValue: Integer): LongBool; stdcall;
+    var IntegerValue: Integer): BOOL; stdcall;
 
   TSetupGetMultiSzFieldA = function(var Context: TInfContext; FieldIndex: DWORD;
-    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetMultiSzFieldW = function(var Context: TInfContext; FieldIndex: DWORD;
-    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetMultiSzField = TSetupGetMultiSzFieldA;
 
   TSetupGetBinaryField = function(var Context: TInfContext; FieldIndex: DWORD;
-    ReturnBuffer: PBYTE; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PBYTE; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
 
   TSetupGetFileCompressionInfoA = function(const SourceFileName: PAnsiChar;
     var ActualSourceFileName: PAnsiChar; var SourceFileSize: DWORD;
@@ -4552,6 +5187,18 @@ type
     var TargetFileSize: DWORD; var CompressionType: UINT): DWORD; stdcall;
   TSetupGetFileCompressionInfo = TSetupGetFileCompressionInfoA;
 
+  {$IFDEF WINXP}
+  TSetupGetFileCompressionInfoExA = function(const SourceFileName: PAnsiChar;
+    ActualSourceFileNameBuffer: PAnsiChar; var ActualSourceFileNameBufferLen: DWORD;
+    RequiredBufferLen: PDWORD; var SourceFileSize: DWORD;
+    var TargetFileSize: DWORD; var CompressionType: UINT): BOOL; stdcall;
+  TSetupGetFileCompressionInfoExW = function(const SourceFileName: PWideChar;
+    ActualSourceFileNameBuffer: PWideChar; var ActualSourceFileNameBufferLen: DWORD;
+    RequiredBufferLen: PDWORD; var SourceFileSize: DWORD;
+    var TargetFileSize: DWORD; var CompressionType: UINT): BOOL; stdcall;
+  TSetupGetFileCompressionInfoEx = TSetupGetFileCompressionInfoExA;
+  {$ENDIF WINXP}
+
   TSetupDecompressOrCopyFileA = function(const SourceFileName, TargetFileName: PAnsiChar;
     var CompressionType: UINT): DWORD; stdcall;
   TSetupDecompressOrCopyFileW = function(const SourceFileName, TargetFileName: PWideChar;
@@ -4560,55 +5207,55 @@ type
 
   TSetupGetSourceFileLocationA = function(InfHandle: HINF; InfContext: PInfContext;
     const FileName: PAnsiChar; var SourceId: UINT; ReturnBuffer: PAnsiChar;
-    ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetSourceFileLocationW = function(InfHandle: HINF; InfContext: PInfContext;
     const FileName: PWideChar; var SourceId: UINT; ReturnBuffer: PWideChar;
-    ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetSourceFileLocation = TSetupGetSourceFileLocationA;
 
   TSetupGetSourceFileSizeA = function(InfHandle: HINF; InfContext: PInfContext;
     const FileName: PAnsiChar; const Section: PAnsiChar; var FileSize: DWORD;
-    RoundingFactor: UINT): LongBool; stdcall;
+    RoundingFactor: UINT): BOOL; stdcall;
   TSetupGetSourceFileSizeW = function(InfHandle: HINF; InfContext: PInfContext;
     const FileName: PWideChar; const Section: PWideChar; var FileSize: DWORD;
-    RoundingFactor: UINT): LongBool; stdcall;
+    RoundingFactor: UINT): BOOL; stdcall;
   TSetupGetSourceFileSize = TSetupGetSourceFileSizeA;
 
   TSetupGetTargetPathA = function(InfHandle: HINF; InfContext: PInfContext;
     const Section: PAnsiChar; ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetTargetPathW = function(InfHandle: HINF; InfContext: PInfContext;
     const Section: PWideChar; ReturnBuffer: PWideChar; ReturnBufferSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetTargetPath = TSetupGetTargetPathA;
 
   TSetupSetSourceListA = function(Flags: DWORD; SourceList: PPASTR;
-    SourceCount: UINT): LongBool; stdcall;
+    SourceCount: UINT): BOOL; stdcall;
   TSetupSetSourceListW = function(Flags: DWORD; SourceList: PPWSTR;
-    SourceCount: UINT): LongBool; stdcall;
+    SourceCount: UINT): BOOL; stdcall;
   TSetupSetSourceList = function(Flags: DWORD; SourceList: PPSTR;
-    SourceCount: UINT): LongBool; stdcall;
+    SourceCount: UINT): BOOL; stdcall;
 
-  TSetupCancelTemporarySourceList = function: LongBool; stdcall;
+  TSetupCancelTemporarySourceList = function: BOOL; stdcall;
 
-  TSetupAddToSourceListA = function(Flags: DWORD; const Source: PAnsiChar): LongBool; stdcall;
-  TSetupAddToSourceListW = function(Flags: DWORD; const Source: PWideChar): LongBool; stdcall;
+  TSetupAddToSourceListA = function(Flags: DWORD; const Source: PAnsiChar): BOOL; stdcall;
+  TSetupAddToSourceListW = function(Flags: DWORD; const Source: PWideChar): BOOL; stdcall;
   TSetupAddToSourceList = TSetupAddToSourceListA;
 
-  TSetupRemoveFromSourceListA = function(Flags: DWORD; const Source: PAnsiChar): LongBool; stdcall;
-  TSetupRemoveFromSourceListW = function(Flags: DWORD; const Source: PWideChar): LongBool; stdcall;
+  TSetupRemoveFromSourceListA = function(Flags: DWORD; const Source: PAnsiChar): BOOL; stdcall;
+  TSetupRemoveFromSourceListW = function(Flags: DWORD; const Source: PWideChar): BOOL; stdcall;
   TSetupRemoveFromSourceList = TSetupRemoveFromSourceListA;
 
   TSetupQuerySourceListA = function(Flags: DWORD; var List: PPASTR;
-    var Count: UINT): LongBool; stdcall;
+    var Count: UINT): BOOL; stdcall;
   TSetupQuerySourceListW = function(Flags: DWORD; var List: PPWSTR;
-    var Count: UINT): LongBool; stdcall;
+    var Count: UINT): BOOL; stdcall;
   TSetupQuerySourceList = function(Flags: DWORD; var List: PPSTR;
-    var Count: UINT): LongBool; stdcall;
+    var Count: UINT): BOOL; stdcall;
 
-  TSetupFreeSourceListA = function(var List: PPWSTR; Count: UINT): LongBool; stdcall;
-  TSetupFreeSourceListW = function(var List: PPASTR; Count: UINT): LongBool; stdcall;
-  TSetupFreeSourceList = function(var List: PPSTR; Count: UINT): LongBool; stdcall;
+  TSetupFreeSourceListA = function(var List: PPWSTR; Count: UINT): BOOL; stdcall;
+  TSetupFreeSourceListW = function(var List: PPASTR; Count: UINT): BOOL; stdcall;
+  TSetupFreeSourceList = function(var List: PPSTR; Count: UINT): BOOL; stdcall;
 
   TSetupPromptForDiskA = function(hwndParent: HWND; const DialogTitle, DiskName,
     PathToSource, FileSought, TagFile: PAnsiChar; DiskPromptStyle: DWORD;
@@ -4644,132 +5291,139 @@ type
   TSetupBackupErrorW = function(hwndParent: HWND; const DialogTitle, BackupFile,
     TargetFile: PWideChar; Win32ErrorCode: UINT; Style: DWORD): UINT; stdcall;
   TSetupBackupError = TSetupBackupErrorA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
-  TSetupSetDirectoryIdA = function(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar): LongBool; stdcall;
-  TSetupSetDirectoryIdW = function(InfHandle: HINF; Id: DWORD; const Directory: PWideChar): LongBool; stdcall;
+  TSetupSetDirectoryIdA = function(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar): BOOL; stdcall;
+  TSetupSetDirectoryIdW = function(InfHandle: HINF; Id: DWORD; const Directory: PWideChar): BOOL; stdcall;
   TSetupSetDirectoryId = TSetupSetDirectoryIdA;
 
   TSetupSetDirectoryIdExA = function(InfHandle: HINF; Id: DWORD; const Directory: PAnsiChar;
-    Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): LongBool; stdcall;
+    Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): BOOL; stdcall;
   TSetupSetDirectoryIdExW = function(InfHandle: HINF; Id: DWORD; const Directory: PWideChar;
-    Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): LongBool; stdcall;
+    Flags: DWORD; Reserved1: DWORD; Reserved2: Pointer): BOOL; stdcall;
   TSetupSetDirectoryIdEx = TSetupSetDirectoryIdExA;
 
   TSetupGetSourceInfoA = function(InfHandle: HINF; SourceId, InfoDesired: UINT;
-    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PAnsiChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetSourceInfoW = function(InfHandle: HINF; SourceId, InfoDesired: UINT;
-    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBuffer: PWideChar; ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupGetSourceInfo = TSetupGetSourceInfoA;
 
   TSetupInstallFileA = function(InfHandle: HINF; InfContext: PInfContext;
     const SourceFile, SourcePathRoot, DestinationName: PAnsiChar; CopyStyle: DWORD;
-    CopyMsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+    CopyMsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
   TSetupInstallFileW = function(InfHandle: HINF; InfContext: PInfContext;
     const SourceFile, SourcePathRoot, DestinationName: PWideChar; CopyStyle: DWORD;
-    CopyMsgHandler: TSPFileCallbackW; Context: Pointer): LongBool; stdcall;
+    CopyMsgHandler: TSPFileCallbackW; Context: Pointer): BOOL; stdcall;
   TSetupInstallFile = TSetupInstallFileA;
 
   TSetupInstallFileExA = function(InfHandle: HINF; InfContext: PInfContext;
     const SourceFile, SourcePathRoot, DestinationName: PAnsiChar; CopyStyle: DWORD;
-    CopyMsgHandler: TSPFileCallbackA; Context: Pointer; var FileWasInUse: LongBool): LongBool; stdcall;
+    CopyMsgHandler: TSPFileCallbackA; Context: Pointer; var FileWasInUse: BOOL): BOOL; stdcall;
   TSetupInstallFileExW = function(InfHandle: HINF; InfContext: PInfContext;
     const SourceFile, SourcePathRoot, DestinationName: PWideChar; CopyStyle: DWORD;
-    CopyMsgHandler: TSPFileCallbackW; Context: Pointer; var FileWasInUse: LongBool): LongBool; stdcall;
+    CopyMsgHandler: TSPFileCallbackW; Context: Pointer; var FileWasInUse: BOOL): BOOL; stdcall;
   TSetupInstallFileEx = TSetupInstallFileExA;
 
   TSetupOpenFileQueue = function: HSPFILEQ; stdcall;
 
-  TSetupCloseFileQueue = function(QueueHandle: HSPFILEQ): LongBool; stdcall;
+  TSetupCloseFileQueue = function(QueueHandle: HSPFILEQ): BOOL; stdcall;
 
   {$IFDEF WIN2000}
   TSetupSetFileQueueAlternatePlatformA = function(QueueHandle: HSPFILEQ;
     AlternatePlatformInfo: PSPAltPlatformInfo;
-    const AlternateDefaultCatalogFile: PAnsiChar): LongBool; stdcall;
+    const AlternateDefaultCatalogFile: PAnsiChar): BOOL; stdcall;
   TSetupSetFileQueueAlternatePlatformW = function(QueueHandle: HSPFILEQ;
     AlternatePlatformInfo: PSPAltPlatformInfo;
-    const AlternateDefaultCatalogFile: PWideChar): LongBool; stdcall;
+    const AlternateDefaultCatalogFile: PWideChar): BOOL; stdcall;
   TSetupSetFileQueueAlternatePlatform = TSetupSetFileQueueAlternatePlatformA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
-  TSetupSetPlatformPathOverrideA = function(const Override_: PAnsiChar): LongBool; stdcall;
-  TSetupSetPlatformPathOverrideW = function(const Override_: PWideChar): LongBool; stdcall;
+  TSetupSetPlatformPathOverrideA = function(const Override_: PAnsiChar): BOOL; stdcall;
+  TSetupSetPlatformPathOverrideW = function(const Override_: PWideChar): BOOL; stdcall;
   TSetupSetPlatformPathOverride = TSetupSetPlatformPathOverrideA;
 
   TSetupQueueCopyA = function(QueueHandle: HSPFILEQ; const SourceRootPath, SourcePath,
     SourceFilename, SourceDescription, SourceTagfile, TargetDirectory,
-    TargetFilename: PAnsiChar; CopyStyle: DWORD): LongBool; stdcall;
+    TargetFilename: PAnsiChar; CopyStyle: DWORD): BOOL; stdcall;
   TSetupQueueCopyW = function(QueueHandle: HSPFILEQ; const SourceRootPath, SourcePath,
     SourceFilename, SourceDescription, SourceTagfile, TargetDirectory,
-    TargetFilename: PWideChar; CopyStyle: DWORD): LongBool; stdcall;
+    TargetFilename: PWideChar; CopyStyle: DWORD): BOOL; stdcall;
   TSetupQueueCopy = TSetupQueueCopyA;
 
   {$IFDEF WIN2000}
-  TSetupQueueCopyIndirectA = function(var CopyParams: TSPFileCopyParamsA): LongBool; stdcall;
-  TSetupQueueCopyIndirectW = function(var CopyParams: TSPFileCopyParamsW): LongBool; stdcall;
+  TSetupQueueCopyIndirectA = function(var CopyParams: TSPFileCopyParamsA): BOOL; stdcall;
+  TSetupQueueCopyIndirectW = function(var CopyParams: TSPFileCopyParamsW): BOOL; stdcall;
   TSetupQueueCopyIndirect = TSetupQueueCopyIndirectA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupQueueDefaultCopyA = function(QueueHandle: HSPFILEQ; InfHandle: HINF;
     const SourceRootPath, SourceFilename, TargetFilename: PAnsiChar;
-    CopyStyle: DWORD): LongBool; stdcall;
+    CopyStyle: DWORD): BOOL; stdcall;
   TSetupQueueDefaultCopyW = function(QueueHandle: HSPFILEQ; InfHandle: HINF;
     const SourceRootPath, SourceFilename, TargetFilename: PWideChar;
-    CopyStyle: DWORD): LongBool; stdcall;
+    CopyStyle: DWORD): BOOL; stdcall;
   TSetupQueueDefaultCopy = TSetupQueueDefaultCopyA;
 
   TSetupQueueCopySectionA = function(QueueHandle: HSPFILEQ; const SourceRootPath: PAnsiChar;
-    InfHandle: HINF; ListInfHandle: HINF; const Section: PAnsiChar; CopyStyle: DWORD): LongBool; stdcall;
+    InfHandle: HINF; ListInfHandle: HINF; const Section: PAnsiChar; CopyStyle: DWORD): BOOL; stdcall;
   TSetupQueueCopySectionW = function(QueueHandle: HSPFILEQ; const SourceRootPath: PWideChar;
-    InfHandle: HINF; ListInfHandle: HINF; const Section: PWideChar; CopyStyle: DWORD): LongBool; stdcall;
+    InfHandle: HINF; ListInfHandle: HINF; const Section: PWideChar; CopyStyle: DWORD): BOOL; stdcall;
   TSetupQueueCopySection = TSetupQueueCopySectionA;
 
-  TSetupQueueDeleteA = function(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PAnsiChar): LongBool; stdcall;
-  TSetupQueueDeleteW = function(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PWideChar): LongBool; stdcall;
+  TSetupQueueDeleteA = function(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PAnsiChar): BOOL; stdcall;
+  TSetupQueueDeleteW = function(QueueHandle: HSPFILEQ; const PathPart1, PathPart2: PWideChar): BOOL; stdcall;
   TSetupQueueDelete = TSetupQueueDeleteA;
 
   TSetupQueueDeleteSectionA = function(QueueHandle: HSPFILEQ; InfHandle: HINF;
-    ListInfHandle: HINF; const Section: PAnsiChar): LongBool; stdcall;
+    ListInfHandle: HINF; const Section: PAnsiChar): BOOL; stdcall;
   TSetupQueueDeleteSectionW = function(QueueHandle: HSPFILEQ; InfHandle: HINF;
-    ListInfHandle: HINF; const Section: PWideChar): LongBool; stdcall;
+    ListInfHandle: HINF; const Section: PWideChar): BOOL; stdcall;
   TSetupQueueDeleteSection = TSetupQueueDeleteSectionA;
 
   TSetupQueueRenameA = function(QueueHandle: HSPFILEQ; const SourcePath,
-    SourceFilename, TargetPath, TargetFilename: PAnsiChar): LongBool; stdcall;
+    SourceFilename, TargetPath, TargetFilename: PAnsiChar): BOOL; stdcall;
   TSetupQueueRenameW = function(QueueHandle: HSPFILEQ; const SourcePath,
-    SourceFilename, TargetPath, TargetFilename: PWideChar): LongBool; stdcall;
+    SourceFilename, TargetPath, TargetFilename: PWideChar): BOOL; stdcall;
   TSetupQueueRename = TSetupQueueRenameA;
 
   TSetupQueueRenameSectionA = function(QueueHandle: HSPFILEQ; InfHandle: HINF;
-    ListInfHandle: HINF; const Section: PAnsiChar): LongBool; stdcall;
+    ListInfHandle: HINF; const Section: PAnsiChar): BOOL; stdcall;
   TSetupQueueRenameSectionW = function(QueueHandle: HSPFILEQ; InfHandle: HINF;
-    ListInfHandle: HINF; const Section: PWideChar): LongBool; stdcall;
+    ListInfHandle: HINF; const Section: PWideChar): BOOL; stdcall;
   TSetupQueueRenameSection = TSetupQueueRenameSectionA;
 
   TSetupCommitFileQueueA = function(Owner: HWND; QueueHandle: HSPFILEQ;
-    MsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+    MsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
   TSetupCommitFileQueueW = function(Owner: HWND; QueueHandle: HSPFILEQ;
-    MsgHandler: TSPFileCallbackW; Context: Pointer): LongBool; stdcall;
+    MsgHandler: TSPFileCallbackW; Context: Pointer): BOOL; stdcall;
   TSetupCommitFileQueue = TSetupCommitFileQueueA;
 
   TSetupScanFileQueueA = function(FileQueue: HSPFILEQ; Flags: DWORD; Window: HWND;
-    CallbackRoutine: TSPFileCallbackA; CallbackContext: Pointer; var Result: DWORD): LongBool; stdcall;
+    CallbackRoutine: TSPFileCallbackA; CallbackContext: Pointer; var Result: DWORD): BOOL; stdcall;
   TSetupScanFileQueueW = function(FileQueue: HSPFILEQ; Flags: DWORD; Window: HWND;
-    CallbackRoutine: TSPFileCallbackW; CallbackContext: Pointer; var Result: DWORD): LongBool; stdcall;
+    CallbackRoutine: TSPFileCallbackW; CallbackContext: Pointer; var Result: DWORD): BOOL; stdcall;
   TSetupScanFileQueue = TSetupScanFileQueueA;
 
   TSetupCopyOEMInfA = function(const SourceInfFileName, OEMSourceMediaLocation: PAnsiChar;
     OEMSourceMediaType, CopyStyle: DWORD; DestinationInfFileName: PAnsiChar;
     DestinationInfFileNameSize: DWORD; RequiredSize: PDWORD;
-    DestinationInfFileNameComponent: PPASTR): LongBool; stdcall;
+    DestinationInfFileNameComponent: PPASTR): BOOL; stdcall;
   TSetupCopyOEMInfW = function(const SourceInfFileName, OEMSourceMediaLocation: PWideChar;
     OEMSourceMediaType, CopyStyle: DWORD; DestinationInfFileName: PWideChar;
     DestinationInfFileNameSize: DWORD; RequiredSize: PDWORD;
-    DestinationInfFileNameComponent: PPWSTR): LongBool; stdcall;
+    DestinationInfFileNameComponent: PPWSTR): BOOL; stdcall;
   TSetupCopyOEMInf = function(const SourceInfFileName, OEMSourceMediaLocation: PChar;
     OEMSourceMediaType, CopyStyle: DWORD; DestinationInfFileName: PChar;
     DestinationInfFileNameSize: DWORD; RequiredSize: PDWORD;
-    DestinationInfFileNameComponent: PPSTR): LongBool; stdcall;
+    DestinationInfFileNameComponent: PPSTR): BOOL; stdcall;
+
+  {$IFDEF WINXP}
+  TSetupUninstallOEMInfA = function(const InfFileName: PAnsiChar; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+  TSetupUninstallOEMInfW = function(const InfFileName: PWideChar; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+  TSetupUninstallOEMInf = function(const InfFileName: PAnsiChar; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+  TSetupUninstallNewlyCopiedInfs = function(FileQueue: HSPFILEQ; Flags: DWORD; Reserved: Pointer): BOOL; stdcall;
+  {$ENDIF WINXP}
 
 //
 // Disk space list APIs
@@ -4786,68 +5440,68 @@ type
     Reserved2: DWORD; Flags: UINT): HDSKSPC; stdcall;
   TSetupDuplicateDiskSpaceList = TSetupDuplicateDiskSpaceListA;
 
-  TSetupDestroyDiskSpaceList = function(DiskSpace: HDSKSPC): LongBool; stdcall;
+  TSetupDestroyDiskSpaceList = function(DiskSpace: HDSKSPC): BOOL; stdcall;
 
   TSetupQueryDrivesInDiskSpaceListA = function(DiskSpace: HDSKSPC; ReturnBuffer: PAnsiChar;
-    ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryDrivesInDiskSpaceListW = function(DiskSpace: HDSKSPC; ReturnBuffer: PWideChar;
-    ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryDrivesInDiskSpaceList = TSetupQueryDrivesInDiskSpaceListA;
 
   TSetupQuerySpaceRequiredOnDriveA = function(DiskSpace: HDSKSPC; const DriveSpec: PAnsiChar;
-    var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupQuerySpaceRequiredOnDriveW = function(DiskSpace: HDSKSPC; const DriveSpec: PWideChar;
-    var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    var SpaceRequired: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupQuerySpaceRequiredOnDrive = TSetupQuerySpaceRequiredOnDriveA;
 
   TSetupAdjustDiskSpaceListA = function(DiskSpace: HDSKSPC; const DriveRoot: PAnsiChar;
-    Amount: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Amount: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAdjustDiskSpaceListW = function(DiskSpace: HDSKSPC; const DriveRoot: PWideChar;
-    Amount: Int64; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Amount: Int64; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAdjustDiskSpaceList = TSetupAdjustDiskSpaceListA;
 
   TSetupAddToDiskSpaceListA = function(DiskSpace: HDSKSPC; const TargetFilespec: PAnsiChar;
-    FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAddToDiskSpaceListW = function(DiskSpace: HDSKSPC; const TargetFilespec: PWideChar;
-    FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    FileSize: Int64; Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAddToDiskSpaceList = TSetupAddToDiskSpaceListA;
 
   TSetupAddSectionToDiskSpaceListA = function(DiskSpace: HDSKSPC; InfHandle: HINF;
     ListInfHandle: HINF; const SectionName: PAnsiChar; Operation: UINT;
-    Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAddSectionToDiskSpaceListW = function(DiskSpace: HDSKSPC; InfHandle: HINF;
     ListInfHandle: HINF; const SectionName: PWideChar; Operation: UINT;
-    Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAddSectionToDiskSpaceList = TSetupAddSectionToDiskSpaceListA;
 
   TSetupAddInstallSectionToDiskSpaceListA = function( DiskSpace: HDSKSPC;
     InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PAnsiChar;
-    Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAddInstallSectionToDiskSpaceListW = function( DiskSpace: HDSKSPC;
     InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PWideChar;
-    Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupAddInstallSectionToDiskSpaceList = TSetupAddInstallSectionToDiskSpaceListA;
 
   TSetupRemoveFromDiskSpaceListA = function(DiskSpace: HDSKSPC; const TargetFilespec: PAnsiChar;
-    Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupRemoveFromDiskSpaceListW = function(DiskSpace: HDSKSPC; const TargetFilespec: PWideChar;
-    Operation: UINT; Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Operation: UINT; Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupRemoveFromDiskSpaceList = TSetupRemoveFromDiskSpaceListA;
 
   TSetupRemoveSectionFromDiskSpaceListA = function(DiskSpace: HDSKSPC; InfHandle: HINF;
     ListInfHandle: HINF; const SectionName: PAnsiChar; Operation: UINT; Reserved1: Pointer;
-    Reserved2: UINT): LongBool; stdcall;
+    Reserved2: UINT): BOOL; stdcall;
   TSetupRemoveSectionFromDiskSpaceListW = function(DiskSpace: HDSKSPC; InfHandle: HINF;
     ListInfHandle: HINF; const SectionName: PWideChar; Operation: UINT; Reserved1: Pointer;
-    Reserved2: UINT): LongBool; stdcall;
+    Reserved2: UINT): BOOL; stdcall;
   TSetupRemoveSectionFromDiskSpaceList = TSetupRemoveSectionFromDiskSpaceListA;
 
   TSetupRemoveInstallSectionFromDiskSpaceListA = function(DiskSpace: HDSKSPC;
     InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PAnsiChar;
-    Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupRemoveInstallSectionFromDiskSpaceListW = function(DiskSpace: HDSKSPC;
     InfHandle: HINF; LayoutInfHandle: HINF; const SectionName: PWideChar;
-    Reserved1: Pointer; Reserved2: UINT): LongBool; stdcall;
+    Reserved1: Pointer; Reserved2: UINT): BOOL; stdcall;
   TSetupRemoveInstallSectionFromDiskSpaceList = TSetupRemoveInstallSectionFromDiskSpaceListA;
 
 //
@@ -4855,12 +5509,12 @@ type
 //
 
   TSetupIterateCabinetA = function(const CabinetFile: PAnsiChar; Reserved: DWORD;
-    MsgHandler: TSPFileCallbackA; Context: Pointer): LongBool; stdcall;
+    MsgHandler: TSPFileCallbackA; Context: Pointer): BOOL; stdcall;
   TSetupIterateCabinetW = function(const CabinetFile: PWideChar; Reserved: DWORD;
-    MsgHandler: TSPFileCallbackW; Context: Pointer): LongBool; stdcall;
+    MsgHandler: TSPFileCallbackW; Context: Pointer): BOOL; stdcall;
   TSetupIterateCabinet = TSetupIterateCabinetA;
 
-  TSetupPromptReboot = function(FileQueue: HSPFILEQ; Owner: HWND; ScanOnly: LongBool): Integer; stdcall;
+  TSetupPromptReboot = function(FileQueue: HSPFILEQ; Owner: HWND; ScanOnly: BOOL): Integer; stdcall;
 
   TSetupInitDefaultQueueCallback = function(OwnerWindow: HWND): Pointer; stdcall;
 
@@ -4885,34 +5539,43 @@ type
   TSetupInstallFromInfSectionA = function(Owner: HWND; InfHandle: HINF;
     const SectionName: PAnsiChar; Flags: UINT; RelativeKeyRoot: HKEY;
     const SourceRootPath: PAnsiChar; CopyFlags: UINT; MsgHandler: TSPFileCallbackA;
-    Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): LongBool; stdcall;
+    Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): BOOL; stdcall;
   TSetupInstallFromInfSectionW = function(Owner: HWND; InfHandle: HINF;
     const SectionName: PWideChar; Flags: UINT; RelativeKeyRoot: HKEY;
     const SourceRootPath: PWideChar; CopyFlags: UINT; MsgHandler: TSPFileCallbackW;
-    Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): LongBool; stdcall;
+    Context: Pointer; DeviceInfoSet: HDEVINFO; DeviceIn: PSPDevInfoData): BOOL; stdcall;
   TSetupInstallFromInfSection = TSetupInstallFromInfSectionA;
 
   TSetupInstallFilesFromInfSectionA = function(InfHandle: HINF; LayoutInfHandle: HINF;
     FileQueue: HSPFILEQ; const SectionName, SourceRootPath: PAnsiChar;
-    CopyFlags: UINT): LongBool; stdcall;
+    CopyFlags: UINT): BOOL; stdcall;
   TSetupInstallFilesFromInfSectionW = function(InfHandle: HINF; LayoutInfHandle: HINF;
     FileQueue: HSPFILEQ; const SectionName, SourceRootPath: PWideChar;
-    CopyFlags: UINT): LongBool; stdcall;
+    CopyFlags: UINT): BOOL; stdcall;
   TSetupInstallFilesFromInfSection = TSetupInstallFilesFromInfSectionA;
 
   TSetupInstallServicesFromInfSectionA = function(InfHandle: HINF;
-    const SectionName: PAnsiChar; Flags: DWORD): LongBool; stdcall;
+    const SectionName: PAnsiChar; Flags: DWORD): BOOL; stdcall;
   TSetupInstallServicesFromInfSectionW = function(InfHandle: HINF;
-    const SectionName: PWideChar; Flags: DWORD): LongBool; stdcall;
+    const SectionName: PWideChar; Flags: DWORD): BOOL; stdcall;
   TSetupInstallServicesFromInfSection = TSetupInstallServicesFromInfSectionA;
 
   TSetupInstallServicesFromInfSectionExA = function(InfHandle: HINF;
     const SectionName: PAnsiChar; Flags: DWORD; DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): LongBool; stdcall;
+    DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
   TSetupInstallServicesFromInfSectionExW = function(InfHandle: HINF;
     const SectionName: PWideChar; Flags: DWORD; DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): LongBool; stdcall;
+    DeviceInfoData: TSPDevInfoData; Reserved1, Reserved2: Pointer): BOOL; stdcall;
   TSetupInstallServicesFromInfSectionEx = TSetupInstallServicesFromInfSectionExA;
+
+  {$IFDEF WINXP}
+  TInstallHinfSectionA = procedure(Window: HWND; ModuleHandle: HINSTANCE;
+    CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+  TInstallHinfSectionW = procedure(Window: HWND; ModuleHandle: HINSTANCE;
+    CommandLine: PWideChar; ShowCommand: Integer); stdcall;
+  TInstallHinfSection = procedure (Window: HWND; ModuleHandle: HINSTANCE;
+    CommandLine: PAnsiChar; ShowCommand: Integer); stdcall;
+  {$ENDIF WINXP}
 
 //
 // Define handle type for Setup file log.
@@ -4926,38 +5589,38 @@ type
   TSetupInitializeFileLogW = function(const LogFileName: PWideChar; Flags: DWORD): HSPFILELOG; stdcall;
   TSetupInitializeFileLog = TSetupInitializeFileLogA;
 
-  TSetupTerminateFileLog = function(FileLogHandle: HSPFILELOG): LongBool; stdcall;
+  TSetupTerminateFileLog = function(FileLogHandle: HSPFILELOG): BOOL; stdcall;
 
   TSetupLogFileA = function(FileLogHandle: HSPFILELOG; const LogSectionName,
     SourceFilename, TargetFilename: PAnsiChar; Checksum: DWORD; DiskTagfile,
-    DiskDescription, OtherInfo: PAnsiChar; Flags: DWORD): LongBool; stdcall;
+    DiskDescription, OtherInfo: PAnsiChar; Flags: DWORD): BOOL; stdcall;
   TSetupLogFileW = function(FileLogHandle: HSPFILELOG; const LogSectionName,
     SourceFilename, TargetFilename: PWideChar; Checksum: DWORD; DiskTagfile,
-    DiskDescription, OtherInfo: PWideChar; Flags: DWORD): LongBool; stdcall;
+    DiskDescription, OtherInfo: PWideChar; Flags: DWORD): BOOL; stdcall;
   TSetupLogFile = TSetupLogFileA;
 
   TSetupRemoveFileLogEntryA = function(FileLogHandle: HSPFILELOG;
-    const LogSectionName: PAnsiChar; const TargetFilename: PAnsiChar): LongBool; stdcall;
+    const LogSectionName: PAnsiChar; const TargetFilename: PAnsiChar): BOOL; stdcall;
   TSetupRemoveFileLogEntryW = function(FileLogHandle: HSPFILELOG;
-    const LogSectionName: PWideChar; const TargetFilename: PWideChar): LongBool; stdcall;
+    const LogSectionName: PWideChar; const TargetFilename: PWideChar): BOOL; stdcall;
   TSetupRemoveFileLogEntry = TSetupRemoveFileLogEntryA;
 
   TSetupQueryFileLogA = function(FileLogHandle: HSPFILELOG; const LogSectionName,
     TargetFilename: PAnsiChar; DesiredInfo: SETUPFILELOGINFO; DataOut: PAnsiChar;
-    ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryFileLogW = function(FileLogHandle: HSPFILELOG; const LogSectionName,
     TargetFilename: PWideChar; DesiredInfo: SETUPFILELOGINFO; DataOut: PWideChar;
-    ReturnBufferSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ReturnBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupQueryFileLog = TSetupQueryFileLogA;
 
 //
 // Text logging APIs
 //
 
-  TSetupOpenLog = function(Erase: LongBool): LongBool; stdcall;
+  TSetupOpenLog = function(Erase: BOOL): BOOL; stdcall;
 
-  TSetupLogErrorA = function(const MessageString: PAnsiChar; Severity: LOGSEVERITY): LongBool; stdcall;
-  TSetupLogErrorW = function(const MessageString: PWideChar; Severity: LOGSEVERITY): LongBool; stdcall;
+  TSetupLogErrorA = function(const MessageString: PAnsiChar; Severity: LOGSEVERITY): BOOL; stdcall;
+  TSetupLogErrorW = function(const MessageString: PWideChar; Severity: LOGSEVERITY): BOOL; stdcall;
   TSetupLogError = TSetupLogErrorA;
 
   TSetupCloseLog = procedure; stdcall;
@@ -4968,11 +5631,23 @@ type
 
   {$IFDEF WIN2000}
   TSetupGetBackupInformationA = function(QueueHandle: HSPFILEQ;
-    var BackupParams: TSPBackupQueueParamsA): LongBool; stdcall;
+    var BackupParams: TSPBackupQueueParamsA): BOOL; stdcall;
   TSetupGetBackupInformationW = function(QueueHandle: HSPFILEQ;
-    var BackupParams: TSPBackupQueueParamsW): LongBool; stdcall;
+    var BackupParams: TSPBackupQueueParamsW): BOOL; stdcall;
   TSetupGetBackupInformation = TSetupGetBackupInformationA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
+
+  {$IFDEF WINXP}
+  TSetupPrepareQueueForRestoreA = function(QueueHandle: HSPFILEQ;
+    BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+  TSetupPrepareQueueForRestoreW = function(QueueHandle: HSPFILEQ;
+    BackupPath: PWideChar; RestoreFlags: DWORD): BOOL; stdcall;
+  TSetupPrepareQueueForRestore = function(QueueHandle: HSPFILEQ;
+    BackupPath: PAnsiChar; RestoreFlags: DWORD): BOOL; stdcall;
+
+  TSetupSetNonInteractiveMode = function(NonInteractiveFlag: BOOL): BOOL; stdcall;
+  TSetupGetNonInteractiveMode = function: BOOL; stdcall;
+  {$ENDIF WINXP}
 
 //
 // Device Installer APIs
@@ -4987,51 +5662,51 @@ type
   TSetupDiCreateDeviceInfoListEx = TSetupDiCreateDeviceInfoListExA;
 
   TSetupDiGetDeviceInfoListClass = function(DeviceInfoSet: HDEVINFO;
-    var ClassGuid: TGUID): LongBool; stdcall;
+    var ClassGuid: TGUID): BOOL; stdcall;
 
   TSetupDiGetDeviceInfoListDetailA = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoSetDetailData: TSPDevInfoListDetailDataA): LongBool; stdcall;
+    var DeviceInfoSetDetailData: TSPDevInfoListDetailDataA): BOOL; stdcall;
   TSetupDiGetDeviceInfoListDetailW = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoSetDetailData: TSPDevInfoListDetailDataW): LongBool; stdcall;
+    var DeviceInfoSetDetailData: TSPDevInfoListDetailDataW): BOOL; stdcall;
   TSetupDiGetDeviceInfoListDetail = TSetupDiGetDeviceInfoListDetailA;
 
   TSetupDiCreateDeviceInfoA = function(DeviceInfoSet: HDEVINFO; const DeviceName: PAnsiChar;
     var ClassGuid: TGUID; const DeviceDescription: PAnsiChar; hwndParent: HWND;
-    CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
   TSetupDiCreateDeviceInfoW = function(DeviceInfoSet: HDEVINFO; const DeviceName: PWideChar;
     var ClassGuid: TGUID; const DeviceDescription: PWideChar; hwndParent: HWND;
-    CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    CreationFlags: DWORD; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
   TSetupDiCreateDeviceInfo = TSetupDiCreateDeviceInfoA;
 
   TSetupDiOpenDeviceInfoA = function(DeviceInfoSet: HDEVINFO;
     const DeviceInstanceId: PAnsiChar; hwndParent: HWND; OpenFlags: DWORD;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
   TSetupDiOpenDeviceInfoW = function(DeviceInfoSet: HDEVINFO;
     const DeviceInstanceId: PWideChar; hwndParent: HWND; OpenFlags: DWORD;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
   TSetupDiOpenDeviceInfo = TSetupDiOpenDeviceInfoA;
 
   TSetupDiGetDeviceInstanceIdA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; DeviceInstanceId: PAnsiChar;
-    DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetDeviceInstanceIdW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; DeviceInstanceId: PWideChar;
-    DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    DeviceInstanceIdSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetDeviceInstanceId = TSetupDiGetDeviceInstanceIdA;
 
   TSetupDiDeleteDeviceInfo = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
   TSetupDiEnumDeviceInfo = function(DeviceInfoSet: HDEVINFO;
-    MemberIndex: DWORD; var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    MemberIndex: DWORD; var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
-  TSetupDiDestroyDeviceInfoList = function(DeviceInfoSet: HDEVINFO): LongBool; stdcall;
+  TSetupDiDestroyDeviceInfoList = function(DeviceInfoSet: HDEVINFO): BOOL; stdcall;
 
   TSetupDiEnumDeviceInterfaces = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; const InterfaceClassGuid: TGUID;
-    MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
 //
 // Backward compatibility--do not use
@@ -5039,16 +5714,16 @@ type
 
   TSetupDiEnumInterfaceDevice = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var InterfaceClassGuid: TGUID;
-    MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    MemberIndex: DWORD; var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
   TSetupDiCreateDeviceInterfaceA = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
     const ReferenceString: PAnsiChar; CreationFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiCreateDeviceInterfaceW = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
     const ReferenceString: PWideChar; CreationFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiCreateDeviceInterface = TSetupDiCreateDeviceInterfaceA;
 
 //
@@ -5058,19 +5733,19 @@ type
   TSetupDiCreateInterfaceDeviceA = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
     const ReferenceString: PAnsiChar; CreationFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiCreateInterfaceDeviceW = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; var InterfaceClassGuid: TGUID;
     const ReferenceString: PWideChar; CreationFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiCreateInterfaceDevice = TSetupDiCreateInterfaceDeviceA;
 
   TSetupDiOpenDeviceInterfaceA = function(DeviceInfoSet: HDEVINFO;
     const DevicePath: PAnsiChar; OpenFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiOpenDeviceInterfaceW = function(DeviceInfoSet: HDEVINFO;
     const DevicePath: PWideChar; OpenFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiOpenDeviceInterface = TSetupDiOpenDeviceInterfaceA;
 
 //
@@ -5079,15 +5754,15 @@ type
 
   TSetupDiOpenInterfaceDeviceA = function(DeviceInfoSet: HDEVINFO;
     const DevicePath: PAnsiChar; OpenFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiOpenInterfaceDeviceW = function(DeviceInfoSet: HDEVINFO;
     const DevicePath: PWideChar; OpenFlags: DWORD;
-    DeviceInterfaceData: PSPDeviceInterfaceData): LongBool; stdcall;
+    DeviceInterfaceData: PSPDeviceInterfaceData): BOOL; stdcall;
   TSetupDiOpenInterfaceDevice = TSetupDiOpenInterfaceDeviceA;
 
   TSetupDiGetDeviceInterfaceAlias = function(DeviceInfoSet: HDEVINFO;
     var DeviceInterfaceData: TSPDeviceInterfaceData; var AliasInterfaceClassGuid: TGUID;
-    var AliasDeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    var AliasDeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
 //
 // Backward compatibility--do not use.
@@ -5096,38 +5771,38 @@ type
   TSetupDiGetInterfaceDeviceAlias = function(DeviceInfoSet: HDEVINFO;
     var DeviceInterfaceData: TSPDeviceInterfaceData;
     var AliasInterfaceClassGuid: TGUID;
-    var AliasDeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    var AliasDeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
   TSetupDiDeleteDeviceInterfaceData = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
 //
 // Backward compatibility--do not use.
 //
 
   TSetupDiDeleteInterfaceDeviceData = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
   TSetupDiRemoveDeviceInterface = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
 //
 // Backward compatibility--do not use.
 //
 
   TSetupDiRemoveInterfaceDevice = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInterfaceData: TSPDeviceInterfaceData): LongBool; stdcall;
+    var DeviceInterfaceData: TSPDeviceInterfaceData): BOOL; stdcall;
 
   TSetupDiGetDeviceInterfaceDetailA = function(DeviceInfoSet: HDEVINFO;
     DeviceInterfaceData: PSPDeviceInterfaceData;
     DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataA;
     DeviceInterfaceDetailDataSize: DWORD; var RequiredSize: DWORD;
-    Device: PSPDevInfoData): LongBool; stdcall;
+    Device: PSPDevInfoData): BOOL; stdcall;
   TSetupDiGetDeviceInterfaceDetailW = function(DeviceInfoSet: HDEVINFO;
     DeviceInterfaceData: PSPDeviceInterfaceData;
     DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataW;
     DeviceInterfaceDetailDataSize: DWORD; var RequiredSize: DWORD;
-    Device: PSPDevInfoData): LongBool; stdcall;
+    Device: PSPDevInfoData): BOOL; stdcall;
   TSetupDiGetDeviceInterfaceDetail = TSetupDiGetDeviceInterfaceDetailA;
 
 //
@@ -5138,12 +5813,12 @@ type
     DeviceInterfaceData: PSPDeviceInterfaceData;
     DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataA;
     DeviceInterfaceDetailDataSize: DWORD; RequiredSize: PDWORD;
-    Device: PSPDevInfoData): LongBool; stdcall;
+    Device: PSPDevInfoData): BOOL; stdcall;
   TSetupDiGetInterfaceDeviceDetailW = function(DeviceInfoSet: HDEVINFO;
     DeviceInterfaceData: PSPDeviceInterfaceData;
     DeviceInterfaceDetailData: PSPDeviceInterfaceDetailDataW;
     DeviceInterfaceDetailDataSize: DWORD; RequiredSize: PDWORD;
-    Device: PSPDevInfoData): LongBool; stdcall;
+    Device: PSPDevInfoData): BOOL; stdcall;
   TSetupDiGetInterfaceDeviceDetail = TSetupDiGetInterfaceDeviceDetailA;
 
 //
@@ -5151,14 +5826,20 @@ type
 //
 
   TSetupDiInstallDeviceInterfaces = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
 //
 // Backward compatibility--do not use.
 //
 
   TSetupDiInstallInterfaceDevices = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
+
+  {$IFDEF WINXP}
+  TSetupDiSetDeviceInterfaceDefault = function(DeviceInfoSet: HDEVINFO
+    var DeviceInterfaceData: TSPDeviceInterfaceData; Flags: DWORD;
+    Reserved: Pointer): BOOL; stdcall;
+  {$ENDIF WINXP}
 
 //
 // Default install handler for DIF_REGISTERDEVICE
@@ -5166,45 +5847,45 @@ type
 
   TSetupDiRegisterDeviceInfo = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; Flags: DWORD; CompareProc: TSPDetSigCmpProc;
-    CompareContext: Pointer; DupDeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    CompareContext: Pointer; DupDeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
   TSetupDiBuildDriverInfoList = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData; DriverType: DWORD): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData; DriverType: DWORD): BOOL; stdcall;
 
-  TSetupDiCancelDriverInfoSearch = function(DeviceInfoSet: HDEVINFO): LongBool; stdcall;
+  TSetupDiCancelDriverInfoSearch = function(DeviceInfoSet: HDEVINFO): BOOL; stdcall;
 
   TSetupDiEnumDriverInfoA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; DriverType: DWORD; MemberIndex: DWORD;
-    var DriverInfoData: TSPDrvInfoDataA): LongBool; stdcall;
+    var DriverInfoData: TSPDrvInfoDataA): BOOL; stdcall;
   TSetupDiEnumDriverInfoW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; DriverType: DWORD; MemberIndex: DWORD;
-    var DriverInfoData: TSPDrvInfoDataW): LongBool; stdcall;
+    var DriverInfoData: TSPDrvInfoDataW): BOOL; stdcall;
   TSetupDiEnumDriverInfo = TSetupDiEnumDriverInfoA;
 
   TSetupDiGetSelectedDriverA = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA): BOOL; stdcall;
   TSetupDiGetSelectedDriverW = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW): BOOL; stdcall;
   TSetupDiGetSelectedDriver = TSetupDiGetSelectedDriverA;
 
   TSetupDiSetSelectedDriverA = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataA): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataA): BOOL; stdcall;
   TSetupDiSetSelectedDriverW = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataW): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData; DriverInfoData: PSPDrvInfoDataW): BOOL; stdcall;
   TSetupDiSetSelectedDriver = TSetupDiSetSelectedDriverA;
 
   TSetupDiGetDriverInfoDetailA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
     DriverInfoDetailData: PSPDrvInfoDetailDataA; DriverInfoDetailDataSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetDriverInfoDetailW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW;
     DriverInfoDetailData: PSPDrvInfoDetailDataW; DriverInfoDetailDataSize: DWORD;
-    RequiredSize: PDWORD): LongBool; stdcall;
+    RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetDriverInfoDetail = TSetupDiGetDriverInfoDetailA;
 
   TSetupDiDestroyDriverInfoList = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData; DriverType: DWORD): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData; DriverType: DWORD): BOOL; stdcall;
 
   TSetupDiGetClassDevsA = function(ClassGuid: PGUID; const Enumerator: PAnsiChar;
     hwndParent: HWND; Flags: DWORD): HDEVINFO; stdcall;
@@ -5221,110 +5902,110 @@ type
   TSetupDiGetClassDevsEx = TSetupDiGetClassDevsExA;
 
   TSetupDiGetINFClassA = function(const InfName: PAnsiChar; var ClassGuid: TGUID;
-    ClassName: PAnsiChar; ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassName: PAnsiChar; ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetINFClassW = function(const InfName: PWideChar; var ClassGuid: TGUID;
-    ClassName: PWideChar; ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassName: PWideChar; ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetINFClass = TSetupDiGetINFClassA;
 
   TSetupDiBuildClassInfoList = function(Flags: DWORD; ClassGuidList: PGUID;
-    ClassGuidListSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+    ClassGuidListSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
 
   TSetupDiBuildClassInfoListExA = function(Flags: DWORD; ClassGuidList: PGUID;
     ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PAnsiChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiBuildClassInfoListExW = function(Flags: DWORD; ClassGuidList: PGUID;
     ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PWideChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiBuildClassInfoListEx = TSetupDiBuildClassInfoListExA;
 
   TSetupDiGetClassDescriptionA = function(var ClassGuid: TGUID; ClassDescription: PAnsiChar;
-    ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+    ClassDescriptionSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
   TSetupDiGetClassDescriptionW = function(var ClassGuid: TGUID; ClassDescription: PWideChar;
-    ClassDescriptionSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+    ClassDescriptionSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
   TSetupDiGetClassDescription = TSetupDiGetClassDescriptionA;
 
   TSetupDiGetClassDescriptionExA = function(var ClassGuid: TGUID;
     ClassDescription: PAnsiChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
-    const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetClassDescriptionExW = function(var ClassGuid: TGUID;
     ClassDescription: PWideChar; ClassDescriptionSize: DWORD; var RequiredSize: DWORD;
-    const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetClassDescriptionEx = TSetupDiGetClassDescriptionExA;
 
   TSetupDiCallClassInstaller = function(InstallFunction: DI_FUNCTION;
-    DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_SELECTDEVICE
 //
 
   TSetupDiSelectDevice = function(DeviceInfoSet:  HDEVINFO;
-    DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_SELECTBESTCOMPATDRV
 //
 
   TSetupDiSelectBestCompatDrv = function(DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_INSTALLDEVICE
 //
   TSetupDiInstallDevice = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_INSTALLDEVICEFILES
 //
 
   TSetupDiInstallDriverFiles = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_REGISTER_COINSTALLERS
 //
   TSetupDiRegisterCoDeviceInstallers = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_REMOVE
 //
 
   TSetupDiRemoveDevice = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_UNREMOVE
 //
 
   TSetupDiUnremoveDevice = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_MOVEDEVICE
 //
   TSetupDiMoveDuplicateDevice = function(DeviceInfoSet: HDEVINFO;
-    var DestinationDeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DestinationDeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
 //
 // Default install handler for DIF_PROPERTYCHANGE
 //
   TSetupDiChangeState = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
   TSetupDiInstallClassA = function(hwndParent: HWND; const InfFileName: PAnsiChar;
-    Flags: DWORD; FileQueue: HSPFILEQ): LongBool; stdcall;
+    Flags: DWORD; FileQueue: HSPFILEQ): BOOL; stdcall;
   TSetupDiInstallClassW = function(hwndParent: HWND; const InfFileName: PWideChar;
-    Flags: DWORD; FileQueue: HSPFILEQ): LongBool; stdcall;
+    Flags: DWORD; FileQueue: HSPFILEQ): BOOL; stdcall;
   TSetupDiInstallClass = TSetupDiInstallClassA;
 
   TSetupDiInstallClassExA = function(hwndParent: HWND; const InfFileName: PAnsiChar;
     Flags: DWORD; FileQueue: HSPFILEQ; InterfaceClassGuid: PGUID; Reserved1,
-    Reserved2: Pointer): LongBool; stdcall;
+    Reserved2: Pointer): BOOL; stdcall;
   TSetupDiInstallClassExW = function(hwndParent: HWND; const InfFileName: PWideChar;
     Flags: DWORD; FileQueue: HSPFILEQ; InterfaceClassGuid: PGUID; Reserved1,
-    Reserved2: Pointer): LongBool; stdcall;
+    Reserved2: Pointer): BOOL; stdcall;
   TSetupDiInstallClassEx = TSetupDiInstallClassExA;
 
   TSetupDiOpenClassRegKey = function(ClassGuid: PGUID; samDesired: REGSAM): HKEY; stdcall;
@@ -5368,14 +6049,14 @@ type
     samDesired: REGSAM): HKEY; stdcall;
 
   TSetupDiDeleteDeviceInterfaceRegKey = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): LongBool; stdcall;
+    var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): BOOL; stdcall;
 
 //
 // Backward compatibility--do not use.
 //
 
   TSetupDiDeleteInterfaceDeviceRegKey = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): LongBool; stdcall;
+    var DeviceInterfaceData: TSPDeviceInterfaceData; Reserved: DWORD): BOOL; stdcall;
 
   TSetupDiCreateDevRegKeyA = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; Scope, HwProfile, KeyType: DWORD;
@@ -5393,188 +6074,188 @@ type
 
   TSetupDiDeleteDevRegKey = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; Scope, HwProfile,
-    KeyType: DWORD): LongBool; stdcall;
+    KeyType: DWORD): BOOL; stdcall;
 
   TSetupDiGetHwProfileList = function(HwProfileList: PDWORD; HwProfileListSize: DWORD;
-    var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD): LongBool; stdcall;
+    var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD): BOOL; stdcall;
 
   TSetupDiGetHwProfileListExA = function(HwProfileList: PDWORD;
     HwProfileListSize: DWORD; var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD;
-    const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetHwProfileListExW = function(HwProfileList: PDWORD;
     HwProfileListSize: DWORD; var RequiredSize: DWORD; CurrentlyActiveIndex: PDWORD;
-    const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetHwProfileListEx = TSetupDiGetHwProfileListExA;
 
   TSetupDiGetDeviceRegistryPropertyA = function(DeviceInfoSet: HDEVINFO;
     const DeviceInfoData: TSPDevInfoData; Property_: DWORD;
     var PropertyRegDataType: DWORD; PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-    var RequiredSize: DWORD): LongBool; stdcall;
+    var RequiredSize: DWORD): BOOL; stdcall;
   TSetupDiGetDeviceRegistryPropertyW = function(DeviceInfoSet: HDEVINFO;
     const DeviceInfoData: TSPDevInfoData; Property_: DWORD;
     var PropertyRegDataType: DWORD; PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-    var RequiredSize: DWORD): LongBool; stdcall;
+    var RequiredSize: DWORD): BOOL; stdcall;
   TSetupDiGetDeviceRegistryProperty = TSetupDiGetDeviceRegistryPropertyA;
 
   {$IFDEF WIN2000}
   TSetupDiGetClassRegistryPropertyA = function(var ClassGuid: TGUID;
     Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
     PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PAnsiChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetClassRegistryPropertyW = function(var ClassGuid: TGUID;
     Property_: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PBYTE;
     PropertyBufferSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetClassRegistryProperty = TSetupDiGetClassRegistryPropertyA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupDiSetDeviceRegistryPropertyA = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; Property_: DWORD;
-    const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): LongBool; stdcall;
+    const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): BOOL; stdcall;
   TSetupDiSetDeviceRegistryPropertyW = function(DeviceInfoSet: HDEVINFO;
     var DeviceInfoData: TSPDevInfoData; Property_: DWORD;
-    const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): LongBool; stdcall;
+    const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD): BOOL; stdcall;
   TSetupDiSetDeviceRegistryProperty = TSetupDiSetDeviceRegistryPropertyA;
 
   {$IFDEF WIN2000}
   TSetupDiSetClassRegistryPropertyA = function(var ClassGuid: TGUID;
     Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-    const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiSetClassRegistryPropertyW = function(var ClassGuid: TGUID;
     Property_: DWORD; const PropertyBuffer: PBYTE; PropertyBufferSize: DWORD;
-    const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiSetClassRegistryProperty = TSetupDiSetClassRegistryPropertyA;
-  {$ENDIF}
+  {$ENDIF WIN2000}
 
   TSetupDiGetDeviceInstallParamsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData;
-    var DeviceInstallParams: TSPDevInstallParamsA): LongBool; stdcall;
+    var DeviceInstallParams: TSPDevInstallParamsA): BOOL; stdcall;
 
   TSetupDiGetDeviceInstallParamsW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData;
-    var DeviceInstallParams: TSPDevInstallParamsW): LongBool; stdcall;
+    var DeviceInstallParams: TSPDevInstallParamsW): BOOL; stdcall;
 
   TSetupDiGetDeviceInstallParams = TSetupDiGetDeviceInstallParamsA;
 
   TSetupDiGetClassInstallParamsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-    ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetClassInstallParamsW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-    ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassInstallParamsSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetClassInstallParams = TSetupDiGetClassInstallParamsA;
 
   TSetupDiSetDeviceInstallParamsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData;
-    var DeviceInstallParams: TSPDevInstallParamsA): LongBool; stdcall;
+    var DeviceInstallParams: TSPDevInstallParamsA): BOOL; stdcall;
   TSetupDiSetDeviceInstallParamsW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData;
-    var DeviceInstallParams: TSPDevInstallParamsW): LongBool; stdcall;
+    var DeviceInstallParams: TSPDevInstallParamsW): BOOL; stdcall;
   TSetupDiSetDeviceInstallParams = TSetupDiSetDeviceInstallParamsA;
 
   TSetupDiSetClassInstallParamsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-    ClassInstallParamsSize: DWORD): LongBool; stdcall;
+    ClassInstallParamsSize: DWORD): BOOL; stdcall;
   TSetupDiSetClassInstallParamsW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; ClassInstallParams: PSPClassInstallHeader;
-    ClassInstallParamsSize: DWORD): LongBool; stdcall;
+    ClassInstallParamsSize: DWORD): BOOL; stdcall;
   TSetupDiSetClassInstallParams = TSetupDiSetClassInstallParamsA;
 
   TSetupDiGetDriverInstallParamsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
-    var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+    var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
   TSetupDiGetDriverInstallParamsW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW;
-    var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+    var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
   TSetupDiGetDriverInstallParams = TSetupDiGetDriverInstallParamsA;
 
   TSetupDiSetDriverInstallParamsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataA;
-    var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+    var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
   TSetupDiSetDriverInstallParamsW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var DriverInfoData: TSPDrvInfoDataW;
-    var DriverInstallParams: TSPDrvInstallParams): LongBool; stdcall;
+    var DriverInstallParams: TSPDrvInstallParams): BOOL; stdcall;
   TSetupDiSetDriverInstallParams = TSetupDiSetDriverInstallParamsA;
 
   TSetupDiLoadClassIcon = function(var ClassGuid: TGUID; LargeIcon: PHICON;
-    MiniIconIndex: PINT): LongBool; stdcall;
+    MiniIconIndex: PINT): BOOL; stdcall;
 
   TSetupDiDrawMiniIcon = function(hdc: HDC; rc: TRect; MiniIconIndex: Integer;
     Flags: DWORD): Integer; stdcall;
 
   TSetupDiGetClassBitmapIndex = function(ClassGuid: PGUID;
-    var MiniIconIndex: Integer): LongBool; stdcall;
+    var MiniIconIndex: Integer): BOOL; stdcall;
 
   TSetupDiGetClassImageList = function(
-    var ClassImageListData: TSPClassImageListData): LongBool; stdcall;
+    var ClassImageListData: TSPClassImageListData): BOOL; stdcall;
 
   TSetupDiGetClassImageListExA = function(var ClassImageListData: TSPClassImageListData;
-    const MachineName: PAnsiChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PAnsiChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetClassImageListExW = function(var ClassImageListData: TSPClassImageListData;
-    const MachineName: PWideChar; Reserved: Pointer): LongBool; stdcall;
+    const MachineName: PWideChar; Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetClassImageListEx = TSetupDiGetClassImageListExA;
 
   TSetupDiGetClassImageIndex = function(var ClassImageListData: TSPClassImageListData;
-    var ClassGuid: TGUID; var ImageIndex: Integer): LongBool; stdcall;
+    var ClassGuid: TGUID; var ImageIndex: Integer): BOOL; stdcall;
 
   TSetupDiDestroyClassImageList = function(
-    var ClassImageListData: TSPClassImageListData): LongBool; stdcall;
+    var ClassImageListData: TSPClassImageListData): BOOL; stdcall;
 
   TSetupDiGetClassDevPropertySheetsA = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var PropertySheetHeader: TPropSheetHeaderA;
     PropertySheetHeaderPageListSize: DWORD; RequiredSize: PDWORD;
-    PropertySheetType: DWORD): LongBool; stdcall;
+    PropertySheetType: DWORD): BOOL; stdcall;
   TSetupDiGetClassDevPropertySheetsW = function(DeviceInfoSet: HDEVINFO;
     DeviceInfoData: PSPDevInfoData; var PropertySheetHeader: TPropSheetHeaderW;
     PropertySheetHeaderPageListSize: DWORD; RequiredSize: PDWORD;
-    PropertySheetType: DWORD): LongBool; stdcall;
+    PropertySheetType: DWORD): BOOL; stdcall;
   TSetupDiGetClassDevPropertySheets = TSetupDiGetClassDevPropertySheetsA;
 
-  TSetupDiAskForOEMDisk = function(DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+  TSetupDiAskForOEMDisk = function(DeviceInfoSet: HDEVINFO; DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
   TSetupDiSelectOEMDrv = function(hwndParent: HWND; DeviceInfoSet: HDEVINFO;
-    DeviceInfoData: PSPDevInfoData): LongBool; stdcall;
+    DeviceInfoData: PSPDevInfoData): BOOL; stdcall;
 
   TSetupDiClassNameFromGuidA = function(var ClassGuid: TGUID; ClassName: PAnsiChar;
-    ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiClassNameFromGuidW = function(var ClassGuid: TGUID; ClassName: PWideChar;
-    ClassNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    ClassNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiClassNameFromGuid = TSetupDiClassNameFromGuidA;
 
   TSetupDiClassNameFromGuidExA = function(var ClassGuid: TGUID; ClassName: PAnsiChar;
     ClassNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PAnsiChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiClassNameFromGuidExW = function(var ClassGuid: TGUID; ClassName: PWideChar;
     ClassNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiClassNameFromGuidEx = TSetupDiClassNameFromGuidExA;
 
   TSetupDiClassGuidsFromNameA = function(const ClassName: PAnsiChar; ClassGuidList: PGUID;
-    ClassGuidListSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+    ClassGuidListSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
   TSetupDiClassGuidsFromNameW = function(const ClassName: PWideChar; ClassGuidList: PGUID;
-    ClassGuidListSize: DWORD; var RequiredSize: DWORD): LongBool; stdcall;
+    ClassGuidListSize: DWORD; var RequiredSize: DWORD): BOOL; stdcall;
   TSetupDiClassGuidsFromName = TSetupDiClassGuidsFromNameA;
 
   TSetupDiClassGuidsFromNameExA = function(const ClassName: PAnsiChar; ClassGuidList: PGUID;
     ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PAnsiChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiClassGuidsFromNameExW = function(const ClassName: PWideChar; ClassGuidList: PGUID;
     ClassGuidListSize: DWORD; var RequiredSize: DWORD; const MachineName: PWideChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiClassGuidsFromNameEx = TSetupDiClassGuidsFromNameExA;
 
   TSetupDiGetHwProfileFriendlyNameA = function(HwProfile: DWORD; FriendlyName: PAnsiChar;
-    FriendlyNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    FriendlyNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetHwProfileFriendlyNameW = function(HwProfile: DWORD; FriendlyName: PWideChar;
-    FriendlyNameSize: DWORD; RequiredSize: PDWORD): LongBool; stdcall;
+    FriendlyNameSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
   TSetupDiGetHwProfileFriendlyName = TSetupDiGetHwProfileFriendlyNameA;
 
   TSetupDiGetHwProfileFriendlyNameExA = function(HwProfile: DWORD; FriendlyName: PAnsiChar;
     FriendlyNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PAnsiChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetHwProfileFriendlyNameExW = function(HwProfile: DWORD; FriendlyName: PWideChar;
     FriendlyNameSize: DWORD; RequiredSize: PDWORD; const MachineName: PWideChar;
-    Reserved: Pointer): LongBool; stdcall;
+    Reserved: Pointer): BOOL; stdcall;
   TSetupDiGetHwProfileFriendlyNameEx = TSetupDiGetHwProfileFriendlyNameExA;
 
   TSetupDiGetWizardPage = function(DeviceInfoSet: HDEVINFO;
@@ -5582,22 +6263,69 @@ type
     PageType: DWORD; Flags: DWORD): HPROPSHEETPAGE; stdcall;
 
   TSetupDiGetSelectedDevice = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
   TSetupDiSetSelectedDevice = function(DeviceInfoSet: HDEVINFO;
-    var DeviceInfoData: TSPDevInfoData): LongBool; stdcall;
+    var DeviceInfoData: TSPDevInfoData): BOOL; stdcall;
 
   TSetupDiGetActualSectionToInstallA = function(InfHandle: HINF;
     const InfSectionName: PAnsiChar; InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
-    RequiredSize: PDWORD; Extension: PPASTR): LongBool; stdcall;
+    RequiredSize: PDWORD; Extension: PPASTR): BOOL; stdcall;
   TSetupDiGetActualSectionToInstallW = function(InfHandle: HINF;
     const InfSectionName: PWideChar; InfSectionWithExt: PWideChar; InfSectionWithExtSize: DWORD;
-    RequiredSize: PDWORD; Extension: PPWSTR): LongBool; stdcall;
+    RequiredSize: PDWORD; Extension: PPWSTR): BOOL; stdcall;
   TSetupDiGetActualSectionToInstall = function(InfHandle: HINF;
     const InfSectionName: PChar; InfSectionWithExt: PChar; InfSectionWithExtSize: DWORD;
-    RequiredSize: PDWORD; Extension: PPSTR): LongBool; stdcall;
+    RequiredSize: PDWORD; Extension: PPSTR): BOOL; stdcall;
+
+  {$IFDEF WINXP}
+  TSetupDiGetActualSectionToInstallExA = function(InfHandle: HINF;
+    InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+    InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+    RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+  TSetupDiGetActualSectionToInstallExW = function(InfHandle: HINF;
+    InfSectionName: PWideChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+    InfSectionWithExt: PWideChar; InfSectionWithExtSize: DWORD;
+    RequiredSize: PDWORD; Extension: PPWideChar; Reserved: Pointer): BOOL; stdcall;
+  TSetupDiGetActualSectionToInstallEx = function(InfHandle: HINF;
+    InfSectionName: PAnsiChar; AlternatePlatformInfo: PSPAltPlatformInfo;
+    InfSectionWithExt: PAnsiChar; InfSectionWithExtSize: DWORD;
+    RequiredSize: PDWORD; Extension: PPAnsiChar; Reserved: Pointer): BOOL; stdcall;
+
+  TSetupEnumInfSectionsA = function(InfHandle: HINF; Index: UINT;
+    Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+  TSetupEnumInfSectionsW = function(InfHandle: HINF; Index: UINT;
+    Buffer: PWideChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+  TSetupEnumInfSections = function(InfHandle: HINF; Index: UINT;
+    Buffer: PAnsiChar; Size: UINT; SizeNeeded: PUINT): BOOL; stdcall;
+
+  TSetupVerifyInfFileA = function(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+    var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+  TSetupVerifyInfFileW = function(InfName: PWideChar; AltPlatformInfo: PSPAltPlatformInfo;
+    var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+  TSetupVerifyInfFile = function(InfName: PAnsiChar; AltPlatformInfo: PSPAltPlatformInfo;
+    var InfSignerInfo: TSPInfSignerInfo): BOOL; stdcall;
+
+  TSetupDiGetCustomDevicePropertyA = function(DeviceInfoSet: HDEVINFO;
+    const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+    Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+    PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+  TSetupDiGetCustomDevicePropertyW = function(DeviceInfoSet: HDEVINFO;
+    const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PWideChar;
+    Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+    PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+  TSetupDiGetCustomDeviceProperty = function(DeviceInfoSet: HDEVINFO;
+    const DeviceInfoData: TSPDevInfoData; CustomPropertyName: PAnsiChar;
+    Flags: DWORD; PropertyRegDataType: PDWORD; PropertyBuffer: PByte;
+    PropertyBufferSize: DWORD; RequiredSize: PDWORD): BOOL; stdcall;
+  {$ENDIF WINXP}
 
 var
+  {$IFDEF WINXP}
+  SetupGetFileQueueCount: TSetupGetFileQueueCount;
+  SetupGetFileQueueFlags: TSetupGetFileQueueFlags;
+  SetupSetFileQueueFlags: TSetupSetFileQueueFlags;
+  {$ENDIF WINXP}
   SetupGetInfInformationA: TSetupGetInfInformationA;
   SetupGetInfInformationW: TSetupGetInfInformationW;
   SetupGetInfInformation: TSetupGetInfInformation;
@@ -5608,7 +6336,7 @@ var
   SetupQueryInfOriginalFileInformationA: TSetupQueryInfOriginalFileInformationA;
   SetupQueryInfOriginalFileInformationW: TSetupQueryInfOriginalFileInformationW;
   SetupQueryInfOriginalFileInformation: TSetupQueryInfOriginalFileInformation;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueryInfVersionInformationA: TSetupQueryInfVersionInformationA;
   SetupQueryInfVersionInformationW: TSetupQueryInfVersionInformationW;
   SetupQueryInfVersionInformation: TSetupQueryInfVersionInformation;
@@ -5651,6 +6379,11 @@ var
   SetupGetFileCompressionInfoA: TSetupGetFileCompressionInfoA;
   SetupGetFileCompressionInfoW: TSetupGetFileCompressionInfoW;
   SetupGetFileCompressionInfo: TSetupGetFileCompressionInfo;
+  {$IFDEF WINXP}
+  SetupGetFileCompressionInfoExA: TSetupGetFileCompressionInfoExA;
+  SetupGetFileCompressionInfoExW: TSetupGetFileCompressionInfoExW;
+  SetupGetFileCompressionInfoEx: TSetupGetFileCompressionInfoEx;
+  {$ENDIF WINXP}
   SetupDecompressOrCopyFileA: TSetupDecompressOrCopyFileA;
   SetupDecompressOrCopyFileW: TSetupDecompressOrCopyFileW;
   SetupDecompressOrCopyFile: TSetupDecompressOrCopyFile;
@@ -5695,7 +6428,7 @@ var
   SetupBackupErrorA: TSetupBackupErrorA;
   SetupBackupErrorW: TSetupBackupErrorW;
   SetupBackupError: TSetupBackupError;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetDirectoryIdA: TSetupSetDirectoryIdA;
   SetupSetDirectoryIdW: TSetupSetDirectoryIdW;
   SetupSetDirectoryId: TSetupSetDirectoryId;
@@ -5717,7 +6450,7 @@ var
   SetupSetFileQueueAlternatePlatformA: TSetupSetFileQueueAlternatePlatformA;
   SetupSetFileQueueAlternatePlatformW: TSetupSetFileQueueAlternatePlatformW;
   SetupSetFileQueueAlternatePlatform: TSetupSetFileQueueAlternatePlatform;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetPlatformPathOverrideA: TSetupSetPlatformPathOverrideA;
   SetupSetPlatformPathOverrideW: TSetupSetPlatformPathOverrideW;
   SetupSetPlatformPathOverride: TSetupSetPlatformPathOverride;
@@ -5728,7 +6461,7 @@ var
   SetupQueueCopyIndirectA: TSetupQueueCopyIndirectA;
   SetupQueueCopyIndirectW: TSetupQueueCopyIndirectW;
   SetupQueueCopyIndirect: TSetupQueueCopyIndirect;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueueDefaultCopyA: TSetupQueueDefaultCopyA;
   SetupQueueDefaultCopyW: TSetupQueueDefaultCopyW;
   SetupQueueDefaultCopy: TSetupQueueDefaultCopy;
@@ -5756,6 +6489,12 @@ var
   SetupCopyOEMInfA: TSetupCopyOEMInfA;
   SetupCopyOEMInfW: TSetupCopyOEMInfW;
   SetupCopyOEMInf: TSetupCopyOEMInf;
+  {$IFDEF WINXP}
+  SetupUninstallOEMInfA: TSetupUninstallOEMInfA;
+  SetupUninstallOEMInfW: TSetupUninstallOEMInfW;
+  SetupUninstallOEMInf: TSetupUninstallOEMInf;
+  SetupUninstallNewlyCopiedInfs: TSetupUninstallNewlyCopiedInfs;
+  {$ENDIF WINXP}
   SetupCreateDiskSpaceListA: TSetupCreateDiskSpaceListA;
   SetupCreateDiskSpaceListW: TSetupCreateDiskSpaceListW;
   SetupCreateDiskSpaceList: TSetupCreateDiskSpaceList;
@@ -5812,6 +6551,11 @@ var
   SetupInstallServicesFromInfSectionExA: TSetupInstallServicesFromInfSectionExA;
   SetupInstallServicesFromInfSectionExW: TSetupInstallServicesFromInfSectionExW;
   SetupInstallServicesFromInfSectionEx: TSetupInstallServicesFromInfSectionEx;
+  {$IFDEF WINXP}
+  InstallHinfSectionA: TInstallHinfSectionA;
+  InstallHinfSectionW: TInstallHinfSectionW;
+  InstallHinfSection: TInstallHinfSection;
+  {$ENDIF WINXP}
   SetupInitializeFileLogA: TSetupInitializeFileLogA;
   SetupInitializeFileLogW: TSetupInitializeFileLogW;
   SetupInitializeFileLog: TSetupInitializeFileLog;
@@ -5834,7 +6578,14 @@ var
   SetupGetBackupInformationA: TSetupGetBackupInformationA;
   SetupGetBackupInformationW: TSetupGetBackupInformationW;
   SetupGetBackupInformation: TSetupGetBackupInformation;
-  {$ENDIF}
+  {$ENDIF WIN2000}
+  {$IFDEF WINXP}
+  SetupPrepareQueueForRestoreA: TSetupPrepareQueueForRestoreA;
+  SetupPrepareQueueForRestoreW: TSetupPrepareQueueForRestoreW;
+  SetupPrepareQueueForRestore: TSetupPrepareQueueForRestore;
+  SetupSetNonInteractiveMode: TSetupSetNonInteractiveMode;
+  SetupGetNonInteractiveMode: TSetupGetNonInteractiveMode;
+  {$ENDIF WINXP}
   SetupDiCreateDeviceInfoList: TSetupDiCreateDeviceInfoList;
   SetupDiCreateDeviceInfoListExA: TSetupDiCreateDeviceInfoListExA;
   SetupDiCreateDeviceInfoListExW: TSetupDiCreateDeviceInfoListExW;
@@ -5880,6 +6631,9 @@ var
   SetupDiGetDeviceInterfaceDetail: TSetupDiGetDeviceInterfaceDetail;
   SetupDiInstallDeviceInterfaces: TSetupDiInstallDeviceInterfaces;
   SetupDiInstallInterfaceDevices: TSetupDiInstallDeviceInterfaces;
+  {$IFDEF WINXP}
+  SetupDiSetDeviceInterfaceDefault: TSetupDiSetDeviceInterfaceDefault;
+  {$ENDIF WINXP}
   SetupDiRegisterDeviceInfo: TSetupDiRegisterDeviceInfo;
   SetupDiBuildDriverInfoList: TSetupDiBuildDriverInfoList;
   SetupDiCancelDriverInfoSearch: TSetupDiCancelDriverInfoSearch;
@@ -5960,7 +6714,7 @@ var
   SetupDiGetClassRegistryPropertyA: TSetupDiGetClassRegistryPropertyA;
   SetupDiGetClassRegistryPropertyW: TSetupDiGetClassRegistryPropertyW;
   SetupDiGetClassRegistryProperty: TSetupDiGetClassRegistryProperty;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiSetDeviceRegistryPropertyA: TSetupDiSetDeviceRegistryPropertyA;
   SetupDiSetDeviceRegistryPropertyW: TSetupDiSetDeviceRegistryPropertyW;
   SetupDiSetDeviceRegistryProperty: TSetupDiSetDeviceRegistryProperty;
@@ -5968,7 +6722,7 @@ var
   SetupDiSetClassRegistryPropertyA: TSetupDiSetClassRegistryPropertyA;
   SetupDiSetClassRegistryPropertyW: TSetupDiSetClassRegistryPropertyW;
   SetupDiSetClassRegistryProperty: TSetupDiSetClassRegistryProperty;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiGetDeviceInstallParamsA: TSetupDiGetDeviceInstallParamsA;
   SetupDiGetDeviceInstallParamsW: TSetupDiGetDeviceInstallParamsW;
   SetupDiGetDeviceInstallParams: TSetupDiGetDeviceInstallParams;
@@ -6025,12 +6779,30 @@ var
   SetupDiGetActualSectionToInstallA: TSetupDiGetActualSectionToInstallA;
   SetupDiGetActualSectionToInstallW: TSetupDiGetActualSectionToInstallW;
   SetupDiGetActualSectionToInstall: TSetupDiGetActualSectionToInstall;
+  {$IFDEF WINXP}
+  SetupDiGetActualSectionToInstallExA: TSetupDiGetActualSectionToInstallExA;
+  SetupDiGetActualSectionToInstallExW: TSetupDiGetActualSectionToInstallExW;
+  SetupDiGetActualSectionToInstallEx: TSetupDiGetActualSectionToInstallEx;
+  SetupEnumInfSectionsA: TSetupEnumInfSectionsA;
+  SetupEnumInfSectionsW: TSetupEnumInfSectionsW;
+  SetupEnumInfSections: TSetupEnumInfSections;
+  SetupVerifyInfFileA: TSetupVerifyInfFileA;
+  SetupVerifyInfFileW: TSetupVerifyInfFileW;
+  SetupVerifyInfFile: TSetupVerifyInfFile;
+  SetupDiGetCustomDevicePropertyA: TSetupDiGetCustomDevicePropertyA;
+  SetupDiGetCustomDevicePropertyW: TSetupDiGetCustomDevicePropertyW;
+  SetupDiGetCustomDeviceProperty: TSetupDiGetCustomDeviceProperty;
+  {$ENDIF WINXP}
 
-{$ENDIF}
+{$ENDIF SETUPAPI_LINKONREQUEST}
 
 function IsSetupApiLoaded: Boolean;
 function LoadSetupApi: Boolean;
 procedure UnloadSetupApi;
+
+{$IFDEF SETUPAPI_LINKONREQUEST}
+function GetSetupApiHandle:HINST;
+{$endif}
 
 implementation
 
@@ -6044,7 +6816,14 @@ const
 var
   SetupApiLib: TModuleHandle = INVALID_MODULEHANDLE_VALUE;
   SetupApiLoadCount: Integer = 0;
-{$ENDIF}
+{$ENDIF SETUPAPI_LINKONREQUEST}
+
+{$IFDEF SETUPAPI_LINKONREQUEST}
+function GetSetupApiHandle:HINST;
+begin
+  result := HINST(SetupApiLib);
+end;
+{$endif}
 
 function IsSetupApiLoaded: Boolean;
 begin
@@ -6052,7 +6831,7 @@ begin
   Result := SetupApiLib <> INVALID_MODULEHANDLE_VALUE;
   {$ELSE}
   Result := True;
-  {$ENDIF}
+  {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
 function LoadSetupApi: Boolean;
@@ -6064,6 +6843,11 @@ begin
   Result := LoadModule(SetupApiLib, SetupApiModuleName);
   if Result then
   begin
+    {$IFDEF WINXP}
+    @SetupGetFileQueueCount := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileQueueCount', Result);
+    @SetupGetFileQueueFlags := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileQueueFlags', Result);
+    @SetupSetFileQueueFlags := GetModuleSymbolEx(SetupApiLib, 'SetupSetFileQueueFlags', Result);
+    {$ENDIF WINXP}
     @SetupGetInfInformationA := GetModuleSymbolEx(SetupApiLib, 'SetupGetInfInformationA', Result);
     @SetupGetInfInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupGetInfInformationW', Result);
     @SetupGetInfInformation := GetModuleSymbolEx(SetupApiLib, 'SetupGetInfInformationA', Result);
@@ -6074,7 +6858,7 @@ begin
     @SetupQueryInfOriginalFileInformationA := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfOriginalFileInformationA', Result);
     @SetupQueryInfOriginalFileInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfOriginalFileInformationW', Result);
     @SetupQueryInfOriginalFileInformation := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfOriginalFileInformationA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupQueryInfVersionInformationA := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfVersionInformationA', Result);
     @SetupQueryInfVersionInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfVersionInformationW', Result);
     @SetupQueryInfVersionInformation := GetModuleSymbolEx(SetupApiLib, 'SetupQueryInfVersionInformationA', Result);
@@ -6117,6 +6901,11 @@ begin
     @SetupGetFileCompressionInfoA := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileCompressionInfoA', Result);
     @SetupGetFileCompressionInfoW := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileCompressionInfoW', Result);
     @SetupGetFileCompressionInfo := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileCompressionInfoA', Result);
+    {$IFDEF WINXP}
+    @SetupGetFileCompressionInfoExA := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileCompressionInfoExA', Result);
+    @SetupGetFileCompressionInfoExW := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileCompressionInfoExW', Result);
+    @SetupGetFileCompressionInfoEx := GetModuleSymbolEx(SetupApiLib, 'SetupGetFileCompressionInfoExA', Result);
+    {$ENDIF WINXP}
     @SetupDecompressOrCopyFileA := GetModuleSymbolEx(SetupApiLib, 'SetupDecompressOrCopyFileA', Result);
     @SetupDecompressOrCopyFileW := GetModuleSymbolEx(SetupApiLib, 'SetupDecompressOrCopyFileW', Result);
     @SetupDecompressOrCopyFile := GetModuleSymbolEx(SetupApiLib, 'SetupDecompressOrCopyFileA', Result);
@@ -6161,7 +6950,7 @@ begin
     @SetupBackupErrorA := GetModuleSymbolEx(SetupApiLib, 'SetupBackupErrorA', Result);
     @SetupBackupErrorW := GetModuleSymbolEx(SetupApiLib, 'SetupBackupErrorW', Result);
     @SetupBackupError := GetModuleSymbolEx(SetupApiLib, 'SetupBackupErrorA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupSetDirectoryIdA := GetModuleSymbolEx(SetupApiLib, 'SetupSetDirectoryIdA', Result);
     @SetupSetDirectoryIdW := GetModuleSymbolEx(SetupApiLib, 'SetupSetDirectoryIdW', Result);
     @SetupSetDirectoryId := GetModuleSymbolEx(SetupApiLib, 'SetupSetDirectoryIdA', Result);
@@ -6183,7 +6972,7 @@ begin
     @SetupSetFileQueueAlternatePlatformA := GetModuleSymbolEx(SetupApiLib, 'SetupSetFileQueueAlternatePlatformA', Result);
     @SetupSetFileQueueAlternatePlatformW := GetModuleSymbolEx(SetupApiLib, 'SetupSetFileQueueAlternatePlatformW', Result);
     @SetupSetFileQueueAlternatePlatform := GetModuleSymbolEx(SetupApiLib, 'SetupSetFileQueueAlternatePlatformA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupSetPlatformPathOverrideA := GetModuleSymbolEx(SetupApiLib, 'SetupSetPlatformPathOverrideA', Result);
     @SetupSetPlatformPathOverrideW := GetModuleSymbolEx(SetupApiLib, 'SetupSetPlatformPathOverrideW', Result);
     @SetupSetPlatformPathOverride := GetModuleSymbolEx(SetupApiLib, 'SetupSetPlatformPathOverrideA', Result);
@@ -6194,7 +6983,7 @@ begin
     @SetupQueueCopyIndirectA := GetModuleSymbolEx(SetupApiLib, 'SetupQueueCopyIndirectA', Result);
     @SetupQueueCopyIndirectW := GetModuleSymbolEx(SetupApiLib, 'SetupQueueCopyIndirectW', Result);
     @SetupQueueCopyIndirect := GetModuleSymbolEx(SetupApiLib, 'SetupQueueCopyIndirectA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupQueueDefaultCopyA := GetModuleSymbolEx(SetupApiLib, 'SetupQueueDefaultCopyA', Result);
     @SetupQueueDefaultCopyW := GetModuleSymbolEx(SetupApiLib, 'SetupQueueDefaultCopyW', Result);
     @SetupQueueDefaultCopy := GetModuleSymbolEx(SetupApiLib, 'SetupQueueDefaultCopyA', Result);
@@ -6222,6 +7011,12 @@ begin
     @SetupCopyOEMInfA := GetModuleSymbolEx(SetupApiLib, 'SetupCopyOEMInfA', Result);
     @SetupCopyOEMInfW := GetModuleSymbolEx(SetupApiLib, 'SetupCopyOEMInfW', Result);
     @SetupCopyOEMInf := GetModuleSymbolEx(SetupApiLib, 'SetupCopyOEMInfA', Result);
+    {$IFDEF WINXP}
+    @SetupUninstallOEMInfA := GetModuleSymbolEx(SetupApiLib, 'SetupUninstallOEMInfA', Result);
+    @SetupUninstallOEMInfW := GetModuleSymbolEx(SetupApiLib, 'SetupUninstallOEMInfW', Result);
+    @SetupUninstallOEMInf := GetModuleSymbolEx(SetupApiLib, 'SetupUninstallOEMInfA', Result);
+    @SetupUninstallNewlyCopiedInfs := GetModuleSymbolEx(SetupApiLib, 'SetupUninstallNewlyCopiedInfs', Result);
+    {$ENDIF WINXP}
     @SetupCreateDiskSpaceListA := GetModuleSymbolEx(SetupApiLib, 'SetupCreateDiskSpaceListA', Result);
     @SetupCreateDiskSpaceListW := GetModuleSymbolEx(SetupApiLib, 'SetupCreateDiskSpaceListW', Result);
     @SetupCreateDiskSpaceList := GetModuleSymbolEx(SetupApiLib, 'SetupCreateDiskSpaceListA', Result);
@@ -6278,6 +7073,11 @@ begin
     @SetupInstallServicesFromInfSectionExA := GetModuleSymbolEx(SetupApiLib, 'SetupInstallServicesFromInfSectionExA', Result);
     @SetupInstallServicesFromInfSectionExW := GetModuleSymbolEx(SetupApiLib, 'SetupInstallServicesFromInfSectionExW', Result);
     @SetupInstallServicesFromInfSectionEx := GetModuleSymbolEx(SetupApiLib, 'SetupInstallServicesFromInfSectionExA', Result);
+    {$IFDEF WINXP}
+    @InstallHinfSectionA := GetModuleSymbolEx(SetupApiLib, 'InstallHinfSectionA', Result);
+    @InstallHinfSectionW := GetModuleSymbolEx(SetupApiLib, 'InstallHinfSectionW', Result);
+    @InstallHinfSection := GetModuleSymbolEx(SetupApiLib, 'InstallHinfSectionA', Result);
+    {$ENDIF WINXP}
     @SetupInitializeFileLogA := GetModuleSymbolEx(SetupApiLib, 'SetupInitializeFileLogA', Result);
     @SetupInitializeFileLogW := GetModuleSymbolEx(SetupApiLib, 'SetupInitializeFileLogW', Result);
     @SetupInitializeFileLog := GetModuleSymbolEx(SetupApiLib, 'SetupInitializeFileLogA', Result);
@@ -6300,7 +7100,14 @@ begin
     @SetupGetBackupInformationA := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationA', Result);
     @SetupGetBackupInformationW := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationW', Result);
     @SetupGetBackupInformation := GetModuleSymbolEx(SetupApiLib, 'SetupGetBackupInformationA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
+    {$IFDEF WINXP}
+    @SetupPrepareQueueForRestoreA := GetModuleSymbolEx(SetupApiLib, 'SetupPrepareQueueForRestoreA', Result);
+    @SetupPrepareQueueForRestoreW := GetModuleSymbolEx(SetupApiLib, 'SetupPrepareQueueForRestoreW', Result);
+    @SetupPrepareQueueForRestore := GetModuleSymbolEx(SetupApiLib, 'SetupPrepareQueueForRestoreA', Result);
+    @SetupSetNonInteractiveMode := GetModuleSymbolEx(SetupApiLib, 'SetupSetNonInteractiveMode', Result);
+    @SetupGetNonInteractiveMode := GetModuleSymbolEx(SetupApiLib, 'SetupGetNonInteractiveMode', Result);
+    {$ENDIF WINXP}
     @SetupDiCreateDeviceInfoList := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoList', Result);
     @SetupDiCreateDeviceInfoListExA := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoListExA', Result);
     @SetupDiCreateDeviceInfoListExW := GetModuleSymbolEx(SetupApiLib, 'SetupDiCreateDeviceInfoListExW', Result);
@@ -6346,6 +7153,9 @@ begin
     @SetupDiGetDeviceInterfaceDetail := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInterfaceDetailA', Result);
     @SetupDiInstallDeviceInterfaces := GetModuleSymbolEx(SetupApiLib, 'SetupDiInstallDeviceInterfaces', Result);
     @SetupDiInstallInterfaceDevices := GetModuleSymbolEx(SetupApiLib, 'SetupDiInstallDeviceInterfaces', Result);
+    {$IFDEF WINXP}
+    @SetupDiSetDeviceInterfaceDefault := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceInterfaceDefault', Result);
+    {$ENDIF WINXP}
     @SetupDiRegisterDeviceInfo := GetModuleSymbolEx(SetupApiLib, 'SetupDiRegisterDeviceInfo', Result);
     @SetupDiBuildDriverInfoList := GetModuleSymbolEx(SetupApiLib, 'SetupDiBuildDriverInfoList', Result);
     @SetupDiCancelDriverInfoSearch := GetModuleSymbolEx(SetupApiLib, 'SetupDiCancelDriverInfoSearch', Result);
@@ -6426,7 +7236,7 @@ begin
     @SetupDiGetClassRegistryPropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassRegistryPropertyA', Result);
     @SetupDiGetClassRegistryPropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassRegistryPropertyW', Result);
     @SetupDiGetClassRegistryProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetClassRegistryPropertyA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupDiSetDeviceRegistryPropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceRegistryPropertyA', Result);
     @SetupDiSetDeviceRegistryPropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceRegistryPropertyW', Result);
     @SetupDiSetDeviceRegistryProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetDeviceRegistryPropertyA', Result);
@@ -6434,7 +7244,7 @@ begin
     @SetupDiSetClassRegistryPropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetClassRegistryPropertyA', Result);
     @SetupDiSetClassRegistryPropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetClassRegistryPropertyW', Result);
     @SetupDiSetClassRegistryProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiSetClassRegistryPropertyA', Result);
-    {$ENDIF}
+    {$ENDIF WIN2000}
     @SetupDiGetDeviceInstallParamsA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInstallParamsA', Result);
     @SetupDiGetDeviceInstallParamsW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInstallParamsW', Result);
     @SetupDiGetDeviceInstallParams := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetDeviceInstallParamsA', Result);
@@ -6491,12 +7301,26 @@ begin
     @SetupDiGetActualSectionToInstallA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallA', Result);
     @SetupDiGetActualSectionToInstallW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallW', Result);
     @SetupDiGetActualSectionToInstall := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallA', Result);
+    {$IFDEF WINXP}
+    @SetupDiGetActualSectionToInstallExA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallExA', Result);
+    @SetupDiGetActualSectionToInstallExW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallExW', Result);
+    @SetupDiGetActualSectionToInstallEx := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetActualSectionToInstallExA', Result);
+    @SetupEnumInfSectionsA := GetModuleSymbolEx(SetupApiLib, 'SetupEnumInfSectionsA', Result);
+    @SetupEnumInfSectionsW := GetModuleSymbolEx(SetupApiLib, 'SetupEnumInfSectionsW', Result);
+    @SetupEnumInfSections := GetModuleSymbolEx(SetupApiLib, 'SetupEnumInfSectionsA', Result);
+    @SetupVerifyInfFileA := GetModuleSymbolEx(SetupApiLib, 'SetupVerifyInfFileA', Result);
+    @SetupVerifyInfFileW := GetModuleSymbolEx(SetupApiLib, 'SetupVerifyInfFileW', Result);
+    @SetupVerifyInfFile := GetModuleSymbolEx(SetupApiLib, 'SetupVerifyInfFileA', Result);
+    @SetupDiGetCustomDevicePropertyA := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetCustomDevicePropertyA', Result);
+    @SetupDiGetCustomDevicePropertyW := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetCustomDevicePropertyW', Result);
+    @SetupDiGetCustomDeviceProperty := GetModuleSymbolEx(SetupApiLib, 'SetupDiGetCustomDevicePropertyA', Result);
+    {$ENDIF WINXP}
     if not Result then
       UnloadSetupApi;
   end;
   {$ELSE}
   Result := True;
-  {$ENDIF}
+  {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
 procedure UnloadSetupApi;
@@ -6506,6 +7330,11 @@ begin
   if SetupApiLoadCount > 0 then
     Exit;
   UnloadModule(SetupApiLib);
+  {$IFDEF WINXP}
+  SetupGetFileQueueCount := nil;
+  SetupGetFileQueueFlags := nil;
+  SetupSetFileQueueFlags := nil;
+  {$ENDIF WINXP}
   SetupGetInfInformationA := nil;
   SetupGetInfInformationW := nil;
   SetupGetInfInformation := nil;
@@ -6516,7 +7345,7 @@ begin
   SetupQueryInfOriginalFileInformationA := nil;
   SetupQueryInfOriginalFileInformationW := nil;
   SetupQueryInfOriginalFileInformation := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueryInfVersionInformationA := nil;
   SetupQueryInfVersionInformationW := nil;
   SetupQueryInfVersionInformation := nil;
@@ -6559,6 +7388,11 @@ begin
   SetupGetFileCompressionInfoA := nil;
   SetupGetFileCompressionInfoW := nil;
   SetupGetFileCompressionInfo := nil;
+  {$IFDEF WINXP}
+  SetupGetFileCompressionInfoExA := nil;
+  SetupGetFileCompressionInfoExW := nil;
+  SetupGetFileCompressionInfoEx := nil;
+  {$ENDIF WINXP}
   SetupDecompressOrCopyFileA := nil;
   SetupDecompressOrCopyFileW := nil;
   SetupDecompressOrCopyFile := nil;
@@ -6603,7 +7437,7 @@ begin
   SetupBackupErrorA := nil;
   SetupBackupErrorW := nil;
   SetupBackupError := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetDirectoryIdA := nil;
   SetupSetDirectoryIdW := nil;
   SetupSetDirectoryId := nil;
@@ -6625,7 +7459,7 @@ begin
   SetupSetFileQueueAlternatePlatformA := nil;
   SetupSetFileQueueAlternatePlatformW := nil;
   SetupSetFileQueueAlternatePlatform := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupSetPlatformPathOverrideA := nil;
   SetupSetPlatformPathOverrideW := nil;
   SetupSetPlatformPathOverride := nil;
@@ -6636,7 +7470,7 @@ begin
   SetupQueueCopyIndirectA := nil;
   SetupQueueCopyIndirectW := nil;
   SetupQueueCopyIndirect := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupQueueDefaultCopyA := nil;
   SetupQueueDefaultCopyW := nil;
   SetupQueueDefaultCopy := nil;
@@ -6664,6 +7498,12 @@ begin
   SetupCopyOEMInfA := nil;
   SetupCopyOEMInfW := nil;
   SetupCopyOEMInf := nil;
+  {$IFDEF WINXP}
+  SetupUninstallOEMInfA := nil;
+  SetupUninstallOEMInfW := nil;
+  SetupUninstallOEMInf := nil;
+  SetupUninstallNewlyCopiedInfs := nil;
+  {$ENDIF WINXP}
   SetupCreateDiskSpaceListA := nil;
   SetupCreateDiskSpaceListW := nil;
   SetupCreateDiskSpaceList := nil;
@@ -6720,6 +7560,11 @@ begin
   SetupInstallServicesFromInfSectionExA := nil;
   SetupInstallServicesFromInfSectionExW := nil;
   SetupInstallServicesFromInfSectionEx := nil;
+  {$IFDEF WINXP}
+  InstallHinfSectionA := nil;
+  InstallHinfSectionW := nil;
+  InstallHinfSection := nil;
+  {$ENDIF WINXP}
   SetupInitializeFileLogA := nil;
   SetupInitializeFileLogW := nil;
   SetupInitializeFileLog := nil;
@@ -6742,7 +7587,14 @@ begin
   SetupGetBackupInformationA := nil;
   SetupGetBackupInformationW := nil;
   SetupGetBackupInformation := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
+  {$IFDEF WINXP}
+  SetupPrepareQueueForRestoreA := nil;
+  SetupPrepareQueueForRestoreW := nil;
+  SetupPrepareQueueForRestore := nil;
+  SetupSetNonInteractiveMode := nil;
+  SetupGetNonInteractiveMode := nil;
+  {$ENDIF WINXP}
   SetupDiCreateDeviceInfoList := nil;
   SetupDiCreateDeviceInfoListExA := nil;
   SetupDiCreateDeviceInfoListExW := nil;
@@ -6788,6 +7640,9 @@ begin
   SetupDiGetDeviceInterfaceDetail := nil;
   SetupDiInstallDeviceInterfaces := nil;
   SetupDiInstallInterfaceDevices := nil;
+  {$IFDEF WINXP}
+  SetupDiSetDeviceInterfaceDefault := nil;
+  {$ENDIF WINXP}
   SetupDiRegisterDeviceInfo := nil;
   SetupDiBuildDriverInfoList := nil;
   SetupDiCancelDriverInfoSearch := nil;
@@ -6868,7 +7723,7 @@ begin
   SetupDiGetClassRegistryPropertyA := nil;
   SetupDiGetClassRegistryPropertyW := nil;
   SetupDiGetClassRegistryProperty := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiSetDeviceRegistryPropertyA := nil;
   SetupDiSetDeviceRegistryPropertyW := nil;
   SetupDiSetDeviceRegistryProperty := nil;
@@ -6876,7 +7731,7 @@ begin
   SetupDiSetClassRegistryPropertyA := nil;
   SetupDiSetClassRegistryPropertyW := nil;
   SetupDiSetClassRegistryProperty := nil;
-  {$ENDIF}
+  {$ENDIF WIN2000}
   SetupDiGetDeviceInstallParamsA := nil;
   SetupDiGetDeviceInstallParamsW := nil;
   SetupDiGetDeviceInstallParams := nil;
@@ -6933,11 +7788,30 @@ begin
   SetupDiGetActualSectionToInstallA := nil;
   SetupDiGetActualSectionToInstallW := nil;
   SetupDiGetActualSectionToInstall := nil;
-  {$ENDIF}
+  {$IFDEF WINXP}
+  SetupDiGetActualSectionToInstallExA := nil;
+  SetupDiGetActualSectionToInstallExW := nil;
+  SetupDiGetActualSectionToInstallEx := nil;
+  SetupEnumInfSectionsA := nil;
+  SetupEnumInfSectionsW := nil;
+  SetupEnumInfSections := nil;
+  SetupVerifyInfFileA := nil;
+  SetupVerifyInfFileW := nil;
+  SetupVerifyInfFile := nil;
+  SetupDiGetCustomDevicePropertyA := nil;
+  SetupDiGetCustomDevicePropertyW := nil;
+  SetupDiGetCustomDeviceProperty := nil;
+  {$ENDIF WINXP}
+  {$ENDIF SETUPAPI_LINKONREQUEST}
 end;
 
 {$IFNDEF SETUPAPI_LINKONREQUEST}
 
+{$IFDEF WINXP}
+function SetupGetFileQueueCount; external SetupApiModuleName name 'SetupGetFileQueueCount';
+function SetupGetFileQueueFlags; external SetupApiModuleName name 'SetupGetFileQueueFlags';
+function SetupSetFileQueueFlags; external SetupApiModuleName name 'SetupSetFileQueueFlags';
+{$ENDIF WINXP}
 function SetupGetInfInformationA; external SetupApiModuleName name 'SetupGetInfInformationA';
 function SetupGetInfInformationW; external SetupApiModuleName name 'SetupGetInfInformationW';
 function SetupGetInfInformation; external SetupApiModuleName name 'SetupGetInfInformationA';
@@ -6948,7 +7822,7 @@ function SetupQueryInfFileInformation; external SetupApiModuleName name 'SetupQu
 function SetupQueryInfOriginalFileInformationA; external SetupApiModuleName name 'SetupQueryInfOriginalFileInformationA';
 function SetupQueryInfOriginalFileInformationW; external SetupApiModuleName name 'SetupQueryInfOriginalFileInformationW';
 function SetupQueryInfOriginalFileInformation; external SetupApiModuleName name 'SetupQueryInfOriginalFileInformationA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupQueryInfVersionInformationA; external SetupApiModuleName name 'SetupQueryInfVersionInformationA';
 function SetupQueryInfVersionInformationW; external SetupApiModuleName name 'SetupQueryInfVersionInformationW';
 function SetupQueryInfVersionInformation; external SetupApiModuleName name 'SetupQueryInfVersionInformationA';
@@ -6991,6 +7865,11 @@ function SetupGetBinaryField; external SetupApiModuleName name 'SetupGetBinaryFi
 function SetupGetFileCompressionInfoA; external SetupApiModuleName name 'SetupGetFileCompressionInfoA';
 function SetupGetFileCompressionInfoW; external SetupApiModuleName name 'SetupGetFileCompressionInfoW';
 function SetupGetFileCompressionInfo; external SetupApiModuleName name 'SetupGetFileCompressionInfoA';
+{$IFDEF WINXP}
+function SetupGetFileCompressionInfoExA; external SetupApiModuleName name 'SetupGetFileCompressionInfoExA';
+function SetupGetFileCompressionInfoExW; external SetupApiModuleName name 'SetupGetFileCompressionInfoExW';
+function SetupGetFileCompressionInfoEx; external SetupApiModuleName name 'SetupGetFileCompressionInfoExA';
+{$ENDIF WINXP}
 function SetupDecompressOrCopyFileA; external SetupApiModuleName name 'SetupDecompressOrCopyFileA';
 function SetupDecompressOrCopyFileW; external SetupApiModuleName name 'SetupDecompressOrCopyFileW';
 function SetupDecompressOrCopyFile; external SetupApiModuleName name 'SetupDecompressOrCopyFileA';
@@ -7035,7 +7914,7 @@ function SetupDeleteError; external SetupApiModuleName name 'SetupDeleteErrorA';
 function SetupBackupErrorA; external SetupApiModuleName name 'SetupBackupErrorA';
 function SetupBackupErrorW; external SetupApiModuleName name 'SetupBackupErrorW';
 function SetupBackupError; external SetupApiModuleName name 'SetupBackupErrorA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupSetDirectoryIdA; external SetupApiModuleName name 'SetupSetDirectoryIdA';
 function SetupSetDirectoryIdW; external SetupApiModuleName name 'SetupSetDirectoryIdW';
 function SetupSetDirectoryId; external SetupApiModuleName name 'SetupSetDirectoryIdA';
@@ -7057,7 +7936,7 @@ function SetupCloseFileQueue; external SetupApiModuleName name 'SetupCloseFileQu
 function SetupSetFileQueueAlternatePlatformA; external SetupApiModuleName name 'SetupSetFileQueueAlternatePlatformA';
 function SetupSetFileQueueAlternatePlatformW; external SetupApiModuleName name 'SetupSetFileQueueAlternatePlatformW';
 function SetupSetFileQueueAlternatePlatform; external SetupApiModuleName name 'SetupSetFileQueueAlternatePlatformA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupSetPlatformPathOverrideA; external SetupApiModuleName name 'SetupSetPlatformPathOverrideA';
 function SetupSetPlatformPathOverrideW; external SetupApiModuleName name 'SetupSetPlatformPathOverrideW';
 function SetupSetPlatformPathOverride; external SetupApiModuleName name 'SetupSetPlatformPathOverrideA';
@@ -7068,7 +7947,7 @@ function SetupQueueCopy; external SetupApiModuleName name 'SetupQueueCopyA';
 function SetupQueueCopyIndirectA; external SetupApiModuleName name 'SetupQueueCopyIndirectA';
 function SetupQueueCopyIndirectW; external SetupApiModuleName name 'SetupQueueCopyIndirectW';
 function SetupQueueCopyIndirect; external SetupApiModuleName name 'SetupQueueCopyIndirectA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupQueueDefaultCopyA; external SetupApiModuleName name 'SetupQueueDefaultCopyA';
 function SetupQueueDefaultCopyW; external SetupApiModuleName name 'SetupQueueDefaultCopyW';
 function SetupQueueDefaultCopy; external SetupApiModuleName name 'SetupQueueDefaultCopyA';
@@ -7096,6 +7975,12 @@ function SetupScanFileQueue; external SetupApiModuleName name 'SetupScanFileQueu
 function SetupCopyOEMInfA; external SetupApiModuleName name 'SetupCopyOEMInfA';
 function SetupCopyOEMInfW; external SetupApiModuleName name 'SetupCopyOEMInfW';
 function SetupCopyOEMInf; external SetupApiModuleName name 'SetupCopyOEMInfA';
+{$IFDEF WINXP}
+function SetupUninstallOEMInfA; external SetupApiModuleName name 'SetupUninstallOEMInfA';
+function SetupUninstallOEMInfW; external SetupApiModuleName name 'SetupUninstallOEMInfW';
+function SetupUninstallOEMInf; external SetupApiModuleName name 'SetupUninstallOEMInfA';
+function SetupUninstallNewlyCopiedInfs; external SetupApiModuleName name 'SetupUninstallNewlyCopiedInfs';
+{$ENDIF WINXP}
 function SetupCreateDiskSpaceListA; external SetupApiModuleName name 'SetupCreateDiskSpaceListA';
 function SetupCreateDiskSpaceListW; external SetupApiModuleName name 'SetupCreateDiskSpaceListW';
 function SetupCreateDiskSpaceList; external SetupApiModuleName name 'SetupCreateDiskSpaceListA';
@@ -7152,6 +8037,11 @@ function SetupInstallServicesFromInfSection; external SetupApiModuleName name 'S
 function SetupInstallServicesFromInfSectionExA; external SetupApiModuleName name 'SetupInstallServicesFromInfSectionExA';
 function SetupInstallServicesFromInfSectionExW; external SetupApiModuleName name 'SetupInstallServicesFromInfSectionExW';
 function SetupInstallServicesFromInfSectionEx; external SetupApiModuleName name 'SetupInstallServicesFromInfSectionExA';
+{$IFDEF WINXP}
+function InstallHinfSectionA; external SetupApiModuleName name 'InstallHinfSectionA';
+function InstallHinfSectionW; external SetupApiModuleName name 'InstallHinfSectionW';
+function InstallHinfSection; external SetupApiModuleName name 'InstallHinfSectionA';
+{$ENDIF WINXP}
 function SetupInitializeFileLogA; external SetupApiModuleName name 'SetupInitializeFileLogA';
 function SetupInitializeFileLogW; external SetupApiModuleName name 'SetupInitializeFileLogW';
 function SetupInitializeFileLog; external SetupApiModuleName name 'SetupInitializeFileLogA';
@@ -7174,7 +8064,14 @@ procedure SetupCloseLog; external SetupApiModuleName name 'SetupCloseLog';
 function SetupGetBackupInformationA; external SetupApiModuleName name 'SetupGetBackupInformationA';
 function SetupGetBackupInformationW; external SetupApiModuleName name 'SetupGetBackupInformationW';
 function SetupGetBackupInformation; external SetupApiModuleName name 'SetupGetBackupInformationA';
-{$ENDIF}
+{$ENDIF WIN2000}
+{$IFDEF WINXP}
+function SetupPrepareQueueForRestoreA; external SetupApiModuleName name 'SetupPrepareQueueForRestoreA';
+function SetupPrepareQueueForRestoreW; external SetupApiModuleName name 'SetupPrepareQueueForRestoreW';
+function SetupPrepareQueueForRestore; external SetupApiModuleName name 'SetupPrepareQueueForRestoreA';
+function SetupSetNonInteractiveMode; external SetupApiModuleName name 'SetupSetNonInteractiveMode';
+function SetupGetNonInteractiveMode; external SetupApiModuleName name 'SetupGetNonInteractiveMode';
+{$ENDIF WINXP}
 function SetupDiCreateDeviceInfoList; external SetupApiModuleName name 'SetupDiCreateDeviceInfoList';
 function SetupDiCreateDeviceInfoListExA; external SetupApiModuleName name 'SetupDiCreateDeviceInfoListExA';
 function SetupDiCreateDeviceInfoListExW; external SetupApiModuleName name 'SetupDiCreateDeviceInfoListExW';
@@ -7223,6 +8120,9 @@ function SetupDiGetDeviceInterfaceDetail; external SetupApiModuleName name 'Setu
 function SetupDiGetInterfaceDeviceDetail; external SetupApiModuleName name 'SetupDiGetDeviceInterfaceDetailA';
 function SetupDiInstallDeviceInterfaces; external SetupApiModuleName name 'SetupDiInstallDeviceInterfaces';
 function SetupDiInstallInterfaceDevices; external SetupApiModuleName name 'SetupDiInstallDeviceInterfaces';
+{$IFDEF WINXP}
+function SetupDiSetDeviceInterfaceDefault; external SetupApiModuleName name 'SetupDiSetDeviceInterfaceDefault';
+{$ENDIF WINXP}
 function SetupDiRegisterDeviceInfo; external SetupApiModuleName name 'SetupDiRegisterDeviceInfo';
 function SetupDiBuildDriverInfoList; external SetupApiModuleName name 'SetupDiBuildDriverInfoList';
 function SetupDiCancelDriverInfoSearch; external SetupApiModuleName name 'SetupDiCancelDriverInfoSearch';
@@ -7304,7 +8204,7 @@ function SetupDiGetDeviceRegistryProperty; external SetupApiModuleName name 'Set
 function SetupDiGetClassRegistryPropertyA; external SetupApiModuleName name 'SetupDiGetClassRegistryPropertyA';
 function SetupDiGetClassRegistryPropertyW; external SetupApiModuleName name 'SetupDiGetClassRegistryPropertyW';
 function SetupDiGetClassRegistryProperty; external SetupApiModuleName name 'SetupDiGetClassRegistryPropertyA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupDiSetDeviceRegistryPropertyA; external SetupApiModuleName name 'SetupDiSetDeviceRegistryPropertyA';
 function SetupDiSetDeviceRegistryPropertyW; external SetupApiModuleName name 'SetupDiSetDeviceRegistryPropertyW';
 function SetupDiSetDeviceRegistryProperty; external SetupApiModuleName name 'SetupDiSetDeviceRegistryPropertyA';
@@ -7312,7 +8212,7 @@ function SetupDiSetDeviceRegistryProperty; external SetupApiModuleName name 'Set
 function SetupDiSetClassRegistryPropertyA; external SetupApiModuleName name 'SetupDiSetClassRegistryPropertyA';
 function SetupDiSetClassRegistryPropertyW; external SetupApiModuleName name 'SetupDiSetClassRegistryPropertyW';
 function SetupDiSetClassRegistryProperty; external SetupApiModuleName name 'SetupDiSetClassRegistryPropertyA';
-{$ENDIF}
+{$ENDIF WIN2000}
 function SetupDiGetDeviceInstallParamsA; external SetupApiModuleName name 'SetupDiGetDeviceInstallParamsA';
 function SetupDiGetDeviceInstallParamsW; external SetupApiModuleName name 'SetupDiGetDeviceInstallParamsW';
 function SetupDiGetDeviceInstallParams; external SetupApiModuleName name 'SetupDiGetDeviceInstallParamsA';
@@ -7369,7 +8269,21 @@ function SetupDiSetSelectedDevice; external SetupApiModuleName name 'SetupDiSetS
 function SetupDiGetActualSectionToInstallA; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallA';
 function SetupDiGetActualSectionToInstallW; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallW';
 function SetupDiGetActualSectionToInstall; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallA';
+{$IFDEF WINXP}
+function SetupDiGetActualSectionToInstallExA; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallExA';
+function SetupDiGetActualSectionToInstallExW; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallExW';
+function SetupDiGetActualSectionToInstallEx; external SetupApiModuleName name 'SetupDiGetActualSectionToInstallExA';
+function SetupEnumInfSectionsA; external SetupApiModuleName name 'SetupEnumInfSectionsA';
+function SetupEnumInfSectionsW; external SetupApiModuleName name 'SetupEnumInfSectionsW';
+function SetupEnumInfSections; external SetupApiModuleName name 'SetupEnumInfSectionsA';
+function SetupVerifyInfFileA; external SetupApiModuleName name 'SetupVerifyInfFileA';
+function SetupVerifyInfFileW; external SetupApiModuleName name 'SetupVerifyInfFileW';;
+function SetupVerifyInfFile; external SetupApiModuleName name 'SetupVerifyInfFileA';
+function SetupDiGetCustomDevicePropertyA; external SetupApiModuleName name 'SetupDiGetCustomDevicePropertyA';
+function SetupDiGetCustomDevicePropertyW; external SetupApiModuleName name 'SetupDiGetCustomDevicePropertyW';
+function SetupDiGetCustomDeviceProperty; external SetupApiModuleName name 'SetupDiGetCustomDevicePropertyA';
+{$ENDIF WINXP}
 
-{$ENDIF}
+{$ENDIF SETUPAPI_LINKONREQUEST}
 
 end.

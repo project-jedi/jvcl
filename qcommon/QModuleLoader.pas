@@ -27,9 +27,9 @@
 {                                                                  }
 {******************************************************************}
 
-{$I jvcl.inc}
-
 unit QModuleLoader;
+
+{$I jvcl.inc}
 
 {$WEAKPACKAGEUNIT ON}
 
@@ -327,7 +327,7 @@ end;
 
 {$ENDIF LINUX}
 
-//=== TModuleLoader ==========================================================
+//=== { TModuleLoader } ======================================================
 
 constructor TModuleLoader.Create(const ADLLName: string; LoadMethods: TModuleLoadMethods = []);
 begin
