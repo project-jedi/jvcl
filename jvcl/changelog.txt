@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2004-11-05:
+- Added the ability for TJvLogFile to save content automatically and limit size to a set value. 
+  All this is off by default  // obones
 2004-11-04:
 - Added packages and support files for Delphi2005 (D9) // peter3
 2004-11-01:
