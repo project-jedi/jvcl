@@ -53,7 +53,7 @@ uses
   {$ENDIF COMPILER6_UP}
   JvDsgnConsts, JvTypes,
   {$IFDEF VCL}
-  JvRichEdit, JvStaticText,
+  JvRichEdit,
   JvDateTimePicker, JvDatePickerEdit, JvCalendar, JvxSlider, JvTextListBox,
   JvxCheckListBox, JvCoolBar,
   JvHotKey, JvMemo, JvMenus, JvSystemPopup, JvToolBar, JvUpDown,
@@ -72,7 +72,7 @@ uses
   JvToolEdit, JvBevel, JvCheckBox, JvSpeedButton, JvSecretPanel,
   JvCheckListBox, JvControlBar, JvCtrls, JvGroupBox, JvHeaderControl,
   JvImage, JvLabel, JvRadioButton, JvRadioGroup, JvScrollBar, JvShape,
-  JvStatusBar, JvGrids, JvStringGrid, JvBitBtn, JvPanel, JvImageList,
+  JvStaticText, JvStatusBar, JvGrids, JvStringGrid, JvBitBtn, JvPanel, JvImageList,
   JvTransparentPanel, JvCheckedItemsForm, JvProgressEditor, JvDsgnEditors,
   JvCheckedMaskEdit;
 
@@ -122,7 +122,7 @@ begin
   RegisterComponents(RsPaletteBarPanel, [TJvPageControl,
     TJvTabControl, TJvTabDefaultPainter,
     {$IFDEF VisualCLX}
-    TJvGauge,
+    TGauge,
     {$ENDIF VisualCLX}
     TJvProgressBar, TJvGradientProgressBar, TJvStatusBar,
     {$IFDEF VCL}
