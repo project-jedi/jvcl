@@ -294,6 +294,7 @@ type
     procedure ControlSetStretch(Value: boolean);
     procedure ControlSetTransparent(Value: boolean);
     procedure ControlSetPicture(Value: TPicture);
+    procedure ControlSetGraphic(Value: TGraphic);
     function ControlGetPicture: TPicture;
   end;
 
@@ -319,6 +320,7 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
     procedure ControlSetFocusControl(Value: TWinControl);
+    procedure ControlSetWordWrap(Value: Boolean);
   end;
 
   TJvDynControlVCLStaticText = class (TStaticText, IUnknown, IJvDynControl)
@@ -1231,6 +1233,11 @@ begin
   Picture.Assign(Value);
 end;
 
+procedure TJvDynControlVCLImage.ControlSetGraphic(Value: TGraphic);
+begin
+  Picture.Assign(Value);
+end;
+
 function TJvDynControlVCLImage.ControlGetPicture: TPicture;
 begin
   Result := Picture;
@@ -1296,6 +1303,11 @@ end;
 procedure TJvDynControlVCLLabel.ControlSetFocusControl(Value: TWinControl);
 begin
   FocusControl := Value;
+end;
+
+procedure TJvDynControlVCLLabel.ControlSetWordWrap(Value: Boolean);
+begin
+  WordWrap := Value;
 end;
 
 //=== TJvDynControlVCLStaticText =============================================

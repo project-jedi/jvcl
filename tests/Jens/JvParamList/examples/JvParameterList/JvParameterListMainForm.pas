@@ -2,22 +2,22 @@ unit JvParameterListMainForm;
 
 interface
 
-{.$DEFINE INCLUDE_DEVEXP_CX}
+{$DEFINE INCLUDE_DEVEXP_CX}
 
 uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
-  Dialogs, jvParameterList, StdCtrls, jvParameterList_Parameter, Mask,
+  Dialogs, JvDsaDialogs, jvParameterList, StdCtrls, jvParameterList_Parameter, Mask,
   JvToolEdit,
   {$IFDEF INCLUDE_DEVEXP_CX}
   cxButtons, cxListBox, cxRadioGroup, cxLookAndFeelPainters,
   cxDropDownEdit, cxCalendar, cxSpinEdit, cxTimeEdit, cxCheckBox, cxMemo,
   cxTextEdit, cxMaskEdit, cxControls, cxContainer, cxEdit, cxLabel,
-  cxImage,
+  cxImage, cxCheckListBox, 
   cxGroupBox,
   {$ENDIF}
   ExtCtrls, JvFormPlacement, JvComponent, JvAppStore,
   JvAppRegistryStore, JvDynControlEngine, ComCtrls, Buttons, JvBitBtn,
-  JvCombobox, CheckLst, cxCheckListBox, ShlObj, ExtDlgs, JvImage,
+  JvCombobox, CheckLst, ShlObj, ExtDlgs, JvImage,
   JvMaskEdit, JvSpin, JvBaseEdits;
 
 type
@@ -40,7 +40,6 @@ type
     WidthEdit: TMaskEdit;
     Label4: TLabel;
     HeightEdit: TMaskEdit;
-    DevExpCxLookAndFeelRadioGroup: TRadioGroup;
     JvAppRegistryStore: TJvAppRegistryStore;
     JvFormStorage1: TJvFormStorage;
     JvFormStorage2: TJvFormStorage;
@@ -50,9 +49,23 @@ type
     Image1: TImage;
     JvImage1: TJvImage;
     Image2: TImage;
+    GroupBox2: TGroupBox;
+    DevExpCxLookAndFeelRadioGroup: TRadioGroup;
     DevExpCxStyleGroupBox: TGroupBox;
     ShadowCheckBox: TCheckBox;
     ThickLinesCheckBox: TCheckBox;
+    GroupBox3: TGroupBox;
+    VCLRadioButton: TRadioButton;
+    JVCLRadioButton: TRadioButton;
+    CxRadioButton: TRadioButton;
+    Button5: TButton;
+    VclRedRadioButton: TRadioButton;
+    Button6: TButton;
+    Button7: TButton;
+    Button8: TButton;
+    Button9: TButton;
+    Button10: TButton;
+    Button11: TButton;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -61,6 +74,12 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn2Click(Sender: TObject);
     procedure DevExpCxLookAndFeelRadioGroupClick(Sender: TObject);
+    procedure VCLRadioButtonClick(Sender: TObject);
+    procedure Button5Click(Sender: TObject);
+    procedure Button6Click(Sender: TObject);
+    procedure Button7Click(Sender: TObject);
+    procedure Button8Click(Sender: TObject);
+    procedure Button11Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
@@ -77,10 +96,11 @@ implementation
 
 Uses JvDynControlEngine_VCL,
      JvDynControlEngine_JVCL,
+     JclBase,
      JvFormPlacementSelectList
      {$IFDEF INCLUDE_DEVEXP_CX}
      ,JvDynControlEngine_DevExpCx
-     ,cxLookAndFeels
+     ,cxLookAndFeels, JvDynControlEngine_VCLRed
      {$ENDIF}
      ;
 
@@ -258,10 +278,15 @@ begin
   DevExpCxStyleGroupBox.Enabled := FALSE;
   ShadowCheckBox.Enabled := FALSE;
   ThickLinesCheckBox.Enabled := FALSE;
+  CxRadioButton.Enabled := False;
+  if CxRadioButton.Checked then
+    VCLRadioButton.Checked := True;
   {$ENDIF}
   JvImage1.Picture.Assign(Image1.Picture);
   JvImage1.Invalidate;
   Image2.Picture.Assign(Image1.Picture);
+  VCLRadioButtonClick(nil);
+  DevExpCxLookAndFeelRadioGroupClick(nil);
 end;
 
 procedure TForm1.BitBtn1Click(Sender: TObject);
@@ -312,6 +337,73 @@ begin
       CxProperties.StyleController.Style.BorderStyle := ebsSingle;
   End;
   {$ENDIF}
+end;
+
+procedure TForm1.VCLRadioButtonClick(Sender: TObject);
+begin
+  {$IFDEF INCLUDE_DEVEXP_CX}
+  if CxRadioButton.Checked then
+    SetDefaultDynControlEngine (DynControlEngine_DevExpCx)
+  else
+  {$ENDIF}
+  if JVCLRadioButton.Checked then
+    SetDefaultDynControlEngine (DynControlEngine_JVCL)
+  else
+  if VCLRedRadioButton.Checked then
+    SetDefaultDynControlEngine (DynControlEngine_VCLRed)
+  else
+    SetDefaultDynControlEngine (DynControlEngine_VCL);
+end;
+
+procedure TForm1.Button5Click(Sender: TObject);
+begin
+  MessageDlg(
+    'Simple warning box, standard title, VCL buttons and image.',
+    mtWarning,
+    [mbOK],
+    0);
+end;
+
+procedure TForm1.Button6Click(Sender: TObject);
+begin
+  MessageDlg(
+    'Simple confirmation box, standard title, VCL buttons and image.',
+    mtConfirmation,
+    [mbYes, mbNo],
+    0);
+end;
+
+procedure TForm1.Button7Click(Sender: TObject);
+var
+  Pic: TPicture;
+  BtnCap: TDynStringArray;
+begin
+  Pic := TPicture.Create;
+  try
+    Pic.Icon.Assign(Application.Icon);
+    SetLength(BtnCap, 2);
+    BtnCap[0] := 'Sure';
+    BtnCap[1] := 'No way';
+    MessageDlgEx(
+      'Test warning',
+      'Extended confirmation box, custom title, buttons and image.',
+      Pic.Graphic,
+      BtnCap,
+      [10, 20],
+      0);
+  finally
+    Pic.Free;
+  end;
+end;
+
+procedure TForm1.Button8Click(Sender: TObject);
+begin
+  ShowMessage('Test ShowMessage with custom checkmark text.');
+end;
+
+procedure TForm1.Button11Click(Sender: TObject);
+begin
+  ShowTest1 (DynControlEngine_VCLRed);
 end;
 
 end.

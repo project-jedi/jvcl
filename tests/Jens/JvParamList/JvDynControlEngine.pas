@@ -48,6 +48,7 @@ type
   protected
     procedure SetPropertyValue(const APersistent: TPersistent; const APropertyName: string; const AValue: Variant);
     function GetPropertyValue(const APersistent: TPersistent; const APropertyName: string): Variant;
+    procedure AfterCreateControl (aControl : TControl); virtual;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -331,6 +332,10 @@ begin
   end;
 end;
 
+procedure TJvDynControlEngine.AfterCreateControl (aControl : TControl);
+begin
+end;
+
 function TJvDynControlEngine.CreateControl(AControlType: TJvDynControlType;
   AOwner: TComponent; AParentControl: TWinControl; AControlName: string): TControl;
 var
@@ -348,6 +353,7 @@ begin
   end
   else
     Result := nil;
+  AfterCreateControl (Result);
   if Result = nil then
     raise EJVCLException.Create(SNoRegisteredControlClass);
 end;

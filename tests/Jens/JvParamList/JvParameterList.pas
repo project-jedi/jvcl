@@ -1344,6 +1344,7 @@ begin
   with RightPanel do
   begin
     //Align := alNone;
+    Transparent := True;
     Align   := alRight;
     BorderStyle := bsNone;
     BevelInner := bvNone;
@@ -1360,6 +1361,7 @@ begin
   with ArrangePanel do
   begin
     //Align := alNone;
+    Transparent := True;
     Align := alTop;
     BorderStyle := bsNone;
     BevelInner := bvNone;

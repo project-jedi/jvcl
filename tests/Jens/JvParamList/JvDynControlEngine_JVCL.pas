@@ -312,6 +312,7 @@ type
     procedure ControlSetStretch(Value: boolean);
     procedure ControlSetTransparent(Value: boolean);
     procedure ControlSetPicture(Value: TPicture);
+    procedure ControlSetGraphic(Value: TGraphic);
     function ControlGetPicture: TPicture;
   end;
 
@@ -339,6 +340,7 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
     procedure ControlSetFocusControl(Value: TWinControl);
+    procedure ControlSetWordWrap(Value: Boolean);
   end;
 
   TJvDynControlJVCLStaticText = class (TJvStaticText, IUnknown, IJvDynControl)
@@ -376,7 +378,7 @@ uses
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  SysUtils;
+  JvDynControlEngine_VCL, SysUtils;
 
 var
   IntDynControlEngine_JVCL: TJvDynControlEngine;
@@ -1264,6 +1266,11 @@ begin
   Picture.Assign(Value);
 end;
 
+procedure TJvDynControlJVCLImage.ControlSetGraphic(Value: TGraphic);
+begin
+  Picture.Assign(Value);
+end;
+
 function TJvDynControlJVCLImage.ControlGetPicture: TPicture;
 begin
   Result := Picture;
@@ -1329,6 +1336,11 @@ end;
 procedure TJvDynControlJVCLLabel.ControlSetFocusControl(Value: TWinControl);
 begin
   FocusControl := Value;
+end;
+
+procedure TJvDynControlJVCLLabel.ControlSetWordWrap(Value: Boolean);
+begin
+  WordWrap := Value;
 end;
 
 //=== TJvDynControlJVCLStaticText ============================================
@@ -1413,7 +1425,7 @@ initialization
   IntDynControlEngine_JVCL.RegisterControl(jctButton, TJvDynControlJVCLButton);
   IntDynControlEngine_JVCL.RegisterControl(jctScrollBox, TJvDynControlJVCLScrollBox);
   IntDynControlEngine_JVCL.RegisterControl(jctPanel, TJvDynControlJVCLPanel);
-  IntDynControlEngine_JVCL.RegisterControl(jctImage, TJvDynControlJVCLImage);
+  IntDynControlEngine_JVCL.RegisterControl(jctImage, TJvDynControlVCLImage);
   IntDynControlEngine_JVCL.RegisterControl(jctCheckBox, TJvDynControlJVCLCheckBox);
   IntDynControlEngine_JVCL.RegisterControl(jctComboBox, TJvDynControlJVCLComboBox);
   IntDynControlEngine_JVCL.RegisterControl(jctListBox, TJvDynControlJVCLListBox);

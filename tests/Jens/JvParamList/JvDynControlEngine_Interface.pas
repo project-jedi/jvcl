@@ -63,6 +63,7 @@ type
   IJvDynControlLabel = interface
     ['{247D29CD-ABA4-4F87-A25D-4987BD950F0C}']
     procedure ControlSetFocusControl(Value: TWinControl);
+    procedure ControlSetWordWrap(Value: Boolean);
   end;
 
   TJvDynControlFileNameDialogKind = (jdkOpen, jdkOpenPicture, jdkSave, jdkSavePicture);
@@ -117,8 +118,8 @@ type
     procedure ControlSetStretch(Value: boolean);
     procedure ControlSetTransparent(Value: boolean);
     procedure ControlSetPicture(Value: TPicture);
+    procedure ControlSetGraphic(Value: TGraphic);
     function ControlGetPicture: TPicture;
-    property ControlPicture: TPicture read ControlGetPicture write ControlSetPicture;
   end;
 
   IJvDynControlButton = interface

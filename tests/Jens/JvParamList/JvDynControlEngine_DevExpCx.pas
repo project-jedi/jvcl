@@ -369,6 +369,7 @@ type
     procedure ControlSetStretch(Value: boolean);
     procedure ControlSetTransparent(Value: boolean);
     procedure ControlSetPicture(Value: TPicture);
+    procedure ControlSetGraphic(Value: TGraphic);
     function ControlGetPicture: TPicture;
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
@@ -400,6 +401,7 @@ type
     procedure ControlSetOnClick(Value: TNotifyEvent);
 
     procedure ControlSetFocusControl(Value: TWinControl);
+    procedure ControlSetWordWrap(Value: Boolean);
 
     procedure ControlSetCxProperties(Value: TCxDynControlWrapper);
   end;
@@ -579,7 +581,7 @@ end;
 
 procedure TJvDynControlCxCalcEdit.ControlSetValue(Value: variant);
 begin
-  Text := Value;
+  Self.Value := Value;
 end;
 
 function TJvDynControlCxCalcEdit.ControlGetValue: variant;
@@ -636,12 +638,12 @@ end;
 
 procedure TJvDynControlCxSpinEdit.ControlSetValue(Value: variant);
 begin
-  Text := Value;
+  Self.Value := Value;
 end;
 
 function TJvDynControlCxSpinEdit.ControlGetValue: variant;
 begin
-  Result := Text;
+  Result := Value;
 end;
 
 procedure TJvDynControlCxSpinEdit.ControlSetIncrement(Value: integer);
@@ -1428,6 +1430,8 @@ end;
 
 procedure TJvDynControlCxImage.ControlSetDefaultProperties;
 begin
+  //Properties.GraphicTransparency := gtOpaque;
+  ParentColor := True;
 end;
 
 procedure TJvDynControlCxImage.ControlSetCaption(Value: string);
@@ -1493,6 +1497,11 @@ begin
   Picture.Assign(Value);
 end;
 
+procedure TJvDynControlCxImage.ControlSetGraphic(Value: TGraphic);
+begin
+  Picture.Assign(Value);
+end;
+
 function TJvDynControlCxImage.ControlGetPicture: TPicture;
 begin
   Result := Picture;
@@ -1502,6 +1511,7 @@ procedure TJvDynControlCxImage.ControlSetCxProperties(Value: TCxDynControlWrappe
 begin
   Style.LookAndFeel.Assign(Value.LookAndFeel);
   Style.StyleController := Value.StyleController;
+  Style.StyleController.Style.BorderStyle := ebsNone;
 end;
 
 //=== TJvDynControlCxScrollBox ===============================================
@@ -1564,6 +1574,12 @@ end;
 procedure TJvDynControlCxLabel.ControlSetFocusControl(Value: TWinControl);
 begin
   FocusControl := Value;
+end;
+
+procedure TJvDynControlCxLabel.ControlSetWordWrap(Value: Boolean);
+begin
+//  Properties.WordWrap := Value;
+  WordWrap := Value;
 end;
 
 procedure TJvDynControlCxLabel.ControlSetCxProperties(Value: TCxDynControlWrapper);
