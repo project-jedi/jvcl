@@ -33,15 +33,10 @@ unit JvImageList;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
-  Windows,
-  {$ENDIF MSWINDOWS}
+  Windows, Graphics, Controls, ImgList,
   {$IFDEF VCL}
-  Graphics, Controls, ImgList, CommCtrl,
+  CommCtrl,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QGraphics, QControls, QImgList,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvFinalize;
 
@@ -159,6 +154,9 @@ type
       // Merge creates a new TJvImageList and returns it. It is up to the user
       // to release this new image list.
     {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure GetIcon(Index: Integer; Ico: TIcon);
+    {$ENDIF VisualCLX}
     procedure SaveToFile(const Filename: string);
     procedure SaveToStream(Stream: TStream); virtual;
     procedure LoadFromFile(const Filename: string);
@@ -1152,8 +1150,24 @@ begin
     Result.Handle := h;
   end;
 end;
-
 {$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvImageList.GetIcon(Index: Integer; Ico: TIcon);
+var
+  Bmp: TBitmap;
+begin
+  Bmp := TBitmap.Create;
+  try
+    GetBitmap(Index, Bmp);
+    Ico.Assign(Bmp);
+  finally
+    Bmp.Free;
+  end;
+end;
+{$ENDIF VisualCLX}
+
+
 
 procedure TJvImageList.LoadFromFile(const Filename: string);
 var
