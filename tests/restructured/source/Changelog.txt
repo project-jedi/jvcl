@@ -1,6 +1,14 @@
+2002-07-11
+- Added Robert Marquardt's HID component to the JV System tab and a couple of demos to \examples
+- JvRecentMenuBtn: fixed bug where folders were included
+- JvDirectories: added properties for getting the Common and All Users folders
+- JvFavoritesButton: now folders are placed ahead of files
+- JvStartMenuBtn:now folders are placed ahead of files + added Options property to include items from the Common and All Users Start Menus
+
 2002-07-10
 - Added packages for Delphi 6 Personal
 - Modified JvProgressBar to support D6 Personal
+
 2002-07-08
 - Modified Files for D5 support:
 	JvAppHotKey.pas JvCaptionButton.pas JvChangeNotify.pas 
