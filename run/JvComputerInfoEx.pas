@@ -168,9 +168,6 @@ const
 
 type
   PDevBroadcastHdr = ^TDevBroadcastHdr;
-{$IFDEF COMPILER6_UP}
-{$EXTERNALSYM DEV_BROADCAST_HDR}
-{$ENDIF COMPILER6_UP}
   DEV_BROADCAST_HDR = packed record
     dbch_size: DWORD;
     dbch_devicetype: DWORD;
@@ -179,9 +176,6 @@ type
   TDevBroadcastHdr = DEV_BROADCAST_HDR;
 
   PDevBroadcastVolume = ^TDevBroadcastVolume;
-{$IFDEF COMPILER6_UP}
-{$EXTERNALSYM DEV_BROADCAST_VOLUME}
-{$ENDIF COMPILER6_UP}
   DEV_BROADCAST_VOLUME = packed record
     dbcv_size: DWORD;
     dbcv_devicetype: DWORD;
