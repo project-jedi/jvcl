@@ -61,7 +61,7 @@ type
     FRightMargin: Integer;
     FMaxFontSize: Integer;
     FSpeed: Integer;
-    Pic: Integer;
+    FPics: Integer;
     procedure SetForeImage(Value: TPicture);
     procedure SetBackImage(Value: TPicture);
     function GetForeImage: TPicture;
@@ -98,8 +98,8 @@ uses
 
 const
   cDelayIncrement = 50;
-  cIntToStyle: array[0..3] of TFontStyles =
-  ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
+  cIntToStyle: array [0..3] of TFontStyles =
+    ([], [fsBold], [fsItalic], [fsBold, fsItalic]);
 
 constructor TJvaScrollText.Create(AOwner: TComponent);
 begin
@@ -186,7 +186,7 @@ var
   DelayPause2: Longword;
   Pixels: 1..4;
   Pixels2: 1..4;
-  Pix: array[1..4] of Integer;
+  Pix: array [1..4] of Integer;
  // DrawInfo: Boolean;
   Line: Integer;
   H2, Popr, LastLine: Integer;
@@ -308,8 +308,8 @@ var
         Exit;
     until GetTickCount - DelayMsec > DelayPause;
     {************* Correction of speed [translated] *************}
-    Inc(Pic);
-    if Pic > 11 then
+    Inc(FPics);
+    if FPics > 11 then
     begin
       { To recorrect speed - to make by the jerks [translated] }
       Pixels := 1;
@@ -326,7 +326,7 @@ var
       Pix[2] := 0;
       Pix[3] := 0;
       Pix[4] := 0;
-      Pic := 0;
+      FPics := 0;
     end
     else
     begin

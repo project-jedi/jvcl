@@ -46,7 +46,7 @@ uses
 type
   {$IFDEF BCB}
   TDate = TDateTime;
-  {$ENDIF}
+  {$ENDIF BCB}
 
   TJvDateTimePicker = class(TDateTimePicker)
   private
@@ -66,7 +66,7 @@ type
     procedure SetNullDate(const Value: TDateTime);
   protected
     function WithinDelta(Val1, Val2: TDateTime): Boolean; virtual;
-    // returns True if NullDate matches Date or frac(NullDate) matches frac(Time) depending on Kind
+    // returns True if NullDate matches Date or Frac(NullDate) matches Frac(Time) depending on Kind
     function CheckNullValue: Boolean; virtual;
     procedure Change; override;
     function MsgSetDateTime(Value: TSystemTime): Boolean; override;
@@ -96,7 +96,6 @@ constructor TJvDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FHintColor := clInfoBk;
-  // ControlStyle := ControlStyle + [csAcceptsControls];
   FNullText := RsNoneCaption;
   FDropDownDate := SysUtils.Date;
 end;

@@ -57,6 +57,7 @@ type
   end;
 
   IElementEnumerator = interface;
+
   TDefaultParser = class(TInterfacedObject, IParser)
   private
     FEnum: IElementEnumerator;
@@ -110,9 +111,9 @@ type
   end;
 
 const
-  OpenTag: Char = '<';
-  CloseTag: Char = '>';
-  EndMarker: Char = '/';
+  OpenTag = '<';
+  CloseTag = '>';
+  EndMarker = '/';
 
 constructor TElementEnumerator.Create(const Text: string);
 begin
@@ -211,8 +212,8 @@ end;
 
 //=== TDefaultParser =========================================================
 
-procedure TDefaultParser.AddSourceTreeToDynamicNode( const Node: TDynamicNode;
-                                                     const Source: string);
+procedure TDefaultParser.AddSourceTreeToDynamicNode(const Node: TDynamicNode;
+  const Source: string);
 var
   Parser: TDefaultParser;
   Tree: TNodeTree;
@@ -229,7 +230,7 @@ begin
 
     Tree.Root.OwnsChildren := False;
     for I := 0 to Tree.Root.Children.Count - 1 do
-      Node.AddChild(Tree.Root.Children[I],Tree.Root);
+      Node.AddChild(Tree.Root.Children[I], Tree.Root);
   finally
     Tree.Free;
   end;
@@ -237,50 +238,46 @@ end;
 
 function TDefaultParser.GetNodeFromTag(const Tag: string): TNode;
 type
-  TTag =
-    (ttBold, ttItalic, ttUnderline, ttColor, ttLink, ttLineBreak, ttParagraphBreak, ttDynamic);
+  TTag = (ttBold, ttItalic, ttUnderline, ttColor,
+    ttLink, ttLineBreak, ttParagraphBreak, ttDynamic);
 var
   CurrentTag: TTag;
   UnknownTag: Boolean;
 
-// Bianconi
-  function GetColorFromTag : TColor;
+  // Bianconi
+  function GetColorFromTag: TColor;
   var
-    sVar : String;
+    sVar: string;
   begin
     Result := clNone;
-    sVar := Copy(Tag,Pos('=',Tag) + 1,Length(Tag));
+    sVar := Copy(Tag, Pos('=', Tag) + 1, Length(Tag));
     try
       Result := StringToColor(sVar);
-    except  // Only to avoid raise an exception on invalid color
+    except // Only to avoid raise an exception on invalid color
     end;
   end;
-// End of Bianconi
+  // End of Bianconi
 
   function GetTagFromString: TTag;
   const
     TagStrings: array [TTag] of PChar =
-      ('B',
-       'I',
-       'U',
-       'COLOR=',            // Bianconi
-       'LINK',
-       'BR',
-       'P',
-       'DYNAMIC');
+     ('B',
+      'I',
+      'U',
+      'COLOR=', // Bianconi
+      'LINK',
+      'BR',
+      'P',
+      'DYNAMIC');
     DontCare = 0;
   begin
     UnknownTag := False;
-// Bianconi
+    // Bianconi
     for Result := Low(TTag) to High(TTag) do
-    begin
-      if (AnsiUpperCase(Tag) = TagStrings[Result]) OR
-         (Copy(AnsiUpperCase(Tag),1,Length(TagStrings[Result])) = 'COLOR=') then
-      begin
+      if (AnsiUpperCase(Tag) = TagStrings[Result]) or
+        (Copy(AnsiUpperCase(Tag), 1, Length(TagStrings[Result])) = 'COLOR=') then
         Exit;
-      end;
-    end;
-//End of Bianconi
+    //End of Bianconi
     Result := TTag(DontCare); // To get rid of a compiler warning
     UnknownTag := True;
   end;
@@ -302,12 +299,10 @@ begin
         Result := TStyleNode.Create(fsItalic);
       ttUnderline:
         Result := TStyleNode.Create(fsUnderline);
-// Bianconi
-      ttColor :
-        begin
-          Result := TColorNode.Create(GetColorFromTag);
-        end; // ttColor
-// End of Bianconi
+      // Bianconi
+      ttColor:
+        Result := TColorNode.Create(GetColorFromTag);
+      // End of Bianconi
       ttLink:
         Result := TLinkNode.Create;
       ttLineBreak:
@@ -374,8 +369,7 @@ var
       contains children at parse-time, thus we shouldn't wait for a redundant
       </DYNAMIC>. Instead, its contents are supplied before it's rendered by
       compiled program code. }
-    Result :=
-      (Element.Kind = ekBeginTag) and
+    Result := (Element.Kind = ekBeginTag) and
       (Node is TParentNode) and not (Node is TDynamicNode);
   end;
 
@@ -393,14 +387,10 @@ begin
       raise EParserError.Create(RsEUnsupportedState);
     end;
 
-    if( Node.GetNodeType = ntRootNode ) then
-    begin
-      Node.AddChild(NewNode, TRootNode(Node));
-    end
+    if (Node.GetNodeType = ntRootNode) then
+      Node.AddChild(NewNode, TRootNode(Node))
     else
-    begin
       Node.AddChild(NewNode, Node.Root);
-    end;
 
     if IsNodeContainer(NewNode, Element) then
       ParseNode(NewNode as TParentNode);

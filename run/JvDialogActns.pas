@@ -35,25 +35,17 @@ unit JvDialogActns;
 interface
 
 uses
-  Classes,
-  SysUtils,
-  ActnList,
-  StdActns,
-  {$IFNDEF COMPILER6_UP}Dialogs,{$ENDIF}
-  JvBaseDlg,
-  JvBrowseFolder,
-  JvSelectDirectory,
-  JvConnectNetwork,
-  JvWinDialogs,
-  JvDialogs,
-  JvPageSetupTitled,
-  JvPageSetup;
-
+  Classes, SysUtils, ActnList, StdActns,
+  {$IFNDEF COMPILER6_UP}
+  Dialogs,
+  {$ENDIF COMPILER6_UP}
+  JvBaseDlg, JvBrowseFolder, JvSelectDirectory, JvConnectNetwork,
+  JvWinDialogs, JvDialogs, JvPageSetupTitled, JvPageSetup;
 
 type
   {$IFNDEF COMPILER6_UP}
   TCommonDialogClass = class of TCommonDialog;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   TJvCommonDialogClass = class of TJvCommonDialog;
   TJvCommonDialogPClass = class of TJvCommonDialogP;
   TJvCommonDialogFClass = class of TJvCommonDialogF;
@@ -62,7 +54,7 @@ type
   private
     {$IFDEF COMPILER6_UP}
     FExecuteResult: Boolean;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     FOnAccept: TNotifyEvent;
     FOnCancel: TNotifyEvent;
     FBeforeExecute: TNotifyEvent;
@@ -77,7 +69,7 @@ type
     {$IFDEF COMPILER6_UP}
     procedure ExecuteTarget(Target: TObject); override;
     property ExecuteResult: Boolean read FExecuteResult;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
 
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
   published
@@ -89,7 +81,7 @@ type
     property ShortCut;
     {$IFDEF COMPILER6_UP}
     property SecondaryShortCuts;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property Visible;
   end;
 
@@ -113,7 +105,7 @@ type
     property ShortCut;
     {$IFDEF COMPILER6_UP}
     property SecondaryShortCuts;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property Visible;
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
     property AfterExecute: TNotifyEvent read FAfterExecute write FAfterExecute;
@@ -139,7 +131,7 @@ type
     property ShortCut;
     {$IFDEF COMPILER6_UP}
     property SecondaryShortCuts;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property Visible;
     property BeforeExecute: TNotifyEvent read FBeforeExecute write FBeforeExecute;
     property AfterExecute: TNotifyEvent read FAfterExecute write FAfterExecute;
@@ -216,7 +208,7 @@ type
     property Visible;
     {$IFDEF COMPILER6_UP}
     property SecondaryShortCuts;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     property OnAccept;
     property OnCancel;
   end;
@@ -264,7 +256,7 @@ begin
     FDialog.Name := Copy(DialogClass.ClassName, 2, Length(DialogClass.ClassName));
    {$IFDEF COMPILER6_UP}
     FDialog.SetSubComponent(True);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
   DisableIfNoHandler := False;
   Enabled := True;
@@ -289,7 +281,8 @@ begin
       FOnCancel(Self);
   end;
 end;
-{$ENDIF}
+{$ENDIF COMPILER6_UP}
+
 function TJvCommonDialogAction.GetDialogClass: TJvCommonDialogClass;
 begin
   Result := nil;
@@ -314,7 +307,7 @@ begin
     FDialog.Name := Copy(DialogClass.ClassName, 2, Length(DialogClass.ClassName));
     {$IFDEF COMPILER6_UP}
     FDialog.SetSubComponent(True);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
   DisableIfNoHandler := False;
   Enabled := True;
@@ -356,7 +349,7 @@ begin
     FDialog.Name := Copy(DialogClass.ClassName, 2, Length(DialogClass.ClassName));
     {$IFDEF COMPILER6_UP}
     FDialog.SetSubComponent(True);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
   end;
   DisableIfNoHandler := False;
   Enabled := True;

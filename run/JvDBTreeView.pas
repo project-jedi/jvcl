@@ -46,9 +46,9 @@ unit JvDBTreeView;
 interface
 
 uses
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
   CommCtrl, ComCtrls, ExtCtrls, DB;
 

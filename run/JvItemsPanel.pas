@@ -21,14 +21,15 @@ Last Modified: 2002-05-26
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
+Description:
+  A Panel that is divided into items defined by the Items property
+
 Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I jvcl.inc}
 
 unit JvItemsPanel;
-
-{ A Panel that is divided into items defined by the Items property }
 
 interface
 
@@ -59,9 +60,6 @@ type
     FHotTrackColor: TColor;
     FOnItemClick: TJvPanelItemClickEvent;
     FOrientation: TJvPanelOrientation;
-    {$IFDEF VCL}
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    {$ENDIF VCL}
     function GetCaption: TCaption;
     procedure SetItems(const Value: TStrings);
     procedure SetItemHeight(const Value: Integer);
@@ -70,6 +68,9 @@ type
     procedure SetHotTrackColor(const Value: TColor);
     procedure SetClickable(const Value: Boolean);
     procedure SetOrientation(const Value: TJvPanelOrientation);
+    {$IFDEF VCL}
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    {$ENDIF VCL}
   protected
     procedure SetAutoSize(Value: Boolean); {$IFDEF VCL} override; {$ENDIF}
     {$IFDEF VisualCLX}
@@ -226,7 +227,7 @@ begin
       else
         R.Right := R.Right + Rest;
     end;
-    Frame3d(Canvas, R, clBtnHighLight, clBtnShadow, 1);
+    Frame3D(Canvas, R, clBtnHighLight, clBtnShadow, 1);
     InflateRect(R, 1, 1);
     DrawItemText(I, R, False);
   end;
@@ -306,13 +307,19 @@ end;
 
 {$IFDEF VCL}
 procedure TJvItemsPanel.WMSize(var Msg: TWMSize);
-{$ELSE}
-procedure TJvItemsPanel.AdjustSize;
-{$ENDIF VCL}
 begin
   inherited;
   Grow;
 end;
+{$ENDIF VCL}
+
+{$IFDEF VisualCLX}
+procedure TJvItemsPanel.AdjustSize;
+begin
+  inherited AdjustSize;
+  Grow;
+end;
+{$ENDIF VisualCLX}
 
 procedure TJvItemsPanel.Grow;
 begin
@@ -403,7 +410,7 @@ procedure TJvItemsPanel.PaintDown;
 begin
   if not FClickable then
     Exit;
-  Frame3d(Canvas, FDownRect, clBtnShadow, clBtnHighLight, 1);
+  Frame3D(Canvas, FDownRect, clBtnShadow, clBtnHighLight, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
     DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
@@ -413,7 +420,7 @@ end;
 
 procedure TJvItemsPanel.PaintUp;
 begin
-  Frame3d(Canvas, FDownRect, clBtnHighLight, clBtnShadow, 1);
+  Frame3D(Canvas, FDownRect, clBtnHighLight, clBtnShadow, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
     DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
@@ -423,7 +430,7 @@ end;
 
 procedure TJvItemsPanel.PaintHi;
 begin
-  Frame3d(Canvas, FDownRect, clWhite, clBlack, 1);
+  Frame3D(Canvas, FDownRect, clWhite, clBlack, 1);
   InflateRect(FDownRect, 1, 1);
   if Orientation = poVertical then
     DrawItemText(GetItemAt(1, FDownRect.Top + 1), FDownRect, True)
@@ -469,7 +476,7 @@ end;
 procedure TJvItemsPanel.DoItemClick(ItemIndex: Integer);
 begin
   if Assigned(FOnItemClick) then
-    FOnItemClick(self, ItemIndex);
+    FOnItemClick(Self, ItemIndex);
 end;
 
 procedure TJvItemsPanel.SetOrientation(const Value: TJvPanelOrientation);

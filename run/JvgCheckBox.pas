@@ -36,7 +36,6 @@ uses
   JvgTypes, JvgCommClasses, JvComponent, JvgUtils;
 
 type
-
   TJvgCheckBox = class(TJvGraphicControl)
   private
     FChecked: Boolean;
@@ -57,9 +56,7 @@ type
     FFocusControl: TWinControl;
     FFocusControlMethod: TFocusControlMethod;
     FAfterPaint: TNotifyEvent;
-
     FGlyphKind: TglGlyphKind;
-
     FPrevWndProc: Pointer;
     FNewWndProc: Pointer;
     FActiveNow: Boolean;
@@ -203,7 +200,7 @@ begin
   //  FNeedUpdateOnlyMainText := False;
   {$IFDEF FR_RUS}
   Font.CharSet := RUSSIAN_CHARSET;
-  {$ENDIF}
+  {$ENDIF FR_RUS}
   GlyphKind := fgkDefault;
 end;
 //______________________________________________________________

@@ -253,7 +253,6 @@ begin
           FillRect(Rect(X, R.Top, X2, R.Bottom));
           Inc(X, FStep + FInterspace);
         end;
-
     end;
     //...CALC POSITION
     try
@@ -303,15 +302,13 @@ begin
           Y := TextSize.cy;
         end;
       fldDownUp:
-        begin
-          case FCaptionAlignment of
-            taCenter:
-              Y := (Height + TextSize.cx - (Size.cy - TextSize.cy)) div 2;
-            taRightJustify:
-              Y := TextSize.cx - 4;
-          else
-            Y := Height - (Size.cy - TextSize.cy) - 2;
-          end;
+        case FCaptionAlignment of
+          taCenter:
+            Y := (Height + TextSize.cx - (Size.cy - TextSize.cy)) div 2;
+          taRightJustify:
+            Y := TextSize.cx - 4;
+        else
+          Y := Height - (Size.cy - TextSize.cy) - 2;
         end;
       fldUpDown:
         begin
@@ -396,8 +393,11 @@ end;
 
 procedure TJvgProgress.SetCaptionStyle(Value: TglTextStyle);
 begin
-  FCaptionStyle := Value;
-  Repaint;
+  if FCaptionStyle <> Value then
+  begin
+    FCaptionStyle := Value;
+    Repaint;
+  end;
 end;
 
 procedure TJvgProgress.SetStep(Value: Integer);

@@ -43,8 +43,8 @@ uses
 type
   TJvTextShape = class;
 
+  // All controls descend from this, to help with streaming and unique naming
   TJvCustomDiagramShape = class(TJvGraphicControl)
-    // All controls descend from this, to help with streaming and unique naming
   private
     FCanProcessMouseMsg: Boolean;
     FCaption: TJvTextShape;
