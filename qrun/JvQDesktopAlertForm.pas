@@ -136,7 +136,7 @@ uses
   JclUnitVersioning,
   {$ENDIF UNITVERSIONING}
   QMenus, SysUtils,
-  JvQJVCLUtils, JvQDesktopAlert, JvResources;
+  JvQJVCLUtils, JvQDesktopAlert, JvQResources;
 
 {.$R *.dfm} // not needed
 

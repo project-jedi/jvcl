@@ -113,7 +113,6 @@ type
     procedure ChangeScale(M, D , MH, DH : Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     property Data: Pointer read FData write FData;
   published
     property Expanded: Boolean read FExpanded write SetExpanded default True;
@@ -544,15 +543,9 @@ begin
     Margin := 4;
     Spacing := -1;
     NoBorder := False;
-    ParentColor := True;
-    {o} 
+    ParentColor := True; 
   end;
   Expanded := True;
-end;
-
-destructor TJvScrollMaxBand.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvScrollMaxBand.Loaded;

@@ -221,7 +221,6 @@ type
     property ImageIndex[ADate: TDate]: Integer read GetImageIndex write SetImageIndex;
     // gets / sets the TObject for a specific date
     property Objects[ADate: TDate]: TObject read GetObjects write SetObjects;
-
   end;
 
   TJvTMTimeline = class(TJvCustomTMTimeline)
@@ -336,12 +335,13 @@ uses
 
 
 resourcestring
-  SInvalidImage = 'Invalid Image'; 
+  SInvalidImage = 'Invalid Image';
+
 
 const
   cMagic = 'Jv.TMTIMELINE1';
 
-  //=== { TJvTLSelFrame } ======================================================
+//=== { TJvTLSelFrame } ======================================================
 
 constructor TJvTLSelFrame.Create;
 begin
@@ -1348,13 +1348,14 @@ begin
 end;
 
 function TJvCustomTMTimeline.DateHasImage(ADate: TDateTime): Boolean;
-var i:Integer;
+var
+  I: Integer;
 begin
   Result := False;
   if Assigned(Images) then
   begin
-    i := ImageIndex[ADate];
-    Result := (i >= 0) and (i < Images.Count);
+    I := ImageIndex[ADate];
+    Result := (I >= 0) and (I < Images.Count);
   end;
 end;
 

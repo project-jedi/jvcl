@@ -207,7 +207,7 @@ type
     procedure FontChanged; override;
     procedure DoEnter; override;
     procedure DoCtl3DChanged; virtual;
-    function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean; override;
+    function DoPaintBackGround(Canvas: TCanvas; Param: Integer): Boolean; override;
     { Repositions the child controls; checkbox }
     procedure UpdateControls; virtual;
     { Updates the margins of the edit box }
@@ -1069,10 +1069,6 @@ begin
   end; 
 end;
 
-
-
-
-
 function PaintComboEdit(Editor: TJvCustomComboEdit; const AText: string;
   AAlignment: TAlignment; StandardPaint: Boolean; Flat: Boolean;
   ACanvas: TCanvas): Boolean;
@@ -1085,12 +1081,6 @@ begin
   else
     Result := True;
 end;
-
-
-
-
-
-
 
 { PaintEdit (CLX) needs an implemented EM_GETRECT message handler. If no
   EM_GETTEXT handler exists or the edit control does not implement
@@ -1189,7 +1179,7 @@ begin
       begin
         (*
         if Supports(ed, IJvWinControlEvents) then
-          (ed as IJvWinControlEvents).DoEraseBackground(ACanvas, 0);
+          (ed as IJvWinControlEvents).DoPaintBackGround(ACanvas, 0);
         *)
         ACanvas.Brush.Style := bsClear;
         ACanvas.Font.Color := DisabledTextColor;
@@ -1507,14 +1497,14 @@ begin
   end;
 end;
 
-function TJvCustomComboEdit.DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;
+function TJvCustomComboEdit.DoPaintBackGround(Canvas: TCanvas; Param: Integer): Boolean;
 begin
   Result := True;
   if csDestroying in ComponentState then
     { (rb) Implementation diffs; some return True other False }
     Exit;
   if Enabled then
-    Result := inherited DoEraseBackground(Canvas, Param)
+    Result := inherited DoPaintBackGround(Canvas, Param)
   else
   begin
     Canvas.Brush.Color := FDisabledColor;
@@ -1545,7 +1535,8 @@ procedure TJvCustomComboEdit.EnabledChanged;
 begin
   inherited EnabledChanged;
   Invalidate;
-  FButton.Enabled := Enabled;
+  if Assigned(FButton) then
+    FButton.Enabled := Enabled;
   if Assigned(FOnEnabledChanged) then
     FOnEnabledChanged(Self);
 end;
@@ -2314,7 +2305,8 @@ var
   Loc: TRect;
 begin
   { Delay until Loaded and Handle is created }
-  if (csLoading in ComponentState) or not HandleAllocated then
+//  if (csLoading in ComponentState) or not HandleAllocated then
+  if (csLoading in ComponentState) or (Parent = nil) then
     Exit;
 
   {UpdateMargins gets called whenever the layout of child controls changes.
@@ -2412,6 +2404,8 @@ end;
 constructor TJvCustomDateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  ControlStyle := ControlStyle - [csSetCaption];
+
   // Polaris
   FDateAutoBetween := True;
   FMinDate := NullDate;

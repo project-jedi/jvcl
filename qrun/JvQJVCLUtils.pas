@@ -120,6 +120,13 @@ function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
   HighLightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
   TBitmap;
+
+  overload;
+function CreateDisabledBitmap(FOriginal: TBitmap): TBitmap; overload;
+function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor = clDefault): TBitmap;
+
+
+
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
@@ -1313,6 +1320,83 @@ begin
     Bitmap.Width, Bitmap.Height, 0, 0, Bitmap.Width, Bitmap.Height);
 end;
 
+
+function CreateMonoBitmap(FOriginal: TBitmap; BackColor: TColor): TBitmap;
+var
+  Img: QImageH;
+  tmp: TBitmap;
+begin
+  Img := QImage_create;
+  tmp := TBitmap.Create;
+  if BackColor = clNone then
+    tmp.Assign(FOriginal)
+  else
+    with tmp do
+    begin
+      Width := FOriginal.width;
+      Height := FOriginal.Height;
+      if BackColor = clDefault then
+        BackColor := FOriginal.Canvas.Pixels[0, Height-1];
+      with Canvas do
+      begin
+        Start;
+        Brush.Color := clWhite;
+        FillRect(Rect(0,0, Width, Height));
+        DrawBitmapTransparent(Canvas, 0, 0, FOriginal, BackColor);
+        Stop;
+      end;
+    end;
+  QPixmap_convertToImage(tmp.Handle, Img);
+  try
+    Result := TBitmap.Create;
+    try
+      Result.Handle := QPixmap_create(FOriginal.Width, FOriginal.Width, -1, QPixmapOptimization_NoOptim);
+      QPixmap_convertFromImage(Result.Handle, Img,  Integer(ImageConversionFlags_MonoOnly) +
+        Integer(ImageConversionFlags_ThresholdDither) + Integer(ImageConversionFlags_AvoidDither));
+      Result.TransparentColor := clWhite;
+      Result.Transparent := True;
+    except
+      Result.Free;
+      Result := nil;
+    end;
+  finally
+    tmp.Free;
+    QImage_destroy(Img);
+  end;
+end;
+
+procedure MakeBitmapMonochrome(Bmp: TBitmap);
+var
+  Tmp: TBitmap;
+begin
+  Tmp := CreateMonoBitmap(Bmp, clBlack);
+  Bmp.Assign(Tmp);
+  Tmp.Free;
+end;
+
+function CreateDisabledBitmap(FOriginal: TBitmap): TBitmap;
+var
+  IconSet: QIconSetH;
+  MonoBmp: TBitmap;
+begin
+  Result := TBitmap.Create;
+  MonoBmp := CreateMonoBitmap(FOriginal);
+  try
+    IconSet := QIconSet_create(MonoBmp.Handle, QIconSetSize_Small);
+    try
+      Result.Handle := QPixmap_create;
+      QIconSet_pixmap(IconSet, Result.Handle, QIconSetSize_Small, False);
+    finally
+      QIconSet_destroy(IconSet);
+    end;
+  except
+    Result.Free;
+    Result := nil;
+  end;
+  MonoBmp.Free;
+end;
+
+
 { CreateDisabledBitmap. Creating TBitmap object with disable button glyph
   image. You must destroy it outside by calling TBitmap.Free method. }
 
@@ -1427,12 +1511,13 @@ end;
 
 function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
   TBitmap;
-begin
+begin  
   Result := CreateDisabledBitmapEx(FOriginal, OutlineColor,
-    clBtnFace, clBtnHighlight, clBtnShadow, True);
+//    clBtnFace, clBtnHighlight, clBtnShadow, True);
+    clDark, clLight, clBtnShadow, True); 
 end;
 
-{ ChangeBitmapColor. This function create new TBitmap object.
+{ ChangeBitmapColor. This function creates a new TBitmap object.
   You must destroy it outside by calling TBitmap.Free method. }
 
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
@@ -3096,6 +3181,18 @@ end;
 
 procedure InternalRestoreFormPlacement(Form: TForm; const AppStorage: TJvCustomAppStorage;
   const StorePath: string; Options: TPlacementOptions = [fpState, fpSize, fpLocation]);
+
+    procedure ChangePosition (APosition : TPosition);
+    begin
+      TComponentAccessProtected(Form).SetDesigning(True);
+      try
+        Form.Position := APosition;
+      finally
+        TComponentAccessProtected(Form).SetDesigning(False);
+      end;
+    end;
+
+
 const
   Delims = [',', ' '];
 var
@@ -3166,15 +3263,27 @@ begin
               rcNormalPosition.Top, rcNormalPosition.Left + Width, rcNormalPosition.Top + Height);
         if rcNormalPosition.Right > rcNormalPosition.Left then
         begin
-          if (Position in [poScreenCenter, poDesktopCenter]) and
-            not (csDesigning in ComponentState) then
+          if not (csDesigning in ComponentState) then
           begin
-            TComponentAccessProtected(Form).SetDesigning(True);
-            try
-              Position := poDesigned;
-            finally
-              TComponentAccessProtected(Form).SetDesigning(False);
-            end;
+            if (fpSize in Options) and (fpLocation in Options) then
+              ChangePosition(poDesigned)
+            else
+            if fpSize in Options then
+            begin
+              {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
+              if Position = poDefault then
+                ChangePosition(poDefaultPosOnly);
+              {.ENDIF}
+            end
+            else
+            if fpLocation in Options then // obsolete but better to read
+              {.$IFDEF DELPHI????_UP}  // Change to the right version 5 or 6 ?
+              if Position = poDefault then
+                ChangePosition(poDefaultSizeOnly)
+              else
+              {.ENDIF}
+              if Position <> poDesigned then
+                ChangePosition(poDesigned);
           end;
           SetWindowPlacement(Handle, @Placement);
         end;
@@ -5367,7 +5476,7 @@ var
     end;
   end;
 
-  procedure NewLine(Always: Boolean= false);
+  procedure NewLine(Always: Boolean = False);
   begin
     if Assigned(Canvas) then
       if Always or (vCount < vStr.Count - 1) then
