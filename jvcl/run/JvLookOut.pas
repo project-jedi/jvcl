@@ -32,8 +32,15 @@ unit JvLookOut;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, Buttons, Menus, ImgList,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QButtons,
+  QMenus, QImgList, QTypes, QWindows,
+  {$ENDIF VisualCLX}
   JvTypes, JvConsts, JvComponent, JvThemes, JvExControls, JvExButtons;
 
 const
@@ -50,7 +57,9 @@ type
     FDown: Boolean;
     FFlat: Boolean;
     procedure SetFlat(Value: Boolean);
+    {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
+    {$ENDIF VCL}
   protected
     procedure OnTime(Sender: TObject); virtual;
     procedure Paint; override;
@@ -136,7 +145,7 @@ type
     procedure EditMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer);
     procedure PaintFrame; virtual;
-    procedure SetParent(AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
     procedure Paint; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
@@ -185,7 +194,9 @@ type
     property Caption;
     property Constraints;
     property Down;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property Font;
@@ -231,7 +242,9 @@ type
     property Caption;
     property Constraints;
     property Down;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FillColor default clBtnFace;
@@ -323,8 +336,13 @@ type
     procedure CalcArrows; virtual;
     procedure ScrollChildren(Start: Word); virtual;
     procedure AlignControls(Control: TControl; var Rect: TRect); override;
-    procedure SetParent(AParent: TWinControl); override;
+    procedure SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl); override;
+    {$IFDEF VCL}
     procedure CreateWnd; override;
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    {$ENDIF VisualCLX}
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
@@ -358,7 +376,9 @@ type
     property ShowPressed: Boolean read FShowPressed write FShowPressed default False;
     property Caption: TCaption read FCaption write SetCaption;
     property Color;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property ShowHint;
     property Visible;
@@ -407,10 +427,12 @@ type
     function GetPage(Index: Integer): TJvLookOutPage;
     procedure SetPage(Index: Integer; Value: TJvLookOutPage);
     procedure SetFlatButtons(Value: Boolean);
+    {$IFDEF VCL}
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
+    {$ENDIF VCL}
     procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
   protected
-    procedure SetAutoSize(Value: Boolean); override; 
+    procedure SetAutoSize(Value: Boolean); override;
     procedure SmoothScroll(AControl: TControl; NewTop, AInterval: Integer; Smooth: Boolean); virtual;
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -429,7 +451,9 @@ type
     property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
     property Color default clBtnShadow;
     property FlatButtons: Boolean read FFlatButtons write SetFlatButtons default False;
+    {$IFDEF VCL}
     property DragCursor;
+    {$ENDIF VCL}
     property DragMode;
     property ImageSize: TJvImageSize read FImageSize write SetImageSize default isLarge;
     property ShowHint;
@@ -459,9 +483,14 @@ type
     procedure ScrollChildren(Start: Word); override;
     procedure DrawTopButton; override;
     procedure Paint; override;
+    {$IFDEF VCL}
     procedure CreateWnd; override;
-    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
     procedure WMNCCalcSize(var Msg: TWMNCCalcSize); message WM_NCCALCSIZE;
+    {$ENDIF VCL}
+    procedure WMNCPaint(var Msg: TMessage); message WM_NCPAINT;
+    {$IFDEF VisualCLX}
+    procedure CreateWidget; override;
+    {$ENDIF VisualCLX}
   public
     constructor Create(AOwner: TComponent); override;
     function AddButton: TJvExpressButton;
@@ -474,8 +503,14 @@ type
 
 implementation
 
+{$IFDEF VCL}
 uses
   ActnList;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QActnList;
+{$ENDIF VisualCLX}
 
 const
   cSpeed = 20;
@@ -638,10 +673,12 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvUpArrowBtn.CMDesignHitTest(var Msg: TCMDesignHitTest);
 begin
   Msg.Result := 1;
 end;
+{$ENDIF VCL}
 
 procedure TJvUpArrowBtn.Paint;
 var
@@ -1207,7 +1244,7 @@ begin
 
     PaintFrame;
 
-    Flags := DT_END_ELLIPSIS or DT_EDITCONTROL;
+    Flags := DT_END_ELLIPSIS {$IFDEF VCL}or DT_EDITCONTROL{$ENDIF};
 
     if (FImageSize = isSmall) and Assigned(FSmallImages) then
     begin
@@ -1241,7 +1278,7 @@ begin
     if (ImageSize = isSmall) and Assigned(FSmallImages) then
       R.Left := R.Left + FSmallImages.Width + (FSpacing * 3)
     else
-      Flags := DT_END_ELLIPSIS or DT_EDITCONTROL or DT_WORDBREAK or DT_CENTER or DT_VCENTER;
+      Flags := DT_END_ELLIPSIS or DT_WORDBREAK or DT_CENTER or DT_VCENTER {$IFDEF VCL}or DT_EDITCONTROL{$ENDIF};
     if FDown then
       OffsetRect(R, FOffset, FOffset);
     FTextRect := R;
@@ -1301,7 +1338,12 @@ begin
     if (csDesigning in ComponentState) and not Visible then
     begin
       Canvas.Brush.Style := bsBDiagonal;
+      {$IFDEF VCL}
       Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
+      {$ENDIF VisualCLX}
       Canvas.Brush.Style := bsSolid;
     end
     else
@@ -1313,7 +1355,12 @@ begin
     else
     begin { fill it up! }
       Canvas.Brush.Color := FFillColor;
+      {$IFDEF VCL}
       Windows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      QWindows.FillRect(Canvas.Handle, R, Canvas.Brush.Handle);
+      {$ENDIF VisualCLX}
     end;
 
     if FDown then
@@ -1493,7 +1540,7 @@ begin
   end;
 end;
 
-procedure TJvCustomLookOutButton.SetParent(AParent: TWinControl);
+procedure TJvCustomLookOutButton.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
 begin
   if AParent <> Parent then
   begin
@@ -1754,7 +1801,7 @@ begin
     FActiveButton := Value;
 end;
 
-procedure TJvLookOutPage.SetParent(AParent: TWinControl);
+procedure TJvLookOutPage.SetParent({$IFDEF VisualCLX}const {$ENDIF}AParent: TWinControl);
 begin
   if AParent <> Parent then
   begin
@@ -1898,11 +1945,21 @@ begin
   FInScroll := False;
 end;
 
+{$IFDEF VCL}
 procedure TJvLookOutPage.CreateWnd;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvLookOutPage.CreateWidget;
+{$ENDIF VisualCLX}
 var
   R: TRect;
 begin
+  {$IFDEF VCL}
   inherited CreateWnd;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  inherited CreateWidget;
+  {$ENDIF VisualCLX}
   R := GetClientRect;
   if not Assigned(FUpArrow) then
   begin
@@ -2618,6 +2675,7 @@ begin
   inherited;
 end;
 
+
 procedure TJvLookOut.WMNCPaint(var Msg: TMessage);
 var
   DC: HDC;
@@ -2659,6 +2717,9 @@ procedure TJvLookOut.Paint;
 begin
   if not (Visible or (csDesigning in ComponentState)) then
     Exit;
+  {$IFDEF VisualCLX}
+  Perform(WM_NCPAINT, 1, 0);
+  {$ENDIF VisualCLX}
   Canvas.Brush.Color := Color;
   Canvas.FillRect(GetClientRect);
   { make TJvLookOuts adjust to Managers size }
@@ -2680,6 +2741,9 @@ end;
 
 procedure TJvExpress.Paint;
 begin
+  {$IFDEF VisualCLX}
+  Perform(WN_NCPAINT, 1, 0);
+  {$ENDIF VisualCLX}
   if not FBitmap.Empty then
   begin
     ControlStyle := ControlStyle + [csOpaque];
@@ -2798,16 +2862,25 @@ begin
   end;
 end;
 
+{$IFDEF VCL}
 procedure TJvExpress.WMNCCalcSize(var Msg: TWMNCCalcSize);
 begin
   with Msg.CalcSize_Params^ do
     InflateRect(rgrc[0], -2, -2);
   inherited;
 end;
+{$ENDIF VCL}
 
+{$IFDEF VCL}
 procedure TJvExpress.CreateWnd;
 begin
   inherited CreateWnd;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+procedure TJvExpress.CreateWidget;
+begin
+  inherited CreateWidget;
+{$ENDIF VisualCLX}
   if not Assigned(FUpArrow) then
     FUpArrow := TJvUpArrowBtn.Create(nil);
 
