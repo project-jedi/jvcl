@@ -39,11 +39,11 @@ uses
   Libc,
   {$ENDIF LINUX}
   {$IFDEF VCL}
-  Messages, Graphics, Controls, Forms,
+  Messages,
   {$ENDIF VCL}
+  Graphics, Controls, Forms,
   {$IFDEF VisualCLX}
-  Qt, QTypes, QGraphics, QControls, QForms, QStdCtrls, QMask, QClipbrd,
-  Types, QWindows,
+  Qt, QTypes, QStdCtrls, QMask, QClipbrd, QWindows,
   {$ENDIF VisualCLX}
   Classes, SysUtils,
   JvTypes, JvThemes, JVCLVer;
@@ -66,10 +66,18 @@ type
   );
   TDlgCodes = set of TDlgCode;
 
-  {$IFDEF VisualCLX}
+{$IFDEF VisualCLX}
+  TAlignInfo = record
+    AlignList: TList;
+    ControlIndex: Integer;
+    Align: TAlign;
+    Scratch: Integer;
+  end;
   HWND = QWindows.HWND;
   TClxWindowProc = procedure(var Msg: TMessage) of object;
-  {$ENDIF VisualCLX}
+const
+  QEventType_FontChanged = QEventType(Integer(QEventType_User) + $70);
+{$ENDIF VisualCLX}
 
 const
   dcWantMessage = dcWantAllKeys;
@@ -104,8 +112,8 @@ type
     {$ENDIF VCL}
   end;
 
-  IJvStdControlEvents = interface(IPerformControl)
-    ['{62259013-4F43-44BC-AA8C-9E862F9FEE36}']
+  IJvWinControlEvents = interface(IJvControlEvents)
+    ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     procedure DoBoundsChanged;
     procedure CursorChanged;
     procedure ShowingChanged;
@@ -116,21 +124,19 @@ type
     procedure DoSetFocus(FocusedWnd: HWND);  // WM_SETFOCUS
     procedure DoKillFocus(FocusedWnd: HWND); // WM_KILLFOCUS
     function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean; // WM_ERASEBKGND
-  end;
-
-
-  IJvWinControlEvents = interface(IJvStdControlEvents)
-    ['{B5F7FB62-78F0-481D-AFF4-7A24ED6776A0}']
     {$IFDEF VisualCLX}
-    function GetDoubleBuffered: Boolean;
+    procedure DoFontChanged(Sender: TObject);  // CM_FONTCHANGED
     procedure Paint;
     {$ENDIF VisualCLX}
   end;
 
-
-
-  IJvCustomControlEvents = interface(IPerformControl)
+  IJvCustomControlEvents = interface(IJvWinControlEvents)
     ['{7804BD3A-D7A5-4314-9259-6DE08A0DC38A}']
+    {$IFDEF VisualCLX}
+    // implements doublebuffering for  TCustomControl derived classes and
+    // TJvExWidgetControl.
+    function GetDoubleBuffered: Boolean;
+    {$ENDIF VisualCLX}
   end;
 
   IJvEditControlEvents = interface(IPerformControl)
@@ -174,8 +180,7 @@ type
 
 type
   JV_CONTROL_EVENTS(Control)
-  JV_WINCONTROL_EVENTS(WinControl)
-
+  JV_WIDGETCONTROL_EVENTS(WinControl)
   JV_CONTROL_EVENTS_BEGIN(GraphicControl)
   JV_CONSTRUCTOR
   {$IFDEF VisualCLX}
@@ -195,6 +200,10 @@ type
   {$DEFINE CONSTRUCTORCODE}
 
   JV_CUSTOMCONTROL_EVENTS(HintWindow)
+  {$IFDEF VisualCLX}
+  JV_WINCONTROL_EVENTS(FrameControl)
+  {$ENDIF VisualCLX}
+
 
 {$IFDEF VCL}
 
@@ -238,16 +247,26 @@ procedure Control_MouseLeave(Instance, Control: TControl; var FMouseOver: Boolea
 function DefaultDoPaintBackground(Instance: TWinControl; Canvas: TCanvas; Param: Integer): Boolean;
 
 {$IFDEF VisualCLX}
+// handles fontchanged & focuschanged
+function WidgetControl_EventFilter(Instance: TWidgetControl; Sender: QObjectH; Event: QEventH): Boolean;
+
+// Paint method for native Qt Controls
+procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   EventRegion: QRegionH);
-  // - redirects Canvas.Handle to a Pixmap if Instance.DoubleBuffered is set
-  // - calls Instance.Paint
-procedure WidgetControl_DefaultPaint(Instance: TWidgetControl; Canvas: TCanvas);
 
-function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
+// - redirects Canvas.Handle to a Pixmap if Instance.DoubleBuffered is set
+// - calls Instance.Paint
+procedure CustomControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
+  EventRegion: QRegionH);
+procedure WidgetControl_ColorChanged(Instance: TWidgetControl);
+
+// support for PaintTo & PaintWindow
+procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: integer);
+
+function WidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
   Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
 
-procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
 {$ENDIF VisualCLX}
 
 procedure TCustomEdit_Undo(Instance: TWinControl);
@@ -687,13 +706,69 @@ type
   TCustomEditAccessProtected = class(TCustomEdit);
   TCustomMaskEditAccessProtected = class(TCustomMaskEdit);
 
-procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
+procedure WidgetControl_PaintTo(Instance: TWidgetControl; PaintDevice: QPaintDeviceH; X, Y: integer);
+var
+  PixMap: QPixmapH;
+begin
+  PixMap := QPixmap_create;
+  try
+    with Instance do
+    begin
+      QPixmap_grabWidget(PixMap, Handle, 0, 0, Width, Height);
+      Qt.BitBlt(PaintDevice, X, Y, PixMap, 0, 0, Width, Height, RasterOp_CopyROP, True);
+    end;
+  finally
+    QPixMap_destroy(PixMap);
+  end;
+end;
+
+function WidgetControl_EventFilter(Instance: TWidgetControl; Sender: QObjectH; Event: QEventH): Boolean;
+var
+  Intf: IJvWinControlEvents;
+  Wnd: QWidgetH;
+begin
+  Result := false;
+  try
+    case QEvent_type(Event) of
+      QEventType_FocusIn, QEventType_FocusOut:
+        begin
+          if Supports(Instance, IJvWinControlEvents, Intf) then
+          begin
+            if Screen.ActiveControl <> nil then
+              Wnd := Screen.ActiveControl.Handle
+            else
+              Wnd := nil;
+            if QEvent_type(Event) = QEventType_FocusIn then
+              Intf.DoSetFocus(Wnd)
+            else
+              Intf.DoKillFocus(Wnd);
+          end;
+        end;
+      QEventType_FontChanged:
+        begin
+          if Supports(Instance, IJvWinControlEvents, Intf) then
+          begin
+            Intf.DoFontChanged(Instance);
+            Result := true;
+          end;
+        end;
+    end;
+  except
+    on E: Exception do
+    begin
+      Application.ShowException(E);
+      Result := False;
+    end;
+  end;
+end;
+
+procedure CustomControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
   EventRegion: QRegionH);
 var
   HasBackground: Boolean;
   Pixmap: QPixmapH;
   OriginalPainter: QPainterH;
-  Intf: IJvWinControlEvents;
+  Intf: IJvCustomControlEvents;
   IsDoubleBuffered: Boolean;
   R: TRect;
 begin
@@ -705,7 +780,7 @@ begin
   if IsRectEmpty(R) then
     Exit;
 
-  Instance.GetInterface(IJvWinControlEvents, Intf);
+  Instance.GetInterface(IJvCustomControlEvents, Intf);
   IsDoubleBuffered := Intf.GetDoubleBuffered;
   Pixmap := nil;
   OriginalPainter := nil;
@@ -756,7 +831,7 @@ begin
       if Instance is TCustomControl then
         TCustomControlAccessProtected(Instance).Paint
       else
-        Intf.Paint;
+        (Instance as IJvWinControlEvents).Paint;
     finally
       if Pixmap <> nil then
       begin
@@ -768,6 +843,38 @@ begin
           RasterOp_CopyROP, True);
         QPixmap_destroy(Pixmap);
       end;
+      TControlCanvas(Canvas).StopPaint;
+    end;
+  end;
+end;
+
+procedure WidgetControl_Painting(Instance: TWidgetControl; Canvas: TCanvas;
+  EventRegion: QRegionH);
+var
+  R: TRect;
+begin
+  if (csDestroying in Instance.ComponentState) or not Assigned(Instance.Parent) then
+    Exit;
+
+  R := Rect(0, 0, 0, 0);
+  QRegion_boundingRect(EventRegion, @R);
+  if IsRectEmpty(R) then
+    exit;
+  with TWidgetControlAccessProtected(Instance) do
+  begin
+    TControlCanvas(Canvas).StartPaint;
+    try
+      Canvas.Brush.Assign(Brush);
+      Canvas.Font.Assign(Font);
+      QPainter_setFont(Canvas.Handle, Canvas.Font.Handle);
+      QPainter_setPen(Canvas.Handle, Canvas.Font.FontPen);
+      QPainter_setBrush(Canvas.Handle, Canvas.Brush.Handle);
+
+      if Instance is TCustomForm then
+        // TCustomForm calls Paint in it's EventFilter
+      else
+        (Instance as IJvWinControlEvents).Paint;
+    finally
       TControlCanvas(Canvas).StopPaint;
     end;
   end;
@@ -805,7 +912,7 @@ begin
   end;
 end;
 
-function TWidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
+function WidgetControl_NeedKey(Instance: TWidgetControl; Key: Integer;
   Shift: TShiftState; const KeyText: WideString; InheritedValue: Boolean): Boolean;
 
   function IsTabKey: Boolean;
@@ -853,15 +960,15 @@ begin
   end;
 end;
 
-procedure TWidgetControl_ColorChanged(Instance: TWidgetControl);
+procedure WidgetControl_ColorChanged(Instance: TWidgetControl);
 var
   TC: QColorH;
-  Intf: IJvWinControlEvents;
+  Intf: IJvCustomControlEvents;
 begin
   with TWidgetControlAccessProtected(Instance) do
   begin
     HandleNeeded;
-    Instance.GetInterface(IJvWinControlEvents, Intf);
+    Instance.GetInterface(IJvCustomControlEvents, Intf);
     if Bitmap.Empty then
     begin
       Palette.Color := Brush.Color;
@@ -877,18 +984,6 @@ begin
   end;
 end;
 
-{$IFDEF COMPILER6}
-
-// redirect Kylix 3 / Delphi 7 function names to Delphi 6 available function
-{$IF not declared(PatchedVCLX)}
-type
-  QClxLineEditH = QLineEditH;
-
-procedure QClxLineEdit_copy(handle: QLineEditH); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_copy';
-procedure QClxLineEdit_cut(handle: QLineEditH); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_cut';
-procedure QClxLineEdit_insert(handle: QLineEditH; p1: PWideString); cdecl; external QtIntf name QtNamePrefix + 'QLineEdit_insert';
-{$IFEND}
-
 procedure QClxLineEdit_undo(handle: QLineEditH);
 var
   W: WideString;
@@ -903,8 +998,6 @@ begin
     QKeyEvent_destroy(Event);
   end;
 end;
-
-{$ENDIF COMPILER6}
 
 {$ENDIF VisualCLX}
 
@@ -1000,7 +1093,8 @@ end;
 // *****************************************************************************
 
 JV_CONTROL_EVENTS_IMPL(Control)
-JV_WINCONTROL_EVENTS_IMPL(WinControl)
+
+JV_WIDGETCONTROL_EVENTS_IMPL(WinControl)
 
 JV_CONTROL_EVENTS_IMPL_BEGIN(GraphicControl)
 {$IFDEF VisualCLX}
@@ -1036,10 +1130,14 @@ begin
   end;
 end;
 {$ENDIF VisualCLX}
-JV_CONTROL_EVENTS_IMPL_END(GraphicControl)
 
+JV_CONTROL_EVENTS_IMPL_END(GraphicControl)
 JV_CUSTOMCONTROL_EVENTS_IMPL(CustomControl)
 JV_CUSTOMCONTROL_EVENTS_IMPL(HintWindow)
+{$IFDEF VisualCLX}
+JV_WINCONTROL_EVENTS_IMPL(FrameControl)
+{$ENDIF VisualCLX}
+
 
 // *****************************************************************************
 
@@ -1264,66 +1362,7 @@ finalization
 
 {$ENDIF COMPILER5}
 
-{$IFDEF VisualCLX}
-
-// Handles DoSetFocus and DoKillFocus
-
-function AppEventFilter(App: TApplication; Sender: QObjectH; Event: QEventH): Boolean; cdecl;
-var
-  Control: TWidgetControl;
-  Intf: IJvWinControlEvents;
-  Wnd: HWND;
-begin
-  Result := False; // let the default event handler handle this event
-  try
-    case QEvent_type(Event) of
-      QEventType_FocusIn, QEventType_FocusOut:
-        begin
-          Control := FindControl(QWidgetH(Sender));
-          if (Control <> nil) and Supports(Control, IJvWinControlEvents, Intf) then
-          begin
-            if Screen.ActiveControl <> nil then
-              Wnd := Screen.ActiveControl.Handle
-            else
-              Wnd := HWND(0);
-            if QEvent_type(Event) = QEventType_FocusIn then
-              Intf.DoSetFocus(Wnd)
-            else
-              Intf.DoKillFocus(Wnd);
-          end;
-        end;
-    end;
-  except
-    on E: Exception do
-    begin
-      Application.ShowException(E);
-      Result := False;
-    end;
-  end;
-end;
-
-var
-  AppEventFilterHook: QObject_hookH = nil;
-
-procedure InstallAppEventFilterHook;
-var
-  Method: TMethod;
-begin
-  if AppEventFilterHook = nil then
-  begin
-    Method.Code := @AppEventFilter;
-    Method.Data := Application;
-    AppEventFilterHook := QObject_hook_create(Application.Handle);
-    Qt_hook_hook_events(AppEventFilterHook, Method);
-  end;
-end;
-
-procedure UninstallAppEventFilterHook;
-begin
-  if Assigned(AppEventFilterHook) then
-    QObject_hook_destroy(AppEventFilterHook);
-end;
-
+{$IFDEF VISUALCLX}
 
 function CallSetFocusedControl(Instance: TCustomForm; Control: TWidgetControl): Boolean;
 asm
@@ -1400,10 +1439,8 @@ var
     CallCopyToClipboard, CallUndo: TOrgCallCode;
 
 initialization
-  InstallAppEventFilterHook;
-  InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
-    @CallSetFocusedControl);
-
+//  InstallProcHook(@TCustomForm.SetFocusedControl, @SetFocusedControlHook,
+//    @CallSetFocusedControl);
   InstallProcHook(@TCustomEdit.CutToClipboard, @CutToClipboardHook,
     @CallCutToClipboard);
   InstallProcHook(@TCustomEdit.CopyToClipboard, @CopyToClipboardHook,
@@ -1431,10 +1468,7 @@ finalization
   UninstallProcHook(@CallUndo);
   {$IFEND}
   {$ENDIF COMPILER7}
-
-  UninstallProcHook(@CallSetFocusedControl);
-  UninstallAppEventFilterHook;
-
+//  UninstallProcHook(@CallSetFocusedControl);
 {$ENDIF VisualCLX}
 
 end.
