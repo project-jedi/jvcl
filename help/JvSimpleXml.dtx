@@ -180,7 +180,7 @@ Summary
 @@TJvSimpleXML
 <TITLEIMG TJvSimpleXML>
 JVCLInfo
-  GROUP=JVCL.???
+  GROUP=JVCL.Network
   FLAG=Component
 Summary
   The component to manipulate a XML file
@@ -201,7 +201,7 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.IndentString
 Summary
-  The string to perform indentation in the file
+  The string to use when performing indentation in the file.
 Description
   This string must be made of only spaces or tabs, and if not, will be refused leaving the current
   value unchanged.
@@ -244,8 +244,58 @@ Summary
   Load the xml data from a string
 Parameters
   Value - The string to load the value from
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXML.OnEncodeValue
+Summary
+  Occurs when a value is to be encoded.
+Description
+  Write a handler for this event to do special processing to the XML data of tag and attribute values.
+  The normal processing of JvSimpleXML (if sxoAutoEncodeValue is set in Options) is to encode all
+  tag and attribute value susing the SimpleXMLEnocde function but you can handle all encoding/decoding
+  yourself using any of the events OnEncodeValue, OnDecodeValue, OnEncodeStream and OnDecodeStream.
 
+  Note that if you assign a handler to this event, the default decoding is not performed, regardless of
+  the value of sxoAutoEncodeValue.
+See Also
+  OnDecodeValue, OnEncodeStream, OnDecodeStream
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXML.OnDecodeValue
+Summary
+  Occurs when a value is to be decoded.
+Description
+  Write a handler for this event to do special processing to the XML data of tag and attribute values.
+  The normal processing of JvSimpleXML (if sxoAutoEncodeValue is set in Options) is to decode
+  all XML values using the SimpleXMLDecode function but you can handle all encoding/decoding yourself
+  using any of the events OnEncodeValue, OnDecodeValue, OnEncodeStream and OnDecodeStream.
 
+  Note that if you assign a handler to this event, the default decoding is not performed, regardless of
+  the value of sxoAutoEncodeValue.
+See Also
+  OnEncodeValue, OnEncodeStream, OnDecodeStream
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXML.OnEncodeStream
+Summary
+  Occurs when the XML data is written to string, stream or file.
+Description
+  Write a handler for this event to do special processing of the XML stream before writing it to
+  storage. For example, use this event to convert an internal XML format to a standard encoding.
+
+  Note that if you assign a handler to this event, you should set sxoAutoEncodeValue to false in Options
+  to prevent the default encoding of tag and attribute values.
+See Also
+  OnDecodeStream
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXML.OnDecodeStream
+Summary
+  Occurs when the XML data is read from string, stream or file.
+Description
+  Write a handler for this event to do special processing of the XML stream before reading it into
+  the component. For example, use this event to convert an encoded XML file to an internal format.
+
+  Note that if you assign a handler to this event, you should set sxoAutoEncodeValue to false in Options
+  to prevent the default encoding of tag and attribute values.
+See Also
+  OnEncodeStream
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.OnLoadProgress
 Summary
@@ -292,16 +342,14 @@ Summary
   The prolog in the xml file
 Description
   Usually indicates the DTD to be used with the XML file. For instance:
-  <?xml version="1.0"?> 
-  <!DOCTYPE greeting SYSTEM "hello.dtd"> 
+  <?xml version="1.0"?>
+  <!DOCTYPE greeting SYSTEM "hello.dtd">
 
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.Root
 Summary
   The root element in the xml file
-
-
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXML.SaveToFile
 Summary
@@ -337,6 +385,10 @@ Return value
 See Also
   LoadFromString, SaveToFile, SaveToStream
 
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXML.XMLData
+Summary
+  Provides access to the XML data as a string.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLElem
@@ -1043,8 +1095,11 @@ Summary
 Description
   sxoAutoCreate - If an element is accessed by name and it doesn't  exist, it will be created
   sxoAutoIndent - Automatically adds indentation string when outputing the xml data in character form
-
-
+  sxoAutoEncodeValue - Automatically encode and decode tag and attribute values when they are read from
+                       and written to persistent storage.
+  sxoAutoEncodeEntity - Automatically encode and decode XML built-in entities when
+                        they are read from and written to persistent storage. Note
+                        that this value is only used when sxoAutoEncodeValue is false.
 ----------------------------------------------------------------------------------------------------
 @@TJvSimpleXMLProp
 Summary
@@ -1372,27 +1427,39 @@ Parameters
   AXml  - The XML element to put in the variant
 See Also
   XmlCreate
-
-
 ----------------------------------------------------------------------------------------------------
 @@XMLDecode
 <TITLE XMLDecode function>
 Summary
-  Decodes the given string
+  Decodes the given string. This function calls SimpleXMLDecode.
 Parameters
   S - The string to decode
 See Also
   SimpleXMLDecode
-
-
 ----------------------------------------------------------------------------------------------------
 @@XMLEncode
 <TITLE XMLEncode function>
 Summary
-  Encodes the given string
+  Encodes the given string. This function calls SimpleXMLEncode.
 Parameters
   S - The string to encode
 See Also
   SimpleXmlEncode
-
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLEncodeEvent
+<TITLE @@TJvSimpleXMLEncodeEvent type>
+Summary
+  Event type used by OnEncode and OnDecode events of TJvSimpleXML.
+Parameters
+  Sender - the component that triggered the event.
+  Value  - the value to encode.
+----------------------------------------------------------------------------------------------------
+@@TJvSimpleXMLEncodeStreamEvent
+<TITLE @@TJvSimpleXMLEncodeEvent type>
+Summary
+ Event type used by OnEncodeStream and OnDecodeStream of TJvSimpleXML.
+Parameters
+  Sender    - the component that triggered the event.
+  InStream  - the stream to encode/decode.
+  OutStream - the result of encoding/decoding InStream.
 
