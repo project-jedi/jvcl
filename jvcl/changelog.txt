@@ -1,5 +1,11 @@
 Changelog for JVCL 3.0
 ======================
+2004-11-22:
+- TJvZoom:
+  * Added ZoomPercentage - opposite of ZoomLevel
+  * Added CrosshairPicture. Use instead of CrossHairColor/CrossHairSize. Still need to set CrossHair to true to use.
+  * Added ZoomInAt method: use with Enabled set to false to manually control the zoom area, use with Enabled set to true to move the cursor to the specified location
+  * published several missing propeties (Anchors, Align, Constraints, Enabled, Visible) // peter3
 2004-11-18:
 - JvRas32: A new RasAvailable property has been added and it no longer raises an exception when RAS is not available // peter3
 2004-11-17:
