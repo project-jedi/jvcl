@@ -92,14 +92,15 @@ begin
         else
           if DataSource.DataSet.Fields[i].Visible then
           begin
-            lColumn := FJvMyDBGrid.Columns.Add;
-            // On essaie de l'insérer à sa place
-            if i < FJvMyDBGrid.Columns.Count then lColumn.Index := i;
+            lColumn := FJvDBGrid.Columns.Add;
+            // Try to insert it at its place
+            if i < FJvDBGrid.Columns.Count then 
+              lColumn.Index := i;
             lColumn.Field := DataSource.DataSet.Fields[i];
           end;
       end
       else
-        FJvMyDBGrid.Columns.Items[i].Visible := clbList.Checked[i];
+        FJvDBGrid.Columns.Items[i].Visible := clbList.Checked[i];
     end;
   end;
 end;
@@ -114,9 +115,9 @@ var
   i, j: Integer;
   lColumn: TColumn;
 begin
-  if Assigned(FJvMyDBGrid) then
+  if Assigned(FJvDBGrid) then
   begin
-    with FJvMyDBGrid do
+    with FJvDBGrid do
     try
       if not (Assigned(DataSource) and
         Assigned(DataSource.DataSet)) then Exit;
@@ -132,7 +133,7 @@ begin
             else clbList.Checked[j] := false;
           end
       else
-        with FJvMyDBGrid.Columns do
+        with FJvDBGrid.Columns do
           for i := 0 to Count - 1 do
           begin
             j := clbList.Items.AddObject(Items[i].Title.Caption, Items[i]);
@@ -152,7 +153,7 @@ var
   i: integer;
 begin
   result := nil;
-  with FJvMyDBGrid.Columns do
+  with FJvDBGrid.Columns do
     for i := 0 to Count - 1 do
     begin
       if Items[i].FieldName = aField.FieldName then
