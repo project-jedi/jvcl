@@ -63,4 +63,13 @@ object frmProgress: TfrmProgress
     Left = 102
     Top = 18
   end
+  object ActionList1: TActionList
+    Left = 160
+    Top = 24
+    object Action1: TAction
+      Caption = 'Action1'
+      ShortCut = 32883
+      OnExecute = Action1Execute
+    end
+  end
 end

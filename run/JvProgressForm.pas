@@ -42,7 +42,7 @@ uses
   QWindows, QForms, QGraphics, QExtCtrls, QStdCtrls,
   QControls, QComCtrls, QTypes,
   {$ENDIF VisualCLX}
-  JvComponent;
+  JvComponent, ActnList;
 
 type
   TJvPrivateProgressUpdate = procedure(Sender: TObject;
@@ -56,13 +56,16 @@ type
     Label1: TLabel;
     btnCancel: TButton;
     tmProgress: TTimer;
+    ActionList1: TActionList;
+    Action1: TAction;
     procedure tmProgressTimer(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
     procedure FormPaint(Sender: TObject);
+    procedure Action1Execute(Sender: TObject);
   private
     FOnProgress: TJvPrivateProgressUpdate;
     FOnCancel: TNotifyEvent;
-    FCancelled: Boolean;
+    FCancelled, FCanClose: Boolean;
     function DoProgress: Boolean;
     procedure DoCancel;
     procedure AdjustComponents;
@@ -123,6 +126,7 @@ begin
       tmProgress.Interval := AInterval;
       tmProgress.Enabled := AInterval > 0;
       btnCancel.Visible := ShowCancel;
+      FCanClose := ShowCancel;
       btnCancel.Caption := SCancelButton;
       FOnCancel := AOnCancel;
       AdjustComponents;
@@ -311,6 +315,11 @@ procedure TfrmProgress.FormPaint(Sender: TObject);
 begin
   if (imProgress.Picture.Graphic <> nil) and not imProgress.Picture.Graphic.Empty then
     Canvas.Draw(imProgress.Left, imProgress.Top, imProgress.Picture.Graphic);
+end;
+
+procedure TfrmProgress.Action1Execute(Sender: TObject);
+begin
+  if FCanClose then Close;
 end;
 
 end.
