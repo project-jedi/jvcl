@@ -1279,6 +1279,7 @@ end;
 
 procedure TJvMemoryData.InternalInitFieldDefs;
 begin
+  InitFieldDefsFromFields;
 end;
 
 function TJvMemoryData.IsCursorOpen: Boolean;

@@ -38,7 +38,7 @@ type
   TJvGradient = class(TGraphicControl)
   private
     FAboutJVCL: TJVCLAboutInfo;
-    FStyle: TGradStyle;
+    FStyle: TJvGradStyle;
     FStartColor: TColor;
     FEndColor: TColor;
     FSteps: Word;
@@ -48,7 +48,7 @@ type
     procedure SetSteps(Value: Word);
     procedure SetStartColor(Value: TColor);
     procedure SetEndColor(Value: TColor);
-    procedure SetStyle(Value: TGradStyle);
+    procedure SetStyle(Value: TJvGradStyle);
   protected
     { Note: No need to respond to WM_ERASEBKGND; this is not a TWinControl }
     procedure Paint; override;
@@ -63,7 +63,7 @@ type
     property ParentShowHint;
     property Enabled;
     property PopupMenu;
-    property Style: TGradStyle read FStyle write SetStyle default grHorizontal;
+    property Style: TJvGradStyle read FStyle write SetStyle default grHorizontal;
     property StartColor: TColor read FStartColor write SetStartColor default clBlue;
     property EndColor: TColor read FEndColor write SetEndColor default clBlack;
     property Steps: Word read FSteps write SetSteps default 100;
@@ -275,7 +275,7 @@ begin
   Canvas.Draw(0, 0, FBuffer);
 end;
 
-procedure TJvGradient.SetStyle(Value: TGradStyle);
+procedure TJvGradient.SetStyle(Value: TJvGradStyle);
 begin
   FStyle := Value;
   FBufferWidth := 0;

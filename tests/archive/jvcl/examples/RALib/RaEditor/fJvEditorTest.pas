@@ -127,7 +127,7 @@ begin
   begin
     Canvas.FillRect(Rect);
     case Mode of
-      cmIdentifers:
+      cmIdentifiers:
         begin
           ImageIndex := StrToInt(Trim(SubStr(Items[Index], 2, Separator))) - 1;
           ilCompletions.Draw(Canvas, Rect.Left + 2, Rect.Top, ImageIndex);
@@ -136,7 +136,7 @@ begin
           W := Canvas.TextWidth(S);
           Canvas.TextOut(Rect.Right - 2*Offset - W, Rect.Top +2, S);
         end;
-      cmTemplates :
+      cmTemplates:
         begin
           Canvas.TextOut(Rect.Left + Offset, Rect.Top +2, SubStr(Items[Index], 1, Separator));
           Canvas.Font.Style := [fsBold];

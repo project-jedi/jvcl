@@ -8,7 +8,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, GIFImage, ExtCtrls, JvProgressDialog, jpeg, ExtDlgs,
+  Dialogs, StdCtrls, ExtCtrls, JvProgressDialog, jpeg, ExtDlgs,
   JvComponent, JvBaseDlg;
 
 type

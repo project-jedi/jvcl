@@ -34,6 +34,7 @@ object ControlsExampleMainForm: TControlsExampleMainForm
       item
         Width = 50
       end>
+    SimplePanel = False
   end
   object JvPageControl1: TJvPageControl
     Left = 0
@@ -65,33 +66,12 @@ object ControlsExampleMainForm: TControlsExampleMainForm
           'TJvPageControl can hide tabs (HideTabs property) and set its cli' +
           'ent border size'
       end
-      object Label2: TLabel
-        Left = 8
-        Top = 40
-        Width = 306
-        Height = 13
-        Caption = 'TJvListoBox enables to use '#39'virtual mode'#39' by OwnerData property'
-      end
       object Label3: TLabel
         Left = 160
         Top = 240
         Width = 280
         Height = 13
         Caption = 'TJvTrackBar has ToolTips property to show custom tooltips'
-      end
-      object JvListBox1: TJvListBox
-        Left = 8
-        Top = 64
-        Width = 137
-        Height = 233
-        Hint = 'JvListBox1'
-        Anchors = [akLeft, akTop, akBottom]
-        ItemHeight = 16
-        MultiSelect = True
-        TabOrder = 0
-        OwnerData = True
-        ScrollBars = ssNone
-        OnGetText = JvListBox1GetText
       end
       object JvTrackBar1: TJvTrackBar
         Left = 159
@@ -101,10 +81,15 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Hint = 'JvTrackBar1'
         Anchors = [akTop, akRight, akBottom]
         Max = 500
+        Orientation = trHorizontal
         PageSize = 10
         Frequency = 10
-        TabOrder = 1
-        OnChange = JvTrackBar1Change
+        Position = 0
+        SelEnd = 0
+        SelStart = 0
+        TabOrder = 0
+        TickMarks = tmBottomRight
+        TickStyle = tsAuto
         ToolTips = True
         OnToolTip = JvTrackBar1ToolTip
       end
@@ -114,7 +99,7 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Width = 75
         Height = 25
         Caption = 'Next >'
-        TabOrder = 2
+        TabOrder = 1
         OnClick = Button1Click
       end
     end
@@ -135,6 +120,11 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Width = 75
         Height = 25
         TabOrder = 0
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Kind = bkClose
       end
       object JvImgBtn2: TJvImgBtn
@@ -144,6 +134,11 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Height = 57
         Caption = 'Accepts|multiline|text'
         TabOrder = 1
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
       end
       object JvImgBtn5: TJvImgBtn
         Left = 232
@@ -154,6 +149,11 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         TabOrder = 2
         Animate = True
         AnimateFrames = 2
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Images = ImageList1
         ImageIndex = 0
       end
@@ -164,6 +164,11 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Height = 25
         Caption = 'JvImgBtn'
         TabOrder = 3
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Images = ImageList1
         ImageIndex = 0
         Layout = blImageRight
@@ -175,6 +180,11 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Height = 57
         Caption = 'Accepts|multiline|text'
         TabOrder = 4
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Images = ImageList1
         ImageIndex = 8
       end
@@ -194,6 +204,11 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Height = 57
         Caption = 'Handles|mouse|events'
         TabOrder = 6
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         OnMouseEnter = JvImgBtn6MouseEnter
         OnMouseLeave = JvImgBtn6MouseLeave
       end
@@ -207,6 +222,11 @@ object ControlsExampleMainForm: TControlsExampleMainForm
         Animate = True
         AnimateFrames = 7
         AnimateInterval = 100
+        HotTrackFont.Charset = DEFAULT_CHARSET
+        HotTrackFont.Color = clWindowText
+        HotTrackFont.Height = -11
+        HotTrackFont.Name = 'MS Sans Serif'
+        HotTrackFont.Style = []
         Images = ImageList1
         ImageIndex = 0
         OnGetAnimateIndex = JvImgBtn7GetAnimateIndex

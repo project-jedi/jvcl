@@ -84,7 +84,7 @@ function GetShellVersion: Cardinal;
 
 // set the background wallpaper (two versions)
 procedure SetWallpaper(Path: string); overload;
-procedure SetWallpaper(Path: string; Style: TWallpaperStyle); overload;
+procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle); overload;
 
 // screen capture functions
 function CaptureScreen: TBitmap; overload;
@@ -542,7 +542,7 @@ begin
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
 end;
 
-procedure SetWallpaper(Path: string; Style: TWallpaperStyle);
+procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle);
 begin
   with TRegistry.Create do
   begin

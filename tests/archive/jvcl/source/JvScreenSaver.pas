@@ -39,15 +39,15 @@ type
   private
     FOnStart: TNotifyEvent;
     FOnConfigure: TNotifyEvent;
-    FOnPreview: TOnParent;
-    FOnPasswordChange: TOnParent;
+    FOnPreview: TJvParentEvent;
+    FOnPasswordChange: TJvParentEvent;
   public
     constructor Create(AOwner: TComponent); override;
   published
     property OnConfigure: TNotifyEvent read FOnConfigure write FOnConfigure;
-    property OnPreview: TOnParent read FOnPreview write FOnPreview;
+    property OnPreview: TJvParentEvent read FOnPreview write FOnPreview;
     property OnStart: TNotifyEvent read FOnStart write FOnStart;
-    property OnPasswordChange: TOnParent read FOnPasswordChange write FOnPasswordChange;
+    property OnPasswordChange: TJvParentEvent read FOnPasswordChange write FOnPasswordChange;
   end;
 
 implementation

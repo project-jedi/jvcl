@@ -38,7 +38,7 @@ type
   TJvRenameError = class(TJvCommonDialogD)
   private
     FWin32ErrorCode: Integer;
-    FStyle: TDeleteStyles;
+    FStyle: TJvDeleteStyles;
     FDestFile: string;
     FSourceFile: string;
   public
@@ -47,8 +47,8 @@ type
     property SourceFile: string read FSourceFile write FSourceFile;
     property DestFile: string read FDestFile write FDestFile;
     property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
-    property Style: TDeleteStyles read FStyle write FStyle;
-    function Execute: TDiskRes; override;
+    property Style: TJvDeleteStyles read FStyle write FStyle;
+    function Execute: TJvDiskRes; override;
   end;
 
 implementation
@@ -86,7 +86,7 @@ begin
   FSourceFile := '';
 end;
 
-function TJvRenameError.Execute: TDiskRes;
+function TJvRenameError.Execute: TJvDiskRes;
 var
   Sty: DWORD;
   SetupRenameError: TSetupRenameError;

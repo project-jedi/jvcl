@@ -40,7 +40,7 @@ type
     FPathToSource: string;
     FNewPath: string;
     FDiskName: string;
-    FStyle: TDiskStyles;
+    FStyle: TJvDiskStyles;
     FWin32ErrorCode: Integer;
     FTargetFile: string;
     FSourceFile: string;
@@ -54,8 +54,8 @@ type
     property SourceFile: string read FSourceFile write FSourceFile;
     property TargetFile: string read FTargetFile write FTargetFile;
     property Win32ErrorCode: Integer read FWin32ErrorCode write FWin32ErrorCode default 0;
-    property Style: TDiskStyles read FStyle write FStyle;
-    function Execute: TDiskRes; override;
+    property Style: TJvDiskStyles read FStyle write FStyle;
+    function Execute: TJvDiskRes; override;
   end;
 
 implementation
@@ -97,7 +97,7 @@ begin
   FWin32ErrorCode := 0;
 end;
 
-function TJvCopyError.Execute: TDiskRes;
+function TJvCopyError.Execute: TJvDiskRes;
 var
   Sty: DWORD;
   Required: DWORD;

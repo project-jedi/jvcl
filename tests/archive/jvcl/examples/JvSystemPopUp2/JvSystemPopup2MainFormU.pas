@@ -78,12 +78,12 @@ end;
 
 procedure TJvSystemPopup2MainForm.rgrPositionClick(Sender: TObject);
 begin
-  JvSystemPopup1.Position := TPopupPosition(rgrPosition.ItemIndex);
+  JvSystemPopup1.Position := TJvPopupPosition(rgrPosition.ItemIndex);
 end;
 
 procedure TJvSystemPopup2MainForm.rgrPositionInMenuClick(Sender: TObject);
 begin
-  JvSystemPopup1.PositionInMenu := TPositionInMenu(rgrPositionInMenu.ItemIndex);
+  JvSystemPopup1.PositionInMenu := TJvPositionInMenu(rgrPositionInMenu.ItemIndex);
 end;
 
 procedure TJvSystemPopup2MainForm.RadioClick(Sender: TObject);

@@ -170,8 +170,6 @@ begin
 end;
 
 procedure TJvCustomBmpAnimator.TimerEvent(Sender: TObject);
-var
-  dX, dY: Integer;
 begin
   if not Assigned(FImageList) then
     Exit;

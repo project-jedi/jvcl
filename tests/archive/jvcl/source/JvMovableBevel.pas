@@ -34,7 +34,7 @@ uses
   ExtCtrls;
 
 type
-  TDirection = (tdNone, tdUp2Down, tdDown2Up, tdLeft2Right, tdRight2Left,
+  TJvScrollTextDirection = (tdNone, tdUp2Down, tdDown2Up, tdLeft2Right, tdRight2Left,
     tdTopLeft2BottomRight, tdTopRight2BottomLeft, tdBottomLeft2TopRight,
     tdBottomRight2TopLeft);
 
@@ -46,7 +46,7 @@ type
     FMoving: Boolean; // If True then we are moving the object around.
     FMinSize: Integer;
     FSizing: Boolean; // if True then we are sizing the object;
-    FDirection: TDirection;
+    FDirection: TJvScrollTextDirection;
     FBorderSize: Byte;
   protected
     procedure DoMove(Shift: TShiftState; DeltaX, DeltaY: Integer);

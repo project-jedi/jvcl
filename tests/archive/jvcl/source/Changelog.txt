@@ -1,3 +1,47 @@
+2003-06-15:
+====================
+- Cleaned and updated JvTypes.pas: several event types, enumerations and sets were renamed/removed. Some of the removed types are only used by units in \archive. These have been commented out and a reference to the using unit has been added. A complete list of changes are below. You can also get the JvTypesRename030615.dat file from CVS (it's in the jvcl\convert folder) and run your project through JVCLConvert using it.
+
+NOTE: even if you run the dat file with JVCLConvert, you will still have to change any occurence of TJvAnimations -> TJvAnimation and TJvAnimation -> TJvAnimations manually. 
+
+List of renames in JvTypes.pas:
+
+TDirection=TJvScrollTextDirection
+TOnLinkClick=TJvLinkClickEvent
+TOnDoneFile=TJvDoneFileEvent
+TOnDoneStream=TJvDoneStreamEvent
+TOnProgress=TJvProgressEvent
+TOnFtpProgress=TJvFTPProgressEvent
+TOnError=TJvErrorEvent
+TOnPrintProgress=TJvPrintProgressEvent
+TOnNextPage=TJvNextPageEvent
+TOnKeyFound=TJvKeyFoundEvent
+TParserInfos=TJvParserInfoList
+TParserInf=TJvParserInfo
+TOnParent=TJvParentEvent
+TNotifyEventParams=TJvNotifyParamsEvent
+TFileInformation=TJvFileInfoRec
+TJvAnimations=TJvAnimation
+TDropEvent=TJvDropEvent
+TOnChangeColor=TJvChangeColorEvent
+TVolumeRec=TJvVolumeRec
+TWallpaperStyle=TJvWallpaperStyle
+TTransformationKind=TJvTransformationKind
+TPopupPosition=TJvPopupPosition
+TBitmapStyle=TJvBitmapStyle
+TGradStyle=TJvGradStyle
+TDiskRes=TJvDiskRes
+TDiskStyle=TJvDiskStyle
+TDiskStyles=TJvDiskStyles
+TDeleteStyle=TJvDeleteStyle
+TDeleteStyles=TJvDeleteStyles
+TFourCC=TJvFourCC
+PAniTag=PJvAniTag
+TAniTag=TJvAniTag
+TAniHeader=TJvAniHeader
+TPositionInMenu=TJvPositionInMenu
+====================
+
 2003-05-28
 - Added donated JvCSVDataset from Warren Postma and a demo as well. Not included in the packages yet. // peter3
 

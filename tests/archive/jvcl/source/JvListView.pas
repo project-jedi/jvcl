@@ -37,6 +37,8 @@ uses
 
 type
   EJvListViewError = EJVCLException;
+  TJvListView = class; // forward
+  TJvListItemGroup = class;
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TOnSortMethod = function(Sender: TObject; Column: Integer): TJvSortMethod of object;
   TProgress = procedure(Sender: TObject; Progression, Total: Integer) of object;
@@ -45,12 +47,40 @@ type
   private
     FPopupMenu: TPopupMenu;
     FBold: Boolean;
+    function GetGroup: TJvListItemGroup;
+    procedure SetGroup(const Value: TJvListItemGroup);
   protected
     procedure SetPopupMenu(const Value: TPopupMenu);
   public
     constructor CreateEnh(AOwner: TListItems);
     property PopupMenu: TPopupMenu read FPopupMenu write SetPopupMenu;
+    property Group:TJvListItemGroup read GetGroup write SetGroup;
   end;
+
+  TJvListItemGroup = class(TCollectionItem)
+  private
+    FCaption: string;
+    FAlignment: TAlignment;
+    procedure SetAlignment(const Value: TAlignment);
+    procedure SetCaption(const Value: string);
+  published
+    property Caption:string read FCaption write SetCaption;
+//    property Footer:string;
+    property Alignment:TAlignment read FAlignment write SetAlignment;
+  end;
+
+  TJvListItemGroups = class(TOwnedCollection)
+  private
+    FListView:TJvListView;
+    function GetItem(Index: integer): TJvListItemGroup;
+    procedure SetItem(Index: integer; const Value: TJvListItemGroup);
+  public
+    constructor Create(AListView:TJvListView);
+    function Add:TJvListItemGroup;
+    procedure Assign(Source:TPersistent);override;
+    property Items[Index:integer]:TJvListItemGroup read GetItem write SetItem;
+  end;
+
 
   TJvListView = class(TListView)
   private
@@ -133,6 +163,16 @@ begin
   inherited Create(AOwner);
   FBold := False;
   FPopupMenu := TPopupMenu.Create(AOwner.Owner);
+end;
+
+function TJvListItem.GetGroup: TJvListItemGroup;
+begin
+  Result := nil;
+end;
+
+procedure TJvListItem.SetGroup(const Value: TJvListItemGroup);
+begin
+  //
 end;
 
 procedure TJvListItem.SetPopupMenu(const Value: TPopupMenu);
@@ -983,6 +1023,52 @@ begin
   finally
     Free;
   end;
+end;
+
+{ TJvListItemGroups }
+
+function TJvListItemGroups.Add: TJvListItemGroup;
+begin
+  Result := TJvListItemGroup(inherited Add);
+end;
+
+procedure TJvListItemGroups.Assign(Source: TPersistent);
+begin
+  if Source is TJvListItemGroups then
+  begin
+    Exit;
+  end;
+  inherited;
+
+end;
+
+constructor TJvListItemGroups.Create(AListView: TJvListView);
+begin
+  inherited Create(AListView, TJvListItemGroup);
+  FListView := AListView;
+end;
+
+function TJvListItemGroups.GetItem(Index: integer): TJvListItemGroup;
+begin
+  Result := TJvListItemGroup(inherited Items[Index]);
+end;
+
+procedure TJvListItemGroups.SetItem(Index: integer;
+  const Value: TJvListItemGroup);
+begin
+  inherited Items[Index] := Value;
+end;
+
+{ TJvListItemGroup }
+
+procedure TJvListItemGroup.SetAlignment(const Value: TAlignment);
+begin
+  FAlignment := Value;
+end;
+
+procedure TJvListItemGroup.SetCaption(const Value: string);
+begin
+  FCaption := Value;
 end;
 
 end.

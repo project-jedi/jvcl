@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, JvComCtrls, ExtCtrls, StdCtrls, JvCtrls, ImgList, JvStatusBar,
-  JvListBox;
+  JvListBox, JvButton;
 
 type
   TControlsExampleMainForm = class(TForm)
@@ -16,8 +16,6 @@ type
     TabSheet2: TTabSheet;
     Label1: TLabel;
     Bevel1: TBevel;
-    JvListBox1: TJvListBox;
-    Label2: TLabel;
     JvTrackBar1: TJvTrackBar;
     Label3: TLabel;
     Button1: TButton;
@@ -36,7 +34,6 @@ type
     procedure Timer1Timer(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure JvTrackBar1ToolTip(Sender: TObject; var ToolTipText: String);
-    procedure JvTrackBar1Change(Sender: TObject);
     procedure JvListBox1GetText(Sender: TWinControl; Index: Integer; var Text: String);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
@@ -68,11 +65,6 @@ end;
 procedure TControlsExampleMainForm.JvTrackBar1ToolTip(Sender: TObject; var ToolTipText: String);
 begin
   ToolTipText := Format('TJvListBox displays %d items now', [JvTrackBar1.Position]);
-end;
-
-procedure TControlsExampleMainForm.JvTrackBar1Change(Sender: TObject);
-begin
-  JvListBox1.Count := JvTrackBar1.Position;
 end;
 
 procedure TControlsExampleMainForm.JvListBox1GetText(Sender: TWinControl; Index: Integer;

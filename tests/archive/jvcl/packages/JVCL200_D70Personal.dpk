@@ -87,6 +87,18 @@ contains
   JvID3v2Editor in '..\source\JvID3v2Editor.pas' {JvID3FramesEditor},
   JvID3v2Define in '..\source\JvID3v2Define.pas' {JvID3DefineDlg},
   JvBehaviorLabelProperty in '..\source\JvBehaviorLabelProperty.pas',
-  JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
+  JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas',
+  JvDBSecurityEditor in '..\source\JvDBSecurityEditor.pas',
+  JvMemTableEditor in '..\Source\JvMemTableEditor.pas',
+  JvProgressEditor in '..\Source\JvProgressEditor.pas',
+  JvAnimatedEditor in '..\Source\JvAnimatedEditor.pas',
+  JvFooterEditor in '..\Source\JvFooterEditor.pas',
+  JvGroupHeaderEditor in '..\Source\JvGroupHeaderEditor.pas',
+  JvMailEditor in '..\Source\JvMailEditor.pas',
+  JvPerfStatEditor in '..\Source\JvPerfStatEditor.pas',
+  JvScrollMaxEditor in '..\Source\JvScrollMaxEditor.pas',
+  JVHLEditEditor in '..\Source\JvHLEditEditor.pas',
+  JvBDEEditors in '..\Source\JvBDEEditors.pas',
+  JVDBEditors in '..\Source\JvDBEditors.pas';
 
 end.

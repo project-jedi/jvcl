@@ -59,10 +59,19 @@ unit JvCaptionButton;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, Forms, Types, ActnList, ImgList,
+  Windows, Messages, Classes, Graphics, Controls, Forms, {$IFDEF COMPILER6_UP}Types, {$ENDIF}ActnList, ImgList,
   JvComponent, JvWndProcHook;
 
 type
+  {$IFNDEF COMPILER6_UP}
+  TWMNCPaint = packed record
+    Msg: Cardinal;
+    RGN: HRGN;
+    Unused: Longint;
+    Result: Longint;
+  end;
+  {$ENDIF}
+
   TJvStandardButton = (tsbNone, tsbClose, tsbHelp, tsbMax, tsbMin, tsbRestore,
     tsbMinimizeToTray {a la e-Mule});
   TJvCaptionButtonLayout = (cbImageLeft, cbImageRight);
@@ -514,7 +523,7 @@ begin
     if Assigned(FOnClick) and (Action <> nil) and (@FOnClick <> @Action.OnExecute) then
       FOnClick(Self)
     else if {not (csDesigning in ComponentState) and}  Assigned(ActionLink) then
-      FActionLink.Execute(Self)
+      FActionLink.Execute{$IFDEF COMPILER6_UP}(Self){$ENDIF}
     else if Assigned(FOnClick) then
       FOnClick(Self);
   end;
@@ -1108,7 +1117,6 @@ begin
         MouseMove(KeysToShiftState(Keys), XPos, YPos);
   end;
 end;
-
 procedure TJvCaptionButton.HandleNCPaintAfter(Wnd: THandle; var Msg: TWMNCPaint);
 begin
   if FRgnChanged then

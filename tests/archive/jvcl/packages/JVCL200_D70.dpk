@@ -61,7 +61,11 @@ requires
   inet,
   qrpt,
   vclx,
-  JVCL200_R70;
+  JVCL200_R70,
+  vclactnband,
+  DJCL70,
+  vcldesigner,
+  designdgm;
 
 contains
   JvaDBReg in '..\Source\JvaDBReg.pas',
@@ -108,8 +112,8 @@ contains
   JvSbEdit in '..\source\JvSbEdit.pas' {JvSpeedbarEditor},
   JvSelDSFrm in '..\source\JvSelDSFrm.pas' {JvSelectDataSetForm},
   JvTimLstEd in '..\source\JvTimLstEd.pas' {JvTimerItemsEditor},
-  jvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
-  jvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
+  JvBandObjectDLLWizard in '..\source\JvBandObjectDLLWizard.pas',
+  JvBandObjectDLLWizardForm in '..\source\JvBandObjectDLLWizardForm.pas' {zWizardForm},
   JvxDConst in '..\source\JvxDConst.pas',
   JvActions in '..\source\JvActions.pas',
   JvDialogActns in '..\source\JvDialogActns.pas',
@@ -123,6 +127,18 @@ contains
   JvID3v2Editor in '..\source\JvID3v2Editor.pas' {JvID3FramesEditor},
   JvID3v2Define in '..\source\JvID3v2Define.pas' {JvID3DefineDlg},
   JvBehaviorLabelProperty in '..\source\JvBehaviorLabelProperty.pas',
-  JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas';
+  JvJVCLAboutProperty in '..\source\JvJVCLAboutProperty.pas',
+  JvDBSecurityEditor in '..\source\JvDBSecurityEditor.pas',
+  JvMemTableEditor in '..\source\JvMemTableEditor.pas',
+  JvProgressEditor in '..\Source\JvProgressEditor.pas',
+  JvAnimatedEditor in '..\Source\JvAnimatedEditor.pas',
+  JvFooterEditor in '..\Source\JvFooterEditor.pas',
+  JvGroupHeaderEditor in '..\Source\JvGroupHeaderEditor.pas',
+  JvMailEditor in '..\Source\JvMailEditor.pas',
+  JvPerfStatEditor in '..\Source\JvPerfStatEditor.pas',
+  JvScrollMaxEditor in '..\Source\JvSCrollMaxEditor.pas',
+  JvHLEditEditor in '..\Source\JvHLEditEditor.pas',
+  JvBDEEditors in '..\Source\JvBDEEditors.pas',
+  JvDBEditors in '..\Source\JvDBEditors.pas';
 
 end.

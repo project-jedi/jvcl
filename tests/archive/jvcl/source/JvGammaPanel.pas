@@ -59,7 +59,7 @@ type
     FChoosed: TImage;
     FForegroundColorImg: TImage;
     FBackgroundColorImg: TImage;
-    FOnChangeColor: TOnChangeColor;
+    FOnChangeColor: TJvChangeColorEvent;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure ChangeColor(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Integer);
@@ -75,7 +75,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property AutoSize;
-    property OnChangeColor: TOnChangeColor read FOnChangeColor write FOnChangeColor;
+    property OnChangeColor: TJvChangeColorEvent read FOnChangeColor write FOnChangeColor;
     property ForegroundColor: TColor read FForegroundColor write SetForegroundColor default clBlack;
     property BackgroundColor: TColor read FBackgroundColor write SetBackgroundColor default clWhite;
   end;

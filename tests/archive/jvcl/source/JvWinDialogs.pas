@@ -1764,9 +1764,10 @@ begin
   begin
     dwAdState := cAdState[AdState];
     dwFlags := cFlags[Flags];
-    lpszTitle := PWideChar(Title);
-    lpszAbstract := PWideChar(Description);
-    lpszHREF := PWideChar(HREF);
+    // (p3)_ does result from StringToOLEStr need to be freed? 
+    lpszTitle := StringToOLEStr(Title);
+    lpszAbstract := StringToOLEStr(Description);
+    lpszHREF := StringToOLEStr(HREF);
     dwInstalledVersionMS := InstalledVersionMS;
     dwInstalledVersionLS := InstalledVersionLS;
     dwUpdateVersionMS := UpdateVersionMS;

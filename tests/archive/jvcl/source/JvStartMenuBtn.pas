@@ -43,7 +43,7 @@ type
   private
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
-    FOnLinkClick: TOnLinkClick;
+    FOnLinkClick: TJvLinkClickEvent;
     FOnPopup: TNotifyEvent;
     FImages: TImageList;
     FOptions: TJvStartMenuOptions;
@@ -60,7 +60,7 @@ type
     procedure Click; override;
   published
     property Options: TJvStartMenuOptions read FOptions write FOptions default [smCurrentUser..smAllUsers];
-    property OnLinkClick: TOnLinkClick read FOnLinkClick write FOnLinkClick;
+    property OnLinkClick: TJvLinkClickEvent read FOnLinkClick write FOnLinkClick;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 

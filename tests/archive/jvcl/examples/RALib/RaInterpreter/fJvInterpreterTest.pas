@@ -11,10 +11,10 @@ the specific language governing rights and limitations under the License.
 The Original Code is: RAFDAlignPalette.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
-Copyright (c) 1999, 2002 Andrei Prygounkov   
+Copyright (c) 1999, 2002 Andrei Prygounkov
 All Rights Reserved.
 
-Contributor(s): 
+Contributor(s):
 
 Last Modified: 2002-07-04
 
@@ -31,7 +31,6 @@ unit fJvInterpreterTest;
 
 interface
 
-{$INCLUDE JVCL.INC}
 
 uses
 {$IFDEF COMPILER3_UP} 
@@ -206,6 +205,9 @@ begin
   Parser.Free;
 end;
 
+{$IFNDEF COMPILER6_UP}
+type TVarType = Word;
+{$ENDIF}
 procedure TTest.Button1Click(Sender: TObject);
 const
   Bool : array [boolean] of string = ('False', 'True');

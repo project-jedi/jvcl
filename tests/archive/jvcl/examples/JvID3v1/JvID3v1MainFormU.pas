@@ -44,8 +44,6 @@ type
     actAbout: TAction;
     ToolButton6: TToolButton;
     JvBalloonHint1: TJvBalloonHint;
-    procedure JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
-      Value: TStringList);
     procedure actSaveExecute(Sender: TObject);
     procedure actEraseExecute(Sender: TObject);
     procedure actExitExecute(Sender: TObject);
@@ -56,6 +54,8 @@ type
     procedure JvFilenameEdit1AfterDialog(Sender: TObject; var Name: string;
       var Action: Boolean);
     procedure actAboutExecute(Sender: TObject);
+    procedure JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
+      Value: TStrings);
   public
     procedure ChangeFileNameTo(S: string);
     procedure FillGenres(Strings: TStrings);
@@ -69,7 +69,7 @@ var
 implementation
 
 uses
-  JclStrings;
+  JvId3v2Types, JclStrings;
 
 {$R *.dfm}
 
@@ -84,24 +84,8 @@ begin
 end;
 
 procedure TJvID3v1MainForm.FillGenres(Strings: TStrings);
-var
-  Genre: TGenre;
 begin
-  Strings.BeginUpdate;
-  try
-    Strings.Clear;
-    for Genre := Low(TGenre) to High(TGenre) do
-      Strings.AddObject(JvId3v11.GenreToString(Genre), TObject(Genre));
-  finally
-    Strings.EndUpdate;
-  end;
-end;
-
-procedure TJvID3v1MainForm.JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
-  Value: TStringList);
-begin
-  if Value.Count > 0 then
-    ChangeFileNameTo(Value[0]);
+  ID3_Genres(Strings,true);
 end;
 
 procedure TJvID3v1MainForm.actSaveExecute(Sender: TObject);
@@ -115,9 +99,9 @@ begin
     JvId3v11.Album := edtAlbum.Text;
     JvId3v11.Year := edtYear.Text;
     with cmbGenre do
-      JvId3v11.Genre := TGenre(Items.Objects[ItemIndex]);
+      JvId3v11.Genre := byte(Items.Objects[ItemIndex]);
     JvId3v11.Comment := edtComment.Text;
-    JvId3v11.WriteTag;
+//    JvId3v11.WriteTag;
     UpdateCaption;
   end;
 end;
@@ -128,7 +112,7 @@ begin
     JvBalloonHint1.ActivateHint(JvFilenameEdit1, 'First select a mp3 file', ikError, 'Error', 5000)
   else
   begin
-    JvId3v11.RemoveTag;
+//    JvId3v11.RemoveTag;
     UpdateCtrls;
     UpdateCaption;
   end;
@@ -194,7 +178,7 @@ begin
   begin
     { Store TagPresent in variabele to prevent double checks whether the file
       has a tag }
-    HasTag := JvId3v11.TagPresent;
+    HasTag := JvId3v11.HasTag;
     lblHasTag.Font.Color := CHasTagColor[HasTag];
     lblHasTag.Caption := CHasTagStr[HasTag];
   end
@@ -215,6 +199,13 @@ end;
 procedure TJvID3v1MainForm.actAboutExecute(Sender: TObject);
 begin
   JvJVCLAboutComponent1.Execute;
+end;
+
+procedure TJvID3v1MainForm.JvDragDrop1Drop(Sender: TObject; Pos: TPoint;
+  Value: TStrings);
+begin
+  if Value.Count > 0 then
+    ChangeFileNameTo(Value[0]);
 end;
 
 end.

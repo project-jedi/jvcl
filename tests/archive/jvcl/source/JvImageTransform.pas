@@ -45,7 +45,7 @@ type
     FInterval: Integer;
     FImageShown: Byte;
     FSteps: Integer;
-    FType: TTransformationKind;
+    FType: TJvTransformationKind;
     StepNum: Integer;
     FOnFinished: TNotifyEvent;
     procedure PictureChanged(Sender: TObject);
@@ -53,7 +53,7 @@ type
     procedure SetPicture2(Value: TPicture);
     procedure SetImageShown(Value: Byte);
     procedure SetInterval(Value: Integer);
-    procedure SetType(Value: TTransformationKind);
+    procedure SetType(Value: TJvTransformationKind);
   protected
     procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
     function GetPalette: HPALETTE; override;
@@ -76,7 +76,7 @@ type
     property PopupMenu;
     property ShowHint;
     property Steps: Integer read FSteps write FSteps default 10;
-    property TransformType: TTransformationKind read FType write SetType default ttWipeLeft;
+    property TransformType: TJvTransformationKind read FType write SetType default ttWipeLeft;
     property Visible;
     property OnClick;
     property OnDblClick;
@@ -162,7 +162,7 @@ begin
     FTimer.Interval := FInterval;
 end;
 
-procedure TJvImageTransform.SetType(Value: TTransformationKind);
+procedure TJvImageTransform.SetType(Value: TJvTransformationKind);
 begin
   FType := Value;
 end;

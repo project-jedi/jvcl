@@ -74,7 +74,7 @@ type
     property SmallImages: TImageList read FSmallImages;
     property IconHandle: THandle read GetIconHandle stored False;
     property Attributes: Integer read GetAttributes stored False;
-    function GetCustomInformation(Value: string): TFileInformation;
+    function GetCustomInformation(Value: string): TJvFileInfoRec;
   published
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -346,7 +346,7 @@ begin
 // do nothing
 end;
 
-function TJvFileInfo.GetCustomInformation(Value: string): TFileInformation;
+function TJvFileInfo.GetCustomInformation(Value: string): TJvFileInfoRec;
 var
   Tmp: SHFILEINFO;
   Flags: Cardinal;
