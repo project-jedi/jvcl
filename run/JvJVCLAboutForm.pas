@@ -125,7 +125,7 @@ const
   cJVCLIni = '\JVCL.ini';
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
-  cJVCLIni = '~/JVCL.ini';
+  cJVCLIni = '/.JVCL.ini';
   {$ENDIF}
 
 procedure TJvJVCLAboutForm.FormShow(Sender: TObject);
