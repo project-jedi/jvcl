@@ -233,7 +233,7 @@ type
     property AsWideText: WideString read GetAsWideText write SetAsWideText;
   end;
 
-  // global function to get access to a TJvClipboard object
+// global function to get access to a TJvClipboard object
 function JvClipboard: TJvClipboard;
 
 implementation
@@ -668,22 +668,21 @@ begin
 end;
 
 var
-  // global variable
-  FJvClipboard: TJvClipboard;
+  GlobalClipboard: TJvClipboard;
 
-  // global function to call to get access to the clipboard
+// global function to call to get access to the clipboard
 
 function JvClipboard: TJvClipboard;
 begin
-  if FJvClipboard = nil then
-    FJvClipboard := TJvClipboard.Create;
-  Result := FJvClipboard;
+  if GlobalClipboard = nil then
+    GlobalClipboard := TJvClipboard.Create;
+  Result := GlobalClipboard;
 end;
 
 initialization
 
 finalization
-  FJvClipboard.Free;
+  FreeAndNil(GlobalClipboard);
 
 end.
 

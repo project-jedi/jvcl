@@ -1243,12 +1243,12 @@ var
 {$IFDEF COMPILER6_UP}
 
 var
-  VariantRecordInstance: TJvRecordVariantType;
-  VariantObjectInstance: TJvObjectVariantType;
-  VariantClassInstance: TJvClassVariantType;
-  VariantPointerInstance: TJvPointerVariantType;
-  VariantSetInstance: TJvSetVariantType;
-  VariantArrayInstance: TJvArrayVariantType;
+  VariantRecordInstance: TJvRecordVariantType = nil;
+  VariantObjectInstance: TJvObjectVariantType = nil;
+  VariantClassInstance: TJvClassVariantType = nil;
+  VariantPointerInstance: TJvPointerVariantType = nil;
+  VariantSetInstance: TJvSetVariantType = nil;
+  VariantArrayInstance: TJvArrayVariantType = nil;
 
 //=== TJvSimpleVariantType ===================================================
 
@@ -1265,7 +1265,7 @@ end;
 
 function varRecord: TVarType;
 begin
-  Result := VariantRecordInstance.VarType
+  Result := VariantRecordInstance.VarType;
 end;
 
 function varObject: TVarType;
@@ -7838,7 +7838,7 @@ finalization
       'ObjCount = ' + IntToStr(ObjCount)),
       'JvInterpreter Internal Error', MB_ICONERROR);
   {$ENDIF JvInterpreter_DEBUG}
-  GlobalJvInterpreterAdapter.Free;
+  FreeAndNil(GlobalJvInterpreterAdapter);
 
   {$IFDEF COMPILER6_UP}
   FreeAndNil(VariantRecordInstance);

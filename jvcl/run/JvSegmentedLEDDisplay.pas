@@ -56,7 +56,7 @@ type
   TJvSegmentedLEDDigitClassName = type string;
   TUnlitColor = type TColor;
   TSlantAngle = 0 .. 44;
-  TSLDHitInfo= (shiNowhere, shiDigit, shiDigitSegment, shiClientArea);
+  TSLDHitInfo = (shiNowhere, shiDigit, shiDigitSegment, shiClientArea);
   TCharSet = set of Char;
   TSegCharMapHeader = record
     ID: array[0..11] of Char;
@@ -385,12 +385,14 @@ uses
 {$R ..\resources\JvSegmentedLEDDisplay.res}
 
 var
-  GDigitClassList: TThreadList;
+  GDigitClassList: TThreadList = nil;
 
 //===DigitClass registration routines===============================================================
 
 function DigitClassList: TThreadList;
 begin
+  if GDigitClassList = nil then
+    GDigitClassList := TThreadList.Create;
   Result := GDigitClassList;
 end;
 
@@ -1902,14 +1904,10 @@ begin
 end;
 
 initialization
-  GDigitClassList := TThreadList.Create;
   AddModuleUnloadProc(ModuleUnload);
-
-  RegisterSegmentedLEDDigitClasses([
-    TJv7SegmentedLEDDigit
-  ]);
-
+  RegisterSegmentedLEDDigitClasses([TJv7SegmentedLEDDigit]);
   RegisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
+
 finalization
   {$IFDEF COMPILER6_UP}
   UnregisterIntegerConsts(TypeInfo(TUnlitColor), IdentToUnlitColor, UnlitColorToIdent);
@@ -1917,6 +1915,7 @@ finalization
   UnregisterModuleSegmentedLEDDigitClasses(HInstance);
   FreeAndNil(GDigitClassList);
   RemoveModuleUnloadProc(ModuleUnload);
+
 end.
 
 

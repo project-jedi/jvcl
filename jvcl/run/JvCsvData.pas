@@ -633,9 +633,10 @@ uses
   JvJCLUtils, JvCsvParse, JvConsts, JvResources;
 
 var
-  CallCount: Integer;
+  // (rom) disabled unused
+  // CallCount: Integer = 0;
   AsciiTime_MinValue : array[1..6] of Integer     = ( 1900, 1 , 1, 0, 0, 0 );
-  AsciiTime_MaxValue : array[1..6] of Integer      = ( 3999, 12, 31, 23, 59, 59 );
+  AsciiTime_MaxValue : array[1..6] of Integer     = ( 3999, 12, 31, 23, 59, 59 );
   AsciiTime_ExpectLengths: array[1..6] of Integer = ( 4,2,2,2,2,2 );
 
 
@@ -3611,7 +3612,7 @@ begin
   Base := EncodeDate(1970, 1, 1);
   Base := Base + (SecondsSince1970 / 86400.0);
 { DateTimeAsStr := FormatDateTime('yyyy/mm/dd hh:nn:ss',Base);}
-  Inc(CallCount);
+  // Inc(CallCount);
   Result := Base;
 end;
 
@@ -3801,9 +3802,6 @@ begin
   Windows.CopyFile(PChar(FileName), PChar(BackupFilename), False);
   Result := True;
 end;
-
-initialization
-  CallCount := 0;
 
 end.
 

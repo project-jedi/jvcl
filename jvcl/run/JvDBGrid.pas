@@ -315,12 +315,12 @@ const
 
 // (rom) changed to var
 var
-  GridBitmaps: array[TGridPicture] of TBitmap =
-  (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
+  GridBitmaps: array [TGridPicture] of TBitmap =
+    (nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil, nil);
 
-  // ***********************************************************************
-  // Fonction diverses
-  // ***********************************************************************
+// ***********************************************************************
+// Fonction diverses
+// ***********************************************************************
 
 function GetGridBitmap(BmpType: TGridPicture): TBitmap;
 begin
@@ -331,12 +331,13 @@ begin
   end;
   Result := GridBitmaps[BmpType];
 end;
+
 procedure DestroyLocals;
 var
   I: TGridPicture;
 begin
   for I := Low(TGridPicture) to High(TGridPicture) do
-    GridBitmaps[I].Free;
+    FreeAndNil(GridBitmaps[I]);
 end;
 
 procedure GridInvalidateRow(Grid: TJvDBGrid; Row: Longint);
@@ -366,7 +367,7 @@ type
     constructor Create(Owner: TComponent); override;
     property DataList: TJvDBLookupList read FDataList; //  TDBLookupListBox
   end;
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 
 
 //=== TJvDBGrid ==============================================================
@@ -2436,6 +2437,7 @@ end;
 // ***********************************************************************
 // End Lionel
 // ***********************************************************************
+
 initialization
 
 finalization

@@ -935,7 +935,7 @@ end;
 
 // (rom) changed to var
 var
-  SaveIndexFieldNames: TStrings = nil;
+  SaveIndexFieldNames: TStringList = nil;
 
 procedure UsesSaveIndexies;
 begin
@@ -945,11 +945,7 @@ end;
 
 procedure ReleaseSaveIndices;
 begin
-  if SaveIndexFieldNames <> nil then
-  begin
-    SaveIndexFieldNames.Free;
-    SaveIndexFieldNames := nil;
-  end;
+  FreeAndNil(SaveIndexFieldNames);
 end;
 
 procedure SetIndex(Table: TTable; const IndexFieldNames: string);
@@ -2229,6 +2225,8 @@ initialization
   
 finalization
   ReleaseSaveIndices;
+  // (rom) i tried deleting the elements created by CreateDbLocate
+  // (rom) but that causes crashes
 
 end.
 

@@ -333,9 +333,9 @@ type
   TCrackTControl = class(TControl);
 
 var
-  FShapeCount: Integer;
   // Used in unique naming scheme. It is global in this unit to enable a
   // 'memory' of the component names used during the lifetime of this unit.
+  GlobalShapeCount: Integer = 1;
 
 procedure NoLessThan(var Value: Integer; Limit: Integer);
 begin
@@ -408,8 +408,8 @@ begin
   repeat
     // Use a local variable to hold the name, so that don't get exceptions
     // raised on duplicate names
-    TempName := 'Shape' + IntToStr(FShapeCount);
-    Inc(FShapeCount);
+    TempName := 'Shape' + IntToStr(GlobalShapeCount);
+    Inc(GlobalShapeCount);
     AlreadyUsed := False;
 
     // Loop through all the components on the form to ensure that this name
@@ -2060,7 +2060,6 @@ end;
 
 initialization
   RegisterStorageClasses;
-  FShapeCount := 1;
 
 end.
 

@@ -68,7 +68,6 @@ type
   protected
     procedure Loaded; override;
     procedure WndProc(var Msg: TMessage); virtual;
-    function GetIsRemoteInstanceActive: Boolean;
     procedure DoInstanceCreated(ProcessId: Cardinal); virtual;
     procedure DoInstanceDestroyed(ProcessId: Cardinal); virtual;
     procedure DoUserNotify(Param: Integer); virtual;
@@ -108,14 +107,9 @@ uses
 
 const
   sAppInstancesWindowClassName = 'JvAppInstances_WindowClass'; // do not localize
-  AI_GETACTIVE = $0004;
-  AI_SETACTIVE = $0005;
-
-type
-  TOpenJclAppInstances = class(TJclAppInstances);
 
 var
-  FirstJvAppInstance: Boolean;
+  FirstJvAppInstance: Boolean = True;
 
 constructor TJvAppInstances.Create(AOwner: TComponent);
 begin
@@ -147,27 +141,24 @@ end;
 procedure TJvAppInstances.Check;
 begin
   if Active and not (csDesigning in ComponentState) then
-    if MaxInstances > 0 then
-      if AppInstances.InstanceCount > MaxInstances then
+    if FMaxInstances > 0 then
+      if AppInstances.InstanceCount > FMaxInstances then
       begin
-        if GetIsRemoteInstanceActive then
-        begin
-          DoRejected;
-          if AutoActivate then
-            AppInstances.SwitchTo(0);
-          if SendCmdLine then
-            AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
+        DoRejected;
+        if FAutoActivate then
+          AppInstances.SwitchTo(0);
+        if FSendCmdLine then
+          AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
 
-         // terminate this process (Form.OnCreate is not executed yet)
+       // terminate this process (Form.OnCreate is not executed yet)
 
-          { DoneApplication destroys all formulars in the Forms unit's
-            finalization section. At that moment the OnDestroy events are fired.
-            To prevent this we set the Application variable to nil. Because
-            KillInstance uses halt() to terminate this does not raise any access
-            violation. }
-          Application := nil;
-          AppInstances.KillInstance;
-        end;
+        { DoneApplication destroys all formulars in the Forms unit's
+          finalization section. At that moment the OnDestroy events are fired.
+          To prevent this we set the Application variable to nil. Because
+          KillInstance uses halt() to terminate this does not raise any access
+          violation. }
+        Application := nil;
+        AppInstances.KillInstance;
       end;
 end;
 
@@ -227,62 +218,60 @@ var
   Kind: TJvAppInstDataKind;
   Data: Pointer;
   Size: Integer;
-  CmdLine: TStrings;
+  CmdLine: TStringList;
 begin
-  try
-    if Msg.Msg = AppInstances.MessageID then
-    begin
-      case Msg.WParam of
-        AI_INSTANCECREATED:
-          if Cardinal(Msg.LParam) <> GetCurrentProcessId then
-            DoInstanceCreated(Cardinal(Msg.LParam));
-        AI_INSTANCEDESTROYED:
-          DoInstanceDestroyed(Cardinal(Msg.LParam));
-        AI_USERMSG:
-          DoUserNotify(Msg.LParam);
-        AI_GETACTIVE:
-          SendMessage(HWND(Msg.LParam), AppInstances.MessageID,
-            AI_SETACTIVE, Ord(Active));
-        AI_SETACTIVE:
-          Active := Msg.LParam <> 0;
-      end;
-    end
-    else
-    begin
-      Kind := ReadMessageCheck(Msg, Handle);
-      case Kind of
-        AppInstDataKindNoData:
-          ; // do nothing
-        AppInstCmdLineDataKind:
-          begin
-            if Assigned(FOnCmdLineReceived) then
-            begin
-              CmdLine := TStringList.Create;
-              try
-                ReadMessageStrings(Msg, CmdLine);
-                DoCmdLineReceived(CmdLine);
-              finally
-                CmdLine.Free;
-              end;
-            end;
-            Exit;
-          end;
-      else
-        if Assigned(FOnDataAvailable) then
-        begin
-          ReadMessageData(Msg, Data, Size);
-          try
-            DoDataAvailable(Kind, Data, Size);
-          finally
-            FreeMem(Data);
-          end;
+  if Active then
+  begin
+    try
+      if Msg.Msg = AppInstances.MessageID then
+      begin
+        case Msg.WParam of
+          AI_INSTANCECREATED:
+            if Cardinal(Msg.LParam) <> GetCurrentProcessId then
+              DoInstanceCreated(Cardinal(Msg.LParam));
+          AI_INSTANCEDESTROYED:
+            DoInstanceDestroyed(Cardinal(Msg.LParam));
+          AI_USERMSG:
+            DoUserNotify(Msg.LParam);
         end;
-        Exit;
+      end
+      else
+      begin
+        Kind := ReadMessageCheck(Msg, Handle);
+        case Kind of
+          AppInstDataKindNoData:
+            ; // do nothing
+          AppInstCmdLineDataKind:
+            begin
+              if Assigned(FOnCmdLineReceived) then
+              begin
+                CmdLine := TStringList.Create;
+                try
+                  ReadMessageStrings(Msg, CmdLine);
+                  DoCmdLineReceived(CmdLine);
+                finally
+                  CmdLine.Free;
+                end;
+              end;
+              Exit;
+            end;
+        else
+          if Assigned(FOnDataAvailable) then
+          begin
+            ReadMessageData(Msg, Data, Size);
+            try
+              DoDataAvailable(Kind, Data, Size);
+            finally
+              FreeMem(Data);
+            end;
+          end;
+          Exit;
+        end;
       end;
+    except
+      on E: Exception do
+        Application.ShowException(E);
     end;
-  except
-    on E: Exception do
-      Application.ShowException(E);
   end;
 
   with Msg do
@@ -301,48 +290,8 @@ begin
     Size, Handle);
 end;
 
-
-function TJvAppInstances.GetIsRemoteInstanceActive: Boolean;
-type
-  PData = ^TData;
-  TData = record
-    Instance: TJvAppInstances;
-    Message: TMessage;
-  end;
-  
-var
-  I: Integer;
-  Wnd: HWND;
-  TID: DWORD;
-  Data: TData;
-
-  function EnumWinProc(Wnd: HWND; Data: PData): BOOL; stdcall;
-  begin
-    with Data^.Message do
-      SendMessage(Wnd, Msg, WParam, LParam);
-    Result := Data^.Instance.Active;
-  end;
-
-begin
-  for I := 0 to AppInstances.InstanceCount - 1 do
-  begin
-    if AppInstances.ProcessIDs[I] = GetCurrentProcessId then
-      Continue;
-    Wnd := AppInstances.AppWnds[I];
-    TID := GetWindowThreadProcessId(Wnd, nil);
-    Data.Instance := Self;
-    Data.Message.Msg := AppInstances.MessageID;
-    Data.Message.WParam := AI_GETACTIVE;
-    Data.Message.LParam := Handle;
-    EnumThreadWindows(TID, @EnumWinProc, LPARAM(@Data));
-    if not Active then
-      Break;
-  end;
-  Result := Active;
-end;
-
-
-initialization
-  FirstJvAppInstance := True;
+// (rom) now handled at the variable
+//initialization
+//  FirstJvAppInstance := True;
 
 end.

@@ -12,7 +12,7 @@ The Original Code is: JvAniFile.PAS, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Fedor Koshevnikov, Igor Pavluk and Serge Korolev
 Copyright (c) 1997, 1998 Fedor Koshevnikov, Igor Pavluk and Serge Korolev
-Copyright (c) 2001,2002 SGB Software          
+Copyright (c) 2001,2002 SGB Software
 All Rights Reserved.
 
 Last Modified: 2003-10-24
@@ -69,6 +69,7 @@ type
     FCreator: TAniName;
     FIcons: TList;
     FOriginalColors: Word;
+    FIndex: Integer;
     procedure NewImage;
     procedure RiffReadError;
     function ReadCreateIcon(Stream: TStream; ASize: Longint;
@@ -79,16 +80,17 @@ type
     function GetTitle: string;
     function GetCreator: string;
     function GetDefaultRate: Longint;
+    procedure SetIndex(Value: Integer);
     procedure ReadAniStream(Stream: TStream);
     procedure ReadStream(Size: Longint; Stream: TStream);
     procedure WriteStream(Stream: TStream; WriteSize: Boolean);
   protected
     procedure AssignTo(Dest: TPersistent); override;
-    procedure Draw(ACanvas: TCanvas; const ARect: TRect);
   public
     constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
+    procedure Draw(ACanvas: TCanvas; const ARect: TRect);
     procedure Clear;
     procedure LoadFromStream(Stream: TStream); virtual;
     procedure SaveToStream(Stream: TStream); virtual;
@@ -105,6 +107,7 @@ type
     property Creator: string read GetCreator;
     property OriginalColors: Word read FOriginalColors;
     property Header: TJvAniHeader read FHeader;
+    property Index: Integer read FIndex write SetIndex;
   end;
 
 function LoadJvAnimatedCursorImageDialog: TJvAnimatedCursorImage;
@@ -291,6 +294,7 @@ begin
   inherited Create;
   FIcons := TList.Create;
   FData := TMemoryStream.Create;
+  FIndex := 0;
 end;
 
 destructor TJvAnimatedCursorImage.Destroy;
@@ -354,6 +358,12 @@ begin
   Result := Max(0, Min((FHeader.dwJIFRate * 100) div 6, High(Result)));
 end;
 
+procedure TJvAnimatedCursorImage.SetIndex(Value: Integer);
+begin
+  if (Value >= 0) and (Value < IconCount) then
+    FIndex := Value;
+end;
+
 procedure TJvAnimatedCursorImage.Assign(Source: TPersistent);
 var
   I: Integer;
@@ -400,7 +410,7 @@ begin
   if Dest is TIcon then
   begin
     if IconCount > 0 then
-      Dest.Assign(Icons[0])
+      Dest.Assign(Icons[Index])
     else
       Dest.Assign(nil);
   end
@@ -721,11 +731,12 @@ end;
 procedure TJvAnimatedCursorImage.Draw(ACanvas: TCanvas; const ARect: TRect);
 begin
   if FIcons.Count > 0 then
-    {$IFDEF VCL}
-    DrawRealSizeIcon(ACanvas, Icons[0], ARect.Left, ARect.Top);
-    {$ELSE}
-    ACanvas.Draw(ARect.Left, ARect.Top, Icons[0]);
-    {$ENDIF VCL}
+    if not Icons[Index].Empty then
+      {$IFDEF VCL}
+      DrawRealSizeIcon(ACanvas, Icons[Index], ARect.Left, ARect.Top);
+      {$ELSE}
+      ACanvas.Draw(ARect.Left, ARect.Top, Icons[Index]);
+      {$ENDIF VCL}
 end;
 
 {$IFDEF VCL}

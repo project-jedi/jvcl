@@ -108,8 +108,8 @@ uses
   JvResources;
 
 var
-  FDBReg: TJvInspectorRegister;
-  FMapReg: TJvInspectorRegister;
+  GlobalDBReg: TJvInspectorRegister = nil;
+  GlobalMapReg: TJvInspectorRegister = nil;
 
 function GetTableName(const AField: TField): string;
 begin
@@ -443,9 +443,9 @@ end;
 
 class function TJvInspectorDBData.FieldTypeMapping: TJvInspectorRegister;
 begin
-  if FMapReg = nil then
-    FMapReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
-  Result := FMapReg;
+  if GlobalMapReg = nil then
+    GlobalMapReg := TJvInspectorRegister.Create(TJvCustomInspectorData);
+  Result := GlobalMapReg;
 end;
 
 procedure TJvInspectorDBData.GetAsSet(var Buf);
@@ -487,9 +487,9 @@ end;
 
 class function TJvInspectorDBData.ItemRegister: TJvInspectorRegister;
 begin
-  if FDBReg = nil then
-    FDBReg := TJvInspectorRegister.Create(TJvInspectorDBData);
-  Result := FDBReg;
+  if GlobalDBReg = nil then
+    GlobalDBReg := TJvInspectorRegister.Create(TJvInspectorDBData);
+  Result := GlobalDBReg;
 end;
 
 class function TJvInspectorDBData.New(const AParent: TJvCustomInspectorItem;
@@ -680,6 +680,11 @@ end;
 
 initialization
   RegisterDBTypes;
+
+finalization
+  // (rom) added cleanup
+  FreeAndNil(GlobalDBReg);
+  FreeAndNil(GlobalMapReg);
 
 end.
 

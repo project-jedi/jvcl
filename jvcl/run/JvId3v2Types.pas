@@ -1586,5 +1586,6 @@ end;
 initialization
 
 finalization
-  GInstance.Free;
+  FreeAndNil(GInstance);
+
 end.

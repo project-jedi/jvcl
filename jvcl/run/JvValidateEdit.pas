@@ -84,7 +84,7 @@ type
 
   TJvCustomValidateEdit = class(TJvCustomEdit)
   private
-    bSelfChange: Boolean;
+    FSelfChange: Boolean;
     FCheckChars: string;
     FDecimalPlaces: Cardinal;
     FDisplayFormat: TJvValidateEditDisplayFormat;
@@ -102,7 +102,7 @@ type
     FCriticalPoints: TJvValidateEditCriticalPoints;
     FStandardFontColor: TColor;
     FAutoAlignment: Boolean;
-    FOldFontChange:TNotifyEvent;
+    FOldFontChange: TNotifyEvent;
     procedure DisplayText;
     function IsValidChar(const S: string; Key: Char; Posn: Integer): boolean; virtual;
     function MakeValid(ParseString: string): string;
@@ -268,12 +268,13 @@ uses
   Math,
   JvJCLUtils;
 
+//=== TJvCustomValidateEdit ==================================================
 
 constructor TJvCustomValidateEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  bSelfChange := False;
+  FSelfChange := False;
   FAutoAlignment := True;
   FCriticalPoints := TJvValidateEditCriticalPoints.Create;
   FCriticalPoints.OnChange := CriticalPointsChange;
@@ -307,12 +308,12 @@ begin
 
   if Source is TJvCustomValidateEdit then
   begin
-    lcSource    := Source as TJvCustomValidateEdit;
+    lcSource := Source as TJvCustomValidateEdit;
     CriticalPoints.Assign(lcSource.CriticalPoints);
     DisplayFormat := lcSource.DisplayFormat;
     DecimalPlaces := lcSource.DecimalPlaces;
-    MinValue    := lcSource.MinValue;
-    MaxValue    := lcSource.MaxValue;
+    MinValue := lcSource.MinValue;
+    MaxValue := lcSource.MaxValue;
     HasMinValue := lcSource.HasMinValue;
     HasMaxValue := lcSource.HasMaxValue;
     ZeroEmpty := lcSource.ZeroEmpty;
@@ -366,13 +367,13 @@ begin
   if ControlState = [csReadingState] then
     FDecimalPlaces := NewValue
   else
-    if (FDisplayFormat in [dfCurrency, dfFloat, dfScientific, dfPercent]) then
-      FDecimalPlaces := NewValue;
+  if FDisplayFormat in [dfCurrency, dfFloat, dfScientific, dfPercent] then
+    FDecimalPlaces := NewValue;
   EditText := FEditText;
 end;
 
-procedure TJvCustomValidateEdit.SetDisplayFormat(NewValue: 
-    TJvValidateEditDisplayFormat);
+procedure TJvCustomValidateEdit.SetDisplayFormat(NewValue:
+  TJvValidateEditDisplayFormat);
 const
   ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   NUMBERS = '0123456789';
@@ -385,80 +386,101 @@ begin
     OldFormat := FDisplayFormat;
     FDisplayFormat := NewValue;
     case FDisplayFormat of
-      dfAlphabetic: begin
-        FCheckChars := ALPHABET;
-        if FAutoAlignment then
-          Alignment := taLeftJustify;
-      end;
-      dfAlphaNumeric: begin
-        FCheckChars := ALPHABET + NUMBERS;
-        if FAutoAlignment then
-          Alignment := taLeftJustify;
-      end;
-      dfBinary: begin
-        FCheckChars := '01';
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-      end;
-      dfCheckChars, dfNonCheckChars: Alignment := taLeftJustify;
-      dfCustom, dfNone: begin
-        FCheckChars := '';
-        if FAutoAlignment then
-          Alignment := taLeftJustify;
-      end;
-      dfCurrency: begin
-        FCheckChars := NUMBERS + DecimalSeparator;
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-        if FDecimalPlaces = 0 then
-          FDecimalPlaces := CurrencyDecimals;
-      end;
-      dfFloat, dfPercent: begin
-        FCheckChars := NUMBERS + DecimalSeparator;
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-      end;
-      dfHex: begin
-        FCheckChars := NUMBERS + 'ABCDEFabcdef';
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-      end;
-      dfInteger: begin
-        FCheckChars := NUMBERS;
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-      end;
-      dfOctal: begin
-        FCheckChars := '01234567';
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-      end;
-      dfScientific: begin
-        FCheckChars := NUMBERS + 'Ee' + DecimalSeparator;
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-      end;
-      dfYear: begin
-        FCheckChars := NUMBERS;
-        if FAutoAlignment then
-          Alignment := taRightJustify;
-        MaxLength := 4;
-      end;
+      dfAlphabetic:
+        begin
+          FCheckChars := ALPHABET;
+          if FAutoAlignment then
+            Alignment := taLeftJustify;
+        end;
+      dfAlphaNumeric:
+        begin
+          FCheckChars := ALPHABET + NUMBERS;
+          if FAutoAlignment then
+            Alignment := taLeftJustify;
+        end;
+      dfBinary:
+        begin
+          FCheckChars := '01';
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+        end;
+      dfCheckChars, dfNonCheckChars:
+        Alignment := taLeftJustify;
+      dfCustom, dfNone:
+        begin
+          FCheckChars := '';
+          if FAutoAlignment then
+            Alignment := taLeftJustify;
+        end;
+      dfCurrency:
+        begin
+          FCheckChars := NUMBERS + DecimalSeparator;
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+          if FDecimalPlaces = 0 then
+            FDecimalPlaces := CurrencyDecimals;
+        end;
+      dfFloat, dfPercent:
+        begin
+          FCheckChars := NUMBERS + DecimalSeparator;
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+        end;
+      dfHex:
+        begin
+          FCheckChars := NUMBERS + 'ABCDEFabcdef';
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+        end;
+      dfInteger:
+        begin
+          FCheckChars := NUMBERS;
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+        end;
+      dfOctal:
+        begin
+          FCheckChars := '01234567';
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+        end;
+      dfScientific:
+        begin
+          FCheckChars := NUMBERS + 'Ee' + DecimalSeparator;
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+        end;
+      dfYear:
+        begin
+          FCheckChars := NUMBERS;
+          if FAutoAlignment then
+            Alignment := taRightJustify;
+          MaxLength := 4;
+        end;
     end;
 
     if OldFormat = dfYear then
       MaxLength := 0;
 
     // Convert non-base 10 numbers to base 10 and base-10 numbers to non-base 10
-    if (OldFormat = dfBinary) and (NewValue in [dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+    if (OldFormat = dfBinary) and
+      (NewValue in [dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
       SetAsInteger(BaseToInt(FEditText, 2))
-    else if (OldFormat in [dfCurrency, dfFloat, dfPercent]) and (NewValue in [dfBinary, dfHex, dfOctal]) then
+    else
+    if (OldFormat in [dfCurrency, dfFloat, dfPercent]) and
+      (NewValue in [dfBinary, dfHex, dfOctal]) then
       SetAsFloat(StrToFloatDef(FEditText, 0))
-    else if (OldFormat = dfHex) and (NewValue in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+    else
+    if (OldFormat = dfHex) and
+      (NewValue in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
       SetAsInteger(BaseToInt(FEditText, 16))
-    else if (OldFormat in [dfInteger, dfYear]) and (NewValue in [dfBinary, dfHex, dfOctal]) then
+    else
+    if (OldFormat in [dfInteger, dfYear]) and
+      (NewValue in [dfBinary, dfHex, dfOctal]) then
       SetAsInteger(StrToIntDef(FEditText, 0))
-    else if (OldFormat = dfOctal) and (NewValue in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfPercent, dfScientific, dfYear]) then
+    else
+    if (OldFormat = dfOctal) and
+      (NewValue in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfPercent, dfScientific, dfYear]) then
       SetAsInteger(BaseToInt(FEditText, 8))
     else
     begin
@@ -481,11 +503,14 @@ end;
 function TJvCustomValidateEdit.GetAsInteger: Integer;
 begin
   case FDisplayFormat of
-    dfBinary: Result := BaseToInt(FEditText, 2);
-    dfHex: Result := BaseToInt(FEditText, 16);
-    dfOctal: Result := BaseToInt(FEditText, 8);
-    else
-      Result := StrToIntDef(FEditText, 0);
+    dfBinary:
+      Result := BaseToInt(FEditText, 2);
+    dfHex:
+      Result := BaseToInt(FEditText, 16);
+    dfOctal:
+      Result := BaseToInt(FEditText, 8);
+  else
+    Result := StrToIntDef(FEditText, 0);
   end;
 end;
 
@@ -494,10 +519,14 @@ begin
   EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
-      dfNonCheckChars, dfNone: EditText := IntToStr(NewValue);
-    dfBinary: EditText := IntToBase(NewValue, 2);
-    dfHex: EditText := IntToBase(NewValue, 16);
-    dfOctal: EditText := IntToBase(NewValue, 8);
+    dfNonCheckChars, dfNone:
+      EditText := IntToStr(NewValue);
+    dfBinary:
+      EditText := IntToBase(NewValue, 2);
+    dfHex:
+      EditText := IntToBase(NewValue, 16);
+    dfOctal:
+      EditText := IntToBase(NewValue, 8);
     dfCurrency, dfFloat, dfInteger, dfPercent, dfScientific, dfYear:
       EditText := IntToStr(IntRangeValue(NewValue));
   end;
@@ -507,11 +536,14 @@ end;
 function TJvCustomValidateEdit.GetAsCurrency: Currency;
 begin
   case FDisplayFormat of
-    dfBinary: Result := BaseToInt(FEditText, 2);
-    dfHex: Result := BaseToInt(FEditText, 16);
-    dfOctal: Result := BaseToInt(FEditText, 8);
-    else
-      Result := StrToCurrDef(FEditText, 0);
+    dfBinary:
+      Result := BaseToInt(FEditText, 2);
+    dfHex:
+      Result := BaseToInt(FEditText, 16);
+    dfOctal:
+      Result := BaseToInt(FEditText, 8);
+  else
+    Result := StrToCurrDef(FEditText, 0);
   end;
 end;
 
@@ -520,10 +552,14 @@ begin
   EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
-      dfNonCheckChars, dfNone: EditText := CurrToStr(NewValue);
-    dfBinary: EditText := IntToBase(Trunc(NewValue), 2);
-    dfHex: EditText := IntToBase(Trunc(NewValue), 16);
-    dfOctal: EditText := IntToBase(Trunc(NewValue), 8);
+    dfNonCheckChars, dfNone:
+      EditText := CurrToStr(NewValue);
+    dfBinary:
+      EditText := IntToBase(Trunc(NewValue), 2);
+    dfHex:
+      EditText := IntToBase(Trunc(NewValue), 16);
+    dfOctal:
+      EditText := IntToBase(Trunc(NewValue), 8);
     dfCurrency, dfFloat, dfInteger, dfPercent, dfScientific, dfYear:
       EditText := CurrToStr(CurrRangeValue(NewValue));
   end;
@@ -533,12 +569,16 @@ end;
 function TJvCustomValidateEdit.GetAsFloat: Double;
 begin
   case FDisplayFormat of
-    dfBinary: Result := BaseToInt(FEditText, 2);
-    dfHex: Result := BaseToInt(FEditText, 16);
-    dfOctal: Result := BaseToInt(FEditText, 8);
-    dfScientific: Result := ScientificStrToFloat(FEditText);
-    else
-      Result := StrToFloatDef(FEditText, 0);
+    dfBinary:
+      Result := BaseToInt(FEditText, 2);
+    dfHex:
+      Result := BaseToInt(FEditText, 16);
+    dfOctal:
+      Result := BaseToInt(FEditText, 8);
+    dfScientific:
+      Result := ScientificStrToFloat(FEditText);
+  else
+    Result := StrToFloatDef(FEditText, 0);
   end;
 end;
 
@@ -547,14 +587,19 @@ begin
   EnterText := FEditText;
   case FDisplayFormat of
     dfAlphabetic, dfAlphaNumeric, dfCheckChars, dfCustom,
-      dfNonCheckChars, dfNone: EditText := FloatToStr(NewValue);
-    dfBinary: EditText := IntToBase(Trunc(NewValue), 2);
-    dfHex: EditText := IntToBase(Trunc(NewValue), 16);
+    dfNonCheckChars, dfNone:
+      EditText := FloatToStr(NewValue);
+    dfBinary:
+      EditText := IntToBase(Trunc(NewValue), 2);
+    dfHex:
+      EditText := IntToBase(Trunc(NewValue), 16);
     dfOctal: EditText := IntToBase(Trunc(NewValue), 8);
-    dfInteger, dfYear: EditText := IntToStr(IntRangeValue(Trunc(NewValue)));
+    dfInteger, dfYear:
+      EditText := IntToStr(IntRangeValue(Trunc(NewValue)));
     dfCurrency, dfFloat, dfPercent:
       EditText := FloatToStr(FloatRangeValue(NewValue));
-    dfScientific: EditText := Format('%e', [FloatRangeValue(NewValue)]);
+    dfScientific:
+      EditText := Format('%e', [FloatRangeValue(NewValue)]);
   end;
   DoValueChanged;
 end;
@@ -563,13 +608,13 @@ function TJvCustomValidateEdit.GetValue: Variant;
 begin
   case FDisplayFormat of
     dfCurrency:
-      Result := StrToCurrDef(FEditText,0);
+      Result := StrToCurrDef(FEditText, 0);
     dfFloat, dfPercent, dfScientific:
-      Result := StrToFloatDef(FEditText,0);
+      Result := StrToFloatDef(FEditText, 0);
     dfInteger, dfYear:
-      Result := StrToIntDef(FEditText,0);
-    else
-      Result := inherited Text;
+      Result := StrToIntDef(FEditText, 0);
+  else
+    Result := inherited Text;
   end;
 end;
 
@@ -599,7 +644,7 @@ procedure TJvCustomValidateEdit.KeyPress(var Key: Char);
 begin
   if not IsValidChar(Text, Key, SelStart) and (Key >= #32) then
     Key := #0;
-  inherited;
+  inherited KeyPress(Key);
 end;
 
 procedure TJvCustomValidateEdit.DoClipboardPaste;
@@ -612,12 +657,12 @@ end;
 function TJvCustomValidateEdit.MakeValid(ParseString: string): string;
 var
   S: string;
-  i: integer;
+  I: Integer;
 begin
   S := '';
-  for i := 1 to Length(ParseString) do
-    if IsValidChar(Copy(ParseString, 1, i - 1), ParseString[i], i) then
-      S := S + ParseString[i];
+  for I := 1 to Length(ParseString) do
+    if IsValidChar(Copy(ParseString, 1, I - 1), ParseString[I], I) then
+      S := S + ParseString[I];
   Result := S;
 end;
 
@@ -629,41 +674,52 @@ begin
   case FDisplayFormat of
     dfBinary, dfCheckChars, dfHex, dfOctal, dfYear:
       Result := Pos(Key, FCheckChars) > 0;
-    dfAlphabetic: Result := IsCharAlpha(Key);
-    dfAlphaNumeric: Result := IsCharAlphaNumeric(Key);
-    dfCustom: Result := DoValidate(Key, S, Posn);
-    dfInteger: Result := (Pos(Key, FCheckChars) > 0)
-      or ((Key = '+') and (Pos('+', S) = 0))
-      or ((Key = '-') and (Pos('-', S) = 0));
-    dfFloat, dfCurrency, dfPercent: Result := (Pos(Key, FCheckChars) > 0)
-      or ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0))
-      or ((Key = '+') and (Pos('+', S) = 0))
-      or ((Key = '-') and (Pos('-', S) = 0));
-    dfNonCheckChars: Result := Pos(Key, FCheckChars) = 0;
-    dfNone: Result := True;
-    dfScientific: begin
-      Result := (Pos(Key, FCheckChars) > 0) or (Key in ['+', '-']);
-      if Result then
+    dfAlphabetic:
+      Result := IsCharAlpha(Key);
+    dfAlphaNumeric:
+      Result := IsCharAlphaNumeric(Key);
+    dfCustom:
+      Result := DoValidate(Key, S, Posn);
+    dfInteger:
+      Result := (Pos(Key, FCheckChars) > 0) or
+        ((Key = '+') and (Pos('+', S) = 0)) or
+        ((Key = '-') and (Pos('-', S) = 0));
+    dfFloat, dfCurrency, dfPercent:
+      Result := (Pos(Key, FCheckChars) > 0) or
+        ((Key = DecimalSeparator) and (Pos(DecimalSeparator, S) = 0)) or
+        ((Key = '+') and (Pos('+', S) = 0)) or
+        ((Key = '-') and (Pos('-', S) = 0));
+    dfNonCheckChars:
+      Result := Pos(Key, FCheckChars) = 0;
+    dfNone:
+      Result := True;
+    dfScientific:
       begin
-        iPosE := Pos('e', LowerCase(S));
-        if Key = DecimalSeparator then
+        Result := (Pos(Key, FCheckChars) > 0) or (Key in ['+', '-']);
+        if Result then
         begin
-          if iPosE = 0 then
-            Result := (Pos(DecimalSeparator, S) = 0)
+          iPosE := Pos('e', LowerCase(S));
+          if Key = DecimalSeparator then
+          begin
+            if iPosE = 0 then
+              Result := (Pos(DecimalSeparator, S) = 0)
+            else
+              Result := ((Posn < iPosE) and (Pos(DecimalSeparator, Copy(S, 1, iPosE - 1)) = 0)) or
+                ((Posn > iPosE) and (Pos(DecimalSeparator, Copy(S, iPosE + 1, 99)) = 0));
+          end
           else
-            Result := ((Posn < iPosE) and (Pos(DecimalSeparator, Copy(S, 1, iPosE-1)) = 0))
-              or ((Posn > iPosE) and (Pos(DecimalSeparator, Copy(S, iPosE+1, 99)) = 0));
-        end
-        else if Key in ['E', 'e'] then
-          Result := (iPosE = 0) and (Posn > 1)
-        else if Key = '+' then
-          Result := (Posn = 0) or (Posn = iPosE)
-        else if Key = '-' then
-          Result := (Posn = 0) or (Posn = iPosE);
+          if Key in ['E', 'e'] then
+            Result := (iPosE = 0) and (Posn > 1)
+          else
+          if Key = '+' then
+            Result := (Posn = 0) or (Posn = iPosE)
+          else
+          if Key = '-' then
+            Result := (Posn = 0) or (Posn = iPosE);
+        end;
       end;
-    end;
-    else
-      Result := False;
+  else
+    Result := False;
   end;
 end;
 
@@ -675,10 +731,9 @@ begin
     FOnCustomValidate(Self, Key, AText, Posn, Result);
 end;
 
-
 procedure TJvCustomValidateEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited;
+  inherited KeyDown(Key, Shift);
   if Key = VK_DELETE then
     EditText := MakeValid(inherited Text);
 end;
@@ -688,7 +743,8 @@ begin
   Result := CheckValue;
   if FHasMaxValue and (CheckValue > FMaxValue) then
     Result := FMaxValue
-  else if FHasMinValue and (CheckValue < FMinValue) then
+  else
+  if FHasMinValue and (CheckValue < FMinValue) then
     Result := FMinValue;
 end;
 
@@ -697,7 +753,8 @@ begin
   Result := CheckValue;
   if FHasMaxValue and (CheckValue > FMaxValue) then
     Result := FMaxValue
-  else if FHasMinValue and (CheckValue < FMinValue) then
+  else
+  if FHasMinValue and (CheckValue < FMinValue) then
     Result := FMinValue;
 end;
 
@@ -706,7 +763,8 @@ begin
   Result := CheckValue;
   if FHasMaxValue and (CheckValue > FMaxValue) then
     Result := Trunc(FMaxValue)
-  else if FHasMinValue and (CheckValue < FMinValue) then
+  else
+  if FHasMinValue and (CheckValue < FMinValue) then
     Result := Trunc(FMinValue);
 end;
 
@@ -719,9 +777,9 @@ procedure TJvCustomValidateEdit.SetEditText(const NewValue: string);
 begin
   FEditText := MakeValid(NewValue);
   if (FDisplayFormat = dfYear) and ((not FHasMaxValue) or
-    (FHasMaxValue and (FMaxValue > 2000+TwoDigitYearCenturyWindow)))
-    and ((MaxLength = 0) or (MaxLength > 3)) then
-      FEditText := IntToStr(MakeYear4Digit(StrToIntDef(FEditText, 0), TwoDigitYearCenturyWindow));
+    (FHasMaxValue and (FMaxValue > 2000 + TwoDigitYearCenturyWindow))) and
+    ((MaxLength = 0) or (MaxLength > 3)) then
+    FEditText := IntToStr(MakeYear4Digit(StrToIntDef(FEditText, 0), TwoDigitYearCenturyWindow));
   if FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger,
     dfOctal, dfPercent, dfScientific, dfYear] then
   begin
@@ -749,73 +807,72 @@ procedure TJvCustomValidateEdit.ChangeText(const NewValue: string);
 var
   S: string;
 begin
-  bSelfChange := True;
+  FSelfChange := True;
   try
     S := FDisplayPrefix + NewValue + FDisplaySuffix;
     if S <> inherited Text then
       {$IFDEF VCL}
       inherited Text := S;
       {$ENDIF VCL}
-      {$IFDEF VisualCLX}
-      inherited SetText(S);
-      {$ENDIF VisualCLX}
+    {$IFDEF VisualCLX}
+    inherited SetText(S);
+    {$ENDIF VisualCLX}
   finally
-    bSelfChange := False;
+    FSelfChange := False;
   end;
 end;
 
 procedure TJvCustomValidateEdit.DisplayText;
 begin
   // The number types need to be formatted
-  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger,
-    dfOctal, dfPercent, dfScientific, dfYear]) and (AsFloat = 0) and FZeroEmpty then
-      ChangeText('')
+  if (FDisplayFormat in [dfBinary, dfCurrency, dfFloat, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) and
+    (AsFloat = 0) and FZeroEmpty then
+    ChangeText('')
   else
   begin
     if (FCriticalPoints.CheckPoints <> cpNone) and (FDisplayFormat in
-      [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent,
-      dfScientific, dfYear]) then
-        SetFontColor;
+      [dfBinary, dfCurrency, dfFloat, dfHex, dfInteger, dfOctal, dfPercent, dfScientific, dfYear]) then
+      SetFontColor;
     case FDisplayFormat of
       dfCurrency:
-        ChangeText(Format('%.*m',[FDecimalPlaces,AsCurrency]));
+        ChangeText(Format('%.*m', [FDecimalPlaces, AsCurrency]));
       dfInteger:
         ChangeText(Format('%d', [AsInteger]));
       dfFloat:
-        ChangeText(Format('%.*n',[FDecimalPlaces, AsFloat]));
+        ChangeText(Format('%.*n', [FDecimalPlaces, AsFloat]));
       dfScientific:
-        ChangeText(Format('%.*e',[FDecimalPlaces,AsFloat]));
+        ChangeText(Format('%.*e', [FDecimalPlaces, AsFloat]));
       dfPercent:
-        ChangeText(Format('%.*n%',[FDecimalPlaces, AsFloat]));
-      else
-        ChangeText(FEditText);
+        ChangeText(Format('%.*n%', [FDecimalPlaces, AsFloat]));
+    else
+      ChangeText(FEditText);
     end;
   end;
 end;
 
 function TJvCustomValidateEdit.ScientificStrToFloat(SciString: string): Double;
 var
-  i: Cardinal;
+  I: Cardinal;
   sMantissa, sExponent: string;
   bInExp: boolean;
 begin
-  if Pos('E', Uppercase(SciString)) = 0 then
+  if Pos('E', UpperCase(SciString)) = 0 then
     Result := StrToFloatDef(SciString, 0)
   else
   begin
     sMantissa := '';
     sExponent := '';
     bInExp := False;
-    for i := 1 to Length(SciString) do
+    for I := 1 to Length(SciString) do
     begin
-      if UpperCase(SciString[i]) = 'E' then
+      if UpperCase(SciString[I]) = 'E' then
         bInExp := True
       else
       begin
         if bInExp then
-          sExponent := sExponent + SciString[i]
+          sExponent := sExponent + SciString[I]
         else
-          sMantissa := sMantissa + SciString[i];
+          sMantissa := sMantissa + SciString[I];
       end;
     end;
     Result := StrToFloatDef(sMantissa, 0) * Power(10, StrToFloatDef(sExponent, 0));
@@ -824,14 +881,15 @@ end;
 
 function TJvCustomValidateEdit.BaseToInt(const BaseValue: string; Base: Byte): Integer;
 var
-  i: integer;
+  I: Integer;
 
-  function BaseCharToInt(BaseChar: Char): integer;
+  function BaseCharToInt(BaseChar: Char): Integer;
   begin
     case Ord(BaseChar) of
-      Ord('0')..Ord('9'): Result := Ord(BaseChar) - Ord('0');
-      else
-        Result := Ord(BaseChar) - Ord('A') + 10;
+      Ord('0')..Ord('9'):
+        Result := Ord(BaseChar) - Ord('0');
+    else
+      Result := Ord(BaseChar) - Ord('A') + 10;
     end;
   end;
 
@@ -840,19 +898,20 @@ begin
   Assert(Base > 1, 'BaseToInt: Base must be greater than 1');
 
   Result := 0;
-  for i := 1 to Length(BaseValue) do
-    Inc(Result, Trunc(BaseCharToInt(BaseValue[i]) * Power(Base, Length(BaseValue)-i)));
+  for I := 1 to Length(BaseValue) do
+    Inc(Result, Trunc(BaseCharToInt(BaseValue[I]) * Power(Base, Length(BaseValue) - I)));
 end;
 
 function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte): string;
 var
-  iDivisor, iRemainder, i: Cardinal;
+  iDivisor, iRemainder, I: Cardinal;
   iBaseIterations: Integer;
 
   function IntToBaseChar(IntValue: Integer): Char;
   begin
     case IntValue of
-      0..9: Result := Chr(Ord('0') + IntValue);
+      0..9:
+        Result := Chr(Ord('0') + IntValue);
     else
       Result := Chr(Ord('A') + IntValue - 10);
     end;
@@ -874,7 +933,7 @@ begin
       Inc(iBaseIterations);
     end;
     iDivisor := iDivisor div Base;
-    for i := 1 to iBaseIterations do
+    for I := 1 to iBaseIterations do
     begin
       Result := Result + IntToBaseChar(iRemainder div iDivisor);
       iRemainder := iRemainder mod iDivisor;
@@ -891,11 +950,12 @@ begin
 end;
 
 {procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);}
+
 procedure TJvCustomValidateEdit.Change;
 begin
   // Update FEditText for User changes, so that the AsInteger, etc,
   // functions work while editing
-  if not bSelfChange then
+  if not FSelfChange then
     FEditText := inherited Text;
   { // (ahuser) Done by inherited Change
   if Assigned(OnChange) then
@@ -939,7 +999,8 @@ procedure TJvCustomValidateEdit.SetFontColor;
 begin
   Font.OnChange := nil;
   case FCriticalPoints.CheckPoints of
-    cpNone: Font.Color := FStandardFontColor;
+    cpNone:
+      Font.Color := FStandardFontColor;
     cpMaxValue:
       if AsFloat > FCriticalPoints.MaxValue then
         Font.Color := FCriticalPoints.ColorAbove
@@ -948,7 +1009,8 @@ begin
     cpBoth:
       if AsFloat > FCriticalPoints.MaxValue then
         Font.Color := FCriticalPoints.ColorAbove
-      else if AsFloat < FCriticalPoints.MinValue then
+      else
+      if AsFloat < FCriticalPoints.MinValue then
         Font.Color := FCriticalPoints.ColorBelow
       else
         Font.Color := FStandardFontColor;
@@ -982,19 +1044,17 @@ begin
     SetAsFloat(FMinValue);
 end;
 
-{ TJvValidateEditCriticalPoints }
+//=== TJvValidateEditCriticalPoints ==========================================
 
 constructor TJvValidateEditCriticalPoints.Create;
 begin
-  inherited;
-
+  inherited Create;
   FCheckPoints := cpNone;
   FColorAbove := clBlue;
   FColorBelow := clRed;
 end;
 
-procedure TJvValidateEditCriticalPoints.SetCheckPoints(NewValue:
-    TJvValidateEditCriticalPointsCheck);
+procedure TJvValidateEditCriticalPoints.SetCheckPoints(NewValue: TJvValidateEditCriticalPointsCheck);
 begin
   if FCheckPoints <> NewValue then
   begin
@@ -1047,21 +1107,19 @@ end;
 
 procedure TJvValidateEditCriticalPoints.Assign(Source: TPersistent);
 var
-  lcSource: TJvValidateEditCriticalPoints;
+  LocalSource: TJvValidateEditCriticalPoints;
 begin
-  inherited;
-
+  inherited Assign(Source);
   if Source is TJvValidateEditCriticalPoints then
   begin
-    lcSource := Source as TJvValidateEditCriticalPoints;
-    CheckPoints := lcSource.CheckPoints;
-    ColorAbove := lcSource.ColorAbove;
-    ColorBelow := lcSource.ColorBelow;
-    MaxValue := lcSource.MaxValue;
-    MinValue := lcSource.MinValue;
+    LocalSource := Source as TJvValidateEditCriticalPoints;
+    CheckPoints := LocalSource.CheckPoints;
+    ColorAbove := LocalSource.ColorAbove;
+    ColorBelow := LocalSource.ColorBelow;
+    MaxValue := LocalSource.MaxValue;
+    MinValue := LocalSource.MinValue;
   end;
 end;
-
 
 end.
 

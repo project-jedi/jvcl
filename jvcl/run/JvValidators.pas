@@ -241,7 +241,7 @@ uses
   JvTypes, JvResources;
 
 var
-  FValidatorsList: TStringList = nil;
+  GlobalValidatorsList: TStringList = nil;
 
 procedure Debug(const Msg: string); overload;
 begin
@@ -304,29 +304,29 @@ end;
 
 class procedure TJvBaseValidator.RegisterBaseValidator(const DisplayName:string; AValidatorClass:TJvBaseValidatorClass);
 begin
-  if FValidatorsList = nil then
-    FValidatorsList := TStringList.Create;
-  if FValidatorsList.IndexOfObject(Pointer(AValidatorClass)) < 0 then
+  if GlobalValidatorsList = nil then
+    GlobalValidatorsList := TStringList.Create;
+  if GlobalValidatorsList.IndexOfObject(Pointer(AValidatorClass)) < 0 then
   begin
     Classes.RegisterClass(TPersistentClass(AValidatorClass));
-    FValidatorsList.AddObject(DisplayName,Pointer(AValidatorClass));
+    GlobalValidatorsList.AddObject(DisplayName,Pointer(AValidatorClass));
   end;
 end;
 
 class function TJvBaseValidator.BaseValidatorsCount:integer;
 begin
-  if FValidatorsList = nil then
+  if GlobalValidatorsList = nil then
     Result := 0
   else
-    Result := FValidatorsList.Count;
+    Result := GlobalValidatorsList.Count;
 end;
 
 class procedure TJvBaseValidator.GetBaseValidatorInfo(Index:integer;var DisplayName:string;var ABaseValidatorClass:TJvBaseValidatorClass);
 begin
-  if (FValidatorsList = nil) or (Index < 0) or (Index >= FValidatorsList.Count) then
+  if (GlobalValidatorsList = nil) or (Index < 0) or (Index >= GlobalValidatorsList.Count) then
     raise EJVCLException.CreateFmt(RsEInvalidIndexd, [Index]);
-  DisplayName := FValidatorsList[Index];
-  ABaseValidatorClass := TJvBaseValidatorClass(FValidatorsList.Objects[Index]);
+  DisplayName := GlobalValidatorsList[Index];
+  ABaseValidatorClass := TJvBaseValidatorClass(GlobalValidatorsList.Objects[Index]);
 end;
 
 constructor TJvBaseValidator.Create(AOwner: TComponent);
@@ -808,14 +808,15 @@ end;
 
 initialization
 //  RegisterClasses([TJvValidators, TJvValidationSummary]);
-  TJvBaseValidator.RegisterBaseValidator('Required Field Validator',TJvRequiredFieldValidator);
-  TJvBaseValidator.RegisterBaseValidator('Compare Validator',TJvCompareValidator);
-  TJvBaseValidator.RegisterBaseValidator('Range Validator',TJvRangeValidator);
-  TJvBaseValidator.RegisterBaseValidator('Regular Expression Validator',TJvRegularExpressionValidator);
-  TJvBaseValidator.RegisterBaseValidator('Custom Validator',TJvCustomValidator);
+  TJvBaseValidator.RegisterBaseValidator('Required Field Validator', TJvRequiredFieldValidator);
+  TJvBaseValidator.RegisterBaseValidator('Compare Validator', TJvCompareValidator);
+  TJvBaseValidator.RegisterBaseValidator('Range Validator', TJvRangeValidator);
+  TJvBaseValidator.RegisterBaseValidator('Regular Expression Validator', TJvRegularExpressionValidator);
+  TJvBaseValidator.RegisterBaseValidator('Custom Validator', TJvCustomValidator);
 
 finalization
-  FValidatorsList.Free;
+  FreeAndNil(GlobalValidatorsList);
+
 end.
 
 

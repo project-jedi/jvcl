@@ -4877,13 +4877,16 @@ procedure InitDockManager;
 var
   OSVersionInfo: TOSVersionInfo;
 begin
-  if JvGlobalDockManager <> nil then
+  try
     JvGlobalDockManager.Free;
-  JvGlobalDockManager := TJvDockManager.Create;
+    JvGlobalDockManager := nil;
+    JvGlobalDockManager := TJvDockManager.Create;
 
-  OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
-  GetVersionEx(OSVersionInfo);
-  IsWinXP := (OSVersionInfo.dwMajorVersion = 5) and (OSVersionInfo.dwMinorVersion = 1);
+    OSVersionInfo.dwOSVersionInfoSize := SizeOf(OSVersionInfo);
+    GetVersionEx(OSVersionInfo);
+    IsWinXP := (OSVersionInfo.dwMajorVersion = 5) and (OSVersionInfo.dwMinorVersion = 1);
+  except
+  end;
 end;
 
 procedure DoneDockManager;

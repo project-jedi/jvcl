@@ -358,6 +358,6 @@ finalization
       'Memory leak detected: free MTData objects before application shutdown'); // do not localize
   {$ENDIF DEBUGINFO_ON}
   {$ENDIF MSWINDOWS}
-  DataThreadsMan.Free;
+  FreeAndNil(DataThreadsMan);
 
 end.

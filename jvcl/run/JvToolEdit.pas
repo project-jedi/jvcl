@@ -949,10 +949,10 @@ const
 
 var
   {$IFDEF VCL}
-  GDateHook: TDateHook;
+  GDateHook: TDateHook = nil;
   {$ENDIF VCL}
   GDateImageIndex: TImageIndex = -1;
-  GDefaultComboEditImagesList: TImageList;
+  GDefaultComboEditImagesList: TImageList = nil;
   GFileImageIndex: TImageIndex = -1;
 
 //=== Local procedures =======================================================

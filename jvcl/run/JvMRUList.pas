@@ -704,7 +704,7 @@ end;
 
 initialization
   hComCtlDll := LoadLibrary(DllComCtlName);
-  if hComCtlDll <> 0 then
+  if hComCtlDll > 0 then
   begin
     // (rom) can we get them by name?
     CreateMruList := GetProcAddress(hComCtlDll, PChar(151));
@@ -735,8 +735,11 @@ initialization
     PError('MRU');
 
 finalization
-  if hComCtlDll <> 0 then
+  if hComCtlDll > 0 then
+  begin
     FreeLibrary(hComCtlDll);
+    hComCtlDll := 0;
+  end;
 
 end.
 
