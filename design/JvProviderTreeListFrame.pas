@@ -52,6 +52,8 @@ type
     destructor Destroy; override;
     function ProviderIntf: IJvDataProvider; override;
     procedure SetProviderIntf(Value: IJvDataProvider); override;
+    function ContextIntf: IJvDataContext; override;
+    procedure SetContextIntf(Value: IJvDataContext); override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; override;
 
     property Slave: TJvDataConsumer read FSlave write SetSlave;
@@ -84,6 +86,7 @@ type
     function GetViewList: IJvDataConsumerViewList;
     function UsingVirtualRoot: Boolean;
     procedure UpdateColumnSize;
+    procedure NotifyConsumerItemSelect;
     procedure UpdateSelectedItem; virtual;
     procedure ConsumerChanged(Sender: TJvDataConsumer; Reason: TJvDataConsumerChangeReason); virtual;
     procedure GenerateVirtualRoot; dynamic;
@@ -168,7 +171,7 @@ end;
 procedure TMasterConsumer.LimitSubServices(Sender: TJvDataConsumer;
   var SubSvcClass: TJvDataConsumerAggregatedObjectClass);
 begin
-  if not SubSvcClass.InheritsFrom(TJvDataConsumerContext) and
+  if (Slave <> nil) and not SubSvcClass.InheritsFrom(TJvDataConsumerContext) and
       not SubSvcClass.InheritsFrom(TJvDataConsumerItemSelect) and
       not SubSvcClass.InheritsFrom(TJvCustomDataConsumerViewList) then
     SubSvcClass := nil;
@@ -199,12 +202,31 @@ begin
   if Slave <> nil then
     Result := Slave.ProviderIntf
   else
-    Result := nil;
+    Result := inherited ProviderIntf;
 end;
 
 procedure TMasterConsumer.SetProviderIntf(Value: IJvDataProvider);
 begin
-  // Does absolutely nothing
+  if Slave <> nil then
+    Slave.SetProviderIntf(Value)
+  else
+    inherited SetProviderIntf(Value);
+end;
+
+function TMasterConsumer.ContextIntf: IJvDataContext;
+begin
+  if Slave <> nil then
+    Result := Slave.ContextIntf
+  else
+    Result := inherited ContextIntf;
+end;
+
+procedure TMasterConsumer.SetContextIntf(Value: IJvDataContext);
+begin
+  if Slave <> nil then
+    Slave.SetContextIntf(Value)
+  else
+    inherited SetContextIntf(Value);
 end;
 
 function TMasterConsumer.GetInterface(const IID: TGUID; out Obj): Boolean;
@@ -257,8 +279,20 @@ begin
   lvProvider.Columns[0].Width := lvProvider.ClientWidth;
 end;
 
+procedure TfmeJvProviderTreeList.NotifyConsumerItemSelect;
+var
+  Item: IJvDataItem;
+begin
+  if lvProvider.Selected <> nil then
+    Item := GetDataItem(lvProvider.Selected.Index)
+  else
+    Item := nil;
+  Provider.Slave.ItemSelected(Item);
+end;
+
 procedure TfmeJvProviderTreeList.UpdateSelectedItem;
 begin
+  NotifyConsumerItemSelect;
   DoItemSelect;
 end;
 

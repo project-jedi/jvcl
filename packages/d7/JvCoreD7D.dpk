@@ -56,6 +56,7 @@ contains
   JvDataContextManagerForm in '..\..\design\JvDataContextManagerForm.pas' {frmJvDataContextManager},
   JvDataConsumerContextSelectForm in '..\..\design\JvDataConsumerContextSelectForm.pas' {frmDataConsumerContextSelect: TFrame},
   JvColorProviderEditors in '..\..\design\JvColorProviderEditors.pas',
-  JvColorProviderDesignerForm in '..\..\design\JvColorProviderDesignerForm.pas';
+  JvColorProviderDesignerForm in '..\..\design\JvColorProviderDesignerForm.pas' {frmJvColorProviderDesigner},
+  JvProviderTreeListDsgnFrame in '..\..\design\JvProviderTreeListDsgnFrame.pas' {fmeJvProviderTreeListDsgn: TFrame};
 
 end.

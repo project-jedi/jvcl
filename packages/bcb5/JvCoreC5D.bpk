@@ -17,7 +17,8 @@
       ..\..\dcu\JvDataConsumerItemSelectForm.obj 
       ..\..\dcu\JvDataProviderDesignerForm.obj ..\..\dcu\JvDateTimeForm.obj 
       ..\..\dcu\JvStdToolbarDsgnFrame.obj ..\..\dcu\JvColorProviderEditors.obj 
-      ..\..\dcu\JvCoreC5D.obj"/>
+      ..\..\dcu\JvCoreC5D.obj ..\..\dcu\JvColorProviderDesignerForm.obj
+      ..\..\dcu\JvProviderTreeListDsgnFrame.obj"/>
     <RESFILES value="JvCoreC5D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>

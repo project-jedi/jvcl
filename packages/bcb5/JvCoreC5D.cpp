@@ -29,6 +29,8 @@ USEUNIT("..\..\design\JvDataProviderDesignerForm.pas");
 USEUNIT("..\..\design\JvDateTimeForm.pas");
 USEUNIT("..\..\design\JvStdToolbarDsgnFrame.pas");
 USEUNIT("..\..\design\JvColorProviderEditors.pas");
+USEUNIT("..\..\design\JvColorProviderDesignerForm.pas");
+USEUNIT("..\..\design\JvProviderTreeListDsgnFrame.pas");
 USEPACKAGE("dclstd50.bpi");
 USEPACKAGE("vclx50.bpi");
 USEPACKAGE("vcl50.bpi");

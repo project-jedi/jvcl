@@ -12,6 +12,8 @@ USEFORMNS("..\..\design\JvDataConsumerItemSelectForm.pas", Jvdataconsumeritemsel
 USEFORMNS("..\..\design\JvDataProviderDesignerForm.pas", Jvdataproviderdesignerform, frmDataProviderDesigner);
 USEFORMNS("..\..\design\JvDateTimeForm.pas", Jvdatetimeform, frmSelectDateTimeDlg);
 USEFORMNS("..\..\design\JvStdToolbarDsgnFrame.pas", Jvstdtoolbardsgnframe, fmeJvStdToolbarDesign); /* TFrame: File Type */
+USEFORMNS("..\..\design\JvColorProviderDesignerForm.pas", Jvcolorproviderdesignerform, frmJvColorProviderDesigner);
+USEFORMNS("..\..\design\JvProviderTreeListDsgnFrame.pas", Jvprovidertreelistdsgnframe, fmeJvProviderTreeListDsgn); /* TFrame: File Type */
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 //---------------------------------------------------------------------------

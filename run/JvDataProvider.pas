@@ -17,7 +17,7 @@ All Rights Reserved.
 
 Contributor(s): -
 
-Last Modified: 2003-07-19
+Last Modified: 2003-11-10
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -78,6 +78,7 @@ type
     function AllowContextManager: Boolean;
     function GetNotifierCount: Integer;
     function GetNotifier(Index: Integer): IJvDataProviderNotify;
+    function GetImplementer: TObject;
   end;
 
   IJvDataProviderNotify = interface
@@ -195,6 +196,8 @@ type
     function GetCaption: string;
     { Set the text of the item. }
     procedure SetCaption(const Value: string);
+    { Determines if the item's caption can be modified by a UI control (such as an edit control). }
+    function Editable: Boolean;
     { Get or set the text of the item. }
     property Caption: string read GetCaption write SetCaption;
   end;
