@@ -36,10 +36,10 @@ interface
 
 uses
   {$IFDEF VCL}
-  Windows, Messages, Controls, Graphics,
+  Windows, Messages, Controls, Graphics, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QWindows, QControls, QGraphics, Types,
+  QWindows, QControls, QGraphics, Types, QExtCtrls,
   {$ENDIF VisualCLX}
   Classes,
   JvComponent;
@@ -49,12 +49,12 @@ type
   private
     FImgPict: TBitmap;
     FImgMask: TBitmap;
-    FThread: TThread;
+    FTimer: TTimer;
     FColorOn: TColor;
     FColorOff: TColor;
+    FActive: Boolean;
     FStatus: Boolean;
     FOnChange: TNotifyEvent;
-    FInterval: Cardinal;
     {$IFDEF VisualCLX}
     FAutoSize: Boolean;
     procedure SetAutoSize(Value: Boolean);
@@ -62,11 +62,12 @@ type
     procedure SetColorOn(Value: TColor);
     procedure SetColorOff(Value: TColor);
     procedure SetInterval(Value: Cardinal);
+    function GetInterval: Cardinal;
     procedure SetActive(Value: Boolean);
     function GetActive: Boolean;
     procedure SetStatus(Value: Boolean);
     function GetStatus: Boolean;
-    procedure DoBlink(Sender: TObject; BlinkOn: Boolean);
+    procedure DoBlink(Sender: TObject);
   protected
     procedure ColorChanged; override;
     procedure Paint; override;
@@ -74,7 +75,7 @@ type
     property Color default clLime;
     property ColorOn: TColor read FColorOn write SetColorOn default clLime;
     property ColorOff: TColor read FColorOff write SetColorOff default clRed;
-    property Interval: Cardinal read FInterval write SetInterval default 1000;
+    property Interval: Cardinal read GetInterval write SetInterval default 1000;
     property Status: Boolean read GetStatus write SetStatus default True;
     {$IFDEF VisualCLX}
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
@@ -137,21 +138,6 @@ const
   cMaskLEDName = 'JVTR_MASK_LED';
   cGreenLEDName = 'JVTR_GREEN_LED';
 
-type
-  TBlinkEvent = procedure(Sender: TObject; BlinkOn: boolean) of object;
-  TBlinkThread = class(TThread)
-  private
-    FOnBlink: TBlinkEvent;
-    FBlinkOn: Boolean;
-    FInterval: Cardinal;
-    procedure DoBlink;
-  public
-    constructor Create(Interval: Cardinal);
-    procedure Execute; override;
-    property Interval: Cardinal read FInterval;
-    property OnBlink: TBlinkEvent read FOnBlink write FOnBlink;
-  end;
-
 //=== TJvCustomLED ===========================================================
 
 constructor TJvCustomLED.Create(AOwner: TComponent);
@@ -160,10 +146,13 @@ begin
   FImgPict := TBitmap.Create;
   FImgMask := TBitmap.Create;
   FImgMask.LoadFromResourceName(HInstance, cMaskLEDName);
+  FTimer := TTimer.Create(Self);
+  FTimer.Enabled := False;
+  FTimer.OnTimer := DoBlink;
+  FTimer.Interval := 1000;
   Color := clLime;
   Width := 17;
   Height := 17;
-  FInterval := 1000;
   ColorOn := clLime;
   ColorOff := clRed;
   Active := False;
@@ -175,9 +164,8 @@ end;
 
 destructor TJvCustomLED.Destroy;
 begin
-  if FThread <> nil then
-    FThread.Terminate;
-  FreeAndNil(FThread);
+  FTimer.Enabled := False;
+  FTimer.OnTimer := nil;
   FImgPict.Free;
   FImgMask.Free;
   inherited Destroy;
@@ -216,40 +204,27 @@ begin
     Color := Value;
 end;
 
-procedure TJvCustomLED.SetInterval(Value: Cardinal);
+function TJvCustomLED.GetInterval: Cardinal;
 begin
-  if Value <> FInterval then
-  begin
-    FInterval := Value;
-    if FThread <> nil then
-    begin
-      FreeAndNil(FThread);
-      FThread := TBlinkThread.Create(FInterval);
-      TBlinkThread(FThread).OnBlink := DoBlink;
-      if FInterval > 0 then
-        FThread.Resume;
-    end;
-  end;
+  Result := FTimer.Interval;
 end;
 
-procedure TJvCustomLED.SetActive(Value: Boolean);
+procedure TJvCustomLED.SetInterval(Value: Cardinal);
 begin
-  if Value then
-  begin
-    if FThread = nil then
-      FThread := TBlinkThread.Create(Interval);
-    TBlinkThread(FThread).OnBlink := DoBlink;
-    if Interval > 0 then
-      FThread.Resume;
-  end
-  else
-  if FThread <> nil then
-    FThread.Suspend;
+  if Value <> FTimer.Interval then
+    FTimer.Interval := Value;
 end;
 
 function TJvCustomLED.GetActive: Boolean;
 begin
-  Result := (FThread <> nil) and (FInterval > 0) and not FThread.Suspended;
+  Result := FActive;
+end;
+
+procedure TJvCustomLED.SetActive(Value: Boolean);
+begin
+  FActive := Value;
+  if not (csDesigning in ComponentState) then
+    FTimer.Enabled := Value;
 end;
 
 procedure TJvCustomLED.SetStatus(Value: Boolean);
@@ -268,9 +243,9 @@ begin
   Result := FStatus;
 end;
 
-procedure TJvCustomLED.DoBlink(Sender: TObject; BlinkOn: Boolean);
+procedure TJvCustomLED.DoBlink(Sender: TObject);
 begin
-  Status := BlinkOn;
+  Status := not Status;
 end;
 
 procedure TJvCustomLED.SetBounds(ALeft, ATop, AWidth, AHeight: Integer);
@@ -296,31 +271,6 @@ begin
   end;
 end;
 {$ENDIF VisualCLX}
-
-//=== TBlinkThread ===========================================================
-
-constructor TBlinkThread.Create(Interval: Cardinal);
-begin
-  inherited Create(True);
-  FInterval := Interval;
-end;
-
-procedure TBlinkThread.DoBlink;
-begin
-  if Assigned(FOnBlink) then
-    FOnBlink(Self, FBlinkOn);
-  FBlinkOn := not FBlinkOn;
-end;
-
-procedure TBlinkThread.Execute;
-begin
-  FBlinkOn := False;
-  while not Terminated and not Suspended do
-  begin
-    Synchronize(DoBlink);
-    Sleep(FInterval);
-  end;
-end;
 
 procedure TJvCustomLED.ColorChanged;
 var
