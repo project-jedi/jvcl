@@ -839,10 +839,13 @@ begin
   begin
     if BevelKind = bkNone then Exit;
     R := Bounds(0, 0, Width, Height);
+
     Canvas.Brush.Color := Color;
     QWindows.FrameRect(Canvas, R);
     InflateRect(R,-1,-1);
     QWindows.FrameRect(Canvas, R);
+    InflateRect(R, 1, 1);
+
     if BevelKind <> bkNone then
     begin
       FEdgeSize := 0;
@@ -850,13 +853,12 @@ begin
       if BevelOuter <> bvNone then Inc(FEdgeSize, BevelWidth);
       if FEdgeSize = 0 then
       begin
-        R := ClientRect;
         Canvas.Brush.Color := Color;
         QWindows.FrameRect(Canvas, R);
-        InflateRect(R, -1, -1);
+        InflateRect(R,-1,-1);
         QWindows.FrameRect(Canvas, R);
+        InflateRect(R, 1, 1);
       end;
-      R := Bounds(0, 0, Width, Height);
       with R do
       begin
         if beLeft in BevelEdges then Dec(Left, FEdgeSize);
@@ -865,7 +867,7 @@ begin
         if beBottom in BevelEdges then Inc(Bottom, FEdgeSize);
       end;
       DrawEdge(Canvas.Handle, R, InnerStyles[BevelInner] or OuterStyles[BevelOuter],
-        Byte(BevelEdges) or EdgeStyles[BevelKind]);
+        Byte(BevelEdges) or EdgeStyles[BevelKind] or BF_ADJUST);
     end;
   end;
 end;
