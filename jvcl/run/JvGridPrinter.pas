@@ -122,11 +122,7 @@ type
 implementation
 
 uses
-  JvGridPreviewForm;
-
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
+  JvGridPreviewForm, JvTypes;
 
   { TPrintOptions }
 

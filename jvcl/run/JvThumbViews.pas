@@ -197,13 +197,13 @@ type
 
 implementation
 
+uses
+  JvTypes;
+  
 {const
   FGraphicExtensions  : array[1..9] of string = ('*.BMP','*.JPG','*.WMF','*.EMF',
                                              '*.ICO','*.GIF','*.PCX',
                                              '*.TGA','*.PNG'); {}
-const
-  CRLF = #13 + #10;
-
 constructor TJvThumbView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -1179,7 +1179,7 @@ begin
     else
       Final := Final + ';' + Res;
   until Cp1 = 0;
-  Final := ReplaceAllstr(Final, ';', crlf, False);
+  Final := ReplaceAllstr(Final, ';', sLineBreak, False);
   FGraphicExtensions.Text := Final;
 
   Cp1 := 0;

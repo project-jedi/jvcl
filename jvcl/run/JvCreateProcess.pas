@@ -1360,7 +1360,7 @@ end;
 
 function TJvCreateProcess.WriteLn(const S: string): Boolean;
 begin
-  Result := Write(S + CrLf);
+  Result := Write(S + sLineBreak);
 end;
 
 end.

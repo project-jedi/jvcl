@@ -1940,9 +1940,9 @@ begin
     if (Name <> '') then
     begin
       if Value = '' then
-        St := '/>' + CrLf
+        St := '/>' + sLineBreak
       else
-       St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + CrLf;
+       St := '>' + SimpleXmlEncode(Value) + '</' + Name + '>' + sLineBreak;
       Stream.Write(St[1], Length(St));
     end;
   end
@@ -1950,7 +1950,7 @@ begin
   begin
     if (Name <> '') then
     begin
-      St := '>' + CrLf;
+      St := '>' + sLineBreak;
       Stream.Write(St[1], Length(St));
     end;
     if Assigned(SimpleXml) and
@@ -1961,7 +1961,7 @@ begin
     Items.SaveToStream(Stream, Level + LevelAdd, Parent);
     if Name <> '' then
     begin
-      St := Level + '</' + Name + '>' + CrLf;
+      St := Level + '</' + Name + '>' + sLineBreak;
       Stream.Write(St[1], Length(St));
     end;
   end;
@@ -2053,7 +2053,7 @@ begin
   Stream.Write(St[1], Length(St));
   if Value <> '' then
     Stream.Write(Value[1], Length(Value));
-  St := '-->' + CrLf;
+  St := '-->' + sLineBreak;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -2141,7 +2141,7 @@ begin
   Stream.Write(St[1], Length(St));
   if Value <> '' then
     Stream.Write(Value[1], Length(Value));
-  St := ']]>' + CrLf;
+  St := ']]>' + sLineBreak;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -2207,7 +2207,7 @@ var
 begin
   if Value <> '' then
   begin
-    St := Level + SimpleXmlEncode(Value) + CrLf;
+    St := Level + SimpleXmlEncode(Value) + sLineBreak;
     Stream.Write(St[1], Length(St));
   end;
   if Parent <> nil then
@@ -2306,7 +2306,7 @@ begin
     St := St + ' standalone="yes"';
   if Encoding <> '' then
     St := St + ' encoding="' + Encoding + '"';
-  St := St + '?>' + CrLf;
+  St := St + '?>' + sLineBreak;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -2397,7 +2397,7 @@ procedure TJvSimpleXMLElemDocType.SaveToStream(const Stream: TStream;
 var
   St: string;
 begin
-  St := '<!DOCTYPE ' + Value + '>' + CrLf;
+  St := '<!DOCTYPE ' + Value + '>' + sLineBreak;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;
@@ -2481,7 +2481,7 @@ begin
   St := Level + '<?xml-stylesheet';
   for I := 0 to Properties.GetCount - 1 do
     St := St + Properties.Item[I].SaveToString;
-  St := St + '?>' + CrLf;
+  St := St + '?>' + sLineBreak;
   Stream.Write(St[1], Length(St));
   if Parent <> nil then
     Parent.DoSaveProgress;

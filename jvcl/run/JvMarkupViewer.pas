@@ -556,15 +556,12 @@ begin
 end;
 
 procedure TJvMarkupViewer.SetText(const Value: TCaption);
-const
-  cr = chr(13) + chr(10);
-  tab = chr(9);
 var
   s: string;
 begin
   if value = FText then exit;
   s := value;
-  s := stringreplace(s, cr, ' ', [rfreplaceall]);
+  s := stringreplace(s, sLineBreak, ' ', [rfreplaceall]);
   s := Trimright(s);
   parseHTML(s);
   HTMLElementDimensions;

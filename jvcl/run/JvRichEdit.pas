@@ -2856,7 +2856,7 @@ begin
     if Selection.cpMin >= 0 then
     begin
       if RichEditVersion = 1 then
-        Fmt := '%s' + CrLf
+        Fmt := '%s' + sLineBreak
       else
         Fmt := '%s' + Cr;
     end
@@ -2874,7 +2874,7 @@ begin
           Exit;
         Inc(Selection.cpMin, L);
         if RichEditVersion = 1 then
-          Fmt := CrLf + '%s'
+          Fmt := sLineBreak + '%s'
         else
           Fmt := Cr + '%s';
       end
@@ -2885,7 +2885,7 @@ begin
           Exit;
         Inc(Selection.cpMin, L);
         if RichEditVersion = 1 then
-          Fmt := '%s' + CrLf
+          Fmt := '%s' + sLineBreak
         else
           Fmt := '%s' + Cr;
       end;

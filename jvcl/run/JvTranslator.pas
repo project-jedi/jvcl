@@ -431,7 +431,7 @@ var
 
   function AnalyseCRLF(Value: string): string;
   begin
-    Result := StringReplace(Value, '\n', CrLf, [rfReplaceAll]);
+    Result := StringReplace(Value, '\n', sLineBreak, [rfReplaceAll]);
   end;
 
   function IsObject(const Obj: TClass; ClassName: string): Boolean;
@@ -520,7 +520,7 @@ var
       if Prop <> nil then
         case Prop^.PropType^.Kind of
           tkstring, tkLString, tkWString:
-            SetStrProp(Obj, Prop, StringReplace(Elem.Properties[I].Value, '\n', CrLf, []));
+            SetStrProp(Obj, Prop, StringReplace(Elem.Properties[I].Value, '\n', sLineBreak, []));
           tkSet:
             SetSetProp(Obj, Prop, Elem.Properties[I].Value);
           tkEnumeration:
@@ -584,7 +584,7 @@ var
         if Prop <> nil then
           case Prop^.PropType^.Kind of
             tkString, tkLString:
-              SetStrProp(Obj, Prop, StringReplace(Elem.Items[I].Value, '\n', CrLf, []));
+              SetStrProp(Obj, Prop, StringReplace(Elem.Items[I].Value, '\n', sLineBreak, []));
             tkSet:
               SetSetProp(Obj, Prop, Elem.Items[I].Value);
             tkEnumeration:

@@ -1611,7 +1611,7 @@ end;
 
 function TJvWideEditorStrings.GetText: WideString;
 begin
-  Result := GetSeparatedText(WideCRLF);
+  Result := GetSeparatedText(sWideLineBreak);
 end;
 
 { TJvCustomWideEditor }
@@ -4917,7 +4917,7 @@ function TJvCustomWideEditor.GetTextLen: Integer;
 var
   i, SepSize: Integer;
 begin
-  SepSize := Length(WideCRLF);
+  SepSize := Length(sWideLineBreak);
   Result := 0;
   for i := 0 to FLines.Count - 1 do
     Result := Result + Length(FLines[i]) + SepSize;
