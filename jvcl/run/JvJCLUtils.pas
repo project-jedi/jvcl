@@ -48,11 +48,9 @@ uses
   Libc, Xlib, QStdCtrls, StrUtils,
   {$ENDIF LINUX}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Graphics, Clipbrd,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QGraphics, QClipbrd, Types, QWindows,
+  Qt, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
@@ -3768,11 +3766,11 @@ begin
   TOpenIcon(Ico).AssignTo(Result);
 end;
 
-procedure CopyIconToClipboard(Ico: TIcon; TransparentColor: TColor);
+procedure CopyIconToClipboard(Icon: TIcon; BackColor: TColor);
 var
   bmp: TBitmap;
 begin
-  bmp := Icon2Bmp(Ico);
+  bmp := Icon2Bmp(Icon);
   Clipboard.Assign(Bmp);
 end;
 
