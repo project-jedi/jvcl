@@ -3328,4 +3328,12 @@ object MainForm: TMainForm
       Action = View_Customize_Toolbar_Action
     end
   end
+  object JvAppStorage: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = 'Software\JVCL\Examples\JvDocking\VCDemoPro'
+    SubStorages = <>
+    Left = 75
+    Top = 215
+  end
 end

@@ -19,6 +19,7 @@ object MainForm: TMainForm
   Scaled = False
   Visible = True
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 14
   object ToolBar1: TToolBar
@@ -163,13 +164,13 @@ object MainForm: TMainForm
     end
     object DockInfo_Menu: TMenuItem
       Caption = 'Dock Information'
-      object SaveToFile: TMenuItem
+      object SaveToIniFile: TMenuItem
         Caption = 'Save To Ini File'
-        OnClick = SaveToFileClick
+        OnClick = SaveToIniFileClick
       end
-      object LoadFromFile: TMenuItem
+      object LoadFromIniFile: TMenuItem
         Caption = 'Load From Ini File'
-        OnClick = LoadFromFileClick
+        OnClick = LoadFromIniFileClick
       end
       object N24: TMenuItem
         Caption = '-'
@@ -181,6 +182,17 @@ object MainForm: TMainForm
       object LoadFromReg: TMenuItem
         Caption = 'Load From Registry'
         OnClick = LoadFromRegClick
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object SaveToXmlFile: TMenuItem
+        Caption = 'Save To Xml File'
+        OnClick = SaveToXmlFileClick
+      end
+      object LoadFromXmlFile: TMenuItem
+        Caption = 'Load From Xml File'
+        OnClick = LoadFromXmlFileClick
       end
     end
     object DockOption_Menu: TMenuItem

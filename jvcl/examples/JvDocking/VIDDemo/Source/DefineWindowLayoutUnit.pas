@@ -136,7 +136,8 @@ procedure TDefineWindowLayoutForm.Apply_ButtonClick(Sender: TObject);
 begin
   if Views_ListBox.ItemIndex <> -1 then
   begin
-    LoadDocktreeFromFile(ExtractFilePath(Application.EXEName) + Views_ListBox.Items[Views_ListBox.ItemIndex] + '.ini');
+//    LoadDocktreeFromFile(ExtractFilePath(Application.EXEName) + Views_ListBox.Items[Views_ListBox.ItemIndex] + '.ini');
+    LoadDockTreeFromAppStorage(MainForm.JvAppStorage, Views_ListBox.Items[Views_ListBox.ItemIndex]);
     SelectItemIndex := Views_ListBox.ItemIndex;
     SetForegroundWindow(Handle);
   end;
@@ -148,7 +149,8 @@ begin
   begin
     Views_ListBox.Items.Add(Trim(ViewName_Edit.Text));
   end;
-  SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Trim(ViewName_Edit.Text) + '.ini');
+  SaveDockTreeToAppStorage(MainForm.JvAppStorage, Trim(ViewName_Edit.Text));
+//  SaveDockTreeToFile(ExtractFilePath(Application.EXEName) + Trim(ViewName_Edit.Text) + '.ini');
   ViewName_EditChange(ViewName_Edit);
 end;
 

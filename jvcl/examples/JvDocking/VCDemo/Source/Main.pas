@@ -16,7 +16,8 @@ uses
   Windows, Messages, SysUtils, {Variants, }Classes, Graphics, Controls, Forms,
   Dialogs, ComCtrls, ToolWin, ImgList, ExtCtrls, StdCtrls, Menus, ActnList,
   JvDockControlForm, JvDockVCStyle, Grids{, ValEdit}, StdActns, JVHLEditor,
-  JvDockDelphiStyle, JvDockVIDStyle;
+  JvDockDelphiStyle, JvDockVIDStyle, JvComponent, JvAppStorage,
+  JvAppRegistryStorage;
 
 type
   TMainForm = class(TForm)
@@ -409,6 +410,7 @@ type
     ToolButton51: TToolButton;
     ToolButton52: TToolButton;
     ToolButton53: TToolButton;
+    JvAppStorage: TJvAppRegistryStorage;
     procedure View_Workspace_ActionExecute(Sender: TObject);
     procedure View_OutPut_ActionExecute(Sender: TObject);
     procedure MainControlBarBandMove(Sender: TObject; Control: TControl;
@@ -624,7 +626,8 @@ var i: Integer;
 begin
   for i := MDIChildCount - 1 downto 0 do
     MDIChildren[i].Close;
-  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+//  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  SaveDockTreeToAppStorage(JvAppStorage);
 end;
 
 procedure TMainForm.MainControlBarResize(Sender: TObject);
@@ -947,7 +950,8 @@ procedure TMainForm.LoadDockInfo;
 begin
   CreateDockableForm;
   GetToolbarWidthArr;
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+//  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockInfo.ini');
+  LoadDockTreeFromAppStorage(JvAppStorage);
   SetToolButtonDownAndActionCheck;
 end;
 

@@ -1509,4 +1509,12 @@ object MSDN2002: TMSDN2002
     Left = 168
     Top = 32
   end
+  object JvAppStorage: TJvAppRegistryStorage
+    StorageOptions.BooleanStringTrueValues = 'TRUE, YES, Y'
+    StorageOptions.BooleanStringFalseValues = 'FALSE, NO, N'
+    Root = 'Software\JVCL\Examples\JvDocking\MSDN2002Pro'
+    SubStorages = <>
+    Left = 35
+    Top = 105
+  end
 end

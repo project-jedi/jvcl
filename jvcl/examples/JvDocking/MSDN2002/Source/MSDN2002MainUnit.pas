@@ -16,7 +16,8 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ActnList, Menus, ImgList, JvDockControlForm, JvDockVIDStyle,
-  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, shdocvw;
+  JvDockVSNetStyle, StdCtrls, ComCtrls, ToolWin, ExtCtrls, shdocvw,
+  JvComponent, JvAppStorage, JvAppRegistryStorage;
 
 type
   TMSDN2002 = class(TForm)
@@ -196,6 +197,7 @@ type
     Float_Item: TMenuItem;
     AutoHide_Item: TMenuItem;
     JvDockVSNetStyle1: TJvDockVSNetStyle;
+    JvAppStorage: TJvAppRegistryStorage;
     procedure File_Print_ActionExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
@@ -267,12 +269,14 @@ end;
 
 procedure TMSDN2002.LoadToolFormLayout;
 begin
-  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+//  LoadDockTreeFromFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  LoadDockTreeFromAppStorage(JvAppStorage);
 end;
 
 procedure TMSDN2002.SaveToolFormLayout;
 begin
-  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+//  SaveDockTreeToFile(ExtractFilePath(Application.ExeName) + 'DockLayout.ini');
+  SaveDockTreeToAppStorage(JvAppStorage);
 end;
 
 procedure TMSDN2002.File_Print_ActionExecute(Sender: TObject);
