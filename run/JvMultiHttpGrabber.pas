@@ -49,8 +49,6 @@ type
     FileSize: Integer; Url: string) of object;
   TJvDoneStreamEvent = procedure(Sender: TObject; UserData: Integer; Stream: TStream;
     StreamSize: Integer; Url: string) of object;
-  TJvProgressEvent = procedure(Sender: TObject; UserData: Integer; Position: Integer;
-    TotalSize: Integer; Url: string; var Continue: Boolean) of object;
   TDateEvent = procedure(Sender: TObject; UserData: Integer; FileDate: TDateTime;
     Url: string) of object;
 
@@ -65,7 +63,7 @@ type
     FFileName: TFileName;
     FOnDoneFile: TJvDoneFileEvent;
     FOnDoneStream: TJvDoneStreamEvent;
-    FOnProgress: TJvProgressEvent;
+    FOnProgress: TJvHTTPProgressEvent;
     FOnReceived: TUrlSent;
     FOnReceivingResponse: TUrlEvent;
     FOnClosed: TUrlEvent;
@@ -111,7 +109,7 @@ type
     property OnDoneFile: TJvDoneFileEvent read FOnDoneFile write FOnDoneFile;
     property OnDoneStream: TJvDoneStreamEvent read FOnDoneStream write FOnDoneStream;
     property OnError: TUrlEventError read FOnError write FOnError;
-    property OnProgress: TJvProgressEvent read FOnProgress write FOnProgress;
+    property OnProgress: TJvHTTPProgressEvent read FOnProgress write FOnProgress;
     property OnReceivingResponse: TUrlEvent read FOnReceivingResponse write FOnReceivingResponse;
     property OnReceivedResponse: TUrlSent read FOnReceived write FOnReceived;
     property OnRedirect: TUrlRedirect read FOnRedirect write FOnRedirect;

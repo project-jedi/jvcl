@@ -84,6 +84,7 @@ type
   TJvInspectorRegister = class;
   TJvCustomInspectorRegItem = class;
   TJvInspectorEventData = class;
+  TJvInspectorPropData = class;
 
   TInspectorItemFlag = (iifReadonly, iifHidden, iifExpanded, iifVisible,
     iifQualifiedNames, iifAutoUpdate, iifMultiLine, iifValueList,
@@ -188,6 +189,8 @@ type
     FOnKeyPress: TKeyPressEvent;
     FOnKeyUp: TKeyEvent;
     FOnMouseDown:TOnJvInspectorMouseDown;
+    FInspectObject: TObject;
+    procedure SetInspectObject(const Value: TObject);
 
 //    FOnMouseDown: TInspectorMouseDownEvent;
 
@@ -311,6 +314,7 @@ type
     property ReadOnly: Boolean read GetReadOnly write SetReadOnly;
     property RelativeDivider: Boolean read GetRelativeDivider write SetRelativeDivider;
     property Root: TJvCustomInspectorItem read GetRoot;
+    property InspectObject:TObject read FInspectObject write SetInspectObject;
     property RowSizing: Boolean read FRowSizing write FRowSizing;
     property RowSizingItem: TJvCustomInspectorItem read FRowSizingItem write
       FRowSizingItem;
@@ -354,6 +358,7 @@ type
     property TopIndex;
     property VisibleCount;
     property VisibleItems;
+    property InspectObject;
   published
     property Align;
     property Anchors;
@@ -10723,6 +10728,13 @@ end;
 procedure RegisterConsts;
 begin
   RegisterIntegerConsts(TypeInfo(TItemRowSizing), irsToInt, IntToirs);
+end;
+
+procedure TJvCustomInspector.SetInspectObject(const Value: TObject);
+begin
+  Root.Clear;
+  TJvInspectorPropData.New(Root,Value);
+  FInspectObject := Value;
 end;
 
 initialization

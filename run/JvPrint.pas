@@ -39,7 +39,7 @@ type
   private
     FOnBeginPrint: TNotifyEvent;
     FOnFinishedPrint: TNotifyEvent;
-    FOnProgress: TJvPrintProgressEvent;
+    FOnProgress: TJvProgressEvent;
     FOnNextPage: TJvNextPageEvent;
   published
     procedure Print(Value: TStringList);
@@ -47,7 +47,7 @@ type
     procedure Abort;
     property OnBeginPrint: TNotifyEvent read FOnBeginPrint write FOnBeginPrint;
     property OnFinishedPrint: TNotifyEvent read FOnFinishedPrint write FOnFinishedPrint;
-    property OnProgress: TJvPrintProgressEvent read FOnProgress write FOnProgress;
+    property OnProgress: TJvProgressEvent read FOnProgress write FOnProgress;
     property OnNextPage: TJvNextPageEvent read FOnNextPage write FOnNextPage;
   end;
 
