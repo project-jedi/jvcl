@@ -56,7 +56,7 @@ uses
   JvQAppRegistryStorage,
   {$ENDIF USEWINDOWS}
   JvQAppIniStorage, JvQAppStorage, JvQAppStorageSelectList,
-  JvQAutoComplete;
+  JvQAutoComplete{, JvQStdCtrlsEx};
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvCoreReg.dcr}
@@ -68,12 +68,12 @@ uses
 procedure Register;
 const
   BaseClass: TClass = TComponent;
-begin 
+begin
   GroupDescendentsWith(TJvComponent, TControl);
-  GroupDescendentsWith(TJvLookupAutoComplete, TControl); 
-
+  GroupDescendentsWith(TJvLookupAutoComplete, TControl);
+//  RegisterComponents(RsPaletteEdit,[TJvEditEx]);
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
-    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]); 
+    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
 
   RegisterComponents(RsPalettePersistence, [TJvAppStorage,
     TJvAppIniFileStorage, TJvAppStorageSelectList]);
@@ -82,18 +82,18 @@ begin
   {$ENDIF USEWINDOWS}
 
   RegisterComponents(RsPaletteNonVisual, [TJvLookupAutoComplete]);
-  
-  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty); 
+
+  RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCLX', TJVCLAboutDialogProperty);
 
   // The TJvPersistent class needs an editor for D5 and BCB5, but for
   // all other compilers, it doesn't need anything as it is declared as
   // a SubComponent. However, we want to hide the Name and Tag property
-  // in this case, thus the registration of 'nil' property editors 
+  // in this case, thus the registration of 'nil' property editors
   RegisterPropertyEditor(TypeInfo(TComponentName), TJvPersistent, 'Name', nil);
-  RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil); 
- 
-  
-  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvColorProperty); 
+  RegisterPropertyEditor(TypeInfo(Longint), TJvPersistent, 'Tag', nil);
+
+
+  RegisterPropertyEditor(TypeInfo(TColor), nil, '', TJvColorProperty);
 
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'InitialDir', TJvDirectoryProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirectoryProperty);
@@ -119,7 +119,7 @@ begin
 
   RegisterComponentEditor(TCustomImageList, TJvImageListEditor);
   RegisterComponentEditor(TImageList, TJvImageListEditor);
- 
+
 
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
   RegisterPropertyEditor(TypeInfo(TDayOfWeekName), nil, '', TJvWeekDayProperty);
@@ -133,7 +133,7 @@ begin
   RegisterPropertyEditor(TypeInfo(TJvColorProviderAddColorStyle), nil, '', TJvColorProviderAddColorStyleEditor);
   RegisterComponentEditor(TJvCustomDataProvider, TJvProviderEditor);
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
- 
+
 
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);
   RegisterZoom;

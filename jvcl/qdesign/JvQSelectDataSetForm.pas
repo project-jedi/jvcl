@@ -65,7 +65,7 @@ implementation
 
 uses
   TypInfo,
-  DsnDbCst, DSDesign,
+  DsnDbCst, {DSDesign,}
   JvQJVCLUtils, JvQConsts;
 
 
@@ -132,7 +132,7 @@ end;
 procedure TJvSelectDataSetForm.DataSetListKeyPress(Sender: TObject;
   var Key: Char);
 begin
-  if (Ord(Key) = VK_RETURN) and (DataSetList.ItemIndex >= 0) then
+  if (Ord(Key) = 13) and (DataSetList.ItemIndex >= 0) then
     ModalResult := mrOk;
 end;
 

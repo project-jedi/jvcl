@@ -46,12 +46,6 @@ uses
  
   QExtDlgs, 
 
-  {$IFDEF USEWINDOWS}
-  JvQWinDialogs, JvQAddPrinter, JvQCommonDialogD, JvQConnectNetwork, JvQCopyError,
-  JvQDeleteError, JvQRenameError, JvQDiskPrompt, JvQFindFiles,
-  JvQObjectPickerDialog, JvQCommonDialogDEditor,
-  {$ENDIF USEWINDOWS}
-
   JvQBaseDlg, JvQFindReplace, JvQDSADialogs, JvQTipOfDay, JvQCommonExecDlg,
   JvQDesktopAlert, JvQProgressComponent, JvQSelectDirectory, JvQImageDlg,
   JvQLoginForm, JvQDualList, JvQProgressDialog, JvQBaseDlgEditor,
@@ -72,34 +66,18 @@ begin
   RegisterComponents(RsPaletteDialog, [TOpenPictureDialog, TSavePictureDialog, TPrinterSetupDialog]); 
   RegisterComponents(RsPaletteDialog, [TJvSelectDirectory, TJvTipOfDay,
     TJvFindReplace, TJvDSADialog]); 
-  {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvConnectNetwork, TJvDisconnectNetwork,
-    TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDriveDialog,
-    TJvOrganizeFavoritesDialog, TJvComputerNameDialog, TJvChangeIconDialog,
-    TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
-    TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog, TJvDiskFullDialog,
-    TJvExitWindowsDialog, TJvOutOfMemoryDialog, TJvObjectPickerDialog,
-    TJvImageDialog]);
-  {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvLoginDialog, TJvProgressDialog, TJvProgressComponent]);
-  {$IFDEF USEWINDOWS}
-  RegisterComponents(RsPaletteDialog, [TJvDiskPrompt, TJvCopyError,
-    TJvDeleteError, TJvRenameError]);
-  {$ENDIF USEWINDOWS}
   RegisterComponents(RsPaletteDialog, [TJvDesktopAlert, TJvDesktopAlertStack,
-    TJvDualListDialog]); 
- 
-  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor); 
-  RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);  
+    TJvDualListDialog]);
+
+  RegisterComponentEditor(TCommonDialog, TJvBaseDlgEditor);
+  RegisterComponentEditor(TJvCommonDialog, TJvBaseDlgEditor);
   RegisterComponentEditor(TOpenPictureDialog, TJvBaseDlgEditor);
-  RegisterComponentEditor(TSavePictureDialog, TJvBaseDlgEditor); 
+  RegisterComponentEditor(TSavePictureDialog, TJvBaseDlgEditor);
 
   RegisterComponentEditor(TJvCommonDialogP, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
-  {$IFDEF USEWINDOWS}
-  RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
-  {$ENDIF USEWINDOWS}
-  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);   // removed because BCB5 cannot compile/link JvDialogActns  
+  RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);   // removed because BCB5 cannot compile/link JvDialogActns
 end;
 
 end.
