@@ -93,13 +93,13 @@ type
 
   TJvIpAddressValues = class(TPersistent)
   private
-    FValues:array[0..3] of byte;
+    FValues: array[0..3] of byte;
     FOnChange: TNotifyEvent;
     FOnChanging: TJvIPAddressChanging;
     function GetValue: Cardinal;
     procedure SetValue(const AValue: Cardinal);
-    procedure SetValues(Index:integer;Value:byte);
-    function GetValues(Index:integer):byte;
+    procedure SetValues(Index: integer; Value: byte);
+    function GetValues(Index: integer): byte;
   protected
     procedure Change; virtual;
     function Changing(Index: integer; Value: byte): boolean; virtual;
@@ -214,6 +214,7 @@ type
     procedure WMLButtonDown(var msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure CMDialogKey(var msg: TWMKey); message CM_DIALOGKEY;
     procedure SetDrawTabShadow(const Value: boolean);
+    procedure SetHideAllTabs(const Value: Boolean);
   protected
     procedure Loaded; override;
     procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean; DefaultDraw: boolean);
@@ -227,7 +228,7 @@ type
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
       JvDefPageControlBorder;
     property DrawTabShadow: boolean read FDrawTabShadow write SetDrawTabShadow;
-    property HideAllTabs: Boolean read FHideAllTabs write FHideAllTabs default False;
+    property HideAllTabs: Boolean read FHideAllTabs write SetHideAllTabs default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
@@ -857,26 +858,17 @@ begin
 end;
 
 procedure TJvPageControl.Loaded;
-var
-  I: Integer;
-  SaveActivePage: TTabSheet;
 begin
   inherited;
-  if FHideAllTabs and not (csDesigning in ComponentState) then
-  begin
-    SaveActivePage := ActivePage;
-    for I := 0 to PageCount - 1 do
-      Pages[I].TabVisible := False;
-    ActivePage := SaveActivePage;
-    TabStop := False;
-  end;
+  HideAllTabs := FHideAllTabs;
 end;
 
 procedure TJvPageControl.MouseEnter(var Msg: TMessage);
 begin
   FSaved := Application.HintColor;
   // for D7...
-  if csDesigning in ComponentState then Exit;
+  if csDesigning in ComponentState then
+    Exit;
   Application.HintColor := FColor;
   if Assigned(FOnMouseEnter) then
     FOnMouseEnter(Self);
@@ -904,6 +896,23 @@ begin
   begin
     FDrawTabShadow := Value;
     Invalidate;
+  end;
+end;
+
+procedure TJvPageControl.SetHideAllTabs(const Value: Boolean);
+var
+  I: Integer;
+  SaveActivePage: TTabSheet;
+begin
+  FHideAllTabs := Value;
+  if (csDesigning in ComponentState) then Exit;
+  if HandleAllocated then
+  begin
+    SaveActivePage := ActivePage;
+    for I := 0 to PageCount - 1 do
+      Pages[I].TabVisible := not FHideAllTabs;
+    ActivePage := SaveActivePage;
+    TabStop := not FHideAllTabs;
   end;
 end;
 
@@ -981,7 +990,7 @@ begin
   FColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
   FToolTipSide := tsLeft;
-  FShowRange   := true;
+  FShowRange := true;
 end;
 
 procedure TJvTrackBar.CreateParams(var Params: TCreateParams);
@@ -1654,7 +1663,7 @@ end;
 
 function TJvIpAddressValues.GetValues(Index: integer): byte;
 begin
-  Result := FValues[Index]; 
+  Result := FValues[Index];
 end;
 
 procedure TJvIpAddressValues.SetValue(const AValue: Cardinal);
