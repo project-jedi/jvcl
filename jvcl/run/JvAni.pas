@@ -56,6 +56,7 @@ type
     function GetCurrentIcon: TIcon;
     procedure SetAnimated(const Value: Boolean);
     procedure CalcDelay;
+    function GetDefaultRate: Longint;
   protected
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
@@ -65,7 +66,6 @@ type
     procedure Animate(Sender: TObject);
     procedure SetTransparent(Value: Boolean); override;
     function GetTransparent: Boolean; override;
-    function GetDefaultRate: Longint;
     procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create; override;
@@ -247,14 +247,14 @@ begin
   Result := FIconData.Frames[Index].Icon;
 end;
 
+function TJvAni.GetDefaultRate: Longint;
+begin
+  Result := FIconData.Header.dwJIFRate;
+end;
+
 function TJvAni.GetAnimated: Boolean;
 begin
   Result := FTimer.Enabled;
-end;
-
-function TJvAni.GetDefaultRate: Longint;
-begin
-  Result := FIconData.DefaultRate;
 end;
 
 procedure TJvAni.SetAnimated(const Value: Boolean);
@@ -278,7 +278,7 @@ begin
     Animated := False
   else
   begin
-    FTimer.Interval := Cardinal(FIconData.Frames[Index].JiffRate) * (1000 div 60);
+    FTimer.Interval := (Cardinal(FIconData.Rates[Index]) * 100) div 6;
     if FTimer.Interval = 0 then
       FTimer.Interval := 100;
   end;

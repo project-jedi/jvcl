@@ -1972,7 +1972,7 @@ begin
       begin
         AddFrame(TIcon(Icons[I]));
         Self.Frames[FrameIndex].FAnimateInterval :=
-          Longint(Frames[I].JiffRate * 100) div 6;
+          Longint(Rates[I] * 100) div 6;
       end;
     end;
     Changed(Self);

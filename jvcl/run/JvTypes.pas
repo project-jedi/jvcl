@@ -235,7 +235,7 @@ type
     ckSize: Longint;
   end;
 
-  TJvAniHeader = record
+  TJvAniHeader = packed record
     dwSizeof: Longint;
     dwFrames: Longint;
     dwSteps: Longint;

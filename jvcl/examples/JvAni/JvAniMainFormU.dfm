@@ -87,7 +87,6 @@ object JvAniMainForm: TJvAniMainForm
     Width = 75
     Height = 25
     Caption = 'Save'
-    Enabled = False
     TabOrder = 4
     OnClick = SaveClick
   end
