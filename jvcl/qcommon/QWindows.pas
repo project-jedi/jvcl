@@ -1370,8 +1370,22 @@ function InjectCode(Addr: Pointer; Code: Pointer; Size: Integer): Boolean;
 //
 procedure EnableTaskWindows(WindowList: Pointer);
 function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
+// 
+function GetKeyState(nVirtKey: Integer): SmallInt;
 {$ENDIF MSWINDOWS}
 
+{  ====================== IP Address edit control ============================= }
+// Taken from CommCtrl
+function MAKEIPRANGE(low, high: Byte): integer;
+{ And this is a useful macro for making the IP Address to be passed }
+{ as a LPARAM. }
+function MAKEIPADDRESS(b1, b2, b3, b4: cardinal): integer;
+{ Get individual number }
+function FIRST_IPADDRESS(x: cardinal): cardinal;
+function SECOND_IPADDRESS(x: cardinal): cardinal;
+function THIRD_IPADDRESS(x: cardinal): cardinal;
+function FOURTH_IPADDRESS(x: cardinal): cardinal;
+{ ============================================================================== }
 {$IFDEF LINUX}
 resourcestring
   SFCreateError = 'Unable to create file %s';
@@ -6332,9 +6346,40 @@ begin
   Result := (Ch in ['0'..'9']) or IsCharAlpha(Ch);
 end;
 
+{ IP Address edit control }
+
+function MAKEIPRANGE(low, high: Byte): integer;
+begin
+  Result := high;
+  Result := (Result shl 8) + low;
+end;
+
+function MAKEIPADDRESS(b1, b2, b3, b4: cardinal): integer;
+begin
+  Result := (b1 shl 24) + (b2 shl 16) + (b3 shl 8) + b4;
+end;
+
+function FIRST_IPADDRESS(x: cardinal): cardinal;
+begin
+  Result := (x shr 24) and $FF;
+end;
+
+function SECOND_IPADDRESS(x: cardinal): cardinal;
+begin
+  Result := (x shr 16) and $FF;
+end;
+
+function THIRD_IPADDRESS(x: cardinal): cardinal;
+begin
+  Result := (x shr 8) and $FF;
+end;
+
+function FOURTH_IPADDRESS(x: cardinal): cardinal;
+begin
+  Result := x and $FF;
+end;
 
 {$IFDEF LINUX}
-
 function FileGetAttr(const FileName: string): Integer;
 var
   sr: TSearchRec;
@@ -7861,6 +7906,11 @@ end;
 
 {$IFDEF MSWINDOWS}
 function GetTickCount: Cardinal;
+begin
+  Result := Windows.GetTickCount;
+end;
+
+function GetKeyState(nVirtKey: Integer): SmallInt;
 begin
   Result := Windows.GetTickCount;
 end;
