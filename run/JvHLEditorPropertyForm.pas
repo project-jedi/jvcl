@@ -238,7 +238,7 @@ procedure TJvSampleViewer.WMLButtonDown(var Msg: TWMLButtonDown);
 var
   XX, YY: Integer;
   F: Integer;
-  Str: WideString;
+  Str: string;
 begin
   { also prevent user interact }
   { detect symbol type }
@@ -873,7 +873,7 @@ begin
   if (Sender <> nil) and (Params.FRegAuto <> nil) then
     Params.SaveHighlighterColors(JvHLEditorPreview, JvHLEditorPreview.HighLighter);
 
-  ReadColorSampleSection(FColorSamples, cbColorSettings.Text, JvHLEditorPreview.LinesAnsi);
+  ReadColorSampleSection(FColorSamples, cbColorSettings.Text, JvHLEditorPreview.Lines);
 
   JvHLEditorPreview.Highlighter := THighlighter(cbColorSettings.ItemIndex);
   if JvHLEditorPreview.HighLighter = hlIni then
