@@ -67,6 +67,7 @@ object frmPageListEditor: TfrmPageListEditor
     ItemHeight = 13
     TabOrder = 1
     OnClick = lbPagesClick
+    OnKeyPress = lbPagesKeyPress
   end
   object StatusBar1: TStatusBar
     Left = 0
