@@ -132,11 +132,11 @@ type
   end;
 
   // (rom) renamed to match renamed TJvBrowseForFolder
-  TJvBrowseForFolderAction = class(TJvCommonDialogAction)
+  TJvBrowseForFolderAction = class(TJvCommonDialogFAction)
   private
     function GetDialog: TJvBrowseForFolderDialog;
   protected
-    function GetDialogClass: TJvCommonDialogClass; override;
+    function GetDialogClass: TJvCommonDialogFClass; override;
   published
     property Dialog: TJvBrowseForFolderDialog read GetDialog;
   end;
@@ -382,7 +382,7 @@ begin
   Result := TJvBrowseForFolderDialog(FDialog);
 end;
 
-function TJvBrowseForFolderAction.GetDialogClass: TJvCommonDialogClass;
+function TJvBrowseForFolderAction.GetDialogClass: TJvCommonDialogFClass;
 begin
   Result := TJvBrowseForFolderDialog;
 end;

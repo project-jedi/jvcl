@@ -75,7 +75,12 @@ begin
   else
   // (rom) to accompany TJvCommonDialogP
   if Component is TJvCommonDialogF then
-    TJvCommonDialogF(Component).Execute;
+    TJvCommonDialogF(Component).Execute
+  else
+    Exit;
+
+  { Some properties might have changed }
+  Designer.Modified;
 end;
 
 function TJvBaseDlgEditor.GetVerb(Index: Integer): string;
