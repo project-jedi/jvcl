@@ -540,7 +540,7 @@ begin
   GetCursorPos(P);
   MouseInControl := PtInRect(BoundsRect, P) and (FindVCLWindow(P) = Self);
   MouseTimer.Enabled := True;
-  if not FadeTimer.Enabled and not MouseInControl then
+  if not FadeTimer.Enabled and not MouseInControl and (WaitTime > 0) then
     FadeOut;
 end;
 
@@ -576,7 +576,7 @@ begin
   FadeTimer.Interval := WaitTime;
   FadeTimer.OnTimer := WaitTimer;
   FadeTimer.Enabled := WaitTime > 0;
-  // NB! If waittime = 0 then we never close - user has to do that manually 
+  // NB! If waittime = 0 then we never close - user has to do that manually
 //  if not FadeTimer.Enabled then
 //    FadeOut;
 end;
