@@ -10,12 +10,11 @@
       ..\lib6\JvAlarmsEditor.obj ..\lib6\JvBaseDlgEditor.obj 
       ..\lib6\JvCommonDialogDEditor.obj ..\lib6\JvDataEmbeddedEditor.obj ..\lib6\JvFormLog.obj
       ..\lib6\JvHtmlParserEditor.obj ..\lib6\JvLogFile.obj 
-      ..\lib6\JvLoginDlg.obj ..\lib6\JvPatcherEditor.obj ..\lib6\JVCLMiscal.obj 
+      ..\lib6\JvLoginDlg.obj ..\lib6\JvPatcherEditor.obj
       ..\lib6\JvDateTimeDlg.obj ..\lib6\JvDsgnEditors.obj 
       ..\lib6\JvTimeLineEdit.obj ..\lib6\JvOutEdit.obj ..\lib6\JvStrLEdit.obj 
       ..\lib6\JvOLBEditor.obj ..\lib6\JvChNtfyProperty.obj 
-      ..\lib6\JvLCProperty.obj ..\lib6\JvTipOfDayProp.obj 
-      ..\lib6\JvAppletProperty.obj ..\lib6\JvColors.obj ..\lib6\JvDsgn.obj 
+      ..\lib6\JvTipOfDayProp.obj  ..\lib6\JvAppletProperty.obj ..\lib6\JvColors.obj
       ..\lib6\JvCtlReg.obj ..\lib6\JvToolReg.obj ..\lib6\JvDBReg.obj 
       ..\lib6\JvBDEReg.obj ..\lib6\JvImagPrvw.obj ..\lib6\JvCheckItm.obj 
       ..\lib6\JvDirFrm.obj ..\lib6\JvFormWallpaperEditor.obj 
@@ -28,7 +27,7 @@
       ..\lib6\JvDialogActns.obj ..\lib6\JvPluginWizard.obj 
       ..\lib6\JvPluginParams.obj ..\lib6\JvActnRes.obj 
       ..\lib6\JvDatePickerReg.obj ..\lib6\JvSchedEvntReg.obj 
-      ..\lib6\ScheduleEditor.obj ..\lib6\JvTransLEDReg.obj 
+      ..\lib6\JvScheduleEditor.obj ..\lib6\JvTransLEDReg.obj 
       ..\lib6\JvJVCLAboutProperty.obj ..\lib6\JvxDConst.obj"/>
     <RESFILES value="jvcl200_D60C.res"/>
     <IDLFILES value=""/>
@@ -43,7 +42,7 @@
       ..\source\JvPictEdit.dfm ..\source\JvPresrDsn.dfm ..\source\JvQBndDlg.dfm 
       ..\source\JvSbEdit.dfm ..\source\JvSelDSFrm.dfm ..\source\JvTimLstEd.dfm 
       ..\source\JvBandObjectDLLWizardForm.dfm ..\source\JvPluginParams.dfm 
-      ..\source\JvActnRes.dfm ..\source\ScheduleEditor.dfm"/>
+      ..\source\JvActnRes.dfm ..\source\JvScheduleEditor.dfm"/>
     <LIBFILES value=""/>
     <LIBRARIES value="bcb2kaxserver.lib indy.lib dbxcds.lib dclocx.lib soaprtl.lib nmfast.lib 
       dbexpress.lib inetdbxpress.lib inetdbbde.lib dsnapcon.lib dsnapcrba.lib 
@@ -109,7 +108,6 @@
       <FILE FILENAME="..\Source\JvHtmlParserEditor.pas" FORMNAME="" UNITNAME="JvHtmlParserEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvLogFile.pas" FORMNAME="" UNITNAME="JvLogFile" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvPatcherEditor.pas" FORMNAME="" UNITNAME="JvPatcherEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\Source\JVCLMiscal.pas" FORMNAME="" UNITNAME="JVCLMiscal" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvDateTimeDlg.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvDsgnEditors.pas" FORMNAME="" UNITNAME="JvDsgnEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvTimeLineEdit.pas" FORMNAME="" UNITNAME="JvTimeLineEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -117,11 +115,9 @@
       <FILE FILENAME="..\Source\JvStrLEdit.pas" FORMNAME="JvStrEditDlg" UNITNAME="JvStrLEdit" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvOLBEditor.pas" FORMNAME="frmOLBEditor" UNITNAME="JvOLBEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvChNtfyProperty.pas" FORMNAME="" UNITNAME="JvChNtfyProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\Source\JvLCProperty.pas" FORMNAME="" UNITNAME="JvLCProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\Source\JvTipOfDayProp.pas" FORMNAME="" UNITNAME="JvTipOfDayProp" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvAppletProperty.pas" FORMNAME="" UNITNAME="JvAppletProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvColors.pas" FORMNAME="" UNITNAME="JvColors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvDsgn.pas" FORMNAME="" UNITNAME="JvDsgn" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCtlReg.pas" FORMNAME="" UNITNAME="JvCtlReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvToolReg.pas" FORMNAME="" UNITNAME="JvToolReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDBReg.pas" FORMNAME="" UNITNAME="JvDBReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
@@ -149,7 +145,7 @@
       <FILE FILENAME="..\source\JvActnRes.pas" FORMNAME="JvStandardActions" UNITNAME="JvActnRes" CONTAINERID="PascalCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvDatePickerReg.pas" FORMNAME="" UNITNAME="JvDatePickerReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvSchedEvntReg.pas" FORMNAME="" UNITNAME="JvSchedEvntReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\ScheduleEditor.pas" FORMNAME="frmScheduleEditor" UNITNAME="ScheduleEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\source\JvScheduleEditor.pas" FORMNAME="frmScheduleEditor" UNITNAME="JvScheduleEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvTransLEDReg.pas" FORMNAME="" UNITNAME="JvTransLedReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvJVCLAboutProperty.pas" FORMNAME="" UNITNAME="JvJVCLAboutProperty" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>

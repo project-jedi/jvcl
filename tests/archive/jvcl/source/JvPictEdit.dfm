@@ -78,7 +78,7 @@ object PictureEditDialog: TPictureEditDialog
       Width = 237
       Height = 237
     end
-    object PathsBtn: TJvxSpeedButton
+    object PathsBtn: TJvSpeedButton
       Left = 307
       Top = 186
       Width = 22

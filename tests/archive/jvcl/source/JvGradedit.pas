@@ -37,7 +37,8 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf,
   {$ENDIF}
-  JvxCtrls, JvPlacemnt, JvToolEdit, JvGrdCpt, JvListBox, JvCtrls;
+  JvxCtrls, JvPlacemnt, JvToolEdit, JvGrdCpt, JvListBox, JvCtrls,
+  JvComponent;
 
 {$IFNDEF COMPILER4_UP}
 type

@@ -56,58 +56,10 @@ implementation
 
 uses
   TypInfo,
-  JvSelDSFrm,
+  JvSelDSFrm, JvMemTableEditor, JvDBEditors,  
   JvMemDS,
   JvDBRichEd,
-  JvDBCtrl, JvLookup, JvDBComb, JvVCLUtils, JvDsgn, JvxDConst;
-
-//=== TJvFieldProperty =======================================================
-
-{ TJvFieldProperty }
-{ For TJvDBLookupList, TJvDBLookupCombo components }
-
-type
-  TJvFieldProperty = class(TJvDBStringProperty)
-  public
-    procedure GetValueList(List: TStrings); override;
-    function GetDataSourcePropName: string; virtual;
-  end;
-
-function TJvFieldProperty.GetDataSourcePropName: string;
-begin
-  Result := 'LookupSource';
-end;
-
-procedure TJvFieldProperty.GetValueList(List: TStrings);
-var
-  Instance: TComponent;
-  PropInfo: PPropInfo;
-  DataSource: TDataSource;
-begin
-  Instance := TComponent(GetComponent(0));
-  PropInfo := TypInfo.GetPropInfo(Instance.ClassInfo, GetDataSourcePropName);
-  if (PropInfo <> nil) and (PropInfo^.PropType^.Kind = tkClass) then
-  begin
-    DataSource := TObject(GetOrdProp(Instance, PropInfo)) as TDataSource;
-    if (DataSource <> nil) and (DataSource.DataSet <> nil) then
-      DataSource.DataSet.GetFieldNames(List);
-  end;
-end;
-
-//=== TJvMemoryDataEditor ====================================================
-
-type
-  TJvMemoryDataEditor = class(TJvMemDataSetEditor)
-  protected
-    function CopyStructure(Source, Dest: TDataSet): Boolean; override;
-  end;
-
-function TJvMemoryDataEditor.CopyStructure(Source, Dest: TDataSet): Boolean;
-begin
-  Result := Dest is TJvMemoryData;
-  if Result then
-    TJvMemoryData(Dest).CopyStructure(Source);
-end;
+  JvDBCtrl, JvLookup, JvDBComb, JvVCLUtils, JvxDConst;
 
 { Designer registration }
 
@@ -133,11 +85,11 @@ begin
     axrComponentOnly);
   { Property and component editors for data aware components }
   RegisterPropertyEditor(TypeInfo(string), TJvLookupControl, 'LookupField',
-    TJvFieldProperty);
+    TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvLookupEdit, 'LookupField',
-    TJvFieldProperty);
+    TJvLookupSourceProperty);
   RegisterPropertyEditor(TypeInfo(Integer), TJvDBGrid, 'RowsHeight', nil);
-  RegisterComponentEditor(TJvMemoryData, TJvMemoryDataEditor);
+  RegisterComponentEditor(TJvMemoryData, TJvMemDataSetEditor);
 end;
 
 {$ENDIF DelphiPersonalEdition}

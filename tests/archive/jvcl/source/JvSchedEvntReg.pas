@@ -27,8 +27,8 @@ unit JvSchedEvntReg;
 interface
 
 uses
-  SysUtils, Classes, ScheduleEditor,
-  JvScheduledEvents;
+  SysUtils, Classes,
+  JvScheduleEditor, JvScheduledEvents;
 
 procedure Register;
 
@@ -44,23 +44,23 @@ uses
   JclSchedule, JvxDConst;
 
 type
-  TSchedulePropertyEditor = class(TPropertyEditor)
+  TJvSchedulePropertyEditor = class(TPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
   end;
 
-  TSchedEventComponentEditor = class(TComponentEditor)
+  TJvSchedEventComponentEditor = class(TComponentEditor)
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
 
-//=== TSchedulePropertyEditor ================================================
+//=== TJvSchedulePropertyEditor ================================================
 
-procedure TSchedulePropertyEditor.Edit;
+procedure TJvSchedulePropertyEditor.Edit;
 begin
   with TfrmScheduleEditor.Create(nil) do
   try
@@ -72,30 +72,30 @@ begin
   end;
 end;
 
-function TSchedulePropertyEditor.GetAttributes: TPropertyAttributes;
+function TJvSchedulePropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paDialog, paReadOnly];
 end;
 
-function TSchedulePropertyEditor.GetValue: string;
+function TJvSchedulePropertyEditor.GetValue: string;
 begin
   Result := '(IJclSchedule)';
 end;
 
-//=== TSchedEventComponentEditor =============================================
+//=== TJvSchedEventComponentEditor =============================================
 
-procedure TSchedEventComponentEditor.ExecuteVerb(Index: Integer);
+procedure TJvSchedEventComponentEditor.ExecuteVerb(Index: Integer);
 begin
   ShowCollectionEditorClass(Designer, TCollectionEditor, Component,
     TJvCustomScheduledEvents(Component).Events, 'Events');
 end;
 
-function TSchedEventComponentEditor.GetVerb(Index: Integer): string;
+function TJvSchedEventComponentEditor.GetVerb(Index: Integer): string;
 begin
   Result := 'Event editor...';
 end;
 
-function TSchedEventComponentEditor.GetVerbCount: Integer;
+function TJvSchedEventComponentEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
@@ -103,8 +103,8 @@ end;
 procedure Register;
 begin
   RegisterComponents(srJvAdditionalPalette, [TJvScheduledEvents]);
-  RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem, 'Schedule', TSchedulePropertyEditor);
-  RegisterComponentEditor(TJvCustomScheduledEvents, TSchedEventComponentEditor);
+  RegisterPropertyEditor(TypeInfo(IJclSchedule), TJvEventCollectionItem, 'Schedule', TJvSchedulePropertyEditor);
+  RegisterComponentEditor(TJvCustomScheduledEvents, TJvSchedEventComponentEditor);
 end;
 
 end.

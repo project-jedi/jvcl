@@ -56,74 +56,6 @@ uses
   JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
   JvDsgnEditors, JvxDConst;
 
-//=== TJvStringsEditor =======================================================
-
-type
-  TJvStringsEditor = class(TDefaultEditor)
-  public
-    {$IFDEF COMPILER6_UP}
-    procedure EditProperty(const PropertyEditor: IProperty;
-      var Continue: Boolean); override;
-    {$ELSE}
-    procedure EditProperty(PropertyEditor: TPropertyEditor;
-      var Continue, FreeEditor: Boolean); override;
-    {$ENDIF}
-  end;
-
-{$IFDEF COMPILER6_UP}
-procedure TJvStringsEditor.EditProperty(const PropertyEditor: IProperty;
-  var Continue: Boolean);
-{$ELSE}
-procedure TJvStringsEditor.EditProperty(PropertyEditor: TPropertyEditor;
-  var Continue, FreeEditor: Boolean);
-{$ENDIF}
-var
-  PropName: string;
-begin
-  PropName := PropertyEditor.GetName;
-  if (CompareText(PropName, 'STRINGS') = 0) then
-  begin
-    PropertyEditor.Edit;
-    Continue := False;
-  end;
-end;
-
-//=== TJvComponentFormProperty ===============================================
-
-type
-  TJvComponentFormProperty = class(TComponentProperty)
-  public
-    procedure GetValues(Proc: TGetStrProc); override;
-    procedure SetValue(const Value: string); override;
-  end;
-
-procedure TJvComponentFormProperty.GetValues(Proc: TGetStrProc);
-var
-  Form: TComponent;
-begin
-  inherited GetValues(Proc);
-  Form := Designer.{$IFDEF COMPILER6_UP} Root {$ELSE} Form {$ENDIF};
-  if (Form is GetTypeData(GetPropType)^.ClassType) and (Form.Name <> '') then
-    Proc(Form.Name);
-end;
-
-procedure TJvComponentFormProperty.SetValue(const Value: string);
-var
-  Component: TComponent;
-  Form: TComponent;
-begin
-  Component := Designer.GetComponent(Value);
-  Form := Designer.{$IFDEF COMPILER6_UP} Root {$ELSE} Form {$ENDIF};
-  if ((Component = nil) or not (Component is GetTypeData(GetPropType)^.ClassType)) and
-    (CompareText(Form.Name, Value) = 0) then
-  begin
-    if not (Form is GetTypeData(GetPropType)^.ClassType) then
-      raise EPropertyError.Create(ResStr(SInvalidPropertyValue));
-    SetOrdValue(Longint(Form));
-  end
-  else
-    inherited SetValue(Value);
-end;
 
 procedure Register;
 begin
@@ -149,7 +81,7 @@ begin
     'WinControl', TJvComponentFormProperty);
   RegisterNoIcon([TJvSpeedItem, TJvSpeedbarSection]);
   RegisterComponentEditor(TJvSpeedBar, TJvSpeedbarCompEditor);
-  RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', THintProperty);
+  RegisterPropertyEditor(TypeInfo(TCaption), TJvSpeedItem, 'BtnCaption', TStringProperty);
   RegisterNoIcon([TJvPageProxy]);
   RegisterComponentEditor(TJvPageManager, TJvPageManagerEditor);
   RegisterPropertyEditor(TypeInfo(TList), TJvPageManager, 'PageProxies',

@@ -91,7 +91,7 @@ object ImageForm: TImageForm
     Caption = '&Folders:  '
     FocusControl = DirectoryList
   end
-  object PreviewBtn: TJvxSpeedButton
+  object PreviewBtn: TJvSpeedButton
     Left = 455
     Top = 4
     Width = 24

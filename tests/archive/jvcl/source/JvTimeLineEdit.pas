@@ -41,7 +41,7 @@ uses
 
 type
   { a component editor that by default opens the editor for the Items property in TTimeline }
-  TTimeLineEditor = class(TDefaultEditor)
+  TJvTimeLineEditor = class(TDefaultEditor)
   public
     {$IFDEF COMPILER6_UP}
     procedure EditProperty(const Prop: IProperty; var Continue: Boolean); override;
@@ -65,7 +65,7 @@ const
   SEditProperty = 'Items Editor...';
 
 {$IFDEF COMPILER6_UP}
-procedure TTimeLineEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
+procedure TJvTimeLineEditor.EditProperty(const Prop: IProperty; var Continue: Boolean);
 var
   PropName: string;
 begin
@@ -77,7 +77,7 @@ begin
   end;
 end;
 {$ELSE}
-procedure TTimeLineEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
+procedure TJvTimeLineEditor.EditProperty(PropertyEditor: TPropertyEditor; var Continue, FreeEditor: Boolean);
 var
   PropName: string;
 begin
@@ -90,7 +90,7 @@ begin
 end;
 {$ENDIF}
 
-procedure TTimeLineEditor.ExecuteVerb(Index: integer);
+procedure TJvTimeLineEditor.ExecuteVerb(Index: integer);
 begin
   if Index = 0 then
     Edit
@@ -98,7 +98,7 @@ begin
     inherited ExecuteVerb(Index);
 end;
 
-function TTimeLineEditor.GetVerb(Index: Integer): string;
+function TJvTimeLineEditor.GetVerb(Index: Integer): string;
 begin
   if Index = 0 then
     Result := SEditProperty
@@ -106,14 +106,14 @@ begin
     Result := inherited GetVerb(Index);
 end;
 
-function TTimeLineEditor.GetVerbCount: Integer;
+function TJvTimeLineEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
 
 procedure Register;
 begin
-  RegisterComponentEditor(TJvCustomTimeLine, TTimeLineEditor);
+  RegisterComponentEditor(TJvCustomTimeLine, TJvTimeLineEditor);
 end;
 
 end.

@@ -145,7 +145,7 @@ uses
   JvCoupler, JvHighlighter, JvGroupBox, JvPopupMemo, JvTransparentPanel, JvSpacer, JvSyncSplitter,
 
   // Petr Vones Components
-  JVCLMiscal,
+  JvPerfStatEditor, JvMailEditor, 
   JvComCtrls, JvCtrls, JvDdeCmd, JvDialogs, JvMail, JvPerfMon95, JvSysComp,
 
 
@@ -170,15 +170,18 @@ uses
 
   JvCaptionPanel, JvColorBtn, JvColorBox, JvColorForm, JvOutEdit,
   JvImagewindow, JvListComb, JvLookout, JvProfiler32, JvRegTV,
-  JvSearchFiles, JvTransBtn, ImgList, JvLCProperty, JvTipOfDayProp,
+  JvSearchFiles, JvTransBtn, ImgList, JvTipOfDayProp,
 
   JvChangeNotify, JvEnterTab, JvFindFiles,
-  JvFileInfo, JvItemsPanel, JvDsgnEditors, JvCntScr, JvCmdEdit,
+  JvFileInfo, JvItemsPanel, JvCntScr, JvCmdEdit,
   JvTMTL, JvCalendar, JvUCB, JvChNtfyProperty, JvOLBar, JvOLBEditor,
   JvInspector, JvHidControllerClass, JvAnalogClock, JvRadioCtl,
 
+  JvDsgnEditors,
+
   // Fernando Silva
   JvFooter, JvGroupHeader, JvNTEventLog,
+  JvGroupHeaderEditor, JvFooterEditor,  
 
   //  JvPlugin
   JvPlugin,
@@ -207,20 +210,20 @@ begin
   RegisterPropertyEditor(TypeInfo(TstringList), TJvAlarms, 'Alarms', TJvAlarmsEditor);
   RegisterPropertyEditor(TypeInfo(TParserInfos), TJvHtmlParser, 'Parser', TJvHtmlParserEditor);
   RegisterPropertyEditor(TypeInfo(TJVCLAboutInfo), nil, 'AboutJVCL', TJVCLAboutDialogProperty);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton, 'ImageIndex', TLookOutImageIndexProperty);
-  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton, 'ImageIndex', TLookOutImageIndexProperty);
-  RegisterPropertyEditor(TypeInfo(string), TJvChangeItem, 'Directory', TDirectoryPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvLookoutButton, 'ImageIndex', TJvLookOutImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(TImageIndex), TJvExpressButton, 'ImageIndex', TJvLookOutImageIndexProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvChangeItem, 'Directory', TJvDirectoryProperty);
   {$IFDEF JVCL_REGISTER_GLOBAL_DESIGNEDITORS}
-  RegisterPropertyEditor(TypeInfo(TDate), nil, '', TDateExProperty);
-  RegisterPropertyEditor(TypeInfo(TTime), nil, '', TTimeExProperty);
-  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TDateTimeExProperty);
+  RegisterPropertyEditor(TypeInfo(TDate), nil, '', TJvDateExProperty);
+  RegisterPropertyEditor(TypeInfo(TTime), nil, '', TJvTimeExProperty);
+  RegisterPropertyEditor(TypeInfo(TDateTime), nil, '', TJvDateTimeExProperty);
   {$ENDIF}
 
   {Thumbview.filter editor}
   RegisterPropertyEditor(TypeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);
   RegisterPropertyEditor(TypeInfo(integer), TJvAppletDialog, 'AppletIndex', TJvAppletIndexProperty);
-  RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TShortCutProperty);
+  RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TJvShortCutProperty);
 
 // JvPlugin
 //   RegisterPropertyEditor(TypeInfo(string), TJvPlugin, 'Version', TVersionEditor);
@@ -241,11 +244,11 @@ begin
   RegisterComponentEditor(TJvCommonDialogF, TJvBaseDlgEditor);
   RegisterComponentEditor(TJvCommonDialogD, TJvCommonDialogDEditor);
   RegisterComponentEditor(TJvTipOfDay, TJvTipOfDayEditor);
-  RegisterComponentEditor(TJvLookOut, TLookOutEditor);
-  RegisterComponentEditor(TJvLookOutPage, TLookOutPageEditor);
-  RegisterComponentEditor(TJvImageListBox, TJvListCombProperty);
-  RegisterComponentEditor(TJvImageComboBox, TJvListCombProperty);
-  RegisterComponentEditor(TJvExpress, TExpressEditor);
+  RegisterComponentEditor(TJvLookOut, TJvLookOutEditor);
+  RegisterComponentEditor(TJvLookOutPage, TJvLookOutPageEditor);
+  RegisterComponentEditor(TJvImageListBox, TJvStringsEditor);
+  RegisterComponentEditor(TJvImageComboBox, TJvStringsEditor);
+  RegisterComponentEditor(TJvExpress, TJvExpressEditor);
   RegisterComponentEditor(TJvChangeNotify, TJvChangeNotifyEditor);
   RegisterComponentEditor(TJvGroupHeader, TJvGroupHeaderEditor);
   RegisterComponentEditor(TJvFooter, TJvFooterEditor);

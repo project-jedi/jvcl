@@ -38,7 +38,7 @@ uses
   {$ENDIF}
   SysUtils, Messages, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, Buttons, Grids, Menus,
-  JvSpeedBar, JvPlacemnt, JvConst, JvxCtrls, JvVCLUtils;
+  JvSpeedBar, JvPlacemnt, JvConst, JvxCtrls, JvVCLUtils, JvComponent;
 
 type
   TSelectData = record

@@ -34,7 +34,7 @@ uses
   RTLConsts, Variants,
   {$ENDIF}
   Windows, Registry, Controls, Messages, Classes, Forms, IniFiles,
-  JvWndProcHook {, JvComponent};
+  JvComponent, JvWndProcHook {, JvComponent};
 
 type
   TPlacementOption = (fpState, fpPosition, fpActiveControl);
@@ -69,7 +69,7 @@ type
     property MinTrackWidth: Integer index 7 read GetMinMaxInfo write SetMinMaxInfo default 0;
   end;
 
-  TJvFormPlacement = class(TComponent)
+  TJvFormPlacement = class(TJvComponent)
   private
     FActive: Boolean;
     FIniFileName: string;

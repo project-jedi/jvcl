@@ -1,3 +1,9 @@
+2003-04-05
+- Extracted property and design editors from various XXXReg files into their own units (this is to simplify a possible future split of packages). Several new units added. // peter3
+- Merged generic (i.e not JVCL specific) property and component editors into JvDsgnEditors, JvDBEditors and JvBDEEditors // peter3
+- JvDsgn, JvLCProperty and JVCLMiscal moved to \archive - no longer needed // peter3
+- Renamed ScheduleEditor.pas to JvScheduleEditor.pas // peter3
+
 2003-03-30
 - Merged TJvClipBoardViewer and TJvxClipboardViewer into TJvxClipboardViewer. Renamed TJvxClipboardViewer to TJvClipboardViewer. Moved JvClipboardViewer.pas to \archive // peter3
 - Moved JvExchListBoxes.pas and JvFormLists.pas to \archive - duplicates functionality in JvDualList.pas and JvFDualList.pas //peter3

@@ -42,7 +42,7 @@ uses
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF}
   StdCtrls, ExtCtrls,
-  JvPageMngr, JvPlacemnt, JvVCLUtils;
+  JvPageMngr, JvPlacemnt, JvVCLUtils, JvComponent;
 
 type
   TJvProxyEditor = class(TDesignWindow)

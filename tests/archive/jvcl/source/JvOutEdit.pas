@@ -42,7 +42,7 @@ uses
   JvLookOut, JvDsgnEditors;
 
 type
-  TLookOutPageEditor = class(TComponentEditor)
+  TJvLookOutPageEditor = class(TComponentEditor)
   public
     {$IFDEF COMPILER6_UP}
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
@@ -60,7 +60,7 @@ type
     property Designer;
   end;
 
-  TLookOutEditor = class(TComponentEditor)
+  TJvLookOutEditor = class(TComponentEditor)
   public
     {$IFDEF COMPILER6_UP}
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
@@ -76,7 +76,7 @@ type
     property Designer;
   end;
 
-  TExpressEditor = class(TComponentEditor)
+  TJvExpressEditor = class(TComponentEditor)
   public
     {$IFDEF COMPILER6_UP}
     constructor Create(AComponent: TComponent; ADesigner: IDesigner); override;
@@ -92,7 +92,7 @@ type
     property Designer;
   end;
 
-  TLookOutImageIndexProperty = class(TJvDefaultImageIndexProperty)
+  TJvLookOutImageIndexProperty = class(TJvDefaultImageIndexProperty)
   protected
     function ImageList: TCustomImageList; override;
     function GetButton: TJvCustomLookOutButton;
@@ -100,27 +100,27 @@ type
 
 implementation
 
-//=== TLookOutPageEditor =====================================================
+//=== TJvLookOutPageEditor =====================================================
 
 {$IFDEF COMPILER6_UP}
-constructor TLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
+constructor TJvLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
   inherited Create(AComponent, ADesigner);
 end;
 {$ELSE}
-constructor TLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+constructor TJvLookOutPageEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
 begin
   inherited Create(AComponent, ADesigner);
 end;
 {$ENDIF}
 
-procedure TLookOutPageEditor.Edit;
+procedure TJvLookOutPageEditor.Edit;
 begin
   if Component <> nil then
     ExecuteVerb(1);
 end;
 
-procedure TLookOutPageEditor.SetActive;
+procedure TJvLookOutPageEditor.SetActive;
 var
   C: TJvLookOutPage;
   P: TJvLookOut;
@@ -135,7 +135,7 @@ begin
   end;
 end;
 
-procedure TLookOutPageEditor.AddButton;
+procedure TJvLookOutPageEditor.AddButton;
 var
   Btn: TJvLookOutButton;
 begin
@@ -147,7 +147,7 @@ begin
 //  Designer.CreateComponent(TJvLookOutButton,Component,0,MaxInt,0,0);
 end;
 
-function TLookOutPageEditor.GetVerb(Index: Integer): string;
+function TJvLookOutPageEditor.GetVerb(Index: Integer): string;
 begin
   // (rom) added initialization to be more readable
   Result := '';
@@ -169,7 +169,7 @@ begin
   end;
 end;
 
-procedure TLookOutPageEditor.ExecuteVerb(Index: Integer);
+procedure TJvLookOutPageEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
     0:
@@ -187,12 +187,12 @@ begin
   end;
 end;
 
-function TLookOutPageEditor.GetVerbCount: Integer;
+function TJvLookOutPageEditor.GetVerbCount: Integer;
 begin
   Result := 6;
 end;
 
-procedure TLookOutPageEditor.AddPage;
+procedure TJvLookOutPageEditor.AddPage;
 var
   Page: TJvLookOutPage;
 begin
@@ -203,27 +203,27 @@ begin
   Page.Caption := Page.Name;
 end;
 
-//=== TLookOutEditor =========================================================
+//=== TJvLookOutEditor =========================================================
 
 {$IFDEF COMPILER6_UP}
-constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
+constructor TJvLookOutEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
   inherited Create(AComponent, ADesigner);
 end;
 {$ELSE}
-constructor TLookOutEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+constructor TJvLookOutEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
 begin
   inherited Create(AComponent, ADesigner);
 end;
 {$ENDIF}
 
-procedure TLookOutEditor.Edit;
+procedure TJvLookOutEditor.Edit;
 begin
   if Component <> nil then
     inherited Edit;
 end;
 
-procedure TLookOutEditor.ExecuteVerb(Index: Integer);
+procedure TJvLookOutEditor.ExecuteVerb(Index: Integer);
 var
   I: Integer;
 begin
@@ -261,7 +261,7 @@ begin
   end;
 end;
 
-procedure TLookOutEditor.AddPage;
+procedure TJvLookOutEditor.AddPage;
 var
   Page: TJvLookOutPage;
 begin
@@ -272,7 +272,7 @@ begin
   Page.Caption := Page.Name;
 end;
 
-function TLookOutEditor.GetVerb(Index: Integer): string;
+function TJvLookOutEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
@@ -284,26 +284,26 @@ begin
   end;
 end;
 
-function TLookOutEditor.GetVerbCount: Integer;
+function TJvLookOutEditor.GetVerbCount: Integer;
 begin
   Result := 3;
 end;
 
-//=== TExpressEditor =========================================================
+//=== TJvExpressEditor =========================================================
 
 {$IFDEF COMPILER6_UP}
-constructor TExpressEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
+constructor TJvExpressEditor.Create(AComponent: TComponent; ADesigner: IDesigner);
 begin
   inherited Create(Acomponent, ADesigner);
 end;
 {$ELSE}
-constructor TExpressEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
+constructor TJvExpressEditor.Create(AComponent: TComponent; ADesigner: IFormDesigner);
 begin
   inherited Create(Acomponent, ADesigner);
 end;
 {$ENDIF}
 
-procedure TExpressEditor.AddButton;
+procedure TJvExpressEditor.AddButton;
 var
   Exp: TJvExpress;
   Btn: TJvExpressButton;
@@ -322,12 +322,12 @@ begin
   end;
 end;
 
-procedure TExpressEditor.Edit;
+procedure TJvExpressEditor.Edit;
 begin
   inherited Edit;
 end;
 
-procedure TExpressEditor.ExecuteVerb(Index: Integer);
+procedure TJvExpressEditor.ExecuteVerb(Index: Integer);
 begin
   case Index of
     0:
@@ -336,7 +336,7 @@ begin
   end;
 end;
 
-function TExpressEditor.GetVerb(Index: Integer): string;
+function TJvExpressEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
@@ -345,14 +345,14 @@ begin
   end;
 end;
 
-function TExpressEditor.GetVerbCount: Integer;
+function TJvExpressEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
 
-//=== TLookOutImageIndexProperty =============================================
+//=== TJvLookOutImageIndexProperty =============================================
 
-function TLookOutImageIndexProperty.GetButton: TJvCustomLookOutButton;
+function TJvLookOutImageIndexProperty.GetButton: TJvCustomLookOutButton;
 begin
   if GetComponent(0) is TJvCustomLookOutButton then
     Result := TJvCustomLookOutButton(GetComponent(0))
@@ -363,7 +363,7 @@ end;
 type
   THackButton = class(TJvCustomLookOutButton);
 
-function TLookOutImageIndexProperty.ImageList: TCustomImageList;
+function TJvLookOutImageIndexProperty.ImageList: TCustomImageList;
 var
   Btn: TJvCustomLookOutButton;
 begin

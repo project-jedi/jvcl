@@ -41,7 +41,7 @@ uses
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
   {$ENDIF}
-  JvVCLUtils, JvPlacemnt, JvTimerLst;
+  JvVCLUtils, JvPlacemnt, JvTimerLst, JvComponent;
 
 type
   TJvTimerItemsEditor = class(TDesignWindow)
