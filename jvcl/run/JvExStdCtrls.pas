@@ -4310,7 +4310,7 @@ end;
 constructor TJvExCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 destructor TJvExCustomMemo.Destroy;
@@ -4614,7 +4614,7 @@ end;
 constructor TJvExMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 destructor TJvExMemo.Destroy;
@@ -4629,7 +4629,7 @@ begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  
+  FClipboardCommands := [caCopy..caUndo];
 end;
 
 destructor TJvExMemo.Destroy;
