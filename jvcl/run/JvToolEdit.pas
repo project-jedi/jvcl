@@ -908,7 +908,10 @@ implementation
 
 uses
   ShellAPI, Consts, Math, 
-  JvThemes, JvResources, JvJVCLUtils, JvPickDate, JvBrowseFolder,
+  JvThemes, JvResources, JvJVCLUtils, JvPickDate,
+  {$IFDEF VCL}
+  JvBrowseFolder,
+  {$ENDIF VCL}
   JvConsts;
 
 {$R ..\resources\JvToolEdit.res}
@@ -3369,11 +3372,11 @@ begin
     Temp := '\';
   DisableSysErrors;
   try
+    {$IFDEF VCL}
     if NewStyleControls and (DialogKind = dkWin32) then
       Action := BrowseForFolder(FDialogText, True, Temp, Self.HelpContext)
         //BrowseDirectory(Temp, FDialogText, Self.HelpContext)
     else
-    {$IFDEF VCL}
       Action := SelectDirectory(Temp, FOptions, Self.HelpContext);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}

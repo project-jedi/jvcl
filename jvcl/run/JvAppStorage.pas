@@ -606,7 +606,6 @@ const
 implementation
 
 uses
-  Forms,
   JclFileUtils, JclStrings, JclSysInfo, JclRTTI,
   JvPropertyStore, JvConsts, JvResources;
 
@@ -2201,7 +2200,7 @@ begin
       flWindows:
         Result := PathAddSeparator(GetWindowsFolder) + NameOnly;
       flExeFile:
-        Result := PathAddSeparator(ExtractFilePath(Application.ExeName)) + NameOnly;
+        Result := PathAddSeparator(ExtractFilePath(GetModuleName(0))) + NameOnly;
       flUserFolder:
         Result := PathAddSeparator(GetAppdataFolder) + RelPathName;
     end;
