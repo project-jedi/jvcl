@@ -54,7 +54,6 @@ contains
   JvBrowseFolder in '..\source\JvBrowseFolder.pas',
   JvButton in '..\source\JvButton.pas',
   JvButtonPersistent in '..\source\JvButtonPersistent.pas',
-  JvButtonShaped in '..\source\JvButtonShaped.pas',
   JvCabFile in '..\source\JvCabFile.pas',
   JvCaesarCipher in '..\source\JvCaesarCipher.pas',
   JvCheckBox in '..\source\JvCheckBox.pas',

@@ -10,7 +10,7 @@
       ..\lib5\JvApplication.obj ..\lib5\JvAutoSizeCompo.obj 
       ..\lib5\JvBaseDlg.obj ..\lib5\JvBevel.obj ..\lib5\JvBitBtn.obj 
       ..\lib5\JvBreatheSkin.obj ..\lib5\JvBrowseFolder.obj ..\lib5\JvButton.obj
-      ..\lib5\JvButtonPersistent.obj ..\lib5\JvButtonShaped.obj 
+      ..\lib5\JvButtonPersistent.obj
       ..\lib5\JvCabFile.obj ..\lib5\JvCaesarCipher.obj ..\lib5\JvCheckBox.obj 
       ..\lib5\JvCheckListBox.obj ..\lib5\JvChrono.obj 
       ..\lib5\JvClipboardViewer.obj ..\lib5\JvClock.obj ..\lib5\JvCombobox.obj 

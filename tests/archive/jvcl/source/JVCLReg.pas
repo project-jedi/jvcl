@@ -66,7 +66,7 @@ uses
 //  JvTypedEdit, JvFloatEdit,
 
   // Controls
-  JvPlaylist, JvButtonShaped, JvFavoritesButton, JvClock, JvStartMenuBtn,
+  JvPlaylist, JvFavoritesButton, JvClock, JvStartMenuBtn,
   JvScrollText, JvRecentMenuBtn,
   {$IFNDEF DelphiPersonalEdition}
   JvControlPanel,
@@ -263,7 +263,7 @@ begin
   // Jv Additional
   RegisterComponents(srJvAdditionalPalette,
     [TJvBitBtn, TJvImgBtn, TJvSpeedButton, TJvMultilineButton,
-     TJvOneSizeFitsAllButton, TJvButtonShaped, TJvArrowButton,
+     TJvOneSizeFitsAllButton, TJvArrowButton,
      TJvTransparentButton, TJvTransparentButton2, 
 
      TJvPopupMemo, TJvStringGrid, TJvDrawGrid, TJvButtonDrawGrid,

@@ -20,7 +20,6 @@ USEUNIT("..\source\JvBreatheSkin.pas");
 USEUNIT("..\source\JvBrowseFolder.pas");
 USEUNIT("..\source\JvButton.pas");
 USEUNIT("..\source\JvButtonPersistent.pas");
-USEUNIT("..\source\JvButtonShaped.pas");
 USEUNIT("..\source\JvCabFile.pas");
 USEUNIT("..\source\JvCaesarCipher.pas");
 USEUNIT("..\source\JvCheckBox.pas");

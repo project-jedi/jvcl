@@ -11,7 +11,7 @@
       ..\lib6\JvAutoSizeCompo.obj ..\lib6\JvBalloonHint.obj 
       ..\lib6\JvBaseDlg.obj ..\lib6\JvBevel.obj ..\lib6\JvBitBtn.obj 
       ..\lib6\JvBreatheSkin.obj ..\lib6\JvBrowseFolder.obj ..\lib6\JvButton.obj
-      ..\lib6\JvButtonPersistent.obj ..\lib6\JvButtonShaped.obj 
+      ..\lib6\JvButtonPersistent.obj
       ..\lib6\JvCabFile.obj ..\lib6\JvCaesarCipher.obj ..\lib6\JvCheckBox.obj 
       ..\lib6\JvCheckListBox.obj ..\lib6\JvChrono.obj 
       ..\lib6\JvClipboardViewer.obj ..\lib6\JvClock.obj ..\lib6\JvCombobox.obj 
@@ -245,7 +245,6 @@
       <FILE FILENAME="..\source\JvBrowseFolder.pas" FORMNAME="" UNITNAME="JvBrowseFolder" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvButton.pas" FORMNAME="" UNITNAME="JvButton" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvButtonPersistent.pas" FORMNAME="" UNITNAME="JvButtonPersistent" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\source\JvButtonShaped.pas" FORMNAME="" UNITNAME="JvButtonShaped" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCabFile.pas" FORMNAME="" UNITNAME="JvCabFile" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCaesarCipher.pas" FORMNAME="" UNITNAME="JvCaesarCipher" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\source\JvCheckBox.pas" FORMNAME="" UNITNAME="JvCheckBox" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
