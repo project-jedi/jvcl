@@ -28,6 +28,8 @@ Known Issues:
 
 unit JvCheckBox;
 
+
+
 interface
 
 uses
@@ -37,7 +39,6 @@ uses
 type
   TJvCheckBox = class(TCheckBox)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FOnMouseEnter: TNotifyEvent;
     FColor: TColor;
     FSaved: TColor;
@@ -51,18 +52,20 @@ type
     FOver: Boolean;
     FAutoSave: TJvAutoSave;
     FAutoSize: Boolean;
+    FAboutJVCL: TJVCLAboutInfo;
     FAssociated: TControl;
     procedure SetHotFont(const Value: TFont);
     function GetCaption: TCaption;
     procedure SetCaption(const Value: TCaption);
     procedure SetAssociated(const Value: TControl);
   protected
-    procedure SetAutoSize(Value: Boolean); {$IFDEF COMPILER6_UP} override; {$ENDIF}
+    procedure SetAutoSize(Value: Boolean);{$IFDEF COMPILER6_UP}override;{$ENDIF}
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     procedure Loaded; override;
     procedure Toggle; override;
@@ -93,7 +96,7 @@ implementation
 
 constructor TJvCheckBox.Create(AOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited;
   FHotTrack := False;
   FHotFont := TFont.Create;
   FFontSave := TFont.Create;
@@ -105,21 +108,17 @@ begin
     FAssociated.Enabled := Checked;
 end;
 
-destructor TJvCheckBox.Destroy;
-begin
-  FAutoSave.Free;
-  FHotFont.Free;
-  FFontSave.Free;
-  inherited Destroy;
-end;
+{**************************************************}
 
 procedure TJvCheckBox.Toggle;
 begin
-  inherited Toggle;
+  inherited;
   FAutoSave.SaveValue(Checked);
   if Assigned(FAssociated) then
     FAssociated.Enabled := Checked;
 end;
+
+{**************************************************}
 
 procedure TJvCheckBox.CreateParams(var Params: TCreateParams);
 begin
@@ -127,12 +126,15 @@ begin
   Params.Style := Params.Style or BS_MULTILINE or BS_TOP;
 end;
 
+{**************************************************}
+
 procedure TJvCheckBox.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
+{**************************************************}
 
 procedure TJvCheckBox.CMParentColorChanged(var Msg: TMessage);
 begin
@@ -141,11 +143,21 @@ begin
     FOnParentColorChanged(Self);
 end;
 
+procedure TJvCheckBox.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  // 22/06/03, Liran Shahar
+  // Added to handle Associated object removal from components list
+  inherited Notification(AComponent,Operation);
+  if (AComponent = FAssociated) and (Operation = opRemove) then
+    FAssociated := nil;
+end;
+
+{**************************************************}
+
 procedure TJvCheckBox.CMMouseEnter(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then
-    Exit;
+  if csDesigning in ComponentState then Exit;
   if not FOver then
   begin
     FSaved := Application.HintColor;
@@ -161,11 +173,12 @@ begin
     FOnMouseEnter(Self);
 end;
 
+{**************************************************}
+
 procedure TJvCheckBox.CMMouseLeave(var Msg: TMessage);
 begin
   // for D7...
-  if csDesigning in ComponentState then
-    Exit;
+  if csDesigning in ComponentState then Exit;
   if FOver then
   begin
     Application.HintColor := FSaved;
@@ -177,34 +190,54 @@ begin
     FOnMouseLeave(Self);
 end;
 
+{**************************************************}
+
+destructor TJvCheckBox.Destroy;
+begin
+  FAutoSave.Free;
+  FHotFont.Free;
+  FFontSave.Free;
+  inherited;
+end;
+
+{**************************************************}
+
 procedure TJvCheckBox.SetHotFont(const Value: TFont);
 begin
   FHotFont.Assign(Value);
 end;
 
+{**************************************************}
+
 procedure TJvCheckBox.Loaded;
 var
-  B: Boolean;
+  b: Boolean;
 begin
   inherited;
-  if FAutoSave.LoadValue(B) then
+  if FAutoSave.LoadValue(b) then
   begin
-    Checked := B;
+    Checked := b;
     if Assigned(FOnRestored) then
       FOnRestored(Self);
   end;
 end;
+
+{**************************************************}
 
 function TJvCheckBox.GetCaption: TCaption;
 begin
   Result := inherited Caption;
 end;
 
+{**************************************************}
+
 procedure TJvCheckBox.SetAutoSize(Value: Boolean);
 begin
   FAutoSize := Value;
   SetCaption(Caption);
 end;
+
+{**************************************************}
 
 procedure TJvCheckBox.SetCaption(const Value: TCaption);
 begin
@@ -215,23 +248,34 @@ begin
   end;
 end;
 
+{**************************************************}
+
 procedure TJvCheckBox.SetAssociated(const Value: TControl);
 begin
-  FAssociated := Value;
-  if Assigned(FAssociated) then
-    FAssociated.Enabled := Checked;
+  // 22/06/03, Liran Shahar
+  // Added to avoid the situation when Associated=Self
+  if (FAssociated <> Self) then
+  begin
+    FAssociated := Value;
+    if Assigned(FAssociated) then
+      FAssociated.Enabled := Checked;
+  end; // if
 end;
+
+{**************************************************}
 
 procedure TJvCheckBox.SetChecked(Value: Boolean);
 begin
-  inherited SetChecked(Value);
+  inherited;
   if Assigned(FAssociated) then
     FAssociated.Enabled := Value;
 end;
 
+{**************************************************}
+
 procedure TJvCheckBox.Click;
 begin
-  inherited Click;
+  inherited;
   if Assigned(FAssociated) then
     FAssociated.Enabled := Checked;
 end;
