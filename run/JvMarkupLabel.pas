@@ -32,12 +32,7 @@ unit JvMarkupLabel;
 interface
 
 uses
-  {$IFDEF VCL}
   Windows, Messages, Graphics, Controls,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QGraphics, QControls, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes,
   JvComponent, JvMarkupCommon;
 
@@ -465,9 +460,6 @@ var
 begin
   iEol := 0; // Not Needed but removes warning.
   R := ClientRect;
-//  {$IFDEF VisualCLX}
-  Canvas.Brush.Style := bsSolid;
-//  {$ENDIF VisualCLX}
   Canvas.Brush.Color := Color;
   DrawThemedBackground(Self, Canvas, R);
   C := FElementStack.Count;
