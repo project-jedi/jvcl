@@ -19,7 +19,7 @@ uses
   JvDriveCtrls, JvFooter, JvGroupHeader, JvHint, JvHtControls, JvInstallLabel, JvItemsPanel,
   JvListComb, JvPageScroller, JvRegistryTreeView, JvRollOut, JvScrollPanel,
   JvScrollText, JvSpacer, JvSpeedBar, JvSplit, JvSplitter, JvSwitch, JvSyncSplitter,
-  JvTransparentButton, JvTransLED, JvxClock, JvSpeedbarSetupForm,
+  JvTransparentButton, JvTransLED, JvBlinkingLED, JvxClock, JvSpeedbarSetupForm,
   JvColorForm, JvDsgnIntf, JvImageDrawThread, JvWinampLabel, JvPlaylist, JvComponentPanel,
   JvButtons, JvCaptionPanel, JvScrollMax, JvUninstallControls, JvMovableBevel,
   JvScrollMaxEditor, JvBehaviorLabelEditor, JvGroupHeaderEditor, JvFooterEditor,
@@ -32,7 +32,7 @@ begin
   RegisterComponents(SPaletteButton,[
     TJvTransparentButton, TJvTransparentButton2,
     TJvArrowButton, TJvCaptionButton, TJvColorButton, TJvHTButton,
-    TJvTransLED, TJvSpacer, TJvSwitch
+    TJvTransLED, TJvBlinkingLED, TJvSpacer, TJvSwitch
 
     ]);
   RegisterComponents(SPaletteBarPanel,[

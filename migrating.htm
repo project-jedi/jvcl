@@ -1,10 +1,125 @@
 <html>
   <head>
-    <link rel="STYLESHEET" href="default.css" type="text/css">
     <title>Migrating your applications from previous versions of JEDI VCL</title>
+    <link rel="STYLESHEET" href="default.css" type="text/css">
   </head>
   <body>
     <h1>Migrating your applications from previous versions of JEDI VCL</h1>
-    <hr />
+<h2>
+    <hr >
+Introduction</h2>
+<p>Since the 2.10 release the JVCL has undergone some major changes. Old 
+components have been bug fixed, enhanced, merged and&nbsp;removed, new 
+components and libraries have been added, units have been renamed and the 
+previous monolithic package has been split into several smaller packages. </p>
+<p>The folder structure has also changed. Source files have been rearranged into 
+design and run folders, packages have been moved into separate folders based on 
+the supported Delphi/BCB/Kylix version. </p>
+<p>Taken together, moving your applications from using JVCL 2.10 to using the 
+current version can be quite a task and many things can go wrong if they are not 
+performed in the right order using the righ tools. This document is a help in 
+making this migration as easy as possible. The docuemtn refers to "Delphi" in 
+several places, but this also applies to other versions of Bolrand GUI's that 
+can use Delphi units, like C++Builder and Kylix.</p>
+<p>&nbsp;</p>
+<h2>General migration issues</h2>
+<p>Before you start moving your application to the latest JVCL, you must make 
+sure that you can go back if something goes wrong. To accomplish this, you must 
+perform the following steps:</p>
+<ul>
+  <li>Make sure you save all DFM files in text format. This simplifies manual 
+  editing (f ex with Notepad) of DFM files in case you can't load them into 
+  Delphi</li>
+  <li>Make a complete backup of your current JVCL and JCL installations and 
+  store in a safe place</li>
+  <li>Make a complete backup of your application and store in a safe 
+place</li></ul>
+<p>&nbsp;</p>
+<p>You also need to make sure that Delphi doesn't use use the old JVCL sources 
+and/or binaries once you've started the migration. To make sure that none of the 
+old files are used by Delphi, you should</p>
+<ul>
+  <li>Start Delphi, go to "Install Packages", select any JCL and JVCL packages 
+  in the list and click the remove button</li>
+  <li>Go to Environment Options and remove any paths to JCL and JVCL from the 
+  Library, Search, Debug&nbsp;and Browse path lists</li>
+  <li>Close Delphi. Delete all JCL and JVCL folders from your computer. Delete 
+  all JCL and JVCL dcu, dcp, bpl and other related files from your 
+computer</li></ul>
+<p>Your computer should now be "JVCL free" and you are ready to start 
+migrating</p>
+<p>&nbsp;</p>
+<h3>Step one - installation</h3>
+<p>Before you can start using the new JVCL, you need to install it. Follow the 
+instructions in install.htm to install JCL/JVCL. Add any required paths to the 
+Environment Options in Delphi. Since it is impossible to know what JVCL packages 
+you will need to install, we recommend that you start by installing all of them. 
+You can go back later and remove or deactivate those that you don't use. </p>
+<p>Make sure that you can use the JVCL components by creating a new empty 
+project, drop a few JVCL components on the form and try to run it. If the 
+application builds and runs without errors, you are ready to start using 
+JVCL.</p>
+<p>&nbsp;</p>
+<h3>Step two - search and replace</h3>
+<p>After succesfully installing JVCL, you need to go through your application 
+sources outside Delphi and replace any occurences of old unit, class and type 
+names with the new names. You can do this manually by referencing the list of 
+renames in readme.htm and changelog.txt but it is a lot simpler to use the JVCL 
+Convert program and the provided conversion data file.</p>
+<p>JVCL Convert is a tool that can search a set of selected files and replace 
+occurences of one text with another by reading the entiresin a conversion data 
+file. A conversion data file contains pairs of old/new values. A conversion file 
+named JVCL3.dat is provided with the download of JVCL. Run the JVCL convert 
+program with the JVCL3.dat file on your application source files. You can know 
+try to open your application project in Delphi. If it opens and compiles without 
+problem, you are finished and can start using JVCL 3.</p>
+<h3>Step three - replace removed components</h3>
+<p>In some cases, the simple replacement of unit, class and type names isn't 
+sufficient to make your application run. F ex, if you use a component that now 
+has been removed or replaced with another component, properties will most likely 
+be named differently, the components design might be so different that the old 
+properties aren't even usable with the new component. You could even be forced 
+to recode the logic in your application to match the workings of the new 
+component.</p>
+<p>The only way to sort these problems out is to compare the old components 
+design with the new one and make decision based on that. In rare cases, you 
+can't replace the old component with a new one and need to keep the old one in 
+use. We never delete components once they have been added to JVCL. Instead, all 
+old components are available in the \archive folder (this folder is only 
+included in the full install). You will need to add this component manually to a 
+package of your choice and you will most likely also have to write a Register 
+procedure to install it into Delphi. </p>
+<p>&nbsp;</p>
+<h3>Step four - future proof your application</h3>
+<p>Although we don't anticipate that we will ever do such a complete overhaul of 
+the JVCL again, you still need to future proof your applications so the next 
+version of JVCL doesn't catch you by surprise. Since almost all the duplicate 
+components in JVCL have been merged, there are not many that we think will 
+change. But you should still consider the following:</p>
+<ul>
+  <li>If there is more than one component with the same basic name, you can 
+  expect one of them to disappear in the future. F ex, there is a TJvTrayIcon 
+  and a TJvxTrayIcon component. One of them will most likely disappear. To try 
+  to determine which one will disapear, compare their feature sets and their 
+  functionality. The most feature rich and best working component is probably be 
+  the one that will be kept.</li>
+  <li>Components in the deprecated list in readme.htm will probably not be part 
+  of the next JVCL release</li>
+  <li>Very simple components and some JCL duplicate functions might not be part 
+  of the next release</li></ul>
+<p>&nbsp;</p>
+<h2>Migrating from RALib to JVCL</h2>
+<p>Use the RALib.dat file with JVCL Convert to convert your source code.</p>
+<h2>Migrating from Globus Lib to JVCL</h2>
+<p>Use the Globus.dat file with JVCL Convert to convert your source code.</p>
+<h2>Migrating from&nbsp;Jans to JVCL</h2>
+<p>Use the Jans.dat file with JVCL Convert to convert your source code.</p>
+<h2>Migrating from&nbsp;KWizard to JVCL</h2>
+<p>Use the KWizard2JVCL.dat file with JVCL Convert to convert your source 
+code.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
   </body>
 </html>

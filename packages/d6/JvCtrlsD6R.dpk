@@ -61,6 +61,7 @@ contains
   JvSyncSplitter in '..\..\run\JvSyncSplitter.pas',
   JvTransparentButton in '..\..\run\JvTransparentButton.pas',
   JvTransLED in '..\..\run\JvTransLED.pas',
+  JvBlinkingLED in '..\..\run\JvBlinkingLED.pas',
   JvxClock in '..\..\run\JvxClock.pas',
   JvSpeedbarSetupForm in '..\..\run\JvSpeedbarSetupForm.pas' {JvSpeedbarSetupWindow},
   JvColorForm in '..\..\run\JvColorForm.pas',

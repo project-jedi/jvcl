@@ -1,5 +1,8 @@
 Changelog for JVCL 3.0
 ======================
+2003-07-12:
+- Added TJvBlinkingLED (derived from TJvTransLED) from Tomas Hensle
+
 2003-07-11:
 - Added updated JvPlugin units from Stefaan Lesage
 - Added JvConvert conversion file for KWizard
