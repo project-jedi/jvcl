@@ -55,6 +55,7 @@ resourcestring
   sJvInspRegNoCompare = 'Cannot compare %s to %s.';
   sJvInspNoGenReg = 'Unable to create generic item registration list.';
   sJvInspPaintNotActive = 'Painter is not the active painter of the specified inspector.';
+  sJvInspPaintOnlyUsedOnce = 'Inspector painter can only be linked to one inspector.';
 
 const
   { Inspector Row Size constants }
@@ -2624,6 +2625,11 @@ begin
     IncPaintGeneration;
     Painter.Setup(Canvas);
     Painter.Paint;
+  end
+  else
+  begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(ClientRect);
   end;
 end;
 
@@ -2848,8 +2854,16 @@ procedure TJvCustomInspector.SetPainter(const Value: TJvInspectorPainter);
 begin
   if (Value <> Painter) then
   begin
+    if Value <> nil then
+    begin
+      if (Value.Inspector <> nil) and (Value.Inspector <> Self) then
+        raise EJvInspector.Create(sJvInspPaintOnlyUsedOnce);
+    end;
     if Painter <> nil then
+    begin
       Painter.RemoveFreeNotification(Self);
+      Painter.SetInspector(nil);
+    end;
     FPainter := Value;
     if Painter <> nil then
     begin
@@ -3649,10 +3663,12 @@ end;
 
 procedure TJvInspectorPainter.SetInspector(const AInspector: TJvCustomInspector);
 begin
-  if AInspector.Painter <> Self then
+  if (AInspector <> nil) and (AInspector.Painter <> Self) then
     raise EJvInspector.Create(sJvInspPaintNotActive);
   if AInspector <> Inspector then
   begin
+    if (Inspector <> nil) and (AInspector <> nil) then
+      raise EJvInspector.Create(sJvInspPaintOnlyUsedOnce);
     FInspector := AInspector;
   end;
 end;
