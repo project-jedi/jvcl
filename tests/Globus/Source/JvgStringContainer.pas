@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -39,10 +39,10 @@ type
 
   TJvgStringContainer = class(TComponent)
   private
-    FItems           : TStringList;
-    FReadOnly        : boolean;
+    FItems: TStringList;
+    FReadOnly: boolean;
     FOnReadItem: TOnReadItem;
-    function GetString( Index: integer ): string;
+    function GetString(Index: integer): string;
     procedure SetString(Index: integer; const Value: string);
     procedure SetItems(Value: TStringList);
     function GetCount: integer;
@@ -51,7 +51,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-    property Items: TStringList read FItems write SetItems; 
+    property Items: TStringList read FItems write SetItems;
     property Count: integer read GetCount;
     property ReadOnly: boolean read FReadOnly write FReadOnly default false;
     property OnReadItem: TOnReadItem read FOnReadItem write FOnReadItem;
@@ -99,6 +99,5 @@ function TJvgStringContainer.GetCount: integer;
 begin
   Result := FItems.Count;
 end;
-
 
 end.

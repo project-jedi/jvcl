@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -97,9 +97,10 @@ procedure TJvgReportParamEditor.pbAddItemClick(Sender: TObject);
 begin
   eItemToAdd.Text := Trim(eItemToAdd.Text);
   if length(eItemToAdd.Text) > 0 then
-    if TButton(Sender).Tag = 0 then lbRadioItems.Items.Append(eItemToAdd.Text)
+    if TButton(Sender).Tag = 0 then
+      lbRadioItems.Items.Append(eItemToAdd.Text)
     else if lbRadioItems.ItemIndex <> -1 then
-          lbRadioItems.Items.Insert(lbRadioItems.ItemIndex, eItemToAdd.Text);
+      lbRadioItems.Items.Insert(lbRadioItems.ItemIndex, eItemToAdd.Text);
 end;
 
 procedure TJvgReportParamEditor.lbRadioItemsClick(Sender: TObject);

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,15 +38,15 @@ type
 
   TJvgBitBtn = class(TBitBtn)
   private
-    FCanvas		: TCanvas;
-    fMouseEnter         : boolean;
+    FCanvas: TCanvas;
+    fMouseEnter: boolean;
     procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
   protected
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct);
   public
-    constructor Create( AOwner : TComponent ); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
   end;
@@ -55,17 +55,19 @@ procedure Register;
 
 implementation
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
+
 procedure Register;
 begin
   RegisterComponents('Proba', [TJvgBitBtn]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
-constructor TJvgBitBtn.Create( AOwner : TComponent );
+
+constructor TJvgBitBtn.Create(AOwner: TComponent);
 begin
   inherited;
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;//...i can draw now! :)
+  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
   //..defaults
 end;
 
@@ -83,10 +85,10 @@ end;
 
 procedure TJvgBitBtn.DrawItem(const DrawItemStruct: TDrawItemStruct);
 var
-  IsDown{, IsDefault}: Boolean;
+  IsDown {, IsDefault}: Boolean;
   //State: TButtonState;
   R: TRect;
-  BPen, FPen, SPen,OldPen :HPEN;
+  BPen, FPen, SPen, OldPen: HPEN;
   FBrush: HBRUSH;
 begin
   R := ClientRect;
@@ -104,33 +106,40 @@ begin
   if (not fMouseEnter) and (not IsDown) then
   begin
 
-    FBrush := CreateSolidBrush( GetSysColor(COLOR_BTNFACE) );
+    FBrush := CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
     if not Focused and not Default then
     begin
-      SPen := CreatePen( PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW) );
-      FPen := CreatePen( PS_SOLID, 1, GetSysColor(COLOR_BTNFACE) );
-      BPen := CreatePen( PS_SOLID, 1, ColorToRGB((Parent as TWinControl).Brush.Color) );
-      OldPen := SelectObject( DrawItemStruct.hDC, FPen );
+      SPen := CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNSHADOW));
+      FPen := CreatePen(PS_SOLID, 1, GetSysColor(COLOR_BTNFACE));
+      BPen := CreatePen(PS_SOLID, 1, ColorToRGB((Parent as TWinControl).Brush.Color));
+      OldPen := SelectObject(DrawItemStruct.hDC, FPen);
 
-      MoveToEx(DrawItemStruct.hDC, R.Left+1, R.Top+1, nil); LineTo(DrawItemStruct.hDC, R.Right-1, R.Top+1);
-      MoveToEx(DrawItemStruct.hDC, R.Left+1, R.Top+1, nil); LineTo(DrawItemStruct.hDC, R.Left+1, R.Bottom-1);
+      MoveToEx(DrawItemStruct.hDC, R.Left + 1, R.Top + 1, nil);
+      LineTo(DrawItemStruct.hDC, R.Right - 1, R.Top + 1);
+      MoveToEx(DrawItemStruct.hDC, R.Left + 1, R.Top + 1, nil);
+      LineTo(DrawItemStruct.hDC, R.Left + 1, R.Bottom - 1);
 
-      SelectObject( DrawItemStruct.hDC, BPen );
+      SelectObject(DrawItemStruct.hDC, BPen);
 
-      MoveToEx(DrawItemStruct.hDC, R.Left, R.Bottom-1, nil); LineTo(DrawItemStruct.hDC, R.Right, R.Bottom-1);
-      MoveToEx(DrawItemStruct.hDC, R.Right-1, R.Top, nil); LineTo(DrawItemStruct.hDC, R.Right-1, R.Bottom);
+      MoveToEx(DrawItemStruct.hDC, R.Left, R.Bottom - 1, nil);
+      LineTo(DrawItemStruct.hDC, R.Right, R.Bottom - 1);
+      MoveToEx(DrawItemStruct.hDC, R.Right - 1, R.Top, nil);
+      LineTo(DrawItemStruct.hDC, R.Right - 1, R.Bottom);
 
-      SelectObject( DrawItemStruct.hDC, SPen );
+      SelectObject(DrawItemStruct.hDC, SPen);
 
-      MoveToEx(DrawItemStruct.hDC, R.Left-2, R.Bottom-2, nil); LineTo(DrawItemStruct.hDC, R.Right-1, R.Bottom-2);
-      MoveToEx(DrawItemStruct.hDC, R.Right-2, R.Top, nil); LineTo(DrawItemStruct.hDC, R.Right-2, R.Bottom-1);
+      MoveToEx(DrawItemStruct.hDC, R.Left - 2, R.Bottom - 2, nil);
+      LineTo(DrawItemStruct.hDC, R.Right - 1, R.Bottom - 2);
+      MoveToEx(DrawItemStruct.hDC, R.Right - 2, R.Top, nil);
+      LineTo(DrawItemStruct.hDC, R.Right - 2, R.Bottom - 1);
 
-      DeleteObject( SelectObject( DrawItemStruct.hDC, OldPen ) );
+      DeleteObject(SelectObject(DrawItemStruct.hDC, OldPen));
       DeleteObject(FPen);
       DeleteObject(BPen);
-    end else
+    end
+    else
     begin
-      FrameRect(DrawItemStruct.hDC, Rect(R.Left+2, R.Top+2, R.Right-2, R.Bottom-2), FBrush);
+      FrameRect(DrawItemStruct.hDC, Rect(R.Left + 2, R.Top + 2, R.Right - 2, R.Bottom - 2), FBrush);
       DeleteObject(FBrush);
     end;
   end;
@@ -150,7 +159,5 @@ begin
   fMouseEnter := false;
   Repaint;
 end;
-
-
 
 end.

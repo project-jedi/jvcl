@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -59,14 +59,14 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Loaded; override;
-    procedure InitRichText;    
+    procedure InitRichText;
     property HighlightButton: boolean read FHighlightButton write SetHighlightButton;
   published
     property Align;
     property Alignment;
-  {$IFDEF GLVER_D4}
+    {$IFDEF GLVER_D4}
     property Anchors;
-  {$ENDIF}
+    {$ENDIF}
     property AutoSize;
     property BevelInner stored true;
     property BevelOuter stored true;
@@ -78,10 +78,10 @@ type
     property Color;
     property Constraints;
     property Ctl3D;
-  {$IFDEF GLVER_D4}
+    {$IFDEF GLVER_D4}
     property UseDockManager default True;
     property DockSite;
-  {$ENDIF}
+    {$ENDIF}
     property DragCursor;
     property DragKind;
     property DragMode;
@@ -102,31 +102,31 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-  {$IFDEF GLVER_D5}
+    {$IFDEF GLVER_D5}
     property OnContextPopup;
-  {$ENDIF}
+    {$ENDIF}
     property OnDockDrop;
     property OnDockOver;
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-  {$IFDEF GLVER_D4}
+    {$IFDEF GLVER_D4}
     property OnEndDock;
-  {$ENDIF}
+    {$ENDIF}
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-  {$IFDEF GLVER_D4}
+    {$IFDEF GLVER_D4}
     property OnGetSiteInfo;
-  {$ENDIF}
+    {$ENDIF}
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
-  {$IFDEF GLVER_D4}
+    {$IFDEF GLVER_D4}
     property OnStartDock;
     property OnUnDock;
-  {$ENDIF}
+    {$ENDIF}
     property OnStartDrag;
 
     property Expanded: boolean read FExpanded write SetExpanded default false;
@@ -134,12 +134,9 @@ type
     property ExpandedHeight: integer read FExpandedHeight write SetExpandedHeight;
   end;
 
-
-
 procedure Register;
 
 implementation
-
 
 procedure Register;
 begin
@@ -195,7 +192,7 @@ var
 begin
   if not Assigned(Rich) then exit;
   Rich.BorderStyle := bsNone;
-  Rich.SetBounds(12, 16, Width-24, ExpandedHeight-22);
+  Rich.SetBounds(12, 16, Width - 24, ExpandedHeight - 22);
   ms := TMemoryStream.Create;
   try
     FStrings.SaveToStream(ms);
@@ -222,8 +219,9 @@ begin
   if PtInRect(ButtonRect, Point(X, Y)) then
   begin
     if not HighlightButton then HighlightButton := not HighlightButton;
-  end else
-    if HighlightButton then HighlightButton := not HighlightButton;
+  end
+  else if HighlightButton then
+    HighlightButton := not HighlightButton;
 end;
 
 procedure TJvgHelpPanel.Paint;
@@ -240,22 +238,22 @@ begin
   Canvas.FillRect(ClientRect);
 
   Canvas.Brush.Color := clBtnShadow;
-  Canvas.FillRect(Bounds(5, 7, Width-10, 2));
-
+  Canvas.FillRect(Bounds(5, 7, Width - 10, 2));
 
   Canvas.Brush.Color := clWindow;
   Canvas.Pen.Color := clBlack;
   if Expanded then
-    Canvas.Rectangle(5, 15, Width-5, Height-5);
+    Canvas.Rectangle(5, 15, Width - 5, Height - 5);
 
-  ButtonRect := Bounds(Width-80, 0, 80, 20);
+  ButtonRect := Bounds(Width - 80, 0, 80, 20);
 
   Canvas.Font.Style := [fsBold];
   if FHighlightButton then
   begin
     SetBkColor(Canvas.Handle, ColorToRGB(clBtnShadow));
     SetTextColor(Canvas.Handle, clWhite);
-  end else
+  end
+  else
   begin
     SetBkColor(Canvas.Handle, ColorToRGB(clBtnFace));
     SetTextColor(Canvas.Handle, clBlack);
@@ -265,7 +263,8 @@ begin
 
   if csDesigning in ComponentState then
   begin
-    R := ClientRect; inc(R.Top, 20);
+    R := ClientRect;
+    inc(R.Top, 20);
     SetBkMode(Canvas.Handle, TRANSPARENT);
     DrawText(Canvas.Handle, WARNING, length(WARNING), R, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
   end;
@@ -283,9 +282,12 @@ begin
   end;
 
   if not fInitializing then
-    if Parent is TForm then with (Parent as TForm) do
-      if FExpanded then Height := Height + ExpandedHeight - 16
-                   else Height := Height - ExpandedHeight + 16;
+    if Parent is TForm then
+      with (Parent as TForm) do
+        if FExpanded then
+          Height := Height + ExpandedHeight - 16
+        else
+          Height := Height - ExpandedHeight + 16;
 end;
 
 procedure TJvgHelpPanel.SetExpandedHeight(const Value: integer);
@@ -296,7 +298,10 @@ end;
 procedure TJvgHelpPanel.SetHighlightButton(const Value: boolean);
 begin
   FHighlightButton := Value;
-  if FHighlightButton then Cursor := crHandPoint else Cursor := crDefault;
+  if FHighlightButton then
+    Cursor := crHandPoint
+  else
+    Cursor := crDefault;
   Repaint;
 end;
 
@@ -305,7 +310,5 @@ begin
   FStrings.Assign(Value);
   InitRichText;
 end;
-
-
 
 end.

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,36 +33,36 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  DsgnIntf, TypInfo;//FrTypes;
+  DsgnIntf, TypInfo; //FrTypes;
 
 type
   TJvgPointProperty = class(TPropertyEditor)
 
-    function GetAttributes : TPropertyAttributes; override;
+    function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
-//    procedure Edit; override;
+    //    procedure Edit; override;
   end;
 
 procedure Register;
 
 implementation
 var
-  PPointTypeInfo : PTypeInfo;
-  PointTypeInfo : TTypeInfo;
+  PPointTypeInfo: PTypeInfo;
+  PointTypeInfo: TTypeInfo;
 
-{== TPointPropertyEditor Methods ==}
+  {== TPointPropertyEditor Methods ==}
 
 function TJvgPointProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [];// paSubProperties, paReadOnly ];
+  Result := []; // paSubProperties, paReadOnly ];
 end;
 
 function TJvgPointProperty.GetValue: string;
 var
   pPT: PPoint;
 begin
-//  pPT := PPoint(GetOrdValue);
-//  Result := Format('(%d,%d)', [ ppt^.x, ppt^.y ]);
+  //  pPT := PPoint(GetOrdValue);
+  //  Result := Format('(%d,%d)', [ ppt^.x, ppt^.y ]);
   Result := '[,]';
 end;
 
@@ -71,8 +71,8 @@ begin
   PointTypeInfo.Name := 'TPoint';
   PointTypeInfo.Kind := tkFloat;
   PPointTypeInfo := @PointTypeInfo;
-  RegisterPropertyEditor( TypeInfo(TPoint), nil,
-                          '', TJvgPointProperty );
+  RegisterPropertyEditor(TypeInfo(TPoint), nil,
+    '', TJvgPointProperty);
 
 end;
 

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,7 +33,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, extctrls ,JvgTypes, CommCtrl, JvgCommClasses {$IFDEF GLVER_D5},Imglist{$ENDIF};
+  ComCtrls, extctrls, JvgTypes, CommCtrl, JvgCommClasses{$IFDEF GLVER_D5}, Imglist{$ENDIF};
 
 //const
 
@@ -41,12 +41,12 @@ type
 
   TJvgWinMask = class(TCustomPanel)
   private
-    FMask        : TBitmap;
-    FMaskBuff    : TBitmap;
-    fIgnorePaint : boolean;
+    FMask: TBitmap;
+    FMaskBuff: TBitmap;
+    fIgnorePaint: boolean;
   public
-    Control      : TWinControl;
-    constructor Create( AOwner : TComponent ); override;
+    Control: TWinControl;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   protected
     procedure Loaded; override;
@@ -54,24 +54,27 @@ type
     procedure SetParent(Value: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    property Mask: TBitmap read FMask write FMask;// stored fDontUseDefaultImage;
+    property Mask: TBitmap read FMask write FMask; // stored fDontUseDefaultImage;
   end;
 
-  procedure Register;
+procedure Register;
 
 implementation
 uses JvgUtils;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
+
 procedure Register;
 begin
   RegisterComponents('Proba', [TJvgWinMask]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //___________________________________________________ TJvgWinMask Methods _
-constructor TJvgWinMask.Create( AOwner : TComponent );
+
+constructor TJvgWinMask.Create(AOwner: TComponent);
 begin
   inherited;
-  Height  := 50;  Width  := 100;
+  Height := 50;
+  Width := 100;
   FMask := TBitmap.Create;
   FMaskBuff := TBitmap.Create;
   fIgnorePaint := false;
@@ -95,25 +98,27 @@ var
   CurrStyle: TJvgTextBoxStyle;
   OldPointer: Pointer;
   Message: TMessage;
+
   procedure CreateMaskBuff(R: TRect);
   begin
-    FMaskBuff.Width := Width; FMaskBuff.Height := Height;
+    FMaskBuff.Width := Width;
+    FMaskBuff.Height := Height;
 
     FMaskBuff.Canvas.Brush.Color := clBlue;
     FMaskBuff.Canvas.FillRect(R);
 
     Message.Msg := WM_PAINT;
     SendMessage(Control.Handle, WM_PAINT, FMaskBuff.Canvas.handle, 0);
-//    GetWindowImageFrom(Control, 0, 0, true, false, FMaskBuff.Canvas.handle);
-//    GetParentImageRect( self, Bounds(Left,Top,Width,Height),
-//			  FMaskBuff.Canvas.Handle );
+    //    GetWindowImageFrom(Control, 0, 0, true, false, FMaskBuff.Canvas.handle);
+    //    GetParentImageRect( self, Bounds(Left,Top,Width,Height),
+    //			  FMaskBuff.Canvas.Handle );
 
-//    BitBlt( FMaskBuff.Canvas.Handle, 0, 0, Width, Height,
-//            FMask.Canvas.Handle, 0, 0, SRCPAINT );
+    //    BitBlt( FMaskBuff.Canvas.Handle, 0, 0, Width, Height,
+    //            FMask.Canvas.Handle, 0, 0, SRCPAINT );
 
-    BitBlt( Canvas.Handle, R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-            FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY );
-//    FMaskBuff
+    BitBlt(Canvas.Handle, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+      FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY);
+    //    FMaskBuff
   end;
 begin
   if fIgnorePaint then exit;
@@ -124,10 +129,10 @@ begin
   begin
     CreateMaskBuff(R);
 
-//    BitBlt( Canvas.Handle, R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-//            FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY );
+    //    BitBlt( Canvas.Handle, R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
+    //            FMaskBuff.Canvas.Handle, 0, 0, SRCCOPY );
   end;
-//  if Assigned(FAfterPaint) then FAfterPaint(self);
+  //  if Assigned(FAfterPaint) then FAfterPaint(self);
   fIgnorePaint := false;
 end;
 

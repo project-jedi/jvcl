@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -40,24 +40,24 @@ type
   TJvgSysInfo = class(TComponent)
   private
     {data fields for properties}
-    FMemoryLoad      : integer;
-    FTotalPhys       : integer;
-    FAvailPhys       : integer;
-    FTotalPageFile   : integer;
-    FAvailPageFile   : integer;
-    FTotalVirtual    : integer;
-    FAvailVirtual    : integer;
-    FColorDepth      : integer;
-    FSystemFont      : string;
-    FOSPlatform      : string;
-    FVRefreshRate    : integer;
+    FMemoryLoad: integer;
+    FTotalPhys: integer;
+    FAvailPhys: integer;
+    FTotalPageFile: integer;
+    FAvailPageFile: integer;
+    FTotalVirtual: integer;
+    FAvailVirtual: integer;
+    FColorDepth: integer;
+    FSystemFont: string;
+    FOSPlatform: string;
+    FVRefreshRate: integer;
     FGraphicResolution: string;
-    FCPUKind         : integer;
-    FCPUName         : string;
-    FComputerName    : string;
-    FUserName        : string;
-    iNone            : integer;
-    sNone            : string;    
+    FCPUKind: integer;
+    FCPUName: string;
+    FComputerName: string;
+    FUserName: string;
+    iNone: integer;
+    sNone: string;
   protected
     procedure Loaded; override;
   public
@@ -129,12 +129,11 @@ begin
   FTotalVirtual := MS.dwTotalVirtual;
   FAvailVirtual := MS.dwAvailVirtual;
 
-
   FCPUKind := SI.wProcessorLevel;
 
   case SI.wProcessorLevel of
-//    i8086: Result := '8086';
-//    i80286: Result := '80286';
+    //    i8086: Result := '8086';
+    //    i80286: Result := '80286';
     i80386: FCPUName := '80386';
     i80486: FCPUName := '80486';
     iPentium: FCPUName := 'Pentium';
@@ -143,16 +142,20 @@ begin
     FCPUName := Format('P%d', [SI.wProcessorLevel]);
   end;
 
-  if OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT then FOSPlatform := 'NT'
-  else if OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS then FOSPlatform := '95';
+  if OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT then
+    FOSPlatform := 'NT'
+  else if OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS then
+    FOSPlatform := '95';
 
   FVRefreshRate := GetDeviceCaps(DC, VREFRESH);
   FColorDepth := GetDeviceCaps(DC, BITSPIXEL);
 
   FGraphicResolution := Format('%dx%d', [GetDeviceCaps(DC, HORZRES), GetDeviceCaps(DC, VERTRES)]);
 
-  if GetDeviceCaps(DC, LOGPIXELSX) = 96 then FSystemFont := 'SmallFont'
-  else if GetDeviceCaps(DC, LOGPIXELSX) = 120 then FSystemFont := 'BigFont';
+  if GetDeviceCaps(DC, LOGPIXELSX) = 96 then
+    FSystemFont := 'SmallFont'
+  else if GetDeviceCaps(DC, LOGPIXELSX) = 120 then
+    FSystemFont := 'BigFont';
 
   FComputerName := JvgUtils.ComputerName;
   FUserName := JvgUtils.UserName;
@@ -164,8 +167,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents ('Globus Components', [TJvgSysInfo]);
+  RegisterComponents('Globus Components', [TJvgSysInfo]);
 end;
 
 end.
-

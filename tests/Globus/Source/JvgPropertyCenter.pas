@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -45,21 +45,21 @@ type
 
   TJvgPropertyCenter = class(TComponent)
   private
-    FColorProperty       : TColor;
-    FFontColorProperty   : TColor;
-    FFontProperty        : TFont;
-    FComponentList       : TStringList;
-    FUseProperties       : TglProperties;
-    FAutoApdate          : boolean;
+    FColorProperty: TColor;
+    FFontColorProperty: TColor;
+    FFontProperty: TFont;
+    FComponentList: TStringList;
+    FUseProperties: TglProperties;
+    FAutoApdate: boolean;
     procedure SetColorProperty(Value: TColor);
     procedure SetFontColorProperty(Value: TColor);
     procedure SetFontProperty(Value: TFont);
     procedure UpdateProperties(Properties: Tgl_Properties);
   protected
-    procedure Notification( Component: TComponent; Operation: TOperation );
+    procedure Notification(Component: TComponent; Operation: TOperation);
     procedure Loaded; override;
   public
-    CompList            : TList;
+    CompList: TList;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -75,10 +75,11 @@ procedure Register;
 
 implementation
 uses JvgUtils, JvgTypes, JvgComponentListEditor;
+
 procedure Register;
 begin
-//  RegisterComponents('Proba', [Tgl3DColors]);
-//  RegisterPropertyEditor( TypeInfo(TStringList), TJvgPropertyCenter, 'Resources', TJvgComponentListProperty );
+  //  RegisterComponents('Proba', [Tgl3DColors]);
+  //  RegisterPropertyEditor( TypeInfo(TStringList), TJvgPropertyCenter, 'Resources', TJvgComponentListProperty );
 end;
 
 constructor TJvgPropertyCenter.Create(AOwner: TComponent);
@@ -104,16 +105,16 @@ begin
 
   for i := 0 to ComponentList.Count - 1 do
   begin
-    Comp := Owner.FindComponent( ComponentList[i] );
+    Comp := Owner.FindComponent(ComponentList[i]);
     if Comp = nil then continue;
     CompList.Add(Comp);
     ComponentList.Add(Comp.Name);
   end;
 end;
 
-procedure TJvgPropertyCenter.Notification( Component: TComponent; Operation: TOperation );
+procedure TJvgPropertyCenter.Notification(Component: TComponent; Operation: TOperation);
 begin
-  if (Component <> Self)and(Operation = opRemove) then
+  if (Component <> Self) and (Operation = opRemove) then
     if CompList.IndexOf(Component) <> -1 then CompList.Delete(CompList.IndexOf(Component));
   inherited;
 end;
@@ -123,22 +124,22 @@ var
   i: integer;
   ColorPropInfo, FontPropInfo: PPropInfo;
 begin
-  for i:=0 to CompList.Count-1 do
+  for i := 0 to CompList.Count - 1 do
   begin
 
     if f_upColor in Properties then
     begin
-      ColorPropInfo := GetPropInfo( TComponent(CompList[i]).ClassInfo, 'Color');
+      ColorPropInfo := GetPropInfo(TComponent(CompList[i]).ClassInfo, 'Color');
       if ColorPropInfo <> nil then
-        SetOrdProp( TComponent(CompList[i]), ColorPropInfo, FColorProperty );
+        SetOrdProp(TComponent(CompList[i]), ColorPropInfo, FColorProperty);
     end;
-{    if (fupFontColor in Properties)or(fupFont in Properties) then
-    begin
-      ColorPropInfo := GetPropInfo( TComponent(CompList[i]).ClassInfo, 'Font');
-      if ColorPropInfo <> nil then
-        if fupFontColor in Properties then
-          SetOrdProp( TComponent(CompList[i]), PropInfo, FColorProperty );
-    end;}
+    {    if (fupFontColor in Properties)or(fupFont in Properties) then
+        begin
+          ColorPropInfo := GetPropInfo( TComponent(CompList[i]).ClassInfo, 'Font');
+          if ColorPropInfo <> nil then
+            if fupFontColor in Properties then
+              SetOrdProp( TComponent(CompList[i]), PropInfo, FColorProperty );
+        end;}
   end;
 
 end;
@@ -163,6 +164,5 @@ begin
   FFontProperty.Assign(Value);
   if FAutoApdate then UpdateProperties([f_upFont]);
 end;
-
 
 end.

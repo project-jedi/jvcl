@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,7 +38,7 @@ type
   private
     FGrid: TCustomGrid;
     FJoinColumns: TStringList;
-//    aColWidths: array[0..255] of word;
+    //    aColWidths: array[0..255] of word;
     FEqualSize: boolean;
     FSections: THeaderSections;
   public
@@ -57,7 +57,7 @@ type
     property Grid: TCustomGrid read FGrid write FGrid;
     property JoinColumns: TStringList read FJoinColumns write SetJoinColumns;
     property EqualSize: boolean read FEqualSize write SetEqualSize default true;
-//    property Sections: THeaderSections read FSections write SetSections;
+    //    property Sections: THeaderSections read FSections write SetSections;
   end;
 
   TJvgPublicGrid = class(TCustomGrid)
@@ -81,19 +81,21 @@ begin
 end;
 
 procedure TJvgGridHeaderControl.Loaded;
-var i: integer;
+var
+  i: integer;
 begin
   inherited;
   if not Assigned(Grid) then exit;
 end;
 
 procedure TJvgGridHeaderControl.Resize;
-var i: integer;
+var
+  i: integer;
 begin
   inherited;
   if not Assigned(Grid) then exit;
-//  for i:=0 to TJvgPublicGrid(Grid).ColCount-1 do
-//    aColWidths[i] := TJvgPublicGrid(Grid).ColWidths[i];
+  //  for i:=0 to TJvgPublicGrid(Grid).ColCount-1 do
+  //    aColWidths[i] := TJvgPublicGrid(Grid).ColWidths[i];
 
   ResizeColumns;
 end;
@@ -114,40 +116,41 @@ begin
 
   G := TJvgPublicGrid(Grid);
   ItemsCount := min(G.ColCount, Sections.Count);
-  for i:=0 to max(FJoinColumns.Count-1, Sections.Count-1) do
-    try
-      if FJoinColumns.Count <= i then FJoinColumns.Add('1');
-      FJoinColumns.Objects[i] := Pointer(StrToInt(FJoinColumns[i]));
-    except
-      FJoinColumns.Objects[i] := Pointer(1);
-    end;
+  for i := 0 to max(FJoinColumns.Count - 1, Sections.Count - 1) do
+  try
+    if FJoinColumns.Count <= i then FJoinColumns.Add('1');
+    FJoinColumns.Objects[i] := Pointer(StrToInt(FJoinColumns[i]));
+  except
+    FJoinColumns.Objects[i] := Pointer(1);
+  end;
 
-  Col := 0; Sect := 0;
-  fIndicator := (Grid is TDBGrid)and(dgIndicator in TDBGrid(g).Options);
+  Col := 0;
+  Sect := 0;
+  fIndicator := (Grid is TDBGrid) and (dgIndicator in TDBGrid(g).Options);
   if fIndicator then col := 1;
 
-  while (Col < G.ColCount)and(Sect < Sections.Count) do
+  while (Col < G.ColCount) and (Sect < Sections.Count) do
   begin
     ColsToJoin := min(integer(FJoinColumns.Objects[Sect]), G.ColCount - Col);
 
     ColsToJoinWidth := 0;
-    for i:=0 to ColsToJoin-1 do
-      inc(ColsToJoinWidth, g.ColWidths[Col+i]);
+    for i := 0 to ColsToJoin - 1 do
+      inc(ColsToJoinWidth, g.ColWidths[Col + i]);
 
-//      inc(ColsToJoinWidth ,-ColsToJoin);
+    //      inc(ColsToJoinWidth ,-ColsToJoin);
 
-//    ColsToJoinWidth := 0;
-//    for i:=0 to ColsToJoin-1 do
-//      inc(ColsToJoinWidth, G.ColWidths[Col+i]);
+    //    ColsToJoinWidth := 0;
+    //    for i:=0 to ColsToJoin-1 do
+    //      inc(ColsToJoinWidth, G.ColWidths[Col+i]);
 
     if ColsToJoinWidth <> 0 then
     begin
-      for i:=0 to ColsToJoin-1 do
+      for i := 0 to ColsToJoin - 1 do
       begin
         if EqualSize then
-          G.ColWidths[Col+i] := trunc((ColsToJoinWidth / ColsToJoin / ColsToJoinWidth)*Sections[Sect].Width)-1
+          G.ColWidths[Col + i] := trunc((ColsToJoinWidth / ColsToJoin / ColsToJoinWidth) * Sections[Sect].Width) - 1
         else
-          G.ColWidths[Col+i] := trunc((g.ColWidths[Col+i] / ColsToJoinWidth)*Sections[Sect].Width)-1;
+          G.ColWidths[Col + i] := trunc((g.ColWidths[Col + i] / ColsToJoinWidth) * Sections[Sect].Width) - 1;
       end;
       //G.ColWidths[Col + ColsToJoin-1] := G.ColWidths[Col + ColsToJoin-1] + Sections[Sect].Width - ColsToJoinWidth - ColsToJoin;
     end;

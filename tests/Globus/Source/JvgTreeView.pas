@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,43 +33,43 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, JvgTypes, CommCtrl, JvgCommClasses {$IFDEF GLVER_D4},Imglist, flatSB{$ENDIF};
+  ComCtrls, JvgTypes, CommCtrl, JvgCommClasses{$IFDEF GLVER_D4}, Imglist, flatSB{$ENDIF};
 
 const
-  ITEM_ENABLED        = integer(true);
-  ITEM_DISABLED       = integer(false);
-  ncsUndefined        = -1;
-  ncsUnChecked        = 1;
-  ncsChecked          = 2;
-  ncsPartChecked      = 3;
+  ITEM_ENABLED = integer(true);
+  ITEM_DISABLED = integer(false);
+  ncsUndefined = -1;
+  ncsUnChecked = 1;
+  ncsChecked = 2;
+  ncsPartChecked = 3;
 
-  TVS_NOTOOLTIPS        = $0080;
-  TVS_CHECKBOXES        = $0100;
-  TVS_TRACKSELECT       = $0200;
+  TVS_NOTOOLTIPS = $0080;
+  TVS_CHECKBOXES = $0100;
+  TVS_TRACKSELECT = $0200;
 
 type
-  FOnTNDrawEvent       =  procedure (Sender: TObject; Message: TWMPaint ) of object;
+  FOnTNDrawEvent = procedure(Sender: TObject; Message: TWMPaint) of object;
 
   TJvgCustomTreeView = class(TCustomTreeView)
   private
-    FCanvas		: TCanvas;
-    FWallpaper		: TBitmap;
-    FBoldSelection      : boolean;
-    FBevel              : TJvgBevel;
-    FHotTrack           : Boolean;
-    FCheckboxes         : Boolean;
-    FToolTips           : Boolean;
-    FMask               : TBitmap;
-    FGradient           : TJvgGradient;
-    FOnDraw             : FOnTNDrawEvent;
-    FOnEndEdit          : TNotifyEvent;
-    fPaintingNow	: boolean;
+    FCanvas: TCanvas;
+    FWallpaper: TBitmap;
+    FBoldSelection: boolean;
+    FBevel: TJvgBevel;
+    FHotTrack: Boolean;
+    FCheckboxes: Boolean;
+    FToolTips: Boolean;
+    FMask: TBitmap;
+    FGradient: TJvgGradient;
+    FOnDraw: FOnTNDrawEvent;
+    FOnEndEdit: TNotifyEvent;
+    fPaintingNow: boolean;
     FOptions: TglTreeViewOptions;
-    isEditing_          : boolean;
+    isEditing_: boolean;
     procedure Paint(var Message: TWMPaint); message WM_PAINT;
-    procedure SetWallpaper( Value: TBitmap );
+    procedure SetWallpaper(Value: TBitmap);
     function GetWallpaper: TBitmap;
-    procedure SetBoldSelection( Value: boolean );
+    procedure SetBoldSelection(Value: boolean);
     procedure SetHotTrack(Value: Boolean);
     procedure SetCheckboxes(Value: Boolean);
     procedure SetToolTips(Value: Boolean);
@@ -84,8 +84,8 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Canvas: TCanvas read FCanvas;
-    procedure SetNodeBoldState( Node: TTreeNode; fBold: boolean );
-    procedure SetNodeState_( ItemID: HTreeItem; stateMask, State: UINT );
+    procedure SetNodeBoldState(Node: TTreeNode; fBold: boolean);
+    procedure SetNodeState_(ItemID: HTreeItem; stateMask, State: UINT);
   protected
     property Wallpaper: TBitmap read GetWallpaper write SetWallpaper;
     property Options: TglTreeViewOptions read FOptions write FOptions;
@@ -106,7 +106,8 @@ type
     property ShowLines;
     property ShowRoot;
     property ReadOnly;
-    {$IFDEF GLVER_D3}property RightClickSelect;{$ENDIF}
+    {$IFDEF GLVER_D3}property RightClickSelect;
+    {$ENDIF}
     property DragMode;
     property HideSelection;
     property Indent;
@@ -155,7 +156,8 @@ type
     property Images;
     property StateImages;
     property Wallpaper;
-    {$IFDEF GLVER_D5} property Options; {$ENDIF}
+    {$IFDEF GLVER_D5}property Options;
+    {$ENDIF}
     property BoldSelection;
     property BevelSelection;
     property HotTrack;
@@ -167,21 +169,21 @@ type
 
   TJvgCheckTreeView = class(TJvgCustomTreeView)
   private
-    FOnChangeCheck	: TTVChangedEvent;
-    FGlyphChecked	: TBitmap;
-    FGlyphUnChecked	: TBitmap;
-    FGlyphSemiChecked	: TBitmap;
-    FCheckKind          : TglCheckKind;
-    FChecksScheme	: integer;
-    FCheckStateInheritance : boolean;
-    FCheckImageList	: TImageList;
+    FOnChangeCheck: TTVChangedEvent;
+    FGlyphChecked: TBitmap;
+    FGlyphUnChecked: TBitmap;
+    FGlyphSemiChecked: TBitmap;
+    FCheckKind: TglCheckKind;
+    FChecksScheme: integer;
+    FCheckStateInheritance: boolean;
+    FCheckImageList: TImageList;
 
-    procedure SetGlyphChecked( Value: TBitmap );
-    procedure SetGlyphUnChecked( Value: TBitmap );
-    procedure SetGlyphSemiChecked( Value: TBitmap );
-    procedure SetChecksScheme( Value: integer );
+    procedure SetGlyphChecked(Value: TBitmap);
+    procedure SetGlyphUnChecked(Value: TBitmap);
+    procedure SetGlyphSemiChecked(Value: TBitmap);
+    procedure SetChecksScheme(Value: integer);
     procedure SetChecksBitmap;
-    function TestChildCheckState( Node: TTreeNode ): integer;
+    function TestChildCheckState(Node: TTreeNode): integer;
     procedure TVMInsertItem(var Message: TMessage); message TVM_INSERTITEM;
     procedure WMLButtonDown(var Message: TWMLButtonDown); message WM_LBUTTONDOWN;
   protected
@@ -189,9 +191,9 @@ type
     procedure Assign(Source: TPersistent); override;
   public
     function CheckedItem: TTreeNode;
-    function Checked( Node: TTreeNode ): boolean;
-    procedure SetChecked( Node: TTreeNode; Value: boolean );
-    procedure SetStateIndex( Node: TTreeNode; StateIndex: integer );
+    function Checked(Node: TTreeNode): boolean;
+    procedure SetChecked(Node: TTreeNode; Value: boolean);
+    procedure SetStateIndex(Node: TTreeNode; StateIndex: integer);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
@@ -210,7 +212,8 @@ type
     property ShowLines;
     property ShowRoot;
     property ReadOnly;
-    {$IFDEF GLVER_D3}property RightClickSelect;{$ENDIF}
+    {$IFDEF GLVER_D3}property RightClickSelect;
+    {$ENDIF}
     property DragMode;
     property HideSelection;
     property Indent;
@@ -258,7 +261,8 @@ type
     property ShowHint;
     property Images;
     property Wallpaper;
-    {$IFDEF GLVER_D5} property Options; {$ENDIF}
+    {$IFDEF GLVER_D5}property Options;
+    {$ENDIF}
     property BoldSelection;
     property BevelSelection;
     property HotTrack;
@@ -281,11 +285,12 @@ begin
 end;
 
 //______________________________________________________TglCheckTreeView
+
 constructor TJvgCustomTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;//...i can draw now! :)
+  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
   FBevel := TJvgBevel.Create;
   FHotTrack := False;
   FCheckboxes := False;
@@ -309,10 +314,10 @@ procedure TJvgCustomTreeView.Assign(Source: TPersistent);
 begin
   if Source is TJvgCustomTreeView then
   begin
-    Width:=TJvgCustomTreeView(Source).Width;
-    Height:=TJvgCustomTreeView(Source).Height;
-    Align:=TJvgCustomTreeView(Source).Align;
-    Parent:=TJvgCustomTreeView(Source).Parent;
+    Width := TJvgCustomTreeView(Source).Width;
+    Height := TJvgCustomTreeView(Source).Height;
+    Align := TJvgCustomTreeView(Source).Align;
+    Parent := TJvgCustomTreeView(Source).Parent;
     Items.Assign(TJvgCustomTreeView(Source).Items);
   end;
 end;
@@ -322,9 +327,9 @@ begin
   inherited CreateParams(Params);
   with Params do
   begin
-    if FHotTrack then Style:= Style or TVS_TRACKSELECT;
-    if FCheckBoxes then Style:= Style or TVS_CHECKBOXES;
-    if not FToolTips then Style:= Style or TVS_NOTOOLTIPS;
+    if FHotTrack then Style := Style or TVS_TRACKSELECT;
+    if FCheckBoxes then Style := Style or TVS_CHECKBOXES;
+    if not FToolTips then Style := Style or TVS_NOTOOLTIPS;
   end;
 end;
 
@@ -343,96 +348,107 @@ begin
   {$IFDEF GLVER_D5}
   try
     InitializeFlatSB(Handle);
-    FlatSB_SetScrollProp(handle,WSB_PROP_VSTYLE, FSB_ENCARTA_MODE, false);
-    FlatSB_SetScrollProp(handle,WSB_PROP_HSTYLE, FSB_ENCARTA_MODE, false);
+    FlatSB_SetScrollProp(handle, WSB_PROP_VSTYLE, FSB_ENCARTA_MODE, false);
+    FlatSB_SetScrollProp(handle, WSB_PROP_HSTYLE, FSB_ENCARTA_MODE, false);
 
     GetScrollRange(Handle, SB_VERT, MinPos, MaxPos);
 
     FlatSB_SetScrollRange(handle, 1, MinPos, MaxPos, false);
-  except end;                                                                  
+  except
+  end;
   {$ENDIF}
 end;
 
 procedure TJvgCustomTreeView.Paint(var Message: TWMPaint);
 var
-  x,y,IWidth,IHeight: integer;
+  x, y, IWidth, IHeight: integer;
   r: TRect;
   Bmp, Bmp2: TBitmap;
   mask, OldMask: HBITMAP;
   MaskDC: HDC;
   OldBkColor: COLORREF;
+
   procedure DrawBevel;
-  var R: TRect;
+  var
+    R: TRect;
   begin
     if Assigned(Selected) then
     begin
-      R := Selected.DisplayRect( true );
-      dec(R.Right); dec(r.Bottom);
-      DrawBoxEx( Canvas.Handle, r, FBevel.Sides, FBevel.Inner, FBevel.Outer,
-		 FBevel.Bold, 0, true );
+      R := Selected.DisplayRect(true);
+      dec(R.Right);
+      dec(r.Bottom);
+      DrawBoxEx(Canvas.Handle, r, FBevel.Sides, FBevel.Inner, FBevel.Outer,
+        FBevel.Bold, 0, true);
     end;
   end;
 begin
 
-try
-  if not Assigned(FWallpaper)or(FWallpaper.handle=0) then
-  begin
-    inherited;
-    if Assigned(FOnDraw) then FOnDraw( self, Message );
-    exit;
-  end;
-
-  fPaintingNow := true;
-  r:=GetClientRect;
-  IWidth := r.right-r.left; IHeight := r.bottom-r.top;
-  Bmp := TBitmap.Create;
-  Bmp2 := TBitmap.Create;
-  mask := CreateBitmap( IWidth, IHeight, 1, 1, nil );
-  MaskDC := CreateCompatibleDC( Canvas.handle );
-  OldMask := SelectObject( MaskDC, Mask );
-
-  bmp.Width := IWidth; bmp.Height := IHeight;
-  bmp2.Width := IWidth; bmp2.Height := IHeight;
-  x := 0; y := 0;
-  while x < r.Right-r.Left do begin
-    while y < IHeight do begin
-      BitBlt( bmp.Canvas.Handle, x, y, FWallpaper.Width, FWallpaper.Height, FWallpaper.Canvas.Handle, 0,0, SRCCOPY );
-      Inc(y, FWallpaper.Height);
+  try
+    if not Assigned(FWallpaper) or (FWallpaper.handle = 0) then
+    begin
+      inherited;
+      if Assigned(FOnDraw) then FOnDraw(self, Message);
+      exit;
     end;
-    Inc(x, FWallpaper.Width);
-    y:=0;
-  end;
 
-  inherited; DrawBevel;
-//  BitBlt( bmp.Canvas.Handle, 0, 0, IWidth, IHeight, FWallpaper.Canvas.Handle, 0,0, SRCCOPY );
-  //SetBkMode(Canvas.handle,TRANSPARENT);
-  //InvalidateRect(handle,@r,false);
-//  inherited;
-//  bmp2.Width := Width; bmp2.Height := Height;
-//  self.PaintWindow(bmp2.Canvas.Handle);
-//exit;
-  BitBlt( bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, Canvas.handle, 0,0, SRCCOPY );
+    fPaintingNow := true;
+    r := GetClientRect;
+    IWidth := r.right - r.left;
+    IHeight := r.bottom - r.top;
+    Bmp := TBitmap.Create;
+    Bmp2 := TBitmap.Create;
+    mask := CreateBitmap(IWidth, IHeight, 1, 1, nil);
+    MaskDC := CreateCompatibleDC(Canvas.handle);
+    OldMask := SelectObject(MaskDC, Mask);
 
-  OldBkColor := SetBkColor( bmp2.Canvas.handle, ColorToRGB(Color) );
-  BitBlt( MaskDC, 0, 0, IWidth, IHeight, bmp2.Canvas.handle, 0,0, SRCCOPY );
-  SetBkColor( bmp2.Canvas.handle, OldBkColor );
+    bmp.Width := IWidth;
+    bmp.Height := IHeight;
+    bmp2.Width := IWidth;
+    bmp2.Height := IHeight;
+    x := 0;
+    y := 0;
+    while x < r.Right - r.Left do
+    begin
+      while y < IHeight do
+      begin
+        BitBlt(bmp.Canvas.Handle, x, y, FWallpaper.Width, FWallpaper.Height, FWallpaper.Canvas.Handle, 0, 0, SRCCOPY);
+        Inc(y, FWallpaper.Height);
+      end;
+      Inc(x, FWallpaper.Width);
+      y := 0;
+    end;
 
-  BitBlt( bmp.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0,0, SRCAND );
+    inherited;
+    DrawBevel;
+    //  BitBlt( bmp.Canvas.Handle, 0, 0, IWidth, IHeight, FWallpaper.Canvas.Handle, 0,0, SRCCOPY );
+      //SetBkMode(Canvas.handle,TRANSPARENT);
+      //InvalidateRect(handle,@r,false);
+    //  inherited;
+    //  bmp2.Width := Width; bmp2.Height := Height;
+    //  self.PaintWindow(bmp2.Canvas.Handle);
+    //exit;
+    BitBlt(bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, Canvas.handle, 0, 0, SRCCOPY);
 
-  {put mask on canvas to change background color to white}
-  if Color<>clWhite then BitBlt( bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0,0, SRCPAINT );
+    OldBkColor := SetBkColor(bmp2.Canvas.handle, ColorToRGB(Color));
+    BitBlt(MaskDC, 0, 0, IWidth, IHeight, bmp2.Canvas.handle, 0, 0, SRCCOPY);
+    SetBkColor(bmp2.Canvas.handle, OldBkColor);
 
-  BitBlt( MaskDC, 0, 0, IWidth, IHeight, MaskDC, 0, 0, NOTSRCCOPY);
-  BitBlt( bmp.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0,0, SRCPAINT );
+    BitBlt(bmp.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0, 0, SRCAND);
 
-  BitBlt( bmp2.Canvas.handle, 0, 0, IWidth, IHeight, bmp.Canvas.Handle, 0, 0, SRCAND );
-  BitBlt( Canvas.handle, 0, 0, IWidth, IHeight, bmp2.Canvas.Handle, 0, 0, SRCCOPY );
-  DeleteObject( SelectObject(MaskDC, OldMask) );
-  DeleteDC( MaskDC );
-  Bmp.free;
-  Bmp2.free;
-  fPaintingNow := false;
-  if Assigned(FOnDraw) then FOnDraw( self, Message );
+    {put mask on canvas to change background color to white}
+    if Color <> clWhite then BitBlt(bmp2.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0, 0, SRCPAINT);
+
+    BitBlt(MaskDC, 0, 0, IWidth, IHeight, MaskDC, 0, 0, NOTSRCCOPY);
+    BitBlt(bmp.Canvas.Handle, 0, 0, IWidth, IHeight, MaskDC, 0, 0, SRCPAINT);
+
+    BitBlt(bmp2.Canvas.handle, 0, 0, IWidth, IHeight, bmp.Canvas.Handle, 0, 0, SRCAND);
+    BitBlt(Canvas.handle, 0, 0, IWidth, IHeight, bmp2.Canvas.Handle, 0, 0, SRCCOPY);
+    DeleteObject(SelectObject(MaskDC, OldMask));
+    DeleteDC(MaskDC);
+    Bmp.free;
+    Bmp2.free;
+    fPaintingNow := false;
+    if Assigned(FOnDraw) then FOnDraw(self, Message);
 
   finally
     if (ftvFlatScroll in Options) and not IsEditing_ then UpdateFlatScrollBar();
@@ -445,7 +461,7 @@ begin
     case code of
       TVN_ENDLABELEDIT:
         begin
-          if Assigned( OnEndEdit ) then  OnEndEdit(self);
+          if Assigned(OnEndEdit) then OnEndEdit(self);
           isEditing_ := false;
         end;
       TVN_SELCHANGING:
@@ -459,56 +475,63 @@ begin
           inherited;
           exit;
         end;
-        TVN_BEGINLABELEDIT: isEditing_ := true;
-//      TVN_SELCHANGED:
-//        with PNMTreeView(Pointer(Message.NMHdr))^ do
-//          Change(GetNodeFromItem(itemNew));
+      TVN_BEGINLABELEDIT: isEditing_ := true;
+      //      TVN_SELCHANGED:
+      //        with PNMTreeView(Pointer(Message.NMHdr))^ do
+      //          Change(GetNodeFromItem(itemNew));
     end;
   inherited;
 end;
 
-procedure TJvgCustomTreeView.SetNodeBoldState( Node: TTreeNode; fBold: boolean );
+procedure TJvgCustomTreeView.SetNodeBoldState(Node: TTreeNode; fBold: boolean);
 begin
-  if fBold then SetNodeState_( Node.ItemID, TVIS_BOLD, TVIS_BOLD )
-           else SetNodeState_( Node.ItemID, TVIS_BOLD, 0 )
+  if fBold then
+    SetNodeState_(Node.ItemID, TVIS_BOLD, TVIS_BOLD)
+  else
+    SetNodeState_(Node.ItemID, TVIS_BOLD, 0)
 end;
 
-procedure TJvgCustomTreeView.SetNodeState_( ItemID: HTreeItem; stateMask, State: UINT );
+procedure TJvgCustomTreeView.SetNodeState_(ItemID: HTreeItem; stateMask, State: UINT);
 var
   tvi: TTVItem;
 begin
-  FillChar( tvi, Sizeof(tvi), 0 );
+  FillChar(tvi, Sizeof(tvi), 0);
   tvi.hItem := ItemID;
   tvi.mask := TVIF_STATE;
-  tvi.stateMask := stateMask;//TVIS_DROPHILITED, TVIS_BOLD;
+  tvi.stateMask := stateMask; //TVIS_DROPHILITED, TVIS_BOLD;
   tvi.state := State;
-  TreeView_SetItem( Handle, tvi );
+  TreeView_SetItem(Handle, tvi);
 end;
 
 procedure TJvgCustomTreeView.SetCheckboxes(Value: Boolean);
 begin
   if FCheckboxes = Value then exit;
-  FCheckboxes := Value; RecreateWnd;
+  FCheckboxes := Value;
+  RecreateWnd;
 end;
 
 procedure TJvgCustomTreeView.SetHotTrack(Value: Boolean);
 begin
   if FHotTrack = Value then exit;
-  FHotTrack := Value; RecreateWnd;
+  FHotTrack := Value;
+  RecreateWnd;
 end;
 
 procedure TJvgCustomTreeView.SetToolTips(Value: Boolean);
 begin
   if FToolTips = Value then exit;
-  FToolTips := Value; RecreateWnd;
+  FToolTips := Value;
+  RecreateWnd;
 end;
 
 //---------------------------------------------propeties
-procedure TJvgCustomTreeView.SetWallpaper( Value: TBitmap );
+
+procedure TJvgCustomTreeView.SetWallpaper(Value: TBitmap);
 begin
   if Assigned(FWallpaper) then FWallpaper.Free;
   FWallpaper := TBitmap.Create;
-  FWallpaper.Assign(Value); Invalidate;
+  FWallpaper.Assign(Value);
+  Invalidate;
 end;
 
 function TJvgCustomTreeView.GetWallpaper: TBitmap;
@@ -517,12 +540,13 @@ begin
   Result := FWallpaper;
 end;
 
-procedure TJvgCustomTreeView.SetBoldSelection( Value: boolean );
+procedure TJvgCustomTreeView.SetBoldSelection(Value: boolean);
 begin
   FBoldSelection := Value;
-  if Assigned(Selected) then SetNodeBoldState( Selected, FBoldSelection );
+  if Assigned(Selected) then SetNodeBoldState(Selected, FBoldSelection);
 end;
 //______________________________________________________TglCheckTreeView
+
 constructor TJvgCheckTreeView.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -532,7 +556,7 @@ begin
   FCheckImageList := TImageList.Create(self);
   StateImages := FCheckImageList;
   if csDesigning in ComponentState then
-    ChecksScheme := 2;//...not FChecksScheme!
+    ChecksScheme := 2; //...not FChecksScheme!
   FCheckStateInheritance := false;
 end;
 
@@ -541,23 +565,26 @@ begin
   FGlyphChecked.Free;
   FGlyphUnChecked.Free;
   FGlyphSemiChecked.Free;
-  FCheckImageList.Free; FCheckImageList:=nil;
+  FCheckImageList.Free;
+  FCheckImageList := nil;
   inherited Destroy;
 end;
 
 procedure TJvgCheckTreeView.Loaded;
-var i: integer;
+var
+  i: integer;
 begin
   inherited;
-//  ChangeBitmapColor(FGlyphChecked, GetTransparentColor( FGlyphChecked, ftcLeftBottomPixel), Color);
-//  ChangeBitmapColor(FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel), Color);
-//  ChangeBitmapColor(FGlyphSemiChecked, GetTransparentColor( FGlyphSemiChecked, ftcLeftBottomPixel), Color);
+  //  ChangeBitmapColor(FGlyphChecked, GetTransparentColor( FGlyphChecked, ftcLeftBottomPixel), Color);
+  //  ChangeBitmapColor(FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel), Color);
+  //  ChangeBitmapColor(FGlyphSemiChecked, GetTransparentColor( FGlyphSemiChecked, ftcLeftBottomPixel), Color);
 
   if ChecksScheme = -1 then SetChecksBitmap;
   if ChecksScheme = 0 then SetChecksScheme(2);
 
   if Items.Count > 0 then
-    for i:=0 to Items.Count-1 do Items[i].StateIndex := 1;
+    for i := 0 to Items.Count - 1 do
+      Items[i].StateIndex := 1;
 end;
 
 procedure TJvgCheckTreeView.Assign(Source: TPersistent);
@@ -565,27 +592,29 @@ begin
   if Source is TJvgCustomTreeView then inherited Assign(Source);
   if Source is TJvgCheckTreeView then
   begin
-    FOnChangeCheck:=TJvgCheckTreeView(Source).OnChangeCheck;
+    FOnChangeCheck := TJvgCheckTreeView(Source).OnChangeCheck;
     FGlyphChecked.Assign(TJvgCheckTreeView(Source).GlyphChecked);
     FGlyphUnChecked.Assign(TJvgCheckTreeView(Source).GlyphUnChecked);
-    FChecksScheme:=TJvgCheckTreeView(Source).ChecksScheme;
-    FCheckStateInheritance:=TJvgCheckTreeView(Source).CheckStateInheritance;
+    FChecksScheme := TJvgCheckTreeView(Source).ChecksScheme;
+    FCheckStateInheritance := TJvgCheckTreeView(Source).CheckStateInheritance;
   end;
 end;
 
 procedure TJvgCheckTreeView.TVMInsertItem(var Message: TMessage);
-var i: integer;
+var
+  i: integer;
 begin
   with TTVInsertStruct(pointer(Message.LParam)^).Item do
   begin
     mask := mask or TVIF_STATE or TVIF_HANDLE;
     stateMask := TVIS_STATEIMAGEMASK;
-    state := IndexToStateImageMask( ncsUnChecked );
+    state := IndexToStateImageMask(ncsUnChecked);
   end;
   inherited;
   if csDesigning in ComponentState then
     if Items.Count > 0 then
-      for i:=0 to Items.Count-1 do Items[i].StateIndex := 1;
+      for i := 0 to Items.Count - 1 do
+        Items[i].StateIndex := 1;
 end;
 
 procedure TJvgCheckTreeView.WMLButtonDown(var Message: TWMLButtonDown);
@@ -593,49 +622,53 @@ var
   pt: TPoint;
   Node: TTreeNode;
 begin
-  GetCursorPos( pt );
-  pt:=ScreenToClient( pt );
+  GetCursorPos(pt);
+  pt := ScreenToClient(pt);
   inherited;
-  if htOnStateIcon in GetHitTestInfoAt( pt.x, pt.y ) then
+  if htOnStateIcon in GetHitTestInfoAt(pt.x, pt.y) then
   begin
     if Selected.StateIndex = -1 then exit;
-    if (Selected.StateIndex = ncsChecked)and(FCheckKind <> fckRadioButtons) then
-      SetStateIndex( Selected, ncsUnChecked )
+    if (Selected.StateIndex = ncsChecked) and (FCheckKind <> fckRadioButtons) then
+      SetStateIndex(Selected, ncsUnChecked)
     else
-      SetStateIndex( Selected, ncsChecked );
+      SetStateIndex(Selected, ncsChecked);
 
-    if Assigned(FOnChangeCheck) then FOnChangeCheck( self, Selected );
+    if Assigned(FOnChangeCheck) then FOnChangeCheck(self, Selected);
     if FCheckStateInheritance then
     begin
       if Assigned(Selected.Parent) then
-        SetStateIndex( Selected.Parent, TestChildCheckState( Selected.Parent ) );
+        SetStateIndex(Selected.Parent, TestChildCheckState(Selected.Parent));
       Node := Selected;
       repeat
-	Node := Node.GetNext; if Node=nil then break;
-	if Selected.Level >= Node.Level then break;
-        SetStateIndex( Node, Selected.StateIndex );
-	if Assigned(FOnChangeCheck) then FOnChangeCheck( self, Node );
+        Node := Node.GetNext;
+        if Node = nil then break;
+        if Selected.Level >= Node.Level then break;
+        SetStateIndex(Node, Selected.StateIndex);
+        if Assigned(FOnChangeCheck) then FOnChangeCheck(self, Node);
       until Node = nil;
     end;
   end;
 end;
 
-function TJvgCheckTreeView.TestChildCheckState( Node: TTreeNode ): integer;
+function TJvgCheckTreeView.TestChildCheckState(Node: TTreeNode): integer;
 var
-  i,CheckedCount: integer;
+  i, CheckedCount: integer;
   ChildNode: TTreeNode;
 begin
   CheckedCount := 0;
   ChildNode := Node;
-  for i:=1 to Node.Count do
+  for i := 1 to Node.Count do
   begin
     ChildNode := ChildNode.GetNext;
     if ChildNode.StateIndex = ncsChecked then inc(CheckedCount);
   end;
 
-  if CheckedCount = 0 then Result := ncsUnChecked else
-    if CheckedCount = Node.Count then Result := ncsChecked else
-      Result := ncsPartChecked;
+  if CheckedCount = 0 then
+    Result := ncsUnChecked
+  else if CheckedCount = Node.Count then
+    Result := ncsChecked
+  else
+    Result := ncsPartChecked;
 
 end;
 
@@ -643,7 +676,8 @@ procedure TJvgCheckTreeView.SetGlyphChecked(Value: TBitmap);
 begin
   if not Assigned(Value) then exit;
   FGlyphChecked.Assign(Value);
-  FChecksScheme := -1; SetChecksBitmap;
+  FChecksScheme := -1;
+  SetChecksBitmap;
   Invalidate;
 end;
 
@@ -651,7 +685,8 @@ procedure TJvgCheckTreeView.SetGlyphUnChecked(Value: TBitmap);
 begin
   if not Assigned(Value) then exit;
   FGlyphUnChecked.Assign(Value);
-  FChecksScheme := -1; SetChecksBitmap;
+  FChecksScheme := -1;
+  SetChecksBitmap;
   Invalidate;
 end;
 
@@ -659,7 +694,8 @@ procedure TJvgCheckTreeView.SetGlyphSemiChecked(Value: TBitmap);
 begin
   if not Assigned(Value) then exit;
   FGlyphSemiChecked.Assign(Value);
-  FChecksScheme := -1; SetChecksBitmap;
+  FChecksScheme := -1;
+  SetChecksBitmap;
   Invalidate;
 end;
 
@@ -670,12 +706,14 @@ begin
   if ChecksScheme > -1 then
   begin
     StateImages.Clear;
-    if StateImages.ResourceLoad( rtBitmap,'CHECKS'+IntToStr(Value), clOlive) then
+    if StateImages.ResourceLoad(rtBitmap, 'CHECKS' + IntToStr(Value), clOlive) then
     begin
-      StateImages.GetBitmap( 1, FGlyphUnChecked );
-      StateImages.GetBitmap( 2, FGlyphChecked );
-      StateImages.GetBitmap( 3, FGlyphSemiChecked );
-    end else SetChecksScheme(-1);
+      StateImages.GetBitmap(1, FGlyphUnChecked);
+      StateImages.GetBitmap(2, FGlyphChecked);
+      StateImages.GetBitmap(3, FGlyphSemiChecked);
+    end
+    else
+      SetChecksScheme(-1);
   end;
 end;
 
@@ -684,67 +722,76 @@ var
   i: integer;
 begin
   Result := nil;
-  for i := 0 to Items.Count-1 do
-    if Items[i].StateIndex = ncsChecked then begin Result := Items[i]; break; end;
+  for i := 0 to Items.Count - 1 do
+    if Items[i].StateIndex = ncsChecked then
+    begin
+      Result := Items[i];
+      break;
+    end;
 end;
 
-function TJvgCheckTreeView.Checked( Node: TTreeNode ): boolean;
+function TJvgCheckTreeView.Checked(Node: TTreeNode): boolean;
 begin
-  Result := false; if not Assigned(Node) then exit;
-  Result := boolean( Node.StateIndex-1 );
+  Result := false;
+  if not Assigned(Node) then exit;
+  Result := boolean(Node.StateIndex - 1);
 end;
 
-procedure TJvgCheckTreeView.SetChecked( Node: TTreeNode; Value: boolean );
+procedure TJvgCheckTreeView.SetChecked(Node: TTreeNode; Value: boolean);
 begin
   if not Assigned(Node) then exit;
-  if Node.StateIndex = integer(Value)+1 then exit;
-  SetStateIndex( Node, integer(Value)+1 );
-  if Assigned(FOnChangeCheck) then FOnChangeCheck( self, Node );
+  if Node.StateIndex = integer(Value) + 1 then exit;
+  SetStateIndex(Node, integer(Value) + 1);
+  if Assigned(FOnChangeCheck) then FOnChangeCheck(self, Node);
 end;
 
-procedure TJvgCheckTreeView.SetStateIndex( Node: TTreeNode; StateIndex: integer );
+procedure TJvgCheckTreeView.SetStateIndex(Node: TTreeNode; StateIndex: integer);
 var
   i: integer;
-  procedure SetState_( Node: TTreeNode; StateIndex: integer );
+
+  procedure SetState_(Node: TTreeNode; StateIndex: integer);
   var
     TextR: TRect;
   begin
-    TextR := Node.DisplayRect( true );
+    TextR := Node.DisplayRect(true);
     Node.StateIndex := StateIndex;
-    ValidateRect( Handle, @TextR );
+    ValidateRect(Handle, @TextR);
   end;
 begin
   if FCheckKind = fckRadioButtons then
   begin
     if StateIndex = ncsChecked then
     begin
-      for i := 0 to Items.Count-1 do
+      for i := 0 to Items.Count - 1 do
       begin
-        if (Items[i] <> Node)and(Items[i].StateIndex <> -1) then SetState_(Items[i], ncsUnChecked);
+        if (Items[i] <> Node) and (Items[i].StateIndex <> -1) then SetState_(Items[i], ncsUnChecked);
       end;
     end
-    else SetState_(Node, StateIndex);
+    else
+      SetState_(Node, StateIndex);
     if StateIndex <> ncsUnChecked then SetState_(Node, StateIndex);
-  end else
-  SetState_(Node, StateIndex);
-//  if StateIndex = ncsChecked then CheckedItem := Node;
+  end
+  else
+    SetState_(Node, StateIndex);
+  //  if StateIndex = ncsChecked then CheckedItem := Node;
 end;
 //______________________
+
 procedure TJvgCheckTreeView.SetChecksBitmap;
 begin
-  if Assigned(FGlyphChecked)and(FGlyphChecked.handle<>0)and
-     Assigned(FGlyphUnChecked)and(FGlyphUnChecked.handle<>0)and
-     Assigned(StateImages) then
+  if Assigned(FGlyphChecked) and (FGlyphChecked.handle <> 0) and
+    Assigned(FGlyphUnChecked) and (FGlyphUnChecked.handle <> 0) and
+    Assigned(StateImages) then
   begin
     StateImages.Clear;
-    StateImages.Width := min( GlyphSemiChecked.Width, min( GlyphUnChecked.Width, GlyphChecked.Width ));
-    StateImages.Height := min( GlyphSemiChecked.Height, min( GlyphUnChecked.Height, GlyphChecked.Height ));
-//    StateImages.AddMasked( FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel) );
-//    StateImages.AddMasked( FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel) );
-    StateImages.AddMasked( FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel) );
-    StateImages.AddMasked( FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel) );
-    StateImages.AddMasked( FGlyphChecked, GetTransparentColor( FGlyphChecked, ftcLeftBottomPixel) );
-    StateImages.AddMasked( FGlyphSemiChecked, GetTransparentColor( FGlyphSemiChecked, ftcLeftBottomPixel) );
+    StateImages.Width := min(GlyphSemiChecked.Width, min(GlyphUnChecked.Width, GlyphChecked.Width));
+    StateImages.Height := min(GlyphSemiChecked.Height, min(GlyphUnChecked.Height, GlyphChecked.Height));
+    //    StateImages.AddMasked( FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel) );
+    //    StateImages.AddMasked( FGlyphUnChecked, GetTransparentColor( FGlyphUnChecked, ftcLeftBottomPixel) );
+    StateImages.AddMasked(FGlyphUnChecked, GetTransparentColor(FGlyphUnChecked, ftcLeftBottomPixel));
+    StateImages.AddMasked(FGlyphUnChecked, GetTransparentColor(FGlyphUnChecked, ftcLeftBottomPixel));
+    StateImages.AddMasked(FGlyphChecked, GetTransparentColor(FGlyphChecked, ftcLeftBottomPixel));
+    StateImages.AddMasked(FGlyphSemiChecked, GetTransparentColor(FGlyphSemiChecked, ftcLeftBottomPixel));
   end;
 end;
 

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -37,11 +37,11 @@ type
 
   TJvgMaskEdit = class(TCustomMaskEdit)
   private
-    FScrollBars : TScrollStyle;
-    FAlignment  : TAlignment;
-    FMultiline  : boolean;
-    FWordWrap   : boolean;
-    FAfterPaint : TNotifyEvent;
+    FScrollBars: TScrollStyle;
+    FAlignment: TAlignment;
+    FMultiline: boolean;
+    FWordWrap: boolean;
+    FAfterPaint: TNotifyEvent;
     procedure SetScrollBars(Value: TScrollStyle);
     procedure SetAlignment(Value: TAlignment);
     procedure SetMultiline(Value: boolean);
@@ -49,8 +49,8 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
   public
-    Canvas	: TCanvas;
-    constructor Create( AOwner : TComponent ); override;
+    Canvas: TCanvas;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint(var Message: TWMPaint); message WM_PAINT;
   published
@@ -94,14 +94,14 @@ type
     property OnMouseUp;
     property OnStartDrag;
 
-    property ScrollBars : TScrollStyle read FScrollBars write SetScrollBars
-     default ssNone;
-    property Alignment  : TAlignment read FAlignment write SetAlignment
-     default taLeftJustify;
-    property Multiline  : boolean read FMultiline write SetMultiline
-     default false;
-    property WordWrap  : boolean read FWordWrap write SetWordWrap
-     default false;
+    property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars
+      default ssNone;
+    property Alignment: TAlignment read FAlignment write SetAlignment
+      default taLeftJustify;
+    property Multiline: boolean read FMultiline write SetMultiline
+      default false;
+    property WordWrap: boolean read FWordWrap write SetWordWrap
+      default false;
     property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
   end;
 
@@ -111,16 +111,18 @@ implementation
 //{$R JvgShadow.res}
 
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
+
 procedure Register;
 begin
   RegisterComponents('Proba', [TJvgMaskEdit]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
-constructor TJvgMaskEdit.Create( AOwner : TComponent );
+
+constructor TJvgMaskEdit.Create(AOwner: TComponent);
 begin
   inherited;
   Canvas := TControlCanvas.Create;
-  TControlCanvas(Canvas).Control := Self;//...i can draw now! :)
+  TControlCanvas(Canvas).Control := Self; //...i can draw now! :)
   {$IFDEF FR_RUS}
   Font.CharSet := RUSSIAN_CHARSET;
   {$ENDIF}
@@ -140,8 +142,8 @@ end;
 
 procedure TJvgMaskEdit.CreateParams(var Params: TCreateParams);
 const
-  aAlignments: array[TAlignment] of DWORD = ( ES_LEFT, ES_RIGHT, ES_CENTER );
-  aMultiline: array[boolean] of DWORD = ( 0, ES_MULTILINE );
+  aAlignments: array[TAlignment] of DWORD = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  aMultiline: array[boolean] of DWORD = (0, ES_MULTILINE);
   ScrollBar: array[TScrollStyle] of DWORD = (0, WS_HSCROLL, WS_VSCROLL,
     WS_HSCROLL or WS_VSCROLL);
   WordWraps: array[Boolean] of DWORD = (0, ES_AUTOHSCROLL);
@@ -152,13 +154,28 @@ begin
 end;
 
 procedure TJvgMaskEdit.SetScrollBars(Value: TScrollStyle);
-begin FScrollBars := Value; RecreateWnd; end;
+begin
+  FScrollBars := Value;
+  RecreateWnd;
+end;
+
 procedure TJvgMaskEdit.SetAlignment(Value: TAlignment);
-begin FAlignment := Value; RecreateWnd; end;
+begin
+  FAlignment := Value;
+  RecreateWnd;
+end;
+
 procedure TJvgMaskEdit.SetMultiline(Value: boolean);
-begin FMultiline := Value; RecreateWnd; end;
+begin
+  FMultiline := Value;
+  RecreateWnd;
+end;
+
 procedure TJvgMaskEdit.SetWordWrap(Value: boolean);
-begin FWordWrap := Value; RecreateWnd; end;
+begin
+  FWordWrap := Value;
+  RecreateWnd;
+end;
 {
 procedure TJvgMaskEdit.SetText( Value: string );
 var
@@ -198,6 +215,4 @@ begin
   end;
 end;}
 
-
 end.
-

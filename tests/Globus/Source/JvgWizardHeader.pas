@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -78,7 +78,7 @@ type
     property Gradient: TJvgGradient read FGradient write SetGradient;
     property Glyph: TBitmap read GetGlyph write SetGlyph;
     property BufferedDraw: boolean read FBufferedDraw write FBufferedDraw;
-//    property PageControl: TPageControl read FPageControl write SetPageControl;
+    //    property PageControl: TPageControl read FPageControl write SetPageControl;
   end;
 
 procedure Register;
@@ -114,7 +114,7 @@ begin
   FSymbolFont.Size := 26;
   FSymbolFont.Color := clHighlightText;
   FSymbolFont.Style := [fsBold];
-//  FSymbol := '4';
+  //  FSymbol := '4';
 end;
 
 destructor TJvgWizardHeader.Destroy;
@@ -136,7 +136,9 @@ procedure TJvgWizardHeader.Notification(AComponent: TComponent; Operation: TOper
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FPageControl) and (Operation = opRemove) then
-  begin FPageControl := nil; end;
+  begin
+    FPageControl := nil;
+  end;
 end;
 
 procedure TJvgWizardHeader.Paint;
@@ -164,59 +166,68 @@ begin
 
   try
 
-  if FCaptions.Count = 0 then Caption := 'Caption' else Caption := FCaptions[ Min(FCaptions.Count-1, PageNo) ];
-  if FComments.Count = 0 then Comment := 'Some comment text' else Comment := FComments[ Min(FComments.Count-1, PageNo) ];
+    if FCaptions.Count = 0 then
+      Caption := 'Caption'
+    else
+      Caption := FCaptions[Min(FCaptions.Count - 1, PageNo)];
+    if FComments.Count = 0 then
+      Comment := 'Some comment text'
+    else
+      Comment := FComments[Min(FComments.Count - 1, PageNo)];
 
-  R := ClientRect;
-
-  TargetCanvas.Brush.Color := clWindow;
-  TargetCanvas.FillRect(R);
-
-  Inc(R.Left, 20); Dec(R.Right, 60);
-  Inc(R.Top, 8); Dec(R.Bottom, 5);
-
-  TargetCanvas.Font.Assign(CaptionFont);
-  DrawText(TargetCanvas.Handle, PChar(Caption), length(Caption), R, DT_SINGLELINE);
-
-  inc(R.Top, TargetCanvas.TextHeight('Hy')); inc(R.Left, 20);
-
-  TargetCanvas.Font.Assign(CommentFont);
-  SR := R;
-  DrawText(TargetCanvas.Handle, PChar(Comment), length(Comment), SR, DT_WORDBREAK or DT_CALCRECT);
-
-  OffsetRect(SR, 0, (R.Bottom - SR.Bottom) div 2);
-  DrawText(TargetCanvas.Handle, PChar(Comment), length(Comment), SR, DT_WORDBREAK);
-
-  if Assigned(FGlyph)and(FGlyph.Width > 0) then
-  begin
     R := ClientRect;
-    Offset := (Height - FGlyph.Height) div 2;
 
-//    BitBlt(TargetCanvas.Handle, R.Right-FGlyph.Width-Offset, R.Top+Offset, FGlyph.Width, FGlyph.Height, FGlyph.TargetCanvas.Handle, 0, 0, SRCCOPY);
-    DrawBitmapExt(TargetCanvas.Handle, FGlyph, R, R.Right-FGlyph.Width-Offset, R.Top+Offset,
-		  fwoNone, fdsDefault, true, GetTransparentColor(FGlyph, ftcLeftBottomPixel), 0);
-  end else
-  if length(FSymbol) > 0 then
-  begin
-    TargetCanvas.Brush.Color := clHighlight;
+    TargetCanvas.Brush.Color := clWindow;
+    TargetCanvas.FillRect(R);
+
+    Inc(R.Left, 20);
+    Dec(R.Right, 60);
+    Inc(R.Top, 8);
+    Dec(R.Bottom, 5);
+
+    TargetCanvas.Font.Assign(CaptionFont);
+    DrawText(TargetCanvas.Handle, PChar(Caption), length(Caption), R, DT_SINGLELINE);
+
+    inc(R.Top, TargetCanvas.TextHeight('Hy'));
+    inc(R.Left, 20);
+
+    TargetCanvas.Font.Assign(CommentFont);
+    SR := R;
+    DrawText(TargetCanvas.Handle, PChar(Comment), length(Comment), SR, DT_WORDBREAK or DT_CALCRECT);
+
+    OffsetRect(SR, 0, (R.Bottom - SR.Bottom) div 2);
+    DrawText(TargetCanvas.Handle, PChar(Comment), length(Comment), SR, DT_WORDBREAK);
+
+    if Assigned(FGlyph) and (FGlyph.Width > 0) then
+    begin
+      R := ClientRect;
+      Offset := (Height - FGlyph.Height) div 2;
+
+      //    BitBlt(TargetCanvas.Handle, R.Right-FGlyph.Width-Offset, R.Top+Offset, FGlyph.Width, FGlyph.Height, FGlyph.TargetCanvas.Handle, 0, 0, SRCCOPY);
+      DrawBitmapExt(TargetCanvas.Handle, FGlyph, R, R.Right - FGlyph.Width - Offset, R.Top + Offset,
+        fwoNone, fdsDefault, true, GetTransparentColor(FGlyph, ftcLeftBottomPixel), 0);
+    end
+    else if length(FSymbol) > 0 then
+    begin
+      TargetCanvas.Brush.Color := clHighlight;
+      R := ClientRect;
+      SR := Rect(R.Right - 50, R.Top + 5, R.Right - 5, R.Bottom - 5);
+      if Assigned(Gradient) and Gradient.Active then dec(SR.Bottom, 3);
+      TargetCanvas.FillRect(SR);
+
+      TargetCanvas.Font.Assign(SymbolFont);
+      SetBkMode(TargetCanvas.Handle, TRANSPARENT);
+      DrawText(TargetCanvas.Handle, PChar(Symbol), length(FSymbol), SR, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
+    end;
+
     R := ClientRect;
-    SR := Rect(R.Right-50, R.Top+5, R.Right-5, R.Bottom-5 );
-    if Assigned(Gradient) and Gradient.Active then dec(SR.Bottom, 3);
-    TargetCanvas.FillRect(SR);
+    DrawEdge(TargetCanvas.Handle, R, EDGE_ETCHED, BF_BOTTOM);
 
-    TargetCanvas.Font.Assign(SymbolFont);
-    SetBkMode(TargetCanvas.Handle, TRANSPARENT);
-    DrawText(TargetCanvas.Handle, PChar(Symbol), length(FSymbol), SR, DT_SINGLELINE or DT_CENTER or DT_VCENTER);
-  end;
+    if Gradient.Active then
+      GradientBox(TargetCanvas.Handle, Rect(R.Left, R.Bottom - 5, R.Right, R.Bottom - 1), Gradient, 1, 1);
 
-  R := ClientRect;
-  DrawEdge(TargetCanvas.Handle, R, EDGE_ETCHED, BF_BOTTOM);
-
-  if Gradient.Active then
-    GradientBox( TargetCanvas.Handle, Rect(R.Left, R.Bottom-5, R.Right, R.Bottom-1), Gradient, 1, 1);
-
-  if BufferedDraw then
-    BitBlt(Canvas.Handle, 0, 0, Width, Height, TargetCanvas.Handle, 0, 0, SRCCOPY);
+    if BufferedDraw then
+      BitBlt(Canvas.Handle, 0, 0, Width, Height, TargetCanvas.Handle, 0, 0, SRCCOPY);
 
   finally
     if BufferedDraw then Buffer.Free;

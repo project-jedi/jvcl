@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -89,8 +89,8 @@ uses
   Forms, Dialogs, comctrls, TypInfo;
 
 type
-  TOnGetXMLHeader = procedure (Sender: TObject; var Value: string) of object;
-  TBeforeParsingEvent = procedure (Sender: TObject; Buffer: PChar) of object;
+  TOnGetXMLHeader = procedure(Sender: TObject; var Value: string) of object;
+  TBeforeParsingEvent = procedure(Sender: TObject; Buffer: PChar) of object;
 
   EJvgXMLSerializerException = class(Exception)
   end;
@@ -99,7 +99,7 @@ type
   private
     Buffer: PChar;
     BufferLength: DWORD;
-    TokenPtr{, MaxTokenPtr}: PChar;
+    TokenPtr {, MaxTokenPtr}: PChar;
     OutStream: TStream;
 
     FOnGetXMLHeader: TOnGetXMLHeader;
@@ -131,32 +131,31 @@ type
     procedure GenerateDTD(Component: TObject; Stream: TStream);
   published
     property GenerateFormattedXML: boolean
-     read FGenerateFormattedXML write FGenerateFormattedXML default true;
+      read FGenerateFormattedXML write FGenerateFormattedXML default true;
     property ExcludeEmptyValues: boolean
-     read FExcludeEmptyValues write FExcludeEmptyValues;
+      read FExcludeEmptyValues write FExcludeEmptyValues;
     property ExcludeDefaultValues: boolean
-     read FExcludeDefaultValues write FExcludeDefaultValues;
+      read FExcludeDefaultValues write FExcludeDefaultValues;
     property ReplaceReservedSymbols: boolean
-     read FReplaceReservedSymbols write FReplaceReservedSymbols;
+      read FReplaceReservedSymbols write FReplaceReservedSymbols;
     property StrongConformity: boolean
-     read FStrongConformity write FStrongConformity default true;
+      read FStrongConformity write FStrongConformity default true;
     property IgnoreUnknownTags: boolean
-     read FIgnoreUnknownTags write FIgnoreUnknownTags;
+      read FIgnoreUnknownTags write FIgnoreUnknownTags;
 
     property WrapCollections: boolean
-     read FWrapCollections write FWrapCollections default true;
-
+      read FWrapCollections write FWrapCollections default true;
 
     property OnGetXMLHeader: TOnGetXMLHeader
-     read FOnGetXMLHeader write FOnGetXMLHeader;
+      read FOnGetXMLHeader write FOnGetXMLHeader;
     property BeforeParsing: TBeforeParsingEvent
-     read FBeforeParsing write FBeforeParsing;
+      read FBeforeParsing write FBeforeParsing;
   end;
 
 procedure Register;
 
 implementation
-uses JvgUtils {$IFDEF GLVER_D6}, DesignIntf{$ELSE} {$IFDEF GLVER_D5}, dsgnintf{$ENDIF} {$ENDIF};
+uses JvgUtils{$IFDEF GLVER_D6}, DesignIntf{$ELSE}{$IFDEF GLVER_D5}, dsgnintf{$ENDIF}{$ENDIF};
 
 const
   ORDINAL_TYPES = [tkInteger, tkChar, tkEnumeration, tkSet];
@@ -166,9 +165,8 @@ var
 
 procedure Register;
 begin
-//  RegisterComponents('Gl Components', [TJvgXMLSerializer]);
+  //  RegisterComponents('Gl Components', [TJvgXMLSerializer]);
 end;
-
 
 constructor TJvgXMLSerializer.Create(AOwner: TComponent);
 begin
@@ -180,6 +178,7 @@ begin
 end;
 
 { пишет строку в выходящий поток. Исп-ся при сериализации }
+
 procedure TJvgXMLSerializer.WriteOutStream(Value: string);
 begin
   OutStream.Write(Pchar(Value)[0], Length(Value));
@@ -193,6 +192,7 @@ end;
   Выход:
     текст XML в поток Stream
 }
+
 procedure TJvgXMLSerializer.Serialize(Component: TObject; Stream: TStream);
 var
   Result: string;
@@ -207,11 +207,11 @@ begin
 
   OutStream := Stream;
 
-  WriteOutStream( PChar(Result) );
+  WriteOutStream(PChar(Result));
 
-  WriteOutStream( PChar(CR + '<' + Component.ClassName + '>') );
+  WriteOutStream(PChar(CR + '<' + Component.ClassName + '>'));
   SerializeInternal(Component);
-  WriteOutStream( PChar(CR + '</' + Component.ClassName + '>') );
+  WriteOutStream(PChar(CR + '</' + Component.ClassName + '>'));
 end;
 
 {
@@ -224,6 +224,7 @@ end;
   Выход:
     строка XML в выходной поток через метод WriteOutStream()
 }
+
 procedure TJvgXMLSerializer.SerializeInternal(Component: TObject; Level: integer = 1);
 var
   PropInfo: PPropInfo;
@@ -236,6 +237,7 @@ var
   PropObject: TObject;
 
   { Добавляет открывающий тег с заданным именем }
+
   procedure addOpenTag(const Value: string);
   begin
     WriteOutStream(CR + DupStr(TAB, Level) + '<' + Value + '>');
@@ -243,6 +245,7 @@ var
   end;
 
   { Добавляет закрывающий тег с заданным именем }
+
   procedure addCloseTag(const Value: string; addBreak: boolean = false);
   begin
     dec(Level);
@@ -252,27 +255,27 @@ var
   end;
 
   { Добавляет значение в результирующую строку }
+
   procedure addValue(const Value: string);
   begin
     WriteOutStream(Value);
   end;
 begin
-//  Result := '';
+  //  Result := '';
 
-  { Playing with RTTI }
+    { Playing with RTTI }
   TypeInf := Component.ClassInfo;
   AName := TypeInf^.Name;
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-
-  GetMem(PropList, NumProps*sizeof(pointer));
+  GetMem(PropList, NumProps * sizeof(pointer));
   try
 
     { Получаем список свойств }
     GetPropInfos(TypeInf, PropList);
 
-    for i := 0 to NumProps-1 do
+    for i := 0 to NumProps - 1 do
     begin
       PropName := PropList^[i]^.Name;
 
@@ -284,80 +287,78 @@ begin
 
       case PropTypeInf^.Kind of
         tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
-        tkWChar, tkLString, tkWString, tkVariant:
-        begin
-          { Получение значения свойства }
-          sPropValue := GetPropValue(Component, PropName, true);
-
-          { Проверяем на пустое значение и значение по умолчанию }
-          if ExcludeEmptyValues and (sPropValue = '') then continue;
-          if ExcludeDefaultValues and (PropTypeInf^.Kind in ORDINAL_TYPES)
-           and (sPropValue = IntToStr(PropInfo.Default)) then continue;
-
-          { Замена спецсимволов }
-          if FReplaceReservedSymbols then
+          tkWChar, tkLString, tkWString, tkVariant:
           begin
-            sPropValue := StringReplace(sPropValue, '<', '&lt;', [rfReplaceAll]);
-            sPropValue := StringReplace(sPropValue, '>', '&gt;', [rfReplaceAll]);
-            // sPropValue := StringReplace(sPropValue, '&', '&', [rfReplaceAll]);
-          end;
+            { Получение значения свойства }
+            sPropValue := GetPropValue(Component, PropName, true);
 
-          { Перевод в XML }
-          addOpenTag(PropName);
-          addValue(sPropValue); { Добавляем значение свойства в результат }
-          addCloseTag(PropName);
-        end;
-        tkClass: { Для классовых типов рекурсивная обработка }
-        begin
+            { Проверяем на пустое значение и значение по умолчанию }
+            if ExcludeEmptyValues and (sPropValue = '') then continue;
+            if ExcludeDefaultValues and (PropTypeInf^.Kind in ORDINAL_TYPES)
+              and (sPropValue = IntToStr(PropInfo.Default)) then continue;
 
-
-          PropObject := GetObjectProp(Component, PropInfo);
-          if Assigned(PropObject)then
-          begin
-            { Для дочерних свойств-классов - рекурсивный вызов }
-
-            { Индивидуальный подход к некоторым классам }
-            if (PropObject is TStrings) then { Текстовые списки }
+            { Замена спецсимволов }
+            if FReplaceReservedSymbols then
             begin
-              addOpenTag(PropName);
-              WriteOutStream(TStrings(PropObject).CommaText);
-              addCloseTag(PropName, true);
-            end else
-            if (PropObject is TCollection) then { Коллекции }
-            begin
-              if WrapCollections then addOpenTag(PropName);
-
-              SerializeInternal(PropObject, Level);
-              for j := 0 to (PropObject as TCollection).Count-1 do
-              begin { Контейнерный тег по имени класса }
-                addOpenTag(TCollection(PropObject).Items[j].ClassName);
-                SerializeInternal(TCollection(PropObject).Items[j], Level);
-                addCloseTag(TCollection(PropObject).Items[j].ClassName, true);
-              end;
-
-              if WrapCollections then addCloseTag(PropName, true);
-            end else
-            if (PropObject is TPersistent) then
-            begin
-               addOpenTag(PropName);
-               SerializeInternal(PropObject, Level);
-               addCloseTag(PropName, true);
+              sPropValue := StringReplace(sPropValue, '<', '&lt;', [rfReplaceAll]);
+              sPropValue := StringReplace(sPropValue, '>', '&gt;', [rfReplaceAll]);
+              // sPropValue := StringReplace(sPropValue, '&', '&', [rfReplaceAll]);
             end;
 
-            { Здесь можно добавить обработку остальных классов: TTreeNodes, TListItems }
+            { Перевод в XML }
+            addOpenTag(PropName);
+            addValue(sPropValue); { Добавляем значение свойства в результат }
+            addCloseTag(PropName);
           end;
-          { После обработки свойств закрываем тег объекта }
+        tkClass: { Для классовых типов рекурсивная обработка }
+          begin
 
-        end;
+            PropObject := GetObjectProp(Component, PropInfo);
+            if Assigned(PropObject) then
+            begin
+              { Для дочерних свойств-классов - рекурсивный вызов }
+
+              { Индивидуальный подход к некоторым классам }
+              if (PropObject is TStrings) then { Текстовые списки }
+              begin
+                addOpenTag(PropName);
+                WriteOutStream(TStrings(PropObject).CommaText);
+                addCloseTag(PropName, true);
+              end
+              else if (PropObject is TCollection) then { Коллекции }
+              begin
+                if WrapCollections then addOpenTag(PropName);
+
+                SerializeInternal(PropObject, Level);
+                for j := 0 to (PropObject as TCollection).Count - 1 do
+                begin { Контейнерный тег по имени класса }
+                  addOpenTag(TCollection(PropObject).Items[j].ClassName);
+                  SerializeInternal(TCollection(PropObject).Items[j], Level);
+                  addCloseTag(TCollection(PropObject).Items[j].ClassName, true);
+                end;
+
+                if WrapCollections then addCloseTag(PropName, true);
+              end
+              else if (PropObject is TPersistent) then
+              begin
+                addOpenTag(PropName);
+                SerializeInternal(PropObject, Level);
+                addCloseTag(PropName, true);
+              end;
+
+              { Здесь можно добавить обработку остальных классов: TTreeNodes, TListItems }
+            end;
+            { После обработки свойств закрываем тег объекта }
+
+          end;
 
       end;
     end;
   finally
-    FreeMem(PropList, NumProps*sizeof(pointer));
+    FreeMem(PropList, NumProps * sizeof(pointer));
   end;
 
 end;
-
 
 {
   Загружает в компонент данные из потока с XML-кодом.
@@ -367,6 +368,7 @@ end;
   Предусловия:
     Объект Component должен быть создан до вызова процедуры
 }
+
 procedure TJvgXMLSerializer.DeSerialize(Component: TObject; Stream: TStream);
 begin
   GetMem(Buffer, Stream.Size);
@@ -378,14 +380,13 @@ begin
 
     { Устанавливаем текущий указатель чтения данных }
     TokenPtr := Buffer;
-    BufferLength := Stream.Size-1;
+    BufferLength := Stream.Size - 1;
     { Вызываем загрузчик }
     DeSerializeInternal(Component, Component.ClassName);
   finally
     FreeMem(Buffer);
   end;
 end;
-
 
 {
   Рекурсивная процедура загрузки объекта их текстового буфера с XML
@@ -396,6 +397,7 @@ end;
     ComponentTagName - имя XML тега объекта
     ParentBlockEnd - указатель на конец XML описания родительского тега
 }
+
 procedure TJvgXMLSerializer.DeSerializeInternal(Component: TObject; {const} ComponentTagName: string; ParentBlockEnd: PChar = nil);
 var
   BlockStart, BlockEnd, TagStart, TagEnd: PChar;
@@ -408,29 +410,33 @@ var
   NumProps: word;
 
   { Поиск у объекта свойства с заданным именем }
+
   function FindProperty(TagName: PChar): integer;
-  var i: integer;
+  var
+    i: integer;
   begin
     Result := -1;
-    for i := 0 to NumProps-1 do
-    if CompareStr(PropList^[i]^.Name, TagName) = 0 then
-    begin
-      Result := i;
-      break;
-    end;
+    for i := 0 to NumProps - 1 do
+      if CompareStr(PropList^[i]^.Name, TagName) = 0 then
+      begin
+        Result := i;
+        break;
+      end;
   end;
 
   procedure SkipSpaces(var TagEnd: PChar);
   begin
-    while TagEnd[0] <= #33 do inc(TagEnd);
+    while TagEnd[0] <= #33 do
+      inc(TagEnd);
   end;
 
-{
-  StrPosExt - ищет позицию одной строки в другой с заданной длиной.
-  На длинных строках превосходит StrPos.
-}
-function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
-asm
+  {
+    StrPosExt - ищет позицию одной строки в другой с заданной длиной.
+    На длинных строках превосходит StrPos.
+  }
+
+  function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
+  asm
         PUSH    EDI
         PUSH    ESI
         PUSH    EBX
@@ -475,7 +481,7 @@ asm
 @@3:    POP     EBX
         POP     ESI
         POP     EDI
-end;
+  end;
 
 begin
   { Playing with RTTI }
@@ -484,7 +490,7 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps*sizeof(pointer));
+  GetMem(PropList, NumProps * sizeof(pointer));
 
   if not WrapCollections and (Component is TCollection) then
     ComponentTagName := TCollection(Component).ItemClass.ClassName;
@@ -492,31 +498,31 @@ begin
   try
     GetPropInfos(TypeInf, PropList);
 
-  { ищем открывающий тег }
-  BlockStart := StrPosExt(TokenPtr, PChar('<' + ComponentTagName + '>'), BufferLength);
+    { ищем открывающий тег }
+    BlockStart := StrPosExt(TokenPtr, PChar('<' + ComponentTagName + '>'), BufferLength);
 
-  { Если тег не найден и его наличие необязательно, то не обрабатываем его }
-  if (BlockStart = nil)and not StrongConformity then exit;
+    { Если тег не найден и его наличие необязательно, то не обрабатываем его }
+    if (BlockStart = nil) and not StrongConformity then exit;
 
-  { иначе проверяем его присутствие }
-  check(BlockStart <> nil, 'Открывающий тег не найден: ' + '<' + ComponentTagName + '>');
-  inc(BlockStart, length(ComponentTagName) + 2);
+    { иначе проверяем его присутствие }
+    check(BlockStart <> nil, 'Открывающий тег не найден: ' + '<' + ComponentTagName + '>');
+    inc(BlockStart, length(ComponentTagName) + 2);
 
-  { ищем закрывающий тег }
-  BlockEnd := StrPosExt(BlockStart, PChar('</' + ComponentTagName + '>'), BufferLength);
-  check(BlockEnd <> nil, 'Закрывающий тег не найден: ' + '<' + ComponentTagName + '>');
+    { ищем закрывающий тег }
+    BlockEnd := StrPosExt(BlockStart, PChar('</' + ComponentTagName + '>'), BufferLength);
+    check(BlockEnd <> nil, 'Закрывающий тег не найден: ' + '<' + ComponentTagName + '>');
 
-  { проверка на вхождение закр. тега в родительский тег }
-  check((ParentBlockEnd = nil)or(BlockEnd < ParentBlockEnd), 'Закрывающий тег не найден: ' + '<' + ComponentTagName + '>');
+    { проверка на вхождение закр. тега в родительский тег }
+    check((ParentBlockEnd = nil) or (BlockEnd < ParentBlockEnd), 'Закрывающий тег не найден: ' + '<' + ComponentTagName + '>');
 
-  TagEnd := BlockStart;
-  SkipSpaces(TagEnd);
+    TagEnd := BlockStart;
+    SkipSpaces(TagEnd);
 
-  { XML парсер }
-  while (TagEnd < BlockEnd){ and (TagEnd >= TokenPtr)} do
-  begin
-    { быстрый поиск угловых скобок }
-    asm
+    { XML парсер }
+    while (TagEnd < BlockEnd) { and (TagEnd >= TokenPtr)} do
+    begin
+      { быстрый поиск угловых скобок }
+      asm
       mov CL, '<'
       mov EDX, Pointer(TagEnd)
       dec EDX
@@ -532,56 +538,54 @@ begin
       cmp AL, CL
       jne @@2
       mov TagEnd, EDX
+      end;
+
+      GetMem(TagName, TagEnd - TagStart + 1);
+      try
+
+        { TagName - имя тега }
+        StrLCopy(TagName, TagStart + 1, TagEnd - TagStart - 1);
+
+        { TagEnd - закрывающий тег }
+        TagEnd := StrPosExt(TagEnd, PChar('</' + TagName + '>'), BufferLength);
+
+        //inc(TagStart, length('</' + TagName + '>')-1);
+
+        { начало очередного дочернего тега }
+        TagValue := TagStart + length('</' + TagName + '>') - 1;
+        TagValueEnd := TagEnd;
+
+        { поиск свойства, соответствующего тегу }
+        PropIndex := FindProperty(TagName);
+
+        if not WrapCollections and (PropIndex = -1) then
+        begin
+          PropIndex := FindProperty(Pchar(TagName + 's'));
+
+        end
+        else
+          TokenPtr := TagStart;
+
+        if not IgnoreUnknownTags then
+          check(PropIndex <> -1, 'TJvgXMLSerializer.DeSerializeInternal: Uncknown property: ' + TagName);
+
+        if PropIndex <> -1 then
+          SetPropertyValue(Component, PropList^[PropIndex], TagValue, TagValueEnd, BlockEnd);
+
+        inc(TagEnd, length('</' + TagName + '>'));
+        SkipSpaces(TagEnd);
+
+      finally
+        FreeMem(TagName);
+      end;
+
     end;
-
-    GetMem(TagName, TagEnd - TagStart + 1);
-    try
-
-      { TagName - имя тега }
-      StrLCopy(TagName, TagStart + 1, TagEnd - TagStart - 1);
-
-      { TagEnd - закрывающий тег }
-      TagEnd := StrPosExt(TagEnd, PChar('</' + TagName + '>'), BufferLength);
-
-      //inc(TagStart, length('</' + TagName + '>')-1);
-
-      { начало очередного дочернего тега }
-      TagValue := TagStart + length('</' + TagName + '>') - 1;
-      TagValueEnd := TagEnd;
-
-
-      { поиск свойства, соответствующего тегу }
-      PropIndex := FindProperty(TagName);
-
-      if not WrapCollections and (PropIndex = -1) then
-      begin
-        PropIndex := FindProperty(Pchar(TagName+'s'));
-
-      end else
-        TokenPtr := TagStart;
-
-      if not IgnoreUnknownTags then
-        check(PropIndex <> -1, 'TJvgXMLSerializer.DeSerializeInternal: Uncknown property: ' + TagName);
-
-      if PropIndex <> -1 then
-        SetPropertyValue(Component, PropList^[PropIndex], TagValue, TagValueEnd, BlockEnd);
-
-      inc(TagEnd, length('</' + TagName + '>'));
-      SkipSpaces(TagEnd);
-
-    finally
-      FreeMem(TagName);
-    end;
-
-  end;
-
 
   finally
-    FreeMem(PropList, NumProps*sizeof(pointer));
+    FreeMem(PropList, NumProps * sizeof(pointer));
   end;
 
 end;
-
 
 {
   Процедура инициализации свойства объекта
@@ -594,6 +598,7 @@ end;
     ParentBlockEnd - указатель на конец XML описания родительского тега
                      Используется для рекурсии
 }
+
 procedure TJvgXMLSerializer.SetPropertyValue(Component: TObject; PropInfo: PPropInfo; Value, ValueEnd: PChar; ParentBlockEnd: PChar);
 var
   PropTypeInf: PTypeInfo;
@@ -602,10 +607,10 @@ var
   sValue: string;
   charTmp: char;
 begin
-    PropTypeInf := PropInfo.PropType^;
+  PropTypeInf := PropInfo.PropType^;
 
-    case PropTypeInf^.Kind of
-      tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
+  case PropTypeInf^.Kind of
+    tkInteger, tkChar, tkEnumeration, tkFloat, tkString, tkSet,
       tkWChar, tkLString, tkWString, tkVariant:
       begin
         { имитируем zero terminated string }
@@ -616,30 +621,30 @@ begin
 
         { Замена спецсимволов. Актуально только для XML,
          сохраненного с помощью этого компонента }
-         if FReplaceReservedSymbols then
-         begin
-           sValue := StringReplace(sValue, '&lt;', '<', [rfReplaceAll]);
-           sValue := StringReplace(sValue, '&gt;', '>', [rfReplaceAll]);
-           // sValue := StringReplace(sValue, '&', '&', [rfReplaceAll]);
-         end;
+        if FReplaceReservedSymbols then
+        begin
+          sValue := StringReplace(sValue, '&lt;', '<', [rfReplaceAll]);
+          sValue := StringReplace(sValue, '&gt;', '>', [rfReplaceAll]);
+          // sValue := StringReplace(sValue, '&', '&', [rfReplaceAll]);
+        end;
 
-         { Замена разделителя на системный }
-         if PropTypeInf^.Kind = tkFloat then
-         begin
-           if DecimalSeparator = ',' then
-             sValue := StringReplace(sValue, '.', DecimalSeparator, [rfReplaceAll])
-           else
-             sValue := StringReplace(sValue, ',', DecimalSeparator, [rfReplaceAll]);
-         end;
+        { Замена разделителя на системный }
+        if PropTypeInf^.Kind = tkFloat then
+        begin
+          if DecimalSeparator = ',' then
+            sValue := StringReplace(sValue, '.', DecimalSeparator, [rfReplaceAll])
+          else
+            sValue := StringReplace(sValue, ',', DecimalSeparator, [rfReplaceAll]);
+        end;
 
         { Для корректного преобразования парсером tkSet нужны угловые скобки }
         if PropTypeInf^.Kind = tkSet then sValue := '[' + sValue + ']';
         SetPropValue(Component, PropInfo^.Name, sValue);
       end;
-      tkClass:
+    tkClass:
       begin
         PropObject := GetObjectProp(Component, PropInfo);
-        if Assigned(PropObject)then
+        if Assigned(PropObject) then
         begin
           { Индивидуальный подход к некоторым классам }
           if (PropObject is TStrings) then { Текстовые списки }
@@ -650,8 +655,7 @@ begin
             ValueEnd[0] := charTmp;
             TStrings(PropObject).CommaText := sValue;
           end
-          else
-          if (PropObject is TCollection) then { Коллекции }
+          else if (PropObject is TCollection) then { Коллекции }
           begin
             while true do { Заранее не известно число элементов в коллекции }
             begin
@@ -674,9 +678,8 @@ begin
         end;
 
       end;
-    end;
+  end;
 end;
-
 
 {
   Процедура генерации DTD для заданного объекта в
@@ -686,6 +689,7 @@ end;
   Выход:
     текст DTD в поток Stream
 }
+
 procedure TJvgXMLSerializer.GenerateDTD(Component: TObject; Stream: TStream);
 var
   DTDList: TStringList;
@@ -698,7 +702,6 @@ begin
   end;
 end;
 
-
 {
   Внутренняя рекурсивная процедура генерации DTD для заданного объекта.
   Вход:
@@ -708,6 +711,7 @@ end;
   Выход:
     текст DTD в поток Stream
 }
+
 procedure TJvgXMLSerializer.GenerateDTDInternal(Component: TObject; DTDList: TStrings; Stream: TStream; const ComponentTagName: string);
 var
   PropInfo: PPropInfo;
@@ -720,8 +724,10 @@ var
   PropObject: TObject;
 const
   PCDATA = '#PCDATA';
+
   procedure addElement(const ElementName: string; Data: string);
-  var s: string;
+  var
+    s: string;
   begin
     if DTDList.IndexOf(ElementName) <> -1 then exit;
     DTDList.Add(ElementName);
@@ -737,14 +743,13 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-
-  GetMem(PropList, NumProps*sizeof(pointer));
+  GetMem(PropList, NumProps * sizeof(pointer));
   try
     { Получаем список свойств }
     GetPropInfos(TypeInf, PropList);
     TagContent := '';
 
-    for i := 0 to NumProps-1 do
+    for i := 0 to NumProps - 1 do
     begin
       PropName := PropList^[i]^.Name;
 
@@ -758,14 +763,13 @@ begin
         TagContent := TagContent + PropName;
       end;
 
-
       case PropTypeInf^.Kind of
         tkInteger, tkChar, tkFloat, tkString,
-        tkWChar, tkLString, tkWString, tkVariant, tkEnumeration, tkSet:
-        begin
-          { Перевод в DTD. Для данных типов модель содержания - #PCDATA }
-          addElement(PropName, PCDATA);
-        end;
+          tkWChar, tkLString, tkWString, tkVariant, tkEnumeration, tkSet:
+          begin
+            { Перевод в DTD. Для данных типов модель содержания - #PCDATA }
+            addElement(PropName, PCDATA);
+          end;
         { код был бы полезен при использовании атрибутов
         tkEnumeration:
         begin
@@ -780,15 +784,15 @@ begin
         end;
         }
         tkClass: { Для классовых типов рекурсивная обработка }
-        begin
-          PropObject := GetObjectProp(Component, PropInfo);
-          if Assigned(PropObject)then
           begin
-            { Для дочерних свойств-классов - рекурсивный вызов }
-            if (PropObject is TPersistent) then
-              GenerateDTDInternal(PropObject, DTDList, Stream, PropName);
+            PropObject := GetObjectProp(Component, PropInfo);
+            if Assigned(PropObject) then
+            begin
+              { Для дочерних свойств-классов - рекурсивный вызов }
+              if (PropObject is TPersistent) then
+                GenerateDTDInternal(PropObject, DTDList, Stream, PropName);
+            end;
           end;
-        end;
 
       end;
     end;
@@ -804,7 +808,7 @@ begin
     { Добавляем модель содержания для элемента }
     addElement(ComponentTagName, TagContent);
   finally
-    FreeMem(PropList, NumProps*sizeof(pointer));
+    FreeMem(PropList, NumProps * sizeof(pointer));
   end;
 
 end;
@@ -820,5 +824,3 @@ end.
 
 //tickCount := GetTickCount();
 //inc(tickCounter, GetTickCount() - tickCount);
-
-

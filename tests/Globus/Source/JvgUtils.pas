@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,104 +31,105 @@ unit JvgUtils;
 
 interface
 uses Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
-     JvgTypes, JvgCommClasses, Jvg3DColors, mmsystem;
+  JvgTypes, JvgCommClasses, Jvg3DColors, mmsystem;
 
+function Min(i1, i2: integer): integer;
+function Max(i1, i2: integer): integer;
+function MinSingle(r1, r2: Single): Single;
+function MaxSingle(r1, r2: Single): Single;
+function IsEven(i: integer): boolean;
+function SantimsToPixels(DC: HDC; Value: single; IsHosiz: boolean): integer;
 
-function Min(i1,i2:integer):integer;
-function Max(i1,i2:integer):integer;
-function MinSingle(r1,r2:Single):Single;
-function MaxSingle(r1,r2:Single):Single;
-function IsEven(i: integer):boolean;
-function SantimsToPixels( DC: HDC; Value: single; IsHosiz: boolean ): integer;
-
-procedure SwapInt( var i1,i2:integer);
-function Spaces(count: integer):string;
-function DupStr(const str: string; Count: integer):string;
-function DupChar( C: Char; Count: integer):string;
-procedure Msg(msg:string);
-function IsPointInRect( P:TPoint; R: TRect ):boolean;
+procedure SwapInt(var i1, i2: integer);
+function Spaces(count: integer): string;
+function DupStr(const str: string; Count: integer): string;
+function DupChar(C: Char; Count: integer): string;
+procedure Msg(msg: string);
+function IsPointInRect(P: TPoint; R: TRect): boolean;
 function RectW(R: TRect): integer;
 function RectH(R: TRect): integer;
-function IncColor(lColor :LongInt; bOffset: byte): LongInt;
-function DecColor(lColor :LongInt; bOffset: byte): LongInt;
-function IsItAFilledBitmap( Bmp:TBitmap ):boolean;
-procedure DrawTextInRectWithAlign( DC:HDC; r:TRect; Text:string;
-				   HAlign:TglHorAlign;VAlign:TglVertAlign;
-				   Style:TglTextStyle; Fnt:TFont;
-				   FLAGS:UINT );
+function IncColor(lColor: LongInt; bOffset: byte): LongInt;
+function DecColor(lColor: LongInt; bOffset: byte): LongInt;
+function IsItAFilledBitmap(Bmp: TBitmap): boolean;
+procedure DrawTextInRectWithAlign(DC: HDC; r: TRect; Text: string;
+  HAlign: TglHorAlign; VAlign: TglVertAlign;
+  Style: TglTextStyle; Fnt: TFont;
+  FLAGS: UINT);
 
-procedure DrawTextInRect( DC:HDC; r:TRect; Text:string;
-			  Style:TglTextStyle; Fnt:TFont; FLAGS:UINT );
+procedure DrawTextInRect(DC: HDC; r: TRect; Text: string;
+  Style: TglTextStyle; Fnt: TFont; FLAGS: UINT);
 
-procedure ExtTextOutExt( DC: HDC;
-			 x, y: integer;
-			 r: TRect;
-			 Text: string;
-			 Style: TglTextStyle;
-			 fDelineated, fSupress3D: boolean;
-			 FontColor, DelinColor, HighlightColor, ShadowColor: TColor;
-			 Illumination: TJvgIllumination;
-			 Gradient: TJvgGradient;
-			 Font: TFont );
+procedure ExtTextOutExt(DC: HDC;
+  x, y: integer;
+  r: TRect;
+  Text: string;
+  Style: TglTextStyle;
+  fDelineated, fSupress3D: boolean;
+  FontColor, DelinColor, HighlightColor, ShadowColor: TColor;
+  Illumination: TJvgIllumination;
+  Gradient: TJvgGradient;
+  Font: TFont);
 
-procedure DrawBox( DC:HDC; var r:TRect; Style:TglBoxStyle;
-		   BackgrColor:LongInt; fTransparent:boolean );
+procedure DrawBox(DC: HDC; var r: TRect; Style: TglBoxStyle;
+  BackgrColor: LongInt; fTransparent: boolean);
 
-function DrawBoxEx( DC:HDC; rect:TRect; Borders:TglSides;
-		   BevelInner, BevelOuter:TPanelBevel;
-		   Bold:boolean;BackgrColor:LongInt;
-		   fTransparent:boolean ):TRect;
+function DrawBoxEx(DC: HDC; rect: TRect; Borders: TglSides;
+  BevelInner, BevelOuter: TPanelBevel;
+  Bold: boolean; BackgrColor: LongInt;
+  fTransparent: boolean): TRect;
 
-procedure GradientBox( DC:HDC; r:TRect; Gradient:TJvgGradient;
-		       PenStyle, PenWidth:integer );
+procedure GradientBox(DC: HDC; r: TRect; Gradient: TJvgGradient;
+  PenStyle, PenWidth: integer);
 
-procedure ChangeBitmapColor( Bitmap :TBitmap;
-			     FromColor, ToColor: TColor );
+procedure ChangeBitmapColor(Bitmap: TBitmap;
+  FromColor, ToColor: TColor);
 
-procedure DrawBitmapExt(   DC		     :HDC;{ DC - background & result}
-			   SourceBitmap      :TBitmap;
-			   r		     :TRect;
-			   x,y		     :integer;//...x,y _in_ rect!
-			   BitmapOption      :TglWallpaperOption;
-			   DrawState	     :TglDrawState;
-			   fTransparent      :boolean;
-			   TransparentColor  :TColor;
-			   DisabledMaskColor :TColor);
+procedure DrawBitmapExt(DC: HDC; { DC - background & result}
+  SourceBitmap: TBitmap;
+  r: TRect;
+  x, y: integer; //...x,y _in_ rect!
+  BitmapOption: TglWallpaperOption;
+  DrawState: TglDrawState;
+  fTransparent: boolean;
+  TransparentColor: TColor;
+  DisabledMaskColor: TColor);
 
-procedure CreateBitmapExt( DC		     :HDC;{ DC - background & result}
-			   SourceBitmap      :TBitmap;
-			   r		     :TRect;
-			   x,y		     :integer;//...x,y _in_ rect!
-			   BitmapOption      :TglWallpaperOption;
-			   DrawState	     :TglDrawState;
-			   fTransparent      :boolean;
-			   TransparentColor  :TColor;
-			   DisabledMaskColor :TColor );
-
+procedure CreateBitmapExt(DC: HDC; { DC - background & result}
+  SourceBitmap: TBitmap;
+  r: TRect;
+  x, y: integer; //...x,y _in_ rect!
+  BitmapOption: TglWallpaperOption;
+  DrawState: TglDrawState;
+  fTransparent: boolean;
+  TransparentColor: TColor;
+  DisabledMaskColor: TColor);
 
 procedure BringParentWindowToTop(Wnd: TWinControl);
 function GetParentForm(Control: TControl): TForm;
-procedure GetWindowImageFrom(Control: TWinControl; X,Y: integer; fDrawSelf, fDrawChildWindows: boolean; DC: HDC);
+procedure GetWindowImageFrom(Control: TWinControl; X, Y: integer; fDrawSelf, fDrawChildWindows: boolean; DC: HDC);
 procedure GetWindowImage(Control: TWinControl; fDrawSelf, fDrawChildWindows: boolean; DC: HDC);
 procedure GetParentImageRect(Control: TControl; Rect: TRect; DC: HDC);
-function CreateRotatedFont(F : TFont; Escapement : Integer) : hFont;
-function FindMainWindow( sWndClass, sWndTitle :string ):HWND;
-procedure CalcShadowAndHighlightColors( BaseColor: TColor; Colors: TJvgLabelColors );
+function CreateRotatedFont(F: TFont; Escapement: Integer): hFont;
+function FindMainWindow(sWndClass, sWndTitle: string): HWND;
+procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColors);
 
-function CalcMathString( sExpression: string ): single;
+function CalcMathString(sExpression: string): single;
 
-function IIF( fExpression: boolean; IfTrue, IfFalse: variant ): variant; {$IFDEF GLVER_D5} overload; {$ENDIF}
-{$IFDEF GLVER_D5} function IIF( fExpression: boolean; const IfTrue, IfFalse: string ): string; overload; {$ENDIF}
+function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;
+{$IFDEF GLVER_D5}overload;
+{$ENDIF}
+{$IFDEF GLVER_D5}function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
+{$ENDIF}
 
-function GetTransparentColor( Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor ): TColor;
+function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
 procedure TypeStringOnKeyboard(S: string);
 //function NextStringGridCell( Grid: TStringGrid ): boolean;
-procedure DrawTextExtAligned( Canvas: TCanvas; const Text: string; R: TRect; Alignment: TglAlignment; WordWrap: boolean );
+procedure DrawTextExtAligned(Canvas: TCanvas; const Text: string; R: TRect; Alignment: TglAlignment; WordWrap: boolean);
 procedure LoadComponentFromTextFile(Component: TComponent; FileName: string);
 procedure SaveComponentToTextFile(Component: TComponent; FileName: string);
 function ComponentToString(Component: TComponent): string;
 procedure StringToComponent(Component: TComponent; const Value: string);
-function PlayWaveResource(sResName: String): boolean;
+function PlayWaveResource(sResName: string): boolean;
 function UserName: string;
 function ComputerName: string;
 function CreateIniFileName: string;
@@ -145,81 +146,114 @@ function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 implementation
 uses shlobj;
 //_________________________________________________________________\\
-function Min(i1,i2:integer):integer;
+
+function Min(i1, i2: integer): integer;
 begin
-  if i1<i2 then Result:=i1 else Result:=i2;
-end;
-function Max(i1,i2:integer):integer;
-begin
-  if i1>i2 then Result:=i1 else Result:=i2;
+  if i1 < i2 then
+    Result := i1
+  else
+    Result := i2;
 end;
 
-function MinSingle(r1,r2:Single):Single;
+function Max(i1, i2: integer): integer;
 begin
-  if r1<r2 then Result:=r1 else Result:=r2;
+  if i1 > i2 then
+    Result := i1
+  else
+    Result := i2;
 end;
-function MaxSingle(r1,r2:Single):Single;
+
+function MinSingle(r1, r2: Single): Single;
 begin
-  if r1>r2 then Result:=r1 else Result:=r2;
+  if r1 < r2 then
+    Result := r1
+  else
+    Result := r2;
+end;
+
+function MaxSingle(r1, r2: Single): Single;
+begin
+  if r1 > r2 then
+    Result := r1
+  else
+    Result := r2;
 end;
 
 { Проверка целого числа на четность }
-function IsEven(i: integer):boolean;
+
+function IsEven(i: integer): boolean;
 begin
   Result := i / 2 = i div 2;
 end;
 
 { Обмен значений }
-procedure SwapInt(var i1,i2: integer);
-var i_: integer;
+
+procedure SwapInt(var i1, i2: integer);
+var
+  i_: integer;
 begin
-  i_:=i1; i1:=i2; i2:=i_;
+  i_ := i1;
+  i1 := i2;
+  i2 := i_;
 end;
 //_________________________________________________________________\\
 { Создание строки из заданого числа пробелов }
+
 function Spaces(Count: integer): string;
-var i: word;
+var
+  i: word;
 begin
-  Result:=''; //if Count<=0 then exit;
-  for i:=1 to Count do Result:=Result+' ';
+  Result := ''; //if Count<=0 then exit;
+  for i := 1 to Count do
+    Result := Result + ' ';
 end;
 //_________________________________________________________________\\
 { Создание строки из заданого числа символов }
-function DupChar( C: Char; Count: integer): string;
-var i: word;
+
+function DupChar(C: Char; Count: integer): string;
+var
+  i: word;
 begin
-  Result:='';
-  for i:=1 to Count do Result:=Result+C;
+  Result := '';
+  for i := 1 to Count do
+    Result := Result + C;
 end;
 //_________________________________________________________________\\
 { Создание строки из заданого числа строк }
+
 function DupStr(const str: string; Count: integer): string;
-var i: word;
+var
+  i: word;
 begin
-  Result:='';
-  for i:=1 to Count do Result := Result + str;
+  Result := '';
+  for i := 1 to Count do
+    Result := Result + str;
 end;
 //_________________________________________________________________\\
 { Модальное окно с иконкой информации и одной кнопкой ОК }
-procedure Msg(msg:string);
+
+procedure Msg(msg: string);
 begin
   MessageBox(Application.Handle, PChar(msg), '',
-   MB_APPLMODAL or MB_ICONINFORMATION or MB_OK);
+    MB_APPLMODAL or MB_ICONINFORMATION or MB_OK);
 end;
 //_________________________________________________________________\\
 { Проверка вхождения точки в примоугольник. границы не считаются }
-function IsPointInRect( P:TPoint; R: TRect ):boolean;
+
+function IsPointInRect(P: TPoint; R: TRect): boolean;
 begin
-  Result := (P.x>R.Left)and(P.x<R.Right)and(P.y>R.Top)and(P.y<R.Bottom);
+  Result := (P.x > R.Left) and (P.x < R.Right) and (P.y > R.Top) and (P.y < R.Bottom);
 end;
 
 { Длина примоугольника }
+
 function RectW(R: TRect): integer;
 begin
   Result := R.Right - R.Left;
 end;
 
 { Высота примоугольника }
+
 function RectH(R: TRect): integer;
 begin
   Result := R.Bottom - R.Top;
@@ -227,45 +261,49 @@ end;
 //_________________________________________________________________\\
 
 { Увеличивает составляющие цвета на заданное смещение }
-function IncColor(lColor :LongInt; bOffset: byte): LongInt;
+
+function IncColor(lColor: LongInt; bOffset: byte): LongInt;
 var
   R, G, B: byte;
 begin
-  if lColor < 0 then lColor := GetSysColor( lColor and $ff );
-  R := min( 255, GetRValue(lColor) + bOffset );
-  G := min( 255, GetGValue(lColor) + bOffset );
-  B := min( 255, GetBValue(lColor) + bOffset );
-  Result := RGB( R, G, B );
+  if lColor < 0 then lColor := GetSysColor(lColor and $FF);
+  R := min(255, GetRValue(lColor) + bOffset);
+  G := min(255, GetGValue(lColor) + bOffset);
+  B := min(255, GetBValue(lColor) + bOffset);
+  Result := RGB(R, G, B);
 end;
 //_________________________________________________________________\\
 
 { Уменьшает составляющие цвета на заданное смещение }
-function DecColor(lColor :LongInt; bOffset: byte): LongInt;
+
+function DecColor(lColor: LongInt; bOffset: byte): LongInt;
 var
   R, G, B: byte;
 begin
-  if lColor < 0 then lColor := GetSysColor( lColor and $ff );
-  R := max( 0, GetRValue(lColor) - bOffset);
-  G := max( 0, GetGValue(lColor) - bOffset);
-  B := max( 0, GetBValue(lColor) - bOffset);
-  Result := RGB( R, G, B );
+  if lColor < 0 then lColor := GetSysColor(lColor and $FF);
+  R := max(0, GetRValue(lColor) - bOffset);
+  G := max(0, GetGValue(lColor) - bOffset);
+  B := max(0, GetBValue(lColor) - bOffset);
+  Result := RGB(R, G, B);
 end;
 //_________________________________________________________________\\
 
 { Переводит сантиметра в пиксели }
-function SantimsToPixels( DC: HDC; Value: single; IsHosiz: boolean ): integer;
+
+function SantimsToPixels(DC: HDC; Value: single; IsHosiz: boolean): integer;
 const
- LOGPIXELS: array [boolean] of integer = ( LOGPIXELSY ,LOGPIXELSX );
+  LOGPIXELS: array[boolean] of integer = (LOGPIXELSY, LOGPIXELSX);
 begin
-  Result := round( Value * GetDeviceCaps( DC, LOGPIXELS[IsHosiz] ) * 1.541 * 2.54 / 10 );
+  Result := round(Value * GetDeviceCaps(DC, LOGPIXELS[IsHosiz]) * 1.541 * 2.54 / 10);
 end;
 //_________________________________________________________________\\
 
 { Проверяет создан ли объеки bitmap и имеет ли он размер }
+
 function IsItAFilledBitmap(Bmp: TBitmap): boolean;
 begin
-  with Bmp do         
-    Result := Assigned(bmp)and(Width<>0)and(Height<>0);
+  with Bmp do
+    Result := Assigned(bmp) and (Width <> 0) and (Height <> 0);
 end;
 //_________________________________________________________________\\
 
@@ -277,23 +315,24 @@ end;
  Style - стиль (вдавленный, с тенью etc)
  FLAGS - доп. параметры для Windows.DrawText
 }
-procedure DrawTextInRectWithAlign( DC: HDC; r: TRect; Text: string;
-				   HAlign: TglHorAlign; VAlign: TglVertAlign;
-				   Style: TglTextStyle; Fnt: TFont;
-				   FLAGS: UINT);
+
+procedure DrawTextInRectWithAlign(DC: HDC; r: TRect; Text: string;
+  HAlign: TglHorAlign; VAlign: TglVertAlign;
+  Style: TglTextStyle; Fnt: TFont;
+  FLAGS: UINT);
 begin
   case HAlign of
-    fhaLeft:   FLAGS:=FLAGS or DT_LEFT;
-    fhaCenter: FLAGS:=FLAGS or DT_CENTER;
-    fhaRight:  FLAGS:=FLAGS or DT_RIGHT;
+    fhaLeft: FLAGS := FLAGS or DT_LEFT;
+    fhaCenter: FLAGS := FLAGS or DT_CENTER;
+    fhaRight: FLAGS := FLAGS or DT_RIGHT;
   end;
   case VAlign of
-    fvaTop:    FLAGS:=FLAGS or DT_TOP;
-    fvaCenter: FLAGS:=FLAGS or DT_VCENTER;
-    fvaBottom: FLAGS:=FLAGS or DT_BOTTOM;
+    fvaTop: FLAGS := FLAGS or DT_TOP;
+    fvaCenter: FLAGS := FLAGS or DT_VCENTER;
+    fvaBottom: FLAGS := FLAGS or DT_BOTTOM;
   end;
 
-  DrawTextInRect( DC, r, Text, Style, Fnt, FLAGS );
+  DrawTextInRect(DC, r, Text, Style, Fnt, FLAGS);
 end;
 //_________________________________________________________________\\
 
@@ -304,73 +343,74 @@ end;
  Style - стиль (вдавленный, с тенью etc)
  FLAGS - параметры для Windows.DrawText
 }
-procedure DrawTextInRect( DC:HDC; r:TRect; Text:string; Style:TglTextStyle; Fnt:TFont; FLAGS:UINT );
+
+procedure DrawTextInRect(DC: HDC; r: TRect; Text: string; Style: TglTextStyle; Fnt: TFont; FLAGS: UINT);
 var
-  iOldBkMode	  :integer;
-  OldFont	  :Windows.HFont;
-  FontColor:TColor;
-  ShadowColor_, HighlightColor_ : TColor;
+  iOldBkMode: integer;
+  OldFont: Windows.HFont;
+  FontColor: TColor;
+  ShadowColor_, HighlightColor_: TColor;
 begin
 
-  if not Assigned( Fnt ) then exit;
+  if not Assigned(Fnt) then exit;
   if FLAGS = 0 then FLAGS := DT_LEFT or DT_VCENTER or DT_SINGLELINE;
-  iOldBkMode:=SetBkMode( DC, integer(Transparent) );
+  iOldBkMode := SetBkMode(DC, integer(Transparent));
   FontColor := Fnt.Color;
 
   ShadowColor_ := clBtnShadow;
   HighlightColor_ := clBtnHighlight;
 
-  OldFont:=SelectObject( DC, Fnt.Handle );
+  OldFont := SelectObject(DC, Fnt.Handle);
   case Style of
     fstRaised:
-    begin
-      SetTextColor( DC , ColorToRGB(HighlightColor_) );
-      OffsetRect( r, -1, -1 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-      SetTextColor( DC , ColorToRGB(ShadowColor_) );
-      OffsetRect( r, 2, 2 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-      SetTextColor( DC , ColorToRGB(FontColor) );
-      OffsetRect( r, -1, -1 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-    end;
+      begin
+        SetTextColor(DC, ColorToRGB(HighlightColor_));
+        OffsetRect(r, -1, -1);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+        SetTextColor(DC, ColorToRGB(ShadowColor_));
+        OffsetRect(r, 2, 2);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+        SetTextColor(DC, ColorToRGB(FontColor));
+        OffsetRect(r, -1, -1);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+      end;
     fstRecessed:
-    begin
-      SetTextColor( DC , ColorToRGB(ShadowColor_) );
-      OffsetRect( r, -1, -1 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-      SetTextColor( DC , ColorToRGB(HighlightColor_) );
-      OffsetRect( r, 2, 2 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-      SetTextColor( DC , ColorToRGB(FontColor) );
-      OffsetRect( r, -1, -1 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-    end;
+      begin
+        SetTextColor(DC, ColorToRGB(ShadowColor_));
+        OffsetRect(r, -1, -1);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+        SetTextColor(DC, ColorToRGB(HighlightColor_));
+        OffsetRect(r, 2, 2);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+        SetTextColor(DC, ColorToRGB(FontColor));
+        OffsetRect(r, -1, -1);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+      end;
     fstPushed:
-    begin
-      SetTextColor( DC , ColorToRGB(HighlightColor_) );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-      SetTextColor( DC , ColorToRGB(ShadowColor_) );
-      OffsetRect( r, -1, -1 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-    end;
+      begin
+        SetTextColor(DC, ColorToRGB(HighlightColor_));
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+        SetTextColor(DC, ColorToRGB(ShadowColor_));
+        OffsetRect(r, -1, -1);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+      end;
     fstShadow:
+      begin
+        SetTextColor(DC, ColorToRGB(ShadowColor_));
+        OffsetRect(r, 2, 2);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+        SetTextColor(DC, ColorToRGB(FontColor));
+        OffsetRect(r, -2, -2);
+        DrawText(DC, PChar(Text), length(Text), r, FLAGS);
+      end;
+  else
     begin
-      SetTextColor( DC , ColorToRGB(ShadowColor_) );
-      OffsetRect( r, 2, 2 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-      SetTextColor( DC , ColorToRGB(FontColor) );
-      OffsetRect( r, -2, -2 );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
-    end;
-    else
-    begin
-      SetTextColor( DC , ColorToRGB(FontColor) );
-      DrawText( DC, PChar(Text), length(Text), r, FLAGS );
+      SetTextColor(DC, ColorToRGB(FontColor));
+      DrawText(DC, PChar(Text), length(Text), r, FLAGS);
     end;
   end;
-  SelectObject( DC, OldFont );
-  SetBkMode( DC , iOldBkMode );
+  SelectObject(DC, OldFont);
+  SetBkMode(DC, iOldBkMode);
 end;
 
 //_________________________________________________________________\\
@@ -385,107 +425,136 @@ end;
  Illumination - не используется
  Gradient - градиент для заливки букв текста
 }
-procedure ExtTextOutExt( DC: HDC;
-			 x, y: integer;
-			 r: TRect;
-			 Text: string;
-			 Style: TglTextStyle;
-			 fDelineated, fSupress3D: boolean;
-			 FontColor, DelinColor, HighlightColor, ShadowColor: TColor;
-			 Illumination: TJvgIllumination;
-			 Gradient: TJvgGradient;
-			 Font: TFont );
+
+procedure ExtTextOutExt(DC: HDC;
+  x, y: integer;
+  r: TRect;
+  Text: string;
+  Style: TglTextStyle;
+  fDelineated, fSupress3D: boolean;
+  FontColor, DelinColor, HighlightColor, ShadowColor: TColor;
+  Illumination: TJvgIllumination;
+  Gradient: TJvgGradient;
+  Font: TFont);
 var
-  iOldBkMode,x_,y_,i,ShadowDepth      :integer;
-  OldFont	  :Windows.HFont;
+  iOldBkMode, x_, y_, i, ShadowDepth: integer;
+  OldFont: Windows.HFont;
   //...local proc
-  procedure DrawMain( fDelineated: boolean; s_:integer );
+
+  procedure DrawMain(fDelineated: boolean; s_: integer);
   begin
     if fDelineated then
     begin
-      if not fSupress3D then	   begin
-      SetTextColor( DC ,ColorToRGB(DelinColor) );
-      ExtTextOut( DC, x+s_, y+s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-      ExtTextOut( DC, x+2+s_, y+2+s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-      ExtTextOut( DC, x+s_, y+s_+2, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-      ExtTextOut( DC, x+s_+2, y+s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+      if not fSupress3D then
+      begin
+        SetTextColor(DC, ColorToRGB(DelinColor));
+        ExtTextOut(DC, x + s_, y + s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        ExtTextOut(DC, x + 2 + s_, y + 2 + s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        ExtTextOut(DC, x + s_, y + s_ + 2, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        ExtTextOut(DC, x + s_ + 2, y + s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
       end;
-      SetTextColor( DC ,ColorToRGB(FontColor) );
-      if Assigned(Gradient) then Gradient.TextOut( DC, Text, r, x+s_+1, y+s_+1 )
-      else ExtTextOut( DC, x+s_+1, y+s_+1, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-    end else
-    begin
-      SetTextColor( DC ,ColorToRGB(FontColor) );
-      if Assigned(Gradient) then Gradient.TextOut( DC, Text, r, x+s_, y+s_ )
+      SetTextColor(DC, ColorToRGB(FontColor));
+      if Assigned(Gradient) then
+        Gradient.TextOut(DC, Text, r, x + s_ + 1, y + s_ + 1)
       else
-        ExtTextOut( DC, x+s_, y+s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        ExtTextOut(DC, x + s_ + 1, y + s_ + 1, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+    end
+    else
+    begin
+      SetTextColor(DC, ColorToRGB(FontColor));
+      if Assigned(Gradient) then
+        Gradient.TextOut(DC, Text, r, x + s_, y + s_)
+      else
+        ExtTextOut(DC, x + s_, y + s_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
     end;
   end;
 begin
-  if (not Assigned( Font )) then exit;
-  OldFont:=SelectObject( DC, Font.Handle );
-  iOldBkMode:=SetBkMode( DC, TRANSPARENT );
+  if (not Assigned(Font)) then exit;
+  OldFont := SelectObject(DC, Font.Handle);
+  iOldBkMode := SetBkMode(DC, TRANSPARENT);
 
-  if fDelineated then begin x_:=4;y_:=4; end
-		 else begin x_:=2;y_:=2; end;
-  if Style=fstNone then begin x_:=x_ div 2-1;y_:=y_ div 2-1; end;
-  if Style=fstShadow then begin x_:=x_ div 2-1;y_:=y_ div 2-1; end;
-  if Assigned(Illumination) then ShadowDepth := Illumination.ShadowDepth
-			    else ShadowDepth := 2;
+  if fDelineated then
+  begin
+    x_ := 4;
+    y_ := 4;
+  end
+  else
+  begin
+    x_ := 2;
+    y_ := 2;
+  end;
+  if Style = fstNone then
+  begin
+    x_ := x_ div 2 - 1;
+    y_ := y_ div 2 - 1;
+  end;
+  if Style = fstShadow then
+  begin
+    x_ := x_ div 2 - 1;
+    y_ := y_ div 2 - 1;
+  end;
+  if Assigned(Illumination) then
+    ShadowDepth := Illumination.ShadowDepth
+  else
+    ShadowDepth := 2;
   case Style of
     fstRaised:
-    begin
-      if not fSupress3D then begin
-      SetTextColor( DC, ColorToRGB(HighlightColor) );
-      ExtTextOut( DC, x, y,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-      SetTextColor( DC, ColorToRGB(ShadowColor) );
-      ExtTextOut( DC, x+x_, y+y_,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-			     end;
-      DrawMain( fDelineated, 1 );
-    end;
-    fstRecessed:
-    begin
-      if not fSupress3D then begin
-      SetTextColor( DC, ColorToRGB(ShadowColor) );
-      ExtTextOut( DC, x, y,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-      SetTextColor( DC, ColorToRGB(HighlightColor) );
-      ExtTextOut( DC, x+x_, y+y_,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-			     end;
-      DrawMain( fDelineated, 1 );
-    end;
-    fstPushed:
-    begin
-      SetTextColor( DC , ColorToRGB(HighlightColor) );
-      ExtTextOut( DC, x+1, y+1,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-      SetTextColor( DC , ColorToRGB(ShadowColor) );
-      ExtTextOut( DC, x, y,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-    end;
-    fstShadow:
-    begin
-      if not fSupress3D then begin
-      SetTextColor( DC , ColorToRGB(ShadowColor) );
-      ExtTextOut( DC, x+x_+ShadowDepth, y+y_+ShadowDepth,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
-			     end;
-      DrawMain( fDelineated, 0 );
-    end;
-    fstVolumetric:
-    begin
-      if not fSupress3D then begin
-      SetTextColor( DC , ColorToRGB(ShadowColor) );
-      for i:=1 to ShadowDepth do
-	ExtTextOut( DC, x+i, y+i,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+      begin
+        if not fSupress3D then
+        begin
+          SetTextColor(DC, ColorToRGB(HighlightColor));
+          ExtTextOut(DC, x, y, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+          SetTextColor(DC, ColorToRGB(ShadowColor));
+          ExtTextOut(DC, x + x_, y + y_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        end;
+        DrawMain(fDelineated, 1);
       end;
-      DrawMain( fDelineated, 0 );
-    end;
-    else
+    fstRecessed:
+      begin
+        if not fSupress3D then
+        begin
+          SetTextColor(DC, ColorToRGB(ShadowColor));
+          ExtTextOut(DC, x, y, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+          SetTextColor(DC, ColorToRGB(HighlightColor));
+          ExtTextOut(DC, x + x_, y + y_, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        end;
+        DrawMain(fDelineated, 1);
+      end;
+    fstPushed:
+      begin
+        SetTextColor(DC, ColorToRGB(HighlightColor));
+        ExtTextOut(DC, x + 1, y + 1, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        SetTextColor(DC, ColorToRGB(ShadowColor));
+        ExtTextOut(DC, x, y, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+      end;
+    fstShadow:
+      begin
+        if not fSupress3D then
+        begin
+          SetTextColor(DC, ColorToRGB(ShadowColor));
+          ExtTextOut(DC, x + x_ + ShadowDepth, y + y_ + ShadowDepth, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        end;
+        DrawMain(fDelineated, 0);
+      end;
+    fstVolumetric:
+      begin
+        if not fSupress3D then
+        begin
+          SetTextColor(DC, ColorToRGB(ShadowColor));
+          for i := 1 to ShadowDepth do
+            ExtTextOut(DC, x + i, y + i, ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+        end;
+        DrawMain(fDelineated, 0);
+      end;
+  else
     begin
-      DrawMain( fDelineated, 0 );
-//	SetTextColor( DC , ColorToRGB(FontColor) );
-//	ExtTextOut( DC, x, y,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
+      DrawMain(fDelineated, 0);
+      //	SetTextColor( DC , ColorToRGB(FontColor) );
+      //	ExtTextOut( DC, x, y,  ETO_CLIPPED, @r, PChar(Text), Length(Text), nil);
     end;
   end;
-  SelectObject( DC, OldFont );
-  SetBkMode( DC , iOldBkMode );
+  SelectObject(DC, OldFont);
+  SetBkMode(DC, iOldBkMode);
 end;
 
 //_________________________________________________________________\\
@@ -497,79 +566,97 @@ end;
  Style - стиль (fbsFlat, fbsCtl3D, fbsStatusControl, fbsRecessed, fbsRaised, fbsRaisedFrame, fbsRecessedFrame)
  BackgrColor- цвет фона, если fTransparent = false
 }
-procedure DrawBox( DC: HDC; var r: TRect; Style: TglBoxStyle;
-		   BackgrColor: LongInt; fTransparent: boolean );
+
+procedure DrawBox(DC: HDC; var r: TRect; Style: TglBoxStyle;
+  BackgrColor: LongInt; fTransparent: boolean);
 const
-  FBorderWidth =1;
+  FBorderWidth = 1;
 begin
 
   case Style of
-    fbsFlat://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    begin
-    end;
-    fbsCtl3D://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    begin
-      r.top:=r.top+2; r.left:=r.left+2; r.right:=r.right-2;
-      r.bottom:=r.bottom-1;
- //	Frame3D(Canvas, r,clBtnShadow,clBtnHighlight,1);
-    end;
-//    fbsStatusControl:
-    fbsRaised://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    begin
-      InflateRect( r, -2, -2 );
-      DrawEdge(DC, r, BDR_RAISEDOUTER, BF_BOTTOMRIGHT); 	 // black
-      Dec(r.Bottom); Dec(r.Right);
-      DrawEdge(DC, r, BDR_RAISEDINNER, BF_TOPLEFT);		 // btnhilite
-      Inc(r.Top); Inc(r.Left);
-      DrawEdge(DC, r, BDR_RAISEDINNER, BF_BOTTOMRIGHT or BF_MIDDLE); // btnshadow
-    end;
-    fbsRecessed://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    begin
-      r.bottom:=r.bottom-1;
-      DrawEdge(DC, r, BDR_SUNKENINNER, BF_TOPLEFT);	 // black
-      DrawEdge(DC, r, BDR_SUNKENOUTER, BF_BOTTOMRIGHT);  // btnhilite
-      Dec(r.Bottom); Dec(r.Right);
-      Inc(r.Top); Inc(r.Left);
-      DrawEdge(DC, r, BDR_SUNKENOUTER, BF_TOPLEFT or BF_MIDDLE); // btnshadow
-      inc(r.top);inc(r.left);
-    end;
-    fbsRaisedFrame://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    begin
-      DrawEdge(DC, r, BDR_RAISEDOUTER, BF_BOTTOMRIGHT); 	 // black
-      Dec(r.Bottom); Dec(r.Right);
-      DrawEdge(DC, r, BDR_RAISEDINNER, BF_TOPLEFT);		 // btnhilite
-      Inc(r.Top); Inc(r.Left);
-      DrawEdge(DC, r, BDR_RAISEDINNER, BF_BOTTOMRIGHT or BF_MIDDLE); // btnshadow
+    fbsFlat: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      begin
+      end;
+    fbsCtl3D: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      begin
+        r.top := r.top + 2;
+        r.left := r.left + 2;
+        r.right := r.right - 2;
+        r.bottom := r.bottom - 1;
+        //	Frame3D(Canvas, r,clBtnShadow,clBtnHighlight,1);
+      end;
+    //    fbsStatusControl:
+    fbsRaised: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      begin
+        InflateRect(r, -2, -2);
+        DrawEdge(DC, r, BDR_RAISEDOUTER, BF_BOTTOMRIGHT); // black
+        Dec(r.Bottom);
+        Dec(r.Right);
+        DrawEdge(DC, r, BDR_RAISEDINNER, BF_TOPLEFT); // btnhilite
+        Inc(r.Top);
+        Inc(r.Left);
+        DrawEdge(DC, r, BDR_RAISEDINNER, BF_BOTTOMRIGHT or BF_MIDDLE); // btnshadow
+      end;
+    fbsRecessed: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      begin
+        r.bottom := r.bottom - 1;
+        DrawEdge(DC, r, BDR_SUNKENINNER, BF_TOPLEFT); // black
+        DrawEdge(DC, r, BDR_SUNKENOUTER, BF_BOTTOMRIGHT); // btnhilite
+        Dec(r.Bottom);
+        Dec(r.Right);
+        Inc(r.Top);
+        Inc(r.Left);
+        DrawEdge(DC, r, BDR_SUNKENOUTER, BF_TOPLEFT or BF_MIDDLE); // btnshadow
+        inc(r.top);
+        inc(r.left);
+      end;
+    fbsRaisedFrame: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      begin
+        DrawEdge(DC, r, BDR_RAISEDOUTER, BF_BOTTOMRIGHT); // black
+        Dec(r.Bottom);
+        Dec(r.Right);
+        DrawEdge(DC, r, BDR_RAISEDINNER, BF_TOPLEFT); // btnhilite
+        Inc(r.Top);
+        Inc(r.Left);
+        DrawEdge(DC, r, BDR_RAISEDINNER, BF_BOTTOMRIGHT or BF_MIDDLE); // btnshadow
 
-      InflateRect( r, -FBorderWidth, -FBorderWidth );
+        InflateRect(r, -FBorderWidth, -FBorderWidth);
 
-      DrawEdge(DC, r, BDR_SUNKENINNER, BF_TOPLEFT);	 // black
-      DrawEdge(DC, r, BDR_SUNKENOUTER, BF_BOTTOMRIGHT);  // btnhilite
-      Dec(r.Bottom); Dec(r.Right);
-      Inc(r.Top); Inc(r.Left);
-      DrawEdge(DC, r, BDR_SUNKENOUTER, BF_TOPLEFT or BF_MIDDLE); // btnshadow
-      inc(r.top);inc(r.left);
+        DrawEdge(DC, r, BDR_SUNKENINNER, BF_TOPLEFT); // black
+        DrawEdge(DC, r, BDR_SUNKENOUTER, BF_BOTTOMRIGHT); // btnhilite
+        Dec(r.Bottom);
+        Dec(r.Right);
+        Inc(r.Top);
+        Inc(r.Left);
+        DrawEdge(DC, r, BDR_SUNKENOUTER, BF_TOPLEFT or BF_MIDDLE); // btnshadow
+        inc(r.top);
+        inc(r.left);
 
-    end;
+      end;
 
-    fbsRecessedFrame://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    begin
-      DrawEdge(DC, r, BDR_SUNKENINNER, BF_TOPLEFT);	 // black
-      DrawEdge(DC, r, BDR_SUNKENOUTER, BF_BOTTOMRIGHT);  // btnhilite
-      Dec(r.Bottom); Dec(r.Right);
-      Inc(r.Top); Inc(r.Left);
-      DrawEdge(DC, r, BDR_SUNKENOUTER, BF_TOPLEFT or BF_MIDDLE); // btnshadow
-      inc(r.top);inc(r.left);
+    fbsRecessedFrame: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      begin
+        DrawEdge(DC, r, BDR_SUNKENINNER, BF_TOPLEFT); // black
+        DrawEdge(DC, r, BDR_SUNKENOUTER, BF_BOTTOMRIGHT); // btnhilite
+        Dec(r.Bottom);
+        Dec(r.Right);
+        Inc(r.Top);
+        Inc(r.Left);
+        DrawEdge(DC, r, BDR_SUNKENOUTER, BF_TOPLEFT or BF_MIDDLE); // btnshadow
+        inc(r.top);
+        inc(r.left);
 
-      InflateRect( r, -FBorderWidth, -FBorderWidth );
+        InflateRect(r, -FBorderWidth, -FBorderWidth);
 
-      DrawEdge(DC, r, BDR_RAISEDOUTER, BF_BOTTOMRIGHT); 	 // black
-      Dec(r.Bottom); Dec(r.Right);
-      DrawEdge(DC, r, BDR_RAISEDINNER, BF_TOPLEFT);		 // btnhilite
-      Inc(r.Top); Inc(r.Left);
-      DrawEdge(DC, r, BDR_RAISEDINNER, BF_BOTTOMRIGHT or BF_MIDDLE); // btnshadow
+        DrawEdge(DC, r, BDR_RAISEDOUTER, BF_BOTTOMRIGHT); // black
+        Dec(r.Bottom);
+        Dec(r.Right);
+        DrawEdge(DC, r, BDR_RAISEDINNER, BF_TOPLEFT); // btnhilite
+        Inc(r.Top);
+        Inc(r.Left);
+        DrawEdge(DC, r, BDR_RAISEDINNER, BF_BOTTOMRIGHT or BF_MIDDLE); // btnshadow
 
-    end;
+      end;
   end;
 end;
 //_________________________________________________________________\\
@@ -583,226 +670,269 @@ end;
  Bold - толстая рамка
  BackgrColor- цвет фона, если fTransparent = false
 }
-function DrawBoxEx( DC: HDC; rect: TRect; Borders: TglSides;
-		   BevelInner, BevelOuter: TPanelBevel;
-		   Bold: boolean; BackgrColor: LongInt;
-		   fTransparent: boolean ):TRect;
+
+function DrawBoxEx(DC: HDC; rect: TRect; Borders: TglSides;
+  BevelInner, BevelOuter: TPanelBevel;
+  Bold: boolean; BackgrColor: LongInt;
+  fTransparent: boolean): TRect;
 var
-  i:word;
-  BPen,LPen,SPen,OldPen :HPEN;
-  hBackgrBrush,hOldBrush:HBRUSH;
-  r,r_:TRect;
-  BColor,HColor,SColor: LongInt;
+  i: word;
+  BPen, LPen, SPen, OldPen: HPEN;
+  hBackgrBrush, hOldBrush: HBRUSH;
+  r, r_: TRect;
+  BColor, HColor, SColor: LongInt;
   LOGOLDPEN: TLOGPEN;
-  PenWidth:UINT;
+  PenWidth: UINT;
+
   procedure SetDefColors;
   begin
-    BColor := GetSysColor( COLOR_3DDKSHADOW );
-    HColor := GetSysColor( COLOR_3DHILIGHT );
-    SColor := GetSysColor( COLOR_3DSHADOW );
+    BColor := GetSysColor(COLOR_3DDKSHADOW);
+    HColor := GetSysColor(COLOR_3DHILIGHT);
+    SColor := GetSysColor(COLOR_3DSHADOW);
   end;
-  procedure DrawBevel( Bevel:TPanelBevel );//____________LOCAL PROC_
+
+  procedure DrawBevel(Bevel: TPanelBevel); //____________LOCAL PROC_
   begin
-  if fsdLeft in Borders then
-  begin
-    case Bevel of
-      bvRaised:
-      begin
-	SelectObject( DC, LPen );
-	MoveToEx( DC, r.left, r.top, nil );
-	LineTo( DC, r.left, r.bottom+1 ); inc(r_.left);
-	//.if Bold then inc(r_.left);
-      end;
-      bvLowered:
-      begin
-	if Bold then begin
-	  SelectObject( DC, BPen );
-	  MoveToEx( DC, r.left, r.top, nil );
-	  LineTo( DC, r.left, r.bottom ); inc(r_.left);
-	  SelectObject( DC, SPen );
-	  if fsdBottom in Borders then i:=0 else i:=1;
-	  MoveToEx( DC, r.left+1, r.top+1, nil );
-	  LineTo( DC, r.left+1, r.bottom+i );
-	  //SetPixel(DC, r.left, r.bottom-1, SColor);
-	  inc(r_.left);
-	end else begin
-	  SelectObject( DC, SPen );
-	  MoveToEx( DC, r.left, r.top, nil );
-	  LineTo( DC, r.left, r.bottom ); inc(r_.left);
-	end;
-      end;
-      {$IFDEF GLVER_D4}
-      bvSpace:
-      begin
-        SelectObject( DC, SPen );
-	MoveToEx( DC, r.left, r.top, nil );
-	LineTo( DC, r.left, r.bottom ); inc(r_.left);
-      end;
-      {$ENDIF}
-    end;//........{ . END CASE . }
-  end;
-  if fsdTop in Borders then
-  begin
-    case Bevel of
-      bvRaised:
-      begin
-	SelectObject( DC, LPen );
-	MoveToEx( DC, r.left, r.top, nil );
-	LineTo( DC, r.right, r.top ); inc(r_.top);
-	//.if Bold then inc(r_.top);
-      end;
-      bvLowered:
-      begin
-	if Bold then begin
-	  SelectObject( DC, BPen );
-	  MoveToEx( DC, r.left, r.top, nil );
-	  LineTo( DC, r.right, r.top ); inc(r_.top);
-	  SelectObject( DC, SPen );
-	  MoveToEx( DC, r.left+1, r.top+1, nil );
-	  LineTo( DC, r.right, r.top+1 );
-	  //SetPixel(DC, r.right-1, r.top+1, SColor);
-	  inc(r_.top);
-	end else begin
-	  SelectObject( DC, SPen );
-	  MoveToEx( DC, r.left, r.top, nil );
-	  LineTo( DC, r.right, r.top ); inc(r_.top);
-	end;
-      end;
-      {$IFDEF GLVER_D4}
-      bvSpace:
-      begin
-        SelectObject( DC, SPen );
-        MoveToEx( DC, r.left, r.top, nil );
-        LineTo( DC, r.right, r.top ); inc(r_.top);
-      end;
-      {$ENDIF}
-    end;//........{ . END CASE . }
-  end;
-  if fsdRight in Borders then
-  begin
-    case Bevel of
-      bvRaised:
-      begin
-	if Bold then begin
-	  SelectObject( DC, BPen );
-	  MoveToEx( DC, r.right, r.top, nil );
-	  LineTo( DC, r.right, r.bottom+1 ); dec(r_.right);
-	  SelectObject( DC, SPen );
-	  MoveToEx( DC, r.right-1, r.top+1, nil );
-	  LineTo( DC, r.right-1, r.bottom+1 );
-	  //SetPixel(DC, r.right-1, r.bottom-1, SColor);
-	  dec(r_.right);
-	end else begin
-	  SelectObject( DC, SPen );
-	  MoveToEx( DC, r.right, r.top, nil );
-	  LineTo( DC, r.right, r.bottom+1 ); dec(r_.right);
-	end;
-      end;
-      bvLowered:
-      begin
-	SelectObject( DC, LPen );
-	MoveToEx( DC, r.right, r.top, nil );
-	LineTo( DC, r.right, r.bottom ); dec(r_.right);
-//.	if Bold then dec(r_.right);
-      end;
-      {$IFDEF GLVER_D4}
-      bvSpace:
-      begin
-	SelectObject( DC, SPen );
-	MoveToEx( DC, r.right, r.top, nil );
-	LineTo( DC, r.right, r.bottom ); dec(r_.right);
-      end;
-      {$ENDIF}
-    end;//........{ . END CASE . }
-  end;
-  if fsdBottom in Borders then
-  begin
-    case Bevel of
-      bvRaised:
-      begin
-	if Bold then begin
-	  SelectObject( DC, BPen );
-	  if fsdLeft in Borders then i:=1 else i:=0;
-	  MoveToEx( DC, r.left{+1}, r.bottom, nil );
-	  LineTo( DC, r.right, r.bottom ); dec(r_.bottom);
-	  SelectObject( DC, SPen );
-	  MoveToEx( DC, r.left+i{+i}, r.bottom-1, nil );
-	  LineTo( DC, r.right, r.bottom-1 );
-	  //SetPixel(DC, r.right-1+i, r.bottom-1, SColor);
-	  dec(r_.bottom);
-	end else begin
-	  SelectObject( DC, SPen );
-	  MoveToEx( DC, r.left, r.bottom, nil );
-	  LineTo( DC, r.right, r.bottom ); dec(r_.bottom);
-	end;
-      end;
-      bvLowered:
-      begin
-	SelectObject( DC, LPen );
-//	  if Borders.Left then i:=1 else i:=0;
-	MoveToEx( DC, r.left, r.bottom{-1}, nil );
-	LineTo( DC, r.right+1, r.bottom{-1} ); dec(r_.bottom);
- //.	if Bold then dec(r_.bottom);
-	//dec(r_.bottom);
-      end;
-      {$IFDEF GLVER_D4}
-      bvSpace:
-      begin
-	SelectObject( DC, SPen );
-	MoveToEx( DC, r.left, r.bottom{-1}, nil );
-	LineTo( DC, r.right+1, r.bottom{-1} ); dec(r_.bottom);
-      end;
-      {$ENDIF}
-    end;//........{ . END CASE . }
-  end;
-end;//_______________________________________LOCAL END_
-begin//_________________________________________MAIN_
+    if fsdLeft in Borders then
+    begin
+      case Bevel of
+        bvRaised:
+          begin
+            SelectObject(DC, LPen);
+            MoveToEx(DC, r.left, r.top, nil);
+            LineTo(DC, r.left, r.bottom + 1);
+            inc(r_.left);
+            //.if Bold then inc(r_.left);
+          end;
+        bvLowered:
+          begin
+            if Bold then
+            begin
+              SelectObject(DC, BPen);
+              MoveToEx(DC, r.left, r.top, nil);
+              LineTo(DC, r.left, r.bottom);
+              inc(r_.left);
+              SelectObject(DC, SPen);
+              if fsdBottom in Borders then
+                i := 0
+              else
+                i := 1;
+              MoveToEx(DC, r.left + 1, r.top + 1, nil);
+              LineTo(DC, r.left + 1, r.bottom + i);
+              //SetPixel(DC, r.left, r.bottom-1, SColor);
+              inc(r_.left);
+            end
+            else
+            begin
+              SelectObject(DC, SPen);
+              MoveToEx(DC, r.left, r.top, nil);
+              LineTo(DC, r.left, r.bottom);
+              inc(r_.left);
+            end;
+          end;
+        {$IFDEF GLVER_D4}
+        bvSpace:
+          begin
+            SelectObject(DC, SPen);
+            MoveToEx(DC, r.left, r.top, nil);
+            LineTo(DC, r.left, r.bottom);
+            inc(r_.left);
+          end;
+        {$ENDIF}
+      end; //........{ . END CASE . }
+    end;
+    if fsdTop in Borders then
+    begin
+      case Bevel of
+        bvRaised:
+          begin
+            SelectObject(DC, LPen);
+            MoveToEx(DC, r.left, r.top, nil);
+            LineTo(DC, r.right, r.top);
+            inc(r_.top);
+            //.if Bold then inc(r_.top);
+          end;
+        bvLowered:
+          begin
+            if Bold then
+            begin
+              SelectObject(DC, BPen);
+              MoveToEx(DC, r.left, r.top, nil);
+              LineTo(DC, r.right, r.top);
+              inc(r_.top);
+              SelectObject(DC, SPen);
+              MoveToEx(DC, r.left + 1, r.top + 1, nil);
+              LineTo(DC, r.right, r.top + 1);
+              //SetPixel(DC, r.right-1, r.top+1, SColor);
+              inc(r_.top);
+            end
+            else
+            begin
+              SelectObject(DC, SPen);
+              MoveToEx(DC, r.left, r.top, nil);
+              LineTo(DC, r.right, r.top);
+              inc(r_.top);
+            end;
+          end;
+        {$IFDEF GLVER_D4}
+        bvSpace:
+          begin
+            SelectObject(DC, SPen);
+            MoveToEx(DC, r.left, r.top, nil);
+            LineTo(DC, r.right, r.top);
+            inc(r_.top);
+          end;
+        {$ENDIF}
+      end; //........{ . END CASE . }
+    end;
+    if fsdRight in Borders then
+    begin
+      case Bevel of
+        bvRaised:
+          begin
+            if Bold then
+            begin
+              SelectObject(DC, BPen);
+              MoveToEx(DC, r.right, r.top, nil);
+              LineTo(DC, r.right, r.bottom + 1);
+              dec(r_.right);
+              SelectObject(DC, SPen);
+              MoveToEx(DC, r.right - 1, r.top + 1, nil);
+              LineTo(DC, r.right - 1, r.bottom + 1);
+              //SetPixel(DC, r.right-1, r.bottom-1, SColor);
+              dec(r_.right);
+            end
+            else
+            begin
+              SelectObject(DC, SPen);
+              MoveToEx(DC, r.right, r.top, nil);
+              LineTo(DC, r.right, r.bottom + 1);
+              dec(r_.right);
+            end;
+          end;
+        bvLowered:
+          begin
+            SelectObject(DC, LPen);
+            MoveToEx(DC, r.right, r.top, nil);
+            LineTo(DC, r.right, r.bottom);
+            dec(r_.right);
+            //.	if Bold then dec(r_.right);
+          end;
+        {$IFDEF GLVER_D4}
+        bvSpace:
+          begin
+            SelectObject(DC, SPen);
+            MoveToEx(DC, r.right, r.top, nil);
+            LineTo(DC, r.right, r.bottom);
+            dec(r_.right);
+          end;
+        {$ENDIF}
+      end; //........{ . END CASE . }
+    end;
+    if fsdBottom in Borders then
+    begin
+      case Bevel of
+        bvRaised:
+          begin
+            if Bold then
+            begin
+              SelectObject(DC, BPen);
+              if fsdLeft in Borders then
+                i := 1
+              else
+                i := 0;
+              MoveToEx(DC, r.left {+1}, r.bottom, nil);
+              LineTo(DC, r.right, r.bottom);
+              dec(r_.bottom);
+              SelectObject(DC, SPen);
+              MoveToEx(DC, r.left + i {+i}, r.bottom - 1, nil);
+              LineTo(DC, r.right, r.bottom - 1);
+              //SetPixel(DC, r.right-1+i, r.bottom-1, SColor);
+              dec(r_.bottom);
+            end
+            else
+            begin
+              SelectObject(DC, SPen);
+              MoveToEx(DC, r.left, r.bottom, nil);
+              LineTo(DC, r.right, r.bottom);
+              dec(r_.bottom);
+            end;
+          end;
+        bvLowered:
+          begin
+            SelectObject(DC, LPen);
+            //	  if Borders.Left then i:=1 else i:=0;
+            MoveToEx(DC, r.left, r.bottom {-1}, nil);
+            LineTo(DC, r.right + 1, r.bottom {-1});
+            dec(r_.bottom);
+            //.	if Bold then dec(r_.bottom);
+            //dec(r_.bottom);
+          end;
+        {$IFDEF GLVER_D4}
+        bvSpace:
+          begin
+            SelectObject(DC, SPen);
+            MoveToEx(DC, r.left, r.bottom {-1}, nil);
+            LineTo(DC, r.right + 1, r.bottom {-1});
+            dec(r_.bottom);
+          end;
+        {$ENDIF}
+      end; //........{ . END CASE . }
+    end;
+  end; //_______________________________________LOCAL END_
+begin //_________________________________________MAIN_
 
   try
     if Assigned(glGlobalData.lp3DColors) then
       with Tgl3DColors(glGlobalData.lp3DColors) do
       begin
-	BColor := ColorToRGB( DkShadow );
-	HColor := ColorToRGB( Highlight );
-	SColor := ColorToRGB( Shadow );
+        BColor := ColorToRGB(DkShadow);
+        HColor := ColorToRGB(Highlight);
+        SColor := ColorToRGB(Shadow);
       end
-    else SetDefColors;
+    else
+      SetDefColors;
 
-  except end;
+  except
+  end;
 
-  LPen := CreatePen( PS_SOLID, 1, HColor );	//.
-  OldPen := SelectObject( DC, LPen );		//..
-  DeleteObject( SelectObject( DC, OldPen ) );	//...get OldPen
+  LPen := CreatePen(PS_SOLID, 1, HColor); //.
+  OldPen := SelectObject(DC, LPen); //..
+  DeleteObject(SelectObject(DC, OldPen)); //...get OldPen
 
   FillChar(LOGOLDPEN, sizeof(LOGOLDPEN), 0);
-  GetObject(OldPen,sizeof(LOGOLDPEN),@LOGOLDPEN);
-  if LOGOLDPEN.lopnWidth.x = 0 then PenWidth:=1
-			       else PenWidth:=LOGOLDPEN.lopnWidth.x;
-  BPen := CreatePen( LOGOLDPEN.lopnStyle, PenWidth, BColor );
-  LPen := CreatePen( LOGOLDPEN.lopnStyle, PenWidth, HColor );
-  SPen := CreatePen( LOGOLDPEN.lopnStyle, PenWidth, SColor );
-  SelectObject( DC, LPen );
-  r_:=rect;
-  r :=rect;
-  if BevelOuter <> bvNone then DrawBevel( BevelOuter );
+  GetObject(OldPen, sizeof(LOGOLDPEN), @LOGOLDPEN);
+  if LOGOLDPEN.lopnWidth.x = 0 then
+    PenWidth := 1
+  else
+    PenWidth := LOGOLDPEN.lopnWidth.x;
+  BPen := CreatePen(LOGOLDPEN.lopnStyle, PenWidth, BColor);
+  LPen := CreatePen(LOGOLDPEN.lopnStyle, PenWidth, HColor);
+  SPen := CreatePen(LOGOLDPEN.lopnStyle, PenWidth, SColor);
+  SelectObject(DC, LPen);
+  r_ := rect;
+  r := rect;
+  if BevelOuter <> bvNone then DrawBevel(BevelOuter);
   r := r_;
-//  if (BevelOuter = bvRaised)and(BevelInner = bvLowered)and Bold then
-//  begin dec(r.top); dec(r.left); end;
+  //  if (BevelOuter = bvRaised)and(BevelInner = bvLowered)and Bold then
+  //  begin dec(r.top); dec(r.left); end;
 
-  if BevelInner <> bvNone then DrawBevel( BevelInner );
+  if BevelInner <> bvNone then DrawBevel(BevelInner);
 
-  SelectObject( DC, OldPen );
-  DeleteObject( BPen );
-  DeleteObject( LPen );
-  DeleteObject( SPen );
+  SelectObject(DC, OldPen);
+  DeleteObject(BPen);
+  DeleteObject(LPen);
+  DeleteObject(SPen);
 
   if not fTransparent then
   begin
-    hBackgrBrush := CreateSolidBrush( ColorToRGB( BackgrColor ) );
-    hOldBrush := SelectObject( DC, hBackgrBrush );
-    r:=r_;{dec(r.top);dec(r.left);}inc(r.right);inc(r.bottom);
-    FillRect( DC, r, hBackgrBrush );
-    DeleteObject( SelectObject( DC, hOldBrush ) );
+    hBackgrBrush := CreateSolidBrush(ColorToRGB(BackgrColor));
+    hOldBrush := SelectObject(DC, hBackgrBrush);
+    r := r_; {dec(r.top);dec(r.left);}
+    inc(r.right);
+    inc(r.bottom);
+    FillRect(DC, r, hBackgrBrush);
+    DeleteObject(SelectObject(DC, hOldBrush));
   end;
 
   Result := r_;
@@ -810,10 +940,10 @@ end;
 
 //_________________________________________________________________\\
 
-
 {
  Рисует градиент TJvgGradient
 }
+
 procedure GradientBox(DC: HDC; r: TRect; Gradient: TJvgGradient; PenStyle, PenWidth: integer);
 begin
   Gradient.Draw(DC, r, PenStyle, PenWidth);
@@ -824,24 +954,26 @@ end;
 {
  Заменяет цвет у битмапа
 }
-procedure ChangeBitmapColor( Bitmap :TBitmap;
-			     FromColor, ToColor: TColor );
+
+procedure ChangeBitmapColor(Bitmap: TBitmap;
+  FromColor, ToColor: TColor);
 var
   IWidth, IHeight: Integer;
   DRect, SRect: TRect;
-  MonoBMP,OldBMP: HBitmap;
+  MonoBMP, OldBMP: HBitmap;
   MonoDC: HDC;
 const
   ROP_DSPDxax = $00E20746;
 
 begin
   if (Bitmap.Width or Bitmap.Height) = 0 then Exit;
-  IWidth := Bitmap.Width; IHeight := Bitmap.Height;
+  IWidth := Bitmap.Width;
+  IHeight := Bitmap.Height;
   DRect := Rect(0, 0, IWidth, IHeight);
   SRect := DRect;
 
-  MonoDC := CreateCompatibleDC( Bitmap.Canvas.handle );
-  MonoBMP := CreateBitmap( IWidth, IHeight, 1, 1, nil);
+  MonoDC := CreateCompatibleDC(Bitmap.Canvas.handle);
+  MonoBMP := CreateBitmap(IWidth, IHeight, 1, 1, nil);
   OldBMP := SelectObject(MonoDC, MonoBMP);
 
   try
@@ -849,16 +981,16 @@ begin
     begin
       Bitmap.Canvas.Brush.Color := FromColor;
       {copy Bitmap to MonoBmp}
-      BitBlt( MonoDC, 0, 0, IWidth, IHeight, Handle, 0, 0, cmSrcCopy);
+      BitBlt(MonoDC, 0, 0, IWidth, IHeight, Handle, 0, 0, cmSrcCopy);
       Brush.Color := ToColor;
       SetTextColor(Handle, clBlack);
       SetBkColor(Handle, clWhite);
       BitBlt(Handle, 0, 0, IWidth, IHeight,
-       MonoDC, 0, 0, ROP_DSPDxax);
+        MonoDC, 0, 0, ROP_DSPDxax);
     end;
   finally
-    DeleteObject( SelectObject(MonoDC, OldBMP) );
-    DeleteDC( MonoDC );
+    DeleteObject(SelectObject(MonoDC, OldBMP));
+    DeleteDC(MonoDC);
   end;
 end;
 
@@ -868,85 +1000,95 @@ end;
  Выводит битмап. Прозрачный, disabled, размноженный etc
 
 }
-procedure DrawBitmapExt(   DC		     :HDC;{ DC - background & result}
-			   SourceBitmap      :TBitmap;
-			   r		     :TRect;
-			   x,y		     :integer;//...x,y _in_ rect!
-			   BitmapOption      :TglWallpaperOption;
-			   DrawState	     :TglDrawState;
-			   fTransparent      :boolean;
-			   TransparentColor  :TColor;
-			   DisabledMaskColor :TColor );
+
+procedure DrawBitmapExt(DC: HDC; { DC - background & result}
+  SourceBitmap: TBitmap;
+  r: TRect;
+  x, y: integer; //...x,y _in_ rect!
+  BitmapOption: TglWallpaperOption;
+  DrawState: TglDrawState;
+  fTransparent: boolean;
+  TransparentColor: TColor;
+  DisabledMaskColor: TColor);
 begin
 
-  CreateBitmapExt( DC, SourceBitmap, r, x, y, BitmapOption,
-		   DrawState, fTransparent, TransparentColor,
-		   DisabledMaskColor );
+  CreateBitmapExt(DC, SourceBitmap, r, x, y, BitmapOption,
+    DrawState, fTransparent, TransparentColor,
+    DisabledMaskColor);
 end;
 //_________________________________________________________________\\
 //..DrawBitmap algorithm borrow from Delphi2 VCL Sources
 { create bimap based on  SourceBitmap and write new bitmap to DC }
-procedure CreateBitmapExt( DC		     :HDC;{target DC}
-			   SourceBitmap      :TBitmap;
-			   r		     :TRect;
-			   x,y		     :integer;//...x,y _in_ rect!
-			   BitmapOption      :TglWallpaperOption;
-			   DrawState	     :TglDrawState;
-			   fTransparent      :boolean;
-			   TransparentColor  :TColor;
-			   DisabledMaskColor :TColor );
+
+procedure CreateBitmapExt(DC: HDC; {target DC}
+  SourceBitmap: TBitmap;
+  r: TRect;
+  x, y: integer; //...x,y _in_ rect!
+  BitmapOption: TglWallpaperOption;
+  DrawState: TglDrawState;
+  fTransparent: boolean;
+  TransparentColor: TColor;
+  DisabledMaskColor: TColor);
 var
-  x_,y_,H,W:integer;
-  D,D_:double;
+  x_, y_, H, W: integer;
+  D, D_: double;
   TmpImage, MonoBmp: TBitmap;
   IWidth, IHeight: Integer;
   IRect, ORect: TRect;
-//  DestDC: HDC;
+  //  DestDC: HDC;
   BmpInfo: Windows.TBitmap;
   ptSize, ptOrg: TPoint;
-  MemDC,ImageDC: HDC;
-  OldBMP,OldMonoBMP,OldScreenImageBMP,OldMemBMP: HBitmap;
-  Mono_BMP,ScreenImageBMP,MemBMP: HBitmap;
-  MonoDC,ScreenImageDC: HDC;
-  OldBkColor:COLORREF;
-  SavedIHeight:integer;
+  MemDC, ImageDC: HDC;
+  OldBMP, OldMonoBMP, OldScreenImageBMP, OldMemBMP: HBitmap;
+  Mono_BMP, ScreenImageBMP, MemBMP: HBitmap;
+  MonoDC, ScreenImageDC: HDC;
+  OldBkColor: COLORREF;
+  SavedIHeight: integer;
 const
   ROP_DSPDxax = $00E20746;
-  procedure BitBltWorks;//*************************************END LOCAL
-  begin
-  if fTransparent then
-  begin
-    { create copy of drawing image }
-    BitBlt( MemDC, 0,0, IWidth, IHeight, ImageDC, 0,0, SRCCOPY );
-    if DrawState = fdsDisabled then TransparentColor:=clBtnFace;
-    OldBkColor := SetBkColor( MemDC, ColorToRGB(TransparentColor) );
-    { create monohrome mask: TransparentColor -> white, other color -> black }
-    BitBlt( MonoDC, 0,0, IWidth, IHeight, MemDC, 0,0, SRCCOPY );
-    SetBkColor(MemDC, OldBkColor);
-    {create copy of screen image}
-    BitBlt( ScreenImageDC, 0,0, IWidth, IHeight, DC, x_, y_, SRCCOPY );
-    { put monohrome mask }
-    BitBlt( ScreenImageDC, 0,0, IWidth, IHeight, MonoDC, 0,0, SRCAND );
-    BitBlt( MonoDC, 0, 0, IWidth, IHeight, MonoDC, 0, 0, NOTSRCCOPY);
-    { put inverse monohrome mask }
-    BitBlt( MemDC, 0,0, IWidth, IHeight, MonoDC, 0,0, SRCAND );
-    { merge Screen screen image(MemDC) and Screen image(ScreenImageDC) }
-    BitBlt( MemDC, 0,0, IWidth, IHeight, ScreenImageDC, 0,0, SRCPAINT );
-    { to screen }
-//    DSTINVERT MERGEPAINT
-    BitBlt( DC, x_, y_, IWidth, IHeight, MemDC, 0,0, SRCCOPY );
-  end else
-    BitBlt( DC, x_, y_, IWidth, IHeight, ImageDC, 0,0, SRCCOPY );
 
-end;//*******************************************END LOCAL PROC
+  procedure BitBltWorks; //*************************************END LOCAL
+  begin
+    if fTransparent then
+    begin
+      { create copy of drawing image }
+      BitBlt(MemDC, 0, 0, IWidth, IHeight, ImageDC, 0, 0, SRCCOPY);
+      if DrawState = fdsDisabled then TransparentColor := clBtnFace;
+      OldBkColor := SetBkColor(MemDC, ColorToRGB(TransparentColor));
+      { create monohrome mask: TransparentColor -> white, other color -> black }
+      BitBlt(MonoDC, 0, 0, IWidth, IHeight, MemDC, 0, 0, SRCCOPY);
+      SetBkColor(MemDC, OldBkColor);
+      {create copy of screen image}
+      BitBlt(ScreenImageDC, 0, 0, IWidth, IHeight, DC, x_, y_, SRCCOPY);
+      { put monohrome mask }
+      BitBlt(ScreenImageDC, 0, 0, IWidth, IHeight, MonoDC, 0, 0, SRCAND);
+      BitBlt(MonoDC, 0, 0, IWidth, IHeight, MonoDC, 0, 0, NOTSRCCOPY);
+      { put inverse monohrome mask }
+      BitBlt(MemDC, 0, 0, IWidth, IHeight, MonoDC, 0, 0, SRCAND);
+      { merge Screen screen image(MemDC) and Screen image(ScreenImageDC) }
+      BitBlt(MemDC, 0, 0, IWidth, IHeight, ScreenImageDC, 0, 0, SRCPAINT);
+      { to screen }
+  //    DSTINVERT MERGEPAINT
+      BitBlt(DC, x_, y_, IWidth, IHeight, MemDC, 0, 0, SRCCOPY);
+    end
+    else
+      BitBlt(DC, x_, y_, IWidth, IHeight, ImageDC, 0, 0, SRCCOPY);
+
+  end; //*******************************************END LOCAL PROC
 
 begin
   if (SourceBitmap.Width or SourceBitmap.Height) = 0 then Exit;
 
-  x:=x+r.left; y:=y+r.top; x_:=x; y_:=y;
-  OldBMP := 0; OldMemBMP := 0; OldMonoBMP := 0; OldScreenImageBMP := 0;
-  IWidth := SourceBitmap.Width;//min( SourceBitmap.Width, r.right-r.left );
-  IHeight := SourceBitmap.Height;//min( SourceBitmap.Height, r.bottom-r.top );
+  x := x + r.left;
+  y := y + r.top;
+  x_ := x;
+  y_ := y;
+  OldBMP := 0;
+  OldMemBMP := 0;
+  OldMonoBMP := 0;
+  OldScreenImageBMP := 0;
+  IWidth := SourceBitmap.Width; //min( SourceBitmap.Width, r.right-r.left );
+  IHeight := SourceBitmap.Height; //min( SourceBitmap.Height, r.bottom-r.top );
   TmpImage := TBitmap.Create;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~/
@@ -957,87 +1099,96 @@ begin
     ORect := Rect(0, 0, IWidth, IHeight);
 
     TmpImage.Canvas.Brush.Color := TransparentColor;
-    TmpImage.Canvas.FillRect(Rect(0,0,IWidth,IHeight));
+    TmpImage.Canvas.FillRect(Rect(0, 0, IWidth, IHeight));
 
     case DrawState of
-      fdsDefault://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      begin
-	BitBlt( TmpImage.Canvas.Handle, 0, 0, IWidth, IHeight,
-		SourceBitmap.canvas.Handle, 0, 0, SRCCOPY);
-      end;
-      fdsDelicate://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      begin
-	with TmpImage.Canvas do
-	BitBlt( Handle, 0, 0, IWidth, IHeight,
-		SourceBitmap.canvas.Handle, 0, 0, cmSrcCopy);
-	begin
-	  { Convert white to clBtnHighlight }
-	  ChangeBitmapColor(TmpImage,clWhite,clBtnHighlight);
-	  { Convert gray to clBtnShadow }
-	  ChangeBitmapColor(TmpImage,clGray,clBtnShadow);
-	  { Convert transparent color to clBtnFace }
-//	    ChangeBitmapColor(TmpImage,ColorToRGB(}TransparentColor),clBtnFace);
-	end;
-      end;
-      fdsDisabled://~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-      begin
-	if DisabledMaskColor<>0 then
-	  ChangeBitmapColor( TmpImage, DisabledMaskColor, clBlack );
-	MonoBmp:=Tbitmap.Create;
-	try	   { Create a disabled version }
-	  with MonoBmp do
-	  begin
-	    Assign(SourceBitmap);
-	    Canvas.Brush.Color := 0;
-	    Width := IWidth;
-	    if Monochrome then
-	    begin
-	      Canvas.Font.Color := clWhite;
-	      Monochrome := False;
-	      Canvas.Brush.Color := clWhite;
-	    end;
-	    Monochrome := True;
-	  end;
-	  with TmpImage.Canvas do
-	  begin
-	    Brush.Color := clBtnFace;
-	    FillRect(IRect);
-	    Brush.Color := clBtnHighlight;
-	    SetTextColor(Handle, 0 ); SetBkColor(Handle, clWhite);
-	    BitBlt(Handle, 1, 1, IWidth, IHeight,
-	     MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-	    Brush.Color := clBtnShadow;
-	    SetTextColor(Handle, 0 ); SetBkColor(Handle, clWhite);
-	    BitBlt(Handle, 0, 0, IWidth, IHeight,
-	     MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
-	  end;
-	finally
-	  MonoBmp.Free;
-	end;
-      end;
-    end;{CASE}
+      fdsDefault: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        begin
+          BitBlt(TmpImage.Canvas.Handle, 0, 0, IWidth, IHeight,
+            SourceBitmap.canvas.Handle, 0, 0, SRCCOPY);
+        end;
+      fdsDelicate: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        begin
+          with TmpImage.Canvas do
+            BitBlt(Handle, 0, 0, IWidth, IHeight,
+              SourceBitmap.canvas.Handle, 0, 0, cmSrcCopy);
+          begin
+            { Convert white to clBtnHighlight }
+            ChangeBitmapColor(TmpImage, clWhite, clBtnHighlight);
+            { Convert gray to clBtnShadow }
+            ChangeBitmapColor(TmpImage, clGray, clBtnShadow);
+            { Convert transparent color to clBtnFace }
+         //	    ChangeBitmapColor(TmpImage,ColorToRGB(}TransparentColor),clBtnFace);
+          end;
+        end;
+      fdsDisabled: //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        begin
+          if DisabledMaskColor <> 0 then
+            ChangeBitmapColor(TmpImage, DisabledMaskColor, clBlack);
+          MonoBmp := Tbitmap.Create;
+          try { Create a disabled version }
+            with MonoBmp do
+            begin
+              Assign(SourceBitmap);
+              Canvas.Brush.Color := 0;
+              Width := IWidth;
+              if Monochrome then
+              begin
+                Canvas.Font.Color := clWhite;
+                Monochrome := False;
+                Canvas.Brush.Color := clWhite;
+              end;
+              Monochrome := True;
+            end;
+            with TmpImage.Canvas do
+            begin
+              Brush.Color := clBtnFace;
+              FillRect(IRect);
+              Brush.Color := clBtnHighlight;
+              SetTextColor(Handle, 0);
+              SetBkColor(Handle, clWhite);
+              BitBlt(Handle, 1, 1, IWidth, IHeight,
+                MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+              Brush.Color := clBtnShadow;
+              SetTextColor(Handle, 0);
+              SetBkColor(Handle, clWhite);
+              BitBlt(Handle, 0, 0, IWidth, IHeight,
+                MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+            end;
+          finally
+            MonoBmp.Free;
+          end;
+        end;
+    end; {CASE}
 
     with TmpImage.Canvas do
-    if (BitmapOption=fwoStretch)or(BitmapOption=fwoPropStretch) then
-    begin
-      MemDC := CreateCompatibleDC(DC);
-      MemBMP := CreateCompatibleBitmap(TmpImage.Canvas.Handle, r.right-r.left, r.bottom-r.top);
-      OldMemBMP := SelectObject( MemDC, MemBMP);
-      W := r.right-r.left; H := r.bottom-r.top;
-      if BitmapOption=fwoPropStretch then begin
-	D_ := W / IWidth; D := H / IHeight;
-	if D > D_ then D := D_;//...D == min
-	W := trunc(IWidth * D); H := trunc(IHeight * D);
+      if (BitmapOption = fwoStretch) or (BitmapOption = fwoPropStretch) then
+      begin
+        MemDC := CreateCompatibleDC(DC);
+        MemBMP := CreateCompatibleBitmap(TmpImage.Canvas.Handle, r.right - r.left, r.bottom - r.top);
+        OldMemBMP := SelectObject(MemDC, MemBMP);
+        W := r.right - r.left;
+        H := r.bottom - r.top;
+        if BitmapOption = fwoPropStretch then
+        begin
+          D_ := W / IWidth;
+          D := H / IHeight;
+          if D > D_ then D := D_; //...D == min
+          W := trunc(IWidth * D);
+          H := trunc(IHeight * D);
+        end;
+        StretchBlt(MemDC, 0, 0, W, H, Handle,
+          0, 0, IWidth, IHeight, SRCCOPY);
+
+        IWidth := W;
+        IHeight := H;
+        TmpImage.Width := W;
+        TmpImage.Height := H;
+        BitBlt(Handle, 0, 0, IWidth, IHeight, MemDC, 0, 0, SRCCOPY);
+
+        DeleteObject(SelectObject(MemDC, OldMemBMP));
+        DeleteDC(MemDC);
       end;
-      StretchBlt( MemDC, 0, 0, W, H, Handle,
-	 0, 0, IWidth, IHeight, SRCCOPY );
-
-      IWidth := W; IHeight := H; TmpImage.Width := W; TmpImage.Height := H;
-      BitBlt( Handle, 0, 0, IWidth, IHeight, MemDC, 0, 0, SRCCOPY);
-
-      DeleteObject( SelectObject(MemDC, OldMemBMP) );
-      DeleteDC( MemDC );
-    end;
 
     ImageDC := CreateCompatibleDC(DC);
 
@@ -1047,54 +1198,62 @@ begin
       ScreenImageDC := CreateCompatibleDC(DC);
       MonoDC := CreateCompatibleDC(DC);
 
-      Mono_BMP := CreateBitmap( IWidth, IHeight, 1, 1, nil);
+      Mono_BMP := CreateBitmap(IWidth, IHeight, 1, 1, nil);
       ScreenImageBMP := CreateCompatibleBitmap(TmpImage.Canvas.Handle, IWidth, IHeight);
       MemBMP := CreateCompatibleBitmap(TmpImage.Canvas.Handle, IWidth, IHeight);
 
       OldMonoBMP := SelectObject(MonoDC, Mono_BMP);
       OldScreenImageBMP := SelectObject(ScreenImageDC, ScreenImageBMP);
-      OldMemBMP := SelectObject( MemDC, MemBMP);
+      OldMemBMP := SelectObject(MemDC, MemBMP);
     end;
-    OldBMP := SelectObject( ImageDC, TmpImage.Handle );
+    OldBMP := SelectObject(ImageDC, TmpImage.Handle);
 
-
-    if OldBMP<>0 then
+    if OldBMP <> 0 then
     begin
-      SetMapMode( ImageDC, GetMapMode(DC) );
-      GetObject( TmpImage.Handle, sizeof(Windows.TBitmap), @BmpInfo );
-      ptSize.x:=BmpInfo.bmWidth; ptOrg.x:=0;
-      ptSize.y:=BmpInfo.bmHeight; ptOrg.y:=0;
+      SetMapMode(ImageDC, GetMapMode(DC));
+      GetObject(TmpImage.Handle, sizeof(Windows.TBitmap), @BmpInfo);
+      ptSize.x := BmpInfo.bmWidth;
+      ptOrg.x := 0;
+      ptSize.y := BmpInfo.bmHeight;
+      ptOrg.y := 0;
       if fTransparent then
-      begin DPtoLP( DC, ptSize, 1 ); DPtoLP( MemDC, ptOrg.y, 1 ); end;
-      if BitmapOption=fwoTile then
       begin
-	//SavedIWidth:=IWidth;
-	 SavedIHeight:=IHeight;
-	while x_ < r.right do
-	begin
-	  //IWidth:=SavedIWidth; //SavedIWidth:=IWidth;
-	  if x_+IWidth > r.right then IWidth:=r.right-x_;
-	  while y_ < r.bottom do begin
-	    IHeight:=SavedIHeight;// SavedIHeight:=IHeight;
-	    if y_+IHeight > r.bottom then IHeight:=r.bottom-y_;
-	    BitBltWorks;
-	    Inc(y_, IHeight);
-	  end;
-	  Inc(x_, IWidth); y_:=y;
-	end;
-      end else BitBltWorks;
+        DPtoLP(DC, ptSize, 1);
+        DPtoLP(MemDC, ptOrg.y, 1);
+      end;
+      if BitmapOption = fwoTile then
+      begin
+        //SavedIWidth:=IWidth;
+        SavedIHeight := IHeight;
+        while x_ < r.right do
+        begin
+          //IWidth:=SavedIWidth; //SavedIWidth:=IWidth;
+          if x_ + IWidth > r.right then IWidth := r.right - x_;
+          while y_ < r.bottom do
+          begin
+            IHeight := SavedIHeight; // SavedIHeight:=IHeight;
+            if y_ + IHeight > r.bottom then IHeight := r.bottom - y_;
+            BitBltWorks;
+            Inc(y_, IHeight);
+          end;
+          Inc(x_, IWidth);
+          y_ := y;
+        end;
+      end
+      else
+        BitBltWorks;
     end;
   finally
-    DeleteObject( SelectObject(ImageDC, OldBMP) );
-    DeleteDC( ImageDC );
+    DeleteObject(SelectObject(ImageDC, OldBMP));
+    DeleteDC(ImageDC);
     if fTransparent then
     begin
-      DeleteObject( SelectObject(MonoDC, OldMonoBMP) );
-      DeleteObject( SelectObject(ScreenImageDC, OldScreenImageBMP) );
-      DeleteObject( SelectObject(MemDC, OldMemBMP) );
-      DeleteDC( MonoDC );
-      DeleteDC( ScreenImageDC );
-      DeleteDC( MemDC );
+      DeleteObject(SelectObject(MonoDC, OldMonoBMP));
+      DeleteObject(SelectObject(ScreenImageDC, OldScreenImageBMP));
+      DeleteObject(SelectObject(MemDC, OldMemBMP));
+      DeleteDC(MonoDC);
+      DeleteDC(ScreenImageDC);
+      DeleteDC(MemDC);
     end;
     TmpImage.Free;
   end;
@@ -1103,19 +1262,29 @@ end;
 //-----------------------------------------------------
 
 { Выносит родительское окно на передний план }
+
 procedure BringParentWindowToTop(Wnd: TWinControl);
 begin
-  if Wnd is TForm then BringWindowToTop(Wnd.Handle)
-  else if Wnd.Parent is TWinControl then BringParentWindowToTop(Wnd.Parent);
+  if Wnd is TForm then
+    BringWindowToTop(Wnd.Handle)
+  else if Wnd.Parent is TWinControl then
+    BringParentWindowToTop(Wnd.Parent);
 end;
 //-----------------------------------------------------
 
 { Возвращает родительское окно класса TForm }
+
 function GetParentForm(Control: TControl): TForm;
 begin
-  if Control is TForm then begin Result := TForm(Control); exit; end
-  else if Control.Parent is TWinControl then Result := GetParentForm(Control.Parent)
-  else Result := nil;
+  if Control is TForm then
+  begin
+    Result := TForm(Control);
+    exit;
+  end
+  else if Control.Parent is TWinControl then
+    Result := GetParentForm(Control.Parent)
+  else
+    Result := nil;
 end;
 
 //-----------------------------------------------------
@@ -1124,6 +1293,7 @@ end;
  Отрисовывает TWinControl со всем содержимым на DC со смещением X, Y
  //...from rxLib... :( very sorry
 }
+
 procedure GetWindowImageFrom(Control: TWinControl; X, Y: integer; fDrawSelf, fDrawChildWindows: boolean; DC: HDC);
 var
   I, Count, SaveIndex: Integer;
@@ -1140,38 +1310,42 @@ begin
     RestoreDC(DC, SaveIndex);
   end;
   { Copy images of graphic controls }
-  for I := 0 to Count - 1 do begin
+  for I := 0 to Count - 1 do
+  begin
     if (Control.Controls[I] <> nil) then
     begin
       if Control.Controls[I] = Control then Break;
-      if (Control.Controls[I] is TWinControl)and fDrawChildWindows then
-	GetWindowImageFrom( TWinControl(Control.Controls[I]),
-			    TWinControl(Control.Controls[I]).Left,
-			    TWinControl(Control.Controls[I]).Top,
-			    true{fDrawSelf}, fDrawChildWindows, DC ) else
-      with Control.Controls[I] do
-	if Visible then begin
-	  SaveIndex := SaveDC(DC);
-	  SetViewportOrgEx(DC, Left + X, Top + Y, nil);
-	  Perform(WM_PAINT, Longint(DC), 0);
-	  RestoreDC(DC, SaveIndex);
-	end;
+      if (Control.Controls[I] is TWinControl) and fDrawChildWindows then
+        GetWindowImageFrom(TWinControl(Control.Controls[I]),
+          TWinControl(Control.Controls[I]).Left,
+          TWinControl(Control.Controls[I]).Top,
+          true {fDrawSelf}, fDrawChildWindows, DC)
+      else
+        with Control.Controls[I] do
+          if Visible then
+          begin
+            SaveIndex := SaveDC(DC);
+            SetViewportOrgEx(DC, Left + X, Top + Y, nil);
+            Perform(WM_PAINT, Longint(DC), 0);
+            RestoreDC(DC, SaveIndex);
+          end;
     end;
   end;
 end;
 
-
 {
  Отрисовывает TWinControl со всем содержимым на DC со смещением 0, 0
 }
+
 procedure GetWindowImage(Control: TWinControl; fDrawSelf, fDrawChildWindows: boolean; DC: HDC);
 begin
-  GetWindowImageFrom( Control, 0, 0, fDrawSelf, fDrawChildWindows, DC );
+  GetWindowImageFrom(Control, 0, 0, fDrawSelf, fDrawChildWindows, DC);
 end;
 
 {
  Отрисовывает родительский TWinControl со всем содержимым на DC с ограничением по Rect
 }
+
 procedure GetParentImageRect(Control: TControl; Rect: TRect; DC: HDC);
 var
   I, Count, X, Y, SaveIndex: Integer;
@@ -1180,69 +1354,74 @@ begin
   if Control.Parent = nil then exit;
   Count := Control.Parent.ControlCount;
   SelfR := Bounds(Control.Left, Control.Top, Control.Width, Control.Height);
-//  OffsetRect( Rect, Control.Left, Control.Top );
+  //  OffsetRect( Rect, Control.Left, Control.Top );
   IntersectRect(SelfR, SelfR, Rect);
 
-  X := -Rect{Control}.Left; Y := -Rect{Control}.Top;
+  X := -Rect {Control}.Left;
+  Y := -Rect {Control}.Top;
   { Copy parent control image }
   SaveIndex := SaveDC(DC);
   SetViewportOrgEx(DC, X, Y, nil);
-  IntersectClipRect(DC, 0, 0, {Control.Parent.ClientWidth}Rect.Right,
-		    {Control.Parent.ClientHeight}Rect.Bottom);
+  IntersectClipRect(DC, 0, 0, {Control.Parent.ClientWidth} Rect.Right,
+    {Control.Parent.ClientHeight} Rect.Bottom);
   TJvgPublicWinControl(Control.Parent).PaintWindow(DC);
   RestoreDC(DC, SaveIndex);
   { Copy images of graphic controls }
-  for I := 0 to Count - 1 do begin
+  for I := 0 to Count - 1 do
+  begin
     if (Control.Parent.Controls[I] <> nil) and
       not (Control.Parent.Controls[I] is TWinControl) then
     begin
       if Control.Parent.Controls[I] = Control then Break;
-      with Control.Parent.Controls[I] do begin
-	CtlR := Bounds(Left, Top, Width, Height);
-	if Bool(IntersectRect(R, SelfR, CtlR)) and Visible then begin
-	  SaveIndex := SaveDC(DC);
-	  SetViewportOrgEx(DC, Left + X, Top + Y, nil);
-	  IntersectClipRect(DC, 0, 0, Width, Height);
-	  Perform(WM_PAINT, Longint(DC), 0);
-	  RestoreDC(DC, SaveIndex);
-	end;
+      with Control.Parent.Controls[I] do
+      begin
+        CtlR := Bounds(Left, Top, Width, Height);
+        if Bool(IntersectRect(R, SelfR, CtlR)) and Visible then
+        begin
+          SaveIndex := SaveDC(DC);
+          SetViewportOrgEx(DC, Left + X, Top + Y, nil);
+          IntersectClipRect(DC, 0, 0, Width, Height);
+          Perform(WM_PAINT, Longint(DC), 0);
+          RestoreDC(DC, SaveIndex);
+        end;
       end;
     end;
   end;
 end;
 
-
 {
  Создает шрифт с заданным углом наклона
 }
-function CreateRotatedFont(F : TFont; Escapement : Integer) : hFont;
-  {-create a rotated font based on the font object F}
+
+function CreateRotatedFont(F: TFont; Escapement: Integer): hFont;
+{-create a rotated font based on the font object F}
 var
-  LF : TLogFont;
+  LF: TLogFont;
 begin
   FillChar(LF, SizeOf(LF), #0);
-  with LF do begin
-    lfHeight	       := F.Height;
-//    lfWidth		 := 8;//FHeight div 4;
-    lfEscapement       := Escapement;
-    lfOrientation      := 0;
+  with LF do
+  begin
+    lfHeight := F.Height;
+    //    lfWidth		 := 8;//FHeight div 4;
+    lfEscapement := Escapement;
+    lfOrientation := 0;
     if fsBold in F.Style then
-      lfWeight	       := FW_BOLD
+      lfWeight := FW_BOLD
     else
-      lfWeight	       := FW_NORMAL;
-//    if FFontWeight	 <> fwDONTCARE then lfWeight:=uFontWeight;
-    lfItalic	       := Byte(fsItalic in F.Style);
-    lfUnderline        := Byte(fsUnderline in F.Style);
-    lfStrikeOut        := Byte(fsStrikeOut in F.Style);
-    lfCharSet	       := F.CHARSET;
+      lfWeight := FW_NORMAL;
+    //    if FFontWeight	 <> fwDONTCARE then lfWeight:=uFontWeight;
+    lfItalic := Byte(fsItalic in F.Style);
+    lfUnderline := Byte(fsUnderline in F.Style);
+    lfStrikeOut := Byte(fsStrikeOut in F.Style);
+    lfCharSet := F.CHARSET;
     StrPCopy(lfFaceName, F.Name);
-    lfQuality	       := DEFAULT_QUALITY;
+    lfQuality := DEFAULT_QUALITY;
     {everything else as default}
-    lfOutPrecision     := OUT_DEFAULT_PRECIS;
-    lfClipPrecision    := CLIP_DEFAULT_PRECIS;
+    lfOutPrecision := OUT_DEFAULT_PRECIS;
+    lfClipPrecision := CLIP_DEFAULT_PRECIS;
     case F.Pitch of
-      fpVariable : lfPitchAndFamily := VARIABLE_PITCH;
-      fpFixed	 : lfPitchAndFamily := FIXED_PITCH;
+      fpVariable: lfPitchAndFamily := VARIABLE_PITCH;
+      fpFixed: lfPitchAndFamily := FIXED_PITCH;
     else
       lfPitchAndFamily := DEFAULT_PITCH;
     end;
@@ -1255,68 +1434,73 @@ end;
 {
  Возвращает главное окно приложения
 }
-function FindMainWindow( sWndClass, sWndTitle :string ):HWND;
+
+function FindMainWindow(sWndClass, sWndTitle: string): HWND;
 begin
   Result := 0;
-  if (sWndClass='')and(sWndTitle='') then exit;
-  Result := FindWindow( PChar(sWndClass), PChar(sWndTitle) );
+  if (sWndClass = '') and (sWndTitle = '') then exit;
+  Result := FindWindow(PChar(sWndClass), PChar(sWndTitle));
 end;
 //______________________________________________________________
 
 {
  Для заданного цвета BaseColor считает цвет тени и подсветки
 }
-procedure CalcShadowAndHighlightColors( BaseColor: TColor; Colors: TJvgLabelColors );
+
+procedure CalcShadowAndHighlightColors(BaseColor: TColor; Colors: TJvgLabelColors);
 var
-  r,g,b:byte;
+  r, g, b: byte;
 begin
   with Colors do
   begin
-    if (BaseColor and $80000000)<>0 then
-      BaseColor:=GetSysColor( BaseColor and $ff );
+    if (BaseColor and $80000000) <> 0 then
+      BaseColor := GetSysColor(BaseColor and $FF);
     b := (BaseColor and $00FF0000) shr 16;
     g := (BaseColor and $0000FF00) shr 8;
     r := BaseColor and $000000FF;
-    if AutoShadow then begin
+    if AutoShadow then
+    begin
       {if r<g then limit:=r else limit:=g; if b<limit then limit:=b;//...min
       if limit<FColorShadowShift then FColorShadowShift:=limit;
       FShadow := RGB(r-FColorShadowShift,g-FColorShadowShift,b-FColorShadowShift);}
-      FShadow := RGB(max(r-FColorShadowShift,0),max(g-FColorShadowShift,0),max(b-FColorShadowShift,0));
+      FShadow := RGB(max(r - FColorShadowShift, 0), max(g - FColorShadowShift, 0), max(b - FColorShadowShift, 0));
     end;
-    if AutoHighlight then begin
+    if AutoHighlight then
+    begin
       {if r>g then limit:=r else limit:=g; if b>limit then limit:=b;//...max
       if (255-limit)<FColorHighlightShift then FColorHighlightShift:=255-limit;
       FHighlight := RGB(r+FColorHighlightShift,g+FColorHighlightShift,b+FColorHighlightShift);}
-      FHighlight := RGB(min(r+FColorHighlightShift,255),min(g+FColorHighlightShift,255),min(b+FColorHighlightShift,255));
+      FHighlight := RGB(min(r + FColorHighlightShift, 255), min(g + FColorHighlightShift, 255), min(b + FColorHighlightShift, 255));
     end;
   end;
 end;
 //______________________________________________________________
 
-
 {
  Считает арифметическое выражение из строки
 }
-function CalcMathString( sExpression: string ): single;
+
+function CalcMathString(sExpression: string): single;
 var
   ExpressionPtr, ExpressionLength, BracketsCount: integer;
   fCalcResult: boolean;
   cCurrChar: char;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~LOCAL PROCS
-  function Expression: single;forward;
+  function Expression: single; forward;
 
   procedure NextChar;
   begin
-    inc( ExpressionPtr );
+    inc(ExpressionPtr);
     if ExpressionPtr <= ExpressionLength then
       cCurrChar := sExpression[ExpressionPtr]
     else
       cCurrChar := #0;
     if cCurrChar = ' ' then NextChar;
     if cCurrChar = #0 then exit;
-    if not(cCurrChar in ['0'..'9',',','.','-','+','/','*','(',')']) then NextChar;
+    if not (cCurrChar in ['0'..'9', ',', '.', '-', '+', '/', '*', '(', ')']) then NextChar;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function DigitsToValue: single;
   var
     PointDepth: integer;
@@ -1325,104 +1509,122 @@ var
     Result := 0;
     fPoint := false;
     PointDepth := 0;
-    while cCurrChar = ' ' do NextChar;
+    while cCurrChar = ' ' do
+      NextChar;
 
-    if (cCurrChar <= '9') and (cCurrChar >= '0') then//.....digit_
+    if (cCurrChar <= '9') and (cCurrChar >= '0') then //.....digit_
     begin
       while (cCurrChar <= '9') and (cCurrChar >= '0') do
       begin
-	Result := Result*10 + ord(cCurrChar) - ord('0');
-	NextChar;
-	if fPoint then inc( PointDepth );
-	if (cCurrChar = '.') or (cCurrChar = ',') then
-	begin
-	  NextChar; fPoint := true;
-	end;
-      end;//While
-      if PointDepth<>0 then Result := Result / (10*PointDepth);
+        Result := Result * 10 + ord(cCurrChar) - ord('0');
+        NextChar;
+        if fPoint then inc(PointDepth);
+        if (cCurrChar = '.') or (cCurrChar = ',') then
+        begin
+          NextChar;
+          fPoint := true;
+        end;
+      end; //While
+      if PointDepth <> 0 then Result := Result / (10 * PointDepth);
     end
-    else//...............................................sign or braket_
+    else //...............................................sign or braket_
     begin
       case cCurrChar of
-	'-':
-	begin NextChar; Result := - 1 * Result; end;
-	'(':
-	begin
-          inc(BracketsCount);
-	  NextChar; Result := Expression;
-	  while cCurrChar = ' ' do NextChar;
-	  if cCurrChar <> ')' then
-	  begin
-	    raise Exception.Create('Right brakets not found');
-	    fCalcResult := false;
-	    Result := 0;
-	  end else NextChar;
-	end;
-       // '.': fPoint := true;
-       // ',': fPoint := true;
-      end;//CASE
+        '-':
+          begin
+            NextChar;
+            Result := -1 * Result;
+          end;
+        '(':
+          begin
+            inc(BracketsCount);
+            NextChar;
+            Result := Expression;
+            while cCurrChar = ' ' do
+              NextChar;
+            if cCurrChar <> ')' then
+            begin
+              raise Exception.Create('Right brakets not found');
+              fCalcResult := false;
+              Result := 0;
+            end
+            else
+              NextChar;
+          end;
+        // '.': fPoint := true;
+        // ',': fPoint := true;
+      end; //CASE
     end;
     if cCurrChar = ')' then
     begin
       dec(BracketsCount);
-      if BracketsCount < 0 then raise Exception.Create('Right braket havn''t a left one. Pos:' + IntToStr(ExpressionPtr-1) );
+      if BracketsCount < 0 then raise Exception.Create('Right braket havn''t a left one. Pos:' + IntToStr(ExpressionPtr - 1));
     end;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function TestFor_MulDiv: single;
   var
     Denominator: single;
   begin
-    Result := DigitsToValue;// . . .test For digits, signs And brackets
+    Result := DigitsToValue; // . . .test For digits, signs And brackets
     while true do
     begin
       case cCurrChar of
-//	Case "-":    NextChar
-	'*': begin NextChar; Result := Result * DigitsToValue; end;
-	'/':
-	begin
-	  NextChar; Denominator := DigitsToValue;
-	  if Denominator <> 0 then Result := Result / Denominator
-	  else
-	  begin
-	    fCalcResult := false;
-	    raise Exception.Create('Divide by 0');
-	  end;
-	end;
-	else//case else
-	  break;
-      end;//END CASE
+        //	Case "-":    NextChar
+        '*':
+          begin
+            NextChar;
+            Result := Result * DigitsToValue;
+          end;
+        '/':
+          begin
+            NextChar;
+            Denominator := DigitsToValue;
+            if Denominator <> 0 then
+              Result := Result / Denominator
+            else
+            begin
+              fCalcResult := false;
+              raise Exception.Create('Divide by 0');
+            end;
+          end;
+      else //case else
+        break;
+      end; //END CASE
     end;
 
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
   function Expression: single;
   begin
     Result := TestFor_MulDiv; //...test for '*' and '/'
     while true do
-      case cCurrChar of//...TestFor_AddSub
-	' ': NextChar;
-	'+':
-        begin
-          NextChar;
-          if cCurrChar in ['+','-','/','*'] then raise Exception.Create('Duplicate signs. Pos:' + IntToStr(ExpressionPtr-1));
-          Result := Result + TestFor_MulDiv;
-        end;
-	'-':
-        begin
-          NextChar;
-          if cCurrChar in ['+','-','/','*'] then raise Exception.Create('Duplicate signs at. Pos:' + IntToStr(ExpressionPtr-1));
-          Result := Result - TestFor_MulDiv;
-        end;
-        else break;
+      case cCurrChar of //...TestFor_AddSub
+        ' ': NextChar;
+        '+':
+          begin
+            NextChar;
+            if cCurrChar in ['+', '-', '/', '*'] then raise Exception.Create('Duplicate signs. Pos:' + IntToStr(ExpressionPtr - 1));
+            Result := Result + TestFor_MulDiv;
+          end;
+        '-':
+          begin
+            NextChar;
+            if cCurrChar in ['+', '-', '/', '*'] then raise Exception.Create('Duplicate signs at. Pos:' + IntToStr(ExpressionPtr - 1));
+            Result := Result - TestFor_MulDiv;
+          end;
+      else
+        break;
       end;
   end;
   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-begin//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN PROC
+begin //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN PROC
 
   ExpressionPtr := 0;
   BracketsCount := 0;
-//  Calculate = FALSE;
+  //  Calculate = FALSE;
   sExpression := trim(sExpression);
 
   ExpressionLength := Length(sExpression);
@@ -1430,8 +1632,8 @@ begin//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN PROC
   fCalcResult := true;
   NextChar;
   Result := Expression;
-//  CalcResult = Value;
-//  fCalculate = fCalcResult
+  //  CalcResult = Value;
+  //  fCalculate = fCalcResult
 
 end;
 //------------------------
@@ -1439,15 +1641,25 @@ end;
 {
  Тренарный оператор   x ? y : z
 }
-function IIF( fExpression: boolean; IfTrue, IfFalse: variant ): variant; {$IFDEF GLVER_D5} overload; {$ENDIF}
+
+function IIF(fExpression: boolean; IfTrue, IfFalse: variant): variant;
+{$IFDEF GLVER_D5} overload;
+{$ENDIF}
 begin
-  if fExpression then Result := IfTrue else Result := IfFalse;
+  if fExpression then
+    Result := IfTrue
+  else
+    Result := IfFalse;
 end;
 //------------------------
 {$IFDEF GLVER_D5}
-function IIF( fExpression: boolean; const IfTrue, IfFalse: string ): string; overload;
+
+function IIF(fExpression: boolean; const IfTrue, IfFalse: string): string; overload;
 begin
-  if fExpression then Result := IfTrue else Result := IfFalse;
+  if fExpression then
+    Result := IfTrue
+  else
+    Result := IfFalse;
 end;
 {$ENDIF}
 //------------------------
@@ -1455,33 +1667,55 @@ end;
 {
  Возвращает цвет левой/правой нижней/верхней точки битмапа
 }
-function GetTransparentColor( Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor ): TColor;
-var x,y :integer;
+
+function GetTransparentColor(Bitmap: TBitmap; AutoTrColor: TglAutoTransparentColor): TColor;
+var
+  x, y: integer;
 begin
-  if (AutoTrColor=ftcUser)or(not IsItAFilledBitmap(Bitmap)) then
+  if (AutoTrColor = ftcUser) or (not IsItAFilledBitmap(Bitmap)) then
     Result := 0
   else
   begin
     case AutoTrColor of
-      ftcLeftTopPixel: begin x:=0; y:=0; end;
-      ftcLeftBottomPixel: begin x:=0; y:=Bitmap.Height-1; end;
-      ftcRightTopPixel: begin x:=Bitmap.Width-1; y:=0; end;
-      else{ftcRightBottomPixel} begin x:=Bitmap.Width-1; y:=Bitmap.Height-1; end;
+      ftcLeftTopPixel:
+        begin
+          x := 0;
+          y := 0;
+        end;
+      ftcLeftBottomPixel:
+        begin
+          x := 0;
+          y := Bitmap.Height - 1;
+        end;
+      ftcRightTopPixel:
+        begin
+          x := Bitmap.Width - 1;
+          y := 0;
+        end;
+    else {ftcRightBottomPixel}
+      begin
+        x := Bitmap.Width - 1;
+        y := Bitmap.Height - 1;
+      end;
     end;
-    Result := GetPixel(Bitmap.Canvas.Handle,x,y);
+    Result := GetPixel(Bitmap.Canvas.Handle, x, y);
   end;
 end;
 //------------------------
+
 procedure TypeStringOnKeyboard(S: string);
 var
   i: integer;
   vk: byte;
 begin
-  for i:=1 to length(S) do
+  for i := 1 to length(S) do
   begin
-    if ord(S[i])>32 then vk := ord(S[i]) - 32 else vk := ord(S[i]);
-    keybd_event( vk, 0, 0, 0 );
-    keybd_event( vk, 0, KEYEVENTF_KEYUP, 0 );
+    if ord(S[i]) > 32 then
+      vk := ord(S[i]) - 32
+    else
+      vk := ord(S[i]);
+    keybd_event(vk, 0, 0, 0);
+    keybd_event(vk, 0, KEYEVENTF_KEYUP, 0);
   end;
 end;
 //------------------------------------------------------------------------------
@@ -1510,91 +1744,112 @@ end;
 }
 
 //------------------------------------------------------------------------------
-procedure DrawTextExtAligned( Canvas: TCanvas; const Text: string; R: TRect; Alignment: TglAlignment; WordWrap: boolean );
+
+procedure DrawTextExtAligned(Canvas: TCanvas; const Text: string; R: TRect; Alignment: TglAlignment; WordWrap: boolean);
 const
   Alignments: array[TglAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER, 0);
   WordWraps: array[Boolean] of Word = (0, DT_WORDBREAK);
 var
   DrawPos, Pos1, Pos2, LineWidth,
-  LineNo, LexemCount, TextHeight: integer;
+    LineNo, LexemCount, TextHeight: integer;
   Width: integer;
   Lexem: string;
   Size: TSIZE;
   fStop, fBroadwiseLine: boolean;
 
-  function GetNextLexem( var Pos1, Pos2: integer; fTrimleft: boolean ): string;
-  var Pos: integer;
+  function GetNextLexem(var Pos1, Pos2: integer; fTrimleft: boolean): string;
+  var
+    Pos: integer;
   begin
     pos := pos1;
-    if Text[Pos]=' ' then
-      repeat inc(Pos); until (Pos>length(Text))or(Text[Pos]<>' ');
-    Pos2:=Pos; if fTrimleft and(LineNo>0) then Pos1:=Pos;
-    repeat inc(Pos2); until (Pos2>length(Text))or(Text[Pos2]=' ');
+    if Text[Pos] = ' ' then
+      repeat inc(Pos);
+      until (Pos > length(Text)) or (Text[Pos] <> ' ');
+    Pos2 := Pos;
+    if fTrimleft and (LineNo > 0) then Pos1 := Pos;
+    repeat inc(Pos2);
+    until (Pos2 > length(Text)) or (Text[Pos2] = ' ');
 
-    Result := copy( Text, Pos1, Pos2-Pos1 );
+    Result := copy(Text, Pos1, Pos2 - Pos1);
   end;
-  procedure DrawLine( AdditSpace: cardinal );
+
+  procedure DrawLine(AdditSpace: cardinal);
   var
     i, DrawPos1, DrawPos2: integer;
     Lexem: string;
     Size: TSIZE;
-    X,X_: single;
+    X, X_: single;
   begin
-    DrawPos1 := DrawPos; DrawPos2 := DrawPos; X := 0; X_ := 0; LineWidth := 0;
-    for i:=1 to LexemCount do
+    DrawPos1 := DrawPos;
+    DrawPos2 := DrawPos;
+    X := 0;
+    X_ := 0;
+    LineWidth := 0;
+    for i := 1 to LexemCount do
     begin
-      Lexem := GetNextLexem( DrawPos1, DrawPos2, i=1 );
-//      if LexemCount=1 then Lexem:=Lexem+' ';
-      GetTextExtentPoint32( Canvas.Handle, PChar(Lexem), length(Lexem), Size );
-      inc( LineWidth, trunc(X) );
+      Lexem := GetNextLexem(DrawPos1, DrawPos2, i = 1);
+      //      if LexemCount=1 then Lexem:=Lexem+' ';
+      GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
+      inc(LineWidth, trunc(X));
       X := X + Size.cx;
-      if (trunc(X) > Width)and(LexemCount>1) then exit;
+      if (trunc(X) > Width) and (LexemCount > 1) then exit;
 
-      if (LexemCount>1)and fBroadwiseLine then X := X + AdditSpace/(LexemCount-1);
-      TextOut( Canvas.Handle, R.Left+trunc(X_), R.Top+LineNo*TextHeight, PChar(Lexem), length(Lexem) );
-      X_:=X;
+      if (LexemCount > 1) and fBroadwiseLine then X := X + AdditSpace / (LexemCount - 1);
+      TextOut(Canvas.Handle, R.Left + trunc(X_), R.Top + LineNo * TextHeight, PChar(Lexem), length(Lexem));
+      X_ := X;
       DrawPos1 := DrawPos2;
     end;
   end;
 begin
   if Text = '' then exit;
-  if (Alignment <> ftaBroadwise)then
+  if (Alignment <> ftaBroadwise) then
   begin
-    DrawText( Canvas.Handle, PChar(Text), Length(Text), R,
-              DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[Alignment]);
+    DrawText(Canvas.Handle, PChar(Text), Length(Text), R,
+      DT_EXPANDTABS or WordWraps[WordWrap] or Alignments[Alignment]);
     exit;
   end;
   Width := R.Right - R.Left; {Height := R.Bottom - R.Top;}
-  LineWidth := 0; LineNo := 0; DrawPos := 1; Pos1 := 1; Pos2 := 1;
-  LexemCount := 0; TextHeight := 0; fStop := false;
+  LineWidth := 0;
+  LineNo := 0;
+  DrawPos := 1;
+  Pos1 := 1;
+  Pos2 := 1;
+  LexemCount := 0;
+  TextHeight := 0;
+  fStop := false;
   fBroadwiseLine := true;
   repeat
-    Lexem := GetNextLexem( Pos1, Pos2, LexemCount=0 );
-//    if LexemCount=0 then Lexem:=Lexem+' ';
-    GetTextExtentPoint32( Canvas.Handle, PChar(Lexem), length(Lexem), Size );
-    inc( LineWidth, Size.cx );
-    inc( LexemCount );
-    if TextHeight < Size.cy then TextHeight :=Size.cy;
-    if (LineWidth > Width)or(Pos2 >= length(Text)) then
+    Lexem := GetNextLexem(Pos1, Pos2, LexemCount = 0);
+    //    if LexemCount=0 then Lexem:=Lexem+' ';
+    GetTextExtentPoint32(Canvas.Handle, PChar(Lexem), length(Lexem), Size);
+    inc(LineWidth, Size.cx);
+    inc(LexemCount);
+    if TextHeight < Size.cy then TextHeight := Size.cy;
+    if (LineWidth > Width) or (Pos2 >= length(Text)) then
     begin
       if (LineWidth > Width) then
       begin
-        if LexemCount=1 then Pos1:=Pos2;
-        if LexemCount>1 then dec( LexemCount );
-        DrawLine( Width-(LineWidth-Size.cx) );
-        DrawPos := Pos1; inc(LineNo);
-        LexemCount := 0; LineWidth := 0;
-        fStop := Pos1>length(Text);
+        if LexemCount = 1 then Pos1 := Pos2;
+        if LexemCount > 1 then dec(LexemCount);
+        DrawLine(Width - (LineWidth - Size.cx));
+        DrawPos := Pos1;
+        inc(LineNo);
+        LexemCount := 0;
+        LineWidth := 0;
+        fStop := Pos1 > length(Text);
       end
       else
       begin
-        fBroadwiseLine := false;//ftoBroadwiseLastLine;
-        DrawLine( Width-LineWidth ); inc(LineNo); fStop:=true;
+        fBroadwiseLine := false; //ftoBroadwiseLastLine;
+        DrawLine(Width - LineWidth);
+        inc(LineNo);
+        fStop := true;
       end;
     end
-    else Pos1:=Pos2;
+    else
+      Pos1 := Pos2;
   until fStop;
-//  if FAutoSize then Height := max( 12, LineNo*TextHeight );
+  //  if FAutoSize then Height := max( 12, LineNo*TextHeight );
 end;
 
 //------------------------------------------------------------------------------
@@ -1602,6 +1857,7 @@ end;
 {
  Загружает компонент из текстового файла - десериализация
 }
+
 procedure LoadComponentFromTextFile(Component: TComponent; FileName: string);
 var
   ms: TMemoryStream;
@@ -1623,6 +1879,7 @@ end;
 {
  сериализует компонент в строку
 }
+
 function ComponentToString(Component: TComponent): string;
 var
   ms: TMemoryStream;
@@ -1642,10 +1899,10 @@ begin
   end;
 end;
 
-
 {
  Сохраняет компонент в текстовый файл - сериализация
 }
+
 procedure SaveComponentToTextFile(Component: TComponent; FileName: string);
 var
   ms: TMemoryStream;
@@ -1667,9 +1924,10 @@ end;
 {
  десериализует строку в компонент
 }
+
 procedure StringToComponent(Component: TComponent; const Value: string);
 var
-  StrStream:TStringStream;
+  StrStream: TStringStream;
   ms: TMemoryStream;
 begin
   StrStream := TStringStream.Create(Value);
@@ -1678,10 +1936,10 @@ begin
     try
       ObjectTextToBinary(StrStream, ms);
 
-    ms.position := 0;
-    ms.ReadComponent(Component);
+      ms.position := 0;
+      ms.ReadComponent(Component);
 
-//      Result := BinStream.ReadComponent(nil);
+      //      Result := BinStream.ReadComponent(nil);
     finally
       ms.Free;
     end;
@@ -1694,30 +1952,32 @@ end;
 {
  Воспроизводит ресурс WAV из ресурсов
 }
-function PlayWaveResource(sResName: String): boolean;
+
+function PlayWaveResource(sResName: string): boolean;
 var
-  WaveHandle  : THandle;
-  WavePointer : pointer;
+  WaveHandle: THandle;
+  WavePointer: pointer;
 begin
   Result := false;
-  WaveHandle  := FindResource(hInstance, PChar(sResName), RT_RCDATA);
-  if WaveHandle<>0 then
+  WaveHandle := FindResource(hInstance, PChar(sResName), RT_RCDATA);
+  if WaveHandle <> 0 then
   begin
-    WaveHandle:= LoadResource(hInstance, WaveHandle);
-    if WaveHandle<>0 then
+    WaveHandle := LoadResource(hInstance, WaveHandle);
+    if WaveHandle <> 0 then
     begin
       WavePointer := LockResource(WaveHandle);
-      Result := sndPlaySound(WavePointer, snd_Memory OR SND_ASYNC);
+      Result := sndPlaySound(WavePointer, snd_Memory or SND_ASYNC);
       UnlockResource(WaveHandle);
       FreeResource(WaveHandle);
     end;
- end;
+  end;
 end;
 //------------------------------------------------------------------------------
 
 {
  Имя пользователя текущего потока
 }
+
 function UserName: string;
 var
   un: array[0..32] of char;
@@ -1732,6 +1992,7 @@ end;
 {
  Имя компьютера
 }
+
 function ComputerName: string;
 var
   un: array[0..32] of char;
@@ -1746,6 +2007,7 @@ end;
 {
  Создает ini файл с именем файла проекта - пользуйтесь ChangeFileExt
 }
+
 function CreateIniFileName: string;
 begin
   Result := ParamStr(0);
@@ -1757,15 +2019,20 @@ end;
 {
  Расширяет строку пробелами до заданной длины
 }
+
 function ExpandString(const str: string; len: integer): string;
-var i: integer;
+var
+  i: integer;
 begin
   Result := str;
   if Length(Result) >= len then exit;
   SetLength(Result, len);
 
-  for i:=1 to length(Result) do
-    if i <= Length(str) then Result[i] := Str[i] else Result[i] := ' ';
+  for i := 1 to length(Result) do
+    if i <= Length(str) then
+      Result[i] := Str[i]
+    else
+      Result[i] := ' ';
 
 end;
 
@@ -1773,66 +2040,72 @@ end;
  Транслитерация строки RusToLat и обратно
 }
 {$IFDEF GLVER_D5}
+
 function Transliterate(const Str: string; RusToLat: boolean): string;
 const
   LAT: string = 'ABVGDEGZIIKLMNOPRSTUFHC___"Y''EUYabvgdegziiklmnoprstufhc___"y''euy+';
   RUS: string = 'АБВГДЕЖЗИЙКЛМНОПРСТУФХЦШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцшщъыьэюя+';
-  LATRUS: array[1..52,1..2] of char =
-                (
-                ('A','А'), ('B','Б'), ('C','Ц'), ('D','Д'), ('E','Е'),
-                ('F','Ф'), ('G','Ж'), ('H','Х'), ('I','И'), ('J','Й'),
-                ('K','К'), ('L','Л'), ('M','М'), ('N','Н'), ('O','О'),
-                ('P','П'), ('Q', #0), ('R','Р'), ('S','С'), ('T','Т'),
-                ('U','У'), ('V','В'), ('W', #0), ('X', #0), ('Y','Ы'), ('Z','З'),
-                ('a','а'), ('b','б'), ('c','ц'), ('d','д'), ('e','е'),
-                ('f','ф'), ('g','ж'), ('h','х'), ('i','и'), ('j','й'),
-                ('k','к'), ('l','л'), ('m','м'), ('n','н'), ('o','о'),
-                ('p','п'), ('q', #0), ('r','р'), ('s','с'), ('t','т'),
-                ('u','у'), ('v','в'), ('w', #0), ('x', #0), ('y','ы'), ('z','з')
-                );
+  LATRUS: array[1..52, 1..2] of char =
+  (
+    ('A', 'А'), ('B', 'Б'), ('C', 'Ц'), ('D', 'Д'), ('E', 'Е'),
+    ('F', 'Ф'), ('G', 'Ж'), ('H', 'Х'), ('I', 'И'), ('J', 'Й'),
+    ('K', 'К'), ('L', 'Л'), ('M', 'М'), ('N', 'Н'), ('O', 'О'),
+    ('P', 'П'), ('Q', #0), ('R', 'Р'), ('S', 'С'), ('T', 'Т'),
+    ('U', 'У'), ('V', 'В'), ('W', #0), ('X', #0), ('Y', 'Ы'), ('Z', 'З'),
+    ('a', 'а'), ('b', 'б'), ('c', 'ц'), ('d', 'д'), ('e', 'е'),
+    ('f', 'ф'), ('g', 'ж'), ('h', 'х'), ('i', 'и'), ('j', 'й'),
+    ('k', 'к'), ('l', 'л'), ('m', 'м'), ('n', 'н'), ('o', 'о'),
+    ('p', 'п'), ('q', #0), ('r', 'р'), ('s', 'с'), ('t', 'т'),
+    ('u', 'у'), ('v', 'в'), ('w', #0), ('x', #0), ('y', 'ы'), ('z', 'з')
+    );
 
   TRANS_PAIRCOUNT = 14;
-  aTRANS_PAIR: array[1..TRANS_PAIRCOUNT,boolean] of string = ( ('х', 'kh'), ('ц', 'ts'), ('ч', 'ch'), ('ш', 'sh'), ('щ', 'shch'), ('ю', 'iu'), ('я', 'ia'),
-                                                               ('Х', 'Kh'), ('Ц', 'Ts'), ('Ч', 'Сh'), ('Ш', 'Sh'), ('Щ', 'Shch'), ('Ю', 'Iu'), ('Я', 'Ia'));
+  aTRANS_PAIR: array[1..TRANS_PAIRCOUNT, boolean] of string = (('х', 'kh'), ('ц', 'ts'), ('ч', 'ch'), ('ш', 'sh'), ('щ', 'shch'), ('ю', 'iu'), ('я', 'ia'),
+    ('Х', 'Kh'), ('Ц', 'Ts'), ('Ч', 'Сh'), ('Ш', 'Sh'), ('Щ', 'Shch'), ('Ю', 'Iu'), ('Я', 'Ia'));
 var
   i, j: integer;
 begin
   Result := Str;
-  for i:=1 to TRANS_PAIRCOUNT do
-    Result := StringReplace(Result, aTRANS_PAIR[i,not RusToLat], aTRANS_PAIR[i, RusToLat], [rfReplaceAll]);
+  for i := 1 to TRANS_PAIRCOUNT do
+    Result := StringReplace(Result, aTRANS_PAIR[i, not RusToLat], aTRANS_PAIR[i, RusToLat], [rfReplaceAll]);
 
   if RusToLat then
   begin
-    for i:=1 to length(Result) do
+    for i := 1 to length(Result) do
       if Result[i] in ['А'..'я'] then
-        Result[i] := LAT[ ord(Result[i])-ord('А')+1 ];// else
-  end else
-    for i:=1 to length(Result) do
+        Result[i] := LAT[ord(Result[i]) - ord('А') + 1]; // else
+  end
+  else
+    for i := 1 to length(Result) do
       if Result[i] in ['A'..'z'] then
-        for j:=1 to 52 do
-          if Result[i] = LATRUS[j,1] then
+        for j := 1 to 52 do
+          if Result[i] = LATRUS[j, 1] then
           begin
-            Result[i] := LATRUS[j,2];
+            Result[i] := LATRUS[j, 2];
             break;
           end;
 end;
 {$ENDIF}
 
 {Значение функции TRUE если мелкий шрифт}
+
 function IsSmallFonts: boolean;
-var DC: HDC;
+var
+  DC: HDC;
 begin
-  DC:=GetDC(0);
-  Result:=(GetDeviceCaps(DC, LOGPIXELSX) = 96);
+  DC := GetDC(0);
+  Result := (GetDeviceCaps(DC, LOGPIXELSX) = 96);
   { В случае крупного шрифта будет 120}
   ReleaseDC(0, DC);
 end;
 
 { Глуюина цвета в системе, бит (8, 16 или 32) }
+
 function SystemColorDepth: integer;
-var DC: HDC;
+var
+  DC: HDC;
 begin
-  DC:=GetDC(0);
+  DC := GetDC(0);
   Result := GetDeviceCaps(DC, BITSPIXEL);
   ReleaseDC(0, DC);
 end;
@@ -1848,15 +2121,21 @@ begin
   Result := fftUndefined;
   Ext := ExtractFileExt(FileName);
   for i := 0 to 3 do
-    if CompareText(Ext, aExt[i]) = 0 then begin Result := aType[i]; break; end;
+    if CompareText(Ext, aExt[i]) = 0 then
+    begin
+      Result := aType[i];
+      break;
+    end;
 end;
 
 { Ищет верхний контрол в заданной точке }
+
 function FindControlAtPt(Control: TWinControl; pt: TPoint; MinClass: TClass): TControl;
-var i: integer;
+var
+  i: integer;
 begin
   Result := nil;
-  for i := Control.ControlCount-1 downto 0 do
+  for i := Control.ControlCount - 1 downto 0 do
     if (Control.Controls[i] is MinClass) and PtInRect(Control.Controls[i].BoundsRect, pt) then
     begin
       Result := Control.Controls[i];
@@ -1864,13 +2143,11 @@ begin
     end;
 end;
 
-
-
-
 {
   StrPosExt - ищет позицию одной строки в другой с заданной длиной.
   На длинных строках превосходит StrPos на 1-2 порядка.
 }
+
 function StrPosExt(const Str1, Str2: PChar; Str2Len: DWORD): PChar; assembler;
 asm
         PUSH    EDI
@@ -1920,5 +2197,3 @@ asm
 end;
 
 end.
-
-

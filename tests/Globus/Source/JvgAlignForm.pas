@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -60,8 +60,8 @@ implementation
 
 procedure TAlignForm.B_OkClick(Sender: TObject);
 begin
-  Horz := TglHComponentAlign( g_Horz.ItemIndex);
-  Vert := TglVComponentAlign( g_Vert.ItemIndex);
+  Horz := TglHComponentAlign(g_Horz.ItemIndex);
+  Vert := TglVComponentAlign(g_Vert.ItemIndex);
   ModalResult := mrOK;
 end;
 

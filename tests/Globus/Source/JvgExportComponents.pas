@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -36,10 +36,10 @@ uses
 
 type
   TglExportCaptions = (fecDisplayLabels, fecFieldNames, fecNone);
-  TGetCaptionEvent = procedure (Sender: TObject; var Caption: string) of object;
-  TExportRecordEvent = procedure (Sender: TObject; var AllowExport: boolean) of object;
-  TExportFieldEvent = procedure (Sender: TObject; const Field: TField; var FieldValue: string) of object;
-  TGetLineFontEvent = procedure (Sender: TObject; LineNo: integer; const Value: string; Font: TFont) of object;
+  TGetCaptionEvent = procedure(Sender: TObject; var Caption: string) of object;
+  TExportRecordEvent = procedure(Sender: TObject; var AllowExport: boolean) of object;
+  TExportFieldEvent = procedure(Sender: TObject; const Field: TField; var FieldValue: string) of object;
+  TGetLineFontEvent = procedure(Sender: TObject; LineNo: integer; const Value: string; Font: TFont) of object;
 
   EJvgExportException = class(Exception)
   end;
@@ -154,7 +154,7 @@ type
     { Protected declarations }
   public
     constructor Create(AOwner: TComponent); override;
-//    destructor Destroy; override;
+    //    destructor Destroy; override;
 
     procedure Execute; override;
   published
@@ -187,7 +187,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
 
-//    procedure Execute; override;
+    //    procedure Execute; override;
   published
     property DataSet;
     property Captions;
@@ -211,10 +211,10 @@ type
   protected
     { Protected declarations }
   public
-//    constructor Create(AOwner: TComponent); override;
-//    destructor Destroy; override;
+    //    constructor Create(AOwner: TComponent); override;
+    //    destructor Destroy; override;
 
-//    procedure Execute; override;
+    //    procedure Execute; override;
   published
     property DataSet;
     property Captions;
@@ -236,7 +236,7 @@ uses ComObj, FileCtrl, JvgUtils, JvgFileUtils;
 
 procedure Register;
 begin
-  RegisterComponents('Gl ExportImport', [TJvgExportExcel, TJvgExportDBETable{, TJvgExportHTML, TJvgExportXML}]);
+  RegisterComponents('Gl ExportImport', [TJvgExportExcel, TJvgExportDBETable {, TJvgExportHTML, TJvgExportXML}]);
 end;
 
 { TJvgCommonExport }
@@ -299,7 +299,7 @@ begin
   if FTransliterateRusToEng then Result := Transliterate(Result, true);
   {$ENDIF}
 
-  if (FMaxFieldSize > 0)and(Field.DataType in [ftString, ftMemo, ftFmtMemo]) then
+  if (FMaxFieldSize > 0) and (Field.DataType in [ftString, ftMemo, ftFmtMemo]) then
   begin
     if length(Result) > FMaxFieldSize then
       Result := copy(Result, 1, FMaxFieldSize) + '...';
@@ -342,17 +342,19 @@ var
   AllowExportRecord: boolean;
   i, j, RecNo, ColNo, OldRecNo: integer;
   CellFont: TFont;
+
   procedure InsertStrings(Strings: TStrings; Font: TFont; GetLineFontEvent: TGetLineFontEvent);
-  var i: integer;
+  var
+    i: integer;
   begin
-    for i:=0 to Strings.Count-1 do
+    for i := 0 to Strings.Count - 1 do
     begin
       Sheet.Cells[RecNo, ColNo] := Strings[i];
       CellFont.Assign(Font);
       if Assigned(FOnGetHeaderLineFont) then OnGetHeaderLineFont(self, i, Strings[i], CellFont);
 
       Sheet.Cells[RecNo, ColNo].Font.Size := CellFont.Size;
-      Sheet.Cells[RecNo, ColNo].Font.Color := CellFont.Color;      
+      Sheet.Cells[RecNo, ColNo].Font.Color := CellFont.Color;
       if fsBold in CellFont.Style then
         Sheet.Cells[RecNo, ColNo].Font.Bold := true;
       if fsItalic in CellFont.Style then
@@ -374,28 +376,31 @@ begin
   XL.WorkBooks.Add;
   XL.WorkBooks[XL.WorkBooks.Count].WorkSheets[1].Name := 'Report';
   Sheet := XL.WorkBooks[XL.WorkBooks.Count].WorkSheets['Report'];
-  if (BackgroundPicture<>'')and FileExists(BackgroundPicture) then
-    Sheet.SetBackgroundPicture(FileName:=BackgroundPicture);
+  if (BackgroundPicture <> '') and FileExists(BackgroundPicture) then
+    Sheet.SetBackgroundPicture(FileName := BackgroundPicture);
 
   CellFont := TFont.Create;
   try
-    RecNo := 1; ColNo := 1;
+    RecNo := 1;
+    ColNo := 1;
 
     inc(RecNo, Header.Count + SubHeader.Count);
 
     if FCaptions <> fecNone then
-    for i:=0 to DataSet.FieldCount-1 do
-    begin
-      case FCaptions of
-        fecDisplayLabels:
-         if DataSet.Fields[i].DisplayLabel <> '' then Sheet.Cells[RecNo, ColNo+i] := DataSet.Fields[i].DisplayLabel
-                                                 else Sheet.Cells[RecNo, ColNo+i] := DataSet.Fields[i].FieldName;
-        fecFieldNames:
-          Sheet.Cells[RecNo, ColNo+i] := DataSet.Fields[i].FieldName;
+      for i := 0 to DataSet.FieldCount - 1 do
+      begin
+        case FCaptions of
+          fecDisplayLabels:
+            if DataSet.Fields[i].DisplayLabel <> '' then
+              Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].DisplayLabel
+            else
+              Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].FieldName;
+          fecFieldNames:
+            Sheet.Cells[RecNo, ColNo + i] := DataSet.Fields[i].FieldName;
+        end;
+        Sheet.Cells[RecNo, ColNo + i].Font.Bold := true;
+        Sheet.Cells[RecNo, ColNo + i].Font.Size := 10;
       end;
-      Sheet.Cells[RecNo, ColNo+i].Font.Bold := true;
-      Sheet.Cells[RecNo, ColNo+i].Font.Size := 10;
-    end;
 
     inc(RecNo);
     DataSet.First;
@@ -405,9 +410,9 @@ begin
       if Assigned(OnExportRecord) then OnExportRecord(self, AllowExportRecord);
       if AllowExportRecord then
       begin
-        for i:=0 to DataSet.FieldCount-1 do
+        for i := 0 to DataSet.FieldCount - 1 do
           if not (DataSet.Fields[i].DataType in [ftBlob, ftGraphic, ftParadoxOle, ftDBaseOle, ftTypedBinary{$IFDEF GLVER_D5}, ftReference, ftDataSet, ftOraBlob, ftOraClob, ftInterface, ftIDispatch{$ENDIF}]) then
-            Sheet.Cells[RecNo, ColNo+i] := GetFieldValue(DataSet.Fields[i]);
+            Sheet.Cells[RecNo, ColNo + i] := GetFieldValue(DataSet.Fields[i]);
 
         inc(RecNo);
       end;
@@ -415,8 +420,8 @@ begin
     end;
 
     if FAutoColumnFit then
-    for i:=0 to DataSet.FieldCount-1 do
-      Sheet.Columns[i+1].EntireColumn.AutoFit;
+      for i := 0 to DataSet.FieldCount - 1 do
+        Sheet.Columns[i + 1].EntireColumn.AutoFit;
 
     OldRecNo := RecNo;
     RecNo := 1;
@@ -424,7 +429,6 @@ begin
     InsertStrings(SubHeader, SubHeaderFont, FOnGetSubHeaderLineFont);
     RecNo := OldRecNo + 1;
     InsertStrings(Footer, SubHeaderFont, FOnGetSubHeaderLineFont);
-
 
     if ExtractFileExt(FSaveToFileName) = '' then FSaveToFileName := DelFileExt(FSaveToFileName) + '.xls';
     if FileExists(FSaveToFileName) then DeleteFileEx(FSaveToFileName);
@@ -566,12 +570,12 @@ begin
 
   Table.TableType := TableType;
   Table.TableName := SaveToFileName;
-//  if ExtractFileExt(Table.TableName) = '' then Table.TableName := DelFileExt() + aTableTypeExt[TableType];
+  //  if ExtractFileExt(Table.TableName) = '' then Table.TableName := DelFileExt() + aTableTypeExt[TableType];
 
   FieldType := DataSet.Fields[i].DataType;
   if FieldType = ftAutoInc then FieldType := ftInteger;
 
-  for i:=0 to DataSet.FieldCount-1 do
+  for i := 0 to DataSet.FieldCount - 1 do
     Table.FieldDefs.Add(DataSet.Fields[i].Name, FieldType, DataSet.Fields[i].Size, DataSet.Fields[i].Required);
 
   Table.CreateTable;
@@ -586,11 +590,13 @@ begin
       if AllowExportRecord then
       begin
         Table.Append;
-        for i:=0 to DataSet.FieldCount-1 do
-          if DataSet.Fields[i].DataType in [ftString, ftMemo] then Table.Fields[i].Value := GetFieldValue(DataSet.Fields[i])
-                                                              else Table.Fields[i].Value := DataSet.Fields[i].Value;
+        for i := 0 to DataSet.FieldCount - 1 do
+          if DataSet.Fields[i].DataType in [ftString, ftMemo] then
+            Table.Fields[i].Value := GetFieldValue(DataSet.Fields[i])
+          else
+            Table.Fields[i].Value := DataSet.Fields[i].Value;
         Table.Post;
-    end;
+      end;
       DataSet.Next;
     end;
     Table.Close;
@@ -598,13 +604,14 @@ begin
     Table.Free;
   end;
 
-
 end;
 
 procedure TJvgExportDBETable.SetTableType(const Value: TTableType);
 begin
-  if Value = ttDefault then FTableType := ttDBase
-                       else FTableType := Value;
+  if Value = ttDefault then
+    FTableType := ttDBase
+  else
+    FTableType := Value;
 end;
 
 end.

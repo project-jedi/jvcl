@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -64,7 +64,7 @@ type
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
   public
-    constructor Create( AOwner : TComponent ); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
   published
@@ -83,20 +83,22 @@ procedure Register;
 
 implementation
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
+
 procedure Register;
 begin
   RegisterComponents('Proba', [TJvgSpeedButton]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //________________________________________________________ Methods _
-constructor TJvgSpeedButton.Create( AOwner : TComponent );
+
+constructor TJvgSpeedButton.Create(AOwner: TComponent);
 begin
   inherited;
   FCanvas := TControlCanvas.Create;
-  TControlCanvas(FCanvas).Control := Self;//...i can draw now! :)
+  TControlCanvas(FCanvas).Control := Self; //...i can draw now! :)
   //..defaults
-  FColor :=  IncColor(GetSysColor(COLOR_BTNFACE), 30);
-  FActiveColor :=  IncColor(FColor, 10);
+  FColor := IncColor(GetSysColor(COLOR_BTNFACE), 30);
+  FActiveColor := IncColor(FColor, 10);
   FFrame := true;
 end;
 
@@ -109,7 +111,7 @@ end;
 procedure TJvgSpeedButton.Paint;
 var
   R: TRect;
-  BevelOuter:TPanelBevel;
+  BevelOuter: TPanelBevel;
 begin
   if DefaultStyle then
   begin
@@ -120,12 +122,16 @@ begin
 
   R := ClientRect;
 
-  if IsDown and fMouseEnter then BevelOuter := bvLowered else BevelOuter := bvRaised;
+  if IsDown and fMouseEnter then
+    BevelOuter := bvLowered
+  else
+    BevelOuter := bvRaised;
   if Flat and not IsDown then
     BevelOuter := bvNone;
 
   if FFrame then InflateRect(R, -1, -1);
-  dec(R.Right); dec(R.Bottom);
+  dec(R.Right);
+  dec(R.Bottom);
   DrawBoxEx(Canvas.handle, R, ALLGLSIDES, bvNone, BevelOuter, false, iif(fMouseEnter, ActiveColor, Color), false);
 
   SetBkMode(Canvas.handle, integer(TRANSPARENT));
@@ -146,9 +152,9 @@ begin
   end;
 
   if Assigned(Glyph) then
-    CreateBitmapExt( Canvas.Handle, Glyph, ClientRect, (Width - Glyph.Width - Canvas.TextWidth(Caption))div 2 + integer(IsDown) - 1-Spacing, 1+(Height - Glyph.Height)div 2 + integer(IsDown),
-		     fwoNone, fdsDefault,
-		     true, GetTransparentColor(Glyph, ftcLeftBottomPixel), 0 );
+    CreateBitmapExt(Canvas.Handle, Glyph, ClientRect, (Width - Glyph.Width - Canvas.TextWidth(Caption)) div 2 + integer(IsDown) - 1 - Spacing, 1 + (Height - Glyph.Height) div 2 + integer(IsDown),
+      fwoNone, fdsDefault,
+      true, GetTransparentColor(Glyph, ftcLeftBottomPixel), 0);
 
 end;
 

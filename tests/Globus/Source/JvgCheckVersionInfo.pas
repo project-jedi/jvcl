@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -91,8 +91,9 @@ begin
       reComments.Text := VersionInfo.Comments;
 
       ShowModal;
-    end else
-      Application.MessageBox('Данных о новой версии программы не найдено.', 'SiteBuilder',  MB_OK + MB_ICONINFORMATION);
+    end
+    else
+      Application.MessageBox('Данных о новой версии программы не найдено.', 'SiteBuilder', MB_OK + MB_ICONINFORMATION);
 
   finally
     VersionInfo.Free;

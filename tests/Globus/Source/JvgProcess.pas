@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-unit JvgProcess;//...simple process managment
+unit JvgProcess; //...simple process managment
 
 interface
 
@@ -35,22 +35,22 @@ uses Windows, Messages, Classes, Forms, dialogs;
 
 type
 
-TJvgProcess = class ( TComponent )
-private
-  FResult: boolean;
-  FFileName: string;
-  FOnTermainated: TNotifyEvent;
-  si: TStartupInfo;
-public
-  pi: TProcessInformation;
-  function Run: boolean;
-  function Kill: boolean;
-  destructor Destroy; override;
-published
-  property FileName: string read FFileName write FFileName;
-  property Result: boolean read FResult stored false;
-  property OnTermainated: TNotifyEvent read FOnTermainated write FOnTermainated;
-end;
+  TJvgProcess = class(TComponent)
+  private
+    FResult: boolean;
+    FFileName: string;
+    FOnTermainated: TNotifyEvent;
+    si: TStartupInfo;
+  public
+    pi: TProcessInformation;
+    function Run: boolean;
+    function Kill: boolean;
+    destructor Destroy; override;
+  published
+    property FileName: string read FFileName write FFileName;
+    property Result: boolean read FResult stored false;
+    property OnTermainated: TNotifyEvent read FOnTermainated write FOnTermainated;
+  end;
 
 procedure Register;
 
@@ -60,7 +60,6 @@ procedure Register;
 begin
   RegisterComponents('Proba', [TJvgProcess]);
 end;
-
 
 destructor TJvgProcess.Destroy;
 begin
@@ -72,19 +71,22 @@ function TJvgProcess.Run: boolean;
 begin
   GetStartupInfo(si);
   si.wShowWindow := SW_NORMAL;
-  FResult := CreateProcess( PChar(FFileName), nil, nil, nil, false, NORMAL_PRIORITY_CLASS, nil, nil, si, pi);
+  FResult := CreateProcess(PChar(FFileName), nil, nil, nil, false, NORMAL_PRIORITY_CLASS, nil, nil, si, pi);
   Run := FResult;
   if Result then
   begin
-    while WaitForSingleObject(pi.hProcess, 100) = WAIT_TIMEOUT do Application.ProcessMessages;
+    while WaitForSingleObject(pi.hProcess, 100) = WAIT_TIMEOUT do
+      Application.ProcessMessages;
     if Assigned(OnTermainated) then OnTermainated(self);
   end;
 end;
 
 function TJvgProcess.Kill: boolean;
 begin
-  if FResult {and(WaitForSingleObject(pi.hProcess, 100) <> WAIT_TIMEOUT)}
-  then Kill := TerminateProcess( pi.hProcess, 0 ) else Kill := false;
+  if FResult {and(WaitForSingleObject(pi.hProcess, 100) <> WAIT_TIMEOUT)} then
+    Kill := TerminateProcess(pi.hProcess, 0)
+  else
+    Kill := false;
 end;
 
 end.

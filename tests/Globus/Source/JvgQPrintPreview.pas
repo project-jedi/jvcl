@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -102,27 +102,28 @@ var
   l: TJvgQRLabel;
 
 implementation
-uses JvgTypes, JvgExport, JvgQPrintSetup, printers;//, mdrpt;
+uses JvgTypes, JvgExport, JvgQPrintSetup, printers; //, mdrpt;
 {$R *.DFM}
 
 procedure TJvgfPrintPreview.FormCreate(Sender: TObject);
 begin
-{  l := TJvgQRLabel.Create(self);
-  l.Caption := 'FormCreate(Sender: TObject)';
-  l.Top := 40;
-  l.Left := 40;
-  l.Direction := fldDownUp;
-  l.Parent := Band;}
+  {  l := TJvgQRLabel.Create(self);
+    l.Caption := 'FormCreate(Sender: TObject)';
+    l.Top := 40;
+    l.Left := 40;
+    l.Direction := fldDownUp;
+    l.Parent := Band;}
 end;
 
 procedure TJvgfPrintPreview.qrPreview(Sender: TObject);
 begin
   QRPreview1.QRPrinter := qr.QRPrinter;
-//  QRPreview1.UpdateImage;
+  //  QRPreview1.UpdateImage;
 end;
 
 procedure TJvgfPrintPreview.tbPriorClick(Sender: TObject);
-var e: extended;
+var
+  e: extended;
 begin
   QRPreview1.PageNumber := QRPreview1.PageNumber - 1;
   QRPreview1.UpdateZoom;
@@ -151,7 +152,7 @@ end;
 
 procedure TJvgfPrintPreview.glLabel1MouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  ShellExecute(0,nil,'http://shop.biblio-globus.ru/cpr/',nil,nil,sw_show);
+  ShellExecute(0, nil, 'http://shop.biblio-globus.ru/cpr/', nil, nil, sw_show);
 end;
 
 procedure TJvgfPrintPreview.ToolButton4Click(Sender: TObject);
@@ -169,7 +170,8 @@ begin
   try
     PB.Max := QRPreview1.QRPrinter.PageCount;
     PB.Min := QRPreview1.PageNumber;
-  except end;
+  except
+  end;
 end;
 
 procedure TJvgfPrintPreview.tbExportExcelClick(Sender: TObject);
@@ -193,14 +195,14 @@ begin
   qr.PrinterSettings.FirstPage := PrintDialog.FromPage;
   qr.PrinterSettings.LastPage := PrintDialog.ToPage;
 
-//  qr.Printer.FirstPage := PrintDialog.FromPage;
-//  qr.Printer.LastPage := PrintDialog.ToPage;
+  //  qr.Printer.FirstPage := PrintDialog.FromPage;
+  //  qr.Printer.LastPage := PrintDialog.ToPage;
 end;
 
 procedure TJvgfPrintPreview.tbPrinterSetupClick(Sender: TObject);
 begin
   Printer.Orientation := qr.Page.Orientation;
-//  Printer.Paper
+  //  Printer.Paper
   PrinterSetupDialog.Execute;
   qr.Page.Orientation := Printer.Orientation;
   qr.PrinterSettings.Orientation := Printer.Orientation;
@@ -213,12 +215,12 @@ end;
 
 procedure TJvgfPrintPreview.tbPrintRangeClick(Sender: TObject);
 begin
-//  InitPrintDialog;
-//  PrintDialog.FromPage := QRPreview1.PageNumber;
-//  PrintDialog.ToPage := QRPreview1.PageNumber;
-//  PrintDialog.PrintRange := prPageNums;
-//  if not PrintDialog.Execute then exit;
-//  SavePrintDialog;
+  //  InitPrintDialog;
+  //  PrintDialog.FromPage := QRPreview1.PageNumber;
+  //  PrintDialog.ToPage := QRPreview1.PageNumber;
+  //  PrintDialog.PrintRange := prPageNums;
+  //  if not PrintDialog.Execute then exit;
+  //  SavePrintDialog;
   qr.PrinterSettings.FirstPage := QRPreview1.PageNumber;
   qr.PrinterSettings.LastPage := QRPreview1.PageNumber;
 
@@ -275,4 +277,3 @@ begin
 end;
 
 end.
-

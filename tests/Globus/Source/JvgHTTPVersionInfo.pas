@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -124,7 +124,7 @@ begin
   finally
     WebBrowser.Free;
   end;
-  Result := (Version <> '')or(Date <> '')or(ProgramURL <> '');
+  Result := (Version <> '') or (Date <> '') or (ProgramURL <> '');
 end;
 
 procedure TJvgHTTPVersionInfo.OnLoadVersionInfo(Sender: TObject; const pDisp: IDispatch; var URL: OleVariant);

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -33,13 +33,13 @@ interface
 uses windows, classes, sysutils, graphics, controls, menus, extctrls, JvgCommClasses, JvgTypes, shdocvw;
 
 type
-{  TJvgIterator = class
-    procedure First; virtual; abstract;
-    procedure Next; virtual; abstract;
-    function IsDone: boolean; virtual; abstract;
-  end;}
+  {  TJvgIterator = class
+      procedure First; virtual; abstract;
+      procedure Next; virtual; abstract;
+      function IsDone: boolean; virtual; abstract;
+    end;}
 
-  TJvgWebDocumentIterator = class{(TJvgIterator)}
+  TJvgWebDocumentIterator = class {(TJvgIterator)}
   private
     WebBrowser: TWebBrowser;
     Doc, Item: variant;
@@ -54,8 +54,6 @@ type
     procedure Next;
     function IsDone: boolean;
   end;
-
-
 
 implementation
 
@@ -89,30 +87,31 @@ begin
   if IsDone then exit;
 
   try
-  if ItemIndex <= Doc.images.length - 1 then
-  begin
-    Item := Doc.images.Item(ItemIndex);
-    FCurrentItem := Item.src;
-  end else
-  if ItemIndex - Doc.images.length <= Doc.links.length - 1 then
-  begin
-    Item := Doc.links.Item(ItemIndex - Doc.images.length);
-    FCurrentItem := Item.href;
-  end else
-  if ItemIndex - Doc.images.length - Doc.links.length <= Doc.all.length - 1 then
-  begin
-    Item := Doc.all.item(ItemIndex - Doc.images.length - Doc.links.length).style;
-    FCurrentItem := Item.backgroundImage;
-  end;
+    if ItemIndex <= Doc.images.length - 1 then
+    begin
+      Item := Doc.images.Item(ItemIndex);
+      FCurrentItem := Item.src;
+    end
+    else if ItemIndex - Doc.images.length <= Doc.links.length - 1 then
+    begin
+      Item := Doc.links.Item(ItemIndex - Doc.images.length);
+      FCurrentItem := Item.href;
+    end
+    else if ItemIndex - Doc.images.length - Doc.links.length <= Doc.all.length - 1 then
+    begin
+      Item := Doc.all.item(ItemIndex - Doc.images.length - Doc.links.length).style;
+      FCurrentItem := Item.backgroundImage;
+    end;
   except
-   Next; exit;
+    Next;
+    exit;
   end;
 
   FCurrentItem := LowerCase(trim(FCurrentItem));
   if (FCurrentItem = '') and not IsDone then Next;
 
   if pos('#', FCurrentItem) > 0 then
-    FCurrentItem := copy(FCurrentItem, 1, pos('#', FCurrentItem)-1);
+    FCurrentItem := copy(FCurrentItem, 1, pos('#', FCurrentItem) - 1);
 
   FCurrentItem := StringReplace(FCurrentItem, 'file:///', '', [rfReplaceAll, rfIgnoreCase]);
   FCurrentItem := StringReplace(FCurrentItem, '/', '\', [rfReplaceAll]);
@@ -140,6 +139,4 @@ begin
   FCurrentItem := StringReplace(FCurrentItem, '%20', ' ', [rfReplaceAll]);
 end;
 
-
 end.
-

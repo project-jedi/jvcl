@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -42,11 +42,11 @@ type
 
   TJvgFixFont = class(TComponent)
   private
-    procedure FixFont( Window: TWinControl );
+    procedure FixFont(Window: TWinControl);
   protected
     { Protected declarations }
   public
-    constructor Create( AOwner: TComponent ); override;
+    constructor Create(AOwner: TComponent); override;
   published
     { Published declarations }
   end;
@@ -60,23 +60,25 @@ begin
   RegisterComponents('Proba', [TJvgFixFont]);
 end;
 //____________________________
-constructor TJvgFixFont.Create( AOwner: TComponent );
+
+constructor TJvgFixFont.Create(AOwner: TComponent);
 begin
   inherited;
-  FixFont( TWinControl(Owner) );
+  FixFont(TWinControl(Owner));
 end;
 
-procedure TJvgFixFont.FixFont( Window: TWinControl );
-var i: integer;
+procedure TJvgFixFont.FixFont(Window: TWinControl);
+var
+  i: integer;
 begin
   with Window do
   begin
-    TJvgPublicControlFont( Window ).Font.Size := 8;
-    for i:=0 to ComponentCount-1 do
-    if Components[i] is TWinControl then FixFont( TWinControl(Components[i]) )
-    else
-      if Components[i] is TControl then
-	TJvgPublicControlFont(Components[i]).Font.Size := 8;
+    TJvgPublicControlFont(Window).Font.Size := 8;
+    for i := 0 to ComponentCount - 1 do
+      if Components[i] is TWinControl then
+        FixFont(TWinControl(Components[i]))
+      else if Components[i] is TControl then
+        TJvgPublicControlFont(Components[i]).Font.Size := 8;
   end;
 end;
 

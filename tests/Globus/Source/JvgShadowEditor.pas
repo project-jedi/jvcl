@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,10 +34,9 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, comctrls
-  {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE} {$IFDEF GLVER_D4}, dsgnintf{$ENDIF} {$ENDIF};
+  {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF GLVER_D4}, dsgnintf{$ENDIF}{$ENDIF};
 
-
-type  
+type
 
   TJvgShadowEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
@@ -45,18 +44,18 @@ type
     function GetVerbCount: Integer; override;
   end;
 
-
 implementation
 uses StdCtrls, JvgShadow;
 
-
 { TJvgShadowEditor }
+
 procedure TJvgShadowEditor.ExecuteVerb(Index: Integer);
 var
   sl: TStringList;
   i: integer;
   sNewName: string;
   Shadow: TJvgShadow;
+
   procedure UpdateIt(Edit: TCustomEdit);
   var
     Sh: TJvgShadow;
@@ -68,7 +67,7 @@ var
     TEdit(Edit).BorderStyle := bsNone;
     Sh := TJvgShadow.Create(Component.Owner);
     Sh.Parent := Shadow.Parent;
-    Sh.SetBounds(Edit.Left, Edit.Top, Edit.Width-2, Edit.Height-2);
+    Sh.SetBounds(Edit.Left, Edit.Top, Edit.Width - 2, Edit.Height - 2);
     Sh.Shadowed := Shadow.Shadowed;
     Sh.ShadowDepth := Shadow.ShadowDepth;
     Sh.Style.Inner := Shadow.Style.Inner;
@@ -80,7 +79,7 @@ var
       fExists := false;
       inc(NewNameIndex);
       sNewName := 'JvgShadow' + IntToStr(NewNameIndex);
-      for i:=0 to (Shadow.Owner as TForm).ControlCount-1 do
+      for i := 0 to (Shadow.Owner as TForm).ControlCount - 1 do
       begin
         fExists := CompareText((Shadow.Owner as TForm).Controls[i].Name, sNewName) = 0;
         if fExists then break;
@@ -93,20 +92,20 @@ var
 begin
   case Index of
     0:
-    begin
-      sl := TStringList.Create;
-      Shadow := Component as TJvgShadow;
-      for i:=0 to Shadow.Parent.ControlCount-1 do
-        if (Shadow.Parent.Controls[i] is TJvgShadow)and((Shadow.Parent.Controls[i] as TJvgShadow).Control <> nil) then
-          sl.Add((Shadow.Parent.Controls[i] as TJvgShadow).Control.Name);
+      begin
+        sl := TStringList.Create;
+        Shadow := Component as TJvgShadow;
+        for i := 0 to Shadow.Parent.ControlCount - 1 do
+          if (Shadow.Parent.Controls[i] is TJvgShadow) and ((Shadow.Parent.Controls[i] as TJvgShadow).Control <> nil) then
+            sl.Add((Shadow.Parent.Controls[i] as TJvgShadow).Control.Name);
 
-      for i:=0 to Shadow.Parent.ControlCount-1 do
-        if Shadow.Parent.Controls[i] is TCustomEdit then
-        begin
-          UpdateIt(Shadow.Parent.Controls[i] as TCustomEdit);
-        end;
-      sl.Free;
-    end;
+        for i := 0 to Shadow.Parent.ControlCount - 1 do
+          if Shadow.Parent.Controls[i] is TCustomEdit then
+          begin
+            UpdateIt(Shadow.Parent.Controls[i] as TCustomEdit);
+          end;
+        sl.Free;
+      end;
   end;
 end;
 
@@ -121,6 +120,5 @@ function TJvgShadowEditor.GetVerbCount: Integer;
 begin
   Result := 1;
 end;
-
 
 end.

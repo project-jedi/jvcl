@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,7 +35,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, extctrls;
 
 type
-  TOnNewMessage = procedure (Sender: TObject; MessageText: string) of object;
+  TOnNewMessage = procedure(Sender: TObject; MessageText: string) of object;
 
   TJvgMailSlotServer = class(TComponent)
   private
@@ -43,9 +43,9 @@ type
     FOnNewMessage: TOnNewMessage;
 
     Timer: TTimer;
-    h : THandle;
-    str : string[250];
-    MsgNumber,MsgNext,Read : DWORD;
+    h: THandle;
+    str: string[250];
+    MsgNumber, MsgNext, Read: DWORD;
   public
     FEnabled: boolean;
     constructor Create(AOwner: TComponent); override;
@@ -60,7 +60,6 @@ type
     property OnNewMessage: TOnNewMessage read FOnNewMessage write FOnNewMessage;
   end;
 
-
   TJvgMailSlotClient = class(TComponent)
   private
     FMailSlotName, FServerName: string;
@@ -68,10 +67,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Send(str: string):boolean;
+    function Send(str: string): boolean;
   protected
     procedure Loaded; override;
-    procedure ErrorCatch(Sender : TObject; Exc : Exception);
+    procedure ErrorCatch(Sender: TObject; Exc: Exception);
   published
     property ServerName: string read FServerName write FServerName;
     property MailSlotName: string read FMailSlotName write FMailSlotName;
@@ -82,6 +81,7 @@ procedure Register;
 
 implementation
 uses JvgUtils, JvgTypes;
+
 procedure Register;
 begin
   RegisterComponents('Gl Components', [TJvgMailSlotServer, TJvgMailSlotClient]);
@@ -90,7 +90,7 @@ end;
 constructor TJvgMailSlotServer.Create(AOwner: TComponent);
 begin
   inherited;
-  FEnabled := true;  
+  FEnabled := true;
   FMailSlotName := 'MailSlot';
   Timer := TTimer.Create(nil);
   Timer.Enabled := false;
@@ -113,13 +113,14 @@ end;
 
 procedure TJvgMailSlotServer.Open;
 begin
-//  if not FEnabled then exit;
-// создание канала с именем MailSlotName - по этому имени к нему
-  // будут обращаться клиенты
-  h := CreateMailSlot(PChar('\\.\mailslot\' + MailSlotName), 0, MAILSLOT_WAIT_FOREVER,nil);
+  //  if not FEnabled then exit;
+  // создание канала с именем MailSlotName - по этому имени к нему
+    // будут обращаться клиенты
+  h := CreateMailSlot(PChar('\\.\mailslot\' + MailSlotName), 0, MAILSLOT_WAIT_FOREVER, nil);
   //h:=CreateMailSlot('\\.\mailslot\MailSlot',0,MAILSLOT_WAIT_FOREVER,nil);
 
-  if h = INVALID_HANDLE_VALUE then begin
+  if h = INVALID_HANDLE_VALUE then
+  begin
     raise Exception.Create('TJvgMailSlotServer: Ошибка создания канала !');
   end;
   Timer.Enabled := true;
@@ -135,24 +136,25 @@ procedure TJvgMailSlotServer.OnTimer(Sender: TObject);
 var
   MessageText: string;
 begin
-//  if not FEnabled then exit;
+  //  if not FEnabled then exit;
 
   MessageText := '';
-// определение наличия сообщения в канале
-  if not GetMailSlotInfo(h,nil,DWORD(MsgNext),@MsgNumber,nil) then
+  // определение наличия сообщения в канале
+  if not GetMailSlotInfo(h, nil, DWORD(MsgNext), @MsgNumber, nil) then
   begin
     raise Exception.Create('TJvgMailSlotServer: Ошибка сбора информации!');
   end;
-  if MsgNext <> MAILSLOT_NO_MESSAGE then begin
+  if MsgNext <> MAILSLOT_NO_MESSAGE then
+  begin
     beep;
     // чтение сообщения из канала и добавление в текст протокола
-    if ReadFile(h,str,200,DWORD(Read),nil) then
+    if ReadFile(h, str, 200, DWORD(Read), nil) then
       MessageText := str
     else
       raise Exception.Create('TJvgMailSlotServer: Ошибка чтения сообщения !');
   end;
 
-  if (MessageText<>'')and Assigned(OnNewMessage) then OnNewMessage(self, MessageText);
+  if (MessageText <> '') and Assigned(OnNewMessage) then OnNewMessage(self, MessageText);
 
   FLastMessage := MessageText;
 end;
@@ -176,21 +178,21 @@ begin
   Application.OnException := ErrorCatch;
 end;
 
-procedure TJvgMailSlotClient.ErrorCatch(Sender : TObject; Exc : Exception);
+procedure TJvgMailSlotClient.ErrorCatch(Sender: TObject; Exc: Exception);
 var
   UserName: array[0..99] of char;
   i: integer;
 begin
   // получение имени пользователя
-  i:=SizeOf(UserName);
-  GetUserName(UserName,DWORD(i));
+  i := SizeOf(UserName);
+  GetUserName(UserName, DWORD(i));
 
-  Send('/'+UserName+'/'+FormatDateTime('hh:mm',Time)+'/'+Exc.Message);
+  Send('/' + UserName + '/' + FormatDateTime('hh:mm', Time) + '/' + Exc.Message);
   // вывод сообщения об ошибке пользователю
   Application.ShowException(Exc);
 end;
 
-function TJvgMailSlotClient.Send(str: string):boolean;
+function TJvgMailSlotClient.Send(str: string): boolean;
 var
   strMess: string[250];
   h: THandle;
@@ -200,13 +202,13 @@ begin
   // (\\.\\mailslot\xxx - монитор работает на этом же ПК)
   // xxx - имя канала
   if FServerName = '' then FServerName := '.\';
-  h:=CreateFile( PChar('\\' + FServerName + '\mailslot\' + FMailSlotName), GENERIC_WRITE,
-                 FILE_SHARE_READ,nil,OPEN_EXISTING, 0, 0);
+  h := CreateFile(PChar('\\' + FServerName + '\mailslot\' + FMailSlotName), GENERIC_WRITE,
+    FILE_SHARE_READ, nil, OPEN_EXISTING, 0, 0);
   if h <> INVALID_HANDLE_VALUE then
   begin
     strMess := str;
     // передача текста ошибки (запись в канал и закрытие канала)
-    WriteFile(h,strMess,Length(strMess)+1,DWORD(i),nil);
+    WriteFile(h, strMess, Length(strMess) + 1, DWORD(i), nil);
     CloseHandle(h);
   end;
   Result := h <> INVALID_HANDLE_VALUE;

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -46,7 +46,7 @@ type
   TJvgLogicVariant = class;
   TJvgLogicProducer = class;
 
-  TOnTraceMessage = procedure (Sender: TJvgLogics; fStepResult: boolean; const StepResult, ParsedResult, Msg: string) of object;
+  TOnTraceMessage = procedure(Sender: TJvgLogics; fStepResult: boolean; const StepResult, ParsedResult, Msg: string) of object;
 
   TJvgLogicProducer = class(TComponent)
   private
@@ -157,11 +157,11 @@ type
 
     procedure Analyze;
     procedure AnalyzeStep;
-    procedure StartAnalyze;    
+    procedure StartAnalyze;
     //    procedure Assign(StylePairs: TJvgLogics);
-    function  Add: TJvgLogicElement;
+    function Add: TJvgLogicElement;
     function Insert(Index: Integer): TJvgLogicElement;
-    property Items[Index: Integer]: TJvgLogicElement read GetItem  write SetItem; default;
+    property Items[Index: Integer]: TJvgLogicElement read GetItem write SetItem; default;
     property Result: string read FResult write FResult;
   published
     property Dictionary: TStrings read FDictionary write SetDictionary;
@@ -171,12 +171,12 @@ type
 
   TJvgLogicVariant = class(TCollectionItem)
   private
-//    FExpression: string;
+    //    FExpression: string;
     FValue: string;
     FTrueResult: string;
     FFalseResult: string;
   published
-//    property Expression: string read FExpression write FExpression;
+    //    property Expression: string read FExpression write FExpression;
     property Value: string read FValue write FValue;
     property TrueResult: string read FTrueResult write FTrueResult;
     property FalseResult: string read FFalseResult write FFalseResult;
@@ -187,9 +187,9 @@ type
     function GetItem(Index: Integer): TJvgLogicVariant;
     procedure SetItem(Index: Integer; Value: TJvgLogicVariant);
   public
-    function  Add: TJvgLogicVariant;
+    function Add: TJvgLogicVariant;
     function Insert(Index: Integer): TJvgLogicVariant;
-    property Items[Index: Integer]: TJvgLogicVariant read GetItem  write SetItem; default;
+    property Items[Index: Integer]: TJvgLogicVariant read GetItem write SetItem; default;
   end;
 
   TJvgCommentArea = class(TCollectionItem)
@@ -214,9 +214,9 @@ type
     function GetItem(Index: Integer): TJvgCommentArea;
     procedure SetItem(Index: Integer; Value: TJvgCommentArea);
   public
-    function  Add: TJvgCommentArea;
+    function Add: TJvgCommentArea;
     function Insert(Index: Integer): TJvgCommentArea;
-    property Items[Index: Integer]: TJvgCommentArea read GetItem  write SetItem; default;
+    property Items[Index: Integer]: TJvgCommentArea read GetItem write SetItem; default;
   end;
 
 implementation
@@ -239,13 +239,14 @@ end;
 
 procedure TJvgLogicElement.Loaded;
 begin
-  if FLogicVariants.Count = 0 then with FLogicVariants.Add do
-  begin
-//    FExpression := self.FExpression;
-    FValue := self.FValue;
-    FTrueResult := self.FTrueResult;
-    FFalseResult := self.FFalseResult;
-  end;
+  if FLogicVariants.Count = 0 then
+    with FLogicVariants.Add do
+    begin
+      //    FExpression := self.FExpression;
+      FValue := self.FValue;
+      FTrueResult := self.FTrueResult;
+      FFalseResult := self.FFalseResult;
+    end;
 end;
 
 constructor TJvgLogics.Create(ItemClass: TCollectionItemClass);
@@ -261,9 +262,10 @@ begin
 end;
 
 procedure TJvgLogics.Loaded;
-var i: integer;
+var
+  i: integer;
 begin
-  for i := 0 to Count-1 do
+  for i := 0 to Count - 1 do
     Items[i].Loaded;
 end;
 
@@ -286,7 +288,6 @@ function TJvgLogics.Insert(Index: Integer): TJvgLogicElement;
 begin
   Result := TJvgLogicElement(inherited Insert(Index));
 end;
-
 
 function TJvgLogicElement.GetNextElement: TJvgLogicElement;
 begin
@@ -325,14 +326,18 @@ end;
 
 procedure TJvgLogicElement.SetNextElement(const Value: TJvgLogicElement);
 begin
-  if Value = nil then FNextElementID := -1
-                 else FNextElementID := Value.ID;
+  if Value = nil then
+    FNextElementID := -1
+  else
+    FNextElementID := Value.ID;
 end;
 
 procedure TJvgLogicElement.SetNextFalseElement(const Value: TJvgLogicElement);
 begin
-  if Value = nil then FNextFalseElementID := -1
-                 else FNextFalseElementID := Value.ID;
+  if Value = nil then
+    FNextFalseElementID := -1
+  else
+    FNextFalseElementID := Value.ID;
 end;
 
 { TJvgLogicProducer }
@@ -397,7 +402,10 @@ end;
 
 procedure TJvgLogics.StartAnalyze;
 begin
-  if Count > 0 then TraceItem := Items[0] else TraceItem := nil;
+  if Count > 0 then
+    TraceItem := Items[0]
+  else
+    TraceItem := nil;
 end;
 
 procedure TJvgLogics.AnalyzeStep;
@@ -413,10 +421,14 @@ begin
     TraceItem.IsTrue := true;
     f := GetItemResult(TraceItem, LogicVariant);
 
-    if f then Result := Result + ParseExpression(LogicVariant.TrueResult)
-         else Result := Result + ParseExpression(LogicVariant.FalseResult);
-    if f then TraceItem := TraceItem.NextElement
-         else TraceItem := TraceItem.NextFalseElement;
+    if f then
+      Result := Result + ParseExpression(LogicVariant.TrueResult)
+    else
+      Result := Result + ParseExpression(LogicVariant.FalseResult);
+    if f then
+      TraceItem := TraceItem.NextElement
+    else
+      TraceItem := TraceItem.NextFalseElement;
   end;
 end;
 
@@ -425,12 +437,13 @@ var
   i: integer;
   Item: TJvgLogicElement;
 begin
-  for i := 0 to Count-1 do Items[i].IsTrue := false;
+  for i := 0 to Count - 1 do
+    Items[i].IsTrue := false;
 
   Result := '';
   i := 0;
   TraceItem := Items[0];
-  while Assigned(TraceItem) and (i<1000) do
+  while Assigned(TraceItem) and (i < 1000) do
   begin
     AnalyzeStep;
     inc(i);
@@ -445,17 +458,17 @@ begin
   Expr := ParseExpression(Item.Expression);
   if IgnoreSpaces then Expr := trim(Expr);
 
-  for i:=0 to Item.LogicVariants.Count-1 do
+  for i := 0 to Item.LogicVariants.Count - 1 do
   begin
     Value := ParseExpression(Item.LogicVariants[i].Value);
 
     case Item.Rule of
-      lrEqual     : Result := Expr = Value;
-      lrBeginWith : Result := pos(Value, Expr) = 1;
-      lrEndWith   : Result := copy(Expr, length(Expr)-length(Value)+1, length(Value)) = Value;
-      lrContains  : Result := pos(Expr, Value) <> 1;
+      lrEqual: Result := Expr = Value;
+      lrBeginWith: Result := pos(Value, Expr) = 1;
+      lrEndWith: Result := copy(Expr, length(Expr) - length(Value) + 1, length(Value)) = Value;
+      lrContains: Result := pos(Expr, Value) <> 1;
       lrContainsIn: Result := pos(Value, Expr) <> 1;
-      ltNotEmpty  : Result := length(Expr) > 0;
+      ltNotEmpty: Result := length(Expr) > 0;
     end;
 
     LogicVariant := Item.LogicVariants[i];
@@ -464,19 +477,20 @@ begin
 
   end;
 
-  if Assigned(OnTraceMessage) then OnTraceMessage(self, Result, IIF(Result, Item.TrueResult, Item.FalseResult), ParseExpression(IIF(Result, Item.TrueResult, Item.FalseResult)), Item.Caption + '  :  ' + IIF(Result, 'TRUE', 'FALSE') + '  :  '  + IIF(Result, Item.TrueResult, Item.FalseResult));
+  if Assigned(OnTraceMessage) then OnTraceMessage(self, Result, IIF(Result, Item.TrueResult, Item.FalseResult), ParseExpression(IIF(Result, Item.TrueResult, Item.FalseResult)), Item.Caption + '  :  ' + IIF(Result, 'TRUE', 'FALSE') + '  :  ' + IIF(Result, Item.TrueResult, Item.FalseResult));
 
 end;
 
 function TJvgLogics.ParseExpression(const Value: string): string;
-var i: integer;
+var
+  i: integer;
 begin
   Result := Value;
   Result := StringReplace(Result, '[RESULT]', self.Result, [rfReplaceAll, rfIgnoreCase]);
-  for i := 0 to Dictionary.Count-1 do
+  for i := 0 to Dictionary.Count - 1 do
     Result := StringReplace(Result, '[' + Dictionary.Names[i] + ']', Dictionary.Values[Dictionary.Names[i]], [rfReplaceAll, rfIgnoreCase]);
 
-  i := 1;  
+  i := 1;
   while i <= length(Result) do
   begin
     if Result[i] = '[' then
@@ -498,7 +512,8 @@ begin
 end;
 
 procedure TJvgLogicProducer.Loaded;
-var i: integer;
+var
+  i: integer;
 begin
   inherited;
   Logics.Loaded;
@@ -559,6 +574,4 @@ begin
   Items[Index].Assign(Value);
 end;
 
-
 end.
-

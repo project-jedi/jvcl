@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -27,7 +27,7 @@ Known Issues:
 
 {$I JVCL.INC}
 
-{ 
+{
 eng:
  Load new string resources from file to components. Uses RTTI
 
@@ -68,7 +68,7 @@ procedure LoadLanguage(Component: TComponent; FileName: string; Options: TLangua
 procedure Register;
 
 implementation
-uses TypInfo ;//{$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE} {$IFDEF GLVER_D5}, dsgnintf{$ENDIF} {$ENDIF};
+uses TypInfo; //{$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE} {$IFDEF GLVER_D5}, dsgnintf{$ENDIF} {$ENDIF};
 
 procedure Register;
 begin
@@ -76,13 +76,14 @@ begin
 end;
 
 {Ф-ия для загрузки словаря без предварительного создания компонента}
+
 procedure LoadLanguage(Component: TComponent; FileName: string; Options: TLanguageLoaderOptions);
 var
   LanguageLoader: TJvgLanguageLoader;
 begin
   LanguageLoader := TJvgLanguageLoader.Create(nil);
   try
-      LanguageLoader.LoadLanguage(Component, FileName);
+    LanguageLoader.LoadLanguage(Component, FileName);
   finally
     LanguageLoader.Free;
   end;
@@ -92,13 +93,16 @@ end;
 
 {  Загрузка словаря, обход указанного компонента и  }
 {  всех его дочерних компонентов                    }
+
 procedure TJvgLanguageLoader.LoadLanguage(Component: TComponent; FileName: string);
-  procedure UpdateAllComponents(Component: TComponent);
-  var i: integer;
+
+procedure UpdateAllComponents(Component: TComponent);
+  var
+    i: integer;
   begin
     { обработка своцств компонента }
     UpdateComponent(Component);
-    for i := 0 to Component.ComponentCount-1 do
+    for i := 0 to Component.ComponentCount - 1 do
       UpdateAllComponents(Component.Components[i]);
   end;
 begin
@@ -115,6 +119,7 @@ end;
 
 { Проход по всем свойствам компонента                        }
 { Для всех строковых свойств - загрузка перевода из сооваря  }
+
 procedure TJvgLanguageLoader.UpdateComponent(Component: TPersistent);
 var
   PropInfo: PPropInfo;
@@ -132,66 +137,66 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps*sizeof(pointer));
+  GetMem(PropList, NumProps * sizeof(pointer));
 
   try
     GetPropInfos(TypeInf, PropList);
 
-    for i := 0 to NumProps-1 do
+    for i := 0 to NumProps - 1 do
     begin
       PropName := PropList^[i]^.Name;
 
       PropTypeInf := PropList^[i]^.PropType^;
       PropInfo := PropList^[i];
 
-
       case PropTypeInf^.Kind of
         tkString, tkLString:
-        if PropName <> 'Name' then { Переводить свойство Name не следует }
-        begin
-          { Получение значения свойства и поиск перевода в словаре }
-          StringPropValue := GetStrProp( Component, PropInfo );
-          SetStrProp( Component, PropInfo, TranslateString(StringPropValue) );
-        end;
-        tkClass:
-        begin
-          PropObject := GetObjectProp(Component, PropInfo{, TPersistent});
-
-          if Assigned(PropObject)then
+          if PropName <> 'Name' then { Переводить свойство Name не следует }
           begin
-            { Для дочерних свойств-классов вызов просмотра свойств }
-            if (PropObject is TPersistent) then
-             UpdateComponent(PropObject as TPersistent);
-
-            { Индивидуальный подход к некоторым классам }
-            if (PropObject is TStrings) then
-            begin
-              for j := 0 to (PropObject as TStrings).Count-1 do
-                TStrings(PropObject)[j] := TranslateString(TStrings(PropObject)[j]);
-            end;
-            if (PropObject is TTreeNodes) then
-            begin
-              for j := 0 to (PropObject as TTreeNodes).Count-1 do
-                TTreeNodes(PropObject).Item[j].Text := TranslateString(TTreeNodes(PropObject).Item[j].Text);
-            end;
-            if (PropObject is TListItems) then
-            begin
-              for j := 0 to (PropObject as TListItems).Count-1 do
-                TListItems(PropObject).Item[j].Caption := TranslateString(TListItems(PropObject).Item[j].Caption);
-            end;
-            { Здесь можно добавить обработку остальных классов }
+            { Получение значения свойства и поиск перевода в словаре }
+            StringPropValue := GetStrProp(Component, PropInfo);
+            SetStrProp(Component, PropInfo, TranslateString(StringPropValue));
           end;
+        tkClass:
+          begin
+            PropObject := GetObjectProp(Component, PropInfo {, TPersistent});
 
-        end;
+            if Assigned(PropObject) then
+            begin
+              { Для дочерних свойств-классов вызов просмотра свойств }
+              if (PropObject is TPersistent) then
+                UpdateComponent(PropObject as TPersistent);
+
+              { Индивидуальный подход к некоторым классам }
+              if (PropObject is TStrings) then
+              begin
+                for j := 0 to (PropObject as TStrings).Count - 1 do
+                  TStrings(PropObject)[j] := TranslateString(TStrings(PropObject)[j]);
+              end;
+              if (PropObject is TTreeNodes) then
+              begin
+                for j := 0 to (PropObject as TTreeNodes).Count - 1 do
+                  TTreeNodes(PropObject).Item[j].Text := TranslateString(TTreeNodes(PropObject).Item[j].Text);
+              end;
+              if (PropObject is TListItems) then
+              begin
+                for j := 0 to (PropObject as TListItems).Count - 1 do
+                  TListItems(PropObject).Item[j].Caption := TranslateString(TListItems(PropObject).Item[j].Caption);
+              end;
+              { Здесь можно добавить обработку остальных классов }
+            end;
+
+          end;
 
       end;
     end;
   finally
-    FreeMem(PropList, NumProps*sizeof(pointer));
+    FreeMem(PropList, NumProps * sizeof(pointer));
   end;
 end;
 
 { Поиск перевода для заданной строки в словаре }
+
 function TJvgLanguageLoader.TranslateString(sString: string): string;
 begin
   if lofTrimSpaces in Options then sString := trim(sString);
@@ -200,8 +205,10 @@ begin
     Result := '';
     exit;
   end;
-  if sl.IndexOfName(sString) <> -1 then Result := sl.Values[sString] else Result := sString;
+  if sl.IndexOfName(sString) <> -1 then
+    Result := sl.Values[sString]
+  else
+    Result := sString;
 end;
-
 
 end.

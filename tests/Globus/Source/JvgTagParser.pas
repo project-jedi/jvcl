@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -42,7 +42,7 @@ type
     constructor Create;
     destructor Destroy; override;
     function Attributes(const sTag: string): TStrings;
-    procedure OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: String; TagParams: TStrings; var ReplaceText: String);
+    procedure OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: string; TagParams: TStrings; var ReplaceText: string);
   end;
 
 implementation
@@ -56,28 +56,27 @@ var
 begin
   Result := TStringList.Create;
   try
-  PageProducer := TPageProducer.Create(nil);
-  PageProducer.HTMLDoc.Text := StringReplace(sTag, '<?', '<#', []);
-  PageProducer.OnHTMLTag := OnHTMLTag;
-  sTemp := PageProducer.Content;
+    PageProducer := TPageProducer.Create(nil);
+    PageProducer.HTMLDoc.Text := StringReplace(sTag, '<?', '<#', []);
+    PageProducer.OnHTMLTag := OnHTMLTag;
+    sTemp := PageProducer.Content;
 
-  try
-    for i := 1 to TagParams.Count-1 do
-    begin
-      sIncludeParamValue := TagParams.Values[TagParams.Names[i]];
-      sIncludeParamName := TagParams.Names[i];
-      sIncludeParamValue := StringReplace(sIncludeParamValue, '[', '<', [rfReplaceAll]);
-      sIncludeParamValue := StringReplace(sIncludeParamValue, ']', '>', [rfReplaceAll]);
-      Result.Add(sIncludeParamName + '=' + sIncludeParamValue);
+    try
+      for i := 1 to TagParams.Count - 1 do
+      begin
+        sIncludeParamValue := TagParams.Values[TagParams.Names[i]];
+        sIncludeParamName := TagParams.Names[i];
+        sIncludeParamValue := StringReplace(sIncludeParamValue, '[', '<', [rfReplaceAll]);
+        sIncludeParamValue := StringReplace(sIncludeParamValue, ']', '>', [rfReplaceAll]);
+        Result.Add(sIncludeParamName + '=' + sIncludeParamValue);
+      end;
+    finally
+      PageProducer.Free;
     end;
-  finally
-    PageProducer.Free;
-  end;
   except
     FreeAndNil(Result);
   end;
 end;
-
 
 constructor TJvgTagParser.Create;
 begin
@@ -92,19 +91,19 @@ begin
   inherited;
 end;
 
-procedure TJvgTagParser.OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: String; TagParams: TStrings; var ReplaceText: String);
+procedure TJvgTagParser.OnHTMLTag(Sender: TObject; Tag: TTag; const TagString: string; TagParams: TStrings; var ReplaceText: string);
 var
   i: integer;
 begin
   TagParams.Text := LowerCase(TagParams.Text);
 
   with AttributeFilter do
-  for i:=0 to pred(TagParams.Count) do
-    if IndexOfName(TagParams.Names[i]) <> -1 then
-    if Values[TagParams.Names[i]] = Values[TagParams.Names[i]] then
-    begin
-      self.TagParams.Assign(TagParams);
-    end;
+    for i := 0 to pred(TagParams.Count) do
+      if IndexOfName(TagParams.Names[i]) <> -1 then
+        if Values[TagParams.Names[i]] = Values[TagParams.Names[i]] then
+        begin
+          self.TagParams.Assign(TagParams);
+        end;
 end;
 
 end.

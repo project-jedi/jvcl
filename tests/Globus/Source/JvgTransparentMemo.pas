@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -38,11 +38,11 @@ uses
 type
   TJvgTranspMemo = class(TMemo)
   private
-    procedure OnWMPaint( var Msg: TWMPaint ); message WM_PAINT;
+    procedure OnWMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
     { Protected declarations }
   public
-    constructor Create( AOwner : TComponent ); override;
+    constructor Create(AOwner: TComponent); override;
     procedure CreateParams(var Params: TCreateParams); override;
   published
     { Published declarations }
@@ -57,7 +57,7 @@ begin
   RegisterComponents('Proba', [TJvgTranspMemo]);
 end;
 
-constructor TJvgTranspMemo.Create( AOwner : TComponent );
+constructor TJvgTranspMemo.Create(AOwner: TComponent);
 begin
   inherited;
   //Canvas.Brush.Style:=bsClear;
@@ -66,16 +66,17 @@ end;
 procedure TJvgTranspMemo.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
-//if Transparent then
+  //if Transparent then
   Params.ExStyle := Params.ExStyle or WS_EX_Transparent;
 end;
 
-procedure TJvgTranspMemo.OnWMPaint( var Msg: TWMPaint );
-var dc:HDC;
+procedure TJvgTranspMemo.OnWMPaint(var Msg: TWMPaint);
+var
+  dc: HDC;
 begin
-  dc:=GetDC(handle);
-  SetBkMode( dc, TRANSPARENT );
-  releaseDC(handle,dc);
+  dc := GetDC(handle);
+  SetBkMode(dc, TRANSPARENT);
+  releaseDC(handle, dc);
   inherited;
 end;
 

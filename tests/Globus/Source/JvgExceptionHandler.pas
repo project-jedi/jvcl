@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -102,13 +102,13 @@ procedure AssertErrorHandler_gl(const Message, Filename: string; LineNumber: Int
 begin
   if Assigned(ExceptionHandler) then
     ExceptionHandler.ProcessMessage(
-              'ExceptAddr=' + Format('%p', [ErrorAddr]) + #13#10 +
-              'LineNumber=' + IntToStr(LineNumber) + #13#10 +
-              'FileName=' + Filename
-              ,'internal JvgExceptionHandler message', '');
+      'ExceptAddr=' + Format('%p', [ErrorAddr]) + #13#10 +
+      'LineNumber=' + IntToStr(LineNumber) + #13#10 +
+      'FileName=' + Filename
+      , 'internal JvgExceptionHandler message', '');
   ExceptionClass := EAssertionFailed;
-//  E := CreateAssertException(Message, Filename, LineNumber);
-//  RaiseAssertException(E, ErrorAddr, PChar(@ErrorAddr)+4);
+  //  E := CreateAssertException(Message, Filename, LineNumber);
+  //  RaiseAssertException(E, ErrorAddr, PChar(@ErrorAddr)+4);
 end;
 
 { TJvgExceptionHandler }
@@ -127,7 +127,7 @@ begin
   ScreenShotList.Free;
   if Assigned(SysInfo) then SysInfo.Free;
   Application.OnException := nil;
-  inherited;  
+  inherited;
 end;
 
 procedure TJvgExceptionHandler.OnException(Sender: TObject; E: Exception);
@@ -143,8 +143,8 @@ procedure TJvgExceptionHandler.Loaded;
 begin
   inherited;
   if Active then
-    if ((csDesigning in ComponentState) and (fehActiveDesignTime in Options))or
-       (not(csDesigning in ComponentState) and (fehActiveRunTime in Options))then
+    if ((csDesigning in ComponentState) and (fehActiveDesignTime in Options)) or
+      (not (csDesigning in ComponentState) and (fehActiveRunTime in Options)) then
     begin
       Application.OnException := OnException;
       // Настройка ссылки на глобальный обработчик процедуры Assert
@@ -159,66 +159,65 @@ var
   FileName, Msg: string;
   Buffer: Pointer;
 begin
-  FileName :=  IIF( (pos('//', LogFileName)=0)and(pos(':', LogFileName)=0), ExtractFilePath(ParamStr(0)) + LogFileName, LogFileName );
+  FileName := IIF((pos('//', LogFileName) = 0) and (pos(':', LogFileName) = 0), ExtractFilePath(ParamStr(0)) + LogFileName, LogFileName);
 
   Msg := '';
   try
-      if not FileExists(FileName) then { первое создание лога }
+    if not FileExists(FileName) then { первое создание лога }
+    try
+      if not assigned(SysInfo) then SysInfo := TJvgSysInfo.Create(nil);
+      SysInfo.Refresh;
+      Msg := '##################### exception log header';
+      Msg := Msg + #13#10'ExeModule= ' + ParamStr(0);
+      Msg := Msg + #13#10'OSPlatform= ' + SysInfo.OSPlatform;
+      Msg := Msg + #13#10'CPUKind= ' + IntToStr(SysInfo.CPUKind);
+      Msg := Msg + #13#10'CPUName= ' + SysInfo.CPUName;
+      Msg := Msg + #13#10'TotalPhys= ' + IntToStr(SysInfo.TotalPhys);
+      Msg := Msg + #13#10'AvailPhys= ' + IntToStr(SysInfo.AvailPhys);
+      Msg := Msg + #13#10'TotalPageFile= ' + IntToStr(SysInfo.TotalPageFile);
+      Msg := Msg + #13#10'AvailPageFile= ' + IntToStr(SysInfo.AvailPageFile);
+      Msg := Msg + #13#10'TotalVirtual= ' + IntToStr(SysInfo.TotalVirtual);
+      Msg := Msg + #13#10'AvailVirtual= ' + IntToStr(SysInfo.AvailVirtual);
+      Msg := Msg + #13#10'ColorDepth= ' + IntToStr(SysInfo.ColorDepth);
+      Msg := Msg + #13#10'SystemFont= ' + SysInfo.SystemFont;
+      Msg := Msg + #13#10'VRefreshRate= ' + IntToStr(SysInfo.VRefreshRate);
+      Msg := Msg + #13#10'GraphicResolution= ' + SysInfo.GraphicResolution;
+      Msg := Msg + #13#10'##################### exception log header end'#13#10;
+    except
+      { Сбои в работе TJvgSysInfo не должны мешать обработчику }
+    end;
+
+    if ExceptObject <> nil then
+    begin
+      Msg := Msg + #13#10'Exception class= ' + ExceptObject.ClassName;
+      Msg := Msg + #13#10'ExceptAddr= ' + Format('%p', [ExceptAddr]);
+    end;
+    Msg := Msg + #13#10'Computer= ' + ComputerName;
+    Msg := Msg + #13#10'User= ' + UserName;
+    Msg := Msg + #13#10'Datetime= ' + DateToStr(date) + '  ' + TimeToStr(time);
+
+    if ID <> '' then Msg := Msg + #13#10 + 'ID= ' + ID;
+    if ExceptionMessage <> '' then Msg := Msg + #13#10'ExceptionMessage= ' + ExceptionMessage;
+    if Message <> '' then Msg := Msg + #13#10'Message= ' + Message;
+    Msg := Msg + #13#10;
+
+    if Assigned(MailSlot) then MailSlot.Send(Msg);
+    if (fehFileLogging in Options) and (trim(LogFileName) <> '') then
+    begin
+      if FileExists(FileName) then
+        fs := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyNone)
+      else
+        fs := TFileStream.Create(FileName, fmCreate or fmShareDenyNone);
+
       try
-        if not assigned(SysInfo) then SysInfo := TJvgSysInfo.Create(nil);
-        SysInfo.Refresh;
-        Msg := '##################### exception log header';
-        Msg := Msg + #13#10'ExeModule= '        + ParamStr(0);
-        Msg := Msg + #13#10'OSPlatform= '       + SysInfo.OSPlatform;
-        Msg := Msg + #13#10'CPUKind= '          + IntToStr(SysInfo.CPUKind);
-        Msg := Msg + #13#10'CPUName= '          + SysInfo.CPUName;
-        Msg := Msg + #13#10'TotalPhys= '        + IntToStr(SysInfo.TotalPhys);
-        Msg := Msg + #13#10'AvailPhys= '        + IntToStr(SysInfo.AvailPhys);
-        Msg := Msg + #13#10'TotalPageFile= '    + IntToStr(SysInfo.TotalPageFile);
-        Msg := Msg + #13#10'AvailPageFile= '    + IntToStr(SysInfo.AvailPageFile);
-        Msg := Msg + #13#10'TotalVirtual= '     + IntToStr(SysInfo.TotalVirtual);
-        Msg := Msg + #13#10'AvailVirtual= '     + IntToStr(SysInfo.AvailVirtual);
-        Msg := Msg + #13#10'ColorDepth= '       + IntToStr(SysInfo.ColorDepth);
-        Msg := Msg + #13#10'SystemFont= '       + SysInfo.SystemFont;
-        Msg := Msg + #13#10'VRefreshRate= '     + IntToStr(SysInfo.VRefreshRate);
-        Msg := Msg + #13#10'GraphicResolution= '+ SysInfo.GraphicResolution;
-        Msg := Msg + #13#10'##################### exception log header end'#13#10;
-      except
-        { Сбои в работе TJvgSysInfo не должны мешать обработчику }
+        fs.Seek(0, soFromEnd);
+        Buffer := @Msg[1];
+        fs.Write(Buffer^, length(Msg));
+      finally
+        fs.Free;
       end;
 
-
-      if ExceptObject <> nil then
-      begin
-        Msg := Msg + #13#10'Exception class= ' + ExceptObject.ClassName;
-        Msg := Msg + #13#10'ExceptAddr= ' + Format('%p', [ExceptAddr]);
-      end;
-      Msg := Msg + #13#10'Computer= ' + ComputerName;
-      Msg := Msg + #13#10'User= ' + UserName;
-      Msg := Msg + #13#10'Datetime= ' + DateToStr(date) +  '  ' + TimeToStr(time);
-
-      if ID <> '' then Msg := Msg + #13#10 + 'ID= ' + ID;
-      if ExceptionMessage <> '' then Msg := Msg + #13#10'ExceptionMessage= ' + ExceptionMessage;
-      if Message <> '' then Msg := Msg + #13#10'Message= ' + Message;
-      Msg := Msg + #13#10;
-
-      if Assigned(MailSlot) then MailSlot.Send(Msg);
-      if (fehFileLogging in Options)and(trim(LogFileName) <> '') then
-      begin
-        if FileExists(FileName) then
-          fs := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyNone)
-        else
-          fs := TFileStream.Create(FileName, fmCreate or fmShareDenyNone);
-
-        try
-          fs.Seek(0, soFromEnd);
-          Buffer := @Msg[1];
-          fs.Write(Buffer^, length(Msg));
-        finally
-          fs.Free;
-        end;
-
-      end;
+    end;
 
   except
     on E: Exception do ShowMessage(E, 'Ошибка при сохранении протокола. '#13#10#13#10 + E.Message);
@@ -245,16 +244,16 @@ begin
   BackImage := TBitmap.Create;
   try
     DC := GetDC(0);
-    BackImage.Width := Screen.Width; BackImage.Height := Screen.Height;
+    BackImage.Width := Screen.Width;
+    BackImage.Height := Screen.Height;
     BitBlt(BackImage.Canvas.Handle, 0, 0, BackImage.Width, BackImage.Height, DC, 0, 0, SRCCOPY);
     ReleaseDC(0, DC);
     Jpeg.CompressionQuality := 50;
     Jpeg.Assign(BackImage);
 
-
-    LogPath := ExtractFilePath(ParamStr(0)) +  DelFileExt(ExtractFileName(ParamStr(0))) + '\';
-    ScreenShotName := DelFileExt(ExtractFileName(ParamStr(0)) + ' ' + StringReplace(StringReplace(ID, '{', '', [rfReplaceAll]), '}' ,'', [rfReplaceAll]))
-                      + Format('  %2d-%2d-%4d %2d-%2d-%2d', [SysTime.wDay, SysTime.wMonth, SysTime.wYear, SysTime.wHour, SysTime.wMinute, SysTime.wSecond]);
+    LogPath := ExtractFilePath(ParamStr(0)) + DelFileExt(ExtractFileName(ParamStr(0))) + '\';
+    ScreenShotName := DelFileExt(ExtractFileName(ParamStr(0)) + ' ' + StringReplace(StringReplace(ID, '{', '', [rfReplaceAll]), '}', '', [rfReplaceAll]))
+      + Format('  %2d-%2d-%4d %2d-%2d-%2d', [SysTime.wDay, SysTime.wMonth, SysTime.wYear, SysTime.wHour, SysTime.wMinute, SysTime.wSecond]);
 
     ForceDirectories(LogPath);
 
@@ -269,7 +268,9 @@ procedure TJvgExceptionHandler.Notification(AComponent: TComponent; Operation: T
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = MailSlot) and (Operation = opRemove) then
-  begin FMailSlot := nil; end;
+  begin
+    FMailSlot := nil;
+  end;
 end;
 
 procedure TJvgExceptionHandler.Raise_(const ID: string);
@@ -316,10 +317,14 @@ begin
 end;
 
 { Отображает сообщение, если исключение не внутреннее - EJvgHandlerException }
+
 procedure TJvgExceptionHandler.ShowMessage(E: Exception; const Message: string);
 begin
-  if not(E is EJvgHandlerException)and not(fehSupressExceptions in Options) then
-    if Message <> '' then Dialogs.ShowMessage(Message) else Application.ShowException(E);
+  if not (E is EJvgHandlerException) and not (fehSupressExceptions in Options) then
+    if Message <> '' then
+      Dialogs.ShowMessage(Message)
+    else
+      Application.ShowException(E);
 end;
 
 procedure TJvgExceptionHandler.Refresh;
@@ -328,6 +333,7 @@ begin
 end;
 
 { Вызывает исключение с заданным сообщением без протоколирования }
+
 procedure TJvgExceptionHandler.RaiseMessage(const Message: string);
 begin
   Dialogs.ShowMessage(Message);

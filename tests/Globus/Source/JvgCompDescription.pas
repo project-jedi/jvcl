@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -62,7 +62,7 @@ type
   public
     function Add: TJvgPropInform;
     function Insert(Index: Integer): TJvgPropInform;
-    property Items[Index: Integer]: TJvgPropInform read GetItem  write SetItem; default;
+    property Items[Index: Integer]: TJvgPropInform read GetItem write SetItem; default;
   end;
 
   TJvgPropInform = class(TCollectionItem)
@@ -86,7 +86,6 @@ type
 
 implementation
 
-
 constructor TJvgComponentDescription.Create(AOwner, Component: TComponent);
 begin
   inherited Create(AOwner);
@@ -96,7 +95,7 @@ end;
 
 destructor TJvgComponentDescription.Destroy;
 begin
-  FreeMem(PropList, NumProps*sizeof(pointer));
+  FreeMem(PropList, NumProps * sizeof(pointer));
   PropInfos.Free;
   inherited;
 end;
@@ -111,7 +110,7 @@ var
   PropObject: TObject;
 begin
   if NumProps > 0 then
-    FreeMem(PropList, NumProps*sizeof(pointer));
+    FreeMem(PropList, NumProps * sizeof(pointer));
 
   { Playing with RTTI }
   TypeInf := Component.ClassInfo;
@@ -119,12 +118,12 @@ begin
   TypeData := GetTypeData(TypeInf);
   NumProps := TypeData^.PropCount;
 
-  GetMem(PropList, NumProps*sizeof(pointer));
+  GetMem(PropList, NumProps * sizeof(pointer));
   try
     { Получаем список свойств }
     GetPropInfos(TypeInf, PropList);
 
-    for i := 0 to NumProps-1 do
+    for i := 0 to NumProps - 1 do
     begin
       PropInfos.AddPropInfo(PropList^[i], Component);
 
@@ -163,10 +162,14 @@ begin
       TypeData := GetTypeData(TypeInfo);
 
       for j := TypeData^.MinValue to TypeData^.MaxValue do
-       begin
-         if sNote <> '' then if TypeKind = tkSet then sNote := sNote + ' | ' else sNote := sNote + ', ';
-         sNote := sNote + GetEnumName(TypeInfo, j);
-       end;
+      begin
+        if sNote <> '' then
+          if TypeKind = tkSet then
+            sNote := sNote + ' | '
+          else
+            sNote := sNote + ', ';
+        sNote := sNote + GetEnumName(TypeInfo, j);
+      end;
       sNote := '[' + sNote + ']';
     end;
     Note := sNote;

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -35,35 +35,35 @@ uses Dialogs,
   JvgTypes, JvgCommClasses, JvgUtils, StdCtrls, ExtCtrls, SysUtils, Mask, Jvg3DColors;
 type
 
-  TJvgShadow = class ( TGraphicControl )
+  TJvgShadow = class(TGraphicControl)
   private
-    FControl		: TControl;
-    FStyle              : TJvgTextBoxStyle;
-    FStyleActive        : TJvgTextBoxStyle;
-    FShadowed           : boolean;
-    FShadowDepth        : word;
-    FShadowImage        : TBitmap;
-    FShadowImageBuff    : TBitmap;
-    FAutoTrColor	: TglAutoTransparentColor;
-    FTransparentShadow	: boolean;
-    FMaskedShadow	: boolean;
-    FTransparentColor	: TColor;
-    FMaskedFromColor    : TColor;
-    FMaskedToColor      : TColor;
+    FControl: TControl;
+    FStyle: TJvgTextBoxStyle;
+    FStyleActive: TJvgTextBoxStyle;
+    FShadowed: boolean;
+    FShadowDepth: word;
+    FShadowImage: TBitmap;
+    FShadowImageBuff: TBitmap;
+    FAutoTrColor: TglAutoTransparentColor;
+    FTransparentShadow: boolean;
+    FMaskedShadow: boolean;
+    FTransparentColor: TColor;
+    FMaskedFromColor: TColor;
+    FMaskedToColor: TColor;
 
-    FAfterPaint         : TNotifyEvent;
-    FOnEnter            : TNotifyEvent;
-    FOnExit             : TNotifyEvent;
-    ThreeDColors        : Tgl3DLocalColors;
-    fDontUseDefaultImage        : boolean;
-    procedure CreateShadowImageBuff( R: TRect );
+    FAfterPaint: TNotifyEvent;
+    FOnEnter: TNotifyEvent;
+    FOnExit: TNotifyEvent;
+    ThreeDColors: Tgl3DLocalColors;
+    fDontUseDefaultImage: boolean;
+    procedure CreateShadowImageBuff(R: TRect);
     procedure CreateDefaultShadowImage;
 
     procedure SetControl(Value: TControl);
-    procedure SetShadowed( Value: boolean );
-    procedure SetShadowDepth( Value: word );
+    procedure SetShadowed(Value: boolean);
+    procedure SetShadowDepth(Value: word);
     procedure SetShadowImage(Value: TBitmap);
-    function  GetShadowImage: TBitmap;
+    function GetShadowImage: TBitmap;
     procedure SetAutoTrColor(Value: TglAutoTransparentColor);
     procedure SetTransparentShadow(Value: boolean);
     procedure SetMaskedShadow(Value: boolean);
@@ -82,41 +82,40 @@ type
     procedure SetParent(Value: TWinControl); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    fNeedRecreateShadowImageBuff: boolean;  
-    fDestroying : boolean;
-    constructor Create( AOwner : TComponent ); override;
+    fNeedRecreateShadowImageBuff: boolean;
+    fDestroying: boolean;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
-  {$IFDEF GLVER_D5}
+    {$IFDEF GLVER_D5}
     property Anchors;
-  {$ENDIF}  
+    {$ENDIF}
     property Align;
     property Control: TControl read FControl write SetControl;
     property Visible;
     property Style: TJvgTextBoxStyle read FStyle write FStyle;
     property StyleActive: TJvgTextBoxStyle read FStyleActive write FStyleActive;
-//    property DigitsOnly: boolean read FDigitsOnly write SetDigitsOnly  default false;
+    //    property DigitsOnly: boolean read FDigitsOnly write SetDigitsOnly  default false;
     property Shadowed: boolean read FShadowed write SetShadowed default true;
     property ShadowDepth: word read FShadowDepth write SetShadowDepth default 6;
     property ShadowImage: TBitmap read GetShadowImage write SetShadowImage
-     stored fDontUseDefaultImage;
+      stored fDontUseDefaultImage;
     property AutoTransparentColor: TglAutoTransparentColor
-     read FAutoTrColor write SetAutoTrColor default ftcRightTopPixel;
+      read FAutoTrColor write SetAutoTrColor default ftcRightTopPixel;
     property TransparentShadow: boolean read FTransparentShadow write SetTransparentShadow
-     default true;
+      default true;
     property MaskedShadow: boolean read FMaskedShadow write SetMaskedShadow
-     default false;
+      default false;
     property TransparentColor: TColor read FTransparentColor
-     write SetTransparentColor default clOlive;
+      write SetTransparentColor default clOlive;
     property MaskedFromColor: TColor read FMaskedFromColor
-     write SetMaskedFromColor default clOlive;
+      write SetMaskedFromColor default clOlive;
     property MaskedToColor: TColor read FMaskedToColor
-     write SetMaskedToColor default clBtnFace;
+      write SetMaskedToColor default clBtnFace;
     property AfterPaint: TNotifyEvent read FAfterPaint write FAfterPaint;
     property OnControlEnter: TNotifyEvent read FOnEnter write FOnEnter;
     property OnControlExit: TNotifyEvent read FOnExit write FOnExit;
   end;
-
 
 procedure Register;
 
@@ -124,29 +123,32 @@ implementation
 //{$R JvgShadow.res}
 
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
+
 procedure Register;
 begin
   RegisterComponents('Proba', [TJvgShadow]);
 end;
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
 //___________________________________________________ TJvgShadow Methods _
-constructor TJvgShadow.Create( AOwner : TComponent );
+
+constructor TJvgShadow.Create(AOwner: TComponent);
 begin
   inherited;
-  ThreeDColors  := Tgl3DLocalColors.Create(self);
-  FStyle        := TJvgTextBoxStyle.Create;
-  FStyleActive  := TJvgTextBoxStyle.Create;
+  ThreeDColors := Tgl3DLocalColors.Create(self);
+  FStyle := TJvgTextBoxStyle.Create;
+  FStyleActive := TJvgTextBoxStyle.Create;
   FTransparentColor := clOlive;
-  if (csDesigning in ComponentState)and not(csLoading in ComponentState)then
+  if (csDesigning in ComponentState) and not (csLoading in ComponentState) then
   begin
     CreateDefaultShadowImage;
   end;
-//  FStyle.Inner := bvRaised;
-//  FStyleActive.Inner := bvRaised;
-//  FStyleActive.Bold := true;
-//  FStyleActive.HighlightColor := clWhite;
+  //  FStyle.Inner := bvRaised;
+  //  FStyleActive.Inner := bvRaised;
+  //  FStyleActive.Bold := true;
+  //  FStyleActive.HighlightColor := clWhite;
 
-  Height  := 23;  Width  := 120;
+  Height := 23;
+  Width := 120;
   FShadowed := true;
   FShadowDepth := 6;
   FAutoTrColor := ftcRightTopPixel;
@@ -189,39 +191,46 @@ begin
   r := ClientRect;
   if Shadowed then
   begin
-    inc( r.left, FShadowDepth ); inc( r.top, FShadowDepth );
-    if (csDesigning in ComponentState)or fNeedRecreateShadowImageBuff then
+    inc(r.left, FShadowDepth);
+    inc(r.top, FShadowDepth);
+    if (csDesigning in ComponentState) or fNeedRecreateShadowImageBuff then
     begin
-      CreateShadowImageBuff( R );
+      CreateShadowImageBuff(R);
       fNeedRecreateShadowImageBuff := false;
     end;
-    BitBlt( Canvas.Handle, R.Left, R.Top, R.Right-R.Left, R.Bottom-R.Top,
-            FShadowImageBuff.Canvas.Handle, 0, 0, SRCCOPY );
-    OffsetRect( r, -FShadowDepth, -FShadowDepth );
+    BitBlt(Canvas.Handle, R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top,
+      FShadowImageBuff.Canvas.Handle, 0, 0, SRCCOPY);
+    OffsetRect(r, -FShadowDepth, -FShadowDepth);
   end
-  else begin dec( r.right ); dec( r.bottom ); end;
+  else
+  begin
+    dec(r.right);
+    dec(r.bottom);
+  end;
 
-  if Assigned(Control)and(Control is TWinControl)and TWinControl(Control).Focused then
-     CurrStyle := FStyleActive else CurrStyle := FStyle;
+  if Assigned(Control) and (Control is TWinControl) and TWinControl(Control).Focused then
+    CurrStyle := FStyleActive
+  else
+    CurrStyle := FStyle;
 
   with CurrStyle do
   begin
     ThreeDColors.Highlight := HighlightColor;
-    ThreeDColors.Shadow	:= ShadowColor;
+    ThreeDColors.Shadow := ShadowColor;
     OldPointer := glGlobalData.lp3DColors;
     glGlobalData.lp3DColors := ThreeDColors;
-    r := DrawBoxEx( Canvas.Handle, r, Sides, Inner, Outer,
-		    Bold, Style.BackgroundColor, false );
+    r := DrawBoxEx(Canvas.Handle, r, Sides, Inner, Outer,
+      Bold, Style.BackgroundColor, false);
     glGlobalData.lp3DColors := OldPointer;
   end;
 
   if Assigned(Control) then
   begin
-    OffsetRect( r, left, top );
+    OffsetRect(r, left, top);
     if Control.left <> r.left then Control.left := r.left;
     if Control.top <> r.top then Control.top := r.top;
-    if not EqualRect( Control.ClientRect, Bounds( 0, 0, r.right-r.left+1, r.bottom-r.top+1 )) then
-      Control.SetBounds( r.left, r.top, r.right-r.left+1, r.bottom-r.top+1 );
+    if not EqualRect(Control.ClientRect, Bounds(0, 0, r.right - r.left + 1, r.bottom - r.top + 1)) then
+      Control.SetBounds(r.left, r.top, r.right - r.left + 1, r.bottom - r.top + 1);
   end;
   if Assigned(FAfterPaint) then FAfterPaint(self);
 end;
@@ -230,7 +239,7 @@ procedure TJvgShadow.SetParent(Value: TWinControl);
 begin
   inherited;
   if Assigned(Control) then
-    if not(csDestroying in ComponentState) then Control.Parent := Value;
+    if not (csDestroying in ComponentState) then Control.Parent := Value;
 end;
 
 procedure TJvgShadow.Notification(AComponent: TComponent; Operation: TOperation);
@@ -240,10 +249,9 @@ begin
     Control := nil;
 end;
 
-
 procedure TJvgShadow.CMFontChanged(var Message: TMessage);
 begin
-  if Assigned(Control)and(Control is TControl) then TJvgPublicWinControl(Control).Font := Font;
+  if Assigned(Control) and (Control is TControl) then TJvgPublicWinControl(Control).Font := Font;
 end;
 
 {procedure TJvgShadow.OnKeyPress_(Sender: TObject; var Key: Char);
@@ -256,6 +264,7 @@ begin
   if Assigned(FOnKeyPress) then FOnKeyPress(self, Key);
 end;
 }
+
 procedure TJvgShadow.OnEnter_(Sender: TObject);
 begin
   if Assigned(FOnEnter) then FOnEnter(self);
@@ -263,7 +272,10 @@ begin
   begin
     TJvgPublicWinControl(Control).Font.Color := StyleActive.TextColor;
     TJvgPublicWinControl(Control).Color := StyleActive.BackgroundColor;
-    if csDesigning in ComponentState then Repaint else Paint;
+    if csDesigning in ComponentState then
+      Repaint
+    else
+      Paint;
   end;
 end;
 
@@ -274,55 +286,76 @@ begin
   begin
     TJvgPublicWinControl(Control).Font.Color := Style.TextColor;
     TJvgPublicWinControl(Control).Color := Style.BackgroundColor;
-    if csDesigning in ComponentState then Repaint else Paint;
+    if csDesigning in ComponentState then
+      Repaint
+    else
+      Paint;
   end;
 end;
 
 procedure TJvgShadow.SmthChanged(Sender: TObject);
-begin Invalidate; end;
+begin
+  Invalidate;
+end;
 
-procedure TJvgShadow.CreateShadowImageBuff( R: TRect );
+procedure TJvgShadow.CreateShadowImageBuff(R: TRect);
 begin
   CreateDefaultShadowImage;
-  with FShadowImageBuff do begin
-    Width := R.Right-R.Left; Height := R.Bottom-R.Top;
+  with FShadowImageBuff do
+  begin
+    Width := R.Right - R.Left;
+    Height := R.Bottom - R.Top;
     Canvas.Brush.Color := clBtnFace;
     Canvas.Brush.Style := bsSolid;
-    Canvas.FillRect( Bounds(0,0,Width,Height) );
+    Canvas.FillRect(Bounds(0, 0, Width, Height));
   end;
   if FTransparentShadow then
-    GetParentImageRect( self, Bounds( Left+R.Left, Top+R.Top, FShadowImageBuff.Width, FShadowImageBuff.Height ),
-            	        FShadowImageBuff.Canvas.Handle );
+    GetParentImageRect(self, Bounds(Left + R.Left, Top + R.Top, FShadowImageBuff.Width, FShadowImageBuff.Height),
+      FShadowImageBuff.Canvas.Handle);
 
-  CreateBitmapExt( FShadowImageBuff.Canvas.Handle, FShadowImage,
-                   Rect(0,0,FShadowImageBuff.Width,FShadowImageBuff.Height), 0, 0,
-	           fwoTile, fdsDefault, FTransparentShadow, FTransparentColor, 0 );
+  CreateBitmapExt(FShadowImageBuff.Canvas.Handle, FShadowImage,
+    Rect(0, 0, FShadowImageBuff.Width, FShadowImageBuff.Height), 0, 0,
+    fwoTile, fdsDefault, FTransparentShadow, FTransparentColor, 0);
   if FMaskedShadow then
-    ChangeBitmapColor( FShadowImageBuff, FMaskedFromColor, FMaskedToColor );
+    ChangeBitmapColor(FShadowImageBuff, FMaskedFromColor, FMaskedToColor);
 end;
 
 procedure TJvgShadow.CreateDefaultShadowImage;
-const SIZE = 8;
-var i,j: byte;
+const
+  SIZE = 8;
+var
+  i, j: byte;
 begin
   if Assigned(FShadowImage) then FShadowImage.Free;
   if Assigned(FShadowImageBuff) then FShadowImageBuff.Free;
-  FShadowImage := TBitmap.Create; FShadowImageBuff := TBitmap.Create;
-  FShadowImage.Width := SIZE; FShadowImage.Height := SIZE;
-  i:=0; j:=0; FShadowImage.Canvas.FillRect(Rect(0,0,SIZE,SIZE));
-  while j < SIZE do begin
-    while i < SIZE do begin
-      FShadowImage.Canvas.Pixels[i,j] := 0; inc(i,2);
+  FShadowImage := TBitmap.Create;
+  FShadowImageBuff := TBitmap.Create;
+  FShadowImage.Width := SIZE;
+  FShadowImage.Height := SIZE;
+  i := 0;
+  j := 0;
+  FShadowImage.Canvas.FillRect(Rect(0, 0, SIZE, SIZE));
+  while j < SIZE do
+  begin
+    while i < SIZE do
+    begin
+      FShadowImage.Canvas.Pixels[i, j] := 0;
+      inc(i, 2);
     end;
-    inc(j); if i=8 then i:=1 else i:=0;
+    inc(j);
+    if i = 8 then
+      i := 1
+    else
+      i := 0;
   end;
   FTransparentColor := clWhite;
   fDontUseDefaultImage := false;
 end;
 //___________________________________________________ TJvgShadow Methods _
+
 procedure TJvgShadow.SetControl(Value: TControl);
 begin
-  if Value<>self then FControl := Value;
+  if Value <> self then FControl := Value;
   if FControl is TWinControl then
   begin
     TJvgPublicWinControl(FControl).OnEnter := OnEnter_;
@@ -352,36 +385,38 @@ begin
 
 end;
 }
-procedure TJvgShadow.SetDigitsOnly( Value: boolean );
+
+procedure TJvgShadow.SetDigitsOnly(Value: boolean);
 //var
 //  i: integer;
 begin //{$O-}
-{  if DigitsOnly = Value then exit;
-  FDigitsOnly := Value;
-  if DigitsOnly then
-  begin
-    Control.Text := trim( Control.Text );
-     try
-      i := StrToInt( Control.Text );
-    except
-      Control.Text := '';
-    end;
-  end;}
- // {$O+}
+  {  if DigitsOnly = Value then exit;
+    FDigitsOnly := Value;
+    if DigitsOnly then
+    begin
+      Control.Text := trim( Control.Text );
+       try
+        i := StrToInt( Control.Text );
+      except
+        Control.Text := '';
+      end;
+    end;}
+   // {$O+}
 end;
 
-procedure TJvgShadow.SetShadowed( Value: boolean );
+procedure TJvgShadow.SetShadowed(Value: boolean);
 begin
   if FShadowed = Value then exit;
   FShadowed := Value;
-  if FShadowed and(FShadowImage=nil) then CreateDefaultShadowImage;
+  if FShadowed and (FShadowImage = nil) then CreateDefaultShadowImage;
   Invalidate;
 end;
 
-procedure TJvgShadow.SetShadowDepth( Value: word );
+procedure TJvgShadow.SetShadowDepth(Value: word);
 begin
   if FShadowDepth = Value then exit;
-  FShadowDepth := Value; invalidate;
+  FShadowDepth := Value;
+  invalidate;
 end;
 
 procedure TJvgShadow.SetShadowImage(Value: TBitmap);
@@ -402,27 +437,44 @@ end;
 procedure TJvgShadow.SetAutoTrColor(Value: TglAutoTransparentColor);
 begin
   FAutoTrColor := Value;
-  FTransparentColor := GetTransparentColor( FShadowImage, Value );
-  fNeedRecreateShadowImageBuff:=true; Invalidate;
+  FTransparentColor := GetTransparentColor(FShadowImage, Value);
+  fNeedRecreateShadowImageBuff := true;
+  Invalidate;
 end;
 
 procedure TJvgShadow.SetTransparentShadow(Value: boolean);
-begin FTransparentShadow := Value; fNeedRecreateShadowImageBuff:=true; Invalidate; end;
+begin
+  FTransparentShadow := Value;
+  fNeedRecreateShadowImageBuff := true;
+  Invalidate;
+end;
 
 procedure TJvgShadow.SetMaskedShadow(Value: boolean);
-begin FMaskedShadow := Value; fNeedRecreateShadowImageBuff:=true; Invalidate; end;
+begin
+  FMaskedShadow := Value;
+  fNeedRecreateShadowImageBuff := true;
+  Invalidate;
+end;
 
 procedure TJvgShadow.SetTransparentColor(Value: TColor);
-begin FTransparentColor := Value; fNeedRecreateShadowImageBuff:=FTransparentShadow; Invalidate; end;
+begin
+  FTransparentColor := Value;
+  fNeedRecreateShadowImageBuff := FTransparentShadow;
+  Invalidate;
+end;
 
 procedure TJvgShadow.SetMaskedFromColor(Value: TColor);
-begin FMaskedFromColor := Value; fNeedRecreateShadowImageBuff:=FMaskedShadow; Invalidate; end;
+begin
+  FMaskedFromColor := Value;
+  fNeedRecreateShadowImageBuff := FMaskedShadow;
+  Invalidate;
+end;
 
 procedure TJvgShadow.SetMaskedToColor(Value: TColor);
-begin FMaskedToColor := Value; fNeedRecreateShadowImageBuff:=FMaskedShadow; Invalidate; end;
-
-
-
+begin
+  FMaskedToColor := Value;
+  fNeedRecreateShadowImageBuff := FMaskedShadow;
+  Invalidate;
+end;
 
 end.
-

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -40,77 +40,75 @@ procedure Register;
 implementation
 
 uses Classes,
-     { beta version units - готовые к использованию компоненты }
-     JvgBevel, JvgLabel, JvgEdit, JvgCheckBox, JvgTreeView, JvgFlyingText, JvgPage, JvgTab,
-     JvgHint, Jvg3DColors, JvgCaption, JvgProgress, JvgHShape, JvgSplit, JvgJump,
-     JvgDigits, JvgGroupBox, JvgImage, JvgShadow, JvgListBox, JvgAskListBox, JvgScrollBox, JvgGraphicButton,{ JvgQRLabel,}
-     JvgBitBtn, JvgRuler, JvgStringGrid, JvgProcess, JvgSysInf, {JvgShape,}
-     {JvgReport, JvgReportEditor,} JvgMailSlots, JvgExceptionHandler, JvgSpeedButton,
-     JvgSingleInstance, JvgHelpPanel, JvgStringContainer, JvgSysRequirements,
-     JvgSmallFontsDefence, JvgWizardHeader, JvgXMLSerializer,
-     {JvgExportComponents, }JvgShadowEditor, JvgHelpPanelEditor
+  { beta version units - готовые к использованию компоненты }
+  JvgBevel, JvgLabel, JvgEdit, JvgCheckBox, JvgTreeView, JvgFlyingText, JvgPage, JvgTab,
+  JvgHint, Jvg3DColors, JvgCaption, JvgProgress, JvgHShape, JvgSplit, JvgJump,
+  JvgDigits, JvgGroupBox, JvgImage, JvgShadow, JvgListBox, JvgAskListBox, JvgScrollBox, JvgGraphicButton, { JvgQRLabel,}
+  JvgBitBtn, JvgRuler, JvgStringGrid, JvgProcess, JvgSysInf, {JvgShape,}
+  {JvgReport, JvgReportEditor,} JvgMailSlots, JvgExceptionHandler, JvgSpeedButton,
+  JvgSingleInstance, JvgHelpPanel, JvgStringContainer, JvgSysRequirements,
+  JvgSmallFontsDefence, JvgWizardHeader, JvgXMLSerializer,
+  {JvgExportComponents, } JvgShadowEditor, JvgHelpPanelEditor
 
-     { alpha version units - компоненты в стадии доработки }
-     {$IFDEF INC_ALPHA_UNITS}
-     {JvgMultiResources, JvgButton,  },
-     JvgPropertyCenter,
-     JvgGridHeaderControl,
-     JvgCrossTable,
-     JvgReportParamEditor,
-     JvgComponentListEditor,
-     geGHC,
-     JvgLogics, JvgLogicsEditor,
-     JvgInspectorGrid
-     {$ENDIF}
-     {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE} {$IFDEF GLVER_D5}, dsgnintf{$ENDIF} {$ENDIF};
+  { alpha version units - компоненты в стадии доработки }
+  {$IFDEF INC_ALPHA_UNITS}
+  {JvgMultiResources, JvgButton,  },
+  JvgPropertyCenter,
+  JvgGridHeaderControl,
+  JvgCrossTable,
+  JvgReportParamEditor,
+  JvgComponentListEditor,
+  geGHC,
+  JvgLogics, JvgLogicsEditor,
+  JvgInspectorGrid
+  {$ENDIF}
+  {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF GLVER_D5}, dsgnintf{$ENDIF}{$ENDIF};
 
 procedure Register;
 begin
-  RegisterComponents( 'Gl Controls', [ TJvgSplitter, TJvgBevel, TJvgLabel, TJvgBitBtn, TJvgGraphicButton,TJvgMaskEdit ,TJvgCheckBox, TJvgTreeView, TJvgCheckTreeView, TJvgFlyingText,
-                                       TJvgPageControl, TJvgTabControl, TJvgProgress, TJvgHoleShape,
-                                       TJvgDigits, TJvgShadow, TJvgGroupBox, TJvgBitmapImage, TJvgStaticTextLabel, TJvgListBox,
-                                       TJvgCheckListBox, TJvgAskListBox, TJvgScrollBox, TJvgMaskEdit, TJvgRuler, TJvgStringGrid,
-                                       TJvgSplitter, TJvgSpeedButton,
-                                       TJvgHelpPanel, TJvgWizardHeader
-                                       ]);
+  RegisterComponents('Gl Controls', [TJvgSplitter, TJvgBevel, TJvgLabel, TJvgBitBtn, TJvgGraphicButton, TJvgMaskEdit, TJvgCheckBox, TJvgTreeView, TJvgCheckTreeView, TJvgFlyingText,
+    TJvgPageControl, TJvgTabControl, TJvgProgress, TJvgHoleShape,
+      TJvgDigits, TJvgShadow, TJvgGroupBox, TJvgBitmapImage, TJvgStaticTextLabel, TJvgListBox,
+      TJvgCheckListBox, TJvgAskListBox, TJvgScrollBox, TJvgMaskEdit, TJvgRuler, TJvgStringGrid,
+      TJvgSplitter, TJvgSpeedButton,
+      TJvgHelpPanel, TJvgWizardHeader
+      ]);
 
-  RegisterComponents( 'Gl Components', [ Tgl3DColors, TJvgCaption, TJvgHint, TJvgProcess, TJvgSysInfo,
-                                        TJvgJumpingComponent, TJvgMailSlotServer, TJvgMailSlotClient,
-                                        //TJvgReport, TJvgReportEditor,
-                                        TJvgExceptionHandler, TJvgSingleInstance, TJvgStringContainer, TJvgSysRequirements,
-                                        TJvgSmallFontsDefence, TJvgXMLSerializer{, TJvgMultipleResources}]);
+  RegisterComponents('Gl Components', [Tgl3DColors, TJvgCaption, TJvgHint, TJvgProcess, TJvgSysInfo,
+    TJvgJumpingComponent, TJvgMailSlotServer, TJvgMailSlotClient,
+      //TJvgReport, TJvgReportEditor,
+    TJvgExceptionHandler, TJvgSingleInstance, TJvgStringContainer, TJvgSysRequirements,
+      TJvgSmallFontsDefence, TJvgXMLSerializer {, TJvgMultipleResources}]);
 
-//  RegisterComponents( 'Gl QReport', [ TJvgQRLabel, TJvgQRDBText ] );
+  //  RegisterComponents( 'Gl QReport', [ TJvgQRLabel, TJvgQRDBText ] );
 
-//  RegisterComponents('Gl ExportImport', [TJvgExportExcel, TJvgExportDBETable{, TJvgExportHTML, TJvgExportXML}]);
+  //  RegisterComponents('Gl ExportImport', [TJvgExportExcel, TJvgExportDBETable{, TJvgExportHTML, TJvgExportXML}]);
 
   {$IFDEF INC_ALPHA_UNITS}
-  RegisterComponents( 'Gl Controls', [ TJvgGridHeaderControl, TJvgInspectorGrid {, TJvgButton} ]);
-  RegisterComponents( 'Gl Components', [ TJvgReportParamsEditor, TJvgLogicProducer {, TJvgMultipleResources} ]);
-  RegisterComponents( 'Gl DB', [ TJvgPrintCrossTable ] );
+  RegisterComponents('Gl Controls', [TJvgGridHeaderControl, TJvgInspectorGrid {, TJvgButton}]);
+  RegisterComponents('Gl Components', [TJvgReportParamsEditor, TJvgLogicProducer {, TJvgMultipleResources}]);
+  RegisterComponents('Gl DB', [TJvgPrintCrossTable]);
 
   RegisterComponentEditor(TJvgPropertyCenter, TJvgComponentListEditor);
-  RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter, 'ComponentList', TJvgComponentListProperty );
+  RegisterPropertyEditor(TypeInfo(TStringList), TJvgPropertyCenter, 'ComponentList', TJvgComponentListProperty);
   RegisterComponentEditor(TJvgReportParamsEditor, TJvgRepParamsEditor);
   RegisterComponentEditor(TJvgGridHeaderControl, TglGridHeaderControl_Editor);
   RegisterComponentEditor(TJvgLogicProducer, TJvgLogicsComponentEditor);
-{
-  RegisterComponents( 'Gl Components', [ Tgl3DColors, TJvgCaption,
-		      TJvgHint, TJvgJumpingComponent, TJvgProcess, TJvgStringContainer,
-		      TJvgMultipleResources , TJvgPropertyCenter, TJvgSysInfo,
-                      TJvgReport, TJvgReportEditor, TJvgReportParamsEditor] );
-  RegisterComponents( 'Gl DBAware', [ TJvgDBGrid, TJvgVertDBSGrid, TJvgPrintCrossTable ] );
-}
-//  RegisterPropertyEditor(TypeInfo(string), TglEdit, 'EditMask', TMaskProperty);
-//  RegisterPropertyEditor(TypeInfo(string), TJvgProcess, 'FileName', TFilenameProperty);
-//  RegisterPropertyEditor( TypeInfo(TJvgResStringList), TJvgMultipleResources, 'Resources', TJvgResourcesProperty );
+  {
+    RegisterComponents( 'Gl Components', [ Tgl3DColors, TJvgCaption,
+          TJvgHint, TJvgJumpingComponent, TJvgProcess, TJvgStringContainer,
+          TJvgMultipleResources , TJvgPropertyCenter, TJvgSysInfo,
+                        TJvgReport, TJvgReportEditor, TJvgReportParamsEditor] );
+    RegisterComponents( 'Gl DBAware', [ TJvgDBGrid, TJvgVertDBSGrid, TJvgPrintCrossTable ] );
+  }
+  //  RegisterPropertyEditor(TypeInfo(string), TglEdit, 'EditMask', TMaskProperty);
+  //  RegisterPropertyEditor(TypeInfo(string), TJvgProcess, 'FileName', TFilenameProperty);
+  //  RegisterPropertyEditor( TypeInfo(TJvgResStringList), TJvgMultipleResources, 'Resources', TJvgResourcesProperty );
   {$ENDIF};
 
-
-//  RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
-//  RegisterPropertyEditor( TypeInfo(TStringList), TJvgReport, 'Report', TJvgRepProperty );
-//  RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
-
+  //  RegisterComponentEditor(TJvgReport, TJvgReportCompEditor);
+  //  RegisterPropertyEditor( TypeInfo(TStringList), TJvgReport, 'Report', TJvgRepProperty );
+  //  RegisterComponentEditor(TJvgReportEditor, TJvgReportCompEditor);
 
   RegisterComponentEditor(TJvgShadow, TJvgShadowEditor);
   RegisterComponentEditor(TJvgHelpPanel, TJvgHelpPanelEditor);

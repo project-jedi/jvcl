@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -34,16 +34,14 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ExtCtrls, comctrls
-  {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE} {$IFDEF GLVER_D4}, dsgnintf{$ENDIF} {$ENDIF};
+  {$IFDEF GLVER_D6}, DesignIntf, DesignWindows, DesignEditors{$ELSE}{$IFDEF GLVER_D4}, dsgnintf{$ENDIF}{$ENDIF};
 
-
-type  
+type
   TJvgHelpPanelEditor = class(TComponentEditor)
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
   end;
-
 
 implementation
 uses JvgHelpPanel, JvgRTFPreviewEditor;
@@ -57,34 +55,34 @@ begin
   inherited;
   case Index of
     0:
-    begin
-      OpenDialog := TOpenDialog.Create(nil);
-      OpenDialog.Filter := 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
-      if OpenDialog.Execute then
       begin
-        (Component as TJvgHelpPanel).Strings.LoadFromFile(OpenDialog.FileName);
-      end;
-      OpenDialog.Free;
-    end;
-    1:
-    begin
-      try
-        fRTFPreview := TJvgRTFPreview.Create(nil);
-
-        ms := TMemoryStream.Create;
-        try
-          (Component as TJvgHelpPanel).Strings.SaveToStream(ms);
-          ms.Position := 0;
-          fRTFPreview.Rich.Lines.LoadFromStream(ms);
-          fRTFPreview.ShowModal;
-        finally
-          ms.Free;
+        OpenDialog := TOpenDialog.Create(nil);
+        OpenDialog.Filter := 'RTF and Text files (*.rtf,*.txt)|*.rtf;*.txt';
+        if OpenDialog.Execute then
+        begin
+          (Component as TJvgHelpPanel).Strings.LoadFromFile(OpenDialog.FileName);
         end;
-
-      finally
-        fRTFPreview.Free;
+        OpenDialog.Free;
       end;
-    end;
+    1:
+      begin
+        try
+          fRTFPreview := TJvgRTFPreview.Create(nil);
+
+          ms := TMemoryStream.Create;
+          try
+            (Component as TJvgHelpPanel).Strings.SaveToStream(ms);
+            ms.Position := 0;
+            fRTFPreview.Rich.Lines.LoadFromStream(ms);
+            fRTFPreview.ShowModal;
+          finally
+            ms.Free;
+          end;
+
+        finally
+          fRTFPreview.Free;
+        end;
+      end;
   end;
 end;
 

@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -63,8 +63,8 @@ type
     function CheckFileExt(const FileName: string): boolean;
   public
     property CurrentItem: TSearchRec read GetCurrentItem; // последний результат поиска
-    property Path: string read GetPath;                   // заданный для поиска путь
-    property Attr: Integer read FAttr;                  // и атрибуты
+    property Path: string read GetPath; // заданный для поиска путь
+    property Attr: Integer read FAttr; // и атрибуты
     property Recurse: boolean read FRecurse;
 
     property ErrorCode: integer read FLastSearchResult; // код ошибки Windows
@@ -95,9 +95,10 @@ begin
   try
     FLastSearchResult := sysUtils.FindFirst(FPath + '*.*', FileAttr, PCurrentItem^.sr);
     FindOpened := CheckResult(FLastSearchResult);
-    if not FindOpened then FindClose
-    else
-      if not CheckFileExt(PCurrentItem^.sr.Name) then Next;
+    if not FindOpened then
+      FindClose
+    else if not CheckFileExt(PCurrentItem^.sr.Name) then
+      Next;
   except
     FindClose;
   end;
@@ -109,12 +110,12 @@ begin
   case Value of
     0: Result := true;
     ERROR_NO_MORE_FILES:
-    begin
-      FindClose;
-      Result := false;
-    end;
-    else
-      RaiseLastWin32Error;
+      begin
+        FindClose;
+        Result := false;
+      end;
+  else
+    RaiseLastWin32Error;
   end;
 end;
 
@@ -134,31 +135,31 @@ begin
 
     if FRecurse and (PCurrentItem^.sr.Attr and faDirectory = faDirectory) and (PCurrentItem^.sr.Name <> '.') and (PCurrentItem^.sr.Name <> '..') then
       First(ExtractFilePath(PCurrentItem^.Path) + PCurrentItem^.sr.Name + '\', '', FAttr, true)
-    else
-      if not CheckFileExt(PCurrentItem^.sr.Name) then Next;
+    else if not CheckFileExt(PCurrentItem^.sr.Name) then
+      Next;
 
-  end;// else
-//    raise Exception.Create('Call Next method after First method');
+  end; // else
+  //    raise Exception.Create('Call Next method after First method');
 end;
 
 function TJvgFileIterator.CheckFileExt(const FileName: string): boolean;
 begin
-  Result := not((FileName = '.')or(FileName = '..'));
+  Result := not ((FileName = '.') or (FileName = '..'));
   if not Result then exit;
-  Result := (trim(slFileExt.Text) = '*')or(slFileExt.IndexOf(LowerCase(ExtractFileExt(FileName))) <> -1);
+  Result := (trim(slFileExt.Text) = '*') or (slFileExt.IndexOf(LowerCase(ExtractFileExt(FileName))) <> -1);
 end;
 
 procedure TJvgFileIterator.FindClose(Destroing: boolean = false);
 begin
   if lSearchRecs.Count = 0 then exit;
   Sysutils.FindClose(PCurrentItem^.sr);
-  Dispose(lSearchRecs[lSearchRecs.Count-1]);
+  Dispose(lSearchRecs[lSearchRecs.Count - 1]);
 
-  lSearchRecs.Count := lSearchRecs.Count-1;
+  lSearchRecs.Count := lSearchRecs.Count - 1;
 
   if not Destroing and (lSearchRecs.Count > 0) then
   begin
-    PCurrentItem := lSearchRecs[lSearchRecs.Count-1];
+    PCurrentItem := lSearchRecs[lSearchRecs.Count - 1];
     Next;
   end;
 
@@ -167,7 +168,8 @@ end;
 destructor TJvgFileIterator.Destroy;
 begin
   inherited;
-  while lSearchRecs.Count > 0 do FindClose(true);
+  while lSearchRecs.Count > 0 do
+    FindClose(true);
   lSearchRecs.Free;
   slFileExt.Free;
 end;
@@ -185,7 +187,7 @@ end;
 
 function TJvgFileIterator.GetPath: string;
 begin
-  Result := PSearchData(lSearchRecs[lSearchRecs.Count-1])^.Path;
+  Result := PSearchData(lSearchRecs[lSearchRecs.Count - 1])^.Path;
 end;
 
 end.

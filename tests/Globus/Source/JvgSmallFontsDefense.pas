@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -26,7 +26,6 @@ Known Issues:
 -----------------------------------------------------------------------------}
 
 {$I JVCL.INC}
-
 
 // Component prevents your apps from BIG fonts.
 
@@ -81,7 +80,8 @@ begin
   begin
     if not IsSmallFonts then
       ShowMessage('Проектирование приложения в режиме крупных шрифтов недопустимо!'#13#10'Компонент TJvgSmallFontsDefence отказывается работать в таких условиях.');
-  end else
+  end
+  else
     UpdateFonts((Owner as TForm));
 end;
 
@@ -93,6 +93,7 @@ end;
 procedure TJvgSmallFontsDefence.UpdateFonts(Control: TWinControl);
 var
   i: integer;
+
   procedure UpdateFont(Font: TFont);
   begin
     if CompareText(Font.Name, 'MS Sans Serif') <> 0 then exit;
@@ -103,13 +104,12 @@ begin
   if (fdoExcludeGrids in Options) and (Control is TCustomGrid) then exit;
   UpdateFont(TJvgShowFont(Control).Font);
   with Control do
-  for i:=0 to ControlCount-1 do
-  begin
-    UpdateFont(TJvgShowFont(Controls[i]).Font);
-    if Controls[i] is TWinControl then UpdateFonts(Controls[i] as TWinControl);
-  end;
+    for i := 0 to ControlCount - 1 do
+    begin
+      UpdateFont(TJvgShowFont(Controls[i]).Font);
+      if Controls[i] is TWinControl then UpdateFonts(Controls[i] as TWinControl);
+    end;
 
 end;
-
 
 end.

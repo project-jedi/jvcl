@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -105,10 +105,10 @@ constructor TJvgSingleInstance.Create(AOwner: TComponent);
 begin
   inherited;
   if csDesigning in ComponentState then exit;
-  CheckEvent := TEvent.Create( nil, false, true, ExtractFileName(ParamStr(0)));
+  CheckEvent := TEvent.Create(nil, false, true, ExtractFileName(ParamStr(0)));
   if CheckEvent.WaitFor(10) <> wrSignaled then
   begin
-    Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.', PChar('Повторный запуск программы '+ ExtractFileName(ParamStr(0))), MB_ICONSTOP or MB_OK);
+    Application.MessageBox('Копия данной программы уже запущена. Повторный запуск программы не разрешен.', PChar('Повторный запуск программы ' + ExtractFileName(ParamStr(0))), MB_ICONSTOP or MB_OK);
     halt;
   end;
 end;

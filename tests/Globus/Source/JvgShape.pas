@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -61,6 +61,7 @@ procedure Register;
 
 implementation
 {~~~~~~~~~~~~~~~~~~~~~~~~~}
+
 procedure Register;
 begin
   RegisterComponents('Gl Controls', [TJvgShape]);
@@ -81,8 +82,8 @@ end;
 constructor TJvgShape.Create(AOwner: TComponent);
 begin
   inherited;
-//  FWallpaper := TBitmap.Create;
-  ControlStyle := ControlStyle + [csClickEvents	,csDoubleClicks];
+  //  FWallpaper := TBitmap.Create;
+  ControlStyle := ControlStyle + [csClickEvents, csDoubleClicks];
 end;
 
 destructor TJvgShape.Destroy;

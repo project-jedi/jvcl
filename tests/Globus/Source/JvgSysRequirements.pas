@@ -17,7 +17,7 @@ All Rights Reserved.
 Contributor(s):
 Michael Beck [mbeck@bigfoot.com].
 
-Last Modified:  2003-01-15 
+Last Modified:  2003-01-15
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -31,24 +31,23 @@ unit JvgSysRequirements;
 
 interface
 
-
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs;
 
 type
-  TglMinVideoVRefreshRate       = (frrIgnore, frr70Hertz, frr75Hertz, frr85Hertz);
-  TglMinGraphicResolution       = (fgrIgnore, fgr800x600, fgr1024x768);
-  TglMinColorDepth              = (fcdIgnore, fcd16BitColor, fcd32BitColor);
-  TglSystemFont                 = (fsfIgnore, fsfSmallFont, fsfBigFont);
-//  TglProcessor                  = (fsrPentium, fsrMMX);
-  TglOS_                        = (fosWindowsNT, fosWindows95);
-  TglOS                         = set of TglOS_;
+  TglMinVideoVRefreshRate = (frrIgnore, frr70Hertz, frr75Hertz, frr85Hertz);
+  TglMinGraphicResolution = (fgrIgnore, fgr800x600, fgr1024x768);
+  TglMinColorDepth = (fcdIgnore, fcd16BitColor, fcd32BitColor);
+  TglSystemFont = (fsfIgnore, fsfSmallFont, fsfBigFont);
+  //  TglProcessor                  = (fsrPentium, fsrMMX);
+  TglOS_ = (fosWindowsNT, fosWindows95);
+  TglOS = set of TglOS_;
 
-  TglRequirements_              = (fsrVideoVRefreshRate, fsrGraphicResolution, fsrColorDepth, fsrSystemFont, {fsrProcessor, }fsrOSPlatform);
-  TglRequirements               = set of TglRequirements_;
+  TglRequirements_ = (fsrVideoVRefreshRate, fsrGraphicResolution, fsrColorDepth, fsrSystemFont, {fsrProcessor, } fsrOSPlatform);
+  TglRequirements = set of TglRequirements_;
 
-  TglSysReqBehavior             = (fsbHalt, fsbWarning);
-  OnWarningEvent                = procedure(Sender: TObject; var ReportMessage: string; var doShowWarning, doHalt: boolean) of object;
+  TglSysReqBehavior = (fsbHalt, fsbWarning);
+  OnWarningEvent = procedure(Sender: TObject; var ReportMessage: string; var doShowWarning, doHalt: boolean) of object;
 
   TJvgSysRequirements = class(TComponent)
   private
@@ -73,14 +72,13 @@ type
     property MinGraphicResolution: TglMinGraphicResolution read FMinGraphicResolution write FMinGraphicResolution;
     property MinColorDepth: TglMinColorDepth read FMinColorDepth write FMinColorDepth;
     property SystemFont: TglSystemFont read FSystemFont write FSystemFont;
-//    property Processor: TglProcessor;
+    //    property Processor: TglProcessor;
     property OSPlatform: TglOS read FOSPlatform write FOSPlatform;
     property Behavior: TglSysReqBehavior read FBehavior write FBehavior;
     property OnWarning: OnWarningEvent read FOnWarning write FOnWarning;
   end;
 
 procedure Register;
-
 
 implementation
 uses JvgConstSysRequirements;
@@ -105,23 +103,22 @@ var
   doShowWarning, doHalt: boolean;
 begin
   inherited;
-  if not(csDesigning in ComponentState) then
-  if not TestRequirements(ReportMessage) then
-  begin
+  if not (csDesigning in ComponentState) then
+    if not TestRequirements(ReportMessage) then
+    begin
 
-    doShowWarning := true;
-    doHalt := Behavior = fsbHalt;
+      doShowWarning := true;
+      doHalt := Behavior = fsbHalt;
 
-    if Assigned(OnWarning) then
-      OnWarning(Self, ReportMessage, doShowWarning, doHalt);
+      if Assigned(OnWarning) then
+        OnWarning(Self, ReportMessage, doShowWarning, doHalt);
 
-    if doShowWarning then
-      Application.MessageBox(PChar(ReportMessage), PChar(ExtractFilename(ParamStr(0))), MB_OK + MB_ICONINFORMATION);
-    if doHalt then
-      Application.Terminate;
-  end;
+      if doShowWarning then
+        Application.MessageBox(PChar(ReportMessage), PChar(ExtractFilename(ParamStr(0))), MB_OK + MB_ICONINFORMATION);
+      if doHalt then
+        Application.Terminate;
+    end;
 end;
-
 
 function TJvgSysRequirements.TestRequirements(var ReportMessage: string): boolean;
 var
@@ -154,15 +151,14 @@ begin
   end;
 
   case MinColorDepth of
-    fcd16BitColor: Test(GetDeviceCaps( DC, BITSPIXEL ) >= 16, Format(ERR_ColorDepth, ['65 536 (hi color)']));
-    fcd32BitColor: Test(GetDeviceCaps( DC, BITSPIXEL ) >= 32, Format(ERR_ColorDepth, ['4 294 967 296 (true color)']));
+    fcd16BitColor: Test(GetDeviceCaps(DC, BITSPIXEL) >= 16, Format(ERR_ColorDepth, ['65 536 (hi color)']));
+    fcd32BitColor: Test(GetDeviceCaps(DC, BITSPIXEL) >= 32, Format(ERR_ColorDepth, ['4 294 967 296 (true color)']));
   end;
 
   case SystemFont of
     fsfSmallFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 96, Format(ERR_SystemFont, ['мелкий']));
     fsfBigFont: Test(GetDeviceCaps(DC, LOGPIXELSX) = 120, Format(ERR_SystemFont, ['крупный']));
   end;
-
 
   OSVersionInfo.dwOSVersionInfoSize := sizeof(OSVersionInfo);
 
@@ -171,13 +167,13 @@ begin
   if OSPlatform = [fosWindowsNT] then Test(OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_NT, Format(ERR_OSPlatform, ['Windows NT/2000']));
   if OSPlatform = [fosWindows95] then Test(OSVersionInfo.dwPlatformId = VER_PLATFORM_WIN32_WINDOWS, Format(ERR_OSPlatform, ['Windows 95/98']));
 
-{  fHalt := fHalt or fsrVideoVRefreshRate in HaltOptions;
-  fHalt := fHalt or fsrGraphicResolution in HaltOptions;
-  fHalt := fHalt or fsrColorDepth in HaltOptions;
-  fHalt := fHalt or fsrSystemFont in HaltOptions;
-  fHalt := fHalt or fsrOSPlatform in HaltOptions;
-}
-//  IsProcessorFeaturePresent(PF_MMX_INSTRUCTIONS_AVAILABLE	)
+  {  fHalt := fHalt or fsrVideoVRefreshRate in HaltOptions;
+    fHalt := fHalt or fsrGraphicResolution in HaltOptions;
+    fHalt := fHalt or fsrColorDepth in HaltOptions;
+    fHalt := fHalt or fsrSystemFont in HaltOptions;
+    fHalt := fHalt or fsrOSPlatform in HaltOptions;
+  }
+  //  IsProcessorFeaturePresent(PF_MMX_INSTRUCTIONS_AVAILABLE	)
 
   ReleaseDC(0, DC);
 end;
