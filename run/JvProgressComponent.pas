@@ -165,7 +165,7 @@ begin
     with FLabel1 do
     begin
       Parent := FForm;
-      Caption := '';
+      Caption := InfoLabel;
       AutoSize := False;
       SetBounds(8, 8, 293, 13);
     end;
