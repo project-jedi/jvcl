@@ -154,8 +154,7 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
-    property HintColor: TColor read FHintColor write FHintColor default
-      clInfoBk;
+    property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write
@@ -190,6 +189,7 @@ begin
   FFont.OnChange := FontChanged;
 
   ControlStyle := ControlStyle + [csOpaque]; // SMM 20020604
+  FHintColor := clInfoBk;
   FMaximum := 100;
   FMinimum := 0;
   FTransparent := False;
