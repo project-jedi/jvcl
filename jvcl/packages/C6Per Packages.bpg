@@ -9,20 +9,35 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jv3rdC6R.bpl JvCoreC6R.bpl JvCoreC6D.bpl JvSystemC6R.bpl JvSystemC6D.bpl \
-  JvStdCtrlsC6R.bpl JvStdCtrlsC6D.bpl JvCtrlsC6R.bpl JvCtrlsC6D.bpl JvCmpC6R.bpl \
-  JvCmpC6D.bpl JvCustomC6R.bpl JvCustomC6D.bpl JvDlgsC6R.bpl JvDlgsC6D.bpl \
-  JvCryptC6R.bpl JvCryptC6D.bpl JvMMC6R.bpl JvMMC6D.bpl JvNetC6R.bpl JvNetC6D.bpl \
-  JvAppFrmC6R.bpl JvAppFrmC6D.bpl \
-  JvInterpreterC6R.bpl JvInterpreterC6D.bpl JvBandsC6R.bpl \
-  JvBandsC6D.bpl JvPluginC6R.bpl JvPluginC6D.bpl JvJansC6R.bpl JvJansC6D.bpl \
-  JvGlobusC6R.bpl JvGlobusC6D.bpl JvPrintPreviewC6R.bpl JvPrintPreviewC6D.bpl \
-  JvPageCompsC6R.bpl JvPageCompsC6D.bpl JvValidatorsC6R.bpl JvValidatorsC6D.bpl \
-  JvUIBC6R.bpl JvUIBC6D.bpl JvWizardC6R.bpl JvWizardC6D.bpl \
-  JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl JvHMIC6R.bpl JvHMIC6D.bpl \
-  JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl JvXPCtrlsC6R.bpl \
-  JvXPCtrlsC6D.bpl JvDockingC6R.bpl JvDockingC6D.bpl JvDotNetCtrlsC6R.bpl \
-  JvDotNetCtrlsC6D.bpl
+PROJECTS = Jv3rdC6R.bpl                                    \
+           JvCoreC6R.bpl JvCoreC6D.bpl                     \
+           JvSystemC6R.bpl JvSystemC6D.bpl                 \
+           JvStdCtrlsC6R.bpl JvStdCtrlsC6D.bpl             \
+           JvCtrlsC6R.bpl JvCtrlsC6D.bpl                   \
+           JvCmpC6R.bpl JvCmpC6D.bpl                       \
+           JvCustomC6R.bpl JvCustomC6D.bpl                 \
+           JvDlgsC6R.bpl JvDlgsC6D.bpl                     \
+           JvCryptC6R.bpl JvCryptC6D.bpl                   \
+           JvMMC6R.bpl JvMMC6D.bpl                         \
+           JvNetC6R.bpl JvNetC6D.bpl                       \
+           JvAppFrmC6R.bpl JvAppFrmC6D.bpl                 \
+           JvInterpreterC6R.bpl JvInterpreterC6D.bpl       \
+           JvBandsC6R.bpl JvBandsC6D.bpl                   \
+           JvPluginC6R.bpl JvPluginC6D.bpl                 \
+           JvJansC6R.bpl JvJansC6D.bpl                     \
+           JvGlobusC6R.bpl JvGlobusC6D.bpl                 \
+           JvPrintPreviewC6R.bpl JvPrintPreviewC6D.bpl     \
+           JvPageCompsC6R.bpl JvPageCompsC6D.bpl           \
+           JvValidatorsC6R.bpl JvValidatorsC6D.bpl         \
+           JvUIBC6R.bpl JvUIBC6D.bpl                       \
+           JvWizardC6R.bpl JvWizardC6D.bpl                 \
+           JvTimeFrameworkC6R.bpl JvTimeFrameworkC6D.bpl   \
+           JvHMIC6R.bpl JvHMIC6D.bpl                       \
+           JvManagedThreadsC6R.bpl JvManagedThreadsC6D.bpl \
+           JvXPCtrlsC6R.bpl JvXPCtrlsC6D.bpl               \
+           JvDockingC6R.bpl JvDockingC6D.bpl               \
+           JvDotNetCtrlsC6R.bpl JvDotNetCtrlsC6D.bpl       \
+           JvInspectorC6R.bpl JvInspectorC6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
@@ -247,3 +262,10 @@ JvDotNetCtrlsC6D.bpl: c6\JvDotNetCtrlsC6D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
+JvInspectorC6R.bpl: c6per\JvInspectorC6R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvInspectorC6D.bpl: c6\JvInspectorC6D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
