@@ -55,7 +55,8 @@ uses
   Libc, DateUtils,
   {$ENDIF LINUX}
   Types, StrUtils, SysUtils, Classes, Math, Contnrs, SyncObjs, QDialogs,
-  QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons;
+  QTypes, Qt, QConsts, QGraphics, QControls, QForms, QExtCtrls, QButtons,
+  QImgList;
 
 type
   IPerformControl = interface
@@ -316,7 +317,8 @@ procedure ChangeBiDiModeAlignment(var Alignment: TAlignment);
 function UseRightToLeftAlignment: Boolean;
 var
   NewStyleControls: Boolean = True;
-{ colors }
+
+{ Palette colors }
 function GetSysColor(SysColor: Integer): TColorRef;  // windows SysColor !!
 function SetSysColor(RefColor: TColor; TrueColor: TColorRef): Boolean;
 function SetSysColors(Elements: Integer; const lpaElements;
@@ -390,8 +392,8 @@ const
   clNoRole = TColor(-15);
   clNormalNoRole = TColor(clNoRole - cloNormal);
   clDisabledNoRole = TColor(clNoRole - cloDisabled);
-  clDesktop = clDisabledNoRole;
   clActiveNoRole = TColor(clNoRole - cloActive);
+  clDesktop = clDisabledNoRole;
   clColor0 = clMask;
   clColor1 = clDontMask;
 
@@ -416,7 +418,8 @@ function UnionRect(var Dst: TRect; R1, R2: TRect): LongBool;
 function CopyRect(var Dst: TRect; const Src: TRect): LongBool; overload;
 function SubtractRect(var dR: TRect; const R1, R2: TRect): LongBool;
 function CenterRect(InnerRect, OuterRect: TRect): TRect;
-function PtInRect(const R: TRect; pt: TPoint): LongBool;
+function PtInRect(const R: TRect; pt: TPoint): LongBool; overload;
+function PtInRect(const R: TRect; X, Y: integer): LongBool; overload;
 function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool;
 
 type
@@ -461,6 +464,7 @@ type
   end;
   TTextMetric = tagTEXTMETRICA;
   TEXTMETRIC = TTextMetric;
+
   { Logical Pen }
   PLogPen = ^TLogPen;
   tagLOGPEN = packed record
@@ -565,7 +569,6 @@ const
   ODS_SELECTED = 2;
   ODS_FOCUS    = 4;
 
-
 { brushes }
 function CreateSolidBrush(Color: TColor): QBrushH;
 function CreateHatchBrush(bStyle: BrushStyle; Color: TColor): QBrushH;
@@ -613,18 +616,19 @@ function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainter
   XSrc, YSrc: Integer; Rop: RasterOp; IgnoreMask: Boolean = true): LongBool; overload;
 function BitBlt(DestDC: QPainterH; X, Y, Width, Height: Integer; SrcDC: QPainterH;
   XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
-//
-// does the required start/stop painting if needed
-// adjust x,y & XSrc,YSrc ico TControlCanvas (as used by TGraphicControl)
-//
+{
+ does the required start/stop painting if needed
+ adjust x,y & XSrc,YSrc ico TControlCanvas (as used by TGraphicControl)
+}
 function BitBlt(DestCanvas: TCanvas; X, Y, Width, Height: Integer; SrcCanvas: TCanvas;
   XSrc, YSrc: Integer; WinRop: Cardinal; IgnoreMask: Boolean = true): LongBool; overload;
 
-//
+{
 // Calculates coord of TopLeft in Paintdevice coordinates
 // ((0,0) for bitmaps and TWidgetControl derived classes)
-//
+}
 function PainterOffset(Canvas: TCanvas): TPoint;
+
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer;
   WinRop: Cardinal): LongBool; overload;
 function PatBlt(Canvas: TCanvas; X, Y, Width, Height: Integer;
@@ -645,10 +649,8 @@ function StretchBlt(DestCanvas: TCanvas; dx, dy, dw, dh: Integer;
   SrcCanvas: TCanvas; sx, sy, sw, sh: Integer; WinRop: Cardinal;
   IgnoreMask: Boolean = True): LongBool; overload;
 
-
 function ScrollDC(Handle: QPainterH; dx, dy: Integer; var Scroll, Clip: TRect;
   Rgn: QRegionH; Update: PRect): LongBool;
-
 
 { StretchBlt() Modes }
 type
@@ -770,12 +772,14 @@ type
     NULL_BRUSH = 5,
     DC_BRUSH = 18
   );
+
   TStockObjectPen = (
     WHITE_PEN = 6,
     BLACK_PEN = 7,
     NULL_PEN = 8,
     DC_PEN = 19
   );
+
   TStockObjectFont = (
     OEM_FIXED_FONT = 10,
     ANSI_FIXED_FONT = 11,
@@ -816,8 +820,6 @@ const
 
 function GetMapMode(Handle: QPainterH): TMapMode;
 function SetMapMode(Handle: QPainterH; MapMode: TMapMode): TMapMode;
-
-
 
 // DeleteObject is intended to destroy the Handle returned by CreateCompatibleBitmap
 // (it destroys the Painter AND PaintDevice)
@@ -867,8 +869,9 @@ function GetTextExtentPoint32(Canvas: TCanvas; const Text: WideString; Len: Inte
 
 function FrameRect(Handle: QPainterH; const R: TRect; Brush: QBrushH): LongBool; overload;
 procedure FrameRect(Canvas: TCanvas; const R: TRect); overload;
+function FrameRgn(Handle: QPainterH; Region: QRegionH; Brush: QBrushH; Width, Height: integer): LongBool;
+
 function DrawFocusRect(Handle: QPainterH; const R: TRect): LongBool;
-procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
 function InvertRect(Handle: QPainterH; const R: TRect): LongBool;
 function Rectangle(Handle: QPainterH; Left, Top, Right, Bottom: Integer): LongBool;
 function RoundRect(Handle: QPainterH; Left, Top, Right, Bottom, X3, Y3: Integer): LongBool;
@@ -996,28 +999,31 @@ function DrawText2(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer): Integer; overload;
 
 function DrawText(Handle: QPainterH; Text: PAnsiChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer; overload;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
+
+function DrawText(Handle: QPainterH; Text: TCaption; Len: Integer;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 
 function DrawTextW(Handle: QPainterH; Text: PWideChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer; overload;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   x,y, w, h: Integer; WinFlags: Integer; Angle: Integer = 0): Integer;  overload;
 
 function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
-//
-// additional functionality DrawText(Canvas, .....
-// - canvas start/stop
-// - sets painterfont
-//
+{
+ additional functionality DrawText(Canvas, .....
+ - canvas start/stop
+ - sets painterfont
+}
 function DrawText(Canvas :TCanvas; Text: TCaption; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer; overload;
 
 function DrawText(Canvas: TCanvas; Text: PAnsiChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer; overload;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer; overload;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 
 function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
   var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
@@ -1135,8 +1141,9 @@ function SetParent(hWndChild, hWndNewParent: QWidgetH): QWidgetH;
 function GetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement): LongBool;
 function GetWindowRect(Handle: QWidgetH; var  R: TRect): LongBool;
 function WindowFromDC(Handle: QPainterH): QWidgetH;
+
+{ hWndParent is ignored under Linux }
 function ChildWindowFromPoint(hWndParent: QWidgetH; Point: TPoint): QWidgetH;
-// hWndParent is ignored under Linux
 
 function WindowFromPoint(Point: TPoint): QWidgetH;
 function FindCLXWindow(const Point: TPoint): TWidgetControl;
@@ -1315,26 +1322,26 @@ function SetWindowRgn(Handle: QWidgetH; Region: QRegionH; Redraw: LongBool): Int
   { SetWindowRgn limitation: The region must have negative top coordinate in
     order to contain the window's caption bar. }
   { asn: Qt operates on the client rectangle of the form: windows/x11 titlebar
-         and windows/x11 borders are not included. }
+         and windows/x11 borders are not included, hence the negative values }
 function GetWindowRgn(Handle: QWidgetH; Region: QRegionH): Integer;
 
 const
-  // constants for CreatePolygon
+  { constants for CreatePolygon  }
   ALTERNATE     = 1;
   WINDING       = 2;
-  // CombineRgn return values
+  { CombineRgn return values }
   NULLREGION    = 1;     // Region is empty
   SIMPLEREGION  = 2;     // Region is a rectangle
   COMPLEXREGION = 3;     // Region is not a rectangle
-  ERROR          = 0;     // Region error
+  ERROR         = 0;     // Region error
   RGN_ERROR     = ERROR;
 
-// viewports
+{ viewports }
 function SetViewportExtEx(Handle: QPainterH; XExt, YExt: Integer; Size: PSize): LongBool;
 function SetViewPortOrgEx(Handle: QPainterH; X, Y: Integer; OldOrg: PPoint): LongBool;
 function GetViewportExtEx(Handle: QPainterH; Size: PSize): LongBool;
 
-// Text clipping
+{ Text clipping }
 function TruncatePath(const FilePath: string; Canvas: TCanvas; MaxLen: Integer): string;
 function TruncateName(const Name: WideString; Canvas: TCanvas; MaxLen: Integer; QtFlags: integer = 0): WideString;
 
@@ -1381,7 +1388,7 @@ function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Lon
    MessageObject handle. }
 function PostMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): LongBool; overload;
 function PostMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): LongBool; overload;
- { SendMessage synchronizes with the main (event handling) thread. }
+{ SendMessage synchronizes with the main (event handling) thread. }
 function SendMessage(Handle: QObjectH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
@@ -1391,9 +1398,8 @@ type
 procedure InstallApplicationHook(Hook: TApplicationHook); // not threadsafe
 procedure UninstallApplicationHook(Hook: TApplicationHook); // not threadsafe
 procedure IgnoreNextEvents(Handle: QObjectH; const Events: array of QEventType);
- // equivalent to "while PeekMessage(h, evstart, evend, PM_REMOVE"
+{ equivalent to "while PeekMessage(h, evstart, evend, PM_REMOVE" }
 procedure IgnoreMouseEvents(Handle: QObjectH);
-
 
 function SetTimer(Wnd: QWidgetH; IDEvent, Elapse: Cardinal;
   TimerFunc: Pointer): Cardinal; overload;
@@ -1426,38 +1432,30 @@ function ShellExecute(Handle: QWidgetH; const Operation, FileName, Parameters,
 function ShellExecute(Handle: Integer; Operation, FileName, Parameters,
   Directory: PChar; ShowCmd: Integer): THandle; overload;
 
+{ Platform dependendant wrappers}
 function GetTickCount: Cardinal;
 function GetUserName(Buffer: PChar; var Size: Cardinal): LongBool;
 function GetComputerName(Buffer: PChar; var Size: Cardinal): LongBool;
 procedure OutputDebugString(lpOutputString: PChar);
-
-// wrappers
 function InterlockedIncrement(var I: Integer): Integer;
 function InterlockedDecrement(var I: Integer): Integer;
 function InterlockedExchange(var A: Integer; B: Integer): Integer;
 function InterlockedExchangeAdd(var A: Integer; B: Integer): Integer;
 
-//
-// Taken from QControls
-//
 function InjectCode(Addr: Pointer; Code: Pointer; Size: Integer): Boolean;
 {$IFDEF MSWINDOWS}
-//
-// Taken from QDialogs
-//
+{
+ Taken from QDialogs, (public with VCL)
+}
 procedure EnableTaskWindows(WindowList: Pointer);
 function DisableTaskWindows(ActiveWindow: Windows.HWnd): Pointer;
-// 
+//
 function GetKeyState(nVirtKey: Integer): SmallInt;
 {$ENDIF MSWINDOWS}
 
 {  ====================== IP Address edit control ============================= }
-// Taken from CommCtrl
 function MAKEIPRANGE(low, high: Byte): integer;
-{ And this is a useful macro for making the IP Address to be passed }
-{ as a LPARAM. }
 function MAKEIPADDRESS(b1, b2, b3, b4: cardinal): integer;
-{ Get individual number }
 function FIRST_IPADDRESS(x: cardinal): cardinal;
 function SECOND_IPADDRESS(x: cardinal): cardinal;
 function THIRD_IPADDRESS(x: cardinal): cardinal;
@@ -1513,10 +1511,11 @@ function ResultCode(Res: HResult): Integer;
 function GetCurrentProcess: THandle;
 
 function TerminateThread(ThreadID: TThreadID; RetVal: Integer): LongBool;
-//
-// The Windows API's  SuspendThread & ResumeThread are functions.
-// With QWindows / Linux these are procedures
-//
+{
+ NOTE:
+ The Windows API's  SuspendThread & ResumeThread are functions.
+ With QWindows / Linux these are procedures
+}
 procedure SuspendThread(ThreadID: TThreadID);
 procedure ResumeThread(ThreadID: TThreadID);
 function GetThreadPolicy(ThreadID: TThreadID): Integer;
@@ -1594,7 +1593,6 @@ function WaitForSingleObject(Handle: THandle; Milliseconds: Cardinal): Cardinal;
 
 { Operate on semaphore.  }
 
-
 const
   STATUS_WAIT_0           = $00000000;
   STATUS_ABANDONED_WAIT_0 = $00000080;
@@ -1613,11 +1611,11 @@ type
 function WaitForMultipleObjects(Count: Cardinal; Handles: PWOHandleArray;
   WaitAll: LongBool; Milliseconds: Cardinal): Cardinal;
 
-// all Handles are TObject derived classes
+{ all Handles are TObject derived classes }
 
 function CloseHandle(hObject: THandle): LongBool;
 
-// memory management
+{ memory management }
 function GlobalAllocPtr(Flags: Integer; Bytes: Longint): Pointer;
 function GlobalReAllocPtr(P: Pointer; Bytes: Longint; Flags: Integer): Pointer;
 function GlobalFreePtr(P: Pointer): THandle;
@@ -1674,7 +1672,6 @@ type
     property Handle: QObjectH read FHandle;
     property Hooks: QObject_hookH read FHooks;
   end;
-
 {$IFDEF LINUX}
 var
   Shell: string = 'kfmclient exec'; // KDE. Gnome equivalent ?
@@ -1728,7 +1725,7 @@ begin
 end;
 {---------------------------------------}
 
-// used internally
+{ used internally }
 
 procedure MapPainterLP(Handle: QPainterH; var x, y: Integer); overload;
 begin
@@ -2135,9 +2132,9 @@ const
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   SystemFont: WideString = 'Fixed';   // asn: is not always True
-  GuiFont: array[Boolean] of WideString = ('Verdana', 'Verdana');
+//  GuiFont: array[Boolean] of WideString = ('Verdana', 'Verdana');
 //asn:  in JVCL units Helvetica is used. Why introduce another?
-//  GuiFont: array[Boolean] of WideString = ('Helvetica', 'Helvetica');
+  GuiFont: array[Boolean] of WideString = ('Helvetica', 'Helvetica');
   {$ENDIF LINUX}
 type
   Int = Integer;
@@ -2904,11 +2901,39 @@ begin
 end;
 
 procedure BrushCopy(DstCanvas: TCanvas; const Dest: TRect; Bitmap: TBitmap;
-  const Source: TRect; Color: TColor); 
+  const Source: TRect; Color: TColor);
+var
+  Bmp: TBitmap;
+  X, Y: integer;
 begin
-  {TODO : implement MaskBlt() first. }
-  // Show something even if it is wrong.
-  CopyRect(DstCanvas, Dest, Bitmap.Canvas, Source);
+  Bmp := TBitmap.Create;
+  { create the "brush" }
+  with Bmp do
+  begin
+    Width := Source.Right - Source.Left;
+    Height := Source.Bottom - Source.Top;
+    Canvas.Start;
+    Canvas.Draw( -Source.Left, -Source.Top, Bitmap);
+    TransparentColor := Color;
+    Transparent := True;
+    { fill the Dest with the bitmap }
+    DstCanvas.Start;
+    X := Dest.Left;
+    while X < Dest.Right do
+    begin
+      Y := Dest.Top;
+      while Y < Dest.Bottom do
+      begin
+        DstCanvas.Draw(X, Y, Bmp);
+        Y := Y + Height;
+      end;
+      X := X + Width;
+    end;
+    bmp.savetofile('BrushCopy.bmp');
+    DstCanvas.Stop;
+    Canvas.Stop;
+    Free;
+  end;
 end;
 
 function PatBlt(Handle: QPainterH; X, Y, Width, Height: Integer; WinRop: Cardinal): LongBool;
@@ -3836,6 +3861,56 @@ begin
   end;
 end;
 
+function FrameRgn(Handle: QPainterH; Region: QRegionH; Brush: QBrushH; Width, Height: integer): LongBool;
+var
+  R: TRect;
+  X, Y: integer;
+  Pen: QPenH;
+
+  function IsBorderPoint(X, Y: integer): Boolean;
+  var
+    I, J, K: integer;
+  begin
+    Result := False;
+    if PtInRegion(Region, X, Y) then
+    begin
+      K := 0;
+      For I := -Width to Width do
+        For J := -Height to Height do
+        begin
+          If not PtInRegion(Region, X + I , Y + J) then
+          begin
+            Inc(K);
+            if K > 1 then
+            begin
+              Result := True;
+              exit;
+            end;
+          end;
+        end
+    end;
+  end;
+begin
+//  Result := false;
+  QPainter_save(Handle);
+  try
+    QRegion_boundingRect(Region, @R);
+    Pen := QPen_create(QBrush_color(Brush), 1, PenStyle_SolidLine);
+    try
+      QPainter_setPen(Handle, Pen);
+    finally
+      QPen_destroy(Pen);
+    end;
+    for X := R.Left to R.Right do
+      for Y := R.Top to R.Bottom do
+        if IsBorderPoint(X, Y) then
+          QPainter_drawPoint(Handle, X, Y);
+    Result := True;
+  finally
+    QPainter_restore(Handle);
+  end;
+end;
+
 function DeleteObject(Region: QRegionH): LongBool;
 begin
   try
@@ -4321,7 +4396,7 @@ begin
   FPalette := GetPaletteHandle(Instance);
   FColor := QPalette_color(FPalette, FColorGroup, FColorRole);
   Result := QColorColor(FColor);
-//  QColor_destroy(FColor);
+//  QColor_destroy(FColor);  {not owned}
 end;
 
 
@@ -4444,16 +4519,21 @@ begin
   end;
 end;
 
-function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool; 
+function IntersectRect(var R: TRect; const R1, R2: TRect): LongBool;
 begin
   Result := Types.IntersectRect(R, R1, R2);
 end;
 
-function PtInRect(const R: TRect; pt: TPoint): LongBool;
+function PtInRect(const R: TRect; X, Y: integer): LongBool;
 begin
   with R do
-    Result := (pt.X >= Left) and (pt.X <= Right) and
-              (pt.Y >= Top) and (pt.Y <= Bottom); 
+    Result := (X >= Left) and (X <= Right) and
+              (Y >= Top) and (Y <= Bottom);
+end;
+
+function PtInRect(const R: TRect; pt: TPoint): LongBool;
+begin
+  Result := PtInRect(R, pt.X, Pt.Y);
 end;
 
 procedure TextOutAngle(Handle: QPainterH; Angle, Left, Top: Integer; Text: WideString);
@@ -4863,13 +4943,13 @@ begin
 end;
 
 function DrawText(Handle :QPainterH; Text: PAnsiChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer;
 var
   WText: WideString;
   AText: string;
 begin
   WText := Text;
-  Result := DrawText(Handle, WText, Len, R, WinFlags);
+  Result := DrawTextW(Handle, PWideChar(WText), Len, R, WinFlags, 0);
   if (DT_MODIFYSTRING and WinFlags <> 0) and (Text <> nil) then
   begin
     AText := WText;
@@ -4877,8 +4957,17 @@ begin
   end;
 end;
 
+function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
+  x,y, w, h: Integer; WinFlags: Integer; Angle: Integer): Integer;
+var
+  R2: TRect;
+begin
+  R2 := Bounds(x,y,w,h);
+  Result := DrawTextW(Handle,  PWideChar(Text), Len, R2, WinFlags, Angle);
+end;
+
 function DrawTextW(Handle :QPainterH; Text: PWideChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer;
+  var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer;
 var
   WText: WideString;
 begin
@@ -4892,25 +4981,25 @@ begin
 end;
 
 function DrawTextW(Canvas :TCanvas; Text: PWideChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer;
+  var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer;
 begin
   with Canvas do
   begin
     Start;
     RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
-    Result := DrawTextW(Handle, Text, Len, R, WinFlags);
+    Result := DrawTextW(Handle, Text, Len, R, WinFlags, Angle);
     Stop;
   end;
 end;
 
 function DrawText(Canvas :TCanvas; Text: PAnsiChar; Len: Integer;
-  var R: TRect; WinFlags: Integer): Integer;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer;
 begin
   with Canvas do
   begin
     Start;
     RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
-    Result := DrawText(Handle, Text, Len, R, WinFlags);
+    Result := DrawText(Handle, Text, Len, R, WinFlags, Angle);
     Stop;
   end;
 end;
@@ -4936,41 +5025,33 @@ end;
 
 function DrawText(Canvas: TCanvas; Text: TCaption; Len: Integer;
   var R: TRect; WinFlags: Integer; Angle: integer = 0): Integer;
-var
-  ws: WideString;
 begin
-  ws := Text;
   with Canvas do
   begin
     Start;
     RequiredState(Canvas, [csHandleValid, csBrushValid, csFontValid]);
-    Result := DrawText(Handle, ws, Len, R, WinFlags, Angle);
+    Result := DrawTextW(Handle, PWideChar(Text), Len, R, WinFlags, Angle);
     Stop;
   end;
 end;
 
-function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
-  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
+function DrawText(Handle: QPainterH; Text: TCaption; Len: Integer;
+  var R: TRect; WinFlags: Integer; Angle: Integer = 0): Integer; overload;
 begin
-  Result := DrawText(Handle, Text, Len, R, WinFlags);
+  Result := DrawTextW(Handle, PWideChar(Text), Len, R, WinFlags, Angle);
+end;
+
+function DrawTextEx(Handle: QPainterH; var Text: WideString; Len: Integer;
+  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer;
+begin
+  Result := DrawTextW(Handle, PWideChar(Text), Len, R, WinFlags);
 end;
 
 function DrawTextEx(Handle: QPainterH; Text: PChar; Len: Integer;
-  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer; overload;
+  var R: TRect; WinFlags: Integer; DTParams: Pointer): Integer;
 begin
   Result := DrawText(Handle, Text, Len, R, WinFlags);
 end;
-
-
-function DrawText(Handle: QPainterH; var Text: WideString; Len: Integer;
-  x,y, w, h: Integer; WinFlags: Integer; Angle: Integer): Integer;
-var
-  R2: TRect;
-begin
-  R2 := Bounds(x,y,w,h);
-  Result := DrawText(Handle, Text, Len, R2, WinFlags, Angle);
-end;
-
 
 function ExtTextOut(Handle: QPainterH; X, Y: Integer; WinFlags: Cardinal;
   R: PRect; const Text: WideString; Len: Integer; lpDx: Pointer): LongBool;
@@ -5121,8 +5202,6 @@ begin
     Result := False;
   end;
 end;
-
-
 
 function DrawIcon(Handle: QPainterH; X, Y: Integer; hIcon: QPixmapH): LongBool;
 var
@@ -5283,24 +5362,6 @@ begin
   end;
 end;
 
-procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
-var
-  DC: QPainterH;
-  i: Integer;
-begin
-  DC := GetDC(HWND_DESKTOP);
-  try
-    for i := 1 to Width do
-    begin
-      DrawFocusRect(DC, ScreenRect);
-      InflateRect(ScreenRect, -1, -1);
-    end;
-  finally
-    ReleaseDC(0, DC);
-  end;
-end;
-
-
 function DrawFrameControl(Handle: QPainterH; const Rect: TRect; uType, uState: Longword): LongBool;
 
   function GetColorGroup(uState: LongWord): QColorGroupH;
@@ -5390,11 +5451,13 @@ begin
                   end;
                 DFCS_CAPTIONMIN:
                   begin
+                    SetRect(R, 0, 0, 9, 9);
+                    R := CenterRect(R, Rect);
                     if (uState and DFCS_PUSHED) <> 0 then
                       OffsetRect(R, 1, 1);
-                    Inc(R.Left, 4);
-                    Dec(R.Right, 6);
-                    Dec(R.Bottom, 4);
+//                    Inc(R.Left, 4);
+//                    Dec(R.Right, 6);
+//                    Dec(R.Bottom, 4);
                     QPainter_moveTo(Handle, R.Left , R.Bottom - 1);
                     QPainter_lineTo(Handle, R.Right, R.Bottom - 1);
                     QPainter_moveTo(Handle, R.Left , R.Bottom );
@@ -6425,7 +6488,7 @@ begin
     Result := Result or DontClip;
 end;
 
-// strips Qt extended alignment from flags
+{ strips Qt extended alignment from flags }
 function QtStdAlign(Flags: Integer): Word;
 begin
   Result := Word(Flags and QtAlignMask);
@@ -6751,7 +6814,6 @@ begin
     Result := True;
 end;
 
-
 function VirtualProtect(lpAddress: Pointer; dwSize, flNewProtect: Cardinal;
   lpflOldProtect: Pointer): LongBool; overload;
 var
@@ -6991,14 +7053,12 @@ begin
     Free;
 end;
 
-
 { TWaitObject }
 
 constructor TWaitObject.Create(const AName: string);
 begin
   inherited Create(WaitObjectList, AName);
 end;
-
 
 { THandleObjectList }
 
@@ -7044,7 +7104,6 @@ begin
   end;
   Result := nil;
 end;
-
 
 { TSemaphoreWaitObject }
 
@@ -7259,7 +7318,6 @@ begin
     Sleep(10);
   end;
 end;
-
 
 { TEventWaitObject }
 
@@ -7906,7 +7964,6 @@ begin
   Result := CreateGuid(Guid);
 end;
 
-
 {$ENDIF LINUX}
 
 // for ShellExecute(0, ..
@@ -8073,9 +8130,9 @@ function GetKeyState(nVirtKey: Integer): SmallInt;
 begin
   Result := Windows.GetTickCount;
 end;
-//
-// Taken from QDialogs.
-//
+{
+ Taken from QDialogs,
+}
 type
   PTaskWindow = ^TTaskWindow;
   TTaskWindow = record
