@@ -193,19 +193,33 @@ begin
   Result := FControlCanvas;
 end;
 
+function GetDefaultCheckBoxSize:TSize;
+begin
+  with TBitmap.Create do
+  try
+    Handle := LoadBitmap(0, PChar(32759));
+    Result.cx := Width div 4;
+    Result.cy := Height div 3;
+  finally
+    Free;
+  end;
+end;
+
 procedure TJvRadioButton.CalcAutoSize;
-var AWidth,AHeight:integer;
+var AWidth,AHeight:integer; ASize:TSize;
 begin
   // (p3) TODO: find the Windows constants for width and height of checkbox and radiobutton icons
+  if Parent = nil then Exit;
+  ASize := GetDefaultCheckBoxSize;
   if AutoSize then
   begin
     with Canvas.TextExtent(Caption) do
     begin
-      AWidth := cx + 18;
+      AWidth := cx + ASize.cx;
       if AWidth <= 18 then
-        AWidth := 14;
+        AWidth := ASize.cx;
       AHeight := cy + 4;
-      if AHeight < 14 then AHeight := 14;
+      if AHeight < ASize.cy then AHeight := ASize.cy;
       if Caption <> '' then
         Inc(AWidth, 4);
       ClientWidth := AWidth;
