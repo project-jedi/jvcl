@@ -3,8 +3,8 @@ object frmUnitStats: TfrmUnitStats
   Top = 172
   BorderStyle = bsDialog
   Caption = 'Statistics for "%s"'
-  ClientHeight = 344
-  ClientWidth = 376
+  ClientHeight = 357
+  ClientWidth = 291
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,9 +13,6 @@ object frmUnitStats: TfrmUnitStats
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    376
-    344)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -23,26 +20,29 @@ object frmUnitStats: TfrmUnitStats
     Top = 16
     Width = 31
     Height = 13
-    Caption = 'Name:'
+    Caption = '&Name:'
+    FocusControl = edName
   end
   object Label2: TLabel
     Left = 8
     Top = 72
     Width = 43
     Height = 13
-    Caption = 'Used by:'
+    Caption = 'Used &by:'
+    FocusControl = reUsed
   end
   object Label3: TLabel
     Left = 8
     Top = 184
     Width = 27
     Height = 13
-    Caption = 'Uses:'
+    Caption = '&Uses:'
+    FocusControl = reUses
   end
   object edName: TEdit
     Left = 8
     Top = 32
-    Width = 358
+    Width = 273
     Height = 21
     Anchors = [akLeft, akTop, akRight]
     Color = clBtnFace
@@ -52,7 +52,7 @@ object frmUnitStats: TfrmUnitStats
   object reUsed: TRichEdit
     Left = 8
     Top = 88
-    Width = 358
+    Width = 273
     Height = 89
     Anchors = [akLeft, akTop, akRight]
     Color = clBtnFace
@@ -65,8 +65,8 @@ object frmUnitStats: TfrmUnitStats
   object reUses: TRichEdit
     Left = 8
     Top = 200
-    Width = 358
-    Height = 85
+    Width = 273
+    Height = 98
     Anchors = [akLeft, akTop, akRight, akBottom]
     Color = clBtnFace
     PlainText = True
@@ -76,8 +76,8 @@ object frmUnitStats: TfrmUnitStats
     WordWrap = False
   end
   object btnOK: TButton
-    Left = 150
-    Top = 306
+    Left = 108
+    Top = 319
     Width = 75
     Height = 25
     Anchors = [akBottom]

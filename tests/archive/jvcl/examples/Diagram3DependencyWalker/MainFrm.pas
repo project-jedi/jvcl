@@ -4,9 +4,10 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   JvDiagramShape, Dialogs, ComCtrls, Menus, ImgList, StdCtrls, ExtCtrls,
-  ActnList, IniFiles, PersistSettings, DepWalkConsts, ToolWin;
+  ActnList, IniFiles, PersistSettings, DepWalkConsts, ToolWin, Buttons;
 
 type
+(*
   // (p3) interposer class for TListBox that implements IPersistSettings (for the skiplist)
   TListBox = class(StdCtrls.TListBox, IUnknown, IPersistSettings)
   private
@@ -14,6 +15,7 @@ type
     procedure Load(Storage: TCustomIniFile);
     procedure Save(Storage: TCustomIniFile);
   end;
+*)  
 
   TfrmMain = class(TForm, IUnknown, IPersistSettings)
     StatusBar1: TStatusBar;
@@ -27,17 +29,17 @@ type
     dlgSelectFiles: TOpenDialog;
     il32: TImageList;
     Clear1: TMenuItem;
-    Splitter1: TSplitter;
-    Panel1: TPanel;
-    Panel2: TPanel;
+    vertSplitter: TSplitter;
+    pnlDiagram: TPanel;
+    pnlSkipList: TPanel;
     lbSkipList: TListBox;
-    Panel3: TPanel;
-    Panel4: TPanel;
+    pnlDiagramTitle: TPanel;
+    pnlSkipListTitle: TPanel;
     popSkipList: TPopupMenu;
     Add1: TMenuItem;
     Delete1: TMenuItem;
     Edit1: TMenuItem;
-    Arrange1: TMenuItem;
+    Sort1: TMenuItem;
     N2: TMenuItem;
     Skiplist1: TMenuItem;
     Add2: TMenuItem;
@@ -63,27 +65,39 @@ type
     Statistics1: TMenuItem;
     Delete3: TMenuItem;
     N4: TMenuItem;
-    acDelDiagram: TAction;
-    acPrint: TAction;
+    acDelShape: TAction;
+    acReport: TAction;
     Print1: TMenuItem;
     acFind: TAction;
     Find1: TMenuItem;
-    CoolBar1: TCoolBar;
-    ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton2: TToolButton;
+    cbToolbar: TCoolBar;
+    tbStandard: TToolBar;
+    tbSelectFiles: TToolButton;
+    tbClear: TToolButton;
     ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
+    tbAddSkip: TToolButton;
+    tbDelSkip: TToolButton;
     Actions: TImageList;
-    ToolButton6: TToolButton;
+    tbReport: TToolButton;
     ToolButton7: TToolButton;
-    ToolButton8: TToolButton;
-    ToolButton9: TToolButton;
-    ToolButton10: TToolButton;
+    tbFind: TToolButton;
+    tbUnitStats: TToolButton;
+    tbAbout: TToolButton;
     ToolButton11: TToolButton;
-    ToolButton12: TToolButton;
+    tbDelShape: TToolButton;
     ToolButton13: TToolButton;
+    acAddToSkipList: TAction;
+    Addtoskiplist1: TMenuItem;
+    View1: TMenuItem;
+    acViewStatusBar: TAction;
+    acViewSkipList: TAction;
+    SpeedButton1: TSpeedButton;
+    StatusBar2: TMenuItem;
+    Skiplist2: TMenuItem;
+    acViewToolBar: TAction;
+    Toolbar1: TMenuItem;
+    N6: TMenuItem;
+    acRefresh: TAction;
     procedure FormCreate(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure SbMouseWheel(Sender: TObject; Shift: TShiftState;
@@ -99,9 +113,14 @@ type
     procedure alMainUpdate(Action: TBasicAction;
       var Handled: Boolean);
     procedure acUnitStatsExecute(Sender: TObject);
-    procedure acDelDiagramExecute(Sender: TObject);
-    procedure acPrintExecute(Sender: TObject);
+    procedure acDelShapeExecute(Sender: TObject);
+    procedure acReportExecute(Sender: TObject);
     procedure acFindExecute(Sender: TObject);
+    procedure acAddToSkipListExecute(Sender: TObject);
+    procedure acViewStatusBarExecute(Sender: TObject);
+    procedure acViewSkipListExecute(Sender: TObject);
+    procedure acViewToolBarExecute(Sender: TObject);
+    procedure acRefreshExecute(Sender: TObject);
   private
     { Private declarations }
     FPrintFormat:TPrintFormat;
@@ -126,8 +145,7 @@ type
     procedure Arrange(AList: TList);
     procedure CreateScrollBox(AParent: TWinControl);
     procedure DoShapeClick(Sender: TObject);
-    procedure SortItems(ATag: integer; AList: TList;
-      InvertedSort: boolean);
+    procedure SortItems(ATag: integer; AList: TList; InvertedSort: boolean);
 
     {IPersistSettings}
     procedure Load(Storage: TCustomIniFile);
@@ -237,7 +255,7 @@ end;
 
 // (p3) retrievs the shapes that AShape is connected to and store their name and pointers in Strings
 
-procedure UsesUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = '.pas');
+procedure UsesUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = cPascalExt);
 var i: integer;
 begin
   Strings.Clear;
@@ -250,7 +268,7 @@ end;
 
 // (p3) retrievs the shapes that connects to AShape and store their name and pointers in Strings
 
-procedure UsedByUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = '.pas');
+procedure UsedByUnits(AShape: TJvCustomDiagramShape; Strings: TStrings; const Ext: string = cPascalExt);
 var i: integer;
 begin
   Strings.Clear;
@@ -318,10 +336,12 @@ begin
   Result := -MinLinksFromCompare(Item1, Item2);
 end;
 
+(*
 { TListBox }
 
 procedure TListBox.Load(Storage: TCustomIniFile);
 begin
+  Exit;
   if Storage.SectionExists(Name) then
   begin
     Sorted := false;
@@ -333,10 +353,13 @@ end;
 procedure TListBox.Save(Storage: TCustomIniFile);
 var i: integer;
 begin
+  Exit;
+  Storage.EraseSection(Name);
   for i := 0 to Items.Count - 1 do
     Storage.WriteString(Name, Items[i], '');
 end;
 
+*)
 { TfrmMain }
 
 procedure TfrmMain.DoShapeClick(Sender: TObject);
@@ -506,7 +529,7 @@ begin
   finally
     SuspendRedraw(sb, false);
   end;
-  StatusBar1.Panels[0].Text := Format('Done (%d units parsed, %d units in diagram)',
+  StatusBar1.Panels[0].Text := Format(SParsedStatusFmt,
     [Files.Count, FFileShapes.Count]);
 end;
 
@@ -520,7 +543,7 @@ begin
   TJvCustomDiagramShape.DeleteAllShapes(sb);
   FLeft := FStartX;
   FTop := FStartY;
-  StatusBar1.Panels[0].Text := '  Ready';
+  StatusBar1.Panels[0].Text := SStatusReady;
 end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -531,31 +554,31 @@ begin
   FLeft := FStartX;
   FTop := FStartY;
   LoadSettings;
-  CreateScrollBox(Panel1);
+  CreateScrollBox(pnlDiagram);
 end;
 
 procedure TfrmMain.LoadSkipList;
 var
-  i: integer;
+//  i: integer;
+  AFilename:string;
 begin
-  // NB! not used: see LoadSettings
-  if FileExists(ExtractFilePath(Application.Exename) + 'SkipList.txt') then
+  AFilename := ExtractFilePath(Application.Exename) + 'SkipList.txt';
+  if FileExists(AFilename) then
   begin
     lbSkipList.Sorted := false;
-    lbSkipList.Items.LoadFromFile(ExtractFilePath(Application.Exename) + 'SkipList.txt');
-    for i := lbSkipList.Items.Count - 1 downto 0 do
+    lbSkipList.Items.LoadFromFile(AFilename);
+{    for i := lbSkipList.Items.Count - 1 downto 0 do
     begin
       lbSkipList.Items[i] := ExtractFileName(ChangeFileExt(lbSkipList.Items[i], ''));
       if lbSkipList.Items[i] = '' then
         lbSkipList.Items.Delete(i);
-    end;
+    end; }
     lbSkipList.Sorted := true;
   end;
 end;
 
 procedure TfrmMain.SaveSkipList;
 begin
-  // NB! not used: see SaveSettings
   lbSkipList.Items.SaveToFile(ExtractFilePath(Application.Exename) + 'SkipList.txt');
 end;
 
@@ -637,7 +660,7 @@ begin
       ParseUnits(dlgSelectFiles.Files, Errors);
       if Errors.Count > 0 then
       begin
-        ShowMessageFmt('Errors were encountered:'#13#10#13#10'%s', [Errors.Text]);
+        ShowMessageFmt(SParseErrorsFmt, [Errors.Text]);
         // copy to clipboard as well
         Clipboard.SetTextBuf(PChar(Errors.Text));
       end;
@@ -707,15 +730,15 @@ begin
       pfText:
       begin
         Strings.Add(AShape.Caption.Text);
-        Strings.Add('  uses:');
+        Strings.Add('  ' + SUsesColon);
         if UsesStrings.Count < 1 then
-          Strings.Add('    (none)')
+          Strings.Add('    ' + SNone)
         else
           for j := 0 to UsesStrings.Count - 1 do
             Strings.Add('    ' + UsesStrings[j]);
-        Strings.Add('  used by:');
+        Strings.Add('  ' + SUsedByColon);
         if UsedByStrings.Count < 1 then
-          Strings.Add('    (none)')
+          Strings.Add('    ' + SNone)
         else
           for j := 0 to UsedByStrings.Count - 1 do
             Strings.Add('    ' + UsedByStrings[j]);
@@ -724,13 +747,13 @@ begin
       begin
         Strings.Add(Format('<h3>%s:</h3>',[AShape.Caption.Text]));
         if UsesStrings.Count > 0 then
-          Strings.Add('<b>uses:</b>');
+          Strings.Add(Format('<b>%s</b>',[SUsesColon]));
         Strings.Add('<ul>');
         for j := 0 to UsesStrings.Count - 1 do
           Strings.Add('<li>' + UsesStrings[j]);
         Strings.Add('</ul>');
         if UsedByStrings.Count > 0 then
-          Strings.Add('<b>used by:</b>');
+          Strings.Add(Format('<b>%s</b>',[SUsedByColon]));
         Strings.Add('<ul>');
         for j := 0 to UsedByStrings.Count - 1 do
           Strings.Add('<li>' + UsedByStrings[j]);
@@ -756,10 +779,8 @@ begin
       end;
       pfHTML:
       begin
-        Strings.Insert(0,'<html><head><title>Dependency Walker</title></head>');
-        Strings.Insert(1,'<body style="font-family:verdana,arial,sans serif,helvetica"><h1>Dependency Walker</h1><hr>');
-//        Strings.Insert(2,'<h2>Legend:</h2><ul type="disc"><li> denotes "uses"</ul><ul type="square"><li>denotes "used by"</ul>');
-
+        Strings.Insert(0,Format('<html><head><title>%s</title></head>',[SDependencyWalkerTitle]));
+        Strings.Insert(1,Format('<body style="font-family:verdana,arial,sans serif,helvetica"><h1>%s</h1><hr>',[SDependencyWalkerTitle]));
         Strings.Add('</body></html>');
       end;
     end; //
@@ -805,7 +826,7 @@ var
   S: string;
 begin
   S := '';
-  if InputQuery('Add unit to skiplist', 'Unit name:', S) and (S <> '') and not InSkipList(S) then
+  if InputQuery(SAddSkipListTitle,SAddSkipListCaption, S) and (S <> '') and not InSkipList(S) then
     lbSkipList.Items.Add(ChangeFileExt(ExtractFilename(S), ''));
 end;
 
@@ -813,7 +834,7 @@ procedure TfrmMain.acDeleteExecute(Sender: TObject);
 var
   i: integer;
 begin
-  if not YesNo('Confirm delete','Delete selected items?') then Exit;
+  if not YesNo(SConfirmDelete,SDelSelItemsPrompt) then Exit;
   with lbSkipList do
     for i := Items.Count - 1 downto 0 do
       if Selected[i] then
@@ -822,24 +843,29 @@ end;
 
 procedure TfrmMain.acAboutExecute(Sender: TObject);
 begin
-  ShowMessage('Dependency Walker Demo - part of JVCL (http://jvcl.sourceforge.net)');
+  ShowMessage(SAboutText);
 end;
 
 procedure TfrmMain.acClearExecute(Sender: TObject);
 begin
-  if YesNo('Confirm delete','Clear diagram?') then
+  if YesNo(SConfirmDelete,SClearDiagramPrompt) then
     Clear;
 end;
 
 procedure TfrmMain.alMainUpdate(Action: TBasicAction;
   var Handled: Boolean);
 begin
+  if csFreeNotification in ComponentState then Exit;
   acDelete.Enabled := lbSkipList.SelCount > 0;
   acClear.Enabled := sb.ControlCount > 0;
+  acFind.Enabled := acClear.Enabled;
+  acReport.Enabled := acClear.Enabled;
+
   // (p3) this might be too slow on large sets of shapes so comment it out
-  //if it gets too sluggish
-  acDelDiagram.Enabled := GetFirstSelectedShape(sb) <> nil;
-  acUnitStats.Enabled := acDelDiagram.Enabled;
+  // if it gets too sluggish
+  acDelShape.Enabled := GetFirstSelectedShape(sb) <> nil;
+  acUnitStats.Enabled := acDelShape.Enabled;
+  acAddToSkipList.Enabled := acDelShape.Enabled;
 end;
 
 procedure TfrmMain.Load(Storage: TCustomIniFile);
@@ -851,6 +877,13 @@ begin
   acInvertSort.Checked := Storage.ReadBool(ClassName, 'InvertSort', false);
   FPrintFormat := TPrintFormat(Storage.ReadInteger(ClassName,'Print Format',0));
   FInitialDir  := Storage.ReadString(ClassName,'InitialDir','');
+  pnlSkipList.Width := Storage.ReadInteger(ClassName,'vertSplitter',pnlSkipList.Width);
+  if not acViewStatusBar.Checked = Storage.ReadBool(ClassName,acViewStatusBar.Name,acViewStatusBar.Checked) then
+    acViewStatusBar.Execute; // toggle to other state
+  if not acViewToolbar.Checked = Storage.ReadBool(ClassName,acViewToolbar.Name,acViewToolbar.Checked) then
+    acViewToolbar.Execute;
+  if not acViewSkipList.Checked = Storage.ReadBool(ClassName,acViewSkipList.Name,acViewSkipList.Checked) then
+    acViewSkipList.Execute;
 end;
 
 procedure TfrmMain.Save(Storage: TCustomIniFile);
@@ -865,25 +898,30 @@ begin
   Storage.WriteBool(ClassName, 'InvertSort', acInvertSort.Checked);
   Storage.WriteInteger(ClassName,'Print Format',Ord(FPrintFormat));
   Storage.WriteString(ClassName,'InitialDir',FInitialDir);
+  Storage.WriteInteger(ClassName,'vertSplitter',pnlSkipList.Width);
+  Storage.WriteBool(ClassName,acViewStatusBar.Name,acViewStatusBar.Checked);
+  Storage.WriteBool(ClassName,acViewToolbar.Name,acViewToolbar.Checked);
+  Storage.WriteBool(ClassName,acViewSkipList.Name,acViewSkipList.Checked);
 end;
 
 procedure TfrmMain.LoadSettings;
 var Ini: TIniFile;
 begin
-//  LoadSkipList;
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
+  LoadSkipList;
+  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt));
   try
     PersistSettings.LoadComponents(self, Ini);
   finally
     Ini.Free;
   end;
+  Application.HintShortCuts := true;
 end;
 
 procedure TfrmMain.SaveSettings;
 var Ini: TIniFile;
 begin
-//  SaveSkipList;
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, '.ini'));
+  SaveSkipList;
+  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName, cIniFileExt));
   try
     PersistSettings.SaveComponents(self, Ini);
   finally
@@ -908,24 +946,24 @@ begin
     UsesUnits(AShape, UsesStrings);
     UsedByUnits(AShape, UsedByStrings);
     if UsedByStrings.Count < 1 then
-      UsedByStrings.Add('(none)');
+      UsedByStrings.Add(SNone);
     if UsesStrings.Count < 1 then
-      UsesStrings.Add('(none)');
-    TfrmUnitStats.Execute(ChangeFileExt(AShape.Caption.Text, '.pas'), UsedByStrings, UsesStrings);
+      UsesStrings.Add(SNone);
+    TfrmUnitStats.Execute(ChangeFileExt(AShape.Caption.Text, cPascalExt), UsedByStrings, UsesStrings);
   finally
     UsedByStrings.Free;
     UsesStrings.Free;
   end;
 end;
 
-procedure TfrmMain.acDelDiagramExecute(Sender: TObject);
+procedure TfrmMain.acDelShapeExecute(Sender: TObject);
 var AShape: TJvCustomDiagramShape;
   i: integer;
 begin
   // (p3) Can't use TJvCustomDiagramShape.DeleteSelecetdShapes here since
   // we need to remove the item from the FFileShapes list as well:
   AShape := GetFirstSelectedShape(sb);
-  if (AShape <> nil) and YesNo('Confirm delete',Format('Remove "%s" from diagram?',[AShape.Caption.Text])) then
+  if (AShape <> nil) and YesNo(SConfirmDelete,Format(SDelSelItemFmt,[AShape.Caption.Text])) then
   begin
     i := FFileShapes.IndexOfObject(AShape);
     if i > -1 then
@@ -934,7 +972,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.acPrintExecute(Sender: TObject);
+procedure TfrmMain.acReportExecute(Sender: TObject);
 const
   cFormatExt:array[TPrintFormat] of PChar = ('.txt','.htm','.xml');
 var
@@ -963,11 +1001,11 @@ procedure TfrmMain.acFindExecute(Sender: TObject);
 var S:string;i:integer;
 begin
   S := '';
-  if InputQuery('Find','Name:',S) and (S <> '') then
+  if InputQuery(SFindTitle,SFindNameColon,S) and (S <> '') then
   begin
     i := FFileShapes.IndexOf(S);
     if i < 0 then
-      ShowMessageFmt('"%s" not found!',[S])
+      ShowMessageFmt(SFindNotFoundFmt,[S])
     else
     begin
       TJvCustomDiagramShape(FFileShapes.Objects[i]).Selected := true;
@@ -976,6 +1014,43 @@ begin
       sb.ScrollInView(TJvCustomDiagramShape(FFileShapes.Objects[i]).Caption);
     end;
   end;
+end;
+
+procedure TfrmMain.acAddToSkipListExecute(Sender: TObject);
+var ASHape:TJvCustomDiagramShape;
+begin
+  AShape := GetFirstSelectedShape(sb);
+  if AShape <> nil then
+  begin
+    lbSkipList.Items.Add(ChangeFileExt(ExtractFilename(AShape.Caption.Text), ''));
+    acDelShape.Execute;
+  end;
+end;
+
+procedure TfrmMain.acViewStatusBarExecute(Sender: TObject);
+begin
+  acViewStatusBar.Checked := not acViewStatusBar.Checked;
+  StatusBar1.Visible := acViewStatusBar.Checked;
+end;
+
+procedure TfrmMain.acViewSkipListExecute(Sender: TObject);
+begin
+  acViewSkipList.Checked := not acViewSkipList.Checked;
+  pnlSkipList.Visible := acViewSkipList.Checked;
+  vertSplitter.Visible := acViewSkipList.Checked;
+  if pnlSkipList.Visible then
+    vertSplitter.Left := pnlSkipList.Left;
+end;
+
+procedure TfrmMain.acViewToolBarExecute(Sender: TObject);
+begin
+  acViewToolBar.Checked := not acViewToolBar.Checked;
+  cbToolbar.Visible := acViewToolBar.Checked;
+end;
+
+procedure TfrmMain.acRefreshExecute(Sender: TObject);
+begin
+  sb.Invalidate;
 end;
 
 end.

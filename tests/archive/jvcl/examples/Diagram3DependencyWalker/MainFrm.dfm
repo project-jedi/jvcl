@@ -1,11 +1,13 @@
 object frmMain: TfrmMain
   Left = 301
   Top = 157
-  Width = 603
-  Height = 504
+  Width = 593
+  Height = 463
   BorderWidth = 2
   Caption = 'Dependency Walker'
   Color = clBtnFace
+  Constraints.MinHeight = 200
+  Constraints.MinWidth = 300
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -18,18 +20,20 @@ object frmMain: TfrmMain
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object Splitter1: TSplitter
-    Left = 401
+  object vertSplitter: TSplitter
+    Left = 391
     Top = 26
     Width = 5
-    Height = 409
-    Cursor = crHSplit
+    Height = 368
+    Cursor = crSizeWE
     Align = alRight
+    AutoSnap = False
+    MinSize = 110
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Top = 435
-    Width = 591
+    Top = 394
+    Width = 581
     Height = 19
     Panels = <
       item
@@ -37,18 +41,18 @@ object frmMain: TfrmMain
       end>
     SimplePanel = False
   end
-  object Panel1: TPanel
+  object pnlDiagram: TPanel
     Left = 0
     Top = 26
-    Width = 401
-    Height = 409
+    Width = 391
+    Height = 368
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    object Panel3: TPanel
+    object pnlDiagramTitle: TPanel
       Left = 0
       Top = 0
-      Width = 401
+      Width = 391
       Height = 21
       Align = alTop
       Alignment = taLeftJustify
@@ -63,11 +67,11 @@ object frmMain: TfrmMain
       TabOrder = 0
     end
   end
-  object Panel2: TPanel
-    Left = 406
+  object pnlSkipList: TPanel
+    Left = 396
     Top = 26
     Width = 185
-    Height = 409
+    Height = 368
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
@@ -75,7 +79,7 @@ object frmMain: TfrmMain
       Left = 0
       Top = 21
       Width = 185
-      Height = 388
+      Height = 347
       Align = alClient
       BorderStyle = bsNone
       ItemHeight = 13
@@ -810,7 +814,7 @@ object frmMain: TfrmMain
       Sorted = True
       TabOrder = 0
     end
-    object Panel4: TPanel
+    object pnlSkipListTitle: TPanel
       Left = 0
       Top = 0
       Width = 185
@@ -826,47 +830,63 @@ object frmMain: TfrmMain
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 1
+      object SpeedButton1: TSpeedButton
+        Left = 166
+        Top = 2
+        Width = 16
+        Height = 16
+        Action = acViewSkipList
+        Anchors = [akTop, akRight]
+        Caption = 'r'
+        Flat = True
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Marlett'
+        Font.Style = []
+        ParentFont = False
+      end
     end
   end
-  object CoolBar1: TCoolBar
+  object cbToolbar: TCoolBar
     Left = 0
     Top = 0
-    Width = 591
+    Width = 581
     Height = 26
     AutoSize = True
     Bands = <
       item
-        Control = ToolBar1
+        Control = tbStandard
         ImageIndex = -1
         MinHeight = 22
-        Width = 587
+        Width = 577
       end>
-    object ToolBar1: TToolBar
+    object tbStandard: TToolBar
       Left = 9
       Top = 0
-      Width = 574
+      Width = 564
       Height = 22
       AutoSize = True
-      Caption = 'ToolBar1'
+      Caption = 'Standard'
       EdgeBorders = []
       Flat = True
       Images = Actions
       TabOrder = 0
       Wrapable = False
-      object ToolButton1: TToolButton
+      object tbSelectFiles: TToolButton
         Left = 0
         Top = 0
         Action = acSelectFiles
       end
-      object ToolButton2: TToolButton
+      object tbClear: TToolButton
         Left = 23
         Top = 0
         Action = acClear
       end
-      object ToolButton6: TToolButton
+      object tbReport: TToolButton
         Left = 46
         Top = 0
-        Action = acPrint
+        Action = acReport
       end
       object ToolButton3: TToolButton
         Left = 69
@@ -876,7 +896,7 @@ object frmMain: TfrmMain
         ImageIndex = 2
         Style = tbsSeparator
       end
-      object ToolButton8: TToolButton
+      object tbFind: TToolButton
         Left = 77
         Top = 0
         Action = acFind
@@ -889,15 +909,15 @@ object frmMain: TfrmMain
         ImageIndex = 18
         Style = tbsSeparator
       end
-      object ToolButton9: TToolButton
+      object tbUnitStats: TToolButton
         Left = 108
         Top = 0
         Action = acUnitStats
       end
-      object ToolButton12: TToolButton
+      object tbDelShape: TToolButton
         Left = 131
         Top = 0
-        Action = acDelDiagram
+        Action = acDelShape
       end
       object ToolButton7: TToolButton
         Left = 154
@@ -907,12 +927,13 @@ object frmMain: TfrmMain
         ImageIndex = 5
         Style = tbsSeparator
       end
-      object ToolButton4: TToolButton
+      object tbAddSkip: TToolButton
         Left = 162
         Top = 0
+        Hint = 'Add a unit to the skiplist'
         Action = acAdd
       end
-      object ToolButton5: TToolButton
+      object tbDelSkip: TToolButton
         Left = 185
         Top = 0
         Action = acDelete
@@ -925,7 +946,7 @@ object frmMain: TfrmMain
         ImageIndex = 6
         Style = tbsSeparator
       end
-      object ToolButton10: TToolButton
+      object tbAbout: TToolButton
         Left = 216
         Top = 0
         Action = acAbout
@@ -935,14 +956,14 @@ object frmMain: TfrmMain
   object mmMain: TMainMenu
     Images = Actions
     Left = 24
-    Top = 40
+    Top = 56
     object File1: TMenuItem
       Caption = 'File'
       object SelectFiles1: TMenuItem
         Action = acSelectFiles
       end
       object Print1: TMenuItem
-        Action = acPrint
+        Action = acReport
       end
       object N1: TMenuItem
         Caption = '-'
@@ -953,8 +974,17 @@ object frmMain: TfrmMain
     end
     object Edit1: TMenuItem
       Caption = 'Edit'
-      object Arrange1: TMenuItem
-        Caption = 'Arrange'
+      object Skiplist1: TMenuItem
+        Caption = 'Skiplist'
+        object Add2: TMenuItem
+          Action = acAdd
+        end
+        object Delete2: TMenuItem
+          Action = acDelete
+        end
+      end
+      object Sort1: TMenuItem
+        Caption = 'Sort'
         object byName1: TMenuItem
           Action = acSortName
           GroupIndex = 1
@@ -979,15 +1009,6 @@ object frmMain: TfrmMain
           GroupIndex = 1
         end
       end
-      object Skiplist1: TMenuItem
-        Caption = 'Skiplist'
-        object Add2: TMenuItem
-          Action = acAdd
-        end
-        object Delete2: TMenuItem
-          Action = acDelete
-        end
-      end
       object N2: TMenuItem
         Caption = '-'
       end
@@ -996,6 +1017,21 @@ object frmMain: TfrmMain
       end
       object Clear1: TMenuItem
         Action = acClear
+      end
+    end
+    object View1: TMenuItem
+      Caption = 'View'
+      object Toolbar1: TMenuItem
+        Action = acViewToolBar
+      end
+      object Skiplist2: TMenuItem
+        Action = acViewSkipList
+      end
+      object N6: TMenuItem
+        Caption = '-'
+      end
+      object StatusBar2: TMenuItem
+        Action = acViewStatusBar
       end
     end
     object Help1: TMenuItem
@@ -1010,14 +1046,14 @@ object frmMain: TfrmMain
     Filter = 'Pascal files (*.pas)|*.pas|All files|*.*'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing]
     Title = 'Select file(s)'
-    Left = 232
-    Top = 40
+    Left = 24
+    Top = 104
   end
   object il32: TImageList
     Height = 32
     Width = 32
     Left = 120
-    Top = 40
+    Top = 56
     Bitmap = {
       494C010101000400040020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000002000000001001000000000000020
@@ -1300,7 +1336,7 @@ object frmMain: TfrmMain
   end
   object popSkipList: TPopupMenu
     Left = 168
-    Top = 40
+    Top = 56
     object Add1: TMenuItem
       Action = acAdd
     end
@@ -1312,49 +1348,49 @@ object frmMain: TfrmMain
     Images = Actions
     OnUpdate = alMainUpdate
     Left = 72
-    Top = 40
+    Top = 56
     object acSelectFiles: TAction
       Category = 'File'
       Caption = 'Select Files...'
+      Hint = 'Select the unit(s) to display'
       ImageIndex = 1
       ShortCut = 16463
       OnExecute = acSelectFilesExecute
     end
-    object acExit: TAction
-      Category = 'File'
-      Caption = 'Exit'
-      ShortCut = 32883
-      OnExecute = acExitExecute
-    end
     object acSortName: TAction
-      Category = 'Arrange'
+      Category = 'Edit'
       Caption = 'by Name'
+      Hint = 'Sort by name'
       ShortCut = 16433
       OnExecute = acArrangeAction
     end
     object acSortLinksTo: TAction
       Tag = 1
-      Category = 'Arrange'
+      Category = 'Edit'
       Caption = 'by Links To'
+      Hint = 'Sort by links going to unit'
       ShortCut = 16434
       OnExecute = acArrangeAction
     end
     object acSortLinksFrom: TAction
       Tag = 2
-      Category = 'Arrange'
+      Category = 'Edit'
       Caption = 'by Links From'
+      Hint = 'Sort by links going from unit'
       ShortCut = 16435
       OnExecute = acArrangeAction
     end
     object acInvertSort: TAction
-      Category = 'Arrange'
+      Category = 'Edit'
       Caption = 'Inverted Sort'
+      Hint = 'Invert sort order'
       ShortCut = 16457
       OnExecute = acInvertSortExecute
     end
     object acAdd: TAction
       Category = 'Skiplist'
       Caption = 'Add...'
+      Hint = 'Add an unit to the skiplist'
       ImageIndex = 3
       ShortCut = 16429
       OnExecute = acAddExecute
@@ -1362,6 +1398,7 @@ object frmMain: TfrmMain
     object acDelete: TAction
       Category = 'Skiplist'
       Caption = 'Delete...'
+      Hint = 'Delete the selected units from the skiplist'
       ImageIndex = 4
       ShortCut = 16430
       OnExecute = acDeleteExecute
@@ -1369,6 +1406,7 @@ object frmMain: TfrmMain
     object acClear: TAction
       Category = 'Edit'
       Caption = 'Clear'
+      Hint = 'Clear diagram'
       ImageIndex = 11
       ShortCut = 24622
       OnExecute = acClearExecute
@@ -1376,42 +1414,93 @@ object frmMain: TfrmMain
     object acAbout: TAction
       Category = 'Help'
       Caption = 'About...'
+      Hint = 'Show About box'
       ImageIndex = 17
       OnExecute = acAboutExecute
     end
     object acUnitStats: TAction
-      Category = 'Diagrams'
+      Category = 'Shapes'
       Caption = 'Statistics...'
+      Hint = 'Display statistics for unit'
       ImageIndex = 20
       ShortCut = 32781
       OnExecute = acUnitStatsExecute
     end
-    object acDelDiagram: TAction
-      Category = 'Diagrams'
+    object acDelShape: TAction
+      Category = 'Shapes'
       Caption = 'Delete...'
+      Hint = 'Delete unit from diagram'
       ImageIndex = 9
-      OnExecute = acDelDiagramExecute
+      ShortCut = 16452
+      OnExecute = acDelShapeExecute
     end
-    object acPrint: TAction
+    object acReport: TAction
       Category = 'File'
-      Caption = 'Print...'
+      Caption = 'Create Report...'
+      Hint = 'Create a report in text, html or xml format'
       ImageIndex = 10
       ShortCut = 16464
-      OnExecute = acPrintExecute
+      OnExecute = acReportExecute
+    end
+    object acExit: TAction
+      Category = 'File'
+      Caption = 'Exit'
+      Hint = 'Close the program'
+      ShortCut = 32883
+      OnExecute = acExitExecute
     end
     object acFind: TAction
       Category = 'Edit'
       Caption = 'Find...'
+      Hint = 'Search for a unit in the diagram'
       ImageIndex = 21
       ShortCut = 16454
       OnExecute = acFindExecute
     end
+    object acAddToSkipList: TAction
+      Category = 'Shapes'
+      Caption = 'Add to skiplist'
+      Hint = 'Add unit to skiplist'
+      ImageIndex = 3
+      ShortCut = 16449
+      OnExecute = acAddToSkipListExecute
+    end
+    object acViewStatusBar: TAction
+      Category = 'View'
+      Caption = 'Statusbar'
+      Checked = True
+      ShortCut = 16469
+      OnExecute = acViewStatusBarExecute
+    end
+    object acViewSkipList: TAction
+      Category = 'View'
+      Caption = 'Skiplist'
+      Checked = True
+      ShortCut = 16460
+      OnExecute = acViewSkipListExecute
+    end
+    object acViewToolBar: TAction
+      Category = 'View'
+      Caption = 'Toolbar'
+      Checked = True
+      ShortCut = 16468
+      OnExecute = acViewToolBarExecute
+    end
+    object acRefresh: TAction
+      Category = 'View'
+      Caption = 'Refresh'
+      ShortCut = 116
+      OnExecute = acRefreshExecute
+    end
   end
   object popDiagram: TPopupMenu
     Left = 168
-    Top = 96
+    Top = 104
+    object Addtoskiplist1: TMenuItem
+      Action = acAddToSkipList
+    end
     object Delete3: TMenuItem
-      Action = acDelDiagram
+      Action = acDelShape
     end
     object N4: TMenuItem
       Caption = '-'
@@ -1421,10 +1510,10 @@ object frmMain: TfrmMain
     end
   end
   object Actions: TImageList
-    Left = 240
-    Top = 80
+    Left = 72
+    Top = 104
     Bitmap = {
-      494C010116001800040010001000FFFFFFFFFF00FFFFFFFFFFFFFFFF424D3600
+      494C010116001800040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000006000000001001000000000000030
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -1836,6 +1925,7 @@ object frmMain: TfrmMain
       E003FFFFC0018007E003800F80318007E003800780318001E003800380318001
       E003800180018001E003800080018007E003800080018007E003800F8FF1800F
       E003800F8FF1800FE003800F8FF1800FE007C7F88FF1801FE00FFFFC8FF1803F
-      E01FFFBA8FF5807FFFFFFFC78001FFFF}
+      E01FFFBA8FF5807FFFFFFFC78001FFFF00000000000000000000000000000000
+      000000000000}
   end
 end

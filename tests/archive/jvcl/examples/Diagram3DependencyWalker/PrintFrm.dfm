@@ -14,9 +14,6 @@ object frmPrint: TfrmPrint
   Font.Style = []
   OldCreateOrder = False
   Position = poMainFormCenter
-  DesignSize = (
-    294
-    113)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -24,7 +21,8 @@ object frmPrint: TfrmPrint
     Top = 16
     Width = 73
     Height = 13
-    Caption = 'Output format:'
+    Caption = '&Output format:'
+    FocusControl = cbFormat
   end
   object cbFormat: TComboBox
     Left = 8
