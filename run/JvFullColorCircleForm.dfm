@@ -203,41 +203,32 @@ object JvFullColorCircleFrm: TJvFullColorCircleFrm
       Caption = 'C&ommon:'
       FocusControl = SpinEditComAxis0
     end
-    object SpinEditComAxis0: TSpinEdit
+    object SpinEditComAxis0: TJvSpinEdit
       Tag = 48
       Left = 80
       Top = 48
       Width = 57
       Height = 22
       Enabled = False
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 0
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditComAxis1: TSpinEdit
+    object SpinEditComAxis1: TJvSpinEdit
       Tag = 49
       Left = 176
       Top = 48
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 1
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditComAxis2: TSpinEdit
+    object SpinEditComAxis2: TJvSpinEdit
       Tag = 50
       Left = 272
       Top = 48
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 2
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
     object CheckBoxCom0: TCheckBox
@@ -329,111 +320,84 @@ object JvFullColorCircleFrm: TJvFullColorCircleFrm
       Caption = '&Blue:'
       FocusControl = SpinEditBlueAxis0
     end
-    object SpinEditRedAxis0: TSpinEdit
+    object SpinEditRedAxis0: TJvSpinEdit
       Left = 80
       Top = 48
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 0
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditGreenAxis0: TSpinEdit
+    object SpinEditGreenAxis0: TJvSpinEdit
       Tag = 16
       Left = 80
       Top = 120
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 6
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditBlueAxis0: TSpinEdit
+    object SpinEditBlueAxis0: TJvSpinEdit
       Tag = 32
       Left = 80
       Top = 192
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 12
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditRedAxis1: TSpinEdit
+    object SpinEditRedAxis1: TJvSpinEdit
       Tag = 1
       Left = 176
       Top = 48
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 1
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditRedAxis2: TSpinEdit
+    object SpinEditRedAxis2: TJvSpinEdit
       Tag = 2
       Left = 272
       Top = 48
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 2
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditGreenAxis1: TSpinEdit
+    object SpinEditGreenAxis1: TJvSpinEdit
       Tag = 17
       Left = 176
       Top = 120
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 7
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditGreenAxis2: TSpinEdit
+    object SpinEditGreenAxis2: TJvSpinEdit
       Tag = 18
       Left = 272
       Top = 120
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 8
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditBlueAxis1: TSpinEdit
+    object SpinEditBlueAxis1: TJvSpinEdit
       Tag = 33
       Left = 176
       Top = 192
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 13
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
-    object SpinEditBlueAxis2: TSpinEdit
+    object SpinEditBlueAxis2: TJvSpinEdit
       Tag = 34
       Left = 272
       Top = 192
       Width = 57
       Height = 22
-      MaxValue = 0
-      MinValue = 0
       TabOrder = 14
-      Value = 0
       OnChange = SpinEditSettingsValueChange
     end
     object CheckBoxRed0: TCheckBox
