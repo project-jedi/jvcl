@@ -2,12 +2,12 @@ program JvMenusExample;
 
 uses
   Forms,
-  MainForm in 'MainForm.pas' {frmMain};
+  JvMenusExampleMainForm in 'JvMenusExampleMainForm.pas' {JvMenusExampleMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TJvMenusExampleMainFrm, JvMenusExampleMainFrm);
   Application.Run;
 end.
