@@ -64,6 +64,10 @@ DXGETTEXT=-DUSE_DXGETTEXT
 DXGETTEXT=
 !endif
 
+!ifndef UNITDIRS
+UNITDIRS=.
+!endif
+
 !ifndef EXTRAUNITDIRS
 EXTRAUNITDIRS=.
 !endif
@@ -180,6 +184,9 @@ configfile:
 	@echo -U"$(EXTRAUNITDIRS)">>"$(CFG)"
 	@echo -I"$(EXTRAINCLUDEDIRS)">>"$(CFG)"
 	@echo -R"$(EXTRARESDIRS)">>"$(CFG)"
+	#
+	@echo -U"$(UNITDIRS)">>"$(CFG)"
+	@echo -R"$(UNITDIRS)">>"$(CFG)"
 
 
 ################################################################################
