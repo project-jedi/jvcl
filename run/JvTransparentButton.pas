@@ -345,7 +345,7 @@ begin
   FBorderSize := 1;
   FTransparent := True;
 
-  FImList := TImageList.CreateSize(Width, Height);
+  FImList := TImageList.Create(nil);
   FGlyph := TBitmap.Create;
   FGrayGlyph := TBitmap.Create;
   FDisabledGlyph := TBitmap.Create;
@@ -887,14 +887,13 @@ end;
 procedure TJvTransparentButton2.AddGlyphs;
 var
   Bmp: TBitmap;
-  Ico: TIcon;
+  Icon:HICON;
 begin
   Bmp := TBitmap.Create;
-  Ico := TIcon.Create;
   try
     { destroy old list }
     FImList.Clear;
-    Repaint;
+//    Repaint;
     { create the imagelist }
     if Assigned(FActiveList) and (FActiveIndex > -1) then
     begin
@@ -902,16 +901,17 @@ begin
       FImList.Width := FActiveList.Width;
       Bmp.Height := FImList.Height;
       Bmp.Width := FImList.Width;
-      FActiveList.GetIcon(FActiveIndex, Ico);
-      FImList.AddIcon(Ico);
+      Icon := ImageList_GetIcon(FActiveList.Handle, FActiveIndex, ILD_TRANSPARENT);
+      ImageList_AddIcon(FImList.Handle, Icon);
+      DeleteObject(Icon);
     end
     else
       Exit;
 
     if Assigned(FDisabledList) and (FDisabledIndex > -1) then
     begin
-      FDisabledList.GetIcon(FDisabledIndex, Ico);
-      FImList.AddIcon(Ico);
+      Icon := ImageList_GetIcon(FDisabledList.Handle, FDisabledIndex, ILD_TRANSPARENT);
+      ImageList_AddIcon(FImList.Handle, Icon);
     end
     else
     begin
@@ -922,19 +922,22 @@ begin
 
     if Assigned(FDownList) and (FDownIndex > -1) then
     begin
-      FDownList.GetIcon(FDownIndex, Ico);
-      FImList.AddIcon(Ico);
+      Icon := ImageList_GetIcon(FDownList.Handle,FDownIndex, ILD_TRANSPARENT);
+      ImageList_AddIcon(FImList.Handle, Icon);
+      DeleteObject(Icon);
     end
     else
     begin
-      FActiveList.GetIcon(FActiveIndex, Ico);
-      FImList.AddIcon(Ico);
+      Icon := ImageList_GetIcon(FActiveList.Handle,FActiveIndex, ILD_TRANSPARENT);
+      ImageList_AddIcon(FImList.Handle, Icon);
+      DeleteObject(Icon);
     end;
 
     if Assigned(FGrayList) and (FGrayIndex > -1) then
     begin
-      FGrayList.GetIcon(FGrayIndex, Ico);
-      FImList.AddIcon(Ico);
+      Icon := ImageList_GetIcon(FGrayList.Handle,FGrayIndex, ILD_TRANSPARENT);
+      ImageList_AddIcon(FImList.Handle, Icon);
+      DeleteObject(Icon);
     end
     else
     begin
@@ -942,10 +945,8 @@ begin
       GrayBitmap(Bmp, 11, 59, 30);
       FImList.AddMasked(Bmp, Bmp.TransparentColor);
     end;
-
   finally
     Bmp.Free;
-    Ico.Free;
   end;
   Repaint;
 end;
@@ -1386,7 +1387,7 @@ begin
     if (bsMouseDown in MouseStates) then
       Index := 2
     else
-    if (FrameStyle = fsExplorer) and FAutoGray and not (bsMouseDown in MouseStates) then
+    if (FrameStyle = fsExplorer) and FAutoGray and (MouseStates = []) then
       Index := 3 { autogray }
     else
       Index := 0; { active }
