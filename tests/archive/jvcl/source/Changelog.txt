@@ -1,3 +1,9 @@
+2002-11-19
+- Added Transparent and Multiline property to JvPanel. // peter3, pongtawat
+2002-11-18
+- Major changes to examples to compile with D5. Also added all projects except DynamicLoad and DBTree to JVCLDemos.bpg and makefile.mak // peter3
+2002-11-16:
+- Added undo capability and several new properties to JvMaskEdit // rbraasem
 2002-11-05
 - Moved JvTextContainer to \archive: duplicates TJvStrHolder with less functionality // peter3
 2002-11-04
@@ -10,7 +16,7 @@
 - Added JvWndProcHook unit. This unit implements a method of safe subclassing of the WndProc of any TControl and makes sure the WndProc link can't be broken. Also modified JvHook, JvButtons, JvCaptionButton, JvaCaptionButton, JvAppHotKey, JvDragDrop, JvEasterEgg, JvPlacemnt, JvMagnet, Jvgrdcpt to use JvWndProcHook instead if subclassing directly. Moved JvHooks to \Archive. Moved TJvWindowHook class from JvHook to JvWndProcHook and modified it to use the JvWndProc subclassing method.  //peter3, remkobonte
 
 2002-10-28
-- Added JvScheduledEvents, ScheduleEdiot. NOTE: needs JCL 1.22 or above // marcelb
+- Added JvScheduledEvents, ScheduleEditor. NOTE: needs JCL 1.22 or above // marcelb
 
 2002-10-27
 - Added "//"" comments to several units that contained cyrillic characters. Supposedly, these characters upsets Delphi on chinese systems, since some of them are interpreted as the ending } in a comment. Affected units are JvEditor, JvHLPareser, JvRegAuto, JvRegAutoEditor, JvStrUtil, JvUtils, JvaScrollText and JvDBUtil // peter3
