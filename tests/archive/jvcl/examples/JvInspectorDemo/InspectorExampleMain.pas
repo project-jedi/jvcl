@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvInspector, IniFiles, TypInfo, JvComponent, StdCtrls;
+  JvInspector, IniFiles, TypInfo, JvComponent;
 
 type
   TfrmInspector = class(TForm)
@@ -31,6 +31,7 @@ type
     procedure AddINIFile;
     procedure AddVarious;
     procedure ChangeChkState(const Item: TJvCustomInspectorItem);
+    procedure Edit1Change2(Sender: TObject);
   public
     { Public declarations }
   end;
@@ -45,7 +46,7 @@ implementation
 uses
   InspectorExampleTestForm,
   JclRTTI,
-  JVCLVer;
+  JVCLVer, JvInspExtraEditors;
 
 type
   TTestOption = (toOption1, toOption2, toOption3, toOption4, toOption5, toOption6, toOption7, toOption8);
@@ -77,8 +78,8 @@ begin
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'JvInspector Settings';
   for I := Low(PropArray) to High(PropArray) do
-    TJvInspectorPropData.New(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).DisplayName := PropArray[I, 1];
-  TJvInspectorVarData.New(InspCat, 'AboutJVCL', TypeInfo(string), VerInfoStr).DisplayName := 'About JVCL';
+    TJvInspectorPropData.New(InspCat, JvInspector1, GetPropInfo(JvInspector1, PropArray[I, 0])).Data.Name := PropArray[I, 1];
+  TJvInspectorVarData.New(InspCat, 'AboutJVCL', TypeInfo(string), VerInfoStr).Data.Name := 'About JVCL';
   InspCat.Expanded := True;
 end;
 
@@ -100,15 +101,14 @@ procedure TfrmInspector.AddFormAndControls;
 var
   InspCat: TJvInspectorCustomCategoryItem;
 begin
-  if frmTest = nil then
-    Application.CreateForm(TfrmTest, frmTest);
+  Application.CreateForm(TfrmTest, frmTest);
   InspCat := TJvInspectorCustomCategoryItem.Create(JvInspector1.Root, nil);
   InspCat.DisplayName := 'Form and controls (published property data).';
   InspCat.SortKind := iskNone;
   AddCtrl(InspCat, frmTest);
   AddCtrl(InspCat, frmTest.PanelForLabel);
   AddCtrl(InspCat, frmTest.lblTest);
-  AddCtrl(InspCat, frmTest.ListBox1);
+  AddCtrl(InspCat, frmTest.Edit1);
   InspCat.Expanded := True;
 end;
 
@@ -130,10 +130,24 @@ end;
 procedure TfrmInspector.AddCtrl(const Parent: TJvCustomInspectorItem; const Ctrl: TControl);
 var
   InspCat: TJvInspectorCustomCategoryItem;
+  M: TNotifyEvent;
 begin
   InspCat := TJvInspectorCustomCategoryItem.Create(Parent, nil);
   InspCat.DisplayName := Ctrl.Name + ': ' + Ctrl.ClassName;
-  TJvInspectorPropData.New(InspCat, Ctrl);
+  if Ctrl = frmTest.Edit1 then
+  begin
+    with TJvInspectorPropData.New(InspCat, Ctrl, 'OnChange') as TJvInspectorTMethodItem do
+    begin
+      AddInstance(frmTest, 'frmTest');
+      AddInstance(Self, 'frmInspector');
+      M := frmTest.Edit1Change1;
+      AddMethod(TMethod(M), 'Edit1Change1');
+      M := Edit1Change2;
+      AddMethod(TMethod(M), 'Edit1Change2');
+    end;
+  end
+  else
+    TJvInspectorPropData.New(InspCat, Ctrl);
 end;
 
 procedure TfrmInspector.AddINIFile;
@@ -174,6 +188,14 @@ begin
     ChangeChkState(Item[I]);
 end;
 
+procedure TfrmInspector.Edit1Change2(Sender: TObject);
+begin
+  frmTest.mmChanges.Lines.Add('Edit1Change2 event');
+end;
+
+type
+  THackInsp = class(TJvCustomInspector);
+
 procedure TfrmInspector.FormCreate(Sender: TObject);
 begin
   BoolsAsChecks := True;
@@ -198,8 +220,6 @@ begin
     begin
       AddOwner(Self);
     end;
-  if Item is TJvInspectorFontItem then
-    TJvInspectorFontItem(Item).CreateMemberItems := False;
 end;
 
 procedure TfrmInspector.GetBoolsAsChecks(Sender: TJvInspectorEventData; var Value: Int64);
@@ -324,6 +344,10 @@ initialization
   GeneratedTestEnum := JclGenerateEnumType('TestEnum',
     ['me, myself and I', 'Marcel Bestebroer', 'Project JEDI', 'JEDI-VCL Inspector']);
   ADate := Now;
+
+  TJvInspectorAlignItem.RegisterAsDefaultItem;
+  TJvInspectorAnchorsItem.RegisterAsDefaultItem;
+  TJvInspectorColorItem.RegisterAsDefaultItem;
 
 finalization
   RemoveTypeInfo(GeneratedTestEnum);

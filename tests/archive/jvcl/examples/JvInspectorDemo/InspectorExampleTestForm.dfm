@@ -1,10 +1,10 @@
 object frmTest: TfrmTest
-  Left = 556
-  Top = 215
+  Left = 272
+  Top = 180
   AutoScroll = False
   Caption = 'Test Form'
-  ClientHeight = 278
-  ClientWidth = 402
+  ClientHeight = 536
+  ClientWidth = 615
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,7 +17,7 @@ object frmTest: TfrmTest
   object PanelForLabel: TPanel
     Left = 0
     Top = 0
-    Width = 402
+    Width = 615
     Height = 141
     Align = alTop
     BevelOuter = bvNone
@@ -29,17 +29,25 @@ object frmTest: TfrmTest
       Height = 13
       Caption = 'Test'
     end
+    object Edit1: TEdit
+      Left = 0
+      Top = 120
+      Width = 615
+      Height = 21
+      Anchors = [akLeft, akRight, akBottom]
+      TabOrder = 0
+      Text = 'Edit1'
+      OnChange = Edit1Change1
+    end
   end
-  object ListBox1: TListBox
-    Left = 55
-    Top = 175
-    Width = 121
-    Height = 97
-    ItemHeight = 13
-    Items.Strings = (
-      'Item1'
-      'Item2'
-      'Item3')
+  object mmChanges: TMemo
+    Left = 0
+    Top = 141
+    Width = 615
+    Height = 395
+    Align = alClient
+    ReadOnly = True
+    ScrollBars = ssVertical
     TabOrder = 1
   end
 end

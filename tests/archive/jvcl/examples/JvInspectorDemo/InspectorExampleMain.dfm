@@ -1,6 +1,6 @@
 object frmInspector: TfrmInspector
-  Left = 304
-  Top = 113
+  Left = 409
+  Top = 114
   Width = 254
   Height = 708
   ActiveControl = JvInspector1
@@ -27,8 +27,8 @@ object frmInspector: TfrmInspector
     BandWidth = 150
     BevelInner = bvNone
     BevelKind = bkTile
-    RelativeDivider = False
-    Divider = 75
+    RelativeDivider = True
+    Divider = 50
     ItemHeight = 16
     Painter = JvInspectorBorlandPainter1
     Readonly = False
@@ -37,7 +37,7 @@ object frmInspector: TfrmInspector
     AfterItemCreate = JvInspector1AfterItemCreate
   end
   object JvInspectorBorlandPainter1: TJvInspectorBorlandPainter
-    Left = 135
+    Left = 130
     Top = 50
   end
   object JvInspectorDotNETPainter1: TJvInspectorDotNETPainter
