@@ -97,6 +97,7 @@ int main(int argc, char* argv[])
   for (Index=0; Index<4; Index++)
     cout << "Value " << Index << " is : " << Values[Index] << "\n";
   cout << "\nProgram terminated\n";
+  gets(Line);
   return 0;
 }
 //---------------------------------------------------------------------------
