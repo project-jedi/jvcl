@@ -36,10 +36,9 @@ unit JvQClock;
 
 interface
 
-uses  
-  Types, QWindows, 
-  Classes, QGraphics, QControls,
-  JvQTimer, JvQComponent, JvQExControls;
+uses
+  Types, QWindows, QMessages, Classes, QGraphics, QControls,
+  JvQJCLUtils, JvQTimer, JvQComponent, JvQExControls;
 
 type
   TShowClock = (scDigital, scAnalog);
@@ -855,10 +854,10 @@ var
       ((NewTime.Minute <> FDisplayTime.Minute) and IsPartSym(2, Num)) or
       (NewTime.Hour <> FDisplayTime.Hour) then
     begin
-      DrawThemedBackground(Self, Canvas, Rect);  
+      DrawThemedBackground(Self, Canvas, Rect);
       SetBkMode(Canvas.Handle, QWindows.TRANSPARENT);
       DrawText(Canvas, Sym, 1, Rect, DT_EXPANDTABS or
-        DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE); 
+        DT_VCENTER or DT_CENTER or DT_NOCLIP or DT_SINGLELINE);
     end;
   end;
 
@@ -920,7 +919,7 @@ begin
     if FullTime or (NewTime.Hour <> FDisplayTime.Hour) then
     begin
       Rect.Right := Rect.Left + TextWidth(SAmPm);
-      DrawText(Handle, @SAmPm[1], Length(SAmPm), Rect,
+      DrawText(Canvas, SAmPm[1], Length(SAmPm), Rect,
         DT_EXPANDTABS or DT_VCENTER or DT_NOCLIP or DT_SINGLELINE);
     end;
   end;

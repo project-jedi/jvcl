@@ -40,10 +40,9 @@ unit JvQComboListBox;
 interface
 
 uses
-  SysUtils, Classes,
-  QWindows, QMessages, QControls, Types, QGraphics, QStdCtrls, QExtCtrls, QMenus,  
+  Types, QWindows, QMessages,  
   Qt, JvQExStdCtrls, 
-  JvQTypes;
+  Classes, QControls, QGraphics, QStdCtrls, QMenus ;
 
 type
   // (p3) these types should *not* be moved to JvTypes (they are only used here)!
@@ -373,7 +372,7 @@ begin
       begin
         AText := Items[Index];
         DoGetText(Index, AText);
-        DrawText(Canvas.Handle, PChar(AText), Length(AText),
+        DrawText(Canvas, AText, Length(AText),
           TmpRect, DT_WORDBREAK or DT_LEFT or DT_TOP or DT_EDITCONTROL or DT_NOPREFIX or DT_END_ELLIPSIS);
       end;
     end;

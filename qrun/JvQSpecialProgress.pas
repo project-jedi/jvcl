@@ -232,8 +232,9 @@ begin
     UpdateBuffer;
   end;
   if (ClientWidth > 2) and (ClientHeight > 2) then
-  begin    
-    Canvas.Draw(0,0, FBuffer); 
+  begin  
+    BitBlt(Canvas, 0, 0, ClientWidth, ClientHeight,
+      FBuffer.Canvas, 0, 0, SRCCOPY); 
   end;
 end;
 
@@ -434,8 +435,8 @@ begin
   Y := (ClientHeight - FBuffer.Canvas.TextHeight(S)) div 2;
   if Y < 0 then
     Y := 0;
-  
-  SetBkMode(FBuffer.Canvas.Handle, TRANSPARENT); 
+
+  SetBkMode(FBuffer.Canvas.Handle, QWindows.TRANSPARENT);
   //    FBuffer.Canvas.Brush.Color := clNone;
   //    FBuffer.Canvas.Brush.Style := bsClear;
   FBuffer.Canvas.TextOut(X, Y, S);

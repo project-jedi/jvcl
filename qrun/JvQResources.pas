@@ -371,6 +371,7 @@ resourcestring
   RsRefreshHint = 'Refresh';
   RsENoFieldsDefined = 'No fields defined';
 
+  
 //=== JvCsvData.pas ==========================================================
 resourcestring
   RsErrorRowItem = '<ERROR>';
@@ -483,6 +484,7 @@ resourcestring
   RsJvDBGridSelectTitle = 'Select columns';
   RsJvDBGridSelectOK = '&OK';
   RsJvDBGridSelectWarning = 'At least one column must be visible!';
+  RsJvDBGridControlPropertyNotAssigned = 'JvDbControls.EditControls property Control not assigned'; // wpostma.
 
 //=== JvDBGridExport.pas =====================================================
 resourcestring

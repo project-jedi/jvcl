@@ -34,9 +34,10 @@ unit JvQSwitch;
 interface
 
 uses
-  SysUtils, Classes,  
-  Qt, Types, QGraphics, QControls, QForms, QMenus, QWindows, 
-  JvQComponent;
+  SysUtils, Classes,
+  Types, QWindows, QMessages, QGraphics, QControls, QForms, QMenus, 
+  Qt, 
+  JvQJCLUtils, JvQComponent;
 
 type
   TTextPos = (tpNone, tpLeft, tpRight, tpAbove, tpBelow);
@@ -388,9 +389,9 @@ begin
           Top := ((Bottom + Top) - FontHeight) shr 1;
           Bottom := Top + FontHeight;
         end;
-        Text := Caption;  
+        Text := Caption;
         DrawText(Canvas, Text, Length(Caption), ARect,
-          DT_EXPANDTABS or DT_VCENTER or DT_CENTER); 
+          DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
       end;
     end; 
     if BorderStyle = bsSingle then

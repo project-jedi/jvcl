@@ -1761,6 +1761,7 @@ procedure TJvChart.GraphSetup;
 var
   X1, X2, Y1, Y2, PYVC, VC: Integer;
 begin
+  ChartCanvas.Brush.Style := bsSolid;
   if FData.ValueCount > 0 then
     Options.XValueCount := FData.ValueCount;
 
