@@ -3,21 +3,53 @@ unit isuUtils;
 interface
 
 procedure Run;
-{$I JVCL.INC}
 
 implementation
 uses
-  Forms, Classes, {$IFDEF COMPILER6_UP}StrUtils, {$ENDIF}SysUtils, JvSearchFiles;
+  Forms, Classes, SysUtils;
 
-{$IFNDEF COMPILER6_UP}
-function AnsiContainsText(const S,SubString:string):boolean;
+function FindFiles(const Path, Filemask: string; Recursive: boolean; Files: TStrings): integer;
+var
+  F: TSearchRec;
+  H: integer;
+  tmp: string;
 begin
-  Result := Pos(AnsiLowerCase(SubString),AnsiLowerCase(S)) > 0;
+  Result := 0;
+  tmp := IncludeTrailingPathDelimiter(Path);
+  H := FindFirst(tmp + Filemask, faAnyFile, F);
+  if H = 0 then
+  begin
+    repeat
+      if F.Attr and faDirectory = 0 then
+      begin
+        Files.Add(tmp + F.Name);
+        Inc(Result);
+      end;
+    until FindNext(F) <> 0;
+    FindClose(F);
+  end;
+  if Recursive then
+  begin
+    H := FindFirst(tmp + '*.*', faDirectory, F);
+    if H = 0 then
+    begin
+      repeat
+        if (F.Attr and faDirectory = faDirectory) and (F.Name[1] <> '.') then
+          Inc(Result, FindFiles(tmp + F.Name, Filemask, true, Files));
+      until FindNext(F) <> 0;
+      FindClose(F);
+    end;
+  end;
 end;
-{$ENDIF}
+
+function AnsiContainsText(const S, SubString: string): boolean;
+begin
+  Result := Pos(AnsiLowerCase(SubString), AnsiLowerCase(S)) > 0;
+end;
 
 procedure StripUnused(const Filename: string);
-var S: TStringlist;
+var
+  S: TStringlist;
   i: integer;
 begin
   S := TStringlist.Create;
@@ -26,7 +58,11 @@ begin
     for i := S.Count - 1 downto 0 do
       if AnsiContainsText(S[i], 'Status:3') then
         S.Delete(i);
-    S.SaveToFile(Filename);
+    try
+      S.SaveToFile(Filename);
+    except
+      writeln('Unable to save ', Filename);
+    end;
   finally
     S.Free;
   end;
@@ -41,27 +77,27 @@ begin
 end;
 
 procedure Run;
-var i: integer;
+var
+  FFiles: TStringlist;
+  i: integer;
 begin
   try
     ShowHelp;
-    with TJvSearchFiles.Create(nil) do
+    FFiles := TStringlist.Create;
     try
-      RootDirectory := GetCurrentDir;
-      FileParams.FileMask := '*.dfn';
-      Search;
-      for i := 0 to Files.Count - 1 do
+      FindFiles(GetCurrentDir, '*.dfn', true, FFiles);
+      for i := 0 to FFiles.Count - 1 do
       begin
-        writeln('Processing ',ExtractRelativePath(GetCurrentDir,ExtractFilePath(Files[i])),ExtractFileName(Files[i]),'...');
-        StripUnused(Files[i]);
+        writeln('Processing ', FFiles[i], '...');
+        StripUnused(FFiles[i]);
       end;
-      writeln('Done: Found and processed ',Files.Count, ' files');
+      writeln('Done: Found and processed ', FFiles.Count, ' files');
     finally
-      Free;
+      FFiles.Free;
     end;
   except
     on E: Exception do
-      writeln({$IFDEF COMPILER6_UP}ErrOutput,{$ENDIF} 'ERROR:', E.Message);
+      writeln(ErrOutput, 'ERROR:', E.Message);
   end;
 end;
 end.
