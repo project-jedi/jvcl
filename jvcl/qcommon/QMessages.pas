@@ -42,27 +42,32 @@ unit QMessages;
 interface
 
 uses
-  SysUtils, Classes,
-  Qt, QControls, QWindows;
+  SysUtils, Classes, Types, SyncObjs,
+
+  Windows,
+
+  Qt, QTypes, QForms, QControls, QWindows;
 
 const
 
   EM_GETRECT          = $00B2;
   EM_SETRECT          = $00B3;
 
+// taken from QControls
+//
+  CM_BASE = $B000;
+  CM_PARENTSHOWHINTCHANGED = CM_BASE + 1;
+  CM_PARENTCOLORCHANGED = CM_BASE + 2;
+  CM_PARENTFONTCHANGED = CM_BASE + 3;
+  CM_RECREATEWINDOW = CM_BASE + 4;
+  CM_KEYDOWN = CM_BASE + 5;
+  CM_WANTKEY = CM_BASE + 6;
+
 // VCL Messages
 // taken from Controls (VCL)
-  CM_BASE                   = 100; //$B000;
-  CM_ACTIVATE               = CM_BASE + 0;
-  CM_DEACTIVATE             = CM_BASE + 1;
-  CM_GOTFOCUS               = CM_BASE + 2;
-  CM_LOSTFOCUS              = CM_BASE + 3;
-  CM_CANCELMODE             = CM_BASE + 4;
-  CM_DIALOGKEY              = CM_BASE + 5;
-  CM_DIALOGCHAR             = CM_BASE + 6;
   CM_FOCUSCHANGED           = CM_BASE + 7;
-  CM_PARENTFONTCHANGED      = CM_BASE + 8;
-  CM_PARENTCOLORCHANGED     = CM_BASE + 9;
+//  CM_PARENTFONTCHANGED      = CM_BASE + 8;
+//  CM_PARENTCOLORCHANGED     = CM_BASE + 9;
   CM_HITTEST                = CM_BASE + 10;
   CM_VISIBLECHANGED         = CM_BASE + 11;
   CM_ENABLEDCHANGED         = CM_BASE + 12;
@@ -88,7 +93,7 @@ const
   CM_WINDOWHOOK             = CM_BASE + 32;
   CM_RELEASE                = CM_BASE + 33;
   CM_SHOWHINTCHANGED        = CM_BASE + 34;
-  CM_PARENTSHOWHINTCHANGED  = CM_BASE + 35;
+//  CM_PARENTSHOWHINTCHANGED  = CM_BASE + 35;
   CM_SYSCOLORCHANGE         = CM_BASE + 36;
 //  CM_WININICHANGE           = CM_BASE + 37;
   CM_FONTCHANGE             = CM_BASE + 38;
@@ -104,7 +109,7 @@ const
   CM_HINTSHOW               = CM_BASE + 48;
   CM_DIALOGHANDLE           = CM_BASE + 49;
   CM_ISTOOLCONTROL          = CM_BASE + 50;
-  CM_RECREATEWND            = CM_BASE + 51;
+//  CM_RECREATEWND            = CM_BASE + 51;
   CM_INVALIDATE             = CM_BASE + 52;
   CM_SYSFONTCHANGED         = CM_BASE + 53;
   CM_CONTROLCHANGE          = CM_BASE + 54;
@@ -119,16 +124,25 @@ const
   CM_ACTIONUPDATE           = CM_BASE + 63;
   CM_ACTIONEXECUTE          = CM_BASE + 64;
   CM_HINTSHOWPAUSE          = CM_BASE + 65;
-  CM_DOCKNOTIFICATION       = CM_BASE + 66;
+//  CM_DOCKNOTIFICATION       = CM_BASE + 66;
   CM_MOUSEWHEEL             = CM_BASE + 67;
   CM_ISSHORTCUT             = CM_BASE + 68;
 {$IFDEF LINUX}
   CM_RAWX11EVENT            = CM_BASE + 69;
 {$ENDIF}
 
+  CM_ACTIVATE               = CM_BASE + 70;
+  CM_DEACTIVATE             = CM_BASE + 71;
+  CM_GOTFOCUS               = CM_BASE + 72;
+  CM_LOSTFOCUS              = CM_BASE + 73;
+  CM_CANCELMODE             = CM_BASE + 74;
+  CM_DIALOGKEY              = CM_BASE + 75;
+  CM_DIALOGCHAR             = CM_BASE + 76;
+
 // windows messages
   WM_HSCROLL                = CM_BASE + 100;
   WM_VSCROLL                = CM_BASE + 101;
+  WM_COMMAND                = CM_BASE + 102;
 
   WM_USER             = $0400;
   WM_TIMER            = $0113;
@@ -163,6 +177,8 @@ type
     Pos: Integer;
     ScrollCode: Integer;
   end;
+  TWMHScroll = TWMScroll;
+  TWMVScroll = TWMScroll;
 
   TCMActivate = packed record
     Msg: Integer;
@@ -206,7 +222,7 @@ function Perform(Control: TControl; Msg: Cardinal; WParam, LParam: Longint): Lon
 function PostMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): LongBool;
  { SendMsg synchronizes with the main thread }
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer; overload;
-function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
+//function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer; overload;
 
 
 implementation
@@ -381,10 +397,12 @@ begin
   end;
 end;
 
+(*)
 function SendMessage(AControl: TWidgetControl; Msg: Integer; WParam, LParam: Longint): Integer;
 begin
   Result := SendMessage(AControl.Handle, Msg, WParam, LParam);
 end;
+(*)
 
 function SendMessage(Handle: QWidgetH; Msg: Integer; WParam, LParam: Longint): Integer;
 var
@@ -432,10 +450,10 @@ begin
   end;
 end;
 
+initialization
+
 finalization
   if Assigned(AppEventFilterHook) then
     QObject_hook_destroy(AppEventFilterHook);
-end.
-
 
 end.
