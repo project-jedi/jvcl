@@ -33,7 +33,8 @@ unit JvDBUtils;
 interface
 
 uses
-  Registry, Classes, SysUtils, DB, IniFiles;
+  Registry, Classes, SysUtils, DB, IniFiles,
+  JvAppStore;
 
 type
   TCommit = (ctNone, ctStep, ctAll);
@@ -90,18 +91,19 @@ procedure RefreshQuery(Query: TDataSet);
 function DataSetSortedSearch(DataSet: TDataSet;
   const Value, FieldName: string; CaseInsensitive: Boolean): Boolean;
 function DataSetSectionName(DataSet: TDataSet): string;
-procedure InternalSaveFields(DataSet: TDataSet; IniFile: TObject;
-  const Section: string);
-procedure InternalRestoreFields(DataSet: TDataSet; IniFile: TObject;
-  const Section: string; RestoreVisible: Boolean);
+procedure InternalSaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string);
+procedure InternalRestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore;
+  const Path: string; RestoreVisible: Boolean);
 function DataSetLocateThrough(DataSet: TDataSet; const KeyFields: string;
   const KeyValues: Variant; Options: TLocateOptions): Boolean;
+(*
 procedure SaveFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile);
 procedure RestoreFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile;
   RestoreVisible: Boolean);
-procedure SaveFields(DataSet: TDataSet; IniFile: TIniFile);
-procedure RestoreFields(DataSet: TDataSet; IniFile: TIniFile;
-  RestoreVisible: Boolean);
+*)
+procedure SaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string = '');
+procedure RestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string = '';
+  RestoreVisible: Boolean = True);
 procedure AssignRecord(Source, Dest: TDataSet; ByName: Boolean);
 function ConfirmDelete: Boolean;
 procedure ConfirmDataSetCancel(DataSet: TDataSet);
@@ -591,8 +593,7 @@ begin
     Result := DataSetSectionName(DataSet);
 end;
 
-procedure InternalSaveFields(DataSet: TDataSet; IniFile: TObject;
-  const Section: string);
+procedure InternalSaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string);
 var
   I: Integer;
 begin
@@ -600,16 +601,16 @@ begin
   begin
     for I := 0 to FieldCount - 1 do
     begin
-      IniWriteString(IniFile, CheckSection(DataSet, Section),
-        Name + Fields[I].FieldName,
+      AppStorage.WriteString(AppStorage.ConcatPaths([CheckSection(DataSet, Path),
+        Name + Fields[I].FieldName]),
         Format('%d,%d,%d', [Fields[I].Index, Fields[I].DisplayWidth,
           Integer(Fields[I].Visible)]));
     end;
   end;
 end;
 
-procedure InternalRestoreFields(DataSet: TDataSet; IniFile: TObject;
-  const Section: string; RestoreVisible: Boolean);
+procedure InternalRestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore;
+  const Path: string; RestoreVisible: Boolean);
 type
   TFieldInfo = record
     Field: TField;
@@ -630,8 +631,8 @@ begin
     try
       for I := 0 to FieldCount - 1 do
       begin
-        S := IniReadString(IniFile, CheckSection(DataSet, Section),
-          Name + Fields[I].FieldName, '');
+        S := AppStorage.ReadString(AppStorage.ConcatPaths([CheckSection(DataSet, Path),
+          Name + Fields[I].FieldName]), '');
         FieldArray^[I].Field := Fields[I];
         FieldArray^[I].EndIndex := Fields[I].Index;
         if S <> '' then
@@ -662,27 +663,15 @@ begin
   end;
 end;
 
-procedure SaveFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile);
+procedure SaveFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string);
 begin
-  InternalSaveFields(DataSet, IniFile, DataSetSectionName(DataSet));
+  InternalSaveFields(DataSet, AppStorage, AppStorage.ConcatPaths([Path, DataSetSectionName(DataSet)]));
 end;
 
-procedure RestoreFieldsReg(DataSet: TDataSet; IniFile: TRegIniFile;
+procedure RestoreFields(DataSet: TDataSet; AppStorage: TJvCustomAppStore; const Path: string;
   RestoreVisible: Boolean);
 begin
-  InternalRestoreFields(DataSet, IniFile, DataSetSectionName(DataSet),
-    RestoreVisible);
-end;
-
-procedure SaveFields(DataSet: TDataSet; IniFile: TIniFile);
-begin
-  InternalSaveFields(DataSet, IniFile, DataSetSectionName(DataSet));
-end;
-
-procedure RestoreFields(DataSet: TDataSet; IniFile: TIniFile;
-  RestoreVisible: Boolean);
-begin
-  InternalRestoreFields(DataSet, IniFile, DataSetSectionName(DataSet),
+  InternalRestoreFields(DataSet, AppStorage, AppStorage.ConcatPaths([DataSetSectionName(DataSet)]),
     RestoreVisible);
 end;
 

@@ -39,7 +39,7 @@ uses
   {$ENDIF}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, Mask, IniFiles, DB, DBGrids,
-  JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls, JvxCtrls, JvBaseEdits;
+  JvAppStore, JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls, JvxCtrls, JvBaseEdits;
 
 { TJvDBGrid }
 
@@ -115,8 +115,6 @@ type
     procedure TrackButton(X, Y: Integer);
     function ActiveRowSelected: Boolean;
     function GetSelCount: Longint;
-    procedure InternalSaveLayout(IniFile: TObject; const Section: string);
-    procedure InternalRestoreLayout(IniFile: TObject; const Section: string);
     procedure SaveColumnsLayout(IniFile: TObject; const Section: string);
     procedure RestoreColumnsLayout(IniFile: TObject; const Section: string);
     function GetOptions: TDBGridOptions;
@@ -176,14 +174,14 @@ type
     procedure EnableScroll;
     function ScrollDisabled: Boolean;
     procedure MouseToCell(X, Y: Integer; var ACol, ARow: Longint);
-    procedure SaveLayout(IniFile: TIniFile);
-    procedure RestoreLayout(IniFile: TIniFile);
     procedure SelectAll;
     procedure UnselectAll;
     procedure ToggleRowSelection;
     procedure GotoSelection(Index: Longint);
-    procedure SaveLayoutReg(IniFile: TRegIniFile);
-    procedure RestoreLayoutReg(IniFile: TRegIniFile);
+    procedure LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
+    procedure Load;
+    procedure Save;
     property SelectedRows;
     property SelCount: Longint read GetSelCount;
     property Canvas;
@@ -2120,28 +2118,7 @@ begin
   end;
 end;
 
-procedure TJvDBGrid.SaveLayoutReg(IniFile: TRegIniFile);
-begin
-  InternalSaveLayout(IniFile, '');
-end;
-
-procedure TJvDBGrid.RestoreLayoutReg(IniFile: TRegIniFile);
-begin
-  InternalRestoreLayout(IniFile, '');
-end;
-
-procedure TJvDBGrid.InternalSaveLayout(IniFile: TObject;
-  const Section: string);
-begin
-  if (DataSource <> nil) and (DataSource.DataSet <> nil) then
-    if StoreColumns then
-      SaveColumnsLayout(IniFile, Section)
-    else
-      InternalSaveFields(DataSource.DataSet, IniFile, Section);
-end;
-
-procedure TJvDBGrid.InternalRestoreLayout(IniFile: TObject;
-  const Section: string);
+procedure TJvDBGrid.LoadFromAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
 begin
   if (DataSource <> nil) and (DataSource.DataSet <> nil) then
   begin
@@ -2149,40 +2126,49 @@ begin
     BeginLayout;
     try
       if StoreColumns then
-        RestoreColumnsLayout(IniFile, Section)
+        RestoreColumnsLayout(AppStorage, Path)
       else
-        InternalRestoreFields(DataSource.DataSet, IniFile, Section, False);
+        InternalRestoreFields(DataSource.DataSet, AppStorage, Path, False);
     finally
       EndLayout;
     end;
   end;
 end;
 
-procedure TJvDBGrid.SaveLayout(IniFile: TIniFile);
+procedure TJvDBGrid.SaveToAppStore(const AppStorage: TJvCustomAppStore; const Path: string);
 begin
-  InternalSaveLayout(IniFile, '');
+  if (DataSource <> nil) and (DataSource.DataSet <> nil) then
+    if StoreColumns then
+      SaveColumnsLayout(AppStorage, Path)
+    else
+      InternalSaveFields(DataSource.DataSet, AppStorage, Path);
 end;
 
-procedure TJvDBGrid.RestoreLayout(IniFile: TIniFile);
+procedure TJvDBGrid.Load;
 begin
-  InternalRestoreLayout(IniFile, '');
+  IniLoad(nil);
+end;
+
+procedure TJvDBGrid.Save;
+begin
+  IniSave(nil);
 end;
 
 procedure TJvDBGrid.IniSave(Sender: TObject);
 var
   Section: string;
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
+  if (Name <> '') and IniStorage.IsActive then
   begin
     if StoreColumns then
-      Section := FIniLink.RootSection + GetDefaultSection(Self)
+      Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
     else
-      if (FIniLink.RootSection <> '') and (DataSource <> nil) and
+      if (DataSource <> nil) and
       (DataSource.DataSet <> nil) then
-      Section := FIniLink.RootSection + DataSetSectionName(DataSource.DataSet)
+      Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, DataSetSectionName(DataSource.DataSet)])
     else
       Section := '';
-    InternalSaveLayout(FIniLink.IniObject, Section);
+    SaveToAppStore(IniStorage.AppStorage, Section);
   end;
 end;
 
@@ -2190,17 +2176,17 @@ procedure TJvDBGrid.IniLoad(Sender: TObject);
 var
   Section: string;
 begin
-  if (Name <> '') and (FIniLink.IniObject <> nil) then
+  if (Name <> '') and IniStorage.IsActive then
   begin
     if StoreColumns then
-      Section := FIniLink.RootSection + GetDefaultSection(Self)
+      Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, GetDefaultSection(Self)])
     else
-    if (FIniLink.RootSection <> '') and (DataSource <> nil) and
+      if (DataSource <> nil) and
       (DataSource.DataSet <> nil) then
-      Section := FIniLink.RootSection + DataSetSectionName(DataSource.DataSet)
+      Section := IniStorage.AppStorage.ConcatPaths([IniStorage.AppStoragePath, DataSetSectionName(DataSource.DataSet)])
     else
       Section := '';
-    InternalRestoreLayout(FIniLink.IniObject, Section);
+    LoadFromAppStore(IniStorage.AppStorage, Section);
   end;
 end;
 
