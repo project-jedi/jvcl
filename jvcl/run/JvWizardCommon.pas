@@ -20,29 +20,25 @@ Peter Thörnqvist - converted to JVCL naming conventions on 2003-07-11
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-Known Issues:
------------------------------------------------------------------------------}
-// $Id$
+Purpose:
+  All common functions and procedures which used by all components
 
-{*****************************************************************************
-  Purpose:   All common functions and procedures which used by all components
-
-  History:
-  ---------------------------------------------------------------------------
-  Date(mm/dd/yy)   Comments
-  ---------------------------------------------------------------------------
+History:
   12/23/2001       First Create, introduce TKSide, TKSides, TJvWizardFrameStyle,
                      beAllSides, TKDeleteItemEvent
                    function KDrawSides, KDrawBevel, KDrawFrame
   12/25/2001       introduced TKMessageLevel
   01/04/2001       Add function KDrawBorderSides
-******************************************************************************}
+
+Known Issues:
+-----------------------------------------------------------------------------}
+// $Id$
+
+{$I jvcl.inc}
 
 unit JvWizardCommon;
 
 interface
-
-{$I jvcl.inc}
 
 uses
   {$IFDEF VCL}

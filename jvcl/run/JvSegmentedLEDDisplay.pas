@@ -24,7 +24,6 @@ located at http://jvcl.sourceforge.net
 Known Issues:
   * Automatic unlit color calculation is not working properly. Maybe a function in JclGraphUtil
     can help out there.
-  * String literals need to be converted into resourcestrings
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -378,7 +377,8 @@ implementation
 
 uses
   Controls, SysUtils,
-  JclGraphUtils, JvThemes, JvConsts, JvResources;
+  JclGraphUtils,
+  JvThemes, JvConsts, JvResources;
 
 {$IFDEF MSWINDOWS}
 {$R ..\Resources\JvSegmentedLEDDisplay.res}
@@ -390,7 +390,7 @@ uses
 var
   GDigitClassList: TThreadList = nil;
 
-//===DigitClass registration routines===============================================================
+//=== DigitClass registration routines =======================================
 
 function DigitClassList: TThreadList;
 begin
@@ -451,7 +451,7 @@ begin
   end;
 end;
 
-//===Helper routine:AngleAdjustPoint================================================================
+//=== Helper routine: AngleAdjustPoint =======================================
 
 function AngleAdjustPoint(X, Y, Angle: Integer): TPoint;
 begin
@@ -459,7 +459,33 @@ begin
   Result.Y := Y;
 end;
 
-//===TJvCustomSegmentedLEDDisplay===================================================================
+//=== TJvCustomSegmentedLEDDisplay ===========================================
+
+constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  IncludeThemeStyle(Self, [csParentBackground]);
+  AutoSize := True;
+  FDigitClass := TJv7SegmentedLEDDigit;
+  FCharacterMapper := TJvSegmentedLEDCharacterMapper.Create(Self);
+  FDigits := TJvSegmentedLEDDigits.Create(Self);
+  FDigitHeight := 30;
+  FDigitSpacing := 2;
+  FDigitWidth := 20;
+  FDotSize := 4;
+  FSegmentLitColor := clWindowText;
+  FSegmentSpacing := 2;
+  FSegmentThickness := 2;
+  FSegmentUnlitColor := clDefaultLitColor;
+  ClientWidth := 20;
+  ClientHeight := 30;
+end;
+
+destructor TJvCustomSegmentedLEDDisplay.Destroy;
+begin
+  FreeAndNil(FDigits);
+  inherited Destroy;
+end;
 
 procedure TJvCustomSegmentedLEDDisplay.DefineProperties(Filer: TFiler);
 begin
@@ -659,9 +685,11 @@ function TJvCustomSegmentedLEDDisplay.GetRealUnlitColor: TColor;
 begin
   if SegmentUnlitColor = clNone then
     Result := Color
-  else if SegmentUnlitColor = clDefaultBackground then
+  else
+  if SegmentUnlitColor = clDefaultBackground then
     Result := CalcRealUnlitColorBackground
-  else if SegmentUnlitColor = clDefaultLitColor then
+  else
+  if SegmentUnlitColor = clDefaultLitColor then
     Result := CalcRealUnlitColorLitColor
   else
     Result := SegmentUnlitColor;
@@ -805,32 +833,6 @@ begin
   UpdateDigitsPositions;
 end;
 
-constructor TJvCustomSegmentedLEDDisplay.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  IncludeThemeStyle(Self, [csParentBackground]);
-  AutoSize := True;
-  FDigitClass := TJv7SegmentedLEDDigit;
-  FCharacterMapper := TJvSegmentedLEDCharacterMapper.Create(Self);
-  FDigits := TJvSegmentedLEDDigits.Create(Self);
-  FDigitHeight := 30;
-  FDigitSpacing := 2;
-  FDigitWidth := 20;
-  FDotSize := 4;
-  FSegmentLitColor := clWindowText;
-  FSegmentSpacing := 2;
-  FSegmentThickness := 2;
-  FSegmentUnlitColor := clDefaultLitColor;
-  ClientWidth := 20;
-  ClientHeight := 30;
-end;
-
-destructor TJvCustomSegmentedLEDDisplay.Destroy;
-begin
-  FreeAndNil(FDigits);
-  inherited Destroy;
-end;
-
 procedure TJvCustomSegmentedLEDDisplay.RemapText;
 begin
   PrimSetText(Text);
@@ -866,7 +868,12 @@ begin
   end;
 end;
 
-//===TJvSegmentedLEDDigits==========================================================================
+//=== TJvSegmentedLEDDigits ==================================================
+
+constructor TJvSegmentedLEDDigits.Create(AOwner: TPersistent);
+begin
+  inherited Create(AOwner, TJvCustomSegmentedLEDDisplay(AOwner).DigitClass);
+end;
 
 function TJvSegmentedLEDDigits.GetItem(Index: Integer): TJvCustomSegmentedLEDDigit;
 begin
@@ -889,12 +896,13 @@ begin
   Display.UpdateBounds;
 end;
 
-constructor TJvSegmentedLEDDigits.Create(AOwner: TPersistent);
-begin
-  inherited Create(AOwner, TJvCustomSegmentedLEDDisplay(AOwner).DigitClass);
-end;
+//=== TJvCustomSegmentedLEDDigit =============================================
 
-//===TJvCustomSegmentedLEDDigit=====================================================================
+constructor TJvCustomSegmentedLEDDigit.Create(Collection: TCollection);
+begin
+  inherited Create(Collection);
+  InvalidateRefPoints;
+end;
 
 function TJvCustomSegmentedLEDDigit.GetBaseTop: Integer;
 begin
@@ -1104,19 +1112,13 @@ begin
       Display.Canvas.Polygon(FSegmentRenderInfo[Index].Points);
     srtCircle:
       Display.Canvas.Ellipse(
-        FSegmentRenderInfo[Index].Points[0].x, FSegmentRenderInfo[Index].Points[0].y,
-        FSegmentRenderInfo[Index].Points[1].x, FSegmentRenderInfo[Index].Points[1].y);
+        FSegmentRenderInfo[Index].Points[0].X, FSegmentRenderInfo[Index].Points[0].Y,
+        FSegmentRenderInfo[Index].Points[1].X, FSegmentRenderInfo[Index].Points[1].Y);
     srtRect:
       Display.Canvas.Rectangle(
-        FSegmentRenderInfo[Index].Points[0].x, FSegmentRenderInfo[Index].Points[0].y,
-        FSegmentRenderInfo[Index].Points[1].x, FSegmentRenderInfo[Index].Points[1].y);
+        FSegmentRenderInfo[Index].Points[0].X, FSegmentRenderInfo[Index].Points[0].Y,
+        FSegmentRenderInfo[Index].Points[1].X, FSegmentRenderInfo[Index].Points[1].Y);
   end;
-end;
-
-constructor TJvCustomSegmentedLEDDigit.Create(Collection: TCollection);
-begin
-  inherited Create(Collection);
-  InvalidateRefPoints;
 end;
 
 function TJvCustomSegmentedLEDDigit.GetHitInfo(X, Y: Integer): TSLDHitInfo;
@@ -1158,7 +1160,7 @@ begin
           Rgn := CreatePolygonRgn(SegPts[0], Length(SegPts), WINDING);
           try
             if Rgn <> 0 then
-              Result := PtInRegion(Rgn, Pt.x, Pt.y)
+              Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
           finally
@@ -1166,13 +1168,13 @@ begin
           end;
         end;
       srtRect:
-        Result := PtInRect(Rect(SegPts[0].x, SegPts[0].y, SegPts[1].x, SegPts[1].y), Pt);
+        Result := PtInRect(Rect(SegPts[0].X, SegPts[0].Y, SegPts[1].X, SegPts[1].Y), Pt);
       srtCircle:
         begin
-          Rgn := CreateEllipticRgn(SegPts[0].x, SegPts[0].y, SegPts[1].x, SegPts[1].y);
+          Rgn := CreateEllipticRgn(SegPts[0].X, SegPts[0].Y, SegPts[1].X, SegPts[1].Y);
           try
             if Rgn <> 0 then
-              Result := PtInRegion(Rgn, Pt.x, Pt.y)
+              Result := PtInRegion(Rgn, Pt.X, Pt.Y)
             else
               Result := False;
           finally
@@ -1225,7 +1227,7 @@ begin
   Result := 0;
 end;
 
-//===TJvBaseSegmentedLEDDigit=======================================================================
+//=== TJvBaseSegmentedLEDDigit ===============================================
 
 procedure TJvBaseSegmentedLEDDigit.EnableAllSegs;
 begin
@@ -1397,7 +1399,8 @@ class function TJvBaseSegmentedLEDDigit.GetSegmentName(Index: Integer): string;
 begin
   if Index < 7 then
     Result := Chr(Ord('A') + Index)
-  else if Index = 7 then
+  else
+  if Index = 7 then
     Result := 'DP'
   else
     Result := '';
@@ -1413,7 +1416,8 @@ begin
     if Result > 6 then
       Result := -1;
   end
-  else if Name = 'DP' then
+  else
+  if Name = 'DP' then
     Result := 7;
 end;
 
@@ -1434,7 +1438,14 @@ begin
   end;
 end;
 
-//===TJvSegmentedLEDCharacterMapper=============================================================
+//=== TJvSegmentedLEDCharacterMapper =========================================
+
+constructor TJvSegmentedLEDCharacterMapper.Create(ADisplay: TJvCustomSegmentedLEDDisplay);
+begin
+  inherited Create;
+  FDisplay := ADisplay;
+  LoadDefaultMapping;
+end;
 
 function TJvSegmentedLEDCharacterMapper.GetCharMapping(Chr: Char): Int64;
 begin
@@ -1644,13 +1655,6 @@ begin
   Display.RemapText;
 end;
 
-constructor TJvSegmentedLEDCharacterMapper.Create(ADisplay: TJvCustomSegmentedLEDDisplay);
-begin
-  inherited Create;
-  FDisplay := ADisplay;
-  LoadDefaultMapping;
-end;
-
 procedure TJvSegmentedLEDCharacterMapper.MapText(var Text: PChar;
   ADigit: TJvCustomSegmentedLEDDigit);
 var
@@ -1768,7 +1772,7 @@ begin
   end;
 end;
 
-//===TJv7SegmentedLEDDigit==========================================================================
+//=== TJv7SegmentedLEDDigit ==================================================
 
 procedure TJv7SegmentedLEDDigit.EnableAllSegs;
 begin
@@ -1799,9 +1803,11 @@ class function TJv7SegmentedLEDDigit.GetSegmentName(Index: Integer): string;
 begin
   if Index <= 7 then
     Result := inherited GetSegmentName(Index)
-  else if Index = 8 then
+  else
+  if Index = 8 then
     Result := 'CL'
-  else if Index = 9 then
+  else
+  if Index = 9 then
     Result := 'CH'
   else
     Result := '';
@@ -1815,7 +1821,8 @@ begin
     Name := UpperCase(Name);
     if Name = 'CL' then
       Result := 8
-    else if Name = 'CH' then
+    else
+    if Name = 'CH' then
       Result := 9;
   end;
 end;
@@ -1841,10 +1848,8 @@ var
 begin
   UpperLeftPoint := AngleAdjustPoint(FRefCenterX - DotSize div 2,
     (FRefCenterY - FRefTop) div 2 + FRefTop, SlantAngle);
-  SetSegmentRenderInfo(Index, srtCircle, [
-    UpperLeftPoint,
-    Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)
-  ]);
+  SetSegmentRenderInfo(Index, srtCircle,
+    [UpperLeftPoint, Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)]);
 end;
 
 procedure TJv7SegmentedLEDDigit.CalcCLSeg(Index: Integer);
@@ -1853,10 +1858,8 @@ var
 begin
   UpperLeftPoint := AngleAdjustPoint(FRefCenterX - DotSize div 2,
     (FRefBottom - FRefCenterY) div 2 + FRefCenterY - DotSize div 2, SlantAngle);
-  SetSegmentRenderInfo(Index, srtCircle, [
-    UpperLeftPoint,
-    Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)
-  ]);
+  SetSegmentRenderInfo(Index, srtCircle,
+    [UpperLeftPoint, Point(UpperLeftPoint.X + DotSize, UpperLeftPoint.Y + DotSize)]);
 end;
 
 procedure ModuleUnload(Instance: Longint);

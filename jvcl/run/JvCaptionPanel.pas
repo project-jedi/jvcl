@@ -193,6 +193,9 @@ type
 
 implementation
 
+uses
+  JvConsts;
+
 //=== TJvCapBtn ==============================================================
 
 constructor TJvCapBtn.Create(AOwner: TComponent);
@@ -867,8 +870,6 @@ begin
 end;
 
 procedure TJvCaptionPanel.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-const
-  SC_DRAGMOVE = $F012;
 begin
   inherited MouseDown(Button, Shift, X, Y);
 
@@ -881,12 +882,12 @@ begin
     SetZOrder(True);
     FDragging := True;
     ReleaseCapture;
-   {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
+    {$IFDEF JVCAPTIONPANEL_STD_BEHAVE}
     SetCapture(Handle);
     FAnchorPos := Point(X, Y);
-   {$ELSE}
+    {$ELSE}
     Perform(WM_SYSCOMMAND, SC_DRAGMOVE, 0);
-   {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
+    {$ENDIF JVCAPTIONPANEL_STD_BEHAVE}
   end;
 end;
 

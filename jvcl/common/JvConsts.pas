@@ -245,6 +245,9 @@ const
   JediAgent = 'JEDI-VCL';
   DefaultOutputFileName = 'output.txt';
 
+const
+  SC_DRAGMOVE = $F012;
+
 implementation
 
 end.
