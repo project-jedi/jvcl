@@ -16,8 +16,9 @@ All Rights Reserved.
 
 Contributor(s):
 Uljaki Sándor [ujlaki.sandor@drotposta.hu]
+ccrows
 
-Last Modified: 2002-07-12
+Last Modified: 2002-12-13
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -88,6 +89,10 @@ type
     npxk, npyk, npk, npy23: integer;
 
     OldHour, OldMin, OldSec: Integer;
+    datrT:Trect;
+    OldDate:String;
+    DateBottom:Boolean;
+
     FOnChangeSec: TJvNotifyTime;
     FOnChangeMin: TJvNotifyTime;
     FOnChangeHour: TJvNotifyTime;
@@ -515,13 +520,16 @@ var
   npkT, nXT, nYT: Integer;
   rT: Trect;
   sT: ShortString;
+  datx, daty:Integer;
+  datS:String;
+
 begin
 
   npx := ((Width) div 2);               {Center}
   npy := ((Height) div 2);
 //if plDate then npy := ((Height - pFDate.Height) div 2);
-  if plDate then
-    npy := ((Height - (Font.Height + 4)) div 2);
+ // if plDate then
+ //   npy := ((Height - (Font.Height + 4)) div 2);
 
   npxk := npx - (1 + pnHrSize);
   if BevelInner <> bvNone then
@@ -540,6 +548,22 @@ begin
     npk := npXk;
   npk := npk - pnWidthHr;
   npy23 := npk div 3;
+
+  datS := DateToStr(Sysutils.Date);
+  datx :=  npx - ((Canvas.TextWidth(datS)) div 2);
+  daty := npy div 2;
+  if BevelInner <> bvNone then
+    daty := daty - (Bevelwidth);
+  if BevelOuter <> bvNone then
+    daty := daty - (Bevelwidth);
+  datrT := rect(datx, daty, datx + Canvas.TextWidth(datS), daty + Canvas.TextHeight(datS));
+
+  //if plDate then
+ // begin
+ //  Canvas.Brush.Style := bsClear;
+  // Canvas.TextRect(datrT, datrT.Left, datrT.Top, datS);
+
+ // end;
 
   if plMinMarks then
   begin
@@ -713,6 +737,7 @@ begin
     nDeli := 50;
     ActTimer(Self);
   end;
+
 end;
 
 procedure TJvAnalogClock.ActTimer;
@@ -722,6 +747,8 @@ var
   fak: real;
   nUra: Integer;
   dT: TDateTime;
+  datS:String;
+  newDateBottom:Boolean;
 begin
 
   if not plEnabled then
@@ -741,6 +768,29 @@ begin
     OldS := s;
     hund := 0;
   end;
+
+  if plDate then
+  begin
+   datS := DateToStr(dT);
+   newDateBottom := ((h mod 12) <2)or((h mod 12) > 7);
+   if(newDateBottom <> DateBottom) or (datS <> OldDate)then
+   begin
+    Canvas.Brush.Color := Color;
+    Canvas.Brush.Style := bsSolid;
+    Canvas.TextRect(datrT, datrT.Left, datrT.Top, '');
+    Canvas.TextRect(rect(datrT.left, datrT.Top * 3, datrT.Right,
+      datrT.Top * 2 + datrT.Bottom), datrT.Left, datrT.Top * 3, '');
+   end;
+   DateBottom := newDateBottom;
+   OldDate := datS;
+   Canvas.Brush.Style := bsClear;
+   if DateBottom then
+     Canvas.TextRect(rect(datrT.left, datrT.Top * 3, datrT.Right,
+      datrT.Top * 2 + datrT.Bottom), datrT.Left, datrT.Top * 3, datS)
+   else
+     Canvas.TextRect(datrT, datrT.Left, datrT.Top, datS);
+  end;
+
 
 //event handler by Ujlaki Sándor e-mail: ujlaki.sandor@drotposta.hu
   if plEnabled and (s <> OldSec) then   //every seconds
@@ -893,6 +943,10 @@ begin
   end
   else
     nUraS := 0;
+
+  //datS := DateToStr(SysUtils.Date);
+
+
 end;
 
 end.
