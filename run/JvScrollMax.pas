@@ -108,7 +108,6 @@ type
     procedure ChangeScale(M, D {$IFDEF VisualCLX}, MH, DH {$ENDIF}: Integer); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     property Data: Pointer read FData write FData;
   published
     property Expanded: Boolean read FExpanded write SetExpanded default True;
@@ -589,17 +588,11 @@ begin
     Spacing := -1;
     NoBorder := False;
     ParentColor := True;
-    {o}
     {$IFDEF VCL}
     FButton.ParentBiDiMode := True;
     {$ENDIF VCL}
   end;
   Expanded := True;
-end;
-
-destructor TJvScrollMaxBand.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvScrollMaxBand.Loaded;
@@ -1116,7 +1109,6 @@ begin
     DesignInteractive := True;
   end;
   {$IFDEF JVCLThemesEnabled}
-  // (ahuser) FPnlEdit and FScrollBar must be created
   ParentBackground := True;
   {$ENDIF JVCLThemesEnabled}
 end;
@@ -1131,8 +1123,10 @@ end;
 procedure TJvScrollMax.SetParentBackground(Value: Boolean);
 begin
   inherited SetParentBackground(Value);
-  FPnlEdit.ParentBackground := Value;
-  FScrollBar.ParentBackground := Value;
+  if Assigned(FPnlEdit) then
+    FPnlEdit.ParentBackground := Value;
+  if Assigned(FScrollBar) then
+    FScrollBar.ParentBackground := Value;
 end;
 {$ENDIF JVCLThemesEnabled}
 
