@@ -38,7 +38,7 @@ uses
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Libc,
-  {$ENDIF}
+  {$ENDIF LINUX}
   SysUtils, Classes,
   {$IFDEF VCL}
   Messages, Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
@@ -219,7 +219,7 @@ function ScreenCursor(ACursor: TCursor): IInterface;
 // loads the more modern looking drag cursors from OLE32.DLL
 function LoadOLEDragCursors: Boolean;
 // set some default cursor from JVCL
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 procedure SetDefaultJVCLCursors;
 
 {$IFDEF VCL}
@@ -585,11 +585,14 @@ implementation
 uses
   SysConst,
   {$IFDEF VCL}
-  Consts, CommCtrl, MMSystem, ShlObj, ActiveX,
+  Consts,
   {$ENDIF}
+  {$IFDEF MSWINDOWS}
+  CommCtrl, MMSystem, ShlObj, ActiveX,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VisualCLX}
   QConsts,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   Math,
   JclSysInfo, JvConsts, JvProgressUtils, JvResources;
 
@@ -766,7 +769,7 @@ begin
   QColor_getHsv(QC, @H, @S, @V);
   QColor_destroy(QC);
 end;
-{$ENDIF}
+{$ENDIF VisualCLX}
 
 (* (rom) to be deleted. Use ScreenShot from JCL
 {$IFDEF VCL}
@@ -873,7 +876,6 @@ begin
   end;
   SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDWININICHANGE);
 end;
-
 {$ENDIF MSWINDOWS}
 
 procedure GetRBitmap(var Dest: TBitmap; const Source: TBitmap);
@@ -2351,7 +2353,7 @@ function ScreenWorkArea: TRect;
 begin
   {$IFDEF MSWINDOWS}
   if not SystemParametersInfo(SPI_GETWORKAREA, 0, @Result, 0) then
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
     with Screen do
       Result := Bounds(0, 0, Width, Height);
 end;
@@ -2758,7 +2760,7 @@ begin
     end;
   end;
 end;
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 procedure SetDefaultJVCLCursors;
 begin

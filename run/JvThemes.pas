@@ -51,12 +51,10 @@ uses
   {$ENDIF VisualCLX}
   SysUtils, Classes;
 
-{$IFDEF VCL}
 const
  // Add a message handler to a component that is themed by the ThemeManager but
  // should not be themed.
   CM_DENYSUBCLASSING = CM_BASE + 2000; // from ThemeMgr.pas
-{$ENDIF}
 
 type
   {$IFDEF VCL}
