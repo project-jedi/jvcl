@@ -38,7 +38,7 @@ interface
 
 uses
   WinTypes, WinProcs, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, DB, BdeInfo, JvTextListBox;
+  Dialogs, ExtCtrls, StdCtrls, DB, BdeInfo, JvTextListBox, JvExStdCtrls;
 
 type
   TBdePropertyDlg = class(TForm)

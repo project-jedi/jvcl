@@ -37,7 +37,7 @@ unit RenDlg;
 interface
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  Buttons, ExtCtrls, Mask, JvToolEdit;
+  Buttons, ExtCtrls, Mask, JvToolEdit, JvExMask;
 
 type
   TRenameDialog = class(TForm)

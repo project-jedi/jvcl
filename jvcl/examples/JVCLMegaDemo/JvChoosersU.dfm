@@ -16,7 +16,7 @@ object JvChoosersFrm: TJvChoosersFrm
   object JvLabel1: TJvLabel
     Left = 16
     Top = 43
-    Width = 86
+    Width = 88
     Height = 16
     Caption = 'JvColorButton:'
     Font.Charset = DEFAULT_CHARSET
@@ -25,42 +25,41 @@ object JvChoosersFrm: TJvChoosersFrm
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
+    ImageIndex = 0
   end
   object JvLabel2: TJvLabel
     Left = 336
     Top = 8
-    Width = 77
+    Width = 79
     Height = 13
     Caption = 'JvGammaPanel:'
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
-  end
-  object JvColorSquare1: TJvColorSquare
-    Left = 336
-    Top = 72
-    Width = 73
-    Height = 65
-    BorderStyle = bsSingle
+    ImageIndex = 0
   end
   object JvLabel3: TJvLabel
     Left = 336
     Top = 48
-    Width = 72
+    Width = 74
     Height = 13
     Caption = 'JvColorSquare:'
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
+    ImageIndex = 0
   end
   object Label5: TLabel
     Left = 16
@@ -79,7 +78,7 @@ object JvChoosersFrm: TJvChoosersFrm
   object JvLabel4: TJvLabel
     Left = 16
     Top = 81
-    Width = 116
+    Width = 118
     Height = 16
     Caption = 'JvColorComboBox:'
     Font.Charset = DEFAULT_CHARSET
@@ -88,18 +87,13 @@ object JvChoosersFrm: TJvChoosersFrm
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
+    AutoOpenURL = False
     HotTrackFont.Charset = DEFAULT_CHARSET
     HotTrackFont.Color = clWindowText
     HotTrackFont.Height = -11
     HotTrackFont.Name = 'MS Sans Serif'
     HotTrackFont.Style = []
-  end
-  object JvArrow1: TJvArrow
-    Left = 352
-    Top = 144
-    Width = 65
-    Height = 25
-    Shape = atDownLeft
+    ImageIndex = 0
   end
   object JvxLabel1: TJvLabel
     Left = 41
@@ -107,6 +101,13 @@ object JvChoosersFrm: TJvChoosersFrm
     Width = 187
     Height = 13
     Caption = 'change the font in the FontComboBox !'
+    AutoOpenURL = False
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -11
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+    ImageIndex = 0
   end
   object Label2: TLabel
     Left = 24
@@ -149,7 +150,8 @@ object JvChoosersFrm: TJvChoosersFrm
     Top = 117
     Width = 145
     Height = 22
-    FontName = 'Arial'
+    DroppedDownWidth = 145
+    FontName = '@Arial Unicode MS'
     ItemIndex = 0
     Options = [foWysiWyg]
     Sorted = True
@@ -162,27 +164,18 @@ object JvChoosersFrm: TJvChoosersFrm
     Width = 145
     Height = 22
     ColorDialogText = '(Other...)'
+    DroppedDownWidth = 145
     NewColorText = 'New Color '
     Options = [coText, coCustomColors]
-    DroppedDownWidth = 145
     TabOrder = 2
   end
   object JvGammaPanel1: TJvGammaPanel
     Left = 432
     Top = 8
-    Width = 65
-    Height = 250
     AutoSize = True
-    OnChangeColor = JvGammaPanel1ChangeColor
-  end
-  object JvColorBox1: TJvColorBox
-    Left = 48
-    Top = 224
-    Width = 78
-    Height = 96
-    BorderStyle = bsSingle
   end
   object JvColorDialog1: TJvColorDialog
+    Ctl3D = True
     Left = 256
     Top = 208
   end

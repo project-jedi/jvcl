@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvFormWallpaper;
+  JvFormWallpaper, JvExControls, JvComponent;
 
 type
   TfrWallpaper = class(TForm)

@@ -32,8 +32,9 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvLabel, JvHotLink, JvScrollText, jpeg, ExtCtrls, JvImage,
-  JvComponent, JvBaseDlg, JvJVCLAbout;
+  StdCtrls, JvLabel, JvScrollText, jpeg, ExtCtrls, JvImage,
+  JvComponent, JvBaseDlg, JvJVCLAboutForm, JvExControls,
+  JvExExtCtrls;
 
 type
   TWelcomeForm = class(TForm)

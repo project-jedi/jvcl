@@ -20,11 +20,4 @@ object frPerforatedForm: TfrPerforatedForm
     Height = 13
     Caption = 'move the form around!'
   end
-  object JvPerforated1: TJvPerforated
-    Left = 64
-    Top = 80
-    Width = 161
-    Height = 105
-    Transparent = True
-  end
 end

@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, JvComponent, JvClipboardViewer;
+  ExtCtrls, StdCtrls, JvComponent, JvClipboardViewer, JvExForms;
 
 type
   TJvClipboardViewerMainForm = class(TForm)
@@ -37,6 +37,7 @@ type
     Memo1: TMemo;
     Image1: TImage;
     Label2: TLabel;
+    Label3: TLabel;
     procedure JvClipboardViewer1Image(Sender: TObject; Image: TBitmap);
     procedure JvClipboardViewer1Text(Sender: TObject; AText: String);
   end;

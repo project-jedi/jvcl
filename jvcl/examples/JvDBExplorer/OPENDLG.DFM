@@ -48,6 +48,8 @@ object OpenDatabaseDlg: TOpenDatabaseDlg
     Width = 261
     Height = 21
     DropDownCount = 8
+    DisplayEmpty = '<none>'
+    EmptyItemColor = 8421631
     ItemHeight = 14
     LookupField = 'NAME'
     LookupDisplay = 'NAME'
@@ -64,7 +66,6 @@ object OpenDatabaseDlg: TOpenDatabaseDlg
     ButtonHint = 'Select directory|'
     ButtonFlat = False
     CharCase = ecLowerCase
-    NumGlyphs = 1
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1

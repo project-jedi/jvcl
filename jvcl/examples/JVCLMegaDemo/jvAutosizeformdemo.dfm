@@ -13,9 +13,4 @@ object frAutosize: TfrAutosize
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
-  object JvAutoSizeCompo1: TJvAutoSizeCompo
-    Active = True
-    Left = 48
-    Top = 40
-  end
 end

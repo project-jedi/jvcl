@@ -28,31 +28,33 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvBehaviorLabel;
+  Dialogs, StdCtrls, JvBehaviorLabel, JvExStdCtrls;
 
 type
   TForm1 = class(TForm)
     lblCodeBreaker: TJvBehaviorLabel;
-    Button1: TButton;
+    btnCodeBreak: TButton;
     lblAppearing: TJvBehaviorLabel;
-    Button2: TButton;
+    btnAppear: TButton;
     lblBlinking: TJvBehaviorLabel;
-    Button3: TButton;
+    btnBlink: TButton;
     lblBouncing: TJvBehaviorLabel;
-    Button4: TButton;
+    btnBounce: TButton;
     lblScrolling: TJvBehaviorLabel;
-    Button5: TButton;
+    btnScroll: TButton;
     lblSpecial: TJvBehaviorLabel;
-    Button6: TButton;
+    btnSpecial: TButton;
     lblTyping: TJvBehaviorLabel;
-    Button7: TButton;
-    procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
-    procedure Button6Click(Sender: TObject);
-    procedure Button7Click(Sender: TObject);
+    btnType: TButton;
+    btnAll: TButton;
+    procedure btnCodeBreakClick(Sender: TObject);
+    procedure btnAppearClick(Sender: TObject);
+    procedure btnBlinkClick(Sender: TObject);
+    procedure btnBounceClick(Sender: TObject);
+    procedure btnScrollClick(Sender: TObject);
+    procedure btnSpecialClick(Sender: TObject);
+    procedure btnTypeClick(Sender: TObject);
+    procedure btnAllClick(Sender: TObject);
   private
     procedure DoCodeBreakStart(Sender:TObject);
     procedure DoCodeBreakStop(Sender:TObject);
@@ -66,7 +68,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TForm1.Button1Click(Sender: TObject);
+procedure TForm1.btnCodeBreakClick(Sender: TObject);
 begin
   lblCodeBreaker.OnStart := nil;
   lblCodeBreaker.OnStop := nil;
@@ -86,34 +88,42 @@ begin
   ShowMessage('Congratulations! You''ve hacked the system!');
 end;
 
-procedure TForm1.Button2Click(Sender: TObject);
+procedure TForm1.btnAppearClick(Sender: TObject);
 begin
   lblAppearing.BehaviorOptions.Active := not lblAppearing.BehaviorOptions.Active; 
 end;
 
-procedure TForm1.Button3Click(Sender: TObject);
+procedure TForm1.btnBlinkClick(Sender: TObject);
 begin
   lblBlinking.BehaviorOptions.Active := not lblBlinking.BehaviorOptions.Active;
 end;
 
-procedure TForm1.Button4Click(Sender: TObject);
+procedure TForm1.btnBounceClick(Sender: TObject);
 begin
   lblBouncing.BehaviorOptions.Active := not lblBouncing.BehaviorOptions.Active;
 end;
 
-procedure TForm1.Button5Click(Sender: TObject);
+procedure TForm1.btnScrollClick(Sender: TObject);
 begin
   lblScrolling.BehaviorOptions.Active := not lblScrolling.BehaviorOptions.Active;
 end;
 
-procedure TForm1.Button6Click(Sender: TObject);
+procedure TForm1.btnSpecialClick(Sender: TObject);
 begin
   lblSpecial.BehaviorOptions.Active := not lblSpecial.BehaviorOptions.Active;
 end;
 
-procedure TForm1.Button7Click(Sender: TObject);
+procedure TForm1.btnTypeClick(Sender: TObject);
 begin
   lblTyping.BehaviorOptions.Active := not lblTyping.BehaviorOptions.Active;
+end;
+
+procedure TForm1.btnAllClick(Sender: TObject);
+var i:integer;
+begin
+  for i := 0 to ControlCount -1 do
+    if (Controls[i] <> btnAll) and (Controls[i] is TButton) then
+      TButton(Controls[i]).Click;
 end;
 
 end.

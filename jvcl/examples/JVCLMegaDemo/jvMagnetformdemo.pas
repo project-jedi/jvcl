@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvMagnet, JvLabel;
+  JvComponent, JvLabel, JvFormMagnet, JvExControls;
 
 type
   Tfrmagnet = class(TForm)

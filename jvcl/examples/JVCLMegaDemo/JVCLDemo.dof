@@ -1,4 +1,4 @@
 [Directories]
-OutputDir=..\..\Bin
-UnitOutputDir=..\..\Dcu
-SearchPath=..\..\Source;..\..\common;..\..\Archive
+OutputDir=..\..\bin
+UnitOutputDir=..\..\dcu
+SearchPath=..\..\run;..\..\common

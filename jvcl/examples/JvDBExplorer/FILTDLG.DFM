@@ -71,7 +71,7 @@ object FilterDialog: TFilterDialog
     StoredProps.Strings = (
       'UpCaseBox.Checked')
     StoredValues = <>
-    Left = 216
+    Left = 184
     Top = 4
   end
   object MRU: TJvMRUManager
@@ -79,7 +79,7 @@ object FilterDialog: TFilterDialog
     Capacity = 15
     IniStorage = Storage
     ShowAccelChar = False
-    Left = 188
+    Left = 156
     Top = 4
   end
 end

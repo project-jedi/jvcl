@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, FileCtrl, ComCtrls, JvThumbImage,
-  JvThumbNails, JvBaseThumbnail;
+  JvThumbNails, JvBaseThumbnail, JvExExtCtrls;
 
 type
   TJvThumbnailChildForm = class(TForm)

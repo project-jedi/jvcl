@@ -150,67 +150,76 @@ object Form1: TForm1
     ParentColor = False
     ParentFont = False
   end
-  object Button1: TButton
+  object btnCodeBreak: TButton
     Left = 38
     Top = 50
     Width = 80
     Height = 25
     Caption = '&CodeBreaker'
     TabOrder = 0
-    OnClick = Button1Click
+    OnClick = btnCodeBreakClick
   end
-  object Button2: TButton
+  object btnAppear: TButton
     Left = 312
     Top = 48
     Width = 80
     Height = 25
     Caption = '&Appearing'
     TabOrder = 1
-    OnClick = Button2Click
+    OnClick = btnAppearClick
   end
-  object Button3: TButton
+  object btnBlink: TButton
     Left = 38
     Top = 121
     Width = 80
     Height = 25
     Caption = '&Blinking'
     TabOrder = 2
-    OnClick = Button3Click
+    OnClick = btnBlinkClick
   end
-  object Button4: TButton
+  object btnBounce: TButton
     Left = 312
     Top = 121
     Width = 80
     Height = 25
     Caption = 'B&ouncing'
     TabOrder = 3
-    OnClick = Button4Click
+    OnClick = btnBounceClick
   end
-  object Button5: TButton
+  object btnScroll: TButton
     Left = 38
     Top = 193
     Width = 80
     Height = 25
     Caption = '&Scrolling'
     TabOrder = 4
-    OnClick = Button5Click
+    OnClick = btnScrollClick
   end
-  object Button6: TButton
+  object btnSpecial: TButton
     Left = 312
     Top = 193
     Width = 80
     Height = 25
     Caption = 'S&pecial'
     TabOrder = 5
-    OnClick = Button6Click
+    OnClick = btnSpecialClick
   end
-  object Button7: TButton
+  object btnType: TButton
     Left = 38
     Top = 265
     Width = 80
     Height = 25
     Caption = '&Typing'
     TabOrder = 6
-    OnClick = Button7Click
+    OnClick = btnTypeClick
+  end
+  object btnAll: TButton
+    Left = 312
+    Top = 265
+    Width = 80
+    Height = 25
+    Caption = 'Do '#39'em all!'
+    TabOrder = 7
+    OnClick = btnAllClick
   end
 end

@@ -1,6 +1,6 @@
 object Mainform: TMainform
-  Left = 44
-  Top = 10
+  Left = 358
+  Top = 122
   Width = 812
   Height = 612
   Caption = 'JVCL- MegaDemo'
@@ -104,7 +104,7 @@ object Mainform: TMainform
               Tag = 17
             end
             item
-              Caption = 'JvDSADialog (Don'#180't show again)'
+              Caption = 'JvDSADialog (Don´t show again)'
               ImageIndex = 0
               Tag = 44
             end
@@ -175,6 +175,11 @@ object Mainform: TMainform
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
+          DownFont.Charset = DEFAULT_CHARSET
+          DownFont.Color = clWindowText
+          DownFont.Height = -11
+          DownFont.Name = 'MS Sans Serif'
+          DownFont.Style = []
           ButtonSize = olbsLarge
           ParentColor = True
           TopButtonIndex = 0
@@ -278,6 +283,11 @@ object Mainform: TMainform
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
+          DownFont.Charset = DEFAULT_CHARSET
+          DownFont.Color = clWindowText
+          DownFont.Height = -11
+          DownFont.Name = 'MS Sans Serif'
+          DownFont.Style = []
           ButtonSize = olbsLarge
           ParentColor = True
           TopButtonIndex = 0
@@ -326,6 +336,11 @@ object Mainform: TMainform
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
+          DownFont.Charset = DEFAULT_CHARSET
+          DownFont.Color = clWindowText
+          DownFont.Height = -11
+          DownFont.Name = 'MS Sans Serif'
+          DownFont.Style = []
           ButtonSize = olbsLarge
           ParentColor = True
           TopButtonIndex = 0
@@ -364,6 +379,11 @@ object Mainform: TMainform
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
+          DownFont.Charset = DEFAULT_CHARSET
+          DownFont.Color = clWindowText
+          DownFont.Height = -11
+          DownFont.Name = 'MS Sans Serif'
+          DownFont.Style = []
           ButtonSize = olbsLarge
           ParentColor = True
           TopButtonIndex = 0
@@ -432,6 +452,11 @@ object Mainform: TMainform
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
+          DownFont.Charset = DEFAULT_CHARSET
+          DownFont.Color = clWindowText
+          DownFont.Height = -11
+          DownFont.Name = 'MS Sans Serif'
+          DownFont.Style = []
           ButtonSize = olbsLarge
           ParentColor = True
           TopButtonIndex = 0
@@ -460,17 +485,17 @@ object Mainform: TMainform
           Font.Height = -11
           Font.Name = 'MS Sans Serif'
           Font.Style = []
+          DownFont.Charset = DEFAULT_CHARSET
+          DownFont.Color = clWindowText
+          DownFont.Height = -11
+          DownFont.Name = 'MS Sans Serif'
+          DownFont.Style = []
           ButtonSize = olbsLarge
           ParentColor = True
           TopButtonIndex = 0
         end>
       ActivePageIndex = 5
       OnButtonClick = JvOutlookBar1ButtonClick
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
       TabOrder = 0
     end
     object Panel2: TPanel

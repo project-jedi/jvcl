@@ -32,7 +32,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, ExtCtrls, DBCtrls, Grids, DBGrids, Db, DBTables,
   JvDBDateTimePicker, StdCtrls, JvDateTimePicker, JvComponent,
-  JvCaptionPanel;
+  JvCaptionPanel, JvExComCtrls;
 
 type
   TJvDBDateTimePickerMainForm = class(TForm)

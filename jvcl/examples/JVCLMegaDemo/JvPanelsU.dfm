@@ -81,17 +81,6 @@ object JvPanelsFrm: TJvPanelsFrm
         SmallImages = ImageList1
       end
     end
-    object JvSizeablePanel1: TJvSizeablePanel
-      Left = 47
-      Top = 0
-      Width = 242
-      Height = 161
-      Caption = 'JvSizeablePanel is also at runtime sizeable'
-      Ctl3D = True
-      ParentCtl3D = False
-      TabOrder = 1
-      MultiLine = False
-    end
     object JvItemsPanel1: TJvItemsPanel
       Left = 44
       Top = 192
@@ -106,10 +95,10 @@ object JvPanelsFrm: TJvPanelsFrm
         'Looks like Outlook')
       HotTrack = False
       Color = clTeal
-      TabOrder = 2
+      TabOrder = 1
     end
   end
-  object JvRollout1: TJvRollout
+  object JvRollout1: TJvRollOut
     Left = 16
     Top = 3
     Width = 433
@@ -118,7 +107,6 @@ object JvPanelsFrm: TJvPanelsFrm
     Caption = 'JvRollout- click here'
     ChildOffset = 3
     Collapsed = True
-    Color = clBackground
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2
@@ -129,17 +117,8 @@ object JvPanelsFrm: TJvPanelsFrm
     object JvClock1: TJvClock
       Left = 24
       Top = 48
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -11
-      Font.Name = 'MS Sans Serif'
-      Font.Style = []
-    end
-    object JvAnalogClock1: TJvAnalogClock
-      Left = 168
-      Top = 32
-      SpiderClock = True
-      TabOrder = 1
+      Width = 185
+      Height = 41
     end
   end
   object JvOutlookBar1: TJvOutlookBar
@@ -162,6 +141,11 @@ object JvPanelsFrm: TJvPanelsFrm
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
+        DownFont.Charset = DEFAULT_CHARSET
+        DownFont.Color = clWindowText
+        DownFont.Height = -11
+        DownFont.Name = 'MS Sans Serif'
+        DownFont.Style = []
         ButtonSize = olbsLarge
         ParentColor = True
         TopButtonIndex = 0
@@ -185,16 +169,16 @@ object JvPanelsFrm: TJvPanelsFrm
         Font.Height = -11
         Font.Name = 'MS Sans Serif'
         Font.Style = []
+        DownFont.Charset = DEFAULT_CHARSET
+        DownFont.Color = clWindowText
+        DownFont.Height = -11
+        DownFont.Name = 'MS Sans Serif'
+        DownFont.Style = []
         ButtonSize = olbsLarge
         ParentColor = True
         TopButtonIndex = 0
       end>
     LargeImages = ImageList1
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
     TabOrder = 3
   end
   object ImageList1: TImageList

@@ -3,7 +3,7 @@ object Form1: TForm1
   Top = 156
   Width = 391
   Height = 456
-  Caption = 'Form1'
+  Caption = 'JvDBMaskEdit Demo'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -34,10 +34,12 @@ object Form1: TForm1
     Width = 337
     Height = 255
     Anchors = [akLeft, akTop, akBottom]
+    ColCount = 1
     DataSource = DataSource1
     PanelHeight = 85
     PanelWidth = 321
     TabOrder = 0
+    RowCount = 3
     object Label3: TLabel
       Left = 16
       Top = 19

@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, JvColorCombo, StdCtrls, JvCombobox;
+  Dialogs, JvColorCombo, StdCtrls, JvCombobox, JvExStdCtrls;
 
 type
   TJvColorComboDemoMainForm = class(TForm)

@@ -31,7 +31,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvComponent, JvClipboardViewer, ExtCtrls, ExtDlgs,
-  ComCtrls, Menus, JvComboListBox;
+  ComCtrls, Menus, JvComboListBox, JvExForms;
 
 type
 

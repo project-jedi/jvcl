@@ -30,8 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvGIF, ExtCtrls, JvCntScr, JvComponent, JvCaptionPanel,
-  JvContentScroller;
+  Dialogs, StdCtrls, JvGIF, ExtCtrls, JvComponent, JvCaptionPanel,
+  JvContentScroller, JvExExtCtrls;
 
 type
   TContentScrollerMainForm = class(TForm)

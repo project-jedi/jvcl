@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ImgList, JvInstallLabel, JvComponent;
+  StdCtrls, ExtCtrls, ImgList, JvInstallLabel, JvComponent, JvExControls;
 
 type
   TInstallLabelMainForm = class(TForm)

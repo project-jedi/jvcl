@@ -35,7 +35,6 @@ object JvUtilsFrm: TJvUtilsFrm
     Height = 25
     Caption = 'turn the monitor off (click to get it back)'
     TabOrder = 2
-    OnClick = Button2Click
   end
   object Button3: TButton
     Left = 7
@@ -44,7 +43,6 @@ object JvUtilsFrm: TJvUtilsFrm
     Height = 25
     Caption = 'add this exe file to the recent docs '
     TabOrder = 3
-    OnClick = Button3Click
   end
   object Button5: TButton
     Left = 7
@@ -53,7 +51,6 @@ object JvUtilsFrm: TJvUtilsFrm
     Height = 25
     Caption = 'launch the control panel unit  "desk"'
     TabOrder = 4
-    OnClick = Button5Click
   end
   object Button6: TButton
     Left = 7
@@ -92,57 +89,13 @@ object JvUtilsFrm: TJvUtilsFrm
     TabOrder = 8
     OnClick = CheckBox2Click
   end
-  object JvRecentMenuBtn1: TJvRecentMenuBtn
-    Left = 7
-    Top = 84
-    Width = 280
-    Height = 25
-    Caption = 'get all recent docs with JvRecentMenuBtn'
-    TabOrder = 9
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
-  end
-  object JvStartMenuBtn1: TJvStartMenuBtn
-    Left = 7
-    Top = 49
-    Width = 280
-    Height = 25
-    Caption = 'JvStartMenuBtn: I am a startmenu replacement'
-    TabOrder = 10
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
-  end
   object JvFavoritesButton1: TJvFavoritesButton
     Left = 7
     Top = 15
     Width = 280
     Height = 25
     Caption = 'JvFavoritesButton: Click me to see all your favorites'
-    TabOrder = 11
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
-  end
-  object JvControlPanel1: TJvControlPanel
-    Left = 7
-    Top = 118
-    Width = 280
-    Height = 25
-    Caption = 'all ControlPanel items (powered by JvControlPanel)'
-    TabOrder = 12
-    HotTrackFont.Charset = DEFAULT_CHARSET
-    HotTrackFont.Color = clWindowText
-    HotTrackFont.Height = -11
-    HotTrackFont.Name = 'MS Sans Serif'
-    HotTrackFont.Style = []
+    TabOrder = 9
   end
   object CheckBox1: TCheckBox
     Left = 7
@@ -151,7 +104,7 @@ object JvUtilsFrm: TJvUtilsFrm
     Height = 17
     Alignment = taLeftJustify
     Caption = 'hide Startmenu'
-    TabOrder = 13
+    TabOrder = 10
     OnClick = CheckBox1Click
   end
   object JvDirectories1: TJvDirectories
@@ -159,10 +112,6 @@ object JvUtilsFrm: TJvUtilsFrm
     Top = 160
   end
   object JvKeyboardStates1: TJvKeyboardStates
-    Animation = anLeftRight
-    NumLock = True
-    ScrollLock = False
-    CapsLock = False
     SystemKeysEnabled = True
     Left = 520
     Top = 216

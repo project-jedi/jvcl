@@ -30,11 +30,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, JvAutoSizeCompo, StdCtrls;
+  JvComponent, StdCtrls;
 
 type
   TfrAutosize = class(TForm)
-    JvAutoSizeCompo1: TJvAutoSizeCompo;
   private
   public
   end;

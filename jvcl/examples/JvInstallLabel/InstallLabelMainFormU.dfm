@@ -84,7 +84,7 @@ object InstallLabelMainForm: TInstallLabelMainForm
       Font.Height = -13
       Font.Name = 'MS Sans Serif'
       Font.Style = []
-      ImageList = ImageList1
+      Images = ImageList1
       Lines.Strings = (
         'Internet Explorer 4.0'
         'Communication Components'

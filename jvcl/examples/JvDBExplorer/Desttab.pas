@@ -39,7 +39,8 @@ interface
 
 uses Windows, SysUtils, Classes, Graphics, Forms, Controls,
   StdCtrls, ExtCtrls, FileCtrl, Mask, JvToolEdit, DB, DBTables,
-  JvValidateEdit, JvComponent, JvFormPlacement, JvEdit;
+  JvValidateEdit, JvComponent, JvFormPlacement, JvEdit, JvExStdCtrls,
+  JvExMask;
 
 type
   TDestTableDlg = class(TForm)

@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ComCtrls, Menus,
   JvColorCombo, JvCharMap, JvCombobox
-  {$IFDEF USETNT}, TntStdCtrls{$ENDIF};
+  {$IFDEF USETNT}, TntStdCtrls, JvExStdCtrls{$ENDIF};
 
 type
   TForm1 = class(TForm)

@@ -30,7 +30,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls, JvComCtrls, JvComponent, JvCaptionPanel;
+  ComCtrls, ExtCtrls, StdCtrls, JvComCtrls, JvComponent, JvCaptionPanel,
+  JvExComCtrls;
   
 type
   TJvTreeViewAsMenuMainForm = class(TForm)

@@ -30,10 +30,10 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, JvButton, JvFavoritesButton, JvStartMenuBtn,
+  StdCtrls, JvButton, JvFavoritesButton, 
   JvClock, JvCombobox, JvGammaPanel, JvGradientCaption,
-  Spin, JvZoom, JvWaitingGradient, JvControlPanel, JvRecentMenuBtn,
-  ExtCtrls, JvShape, JvListComb, ImgList, JvComponent, JvTimeLine, JvListBox, JvCtrls;
+  Spin, JvZoom, JvWaitingGradient, ExtCtrls, JvShape, JvListComb, ImgList, JvComponent, JvTimeLine, JvListBox, JvCtrls,
+  JvExControls, JvExStdCtrls;
 
 type
   TJvControls = class(TForm)

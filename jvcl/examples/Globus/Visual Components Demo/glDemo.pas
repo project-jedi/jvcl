@@ -35,7 +35,8 @@ uses
   JvgTypes, JvgCaption, JvgShape, JvgHint, ImgList, JvgHoleShape, JvgRuler, JvgGridHeaderControl,
   Grids, DBGrids, JvgBitBtn, JvgSplit, JvgStringGrid, JvgCheckBox, JvgSpeedButton,
   JvgShadow, JvgWizardHeader, Mask, JvgEdit, JvgProgress,
-  Spin, JvComponent, JvgStaticText, JvgSmallFontsDefense;
+  Spin, JvComponent, JvgStaticText, JvgSmallFontsDefense, JvExButtons,
+  JvExExtCtrls, JvExComCtrls, JvExControls;
 
 type
   TForm1 = class(TForm)
@@ -120,7 +121,6 @@ type
     Label3: TLabel;
     Label4: TLabel;
     glSpeedButton4: TJvgSpeedButton;
-    glSmallFontsDefence1: TJvgSmallFontsDefence;
     TabSheet17: TTabSheet;
     glWizardHeader1: TJvgWizardHeader;
     glWizardHeader2: TJvgWizardHeader;
@@ -281,8 +281,8 @@ begin
   with (sender as TJvgPageControl) do
   begin
     glFlyingText.Active := ActivePage = TabSheet9;
-    FrJumpingComponent1.Enabled := ActivePage=TabSheet5;
-    Timer1.Enabled:=ActivePage=TabSheet12;
+    FrJumpingComponent1.Active := ActivePage = TabSheet5;
+    Timer1.Enabled := ActivePage = TabSheet12;
   end;
 end;
 
@@ -309,7 +309,7 @@ procedure TForm1.glTabControl3GetItemColor(Sender: TObject; Index: Integer;
 begin
   if Index = (Sender as TJvgTabControl).TabIndex then
   begin
-    Color := RGB( 128 + Random(128), 128 + Random(128), 128 + Random(128));
+    Color := RGB(128 + Random(128), 128 + Random(128), 128 + Random(128));
     ShapeColor.Brush.Color := Color;
   end;
 end;
@@ -353,7 +353,7 @@ procedure TForm1.glFlyingTextTextLineChanging(Sender: TObject; LineNum: Integer)
 begin
   with glFlyingText do
   begin
-    Gradient.FromColor := RGB(random(100),random(100),random(100));
+    Gradient.FromColor := RGB(random(100), random(100), random(100));
     Gradient.ToColor := IncColor(Gradient.FromColor, 100);
 //    Gradient3D.ToColor := IncColor(Gradient.FromColor, 200);
   end;
@@ -365,3 +365,4 @@ begin
 end;
 
 end.
+

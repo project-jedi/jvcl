@@ -32,7 +32,7 @@ uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, FileCtrl, ComCtrls, Spin,
   JvThumbNails, JvSpecialProgress, JvThumbViews, JvBaseThumbnail,
   JvListBox, JvDriveCtrls, JvCombobox, JvExControls, JvComponent,
-  JvExStdCtrls;
+  JvExStdCtrls, JvExForms;
 
 type
   TJvThumbnailMainForm = class(TForm)

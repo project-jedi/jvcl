@@ -28,9 +28,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvComponent, StdCtrls, JvDirectories, JvChrono, JvKeyboardStates,
-  MPlayer, JvFunctions, JvButton, JvRecentMenuBtn, JvStartMenuBtn, JvScreenSaver,
-  JvControlPanel, JvFavoritesButton;
+  JvComponent, StdCtrls, JvDirectories, JvKeyboardStates,
+  MPlayer, JvButton, JvScreenSaver, JvControlPanelButton, JvFavoritesButton, JvExStdCtrls;
 
 type
   TJvUtilsFrm = class(TForm)
@@ -45,15 +44,9 @@ type
     Button7: TButton;
     Button10: TButton;
     CheckBox2: TCheckBox;
-    JvRecentMenuBtn1: TJvRecentMenuBtn;
-    JvStartMenuBtn1: TJvStartMenuBtn;
     JvFavoritesButton1: TJvFavoritesButton;
-    JvControlPanel1: TJvControlPanel;
     CheckBox1: TCheckBox;
     procedure Button1Click(Sender: TObject);
-    procedure Button2Click(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure Button5Click(Sender: TObject);
     procedure Button6Click(Sender: TObject);
     procedure Button7Click(Sender: TObject);
     procedure CheckBox2Click(Sender: TObject);
@@ -62,6 +55,9 @@ type
   end;
 
 implementation
+uses
+  JvJCLUtils, JvJVCLUtils;
+
 
 {$R *.dfm}
 
@@ -90,22 +86,6 @@ begin
    Add('Startup: ' + JvDirectories1.Startup);
    Add('Templates: ' + JvDirectories1.Templates);
  end;
-end;
-
-procedure TJvUtilsFrm.Button2Click(Sender: TObject);
-begin
- MonitorOff();  
-end;
-
-procedure TJvUtilsFrm.Button3Click(Sender: TObject);
-begin
- AddToRecentDocs(Application.ExeName);
- ShowMessage('Done');
-end;
-
-procedure TJvUtilsFrm.Button5Click(Sender: TObject);
-begin
- LaunchCPL(JvDirectories1.SystemDirectory + 'DESK.CPL');
 end;
 
 procedure TJvUtilsFrm.Button6Click(Sender: TObject);

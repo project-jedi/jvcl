@@ -6,10 +6,13 @@ object RenameDialog: TRenameDialog
   Caption = 'Rename Table'
   ClientHeight = 132
   ClientWidth = 331
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  OldCreateOrder = True
   Position = poScreenCenter
   PixelsPerInch = 96
   TextHeight = 13
@@ -53,14 +56,15 @@ object RenameDialog: TRenameDialog
     Top = 64
     Width = 315
     Height = 21
-    AcceptFiles = True
-    DefaultExt = 'DB'
+    AddQuotes = False
+    DefaultExt = 'db'
     Filter = 
       'Paradox or DBase files (*.db; *.dbf)|*.DB;*.DBF|ASCII files (*.t' +
       'xt)|*.TXT|All files (*.*)|*.*'
     DialogOptions = [ofHideReadOnly, ofPathMustExist]
     DialogTitle = 'Browse files'
     ButtonHint = 'Browse files|'
+    ButtonFlat = True
     ParentShowHint = False
     ShowHint = True
     TabOrder = 2

@@ -28,7 +28,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, JvLabel, JvRichEd, ComCtrls;
+  Dialogs, StdCtrls, JvLabel, ComCtrls, JvExControls, JvComponent;
 
 type
   TRessourcesForm = class(TForm)

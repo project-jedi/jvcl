@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   Menus, Db, Grids, DBGrids, ComCtrls, 
-  JvComponent, JvDBGridExport, JvCsvData, JvXPBar,
+  JvComponent, JvDBGridExport, JvCsvData,
   JvBaseDlg, JvProgressDialog, JvDBGrid, JvExDBGrids;
 
 type

@@ -25,9 +25,12 @@ object frFormplace: TfrFormplace
     Font.Name = 'MS Sans Serif'
     Font.Style = []
     ParentFont = False
-  end
-  object JvFormPlace1: TJvFormPlace
-    Left = 32
-    Top = 8
+    AutoOpenURL = False
+    HotTrackFont.Charset = DEFAULT_CHARSET
+    HotTrackFont.Color = clWindowText
+    HotTrackFont.Height = -16
+    HotTrackFont.Name = 'MS Sans Serif'
+    HotTrackFont.Style = []
+    ImageIndex = 0
   end
 end

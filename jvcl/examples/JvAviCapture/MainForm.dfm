@@ -31,19 +31,21 @@ object frmMain: TfrmMain
     TabOrder = 1
     OnClick = btnStartPreviewClick
   end
-  object AviCap: TJvAviCapture
+  object AviCap: TJvAVICapture
     Left = 148
     Top = 96
     Width = 20
     Height = 20
     DriverIndex = -1
-    FileName = 'C:\CAPTURE.AVI'
     FileSizeAlloc = 0
+    MCIDevice = 'Not connected'
     NoFile = False
     Overlaying = False
     PreviewFrameDelay = 40
     PreviewFPS = 25
     Previewing = False
+    ScrollPos.Left = 0
+    ScrollPos.Top = 0
     UsedEvents = [ueCapControl, ueError, ueFrame, ueStatus, ueVideoStream, ueWaveStream, ueYield]
     VideoLeft = 0
     VideoTop = 0
@@ -110,7 +112,6 @@ object frmMain: TfrmMain
     Height = 85
     Cursor = crArrow
     TabStop = False
-    BevelEdges = []
     BorderStyle = bsNone
     Color = clBtnFace
     Lines.Strings = (

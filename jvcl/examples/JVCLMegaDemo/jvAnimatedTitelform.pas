@@ -34,7 +34,6 @@ uses
 
 type
   TfrAnimatedTitel = class(TForm)
-    JvAnimTitle1: TJvAnimTitle;
   private
   public
   end;

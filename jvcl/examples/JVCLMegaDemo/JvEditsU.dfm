@@ -18,7 +18,7 @@ object JvEdits: TJvEdits
     Top = 19
     Width = 122
     Height = 15
-    Caption = 'I ''m a JvFilenameEdit: '
+    Caption = 'I '#39'm a JvFilenameEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -31,7 +31,7 @@ object JvEdits: TJvEdits
     Top = 50
     Width = 118
     Height = 15
-    Caption = 'I ''m a JvDirectoryEdit: '
+    Caption = 'I '#39'm a JvDirectoryEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -44,7 +44,7 @@ object JvEdits: TJvEdits
     Top = 81
     Width = 111
     Height = 15
-    Caption = 'I ''m a JvComboEdit: '
+    Caption = 'I '#39'm a JvComboEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -57,7 +57,7 @@ object JvEdits: TJvEdits
     Top = 112
     Width = 97
     Height = 15
-    Caption = 'I ''m a JvFloatEdit :'
+    Caption = 'I '#39'm a JvFloatEdit :'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -70,7 +70,7 @@ object JvEdits: TJvEdits
     Top = 144
     Width = 95
     Height = 15
-    Caption = 'I ''m a JvCalcEdit: '
+    Caption = 'I '#39'm a JvCalcEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -83,7 +83,7 @@ object JvEdits: TJvEdits
     Top = 175
     Width = 119
     Height = 15
-    Caption = 'I ''m a JvCurrencyEdit: '
+    Caption = 'I '#39'm a JvCurrencyEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -96,7 +96,7 @@ object JvEdits: TJvEdits
     Top = 237
     Width = 108
     Height = 15
-    Caption = 'I ''m a JvIntegerEdit: '
+    Caption = 'I '#39'm a JvIntegerEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -109,7 +109,7 @@ object JvEdits: TJvEdits
     Top = 269
     Width = 95
     Height = 15
-    Caption = 'I ''m a JvYearEdit: '
+    Caption = 'I '#39'm a JvYearEdit: '
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -213,7 +213,7 @@ object JvEdits: TJvEdits
     Top = 206
     Width = 101
     Height = 15
-    Caption = 'I ''m a JvFloatEdit2:'
+    Caption = 'I '#39'm a JvFloatEdit2:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -252,7 +252,7 @@ object JvEdits: TJvEdits
     Top = 300
     Width = 96
     Height = 15
-    Caption = 'I ''m a  JvDateEdit:'
+    Caption = 'I '#39'm a  JvDateEdit:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -266,7 +266,7 @@ object JvEdits: TJvEdits
     Top = 331
     Width = 95
     Height = 15
-    Caption = 'I ''m a  JvSpinEdit:'
+    Caption = 'I '#39'm a  JvSpinEdit:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -280,7 +280,7 @@ object JvEdits: TJvEdits
     Top = 363
     Width = 105
     Height = 15
-    Caption = 'I ''m a  JvIpAddress:'
+    Caption = 'I '#39'm a  JvIpAddress:'
     Font.Charset = ANSI_CHARSET
     Font.Color = clWindowText
     Font.Height = -12
@@ -333,8 +333,8 @@ object JvEdits: TJvEdits
     Top = 16
     Width = 150
     Height = 21
+    AddQuotes = False
     ButtonFlat = False
-    NumGlyphs = 1
     TabOrder = 0
   end
   object JvButtonBox1: TJvComboEdit
@@ -343,9 +343,8 @@ object JvEdits: TJvEdits
     Width = 150
     Height = 21
     ButtonFlat = False
-    GlyphKind = gkEllipsis
     ButtonWidth = 16
-    NumGlyphs = 1
+    ImageKind = ikEllipsis
     TabOrder = 1
     OnButtonClick = JvButtonBox1ButtonClick
   end
@@ -354,19 +353,15 @@ object JvEdits: TJvEdits
     Top = 110
     Width = 150
     Height = 21
-    GroupIndex = -1
-    MaxPixel.Font.Charset = DEFAULT_CHARSET
-    MaxPixel.Font.Color = clWindowText
-    MaxPixel.Font.Height = -11
-    MaxPixel.Font.Name = 'MS Sans Serif'
-    MaxPixel.Font.Style = []
-    Modified = False
-    SelStart = 0
-    SelLength = 0
+    CheckChars = '01234567890'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clBlue
+    CriticalPoints.ColorBelow = clRed
+    EditText = '2'
     PasswordChar = #0
-    ReadOnly = False
     TabOrder = 2
-    Value = 1.9
+    Text = '2'
+    Value = 2
   end
   object JvCalculatorBox1: TJvCalcEdit
     Left = 156
@@ -374,7 +369,6 @@ object JvEdits: TJvEdits
     Width = 150
     Height = 21
     AutoSize = False
-    NumGlyphs = 2
     TabOrder = 3
   end
   object JvCurrencyEdit1: TJvValidateEdit
@@ -382,57 +376,73 @@ object JvEdits: TJvEdits
     Top = 172
     Width = 150
     Height = 21
-    Alignment = taRightJustify
-    ReadOnly = False
+    CheckChars = '01234567890'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clBlue
+    CriticalPoints.ColorBelow = clRed
+    EditText = '1'
+    PasswordChar = #0
     TabOrder = 4
+    Text = '1'
     Value = 1
-    HasMaxValue = False
-    HasMinValue = False
   end
   object JvFloatEdit21: TJvValidateEdit
     Left = 156
     Top = 204
     Width = 150
     Height = 21
-    Alignment = taRightJustify
-    MaxLength = 10
-    ReadOnly = False
-    TabOrder = 5
-    Value = 1
-    MaxValue = 999
-    MinValue = 1
-    MaxDecimals = 5
+    CheckChars = '01234567890'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clBlue
+    CriticalPoints.ColorBelow = clRed
+    EditText = '1'
     HasMaxValue = True
     HasMinValue = True
+    MaxLength = 10
+    MaxValue = 999
+    MinValue = 1
+    PasswordChar = #0
+    TabOrder = 5
+    Text = '1'
+    Value = 1
   end
   object JvIntegerEdit1: TJvValidateEdit
     Left = 156
     Top = 235
     Width = 150
     Height = 21
-    Alignment = taRightJustify
-    ReadOnly = False
-    TabOrder = 6
-    Value = 1
-    MaxValue = 999999
-    MinValue = 1
+    CheckChars = '01234567890'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clBlue
+    CriticalPoints.ColorBelow = clRed
+    EditText = '1'
     HasMaxValue = True
     HasMinValue = True
+    MaxValue = 999999
+    MinValue = 1
+    PasswordChar = #0
+    TabOrder = 6
+    Text = '1'
+    Value = 1
   end
   object JvYearEdit1: TJvValidateEdit
     Left = 156
     Top = 266
     Width = 150
     Height = 21
-    Alignment = taRightJustify
-    ReadOnly = False
-    TabOrder = 7
-    Value = 2002
-    MaxValue = 9999
-    MinValue = 1900
+    CheckChars = '01234567890'
+    CriticalPoints.CheckPoints = cpNone
+    CriticalPoints.ColorAbove = clBlue
+    CriticalPoints.ColorBelow = clRed
+    EditText = '2002'
     HasMaxValue = True
     HasMinValue = True
-    WindowsillYear = 71
+    MaxValue = 9999
+    MinValue = 1900
+    PasswordChar = #0
+    TabOrder = 7
+    Text = '2002'
+    Value = 2002
   end
   object JvDirectoryEdit1: TJvDirectoryEdit
     Left = 156
@@ -440,7 +450,6 @@ object JvEdits: TJvEdits
     Width = 150
     Height = 21
     ButtonFlat = False
-    NumGlyphs = 1
     TabOrder = 8
   end
   object JvDateEdit1: TJvDateEdit
@@ -449,7 +458,6 @@ object JvEdits: TJvEdits
     Width = 150
     Height = 21
     ButtonFlat = False
-    NumGlyphs = 2
     TabOrder = 9
   end
   object JvSpinEdit1: TJvSpinEdit
@@ -459,7 +467,7 @@ object JvEdits: TJvEdits
     Height = 21
     TabOrder = 10
   end
-  object JvIpAddress1: TJvIpAddress
+  object JvIpAddress1: TJvIPAddress
     Left = 157
     Top = 361
     Width = 150

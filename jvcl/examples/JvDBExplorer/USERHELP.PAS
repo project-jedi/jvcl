@@ -44,10 +44,10 @@ uses
 type
   TCustomizeHelpDlg = class(TForm)
     Label1: TLabel;
-    FormStorage: TJvFormStorage ;
-    FileName: TJvFilenameEdit ;
+    FormStorage: TJvFormStorage;
+    FileName: TJvFilenameEdit;
     Label2: TLabel;
-    HelpList: TJvDrawGrid ;
+    HelpList: TJvDrawGrid;
     OkBtn: TButton;
     CancelBtn: TButton;
     procedure FormCreate(Sender: TObject);
@@ -59,7 +59,7 @@ type
     procedure HelpListDrawCell(Sender: TObject; Col, Row: Longint;
       Rect: TRect; State: TGridDrawState);
     procedure HelpListSetEditText(Sender: TObject; ACol, ARow: Longint;
-      const Value: String);
+      const Value: string);
     procedure FileNameChange(Sender: TObject);
     procedure OkBtnClick(Sender: TObject);
     procedure HelpListKeyDown(Sender: TObject; var Key: Word;
@@ -108,6 +108,7 @@ end;
 { TCustomizeHelpDlg }
 
 {$IFNDEF WIN32}
+
 procedure TCustomizeHelpDlg.CreateParams(var Params: TCreateParams);
 begin
   inherited CreateParams(Params);
@@ -141,7 +142,7 @@ end;
 procedure TCustomizeHelpDlg.FormCreate(Sender: TObject);
 begin
   FHelpList := TStringList.Create;
-  HelpList.ClientHeight := (HelpList.DefaultRowHeight+ 1) * 5 - 1;
+  HelpList.ClientHeight := (HelpList.DefaultRowHeight + 1) * 5 - 1;
 end;
 
 procedure TCustomizeHelpDlg.FormDestroy(Sender: TObject);
@@ -183,7 +184,7 @@ begin
 end;
 
 procedure TCustomizeHelpDlg.HelpListSetEditText(Sender: TObject; ACol,
-  ARow: Longint; const Value: String);
+  ARow: Longint; const Value: string);
 begin
   if ARow >= FHelpList.Count then begin
     if (Value <> '') then
@@ -248,3 +249,4 @@ begin
 end;
 
 end.
+

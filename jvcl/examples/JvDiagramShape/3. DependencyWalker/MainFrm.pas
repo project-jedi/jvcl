@@ -270,7 +270,7 @@ uses
   PrintFrm,
   Registry,
 {$IFNDEF COMPILER6_UP}
-  JvFunctions,
+  JvJCLUTils, JvJVCLUtils,
 {$ENDIF}
   OptionsFrm;
 

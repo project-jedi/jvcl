@@ -72,7 +72,7 @@ type
   TMDIChild = class(TForm)
     TableList: TJvDatabaseItems ;
     DataSource1: TDataSource;
-    TablesGrid: TJvDBGrid ;
+    TablesGrid: TJvDBGrid;
     rxSplitter1: TJvxSplitter ;
     Panel1: TPanel;
     Notebook1: TNotebook;

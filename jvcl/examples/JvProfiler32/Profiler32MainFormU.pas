@@ -30,7 +30,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, JvProfiler32, JvComponent, JvProfilerForm;
+  StdCtrls, ExtCtrls, ComCtrls, JvComponent, JvProfilerForm;
 
 type
   TProfiler32MainForm = class(TForm)

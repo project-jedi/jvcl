@@ -32,7 +32,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, ExtCtrls, Menus, ActnList, JvRegistryTreeView;
+  Dialogs, ComCtrls, ExtCtrls, Menus, ActnList, JvRegistryTreeView,
+  JvExComCtrls, JvComponent;
 
 type
   TRegTVMainForm = class(TForm)
