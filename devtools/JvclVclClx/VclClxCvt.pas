@@ -90,11 +90,16 @@ type
       { Removes if necessary the condition blocks. }
     procedure CheckUses(Token: PTokenInfo; var Context: TParseContext);
       { Parses the uses-clause and allows the replacement of unit names.
+
+        asn: the following is not required anymore. Required types are added to
+             QWindows.
+
         If it finds a "Windows" in a non-IFDEF'ed area the "Types" unit will be
         added before the replaced "Windows"
         If no "Windows" unit is found the "Types" unit will be inserted before
         the replaced "Graphics" unit.
-        "Types" will not be added when it already is in the uses list. }
+        "Types" will not be added when it already is in the uses list.
+       }
     procedure CheckFileHead(Token: PTokenInfo; var Context: TParseContext);
       { Replaces the "unit", "program", ... name and adds the unit name to the
         UsedUnits list. }
@@ -742,9 +747,9 @@ procedure TVCLConverter.CheckUses(Token: PTokenInfo; var Context: TParseContext)
 var
   Parser: TPascalParser;
   StartConditionStackCount: Integer;
-  InsertTypesUnitStartIndex: Integer;
+//  InsertTypesUnitStartIndex: Integer;
 begin
-  InsertTypesUnitStartIndex := -1;
+//  InsertTypesUnitStartIndex := -1;
   StartConditionStackCount := FConditionStack.OpenCount;
   Parser := Token.Parser;
   while GetNextToken(Parser, Token, Context) do
@@ -771,22 +776,26 @@ begin
             // replace unit names, because we are outside a VCL/VisualCLX condition
             if not IsUnitIgnored(Token.Value) then
             begin
+              {  asn: not required anymore.
               if SameText(Token.Value, 'Windows') then
                 InsertTypesUnitStartIndex := Token.StartIndex;
               if (InsertTypesUnitStartIndex = -1) and SameText(Token.Value, 'Graphics') then
                 InsertTypesUnitStartIndex := Token.StartIndex;
+              }
               ReplaceUnitName(Token);
             end;
           end;
         end;
     end;
   end;
+  {
   if (InsertTypesUnitStartIndex > 0) and Context.InInterfaceSection and
      (FUsesUnits.IndexOf('Types') = -1) then
   begin
     Parser.Insert(InsertTypesUnitStartIndex, 'Types, ');
     Parser.IndexNoClear := Parser.Index + 7;
   end;
+  }
 end;
 
 procedure TVCLConverter.CheckFileHead(Token: PTokenInfo; var Context: TParseContext);
@@ -1028,6 +1037,7 @@ begin
     Line := '';
   if AnsiStartsText('IsControl = True', Line) or
      AnsiStartsText('PageSize = 0', Line) or
+     AnsiStartsText('DefaultMonitor = ', Line) or
      AnsiStartsText('RightClickSelect = True', Line) then
     Line := '';
 end;
