@@ -77,6 +77,7 @@ type
     procedure LoadProperties; virtual;
     procedure Assign(Source: TPersistent); override;
     procedure Clear; virtual;
+    function TranslatePropertyName(AName: string): string; virtual;
   published
     property AutoLoad: boolean read FAutoLoad write SetAutoLoad;
     property AppStoragePath: string read FAppStoragePath Write SetPath;
@@ -387,6 +388,11 @@ end;
 
 procedure TJvCustomPropertyStore.Clear;
 begin
+end;
+
+function TJvCustomPropertyStore.TranslatePropertyName(AName: string): string;
+begin
+  Result := aName;
 end;
 
 procedure TJvCustomPropertyStore.SetAutoLoad(Value: Boolean);

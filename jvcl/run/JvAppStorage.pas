@@ -1918,7 +1918,10 @@ function TJvCustomAppStorage.TranslatePropertyName(Instance: TPersistent; const 
   const Reading: Boolean): string;
 begin
   Result := AName;
-  DoTranslatePropertyName(Instance, Result, Reading);
+  if Instance is TJvCustomPropertyStore then
+    Result := TJvCustomPropertyStore(Instance).TranslatePropertyName(Result)
+  else
+    DoTranslatePropertyName(Instance, Result, Reading);
 end;
 
 procedure TJvCustomAppStorage.GetStoredValues(const Path: string;
