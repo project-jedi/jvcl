@@ -45,28 +45,29 @@ uses
 
 type
   TColorDemoMainForm = class(TForm)
-    Panel2: TPanel;
-    GroupBox2: TGroupBox;
+    pConfigurePanel: TPanel;
+    GroupBoxPanelStyles: TGroupBox;
     chkPanelFlat: TCheckBox;
     chkPanelAuto: TCheckBox;
     chkPanelOther: TCheckBox;
-    Panel3: TPanel;
-    JvOfficeColorPanel1: TJvOfficeColorPanel;
+    pPanelColor: TPanel;
+    JvOfficeColorPanel: TJvOfficeColorPanel;
     JvNetscapeSplitter1: TJvNetscapeSplitter;
-    Panel5: TPanel;
-    GroupBox1: TGroupBox;
+    pConfigureButton: TPanel;
+    GroupBoxButtonStyles: TGroupBox;
     chkButtonFlat: TCheckBox;
     chkButtonAuto: TCheckBox;
     chkButtonOther: TCheckBox;
     chkButtonDrag: TCheckBox;
     chkButtonGlyph: TCheckBox;
     chkButtonEnabled: TCheckBox;
-    Panel1: TPanel;
-    JvOfficeColorButton1: TJvOfficeColorButton;
+    pButtonColor: TPanel;
+    JvOfficeColorButton: TJvOfficeColorButton;
     procedure ButtonOptionClick(Sender: TObject);
-    procedure JvOfficeColorPanel1ColorChange(Sender: TObject);
-    procedure JvOfficeColorButton1ColorChange(Sender: TObject);
+    procedure JvOfficeColorPanelColorChange(Sender: TObject);
+    procedure JvOfficeColorButtonColorChange(Sender: TObject);
     procedure PanelOptionsClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   public
   end;
 
@@ -87,51 +88,51 @@ implementation
 
 procedure TColorDemoMainForm.ButtonOptionClick(Sender: TObject);
 begin
-  with JvOfficeColorButton1 do
+  with JvOfficeColorButton do
   begin
     Flat := chkButtonFlat.Checked;
     Properties.ShowAutoButton := chkButtonAuto.Checked;
     Properties.ShowOtherButton := chkButtonOther.Checked;
     Properties.ShowDragBar := chkButtonDrag.Checked;
-    if chkButtonGlyph.Checked then
-{$IFDEF VisualCLX}
-      Glyph.LoadFromResourceName(hInstance, 'FONTCOLOR')
-{$ENDIF VisualCLX}
-{$IFDEF VCL}
-      Glyph.Handle := LoadBitmap(hInstance, 'FONTCOLOR')
-{$ENDIF VCL}
-    else
-      Glyph := nil;
+    if chkButtonGlyph.Checked
+      then Glyph.LoadFromResourceName(hInstance, 'FONTCOLOR')
+      else Glyph := nil;
+    Enabled := chkButtonEnabled.Checked;
   end;
 end;
 
-procedure TColorDemoMainForm.JvOfficeColorPanel1ColorChange(
+procedure TColorDemoMainForm.JvOfficeColorPanelColorChange(
   Sender: TObject);
 begin
-  if not JvOfficeColorButton1.Enabled then
-    JvOfficeColorButton1.Color := JvOfficeColorPanel1.Color;
-  Panel3.Color := JvOfficeColorPanel1.Color;
-  Panel3.Font.Color := ColorToRGB(Panel3.Color) xor $FFFFFF;
-  Panel3.Caption := ColorToString(Panel3.Color);
+  if not JvOfficeColorButton.Enabled then
+    JvOfficeColorButton.Color := JvOfficeColorPanel.Color;
+  pPanelColor.Color := JvOfficeColorPanel.SelectedColor;
+  pPanelColor.Font.Color := ColorToRGB(pPanelColor.Color) xor $FFFFFF;
+  pPanelColor.Caption := ColorToString(pPanelColor.Color);
 end;
 
-procedure TColorDemoMainForm.JvOfficeColorButton1ColorChange(
+procedure TColorDemoMainForm.JvOfficeColorButtonColorChange(
   Sender: TObject);
 begin
-  Panel1.Color := JvOfficeColorButton1.Color;
-  Panel1.Font.Color := ColorToRGB(Panel1.Color) xor $FFFFFF;
-  Panel1.Caption := ColorToString(Panel1.Color);
-
+  pButtonColor.Color := JvOfficeColorButton.SelectedColor;
+  pButtonColor.Font.Color := ColorToRGB(pButtonColor.Color) xor $FFFFFF;
+  pButtonColor.Caption := ColorToString(pButtonColor.Color);
 end;
 
 procedure TColorDemoMainForm.PanelOptionsClick(Sender: TObject);
 begin
-  with JvOfficeColorPanel1 do
+  with JvOfficeColorPanel do
   begin
     Flat := chkPanelFlat.Checked;
     Properties.ShowAutoButton := chkPanelAuto.Checked;
     Properties.ShowOtherButton := chkPanelOther.Checked;
   end;
+end;
+
+procedure TColorDemoMainForm.FormCreate(Sender: TObject);
+begin
+  JvOfficeColorButtonColorChange(nil);
+  JvOfficeColorPanelColorChange(nil);
 end;
 
 end.
