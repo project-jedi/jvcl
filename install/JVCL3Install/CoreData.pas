@@ -85,6 +85,7 @@ type
     function GetJCLPackageDir: string;
     function GetJCLPackageXmlDir: string;
     function GetPackageGeneratorTarget: string;
+    function GetJCLDir: string;
   protected
     procedure ClearPalette(reg: TRegistry; const Name: string);
     procedure DoClearJVCLPalette;
@@ -131,7 +132,7 @@ type
     property LibDir: string read GetLibDir; // relative to $(JVCL)
     property PackageGeneratorTarget: string read GetPackageGeneratorTarget; // c5, c6, d5, d5s, d6, d6p, d7, d7p
 
-    property JCLDir: string read FJCLDir; // directory where JCL is installed or the global JCLDir
+    property JCLDir: string read GetJCLDir; // directory where JCL is installed or the global JCLDir
     property JCLPackageDir: string read GetJCLPackageDir;
     property JCLPackageXmlDir: string read GetJCLPackageXmlDir;
     property JCLNeedsDcp: Boolean read FJCLNeedsDcp;
@@ -300,9 +301,9 @@ procedure DeleteFilesEx(const Dir, Mask: string);
 
 function CreateJclPackageList(Target: TTargetInfo): TPackageList;
 
-implementation
+procedure SetxJCLDir(const Value: string);
 
-uses Math;
+implementation
 
 const
   cDelphiKeyName = 'SOFTWARE\Borland\Delphi';
@@ -387,6 +388,12 @@ begin
   end;
 end;
 
+procedure SetxJCLDir(const Value: string);
+begin
+  xJCLDir := Value;
+  xJCLPackageDir := xJCLDir + '\packages';
+  xJCLPackageXmlDir := xJCLPackageDir + '\xml';
+end;
 
 function FindCmdSwitch(const Switch: string): Boolean;
 var i: Integer;
@@ -1385,6 +1392,13 @@ begin
     if (not Packages[i].IsDesign) and
        ((Packages[i].Install) or (Packages[i].IsInstalled)) then
       Ini.WriteString(Symbol + ' Runtime', Packages[i].BplName, '1');
+end;
+
+function TTargetInfo.GetJCLDir: string;
+begin
+  Result := FJCLDir;
+  if Result = '' then
+    Result := xJCLDir;
 end;
 
 { TTargetList }

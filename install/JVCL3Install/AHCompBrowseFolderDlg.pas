@@ -76,9 +76,6 @@ type
     procedure WMNCDestroy(var Message: TWMNCDestroy); message WM_NCDESTROY;
     procedure WMCommand(var Message: TMessage); message WM_COMMAND;
   protected
-{$IFNDEF COMPILER6_UP}
-    procedure WndProc(var Message: TMessage); virtual;
-{$ENDIF}
     function TaskModalDialog2(var Info: TBrowseInfo): PItemIDList;
   public
     procedure DefaultHandler(var Message); override;
@@ -291,13 +288,6 @@ begin
   else
     inherited DefaultHandler(Message);
 end;
-
-{$IFNDEF COMPILER6_UP}
-procedure TBrowseFolderDialog.WndProc(var Message: TMessage);
-begin
-  Dispatch(Message);
-end;
-{$ENDIF}
 
 procedure TBrowseFolderDialog.WMCommand(var Message: TMessage);
 begin
