@@ -86,7 +86,7 @@ end;
 function GetNameCplW2k(const APath, AName: string; Strings: TStrings): Boolean;
 var
   hLib: HMODULE; // Library Handle to *.cpl file
-  hIco: HICON;
+  hicoTmp,hIco: HICON;
   CplCall: TCPLApplet; // Pointer to CPlApplet() function
   i: LongInt;
   tmpCount, Count: LongInt;
@@ -128,20 +128,31 @@ begin
           begin
             Move(InfoW, InfoA, sizeof(InfoA));
             if i > 0 then
-              hIco := InfoA.hIcon;
+              hIco := InfoA.hIcon
+            else
+              // special case: extract the 32x32 icon and use isto the 16x16
+              ExtractIconEx(PChar(APath + AName), 0, hIco, hIcoTmp, 1);
             S := string(InfoA.szName);
           end
           else
           begin
             CplCall(GetFocus, CPL_INQUIRE, i, LongInt(@CPLInfo));
-            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, 32);
+            LoadStringA(hLib, CPLInfo.idName, InfoA.szName, sizeof(InfoA.szName));
             if i > 0 then
-              hIco := LoadIcon(hLib, MakeIntResource(@CPLInfo.idIcon));
+            begin
+              hIco := LoadImage(hLib, PChar(CPLInfo.idIcon), IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
+              if hIco = 0 then
+                hIco := LoadIcon(hLib, PChar(CPLInfo.idIcon));
+            end;
             S := string(InfoA.szName);
           end;
         end;
         if S <> '' then
+        begin
+          if hIco = 0 then
+            ExtractIconEx(PChar(APath + AName), 0, hIcoTmp, hIco, 1);
           Strings.AddObject(S + '%' + AName, TObject(hIco));
+        end;
       end;
       Result := tmpCount < Strings.Count;
     finally
@@ -160,7 +171,6 @@ var
   res: Integer;
   it: TMenuItem;
   ts: TStringList;
-  w: Word;
   b: TBitmap;
 begin
   ts := TStringList.Create;
@@ -183,14 +193,18 @@ begin
     it.Caption := Copy(ts[res], 1, Pos('%', ts[res]) - 1);
     it.OnClick := UrlClick;
     it.Hint := Path + Copy(ts[res], Pos('%', ts[res]) + 1, Length(ts[res]));
-    w := 0;
-    if ts.Objects[res] <> nil then
-      b := IconToBitmap2(integer(ts.Objects[res]), 16, clWhite)
-    else
-      b := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w), 16, clWhite);
+    b := IconToBitmap2(integer(ts.Objects[res]), 16, clMenu);
+    {
+      w := 0;
+      if ts.Objects[res] <> nil then
+          b := IconToBitmap2(integer(ts.Objects[res]), 16, clMenu)
+        else
+        begin
+          b := IconToBitmap2(ExtractAssociatedIcon(Application.Handle, PChar(it.Hint), w), 16, clMenu);
+        }
     it.Bitmap.Assign(b);
-    b.Free;
     item.Add(it);
+    b.Free;
     Application.ProcessMessages;
   end;
   ts.Free;
