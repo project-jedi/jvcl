@@ -54,8 +54,8 @@ type
     { Private declarations }
     grabber : TJvUrlListGrabber;
     procedure DoHandleError(Sender: TObject; ErrorMsg: string);
-    procedure DoProgressEvent(Sender: TObject; Position: Integer;
-      Url: string);
+    procedure DoProgressEvent(Sender: TObject; Position, TotalSize: Int64;
+      Url: string; var Continue: Boolean);
   public
     { Public declarations }
     procedure grabberConnectionClosed(Sender : TJvUrlListGrabber; Grabber : TJvCustomUrlGrabber);
@@ -129,7 +129,7 @@ begin
   end;
 end;
 
-procedure TfrmMain.DoProgressEvent(Sender: TObject; Position: Integer; Url: string);
+procedure TfrmMain.DoProgressEvent(Sender: TObject; Position, TotalSize: Int64; Url: string; var Continue: Boolean);
 begin
   memExplanation.Lines.Add(Format('Url: %s, Position: %d',[Url, Position]));
 end;
