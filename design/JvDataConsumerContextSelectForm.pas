@@ -55,12 +55,7 @@ implementation
 uses
   JvContextProvider, JvTypes, JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function ConsumerSelectContext(AConsumer: IJvDataConsumer): Boolean;
 var

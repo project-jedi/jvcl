@@ -88,12 +88,7 @@ implementation
 uses
   JvConsts, JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 function IsColorProviderDesingForm(Form: TJvBaseDesign; const Args: array of const): Boolean;
 begin

@@ -164,12 +164,7 @@ uses
   JclDateTime,
   JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure DecodeTimeStampTime(const Stamp: TTimeStamp;
   var ADays, AHour, AMinute, ASecond, AMSec: Word);

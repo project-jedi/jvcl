@@ -81,12 +81,7 @@ uses
   Registry,
   JvDsgnConsts;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 const
   cLastOpenFolder = 'LastOpenFolder';

@@ -36,7 +36,7 @@ uses
   {$IFDEF VisualCLX}
   QComCtrlsEx,
   {$ENDIF VisualCLX}
-  JvGridPrinter, JvComponent;
+  JvGridPrinter, JvComponent, QExtDlgs;
 
 type
   TJvGridPreviewForm = class(TJvForm)
@@ -105,12 +105,7 @@ uses
   {$ENDIF UNITVERSIONING}
   JvPaintFX, JvConsts, JvResources;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 var
   RowHeights: array of Integer;

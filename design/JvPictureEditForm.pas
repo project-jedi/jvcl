@@ -103,23 +103,14 @@ implementation
 
 uses
   TypInfo, SysUtils,
-  {$IFDEF VCL}
   Clipbrd, Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QClipbrd, QConsts,
-  {$ENDIF VisualCLX}
   {$IFDEF MSWINDOWS}
   ShellAPI, LibHelp,
   {$ENDIF MSWINDOWS}
   JvJVCLUtils, JvJCLUtils, JvConsts, JvDsgnConsts, JvDirectoryListForm, JvTypes;
 
-{$IFDEF VCL}
+
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 procedure CopyPicture(Pict: TPicture; BackColor: TColor);
 begin

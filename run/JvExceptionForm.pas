@@ -30,15 +30,10 @@ unit JvExceptionForm;
 interface
 
 uses
-  {$IFDEF MSWINDOWS}
   Windows,
-  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
   Messages, ComObj,
   {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  Types, QWindows,
-  {$ENDIF VisualCLX}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   JvLabel, JvComponent, JvExControls;
 
@@ -100,12 +95,7 @@ uses
   {$ENDIF COMPILER5}
   JvJCLUtils, JvConsts, JvResources;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 var
   JvErrorDialog: TJvErrorDialog = nil;

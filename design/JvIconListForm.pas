@@ -116,21 +116,11 @@ implementation
 
 uses
   SysUtils,
-  {$IFDEF VCL}
   Clipbrd, Consts,
-  {$ENDIF VCL}
-  {$IFDEF VisualCLX}
-  QClipbrd, QConsts,
-  {$ENDIF VisualCLX}
   Math,
   JvJVCLUtils, JvJCLUtils, JvDsgnConsts, JvAni;
 
-{$IFDEF VCL}
 {$R *.dfm}
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-{$R *.xfm}
-{$ENDIF VisualCLX}
 
 const
   sSlot = 'Slot%d';
