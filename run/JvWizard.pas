@@ -463,6 +463,9 @@ type
     property Pages[Index: Integer]: TJvWizardCustomPage read GetPage;
     property PageCount: Integer read GetPageCount;
     property PageIndex: Integer read FPageIndex write SetPageIndex;
+  published
+    property Enabled; //WP.Dec 2004.
+    property Visible; //WP.Dec 2004.
   end;
 
   TJvWizardImage = class(TPersistent)
