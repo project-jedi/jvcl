@@ -72,6 +72,7 @@ type
     procedure OnOkButtonClick(Sender : TObject);
     procedure OnCancelButtonClick(Sender : TObject);
     procedure OnListBoxChange(Sender : TObject);
+    procedure SelectFormDestroying(Sender: TObject);
 
     procedure LoadSelectList;
     procedure StoreSelectList;
@@ -171,6 +172,14 @@ begin
     IComboBoxData.Value := IListBoxItems.Items[Index];
 end;
 
+procedure tJvAppStoreSelectList.SelectFormDestroying(Sender: TObject);
+begin
+  fIComboBoxItems := nil;
+  fIComboBoxData := nil;
+  fIListBoxItems := nil;
+  fIListBoxData := nil;
+end;
+
 procedure tJvAppStoreSelectList.CreateDialog(aOperation : tJvAppStoreSelectListOperation; aCaption : string = '');
 var
   MainPanel, ButtonPanel, ListBoxPanel, ComboBoxPanel : TWinControl;
@@ -191,6 +200,7 @@ begin
     FormStyle := fsNormal;
     BorderStyle := bsDialog;
     Position := poScreenCenter;
+    OnDestroy := SelectFormDestroying;
   end;
 
   if aCaption <> '' then
