@@ -84,8 +84,8 @@ begin
     TJvSpinEdit, TJvIPAddress]);
   RegisterComponents(RsPaletteImageAnimator, [TJvImage, TJvImageList]);
   RegisterComponents(RsPaletteBarPanel, [
-    TJvPageControl,  TJvTabDefaultPainter, TJvTabOutlookPainter,
-    TJvProgressBar, TJvStatusBar, TJvTabControl, TJvToolBar, TJvControlBar, TJvCoolBar,
+    TJvPageControl,  TJvTabControl, TJvTabDefaultPainter, 
+    TJvProgressBar, TJvStatusBar, TJvToolBar, TJvControlBar, TJvCoolBar,
     TJvGroupBox, TJvHeaderControl, TJvPanel, TJvBevel,
     TJvSecretPanel {TJvTransparentPanel}]);
   RegisterComponents(RsPaletteLabel, [TJvLabel, TJvStaticText]);

@@ -308,13 +308,6 @@ type
     property ShowFocus:boolean read FShowFocus write SetShowFocus default False;
   end;
 
-  TJvTabOutlookPainter = class(TJvTabDefaultPainter)
-  protected
-    procedure DrawTab(AControl: TCustomTabControl; Canvas: TCanvas;
-      Images: TCustomImageList; ImageIndex: Integer; const Caption: string;
-      const Rect: TRect; Active, Enabled: Boolean); override;
-  end;
-
   TJvTabControl = class(TJvExTabControl)
   private
     FTabPainter: TJvTabControlPainter;
@@ -1320,79 +1313,6 @@ end;
 function TJvTabDefaultPainter.IsInactiveFontStored: boolean;
 begin
   Result := true;
-end;
-
-// === TJvTabOutlookPainter ====================================================
-
-procedure TJvTabOutlookPainter.DrawTab(AControl: TCustomTabControl;
-  Canvas: TCanvas; Images: TCustomImageList; ImageIndex: Integer;
-  const Caption: string; const Rect: TRect; Active, Enabled: Boolean);
-var
-  R: TRect;
-  SaveState: integer;
-begin
-  R := Rect;
-  InflateRect(R, 0, -1);
-  if not Enabled then
-  begin
-    GradientFillRect(Canvas, R, DisabledColorFrom, DisabledColorTo, DisabledGradientDirection, 255);
-    Canvas.Font := DisabledFont;
-  end
-  else if Active then
-  begin
-    GradientFillRect(Canvas, R, ActiveColorFrom, ActiveColorTo, ActiveGradientDirection, 255);
-    Canvas.Font := ActiveFont;
-  end
-  else
-  begin
-    GradientFillRect(Canvas, R, InactiveColorFrom, InactiveColorTo, InactiveGradientDirection, 255);
-    Canvas.Font := InactiveFont;
-  end;
-  if Assigned(Images) then
-  begin
-    SaveState := SaveDC(Canvas.Handle);
-    try
-      Images.Draw(Canvas, R.Left + ((R.Right - R.Left) - Images.Width) div 2, R.Top + (R.Bottom - R.Top) div 4 - Images.Height div 2, ImageIndex, Enabled);
-    finally
-      RestoreDC(Canvas.Handle, SaveState);
-    end;
-  end;
-  OffsetRect(R, 0, (R.Bottom - R.Top) div 2);
-  Canvas.Pen.Color := clGrayText;
-  if Active then
-  begin
-    Canvas.MoveTo(R.Left + 4, R.Top);
-    Canvas.LineTo(R.Right - 5, R.Top);
-    Canvas.Pen.Color := clHighlightText;
-    Canvas.MoveTo(R.Left + 5, R.Top + 1);
-    Canvas.LineTo(R.Right - 4, R.Top + 1);
-    OffsetRect(R, 0, 2);
-  end
-  else
-  begin
-    Canvas.MoveTo(R.Left + 1, R.Top + 1);
-    Canvas.LineTo(R.Right - 2, R.Top + 1);
-    Canvas.Pen.Color := clHighlightText;
-    Canvas.MoveTo(R.Left + 2, R.Top + 2);
-    Canvas.LineTo(R.Right - 1, R.Top + 2);
-    OffsetRect(R, 0, 3);
-  end;
-  R.Bottom := Rect.Bottom;
-  if Caption <> '' then
-  begin
-    SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
-    InflateRect(R, -2, -2);
-    if not Enabled then
-    begin
-      Canvas.Font := DisabledFont;
-      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
-      OffsetRect(R, 1, 1);
-      Canvas.Font.Color := clHighlightText;
-      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
-    end
-    else
-      DrawText(Canvas.Handle, PChar(Caption), Length(Caption), R, DT_SINGLELINE or DT_VCENTER or DT_CENTER);
-  end;
 end;
 
 // === TJvTabControl ========================================================
