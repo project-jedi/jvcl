@@ -165,13 +165,13 @@ type
   TJvCustomSpinEdit = class(TJvCustomMaskEdit)
   private
     //Polaris
-    FFocused: Boolean;
-    FCheckOptions: TJvCheckOptions;
-    FLCheckMinValue: Boolean;
-    FLCheckMaxValue: Boolean;
-    FCheckMinValue: Boolean;
     FCheckMaxValue: Boolean;
+    FCheckMinValue: Boolean;
+    FCheckOptions: TJvCheckOptions;
     FDisplayFormat: string;
+    FFocused: Boolean;
+    FLCheckMaxValue: Boolean;
+    FLCheckMinValue: Boolean;
     //<Polaris
     FAlignment: TAlignment;
     FMinValue: Extended;
@@ -194,12 +194,12 @@ type
     FThousands: Boolean; // New
 
     //Polaris
-    procedure SetMinValue(NewValue: Extended);
-    procedure SetMaxValue(NewValue: Extended);
-    procedure SetCheckMinValue(NewValue: Boolean);
+    function StoreCheckMaxValue: Boolean;
     function StoreCheckMinValue: Boolean;
     procedure SetCheckMaxValue(NewValue: Boolean);
-    function StoreCheckMaxValue: Boolean;
+    procedure SetCheckMinValue(NewValue: Boolean);
+    procedure SetMaxValue(NewValue: Extended);
+    procedure SetMinValue(NewValue: Extended);
 
     function CheckDefaultRange(CheckMax: Boolean): Boolean;
     procedure SetDisplayFormat(const Value: string);
@@ -209,63 +209,63 @@ type
     procedure SetFocused(Value: Boolean);
     //procedure CheckRange(const AOption: TJvCheckOption);
 
-    function GetButtonKind: TSpinButtonKind;
-    procedure SetButtonKind(Value: TSpinButtonKind);
-    procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
-    function GetMinHeight: Integer;
-    procedure GetTextHeight(var SysHeight, Height: Integer);
     //function TryGetValue(var Value: Extended): Boolean; // New
     function GetAsInteger: Longint;
+    function GetButtonKind: TSpinButtonKind;
+    function GetButtonWidth: Integer;
+    function GetMinHeight: Integer;
     function IsIncrementStored: Boolean;
     function IsMaxStored: Boolean;
     function IsMinStored: Boolean;
     function IsValueStored: Boolean;
+    procedure GetTextHeight(var SysHeight, Height: Integer);
+    procedure ResizeButton;
+    procedure SetAlignment(Value: TAlignment);
     procedure SetArrowKeys(Value: Boolean);
     procedure SetAsInteger(NewValue: Longint);
+    procedure SetButtonKind(Value: TSpinButtonKind);
     procedure SetDecimal(NewValue: Byte);
-    function GetButtonWidth: Integer;
-    procedure SetThousands(const Value: Boolean);
-    procedure ResizeButton;
     procedure SetEditRect;
-    procedure SetAlignment(Value: TAlignment);
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
-    procedure CMEnter(var Msg: TMessage); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
-    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
-    procedure WMCut(var Msg: TWMCut); message WM_CUT;
-    procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
+    procedure SetThousands(const Value: Boolean);
+    procedure UpDownClick(Sender: TObject; Button: TUDBtnType);
+    procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMEnabledChanged(var Msg: TMessage); message CM_ENABLEDCHANGED;
+    procedure CMEnter(var Msg: TMessage); message CM_ENTER;
+    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure CMFontChanged(var Msg: TMessage); message CM_FONTCHANGED;
-    procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
+    procedure WMCut(var Msg: TWMCut); message WM_CUT;
+    procedure WMKillFocus(var Message: TWMKillFocus); message WM_KILLFOCUS;
+    procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
+    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
     //Polaris up to protected
     FButtonKind: TSpinButtonKind;
-    procedure RecreateButton;
     function CheckValue(NewValue: Extended): Extended;
     function CheckValueRange(NewValue: Extended; RaiseOnError: Boolean): Extended;
-    procedure SetValue(NewValue: Extended); virtual; abstract;
     function GetValue: Extended; virtual; abstract;
-    procedure SetValueType(NewType: TValueType); virtual;
     procedure DataChanged; virtual;
+    procedure RecreateButton;
+    procedure SetValue(NewValue: Extended); virtual; abstract;
+    procedure SetValueType(NewType: TValueType); virtual;
     //Polaris up to protected
 
     //Polaris
     procedure Loaded; override;
     function DefaultDisplayFormat: string; virtual;
-    property DisplayFormat: string read FDisplayFormat write SetDisplayFormat
-      stored IsFormatStored;
+    property DisplayFormat: string read FDisplayFormat write SetDisplayFormat stored IsFormatStored;
     //    procedure DefinePropertyes(Filer: TFiler); override;
     //Polaris
 
-    procedure Change; override;
     function IsValidChar(Key: Char): Boolean; virtual;
-    procedure UpClick(Sender: TObject); virtual;
+    procedure Change; override;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure CreateWnd; override;
     procedure DownClick(Sender: TObject); virtual;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
+    procedure UpClick(Sender: TObject); virtual;
     property ButtonWidth: Integer read GetButtonWidth;
   public
     constructor Create(AOwner: TComponent); override;
@@ -413,6 +413,13 @@ const
   InitRepeatPause = 400; { pause before repeat timer (ms) }
   RepeatPause = 100;
 
+function DefBtnWidth: Integer;
+begin
+  Result := GetSystemMetrics(SM_CXVSCROLL);
+  if Result > 15 then
+    Result := 15;
+end;
+
 function RemoveThousands(const AValue: string): string;
 begin
   if DecimalSeparator <> ThousandSeparator then
@@ -440,6 +447,33 @@ begin
 end;
 
 //=== TJvSpinButton ==========================================================
+
+procedure TJvSpinButton.BottomClick;
+begin
+  if Assigned(FOnBottomClick) then
+  begin
+    FOnBottomClick(Self);
+    if not (csLButtonDown in ControlState) then
+      FDown := sbNotDown;
+  end;
+end;
+
+procedure TJvSpinButton.CMEnabledChanged(var Msg: TMessage);
+begin
+  inherited;
+  //>Polaris
+  //  FInvalidate := True;
+  //  Invalidate;
+  GlyphChanged(Self);
+  //<Polaris
+end;
+
+procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
+begin
+  inherited;
+  { The buttons we draw are buffered, thus we need to repaint them to theme changes etc. }
+  GlyphChanged(Self);
+end;
 
 constructor TJvSpinButton.Create(AOwner: TComponent);
 begin
@@ -481,94 +515,6 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvSpinButton.GlyphChanged(Sender: TObject);
-begin
-  FInvalidate := True;
-  Invalidate;
-end;
-
-function TJvSpinButton.GetUpGlyph: TBitmap;
-begin
-  Result := FUpBitmap;
-end;
-
-procedure TJvSpinButton.SetUpGlyph(Value: TBitmap);
-begin
-  if Value <> nil then
-    FUpBitmap.Assign(Value)
-      //  else FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
-//>Polaris
-  else
-    FUpBitmap.Handle := 0;
-end;
-
-function TJvSpinButton.GetDownGlyph: TBitmap;
-begin
-  Result := FDownBitmap;
-end;
-
-procedure TJvSpinButton.SetDownGlyph(Value: TBitmap);
-begin
-  if Value <> nil then
-    FDownBitmap.Assign(Value)
-      //  else FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
-//Polaris
-  else
-    FDownBitmap.Handle := 0;
-end;
-
-procedure TJvSpinButton.SetDown(Value: TSpinButtonState);
-var
-  OldState: TSpinButtonState;
-begin
-  OldState := FDown;
-  FDown := Value;
-  if OldState <> FDown then
-    Repaint;
-end;
-
-procedure TJvSpinButton.SetFocusControl(Value: TWinControl);
-begin
-  FFocusControl := Value;
-  if Value <> nil then
-    Value.FreeNotification(Self);
-end;
-
-procedure TJvSpinButton.Notification(AComponent: TComponent;
-  Operation: TOperation);
-begin
-  inherited Notification(AComponent, Operation);
-  if (Operation = opRemove) and (AComponent = FFocusControl) then
-    FFocusControl := nil;
-end;
-
-procedure TJvSpinButton.Paint;
-begin
-  if not Enabled and not (csDesigning in ComponentState) then
-    FDragging := False;
-  if (FNotDownBtn.Height <> Height) or (FNotDownBtn.Width <> Width) or
-    FInvalidate then
-    DrawAllBitmap;
-  FInvalidate := False;
-  with Canvas do
-    case FDown of
-      sbNotDown:
-        {$IFDEF JVCLThemesEnabled}
-        if FMouseInTopBtn then
-          Draw(0, 0, FTopHotBtn)
-        else
-        if FMouseInBottomBtn then
-          Draw(0, 0, FBottomHotBtn)
-        else
-        {$ENDIF}
-          Draw(0, 0, FNotDownBtn);
-      sbTopDown:
-        Draw(0, 0, FTopDownBtn);
-      sbBottomDown:
-        Draw(0, 0, FBottomDownBtn);
-    end;
-end;
-
 procedure TJvSpinButton.DrawAllBitmap;
 begin
   {$IFDEF JVCLThemesEnabled}
@@ -587,18 +533,6 @@ begin
   DrawBitmap(FTopDownBtn, sbTopDown);
   DrawBitmap(FBottomDownBtn, sbBottomDown);
   DrawBitmap(FNotDownBtn, sbNotDown);
-end;
-
-function TJvSpinButton.MouseInBottomBtn(const P: TPoint): Boolean;
-begin
-  with P do
-    {$IFNDEF POLESPIN}
-    Result := Y > (-(Width / Height) * X + Height) then
-      {$ELSE}
-    Result :=
-      ((FButtonStyle = sbsDefault)) and (Y > (-(Width / Height) * X + Height)) or
-      ((FButtonStyle = sbsClassic) and (Y > (Height div 2)));
-  {$ENDIF}
 end;
 
 {$IFDEF JVCLThemesEnabled}
@@ -822,40 +756,6 @@ begin
     TemplateButtons[bpsPressed].Free;
   end;
 end;
-
-procedure TJvSpinButton.WndProc(var Message: TMessage);
-var
-  P: TPoint;
-begin
-  inherited WndProc(Message);
-
-  if ThemeServices.ThemesEnabled then
-  begin
-    if Message.Msg = CM_MOUSEENTER then
-    begin
-      if not FMouseInTopBtn and not FMouseInBottomBtn then
-      begin
-        GetCursorPos(P);
-        if MouseInBottomBtn(ScreenToClient(P)) then
-          FMouseInBottomBtn := True
-        else
-          FMouseInTopBtn := True;
-        Repaint;
-      end;
-    end
-    else
-      if Message.Msg = CM_MOUSELEAVE then
-    begin
-      if FMouseInTopBtn or FMouseInBottomBtn then
-      begin
-        FMouseInTopBtn := False;
-        FMouseInBottomBtn := False;
-        Repaint;
-      end;
-    end;
-  end;
-end;
-
 {$ENDIF JVCLThemesEnabled}
 
 (*Polaris
@@ -947,12 +847,11 @@ begin
 end;
 *)
 type
-  TColorArray = array[0..2] of TColor;
+  TColorArray = array [0..2] of TColor;
 
 procedure TJvSpinButton.DrawBitmap(ABitmap: TBitmap; ADownState: TSpinButtonState);
 const
   CColors: TColorArray = (clBtnShadow, clBtnHighlight, clWindowFrame {clBtnFace});
-
 var
   R, RSrc: TRect;
   DRect: Integer;
@@ -1109,53 +1008,20 @@ begin
   end;
 end;
 
-procedure TJvSpinButton.CMEnabledChanged(var Msg: TMessage);
+function TJvSpinButton.GetDownGlyph: TBitmap;
 begin
-  inherited;
-  //>Polaris
-  //  FInvalidate := True;
-  //  Invalidate;
-  GlyphChanged(Self);
-  //<Polaris
+  Result := FDownBitmap;
 end;
 
-procedure TJvSpinButton.CMSysColorChange(var Msg: TMessage);
+function TJvSpinButton.GetUpGlyph: TBitmap;
 begin
-  inherited;
+  Result := FUpBitmap;
+end;
+
+procedure TJvSpinButton.GlyphChanged(Sender: TObject);
+begin
+  FInvalidate := True;
   Invalidate;
-  DrawAllBitmap;
-end;
-
-//>Polaris
-
-procedure TJvSpinButton.SetButtonStyle(Value: TJvSpinButtonStyle);
-begin
-  if Value <> FButtonStyle then
-  begin
-    FButtonStyle := Value;
-    GlyphChanged(Self);
-  end;
-end;
-//<Polaris
-
-procedure TJvSpinButton.TopClick;
-begin
-  if Assigned(FOnTopClick) then
-  begin
-    FOnTopClick(Self);
-    if not (csLButtonDown in ControlState) then
-      FDown := sbNotDown;
-  end;
-end;
-
-procedure TJvSpinButton.BottomClick;
-begin
-  if Assigned(FOnBottomClick) then
-  begin
-    FOnBottomClick(Self);
-    if not (csLButtonDown in ControlState) then
-      FDown := sbNotDown;
-  end;
 end;
 
 procedure TJvSpinButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -1200,6 +1066,18 @@ begin
     end;
     FDragging := True;
   end;
+end;
+
+function TJvSpinButton.MouseInBottomBtn(const P: TPoint): Boolean;
+begin
+  with P do
+    {$IFNDEF POLESPIN}
+    Result := Y > (-(Width / Height) * X + Height) then
+    {$ELSE}
+    Result :=
+      ((FButtonStyle = sbsDefault)) and (Y > (-(Width / Height) * X + Height)) or
+      ((FButtonStyle = sbsClassic) and (Y > (Height div 2)));
+    {$ENDIF}
 end;
 
 procedure TJvSpinButton.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -1287,6 +1165,90 @@ begin
   end;
 end;
 
+procedure TJvSpinButton.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) and (AComponent = FFocusControl) then
+    FFocusControl := nil;
+end;
+
+procedure TJvSpinButton.Paint;
+begin
+  if not Enabled and not (csDesigning in ComponentState) then
+    FDragging := False;
+  if (FNotDownBtn.Height <> Height) or (FNotDownBtn.Width <> Width) or
+    FInvalidate then
+    DrawAllBitmap;
+  FInvalidate := False;
+  with Canvas do
+    case FDown of
+      sbNotDown:
+        {$IFDEF JVCLThemesEnabled}
+        if FMouseInTopBtn then
+          Draw(0, 0, FTopHotBtn)
+        else
+        if FMouseInBottomBtn then
+          Draw(0, 0, FBottomHotBtn)
+        else
+        {$ENDIF}
+          Draw(0, 0, FNotDownBtn);
+      sbTopDown:
+        Draw(0, 0, FTopDownBtn);
+      sbBottomDown:
+        Draw(0, 0, FBottomDownBtn);
+    end;
+end;
+
+//>Polaris
+
+procedure TJvSpinButton.SetButtonStyle(Value: TJvSpinButtonStyle);
+begin
+  if Value <> FButtonStyle then
+  begin
+    FButtonStyle := Value;
+    GlyphChanged(Self);
+  end;
+end;
+//<Polaris
+
+procedure TJvSpinButton.SetDown(Value: TSpinButtonState);
+var
+  OldState: TSpinButtonState;
+begin
+  OldState := FDown;
+  FDown := Value;
+  if OldState <> FDown then
+    Repaint;
+end;
+
+procedure TJvSpinButton.SetDownGlyph(Value: TBitmap);
+begin
+  if Value <> nil then
+    FDownBitmap.Assign(Value)
+      //  else FDownBitmap.Handle := LoadBitmap(HInstance, sSpinDownBtn);
+//Polaris
+  else
+    FDownBitmap.Handle := 0;
+end;
+
+procedure TJvSpinButton.SetFocusControl(Value: TWinControl);
+begin
+  FFocusControl := Value;
+  if Value <> nil then
+    Value.FreeNotification(Self);
+end;
+
+procedure TJvSpinButton.SetUpGlyph(Value: TBitmap);
+begin
+  if Value <> nil then
+    FUpBitmap.Assign(Value)
+      //  else FUpBitmap.Handle := LoadBitmap(HInstance, sSpinUpBtn);
+//>Polaris
+  else
+    FUpBitmap.Handle := 0;
+end;
+
 procedure TJvSpinButton.TimerExpired(Sender: TObject);
 begin
   FRepeatTimer.Interval := RepeatPause;
@@ -1304,12 +1266,50 @@ begin
   end;
 end;
 
-function DefBtnWidth: Integer;
+procedure TJvSpinButton.TopClick;
 begin
-  Result := GetSystemMetrics(SM_CXVSCROLL);
-  if Result > 15 then
-    Result := 15;
+  if Assigned(FOnTopClick) then
+  begin
+    FOnTopClick(Self);
+    if not (csLButtonDown in ControlState) then
+      FDown := sbNotDown;
+  end;
 end;
+
+{$IFDEF JVCLThemesEnabled}
+procedure TJvSpinButton.WndProc(var Message: TMessage);
+var
+  P: TPoint;
+begin
+  inherited WndProc(Message);
+
+  if ThemeServices.ThemesEnabled then
+  begin
+    if Message.Msg = CM_MOUSEENTER then
+    begin
+      if not FMouseInTopBtn and not FMouseInBottomBtn then
+      begin
+        GetCursorPos(P);
+        if MouseInBottomBtn(ScreenToClient(P)) then
+          FMouseInBottomBtn := True
+        else
+          FMouseInTopBtn := True;
+        Repaint;
+      end;
+    end
+    else
+      if Message.Msg = CM_MOUSELEAVE then
+    begin
+      if FMouseInTopBtn or FMouseInBottomBtn then
+      begin
+        FMouseInTopBtn := False;
+        FMouseInBottomBtn := False;
+        Repaint;
+      end;
+    end;
+  end;
+end;
+{$ENDIF JVCLThemesEnabled}
 
 //=== TJvUpDown ==============================================================
 
@@ -1370,11 +1370,6 @@ begin
   ScrollMessage(TWMVScroll(Msg));
 end;
 
-procedure TJvUpDown.WMVScroll(var Msg: TWMVScroll);
-begin
-  ScrollMessage(Msg);
-end;
-
 procedure TJvUpDown.WMSize(var Msg: TWMSize);
 begin
   inherited;
@@ -1382,7 +1377,143 @@ begin
     Width := DefBtnWidth;
 end;
 
+procedure TJvUpDown.WMVScroll(var Msg: TWMVScroll);
+begin
+  ScrollMessage(Msg);
+end;
+
 //=== TJvCustomSpinEdit ======================================================
+
+procedure TJvCustomSpinEdit.Change;
+var
+//  OldText: string;
+  OldSelStart: Integer;
+begin
+  { (rb) Maybe move to CMTextChanged }
+  if FChanging or not HandleAllocated then
+    Exit;
+
+  FChanging := True;
+  try
+//    OldText := inherited Text;
+    OldSelStart := SelStart;
+    try
+      if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
+      begin
+        CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions)); 
+        SetValue(CheckValue(Value));
+      end;
+    except
+      SetValue(CheckValue(Value));
+    end;
+  finally
+    FChanging := False;
+  end;
+  if FOldValue <> Value then
+  begin
+    inherited Change;
+    FOldValue := Value;
+  end;
+//  if CompareText(inherited Text, OldText) <> 0 then
+//    inherited Change;
+
+  SelStart := OldSelStart;
+end;
+
+function TJvCustomSpinEdit.CheckDefaultRange(CheckMax: Boolean): Boolean;
+begin
+  Result := (FMinValue <> 0) or (FMaxValue <> 0);
+end;
+
+function TJvCustomSpinEdit.CheckValue(NewValue: Extended): Extended;
+begin
+  Result := NewValue;
+  {
+    if (FMaxValue <> FMinValue) then begin
+      if NewValue < FMinValue then
+        Result := FMinValue
+      else if NewValue > FMaxValue then
+        Result := FMaxValue;
+    end;
+  }
+  if FCheckMinValue or FCheckMaxValue then
+  begin
+    if FCheckMinValue and (NewValue < FMinValue) then
+      Result := FMinValue;
+    if FCheckMaxValue and (NewValue > FMaxValue) then
+      Result := FMaxValue;
+  end;
+end;
+
+//Polaris
+function TJvCustomSpinEdit.CheckValueRange(NewValue: Extended; RaiseOnError: Boolean): Extended;
+begin
+  Result := CheckValue(NewValue);
+  if (FCheckMinValue or FCheckMaxValue) and
+    RaiseOnError and (Result <> NewValue) then
+    raise ERangeError.CreateFmt(ReplaceStr(SOutOfRange, '%d', '%g'),
+      [FMinValue, FMaxValue]);
+end;
+
+procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);
+begin
+  inherited;
+  ResizeButton;
+  SetEditRect;
+end;
+
+procedure TJvCustomSpinEdit.CMCtl3DChanged(var Msg: TMessage);
+begin
+  inherited;
+  ResizeButton;
+  SetEditRect;
+end;
+
+procedure TJvCustomSpinEdit.CMEnabledChanged(var Msg: TMessage);
+begin
+  inherited;
+  if FUpDown <> nil then
+  begin
+    FUpDown.Enabled := Enabled;
+    ResizeButton;
+  end;
+  if FButton <> nil then
+    FButton.Enabled := Enabled;
+end;
+
+procedure TJvCustomSpinEdit.CMEnter(var Msg: TMessage);
+begin
+  SetFocused(True);
+  if AutoSelect and not (csLButtonDown in ControlState) then
+    SelectAll;
+  inherited;
+end;
+
+procedure TJvCustomSpinEdit.CMExit(var Msg: TCMExit);
+begin
+  SetFocused(False);
+  try
+    if not (csDesigning in ComponentState) and (coCheckOnExit in CheckOptions) then
+    begin
+      CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions));
+      SetValue(CheckValue(Value));
+    end;
+  except
+    SetFocused(True);
+    SelectAll;
+    if CanFocus then
+      SetFocus;
+    raise
+  end;
+  inherited;
+end;
+
+procedure TJvCustomSpinEdit.CMFontChanged(var Msg: TMessage);
+begin
+  inherited;
+  ResizeButton;
+  SetEditRect;
+end;
 
 constructor TJvCustomSpinEdit.Create(AOwner: TComponent);
 begin
@@ -1407,6 +1538,44 @@ begin
   RecreateButton;
 end;
 
+procedure TJvCustomSpinEdit.CreateParams(var Params: TCreateParams);
+const
+  Alignments: array [Boolean, TAlignment] of DWORD =
+    ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
+begin
+  inherited CreateParams(Params);
+  // Polaris:
+  //    or ES_MULTILINE
+  Params.Style := Params.Style or WS_CLIPCHILDREN or
+    Alignments[UseRightToLeftAlignment, FAlignment];
+end;
+
+procedure TJvCustomSpinEdit.CreateWnd;
+begin
+  inherited CreateWnd;
+  SetEditRect;
+end;
+
+procedure TJvCustomSpinEdit.DataChanged;
+var
+  EditFormat: string;
+begin
+  if (ValueType = vtFloat) and FFocused and (FDisplayFormat <> EmptyStr) then
+  begin
+    EditFormat := '0';
+    if FDecimal > 0 then
+      EditFormat := EditFormat + '.' + MakeStr('#', FDecimal);
+    EditText := FormatFloat(EditFormat, Value);
+  end;
+end;
+
+//Polaris
+
+function TJvCustomSpinEdit.DefaultDisplayFormat: string;
+begin
+  Result := ',0.##';
+end;
+
 destructor TJvCustomSpinEdit.Destroy;
 begin
   Destroying;
@@ -1424,6 +1593,216 @@ begin
     FUpDown := nil;
   end;
   inherited Destroy;
+end;
+
+procedure TJvCustomSpinEdit.DownClick(Sender: TObject);
+var
+  OldText: string;
+begin
+  if ReadOnly then
+    MessageBeep(0)
+  else
+  begin
+    FChanging := True;
+    try
+      OldText := inherited Text;
+      Value := Value - FIncrement;
+    finally
+      FChanging := False;
+    end;
+    if CompareText(inherited Text, OldText) <> 0 then
+    begin
+      Modified := True;
+      Change;
+    end;
+    if Assigned(FOnBottomClick) then
+      FOnBottomClick(Self);
+  end;
+end;
+
+{function TJvCustomSpinEdit.TryGetValue(var Value: Extended): Boolean;
+var
+  S: string;
+begin
+  try
+    S := StringReplace(Text, ThousandSeparator, '', [rfReplaceAll]);
+    if ValueType = vtFloat then
+      Value := StrToFloat(S)
+    else
+      if ValueType = vtHex then
+        Value := StrToInt('$' + Text)
+      else
+        Value := StrToInt(S);
+    Result := True;
+  except
+    if ValueType = vtFloat then
+      Value := FMinValue
+    else
+      Value := Trunc(FMinValue);
+    Result := False;
+  end;
+end;}
+
+function TJvCustomSpinEdit.GetAsInteger: Longint;
+begin
+  Result := Trunc(GetValue);
+end;
+
+function TJvCustomSpinEdit.GetButtonKind: TSpinButtonKind;
+begin
+  if NewStyleControls then
+    Result := FButtonKind
+  {$IFNDEF POLESPIN}
+  else
+    Result := bkDiagonal;
+  {$ELSE}
+    //>Polaris
+  else
+  begin
+    Result := bkDiagonal;
+    if Assigned(FButton) and (FButton.ButtonStyle = sbsClassic) then
+      Result := bkClassic;
+  end;
+  //<Polaris
+  {$ENDIF}
+end;
+
+function TJvCustomSpinEdit.GetButtonWidth: Integer;
+begin
+  if FUpDown <> nil then
+    Result := FUpDown.Width
+  else
+  if FButton <> nil then
+    Result := FButton.Width
+  else
+    Result := DefBtnWidth;
+end;
+
+function TJvCustomSpinEdit.GetMinHeight: Integer;
+var
+  I, H: Integer;
+begin
+  GetTextHeight(I, H);
+  if I > H then
+    I := H;
+  Result := H + (GetSystemMetrics(SM_CYBORDER) * 4) + 1;
+end;
+
+procedure TJvCustomSpinEdit.GetTextHeight(var SysHeight, Height: Integer);
+var
+  DC: HDC;
+  SaveFont: HFONT;
+  SysMetrics, Metrics: TTextMetric;
+begin
+  DC := GetDC(0);
+  GetTextMetrics(DC, SysMetrics);
+  SaveFont := SelectObject(DC, Font.Handle);
+  GetTextMetrics(DC, Metrics);
+  SelectObject(DC, SaveFont);
+  ReleaseDC(0, DC);
+  SysHeight := SysMetrics.tmHeight;
+  Height := Metrics.tmHeight;
+end;
+
+function TJvCustomSpinEdit.IsFormatStored: Boolean;
+begin
+  Result := DisplayFormat <> DefaultDisplayFormat;
+end;
+
+function TJvCustomSpinEdit.IsIncrementStored: Boolean;
+begin
+  Result := FIncrement <> 1.0;
+end;
+
+function TJvCustomSpinEdit.IsMaxStored: Boolean;
+begin
+  Result := MaxValue <> 0.0;
+end;
+
+function TJvCustomSpinEdit.IsMinStored: Boolean;
+begin
+  Result := MinValue <> 0.0;
+end;
+
+function TJvCustomSpinEdit.IsValidChar(Key: Char): Boolean;
+var
+  ValidChars: set of Char;
+begin
+  ValidChars := ['+', '-', '0'..'9'];
+  if ValueType = vtFloat then
+  begin
+    if Pos(DecimalSeparator, Text) = 0 then
+    begin
+      if not Thousands or (ThousandSeparator <> '.') then
+        ValidChars := ValidChars + [DecimalSeparator, '.'] // Polaris
+      else
+        ValidChars := ValidChars + [DecimalSeparator];
+    end;
+    if Pos('E', AnsiUpperCase(Text)) = 0 then
+      ValidChars := ValidChars + ['e', 'E'];
+  end
+  else
+  if ValueType = vtHex then
+  begin
+    ValidChars := ValidChars + ['A'..'F', 'a'..'f'];
+  end;
+  Result := (Key in ValidChars) or (Key < #32);
+  if not FEditorEnabled and Result and ((Key >= #32) or
+    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then
+    Result := False;
+end;
+
+function TJvCustomSpinEdit.IsValueStored: Boolean;
+begin
+  Result := GetValue <> 0.0;
+end;
+
+procedure TJvCustomSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  if ArrowKeys and (Key in [VK_UP, VK_DOWN]) then
+  begin
+    if Key = VK_UP then
+      UpClick(Self)
+    else
+    if Key = VK_DOWN then
+      DownClick(Self);
+    Key := 0;
+  end;
+end;
+
+procedure TJvCustomSpinEdit.KeyPress(var Key: Char);
+begin
+  if not IsValidChar(Key) then
+  begin
+    Key := #0;
+    MessageBeep(0)
+  end;
+  //Polaris
+  if (Key = '.') and (not Thousands or (ThousandSeparator <> '.')) then
+    Key := DecimalSeparator;
+
+  if Key <> #0 then
+  begin
+    inherited KeyPress(Key);
+    if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
+    begin
+      { must catch and remove this, since is actually multi-line }
+      GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
+      if Key = Char(VK_RETURN) then
+        Key := #0;
+    end;
+  end;
+end;
+
+//Polaris
+
+procedure TJvCustomSpinEdit.Loaded;
+begin
+  inherited Loaded;
+  FLCheckMinValue := True;
+  FLCheckMaxValue := True;
+  FOldValue := Value;
 end;
 
 procedure TJvCustomSpinEdit.RecreateButton;
@@ -1479,68 +1858,6 @@ begin
   end;
 end;
 
-procedure TJvCustomSpinEdit.SetArrowKeys(Value: Boolean);
-begin
-  FArrowKeys := Value;
-  ResizeButton;
-end;
-
-function TJvCustomSpinEdit.GetButtonKind: TSpinButtonKind;
-begin
-  if NewStyleControls then
-    Result := FButtonKind
-  {$IFNDEF POLESPIN}
-  else
-    Result := bkDiagonal;
-  {$ELSE}
-    //>Polaris
-  else
-  begin
-    Result := bkDiagonal;
-    if Assigned(FButton) and (FButton.ButtonStyle = sbsClassic) then
-      Result := bkClassic;
-  end;
-  //<Polaris
-  {$ENDIF}
-end;
-
-procedure TJvCustomSpinEdit.SetButtonKind(Value: TSpinButtonKind);
-var
-  OldKind: TSpinButtonKind;
-begin
-  OldKind := FButtonKind;
-  FButtonKind := Value;
-  if OldKind <> GetButtonKind then
-  begin
-    RecreateButton;
-    ResizeButton;
-    SetEditRect;
-  end;
-end;
-
-procedure TJvCustomSpinEdit.UpDownClick(Sender: TObject; Button: TUDBtnType);
-begin
-  if TabStop and CanFocus then
-    SetFocus;
-  case Button of
-    btNext:
-      UpClick(Sender);
-    btPrev:
-      DownClick(Sender);
-  end;
-end;
-
-function TJvCustomSpinEdit.GetButtonWidth: Integer;
-begin
-  if FUpDown <> nil then
-    Result := FUpDown.Width
-  else
-  if FButton <> nil then
-    Result := FButton.Width
-  else
-    Result := DefBtnWidth;
-end;
-
 procedure TJvCustomSpinEdit.ResizeButton;
 var
   R: TRect;
@@ -1590,124 +1907,76 @@ begin
     end;
 end;
 
-procedure TJvCustomSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
+procedure TJvCustomSpinEdit.SetAlignment(Value: TAlignment);
 begin
-  inherited KeyDown(Key, Shift);
-  if ArrowKeys and (Key in [VK_UP, VK_DOWN]) then
+  if FAlignment <> Value then
   begin
-    if Key = VK_UP then
-      UpClick(Self)
-    else
-    if Key = VK_DOWN then
-      DownClick(Self);
-    Key := 0;
+    FAlignment := Value;
+    RecreateWnd;
   end;
 end;
 
-procedure TJvCustomSpinEdit.Change;
+procedure TJvCustomSpinEdit.SetArrowKeys(Value: Boolean);
+begin
+  FArrowKeys := Value;
+  ResizeButton;
+end;
+
+procedure TJvCustomSpinEdit.SetAsInteger(NewValue: Longint);
+begin
+  SetValue(NewValue);
+end;
+
+procedure TJvCustomSpinEdit.SetButtonKind(Value: TSpinButtonKind);
 var
-//  OldText: string;
-  OldSelStart: Integer;
+  OldKind: TSpinButtonKind;
 begin
-  { (rb) Maybe move to CMTextChanged }
-  if FChanging or not HandleAllocated then
-    Exit;
-
-  FChanging := True;
-  try
-//    OldText := inherited Text;
-    OldSelStart := SelStart;
-    try
-      if not (csDesigning in ComponentState) and (coCheckOnChange in CheckOptions) then
-      begin
-        CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions)); 
-        SetValue(CheckValue(Value));
-      end;
-    except
-      SetValue(CheckValue(Value));
-    end;
-  finally
-    FChanging := False;
-  end;
-  if FOldValue <> Value then
+  OldKind := FButtonKind;
+  FButtonKind := Value;
+  if OldKind <> GetButtonKind then
   begin
-    inherited Change;
-    FOldValue := Value;
-  end;
-//  if CompareText(inherited Text, OldText) <> 0 then
-//    inherited Change;
-
-  SelStart := OldSelStart;
-end;
-
-procedure TJvCustomSpinEdit.KeyPress(var Key: Char);
-begin
-  if not IsValidChar(Key) then
-  begin
-    Key := #0;
-    MessageBeep(0)
-  end;
-  //Polaris
-  if (Key = '.') and (not Thousands or (ThousandSeparator <> '.')) then
-    Key := DecimalSeparator;
-
-  if Key <> #0 then
-  begin
-    inherited KeyPress(Key);
-    if (Key = Char(VK_RETURN)) or (Key = Char(VK_ESCAPE)) then
-    begin
-      { must catch and remove this, since is actually multi-line }
-      GetParentForm(Self).Perform(CM_DIALOGKEY, Byte(Key), 0);
-      if Key = Char(VK_RETURN) then
-        Key := #0;
-    end;
+    RecreateButton;
+    ResizeButton;
+    SetEditRect;
   end;
 end;
 
-function TJvCustomSpinEdit.IsValidChar(Key: Char): Boolean;
-var
-  ValidChars: set of Char;
+procedure TJvCustomSpinEdit.SetCheckMaxValue(NewValue: Boolean);
 begin
-  ValidChars := ['+', '-', '0'..'9'];
-  if ValueType = vtFloat then
+  if FMaxValue <> 0 then
+    NewValue := True;
+  FCheckMaxValue := NewValue;
+  if csLoading in ComponentState then
+    FLCheckMaxValue := False;
+  SetValue(Value);
+end;
+
+procedure TJvCustomSpinEdit.SetCheckMinValue(NewValue: Boolean);
+begin
+  if FMinValue <> 0 then
+    NewValue := True;
+  FCheckMinValue := NewValue;
+  if csLoading in ComponentState then
+    FLCheckMinValue := False;
+  SetValue(Value);
+end;
+
+procedure TJvCustomSpinEdit.SetDecimal(NewValue: Byte);
+begin
+  if FDecimal <> NewValue then
   begin
-    if Pos(DecimalSeparator, Text) = 0 then
-    begin
-      if not Thousands or (ThousandSeparator <> '.') then
-        ValidChars := ValidChars + [DecimalSeparator, '.'] // Polaris
-      else
-        ValidChars := ValidChars + [DecimalSeparator];
-    end;
-    if Pos('E', AnsiUpperCase(Text)) = 0 then
-      ValidChars := ValidChars + ['e', 'E'];
-  end
-  else
-  if ValueType = vtHex then
-  begin
-    ValidChars := ValidChars + ['A'..'F', 'a'..'f'];
+    FDecimal := NewValue;
+    Value := GetValue;
   end;
-  Result := (Key in ValidChars) or (Key < #32);
-  if not FEditorEnabled and Result and ((Key >= #32) or
-    (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE))) then
-    Result := False;
 end;
 
-procedure TJvCustomSpinEdit.CreateParams(var Params: TCreateParams);
-const
-  Alignments: array [Boolean, TAlignment] of DWORD =
-  ((ES_LEFT, ES_RIGHT, ES_CENTER), (ES_RIGHT, ES_LEFT, ES_CENTER));
+procedure TJvCustomSpinEdit.SetDisplayFormat(const Value: string);
 begin
-  inherited CreateParams(Params);
-  // Polaris:
-  //    or ES_MULTILINE
-  Params.Style := Params.Style or WS_CLIPCHILDREN or
-    Alignments[UseRightToLeftAlignment, FAlignment];
-end;
-
-procedure TJvCustomSpinEdit.CreateWnd;
-begin
-  inherited CreateWnd;
-  SetEditRect;
+  if DisplayFormat <> Value then
+  begin
+    FDisplayFormat := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvCustomSpinEdit.SetEditRect;
@@ -1729,56 +1998,89 @@ begin
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
 end;
 
-procedure TJvCustomSpinEdit.SetAlignment(Value: TAlignment);
+//Polaris
+
+procedure TJvCustomSpinEdit.SetFocused(Value: Boolean);
 begin
-  if FAlignment <> Value then
+  if Value <> FFocused then
   begin
-    FAlignment := Value;
-    RecreateWnd;
+    FFocused := Value;
+    Invalidate;
+    DataChanged;
   end;
 end;
 
-procedure TJvCustomSpinEdit.WMSize(var Msg: TWMSize);
+procedure TJvCustomSpinEdit.SetMaxValue(NewValue: Extended);
 var
-  MinHeight: Integer;
+  Z: Boolean;
+  B: Boolean;
 begin
-  inherited;
-  MinHeight := GetMinHeight;
-  { text edit bug: if size to less than minheight, then edit ctrl does
-    not display the text }
-  if Height < MinHeight then
-    Height := MinHeight
-  else
+  if NewValue <> FMaxValue then
   begin
-    ResizeButton;
-    SetEditRect;
+    B := not StoreCheckMaxValue;
+    Z := (FMaxValue = 0) <> (NewValue = 0);
+    FMaxValue := NewValue;
+    if Z and FLCheckMaxValue then
+    begin
+      SetCheckMaxValue(CheckDefaultRange(True));
+      if B and FLCheckMinValue then
+        SetCheckMinValue(CheckDefaultRange(False));
+    end;
+    SetValue(Value);
   end;
 end;
 
-procedure TJvCustomSpinEdit.GetTextHeight(var SysHeight, Height: Integer);
+procedure TJvCustomSpinEdit.SetMinValue(NewValue: Extended);
 var
-  DC: HDC;
-  SaveFont: HFONT;
-  SysMetrics, Metrics: TTextMetric;
+  Z: Boolean;
+  B: Boolean;
 begin
-  DC := GetDC(0);
-  GetTextMetrics(DC, SysMetrics);
-  SaveFont := SelectObject(DC, Font.Handle);
-  GetTextMetrics(DC, Metrics);
-  SelectObject(DC, SaveFont);
-  ReleaseDC(0, DC);
-  SysHeight := SysMetrics.tmHeight;
-  Height := Metrics.tmHeight;
+  if NewValue <> FMinValue then
+  begin
+    B := not StoreCheckMinValue;
+    Z := (FMinValue = 0) <> (NewValue = 0);
+    FMinValue := NewValue;
+    if Z and FLCheckMinValue then
+    begin
+      SetCheckMinValue(CheckDefaultRange(False));
+      if B and FLCheckMaxValue then
+        SetCheckMaxValue(CheckDefaultRange(True));
+    end;
+    SetValue(Value);
+  end;
 end;
 
-function TJvCustomSpinEdit.GetMinHeight: Integer;
-var
-  I, H: Integer;
+procedure TJvCustomSpinEdit.SetThousands(const Value: Boolean);
 begin
-  GetTextHeight(I, H);
-  if I > H then
-    I := H;
-  Result := H + (GetSystemMetrics(SM_CYBORDER) * 4) + 1;
+  if ValueType <> vtHex then
+    FThousands := Value;
+end;
+
+procedure TJvCustomSpinEdit.SetValueType(NewType: TValueType);
+begin
+  if FValueType <> NewType then
+  begin
+    FValueType := NewType;
+    Value := GetValue;
+    if FValueType in [{$IFDEF CBUILDER}vtInt{$ELSE}vtInteger{$ENDIF}, vtHex] then
+    begin
+      FIncrement := Round(FIncrement);
+      if FIncrement = 0 then
+        FIncrement := 1;
+    end;
+    if FValueType = vtHex then
+      Thousands := False;
+  end;
+end;
+
+function TJvCustomSpinEdit.StoreCheckMaxValue: Boolean;
+begin
+  Result := (FMaxValue = 0) and (FCheckMaxValue = (FMinValue = 0));
+end;
+
+function TJvCustomSpinEdit.StoreCheckMinValue: Boolean;
+begin
+  Result := (FMinValue = 0) and (FCheckMinValue = (FMaxValue = 0));
 end;
 
 procedure TJvCustomSpinEdit.UpClick(Sender: TObject);
@@ -1806,62 +2108,38 @@ begin
   end;
 end;
 
-procedure TJvCustomSpinEdit.DownClick(Sender: TObject);
-var
-  OldText: string;
+procedure TJvCustomSpinEdit.UpDownClick(Sender: TObject; Button: TUDBtnType);
 begin
-  if ReadOnly then
-    MessageBeep(0)
+  if TabStop and CanFocus then
+    SetFocus;
+  case Button of
+    btNext:
+      UpClick(Sender);
+    btPrev:
+      DownClick(Sender);
+  end;
+end;
+
+procedure TJvCustomSpinEdit.WMCut(var Msg: TWMCut);
+begin
+  if not FEditorEnabled or ReadOnly then
+    Exit;
+  inherited;
+end;
+
+procedure TJvCustomSpinEdit.WMKillFocus(var Message: TWMKillFocus);
+begin
+  if ([coCropBeyondLimit, coCheckOnExit] <= CheckOptions) and not (csDesigning in ComponentState) then
+    SetValue(CheckValue(Value));
+  inherited;
+end;
+
+procedure TJvCustomSpinEdit.WMMouseWheel(var Msg: TWMMouseWheel);
+begin
+  if Msg.WheelDelta > 0 then
+    UpClick(nil)
   else
-  begin
-    FChanging := True;
-    try
-      OldText := inherited Text;
-      Value := Value - FIncrement;
-    finally
-      FChanging := False;
-    end;
-    if CompareText(inherited Text, OldText) <> 0 then
-    begin
-      Modified := True;
-      Change;
-    end;
-    if Assigned(FOnBottomClick) then
-      FOnBottomClick(Self);
-  end;
-end;
-
-procedure TJvCustomSpinEdit.CMBiDiModeChanged(var Msg: TMessage);
-begin
-  inherited;
-  ResizeButton;
-  SetEditRect;
-end;
-
-procedure TJvCustomSpinEdit.CMFontChanged(var Msg: TMessage);
-begin
-  inherited;
-  ResizeButton;
-  SetEditRect;
-end;
-
-procedure TJvCustomSpinEdit.CMCtl3DChanged(var Msg: TMessage);
-begin
-  inherited;
-  ResizeButton;
-  SetEditRect;
-end;
-
-procedure TJvCustomSpinEdit.CMEnabledChanged(var Msg: TMessage);
-begin
-  inherited;
-  if FUpDown <> nil then
-  begin
-    FUpDown.Enabled := Enabled;
-    ResizeButton;
-  end;
-  if FButton <> nil then
-    FButton.Enabled := Enabled;
+    DownClick(nil);
 end;
 
 procedure TJvCustomSpinEdit.WMPaste(var Msg: TWMPaste);
@@ -1883,293 +2161,21 @@ begin
   }
 end;
 
-procedure TJvCustomSpinEdit.WMCut(var Msg: TWMCut);
+procedure TJvCustomSpinEdit.WMSize(var Msg: TWMSize);
+var
+  MinHeight: Integer;
 begin
-  if not FEditorEnabled or ReadOnly then
-    Exit;
   inherited;
-end;
-
-//Polaris
-
-procedure TJvCustomSpinEdit.SetFocused(Value: Boolean);
-begin
-  if Value <> FFocused then
-  begin
-    FFocused := Value;
-    Invalidate;
-    DataChanged;
-  end;
-end;
-
-procedure TJvCustomSpinEdit.CMExit(var Msg: TCMExit);
-begin
-  SetFocused(False);
-  try
-    if not (csDesigning in ComponentState) and (coCheckOnExit in CheckOptions) then
-    begin
-      CheckValueRange(Value, not (coCropBeyondLimit in CheckOptions));
-      SetValue(CheckValue(Value));
-    end;
-  except
-    SetFocused(True);
-    SelectAll;
-    if CanFocus then
-      SetFocus;
-    raise
-  end;
-  inherited;
-end;
-
-procedure TJvCustomSpinEdit.CMEnter(var Msg: TMessage);
-begin
-  SetFocused(True);
-  if AutoSelect and not (csLButtonDown in ControlState) then
-    SelectAll;
-  inherited;
-end;
-
-{function TJvCustomSpinEdit.TryGetValue(var Value: Extended): Boolean;
-var
-  S: string;
-begin
-  try
-    S := StringReplace(Text, ThousandSeparator, '', [rfReplaceAll]);
-    if ValueType = vtFloat then
-      Value := StrToFloat(S)
-    else
-      if ValueType = vtHex then
-        Value := StrToInt('$' + Text)
-      else
-        Value := StrToInt(S);
-    Result := True;
-  except
-    if ValueType = vtFloat then
-      Value := FMinValue
-    else
-      Value := Trunc(FMinValue);
-    Result := False;
-  end;
-end;}
-
-function TJvCustomSpinEdit.GetAsInteger: Longint;
-begin
-  Result := Trunc(GetValue);
-end;
-
-procedure TJvCustomSpinEdit.SetAsInteger(NewValue: Longint);
-begin
-  SetValue(NewValue);
-end;
-
-procedure TJvCustomSpinEdit.SetValueType(NewType: TValueType);
-begin
-  if FValueType <> NewType then
-  begin
-    FValueType := NewType;
-    Value := GetValue;
-    if FValueType in [{$IFDEF CBUILDER}vtInt{$ELSE}vtInteger{$ENDIF}, vtHex] then
-    begin
-      FIncrement := Round(FIncrement);
-      if FIncrement = 0 then
-        FIncrement := 1;
-    end;
-    if FValueType = vtHex then
-      Thousands := False;
-  end;
-end;
-
-function TJvCustomSpinEdit.IsIncrementStored: Boolean;
-begin
-  Result := FIncrement <> 1.0;
-end;
-
-function TJvCustomSpinEdit.IsMaxStored: Boolean;
-begin
-  Result := MaxValue <> 0.0;
-end;
-
-function TJvCustomSpinEdit.IsMinStored: Boolean;
-begin
-  Result := MinValue <> 0.0;
-end;
-
-function TJvCustomSpinEdit.IsValueStored: Boolean;
-begin
-  Result := GetValue <> 0.0;
-end;
-
-procedure TJvCustomSpinEdit.SetDecimal(NewValue: Byte);
-begin
-  if FDecimal <> NewValue then
-  begin
-    FDecimal := NewValue;
-    Value := GetValue;
-  end;
-end;
-
-//Polaris
-
-function TJvCustomSpinEdit.CheckValueRange(NewValue: Extended; RaiseOnError: Boolean): Extended;
-begin
-  Result := CheckValue(NewValue);
-  if (FCheckMinValue or FCheckMaxValue) and
-    RaiseOnError and (Result <> NewValue) then
-    raise ERangeError.CreateFmt(ReplaceStr(SOutOfRange, '%d', '%g'),
-      [FMinValue, FMaxValue]);
-end;
-
-function TJvCustomSpinEdit.CheckValue(NewValue: Extended): Extended;
-begin
-  Result := NewValue;
-  {
-    if (FMaxValue <> FMinValue) then begin
-      if NewValue < FMinValue then
-        Result := FMinValue
-      else if NewValue > FMaxValue then
-        Result := FMaxValue;
-    end;
-  }
-  if FCheckMinValue or FCheckMaxValue then
-  begin
-    if FCheckMinValue and (NewValue < FMinValue) then
-      Result := FMinValue;
-    if FCheckMaxValue and (NewValue > FMaxValue) then
-      Result := FMaxValue;
-  end;
-end;
-
-//Polaris
-
-procedure TJvCustomSpinEdit.Loaded;
-begin
-  inherited Loaded;
-  FLCheckMinValue := True;
-  FLCheckMaxValue := True;
-  FOldValue := Value;
-end;
-
-function TJvCustomSpinEdit.CheckDefaultRange(CheckMax: Boolean): Boolean;
-begin
-  Result := (FMinValue <> 0) or (FMaxValue <> 0);
-end;
-
-procedure TJvCustomSpinEdit.SetMinValue(NewValue: Extended);
-var
-  Z: Boolean;
-  B: Boolean;
-begin
-  if NewValue <> FMinValue then
-  begin
-    B := not StoreCheckMinValue;
-    Z := (FMinValue = 0) <> (NewValue = 0);
-    FMinValue := NewValue;
-    if Z and FLCheckMinValue then
-    begin
-      SetCheckMinValue(CheckDefaultRange(False));
-      if B and FLCheckMaxValue then
-        SetCheckMaxValue(CheckDefaultRange(True));
-    end;
-    SetValue(Value);
-  end;
-end;
-
-procedure TJvCustomSpinEdit.SetMaxValue(NewValue: Extended);
-var
-  Z: Boolean;
-  B: Boolean;
-begin
-  if NewValue <> FMaxValue then
-  begin
-    B := not StoreCheckMaxValue;
-    Z := (FMaxValue = 0) <> (NewValue = 0);
-    FMaxValue := NewValue;
-    if Z and FLCheckMaxValue then
-    begin
-      SetCheckMaxValue(CheckDefaultRange(True));
-      if B and FLCheckMinValue then
-        SetCheckMinValue(CheckDefaultRange(False));
-    end;
-    SetValue(Value);
-  end;
-end;
-
-procedure TJvCustomSpinEdit.SetCheckMinValue(NewValue: Boolean);
-begin
-  if FMinValue <> 0 then
-    NewValue := True;
-  FCheckMinValue := NewValue;
-  if csLoading in ComponentState then
-    FLCheckMinValue := False;
-  SetValue(Value);
-end;
-
-procedure TJvCustomSpinEdit.SetCheckMaxValue(NewValue: Boolean);
-begin
-  if FMaxValue <> 0 then
-    NewValue := True;
-  FCheckMaxValue := NewValue;
-  if csLoading in ComponentState then
-    FLCheckMaxValue := False;
-  SetValue(Value);
-end;
-
-function TJvCustomSpinEdit.StoreCheckMinValue: Boolean;
-begin
-  Result := (FMinValue = 0) and (FCheckMinValue = (FMaxValue = 0));
-end;
-
-function TJvCustomSpinEdit.StoreCheckMaxValue: Boolean;
-begin
-  Result := (FMaxValue = 0) and (FCheckMaxValue = (FMinValue = 0));
-end;
-
-//Polaris
-
-function TJvCustomSpinEdit.DefaultDisplayFormat: string;
-begin
-  Result := ',0.##';
-end;
-
-function TJvCustomSpinEdit.IsFormatStored: Boolean;
-begin
-  Result := DisplayFormat <> DefaultDisplayFormat;
-end;
-
-procedure TJvCustomSpinEdit.SetDisplayFormat(const Value: string);
-begin
-  if DisplayFormat <> Value then
-  begin
-    FDisplayFormat := Value;
-    Invalidate;
-  end;
-end;
-
-procedure TJvCustomSpinEdit.DataChanged;
-var
-  EditFormat: string;
-begin
-  if (ValueType = vtFloat) and FFocused and (FDisplayFormat <> EmptyStr) then
-  begin
-    EditFormat := '0';
-    if FDecimal > 0 then
-      EditFormat := EditFormat + '.' + MakeStr('#', FDecimal);
-    EditText := FormatFloat(EditFormat, Value);
-  end;
-end;
-
-procedure TJvCustomSpinEdit.SetThousands(const Value: Boolean);
-begin
-  if ValueType <> vtHex then
-    FThousands := Value;
-end;
-
-procedure TJvCustomSpinEdit.WMMouseWheel(var Msg: TWMMouseWheel);
-begin
-  if Msg.WheelDelta > 0 then
-    UpClick(nil)
+  MinHeight := GetMinHeight;
+  { text edit bug: if size to less than minheight, then edit ctrl does
+    not display the text }
+  if Height < MinHeight then
+    Height := MinHeight
   else
-    DownClick(nil);
+  begin
+    ResizeButton;
+    SetEditRect;
+  end;
 end;
 
 //=== TJvSpinEdit ============================================================
@@ -2184,31 +2190,6 @@ begin
   //{$ENDIF}
   Text := '0';
   //  RecreateButton;
-end;
-
-procedure TJvSpinEdit.SetValue(NewValue: Extended);
-var
-  FloatFormat: TFloatFormat;
-begin
-  if Thousands then
-    FloatFormat := ffNumber
-  else
-    FloatFormat := ffFixed;
-
-  case ValueType of
-    vtFloat:
-      if FDisplayFormat <> EmptyStr then
-        Text := FormatFloat(FDisplayFormat, CheckValue(NewValue))
-      else
-        Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);
-    vtHex:
-      if ValueType = vtHex then
-        Text := IntToHex(Round(CheckValue(NewValue)), 1);
-  else {vtInteger}
-    //Text := IntToStr(Round(CheckValue(NewValue)));
-    Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
-  end;
-  DataChanged;
 end;
 
 function TJvSpinEdit.GetValue: Extended;
@@ -2238,6 +2219,31 @@ begin
     else
       Result := Round(FMinValue);
   end;
+end;
+
+procedure TJvSpinEdit.SetValue(NewValue: Extended);
+var
+  FloatFormat: TFloatFormat;
+begin
+  if Thousands then
+    FloatFormat := ffNumber
+  else
+    FloatFormat := ffFixed;
+
+  case ValueType of
+    vtFloat:
+      if FDisplayFormat <> EmptyStr then
+        Text := FormatFloat(FDisplayFormat, CheckValue(NewValue))
+      else
+        Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, FDecimal);
+    vtHex:
+      if ValueType = vtHex then
+        Text := IntToHex(Round(CheckValue(NewValue)), 1);
+  else {vtInteger}
+    //Text := IntToStr(Round(CheckValue(NewValue)));
+    Text := FloatToStrF(CheckValue(NewValue), FloatFormat, 15, 0);
+  end;
+  DataChanged;
 end;
 
 end.
