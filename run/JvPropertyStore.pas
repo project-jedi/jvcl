@@ -89,7 +89,7 @@ type
     property AutoLoad: Boolean read FAutoLoad write SetAutoLoad;
     property AppStoragePath: string read FAppStoragePath write SetPath;
     property Enabled: Boolean read FEnabled write FEnabled default True;
-    property ReadOnly: Boolean read FEnabled write FEnabled default False;
+    property ReadOnly: Boolean read FReadOnly write FReadOnly default False;
     property DeleteBeforeStore: Boolean read FDeleteBeforeStore write FDeleteBeforeStore default False;
     property ClearBeforeLoad: Boolean read FClearBeforeLoad write FClearBeforeLoad default False;
     property IgnoreLastLoadTime: Boolean read FIgnoreLastLoadTime write FIgnoreLastLoadTime default False;
