@@ -32,12 +32,16 @@ interface
 
 uses
   SysUtils, Classes, Graphics, Forms, ComCtrls,
-  JvRgbToHtml, JvStrToHtml, JvComponent;
+  JvRgbToHtml, JvStrToHtml, JvRichEdit, JvComponent;
 
 type
   TJvParaAttributesRec = record
     Alignment: TAlignment;
     Numbering: TNumberingStyle;
+  end;
+  TJvRichEditParaAttributesRec = record
+    Alignment: TParaAlignment;
+    Numbering: TJvNumbering;
   end;
 
   TJvRichEditToHtml = class(TJvComponent)
@@ -47,65 +51,85 @@ type
     FEndSection: string;
     FEndPara: string;
     FTitle: string;
+    FFooter: TStrings;
+    FHeader: TStrings;
     function AttToHtml(Value: TFont): string;
-    function ParaToHtml(Value: TJvParaAttributesRec): string;
+    function ParaToHtml(Value: TJvParaAttributesRec): string;overload;
+    function ParaToHtml(Value: TJvRichEditParaAttributesRec): string;overload;
+    procedure SetFooter(const Value: TStrings);
+    procedure SetHeader(const Value: TStrings);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure ConvertToHtml(Value: TRichEdit; const FileName: string);
-    procedure ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);
+    procedure ConvertToHtml(Value: TRichEdit; const FileName: string);overload;
+    procedure ConvertToHtml(Value: TJvRichEdit; const FileName: string);overload;
+    procedure ConvertToHtmlStrings(Value: TRichEdit; Strings: TStrings);overload;
+    procedure ConvertToHtmlStrings(Value: TJvRichEdit; Strings: TStrings);overload;
   published
     property Title: string read FTitle write FTitle;
+    property Header:TStrings read FHeader write SetHeader;
+    property Footer:TStrings read FFooter write SetFooter;
   end;
 
 implementation
 
 const
   // (rom) needs renaming?
-  RC_Html1 = '<HTML>';
-  RC_Html3 = '<BODY>';
-  RC_Html4 = '<BR>';
-  RC_Html5 = '</BODY>';
-  RC_Html6 = '</HTML>';
-  RC_Html7 = '<TITLE>%s</TITLE>';
+//  cHTMLHeadBegin = '<HTML>';
+//  cHTMLBodyBegin = '<BODY>';
+//  cHTMLBodyEnd = '</BODY>';
+//  cHTMLEnd = '</HTML>';
+//  cHTMLTitleFmt = '<TITLE>%s</TITLE>';
 
-  RC_EndFont = '</FONT>';
-  RC_Font1 = '<FONT COLOR=#';
-  RC_Font2 = ' SIZE=';
-  RC_Font3 = ' FACE="';
-  RC_Font4 = '">';
+  cHTMLBR = '<BR>';
+//  cHTMLFontColorBegin = '<FONT COLOR=#';
+//  cHTMLSize = ' SIZE=';
+//  cHTMLFace = ' FACE="';
+  cHTMLFontEnd = '</FONT>';
 
-  RC_EndBold = '</B>';
-  RC_Bold = '<B>';
+  cHTMLBoldBegin = '<B>';
+  cHTMLBoldEnd = '</B>';
 
-  RC_EndItalic = '</I>';
-  RC_Italic = '<I>';
+  cHTMLItalicBegin = '<I>';
+  cHTMLItalicEnd = '</I>';
 
-  RC_EndStrikeOut = '</STRIKE>';
-  RC_StrikeOut = '<STRIKE>';
+  cHTMLStrikeoutBegin = '<STRIKE>';
+  cHTMLStrikeoutEnd = '</STRIKE>';
 
-  RC_EndUnderline = '</U>';
-  RC_Underline = '<U>';
+  cHTMLUnderlineBegin = '<U>';
+  cHTMLUnderlineEnd = '</U>';
 
-  RC_EndPar = '</P>';
-  RC_LeftPara = '<P ALIGN="LEFT">';
-  RC_RightPara = '<P ALIGN="RIGHT">';
-  RC_CenterPara = '<P ALIGN="CENTER">';
+  cHTMLParaEnd = '</P>';
+  cHTMLParaLeft = '<P ALIGN="LEFT">';
+  cHTMLParaRight = '<P ALIGN="RIGHT">';
+  cHTMLParaCenter = '<P ALIGN="CENTER">';
 
-  RC_LeftIndent = '<LI>';
-  RC_EndLeftIndent = '</LI>';
+  cHTMLListBegin = '<LI>';
+  cHTMLListEnd = '</LI>';
 
 constructor TJvRichEditToHtml.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FCToH := TJvRgbToHtml.Create(Self);
   FCharToH := TJvStrToHtml.Create(Self);
+  FHeader := TStringlist.Create;
+  FHeader.Add('<HTML>');
+  FHeader.Add('  <HEAD>');
+  FHeader.Add('    <TITLE><#TITLE></TITLE>');
+  FHeader.Add('  </HEAD>');
+  FHeader.Add('  <BODY>');
+
+  FFooter := TStringlist.Create;
+  FFooter.Add('  </BODY>');
+  FFooter.Add('</HTML>');
 end;
 
 destructor TJvRichEditToHtml.Destroy;
 begin
   FCToH.Free;
   FCharToH.Free;
+  FHeader.Free;
+  FFooter.Free;
   inherited Destroy;
 end;
 
@@ -124,47 +148,47 @@ end;
 
 function TJvRichEditToHtml.AttToHtml(Value: TFont): string;
 begin
-  FEndSection := RC_EndFont;
+  FEndSection := cHTMLFontEnd;
   FCToH.RgbColor := Value.Color;
-  Result := RC_Font1 + FCtoH.HtmlColor + RC_Font2 + IntToStr((Value.Size mod 8) + 2) + RC_Font3;
-  Result := Result + Value.Name + RC_Font4;
+  Result := Format('<FONT COLOR="#%s" SIZE="%d" FACE="%s">',
+                    [FCtoH.HtmlColor,(Value.Size mod 8) + 2,Value.Name]);
   if fsBold in Value.Style then
   begin
-    FEndSection := RC_EndBold + FEndSection;
-    Result := Result + RC_Bold;
+    FEndSection := cHTMLBoldEnd + FEndSection;
+    Result := Result + cHTMLBoldBegin;
   end;
   if fsItalic in Value.Style then
   begin
-    FEndSection := RC_EndItalic + FEndSection;
-    Result := Result + RC_Italic;
+    FEndSection := cHTMLItalicEnd + FEndSection;
+    Result := Result + cHTMLItalicBegin;
   end;
   if fsStrikeout in Value.Style then
   begin
-    FEndSection := RC_EndStrikeOut + FEndSection;
-    Result := Result + RC_StrikeOut;
+    FEndSection := cHTMLStrikeoutEnd + FEndSection;
+    Result := Result + cHTMLStrikeoutBegin;
   end;
   if fsUnderline in Value.Style then
   begin
-    FEndSection := RC_EndUnderline + FEndSection;
-    Result := Result + RC_Underline;
+    FEndSection := cHTMLUnderlineEnd + FEndSection;
+    Result := Result + cHTMLUnderlineBegin;
   end;
 end;
 
 function TJvRichEditToHtml.ParaToHtml(Value: TJvParaAttributesRec): string;
 begin
-  FEndPara := RC_EndPar;
+  FEndPara := cHTMLParaEnd;
   case Value.Alignment of
-    taLeftJustify:
-      Result := RC_LeftPara;
-    taRightJustify:
-      Result := RC_RightPara;
-    taCenter:
-      Result := RC_CenterPara;
+    Classes.taLeftJustify:
+      Result := cHTMLParaLeft;
+    Classes.taRightJustify:
+      Result := cHTMLParaRight;
+    Classes.taCenter:
+      Result := cHTMLParaCenter;
   end;
-  if Value.Numbering = nsBullet then
+  if Value.Numbering = ComCtrls.nsBullet then
   begin
-    Result := RC_LeftIndent + Result;
-    FEndPara := FEndPara + RC_EndLeftIndent;
+    Result := cHTMLListBegin + Result;
+    FEndPara := FEndPara + cHTMLListEnd;
   end;
 end;
 
@@ -174,7 +198,12 @@ begin
     (One.Name <> Two.Name) or (One.Size <> Two.Size);
 end;
 
-function DiffPara(One, Two: TJvParaAttributesRec): Boolean;
+function DiffPara(One, Two: TJvParaAttributesRec): Boolean;overload;
+begin
+  Result := (One.Alignment <> Two.Alignment) or (One.Numbering <> Two.Numbering);
+end;
+
+function DiffPara(One, Two: TJvRichEditParaAttributesRec): Boolean;overload;
 begin
   Result := (One.Alignment <> Two.Alignment) or (One.Numbering <> Two.Numbering);
 end;
@@ -191,14 +220,113 @@ begin
   Value.Lines.BeginUpdate;
   try
     Strings.Clear;
-    Strings.Add(RC_Html1);
-    Strings.Add(Format(RC_Html7, [Title]));
-    Strings.Add(RC_Html3);
+    Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
+//    Strings.Add(cHTMLHeadBegin);
+//    Strings.Add(Format(cHTMLTitleFmt, [Title]));
+//    Strings.Add(cHTMLBodyBegin);
     Datt := TFont.Create;
     Att := TFont.Create;
     CurrAt := TFont.Create;
 
     DPara.Alignment := taLeftJustify;
+    DPara.Numbering := ComCtrls.nsNone;
+    CurrPara.Alignment := DPara.Alignment;
+    CurrPara.Numbering := DPara.Numbering;
+    FendPara := '';
+
+    Datt.Assign(Value.DefAttributes);
+    Strings.Add(AttToHtml(Datt));
+    FEnd := FEndSection;
+
+    K := 0;
+    CurrAt.Assign(Datt);
+    FEndSection := '';
+    for I := 0 to Value.Lines.Count - 1 do
+    begin
+      St := '';
+      CurrPara.Numbering := ComCtrls.nsNone;
+      if Length(Value.lines[I]) > 0 then
+      begin
+        for J := 1 to Length(Value.Lines[I]) do
+        begin
+          Value.SelStart := K + J - 1;
+          Value.SelLength := 1;
+          Att.Assign(Value.SelAttributes);
+          Para.Alignment := Value.Paragraph.Alignment;
+          Para.Numbering := Value.Paragraph.Numbering;
+          if Diff(Att, CurrAt) then
+          begin
+            St := St + FEndSection;
+            CurrAt.Assign(Att);
+            St := St + AttToHtml(Att);
+          end;
+          if DiffPara(Para, CurrPara) then
+          begin
+            St := St + FEndPara;
+            CurrPara.Alignment := Para.Alignment;
+            CurrPara.Numbering := Para.Numbering;
+            St := St + ParaToHtml(Para);
+          end;
+          St := St + CharToHtml(Value.Lines[I][J]);
+        end;
+      end;
+      K := K + Length(Value.Lines[I]) + 2;
+      Strings.Add(cHTMLBR + St);
+      Application.ProcessMessages;
+    end;
+    Strings.Add(FEndSection);
+    Strings.Add(FEndPara);
+
+    Datt.Free;
+    Att.Free;
+    CurrAt.Free;
+
+    Strings.Add(FEnd);
+    Strings.AddStrings(FFooter);
+//    Strings.Add(cHTMLBodyEnd);
+//    Strings.Add(cHTMLEnd);
+  finally
+    Strings.EndUpdate;
+    Value.Lines.EndUpdate;
+  end;
+end;
+
+procedure TJvRichEditToHtml.ConvertToHtml(Value: TJvRichEdit;
+  const FileName: string);
+var
+  S: TStringList;
+begin
+  S := TStringList.Create;
+  try
+    ConvertToHtmlStrings(Value, S);
+    S.SaveToFile(FileName);
+  finally
+    S.Free;
+  end;
+end;
+
+procedure TJvRichEditToHtml.ConvertToHtmlStrings(Value: TJvRichEdit;
+  Strings: TStrings);
+var
+  I, J, K: Integer;
+  Datt, Att, CurrAt: TFont;
+  DPara, Para, CurrPara: TJvRichEditParaAttributesRec;
+  St: string;
+  FEnd: string;
+begin
+  Strings.BeginUpdate;
+  Value.Lines.BeginUpdate;
+  try
+    Strings.Clear;
+//    Strings.Add(cHTMLHeadBegin);
+//    Strings.Add(Format(cHTMLTitleFmt, [Title]));
+//    Strings.Add(cHTMLBodyBegin);
+    Strings.Add(StringReplace(Header.Text, '<#TITLE>',Title,[rfReplaceAll]));
+    Datt := TFont.Create;
+    Att := TFont.Create;
+    CurrAt := TFont.Create;
+
+    DPara.Alignment := paLeftJustify;
     DPara.Numbering := nsNone;
     CurrPara.Alignment := DPara.Alignment;
     CurrPara.Numbering := DPara.Numbering;
@@ -241,7 +369,7 @@ begin
         end;
       end;
       K := K + Length(Value.Lines[I]) + 2;
-      Strings.Add(RC_Html4 + St);
+      Strings.Add(cHTMLBR + St);
       Application.ProcessMessages;
     end;
     Strings.Add(FEndSection);
@@ -252,12 +380,41 @@ begin
     CurrAt.Free;
 
     Strings.Add(FEnd);
-    Strings.Add(RC_Html5);
-    Strings.Add(RC_Html6);
+    Strings.AddStrings(Footer);
+//    Strings.Add(cHTMLBodyEnd);
+//    Strings.Add(cHTMLEnd);
   finally
     Strings.EndUpdate;
     Value.Lines.EndUpdate;
   end;
+end;
+
+function TJvRichEditToHtml.ParaToHtml(Value: TJvRichEditParaAttributesRec): string;
+begin
+  FEndPara := cHTMLParaEnd;
+  case Value.Alignment of
+    paLeftJustify:
+      Result := cHTMLParaLeft;
+    paRightJustify:
+      Result := cHTMLParaRight;
+    paCenter:
+      Result := cHTMLParaCenter;
+  end;
+  if Value.Numbering = nsBullet then
+  begin
+    Result := cHTMLListBegin + Result;
+    FEndPara := FEndPara + cHTMLListEnd;
+  end;
+end;
+
+procedure TJvRichEditToHtml.SetFooter(const Value: TStrings);
+begin
+  FFooter.Assign(Value);
+end;
+
+procedure TJvRichEditToHtml.SetHeader(const Value: TStrings);
+begin
+  FHeader.Assign(Value);
 end;
 
 end.
