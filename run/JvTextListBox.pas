@@ -1,4 +1,3 @@
-{$I JVCL.INC}
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -32,18 +31,22 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 
+{$I JVCL.INC}
+
 unit JvTextListBox;
 
 interface
+
 uses
-  Windows,
-  Messages, Graphics, StdCtrls;
+  Windows, Messages, Graphics, StdCtrls,
+  JVCLVer;
 
 type
   TPositiveInt = 1..MaxInt;
 
   TJvTextListBox = class(TCustomListBox)
   private
+    FAboutJVCL: TJVCLAboutInfo;
     FMaxWidth: Integer;
     procedure ResetHorizontalExtent;
     procedure SetHorizontalExtent;
@@ -51,6 +54,7 @@ type
   protected
     procedure WndProc(var Msg: TMessage); override;
   published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Align;
     property BorderStyle;
     property Color;
@@ -104,11 +108,9 @@ type
   end;
 
 implementation
+
 uses
   Math;
-  
-
-//=== TJvTextListBox =========================================================
 
 procedure TJvTextListBox.SetHorizontalExtent;
 begin
@@ -174,7 +176,6 @@ begin
         inherited WndProc(Msg);
         Canvas.Font.Assign(Self.Font);
         ResetHorizontalExtent;
-        Exit;
       end;
   else
     inherited WndProc(Msg);

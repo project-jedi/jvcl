@@ -44,17 +44,17 @@ type
     FPopup: TPopupMenu;
     FDirs: TJvDirectories;
     FOnLinkClick: TJvLinkClickEvent;
-    FIMages: TImageList;
+    FImages: TImageList;
     procedure AddToPopup(Item: TMenuItem; Path: string);
     procedure SetImages(const Value: TImageList);
   protected
     procedure DoLinkClick(Sender: TObject);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure Click; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure Click; override;
     procedure Refresh;
   published
     property Images: TImageList read FImages write SetImages;
@@ -81,6 +81,8 @@ begin
   FPopup.Free;
   inherited Destroy;
 end;
+
+// (rom) a strange place for doing this
 
 procedure TJvControlPanelButton.CreateParams(var Params: TCreateParams);
 begin
