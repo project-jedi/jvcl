@@ -45,9 +45,9 @@ unit JvDBTreeView;
 interface
 
 uses
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+{$ENDIF}
   Windows, Messages, SysUtils, Classes, Controls, Dialogs, Graphics,
   CommCtrl, ComCtrls, ExtCtrls, Db;
 
@@ -174,7 +174,7 @@ type
     FMasterValue: Variant;
   public
     procedure SetMasterValue(AValue: Variant);
-    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);override;
+    procedure MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode); override;
     property MasterValue: Variant read FMasterValue;
   end;
 
@@ -411,7 +411,7 @@ function TCustomJvDBTreeView.ValidField(FieldName: string; AllowFieldTypes: TFie
 var
   AField: TField;
 begin
-  Result := (csLoading in ComponentState) or
+  Result := (csLoading in ComponentState) or (Length(FieldName) = 0) or
     (FDataLink.DataSet = nil) or not FDataLink.DataSet.Active;
   if not Result and (Length(FieldName) > 0) then
   begin
@@ -525,7 +525,7 @@ end;
 
 procedure TCustomJvDBTreeView.LinkActive(Value: Boolean);
 
-function AllFieldsValid: Boolean;
+  function AllFieldsValid: Boolean;
   begin
     Result := False;
     if ValidDataSet then
@@ -576,8 +576,8 @@ begin
     OldRecCount := FDataLink.DataSet.RecordCount;
   end
   else
-  if FUpdateLock = 0 then
-    Items.Clear;
+    if FUpdateLock = 0 then
+      Items.Clear;
 end;
 
 procedure TCustomJvDBTreeView.UpdateLock;
@@ -1082,7 +1082,7 @@ begin
     end;
     Result.Selected := Select;
     { This line is very necessary, well it(he) does not understand from the first [translated]}
-    Result.Selected := Select; 
+    Result.Selected := Select;
   finally
     Dec(FUpdateLock);
   end;
@@ -1164,8 +1164,8 @@ begin
   if YDragPos < DnDScrollArea then
     Perform(WM_VSCROLL, SB_LINEUP, 0)
   else
-  if YDragPos > ClientHeight - DnDScrollArea then
-    Perform(WM_VSCROLL, SB_LINEDOWN, 0);
+    if YDragPos > ClientHeight - DnDScrollArea then
+      Perform(WM_VSCROLL, SB_LINEDOWN, 0);
 end;
 
 procedure TCustomJvDBTreeView.DragOver(Source: TObject; X, Y: Integer;
@@ -1235,7 +1235,7 @@ end;
 
 procedure TCustomJvDBTreeView.KeyDown(var Key: Word; Shift: TShiftState);
 
-procedure DeleteSelected;
+  procedure DeleteSelected;
   var
     M: string;
   begin
