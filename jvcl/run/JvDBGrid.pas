@@ -35,9 +35,9 @@ interface
 
 uses
   Windows,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
   StdCtrls, ExtCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
@@ -61,7 +61,7 @@ type
     AFont: TFont; var Background: TColor; Highlight: Boolean) of object;
   TSortMarker = (smNone, smDown, smUp);
   TGetBtnParamsEvent = procedure(Sender: TObject; Field: TField;
-    AFont: TFont; var Background: TColor; var SortMarker: TSortMarker;
+    AFont: TFont; var Background: TColor; var ASortMarker: TSortMarker;
     IsDown: Boolean) of object;
   TGetCellPropsEvent = procedure(Sender: TObject; Field: TField;
     AFont: TFont; var Background: TColor) of object; { obsolete }
@@ -91,6 +91,7 @@ type
 
   TJvDBGrid = class(TJvExDBGrid)
   private
+    FAutoSort: boolean;
     FBeepOnError: Boolean; // WAP
     FAutoAppend: Boolean; // Polaris
     FSizingIndex: Integer; // Polaris
@@ -116,7 +117,7 @@ type
     FOnEditChange: TNotifyEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnTitleBtnClick: TTitleClickEvent;
-    FOnTitleBtnDblClick:TTitleClickEvent;
+    FOnTitleBtnDblClick: TTitleClickEvent;
     FOnShowEditor: TJvDBEditShowEvent;
     FOnTopLeftChanged: TNotifyEvent;
     FSelectionAnchor: TBookmarkStr;
@@ -141,7 +142,8 @@ type
     FMaxColumnWidth: Integer;
     FInAutoSize: Boolean;
     FSelectColumnsDialogStrings: TJvSelectDialogColumnStrings;
-    FTitleColumn:TColumn;
+    FTitleColumn: TColumn;
+    FSortMarker: TSortMarker;
     function GetImageIndex(Field: TField): Integer; // Modified by Lionel
     procedure SetShowGlyphs(Value: Boolean);
     procedure SetRowsHeight(Value: Integer);
@@ -171,9 +173,6 @@ type
     // Lionel
     procedure DoHint(X, Y: Integer);
     procedure HintTimerTimer(Sender: TObject);
-    procedure GetBtnParams(Sender: TObject; Field: TField; AFont: TFont;
-      var Background: TColor; var SortMarker: TSortMarker;
-      IsDown: Boolean);
     procedure SetTitleArrow(const Value: Boolean);
     procedure ShowSelectColumnClick;
     procedure SetAlternateRowColor(const Value: TColor);
@@ -183,17 +182,26 @@ type
     procedure SetAutoSizeColumns(const Value: Boolean);
     procedure SetMaxColumnWidth(const Value: Integer);
     procedure SetMinColumnWidth(const Value: Integer);
-    procedure SetSelectColumnsDialogStrings(
-      const Value: TJvSelectDialogColumnStrings);
+    procedure SetSelectColumnsDialogStrings(const Value: TJvSelectDialogColumnStrings);
+    procedure SetSortedField(const Value: string);
+    procedure SetSortMarker(const Value: TSortMarker);
+
+    { TODO -oJVCL -cPOST_JVCL3 : Make protected }
+    procedure DoGetBtnParams(Field: TField; AFont: TFont; var Background: TColor; var ASortMarker: TSortMarker; IsDown:
+      Boolean); virtual;
+    { TODO -oJVCL -cPOST_JVCL3 : Make published }
+    property SortMarker: TSortMarker read FSortMarker write SetSortMarker default smNone;
+    { TODO -oJVCL -cPOST_JVCL3 : Make published }
+    property AutoSort: boolean read FAutoSort write FAutoSort default true;
   protected
-    FCurrentDrawRow:integer;
+    FCurrentDrawRow: integer;
 
     procedure MouseLeave(Control: TControl); override;
     function AcquireFocus: Boolean;
     function CanEditShow: Boolean; override;
     function CreateEditor: TInplaceEdit; override; // Modified by Lionel
     procedure DblClick; override;
-    function DoTitleBtnDblClick:boolean;dynamic;
+    function DoTitleBtnDblClick: boolean; dynamic;
 
     procedure DoTitleClick(ACol: Longint; AField: TField); dynamic; // Modified by Lionel
     procedure CheckTitleButton(ACol, ARow: Longint; var Enabled: Boolean); dynamic;
@@ -238,9 +246,9 @@ type
     procedure EditButtonClick; override;
     procedure CellClick(Column: TColumn); override;
     // End Lionel
-    {$IFNDEF COMPILER6_UP}
+{$IFNDEF COMPILER6_UP}
     procedure FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
-    {$ENDIF !COMPILER6_UP}
+{$ENDIF !COMPILER6_UP}
     procedure DefineProperties(Filer: TFiler); override;
     procedure DoMinColWidth; virtual;
     procedure DoMaxColWidth; virtual;
@@ -328,7 +336,7 @@ type
     property AlternateRowColor: TColor read FAlternateRowColor write SetAlternateRowColor default clNone;
     property PostOnEnter: Boolean read FPostOnEnter write FPostOnEnter default False;
     property SelectColumn: TSelectColumn read FSelectColumn write FSelectColumn default scDataBase;
-    property SortedField: string read FSortedField write FSortedField;
+    property SortedField: string read FSortedField write SetSortedField;
     property ShowTitleHint: Boolean read FShowTitleHint write FShowTitleHint default False;
     property TitleArrow: Boolean read FTitleArrow write SetTitleArrow default False;
     property TitlePopup: TPopUpMenu read FTitlePopup write FTitlePopup;
@@ -426,6 +434,7 @@ var
 begin
   inherited Create(AOwner);
   inherited DefaultDrawing := False;
+  FAutoSort := true;
   FBeepOnError := True;
   Options := DefJvGridOptions;
   Bmp := TBitmap.Create;
@@ -453,7 +462,6 @@ begin
   FHintTimer := TTimer.Create(Self);
   FHintTimer.Enabled := False;
   FHintTimer.OnTimer := HintTimerTimer;
-  Self.OnGetBtnParams := GetBtnParams;
   FAlternateRowColor := clNone;
   FSelectColumn := scDataBase;
   FTitleArrow := False;
@@ -638,14 +646,14 @@ end;
 function TJvDBGrid.CreateEditor: TInplaceEdit;
 begin
   // Lionel
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   Result := TMyInplaceEdit.Create(Self);
   // replace the call to default constructor :
   //  Result := inherited CreateEditor;
   TEdit(Result).OnChange := EditChanged;
-  {$ELSE}
+{$ELSE}
   Result := inherited CreateEditor;
-  {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 end;
 
 function TJvDBGrid.GetTitleOffset: Byte;
@@ -1045,9 +1053,9 @@ var
 
 begin
   Background := Color;
-  if (FCurrentDrawRow >= FixedRows)  and Odd(FCurrentDrawRow + FixedRows) and
-     (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and
-     IsAfterFixedCols then
+  if (FCurrentDrawRow >= FixedRows) and Odd(FCurrentDrawRow + FixedRows) and
+    (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and
+    IsAfterFixedCols then
     Background := AlternateRowColor
   else
     Background := Color;
@@ -1075,38 +1083,47 @@ begin
 end;
 
 procedure TJvDBGrid.DoTitleClick(ACol: Longint; AField: TField);
+const
+  cDirection: array[boolean] of TSortMarker = (smDown, smUp);
 var
   IndexDefs: TIndexDefs;
   lIndexName: string;
+  Descending:boolean;
 
-function GetIndexOf(aFieldName: string; var aIndexName: string): boolean;
-var
-  i: integer;
-begin
-  result := false;
-  for i:=0 to IndexDefs.Count - 1 do
+  function GetIndexOf(aFieldName: string; var aIndexName: string; var Descending: boolean): boolean;
+  var
+    i: integer;
+
   begin
-    if Pos(aFieldName,IndexDefs[i].Fields) = 1 then
+    Result := False;
+    for i := 0 to IndexDefs.Count - 1 do
     begin
-      aIndexName := IndexDefs[i].Name;
-      result := true;
-      Exit;
+      if Pos(aFieldName, IndexDefs[i].Fields) = 1 then
+      begin
+        aIndexName := IndexDefs[i].Name;
+        Descending := (ixDescending in IndexDefs[i].Options);
+        Result := true;
+        Exit;
+      end;
     end;
   end;
-end;
 
 begin
   // Lionel, Peter
-  if IsPublishedProp(DataSource.DataSet, 'IndexDefs') and IsPublishedProp(DataSource.DataSet, 'IndexName') then
-    IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, 'IndexDefs'))
+  if AutoSort and IsPublishedProp(DataSource.DataSet, 'IndexDefs')
+    and IsPublishedProp(DataSource.DataSet, 'IndexName') then
+      IndexDefs := TIndexDefs(GetOrdProp(DataSource.DataSet, 'IndexDefs'))
   else
     IndexDefs := nil;
   if Assigned(IndexDefs) then
-    if GetIndexOf(AField.FieldName,lIndexName) then
+    if GetIndexOf(AField.FieldName, lIndexName, Descending) then
     begin
-      FSortedField := AField.FieldName;
+      SortedField := AField.FieldName;
+      { TODO -oJVCL -cPOST_JVCL3 : Uncomment }
+      // (p3) this should maybe be the other way around?      
+//      SortMarker := cDirection[Descending];
       try
-        SetStrProp(DataSource.DataSet,'IndexName',lIndexName);
+        SetStrProp(DataSource.DataSet, 'IndexName', lIndexName);
       except
       end;
     end;
@@ -1169,7 +1186,7 @@ end;
 
 function TJvDBGrid.DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean;
 var
-  Distance:integer;
+  Distance: integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelDown) then
@@ -1189,7 +1206,7 @@ end;
 
 function TJvDBGrid.DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean;
 var
-  Distance:integer;
+  Distance: integer;
 begin
   Result := False;
   if Assigned(OnMouseWheelUp) then
@@ -1647,7 +1664,7 @@ const
 var
   FrameOffs: Byte;
   BackColor: TColor;
-  SortMarker: TSortMarker;
+  ASortMarker: TSortMarker;
   Indicator, ALeft: Integer;
   Down: Boolean;
   Bmp: TBitmap;
@@ -1815,7 +1832,7 @@ begin
       if dgIndicator in Options then
         Dec(ACol, IndicatorOffset);
       AField := nil;
-      SortMarker := smNone;
+      ASortMarker := smNone;
       if (DataLink <> nil) and DataLink.Active and (ACol >= 0) and
         (ACol < Columns.Count) then
       begin
@@ -1861,10 +1878,12 @@ begin
         Canvas.Font := DrawColumn.Title.Font;
         Canvas.Brush.Color := DrawColumn.Title.Color;
       end;
-      if FTitleButtons and (AField <> nil) and Assigned(FOnGetBtnParams) then
+      if FTitleButtons and (AField <> nil) then
       begin
         BackColor := Canvas.Brush.Color;
-        FOnGetBtnParams(Self, AField, Canvas.Font, BackColor, SortMarker, Down);
+        if AnsiSameText(AField.FieldName, SortedField) then
+          ASortMarker := self.Sortmarker;
+        DoGetBtnParams(AField, Canvas.Font, BackColor, ASortMarker, Down);
         Canvas.Brush.Color := BackColor;
       end;
       if Down then
@@ -1877,7 +1896,7 @@ begin
         Canvas.FillRect(TitleRect)
       else if DrawColumn <> nil then
       begin
-        case SortMarker of
+        case ASortMarker of
           smDown: Bmp := GetGridBitmap(gpMarkDown);
           smUp: Bmp := GetGridBitmap(gpMarkUp);
         else
@@ -1892,6 +1911,8 @@ begin
         DoDrawColumnTitle(Canvas, TitleRect, AField, Bmp, Down, Indicator,
           DefaultDrawText, DefaultDrawSortMarker);
         TextRect := TitleRect;
+        if (ASortMarker <> smNone) and ((DrawColumn.Title.Alignment = taRightJustify) or (Canvas.TextWidth(Caption) > (TextRect.Right-TextRect.Left))) then
+          Dec(TextRect.Right, Bmp.Width + 4);
         if DefaultDrawText then
         begin
           if DrawColumn.Expandable then
@@ -1911,6 +1932,7 @@ begin
               Inc(ALeft);
             if IsRightToLeft then
               ALeft := TitleRect.Left + 3;
+            Canvas.FillRect(Rect(TextRect.Right, TitleRect.Top, TitleRect.Right, TitleRect.Bottom));
             if (ALeft > TitleRect.Left) and (ALeft + Bmp.Width < TitleRect.Right) then
               DrawBitmapTransparent(Canvas, ALeft, (TitleRect.Bottom +
                 TitleRect.Top - Bmp.Height) div 2, Bmp, clFuchsia);
@@ -2216,6 +2238,7 @@ begin
 end;
 
 {$IFNDEF COMPILER6_UP}
+
 procedure TJvDBGrid.FocusCell(ACol, ARow: Longint; MoveAnchor: Boolean);
 begin
   MoveColRow(ACol, ARow, MoveAnchor, True);
@@ -2312,15 +2335,12 @@ begin
   FHintTimer.Enabled := False;
 end;
 
-procedure TJvDBGrid.GetBtnParams(Sender: TObject; Field: TField;
-  AFont: TFont; var Background: TColor; var SortMarker: TSortMarker;
+procedure TJvDBGrid.DoGetBtnParams(Field: TField;
+  AFont: TFont; var Background: TColor; var ASortMarker: TSortMarker;
   IsDown: Boolean);
-const
-  Direction:array [boolean] of TSortMarker = (smUp, smDown);
 begin
-  // Be careful not to stop this event
-  if Field.FieldName = FSortedField then
-    SortMarker := Direction[IsDown];
+  if Assigned(FOnGetBtnParams) then
+    FOnGetBtnParams(Self, Field, AFont, Background, ASortMarker, IsDown);
 end;
 
 procedure TJvDBGrid.ColEnter;
@@ -2820,7 +2840,7 @@ begin
   FTitleColumn := nil;
 end;
 
-function TJvDBGrid.DoTitleBtnDblClick:boolean;
+function TJvDBGrid.DoTitleBtnDblClick: boolean;
 begin
   Result := Assigned(FOnTitleBtnDblClick) and Assigned(FTitleColumn);
   if Result then
@@ -2841,6 +2861,24 @@ begin
   Caption := RsJvDBGridSelectTitle;
   OK := RsJvDBGridSelectOK;
   NoSelectionWarning := RsJvDBGridSelectWarning;
+end;
+
+procedure TJvDBGrid.SetSortedField(const Value: string);
+begin
+  if FSortedField <> Value then
+  begin
+    FSortedField := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvDBGrid.SetSortMarker(const Value: TSortMarker);
+begin
+  if FSortMarker <> Value then
+  begin
+    FSortMarker := Value;
+    Invalidate;
+  end;
 end;
 
 initialization
