@@ -82,17 +82,20 @@ type
     destructor Destroy; override;
 
     procedure Check;
+    procedure UserNotify(Param: Integer);
+    function SendData(DataKind: TJclAppInstDataKind;  Data: Pointer; Size: Integer): Boolean;
 
     property AppInstances: TJclAppInstances read GetAppInstances;
   published
     property Active: Boolean read FActive write FActive default True;
     property AutoActivate: Boolean read FAutoActivate write FAutoActivate default True;
-     { AutoActivateFirst: True means that the first instance is brought to front. }
+     { AutoActivateFirst: True means that the first instance is brought to front
+       by the second process instance. }
     property MaxInstances: Integer read FMaxInstances write FMaxInstances default 1;
      { MaxInstances: 0 means no restriction }
     property SendCmdLine: Boolean read FSendCmdLine write FSendCmdLine default True;
-     { SendCmdLine: True means that the process sends its CmdLine to the first
-       instance when it must be terminated. }
+     { SendCmdLine: True means that the second process instance sends it's
+       CmdLine to the first instance before it terminates. }
 
     property OnInstanceCreated: TInstanceChangeEvent read FOnInstanceCreated write FOnInstanceCreated;
     property OnInstanceDestroyed: TInstanceChangeEvent read FOnInstanceDestroyed write FOnInstanceDestroyed;
@@ -196,12 +199,14 @@ constructor TJvAppInstances.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
-  FHandle := AllocateHWndEx(WndProc, sAppInstancesWindowClassName);
-
-  if FirstJvAppInstance then
+  if not (csDesigning in ComponentState) then
   begin
-    FirstJvAppInstance := False;
-    AppInstances.CheckInstance($FFFF); // increase shared instance count
+    FHandle := AllocateHWndEx(WndProc, sAppInstancesWindowClassName);
+    if FirstJvAppInstance then
+    begin
+      FirstJvAppInstance := False;
+      AppInstances.CheckInstance($FFFF); // increase shared instance count
+    end;
   end;
 
   FActive := True;
@@ -212,13 +217,14 @@ end;
 
 destructor TJvAppInstances.Destroy;
 begin
-  DeallocateHWndEx(FHandle);
+  if not (csDesigning in ComponentState) then
+    DeallocateHWndEx(FHandle);
   inherited Destroy;
 end;
 
 procedure TJvAppInstances.Check;
 begin
-  if FActive then
+  if (FActive) and not (csDesigning in ComponentState) then
   begin
     if FMaxInstances > 0 then
     begin
@@ -229,7 +235,14 @@ begin
           AppInstances.SwitchTo(0);
         if FSendCmdLine then
           AppInstances.SendCmdLineParams(sAppInstancesWindowClassName, Handle);
+
        // terminate this process (Form.OnCreate is not executed yet)
+
+        { DoneApplication destroys the forms in the Forms unit's finalization
+          section. At that moment the OnDestroy events are fired. To prevent
+          this we set the Application variable to nil. Because KillInstance
+          uses halt() to terminate this does not procude any access violation. }
+        Application := nil;
         AppInstances.KillInstance;
       end;
     end;
@@ -275,7 +288,7 @@ end;
 
 function TJvAppInstances.GetAppInstances: TJclAppInstances;
 begin
-  if [csLoading, csDesigning] * ComponentState <> [] then
+  if csDesigning in ComponentState then
     Result := nil
   else
     Result := JclAppInstances; // create AppInstance
@@ -284,9 +297,7 @@ end;
 procedure TJvAppInstances.Loaded;
 begin
   inherited Loaded;
-
-  if not (csDesigning in ComponentState) then
-    Check;
+  Check;
 end;
 
 procedure TJvAppInstances.WndProc(var Msg: TMessage);
@@ -351,6 +362,18 @@ begin
 
   with Msg do
     Result := DefWindowProc(Handle, Msg, WParam, LParam);
+end;
+
+procedure TJvAppInstances.UserNotify(Param: Integer);
+begin
+  AppInstances.UserNotify(Param);
+end;
+
+function TJvAppInstances.SendData(DataKind: TJclAppInstDataKind;
+  Data: Pointer; Size: Integer): Boolean;
+begin
+  Result := AppInstances.SendData(sAppInstancesWindowClassName, DataKind, Data,
+    Size, Handle);
 end;
 
 initialization
