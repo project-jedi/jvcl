@@ -60,10 +60,10 @@ type
 implementation
 
 {$IFDEF VCL}
- {$R *.dfm}
+{$R *.dfm}
 {$ENDIF}
 {$IFDEF VisualCLX}
- {$R *.xfm}
+{$R *.xfm}
 {$ENDIF}
 
 procedure TYearGridEditForm.BtnLoadClick(Sender: TObject);
