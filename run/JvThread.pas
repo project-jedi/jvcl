@@ -30,13 +30,13 @@ unit JvThread;
 interface
 
 uses
+  SysUtils, Classes,
   {$IFDEF MSWINDOWS}
   Windows,
   {$ENDIF MSWINDOWS}
   {$IFDEF LINUX}
   Types, QWindows,
   {$ENDIF LINUX}
-  SysUtils, Classes,
   JvTypes, JvComponent;
 
 type
@@ -67,6 +67,10 @@ type
     function OneThreadIsRunning: Boolean;
     function GetPriority(Thread: THandle): TThreadPriority;
     procedure SetPriority(Thread: THandle; Priority: TThreadPriority);
+    {$IFDEF LINUX}
+    function GetPolicy(Thread: THandle): integer;
+    procedure SetPolicy(Thread: THandle; Policy: integer);
+    {$ENDIF LINUX}
     procedure QuitThread(Thread: THandle);
     procedure Suspend(Thread: THandle); // should not be used
     procedure Resume(Thread: THandle);
@@ -182,7 +186,12 @@ end;
 
 function TJvThread.GetPriority(Thread: THandle): TThreadPriority;
 begin
+  {$IFDEF MSWINDOWS}
   Result := tpIdle;
+  {$ENDIF MSWINDOWS}
+  {$IFDEF LINUX}
+  Result := 0;
+  {$ENDIF}
   if Thread <> 0 then
     Result := TThreadPriority(GetThreadPriority(Thread));
 end;
@@ -191,6 +200,21 @@ procedure TJvThread.SetPriority(Thread: THandle; Priority: TThreadPriority);
 begin
   SetThreadPriority(Thread, Integer(Priority));
 end;
+
+{$IFDEF LINUX}
+function TJvThread.GetPolicy(Thread: THandle): integer;
+begin
+  Result := 0;
+  if Thread <> 0 then
+    Result := GetThreadPolicy(Handle);
+end;
+
+procedure TJvThread.SetPolicy(Thread: THandle; Policy: integer);
+begin
+  if Thread <> 0 then
+    SetThreadPriority(Thread, Policy);
+end;
+{$ENDIF LINUX}
 
 procedure TJvThread.QuitThread(Thread: THandle);
 begin

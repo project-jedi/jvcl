@@ -744,6 +744,7 @@ begin
   else
     Canvas.Font := Self.Font;
   DC := Canvas.Handle; { reduce calls to GetHandle }
+  {$IFDEF VCL}
 
   if FWordWrap then
     Flags := DT_WORDBREAK
@@ -754,11 +755,13 @@ begin
 
   { calculate width and height of text: }
 
-  {$IFDEF VCL}
   DrawText(DC, PChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  DrawTextW(DC, PWideChar(Caption), Length(Caption), TmpRect, Flags or DT_CALCRECT);
+  if FWordWrap then
+    Canvas.TextExtent(Caption, TmpRect, WordBreak)
+  else
+    Canvas.TextExtent(Caption, TmpRect, 0);
   {$ENDIF VisualCLX}
   MidY := TmpRect.Bottom - TmpRect.Top;
   MidX := TmpRect.Right - TmpRect.Left;
@@ -806,7 +809,6 @@ begin
   end;
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  SetBkMode(DC, QWindows.TRANSPARENT);
   if not Enabled then
     DrawDisabledText(DC, PWideChar(Caption), -1, TmpRect, Flags)
   else

@@ -589,8 +589,13 @@ begin
             if NumGlyphs > 1 then
               with TmpImage.Canvas do
               begin { Change white & gray to clBtnHighlight and clBtnShadow }
+                {$IFDEF VisualCLX}
+                Start;
+                {$ENDIF VisualCLX}
                 CopyRect(IRect, DDB.Canvas, ORect);
+                {$IFDEF VCL}
                 MonoBmp.Monochrome := True;
+                {$ENDIF VCL}
                 MonoBmp.Width := IWidth;
                 MonoBmp.Height := IHeight;
 
@@ -623,6 +628,9 @@ begin
                 SetBkColor(DestDC, clWhite);
                 BitBlt(DestDC, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                {$IFDEF VisualCLX}
+                Stop;
+                {$ENDIF VisualCLX}
               end
             else
             begin
@@ -645,6 +653,9 @@ begin
               end;
               with TmpImage.Canvas do
               begin
+                {$IFDEF VisualCLX}
+                Start;
+                {$ENDIF VisualCLX}
                 Brush.Color := Color {clBtnFace};
                 FillRect(IRect);
                 Brush.Color := clBtnHighlight;
@@ -657,6 +668,9 @@ begin
                 SetBkColor(Handle, clWhite);
                 BitBlt(Handle, 0, 0, IWidth, IHeight,
                   MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
+                {$IFDEF VisualCLX}
+                Stop;
+                {$ENDIF VisualCLX}
               end;
             end;
           finally

@@ -340,6 +340,9 @@ procedure TJvGammaPanel.ColorSeek(Sender: TObject; Shift: TShiftState; X, Y: Int
 var
   Col: TColor;
 begin
+  if not PtInRect(Bounds(0, 0, FGamma.Picture.width, FGamma.Picture.Height), Point(X,Y))
+  then
+    exit; // asn for LINUX/X11     
   Col := FGamma.Picture.Bitmap.Canvas.Pixels[X, Y];
   LastCol := Col;
   FRLabel.Caption := Format(RsRedFormat, [GetRValue(Col)]);

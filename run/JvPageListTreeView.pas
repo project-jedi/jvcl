@@ -24,7 +24,6 @@ Known Issues:
 // $Id$
 
 {$I jvcl.inc}
-{$I windowsonly.inc}
 
 unit JvPageListTreeView;
 {
@@ -35,8 +34,14 @@ Changes:
 }
 interface
 uses
-  Windows, SysUtils, Messages, Classes, Graphics, Controls,
-  ImgList, ComCtrls, JvComponent, JvThemes, JvPageList, JvExComCtrls;
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, ImgList, ComCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Types, QGraphics, QControls, QImgList, QComCtrls, QWindows,
+  {$ENDIF VisualCLX}
+  JvComponent, JvThemes, JvPageList, JvExComCtrls;
 
 type
   TJvCustomPageListTreeView = class;
@@ -223,14 +228,19 @@ type
     property BevelOuter;
     property BevelKind default bkNone;
     property BevelWidth;
+    {$IFDEF VCL}
     property BiDiMode;
+    property DragKind;
+    property DragCursor;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF}
     property BorderStyle;
     property BorderWidth;
     property ChangeDelay;
     property Color;
     property Constraints;
-    property DragKind;
-    property DragCursor;
     property DragMode;
     property Enabled;
     property Font;
@@ -242,7 +252,6 @@ type
     property MultiSelect;
     property MultiSelectStyle;
     {$ENDIF COMPILER6_UP}
-    property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -278,7 +287,6 @@ type
     property OnDragOver;
     property OnEdited;
     property OnEditing;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -292,7 +300,6 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
     property Items;
   end;
@@ -319,14 +326,19 @@ type
     property BevelOuter;
     property BevelKind default bkNone;
     property BevelWidth;
+    {$IFDEF VCL}
     property BiDiMode;
+    property DragKind;
+    property DragCursor;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+    {$ENDIF VCL}
     property BorderStyle;
     property BorderWidth;
     property ChangeDelay;
     property Color;
     property Constraints;
-    property DragKind;
-    property DragCursor;
     property DragMode;
     property Enabled;
     property Font;
@@ -337,7 +349,6 @@ type
     // don't use!
 //    property MultiSelect;
 //    property MultiSelectStyle;
-    property ParentBiDiMode;
     property ParentColor default False;
     property ParentFont;
     property ParentShowHint;
@@ -373,7 +384,6 @@ type
     property OnDragOver;
     property OnEdited;
     property OnEditing;
-    property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
@@ -387,7 +397,6 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnStartDock;
     property OnStartDrag;
     property Items;
   end;
@@ -395,11 +404,17 @@ type
 
 implementation
 
+{$IFDEF VCL}
 uses
   {$IFNDEF COMPILER6_UP}
   JvResources,
   {$ENDIF COMPLER6_UP}
   Forms;
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+uses
+  QForms;
+{$ENDIF VisualCLX}
 
 type
   THackTab = class(TCustomTabControl);

@@ -322,6 +322,7 @@ var
   I: Integer;
 begin
   Height := FButtonHeight;
+  if FButtonPointer = nil then exit; // asn: for visualclx
   FButtonPointer.Height := FButtonHeight;
   FButtonPointer.Width := FButtonWidth;
   FButtonLeft.Height := FButtonHeight;

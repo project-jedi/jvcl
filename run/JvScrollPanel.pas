@@ -694,6 +694,8 @@ end;
 procedure TJvCustomScrollPanel.EnabledChanged;
 begin
   inherited EnabledChanged;
+  if FUpLeft = nil then
+    Exit;
   FUpLeft.Enabled := Enabled;
   FDownRight.Enabled := Enabled;
   if AutoHide then
@@ -705,6 +707,8 @@ end;
 procedure TJvCustomScrollPanel.VisibleChanged;
 begin
   inherited VisibleChanged;
+  if FUpLeft = nil then
+    Exit;
   FUpLeft.Visible := Visible;
   FDownRight.Visible := Visible;
 end;

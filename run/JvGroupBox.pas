@@ -137,6 +137,7 @@ begin
     {$IFDEF VisualCLX}
     Txt := Text;
     Start;
+    RequiredState(Canvas, [csHandleValid, csFontValid, csBrushValid]);
     {$ENDIF VisualCLX}
     LastBkMode := GetBkMode(Handle);
     try
