@@ -42,7 +42,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, StdCtrls,
-  JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree, JVCLVer, JvTypes;
+  JvLinkLabelParser, JvLinkLabelRenderer, JvLinkLabelTree, JVCLVer, JvTypes,
+  JvComponent;
 
 type
   ELinkLabelError = class(EJVCLException);
@@ -52,9 +53,8 @@ type
   TDynamicTagInitEvent = procedure(Sender: TObject; out Source: string;
     Number: Integer) of object;
 
-  TJvCustomLinkLabel = class(TGraphicControl, IDynamicNodeHandler)
+  TJvCustomLinkLabel = class(TJvGraphicControl, IDynamicNodeHandler)
   private
-    FAboutJVCL: TJVCLAboutInfo;
     FCaption: TCaption;
     FText: TStrings;
     FRenderer: IRenderer;
@@ -110,7 +110,6 @@ type
     procedure DoDynamicTagInit(out Source: string; Number: Integer); virtual;
     property Parser: IParser read FParser;
     property Renderer: IRenderer read FRenderer;
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property Caption: TCaption read FCaption write SetCaption;
     property Text: TStrings read FText write SetText;
     property Transparent: Boolean read GetTransparent write SetTransparent;
@@ -459,7 +458,6 @@ var
   TmpBmp : TBitMap;
   TmpRect : TRect;
 begin
-  inherited Paint;
   TmpBmp := nil;
   if Assigned(FNodeTree) then
   begin
