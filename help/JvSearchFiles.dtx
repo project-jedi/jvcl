@@ -95,6 +95,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvErrorResponse
 <TITLE TJvErrorResponse type>
+<AUTOLINK OFF>
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchAttributes
 Summary
@@ -407,9 +408,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.ErrorResponse
 <COMBINEWITH TJvErrorResponse>
+<AUTOLINK OFF>
 Summary
   Specifies how to react on errors.
 Description
+<AUTOLINK ON>
   Use ErrorResponse to specify how the file search component should react on errors. The possible 
   values of ErrorResponse are:
   <TABLE>
@@ -420,6 +423,7 @@ Description
                 in the next.
   erRaise      Raises a system error.
   </TABLE>
+<AUTOLINK OFF>
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchFiles.FileParams
 Summary
@@ -501,7 +505,7 @@ Description
 Parameters
   Sender - The TJvSearchFiles component that has sent this event.
   Result - Set Result to False to indicate that the current file or directory - as specified by FindData -
-           is invalid. Set Result to True to indicate that it is a valid file or directory.
+            is invalid. Set Result to True to indicate that it is a valid file or directory.
 See Also
   FindData
 ----------------------------------------------------------------------------------------------------
@@ -622,7 +626,9 @@ Description
   included in Options).
 
   Eventually Search will end with result False, if an error occurred or the user did 
-  abort the operation; or otherwise with result True.  
+  abort the operation; or otherwise with result True.
+Returns
+  Returns False if an error occurred or the user did abort the operation; otherwise returns True.
 See Also
   Abort, Searching
 ----------------------------------------------------------------------------------------------------
@@ -670,12 +676,13 @@ See Also
   Searching, TotalDirectories, TotalFiles
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchOption
-<TITLE TJvSearchOption type>
+<AUTOLINK OFF>
 <COMBINEWITH TJvSearchOptions>
+<TITLE TJvSearchOption type>
 Summary
-  \Controls the behaviour of a TJvSearchFiles component.
+  \Controls the behaviour of a <LINK TJvSearchFiles,TJvSearchFiles> component.
 Description
-  TJvSearchOption values control the behaviour of a TJvSearchFiles component.
+  TJvSearchOption values control the behaviour of a <LINK TJvSearchFiles,TJvSearchFiles> component.
 
   TJvSearchOptions is a set of TJvSearchOption values.
 
@@ -720,6 +727,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchOptions
 <TITLE TJvSearchOptions type>
+<AUTOLINK OFF>
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchParams
 Summary
@@ -873,8 +881,8 @@ Description
   matched to, to decide whether the component must search in that directory for other files or directories.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchType
+<AUTOLINK OFF>
 <TITLE TJvSearchType type>
-<COMBINEWITH TJvSearchTypes>
 Summary
   Represents the parameters that a file or directory must be matched to, to decide whether it can be
   added to the search results.
@@ -886,10 +894,10 @@ Description
 
   The following table lists the possible values:
 @@TJvSearchType.stAttribute
-  Match the file or directories attributes to the attributes specified by <TJvSearchParams.Attributes,
+  Match the file or directories attributes to the attributes specified by <LINK TJvSearchParams.Attributes,
   Attributes>.
 @@TJvSearchType.stFileMask
-  Match the name of the file or directory to the file masks specified by <TJvSearchParams.FileMasks,
+  Match the name of the file or directory to the file masks specified by <LINK TJvSearchParams.FileMasks,
   FileMasks>. The name must match any of the masks, for the file or directory to be included in the
   search results.
 @@TJvSearchType.stFileMaskCaseSensitive
@@ -898,24 +906,26 @@ Description
   is ignored.
 @@TJvSearchType.stLastChangeAfter
   For a file, match the date and time when the file was last written to, with the date and time 
-  specified by <TJvSearchParams.LastChangeAfter,LastChangeAfter>. For a directory, match the date
-  and time when the directory was created, with <TJvSearchParams.LastChangeAfter,LastChangeAfter>.
+  specified by <LINK TJvSearchParams.LastChangeAfter,LastChangeAfter>. For a directory, match the date
+  and time when the directory was created, with <LINK TJvSearchParams.LastChangeAfter,LastChangeAfter>.
   Only include files or directories in the search result, that are last written to, or created 
-  <i>after</i> the date and time specified by <TJvSearchParams.LastChangeAfter,LastChangeAfter>.
+  <i>after</i> the date and time specified by <LINK TJvSearchParams.LastChangeAfter,LastChangeAfter>.
 @@TJvSearchType.stLastChangeBefore
   For a file, match the date and time when the file was last written to, with the date and time 
-  specified by <TJvSearchParams.LastChangeBefore,LastChangeBefore>. For a directory, match the date 
-  and time when the directory was created, with <TJvSearchParams.LastChangeBefore,LastChangeBefore>.
+  specified by <LINK TJvSearchParams.LastChangeBefore,LastChangeBefore>. For a directory, match the date 
+  and time when the directory was created, with <LINK TJvSearchParams.LastChangeBefore,LastChangeBefore>.
   Only include files or directories in the search result, that are last written to, or created
-  <i>before</i> the date and time specified by <TJvSearchParams.LastChangeBefore,LastChangeBefore>.
+  <i>before</i> the date and time specified by <LINK TJvSearchParams.LastChangeBefore,LastChangeBefore>.
 @@TJvSearchType.stMaxSize
-  Match the file or directories size with the value specified by <TJvSearchParams.MaxSize,MaxSize>. 
+  Match the file or directories size with the value specified by <LINK TJvSearchParams.MaxSize,MaxSize>. 
   Only include files or directories in the search result, that have a smaller size than 
-  <TJvSearchParams.MaxSize,MaxSize>.
+  <LINK TJvSearchParams.MaxSize,MaxSize>.
 @@TJvSearchType.stMinSize
-  Match the file or directories size with the value specified by <TJvSearchParams.MinSize,MinSize>. 
+  Match the file or directories size with the value specified by <LINK TJvSearchParams.MinSize,MinSize>. 
   Only include files or directories in the search result, that have a smaller size than 
-  <TJvSearchParams.MinSize,MinSize>.
+  <LINK TJvSearchParams.MinSize,MinSize>.
 ----------------------------------------------------------------------------------------------------
 @@TJvSearchTypes
 <TITLE TJvSearchTypes type>
+<AUTOLINK OFF>
+<COMBINE TJvSearchType>

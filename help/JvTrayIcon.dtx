@@ -64,9 +64,9 @@ Description
 Summary
   Creates and initializes a new TJvTrayIcon object.
 Description
-  Use Create to create and initialize a new TJvTrayIcon object.
+  Use \Create to create and initialize a new TJvTrayIcon object.
   
-  Create calls the inherited Create method, then sets the initial values for the component as follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the component as follows: 
   
   * Icon is set to Application.Icon.
   * Animated is set to False.
@@ -91,8 +91,10 @@ See Also
 Summary
   Indicates whether this system supports balloon ToolTips.
 Description
-  Balloon ToolTips are only supported for Shell32.dll versions 5.0 and later. AcceptBalloons returns
-  True if the Shell32.dll on this system is version 5.0 or later. AcceptBalloons returns False if the
+  Balloon ToolTips are only supported for Shell32.dll versions 5.0 and later. Use AcceptBalloons to
+  determine whether this system supports balloon ToolTips.
+Returns
+  Returns True if the Shell32.dll on this system is version 5.0 or later. Returns False if the
   Shell32.dll is a pre-5.0 version.
 See Also
   BalloonHint
@@ -136,6 +138,8 @@ Description
   calling the HideApplication method.
 Parameters
   Message - Represents the Windows message.
+Returns
+  Returns True if it processes the message, and False if it does not.
 See Also
   HideApplication, Visibility
 ----------------------------------------------------------------------------------------------------
@@ -220,8 +224,9 @@ Description
   
   If no OnDblClick event handler is assigned; it first checks if property PopupMenu is assigned, and if
   so executes the default shortcut menu command of PopupMenu, if it exists. Finally it checks if 
-  tvRestoreDbClick is included in property Visibility, and if so restores the visibility of the application 
-  by including  tvVisibleTaskBar in property Visiblity.
+  tvRestoreDbClick or tvMinimizeDbClick is included in property Visibility, and if so restores the 
+  visibility of the application by including tvVisibleTaskBar in property Visibility, or hides the
+  application by excluding tvVisibleTaskBar from property Visibility.
 Parameters
   Button - Determines which mouse button the user pressed.
   Shift  - Indicates which keys (Shift, Ctrl, and Alt) were down when the user pressed the mouse button.
@@ -265,9 +270,8 @@ Description
   Do not call DoMouseUp. It is called automatically when the user releases the mouse. 
   
   If the right mouse button is released, DoMouseUp pops up the popup menu specified by PopupMenu. If
-  the left mouse button is released and tvRestoreClick is include in Visibility, DoMouseUp restores
-  the visibility of the application by including tvVisibleTaskBar in property Visiblity.
-  
+  the left mouse button is released and tvRestoreClick or tvMinimizeClick is include in Visibility,
+  DoMouseUp restores the visibility of the application or hides the application, respectively.  
   Finally it triggers the OnMouseUp and OnClick event.
 Parameters
   Button - Determines which mouse button the user pressed.
@@ -299,6 +303,10 @@ Description
   
   \Include tvRestoreClick or tvRestoreDbClick in Visibility to automatically restore the application 
   and the visibility of the application button when the user clicks the tray icon with the left button,
+  or double-clicks the tray icon, respectively.
+
+  \Include tvMinimizeClick or tvMinimizeDbClick in Visibility to automatically hide the application 
+  and application button when the user clicks the tray icon with the left button,
   or double-clicks the tray icon, respectively.
 See Also
   ShowApplication, Visibility
@@ -354,7 +362,7 @@ See Also
 Summary
   Occurs when TJvTrayIcon changes the tray icon.
 Description
-  Write an OnAnimate event handler to take specific action whenever TJvTrayIcon changes the tray icon
+  \Write an OnAnimate event handler to take specific action whenever TJvTrayIcon changes the tray icon
   in response to animate events. When Animated is set to True, TJvTrayIcon iterates through the icons
   in the image list specified by Icons and displays each icon in that list - one at a time - in the
   notification area. Property Delay specifies the amount of time each icon is shown in the tray.
@@ -404,6 +412,9 @@ Description
   
   \Include tvRestoreClick in Visibility to automatically restore the application and the visibility of 
   the application button when the user clicks the tray icon with the left button.
+
+  \Include tvMinimizeClick in Visibility to automatically hide the application and 
+  the application button when the user clicks the tray icon with the left button.
 See Also
   OnDblClick, OnMouseDown, OnMouseUp, Visibility
 ----------------------------------------------------------------------------------------------------
@@ -418,9 +429,13 @@ Description
   
   \Include tvRestoreDbClick in Visibility to automatically restore the application and the visibility
   of the application button when the user double-clicks the tray icon.
+
+  \Include tvMinimizeDbClick in Visibility to automatically hide the application and the application
+  button when the user double-clicks the tray icon, respectively.
 Note
-  Assigning an OnDblClick event handler, overrides the tvRestoreDbClick flag in Visibility. Thus the
-  application isn't automatically restored when the user double-clicks the tray icon.
+  Assigning an OnDblClick event handler, overrides the tvRestoreDbClick and tvMinimizeDbClick flag in
+  Visibility. Thus the application isn't automatically restored or hidden when the user double-clicks
+  the tray icon.
 See Also
   OnClick, OnMouseDown, OnMouseUp, Visibility
 ----------------------------------------------------------------------------------------------------
@@ -490,6 +505,10 @@ Description
   \Include tvRestoreClick or tvRestoreDbClick in Visibility to automatically restore the minimized 
   application and the visibility of the application button when the user clicks the tray icon with 
   the left button, or double-clicks the tray icon, respectively.
+  
+  \Include tvMinimizeClick or tvMinimizeDbClick in Visibility to automatically hide the 
+  application and the application button when the user clicks the tray icon with 
+  the left button, or double-clicks the tray icon, respectively.
 See Also
   HideApplication, Visibility
 ----------------------------------------------------------------------------------------------------
@@ -504,9 +523,13 @@ Description
   <TABLE>
   Value                Meaning
   -----                -------
-  tvVisibleTaskBar     If this flag is set, the application is visible and the application button appears
-                        on the taskbar. If this flag is not set, TJvTrayIcon hides the application and
-                        removes the application button on the taskbar.
+  tvVisibleTaskBar     Indicates whether the application and the application button on the taskbar are
+                        visible. 
+                        
+                       Use this flag at run-time to show or hide the application. For example removing
+                        this flag from Visibility will hide the application. Use this
+                        flag at design-time to indicate whether the application and the application button
+                        must be visible when the application starts up.
   tvVisibleTaskList    (Windows 95, 98 and me.) Shows the application in the windows task manager
                         application. This is default behaviour. If this flag is not set, TJvTrayIcon
                         removes the application from the task manager; the application prevent itself
@@ -519,6 +542,11 @@ Description
                         button on the taskbar, when the user clicks the tray icon with the left button.
   tvRestoreDbClick     Automatically restores the application and the visibility of the application
                         button on the taskbar, when the user double-clicks the tray icon. Assigning
+                        an OnDblClick event handler overrides this behaviour.
+  tvMinimizeClick      Automatically hides the application and removes the application
+                        button from the taskbar, when the user clicks the tray icon with the left button.
+  tvMinimizeDbClick    Automatically hides the application and removes the application
+                        button from the taskbar, when the user double-clicks the tray icon. Assigning
                         an OnDblClick event handler overrides this behaviour.
   </TABLE>
 <AUTOLINK OFF>

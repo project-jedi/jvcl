@@ -115,9 +115,9 @@ Description
 Summary
   Creates and initializes a new TJvCPSStartupInfo object.
 Description
-  Use Create to create and initialize a new TJvCPSStartupInfo object.
+  Use \Create to create and initialize a new TJvCPSStartupInfo object.
   
-  Create calls the inherited Create method, then sets the initial values for the object as follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the object as follows: 
 
   * DefaultSize is set to True.
   * DefaultPosition is set to True.
@@ -230,7 +230,7 @@ Description
 Summary
   Returns a windows STARTUPINFO structure.
 Description
-  Read StartupInfo to get a windows STARTUPINFO structure filled with values specified by the 
+  \Read StartupInfo to get a windows STARTUPINFO structure filled with values specified by the 
   properties of TJvCPSStartupInfo. This property is used by TJvCreateProcess to get a windows 
   STARTUPINFO structure.
 ----------------------------------------------------------------------------------------------------
@@ -333,14 +333,15 @@ Description
 Summary
   Creates and initializes a new TJvCreateProcess object.
 Description
-  Use Create to create and initialize a new TJvCreateProcess object.
+  Use \Create to create and initialize a new TJvCreateProcess object.
   
-  Create calls the inherited Create method, then sets the initial values for the component as follows: 
+  \Create calls the inherited \Create method, then sets the initial values for the component as follows: 
   
   * CreationFlags is set to [].
   * Priority is set to ppNormal.
   * State is set to psReady.
   * WaitForTerminate is set to True.
+  * ConsoleOptions is set to [coOwnerData].
 Parameters
   AOwner - A component, typically the form, that is responsible for freeing the component.
 See Also
@@ -410,6 +411,9 @@ Description
   Calling CloseApplication when State is psReady, will raise an error.
 Parameters
   SendQuit - Indicates whether to close immediately.
+Returns
+  Returns True if a process with an ID equal to <LINK ProcessInfo,ProcessInfo.dwProcessId> exists, 
+  otherwise returns False.
 See Also
   Terminate
 ----------------------------------------------------------------------------------------------------
@@ -585,7 +589,7 @@ Description
 Summary
   Contains identification information about a new process. 
 Description
-  Read ProcessInfo after calling Run to get identification information about the new process.
+  \Read ProcessInfo after calling Run to get identification information about the new process.
 ----------------------------------------------------------------------------------------------------
 @@TJvCreateProcess.Run
 Summary
@@ -715,6 +719,8 @@ Note
   coRedirect must be included in ConsoleOptions otherwise \Write will have no effect.
 Parameters
   S - \Data to be written to the input of a console process.
+Returns
+  Returns True on success, otherwise returns False.
 See Also
   ConsoleOptions, WriteLn
 ----------------------------------------------------------------------------------------------------
@@ -729,6 +735,8 @@ Note
   coRedirect must be included in ConsoleOptions otherwise WriteLn will have no effect.
 Parameters
   S - \Data to be written to the input of a console process.
+Returns
+  Returns True on success, otherwise returns False.
 See Also
   ConsoleOptions, Write
 ----------------------------------------------------------------------------------------------------
@@ -742,9 +750,9 @@ Description
 Summary
   Creates and initializes a new TJvProcessEntry object.
 Description
-  Use Create to create and initialize a new TJvProcessEntry object.
+  Use \Create to create and initialize a new TJvProcessEntry object.
   
-  Create calls the inherited Create method, then sets the initial values for the TJvProcessEntry object
+  \Create calls the inherited \Create method, then sets the initial values for the TJvProcessEntry object
   as follows: 
 Parameters
   AProcessID   - The process id of a process to be associated with a new TJvProcessEntry
@@ -758,6 +766,8 @@ Description
   Call CloseApplication to close the process. If UseQuit is True then the application will terminate
   immediately after processing the request. If UseQuit is False then the application can prompt the 
   user for confirmation, and close only if the user confirms the choice.
+Returns
+  Returns True if a process with an ID equal to ProcessID exists, otherwise returns False.
 Parameters
   UseQuit - Indicates whether to close immediately.
 See Also
@@ -767,7 +777,7 @@ See Also
 Summary
   Returns the path and file name of the file associated with the TJvProcessEntry object.
 Description
-  Read FileName to determine the path and file name of the file associated with the TJvProcessEntry
+  \Read FileName to determine the path and file name of the file associated with the TJvProcessEntry
   object. The returned value is equal to the AFileName parameter specified when creating the object 
   by calling Create.
 See Also
@@ -777,7 +787,7 @@ See Also
 Summary
   Returns the index of the file's large icon.
 Description
-  Read LargeIconIndex to determine the index of the file's large icon within the system image list.
+  \Read LargeIconIndex to determine the index of the file's large icon within the system image list.
   
   LargeIconIndex will only return a valid icon index if you did specify a valid path and filename for
   the AFileName parameter when creating the object by calling Create.
@@ -788,7 +798,7 @@ See Also
 Summary
   Indicates the priority of the proces associated with the TJvProcessEntry object.
 Description
-  Read Priority to determine the priority of the process associated with the TJvProcessEntry object.
+  \Read Priority to determine the priority of the process associated with the TJvProcessEntry object.
 See Also
   PriorityText
 ----------------------------------------------------------------------------------------------------
@@ -801,6 +811,8 @@ Description
   user. 
 Parameters
   Priority - The priority that needs to be converted to a \string.
+Returns 
+  A \string describing the priority indicated by parameter Priority.
 See Also
   Priority
 ----------------------------------------------------------------------------------------------------
@@ -808,7 +820,7 @@ See Also
 Summary
   Returns the process ID of the process associated with the TJvProcessEntry object.
 Description
-  Read ProcessID to determine the process ID of the process associated with the TJvProcessEntry object.
+  \Read ProcessID to determine the process ID of the process associated with the TJvProcessEntry object.
   The returned value is equal to the AProcessID parameter specified when creating th eobject by calling
   Create.
 See Also
@@ -818,7 +830,7 @@ See Also
 Summary
   Returns the name of the process associated with the TJvProcessEntry object.
 Description
-  Read ProcessName to determine the name of the process associated with the TJvProcessEntry object.
+  \Read ProcessName to determine the name of the process associated with the TJvProcessEntry object.
   The returned value is equal to the AProcessName parameter specified when creating th eobject by
   calling Create.
 See Also
@@ -828,7 +840,7 @@ See Also
 Summary
   Returns the index of the file's small icon.
 Description
-  Read SmallIconIndex to determine the index of the file's small icon within the system image list.
+  \Read SmallIconIndex to determine the index of the file's small icon within the system image list.
 
   SmallIconIndex will only return a valid icon index if you did specify a valid path and filename for
   the AFileName parameter when creating the object by calling Create.
@@ -841,6 +853,8 @@ Summary
 Description
   Call Terminate to terminate a process created with TJvCreateProcess. It will unconditionally cause 
   the created process to exit. Use it only in extreme circumstances, otherwise use Close.
+Returns
+  Returns True on success, otherwise returns False.
 See Also
   Close
 ----------------------------------------------------------------------------------------------------

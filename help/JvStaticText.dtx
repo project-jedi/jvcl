@@ -1,105 +1,70 @@
+----------------------------------------------------------------------------------------------------
 @@JvStaticText.pas
 <GROUP JVCL.FileRef>
 Summary
-  Contains the JvStaticText component.
+  Contains the TJvStaticText component.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Sébastien Buysse
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText
-##JVCL:Component
-<TITLEIMG TJvStaticText>
-<GROUP JVCL.LabelsAndStatic>
+@@TJvCustomStaticText
 Summary
-  Supports extended features such as hot tracking.
+  TJvCustomStaticText is the base class for TJvStaticText.
 Description
-  TJvStaticText is a TStaticText descendant that supports extended features such as hot tracking.
-
-  Set HotTrack to True, to provide visual feedback about when the text control is under the mouse. 
-  Use HotGlyph, HotTrackFont to alter the appearance of the control when the mouse is over it.
-  
-  Use property HintColor to change the color of the hint boxes for the control.
+  TJvCustomStaticText is the base class for TJvStaticText, a windowed control that displays text on a
+  form. This component functions like TStaticText, but supports extended features such as hot tracking.
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.Create
-Summary
-  Creates and initializes a new TJvStaticText object.
-Description
-  Use Create to create and initialize a new TJvStaticText object.
-  
-  Create calls the inherited Create method, then sets the initial values for the control as follows: 
-
-  * HintColor is set to clInfoBk.
-  * csAcceptsControls is added to ControlStyle.  
-Parameters
-  AOwner - A component, typically the form, that is responsible for freeing the control.
-See Also
-  Destroy
-----------------------------------------------------------------------------------------------------
-@@TJvStaticText.Destroy
-Summary
-  Destroys an instance of TJvStaticText.
-Description
-  Do not call Destroy directly in an application. Instead, call Free. Free verifies that the 
-  TJvStaticText object is not nil and only then calls Destroy.
-Parameters
-  None.
-See Also
-  Create
-----------------------------------------------------------------------------------------------------
-@@TJvStaticText.AboutJVCL
+@@TJvCustomStaticText.AboutJVCL
   <INCLUDE JVCL.Main.AboutJVCL.dtx>
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.CMCtl3DChanged
+@@TJvCustomStaticText.Alignment
 Summary
-  Responds when the Ctrl3D property changes.
+  Determines how text is aligned within the component.
 Description
-  CMCtl3DChanged is called automatically when the Ctl3D property changes. It triggers the 
-  OnCtl3DChanged event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the control of the Ctl3D 
-        change.
+  The possible values of Alignment are
+
+  <TABLE>
+  Value            Meaning
+  -----            ------- 
+  taLeftJustify    Text is aligned at the left of the control.
+  taCenter         Text is centered in the control.
+  taRightJustify   Text is aligned at the right of the control.
+  </TABLE>
 See Also
-  OnCtl3DChanged
+  Layout
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.CMMouseEnter
+@@TJvCustomStaticText.AutoSize
 Summary
-  Responds when the mouse pointer moves over the control.
+  Determines whether the component is automatically resized to accommodate its text.
 Description
-  CMMouseEnter is called automatically when the mouse pointer moves over the control. It sets the
-  hint color for the application to the property specified by HintColor; sets the font of the text 
-  on the control to HotTrackFont if property HotTrack is true; and triggers the OnMouseEnter event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the control of the event.
-See Also
-  CMMouseLeave, OnMouseEnter, OnMouseLeave
+  If AutoSize is True, the component is automatically resized—at runtime and design time—whenever
+  the font size or Caption text changes.
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.CMMouseLeave
+@@TJvCustomStaticText.BorderStyle
 Summary
-  Responds when the mouse pointer moves off the control.
+  Determines the appearance of the control’s border.
 Description
-  CMMouseEnter is called automatically when the mouse pointer moves off the control. It resets the
-  hint color for the application; resets the font of the text on the control to Font; and finally
-  triggers the OnMouseLeave event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the control of the event.
-See Also
-  CMMouseEnter, OnMouseEnter, OnMouseLeave
+  The possible values of BorderStyle are
+
+  <TABLE>
+  Value      Meaning
+  -----      -------
+  sbsNone    No visible border.
+  sbsSingle  Single-line border.
+  sbsSunken  Raised border.
+  </TABLE>
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.CMParentColorChanged
+@@TJvCustomStaticText.FocusControl
 Summary
-  Responds when the color of the parent of the control changes.
+  Links the component with another windowed control.
 Description
-  CMParentColorChanged is called automatically when the color of the parent of the control changes.
-  It triggers the OnParentColorChange event.
-Parameters
-  Msg - Represents the parameters of the Windows message that informs the control of the parent
-        color change.
-See Also
-  OnParentColorChange
+  Use the FocusControl property to link the TJvCustomStaticText instance with another windowed control.
+  If the text of Caption includes an accelerator key, the component specified by FocusControl receives
+  focus when the accelerator is pressed.
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.HintColor
+@@TJvCustomStaticText.HintColor
 Summary
-  Determines the color of the hint boxes for the Help Hints for the control.
+  Determines the color of the hint boxes for the Help Hints for the <xxx>.
 Description
   Use HintColor to specify the hint box color. A default color value of clInfoBk is set for the
   HintColor property in the constructor when the application is created. To change the HintColor
@@ -107,7 +72,7 @@ Description
 See Also
   HotTrack
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.HotTrack
+@@TJvCustomStaticText.HotTrack
 Summary
   Specifies whether the control is highlighted when the mouse passes over it.
 Description
@@ -117,7 +82,7 @@ Description
 See Also
   OnMouseEnter, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.HotTrackFont
+@@TJvCustomStaticText.HotTrackFont
 Summary
   Specifies the font used when the mouse passes over the control, and HotTrack is True.
 Description
@@ -129,37 +94,141 @@ Description
 See Also
   HotTrack
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.OnCtl3DChanged
+@@TJvCustomStaticText.Layout
+Summary
+  Specifies the vertical placement of the text within the control.
+Description
+  Set Layout to specify how the text of the control is placed within the ClientRect of the control.
+  Layout is the vertical analog to the Alignment property.
+
+  Layout can be one of the following values:
+  <TABLE>
+  Value     Meaning
+  -----     -------
+  tlTop     The text appears at the top of the control. 
+  tlCenter  The text is vertically centered in the control. 
+  tlBottom  The text appears along the bottom of the control.
+  </TABLE>
+See Also
+  Alignment
+----------------------------------------------------------------------------------------------------
+@@TJvCustomStaticText.OnCtl3DChanged
 Summary
   Occurs when the Ctl3D property of the control changes.
 Description
-  Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
+  \Write an OnCtl3DChanged event handler to take specific action when the Ctl3D property changes.
 See Also
   OnParentColorChange
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.OnMouseEnter
+@@TJvCustomStaticText.OnMouseEnter
 Summary
   Occurs when the mouse pointer moves over the control.
 Description
-  Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
+  \Write an OnMouseEnter event handler to take specific action when the user moves the mouse over the
   control.
 See Also
   HotTrack, OnMouseLeave
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.OnMouseLeave
+@@TJvCustomStaticText.OnMouseLeave
 Summary
   Occurs when the mouse pointer moves off the control.
 Description
-  Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
+  \Write an OnMouseLeave event handler to take specific action when the user moves the mouse off the
   control. For example, you can use this event to undo changes that were made in an OnMouseEnter
   event handler.
 See Also
   HotTrack, OnMouseEnter
 ----------------------------------------------------------------------------------------------------
-@@TJvStaticText.OnParentColorChange
+@@TJvCustomStaticText.OnParentColorChange
 Summary
   Occurs when the color property for the parent of the control changes.
 Description
-  Write an OnParentColorChange event to take specific action when the ParentColor property changes.
+  \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
 See Also
   OnCtl3DChanged
+----------------------------------------------------------------------------------------------------
+@@TJvCustomStaticText.ShowAccelChar
+Summary
+  Enables accelerator characters.
+Description
+  If ShowAccelChar is True, an ampersand in the component’s Caption text appears as an underline and
+  makes the character after it into an accelerator key. If ShowAccelChar is False, ampersands appear
+  as ampersands.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvCustomStaticText.TextMargins
+Summary
+  \Controls the indentation of the text on the control.
+Description
+  Use TextMargins to specify the indentation of the text on a control. 
+See Also
+  TJvTextMargins, TJvTextMargins.X, TJvTextMargins.Y
+----------------------------------------------------------------------------------------------------
+@@TJvCustomStaticText.WordWrap
+Summary
+  Specifies whether the control's text wraps when it is too long for the width of the control.
+Description
+  Set WordWrap to True to allow the control to display multiple line of text. When WordWrap is True,
+  text that is too wide for the control wraps at the right margin and continues in additional
+  lines.
+
+  Set WordWrap to False to limit the control to a single line. When WordWrap is False, text that is too
+  wide for the control appears truncated.
+See Also
+----------------------------------------------------------------------------------------------------
+@@TJvStaticText
+##JVCL:Component
+<TITLEIMG TJvStaticText>
+<GROUP JVCL.LabelsAndStatic>
+Summary
+  Supports extended features such as hot tracking.
+Description
+  TJvStaticText is a TJvCustomStaticText descendant that supports extended features such as hot tracking.
+
+  Set HotTrack to True, to provide visual feedback about when the text control is under the mouse. 
+  Use HotGlyph, HotTrackFont to alter the appearance of the control when the mouse is over it.
+  
+  Use property HintColor to change the color of the hint boxes for the control.
+----------------------------------------------------------------------------------------------------
+@@TJvTextMargins
+Summary
+  \Controls the indentation of the text on a control.
+Description
+  Use TJvTextMargins to specify the indentation of the text on a control. 
+  
+  Property X specifies the
+  horizontally margin between the left or right edge of the caption and the control, depending on
+  the value of <LINK TJvCustomStaticText.Alignment,Alignment>.
+  Property Y specifies the
+  vertically margin between the top or bottom edge of the caption and the control, depending on
+  the value of <LINK TJvCustomStaticText.Layout,LayOut>.
+See Also
+  TJvCustomStaticText.Alignment, TJvCustomStaticText.Layout
+----------------------------------------------------------------------------------------------------
+@@TJvTextMargins.X
+Summary
+  Specifies the horizontally number of pixels between the edge of the control and the caption drawn
+  on its surface. 
+Description
+  Use X to specify the indentation of the the text specified by the Caption property. The edges that 
+  X separates depends on the <LINK TJvCustomStaticText.Alignment,Alignment> property. If Alignment is 
+  taLeftJustify, the margin appears between the left edge of the caption and the left edge of the control. 
+  If Layout is taRightJustify, the margin separates the right edges. 
+  
+  If Layout is taCenter the value of X is ignored.
+See Also
+  Y, TJvCustomStaticText.Alignment
+----------------------------------------------------------------------------------------------------
+@@TJvTextMargins.Y
+Summary
+  Specifies the vertically number of pixels between the edge of the control and the caption drawn on
+  its surface. 
+Description
+  Use Y to specify the indentation of the the text specified by the Caption property. The edges that 
+  Y separates depends on the <LINK TJvCustomStaticText.Layout,LayOut> property. If Layout is 
+  tlTop, the margin appears between the top edge of the caption and the top edge of the control. 
+  If Layout is tlBottom, the margin separates the bottom edges. 
+  
+  If Layout is tlCenter the value of Y is ignored.
+See Also
+  X, TJvCustomStaticText.Layout
