@@ -30,8 +30,11 @@ interface
 
 uses
   SysUtils, Classes, IniFiles,
+  {$IFDEF MSWINDOWS}
+  Windows, Messages,
+  {$ENDIF MSWINDOWS}
   {$IFDEF VCL}
-  Windows, Messages, Menus, Buttons, Controls,
+  Menus, Buttons, Controls,
   Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
@@ -72,12 +75,7 @@ type
     FOrientation: TBarOrientation;
     FAlign: TAlign;
     FButtonSize: TPoint;
-    {$IFDEF VCL}
-    FButtonStyle: Buttons.TButtonStyle;
-    {$ENDIF VCL}
-    {$IFDEF VisualCLX}
-    FButtonStyle: JvQThemes.TButtonStyle;
-    {$ENDIF VisualCLX}
+    FButtonStyle: TButtonStyle;
     FGridSize: TPoint;
     FOffset: TPoint;
     FEditWin: HWnd;
@@ -197,7 +195,7 @@ type
     function NewItem(AOwner: TComponent; Section: Integer;
       const AName: string): TJvSpeedItem;
     function AcceptDropItem(Item: TJvSpeedItem; X, Y: Integer): Boolean;
-    procedure SetEditing(Win: HWnd);
+    procedure SetEditing(Win: HWND);
     function GetEditing: Boolean;
     function SearchItem(const ItemName: string): TJvSpeedItem;
     function FindItem(Item: TJvSpeedItem; var Section, Index: Integer): Boolean;
@@ -1686,12 +1684,15 @@ end;
 
 procedure TJvSpeedBar.SetFontDefault;
 {$IFDEF MSWINDOWS}
+{$IFDEF VCL}
 var
   NCMetrics: TNonClientMetrics;
+{$ENDIF VCL}
 begin
   ParentFont := False;
   with Font do
   begin
+    {$IFDEF VCL}
     NCMetrics.cbSize := SizeOf(TNonClientMetrics);
     if SystemParametersInfo(SPI_GETNONCLIENTMETRICS, 0, @NCMetrics, 0) then
     begin
@@ -1699,6 +1700,7 @@ begin
       Charset := DEFAULT_CHARSET;
     end
     else
+    {$ENDIF VCL}
     begin
       Name := 'MS Sans Serif';
       Size := 8;
@@ -2034,7 +2036,7 @@ begin
   Result := (FEditWin <> NullHandle);
 end;
 
-procedure TJvSpeedBar.SetEditing(Win: HWnd);
+procedure TJvSpeedBar.SetEditing(Win: HWND);
 begin
   FEditWin := Win;
   ForEachItem(SetItemEditing, 0);

@@ -70,9 +70,9 @@ object JvSpeedbarSetupWindow: TJvSpeedbarSetupWindow
     Caption = '&Categories:    '
   end
   object HintLabel: TLabel
-    Left = 0
+    Left = 4
     Top = 231
-    Width = 425
+    Width = 413
     Height = 29
     AutoSize = False
     Caption = 
