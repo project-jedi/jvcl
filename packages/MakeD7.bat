@@ -24,7 +24,7 @@ REM echo Creating .dof files
 REM call makedofs.bat
 
 echo.
-echo Createing .cfg files
+echo Creating .cfg files
 MakeCFG "..\..\packages\%DIR%\*.dpk" %DIR%packscfg.tmpl
 
 
