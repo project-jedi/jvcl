@@ -174,7 +174,7 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  JvJCLUtils;
 
 const
   WM_CALLBACKMESSAGE = WM_USER + 1;

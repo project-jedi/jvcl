@@ -1,5 +1,10 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-05:
+- WidthOf and HeightOf renamed to RectWidth and RectHeight // peter3
+- Moved lots of procedures from JvJVCLUtils to JvJCLUtils. Basically, anything that doesn't rely on other JVCL units and doesn't use TComponent and above are now in JvJCLUtils. Graphic stuff has been left in JvJVCLUtils even if it doesn't use (J)VCL. // peter3
+- Replaced IsPointInRect with JvJCLUtils.PtInRectExclusive. // peter3
+- Replaced PointInRect with JvJCLUtils.PtInRectInclusive. // peter3
 2003-11-04: 
 - Updated BCB 5 packages to match the Delphi 7 packages. Some units were previously omitted from the BCB5 packages and JvCaret was still in the System package. It has been moved to the Core package.
 - Modified JvDlgsReg.pas for BCB5 compatability enclosing JvDialogActns in {$IFNDEF BCB5} in the uses clause and omitting the RegisterActions call for BCB5. This is necessary because BCB5 cannot build/link JvDialogActns. // lcc

@@ -306,7 +306,7 @@ type
 implementation
 
 uses
-  Math, ActnList, CommCtrl, JvJVCLUtils, JvThemes;
+  Math, ActnList, CommCtrl, JvJCLUtils, JvJVCLUtils, JvThemes;
 
 const
   Alignments: array[TAlignment] of Word = (DT_LEFT, DT_RIGHT, DT_CENTER);
@@ -490,9 +490,9 @@ begin
   else
     TextBounds := Rect(0, 0, 0, 0);
   TextBounds.Bottom := Max(TextBounds.Top, TextBounds.Top +
-    Min(MaxSize.Y, HeightOf(TextBounds)));
+    Min(MaxSize.Y, RectHeight(TextBounds)));
   TextBounds.Right := Max(TextBounds.Left, TextBounds.Left +
-    Min(MaxSize.X, WidthOf(TextBounds)));
+    Min(MaxSize.X, RectWidth(TextBounds)));
   TextSize := Point(TextBounds.Right - TextBounds.Left, TextBounds.Bottom -
     TextBounds.Top);
   if PopupMark then
@@ -891,7 +891,7 @@ begin
         PopupPos.X := TextBounds.Right + 3
       else
         PopupPos.X := (Client.Left + Client.Right - 7) div 2;
-      PopupPos.Y := TextBounds.Top + HeightOf(TextBounds) div 2;
+      PopupPos.Y := TextBounds.Top + RectHeight(TextBounds) div 2;
       DrawPopupMark(Canvas, PopupPos.X, PopupPos.Y, State);
     end;
   Result := TextBounds;

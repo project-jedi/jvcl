@@ -2518,7 +2518,7 @@ begin
               DrawExpandBtn(TitleRect, TextRect, InBiDiMode, DrawColumn.Expanded);
             with DrawColumn.Title do
               DrawCellText(Self, ACol, ARow, MinimizeText(Caption, Canvas,
-                WidthOf(TextRect) - Indicator), TextRect, Alignment, vaCenter
+                RectWidth(TextRect) - Indicator), TextRect, Alignment, vaCenter
                 , IsRightToLeft);
           end;
         if DefaultDrawSortMarker then

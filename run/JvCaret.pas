@@ -88,7 +88,7 @@ type
 implementation
 
 uses
-  JvJVCLUtils;
+  JvJCLUtils;
 
 constructor TJvCaret.Create(Owner: TWinControl);
 begin

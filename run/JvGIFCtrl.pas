@@ -126,7 +126,7 @@ implementation
 
 uses
   Math,
-  JvJVCLUtils;
+  JvJCLUtils, JvJVCLUtils;
 
 const
   { Maximum delay (10 sec) guarantees that a very long and slow
@@ -439,7 +439,7 @@ begin
       else
       begin
         StretchBitmapRectTransparent(Canvas, Dest.Left, Dest.Top,
-          WidthOf(Dest), HeightOf(Dest), Bounds(0, 0, Frame.Width,
+          RectWidth(Dest), RectHeight(Dest), Bounds(0, 0, Frame.Width,
           Frame.Height), Frame, TransColor);
       end;
     finally

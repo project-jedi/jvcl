@@ -185,7 +185,7 @@ resourcestring
 implementation
 
 uses
-  JvConsts, JvgUtils;
+  JvConsts, JvJCLUtils, JvgUtils;
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin
@@ -462,7 +462,7 @@ begin
   Canvas.Brush.Color := ItemStyle.BtnColor;
   for I := 1 to FButtons.Count do // draw buttons
   begin
-    if IsPointInRect(MouseClickPoint, BtnRect) then
+    if PtInRectExclusive(BtnRect,MouseClickPoint) then
     begin
       if I = FPushedButton[Index] then
         FPushedButton[Index] := 0 //...none pushed

@@ -57,55 +57,6 @@ function IconToBitmap2(Ico: HICON; Size: Integer = 32; TransparentColor: TColor 
 function IconToBitmap3(Ico: HICON; Size: Integer = 32; TransparentColor: TColor = clNone): TBitmap;
 {$ENDIF COMPLIB_VCL}
 
-//Open an object with the shell (url or something like that)
-function OpenObject(Value: PChar): Boolean; overload;
-function OpenObject(const Value: string): Boolean; overload;
-
-//Raise the last Exception
-procedure RaiseLastWin32; overload;
-procedure RaiseLastWin32(Text: string); overload;
-//Raise the last Exception with a small comment from your part
-
-//Same as linux function ;)
-procedure PError(const Text: string);
-
-//Return the maximum of three integers
-function GetMax(I, J, K: Integer): Integer;
-
-//Return the minimum of three integers
-function GetMin(I, J, K: Integer): Integer;
-
-//Convert RGB Values to HSV
-procedure RGBToHSV(r, g, b: Integer; var h, s, v: Integer);
-
-{$IFDEF MSWINDOWS}
-{ GetFileVersion returns the most significant 32 bits of a file's binary
-  version number. Typically, this includes the major and minor version placed
-  together in one 32-bit Integer. It generally does not include the release
-  or build numbers. It returns 0 if it failed. }
-function GetFileVersion(const AFilename: string): Cardinal;
-{$EXTERNALSYM GetFileVersion}
-
-//Get version of Shell.dll
-function GetShellVersion: Cardinal;
-{$EXTERNALSYM GetShellVersion}
-
-// set the background wallpaper (two versions)
-procedure SetWallpaper(Path: string); overload;
-procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle); overload;
-
-{$IFDEF COMPLIB_VCL}
-// screen capture functions
-function CaptureScreen(IncludeTaskBar:boolean=true): TBitmap;overload;
-function CaptureScreen(Rec: TRect): TBitmap; overload;
-function CaptureScreen(WndHandle: LongWord): TBitmap; overload;
-{$ENDIF COMPLIB_VCL}
-
-// CD functions
-procedure OpenCdDrive;
-procedure CloseCdDrive;
-{$ENDIF MSWINDOWS}
-
 // bitmap manipulation functions
 // NOTE: returned bitmap must be freed by caller!
 // get red channel bitmap
@@ -122,10 +73,67 @@ function GetHueBitmap(Value: TBitmap): TBitmap;
 function GetSaturationBitmap(Value: TBitmap): TBitmap;
 // get value bbitmap (v part of hsv)
 function GetValueBitmap(Value: TBitmap): TBitmap;
+
 {$IFDEF MSWINDOWS}
 // hides / shows the a forms caption area
 procedure HideFormCaption(FormHandle: HWND; Hide: Boolean);
+
+type
+  TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
+
+// set the background wallpaper (two versions)
+procedure SetWallpaper(Path: string); overload;
+procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle); overload;
+
+// screen capture functions
+function CaptureScreen(IncludeTaskBar:boolean=true): TBitmap;overload;
+function CaptureScreen(Rec: TRect): TBitmap; overload;
+function CaptureScreen(WndHandle: LongWord): TBitmap; overload;
+
 {$ENDIF MSWINDOWS}
+//Convert RGB Values to HSV
+procedure RGBToHSV(r, g, b: Integer; var h, s, v: Integer);
+
+
+{ from JvVCLUtils }
+
+{$IFDEF COMPLIB_VCL}
+{ Windows resources (bitmaps and icons) VCL-oriented routines }
+procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
+  Bitmap: TBitmap; TransparentColor: TColor);
+procedure DrawBitmapRectTransparent(Dest: TCanvas; DstX, DstY: Integer;
+  SrcRect: TRect; Bitmap: TBitmap; TransparentColor: TColor);
+procedure StretchBitmapRectTransparent(Dest: TCanvas; DstX, DstY, DstW,
+  DstH: Integer; SrcRect: TRect; Bitmap: TBitmap; TransparentColor: TColor);
+function MakeBitmap(ResID: PChar): TBitmap;
+function MakeBitmapID(ResID: Word): TBitmap;
+function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
+procedure CopyParentImage(Control: TControl; Dest: TCanvas);
+function CreateTwoColorsBrushPattern(Color1, Color2: TColor): TBitmap;
+function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor): TBitmap;
+function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
+  HighlightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
+function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor): TBitmap;
+function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
+procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
+  Index: Integer);
+procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
+  X, Y, Index: Integer; HighlightColor, GrayColor: TColor; DrawHighlight: Boolean);
+{$ENDIF COMPLIB_VCL}
+
+function MakeIcon(ResID: PChar): TIcon;
+function MakeIconID(ResID: Word): TIcon;
+function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
+function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
+function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
+{$IFDEF COMPLIB_VCL}
+function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
+{$ENDIF COMPLIB_VCL}
+
+{ Execute executes other program and waiting for it
+  terminating, then return its Exit Code }
+function Execute(const CommandLine, WorkingDirectory: string): Integer;
+
 // launches the specified CPL file
 // format: <Filename> [,@n] or [,,m] or [,@n,m]
 // where @n = zero-based index of the applet to start (if there is more than one
@@ -159,217 +167,16 @@ function GetControlPanelApplets(const APath, AMask: string; Strings: TStrings; I
 function GetControlPanelApplet(const AFilename: string; Strings: TStrings; Images: TCustomImageList = nil): Boolean;
 {$ENDIF COMPLIB_VCL}
 
-// execute a program without waiting
-procedure Exec(FileName, Parameters, Directory: string);
-// execute a program and wait for it to finish
-procedure ExecuteAndWait(FileName: string; Visibility: Integer);
-{ Execute executes other program and waiting for it
-  terminating, then return its Exit Code }
-function Execute(const CommandLine, WorkingDirectory: string): Integer;
-
-{$IFDEF MSWINDOWS}
-// returns True if Drive is accessible
-function DiskInDrive(Drive: Char): Boolean;
-// returns True if this is the first instance of the program that is running
-function FirstInstance(const ATitle: string): Boolean;
-// restores a window based on it's classname and Caption. Either can be left empty
-// to widen the search
-procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
-
-// manipulate the traybar and start button
-procedure HideTraybar;
-procedure ShowTraybar;
-procedure ShowStartButton;
-procedure HideStartButton;
-
-// (rom) SC_MONITORPOWER is documented as Windows 95 only
-// (rom) better do some testing
-// set monitor functions
-procedure MonitorOn;
-procedure MonitorOff;
-procedure LowPower;
-
-// send a key to the window named AppName
-function SendKey(AppName: string; Key: Char): Boolean;
-
-// associates an extension to a specific program
-procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
-
-function GetRecentDocs: TStringList;
-procedure AddToRecentDocs(const Filename: string);
-
-// returns a list of all windows currently visible, the Objects property is filled with their window handle
-procedure GetVisibleWindows(List: Tstrings);
-{$ENDIF MSWINDOWS}
-
-// JvComponentFunctions
-{-----------------------------------------------------------------------------
-Comments:
-  Functions pulled out of MemoEx, used in MemoEx.pas and TypedEdit.pas
-
-  This unit has low internal cohesion (ie it contains routines that do all kinds of stuff)
-  Some are very good candidates for wider reuse
-  some are quite specific to the controls
-  and in a larger library this unit would be broken up
-
-  I have tried to group related functions together
-}
-
-function CharIsMoney(const Ch: Char): Boolean;
-
-{ there is a STrToIntDef provided by Delphi, but no "safe" versions of
-  StrToFloat or StrToCurr }
-function StrToFloatDef(const Str: string; Def: Extended): Extended;
-function StrToCurrDef(const Str: string; Def: Currency): Currency;
-
-{ GetChangedText works out the new text given the current cursor pos & the key pressed
-  It is not very useful in other contexts,
-  but it is in this unit as it is needed in both MemoEx and TypedEdit }
-function GetChangedText(const Text: string; SelStart, SelLength: Integer; Key: Char): string;
-
-function MakeYear4Digit(Year, Pivot: Integer): Integer;
-
-function StrIsInteger(const S: string): Boolean;
-function StrIsFloatMoney(const Ps: string): Boolean;
-function StrIsDateTime(const Ps: string): Boolean;
-
-function PreformatDateString(Ps: string): string;
-
-function BooleanToInteger(const Pb: Boolean): Integer;
-function StringToBoolean(const Ps: string): Boolean;
-
-function SafeStrToDateTime(const Ps: string): TDateTime;
-function SafeStrToDate(const Ps: string): TDateTime;
-function SafeStrToTime(const Ps: string): TDateTime;
-
-function StrDelete(const psSub, psMain: string): string;
-
-{ listview functions }
-function ConvertStates(const State: Integer): TItemStates;
-
-function ChangeHasDeselect(const peOld, peNew: TItemStates): Boolean;
-function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
-
-function ChangeHasDefocus(const peOld, peNew: TItemStates): Boolean;
-function ChangeHasFocus(const peOld, peNew: TItemStates): Boolean;
-
-function GetListItemColumn(const pcItem: TListItem; piIndex: Integer): string;
-
-{ returns the sum of pc.Left, pc.Width and piSpace}
-function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
-{ sets the top of pc to be in the middle of pcParent }
-procedure CenterHeight(const pc, pcParent: TControl);
-{ returns the fractional value of pcValue}
-function TimeOnly(pcValue: TDateTime): TTime;
-{ returns the integral value of pcValue }
-function DateOnly(pcValue: TDateTime): TDate;
-
-type
-  TdtKind = (dtkDateOnly, dtkTimeOnly, dtkDateTime);
-
-const
-  { TDateTime value used to signify Null value}
-  NullEquivalentDate: TDateTime = 0.0;
-
-function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
-// Replacement for Win32Check to avoid platform specific warnings in D6
-function OSCheck(RetVal: Boolean): Boolean;
-
-{ Shortens a fully qualified Path name so that it can be drawn with a specified length limit.
-  Same as FileCtrl.MinimizeName in functionality (but not implementation). Included here to
-  not be forced to use FileCtrl unnecessarily }
-function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
-
-{$IFDEF MSWINDOWS}
-{ RunDLL32 runs a function in a DLL using the utility rundll32.exe (on NT) or rundll.exe (on Win95/98)
- ModuleName is the name of the DLL to load, FuncName is the function to call and CmdLine is
- the command-line parameters (if any) to send to the function. Set WaitForCompletion to False to
- return immediately after the call.
- CmdShow should be one of the SW_SHOWXXXX constants and defaults SW_SHOWDEFAULT
- Return value:
- if WaitForCompletion is True, returns True if the wait didn't return WAIT_FAILED
- if WaitForCompletion is False, returns True if the process could be created
- To get information on why RunDLL32 might have failed, call GetLastError
- To get more info on what can actually be called using rundll32.exe, take a look at
- http://www.dx21.com/SCRIPTING/RUNDLL32/REFGUIDE.ASP?NTI=4&SI=6
-}
-type
-  // the signature of procedures in DLL's that can be called using rundll32.exe
-  TRunDLL32Proc = procedure(Handle: HWND; hInstance: HMODULE; CmdLine: PChar; CmdShow: Integer); stdcall;
-
-function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
-  SW_SHOWDEFAULT): Boolean;
-{ RunDll32Internal does the same as RunDLL32 but does not use the RunDLL32.exe application to do it.
- Rather it loads the DLL, gets a pointer to the function in FuncName and calls it with the given parameters.
- Because of this behaviour, RunDll32Internal works slightly different from RunDLL32:
- * It doesn't return any value indicating success/failure
- * There is no WaitForCompletion parameter (but see comment below on how to circumvent this)
- * You must pass in a valid windows handle in Wnd. Note that if you pass 0, the call might fail, with no indication of why.
- * To simulate WaitForCompletion = False, pass the return value of GetDesktopWindow as the Wnd parameter,
- * To simulate WaitForCompletion = True, pass the handle of the calling window (f ex the form you are calling the procedure from)
- * If you try to call a function in a DLL that doesn't use the TRunDLL32Proc signature, your program
-   might crash. Using the RunDLL32 function protects you from any problems with calling the wrong functions
-   (a dialog is displayed if do something wrong)
- * RunDll32Internal is slightly faster but RunDLL32 is safer
-}
-procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
-{ GetDLLVersion loads DLLName, gets a pointer to the DLLVersion function and calls it, returning the major and minor version values
-from the function. Returns False if the DLL couldn't be loaded or if GetDLLVersion couldn't be found. }
-function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
-{$ENDIF MSWINDOWS}
-{ from JvVCLUtils }
-
-{$IFDEF COMPLIB_VCL}
-{ Windows resources (bitmaps and icons) VCL-oriented routines }
-
-procedure DrawBitmapTransparent(Dest: TCanvas; DstX, DstY: Integer;
-  Bitmap: TBitmap; TransparentColor: TColor);
-procedure DrawBitmapRectTransparent(Dest: TCanvas; DstX, DstY: Integer;
-  SrcRect: TRect; Bitmap: TBitmap; TransparentColor: TColor);
-procedure StretchBitmapRectTransparent(Dest: TCanvas; DstX, DstY, DstW,
-  DstH: Integer; SrcRect: TRect; Bitmap: TBitmap; TransparentColor: TColor);
-function MakeBitmap(ResID: PChar): TBitmap;
-function MakeBitmapID(ResID: Word): TBitmap;
-function MakeModuleBitmap(Module: THandle; ResID: PChar): TBitmap;
-procedure CopyParentImage(Control: TControl; Dest: TCanvas);
-function CreateTwoColorsBrushPattern(Color1, Color2: TColor): TBitmap;
-function CreateDisabledBitmap_NewStyle(FOriginal: TBitmap; BackColor: TColor): TBitmap;
-function CreateDisabledBitmapEx(FOriginal: TBitmap; OutlineColor, BackColor,
-  HighlightColor, ShadowColor: TColor; DrawHighlight: Boolean): TBitmap;
-function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor): TBitmap;
-function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
-procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
-  Index: Integer);
-procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
-  X, Y, Index: Integer; HighlightColor, GrayColor: TColor; DrawHighlight: Boolean);
-{$ENDIF COMPLIB_VCL}
-
-function MakeIcon(ResID: PChar): TIcon;
-function MakeIconID(ResID: Word): TIcon;
-function MakeModuleIcon(Module: THandle; ResID: PChar): TIcon;
-function CreateBitmapFromIcon(Icon: TIcon; BackColor: TColor): TBitmap;
-function CreateIconFromBitmap(Bitmap: TBitmap; TransparentColor: TColor): TIcon;
-
-{ Service routines }
-
-procedure NotImplemented;
-procedure ResourceNotFound(ResID: PChar);
-function WidthOf(R: TRect): Integer;
-function HeightOf(R: TRect): Integer;
-function PointInRect(const P: TPoint; const R: TRect): Boolean;
 {$IFDEF MSWINDOWS}
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 function PaletteColor(Color: TColor): Longint;
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);
 procedure DrawInvertFrame(ScreenRect: TRect; Width: Integer);
-{$IFDEF COMPLIB_VCL}
-function CreateRotatedFont(Font: TFont; Angle: Integer): HFONT;
-{$ENDIF COMPLIB_VCL}
 procedure ShowMDIClientEdge(ClientHandle: THandle; ShowEdge: Boolean);
 {$ENDIF MSWINDOWS}
 procedure Delay(MSecs: Longint);
 procedure CenterControl(Control: TControl);
-function MakeVariant(const Values: array of Variant): Variant;
+procedure NotImplemented;
 
 {$IFDEF LINUX}
 const
@@ -414,30 +221,10 @@ const
 function MsgBox(const Caption, Text: string; Flags: Integer): Integer;
 function MsgDlg(const Msg: string; AType: TMsgDlgType;
   AButtons: TMsgDlgButtons; HelpCtx: Longint): Word;
-{$IFDEF MSWINDOWS}
- {$IFDEF CBUILDER}
-function FindPrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): HWND;
-function ActivatePrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): Boolean;
- {$ELSE}
-function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
-function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
- {$ENDIF CBUILDER}
-function IsForegroundTask: Boolean;
-{$ENDIF MSWINDOWS}
+
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
 function GetAveCharSize(Canvas: TCanvas): TPoint;
-function MinimizeText(const Text: string; Canvas: TCanvas;
-  MaxWidth: Integer): string;
-{$IFDEF MSWINDOWS}
-procedure FreeUnusedOle;
-procedure Beep;
-function GetWindowsVersion: string;
-function LoadDLL(const LibName: string): THandle;
-function RegisterServer(const ModuleName: string): Boolean;
-{$ENDIF MSWINDOWS}
 
 { Gradient filling routine }
 
@@ -446,33 +233,7 @@ type
 
 procedure GradientFillRect(Canvas: TCanvas; ARect: TRect; StartColor,
   EndColor: TColor; Direction: TFillDirection; Colors: Byte);
-
-{ String routines }
-
-function GetEnvVar(const VarName: string): string;
-function AnsiUpperFirstChar(const S: string): string;
-function StringToPChar(var S: string): PChar;
-function StrPAlloc(const S: string): PChar;
-procedure SplitCommandLine(const CmdLine: string; var ExeName,
-  Params: string);
-function DropT(const S: string): string;
-
-{ Memory routines }
-
-function AllocMemo(Size: Longint): Pointer;
-function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
-procedure FreeMemo(var fpBlock: Pointer);
-function GetMemoSize(fpBlock: Pointer): Longint;
-function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean;
-
-{ Manipulate huge pointers routines }
-
-procedure HugeInc(var HugePtr: Pointer; Amount: Longint);
-procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
-function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
-procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
-procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
-
+  
 const
   WaitCursor: TCursor = crHourGlass;
 
@@ -491,22 +252,9 @@ procedure StretchBltTransparent(DstDC: HDC; DstX, DstY, DstW, DstH: Integer;
 procedure DrawTransparentBitmap(DC: HDC; Bitmap: HBITMAP;
   DstX, DstY: Integer; TransparentColor: TColorRef);
 function PaletteEntries(Palette: HPALETTE): Integer;
-function WindowClassName(Wnd: HWND): string;
-function ScreenWorkArea: TRect;
-procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
-procedure ActivateWindow(Wnd: HWND);
-procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
-procedure CenterWindow(Wnd: HWND);
 procedure ShadeRect(DC: HDC; const Rect: TRect);
-procedure KillMessage(Wnd: HWND; Msg: Cardinal);
-
-{ Convert dialog units to pixels and backwards }
-
-function DialogUnitsToPixelsX(DlgUnits: Word): Word;
-function DialogUnitsToPixelsY(DlgUnits: Word): Word;
-function PixelsToDialogUnitsX(PixUnits: Word): Word;
-function PixelsToDialogUnitsY(PixUnits: Word): Word;
 {$ENDIF COMPLIB_VCL}
+function ScreenWorkArea: TRect;
 
 { Grid drawing }
 
@@ -577,18 +325,17 @@ function MsgDlgDef(const Msg, ACaption: string; DlgType: TMsgDlgType;
 {**** Windows routines }
 
 {$ENDIF COMPLIB_VCL}
-{$IFDEF MSWINDOWS}
-{ SetWindowTop put window to top without recreating window }
-procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
-{$ENDIF MSWINDOWS}
-{**** Graphic routines - }
-
 
 {$IFDEF COMPLIB_VCL}
 { LoadIcoToImage loads two icons from resource named NameRes,
   into two image lists ALarge and ASmall}
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
 {$ENDIF COMPLIB_VCL}
+
+{ returns the sum of pc.Left, pc.Width and piSpace}
+function ToRightOf(const pc: TControl; piSpace: Integer = 0): Integer;
+{ sets the top of pc to be in the middle of pcParent }
+procedure CenterHeight(const pc, pcParent: TControl);
 procedure CenterHor(Parent: TControl; MinLeft: Integer; Controls: array of TControl);
 procedure EnableControls(Control: TWinControl; const Enable: Boolean);
 procedure EnableMenuItems(MenuItem: TMenuItem; const Tag: Integer; const Enable: Boolean);
@@ -601,19 +348,18 @@ type
 
 procedure ShowMenu(Form: TForm; MenuAni: TMenuAnimation);
 
+
 {$IFDEF MSWINDOWS}
 { TargetFileName - if FileName is ShortCut returns filename ShortCut linked to }
 function TargetFileName(const FileName: TFileName): TFileName;
 { return filename ShortCut linked to }
 function ResolveLink(const hWnd: HWND; const LinkFile: TFileName;
   var FileName: TFileName): HRESULT;
-
+  
 type
   TProcObj = procedure of object;
 
 procedure ExecAfterPause(Proc: TProcObj; Pause: Integer);
-{ BrowseForFolder displays Browse For Folder dialog }
-function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
 {$ENDIF MSWINDOWS}
 
 { end JvUtils }
@@ -633,7 +379,6 @@ var
   RegUseAppTitle: Boolean = False;
 
 function GetDefaultIniRegKey: string;
-
 function FindForm(FormClass: TFormClass): TForm;
 function FindShowForm(FormClass: TFormClass; const Caption: string): TForm;
 function ShowDialog(FormClass: TFormClass): Boolean;
@@ -648,8 +393,6 @@ procedure SaveMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
 procedure RestoreMDIChildren(MainForm: TForm; const AppStore: TJvCustomAppStore);
 procedure RestoreGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
 procedure SaveGridLayout(Grid: TCustomGrid; const AppStore: TJvCustomAppStore);
-
-function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
 
 function StrToIniStr(const Str: string): string;
 function IniStrToStr(const Str: string): string;
@@ -791,7 +534,6 @@ procedure MoveFileEx(const FileName, DestName: TFileName; ShellDialog: Boolean);
 { end JvFileUtil }
 
 { begin JvCtrlUtils }
-function IntToExtended(I: Integer): Extended;
 
 //------------------------------------------------------------------------------
 // ToolBarMenu
@@ -811,6 +553,17 @@ type
     Focused, Selected: Boolean;
   end;
 
+{ listview functions }
+function ConvertStates(const State: Integer): TItemStates;
+
+function ChangeHasDeselect(const peOld, peNew: TItemStates): Boolean;
+function ChangeHasSelect(const peOld, peNew: TItemStates): Boolean;
+
+function ChangeHasDefocus(const peOld, peNew: TItemStates): Boolean;
+function ChangeHasFocus(const peOld, peNew: TItemStates): Boolean;
+
+function GetListItemColumn(const pcItem: TListItem; piIndex: Integer): string;
+  
 procedure JvListViewToStrings(ListView: TListView; Strings: TStrings;
   SelectedOnly: Boolean = False; Headers: Boolean = True);
 
@@ -861,21 +614,14 @@ resourcestring
   SWin32Error = 'Win32 Error.  Code: %d.'#10'%s';
   RsNotForMdi = 'MDI forms are not allowed';
 
-{$IFDEF MSWINDOWS}
 const
   RC_ControlRegistry = 'Control Panel\Desktop';
   RC_WallpaperStyle = 'WallpaperStyle';
   RC_WallpaperRegistry = 'Wallpaper';
   RC_TileWallpaper = 'TileWallpaper';
-  RC_OpenCDDrive = 'set cdaudio door open wait';
-  RC_CloseCDDrive = 'set cdaudio door closed wait';
   RC_RunCpl = 'rundll32.exe shell32,Control_RunDLL ';
-  RC_ShellName = 'Shell_TrayWnd';
-  RC_DefaultIcon = 'DefaultIcon';
-
-var
-  ShellVersion: Integer;
-
+  
+{$IFDEF MSWINDOWS}
 {$IFDEF COMPLIB_VCL}
 function IconToBitmap(Ico: HICON): TBitmap;
 var
@@ -942,43 +688,6 @@ begin
 end;
 {$ENDIF COMPLIB_VCL}
 
-function OpenObject(const Value: string): Boolean; overload;
-begin
-  Result := OpenObject(PChar(Value));
-end;
-
-{ (rb) Duplicate of JvFunctions.Exec }
-
-function OpenObject(Value: PChar): Boolean; overload;
-begin
-  Result := ShellExecute(0, 'open', Value, nil, nil, SW_SHOWNORMAL) > HINSTANCE_ERROR;
-end;
-
-procedure RaiseLastWin32;
-begin
-  PError('');
-end;
-
-procedure RaiseLastWin32(Text: string);
-begin
-  PError(Text);
-end;
-
-procedure PError(const Text: string);
-var
-  LastError: Integer;
-  St: string;
-begin
-  LastError := GetLastError;
-  if LastError <> 0 then
-  begin
-    St := Format(SWin32Error, [LastError, SysErrorMessage(LastError)]);
-    if Text <> '' then
-      St := Text + ':' + St;
-    raise EOSError.Create(St);
-  end;
-end;
-{$ENDIF MSWINDOWS}
 
 function GetMax(I, J, K: Integer): Integer;
 begin
@@ -1026,73 +735,6 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
-function GetFileVersion(const AFileName: string): Cardinal;
-var
-  FileName: string;
-  InfoSize, Wnd: DWORD;
-  VerBuf: Pointer;
-  FI: PVSFixedFileInfo;
-  VerSize: DWORD;
-begin
-  Result := 0;
-  // GetFileVersionInfo modifies the filename parameter data while parsing.
-  // Copy the string const into a local variable to create a writeable copy.
-  FileName := AFileName;
-  UniqueString(FileName);
-  InfoSize := GetFileVersionInfoSize(PChar(FileName), Wnd);
-  if InfoSize <> 0 then
-  begin
-    GetMem(VerBuf, InfoSize);
-    try
-      if GetFileVersionInfo(PChar(FileName), Wnd, InfoSize, VerBuf) then
-        if VerQueryValue(VerBuf, '\', Pointer(FI), VerSize) then
-          Result := FI.dwFileVersionMS;
-    finally
-      FreeMem(VerBuf);
-    end;
-  end;
-end;
-
-function GetShellVersion: Cardinal;
-begin
-  if ShellVersion = 0 then
-    ShellVersion := GetFileVersion('shell32.dll');
-  Result := ShellVersion;
-end;
-
-procedure SetWallpaper(Path: string);
-begin
-  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
-end;
-
-procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle);
-begin
-  with TRegistry.Create do
-  begin
-    OpenKey(RC_ControlRegistry, False);
-    case Style of
-      wpTile:
-        begin
-          WriteString(RC_TileWallpaper, '1');
-          WriteString(RC_Wallpaperstyle, '0');
-        end;
-      wpCenter:
-        begin
-          WriteString(RC_TileWallpaper, '0');
-          WriteString(RC_Wallpaperstyle, '0');
-        end;
-      wpStretch:
-        begin
-          WriteString(RC_TileWallpaper, '0');
-          WriteString(RC_Wallpaperstyle, '2');
-        end;
-    end;
-    WriteString(RC_WallpaperRegistry, Path);
-    Free;
-  end;
-  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDWININICHANGE);
-end;
 
 {$IFDEF COMPLIB_VCL}
 function CaptureScreen(Rec: TRect): TBitmap;
@@ -1161,15 +803,40 @@ begin
 end;
 { (rb) Duplicate of JclMultimedia.OpenCloseCdDrive ?? }
 
-procedure OpenCdDrive;
+procedure SetWallpaper(Path: string);
 begin
-  mciSendString(PChar(RC_OpenCDDrive), nil, 0, GetForegroundWindow);
+  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, PChar(Path), SPIF_UPDATEINIFILE);
 end;
 
-procedure CloseCdDrive;
+
+procedure SetWallpaper(Path: string; Style: TJvWallpaperStyle);
 begin
-  mciSendString(PChar(RC_CloseCDDrive), nil, 0, GetForegroundWindow);
+  with TRegistry.Create do
+  begin
+    OpenKey(RC_ControlRegistry, False);
+    case Style of
+      wpTile:
+        begin
+          WriteString(RC_TileWallpaper, '1');
+          WriteString(RC_Wallpaperstyle, '0');
+        end;
+      wpCenter:
+        begin
+          WriteString(RC_TileWallpaper, '0');
+          WriteString(RC_Wallpaperstyle, '0');
+        end;
+      wpStretch:
+        begin
+          WriteString(RC_TileWallpaper, '0');
+          WriteString(RC_Wallpaperstyle, '2');
+        end;
+    end;
+    WriteString(RC_WallpaperRegistry, Path);
+    Free;
+  end;
+  SystemParametersInfo(SPI_SETDESKWALLPAPER, 0, nil, SPIF_SENDWININICHANGE);
 end;
+
 {$ENDIF MSWINDOWS}
 
 function GetRBitmap(Value: TBitmap): TBitmap;
@@ -1335,6 +1002,51 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
+// (rom) a thread to wait would be more elegant, also JCL function available
+
+function Execute(const CommandLine, WorkingDirectory: string): Integer;
+{$IFDEF MSWINDOWS}
+var
+  R: Boolean;
+  ProcessInformation: TProcessInformation;
+  StartupInfo: TStartupInfo;
+  ExCode: Cardinal;
+begin
+  Result := 0;
+  FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
+  with StartupInfo do
+  begin
+    cb := SizeOf(TStartupInfo);
+    dwFlags := STARTF_USESHOWWINDOW;
+    wShowWindow := SW_SHOW;
+  end;
+  R := CreateProcess(
+    nil, // Pointer to name of executable module
+    PChar(CommandLine), // Pointer to command line string
+    nil, // Pointer to process security attributes
+    nil, // Pointer to thread security attributes
+    False, // handle inheritance flag
+    0, // creation flags
+    nil, // Pointer to new environment block
+    PChar(WorkingDirectory), // Pointer to current directory name
+    StartupInfo, // Pointer to STARTUPINFO
+    ProcessInformation); // Pointer to PROCESS_INFORMATION
+  if R then
+    while (GetExitCodeProcess(ProcessInformation.hProcess, ExCode) and
+      (ExCode = STILL_ACTIVE)) do
+      Application.ProcessMessages
+  else
+    Result := GetLastError;
+end;
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+begin
+  if WorkingDirectory = '' then WorkingDirectory := GetCurrentDirectory;
+  Result := Libc.system(PChar(Format('cd "%s" ; %s',
+    [WorkingDirectory, CommandLine])));
+end;
+{$ENDIF LINUX}
+
 {$IFDEF COMPLIB_VCL}
 procedure LaunchCpl(FileName: string);
 begin
@@ -1498,753 +1210,6 @@ begin
 end;
 {$ENDIF COMPLIB_VCL}
 
-procedure Exec(FileName, Parameters, Directory: string);
-{$IFDEF MSWINDOWS}
-var
-  Operation: string;
-begin
-  Operation := 'open';
-  ShellExecute(GetForegroundWindow, PChar(Operation), PChar(FileName), PChar(Parameters), PChar(Directory),
-    SW_SHOWNORMAL);
-end;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-begin
-  if Directory = '' then Directory := GetCurrentDirectory;
-  Libc.system(PChar(Format('cd "%s" ; "%s" %s &', [Directory, FileName, Parameters])));
-end;
-{$ENDIF LINUX}
-
-{ (rb) Duplicate of JclMiscel.WinExec32AndWait }
-
-procedure ExecuteAndWait(FileName: string; Visibility: Integer);
-{$IFDEF MSWINDOWS}
-var
-  zAppName: array[0..512] of Char;
-  zCurDir: array[0..255] of Char;
-  WorkDir: string;
-  StartupInfo: TStartupInfo;
-  ProcessInfo: TProcessInformation;
-begin
-  StrPCopy(zAppName, FileName);
-  GetDir(0, WorkDir);
-  StrPCopy(zCurDir, WorkDir);
-  FillChar(StartupInfo, SizeOf(StartupInfo), #0);
-  StartupInfo.cb := SizeOf(StartupInfo);
-  StartupInfo.dwFlags := STARTF_USESHOWWINDOW;
-  StartupInfo.wShowWindow := Visibility;
-  if not CreateProcess(nil, zAppName, nil, nil, False, Create_NEW_CONSOLE or NORMAL_PRIORITY_CLASS,
-    nil, nil, StartupInfo, ProcessInfo) then
-    WaitForSingleObject(ProcessInfo.hProcess, INFINITE);
-end;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-begin
- // ignore Visibility
-  Libc.system(PChar(FileName));
-end;
-{$ENDIF LINUX}
-
-// (rom) a thread to wait would be more elegant, also JCL function available
-
-function Execute(const CommandLine, WorkingDirectory: string): Integer;
-{$IFDEF MSWINDOWS}
-var
-  R: Boolean;
-  ProcessInformation: TProcessInformation;
-  StartupInfo: TStartupInfo;
-  ExCode: Cardinal;
-begin
-  Result := 0;
-  FillChar(StartupInfo, SizeOf(TStartupInfo), 0);
-  with StartupInfo do
-  begin
-    cb := SizeOf(TStartupInfo);
-    dwFlags := STARTF_USESHOWWINDOW;
-    wShowWindow := SW_SHOW;
-  end;
-  R := CreateProcess(
-    nil, // Pointer to name of executable module
-    PChar(CommandLine), // Pointer to command line string
-    nil, // Pointer to process security attributes
-    nil, // Pointer to thread security attributes
-    False, // handle inheritance flag
-    0, // creation flags
-    nil, // Pointer to new environment block
-    PChar(WorkingDirectory), // Pointer to current directory name
-    StartupInfo, // Pointer to STARTUPINFO
-    ProcessInformation); // Pointer to PROCESS_INFORMATION
-  if R then
-    while (GetExitCodeProcess(ProcessInformation.hProcess, ExCode) and
-      (ExCode = STILL_ACTIVE)) do
-      Application.ProcessMessages
-  else
-    Result := GetLastError;
-end;
-{$ENDIF MSWINDOWS}
-{$IFDEF LINUX}
-begin
-  if WorkingDirectory = '' then WorkingDirectory := GetCurrentDirectory;
-  Result := Libc.system(PChar(Format('cd "%s" ; %s',
-    [WorkingDirectory, CommandLine])));
-end;
-{$ENDIF LINUX}
-
-{$IFDEF MSWINDOWS}
-{ (rb) Duplicate of JclFileUtils.DiskInDrive }
-
-function DiskInDrive(Drive: Char): Boolean;
-var
-  DrvNum: Byte;
-  EMode: Word;
-begin
-  DrvNum := Ord(Drive);
-  if DrvNum >= Ord('a') then
-    Dec(DrvNum, $20);
-  EMode := SetErrorMode(SEM_FAILCRITICALERRORS);
-  try
-    Result := DiskSize(DrvNum - $40) <> -1;
-  finally
-    SetErrorMode(EMode);
-  end;
-end;
-
-function FirstInstance(const ATitle: string): Boolean;
-var
-  Mutex: THandle;
-begin
-  Mutex := CreateMutex(nil, False, PChar(ATitle));
-  try
-    Result := (Mutex <> 0) and (GetLastError <> ERROR_ALREADY_EXISTS);
-  finally
-    ReleaseMutex(Mutex);
-  end;
-end;
-
-procedure RestoreOtherInstance(MainFormClassName, MainFormCaption: string);
-var
-  OtherWnd, OwnerWnd: HWND;  
-begin
-  OtherWnd := FindWindow(PChar(MainFormClassName), PChar(MainFormCaption));
-  ShowWindow(OtherWnd, SW_SHOW); //in case the window was not visible before
-
-  OwnerWnd := 0;
-  if OtherWnd <> 0 then
-    OwnerWnd := GetWindow(OtherWnd, GW_OWNER);
-
-  if OwnerWnd <> 0 then
-    OtherWnd := OwnerWnd;
-
-  if OtherWnd <> 0 then
-  begin
-    { (rb) Use JvVCLUtils.SwitchToWindow }
-    if IsIconic(OtherWnd) then
-      ShowWindow(OtherWnd, SW_RESTORE);
-
-    SetForegroundWindow(OtherWnd);
-  end;
-end;
-
-procedure HideTraybar;
-var
-  Wnd: HWND;
-begin
-  Wnd := FindWindow(PChar(RC_ShellName), nil);
-  ShowWindow(Wnd, SW_HIDE);
-end;
-
-procedure ShowTraybar;
-var
-  Wnd: HWND;
-begin
-  Wnd := FindWindow(PChar(RC_ShellName), nil);
-  ShowWindow(Wnd, SW_SHOW);
-end;
-
-procedure HideStartBtn(Visible: Boolean);
-var
-  Tray, Child: HWND;
-  C: array[0..127] of Char;
-  S: string;
-begin
-  Tray := FindWindow(PChar(RC_ShellName), nil);
-  Child := GetWindow(Tray, GW_CHILD);
-  while Child <> 0 do
-  begin
-    if GetClassName(Child, C, SizeOf(C)) > 0 then
-    begin
-      S := StrPas(C);
-      if UpperCase(S) = 'BUTTON' then
-        if Visible then
-          ShowWindow(Child, SW_SHOWNORMAL)
-        else
-          ShowWindow(Child, SW_HIDE);
-    end;
-    Child := GetWindow(Child, GW_HWNDNEXT);
-  end;
-end;
-
-procedure ShowStartButton;
-begin
-  HideStartBtn(True);
-end;
-
-procedure HideStartButton;
-begin
-  HideStartBtn(False);
-end;
-
-procedure MonitorOn;
-begin
-  SendMessage(GetForegroundWindow, WM_SYSCOMMAND, SC_MONITORPOWER, -1);
-end;
-
-procedure MonitorOff;
-begin
-  SendMessage(GetForegroundWindow, WM_SYSCOMMAND, SC_MONITORPOWER, 2);
-end;
-
-procedure LowPower;
-begin
-  SendMessage(GetForegroundWindow, WM_SYSCOMMAND, SC_MONITORPOWER, 1);
-end;
-
-{$WARNINGS OFF}
-
-procedure SendShift(H: HWND; Down: Boolean);
-var
-  vKey, ScanCode: Word;
-  lParam: Longint;
-begin
-  vKey := VK_SHIFT;
-  ScanCode := MapVirtualKey(vKey, 0);
-  lParam := Longint(ScanCode) shl 16 or 1;
-  if not Down then
-    lParam := lParam or $C0000000;
-  SendMessage(H, WM_KEYDOWN, vKey, lParam);
-end;
-
-procedure SendCtrl(H: HWND; Down: Boolean);
-var
-  vKey, ScanCode: Word;
-  lParam: Longint;
-begin
-  vKey := VK_CONTROL;
-  ScanCode := MapVirtualKey(vKey, 0);
-  lParam := Longint(ScanCode) shl 16 or 1;
-  if not Down then
-    lParam := lParam or $C0000000;
-  SendMessage(H, WM_KEYDOWN, vKey, lParam);
-end;
-
-function SendKey(AppName: string; Key: Char): Boolean;
-var
-  vKey, ScanCode: Word;
-  lParam, ConvKey: Longint;
-  Shift, Ctrl: Boolean;
-  H: HWND;
-begin
-  H := FindWindow(PChar(AppName), nil);
-  if H <> 0 then
-  begin
-    ConvKey := OemKeyScan(Ord(Key));
-    Shift := (ConvKey and $00020000) <> 0;
-    Ctrl := (ConvKey and $00040000) <> 0;
-    ScanCode := ConvKey and $000000FF or $FF00;
-    vKey := Ord(Key);
-    lParam := Longint(ScanCode) shl 16 or 1;
-    if Shift then
-      SendShift(H, True);
-    if Ctrl then
-      SendCtrl(H, True);
-    SendMessage(H, WM_KEYDOWN, vKey, lParam);
-    SendMessage(H, WM_CHAR, vKey, lParam);
-    lParam := lParam or $C0000000;
-    SendMessage(H, WM_KEYUP, vKey, lParam);
-    if Shift then
-      SendShift(H, False);
-    if Ctrl then
-      SendCtrl(H, False);
-    Result := True;
-  end
-  else
-    Result := False;
-end;
-
-{$WARNINGS ON}
-
-procedure RebuildIconCache;
-var
-  Dummy: DWORD;
-begin
-  SendMessageTimeout(HWND_BROADCAST, WM_SETTINGCHANGE, SPI_SETNONCLIENTMETRICS,
-    Longint(PChar('WindowMetrics')), SMTO_NORMAL or SMTO_ABORTIFHUNG, 10000, Dummy);
-end;
-
-procedure AssociateFileExtension(IconPath, ProgramName, Path, Extension: string);
-begin
-  with TRegistry.Create do
-  begin
-    RootKey := HKEY_CLASSES_ROOT;
-    OpenKey(ProgramName, True);
-    WriteString('', ProgramName);
-    if IconPath <> '' then
-    begin
-      OpenKey(RC_DefaultIcon, True);
-      WriteString('', IconPath);
-    end;
-    CloseKey;
-    OpenKey(ProgramName, True);
-    OpenKey('shell', True);
-    OpenKey('open', True);
-    OpenKey('command', True);
-    WriteString('', '"' + Path + '" "%1"');
-    Free;
-  end;
-  with TRegistry.Create do
-  begin
-    RootKey := HKEY_CLASSES_ROOT;
-    OpenKey('.' + extension, True);
-    WriteString('', ProgramName);
-    Free;
-  end;
-  RebuildIconCache;
-end;
-
-procedure AssociateExtension(IconPath, ProgramName, Path, Extension: string);
-begin
-  AssociateFileExtension(IconPath, ProgramName, Path, Extension);
-end;
-
-function GetRecentDocs: TStringList;
-var
-  Path: string;
-  t: TSearchRec;
-  Res: Integer;
-begin
-  Result := TStringList.Create;
-  Result.Clear;
-  Path := INcludeTrailingPathDelimiter(GetRecentFolder);
-  //search for all files
-  Res := FindFirst(Path + '*.*', faAnyFile, t);
-  try
-    while Res = 0 do
-    begin
-      if (t.Name <> '.') and (t.Name <> '..') then
-        Result.Add(Path + T.Name);
-      Res := FindNext(t);
-    end;
-  finally
-    FindClose(t);
-  end;
-end;
-
-{ (rb) Duplicate of JvWinDialogs.AddToRecentDocs }
-
-procedure AddToRecentDocs(const Filename: string);
-begin
-  SHAddToRecentDocs(SHARD_PATH, PChar(Filename));
-end;
-
-function EnumWindowsProc(Handle: THandle; lParam: TStrings): Boolean; stdcall;
-var
-  St: array[0..256] of Char;
-  St2: string;
-begin
-  if Windows.IsWindowVisible(Handle) then
-  begin
-    GetWindowText(Handle, St, SizeOf(St));
-    St2 := St;
-    if St2 <> '' then
-      with TStrings(lParam) do
-        AddObject(St2, TObject(Handle));
-  end;
-  Result := True;
-end;
-
-procedure GetVisibleWindows(List: Tstrings);
-begin
-  List.BeginUpdate;
-  try
-    List.Clear;
-    EnumWindows(@EnumWindowsProc, Integer(List));
-  finally
-    List.EndUpdate;
-  end;
-end;
-{$ENDIF MSWINDOWS}
-// from JvComponentFunctions
-
-function StrPosNoCase(const psSub, psMain: string): Integer;
-begin
-  Result := Pos(AnsiUpperCase(psSub), AnsiUpperCase(psMain));
-end;
-
-function StrRestOf(const Ps: string; const n: Integer): string;
-begin
-  Result := Copy(Ps, n, (Length(Ps) - n + 1));
-end;
-
-{!!!!!!!! use these cos the JCL one is badly broken }
-
-{ Am using this one purely as an itnernal for StrReplace
-
- Replace part of a string with new text. iUpdatePos is the last update position
- i.e. the position the substr was found + the length of the replacement string + 1.
- Use 0 first time in }
-
-function StrReplaceInstance(const psSource, psSearch, psReplace: string;
-  var piUpdatePos: Integer; const pbCaseSens: Boolean): string;
-var
-  liIndex: Integer;
-  lsCopy: string;
-begin
-  Result := psSource;
-  if piUpdatePos >= Length(psSource) then
-    Exit;
-  if psSearch = '' then
-    Exit;
-
-  Result := StrLeft(psSource, piUpdatePos - 1);
-  lsCopy := StrRestOf(psSource, piUpdatePos);
-
-  if pbCaseSens then
-    liIndex := Pos(psSearch, lsCopy)
-  else
-    liIndex := StrPosNoCase(psSearch, lsCopy);
-  if liIndex = 0 then
-  begin
-    Result := psSource;
-    piUpdatePos := Length(psSource) + 1;
-    Exit;
-  end;
-
-  Result := Result + StrLeft(lsCopy, liIndex - 1);
-  Result := Result + psReplace;
-  piUpdatePos := Length(Result) + 1;
-  Result := Result + StrRestOf(lsCopy, liIndex + Length(psSearch));
-end;
-
-function LStrReplace(const psSource, psSearch, psReplace: string;
-  const pbCaseSens: Boolean): string;
-var
-  liUpdatePos: Integer;
-begin
-  liUpdatePos := 0;
-  Result := psSource;
-  while liUpdatePos < Length(Result) do
-    Result := StrReplaceInstance(Result, psSearch, psReplace, liUpdatePos, pbCaseSens);
-end;
-
-{ if it's not a decimal point then it must be a digit, space or Currency symbol
-  also always use $ for money }
-
-function CharIsMoney(const Ch: Char): Boolean;
-begin
-  Result := CharIsDigit(Ch) or (Ch = AnsiSpace) or (Ch = '$') or (Ch = '-') or
-    (Pos(Ch, CurrencyString) > 0);
-end;
-
-function StrToCurrDef(const Str: string; Def: Currency): Currency;
-var
-  lStr: string;
-begin
-  try
-    lStr := StrStripNonNumberChars(Str);
-
-    if lStr = '' then
-      Result := Def
-    else
-      Result := StrToCurr(lstr);
-  except
-    Result := Def;
-  end;
-end;
-
-function StrToFloatDef(const Str: string; Def: Extended): Extended;
-var
-  lStr: string;
-begin
-  lStr := StrStripNonNumberChars(Str);
-
-  if lStr = '' then
-    Result := Def
-  else
-  try
-      { the string '-' fails StrToFloat, but it can be interpreted as 0  }
-    if StrRight(lStr, 1) = '-' then
-      lStr := lStr + '0';
-
-      { a string that ends in a '.' such as '12.' fails StrToFloat,
-       but as far as I am concerned, it may as well be interpreted as 12.0 }
-    if StrRight(lStr, 1) = '.' then
-      lStr := lStr + '0';
-    if not TextToFloat(PChar(lStr), Result, fvExtended) then
-      Result := Def;
-//    Result := StrToFloat(lStr);
-  except
-    Result := Def;
-  end;
-end;
-
-function GetChangedText(const Text: string; SelStart, SelLength: Integer; Key: Char): string;
-begin
-  { take the original text, replace what will be overwritten with new value }
-  Result := Text;
-
-  if SelLength > 0 then
-    Delete(Result, SelStart + 1, SelLength);
-  if Key <> #0 then
-    Insert(Key, Result, SelStart + 1);
-end;
-
-{ "window" technique for years to translate 2 digits to 4 digits.
-   The window is 100 years wide
-   The pivot year is the lower edge of the window
-  A pivot year of 1900 is equivalent to putting 1900 before every 2-digit year
- if pivot is 1940, then 40 is interpreted as 1940, 00 as 2000 and 39 as 2039
- The system default is 1950
-
- Why the reimplementation?
- JclDatetime.Make4DigitYear will fail after 2100, this won't
- note that in this implementation pivot is a 4-digit year
- I have made it accept JclDatetime.Make4DigitYear's 2 digit pivot years.
- They are expanded by adding 1900.
-
- It is also better in that a valid 4-digit year will pass through unchanged,
- not fail an assertion.
-}
-
-function MakeYear4Digit(Year, Pivot: Integer): Integer;
-var
-  Century: Integer;
-begin
-  if Pivot < 0 then
-    raise EJVCLException.Create('JvFunctions.MakeYear4Digit: Pivot < 0');
-
-  { map 100 to zero }
-  if Year = 100 then
-    Year := 0;
-  if Pivot = 100 then
-    Pivot := 0;
-
-  // turn 2 digit pivot to 4 digit
-  if Pivot < 100 then
-    Pivot := Pivot + 1900;
-
-  { turn 2 digit years to 4 digits }
-  if (Year >= 0) and (Year < 100) then
-  begin
-    Century := (Pivot div 100) * 100;
-
-    Result := Year + Century; // give the result the same century as the pivot
-    if Result < Pivot then
-      //  cannot be lower than the Pivot
-      Result := Result + 100;
-  end
-  else
-    Result := Year;
-end;
-
-function StrIsInteger(const S: string): Boolean;
-var
-  I: Integer;
-  Ch: Char;
-begin
-  Result := S <> '';
-  for I := 1 to Length(S) do
-  begin
-    Ch := S[I];
-    if (not CharIsNumber(Ch)) or (Ch = DecimalSeparator) then //Az
-    begin
-      Result := False;
-      Exit;
-    end;
-  end;
-end;
-
-function StrIsFloatMoney(const Ps: string): Boolean;
-var
-  liLoop, liDots: Integer;
-  Ch: Char;
-begin
-  Result := True;
-  liDots := 0;
-
-  for liLoop := 1 to Length(Ps) do
-  begin
-    { allow digits, space, Currency symbol and one decimal dot }
-    Ch := Ps[liLoop];
-
-    if Ch = DecimalSeparator then
-    begin
-      Inc(liDots);
-      if liDots > 1 then
-      begin
-        Result := False;
-        Break;
-      end;
-    end
-    else if not CharIsMoney(Ch) then
-    begin
-      Result := False;
-      Break;
-    end;
-  end;
-end;
-
-function StrIsDateTime(const Ps: string): Boolean;
-const
-  MIN_DATE_TIME_LEN = 6; {2Jan02 }
-  MAX_DATE_TIME_LEN = 30; { 30 chars or so in '12 December 1999 12:23:23:00' }
-var
-  liLoop: Integer;
-  Ch: Char;
-  liColons, liSlashes, liSpaces, liDigits, liAlpha: Integer;
-  lbDisqualify: Boolean;
-begin
-  if Length(Ps) < MIN_DATE_TIME_LEN then
-  begin
-    Result := False;
-    Exit;
-  end;
-
-  if Length(Ps) > MAX_DATE_TIME_LEN then
-  begin
-    Result := False;
-    Exit;
-  end;
-
-  lbDisqualify := False;
-  liColons := 0;
-  liSlashes := 0;
-  liSpaces := 0;
-  liDigits := 0;
-  liAlpha := 0;
-
-  for liLoop := 1 to Length(Ps) do
-  begin
-    Ch := Ps[liLoop];
-
-    if Ch = ':' then
-      Inc(liColons)
-    else if Ch = AnsiForwardSlash then
-      Inc(liSlashes)
-    else if Ch = AnsiSpace then
-      Inc(liSpaces)
-    else if CharIsDigit(Ch) then
-      Inc(liDigits)
-    else if CharIsAlpha(Ch) then
-      Inc(liAlpha)
-    else
-    begin
-      // no wierd punctuation in dates!
-      lbDisqualify := True;
-      Break;
-    end;
-  end;
-
-  Result := False;
-  if not lbDisqualify then
-    { a date must have colons and slashes and spaces, but not to many of each }
-    if (liColons > 0) or (liSlashes > 0) or (liSpaces > 0) then
-      { only 2 slashes in "dd/mm/yy" or 3 colons in "hh:mm:ss:ms" or 6 spaces "yy mm dd hh mm ss ms" }
-      if (liSlashes <= 2) and (liColons <= 3) and (liSpaces <= 6) then
-        { must have some digits (min 3 digits, eg in "2 jan 02", max 16 dgits in "01/10/2000 10:10:10:10"
-        longest month name is 8 chars }
-        if (liDigits >= 3) and (liDigits <= 16) and (liAlpha <= 10) then
-          Result := True;
-
-  { define in terms of results - if I can interpret it as a date, then I can }
-  if Result then
-    Result := (SafeStrToDateTime(PreformatDateString(Ps)) <> 0);
-end;
-
-function PreformatDateString(Ps: string): string;
-var
-  liLoop: Integer;
-begin
-  { turn any month names to numbers }
-
-  { use the StrReplace in stringfunctions -
-  the one in JclStrings is badly broken and brings down the app }
-
-  for liLoop := Low(LongMonthNames) to High(LongMonthNames) do
-    Ps := LStrReplace(Ps, LongMonthNames[liLoop], IntToStr(liLoop), False);
-
-  { now that 'January' is gone, catch 'Jan' }
-  for liLoop := Low(ShortMonthNames) to High(ShortMonthNames) do
-    Ps := LStrReplace(Ps, ShortMonthNames[liLoop], IntToStr(liLoop), False);
-
-  { remove redundant spaces }
-  Ps := LStrReplace(Ps, AnsiSpace + AnsiSpace, AnsiSpace, False);
-
-  Result := Ps;
-end;
-
-function BooleanToInteger(const Pb: Boolean): Integer;
-begin
-  // (p3) this works as well:
-  // Result := Ord(Pb);
-  if Pb then
-    Result := 1
-  else
-    Result := 0;
-end;
-
-{ from my ConvertFunctions unit }
-
-function StringToBoolean(const Ps: string): Boolean;
-const
-  TRUE_STRINGS: array[1..5] of string = ('True', 't', 'y', 'yes', '1');
-var
-  liLoop: Integer;
-begin
-  Result := False;
-
-  for liLoop := Low(TRUE_STRINGS) to High(TRUE_STRINGS) do
-    if AnsiSameText(Ps, TRUE_STRINGS[liLoop]) then
-    begin
-      Result := True;
-      Break;
-    end;
-end;
-
-function SafeStrToDateTime(const Ps: string): TDateTime;
-begin
-  try
-    Result := StrToDateTime(PreformatDateString(Ps));
-  except
-    on E: EConvertError do
-      Result := 0.0
-  else
-    raise;
-  end;
-end;
-
-function SafeStrToDate(const Ps: string): TDateTime;
-begin
-  try
-    Result := StrToDate(PreformatDateString(Ps));
-  except
-    on E: EConvertError do
-      Result := 0.0
-  else
-    raise;
-  end;
-end;
-
-function SafeStrToTime(const Ps: string): TDateTime;
-begin
-  try
-    Result := StrToTime(Ps)
-  except
-    on E: EConvertError do
-      Result := 0.0
-  else
-    raise;
-  end;
-end;
 
 { imported from VCLFunctions }
 
@@ -2262,104 +1227,15 @@ begin
     Result := piSpace;
 end;
 
-{ have to do this as it depends what the datekind of the control is}
 
-function DateIsNull(const pdtValue: TDateTime; const pdtKind: TdtKind): Boolean;
-begin
-  Result := False;
-  case pdtKind of
-    dtkDateOnly:
-      Result := pdtValue < 1; //if date only then anything less than 1 is considered null
-    dtkTimeOnly:
-      Result := Frac(pdtValue) = NullEquivalentDate; //if time only then anything without a remainder is null
-    dtkDateTime:
-      Result := pdtValue = NullEquivalentDate;
-  end;
-end;
 
-function OSCheck(RetVal: Boolean): Boolean;
-begin
-  if not RetVal then
-    RaiseLastOSError;
-  Result := RetVal;
-end;
 
-function MinimizeName(const Filename: string; Canvas: TCanvas; MaxLen: Integer): string;
-var
-  b: string;
-  R: TRect;
-begin
-  b := Filename;
-  R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
-  if ClxDrawText(Canvas, b, R,
-    DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or
-    DT_CALCRECT or DT_NOPREFIX) > 0 then
-    Result := b
-  else
-    Result := Filename;
-end;
-
-{$IFDEF MSWINDOWS}
-function RunDLL32(const ModuleName, FuncName, CmdLine: string; WaitForCompletion: Boolean; CmdShow: Integer =
-  SW_SHOWDEFAULT): Boolean;
-var
-  SI: TStartUpInfo;
-  PI: TProcessInformation;
-  S: string;
-begin
-  SI.cb := SizeOf(SI);
-  GetStartupInfo(SI);
-  SI.wShowWindow := CmdShow;
-  S := Format('rundll32.exe %s,%s %s', [ModuleName, FuncName, CmdLine]);
-  Result := CreateProcess(nil, PChar(S), nil, nil, False, 0, nil, nil, SI, PI);
-  try
-    if WaitForCompletion then
-      Result := WaitForSingleObject(PI.hProcess, INFINITE) <> WAIT_FAILED;
-  finally
-    CloseHandle(PI.hThread);
-    CloseHandle(PI.hProcess);
-  end;
-end;
-
-procedure RunDll32Internal(Wnd: HWnd; const DLLName, FuncName, CmdLine: string; CmdShow: Integer = SW_SHOWDEFAULT);
-var
-  H: THandle;
-  ErrMode: Cardinal;
-  P: TRunDLL32Proc;
-begin
-  ErrMode := SetErrorMode(SEM_FAILCRITICALERRORS or SEM_NOOPENFILEERRORBOX);
-  H := LoadLibrary(PChar(DLLName));
-  try
-    if H <> INVALID_HANDLE_VALUE then
-    begin
-      P := GetProcAddress(H, PChar(FuncName));
-      if Assigned(P) then
-        P(Wnd, H, PChar(CmdLine), CmdShow);
-    end;
-  finally
-    SetErrorMode(ErrMode);
-    if H <> INVALID_HANDLE_VALUE then
-      FreeLibrary(H);
-  end;
-end;
-{$ENDIF MSWINDOWS}
-
-function TimeOnly(pcValue: TDateTime): TTime;
-begin
-  Result := Frac(pcValue);
-end;
-
-function DateOnly(pcValue: TDateTime): TDate;
-begin
-  Result := Trunc(pcValue);
-end;
+{ compiled from ComCtrls.pas's implmentation section }
 
 function HasFlag(a, b: Integer): Boolean;
 begin
   Result := (a and b) <> 0;
 end;
-
-{ compiled from ComCtrls.pas's implmentation section }
 
 function ConvertStates(const State: Integer): TItemStates;
 begin
@@ -2371,7 +1247,7 @@ begin
     Include(Result, isCut);
   if HasFlag(State, LVIS_DROPHILITED) then
     Include(Result, isDropHilited);
-{$ENDIF}    
+{$ENDIF}
   if HasFlag(State, LVIS_FOCUSED) then
     Include(Result, isFocused);
   if HasFlag(State, LVIS_SELECTED) then
@@ -2418,95 +1294,7 @@ begin
     Result := pcItem.SubItems[piIndex - 1];
 end;
 
-{!! from strFunctions }
-
-function StrDeleteChars(const Ps: string; const piPos: Integer; const piCount: Integer): string;
-begin
-  Result := StrLeft(Ps, piPos - 1) + StrRestOf(Ps, piPos + piCount);
-end;
-
-function StrDelete(const psSub, psMain: string): string;
-var
-  liPos: Integer;
-begin
-  Result := psMain;
-  if psSub = '' then
-    Exit;
-
-  liPos := StrIPos(psSub, psMain);
-
-  while liPos > 0 do
-  begin
-    Result := StrDeleteChars(Result, liPos, Length(psSub));
-    liPos := StrIPos(psSub, Result);
-  end;
-end;
-
-{$IFDEF MSWINDOWS}
-type
-  // (p3) from ShLwAPI
-  TDLLVersionInfo = packed record
-    cbSize: DWORD;
-    dwMajorVersion: DWORD;
-    dwMinorVersion: DWORD;
-    dwBuildNumber: DWORD;
-    dwPlatformID: DWORD;
-  end;
-
-function GetDLLVersion(const DLLName: string; var pdwMajor, pdwMinor: Integer): Boolean;
-var
-  hDLL, hr: THandle;
-  pDllGetVersion: function(var Dvi: TDLLVersionInfo): Integer; stdcall;
-  Dvi: TDLLVersionInfo;
-begin
-  hDLL := LoadLibrary(PChar(DLLName));
-  if hDLL < 32 then
-    hDLL := 0;
-  if hDLL <> 0 then
-  begin
-    Result := True;
-    (*  You must get this function explicitly
-        because earlier versions of the DLL's
-        don't implement this function.
-        That makes the lack of implementation
-        of the function a version marker in itself.   *)
-    @pDllGetVersion := GetProcAddress(hDLL, PChar('DllGetVersion'));
-    if Assigned(pDllGetVersion) then
-    begin
-      FillChar(Dvi, SizeOf(Dvi), #0);
-      Dvi.cbSize := SizeOf(Dvi);
-      hr := pDllGetVersion(Dvi);
-      if hr = 0 then
-      begin
-        pdwMajor := Dvi.dwMajorVersion;
-        pdwMinor := Dvi.dwMinorVersion;
-      end;
-    end
-    else (*   If GetProcAddress failed, the DLL is a version previous to the one  shipped with IE 3.x. *)
-    begin
-      pdwMajor := 4;
-      pdwMinor := 0;
-    end;
-    FreeLibrary(hDLL);
-    Exit;
-  end;
-  Result := False;
-end;
-{$ENDIF MSWINDOWS}
 {from JvVCLUtils }
-
-{ Exceptions }
-
-procedure ResourceNotFound(ResID: PChar);
-var
-  S: string;
-begin
-  if LongRec(ResID).Hi = 0 then
-    S := IntToStr(LongRec(ResID).Lo)
-  else
-    S := StrPas(ResID);
-  raise EResNotFound.CreateFmt(SResNotFound, [S]);
-end;
 
 { Bitmaps }
 
@@ -2949,13 +1737,13 @@ begin
           Brush.Color := HighlightColor;
           SetTextColor(Handle, clBlack);
           SetBkColor(Handle, clWhite);
-          BitBlt(Handle, 1, 1, WidthOf(IRect), HeightOf(IRect),
+          BitBlt(Handle, 1, 1, RectWidth(IRect), RectHeight(IRect),
             MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
         end;
         Brush.Color := ShadowColor;
         SetTextColor(Handle, clBlack);
         SetBkColor(Handle, clWhite);
-        BitBlt(Handle, 0, 0, WidthOf(IRect), HeightOf(IRect),
+        BitBlt(Handle, 0, 0, RectWidth(IRect), RectHeight(IRect),
           MonoBmp.Canvas.Handle, 0, 0, ROP_DSPDxax);
       end;
     finally
@@ -3128,75 +1916,7 @@ begin
   end;
 end;
 
-{$IFDEF MSWINDOWS}
-{ Dialog units }
 
-function DialogUnitsToPixelsX(DlgUnits: Word): Word;
-begin
-  Result := (DlgUnits * LoWord(GetDialogBaseUnits)) div 4;
-end;
-
-function DialogUnitsToPixelsY(DlgUnits: Word): Word;
-begin
-  Result := (DlgUnits * HiWord(GetDialogBaseUnits)) div 8;
-end;
-
-function PixelsToDialogUnitsX(PixUnits: Word): Word;
-begin
-  Result := PixUnits * 4 div LoWord(GetDialogBaseUnits);
-end;
-
-function PixelsToDialogUnitsY(PixUnits: Word): Word;
-begin
-  Result := PixUnits * 8 div HiWord(GetDialogBaseUnits);
-end;
-
-{ Service routines }
-
-function LoadDLL(const LibName: string): THandle;
-var
-  ErrMode: Cardinal;
-begin
-  ErrMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
-  Result := LoadLibrary(PChar(LibName));
-  SetErrorMode(ErrMode);
-  if Result < HINSTANCE_ERROR then
-    OSCheck(False);
-end;
-
-function RegisterServer(const ModuleName: string): Boolean;
-{ RegisterServer procedure written by Vladimir Gaitanoff, 2:50/430.2 }
-type
-  TProc = procedure;
-var
-  Handle: THandle;
-  DllRegServ: Pointer;
-begin
-  Result := False;
-  Handle := LoadDLL(ModuleName);
-  try
-    DllRegServ := GetProcAddress(Handle, 'DllRegisterServer');
-    if Assigned(DllRegServ) then
-    begin
-      TProc(DllRegServ);
-      Result := True;
-    end;
-  finally
-    FreeLibrary(Handle);
-  end;
-end;
-
-procedure Beep;
-begin
-  MessageBeep(0);
-end;
-
-procedure FreeUnusedOle;
-begin
-  FreeLibrary(GetModuleHandle('OleAut32'));
-end;
-
-{$ENDIF MSWINDOWS}
 
 type
   TJvHack = class(TCustomControl);
@@ -3241,23 +1961,6 @@ begin
 end;
 {$ENDIF MSWINDOWS}
 
-function WidthOf(R: TRect): Integer;
-begin
-  Result := R.Right - R.Left;
-end;
-
-function HeightOf(R: TRect): Integer;
-begin
-  Result := R.Bottom - R.Top;
-end;
-
-function PointInRect(const P: TPoint; const R: TRect): Boolean;
-begin
-  with R do
-    Result := (Left <= P.X) and (Top <= P.Y) and
-      (Right >= P.X) and (Bottom >= P.Y);
-end;
-
 {$IFDEF MSWINDOWS}
 function PointInPolyRgn(const P: TPoint; const Points: array of TPoint): Boolean;
 type
@@ -3277,18 +1980,6 @@ end;
 function PaletteColor(Color: TColor): Longint;
 begin
   Result := ColorToRGB(Color) or PaletteMask;
-end;
-
-procedure KillMessage(Wnd: HWND; Msg: Cardinal);
-{ Delete the requested message from the queue, but throw back }
-{ any WM_QUIT msgs that PeekMessage may also return.          }
-{ Copied from DbGrid.pas                                      }
-var
-  M: TMsg;
-begin
-  M.Message := 0;
-  if PeekMessage(M, Wnd, Msg, Msg, PM_REMOVE) and (M.Message = WM_QUIT) then
-    PostQuitMessage(M.WParam);
 end;
 
 {$IFDEF COMPLIB_VCL}
@@ -3389,55 +2080,6 @@ begin
     SetBounds(X, Y, Width, Height);
 end;
 
-{$IFDEF MSWINDOWS}
-procedure FitRectToScreen(var Rect: TRect);
-var
-  X, Y, Delta: Integer;
-begin
-  X := GetSystemMetrics(SM_CXSCREEN);
-  Y := GetSystemMetrics(SM_CYSCREEN);
-  with Rect do
-  begin
-    if Right > X then
-    begin
-      Delta := Right - Left;
-      Right := X;
-      Left := Right - Delta;
-    end;
-    if Left < 0 then
-    begin
-      Delta := Right - Left;
-      Left := 0;
-      Right := Left + Delta;
-    end;
-    if Bottom > Y then
-    begin
-      Delta := Bottom - Top;
-      Bottom := Y;
-      Top := Bottom - Delta;
-    end;
-    if Top < 0 then
-    begin
-      Delta := Bottom - Top;
-      Top := 0;
-      Bottom := Top + Delta;
-    end;
-  end;
-end;
-
-procedure CenterWindow(Wnd: HWND);
-var
-  R: TRect;
-begin
-  GetWindowRect(Wnd, R);
-  R := Rect((GetSystemMetrics(SM_CXSCREEN) - R.Right + R.Left) div 2,
-    (GetSystemMetrics(SM_CYSCREEN) - R.Bottom + R.Top) div 2,
-    R.Right - R.Left, R.Bottom - R.Top);
-  FitRectToScreen(R);
-  SetWindowPos(Wnd, 0, R.Left, R.Top, 0, 0, SWP_NOACTIVATE or
-    SWP_NOSIZE or SWP_NOZORDER);
-end;
-{$ENDIF MSWINDOWS}
 
 procedure MergeForm(AControl: TWinControl; AForm: TForm; Align: TAlign;
   Show: Boolean);
@@ -3496,6 +2138,7 @@ begin
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOZORDER);
   end;
 end;
+{$ENDIF}
 
 { Shade rectangle }
 
@@ -3529,175 +2172,7 @@ begin
       Result := Bounds(0, 0, Width, Height);
 end;
 
-function WindowClassName(Wnd: HWND): string;
-var
-  Buffer: array[0..255] of Char;
-begin
-  SetString(Result, Buffer, GetClassName(Wnd, Buffer, SizeOf(Buffer) - 1));
-end;
 
-function GetAnimation: Boolean;
-var
-  Info: TAnimationInfo;
-begin
-  Info.cbSize := SizeOf(TAnimationInfo);
-  if SystemParametersInfo(SPI_GETANIMATION, SizeOf(Info), @Info, 0) then
-    Result := Info.iMinAnimate <> 0
-  else
-    Result := False;
-end;
-
-procedure SetAnimation(Value: Boolean);
-var
-  Info: TAnimationInfo;
-begin
-  Info.cbSize := SizeOf(TAnimationInfo);
-  BOOL(Info.iMinAnimate) := Value;
-  SystemParametersInfo(SPI_SETANIMATION, SizeOf(Info), @Info, 0);
-end;
-
-procedure ShowWinNoAnimate(Handle: HWND; CmdShow: Integer);
-var
-  Animation: Boolean;
-begin
-  Animation := GetAnimation;
-  if Animation then
-    SetAnimation(False);
-  ShowWindow(Handle, CmdShow);
-  if Animation then
-    SetAnimation(True);
-end;
-
-procedure SwitchToWindow(Wnd: HWND; Restore: Boolean);
-begin
-  if Windows.IsWindowEnabled(Wnd) then
-  begin
-    SetForegroundWindow(Wnd);
-    if Restore and Windows.IsWindowVisible(Wnd) then
-    begin
-      if not IsZoomed(Wnd) then
-        SendMessage(Wnd, WM_SYSCOMMAND, SC_RESTORE, 0);
-      Windows.SetFocus(Wnd);
-    end;
-  end;
-end;
-
-function GetWindowParent(Wnd: HWND): HWND;
-begin
-  Result := GetWindowLong(Wnd, GWL_HWNDPARENT);
-end;
-
-procedure ActivateWindow(Wnd: HWND);
-begin
-  if Wnd <> 0 then
-  begin
-    ShowWinNoAnimate(Wnd, SW_SHOW);
-    SetForegroundWindow(Wnd);
-  end;
-end;
-
-{$IFDEF CBUILDER}
-
-function FindPrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): HWND;
-{$ELSE}
-
-function FindPrevInstance(const MainFormClass, ATitle: string): HWND;
-{$ENDIF CBUILDER}
-var
-  BufClass, BufTitle: PChar;
-begin
-  Result := 0;
-  if (MainFormClass = '') and (ATitle = '') then
-    Exit;
-  BufClass := nil;
-  BufTitle := nil;
-  if (MainFormClass <> '') then
-    BufClass := StrPAlloc(MainFormClass);
-  if (ATitle <> '') then
-    BufTitle := StrPAlloc(ATitle);
-  try
-    Result := FindWindow(BufClass, BufTitle);
-  finally
-    StrDispose(BufTitle);
-    StrDispose(BufClass);
-  end;
-end;
-
-function WindowsEnum(Handle: HWND; Param: Longint): Bool; export; stdcall;
-begin
-  if WindowClassName(Handle) = 'TAppBuilder' then
-  begin
-    Result := False;
-    PLongint(Param)^ := 1;
-  end
-  else
-    Result := True;
-end;
-
-{$IFDEF CBUILDER}
-
-function ActivatePrevInstance(const MainFormClass: ShortString;
-  const ATitle: string): Boolean;
-{$ELSE}
-
-function ActivatePrevInstance(const MainFormClass, ATitle: string): Boolean;
-{$ENDIF CBUILDER}
-var
-  PrevWnd, PopupWnd, ParentWnd: HWND;
-  IsDelphi: Longint;
-begin
-  Result := False;
-  PrevWnd := FindPrevInstance(MainFormClass, ATitle);
-  if PrevWnd <> 0 then
-  begin
-    ParentWnd := GetWindowParent(PrevWnd);
-    while (ParentWnd <> GetDesktopWindow) and (ParentWnd <> 0) do
-    begin
-      PrevWnd := ParentWnd;
-      ParentWnd := GetWindowParent(PrevWnd);
-    end;
-    if WindowClassName(PrevWnd) = 'TApplication' then
-    begin
-      IsDelphi := 0;
-      EnumThreadWindows(GetWindowTask(PrevWnd), @WindowsEnum,
-        LPARAM(@IsDelphi));
-      if Boolean(IsDelphi) then
-        Exit;
-      if IsIconic(PrevWnd) then
-      begin { application is minimized }
-        SendMessage(PrevWnd, WM_SYSCOMMAND, SC_RESTORE, 0);
-        Result := True;
-        Exit;
-      end
-      else
-        ShowWinNoAnimate(PrevWnd, SW_SHOWNOACTIVATE);
-    end
-    else
-      ActivateWindow(PrevWnd);
-    PopupWnd := GetLastActivePopup(PrevWnd);
-    if (PrevWnd <> PopupWnd) and Windows.IsWindowVisible(PopupWnd) and
-      Windows.IsWindowEnabled(PopupWnd) then
-    begin
-      SetForegroundWindow(PopupWnd);
-    end
-    else
-      ActivateWindow(PopupWnd);
-    Result := True;
-  end;
-end;
-{$ENDIF MSWINDOWS}
-
-function MakeVariant(const Values: array of Variant): Variant;
-begin
-  if High(Values) - Low(Values) > 1 then
-    Result := VarArrayOf(Values)
-  else
-  if High(Values) - Low(Values) = 1 then
-    Result := Values[Low(Values)]
-  else
-    Result := Null;
-end;
 
 { Standard Windows MessageBox function }
 
@@ -3854,13 +2329,13 @@ begin
   ColorBand := ARect;
   if Direction in [fdTopToBottom, fdBottomToTop] then
   begin
-    Colors := Max(2, Min(Colors, HeightOf(ARect)));
-    Delta := HeightOf(ARect) div Colors;
+    Colors := Max(2, Min(Colors, RectHeight(ARect)));
+    Delta := RectHeight(ARect) div Colors;
   end
   else
   begin
-    Colors := Max(2, Min(Colors, WidthOf(ARect)));
-    Delta := WidthOf(ARect) div Colors;
+    Colors := Max(2, Min(Colors, RectWidth(ARect)));
+    Delta := RectWidth(ARect) div Colors;
   end;
   with Canvas.Pen do
   begin { Set the pen style and mode }
@@ -3905,9 +2380,9 @@ begin
     end;
   end;
   if Direction in [fdTopToBottom, fdBottomToTop] then
-    Delta := HeightOf(ARect) mod Colors
+    Delta := RectHeight(ARect) mod Colors
   else
-    Delta := WidthOf(ARect) mod Colors;
+    Delta := RectWidth(ARect) mod Colors;
   if Delta > 0 then
   begin
     case Direction of
@@ -3946,20 +2421,6 @@ begin
   end;
 end;
 
-function MinimizeText(const Text: string; Canvas: TCanvas;
-  MaxWidth: Integer): string;
-var
-  I: Integer;
-begin
-  Result := Text;
-  I := 1;
-  while (I <= Length(Text)) and (Canvas.TextWidth(Result) > MaxWidth) do
-  begin
-    Inc(I);
-    Result := Copy(Text, 1, Max(0, Length(Text) - I)) + '...';
-  end;
-end;
-
 function GetAveCharSize(Canvas: TCanvas): TPoint;
 var
   I: Integer;
@@ -3979,249 +2440,6 @@ begin
   Result.X := Result.X div 52;
 end;
 
-{ Memory routines }
-
-function AllocMemo(Size: Longint): Pointer;
-begin
-  if Size > 0 then
-{$IFDEF MSWINDOWS}
-    Result := GlobalAllocPtr(HeapAllocFlags or GMEM_ZEROINIT, Size)
-{$ENDIF}
-{$IFDEF LINUX}
-    Result := Libc.malloc(Size)
-{$ENDIF}
-  else
-    Result := nil;
-end;
-
-function ReallocMemo(fpBlock: Pointer; Size: Longint): Pointer;
-begin
-{$IFDEF MSWINDOWS}
-  Result := GlobalReallocPtr(fpBlock, Size,
-    HeapAllocFlags or GMEM_ZEROINIT);
-{$ENDIF}
-{$IFDEF LINUX}
-  Result := Libc.realloc(fpBlock, Size);
-{$ENDIF}
-end;
-
-procedure FreeMemo(var fpBlock: Pointer);
-begin
-  if fpBlock <> nil then
-  begin
-{$IFDEF MSWINDOWS}
-    GlobalFreePtr(fpBlock);
-{$ENDIF}
-{$IFDEF LINUX}
-    Libc.free(fpBlock);
-{$ENDIF}
-    fpBlock := nil;
-  end;
-end;
-
-function GetMemoSize(fpBlock: Pointer): Longint;
-{$IFDEF MSWINDOWS}
-var
-  hMem: THandle;
-{$ENDIF}  
-begin
-  Result := 0;
-  if fpBlock <> nil then
-  begin
-{$IFDEF MSWINDOWS}
-    hMem := GlobalHandle(fpBlock);
-    if hMem <> 0 then
-      Result := GlobalSize(hMem);
-{$ENDIF}
-{$IFDEF LINUX}
-    Result := memsize(
-{$ENDIF}
-  end;
-end;
-
-function CompareMem(fpBlock1, fpBlock2: Pointer; Size: Cardinal): Boolean; assembler;
-asm
-        PUSH    ESI
-        PUSH    EDI
-        MOV     ESI,fpBlock1
-        MOV     EDI,fpBlock2
-        MOV     ECX,Size
-        MOV     EDX,ECX
-        XOR     EAX,EAX
-        AND     EDX,3
-        SHR     ECX,2
-        REPE    CMPSD
-        JNE     @@2
-        MOV     ECX,EDX
-        REPE    CMPSB
-        JNE     @@2
-@@1:    INC     EAX
-@@2:    POP     EDI
-        POP     ESI
-end;
-
-{ Manipulate huge pointers routines by Ray Lischner, The Waite Group, Inc. }
-
-procedure HugeInc(var HugePtr: Pointer; Amount: Longint);
-begin
-  HugePtr := PChar(HugePtr) + Amount;
-end;
-
-procedure HugeDec(var HugePtr: Pointer; Amount: Longint);
-begin
-  HugePtr := PChar(HugePtr) - Amount;
-end;
-
-function HugeOffset(HugePtr: Pointer; Amount: Longint): Pointer;
-begin
-  Result := PChar(HugePtr) + Amount;
-end;
-
-procedure HMemCpy(DstPtr, SrcPtr: Pointer; Amount: Longint);
-begin
-  Move(SrcPtr^, DstPtr^, Amount);
-end;
-
-procedure HugeMove(Base: Pointer; Dst, Src, Size: Longint);
-var
-  SrcPtr, DstPtr: PChar;
-begin
-  SrcPtr := PChar(Base) + Src * SizeOf(Pointer);
-  DstPtr := PChar(Base) + Dst * SizeOf(Pointer);
-  Move(SrcPtr^, DstPtr^, Size * SizeOf(Pointer));
-end;
-{ String routines }
-
-{ function GetParamStr copied from SYSTEM.PAS unit of Delphi 2.0 }
-
-function GetParamStr(P: PChar; var Param: string): PChar;
-var
-  Len: Integer;
-  Buffer: array[Byte] of Char;
-begin
-  while True do
-  begin
-    while (P[0] <> #0) and (P[0] <= ' ') do
-      Inc(P);
-    if (P[0] = '"') and (P[1] = '"') then
-      Inc(P, 2)
-    else
-      Break;
-  end;
-  Len := 0;
-  while P[0] > ' ' do
-    if P[0] = '"' then
-    begin
-      Inc(P);
-      while (P[0] <> #0) and (P[0] <> '"') do
-      begin
-        Buffer[Len] := P[0];
-        Inc(Len);
-        Inc(P);
-      end;
-      if P[0] <> #0 then
-        Inc(P);
-    end
-    else
-    begin
-      Buffer[Len] := P[0];
-      Inc(Len);
-      Inc(P);
-    end;
-  SetString(Param, Buffer, Len);
-  Result := P;
-end;
-
-function ParamCountFromCommandLine(CmdLine: PChar): Integer;
-var
-  S: string;
-  P: PChar;
-begin
-  P := CmdLine;
-  Result := 0;
-  while True do
-  begin
-    P := GetParamStr(P, S);
-    if S = '' then
-      Break;
-    Inc(Result);
-  end;
-end;
-
-function ParamStrFromCommandLine(CmdLine: PChar; Index: Integer): string;
-var
-  P: PChar;
-begin
-  P := CmdLine;
-  while True do
-  begin
-    P := GetParamStr(P, Result);
-    if (Index = 0) or (Result = '') then
-      Break;
-    Dec(Index);
-  end;
-end;
-
-procedure SplitCommandLine(const CmdLine: string; var ExeName,
-  Params: string);
-var
-  Buffer: PChar;
-  Cnt, I: Integer;
-  S: string;
-begin
-  ExeName := '';
-  Params := '';
-  Buffer := StrPAlloc(CmdLine);
-  try
-    Cnt := ParamCountFromCommandLine(Buffer);
-    if Cnt > 0 then
-    begin
-      ExeName := ParamStrFromCommandLine(Buffer, 0);
-      for I := 1 to Cnt - 1 do
-      begin
-        S := ParamStrFromCommandLine(Buffer, I);
-        if Pos(' ', S) > 0 then
-          S := '"' + S + '"';
-        Params := Params + S;
-        if I < Cnt - 1 then
-          Params := Params + ' ';
-      end;
-    end;
-  finally
-    StrDispose(Buffer);
-  end;
-end;
-
-function AnsiUpperFirstChar(const S: string): string;
-var
-  Temp: string[1];
-begin
-  Result := AnsiLowerCase(S);
-  if S <> '' then
-  begin
-    Temp := Result[1];
-    Temp := AnsiUpperCase(Temp);
-    Result[1] := Temp[1];
-  end;
-end;
-
-function StrPAlloc(const S: string): PChar;
-begin
-  Result := StrPCopy(StrAlloc(Length(S) + 1), S);
-end;
-
-function StringToPChar(var S: string): PChar;
-begin
-  Result := PChar(S);
-end;
-
-function DropT(const S: string): string;
-begin
-  if (UpCase(S[1]) = 'T') and (Length(S) > 1) then
-    Result := Copy(S, 2, MaxInt)
-  else
-    Result := S;
-end;
 
 { Cursor routines }
 
@@ -4517,86 +2735,7 @@ begin
 end;
 {$ENDIF COMPLIB_VCL}
 
-{$IFDEF MSWINDOWS}
-{ Check if this is the active Windows task }
-{ Copied from implementation of FORMS.PAS  }
-
-type
-  PCheckTaskInfo = ^TCheckTaskInfo;
-  TCheckTaskInfo = record
-    FocusWnd: HWND;
-    Found: Boolean;
-  end;
-
-function CheckTaskWindow(Window: HWND; Data: Longint): WordBool; stdcall;
-begin
-  Result := True;
-  if PCheckTaskInfo(Data)^.FocusWnd = Window then
-  begin
-    Result := False;
-    PCheckTaskInfo(Data)^.Found := True;
-  end;
-end;
-
-function IsForegroundTask: Boolean;
-var
-  Info: TCheckTaskInfo;
-begin
-  Info.FocusWnd := GetActiveWindow;
-  Info.Found := False;
-  EnumThreadWindows(GetCurrentThreadID, @CheckTaskWindow, Longint(@Info));
-  Result := Info.Found;
-end;
-
-function GetWindowsVersion: string;
-const
-  sWindowsVersion = 'Windows %s %d.%.2d.%.3d %s';
-var
-  Ver: TOsVersionInfo;
-  Platfrm: string[4];
-begin
-  Ver.dwOSVersionInfoSize := SizeOf(Ver);
-  GetVersionEx(Ver);
-  with Ver do
-  begin
-    case dwPlatformId of
-      VER_PLATFORM_WIN32s:
-        Platfrm := '32s';
-      VER_PLATFORM_WIN32_WINDOWS:
-        begin
-          dwBuildNumber := dwBuildNumber and $0000FFFF;
-          if (dwMajorVersion > 4) or ((dwMajorVersion = 4) and
-            (dwMinorVersion >= 10)) then
-            Platfrm := '98'
-          else
-            Platfrm := '95';
-        end;
-      VER_PLATFORM_WIN32_NT: Platfrm := 'NT';
-    end;
-    Result := Trim(Format(sWindowsVersion, [Platfrm, dwMajorVersion,
-      dwMinorVersion, dwBuildNumber, szCSDVersion]));
-  end;
-end;
-{$ENDIF MSWINDOWS}
 // (rom) moved to file end to minimize W- switch impact at end of function
-
-{$IFDEF MSWINDOWS}
-function GetEnvVar(const VarName: string): string;
-var
-  S: array[0..2048] of Char;
-begin
-  if GetEnvironmentVariable(PChar(VarName), S, SizeOf(S) - 1) > 0 then
-    Result := StrPas(S)
-  else
-    Result := '';
-end;
-{$ENDIF}
-{$IFDEF LINUX}
-function GetEnvVar(const VarName: string): string;
-begin
-  Result := getenv(PChar(VarName));
-end;
-{$ENDIF}
 
 { end JvVCLUtils }
 { begin JvUtils }
@@ -4785,16 +2924,6 @@ begin
 end;
 {$ENDIF COMPLIB_VCL}
 
-{$IFDEF MSWINDOWS}
-procedure SetWindowTop(const Handle: HWND; const Top: Boolean);
-const
-  TopFlag: array[Boolean] of Longword = (HWND_NOTOPMOST, HWND_TOPMOST);
-begin
-  SetWindowPos(Handle, TopFlag[Top], 0, 0, 0, 0, SWP_NOMOVE or
-    SWP_NOSIZE or SWP_NOACTIVATE);
-end;
-{$ENDIF MSWINDOWS}
-
 {$IFDEF COMPLIB_VCL}
 procedure LoadIcoToImage(ALarge, ASmall: TCustomImageList; const NameRes: string);
 var
@@ -4908,6 +3037,7 @@ begin
       end;
   end;
 end;
+
 
 {$IFDEF MSWINDOWS}
 function TargetFileName(const FileName: TFileName): TFileName;
@@ -5043,31 +3173,8 @@ begin
   SetTimer(QWidget_winId(Application.AppWidget), Num, Pause, @TmrProc);
 {$ENDIF}
 end;
-
-function BrowseForFolder(const Handle: HWND; const Title: string; var Folder: string): Boolean;
-var
-  BrowseInfo: TBrowseInfo;
-  Id: PItemIDList;
-  FN: array[0..MAX_PATH] of Char;
-begin
-  with BrowseInfo do
-  begin
-    hwndOwner := Handle;
-    pidlRoot := nil;
-    pszDisplayName := FN;
-    lpszTitle := PChar(Title);
-    ulFlags := 0;
-    lpfn := nil;
-  end;
-  Id := SHBrowseForFolder(BrowseInfo);
-  Result := Id <> nil;
-  if Result then
-  begin
-    SHGetPathFromIDList(Id, FN);
-    Folder := FN;
-  end;
-end;
 {$ENDIF MSWINDOWS}
+
 { end JvUtils }
 
 { begin JvApputils }
@@ -5642,23 +3749,6 @@ procedure RestoreFormPlacement(Form: TForm; const AppStore: TJvCustomAppStore; L
   LoadPosition: Boolean);
 begin
   InternalRestoreFormPlacement(Form, AppStore, GetDefaultSection(Form), LoadState, LoadPosition);
-end;
-
-function GetUniqueFileNameInDir(const Path, FileNameMask: string): string;
-var
-  CurrentName: string;
-  I: Integer;
-begin
-  Result := '';
-  for I := 0 to MaxInt do
-  begin
-    CurrentName := Format(FileNameMask, [I]);
-    if not FileExists(NormalDir(Path) + CurrentName) then
-    begin
-      Result := CurrentName;
-      Exit;
-    end;
-  end;
 end;
 
 {$IFDEF COMPLIB_VCL}
@@ -7088,8 +5178,8 @@ begin
   try
     with Rect do
       IntersectClipRect(Canvas.Handle, Left, Top, Right, Bottom);
-    for X := 0 to (WidthOf(Rect) div Image.Width) do
-      for Y := 0 to (HeightOf(Rect) div Image.Height) do
+    for X := 0 to (RectWidth(Rect) div Image.Width) do
+      for Y := 0 to (RectHeight(Rect) div Image.Height) do
         Canvas.Draw(Rect.Left + X * Image.Width,
           Rect.Top + Y * Image.Height, Image);
   finally
@@ -7423,11 +5513,6 @@ end;
 { end JvFileUtil }
 
 { begin JvCtrlUtils }
-
-function IntToExtended(I: Integer): Extended;
-begin
-  Result := I;
-end;
 
 //==============================================================================
 // ToolBarMenu
@@ -7814,7 +5899,7 @@ begin
   end;
 {$ELSE}
   Result.cx := 12;
-  Result.cy := 12;  
+  Result.cy := 12;
 {$ENDIF}
 end;
 

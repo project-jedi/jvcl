@@ -1610,7 +1610,7 @@ uses
   RTLConsts,
 {$ENDIF}
   JclRTTI, JclLogic,
-  JvWndProcHook, JvThemes;
+  JvWndProcHook, JvJCLUtils, JvThemes;
 
 type
   PMethod = ^TMethod;
@@ -1682,16 +1682,6 @@ begin
 end;
 
 //=== TCanvasStack ===========================================================
-
-function HeightOf(const Rect: TRect): Integer;
-begin
-  Result := Rect.Bottom - Rect.Top;
-end;
-
-function WidthOf(const Rect: TRect): Integer;
-begin
-  Result := Rect.Right - Rect.Left;
-end;
 
 type
   TCanvasStack = class(TObjectList)
@@ -3206,7 +3196,7 @@ end;
 
 function TJvCustomInspector.ViewHeight: Integer;
 begin
-  Result := HeightOf(ViewRect);
+  Result := RectHeight(ViewRect);
 end;
 
 function TJvCustomInspector.ViewRect: TRect;
@@ -3216,7 +3206,7 @@ end;
 
 function TJvCustomInspector.ViewWidth: Integer;
 begin
-  Result := WidthOf(ViewRect);
+  Result := RectWidth(ViewRect);
 end;
 
 procedure TJvCustomInspector.WMGetDlgCode(var Msg: TWMGetDlgCode);
@@ -3898,8 +3888,8 @@ begin
   if ButtonImage <> nil then
   begin
     BtnSrcRect := Rect(0, 0, ButtonImage.Width, ButtonImage.Height);
-    BtnDstRect := Rect(0, 0, WidthOf(Rects[iprButtonArea]),
-      HeightOf(Rects[iprButtonArea]));
+    BtnDstRect := Rect(0, 0, RectWidth(Rects[iprButtonArea]),
+      RectHeight(Rects[iprButtonArea]));
     if BtnSrcRect.Right > BtnDstRect.Right then
     begin
       BtnSrcRect.Left := (BtnDstRect.Right - BtnSrcRect.Right) div 2;
@@ -3910,19 +3900,19 @@ begin
       BtnSrcRect.Top := (BtnDstRect.Bottom - BtnSrcRect.Bottom) div 2;
       BtnSrcRect.Bottom := BtnSrcRect.Top + BtnDstRect.Bottom;
     end;
-    if BtnDstRect.Right > WidthOf(BtnSrcRect) then
+    if BtnDstRect.Right > RectWidth(BtnSrcRect) then
     begin
-      BtnDstRect.Left := (BtnDstRect.Right - WidthOf(BtnSrcRect)) div 2;
-      BtnDstRect.Right := BtnDstRect.Left + WidthOf(BtnSrcRect);
+      BtnDstRect.Left := (BtnDstRect.Right - RectWidth(BtnSrcRect)) div 2;
+      BtnDstRect.Right := BtnDstRect.Left + RectWidth(BtnSrcRect);
     end;
-    if BtnDstRect.Bottom > HeightOf(BtnSrcRect) then
+    if BtnDstRect.Bottom > RectHeight(BtnSrcRect) then
     begin
-      if (HeightOf(BtnDstRect) div Inspector.ItemHeight) < 2 then
-        Y := (HeightOf(BtnDstRect) - HeightOf(BtnSrcRect)) div 2
+      if (RectHeight(BtnDstRect) div Inspector.ItemHeight) < 2 then
+        Y := (RectHeight(BtnDstRect) - RectHeight(BtnSrcRect)) div 2
       else
-        Y := (Inspector.ItemHeight - HeightOf(BtnSrcRect)) div 2;
+        Y := (Inspector.ItemHeight - RectHeight(BtnSrcRect)) div 2;
       BtnDstRect.Top := Y;
-      BtnDstRect.Bottom := BtnDstRect.Top + HeightOf(BtnSrcRect);
+      BtnDstRect.Bottom := BtnDstRect.Top + RectHeight(BtnSrcRect);
     end;
     OffsetRect(BtnDstRect, Rects[iprButtonArea].Left, Rects[iprButtonArea].Top);
   end
@@ -3966,8 +3956,8 @@ begin
     ApplyNameFont;
     RowHeight := Canvas.TextHeight('Wy');
     TmpRect := Rects[iprNameArea];
-    if HeightOf(TmpRect) div RowHeight < 2 then
-      OffsetRect(TmpRect, 0, (HeightOf(TmpRect) - RowHeight) div 2)
+    if RectHeight(TmpRect) div RowHeight < 2 then
+      OffsetRect(TmpRect, 0, (RectHeight(TmpRect) - RowHeight) div 2)
     else
     begin
       Inc(TmpRect.Top, 1);
@@ -3991,9 +3981,9 @@ begin
     ApplyValueFont;
     RowHeight := Canvas.TextHeight('Wy');
     TmpRect := Rects[iprValueArea];
-    if HeightOf(TmpRect) div RowHeight < 2 then
+    if RectHeight(TmpRect) div RowHeight < 2 then
     begin
-      OffsetRect(TmpRect, 0, (HeightOf(TmpRect) - RowHeight) div 2);
+      OffsetRect(TmpRect, 0, (RectHeight(TmpRect) - RowHeight) div 2);
       IntersectRect(TmpRect, TmpRect, Rects[iprValueArea]);
     end
     else
@@ -4182,11 +4172,11 @@ begin
     EndOfCat := Item.BaseCategory <> nil;
 
   PreNameRect := Rects[iprButtonArea];
-  PreNameRect.Left := Rects[iprItem].Left + WidthOf(Rects[iprButtonArea]);
+  PreNameRect.Left := Rects[iprItem].Left + RectWidth(Rects[iprButtonArea]);
   Inc(PreNameRect.Right);
 
   CatRect := Rects[iprItem];
-  CatRect.Right := CatRect.Left + WidthOf(Rects[iprButtonArea]);
+  CatRect.Right := CatRect.Left + RectWidth(Rects[iprButtonArea]);
   Inc(CatRect.Bottom);
   if (Item.BaseCategory <> nil) then
   begin
@@ -4225,7 +4215,7 @@ begin
   else
     Canvas.Pen.Color := clBtnFace;
   if not EndOfList and not EndOfCat then
-    LeftX := Rects[iprItem].Left + WidthOf(Rects[iprButtonArea])
+    LeftX := Rects[iprItem].Left + RectWidth(Rects[iprButtonArea])
   else
     LeftX := Rects[iprItem].Left;
   Canvas.MoveTo(Rects[iprItem].Right, Rects[iprItem].Bottom);
@@ -4237,8 +4227,8 @@ begin
       Canvas.Pen.Color := clBtnShadow
     else
       Canvas.Pen.Color := CategoryColor;
-    Canvas.MoveTo(Rects[iprItem].Left + WidthOf(Rects[iprButtonArea]), Rects[iprItem].Top);
-    Canvas.LineTo(Rects[iprItem].Left + WidthOf(Rects[iprButtonArea]), Succ(Rects[iprItem].Bottom));
+    Canvas.MoveTo(Rects[iprItem].Left + RectWidth(Rects[iprButtonArea]), Rects[iprItem].Top);
+    Canvas.LineTo(Rects[iprItem].Left + RectWidth(Rects[iprButtonArea]), Succ(Rects[iprItem].Bottom));
   end;
   RestoreCanvasState(Canvas, SaveIdx);
 end;
@@ -4592,7 +4582,7 @@ var
 begin
   if not DroppedDown then
   begin
-    ListBox.Width := WidthOf(Rects[iprValueArea]);
+    ListBox.Width := RectWidth(Rects[iprValueArea]);
     TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
     if TListBox(ListBox).IntegralHeight then
     begin
@@ -4623,7 +4613,7 @@ begin
       Inc(J, GetSystemMetrics(SM_CXVSCROLL));
     ListBox.ClientWidth := J;
     P := Inspector.ClientToScreen(Point(Rects[iprValueArea].Left, EditCtrl.Top));
-    Y := P.Y + HeightOf(Rects[iprValueArea]);
+    Y := P.Y + RectHeight(Rects[iprValueArea]);
     if Y + ListBox.Height > Screen.Height then
       Y := P.Y - TListBox(ListBox).Height;
     if P.X + Listbox.Width > Screen.Width then
@@ -5685,19 +5675,19 @@ begin
 {$ENDIF}
       DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
       W := 2;
-      G := (WidthOf(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
+      G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
       if G < 1 then
       begin
         W := 1;
-        G := (WidthOf(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
+        G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
       end;
       if G < 1 then
         G := 1;
       if G > 3 then
         G := 3;
 
-      BFlags := R.Left + (WidthOf(R) - 3 * W - 2 * G) div 2 + Ord(Pressed);
-      I := R.Top + (HeightOf(R) - W) div 2;
+      BFlags := R.Left + (RectWidth(R) - 3 * W - 2 * G) div 2 + Ord(Pressed);
+      I := R.Top + (RectHeight(R) - W) div 2;
       PatBlt(ACanvas.handle, BFlags, I, W, W, BLACKNESS);
       PatBlt(ACanvas.handle, BFlags + G + W, I, W, W, BLACKNESS);
       PatBlt(ACanvas.handle, BFlags + 2 * G + 2 * W, I, W, W, BLACKNESS);
@@ -6149,7 +6139,7 @@ begin
   for I := 0 to ColumnCount - 1 do
     if Columns[I].Width > 0 then
       Inc(VisibleColCount);
-  WidthAvail := WidthOf(Value);
+  WidthAvail := RectWidth(Value);
   if VisibleColCount > 1 then
     Dec(WidthAvail, Pred(VisibleColCount) * Inspector.Painter.DividerWidth);
   CurRect := Value;

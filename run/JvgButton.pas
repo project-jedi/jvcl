@@ -216,7 +216,7 @@ resourcestring
 implementation
 
 uses
-  JvConsts, JvThemes;
+  JvConsts, JvJCLUtils, JvThemes;
 
 {$R ..\Resources\JvgButton.res}
 
@@ -632,7 +632,7 @@ begin
   inherited MouseMove(Shift, X, Y);
   Pt.X := X;
   Pt.Y := Y;
-  if IsPointInRect(Pt, ClientRect) then
+  if PtInRectExclusive(ClientRect, Pt) then
   begin
     fMouseInControl_ := IsMouseInControl;
     if fMouseInControl_ <> FMouseInControl then

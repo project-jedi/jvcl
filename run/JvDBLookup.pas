@@ -1905,15 +1905,15 @@ begin
               Canvas.Font := Self.Canvas.Font;
               Canvas.Brush := Self.Canvas.Brush;
               Canvas.Pen := Self.Canvas.Pen;
-              Width := WidthOf(R);
-              Height := HeightOf(R);
+              Width := RectWidth(R);
+              Height := RectHeight(R);
             end;
-            ImageRect := Bounds(0, 0, TextMargin, HeightOf(R));
+            ImageRect := Bounds(0, 0, TextMargin, RectHeight(R));
             Bmp.Canvas.FillRect(ImageRect);
             if Image <> nil then
               DrawPicture(Bmp.Canvas, ImageRect, Image);
-            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, WidthOf(R) - TextMargin,
-              HeightOf(R)), Selected, True);
+            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, RectWidth(R) - TextMargin,
+              RectHeight(R)), Selected, True);
             Canvas.Draw(R.Left, R.Top, Bmp);
           end
           else
@@ -1938,15 +1938,15 @@ begin
               Canvas.Font := Self.Canvas.Font;
               Canvas.Brush := Self.Canvas.Brush;
               Canvas.Pen := Self.Canvas.Pen;
-              Width := WidthOf(R);
-              Height := HeightOf(R);
+              Width := RectWidth(R);
+              Height := RectHeight(R);
             end;
-            ImageRect := Bounds(0, 0, TextMargin, HeightOf(R));
+            ImageRect := Bounds(0, 0, TextMargin, RectHeight(R));
             Bmp.Canvas.FillRect(ImageRect);
             if Image <> nil then
               DrawPicture(Bmp.Canvas, ImageRect, Image);
-            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, WidthOf(R) - TextMargin,
-              HeightOf(R)), Selected, False);
+            DrawItemText(Bmp.Canvas, Bounds(TextMargin, 0, RectWidth(R) - TextMargin,
+              RectHeight(R)), Selected, False);
             Canvas.Draw(R.Left, R.Top, Bmp);
           end
           else
@@ -2885,7 +2885,7 @@ begin
     Canvas.Pen.Color := clBtnShadow;
   LastIndex := FDisplayValues.Count - 1;
   TxtWidth := Canvas.TextWidth('M');
-  ATop := Max(0, (HeightOf(R) - Canvas.TextHeight('Xy')) div 2);
+  ATop := Max(0, (RectHeight(R) - Canvas.TextHeight('Xy')) div 2);
   ARight := R.Right;
   Inc(R.Left, ALeft);
   for I := 0 to LastIndex do
@@ -3028,16 +3028,16 @@ begin
         TControlCanvas(Self.Canvas).UpdateTextFlags;
         Bmp.Canvas.TextFlags := Self.Canvas.TextFlags;
       end;
-      Bmp.Width := WidthOf(R);
-      Bmp.Height := HeightOf(R);
-      ImageRect := Rect(0, 0, WidthOf(R), HeightOf(R));
+      Bmp.Width := RectWidth(R);
+      Bmp.Height := RectHeight(R);
+      ImageRect := Rect(0, 0, RectWidth(R), RectHeight(R));
       if DrawList and (ListStyle = lsFixed) and (FDisplayValues <> nil) and
         (FDisplayValues.Count > 0) then
       begin
         if IsEmpty then
         begin
           AText := DisplayEmpty;
-          Bmp.Canvas.TextRect(ImageRect, X, Max(0, (HeightOf(R) -
+          Bmp.Canvas.TextRect(ImageRect, X, Max(0, (RectHeight(R) -
             Canvas.TextHeight(AText)) div 2), AText);
         end
         else
@@ -3045,7 +3045,7 @@ begin
       end
       else
       begin
-        Bmp.Canvas.TextRect(ImageRect, X, Max(0, (HeightOf(R) -
+        Bmp.Canvas.TextRect(ImageRect, X, Max(0, (RectHeight(R) -
           Canvas.TextHeight(AText)) div 2), AText);
       end;
       if Image <> nil then

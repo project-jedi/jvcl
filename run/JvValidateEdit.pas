@@ -258,7 +258,7 @@ implementation
 
 uses
   { Delphi } Windows, SysUtils, Math,
-  { local } JvJVCLUtils;
+  { local } JvJCLUtils;
 
 
 constructor TJvCustomValidateEdit.Create(AOwner: TComponent);

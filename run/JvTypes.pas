@@ -144,7 +144,6 @@ type
   end;
 
   TJvErrorEvent = procedure(Sender: TObject; ErrorMsg: string) of object;
-  TJvWallpaperStyle = (wpTile, wpCenter, wpStretch);
   TJvTransformationKind = (ttWipeLeft, ttWipeRight, ttWipeUp, ttWipeDown,
     ttTurnLeft, ttTurnRight, ttTurnUp, ttTurnDown,
     ttWipeDownRight, ttWipeDownLeft, ttWipeUpRight, ttWipeUpLeft);
