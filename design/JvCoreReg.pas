@@ -77,7 +77,7 @@ begin
   {$ENDIF COMPILER7_UP}
 
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent,
-   TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
+    TJvContextProvider, TJvColorProvider, TJvColorMappingProvider]);
   {$IFDEF VCL}
   RegisterComponents(RsPaletteNonVisual, [TJvBackground]);
   {$ENDIF VCL}
@@ -159,8 +159,7 @@ begin
   RegisterComponentEditor(TJvColorProvider, TJvColorProviderEditor);
 
   {$IFDEF VCL}
-  RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground,
-    'Clients', TJvClientsProperty);
+  RegisterPropertyEditor(TypeInfo(TJvBackgroundClients), TJvBackground, 'Clients', TJvClientsProperty);
   {$ENDIF VCL}
 
   RegisterActions(RsJVCLActionsCategory, [{$IFDEF MSWINDOWS} TJvSendMailAction, {$ENDIF} TJvWebAction], TJvStandardActions);

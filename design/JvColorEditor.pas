@@ -224,7 +224,7 @@ end;
 {$IFDEF VisualCLX}
 //
 // Edit uses TColorDialog, but that does not store the
-// customcolors. For design time non volatile customcolors are
+// custom colors. For design time non-volatile custom colors are
 // implemented stored in the Registry under windows and in
 // Linux in an IniFile.
 //
@@ -234,7 +234,7 @@ begin
 end;
 
 const
-  DefaultColors: array['A'..'P'] of string = (
+  DefaultColors: array ['A'..'P'] of string = (
     'F0FBFF',  // clCream
     'C0DCC0',  // clMoneyGreen
 
@@ -342,6 +342,7 @@ begin
     ColorDialog.Free;
   end;
 end;
+
 {$ENDIF VisualCLX}
 
 end.
