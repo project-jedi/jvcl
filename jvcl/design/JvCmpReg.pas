@@ -16,7 +16,7 @@ uses
   JvAlarmsEditor, JvPageManagerForm,
   JvDsgnEditors;
 
-{.$R ..\resources\JvCmpReg.dcr}
+{$R ..\resources\JvCmpReg.dcr}
                             
 procedure Register;
 begin

@@ -31,7 +31,8 @@ requires
   JvStdCtrlsD7R,
   JvMMD7R,
   vcl,
-  rtl;
+  rtl,
+  JvDlgsD7R;
 
 contains
   JvAppAnimatedIcon in '..\..\run\JvAppAnimatedIcon.pas',
@@ -41,7 +42,6 @@ contains
   JvTransparentForm in '..\..\run\JvTransparentForm.pas',
   JvFormAnimatedIcon in '..\..\run\JvFormAnimatedIcon.pas',
   JvFormAnimation in '..\..\run\JvFormAnimation.pas',
-  JvFormImage in '..\..\run\JvFormImage.pas' {FormImg},
   JvFormWallpaper in '..\..\run\JvFormWallpaper.pas',
   JvFormWallpaperEdit in '..\..\run\JvFormWallpaperEdit.pas',
   JvFormMagnet in '..\..\run\JvFormMagnet.pas',

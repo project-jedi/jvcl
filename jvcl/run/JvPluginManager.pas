@@ -175,7 +175,7 @@ implementation
 
 uses
   {$IFNDEF COMPILER6_UP}
-  JvFunctions, // for IncludeTrailingPathDelimiter (only <D6)
+  JvJVCLUtils, // for IncludeTrailingPathDelimiter (only <D6)
   {$ENDIF}
   Forms;
 

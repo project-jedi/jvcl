@@ -13,7 +13,7 @@ uses
   JvMultiHttpGrabber, JvRgbToHtml, JvRichEditToHtml, JvStrToHtml, JvMail,
   JvMailEditor, JvHTMLParserEditor;
 
-{.$R ..\resources\JvNetReg.dcr}
+{$R ..\resources\JvNetReg.dcr}
 
 procedure Register;
 begin

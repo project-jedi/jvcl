@@ -13,7 +13,7 @@ uses
   JvJCLUtils, JVCLVer, JvComponent, JvActions, JvActnRes, JvJVCLAbout, JvDsgnEditors, JvIDEZoom,
   JvJVCLAboutEditor, JvBaseDlgEditor, JvColorEditor, JvPaintBoxEditor;
 
-{.$R ..\resources\JvCoreReg.dcr}
+{$R ..\resources\JvCoreReg.dcr}
 
 procedure Register;
 const

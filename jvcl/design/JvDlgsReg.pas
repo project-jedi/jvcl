@@ -15,7 +15,7 @@ uses
   JvImageDlg, JvLoginForm, JvDualList, JvProgressDialog,
   JvAppletEditor, JvObjectPickerDialog, JvBaseDlgEditor, JvCommonDialogDEditor, JvTipOfDayEditor;
 
-{.$R ..\resources\JvDlgsReg.dcr}
+{$R ..\resources\JvDlgsReg.dcr}
 
 procedure Register;
 begin

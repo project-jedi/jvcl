@@ -20,7 +20,7 @@ uses
   JvPerfStatEditor, 
   JvDsgnEditors;
 
-{.$R ..\resources\JvSystemReg.dcr}
+{$R ..\resources\JvSystemReg.dcr}
 
 procedure Register;
 begin

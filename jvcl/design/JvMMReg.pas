@@ -19,7 +19,7 @@ uses
 
   JvAnimatedEditor, JvID3v2EditorForm, JvPictureEditForm, JvIconListForm, JvGradientCaptionForm;
 
-{.$R ..\resources\JvMMReg.dcr}
+{$R ..\resources\JvMMReg.dcr}
 
 procedure Register;
 begin

@@ -21,7 +21,7 @@ uses
   JvSpeedbarForm,
   JvDsgnEditors;
 
-{.$R ..\resources\JvCtrlsReg.dcr}
+{$R ..\resources\JvCtrlsReg.dcr}
 
 procedure Register;
 begin

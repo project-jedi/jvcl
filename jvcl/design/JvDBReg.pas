@@ -16,7 +16,7 @@ uses
 
   {$IFDEF JV_MIDAS},JvDBRemoteLogin {$ENDIF};
 
-{.$R ..\resources\JvDBReg.dcr}
+{$R ..\resources\JvDBReg.dcr}
 
 procedure Register;
 const
