@@ -103,6 +103,18 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   
   end;
+  TJvExPubSpeedButton = class(TJvExSpeedButton)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExBitBtn = class(TBitBtn, IJvWinControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -185,6 +197,18 @@ type
     procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubBitBtn = class(TJvExBitBtn)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 

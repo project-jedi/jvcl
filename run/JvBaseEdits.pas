@@ -76,8 +76,8 @@ type
     //Polaris    function CheckValue(NewValue: Extended; RaiseOnError: Boolean): Extended;
     function IsFormatStored: Boolean;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
-    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
   protected
+    procedure DoClipboardPaste; override;
     procedure SetBeepOnError(Value: Boolean); override;
 
     procedure EnabledChanged; override;
@@ -778,13 +778,13 @@ begin
   Self.Value := CheckValue(Value, False); //Polaris
 end;
 
-procedure TJvCustomNumEdit.WMPaste(var Msg: TMessage);
+procedure TJvCustomNumEdit.DoClipboardPaste;
 var
   S: string;
 begin
   S := EditText;
   try
-    inherited;
+    inherited DoClipboardPaste;
     UpdateData;
   except
     EditText := S;

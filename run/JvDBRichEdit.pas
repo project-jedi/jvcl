@@ -58,14 +58,14 @@ type
     procedure UpdateData(Sender: TObject);
     procedure EditingChange(Sender: TObject);
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
-    procedure WMPaste(var Msg: TMessage); message WM_PASTE;
-    procedure WMCut(var Msg: TMessage); message WM_CUT;
-    procedure CMEnter(var Msg: TCMEnter); message CM_ENTER;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
     procedure EMSetCharFormat(var Msg: TMessage); message EM_SETCHARFORMAT;
     procedure EMSetParaFormat(var Msg: TMessage); message EM_SETPARAFORMAT;
   protected
+    procedure DoClipboardPaste; override;
+    procedure DoClipboardCut; override;
+    procedure DoEnter; override;
+    procedure DoExit; override;
     procedure Change; override;
     function EditCanModify: Boolean; virtual;
     procedure Loaded; override;
@@ -402,15 +402,15 @@ begin
   end;
 end;
 
-procedure TJvDBRichEdit.CMEnter(var Msg: TCMEnter);
+procedure TJvDBRichEdit.DoEnter;
 begin
   SetFocused(True);
-  inherited;
+  inherited DoEnter;
   if SysLocale.FarEast and FDataLink.CanModify then
     inherited ReadOnly := False;
 end;
 
-procedure TJvDBRichEdit.CMExit(var Msg: TCMExit);
+procedure TJvDBRichEdit.DoExit;
 begin
   try
     FDataLink.UpdateRecord;
@@ -420,7 +420,7 @@ begin
     raise;
   end;
   SetFocused(False);
-  inherited;
+  inherited DoExit;
 end;
 
 procedure TJvDBRichEdit.SetAutoDisplay(Value: Boolean);
@@ -451,16 +451,16 @@ begin
     inherited;
 end;
 
-procedure TJvDBRichEdit.WMCut(var Msg: TMessage);
+procedure TJvDBRichEdit.DoClipboardCut;
 begin
   EditCanModify;
-  inherited;
+  inherited DoClipboardCut;
 end;
 
-procedure TJvDBRichEdit.WMPaste(var Msg: TMessage);
+procedure TJvDBRichEdit.DoClipboardPaste;
 begin
   EditCanModify;
-  inherited;
+  inherited DoClipboardPaste;
 end;
 
 procedure TJvDBRichEdit.CMGetDataLink(var Msg: TMessage);

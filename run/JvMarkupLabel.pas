@@ -30,9 +30,6 @@ Known Issues:
 
 unit JvMarkupLabel;
 
-// (rom) is this needed?
-{$OBJEXPORTALL On}
-
 interface
 
 uses
@@ -46,7 +43,7 @@ uses
   JvComponent, JvMarkupCommon;
 
 type
-  TJvMarkupLabel = class(TJvGraphicControl)
+  TJvMarkupLabel = class(TJvPubGraphicControl)
   private
     FElementStack: TJvHTMLElementStack;
     FTagStack: TJvHTMLElementStack;
@@ -60,26 +57,23 @@ type
     procedure RenderHTML;
     procedure HTMLClearBreaks;
     procedure HTMLElementDimensions;
-    function GetBackColor: TColor; {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
-    procedure SetBackColor(const Value: TColor); {$IFDEF COMPILER6_UP} deprecated; {$ENDIF}
     procedure SetText(const Value: string); {$IFDEF VisualCLX} reintroduce; {$ENDIF}
     procedure SetMarginLeft(const Value: Integer);
     procedure SetMarginRight(const Value: Integer);
     procedure SetMarginTop(const Value: Integer);
     procedure SetAlignment(const Value: TAlignment);
+    procedure DoReadBackColor(Reader: TReader);
   protected
-    {$IFDEF COMPILER7_UP}
     procedure FontChanged; override;
-    {$ENDIF COMPILER7_UP}
     {$IFDEF VCL}
     procedure SetAutoSize(Value: Boolean); override;
     {$ENDIF VCL}
+    procedure DefineProperties(Filer: TFiler); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Paint; override;
   published
-    property BackColor: TColor read GetBackColor write SetBackColor;
     property Height default 100;
     property Width default 200;
     property MarginLeft: Integer read FMarginLeft write SetMarginLeft default 5;
@@ -97,13 +91,6 @@ type
     property Enabled;
     property Color;   // Duplicates BackColor
     property Constraints;
-    {$IFDEF VCL}
-    property BiDiMode;
-    property DragCursor;
-    property DragKind;
-    property DragMode;
-    property ParentBiDiMode;
-    {$ENDIF VCL}
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
@@ -115,10 +102,6 @@ type
     property OnDblClick;
     property OnDragDrop;
     property OnDragOver;
-    {$IFDEF VCL}
-    property OnEndDock;
-    property OnStartDock;
-    {$ENDIF VCL}
     property OnEndDrag;
     property OnMouseDown;
     property OnMouseMove;
@@ -212,13 +195,11 @@ begin
   RenderHTML;
 end;
 
-{$IFDEF COMPILER7_UP}
 procedure TJvMarkupLabel.FontChanged;
 begin
   inherited FontChanged;
   Refresh;
 end;
-{$ENDIF COMPILER7_UP}
 
 procedure TJvMarkupLabel.ParseHTML(S: string);
 var
@@ -477,7 +458,7 @@ var
 begin
   iEol := 0; // Not Needed but removes warning.
   R := ClientRect;
-  Canvas.Brush.Color := BackColor;
+  Canvas.Brush.Color := Color;
   DrawThemedBackground(Self, Canvas, R);
   C := FElementStack.Count;
   if C = 0 then
@@ -647,7 +628,7 @@ begin
   Refresh;
 end;
 
-function TJvMarkupLabel.GetBackColor: TColor;
+{function TJvMarkupLabel.GetBackColor: TColor;
 begin
   Result := Color;
 end;
@@ -655,6 +636,17 @@ end;
 procedure TJvMarkupLabel.SetBackColor(const Value: TColor);
 begin
   Color := Value;
+end;}
+
+procedure TJvMarkupLabel.DoReadBackColor(Reader: TReader);
+begin
+  Color := TColor(Reader.ReadInteger);
+end;
+
+procedure TJvMarkupLabel.DefineProperties(Filer: TFiler);
+begin
+  Filer.DefineProperty('BackColor', DoReadBackColor, nil, False);
+  inherited DefineProperties(Filer);
 end;
 
 end.

@@ -661,7 +661,8 @@ uses
   JvConsts, JvTypes, JvJVCLUtils, JvJCLUtils;
 
 const
-  DefMarginColor: TColor = clBlue;
+  // (ahuser) deactivated because the code that uses DefMarginColor is deactivated
+  //DefMarginColor: TColor = clBlue;
   Separator = '-';
 
 function CreateMenuItemPainterFromStyle(Style : TJvMenuStyle; Menu : TMenu) : TJvCustomMenuItemPainter;

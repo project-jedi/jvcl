@@ -198,7 +198,19 @@ type
     FAboutJVCL: TJVCLAboutInfo;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
-
+  
+  end;
+  TJvExPubControl = class(TJvExControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExWinControl = class(TWinControl, IJvWinControlEvents, IJvControlEvents)
@@ -283,6 +295,18 @@ type
     property Canvas: TCanvas read FCanvas;
   {$ENDIF VisualCLX}
   end;
+  TJvExPubWinControl = class(TJvExWinControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
 
   TJvExGraphicControl = class(TGraphicControl, IJvControlEvents)
@@ -345,6 +369,18 @@ type
     function GetText: TCaption; override;
     procedure SetText(const Value: TCaption); override;
   {$ENDIF VisualCLX}
+  end;
+  TJvExPubGraphicControl = class(TJvExGraphicControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
   TJvExCustomControl = class(TCustomControl,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
@@ -423,6 +459,18 @@ type
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
   end;
+  TJvExPubCustomControl = class(TJvExCustomControl)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
+  end;
   
   TJvExHintWindow = class(THintWindow,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents)
   {$IFDEF VCL}
@@ -499,6 +547,18 @@ type
     procedure DoSetFocus(FocusedWnd: HWND); dynamic;
     procedure DoKillFocus(FocusedWnd: HWND); dynamic;
   
+  end;
+  TJvExPubHintWindow = class(TJvExHintWindow)
+  {$IFDEF VCL}
+  published
+    property BiDiMode;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property ParentBiDiMode;
+    property OnEndDock;
+    property OnStartDock;
+  {$ENDIF VCL}
   end;
   
 

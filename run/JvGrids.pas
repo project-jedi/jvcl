@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   Messages, Classes, Controls, Graphics, StdCtrls, Forms, Grids,
-  JvAppStorage, JvConsts, JvFormPlacement, JvExGrids;
+  JvAppStorage, JvConsts, JvFormPlacement, JvComponent, JvExGrids;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -215,13 +215,13 @@ type
   TIntArray = array[0..MaxCustomExtents] of Integer;
 
 type
-  TJvPopupListBox = class;
+  TJvGridPopupListBox = class;
 
   TJvInplaceEdit = class(TJvExInplaceEdit)
   private
     FAlignment: TAlignment;
     FButtonWidth: Integer;
-    FPickList: TJvPopupListBox;
+    FPickList: TJvGridPopupListBox;
     FActiveList: TWinControl;
     FEditStyle: TInplaceEditStyle;
     FListVisible: Boolean;
@@ -255,69 +255,20 @@ type
     procedure UpdateContents; override;
     procedure WndProc(var Message: TMessage); override;
     property ActiveList: TWinControl read FActiveList write FActiveList;
-    property PickList: TJvPopupListBox read FPickList;
+    property PickList: TJvGridPopupListBox read FPickList;
   public
     constructor Create(Owner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property EditStyle: TInplaceEditStyle read FEditStyle write SetEditStyle;
   end;
 
-  TJvPopupListBox = class(TCustomListBox)
-  private
-    FSearchText: string;
-    FSearchTickCount: Longint;
+  TJvGridPopupListBox = class(TJvPopupListBox)
   protected
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
-    procedure KeyPress(var Key: Char); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
+      X, Y: Integer); override;
   end;
 
-//=== TJvPopupListBox ========================================================
-
-procedure TJvPopupListBox.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-  begin
-    Style := Style or WS_BORDER;
-    ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
-    AddBiDiModeExStyle(ExStyle);
-    WindowClass.Style := CS_SAVEBITS;
-  end;
-end;
-
-procedure TJvPopupListBox.CreateWnd;
-begin
-  inherited CreateWnd;
-  Windows.SetParent(Handle, 0);
-  CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
-end;
-
-procedure TJvPopupListBox.KeyPress(var Key: Char);
-var
-  TickCount: Integer;
-begin
-  case Word(Key) of
-    VK_BACK, VK_ESCAPE:
-      FSearchText := '';
-    32..255:
-      begin
-        TickCount := GetTickCount;
-        if TickCount - FSearchTickCount > 4000 then
-          FSearchText := '';
-        FSearchTickCount := TickCount;
-        if Length(FSearchText) < 32 then
-          FSearchText := FSearchText + Key;
-        SendMessage(Handle, LB_SELECTSTRING, WORD(-1),
-          Longint(PChar(FSearchText)));
-        Key := #0;
-      end;
-  end;
-  inherited KeyPress(Key);
-end;
-
-procedure TJvPopupListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
+procedure TJvGridPopupListBox.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
@@ -574,7 +525,7 @@ begin
       begin
         if FPickList = nil then
         begin
-          FPickList := TJvPopupListBox.Create(Self);
+          FPickList := TJvGridPopupListBox.Create(Self);
           FPickList.Visible := False;
           FPickList.Parent := Self;
           FPickList.OnMouseUp := ListMouseUp;

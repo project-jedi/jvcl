@@ -45,12 +45,12 @@ type
     function GetDataSource: TDataSource; { Returns linked data source. }
     procedure SetDataField(const NewFieldName: string); { Assigns new field. }
     procedure SetDataSource(NewSource: TDataSource); { Assigns new data source. }
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT; { called to update data }
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     function GetReadOnlyField: Boolean;
     procedure SetReadOnlyField(Value: Boolean);
     procedure SetOnChange(const Value: TNotifyEvent);
   protected
+    procedure DoExit; override; { called to update data }
     procedure DoChange(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -128,7 +128,7 @@ begin
   end;
 end;
 
-procedure TJvDBSpinEdit.CMExit(var Msg: TCMExit);
+procedure TJvDBSpinEdit.DoExit;
 begin
   try
     FFieldDataLink.UpdateRecord; { tell data link to update database }
@@ -136,7 +136,7 @@ begin
     SetFocus; { if it failed, don't let focus leave }
     raise;
   end;
-  inherited;
+  inherited DoExit;
 end;
 
 { UpdateData is only called after calls to both FFieldDataLink.Modified and

@@ -15,7 +15,7 @@ All Rights Reserved.
 
 Contributor(s): Peter Thörnqvist
 
-Last Modified: 2003-02-20
+Last Modified: 2004-01-17
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL
 home page, located at http://jvcl.sourceforge.net
@@ -140,17 +140,17 @@ type
     procedure EnforceMaxValue;
     procedure EnforceMinValue;
     {$IFDEF VCL}
-    procedure CMChanged(var Message: TMessage); message CM_CHANGED;
-    procedure WMPaste(var Message: TWMPaste); message WM_PASTE;
+    // procedure CMChanged(var Message: TMessage); message CM_CHANGED;
     procedure SetText(const NewValue: TCaption);
     function GetText: TCaption;
     {$ENDIF VCL}
   protected
+    procedure Change; override; // (ahuser) CM_CHANGED is only called by TCustomEdit.Change
     procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure DoSetFocus(FocusedWnd: HWND); override;
+    procedure DoClipboardPaste; override;
     {$IFDEF VisualCLX}
     procedure SetText(const NewValue: TCaption); override;
-    procedure TextChanged; override; // -> CMChanged
     {$ENDIF VisualCLX}
     property CheckChars: string read FCheckChars write SetCheckChars;
     property DecimalPlaces: Cardinal read FDecimalPlaces write SetDecimalPlaces;
@@ -163,8 +163,7 @@ type
     property MinValue: Double read FMinValue write SetMinValue;
     property OnCustomValidate: TJvCustomTextValidateEvent
       read FOnCustomValidate write FOnCustomValidate;
-    property OnValueChanged: TNotifyEvent read FOnValueChanged
-      write FOnValueChanged;
+    property OnValueChanged: TNotifyEvent read FOnValueChanged write FOnValueChanged;
     property Text: TCaption read GetText write SetText;
     property Value: Variant read GetValue write SetValue;
     property ZeroEmpty: Boolean read FZeroEmpty write SetZeroEmpty;
@@ -180,10 +179,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-    {$IFDEF VisualCLX}
-    procedure PasteFromClipboard; override;
-    {$ENDIF VisualCLX}
 
     procedure Assign(Source: TPersistent); override;
     property AsInteger: Integer read GetAsInteger write SetAsInteger;
@@ -286,10 +281,10 @@ begin
   FCheckChars := '01234567890';
   Alignment := taRightJustify;
   FEditText := '';
-  Text      := '';
-  AutoSize  := True;
-  FMinValue    := 0;
-  FMaxValue    := 0;
+  Text := '';
+  AutoSize := True;
+  FMinValue := 0;
+  FMaxValue := 0;
   FHasMinValue := False;
   FHasMaxValue := False;
   FZeroEmpty := False;
@@ -607,15 +602,10 @@ begin
   inherited;
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomValidateEdit.WMPaste(var Message: TWMPaste);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomValidateEdit.PasteFromClipboard;
-{$ENDIF VisualCLX}
+procedure TJvCustomValidateEdit.DoClipboardPaste;
 begin
   EnterText := FEditText;
-  inherited;
+  inherited DoClipboardPaste;
   EditText := MakeValid(inherited Text);
 end;
 
@@ -720,7 +710,6 @@ begin
     Result := Trunc(FMinValue);
 end;
 
-
 function TJvCustomValidateEdit.GetEditText: string;
 begin
   Result := FEditText;
@@ -742,7 +731,6 @@ begin
   ChangeText(FEditText);
   DisplayText;
 end;
-
 
 procedure TJvCustomValidateEdit.DoSetFocus(FocusedWnd: HWND);
 begin
@@ -856,8 +844,7 @@ begin
     Inc(Result, Trunc(BaseCharToInt(BaseValue[i]) * Power(Base, Length(BaseValue)-i)));
 end;
 
-function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte):
-    string;
+function TJvCustomValidateEdit.IntToBase(NewValue, Base: Byte): string;
 var
   iDivisor, iRemainder, i: Cardinal;
   iBaseIterations: Integer;
@@ -866,8 +853,8 @@ var
   begin
     case IntValue of
       0..9: Result := Chr(Ord('0') + IntValue);
-      else
-        Result := Chr(Ord('A') + IntValue - 10);
+    else
+      Result := Chr(Ord('A') + IntValue - 10);
     end;
   end;
 
@@ -903,20 +890,17 @@ begin
     FOnValueChanged(Self);
 end;
 
-{$IFDEF VCL}
-procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
-procedure TJvCustomValidateEdit.TextChanged;
-{$ENDIF VisualCLX}
+{procedure TJvCustomValidateEdit.CMChanged(var Message: TMessage);}
+procedure TJvCustomValidateEdit.Change;
 begin
   // Update FEditText for User changes, so that the AsInteger, etc,
   // functions work while editing
   if not bSelfChange then
     FEditText := inherited Text;
+  { // (ahuser) Done by inherited Change
   if Assigned(OnChange) then
-    OnChange(Self);
-  inherited;
+    OnChange(Self);}
+  inherited Change;
 end;
 
 {$IFDEF VCL}

@@ -151,9 +151,9 @@ type
     procedure DrawPicture(Canvas: TCanvas; Rect: TRect; Image: TGraphic);
     procedure UpdateDisplayValue;
     function EmptyRowVisible: Boolean;
-    procedure WMKillFocus(var Msg: TMessage); message WM_KILLFOCUS;
-    procedure WMSetFocus(var Msg: TMessage); message WM_SETFOCUS;
   protected
+    procedure DoKillFocus(FocusedWnd: HWND); override;
+    procedure DoSetFocus(FocusedWnd: HWND); override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     function GetReadOnly: Boolean;virtual;
     procedure SetReadOnly(Value: Boolean);virtual;
@@ -379,10 +379,10 @@ type
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMCancelMode(var Msg: TMessage); message WM_CANCELMODE;
-    procedure WMKillFocus(var Msg: TWMKillFocus); message WM_KILLFOCUS;
     procedure WMSetCursor(var Msg: TWMSetCursor); message WM_SETCURSOR;
     procedure CMBiDiModeChanged(var Msg: TMessage); message CM_BIDIMODECHANGED;
   protected
+    procedure DoKillFocus(FocusedWnd: HWND); override;
     procedure Resize; override;
     procedure DoGetDlgCode(var Code: TDlgCodes); override;
     procedure EnabledChanged; override;
@@ -1441,17 +1441,17 @@ begin
   Code := [dcWantArrows, dcWantChars];
 end;
 
-procedure TJvLookupControl.WMKillFocus(var Msg: TMessage);
+procedure TJvLookupControl.DoKillFocus(FocusedWnd: HWND);
 begin
   FFocused := False;
-  inherited;
+  inherited DoKillFocus(FocusedWnd);
   Invalidate;
 end;
 
-procedure TJvLookupControl.WMSetFocus(var Msg: TMessage);
+procedure TJvLookupControl.DoSetFocus(FocusedWnd: HWND);
 begin
   FFocused := True;
-  inherited;
+  inherited DoSetFocus(FocusedWnd);
   Invalidate;
 end;
 
@@ -3216,9 +3216,9 @@ begin
   Code := [dcButton, dcWantAllKeys, dcWantArrows, dcWantChars];
 end;
 
-procedure TJvDBLookupCombo.WMKillFocus(var Msg: TWMKillFocus);
+procedure TJvDBLookupCombo.DoKillFocus(FocusedWnd: HWND);
 begin
-  inherited;
+  inherited DoKillFocus(FocusedWnd);
   CloseUp(False);
 end;
 

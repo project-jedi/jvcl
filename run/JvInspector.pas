@@ -1654,7 +1654,6 @@ const
 implementation
 
 uses
-
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
@@ -1678,66 +1677,6 @@ var
   FGenItemReg: TJvInspectorRegister;
   FVarItemReg: TJvInspectorRegister;
   FPropItemReg: TJvInspectorRegister;
-
-//=== TJvPopupListBox ========================================================
-
-{$IFDEF VCL}
-type
-  TJvPopupListBox = class(TCustomListBox)
-  private
-    FSearchText: string;
-    FSearchTickCount: Longint;
-  protected
-    procedure CreateParams(var Params: TCreateParams); override;
-    procedure CreateWnd; override;
-    procedure KeyPress(var Key: Char); override;
-  end;
-
-  // (rom) since RxLib is now part of JVCL, could the original be used?
-  { TJvPopupListBox - copied from RxLib }
-
-procedure TJvPopupListBox.CreateParams(var Params: TCreateParams);
-begin
-  inherited CreateParams(Params);
-  with Params do
-  begin
-    Style := Style or WS_BORDER;
-    ExStyle := WS_EX_TOOLWINDOW or WS_EX_TOPMOST;
-    AddBiDiModeExStyle(ExStyle);
-    WindowClass.Style := CS_SAVEBITS;
-  end;
-end;
-
-procedure TJvPopupListBox.CreateWnd;
-begin
-  inherited CreateWnd;
-  Windows.SetParent(Handle, 0);
-  CallWindowProc(DefWndProc, Handle, WM_SETFOCUS, 0, 0);
-end;
-
-procedure TJvPopupListBox.KeyPress(var Key: Char);
-var
-  TickCount: Integer;
-begin
-  case Word(Key) of
-    VK_BACK, VK_ESCAPE:
-      FSearchText := '';
-    32..255:
-      begin
-        TickCount := GetTickCount;
-        if TickCount - FSearchTickCount > 4000 then
-          FSearchText := '';
-        FSearchTickCount := TickCount;
-        if Length(FSearchText) < 32 then
-          FSearchText := FSearchText + Key;
-        SendMessage(Handle, LB_SELECTSTRING, WORD(-1),
-          Longint(PChar(FSearchText)));
-        Key := #0;
-      end;
-  end;
-  inherited KeyPress(Key);
-end;
-{$ENDIF VCL}
 
 //=== TCanvasStack ===========================================================
 

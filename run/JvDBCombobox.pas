@@ -38,10 +38,10 @@ uses
   VDBConsts,
   {$ENDIF COMPILER6_UP}
   Messages, Menus, Graphics, Classes, Controls, DB,
-  StdCtrls, DBConsts;
+  StdCtrls, DBConsts, JvExStdCtrls;
 
 type
-  TJvCustomDBComboBox = class(TCustomComboBox)
+  TJvCustomDBComboBox = class(TJvExCustomComboBox)
   private
     FDataLink: TFieldDataLink;
     FPaintControl: TPaintControl;
@@ -62,10 +62,10 @@ type
     procedure UpdateData(Sender: TObject);
     function GetComboText: string; virtual;
     procedure SetComboText(const Value: string); virtual;
-    procedure CMExit(var Msg: TCMExit); message CM_EXIT;
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     procedure WMPaint(var Msg: TWMPaint); message WM_PAINT;
   protected
+    procedure DoExit; override;
     procedure Change; override;
     procedure Click; override;
     procedure ComboWndProc(var Msg: TMessage; ComboWnd: HWND;
@@ -127,8 +127,7 @@ type
     property DragCursor;
     property DropDownCount;
     property Enabled;
-    property EnableValues: Boolean read FEnableValues write SetEnableValues
-      default True; // Polaris
+    property EnableValues: Boolean read FEnableValues write SetEnableValues default True;
     property Font;
     property Anchors;
     property BiDiMode;
@@ -425,7 +424,7 @@ begin
   inherited ComboWndProc(Msg, ComboWnd, ComboProc);
 end;
 
-procedure TJvCustomDBComboBox.CMExit(var Msg: TCMExit);
+procedure TJvCustomDBComboBox.DoExit;
 begin
   try
     FDataLink.UpdateRecord;
@@ -435,7 +434,7 @@ begin
       SetFocus;
     raise;
   end;
-  inherited;
+  inherited DoExit;
 end;
 
 
