@@ -101,6 +101,8 @@ type
     property Location;
     property DefaultSection;
     property SubStorages;
+
+    property OnGetFileName;
   end;
 
 implementation
