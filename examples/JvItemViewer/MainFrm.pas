@@ -332,7 +332,7 @@ begin
   if LoadFromFile and FileExists(Item.FileName) then
     TfrmImageViewer.View(Item.FileName, ITV.Options.Transparent, ITV.Color)
   else
-    TfrmImageViewer.View(Item.Picture, ITV.Color);
+    TfrmImageViewer.View(Item.Picture, ITV.Options.Transparent, ITV.Color);
 end;
 
 procedure TfrmMain.Viewfromfile1Click(Sender: TObject);

@@ -57,7 +57,7 @@ type
   private
     FOnAccept: TDropFrmAcceptEvent;
     FIncludeFiles: boolean;
-    procedure BuildFolderList(Items: TTreeNodes; Parent: TTreeNode; const Root: string; Level: integer; IncludeFiles: boolean);
+    procedure BuildFolderList(Items: TTreeNodes; Parent: TTreeNode; const Root: string; IncludeFiles: boolean);
     procedure BuildFileSystem;
 
   protected
@@ -132,7 +132,7 @@ begin
       GetLocalDrives(S);
       S.Sort;
       for i := 0 to S.Count - 1 do
-        BuildFolderList(tvFolders.Items, tvFolders.Items.AddChild(nil, S[i]), S[i], 2, IncludeFiles);
+        BuildFolderList(tvFolders.Items, tvFolders.Items.AddChild(nil, S[i]), S[i], IncludeFiles);
     finally
       S.Free;
     end;
@@ -143,18 +143,23 @@ begin
 //  tvFolders.Items.GetFirstNode.Expand(false);
 end;
 
-procedure TfrmDrop.BuildFolderList(Items: TTreeNodes; Parent: TTreeNode; const Root: string; Level: integer; IncludeFiles: boolean);
+procedure TfrmDrop.BuildFolderList(Items: TTreeNodes; Parent: TTreeNode; const Root: string; IncludeFiles: boolean);
 var
-  F: TSearchRec;
+  F,F2: TSearchRec;
   S: string;
+  Node:TTreeNode;
 begin
-  if Level = 0 then Exit;
   S := IncludeTrailingPathDelimiter(Root);
   if FindFirst(S + '*.*', faDirectory, F) = 0 then
   begin
     repeat
       if (F.Name[1] <> '.') and (F.Attr and faDirectory = faDirectory) then
-        BuildFolderList(Items, Items.AddChild(Parent, F.Name), S + F.Name, Level - 1, IncludeFiles);
+      begin
+        Node := Items.AddChild(Parent, F.Name);
+        Node.HasChildren := FindFirst(S + F.Name + '\*.*',faDirectory, F2) = 0;
+        if Node.HasChildren then
+          FindClose(F2);
+      end;
     until FindNext(F) <> 0;
     FindClose(F);
   end;
@@ -190,7 +195,7 @@ begin
   Screen.Cursor := crHourGlass;
   tvFolders.Items.BeginUpdate;
   try
-    BuildFolderList(tvFolders.Items, Node, GetFullPath(Node), 2, IncludeFiles);
+    BuildFolderList(tvFolders.Items, Node, GetFullPath(Node), IncludeFiles);
   finally
     Screen.Cursor := crDefault;
     tvFolders.Items.EndUpdate;
