@@ -52,11 +52,15 @@
     <File Name="..\..\run\JvTimer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvTimerList.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvWndProcHook.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\common\Ras32.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\common\Ras32.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QRas32.pas" Targets="D7clx" Formname="" Condition=""/>
     <File Name="..\..\common\Hid.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\common\ModuleLoader.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\common\DBT.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\common\ModuleLoader.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QModuleLoader.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\common\DBT.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QDBT.pas" Targets="D7clx" Formname="" Condition=""/>
     <File Name="..\..\common\SetupApi.pas" Targets="windows" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QSetupApi.pas" Targets="D7clx" Formname="" Condition=""/>
     <File Name="..\..\run\JvAppXMLStorage.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvComputerInfoEx.pas" Targets="windows" Formname="" Condition=""/>
   </Contains>
