@@ -7,7 +7,7 @@ uses
   Dialogs, ToolWin, ComCtrls, JvToolBar, Menus, JvMenus, ExtCtrls,
   StdCtrls, JvListBox, JvCtrls, JvCoolBar, JvSplitter, JvStatusBar,
   JvComCtrls, JvControlBar, ImgList, ActnList, FileWrapper, AppEvnts,
-  JvComponent, JvMRUList;
+  JvComponent, JvMRUList, JvFormPlacement, JvAppStore, JvAppRegistryStore;
 
 type
   TfrmMain = class(TForm)
@@ -79,6 +79,8 @@ type
     memPreText: TMemo;
     jvmRecentFiles: TJvMRUList;
     sepAfterMRU: TMenuItem;
+    JvAppRegistryStore: TJvAppRegistryStore;
+    JvFormStorage: TJvFormStorage;
     procedure actExitExecute(Sender: TObject);
     procedure actOpenExecute(Sender: TObject);
     procedure actSaveExecute(Sender: TObject);
