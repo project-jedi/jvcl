@@ -17,6 +17,7 @@ const
 
 var
   StartDir: string = '';
+  Filemask: string = '*.pas';
   LastModify: Integer = 0;
   LD: Integer = 1;
 
@@ -30,7 +31,7 @@ begin
   if (Count < 1) xor ((S <> '') and (S[1] = '-')) then
   begin
     WriteLn('Usage:');
-    WriteLn('  LastModifyRepl.exe [Directory] [Options]');
+    WriteLn('  LastModifyRepl.exe [Directory] [Filemask] [Options]');
     WriteLn;
     WriteLn('Options:');
     WriteLn('  -LastModify=0  (default)   remove "Last modified" line');
@@ -54,7 +55,12 @@ begin
         LD := StrToInt(Copy(S, 5, 1));
     end
     else
-      StartDir := S;
+    begin
+      if StartDir = '' then
+        StartDir := S
+      else
+        Filemask := S;
+    end;
     Inc(i);
   end;
 end;
@@ -185,7 +191,7 @@ begin
   Search := TJvSearchFiles.Create(nil);
   try
     Search.RootDirectory := StartDir;
-    Search.FileParams.FileMask := '*.pas';
+    Search.FileParams.FileMask := Filemask;
     Search.FileParams.SearchTypes := [stFileMask];
     Search.DirOption := doIncludeSubDirs;
     Search.Search;
