@@ -848,8 +848,10 @@ begin
       Lines.Add(Format('.path.res = %s\Resources', [S]));
       Lines.Add(Format('.path.bpl = %s;%s',
         [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
-      Lines.Add(Format('.path.dcp = %s;%s',
-        [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir]));
+      Lines.Add(Format('.path.dcp = %s;%s;%s;%s;%s',
+        [ProjectGroup.TargetConfig.BplDir, ProjectGroup.TargetConfig.DcpDir,
+         ProjectGroup.Target.BplDir, ProjectGroup.Target.DcpDir,
+         ProjectGroup.Target.ExpandDirMacros(ConvertPathList(ProjectGroup.Target.BrowsingPaths))]));
       Lines.Add('');
      // add files like jvcl.inc
       Dependencies := '';
@@ -889,16 +891,11 @@ begin
 
       if AutoDepend then
       begin
-       // Add all contained files even if the condition and target is not
-       // correct. This does not make any difference because the Compiler has
-       // the last decission.
+       // Add all contained files and test for their condition.
         for depI := 0 to Pkg.Info.ContainCount - 1 do
-        begin
-          if not IsCondition(Pkg.Info.Contains[depI].Condition) then
-            COntinue;
-          Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
-            ExtractFileName(Pkg.Info.Contains[depI].Name);
-        end;
+          if IsCondition(Pkg.Info.Contains[depI].Condition) then
+            Dependencies := Dependencies + '\' + sLineBreak + #9#9 +
+              ExtractFileName(Pkg.Info.Contains[depI].Name);
         Dependencies := Dependencies + '\' + sLineBreak + #9#9'$(CommonDependencies)';
       end;
 

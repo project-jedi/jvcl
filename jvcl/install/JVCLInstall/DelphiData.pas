@@ -148,6 +148,9 @@ type
   end;
 
 
+procedure ConvertPathList(const Paths: string; List: TStrings); overload;
+function ConvertPathList(List: TStrings): string; overload;
+
 implementation
 
 uses
