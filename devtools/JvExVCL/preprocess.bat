@@ -15,6 +15,7 @@ move JvExForms.i.pas %OUTDIR%\JvExForms.pas
 move JvExGrids.i.pas %OUTDIR%\JvExGrids.pas
 move JvExMask.i.pas %OUTDIR%\JvExMask.pas
 move JvExStdCtrls.i.pas %OUTDIR%\JvExStdCtrls.pas
+move JvExComboEdits.i.pas %OUTDIR%\JvExComboEdits.pas
 
 SET OUTDIR=
 
