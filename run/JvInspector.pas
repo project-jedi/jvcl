@@ -297,6 +297,7 @@ type
     var Allow: Boolean) of object;
   TInspectorValueErrorEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem;
     ExceptObject: Exception) of object;
+  TInspectorValueChangingEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem; const NewValue: string; var AllowChange: Boolean) of object;
   // new event types (sept 2004) -wp
   TInspectorBeforeEditEvent = procedure(Sender: TObject; Item: TJvCustomInspectorItem; Edit: TCustomEdit) of object;
 
@@ -369,6 +370,7 @@ type
     FOnEditorMouseDown: TOnJvInspectorMouseDown;
     FOnItemEdit: TOnJvInspectorItemEdit; // User clicks Ellipsis button.
     FOnItemValueError: TInspectorValueErrorEvent;
+    FOnItemValueChanging: TInspectorValueChangingEvent;
     FInspectObject: TObject;
     // BeforeEdit NOTE: - WAP
     //
@@ -409,6 +411,7 @@ type
     procedure DoDataValueChanged(const Data: TJvCustomInspectorData); virtual;
     procedure DoItemSelected; virtual;
     procedure DoItemValueChanged(const Item: TJvCustomInspectorItem); virtual;
+    function DoItemValueChanging(const Item: TJvCustomInspectorItem; const NewValue: string): Boolean; virtual;
     function DoItemValueError(Item: TJvCustomInspectorItem): Boolean; virtual;
     function GetAfterDataCreate: TInspectorDataEvent; virtual;
     function GetAfterItemCreate: TInspectorItemEvent; virtual;
@@ -516,6 +519,7 @@ type
     property OnDataValueChanged: TInspectorDataEvent read FOnDataValueChanged write FOnDataValueChanged;
     property OnItemSelected: TNotifyEvent read GetOnItemSelected write SetOnItemSelected;
     property OnItemValueChanged: TInspectorItemEvent read FOnItemValueChanged write FOnItemValueChanged;
+    property OnItemValueChanging: TInspectorValueChangingEvent read FOnItemValueChanging write FOnItemValueChanging;
     property AfterDataCreate: TInspectorDataEvent read GetAfterDataCreate write SetAfterDataCreate;
     property AfterItemCreate: TInspectorItemEvent read GetAfterItemCreate write SetAfterItemCreate;
     property BeforeItemCreate: TInspectorItemBeforeCreateEvent read GetBeforeItemCreate write SetBeforeItemCreate;
@@ -604,6 +608,7 @@ type
     property OnDataValueChanged;
     property OnItemSelected;
     property OnItemValueChanged;
+    property OnItemValueChanging;
     property OnItemValueError;
     property OnItemEdit; // User clicks Ellipsis button.
     property BeforeEdit; // Low level hook for customizing TEdit/TMemo after objects are created, just before editing.
@@ -2871,6 +2876,13 @@ procedure TJvCustomInspector.DoItemValueChanged(const Item: TJvCustomInspectorIt
 begin
   if Assigned(FOnItemValueChanged) then
     FOnItemValueChanged(Self, Item);
+end;
+
+function TJvCustomInspector.DoItemValueChanging(const Item: TJvCustomInspectorItem; const NewValue: string): Boolean;
+begin
+  Result := True;
+  if Assigned(FOnItemValueChanging) then
+    FOnItemValueChanging(Self, Item, NewValue, Result);
 end;
 
 function TJvCustomInspector.DoItemValueError(Item: TJvCustomInspectorItem): Boolean;
@@ -5509,36 +5521,41 @@ procedure TJvCustomInspectorItem.Apply;
 var
   TmpOnChange: TNotifyEvent;
 begin
-  if Editing and (EditCtrl <> nil) and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) then
-  begin
-    try
-      DisplayValue := EditCtrl.Text;
-    except
-      if not Inspector.DoItemValueError(Self) then
-        raise;
-    end;
-    InvalidateItem;
-    if EditCtrl <> nil then
+  try
+    if Editing and (EditCtrl <> nil) and (not Data.IsAssigned or (DisplayValue <> EditCtrl.Text)) and
+       Inspector.DoItemValueChanging(Self, EditCtrl.Text) then
     begin
-      TmpOnChange := TCustomEditAccessProtected(EditCtrl).OnChange;
-      TCustomEditAccessProtected(EditCtrl).OnChange := nil;
       try
-        if Data.IsAssigned then
-          EditCtrl.Text := DisplayValue
-        else
-          EditCtrl.Text := '';
-      finally
-        TCustomEditAccessProtected(EditCtrl).OnChange := TmpOnChange;
+        DisplayValue := EditCtrl.Text;
+      except
+        if not Inspector.DoItemValueError(Self) then
+          raise;
       end;
+      InvalidateItem;
+      if EditCtrl <> nil then
+      begin
+        TmpOnChange := TCustomEditAccessProtected(EditCtrl).OnChange;
+        TCustomEditAccessProtected(EditCtrl).OnChange := nil;
+        try
+          if Data.IsAssigned then
+            EditCtrl.Text := DisplayValue
+          else
+            EditCtrl.Text := '';
+        finally
+          TCustomEditAccessProtected(EditCtrl).OnChange := TmpOnChange;
+        end;
+      end;
+      Inspector.DoItemValueChanged(Self);
     end;
-  end;
-  if Editing and (EditCtrl <> nil) then
-  begin
-    EditCtrl.SelectAll;
-    EditCtrl.Modified := False;
-    {$IFDEF VCL}
-    EditCtrl.ClearUndo;
-    {$ENDIF VCL}
+  finally
+    if Editing and (EditCtrl <> nil) then
+    begin
+      EditCtrl.SelectAll;
+      EditCtrl.Modified := False;
+      {$IFDEF VCL}
+      EditCtrl.ClearUndo;
+      {$ENDIF VCL}
+    end;
   end;
 end;
 
@@ -5993,9 +6010,10 @@ var
 
   function LeftRightCanNavigate: Boolean;
   begin
-    Result :=
+{    Result :=
       ((Msg.WParam = VK_LEFT) and ((EditCtrl.SelLength = Length(EditCtrl.Text)) or (EditCtrl.SelStart < 1))) or
-      ((Msg.WParam = VK_RIGHT) and ((EditCtrl.SelLength = Length(EditCtrl.Text)) or (EditCtrl.SelStart >= Length(EditCtrl.Text))));
+      ((Msg.WParam = VK_RIGHT) and ((EditCtrl.SelLength = Length(EditCtrl.Text)) or (EditCtrl.SelStart >= Length(EditCtrl.Text))));}
+    Result := False;
   end;
 
   function TabNavigate: Boolean;
