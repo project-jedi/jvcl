@@ -48,7 +48,6 @@ type
     FIsIcon: Boolean;
     FHotSpot: TPoint;
   public
-    constructor Create;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Icon: TIcon read FIcon;
@@ -211,11 +210,6 @@ type
   end;
 
 //=== TJvIconFrame ===========================================================
-
-constructor TJvIconFrame.Create;
-begin
-  inherited Create;
-end;
 
 destructor TJvIconFrame.Destroy;
 begin

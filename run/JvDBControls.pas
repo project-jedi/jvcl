@@ -223,10 +223,10 @@ type
     function ExecuteAction(Action: TBasicAction): Boolean; override;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function UseRightToLeftAlignment: Boolean; override;
-{$IFNDEF BCB5}
+    {$IFNDEF BCB5}
     // Do not use this under BCB5, you will crash the linker.
     property Button;
-{$ENDIF BCB5}
+    {$ENDIF BCB5}
     property Field: TField read GetField;
     property Canvas: TCanvas read GetCanvas;
   published
@@ -690,18 +690,6 @@ uses
 //=== NEW IN JVCL 3.0 ==
 //=== TJvDBMaskEdit ==============================================================
 
-procedure TJvDBMaskEdit.ResetMaxLength;
-var
-  F: TField;
-begin
-  if (MaxLength > 0) and Assigned(DataSource) and Assigned(DataSource.DataSet) then
-  begin
-    F := DataSource.DataSet.FindField(DataField);
-    if Assigned(F) and (F.DataType in [ftString, ftWideString]) and (F.Size = MaxLength) then
-      MaxLength := 0;
-  end;
-end;
-
 constructor TJvDBMaskEdit.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -733,6 +721,18 @@ begin
   ResetMaxLength;
   if csDesigning in ComponentState then
     DataChange(Self);
+end;
+
+procedure TJvDBMaskEdit.ResetMaxLength;
+var
+  F: TField;
+begin
+  if (MaxLength > 0) and Assigned(DataSource) and Assigned(DataSource.DataSet) then
+  begin
+    F := DataSource.DataSet.FindField(DataField);
+    if Assigned(F) and (F.DataType in [ftString, ftWideString]) and (F.Size = MaxLength) then
+      MaxLength := 0;
+  end;
 end;
 
 procedure TJvDBMaskEdit.Notification(AComponent: TComponent;

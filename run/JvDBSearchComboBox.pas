@@ -27,7 +27,6 @@ Description:
 -----------------------------------------------------------------------------}
 // $Id$
 
-
 {$I jvcl.inc}
 
 unit JvDBSearchComboBox;
@@ -54,40 +53,39 @@ type
 
   TJvSearchComboBoxLink = class(TDataLink)
   private
-   FJvDBSearchComboBox : TJvDBCustomSearchComboBox;
-   FDataFieldName : string;
-   FDataField : TField;
-   FWasEdited : boolean;
-   FReading : boolean;
-   procedure SetDataFieldName(const Value : string);
-   procedure SetDataField;
-
+    FJvDBSearchComboBox: TJvDBCustomSearchComboBox;
+    FDataFieldName: string;
+    FDataField: TField;
+    FWasEdited: Boolean;
+    FReading: Boolean;
+    procedure SetDataFieldName(const Value: string);
+    procedure SetDataField;
   protected
-   procedure ActiveChanged;override;
-   procedure DataSetScrolled(Distance : integer);override;
-   procedure DataSetChanged;override;
-   procedure EditingChanged;override;
+    procedure ActiveChanged; override;
+    procedure DataSetScrolled(Distance: Integer); override;
+    procedure DataSetChanged; override;
+    procedure EditingChanged; override;
   public
-   constructor Create(aJvDBSearchComboBox : TJvDBCustomSearchComboBox);
-   property DataField: TField read FDataField;
-   property DataFieldName: string read FDataFieldName write SetDataFieldName;
+    constructor Create(AJvDBSearchComboBox: TJvDBCustomSearchComboBox);
+    property DataField: TField read FDataField;
+    property DataFieldName: string read FDataFieldName write SetDataFieldName;
   end;
- 
+
   TJvDBCustomSearchComboBox = class(TJvCustomComboBox)
   private
-    FDataLink : TJvSearchComboBoxLink;
-    FChanging : boolean;
+    FDataLink: TJvSearchComboBoxLink;
+    FChanging: Boolean;
     FDataResult: string;
     function GetDataField: string;
     function GetDataSource: TDataSource;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
   protected
-    procedure Scroll(Distance : Integer);
+    procedure Scroll(Distance: Integer);
     procedure ReadList;
     procedure ClearList;
     procedure Select; override;
-    procedure Notification(Component : TComponent;Operation : TOperation);override;
+    procedure Notification(Component: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,29 +159,30 @@ type
     property OnParentColorChange;
   end;
 
-
 implementation
 
-// *****************************************************************************
-// TJvSearchComboBoxLink
-// *****************************************************************************
+//=== TJvSearchComboBoxLink ==================================================
 
-constructor TJvSearchComboBoxLink.Create(aJvDBSearchComboBox : TJvDBCustomSearchComboBox);
+constructor TJvSearchComboBoxLink.Create(AJvDBSearchComboBox: TJvDBCustomSearchComboBox);
 begin
   inherited Create;
-  FJvDBSearchComboBox := aJvDBSearchComboBox;
+  FJvDBSearchComboBox := AJvDBSearchComboBox;
   FDataFieldName := '';
-  FDataField     := nil;
-  FWasEdited     := false;
-  FReading       := false;
+  FDataField := nil;
+  FWasEdited := False;
+  FReading := False;
 end;
 
 procedure TJvSearchComboBoxLink.SetDataField;
 begin
-  if DataSource = nil then exit;
-  if DataSource.DataSet = nil then exit;
-  if not DataSource.DataSet.Active then exit;
-  if FDataFieldName = '' then exit;
+  if DataSource = nil then
+    Exit;
+  if DataSource.DataSet = nil then
+    Exit;
+  if not DataSource.DataSet.Active then
+    Exit;
+  if FDataFieldName = '' then
+    Exit;
   FDataField := DataSource.DataSet.FieldByName(FDataFieldName);
   if Active then
     FJvDBSearchComboBox.ReadList;
@@ -214,7 +213,8 @@ end;
 
 procedure TJvSearchComboBoxLink.DataSetChanged;
 begin
-  if FReading or FJvDBSearchComboBox.FChanging then Exit;
+  if FReading or FJvDBSearchComboBox.FChanging then
+    Exit;
   FReading := True;
   try
     if not (DataSource.DataSet.State in dsEditModes) then
@@ -227,10 +227,10 @@ begin
   end;
 end;
 
-procedure TJvSearchComboBoxLink.DataSetScrolled(Distance : integer);
+procedure TJvSearchComboBoxLink.DataSetScrolled(Distance: Integer);
 begin
-  if Distance = 0 then Exit;
-  FJvDBSearchComboBox.Scroll(Distance);
+  if Distance <> 0 then
+    FJvDBSearchComboBox.Scroll(Distance);
 end;
 
 procedure TJvSearchComboBoxLink.EditingChanged;
@@ -239,9 +239,7 @@ begin
     FWasEdited := True;
 end;
 
-// *****************************************************************************
-// TJvDBCustomSearchComboBox
-// *****************************************************************************
+//=== TJvDBCustomSearchComboBox ==============================================
 
 constructor TJvDBCustomSearchComboBox.Create(AOwner: TComponent);
 begin
@@ -256,9 +254,9 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvDBCustomSearchComboBox.Notification(Component : TComponent;Operation : TOperation);
+procedure TJvDBCustomSearchComboBox.Notification(Component: TComponent; Operation: TOperation);
 begin
-  inherited Notification(Component,Operation);
+  inherited Notification(Component, Operation);
   if (FDataLink <> nil) and (Component = DataSource) and (Operation = opRemove) then
     DataSource := nil;
 end;
@@ -295,7 +293,7 @@ begin
       FChanging := False;
     end;
   end;
-  inherited;
+  inherited Select;
 end;
 
 procedure TJvDBCustomSearchComboBox.Refresh;
@@ -303,24 +301,26 @@ begin
   ReadList;
 end;
 
-procedure TJvDBCustomSearchComboBox.Scroll(Distance : integer);
+procedure TJvDBCustomSearchComboBox.Scroll(Distance: Integer);
 begin
-  if FChanging then Exit;
+  if FChanging then
+    Exit;
   FChanging := True;
   try
     ItemIndex := ItemIndex + Distance;
   finally
     FChanging := False;
-  end;  
+  end;
 end;
 
 procedure TJvDBCustomSearchComboBox.ReadList;
 var
-  Bmrk : TBookmarkStr;
-  N, CurIndex : integer;
+  Bmrk: TBookmarkStr;
+  N, CurIndex: Integer;
 begin
   if (FDataLink.DataField = nil) or (FDataLink.DataSet = nil) or
-     (not FDataLink.DataSet.Active) then Exit;
+    (not FDataLink.DataSet.Active) then
+    Exit;
   ClearList;
   CurIndex := -1;
   with FDataLink.DataSet do
@@ -333,8 +333,9 @@ begin
       while not EOF do
       begin
         Items.AddObject(FieldByName(FDatalink.FDataFieldName).AsString, GetBookmark);
-        if Bookmark = Bmrk then CurIndex := N;
-        inc(N);
+        if Bookmark = Bmrk then
+          CurIndex := N;
+        Inc(N);
         Next;
       end;
       Bookmark := Bmrk;
@@ -347,21 +348,19 @@ end;
 
 procedure TJvDBCustomSearchComboBox.ClearList;
 var
-  I : integer;
+  I: Integer;
 begin
   if Assigned(FDataLink.DataSet) then
     for I := 0 to Items.Count - 1 do
-    begin
       FDataLink.DataSet.FreeBookmark(Pointer(Items.Objects[I]));
-    end;
   Items.Clear;
 end;
 
 function TJvDBCustomSearchComboBox.GetResult: Variant;
 begin
   Result := Null;
-  if Assigned(FDataLink.DataSet) and (DataResult<>'') then
-    Result := FDataLink.DataSet.Lookup(DataField,Text,DataResult);
+  if Assigned(FDataLink.DataSet) and (DataResult <> '') then
+    Result := FDataLink.DataSet.Lookup(DataField, Text, DataResult);
 end;
 
 end.

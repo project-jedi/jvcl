@@ -426,6 +426,14 @@ const
   LWA_ALPHA = $00000002;
 {$ENDIF !COMPILER6_UP}
 
+constructor TShadowWindow.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := [csFixedHeight, csFixedWidth, csNoDesignVisible, csNoStdEvents];
+  Color := clBlack;
+  Visible := False;
+end;
+
 procedure TShadowWindow.CreateHandle;
 var
   DynamicSetLayeredWindowAttributes: TDynamicSetLayeredWindowAttributes;
@@ -453,14 +461,6 @@ begin
     DynamicSetLayeredWindowAttributes(Handle, 0, cShadowAlpha, LWA_ALPHA);
   end;
   {$ENDIF !COMPILER6_UP}
-end;
-
-constructor TShadowWindow.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  ControlStyle := [csFixedHeight, csFixedWidth, csNoDesignVisible, csNoStdEvents];
-  Color := clBlack;
-  Visible := False;
 end;
 
 procedure TShadowWindow.CreateParams(var Params: TCreateParams);

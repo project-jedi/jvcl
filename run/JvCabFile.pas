@@ -31,7 +31,7 @@ unit JvCABFile;
 interface
 
 uses
-  Windows, SetupApi, SysUtils, Classes,
+  Windows, SysUtils, Classes,
   JvTypes, JvComponent;
 
 type
@@ -82,6 +82,7 @@ type
 implementation
 
 uses
+  SetupApi,
   JvConsts, JvResources;
 
 constructor TJvCABFile.Create(AOwner: TComponent);

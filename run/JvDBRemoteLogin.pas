@@ -58,7 +58,6 @@ type
     procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   published
     property RemoteServer: TCustomRemoteServer read FRemoteServer write SetRemoteServer;
@@ -90,11 +89,6 @@ uses
 
 type
   TJvServer = class(TCustomRemoteServer);
-
-constructor TJvDBRemoteLogin.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-end;
 
 destructor TJvDBRemoteLogin.Destroy;
 begin

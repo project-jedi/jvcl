@@ -38,8 +38,8 @@ type
   private
     FFieldDataLink: TFieldDataLink;
     FOnChange: TNotifyEvent;
-    FIsNull: boolean;
-    FAllowNull: boolean;
+    FIsNull: Boolean;
+    FAllowNull: Boolean;
     procedure DataChange(Sender: TObject);
     procedure UpdateData(Sender: TObject);
     procedure EditingChange(Sender: TObject);
@@ -51,7 +51,6 @@ type
     procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
     function GetReadOnlyField: Boolean;
     procedure SetReadOnlyField(Value: Boolean);
-
   protected
     function IsValidChar(Key: Char): Boolean; override;
     procedure Change; override;
@@ -65,9 +64,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property IsNull:boolean read FIsNull;
+    property IsNull: Boolean read FIsNull;
   published
-    property AllowNull:boolean read FAllowNull write FAllowNull default True;
+    property AllowNull: Boolean read FAllowNull write FAllowNull default True;
     property DataField: string read GetDataField write SetDataField;
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property ReadOnlyField: Boolean read GetReadOnlyField write SetReadOnlyField;
@@ -75,6 +74,7 @@ type
   end;
 
 implementation
+
 {$IFDEF COMPILER6_UP}
 uses
   Variants;
@@ -97,7 +97,6 @@ begin
   FFieldDataLink.Free;
   inherited Destroy;
 end;
-
 
 procedure TJvDBSpinEdit.DoExit;
 begin
@@ -138,9 +137,10 @@ begin
   end
   else
   begin
-    FIsNull := False; 
+    FIsNull := False;
     if csDesigning in ComponentState then
-      Text := Name else
+      Text := Name
+    else
       Text := '';
   end;
 end;
@@ -226,7 +226,7 @@ begin
     FIsNull := False;
     Text := '1';
   end;
-  inherited;
+  inherited DownClick(Sender);
 end;
 
 procedure TJvDBSpinEdit.UpClick(Sender: TObject);
@@ -240,7 +240,7 @@ begin
     Text := '1';
   end
   else
-    inherited;
+    inherited UpClick(Sender);
 end;
 
 procedure TJvDBSpinEdit.ActiveChange(Sender: TObject);
@@ -257,8 +257,8 @@ end;
 procedure TJvDBSpinEdit.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   inherited KeyDown(Key, Shift);
-  if (Key = VK_DELETE) or (Key = VK_BACK) or ((Key = VK_INSERT) and (ssShift in Shift))
-    or IsValidChar(Char(Key)) then
+  if (Key = VK_DELETE) or (Key = VK_BACK) or
+    ((Key = VK_INSERT) and (ssShift in Shift)) or IsValidChar(Char(Key)) then
     FFieldDataLink.Edit;
 end;
 
@@ -267,7 +267,7 @@ begin
   Result := inherited IsValidChar(Key);
   if not Result and AllowNull and
     (Key = Char(VK_BACK)) or (Key = Char(VK_DELETE)) then
-      Result := True;
+    Result := True;
 end;
 
 end.

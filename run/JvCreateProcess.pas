@@ -467,11 +467,6 @@ end;
 
 //=== TJvProcessEntry ========================================================
 
-function TJvProcessEntry.Close(UseQuit: Boolean): Boolean;
-begin
-  Result := InternalCloseApp(ProcessID, UseQuit);
-end;
-
 constructor TJvProcessEntry.Create(AProcessID: DWORD;
   const AFileName: TFileName; const AProcessName: string);
 begin
@@ -479,6 +474,11 @@ begin
   FFileName := AFileName;
   FProcessID := AProcessID;
   FProcessName := AProcessName;
+end;
+
+function TJvProcessEntry.Close(UseQuit: Boolean): Boolean;
+begin
+  Result := InternalCloseApp(ProcessID, UseQuit);
 end;
 
 function TJvProcessEntry.GetPriority: TJvProcessPriority;
@@ -557,6 +557,15 @@ end;
 
 //=== TJvCPSStartupInfo ======================================================
 
+constructor TJvCPSStartupInfo.Create;
+begin
+  inherited Create;
+  FDefaultSize := True;
+  FDefaultPosition := True;
+  FDefaultWindowState := True;
+  FShowWindow := swNormal;
+end;
+
 procedure TJvCPSStartupInfo.AssignTo(Dest: TPersistent);
 begin
   if Dest is TJvCPSStartupInfo then
@@ -577,15 +586,6 @@ begin
     end
   else
     inherited AssignTo(Dest);
-end;
-
-constructor TJvCPSStartupInfo.Create;
-begin
-  inherited Create;
-  FDefaultSize := True;
-  FDefaultPosition := True;
-  FDefaultWindowState := True;
-  FShowWindow := swNormal;
 end;
 
 function TJvCPSStartupInfo.GetStartupInfo: TStartupInfo;
@@ -667,6 +667,39 @@ end;
 
 //=== TJvReadThread ==========================================================
 
+constructor TJvReadThread.Create(AReadHandle, ADestHandle: THandle);
+begin
+  inherited Create(True);
+
+  FreeOnTerminate := True;
+  Priority := tpLower;
+
+  FReadLock := TCriticalSection.Create;
+
+  // Note: TJvReadThread is responsible for closing the FReadHandle
+  FReadHandle := AReadHandle;
+  FDestHandle := ADestHandle;
+
+  FInputBuffer := nil;
+  FInputBufferSize := CCPS_BufferSize;
+  FInputBufferEnd := 0;
+  ReallocMem(FInputBuffer, FInputBufferSize);
+  GetMem(FPreBuffer, CCPS_BufferSize);
+end;
+
+destructor TJvReadThread.Destroy;
+begin
+  SafeCloseHandle(FReadHandle);
+  inherited Destroy;
+  { It is (theoretically) possible that the inherited Destroy triggers an
+    OnTerminate event and the following fields can be accessed in the handler,
+    thus free them after the destroy.
+  }
+  ReallocMem(FInputBuffer, 0);
+  FReadLock.Free;
+  FreeMem(FPreBuffer);
+end;
+
 procedure TJvReadThread.CloseRead;
 begin
   FReadLock.Acquire;
@@ -705,39 +738,6 @@ begin
 
   // Notify TJvCreateProcess that data has been read from the pipe
   PostMessage(FDestHandle, CM_READ, 0, 0);
-end;
-
-constructor TJvReadThread.Create(AReadHandle, ADestHandle: THandle);
-begin
-  inherited Create(True);
-
-  FreeOnTerminate := True;
-  Priority := tpLower;
-
-  FReadLock := TCriticalSection.Create;
-
-  // Note: TJvReadThread is responsible for closing the FReadHandle
-  FReadHandle := AReadHandle;
-  FDestHandle := ADestHandle;
-
-  FInputBuffer := nil;
-  FInputBufferSize := CCPS_BufferSize;
-  FInputBufferEnd := 0;
-  ReallocMem(FInputBuffer, FInputBufferSize);
-  GetMem(FPreBuffer, CCPS_BufferSize);
-end;
-
-destructor TJvReadThread.Destroy;
-begin
-  SafeCloseHandle(FReadHandle);
-  inherited Destroy;
-  { It is (theoretically) possible that the inherited Destroy triggers an
-    OnTerminate event and the following fields can be accessed in the handler,
-    thus free them after the destroy.
-  }
-  ReallocMem(FInputBuffer, 0);
-  FReadLock.Free;
-  FreeMem(FPreBuffer);
 end;
 
 procedure TJvReadThread.Execute;
@@ -811,16 +811,6 @@ end;
 
 //=== TJvConsoleThread =======================================================
 
-procedure TJvConsoleThread.CloseWrite;
-begin
-  FWriteLock.Acquire;
-  try
-    SafeCloseHandle(FWriteHandle);
-  finally
-    FWriteLock.Release;
-  end;
-end;
-
 constructor TJvConsoleThread.Create(ProcessHandle: DWORD;
   AWriteHandle: THandle);
 begin
@@ -849,6 +839,16 @@ begin
     thus free them after the destroy.
   }
   FWriteLock.Free;
+end;
+
+procedure TJvConsoleThread.CloseWrite;
+begin
+  FWriteLock.Acquire;
+  try
+    SafeCloseHandle(FWriteHandle);
+  finally
+    FWriteLock.Release;
+  end;
 end;
 
 procedure TJvConsoleThread.Execute;
@@ -972,6 +972,32 @@ end;
 
 //=== TJvCreateProcess =======================================================
 
+constructor TJvCreateProcess.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FCreationFlags := [];
+  FEnvironment := TStringList.Create;
+  FPriority := ppNormal;
+  FState := psReady;
+  FWaitForTerminate := True;
+  FStartupInfo := TJvCPSStartupInfo.Create;
+  FConsoleOutput := TStringList.Create;
+  FConsoleOptions := [coOwnerData];
+end;
+
+destructor TJvCreateProcess.Destroy;
+begin
+  TerminateWaitThread;
+  //  CloseProcessHandles;
+  FreeAndNil(FEndLock);
+  FreeAndNil(FEnvironment);
+  FreeAndNil(FStartupInfo);
+  if FHandle <> 0 then
+    DeallocateHWndEx(FHandle);
+  inherited Destroy;
+  FConsoleOutput.Free;
+end;
+
 procedure TJvCreateProcess.CheckNotWaiting;
 begin
   if FState = psWaiting then
@@ -1032,32 +1058,6 @@ begin
 
   if AllThreadsDone then
     DoTerminateEvent;
-end;
-
-constructor TJvCreateProcess.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FCreationFlags := [];
-  FEnvironment := TStringList.Create;
-  FPriority := ppNormal;
-  FState := psReady;
-  FWaitForTerminate := True;
-  FStartupInfo := TJvCPSStartupInfo.Create;
-  FConsoleOutput := TStringList.Create;
-  FConsoleOptions := [coOwnerData];
-end;
-
-destructor TJvCreateProcess.Destroy;
-begin
-  TerminateWaitThread;
-  //  CloseProcessHandles;
-  FreeAndNil(FEndLock);
-  FreeAndNil(FEnvironment);
-  FreeAndNil(FStartupInfo);
-  if FHandle <> 0 then
-    DeallocateHWndEx(FHandle);
-  inherited Destroy;
-  FConsoleOutput.Free;
 end;
 
 procedure TJvCreateProcess.DoRawReadEvent(Data: PChar; const ASize: Cardinal);

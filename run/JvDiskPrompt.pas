@@ -58,19 +58,8 @@ type
 implementation
 
 uses
+  SetupApi,
   JclSysUtils;
-
-const
-  DPROMPT_SUCCESS        = 0;
-  DPROMPT_CANCEL         = 1;
-  DPROMPT_SKIPFILE       = 2;
-  DPROMPT_BUFFERTOOSMALL = 3;
-  DPROMPT_OUTOFMEMORY    = 4;
-
-type
-  TSetupPromptForDisk = function(hwndParent: HWND; const DialogTitle, DiskName,
-    PathToSource, FileSought, TagFile: PChar; DiskPromptStyle: DWORD;
-    PathBuffer: PChar; PathBufferSize: DWORD; var PathRequiredSize: DWORD): UINT; stdcall;
 
 constructor TJvDiskPrompt.Create(AOwner: TComponent);
 begin
@@ -87,9 +76,7 @@ function TJvDiskPrompt.Execute: TJvDiskRes;
 var
   Required: DWORD;
   Res: array [0..255] of Char;
-  SetupPromptForDisk: TSetupPromptForDisk;
 begin
-  SetupPromptForDisk := GetProcAddress(SetupApiDllHandle, 'SetupPromptForDiskA');
   case SetupPromptForDisk(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
       PCharOrNil(PathToSource), PChar(FileSought), PCharOrNil(TagFile),
       JvDiskStylesToDWORD(Style), Res, SizeOf(Res), Required) of

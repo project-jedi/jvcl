@@ -410,15 +410,15 @@ type
 
 constructor TJvCalculatorPanel.CreateLayout(AOwner: TComponent;
   ALayout: TCalcPanelLayout);
+const
+  BtnGlyphs: array [cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
+    4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
 var
   {$IFDEF VisualCLX}
   GlyphList: TImageList;
   {$ENDIF VisualCLX}
   Bmp: TBitmap;
   I: TCalcBtnKind;
-const
-  BtnGlyphs: array [cbSgn..cbCancel] of Integer = (2 {Sgn}, -1, -1, 3 {Mul},
-    4 {Sub}, 5 {Add}, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 1 {Ok}, 0 {Cancel});
 begin
   inherited Create(AOwner);
   if ALayout = clPopup then

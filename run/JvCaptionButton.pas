@@ -567,18 +567,6 @@ end;
 
 //=== TGlobalXPData ==========================================================
 
-procedure TGlobalXPData.AddClient;
-begin
-  Inc(FClientCount);
-end;
-
-function TGlobalXPData.CanDrawTransparent: Boolean;
-begin
-  if not FTriedLoadMsimg32Dll then
-    LoadMsimg32Dll;
-  Result := Assigned(_TransparentBlt);
-end;
-
 constructor TGlobalXPData.Create;
 begin
   inherited Create;
@@ -591,6 +579,18 @@ begin
   UnloadMsimg32Dll;
   FButtons.Free;
   inherited Destroy;
+end;
+
+procedure TGlobalXPData.AddClient;
+begin
+  Inc(FClientCount);
+end;
+
+function TGlobalXPData.CanDrawTransparent: Boolean;
+begin
+  if not FTriedLoadMsimg32Dll then
+    LoadMsimg32Dll;
+  Result := Assigned(_TransparentBlt);
 end;
 
 procedure TGlobalXPData.Draw(HDC: HDC; State: Integer;

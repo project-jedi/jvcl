@@ -379,7 +379,7 @@ begin
     Include(Result, odSelected);
 end;
 
-// === TJvColorComboBox ======================================================
+//=== TJvColorComboBox =======================================================
 
 constructor TJvColorComboBox.Create(AOwner: TComponent);
 begin
@@ -837,7 +837,7 @@ begin
     GetColors;
 end;
 
-// === TJvFontComboBox =======================================================
+//=== TJvFontComboBox ========================================================
 
 constructor TJvFontComboBox.Create(AOwner: TComponent);
 begin
@@ -866,7 +866,7 @@ procedure TJvFontComboBox.GetFonts;
 var
   DC: HDC;
   MRUItems: TStringlist;
-  i: Integer;
+  I: Integer;
 begin
   HandleNeeded;
   if not HandleAllocated then
@@ -874,8 +874,8 @@ begin
   MRUItems := TStringlist.Create;
   try
     if FShowMRU then
-      for i := 0 to MRUCount - 1 do
-        MRUItems.AddObject(Items[i], Items.Objects[i]);
+      for I := 0 to MRUCount - 1 do
+        MRUItems.AddObject(Items[I], Items.Objects[I]);
     Clear;
     DC := GetDC(0);
     try
@@ -891,9 +891,9 @@ begin
       ReleaseDC(0, DC);
     end;
     if FShowMRU then
-      for i := MRUCount - 1 downto 0 do
+      for I := MRUCount - 1 downto 0 do
       begin
-        Items.InsertObject(0, MRUItems[i], MRUItems.Objects[i]);
+        Items.InsertObject(0, MRUItems[I], MRUItems.Objects[I]);
       end;
   finally
     MRUItems.Free;

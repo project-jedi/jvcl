@@ -157,6 +157,13 @@ begin
   TabStop := True;
 end;
 
+destructor TJvCustomCheckedMaskEdit.Destroy;
+begin
+  if ShowCheckBox then
+    FCheck.OnClick := nil;
+  inherited Destroy;
+end;
+
 procedure TJvCustomCheckedMaskEdit.CreateParams(var AParams: TCreateParams);
 begin
   inherited CreateParams(AParams);
@@ -168,13 +175,6 @@ procedure TJvCustomCheckedMaskEdit.CreateWnd;
 begin
   inherited CreateWnd;
   UpdateControls;
-end;
-
-destructor TJvCustomCheckedMaskEdit.Destroy;
-begin
-  if ShowCheckBox then
-    FCheck.OnClick := nil;
-  inherited Destroy;
 end;
 
 function TJvCustomCheckedMaskEdit.GetChecked: Boolean;

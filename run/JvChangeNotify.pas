@@ -81,7 +81,6 @@ type
     procedure Change; virtual;
   public
     constructor Create(Collection: TCollection); override;
-    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
   published
     property Directory: string read FDir write SetDir;
@@ -178,11 +177,6 @@ begin
   FParent := TJvChangeItems(Collection);
   FSubTrees := False;
   FActions := [caChangeFileName, caChangeDirName];
-end;
-
-destructor TJvChangeItem.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvChangeItem.Assign(Source: TPersistent);

@@ -422,7 +422,6 @@ type
     property Items: IJvDataItems read FItems implements IJvDataItems;
   public
     constructor Create(AOwner: TExtensibleInterfacedPersistent; AItems: TJvBaseDataItems); reintroduce; virtual;
-    destructor Destroy; override;
     procedure BeforeDestruction; override;
     function GetInterface(const IID: TGUID; out Obj): Boolean; override;
   end;
@@ -2571,11 +2570,6 @@ constructor TJvBaseDataItemSubItems.Create(AOwner: TExtensibleInterfacedPersiste
 begin
   inherited Create(AOwner);
   FItems := AItems;
-end;
-
-destructor TJvBaseDataItemSubItems.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvBaseDataItemSubItems.BeforeDestruction;

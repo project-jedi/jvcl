@@ -173,7 +173,6 @@ type
     procedure DataSetScrolled(Distance: Integer); override;
   public
     constructor Create(ATreeView: TJvCustomDBTreeView);
-    destructor Destroy; override;
   end;
 
   TJvDBTreeNode = class(TTreeNode)
@@ -332,11 +331,6 @@ constructor TJvDBTreeViewDataLink.Create(ATreeView: TJvCustomDBTreeView);
 begin
   inherited Create;
   FTreeView := ATreeView;
-end;
-
-destructor TJvDBTreeViewDataLink.Destroy;
-begin
-  inherited Destroy;
 end;
 
 procedure TJvDBTreeViewDataLink.ActiveChanged;

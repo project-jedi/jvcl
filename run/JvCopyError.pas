@@ -61,19 +61,8 @@ type
 implementation
 
 uses
+  SetupApi,
   JclSysUtils;
-
-const
-  DPROMPT_SUCCESS        = 0;
-  DPROMPT_CANCEL         = 1;
-  DPROMPT_SKIPFILE       = 2;
-  DPROMPT_BUFFERTOOSMALL = 3;
-  DPROMPT_OUTOFMEMORY    = 4;
-  
-type
-  TSetupCopyError = function(hwndParent: HWND; const DialogTitle, DiskName,
-    PathToSource, SourceFile, TargetPathFile: PAnsiChar; Win32ErrorCode: UINT; Style: DWORD;
-    PathBuffer: PAnsiChar; PathBufferSize: DWORD; PathRequiredSize: PDWORD): UINT; stdcall;
 
 constructor TJvCopyError.Create(AOwner: TComponent);
 begin
@@ -91,9 +80,7 @@ function TJvCopyError.Execute: TJvDiskRes;
 var
   Required: DWORD;
   Res: array [0..255] of Char;
-  SetupCopyError: TSetupCopyError;
 begin
-  SetupCopyError := GetProcAddress(SetupApiDllHandle, 'SetupCopyErrorA');
   case SetupCopyError(OwnerWindow, PCharOrNil(Title), PCharOrNil(DiskName),
       PChar(PathToSource), PChar(SourceFile), PCharOrNil(TargetFile),
       FWin32ErrorCode, JvDiskStylesToDWORD(Style), Res, SizeOf(Res), @Required) of

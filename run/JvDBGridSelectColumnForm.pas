@@ -23,8 +23,9 @@ Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
 
-unit JvDBGridSelectColumnForm;
 {$I jvcl.inc}
+
+unit JvDBGridSelectColumnForm;
 
 interface
 
@@ -59,7 +60,7 @@ type
     FCanHide: Boolean;
     FNoSelectionWarning: string;
     procedure ResizeForm;
-    function GetColumn(aField: TField): TColumn;
+    function GetColumn(AField: TField): TColumn;
   public
     property DataSource: TDataSource read FDataSource write FDataSource;
     property Grid: TJvDBGrid read FJvDBGrid write FJvDBGrid;
@@ -80,29 +81,30 @@ implementation
 
 procedure TfrmSelectColumn.FormCreate(Sender: TObject);
 begin
-  FColumnUpdate := true;
-  FCanHide := true;
+  FColumnUpdate := True;
+  FCanHide := True;
   // (p3) don't use resourcestring here since this property is normally set from the JvDBGrid
   // and using resourcestrings might give problems with localization synchronizing
   NoSelectionWarning := 'At least one column must be visible!';
 end;
+
 type
   TDBGridAccess = class(TJvDBGrid);
 
 procedure TfrmSelectColumn.FormClose(Sender: TObject;
   var Action: TCloseAction);
 var
-  i, j: Integer;
+  I, J: Integer;
 begin
   if (ModalResult = mrOk) and FColumnUpdate and FCanHide and Assigned(FJvDBGrid) then
   begin
     TDBGridAccess(FJvDBGrid).BeginLayout;
     try
-      for i := 0 to clbList.Items.Count - 1 do
+      for I := 0 to clbList.Items.Count - 1 do
       begin
-        j := integer(clbList.Items.Objects[i]);
-        if (j >= 0) and (j < FJvDBGrid.Columns.Count) then
-          FJvDBGrid.Columns[j].Visible := clbList.Checked[i];
+        J := Integer(clbList.Items.Objects[I]);
+        if (J >= 0) and (J < FJvDBGrid.Columns.Count) then
+          FJvDBGrid.Columns[J].Visible := clbList.Checked[I];
       end;
     finally
       TDBGridAccess(FJvDBGrid).EndLayout;
@@ -117,7 +119,7 @@ end;
 
 procedure TfrmSelectColumn.FormActivate(Sender: TObject);
 var
-  i, j: Integer;
+  I, J: Integer;
   lColumn: TColumn;
 begin
   if Assigned(FJvDBGrid) then
@@ -127,22 +129,22 @@ begin
       if (FSelectColumn = scDatabase) and Assigned(DataSource) and Assigned(DataSource.Dataset) then
       begin
         with DataSource.Dataset do
-          for i := 0 to FieldCount - 1 do
+          for I := 0 to FieldCount - 1 do
           begin
-            lColumn := GetColumn(Fields[i]);
+            lColumn := GetColumn(Fields[I]);
             if Assigned(lColumn) then
             begin
-               j := clbList.Items.AddObject(Fields[i].DisplayLabel, TObject(lColumn.Index));
-              clbList.Checked[j] := lColumn.Visible and Fields[i].Visible;
+               J := clbList.Items.AddObject(Fields[I].DisplayLabel, TObject(lColumn.Index));
+              clbList.Checked[J] := lColumn.Visible and Fields[I].Visible;
             end;
           end;
       end
       else
       begin
-        for i := 0 to Columns.Count - 1 do
+        for I := 0 to Columns.Count - 1 do
         begin
-          j := clbList.Items.AddObject(FJvDBGrid.Columns[i].FieldName, TObject(i));
-          clbList.Checked[j] := FJvDBGrid.Columns[i].Visible;
+          J := clbList.Items.AddObject(FJvDBGrid.Columns[I].FieldName, TObject(I));
+          clbList.Checked[J] := FJvDBGrid.Columns[I].Visible;
         end;
       end;
       if clbList.Items.Count > 0 then
@@ -151,17 +153,17 @@ begin
   ResizeForm;
 end;
 
-function TfrmSelectColumn.GetColumn(aField: TField): TColumn;
+function TfrmSelectColumn.GetColumn(AField: TField): TColumn;
 var
-  i: integer;
+  I: Integer;
 begin
-  result := nil;
+  Result := nil;
   with FJvDBGrid.Columns do
-    for i := 0 to Count - 1 do
+    for I := 0 to Count - 1 do
     begin
-      if Items[i].FieldName = aField.FieldName then
+      if Items[I].FieldName = AField.FieldName then
       begin
-        Result := Items[i];
+        Result := Items[I];
         Break;
       end;
     end;
@@ -169,13 +171,13 @@ end;
 
 procedure TfrmSelectColumn.clbListClickCheck(Sender: TObject);
 var
-  i: integer;
+  I: Integer;
 begin
   FCanHide := clbList.Items.Count = 0;
   if not FCanHide then
-    for i := 0 to clbList.Items.Count - 1 do
+    for I := 0 to clbList.Items.Count - 1 do
     begin
-      if clbList.Checked[i] then
+      if clbList.Checked[I] then
       begin
         FCanHide := True;
         Break;
@@ -186,8 +188,8 @@ begin
     MessageDlg(NoSelectionWarning, mtWarning, [mbOk], 0);
     if clbList.ItemIndex >= 0 then
     begin
-      clbList.Checked[clbList.ItemIndex] := true;
-      FCanHide := true;
+      clbList.Checked[clbList.ItemIndex] := True;
+      FCanHide := True;
     end;
   end;
 
@@ -204,7 +206,7 @@ end;
 
 procedure TfrmSelectColumn.ResizeForm;
 var
-  MinHeight: integer;
+  MinHeight: Integer;
 begin
   MinHeight := clbList.ItemHeight * clbList.Items.Count;
   if MinHeight >= 400 then

@@ -58,7 +58,6 @@ type
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     function ChangePassword: Boolean;
   published
     property Database: TDatabase read FDatabase write SetDatabase;
@@ -90,12 +89,6 @@ begin
   inherited Create(AOwner);
   FSelectAlias := False;
   FLoginNameField := '';
-end;
-
-destructor TJvDBSecurity.Destroy;
-begin
-  //DisposeStr(FLoginNameField);
-  inherited Destroy;
 end;
 
 procedure TJvDBSecurity.Notification(AComponent: TComponent; Operation: TOperation);

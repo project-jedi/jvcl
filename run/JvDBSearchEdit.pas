@@ -43,18 +43,17 @@ uses
   QGraphics, QControls, QForms, QMenus, QDialogs, QStdCtrls,
   QDBCtrls,
   {$ENDIF VisualCLX}
-{$IFDEF COMPILER6_UP}
+  {$IFDEF COMPILER6_UP}
   Variants,
-{$ENDIF COMPILER6_UP}
+  {$ENDIF COMPILER6_UP}
   JvEdit;
 
 type
   TJvDBCustomSearchEdit = class(TJvCustomEdit)
   private
-    { Private declarations }
     FDataLink: TFieldDataLink;
     FSearchOptions: TLocateOptions;
-    FClearOnEnter: boolean;
+    FClearOnEnter: Boolean;
     FDataResult: string;
     procedure DataChange(Sender: Tobject);
     function GetDataSource: TDataSource;
@@ -69,19 +68,17 @@ type
     procedure KeyPress(var Key: Char); override;
     procedure Notification(Component: TComponent; Operation: TOperation); override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetResult: Variant;
     property SearchOptions: TLocateOptions read FSearchOptions
       write SetSearchOptions default [loCaseInsensitive, loPartialKey];
   published
-    { Published declarations }
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     property DataResult: string read FDataResult write FDataResult;
     property DataField: string read GetDataField write SetDataField;
     property TabStop default True;
-    property ClearOnEnter: boolean read FClearOnEnter write FClearOnEnter default true;
+    property ClearOnEnter: Boolean read FClearOnEnter write FClearOnEnter default true;
   end;
 
   TJvDBSearchEdit = class(TJvDBCustomSearchEdit)
@@ -92,12 +89,12 @@ type
     property Anchors;
     property AutoSelect;
     property AutoSize;
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     property BevelEdges;
     property BevelInner;
     property BevelKind default bkNone;
     property BevelOuter;
-{$ENDIF COMPILER6_UP}
+    {$ENDIF COMPILER6_UP}
     property BorderStyle;
     property CharCase;
     property Color;
@@ -147,9 +144,7 @@ type
 
 implementation
 
-// *****************************************************************************
-// TJvDBCustomSearchEdit
-// *****************************************************************************
+//=== TJvDBCustomSearchEdit ==================================================
 
 constructor TJvDBCustomSearchEdit.Create;
 begin
@@ -158,7 +153,7 @@ begin
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
   FSearchOptions := [loCaseInsensitive, loPartialKey];
-  FClearOnEnter := true;
+  FClearOnEnter := True;
   Text := '';
 end;
 
@@ -185,9 +180,7 @@ begin
       if FDataLink.CanModify then
         Text := FDataLink.Field.Text
       else
-      begin
         Text := FDataLink.Field.DisplayText;
-      end;
       SelectAll;
     end;
   end
@@ -222,7 +215,7 @@ end;
 
 procedure TJvDBCustomSearchEdit.KeyPress(var Key: Char);
 var
-  lLength: integer;
+  lLength: Integer;
 begin
   if Key = #8 then
   begin
@@ -230,7 +223,7 @@ begin
     SelStart := SelStart - 1;
     SelLength := lLength + 1;
   end;
-  inherited;
+  inherited KeyPress(Key);
 end;
 
 function TJvDBCustomSearchEdit.GetDataSource: TDataSource;
@@ -267,13 +260,14 @@ end;
 
 procedure TJvDBCustomSearchEdit.DoEnter;
 begin
-  if FClearOnEnter then Text := '';
-  inherited;
+  if FClearOnEnter then
+    Text := '';
+  inherited DoEnter;
 end;
 
 procedure TJvDBCustomSearchEdit.DoExit;
 begin
-  inherited;
+  inherited DoExit;
   // On replace le texte sur l'enregistrement en cours
   if Assigned(FDataLink.DataSet) then
     Text := FDataLink.DataSet.FieldByName(DataField).AsString;
