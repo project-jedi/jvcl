@@ -39,13 +39,10 @@ uses
   Libc,
   {$ENDIF LINUX}
   SysUtils, Classes,
-  {$IFDEF VCL}
   Forms, Graphics, Controls, StdCtrls, ExtCtrls, Menus, Dialogs,
   ComCtrls, ImgList, Grids,
-  {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  Qt, QTypes, Types, QForms, QGraphics, QControls, QStdCtrls, QExtCtrls, QMenus,
-  QDialogs, QComCtrls, QImgList, QGrids, QWinCursors, QWindows,
+  Qt, QTypes, QWinCursors, QWindows,
   {$ENDIF VisualCLX}
   IniFiles,
   {$IFNDEF NO_JCL}
@@ -135,9 +132,7 @@ function CreateDisabledBitmap(FOriginal: TBitmap; OutlineColor: TColor):
   TBitmap;
 procedure AssignBitmapCell(Source: TGraphic; Dest: TBitmap; Cols, Rows,
   Index: Integer);
-{$IFDEF VCL}
 function ChangeBitmapColor(Bitmap: TBitmap; Color, NewColor: TColor): TBitmap;
-{$ENDIF VCL}
 procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighLightColor, GrayColor: TColor;
   DrawHighlight: Boolean);
@@ -2005,7 +2000,6 @@ begin
     clBtnFace, clBtnHighlight, clBtnShadow, True);
 end;
 
-{$IFDEF VCL}
 { ChangeBitmapColor. This function create new TBitmap object.
   You must destroy it outside by calling TBitmap.Free method. }
 
@@ -2022,14 +2016,18 @@ begin
       r := Bounds(0, 0, Width, Height);
       Canvas.Brush.Color := NewColor;
       Canvas.FillRect(r);
+      {$IFDEF VCL}
       Canvas.BrushCopy(r, Bitmap, r, Color);
+      {$ENDIF VCL}
+      {$IFDEF VisualCLX}
+      DrawBitmapTransparent(Canvas, 0, 0, Bitmap, Color);
+      {$ENDIF VisualCLX}
     end;
   except
     Result.Free;
     raise;
   end;
 end;
-{$ENDIF VCL}
 
 procedure ImageListDrawDisabled(Images: TCustomImageList; Canvas: TCanvas;
   X, Y, Index: Integer; HighLightColor, GrayColor: TColor;
