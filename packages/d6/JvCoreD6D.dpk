@@ -32,7 +32,7 @@ requires
   dclstd;
 
 contains
-  JvJVCLAboutFormEditor in '..\..\design\JvJVCLAboutFormEditor.pas',
+  JvJVCLAboutEditor in '..\..\design\JvJVCLAboutEditor.pas',
   JvCoreReg in '..\..\design\JvCoreReg.pas',
   JvDsgnEditors in '..\..\design\JvDsgnEditors.pas',
   JvDateTimeForm in '..\..\design\JvDateTimeForm.pas' {frmSelectDateTimeDlg},

@@ -54,10 +54,9 @@ contains
   JvLoginForm in '..\..\run\JvLoginForm.pas' {JvLoginForm},
   JvImageDlg in '..\..\run\JvImageDlg.pas',
   JvImageForm in '..\..\run\JvImageForm.pas' {FormImg},
-  JvFormProgress in '..\..\run\JvFormProgress.pas' {FormProg},
   JvExceptionForm in '..\..\run\JvExceptionForm.pas',
   JvProgressDialog in '..\..\run\JvProgressDialog.pas',
-  JvProgressComponent in '..\..\run\JvProgressComponent.pas' {frmProgress},
+  JvProgressForm in '..\..\run\JvProgressForm.pas' {frmProgress},
   JvDualList in '..\..\run\JvDualList.pas',
   JvDualListForm in '..\..\run\JvDualListForm.pas';
 
