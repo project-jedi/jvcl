@@ -580,7 +580,7 @@ Description
 
   To \redo the most recent undo operation, call Redo.
 See Also
-  CanPaste, RedoName, UndoName, Redo, Undo
+  CanPaste, RedoName, UndoName, Redo, TCustomMemo.Undo
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.ClearUndo
 Summary
@@ -588,7 +588,7 @@ Summary
 Description
   Call ClearUndo to empty all undo and \redo buffers.
 See Also
-  CanUndo, Undo
+  TCustomMemo.CanUndo, TCustomMemo.Undo
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.DefAttributes
 Summary
@@ -632,7 +632,7 @@ Parameters
 Return value
   Returns the file masks of the registered converters.
 See Also
-  RegisterConversion
+  RegisterConversionFormat
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.FindDialog
 Summary
@@ -784,7 +784,7 @@ Parameters
 Return value
   \Returns the specified range of characters as a string.
 See Also
-  CaretPos, Lines, SetSelection
+  TCustomMemo.CaretPos, Lines, SetSelection
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.HideScrollBars
 Summary
@@ -795,7 +795,7 @@ Description
 
   HideScrollBars is default set to True.
 See Also
-  HideSelection, WordWrap, SelectionBar
+  HideSelection, SelectionBar
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.HideSelection
 Summary
@@ -809,7 +809,7 @@ Description
 
   HideSelection is default set to True.
 See Also
-  HideScrollBars, WordWrap, SelectionBar
+  HideScrollBars, SelectionBar
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.HintColor
 Summary
@@ -1005,8 +1005,6 @@ Summary
   Occurs when the color property for the parent of the rich edit control changes.
 Description
   \Write an OnParentColorChange event to take specific action when the ParentColor property changes.
-See Also
-  OnCtl3DChanged
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnProtectChange
 Summary
@@ -1077,7 +1075,7 @@ Description
   selection is changed through the SelText property. Portions of the selection can be changed through
   the Lines property.
 See Also
-  AutoSelect, ClearSelection, Lines, SelAttributes, SelStart, SelText, SetSelTextBuffer
+  Lines, SelAttributes, TCustomMemo.SelStart, TCustomMemo.SelText
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnTextNotFound
 Summary
@@ -1138,7 +1136,7 @@ Parameters
 Note
   Rich Edit 2.0
 See Also
-  AutoURLDetect, Link
+  AutoURLDetect, TJvTextAttributes.Link
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.OnVerticalScroll
 Summary
@@ -1221,7 +1219,7 @@ Description
 
   To determine whether there are any actions in the control's \redo queue, check property CanRedo.
 See Also
-  CanRedo, RedoName, UndoName, Undo
+  CanRedo, RedoName, UndoName, TCustomMemo.Undo
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.RedoName
 Summary
@@ -1233,7 +1231,7 @@ Description
   operations. This information can be useful for applications that provide an extended user interface
   for undo and \redo operations, such as a drop-down list box of redoable actions.
 See Also
-  UndoName, Redo, Undo
+  UndoName, Redo, TCustomMemo.Undo
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.RegisterConversionFormat
 Summary
@@ -1347,7 +1345,7 @@ Description
   The selection bar is an unmarked area to the left of each paragraph that when clicked, selects the line.
   Set SelectionBar to True to show the selection bar, set it to False, to hide it.
 See Also
-  HideScrollBars, HideSelection, WordWrap
+  HideScrollBars, HideSelection
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.SelectionType
 Summary
@@ -1405,7 +1403,7 @@ Description
 Note
   Rich Edit 2.0.
 See Also
-  Undo
+  TCustomMemo.Undo
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.StreamFormat
 Summary
@@ -1480,7 +1478,7 @@ See Also
   <LINK TJvCustomRichEdit.RedoName, RedoName>,
   <LINK TJvCustomRichEdit.UndoName, UndoName>,
   <LINK TJvCustomRichEdit.Redo, Redo>,
-  Undo
+  TCustomMemo.Undo
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.UndoName
 Summary
@@ -1513,7 +1511,7 @@ Description
 Note
   Rich Edit 2.0
 See Also
-  RedoName, Redo, Undo
+  RedoName, Redo, TCustomMemo.Undo
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.WordAtCursor
 Summary
@@ -1546,7 +1544,7 @@ Description
   Set WordSelection to True, to enable automatic selection of word on double-click. Set WordSelection
   to False to disable it.
 See Also
-  WordWrap, HideSelection, SelectionBar
+  HideSelection, SelectionBar
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.Zoom
 Summary
@@ -1818,7 +1816,7 @@ Summary
 Description
   See Delphi help for more info.
 See Also
-  FirstIndent, LeftIdent
+  FirstIndent, LeftIndent
 ----------------------------------------------------------------------------------------------------
 @@TJvParaAttributes.SpaceAfter
 Summary
@@ -2149,7 +2147,7 @@ Description
   Text that represents a link is underlined and colored blue. If the user clicks on the link text
   an OnURLClick event is fired.
 See Also
-  Disabled, Hidden, OnURLClick, Protected, Style
+  Disabled, Hidden, TJvCustomRichEdit.OnURLClick, Protected, Style
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAttributes.Name
 Summary
@@ -2214,7 +2212,8 @@ Description
   event handler can then permit or disallow the editing of the protected text. If there is no
   OnProtectChange or OnProtectChangeEx event handler, protected text is read-only.
 See Also
-  ConsistentAttributes, Disabled, Hidden, Link, OnProtectChange, OnProtectChangeEx, Style
+  ConsistentAttributes, Disabled, Hidden, Link, TJvCustomRichEdit.OnProtectChange, 
+  TJvCustomRichEdit.OnProtectChangeEx, Style
 ----------------------------------------------------------------------------------------------------
 @@TJvTextAttributes.RevAuthorIndex
 Summary
@@ -2349,11 +2348,11 @@ Description
   The TRichEditVersion type represents different kinds of versions for rich edit controls, that are
   supported by TJvRichEdit. It ranges from 1 to 4, representing the original specification for rich
   edit controls 1.0, to version 4.0.
-See Also
-  TJvRichEdit, RichEditVersion
 Note
   The Rich Edit 4.1. specification is <i>not</i> included in the TRichEditVersion type, because v4.1
   only supports unicode controls, which TJvRichEdit is not.
+See Also
+  TJvRichEdit, RichEditVersion
 ----------------------------------------------------------------------------------------------------
 @@TRichLangOption
 <TITLE TRichLangOption type>
@@ -2583,7 +2582,7 @@ Description
   The TUndoName type represents types of rich edit control actions that can be undone or redone.
 See Also
   TJvRichEdit,
-  <LINK TCustomRichEdit.RedoName, RedoName>, <LINK TCustomRichEdit.UndoName, UndoName>
+  <LINK TJvCustomRichEdit.RedoName, RedoName>, <LINK TJvCustomRichEdit.UndoName, UndoName>
 @@TUndoName.unUnknown
   The type of undo action is unknown.
 @@TUndoName.unTyping

@@ -578,7 +578,7 @@ Description
   false, the controller is closed; the controller cannot read or write data. When Active is true,
   the controller will be populated with frames from the file specified by the FileName property.
 See Also
-  Close, Open, State
+  Close, Open
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.AddFrame
 Summary
@@ -653,7 +653,7 @@ Description
   Call Close to set the Active property of a tag controller to false. When Active is false, the tag
   controller cannot read or write data from or to the tag.
 See Also
-  Active, Open, State
+  Active, Open
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.Commit
 Summary
@@ -945,7 +945,7 @@ Description
   \Check Modified to determine whether the tag is modified. If Modified is true, the tag controlled by
   the tag controller is modified. If false, the tag is not modified.
 See Also
-  Commit, Erase, State
+  Commit, Erase
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Controller.Open
 Summary
@@ -1238,7 +1238,7 @@ Description
   There may only be one fiInvolvedPeople frame in a version 2.2 or version 2.3 tag, and there may
   only be one fiMusicianCreditList and one fiInvolvedPeople2 frame in a version 2.4 tag.
 See Also
-  TJvID3Controller.Version etc.
+  TJvID3Controller.Version
 ----------------------------------------------------------------------------------------------------
 @@TJvID3DoubleListFrame.Find
 Summary
@@ -1610,7 +1610,7 @@ Return value
   Returns true if a frame with a frame identifier as specified by AFrameID can be added to the tag. Returns
   false otherwise.
 See Also
-  Frames
+  TJvID3Controller.Frames
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frame.CheckFrame
 Summary
@@ -1651,7 +1651,7 @@ Description
   the Controller property of a frame. It is assigned automatically when the frame is created, by
   calling AddFrame.
 See Also
-  AddFrame
+  TJvID3Controller.AddFrame
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frame.Encoding
 Summary
@@ -1950,10 +1950,9 @@ See Also
 Summary
   Deletes all frames from the TJvID3Frames object.
 Description
-  Applications do not normally call the Clear method directly. Clear empties the Frames property array,
-  frees the memory used to store the array and sets the Controller property to nil.
+  Clear empties the Frames property array.
 See Also
-  Controller, Frames
+  RemoveEmptyFrames, Frames
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.Count
 Summary
@@ -2038,7 +2037,7 @@ See Also
 Summary
   Returns all frame identifiers in the tag.
 Description
-  Use GetAllFrameIDs to retrieve all <LINK TJvID3Frame.FrameID,frame identifiers> in the tag.
+  Use GetFrameIDs to retrieve all <LINK TJvID3Frame.FrameID,frame identifiers> in the tag.
 Return value
   Returns all frame identifiers in the tag as a set of TJvID3FrameID values.
 See Also
@@ -2054,7 +2053,7 @@ Parameters
   List - A TStrings descendant that receives the frame names. List must be created and maintained by
           the application.
 See Also
-  FrameByID, FrameByName, Frames, GetAllFrameIDs
+  FrameByID, FrameByName, Frames, GetFrameIDs
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.IndexOf
 Summary
@@ -2084,7 +2083,7 @@ Note
 Parameters
   Frame - The frame which to delete from the Frames array.
 See Also
-  AddFrame, Frames
+  Add, Frames
 ----------------------------------------------------------------------------------------------------
 @@TJvID3Frames.RemoveEmptyFrames
 Summary
@@ -2535,7 +2534,7 @@ Description
 
   An URLs may be relative, e.g. "picture.png".
 See Also
-  MimeType
+  MIMEType
 ----------------------------------------------------------------------------------------------------
 @@TJvID3PlayCounterFrame
 Summary
@@ -2854,7 +2853,7 @@ Description
 
   Use Encoding to specify whether Text or TextW is valid for the frame.
 See Also
-  TJvID3Frame.Encoding, Language, Description, DescriptionW
+  TJvID3Frame.Encoding, Language
 ----------------------------------------------------------------------------------------------------
 @@TJvID3TermsOfUseFrame.TextW
 <COMBINE TJvID3TermsOfUseFrame.Text>
