@@ -1,7 +1,6 @@
 package JvTimeFrameworkD5D;
 
 {$R *.res}
-{$R '..\resources\JvTimeFrameworkReg.dcr'}
 {$ALIGN ON}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}

@@ -1,7 +1,6 @@
 package JvTimeFrameworkD7D;
 
 {$R *.res}
-{$R '..\resources\JvTimeFrameworkReg.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
