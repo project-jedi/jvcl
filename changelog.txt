@@ -1,5 +1,7 @@
 Changelog for JVCL 3.0
 ======================
+2003-11-04: 
+- Added functionality to JvRichEdit.pas to use the MS Text converters. // remkobonte
 2003-11-03: Added JvCharMap - a control similar to the character map grid in the charmap.exe utility in Windows // peter3
 2003-11-02:
 - Added IFDEFS excluding Variants from the uses clause for BCB5 (only) in JvSALCore.pas and JvXmlTree.pas. These exclusions are required for proper compilation under BCB5.
