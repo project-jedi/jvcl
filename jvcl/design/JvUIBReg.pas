@@ -67,7 +67,9 @@ procedure Register;
 begin
   {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvUIBDataSet, TControl);
+  {$IFNDEF DelphiPersonalEdition}
   GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
+  {$ENDIF DelphiPersonalEdition}
   {$ENDIF COMPILER7_UP}
 
   RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
