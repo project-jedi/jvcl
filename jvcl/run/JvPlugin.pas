@@ -42,21 +42,21 @@ uses
 
 type
   TPluginMessageEvent = procedure(Sender: TObject; APluginMessage: Longint; AMessageText: string) of object;
-  TPluginInitializeEvent = procedure(Sender: TObject; var AllowLoad: Boolean) of object;
+  TPluginInitializeEvent = procedure(Sender: TObject; var AllowLoad: boolean) of object;
   TJvPluginCommand = class;
   TJvPluginCommands = class;
 
-  TJvPlugin = class(TDataModule)
+  TJvPlugIn = class(TDataModule)
   private
     FPluginID: string;
     FAuthor: string;
     FCopyright: string;
     FDescription: string;
-    FFilename: string;
+    FFileName: string;
     FCommands: TJvPluginCommands;
     FHostApplication: TApplication;
     FManager: TComponent;
-    FInstanceCount: Integer;
+    FInstanceCount: integer;
     FOnPluginMessage: TPluginMessageEvent;
     FOnInitialize: TPluginInitializeEvent;
     FOnConfigure: TNotifyEvent;
@@ -66,24 +66,24 @@ type
   protected
     procedure SetCommands(NewValue: TJvPluginCommands); virtual;
     procedure TriggerPluginMessageEvent(APluginMessage: Longint; AMessageText: string); virtual;
-    procedure TriggerInitializeEvent(var AllowLoad: Boolean); virtual;
+    procedure TriggerInitializeEvent(var AllowLoad: boolean); virtual;
     procedure TriggerConfigureEvent; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Configure; virtual; stdcall;
-    function Initialize(Manager: TComponent; HostApplication: TApplication; Filename: string): Boolean; virtual;
+    function Initialize(Manager: TComponent; HostApplication: TApplication; FileName: string): boolean; virtual;
       stdcall;
     procedure SendPluginMessage(APluginMessage: Longint; AMessageText: string);
     property HostApplication: TApplication read FHostApplication;
     property Manager: TComponent read FManager;
-    property Filename: string read FFilename;
+    property FileName: string read FFileName;
   published
     property Author: string read FAuthor write FAuthor;
     property Commands: TJvPluginCommands read FCommands write SetCommands;
     property Description: string read FDescription write FDescription;
     property Copyright: string read FCopyright write FCopyright;
-    property InstanceCount: Integer read FInstanceCount write FInstanceCount default 1;
+    property InstanceCount: integer read FInstanceCount write FInstanceCount default 1;
     property PluginID: string read FPluginID write FPluginID;
 //    property Version: string read GetVersion write SetVersion;
     property PluginVersion: string read FPluginVersion write FPluginVersion;
@@ -98,7 +98,7 @@ type
     FCaption: string;
     FHint: string;
     FData: string;
-    FShortCut : TShortCut;
+    FShortCut: TShortCut;
     FBitmap: TBitmap;
     FOnExecute: TNotifyEvent;
     procedure SetBitmap(Value: TBitmap);
@@ -112,19 +112,21 @@ type
     property Hint: string read FHint write FHint;
     property Data: string read FData write FData;
     property Name: string read FName write FName;
-    property ShortCut : TShortCut read FShortCut write FShortCut;
+    property ShortCut: TShortCut read FShortCut write FShortCut;
     property OnExecute: TNotifyEvent read FOnExecute write FOnExecute;
   end;
 
   TJvPluginCommands = class(TCollection)
   private
-    FPlugin: TJvPlugin;
+    FPlugin: TJvPlugIn;
   protected
     function GetOwner: TPersistent; override;
     procedure SetItemName(AItem: TCollectionItem); override;
   public
-    constructor Create(APlugin: TJvPlugin);
+    constructor Create(APlugIn: TJvPlugIn);
   end;
+resourcestring
+  SFmtResNotFound = 'Resource Not Found: %s';
 
 implementation
 
@@ -133,7 +135,7 @@ uses
 
 //=== TJvPlugin ==============================================================
 
-constructor TJvPlugin.Create(AOwner: TComponent);
+constructor TJvPlugIn.Create(AOwner: TComponent);
 begin
   try
     // Create datamodule
@@ -144,10 +146,10 @@ begin
     FCommands := TJvPluginCommands.Create(Self);
 
     FInstanceCount := 1;
-    if (ClassType <> TJvPlugin) and not (csDesigning in ComponentState) then
+    if (ClassType <> TJvPlugIn) and not (csDesigning in ComponentState) then
     begin
-      if not InitInheritedComponent(Self, TJvPlugin) then
-        raise EResNotFound.CreateFmt('Resource Not Found: %s', [ClassName]);
+      if not InitInheritedComponent(Self, TJvPlugIn) then
+        raise EResNotFound.CreateFmt(SFmtResNotFound, [ClassName]);
 
       // (rom) why this ?
       if Assigned(OnCreate) then
@@ -157,13 +159,13 @@ begin
   end;
 end;
 
-destructor TJvPlugin.Destroy;
+destructor TJvPlugIn.Destroy;
 begin
   Commands.Free;
   inherited Destroy;
 end;
 
-procedure TJvPlugin.SetCommands(NewValue: TJvPluginCommands);
+procedure TJvPlugIn.SetCommands(NewValue: TJvPluginCommands);
 begin
   FCommands.Assign(NewValue);
 end;
@@ -182,39 +184,39 @@ end;}
 // Here the plugin should verify if it CAN be loaded (e.g. Mainapplication implements correct interface,
 //      Dongle is there....)
 
-function TJvPlugin.Initialize(Manager: TComponent; HostApplication: TApplication; Filename: string): Boolean;
+function TJvPlugIn.Initialize(Manager: TComponent; HostApplication: TApplication; FileName: string): boolean;
 begin
-  Result := True;
+  Result := true;
   FHostApplication := HostApplication;
-  FFilename := Filename;
+  FFileName := FileName;
   FManager := Manager;
   TriggerInitializeEvent(Result);
 end;
 
-procedure TJvPlugin.Configure;
+procedure TJvPlugIn.Configure;
 begin
   TriggerConfigureEvent;
 end;
 
-procedure TJvPlugin.TriggerPluginMessageEvent(APluginMessage: Longint; AMessageText: string);
+procedure TJvPlugIn.TriggerPluginMessageEvent(APluginMessage: Longint; AMessageText: string);
 begin
-  if (Assigned(FOnPluginMessage)) then
+  if Assigned(FOnPluginMessage) then
     FOnPluginMessage(Self, APluginMessage, AMessageText);
 end;
 
-procedure TJvPlugin.TriggerInitializeEvent(var AllowLoad: Boolean);
+procedure TJvPlugIn.TriggerInitializeEvent(var AllowLoad: boolean);
 begin
-  if (Assigned(FOnInitialize)) then
+  if Assigned(FOnInitialize) then
     FOnInitialize(Self, AllowLoad);
 end;
 
-procedure TJvPlugin.TriggerConfigureEvent;
+procedure TJvPlugIn.TriggerConfigureEvent;
 begin
-  if (Assigned(FOnConfigure)) then
+  if Assigned(FOnConfigure) then
     FOnConfigure(Self);
 end;
 
-procedure TJvPlugin.SendPluginMessage(APluginMessage: Integer; AMessageText: string);
+procedure TJvPlugIn.SendPluginMessage(APluginMessage: integer; AMessageText: string);
 begin
   TriggerPluginMessageEvent(APluginMessage, AMessageText);
 end;
@@ -224,6 +226,7 @@ end;
 constructor TJvPluginCommand.Create(Collection: TCollection);
 begin
   inherited Create(Collection);
+  FBitmap := TBitmap.Create;
   FShortCut := 0;
 end;
 
@@ -242,20 +245,15 @@ end;
 
 procedure TJvPluginCommand.SetBitmap(Value: TBitmap);
 begin
-  FreeAndNil(FBitmap);
-  if Assigned(Value) then
-  begin
-    FBitmap := TBitmap.Create;
-    FBitmap.Assign(Value);
-  end;
+  FBitmap.Assign(Value)
 end;
 
 //=== TJvPluginCommands ======================================================
 
-constructor TJvPluginCommands.Create(APlugin: TJvPlugin);
+constructor TJvPluginCommands.Create(APlugIn: TJvPlugIn);
 begin
   inherited Create(TJvPluginCommand);
-  FPlugin := APlugin;
+  FPlugin := APlugIn;
 end;
 
 function TJvPluginCommands.GetOwner: TPersistent;
@@ -265,14 +263,16 @@ end;
 
 procedure TJvPluginCommands.SetItemName(AItem: TCollectionItem);
 var
-  I: Integer;
-  J: Integer;
+  I: integer;
+  J: integer;
 
-  function NameUsed: Boolean;
+  function NameUsed: boolean;
+  var
+    AName: string;
   begin
+    AName := Format('Command%d', [I]);
     J := AItem.Collection.Count - 1;
-    while (J > -1) and (TJvPluginCommand(AItem.Collection.Items[J]).Name <> ('Command' +
-      IntToStr(I))) do
+    while (J > -1) and not AnsiSameText(TJvPluginCommand(AItem.Collection.Items[J]).Name, AName) do
       Dec(J);
     Result := J > -1;
   end;
@@ -289,7 +289,7 @@ begin
     if Name = '' then
     begin
       FindCmdIdx;
-      Name := 'Command' + IntToStr(I);
+      Name := Format('Command%d', [I]);
     end;
 end;
 
