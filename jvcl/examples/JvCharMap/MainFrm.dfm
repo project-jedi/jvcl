@@ -86,8 +86,11 @@ object Form1: TForm1
       Width = 15
       Height = 22
       Associate = Edit1
+      Min = 0
       Max = 32767
+      Position = 0
       TabOrder = 1
+      Wrap = False
       OnClick = udStartClick
     end
     object Edit2: TEdit
@@ -104,8 +107,11 @@ object Form1: TForm1
       Width = 15
       Height = 22
       Associate = Edit2
+      Min = 0
       Max = 32767
+      Position = 0
       TabOrder = 3
+      Wrap = False
       OnClick = udEndClick
     end
     object Edit3: TEdit
@@ -122,8 +128,11 @@ object Form1: TForm1
       Width = 15
       Height = 22
       Associate = Edit3
+      Min = 0
       Max = 32767
+      Position = 0
       TabOrder = 5
+      Wrap = False
       OnClick = udColumnsClick
     end
     object cbColor: TJvColorComboBox
@@ -224,7 +233,7 @@ object Form1: TForm1
       WordWrap = False
     end
     object btnSelect: TButton
-      Left = 448
+      Left = 456
       Top = 16
       Width = 75
       Height = 25
@@ -239,6 +248,8 @@ object Form1: TForm1
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    MinFontSize = 0
+    MaxFontSize = 0
     Left = 48
     Top = 192
   end
