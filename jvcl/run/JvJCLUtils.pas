@@ -7320,6 +7320,7 @@ var
   R: TRect;
 begin
   b := Filename;
+  UniqueString(b);
   R := Rect(0, 0, MaxLen, Canvas.TextHeight('Wq'));
   if DrawText(Canvas.Handle, PChar(b), -1, R,
     DT_SINGLELINE or DT_MODIFYSTRING or DT_PATH_ELLIPSIS or

@@ -1503,10 +1503,12 @@ begin
         ((FindDockClient(Screen.CustomForms[I]) <> nil) or (FindDockServer(Screen.CustomForms[I]) <> nil)) then
         JvDockInfoTree.CreateZoneAndAddInfoFromApp(Screen.CustomForms[I]);
 
-    JvDockInfoTree.DockInfoIni := TIniFile.Create(FileName);
+    JvDockInfoTree.DockInfoIni := TMemIniFile.Create(FileName);
     try
       JvDockInfoTree.WriteInfoToIni;
+      TMemIniFile(JvDockInfoTree.DockInfoIni).UpdateFile;
     finally
+
       JvDockInfoTree.DockInfoIni.Free;
     end;
   finally
@@ -1531,7 +1533,7 @@ begin
 
   JvDockLockWindow(nil);
   try
-    JvDockInfoTree.DockInfoIni := TIniFile.Create(FileName);
+    JvDockInfoTree.DockInfoIni := TMemIniFile.Create(FileName);
     try
       JvGlobalDockIsLoading := True;
       JvDockInfoTree.ReadInfoFromIni;
