@@ -1293,7 +1293,7 @@ begin
     Application.HelpContext(ID);
     {$ENDIF VCL}
     {$IFDEF VisualCLX}
-    Application.HelpContext := ID;
+    Application.ContextHelp(ID);
     {$ENDIF VisualCLX}
   end;
 end;
