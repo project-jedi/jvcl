@@ -714,7 +714,7 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FHotTrack,FOver: Boolean;
-    FHotGlyph: TBitmap;
+    FHotGlyph: Pointer;
     FOldGlyph: TBitmap;
     FHintColor: TColor;
     FHotTrackFont: TFont;
@@ -722,9 +722,12 @@ type
     FSaved:TColor;
     FOnParentColorChanged: TNotifyEvent;
     procedure GlyphChanged(Sender: TObject);
+    procedure HotGlyphChanged(Sender: TObject);    
     procedure UpdateExclusive;
     function GetGlyph: TBitmap;
+    function GetHotGlyph: TBitmap;    
     procedure SetGlyph(Value: TBitmap);
+    procedure SetHotGlyph(Value: TBitmap);    
     function GetGrayNewStyle: Boolean;
     procedure SetGrayNewStyle(const Value: Boolean);
     function GetNumGlyphs: TJvNumGlyphs;
@@ -806,7 +809,7 @@ type
     property ParentBiDiMode;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotGlyph: TBitmap read FHotGlyph write SetGlyph;
+    property HotGlyph: TBitmap read GetHotGlyph write SetHotGlyph;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment default taCenter;
@@ -4916,7 +4919,6 @@ begin
   FFontSave := TFont.Create;
   FHintColor := clInfoBk;
   FOver := False;
-  FHotGlyph := TBitmap.Create;
   FOldGlyph := TBitmap.Create;
   FFlatStandard := False;
   SetBounds(0, 0, 25, 25);
@@ -4929,6 +4931,8 @@ begin
   FGlyph := TJvButtonGlyph.Create;
   TJvButtonGlyph(FGlyph).OnChange := GlyphChanged;
   TJvButtonGlyph(FGlyph).GrayNewStyle := True;
+  FHotGlyph := TJvButtonGlyph.Create;
+  TJvButtonGlyph(FGlyph).OnChange := HotGlyphChanged;
   ParentFont := True;
   ParentShowHint := False;
   ShowHint := True;
@@ -4957,7 +4961,7 @@ begin
   FDrawImage := nil;
   if FRepeatTimer <> nil then
     FRepeatTimer.Free;
-  FHotGlyph.Free;
+  TJvButtonGlyph(FHotGlyph).Free;
   FOldGlyph.Free;
   FHotTrackFont.Free;
   FFontSave.Free;
@@ -5392,9 +5396,20 @@ begin
   Result := TJvButtonGlyph(FGlyph).Glyph;
 end;
 
+function TJvSpeedButton.GetHotGlyph: TBitmap;
+begin
+  Result := TJvButtonGlyph(FHotGlyph).Glyph;
+end;
+
 procedure TJvSpeedButton.SetGlyph(Value: TBitmap);
 begin
   TJvButtonGlyph(FGlyph).Glyph := Value;
+  Invalidate;
+end;
+
+procedure TJvSpeedButton.SetHotGlyph(Value: TBitmap);
+begin
+  TJvButtonGlyph(FHotGlyph).Glyph := Value;
   Invalidate;
 end;
 
@@ -5422,6 +5437,11 @@ begin
 end;
 
 procedure TJvSpeedButton.GlyphChanged(Sender: TObject);
+begin
+  Invalidate;
+end;
+
+procedure TJvSpeedButton.HotGlyphChanged(Sender: TObject);
 begin
   Invalidate;
 end;
@@ -5661,10 +5681,10 @@ begin
   begin
     FSaved := Application.HintColor;
     Application.HintColor := FHintColor;
-    if not FHotGlyph.Empty then
+    if not TJvButtonGlyph(FHotGlyph).Glyph.Empty then
     begin
       FOldGlyph.Assign(Glyph);
-      Glyph.Assign(FHotGlyph);
+      Glyph.Assign(HotGlyph);
     end;
     if FHotTrack then
     begin
