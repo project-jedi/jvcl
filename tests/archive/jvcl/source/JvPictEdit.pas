@@ -37,7 +37,7 @@ uses {$IFDEF WIN32} Windows, {$ELSE} WinTypes, WinProcs, {$ENDIF}
   DsgnIntf,
   {$ENDIF}
   StdCtrls, ExtCtrls, 
-  {$IFDEF DELPHI_D3} ExtDlgs, ComCtrls, {$ELSE} JvImagPrvw, {$ENDIF} Menus,
+  {$IFDEF COMPILER3} ExtDlgs, ComCtrls, {$ELSE} JvImagPrvw, {$ENDIF} Menus,
   JvMRUList, JvPlacemnt, JvxCtrls, JvClipMon;
 
 type
@@ -85,7 +85,7 @@ type
     Pic: TPicture;
     FIconColor: TColor;
     FClipMonitor: TJvClipboardMonitor;
-{$IFDEF DELPHI_D3}
+{$IFDEF COMPILER3}
     FProgress: TProgressBar;
     FProgressPos: Integer;
     FileDialog: TOpenPictureDialog;
@@ -104,7 +104,7 @@ type
     procedure UpdateClipboard(Sender: TObject);
     procedure WMDropFiles(var Msg: TWMDropFiles); message WM_DROPFILES;
     procedure WMDestroy(var Msg: TMessage); message WM_DESTROY;
-{$IFDEF DELPHI_D3}
+{$IFDEF COMPILER3}
     procedure GraphicProgress(Sender: TObject; Stage: TProgressStage;
       PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 {$ENDIF}
@@ -459,7 +459,7 @@ begin
   Copy.Enabled := Enable;
 end;
 
-{$IFDEF DELPHI_D3}
+{$IFDEF COMPILER3}
 procedure TPictureEditDialog.GraphicProgress(Sender: TObject; Stage: TProgressStage;
   PercentDone: Byte; RedrawNow: Boolean; const R: TRect; const Msg: string);
 begin
@@ -485,7 +485,7 @@ end;
 procedure TPictureEditDialog.FormCreate(Sender: TObject);
 begin
   Pic := TPicture.Create;
-{$IFDEF DELPHI_D3}
+{$IFDEF COMPILER3}
   FileDialog := TOpenPictureDialog.Create(Self);
   SaveDialog := TSavePictureDialog.Create(Self);
   UsePreviewBox.Visible := False;
