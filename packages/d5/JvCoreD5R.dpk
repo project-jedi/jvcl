@@ -2,13 +2,13 @@ package JvCoreD5R;
 
 {$R *.RES}
 {$ALIGN ON}
-{$ASSERTIONS ON}
+{$ASSERTIONS OFF}
 {$BOOLEVAL OFF}
-{$DEBUGINFO ON}
+{$DEBUGINFO OFF}
 {$EXTENDEDSYNTAX ON}
 {$IMPORTEDDATA ON}
 {$IOCHECKS ON}
-{$LOCALSYMBOLS ON}
+{$LOCALSYMBOLS OFF}
 {$LONGSTRINGS ON}
 {$OPENSTRINGS ON}
 {$OPTIMIZATION ON}
@@ -21,40 +21,43 @@ package JvCoreD5R;
 {$VARSTRINGCHECKS ON}
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
-{$IMAGEBASE $500000}
+{$IMAGEBASE $400000}
 {$DESCRIPTION 'JVCL Core Runtime Package'}
 {$RUNONLY}
 {$IMPLICITBUILD OFF}
 
 requires
   DJCL50,
-  vclx50;
+  vclx50
+  ;
 
 contains
-  JvConsts in '..\..\common\JvConsts.pas',
-  JVCLVer in '..\..\run\JVCLVer.pas',
-  JvComponent in '..\..\run\JvComponent.pas',
-  JvVersionInfo in '..\..\run\JvVersionInfo.pas',
-  JvTypes in '..\..\run\JvTypes.pas',
-  JvJVCLUtils in '..\..\run\JvJVCLUtils.pas',
-  JvJCLUtils in '..\..\run\JvJCLUtils.pas',
-  JvMaxPixel in '..\..\run\JvMaxPixel.pas',
-  JvProgressUtils in '..\..\run\JvProgressUtils.pas',
-  JvBaseDlg in '..\..\run\JvBaseDlg.pas',
+  JvConsts in '..\..\common\JvConsts.pas' ,
+  JvColorProvider in '..\..\run\JvColorProvider.pas' ,
+  JvComponent in '..\..\run\JvComponent.pas' ,
+  JvContextProvider in '..\..\run\JvContextProvider.pas' ,
+  JvDataProvider in '..\..\run\JvDataProvider.pas' ,
+  JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas' ,
+  JvDsgnIntf in '..\..\run\JvDsgnIntf.pas' ,
+  JvJCLUtils in '..\..\run\JvJCLUtils.pas' ,
   JvJVCLAboutForm in '..\..\run\JvJVCLAboutForm.pas' {JvJVCLAboutForm},
-  JvActions in '..\..\run\JvActions.pas',
-  JvMouseTimer in '..\..\run\JvMouseTimer.pas',
-  JvDsgnIntf in '..\..\run\JvDsgnIntf.pas',
+  JvJVCLUtils in '..\..\run\JvJVCLUtils.pas' ,
+  JvMaxPixel in '..\..\run\JvMaxPixel.pas' ,
+  JvMouseTimer in '..\..\run\JvMouseTimer.pas' ,
+  JvProgressUtils in '..\..\run\JvProgressUtils.pas' ,
+  JvThemes in '..\..\run\JvThemes.pas' ,
+  JvTypes in '..\..\run\JvTypes.pas' ,
+  JvVersionInfo in '..\..\run\JvVersionInfo.pas' ,
+  JvActions in '..\..\run\JvActions.pas' ,
+  JvAppIniStore in '..\..\run\JvAppIniStore.pas' ,
+  JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas' ,
+  JvAppStore in '..\..\run\JvAppStore.pas' ,
+  JvBaseDlg in '..\..\run\JvBaseDlg.pas' ,
+  JvCaret in '..\..\run\JvCaret.pas' ,
+  JVCLVer in '..\..\run\JVCLVer.pas' ,
+  JvClxUtils in '..\..\run\JvClxUtils.pas' ,
   JvActnResForm in '..\..\design\JvActnResForm.pas' {JvStandardActions: TDataModule},
-  JvDataProviderImpl in '..\..\run\JvDataProviderImpl.pas',
-  JvDataProvider in '..\..\run\JvDataProvider.pas',
-  JvContextProvider in '..\..\run\JvContextProvider.pas',
-  JvCaret in '..\..\run\JvCaret.pas',
-  JvAppStore in '..\..\run\JvAppStore.pas',
-  JvAppRegistryStore in '..\..\run\JvAppRegistryStore.pas',
-  JvAppIniStore in '..\..\run\JvAppIniStore.pas',
-  JvThemes in '..\..\run\JvThemes.pas',
-  JvClxUtils in '..\..\run\JvClxUtils.pas',
-  JvColorProvider in '..\..\run\JvColorProvider.pas';
+  JvPropertyStore in '..\..\run\JvPropertyStore.pas' 
+  ;
 
 end.

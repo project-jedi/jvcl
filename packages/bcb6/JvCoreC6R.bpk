@@ -1,57 +1,55 @@
-<?xml version='1.0' encoding='utf-8' ?>
-<!-- C++Builder XML Project -->
-<!--
------------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
-
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvCoreC6R.bpk, released on 2003-11-08.
-
-The Initial Developer of the Original Code is Olivier Sannier [obones@meloo.com]
-Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
-All Rights Reserved.
-
-Contributor(s): -
-
-Last Modified: 2003-11-08
-
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
-
-Known Issues:
------------------------------------------------------------------------------
--->
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvCoreC6R.bpl"/>
-    <OBJFILES value="..\..\dcu\JvCoreC6R.obj ..\..\dcu\JvConsts.obj ..\..\dcu\JVCLVer.obj 
-      ..\..\dcu\JvComponent.obj ..\..\dcu\JvVersionInfo.obj 
-      ..\..\dcu\JvTypes.obj ..\..\dcu\JvJCLUtils.obj ..\..\dcu\JvMaxPixel.obj 
-      ..\..\dcu\JvProgressUtils.obj ..\..\dcu\JvBaseDlg.obj 
-      ..\..\dcu\JvActions.obj ..\..\dcu\JvMouseTimer.obj 
-      ..\..\dcu\JvDsgnIntf.obj ..\..\dcu\JvDataProvider.obj 
-      ..\..\dcu\JvDataProviderImpl.obj ..\..\dcu\JvContextProvider.obj 
-      ..\..\dcu\JvAppStore.obj ..\..\dcu\JvAppRegistryStore.obj 
-      ..\..\dcu\JvAppIniStore.obj ..\..\dcu\JvJVCLAboutForm.obj 
-      ..\..\dcu\JvActnResForm.obj ..\..\dcu\JvJVCLUtils.obj 
-      ..\..\dcu\JvThemes.obj ..\..\dcu\JvClxUtils.obj 
-      ..\..\dcu\JvCaret.obj ..\..\dcu\JvColorProvider.obj"/>
+    <OBJFILES value="
+      ..\..\dcu\JvCoreC6R.obj
+      ..\..\dcu\JvConsts.obj
+      ..\..\dcu\JvColorProvider.obj
+      ..\..\dcu\JvComponent.obj
+      ..\..\dcu\JvContextProvider.obj
+      ..\..\dcu\JvDataProvider.obj
+      ..\..\dcu\JvDataProviderImpl.obj
+      ..\..\dcu\JvDsgnIntf.obj
+      ..\..\dcu\JvJCLUtils.obj
+      ..\..\dcu\JvJVCLAboutForm.obj
+      ..\..\dcu\JvJVCLUtils.obj
+      ..\..\dcu\JvMaxPixel.obj
+      ..\..\dcu\JvMouseTimer.obj
+      ..\..\dcu\JvProgressUtils.obj
+      ..\..\dcu\JvThemes.obj
+      ..\..\dcu\JvTypes.obj
+      ..\..\dcu\JvVersionInfo.obj
+      ..\..\dcu\JvActions.obj
+      ..\..\dcu\JvAppIniStore.obj
+      ..\..\dcu\JvAppRegistryStore.obj
+      ..\..\dcu\JvAppStore.obj
+      ..\..\dcu\JvBaseDlg.obj
+      ..\..\dcu\JvCaret.obj
+      ..\..\dcu\JVCLVer.obj
+      ..\..\dcu\JvClxUtils.obj
+      ..\..\dcu\JvActnResForm.obj
+      ..\..\dcu\JvPropertyStore.obj
+    "/>
     <RESFILES value="JvCoreC6R.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\run\JvJVCLAboutForm.dfm ..\..\design\JvActnResForm.dfm"/>
+    <RESDEPEN value="$(RESFILES)
+    ..\..\run\JvJVCLAboutForm.dfm
+    ..\..\design\JvStandardActions.dfm
+    "/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="cjcl60.bpi bcbsmp.bpi rtl.bpi vcl.bpi vcljpg.bpi vclx.bpi"/>
+    <PACKAGES value="
+       CJCL60.bpi 
+       vclx.bpi 
+       vcl.bpi 
+       rtl.bpi 
+       bcbsmp.bpi 
+       vcljpg.bpi 
+    "/>
     <PATHCPP value=".;"/>
     <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
     <PATHRC value=".;"/>
@@ -72,7 +70,9 @@ Known Issues:
       -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
     <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -U&quot;$(PATH)&quot;"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M 
+                   -U&quot;$(PATH)&quot; 
+                  "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
     <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Runtime Package&quot; -aa -Tpp
@@ -88,37 +88,38 @@ Known Issues:
   <FILELIST>
       <FILE FILENAME="JvCoreC6R.res" FORMNAME="" UNITNAME="JvCoreC6R.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.cpp" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="cjcl60.bpi" FORMNAME="" UNITNAME="cjcl60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\common\JvConsts.pas" FORMNAME="" UNITNAME="JvConsts" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JVCLVer.pas" FORMNAME="" UNITNAME="JVCLVer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvColorProvider.pas" FORMNAME="" UNITNAME="JvColorProvider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvComponent.pas" FORMNAME="" UNITNAME="JvComponent" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvVersionInfo.pas" FORMNAME="" UNITNAME="JvVersionInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvTypes.pas" FORMNAME="" UNITNAME="JvTypes" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvJCLUtils.pas" FORMNAME="" UNITNAME="JvJCLUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvMaxPixel.pas" FORMNAME="" UNITNAME="JvMaxPixel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvCaret.pas" FORMNAME="" UNITNAME="JvCaret" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvProgressUtils.pas" FORMNAME="" UNITNAME="JvProgressUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvBaseDlg.pas" FORMNAME="" UNITNAME="JvBaseDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvActions.pas" FORMNAME="" UNITNAME="JvActions" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvMouseTimer.pas" FORMNAME="" UNITNAME="JvMouseTimer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvDsgnIntf.pas" FORMNAME="" UNITNAME="JvDsgnIntf" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvContextProvider.pas" FORMNAME="" UNITNAME="JvContextProvider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvDataProvider.pas" FORMNAME="" UNITNAME="JvDataProvider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvDataProviderImpl.pas" FORMNAME="" UNITNAME="JvDataProviderImpl" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvContextProvider.pas" FORMNAME="" UNITNAME="JvContextProvider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvAppStore.pas" FORMNAME="" UNITNAME="JvAppStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvAppRegistryStore.pas" FORMNAME="" UNITNAME="JvAppRegistryStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvAppIniStore.pas" FORMNAME="" UNITNAME="JvAppIniStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvDsgnIntf.pas" FORMNAME="" UNITNAME="JvDsgnIntf" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvJCLUtils.pas" FORMNAME="" UNITNAME="JvJCLUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvJVCLAboutForm.pas" FORMNAME="JvJVCLAboutForm" UNITNAME="JvJVCLAboutForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvActnResForm.pas" FORMNAME="JvStandardActions" UNITNAME="JvActnResForm" CONTAINERID="PascalCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvJVCLUtils.pas" FORMNAME="" UNITNAME="JvJVCLUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvMaxPixel.pas" FORMNAME="" UNITNAME="JvMaxPixel" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvMouseTimer.pas" FORMNAME="" UNITNAME="JvMouseTimer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvProgressUtils.pas" FORMNAME="" UNITNAME="JvProgressUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvThemes.pas" FORMNAME="" UNITNAME="JvThemes" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvTypes.pas" FORMNAME="" UNITNAME="JvTypes" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvVersionInfo.pas" FORMNAME="" UNITNAME="JvVersionInfo" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvActions.pas" FORMNAME="" UNITNAME="JvActions" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvAppIniStore.pas" FORMNAME="" UNITNAME="JvAppIniStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvAppRegistryStore.pas" FORMNAME="" UNITNAME="JvAppRegistryStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvAppStore.pas" FORMNAME="" UNITNAME="JvAppStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvBaseDlg.pas" FORMNAME="" UNITNAME="JvBaseDlg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvCaret.pas" FORMNAME="" UNITNAME="JvCaret" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JVCLVer.pas" FORMNAME="" UNITNAME="JVCLVer" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvClxUtils.pas" FORMNAME="" UNITNAME="JvClxUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\run\JvColorProvider.pas" FORMNAME="" UNITNAME="JvColorProvider" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvActnResForm.pas" FORMNAME="JvStandardActions" UNITNAME="JvActnResForm" CONTAINERID="PascalCompiler" DESIGNCLASS="TDataModule" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\run\JvPropertyStore.pas" FORMNAME="" UNITNAME="JvPropertyStore" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>

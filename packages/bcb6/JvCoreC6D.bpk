@@ -1,70 +1,70 @@
-<?xml version='1.0' encoding='utf-8' ?>
-<!-- C++Builder XML Project -->
-<!--
------------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
-
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
-
-The Original Code is: JvCoreC6D.bpk, released on 2003-11-08.
-
-The Initial Developer of the Original Code is Olivier Sannier [obones@meloo.com]
-Portions created by Olivier Sannier are Copyright (C) 2003 Olivier Sannier.
-All Rights Reserved.
-
-Contributor(s): -
-
-Last Modified: 2003-11-08
-
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
-
-Known Issues:
------------------------------------------------------------------------------
--->
 <PROJECT>
   <MACROS>
     <VERSION value="BCB.06.00"/>
     <PROJECT value="JvCoreC6D.bpl"/>
-    <OBJFILES value="..\..\dcu\JvCoreC6D.obj ..\..\dcu\JvStringsForm.obj 
-      ..\..\dcu\JvBaseDlgEditor.obj ..\..\dcu\JvColorEditor.obj 
-      ..\..\dcu\JvCoreReg.obj ..\..\dcu\JvDataContextManagerForm.obj 
-      ..\..\dcu\JvDataProviderEditors.obj ..\..\dcu\JvDataProviderItemDesign.obj 
-      ..\..\dcu\JvDesignerUtils.obj ..\..\dcu\JvDsgnConsts.obj 
-      ..\..\dcu\JvDsgnEditors.obj ..\..\dcu\JvIDEZoom.obj 
-      ..\..\dcu\JvJVCLAboutEditor.obj ..\..\dcu\JvPaintBoxEditor.obj 
-      ..\..\dcu\JvProviderToolbarFrame.obj ..\..\dcu\JvProviderTreeListFrame.obj 
-      ..\..\dcu\JvBaseDsgnForm.obj ..\..\dcu\JvBaseDsgnFrame.obj 
-      ..\..\dcu\JvBaseDsgnToolbarFrame.obj 
-      ..\..\dcu\JvDataConsumerContextSelectForm.obj 
-      ..\..\dcu\JvDataConsumerItemSelectForm.obj 
-      ..\..\dcu\JvDataProviderDesignerForm.obj ..\..\dcu\JvDateTimeForm.obj 
-      ..\..\dcu\JvStdToolbarDsgnFrame.obj ..\..\dcu\JvColorProviderEditors.obj
-      ..\..\dcu\JvColorProviderDesignerForm.obj 
-      ..\..\dcu\JvProviderTreeListDsgnFrame.obj"/>
+    <OBJFILES value="
+      ..\..\dcu\JvCoreC6D.obj
+      ..\..\dcu\JvProviderTreeListDsgnFrame.obj
+      ..\..\dcu\JvProviderTreeListFrame.obj
+      ..\..\dcu\JvStdToolbarDsgnFrame.obj
+      ..\..\dcu\JvStringsForm.obj
+      ..\..\dcu\JvBaseDlgEditor.obj
+      ..\..\dcu\JvBaseDsgnForm.obj
+      ..\..\dcu\JvBaseDsgnFrame.obj
+      ..\..\dcu\JvBaseDsgnToolbarFrame.obj
+      ..\..\dcu\JvColorEditor.obj
+      ..\..\dcu\JvColorProviderDesignerForm.obj
+      ..\..\dcu\JvColorProviderEditors.obj
+      ..\..\dcu\JvCoreReg.obj
+      ..\..\dcu\JvDataConsumerContextSelectForm.obj
+      ..\..\dcu\JvDataConsumerItemSelectForm.obj
+      ..\..\dcu\JvDataContextManagerForm.obj
+      ..\..\dcu\JvDataProviderDesignerForm.obj
+      ..\..\dcu\JvDataProviderEditors.obj
+      ..\..\dcu\JvDataProviderItemDesign.obj
+      ..\..\dcu\JvDateTimeForm.obj
+      ..\..\dcu\JvDesignerUtils.obj
+      ..\..\dcu\JvDsgnConsts.obj
+      ..\..\dcu\JvDsgnEditors.obj
+      ..\..\dcu\JvIDEZoom.obj
+      ..\..\dcu\JvJVCLAboutEditor.obj
+      ..\..\dcu\JvPaintBoxEditor.obj
+      ..\..\dcu\JvProviderToolbarFrame.obj
+      ..\..\dcu\JvDsgnTypes.obj
+    "/>
     <RESFILES value="JvCoreC6D.res"/>
     <IDLFILES value=""/>
     <IDLGENFILES value=""/>
     <DEFFILE value=""/>
-    <RESDEPEN value="$(RESFILES) ..\..\design\JvStringsForm.dfm 
-      ..\..\design\JvProviderTreeListFrame.dfm ..\..\design\JvBaseDsgnForm.dfm 
-      ..\..\design\JvBaseDsgnFrame.dfm ..\..\design\JvBaseDsgnToolbarFrame.dfm 
-      ..\..\design\JvDataConsumerContextSelectForm.dfm 
-      ..\..\design\JvDataConsumerItemSelectForm.dfm 
-      ..\..\design\JvDataProviderDesignerForm.dfm 
-      ..\..\design\JvDateTimeForm.dfm ..\..\design\JvStdToolbarDsgnFrame.dfm
-      ..\..\design\JvProviderTreeListDsgnFrame.dfm"/>
+    <RESDEPEN value="$(RESFILES)
+    ..\..\design\fmeJvProviderTreeListDsgn.dfm
+    ..\..\design\fmeJvProviderTreeList.dfm
+    ..\..\design\fmeJvStdToolbarDesign.dfm
+    ..\..\design\JvStrEditDlg.dfm
+    ..\..\design\JvBaseDesign.dfm
+    ..\..\design\fmeJvBaseDesign.dfm
+    ..\..\design\fmeJvBaseToolbarDesign.dfm
+    ..\..\design\frmJvColorProviderDesigner.dfm
+    ..\..\design\frmDataConsumerContextSelect.dfm
+    ..\..\design\frmJvDataConsumerItemSelect.dfm
+    ..\..\design\frmJvDataContextManager.dfm
+    ..\..\design\frmDataProviderDesigner.dfm
+    ..\..\design\frmSelectDateTimeDlg.dfm
+    ..\..\design\fmeJvProviderToolbar.dfm
+    "/>
     <LIBFILES value=""/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
-    <PACKAGES value="rtl.bpi designide.bpi vcl.bpi JvCoreC6R.bpi dclstd.bpi vclx.bpi"/>
+    <PACKAGES value="
+       JvCoreC6R.bpi 
+       designide.bpi 
+       dclstd.bpi 
+       rtl.bpi 
+       vcl.bpi 
+       vclx.bpi 
+    "/>
     <PATHCPP value=".;"/>
-    <PATHPAS value=".;..\..\design"/>
+    <PATHPAS value=".;..\..\common;..\..\run;..\..\design"/>
     <PATHRC value=".;"/>
     <PATHASM value=".;"/>
     <DEBUGLIBPATH value="$(BCB)\lib\debug"/>
@@ -73,21 +73,23 @@ Known Issues:
     <USERDEFINES value="_DEBUG"/>
     <SYSDEFINES value="_RTLDLL;NO_STRICT;USEPACKAGES"/>
     <MAINSOURCE value="JvCoreC6D.cpp"/>
-    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib"/>
-    <LIBPATH value="..\..\design;..\..\dcu;..\..\resources;..\..\..\JCL\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib;&quot;$(PATH)&quot;"/>
+    <INCLUDEPATH value="..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl"/>
+    <LIBPATH value="..\..\run;..\..\design;..\..\common;..\..\resources;..\..\dcu;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug;&quot;$(PATH)&quot;"/>
     <WARNINGS value="-w-par"/>
     <OTHERFILES value=""/>
   </MACROS>
   <OPTIONS>
-    <IDLCFLAGS value="-I$(BCB)\include -I$(BCB)\include\vcl -I$(BCB)\Projects\lib -I..\..\design 
-      -I..\..\run -I..\..\common -src_suffix cpp -D_DEBUG -boa"/>
-    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c 
+    <IDLCFLAGS value="-I..\..\design -I..\..\run -I..\..\common -I..\..\..\JCL\source
+      -I$(BCB)\include -I$(BCB)\include\vcl -src_suffix cpp -D_DEBUG -boa"/>
+    <CFLAG1 value="-Od -H=$(BCB)\lib\vcl60.csm -Hc -Vx -Ve -X- -r- -a8 -b- -k -y -v -vi- -c
       -tWM"/>
-    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M -U&quot;$(PATH)&quot; -LUDesignIde
-      -LUdclstd.dcp"/>
+    <PFLAGS value="-N2..\..\dcu -N0..\..\dcu -$YD -$W -$O- -$A8 -v -JPHNE -M 
+                   -U&quot;$(PATH)&quot; 
+                  "/>
     <RFLAGS value=""/>
     <AFLAGS value="/mx /w2 /zd"/>
-    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Components&quot; -aa -Tpp -Gpd -x -Gn -Gl -Gi -v"/>
+    <LFLAGS value="-I..\..\dcu -D&quot;JVCL Core Components&quot; -aa -Tpp
+      -Gpr -x -Gn -Gl -Gi -v"/>
     <OTHERFILES value=""/>
   </OPTIONS>
   <LINKER>
@@ -99,39 +101,39 @@ Known Issues:
   <FILELIST>
       <FILE FILENAME="JvCoreC6D.res" FORMNAME="" UNITNAME="JvCoreC6D.res" CONTAINERID="ResTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6D.cpp" FORMNAME="" UNITNAME="JvCoreC6D" CONTAINERID="CCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="CJCL60.bpi" FORMNAME="" UNITNAME="CJCL60" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="JvCoreC6R.bpi" FORMNAME="" UNITNAME="JvCoreC6R" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvProviderTreeListDsgnFrame.pas" FORMNAME="fmeJvProviderTreeListDsgn" UNITNAME="JvProviderTreeListDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvProviderTreeListFrame.pas" FORMNAME="fmeJvProviderTreeList" UNITNAME="JvProviderTreeListFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvStdToolbarDsgnFrame.pas" FORMNAME="fmeJvStdToolbarDesign" UNITNAME="JvStdToolbarDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvStringsForm.pas" FORMNAME="JvStrEditDlg" UNITNAME="JvStringsForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvBaseDlgEditor.pas" FORMNAME="" UNITNAME="JvBaseDlgEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvBaseDsgnForm.pas" FORMNAME="JvBaseDesign" UNITNAME="JvBaseDsgnForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvBaseDsgnFrame.pas" FORMNAME="fmeJvBaseDesign" UNITNAME="JvBaseDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvBaseDsgnToolbarFrame.pas" FORMNAME="fmeJvBaseToolbarDesign" UNITNAME="JvBaseDsgnToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvColorEditor.pas" FORMNAME="" UNITNAME="JvColorEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvColorProviderDesignerForm.pas" FORMNAME="frmJvColorProviderDesigner" UNITNAME="JvColorProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvColorProviderEditors.pas" FORMNAME="" UNITNAME="JvColorProviderEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvCoreReg.pas" FORMNAME="" UNITNAME="JvCoreReg" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvDataContextManagerForm.pas" FORMNAME="" UNITNAME="JvDataContextManagerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataConsumerContextSelectForm.pas" FORMNAME="frmDataConsumerContextSelect" UNITNAME="JvDataConsumerContextSelectForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataConsumerItemSelectForm.pas" FORMNAME="frmJvDataConsumerItemSelect" UNITNAME="JvDataConsumerItemSelectForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataContextManagerForm.pas" FORMNAME="frmJvDataContextManager" UNITNAME="JvDataContextManagerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDataProviderDesignerForm.pas" FORMNAME="frmDataProviderDesigner" UNITNAME="JvDataProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvDataProviderEditors.pas" FORMNAME="" UNITNAME="JvDataProviderEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvDataProviderItemDesign.pas" FORMNAME="" UNITNAME="JvDataProviderItemDesign" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDateTimeForm.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvDesignerUtils.pas" FORMNAME="" UNITNAME="JvDesignerUtils" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvDsgnConsts.pas" FORMNAME="" UNITNAME="JvDsgnConsts" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvDsgnEditors.pas" FORMNAME="" UNITNAME="JvDsgnEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvIDEZoom.pas" FORMNAME="" UNITNAME="JvIDEZoom" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvJVCLAboutEditor.pas" FORMNAME="" UNITNAME="JvJVCLAboutEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\design\JvPaintBoxEditor.pas" FORMNAME="" UNITNAME="JvPaintBoxEditor" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvProviderToolbarFrame.pas" FORMNAME="" UNITNAME="JvProviderToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvProviderTreeListFrame.pas" FORMNAME="fmeJvProviderTreeList" UNITNAME="JvProviderTreeListFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvBaseDsgnForm.pas" FORMNAME="JvBaseDesign" UNITNAME="JvBaseDsgnForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvBaseDsgnFrame.pas" FORMNAME="fmeJvBaseDesign" UNITNAME="JvBaseDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvBaseDsgnToolbarFrame.pas" FORMNAME="fmeJvBaseToolbarDesign" UNITNAME="JvBaseDsgnToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvDataConsumerContextSelectForm.pas" FORMNAME="frmDataConsumerContextSelect" UNITNAME="JvDataConsumerContextSelectForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvDataConsumerItemSelectForm.pas" FORMNAME="frmJvDataConsumerItemSelect" UNITNAME="JvDataConsumerItemSelectForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvDataProviderDesignerForm.pas" FORMNAME="frmDataProviderDesigner" UNITNAME="JvDataProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvDateTimeForm.pas" FORMNAME="frmSelectDateTimeDlg" UNITNAME="JvDateTimeForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvStdToolbarDsgnFrame.pas" FORMNAME="fmeJvStdToolbarDesign" UNITNAME="JvStdToolbarDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvColorProviderEditors.pas" FORMNAME="" UNITNAME="JvColorProviderEditors" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvColorProviderDesignerForm.pas" FORMNAME="" UNITNAME="JvColorProviderDesignerForm" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="..\..\design\JvProviderTreeListDsgnFrame.pas" FORMNAME="fmeJvProviderTreeListDsgn" UNITNAME="JvProviderTreeListDsgnFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
-      <FILE FILENAME="designide.bpi" FORMNAME="" UNITNAME="designide" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="dclstd.bpi" FORMNAME="" UNITNAME="dclstd" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vcl.bpi" FORMNAME="" UNITNAME="vcl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="vclx.bpi" FORMNAME="" UNITNAME="vclx" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
-      <FILE FILENAME="rtl.bpi" FORMNAME="" UNITNAME="rtl" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvProviderToolbarFrame.pas" FORMNAME="fmeJvProviderToolbar" UNITNAME="JvProviderToolbarFrame" CONTAINERID="PascalCompiler" DESIGNCLASS="TFrame" LOCALCOMMAND=""/>
+      <FILE FILENAME="..\..\design\JvDsgnTypes.pas" FORMNAME="" UNITNAME="JvDsgnTypes" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
   </FILELIST>
   <BUILDTOOLS>
   </BUILDTOOLS>
@@ -149,7 +151,7 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1033
 CodePage=1252
 
 [Version Info Keys]
@@ -165,24 +167,22 @@ ProductVersion=1.0.0.0
 Comments=
 
 [HistoryLists\hlIncludePath]
-Count=8
-Item0=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;..\..\design;..\..\run;..\..\common
-Item1=$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;..\..\design;..\..\run;..\..\common;..\..\resources
-Item2=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
-Item3=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;C:\Prog\delphi6\Lib\JCL\dcu
-Item4=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib;C:\Prog\delphi6\Lib\JCL\dcu
-Item5=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
-Item6=..\..\design;..\..\run;$(BCB)\include;$(BCB)\include\vcl;$(BCB)\Projects\lib
-Item7=..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\include;$(BCB)\include\vcl
+Count=4
+Item0=..\..\design;..\..\run;..\..\common;..\..\..\JCL\source;$(BCB)\include;$(BCB)\include\vcl
+Item1=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl
+Item2=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\include;$(BCB)\include\vcl
+Item3=..\..\design;..\..\run;..\..\common;$(BCB)\include;$(BCB)\include\vcl;..\..\..\JCL\source
 
 [HistoryLists\hlLibraryPath]
-Count=6
-Item0=$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib;..\..\design;..\..\dcu;..\..\resources
-Item1=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib;..\..\resources
-Item2=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
-Item3=..\..\design;..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
-Item4=..\..\dcu;$(BCB)\lib;$(BCB)\lib\obj;$(BCB)\lib\debug;$(BCB)\Projects\lib
-Item5=c:\prog\cbuilder6\lib\debug;..\..\design;C:\Prog\CBuilder6\Projects;$(BCB)\lib\obj;$(BCB)\lib
+Count=8
+Item0=..\..\design;..\..\run;..\..\common;..\..\resources;..\..\..\JCL\dcu;$(BCB)\Projects\Lib;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item1=..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item2=C:\Prog\delphi6\Lib\JCL\dcu;..\..\design;..\..\run;..\..\common;..\..\resources;$(BCB)\lib\obj;$(BCB)\lib;$(BCB)\lib\debug
+Item3=C:\Prog\delphi6\Lib\JCL\dcu;c:\prog\cbuilder6\lib\debug;$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item4=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common
+Item5=$(BCB)\lib\obj;$(BCB)\lib;..\..\design;..\..\run;..\..\common;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item6=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib;..\..\..\JCL\dcu;..\..\..\JCL\source
+Item7=..\..\design;..\..\run;..\..\common;$(BCB)\lib\obj;$(BCB)\lib
 
 [HistoryLists\hlDebugSourcePath]
 Count=1
@@ -197,9 +197,12 @@ Count=1
 Item0=..\..\dcu
 
 [HistoryLists\hlFinalOutputDir]
-Count=2
-Item0=..\..\lib6\
-Item1=..\..\lib6
+Count=1
+Item0=$(BCB)\Projects\bpl
+
+[HistoryLists\hIBPIOutputDir]
+Count=1
+Item0=$(BCB)\Projects\lib
 
 [Debugging]
 DebugSourceDirs=$(BCB)\source\vcl
