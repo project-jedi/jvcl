@@ -62,6 +62,7 @@ type
 
 const
   WM_XPBARAFTERCOLLAPSE = WM_USER + 303; // Ord('J') + Ord('V') + Ord('C') + Ord('L')
+  WM_XPBARAFTEREXPAND = WM_XPBARAFTERCOLLAPSE + 1;
 
 type
   TJvXPBarItem = class;
@@ -150,16 +151,13 @@ type
   published
     property Action: TBasicAction read GetAction write SetAction;
     property Caption: TCaption read FCaption write SetCaption stored IsCaptionStored;
-    property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored
-      default True;
+    property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
     property Hint: string read FHint write FHint stored IsHintStored;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex
-      stored IsImageIndexStored default -1;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex stored IsImageIndexStored default -1;
     property ImageList: TCustomImageList read FImageList write SetImageList;
     property Name: string read FName write SetName;
     property Tag: Integer read FTag write FTag default 0;
-    property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored
-      default True;
+    property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
   end;
 
@@ -266,6 +264,11 @@ type
     FOnDrawItem: TJvXPBarOnDrawItemEvent;
     FOnItemClick: TJvXPBarOnItemClickEvent;
     FColors: TJvXPBarColors;
+    FRollImages: TCustomImageList;
+    FImageChangeLink: TChangeLink;
+    FRollChangeLink: TChangeLink;
+    FGrouped: boolean;
+    FHeaderHeight: integer;
     function IsFontStored: Boolean;
     procedure FontChanged(Sender: TObject);
     procedure SetCollapsed(Value: Boolean);
@@ -281,7 +284,14 @@ type
     procedure SetShowRollButton(Value: Boolean);
     procedure ResizeToMaxHeight;
     procedure SetColors(const Value: TJvXPBarColors);
+    procedure SetRollImages(const Value: TCustomImageList);
+    procedure SetGrouped(const Value: boolean);
+    procedure GroupMessage;
+    procedure SetHeaderHeight(const Value: integer);
+    function GetRollHeight: integer;
+    function GetRollWidth: integer;
   protected
+
     function GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
     function GetItemRect(Index: Integer): TRect; virtual;
     procedure ItemVisibilityChanged(Item: TJvXPBarItem); dynamic;
@@ -296,10 +306,14 @@ type
     procedure Paint; override;
     procedure EndUpdate; override;
     procedure WMAfterXPBarCollapse(var Msg: TMessage); message WM_XPBARAFTERCOLLAPSE;
+    procedure WMAfterXPBarExpand(var Msg: TMessage); message WM_XPBARAFTEREXPAND;
     property Collapsed: Boolean read FCollapsed write SetCollapsed default False;
     property Colors: TJvXPBarColors read FColors write SetColors;
+    property RollImages: TCustomImageList read FRollImages write SetRollImages;
     property Font: TFont read FFont write SetFont stored IsFontStored;
+    property Grouped: boolean read FGrouped write SetGrouped default False;
     property HeaderFont: TFont read FHeaderFont write SetHeaderFont stored IsFontStored;
+    property HeaderHeight: integer read FHeaderHeight write SetHeaderHeight default 28;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default True;
     property HotTrackColor: TColor read FHotTrackColor write SetHotTrackColor default $00FF7C35;
     property Icon: TIcon read FIcon write SetIcon;
@@ -313,15 +327,13 @@ type
     property RollStep: TJvXPBarRollStep read FRollStep write FRollStep default 3;
     property ShowLinkCursor: Boolean read FShowLinkCursor write FShowLinkCursor default True;
     property ShowRollButton: Boolean read FShowRollButton write SetShowRollButton default True;
-    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange
-      write FAfterCollapsedChange;
-    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange
-      write FBeforeCollapsedChange;
-    property OnCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FOnCollapsedChange
-      write FOnCollapsedChange;
+    property AfterCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FAfterCollapsedChange write FAfterCollapsedChange;
+    property BeforeCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FBeforeCollapsedChange write FBeforeCollapsedChange;
+    property OnCollapsedChange: TJvXPBarOnCollapsedChangeEvent read FOnCollapsedChange write FOnCollapsedChange;
     property OnCanChange: TJvXPBarOnCanChangeEvent read FOnCanChange write FOnCanChange;
     property OnDrawItem: TJvXPBarOnDrawItemEvent read FOnDrawItem write FOnDrawItem;
     property OnItemClick: TJvXPBarOnItemClickEvent read FOnItemClick write FOnItemClick;
+    procedure AdjustClientRect(var Rect: TRect); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -338,8 +350,11 @@ type
     property Collapsed;
     property Colors;
     property Items;
+    property RollImages;
     property Font;
+    property Grouped;
     property HeaderFont;
+    property HeaderHeight;
     property HotTrack;
     property HotTrackColor;
     property Icon;
@@ -391,9 +406,9 @@ type
     property OnCanResize;
     property OnClick;
     property OnConstrainedResize;
-    {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
     property OnContextPopup;
-    {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -415,9 +430,9 @@ implementation
 {$IFDEF JVCLThemesEnabled}
 uses
   UxTheme,
-  {$IFNDEF COMPILER7_UP}
+{$IFNDEF COMPILER7_UP}
   TmSchema,
-  {$ENDIF COMPILER7_UP}
+{$ENDIF COMPILER7_UP}
   JvThemes;
 {$ENDIF JVCLThemesEnabled}
 
@@ -429,7 +444,7 @@ uses
 {$ENDIF LINUX}
 
 const
-  FC_HEADER_HEIGHT = 34;
+  FC_HEADER_MARGIN = 6;
   FC_ITEM_MARGIN = 8;
 
 resourcestring
@@ -443,8 +458,7 @@ begin
   Idx2 := TCollectionItem(Item2).Index;
   if Idx1 < Idx2 then
     Result := -1
-  else
-  if Idx1 = Idx2 then
+  else if Idx1 = Idx2 then
     Result := 0
   else
     Result := 1;
@@ -573,10 +587,10 @@ var
   DisplayName, ItemName: string;
 begin
   DisplayName := FCaption;
-  if DisplayName = '' then
+  if (DisplayName = '') then
     DisplayName := RsUntitled;
   ItemName := FName;
-  if ItemName <> '' then
+  if (ItemName <> '') then
     DisplayName := DisplayName + ' [' + ItemName + ']';
   if not FVisible then
     DisplayName := DisplayName + '*';
@@ -588,11 +602,9 @@ begin
   Result := nil;
   if Assigned(FImageList) then
     Result := FImageList
-  else
-  if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
+  else if Assigned(Action) and Assigned(TAction(Action).ActionList.Images) then
     Result := TAction(Action).ActionList.Images
-  else
-  if Assigned(FWinXPBar.FImageList) then
+  else if Assigned(FWinXPBar.FImageList) then
     Result := FWinXPBar.FImageList;
 end;
 
@@ -984,7 +996,7 @@ begin
   FGradientFrom := clWhite;
   FGradientTo := $00F7D7C6;
   FSeparatorColor := $00F7D7C6;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     Details := ThemeServices.GetElementDetails(tebHeaderBackgroundNormal);
@@ -1004,7 +1016,7 @@ begin
         FSeparatorColor := AColor;
     end;
   end;
-  {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
 end;
 
 procedure TJvXPBarColors.Change;
@@ -1054,7 +1066,7 @@ end;
 constructor TJvXPCustomWinXPBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  ControlStyle := ControlStyle - [csDoubleClicks];
+  ControlStyle := ControlStyle - [csDoubleClicks] + [csAcceptsControls];
   ExControlStyle := [csRedrawCaptionChanged];
   Height := 46;
   HotTrack := True; // initialize mouse events
@@ -1063,13 +1075,17 @@ begin
   FColors.OnChange := DoColorsChange;
   FCollapsed := False;
   FFadeThread := nil;
+  FImageChangeLink := TChangeLink.Create;
+  FImageChangeLink.OnChange := DoColorsChange;
+  FRollChangeLink := TChangeLink.Create;
+  FRollChangeLink.OnChange := DoColorsChange;
 
   FFont := TFont.Create;
   FFont.Color := $00E75100;
   FFont.Size := 10;
   FFont.OnChange := FontChanged;
   FGradient := TBitmap.Create;
-
+  FHeaderHeight := 28;
   FGradientWidth := 0;
   FHeaderFont := TFont.Create;
   FHeaderFont.Color := $00E75100;
@@ -1114,7 +1130,9 @@ begin
   if not (csDestroying in ComponentState) and (Operation = opRemove) then
   begin
     if AComponent = FImageList then
-      FImageList := nil;
+      ImageList := nil;
+    if AComponent = FRollImages then
+      RollImages := nil;
     for I := 0 to FItems.Count - 1 do
       FItems[I].Notification(AComponent);
   end;
@@ -1140,14 +1158,12 @@ begin
   { TODO: Check this!!! }
   if IsLocked then
     Exit;
-
-  NewHeight := FC_HEADER_HEIGHT + FVisibleItems.Count * FRollOffset + FC_ITEM_MARGIN + 1;
-
+  NewHeight := FC_HEADER_MARGIN + HeaderHeight + FVisibleItems.Count * FRollOffset + FC_ITEM_MARGIN + 1;
   { full collapsing }
-  if (FRolling and not FCollapsed) or (not FRolling and FCollapsed) or
-    (FVisibleItems.Count = 0) then
+  if ((FRolling and not FCollapsed) or (not FRolling and FCollapsed) or
+    (FVisibleItems.Count = 0)) then
     Dec(NewHeight, FC_ITEM_MARGIN);
-
+  //  if Height <> NewHeight then
   Height := NewHeight;
 end;
 
@@ -1165,19 +1181,36 @@ begin
   Result.Left := 3;
   Result.Right := Width - 8;
   if FRollMode = rmShrink then
-    Result.Top := FC_HEADER_HEIGHT + FC_ITEM_MARGIN div 2 + Index * FRollOffset + 1
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FRollOffset + 1
   else
-    Result.Top := FC_HEADER_HEIGHT + FC_ITEM_MARGIN div 2 + Index * FItemHeight + 1;
+    Result.Top := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN div 2 + Index * FItemHeight + 1;
   Result.Bottom := Result.Top + FItemHeight;
 end;
 
+function TJvXPCustomWinXPBar.GetRollHeight: integer;
+begin
+  if Assigned(FRollImages) then
+    Result := FRollImages.Height
+  else
+    Result := 18;
+end;
+
+function TJvXPCustomWinXPBar.GetRollWidth: integer;
+begin
+  if Assigned(FRollImages) then
+    Result := FRollImages.Width
+  else
+    Result := 18;
+end;
+
 function TJvXPCustomWinXPBar.GetHitTestRect(const HitTest: TJvXPBarHitTest): TRect;
+
 begin
   case HitTest of
     htHeader:
-      Result := Bounds(0, 5, Width, 28);
+      Result := Bounds(0, 5, Width, FHeaderHeight);
     htRollButton:
-      Result := Bounds(Width - 24, 10, 18, 18);
+      Result := Bounds(Width - 24, (FHeaderHeight - GetRollHeight) div 2, GetRollWidth, GetRollHeight);
   end;
 end;
 
@@ -1221,7 +1254,7 @@ begin
   FHitTest := GetHitTestAt(X, Y);
   if FHitTest <> OldHitTest then
   begin
-    Rect := Bounds(0, 5, Width, 28); // header
+    Rect := Bounds(0, 5, Width, FHeaderHeight); // header
     InvalidateRect(Handle, @Rect, False);
     if FShowLinkCursor then
     begin
@@ -1231,7 +1264,7 @@ begin
         Cursor := crDefault;
     end;
   end;
-  Header := FC_HEADER_HEIGHT + FC_ITEM_MARGIN;
+  Header := FC_HEADER_MARGIN + HeaderHeight + FC_ITEM_MARGIN;
   if (Y < Header) or (Y > Height - FC_ITEM_MARGIN) then
     NewIndex := -1
   else
@@ -1247,8 +1280,7 @@ begin
       if FShowLinkCursor then
         Cursor := crHandPoint;
     end
-    else
-    if FShowLinkCursor then
+    else if FShowLinkCursor then
       Cursor := crDefault;
   end;
   inherited;
@@ -1283,7 +1315,7 @@ begin
     FGradientWidth := Width;
 
     // recreate gradient rect
-    JvXPCreateGradientRect(Width, 28, clWhite, $00F7D7C6, 32, gsLeft, True,
+    JvXPCreateGradientRect(Width, FHeaderHeight, clWhite, $00F7D7C6, 32, gsLeft, True,
       FGradient);
   end;
 
@@ -1295,6 +1327,7 @@ end;
 procedure TJvXPCustomWinXPBar.SetCollapsed(Value: Boolean);
 begin
   if Value <> FCollapsed then
+  begin
     if not (csLoading in ComponentState) then
     begin
       if Assigned(FBeforeCollapsedChange) then
@@ -1315,7 +1348,10 @@ begin
       else
         RollOffset := FItemHeight;
       FRolling := False;
+      if Grouped and not Value then
+        GroupMessage;
     end;
+  end;
 end;
 
 procedure TJvXPCustomWinXPBar.SetFont(Value: TFont);
@@ -1368,7 +1404,14 @@ procedure TJvXPCustomWinXPBar.SetImageList(Value: TCustomImageList);
 begin
   if Value <> FImageList then
   begin
+    if FImageList <> nil then
+      FImageList.UnRegisterChanges(FImageChangeLink);
     FImageList := Value;
+    if FImageList <> nil then
+    begin
+      FImageList.FreeNotification(Self);
+      FImageList.RegisterChanges(FImageChangeLink);
+    end;
     InternalRedraw;
   end;
 end;
@@ -1453,10 +1496,10 @@ begin
     Font.Assign(Self.Font);
     if not FVisibleItems[Index].Enabled then
       Font.Color := clGray
-    else
-    if dsHighlight in State then
+    else if dsHighlight in State then
     begin
-      Font.Color := FHotTrackColor;
+      if FHotTrackColor <> clNone then
+        Font.Color := FHotTrackColor;
       Font.Style := Font.Style + [fsUnderline];
     end;
     ItemRect := GetItemRect(Index);
@@ -1471,8 +1514,8 @@ begin
       if HasImages then
         Draw(ItemRect.Left, ItemRect.Top + (FItemHeight - Bitmap.Height) div 2, Bitmap);
       ItemCaption := FVisibleItems[Index].Caption;
-      if ItemCaption = '' then
-        ItemCaption := Format('(untitled %d)', [Index]);
+      if (ItemCaption = '') and ((csDesigning in ComponentState) or (ControlCount = 0)) then
+        ItemCaption := Format('(%s %d)', [RsUntitled, Index]);
       Inc(ItemRect.Left, 20);
       DrawText(Handle, PChar(ItemCaption), -1, ItemRect, DT_SINGLELINE or
         DT_VCENTER or DT_END_ELLIPSIS or DT_NOPREFIX);
@@ -1500,7 +1543,7 @@ begin
     FillRect(Rect);
 
     { draw header }
-    JvXPCreateGradientRect(Width, 28, FColors.GradientFrom,
+    JvXPCreateGradientRect(Width, FHeaderHeight, FColors.GradientFrom,
       FColors.GradientTo, 32, gsLeft, True, FGradient);
     Draw(0, Rect.Top, FGradient);
 
@@ -1524,20 +1567,46 @@ begin
     begin
       Bitmap := TBitmap.Create;
       try
-        Index := 0;
-        if FHitTest = htRollButton then
+        if Assigned(FRollImages) then
         begin
-          if dsHighlight in DrawState then
-            Index := 1;
-          if (dsClicked in DrawState) and (dsHighlight in DrawState) then
-            Index := 2;
-        end;
-        if FCollapsed then
-          Bitmap.Handle := LoadBitmap(hInstance, PChar('EXPAND' + IntToStr(Index)))
+          // format:
+          // 0 - normal collapsed
+          // 1 - normal expanded
+          // 2 - hot collapsed
+          // 3 - hot expanded
+          // 4 - down collapsed
+          // 5 - down expanded
+          Index := 0; // normal
+          if FHitTest = htRollButton then
+          begin
+            if dsHighlight in DrawState then
+              Index := 2; // hot
+            if (dsClicked in DrawState) and (dsHighlight in DrawState) then
+              Index := 4; // down
+          end;
+          if not FCollapsed then
+            Inc(Index);
+          if Index >= FRollImages.Count then
+            Index := Ord(not FCollapsed);
+          FRollImages.GetBitmap(Index, Bitmap);
+        end
         else
-          Bitmap.Handle := LoadBitmap(hInstance, PChar('COLLAPSE' + IntToStr(Index)));
+        begin
+          Index := 0;
+          if FHitTest = htRollButton then
+          begin
+            if dsHighlight in DrawState then
+              Index := 1; // hot
+            if (dsClicked in DrawState) and (dsHighlight in DrawState) then
+              Index := 2; // down
+          end;
+          if FCollapsed then
+            Bitmap.Handle := LoadBitmap(hInstance, PChar('EXPAND' + IntToStr(Index)))
+          else
+            Bitmap.Handle := LoadBitmap(hInstance, PChar('COLLAPSE' + IntToStr(Index)));
+        end;
         Bitmap.Transparent := True;
-        Draw(Rect.Right - 24, Rect.Top + 5, Bitmap);
+        Draw(Rect.Right - 24, Rect.Top + (HeaderHeight - GetRollHeight) div 2, Bitmap);
       finally
         Bitmap.Free;
       end;
@@ -1546,7 +1615,7 @@ begin
 
     { draw seperator line }
     Pen.Color := FColors.SeparatorColor;
-    JvXPDrawLine(Canvas, 1, Rect.Top + 28, Width - 1, Rect.Top + 28);
+    JvXPDrawLine(Canvas, 1, Rect.Top + FHeaderHeight, Width - 1, Rect.Top + FHeaderHeight);
 
     { draw icon }
     Inc(Rect.Left, 22);
@@ -1559,9 +1628,9 @@ begin
     { draw caption }
     SetBkMode(Handle, Transparent);
     Font.Assign(FHeaderFont);
-    if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) then
+    if FHotTrack and (dsHighlight in DrawState) and (FHitTest <> htNone) and (FHotTrackColor <> clNone) then
       Font.Color := FHotTrackColor;
-    Rect.Bottom := Rect.Top + 28;
+    Rect.Bottom := Rect.Top + FHeaderHeight;
     Dec(Rect.Right, 3);
     DrawText(Handle, PChar(Caption), -1, Rect, DT_SINGLELINE or DT_VCENTER or
       DT_END_ELLIPSIS or DT_NOPREFIX);
@@ -1578,9 +1647,12 @@ begin
 end;
 
 procedure TJvXPCustomWinXPBar.WMAfterXPBarCollapse(var Msg: TMessage);
+var i:integer;
 begin
   if Assigned(FAfterCollapsedChange) then
     FAfterCollapsedChange(Self, Msg.WParam <> 0);
+  if Grouped and not FCollapsed then
+    GroupMessage;
 end;
 
 procedure TJvXPCustomWinXPBar.DoColorsChange(Sender: TObject);
@@ -1591,6 +1663,71 @@ end;
 procedure TJvXPCustomWinXPBar.SetColors(const Value: TJvXPBarColors);
 begin
   //
+end;
+
+procedure TJvXPCustomWinXPBar.SetRollImages(const Value: TCustomImageList);
+begin
+  if FRollImages <> Value then
+  begin
+    if FRollImages <> nil then
+      FRollImages.UnregisterChanges(FRollChangeLink);
+    FRollImages := Value;
+    if FRollImages <> nil then
+    begin
+      FRollImages.FreeNotification(Self);
+      FRollImages.RegisterChanges(FRollChangeLink);
+    end;
+    InternalRedraw;
+  end;
+end;
+
+procedure TJvXPCustomWinXPBar.GroupMessage;
+var
+  Msg: TMessage;
+begin
+  if (Parent <> nil) then
+  begin
+    Msg.Msg := WM_XPBARAFTEREXPAND;
+    Msg.WParam := integer(Self);
+    Msg.Result := 0;
+    Parent.Broadcast(Msg);
+  end;
+end;
+
+procedure TJvXPCustomWinXPBar.WMAfterXPBarExpand(var Msg: TMessage);
+begin
+  if Grouped and (TObject(Msg.WParam) <> Self) then
+    Collapsed := true;
+end;
+
+procedure TJvXPCustomWinXPBar.SetGrouped(const Value: boolean);
+begin
+  if FGrouped <> Value then
+  begin
+    FGrouped := Value;
+    if FGrouped and not Collapsed then
+      Collapsed := true;
+  end;
+end;
+
+procedure TJvXPCustomWinXPBar.AdjustClientRect(var Rect: TRect);
+begin
+  inherited;
+  if ControlCount > 0 then
+  begin
+    Inc(Rect.Top, FHeaderHeight + 4);
+    InflateRect(Rect, -4, -4);
+  end;
+end;
+
+procedure TJvXPCustomWinXPBar.SetHeaderHeight(const Value: integer);
+begin
+  if FHeaderHeight <> Value then
+  begin
+    FHeaderHeight := Value;
+    ResizeToMaxHeight;
+    //    InternalRedraw;
+  end;
 end;
 
 end.
