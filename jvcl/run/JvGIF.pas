@@ -34,7 +34,7 @@ uses
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF COMPILER6_UP}
-  SysUtils, Classes, Graphics;
+  SysUtils, Classes, Graphics, Controls;
 
 const
   RT_GIF = 'GIF'; { GIF Resource Type }
@@ -3010,11 +3010,13 @@ end;
 initialization
   CF_GIF := RegisterClipboardFormat('GIF Image');
 
-  {$IFDEF VisualCLX}
+  {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvGIFFrame, TControl);
   GroupDescendentsWith(TJvGIFImage, TControl);
-  {$ENDIF VisualCLX}
+  {$ENDIF COMPILER7_UP}
   RegisterClasses([TJvGIFFrame, TJvGIFImage]);
+  {$ENDIF VCL}
 {$IFDEF USE_JV_GIF}
   TPicture.RegisterFileFormat('gif', RsGIFImage, TJvGIFImage);
   TPicture.RegisterClipboardFormat(CF_GIF, TJvGIFImage);

@@ -42,7 +42,7 @@ implementation
 {$IFNDEF UIBNOCOMPONENT}
 
 uses
-  Classes,
+  Classes, Controls,
   {$IFDEF USEJVCL}
   JvDsgnConsts,
   {$ENDIF USEJVCL}
@@ -65,6 +65,11 @@ resourcestring
 
 procedure Register;
 begin
+  {$IFDEF COMPILER7_UP}
+  GroupDescendentsWith(TJvUIBDataSet, TControl);
+  GroupDescendentsWith(TJvUIBCustomDataSet, TControl);
+  {$ENDIF COMPILER7_UP}
+
   RegisterComponents(RsPaletteUIB, [TJvUIBDatabase, TJvUIBTransaction, TJvUIBQuery,
     {$IFNDEF DelphiPersonalEdition} TJvUIBDataSet, {$ENDIF}
     TJvUIBScript, TJvUIBBackup, TJvUIBRestore]);

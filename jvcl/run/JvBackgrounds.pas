@@ -1760,9 +1760,6 @@ begin
         FClients.Add(TWinControl(Owner));
   if not Registered then
   begin
-    {$IFDEF VisualCLX}
-    GroupDescendentsWith(TJvBackgroundImage, TControl);
-    {$ENDIF VisualCLX}
     Classes.RegisterClasses([TJvBackgroundImage]);
     Registered := True;
   end;

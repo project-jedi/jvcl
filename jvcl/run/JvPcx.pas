@@ -38,7 +38,7 @@ uses
   QWindows,
   {$ENDIF LINUX}
   {$IFDEF VCL}
-  Graphics, Forms,
+  Graphics, Controls, Forms,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, Qt, QGraphics, QControls,
@@ -615,10 +615,12 @@ end;
 
 
 initialization
-  {$IFDEF VisualCLX}
+  {$IFDEF VCL}
+  {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvPcx, TControl);
-  {$ENDIF VisualCLX}
+  {$ENDIF COMPILER7_UP}
   RegisterClass(TJvPcx);
+  {$ENDIF VCL}
   TPicture.RegisterFileFormat(RsPcxExtension, RsPcxFilterName, TJvPcx);
 
 finalization

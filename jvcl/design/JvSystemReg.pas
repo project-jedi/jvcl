@@ -60,6 +60,11 @@ uses
 
 procedure Register;
 begin
+  {$IFDEF COMPILER7_UP}
+  GroupDescendentsWith(TJvSimpleXML, TControl);
+  GroupDescendentsWith(TJvTimer, TControl);
+  {$ENDIF COMPILER7_UP}
+
   RegisterComponents(RsPaletteSystem, [TJvClipboardMonitor, TJvClipboardViewer,
     {TJvComputerInfo, // - do not register this component as default}
     TJvSHFileOperation, TJvChangeNotify, TJvDropTarget, TJvDragDrop, TJvAppInstances,

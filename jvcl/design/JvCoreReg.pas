@@ -72,6 +72,10 @@ procedure Register;
 const
   BaseClass: TClass = TComponent;
 begin
+  {$IFDEF COMPILER7_UP}
+  GroupDescendentsWith(TJvComponent, TControl);
+  {$ENDIF COMPILER7_UP}
+
   RegisterComponents(RsPaletteNonVisual, [TJvJVCLAboutComponent]);
   {$IFDEF MSWINDOWS}
   RegisterComponents(RsPaletteNonVisual, [TJvContextProvider,

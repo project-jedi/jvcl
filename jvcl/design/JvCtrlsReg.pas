@@ -64,6 +64,10 @@ uses
 
 procedure Register;
 begin
+  {$IFDEF COMPILER7_UP}
+  GroupDescendentsWith(TJvHint, TControl);
+  {$ENDIF COMPILER7_UP}
+
   RegisterComponents(RsPaletteButton, [TJvTransparentButton,
     TJvTransparentButton2, TJvArrowButton, TJvCaptionButton, TJvColorButton,
     TJvOfficeColorButton, TJvOfficeColorPanel,

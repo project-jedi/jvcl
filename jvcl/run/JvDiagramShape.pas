@@ -2082,9 +2082,9 @@ end;
 
 procedure RegisterStorageClasses;
 begin
-  {$IFDEF VisualCLX}
+  {$IFDEF COMPILER7_UP}
   GroupDescendentsWith(TJvConnection, TControl);
-  {$ENDIF VisualCLX}
+  {$ENDIF COMPILER7_UP}
   RegisterClasses([TJvCustomDiagramShape, TJvMoveableShape,
     TJvSizeableShape, TJvConnection, TJvConnector, TJvSingleHeadArrow,
       TJvBluntSingleHeadArrow, TJvDoubleHeadArrow, TJvBitmapShape,
