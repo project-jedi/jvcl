@@ -30,14 +30,13 @@ unit JvSpeedBar;
 interface
 
 uses
-  Windows, Registry,
+  Windows, Registry, SysUtils, Classes, Messages, Menus, Buttons, Controls,
+  Graphics, Forms, ImgList, ActnList, ExtCtrls, Grids, IniFiles,
   {$IFDEF COMPILER6_UP}
   RTLConsts,
   {$ENDIF}
-  SysUtils, Classes, Messages, Menus, Buttons, Controls, Graphics, Forms,
-  ImgList, ActnList,
-  ExtCtrls, Grids, IniFiles,
-  JvSpeedButton, JvAppStore, JvTypes, JvFormPlacement, JvComponent, JvThemes;
+  JvSpeedButton, JvAppStore, JvConsts, JvTypes, JvFormPlacement,
+  JvComponent, JvThemes;
 
 const
   DefButtonWidth = 24;
@@ -486,13 +485,6 @@ type
     property Font;
   end;
 
-const
-  { Values for WParam for CM_SPEEDBARCHANGED message }
-  SBR_CHANGED = 0;        { change buttons properties  }
-  SBR_DESTROYED = 1;      { destroy SpeedBar           }
-  SBR_BTNSELECT = 2;      { select button in SpeedBar  }
-  SBR_BTNSIZECHANGED = 3; { button size changed        }
-
 { Utility routines for SpeedBar Editors }
 
 function FindSpeedBar(const Pos: TPoint): TJvSpeedBar;
@@ -506,7 +498,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJVCLUtils, JvJCLUtils, JvConsts, JvSpeedbarSetupForm, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvSpeedbarSetupForm, JvResources;
 
 const
   DefaultButtonSize: TPoint = (X: DefButtonWidth; Y: DefButtonHeight);

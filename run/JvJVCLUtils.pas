@@ -1967,15 +1967,6 @@ end;
 type
   TJvHack = class(TCustomControl);
 
-{
-procedure NotImplemented;
-begin
-  Screen.Cursor := crDefault;
-  MessageDlg(SNotImplemented, mtInformation, [mbOK], 0);
-  SysUtils.Abort;
-end;
-}
-
 {$IFDEF MSWINDOWS}
 
 procedure PaintInverseRect(const RectOrg, RectEnd: TPoint);

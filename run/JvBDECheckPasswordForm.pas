@@ -47,7 +47,7 @@ implementation
 
 uses
   Consts,
-  JvConsts, JvJVCLUtils;
+  JvResources, JvJVCLUtils;
 
 {$R *.dfm}
 
@@ -114,10 +114,10 @@ end;
 
 procedure TJvChPswdForm.FormCreate(Sender: TObject);
 begin
-  Caption := SChangePassword;
-  OldPswdLabel.Caption := SOldPasswordLabel;
-  NewPswdLabel.Caption := SNewPasswordLabel;
-  ConfirmLabel.Caption := SConfirmPasswordLabel;
+  Caption := RsChangePassword;
+  OldPswdLabel.Caption := RsOldPasswordLabel;
+  NewPswdLabel.Caption := RsNewPasswordLabel;
+  ConfirmLabel.Caption := RsConfirmPasswordLabel;
   OkBtn.Caption := SOKButton;
   CancelBtn.Caption := SCancelButton;
 end;
@@ -178,12 +178,12 @@ begin
             Ok := OnChangePassword(Table, OldPswd.Text, NewPswd.Text);
         end;
         if Ok then
-          MessageBox(SPasswordChanged, '', MB_OK or MB_ICONINFORMATION)
+          MessageBox(RsPasswordChanged, '', MB_OK or MB_ICONINFORMATION)
         else
         if Error = peMismatch then
-          MessageBox(SPasswordsMismatch, '', MB_OK or MB_ICONERROR)
+          MessageBox(RsPasswordsMismatch, '', MB_OK or MB_ICONERROR)
         else
-          MessageBox(SPasswordNotChanged, '', MB_OK or MB_ICONERROR);
+          MessageBox(RsPasswordNotChanged, '', MB_OK or MB_ICONERROR);
       finally
         if Table <> nil then
           Table.Free;

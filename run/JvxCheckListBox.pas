@@ -42,9 +42,7 @@ uses
   RTLConsts,
   {$ENDIF}
   Messages, Classes, Controls, Graphics, StdCtrls, Forms,
-
-  JvAppStore, JvFormPlacement, JvComponent,
-  JvTypes;
+  JvAppStore, JvFormPlacement, JvComponent;
 
 type
   TGetItemWidthEvent = procedure(Control: TWinControl; Index: Integer;
@@ -312,7 +310,8 @@ implementation
 {$R ..\resources\JvxCheckListBox.res}
 
 uses
-  SysUtils, Consts, Math, JvJVCLUtils;
+  SysUtils, Consts, Math,
+  JvConsts, JvJVCLUtils;
 
 
 //=== TJvListBoxStrings ======================================================

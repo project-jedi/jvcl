@@ -204,7 +204,7 @@ implementation
 
 uses
   FileCtrl, TypInfo, Math, Dlgs, Consts,
-  JvTypes, JvStringsForm, JvDateTimeForm, JvConsts, JvDsgnConsts;
+  JvTypes, JvStringsForm, JvDateTimeForm, JvDsgnConsts;
 
 function ValueName(E: Extended): string;
 begin
@@ -926,7 +926,7 @@ begin
     0:
       Result := SImageListEditor;
     1:
-      Result := srSaveImageList;
+      Result := RsSaveImageList;
   else
     Result := '';
   end;

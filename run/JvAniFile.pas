@@ -109,7 +109,7 @@ implementation
 
 uses
   Consts, Math,
-  JvJVCLUtils, JvJCLUtils, JvIconList, JvConsts, JvResources;
+  JvJVCLUtils, JvJCLUtils, JvIconList, JvResources;
 
 { This implementation based on animated cursor editor source code
   (ANIEDIT.C, copyright (C) Microsoft Corp., 1993-1996) }
@@ -272,7 +272,7 @@ begin
     try
       Options := [ofHideReadOnly, ofFileMustExist];
       DefaultExt := RsAniExtension;
-      Filter := srAniCurFilter;
+      Filter := RsAniCurFilter;
       if Execute then
       begin
         Result := TJvAnimatedCursorImage.Create;

@@ -474,7 +474,7 @@ begin
     except
       on E: EDbEngineError do
       begin
-        EndLogin := (MessageDlg(E.Message + '. ' + SRetryLogin,
+        EndLogin := (MessageDlg(E.Message + '. ' + RsRetryLogin,
           mtConfirmation, [mbYes, mbNo], 0) <> mrYes);
       end;
       on E: EDatabaseError do
@@ -1433,7 +1433,7 @@ begin
       Result := Buffer;
     end
     else
-      DBError(SLocalDatabase);
+      DBError(RsELocalDatabase);
   end
   else
     _DBError(SDatabaseClosed);

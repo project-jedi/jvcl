@@ -189,7 +189,7 @@ implementation
 
 uses
   BDEConst, DBConsts,
-  JvConsts;
+  JvResources;
 
 //=== Utility routines =======================================================
 
@@ -415,14 +415,14 @@ begin
       if DataBase.IsSQLBased then
         Check(DbiOpenSPList(DBHandle, FExtended, FSystemItems, nil, Result))
       else
-        DatabaseError(SLocalDatabase);
+        DatabaseError(RsELocalDatabase);
     dtFiles:
       Check(DbiOpenFileList(DBHandle, WildCard, Result));
     dtFunctions:
       if DataBase.IsSQLBased then
         Check(DbiOpenFunctionList(DBHandle, DBIFUNCOpts(FExtended), @Result))
       else
-        DatabaseError(SLocalDatabase);
+        DatabaseError(RsELocalDatabase);
   end;
 end;
 

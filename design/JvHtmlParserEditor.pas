@@ -52,7 +52,7 @@ type
 implementation
 
 uses
-  JvConsts;
+  JvDsgnConsts;
 
 function TJvHtmlParserEditor.GetAttributes: TPropertyAttributes;
 begin

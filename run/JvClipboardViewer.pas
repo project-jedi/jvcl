@@ -106,7 +106,7 @@ implementation
 
 uses
   Grids, Math,
-  JvJVCLUtils, JvJCLUtils, JvConsts;
+  JvJVCLUtils, JvJCLUtils, JvResources;
 
 { Utility routines }
 
@@ -513,9 +513,9 @@ begin
           end
           else
             if IsEmptyClipboard then
-            Text := SClipbrdEmpty
+            Text := RsClipboardEmpty
           else
-            Text := SClipbrdUnknown;
+            Text := RsClipboardUnknown;
           ReadOnly := True;
         end;
       end;

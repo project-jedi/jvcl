@@ -93,7 +93,7 @@ implementation
 
 uses
   SysUtils, Consts,
-  JvJVCLUtils, JvTypes;
+  JvJVCLUtils, JvConsts;
 
 constructor TJvPicClip.Create(AOwner: TComponent);
 begin
@@ -267,8 +267,7 @@ function TJvPicClip.GetDefaultMaskColor: TColor;
 begin
   Result := clOlive;
   if (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then
-    Result := TBitmap(Picture.Graphic).TransparentColor and
-      not PaletteMask;
+    Result := TBitmap(Picture.Graphic).TransparentColor and not PaletteMask;
 end;
 
 function TJvPicClip.GetHeight: Integer;

@@ -32,7 +32,7 @@ interface
 uses
   Windows,
   Messages, Classes, Controls, Graphics, StdCtrls, Forms, Grids,
-  JvAppStore, JvTypes, JvFormPlacement;
+  JvAppStore, JvConsts, JvFormPlacement;
 
 type
   TAcceptKeyEvent = function(Sender: TObject; var Key: Char): Boolean of object;
@@ -785,8 +785,7 @@ var
 begin
   X := (ARect.Right + ARect.Left - Graphic.Width) div 2;
   Y := (ARect.Bottom + ARect.Top - Graphic.Height) div 2;
-  DrawBitmapTransparent(Canvas, X, Y, Graphic, Graphic.TransparentColor
-    and not PaletteMask);
+  DrawBitmapTransparent(Canvas, X, Y, Graphic, Graphic.TransparentColor and not PaletteMask);
 end;
 
 procedure TJvDrawGrid.DrawStr(ARect: TRect; const S: string;

@@ -382,25 +382,6 @@ type
   TJvSortMethod = (smAutomatic, smAlphabetic, smNonCaseSensitive, smNumeric, smDate, smTime, smDateTime, smCurrency);
   TJvListViewColumnSortEvent = procedure(Sender: TObject; Column: Integer; var AMethod:TJvSortMethod) of object;
 
-const
-  CM_JVBASE = CM_BASE + 80;
-  { Command message for JvSpeedbar editor }
-  CM_SPEEDBARCHANGED = CM_JVBASE + 0;
-  { Command message for TJvSpeedButton }
-  CM_JVBUTTONPRESSED = CM_JVBASE + 1;
-  { Command messages for TJvWindowHook }
-  CM_RECREATEWINDOW  = CM_JVBASE + 2;
-  CM_DESTROYHOOK     = CM_JVBASE + 3;
-  { Notify message for TJvxTrayIcon }
-  CM_TRAYICON        = CM_JVBASE + 4;
-
-  { TBitmap.GetTransparentColor from GRAPHICS.PAS use this value }
-  PaletteMask = $02000000;
-
-const
-  crHand     = TCursor(14000);
-  crDragHand = TCursor(14001);
-
 implementation
 
 end.

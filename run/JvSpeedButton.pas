@@ -1,4 +1,3 @@
-{$I JVCL.INC}
 {-----------------------------------------------------------------------------
 The contents of this file are subject to the Mozilla Public License
 Version 1.1 (the "License"); you may not use this file except in compliance
@@ -31,6 +30,9 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
+
+{$I JVCL.INC}
+
 unit JvSpeedButton;
 
 interface
@@ -38,7 +40,7 @@ uses
   Windows, Messages,
   SysUtils, Classes, Controls, Graphics, Forms, ExtCtrls, Buttons, Menus,
   ImgList,
-  JvComponent, JvTypes;
+  JvComponent, JvConsts, JvTypes;
 
 type
   TJvNumGlyphs = 1..5;

@@ -139,7 +139,7 @@ implementation
 
 uses
   Dialogs, Math, SysUtils,
-  JvID3v2DefineForm, JvTypes, JvConsts, JvDsgnConsts;
+  JvID3v2DefineForm, JvTypes, JvDsgnConsts;
 
 {$R *.dfm}
 

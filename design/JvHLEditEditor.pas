@@ -61,7 +61,7 @@ type
 implementation
 
 uses
-  JvAppINIStore, JvConsts, JvDsgnConsts;
+  JvAppINIStore, JvDsgnConsts;
 
 //=== TJvHLEdPropDlgEditor ===================================================
 
@@ -103,7 +103,7 @@ begin
         NewRegAuto.AppStorage := NewStore;
         SetLength(PakName, MAX_PATH);
         SetLength(PakName, GetModuleFileName(hInstance, PChar(PakName), MAX_PATH));
-        NewStore.FileName := ExtractFilePath(PakName) + srJvHLEdPropDlgIni;
+        NewStore.FileName := ExtractFilePath(PakName) + RsJvHLEdPropDlgIni;
         with Component as TJvHLEdPropDlg do
         begin
           OldRegAuto := Storage;

@@ -110,7 +110,7 @@ implementation
 
 uses
   TypInfo,
-  JvConsts;
+  JvDsgnConsts;
 
 {$R *.dfm}
 
@@ -141,7 +141,7 @@ function TJvFormStorageEditor.GetVerb(Index: Integer): string;
 begin
   case Index of
     0:
-      Result := srStorageDesigner;
+      Result := RsStorageDesigner;
   else
     Result := '';
   end;

@@ -85,7 +85,7 @@ implementation
 
 uses
   SysUtils, Forms, Consts,
-  JvDualListForm, JvConsts, JvJVCLUtils;
+  JvDualListForm, JvResources, JvJVCLUtils;
 
 constructor TJvDualListDialog.Create(AOwner: TComponent);
 begin
@@ -95,8 +95,8 @@ begin
   FTitle := EmptyStr;
   FList1 := TStringList.Create;
   FList2 := TStringList.Create;
-  FLabel1Caption := SDualListSrcCaption;
-  FLabel2Caption := SDualListDestCaption;
+  FLabel1Caption := RsDualListSrcCaption;
+  FLabel2Caption := RsDualListDestCaption;
   OkBtnCaption := SOKButton;
   CancelBtnCaption := SCancelButton;
   HelpBtnCaption := SHelpButton;
@@ -131,12 +131,12 @@ end;
 
 function TJvDualListDialog.IsLabel1Custom: Boolean;
 begin
-  Result := CompareStr(Label1Caption, SDualListSrcCaption) <> 0;
+  Result := CompareStr(Label1Caption, RsDualListSrcCaption) <> 0;
 end;
 
 function TJvDualListDialog.IsLabel2Custom: Boolean;
 begin
-  Result := CompareStr(Label2Caption, SDualListDestCaption) <> 0;
+  Result := CompareStr(Label2Caption, RsDualListDestCaption) <> 0;
 end;
 
 function TJvDualListDialog.IsOkBtnCustom: Boolean;
