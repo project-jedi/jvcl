@@ -412,7 +412,6 @@ contains
   JvInterpreter_StdCtrls in '..\Source\JvInterpreter_StdCtrls.pas',
   JvInterpreter_System in '..\Source\JvInterpreter_System.pas',
   JvInterpreter_SysUtils in '..\Source\JvInterpreter_SysUtils.pas',
-  JvInterpreter_all in '..\Source\JvInterpreter_all.pas',
   JvInterpreter_Contnrs in '..\Source\JvInterpreter_Contnrs.pas',
   JvInterpreter_JvUtils in '..\Source\JvInterpreter_JvUtils.pas',
   JvUtils in '..\Source\JvUtils.pas',
