@@ -3,7 +3,8 @@
 ----------------------------------------------------------------------------------------------------
 @@JvMemoryDataset.pas
 Summary
-  Contains the TJvMemoryDataset component.
+  Contains the TJvMemoryDataset component. This component may be used to manipulate records within
+  memory, and provide them to any DataSource for use in data components.
 <INCLUDE JVCL.UnitText.dtx>
 Author
   Fedor Koshevnikov, Igor Pavluk and Serge Korolev
@@ -131,9 +132,16 @@ JVCLInfo
   GROUP=JVCL.Storage
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Allows developer to create and maintain a memory-driven database.
 Description
-  Write here a description
+  This object, derived from TDataSet, provides methods that allow for creation and maintenance of
+  memory-based databases. This can be useful if you want to dri e data-driven components from memory
+  rather than a disk-based database, say in the case of a client-server app where you wish to cache
+  frequently used data at the client side.
+
+  You could then use a TJvMemoryData object to provide this data to data access controls for display
+  and/or selection. Remember, however, that you would need to deliberately write information back to
+  the server if you wish for it to be persistent.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvMemoryData.AfterApply

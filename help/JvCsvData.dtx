@@ -97,11 +97,11 @@ Parameters
 @@DateTimeToTimeTHex
 <TITLE DateTimeToTimeTHex function>
 Summary
-  Encode Date/Time as Hex string.
+  Encodes Date/Time as Hex string.
 Description
-  Convert Delphi TDateTime to POSIX TIME_T Integer and then convert the Integer (32 bit) into a
-  hexadecimal string, and then store that as the value of the CSV date field. Not very human readable,
-  but very robust and easy to parse by computer.
+  Converts a Delphi TDateTime value to a POSIX TIME_T Integer and then converts the Integer (32 bit)
+  into a hexadecimal string, and then store that as the value of the CSV date field. Not very human
+  readable, but very robust and easy to parse by computer.
 Parameters
   ADateTime          - The date time value to encode.
   TimeZoneCorrection - Timezone correction is zero unless you need to correct for different
@@ -113,9 +113,10 @@ See Also
 @@DateTimeToTimeToIsoAscii
 <TITLE DateTimeToTimeToIsoAscii function>
 Summary
-  Encode Date/Time as ISO Format Date string.
+  Encodes Date/Time as ISO Format Date string.
 Description
-  Format Delphi TDateTime as international ISO standard date-time string in form YYYY-MM-DD HH:MM:SS.
+  Call DateTimeToTimeToIsoAscii to format a Delphi TDateTime value as international ISO standard
+  date-time string in form YYYY-MM-DD HH:MM:SS.
 Parameters
   ADateTime - The date time value to encode.
 See Also
@@ -542,7 +543,7 @@ Description
   backslashes. Only set this to true if you know what you are doing.
 
   If quotes appear inside a string, enquote them using backslash-quote sequence instead of quote-quote
-  sequence. Non-standard CSV extension.See Also
+  sequence. Non-standard CSV extension.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvCsvRows.GetARowItem

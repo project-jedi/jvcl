@@ -131,9 +131,15 @@ See Also
 @@FindDockClient
 <TITLE FindDockClient function>
 Summary
-  Searches for a TJvDockClient control.
+  Returns a TJvDockClient control given its owner.
 Description
   Call FindDockClient to search for a TJvDockClient control owned by Client.
+
+  FindDockClient searches the Client’s children and returns the first TJvDockClient component. If no
+  child control is of type TJvDockClient, FindChildControl returns nil.
+
+  Note that a form can have at most 1 TJvDockClient as child, and can <I>not</I> have both a
+  TJvDockClient and a TJvDockServer as child.
 Parameters
   Client - Description for this parameter
 See Also

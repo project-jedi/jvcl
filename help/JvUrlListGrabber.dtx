@@ -39,10 +39,10 @@ Summary
   Ancestor of all URL grabbers
 Description
   This class is the ancestor of all the Url Grabbers and declares the required methods that a grabber
-  must provide. Do not instanciate a TJvUrlGrabber directly, simply use one of its descendants. This
+  must provide. Do not instantiate a TJvUrlGrabber directly, simply use one of its descendants. This
   family of classes is used by TJvUrlListGrabber to allow downloading a list of URLs. When deriving a
   new class from this one, please remember that you have to provide implementations for
-  GetDefaultPropertiesClass and GetSupportedURLName. Further, unless you intentionnaly want to do
+  GetDefaultPropertiesClass and GetSupportedURLName. Further, unless you intentionally want to do
   blocking grabbing, you must create a new class derived from TJvCustomUrlGrabberThread that will
   handle the grabbing in a separate background thread.
 
@@ -101,10 +101,10 @@ Return value
 Summary
   This function returns the marker that indicates the protocol in a URL.
 Description
-  For instance, for an HTTP grabber, this would return 'http://' This function MUST be overriden in the
-  derived classes but cannot be abstract because of C++ Builder compatibility issues
+  For instance, for an HTTP grabber, this would return 'http://'. This function MUST be overriden in
+  the derived classes but cannot be abstract because of C++ Builder compatibility issues
 Return value
-  A string indicating the marker for protocol supported by the class
+  A string indicating the marker for protocol supported by the class.
 See Also
   TJvCustomUrlGrabber.GetSupportedURLName
 
@@ -115,10 +115,10 @@ Summary
   a URL, but a user displayable string.
 Description
   This function returns a user displayable name that indicates the type of URL supported by the class.
-  For instance, a HTTP grabber class would return 'HTTP' This function MUST be overriden in the derived
-  classes but cannot be abstract because of C++ Builder compatibility issues
+  For instance, a HTTP grabber class would return 'HTTP'. This function MUST be overriden in the
+  derived classes but cannot be abstract because of C++ Builder compatibility issues
 Return value
-  A string indicating the type of URL supported by the class
+  A string indicating the type of URL supported by the class.
 See Also
   TJvCustomUrlGrabber.GetSupportedProtocolMarker
 
@@ -588,8 +588,8 @@ Description
 @@TJvGrabberNotifyEvent
 <TITLE TJvGrabberNotifyEvent type>
 Summary
-  This is the type of the events triggered when one of the grabbers has triggred its own event to
-  indicate a change in its state
+  This is the type of the events triggered when one of the grabbers has triggered its own event to
+  indicate a change in its state.
 Description
   This type is used by (for reference): TJvUrlListGrabber.OnClosingConnection
   TJvUrlListGrabber.OnConnectedToServer TJvUrlListGrabber.OnConnectingToServer

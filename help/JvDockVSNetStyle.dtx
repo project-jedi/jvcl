@@ -22,7 +22,7 @@ Description
 Summary
   Hides all visible VS.Net style popup panels.
 Description
-  Call HidePopupPanel to hide a channels containing popup panels except ExludeChannel.
+  Call HidePopupPanel to hide a channels containing popup panels except ExcludeChannel.
 Parameters
   ExcludeChannel - A channel to keep visible. If ExcludeChannel is nil or not found, all panels are
                     hidden.
@@ -75,7 +75,7 @@ Description
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockChannelState.csShow
-  The chanel is currently visible.
+  The channel is currently visible.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockChannelState.csHide
@@ -101,10 +101,10 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSBlock
 Summary
-  Represents a group of tabs on a VS.net channel.
+  Represents a group of tabs on a VS.Net channel.
 Description
   Each TJvDockVSBlock object is a member of a blocks collection of a TJvDockVSChannel object and
-  represents a group of tabs or panes on a VS.net channel.
+  represents a group of tabs or panes on a VS.Net channel.
 See Also
   TJvDockVSChannel.Blocks
 
@@ -189,34 +189,35 @@ See Also
 Summary
   Specifies the TJvDockVSChannel instance to which the block belongs.
 Description
-  Each TJvDockVSBlock belongs to the TJvDockVSChannel which creates it. The VSChannel property points
-  to the channel object to which the block belongs.
+  Each TJvDockVSBlock belongs to the TJvDockVSChannel that creates it. The VSChannel property points to
+  the channel object to which the block belongs.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSBlock.VSPaneCount
 Summary
-  Write here a summary (1 line)
+  Indicates the number of tabs on the block.
 Description
-  Write here a description
+  Read VSPaneCount to determine the number of tabs (also named panes) on a block.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  VSPanes
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSBlock.VSPanes
 Summary
   Lists the tabs of a block.
 Description
-  Use VSPanes to access a single tab (also named pane) off a VS.Net channel.
+  Use VSPanes to access a single tab (also named pane) of a VS.Net channel.
 Parameters
   Index - The tab index.
+See Also
+  VSPaneCount
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel
 Summary
   Toolbar like control placed on the edge of a form that can hold auto hidden forms.
 Description
-  VS.net windows support a feature called Auto Hide. Auto Hide allows you to minimize windows along the
+  VS.Net windows support a feature called Auto Hide. Auto Hide allows you to minimize windows along the
   edges of a form. TJvDockVSChannel is a container for auto hidden windows.
 
   When auto hidden, the name and icon of a window are visible on a tab (also named pane) on a
@@ -231,12 +232,17 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.ActiveDockForm
 Summary
-  Write here a summary (1 line)
+  Indicates which form currently has focus.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Read ActiveForm to learn which form in the application has input focus. If the application is not
+  currently active, ActiveForm is the form that will have focus when the application becomes active
+  again.
+
+  ActiveForm is a read-only property. To change the ActiveForm, use the SetFocus method of the form
+  that should receive focus. ActiveForm also changes if the SetFocusedControl method of an inactive
+  form is called to set focus to a control on that inactive form.
+
+  After focus shifts from one form to another, the screen receives an OnActiveFormChange event.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.ActivePaneSize
@@ -275,12 +281,11 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.BlockCount
 Summary
-  Write here a summary (1 line)
+  Indicates the number of blocks on the channel.
 Description
-  Write here a description
+  Read BlockCount to determine the number of blocks on the VS.Net channel.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Blocks
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.BlockInterval
@@ -300,6 +305,8 @@ Description
   Use Blocks to access the blocks on the VS.Net channel.
 Parameters
   Index - The block index
+See Also
+  BlockCount
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.BlockStartOffset
@@ -366,42 +373,39 @@ See Also
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.DockServer
 Summary
-  Write here a summary (1 line)
+  Gives access to the dock site manager.
 Description
-  Write here a description
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Use the DockServer property of the channel object to access the TJvDockServer object that maintains
+  this channel.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.FindDockControl
 Summary
-  Write here a summary (1 line)
+  Returns the block and pane index that contains a given control.
 Description
-  Write here a description
+  Call FindDockControl to obtain information about the position of a control (usually a form) on the
+  channel. Specify the form to search for as the value of the Control parameter.
 Parameters
-  Control    - Description for this parameter
+  Control    - The control to search for.
   BlockIndex - Description for this parameter
   PaneIndex  - Description for this parameter
 Return value
-  Describe here what the function returns
+  True, if the control is found on the channel, false otherwise.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FindPane
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.FindPane
 Summary
-  Write here a summary (1 line)
+  Returns a pane object that contains a given control.
 Description
-  Write here a description
+  Call FindPane to obtain a pane object that contains a specific control (usually a form).
 Parameters
-  Control - Description for this parameter
+  Control - The control to search for.
 Return value
-  Describe here what the function returns
+  The pane object that contains Control, or nil if the Control is not found on the channel.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  FindDockControl
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.GetPaneWithControl
@@ -427,19 +431,12 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all other overloaded
   functions with the same name.
 Parameters
-  Pane - Description for this parameter
+  Pane    - Description for this parameter
+  Control - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.HidePopupPanel@TWinControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description This is an overloaded function/procedure, if possible you may combine the
-  description of all these functions into 1 general description. If you do so, combine all "Parameter"
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all other overloaded
-  functions with the same name.
-Parameters
-  Control - Description for this parameter
+<COMBINE TJvDockVSChannel.HidePopupPanel@TJvDockVSPane>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.HidePopupPanelWithAnimate
@@ -461,19 +458,12 @@ Description
   lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all other overloaded
   functions with the same name.
 Parameters
-  Pane - Description for this parameter
+  Pane    - Description for this parameter
+  Control - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.PopupDockForm@TWinControl
-Summary
-  Write here a summary (1 line)
-Description
-  Write here a description This is an overloaded function/procedure, if possible you may combine the
-  description of all these functions into 1 general description. If you do so, combine all "Parameter"
-  lists into 1 list, and leave the "Summary", "Description" etc. fields empty for all other overloaded
-  functions with the same name.
-Parameters
-  Control - Description for this parameter
+<COMBINE TJvDockVSChannel.PopupDockForm@TJvDockVSPane>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.RemoveAllBlock
@@ -537,25 +527,15 @@ Description
   leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
   name.
 Parameters
-  Pane - Description for this parameter
+  Pane    - Description for this parameter
+  Control - Description for this parameter
 See Also
   List here other properties, methods (comma seperated)
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.ShowPopupPanel@TWinControl
-Summary
-  Write here a summary (1 line)
-Description
-  This is an overloaded function/procedure, if possible you may combine the description of all these
-  functions into 1 general description. If you do so, combine all "Parameter" lists into 1 list, and
-  leave the "Summary", "Description" etc. fields empty for all other overloaded functions with the same
-  name.
-Parameters
-  Control - Description for this parameter
-See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+<COMBINE TJvDockVSChannel.ShowPopupPanel@TJvDockVSPane>
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSChannel.VSPopupPanel
@@ -760,9 +740,11 @@ JVCLInfo
   GROUP=JVCL.Docking
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  Defines standard Visual Studio .NET docking behavior.
 Description
-  Write here a description
+  Drop a TJvDockVSNetStyle on a form when you want the form to dock in the same way as in Visual Studio
+  .NET. To activate the docking, drop a TJvDockServer or TJvDockClient on the same form and set its
+  DockStyle property to point to the TJvDockVSNetStyle component.
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSNetStyle.ChannelOption
@@ -819,39 +801,6 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockVSNetStyle.GetDockFormVisible
-Summary
-  Write here a summary (1 line) This is an overridden method, you don't have to describe these if it
-  does the same as the inherited method
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ADockClient - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVSNetStyle.HideDockForm
-Summary
-  Write here a summary (1 line) This is an overridden method, you don't have to describe these if it
-  does the same as the inherited method
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ADockClient - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVSNetStyle.RestoreClient
-Summary
-  Write here a summary (1 line) This is an overridden method, you don't have to describe these if it
-  does the same as the inherited method
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  DockClient - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockVSNetStyle.SetAnimationInterval
 Summary
   Sets a new animation interval.
@@ -903,20 +852,9 @@ See Also
   Remove the 'See Also' section if there are no references
 
 ----------------------------------------------------------------------------------------------------
-@@TJvDockVSNetStyle.ShowDockForm
-Summary
-  Write here a summary (1 line) This is an overridden method, you don't have to describe these if it
-  does the same as the inherited method
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  ADockClient - Description for this parameter
-
-----------------------------------------------------------------------------------------------------
 @@TJvDockVSNETTabPageControl
 Summary
-  Write here a summary (1 line)
+  A VS.Net style docking page control.
 Description
   Write here a description
 
@@ -930,7 +868,7 @@ Description
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSNETTabServerOption
 Summary
-  Write here a summary (1 line)
+  Provides the properties describing a VS.Net style docking page control.
 Description
   Write here a description
 
@@ -1028,19 +966,6 @@ Summary
   Write here a summary (1 line)
 Description
   Write here a description
-
-----------------------------------------------------------------------------------------------------
-@@TJvDockVSPopupPanel.ShowDockPanel
-Summary
-  Write here a summary (1 line) This is an overridden method, you don't have to describe these if it
-  does the same as the inherited method
-Description
-  This is an overridden method, you don't have to describe these if it does the same as the inherited
-  method
-Parameters
-  MakeVisible   - Description for this parameter
-  Client        - Description for this parameter
-  PanelSizeFrom - Description for this parameter
 
 ----------------------------------------------------------------------------------------------------
 @@TJvDockVSPopupPanel.VSChannel
