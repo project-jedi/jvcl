@@ -50,6 +50,7 @@ uses
   FrmPackageSelection in 'Frames\FrmPackageSelection.pas' {FramePackageSelection: TFrame},
   FileUtils in '..\..\devtools\PackagesGenerator\FileUtils.pas',
   GenerateUtils in '..\..\devtools\PackagesGenerator\GenerateUtils.pas',
+  ConditionParser in '..\..\devtools\PackagesGenerator\ConditionParser.pas',
   UtilsJcl in '..\..\devtools\PackagesGenerator\UtilsJcl.pas',
   PackageInformation in '..\..\devtools\common\PackageInformation.pas',
   Utils in 'Utils.pas',
