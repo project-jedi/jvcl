@@ -68,7 +68,7 @@ type
     FOnNewMessage: TOnNewMessage;
   public
     constructor Create(AOwner: TComponent); override;
-    function Send(str: string): Boolean;
+    function Send(Str: string): Boolean;
   protected
     procedure Loaded; override;
     procedure ErrorCatch(Sender: TObject; Exc: Exception);
@@ -225,7 +225,7 @@ begin
   Application.ShowException(Exc);
 end;
 
-function TJvgMailSlotClient.Send(str: string): Boolean;
+function TJvgMailSlotClient.Send(Str: string): Boolean;
 var
   Buffer: PChar;
   FHandle: THandle;

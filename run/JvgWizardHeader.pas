@@ -227,7 +227,7 @@ begin
       R := ClientRect;
       SR := Rect(R.Right - 50, R.Top + 5, R.Right - 5, R.Bottom - 5);
       if Assigned(Gradient) and Gradient.Active then
-        dec(SR.Bottom, 3);
+        Dec(SR.Bottom, 3);
       TargetCanvas.FillRect(SR);
 
       TargetCanvas.Font.Assign(SymbolFont);

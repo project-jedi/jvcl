@@ -356,6 +356,8 @@ end;
 //=== { TProfReport } ========================================================
 
 procedure TProfReport.FormShow(Sender: TObject);
+const
+  NumberFormat = '%4.2f';
 var
   ThisProc: Integer;
   TotalSum: Integer;
@@ -374,10 +376,10 @@ begin
       LItem.Caption := StringID;        { function ID }
       if Calls <> 0 then
       begin
-        LItem.SubItems.Add(Format('%4.2f', [TimeSpent * 1.0]));  { Total time spent here }
-        LItem.Subitems.Add(IntToStr(Calls)); { Total number of calls }
-        LItem.SubItems.Add(Format('%4.2f', [TimeSpent / Calls]));  { average time }
-        LItem.SubItems.Add(Format('%4.2f', [TimeSpent / TotalSum * 100]));  { percentage }
+        LItem.SubItems.Add(Format(NumberFormat, [TimeSpent * 1.0]));  { Total time spent here }
+        LItem.SubItems.Add(IntToStr(Calls)); { Total number of calls }
+        LItem.SubItems.Add(Format(NumberFormat, [TimeSpent / Calls]));  { average time }
+        LItem.SubItems.Add(Format(NumberFormat, [TimeSpent / TotalSum * 100.0]));  { percentage }
       end
       else
       begin

@@ -509,7 +509,7 @@ begin
     FOldOnMouseWheelUp := FParentForm.OnMouseWheelUp;
     FParentForm.OnMouseWheelUp := DoFormOnMouseWheelUp;
     FOldOnUndock := FParentForm.OnUnDock;
-    FParentForm.OnUnDock := DoFormOnUnDock;
+    FParentForm.OnUnDock := DoFormOnUndock;
     FOldOnCanResize := FParentForm.OnCanResize;
     FParentForm.OnCanResize := DoFormOnCanResize;
     FOldOnClick := FParentForm.OnClick;
@@ -589,7 +589,7 @@ begin
     FOldOnMouseWheelDown := nil;
     FParentForm.OnMouseWheelUp := FOldOnMouseWheelUp;
     FOldOnMouseWheelUp := nil;
-    FParentForm.OnUndock := FOldOnUndock;
+    FParentForm.OnUnDock := FOldOnUndock;
     FOldOnUndock := nil;
     FParentForm.OnCanResize := FOldOnCanResize;
     FOldOnCanResize := nil;

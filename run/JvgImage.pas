@@ -219,7 +219,7 @@ begin
     end;
     Pt := CalcAlignOffset;
     BitBlt(Canvas.Handle, Pt.X, Pt.Y, FResBitmap.Width, FResBitmap.Height,
-      FResBitmap.canvas.Handle, 0, 0, SRCCOPY);
+      FResBitmap.Canvas.Handle, 0, 0, SRCCOPY);
   end;
   if (csDesigning in ComponentState) and (Tag <> 9999) then
     with Canvas do
@@ -287,7 +287,7 @@ begin
       FResBitmap.Height),
       FResBitmap.Canvas.Handle);
   //BringParentWindowToTop(parent);
-//    BitBlt( FResBitmap.Canvas.Handle, 0,0, Width, Height, canvas.Handle, 0, 0, SRCCOPY);
+//    BitBlt( FResBitmap.Canvas.Handle, 0,0, Width, Height, Canvas.Handle, 0, 0, SRCCOPY);
 
   CreateBitmapExt(FResBitmap.Canvas.Handle, FBmp, ClientRect, 0, 0,
     FBitmapOption, FDrawState,

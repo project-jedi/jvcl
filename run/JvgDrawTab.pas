@@ -55,7 +55,7 @@ var
   GrFromColor, GrToColor: TColor;
 begin
   if not Assigned(DrawTabStr.lpDrawItemStr) then
-    exit;
+    Exit;
   with DrawTabStr, DrawTabStr.lpDrawItemStr^, DrawTabStr.BoxStyle do
   begin
     Selected := (itemState and ODS_SELECTED) <> 0;

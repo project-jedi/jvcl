@@ -46,8 +46,8 @@ uses
 type
   TJvTextMargins = class(TPersistent)
   private
-    FY: Word;
     FX: Word;
+    FY: Word;
     FOnChange: TNotifyEvent;
     procedure SetX(const Value: Word);
     procedure SetY(const Value: Word);
@@ -89,17 +89,15 @@ type
     procedure Loaded; override;
     procedure MouseEnter(Control: TControl); override;
     procedure MouseLeave(Control: TControl); override;
-    function WantKey(Key: Integer; Shift: TShiftState;
-      const KeyText: WideString): Boolean; override;
+    function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
     procedure FontChanged; override;
     procedure TextChanged; override;
     procedure AdjustBounds; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetAutoSize(Value: Boolean); override;
     procedure DrawItem(const DrawItemStruct: TDrawItemStruct); virtual;
-    function GetTextDisplayInfo(aDC: HDC; var ARect: TRect): Cardinal;
+    function GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;
     procedure CreateParams(var Params: TCreateParams); override;
-
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property BorderStyle: TStaticBorderStyle read FBorderStyle write SetBorderStyle default sbsNone;
@@ -438,7 +436,7 @@ begin
   end;
 end;
 
-function TJvCustomStaticText.GetTextDisplayInfo(aDC: HDC; var ARect: TRect): Cardinal;
+function TJvCustomStaticText.GetTextDisplayInfo(ADC: HDC; var ARect: TRect): Cardinal;
 const
   cAlignment: array [Boolean, TAlignment] of DWORD =
     ((DT_LEFT, DT_RIGHT, DT_CENTER), (DT_RIGHT, DT_LEFT, DT_CENTER));
@@ -449,7 +447,7 @@ begin
   Result := DT_EXPANDTABS or cAlignment[UseRightToLeftAlignment, Alignment] or
     cLayout[Layout] or cDrawAccel[ShowAccelChar] or cWordWrap[WordWrap];
 
-  DrawText(aDC, PChar(Caption), Length(Caption), ARect, Result or DT_CALCRECT);
+  DrawText(ADC, PChar(Caption), Length(Caption), ARect, Result or DT_CALCRECT);
 end;
 
 procedure TJvCustomStaticText.Resize;

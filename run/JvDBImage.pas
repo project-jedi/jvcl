@@ -99,7 +99,8 @@ unit JvDBImage;
 interface
 
 uses
-  Windows, Messages, Classes, Graphics, Controls, Clipbrd, DB, DBCtrls, Forms, Contnrs; 
+  Windows, Messages, Classes, Graphics, Controls,
+  Clipbrd, DB, DBCtrls, Forms, Contnrs; 
 
 type
   TJvGetGraphicClassEvent = procedure(Sender: TObject; Stream: TMemoryStream;
@@ -127,8 +128,8 @@ type
     function DestRect(W, H, CW, CH: Integer): TRect;
     procedure Paint; override;
 
-    procedure WMLButtonDblClk(var Message: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
-    procedure WMPaste(var Message: TWMPaste); message WM_PASTE;
+    procedure WMLButtonDblClk(var Msg: TWMLButtonDblClk); message WM_LBUTTONDBLCLK;
+    procedure WMPaste(var Msg: TWMPaste); message WM_PASTE;
     procedure KeyPress(var Key: Char); override;
     function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; override;
   public
@@ -628,7 +629,7 @@ begin
   Result := Control.ScreenToClient(Result);
 end;
 
-procedure TJvDBImage.WMLButtonDblClk(var Message: TWMLButtonDblClk);
+procedure TJvDBImage.WMLButtonDblClk(var Msg: TWMLButtonDblClk);
 begin
   // we can't call inherited because TDBImage loads the image there as well
   // and will get mighty upset if it's not a BMP, so we have to redo the
@@ -640,12 +641,12 @@ begin
   if csClickEvents in ControlStyle then
     DblClick;
   if not (csNoStdEvents in ControlStyle) then
-    with Message do
+    with Msg do
       if (Width > 32768) or (Height > 32768) then
         with ControlCursorPos(Self) do
           MouseDown(mbLeft, KeysToShiftState(Keys), X, Y)
       else
-        MouseDown(mbLeft, KeysToShiftState(Keys), Message.XPos, Message.YPos);
+        MouseDown(mbLeft, KeysToShiftState(Keys), XPos, YPos);
   LoadPicture;
 end;
 
@@ -653,11 +654,11 @@ procedure TJvDBImage.KeyPress(var Key: Char);
 begin
   case Key of
     CtrlC:
-      CopyToClipBoard;
+      CopyToClipboard;
     CtrlV:
-      PasteFromClipBoard;
+      PasteFromClipboard;
     CtrlX:
-      CutToClipBoard;
+      CutToClipboard;
     Cr:
       LoadPicture;
     Esc:
@@ -668,7 +669,7 @@ begin
   end;
 end;
 
-procedure TJvDBImage.WMPaste(var Message: TWMPaste);
+procedure TJvDBImage.WMPaste(var Msg: TWMPaste);
 begin
   PasteFromClipboard;
 end;

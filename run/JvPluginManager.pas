@@ -415,7 +415,7 @@ begin
       begin
         FreeAndNil(PlugIn);
         if LibHandle <> 0 then
-          UnLoadLibrary(PlgKind, LibHandle);
+          UnloadLibrary(PlgKind, LibHandle);
         if not (csDesigning in ComponentState) and Assigned(FOnPlugInError) then
           FOnPlugInError(Self, E)
         else

@@ -143,7 +143,7 @@ begin
       {$ENDIF VisualCLX}
       Position := poMainFormCenter;
       FormStyle := fsStayOnTop;
-      Scaled := false;
+      Scaled := False;
 
       FProgressBar := TProgressBar.Create(FForm);
     end;

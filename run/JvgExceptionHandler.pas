@@ -233,7 +233,7 @@ end;
 
 procedure TJvgExceptionHandler.MakeScreenShot(const ID: string);
 var
-  Jpeg: TJpegImage;
+  JpegImage: TJpegImage;
   BackImage: TBitmap;
   LogPath, ScreenShotName: string;
   SysTime: TSystemTime;
@@ -246,7 +246,7 @@ begin
 
   FScreenShotList.Add(ExceptAddr);
 
-  Jpeg := TJpegImage.Create;
+  JpegImage := TJpegImage.Create;
   BackImage := TBitmap.Create;
   try
     DC := GetDC(0);
@@ -255,8 +255,8 @@ begin
     BitBlt(BackImage.Canvas.Handle, 0, 0, BackImage.Width, BackImage.Height,
       DC, 0, 0, SRCCOPY);
     ReleaseDC(0, DC);
-    Jpeg.CompressionQuality := 50;
-    Jpeg.Assign(BackImage);
+    JpegImage.CompressionQuality := 50;
+    JpegImage.Assign(BackImage);
 
     LogPath := ExtractFilePath(ParamStr(0)) +
       DeleteFileExt(ExtractFileName(ParamStr(0))) + '\';
@@ -267,9 +267,9 @@ begin
 
     ForceDirectories(LogPath);
 
-    Jpeg.SaveToFile(LogPath + ScreenShotName + '.jpg');
+    JpegImage.SaveToFile(LogPath + ScreenShotName + '.jpg');
   finally
-    Jpeg.Free;
+    JpegImage.Free;
     BackImage.Free;
   end;
 end;
