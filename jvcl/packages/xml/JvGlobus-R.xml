@@ -28,6 +28,7 @@
     <Package Name="vclsmp" Targets="D6,D6p,D7p" Condition=""/>
     <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="JvStdCtrls-R" Targets="all" Condition=""/>
+    <Package Name="JvSystem-R" Targets="all" Condition=""/>
   </Requires>
   <Contains>
     <File Name="..\..\run\JvgReportParamsEditor.pas" Targets="all" Formname="" Condition=""/>
