@@ -419,7 +419,7 @@ var
   PropName: string;
 begin
   PropName := PropertyEditor.GetName;
-  if SameText(PropName, SItems) then
+  if SameText(PropName, RsItems) then
   begin
     PropertyEditor.Edit;
     Continue := False;
