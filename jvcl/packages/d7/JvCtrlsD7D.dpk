@@ -35,11 +35,10 @@ requires
 contains
   JvCtrlsReg in '..\..\design\JvCtrlsReg.pas',
   JvBehaviorLabelEditor in '..\..\design\JvBehaviorLabelEditor.pas',
-  JvRegAutoEditorForm in '..\..\design\JvRegAutoEditorForm.pas' {JvRegEditor},
   JvScrollMaxEditor in '..\..\design\JvScrollMaxEditor.pas',
   JvFooterEditor in '..\..\design\JvFooterEditor.pas',
   JvGroupHeaderEditor in '..\..\design\JvGroupHeaderEditor.pas',
-  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas' {JvSpeedbarEditor}, 
+  JvSpeedbarForm in '..\..\design\JvSpeedbarForm.pas' {JvSpeedbarEditor},
   JvHTHintForm in '..\..\design\JvHTHintForm.pas' {JvHintEditor};
 
 end.

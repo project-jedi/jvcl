@@ -56,7 +56,6 @@ contains
   JvInterpreter_httpapp in '..\..\run\JvInterpreter_httpapp.pas',
   JvInterpreter_JvEditor in '..\..\run\JvInterpreter_JvEditor.pas',
   JvInterpreter_JvInterpreter in '..\..\run\JvInterpreter_JvInterpreter.pas',
-  JvInterpreter_JvRegAuto in '..\..\run\JvInterpreter_JvRegAuto.pas',
   JvInterpreter_JvUtils in '..\..\run\JvInterpreter_JvUtils.pas',
   JvInterpreter_Menus in '..\..\run\JvInterpreter_Menus.pas',
   JvInterpreter_Quickrpt in '..\..\run\JvInterpreter_Quickrpt.pas',
