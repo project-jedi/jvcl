@@ -9,20 +9,38 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jv3rdD7R.bpl JvCoreD7R.bpl JvCoreD7D.bpl JvSystemD7R.bpl JvSystemD7D.bpl \
-  JvStdCtrlsD7R.bpl JvStdCtrlsD7D.bpl JvCtrlsD7R.bpl JvCtrlsD7D.bpl JvCmpD7R.bpl \
-  JvCmpD7D.bpl JvCustomD7R.bpl JvCustomD7D.bpl JvDlgsD7R.bpl JvDlgsD7D.bpl \
-  JvCryptD7R.bpl JvCryptD7D.bpl JvMMD7R.bpl JvMMD7D.bpl JvNetD7R.bpl JvNetD7D.bpl \
-  JvAppFrmD7R.bpl JvAppFrmD7D.bpl JvDBD7R.bpl JvDBD7D.bpl JvBDED7R.bpl \
-  JvBDED7D.bpl JvInterpreterD7R.bpl JvInterpreterD7D.bpl JvBandsD7R.bpl \
-  JvBandsD7D.bpl JvPluginD7R.bpl JvPluginD7D.bpl JvJansD7R.bpl JvJansD7D.bpl \
-  JvGlobusD7R.bpl JvGlobusD7D.bpl JvPrintPreviewD7R.bpl JvPrintPreviewD7D.bpl \
-  JvPageCompsD7R.bpl JvPageCompsD7D.bpl JvValidatorsD7R.bpl JvValidatorsD7D.bpl \
-  JvUIBD7R.bpl JvUIBD7D.bpl JvWizardD7R.bpl JvWizardD7D.bpl \
-  JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl JvHMID7R.bpl JvHMID7D.bpl \
-  JvManagedThreadsD7R.bpl JvManagedThreadsD7D.bpl JvXPCtrlsD7R.bpl JvXPCtrlsD7D.bpl \
-  JvDockingD7R.bpl JvDockingD7D.bpl JvDotNetCtrlsD7R.bpl JvDotNetCtrlsD7D.bpl \
-  JvEDID7R.bpl JvEDID7D.bpl JvInspectorD7R.bpl JvInspectorD7D.bpl
+PROJECTS = Jv3rdD7R.bpl                           \
+  JvCoreD7R.bpl JvCoreD7D.bpl                     \
+  JvSystemD7R.bpl JvSystemD7D.bpl                 \
+  JvCtrlsD7R.bpl JvCtrlsD7D.bpl                   \
+  JvStdCtrlsD7R.bpl JvStdCtrlsD7D.bpl             \
+  JvCmpD7R.bpl JvCmpD7D.bpl                       \
+  JvCustomD7R.bpl JvCustomD7D.bpl                 \
+  JvDlgsD7R.bpl JvDlgsD7D.bpl                     \
+  JvCryptD7R.bpl JvCryptD7D.bpl                   \
+  JvMMD7R.bpl JvMMD7D.bpl                         \
+  JvNetD7R.bpl JvNetD7D.bpl                       \
+  JvAppFrmD7R.bpl JvAppFrmD7D.bpl                 \
+  JvDBD7R.bpl JvDBD7D.bpl                         \
+  JvBDED7R.bpl JvBDED7D.bpl                       \
+  JvInterpreterD7R.bpl JvInterpreterD7D.bpl       \
+  JvBandsD7R.bpl JvBandsD7D.bpl                   \
+  JvPluginD7R.bpl JvPluginD7D.bpl                 \
+  JvJansD7R.bpl JvJansD7D.bpl                     \
+  JvGlobusD7R.bpl JvGlobusD7D.bpl                 \
+  JvPrintPreviewD7R.bpl JvPrintPreviewD7D.bpl     \
+  JvPageCompsD7R.bpl JvPageCompsD7D.bpl           \
+  JvValidatorsD7R.bpl JvValidatorsD7D.bpl         \
+  JvUIBD7R.bpl JvUIBD7D.bpl                       \
+  JvWizardD7R.bpl JvWizardD7D.bpl                 \
+  JvTimeFrameworkD7R.bpl JvTimeFrameworkD7D.bpl   \
+  JvHMID7R.bpl JvHMID7D.bpl                       \
+  JvManagedThreadsD7R.bpl JvManagedThreadsD7D.bpl \
+  JvXPCtrlsD7R.bpl JvXPCtrlsD7D.bpl               \
+  JvDockingD7R.bpl JvDockingD7D.bpl               \
+  JvDotNetCtrlsD7R.bpl JvDotNetCtrlsD7D.bpl       \
+  JvEDID7R.bpl JvEDID7D.bpl                       \
+  JvInspectorD7R.bpl JvInspectorD7D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------

@@ -12,8 +12,8 @@ BRCC = $(ROOT)\bin\brcc32.exe $**
 PROJECTS = Jv3rdC5R.bpl                                    \
            JvCoreC5R.bpl JvCoreC5D.bpl                     \
            JvSystemC5R.bpl JvSystemC5D.bpl                 \
-           JvStdCtrlsC5R.bpl JvStdCtrlsC5D.bpl             \
            JvCtrlsC5R.bpl JvCtrlsC5D.bpl                   \
+           JvStdCtrlsC5R.bpl JvStdCtrlsC5D.bpl             \
            JvCmpC5R.bpl JvCmpC5D.bpl                       \
            JvCustomC5R.bpl JvCustomC5D.bpl                 \
            JvDlgsC5R.bpl JvDlgsC5D.bpl                     \
@@ -62,19 +62,19 @@ JvSystemC5D.bpl: c5\JvSystemC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
-JvStdCtrlsC5R.bpl: c5\JvStdCtrlsC5R.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
-JvStdCtrlsC5D.bpl: c5\JvStdCtrlsC5D.bpk
-  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
-  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
-
 JvCtrlsC5R.bpl: c5\JvCtrlsC5R.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 
 JvCtrlsC5D.bpl: c5\JvCtrlsC5D.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvStdCtrlsC5R.bpl: c5\JvStdCtrlsC5R.bpk
+  $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
+  $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
+
+JvStdCtrlsC5D.bpl: c5\JvStdCtrlsC5D.bpk
   $(ROOT)\bin\bpr2mak -t..\BCB.bmk $**
   $(ROOT)\bin\make -$(MAKEFLAGS) -f$*.mak
 

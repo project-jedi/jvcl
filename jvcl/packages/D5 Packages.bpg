@@ -9,15 +9,37 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jv3rdD5R.bpl JvCoreD5R.bpl JvCoreD5D.bpl JvSystemD5R.bpl JvSystemD5D.bpl JvStdCtrlsD5R.bpl JvStdCtrlsD5D.bpl \
-  JvCtrlsD5R.bpl JvCtrlsD5D.bpl JvCmpD5R.bpl JvCmpD5D.bpl JvCustomD5R.bpl JvCustomD5D.bpl JvDlgsD5R.bpl JvDlgsD5D.bpl \
-  JvCryptD5R.bpl JvCryptD5D.bpl JvMMD5R.bpl JvMMD5D.bpl JvNetD5R.bpl JvNetD5D.bpl JvAppFrmD5R.bpl JvAppFrmD5D.bpl \
-  JvDBD5R.bpl JvDBD5D.bpl JvBDED5R.bpl JvBDED5D.bpl JvInterpreterD5R.bpl JvInterpreterD5D.bpl JvBandsD5R.bpl \
-  JvBandsD5D.bpl JvPluginD5R.bpl JvPluginD5D.bpl JvJansD5R.bpl JvJansD5D.bpl JvGlobusD5R.bpl JvGlobusD5D.bpl \
-  JvPrintPreviewD5R.bpl JvPrintPreviewD5D.bpl JvPageCompsD5R.bpl JvPageCompsD5D.bpl JvValidatorsD5R.bpl \
-  JvValidatorsD5D.bpl JvUIBD5R.bpl JvUIBD5D.bpl JvWizardD5R.bpl JvWizardD5D.bpl JvTimeFrameworkD5R.bpl \
-  JvTimeFrameworkD5D.bpl JvHMID5R.bpl JvHMID5D.bpl JvManagedThreadsD5R.bpl JvManagedThreadsD5D.bpl JvXPCtrlsD5R.bpl \
-  JvXPCtrlsD5D.bpl JvDockingD5R.bpl JvDockingD5D.bpl JvDotNetCtrlsD5R.bpl JvDotNetCtrlsD5D.bpl JvEDID5R.bpl JvEDID5D.bpl \
+PROJECTS = Jv3rdD5R.bpl
+  JvCoreD5R.bpl JvCoreD5D.bpl                     \
+  JvSystemD5R.bpl JvSystemD5D.bpl                 \
+  JvCtrlsD5R.bpl JvCtrlsD5D.bpl                   \
+  JvStdCtrlsD5R.bpl JvStdCtrlsD5D.bpl             \
+  JvCmpD5R.bpl JvCmpD5D.bpl                       \
+  JvCustomD5R.bpl JvCustomD5D.bpl                 \
+  JvDlgsD5R.bpl JvDlgsD5D.bpl                     \
+  JvCryptD5R.bpl JvCryptD5D.bpl                   \
+  JvMMD5R.bpl JvMMD5D.bpl                         \
+  JvNetD5R.bpl JvNetD5D.bpl                       \
+  JvAppFrmD5R.bpl JvAppFrmD5D.bpl                 \
+  JvDBD5R.bpl JvDBD5D.bpl                         \
+  JvBDED5R.bpl JvBDED5D.bpl                       \
+  JvInterpreterD5R.bpl JvInterpreterD5D.bpl       \
+  JvBandsD5R.bpl JvBandsD5D.bpl                   \
+  JvPluginD5R.bpl JvPluginD5D.bpl                 \
+  JvJansD5R.bpl JvJansD5D.bpl                     \
+  JvGlobusD5R.bpl JvGlobusD5D.bpl                 \
+  JvPrintPreviewD5R.bpl JvPrintPreviewD5D.bpl     \
+  JvPageCompsD5R.bpl JvPageCompsD5D.bpl           \
+  JvValidatorsD5R.bpl JvValidatorsD5D.bpl         \
+  JvUIBD5R.bpl JvUIBD5D.bpl                       \
+  JvWizardD5R.bpl JvWizardD5D.bpl                 \
+  JvTimeFrameworkD5R.bpl JvTimeFrameworkD5D.bpl   \
+  JvHMID5R.bpl JvHMID5D.bpl                       \
+  JvManagedThreadsD5R.bpl JvManagedThreadsD5D.bpl \
+  JvXPCtrlsD5R.bpl JvXPCtrlsD5D.bpl               \
+  JvDockingD5R.bpl JvDockingD5D.bpl               \
+  JvDotNetCtrlsD5R.bpl JvDotNetCtrlsD5D.bpl       \
+  JvEDID5R.bpl JvEDID5D.bpl                       \
   JvInspectorD5R.bpl JvInspectorD5D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)

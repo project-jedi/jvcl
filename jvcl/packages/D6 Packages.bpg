@@ -9,21 +9,38 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = Jv3rdD6R.bpl JvCoreD6R.bpl JvCoreD6D.bpl JvSystemD6R.bpl JvSystemD6D.bpl \
-  JvStdCtrlsD6R.bpl JvStdCtrlsD6D.bpl JvCtrlsD6R.bpl JvCtrlsD6D.bpl JvCmpD6R.bpl \
-  JvCmpD6D.bpl JvCustomD6R.bpl JvCustomD6D.bpl JvDlgsD6R.bpl JvDlgsD6D.bpl \
-  JvCryptD6R.bpl JvCryptD6D.bpl JvMMD6R.bpl JvMMD6D.bpl JvNetD6R.bpl JvNetD6D.bpl \
-  JvAppFrmD6R.bpl JvAppFrmD6D.bpl JvDBD6R.bpl JvDBD6D.bpl JvBDED6R.bpl \
-  JvBDED6D.bpl JvInterpreterD6R.bpl JvInterpreterD6D.bpl JvBandsD6R.bpl \
-  JvBandsD6D.bpl JvPluginD6R.bpl JvPluginD6D.bpl JvJansD6R.bpl JvJansD6D.bpl \
-  JvGlobusD6R.bpl JvGlobusD6D.bpl JvPrintPreviewD6R.bpl JvPrintPreviewD6D.bpl \
-  JvPageCompsD6R.bpl JvPageCompsD6D.bpl JvValidatorsD6R.bpl JvValidatorsD6D.bpl \
-  JvUIBD6R.bpl JvUIBD6D.bpl JvWizardD6R.bpl JvWizardD6D.bpl \
-  JvTimeFrameworkD6R.bpl JvTimeFrameworkD6D.bpl JvHMID6R.bpl JvHMID6D.bpl \
-  JvManagedThreadsD6R.bpl JvManagedThreadsD6D.bpl JvXPCtrlsD6R.bpl \
-  JvXPCtrlsD6D.bpl JvDockingD6R.bpl JvDockingD6D.bpl JvDotNetCtrlsD6R.bpl \
-  JvDotNetCtrlsD6D.bpl JvEDID6R.bpl JvEDID6D.bpl JvInspectorD6R.bpl \
-  JvInspectorD6D.bpl
+PROJECTS = Jv3rdD6R.bpl                           \
+  JvCoreD6R.bpl JvCoreD6D.bpl                     \
+  JvSystemD6R.bpl JvSystemD6D.bpl                 \
+  JvCtrlsD6R.bpl JvCtrlsD6D.bpl                   \
+  JvStdCtrlsD6R.bpl JvStdCtrlsD6D.bpl             \
+  JvCmpD6R.bpl JvCmpD6D.bpl                       \
+  JvCustomD6R.bpl JvCustomD6D.bpl                 \
+  JvDlgsD6R.bpl JvDlgsD6D.bpl                     \
+  JvCryptD6R.bpl JvCryptD6D.bpl                   \
+  JvMMD6R.bpl JvMMD6D.bpl                         \
+  JvNetD6R.bpl JvNetD6D.bpl                       \
+  JvAppFrmD6R.bpl JvAppFrmD6D.bpl                 \
+  JvDBD6R.bpl JvDBD6D.bpl                         \
+  JvBDED6R.bpl JvBDED6D.bpl                       \
+  JvInterpreterD6R.bpl JvInterpreterD6D.bpl       \
+  JvBandsD6R.bpl JvBandsD6D.bpl                   \
+  JvPluginD6R.bpl JvPluginD6D.bpl                 \
+  JvJansD6R.bpl JvJansD6D.bpl                     \
+  JvGlobusD6R.bpl JvGlobusD6D.bpl                 \
+  JvPrintPreviewD6R.bpl JvPrintPreviewD6D.bpl     \
+  JvPageCompsD6R.bpl JvPageCompsD6D.bpl           \
+  JvValidatorsD6R.bpl JvValidatorsD6D.bpl         \
+  JvUIBD6R.bpl JvUIBD6D.bpl                       \
+  JvWizardD6R.bpl JvWizardD6D.bpl                 \
+  JvTimeFrameworkD6R.bpl JvTimeFrameworkD6D.bpl   \
+  JvHMID6R.bpl JvHMID6D.bpl                       \
+  JvManagedThreadsD6R.bpl JvManagedThreadsD6D.bpl \
+  JvXPCtrlsD6R.bpl JvXPCtrlsD6D.bpl               \
+  JvDockingD6R.bpl JvDockingD6D.bpl               \
+  JvDotNetCtrlsD6R.bpl JvDotNetCtrlsD6D.bpl       \
+  JvEDID6R.bpl JvEDID6D.bpl                       \
+  JvInspectorD6R.bpl JvInspectorD6D.bpl
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
