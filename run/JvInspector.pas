@@ -48,9 +48,18 @@ unit JvInspector;
 interface
 
 uses
-  SysUtils, Windows, Classes, Contnrs, TypInfo, Controls, StdCtrls, Graphics,
-  Messages, IniFiles,
-  JvComponent, JvTypes;
+  SysUtils, Classes, Contnrs, Types, TypInfo,
+{$IFDEF MSWINDOWS}
+  Windows, Messages,
+{$ENDIF}
+{$IFDEF COMPLIB_VCL}
+  Graphics, Controls, StdCtrls, ExtCtrls,
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  Qt, QGraphics, QControls, QStdCtrls, QExtCtrls,
+{$ENDIF}
+  IniFiles,
+  JvClxUtils, JvComponent, JvTypes;
 
 resourcestring
   sJvInspItemHasParent = 'Item already assigned to another parent.';
@@ -87,6 +96,39 @@ const
   irsValueHeight = $20000000;
   irsItemHeight = $40000000;
   irsValueMask = $0FFFFFFF;
+
+{$IFDEF COMPLIB_CLX}
+  WM_HSCROLL = 101;
+  WM_VSCROLL = 102;
+  CM_DEACTIVATE = 100;
+
+ // WM_xSCROLL ScrollCodes
+  SB_BOTTOM = 1;
+  SB_ENDSCROLL = 2;
+  SB_LINEDOWN = 3;
+  SB_LINEUP = 4;
+  SB_PAGEDOWN = 5;
+  SB_PAGEUP = 6;
+  SB_THUMBPOSITION = 7;
+  SB_THUMBTRACK = 8;
+  SB_TOP = 9;
+
+  SB_HORZ = 1;
+  SB_VERT = 2;
+  SB_BOTH = SB_HORZ or SB_VERT;
+type
+  TWMScroll = packed record
+    Msg: Integer;
+    Pos: Integer;
+    ScrollCode: Integer;
+  end;
+  TCMActivate = packed record
+    Msg: Integer;
+    WParam: Integer;
+    LParam: Longint;
+    Result: Integer;
+  end;
+{$ENDIF}
 
 type
   TJvCustomInspector = class;
@@ -163,7 +205,11 @@ type
   TOnJvInspectorMouseDown = procedure(Sender: TJvCustomInspector; Item: TJvCustomInspectorItem; Button: TMouseButton;
     Shift: TShiftState; X, Y: Integer) of object;
 
+{$IFDEF COMPLIB_VCL}
   TJvCustomInspector = class(TJvCustomControl)
+{$ELSE}
+  TJvCustomInspector = class(TCustomPanel)
+{$ENDIF}
   private
     FAfterDataCreate: TInspectorDataEvent;
     FAfterItemCreate: TInspectorItemEvent;
@@ -198,8 +244,12 @@ type
     FSelecting: Boolean;
     FTopIndex: Integer;
     FUseBands: Boolean;
-    FVisible: TStrings;
+    FVisibleList: TStrings;
     FWantTabs: Boolean;
+   {$IFDEF COMPLIB_CLX}
+    FHorzScrollBar: TScrollBar;
+    FVertScrollBar: TScrollBar;
+   {$ENDIF} 
     { Standard TCustomControl events -WAP}
     FOnEnter: TNotifyEvent;
     FOnContextPopup: TContextPopupEvent;
@@ -208,6 +258,7 @@ type
     FOnKeyUp: TKeyEvent;
     FOnMouseDown: TOnJvInspectorMouseDown;
     FInspectObject: TObject;
+
     procedure SetInspectObject(const Value: TObject);
 
 //    FOnMouseDown: TInspectorMouseDownEvent;
@@ -296,11 +347,23 @@ type
     function ViewHeight: Integer;
     function ViewRect: TRect; virtual;
     function ViewWidth: Integer;
-    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
-    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
+    {$IFDEF COMPLIB_VCL}
+    procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
+    procedure WMSetFocus(var Msg: TWMSetFocus); message WM_SETFOCUS;
     procedure WMMouseWheel(var Msg: TWMMouseWheel); message WM_MOUSEWHEEL;
+    {$ENDIF}
+    {$IFDEF COMPLIB_CLX}
+    function NeedKey(Key: Integer; Shift: TShiftState;
+      const KeyText: WideString): Boolean; override;
+    procedure DoEnter; override;
+    procedure Scrolled(Sender: TObject; ScrollCode: TScrollCode;
+      var ScrollPos: Integer); dynamic;
+    function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
+      const MousePos: TPoint): Boolean; override;
+    {$ENDIF}
+    procedure ShowScrollBars(Bar: Integer; Visible: Boolean); virtual;
     function YToIdx(const Y: Integer): Integer; virtual;
     property BandSizing: Boolean read FBandSizing write FBandSizing;
     property BandSizingBand: Integer read FBandSizingBand write FBandSizingBand;
@@ -384,9 +447,11 @@ type
     property Align;
     property Anchors;
     property BandWidth;
+  {$IFDEF COMPLIB_VCL}
     property BevelEdges;
-    property BevelInner;
     property BevelKind;
+  {$ENDIF}
+    property BevelInner;
     property BevelOuter;
     property BevelWidth;
     property CollapseButton;
@@ -609,8 +674,13 @@ type
     procedure Deactivate; dynamic;
     procedure DoAfterItemCreate; virtual;
     function DoCompare(const Item: TJvCustomInspectorItem): Integer; virtual;
+    {$IFDEF COMPLIB_VCL}
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); virtual;
+    {$ELSE}
+    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState; var Handled: Boolean); virtual;
+    {$ENDIF}
     procedure DoDropDownKeys(var Key: Word; Shift: TShiftState); virtual;
     procedure DoGetValueList(const Strings: TStrings); virtual;
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer;
@@ -629,7 +699,9 @@ type
       virtual;
     procedure EditMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer); virtual;
+  {$IFDEF COMPLIB_VCL}
     procedure Edit_WndProc(var Message: TMessage); virtual;
+  {$ENDIF}
     function GetAutoUpdate: Boolean; virtual;
     function GetBaseCategory: TJvInspectorCustomCategoryItem; virtual;
     function GetCategory: TJvInspectorCustomCategoryItem; virtual;
@@ -1040,8 +1112,13 @@ type
 
   TJvInspectorFontNameItem = class(TJvInspectorStringItem)
   protected
+    {$IFDEF COMPLIB_VCL}
     procedure DoDrawListItem(Control: TWinControl; Index: Integer; Rect: TRect;
       State: TOwnerDrawState); override;
+    {$ELSE}
+    procedure DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
+      State: TOwnerDrawState; var Handled: Boolean); override;
+    {$ENDIF}
     procedure DoMeasureListItem(Control: TWinControl; Index: Integer;
       var Height: Integer); override;
     procedure DoMeasureListItemWidth(Control: TWinControl; Index: Integer;
@@ -1252,7 +1329,7 @@ type
     function IsAssigned: Boolean; virtual; abstract;
     function IsInitialized: Boolean; virtual; abstract;
     class function ItemRegister: TJvInspectorRegister; virtual;
-    class function New: TJvCustomInspectorData; 
+    class function New: TJvCustomInspectorData;
     function NewItem(const AParent: TJvCustomInspectorItem): TJvCustomInspectorItem; virtual;
     procedure SetAsSet(const Buf); virtual; abstract;
     property AsFloat: Extended read GetAsFloat write SetAsFloat;
@@ -1605,12 +1682,18 @@ type
 implementation
 
 uses
-  Consts, Dialogs, ExtCtrls, Forms, Buttons,
-{$IFDEF COMPILER6_UP}
+  Consts,
+ {$IFDEF COMPILER6_UP}
   RTLConsts,
+ {$ENDIF}
+{$IFDEF COMPLIB_VCL}
+  Dialogs, Forms, Buttons,
+  JvWndProcHook,
 {$ENDIF}
-  JclRTTI, JclLogic,
-  JvWndProcHook, JvJCLUtils, JvThemes;
+{$IFDEF COMPLIB_CLX}
+  QDialogs, QForms, QButtons,
+{$ENDIF}
+  JclRTTI, JclLogic, JvJCLUtils, JvThemes;
 
 type
   PMethod = ^TMethod;
@@ -1625,6 +1708,7 @@ var
 
 //=== TJvPopupListBox ========================================================
 
+{$IFDEF COMPLIB_VCL}
 type
   TJvPopupListBox = class(TCustomListBox)
   private
@@ -1680,6 +1764,7 @@ begin
   end;
   inherited KeyPress(Key);
 end;
+{$ENDIF COMPLIB_VCL}
 
 //=== TCanvasStack ===========================================================
 
@@ -1855,6 +1940,7 @@ var
 function TInspReg.ApplicationDeactivate(var Msg: TMessage): Boolean;
 var
   I: Integer;
+{$IFDEF COMPLIB_VCL}
 begin
   Result := False;
   if Msg.Msg = CM_DEACTIVATE then
@@ -1863,6 +1949,19 @@ begin
       if FInspectors[I].HandleAllocated then
         PostMessage(FInspectors[I].Handle, CM_DEACTIVATE, 0, 0);
 end;
+{$ELSE}
+var A: TCMActivate;
+begin
+  Result := False;
+  A.Msg := CM_DEACTIVATE;
+  A.WParam := 0;
+  A.LParam := 0;
+  A.Result := 0;
+  for I := High(FInspectors) downto 0 do
+    if FInspectors[I].HandleAllocated then
+      FInspectors[I].CMDeactivate(A);
+end;
+{$ENDIF COMPLIB_VCL}
 
 function TInspReg.IndexOf(const Inspector: TJvCustomInspector): Integer;
 begin
@@ -1877,8 +1976,10 @@ begin
   begin
     SetLength(FInspectors, Length(FInspectors) + 1);
     FInspectors[High(FInspectors)] := Inspector;
+  {$IFDEF COMPLIB_VCL}
     if Length(FInspectors) = 1 then
       Application.HookMainWindow(ApplicationDeactivate);
+  {$ENDIF}
   end;
 end;
 
@@ -1892,8 +1993,10 @@ begin
     if I < High(FInspectors) then
       Move(FInspectors[I + 1], FInspectors[I], (High(FInspectors) - I) * SizeOf(TJvCustomInspector));
     SetLength(FInspectors, High(FInspectors));
+  {$IFDEF COMPLIB_VCL}
     if Length(FInspectors) = 0 then
       Application.UnhookMainWindow(ApplicationDeactivate);
+  {$ENDIF}
   end;
 end;
 
@@ -2019,7 +2122,6 @@ end;
 
 var
   DataRegister: TJvInspDataReg;
-
 //=== TJvCustomInspector =====================================================
 
 function TJvCustomInspector.CalcImageHeight: Integer;
@@ -2028,7 +2130,9 @@ var
   BandHeightSB: Integer;
   ClHeightNoSB: Integer;
   ClHeightSB: Integer;
+{$IFDEF COMPLIB_VCL}
   WinStyle: Longint;
+{$ENDIF}
   I: Integer;
 begin
   BandHeightNoSB := 0;
@@ -2039,6 +2143,7 @@ begin
   FBandStartsSB.Clear;
   FBandStartsSB.Add(Pointer(0));
   ClHeightNoSB := ClientHeight;
+{$IFDEF COMPLIB_VCL}
   WinStyle := GetWindowLong(Handle, GWL_STYLE);
   if (WinStyle and WS_HSCROLL) <> 0 then
   begin
@@ -2050,6 +2155,19 @@ begin
     ClHeightSB := ClHeightNoSB;
     Dec(ClHeightSB, GetSystemMetrics(SM_CYHSCROLL));
   end;
+{$ENDIF COMPLIB_VCL}
+{$IFDEF COMPLIB_CLX}
+  if FHorzScrollBar.Visible then
+  begin
+    ClHeightSB := ClHeightNoSB;
+    Inc(ClHeightNoSB, FHorzScrollBar.Width);
+  end
+  else
+  begin
+    ClHeightSB := ClHeightNoSB;
+    Dec(ClHeightSB, FHorzScrollBar.Width);
+  end;
+{$ENDIF COMPLIB_CLX}
   for I := 0 to Pred(VisibleCount) do
   begin
     Inc(FImageHeight, VisibleItems[I].Height);
@@ -2315,15 +2433,15 @@ end;
 
 function TJvCustomInspector.GetVisibleCount: Integer;
 begin
-  Result := FVisible.Count;
+  Result := FVisibleList.Count;
 end;
 
 function TJvCustomInspector.GetVisibleItems(const I: Integer): TJvCustomInspectorItem;
 begin
-  if (I < 0) or (I >= FVisible.Count) then
+  if (I < 0) or (I >= FVisibleList.Count) then
     Result := nil
   else
-    Result := TJvCustomInspectorItem(FVisible.Objects[I]);
+    Result := TJvCustomInspectorItem(FVisibleList.Objects[I]);
 end;
 
 function TJvCustomInspector.GetWantTabs: Boolean;
@@ -2751,6 +2869,9 @@ end;
 
 procedure TJvCustomInspector.Paint;
 begin
+{$IFDEF COMPLIB_CLX}
+  inherited Paint;
+{$ENDIF}
   if Painter <> nil then
   begin
     if NeedRebuild then
@@ -2781,14 +2902,14 @@ var
 begin
   FImageHeight := 0;
   OldSel := Selected;
-  FVisible.Clear;
+  FVisibleList.Clear;
   Item := Root;
   ItemStack := TStack.Create;
   try
     while (Item <> nil) do
     begin
       if not Item.Hidden then
-        FVisible.AddObject(Item.GetSortName, Item);
+        FVisibleList.AddObject(Item.GetSortName, Item);
       if Item.Visible and Item.Expanded and (Item.Count > 0) then
       begin
         ItemStack.Push(Item);
@@ -2807,9 +2928,9 @@ begin
   finally
     ItemStack.Free;
   end;
-  TStringList(FVisible).CustomSort(ListCompare);
+  TStringList(FVisibleList).CustomSort(ListCompare);
   if OldSel <> nil then
-    SelectedIndex := FVisible.IndexOfObject(OldSel);
+    SelectedIndex := FVisibleList.IndexOfObject(OldSel);
   CalcImageHeight;
   NeedRebuild := False;
 end;
@@ -2823,10 +2944,10 @@ procedure TJvCustomInspector.RemoveVisible(const Item: TJvCustomInspectorItem);
 var
   Idx: Integer;
 begin
-  Idx := FVisible.IndexOfObject(Item);
+  Idx := FVisibleList.IndexOfObject(Item);
   if Idx > -1 then
   begin
-    FVisible.Delete(Idx);
+    FVisibleList.Delete(Idx);
     if SelectedIndex >= Idx then
       SelectedIndex := SelectedIndex - 1;
     Invalidate;
@@ -2836,6 +2957,7 @@ end;
 procedure TJvCustomInspector.Resize;
 begin
   inherited Resize;
+  if csCreating in ControlState then Exit;
   if not BandSizing then
   begin
     FImageHeight := 0; // Force recalculation of bands
@@ -3044,7 +3166,7 @@ procedure TJvCustomInspector.SetSelected(const Value: TJvCustomInspectorItem);
 var
   Idx: Integer;
 begin
-  Idx := FVisible.IndexOfObject(Value);
+  Idx := FVisibleList.IndexOfObject(Value);
   if Idx > -1 then
     SelectedIndex := Idx;
 end;
@@ -3136,7 +3258,12 @@ begin
   if Value <> WantTabs then
   begin
     FWantTabs := Value;
+  {$IFDEF COMPLIB_VCL}
     RecreateWnd;
+  {$ENDIF COMPLIB_VCL}
+  {$IFDEF COMPLIB_CLX}
+    RecreateWidget;
+  {$ENDIF COMPLIB_CLX}
   end;
 end;
 
@@ -3145,20 +3272,25 @@ var
   DrawHeight: Integer;
   ClHeight: Integer;
   ScFactor: Extended;
+{$IFDEF COMPLIB_VCL}
   ScrollInfo: TScrollInfo;
+{$ENDIF}
   BCount: Integer;
   BPerPage: Integer;
 begin
+  if csDestroying in ComponentState then Exit;
+  
   if not UseBands then
   begin
-    ShowScrollBar(Handle, SB_HORZ, False);
+    ShowScrollBars(SB_HORZ, False);
     // Cache the image height, client height and scroll factor
     DrawHeight := ImageHeight;
     ClHeight := ClientHeight;
     ScFactor := ScrollfactorV;
     { Needed to redisplay the scrollbar after it's hidden in the CloseUp method
       of an enumerated item's combobox }
-    ShowScrollBar(Handle, SB_VERT, Round((DrawHeight) / ScFactor) >= Round(ClHeight / ScFactor));
+    ShowScrollBars(SB_VERT, Round((DrawHeight) / ScFactor) >= Round(ClHeight / ScFactor));
+{$IFDEF COMPLIB_VCL}
     with ScrollInfo do
     begin
       cbSize := SizeOf(ScrollInfo);
@@ -3170,15 +3302,30 @@ begin
       nTrackPos := 0;
     end;
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
+{$ELSE}
+    with FVertScrollBar do
+    begin
+      Masked := True;
+      Min := 0;
+      try
+        Max := Round((IdxToY(Succ(YToIdx(ImageHeight - ClientHeight))) + ClientHeight) / ScFactor);
+        LargeChange := Round(ClHeight / ScFactor);
+        Position := Round(IdxToY(TopIndex) / ScFactor);
+      except
+        on E: Exception do ShowMessage(E.Message);
+      end;
+    end;
+{$ENDIF COMPLIB_VCL}
   end
   else
   begin
-    ShowScrollBar(Handle, SB_VERT, False);
+    ShowScrollBars(SB_VERT, False);
     { Needed to redisplay the scrollbar after it's hidden in the CloseUp method
       of an enumerated item's combobox }
     BCount := BandStarts.Count;
     BPerPage := ClientWidth div BandWidth;
-    ShowScrollBar(Handle, SB_HORZ, BCount > BPerPage);
+    ShowScrollBars(SB_HORZ, BCount > BPerPage);
+{$IFDEF COMPLIB_VCL}
     with ScrollInfo do
     begin
       cbSize := SizeOf(ScrollInfo);
@@ -3190,6 +3337,16 @@ begin
       nTrackPos := 0;
     end;
     SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
+{$ELSE}
+    with FHorzScrollBar do
+    begin
+      Masked := True;
+      Min := 0;
+      Max := BCount - 1;
+      LargeChange := BPerPage;
+      Position := GetBandFor(TopIndex);
+    end;
+{$ENDIF COMPLIB_VCL}
   end;
   Invalidate;
 end;
@@ -3209,12 +3366,33 @@ begin
   Result := RectWidth(ViewRect);
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvCustomInspector.WMGetDlgCode(var Msg: TWMGetDlgCode);
 begin
   inherited;
   Msg.Result := DLGC_WANTARROWS;
   if WantTabs then
     Msg.Result := Msg.Result + DLGC_WANTTAB;
+end;
+{$ELSE}
+function TJvCustomInspector.NeedKey(Key: Integer; Shift: TShiftState;
+  const KeyText: WideString): Boolean;
+begin
+  Result := (((Key = Key_Tab) or (Key = Key_BackTab)) and FWantTabs)
+    or ((Key = Key_Left) or (Key = Key_Right) or (Key = Key_Up) or (Key = Key_Down)) or
+    inherited NeedKey(Key, Shift, KeyText);
+end;
+{$ENDIF}
+
+{$IFDEF COMPLIB_VCL}
+procedure TJvCustomInspector.WMSetFocus(var Msg: TWMSetFocus);
+{$ELSE}
+procedure TJvCustomInspector.DoEnter;
+{$ENDIF}
+begin
+  inherited;
+  if Selected <> nil then
+    Selected.SetFocus;
 end;
 
 procedure TJvCustomInspector.WMHScroll(var Msg: TWMScroll);
@@ -3253,13 +3431,6 @@ begin
   TopIndex := Integer(BandStarts[CurBand]);
 end;
 
-procedure TJvCustomInspector.WMSetFocus(var Msg: TWMSetFocus);
-begin
-  inherited;
-  if Selected <> nil then
-    Selected.SetFocus;
-end;
-
 procedure TJvCustomInspector.WMVScroll(var Msg: TWMScroll);
 var
   Delta: Integer;
@@ -3293,6 +3464,36 @@ begin
     TopIndex := YToIdx(IdxToY(TopIndex) + Delta);
 end;
 
+{$IFDEF COMPLIB_CLX}
+procedure TJvCustomInspector.Scrolled(Sender: TObject; ScrollCode: TScrollCode;
+  var ScrollPos: Integer);
+var Msg: TWMScroll;
+begin
+  Msg.Pos := ScrollPos;
+  case ScrollCode of
+    scLineUp: Msg.ScrollCode := SB_LINEUP;
+    scLineDown: Msg.ScrollCode := SB_LINEDOWN;
+    scPageUp: Msg.ScrollCode := SB_PAGEUP;
+    scPageDown: Msg.ScrollCode := SB_PAGEDOWN;
+    scBottom: Msg.ScrollCode := SB_BOTTOM;
+    scTop: Msg.ScrollCode := SB_TOP;
+    scPosition: Msg.ScrollCode := SB_BOTTOM;
+    scTrack: Msg.ScrollCode := SB_THUMBTRACK;
+    scEndScroll: Msg.ScrollCode := SB_ENDSCROLL;
+  end;
+  if Sender = FHorzScrollBar then
+  begin
+    Msg.Msg := WM_HSCROLL;
+    WMHScroll(Msg);
+  end
+  else if Sender = FVertScrollBar then
+  begin
+    Msg.Msg := WM_VSCROLL;
+    WMVScroll(Msg);
+  end;
+end;
+{$ENDIF COMPLIB_CLX}
+
 function TJvCustomInspector.YToIdx(const Y: Integer): Integer;
 var
   CurY: Integer;
@@ -3311,17 +3512,34 @@ end;
 constructor TJvCustomInspector.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+{$IFDEF COMPLIB_CLX}
+  FHorzScrollBar := TScrollBar.Create(nil);
+  FVertScrollBar := TScrollBar.Create(nil);
+
+  FHorzScrollBar.Visible := False;
+  FHorzScrollBar.Kind := sbHorizontal;
+  FHorzScrollBar.Align := alRight;
+
+  FVertScrollBar.Visible := False;
+  FVertScrollBar.Kind := sbVertical;
+  FVertScrollBar.Align := alBottom;
+{$ENDIF}
+
   FBandStartsNoSB := TList.Create;
   FBandStartsSB := TList.Create;
   FSortNotificationList := TList.Create;
   FItemHeight := 16;
+{$IFDEF COMPLIB_VCL}
   DoubleBuffered := True;
-  FVisible := TStringList.Create;
+{$ENDIF}
+  FVisibleList := TStringList.Create;
   FRoot := TJvCustomInspectorItem.Create(nil, nil);
   Root.SetInspector(Self);
   Root.Flags := [iifHidden, iifExpanded, iifReadonly, iifVisible];
   FSelectedIndex := -1;
+{$IFDEF COMPLIB_VCL}
   BevelKind := bkTile;
+{$ENDIF}
   BevelInner := bvNone;
   BevelOuter := bvLowered;
   TabStop := True;
@@ -3329,12 +3547,14 @@ begin
   Height := 100;
   Divider := 75;
   BandWidth := 150;
+
   if not (csDesigning in ComponentState) then
     InspReg.RegInspector(Self);
 end;
 
 procedure TJvCustomInspector.BeforeDestruction;
 begin
+  inherited BeforeDestruction;
   if not (csDesigning in ComponentState) then
     InspReg.UnRegInspector(Self);
   Painter := nil;
@@ -3342,7 +3562,11 @@ begin
   FBandStartsSB.Free;
   FBandStartsNoSB.Free;
   FSortNotificationList.Free;
-  FVisible.Free;
+  FVisibleList.Free;
+{$IFDEF COMPLIB_CLX}
+  FHorzScrollBar.Free;
+  FVertScrollBar.Free;
+{$ENDIF}
 end;
 
 function TJvCustomInspector.BeginUpdate: Integer;
@@ -3400,7 +3624,7 @@ end;
 function TJvCustomInspector.VisibleIndex(
   const AItem: TJvCustomInspectorItem): Integer;
 begin
-  Result := FVisible.IndexOfObject(AItem);
+  Result := FVisibleList.IndexOfObject(AItem);
 end;
 
 procedure TJvCustomInspector.RefreshValues;
@@ -4401,7 +4625,9 @@ begin
   begin
     EditCtrl.SelectAll;
     EditCtrl.Modified := False;
+  {$IFDEF COMPLIB_VCL}
     EditCtrl.ClearUndo;
+  {$ENDIF}
   end;
 end;
 
@@ -4468,13 +4694,21 @@ begin
   if DroppedDown then
   begin
     if Inspector.HandleAllocated then
-      ShowScrollBar(Inspector.Handle, SB_BOTH, False);
+      Inspector.ShowScrollBars(SB_BOTH, False);
+  {$IFDEF COMPLIB_VCL}
     if GetCapture <> 0 then
       SendMessage(GetCapture, WM_CANCELMODE, 0, 0);
+  {$ELSE}
+    Mouse.Capture := nil;
+  {$ENDIF}
     if ListBox.ItemIndex > -1 then
       ListValue := ListBox.Items[ListBox.ItemIndex];
+  {$IFDEF COMPLIB_VCL}
     SetWindowPos(ListBox.Handle, 0, 0, 0, 0, 0, SWP_NOZORDER or
       SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE or SWP_HIDEWINDOW);
+  {$ELSE}
+    ListBox.Hide;  
+  {$ENDIF}
     FDroppedDown := False;
     InvalidateItem;
     if Accept then
@@ -4520,8 +4754,13 @@ begin
     Result := 0;
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvCustomInspectorItem.DoDrawListItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
+{$ELSE}
+procedure TJvCustomInspectorItem.DoDrawListItem(Control: TObject; Index: Integer; Rect: TRect;
+  State: TOwnerDrawState; var Handled: Boolean);
+{$ENDIF}
 begin
   with (Control as TListBox) do
     Canvas.TextOut(Rect.Left, Rect.Top, Items[Index]);
@@ -4584,11 +4823,13 @@ begin
   begin
     ListBox.Width := RectWidth(Rects[iprValueArea]);
     TListBox(ListBox).Font := TOpenEdit(EditCtrl).Font;
+  {$IFDEF COMPLIB_VCL}
     if TListBox(ListBox).IntegralHeight then
     begin
       ListBox.Canvas.Font := TListBox(ListBox).Font;
       TListBox(ListBox).ItemHeight := ListBox.Canvas.TextHeight('Wy');
     end;
+  {$ENDIF}  
     ListBox.Items.Clear;
     GetValueList(ListBox.Items);
     if ListBox.Items.Count < MaxListCount then
@@ -4618,11 +4859,20 @@ begin
       Y := P.Y - TListBox(ListBox).Height;
     if P.X + Listbox.Width > Screen.Width then
       P.X := Screen.Width - Listbox.Width;
+  {$IFDEF COMPLIB_VCL}
     SetWindowPos(ListBox.Handle, HWND_TOP, P.X, Y, 0, 0,
       SWP_NOSIZE or SWP_NOACTIVATE or SWP_SHOWWINDOW);
+  {$ELSE}
+    ListBox.Show;
+    ListBox.BringToFront;
+  {$ENDIF}
     FDroppedDown := True;
     InvalidateItem;
+  {$IFDEF COMPLIB_VCL}
     Windows.SetFocus(EditCtrl.Handle);
+  {$ELSE}
+    EditCtrl.SetFocus;
+  {$ENDIF}
   end;
 end;
 
@@ -4706,6 +4956,7 @@ begin
   Inspector.MouseUp(Button, Shift, InspCoord.X, InspCoord.Y);
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvCustomInspectorItem.Edit_WndProc(var Message: TMessage);
 var
   ExecInherited: Boolean;
@@ -4780,6 +5031,7 @@ begin
       end;
   end;
 end;
+{$ENDIF COMPLIB_VCL}
 
 function TJvCustomInspectorItem.GetAutoUpdate: Boolean;
 begin
@@ -5129,7 +5381,9 @@ end;
 procedure TJvCustomInspectorItem.MouseMove(Shift: TShiftState; X, Y: Integer);
 var
   ListPos: TPoint;
+{$IFDEF COMPLIB_VCL}
   MousePos: TSmallPoint;
+{$ENDIF}
 begin
   if Tracking then
   begin
@@ -5140,8 +5394,14 @@ begin
       if PtInRect(ListBox.ClientRect, ListPos) then
       begin
         StopTracking;
+      {$IFDEF COMPLIB_VCL}
         MousePos := PointToSmallPoint(ListPos);
         SendMessage(ListBox.Handle, WM_LBUTTONDOWN, 0, Integer(MousePos));
+      {$ELSE}
+        QApplication_sendEventAndDelete(ListBox.Handle,
+          QMouseEvent_create(QEventType_MouseButtonPress,
+            @ListPos, Integer(ButtonState_LeftButton), Integer(ButtonState_LeftButton)));
+      {$ENDIF COMPLIB_VCL}
         Exit;
       end;
     end;
@@ -5250,7 +5510,9 @@ begin
   begin
     if EditCtrl <> nil then
     begin
+    {$IFDEF COMPLIB_VCL}
       EditCtrl.WindowProc := Edit_WndProc;
+    {$ENDIF}
       EditCtrl.Free;
     end;
     FEditCtrl := Value;
@@ -5258,7 +5520,9 @@ begin
     if EditCtrl <> nil then
       with TOpenEdit(EditCtrl) do
       begin
+      {$IFDEF COMPLIB_VCL}
         Ctl3D := False;
+      {$ENDIF}
         BorderStyle := bsNone;
         Parent := TWinControl(Owner);
       end;
@@ -5485,7 +5749,11 @@ begin
   if Pressed <> NewState then
   begin
     Pressed := NewState;
+  {$IFDEF COMPLIB_VCL}
     InvalidateRect(Inspector.Handle, @R, False);
+  {$ELSE}
+    Inspector.InvalidateRect(R, False);
+  {$ENDIF}
   end;
 end;
 
@@ -5639,41 +5907,58 @@ const
   LeftOffs = 3;
 var
   R: TRect;
+{$IFDEF COMPLIB_VCL}
   BFlags: Integer;
   W, G, I: Integer;
+{$ENDIF}  
 begin
   // This reduces the flickering when dragging the divider bar
   if EditCtrl <> nil then
   begin
+  {$IFDEF COMPLIB_VCL}
     ACanvas.Lock;
     try
       EditCtrl.PaintTo(ACanvas.Handle, EditCtrl.Left, EditCtrl.Top);
     finally
       ACanvas.Unlock;
     end;
+  {$ENDIF}
   end;
   R := Rects[iprEditButton];
   if not IsRectEmpty(R) then
   begin
+  {$IFDEF COMPLIB_VCL}
     BFlags := 0;
+  {$ENDIF}
     if iifValueList in Flags then
     begin
+    {$IFDEF COMPLIB_VCL}
       if not EditCtrl.Enabled then
         BFlags := DFCS_INACTIVE
       else if Pressed then
         BFlags := DFCS_FLAT or DFCS_PUSHED;
       DrawThemedFrameControl(Inspector, ACanvas.Handle, R, DFC_SCROLL, BFlags or DFCS_SCROLLCOMBOBOX);
+    {$ELSE}
+      if EditCtrl.Enabled then
+        DrawButtonFace(ACanvas, R, 0, Pressed, EditCtrl.Focused, True);
+    {$ENDIF}
     end
     else if iifEditButton in Flags then
     begin
+    {$IFDEF COMPLIB_VCL}
       if Pressed then
         BFlags := BF_FLAT;
-{$IFDEF JVCLThemesEnabled}
+      {$IFDEF JVCLThemesEnabled}
       if ThemeServices.ThemesEnabled then
         DrawThemedButtonFace(Inspector, ACanvas, R, 0, bsNew, False, Pressed, False, False)
       else
-{$ENDIF}
+      {$ENDIF}
       DrawEdge(ACanvas.Handle, R, EDGE_RAISED, BF_RECT or BF_MIDDLE or BFlags);
+    {$ELSE}
+      DrawEdge(ACanvas, R, esRaised, esNone, [ebLeft, ebTop, ebRight, ebBottom]);
+    {$ENDIF}
+
+    {$IFDEF COMPLIB_VCL}
       W := 2;
       G := (RectWidth(R) - 2 * Ord(Pressed) - (3 * W)) div 4;
       if G < 1 then
@@ -5688,9 +5973,12 @@ begin
 
       BFlags := R.Left + (RectWidth(R) - 3 * W - 2 * G) div 2 + Ord(Pressed);
       I := R.Top + (RectHeight(R) - W) div 2;
-      PatBlt(ACanvas.handle, BFlags, I, W, W, BLACKNESS);
-      PatBlt(ACanvas.handle, BFlags + G + W, I, W, W, BLACKNESS);
-      PatBlt(ACanvas.handle, BFlags + 2 * G + 2 * W, I, W, W, BLACKNESS);
+      PatBlt(ACanvas.Handle, BFlags, I, W, W, BLACKNESS);
+      PatBlt(ACanvas.Handle, BFlags + G + W, I, W, W, BLACKNESS);
+      PatBlt(ACanvas.Handle, BFlags + 2 * G + 2 * W, I, W, W, BLACKNESS);
+    {$ELSE}
+      {TODO : implement the above code for CLX}
+    {$ENDIF COMPLIB_VCL}
     end;
   end;
 end;
@@ -5735,8 +6023,12 @@ begin
       if not (iifMultiLine in Flags) then
         ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S)
       else
+      {$IFDEF COMPLIB_VCL}
         DrawTextEx(ACanvas.Handle, PChar(S), Length(S), ARect, DT_EDITCONTROL or
-          DT_WORDBREAK, nil)
+          DT_WORDBREAK, nil);
+      {$ELSE}
+        ClxDrawText(ACanvas, S, ARect, {DT_EDITCONTROL or DT_WORDBREAK}0);
+      {$ENDIF}
     end
     else
     begin
@@ -5807,7 +6099,9 @@ begin
       Memo.WordWrap := True;
       Memo.WantReturns := False;
       Memo.ScrollBars := ssVertical;
+    {$IFDEF COMPLIB_VCL}
       SetEditCtrl(Memo);
+    {$ENDIF}
     end
     else
     begin
@@ -5833,17 +6127,25 @@ begin
     begin
       TOpenEdit(EditCtrl).Color := clWindow;
     end;
+  {$IFDEF COMPLIB_VCL}
     FEditWndPrc := EditCtrl.WindowProc;
     EditCtrl.WindowProc := Edit_WndProc;
+  {$ENDIF}
     TOpenEdit(EditCtrl).AutoSize := False;
     if iifValueList in Flags then
     begin
+    {$IFDEF COMPLIB_VCL}
       FListBox := TJvPopupListBox.Create(Inspector);
+    {$ELSE}
+      FListBox := TListBox.Create(Inspector);
+    {$ENDIF}
       ListBox.Visible := False;
       ListBox.Parent := EditCtrl;
       TListBox(ListBox).OnMouseUp := ListMouseUp;
+    {$IFDEF COMPLIB_VCL}
       TListBox(ListBox).IntegralHeight := not (iifOwnerDrawListVariable in
         Flags);
+    {$ENDIF}
       TListBox(ListBox).ItemHeight := 11;
       if iifOwnerDrawListFixed in Flags then
         TListBox(ListBox).Style := lbOwnerDrawFixed
@@ -5917,7 +6219,9 @@ begin
   if not Assigned(Inspector) then exit;
   if csDestroying in Inspector.ComponentState then exit; // bugfix attempt. WAP.Self
 
-  OutputDebugString(PChar('ScrollIntoView:FDisplayName'));
+  {$IFDEF MSWINDOWS}
+//  OutputDebugString(PChar('ScrollIntoView:FDisplayName'));
+  {$ENDIF}
   ViewIdx := Inspector.VisibleIndex(Self);
   if ViewIdx < 0 then
   begin
@@ -7430,7 +7734,9 @@ begin
   with TFontDialog.Create(GetParentForm(Inspector)) do
   try
     Font.Assign(TFont(Data.AsOrdinal));
+  {$IFDEF COMPLIB_VCL}
     Device := fdScreen;
+  {$ENDIF}
     if Execute then
     begin
       TFont(Data.AsOrdinal).Assign(Font);
@@ -7438,7 +7744,7 @@ begin
     end;
   finally
     Free;
-    ShowScrollBar(Inspector.Handle, SB_BOTH, False);
+    Inspector.ShowScrollBars(SB_BOTH, False);
   end;
 end;
 
@@ -7452,8 +7758,13 @@ end;
 
 //=== TJvInspectorFontNameItem ===============================================
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvInspectorFontNameItem.DoDrawListItem(Control: TWinControl;
   Index: Integer; Rect: TRect; State: TOwnerDrawState);
+{$ELSE}
+procedure TJvInspectorFontNameItem.DoDrawListItem(Control: TObject;
+  Index: Integer; Rect: TRect; State: TOwnerDrawState; var Handled: Boolean);
+{$ENDIF}
 var
   FontName: string;
 begin
@@ -7580,10 +7891,13 @@ procedure TJvInspectorBooleanItem.DrawValue(const ACanvas: TCanvas);
 var
   Bool: Boolean;
   ARect: TRect;
-  SaveRgn: HRGN;
+{$IFDEF COMPLIB_VCL}
+  Rgn, SaveRgn: HRGN;
+{$ELSE}
+  Rgn, SaveRgn: QRegionH;
+{$ENDIF}
   HasRgn: Boolean;
   ClipRect: TRect;
-  Rgn: HRGN;
 begin
   if not ShowAsCheckbox then
     inherited DrawValue(ACanvas)
@@ -7601,6 +7915,7 @@ begin
     OffsetRect(ARect, 2, 0);
     ARect.Right := ARect.Left + 13;
     ARect.Bottom := ARect.Top + 13;
+  {$IFDEF COMPLIB_VCL}
     { Remember current clipping region }
     SaveRgn := CreateRectRgn(0, 0, 0, 0);
     HasRgn := GetClipRgn(ACanvas.Handle, SaveRgn) > 0;
@@ -7611,6 +7926,15 @@ begin
       Rgn := CreateRectRgn(Left, Top, Right, Bottom);
     SelectClipRgn(ACanvas.Handle, Rgn);
     DeleteObject(Rgn);
+  {$ELSE}
+    SaveRgn := QPainter_clipRegion(ACanvas.Handle);
+    HasRgn := QPainter_hasClipping(ACanvas.Handle);
+    IntersectRect(ClipRect, ARect, Rects[iprValue]);
+    FCheckRect := ClipRect;
+    Rgn := QRegion_create(@ClipRect, QRegionRegionType_Rectangle);
+    QPainter_setClipRegion(ACanvas.Handle, Rgn);
+    QPainter_setClipping(ACanvas.Handle, True);
+  {$ENDIF COMPLIB_VCL}
     try
       { Paint the 3d checkbox: Frame }
 {      Frame3D(ACanvas, ARect, clBlack, clWhite, 1);
@@ -7634,11 +7958,17 @@ begin
         end;
     finally
       { restore previous clipping region }
+    {$IFDEF COMPLIB_VCL}
       if HasRgn then
         SelectClipRgn(ACanvas.Handle, SaveRgn)
       else
         SelectClipRgn(ACanvas.Handle, 0);
       DeleteObject(SaveRgn);
+    {$ELSE}
+      QPainter_setClipRegion(ACanvas.Handle, SaveRgn);
+      QPainter_setClipping(ACanvas.Handle, HasRgn);
+      QRegion_destroy(Rgn);
+    {$ENDIF COMPLIB_VCL}
     end;
   end;
 end;
@@ -8870,6 +9200,7 @@ begin
     Items[I].Free;
   if FRegistered then
     DataRegister.Remove(Self);
+  inherited BeforeDestruction;
 end;
 
 class function TJvCustomInspectorData.ItemRegister: TJvInspectorRegister;
@@ -10790,7 +11121,11 @@ begin
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorInt64Item, tkInt64));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorClassItem, tkClass));
     Add(TJvInspectorTypeKindRegItem.Create(TJvInspectorTMethodItem, tkMethod));
+  {$IFDEF COMPLIB_VCL}
     Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(TCaption)));
+  {$ELSE}
+    Add(TJvInspectorTCaptionRegItem.Create(TJvInspectorStringItem, TypeInfo(WideString)));
+  {$ENDIF}
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorFontItem, TypeInfo(TFont)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(Boolean)));
     Add(TJvInspectorTypeInfoRegItem.Create(TJvInspectorBooleanItem, TypeInfo(BYTEBOOL)));
@@ -10856,6 +11191,7 @@ begin
   EndUpdate;
 end;
 
+{$IFDEF COMPLIB_VCL}
 procedure TJvCustomInspector.WMMouseWheel(var Msg: TWMMouseWheel);
 var
   Count: Integer;
@@ -10866,6 +11202,34 @@ begin
   if Index > -1 then
     TopIndex := Index;
 end;
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+function TJvCustomInspector.DoMouseWheel(Shift: TShiftState;
+  WheelDelta: Integer; const MousePos: TPoint): Boolean;
+var
+  Count: Integer;
+  Index: Integer;
+begin
+  Count := -WheelDelta div (120 div 5); // 5 items per scroll
+  Index := TopIndex + Count;
+  if Index > -1 then
+    TopIndex := Index;
+  Result := True;
+end;
+{$ENDIF}
+procedure TJvCustomInspector.ShowScrollBars(Bar: Integer; Visible: Boolean);
+begin
+{$IFDEF COMPLIB_VCL}
+  ShowScrollBar(Handle, Bar, Visible);
+{$ENDIF}
+{$IFDEF COMPLIB_CLX}
+  if Bar and SB_HORZ <> 0 then
+    FHorzScrollBar.Visible := Visible;
+  if Bar and SB_VERT <> 0 then
+    FVertScrollBar.Visible := Visible;
+{$ENDIF}
+end;
+
 
 initialization
   CanvasStack := TCanvasStack.Create(512);

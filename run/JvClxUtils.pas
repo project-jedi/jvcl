@@ -51,6 +51,25 @@ type
 
 {$IFDEF COMPLIB_CLX}
 
+const
+  VK_UP = Key_Up;
+  VK_DOWN = Key_Down;
+  VK_RIGHT = Key_Right;
+  VK_LEFT = Key_Left;
+  VK_ESCAPE = Key_Escape;
+  VK_TAB = Key_Tab;
+  VK_SPACE = Key_Space;
+  VK_ENTER = Key_Enter;
+  VK_RETURN = KEy_Return;
+  VK_BACKTAB = Key_Backtab;
+  VK_BACKSPACE = Key_Backspace;
+  VK_PRIOR = Key_Prior;
+  VK_NEXT = Key_Next;
+  VK_HOME = Key_Home;
+  VK_END = Key_End;
+  VK_ADD = Key_Plus;
+  VK_SUBTRACT = Key_Minus;
+
 function GetSysColor(Color: Integer): TColorRef;
 
 procedure SetWindowPlacement(Handle: QWidgetH; W: PWindowPlacement);
