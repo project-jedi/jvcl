@@ -199,7 +199,7 @@ procedure TJvFullColorForm.JvComboBoxColorSpaceSelect(Sender: TObject);
 begin
   if FUpdating then
     Exit;
-  FUpdating := True;
+  FUpdating := True;                                         
   with Sender as TJvColorSpaceCombo do
     FullColor := ColorSpaceManager.ConvertToID(FullColor, ColorSpaceID);
   FUpdating := False;

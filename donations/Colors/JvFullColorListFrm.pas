@@ -95,6 +95,11 @@ implementation
 
 {$R *.dfm}
 
+{$IFDEF UNITVERSIONING}
+uses
+  JclUnitVersioning;
+{$ENDIF UNITVERSIONING}
+
 constructor TJvFullColorListForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -221,7 +226,7 @@ end;
 procedure TJvFullColorListForm.SetColorList(const Value: TJvFullColorList);
 var
   I: Integer;
-begin
+begin                                                    
   with ListBoxColors.Items, ColorSpaceManager do
   begin
     BeginUpdate;

@@ -701,11 +701,11 @@ begin
   finally
     FullColorListForm.Free;
   end;
-end;
+end;   
 
 procedure TJvFullColorListEditor.FormApply(Sender: TObject);
 begin
-  SetOrdValue(Integer((Sender as TJvFullColorListForm).ColorList));
+  SetOrdValue(Cardinal((Sender as TJvFullColorListForm).ColorList));
 end;
 
 function TJvFullColorListEditor.GetAttributes: TPropertyAttributes;

@@ -1280,12 +1280,12 @@ begin
   Y := EnsureRange(Y, 0.0, 1.0);
   Z := EnsureRange(Z, 0.0, 1.0);
 
-  if Y > 0.008856 then
+  if (Y > 0.008856) then
     L := Round(116.0 * Power(Y, 1.0 / 3.0) - 16.0)
   else
     L := Round(903.3 * Y);
-  A := Round(500 *(Calc(X) - Calc(Y)));
-  B := Round(200 *(Calc(Y) - Calc(Z)));
+  A := Round(500.0 *(Calc(X) - Calc(Y)));
+  B := Round(200.0 *(Calc(Y) - Calc(Z)));
 
   L := EnsureRange(L, LAB_MIN, LAB_MAX);
   A := EnsureRange(A, LAB_MIN, LAB_MAX);
@@ -1305,7 +1305,7 @@ var
     if Value > 0.207 then
       Result := Power(Value, 3.0)
     else
-      Result := (116.0 * Value - 16.0) / 903.3;
+      Result := ((116.0 * Value) - 16.0) / 903.3;
   end;
 
 begin
@@ -1315,8 +1315,8 @@ begin
     Y := XYZ_MAX * Power((L + 16.0) / 116.0, 3.0)
   else
     Y := (XYZ_MAX * L) / 903.3;
-  X := XYZ_MAX * Calc(A / 500.0 + (L + 16.0) / 116.0);
-  Z := XYZ_MAX * Calc((L + 16.0) / 116.0 - B / 200.0);
+  X := XYZ_MAX * Calc((A / 500.0) + ((L + 16.0) / 116.0));
+  Z := XYZ_MAX * Calc(((L + 16.0) / 116.0) - (B / 200.0));
 
   X := EnsureRange(X, XYZ_MIN, XYZ_MAX);
   Y := EnsureRange(Y, XYZ_MIN, XYZ_MAX);
