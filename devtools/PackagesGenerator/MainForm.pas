@@ -198,14 +198,23 @@ begin
 end;
 
 constructor TfrmMain.Create(AOwner: TComponent);
+var
+  Success : Boolean;
+  ErrMsg : string;
 begin
   inherited;
 
   jaxStore.FileName := StrEnsureSuffix(PathSeparator, ExtractFilePath(Application.exename)) + 'pgEdit.xml';
   if cmbModel.ItemIndex >-1 then
-    LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex])
+    Success := LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg)
   else
-    LoadConfig(jaxStore.FileName, '');
+    Success := LoadConfig(jaxStore.FileName, '', ErrMsg);
+
+  if not Success then
+  begin
+    Application.MessageBox(PChar(ErrMsg), 'Error loading configuration', MB_ICONERROR);
+    Application.Terminate;
+  end;
 
   with jsgDependencies do
   begin
@@ -591,6 +600,7 @@ var
   path : string;
   targets : TStringList;
   i : Integer;
+  ErrMsg : string;
 begin
   if IsOkToChange then
   begin
@@ -614,7 +624,7 @@ begin
         end;
 
         frmGenMessages.Show;
-        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], frmTargets.chkGenDof.Checked);
+        Generate(jlbList.Items, targets, AddMessage, jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg, frmTargets.chkGenDof.Checked);
       finally
         targets.Free;
       end;
@@ -897,8 +907,11 @@ begin
 end;
 
 procedure TfrmMain.cmbModelClick(Sender: TObject);
+var
+  ErrMsg : string;
 begin
-  LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex]);
+  if not LoadConfig(jaxStore.FileName, cmbModel.Items[cmbModel.ItemIndex], ErrMsg) then
+    Application.MessageBox(PChar(ErrMsg), 'Error loading configuration', MB_ICONERROR);
 end;
 
 end.

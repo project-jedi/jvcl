@@ -60,6 +60,7 @@ var
   curParam : string;
   targets : TStringList;
   packages : TStringList;
+  ErrMsg : string;
 begin
   targets := TStringList.Create;
   try
@@ -111,20 +112,11 @@ begin
     if modelName = '' then
       modelName := 'JVCL';
 
-{
-    if packagesPath = '' then
-      packagesPath := '..'+PathSeparator+'..'+PathSeparator+'packages';
-
-    if prefix = '' then
-      prefix := 'Jv';
-
-    if format = '' then
-      format := '%p%n%e%v%t';
-
-    if incfile = '' then
-      incfile := '..'+PathSeparator+'..'+PathSeparator+'common'+PathSeparator+'jvcl.inc';}
-
-    LoadConfig(xmlconfig, modelName);
+    if not LoadConfig(xmlconfig, modelName, ErrMsg) then
+    begin
+      WriteLn(ErrMsg);
+      Exit;
+    end;
 
    // EnumeratePackages() needs this 
     if packagesPath = '' then
@@ -142,17 +134,22 @@ begin
     packages := TStringList.Create;
     try
       EnumeratePackages(packagesPath, packages);
-      Generate(packages,
-               targets,
-               WriteMsg,
-               XmlConfig,
-               ModelName,
-               FindCmdLineSwitch('d', ['-', '/'], True),
-               packagesPath,
-               prefix,
-               Format,
-               incfile
-              );
+      if not Generate(packages,
+                      targets,
+                      WriteMsg,
+                      XmlConfig,
+                      ModelName,
+                      ErrMsg,
+                      FindCmdLineSwitch('d', ['-', '/'], True),
+                      packagesPath,
+                      prefix,
+                      Format,
+                      incfile
+                     ) then
+      begin
+        WriteLn(ErrMsg);
+        Exit;
+      end;
     finally
       packages.Free;
     end;
