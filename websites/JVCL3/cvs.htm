@@ -23,7 +23,7 @@
 Making CVS and CVS with SSH work on a Windows computer can be a daunting task. 
 With the newest releases of a couple of programs and some clear instructions, 
 this is not as difficult as it once was. This document tries to explain in a 
-step by step, easy to follow manner the tasks you must complete to make it work 
+step by step and easy to follow manner the tasks you must complete to make it work 
 on your computer. </p>
 <p>
 &nbsp;</p>
@@ -78,9 +78,15 @@ put PuTTy in a sub folder of TortoiseCVS. </p>
 
 
 <p>You should now be able to make anonymous connections to the CVS repository. 
-TortoiseCVS makes this really simple: go to the SourceForge project you are 
-interested in and click the CVS link in the menu bar. The CVS page explains how 
-to setup anonymous CVS access, like this (this example is taken from the JEDI 
+TortoiseCVS makes this really simple:&nbsp;</p>
+
+
+<p>&nbsp;</p>
+
+
+<p>Start your web browser and open the project page of the SourceForge project you are 
+interested in. Click the CVS link in the menu bar. The page explains how 
+to setup anonymous access, like this (this example is taken from the JEDI 
 VCL page on SF, but others look the same):</p>
 
 
@@ -105,7 +111,7 @@ cvs -z3 -d<span style="background-color: #FFFF00">:pserver:anonymous</span><span
 
 <p>To do a checkout, right-click on the folder where you would like to put the 
 files you are going to check out (a sub folder with the modulename will be 
-created automatically) and click the CVS Checkout menu item. Copy the yellow 
+created automatically) and click the <b> CVS Checkout</b> menu item. Copy the yellow 
 selection above into the CVSROOT edit field like this:</p>
 
 
@@ -119,21 +125,24 @@ selection above into the CVSROOT edit field like this:</p>
 <p>&nbsp;</p>
 
 
+<p>&nbsp; </p>
+
+
 <p>Notice how TortoiseCVS fills in the other fields automatically for you. The 
-only thing you have to add yourself is the module name. You can either click the 
-&quot;Fetch list&quot; button to get all available modules or type in the name manually. 
+only thing you have to add yourself is the module name. You can either click the
+<b>Fetch list</b> button to get all available modules or type in the name manually. 
 For JVCL3, use dev/JVCL3 as the modulename. </p>
 
 
 <p>&nbsp;</p>
-<blockquote>
-<p> <b>Note:</b>
-<p>Module names are case-sensitive!</p>
-</blockquote>
+<p class="InfoField"> <b>Note:</b><br>
+Module names are case-sensitive!
+</p>
 <p>&nbsp;</p>
 
 
-<p>Click the OK button and all the modules will be downloaded. If you get a 
+<p>Click the OK button and all the units and folders will be downloaded to your
+computer. If you get a 
 password prompt, just press ENTER. If you get a prompt asking you if you trust 
 this server, click Yes. </p>
 
@@ -141,7 +150,13 @@ this server, click Yes. </p>
 <p>&nbsp;</p>
 
 
+<h4>&nbsp;</h4>
+
+
 <h4>Checkout using SSH</h4>
+
+
+<p>&nbsp;</p>
 
 <p>To be able to checkout modules using SSH, you need a SourceForge account, 
 developer access status to the project and SSH enabled on your computer. </p>
@@ -149,25 +164,39 @@ developer access status to the project and SSH enabled on your computer. </p>
 
 <h5>Enabling SSH</h5>
 
-<p>To enable SSH, you only need to do one thing: add an environment variable. In 
+<p>To enable SSH, you only need to do one thing: add an environment variable.&nbsp; </p>
+
+<p>&nbsp; </p>
+
+<p> In 
 Windows NT, right-click the &quot;My computer&quot; icon on the desktop and select 
 &quot;Properties&quot; from the menu. In the dialog, click the &quot;Advanced&quot; tab and then the 
 button &quot;Environment variables&quot;. On the user variables list, click add and enter 
 the following values: </p>
+
+<p>&nbsp; </p>
 <pre>Name - CVS_RSH 
-Value - ssh. 
+Value - ssh
 </pre>
 
 <p>Click OK and OK to close the dialogs. </p>
 
 <h5>Create SourceForge account</h5>
 
-<p>Now you need a SourceForge account (unless you already have one). Go to SourceForge (http://sf.net) and create a a new user account if necessary. When 
-you've done this, one of the project admins need to grant you developer access to the project.</p>
+<p>Now you need a SourceForge account (unless you already have one). Go to SourceForge
+(<a href="http://sf.net">http://sf.net</a>) and create a new user account. When 
+you've done this, one of the JVCL admins need to grant you developer access to the project.
+To contact a project admin, send him a mail or post a request in the bug tracker
+or in the newsgroups.</p>
 
 <h5>Checking out a module using SSH</h5>
 
 <p>You should now be able to access the project via SSH. The actual command to checkout via CVS is on the CVS page of the project:</p>
+
+
+
+
+<p>&nbsp;</p>
 
 
 
@@ -193,8 +222,22 @@ cvs -z3 -d<span style="background-color: #FFFF00">:ext:developername</span><span
 <p>&nbsp;</p>
 
 
-<p>Doing the same as when you made an anonymous checkout, right-click the folder where you would like to put the files and select CVS Checkout from the menu. Paste the selected line above into the CVSROOT field, replace &lt;developername&gt; 
-with your SourceForge login name and either click Fetch List or enter the module name manually. Here's how the TortoiseCVS dialog should look like when doing a SSH checkout (replace peter3 with your SF developer name):</p>
+<p>Doing the same as when you made an anonymous checkout, right-click the folder where you would like to put the files and select
+<b>CVS Checkout</b> from the menu.&nbsp;</p>
+
+
+<p>&nbsp;</p>
+
+
+<p> Paste the marked line above into the CVSROOT field, replace <i>developername</i> 
+with your SourceForge login name and either click <b>Fetch List</b> or enter the module name manually.&nbsp;</p>
+
+
+<p>&nbsp;</p>
+
+
+<p> Here's how the TortoiseCVS dialog should look like when doing a SSH checkout (replace
+&quot;peter3&quot; with your SourceForge developer name):</p>
 
 
 <p>&nbsp;</p>
@@ -206,8 +249,8 @@ with your SourceForge login name and either click Fetch List or enter the module
 <p>&nbsp;</p>
 
 
-<p>You will now be prompted by TortoiseCVS for a password. This is your SourceForge password. Type it in and press ENTER. The files and folders from the CVS tree should 
-be created and downloaded on the selected folder.</p>
+<p>You will now be prompted by TortoiseCVS for a password. This is your SourceForge password. Type it in and press ENTER. The files and folders from the CVS
+repository are now downloaded to the selected folder.</p>
 
 
 <p>&nbsp;</p>
@@ -215,15 +258,27 @@ be created and downloaded on the selected folder.</p>
 
 <h4>Remove the requirement to login</h4>
 
-<p>Constantly entering the password to the CVS repository quickly gets tedious, but there is a simple way to fix this. By creating a couple of private and public 
-identity keys with puttygen, you can then use pageant to handle the login for you. When this is set up correctly, you only need to enter the passphrase in PageAnt at startup and then all will be automatic.</p>
+
+<p>&nbsp;</p>
+
+<p>Constantly entering the password to the CVS repository quickly gets tedious, but there is a simple way to fix this. By creating a private/ public
+key pair with puttygen, you can use PageAnt to handle the login for you.&nbsp;</p>
+
+
+<p>&nbsp;</p>
+
+
+<p> When this is set up correctly, you only need to enter the pass phrase in PageAnt at startup and
+the rest will be automatic.</p>
 
 
 <h5>Create public and private keys</h5>
 
 
 <p>Begin by running puttygen.exe and create a new key pair. Save both keys on your computer (I recommend the TortoiseCVS folder with the names identity.prv 
-and identity.pub). Note that you don't need to have a passphrase for the keys, but it is slightly more secure than leaving them empty.</p>
+and identity.pub). Note that you don't need to specify a pass phrase for the keys, but it is slightly more secure than leaving them empty.
+If you are the only person with access to your computer, you probably won't need
+a pass phrase.</p>
 
 
 <h5>Upload public key to SourceForge</h5>
@@ -231,8 +286,22 @@ and identity.pub). Note that you don't need to have a passphrase for the keys, b
 
 <p>You now need to upload your public key to SourceForge so SSH can find it when you need to login. </p>
 
-<p>To do this, select and copy all the text in the memo field in puttygen. Next, go to your own page on SourceForge (https://sourceforge.net/my), login if prompted to do so and click the Account Options menu item at the top of the page. Browse 
-to the bottom were it says Host Access Information and click the [Edit Keys] link. In the new page, paste the text copied from puttygen into the memo field and click the Update button. </p>
+
+<p>&nbsp; </p>
+
+<p>To do this, select and copy all the text in the memo field in puttygen. Start your web browser and go to your own page on SourceForge (<a href="https://sourceforge.net/my">https://sourceforge.net/my</a>), login
+(if prompted to do so) and click the <b> Account Options</b> menu item at the top of the page.&nbsp; </p>
+
+
+<p>&nbsp; </p>
+
+
+<p> Browse 
+to the bottom were it says <b> Host Access Information </b> and click the <b> [Edit Keys]</b> link. In the new page, paste the text copied from puttygen into the memo field and click the
+<b> Update</b> button. </p>
+
+
+<p>&nbsp; </p>
 
 
 <h4>Loading your private key automatically</h4>
@@ -240,16 +309,18 @@ to the bottom were it says Host Access Information and click the [Edit Keys] lin
 
 <h5>Automatic login</h5>
 
-<p>Create a new shortcut on your desktop and make it point to pageant.exe. Right-click the new link and select Properties. In the Target field, append a space and the path and filename to the private key file you just saved and 
-created. Save and double-click the link to start PageAnt. Enter the passphrase if you use one. Verify that your key has been loaded by right-clicking the PageAnt icon in the tray and select View Keys: there should be one key in the 
+<p>Create a new shortcut on your desktop and make it point to pageant.exe. Right-click the new link and select
+<b>Properties</b>. In the <b> Target</b> field, append a space and the path and filename to the private key file you just saved and 
+created. Save and double-click the link to start PageAnt. Enter the pass phrase if you use one. Verify that your key has been loaded by right-clicking the PageAnt icon in the tray and select<b> View
+Keys</b>: there should be one key in the 
 list. </p>
 
 <p>&nbsp;</p>
 
 <blockquote>
 
-<p><b>Tip: </b></p>
-<p>Copy / move the PageAnt link to your AutoStart/Startup folder to run PageAnt automatically at boot time.</p>
+<p class="InfoField"><b>Tip:<br>
+</b>Copy / move the PageAnt link to your AutoStart/Startup folder to run PageAnt automatically at boot time.</p>
 
 </blockquote>
 
@@ -258,32 +329,27 @@ list. </p>
 <p>Now when you Checkout, Update, Diff, Commit etc in CVS projects that require SSH, you should not have to enter your password. If TortoiseCVS still prompts you, go 
 over this document again and make sure you've done everything correctly. If you've downloaded a project using anonymous access and later want to change to SSH access, it's easiest to completely delete the folder 
 and start from scratch. </p>
-<p>If you for some reason can't do that, you could open every Root file (in the CVS subfolders) with Notepad and manually change the cvs path in them from :pserver 
-to :ext and try an Update after that. </p>
+
+<p>&nbsp; </p>
+<p>If for some reason you can't do that, you could open every Root file (in the CVS subfolders) with Notepad and manually change the cvs path in them from
+&quot;:pserver&quot; 
+to &quot;:ext&quot; and replace &quot;anonymous&quot; with your SF name&nbsp; and try
+a CVS Update after that. </p>
 <hr>
 <p>Arthur Hoogervorst provided these instructions for WinCVS: <br>
 &nbsp;</p>
 <ul>
-  <li>Downloaded the latest <a href="http://www.wincvs.org/">WinCVS</a> (try the mirrors, the other sites are too 
+  <li>Download the latest <a href="http://www.wincvs.org/">WinCVS</a> (try the mirrors, the other sites are too 
   slow (I currently use 1.3 b7) </li>
-  <li>Downloaded <a href="http://sfsetup.sourceforge.net/">SFSetup</a>. Developed in Delphi, 
+  <li>Download <a href="http://sfsetup.sourceforge.net/">SFSetup</a>. Developed in Delphi, 
   and installs neatly. </li>
-  <li>Connect to the CVS with the settings as described by the project manager.
+  <li>Connect to CVS with the settings as described above.
   <br>
 &nbsp;</li>
 </ul>
 <p>&nbsp;</p>
 <hr>
-<p>For more information on how to use CVS you can see the Tortoise tutorial, or the official <a href="http://cvshome.org/docs/manual/">CVS manual</a></p>
-</body>
-
-</html> with the settings as described by the project manager.
-  <br>
-&nbsp;</li>
-</ul>
-<p>&nbsp;</p>
-<hr>
-<p>For more information on how to use CVS you can see the Tortoise tutorial, or the official <a href="http://cvshome.org/docs/manual/">CVS manual</a></p>
+<p>For more information on how to use CVS you can read the Tortoise tutorial, or the official <a href="http://cvshome.org/docs/manual/">CVS manual</a></p>
 </body>
 
 </html>
