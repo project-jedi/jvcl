@@ -59,8 +59,8 @@ const
   cDestination = 'Destination';
 begin
   RegisterComponents(RsPaletteBDE, [TJvDBFilter, TJvDBIndexCombo,
-    TJvDatabaseItems, TJvTableItems,
-    // TJvDBListDataSet, TJvDatabaseList, TJvLangDrivList, TJvTableList,
+    TJvDatabaseItems, TJvBDEItems, TJvTableItems, TJvDBListDataSet, 
+    // TJvDatabaseList, TJvLangDrivList, TJvTableList,
     // TJvStoredProcList, TJvFieldList,  TJvIndexList,
     TJvDBMove, TJvDBProgress, TJvQBEQuery, TJvDBSecurity,
     TJvBDEMemoryTable, TJvQuery, TJvBDESQLScript, TJvSQLScript]);
