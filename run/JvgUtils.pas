@@ -31,9 +31,21 @@ Known Issues:
 unit JvgUtils;
 
 interface
+
 uses
   Windows, Messages, Graphics, ExtCtrls, SysUtils, Classes, Controls, Forms,
   JvgTypes, JvgCommClasses, Jvg3DColors, MMSystem;
+
+type
+  TJvgPublicWinControl = class(TWinControl)
+  public
+    procedure PaintWindow(DC: HDC); override;
+    procedure RecreateWnd;
+    property Font;
+    property OnEnter;
+    property OnExit;
+    property Color;
+  end;
 
 function Min(i1, i2: integer): integer;
 function Max(i1, i2: integer): integer;
@@ -160,7 +172,6 @@ uses
 
 { debug func }
 {$IFDEF glDEBUG}
-
 function DeleteObject(p1: HGDIOBJ): BOOL; stdcall;
 begin
   Result := Windows.DeleteObject(p1);
@@ -168,6 +179,16 @@ begin
     raise Exception.Create('leak');
 end;
 {$ENDIF}
+
+procedure TJvgPublicWinControl.PaintWindow(DC: HDC);
+begin
+  inherited PaintWindow(DC);
+end;
+
+procedure TJvgPublicWinControl.RecreateWnd;
+begin
+  inherited RecreateWnd;
+end;
 
 //_________________________________________________________________\\
 

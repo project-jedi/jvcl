@@ -1,5 +1,8 @@
 TODO for JVCL 3.0
 ======================
+- add BeginUpdate and EndUpdate to all TStrings parameters // (rom)
+- Separate out a TJvRecentPopupMenu from JvRecentMenuButton.pas // (rom)
+
 - get rid of JvgCheckVersionInfoForm.pas // (rom)
 - move JvTransparentPanel.pas to Archive. TJvPanel has Transparent property. // (rom)
 - JvRGBToHtml.pas to Archive and function RgbToHtml to JCL. // (rom)

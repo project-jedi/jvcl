@@ -53,7 +53,7 @@ type
   TJvgTabsWallpaper = class;
 
   TDRAWTABSTRUCT = record
-    lpDrawItemStr: PDRAWITEMSTRUCT;
+    lpDrawItemStr: PDrawItemStruct;
     ClientR: TRect;
     TabsCount: integer;
     Caption: string;
@@ -158,9 +158,14 @@ type
     property IncludeBevels: boolean
       read FIncludeBevels write SetIncludeBevels default true;
   end;
-  //.............../\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\
+
 implementation
-//______________________________________{ . TJvgTabStyle methods . }
+
+type
+  TJvgShowFont = class(TControl)
+  public
+    property Font;
+  end;
 
 constructor TJvgTabStyle.Create(AOwner: TWinControl);
 begin

@@ -181,7 +181,7 @@ var
   Ch: Char;
 begin
   Len := Length(Value);
- // number of chars to add
+  // number of chars to add
   AddLen := 0;
   for I := 1 to Len do
     for J := Low(Conversions) to High(Conversions) do

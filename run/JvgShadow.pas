@@ -32,7 +32,7 @@ unit JvgShadow;
 interface
 uses
   Dialogs, Windows, Messages, Classes, Controls, Graphics, forms, JvgTypes,
-  JvgCommClasses, JVComponent, JvgUtils, StdCtrls, ExtCtrls, SysUtils,
+  JvgCommClasses, JVComponent, StdCtrls, ExtCtrls, SysUtils,
   Mask, Jvg3DColors;
 type
 
@@ -120,18 +120,10 @@ type
     property OnControlExit: TNotifyEvent read FOnExit write FOnExit;
   end;
 
-procedure Register;
-
 implementation
-//{$R JvgShadow.res}
 
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-
-procedure Register;
-begin
-end;
-{~~~~~~~~~~~~~~~~~~~~~~~~~}
-//___________________________________________________ TJvgShadow Methods _
+uses
+  JvgUtils;
 
 constructor TJvgShadow.Create(AOwner: TComponent);
 begin

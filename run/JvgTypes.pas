@@ -32,11 +32,9 @@ unit JvgTypes;
 interface
 
 uses
-  Windows, Graphics, ExtCtrls, StdCtrls, Controls, JVCLVer, ComCtrls;
+  Graphics;
 
 type
-  PFont = ^TFont;
-  TglPercent = 0..100;
   TSpPercent = 1..99;
   TglItemsDrawStyle = (idsNone, idsRecessed, idsRaised);
   TglWallpaperOption = (fwoNone, fwoStretch, fwoPropStretch, fwoTile);
@@ -63,45 +61,43 @@ type
   //  TglProgressBorderStyle = ( fbsFlat, fbsCtl3D, fbsStatusControl,
   //			       fbsRaised, fbsRaisedFrame, fbsRecessedFrame );
   TPercentRange = 0..100;
-  TglLabelOptions_ = (floActiveWhileControlFocused, floBufferedDraw,
+  TglLabelOption = (floActiveWhileControlFocused, floBufferedDraw,
     floDelineatedText, floIgnoreMouse, {floQuality3D,} floTransparentFont);
-  TglLabelOptions = set of TglLabelOptions_;
-  TglStTextOptions_ = (ftoActiveWhileControlFocused, ftoBroadwiseLastLine,
+  TglLabelOptions = set of TglLabelOption;
+  TglStTextOption = (ftoActiveWhileControlFocused, ftoBroadwiseLastLine,
     ftoIgnoreMouse, ftoUnderlinedActive);
-  TglStTextOptions = set of TglStTextOptions_;
-  TglCBoxOptions_ = (fcoActiveWhileControlFocused, fcoBoldChecked,
+  TglStTextOptions = set of TglStTextOption;
+  TglCBoxOption = (fcoActiveWhileControlFocused, fcoBoldChecked,
     fcoEnabledFocusControlWhileChecked, fcoIgnoreMouse, fcoDelineatedText,
     {fcoQuality3D,} fcoFastDraw, fcoUnderlinedActive);
-  TglCBoxOptions = set of TglCBoxOptions_;
-  TglGrBoxOptions_ = (fgoCanCollapse, fgoCollapseOther, fgoFilledCaption,
+  TglCBoxOptions = set of TglCBoxOption;
+  TglGrBoxOption = (fgoCanCollapse, fgoCollapseOther, fgoFilledCaption,
     fgoFluentlyCollapse, fgoFluentlyExpand, fgoResizeParent,
     fgoHideChildrenWhenCollapsed, fgoIgnoreMouse, fgoDelineatedText,
     {fgoQuality3D,} fgoBufferedDraw, fgoOneAlwaysExpanded, fgoSaveChildFocus);
-  TglGrBoxOptions = set of TglGrBoxOptions_;
-  TglListBoxOptions_ = (fboAutoCtl3DColors, fboBufferedDraw,
+  TglGrBoxOptions = set of TglGrBoxOption;
+  TglListBoxOption = (fboAutoCtl3DColors, fboBufferedDraw,
     fboChangeGlyphColor, fboDelineatedText, fboExcludeGlyphs, fboHideText,
     fboHotTrack, fboHotTrackSelect, fboItemColorAsGradientFrom,
     fboItemColorAsGradientTo, fboMouseMoveSentensive, fboShowFocus,
     fboSingleGlyph, fboTransparent, fboWordWrap);
-  TglListBoxOptions = set of TglListBoxOptions_;
-  TglProgressOptions_ = (fpoDelineatedText, fpoTransparent);
-  TglProgressOptions = set of TglProgressOptions_;
-  TglTabOptions_ = (ftoAutoFontDirection, ftoExcludeGlyphs, ftoHideGlyphs,
+  TglListBoxOptions = set of TglListBoxOption;
+  TglProgressOption = (fpoDelineatedText, fpoTransparent);
+  TglProgressOptions = set of TglProgressOption;
+  TglTabOption = (ftoAutoFontDirection, ftoExcludeGlyphs, ftoHideGlyphs,
     ftoInheriteTabFonts, ftoTabColorAsGradientFrom, ftoTabColorAsGradientTo,
     ftoWordWrap);
-  TglTabOptions = set of TglTabOptions_;
+  TglTabOptions = set of TglTabOption;
 
-  TglTreeViewOptions_ = (ftvFlatScroll);
-  TglTreeViewOptions = set of TglTreeViewOptions_;
+  TglTreeViewOption = (ftvFlatScroll);
+  TglTreeViewOptions = set of TglTreeViewOption;
 
   TFocusControlMethod = (fcmOnMouseEnter, fcmOnMouseDown, fcmOnMouseUp);
-  TProgressChangeEvent = procedure(Sender: TObject; Percent: Integer) of
-    object;
-  TglOnGetItemColorEvent = procedure(Sender: TObject; Index: integer; var
-    Color: TColor) of object;
+  TProgressChangeEvent = procedure(Sender: TObject; Percent: Integer) of object;
+  TglOnGetItemColorEvent = procedure(Sender: TObject; Index: Integer; var Color: TColor) of object;
 
-  //  TglDrawGlyphsOptions_ = ( fgoDefaultEnabled, fgoDefaultDisabled );
-  //  TglDrawGlyphsOptions  = set of TglGlyphsOptions_;
+  //  TglDrawGlyphsOption = ( fgoDefaultEnabled, fgoDefaultDisabled );
+  //  TglDrawGlyphsOptions  = set of TglGlyphsOptions;
   TglBoxStyle = (fbsFlat, fbsCtl3D, fbsStatusControl, fbsRecessed, fbsRaised,
     fbsRaisedFrame, fbsRecessedFrame);
   TglSide = (fsdLeft, fsdTop, fsdRight, fsdBottom);
@@ -120,34 +116,9 @@ type
 
   TglCheckKind = (fckCheckBoxes, fckRadioButtons);
 
-  PDRAWITEMSTRUCT = ^TDRAWITEMSTRUCT;
-
   TglGlobalData = record
-    fSuppressGradient: boolean;
+    fSuppressGradient: Boolean;
     lp3DColors: Pointer;
-  end;
-
-  TJvgPublicWinControl = class(TWinControl)
-  public
-    procedure PaintWindow(DC: HDC); override;
-    procedure RecreateWnd;
-    property Font;
-    property OnEnter;
-    property OnExit;
-    property Color;
-  end;
-
-  TJvgShowFont = class(TControl)
-  public
-    property Font;
-  end;
-
-  TJvCustomTreeView = class(TCustomTreeView)
-  private
-    FAboutJVCL: TJVCLAboutInfo;
-  published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-      False;
   end;
 
 const
@@ -196,21 +167,9 @@ var //...global variables
 
 implementation
 
-procedure TJvgPublicWinControl.PaintWindow(DC: HDC);
-begin
-  inherited PaintWindow(DC);
-end;
-
-procedure TJvgPublicWinControl.RecreateWnd;
-begin
-  inherited RecreateWnd;
-end;
-
 initialization
-  begin
-    glGlobalData.fSuppressGradient := false;
-    glGlobalData.lp3DColors := nil;
-  end;
+  glGlobalData.fSuppressGradient := false;
+  glGlobalData.lp3DColors := nil;
 
 end.
 

@@ -34,9 +34,9 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  StdCtrls, Controls, ExtCtrls, Forms, CheckLst,
+  StdCtrls, Controls, ExtCtrls, Forms, CheckLst, ComCtrls,
   {$ELSE}
-  QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, Types,
+  QStdCtrls,  QExtCtrls, QControls, QForms, QCheckLst, QComCtrls, Types,
   {$ENDIF VCL}
   {$IFDEF USE_DXGETTEXT}
   gnugettext,
@@ -55,6 +55,13 @@ type
   end;
 
   TJvGraphicControl = class(TGraphicControl)
+  private
+    FAboutJVCL: TJVCLAboutInfo;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+  end;
+
+  TJvCustomTreeView = class(TCustomTreeView)
   private
     FAboutJVCL: TJVCLAboutInfo;
   published

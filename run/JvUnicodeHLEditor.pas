@@ -50,7 +50,7 @@ const
 
 type
   THighlighter = (hlNone, hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlVB,
-    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, {$IFDEF HL_NOT_QUITE_C}hlNQC, {$ENDIF} hlSyntaxHighlighter);
+    hlHtml, hlPerl, hlIni, hlCocoR, hlPhp, hlNQC, hlSyntaxHighlighter);
   TLongTokenType = 0..255;
 
   TJvWideHLEditor = class;
@@ -373,7 +373,7 @@ begin
     case FHighlighter of
       hlPascal:
         Parser.Style := psPascal;
-      hlCBuilder, hlSql, hlJava {$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+      hlCBuilder, hlSql, hlJava, hlNQC:
         Parser.Style := psCpp;
       hlPython:
         Parser.Style := psPython;
@@ -689,7 +689,7 @@ const
         Result := ((LS > 0) and (St[1] = '{')) or
           ((LS > 1) and (((St[1] = '(') and (St[2] = '*')) or
           ((St[1] = '/') and (St[2] = '/'))));
-      hlCBuilder, hlSQL, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+      hlCBuilder, hlSQL, hlJava, hlPhp, hlNQC:
         Result := (LS > 1) and (St[1] = '/') and
           ((St[2] = '*') or (St[2] = '/'));
       hlVB:
@@ -714,7 +714,7 @@ const
   begin
     LS := Length(St);
     case FHighlighter of
-      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+      hlPascal, hlCBuilder, hlSql, hlPython, hlJava, hlPerl, hlCocoR, hlPhp, hlNQC:
         Result := (LS > 0) and ((St[1] = '''') or (St[1] = '"'));
       hlVB:
         Result := (LS > 0) and (St[1] = '"');
@@ -861,7 +861,7 @@ begin
     Parser.pcPos := Parser.pcProgram;
 
     LS := Length(S);
-    if (FHighlighter in [hlCBuilder{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) and (LS > 0) and
+    if (FHighlighter in [hlCBuilder, hlNQC]) and (LS > 0) and
       (((GetTrimChar(S, 1) = '#') and (FLong = 0)) or (FLong = lgPreproc)) then
       C := FColors.FPreproc
     else
@@ -874,7 +874,7 @@ begin
     if (FLong <> 0) and (FHighlighter <> hlHtml) then
     begin
       Parser.pcPos := Parser.pcProgram + FindLongEnd + 1;
-      if (FHighlighter in [hlCBuilder, hlPython, hlPerl{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) then
+      if (FHighlighter in [hlCBuilder, hlPython, hlPerl, hlNQC]) then
         case FLong of
           lgString:
             C := FColors.FString;
@@ -908,7 +908,7 @@ begin
   if (Length(S) > 0) then
   begin
     Ch := GetTrimChar(S, 1);
-    if ((Ch = '#') and (FHighlighter in [hlCBuilder, hlPython, hlPerl{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}])) or
+    if ((Ch = '#') and (FHighlighter in [hlCBuilder, hlPython, hlPerl, hlNQC])) or
        (((Ch = '#') or (Ch = ';')) and (FHighlighter = hlIni)) then
       Exit;
   end;
@@ -943,13 +943,11 @@ begin
               SetColor(FColors.FReserved)
             else
               F := False;
-{$IFDEF HL_NOT_QUITE_C}
           hlNQC:
             if IsNQCKeyWord(Token) then
               SetColor(FColors.FReserved)
             else
               F := False;
-{$ENDIF}              
           hlSql:
             if IsSQLKeyWord(Token) then
               SetColor(FColors.FReserved)
@@ -1071,7 +1069,7 @@ begin
       if IsIntConstantW(Token) or IsRealConstantW(Token) then
         SetColor(FColors.FNumber)
       else
-      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}]) and
+      if (FHighlighter in [hlCBuilder, hlJava, hlPython, hlPhp, hlNQC]) and
         (PrevToken = '0') and ((Token[1] = 'x') or (Token[1] = 'X')) then
         SetColor(FColors.FNumber)
       else
@@ -1249,7 +1247,7 @@ begin
                   end;
                 end;
             end;
-          hlCBuilder, hlSql, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+          hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
             case FLong of
               lgNone: //  not in comment
                 case S[i] of
@@ -1279,7 +1277,7 @@ begin
                           { ?? }
                       end
                       else
-                      if FHighlighter in [hlCBuilder, hlJava{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}] then
+                      if FHighlighter in [hlCBuilder, hlJava, hlNQC] then
                       begin
                         if (LastNonSpaceChar(S) = '\') and (HasStringOpenEnd(Lines, iLine)) then
                           FLong := lgString;
@@ -1322,7 +1320,7 @@ begin
                   end
                   else
                   begin
-                    if FHighlighter in [hlCBuilder, hlJava{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}] then
+                    if FHighlighter in [hlCBuilder, hlJava, hlNQC] then
                     begin
                       if (LastNonSpaceChar(S) <> '\') or (not HasStringOpenEnd(Lines, iLine)) then
                         FLong := lgNone;
@@ -1523,7 +1521,7 @@ begin
             Result := P - PWideChar(FLine);
           end;
       end;
-    hlCBuilder, hlSql, hlJava, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+    hlCBuilder, hlSql, hlJava, hlPhp, hlNQC:
       begin
         case FLong of
           lgComment2:
@@ -1604,7 +1602,7 @@ begin
   case FHighlighter of
     hlPascal:
       S := #13'{}*()/';
-    hlCBuilder, hlJava, hlSql, hlPhp{$IFDEF HL_NOT_QUITE_C}, hlNQC{$ENDIF}:
+    hlCBuilder, hlJava, hlSql, hlPhp, hlNQC:
       S := #13'*/\';
     hlVB:
       S := #13'''';

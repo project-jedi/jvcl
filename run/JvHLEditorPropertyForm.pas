@@ -179,12 +179,7 @@ type
 const
   HighLighters: array[THighLighter] of string =
   ('None', 'Pascal', 'CBuilder', 'Sql', 'Python', 'Java', 'VB', 'Html',
-    'Perl', 'Ini', 'CocoR', 'Php'
-{$IFDEF HL_NOT_QUITE_C}, 'NQC'{$ENDIF HL_NOT_QUITE_C}, 'User Defined'
-    );
-
-resourcestring
-  sGridCellNotFound = 'Grid cell not found';
+    'Perl', 'Ini', 'CocoR', 'Php', 'NQC', 'User Defined');
 
 implementation
 
@@ -193,6 +188,9 @@ uses
   JvConsts, JvJVCLUtils, JvJCLUtils;
 
 {$R *.dfm}
+
+resourcestring
+  sGridCellNotFound = 'Grid cell not found';
 
 function GetHardCodedExamples: string; forward;
 

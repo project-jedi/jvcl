@@ -36,6 +36,8 @@ uses
   StdCtrls, Menus, ShellApi,
   JvButton, JvDirectories, JvTypes, JvJVCLUtils;
 
+// (rom) best separate out a TJvRecentPopupMenu
+
 type
   TJvRecentMenuButton = class(TJvCustomButton)
   private
@@ -121,7 +123,7 @@ begin
   DynBuild(FPopup.Items, FDirs.Recent);
 end;
 
-function GetAssociatedIcon(const Filename: string; SmallIcon: boolean): HICON;
+function GetAssociatedIcon(const Filename: string; SmallIcon: Boolean): HICON;
 const
   cSmall: array [Boolean] of Cardinal = (SHGFI_LARGEICON, SHGFI_SMALLICON);
 var
@@ -159,7 +161,7 @@ const
     (D1: $000214EE; D2: $0000; D3: $0000; D4: ($C0, $00, $00, $00, $00, $00, $00, $46));
 
 type
-  TUnicodePath = array[0..MAX_PATH - 1] of WideChar;
+  TUnicodePath = array [0..MAX_PATH - 1] of WideChar;
 
 function ShellLinkResolve(const FileName: string): string;
 var
@@ -187,7 +189,6 @@ begin
     end;
   end;
 end;
-
 
 procedure TJvRecentMenuButton.InternalFileFind(const Path, FileMask: string; Strings: TStringList);
 var
@@ -241,7 +242,7 @@ begin
       It.Caption := ExtractFilename(S[I]);
       It.OnClick := UrlClick;
       It.Hint := S[I];
-      Bmp := IconToBitmap2(GetAssociatedIcon(S[I], true), 16, clMenu);
+      Bmp := IconToBitmap2(GetAssociatedIcon(S[I], True), 16, clMenu);
       It.Bitmap.Assign(Bmp);
       Bmp.Free;
       Item.Add(It);

@@ -57,36 +57,25 @@ type
     FFooterSize: Cardinal;
     FOrientation: TPrinterOrientation;
     FLogo: string;
-    procedure SetMarginBottom(const Value: Cardinal);
-    procedure SetMarginLeft(const Value: Cardinal);
-    procedure SetMarginTop(const Value: Cardinal);
-    procedure SetMarginRight(const Value: Cardinal);
-    procedure SetPageFooter(const Value: string);
-    procedure SetDateFormat(const Value: string);
-    procedure SetTimeFormat(const Value: string);
-    procedure SetFooterSize(const Value: Cardinal);
-    procedure SetHeaderSize(const Value: Cardinal);
-    procedure SetOrientation(const Value: TPrinterOrientation);
-    procedure SetLogo(const Value: string);
   published
-    property Orientation: TPrinterOrientation read FOrientation write SetOrientation;
+    property Orientation: TPrinterOrientation read FOrientation write FOrientation;
     property JobTitle: string read FJobTitle write FJobTitle;
     property PageTitle: string read FPageTitle write FPageTitle;
-    property Logo: string read FLogo write SetLogo;
+    property Logo: string read FLogo write FLogo;
     property PageTitleMargin: Cardinal read FPageTitleMargin write FPageTitleMargin;
-    property PageFooter: string read FPageFooter write SetPageFooter;
-    property HeaderSize: Cardinal read FHeaderSize write SetHeaderSize;
-    property FooterSize: Cardinal read FFooterSize write SetFooterSize;
-    property DateFormat: string read FDateFormat write SetDateFormat;
-    property TimeFormat: string read FTimeFormat write SetTimeFormat;
+    property PageFooter: string read FPageFooter write FPageFooter;
+    property HeaderSize: Cardinal read FHeaderSize write FHeaderSize;
+    property FooterSize: Cardinal read FFooterSize write FFooterSize;
+    property DateFormat: string read FDateFormat write FDateFormat;
+    property TimeFormat: string read FTimeFormat write FTimeFormat;
     property Copies: Cardinal read FCopies write FCopies default 1;
     property PreviewPage: Cardinal read FPreviewPage write FPreviewPage;
-    property BorderStyle: TBorderstyle read FBorderStyle write FBorderStyle;
+    property BorderStyle: TBorderStyle read FBorderStyle write FBorderStyle;
     property Leftpadding: Cardinal read FLeftPadding write FLeftPadding;
-    property MarginBottom: Cardinal read FMarginBottom write SetMarginBottom;
-    property MarginLeft: Cardinal read FMarginLeft write SetMarginLeft;
-    property MarginTop: Cardinal read FMarginTop write SetMarginTop;
-    property MarginRight: Cardinal read FMarginRight write SetMarginRight;
+    property MarginBottom: Cardinal read FMarginBottom write FMarginBottom;
+    property MarginLeft: Cardinal read FMarginLeft write FMarginLeft;
+    property MarginTop: Cardinal read FMarginTop write FMarginTop;
+    property MarginRight: Cardinal read FMarginRight write FMarginRight;
   end;
 
   TJvGridPrinter = class(TComponent)
@@ -96,20 +85,16 @@ type
     FNumbersAlright: Boolean;
     FNumberFormat: string;
     FWordWrap: Boolean;
-    procedure SetGrid(const Value: TStringGrid);
-    procedure SetNumbersAlright(const Value: Boolean);
-    procedure SetNumberFormat(const Value: string);
-    procedure SetWordWrap(const Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function Preview: Boolean;
   published
     property PrintOptions: TJvPrintOptions read FPrintOptions write FPrintOptions;
-    property Grid: TStringGrid read FGrid write SetGrid;
-    property WordWrap: Boolean read FWordWrap write SetWordWrap default True;
-    property NumbersAlright: Boolean read FNumbersAlright write SetNumbersAlright default True;
-    property NumberFormat: string read FNumberFormat write SetNumberFormat;
+    property Grid: TStringGrid read FGrid write FGrid;
+    property WordWrap: Boolean read FWordWrap write FWordWrap default True;
+    property NumbersAlright: Boolean read FNumbersAlright write FNumbersAlright default True;
+    property NumberFormat: string read FNumberFormat write FNumberFormat;
   end;
 
 implementation
@@ -121,65 +106,6 @@ resourcestring
   SPrintOptionsPageFooter = 'date|time|page';
   SPrintOptionsDateFormat = 'd-mmm-yyyy';
   SPrintOptionsTimeFormat = 'h:nn am/pm';
-
-//=== TJvPrintOptions ========================================================
-
-procedure TJvPrintOptions.SetDateFormat(const Value: string);
-begin
-  FDateFormat := Value;
-end;
-
-procedure TJvPrintOptions.SetFooterSize(const Value: Cardinal);
-begin
-  FFooterSize := Value;
-end;
-
-procedure TJvPrintOptions.SetHeaderSize(const Value: Cardinal);
-begin
-  FHeaderSize := Value;
-end;
-
-procedure TJvPrintOptions.SetLogo(const Value: string);
-begin
-  FLogo := Value;
-end;
-
-procedure TJvPrintOptions.SetMarginBottom(const Value: Cardinal);
-begin
-  FMarginBottom := Value;
-end;
-
-procedure TJvPrintOptions.SetMarginLeft(const Value: Cardinal);
-begin
-  FMarginLeft := Value;
-end;
-
-procedure TJvPrintOptions.SetMarginRight(const Value: Cardinal);
-begin
-  FMarginRight := Value;
-end;
-
-procedure TJvPrintOptions.SetMarginTop(const Value: Cardinal);
-begin
-  FMarginTop := Value;
-end;
-
-procedure TJvPrintOptions.SetOrientation(const Value: TPrinterOrientation);
-begin
-  FOrientation := Value;
-end;
-
-procedure TJvPrintOptions.SetPageFooter(const Value: string);
-begin
-  FPageFooter := Value;
-end;
-
-procedure TJvPrintOptions.SetTimeFormat(const Value: string);
-begin
-  FTimeFormat := Value;
-end;
-
-//=== TJvGridPrinter =========================================================
 
 constructor TJvGridPrinter.Create(AOwner: TComponent);
 begin
@@ -217,26 +143,6 @@ begin
   end
   else
     Result := False;
-end;
-
-procedure TJvGridPrinter.SetNumbersAlright(const Value: Boolean);
-begin
-  FNumbersAlright := Value;
-end;
-
-procedure TJvGridPrinter.SetNumberFormat(const Value: string);
-begin
-  FNumberFormat := Value;
-end;
-
-procedure TJvGridPrinter.SetGrid(const Value: TStringGrid);
-begin
-  FGrid := Value;
-end;
-
-procedure TJvGridPrinter.SetWordWrap(const Value: Boolean);
-begin
-  FWordWrap := Value;
 end;
 
 end.
