@@ -37,6 +37,23 @@ uses
   JvAppStorage;
 
 type
+  TJvAppIniStorageOptions = class(TJvAppStorageOptions)
+  private
+    FReplaceCRLF: Boolean;
+    FPreserveLeadingTrailingBlanks: Boolean;
+  protected
+    procedure SetReplaceCRLF(Value: Boolean); virtual;
+    procedure SetPreserveLeadingTrailingBlanks(Value: Boolean); virtual;
+  public
+    constructor Create; override;
+  published
+    property ReplaceCRLF: Boolean read FReplaceCRLF
+      write SetReplaceCRLF default false;
+    property PreserveLeadingTrailingBlanks: Boolean
+      read FPreserveLeadingTrailingBlanks
+      write SetPreserveLeadingTrailingBlanks default false;
+  end;
+
   // Storage to INI file, all in memory. This is the base class
   // for INI type storage, descendents will actually implement
   // the writing to a file or anything else
@@ -46,6 +63,19 @@ type
     FDefaultSection: string;
     function CalcDefaultSection(Section: string): string;
   protected
+    class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
+
+    // Replaces all CRLF through "\n"
+    function ReplaceCRLFToSlashN (const Value : string): string;
+    // Replaces all "\n" through CRLF
+    function ReplaceSlashNToCRLF (const Value : string): string;
+    // Adds " at the beginning and the end
+    function SaveLeadingTrailingBlanks (const Value : string): string;
+    // Removes " at the beginning and the end
+    function RestoreLeadingTrailingBlanks (const Value : string): string;
+
+
+
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
     function DefaultExtension : string; override;
@@ -153,6 +183,27 @@ begin
   end;
 end;
 
+
+//=== { TJvAppIniStorageOptions } =========================================
+
+constructor TJvAppIniStorageOptions.Create;
+begin
+  inherited Create;
+  FReplaceCRLF := False;
+  FPreserveLeadingTrailingBlanks := False;
+end;
+
+procedure TJvAppIniStorageOptions.SetReplaceCRLF(Value: Boolean);
+begin
+  FReplaceCRLF := Value;
+end;
+
+procedure TJvAppIniStorageOptions.SetPreserveLeadingTrailingBlanks(Value: Boolean);
+begin
+  FPreserveLeadingTrailingBlanks := Value;
+end;
+
+
 //=== { TJvCustomAppIniStorage } =============================================
 
 constructor TJvCustomAppIniStorage.Create(AOwner: TComponent);
@@ -167,6 +218,78 @@ begin
   // Has to be done AFTER inherited, see comment in
   // TJvCustomAppMemoryFileStorage
   FIniFile.Free;
+end;
+
+// Replaces all CRLF through "\n"
+function TJvCustomAppIniStorage.ReplaceCRLFToSlashN (const Value : string): string;
+begin
+  Result := StringReplace (Value, '\', '\\', [rfReplaceAll]);
+  Result := StringReplace (Result , #13#10, '\n', [rfReplaceAll]);
+  Result := StringReplace (Result , #10, '\n', [rfReplaceAll]);
+  Result := StringReplace (Result , #13, '\n', [rfReplaceAll]);
+end;
+
+// Replaces all "\n" through CRLF
+function TJvCustomAppIniStorage.ReplaceSlashNToCRLF (const Value : string): string;
+var
+  p : Integer;
+  c1,c2 : String;
+
+  function GetNext : Boolean;
+  begin
+    c1 := Copy(Value, p, 1);
+    c2 := Copy(Value, p+1, 1);
+    Inc(p);
+    Result := c1 <> '';
+  end;
+
+begin
+  p := 1;
+  c1 := '';
+  c2 := '';
+  while GetNext do
+  begin
+    if (c1 = '\') and (c2 = '\') then
+    begin
+      Result := Result + c1;
+      Inc(p);
+    end
+    else if (c1 = '\') and (c2 = 'n') then
+    begin
+      Result := Result + #13#10;
+      Inc(p);
+    end
+    else
+      Result := Result + c1;
+  end;
+end;
+
+// Adds " at the beginning and the end
+function TJvCustomAppIniStorage.SaveLeadingTrailingBlanks (const Value : string): string;
+var
+  c1, cl : ShortString;
+begin
+  if Value = '' then
+    Result := ''
+  else
+  begin
+    c1 := Copy (Value, 1, 1);
+    cl := Copy (Value, Length(Value) ,1);
+    if (c1 = ' ') or (cl = ' ') or
+       ((c1 = '"') and (cl = '"')) then
+      Result := '"'+Value+'"'
+    else
+      Result := Value;
+  end;
+end;
+
+// Removes " at the beginning and the end
+function TJvCustomAppIniStorage.RestoreLeadingTrailingBlanks (const Value : string): string;
+begin
+  if (Copy(Value, 1,1) = '"') and (Copy(Value, Length(Value),1) = '"') then
+    Result := Copy (Value, 2, Length(Value)-2)
+  else
+    Result := Value;
 end;
 
 procedure TJvCustomAppIniStorage.SplitKeyPath(const Path: string; out Key, ValueName: string);
@@ -387,7 +510,12 @@ begin
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    Result := IniFile.ReadString(CalcDefaultSection(Section), Key, '');
+    if TJvAppIniStorageOptions(StorageOptions).ReplaceCRLF then
+      Result := ReplaceSlashNToCRLF(IniFile.ReadString(CalcDefaultSection(Section), Key, ''))
+    else
+      Result := IniFile.ReadString(CalcDefaultSection(Section), Key, '');
+    if TJvAppIniStorageOptions(StorageOptions).PreserveLeadingTrailingBlanks then
+      Result := RestoreLeadingTrailingBlanks(Result);
   end
   else
     Result := '';
@@ -399,7 +527,18 @@ begin
   begin
     if AutoReload and not IsUpdating then
       Reload;
-    IniFile.WriteString(CalcDefaultSection(Section), Key, Value);
+    if TJvAppIniStorageOptions(StorageOptions).PreserveLeadingTrailingBlanks then
+      if TJvAppIniStorageOptions(StorageOptions).ReplaceCRLF then
+        IniFile.WriteString(CalcDefaultSection(Section), Key,
+                            SaveLeadingTrailingBlanks(ReplaceCRLFToSlashN(Value)))
+      else
+        IniFile.WriteString(CalcDefaultSection(Section), Key,
+                            SaveLeadingTrailingBlanks(Value))
+    else
+      if TJvAppIniStorageOptions(StorageOptions).ReplaceCRLF then
+        IniFile.WriteString(CalcDefaultSection(Section), Key, ReplaceCRLFToSlashN(Value))
+      else
+        IniFile.WriteString(CalcDefaultSection(Section), Key, Value);
     if AutoFlush and not IsUpdating then
       Flush;
   end;
@@ -498,6 +637,11 @@ begin
       ValueNames.Free;
     end;
   end;
+end;
+
+class function TJvCustomAppIniStorage.GetStorageOptionsClass: TJvAppStorageOptionsClass;
+begin
+  Result := TJvAppIniStorageOptions;
 end;
 
 function TJvCustomAppIniStorage.GetAsString: string;

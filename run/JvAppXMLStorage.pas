@@ -41,6 +41,18 @@ uses
   JvAppStorage, JvSimpleXml;
 
 type
+
+  TJvAppXMLStorageOptions = class(TJvAppStorageOptions)
+  private
+    FWhiteSpaceReplacement: string;
+  protected
+    procedure SetWhiteSpaceReplacement(const Value: string);
+  public
+    constructor Create ; override;
+  published
+    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
+  end;
+
   // This is the base class for an in memory XML file storage
   // There is at the moment only one derived class that simply
   // allows to flush into a disk file.
@@ -49,12 +61,13 @@ type
   // a class (nothing much is involved, use the AsString property).
   TJvCustomAppXMLStorage = class(TJvCustomAppMemoryFileStorage)
   protected
-    FWhiteSpaceReplacement: string;
     FXml: TJvSimpleXml;
+
+    class function GetStorageOptionsClass: TJvAppStorageOptionsClass; override;
+
     function GetAsString: string; override;
     procedure SetAsString(const Value: string); override;
 
-    procedure SetWhiteSpaceReplacement(const Value: string);
     function EnsureNoWhiteSpaceInNodeName(NodeName: string): string;
 
     function DefaultExtension : string; override;
@@ -91,7 +104,6 @@ type
 
     property Xml: TJvSimpleXml read FXml;
     property RootNodeName: string read GetRootNodeName write SetRootNodeName;
-    property WhiteSpaceReplacement: string read FWhiteSpaceReplacement write SetWhiteSpaceReplacement;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -114,7 +126,6 @@ type
     property RootNodeName;
     property SubStorages;
     property OnGetFileName;
-    property WhiteSpaceReplacement;
   end;
 
 implementation
@@ -169,6 +180,27 @@ begin
   end;
 end;
 
+//=== { TJvAppXMLStorageOptions } ===================================================
+
+constructor TJvAppXMLStorageOptions.Create ;
+begin
+  inherited Create;
+  WhiteSpaceReplacement := '';  // to keep the original behaviour
+end;
+
+procedure TJvAppXMLStorageOptions.SetWhiteSpaceReplacement(
+  const Value: string);
+begin
+  if Value <> FWhiteSpaceReplacement then
+  begin
+    if StrContainsChars(Value, AnsiWhiteSpace, True) then
+      raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
+    else
+      FWhiteSpaceReplacement := Value;
+  end
+end;
+
+
 //=== { TJvCustomAppXMLStorage } ===================================================
 
 constructor TJvCustomAppXMLStorage.Create(AOwner: TComponent);
@@ -176,7 +208,6 @@ begin
   inherited Create(AOwner);
   FXml := TJvSimpleXml.Create(nil);
   RootNodeName := 'Configuration';
-  WhiteSpaceReplacement := '';  // to keep the original behaviour
 end;
 
 destructor TJvCustomAppXMLStorage.Destroy;
@@ -187,6 +218,11 @@ begin
   FXml.Free;
 end;
 
+class function TJvCustomAppXMLStorage.GetStorageOptionsClass: TJvAppStorageOptionsClass;
+begin
+  Result := TJvAppXMLStorageOptions;
+end;
+
 function TJvCustomAppXMLStorage.EnsureNoWhiteSpaceInNodeName(
   NodeName: string): string;
 var
@@ -195,7 +231,9 @@ var
   InsertIndex: Integer;
   WhiteSpaceCount: Integer;
   FixedNodeName: string;
+  WhiteSpaceReplacement: string;
 begin
+  WhiteSpaceReplacement := TJvAppXMLStorageOptions(StorageOptions).WhiteSpaceReplacement;
   if StrContainsChars(NodeName, AnsiWhiteSpace, False) then
   begin
     WSRLength := Length(WhiteSpaceReplacement);
@@ -705,18 +743,6 @@ end;
 procedure TJvCustomAppXMLStorage.SetAsString(const Value: string);
 begin
   Xml.LoadFromString(Value);
-end;
-
-procedure TJvCustomAppXMLStorage.SetWhiteSpaceReplacement(
-  const Value: string);
-begin
-  if Value <> FWhiteSpaceReplacement then
-  begin
-    if StrContainsChars(Value, AnsiWhiteSpace, True) then
-      raise EJVCLException.CreateRes(@RsEWhiteSpaceReplacementCannotContainSpaces)
-    else
-      FWhiteSpaceReplacement := Value;
-  end
 end;
 
 function TJvCustomAppXMLStorage.DefaultExtension : string;
