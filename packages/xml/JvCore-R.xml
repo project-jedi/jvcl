@@ -78,6 +78,7 @@
     <File Name="..\..\qcommon\QExtDlgs.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QToolWin.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QComboEdits.pas" Targets="allclx" Formname="" Condition=""/>
+    <File Name="..\..\qcommon\QNotebook.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qcommon\QWinCursors.pas" Targets="allclx" Formname="" Condition=""/>
     <File Name="..\..\qrun\JvQRegistryIniFile.pas" Targets="linux" Formname="" Condition=""/>
   </Contains>

@@ -31,12 +31,10 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF VCL}
-  Windows, Graphics, Controls, Forms, Grids,
-  StdCtrls, ExtCtrls,
+  Windows, Graphics, Controls, Forms, Grids, StdCtrls, ExtCtrls,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  QGrids, QStdCtrls, QControls, QExtCtrls, QGraphics, Types,
-  ClxDesignWindows,
+  QGraphics, QControls, QForms, QStdCtrls, QExtCtrls, QGrids, Types, QWindows,
   {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   RTLConsts, DesignIntf, DesignEditors,
@@ -44,7 +42,7 @@ uses
   VCLEditors, DesignWindows,
   {$ENDIF VCL}
   {$IFDEF VisualCLX}
-  ClxEditors,
+  ClxEditors, QDesignWindows,
   {$ENDIF VisualCLX}
   {$ELSE}
   LibIntf, DsgnIntf, DsgnWnds,
@@ -497,11 +495,16 @@ begin
   Proxy := ProxyByRow(ProxyGrid.Row - 1);
   if Proxy <> nil then
   begin
-    {$IFDEF COMPILER6_UP}
+    {$IFDEF VCL}
+     {$IFDEF COMPILER6_UP}
     TCustomForm(Designer.Root).Designer.ValidateRename(Proxy, Proxy.Name, '');
-    {$ELSE}
+     {$ELSE}
     Designer.ValidateRename(Proxy, Proxy.Name, '');
-    {$ENDIF COMPILER6_UP}
+     {$ENDIF COMPILER6_UP}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
+    TCustomForm(Designer.Root).DesignerHook.ValidateRename(Proxy, Proxy.Name, '');
+    {$ENDIF VisualCLX}
     FDeleting := True;
     try
       Proxy.Free;

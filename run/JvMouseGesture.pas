@@ -51,7 +51,6 @@ Description:
   See demo project for usage ...
 
 Known Issues:
-  - Port to Kylix for hook class
 -----------------------------------------------------------------------------}
 // $Id$
 
@@ -62,14 +61,14 @@ unit JvMouseGesture;
 interface
 
 uses
-  SysUtils, Classes, Dialogs,
-  {$IFDEF MSWINDOWS}
-  Windows, Messages, Forms,
+  SysUtils, Classes,
+  {$IFDEF VCL}
+  Windows, Messages,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Qt, QControls, QForms, Types, QWindows,
+  {$ENDIF VisualCLX}
   JvComponent;
-  {$ENDIF MSWINDOWS}
-  {$IFDEF LINUX}
-  QForms;
-  {$ENDIF LINUX}
 
 type
   { Description
@@ -319,8 +318,6 @@ type
       SetOnJvMouseGestureRightUpperEdge;
   end;
 
-{$IFDEF MSWINDOWS}
-
   { Description
     This class implements a application wide mouse hook for mouse gestures.
     Programmers get only one event for a detected mouse gesture:
@@ -336,6 +333,7 @@ type
       True if a hook is installed
     }
     FHookInstalled: Boolean;
+    {$IFDEF VCL}
     { Description
       Field for hook handle
     }
@@ -343,6 +341,7 @@ type
     { Description
       Field for method pointer
     }
+    {$ENDIF VCL}
     FOnJvMouseGestureCustomInterpretation: TOnJvMouseGestureCustomInterpretation;
     { Description
       Field for active state of component
@@ -390,11 +389,13 @@ type
     { Description
       TRUE if hook was installed successfully
     }
+    {$IFDEF VCL}
     property HookInstalled: Boolean read FHookInstalled; //True if a hook is installed
     { Description
       handle of hook
     }
     property CurrentHook: HHook read FCurrentHook; //contains the handle of the currently installed hook
+    {$ENDIF VCL}
   published
     { Description
       TRUE if component is active, otherwise FALSE. Can be changed during runtime
@@ -420,17 +421,16 @@ type
       FOnJvMouseGestureCustomInterpretation write SetOnJvMouseGestureCustomInterpretation;
   end;
 
+{$IFDEF VCL}
   { Description
     Hook call back function.
     DO NOT USE EXTERN!
   }
 function JvMouseGestureHook(code: Integer; wParam: Word; lParam: Longword): Longword; stdcall;
-
-{$ENDIF MSWINDOWS}
-
-{$IFDEF LINUX}
-// to be done in a later version
-{$ENDIF LINUX}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boolean;
+{$ENDIF VisualCLX}
 
 implementation
 
@@ -458,14 +458,20 @@ var
   JvMouseGestureHookAlreadyInstalled: Boolean = False;
   //<combine JvMouseGestureHookAlreadyInstalled>
   JvMouseGestureHookActive: Boolean = False;
+  {$IFDEF VCL}
   //<combine JvMouseGestureHookAlreadyInstalled>
   JvMouseButtonDown: Cardinal = WM_RBUTTONDOWN;
   //<combine JvMouseGestureHookAlreadyInstalled>
   JvMouseButtonUp: Cardinal = WM_RBUTTONUP;
 
-  {$IFDEF MSWINDOWS}
   JvCurrentHook: HHook = 0; //contains the handle of the currently installed hook
-  {$ENDIF MSWINDOWS}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  //<combine JvMouseGestureHookAlreadyInstalled>
+  JvMouseButtonDown: ButtonState = ButtonState_RightButton;
+  //<combine JvMouseGestureHookAlreadyInstalled>
+  JvMouseButtonUp: ButtonState = ButtonState_RightButton;
+  {$ENDIF VisualCLX}
 
 //=== TJvMouseGesture ========================================================
 
@@ -490,10 +496,7 @@ end;
 destructor TJvMouseGesture.Destroy;
 begin
   FTrailActive := False;
-  try
-    FreeAndNil(FGestureList);
-  except
-  end;
+  FreeAndNil(FGestureList);
   inherited Destroy;
 end;
 
@@ -801,8 +804,6 @@ end;
 
 //=== TJvMouseGestureHook ====================================================
 
-{$IFDEF MSWINDOWS}
-
 constructor TJvMouseGestureHook.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
@@ -810,26 +811,39 @@ begin
 end;
 
 destructor TJvMouseGestureHook.Destroy;
+{$IFDEF VisualCLX}
+var
+  Method: TMethod;
+{$ENDIF VisualCLX}
 begin
   FreeAndNil(JvMouseGestureInterpreter);
 
   if JvMouseGestureHookAlreadyInstalled then
+  {$IFDEF VCL}
     JvMouseGestureHookAlreadyInstalled := UnhookWindowsHookEx(JvCurrentHook);
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  begin
+    Method.Code := @JvMouseGestureHook;
+    Method.Data := nil;
+    UninstallApplicationHook(TApplicationHook(Method));
+    JvMouseGestureHookAlreadyInstalled := False;
+  end;
+  {$ENDIF VisualCLX}
   inherited Destroy;
 end;
 
 procedure TJvMouseGestureHook.CreateForThreadOrSystem(AOwner: TComponent; ADwThreadID: Cardinal);
+{$IFDEF VisualCLX}
+var
+  Method: TMethod;
+{$ENDIF VisualCLX}
 begin
   if JvMouseGestureHookAlreadyInstalled then
-  begin
     raise EJVCLException.CreateRes(@RsECannotHookTwice);
-    Halt;
-  end;
 
   JvMouseGestureInterpreter := TJvMouseGesture.Create(nil);
-
   FMouseButton := JvMButtonRight;
-
   if csDesigning in ComponentState then
   begin
     FActive := False;
@@ -838,6 +852,7 @@ begin
 
   FActive := FActivationMode = JvOnAppStart;
 
+  {$IFDEF VCL}
   //install hook
   FCurrentHook := SetWindowsHookEx(WH_MOUSE, @JvMouseGestureHook, 0, ADwThreadID);
 
@@ -848,6 +863,15 @@ begin
   // global remember, internal use only
   JvMouseGestureHookAlreadyInstalled := FHookInstalled;
   JvCurrentHook := FCurrentHook;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  Method.Code := @JvMouseGestureHook;
+  Method.Data := Self;
+  InstallApplicationHook(TApplicationHook(Method));
+
+  JvMouseGestureHookAlreadyInstalled := True;
+  FHookInstalled := True;
+  {$ENDIF VisualCLX}
 
   // map event
   if Assigned(FOnJvMouseGestureCustomInterpretation) then
@@ -855,7 +879,6 @@ begin
       FOnJvMouseGestureCustomInterpretation
   else
     JvMouseGestureInterpreter.OnJvMouseGestureCustomInterpretation := nil;
-
 end;
 
 procedure TJvMouseGestureHook.SetActivationMode(const Value: TJvActivationMode);
@@ -876,6 +899,7 @@ end;
 procedure TJvMouseGestureHook.SetMouseButton(const Value: TJvMouseGestureButton);
 begin
   FMouseButton := Value;
+  {$IFDEF VCL}
   case Value of
     JvMButtonLeft:
       begin
@@ -893,6 +917,26 @@ begin
         JvMouseButtonUp := WM_RBUTTONUP;
       end;
   end;
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  case Value of
+    JvMButtonLeft:
+      begin
+        JvMouseButtonDown := ButtonState_LeftButton;
+        JvMouseButtonUp := ButtonState_LeftButton;
+      end;
+    JvMButtonMiddle:
+      begin
+        JvMouseButtonDown := ButtonState_MidButton;
+        JvMouseButtonUp := ButtonState_MidButton;
+      end;
+    JvMButtonRight:
+      begin
+        JvMouseButtonDown := ButtonState_RightButton;
+        JvMouseButtonUp := ButtonState_RightButton;
+      end;
+  end;
+  {$ENDIF VisualCLX}
 end;
 
 procedure TJvMouseGestureHook.SetOnJvMouseGestureCustomInterpretation(
@@ -905,6 +949,7 @@ end;
 
 //============================================================================
 
+{$IFDEF VCL}
 function JvMouseGestureHook(Code: Integer; wParam: Word; lParam: Longword): Longword; stdcall;
 var
   locY: Integer;
@@ -915,9 +960,7 @@ begin
     Result := CallNextHookEx(JvCurrentHook, Code, wParam, lParam);
     Exit;
   end;
-
   Result := Code;
-
   if not JvMouseGestureHookActive then
     Exit;
 
@@ -935,12 +978,48 @@ begin
   if wParam = JvMouseButtonUp then
     JvMouseGestureInterpreter.EndMouseGesture;
 end;
+{$ENDIF VCL}
 
-{$ENDIF MSWINDOWS}
+{$IFDEF VisualCLX}
+function JvMouseGestureHook(App: TObject; Sender: QObjectH; Event: QEventH): Boolean;
+var
+  locY: Integer;
+  locX: Integer;
+  etype: QEventType;
+  Btn: ButtonState;
+begin
+  Result := False;
+  if not JvMouseGestureHookActive then
+    Exit;
 
-{$IFDEF LINUX}
-
-{$ENDIF LINUX}
+  etype := QEvent_type(Event);
+  case etype of
+    QEventType_MouseButtonPress,
+    QEventType_MouseButtonRelease,
+    QEventType_MouseMove:
+      begin
+        locX := QMouseEvent_globalX(QMouseEventH(Event));
+        locY := QMouseEvent_globalY(QMouseEventH(Event));
+        Btn := QMouseEvent_button(QMouseEventH(Event));
+        case etype of
+          QEventType_MouseMove:
+            JvMouseGestureInterpreter.TrailMouseGesture(locX, locY);
+          QEventType_MouseButtonPress:
+            begin
+              if Btn = JvMouseButtonDown then
+                JvMouseGestureInterpreter.StartMouseGesture(locX, locY);
+            end;
+          QEventType_MouseButtonRelease:
+            begin
+              if Btn = JvMouseButtonUp then
+                JvMouseGestureInterpreter.EndMouseGesture;
+            end;
+        end;
+        Result := True;
+      end;
+  end;
+end;
+{$ENDIF VisualCLX}
 
 end.
 

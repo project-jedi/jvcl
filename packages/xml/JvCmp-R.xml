@@ -20,8 +20,8 @@
     <Package Name="bcbsmp" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvMouseGesture.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvPageManager.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvMouseGesture.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvPageManager.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPatchFile.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvPrint.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvProfilerForm.pas" Targets="all" Formname="ProfReport" Condition=""/>
@@ -31,10 +31,10 @@
     <File Name="..\..\run\JvWinHelp.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvAlarms.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvConverter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvCreateProcess.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvCreateProcess.pas" Targets="windows" Formname="" Condition=""/>
     <File Name="..\..\run\JvDataEmbedded.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\run\JvEasterEgg.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvEnterTab.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEasterEgg.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvEnterTab.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLogFile.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvLogForm.pas" Targets="all" Formname="FoLog" Condition=""/>
     <File Name="..\..\run\JvMergeManager.pas" Targets="all" Formname="" Condition=""/>

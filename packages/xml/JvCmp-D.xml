@@ -21,7 +21,7 @@
     <Package Name="vclx" Targets="C6,C6p" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\design\JvPageManagerForm.pas" Targets="allbutclx" Formname="JvProxyEditor" Condition=""/>
+    <File Name="..\..\design\JvPageManagerForm.pas" Targets="all" Formname="JvProxyEditor" Condition=""/>
     <File Name="..\..\design\JvPatcherEditor.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvCmpReg.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\design\JvDataEmbeddedEditor.pas" Targets="all" Formname="" Condition=""/>
