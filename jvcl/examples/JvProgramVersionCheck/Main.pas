@@ -22,12 +22,6 @@ type
     ProgramVersionCheck: TJvProgramVersionCheck;
     JvProgramVersionHTTPLocationICS1: TJvProgramVersionHTTPLocationICS;
     procedure FormShow(Sender: TObject);
-    function JvProgramVersionFTPLocation1LoadFileFromRemote(
-      iProgramVersionLocation: TJvProgramVersionFTPLocation; const iRemotePath,
-      iRemoteFileName, iLocalPath, iLocalFileName: string): string;
-    function JvProgramVersionHTTPLocation1LoadFileFromRemote(
-      iProgramVersionLocation: TJvProgramVersionHTTPLocation; const iRemotePath,
-      iRemoteFileName, iLocalPath, iLocalFileName: string): string;
   public
     procedure VersionCheck;
   end;
@@ -44,41 +38,6 @@ Uses JclFileUtils, JvTypes;
 procedure TForm1.FormShow(Sender: TObject);
 begin
   VersionCheck;
-end;
-
-function TForm1.JvProgramVersionFTPLocation1LoadFileFromRemote(
-  iProgramVersionLocation: TJvProgramVersionFTPLocation; const iRemotePath,
-  iRemoteFileName, iLocalPath, iLocalFileName: string): string;
-begin
-  With JvFtpUrlGrabber do
-  begin
-    FileName := PathAppend(iLocalPath, iLocalFileName);
-    url := iRemotePath + iRemoteFilename;
-    OutputMode := omFile;
-    Mode := hmBinary;
-
-    Start;
-    while Status <> gsStopped do
-      Application.HandleMessage;
-    Result := FileName;
-  end;
-end;
-
-function TForm1.JvProgramVersionHTTPLocation1LoadFileFromRemote(
-  iProgramVersionLocation: TJvProgramVersionHTTPLocation; const iRemotePath,
-  iRemoteFileName, iLocalPath, iLocalFileName: string): string;
-begin
-  With JvHttpUrlGrabber do
-  begin
-    FileName := PathAppend(iLocalPath, iLocalFileName);
-    url := iRemotePath + iRemoteFilename;
-    OutputMode := omFile;
-    Start;
-    sleep (1000);
-    while Status <> gsStopped do
-      Application.HandleMessage;
-    Result := FileName;
-  end;
 end;
 
 procedure TForm1.VersionCheck;
