@@ -21,7 +21,7 @@ Contributers:
   Rob den Braasem [rbraasem@xs4all.nl]
   Polaris Software
   rblaurindo
-  
+
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
@@ -38,9 +38,9 @@ interface
 uses
   Windows, Classes, StdCtrls, Controls, Messages, SysUtils, Forms, Graphics,
   Menus, Buttons, Dialogs, FileCtrl, Mask,
-  {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
   RTLConsts, Variants,
-  {$ENDIF}
+{$ENDIF}
   JvComponent, JvxCtrls, JvJCLutils, JvTypes;
 
 const
@@ -84,9 +84,9 @@ type
   public
     // (rom) renamed from FStandart
     FStandard: Boolean; // Polaris
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     FDrawThemedDropDownBtn: Boolean;
-    {$ENDIF}
+{$ENDIF}
     constructor Create(AOwner: TComponent); override;
     procedure Click; override;
   end;
@@ -308,10 +308,10 @@ type
   { The common parent of TJvFilenameEdit and TJvDirectoryEdit          }
   { For internal use only; it's not intended to be used separately }
 
-  {$IFNDEF WIN32}
+{$IFNDEF WIN32}
 const
   MaxFileLength = SizeOf(TFileName) - 1;
-  {$ENDIF}
+{$ENDIF}
 
 type
   TExecOpenDialogEvent = procedure(Sender: TObject; var Name: string;
@@ -567,11 +567,11 @@ type
   TYearDigits = (dyDefault, dyFour, dyTwo);
 
 const
-  {$IFDEF DEFAULT_POPUP_CALENDAR}
+{$IFDEF DEFAULT_POPUP_CALENDAR}
   dcsDefault = csPopup;
-  {$ELSE}
+{$ELSE}
   dcsDefault = csDialog;
-  {$ENDIF DEFAULT_POPUP_CALENDAR}
+{$ENDIF DEFAULT_POPUP_CALENDAR}
 
 type
   TExecDateDialog = procedure(Sender: TObject; var ADate: TDateTime;
@@ -623,7 +623,7 @@ type
     function FourDigitYear: Boolean;
     function FormatSettingsChange(var Msg: TMessage): Boolean;
     procedure CMExit(var Msg: TCMExit); message CM_EXIT;
-    procedure WMContextMenu(var Message: TWMContextMenu);message WM_CONTEXTMENU;
+    procedure WMContextMenu(var Message: TWMContextMenu); message WM_CONTEXTMENU;
   protected
     // Polaris
     FDateAutoBetween: Boolean;
@@ -794,9 +794,9 @@ implementation
 
 uses
   ShellAPI, Consts, Math,
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   Themes,
-  {$ENDIF}
+{$ENDIF}
   ExtDlgs,
   JvConsts, JvJVCLUtils, JvPickDate, JvBrowseFolder;
 
@@ -897,7 +897,7 @@ begin
   begin
     if UseRightToLeftAlignment then
       ChangeBiDiModeAlignment(AAlignment);
-    if StandardPaint and not (csPaintCopy in ControlState)then
+    if StandardPaint and not (csPaintCopy in ControlState) then
     begin
       if SysLocale.MiddleEast and HandleAllocated and (IsRightToLeft) then
       begin { This keeps the right aligned text, right aligned }
@@ -1005,7 +1005,7 @@ var
   R: TRect;
 {$ENDIF}
 begin
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   if ThemeServices.ThemesEnabled then
   begin
     if FDrawThemedDropDownBtn then
@@ -1013,13 +1013,13 @@ begin
       if not Enabled then
         ThemedState := tcDropDownButtonDisabled
       else
-      if FState = rbsDown then
-        ThemedState := tcDropDownButtonPressed
-      else
-      if MouseInControl then
-        ThemedState := tcDropDownButtonHot
-      else
-        ThemedState := tcDropDownButtonNormal;
+        if FState = rbsDown then
+          ThemedState := tcDropDownButtonPressed
+        else
+          if MouseInControl then
+            ThemedState := tcDropDownButtonHot
+          else
+            ThemedState := tcDropDownButtonNormal;
       R := BoundsRect;
       Details := ThemeServices.GetElementDetails(ThemedState);
       ThemeServices.DrawElement(Canvas.Handle, Details, R);
@@ -1028,7 +1028,7 @@ begin
       inherited Paint;
   end
   else
-  {$ENDIF}
+{$ENDIF}
   begin
     inherited Paint;
     if FState <> rbsDown then
@@ -1050,7 +1050,7 @@ end;
 procedure TJvEditButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  if Button = mbLeft then
+  if (Button = mbLeft) and (Owner <> nil) then
     with TJvCustomComboEdit(Owner) do
     begin
       FNoAction := (FPopup <> nil) and FPopupVisible;
@@ -1254,12 +1254,13 @@ procedure TJvCustomComboEdit.UpdateEdit;
 var
   I: Integer;
 begin
-  for I := 0 to Self.Owner.ComponentCount - 1 do
-    if Self.Owner.Components[I] is TJvCustomComboEdit then
-      if ((Self.Owner.Components[I].Name <> Self.Name) and
-        ((Self.Owner.Components[I] as TJvCustomComboEdit).FGroupIndex <> -1) and
-        ((Self.Owner.Components[I] as TJvCustomComboEdit).FGroupIndex = Self.FGroupIndex)) then
-        (Self.Owner.Components[I] as TJvCustomComboEdit).Caption := '';
+  if Owner <> nil then
+    for I := 0 to Owner.ComponentCount - 1 do
+      if Owner.Components[I] is TJvCustomComboEdit then
+        if ((Owner.Components[I].Name <> Self.Name) and
+          ((Owner.Components[I] as TJvCustomComboEdit).FGroupIndex <> -1) and
+          ((Owner.Components[I] as TJvCustomComboEdit).FGroupIndex = Self.FGroupIndex)) then
+          (Owner.Components[I] as TJvCustomComboEdit).Caption := '';
 end;
 
 procedure TJvCustomComboEdit.SetDisabledColor(const Value: TColor);
@@ -1304,7 +1305,7 @@ begin
   begin
     Canvas := nil;
     if not PaintComboEdit(Self, Text, FAlignment, Focused and not PopupVisible,
-       Canvas, Msg) then
+      Canvas, Msg) then
       inherited;
     Canvas.Free;
   end;
@@ -1314,7 +1315,7 @@ end;
 
 procedure TJvCustomComboEdit.CreateParams(var Params: TCreateParams);
 const
-  Alignments: array [TAlignment] of Longword = (ES_LEFT, ES_RIGHT, ES_CENTER);
+  Alignments: array[TAlignment] of Longword = (ES_LEFT, ES_RIGHT, ES_CENTER);
 begin
   inherited CreateParams(Params);
   Params.Style := Params.Style or ES_MULTILINE or WS_CLIPCHILDREN
@@ -1434,6 +1435,7 @@ begin
   if FPopup <> nil then
     TJvPopupWindow(FPopup).SetValue(Value);
 end;
+
 procedure TJvCustomComboEdit.AcceptValue(const Value: Variant);
 begin
   if Text <> VarToStr(Value) then
@@ -1608,14 +1610,14 @@ end;
 procedure TJvCustomComboEdit.SetButtonFlat(const Value: Boolean);
 begin
   FButton.Flat := Value;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   { When XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
     the glyph is the default themed dropdown button. When ButtonFlat = True, we
     can't use that default dropdown button, so we have to recreate the glyph
     in this special case }
   if ThemeServices.ThemesEnabled and (GlyphKind = gkDropDown) then
     RecreateGlyph;
-  {$ENDIF}
+{$ENDIF}
 end;
 
 function TJvCustomComboEdit.GetGlyph: TBitmap;
@@ -1650,13 +1652,13 @@ var
   LLeft: Integer;
 begin
   AdjustHeight;
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   { If flat and themes are enabled, move the left edge of the edit rectangle
     to the right, otherwise the theme edge paints over the border }
   if not Ctl3D and (BorderStyle = bsSingle) and ThemeServices.ThemesEnabled then
     LLeft := 3
   else
-  {$ENDIF}
+{$ENDIF}
     LLeft := 0;
   SetRect(Loc, LLeft, 0, ClientWidth - FBtnControl.Width {Polaris - 2}, ClientHeight + 1);
   SendMessage(Handle, EM_SETRECTNP, 0, Longint(@Loc));
@@ -1669,7 +1671,7 @@ var
   BtnRect: TRect;
 begin
   if NewStyleControls then
-    {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
     begin
       if Ctl3D and (BorderStyle = bsSingle) then
@@ -1681,7 +1683,7 @@ begin
           FButton.Width, Height - 2)
     end
     else
-    {$ENDIF JVCLThemesEnabled}
+{$ENDIF JVCLThemesEnabled}
     begin
       if Ctl3D and (BorderStyle = bsSingle) then
         BtnRect := Bounds(Width - FButton.Width - 4, 0,
@@ -1791,7 +1793,7 @@ var
 begin
   I := GetTextHeight;
   if BorderStyle = bsSingle then
-    I := I + GetSystemMetrics(SM_CYBORDER) * 4 + 1 {$IFNDEF WIN32} + (I div 4){$ENDIF};
+    I := I + GetSystemMetrics(SM_CYBORDER) * 4 + 1{$IFNDEF WIN32} + (I div 4){$ENDIF};
   Result := I;
 end;
 
@@ -1873,7 +1875,7 @@ end;
 
 procedure TJvCustomComboEdit.SetShowCaret;
 const
-  CaretWidth: array [Boolean] of Byte = (1, 2);
+  CaretWidth: array[Boolean] of Byte = (1, 2);
 begin
   CreateCaret(Handle, 0, CaretWidth[fsBold in Font.Style], GetTextHeight);
   ShowCaret(Handle);
@@ -2032,14 +2034,14 @@ var
   end;
 
 begin
-  {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
   { When XP Themes are enabled, ButtonFlat = False, GlyphKind = gkDropDown then
     the glyph is the default themed dropdown button. When ButtonFlat = True, we
     can't use that default dropdown button (because we then use toolbar buttons,
     and there is no themed dropdown toolbar button) }
   if ThemeServices.ThemesEnabled then
     FButton.FDrawThemedDropDownBtn := (FGlyphKind = gkDropDown) and not ButtonFlat;
-  {$ENDIF}
+{$ENDIF}
 
   case FGlyphKind of
     gkDefault:
@@ -2055,9 +2057,9 @@ begin
         end;
       end;
     gkDropDown:
-      {$IFDEF JVCLThemesEnabled}
+{$IFDEF JVCLThemesEnabled}
       if ButtonFlat or not ThemeServices.ThemesEnabled then
-      {$ENDIF}
+{$ENDIF}
       begin
         FButton.Glyph.Handle := LoadBitmap(0, PChar(32738));
         NumGlyphs := 1;
@@ -2087,9 +2089,9 @@ begin
   inherited Create(AOwner);
   OEMConvert := True;
   FAcceptFiles := True;
-  {$IFNDEF WIN32}
+{$IFNDEF WIN32}
   MaxLength := MaxFileLength;
-  {$ENDIF}
+{$ENDIF}
   ControlState := ControlState + [csCreating];
   try
     GlyphKind := gkDefault; { force update }
@@ -2164,7 +2166,7 @@ end;
 
 procedure TJvFileDirEdit.WMDropFiles(var Msg: TWMDropFiles);
 var
-  AFileName: array [0..255] of Char;
+  AFileName: array[0..255] of Char;
   I, Num: Cardinal;
 begin
   Msg.Result := 0;
@@ -2594,13 +2596,13 @@ begin
   ControlState := ControlState + [csCreating];
   try
     UpdateFormat;
-    {$IFDEF DEFAULT_POPUP_CALENDAR}
+{$IFDEF DEFAULT_POPUP_CALENDAR}
     FPopup := TJvPopupWindow(CreatePopupCalendar(Self, BiDiMode,
       // Polaris
       FMinDate, FMaxDate));
     TJvPopupWindow(FPopup).OnCloseUp := PopupCloseUp;
     TJvPopupWindow(FPopup).Color := FPopupColor;
-    {$ENDIF DEFAULT_POPUP_CALENDAR}
+{$ENDIF DEFAULT_POPUP_CALENDAR}
     GlyphKind := gkDefault; { force update }
   finally
     ControlState := ControlState - [csCreating];
