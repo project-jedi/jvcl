@@ -478,12 +478,21 @@ end;
 procedure TJvCustomPropertyStore.SetAppStorage(Value: TJvCustomAppStorage);
 var
   Index: Integer;
+  PropName: string;
 begin
   if Value <> FAppStorage then
   begin
-    for Index := 0 to ComponentCount - 1 do
-      if Components[Index] is TJvCustomPropertyStore then
-        TJvCustomPropertyStore(Components[Index]).AppStorage := Value;
+    for Index := 0 to GetPropCount(Self) - 1 do
+    begin
+      PropName := GetPropName(Self, Index);
+      if IgnoreProperties.IndexOf(PropName) >= 0 then
+        Continue;
+      if FIntIgnoreProperties.IndexOf(PropName) >= 0 then
+        Continue;
+      if PropType(Self, PropName) = tkClass then
+        if (TPersistent(GetOrdProp(Self, PropName)) is TJvCustomPropertyStore) then
+          TJvCustomPropertyStore(TPersistent(GetOrdProp(Self, PropName))).AppStorage := Value;
+    end;
     FAppStorage := Value;
     UpdateChildPaths;
   end;
