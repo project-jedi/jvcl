@@ -579,6 +579,9 @@ var
   R: TRect;
 begin
   case Msg.Msg of
+    WM_DESTROY:
+      Handle := 0;
+      
     WM_KEYFIRST..WM_KEYLAST:
       begin
         FIPAddress.Dispatch(Msg);
@@ -637,11 +640,13 @@ destructor TJvIPAddress.Destroy;
 var
   I: Integer;
 begin
-  for I := 0 to High(FEditControls) do
-    FEditControls[I].Free;
   FreeAndNil(FRange);
   FreeAndNil(FAddressValues);
   inherited Destroy;
+  // (ahuser) I don't know why but TWinControl.DestroyWindowHandle raises an AV
+  //          when FEditControls are released before inherited Destroy.
+  for I := 0 to High(FEditControls) do
+    FEditControls[I].Free;
 end;
 
 procedure TJvIPAddress.CreateParams(var Params: TCreateParams);
@@ -733,7 +738,8 @@ var
   i: Integer;
 begin
   for i := 0 to High(FEditControls) do
-    FEditControls[i].Handle := 0;
+    if FEditControls[i] <> nil then
+      FEditControls[i].Handle := 0;
   FEditControlCount := 0;
 end;
 
@@ -852,8 +858,12 @@ begin
     case Event of
       WM_CREATE:
         begin
-          FEditControls[FEditControlCount].Handle := ChildWnd;
-          Inc(FEditControlCount);
+          if (FEditControlCount <= Length(FEditControls)) and
+             (FEditControls[FEditControlCount] <> nil) then
+          begin
+            FEditControls[FEditControlCount].Handle := ChildWnd;
+            Inc(FEditControlCount);
+          end;
         end;
       WM_DESTROY:
         ClearEditControls;
