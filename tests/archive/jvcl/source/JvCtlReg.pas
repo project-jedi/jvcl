@@ -48,9 +48,9 @@ uses{$IFDEF WIN32}Windows, {$ELSE}WinTypes, {$ENDIF}Classes, SysUtils,
 {$IFDEF COMPILER4_UP}ImgEdit, {$ENDIF}{$IFDEF WIN32}ImgList, {$ENDIF}
 {$ENDIF DelphiPersonalEdition}
 {$IFDEF WIN32}JvRichEd, {$ENDIF}Menus, FiltEdit, StdCtrls, Buttons,
-  JvxConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvHintProp, JvDateUtil,
+  JvxConst, JvxCtrls, JvGrids, JvCurrEdit, JvToolEdit, JvDateUtil,
   JvPickDate, JvSplit, JvxSlider, JvxClock, JvxAnimate, JvSpin, Consts,
-  JvDice, JvSwitch, JvCheckItm, JvVCLUtils, JvColors, JvAniFile, JvGraph,
+  JvDsgnEditors, JvDice, JvSwitch, JvCheckItm, JvVCLUtils, JvColors, JvAniFile, JvGraph,
 {$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvHints, JvExcptDlg, 
   JvFileUtil, JvDsgn;
 
@@ -556,8 +556,8 @@ begin
   RegisterPropertyEditor(TypeInfo(string), TJvDirectoryEdit, 'Text', TJvDirNameProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'FolderName', TJvDirNameProperty);
   RegisterPropertyEditor(TypeInfo(string), BaseClass, 'DirectoryName', TJvDirNameProperty);
-  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', THintProperty);
   RegisterPropertyEditor(TypeInfo(string), TMenuItem, 'Hint', TStringProperty);
+  RegisterPropertyEditor(TypeInfo(string), BaseClass, 'Hint', THintProperty);
   RegisterPropertyEditor(TypeInfo(string), TJvCustomComboEdit, 'ButtonHint', THintProperty);
   RegisterPropertyEditor(TypeInfo(TStrings), TJvxCheckListBox, 'Items', TJvCheckItemsProperty);
   RegisterPropertyEditor(TypeInfo(TControl), BaseClass, 'Gauge', TJvProgressControlProperty);

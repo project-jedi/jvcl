@@ -46,7 +46,7 @@ uses Classes, SysUtils, Controls, Graphics, TypInfo,
   JvStrHlder, JvAppEvent, JvVCLUtils, JvTimerLst, JvTimLstEd, JvIcoList, JvIcoLEdit,
 {$IFDEF USE_Jv_GIF}JvGIF, JvGIFCtrl, {$ENDIF}JvxConst, JvxCtrls,
 {$IFDEF COMPILER3_UP} {JvResExp, }{$ENDIF}JvMenus, JvMRUList,
-{$IFDEF WIN32}JvNotify, JvGrdCpt, JvGradEdit, {$ENDIF}JvHintProp;
+{$IFDEF WIN32}JvNotify, JvGrdCpt, JvGradEdit{$ENDIF}, JvDsgnEditors;
 
 { TJvStringsEditor }
 
