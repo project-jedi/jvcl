@@ -241,3 +241,4 @@ TJvButton=TJvBitBtn
 TJvAppearingLabel=TJvBehaviorLabel
 JvLookup=JvDBLookup
 TJvxTrayIcon=TJvTrayIcon
+JvShell=JvTrayIcon
