@@ -241,6 +241,7 @@ begin
   NewLogFont := LogFont;
   MRect := ClientRect;
   NewLogFont.lfEscapement := Angle10;
+  NewLogFont.lfOutPrecision := OUT_TT_ONLY_PRECIS;
   NewFont := CreateFontIndirect(NewLogFont);
   {
     (p3) unnecessary
