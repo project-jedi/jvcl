@@ -25,7 +25,7 @@ BRC = "$(ROOT)\bin\brc32.exe" -r
 .path.rc = ..\images
 
 #-----------------------------------------------
-default: ResGenerate DcrGenerate
+default: Display ResGenerate DcrGenerate
 
 ResGenerate: \
 JvBaseEdits.res \
@@ -100,6 +100,9 @@ JvUIBReg.dcr \
 JvValidatorsReg.dcr \
 JvWizardReg.dcr \
 JvXPCtrlsReg.dcr
+
+Display:
+	@echo [Generating: Resources]
 
 #--- RES ---------------------------------------
 JvBaseEdits.res: JvBaseEdits.rc
