@@ -19,8 +19,8 @@ much).
 <br>&nbsp; </p>
 
 <h2>How to use it?</h2>
-Just add the required <b>JvEx</b>XXXX (where XXXX is the VCL unit
-or the VisualCLX unit without the leading "Q") unit to the uses clause of your 
+Just add the required <b>JvEx</b>XXXX unit (where XXXX is the VCL unit
+or the VisualCLX unit without the leading "Q") to the uses clause of your 
 control. For example use JvExStdCtrls instead of StdCtrls or QStdCtrls. Change 
 the base class of the control to derive from <b>TJvEx</b>XXXX (for example, 
 derive from TJvExCustomControl instead of TCustomControl). Now you must replace 
@@ -30,6 +30,7 @@ derived class the original message handler is executed (if nothing else is speci
 following tables).
 
 <br />&nbsp;
+<hr />
 <br />Table of message to method mapping for TControl/TGraphicControl derived VCL 
 classes.<blockquote>
 <table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
@@ -112,45 +113,28 @@ classes.<blockquote>
 <tr>
  <td style="vertical-align: top;">CM_FOCUSCHANGED</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoFocusChanged(Sender: TWinControl);<br />
-   <i style="color: navy;">(original CM_FOCUSCHANGED is called before DoFocusChanged)</i></td>
+ <td style="vertical-align: top;">procedure FocusChanged(AControl: TWinControl);</td>
 </tr>
 </tbody>
 </table>
 <br>
 
-<b>Extensions for VCL</b>
-<blockquote>
- <ul>
-  <li>Introduces a virtual SetAutoSize() function for Delphi 5.</li>
- </ul>
-</blockquote>
-
-<b>Extensions for VisualCLX</b>
-<blockquote>
- <ul>
-  <li>Introduces missing MouseEnter, MouseLeave for (unpatched) Delphi 6.</li>
-  <li>Introduces "procedure DoFocusChanged(Control: TWinControl); dynamic;" that is 
-  called immediatly after every TCustomForm.SetFocusedControl() call.</li>
- </ul>
-</blockquote>
-
-<b>Common extensions</b>
-<blockquote>
- <ul>
-  <li>Introduces published property AboutJVCL</li>
-  <li>Introduces protected property HintColor that is assigned to Application.HintColor if it is 
-  not clNone and the mouse is over the control. When the mouse leaves the control the original
-  Application.HintColor is restored.</li>
-  <li>Introduces protected event OnParentColorChange</li>
-  <li>Introduces protected property MouseOver that is True when the mouse is over the control.</li>
- </ul>
-</blockquote>
+<b>Extensions</b>
+<ul>
+ <li>Introduces a virtual SetAutoSize() function for Delphi 5.</li>
+ <li>Introduces published property AboutJVCL</li>
+ <li>Introduces protected property HintColor that is assigned to Application.HintColor if it is 
+ not clNone and the hint will be shown.</li>
+ <li>Introduces protected event OnParentColorChange</li>
+ <li>Introduces protected property MouseOver that is True when the mouse is over the control.</li>
+ <li>Introduces protected events OnMouseEnter and OnMouseLeave.</li>
+</ul>
 
 </blockquote>
 
 
 <br />&nbsp;
+<hr />
 <br />Table of message to method mapping for TWinControl/TCustomControl derived VCL classes.
 	
 <p>The mappings above for TControl/TGraphicControl applies to these classes as 
@@ -201,16 +185,16 @@ procedure ControlsListChanged(Control: TControl; Inserting: Boolean);<br />
 <tr>
  <td style="vertical-align: top;">WM_ERASEBKGND</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">function DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean;<br />
-   <i style="color: navy;">(DoPaintBackground is protected by SaveDC/RestoreDC, Param is the LParam from the message)</i></td>
+ <td style="vertical-align: top;">function DoEraseBackground(Canvas: TCanvas; Param: Integer): Boolean;<br />
+   <i style="color: navy;">(DoEraseBackground is protected by SaveDC/RestoreDC, Param is the LParam from the message)</i></td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_GETDLGCODE</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoGetDlgCode(var Code: TDlgCodes);<br />&nbsp;<br />
+ <td style="vertical-align: top;">procedure GetDlgCode(var Code: TDlgCodes);<br />&nbsp;<br />
   <code>TDlgCode = (<br />
-    &nbsp;&nbsp;dcWantAllKeys, dcWantArrows, dcWantTab, dcWantChars,<br />
-    &nbsp;&nbsp;dcButton,<br />
+    &nbsp;&nbsp;dcWantAllKeys, dcWantArrows, dcWantChars, dcButton,<br />
+    &nbsp;&nbsp;dcHasSetSel, dcWantTab,<br />
     &nbsp;&nbsp;dcNative <i style="color: navy;">{ if dcNative is in the set the native
     functions are used and DoGetDlgCode is ignored }</i><br />
   );<br />
@@ -220,46 +204,34 @@ procedure ControlsListChanged(Control: TControl; Inserting: Boolean);<br />
 <tr>
  <td style="vertical-align: top;">WM_SETFOCUS</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoSetFocus(FocusedWnd: HWND);<br />
-   <i style="color: navy;">(original WM_SETFOCUS is called before DoSetFocus)</i></td>
+ <td style="vertical-align: top;">procedure FocusSet(FocusedWnd: HWND);</td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_KILLFOCUS</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoKillFocus(FocusedWnd: HWND);<br />
-   <i style="color: navy;">(original WM_KILLFOCUS is called before DoKillFocus)</i></td>
+ <td style="vertical-align: top;">procedure FocusKilled(FocusedWnd: HWND);</td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_SIZE</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoBoundsChanged;<br />
-   <i style="color: navy;">(original WM_SIZE is called after DoBoundsChanged)</i></td>
+ <td style="vertical-align: top;">procedure BoundsChanged;<br />
+   <i style="color: navy;">(original WM_SIZE is called before BoundsChanged)</i></td>
 </tr>
 </tbody>
 </table>
 
 <br>
 
-<b>Extensions for VCL</b>
-<blockquote>
- <ul>
-  <li>Introduces virtual method SetParentBackground() and a ParentBackground property for Delphi/BCB 5 and 6 
-    if <i>JVCLThemesEnabled</i> is defined.</li>
- </ul>
-</blockquote>
-
-<b>Extensions for VisualCLX</b>
-<blockquote>
- <ul>
-  <li>Introcudes a virtual Paint method and a Canvas property for TWidgetControl.</li>
-  <li>Introduces DoPaintBackground that is called before Paint().</li>
- </ul>
-</blockquote>
+<b>Extensions</b>
+<ul>
+ <li>Introduces virtual method SetParentBackground() and a ParentBackground property for Delphi/BCB 5 and 6 
+   if <i>JVCLThemesEnabled</i> is defined.</li>
+</ul>
 
 </blockquote>
 <br>&nbsp;
-
-<br />Table of message to method mapping for TCustomEdit/TCustomMemo derived VCL 
+<hr />
+<br />Table of message blocking for TCustomEdit/TCustomMemo derived VCL 
 classes.<blockquote>
 <table style="width: 80%; text-align: left; margin-left: auto; margin-right: auto;"
  border="0" cellspacing="2" cellpadding="2">
@@ -268,64 +240,80 @@ classes.<blockquote>
  <td style="vertical-align: top; text-align: center; font-weight: bold; width: 10%;">
  message</td>
  <td style="vertical-align: top; text-align: center; font-weight: bold; width: 10;">&nbsp;</td>
- <td style="vertical-align: top; text-align: center; font-weight: bold;">corresponding virtual/dynamic method</td>
+ <td style="vertical-align: top; text-align: center; font-weight: bold;">blocked if</td>
 </tr>
 </thead>
 <tbody>
 <tr>
  <td style="vertical-align: top;">WM_PASTE</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoClipboardPaste;</td>
+ <td style="vertical-align: top;">not (caPaste in ClipboardCommand)</td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_COPY</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoClipboardCopy;</td>
+ <td style="vertical-align: top;">not (caCopy in ClipboardCommand)</td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_CUT</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoClipboardCut;</td>
+ <td style="vertical-align: top;">not (caCut in ClipboardCommand)</td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_UNDO</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoUndo;</td>
+ <td style="vertical-align: top;">not (caUndo in ClipboardCommand)</td>
 </tr>
 <tr>
  <td style="vertical-align: top;">WM_CLEAR</td>
  <td style="vertical-align: top;"></td>
- <td style="vertical-align: top;">procedure DoClearText;</td>
+ <td style="vertical-align: top;">not (caClear in ClipboardCommand)</td>
 </tr>
 </tbody>
 </table>
 <br>
 
-<b>Extensions for VisualCLX</b>
-<blockquote>
- <ul>
-  <li>Introduces public method Clear() that is called by DoClearText.</li>
-  <li>Introcudes message handlers for EM_GETRECT and EM_SETRECT. The edit rect is saved but not 
-    used by the class. If you want real edit rect support please have a look at
-    <a target="_blank" href="../qcommon/QComboEdits.pas">QComboEdits.pas</a>.</li>
- </ul>
-</blockquote>
-
-<b>Common extensions</b>
-<blockquote>
- <ul>
-  <li>Introduces property ClipboardCommands: TJvClipboardCommands for Clipboard action restrictions.</li>
- </ul>
-</blockquote>
+<b>Extensions</b>
+<ul>
+ <li>Introduces property ClipboardCommands: TJvClipboardCommands for Clipboard action restrictions.</li>
+</ul>
 
 </blockquote>
 <br />&nbsp;
 
 
 <h2>How does it work?</h2>
-For VCL components, JvExVCL overrides the Dispatch method and redirects all messages to
-    the virtual or dynamic method. As VisualCLX does not use Dispatch for event delivery the
-JvExVCL patches some functions in memory for CLX.
+The JvExVCL changes the route a message takes. It overrides the WndProc of the control
+and redirects some message to virtual or dynamic methods of the control. These methods
+can be overriden by user code. In order to allow the user-control to invoke the inherited
+behaviour all virtual and dynamic (message) methods call the inherited WndProc. This means
+that a simple "inherited" in the overriden method invokes the original message handler.
+
+<p>&nbsp;</p>
+<b>Example:</b><br />
+&nbsp;<br />
+SendMessage(MyCtrl.Handle, CM_VISIBLECHANGED, 0, 0);<br />
+<blockquote>
+TMyCtrl.WndProc()
+ <blockquote>
+  TMyCtrl.VisibleChanged() // overriden method<br />
+  <blockquote>
+  inherited VisibleChanged;
+   <blockquote>
+   TJvExControl.VisibleChanged()
+    <blockquote>
+    TControl.WndProc(CM_VISIBLECHANGED)
+     <blockquote>
+     TControl.CMVisibleChanged()
+     </blockquote>
+    </blockquote>
+   </blockquote>
+  </blockquote>
+ </blockquote>
+</blockquote>
+
+
+
 <br>&nbsp;
 
 <h2>How to extend the JvExVCL (developer)?</h2>
@@ -335,7 +323,7 @@ JvExVCL uses macros that are preprocessed by the
 you only need to change  one file and all classes derived from it will use the new features. 
 This also means that you should not modify the generated JvExVCL units 
 directly since they will be overwritten the next time the preprocessor is 
-run.
+used.
 
 <p>The JvExVCL sources (un-preprocessed files) are in <i>$(JVCL)\devtools\JvExVCL\src</i>
 
