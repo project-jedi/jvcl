@@ -500,12 +500,12 @@ Summary
   Releases all schedules.
 Description
  Release all of the schedules found in the component's Schedules list with one call. The call is equivalent to:
- <CODE>
  <AUTOLINK OFF>
+ <CODE>
  while ScheduleCount > 0 do
    ReleaseSchedule(Schedules[0].SchedName, Schedules[0].SchedDate);
- <AUTOLINK ON>
  </CODE>
+ <AUTOLINK ON>
 See Also
   ReleaseSchedule
 ----------------------------------------------------------------------------------------------------
@@ -628,8 +628,8 @@ Summary
 Description
   Release all of the schedules found in the control's Schedules list with one call. The
   call is equivalent to:
-<CODE>
 <AUTOLINK OFF>
+<CODE>
  while ScheduleCount > 0 do
    ReleaseSchedule(Schedules[0].SchedName, Schedules[0].SchedDate);
 </CODE>
@@ -2299,8 +2299,8 @@ Summary
 Description
   The implementation uses a concatenation of the system date/time and five random alpha chars and is
   as follows:
-  <CODE>
   <AUTOLINK OFF>
+  <CODE>
         class function TJvTFScheduleManager.GenerateApptID: String;
         Var
          I : Integer;
@@ -2572,8 +2572,8 @@ Description
   Use this method to post all of the appointment objects in the server at once.
 
   This method is equivalent to:
-  <CODE>
   <AUTOLINK OFF>
+  <CODE>
    for I := 0 to ApptCount - 1 do
      dbPostAppt(Appts[I]);
   </CODE>

@@ -192,13 +192,13 @@ Description
   <LINK TJvDeviceInfo.ReferenceHandle, ReferenceHandle> property to change the device the preview
   is simulating. For example, to preview how a document would look on the currently selected printer,
   you could write:
-  <CODE>
   <AUTOLINK OFF>
+  <CODE>
     JvPrintPreview1.DeviceInfo.ReferenceHandle := Printer.Handle;
     // Update the rich edit preview
     JvPreviewRenderRichEdit1.CreatePreview(false);
-  <AUTOLINK ON>
   </CODE>
+  <AUTOLINK ON>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomPreviewControl.EndUpdate
 Summary
@@ -557,11 +557,11 @@ Description
   edge of the device context.
 
   When a new ReferenceHandle is set, OffsetBottom is calculated from:
-  <CODE>
   <AUTOLINK OFF>
+  <CODE>
     OffsetBottom := PhysicalHeight - PageHeight - OffsetTop;
-  <AUTOLINK ON>
   </CODE>
+  <AUTOLINK ON>
 See Also
   OffsetLeft, OffsetTop, OffsetRight
 ----------------------------------------------------------------------------------------------------
@@ -587,11 +587,11 @@ Description
   side of the device context.
 
   When a new ReferenceHandle is set, OffsetRight is calculated from:
-  <CODE>
   <AUTOLINK OFF>
+  <CODE>
     OffsetRight := PhysicalWidth - PageWidth - OffsetLeft;
-  <AUTOLINK ON>
   </CODE>
+  <AUTOLINK ON>
 See Also
   OffsetLeft, OffsetTop, OffsetBottom
 ----------------------------------------------------------------------------------------------------
