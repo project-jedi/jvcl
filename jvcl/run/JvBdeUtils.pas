@@ -356,7 +356,7 @@ begin
         AnsiToNative(Locale, Value, PChar(Buffer), FldSize);
       fldBYTES, fldVARBYTES:
         Move(Value[1], Buffer^, Min(Length(Value), FldSize));
-      fldINT16, fldINT32, fldUINT16:
+      fldINT16, fldINT32, fldUINT16, fldINT64:
         begin
           if Value = '' then
             FillChar(Buffer^, FldSize, 0)
