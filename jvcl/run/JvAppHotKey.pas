@@ -46,14 +46,14 @@ type
   TJvApplicationHotKey = class(TJvComponent)
   private
     FActive: Boolean;
-    FShortCut: TShortCut;
+    FHotKey: TShortCut;
     FOnHotKey: TNotifyEvent;
     FHandle: THandle;
     FID: Integer;
     FHasRegistered: Boolean;
     FOnHotKeyRegisterFailed: TJvHotKeyRegisterFailed;
     procedure SetActive(Value: Boolean);
-    procedure SetShortCut(Value: TShortCut);
+    procedure SetHotKey(Value: TShortCut);
     function WndProc(var Msg: TMessage): Boolean;
     procedure GetWndProc;
     procedure ResetWndProc;
@@ -64,7 +64,7 @@ type
     destructor Destroy; override;
   published
     property Active: Boolean read FActive write SetActive default False;
-    property HotKey: TShortCut read FShortCut write SetShortCut;
+    property HotKey: TShortCut read FHotKey write SetHotKey;
     property OnHotKey: TNotifyEvent read FOnHotKey write FOnHotKey;
     property OnHotKeyRegisterFailed: TJvHotKeyRegisterFailed
       read FOnHotKeyRegisterFailed write FOnHotKeyRegisterFailed;
@@ -101,15 +101,15 @@ begin
   inherited Destroy;
 end;
 
-procedure TJvApplicationHotKey.SetShortCut(Value: TShortCut);
+procedure TJvApplicationHotKey.SetHotKey(Value: TShortCut);
 var
   B: Boolean;
 begin
-  if FShortCut <> Value then
+  if FHotKey <> Value then
   begin
     B := FActive;
     SetActive(False);
-    FShortCut := Value;
+    FHotKey := Value;
     SetActive(B);
   end;
 end;
@@ -123,17 +123,17 @@ begin
   if FHandle = 0 then
   begin
     FHandle := TWinControl(Owner).Handle;
-    GetHotKey(FShortCut, VirtKey, Mods);
+    GetHotKey(FHotKey, VirtKey, Mods);
     while not RegisterHotKey(FHandle, FID, Mods, VirtKey) do
     begin
       if Assigned(FOnHotKeyRegisterFailed) then
       begin
-        AShortCut := FShortCut;
-        FOnHotKeyRegisterFailed(Self, FShortCut);
+        AShortCut := FHotKey;
+        FOnHotKeyRegisterFailed(Self, FHotKey);
         // make sure we don't get stuck in a loop here:
-        if AShortCut = FShortCut then
+        if AShortCut = FHotKey then
           Exit;
-        GetHotKey(FShortCut, VirtKey, Mods);
+        GetHotKey(FHotKey, VirtKey, Mods);
       end
       else
         Exit;
