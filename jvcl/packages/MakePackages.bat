@@ -22,7 +22,7 @@ cd bin
 
 echo.
 
-pg.exe -t=all -p=..\..\packages -r=Jv -f=%%p%%n%%e%%v%%t
+pg.exe
 
 cd ..\..\packages
 
