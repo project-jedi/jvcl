@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-  <link type="text/css" href="default.css" rel="STYLESHEET">
+  <link rel="STYLESHEET" href="default.css" type="text/css">
   <title>Installation Notes for JVCL</title>
 </head>
 <body>
@@ -45,7 +45,7 @@ you have installed</li>
 C++ Builder). Delete all of the files related to JVCL and JCL</li>
   <li>Delete or rename the top folder where JCL and JVCL is installed</li>
   <li>Start regedit (click <b>Start - Run</b>, type "regedit.exe" and
-hit <b> Enter</b>). Open the key <font face="Courier New" size="2">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
+hit <b> Enter</b>). Open the key <font size="2" face="Courier New">HKEY_CURRENT_USER\Software\Borland\&lt;compiler&gt;\&lt;version&gt;\Palette</font>
 and delete all name/value items in the list related to JVCL.
 (&lt;compiler&gt; is either "Delphi" or "C++Builder", &lt;version&gt;
 is the IDE version you have installed)</li>
@@ -77,7 +77,7 @@ what
 you want!). We recommend but do not require that the JCL and JVCL
 folders should be created as siblings, i.e the
 folder structure looks like this:</p>
-<p><font size="2" face="Courier New">JEDI<br>
+<p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -167,7 +167,7 @@ you want!). </p>
 the same base folder as JVCL, but we do recommend that the JCL and JVCL
 folders are created as siblings, i.e the folder structure should look
 like this:</p>
-<p><font size="2" face="Courier New">JEDI<br>
+<p><font face="Courier New" size="2">JEDI<br>
 &nbsp; JCL<br>
 &nbsp;&nbsp;&nbsp; &lt;JCL subfolders&gt;<br>
 &nbsp; JVCL<br>
@@ -185,7 +185,8 @@ C++&nbsp;Builder that is located in the jvcl\packages folder. Select <b>Project
 annoying bug, C++&nbsp;Builder will complain about a lot of .bpi files.
 This is because the last packages in the list require the first ones to
 be compiled and of course they are not at the beginning. If you know a
-way to turn that off, please let us know. An alternative solution is to
+way to turn that off, please let us know, but in the meantime, simply
+Cancel all those dialogs. An alternative solution is to
 right-click in the <span style="font-weight: bold;">Project Manager</span>
 and select 'Build' for each package in turn. <br>
 A second alternative is to use the provided MakeBCB* batch files. Open
