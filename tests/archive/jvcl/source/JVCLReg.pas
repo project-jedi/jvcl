@@ -219,7 +219,8 @@ begin
 
   {Thumbview.filter editor}
   RegisterPropertyEditor(TypeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
-//  RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletFileProperty);
+  RegisterPropertyEditor(TypeInfo(string), TJvAppletDialog, 'AppletName', TJvAppletNameProperty);
+  RegisterPropertyEditor(TypeInfo(integer), TJvAppletDialog, 'AppletIndex', TJvAppletIndexProperty);
   RegisterPropertyEditor(TypeInfo(TShortCut), TJvComponent, '', TShortCutProperty);
 
 // JvPlugin
@@ -328,7 +329,7 @@ begin
      TJvDisconnectNetwork, TJvPageSetupDialog, TJvPageSetupTitledDialog,
      TJvAddPrinterDialog, TJvFindFilesDialog, TJvFormatDriveDialog,
      TJvColorDialog, TJvOrganizeFavoritesDialog, TJvComputerNameDialog,
-     TJvControlPanelDialog, TJvAppletDialog, TJvChangeIconDialog,
+     TJvAppletDialog, TJvChangeIconDialog,
      TJvShellAboutDialog, TJvRunDialog, TJvObjectPropertiesDialog,
      TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
      TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,

@@ -157,10 +157,6 @@ type
     function Execute: Boolean; override;
   end;
 
-  TJvControlPanelDialog = class(TJvCommonDialogP)
-  public
-    procedure Execute; override;
-  end;
 
   TJvCplInfo = record
      Icon: TIcon;
@@ -188,6 +184,9 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function ValidApplet:boolean;
+    // (p3) NOTE: if AppletName or AppletIndex is invalid, shows the control
+    // panel explorer window instead and returns FALSE
     function Execute: Boolean; override;
     property Count: Integer read FCount;
     property AppletInfo[Index: Integer]: TJvCplInfo read GetAppletInfo;
@@ -587,12 +586,6 @@ begin
   Result := True;
 end;
 
-//=== TJvControlPanelDialog ==================================================
-
-procedure TJvControlPanelDialog.Execute;
-begin
-  ShellExecute(0, 'open', 'Control.exe', nil, nil, SW_SHOWDEFAULT);
-end;
 
 //=== TJvAppletDialog ========================================================
 
@@ -710,12 +703,11 @@ end;
 
 function TJvAppletDialog.Execute: Boolean;
 begin
-  Result := False;
-  if Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count) then
-  begin
-    FAppletFunc(Application.Handle, CPL_DBLCLK, AppletIndex, AppletInfo[AppletIndex].lData);
-    Result := True;
-  end;
+  Result := ValidApplet;
+  if Result then
+    FAppletFunc(Application.Handle, CPL_DBLCLK, AppletIndex, AppletInfo[AppletIndex].lData)
+  else
+    ShellExecute(GetFocus, 'open', 'Control.exe', nil, nil, SW_SHOWDEFAULT);
 end;
 
 //=== TJvComputerNameDialog ==================================================
@@ -1439,6 +1431,11 @@ begin
     Result := DoExecute(@SaveInterceptor)
   else
     Result := inherited Execute;
+end;
+
+function TJvAppletDialog.ValidApplet: boolean;
+begin
+  Result := Assigned(FAppletFunc) and (AppletIndex >= 0) and (AppletIndex < Count)
 end;
 
 initialization

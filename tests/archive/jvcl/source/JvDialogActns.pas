@@ -177,13 +177,13 @@ type
     property Dialog: TJvOrganizeFavoritesDialog read GetDialog;
   end;
 
-  TJvControlPanelAction = class(TJvCommonDialogPAction)
+  TJvControlPanelAction = class(TJvCommonDialogFAction)
   private
-    function GetDialog: TJvControlPanelDialog;
+    function GetDialog: TJvAppletDialog;
   protected
-    function GetDialogClass: TJvCommonDialogPClass; override;
+    function GetDialogClass: TJvCommonDialogFClass; override;
   published
-    property Dialog: TJvControlPanelDialog read GetDialog;
+    property Dialog: TJvAppletDialog read GetDialog;
   end;
 
   TJvOpenFileAction = class(TJvCommonDialogAction)
@@ -437,14 +437,14 @@ end;
 
 //=== TJvControlPanelAction ==================================================
 
-function TJvControlPanelAction.GetDialog: TJvControlPanelDialog;
+function TJvControlPanelAction.GetDialog: TJvAppletDialog;
 begin
-  Result := TJvControlPanelDialog(FDialog);
+  Result := TJvAppletDialog(FDialog);
 end;
 
-function TJvControlPanelAction.GetDialogClass: TJvCommonDialogPClass;
+function TJvControlPanelAction.GetDialogClass: TJvCommonDialogFClass;
 begin
-  Result := TJvControlPanelDialog;
+  Result := TJvAppletDialog;
 end;
 
 //=== TJvOpenFileAction ======================================================

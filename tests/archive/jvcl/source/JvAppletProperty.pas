@@ -39,33 +39,85 @@ uses
   {$ENDIF}
 
 type
-  TJvAppletFileProperty = class(TStringProperty)
+  // (p3) changed to show the "friendly" names in a list: replaces
+  // select value with CPL name
+  TJvAppletNameProperty = class(TStringProperty)
   public
-    procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const Value: String); override;
+  end;
+  TJvAppletIndexProperty = class(TIntegerProperty)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure GetValues(Proc: TGetStrProc); override;
   end;
 
 implementation
+uses
+  SysUtils, JvWinDialogs, JclSysInfo, JvFunctions;
 
-procedure TJvAppletFileProperty.Edit;
 var
-  AppletFileOpen: TOpenDialog;
+  FApplets:TStringlist = nil;
+
+procedure Refresh;
+var S:string;
 begin
-  AppletFileOpen := TOpenDialog.Create(Application);
-  AppletFileOpen.Filename := GetValue;
-  AppletFileOpen.Filter := 'Applet File (*.cpl)|*.cpl';
-  AppletFileOpen.Options := AppletFileOpen.Options + [ofPathMustExist, ofFileMustExist];
-  try
-    if AppletFileOpen.Execute then
-      SetValue(AppletFileOpen.Filename);
-  finally
-    AppletFileOpen.Free;
-  end;
+  if FApplets = nil then
+    FApplets := TStringlist.Create;
+  FApplets.Clear;
+  S := IncludeTrailingPathDelimiter(GetWindowsSystemFolder);
+  GetControlPanelApplets(S,'*.cpl',FApplets,nil);
 end;
 
-function TJvAppletFileProperty.GetAttributes: TPropertyAttributes;
+
+function TJvAppletNameProperty.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paDialog];
+  Result := [paValueList,paSortList,paMultiSelect,paRevertable];
 end;
+
+procedure TJvAppletNameProperty.GetValues(Proc: TGetStrProc);
+var i:integer;
+begin
+  if FApplets = nil then
+    Refresh;
+  for i := 0 to FApplets.Count - 1 do
+    Proc(FApplets.Names[i]);
+end;
+
+procedure TJvAppletNameProperty.SetValue(const Value: String);
+var i:integer;S:string;
+begin
+  if FApplets = nil then
+    Refresh;
+  i := FApplets.IndexOfName(Value);
+  if i >= 0 then
+  begin
+    S := FApplets.Values[Value];
+    inherited SetValue(Copy(S,1,Pos(',',S)-1));
+  end
+  else
+    inherited SetValue(Value);
+end;
+
+{ TJvAppletIndexProperty }
+
+function TJvAppletIndexProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList,paMultiSelect,paRevertable];
+end;
+
+procedure TJvAppletIndexProperty.GetValues(Proc: TGetStrProc);
+var i,j:integer;
+begin
+  j := (GetComponent(0) as TJvAppletDialog).Count;
+  for i := 0 to j - 1 do
+    Proc(IntToStr(i));
+end;
+
+initialization
+  Refresh;
+finalization
+  FreeAndNil(FApplets);
 
 end.
