@@ -2,12 +2,12 @@ program JvAppStoreDemo;
 
 uses
   Forms,
-  MainForm in 'MainForm.pas' {MainFormDlg};
+  JvAppStorageBaseMainFrmU in 'JvAppStorageBaseMainFrmU.pas' {JvAppStorageBaseMainFrm};
 
 {$R *.res}
 
 begin
   Application.Initialize;
-  Application.CreateForm(TMainFormDlg, MainFormDlg);
+  Application.CreateForm(TJvAppStorageBaseMainFrm, JvAppStorageBaseMainFrm);
   Application.Run;
 end.
