@@ -16,9 +16,11 @@ Portions created by Microsoft are Copyright (C) 1998, 1999 Microsoft Corp.
 All Rights Reserved.
 
 Contributor(s):
+Peter Below [100113.1101@compuserve.com] - alternate TJvPageControl.OwnerDraw routine
 Peter Thörnqvist [peter3@peter3.com] added AddressValues property to TJvIPAddress
+Alfi [alioscia_alessi@onde.net] alternate TJvPageControl.OwnerDraw routine
 
-Last Modified: 2002-06-16
+Last Modified: 2002-06-27
 Current Version: 0.50
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
@@ -208,6 +210,7 @@ type
     FOnMouseEnter: TNotifyEvent;
     FOnMouseLeave: TNotifyEvent;
     FOnParentColorChanged: TNotifyEvent;
+    FDrawTabShadow: boolean;
     procedure SetClientBorderWidth(const Value: TBorderWidth);
     procedure TCMAdjustRect(var Message: TMessage); message TCM_ADJUSTRECT;
     procedure MouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
@@ -215,8 +218,11 @@ type
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
     procedure WMLButtonDown(var msg: TWMLButtonDown); message WM_LBUTTONDOWN;
     procedure CMDialogKey(var msg: TWMKey); message CM_DIALOGKEY;
+    procedure SetDrawTabShadow(const Value: boolean);
   protected
     procedure Loaded; override;
+    procedure DrawDefaultTab(TabIndex: Integer; const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
+    procedure DrawShadowTab(TabIndex: Integer; const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
     procedure DrawTab(TabIndex: Integer; const Rect: TRect; Active: Boolean); override;
   public
     constructor Create(AOwner: TComponent); override;
@@ -225,6 +231,7 @@ type
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property ClientBorderWidth: TBorderWidth read FClientBorderWidth write SetClientBorderWidth default
       JvDefPageControlBorder;
+    property DrawTabShadow:boolean read FDrawTabShadow write SetDrawTabShadow;
     property HideAllTabs: Boolean read FHideAllTabs write FHideAllTabs default False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -773,8 +780,8 @@ begin
   FClientBorderWidth := JvDefPageControlBorder;
 end;
 
-procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
-  Active: Boolean);
+procedure TJvPageControl.DrawDefaultTab(TabIndex: Integer;
+  const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
 var
   imageindex: Integer;
   r: TRect;
@@ -784,32 +791,71 @@ begin
     Canvas.Font.Color := clGrayText;
   if Active then
     Canvas.Font.Style := [fsBold];
-  if Assigned(OnDrawTab) then
-    inherited
-  else
+  if DefaultDraw then
+    Exit;
+  r := Rect;
+  Canvas.Fillrect(r);
+  imageindex := GetImageIndex(tabindex);
+  if (imageindex >= 0) and Assigned(Images) then
   begin
-    r := Rect;
-    Canvas.Fillrect(r);
-    imageindex := GetImageIndex(tabindex);
-    if (imageindex >= 0) and Assigned(Images) then
-    begin
-      SaveDC(canvas.handle);
-      images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
-        imageindex,
-        Pages[TabIndex].enabled);
-      // images.draw fouls the canvas colors if it draws
-      // the image disabled, thus the SaveDC/RestoreDC
-      RestoreDC(canvas.handle, -1);
-      R.Left := R.Left + images.Width + 4;
-    end;
-    S := Pages[TabIndex].Caption;
-    InflateRect(r, -2, -2);
-    DrawText(Canvas.handle,
-      PChar(S),
-      Length(S),
-      r,
-      DT_SINGLELINE or DT_LEFT or DT_TOP);
+    SaveDC(canvas.handle);
+    images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
+      imageindex,
+      Pages[TabIndex].enabled);
+    // images.draw fouls the canvas colors if it draws
+    // the image disabled, thus the SaveDC/RestoreDC
+    RestoreDC(canvas.handle, -1);
+    R.Left := R.Left + images.Width + 4;
   end;
+  S := Pages[TabIndex].Caption;
+  InflateRect(r, -2, -2);
+  // (p3) TODO: draw rotated when TabPosition in tbLeft,tbRight
+  DrawText(Canvas.Handle,PChar(S),Length(S),r,DT_SINGLELINE or DT_LEFT or DT_TOP);
+end;
+
+procedure TJvPageControl.DrawShadowTab(TabIndex: Integer;
+  const Rect: TRect; Active: Boolean;DefaultDraw:boolean);
+var ImageIndex: Integer;
+    R: TRect;
+    S: string;
+begin
+  //inherited;
+  if not Pages[TabIndex].Enabled then
+    Canvas.Font.Color := clGrayText;
+  if not Active then
+  begin
+    with Canvas do
+    begin
+      Brush.Color := clInactiveCaption;
+      Font.Color :=  clInactiveCaptionText;
+    end;
+  end;
+  if DefaultDraw then
+    Exit;
+  R := Rect;
+  Canvas.Fillrect(R);
+  ImageIndex := GetImageIndex(TabIndex);
+  if (ImageIndex >= 0) and Assigned(Images) then
+  begin
+    SaveDC(canvas.handle);
+    Images.Draw(Canvas, Rect.Left + 4, Rect.Top + 2,
+      ImageIndex,
+      Pages[TabIndex].Enabled);
+    RestoreDC(Canvas.Handle, -1);
+    R.Left := R.Left + Images.Width + 4;
+  end;
+  S := Pages[TabIndex].Caption;
+  InflateRect(R, -2, -2);
+  DrawText(Canvas.Handle,PChar(S),Length(S),R,DT_SINGLELINE or DT_LEFT or DT_TOP);
+end;
+
+procedure TJvPageControl.DrawTab(TabIndex: Integer; const Rect: TRect;
+  Active: Boolean);
+begin
+  if DrawTabShadow then
+    DrawShadowTab(TabIndex,Rect,Active,Assigned(OnDrawTab))
+  else
+    DrawDefaultTab(TabIndex,Rect,Active,Assigned(OnDrawTab));
 end;
 
 procedure TJvPageControl.Loaded;
@@ -849,6 +895,15 @@ begin
   begin
     FClientBorderWidth := Value;
     RecreateWnd;
+  end;
+end;
+
+procedure TJvPageControl.SetDrawTabShadow(const Value: boolean);
+begin
+  if FDrawTabShadow <> Value then
+  begin
+    FDrawTabShadow := Value;
+    Invalidate;
   end;
 end;
 
