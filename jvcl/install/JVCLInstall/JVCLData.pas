@@ -516,6 +516,11 @@ begin
       SetLength(S, i - 1);
     end;
     FDxgettextDir := ExtractFileDir(S);
+    if not FileExists(FDxgettextDir + '\msgfmt.exe') then
+    begin
+      FIsDxgettextInstalled := False;
+      FDxgettextDir := '';
+    end;
   end;
 end;
 
