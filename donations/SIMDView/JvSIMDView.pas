@@ -79,6 +79,8 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormDestroy(Sender: TObject);
     procedure Refresh;
+    procedure ThreadEvaluate(const ExprStr, ResultStr: string;
+      ReturnCode: Integer);
     procedure Close;
   end;
 
@@ -235,7 +237,6 @@ begin
 
   FSSEAction:=TAction.Create(nil);
   FSSEAction.Caption := RsSSE;
-  FSSEAction.Shortcut:=Shortcut(Ord('D'),[ssCtrl,ssAlt]);
   FSSEAction.Visible:=True;
   FSSEAction.OnExecute:=ActionExecute;
   FSSEAction.OnUpdate:=ActionUpdate;
@@ -244,8 +245,9 @@ begin
   FSSEAction.Name:='DebugSSECommand';
   FSSEAction.ImageIndex := FNTAServices.ImageList.AddIcon(FIcon);
 
-  FSSEMenuItem:=TMenuItem.Create(nil);
-  FSSEMenuItem.Action:=FSSEAction;
+  FSSEMenuItem := TMenuItem.Create(nil);
+  FSSEMenuItem.Action := FSSEAction;
+  FSSEMenuItem.ShortCut := Shortcut(Ord('D'),[ssCtrl,ssAlt]);
 
   IDEMenu:=FNTAServices.MainMenu;
 
@@ -350,6 +352,13 @@ begin
     then FForm.GetThreadValues;
 end;
 
+procedure TIDESSEWizard.ThreadEvaluate(const ExprStr,
+  ResultStr: string; ReturnCode: Integer);
+begin
+  if Assigned(FForm)
+    then FForm.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
+end;
+
 { TDebuggerNotifier }
 
 procedure TDebuggerNotifier.BreakpointAdded(Breakpoint: IOTABreakpoint);
@@ -398,7 +407,7 @@ procedure TDebuggerNotifier.EvaluteComplete(const ExprStr,
   ResultStr: string; CanModify: Boolean; ResultAddress,
   ResultSize: LongWord; ReturnCode: Integer);
 begin
-  ShowMessage('Evaluate complete');
+  Owner.ThreadEvaluate(ExprStr,ResultStr,ReturnCode);
 end;
 
 function TDebuggerNotifier.FindProcessReference(
