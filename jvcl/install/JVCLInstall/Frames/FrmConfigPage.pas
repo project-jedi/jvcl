@@ -62,6 +62,7 @@ type
     CheckBoxCompileJclDcp: TCheckBox;
     CheckBoxVerbose: TCheckBox;
     CheckBoxGenerateMapFiles: TCheckBox;
+    CheckBoxUnitVersioning: TCheckBox;
     procedure CheckBoxDeveloperInstallClick(Sender: TObject);
     procedure CheckBoxXPThemingClick(Sender: TObject);
     procedure ComboBoxTargetIDEChange(Sender: TObject);
@@ -283,6 +284,7 @@ begin
     CheckBoxDxgettextSupport.Checked := JVCLConfig.Enabled['USE_DXGETTEXT'];
     CheckBoxRegisterJvGif.Checked := JVCLConfig.Enabled['USE_JV_GIF'];
     CheckBoxUseJVCL.Checked := JVCLConfig.Enabled['USEJVCL'];
+    CheckBoxUnitVersioning.Checked := JVCLConfig.Enabled['UNITVERSIONING'];
   end;
 end;
 
@@ -324,6 +326,7 @@ begin
     JVCLConfig.Enabled['USE_DXGETTEXT'] := CheckBoxDxgettextSupport.Checked;
     JVCLConfig.Enabled['USE_JV_GIF'] := CheckBoxRegisterJvGif.Checked;
     JVCLConfig.Enabled['USEJVCL'] := CheckBoxUseJVCL.Checked;
+    JVCLConfig.Enabled['UNITVERSIONING'] := CheckBoxUnitVersioning.Checked;
   end;
 end;
 
@@ -434,7 +437,6 @@ procedure TFrameConfigPage.FrameDirEditBrowseHPPBtnJCLDirBrowseClick(
   Sender: TObject);
 begin
   FrameDirEditBrowseHPP.BtnDirBrowseClick(Sender);
-
 end;
 
 end.
