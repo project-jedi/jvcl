@@ -45,6 +45,9 @@ type
     SetDefault
   );
 
+  TTableFieldInfo = (fPrimary, fForeign, fIndice, fUnique);
+  TTableFieldInfos = set of TTableFieldInfo;
+
 const
   BreakLine = #13#10;
   NewLine = BreakLine + BreakLine;
@@ -103,7 +106,7 @@ const
     'IDX.RDB$INDEX_INACTIVE FROM RDB$INDICES IDX '+
     'LEFT JOIN RDB$INDEX_SEGMENTS ISG ON ISG.RDB$INDEX_NAME = IDX.RDB$INDEX_NAME '+
     'LEFT JOIN RDB$RELATION_CONSTRAINTS C ON IDX.RDB$INDEX_NAME = C.RDB$INDEX_NAME '+
-    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND (IDX.RDB$INDEX_TYPE = 0) AND '+
+    'WHERE (C.RDB$CONSTRAINT_NAME IS NULL) AND ((IDX.RDB$INDEX_TYPE = 0) OR (IDX.RDB$INDEX_TYPE IS NULL)) AND '+
     '(IDX.RDB$RELATION_NAME = ?) ORDER BY IDX.RDB$RELATION_NAME, '+
     'IDX.RDB$INDEX_NAME, ISG.RDB$FIELD_POSITION';
 
@@ -119,7 +122,7 @@ const
     '(A.RDB$INDEX_NAME=E.RDB$INDEX_NAME) AND '+
     '(D.RDB$FIELD_POSITION = E.RDB$FIELD_POSITION) ' +
     'AND (A.RDB$RELATION_NAME = ?) '+
-    'ORDER BY A.RDB$RELATION_NAME, A.RDB$CONSTRAINT_NAME, D.RDB$FIELD_POSITION, E.RDB$FIELD_POSITION';
+    'ORDER BY A.RDB$CONSTRAINT_NAME, A.RDB$RELATION_NAME, D.RDB$FIELD_POSITION, E.RDB$FIELD_POSITION';
 
   QRYCheck =
     'SELECT A.RDB$CONSTRAINT_NAME, C.RDB$TRIGGER_SOURCE '+
@@ -247,6 +250,7 @@ type
     property AsDDLNode: string read GetAsDDLNode;
     property NodeCount: Integer read FNodeItemsCount;
     property Nodes[const Index: Integer]: TNodeItem read GetNodes;
+    property Parent: TMetaNode read FOwner;
   end;
 
   TMetaGenerator = class(TMetaNode)
@@ -320,11 +324,10 @@ type
     FDefaultValue: string;
     FNotNull: boolean;
     FDomain: Integer;
+    FInfos: TTableFieldInfos;
     procedure LoadFromQuery(Q, C: TJvUIBStatement); override;
     procedure LoadFromStream(Stream: TStream); override;
     function GetDomain: TMetaDomain;
-    function GetIsForeign: boolean; virtual;
-    function GetIsPrimary: boolean; virtual;
   public
     class function NodeType: TMetaNodeType; override;
     procedure SaveToDDLNode(Stream: TStringStream); override;
@@ -332,15 +335,11 @@ type
     property DefaultValue: string read FDefaultValue;
     property NotNull: boolean read FNotNull;
     property Domain: TMetaDomain read GetDomain;
-    property IsPrimary: boolean read GetIsPrimary;
-    property IsForeign: boolean read GetIsForeign;
+    property FieldInfos: TTableFieldInfos read FInfos;
   end;
 
 
   TMetaDomain = class(TMetaTableField)
-  private
-    function GetIsForeign: boolean; override;
-    function GetIsPrimary: boolean; override;
   protected
     property Domain; // hidden
   public
@@ -376,6 +375,7 @@ type
   TMetaUnique = class(TMetaConstraint)
   public
     class function NodeClass: string; override;
+    class function NodeType: TMetaNodeType; override;
     procedure SaveToDDL(Stream: TStringStream); override;
   end;
 
@@ -682,11 +682,11 @@ const
   OIDTable     = 1;
     OIDTableFields   = 0;
     OIDPrimary       = 1;
-    OIDUnique        = 2;
-    OIDIndex         = 3;
-    OIDForeign       = 4;
-    OIDCheck         = 5;
-    OIDTableTrigger  = 6;
+    OIDForeign       = 2;
+    OIDTableTrigger  = 3;
+    OIDUnique        = 4;
+    OIDIndex         = 5;
+    OIDCheck         = 6;
   OIDView      = 2;
     OIDViewFields    = 0;
     OIDViewTrigers   = 1;
@@ -916,11 +916,11 @@ begin
   inherited;
   AddClass(TMetaTableField);
   AddClass(TMetaPrimary);
+  AddClass(TMetaForeign);
+  AddClass(TMetaTrigger);
   AddClass(TMetaUnique);
   AddClass(TMetaIndex);
-  AddClass(TMetaForeign);
   AddClass(TMetaCheck);
-  AddClass(TMetaTrigger);
 end;
 
 function TMetaTable.FindFieldName(const name: String): TMetaTableField;
@@ -976,7 +976,8 @@ begin
   QFields.Open;
   while not QFields.Eof do
   begin
-    TMetaTableField.Create(Self, OIDTableFields).LoadFromQuery(QFields, QCharset);
+    with TMetaTableField.Create(Self, OIDTableFields) do
+      LoadFromQuery(QFields, QCharset);
     QFields.Next;
   end;
 
@@ -1005,6 +1006,7 @@ begin
       begin
         SetLength(FFields, FieldsCount + 1);
         FFields[FieldsCount - 1] := FindFieldIndex(Trim(QPrimary.Fields.AsString[1]));
+        include(Fields[FieldsCount - 1].FInfos, fUnique);
       end;
     QPrimary.Next;
   end;
@@ -1030,6 +1032,7 @@ begin
       begin
         SetLength(FFields, FieldsCount + 1);
         FFields[FieldsCount - 1] := FindFieldIndex(Trim(QIndex.Fields.AsString[1]));
+        include(Fields[FieldsCount - 1].FInfos, fIndice);
       end;
     QIndex.Next;
   end;
@@ -1339,7 +1342,6 @@ procedure TMetaDataBase.LoadFromDatabase(Transaction: TJvUIBTransaction);
 var
   i: Integer;
   constr, cForField, str: string;
-  cforupdate: boolean;
 
   QNames, QFields, QCharset, QPrimary,
   QIndex, QForeign, QCheck, QTrigger: TJvUIBStatement;
@@ -1413,7 +1415,6 @@ begin
       QForeign.Open;
       constr := '';
       cForField := '';
-      cforupdate := false;
       while not QForeign.Eof do
       begin
         if (constr <> Trim(QForeign.Fields.AsString[0])) then // new
@@ -1423,8 +1424,11 @@ begin
             FName := Trim(QForeign.Fields.AsString[0]);
             constr := FName;
             FForTable := FindTableIndex(Trim(QForeign.Fields.AsString[3]));
+            if 'TABLE1' = Trim(QForeign.Fields.AsString[3]) then
+              beep;
             SetLength(FFields, 1);
             FFields[0] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
+            include(Tables[i].Fields[FFields[0]].FInfos, fForeign);
             SetLength(FForFields, 1);
             FForFields[0] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
             cForField := ForFields[0].Name;
@@ -1444,20 +1448,13 @@ begin
           end;
         end else
         with Tables[i].Foreign[Tables[i].ForeignCount - 1] do
-          if (cforfield = Trim(QForeign.Fields.AsString[4])) then // add field
-          begin
-            if not cforupdate then
-            begin
-              SetLength(FFields, Length(FFields)+1);
-              FFields[FieldsCount-1] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
-            end;
-          end else  // add foreign field
-          begin
-            SetLength(FForFields, Length(FForFields)+1);
-            FForFields[ForFieldsCount-1] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
-            cForField := ForFields[ForFieldsCount-1].Name;
-            cforupdate := true;
-          end;
+        begin
+          SetLength(FFields, Length(FFields)+1);
+          FFields[FieldsCount-1] := Tables[i].FindFieldIndex(Trim(QForeign.Fields.AsString[5]));
+          include(Tables[i].Fields[FieldsCount-1].FInfos, fForeign);
+          SetLength(FForFields, Length(FForFields)+1);
+          FForFields[ForFieldsCount-1] := ForTable.FindFieldIndex(Trim(QForeign.Fields.AsString[4]));
+        end;
         QForeign.Next;
       end;
     end;
@@ -1753,7 +1750,15 @@ begin
   begin
     ReadString(Stream, FName);
     for i := 0 to i - 1 do
+    begin
       Stream.Read(FFields[i], SizeOf(FFields[i]));
+      case NodeType of
+        MetaForeign: include(TMetaTable(FOwner).Fields[FFields[i]].FInfos, fForeign);
+        MetaIndex  : include(TMetaTable(FOwner).Fields[FFields[i]].FInfos, fIndice);
+        MetaPrimary: include(TMetaTable(FOwner).Fields[FFields[i]].FInfos, fPrimary);
+        MetaUnique : include(TMetaTable(FOwner).Fields[FFields[i]].FInfos, fPrimary);
+      end;
+    end;
   end;
 end;
 
@@ -1781,6 +1786,11 @@ end;
 class function TMetaUnique.NodeClass: string;
 begin
   Result := 'Unique';
+end;
+
+class function TMetaUnique.NodeType: TMetaNodeType;
+begin
+  Result := MetaUnique;
 end;
 
 procedure TMetaUnique.SaveToDDL(Stream: TStringStream);
@@ -1814,6 +1824,7 @@ begin
   begin
     Q.Fields.GetRecord(i);
     FFields[i] := TMetaTable(FOwner).FindFieldIndex(Trim(Q.Fields.AsString[1]));
+    include(TMetaTable(FOwner).Fields[FFields[i]].FInfos, fPrimary);
   end;
 end;
 
@@ -2193,16 +2204,6 @@ end;
 
 { TMetaDomain }
 
-function TMetaDomain.GetIsForeign: boolean;
-begin
-  Result := False;
-end;
-
-function TMetaDomain.GetIsPrimary: boolean;
-begin
-  Result := False;
-end;
-
 class function TMetaDomain.NodeClass: string;
 begin
   Result := 'Domain';
@@ -2503,32 +2504,6 @@ begin
     Result := nil;
 end;
 
-function TMetaTableField.GetIsForeign: boolean;
-var i, j: Integer;
-begin
-  for i := 0 to TMetaTable(FOwner).ForeignCount - 1 do
-    for j := 0 to TMetaTable(FOwner).Foreign[i].FieldsCount - 1 do
-    if TMetaTable(FOwner).Foreign[i].Fields[j] = Self then
-      begin
-        Result := True;
-        Exit;
-      end;
-  Result := False;
-end;
-
-function TMetaTableField.GetIsPrimary: boolean;
-var i, j: Integer;
-begin
-  for i := 0 to TMetaTable(FOwner).PrimaryCount - 1 do
-    for j := 0 to TMetaTable(FOwner).Primary[i].FieldsCount - 1 do
-    if TMetaTable(FOwner).Primary[i].Fields[j] = Self then
-      begin
-        Result := True;
-        Exit;
-      end;
-  Result := False;
-end;
-
 procedure TMetaTableField.LoadFromQuery(Q, C: TJvUIBStatement);
 begin
   inherited;
@@ -2543,7 +2518,7 @@ begin
         System.Length(FDefaultValue) - 8);
   end else
     FDefaultValue := '';
-    
+
   FDomain := -1;
   if not (self is TMetaDomain) then
     if not (Q.Fields.IsNull[10] or (Copy(Q.Fields.AsString[10],1,4) = 'RDB$')) then
@@ -2624,7 +2599,7 @@ end;
 procedure TMetaField.SaveToDDL(Stream: TStringStream);
 begin
   Stream.WriteString(FName + ' ');
-  inherited;  
+  inherited;
 end;
 
 { TMetaUDFField }

@@ -74,14 +74,12 @@ type
   {$ENDIF}
 {$ENDIF}
 
-{$IFNDEF FPC}
   UCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
   {$IFNDEF FPC}{$NODEFINE UCHAR}{$ENDIF}
   USHORT = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Word;
   {$IFNDEF FPC}{$NODEFINE USHORT}{$ENDIF}
   ULONG = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Cardinal;
   {$IFNDEF FPC}{$NODEFINE ULONG}{$ENDIF}
-{$ENDIF}
   SCHAR  = {$IFDEF TYPE_IDENTITY}type {$ENDIF}char;
   {$IFNDEF FPC}{$NODEFINE SCHAR}{$ENDIF}
   SSHORT = {$IFDEF TYPE_IDENTITY}type {$ENDIF}Smallint;
@@ -2114,6 +2112,10 @@ const
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_db_impl_sinixz} {$ENDIF}
 {$ENDIF}
 
+{$IFDEF FB15_UP}
+  isc_info_db_impl_linux_sparc   = 65;
+{$ENDIF}
+
   isc_info_db_impl_isc_a           = isc_info_db_impl_isc_apl_68K;
   {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_info_db_impl_isc_a} {$ENDIF}
   isc_info_db_impl_isc_u           = isc_info_db_impl_isc_vax_ultr;
@@ -2644,6 +2646,11 @@ const
     isc_spb_sts_table          = $14;
     {$IFDEF USE_IBASE_H} {$EXTERNALSYM isc_spb_sts_table} {$ENDIF}
   {$ENDIF}
+{$ENDIF}
+
+{$IFDEF FB15_UP}
+  isc_spb_sts_record_versions	= $20;
+  isc_spb_sts_table			      = $40;
 {$ENDIF}
 
 (*************************

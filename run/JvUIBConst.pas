@@ -231,7 +231,7 @@ resourceString
   EUIB_INDEXERROR          = 'Índice fuera de límite (%d)';
   EUIB_SIZENAME            = 'Nombre demasiado largo (%s)';
   EUIB_MUSTBEPREPARED      = 'El query debe prepararse primero.';
-  EUIB_MUSTBEOPEN          = 'El query debe ser abierto primero.;
+  EUIB_MUSTBEOPEN          = 'El query debe ser abierto primero.';
   EUIB_EXPLICITTRANS       = 'La transaccisn debe ser iniciada explmcitamente.';
   EUIB_EXCEPTIONNOTFOUND   = 'Excepcion con nombre %s, no fue encontrada.';
   EUIB_EXPTIONREGISTERED   = 'Excepcion: %d ya esta registrada.';

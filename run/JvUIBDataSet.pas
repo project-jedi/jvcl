@@ -33,7 +33,7 @@ unit JvUIBDataSet;
 interface
 
 uses
-  SysUtils, Classes, Db, JVUIB, JVUIBLib, JvUIBase, JvUIBConst;
+  SysUtils, Classes, Db, JvUIB, JvUIBLib, JvUIBase, JvUIBConst;
 
 type
 
@@ -69,8 +69,10 @@ type
     function GetDatabase: TJvUIBDataBase;
     function GetParams: TSQLParams;
     function GetInternalFields: TSQLResult;
+    function GetBufferChunks: Cardinal;
+    procedure SetBufferChunks(const Value: Cardinal);
   protected
-
+    property BufferChunks: Cardinal read GetBufferChunks write SetBufferChunks default 1000;
     procedure InternalOpen; override;
     procedure InternalClose; override;
     function IsCursorOpen: Boolean; override;
@@ -99,8 +101,10 @@ type
     procedure InternalInitFieldDefs; override;
     function GetCanModify: Boolean; override;
 
+    {$IFNDEF FPC}
     procedure SetActive(Value: Boolean); override;
-
+    {$ENDIF}
+    
     property Transaction: TJvUIBTransaction read GetTransaction write SetTransaction;
     property Database: TJvUIBDataBase read GetDatabase write SetDatabase;
     property UniDirectional: boolean read  GetUniDirectional write SetUniDirectional default False;
@@ -111,15 +115,15 @@ type
     property Params: TSQLParams read GetParams;
 
 {$IFNDEF COMPILER5_UP}
-    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; override;
+    function BCDToCurr(BCD: Pointer; var Curr: Currency): Boolean; {$IFNDEF FPC}override;{$ENDIF}
     function CurrToBCD(const Curr: Currency; BCD: Pointer; Precision,
-      Decimals: Integer): Boolean; override;
+      Decimals: Integer): Boolean; {$IFNDEF FPC}override;{$ENDIF}
 {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetFieldData(Field: TField; Buffer: Pointer): Boolean; overload; override;
-    function GetFieldData(FieldNo: Integer; Buffer: Pointer): Boolean; overload; override;
+    function GetFieldData(FieldNo: Integer; Buffer: Pointer): Boolean; overload;{$IFNDEF FPC} override; {$ENDIF}
     function CreateBlobStream(Field: TField; Mode: TBlobStreamMode): TStream; override;
     procedure Execute;
     procedure ExecSQL;
@@ -142,8 +146,10 @@ type
   end;
 
   TJvUIBDataSet = class(TJvUIBCustomDataSet)
-  published
+  public
     property Params;
+  published
+    property BufferChunks;
     property Transaction;
     property Database;
 {$IFDEF COMPILER6_UP}
@@ -331,7 +337,7 @@ begin
   with PUIBBookMark(Buffer + FRecordSize)^ do
   begin
     case Result of
-      grOK: BookmarkFlag := bfCurrent;
+      grOK:  BookmarkFlag := bfInserted;
       grBOF: BookmarkFlag := bfBOF;
       grEOF: BookmarkFlag := bfEOF;
     end;
@@ -433,15 +439,30 @@ end;
 
 procedure TJvUIBCustomDataSet.InternalInitFieldDefs;
 var i: Integer;
+{$IFDEF FPC}
+    aName    : string;
+    FieldNo  : Integer;
+    Required : Boolean;
+    DataType : TFieldType;
+    Size     : Word;
+    Precision: Integer;
+{$ENDIF}
 begin
   FStatement.Prepare;
+  {$IFNDEF FPC}
   FieldDefs.BeginUpdate;
+  {$ENDIF}
   FieldDefs.Clear;
   try
     for i := 0 to FStatement.Fields.FieldCount - 1 do
-    with FieldDefs.AddFieldDef, FStatement.Fields do
+    with {$IFNDEF FPC}FieldDefs.AddFieldDef,{$ENDIF}FStatement.Fields do
     begin
+      {$IFNDEF FPC}
       Name := AliasName[i];
+      {$ELSE}
+      AName := AliasName[i];
+      Precision:=-1;
+      {$ENDIF}
       FieldNo := i;
       Required := not IsNullable[i];
       case FieldType[i] of
@@ -516,9 +537,19 @@ begin
       else
         DataType := ftUnknown;
       end;
-    end;
+      
+      {$IFDEF FPC}
+      //Add new defs
+      FieldDefs.Add(aName,DataType,Size,Required);
+      //If Precision is specified, update the definition
+      if Precision<>-1 then
+          FieldDefs.Items[FieldNo].Precision:=Precision;
+      {$ENDIF}
+    end; //With
   finally
+    {$IFNDEF FPC}
     FieldDefs.EndUpdate;
+    {$ENDIF}
   end;
 end;
 
@@ -680,12 +711,14 @@ begin
   FStatement.ExecSQL;
 end;
 
+{$IFNDEF FPC}
 procedure TJvUIBCustomDataSet.SetActive(Value: Boolean);
 begin
   inherited;
   if not Value then
     FStatement.Close(FOnClose);
 end;
+{$ENDIF}
 
 {$IFNDEF COMPILER5_UP}
 function TJvUIBCustomDataSet.BCDToCurr(BCD: Pointer;
@@ -791,6 +824,16 @@ end;
 function TJvUIBCustomDataSet.GetInternalFields: TSQLResult;
 begin
   Result := FStatement.Fields;
+end;
+
+function TJvUIBCustomDataSet.GetBufferChunks: Cardinal;
+begin
+  Result := FStatement.BufferChunks;
+end;
+
+procedure TJvUIBCustomDataSet.SetBufferChunks(const Value: Cardinal);
+begin
+  FStatement.BufferChunks := Value;
 end;
 
 end.

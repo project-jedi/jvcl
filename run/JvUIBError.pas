@@ -1211,6 +1211,8 @@ const
 {$IFDEF FB15_UP}
   isc_dsql_invalid_label                = 336003087;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_invalid_label} {$ENDIF}
+  isc_dsql_datatypes_not_comparable     = 336003088;
+  {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_dsql_datatypes_not_comparable} {$ENDIF}
 {$ENDIF}
 
 {$IFDEF IB65_UP}
@@ -1578,7 +1580,7 @@ const
 {$ENDIF FB103}
 
 {$IFDEF FB15}
-  isc_err_max                           = 712;
+  isc_err_max                           = 713;
   {$IFDEF USE_IBERROR_H} {$EXTERNALSYM isc_err_max} {$ENDIF}
 {$ENDIF FB15}
 
