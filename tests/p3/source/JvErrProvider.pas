@@ -44,26 +44,27 @@ uses
   Messages, Classes, Controls, Graphics, JvComponent;
 
 type
-  IErrorProviderClient = interface;
+  IJvErrorProviderClient = interface;
 
-  // IErrorProvider is implemented by the TJvErrorProvider
-  IErrorProvider = interface
-  ['{5BCB5404-9C17-4CC6-96EC-46567CA19A12}']
-    procedure SetClientError(const AClient:IErrorProviderClient);
+  // IJvErrorProvider is implemented by the TJvErrorProvider
+  IJvErrorProvider = interface
+    ['{5BCB5404-9C17-4CC6-96EC-46567CA19A12}']
+    procedure SetError(AControl:TControl;const AErrorMessage:WideString);
+    procedure SetClientError(const AClient: IJvErrorProviderClient);
   end;
 
-  // IErrorProviderClient should be implemented by controls that wants to be able
+  // IJvErrorProviderClient should be implemented by controls that wants to be able
   // to update the error provider through it's own properties
-  IErrorProviderClient = interface
-  ['{9871F250-631E-4119-B073-71B28711C9B8}']
-    procedure setErrorProvider(const Value:IErrorProvider);
-    function getErrorProvider:IErrorProvider;
-    function getControl:TControl;
-    procedure setErrorMessage(const Value:WideString);
-    function getErrorMessage:WideString;
+  IJvErrorProviderClient = interface
+    ['{9871F250-631E-4119-B073-71B28711C9B8}']
+    procedure setErrorProvider(const Value: IJvErrorProvider);
+    function getErrorProvider: IJvErrorProvider;
+    function getControl: TControl;
+    procedure setErrorMessage(const Value: WideString);
+    function getErrorMessage: WideString;
 
-    property ErrorProvider:IErrorProvider read getErrorProvider write setErrorProvider;
-    property ErrorMessage:WideString read getErrorMessage write setErrorMessage;
+    property ErrorProvider: IJvErrorProvider read getErrorProvider write setErrorProvider;
+    property ErrorMessage: WideString read getErrorMessage write setErrorMessage;
   end;
 
   TJvErrorBlinkStyle = (ebsAlwaysBlink, ebsBlinkIfDifferentError, ebsNeverBlink);
@@ -87,9 +88,7 @@ type
     procedure Paint; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
   public
-
     function CalcBoundsRect: TRect;
-
     property Imagelist: TCustomImageList read FImageList write SetImageList;
     property ImageIndex: integer read FImageIndex write SetImageIndex;
     property Control: TControl read FControl write SetControl;
@@ -106,7 +105,7 @@ type
     property Height default 16;
   end;
 
-  TJvErrorProvider = class(TJvComponent, IErrorProvider)
+  TJvErrorProvider = class(TJvComponent, IUnknown, IJvErrorProvider)
   private
     FUpdateCount: integer;
     FControls: TList;
@@ -116,6 +115,7 @@ type
     FBlinkStyle: TJvErrorBlinkStyle;
     FChangeLink: TChangeLink;
     FImageIndex: integer;
+    FDefaultImage:TImageList;
     function GetError(AControl: TControl): string;
     function GetImageAlignment(AControl: TControl): TJvErrorImageAlignment;
     function GetImagePadding(AControl: TControl): integer;
@@ -133,8 +133,10 @@ type
     function GetControl(Index: integer): TJvErrorControl;
     function GetCount: integer;
   protected
-    { IErrorProvider }
-    procedure SetClientError(const AClient:IErrorProviderClient);
+    { IJvErrorProvider }
+    procedure IJvErrorProvider.SetError = ProviderSetError;
+    procedure ProviderSetError(AControl:TControl;const ErrorMessage:WideString);
+    procedure SetClientError(const AClient: IJvErrorProviderClient);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     function IndexOf(AControl: TControl): integer;
     function Add(AControl: TControl): integer;
@@ -196,8 +198,12 @@ type
   end;
 
 implementation
+uses
+  CommCtrl;
+
 const
   cDefBlinkCount = 5;
+{$R JvErrProvider.res}
 
 type
   TJvBlinkThreadEvent = procedure(Sender: TObject; Erase: boolean) of object;
@@ -225,6 +231,7 @@ begin
   begin
     ci := TJvErrorControl.Create(self);
     ci.Control := AControl;
+    //    ci.Name := ci.Control.Name + '_ErrorControl';
     Result := FControls.Add(ci);
   end;
 end;
@@ -232,6 +239,9 @@ end;
 constructor TJvErrorProvider.Create(AComponent: TComponent);
 begin
   inherited;
+  FDefaultImage := TImageList.CreateSize(16,16);
+  ImageList_AddIcon(FDefaultImage.Handle,
+    LoadImage(hInstance,PChar('JVERRORPROVIDERICON') , IMAGE_ICON, 16, 16, 0));
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
   FControls := TList.Create;
@@ -251,6 +261,7 @@ begin
   ClearErrors;
   FControls.Free;
   FChangeLink.Free;
+  FDefaultImage.Free;
   inherited;
 end;
 
@@ -367,21 +378,21 @@ begin
       else
       begin
         ei := Controls[i];
-        if ((ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError)) or (BlinkStyle = ebsAlwaysBlink) then
+        if ((ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError))
+          or (BlinkStyle = ebsAlwaysBlink) then
         begin
+          ei.Error := Value;
           ei.BlinkCount := cDefBlinkCount;
+          ei.Visible := (csDesigning in ComponentState); 
           if (FUpdateCount = 0) and (FBlinkThread = nil) then
-          begin
-            ei.Visible := false;
             StartThread;
-          end;
         end
         else if (BlinkStyle = ebsNeverBlink) then
         begin
           ei.BlinkCount := 0;
-          ei.Visible := Value <> '';
+          ei.Error := Value;
+          ei.Visible := (Value <> '');
         end;
-        ei.Error := Value;
       end;
       UpdateControls;
     end
@@ -425,12 +436,22 @@ begin
 end;
 
 procedure TJvErrorProvider.UpdateControls;
-var i: integer;
+var i,ii: integer;IL:TCustomImageList;
 begin
+  if ImageList <> nil then
+  begin
+    IL := ImageList;
+    ii := ImageIndex;
+  end
+  else
+  begin
+    IL := FDefaultImage;
+    ii := 0;
+  end;
   for i := 0 to Count - 1 do
   begin
-    Controls[i].ImageList := ImageList;
-    Controls[i].ImageIndex := ImageIndex;
+    Controls[i].ImageList := IL;
+    Controls[i].ImageIndex := ii;
   end;
 end;
 
@@ -531,10 +552,16 @@ begin
   Result := FControls.Count;
 end;
 
-procedure TJvErrorProvider.SetClientError(const AClient: IErrorProviderClient);
+procedure TJvErrorProvider.SetClientError(const AClient: IJvErrorProviderClient);
 begin
   if AClient <> nil then
-    SetError(AClient.getControl,AClient.ErrorMessage);
+    SetError(AClient.getControl, AClient.ErrorMessage);
+end;
+
+procedure TJvErrorProvider.ProviderSetError(AControl: TControl;
+  const ErrorMessage: WideString);
+begin
+  SetError(AControl,ErrorMessage);
 end;
 
 { TJvErrorControl }
@@ -575,7 +602,7 @@ begin
     case ImageAlignment of
       eiaBottomLeft:
         begin
-          // must qualify Result fully since Delphi confuses the TRect with the controls Top/Left properties 
+          // must qualify Result fully since Delphi confuses the TRect with the controls Top/Left properties
           Result.Right := Control.Left - 1;
           Result.Left := Result.Right - ImageList.Width;
           Result.Bottom := Control.Top + Control.Height;
@@ -664,8 +691,8 @@ begin
     if FImageList <> nil then
       BoundsRect := CalcBoundsRect
     else
-      SetBounds(Left,Top,16,16);
-//    Invalidate;
+      SetBounds(Left, Top, 16, 16);
+    //    Invalidate;
   end;
 end;
 

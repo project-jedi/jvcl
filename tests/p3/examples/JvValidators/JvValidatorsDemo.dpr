@@ -2,9 +2,7 @@ program JvValidatorsDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {frmMain},
-  JvValidators in '..\..\source\JvValidators.pas',
-  JvErrProvider in '..\..\source\JvErrProvider.pas';
+  MainFrm in 'MainFrm.pas' {frmMain};
 
 {$R *.RES}
 

@@ -41,7 +41,8 @@ type
   end;
 
 procedure Register;
-{$R *.dcr}
+{$R ..\resources\JvPageListTreeViewReg.dcr}
+
 implementation
 uses
   Forms, ComCtrls, Controls, SysUtils,
@@ -59,6 +60,8 @@ begin
   RegisterComponentEditor(TJvCustomPageList, TJvCustomPageEditor);
   RegisterComponentEditor(TJvCustomPage, TJvCustomPageEditor);
   RegisterComponentEditor(TCustomTreeView, TJvTreeViewComponentEditor);
+  // register for the standard TTreeView as well
+  RegisterComponentEditor(TTreeView, TJvTreeViewComponentEditor);
   RegisterPropertyEditor(typeinfo(TJvPageLinks),
     TJvCustomPageListTreeView, '', TJvPageLinksProperty);
   RegisterPropertyEditor(typeinfo(TJvCustomPage),

@@ -98,7 +98,10 @@ type
     pgWebBrowser: TJvStandardPage;
     JvGroupHeader1: TJvGroupHeader;
     JvGroupHeader2: TJvGroupHeader;
+    Button7: TButton;
+    ImageList2: TImageList;
     procedure FormCreate(Sender: TObject);
+    procedure JvFooterBtn2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -116,6 +119,11 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 begin
   JvColorComboBox1.InsertColor(0, clBlack, 'Automatic');
   JvColorComboBox2.InsertColor(0, clWhite, 'Automatic');
+end;
+
+procedure TfrmMain.JvFooterBtn2Click(Sender: TObject);
+begin
+  Close;
 end;
 
 end.

@@ -2,9 +2,7 @@ program JvFormatEditDemo;
 
 uses
   Forms,
-  MainFrm in 'MainFrm.pas' {Form1},
-  JvValidateEdit in '..\..\source\JvValidateEdit.pas',
-  JvCharStrEditor in '..\..\source\JvCharStrEditor.pas' {frmJvCharEditDlg};
+  MainFrm in 'MainFrm.pas' {Form1};
 
 {$R *.RES}
 

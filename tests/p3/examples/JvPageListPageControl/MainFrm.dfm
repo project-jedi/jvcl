@@ -22,7 +22,7 @@ object Form1: TForm1
     ShowButtons = True
     ShowLines = True
     ReadOnly = False
-    PageDefault = 0
+    PageDefault = 1
     PageList = JvPageListPageControl1
     Align = alLeft
     DragMode = dmAutomatic
@@ -33,13 +33,13 @@ object Form1: TForm1
     OnDragOver = JvPageListTreeView1DragOver
     OnStartDrag = JvPageListTreeView1StartDrag
     Items.Data = {
-      010000001F0000000000000001000000FFFFFFFFFFFFFFFF0000000003000000
-      065061676520311F000000FFFFFFFF02000000FFFFFFFFFFFFFFFF0100000000
-      000000065061676520321F0000000000000001000000FFFFFFFFFFFFFFFF0200
-      000001000000065061676520331F000000FFFFFFFF02000000FFFFFFFFFFFFFF
-      FF0300000000000000065061676520341F000000FFFFFFFF02000000FFFFFFFF
+      010000001F0000000000000001000000FFFFFFFFFFFFFFFF0000000002000000
+      065061676520311F000000FFFFFFFF02000000FFFFFFFFFFFFFFFF0100000001
+      000000065061676520321F000000FFFFFFFF02000000FFFFFFFFFFFFFFFF0300
+      000000000000065061676520341F0000000000000001000000FFFFFFFFFFFFFF
+      FF0200000001000000065061676520331F000000FFFFFFFF02000000FFFFFFFF
       FFFFFFFF040000000000000006506167652035}
-    Items.Links = {050000000000000001000000020000000300000004000000}
+    Items.Links = {050000000000000001000000030000000200000004000000}
   end
   object JvPageListPageControl1: TJvPageListPageControl
     Left = 169
@@ -50,7 +50,9 @@ object Form1: TForm1
     Align = alClient
     TabIndex = 0
     TabOrder = 1
+    DrawTabShadow = False
     object TabSheet1: TTabSheet
+      BorderWidth = 4
       Caption = 'TabSheet1'
       object Label1: TLabel
         Left = 16
@@ -58,6 +60,16 @@ object Form1: TForm1
         Width = 31
         Height = 13
         Caption = 'Label1'
+      end
+      object JvFileListBox1: TJvFileListBox
+        Left = 0
+        Top = 0
+        Width = 677
+        Height = 536
+        Align = alClient
+        ItemHeight = 19
+        ShowGlyphs = True
+        TabOrder = 0
       end
     end
     object TabSheet2: TTabSheet

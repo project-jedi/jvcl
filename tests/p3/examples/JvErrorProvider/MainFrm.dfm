@@ -1,6 +1,6 @@
 object frmErrProviderDemo: TfrmErrProviderDemo
-  Left = 394
-  Top = 99
+  Left = 356
+  Top = 157
   ActiveControl = btnShowErrors
   Anchors = [akLeft, akBottom]
   AutoScroll = False
@@ -15,10 +15,6 @@ object frmErrProviderDemo: TfrmErrProviderDemo
   Font.Style = []
   OldCreateOrder = False
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
-  DesignSize = (
-    556
-    351)
   PixelsPerInch = 96
   TextHeight = 13
   object lblClient: TLabel
@@ -344,8 +340,8 @@ object frmErrProviderDemo: TfrmErrProviderDemo
     OnClick = chkLargeClick
   end
   object il16: TImageList
-    Left = 48
-    Top = 128
+    Left = 112
+    Top = 184
     Bitmap = {
       494C010109000E00040010001000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000400000004000000001001000000000000020
@@ -629,8 +625,8 @@ object frmErrProviderDemo: TfrmErrProviderDemo
   object il32: TImageList
     Height = 32
     Width = 32
-    Left = 88
-    Top = 128
+    Left = 112
+    Top = 152
     Bitmap = {
       494C010109000E00040020002000FFFFFFFFFF10FFFFFFFFFFFFFFFF424D3600
       0000000000003600000028000000800000008000000001001000000000000080

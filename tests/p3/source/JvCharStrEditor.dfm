@@ -1,12 +1,14 @@
 object frmJvCharEditDlg: TfrmJvCharEditDlg
   Left = 365
   Top = 180
-  Width = 389
-  Height = 309
+  Width = 535
+  Height = 417
   ActiveControl = lvCharacters
   BorderWidth = 2
-  Caption = 'Characters Editor'
+  Caption = 'TJvFormatEdit.Characters Editor'
   Color = clBtnFace
+  Constraints.MinHeight = 175
+  Constraints.MinWidth = 320
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -18,17 +20,17 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
   TextHeight = 13
   object Panel1: TPanel
     Left = 0
-    Top = 237
-    Width = 377
+    Top = 345
+    Width = 523
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
-      377
+      523
       41)
     object btnOK: TButton
-      Left = 204
+      Left = 350
       Top = 9
       Width = 75
       Height = 25
@@ -38,7 +40,7 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
       TabOrder = 1
     end
     object btnCancel: TButton
-      Left = 292
+      Left = 438
       Top = 9
       Width = 75
       Height = 25
@@ -51,21 +53,20 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
     object cbFonts: TComboBox
       Left = 8
       Top = 11
-      Width = 184
+      Width = 330
       Height = 21
       Anchors = [akLeft, akTop, akRight]
       ItemHeight = 13
       Sorted = True
       TabOrder = 0
-      OnCloseUp = cbFontsCloseUp
       OnKeyPress = cbFontsKeyPress
     end
   end
   object lvCharacters: TListView
     Left = 0
     Top = 0
-    Width = 377
-    Height = 237
+    Width = 523
+    Height = 345
     Align = alClient
     Checkboxes = True
     Columns = <
@@ -170,14 +171,6 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
         GroupIndex = 1
         RadioItem = True
       end
-      object N1: TMenuItem
-        Caption = '-'
-        GroupIndex = 1
-      end
-      object ShowCharacterCodes1: TMenuItem
-        Action = acShowCharCode
-        GroupIndex = 1
-      end
     end
   end
   object ActionList1: TActionList
@@ -259,11 +252,6 @@ object frmJvCharEditDlg: TfrmJvCharEditDlg
       Category = 'General'
       Caption = 'Uncheck Selected'
       OnExecute = acUnCheckSelExecute
-    end
-    object acShowCharCode: TAction
-      Category = 'General'
-      Caption = 'Show Character Codes'
-      OnExecute = acShowCharCodeExecute
     end
   end
   object ImageList1: TImageList

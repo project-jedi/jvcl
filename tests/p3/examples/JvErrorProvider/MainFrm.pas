@@ -2,32 +2,45 @@
 unit MainFrm;
 
 interface
-                  
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, ExtCtrls, ImgList, ComCtrls,
   JvComponent, JvImageWindow, JvErrProvider, JvOLBar;
 
 type
-  // Example of a control that implements the IErrorProviderClient interface
-  TJvErrorClientEdit = class(TEdit, IErrorProviderClient)
+  // Example of a control that implements the IJvErrorProviderClient interface
+  TJvErrorClientEdit = class(TEdit, IUnknown, IJvErrorProviderClient)
   private
     FErrorMessage:WideString;
-    FErrorProvider:IErrorProvider;
-    procedure setErrorProvider(const Value:IErrorProvider);
-    function getErrorProvider:IErrorProvider;
-    function getControl:TControl;
-    procedure setErrorMessage(const Value:WideString);
-    function getErrorMessage:WideString;
+    FErrorProvider:IJvErrorProvider;
+    {$IFNDEF COMPILER6_UP}
+    // D5 and below doesn't support interface properties, so we fake out with a TComponent property
+    // and instead check the supported interfaces in the setErrorProviderComp
+    FErrorProviderComp:TComponent;
+    procedure setErrorProviderComp(const Value:TComponent);
+    {$ENDIF}
+    { IJvErrorProviderClient}
     procedure UpdateProvider;
+    procedure ClearProvider;
   protected
+    procedure setErrorProvider(const Value:IJvErrorProvider);virtual;
+    function getErrorProvider:IJvErrorProvider;virtual;
+    function getControl:TControl;virtual;
+    procedure setErrorMessage(const Value:WideString);virtual;
+    function getErrorMessage:WideString;virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation);override;
-
+  public
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: Integer);override;
   published
-    property ErrorProvider:IErrorProvider read getErrorProvider write setErrorProvider;
+    {$IFDEF COMPILER6_UP}
+    property ErrorProvider:IJvErrorProvider read getErrorProvider write setErrorProvider;
+    {$ELSE}
+    property ErrorProvider:TComponent read FErrorProviderComp write setErrorProviderComp;
+    {$ENDIF}
     property ErrorMessage:WideString read getErrorMessage write setErrorMessage;
   end;
-
+                
   TfrmErrProviderDemo = class(TForm)
     btnClearErrors: TButton;
     memDescription: TMemo;
@@ -60,7 +73,6 @@ type
     procedure udImageIndexClick(Sender: TObject; Button: TUDBtnType);
     procedure chkAutoScrollClick(Sender: TObject);
     procedure chkLargeClick(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
     jep:TJvErrorProvider;
@@ -92,7 +104,7 @@ begin
   isPreview.ImageIndex := udImageIndex.Position;
   udImageIndex.Max := jep.Imagelist.Count-1;
 
-  // Create an edit dynamically that implements the IErrorProviderClient
+  // Create an edit dynamically that implements the IJvErrorProviderClient interface
   // For this demo, hitting RETURN will display it's Text as an error message
   edClient := TJvErrorClientEdit.Create(self);
   edClient.Parent := self;
@@ -170,6 +182,18 @@ end;
 
 { TJvErrorClientEdit }
 
+procedure TJvErrorClientEdit.ClearProvider;
+var tmp:string;
+begin
+  if (FErrorProvider <> nil) and not (csFreeNotification in ComponentState) then
+  begin
+    tmp := FErrorMessage;
+    FErrorMessage := '';
+    FErrorProvider.SetClientError(self);
+    FErrorMessage := tmp;
+  end;
+end;
+
 function TJvErrorClientEdit.getControl: TControl;
 begin
   Result := self;
@@ -180,7 +204,7 @@ begin
   Result := FErrorMessage;
 end;
 
-function TJvErrorClientEdit.getErrorProvider: IErrorProvider;
+function TJvErrorClientEdit.getErrorProvider: IJvErrorProvider;
 begin
   Result := FErrorProvider;
 end;
@@ -189,10 +213,24 @@ procedure TJvErrorClientEdit.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited;
-  {$IFDEF COMPILER6_UP}
-  if (Assigned(ErrorProvider)) and (AComponent.IsImplementorOf(ErrorProvider)) then
-    ErrorProvider := nil;
-  {$ENDIF}
+  if Operation = opRemove then
+  begin
+    {$IFDEF COMPILER6_UP}
+    if (Assigned(ErrorProvider)) and (AComponent.IsImplementorOf(ErrorProvider)) then
+      ErrorProvider := nil;
+    {$ELSE}
+    if AComponent = ErrorProvider then
+      ErrorProvider := nil;
+    {$ENDIF}
+  end;
+end;
+
+procedure TJvErrorClientEdit.SetBounds(ALeft, ATop, AWidth,
+  AHeight: Integer);
+begin
+  inherited;
+  ClearProvider;
+  UpdateProvider;
 end;
 
 procedure TJvErrorClientEdit.setErrorMessage(const Value: WideString);
@@ -201,29 +239,47 @@ begin
   UpdateProvider;
 end;
 
-procedure TJvErrorClientEdit.setErrorProvider(const Value: IErrorProvider);
+procedure TJvErrorClientEdit.setErrorProvider(const Value: IJvErrorProvider);
 begin
+  ClearProvider;
   {$IFDEF COMPILER6_UP}
   ReferenceInterface(FErrorProvider, opRemove);
   FErrorProvider := Value;
   ReferenceInterface(FErrorProvider, opInsert);
   {$ELSE}
-  FErrorProvider := Value; // is this how it's handled in D5, i.e not at all?
+  FErrorProvider := Value;
   {$ENDIF}
   UpdateProvider;
 end;
 
+{$IFNDEF COMPILER6_UP}
+procedure TJvErrorClientEdit.setErrorProviderComp(const Value: TComponent);
+var obj:IJvErrorProvider;
+begin
+  if FErrorProviderComp <> Value then
+  begin
+    if FErrorProviderComp <> nil then
+      FErrorProviderComp.RemoveFreeNotification(self);
+    if Value = nil then
+    begin
+      FErrorProviderComp := nil;
+      setErrorProvider(nil);
+      Exit;
+    end;
+    if not Supports(Value,IJvErrorProvider,obj) then
+      Exception.CreateFmt('%s does not support the IJvErrorProvider interface',[Value.Name]);
+    FErrorProviderComp := Value;
+    setErrorProvider(obj);
+    if FErrorProviderComp <> nil then
+      FErrorProviderComp.FreeNotification(self);
+  end;
+end;
+{$ENDIF}
+
 procedure TJvErrorClientEdit.UpdateProvider;
 begin
-  if ErrorProvider <> nil then
-    ErrorProvider.SetClientError(self);
-end;
-
-procedure TfrmErrProviderDemo.FormDestroy(Sender: TObject);
-begin
-  {$IFNDEF COMPILER6_UP}
-  edClient.ErrorProvider := nil;
-  {$ENDIF}
+  if (FErrorProvider <> nil) then
+    FErrorProvider.SetClientError(self);
 end;
 
 end.

@@ -2,11 +2,11 @@ unit JvPageListPCDemo;
 
 interface
 uses
-  Windows, SysUtils, Classes, ComCtrls, JvPageListTreeView;
+  Windows, SysUtils, Classes, JvComCtrls, JvPageListTreeView;
 
 type
 // a simple example of how to implement the IPageList interface in a TPageControl
-  TJvPageListPageControl = class(TPageControl, IPageList)
+  TJvPageListPageControl = class(TJvPageControl, IPageList)
   private
     function IPageList.CanChange = PageListCanChange;
     procedure IPageList.SetActivePageIndex = PageListSetActivePageIndex;

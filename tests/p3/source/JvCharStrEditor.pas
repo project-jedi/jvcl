@@ -1,10 +1,12 @@
+{$I JVCL.INC}
 unit JvCharStrEditor;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvValidateEdit, ComCtrls, Menus, ActnList, ImgList;
+  StdCtrls, ExtCtrls, ComCtrls, Menus, ActnList, ImgList,
+  {$IFDEF COMPILER6_UP}DesignEditors, DesignIntf{$ELSE}DsgnIntf{$ENDIF};
 
 type
   TfrmJvCharEditDlg = class(TForm)
@@ -53,9 +55,6 @@ type
     N3: TMenuItem;
     N4: TMenuItem;
     cbFonts: TComboBox;
-    acShowCharCode: TAction;
-    N1: TMenuItem;
-    ShowCharacterCodes1: TMenuItem;
     procedure FormCreate(Sender: TObject);
     procedure lvCharactersInfoTip(Sender: TObject; Item: TListItem;
       var InfoTip: string);
@@ -84,7 +83,6 @@ type
       var DefaultDraw: Boolean);
     procedure lvCharactersSelectItem(Sender: TObject; Item: TListItem;
       Selected: Boolean);
-    procedure acShowCharCodeExecute(Sender: TObject);
   private
     function getCharacters: TJvCharacters;
     procedure setCharacters(const Value: TJvCharacters);
@@ -96,65 +94,81 @@ type
     property Characters: TJvCharacters read getCharacters write setCharacters;
   end;
 
+type
+  TJvCharStringProperty = class(TStringProperty)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
+  end;
+  
 const
-  cAsciiNames: array[char] of PChar =
+  cAsciiNames:array [char] of PChar =
   (
-    'NUL',                              // null
-    'SOH',                              // start of heading
-    'STX',                              // start of text
-    'ETX',                              // end of text
-    'EOT',                              // end of transmission
-    'ENQ',                              // enquiry
-    'ACK',                              // acknowledge
-    'BEL',                              // bell
-    'BS',                               // backspace
-    'TAB',                              // horizontal tab
-    'LF',                               // line feed
-    'VT',                               // vertical tab
-    'FF',                               // form feed
-    'CR',                               // carriage return
-    'SO',                               // shift out
-    'SI',                               // shift in
-    'DLE',                              // data link escape
-    'DC1',                              // device control 1
-    'DC2',                              // device control 2
-    'DC3',                              // device control 3
-    'DC4',                              // device control 4
-    'NAK',                              // negative acknowledge
-    'SYN',                              // synch idle
-    'ETB',                              // end of trans. block
-    'CAN',                              // cancel
-    'EM',                               // end of medium
-    'SUB',                              // substitute
-    'ESC',                              // escape
-    'FS',                               // file separator
-    'GS',                               // group separator
-    'RS',                               // record separator
-    'US',                               // unit separator
-    'SPACE',                            // space
-    #33, #34, #35, #36, #37, #38, #39,
-    #40, #41, #42, #43, #44, #45, #46, #47, #48, #49,
-    #50, #51, #52, #53, #54, #55, #56, #57, #58, #59,
-    #60, #61, #62, #63, #64, #65, #66, #67, #68, #69,
-    #70, #71, #72, #73, #74, #75, #76, #77, #78, #79,
-    #80, #81, #82, #83, #84, #85, #86, #87, #88, #89,
-    #90, #91, #92, #93, #94, #95, #96, #97, #98, #99,
-    #100, #101, #102, #103, #104, #105, #106, #107, #108, #109,
-    #110, #111, #112, #113, #114, #115, #116, #117, #118, #119,
-    #120, #121, #122, #123, #124, #125, #126, #127, #128, #129,
-    #130, #131, #132, #133, #134, #135, #136, #137, #138, #139,
-    #140, #141, #142, #143, #144, #145, #146, #147, #148, #149,
-    #150, #151, #152, #153, #154, #155, #156, #157, #158, #159,
-    #160, #161, #162, #163, #164, #165, #166, #167, #168, #169,
-    #170, #171, #172, #173, #174, #175, #176, #177, #178, #179,
-    #180, #181, #182, #183, #184, #185, #186, #187, #188, #189,
-    #190, #191, #192, #193, #194, #195, #196, #197, #198, #199,
-    #200, #201, #202, #203, #204, #205, #206, #207, #208, #209,
-    #210, #211, #212, #213, #214, #215, #216, #217, #218, #219,
-    #220, #221, #222, #223, #224, #225, #226, #227, #228, #229,
-    #230, #231, #232, #233, #234, #235, #236, #237, #238, #239,
-    #240, #241, #242, #243, #244, #245, #246, #247, #248, #249,
-    #250, #251, #252, #253, #254, #255);
+  'NUL', // null
+  'SOH', // start of heading
+  'STX', // start of text
+  'ETX', // end of text
+  'EOT', // end of transmission
+  'ENQ', // enquiry
+  'ACK', // acknowledge
+  'BEL', // bell
+  'BS',  // backspace
+  'TAB', // horizontal tab
+  'LF',  // line feed
+  'VT',  // vertical tab
+  'FF',  // form feed
+  'CR',  // carriage return
+  'SO',  // shift out
+  'SI',  // shift in
+  'DLE', // data link escape
+  'DC1', // device control 1
+  'DC2', // device control 2
+  'DC3', // device control 3
+  'DC4', // device control 4
+  'NAK', // negative acknowledge
+  'SYN', // synch idle
+  'ETB', // end of trans. block
+  'CAN', // cancel
+  'EM',  // end of medium
+  'SUB', // substitute
+  'ESC', // escape
+  'FS',  // file separator
+  'GS',  // group separator
+  'RS',  // record separator
+  'US',  // unit separator
+  'SPACE', // space
+                  #33, #34, #35, #36, #37, #38, #39,
+   #40, #41, #42, #43, #44, #45, #46, #47, #48, #49,
+   #50, #51, #52, #53, #54, #55, #56, #57, #58, #59,
+   #60, #61, #62, #63, #64, #65, #66, #67, #68, #69,
+   #70, #71, #72, #73, #74, #75, #76, #77, #78, #79,
+   #80, #81, #82, #83, #84, #85, #86, #87, #88, #89,
+   #90, #91, #92, #93, #94, #95, #96, #97, #98, #99,
+  #100,#101,#102,#103,#104,#105,#106,#107,#108,#109,
+  #110,#111,#112,#113,#114,#115,#116,#117,#118,#119,
+  #120,#121,#122,#123,#124,#125,#126,#127,#128,#129,
+  #130,#131,#132,#133,#134,#135,#136,#137,#138,#139,
+  #140,#141,#142,#143,#144,#145,#146,#147,#148,#149,
+  #150,#151,#152,#153,#154,#155,#156,#157,#158,#159,
+  #160,#161,#162,#163,#164,#165,#166,#167,#168,#169,
+  #170,#171,#172,#173,#174,#175,#176,#177,#178,#179,
+  #180,#181,#182,#183,#184,#185,#186,#187,#188,#189,
+  #190,#191,#192,#193,#194,#195,#196,#197,#198,#199,
+  #200,#201,#202,#203,#204,#205,#206,#207,#208,#209,
+  #210,#211,#212,#213,#214,#215,#216,#217,#218,#219,
+  #220,#221,#222,#223,#224,#225,#226,#227,#228,#229,
+  #230,#231,#232,#233,#234,#235,#236,#237,#238,#239,
+  #240,#241,#242,#243,#244,#245,#246,#247,#248,#249,
+  #250,#251,#252,#253,#254,#255);
+  
+// converts a syschar set to it's textual display representation
+// as is displayed in the OI, f ex
+// NOTE: this is *not* the opposite of StringToSysCharSet below!
+function SysCharSetToString(ASet:TSysCharSet;Brackets:boolean):string;
+// converts a string to a SysCharSet
+function StringToSysCharSet(const S:string):TSysCharSet;
+// returns either an unquoted name, like NUL, or a quoted character, like 'A'
+function GetCharName(const Ch:char):string;
 
 resourcestring
   SFormCaption = 'TJvFormatEdit.Characters Editor ($%.2x, #%.2u, "%s")';
@@ -162,6 +176,73 @@ resourcestring
 implementation
 
 {$R *.DFM}
+
+function StringToSysCharSet(const S:string):TSysCharSet;
+var i:integer;
+begin
+  Result := [];
+  for i := 1 to Length(S) do
+  begin
+    Include(Result,S[i]);
+    if Result = [#0..#255] then Exit; // everything included, so no need to continue
+  end;
+end;
+
+function GetCharName(const Ch:char):string;
+var FTmpType:word;
+begin
+  Result := cAsciiNames[Ch];
+  GetStringTypeEx(LOCALE_USER_DEFAULT,CT_CTYPE1,@Ch,1,FTmpType);
+  if (FTmpType and C1_CNTRL = 0) and (Ch <> #32) then
+    Result := #39 + Result + #39;
+end;
+
+// far from perfect, but kind of works...
+function SysCharSetToString(ASet:TSysCharSet;Brackets:boolean):string;
+var i,LastChar,PrevChar:char;
+begin
+  PrevChar := #255;
+  LastChar := #0;
+  for i := #0 to #255 do
+  begin
+    if i in ASet then
+    begin
+//      if PrevChar = #0 then
+      if Ord(i)-Ord(PrevChar) <> 1 then
+      begin
+        if Result <> '' then
+          Result := Result + ',' + getCharName(i)
+        else
+          Result := getCharName(i);
+        LastChar := i;
+      end
+      else if i = #255 then
+      begin
+        if Result = '' then
+          Result := GetCharName(i)
+        else if Ord(i) - Ord(LastChar) > 1 then
+          Result := Result + '...' + GetCharName(i)
+        else
+          Result := Result + ',' + GetCharName(i);
+        Break;
+      end;
+      PrevChar := i;
+    end
+    else
+    begin
+      if Ord(i) - Ord(LastChar) > 1 then
+        Result := Result + '...' + GetCharName(Pred(i))
+      else if (LastChar = #0) and (Pred(i) <> LastChar) and (i <> #0) then
+        Result := Result + ',' + GetCharName(Pred(i));
+      PrevChar := #255;
+      LastChar := i;
+    end;
+  end;
+  if (Length(Result) > 0) and (AnsiLastChar(Result) = ',') then
+    SetLength(Result,Length(Result)-1);
+  if Brackets then
+    Result := '[' + Result + ']';
+end;
 
 { TfrmJvCharEditDlg }
 
@@ -201,8 +282,7 @@ begin
 end;
 
 procedure TfrmJvCharEditDlg.FormCreate(Sender: TObject);
-var i: char;
-  j: integer;
+var i: char;j:integer;
 begin
   with lvCharacters do
   begin
@@ -225,14 +305,14 @@ begin
     cbFonts.ItemIndex := cbFonts.Items.Add(Font.Name)
   else
     cbFonts.ItemIndex := j;
-  Caption := Format(SFormCaption, [0, 0, cAsciiNames[#0]]);
+  Caption := Format(SFormCaption,[0,0,cAsciiNames[#0]]);
 end;
 
 procedure TfrmJvCharEditDlg.lvCharactersInfoTip(Sender: TObject;
   Item: TListItem; var InfoTip: string);
 begin
   if Item <> nil then
-    InfoTip := Format('$%.2x, #%.2d, "%s"', [integer(Item.Data), integer(Item.Data), cAsciiNames[Char(Item.Data)]]);
+    InfoTip := Format('$%.2x, #%.2d, "%s"', [integer(Item.Data), integer(Item.Data),cAsciiNames[Char(Item.Data)]]);
 end;
 
 procedure TfrmJvCharEditDlg.acInvertCheckExecute(Sender: TObject);
@@ -288,7 +368,7 @@ var i: integer;
 begin
   with lvCharacters do
     for i := 0 to Items.Count - 1 do
-      Items[i].Checked := (char(Items[i].Data) in ['0'..'9', '-', '+', DecimalSeparator]);
+      Items[i].Checked := (char(Items[i].Data) in ['0'..'9', '-','+', DecimalSeparator]);
 end;
 
 procedure TfrmJvCharEditDlg.acScientificExecute(Sender: TObject);
@@ -296,7 +376,7 @@ var i: integer;
 begin
   with lvCharacters do
     for i := 0 to Items.Count - 1 do
-      Items[i].Checked := (char(Items[i].Data) in ['0'..'9', 'E', 'e', '-', '+', DecimalSeparator]);
+      Items[i].Checked := (char(Items[i].Data) in ['0'..'9', 'E','e','-','+', DecimalSeparator]);
 end;
 
 procedure TfrmJvCharEditDlg.acCurrencyExecute(Sender: TObject);
@@ -309,7 +389,7 @@ var i: integer;
 begin
   with lvCharacters do
     for i := 0 to Items.Count - 1 do
-      Items[i].Checked := (char(Items[i].Data) in ['0'..'9', '-', '+']);
+      Items[i].Checked := (char(Items[i].Data) in ['0'..'9', '-','+']);
 end;
 
 procedure TfrmJvCharEditDlg.UnCheckAll;
@@ -355,7 +435,7 @@ begin
 end;
 
 procedure TfrmJvCharEditDlg.acCheckSelExecute(Sender: TObject);
-var i: integer;
+var i:integer;
 begin
   with lvCharacters do
     for i := 0 to Items.Count - 1 do
@@ -364,7 +444,7 @@ begin
 end;
 
 procedure TfrmJvCharEditDlg.acUnCheckSelExecute(Sender: TObject);
-var i: integer;
+var i:integer;
 begin
   with lvCharacters do
     for i := 0 to Items.Count - 1 do
@@ -408,21 +488,24 @@ procedure TfrmJvCharEditDlg.lvCharactersSelectItem(Sender: TObject;
   Item: TListItem; Selected: Boolean);
 begin
   if Item <> nil then
-    Caption := Format(SFormCaption, [integer(Item.Data), integer(Item.Data), cAsciiNames[Char(Item.Data)]]);
+    Caption := Format(SFormCaption,[integer(Item.Data),integer(Item.Data),cAsciiNames[Char(Item.Data)]]);
 end;
 
-procedure TfrmJvCharEditDlg.acShowCharCodeExecute(Sender: TObject);
-var i: integer;
+{ TJvCharStringProperty }
+
+procedure TJvCharStringProperty.Edit;
+var S:String;
 begin
-  acShowCharCode.Checked := not acShowCharCode.Checked;
-  with lvCharacters do
-    for i := 0 to Items.Count - 1 do
-      with Items[i] do
-        if acShowCharCode.Checked then
-          Caption := Format('(%.3u) %s', [integer(Data), cAsciiNames[Char(Data)]])
-        else
-          Caption := cAsciiNames[Char(Data)];
+  S := GetValue;
+  if TfrmJvCharEditDlg.Edit(S) then
+    SetValue(S);
+end;
+
+function TJvCharStringProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := inherited GetAttributes + [paDialog];
 end;
 
 end.
+
 

@@ -53,8 +53,6 @@ type
     PopupMenu1: TPopupMenu;
     Save1: TMenuItem;
     Load1: TMenuItem;
-    acFileOpen: TFileOpen;
-    acFileSaveAs: TFileSaveAs;
     acNodeMoveLeft: TAction;
     acNodeMoveRight: TAction;
     acNodeMoveUp: TAction;
@@ -210,13 +208,13 @@ end;
 
 procedure TfrmTreeViewItems.acFileOpenAccept(Sender: TObject);
 begin
-  tvItems.LoadFromFile(acFileOpen.Dialog.Filename);
+//  tvItems.LoadFromFile(acFileOpen.Dialog.Filename);
   tvItems.FullExpand;
 end;
 
 procedure TfrmTreeViewItems.acFileSaveAsAccept(Sender: TObject);
 begin
-  tvItems.SaveToFile(acFileSaveAs.Dialog.Filename);
+//  tvItems.SaveToFile(acFileSaveAs.Dialog.Filename);
 end;
 
 procedure TfrmTreeViewItems.acDeleteExecute(Sender: TObject);

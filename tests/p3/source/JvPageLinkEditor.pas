@@ -1,3 +1,4 @@
+{$I JVCL.INC}
 unit JvPageLinkEditor;
 {
 Changes:
@@ -9,7 +10,7 @@ interface
 
 uses
   Windows, Forms, Classes, SysUtils, Controls, StdCtrls, ExtCtrls, ComCtrls, ActnList,
-  DesignEditors, Variants, DesignIntf, JvPageListTreeView, Menus;
+  {$IFDEF COMPILER6_UP}DesignEditors, Variants, DesignIntf, {$ELSE}DsgnIntf,{$ENDIF}JvPageListTreeView, Menus;
 
 type
   { a property editor for the PageLinks property of TJvCustomPageListTreeView}

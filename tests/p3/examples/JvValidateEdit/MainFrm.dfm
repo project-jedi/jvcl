@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 304
   Top = 186
   AutoScroll = False
-  Caption = 'JvFormatEdit Demo'
+  Caption = 'JvValidateEdit Demo'
   ClientHeight = 143
   ClientWidth = 396
   Color = clBtnFace
@@ -16,9 +16,6 @@ object Form1: TForm1
   OldCreateOrder = False
   Position = poDesktopCenter
   OnCreate = FormCreate
-  DesignSize = (
-    396
-    143)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel
@@ -51,7 +48,7 @@ object Form1: TForm1
     Anchors = [akLeft, akTop, akRight]
     ItemHeight = 13
     TabOrder = 0
-    OnCloseUp = ComboBox1CloseUp
+    OnChange = ComboBox1Change
     OnKeyPress = ComboBox1KeyPress
   end
   object Button2: TButton

@@ -3,54 +3,81 @@ unit JvValidators;
 
 interface
 uses
-  Windows, SysUtils, Classes, Controls, TypInfo, JvTypes;
+  Windows, SysUtils, Classes, Controls, JvComponent, JvErrProvider;
 
 type
-  EValidatorError = class(EJVCLException);
+  EValidatorError = class(Exception);
   // Implemented by classes that can return the value to validate against.
-  // The validator classes first check if the ObjectToValidate supports this interface
+  // The validator classes first check if the ControlToValidate supports this interface
   // and if it does, uses the value returned from GetValidationPropertyValue instead of
-  // extracting it from RTTI (using ObjectToValidate and PropertyToValidate)
+  // extracting it from RTTI (using ControlToValidate and PropertyToValidate)
   // The good thing about implementing this interface is that the value to validate do
-  // not need to be a published property but can be anything
+  // not need to be a published property but can be anything, even a calculated value
   IJvValidationProperty = interface
     ['{564FD9F5-BE57-4559-A6AF-B0624C956E50}']
     function GetValidationPropertyValue: Variant;
+    function GetValidationPropertyName: WideString;
   end;
 
   IJvValidationSummary = interface
-  ['{F2E4F4E5-E831-4514-93C9-0E2ACA941DCF}']
-    procedure AddError(const ErrorMessage:string);
-    procedure RemoveError(const ErrorMessage:string);
+    ['{F2E4F4E5-E831-4514-93C9-0E2ACA941DCF}']
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure AddError(const ErrorMessage: string);
+    procedure RemoveError(const ErrorMessage: string);
   end;
 
   TJvBaseValidator = class;
+  TJvValidators = class;
   TJvBaseValidatorClass = class of TJvBaseValidator;
 
-  TJvBaseValidator = class(TPersistent)
+  TJvBaseValidator = class(TJvComponent)
   private
-    FEnabled, FIsValid: boolean;
+    FEnabled, FValid: boolean;
     FPropertyToValidate: string;
     FErrorMessage: string;
-    FObjectToValidate: TControl;
-    FValidationSummary: IJvValidationSummary;
-    FName: string;
+    FControlToValidate: TControl;
+    FValidator: TJvValidators;
+    FOnValidateFailed: TNotifyEvent;
+    procedure SetControlToValidate(Value: TControl);
   protected
     function GetValidationPropertyValue: Variant; virtual;
-    procedure SetIsValid(const Value: boolean); virtual;
-    function GetIsValid: Boolean; virtual;
+    procedure SetValid(const Value: boolean); virtual;
+    function GetValid: Boolean; virtual;
+    procedure DoValidateFailed; dynamic;
     procedure Validate; virtual; abstract;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetParentComponent(Value: TComponent); override;
+    procedure ReadState(Reader: TReader); override;
+
+    // get the number of registered base validator classes
+    class function BaseValidatorsCount:integer;
+    // get info on a registered class
+    class procedure GetBaseValidatorInfo(Index:integer;var DisplayName:String;var ABaseValidatorClass:TJvBaseValidatorClass);
   public
-    constructor Create;
-    procedure Assign(Source:TPersistent);override;
+    // register a new base validator class. DisplayName is used by the design-time editor.
+    // A class with an empty DisplayName will not sshow up in the editor
+    class procedure RegisterBaseValidator(const DisplayName:string; AValidatorClass:TJvBaseValidatorClass);
+
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
+    function GetParentComponent: TComponent; override;
+    function HasParent: Boolean; override;
+
+
+    property Value: Variant read GetValidationPropertyValue;
   published
-    property Name:string read FName write FName;
-    property ValidationSummary:IJvValidationSummary read FValidationSummary write FValidationSummary;
-    property IsValid: boolean read GetIsValid write SetIsValid;
-    property ObjectToValidate: TControl read FObjectToValidate write FObjectToValidate;
+    property Valid: boolean read GetValid write SetValid;
+    // the control to validate
+    property ControlToValidate: TControl read FControlToValidate write SetControlToValidate;
+    // the property in ControlToValidate to validate against
     property PropertyToValidate: string read FPropertyToValidate write FPropertyToValidate;
     property Enabled: boolean read FEnabled write FEnabled;
+    // the message to display in case of error
     property ErrorMessage: string read FErrorMessage write FErrorMessage;
+    // trhiggered when Valid is set to false
+    property OnValidateFailed: TNotifyEvent read FOnValidateFailed write FOnValidateFailed;
   end;
 
   TJvRequiredFieldValidator = class(TJvBaseValidator)
@@ -91,7 +118,7 @@ type
     property ValidationExpression: string read FValidationExpression write FValidationExpression;
   end;
 
-  TJvCustomValidateEvent = procedure(Sender: TObject; ValueToValidate: Variant; var IsValid: boolean) of object;
+  TJvCustomValidateEvent = procedure(Sender: TObject; ValueToValidate: Variant; var Valid: boolean) of object;
   TJvCustomValidator = class(TJvBaseValidator)
   private
     FOnValidate: TJvCustomValidateEvent;
@@ -102,79 +129,113 @@ type
     property OnValidate: TJvCustomValidateEvent read FOnValidate write FOnValidate;
   end;
 
-  TJvValidateFailEvent = procedure (Sender:TObject; Validator:TJvBaseValidator;var Continue:boolean) of object;
+  TJvValidateFailEvent = procedure(Sender: TObject; BaseValidator: TJvBaseValidator; var Continue: boolean) of object;
 
-  TJvValidatorList = class(TPersistent)
+  TJvValidators = class(TJvComponent)
   private
     FOnValidateFailed: TJvValidateFailEvent;
-    FValidators:TList;
+    FItems: TList;
+    FValidationSummary: IJvValidationSummary;
+    FErrorProvider: IJvErrorProvider;
+{$IFNDEF COMPILER6_UP}
+    FValidationSummaryComponent: TComponent;
+    FErrorProviderComponent:TComponent;
+    procedure SetValidationSummaryComponent(Value: TComponent);
+    procedure SetErrorProviderComponent(Value: TComponent);
+{$ENDIF}
+    procedure SetValidationSummary(const Value: IJvValidationSummary);
+    procedure SetErrorProvider(const Value: IJvErrorProvider);
     function GetCount: integer;
-    function GetValidators(Index: integer): TJvBaseValidator;
+    function GetItem(Index: integer): TJvBaseValidator;
   protected
-    function DoValidateFailed(const AValidator:TJvBaseValidator):boolean;
-  public
-    constructor Create;
-    destructor Destroy;override;
-    procedure Assign(Source:TPersistent);override;
-    function Add(AValidatorClass:TJvBaseValidatorClass):TJvBaseValidator;overload;
-    function Add(AValidator:TJvBaseValidator):integer;overload;
-    function Remove(Index:integer):TJvBaseValidator;
-    procedure Delete(Index:integer);
-    procedure Clear;
-    function Validate:boolean;
-    property Validators[Index:integer]:TJvBaseValidator read GetValidators;default;
-    property Count:integer read getCount;
-    property OnValidateFailed:TJvValidateFailEvent read FOnValidateFailed write FOnValidateFailed;
-  end;
-
-  TJvValidationSummary = class(TInterfacedObject,IJvValidationSummary)
-  private
-    FSummaries:TStrings;
-    FOnChange: TNotifyEvent;
-    function GetSummaries: TStrings;
-  protected
-    { IJvValidationSummary }
-    procedure AddError(const ErrorMessage:string);
-    procedure RemoveError(const ErrorMessage:string);
-
-    procedure Change;virtual;
-  public
-    destructor Destroy;override;
-    property Summaries:TStrings read GetSummaries;
-    property OnChange:TNotifyEvent read FOnChange write FOnChange;
-  end;
-
-  TJvValidator = class(TComponent)
-  private
-    FOnValidateFailed: TJvValidateFailEvent;
-    FValidators: TJvValidatorList;
-    procedure SetValidators(const Value: TJvValidatorList);
-  protected
-    function DoValidateFailed(const AValidator:TJvBaseValidator):boolean;
-    procedure DoInternalValidateFailed(Sender:TObject; AValidator:TJvBaseValidator; var Continue:boolean);
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    function DoValidateFailed(const ABaseValidator: TJvBaseValidator): boolean; dynamic;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    function Validate:boolean;
-    property Validators:TJvValidatorList read FValidators write SetValidators;
+    procedure Insert(AValidator: TJvBaseValidator);
+    procedure Remove(AValidator: TJvBaseValidator);
+    procedure Exchange(Index1, Index2: integer);
+    function Validate: boolean;
+    property Items[Index: integer]: TJvBaseValidator read GetItem; default;
+    property Count: integer read GetCount;
   published
-    property OnValidateFailed:TJvValidateFailEvent read FOnValidateFailed write FOnValidateFailed;
+{$IFDEF COMPILER6_UP}
+    property ValidationSummary: IJvValidationSummary read FValidationSummary write SetValidationSummary;
+    property ErrorProvider:IJvErrorProvider read FErrorProvider write SetErrorProvider;
+{$ELSE}
+    property ValidationSummary: TComponent read FValidationSummaryComponent write SetValidationSummaryComponent;
+    property ErrorProvider:TComponent read FErrorProviderComponent write SetErrorProviderComponent;
+{$ENDIF}
+    property OnValidateFailed: TJvValidateFailEvent read FOnValidateFailed write FOnValidateFailed;
   end;
 
-procedure Register;
+  TJvValidationSummary = class(TJvComponent, IUnknown, IJvValidationSummary)
+  private
+    FUpdateCount,FPendingUpdates: integer;
+    FSummaries: TStrings;
+    FOnChange: TNotifyEvent;
+    FOnRemoveError: TNotifyEvent;
+    FOnAddError: TNotifyEvent;
+    function GetSummaries: TStrings;
+  protected
+    { IJvValidationSummary }
+    procedure AddError(const ErrorMessage: string);
+    procedure RemoveError(const ErrorMessage: string);
+    procedure BeginUpdate;
+    procedure EndUpdate;
+
+    procedure Change; virtual;
+  public
+    destructor Destroy; override;
+    property Summaries: TStrings read GetSummaries;
+  published
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnAddError: TNotifyEvent read FOnAddError write FOnAddError;
+    property OnRemoveError: TNotifyEvent read FOnRemoveError write FOnRemoveError;
+  end;
+
+resourcestring
+  SInterfaceNotSupported = '%s does not support the %s interface';
+  SCircularReference = 'Circular reference not allowed';
+  SInsertNilValidator = 'Cannot insert nil validator';
+  SRemoveNilValidator = 'Cannot remove nil validator';
+  SValidatorNotChild = 'Validator is not owned by this component';
+
 
 implementation
 uses
 {$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF}
-  JclUnicode;
-procedure Register;
+  TypInfo, Forms,
+  JclUnicode; // for reg exp support
+var
+  FValidatorsList:TStringList = nil;
+
+procedure Debug(const Msg: string); overload;
 begin
-//  RegisterComponents('JVCL',[TJvValidator]);
+//  Application.MessageBox(PChar(Msg),PChar('Debug'),MB_OK or MB_TASKMODAL)
+end;
+
+procedure Debug(const Msg: string; const Fmt: array of const); overload;
+begin
+  Debug(Format(Msg, Fmt));
+end;
+
+function ComponentName(Comp: TComponent): string;
+begin
+  if Comp = nil then
+    Result := 'nil'
+  else if Comp.Name <> '' then
+    Result := Comp.Name
+  else
+    Result := Comp.ClassName;
 end;
 
 {$IFNDEF COMPILER6_UP}
+// these types and functions were introduced in D6
 type
   TVariantRelationship = (vrEqual, vrLessThan, vrGreaterThan, vrNotEqual);
 
@@ -210,32 +271,61 @@ end;
 
 { TJvBaseValidator }
 
-procedure TJvBaseValidator.Assign(Source: TPersistent);
+class procedure TJvBaseValidator.RegisterBaseValidator(const DisplayName:string; AValidatorClass:TJvBaseValidatorClass);
 begin
-  if Source is TJvBaseValidator then
+  if FValidatorsList = nil then
+    FValidatorsList := TStringList.Create;
+  if FValidatorsList.IndexOfObject(Pointer(AValidatorClass)) < 0 then
   begin
-    Name               := TJvBaseValidator(Source).Name;
-    ObjectToValidate   := TJvBaseValidator(Source).ObjectToValidate;
-    PropertyToValidate := TJvBaseValidator(Source).PropertyToValidate;
-    ValidationSummary  := TJvBaseValidator(Source).ValidationSummary;
-    Enabled            := TJvBaseValidator(Source).Enabled;
-    IsValid            := TJvBaseValidator(Source).IsValid;
-    ErrorMessage       := TJvBaseValidator(Source).ErrorMessage;
-    Exit;
+    RegisterClass(TPersistentClass(AValidatorClass));
+    FValidatorsList.AddObject(DisplayName,Pointer(AValidatorClass));
   end;
-  inherited;
 end;
 
-constructor TJvBaseValidator.Create;
+class function TJvBaseValidator.BaseValidatorsCount:integer;
 begin
-  inherited Create;
-  FIsValid := true;
+  if FValidatorsList = nil then
+    Result := 0
+  else
+    Result := FValidatorsList.Count;
+end;
+
+class procedure TJvBaseValidator.GetBaseValidatorInfo(Index:integer;var DisplayName:string;var ABaseValidatorClass:TJvBaseValidatorClass);
+begin
+  if (FValidatorsList = nil) or (Index < 0) or (Index >= FValidatorsList.Count) then
+    raise Exception.CreateFmt('Invalid index (%d)',[Index]);
+  DisplayName := FValidatorsList[Index];
+  ABaseValidatorClass := TJvBaseValidatorClass(FValidatorsList.Objects[Index]);
+end;
+
+constructor TJvBaseValidator.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FValid := true;
   FEnabled := true;
 end;
 
-function TJvBaseValidator.GetIsValid: Boolean;
+destructor TJvBaseValidator.Destroy;
 begin
-  Result := FIsValid;
+  Debug('TJvBaseValidator.Destroy: FValidator is %s', [ComponentName(FValidator)]);
+  ControlToValidate := nil;
+  if FValidator <> nil then
+  begin
+    FValidator.Remove(self);
+    FValidator := nil;
+  end;
+  inherited Destroy; ;
+end;
+
+function TJvBaseValidator.GetValid: Boolean;
+begin
+  Result := FValid;
+end;
+
+function TJvBaseValidator.GetParentComponent: TComponent;
+begin
+  Debug('TJvBaseValidator.GetParentComponent: Parent is %s', [ComponentName(FValidator)]);
+  Result := FValidator;
 end;
 
 function TJvBaseValidator.GetValidationPropertyValue: Variant;
@@ -243,45 +333,93 @@ var
   ValProp: IJvValidationProperty;
 begin
   Result := NULL;
-  if (FObjectToValidate <> nil) then
+  if (FControlToValidate <> nil) then
   begin
-    if Supports(FObjectToValidate, IJvValidationProperty, ValProp) then
+    if Supports(FControlToValidate, IJvValidationProperty, ValProp) then
       Result := ValProp.GetValidationPropertyValue
     else if (FPropertyToValidate <> '') then
-      Result := GetPropValue(FObjectToValidate, FPropertyToValidate, false);
+      Result := GetPropValue(FControlToValidate, FPropertyToValidate, false);
   end;
 end;
-function ReadStreamStr(Stream: TStream):string;
-var ACount:integer;
+
+function TJvBaseValidator.HasParent: Boolean;
 begin
-  Stream.Read(ACount,sizeof(ACount));
-  SetLength(Result,ACount);
-  if ACount > 0 then Stream.Read(Result[1],ACount);
+  Debug('TJvBaseValidator.HasParent');
+  Result := true;
 end;
 
-procedure WriteStreamStr(Stream: TStream;const Value:string);
-var ACount:integer;
+procedure TJvBaseValidator.Notification(AComponent: TComponent;
+  Operation: TOperation);
 begin
-  ACount := Length(Value);
-  Stream.Write(ACount,sizeof(ACount));
-  if ACount > 0 then
-    Stream.Write(Value[1],ACount);
-end;
-
-procedure TJvBaseValidator.SetIsValid(const Value: boolean);
-begin
-  FIsValid := Value;
-  if (ValidationSummary <> nil) then
+  inherited Notification(AComponent, Operation);
+  if (Operation = opRemove) then
   begin
-    if ErrorMessage <> '' then
+    if (AComponent = ControlToValidate) then
+      ControlToValidate := nil;
+  end;
+end;
+
+procedure TJvBaseValidator.SetValid(const Value: boolean);
+begin
+  FValid := Value;
+  if not FValid then
+    DoValidateFailed;
+end;
+
+procedure TJvBaseValidator.SetControlToValidate(Value: TControl);
+var obj: IJvValidationProperty;
+begin
+  if FControlToValidate <> Value then
+  begin
+    if FControlToValidate <> nil then
+      FControlToValidate.RemoveFreeNotification(self);
+    FControlToValidate := Value;
+    if FControlToValidate <> nil then
     begin
-      ValidationSummary.RemoveError(ErrorMessage);
-      if not FIsValid then
-        ValidationSummary.AddError(ErrorMessage);
+      FControlToValidate.FreeNotification(self);
+      if Supports(FControlToValidate, IJvValidationProperty, obj) then
+        PropertyToValidate := obj.GetValidationPropertyName;
     end;
   end;
 end;
 
+procedure TJvBaseValidator.SetParentComponent(Value: TComponent);
+begin
+  if not (csLoading in ComponentState) then
+  begin
+    Debug('TJvBaseValidator.SetParentComponent: Parent is %s, changing to %s',
+      [ComponentName(FValidator), ComponentName(Value)]);
+    if FValidator <> nil then
+    begin
+      Debug('FValidator.Remove');
+      FValidator.Remove(self);
+    end;
+    if (Value <> nil) and (Value is TJvValidators) then
+    begin
+      Debug('FValidator.Insert');
+      TJvValidators(Value).Insert(self);
+    end;
+  end;
+end;
+
+procedure TJvBaseValidator.ReadState(Reader: TReader);
+begin
+  inherited;
+  Debug('TJvBaseValidator.ReadState: Reader.Parent is %s', [ComponentName(Reader.Parent)]);
+  if Reader.Parent is TJvValidators then
+  begin
+    if FValidator <> nil then
+      FValidator.Remove(self);
+    FValidator := TJvValidators(Reader.Parent);
+    FValidator.Insert(self);
+  end;
+end;
+
+procedure TJvBaseValidator.DoValidateFailed;
+begin
+  if Assigned(FOnValidateFailed) then
+    FOnValidateFailed(self);
+end;
 
 { TJvRequiredFieldValidator }
 
@@ -290,22 +428,21 @@ var
   R: Variant;
 begin
   R := GetValidationPropertyValue;
-  IsValid := not VarIsNull(R) and not VarIsEmpty(R) and (R <> '');
+  Valid := VarCompareValue(R, '') <> vrEqual;
 end;
 
 { TJvCustomValidator }
 
 function TJvCustomValidator.DoValidate: boolean;
 begin
+  Result := Valid;
   if Assigned(FOnValidate) then
-    FOnValidate(self, GetValidationPropertyValue, Result)
-  else
-    Result := IsValid;
+    FOnValidate(self, GetValidationPropertyValue, Result);
 end;
 
 procedure TJvCustomValidator.Validate;
 begin
-  IsValid := DoValidate;
+  Valid := DoValidate;
 end;
 
 { TJvRegularExpressionValidator }
@@ -337,7 +474,7 @@ var
   R: string;
 begin
   R := VarToStr(GetValidationPropertyValue);
-  IsValid := (R = ValidationExpression) or MatchesMask(R, ValidationExpression);
+  Valid := (R = ValidationExpression) or MatchesMask(R, ValidationExpression);
 end;
 
 { TJvCompareValidator }
@@ -349,15 +486,15 @@ begin
   VR := VarCompareValue(GetValidationPropertyValue, ValueToCompare);
   case Operator of
     vcoLessThan:
-      IsValid := VR = vrLessThan;
+      Valid := VR = vrLessThan;
     vcoLessOrEqual:
-      IsValid := (VR = vrLessThan) or (VR = vrEqual);
+      Valid := (VR = vrLessThan) or (VR = vrEqual);
     vcoEqual:
-      IsValid := (VR = vrEqual);
+      Valid := (VR = vrEqual);
     vcoGreaterOrEqual:
-      IsValid := (VR = vrGreaterThan) or (VR = vrEqual);
+      Valid := (VR = vrGreaterThan) or (VR = vrEqual);
     vcoGreaterThan:
-      IsValid := (VR = vrGreaterThan);
+      Valid := (VR = vrGreaterThan);
   end;
 end;
 
@@ -368,12 +505,207 @@ var
   VR: TVariantRelationship;
 begin
   VR := VarCompareValue(GetValidationPropertyValue, MinimumValue);
-  IsValid := (VR = vrGreaterThan) or (VR = vrEqual);
-  if IsValid then
+  Valid := (VR = vrGreaterThan) or (VR = vrEqual);
+  if Valid then
   begin
     VR := VarCompareValue(GetValidationPropertyValue, MaximumValue);
-    IsValid := (VR = vrLessThan) or (VR = vrEqual);
+    Valid := (VR = vrLessThan) or (VR = vrEqual);
   end;
+end;
+
+{ TJvValidators }
+
+constructor TJvValidators.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FItems := TList.Create;
+end;
+
+destructor TJvValidators.Destroy;
+var V: TJvBaseValidator;
+begin
+  Debug('TJvValidators.Destroy: Count is %d', [FItems.Count]);
+  while FItems.Count > 0 do
+  begin
+    V := TJvBaseValidator(FItems.Last);
+    V.FValidator := nil;
+    V.Free;
+    FItems.Delete(FItems.Count - 1);
+  end;
+  FItems.Free;
+  inherited;
+end;
+
+function TJvValidators.DoValidateFailed(
+  const ABaseValidator: TJvBaseValidator): boolean;
+begin
+  Result := true;
+  if Assigned(FOnValidateFailed) then
+    FOnValidateFailed(self, ABaseValidator, Result);
+  
+end;
+
+function TJvValidators.Validate: boolean;
+var i: integer;
+begin
+  Result := true;
+  if ValidationSummary <> nil then
+    FValidationSummary.BeginUpdate;
+  try
+    for i := 0 to Count - 1 do
+    begin
+      Items[i].Validate;
+      if not Items[i].Valid then
+      begin
+        if (Items[i].ErrorMessage <> '') and (Items[i].ControlToValidate <> nil) then
+        begin
+          if ValidationSummary <> nil then
+            FValidationSummary.AddError(Items[i].ErrorMessage);
+          if ErrorProvider <> nil then
+            FErrorProvider.SetError(Items[i].ControlToValidate,Items[i].ErrorMessage);
+        end;
+        Result := false;
+        if not DoValidateFailed(Items[i]) then
+          Exit;
+      end;
+    end;
+  finally
+    if ValidationSummary <> nil then
+      FValidationSummary.EndUpdate;
+  end;
+end;
+
+procedure TJvValidators.Notification(AComponent: TComponent;
+  Operation: TOperation);
+begin
+  inherited;
+  if Operation = opRemove then
+  begin
+{$IFDEF COMPILER6_UP}
+    if (Assigned(ValidationSummary)) and (AComponent.IsImplementorOf(ValidationSummary)) then
+      ValidationSummary := nil;
+    if (Assigned(ErrorProvider)) and (AComponent.IsImplementorOf(ErrorProvider)) then
+      ErrorProvider := nil;
+{$ELSE}
+    if (ValidationSummary = AComponent) then
+      ValidationSummary := nil;
+    if ErrorProvider = AComponent then
+      ErrorProvider := nil;
+{$ENDIF}
+  end;
+end;
+
+procedure TJvValidators.GetChildren(Proc: TGetChildProc; Root: TComponent);
+var i: integer;
+begin
+  Debug('TJvValidators.GetChildren: Count is %d, Root is %s', [Count, ComponentName(Root)]);
+  for i := 0 to Count - 1 do
+    Proc(Items[i]);
+end;
+
+procedure TJvValidators.SetValidationSummary(const Value: IJvValidationSummary);
+begin
+{$IFDEF COMPILER6_UP}
+  ReferenceInterface(FValidationSummary, opRemove);
+  FValidationSummary := Value;
+  ReferenceInterface(FValidationSummary, opInsert);
+{$ELSE}
+  FValidationSummary := Value;
+{$ENDIF}
+end;
+
+{$IFNDEF COMPILER6_UP}
+
+procedure TJvValidators.SetValidationSummaryComponent(Value: TComponent);
+var obj: IJvValidationSummary;
+begin
+  if Value <> FValidationSummaryComponent then
+  begin
+    if FValidationSummaryComponent <> nil then
+      FValidationSummaryComponent.RemoveFreeNotification(self);
+    if Value = nil then
+    begin
+      FValidationSummaryComponent := nil;
+      SetValidationSummary(nil);
+      Exit;
+    end;
+    if not Supports(Value, IJvValidationSummary, obj) then
+      raise EValidatorError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IJvValidationSummary']);
+    if Value = self then
+      raise EValidatorError.Create(SCircularReference);
+    SetValidationSummary(obj);
+    FValidationSummaryComponent := Value;
+    FValidationSummaryComponent.FreeNotification(self);
+  end;
+end;
+
+procedure TJvValidators.SetErrorProviderComponent(Value: TComponent);
+var obj: IJvErrorProvider;
+begin
+  if Value <> FErrorProviderComponent then
+  begin
+    if FErrorProviderComponent <> nil then
+      FErrorProviderComponent.RemoveFreeNotification(self);
+    if Value = nil then
+    begin
+      FErrorProviderComponent := nil;
+      SetErrorProvider(nil);
+      Exit;
+    end;
+    if not Supports(Value, IJvErrorProvider, obj) then
+      raise EValidatorError.CreateFmt(SInterfaceNotSupported, [Value.Name, 'IJvErrorProvider']);
+    if Value = self then
+      raise EValidatorError.Create(SCircularReference);
+    SetErrorProvider(obj);
+    FErrorProviderComponent := Value;
+    FErrorProviderComponent.FreeNotification(self);
+  end;
+end;
+
+{$ENDIF}
+
+procedure TJvValidators.Insert(AValidator: TJvBaseValidator);
+begin
+  Debug('TJvValidators.Insert: inserting %s', [ComponentName(AValidator)]);
+  Assert(AValidator <> nil, SInsertNilValidator);
+  AValidator.FValidator := self;
+  if FItems.IndexOf(AValidator) < 0 then
+    FItems.Add(AValidator);
+end;
+
+procedure TJvValidators.Remove(AValidator: TJvBaseValidator);
+begin
+  Debug('TJvValidators.Remove: removing %s', [ComponentName(AValidator)]);
+  Assert(AValidator <> nil, SRemoveNilValidator);
+  Assert(AValidator.FValidator = self, SValidatorNotChild);
+  AValidator.FValidator := nil;
+  FItems.Remove(AValidator);
+end;
+
+function TJvValidators.GetCount: integer;
+begin
+  Result := FItems.Count;
+end;
+
+function TJvValidators.GetItem(Index: integer): TJvBaseValidator;
+begin
+  Result := TJvBasevalidator(FItems[Index]);
+end;
+
+procedure TJvValidators.Exchange(Index1, Index2: integer);
+begin
+  FItems.Exchange(Index1, Index2);
+end;
+
+procedure TJvValidators.SetErrorProvider(const Value: IJvErrorProvider);
+begin
+{$IFDEF COMPILER6_UP}
+  ReferenceInterface(FErrorProvider, opRemove);
+  FErrorProvider := Value;
+  ReferenceInterface(FErrorProvider, opInsert);
+{$ELSE}
+  FErrorProvider := Value;
+{$ENDIF}
 end;
 
 { TJvValidationSummary }
@@ -383,24 +715,28 @@ begin
   if Summaries.IndexOf(ErrorMessage) < 0 then
   begin
     Summaries.Add(ErrorMessage);
+    if (FUpdateCount = 0) and Assigned(FOnAddError) then
+      FOnAddError(self);
     Change;
   end;
 end;
 
 procedure TJvValidationSummary.RemoveError(const ErrorMessage: string);
-var i:integer;
+var i: integer;
 begin
   i := Summaries.IndexOf(ErrorMessage);
   if i > -1 then
   begin
     Summaries.Delete(i);
+    if (FUpdateCount = 0) and Assigned(FOnRemoveError) then
+      FOnRemoveError(self);
     Change;
   end;
 end;
 
 destructor TJvValidationSummary.Destroy;
 begin
-  FreeAndNil(FSummaries);
+  FSummaries.Free;
   inherited Destroy;
 end;
 
@@ -413,148 +749,41 @@ end;
 
 procedure TJvValidationSummary.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(self);
-end;
-
-{ TJvValidatorList }
-
-function TJvValidatorList.Add(AValidatorClass: TJvBaseValidatorClass): TJvBaseValidator;
-var i:integer;
-begin
-  if AValidatorClass = nil then
-    raise EValidatorError.Create('AValidatorClass cannot be nil');
-  i := Add(AValidatorClass.Create);
-  Result := Validators[i];
-end;
-
-function TJvValidatorList.Add(AValidator: TJvBaseValidator): integer;
-begin
-  if AValidator = nil then
-    raise EValidatorError.Create('AValidator cannot be nil');
-  Result := FValidators.Add(AValidator);
-end;
-
-procedure TJvValidatorList.Assign(Source: TPersistent);
-var i,j:integer;
-begin
-  if Source is TJvValidatorList then
+  if FUpdateCount <> 0 then
   begin
-    Clear;
-    for i := 0 to TJvValidatorList(Source).Count - 1 do
-      Add(TJvBaseValidatorClass(TJvValidatorList(Source)[i].ClassType)).Assign(TJvValidatorList(Source)[i]);
+    Inc(FPendingUpdates);
     Exit;
   end;
-  inherited;
+  if Assigned(FOnChange) then
+    FOnChange(self);
 end;
 
-procedure TJvValidatorList.Clear;
-var i:integer;
+procedure TJvValidationSummary.BeginUpdate;
 begin
-  for i := 0 to FValidators.Count - 1 do
-    Validators[i].Free;
-  FValidators.Clear;
+  Inc(FUpdateCount);
 end;
 
-constructor TJvValidatorList.Create;
+procedure TJvValidationSummary.EndUpdate;
 begin
-  inherited Create;
-  FValidators := TList.Create;
-end;
-
-procedure TJvValidatorList.Delete(Index: integer);
-begin
-  if (Index < 0) or (Index >= Count) then
-    raise EValidatorError.CreateFmt('Invalid index (%d)',[Index]);
-  TJvBaseValidator(FValidators[Index]).Free;
-  FValidators.Delete(Index);
-end;
-
-destructor TJvValidatorList.Destroy;
-begin
-  Clear;
-  FreeAndNil(FValidators);
-  inherited;
-end;
-
-function TJvValidatorList.DoValidateFailed(const AValidator: TJvBaseValidator): boolean;
-begin
-  Result := true;
-  if Assigned(FOnValidateFailed) then
-    FOnValidateFailed(self,AValidator,Result);
-end;
-
-function TJvValidatorList.GetCount: integer;
-begin
-  Result := FValidators.Count;
-end;
-
-function TJvValidatorList.GetValidators(Index: integer): TJvBaseValidator;
-begin
-  if (Index < 0) or (Index >= Count) then
-    raise EValidatorError.CreateFmt('Invalid index (%d)',[Index]);
-  Result := TJvBaseValidator(FValidators[Index]);
-end;
-
-function TJvValidatorList.Remove(Index: integer): TJvBaseValidator;
-begin
-  if (Index < 0) or (Index >= Count) then
-    raise EValidatorError.CreateFmt('Invalid index (%d)',[Index]);
-  Result := TJvBaseValidator(FValidators[Index]);
-  FValidators.Delete(Index);
-end;
-
-function TJvValidatorList.Validate: boolean;
-var i:integer;
-begin
-  Result := true;
-  for i := 0 to Count - 1 do
+  Dec(FUpdateCount);
+  if FUpdateCount < 0 then
+    FUpdateCount := 0;
+  if (FUpdateCount = 0) and (FPendingUpdates > 0) then
   begin
-    Validators[i].Validate;
-    if not Validators[i].IsValid then
-    begin
-      Result := false;
-      if not DoValidateFailed(Validators[i]) then Exit;
-    end;
+    Change;
+    FPendingUpdates := 0;
   end;
 end;
 
-{ TJvValidator }
+initialization
+//  RegisterClasses([TJvValidators, TJvValidationSummary]);
+  TJvBaseValidator.RegisterBaseValidator('Required Field Validator',TJvRequiredFieldValidator);
+  TJvBaseValidator.RegisterBaseValidator('Compare Validator',TJvCompareValidator);
+  TJvBaseValidator.RegisterBaseValidator('Range Validator',TJvRangeValidator);
+  TJvBaseValidator.RegisterBaseValidator('Regular Expression Validator',TJvRegularExpressionValidator);
+  TJvBaseValidator.RegisterBaseValidator('Custom Validator',TJvCustomValidator);
 
-constructor TJvValidator.Create(AOwner: TComponent);
-begin
-  inherited;
-  FValidators := TJvValidatorList.Create;
-  FValidators.OnValidateFailed := DoInternalValidateFailed;
-end;
-
-destructor TJvValidator.Destroy;
-begin
-  FValidators.Free;
-  inherited;
-end;
-
-procedure TJvValidator.DoInternalValidateFailed(Sender: TObject; AValidator: TJvBaseValidator; var Continue:boolean);
-begin
-  Continue := DoValidateFailed(AValidator);
-end;
-
-function TJvValidator.DoValidateFailed(
-  const AValidator: TJvBaseValidator): boolean;
-begin
-  Result := true;
-  if Assigned(FonValidateFailed) then
-    FonValidateFailed(self,AValidator,Result);
-end;
-
-procedure TJvValidator.SetValidators(const Value: TJvValidatorList);
-begin
-  FValidators.Assign(Value);
-end;
-
-function TJvValidator.Validate: boolean;
-begin
-  Result := FValidators.Validate;
-end;
-
+finalization
+  FValidatorsList.Free;
 end.
 

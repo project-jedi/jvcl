@@ -20,9 +20,7 @@ object frmTreeViewItems: TfrmTreeViewItems
   object Splitter1: TSplitter
     Left = 129
     Top = 0
-    Width = 3
     Height = 159
-    Cursor = crHSplit
   end
   object Panel1: TPanel
     Left = 0
@@ -231,21 +229,6 @@ object frmTreeViewItems: TfrmTreeViewItems
       ShortCut = 16430
       OnExecute = acDeleteExecute
     end
-    object acFileOpen: TFileOpen
-      Category = 'File'
-      Caption = '&Open...'
-      Hint = 'Open|Opens an existing file'
-      ImageIndex = 8
-      ShortCut = 16463
-      OnAccept = acFileOpenAccept
-    end
-    object acFileSaveAs: TFileSaveAs
-      Category = 'File'
-      Caption = 'Save &As...'
-      Hint = 'Save As|Saves the active file with a new name'
-      ImageIndex = 30
-      OnAccept = acFileSaveAsAccept
-    end
     object acNodeMoveLeft: TAction
       Category = 'TreeView'
       Caption = 'Move left'
@@ -290,10 +273,8 @@ object frmTreeViewItems: TfrmTreeViewItems
       Caption = '-'
     end
     object Save1: TMenuItem
-      Action = acFileOpen
     end
     object Load1: TMenuItem
-      Action = acFileSaveAs
     end
   end
 end
