@@ -34,7 +34,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvExGrids;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Grids,
@@ -61,10 +63,10 @@ type
  {$ENDIF VCL}
 {$ENDIF COMPILER6_UP}
 
-{$IFNDEF HAS_GRID_EDITSTYLE}
- // Compiler 5 and VisualCLX do not have TEditStyle
+  {$IFNDEF HAS_GRID_EDITSTYLE}
+  // Compiler 5 and VisualCLX do not have TEditStyle
   TEditStyle = (esSimple, esEllipsis, esPickList);
-{$ENDIF HAS_GRID_EDITSTYLE}
+  {$ENDIF HAS_GRID_EDITSTYLE}
 
 
   TJvExInplaceEdit = class(TInplaceEdit, IJvWinControlEvents, IJvControlEvents, IPerformControl)
@@ -311,8 +313,8 @@ type
   {$ENDIF VCL}
   end;
   
-{$IFDEF VCL}
- {$IFDEF COMPILER6_UP}
+  {$IFDEF VCL}
+  {$IFDEF COMPILER6_UP}
   TJvExCustomDrawGrid = class(TCustomDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -557,8 +559,8 @@ type
   {$ENDIF VCL}
   end;
   
- {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+  {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
 
   TJvExDrawGrid = class(TDrawGrid,  IJvWinControlEvents, IJvCustomControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
@@ -1428,7 +1430,7 @@ begin
 end;
 {$ENDIF VisualCLX}
 {$IFDEF VCL}
- {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExCustomDrawGrid.Dispatch(var Msg);
 asm
@@ -2046,7 +2048,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
- {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 
 {$IFDEF VCL}

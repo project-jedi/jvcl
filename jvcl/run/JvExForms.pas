@@ -34,7 +34,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvExForms;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, ToolWin,

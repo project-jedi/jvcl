@@ -34,7 +34,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvExStdCtrls;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, StdCtrls,
@@ -1309,8 +1311,8 @@ type
   {$ENDIF VCL}
   end;
   
-{$IFDEF VCL}
- {$IFDEF COMPILER6_UP}
+  {$IFDEF VCL}
+  {$IFDEF COMPILER6_UP}
   TJvExCustomCombo = class(TCustomCombo, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -1436,8 +1438,8 @@ type
   {$ENDIF VCL}
   end;
   
- {$ENDIF COMPILER6_UP}
-{$ENDIF VCL}
+  {$ENDIF COMPILER6_UP}
+  {$ENDIF VCL}
   TJvExCustomComboBox = class(TCustomComboBox, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -2688,7 +2690,7 @@ type
   {$ENDIF VCL}
   end;
   
-{$IFDEF VCL}
+  {$IFDEF VCL}
   TJvExCustomStaticText = class(TCustomStaticText, IJvWinControlEvents, IJvControlEvents, IPerformControl)
   {$IFDEF VCL}
   protected
@@ -2939,7 +2941,7 @@ type
   {$ENDIF VCL}
   end;
   
-{$ENDIF VCL}
+  {$ENDIF VCL}
 
 implementation
 
@@ -6106,7 +6108,7 @@ end;
 {$DEFINE CONSTRUCTOR_CODE}
 
 {$IFDEF VCL}
- {$IFDEF COMPILER6_UP}
+{$IFDEF COMPILER6_UP}
 {$IFDEF VCL}
 procedure TJvExCustomCombo.Dispatch(var Msg);
 asm
@@ -6419,7 +6421,7 @@ begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
 {$ENDIF VisualCLX}
- {$ENDIF COMPILER6_UP}
+{$ENDIF COMPILER6_UP}
 {$ENDIF VCL}
 {$IFDEF VCL}
 procedure TJvExCustomComboBox.Dispatch(var Msg);

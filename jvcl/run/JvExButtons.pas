@@ -34,7 +34,9 @@ Known Issues:
  ****************************************************************************}
 
 unit JvExButtons;
+
 interface
+
 uses
   {$IFDEF VCL}
   Windows, Messages, Graphics, Controls, Forms, Buttons, StdCtrls,
@@ -676,9 +678,7 @@ begin
       Invalidate;
   end;
 end;
-
 {$ENDIF VisualCLX}
-
 procedure TJvExBitBtn.CMFocusChanged(var Msg: TCMFocusChanged);
 begin
   inherited;
@@ -708,24 +708,27 @@ function TJvExBitBtn.DoPaintBackground(Canvas: TCanvas; Param: Integer): Boolean
 asm
   JMP   DefaultDoPaintBackground
 end;
-
 {$IFDEF VCL}
-
 constructor TJvExBitBtn.Create(AOwner: TComponent);
 begin
+  {$IFDEF VisualCLX}
+  WindowProc := WndProc;
+  {$IF declared(PatchedVCLX) and (PatchedVCLX > 3.3)}
+  SetCopyRectMode(Self, cmVCL);
+  {$IFEND}
+  {$ENDIF VisualCLX}
   inherited Create(AOwner);
   FHintColor := clInfoBk;
+  
 end;
 
 destructor TJvExBitBtn.Destroy;
 begin
+  
   inherited Destroy;
 end;
-
 {$ENDIF VCL}
-
 {$IFDEF VisualCLX}
-
 constructor TJvExBitBtn.Create(AOwner: TComponent);
 begin
   WindowProc := WndProc;
@@ -740,6 +743,7 @@ end;
 
 destructor TJvExBitBtn.Destroy;
 begin
+  
   FCanvas.Free;
   inherited Destroy;
 end;
@@ -748,7 +752,6 @@ procedure TJvExBitBtn.Paint;
 begin
   WidgetControl_DefaultPaint(Self, Canvas);
 end;
-
 {$ENDIF VisualCLX}
 
 end.
