@@ -119,7 +119,7 @@ type
     property ShowAccelChar: Boolean read FShowAccelChar write SetShowAccelChar default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property Layout: TTextLayout read FLayout write SetLayout;
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
@@ -214,7 +214,7 @@ begin
   Height := 17;
   FAutoSize := True;
   FShowAccelChar := True;
-  FHotTrackFontOptions := DefaultHotTrackOptions;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
   //  ControlStyle := ControlStyle + [csAcceptsControls];
 end;
 

@@ -73,7 +73,7 @@ type
     property AutoSize:boolean read FAutoSize write SetAutoSize;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
 
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
@@ -95,7 +95,7 @@ begin
   FOver := False;
   FHintColor := clInfoBk;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  FHotTrackFontOptions := DefaultHotTrackOptions;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
 destructor TJvRadioButton.Destroy;

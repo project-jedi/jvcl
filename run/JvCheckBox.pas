@@ -83,7 +83,7 @@ type
     property AutoSize: Boolean read FAutoSize write SetAutoSize default True;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotFont write SetHotFont;
-    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
+    property HotTrackFontOptions: TJvTrackFOntOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
 
     property HintColor: TColor read FColor write FColor default clInfoBk;
 
@@ -108,7 +108,7 @@ begin
   FColor := clInfoBk;
   FOver := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  FHotTrackFontOptions := DefaultHotTrackOptions;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
 destructor TJvCheckBox.Destroy;

@@ -794,7 +794,7 @@ type
     property ParentBiDiMode;
     property HotTrack: Boolean read FHotTrack write FHotTrack default False;
     property HotTrackFont: TFont read FHotTrackFont write SetHotTrackFont;
-    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultHotTrackOptions;
+    property HotTrackFontOptions:TJvTrackFontOptions read FHotTrackFontOptions write SetHotTrackFontOptions default DefaultTrackFontOptions;
     property HotGlyph: TBitmap read FHotGlyph write SetGlyph;
     property HintColor: TColor read FHintColor write FHintColor default clInfoBk;
 
@@ -2716,7 +2716,7 @@ begin
   FShadowColor := clBtnHighlight;
   FShadowSize := 0;
   FShadowPos := spLeftTop;
-  FHotTrackFontOptions := DefaultHotTrackOptions;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
 destructor TJvCustomLabel.Destroy;
@@ -4784,7 +4784,7 @@ begin
   FLayout := blGlyphTop;
   FMarkDropDown := True;
   Inc(ButtonCount);
-  FHotTrackFontOptions := DefaultHotTrackOptions;
+  FHotTrackFontOptions := DefaultTrackFontOptions;
 end;
 
 destructor TJvSpeedButton.Destroy;
