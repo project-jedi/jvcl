@@ -293,9 +293,9 @@ type
     { IJvDataIDSearch methods }
     function FindByID(ID: string; const Recursive: Boolean = False): IJvDataItem;
   public
-    constructor Create; virtual;
-    class function CreateProvider(const Provider: IJvDataProvider): TJvBaseDataItems; virtual;
-    class function CreateParent(const Parent: IJvDataItem): TJvBaseDataItems; virtual;
+    constructor Create; overload; virtual;
+    constructor Create(const Provider: IJvDataProvider); overload; virtual;
+    constructor Create(const Parent: IJvDataItem); overload; virtual;
     procedure BeforeDestruction; override;
   end;
 
@@ -571,9 +571,8 @@ type
     function IndexOf(Ctx: IJvDataContext): Integer; virtual;
     property DsgnContext: IJvDataContext read FDsgnContext write FDsgnContext;
   public
-    constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext); virtual;
-    class function CreateManaged(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
-      ManagerClass: TJvDataContextsManagerClass): TJvBaseDataContexts; virtual;
+    constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
+      ManagerClass: TJvDataContextsManagerClass = nil); virtual;
   end;
 
   // Basic context list manager
@@ -629,7 +628,8 @@ type
     function GetCount: Integer; override;
     function GetContext(Index: Integer): IJvDataContext; override;
   public
-    constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext); override;
+    constructor Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
+      ManagerClass: TJvDataContextsManagerClass = nil); override;
     destructor Destroy; override;
   end;
 
@@ -2262,21 +2262,21 @@ begin
   inherited Create;
 end;
 
-class function TJvBaseDataItems.CreateProvider(const Provider: IJvDataProvider): TJvBaseDataItems;
+constructor TJvBaseDataItems.Create(const Provider: IJvDataProvider);
 begin
-  Result := TJvDataItemsClass(Self).Create;
-  Result.FProvider := Provider;
+  Create;
+  FProvider := Provider;
 end;
 
-class function TJvBaseDataItems.CreateParent(const Parent: IJvDataItem): TJvBaseDataItems;
+constructor TJvBaseDataItems.Create(const Parent: IJvDataItem);
 begin
-  Result := CreateProvider(Parent.GetItems.Provider);
-  Result.FParent := Pointer(Parent);
+  Create(Parent.GetItems.Provider);
+  FParent := Pointer(Parent);
   if (Parent <> nil) and Parent.GetItems.IsDynamic then
-    Result.FParentIntf := Parent;
+    FParentIntf := Parent;
   if (Parent <> nil) and (Parent.GetImplementer is TExtensibleInterfacedPersistent) then
-    Result.FSubAggregate := TJvBaseDataItemSubItems.Create(
-      TExtensibleInterfacedPersistent(Parent.GetImplementer), Result);
+    FSubAggregate := TJvBaseDataItemSubItems.Create(
+      TExtensibleInterfacedPersistent(Parent.GetImplementer), Self);
 end;
 
 procedure TJvBaseDataItems.BeforeDestruction;
@@ -2687,7 +2687,7 @@ begin
     end;
     if I = -1 then
     begin
-      TJvDataItemsClass(AClass).CreateParent(Self);
+      TJvDataItemsClass(AClass).Create(Self);
       I := IndexOfImplClass(TJvBaseDataItemSubItems);
     end;
     while not Reader.EndOfList do
@@ -3147,11 +3147,11 @@ begin
   FContextStack := TInterfaceList.Create;
   if ContextsClass <> nil then
   begin
-    FDataContextsImpl := ContextsClass.CreateManaged(Self, nil, ContextsManagerClass);
+    FDataContextsImpl := ContextsClass.Create(Self, nil, ContextsManagerClass);
     FDataContextsIntf := FDataContextsImpl;
   end;
   if ItemsClass <> nil then
-    FDataItems := ItemsClass.CreateProvider(Self)
+    FDataItems := ItemsClass.Create(Self)
   else
     raise EJVCLDataProvider.Create(SDataProviderNeedsItemsImpl);
 end;
@@ -3232,19 +3232,14 @@ begin
     Dec(Result);
 end;
 
-constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext);
+constructor TJvBaseDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
+  ManagerClass: TJvDataContextsManagerClass);
 begin
   inherited Create;
   FProvider := AProvider;
   FAncestor := AAncestor;
-end;
-
-class function TJvBaseDataContexts.CreateManaged(AProvider: IJvDataProvider;
-  AAncestor: IJvDataContext; ManagerClass: TJvDataContextsManagerClass): TJvBaseDataContexts;
-begin
-  Result := TJvDataContextsClass(Self).Create(AProvider, AAncestor);
   if ManagerClass <> nil then
-    ManagerClass.Create(Result);
+    ManagerClass.Create(Self);
 end;
 
 //===TJvBaseDataContextsManager=====================================================================
@@ -3392,9 +3387,10 @@ begin
   Result := IJvDataContext(FContexts[Index]);
 end;
 
-constructor TJvDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext);
+constructor TJvDataContexts.Create(AProvider: IJvDataProvider; AAncestor: IJvDataContext;
+  ManagerClass: TJvDataContextsManagerClass);
 begin
-  inherited Create(AProvider, AAncestor);
+  inherited Create(AProvider, AAncestor, ManagerClass);
   FContexts := TInterfaceList.Create;
 end;
 
