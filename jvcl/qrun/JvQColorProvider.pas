@@ -507,7 +507,7 @@ implementation
 
 uses
   
-  Controls,
+  QControls,
   
   RTLConsts,
   

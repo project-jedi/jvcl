@@ -499,8 +499,9 @@ var
   FlatOffset: Integer;
 begin
   R := ClientRect;
-  
+  (*)
   Canvas.Start;
+  RequiredState(Canvas,
   try
     R := ClientRect;
     InflateRect(R, -2, -2);
@@ -511,7 +512,13 @@ begin
   finally
     Canvas.Stop;
   end;
-  
+  (*)
+//  inherited;
+  if BorderStyle = bsSingle then
+  begin
+    DrawShadePanel(Canvas, R, false, 1, nil);
+    InflateRect(R, -1, -1);
+  end;
   with Canvas do
   begin
     Brush.Color := Color;

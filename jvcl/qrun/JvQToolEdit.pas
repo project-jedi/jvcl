@@ -806,7 +806,11 @@ function IsInWordArray(Value: Word; const A: array of Word): Boolean;
 implementation
 
 uses
-  ShellAPI, Consts, Math, 
+  {$IFDEF MSWINDOWS}
+  ShellAPI,
+  {$ENDIF MSWINDOWS}
+  QConsts,
+  Math,
   JvQThemes, JvQResources, JvQJVCLUtils, JvQPickDate,
   
   JvQConsts;

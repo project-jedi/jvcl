@@ -60,7 +60,7 @@ type
     property Size: Integer read GetSize write SetSize;
     property Data: TStream read GetStream write SetStream;
   published
-    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property AboutJVCLX: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
   end;
 
 implementation
