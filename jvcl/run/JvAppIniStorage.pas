@@ -306,6 +306,7 @@ begin
     RefPath := GetAbsPath(Path);
     if RefPath = '' then
       RefPath := DefaultSection;
+    if AutoReload and not IsUpdating then Reload;
     IniFile.ReadSections(Strings);
     I := Strings.Count - 1;
     while I >= 0 do
@@ -339,6 +340,7 @@ begin
     RefPath := GetAbsPath(Path);
     if RefPath = '' then
       RefPath := DefaultSection;
+    if AutoReload and not IsUpdating then Reload;
     IniFile.ReadSectionValues(RefPath, Strings);
     for I := Strings.Count - 1 downto 0 do
     begin
@@ -398,6 +400,7 @@ begin
     TopSection := GetAbsPath(Path);
     Sections := TStringList.Create;
     try
+      if AutoReload and not IsUpdating then Reload;
       IniFile.ReadSections(Sections);
       if TopSection = '' then
         for I := 0 to Sections.Count - 1 do
@@ -406,6 +409,7 @@ begin
         for I := 0 to Sections.Count - 1 do
           if Pos(TopSection, Sections[I]) = 1 then
             IniFile.EraseSection(Sections[I]);
+      if AutoFlush and not IsUpdating then Flush;
     finally
       Sections.Free;
     end;
@@ -416,6 +420,7 @@ procedure TJvCustomAppIniStorage.RemoveValue(const Section, Key: string);
 begin
   if IniFile <> nil then
   begin
+    if AutoReload and not IsUpdating then Reload;
     if IniFile.ValueExists(Section, Key) then
     begin
       IniFile.DeleteKey(Section, Key);
@@ -448,6 +453,7 @@ var
   Section: string;
   Key: string;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, Section, Key);
   Result := IniFile.SectionExists(Section + '\' + Key);
 end;
@@ -461,6 +467,7 @@ begin
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := DefaultSection;
+  if AutoReload and not IsUpdating then Reload;
   Result := IniFile.SectionExists(RefPath);
   if Result and ListIsValue and IniFile.ValueExists(RefPath, cCount) then
   begin

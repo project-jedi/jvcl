@@ -201,6 +201,7 @@ var
   Key: string;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   SplitKeyPath(Path, Section, Key);
   Result := False;
   Node := GetNodeFromPath(Section);
@@ -404,6 +405,7 @@ var
   I: Integer;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := cEmptyPath;
@@ -434,6 +436,7 @@ var
   Node: TJvSimpleXmlElem;
   Name: string;
 begin
+  if AutoReload and not IsUpdating then Reload;
   PathIsList := ReportListAsValue and ListStored(Path);
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
@@ -470,6 +473,7 @@ var
   Node: TJvSimpleXmlElem;
   Name: string;
 begin
+  if AutoReload and not IsUpdating then Reload;
   RefPath := GetAbsPath(Path);
   if RefPath = '' then
     RefPath := cEmptyPath;
@@ -512,6 +516,7 @@ var
   I: Integer;
   Node: TJvSimpleXmlElem;
 begin
+  if AutoReload and not IsUpdating then Reload;
   NodeList := TStringList.Create;
   if StartNode <> nil then
     Node := StartNode
