@@ -38,9 +38,9 @@ package JvMMD7D;
 
 requires
   JvMMD7R,
-  JvQCmpD7R,
-  JvQCoreD7D,
-  JvQStdCtrlsD7R,
+  JvCmpD7R,
+  JvCoreD7D,
+  JvStdCtrlsD7R,
   rtl,
   designide,
   vcl,
