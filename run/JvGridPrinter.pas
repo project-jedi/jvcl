@@ -23,7 +23,7 @@ located at http://jvcl.sourceforge.net
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$I JEDI.INC}
+{$I JVCL.INC}
 unit JvGridPrinter;
 
 interface

@@ -4845,7 +4845,7 @@ begin
     end;
 end;
 
-// (rom) something for JEDI.INC
+// (rom) something for JVCL.INC
 
 {$DEFINE MBCS}
 
