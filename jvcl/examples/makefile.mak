@@ -59,27 +59,27 @@ StartBackup.exe StartRestore.exe \
 UIB.dll Backup.exe Restore.exe BlobStream.exe BlobSample.exe cursor.exe DataPump.exe MetaData.exe \
 Query.exe QuickScript.exe Script.exe StoredProc.exe QueryStream.exe
 #---------------------------------------------------------------------------------------------------
-standard: JvAniProj.exe AppDdeCmdExample.exe JvAppHotKeyDemo.exe JvAppInstDemo.exe ArrowButtonDemo.exe \
-JvAviCapDemo.exe BalloonPrj.exe JvBehaviorLabelDemo.exe BmpAnimDemo.exe JvBrowserFolder.exe \
-CaptionButtonDemo.exe ChangeNotifyDemo.exe JvCharMapDemo.exe JvChartDemo.exe CheckTVDemo.exe \
-JvClipboardViewerProj.exe ColorButtonDemo.exe ColorComboDemo.exe JvComboListBoxDemo.exe \
-ContentScrollerDemo.exe ControlsExample.exe CreateProcessExample.exe CsvDataDemo.exe JvDataEmbeddedProj.exe \
-DBDTPDemo.exe JvDBGridExportDemo.exe JvDbMaskEditDemo.exe JvDialogsDemo.exe JvDomainUpDownDemo.exe \
-JvDotNetDemo.exe DSAExamples.exe MessageDlgEditor.exe JvEdits.exe JvErrorIndicatorDemo.exe FileDirDemo.exe \
-FindReplaceDemo.exe prjControls.exe BasicDemo.exe CollectionDemo.exe SimpleHIDWrite.exe \
-UsagesDemo.exe JvHtmlParserProj.exe JvID3v1Demo.exe JvID3v2Demo.exe Install2LabelDemo.exe \
-JvItemViewerDemo.exe JvLinkLabelDemo.exe ListCombDemo.exe JvLogFileDemo.exe MailExample.exe \
-JvMarkupLabelDemo.exe JvMenusExample.exe JvMouseGestureDemo.exe JvMruListDemo.exe \
-EventViewer.exe JvObjPickerDemo.exe JvOLEDragCursorsDemo.exe OLBarDemo.exe pm.exe \
-JvPanelDemo.exe JvParameterListDemo.exe JvPlayListProj.exe JvPrvwDemo.exe ProfilerDemo.exe \
-JvProgressDialogDemo.exe RegEditDemo.exe JvRollOutDemo.exe RunDLL32Demo.exe JvScreenCaptureProj.exe \
-ScrollWinDemo.exe JvSearchFileProj.exe JvShellHookDemo.exe ShFileOpDemo.exe SpecialProgressTestPrj.exe \
-JvSpellCheckerDemo.exe JvStringGridDemo.exe JvSystemPopupProj.exe SystemPopupTest.exe JvThreadProj.exe \
-JvThumbnailDemo.exe PhotoOp.exe TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe JvTranslatorProj.exe \
-TransparentButtonDemo.exe JvTrayIconDemo.exe JvTreeViewAsMenu.exe JvUninstallCtrlsDemo.exe \
-JvUrlListGrabberDemo.exe JvFormatEditDemo.exe JvValidatorsDemo.exe JvWinDialogsDemo.exe \
-JvWindowsTitleProj.exe WndProcHookDemo.exe Hospital.exe WinXPBarDemo.exe SimpleDemo.exe \
-JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe
+standard: AppDdeCmdExample.exe JvAniProj.exe JvAppHotKeyDemo.exe JvAppInstDemo.exe \
+ArrowButtonDemo.exe JvAviCapDemo.exe BalloonPrj.exe JvBehaviorLabelDemo.exe BmpAnimDemo.exe \
+JvBrowserFolder.exe CaptionButtonDemo.exe ChangeNotifyDemo.exe JvCharMapDemo.exe JvChartDemo.exe \
+JvCheckBoxDemo.exe CheckTVDemo.exe JvClipboardViewerProj.exe ColorButtonDemo.exe ColorComboDemo.exe \
+JvComboListBoxDemo.exe ContentScrollerDemo.exe ControlsExample.exe CreateProcessExample.exe \
+CsvDataDemo.exe JvDataEmbeddedProj.exe DBDTPDemo.exe JvDBGridExportDemo.exe JvDbMaskEditDemo.exe \
+JvDialogsDemo.exe JvDomainUpDownDemo.exe JvDotNetDemo.exe DSAExamples.exe MessageDlgEditor.exe \
+JvEdits.exe JvErrorIndicatorDemo.exe FileDirDemo.exe FindReplaceDemo.exe prjControls.exe BasicDemo.exe \
+CollectionDemo.exe SimpleHIDWrite.exe UsagesDemo.exe JvHtmlParserProj.exe JvID3v1Demo.exe JvID3v2Demo.exe \
+Install2LabelDemo.exe JvItemViewerDemo.exe JvLEDDemo.exe JvLinkLabelDemo.exe ListCombDemo.exe \
+JvLogFileDemo.exe MailExample.exe JvMarkupLabelDemo.exe JvMenusExample.exe JvMouseGestureDemo.exe \
+JvMruListDemo.exe JvNavPaneDemo.exe EventViewer.exe JvObjPickerDemo.exe OfficeColorButtonDemo.exe \
+JvOLEDragCursorsDemo.exe OLBarDemo.exe JvOutlookBarCustomDrawDemo.exe pm.exe JvPanelDemo.exe \
+JvParameterListDemo.exe JvPlayListProj.exe JvPrvwDemo.exe ProfilerDemo.exe JvProgressDialogDemo.exe \
+RegEditDemo.exe JvRollOutDemo.exe RunDLL32Demo.exe JvScreenCaptureProj.exe ScrollWinDemo.exe \
+JvSearchFileProj.exe JvShellHookDemo.exe ShFileOpDemo.exe SpecialProgressTestPrj.exe JvSpellCheckerDemo.exe \
+JvStringGridDemo.exe JvSystemPopupProj.exe SystemPopupTest.exe JvThreadProj.exe JvThumbnailDemo.exe \
+PhotoOp.exe TimeLineDemo.exe TipsDemo.exe SimpleTLTest1.exe JvTranslatorProj.exe TransparentButtonDemo.exe \
+JvTrayIconDemo.exe JvTreeViewAsMenu.exe JvUninstallCtrlsDemo.exe JvUrlListGrabberDemo.exe \
+JvFormatEditDemo.exe JvValidatorsDemo.exe JvWinDialogsDemo.exe JvWindowsTitleProj.exe WndProcHookDemo.exe \
+Hospital.exe WinXPBarDemo.exe SimpleDemo.exe JvZLibMultipleDemo.exe JvZoomProj.exe LinkedConsumers.exe
 #
 # (rom) temporarily deactivated  does not compile
 # JvMultiHTTPGrabberDemo.exe
@@ -1008,6 +1008,31 @@ RANotepad.exe: "RaLib\RaInterpreterNotepad\RANotepad.dpr"
 
 Rxdemo.exe: "RxLib\Rxdemo.dpr"
   @cd RxLib
+  $(DCC) $&.dpr
+  @cd ..
+
+JvLEDDemo.exe: "JvLED\JvLEDDemo.dpr"
+  @cd JvLED
+  $(DCC) $&.dpr
+  @cd ..
+
+JvCheckBoxDemo.exe: "JvCheckBoxRadioButton\JvCheckBoxDemo.dpr"
+  @cd JvCheckBoxRadioButton
+  $(DCC) $&.dpr
+  @cd ..
+
+OfficeColorButtonDemo.exe: "JvOfficeColorButton\OfficeColorButtonDemo.dpr"
+  @cd JvOfficeColorButton
+  $(DCC) $&.dpr
+  @cd ..
+
+JvOutlookBarCustomDrawDemo.exe: "JvOutlookBarCustomDraw\JvOutlookBarCustomDrawDemo.dpr"
+  @cd JvOutlookBarCustomDraw
+  $(DCC) $&.dpr
+  @cd ..
+
+JvNavPaneDemo.exe: "JvNavigationPane\JvNavPaneDemo.dpr"
+  @cd JvNavigationPane
   $(DCC) $&.dpr
   @cd ..
 #---------------------------------------------------------------------------------------------------

@@ -1,4 +1,4 @@
-program ColorButtonDemo;
+program OfficeColorButtonDemo;
 
 uses
   Forms,
