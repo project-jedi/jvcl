@@ -94,6 +94,7 @@ object JvProxyEditor: TJvProxyEditor
       175)
   end
   object FormStorage: TJvFormStorage
+    RegistryRoot = hkClassesRoot
     StoredValues = <>
     Left = 128
     Top = 112

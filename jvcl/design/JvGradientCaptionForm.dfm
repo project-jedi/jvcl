@@ -157,9 +157,6 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Height = 157
     Caption = '&Captions'
     TabOrder = 0
-    DesignSize = (
-      137
-      157)
     object NewButton: TButton
       Left = 8
       Top = 124
@@ -196,10 +193,13 @@ object GradCaptionsEditor: TGradCaptionsEditor
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = []
+    MinFontSize = 0
+    MaxFontSize = 0
     Left = 24
     Top = 76
   end
   object ColorDialog: TColorDialog
+    Ctl3D = True
     Left = 84
     Top = 76
   end

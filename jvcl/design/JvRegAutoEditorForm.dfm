@@ -46,9 +46,6 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
-      DesignSize = (
-        158
-        30)
       object btnOk: TButton
         Left = 1
         Top = 4
@@ -96,9 +93,6 @@ object JvRegEditor: TJvRegEditor
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
-      DesignSize = (
-        28
-        32)
       object btnAddProp: TSpeedButton
         Left = 2
         Top = 3

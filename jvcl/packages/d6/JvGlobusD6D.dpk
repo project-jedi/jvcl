@@ -1,7 +1,6 @@
 package JvGlobusD6D;
 
 {$R *.res}
-{$R '..\resources\JvGlobusReg.dcr'}
 {$ALIGN 8}
 {$ASSERTIONS ON}
 {$BOOLEVAL OFF}
