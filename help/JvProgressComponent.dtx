@@ -1,4 +1,4 @@
-## Locked by Peter Thörnqvist
+## Needs review
 ----------------------------------------------------------------------------------------------------
 @@JvProgressComponent.pas
 <GROUP JVCL.FileRef>
@@ -14,96 +14,115 @@ JVCLInfo
   GROUP=JVCL.??
   FLAG=Component
 Summary
-  Write here a summary (1 line)
+  A component that can display a progress dialog.
 Description
-  Write here a description
+  Use a TJvProgressComponent when you need to display a progress dialog in your application. Progress dialogs
+  are mostly used to provide feedback to the user when the application is performing a lengthy process and the
+  program needs to be disabled until finished.
+
+  To display the dialog, call the Execute method. While the dialog is visible, you can modify any of it's properties.
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.Cancel
 Summary
-  Write here a summary (1 line)
+  Specifies if the user clicked the Cancel button to close the dialog.
 Description
-  Write here a description
+  Read Cancel to determine if the dialog was closed because the user clicked the Cancel button. The value of
+  Cancel is always false while the dialog is displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  OnShow, Execute
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.Caption
 Summary
-  Write here a summary (1 line)
+  Specifies the text displayed on the dialogs caption.
 Description
-  Write here a description
+  Use Caption to change the Caption of the dialog form. The value can be changed even when the dialog is displayed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  InfoLabel
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.Execute
 Summary
-  Write here a summary (1 line)
+  Displays the progress dialog.
 Description
-  Write here a description
+  Call Execute to display the dialog. Before calling Execute, adjust the Caption, InfoLabel,
+  ProgressMax, ProgressMin and ProgressPosition properties to their initial values. While
+  the dialog is displayed, modify the properties of the component to update the values in the dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Caption, InfoLabel, ProgressMax, ProgressMin, ProgressPosition
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.InfoLabel
 Summary
-  Write here a summary (1 line)
+  Specifies the text displayed above the progress bar.
 Description
-  Write here a description
+  Use InfoLabel to display a descriptive text above the progress bar on the dialog.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Caption
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.OnShow
 Summary
-  Write here a summary (1 line)
+  Occurs when the dialog is displayed.
 Description
-  Write here a description
+  Write a handler for the OnShow event to take specific action when the dialog is displayed. For example, use this
+  event to reset the dialogs properties to their intial values. OnSHow is triggered as a result of calling Execute.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  Execute
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.ProgressMax
 Summary
-  Write here a summary (1 line)
+  Specifies the upper limit of the range of possible positions for the progress bar.
 Description
-  Write here a description
+  Use ProgressMax along with the \ProgressMin property to establish the range of possible positions for the progress bar.
+  Optimally, when the process tracked by the progress bar is complete, the value of \ProgressPosition should equal ProgressMax.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ProgressMin, ProgressPosition, ProgressStepIt
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.ProgressMin
 Summary
-  Write here a summary (1 line)
+  Specifies the lower limit of the range of possible positions for the progress bar.
 Description
-  Write here a description
+  Use \ProgressMax along with the ProgressMin property to establish the range of possible positions for the progress bar.
+  Optimally, when the process tracked by the progress bar is complete, the value of \ProgressPosition should equal ProgressMax.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ProgressMax, ProgressPosition, ProgressStep, ProgressStepIt
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.ProgressPosition
 Summary
-  Write here a summary (1 line)
+  Specifies the current position of the progress bar.
 Description
-  Write here a description
+  Read ProgressPosition to determine how far the process tracked by the progress bar has advanced from
+  \ProgressMin toward \ProgressMax.
+  Set ProgressPosition to cause the progress bar to display a position between \ProgressMin and \ProgressMax.
+  For example, when the process tracked by the progress bar completes, set ProgressPosition to
+  \ProgressMax so that it appears completely filled.
+
+  When a progress bar is created, \ProgressMin and \ProgressMax represent percentages,
+  where \ProgressMin is 0 (0% complete) and \ProgressMax is 100 (100% complete). If these values are not changed,
+  ProgressPosition is the percentage of the process that has already been completed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ProgressMin, ProgressMax, ProgressStep, ProgressStepIt
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.ProgressStep
 Summary
-  Write here a summary (1 line)
+  Specifies the amount that \ProgressPosition increases when the \ProgressStepIt method is called.
 Description
-  Write here a description
+  Set ProgressStep to specify the granularity of the progress bar. ProgressStep should reflect
+  the size of each step in the process tracked by the progress bar, in
+  the logical units used by the \ProgressMax and \ProgressMin properties.
+
+  When a progress bar is created, \ProgressMin and \ProgressMax represent
+  percentages, where \ProgressMin is 0 (0% complete) and \ProgressMax is 100 (100% complete).
+  If these values are not changed, ProgressStep is the percentage of the process
+  completed before the user is provided with additional visual feedback.
+
+  When the ProgressStepIt method is called, the value of \ProgressPosition increases by Step.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ProgressMin, ProgressMax, ProgressPosition, ProgressStepIt
 ----------------------------------------------------------------------------------------------------
 @@TJvProgressComponent.ProgressStepIt
 Summary
-  Write here a summary (1 line)
+  Advances \ProgressPosition by the amount specified in the \ProgressStep property.
 Description
-  Write here a description
+  Call the ProgressStepIt method to increase the value of \ProgressPosition by the value of the
+  \ProgressStep property. If \ProgressStep represents the size of one logical step in
+  the process tracked by the progress bar, call ProgressStepIt after each logical step is completed.
 See Also
-  List here other properties, methods (comma seperated)
-  Remove the 'See Also' section if there are no references
+  ProgressMin, ProgressMax, ProgressPosition, ProgressStep
