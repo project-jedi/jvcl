@@ -188,7 +188,7 @@ end;
 
 function TJvPluginWizard.GetIDString: string;
 begin
-  Result := 'JVCL.PluginWizard';
+  Result := RsPluginWizardIDString;
 end;
 
 function TJvPluginWizard.GetState: TWizardState;

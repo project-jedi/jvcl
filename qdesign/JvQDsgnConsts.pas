@@ -120,6 +120,7 @@ resourcestring
 resourcestring
   RsCreatesABandObjectDLLProject = 'Creates a Band Object DLL Project.';
   RsBandObjectDLLWizard = 'Band Object DLL Wizard';
+  RsBandObjectDLLWizardIDString = 'JVCL.JvBandObjectDLLWizard';
 
 //=== JvBandObjectDLLWizardForm.pas ==========================================
 resourcestring
@@ -610,6 +611,7 @@ resourcestring
     '// the declaration, but not the procedure itself. Both the return' + sLineBreak +
     '// type and the type created must be the same as the declared type above.';
   RsJediPluginWizard = 'JEDI Plugin Wizard';
+  RsPluginWizardIDString = 'JVCL.JvPluginWizard';
 
 //=== JvPreviewReg.pas =======================================================
 resourcestring

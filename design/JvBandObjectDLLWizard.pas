@@ -200,7 +200,7 @@ end;
 
 function TJvBandObjectDLLWizard.GetIDString: string;
 begin
-  Result := 'ctZen.JvBandObjectDLLWizard';
+  Result := RsBandObjectDLLWizardIDString;
 end;
 
 function TJvBandObjectDLLWizard.GetName: string;
