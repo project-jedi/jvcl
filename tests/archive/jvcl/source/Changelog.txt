@@ -1,3 +1,6 @@
+2003-05-28
+- Added donated JvCSVDataset from Warren Postma and a demo as well. Not included in the packages yet. // peter3
+
 2003-05-19
 - JvFormPlace moved to \archive - Use TJvFormPlacement from JvPlacemnt.pas // remko bonte
 
