@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvPanel;
 
 type
-  TJvSizeablePanel = class(TJvMultiLinePanel)
+  TJvSizeablePanel = class(TJvPanel)
   private
     FDragging: Boolean;
     FLastPos: TPoint;

@@ -34,7 +34,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, JvPanel;
 
 type
-  TJvTransparentPanel = class(TJvMultilinePanel)
+  TJvTransparentPanel = class(TJvPanel)
   private
     { Private declarations }
     FBackground: TBitmap;

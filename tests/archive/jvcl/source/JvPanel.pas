@@ -28,8 +28,6 @@ Known Issues:
 
 unit JvPanel;
 
-
-
 interface
 
 uses
@@ -47,27 +45,43 @@ type
     FOnParentColorChanged: TNotifyEvent;
     FOver: Boolean;
     FAboutJVCL: TJVCLAboutInfo;
+    FTransparent: Boolean;
+    FFlatBorder: Boolean;
+    FFlatBorderColor: TColor;
+    FMultiLine: Boolean;
+    procedure SetTransparent(const Value: Boolean);
+    procedure SetFlatBorder(const Value: Boolean);
+    procedure SetFlatBorderColor(const Value: TColor);
+    procedure DrawCaption;
+    procedure DrawBorders;
+    procedure SetMultiLine(const Value: Boolean);
   protected
+
     procedure CMMouseEnter(var Msg: TMessage); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure CMCtl3DChanged(var Msg: TMessage); message CM_CTL3DCHANGED;
     procedure CMParentColorChanged(var Msg: TMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMTextchanged(var Message: TMessage); message CM_TEXTCHANGED;
+
+
+    procedure CreateParams(var Params: TCreateParams); override;
+    procedure Paint; override;
+    procedure WMEraseBkgnd(var Message: TWMEraseBkgnd); message WM_ERASEBKGND;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure Invalidate; override;
   published
     property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
     property HintColor: TColor read FColor write FColor default clInfoBk;
+    property Transparent: Boolean read FTransparent write SetTransparent default False;
+    property MultiLine:Boolean read FMultiLine write SetMultiLine;
+    property FlatBorder: Boolean read FFlatBorder write SetFlatBorder default False;
+    property FlatBorderColor: TColor read FFlatBorderColor write SetFlatBorderColor default clBtnShadow;
 
     property OnMouseEnter: TNotifyEvent read FOnMouseEnter write FOnMouseEnter;
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnCtl3DChanged: TNotifyEvent read FOnCtl3DChanged write FOnCtl3DChanged;
     property OnParentColorChange: TNotifyEvent read FOnParentColorChanged write FOnParentColorChanged;
-  end;
-
-  TJvMultiLinePanel = class(TJvPanel)
-  protected
-    procedure Paint; override;
-    procedure DrawCaption(Rect: TRect); virtual;
   end;
 
 implementation
@@ -78,8 +92,106 @@ constructor TJvPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FColor := clInfoBk;
-  ControlStyle := ControlStyle + [csAcceptsControls];
   FOver := False;
+  FTransparent := False;
+  FFlatBorder := False;
+  FFlatBorderColor := clBtnShadow;
+end;
+
+procedure TJvPanel.CreateParams(var Params: TCreateParams);
+begin
+  inherited CreateParams(Params);
+
+  Params.ExStyle := Params.ExStyle + WS_EX_TRANSPARENT;
+  ControlStyle := ControlStyle - [csOpaque] + [csAcceptsControls];
+end;
+
+procedure TJvPanel.Paint;
+begin
+  Canvas.Brush.Color := Color;
+  if not FTransparent then
+    Canvas.FillRect(ClientRect);
+
+  if FFlatBorder then
+  begin
+    Canvas.Brush.Color := FFlatBorderColor;
+    Canvas.FrameRect(ClientRect);
+    Canvas.Brush.Color := Color;
+  end
+  else
+    DrawBorders;
+  self.DrawCaption;
+end;
+
+procedure TJvPanel.DrawBorders;
+var
+  Rect: TRect;
+  TopColor, BottomColor: TColor;
+
+  procedure AdjustColors(Bevel: TPanelBevel);
+  begin
+    TopColor := clBtnHighlight;
+    if Bevel = bvLowered then TopColor := clBtnShadow;
+    BottomColor := clBtnShadow;
+    if Bevel = bvLowered then BottomColor := clBtnHighlight;
+  end;
+
+begin
+  Rect := ClientRect;
+  if BevelOuter <> bvNone then
+  begin
+    AdjustColors(BevelOuter);
+    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
+  end;
+  Frame3D(Canvas, Rect, Color, Color, BorderWidth);
+  if BevelInner <> bvNone then
+  begin
+    AdjustColors(BevelInner);
+    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
+  end;
+end;
+
+procedure TJvPanel.DrawCaption;
+const
+  Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
+  WordWrap:array[boolean] of Longint = (DT_SINGLELINE,DT_WORDBREAK);
+var
+  ATextRect: TRect;
+  Buff: array[0..255] of Char;
+  BevelSize:integer;
+  Flags:Longint;
+begin
+  with Self.Canvas do
+  begin
+    if Caption <> '' then
+    begin
+      Font := Self.Font;
+      ATextRect := GetClientRect;
+      InflateRect(ATextRect,-BorderWidth,-BorderWidth);
+      BevelSize := 0;
+      if BevelOuter <> bvNone then Inc(BevelSize, BevelWidth);
+      if BevelInner <> bvNone then Inc(BevelSize, BevelWidth);
+      InflateRect(ATextRect, -BevelSize, -BevelSize);
+      Flags := DT_EXPANDTABS or WordWrap[MultiLine] or Alignments[Alignment];
+      Flags := DrawTextBiDiModeFlags(Flags);
+      //calculate required rectangle size
+      DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags or DT_CALCRECT);
+      // adjust the rectangle placement
+      OffsetRect(ATextRect, 0, -ATextRect.Top + (Height - (ATextRect.Bottom-ATextRect.Top)) div 2);
+      case Alignment of
+        taRightJustify:
+          OffsetRect(ATextRect, -ATextRect.Left + (Width - (ATextRect.Right-ATextRect.Left) - BorderWidth - BevelSize),0);
+        taCenter:
+          OffsetRect(ATextRect, -ATextRect.Left + (Width - (ATextRect.Right - ATextRect.Left)) div 2,0);
+      end;
+      if not Enabled then
+        Font.Color := clGrayText;
+      //draw text
+      if Transparent then
+        SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
+      DrawText(Canvas.Handle, PChar(Caption), -1, ATextRect, Flags);
+    end;
+  end; // with
 end;
 
 {***********************************************}
@@ -87,6 +199,7 @@ end;
 procedure TJvPanel.CMCtl3DChanged(var Msg: TMessage);
 begin
   inherited;
+  Invalidate;
   if Assigned(FOnCtl3DChanged) then
     FOnCtl3DChanged(Self);
 end;
@@ -95,6 +208,7 @@ end;
 procedure TJvPanel.CMParentColorChanged(var Msg: TMessage);
 begin
   inherited;
+  Invalidate;
   if Assigned(FOnParentColorChanged) then
     FOnParentColorChanged(Self);
 end;
@@ -128,71 +242,59 @@ begin
     FOnMouseLeave(Self);
 end;
 
-{ TJvMultiLinePanel }
-
-procedure TJvMultiLinePanel.DrawCaption(Rect: TRect);
-const
-  Alignments: array[TAlignment] of Longint = (DT_LEFT, DT_RIGHT, DT_CENTER);
-var
-  ATextRect: TRect;
-  Buff: array[0..255] of Char;
+procedure TJvPanel.SetTransparent(const Value: Boolean);
 begin
-  with Self.Canvas, Rect do
+  if Value <> FTransparent then
   begin
-    if Caption <> '' then
-    begin
-      Font := Self.Font;
-      StrPCopy(Buff, Caption);
-      ATextRect := Rect;
-      //calculate required rectangle size
-      DrawText(Canvas.Handle, Buff, StrLen(Buff), ATextRect, DT_VCENTER or DT_WORDBREAK or
-        DT_CALCRECT or (Alignments[Alignment]));
-      //center the rectangle
-      OffsetRect(ATextRect, (Width - ATextRect.Right) div 2, (Height - ATextRect.Bottom) div 2);
-      if not Enabled then
-        Font.Color := clGrayText;
-      //draw text
-      DrawText(Canvas.Handle, Buff, StrLen(Buff), ATextRect, DT_VCENTER or DT_WORDBREAK or (Alignments[Alignment]));
-    end;
-  end; // with
+    FTransparent := Value;
+    Invalidate;
+  end;
 end;
 
-procedure TJvMultiLinePanel.Paint;
-var
-  Rect: TRect;
-  TopColor, BottomColor: TColor;
-//  FontHeight: Integer;
-//  Flags: Longint;
-
-  procedure AdjustColors(Bevel: TPanelBevel);
-  begin
-    TopColor := clBtnHighlight;
-    if Bevel = bvLowered then TopColor := clBtnShadow;
-    BottomColor := clBtnShadow;
-    if Bevel = bvLowered then BottomColor := clBtnHighlight;
-  end;
-
+procedure TJvPanel.SetFlatBorder(const Value: Boolean);
 begin
-  Rect := GetClientRect;
-  if BevelOuter <> bvNone then
+  if Value <> FFlatBorder then
   begin
-    AdjustColors(BevelOuter);
-    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
+    FFlatBorder := Value;
+    Invalidate;
   end;
-  Frame3D(Canvas, Rect, Color, Color, BorderWidth);
-  if BevelInner <> bvNone then
-  begin
-    AdjustColors(BevelInner);
-    Frame3D(Canvas, Rect, TopColor, BottomColor, BevelWidth);
-  end;
+end;
 
-  with Canvas do
+procedure TJvPanel.SetFlatBorderColor(const Value: TColor);
+begin
+  if Value <> FFlatBorderColor then
   begin
-    Brush.Color := Color;
-    FillRect(Rect);
-    Brush.Style := bsClear;
-    DrawCaption(Rect);
+    FFlatBorderColor := Value;
+    Invalidate;
   end;
+end;
+
+procedure TJvPanel.WMEraseBkgnd(var Message: TWMEraseBkgnd);
+begin
+//  Message.Result := 1;
+end;
+
+procedure TJvPanel.SetMultiLine(const Value: Boolean);
+begin
+  if FMultiLine <> Value then
+  begin
+    FMultiLine := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TJvPanel.CMTextchanged(var Message: TMessage);
+begin
+  inherited;
+  Invalidate;
+end;
+
+procedure TJvPanel.Invalidate;
+begin
+  if Transparent and Assigned(Parent) and Parent.HandleAllocated and HandleAllocated then
+    RedrawWindow(Parent.Handle,nil,0,RDW_ERASE or RDW_FRAME or RDW_INTERNALPAINT or RDW_INVALIDATE
+      or RDW_ERASENOW or RDW_UPDATENOW or RDW_ALLCHILDREN);
+  inherited;
 end;
 
 end.
