@@ -41,12 +41,22 @@ Known Issues:
 
  Known issues / not (yet) implemented features:
 
+ -there is no real support for DateFormats containing any literal characters
+   other than the defined DateSeparator, especially spaces. it /might/ work in
+   some cases but in the majority of cases it will not.
+   TODO: simply disallow such characters or implement proper handling?
+
+ -as the embedded MS-calendar does not support dates prior to 1752-09-14,
+   neither does this control. this is not yet handled gracefully in absolutely
+   all situations though.
+
+ -the Min/MaxYear contstraints are currently commented out as they are not
+   functional in the current state. they would still require some work to make
+   up for two-digit year entries.
+
  -the control does (currently) not allow for time entry
   - it really is a control for date entry only.
 
- -the Min/MaxYear contstraints are currently commented out as they are not
-   functional in the current state. they would still require some work to make up
-   for two-digit year entries.
 }
 
 unit JvDatePickerEdit;
@@ -538,10 +548,9 @@ var
   OldDate: TDateTime;
   Dummy: Integer;
 begin
-  Result := Validate(AText, Dummy);
   {only attempt to convert, if at least the Mask is matched
   - otherwise we'd be swamped by exceptions during input}
-  if Result or AForce then
+  if AForce or Validate(AText, Dummy) then
   begin
     OldDate := ADate;
     OldFormat := ShortDateFormat;
@@ -566,7 +575,9 @@ begin
       SysUtils.DateSeparator := OldSeparator;
       ShortDateFormat := OldFormat;
     end;
-  end;
+  end
+  else
+    Result := False;
 end;
 
 procedure TJvCustomDatePickerEdit.UpdateDisplay;
@@ -757,9 +768,9 @@ begin
   StrReplace(ADateFormat, 'MMM', 'M', []);
   Result := ADateFormat;
   StrReplace(Result, 'dd', '00', []);
-  StrReplace(Result, 'd', '09', []);
+  StrReplace(Result, 'd', '99', []);
   StrReplace(Result, 'MM', '00', []);
-  StrReplace(Result, 'M', '09', []);
+  StrReplace(Result, 'M', '99', []);
   StrReplace(Result, 'yyyy', '0099', []);
   StrReplace(Result, 'yy', '00', []);
   StrReplace(Result, ' ', '_', []);
