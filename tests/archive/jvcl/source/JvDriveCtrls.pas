@@ -43,7 +43,7 @@ interface
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
   FileCtrl, Dialogs, StdCtrls, ShellApi, ImgList, JvComboBox,
-  JvCtrls, JvListBox, JVCLVer;
+  JvCtrls, JvListBox, JVCLVer, JvSearchFiles;
 
 type
   TJvDriveType = (dtRemovable, dtFixed, dtRemote, dtCDROM, dtRamDisk);
@@ -243,6 +243,7 @@ type
     FAboutJVCL: TJVCLAboutInfo;
     FImages: TImageList;
     FForceFileExtensions: boolean;
+    FSearchFiles: TJvSearchFiles;
     procedure SetForceFileExtensions(const Value: boolean);
   protected
     { Protected declarations }
@@ -385,9 +386,20 @@ type
     property OnStartDock;
   end;
 
+{ Should probably be moved to JvFunctions }
+function GetShellVersion: Integer;
+
 implementation
-const
-  cDirPrefix = #32;
+
+var
+  ShellVersion: Integer;
+
+function GetShellVersion: Integer;
+begin
+  if ShellVersion = 0 then
+    ShellVersion := GetFileVersion('shell32.dll');
+  Result := ShellVersion;
+end;
 
 function GetItemHeight(Font: TFont): Integer;
 var DC: HDC; SaveFont: HFont; Metrics: TTextMetric;
@@ -1390,6 +1402,18 @@ begin
   FImages.ShareImages := True;
   FImages.Handle := SHGetFileInfo('', 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_SMALLICON);
   FImages.Drawingstyle := dsTransparent;
+
+  FSearchFiles := TJvSearchFiles.Create(Self);
+  FSearchFiles.Options := [soAllowDuplicates,
+    soSearchDirs, soSearchFiles, soStripDirs];
+  FSearchFiles.DirOption := doExcludeSubDirs;
+  FSearchFiles.FileParams.FileMaskSeperator := ';';
+  FSearchFiles.FileParams.SearchTypes := [stAttribute, stFileMask];
+  FSearchFiles.FileParams.Attributes.IncludeAttr := 0;
+  FSearchFiles.DirParams.FileMaskSeperator := ';';
+  FSearchFiles.DirParams.SearchTypes := [stAttribute, stFileMask];
+  FSearchFiles.DirParams.Attributes.IncludeAttr := 0;
+  FSearchFiles.ErrorResponse := erIgnore;
 end;
 
 destructor TJvFileListBox.Destroy;
@@ -1400,23 +1424,27 @@ end;
 
 procedure TJvFileListBox.ReadFileNames;
 var
+  shinf: SHFILEINFO;
+  I, J: Integer;
+  Flags: Cardinal;
   AttrIndex: TFileAttr;
-  I: Integer;
-  MaskPtr: PChar;
-  Ptr: PChar;
-  AttrWord: Word;
-  FileInfo: TSearchRec;
+  AttrWord: DWORD;
   SaveCursor: TCursor;
 const
-  Attributes: array[TFileAttr] of Word = (faReadOnly, faHidden, faSysFile,
-    faVolumeID, faDirectory, faArchive, 0);
-var shi: TSHFileInfo; OldMode: Cardinal;
+  SHGFI_OVERLAYINDEX = $00000040;
+  {TFileAttr = (ftReadOnly, ftHidden, ftSystem, ftVolumeID, ftDirectory,
+    ftArchive, ftNormal);}
+  Attributes: array[TFileAttr] of Word = (FILE_ATTRIBUTE_READONLY, FILE_ATTRIBUTE_HIDDEN,
+    FILE_ATTRIBUTE_SYSTEM, 0 {faVolumeID}, 0 {faDirectory}, FILE_ATTRIBUTE_ARCHIVE,
+    FILE_ATTRIBUTE_READONLY or FILE_ATTRIBUTE_ARCHIVE or FILE_ATTRIBUTE_NORMAL {faNormal});
+var
+  OldMode: Cardinal;
 begin
-  AttrWord := DDL_READWRITE;
+  AttrWord := 0;
   if HandleAllocated then
   begin
-      { Set attribute flags based on values in FileType }
-    for AttrIndex := ftReadOnly to ftArchive do
+    { Set attribute flags based on values in FileType }
+    for AttrIndex := Low(TFileAttr) to High(TFileAttr) do
       if AttrIndex in FileType then
         AttrWord := AttrWord or Attributes[AttrIndex];
     OldMode := SetErrorMode(SEM_NOOPENFILEERRORBOX);
@@ -1427,58 +1455,56 @@ begin
     end;
     Clear; { clear the list }
 
-    I := 0;
     SaveCursor := Screen.Cursor;
     try
-      MaskPtr := PChar(FMask);
-      while MaskPtr <> nil do
+      FSearchFiles.RootDirectory := GetCurrentDir;
+      FSearchFiles.FileParams.FileMask := fMask;
+      FSearchFiles.FileParams.Attributes.ExcludeAttr := not AttrWord;
+      if ftDirectory in FileType then
       begin
-        Ptr := StrScan(MaskPtr, ';');
-        if Ptr <> nil then
-          Ptr^ := #0;
-        if FindFirst(MaskPtr, AttrWord, FileInfo) = 0 then
+        FSearchFiles.Options := FSearchFiles.Options + [soSearchDirs];
+        FSearchFiles.DirParams.FileMask := fMask;
+        FSearchFiles.DirParams.Attributes.ExcludeAttr := not (AttrWord or
+          FILE_ATTRIBUTE_DIRECTORY);
+      end
+      else
+        FSearchFiles.Options := FSearchFiles.Options - [soSearchDirs];
+
+      FSearchFiles.Search;
+
+      { Overlay included to display linked folders or files etc. }
+      Flags := SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME;
+      if GetShellVersion >= $00050000 then
+        Flags := Flags or SHGFI_OVERLAYINDEX;
+
+      { First add directories.. }
+      with FSearchFiles.Directories do
+        for J := 0 to Count - 1 do
         begin
-          repeat
-            if (ftNormal in FileType) or (FileInfo.Attr and AttrWord <> 0) then
-              if (FileInfo.Attr and faDirectory <> 0) then
-              begin
-                if (FileInfo.Name[1] <> '.') then
-                begin
-                  SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
-//                    if Items.IndexOf(S) = -1 then
-                  begin
-                    if FForceFileExtensions then
-                      I := Items.Add(Format(cDirPrefix + '%s', [FileInfo.Name]))
-                    else
-                      I := Items.Add(Format(cDirPrefix + '%s', [shi.szDisplayName]));
-                    Items.Objects[I] := TObject(shi.iIcon);
-                  end;
-                end;
-              end
-              else if (FileInfo.Name[1] <> '.') then
-              begin
-                SHGetFileInfo(PChar(AddPathBackSlash(FDirectory) + FileInfo.Name), 0, shi, sizeof(shi), SHGFI_SYSICONINDEX or SHGFI_ICON or SHGFI_SMALLICON or SHGFI_DISPLAYNAME);
-//                  if Items.IndexOf(FileInfo.Name) = -1 then
-                begin
-                  if FForceFileExtensions then
-                    I := Items.Add(FileInfo.Name)
-                  else
-                    I := Items.Add(shi.szDisplayName);
-                  Items.Objects[I] := TObject(shi.iIcon);
-                end;
-              end;
-            if I = 100 then
-              Screen.Cursor := crHourGlass;
-          until FindNext(FileInfo) <> 0;
-          FindClose(FileInfo);
+          { Note that the strings in FSearchFiles.Directories do not include a path }
+          SHGetFileInfo(PChar(Strings[J]), 0, shinf, SizeOf(shinf), Flags);
+          if FForceFileExtensions then
+            I := Items.Add(Strings[J])
+          else
+            I := Items.Add(shinf.szDisplayName);
+          Items.Objects[I] := TObject(shinf.iIcon);
+          if I = 100 then
+            Screen.Cursor := crHourGlass;
         end;
-        if Ptr <> nil then
+
+      { ..then add files }
+      with FSearchFiles.Files do
+        for J := 0 to Count - 1 do
         begin
-          Ptr^ := ';';
-          Inc(Ptr);
+          SHGetFileInfo(PChar(Strings[J]), 0, shinf, SizeOf(shinf), Flags);
+          if FForceFileExtensions then
+            I := Items.Add(Strings[J])
+          else
+            I := Items.Add(shinf.szDisplayName);
+          Items.Objects[I] := TObject(shinf.iIcon);
+          if I = 100 then
+            Screen.Cursor := crHourGlass;
         end;
-        MaskPtr := Ptr;
-      end;
     finally
       Screen.Cursor := SaveCursor;
     end;
@@ -1524,6 +1550,8 @@ procedure TJvFileListBox.DrawItem(Index: Integer; Rect: TRect;
 var
   offset: Integer;
   tmpR: TRect;
+  ImageIndex: Integer;
+  OverlayIndex: Integer;
 begin
   with Canvas do
   begin
@@ -1532,13 +1560,20 @@ begin
     tmpR := Rect;
     if ShowGlyphs then
     begin
-      FImages.Draw(Canvas, Rect.Left + 2, (Rect.Top + Rect.Bottom - FImages.Height) div 2, integer(Items.Objects[index]));
+      ImageIndex := Integer(Items.Objects[Index]);
+      OverlayIndex := (ImageIndex shr 24) - 1;
+      if OverlayIndex >= 0 then
+        FImages.DrawOverlay(Canvas, Rect.Left + 2, (Rect.Top + Rect.Bottom - FImages.Height) div 2,
+          ImageIndex and $00FFFFFF, OverlayIndex)
+      else
+        FImages.Draw(Canvas, Rect.Left + 2, (Rect.Top + Rect.Bottom - FImages.Height) div 2,
+          ImageIndex);
       Offset := FImages.Width + 6;
     end;
     tmpR.Left := tmpR.Left + offset - 2;
     tmpR.Right := tmpR.Left + TextWidth(Items[Index]) + 4;
     FillRect(tmpR);
-    TextOut(Rect.Left + offset, Rect.Top, trim(Items[Index]));
+    TextOut(Rect.Left + offset, Rect.Top, Items[Index]);
 
     if odFocused in State then
       DrawFocusRect(tmpR);
