@@ -1892,7 +1892,10 @@ var
   TargetPath: string;
 begin
   if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  begin
+    Result := List.Count;
     exit;
+  end;
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
@@ -1921,7 +1924,10 @@ var
   TargetPath: string;
 begin
   if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  begin
+    Result := List.Count;
     exit;
+  end;
   ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
   Delete(TargetPath, Length(TargetPath) - 1, 2);
   if ClearFirst then
@@ -1948,7 +1954,10 @@ var
   TargetPath: string;
 begin
   if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  begin
+    Result := SL.Count;
     exit;
+  end;
   SL.BeginUpdate;
   try
     ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
@@ -1987,7 +1996,10 @@ var
   TargetPath: string;
 begin
   if not ValueStoredInt(Path) and StorageOptions.DefaultIfValueNotExists then
+  begin
+    Result := SL.Count;
     exit;
+  end;
   SL.BeginUpdate;
   try
     ResolvePath(Path + cSubStorePath, TargetStore, TargetPath);
