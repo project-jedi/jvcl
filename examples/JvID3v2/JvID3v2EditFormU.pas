@@ -114,6 +114,8 @@ type
     procedure actCopyTov1Execute(Sender: TObject);
     procedure actCopyFromv1Execute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure lsvAllFramesInfoTip(Sender: TObject; Item: TListItem;
+      var InfoTip: String);
   private
     FTagDeleted: Boolean;
   protected
@@ -585,6 +587,7 @@ begin
         else
           ListItem.SubItems.Add('No');
         ListItem.SubItems.Add(CFrameDescriptions[FrameID]);
+        ListItem.Data := JvID3v21.Frames[I];
       end;
   finally
     lsvAllFrames.Items.EndUpdate;
@@ -615,7 +618,7 @@ begin
 
     lsvPictures.Items.BeginUpdate;
     try
-      SetPictureListItemTo(lsvPictures.Items.Add, Frame);
+      SetPictureListItemTo(lsvPictures.Selected, Frame);
     finally
       lsvPictures.Items.EndUpdate;
     end;
@@ -656,6 +659,35 @@ end;
 procedure TJvID3v2EditForm.Final;
 begin
   JvID3v21.Close;
+end;
+
+procedure TJvID3v2EditForm.lsvAllFramesInfoTip(Sender: TObject;
+  Item: TListItem; var InfoTip: String);
+var
+  Frame: TJvID3Frame;
+  S: string;
+begin
+  Frame := TJvID3Frame(Item.Data);
+  if Frame is TJvID3TextFrame then
+    InfoTip := TJvID3TextFrame(Frame).Text
+  else if Frame is TJvID3NumberFrame then
+    InfoTip := IntToStr(TJvID3NumberFrame(Frame).Value)
+  else if Frame is TJvID3UserFrame then
+    with Frame as TJvID3UserFrame do
+      InfoTip := Format('%s: %s', [Description, Value])
+  else if Frame is TJvID3PictureFrame then
+    with Frame as TJvID3PictureFrame do
+      InfoTIp := Format('%s (%s) %d bytes', [Description, MIMEType, DataSize])
+  else if Frame is TJvID3TimestampFrame then
+    InfoTip := DateTimeToStr(TJvID3TimestampFrame(Frame).Value)
+  else if Frame is TJvID3ContentFrame then
+    InfoTip := TJvID3ContentFrame(Frame).Text
+  else if Frame is TJvID3SimpleListFrame then
+  begin
+    S := TJvID3SimpleListFrame(Frame).List.GetText;
+    Delete(S, Length(S) - 1, 2);
+    InfoTip := S;
+  end;
 end;
 
 end.
