@@ -8,6 +8,6 @@ uses
 
 begin
   Application.Initialize;
-  Application.CreateForm(TfrmTestProviders, frmTestProviders);
+  Application.CreateForm(TfrmTestProviders, frmTestProviders); 
   Application.Run;
-end.
+end.                                                                              

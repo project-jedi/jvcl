@@ -292,6 +292,14 @@ type
     function AvgItemSize(ACanvas: TCanvas): TSize; override;
   end;
 
+  TJvCustomDataItemsRenderer = class(TJvBaseDataItemsRenderer)
+  protected
+    procedure DoDrawItem(ACanvas: TCanvas; var ARect: TRect; Item: IJvDataItem;
+      State: TOwnerDrawState); override;
+    function DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize; override;
+    function AvgItemSize(ACanvas: TCanvas): TSize; override;
+  end;
+
   TJvDataItemsList = class(TJvBaseDataItems)
   private
     FList: TObjectList;
@@ -428,6 +436,123 @@ begin
 end;
 
 function TJvCustomDataItemsTextRenderer.AvgItemSize(ACanvas: TCanvas): TSize;
+begin
+  Result := ACanvas.TextExtent('WyWyWyWyWyWyWyWyWyWy');
+end;
+
+{ TJvCustomDataItemsRenderer }
+
+procedure TJvCustomDataItemsRenderer.DoDrawItem(ACanvas: TCanvas; var ARect: TRect;
+  Item: IJvDataItem; State: TOwnerDrawState);
+var
+  rgn: HRGN;
+  TextIntf: IJvDataItemText;
+  S: string;
+  ImgsIntf: IJvDataItemsImages;
+  ImgIntf: IJvDataItemImage;
+  ImgIdx: Integer;
+begin
+  rgn := CreateRectRgn(0,0,0,0);
+  GetClipRgn(ACanvas.handle, rgn);
+  try
+    IntersectClipRect(ACanvas.Handle, ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+    if Supports(Item, IJvDataItemText, TextIntf) then
+      S := TextIntf.Caption
+    else
+      S := SDataItemRenderHasNoText;
+    if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) then
+    begin
+      if Supports(Item, IJvDataItemImage, ImgIntf) then
+      begin
+        if odSelected in State then
+        begin
+          ImgIdx := ImgIntf.SelectedIndex;
+          if ImgIdx < 0 then
+            ImgIdx := ImgIntf.ImageIndex;
+        end
+        else
+        begin
+          ImgIdx := ImgIntf.ImageIndex;
+          if ImgIdx < 0 then
+            ImgIdx := ImgIntf.SelectedIndex;
+        end;
+        if (ImgIdx > -1) and (TextIntf = nil) then
+          S := '';
+        // Apply alignment rules and render the image
+        case ImgIntf.Alignment of
+          taLeftJustify:
+            begin
+              ImgsIntf.ImageList.Draw(ACanvas, ARect.Left, ARect.Top, ImgIdx);
+              Inc(ARect.Left, ImgsIntf.ImageList.Width + 2);
+            end;
+          taRightJustify:
+            begin
+              ImgsIntf.ImageList.Draw(ACanvas, ARect.Right - ImgsIntf.ImageList.Width, ARect.Top, ImgIdx);
+              Dec(ARect.Right, ImgsIntf.ImageList.Width + 2);
+            end;
+          taCenter:
+            begin
+              ImgsIntf.ImageList.Draw(ACanvas, ARect.Left + ((ARect.Right - ARect.Left -
+                ImgsIntf.ImageList.Width) div 2), ARect.Top, ImgIdx);
+              Inc(ARect.Top, ImgsIntf.ImageList.Height + 2);
+              ImgIdx := ACanvas.TextWidth(S);
+              ARect.Left := ARect.Left + ((ARect.Right - ARect.Left - ImgIdx) div 2);
+            end;
+        end;
+      end;
+    end;
+    ACanvas.TextRect(ARect, ARect.Left, ARect.Top, S);
+  finally
+    SelectClipRgn(ACanvas.Handle, rgn);
+    DeleteObject(rgn);
+  end;
+end;
+
+function TJvCustomDataItemsRenderer.DoMeasureItem(ACanvas: TCanvas; Item: IJvDataItem): TSize;
+var
+  TextIntf: IJvDataItemText;
+  S: string;
+  ImgsIntf: IJvDataItemsImages;
+  ImgIntf: IJvDataItemImage;
+  ImgIdx: Integer;
+begin
+  if Supports(Item, IJvDataItemText, TextIntf) then
+    S := TextIntf.Caption
+  else
+    S := SDataItemRenderHasNoText;
+  Result := ACanvas.TextExtent(S);
+  if Supports(Item.Items, IJvDataItemsImages, ImgsIntf) and (ImgsIntf.ImageList <> nil) then
+  begin
+    if Supports(Item, IJvDataItemImage, ImgIntf) then
+    begin
+      ImgIdx := ImgIntf.ImageIndex;
+      if ImgIdx < 0 then
+        ImgIdx := ImgIntf.SelectedIndex;
+      if (ImgIdx > -1) and (TextIntf = nil) then
+        S := '';
+      // Apply alignment rules and render the image
+      case ImgIntf.Alignment of
+        taLeftJustify,
+        taRightJustify:
+          begin
+            Result := ACanvas.TextExtent(S);
+            Inc(Result.cx, ImgsIntf.ImageList.Width + 2);
+            if ImgsIntf.ImageList.Height > Result.cy then
+              Result.cy := ImgsIntf.ImageList.Height;
+          end;
+        taCenter:
+          begin
+            Result := ACanvas.TextExtent(S);
+            Inc(Result.cy, ImgsIntf.ImageList.Height + 2);
+            if ImgsIntf.ImageList.Width > Result.cx then
+              Result.cx := ImgsIntf.ImageList.Width;
+          end;
+      end;
+    end;
+  end;
+end;
+
+function TJvCustomDataItemsRenderer.AvgItemSize(ACanvas: TCanvas): TSize;
 begin
   Result := ACanvas.TextExtent('WyWyWyWyWyWyWyWyWyWy');
 end;
@@ -1152,6 +1277,7 @@ begin
       TOpenReader(Reader).ReadProperty(
         TJvBaseDataItems(TJvBaseDataItemSubItems(FAdditionalIntfImpl[I]).Items.GetImplementer));
     Reader.ReadListEnd;
+    Reader.ReadListEnd;
   finally
     ResumeRefCount;
   end;
@@ -1275,16 +1401,6 @@ begin
 end;
 {$ENDIF COMPILER6_UP}
 
-(*function TJvCustomFiller.GetSupports: TJvFillerSupports;
-begin
-  Result := [];
-end;
-
-function TJvCustomFiller.GetOptionClass: TJvFillerOptionsClass;
-begin
-  Result := nil;
-end;
-*)
 function TJvCustomDataProvider.GetItems: IJvDataItems;
 begin
   Result := DataItemsImpl;

@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvStringListDataProvider, JvComponent, JvDataProviderImpl,
   JvFontDataProvider, JvxCtrls, JvLabel, JvDataProviderControls, StdCtrls,
-  JvListBox;
+  JvListBox, ImgList;
 
 type
   TfrmTestProviders = class(TForm)
@@ -15,6 +15,7 @@ type
     JvProvidedListBox2: TJvProvidedListBox;
     JvFontDataProvider1: TJvFontDataProvider;
     JvTreeDataProvider1: TJvTreeDataProvider;
+    ilTest: TImageList;
   private
     { Private declarations }
   public

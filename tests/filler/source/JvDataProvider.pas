@@ -668,10 +668,30 @@ begin
   (Item as IJvDataItemImage).SelectedIndex := Value;
 end;
 
+type
+  TJvDataItemsImagesPropView = class(TJvDataProviderItem)
+  protected
+    function GetImageList: TCustomImageList;
+    procedure SetImageList(Value: TCustomImageList);
+  published
+    property ImageList: TCustomImageList read GetImageList write SetImageList;
+  end;
+
+function TJvDataItemsImagesPropView.GetImageList: TCustomImageList;
+begin
+  Result := (Item as IJvDataItemsImages).ImageList;
+end;
+
+procedure TJvDataItemsImagesPropView.SetImageList(Value: TCustomImageList);
+begin
+  (Item as IJvDataItemsImages).ImageList := Value;
+end;
+
 procedure RegProviderItemInterfaces;
 begin
   RegisterDataItemIntfProp(IJvDataItemText, TJvDataItemTextPropView);
   RegisterDataItemIntfProp(IJvDataItemImage, TJvDataItemImagePropView);
+  RegisterDataItemIntfProp(IJvDataItemsImages, TJvDataItemsImagesPropView);
 end;
 
 initialization

@@ -528,11 +528,12 @@ begin
   begin
     tmp := Renderer.MeasureItemByIndex(Canvas, Index);
     if (tmp.cy <> 0)  then
-      Height := tmp.cy;
+      ClientHeight := tmp.cy;
     if tmp.cx <> 0 then
-      Width := tmp.cx;
-  end;
-  Perform(CM_TEXTCHANGED, 0, 0);
+      ClientWidth := tmp.cx + LeftMargin + RightMargin + 4;
+  end
+  else
+    Perform(CM_TEXTCHANGED, 0, 0);
 end;
 
 end.

@@ -96,7 +96,7 @@ type
 procedure TJvStringsDataItems.InitImplementers;
 begin
   inherited InitImplementers;
-  TJvCustomDataItemsTextRenderer.Create(Self);
+  TJvCustomDataItemsRenderer.Create(Self);
 end;
 
 function TJvStringsDataItems.GetCount: Integer;
@@ -193,6 +193,7 @@ type
 procedure TJvTreeDataItems.InitImplementers;
 begin
   inherited InitImplementers;
+  TJvCustomDataItemsRenderer.Create(Self);
   TJvTreeDataItemsManagement.Create(Self);
   TJvTreeDataItemsDesigner.Create(Self);
   TJvCustomDataItemsImages.Create(Self);
