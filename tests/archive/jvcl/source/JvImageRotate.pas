@@ -80,12 +80,11 @@ end;
 
 destructor TJvImageRotate.Destroy;
 begin
-  FOriginal.Free;
-  FRotated.Free;
   FTimer.OnDraw := nil;
-//  FTimer.Terminate;
-  FTimer.WaitFor;
+  FTimer.Terminate;
   FreeAndNil(FTimer);
+  FreeAndNil(FOriginal);
+  FreeAndNil(FRotated);
   inherited Destroy;
 end;
 

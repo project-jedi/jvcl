@@ -88,6 +88,7 @@ type
     procedure DoBeforeCustom;
     procedure Change; override;
     procedure InternalInsertColor(AIndex: Integer; AColor: TColor; const DisplayName: string); virtual;
+    procedure DoNameMapChange(Sender:TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -380,6 +381,7 @@ begin
   // the default Name/Value map is created (thanks to Brian Cook on the borland NG's):
   if (Owner <> nil) and ([csDesigning, csLoading] * Owner.ComponentState = [csDesigning]) then
     InitColorNames;
+  TStringlist(FColorNameMap).OnChange := DoNameMapChange;
 end;
 
 destructor TJvColorComboBox.Destroy;
@@ -706,13 +708,10 @@ function TJvColorComboBox.GetColorName(AColor: TColor; const Default: string): s
 var
   Tmp: string;
 begin
-  if Default <> '' then
-  begin
-    Result := Default;
-    Exit;
-  end;
   Tmp := ColorToString(AColor);
   Result := FColorNameMap.Values[Tmp];
+  if Result = '' then
+    Result := FColorNameMap.Values['cl'+Tmp];
   if Result = '' then
   begin
     if Default = '' then
@@ -1109,6 +1108,11 @@ begin
   S := FontName;
   inherited Sorted := Value;
   FontName := S;
+end;
+
+procedure TJvColorComboBox.DoNameMapChange(Sender: TObject);
+begin
+  Invalidate;
 end;
 
 end.

@@ -393,6 +393,7 @@ type
     function GetCanFindNext: Boolean;
     procedure FindDialogFind(Sender: TObject);
     procedure ReplaceDialogReplace(Sender: TObject);
+    procedure SetSelText(const Value:string);
     {$IFDEF COMPILER3_UP}
     procedure FindDialogClose(Sender: TObject);
     procedure SetUIActive(Active: Boolean);
@@ -464,6 +465,7 @@ type
     property WordSelection: Boolean read GetWordSelection write SetWordSelection default True;
     property ScrollBars default ssBoth;
     property TabStop default True;
+    property SelText:string read GetSelText write SetSelText; 
     property OnSaveClipboard: TRichEditSaveClipboard read FOnSaveClipboard
       write FOnSaveClipboard;
     property OnSelectionChange: TNotifyEvent read FOnSelChange write FOnSelChange;
@@ -584,6 +586,7 @@ type
     property ReadOnly;
     property ScrollBars;
     property SelectionBar;
+    property SelText;
     property ShowHint;
     property StreamFormat;
     property StreamMode;
@@ -4494,11 +4497,10 @@ begin
   if (FUndoLimit > 1) and (RichEditVersion >= 2) and not FLinesUpdating then
     Msg.WParam := 1; { allow Undo }
   inherited;
-  if not FLinesUpdating then
-  begin
-    Perform(EM_EXSETSEL, 0, Longint(@CharRange));
-    Perform(EM_SCROLLCARET, 0, 0);
-  end;
+  if FLinesUpdating then
+    CharRange.cpMin := CharRange.cpMax;
+  Perform(EM_EXSETSEL, 0, Longint(@CharRange));
+  Perform(EM_SCROLLCARET, 0, 0);
 end;
 
 procedure TJvCustomRichEdit.SetRichEditStrings(Value: TStrings);
@@ -5374,6 +5376,13 @@ begin
         SelText := ReplaceText;
     end;
   end;
+end;
+
+procedure TJvCustomRichEdit.SetSelText(const Value:string);
+begin
+  FLinesUpdating := true;
+  inherited SelText := Value;
+  FLinesUpdating := false;
 end;
 
 {$IFDEF COMPILER3_UP}
