@@ -64,7 +64,6 @@ type
     Flags: Longint;
   end;
 
-
   EJVCLSegmentedLEDException = class(EJVCLException);
 
   TJvCustomSegmentedLEDDisplay = class(TJvGraphicControl)
@@ -256,6 +255,7 @@ type
     class function GetSegmentName(Index: Integer): string; virtual; abstract;
     class function GetSegmentIndex(Name: string): Integer; virtual; abstract;
     function GetSegmentStates: Int64;
+    function GetSegmentString: string; virtual; abstract;
   end;
 
   TJvBaseSegmentedLEDDigit = class(TJvCustomSegmentedLEDDigit)
@@ -294,6 +294,7 @@ type
     class function SegmentCount: Integer; override;
     class function GetSegmentName(Index: Integer): string; override;
     class function GetSegmentIndex(Name: string): Integer; override;
+    function GetSegmentString: string; override;
   end;
 
   TJvSegmentedLEDCharacterMapper = class(TPersistent)
@@ -361,12 +362,12 @@ type
     property Text;
   end;
 
+// TUnlitColor support routines
 function IdentToUnlitColor(const Ident: string; var Int: Longint): Boolean;
 function UnlitColorToIdent(Int: Longint; var Ident: string): Boolean;
 function StringToUnlitColor(const S: string): TUnlitColor;
 function UnlitColorToString(const Color: TUnlitColor): string;
-{ Design time support to retrieve a list of digit classes available. Do not change the list in your
-  own code! }
+// DigitClass registration routines
 function DigitClassList: TThreadList;
 procedure RegisterSegmentedLEDDigitClass(DigitClass: TJvSegmentedLEDDigitClass);
 procedure RegisterSegmentedLEDDigitClasses(DigitClasses: array of TJvSegmentedLEDDigitClass);
@@ -1374,6 +1375,23 @@ begin
   end
   else if Name = 'DP' then
     Result := 7;
+end;
+
+function TJvBaseSegmentedLEDDigit.GetSegmentString: string;
+var
+  I: Integer;
+begin
+  Result := '';
+  for I := 0 to SegmentCount - 1 do
+  begin
+    if GetSegmentState(I) then
+    begin
+      if Length(Result) > 0 then
+        Result := Result + ',' + GetSegmentName(I)
+      else
+        Result := GetSegmentName(I);
+    end;
+  end;
 end;
 
 //===TJvSegmentedLEDCharacterMapper=============================================================

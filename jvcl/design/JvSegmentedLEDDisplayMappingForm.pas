@@ -39,6 +39,8 @@ type
     function AutoStoreSettings: Boolean; override;
     procedure StoreSettings; override;
     procedure RestoreSettings; override;
+    procedure UpdateDigitClass(Sender: TObject);
+    procedure UpdateInfo(Sender: TObject);
     procedure MappingChanged(Sender: TObject);
   public
     { Public declarations }
@@ -97,19 +99,7 @@ end;
 procedure TfrmJvSLDMappingEditor.SetDisplay(Value: TJvCustomSegmentedLEDDisplay);
 begin
   if Value <> Display then
-  begin
     fmeMapper.Display := Value;
-    if Value <> nil then
-    begin
-      lblDigitClass.Caption := fmeMapper.DigitClass.ClassName;
-      lblSegmentCount.Caption := IntToStr(fmeMapper.DigitClass.SegmentCount);
-    end
-    else
-    begin
-      lblDigitClass.Caption := '';
-      lblSegmentCount.Caption := '';
-    end;
-  end;
 end;
 
 procedure TfrmJvSLDMappingEditor.SetDesigner(Value: IFormDesigner);
@@ -165,6 +155,46 @@ begin
   end;
 end;
 
+procedure TfrmJvSLDMappingEditor.UpdateDigitClass(Sender: TObject);
+begin
+  if fmeMapper.Display <> nil then
+  begin
+    lblDigitClass.Caption := fmeMapper.DigitClass.ClassName;
+    lblSegmentCount.Caption := IntToStr(fmeMapper.DigitClass.SegmentCount);
+  end
+  else
+  begin
+    lblDigitClass.Caption := '';
+    lblSegmentCount.Caption := '';
+  end;
+end;
+
+procedure TfrmJvSLDMappingEditor.UpdateInfo(Sender: TObject);
+begin
+  with fmeMapper do
+  begin
+    if CharSelected then
+    begin
+      if CurChar in ['!' .. 'z'] then
+        lblChar.Caption := CurChar + ' (#' + IntToStr(Ord(CurChar)) + ')'
+      else
+        lblChar.Caption := '#' + IntToStr(Ord(CurChar));
+    end
+    else
+      lblChar.Caption := '';
+    if Display <> nil then
+    begin
+      lblMapperValue.Caption := IntToStr(sldEdit.Digits[0].GetSegmentStates);
+      lblSegments.Caption := sldEdit.Digits[0].GetSegmentString;
+    end
+    else
+    begin
+      lblMapperValue.Caption := '';
+      lblSegments.Caption := '';
+    end;
+  end;
+end;
+
 procedure TfrmJvSLDMappingEditor.MappingChanged(Sender: TObject);
 begin
   if Designer <> nil then
@@ -177,6 +207,8 @@ begin
   if fmeMapper <> nil then
   begin
     fmeMapper.OnMappingChanged := MappingChanged;
+    fmeMapper.OnDisplayChanged := UpdateDigitClass;
+    fmeMapper.OnInfoUpdate := UpdateInfo;
   end;
 end;
 

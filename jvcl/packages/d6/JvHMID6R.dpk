@@ -35,6 +35,7 @@ contains
   JvSegmentedLEDDisplay in '..\..\run\JvSegmentedLEDDisplay.pas',
   JvLED in '..\..\run\JvLED.pas',
   JvDialButton in '..\..\run\JvDialButton.pas',
-  JvSegmentedLEDDisplayMapperFrame in '..\..\run\JvSegmentedLEDDisplayMapperFrame.pas' {fmeJvSegmentedLEDDisplayMapper: TFrame};
+  JvSegmentedLEDDisplayMapperFrame in '..\..\run\JvSegmentedLEDDisplayMapperFrame.pas' {fmeJvSegmentedLEDDisplayMapper: TFrame},
+  JvSLDMappingEditorDialog in '..\..\run\JvSLDMappingEditorDialog.pas' {frmSLDMappingEditorDialog};
 
 end.
