@@ -67,7 +67,13 @@ type
 implementation
 
 uses
-  JvConsts, Dialogs, JvResources;
+  {$IFDEF VCL}
+  Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDialogs, 
+  {$ENDIF VisualCLX}
+  JvConsts, JvResources;
 
 {$IFDEF VCL}
 {$R *.dfm}
