@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL\n"
-"POT-Creation-Date: 2004-12-18 17:51\n"
+"POT-Creation-Date: 2004-12-18 18:02\n"
 "PO-Revision-Date: 2004-12-17 22:11+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -1601,6 +1601,68 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
 
+#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
+#~ msgid "http://projectjedi.sourceforge.net"
+#~ msgstr "http://projectjedi.sourceforge.net"
+
+#  Programmer's name for it: RsComponentPalettePrefix
+#  Programmer's name for it: RsComponentPalettePrefix
+#~ msgid "TJv"
+#~ msgstr "TJv"
+
+#  FrameInstall..LblTarget..Caption
+#  FramePackageSelection..LblTarget..Caption
+#  FrameUninstall..LblTarget..Caption
+#~ msgid "LblTarget"
+#~ msgstr "LblTarget"
+
+#  FrameInstall..LblOpenFile..Caption
+#~ msgid "LblOpenFile"
+#~ msgstr "LblOpenFile"
+
+#  FrameInstall..LblInfo..Caption
+#~ msgid "LblInfo"
+#~ msgstr "LblInfo"
+
+#  FrameUninstall..LblFilename..Caption
+#~ msgid "LblFilename"
+#~ msgstr "LblFilename"
+
+#  FormJvclIncConfig..ScrollBox..LblComment..Caption
+#~ msgid "LblComment"
+#~ msgstr "LblComment"
+
+#  FrameDirEditBrowse..LblCaption..Caption
+#~ msgid "LblCaption"
+#~ msgstr "LblCaption"
+
+#  FramePackageSelection..PopupMenuPackages..N2..Caption
+#  FramePackageSelection..PopupMenuPackages..N2..Caption
+#~ msgid "-"
+#~ msgstr "-"
+
+#  FrameDirEditBrowse..BtnJCLDirBrowse..Caption
+#  FrameDirEditBrowse..BtnDirBrowse..Caption
+#~ msgid "..."
+#~ msgstr "..."
+
+#  FormMain..JvWizard..LblHomepage..Font.Name
+#  FrameInstall..RichEditLog..Font.Name
+#~ msgid "Arial"
+#~ msgstr "Arial"
+
+#  FormCompile..PanelClient..LblErrorReason..Caption
+#~ msgid "LblErrorReason"
+#~ msgstr "LblErrorReason"
+
+#  FormJvclIncConfig..TitlePanel..Label4..Font.Name
+#~ msgid "Verdana"
+#~ msgstr "Verdana"
+
+#  FormMain..JvWizard..ButtonHelp.Caption
+#~ msgid "&Hilfe"
+#~ msgstr "&Hilfe"
+
 #  FormCompile..Font.Name
 #  FormCompile..PanelClient..LblStatusCaption..Font.Name
 #  FormCompile..PanelClient..LblStatus..Font.Name
@@ -1622,65 +1684,3 @@ msgstr "Jedi Visual Component Library Homepage"
 #  FormJvclIncConfig..Label1..Font.Name
 #~ msgid "MS Sans Serif"
 #~ msgstr "MS Sans Serif"
-
-#  FormMain..JvWizard..ButtonHelp.Caption
-#~ msgid "&Hilfe"
-#~ msgstr "&Hilfe"
-
-#  FormJvclIncConfig..TitlePanel..Label4..Font.Name
-#~ msgid "Verdana"
-#~ msgstr "Verdana"
-
-#  FormCompile..PanelClient..LblErrorReason..Caption
-#~ msgid "LblErrorReason"
-#~ msgstr "LblErrorReason"
-
-#  FormMain..JvWizard..LblHomepage..Font.Name
-#  FrameInstall..RichEditLog..Font.Name
-#~ msgid "Arial"
-#~ msgstr "Arial"
-
-#  FrameDirEditBrowse..BtnJCLDirBrowse..Caption
-#  FrameDirEditBrowse..BtnDirBrowse..Caption
-#~ msgid "..."
-#~ msgstr "..."
-
-#  FramePackageSelection..PopupMenuPackages..N2..Caption
-#  FramePackageSelection..PopupMenuPackages..N2..Caption
-#~ msgid "-"
-#~ msgstr "-"
-
-#  FrameDirEditBrowse..LblCaption..Caption
-#~ msgid "LblCaption"
-#~ msgstr "LblCaption"
-
-#  FormJvclIncConfig..ScrollBox..LblComment..Caption
-#~ msgid "LblComment"
-#~ msgstr "LblComment"
-
-#  FrameUninstall..LblFilename..Caption
-#~ msgid "LblFilename"
-#~ msgstr "LblFilename"
-
-#  FrameInstall..LblInfo..Caption
-#~ msgid "LblInfo"
-#~ msgstr "LblInfo"
-
-#  FrameInstall..LblOpenFile..Caption
-#~ msgid "LblOpenFile"
-#~ msgstr "LblOpenFile"
-
-#  FrameInstall..LblTarget..Caption
-#  FramePackageSelection..LblTarget..Caption
-#  FrameUninstall..LblTarget..Caption
-#~ msgid "LblTarget"
-#~ msgstr "LblTarget"
-
-#  Programmer's name for it: RsComponentPalettePrefix
-#  Programmer's name for it: RsComponentPalettePrefix
-#~ msgid "TJv"
-#~ msgstr "TJv"
-
-#  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
-#~ msgid "http://projectjedi.sourceforge.net"
-#~ msgstr "http://projectjedi.sourceforge.net"

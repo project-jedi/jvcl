@@ -1,12 +1,7 @@
-# JVCL localization template
-# Copyright (C) 2004 The Jedi Visual Component Library group
-# This file is distributed under the same license as the JVCL package.
-# JVCL Group <jvcl@sourceforge.net>, 2004.
-# 
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2004-12-18 17:51\n"
+"POT-Creation-Date: 2004-12-18 18:02\n"
 "PO-Revision-Date: 2004-12-17 22:10+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -275,9 +270,8 @@ msgstr "Опции на инсталацията"
 
 #. FrameConfigPage..GroupBoxInstallOptions..LblOptionsFor..Caption
 #: Frames/FrmConfigPage.dfm:178
-#, fuzzy
 msgid "&Options for:"
-msgstr "Опции за:"
+msgstr ""
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxDeveloperInstall....Height
 #: Frames/FrmConfigPage.dfm:189
@@ -338,14 +332,13 @@ msgid ""
 "Check this option if you want to register\n"
 "the designtime packages into the IDE."
 msgstr ""
-"Актривирайте тази опция, ако искате да регистрирате\n"
-"пакета за използване по време на дизайн в ИРС"
+"Активирайте тази опция, ако искате да използвате GIF\n"
+"изображения за Отваряне/Запазване диалозите."
 
 #. FrameConfigPage..GroupBoxInstallOptions..CheckBoxCompileOnly..Caption
 #: Frames/FrmConfigPage.dfm:248
-#, fuzzy
 msgid "&IDE registration"
-msgstr "Без ИРС регистрация"
+msgstr ""
 
 #. FrameConfigPage..GroupBoxInstallOptions..FrameDirEditBrowseBPL..LblCaption..Caption
 #: Frames/FrmConfigPage.dfm:264
@@ -539,13 +532,11 @@ msgstr "Компилира: %s"
 msgid "Project filename"
 msgstr ""
 
-#  FormCompile..PanelClient..LblStatusCaption..Caption
 #. FormCompile..PanelClient..LblStatusCaption..Caption
 #: FrmCompile.dfm:65
 msgid "Done:"
 msgstr ""
 
-#  FormCompile..PanelClient..LblCurrentLineCaption..Caption
 #. FormCompile..PanelClient..LblCurrentLineCaption..Caption
 #: FrmCompile.dfm:84
 msgid "Current line:"
@@ -1062,9 +1053,8 @@ msgstr "Свали от"
 
 #. Programmer's name for it: RsJCLVersionRequired
 #: InstallerConsts.pas:180
-#, fuzzy
 msgid "JCL %s or higher required"
-msgstr "Изисква се JCL 1.9 или по-висока"
+msgstr ""
 
 #. http://jcl.sourceforge.net
 #. Programmer's name for it: RsDownloadOrSelectJclDir
@@ -1084,9 +1074,8 @@ msgstr "Инсталирай JCL"
 
 #. Programmer's name for it: RsNoJclVersionFound
 #: InstallerConsts.pas:185
-#, fuzzy
 msgid "No JCL %s found."
-msgstr "Не е открита JCL 1.9."
+msgstr ""
 
 #. Programmer's name for it: RsJCLDirectoryCaption
 #: InstallerConsts.pas:187
@@ -1102,7 +1091,7 @@ msgstr "&Изтрий JVCL файлове (dcu,bpl,dcp, obj,bpi,lib,tds)"
 #: InstallerConsts.pas:189
 #, fuzzy
 msgid "Select JCL %s installation directory..."
-msgstr "Избери инсталационна директория на JCL 1.90 ..."
+msgstr "Добре дошли в приложението за инсталиране на JVCL 3"
 
 #. Main.pas
 #. Programmer's name for it: RsBtnInstall
@@ -1196,18 +1185,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Jedi Visual Component Library Homepage"
 
-#~ msgid "..."
-#~ msgstr "..."
-
-#~ msgid "-"
-#~ msgstr "-"
-
-#~ msgid "LblCaption"
-#~ msgstr "LblCaption"
-
-#~ msgid "LblComment"
-#~ msgstr "LblComment"
-
 #~ msgid "LblFilename"
 #~ msgstr "LblFilename"
 
@@ -1225,3 +1202,9 @@ msgstr "Jedi Visual Component Library Homepage"
 
 #~ msgid "http://projectjedi.sourceforge.net"
 #~ msgstr "http://projectjedi.sourceforge.net"
+
+#~ msgid "LblCaption"
+#~ msgstr "LblCaption"
+
+#~ msgid "LblComment"
+#~ msgstr "LblComment"

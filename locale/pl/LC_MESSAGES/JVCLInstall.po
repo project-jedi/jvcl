@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL 3\n"
-"POT-Creation-Date: 2004-12-18 17:51\n"
+"POT-Creation-Date: 2004-12-18 18:02\n"
 "PO-Revision-Date: 2004-12-17 22:12+0100\n"
 "Last-Translator: Andreas Hausladen <Andreas.Hausladen@gmx,de>\n"
 "Language-Team: \n"
@@ -1375,10 +1375,6 @@ msgstr "<c:blue>http://jvcl.sourceforge.net"
 msgid "Jedi Visual Component Library Homepage"
 msgstr "Strona domowa Jedi Visual Component Library"
 
-#  FrameDirEditBrowse..BtnDirBrowse..Caption
-#~ msgid "..."
-#~ msgstr "..."
-
 #  FramePackageSelection..PopupMenuPackages..N2..Caption
 #~ msgid "-"
 #~ msgstr "-"
@@ -1412,6 +1408,10 @@ msgstr "Strona domowa Jedi Visual Component Library"
 #  Programmer's name for it: RsComponentPalettePrefix
 #~ msgid "TJv"
 #~ msgstr "TJv"
+
+#  FrameDirEditBrowse..BtnDirBrowse..Caption
+#~ msgid "..."
+#~ msgstr "..."
 
 #  FormJvclIncConfig..TitlePanel..imgProjectJEDI..Hint
 #~ msgid "http://projectjedi.sourceforge.net"

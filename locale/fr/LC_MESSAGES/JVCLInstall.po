@@ -6,7 +6,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: JVCL3\n"
-"POT-Creation-Date: 2004-12-18 17:51\n"
+"POT-Creation-Date: 2004-12-18 18:02\n"
 "PO-Revision-Date: 2004-12-18 17:50+0100\n"
 "Last-Translator: Olivier Sannier <obones@meloo.com>\n"
 "Language-Team: jvcl team <jvcl@sf.net>\n"
