@@ -805,8 +805,13 @@ end;
 
 procedure TJvAppXMLFileStorage.Reload;
 begin
-  if FileExists(FullFileName) and not IsUpdating then
-    Xml.LoadFromFile(FullFileName);
+  if not IsUpdating then
+  begin
+    if FileExists(FullFileName) then
+      Xml.LoadFromFile(FullFileName)
+    else // file may have disappeared. If so, clear the root element
+      Xml.Root.Clear;
+  end;
 end;
 
 //=== { Common procedures } ==================================================
