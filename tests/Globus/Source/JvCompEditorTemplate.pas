@@ -31,8 +31,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  JvgCheckBox, JvBaseDlg, JvJVCLAbout, JvRadioCtl, JvComponent,
-  JvgLanguageLoader, JvgLabel, StdCtrls, JvgGroupBox,
+  ComCtrls, StdCtrls, Buttons, ExtCtrls,
   {$IFDEF COMPILER6_UP}
   DesignIntf,
   DesignEditors,
@@ -40,10 +39,11 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  ComCtrls, JvgTab, JvgPage, Buttons, JvgShadow, ExtCtrls, JvgWizardHeader,
-  JvgBitBtn, JvgSpeedButton, JvgSplit;
-type
+  JvBaseDlg, JvJVCLAbout, JvRadioCtl, JvComponent,
+  JvgCheckBox, JvgLanguageLoader, JvgLabel, JvgGroupBox, JvgTab, JvgPage,
+  JvgShadow, JvgWizardHeader, JvgBitBtn, JvgSpeedButton, JvgSplit;
 
+type
   TJvgCompEditorTemplate = class(TForm)
     pnMain: TPanel;
     pnBottom: TPanel;
@@ -54,13 +54,9 @@ type
     pgMain: TJvgPageControl;
     tabMain: TTabSheet;
     hwJVCLCompEditor: TJvgWizardHeader;
+    procedure FormShow(Sender: TObject);
     procedure btnCancel1Click(Sender: TObject); virtual;
     procedure btnOK1Click(Sender: TObject); virtual;
-    procedure FormShow(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
   protected
     procedure InitializeEditor; virtual;
     function UpdateComponent: Boolean; virtual;
@@ -70,7 +66,13 @@ var
   JvgCompEditorTemplate: TJvgCompEditorTemplate;
 
 implementation
+
 {$R *.DFM}
+
+procedure TJvgCompEditorTemplate.FormShow(Sender: TObject);
+begin
+  InitializeEditor;
+end;
 
 procedure TJvgCompEditorTemplate.btnCancel1Click(Sender: TObject);
 begin
@@ -91,17 +93,11 @@ end;
 
 function TJvgCompEditorTemplate.UpdateComponent: Boolean;
 begin
-Result:=False;
-end;
-
-procedure TJvgCompEditorTemplate.FormShow(Sender: TObject);
-begin
-  InitializeEditor;
+  Result := False;
 end;
 
 procedure TJvgCompEditorTemplate.InitializeEditor;
 begin
-
 end;
 
 end.

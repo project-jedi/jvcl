@@ -38,664 +38,637 @@ Known Issues:
 unit JvgAskListBox;
 
 interface
-uses
-   Windows,
-   Messages,
-   SysUtils,
-   Classes,
-   Graphics,
-   Controls,
-   Forms,
-   Dialogs,
-   StdCtrls,
-    JVCLVer,
-   commctrl,
-   ExtCtrls,
-   JvgTypes,
-   JvgCommClasses;
 
-const
-   WordWraps                  : array[Boolean] of Word = (0, DT_WORDBREAK);
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, CommCtrl, ExtCtrls,
+  JVCLVer,
+  JvgTypes, JvgCommClasses;
 
 type
-   TPushedButtons = record
-      Total: word;
-      FirstColumn: word;
-   end;
-   TglAskLBOptions_ = (aloAutoScroll, aloIgnoreMouse, aloShowFocus,
-      aloTransparentButtons, aloWordWrap);
-   TglAskLBOptions = set of TglAskLBOptions_;
+  TPushedButtons = record
+    Total: Word;
+    FirstColumn: Word;
+  end;
 
-   TJvgAskListBox = class(TCustomListBox)
-   private
-      FAutoTrColor: TglAutoTransparentColor;
-      FWallpaper: TBitmap;
-      FWallpaperImage: TImage;
-      FWallpaperOption: TglWallpaperOption;
-      FNumGlyphs: word;
-      FGlyphsAlign: TJvg2DAlign;
-      FTextAlign: TJvg2DAlign;
-      FCaptionsAlign: TJvg2DAlign;
+  TglAskLBOptions_ = (aloAutoScroll, aloIgnoreMouse, aloShowFocus,
+    aloTransparentButtons, aloWordWrap);
+  TglAskLBOptions = set of TglAskLBOptions_;
 
-      FTransparentColor: TColor;
-      FItemStyle: TJvgAskListBoxItemStyle;
-      FItemSelStyle: TJvgAskListBoxItemStyle;
-      FGlyphs: TImageList;
-      FShowWallpaper: boolean;
-      FShowGlyphs: boolean;
-      FItemHeight: word;
-      FTextAlign_: UINT;
-      FCaptionsAlign_: UINT;
-      FShowText: boolean;
-      FSegment1Width: word;
-      FPushedButton: array[0..1023] of byte;
-      FOnButtonClicked: TNotifyEvent;
-      FSelectedItem: word;
-      FButtons: TStringList;
-      FButtonWidth: word;
-      FOptions: TglAskLBOptions;
-      //'''''''''''''''''''''''''''''''''''''''''
-      WallpaperBmp: TBitmap;
-      TmpBitmap: TBitmap;
-      BtnRect, BtnTxtRect: TRect;
-      MouseClickPoint: TPoint;
+  TJvgAskListBox = class(TCustomListBox)
+  private
     FAboutJVCL: TJVCLAboutInfo;
-      procedure SetAutoTrColor(Value: TglAutoTransparentColor);
-      procedure SetWallpaper(Value: TBitmap);
-      function GetWallpaper: TBitmap;
-      procedure SetWallpaperImage(Value: Timage);
-      procedure SetWOpt(Value: TglWallpaperOption);
-      procedure SetNumGlyphs(Value: word);
-      procedure SetGlyphs(Value: TImageList);
-      procedure SetItemHeight(Value: word);
-      procedure SetShowText(Value: boolean);
-      procedure SetTransparentColor(Value: TColor);
-      procedure SetSelectedItem(Value: word);
-      procedure SetButtons(Value: TStringList);
-      procedure SetButtonWidth(Value: word);
-      procedure SetOptions(Value: TglAskLBOptions);
-
-      procedure DrawWallpaper(r: TRect);
-      procedure DrawGlyph(r: TRect; Index: word; Shift: word);
-      procedure SetAlign(Align: TJvg2DAlign; var Align_: UINT);
-      procedure ButtonClicked;
-      procedure RecalcHeights;
-      procedure SmthChanged(Sender: TObject);
-
-      procedure WMLButtonDown(var Message: TWMLButtonDown); message
-         WM_LBUTTONDOWN;
-      procedure WMSize(var Message: TWMSize); message WM_SIZE;
-      procedure CNDrawItem(var Message: TWMDrawItem); message CN_DRAWITEM;
-      procedure CNMeasureItem(var Message: TWMMeasureItem); message
-         CN_MEASUREITEM;
-   protected
-      procedure Loaded; override;
+    FAutoTransparentColor: TglAutoTransparentColor;
+    FWallpaper: TBitmap;
+    FWallpaperImage: TImage;
+    FWallpaperOption: TglWallpaperOption;
+    FNumGlyphs: Word;
+    FGlyphsAlign: TJvg2DAlign;
+    FTextAlign: TJvg2DAlign;
+    FCaptionsAlign: TJvg2DAlign;
+    FTransparentColor: TColor;
+    FItemStyle: TJvgAskListBoxItemStyle;
+    FItemSelStyle: TJvgAskListBoxItemStyle;
+    FGlyphs: TImageList;
+    FShowWallpaper: Boolean;
+    FShowGlyphs: Boolean;
+    FItemHeight: Word;
+    FTextAlign_: UINT;
+    FCaptionsAlign_: UINT;
+    FShowText: Boolean;
+    FSegment1Width: Word;
+    FPushedButton: array [0..1023] of Byte;
+    FOnButtonClicked: TNotifyEvent;
+    FSelectedItem: Word;
+    FButtons: TStringList;
+    FButtonWidth: Word;
+    FOptions: TglAskLBOptions;
+      //'''''''''''''''''''''''''''''''''''''''''
+    WallpaperBmp: TBitmap;
+    TmpBitmap: TBitmap;
+    BtnRect: TRect;
+    BtnTxtRect: TRect;
+    MouseClickPoint: TPoint;
+    procedure SetAutoTransparentColor(Value: TglAutoTransparentColor);
+    procedure SetWallpaper(Value: TBitmap);
+    function GetWallpaper: TBitmap;
+    procedure SetWallpaperImage(Value: Timage);
+    procedure SetWallpaperOption(Value: TglWallpaperOption);
+    procedure SetNumGlyphs(Value: Word);
+    procedure SetGlyphs(Value: TImageList);
+    procedure SetItemHeight(Value: Word);
+    procedure SetShowText(Value: Boolean);
+    procedure SetTransparentColor(Value: TColor);
+    procedure SetSelectedItem(Value: Word);
+    procedure SetButtons(Value: TStringList);
+    procedure SetButtonWidth(Value: Word);
+    procedure SetOptions(Value: TglAskLBOptions);
+    procedure DrawWallpaper(R: TRect);
+    procedure DrawGlyph(R: TRect; Index: Word; Shift: Word);
+    procedure SetAlign(Align: TJvg2DAlign; var Align_: UINT);
+    procedure ButtonClicked;
+    procedure RecalcHeights;
+    procedure SmthChanged(Sender: TObject);
+    procedure WMLButtonDown(var Msg: TWMLButtonDown); message WM_LBUTTONDOWN;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
+    procedure CNDrawItem(var Msg: TWMDrawItem); message CN_DRAWITEM;
+    procedure CNMeasureItem(var Msg: TWMMeasureItem); message CN_MEASUREITEM;
+  protected
+    procedure Loaded; override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-      procedure InitState(var State: TOwnerDrawState; ByteState: Byte);
-   public                               //_____________________________for users
-      function IsFilled: boolean;
-      function CountPushedButtonsInColon(Colon: integer): integer;
-      function GetPushedButtonInLine(Index: word): integer;
-      function SetPushedButtonInLine(Index: word; Value: word): boolean;
-      constructor Create(AOwner: TComponent); override;
-      destructor Destroy; override;
-   published
-      property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored
-         False;
-
-      property Align;
-      property BorderStyle;
-      property Color;
-      property DragCursor;
-      property DragMode;
-      property Enabled;
-      property IntegralHeight;
-      property Items;
-      property ParentColor;
+    procedure InitState(var State: TOwnerDrawState; ByteState: Byte);
+  public
+    function IsFilled: Boolean;
+    function CountPushedButtonsInColon(Colon: Integer): Integer;
+    function GetPushedButtonInLine(Index: Word): Integer;
+    function SetPushedButtonInLine(Index: Word; Value: Word): Boolean;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property AboutJVCL: TJVCLAboutInfo read FAboutJVCL write FAboutJVCL stored False;
+    property Align;
+    property BorderStyle;
+    property Color;
+    property DragCursor;
+    property DragMode;
+    property Enabled;
+    property IntegralHeight;
+    property Items;
+    property ParentColor;
       //    property ParentCtl3D;
       //    property ParentFont;
-      property ParentShowHint;
-      property PopupMenu;
-      property ShowHint;
-      property Sorted;
-      property TabOrder;
-      property TabStop;
-      property Visible;
-      property OnClick;
-      property OnDblClick;
-      property OnDragDrop;
-      property OnDragOver;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property Sorted;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
       //    property AfterItemWasDrown;
-      property OnEndDrag;
-      property OnEnter;
-      property OnExit;
-      property OnKeyDown;
-      property OnKeyPress;
-      property OnKeyUp;
-      property OnMouseDown;
-      property OnMouseMove;
-      property OnMouseUp;
-      property OnStartDrag;
-
-      property AutoTransparentColor: TglAutoTransparentColor
-         read FAutoTrColor write SetAutoTrColor default ftcLeftBottomPixel;
-      property Wallpaper: TBitmap read GetWallpaper write SetWallpaper;
-      property WallpaperImage: TImage read FWallpaperImage write
-         SetWallpaperImage;
-      property WallpaperOption: TglWallpaperOption read FWallpaperOption write
-         SetWOpt default fwoNone;
-      property NumGlyphs: word read FNumGlyphs write SetNumGlyphs default 1;
-      property GlyphsAlign: TJvg2DAlign read FGlyphsAlign write FGlyphsAlign;
-      property ItemStyle: TJvgAskListBoxItemStyle read FItemStyle write
-         FItemStyle;
-      property ItemSelStyle: TJvgAskListBoxItemStyle read FItemSelStyle write
-         FItemSelStyle;
-      property Glyphs: TImageList read FGlyphs write SetGlyphs;
-      property TextAlign: TJvg2DAlign read FTextAlign write FTextAlign;
-      property ItemHeight: word read FItemHeight write SetItemHeight default 12;
-      property ShowText: boolean read FShowText write SetShowText default true;
-      property TransparentColor: TColor read FTransparentColor write
-         SetTransparentColor;
-      property OnButtonClicked: TNotifyEvent read FOnButtonClicked write
-         FOnButtonClicked;
-      property SelectedItem: word read FSelectedItem write SetSelectedItem
-         default 0;
-      property Buttons: TStringList read FButtons write SetButtons;
-      property ButtonWidth: word read FButtonWidth write SetButtonWidth default
-         30;
-      property Options: TglAskLBOptions read FOptions write SetOptions;
-   end;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+    property AutoTransparentColor: TglAutoTransparentColor
+      read FAutoTransparentColor write SetAutoTransparentColor default ftcLeftBottomPixel;
+    property Wallpaper: TBitmap read GetWallpaper write SetWallpaper;
+    property WallpaperImage: TImage read FWallpaperImage write SetWallpaperImage;
+    property WallpaperOption: TglWallpaperOption read FWallpaperOption write
+      SetWallpaperOption default fwoNone;
+    property NumGlyphs: Word read FNumGlyphs write SetNumGlyphs default 1;
+    property GlyphsAlign: TJvg2DAlign read FGlyphsAlign write FGlyphsAlign;
+    property ItemStyle: TJvgAskListBoxItemStyle read FItemStyle write FItemStyle;
+    property ItemSelStyle: TJvgAskListBoxItemStyle read FItemSelStyle write FItemSelStyle;
+    property Glyphs: TImageList read FGlyphs write SetGlyphs;
+    property TextAlign: TJvg2DAlign read FTextAlign write FTextAlign;
+    property ItemHeight: Word read FItemHeight write SetItemHeight default 12;
+    property ShowText: Boolean read FShowText write SetShowText default True;
+    property TransparentColor: TColor read FTransparentColor write SetTransparentColor;
+    property OnButtonClicked: TNotifyEvent read FOnButtonClicked write FOnButtonClicked;
+    property SelectedItem: Word read FSelectedItem write SetSelectedItem default 0;
+    property Buttons: TStringList read FButtons write SetButtons;
+    property ButtonWidth: Word read FButtonWidth write SetButtonWidth default 30;
+    property Options: TglAskLBOptions read FOptions write SetOptions;
+  end;
 
 implementation
-uses JvgUtils;
 
-//*****************************************_____________LowLevel METHODS
+uses
+  JvgUtils;
+
+const
+  WordWraps: array [Boolean] of Word = (0, DT_WORDBREAK);
 
 constructor TJvgAskListBox.Create(AOwner: TComponent);
 begin
-   inherited Create(AOwner);
-   Style := lbOwnerDrawVariable;
-   FGlyphsAlign := TJvg2DAlign.Create;
-   FTextAlign := TJvg2DAlign.Create;
-   FCaptionsAlign := TJvg2DAlign.Create;
-   FButtons := TStringList.Create;
-   FItemStyle := TJvgAskListBoxItemStyle.Create;
-   FItemSelStyle := TJvgAskListBoxItemStyle.Create;
+  inherited Create(AOwner);
+  Style := lbOwnerDrawVariable;
+  FGlyphsAlign := TJvg2DAlign.Create;
+  FTextAlign := TJvg2DAlign.Create;
+  FCaptionsAlign := TJvg2DAlign.Create;
+  FButtons := TStringList.Create;
+  FItemStyle := TJvgAskListBoxItemStyle.Create;
+  FItemSelStyle := TJvgAskListBoxItemStyle.Create;
 
-   TmpBitmap := TBitmap.Create;
-   FButtons.Add('yes');
-   FButtons.Add('no');
-   FAutoTrColor := ftcLeftBottomPixel;
-   FWallpaperOption := fwoNone;
-   FShowWallpaper := true;
-   FShowGlyphs := true;
-   if csDesigning in ComponentState then
-   begin
-      with FItemStyle do
-      begin
+  TmpBitmap := TBitmap.Create;
+  FButtons.Add('yes');
+  FButtons.Add('no');
+  FAutoTransparentColor := ftcLeftBottomPixel;
+  FWallpaperOption := fwoNone;
+  FShowWallpaper := True;
+  FShowGlyphs := True;
+  if csDesigning in ComponentState then
+  begin
+    with FItemStyle do
+    begin
          //      Style := idsRaised;
-         Color := clBtnFace;
-         BtnColor := clBtnFace;
-         TextStyle := fstRaised;
-         BtnTextStyle := fstPushed;
-      end;
-      with FItemSelStyle do
-      begin
+      Color := clBtnFace;
+      BtnColor := clBtnFace;
+      TextStyle := fstRaised;
+      BtnTextStyle := fstPushed;
+    end;
+    with FItemSelStyle do
+    begin
          //      Style := idsRaised;
-         Color := clBtnShadow;
-         BtnColor := clBtnFace;
-         TextStyle := fstRaised;
-         BtnTextStyle := fstPushed;
-      end;
-   end;
-   NumGlyphs := 1;
-   FTransparentColor := clOlive;
-   FItemHeight := 12;
-   FTextAlign_ := DT_LEFT or DT_WORDBREAK or DT_VCENTER; // or DT_SINGLELINE;
-   FCaptionsAlign_ := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
-   FShowText := true;
-   FButtonWidth := 30;
-   FSelectedItem := 0;
-   FOptions := [aloWordWrap];
-   FItemStyle.OnChanged := SmthChanged;
-   FItemSelStyle.OnChanged := SmthChanged;
-   FGlyphsAlign.OnChanged := SmthChanged;
-   FTextAlign.OnChanged := SmthChanged;
-   FCaptionsAlign.OnChanged := SmthChanged;
+      Color := clBtnShadow;
+      BtnColor := clBtnFace;
+      TextStyle := fstRaised;
+      BtnTextStyle := fstPushed;
+    end;
+  end;
+  NumGlyphs := 1;
+  FTransparentColor := clOlive;
+  FItemHeight := 12;
+  FTextAlign_ := DT_LEFT or DT_WORDBREAK or DT_VCENTER; // or DT_SINGLELINE;
+  FCaptionsAlign_ := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
+  FShowText := True;
+  FButtonWidth := 30;
+  FSelectedItem := 0;
+  FOptions := [aloWordWrap];
+  FItemStyle.OnChanged := SmthChanged;
+  FItemSelStyle.OnChanged := SmthChanged;
+  FGlyphsAlign.OnChanged := SmthChanged;
+  FTextAlign.OnChanged := SmthChanged;
+  FCaptionsAlign.OnChanged := SmthChanged;
 
-   FillMemory(@FPushedButton, 1024, 0);
+  FillChar(FPushedButton, SizeOf(FPushedButton), #0);
+  FWallpaper := nil;
 end;
-//------
 
 destructor TJvgAskListBox.Destroy;
 begin
-   if Assigned(FWallpaper) then
-      FWallpaper.Free;
-   TmpBitmap.Free;
-   FGlyphsAlign.Free;
-   FTextAlign.Free;
-   FCaptionsAlign.Free;
-   FButtons.Free;
-   FItemStyle.Free;
-   FItemSelStyle.Free;
-   inherited Destroy;
+  FWallpaper.Free;
+  TmpBitmap.Free;
+  FGlyphsAlign.Free;
+  FTextAlign.Free;
+  FCaptionsAlign.Free;
+  FButtons.Free;
+  FItemStyle.Free;
+  FItemSelStyle.Free;
+  inherited Destroy;
 end;
-//______________________________________________________________
 
 procedure TJvgAskListBox.Loaded;
 begin
-   inherited;
-   RecalcHeights;
+  inherited Loaded;
+  RecalcHeights;
 end;
-//______________________________________________________________
 
-procedure TJvgAskListBox.CNMeasureItem(var Message: TWMMeasureItem);
+procedure TJvgAskListBox.CNMeasureItem(var Msg: TWMMeasureItem);
 var
-   r                          : TRect;
+  R: TRect;
 begin
-   r.left := 3;
-   r.top := 0;
-   r.bottom := 0;
-   r.right := FSegment1Width;
-   if FShowGlyphs and (FGlyphs <> nil) then
-      inc(r.left, FGlyphs.Width);
-   dec(r.right, 5);
-   with Message.MeasureItemStruct^ do
-   begin
-      DrawText(Canvas.Handle, PChar(Items[itemID]),
-         Length(Items[itemID]), r, DT_CALCRECT or DT_WORDBREAK);
-      itemHeight := r.bottom - r.top + 6;
-      if itemHeight < FItemHeight then
-         itemHeight := FItemHeight;
-   end;
+  R.Left := 3;
+  R.Top := 0;
+  R.Bottom := 0;
+  R.Right := FSegment1Width;
+  if FShowGlyphs and (FGlyphs <> nil) then
+    Inc(R.Left, FGlyphs.Width);
+  Dec(R.Right, 5);
+  with Msg.MeasureItemStruct^ do
+  begin
+    DrawText(Canvas.Handle, PChar(Items[itemID]),
+      Length(Items[itemID]), R, DT_CALCRECT or DT_WORDBREAK);
+    itemHeight := R.Bottom - R.Top + 6;
+    if itemHeight < FItemHeight then
+      itemHeight := FItemHeight;
+  end;
 end;
-//______________________________________________________________
 
-procedure TJvgAskListBox.CNDrawItem(var Message: TWMDrawItem);
+procedure TJvgAskListBox.CNDrawItem(var Msg: TWMDrawItem);
 const
-   w                          = 1;
+  w = 1;
 var
-   Index                      : Integer;
-   Rect                       : TRect;
-   State                      : TOwnerDrawState;
-   fSelected                  : boolean;
-   Shift, OldPushedBtn, i     : integer;
-   Rect1                      : TRect;
-   ItemStyle                  : TJvgAskListBoxItemStyle;
+  Index: Integer;
+  Rect: TRect;
+  State: TOwnerDrawState;
+  fSelected: Boolean;
+  Shift, OldPushedBtn, I: Integer;
+  Rect1: TRect;
+  ItemStyle: TJvgAskListBoxItemStyle;
    //  TS:TglTextStyle;
    //  TA:UINT;
 
-   procedure DrawLBItem(ItemSt: TglItemsDrawStyle; r: TRect);
-   begin
-      case ItemSt of
-         idsRecessed:
-            begin
-               Shift := 0;
-               Frame3D(Canvas, r, clBtnShadow, clBtnHighlight, 1);
-            end;
-         idsRaised:
-            begin
-               Shift := 2;
-               Frame3D(Canvas, r, clBtnHighlight, clBtnShadow, 1);
-            end;
-      end;
-   end;
-   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  procedure DrawLBItem(ItemSt: TglItemsDrawStyle; R: TRect);
+  begin
+    case ItemSt of
+      idsRecessed:
+        begin
+          Shift := 0;
+          Frame3D(Canvas, R, clBtnShadow, clBtnHighlight, 1);
+        end;
+      idsRaised:
+        begin
+          Shift := 2;
+          Frame3D(Canvas, R, clBtnHighlight, clBtnShadow, 1);
+        end;
+    end;
+  end;
 
-   procedure DrawTextInRect(rect: TRect; Align: Word; StrListNum: integer);
-   var
-      FontColor               : TColor;
-      szStr                   : array[0..255] of char;
-      Len                     : word;
-      TextStyle               : TglTextStyle;
-   begin
-      dec(rect.right, 2);
+  procedure DrawTextInRect(Rect: TRect; Align: Word; StrListNum: Integer);
+  var
+    FontColor: TColor;
+    szStr: array [0..255] of Char;
+    Len: Word;
+    TextStyle: TglTextStyle;
+  begin
+    Dec(Rect.Right, 2);
       //    FillMemory(@szStr,255,0);
-      if StrListNum = -1 then
-         StrPCopy(szStr, Items[Index])
+    if StrListNum = -1 then
+      StrPCopy(szStr, Items[Index])
+    else
+      StrPCopy(szStr, FButtons[StrListNum - 1]);
+
+    Len := StrLen(szStr);
+
+    if StrListNum = -1 then
+    begin
+      Canvas.Font := ItemStyle.Font;
+      TextStyle := ItemStyle.TextStyle;
+    end
+    else
+    begin
+      Canvas.Font := ItemStyle.BtnFont;
+      if FPushedButton[Index] = StrListNum then
+        TextStyle := fstNone
       else
-         StrPCopy(szStr, FButtons[StrListNum - 1]);
+        TextStyle := ItemStyle.BtnTextStyle;
+    end;
 
-      Len := StrLen(szStr);
+    FontColor := Canvas.Font.Color;
+    SetBkMode(Canvas.Handle, TRANSPARENT);
+    InflateRect(Rect, -1, -1);
+    if StrListNum <> -1 then
+      Inc(Rect.Top, 2);
 
-      if StrListNum = -1 then
+    case TextStyle of
+      fstRaised:
+        begin
+          Canvas.Font.Color := clBtnHighlight;
+          OffsetRect(Rect, -1, -1);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          Canvas.Font.Color := clBtnShadow;
+          OffsetRect(Rect, 2, 2);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          Canvas.Font.Color := FontColor;
+          OffsetRect(Rect, -1, -1);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+        end;
+      fstRecessed:
+        begin
+          Canvas.Font.Color := clBtnShadow;
+          OffsetRect(Rect, -1, -1);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          Canvas.Font.Color := clBtnHighlight;
+          OffsetRect(Rect, 2, 2);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          Canvas.Font.Color := FontColor;
+          OffsetRect(Rect, -1, -1);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+        end;
+      fstPushed:
+        begin
+          Canvas.Font.Color := clBtnHighlight;
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          OffsetRect(Rect, -1, -1);
+          Canvas.Font.Color := clBtnShadow;
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+        end;
+      fstShadow:
+        begin
+          Canvas.Font.Color := clBtnShadow;
+          OffsetRect(Rect, 2, 2);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+          Canvas.Font.Color := FontColor;
+          OffsetRect(Rect, -2, -2);
+          DrawText(Canvas.Handle, szStr, Len, Rect, Align);
+        end;
+    else
       begin
-         Canvas.Font := ItemStyle.Font;
-         TextStyle := ItemStyle.TextStyle;
-      end
-      else
-      begin
-         Canvas.Font := ItemStyle.BtnFont;
-         if FPushedButton[Index] = StrListNum then
-            TextStyle := fstNone
-         else
-            TextStyle := ItemStyle.BtnTextStyle;
+        Canvas.Font.Color := FontColor;
+        DrawText(Canvas.Handle, szStr, Len, Rect, Align);
       end;
+    end;
+  end;
 
-      FontColor := Canvas.Font.Color;
-      SetBkMode(Canvas.Handle, TRANSPARENT);
-      InflateRect(Rect, -1, -1);
-      if StrListNum = -1 then
-      else
-         inc(Rect.top, 2);
-
-      case TextStyle of
-         fstRaised:
-            begin
-               Canvas.Font.Color := clBtnHighlight;
-               OffsetRect(Rect, -1, -1);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-               Canvas.Font.Color := clBtnShadow;
-               OffsetRect(Rect, 2, 2);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-               Canvas.Font.Color := FontColor;
-               OffsetRect(Rect, -1, -1);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-            end;
-         fstRecessed:
-            begin
-               Canvas.Font.Color := clBtnShadow;
-               OffsetRect(Rect, -1, -1);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-               Canvas.Font.Color := clBtnHighlight;
-               OffsetRect(Rect, 2, 2);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-               Canvas.Font.Color := FontColor;
-               OffsetRect(Rect, -1, -1);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-            end;
-         fstPushed:
-            begin
-               Canvas.Font.Color := clBtnHighlight;
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-               OffsetRect(Rect, -1, -1);
-               Canvas.Font.Color := clBtnShadow;
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-            end;
-         fstShadow:
-            begin
-               Canvas.Font.Color := clBtnShadow;
-               OffsetRect(Rect, 2, 2);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-               Canvas.Font.Color := FontColor;
-               OffsetRect(Rect, -2, -2);
-               DrawText(Canvas.Handle, szStr, Len, rect, Align);
-            end;
-      else
-         begin
-            Canvas.Font.Color := FontColor;
-            DrawText(Canvas.Handle, szStr, Len, rect, Align);
-         end;
-      end;
-   end;
-   //~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 begin
-   with Message.DrawItemStruct^ do
-   begin
-      Index := itemID;
-      if Index = -1 then
-         exit;
-      InitState(State, WordRec(LongRec(ItemState).Lo).Lo);  //   State := TOwnerDrawState(WordRec(LongRec(ItemState).Lo).Lo);
-      Canvas.Handle := hDC;
-      Rect := rcItem;
-   end;
+  with Msg.DrawItemStruct^ do
+  begin
+    Index := itemID;
+    if Index = -1 then
+      Exit;
+    InitState(State, WordRec(LongRec(ItemState).Lo).Lo);
+      //   State := TOwnerDrawState(WordRec(LongRec(ItemState).Lo).Lo);
+    Canvas.Handle := hDC;
+    Rect := rcItem;
+  end;
 
-   Canvas.Brush := Brush;
-   //  if State = [odSelected,odFocused] then exit;
-   Canvas.FrameRect(Rect);
-   inc(rect.top);
-   inc(rect.left);
-   fSelected := (State = [odSelected, odFocused]) or (State = [odSelected]);
+  Canvas.Brush := Brush;
+   //  if State = [odSelected,odFocused] then Exit;
+  Canvas.FrameRect(Rect);
+  Inc(Rect.Top);
+  Inc(Rect.Left);
+  fSelected := (State = [odSelected, odFocused]) or (State = [odSelected]);
 
-   if fSelected then
-   begin
-      ItemStyle := FItemSelStyle;
-      Shift := 2;
-   end
-   else
-   begin
-      ItemStyle := FItemStyle;
-      Shift := 0;
-   end;
-   Canvas.Brush.Color := ItemStyle.Color;
+  if fSelected then
+  begin
+    ItemStyle := FItemSelStyle;
+    Shift := 2;
+  end
+  else
+  begin
+    ItemStyle := FItemStyle;
+    Shift := 0;
+  end;
+  Canvas.Brush.Color := ItemStyle.Color;
 
-   Rect1 := rect;
-   rect1.right := FSegment1Width;
+  Rect1 := Rect;
+  Rect1.Right := FSegment1Width;
 
-   if IsItAFilledBitmap(WallpaperBmp) then
-   begin
-      if aloTransparentButtons in Options then
-         DrawWallpaper(rect)
+  if IsItAFilledBitmap(WallpaperBmp) then
+  begin
+    if aloTransparentButtons in Options then
+      DrawWallpaper(Rect)
+    else
+      DrawWallpaper(Rect1);
+  end
+  else
+    Canvas.FillRect(Rect1);
+
+   //DrawLBItem( idsRecessed, Rect1 );
+  DrawBoxEx(Canvas.Handle, Rect1, ItemStyle.Bevel.Sides, ItemStyle.Bevel.Inner,
+    ItemStyle.Bevel.Outer, ItemStyle.Bevel.Bold, 0, True);
+  if fSelected then
+  begin
+    InflateRect(Rect1, -1, -1);
+    Canvas.FillRect(Rect1);
+    InflateRect(Rect1, 1, 1);
+  end;
+
+  OldPushedBtn := FPushedButton[Index];
+
+  BtnRect := Rect;
+  BtnRect.Left := Rect1.Right + 2;
+  BtnRect.Right := BtnRect.Left + FButtonWidth;
+
+  Canvas.Brush.Color := ItemStyle.BtnColor;
+  for I := 1 to FButtons.Count do // draw buttons
+  begin
+    if IsPointInRect(MouseClickPoint, BtnRect) then
+    begin
+      if I = FPushedButton[Index] then
+        FPushedButton[Index] := 0 //...none pushed
       else
-         DrawWallpaper(rect1);
-   end
-   else
-      Canvas.FillRect(Rect1);
-
-   //DrawLBItem( idsRecessed, rect1 );
-   DrawBoxEx(Canvas.Handle, rect1, ItemStyle.Bevel.Sides, ItemStyle.Bevel.Inner,
-      ItemStyle.Bevel.Outer, ItemStyle.Bevel.Bold, 0, true);
-   if fSelected then
-   begin
-      InflateRect(Rect1, -1, -1);
-      Canvas.FillRect(Rect1);
-      InflateRect(Rect1, 1, 1);
-   end;
-   //~~~~~~~~~
-   OldPushedBtn := FPushedButton[Index];
-
-   BtnRect := Rect;
-   BtnRect.Left := Rect1.Right + 2;
-   BtnRect.Right := BtnRect.Left + FButtonWidth;
-
-   Canvas.Brush.Color := ItemStyle.BtnColor;
-   for i := 1 to FButtons.Count do      //______________________DRAW BUTTONS
-   begin
-      if IsPointInRect(MouseClickPoint, BtnRect) then
-      begin
-         if i = FPushedButton[Index] then
-            FPushedButton[Index] := 0   //...none pushed
-         else
-            FPushedButton[Index] := i;
-      end;
-      if not (aloTransparentButtons in Options) or (not
-         IsItAFilledBitmap(WallpaperBmp)) then
-         Canvas.FillRect(BtnRect);
-      BtnTxtRect := BtnRect;
-      if FPushedButton[Index] = i then
-      begin
-         DrawLBItem(idsRecessed, BtnRect);
-         OffsetRect(BtnTxtRect, 1, 1);
-      end
-      else
-         DrawLBItem(idsRaised, BtnRect);
+        FPushedButton[Index] := I;
+    end;
+    if not (aloTransparentButtons in Options) or
+      (not IsItAFilledBitmap(WallpaperBmp)) then
+      Canvas.FillRect(BtnRect);
+    BtnTxtRect := BtnRect;
+    if FPushedButton[Index] = I then
+    begin
+      DrawLBItem(idsRecessed, BtnRect);
+      OffsetRect(BtnTxtRect, 1, 1);
+    end
+    else
+      DrawLBItem(idsRaised, BtnRect);
       //...button text
-      if FPushedButton[Index] = i then
-         ItemStyle.BtnFont.Style := [fsBold]
-      else
-         ItemStyle.BtnFont.Style := [];
-      DrawTextInRect(BtnTxtRect, FCaptionsAlign_ or DT_SINGLELINE, i);
-      inc(BtnRect.Left, FButtonWidth + 1);
-      inc(BtnRect.Right, FButtonWidth + 1);
-   end; //_________________________________________________DRAW BUTTONS END
-   MouseClickPoint.x := -1;
-   MouseClickPoint.y := 0;
-   //~~~~~~~~~
-   rect1.left := 3;
-   rect1.right := FSegment1Width;
+    if FPushedButton[Index] = I then
+      ItemStyle.BtnFont.Style := [fsBold]
+    else
+      ItemStyle.BtnFont.Style := [];
+    DrawTextInRect(BtnTxtRect, FCaptionsAlign_ or DT_SINGLELINE, I);
+    Inc(BtnRect.Left, FButtonWidth + 1);
+    Inc(BtnRect.Right, FButtonWidth + 1);
+  end;
 
-   inc(rect1.top);
-   inc(rect.left);
-   dec(rect1.bottom);
-   dec(rect.right);
+  MouseClickPoint.X := -1;
+  MouseClickPoint.Y := 0;
 
-   if (FShowGlyphs) and (FGlyphs <> nil)
-      and (FGlyphs.Width > 0) and (FGlyphs.Height > 0) then
-   begin
-      DrawGlyph(rect, Index, Shift);
-      Rect1.left := Rect1.left + FGlyphs.Width;
-   end;
-   //...text
-   DrawTextInRect(rect1, FTextAlign_, -1);
+  Rect1.Left := 3;
+  Rect1.Right := FSegment1Width;
 
-   with Message.DrawItemStruct^ do
-      if (odFocused in State) and (aloShowFocus in Options) then
-         DrawFocusRect(hDC, rcItem);
+  Inc(Rect1.Top);
+  Inc(Rect.Left);
+  Dec(Rect1.Bottom);
+  Dec(Rect.Right);
 
-   FSelectedItem := Index;
-   if OldPushedBtn <> FPushedButton[Index] then
-      ButtonClicked;
-   Canvas.Handle := 0;
+  if (FShowGlyphs) and (FGlyphs <> nil) and
+    (FGlyphs.Width > 0) and (FGlyphs.Height > 0) then
+  begin
+    DrawGlyph(Rect, Index, Shift);
+    Rect1.Left := Rect1.Left + FGlyphs.Width;
+  end;
+  //...text
+  DrawTextInRect(Rect1, FTextAlign_, -1);
+
+  with Msg.DrawItemStruct^ do
+    if (odFocused in State) and (aloShowFocus in Options) then
+      DrawFocusRect(hDC, rcItem);
+
+  FSelectedItem := Index;
+  if OldPushedBtn <> FPushedButton[Index] then
+    ButtonClicked;
+  Canvas.Handle := 0;
 end;
-//_____________________________________________________
 
-procedure TJvgAskListBox.DrawWallpaper(r: TRect);
+procedure TJvgAskListBox.DrawWallpaper(R: TRect);
 var
-   X, Y, SaveIndex            : integer;
-   UpdateRgn                  : HRGN;
+  X, Y, SaveIndex: Integer;
+  UpdateRgn: HRGN;
 begin
-   x := 0;
-   y := 0;
-   SaveIndex := SaveDC(Canvas.Handle);
-   UpdateRgn := CreateRectRgn(r.left, r.top, r.right, r.bottom);
+  X := 0;
+  Y := 0;
+  SaveIndex := SaveDC(Canvas.Handle);
+  UpdateRgn := CreateRectRgn(R.Left, R.Top, R.Right, R.Bottom);
 
-   SelectClipRgn(Canvas.Handle, UpdateRgn);
-   case WallpaperOption of
-      fwoStretch:
-         Canvas.StretchDraw(r, WallpaperBmp);
-      fwoTile:
-         while x < r.Right - r.Left do
-         begin
-            while y < r.bottom - r.top do
-            begin
-               Canvas.Draw(r.Left + x, r.top + y, WallpaperBmp);
-               Inc(y, WallpaperBmp.Height);
-            end;
-            Inc(x, WallpaperBmp.Width);
-            y := 0;
-         end;
-   else
-      Canvas.Draw(r.left, r.top, WallpaperBmp);
-   end;
-   DeleteObject(UpdateRgn);
-   RestoreDC(Canvas.Handle, SaveIndex);
+  SelectClipRgn(Canvas.Handle, UpdateRgn);
+  case WallpaperOption of
+    fwoStretch:
+      Canvas.StretchDraw(R, WallpaperBmp);
+    fwoTile:
+      while X < R.Right - R.Left do
+      begin
+        while Y < R.Bottom - R.Top do
+        begin
+          Canvas.Draw(R.Left + X, R.Top + Y, WallpaperBmp);
+          Inc(Y, WallpaperBmp.Height);
+        end;
+        Inc(X, WallpaperBmp.Width);
+        Y := 0;
+      end;
+  else
+    Canvas.Draw(R.Left, R.Top, WallpaperBmp);
+  end;
+  DeleteObject(UpdateRgn);
+  RestoreDC(Canvas.Handle, SaveIndex);
 end;
-//______________________________________________________________
 
-procedure TJvgAskListBox.DrawGlyph(r: TRect; Index: word; Shift: word);
+procedure TJvgAskListBox.DrawGlyph(R: TRect; Index: Word; Shift: Word);
 var
-   i                          : integer;
-   OldRect                    : TRect;
+  I: Integer;
+  OldRect: TRect;
 begin
-   if (FGlyphs = nil) or (FGlyphs.Count = 0) then
-      exit;
-   r.right := r.left + FSegment1Width - 4;
-   OldRect := r;
-   inc(r.top);
-   inc(r.left);
-   case FGlyphsAlign.Horizontal of
-      fhaCenter: OffsetRect(r, (r.right - r.left - Glyphs.Width) div 2, 0);
-      fhaRight: OffsetRect(r, r.right - r.left - Glyphs.Width - Shift, 0);
-   end;
-   case FGlyphsAlign.Vertical of
-      fvaCenter: OffsetRect(r, 0, (r.bottom - r.top - Glyphs.height) div 2);
-      fvaBottom: OffsetRect(r, 0, r.bottom - r.top - Glyphs.height - Shift);
-   end;
+  if (FGlyphs = nil) or (FGlyphs.Count = 0) then
+    Exit;
+  R.Right := R.Left + FSegment1Width - 4;
+  OldRect := R;
+  Inc(R.Top);
+  Inc(R.Left);
+  case FGlyphsAlign.Horizontal of
+    fhaCenter:
+      OffsetRect(R, (R.Right - R.Left - Glyphs.Width) div 2, 0);
+    fhaRight:
+      OffsetRect(R, R.Right - R.Left - Glyphs.Width - Shift, 0);
+  end;
+  case FGlyphsAlign.Vertical of
+    fvaCenter:
+      OffsetRect(R, 0, (R.Bottom - R.Top - Glyphs.Height) div 2);
+    fvaBottom:
+      OffsetRect(R, 0, R.Bottom - R.Top - Glyphs.Height - Shift);
+  end;
 
-   i := -1;
-   if NumGlyphs = 1 then
-      i := 0
-   else if Index < NumGlyphs then
-      i := Index;
-   if i >= 0 then
-   begin
-      FGlyphs.GetBitmap(i, TmpBitmap);
-      if FAutoTrColor = ftcUser then
-         CreateBitmapExt(Canvas.Handle, TmpBitmap, Rect(0, 0, 100, 100), r.left,
-            r.top,
-            fwoNone, fdsDefault, true, FTransparentColor, clBlack)
-      else
-         CreateBitmapExt(Canvas.Handle, TmpBitmap, Rect(0, 0, 100, 100), r.left,
-            r.top,
-            fwoNone, fdsDefault, true, GetTransparentColor(TmpBitmap,
-               FAutoTrColor), clBlack);
-   end;
+  I := -1;
+  if NumGlyphs = 1 then
+    I := 0
+  else
+  if Index < NumGlyphs then
+    I := Index;
+  if I >= 0 then
+  begin
+    FGlyphs.GetBitmap(I, TmpBitmap);
+    if FAutoTransparentColor = ftcUser then
+      CreateBitmapExt(Canvas.Handle, TmpBitmap, Rect(0, 0, 100, 100), R.Left,
+        R.Top, fwoNone, fdsDefault, True, FTransparentColor, clBlack)
+    else
+      CreateBitmapExt(Canvas.Handle, TmpBitmap, Rect(0, 0, 100, 100), R.Left,
+        R.Top, fwoNone, fdsDefault, True,
+        GetTransparentColor(TmpBitmap, FAutoTransparentColor), clBlack);
+  end;
 end;
 
-//*****************************************_____________PROPERTY METHODS
-
-procedure TJvgAskListBox.SetAutoTrColor(Value: TglAutoTransparentColor);
+procedure TJvgAskListBox.SetAutoTransparentColor(Value: TglAutoTransparentColor);
 begin
-   if FAutoTrColor = Value then
-      exit;
-   FAutoTrColor := Value;
-   Invalidate;
+  if FAutoTransparentColor = Value then
+    Exit;
+  FAutoTransparentColor := Value;
+  Invalidate;
 end;
 
 procedure TJvgAskListBox.SetWallpaper(Value: TBitmap);
 begin
-   if Assigned(FWallpaper) then
-      FWallpaper.Free;
-   FWallpaper := TBitmap.Create;
-   FWallpaper.Assign(Value);
-   if (not Assigned(Value)) and Assigned(WallpaperImage) then
+  if Assigned(FWallpaper) then
+    FWallpaper.Free;
+  FWallpaper := TBitmap.Create;
+  FWallpaper.Assign(Value);
+  if (not Assigned(Value)) and Assigned(WallpaperImage) then
+    if Assigned(FWallpaper) then
+      WallpaperBmp := FWallpaper
+    else
+    if Assigned(FWallpaperImage) then
+      WallpaperBmp := FWallpaperImage.Picture.Bitmap
+    else
+      WallpaperBmp := nil;
 
-      if Assigned(FWallpaper) then
-         WallpaperBmp := FWallpaper
-      else if Assigned(FWallpaperImage) then
-         WallpaperBmp := FWallpaperImage.Picture.Bitmap
-      else
-         WallpaperBmp := nil;
-
-   if FShowWallpaper then
-      Invalidate;
+  if FShowWallpaper then
+    Invalidate;
 end;
 
 function TJvgAskListBox.GetWallpaper: TBitmap;
 begin
-   if not Assigned(FWallpaper) then
-      FWallpaper := TBitmap.Create;
-   WallpaperBmp := FWallpaper;
-   Result := FWallpaper;
+  if not Assigned(FWallpaper) then
+    FWallpaper := TBitmap.Create;
+  WallpaperBmp := FWallpaper;
+  Result := FWallpaper;
 end;
 
 procedure TJvgAskListBox.SetWallpaperImage(Value: Timage);
 begin
-   FWallpaperImage := Value;
-   if (not IsItAFilledBitmap(FWallpaper)) and Assigned(Value) then
-   begin
-      WallpaperBmp := Value.Picture.Bitmap;
-      if FShowWallpaper then
-         Invalidate;
-   end;
+  FWallpaperImage := Value;
+  if (not IsItAFilledBitmap(FWallpaper)) and Assigned(Value) then
+  begin
+    WallpaperBmp := Value.Picture.Bitmap;
+    if FShowWallpaper then
+      Invalidate;
+  end;
 end;
 
-procedure TJvgAskListBox.SetWOpt(Value: TglWallpaperOption);
+procedure TJvgAskListBox.SetWallpaperOption(Value: TglWallpaperOption);
 begin
-   FWallpaperOption := Value;
-   if FShowWallpaper then
-      Invalidate;
+  FWallpaperOption := Value;
+  if FShowWallpaper then
+    Invalidate;
 end;
 
-procedure TJvgAskListBox.SetNumGlyphs(Value: word);
+procedure TJvgAskListBox.SetNumGlyphs(Value: Word);
 begin
-   if Value < 1 then
-      exit;
-   FNumGlyphs := Value;
-   if FShowGlyphs then
-      Invalidate;
+  if Value < 1 then
+    Exit;
+  FNumGlyphs := Value;
+  if FShowGlyphs then
+    Invalidate;
 end;
 
 {procedure TJvgAskListBox.SetItemStyle( Value: TItemsDrawStyle );
 begin
-  if FItemStyle = Value then exit;
+  if FItemStyle = Value then Exit;
   FItemStyle := Value;
   Invalidate;
 end;
 
 procedure TJvgAskListBox.SetSelItemStyle( Value: TItemsDrawStyle );
 begin
-  if FSelItemStyle = Value then exit;
+  if FSelItemStyle = Value then Exit;
   FSelItemStyle := Value;
   Invalidate;
 end;
@@ -703,15 +676,15 @@ end;
 
 procedure TJvgAskListBox.SetGlyphs(Value: TImageList);
 begin
-   //if (Value=nil)or(Value.Width<=0)or(Value.Height<=0) then exit;
-   FGlyphs := Value;
-   if FShowGlyphs then
-      Invalidate;
+   //if (Value=nil)or(Value.Width<=0)or(Value.Height<=0) then Exit;
+  FGlyphs := Value;
+  if FShowGlyphs then
+    Invalidate;
 end;
 
 {procedure TJvgAskListBox.SetSelFont( Value: TFont );
 begin
-  if Value=nil then exit;
+  if Value=nil then Exit;
   FSelFont.Assign( Value );
   Invalidate;
 end;
@@ -720,252 +693,263 @@ end;
 {
 procedure TJvgAskListBox.SetColor(Value: TColor);
 begin
-  if FColor = Value then exit;
+  if FColor = Value then Exit;
   FColor := Value; Canvas.Brush.Color:=Value; Invalidate;
 end;
 
 procedure TJvgAskListBox.SetSelColor(Value: TColor);
 begin
-  if FColor = Value then exit;
+  if FColor = Value then Exit;
   FSelColor := Value; Canvas.Brush.Color:=Value; Invalidate;
 end;
 }
 
-procedure TJvgAskListBox.SetItemHeight(Value: word);
+procedure TJvgAskListBox.SetItemHeight(Value: Word);
 begin
-   if (Value <= 6) or (FItemHeight = Value) then
-      exit;
-   FItemHeight := Value;
-   //inherited ItemHeight:=FItemHeight;
-   RecalcHeights;
+  if (Value > 6) and (FItemHeight <> Value) then
+  begin
+    FItemHeight := Value;
+    //inherited ItemHeight:=FItemHeight;
+    RecalcHeights;
+  end;
 end;
 
 procedure TJvgAskListBox.SetAlign(Align: TJvg2DAlign; var Align_: UINT);
 begin
-   case Align.Horizontal of
-      fhaLeft: Align_ := Align_ or DT_LEFT;
-      fhaCenter: Align_ := Align_ or DT_CENTER;
-   else
-      Align_ := Align_ or DT_RIGHT;
-   end;
-   case Align.Vertical of
-      fvaTop: Align_ := Align_ or DT_TOP;
-      fvaCenter: Align_ := Align_ or DT_VCENTER;
-   else
-      Align_ := Align_ or DT_BOTTOM;
-   end;
+  case Align.Horizontal of
+    fhaLeft:
+      Align_ := Align_ or DT_LEFT;
+    fhaCenter:
+      Align_ := Align_ or DT_CENTER;
+  else
+    Align_ := Align_ or DT_RIGHT;
+  end;
+  case Align.Vertical of
+    fvaTop:
+      Align_ := Align_ or DT_TOP;
+    fvaCenter:
+      Align_ := Align_ or DT_VCENTER;
+  else
+    Align_ := Align_ or DT_BOTTOM;
+  end;
 end;
+
 {
 procedure TJvgAskListBox.SetTextStyle(Value: TglTextStyle);
 begin
-  if FTextStyle = Value then exit;
+  if FTextStyle = Value then Exit;
   FTextStyle := Value; if FShowText then Invalidate;
 end;
 
 procedure TJvgAskListBox.SetButtonsTextStyle(Value: TglTextStyle);
 begin
-  if FButtonsTextStyle = Value then exit;
+  if FButtonsTextStyle = Value then Exit;
   FButtonsTextStyle := Value; if FShowText then Invalidate;
 end;
 }
 
-procedure TJvgAskListBox.SetShowText(Value: boolean);
+procedure TJvgAskListBox.SetShowText(Value: Boolean);
 begin
-   if FShowText = Value then
-      exit;
-   FShowText := Value;
-   Invalidate;
+  if FShowText <> Value then
+  begin
+    FShowText := Value;
+    Invalidate;
+  end;
 end;
 
 procedure TJvgAskListBox.SetTransparentColor(Value: TColor);
 begin
-   if FTransparentColor = Value then
-      exit;
-   FTransparentColor := Value;
-   if FShowGlyphs then
+  if FTransparentColor <> Value then
+  begin
+    FTransparentColor := Value;
+    if FShowGlyphs then
       Invalidate;
+  end;
 end;
 
-procedure TJvgAskListBox.SetButtonWidth(Value: word);
+procedure TJvgAskListBox.SetButtonWidth(Value: Word);
 begin
-   if FButtonWidth = Value then
-      exit;
-   FButtonWidth := Value;
-   RecalcHeights;
+  if FButtonWidth <> Value then
+  begin
+    FButtonWidth := Value;
+    RecalcHeights;
+  end;
 end;
 
 procedure TJvgAskListBox.SetOptions(Value: TglAskLBOptions);
 begin
-   if FOptions = Value then
-      exit;
-   FOptions := Value;
-   RecalcHeights;
+  if FOptions <> Value then
+  begin
+    FOptions := Value;
+    RecalcHeights;
+  end;
 end;
 
-//_______________________________________________SERVEICE PROCs
-
-function TJvgAskListBox.IsFilled: boolean;
+function TJvgAskListBox.IsFilled: Boolean;
 var
-   i                          : word;
+  I: Word;
 begin
-   Result := false;
-   for i := 0 to Items.Count - 1 do
-      if FPushedButton[i] = 0 then
-         exit;
-   Result := true;
+  Result := False;
+  for I := 0 to Items.Count - 1 do
+    if FPushedButton[I] = 0 then
+      Exit;
+  Result := True;
 end;
 
-function TJvgAskListBox.CountPushedButtonsInColon(Colon: integer): integer;
+function TJvgAskListBox.CountPushedButtonsInColon(Colon: Integer): Integer;
 var
-   i                          : word;
+  I: Word;
 begin
-   Result := 0;
-   if Colon = 0 then
-   begin
-      for i := 0 to Items.Count - 1 do
-         if FPushedButton[i] <> 0 then
-            inc(Result);
-   end
-   else
-      for i := 0 to Items.Count - 1 do
-         if FPushedButton[i] = Colon then
-            inc(Result);
+  Result := 0;
+  if Colon = 0 then
+  begin
+    for I := 0 to Items.Count - 1 do
+      if FPushedButton[I] <> 0 then
+        Inc(Result);
+  end
+  else
+    for I := 0 to Items.Count - 1 do
+      if FPushedButton[I] = Colon then
+        Inc(Result);
 end;
 
-procedure TJvgAskListBox.SetSelectedItem(Value: word);
+procedure TJvgAskListBox.SetSelectedItem(Value: Word);
 begin
-   if Value >= Items.Count then
-      exit;
-   SendMessage(Handle, LB_SETCURSEL, Value, Longint(0));
+  if Value >= Items.Count then
+    Exit;
+  SendMessage(Handle, LB_SETCURSEL, Value, Longint(0));
 end;
 
 procedure TJvgAskListBox.SetButtons(Value: TStringList);
 begin
-   if (Value = nil) or (Value.Count = 0) then
-      exit;
-   FButtons.Assign(Value);
-   RecalcHeights;
-   Invalidate;
+  if (Value <> nil) and (Value.Count <> 0) then
+  begin
+    FButtons.Assign(Value);
+    RecalcHeights;
+    Invalidate;
+  end;
 end;
 
-function TJvgAskListBox.GetPushedButtonInLine(Index: word): integer;
+function TJvgAskListBox.GetPushedButtonInLine(Index: Word): Integer;
 begin
-   if Index >= Items.Count then
-      Result := -1
-   else
-      Result := FPushedButton[Index];
+  if Index >= Items.Count then
+    Result := -1
+  else
+    Result := FPushedButton[Index];
 end;
 
-function TJvgAskListBox.SetPushedButtonInLine(Index: word; Value: word):
-   boolean;
+function TJvgAskListBox.SetPushedButtonInLine(Index: Word; Value: Word): Boolean;
 var
-   r                          : TRect;
+  R: TRect;
 begin
-   if (Index < Items.Count) and (Value in [0..2]) then
-   begin
-      Result := true;
-      if FPushedButton[Index] = Value then
-         exit;
-      FPushedButton[Index] := Value;
-      SendMessage(Handle, LB_GETITEMRECT, Index, Longint(@r));
-      r.left := FSegment1Width;
-      InvalidateRect(Handle, @r, true);
+  if (Index < Items.Count) and (Value in [0..2]) then
+  begin
+    Result := True;
+    if FPushedButton[Index] = Value then
+      Exit;
+    FPushedButton[Index] := Value;
+    SendMessage(Handle, LB_GETITEMRECT, Index, Longint(@R));
+    R.Left := FSegment1Width;
+    InvalidateRect(Handle, @R, True);
       //ButtonClicked;
-      if (aloAutoScroll in Options) and (Value <> 0) then
-         SendMessage(Handle, LB_SETCURSEL, FSelectedItem + 1, Longint(0));
-   end
-   else
-      Result := false;
+    if (aloAutoScroll in Options) and (Value <> 0) then
+      SendMessage(Handle, LB_SETCURSEL, FSelectedItem + 1, Longint(0));
+  end
+  else
+    Result := False;
 end;
 
-procedure TJvgAskListBox.WMLButtonDown(var Message: TWMLButtonDown);
+procedure TJvgAskListBox.WMLButtonDown(var Msg: TWMLButtonDown);
 var
-   R                          : TRect;
-   ItemN                      : integer;
+  R: TRect;
+  ItemN: Integer;
 begin
-   inherited;
-   if aloIgnoreMouse in Options then
-      exit;
-   MouseClickPoint.x := Message.xPos;
-   MouseClickPoint.y := Message.yPos;
-   if Message.xPos > FSegment1Width then
-   begin
-      ItemN := ItemAtPos(SmallPointToPoint(Message.Pos), True);
-      SendMessage(handle, LB_GETITEMRECT, ItemN, LPARAM(@r));
-      inc(R.Left, FSegment1Width);
-      InvalidateRect(Handle, @R, false);
+  inherited;
+  if aloIgnoreMouse in Options then
+    Exit;
+  MouseClickPoint.X := Msg.XPos;
+  MouseClickPoint.Y := Msg.YPos;
+  if Msg.XPos > FSegment1Width then
+  begin
+    ItemN := ItemAtPos(SmallPointToPoint(Msg.Pos), True);
+    SendMessage(Handle, LB_GETITEMRECT, ItemN, LPARAM(@R));
+    Inc(R.Left, FSegment1Width);
+    InvalidateRect(Handle, @R, False);
       //if (aloAutoScroll in Options)then SendMessage( Handle, LB_SETCURSEL, FSelectedItem+1, Longint(0));
-   end;
+  end;
 end;
 
-procedure TJvgAskListBox.WMSize(var Message: TWMSize);
+procedure TJvgAskListBox.WMSize(var Msg: TWMSize);
 begin
-   inherited;
-   RecalcHeights;
+  inherited;
+  RecalcHeights;
 end;
 
 procedure TJvgAskListBox.ButtonClicked;
 begin
-   if Assigned(FOnButtonClicked) then
-      FOnButtonClicked(self);
+  if Assigned(FOnButtonClicked) then
+    FOnButtonClicked(self);
 end;
 
 procedure TJvgAskListBox.RecalcHeights;
 var
-   i                          : integer;
-   r                          : TRect;
+  I: Integer;
+  R: TRect;
 begin
-   if Items.Count = 0 then
-      exit;
+  if Items.Count = 0 then
+    Exit;
 
-   SendMessage(handle, LB_GETITEMRECT, Items.Count - 1, LPARAM(@r));
-   FSegment1Width := word((r.right - r.left) - (FButtonWidth + 1) *
-      (FButtons.Count) - 1);
+  SendMessage(Handle, LB_GETITEMRECT, Items.Count - 1, LPARAM(@R));
+  FSegment1Width := Word((R.Right - R.Left) - (FButtonWidth + 1) *
+    (FButtons.Count) - 1);
 
-   Items.BeginUpdate;
-   for i := 0 to Items.Count - 1 do
-   begin
-      Items.Insert(i, Items.Strings[i]);
-      Items.Delete(i + 1);
-   end;
-   Items.EndUpdate;
+  Items.BeginUpdate;
+  for I := 0 to Items.Count - 1 do
+  begin
+    Items.Insert(I, Items.Strings[I]);
+    Items.Delete(I + 1);
+  end;
+  Items.EndUpdate;
 end;
 
 procedure TJvgAskListBox.SmthChanged(Sender: TObject);
 begin
-   FTextAlign_ := DT_WORDBREAK;
-   FCaptionsAlign_ := DT_SINGLELINE;
-   SetAlign(FTextAlign, FTextAlign_);
-   SetAlign(FCaptionsAlign, FCaptionsAlign_);
-   FCaptionsAlign_ := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
-   Invalidate;
+  FTextAlign_ := DT_WORDBREAK;
+  FCaptionsAlign_ := DT_SINGLELINE;
+  SetAlign(FTextAlign, FTextAlign_);
+  SetAlign(FCaptionsAlign, FCaptionsAlign_);
+  FCaptionsAlign_ := DT_CENTER or DT_VCENTER or DT_SINGLELINE;
+  Invalidate;
 end;
 
 procedure TJvgAskListBox.InitState(var State: TOwnerDrawState; ByteState: Byte);
 begin
-   State := [];
-   if ByteState and ODS_CHECKED <> 0 then
-      Include(State, odChecked);        //TOwnerDrawState
-   {$IFDEF COMPILER5_UP}
-   if ByteState and ODS_COMBOBOXEDIT <> 0 then
-      Include(State, odComboBoxEdit);
-   if ByteState and ODS_DEFAULT <> 0 then
-      Include(State, odDefault);
-   {$ENDIF}
-   if ByteState and ODS_DISABLED <> 0 then
-      Include(State, odDisabled);
-   if ByteState and ODS_FOCUS <> 0 then
-      Include(State, odFocused);
-   if ByteState and ODS_GRAYED <> 0 then
-      Include(State, odGrayed);
-   if ByteState and ODS_SELECTED <> 0 then
-      Include(State, odSelected);
+  State := [];
+  if ByteState and ODS_CHECKED <> 0 then
+    Include(State, odChecked); //TOwnerDrawState
+  {$IFDEF COMPILER5_UP}
+  if ByteState and ODS_COMBOBOXEDIT <> 0 then
+    Include(State, odComboBoxEdit);
+  if ByteState and ODS_DEFAULT <> 0 then
+    Include(State, odDefault);
+  {$ENDIF}
+  if ByteState and ODS_DISABLED <> 0 then
+    Include(State, odDisabled);
+  if ByteState and ODS_FOCUS <> 0 then
+    Include(State, odFocused);
+  if ByteState and ODS_GRAYED <> 0 then
+    Include(State, odGrayed);
+  if ByteState and ODS_SELECTED <> 0 then
+    Include(State, odSelected);
 end;
+
 procedure TJvgAskListBox.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (AComponent = WallpaperImage) and (Operation = opRemove) then WallpaperImage := nil;
-  if (AComponent = FGlyphs) and (Operation = opRemove) then Glyphs := nil;
+  if (AComponent = WallpaperImage) and (Operation = opRemove) then
+    WallpaperImage := nil;
+  if (AComponent = FGlyphs) and (Operation = opRemove) then
+    Glyphs := nil;
 end;
 
 end.

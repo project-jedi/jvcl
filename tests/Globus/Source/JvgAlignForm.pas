@@ -33,7 +33,8 @@ interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, JvgTypes;
+  StdCtrls, ExtCtrls,
+  JvgTypes;
 
 type
 
@@ -44,8 +45,6 @@ type
     B_Cancel: TButton;
     procedure B_OkClick(Sender: TObject);
     procedure B_CancelClick(Sender: TObject);
-  private
-    { Private declarations }
   public
     Horz: TglHComponentAlign;
     Vert: TglVComponentAlign;
@@ -62,12 +61,12 @@ procedure TAlignForm.B_OkClick(Sender: TObject);
 begin
   Horz := TglHComponentAlign(g_Horz.ItemIndex);
   Vert := TglVComponentAlign(g_Vert.ItemIndex);
-  ModalResult := mrOK;
+  ModalResult := mrOk;
 end;
 
 procedure TAlignForm.B_CancelClick(Sender: TObject);
 begin
-  ModalResult := mrCANCEL;
+  ModalResult := mrCancel;
 end;
 
 end.

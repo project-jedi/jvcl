@@ -189,7 +189,7 @@ var
 implementation
 
 {$R *.dfm}
-{$R .\Resources\JvgLabelEditor.res}
+{$R ..\Resources\JvgLabelEditor.res}
 
 procedure TJvgLabelEditor.ExecuteVerb(Index: Integer);
 var

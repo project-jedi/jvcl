@@ -30,6 +30,7 @@ Known Issues:
 unit Jvg3DColors;
 
 interface
+
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   JvComponent;
@@ -37,11 +38,11 @@ uses
 type
   TJvg3DLocalColors = class(TJvComponent)
   private
-    FDkShadow,
-      FHighlight,
-      FShadow: TColor;
-    FColorShadowShift: byte;
-    FColorHighlightShift: byte;
+    FDkShadow: TColor;
+    FHighlight: TColor;
+    FShadow: TColor;
+    FColorShadowShift: Byte;
+    FColorHighlightShift: Byte;
     OldPointer: Pointer;
     procedure SetDefaults;
     procedure SetDkShadow(Value: TColor);
@@ -53,10 +54,9 @@ type
     procedure CreateAuto3DColors(BaseColor: TColor);
     procedure MakeGlobal;
     procedure MakeLocal;
-
-    property ColorShadowShift: byte read FColorShadowShift write FColorShadowShift
+    property ColorShadowShift: Byte read FColorShadowShift write FColorShadowShift
       default 60;
-    property ColorHighlightShift: byte read FColorHighlightShift write FColorHighlightShift
+    property ColorHighlightShift: Byte read FColorHighlightShift write FColorHighlightShift
       default 60;
   published
     property DkShadow: TColor read FDkShadow write SetDkShadow default cl3DDkShadow;
@@ -72,31 +72,22 @@ type
   end;
 
 implementation
-uses JvgUtils, JvgTypes;
 
-constructor TJvg3DColors.Create(AOwner: TComponent);
-begin
-  inherited;
-  SetDefaults;
-  glGlobalData.lp3DColors := self;
-end;
+uses
+  JvgUtils, JvgTypes;
 
-procedure TJvg3DColors.Notification(Component: TComponent; Operation: TOperation);
-begin
-  if (Component <> Self) and (Operation = opInsert) and (Component is TJvg3DLocalColors) then
-    raise Exception.Create('Cannot create more than one instance of TJvg3DLocalColors component');
-end;
+//=== TJvg3DLocalColors ======================================================
 
 constructor TJvg3DLocalColors.Create(AOwner: TComponent);
 begin
-  inherited;
+  inherited Create(AOwner);
   SetDefaults;
 end;
 
 destructor TJvg3DLocalColors.Destroy;
 begin
   glGlobalData.lp3DColors := nil;
-  inherited;
+  inherited Destroy;
 end;
 
 procedure TJvg3DLocalColors.SetDefaults;
@@ -110,21 +101,21 @@ end;
 
 procedure TJvg3DLocalColors.CreateAuto3DColors(BaseColor: TColor);
 var
-  r, g, b: byte;
+  R, G, B: Byte;
 begin
   if (BaseColor and $80000000) <> 0 then
     BaseColor := GetSysColor(BaseColor and $FF);
-  b := (BaseColor and $00FF0000) shr 16;
-  g := (BaseColor and $0000FF00) shr 8;
-  r := BaseColor and $000000FF;
-  FShadow := RGB(max(r - ColorShadowShift, 0), max(g - ColorShadowShift, 0), max(b - ColorShadowShift, 0));
-  FHighlight := RGB(min(r + ColorHighlightShift, 255), min(g + ColorHighlightShift, 255), min(b + ColorHighlightShift, 255));
+  B := (BaseColor and $00FF0000) shr 16;
+  G := (BaseColor and $0000FF00) shr 8;
+  R := BaseColor and $000000FF;
+  FShadow := RGB(Max(R - ColorShadowShift, 0), Max(G - ColorShadowShift, 0), Max(B - ColorShadowShift, 0));
+  FHighlight := RGB(Min(r + ColorHighlightShift, 255), min(g + ColorHighlightShift, 255), min(b + ColorHighlightShift, 255));
 end;
 
 procedure TJvg3DLocalColors.MakeGlobal;
 begin
   OldPointer := glGlobalData.lp3DColors;
-  glGlobalData.lp3DColors := self;
+  glGlobalData.lp3DColors := Self;
 end;
 
 procedure TJvg3DLocalColors.MakeLocal;
@@ -145,6 +136,21 @@ end;
 procedure TJvg3DLocalColors.SetShadow(Value: TColor);
 begin
   FShadow := Value; {TWinControl(Owner).Invalidate;}
+end;
+
+//=== TJvg3DColors ===========================================================
+
+constructor TJvg3DColors.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  SetDefaults;
+  glGlobalData.lp3DColors := Self;
+end;
+
+procedure TJvg3DColors.Notification(Component: TComponent; Operation: TOperation);
+begin
+  if (Component <> Self) and (Operation = opInsert) and (Component is TJvg3DLocalColors) then
+    raise Exception.Create('Cannot create more than one instance of TJvg3DLocalColors component');
 end;
 
 end.
