@@ -1,33 +1,33 @@
-{-----------------------------------------------------------------------------
-The contents of this file are subject to the Mozilla Public License
-Version 1.1 (the "License"); you may not use this file except in compliance
-with the License. You may obtain a copy of the License at
-http://www.mozilla.org/MPL/MPL-1.1.html
+{******************************************************************
 
-Software distributed under the License is distributed on an "AS IS" basis,
-WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
-the specific language governing rights and limitations under the License.
+                       JEDI-VCL Demo
 
-The Original Code is: Main.pas, released on 2003-10-07.
+ Copyright (C) 2002 Project JEDI
 
-The Initial Developer of the Original Code is Andreas Hausladen [Andreas.Hausladen@gmx.de]
-Portions created by Andreas Hausladen are Copyright (C) 2003 Andreas Hausladen.
-All Rights Reserved.
+ Original author:
 
-Contributor(s): -
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
 
-Last Modified: 2003-10-07
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may
+ not use this file except in compliance with the License. You may
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
 
-You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
-located at http://jvcl.sourceforge.net
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
 
-Known Issues:
------------------------------------------------------------------------------}
+******************************************************************}
 
 {$I jvcl.inc}
 
 unit Main;
+
 interface
+
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, JvAppInst, Mask, JvMaskEdit, JvSpin;
@@ -55,9 +55,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure BtnInstanceCountClick(Sender: TObject);
   private
-    { Private-Deklarationen }
   public
-    { Public-Deklarationen }
   end;
 
 var

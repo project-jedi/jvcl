@@ -13,6 +13,9 @@ object frmPrint: TfrmPrint
   Font.Name = 'MS Shell Dlg 2'
   Font.Style = []
   OldCreateOrder = False
+  DesignSize = (
+    294
+    113)
   PixelsPerInch = 96
   TextHeight = 13
   object Label1: TLabel

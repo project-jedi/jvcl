@@ -27,7 +27,9 @@
 ******************************************************************}
 
 unit Unitmain;
+
 {$I jvcl.inc}
+
 interface
 
 uses
@@ -84,7 +86,7 @@ uses
   FindReplaceMainFormU, JvPlayListMainFormU, ImageWindowMainFormU,
   RessourcesFormMain, SearchingForm, JclDebug, JclStrings, JclFileUtils, ShellAPI;
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TMainform.FormDestroy(Sender: TObject);
 var

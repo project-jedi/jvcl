@@ -1,10 +1,35 @@
+{******************************************************************
+
+                       JEDI-VCL Demo
+
+ Copyright (C) 2002 Project JEDI
+
+ Original author:
+
+ You may retrieve the latest version of this file at the JEDI-JVCL
+ home page, located at http://jvcl.sourceforge.net
+
+ The contents of this file are used with permission, subject to
+ the Mozilla Public License Version 1.1 (the "License"); you may
+ not use this file except in compliance with the License. You may
+ obtain a copy of the License at
+ http://www.mozilla.org/MPL/MPL-1_1Final.html
+
+ Software distributed under the License is distributed on an
+ "AS IS" basis, WITHOUT WARRANTY OF ANY KIND, either express or
+ implied. See the License for the specific language governing
+ rights and limitations under the License.
+
+******************************************************************}
+
 unit JvAniMainFormU;
 
 interface
 
 uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, FileCtrl, ExtCtrls, JvAni, JvCombobox, JvDriveCtrls, JvListBox;
+  StdCtrls, FileCtrl, ExtCtrls,
+  JvAni, JvCombobox, JvDriveCtrls, JvListBox;
 
 type
   TJvAniMainForm = class(TForm)
@@ -21,19 +46,19 @@ var
 
 implementation
 
-{$R *.DFM}
+{$R *.dfm}
 
 procedure TJvAniMainForm.FileListBox1Click(Sender: TObject);
 begin
-  self.Image1.Picture.LoadFromFile(self.FileListBox1.FileName);
+  Self.Image1.Picture.LoadFromFile(Self.FileListBox1.FileName);
 
   with TJvAni(TJvAni(self.Image1.Picture.Graphic)) do
   begin
     Animated:=true;
-    self.Memo1.Clear;
-    self.Memo1.Lines.Add('Author : '+Author);
-    self.Memo1.Lines.Add('Title : '+Title);
-    self.Memo1.Lines.Add('Frames : '+IntToStr(FramesCount));
+    Self.Memo1.Clear;
+    Self.Memo1.Lines.Add('Author : '+Author);
+    Self.Memo1.Lines.Add('Title : '+Title);
+    Self.Memo1.Lines.Add('Frames : '+IntToStr(FramesCount));
   end;
 end;
 
