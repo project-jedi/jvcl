@@ -33,7 +33,7 @@ interface
 
 uses
   Classes, Windows,
-  JvAppStore;
+  JvAppStore, JvTypes;
 
 type
   TJvAppRegistryStore = class(TJvCustomAppStore)
@@ -42,6 +42,8 @@ type
   protected
     function GetApplicationRoot: string;
     procedure SetApplicationRoot(Value: string);
+    function GetRegRoot: TJvRegKey;
+    procedure SetRegRoot(Value: TJvRegKey);
     { Create the registry key path if it doesn't exist yet. Any key in the path that doesn't exist
       is created. }
     procedure CreateKey(Key: string);
@@ -63,6 +65,7 @@ type
       (eg. 'HKEY_LOCAL_MACHINE\Software\Project JEDI'). The sub key is internally stored in the
       AppRoot property.}
     property ApplicationRoot: string read GetApplicationRoot write SetApplicationRoot;
+    property RegRoot: TJvRegKey read GetRegRoot write SetRegRoot stored False;
   end;
 
 implementation
@@ -117,6 +120,17 @@ begin
   finally
     SL.Free;
   end;
+end;
+
+function TJvAppRegistryStore.GetRegRoot: TJvRegKey;
+begin
+  Result := TJvRegKey(FRegHKEY - HKEY_CLASSES_ROOT);
+end;
+
+procedure TJvAppRegistryStore.SetRegRoot(Value: TJvRegKey);
+begin
+  if Value <> RegRoot then
+    FRegHKEY := HKEY_CLASSES_ROOT + Longword(Ord(Value));
 end;
 
 procedure TJvAppRegistryStore.CreateKey(Key: string);

@@ -49,7 +49,8 @@ const
   {$ENDIF}
 
 type
-  TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkCurrentConfig, hkPerformanceData, hkDynData);
+  TJvRegKey = (hkClassesRoot, hkCurrentUser, hkLocalMachine, hkUsers, hkPerformanceData,
+    hkCurrentConfig, hkDynData);
   TJvRegKeys = set of TJvRegKey;
 
   // base JVCL Exception class to derive from
