@@ -37,7 +37,7 @@ begin
      TJvNewLinkDialog, TJvAddHardwareDialog, TJvOpenWithDialog,
      TJvDiskFullDialog, TJvExitWindowsDialog, TJvOutOfMemoryDialog,
      TJvObjectPickerDialog, TJvDualListDialog,
-     TJvImageDlg, TJvLoginDialog,
+     TJvImageDialog, TJvLoginDialog,
      TJvProgressDialog, TJvProgressComponent,
      TJvDiskPrompt, TJvCopyError, TJvDeleteError, TJvRenameError
     ]);

@@ -35,7 +35,7 @@ uses
   JvImageForm, JvBaseDlg, JvTypes;
 
 type
-  TJvImageDlg = class(TJvCommonDialogP)
+  TJvImageDialog = class(TJvCommonDialogP)
   private
     FPicture: TPicture;
     FTitle: string;
@@ -55,20 +55,20 @@ implementation
 resourcestring
   RC_ImageTitle = 'Image Viewer';
 
-constructor TJvImageDlg.Create(AOwner: TComponent);
+constructor TJvImageDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FPicture := TPicture.Create;
   FTitle := RC_ImageTitle;
 end;
 
-destructor TJvImageDlg.Destroy;
+destructor TJvImageDialog.Destroy;
 begin
   FPicture.Free;
   inherited Destroy;
 end;
 
-procedure TJvImageDlg.Execute;
+procedure TJvImageDialog.Execute;
 begin
   with TFormImg.Create(Application) do
   begin
@@ -82,7 +82,7 @@ begin
   end;
 end;
 
-procedure TJvImageDlg.SetPicture(const Value: TPicture);
+procedure TJvImageDialog.SetPicture(const Value: TPicture);
 begin
   FPicture.Assign(Value);
 end;

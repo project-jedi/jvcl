@@ -31,17 +31,25 @@ unit JvPluginParamsForm;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls;
+  SysUtils, Classes, Controls, Forms, StdCtrls, ComCtrls;
 
 type
   TfrmPluginParams = class(TForm)
     butOK: TButton;
     butCancel: TButton;
     gbPluginSettings: TGroupBox;
-    edName: TEdit;
+    edtPluginName: TEdit;
     rbPackage: TRadioButton;
     rbDLL: TRadioButton;
     lblCreateInfo: TLabel;
+    Label1: TLabel;
+    edtPluginAuthor: TEdit;
+    Label2: TLabel;
+    edtPluginCopyright: TEdit;
+    Label3: TLabel;
+    mmoDescripton: TRichEdit;
+    edtPluginUID: TEdit;
+    Label4: TLabel;
     procedure SettingsChanged(Sender: TObject);
     procedure FormShow(Sender: TObject);
   end;
@@ -72,8 +80,8 @@ procedure TfrmPluginParams.SettingsChanged(Sender: TObject);
   end;
 
 begin
-  lblCreateInfo.Caption := Format(SInfoText, [edName.Text, RbToPrjExt]);
-  butOK.Enabled := Trim(edName.Text) <> '';
+  lblCreateInfo.Caption := Format(SInfoText, [edtPluginName.Text, RbToPrjExt]);
+  butOK.Enabled := Trim(edtPluginName.Text) <> '';
 end;
 
 procedure TfrmPluginParams.FormShow(Sender: TObject);

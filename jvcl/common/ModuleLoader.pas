@@ -432,7 +432,11 @@ begin
     AProc := InternalGetProcAddress(Handle,PChar(AName));
     Result := Assigned(AProc);
   end;
-  if not Result then AProc := nil;
+  if not Result then
+  begin
+    AProc := nil;
+    Error(DWORD(TYPE_E_ELEMENTNOTFOUND));
+  end;
 end;
 
 class function TModuleLoader.IsAvaliable(const ADLLName: string;const AProcName:string=''): boolean;

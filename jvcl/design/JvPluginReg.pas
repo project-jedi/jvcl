@@ -13,17 +13,18 @@ uses
   {$ELSE}
   DsgnIntf,
   {$ENDIF COMPILER6_UP}
-  ExptIntf, ToolsApi,
-  JvConsts, JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
+  ToolsApi,
+  JvPlugin, JvPluginManager, JvPluginWizard, JvPluginParamsForm;
 
 {$R ..\resources\JvPluginReg.dcr}
 
 procedure Register;
 begin
-  RegisterComponents(SPaletteNonVisual,[
+  RegisterComponents('Jv Custom',[
     TJvPluginManager
     ]);
-  RegisterLibraryExpert(TJvPluginWizard.Create)
+  RegisterPackageWizard( TjvPluginWizard.Create );
+//  RegisterLibraryExpert(TJvPluginWizard.Create)
 end;
   
 
