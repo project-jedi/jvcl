@@ -1491,6 +1491,7 @@ begin
   FCanvas.Handle := 0;
 end;
 
+{$O-}
 procedure TJvaColorButton.DefaultDrawing(const IsDown, IsDefault : boolean; const State : TButtonState);
 var
   R: TRect;
@@ -1559,6 +1560,9 @@ begin
   end;
 
 end;
+{$IFDEF OPTIMIZATION_ON}
+{$O+}
+{$ENDIF OPTIMIZATION_ON}
 {################## TJvaColorButton ##################}
 
 

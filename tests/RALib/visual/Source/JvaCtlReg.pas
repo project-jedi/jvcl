@@ -8,7 +8,7 @@ Software distributed under the License is distributed on an "AS IS" basis,
 WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
 the specific language governing rights and limitations under the License.
 
-The Original Code is: RAFDAlignPalette.PAS, released on 2002-07-04.
+The Original Code is: JvaCtlReg.pas, released on 2002-07-04.
 
 The Initial Developers of the Original Code are: Andrei Prygounkov <a.prygounkov@gmx.de>
 Copyright (c) 1999, 2002 Andrei Prygounkov
