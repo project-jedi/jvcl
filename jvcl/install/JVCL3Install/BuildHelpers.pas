@@ -98,13 +98,13 @@ procedure MoveHPPFiles(const Paths, StartDir: string; Target: TTargetInfo);
 
 const
   JclIncludePaths = '..\..\source\common';
-  JclSourcePaths = '..\..\source\windows;..\..\source\vcl;..\..\source\visclx';
+  JclSourcePaths = '..\..\source\common;..\..\source\windows;..\..\source\vcl;..\..\source\visclx';
   JclLibDir = '..\..\lib';
   JVCLIncludePaths = '..\..\common';
   JVCLSourcePaths = '..\..\run;..\..\design';
 
 
-implementation
+implementation                          JclFileUtils
 
 const
   DefaultMakeFile =
