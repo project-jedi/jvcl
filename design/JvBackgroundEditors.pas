@@ -22,6 +22,7 @@ located at http://jvcl.sourceforge.net
 Known Issues:
 -----------------------------------------------------------------------------}
 // $Id$
+
 {$I jedi.inc}
 
 unit JvBackgroundEditors;
@@ -30,17 +31,12 @@ interface
 
 uses
   Classes,
-  JvBackgrounds,
-  JvBackgroundEditForm,
-{$IFDEF COMPILER6_UP}
-  DesignEditors,
-  DesignIntf;
-{$ELSE}
-  DsgnIntf;
-{$ENDIF}
-
-
-{ TJvClientsProperty }
+  {$IFDEF COMPILER6_UP}
+  DesignEditors, DesignIntf,
+  {$ELSE}
+  DsgnIntf,
+  {$ENDIF COMPILER6_UP}
+  JvBackgrounds, JvBackgroundEditForm;
 
 type
   TJvClientsProperty = class(TPropertyEditor)
@@ -53,13 +49,9 @@ type
   end;
 
 implementation
+
 uses
-  SysUtils,
-  Consts,
-  Controls,
-  PicEdit,
-  TypInfo,
-  Dialogs;
+  SysUtils, Consts, Controls, PicEdit, TypInfo, Dialogs;
 
 function TJvClientsProperty.GetAttributes: TPropertyAttributes;
 begin
@@ -68,7 +60,7 @@ end;
 
 function TJvClientsProperty.GetValue: string;
 begin
-  FmtStr(Result, '(%s)', [GetPropType^.Name]);
+  Result := Format('(%s)', [GetPropType^.Name]);
 end;
 
 procedure TJvClientsProperty.EditorAddControl(const S: string);
@@ -76,9 +68,10 @@ var
   Control: TWinControl;
 begin
   Control := TWinControl(Designer.GetComponent(S));
-  if Clients.IndexOf(Control) = -1
-    then Editor.SrcList.Items.Add(S)
-    else Editor.DstList.Items.Add(S);
+  if Clients.IndexOf(Control) = -1 then
+    Editor.SrcList.Items.Add(S)
+  else
+    Editor.DstList.Items.Add(S);
 end;
 
 procedure TJvClientsProperty.Edit;
@@ -93,7 +86,7 @@ begin
     EditorAddControl(Designer.Root.Name);
     {$ELSE}
     EditorAddControl(Designer.GetRoot.Name);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     Proc := EditorAddControl;
     Designer.GetComponentNames(GetTypeData(TWinControl.ClassInfo), Proc);
     Editor.SetButtons;
@@ -111,6 +104,5 @@ begin
     Editor := nil;
   end;
 end;
-
 
 end.

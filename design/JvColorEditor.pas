@@ -97,7 +97,7 @@ begin
         Result := Colors[I].Name;
         Exit;
       end;
-    FmtStr(Result, '$%.8x', [Color]);
+    Result := Format('$%.8x', [Color]);
   end;
 end;
 
