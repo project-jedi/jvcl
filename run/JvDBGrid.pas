@@ -1586,10 +1586,14 @@ procedure TJvDBGrid.GetCellProps(Field: TField; AFont: TFont;
   end;
 
 begin
-  if (FCurrentDrawRow >= FixedRows) and Odd(FCurrentDrawRow + FixedRows) and
-    (FAlternateRowColor <> clNone) and (FAlternateRowColor <> Color) and
-    IsAfterFixedCols then
-    Background := AlternateRowColor;
+  if IsAfterFixedCols and (FCurrentDrawRow >= FixedRows) then
+  begin
+    if Odd(FCurrentDrawRow + FixedRows) and (FAlternateRowColor <> clNone)
+      and (FAlternateRowColor <> Color) then
+      Background := AlternateRowColor;
+  end
+  else
+    Background := FixedColor;
 
   if Highlight then
   begin
