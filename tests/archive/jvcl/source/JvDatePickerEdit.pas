@@ -10,13 +10,13 @@ the specific language governing rights and limitations under the License.
 
 The Original Code is: JvDatePickerEdit, released on 2002-10-04.
 
-The Initial Developer of the Original Code is Oliver Giesen [giesen@lucatec.com]
+The Initial Developer of the Original Code is Oliver Giesen [giesen@lucatec.de]
 Portions created by Oliver Giesen are Copyright (C) 2002 Lucatec GmbH.
 All Rights Reserved.
 
-Contributor(s): ______________________________________.
+Contributor(s): Peter Thörnqvist.
 
-Last Modified: 2002-10-04
+Last Modified: 2002-11-04
 
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
@@ -114,21 +114,24 @@ type
     procedure SetSelDate(const AValue: TDateTime);
 
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor CreateWithAppearance(AOwner: TComponent;
+      const AAppearance: TJvMonthCalAppearance);
     destructor Destroy; override;
+
+    procedure SetFocus; override;
 
     property SelDate: TDateTime read GetSelDate write SetSelDate;
 
     property OnCancel: TNotifyEvent read FOnCancel write FOnCancel;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnSelect: TNotifyEvent read FOnSelect write FOnSelect;
-    procedure SetFocus; override;
   end;
 
   TJvCustomDatePickerEdit = class(TJvCustomCheckedMaskEdit)
   private
     FAllowNoDate: Boolean;
     FBut: TSpeedButton;
+    FCalAppearance: TJvMonthCalAppearance;
     FDate: TDateTime;
     FDateError: Boolean;
     FDateFigures: TJvDateFigures;
@@ -155,6 +158,7 @@ type
     procedure RaiseNoDate;
 
     procedure SetAllowNoDate(const AValue: Boolean);
+    procedure SetCalAppearance(const AValue: TJvMonthCalAppearance);
     function GetDate: TDateTime;
     procedure SetDate(const AValue: TDateTime);
     procedure SetDateFormat(const AValue: String);
@@ -194,6 +198,7 @@ type
     procedure RestoreMask;
 
     property AllowNoDate: Boolean read FAllowNoDate write SetAllowNoDate;
+    property CalendarAppearance: TJvMonthCalAppearance read FCalAppearance write SetCalAppearance;
     property Date: TDateTime read GetDate write SetDate;
     property DateFormat: String read FDateFormat write SetDateFormat;
     property Dropped: Boolean read GetDropped;
@@ -219,6 +224,7 @@ type
     property AutoSelect;
     property AutoSize default False;
     property BorderStyle;
+    property CalendarAppearance;
     property CharCase;
     property Checked;
     property Color;
@@ -340,13 +346,15 @@ begin
     Parent := Self;
     Align := alRight;
     Cursor := crArrow;
-    Flat := true;
+    Flat := True;
     Width := GetSystemMetrics(SM_CXVSCROLL) + 1;
     Glyph.Handle := LoadBitmap(0,PChar(OBM_COMBO)); // 	 PChar(32738));
     OnClick := ButClick;
     Visible := True;
   end;
-  
+
+  FCalAppearance := TJvMonthCalAppearance.Create;
+
   SetDateFormat(ShortDateFormat);
   EditMask := FMask;
 end;
@@ -355,7 +363,14 @@ destructor TJvCustomDatePickerEdit.Destroy;
 begin
   CloseUp;
   FBut.OnClick := NIL;
+  FreeAndNil(FCalAppearance);
   inherited;
+end;
+
+procedure TJvCustomDatePickerEdit.SetCalAppearance(
+  const AValue: TJvMonthCalAppearance);
+begin
+  FCalAppearance.Assign(AValue);
 end;
 
 procedure TJvCustomDatePickerEdit.DropDown;
@@ -365,7 +380,7 @@ begin
     if(IsEmpty) then
       Self.Date := SysUtils.Date;
 
-    FDropFo := TJvDropCalendar.Create(Self);
+    FDropFo := TJvDropCalendar.CreateWithAppearance(Self, FCalAppearance);
     with(FDropFo) do
     begin
       SelDate := Self.Date;
@@ -406,7 +421,7 @@ end;
 
 function TJvCustomDatePickerEdit.IsNoDateTextStored: Boolean;
 begin
-  result := ( NoDateText <> EmptyStr);
+  result := (NoDateText <> EmptyStr);
 end;
 
 procedure TJvCustomDatePickerEdit.RaiseNoDate;
@@ -820,10 +835,11 @@ end;
 
 { TLucaDropCalendar }
 
-constructor TJvDropCalendar.Create(AOwner: TComponent);
+constructor TJvDropCalendar.CreateWithAppearance(AOwner: TComponent;
+  const AAppearance: TJvMonthCalAppearance);
 begin
-  inherited;
-  FCal := TUnfocusingMonthCalendar.Create(Self);
+  inherited Create(AOwner);
+  FCal := TUnfocusingMonthCalendar.CreateWithAppearance(Self, AAppearance);
   with(TUnfocusingMonthCalendar(FCal)) do
   begin
     Parent := Self;

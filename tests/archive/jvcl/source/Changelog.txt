@@ -1,3 +1,6 @@
+2002-11-04
+- As has been discussed on the NG in mid-October, decoupled TJvCustomMonthCalendar from its appearance properties for the benefit of TJvDatePickerEdit which could now expose all the relevant appearance-related properties of its dropdown calendar while still retaining its create-on-demand model without having to manage duplicated data. At this stage the designtime interface of TJvMonthCalendar2 remains completely intact. In the future it might be considered to drop the individual appearance-related properties in favour of exposing the Appearance instance directly. //ogiesen
+
 2002-11-02
 - Added TStrings item editor to JvInspector //marcelb
 
