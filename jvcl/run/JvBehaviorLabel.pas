@@ -45,12 +45,12 @@ interface
 
 uses
   SysUtils, Classes,
-{$IFDEF VCL}
+  {$IFDEF VCL}
   Windows, Messages, Controls, Graphics, StdCtrls, ExtCtrls, Forms,
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
   QTypes, QControls, QGraphics, QStdCtrls, QExtCtrls, QForms, Types,
-{$ENDIF VisualCLX}
+  {$ENDIF VisualCLX}
   JvExStdCtrls;
 
 type
@@ -320,12 +320,12 @@ type
     procedure Resize; override;
     procedure DoStart; dynamic;
     procedure DoStop; dynamic;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     function GetLabelText: string; override;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     function GetLabelText: WideString; override;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     property Behavior: TJvLabelBehaviorName read FBehavior write SetBehavior stored BehaviorStored;
     property Caption;
     property BehaviorOptions: TJvLabelBehavior read GetOptions write SetOptions;
@@ -342,13 +342,13 @@ type
 
   TJvBehaviorLabel = class(TJvCustomBehaviorLabel)
   published
-{$IFDEF VCL}
+    {$IFDEF VCL}
     property BiDiMode;
     property DragCursor;
     property OnEndDock;
     property OnStartDock;
     property ParentBiDiMode;
-{$ENDIF VCL}
+    {$ENDIF VCL}
     property Behavior;
     property BehaviorOptions;
     property OnMouseEnter;
@@ -365,9 +365,9 @@ type
     property Color;
     property Constraints;
     property OnEndDrag;
-{$IFDEF VCL}
+    {$IFDEF VCL}
     property DragKind;
-{$ENDIF VCL}
+    {$ENDIF VCL}
     property DragMode;
     property Enabled;
     property FocusControl;
@@ -638,14 +638,14 @@ begin
   if csDesigning in ComponentState then
   begin
     F := GetParentForm(Self);
-{$IFDEF VCL}
+    {$IFDEF VCL}
     if (F <> nil) and (F.Designer <> nil) then
       F.Designer.Modified;
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     if (F <> nil) and (F.DesignerHook <> nil) then
       F.DesignerHook.Modified;
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
   end;
 end;
 
@@ -1232,12 +1232,12 @@ begin
   end
   else if FScratchPad[FCurrentPos] <> DecodedText[FCurrentPos] then
   begin
-{$IFDEF VCL}
+    {$IFDEF VCL}
     FScratchPad[FCurrentPos] := Char(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));
-{$ENDIF VCL}
-{$IFDEF VisualCLX}
+    {$ENDIF VCL}
+    {$IFDEF VisualCLX}
     FScratchPad[FCurrentPos] := WideChar(32 + Random(Ord(DecodedText[FCurrentPos]) + 10));
-{$ENDIF VisualCLX}
+    {$ENDIF VisualCLX}
     //    OwnerLabel.EffectText := Copy(OwnerLabel.Caption, 1, FCurrentPos - 1) +
     //      FScratchPad[FCurrentPos] + Copy(OwnerLabel.Caption, FCurrentPos + 1, MaxInt);
         // (p3) this is the same without the copying...
