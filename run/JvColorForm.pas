@@ -137,9 +137,9 @@ procedure TJvClrFrm.ColorSquare1Click(Sender: TObject);
 begin
   if Sender is TJvColorSquare then
     SelectedColor := (Sender as TJvColorSquare).Color;
+  Hide;
   if Assigned(FOwner) and (FOwner is TJvColorButton) then
     TJvColorButton(FOwner).Color := SelectedColor;
-  Hide;
   ModalResult := mrOK;
 end;
 
