@@ -70,7 +70,7 @@ const
 
   JvDefaultAlternateRowColor = TColor($00DDDDDD);
 
-  // Consts for AutoSizeColumnIndex 
+  // Consts for AutoSizeColumnIndex
   JvGridResizeProportionally = -1;
   JvGridResizeLastVisibleCol = -2;
 
@@ -1163,7 +1163,7 @@ begin
   if not DataLink.Active or not CanGridAcceptKey(Key, Shift) then
     Exit;
   with DataLink.DataSet do
-    if Shift * KeyboardShiftStates = [ssCtrl] then
+    if ssCtrl in Shift then
     begin
       if Key in [VK_UP, VK_PRIOR, VK_DOWN, VK_NEXT, VK_HOME, VK_END] then
         ClearSelections;
@@ -1441,7 +1441,7 @@ begin
   Control := FControls.ControlByField(F.FieldName);
   Result := (Control <> nil);
   if not Result then
-    Result := not (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc,
+    Result := not (F.DataType in [ftUnknown, ftBytes, ftVarBytes, ftAutoInc, 
       ftBlob, ftMemo, ftFmtMemo, ftGraphic, ftTypedBinary, ftParadoxOle,
       ftDBaseOle, ftCursor, ftReference, ftDataSet, ftOraClob, ftOraBlob]);
   Result := Result and (not F.ReadOnly) and F.DataSet.CanModify and
