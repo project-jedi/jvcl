@@ -574,11 +574,12 @@ begin
       QPainter_setPen(Canvas.Handle, Canvas.Font.FontPen);
       QPainter_setBrush(Canvas.Handle, Canvas.Brush.Handle);
 
+      HasBackground := (Instance as IJvWinControlEvents).DoPaintBackground(Canvas, 0);
+
       if IsDoubleBuffered then
       begin
         if not HasBackground then
         begin
-          HasBackground := (Instance as IJvWinControlEvents).DoPaintBackground(Canvas, 0);
           // fill with control's background
           if (QWidget_backgroundPixmap(Handle) <> nil) and
              not QPixmap_isNull(QWidget_backgroundPixmap(Handle)) then
