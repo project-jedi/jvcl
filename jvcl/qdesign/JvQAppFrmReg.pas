@@ -42,7 +42,7 @@ uses
   Classes,
   QGraphics, Types,
   DesignIntf,
-  JvQDsgnConsts, JvQFormColors,
+  JvQDsgnConsts,
   JvQAppAnimatedIcon, JvQAppEvent, JvQFormAutoSize,
   JvQFormAnimatedIcon, JvQFormAnimation, JvQFormWallpaper,
   JvQAnimTitle;
@@ -58,7 +58,7 @@ procedure Register;
 begin
   RegisterComponents(RsPaletteAppForm,
     [TJvAppEvents, TJvAppAnimatedIcon, TJvFormAnimatedIcon, TJvFormAutoSize,
-     TJvFormAnimation, TJvFormWallpaper, TJvFormColors]);
+     TJvFormAnimation, TJvFormWallpaper]);
 
 //  RegisterComponentEditor(TJvGradientCaption, TGradientCaptionEditor);
 //  RegisterPropertyEditor(TypeInfo(TPicture), TJvFormWallpaper, 'Image', TJvFormWallpaperEditor);
