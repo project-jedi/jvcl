@@ -99,8 +99,17 @@ MDIapp.exe \
 RANotepad.exe \
 JVCLDemo.exe \
 prjControls.exe \
-EventViewer.exe
-
+EventViewer.exe \
+PlugInDemo.exe \
+SamplePluginOne.dll \
+MDISample.exe \
+MDIPlugin.dll \
+PropertiesPlugInDemo.exe \
+ChangePropertiesPlugin.dll \
+ExceptionPlugInDemo.exe \
+ExceptionPlugin.dll \
+DataPlugInDemo.exe \
+DataPlugin.dll 
  
 #---------------------------------------------------------------------------------------------------
 
@@ -493,5 +502,53 @@ EventViewer.exe: JvNTEventLog\EventViewer.dpr
   cd JvNTEventLog
   $(DCC) $&.dpr
   cd ..
-  
-  
+
+PlugInDemo.exe: JvPlugin\1SimplePlugin\PlugInDemo.dpr
+  cd JvPlugin\1SimplePlugin
+  $(DCCH) $&.dpr
+  cd ..\..
+
+SamplePluginOne.dll: JvPlugin\1SimplePlugin\SamplePluginOne.dpr
+  cd JvPlugin\1SimplePlugin
+  $(DCCH) $&.dpr
+  cd ..\..
+
+MDISample.exe: JvPlugin\2MDI\MDISample.dpr
+  cd JvPlugin\2MDI
+  $(DCCH) $&.dpr
+  cd ..\..
+
+MDIPlugin.dll: JvPlugin\2MDI\MDIPlugin.dpr
+  cd JvPlugin\2MDI
+  $(DCCH) $&.dpr
+  cd ..\..
+
+PropertiesPlugInDemo.exe: JvPlugin\3ChangingProperties\PropertiesPlugInDemo.dpr
+  cd JvPlugin\3ChangingProperties
+  $(DCCH) $&.dpr
+  cd ..\..
+
+ChangePropertiesPlugin.dll: JvPlugin\3ChangingProperties\ChangePropertiesPlugin.dpr
+  cd JvPlugin\3ChangingProperties
+  $(DCCH) $&.dpr
+  cd ..\..
+
+ExceptionPlugInDemo.exe: JvPlugin\4ApplicationHook\ExceptionPlugInDemo.dpr
+  cd JvPlugin\4ApplicationHook
+  $(DCCH) $&.dpr
+  cd ..\..
+
+ExceptionPlugin.dll: JvPlugin\4ApplicationHook\ExceptionPlugin.dpr
+  cd JvPlugin\4ApplicationHook
+  $(DCCH) $&.dpr
+  cd ..\..
+
+DataPlugInDemo.exe: JvPlugin\5DataAware\DataPlugInDemo.dpr
+  cd JvPlugin\5DataAware
+  $(DCCH) $&.dpr
+  cd ..\..
+
+DataPlugin.dll: JvPlugin\5DataAware\DataPlugin.dpr
+  cd JvPlugin\5DataAware
+  $(DCCH) $&.dpr
+  cd ..\..
