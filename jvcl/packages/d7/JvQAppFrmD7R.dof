@@ -88,15 +88,15 @@ RemoteSymbols=0
 MinStackSize=16384
 MaxStackSize=1048576
 ImageBase=4194304
-ExeDescription=JVCL Unified Interbase Components
+ExeDescription=JVCLX Application and Form Components Runtime Package
 [Directories]
 OutputDir=
-UnitOutputDir=..\..\lib\d7
+UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..\..\run;..\..\common;..\..\Resources
-Packages=
-Conditionals=
+SearchPath=$(JVCL)\jvcl\source;$(JVCL)\jcl\source;G:\Program Files\Borland\Delphi7\Source\ToolsAPI
+Packages=vcl;rtl;vclx;indy;vclie;xmlrtl;inetdbbde;inet;inetdbxpress;dbrtl;soaprtl;dsnap;VclSmp;dbexpress;vcldb;dbxcds;inetdb;bdertl;vcldbx;adortl;teeui;teedb;tee;ibxpress;visualclx;visualdbclx;vclactnband;vclshlctrls;IntrawebDB_50_70;Intraweb_50_70;Rave50CLX;Rave50VCL;dclaxserver;DJcl;JVCL200_R70;qrpt;PDF_InTheBox_Delphi;JvXPCtrlsD7R;JvWizardD7R;JvCtrlsD7R;JvUIBD7R;JvTimeFrameworkD7R;JvCoreD7R;JvSystemD7R;JvStdCtrlsD7R;JvPrintPreviewD7R;JvCmpD7R;JvJansD7R;JvGlobusD7R;JvDotNetCtrlsD7R;JvDlgsD7R;JvCustomD7R;dclusr;DJclVcl
+Conditionals=VisualCLX
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
@@ -108,18 +108,30 @@ DebugCWD=
 [Language]
 ActiveLang=
 ProjectLang=
-RootDir=
+RootDir=G:\Program Files\Borland\Delphi7\Bin\
 [Version Info]
-IncludeVerInfo=0
-AutoIncBuild=0
-MajorVer=1
+IncludeVerInfo=1
+AutoIncBuild=1
+MajorVer=7
 MinorVer=0
-Release=0
-Build=0
+Release=4
+Build=462
 Debug=0
 PreRelease=0
 Special=0
 Private=0
-DLL=0
+DLL=1
 Locale=1043
 CodePage=1252
+[Version Info Keys]
+CompanyName=Borland Software Corporation
+FileDescription=Jedi VisualCLX Component Library
+FileVersion=7.0.4.462
+InternalName=DCLUSR70
+LegalCopyright=Copyright © 2003 André Snepvangers
+LegalTrademarks=
+OriginalFilename=DCLUSR70.BPL
+ProductName=Borland Package Library
+ProductVersion=7.0
+[Excluded Packages]
+G:\Program Files\Borland\Delphi7\Projects\Bpl\JVCL200_D70.bpl=JEDI-VCL Components

@@ -1,4 +1,4 @@
-package JvValidatorsD7D;
+package JvQMMD7D;
 {$R *.res}
 {$ALIGN 8}
 {$ASSERTIONS OFF}
@@ -21,18 +21,23 @@ package JvValidatorsD7D;
 {$WRITEABLECONST ON}
 {$MINENUMSIZE 1}
 {$IMAGEBASE $400000}
-{$DESCRIPTION 'JVCL Validators and Error Provider Components'}
+{$DESCRIPTION 'JVCLX Multimedia and Image Components'}
 {$DESIGNONLY}
 {$IMPLICITBUILD OFF}
+{$DEFINE VisualCLX}
 
 requires
-  JvValidatorsD7R,
-  JvCoreD7D,
+  JvQMMD7R,
+  JvQCmpD7R,
+  JvQCoreD7D,
+  JvQStdCtrlsD7R,
   rtl,
-  designide;
+  designide,
+  visualclx,
+  JvQCoreD7R;
 
 contains
-  JvValidatorsReg in '..\..\design\JvValidatorsReg.pas',
-  JvValidatorsEditorForm in '..\..\design\JvValidatorsEditorForm.pas' {frmValidatorsEditor};
+  JvQDirectoryListForm in '..\..\qdesign\JvQDirectoryListForm.pas' {JvDirectoryListDialog},
+  JvQMMReg in '..\..\qdesign\JvQMMReg.pas';
 
 end.
