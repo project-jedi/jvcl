@@ -93,6 +93,7 @@ type
     property Align;
     property Color default clBackground;
     property Font;
+    property Image;
     property Indent: Integer read FIndent write SetIndent default 8;
     property NodeColors: TJvWizardRouteMapNodeColors read FNodeColors write FNodeColors;
     property UsePageTitle: Boolean read FUsePageTitle write SetUsePageTitle default True;
@@ -229,7 +230,10 @@ begin
     Pen.Color := clBtnShadow;
     Pen.Width := 1;
     Pen.Style := psSolid;
-    Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom);
+    if not HasPicture then
+      Rectangle(ARect.Left, ARect.Top, ARect.Right, ARect.Bottom)
+    else
+      Image.PaintTo(Canvas, ARect);
     InflateRect(ARect, -1, -1);
     AFont := TFont.Create;
     try
@@ -330,7 +334,10 @@ begin
             end;
 
             Brush.Color := AColor;
-            FillRect(ATextRect);
+            if not HasPicture then
+              FillRect(ATextRect)
+            else
+              SetBkMode(Canvas.Handle, Windows.TRANSPARENT);
             Brush.Style := bsClear;
             Font.Assign(AFont);
 

@@ -345,17 +345,19 @@ uses
   JvWizardCommon;
 
 type
-  TJvWizardAboutInfoForm = (JvWizardAbout); // Added by <Steve Forbes>
-  TJvWizardAlign = alTop..alRight;
-  TJvWizardLeftRight = alLeft..alRight;
   TJvWizardButtonKind =
     (bkStart, bkLast, bkBack, bkNext, bkFinish, bkCancel, bkHelp);
   TJvWizardButtonSet = set of TJvWizardButtonKind;
-
 const
   bkAllButtons = [bkStart, bkLast, bkBack, bkFinish, bkNext, bkCancel, bkHelp];
-
+  
 type
+  TJvWizardAboutInfoForm = (JvWizardAbout); // Added by <Steve Forbes>
+  TJvWizardAlign = alTop..alRight;
+  TJvWizardLeftRight = alLeft..alRight;
+  TJvWizardImage = class; // forward
+
+
   TJvWizardCustomPage = class;
   TJvWizard = class;
 
@@ -416,11 +418,13 @@ type
     FAlign: TJvWizardAlign;
     FPages: TList;
     FPageIndex: Integer;
+    FImage:TJvWizardImage;
     FOnDisplaying: TJvWizardRouteMapDisplayEvent;
     function GetPage(Index: Integer): TJvWizardCustomPage;
     function GetPageCount: Integer;
     procedure SetAlign(Value: TJvWizardAlign);
     procedure SetPageIndex(Value: Integer);
+    procedure SetImage(const Value:TJvWizardImage);
     {$IFDEF VCL}
     procedure CMDesignHitTest(var Msg: TCMDesignHitTest); message CM_DESIGNHITTEST;
     {$ENDIF VCL}
@@ -429,7 +433,9 @@ type
     procedure DoUpdatePage(const APage: TJvWizardCustomPage);
     procedure DoActivatePage(const APage: TJvWizardCustomPage);
     procedure DoMovePage(const APage: TJvWizardCustomPage; const OldIndex: Integer);
+    procedure DoImageChange(Sender: TObject);
   protected
+    function HasPicture:boolean;
     {$IFDEF VCL}
     procedure SetParent(AParent: TWinControl); override;
     {$ENDIF VCL}
@@ -448,6 +454,7 @@ type
     function CanDisplay(const APage: TJvWizardCustomPage): Boolean; virtual;
     property Wizard: TJvWizard read FWizard write FWizard;
     property Align: TJvWizardAlign read FAlign write SetAlign default alLeft;
+    property Image:TJvWizardImage read FImage write SetImage;
     property OnDisplaying: TJvWizardRouteMapDisplayEvent
       read FOnDisplaying write FOnDisplaying;
   public
@@ -472,9 +479,8 @@ type
     procedure SetTransparent(Value: Boolean);
     procedure DoChange;
     procedure DoPictureChange(Sender: TObject);
-  protected
-    procedure PaintTo(const ACanvas: TCanvas; ARect: TRect);
   public
+    procedure PaintTo(const ACanvas: TCanvas; ARect: TRect);
     constructor Create;
     destructor Destroy; override;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1364,6 +1370,8 @@ end;
 constructor TJvWizardRouteMapControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  FImage := TJvWizardImage.Create;
+  FImage.OnChange := DoImageChange;
   { !!! YW - Add csNoDesignVisible in order to make it visible and invisible
     at design Time. }
   if csDesigning in ComponentState then
@@ -1384,7 +1392,13 @@ begin
   if Assigned(Wizard) then
     Wizard.FRouteMap := nil;
   FPages.Free;
+  FImage.Free;
   inherited Destroy;
+end;
+
+procedure TJvWizardRouteMapControl.DoImageChange(Sender:TObject);
+begin
+  Invalidate;
 end;
 
 procedure TJvWizardRouteMapControl.DoAddPage(const APage: TJvWizardCustomPage);
@@ -1464,6 +1478,16 @@ end;
 function TJvWizardRouteMapControl.GetPageCount: Integer;
 begin
   Result := FPages.Count;
+end;
+
+procedure TJvWizardRouteMapControl.SetImage(const Value:TJvWizardImage);
+begin
+  FImage.Assign(Value);
+end;
+
+function TJvWizardRouteMapControl.HasPicture:boolean;
+begin
+  Result := (FImage.Picture.Graphic <> nil) and not FImage.Picture.Graphic.Empty;
 end;
 
 procedure TJvWizardRouteMapControl.SetPageIndex(Value: Integer);
