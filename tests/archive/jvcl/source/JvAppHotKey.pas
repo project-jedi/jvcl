@@ -148,7 +148,11 @@ procedure TJvApplicationHotKey.SetActive(Value: boolean);
 begin
   if FActive <> Value then
   begin
-    if csDesigning in ComponentState then Exit;
+    if csDesigning in ComponentState then
+    begin
+      FActive := Value;
+      Exit;
+    end;
     if Value and not FHasRegistered then
     begin
       if IsLibrary then

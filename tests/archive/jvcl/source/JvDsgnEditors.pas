@@ -110,7 +110,15 @@ type
     procedure ExecuteVerb(Index: integer); override;
     procedure Edit; override;
   end;
-{$IFDEF COMPILER6_UP}
+
+  TShortCutProperty = class(TIntegerProperty)
+    function GetAttributes: TPropertyAttributes;override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    function GetValue: string; override;
+    procedure SetValue(const Value: string); override;
+  end;
+
+  {$IFDEF COMPILER6_UP}
   TJvDefaultImageIndexProperty = class(TIntegerProperty, ICustomPropertyDrawing, ICustomPropertyListDrawing)
   protected
     function ImageList: TCustomImageList; virtual;
@@ -159,7 +167,7 @@ type
 
 implementation
 uses
-  FileCtrl, TypInfo,
+  FileCtrl, TypInfo, Menus,
   JvTypes, JvGroupHeader, JvFooter, JvStrLEdit, JvDateTimeDlg, JvMaxMin;
 
 procedure TFilenameProperty.Edit;
@@ -642,5 +650,86 @@ end;
 
 {$ENDIF}
 
+
+{ TShortCutProperty }
+
+function TShortCutProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paValueList, paMultiSelect,paRevertable];
+end;
+
+function TShortCutProperty.GetValue: string;
+begin
+  try
+    Result := ShortCutToText(GetOrdValue);
+    if Result = '' then
+      Result := '(None)';
+  except
+    Result := inherited GetValue;
+  end;
+end;
+
+procedure TShortCutProperty.GetValues(Proc: TGetStrProc);
+var SC:TShortCut;Key:word;Shift:TShiftState;
+begin
+  Proc('(None)');
+
+  Shift := [ssCtrl];
+  for Key := Ord('A') to Ord('Z') do
+  begin
+    SC := ShortCut(Key,Shift);
+    Proc(ShortCutToText(SC));
+  end;
+  Shift := [ssAlt,ssCtrl];
+  for Key := Ord('A') to Ord('Z') do
+  begin
+    SC := ShortCut(Key,Shift);
+    Proc(ShortCutToText(SC));
+  end;
+  Shift := [];
+  for Key := VK_F1 to VK_F10 do
+  begin
+    SC := ShortCut(Key,Shift);
+    Proc(ShortCutToText(SC));
+  end;
+  Shift := [ssCtrl];
+  for Key := VK_F1 to VK_F10 do
+  begin
+    SC := ShortCut(Key,Shift);
+    Proc(ShortCutToText(SC));
+  end;
+  Shift := [ssShift];
+  for Key := VK_F1 to VK_F10 do
+  begin
+    SC := ShortCut(Key,Shift);
+    Proc(ShortCutToText(SC));
+  end;
+  Shift := [ssShift,ssCtrl];
+  for Key := VK_F1 to VK_F10 do
+  begin
+    SC := ShortCut(Key,Shift);
+    Proc(ShortCutToText(SC));
+  end;
+
+  Proc(ShortCutToText(ShortCut(VK_INSERT,[])));
+  Proc(ShortCutToText(ShortCut(VK_INSERT,[ssShift])));
+  Proc(ShortCutToText(ShortCut(VK_INSERT,[ssCtrl])));
+
+  Proc(ShortCutToText(ShortCut(VK_DELETE,[])));
+  Proc(ShortCutToText(ShortCut(VK_DELETE,[ssShift])));
+  Proc(ShortCutToText(ShortCut(VK_DELETE,[ssCtrl])));
+
+  Proc(ShortCutToText(ShortCut(VK_BACK,[ssAlt])));
+  Proc(ShortCutToText(ShortCut(VK_BACK,[ssAlt,ssShift])));
+end;
+
+procedure TShortCutProperty.SetValue(const Value: string);
+begin
+  try
+    SetOrdValue(TextToShortCut(Value));
+  except
+    inherited SetValue(Value);
+  end;
+end;
 
 end.

@@ -41,7 +41,7 @@ uses
   Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, ExtCtrls,
   Dlgs, ToolsApi, ActnList, 
 
-  JvDSADialogs,
+  JvDSADialogs,JvComponent,
   //About JVCL
   JvJVCLAbout, JVCLVer,
 
@@ -212,6 +212,7 @@ begin
     {Thumbview.filter editor}
   RegisterPropertyEditor(typeInfo(string), TJvThumbView, 'Filter', TFilterProperty);
   RegisterPropertyEditor(typeinfo(string), TJvAppletDialog,'AppletName',TJvAppletFileProperty);
+  RegisterPropertyEditor(typeinfo(TShortCut),TJvComponent,'',TShortCutProperty);
 
 //JvPlugin
 //   RegisterPropertyEditor(TypeInfo(string), TJvPlugin, 'Version', TVersionEditor);
