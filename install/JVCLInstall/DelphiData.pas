@@ -110,6 +110,9 @@ type
     function IsPersonal: Boolean;
     function DisplayName: string;
 
+    function VersionedPackage(const Filename: string): string;
+      { returns the filename + version + extension for Delphi 5 and BCB 5 }
+
     function FindPackage(const PackageName: string): TDelphiPackage;
     function FindPackageEx(const PackageNameStart: string): TDelphiPackage;
     function ExpandDirMacros(const Dir: string): string;
@@ -783,6 +786,14 @@ begin
   end
   else
     Result := '';
+end;
+
+function TCompileTarget.VersionedPackage(const Filename: string): string;
+begin
+  if Version > 5 then
+    Result := Filename
+  else
+    Result := ChangeFileExt(Filename, '') + IntToStr(Version) + '0' + ExtractFileExt(Filename);
 end;
 
 { TDelphiPackageList }
