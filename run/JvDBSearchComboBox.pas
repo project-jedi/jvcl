@@ -36,8 +36,15 @@ unit JvDBSearchComboBox;
 interface
 
 uses
-  SysUtils, Windows, Messages, Classes, Graphics, Controls,
-  Forms, Menus, Dialogs, StdCtrls, DB, DBCtrls,
+  SysUtils, Classes, DB,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls,
+  Forms, Menus, Dialogs, StdCtrls, DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls,
+  QForms, QMenus, QDialogs, QStdCtrls, QDBCtrls,
+  {$ENDIF VisualCLX}
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}

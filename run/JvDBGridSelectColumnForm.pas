@@ -30,8 +30,16 @@ unit JvDBGridSelectColumnForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, CheckLst, ExtCtrls, DB, DBGrids, JvDBGrid;
+  SysUtils, Classes, DB,
+  {$IFDEF VCL}
+  Windows, Messages, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Buttons, CheckLst, ExtCtrls, DBGrids,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QGraphics, QControls, QForms,
+  QDialogs, QStdCtrls, QButtons, QCheckLst, QExtCtrls, QDBGrids,
+  {$ENDIF VisualCLX}
+  JvDBGrid;
 
 type
   TfrmSelectColumn = class(TForm)
@@ -64,7 +72,12 @@ type
 
 implementation
 
+{$IFDEF VCL}
 {$R *.dfm}
+{$ENDIF VCL}
+{$IFDEF VisualCLX}
+{$R *.xfm}
+{$ENDIF VisualCLX}
 
 procedure TfrmSelectColumn.FormCreate(Sender: TObject);
 begin

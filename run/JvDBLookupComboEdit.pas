@@ -46,8 +46,14 @@ unit JvDBLookupComboEdit;
 interface
 
 uses
-  Windows, SysUtils, Messages, Classes, Controls, Forms, Graphics,
-  StdCtrls, Buttons, Db, DBCtrls,
+  SysUtils, Classes, Db,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, Graphics,
+  StdCtrls, Buttons, DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QGraphics, QStdCtrls, QButtons, QDBCtrls,
+  {$ENDIF VisualCLX}
   JvDBLookup;
 
 type

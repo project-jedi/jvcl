@@ -35,8 +35,13 @@ unit JvDBRadioPanel;
 interface
 
 uses
-  Windows, Messages, Classes, Controls, ExtCtrls, StdCtrls, Forms,
-  DBCtrls, DB,      
+  Classes,  DB,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, ExtCtrls, StdCtrls, Forms, DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QExtCtrls, QStdCtrls, QForms, QDBCtrls,
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type

@@ -33,12 +33,17 @@ unit JvDBCombobox;
 interface
 
 uses
-  Windows, DbCtrls,
+  Classes, DB, DBConsts,
   {$IFDEF COMPILER6_UP}
   VDBConsts,
   {$ENDIF COMPILER6_UP}
-  Messages, Menus, Graphics, Classes, Controls, DB,
-  StdCtrls, DBConsts, JvExStdCtrls;
+  {$IFDEF VCL}
+  Windows, DbCtrls, Messages, Menus, Graphics, Controls, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDbCtrls, QMenus, QGraphics, QControls, QStdCtrls, QWindows,
+  {$ENDIF VisualCLX}
+  JvExStdCtrls;
 
 type
   TJvCustomDBComboBox = class(TJvExCustomComboBox)

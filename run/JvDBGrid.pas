@@ -35,12 +35,18 @@ unit JvDBGrid;
 interface
 
 uses
-  Windows,
+  Classes, DB,
 {$IFDEF COMPILER6_UP}
   Variants,
 {$ENDIF COMPILER6_UP}
-  Messages, Classes, Controls, Forms, Grids, Graphics, Menus, StdCtrls,
-  ExtCtrls, DB, DBGrids,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, Grids, Graphics, Menus, StdCtrls,
+  ExtCtrls, DBGrids,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QGrids, QGraphics, QMenus, QStdCtrls,
+  QExtCtrls, QDBGrids,
+  {$ENDIF VisualCLX}
   JvAppStorage, JvFormPlacement, JvJCLUtils, JvDBLookup, JvExDBGrids,
   JvFinalize;
 
@@ -331,11 +337,22 @@ type
 implementation
 
 uses
-  SysUtils, Dialogs, DbConsts, Math, TypInfo,
+  SysUtils, DbConsts, Math, TypInfo,
+  {$IFDEF VCL}
+  Dialogs,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDialogs,
+  {$ENDIF VisualCLX}
   JvConsts, JvResources, JvTypes,
   JvDBUtils, JvJVCLUtils, JvDBGridSelectColumnForm;
 
+{$IFDEF MSWINDOWS}
 {$R ..\Resources\JvDBGrid.res}
+{$ENDIF MSWINDOWS}
+{$IFDEF LINUX}
+{$R ../Resources/JvDBGrid.res}
+{$ENDIF LINUX}
 
 const
   sUnitName = 'JvDBGrid';

@@ -42,12 +42,18 @@ unit JvDBControls;
 interface
 
 uses
-  Windows,
+  Classes, DB, IniFiles,
   {$IFDEF COMPILER6_UP}
   Variants,
   {$ENDIF COMPILER6_UP}
-  Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
-  StdCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
+  {$IFDEF VCL}
+  Windows, Messages, Controls, Forms, Grids, Graphics, Buttons, Menus,
+  StdCtrls, Mask, DBGrids, DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QForms, QGrids, QGraphics, QButtons, QMenus,
+  QStdCtrls, QMask, QDBGrids, QDBCtrls,
+  {$ENDIF VisualCLX}
   JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
   JvJCLUtils, JvMaskEdit, JvBaseEdits;
 

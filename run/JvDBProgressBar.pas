@@ -33,8 +33,13 @@ unit JvDBProgressBar;
 
 interface
 uses
-  SysUtils, Classes, Controls, ComCtrls,
-  DB, DBCtrls,
+  SysUtils, Classes, DB,
+  {$IFDEF VCL}
+  Controls, ComCtrls, DBCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QControls, QComCtrls, QDBCtrls,
+  {$ENDIF VisualCLX}
   JvProgressBar;
 
 type

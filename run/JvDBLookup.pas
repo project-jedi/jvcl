@@ -37,11 +37,17 @@ unit JvDBLookup;
 interface
 
 uses
-  SysUtils, Windows, DBCtrls,
+  SysUtils, Classes, DB,
   {$IFDEF COMPILER6_UP}
   Variants, VDBConsts,
   {$ENDIF COMPILER6_UP}
-  Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask, StdCtrls,
+  {$IFDEF VCL}
+  Windows, DBCtrls,
+  Messages, Controls, Forms, Graphics, Menus, Mask, StdCtrls,
+  {$ENDIF VCL}
+  {$IFDEF VisualCLX}
+  QDBCtrls, QControls, QForms, QGraphics, QMenus, QMask, QStdCtrls,
+  {$ENDIF VisualCLX}
   JvDBUtils, JvToolEdit, JvComponent, JvExControls;
 
 const
