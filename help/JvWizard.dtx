@@ -212,6 +212,9 @@ Summary
 Description
   Write a handler for the OnActivePageChanging if you want to be notified before the active page has changed.
   OnActivePageChanging is a general handler for all pages.
+Parameters
+  Sender - Description for this parameter
+  ToPage - Description for this parameter
 See Also
   OnActivePageChanged
 ----------------------------------------------------------------------------------------------------
@@ -391,6 +394,7 @@ Note
   The route map is automatically assigned when dropped on the form.
 ----------------------------------------------------------------------------------------------------
 @@TJvWizard.WizardPages
+Summary
   Provides indexed access to the wizard's pages.
 Description
   Use WizardPages to access the pages in the wizard using an index. To access the first page of the
@@ -462,10 +466,14 @@ Description
   TJvWizardChangePageEvent is the type of the TJvWizardCustomPage.OnEnterPage and TJvWizardCustomPage.OnExitPage
   events.
 Parameters
-  Sender - The wizard that called the event.
-  Page   - The current or next page depending on the event. If it is an OnExitPage event, Page is the
-           page that is receiving focus. If it is an OnEnterPage event, Page is the page losing focus.
-           Note that Page can be nil.
+  Sender   - The wizard that called the event.
+  FromPage - The current or next page depending on the event. If it is an OnExitPage event, Page is the
+             page that is receiving focus. If it is an OnEnterPage event, Page is the page losing focus.
+             Note that Page can be nil.
+----------------------------------------------------------------------------------------------------
+@@TJvWizardChangingPageEvent
+<TITLE TJvWizardChangingPageEvent type>
+<COMBINE TJvWizard.OnActivePageChanging>
 ----------------------------------------------------------------------------------------------------
 @@TJvWizardCustomPage
 Summary

@@ -451,7 +451,7 @@ Description
 See Also
   TJvRichEdit
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRichEdit.AddFormatText
+@@TJvCustomRichEdit.AddFormatText@string@TFont
 Summary
   Appends formatted text.
 Description
@@ -463,8 +463,15 @@ Parameters
   S     - Specifies the string to insert.
   AFont - Specifies the font to use. If AFont = nil, then the current attributes at the insertion
            point are used.
+  FontStyle  - Description for this parameter
+  FontName   - Description for this parameter
+  FontColor  - Description for this parameter
+  FontHeight - Description for this parameter
 See Also
   <LINK InsertBitmap>, <LINK InsertFormatText>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.AddFormatText@string@TFontStyles@string@TColor@integer
+<COMBINE TJvCustomRichEdit.AddFormatText@string@TFont>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.AdvancedTypography
 Summary
@@ -846,7 +853,7 @@ Parameters
 See Also
   OLEDragDrop, <LINK BitmapToRTF>, <LINK BitmapToRTF2>, <LINK InsertFormatText>
 ----------------------------------------------------------------------------------------------------
-@@TJvCustomRichEdit.InsertFormatText
+@@TJvCustomRichEdit.InsertFormatText@Integer@string@TFont
 Summary
   Inserts formatted text at a specific position.
 Description
@@ -860,8 +867,15 @@ Parameters
   S     - Specifies the string to insert.
   AFont - Specifies the font to use. If AFont = nil, then the current attributes at the insertion
            point are used.
+  FontStyle  - Description for this parameter
+  FontName   - Description for this parameter
+  FontColor  - Description for this parameter
+  FontHeight - Description for this parameter
 See Also
   <LINK AddFormatText>, <link InsertBitmap>
+----------------------------------------------------------------------------------------------------
+@@TJvCustomRichEdit.InsertFormatText@integer@string@TFontStyles@string@TColor@integer
+<COMBINE TJvCustomRichEdit.InsertFormatText@Integer@string@TFont>
 ----------------------------------------------------------------------------------------------------
 @@TJvCustomRichEdit.InsertObjectDialog
 Summary

@@ -1,5 +1,7 @@
 ##Package: Custom
 ##Status: Completed (II)
+##Skip: TJvTrayIconState
+##Skip: TJvTrayIconStates
 ----------------------------------------------------------------------------------------------------
 @@JvTrayIcon.pas
 Summary
@@ -42,8 +44,8 @@ Description
   the bottom (if the taskbar is vertical).
 
   You can provide additional information when the user performs mouse actions, such as moving the
-  mouse pointer over the icon or clicking the icon. Use the OnClick, OnDblClick, OnMouseDown, OnMouseMove
-  and OnMouseMove events for this purpose.
+  mouse pointer over the icon or clicking the icon. Use the OnContextPopup, OnClick, OnDblClick, 
+  OnMouseDown, OnMouseMove and OnMouseMove events for this purpose.
 
   Typically, clicking the icon causes the application to display a window with additional information,
   right-clicking displays a shortcut menu, and double-clicking executes the default shortcut menu command.
@@ -162,13 +164,13 @@ Parameters
                 The text can be either single-line or multiline.
   BalloonType - Flags that can be set to add an icon to the balloon ToolTip. It is placed to the left
                 of the title. If Title is an empty \string, the icon is not shown.
-  Delay       - The timeout value, in milliseconds, for a balloon ToolTip. The system enforces minimum
+  ADelay      - The timeout value, in milliseconds, for a balloon ToolTip. The system enforces minimum
                 and maximum timeout values. \Delay values that are too large are set to the maximum
                 value and values that are too small default to the minimum value. The system minimum
                 and maximum timeout values are currently set at 10 seconds and 30 seconds, respectively.
   CancelPrevious - Specifies whether to cancel the previous balloon.
 See Also
-  AcceptBalloons, OnBalloonClick, OnBalloonHide, OnBalloonShow
+  AcceptBalloons, HideBalloon, OnBalloonClick, OnBalloonHide, OnBalloonShow
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.CurrentIcon
 Summary
@@ -194,15 +196,6 @@ Description
   is 100 (1/10 second).
 See Also
   Active, Animated, Icons
-----------------------------------------------------------------------------------------------------
-@@TJvTrayIcon.DoCheckCrash
-Summary
-  Checks whether the taskbar notification area has been recreated.
-Description
-  Call DoCheckCrash to check whether the taskbar notification area has been recreated. If so, and Active
-  is set to true, DoCheckCrash re-adds the icon to the tray.
-See Also
-  Active
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.DoDoubleClick
 Summary
@@ -230,8 +223,7 @@ Summary
   Responds when the user clicks the tray icon with the mouse.
 Description
   Do not call DoMouseDown. It is called automatically when the user clicks the icon with the mouse. As
-  implemented in TJvTrayIcon, DoMouseDown triggers the OnMouseDown event, and if the left mouse button
-  is pressed, pops up the popup menu specified by DropDownMenu.
+  implemented in TJvTrayIcon, DoMouseDown triggers the OnMouseDown event.
 Parameters
   Button - Determines which mouse button the user pressed.
   Shift  - Indicates which keys (Shift, Ctrl, and Alt) were down when the user pressed the mouse button.
@@ -259,8 +251,7 @@ Summary
 Description
   Do not call DoMouseUp. It is called automatically when the user releases the mouse.
 
-  If the right mouse button is released, DoMouseUp pops up the popup menu specified by PopupMenu. If
-  the left mouse button is released and tvRestoreClick or tvMinimizeClick is include in Visibility,
+  If the left mouse button is released and tvRestoreClick or tvMinimizeClick is include in Visibility,
   DoMouseUp restores the visibility of the application or hides the application, respectively.
   Finally it triggers the OnMouseUp and OnClick event.
 Parameters
@@ -303,6 +294,14 @@ Description
   the application is visible.
 See Also
   ShowApplication, Visibility
+----------------------------------------------------------------------------------------------------
+@@TJvTrayIcon.HideBalloon
+Summary
+  Hides a balloon ToolTip.
+Description
+  Call HideBalloon to hide balloons displayed by calling BalloonHint.
+See Also
+  BalloonHint
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.Hint
 Summary
@@ -405,10 +404,29 @@ Description
   Typically, clicking a tray icon causes the application to display a window with additional information;
   right-clicking displays a shortcut menu.
 
-  Use the tvRestoreDbClick and tvMinimizeDbClick flags from Visibility to automate the process of
+  Use the tvRestoreClick and tvMinimizeClick flags from Visibility to automate the process of
   hiding and restoring the application upon clicking of the tray icon with the left button.
 See Also
-  OnDblClick, OnMouseDown, OnMouseUp, Visibility
+  OnContextPopup, OnDblClick, OnMouseDown, OnMouseUp, Visibility
+----------------------------------------------------------------------------------------------------
+@@TJvTrayIcon.OnContextPopup
+Summary
+  Occurs when the user right-clicks the tray icon or otherwise invokes the popup menu (such as 
+  using the keyboard).
+Description
+  The OnContextPopup handler is called when the user uses the mouse or keyboard to request a popup 
+  menu. The OnContextPopup event is generated by a WM_CONTEXTMENU message, which is itself generated
+  by the user clicking the right mouse button or by pressing Shift+F10 key. 
+
+  The OnContextPopup can be used to override the automatic context menu that appears when the control 
+  has an associated popup menu. In this last case, if the event handler displays its own menu, it 
+  should set the Handled parameter to true to suppress the default context menu.
+
+  The handler’s MousePos parameter indicates the position of the mouse, in client coordinates. Windows
+  moves the mouse pointer to the tray icon when the event was not generated by a mouse click, thus
+  the MousePos parameter is always valid.
+See Also
+  PopupMenu
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.OnDblClick
 Summary
@@ -478,7 +496,7 @@ Description
   If no OnDblClick event handler is assigned, TJvTrayIcon automatically executes the default shortcut
   menu command, if the user double-clicks the tray icon.
 See Also
-  DropDownMenu, OnClick
+  DropDownMenu, OnContextPopup
 ----------------------------------------------------------------------------------------------------
 @@TJvTrayIcon.ShowApplication
 Summary
@@ -584,22 +602,6 @@ Description
   String to be used as the title for a balloon ToolTip.
 @@TNotifyIconDataXP.dwInfoFlags
   Flags that can be set to add an icon to a balloon ToolTip.
-----------------------------------------------------------------------------------------------------
-@@TRegisterServiceProcess
-<TITLE TRegisterServiceProcess type>
-Summary
-  Registers or unregisters a service process.
-Description
-  Use TRegisterServiceProcess to register or unregister a service process. A service process continues
-  to run after the user logs off.
-
-  This only applies to Windows 95, 98 and me.
-Parameters
-  dwProcessID - Specifies the identifier of the process to register as a service process. Specifies 0
-                to register the current process.
-  dwType      - Specifies whether the service is to be registered or unregistered. Specifies 0 to
-                unregisters the process as a service process. Specifies 1 to registers the process as
-                a service process.
 ----------------------------------------------------------------------------------------------------
 @@TTrayVisibilities
 <TITLE TTrayVisibilities type>
