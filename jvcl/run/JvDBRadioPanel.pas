@@ -1,30 +1,33 @@
-{******************************************************************************}
-{                                                                              }
-{ Project JEDI Code Library (JCL)                                              }
-{                                                                              }
-{ The contents of this file are subject to the Mozilla Public License Version  }
-{ 1.0 (the "License"); you may not use this file except in compliance with the }
-{ License. You may obtain a copy of the License at http://www.mozilla.org/MPL/ }
-{                                                                              }
-{ Software distributed under the License is distributed on an "AS IS" basis,   }
-{ WITHOUT WARRANTY OF ANY KIND, either express or implied. See the License for }
-{ the specific language governing rights and limitations under the License.    }
-{                                                                              }
-{ The Original Code is JvDBRadioPanel.pas.                                     }
-{                                                                              }
-{ The Initial Developer of the Original Code is Steve Paris                    }
-{ [paris.steve@tourisme.gouv.qc.ca]                                            }
-{ All Rights Reserved.                                                         }
-{                                                                              }
-{ Contributor(s):                                                              }
-{                                                                              }
-{ Works like TDBRadioGroup except haves the look of a TPanel. Major code come  }
-{ from TDBRadioGroup.                                                          }
-{                                                                              }
-{ Unit owner:                                                                  }
-{ Last modified: March 7, 2003                                                 }
-{                                                                              }
-{******************************************************************************}
+{-----------------------------------------------------------------------------
+The contents of this file are subject to the Mozilla Public License
+Version 1.1 (the "License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+http://www.mozilla.org/MPL/MPL-1.1.html
+
+Software distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTY OF ANY KIND, either expressed or implied. See the License for
+the specific language governing rights and limitations under the License.
+
+The Original Code is: JvDBRadioPanel.pas, released .
+
+The Initial Developer of the Original Code is Steve Paris [paris.steve@tourisme.gouv.qc.ca]
+Portions created by Steve Paris are Copyright (C) 2003 Steve Paris.
+All Rights Reserved.
+
+Contributor(s):
+
+Last Modified: March 7, 2003
+
+You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
+located at http://jvcl.sourceforge.net
+
+Description:
+  Works like TDBRadioGroup except haves the look of a TPanel. Major code come
+  from TDBRadioGroup.
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
 
 unit JvDBRadioPanel;
@@ -38,16 +41,15 @@ uses
 type
   TJvDBRadioPanel = class(TJvCustomPanel)
   private
-    { Private declarations }
     FButtons: TList;
-    FItems: TStrings;
+    FItems: TStringList;
     FItemIndex: Integer;
     FColumns: Integer;
     FReading: Boolean;
     FUpdating: Boolean;
     FDataLink: TFieldDataLink;
     FValue: string;
-    FValues: TStrings;
+    FValues: TStringList;
     FInSetValue: Boolean;
     FOnChange: TNotifyEvent;
     procedure DataChange(Sender: TObject);
@@ -56,6 +58,8 @@ type
     function GetDataSource: TDataSource;
     function GetField: TField;
     function GetReadOnly: Boolean;
+    function GetItems: TStrings;
+    function GetValues: TStrings;
     function GetButtonValue(Index: Integer): string;
     procedure SetDataField(const Value: string);
     procedure SetDataSource(Value: TDataSource);
@@ -63,8 +67,6 @@ type
     procedure SetValue(const Value: string);
     procedure SetItems(Value: TStrings);
     procedure SetValues(Value: TStrings);
-    procedure CMGetDataLink(var Message: TMessage); message CM_GETDATALINK;
-
     function GetButtons(Index: Integer): TRadioButton;
     procedure ArrangeButtons;
     procedure ButtonClick(Sender: TObject);
@@ -72,11 +74,10 @@ type
     procedure SetButtonCount(Value: Integer);
     procedure SetColumns(Value: Integer);
     procedure SetItemIndex(Value: Integer);
-
     procedure UpdateButtons;
-    procedure WMSize(var Message: TWMSize); message WM_SIZE;
+    procedure CMGetDataLink(var Msg: TMessage); message CM_GETDATALINK;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
   protected
-    { Protected declarations }
     procedure DoExit; override;
     procedure EnabledChanged; override;
     procedure FontChanged; override;
@@ -92,7 +93,6 @@ type
     function CanModify: Boolean; virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
-    { Public declarations }
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure FlipChildren(AllLevels: Boolean); override;
@@ -105,7 +105,6 @@ type
     property ItemIndex: Integer read FItemIndex write SetItemIndex default -1;
     property Value: string read FValue write SetValue;
   published
-    { Published declarations }
     property Align;
     property Anchors;
     property BiDiMode;
@@ -122,7 +121,7 @@ type
     property DragMode;
     property Enabled;
     property Font;
-    property Items: TStrings read FItems write SetItems;
+    property Items: TStrings read GetItems write SetItems;
     property ParentBiDiMode;
     property ParentColor;
     property ParentFont;
@@ -132,7 +131,7 @@ type
     property ShowHint;
     property TabOrder;
     property TabStop;
-    property Values: TStrings read FValues write SetValues;
+    property Values: TStrings read GetValues write SetValues;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnClick;
@@ -147,7 +146,6 @@ type
     property OnStartDrag;
   end;
 
-
 implementation
 
 { TGroupButton }
@@ -156,7 +154,7 @@ type
   TGroupButton = class(TRadioButton)
   private
     FInClick: Boolean;
-    procedure CNCommand(var Message: TWMCommand); message CN_COMMAND;
+    procedure CNCommand(var Msg: TWMCommand); message CN_COMMAND;
   protected
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
@@ -173,7 +171,7 @@ begin
   Enabled := RadioGroup.Enabled;
   ParentShowHint := False;
   OnClick := RadioGroup.ButtonClick;
-  Parent  := RadioGroup;
+  Parent := RadioGroup;
 end;
 
 destructor TGroupButton.Destroy;
@@ -182,16 +180,16 @@ begin
   inherited Destroy;
 end;
 
-procedure TGroupButton.CNCommand(var Message: TWMCommand);
+procedure TGroupButton.CNCommand(var Msg: TWMCommand);
 begin
   if not FInClick then
   begin
     FInClick := True;
     try
-      if ((Message.NotifyCode = BN_CLICKED) or
-          (Message.NotifyCode = BN_DOUBLECLICKED)) and
-         TJvDBRadioPanel(Parent).CanModify then
-         inherited;
+      if ((Msg.NotifyCode = BN_CLICKED) or
+        (Msg.NotifyCode = BN_DOUBLECLICKED)) and
+        TJvDBRadioPanel(Parent).CanModify then
+        inherited;
     except
       Application.HandleException(Self);
     end;
@@ -205,8 +203,8 @@ begin
   TJvDBRadioPanel(Parent).KeyPress(Key);
   if Key in [#8, ' '] then
   begin
-     if not TJvDBRadioPanel(Parent).CanModify then
-        Key := #0;
+    if not TJvDBRadioPanel(Parent).CanModify then
+      Key := #0;
   end;
 end;
 
@@ -235,24 +233,24 @@ begin
     SelectObject(DC, SaveFont);
     ReleaseDC(0, DC);
     ButtonsPerCol := (FButtons.Count + FColumns - 1) div FColumns;
-    ButtonWidth   := (Width - 10) div FColumns;
-    ButtonHeight  := Height div ButtonsPerCol;
-    TopMargin     := 0;
-    DeferHandle   := BeginDeferWindowPos(FButtons.Count);
+    ButtonWidth := (Width - 10) div FColumns;
+    ButtonHeight := Height div ButtonsPerCol;
+    TopMargin := 0;
+    DeferHandle := BeginDeferWindowPos(FButtons.Count);
     try
       for I := 0 to FButtons.Count - 1 do
         with TGroupButton(FButtons[I]) do
         begin
           BiDiMode := Self.BiDiMode;
-          ALeft    := (I div ButtonsPerCol) * ButtonWidth + 8;
+          ALeft := (I div ButtonsPerCol) * ButtonWidth + 8;
 
           if UseRightToLeftAlignment then
-             ALeft := Self.ClientWidth - ALeft - ButtonWidth;
+            ALeft := Self.ClientWidth - ALeft - ButtonWidth;
 
           DeferHandle := DeferWindowPos(DeferHandle, Handle, 0, ALeft,
-                                        (I mod ButtonsPerCol) * ButtonHeight + TopMargin,
-                                        ButtonWidth, ButtonHeight,
-                                        SWP_NOZORDER or SWP_NOACTIVATE);
+            (I mod ButtonsPerCol) * ButtonHeight + TopMargin,
+            ButtonWidth, ButtonHeight,
+            SWP_NOZORDER or SWP_NOACTIVATE);
           Visible := True;
         end;
     finally
@@ -278,7 +276,8 @@ end;
 
 procedure TJvDBRadioPanel.Change;
 begin
-  if Assigned(FOnChange) then FOnChange(Self);
+  if Assigned(FOnChange) then
+    FOnChange(Self);
 end;
 
 procedure TJvDBRadioPanel.Click;
@@ -287,9 +286,9 @@ begin
   begin
     inherited Click;
     if ItemIndex >= 0 then
-       Value := GetButtonValue(ItemIndex);
+      Value := GetButtonValue(ItemIndex);
     if FDataLink.Editing then
-       FDataLink.Modified;
+      FDataLink.Modified;
   end;
 end;
 
@@ -322,35 +321,35 @@ begin
   ArrangeButtons;
 end;
 
-procedure TJvDBRadioPanel.CMGetDataLink(var Message: TMessage);
+procedure TJvDBRadioPanel.CMGetDataLink(var Msg: TMessage);
 begin
-  Message.Result := Integer(FDataLink);
+  Msg.Result := Integer(FDataLink);
 end;
 
 constructor TJvDBRadioPanel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 //  ControlStyle := [csSetCaption, csDoubleClicks, csParentBackground];
-  ControlStyle := [csDoubleClicks{$IFDEF COMPILER7_UP}, csParentBackground{$ENDIF}];
-  FButtons     := TList.Create;
-  FItems       := TStringList.Create;
-  TStringList(FItems).OnChange := ItemsChange;
-  FItemIndex   := -1;
-  FColumns     := 1;
+  ControlStyle := [csDoubleClicks {$IFDEF COMPILER7_UP}, csParentBackground {$ENDIF}];
+  FButtons := TList.Create;
+  FItems := TStringList.Create;
+  FItems.OnChange := ItemsChange;
+  FItemIndex := -1;
+  FColumns := 1;
 
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
   FDataLink.OnUpdateData := UpdateData;
-  FValues   := TStringList.Create;
+  FValues := TStringList.Create;
 end;
 
 procedure TJvDBRadioPanel.DataChange(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
-     Value := FDataLink.Field.Text
+    Value := FDataLink.Field.Text
   else
-     Value := '';
+    Value := '';
 end;
 
 destructor TJvDBRadioPanel.Destroy;
@@ -360,7 +359,7 @@ begin
   FValues.Free;
 
   SetButtonCount(0);
-  TStringList(FItems).OnChange := nil;
+  FItems.OnChange := nil;
   FItems.Free;
   FButtons.Free;
   inherited Destroy;
@@ -386,7 +385,8 @@ function TJvDBRadioPanel.GetButtonValue(Index: Integer): string;
 begin
   if (Index < FValues.Count) and (FValues[Index] <> '') then
     Result := FValues[Index]
-  else if Index < Items.Count then
+  else
+  if Index < Items.Count then
     Result := Items[Index]
   else
     Result := '';
@@ -421,7 +421,7 @@ begin
   if not FReading then
   begin
     if FItemIndex >= FItems.Count then
-       FItemIndex := FItems.Count - 1;
+      FItemIndex := FItems.Count - 1;
     UpdateButtons;
   end;
 end;
@@ -430,9 +430,9 @@ procedure TJvDBRadioPanel.KeyPress(var Key: Char);
 begin
   inherited KeyPress(Key);
   case Key of
-    #8  ,
-    ' ' : FDataLink.Edit;
-    #27 : FDataLink.Reset;
+    #8,
+      ' ': FDataLink.Edit;
+    #27: FDataLink.Reset;
   end;
 end;
 
@@ -446,10 +446,10 @@ procedure TJvDBRadioPanel.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
-  if (Operation  = opRemove  ) and
-     (FDataLink <> nil       ) and
-     (AComponent = DataSource) then
-     DataSource := nil;
+  if (Operation = opRemove) and
+    (FDataLink <> nil) and
+    (AComponent = DataSource) then
+    DataSource := nil;
 end;
 
 procedure TJvDBRadioPanel.ReadState(Reader: TReader);
@@ -463,18 +463,18 @@ end;
 procedure TJvDBRadioPanel.SetButtonCount(Value: Integer);
 begin
   while FButtons.Count < Value do
-     TGroupButton.InternalCreate(Self);
+    TGroupButton.InternalCreate(Self);
   while FButtons.Count > Value do
-     TGroupButton(FButtons.Last).Free;
+    TGroupButton(FButtons.Last).Free;
 end;
 
 procedure TJvDBRadioPanel.SetColumns(Value: Integer);
 begin
   if Value < 1 then
-     Value := 1;
+    Value := 1;
 
   if Value > 16 then
-     Value := 16;
+    Value := 16;
 
   if FColumns <> Value then
   begin
@@ -493,30 +493,35 @@ procedure TJvDBRadioPanel.SetDataSource(Value: TDataSource);
 begin
   FDataLink.DataSource := Value;
   if Value <> nil then
-     Value.FreeNotification(Self);
+    Value.FreeNotification(Self);
 end;
 
 procedure TJvDBRadioPanel.SetItemIndex(Value: Integer);
 begin
   if FReading then
-     FItemIndex := Value
+    FItemIndex := Value
   else
   begin
     if Value < -1 then
-       Value := -1;
+      Value := -1;
 
     if Value >= FButtons.Count then
-       Value := FButtons.Count - 1;
+      Value := FButtons.Count - 1;
 
     if FItemIndex <> Value then
     begin
-       if FItemIndex >= 0 then
-         TGroupButton(FButtons[FItemIndex]).Checked := False;
-       FItemIndex := Value;
-       if FItemIndex >= 0 then
-         TGroupButton(FButtons[FItemIndex]).Checked := True;
+      if FItemIndex >= 0 then
+        TGroupButton(FButtons[FItemIndex]).Checked := False;
+      FItemIndex := Value;
+      if FItemIndex >= 0 then
+        TGroupButton(FButtons[FItemIndex]).Checked := True;
     end;
   end;
+end;
+
+function TJvDBRadioPanel.GetItems: TStrings;
+begin
+  Result := FItems;
 end;
 
 procedure TJvDBRadioPanel.SetItems(Value: TStrings);
@@ -536,22 +541,27 @@ var
 begin
   if FValue <> Value then
   begin
-     FInSetValue := True;
-     try
-       Index := -1;
-       for I := 0 to Items.Count - 1 do
-         if Value = GetButtonValue(I) then
-         begin
-            Index := I;
-            Break;
-         end;
-       ItemIndex := Index;
-     finally
-       FInSetValue := False;
-     end;
-     FValue := Value;
-     Change;
+    FInSetValue := True;
+    try
+      Index := -1;
+      for I := 0 to Items.Count - 1 do
+        if Value = GetButtonValue(I) then
+        begin
+          Index := I;
+          Break;
+        end;
+      ItemIndex := Index;
+    finally
+      FInSetValue := False;
+    end;
+    FValue := Value;
+    Change;
   end;
+end;
+
+function TJvDBRadioPanel.GetValues: TStrings;
+begin
+  Result := FValues;
 end;
 
 procedure TJvDBRadioPanel.SetValues(Value: TStrings);
@@ -563,7 +573,7 @@ end;
 function TJvDBRadioPanel.UpdateAction(Action: TBasicAction): Boolean;
 begin
   Result := inherited UpdateAction(Action) or (DataLink <> nil) and
-            DataLink.UpdateAction(Action);
+    DataLink.UpdateAction(Action);
 end;
 
 procedure TJvDBRadioPanel.UpdateButtons;
@@ -576,9 +586,9 @@ begin
 
   if FItemIndex >= 0 then
   begin
-     FUpdating := True;
-     TGroupButton(FButtons[FItemIndex]).Checked := True;
-     FUpdating := False;
+    FUpdating := True;
+    TGroupButton(FButtons[FItemIndex]).Checked := True;
+    FUpdating := False;
   end;
   ArrangeButtons;
   Invalidate;
@@ -587,7 +597,7 @@ end;
 procedure TJvDBRadioPanel.UpdateData(Sender: TObject);
 begin
   if FDataLink.Field <> nil then
-     FDataLink.Field.Text := Value;
+    FDataLink.Field.Text := Value;
 end;
 
 function TJvDBRadioPanel.UseRightToLeftAlignment: Boolean;
@@ -595,10 +605,11 @@ begin
   Result := inherited UseRightToLeftAlignment;
 end;
 
-procedure TJvDBRadioPanel.WMSize(var Message: TWMSize);
+procedure TJvDBRadioPanel.WMSize(var Msg: TWMSize);
 begin
   inherited;
   ArrangeButtons;
 end;
 
 end.
+

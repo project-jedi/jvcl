@@ -35,7 +35,7 @@ interface
 uses Windows, DbCtrls,
   {$IFDEF COMPILER6_UP}
   VDBConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Messages, Menus, Graphics, Classes, Controls, DB,
   StdCtrls, DBConsts;
 
@@ -55,7 +55,7 @@ type
     procedure SetEditReadOnly;
     {$IFNDEF COMPILER6_UP}
     procedure SetItems(const Value: TStrings);
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure SetReadOnly(Value: Boolean);
     procedure UpdateData(Sender: TObject);
     function GetComboText: string; virtual;
@@ -79,7 +79,7 @@ type
     procedure SetStyle(Value: TComboBoxStyle);override;
     {$IFDEF COMPILER6_UP}
     procedure SetItems(const Value: TStrings); override;
-    {$ENDIF}
+    {$ENDIF COMPILER6_UP}
     procedure WndProc(var Msg: TMessage); override;
     property ComboText: string read GetComboText write SetComboText;
     property DataField: string read GetDataField write SetDataField;
@@ -98,9 +98,10 @@ type
 
   TJvDBComboBox = class(TJvCustomDBComboBox)
   private
-    FValues: TStrings;
+    FValues: TStringList;
     FEnableValues: Boolean;
     procedure SetEnableValues(Value: Boolean);
+    function GetValues: TStrings;
     procedure SetValues(Value: TStrings);
     procedure ValuesChanged(Sender: TObject);
   protected
@@ -143,7 +144,7 @@ type
     property Sorted;
     property TabOrder;
     property TabStop;
-    property Values: TStrings read FValues write SetValues;
+    property Values: TStrings read GetValues write SetValues;
     property Visible;
     property OnChange;
     property OnClick;
@@ -169,6 +170,8 @@ implementation
 
 uses
   JvDBUtils;
+
+//=== TJvCustomDBComboBox ====================================================
 
 constructor TJvCustomDBComboBox.Create(AOwner: TComponent);
 begin
@@ -489,7 +492,7 @@ begin
   {$ELSE}
   { TODO : (rb) This was incorrectly // Can't test }
   Items.Assign(Value);
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   DataChange(Self);
 end;
 
@@ -517,11 +520,13 @@ begin
     FDataLink.UpdateAction(Action);
 end;
 
+//=== TJvDBComboBox ==========================================================
+
 constructor TJvDBComboBox.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FValues := TStringList.Create;
-  TStringList(FValues).OnChange := ValuesChanged;
+  FValues.OnChange := ValuesChanged;
   //  EnableValues := False;
   FEnableValues := True; // Polaris
   Style := csDropDownList; // Polaris
@@ -529,7 +534,7 @@ end;
 
 destructor TJvDBComboBox.Destroy;
 begin
-  TStringList(FValues).OnChange := nil;
+  FValues.OnChange := nil;
   FValues.Free;
   inherited Destroy;
 end;
@@ -626,12 +631,17 @@ begin
   end;
 end;
 
+function TJvDBComboBox.GetValues: TStrings;
+begin
+  Result := FValues;
+end;
+
 procedure TJvDBComboBox.SetValues(Value: TStrings);
 begin
   FValues.Assign(Value);
 end;
 
-procedure TJvDBComboBox.SetStyle(Value: TComboboxStyle);
+procedure TJvDBComboBox.SetStyle(Value: TComboBoxStyle);
 begin
   if (Value in [csSimple, csDropDown]) and FEnableValues then
     //    Value := csDropDownList;

@@ -36,14 +36,14 @@ interface
 uses
   {$IFDEF MSWINDOWS}
   Windows, Messages,
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   SysUtils, Classes,
   {$IFDEF VCL}
   Graphics, Controls, Forms, Dialogs, ExtCtrls,
-  {$ENDIF}
+  {$ENDIF VCL}
   {$IFDEF VisualCLX}
   Types, QGraphics, QControls, QForms, QDialogs, QExtCtrls,
-  {$ENDIF}
+  {$ENDIF VisualCLX}
   JvComponent;
 
 type
@@ -162,7 +162,7 @@ implementation
 {$IFDEF MSWINDOWS}
 uses
   MMSystem;
-{$ENDIF}
+{$ENDIF MSWINDOWS}
 
 constructor TJvContentScroller.Create(AOwner: TComponent);
 begin
@@ -202,7 +202,7 @@ begin
     Flag := Flag or SND_LOOP;
   if FileExists(FMediaFile) then
     PlaySound(PChar(FMediaFile), 0, Flag);
-  {$ENDIF}
+  {$ENDIF MSWINDOWS}
   FCurLoop := FLoopCount;
 end;
 
@@ -291,14 +291,13 @@ begin
 
     if Active then
     begin
-      ScrollBy(0, i);
+      ScrollBy(0, I);
       FPosition := FPosition + Amount;
     end;
   finally
     EnableAlign;
   end;
 end;
-
 
 procedure TJvContentScroller.SetActive(Value: Boolean);
 begin

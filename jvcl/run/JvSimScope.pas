@@ -75,7 +75,7 @@ type
     function GetItem(Index: Integer): TJvScopeLine;
     procedure SetItem(Index: Integer; const Value: TJvScopeLine);
   public
-    constructor Create(AOwner:TPersistent);
+    constructor Create(AOwner: TPersistent);
     procedure Assign(Source: TPersistent); override;
 
     function Add: TJvScopeLine;
@@ -101,8 +101,7 @@ type
     procedure SetBaseLine(Value: Integer);
     procedure SetInterval(Value: Integer);
     procedure SetLines(const Value: TJvScopeLines);
-    procedure UpdateDisplay(ClearFirst:Boolean);
-
+    procedure UpdateDisplay(ClearFirst: Boolean);
   protected
     CalcBase: Integer;
     Counter: Integer;
@@ -198,7 +197,7 @@ var
   I: Integer;
 begin
   Result := -1;
-  for I := 0 to Count-1 do
+  for I := 0 to Count - 1 do
     if AnsiSameStr(Lines[Result].Name, AName) then
     begin
       Result := I;
@@ -317,7 +316,6 @@ begin
     Counter := 1;
   end;
 end;
-
 
 procedure TJvSimScope.SetBaseLine(Value: Integer);
 begin
@@ -475,8 +473,9 @@ begin
   begin
     if ClearFirst then
       Clear;
-    Paint;
+    Repaint;
   end;
 end;
 
 end.
+

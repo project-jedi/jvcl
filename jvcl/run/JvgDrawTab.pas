@@ -32,7 +32,7 @@ unit JvgDrawTab;
 interface
 
 uses
-  Windows, CommCtrl, graphics, Classes, ExtCtrls,
+  Windows, CommCtrl, Graphics, Classes, ExtCtrls,
   JvgTypes, JvgUtils, JvgTabComm;
 
 procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
@@ -40,33 +40,35 @@ procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
 implementation
 
 procedure DrawOwnTab(DrawTabStr: TDRAWTABSTRUCT);
+const
+  cWordWrap: array [Boolean] of UINT = (DT_SINGLELINE, DT_WORDBREAK);
 var
-  hPen_, hOldPen_: HPEN;
-  r, r_, AddR, ItemR: TRect;
+  HndPen: HPEN;
+  hOldPen: HPEN;
+  R, R1, AddR, ItemR: TRect;
   TransparentColor: TCOLORREF;
-  x, y: integer;
-  fSelected, fVert, fHor: boolean;
-  fWallpaper: boolean;
+  X, Y: Integer;
+  Selected, Vert, Hor: Boolean;
+  BWallpaper: Boolean;
   WallpaperOption: TglWallpaperOption;
   Size: TSIZE;
   OldFont: Windows.HFont;
   GrFromColor, GrToColor: TColor;
-const
-  aWordWrap: array[boolean] of UINT = (DT_SINGLELINE, DT_WORDBREAK);
 begin
-
-  if not Assigned(DrawTabStr.lpDrawItemStr) then exit;
+  if not Assigned(DrawTabStr.lpDrawItemStr) then
+    exit;
   with DrawTabStr, DrawTabStr.lpDrawItemStr^, DrawTabStr.BoxStyle do
   begin
-    fSelected := (itemState and ODS_SELECTED) <> 0;
-    //_________________________________________WALLPAPER WORKS_
+    Selected := (itemState and ODS_SELECTED) <> 0;
+    // WALLPAPER WORKS
     WallpaperOption := fwoNone;
-    fWallpaper := IsItAFilledBitmap(Wallpaper.Bmp);
-    if fWallpaper then
+    BWallpaper := IsItAFilledBitmap(Wallpaper.Bmp);
+    if BWallpaper then
     begin
-      if Wallpaper.Tile then WallpaperOption := fwoTile;
+      if Wallpaper.Tile then
+        WallpaperOption := fwoTile;
       //...calc and fill tabs background
-      if (ItemID = UINT(TabsCount - 1)) and (Wallpaper.FillCaptionBakgr) then
+      if (ItemID = UINT(TabsCount - 1)) and Wallpaper.FillCaptionBakgr then
       begin
         AddR := ClientR;
         ItemR := rcItem;
@@ -74,118 +76,117 @@ begin
         AddR.Left := ItemR.Right;
         AddR.Bottom := ItemR.Bottom;
         if fButton then
-        begin
-          inc(AddR.Bottom, 3);
-        end
+          Inc(AddR.Bottom, 3)
         else
-          inc(AddR.Bottom, 2); //if fSelected then AddR.Bottom:=AddR.Bottom-2;
+          Inc(AddR.Bottom, 2); //if Selected then AddR.Bottom:=AddR.Bottom-2;
         CreateBitmapExt(HDC, Wallpaper.Bmp, AddR, 0, 0,
-          WallpaperOption, fdsDefault, false, 0, clBlack);
+          WallpaperOption, fdsDefault, False, 0, clBlack);
       end;
       //...calc client area exclude tabs and user-client area
-      r := ClientR;
+      R := ClientR;
       case Position of
         fsdTop:
           begin
-            r.top := r.top + rcItem.Bottom - rcItem.Top;
+            R.Top := R.Top + rcItem.Bottom - rcItem.Top;
             if fButton then
-            begin
-              inc(r.top, 4);
-            end
-            else if fSelected then
-              dec(r.top)
+              Inc(R.Top, 4)
             else
-              inc(r.top, 5);
-            dec(r.right);
-            dec(r.bottom);
-            inc(r.left);
+            if Selected then
+              Dec(R.Top)
+            else
+              Inc(R.Top, 5);
+            Dec(R.Right);
+            Dec(R.Bottom);
+            Inc(R.Left);
           end;
         fsdBottom:
           begin
-            r.bottom := r.bottom - (rcItem.Bottom - rcItem.Top);
+            R.Bottom := R.Bottom - (rcItem.Bottom - rcItem.Top);
             if fButton then
-            begin
-              dec(r.bottom, 4);
-            end
-            else if fSelected then
-              dec(r.bottom)
+              Dec(R.Bottom, 4)
             else
-              dec(r.bottom, 5);
-            dec(r.right);
-            inc(r.top);
-            inc(r.left);
+            if Selected then
+              Dec(R.Bottom)
+            else
+              Dec(R.Bottom, 5);
+            Dec(R.Right);
+            Inc(R.Top);
+            Inc(R.Left);
           end;
         fsdLeft:
           begin
-            r.left := r.left + (rcItem.Right - rcItem.Left);
+            R.Left := R.Left + (rcItem.Right - rcItem.Left);
             if fButton then
-            begin
-              inc(r.left, 3);
-            end
-            else if fSelected then
-              dec(r.left)
+              Inc(R.Left, 3)
             else
-              inc(r.left, 5);
-            dec(r.right);
-            dec(r.bottom);
-            inc(r.top);
+            if Selected then
+              Dec(R.Left)
+            else
+              Inc(R.Left, 5);
+            Dec(R.Right);
+            Dec(R.Bottom);
+            Inc(R.Top);
           end;
         fsdRight:
           begin
-            r.right := r.right - (rcItem.Right - rcItem.Left);
+            R.Right := R.Right - (rcItem.Right - rcItem.Left);
             if fButton then
-            begin
-              dec(r.right, 4);
-            end
-            else if fSelected then
-              dec(r.right)
+              Dec(R.Right, 4)
             else
-              dec(r.right, 5);
-            inc(r.left);
-            dec(r.bottom);
-            inc(r.top);
+            if Selected then
+              Dec(R.Right)
+            else
+              Dec(R.Right, 5);
+            Inc(R.Left);
+            Dec(R.Bottom);
+            Inc(R.Top);
           end;
       end;
       //...fill client exclude tabs
       if Wallpaper.FillClient then
-        CreateBitmapExt(HDC, Wallpaper.Bmp, r, 0, 0,
-          WallpaperOption, fdsDefault, false, 0, clBlack);
+        CreateBitmapExt(HDC, Wallpaper.Bmp, R, 0, 0,
+          WallpaperOption, fdsDefault, False, 0, clBlack);
       //...calc tab to fill
       if Wallpaper.FillCaptions and Wallpaper.IncludeBevels then
       begin
-        r := rcItem;
+        R := rcItem;
         if not fButton then
           case Position of
-            fsdTop: dec(r.bottom);
-            fsdLeft: dec(r.right);
-            fsdRight: if not fSelected then dec(r.Left);
+            fsdTop:
+              Dec(R.Bottom);
+            fsdLeft:
+              Dec(R.Right);
+            fsdRight:
+              if not Selected then
+                Dec(R.Left);
           end;
-        CreateBitmapExt(HDC, Wallpaper.Bmp, r, 0, 0,
-          WallpaperOption, fdsDefault, false, 0, clBlack);
+        CreateBitmapExt(HDC, Wallpaper.Bmp, R, 0, 0,
+          WallpaperOption, fdsDefault, False, 0, clBlack);
       end;
-    end; //...end wallpaper works. uf! [`:-)
-    //_________________________________________CORRECT TAB RECT_ to draw bevels
-    r := rcItem;
+    end;
+    // CORRECT TAB RECT to draw bevels
+    R := rcItem;
     if fButton then
     begin
-      if not fSelected then OffsetRect(r, -1, -1);
+      if not Selected then
+        OffsetRect(R, -1, -1);
     end
     else
     begin
-      if fSelected then
+      if Selected then
       begin
         //      InflateRect(R, 4, 4);
-        hPen_ := CreatePen(PS_SOLID, 1, ColorToRGB(clBtnface));
-        hOldPen_ := SelectObject(HDC, hPen_);
+        HndPen := CreatePen(PS_SOLID, 1, ColorToRGB(clBtnFace));
+        hOldPen := SelectObject(HDC, HndPen);
         case Position of
           fsdTop:
             begin {
               MoveToEx( HDC, rcItem.Left, rcItem.Bottom-2, nil );
               LineTo( HDC, rcItem.Right, rcItem.Bottom-2 );}
-              r.Left := r.Left + 3;
-              r.right := r.right - 4;
-              r.top := r.top + 2;
-              //if FInteriorOffset then InflateRect(r,1,0);
+              R.Left := R.Left + 3;
+              R.Right := R.Right - 4;
+              R.Top := R.Top + 2;
+              //if FInteriorOffset then InflateRect(R,1,0);
             end;
           fsdBottom:
             begin
@@ -193,18 +194,18 @@ begin
               LineTo(HDC, rcItem.Right - 2, rcItem.Top + 1);
               MoveToEx(HDC, rcItem.Left, rcItem.Top, nil);
               LineTo(HDC, rcItem.Right - 2, rcItem.Top);
-              r.Left := r.Left + 3;
-              r.right := r.right - 4;
-              dec(r.bottom);
-              //if FInteriorOffset then InflateRect(r,1,0);
+              R.Left := R.Left + 3;
+              R.Right := R.Right - 4;
+              Dec(R.Bottom);
+              //if FInteriorOffset then InflateRect(R,1,0);
             end;
           fsdLeft:
             begin
-              inc(r.Left, 2);
-              dec(r.right, 2);
-              inc(r.Top, 2);
-              dec(r.Bottom, 2);
-              //if FInteriorOffset then inc(r.Bottom);
+              Inc(R.Left, 2);
+              Dec(R.Right, 2);
+              Inc(R.Top, 2);
+              Dec(R.Bottom, 2);
+              //if FInteriorOffset then Inc(R.Bottom);
             end;
           fsdRight:
             begin
@@ -212,46 +213,48 @@ begin
               LineTo(HDC, rcItem.Left, rcItem.Bottom - 2);
               MoveToEx(HDC, rcItem.Left + 1, rcItem.Top, nil);
               LineTo(HDC, rcItem.Left + 1, rcItem.Bottom - 2);
-              inc(r.Left, 0);
-              dec(r.right, 4);
-              inc(r.Top, 2);
-              dec(r.Bottom, 2);
-              //if FInteriorOffset then inc(r.Bottom);
+              Inc(R.Left, 0);
+              Dec(R.Right, 4);
+              Inc(R.Top, 2);
+              Dec(R.Bottom, 2);
+              //if FInteriorOffset then Inc(R.Bottom);
             end;
         end;
-        DeleteObject(SelectObject(HDC, hOldPen_));
+        DeleteObject(SelectObject(HDC, hOldPen));
       end
       else
       begin
         case Position of
           fsdTop:
             begin
-              inc(r.Left);
-              dec(r.right, 2);
-              OffsetRect(r, 0, 2);
-              //if FInteriorOffset then InflateRect(r,1,0);
+              Inc(R.Left);
+              Dec(R.Right, 2);
+              OffsetRect(R, 0, 2);
+              //if FInteriorOffset then InflateRect(R,1,0);
             end;
           fsdBottom:
             begin
-              inc(r.Left);
-              dec(r.right, 2);
-              if not fSelected then OffsetRect(r, 0, -1);
-              if not (fsdTop in Borders) then dec(r.top);
-              //if FInteriorOffset then InflateRect(r,1,0);
+              Inc(R.Left);
+              Dec(R.Right, 2);
+              if not Selected then
+                OffsetRect(R, 0, -1);
+              if not (fsdTop in Borders) then
+                Dec(R.Top);
+              //if FInteriorOffset then InflateRect(R,1,0);
             end;
           fsdLeft:
             begin
-              inc(r.Left, 2); {if FInteriorOffset then inc(r.Bottom);}
+              Inc(R.Left, 2); {if FInteriorOffset then Inc(R.Bottom);}
             end;
           fsdRight:
             begin
-              dec(r.right, 4); {if FInteriorOffset then inc(r.Bottom);}
+              Dec(R.Right, 4); {if FInteriorOffset then Inc(R.Bottom);}
             end;
         end;
       end;
-      dec(r.bottom, 2);
+      Dec(R.Bottom, 2);
     end;
-    //_______________________________________________DRAW BEVELS_
+    // DRAW BEVELS
     if Assigned(Gradient) and Gradient.Active then
     begin
       //      GrFromColor := Gradient.FRGBFromColor;
@@ -260,136 +263,144 @@ begin
       //        if ftoTabColorAsGradientFrom in Options then Gradient.FRGBFromColor := BackgrColor_;
       //        if ftoTabColorAsGradientTo in Options then Gradient.FRGBToColor := BackgrColor_;
       //      end;
-      GradientBox(HDC, r, Gradient, integer(psSolid), 1);
+      GradientBox(HDC, R, Gradient, Integer(psSolid), 1);
       //      Gradient.FRGBFromColor := GrFromColor;
       //      Gradient.FRGBToColor := GrToColor;
     end;
 
-    if DrawTabStr.FlatButtons then InflateRect(r, 3, 3);
-    r := DrawBoxEx(HDC, r, Borders, BevelInner, BevelOuter, Bold, BackgrColor_, (Wallpaper.FillCaptions and fWallpaper)
-      or Gradient.Active);
-    if DrawTabStr.FlatButtons then InflateRect(r, -3, -3);
-    //_________________________________________DRAW caption BACKGROUND_
-    if Wallpaper.FillCaptions and (not Wallpaper.IncludeBevels) then
-      CreateBitmapExt(HDC, Wallpaper.Bmp, r, 0, 0,
-        WallpaperOption, fdsDefault, false, 0, clBlack);
-    inc(r.bottom); //inc(r.right);
-    //_______________________________________________DRAW GLYPH_
-    r_ := r;
-    fHor := (Position = fsdTop) or (Position = fsdBottom);
-    fVert := not fHor;
-    if IsItAFilledBitmap(Glyph) and (not (ftoHideGlyphs in Options)) then
+    if DrawTabStr.FlatButtons then
+      InflateRect(R, 3, 3);
+    R := DrawBoxEx(HDC, R, Borders, BevelInner, BevelOuter, Bold, BackgrColor_,
+      (Wallpaper.FillCaptions and BWallpaper) or Gradient.Active);
+    if DrawTabStr.FlatButtons then
+      InflateRect(R, -3, -3);
+    // DRAW caption BACKGROUND
+    if Wallpaper.FillCaptions and not Wallpaper.IncludeBevels then
+      CreateBitmapExt(HDC, Wallpaper.Bmp, R, 0, 0,
+        WallpaperOption, fdsDefault, False, 0, clBlack);
+    Inc(R.Bottom); //Inc(R.Right);
+    // DRAW GLYPH
+    R1 := R;
+    Hor := (Position = fsdTop) or (Position = fsdBottom);
+    Vert := not Hor;
+    if IsItAFilledBitmap(Glyph) and not (ftoHideGlyphs in Options) then
     begin
       //if GlyphOption = fwoNone then ?
       case GlyphHAlign of
         fhaLeft:
           begin
-            x := 1;
-            if fHor then
-              inc(r_.left, Glyph.Width + 1)
+            X := 1;
+            if Hor then
+              Inc(R1.Left, Glyph.Width + 1)
           end;
-        fhaCenter: x := (r.Right - r.Left - Glyph.Width) div 2;
+        fhaCenter:
+          X := (R.Right - R.Left - Glyph.Width) div 2;
       else {fhaRight}
-        begin
-          x := r.Right - r.Left - Glyph.Width - 1;
-          if fHor then dec(r_.right, Glyph.Width + 1);
-        end;
+        X := R.Right - R.Left - Glyph.Width - 1;
+        if Hor then
+          Dec(R1.Right, Glyph.Width + 1);
       end;
       case GlyphVAlign of
         fvaTop:
           begin
-            y := 0;
-            if fVert then inc(r_.top, Glyph.Height + 1);
+            Y := 0;
+            if Vert then
+              Inc(R1.Top, Glyph.Height + 1);
           end;
-        fvaCenter: y := (r.Bottom - r.Top - Glyph.Height) div 2;
+        fvaCenter:
+          Y := (R.Bottom - R.Top - Glyph.Height) div 2;
       else {fvaBottom}
-        begin
-          y := r.Bottom - r.top - Glyph.Height;
-          if fVert then dec(r_.bottom, Glyph.Height + 1);
-        end;
+        Y := R.Bottom - R.Top - Glyph.Height;
+        if Vert then
+          Dec(R1.Bottom, Glyph.Height + 1);
       end;
       TransparentColor := GetPixel(Glyph.Canvas.Handle, 0, Glyph.Height - 1);
-      //    MoveToEx( hDC, r_.left+x, r_.top+y, nil );
-      //    LineTo( hDC, r_.right, r_.bottom );
+      //    MoveToEx( hDC, R1.Left+X, R1.Top+Y, nil );
+      //    LineTo( hDC, R1.Right, R1.Bottom );
       CreateBitmapExt(HDC, Glyph,
-        r, x, y, GlyphOption, fdsDefault,
-        true, TransparentColor, clBlack);
+        R, X, Y, GlyphOption, fdsDefault,
+        True, TransparentColor, clBlack);
       if GlyphOption <> fwoNone then
-        r_ := r
+        R1 := R
       else
-        r_.Left := r_.Left + 1;
+        R1.Left := R1.Left + 1;
     end; //...end draw glyph_
 
     //   case Position of
-    //     fsdTop, fsdBottom: begin inc(r_.Left,2); dec(r_.Right,2); end;
+    //     fsdTop, fsdBottom: begin Inc(R1.Left,2); Dec(R1.Right,2); end;
     //   end;
 
-    if not (ftoExcludeGlyphs in Options) then r_ := r;
+    if not (ftoExcludeGlyphs in Options) then
+      R1 := R;
     SetBkMode(HDC, TRANSPARENT);
     OldFont := SelectObject(HDC, Font_.Handle);
     SetTextColor(HDC, ColorToRGB(Font_.Color));
-    GetTextExtentPoint32(HDC, PChar(Caption), length(Caption), Size);
+    GetTextExtentPoint32(HDC, PChar(Caption), Length(Caption), Size);
     SelectObject(HDC, OldFont);
-    x := 0;
-    y := 0;
+    X := 0;
+    Y := 0;
     case FontDirection of
       fldLeftRight:
         begin
-          DrawTextInRectWithAlign(HDC, r_, Caption,
-            CaptionHAlign,
-            CaptionVAlign,
-            TextStyle, Font_, aWordWrap[ftoWordWrap in Options]);
-          exit;
+          DrawTextInRectWithAlign(HDC, R1, Caption,
+            CaptionHAlign, CaptionVAlign,
+            TextStyle, Font_, cWordWrap[ftoWordWrap in Options]);
+          Exit;
         end;
       fldRightLeft:
         begin
           case DrawTabStr.BoxStyle.CaptionHAlign of
-            fhaLeft: x := r_.right;
-            fhaCenter: x := r_.left + (r_.right - r_.left + Size.cx) div 2;
-            fhaRight: y := r_.left + Size.cx;
+            fhaLeft:
+              X := R1.Right;
+            fhaCenter:
+              X := R1.Left + (R1.Right - R1.Left + Size.cx) div 2;
+            fhaRight:
+              Y := R1.Left + Size.cx;
           end;
           case CaptionVAlign of
-            fvaTop: y := r_.bottom;
-            fvaCenter: y := r_.top + (r_.bottom - r_.top + Size.cy) div 2;
-            fvaBottom: y := r_.top + Size.cy;
+            fvaTop:
+              Y := R1.Bottom;
+            fvaCenter:
+              Y := R1.Top + (R1.Bottom - R1.Top + Size.cy) div 2;
+            fvaBottom:
+              Y := R1.Top + Size.cy;
           end;
         end;
       fldDownUp:
         begin
-          x := r_.left;
-          y := r_.bottom - 4;
+          X := R1.Left;
+          Y := R1.Bottom - 4;
           case CaptionHAlign of
-            fhaCenter: dec(y, (r_.bottom - r_.top - Size.cx) div 2);
-            fhaRight: y := r_.top + Size.cx + 3;
+            fhaCenter:
+              Dec(Y, (R1.Bottom - R1.Top - Size.cx) div 2);
+            fhaRight:
+              Y := R1.Top + Size.cx + 3;
           end;
           case CaptionVAlign of
-            fvaCenter: inc(x, (r_.right - r_.left - Size.cy) div 2);
-            fvaBottom: x := r_.right - Size.cy - 1;
+            fvaCenter:
+              Inc(X, (R1.Right - R1.Left - Size.cy) div 2);
+            fvaBottom:
+              X := R1.Right - Size.cy - 1;
           end;
         end;
     else {fldUpDown}
-      begin
-        x := r_.right;
-        y := r_.top + 4;
-        case CaptionHAlign of
-          fhaCenter:
-            begin
-              inc(y, (r_.bottom - r_.top - Size.cx) div 2);
-            end;
-          fhaRight: y := r_.bottom - Size.cx - 3;
-        end;
-        case CaptionVAlign of
-          fvaCenter:
-            begin
-              dec(x, (r_.right - r_.left - Size.cy) div 2);
-            end;
-          fvaBottom: x := r_.left + Size.cy;
-        end;
+      X := R1.Right;
+      Y := R1.Top + 4;
+      case CaptionHAlign of
+        fhaCenter:
+          Inc(Y, (R1.Bottom - R1.Top - Size.cx) div 2);
+        fhaRight:
+          Y := R1.Bottom - Size.cx - 3;
+      end;
+      case CaptionVAlign of
+        fvaCenter:
+          Dec(X, (R1.Right - R1.Left - Size.cy) div 2);
+        fvaBottom:
+          X := R1.Left + Size.cy;
       end;
     end;
-    ExtTextOutExt(HDC, x, y, r_, PChar(Caption), TextStyle, false, false, Font.Color, 0 {DelinColor},
+    ExtTextOutExt(HDC, X, Y, R1, PChar(Caption), TextStyle, False, False, Font.Color, 0 {DelinColor},
       clBtnHighlight, clBtnShadow, nil, nil, Font_);
-
   end;
 end;
 

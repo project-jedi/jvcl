@@ -21,7 +21,7 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-* Setting AutoScroll to true for a form and displaying error icons beyond the form's right
+* Setting AutoScroll to True for a form and displaying error icons beyond the form's right
 edge can make the form's scrollbars "jump up and down"
 * Resizing components while displaying error images, doesn't move the error image smoothly
 (this is caused by the image being moved only when the BlinkThread triggers)
@@ -39,9 +39,10 @@ To set the error, use the Error property: an empty error string, removes the err
 unit JvErrorIndicator;
 
 interface
+
 uses
-  Windows, SysUtils, ImgList,
-  Messages, Classes, Controls, Graphics, JvComponent;
+  Windows, Messages, SysUtils, Classes, ImgList, Controls, Graphics,
+  JvComponent;
 
 type
   IJvErrorIndicatorClient = interface;
@@ -49,7 +50,7 @@ type
   // IJvErrorIndicator is implemented by the TJvErrorIndicator
   IJvErrorIndicator = interface
     ['{5BCB5404-9C17-4CC6-96EC-46567CA19A12}']
-    procedure SetError(AControl:TControl;const AErrorMessage:WideString);
+    procedure SetError(AControl: TControl; const AErrorMessage: WideString);
     procedure SetClientError(const AClient: IJvErrorIndicatorClient);
   end;
 
@@ -57,14 +58,14 @@ type
   // to update the error indicator through it's own properties
   IJvErrorIndicatorClient = interface
     ['{9871F250-631E-4119-B073-71B28711C9B8}']
-    procedure setErrorIndicator(const Value: IJvErrorIndicator);
-    function getErrorIndicator: IJvErrorIndicator;
-    function getControl: TControl;
-    procedure setErrorMessage(const Value: WideString);
-    function getErrorMessage: WideString;
+    procedure SetErrorIndicator(const Value: IJvErrorIndicator);
+    function GetErrorIndicator: IJvErrorIndicator;
+    function GetControl: TControl;
+    procedure SetErrorMessage(const Value: WideString);
+    function GetErrorMessage: WideString;
 
-    property ErrorIndicator: IJvErrorIndicator read getErrorIndicator write setErrorIndicator;
-    property ErrorMessage: WideString read getErrorMessage write setErrorMessage;
+    property ErrorIndicator: IJvErrorIndicator read GetErrorIndicator write SetErrorIndicator;
+    property ErrorMessage: WideString read GetErrorMessage write SetErrorMessage;
   end;
 
   TJvErrorBlinkStyle = (ebsAlwaysBlink, ebsBlinkIfDifferentError, ebsNeverBlink);
@@ -74,14 +75,14 @@ type
   TJvErrorControl = class(TGraphicControl)
   private
     FImageList: TCustomImageList;
-    FImageIndex: integer;
-    FImagePadding: integer;
+    FImageIndex: Integer;
+    FImagePadding: Integer;
     FControl: TControl;
     FImageAlignment: TJvErrorImageAlignment;
-    FBlinkCount: integer;
+    FBlinkCount: Integer;
     procedure SetError(const Value: string);
     function GetError: string;
-    procedure SetImageIndex(const Value: integer);
+    procedure SetImageIndex(const Value: Integer);
     procedure SetImageList(const Value: TCustomImageList);
     procedure SetControl(const Value: TControl);
   protected
@@ -90,60 +91,60 @@ type
   public
     function CalcBoundsRect: TRect;
     property Images: TCustomImageList read FImageList write SetImageList;
-    property ImageIndex: integer read FImageIndex write SetImageIndex;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex;
     property Control: TControl read FControl write SetControl;
     property Error: string read GetError write SetError;
-    property BlinkCount: integer read FBlinkCount write FBlinkCount;
+    property BlinkCount: Integer read FBlinkCount write FBlinkCount;
     property ImageAlignment: TJvErrorImageAlignment read FImageAlignment write FImageAlignment;
-    property ImagePadding: integer read FImagePadding write FImagePadding;
+    property ImagePadding: Integer read FImagePadding write FImagePadding;
 
-    procedure DrawImage(Erase: boolean);
+    procedure DrawImage(Erase: Boolean);
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property ShowHint default true;
+    property ShowHint default True;
     property Width default 16;
     property Height default 16;
   end;
 
   TJvErrorIndicator = class(TJvComponent, IUnknown, IJvErrorIndicator)
   private
-    FUpdateCount: integer;
+    FUpdateCount: Integer;
     FControls: TList;
-    FBlinkRate: integer;
+    FBlinkRate: Integer;
     FImageList: TCustomImageList;
     FBlinkThread: TThread;
     FBlinkStyle: TJvErrorBlinkStyle;
     FChangeLink: TChangeLink;
-    FImageIndex: integer;
-    FDefaultImage:TImageList;
+    FImageIndex: Integer;
+    FDefaultImage: TImageList;
     function GetError(AControl: TControl): string;
     function GetImageAlignment(AControl: TControl): TJvErrorImageAlignment;
-    function GetImagePadding(AControl: TControl): integer;
-    procedure SetBlinkRate(const Value: integer);
+    function GetImagePadding(AControl: TControl): Integer;
+    procedure SetBlinkRate(const Value: Integer);
     procedure SetBlinkStyle(const Value: TJvErrorBlinkStyle);
     procedure SetError(AControl: TControl; const Value: string);
     procedure SetImageList(const Value: TCustomImageList);
     procedure SetImageAlignment(AControl: TControl; const Value: TJvErrorImageAlignment);
-    procedure SetImagePadding(AControl: TControl; const Value: integer);
-    procedure SetImageIndex(const Value: integer);
+    procedure SetImagePadding(AControl: TControl; const Value: Integer);
+    procedure SetImageIndex(const Value: Integer);
     procedure DoChangeLinkChange(Sender: TObject);
-    procedure DoBlink(Sender: TObject; Erase: boolean);
+    procedure DoBlink(Sender: TObject; Erase: Boolean);
     procedure StopThread;
     procedure StartThread;
-    function GetControl(Index: integer): TJvErrorControl;
-    function GetCount: integer;
+    function GetControl(Index: Integer): TJvErrorControl;
+    function GetCount: Integer;
   protected
     { IJvErrorIndicator }
     procedure IJvErrorIndicator.SetError = IndicatorSetError;
-    procedure IndicatorSetError(AControl:TControl;const ErrorMessage:WideString);
+    procedure IndicatorSetError(AControl: TControl; const ErrorMessage: WideString);
     procedure SetClientError(const AClient: IJvErrorIndicatorClient);
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    function IndexOf(AControl: TControl): integer;
-    function Add(AControl: TControl): integer;
+    function IndexOf(AControl: TControl): Integer;
+    function Add(AControl: TControl): Integer;
     procedure UpdateControls;
-    procedure Delete(Index: integer);
-    property Controls[Index: integer]: TJvErrorControl read GetControl;
-    property Count: integer read GetCount;
+    procedure Delete(Index: Integer);
+    property Controls[Index: Integer]: TJvErrorControl read GetControl;
+    property Count: Integer read GetCount;
   public
     constructor Create(AComponent: TComponent); override;
     destructor Destroy; override;
@@ -175,11 +176,11 @@ type
     property ImageAlignment[AControl: TControl]: TJvErrorImageAlignment read GetImageAlignment write SetImageAlignment;
     // Gets or sets the amount of extra space to leave between the specified control and the error image.
     // Use AControl = nil to set the same padding for all controls.
-    property ImagePadding[AControl: TControl]: integer read GetImagePadding write SetImagePadding;
+    property ImagePadding[AControl: TControl]: Integer read GetImagePadding write SetImagePadding;
   published
     // The rate at which the error image should flash. The rate is expressed in milliseconds. The default is 250 milliseconds.
     // A value of zero sets BlinkStyle to ebsNeverBlink.
-    property BlinkRate: integer read FBlinkRate write SetBlinkRate default 250;
+    property BlinkRate: Integer read FBlinkRate write SetBlinkRate default 250;
     // The error Image flashes in the manner specified by the assigned BlinkStyle when an error occurs.
     // Possible values:
     //   ebsBlinkIfDifferentError - blink if the new error message differs from the previous
@@ -194,7 +195,7 @@ type
     // If either is nil, invalid or out of range, no error image is displayed
     property Images: TCustomImageList read FImagelist write SetImageList;
     // Gets or sets the ImageIndex in ImageList to use when displaying an image next to a control
-    property ImageIndex: integer read FImageIndex write SetImageIndex;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex;
   end;
 
 implementation
@@ -203,58 +204,40 @@ uses
   CommCtrl,
   JvTypes, JvResources;
 
+{$R ..\Resources\JvErrorIndicator.res}
+
 const
   cDefBlinkCount = 5;
-{$R ..\resources\JvErrorIndicator.res}
 
 type
-  TJvBlinkThreadEvent = procedure(Sender: TObject; Erase: boolean) of object;
+  TJvBlinkThreadEvent = procedure(Sender: TObject; Erase: Boolean) of object;
 
   TJvBlinkThread = class(TThread)
   private
-    FBlinkRate: integer;
-    FErase: boolean;
+    FBlinkRate: Integer;
+    FErase: Boolean;
     FOnBlink: TJvBlinkThreadEvent;
     procedure Blink;
   protected
     procedure Execute; override;
   public
-    constructor Create(BlinkRate: integer);
+    constructor Create(BlinkRate: Integer);
     property OnBlink: TJvBlinkThreadEvent read FOnBlink write FOnBlink;
   end;
 
-  { TJvErrorIndicator }
-
-function TJvErrorIndicator.Add(AControl: TControl): integer;
-var ci: TJvErrorControl;
-begin
-  Result := IndexOf(AControl);
-  if (Result < 0) and (AControl <> nil) then
-  begin
-    ci := TJvErrorControl.Create(self);
-    ci.Control := AControl;
-    //    ci.Name := ci.Control.Name + '_ErrorControl';
-    Result := FControls.Add(ci);
-  end;
-end;
+//=== TJvErrorIndicator ======================================================
 
 constructor TJvErrorIndicator.Create(AComponent: TComponent);
 begin
-  inherited;
-  FDefaultImage := TImageList.CreateSize(16,16);
+  inherited Create(AComponent);
+  FDefaultImage := TImageList.CreateSize(16, 16);
   ImageList_AddIcon(FDefaultImage.Handle,
-    LoadImage(hInstance,PChar('JVERRORINDICATORICON') , IMAGE_ICON, 16, 16, 0));
+    LoadImage(hInstance, PChar('JVERRORINDICATORICON'), IMAGE_ICON, 16, 16, 0));
   FBlinkStyle := ebsBlinkIfDifferentError;
   FBlinkRate := 250;
   FControls := TList.Create;
   FChangeLink := TChangeLink.Create;
   FChangeLink.OnChange := DoChangeLinkChange;
-end;
-
-procedure TJvErrorIndicator.Delete(Index: integer);
-begin
-  Controls[Index].Free;
-  FControls.Delete(Index);
 end;
 
 destructor TJvErrorIndicator.Destroy;
@@ -264,41 +247,64 @@ begin
   FControls.Free;
   FChangeLink.Free;
   FDefaultImage.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+function TJvErrorIndicator.Add(AControl: TControl): Integer;
+var
+  ci: TJvErrorControl;
+begin
+  Result := IndexOf(AControl);
+  if (Result < 0) and (AControl <> nil) then
+  begin
+    ci := TJvErrorControl.Create(Self);
+    ci.Control := AControl;
+    //    ci.Name := ci.Control.Name + '_ErrorControl';
+    Result := FControls.Add(ci);
+  end;
+end;
+
+procedure TJvErrorIndicator.Delete(Index: Integer);
+begin
+  Controls[Index].Free;
+  FControls.Delete(Index);
 end;
 
 function TJvErrorIndicator.GetError(AControl: TControl): string;
-var i: integer;
+var
+  I: Integer;
 begin
-  i := IndexOf(AControl);
-  if (i > -1) then
-    Result := Controls[i].Error
+  I := IndexOf(AControl);
+  if I > -1 then
+    Result := Controls[I].Error
   else
     raise EJVCLException.Create(RsEControlNotFoundInGetError);
 end;
 
 function TJvErrorIndicator.GetImageAlignment(
   AControl: TControl): TJvErrorImageAlignment;
-var i: integer;
+var
+  I: Integer;
 begin
-  i := IndexOf(AControl);
-  if (i > -1) then
-    Result := Controls[i].ImageAlignment
+  I := IndexOf(AControl);
+  if I > -1 then
+    Result := Controls[I].ImageAlignment
   else
     raise EJVCLException.Create(RsEControlNotFoundInGetImageAlignment);
 end;
 
-function TJvErrorIndicator.GetImagePadding(AControl: TControl): integer;
-var i: integer;
+function TJvErrorIndicator.GetImagePadding(AControl: TControl): Integer;
+var
+  I: Integer;
 begin
-  i := IndexOf(AControl);
-  if (i > -1) then
-    Result := Controls[i].ImagePadding
+  I := IndexOf(AControl);
+  if I > -1 then
+    Result := Controls[I].ImagePadding
   else
     raise EJVCLException.Create(RsEControlNotFoundInGetImagePadding);
 end;
 
-function TJvErrorIndicator.IndexOf(AControl: TControl): integer;
+function TJvErrorIndicator.IndexOf(AControl: TControl): Integer;
 begin
   if AControl <> nil then
     for Result := 0 to Count - 1 do
@@ -309,23 +315,24 @@ end;
 
 procedure TJvErrorIndicator.Notification(AComponent: TComponent;
   Operation: TOperation);
-var i: integer;
+var
+  I: Integer;
 begin
-  inherited;
-  if (Operation = opRemove) then
+  inherited Notification(AComponent, Operation);
+  if Operation = opRemove then
   begin
-    if (AComponent is TControl) then
-      i := IndexOf(TControl(AComponent))
+    if AComponent is TControl then
+      I := IndexOf(TControl(AComponent))
     else
-      i := -1;
-    if i > -1 then
-      Delete(i);
+      I := -1;
+    if I > -1 then
+      Delete(I);
     if AComponent = Images then
       Images := nil;
   end;
 end;
 
-procedure TJvErrorIndicator.SetBlinkRate(const Value: integer);
+procedure TJvErrorIndicator.SetBlinkRate(const Value: Integer);
 begin
   if FBlinkRate <> Value then
   begin
@@ -352,7 +359,9 @@ end;
 
 procedure TJvErrorIndicator.SetError(AControl: TControl;
   const Value: string);
-var i: integer; ei: TJvErrorControl;
+var
+  I: Integer;
+  ei: TJvErrorControl;
 begin
   StopThread;
   if AControl = nil then
@@ -360,36 +369,38 @@ begin
     if Value = '' then
       ClearErrors
     else
-      for i := 0 to Count - 1 do
+      for I := 0 to Count - 1 do
       begin
-        ei := Controls[i];
+        ei := Controls[I];
         if ((ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError)) or (BlinkStyle = ebsAlwaysBlink) then
           ei.BlinkCount := cDefBlinkCount
-        else if (BlinkStyle = ebsNeverBlink) then
+        else
+        if BlinkStyle = ebsNeverBlink then
           ei.BlinkCount := 0;
         ei.Error := Value;
       end;
   end
   else
   begin
-    i := Add(AControl);
-    if i > -1 then
+    I := Add(AControl);
+    if I > -1 then
     begin
       if Value = '' then
-        Delete(i)
+        Delete(I)
       else
       begin
-        ei := Controls[i];
+        ei := Controls[I];
         if ((ei.Error <> Value) and (BlinkStyle = ebsBlinkIfDifferentError))
           or (BlinkStyle = ebsAlwaysBlink) then
         begin
           ei.Error := Value;
           ei.BlinkCount := cDefBlinkCount;
-          ei.Visible := (csDesigning in ComponentState); 
+          ei.Visible := (csDesigning in ComponentState);
           if (FUpdateCount = 0) and (FBlinkThread = nil) then
             StartThread;
         end
-        else if (BlinkStyle = ebsNeverBlink) then
+        else
+        if BlinkStyle = ebsNeverBlink then
         begin
           ei.BlinkCount := 0;
           ei.Error := Value;
@@ -405,40 +416,44 @@ end;
 
 procedure TJvErrorIndicator.SetImageAlignment(AControl: TControl;
   const Value: TJvErrorImageAlignment);
-var i: integer;
+var
+  I: Integer;
 begin
   if AControl = nil then
-    for i := 0 to Count - 1 do
-      Controls[i].ImageAlignment := Value
+    for I := 0 to Count - 1 do
+      Controls[I].ImageAlignment := Value
   else
   begin
-    i := Add(AControl);
-    if i > -1 then
-      Controls[i].ImageAlignment := Value
+    I := Add(AControl);
+    if I > -1 then
+      Controls[I].ImageAlignment := Value
     else
       raise EJVCLException.Create(RsEUnableToAddControlInSetImageAlignme);
   end;
 end;
 
 procedure TJvErrorIndicator.SetImagePadding(AControl: TControl;
-  const Value: integer);
-var i: integer;
+  const Value: Integer);
+var
+  I: Integer;
 begin
   if AControl = nil then
-    for i := 0 to Count - 1 do
-      Controls[i].ImagePadding := Value
+    for I := 0 to Count - 1 do
+      Controls[I].ImagePadding := Value
   else
   begin
-    i := Add(AControl);
-    if i > 1 then
-      Controls[i].ImagePadding := Value
+    I := Add(AControl);
+    if I > 1 then
+      Controls[I].ImagePadding := Value
     else
       raise EJVCLException.Create(RsEUnableToAddControlInSetImagePadding);
   end;
 end;
 
 procedure TJvErrorIndicator.UpdateControls;
-var i,ii: integer;IL:TCustomImageList;
+var
+  I, ii: Integer;
+  IL: TCustomImageList;
 begin
   if Images <> nil then
   begin
@@ -450,10 +465,10 @@ begin
     IL := FDefaultImage;
     ii := 0;
   end;
-  for i := 0 to Count - 1 do
+  for I := 0 to Count - 1 do
   begin
-    Controls[i].Images := IL;
-    Controls[i].ImageIndex := ii;
+    Controls[I].Images := IL;
+    Controls[I].ImageIndex := ii;
   end;
 end;
 
@@ -465,19 +480,19 @@ begin
     if Assigned(FImageList) then
     begin
       FImageList.UnRegisterChanges(FChangeLink);
-      FImageList.RemoveFreeNotification(self);
+      FImageList.RemoveFreeNotification(Self);
     end;
     FImageList := Value;
     if Assigned(FImageList) then
     begin
       FImageList.RegisterChanges(FChangeLink);
-      FImageList.FreeNotification(self);
+      FImageList.FreeNotification(Self);
     end;
     UpdateControls;
   end;
 end;
 
-procedure TJvErrorIndicator.SetImageIndex(const Value: integer);
+procedure TJvErrorIndicator.SetImageIndex(const Value: Integer);
 begin
   if FImageIndex <> Value then
   begin
@@ -493,21 +508,23 @@ begin
 end;
 
 procedure TJvErrorIndicator.ClearErrors;
-var i: integer;
+var
+  I: Integer;
 begin
   StopThread;
-  for i := 0 to Count - 1 do
-    Controls[i].Free;
+  for I := 0 to Count - 1 do
+    Controls[I].Free;
   FControls.Clear;
 end;
 
 procedure TJvErrorIndicator.BeginUpdate;
-var i: integer;
+var
+  I: Integer;
 begin
   Inc(FUpdateCount);
   StopThread;
-  for i := 0 to Count - 1 do
-    Controls[i].Visible := false;
+  for I := 0 to Count - 1 do
+    Controls[I].Visible := False;
 end;
 
 procedure TJvErrorIndicator.EndUpdate;
@@ -515,7 +532,7 @@ begin
   if FUpdateCount > 0 then
   begin
     Dec(FUpdateCount);
-    if (FUpdateCount = 0) then
+    if FUpdateCount = 0 then
     begin
       UpdateControls;
       StartThread;
@@ -537,19 +554,20 @@ begin
   FreeAndNil(FBlinkThread);
 end;
 
-procedure TJvErrorIndicator.DoBlink(Sender: TObject; Erase: boolean);
-var i: integer;
+procedure TJvErrorIndicator.DoBlink(Sender: TObject; Erase: Boolean);
+var
+  I: Integer;
 begin
-  for i := 0 to Count - 1 do
-    Controls[i].DrawImage(Erase);
+  for I := 0 to Count - 1 do
+    Controls[I].DrawImage(Erase);
 end;
 
-function TJvErrorIndicator.GetControl(Index: integer): TJvErrorControl;
+function TJvErrorIndicator.GetControl(Index: Integer): TJvErrorControl;
 begin
   Result := TJvErrorControl(FControls[Index]);
 end;
 
-function TJvErrorIndicator.GetCount: integer;
+function TJvErrorIndicator.GetCount: Integer;
 begin
   Result := FControls.Count;
 end;
@@ -563,17 +581,17 @@ end;
 procedure TJvErrorIndicator.IndicatorSetError(AControl: TControl;
   const ErrorMessage: WideString);
 begin
-  SetError(AControl,ErrorMessage);
+  SetError(AControl, ErrorMessage);
 end;
 
-{ TJvErrorControl }
+//=== TJvErrorControl ========================================================
 
 constructor TJvErrorControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FImageAlignment := eiaMiddleRight;
-  ShowHint := true;
-  Visible := false;
+  ShowHint := True;
+  Visible := False;
   Width := 16;
   Height := 16;
 end;
@@ -581,10 +599,10 @@ end;
 destructor TJvErrorControl.Destroy;
 begin
   Control := nil;
-  inherited;
+  inherited Destroy;
 end;
 
-procedure TJvErrorControl.DrawImage(Erase: boolean);
+procedure TJvErrorControl.DrawImage(Erase: Boolean);
 begin
   if not Assigned(Control) or not Assigned(Control.Parent) or not Assigned(Images) then
     Exit;
@@ -657,13 +675,13 @@ end;
 
 procedure TJvErrorControl.Paint;
 begin
-  //  inherited;
+  //  inherited Paint;
   if (Images <> nil) and Visible then
-{$IFDEF COMPILER6_UP}
+    {$IFDEF COMPILER6_UP}
     Images.Draw(Canvas, 0, 0, ImageIndex, dsTransparent, itImage);
-{$ELSE}
+    {$ELSE}
     Images.Draw(Canvas, 0, 0, ImageIndex);
-{$ENDIF}
+    {$ENDIF COMPILER6_UP}
 end;
 
 procedure TJvErrorControl.SetError(const Value: string);
@@ -676,7 +694,7 @@ begin
   Result := Hint;
 end;
 
-procedure TJvErrorControl.SetImageIndex(const Value: integer);
+procedure TJvErrorControl.SetImageIndex(const Value: Integer);
 begin
   if FImageIndex <> Value then
   begin
@@ -703,11 +721,11 @@ begin
   if FControl <> Value then
   begin
     if FControl <> nil then
-      FControl.RemoveFreeNotification(self);
+      FControl.RemoveFreeNotification(Self);
     FControl := Value;
     if FControl <> nil then
     begin
-      FControl.FreeNotification(self);
+      FControl.FreeNotification(Self);
       Parent := FControl.Parent;
     end
     else
@@ -718,32 +736,32 @@ end;
 procedure TJvErrorControl.Notification(AComponent: TComponent;
   Operation: TOperation);
 begin
-  inherited;
+  inherited Notification(AComponent, Operation);
   if (Operation = opRemove) and (AComponent = Control) then
     Control := nil;
 end;
 
-{ TJvBlinkThread }
+//=== TJvBlinkThread =========================================================
 
-constructor TJvBlinkThread.Create(BlinkRate: integer);
+constructor TJvBlinkThread.Create(BlinkRate: Integer);
 begin
-  inherited Create(true);
+  inherited Create(True);
   FBlinkRate := BlinkRate;
-  FErase := false;
+  FErase := False;
 end;
 
 procedure TJvBlinkThread.Blink;
 begin
   if Assigned(FOnBlink) then
-    FOnBlink(self, FErase);
+    FOnBlink(Self, FErase);
 end;
 
 procedure TJvBlinkThread.Execute;
 begin
-  FErase := false;
+  FErase := False;
   while not Terminated and not Suspended do
   begin
-    sleep(FBlinkRate);
+    Sleep(FBlinkRate);
     Synchronize(Blink);
     if FBlinkRate = 0 then
       Exit;

@@ -84,7 +84,7 @@ implementation
 {$IFDEF COMPILER6_UP} 
 uses 
   Variants; 
-{$ENDIF} 
+{$ENDIF COMPILER6_UP} 
 
 ///////////////////////////////////////////////////////////////////////////
 //constructor TJvDBDateTimePicker.Create

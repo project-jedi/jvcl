@@ -875,7 +875,7 @@ uses
   Dialogs, Math,
   {$IFDEF USEJVCL}
   JvAppRegistryStorage, JvAppIniStorage, JvTypes,
-  {$ENDIF}
+  {$ENDIF USEJVCL}
   IniFiles, Registry,
   JvDockSupportProc, JvDockGlobals, JvDockInfo, JvDockVSNetStyle;
 
@@ -1441,26 +1441,26 @@ begin
   ReshowAllVisibleWindow;
 end;
 
-{$ENDIF}
-
-{$IFDEF USEJVCL}
 procedure SaveDockTreeToFile(FileName: string);
-var JvAppStorage:TJvAppIniFileStorage;
+var
+  JvAppStorage: TJvAppIniFileStorage;
 begin
   JvAppStorage := TJvAppIniFileStorage.Create(nil);
   try
-    JvAppStorage.Filename := Filename;
+    JvAppStorage.FileName := FileName;
     SaveDockTreeToAppStorage(JvAppStorage);
   finally
     JvAppStorage.Free;
   end;
 end;
+
 procedure LoadDockTreeFromFile(FileName: string);
-var JvAppStorage:TJvAppIniFileStorage;
+var
+  JvAppStorage: TJvAppIniFileStorage;
 begin
   JvAppStorage := TJvAppIniFileStorage.Create(nil);
   try
-    JvAppStorage.Filename := Filename;
+    JvAppStorage.FileName := FileName;
     LoadDockTreeFromAppStorage(JvAppStorage);
   finally
     JvAppStorage.Free;
@@ -1468,7 +1468,8 @@ begin
 end;
 
 procedure SaveDockTreeToReg(ARootKey: DWORD; RegPatch: string);
-var JvAppStorage:TJvAppRegistryStorage;
+var
+  JvAppStorage: TJvAppRegistryStorage;
 begin
   JvAppStorage := TJvAppRegistryStorage.Create(nil);
   try
@@ -1480,8 +1481,10 @@ begin
     JvAppStorage.Free;
   end;
 end;
+
 procedure LoadDockTreeFromReg(ARootKey: DWORD; RegPatch: string);
-var JvAppStorage:TJvAppRegistryStorage;
+var
+  JvAppStorage: TJvAppRegistryStorage;
 begin
   JvAppStorage := TJvAppRegistryStorage.Create(nil);
   try
@@ -1493,7 +1496,9 @@ begin
     JvAppStorage.Free;
   end;
 end;
+
 {$ELSE}
+
 procedure SaveDockTreeToFile(FileName: string);
 var
   JvDockInfoTree: TJvDockInfoTree;
@@ -1518,7 +1523,6 @@ begin
     JvDockInfoTree.Free;
   end;
 end;
-
 
 procedure LoadDockTreeFromFile(FileName: string);
 var
@@ -1617,7 +1621,9 @@ begin
   end;
   ReshowAllVisibleWindow;
 end;
-{$ENDIF}
+
+{$ENDIF USEJVCL}
+
 procedure SetDockSite(Control: TWinControl; SiteValue: Boolean);
 begin
   TlbWinControlAccess(Control).DockSite := SiteValue;

@@ -516,7 +516,7 @@ type
 
   // Generic data provider implementation
   TJvCustomDataProvider = class(TJvComponent, IUnknown,
-    {$IFNDEF COMPILER6_UP}IInterfaceComponentReference, {$ENDIF}IJvDataProvider)
+    {$IFNDEF COMPILER6_UP} IInterfaceComponentReference, {$ENDIF} IJvDataProvider)
   private
     FDataItems: IJvDataItems;
     FDataContextsImpl: TJvBaseDataContexts;

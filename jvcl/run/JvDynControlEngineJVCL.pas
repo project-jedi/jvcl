@@ -758,11 +758,11 @@ end;
 procedure TJvDynControlJVCLSpinEdit.ControlSetUseForInteger(Value: Boolean);
 begin
   if Value then
-{$IFDEF BCB}
+    {$IFDEF BCB}
     ValueType := TValueType(vtInteger)
-{$ELSE}
+    {$ELSE}
     ValueType := vtInteger
-{$ENDIF}
+    {$ENDIF BCB}
   else
     ValueType := vtFloat;
 end;

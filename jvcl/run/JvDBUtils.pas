@@ -166,7 +166,7 @@ implementation
 uses
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Forms, Controls, Dialogs, DBConsts, Math,
   JvConsts, JvResources, JvTypes, JvJVCLUtils, JvJCLUtils;
 

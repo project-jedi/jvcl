@@ -40,7 +40,7 @@ uses
   SysUtils, Windows, DBCtrls,
   {$IFDEF COMPILER6_UP}
   Variants, VDBConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Graphics, Menus, DB, Mask, StdCtrls,
   JvDBUtils, JvToolEdit, JvComponent;
 
@@ -357,7 +357,7 @@ type
     FDisplayAllFields: Boolean;
     {$IFDEF JVCLThemesEnabled}
     FOver: Boolean;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     FOnDropDown: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     procedure ListMouseUp(Sender: TObject; Button: TMouseButton;
@@ -2437,7 +2437,7 @@ var
   {$IFDEF COMPILER6_UP}
   Animate: BOOL;
   SlideStyle: Integer;
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
 begin
   if not FListVisible and {FListActive} CanModify then
   begin
@@ -2921,7 +2921,7 @@ var
   {$IFDEF JVCLThemesEnabled}
   State: TThemedComboBox;
   Details: TThemedElementDetails;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -2952,9 +2952,7 @@ begin
   begin
     DrawList := False;
     if FDataList.FSearchText <> '' then
-    begin
-      AText := FDataList.FSearchText;
-    end
+      AText := FDataList.FSearchText
     else
     begin
       if FDataList.ValueIsEmpty(FDataList.Value) then
@@ -2970,9 +2968,7 @@ begin
         Image := FDataList.GetPicture(False, False, TextMargin);
       end
       else
-      begin
         Image := GetPicture(True, False, TextMargin);
-      end;
     end;
   end
   else
@@ -3170,6 +3166,7 @@ begin
 end;
 
 {$IFDEF JVCLThemesEnabled}
+
 procedure TJvDBLookupCombo.MouseEnter(Control: TControl);
 begin
   if csDesigning in ComponentState then
@@ -3194,6 +3191,7 @@ begin
     Invalidate;
   end;
 end;
+
 {$ENDIF JVCLThemesEnabled}
 
 procedure TJvDBLookupCombo.EnabledChanged;

@@ -22,23 +22,24 @@ You may retrieve the latest version of this file at the Project JEDI's JVCL home
 located at http://jvcl.sourceforge.net
 
 Known Issues:
-}
+-----------------------------------------------------------------------------}
+
 {$I jvcl.inc}
 
 unit JvDockVIDStyle;
 
 interface
 
-
-uses Windows, Classes, Controls, Math, Messages, JvDockControlForm, JvDockSupportControl,
-  JvDockTree, Graphics, ComCtrls, Extctrls, ImgList;
+uses
+  Windows, Messages, Classes, Controls, Math, Graphics,
+  ComCtrls, ExtCtrls, ImgList,
+  JvDockControlForm, JvDockSupportControl, JvDockTree;
 
 const
-  VIDDefaulTJvDockGrabbersSize   = 18;
+  VIDDefaulTJvDockGrabbersSize = 18;
   VIDDefaulTJvDockSplitterWidth = 4;
 
 type
-  
   TJvDockVIDConjoinServerOption = class(TJvDockBasicConjoinServerOption)
   private
     FTextEllipsis: Boolean;
@@ -60,7 +61,6 @@ type
     procedure SetActiveFont(const Value: TFont);
     procedure SetInactiveFont(const Value: TFont);
   protected
-    
     procedure ResetDockControlOption; override;
     procedure SetDefaultSystemCaptionInfo; virtual;
   public
@@ -76,32 +76,18 @@ type
     procedure SetActiveFont_WithoutChangeSystemInfo(const Value: TFont);
     procedure SetInactiveFont_WithoutChangeSystemInfo(const Value: TFont);
   published
-    
     property ActiveFont: TFont read FActiveFont write SetActiveFont;
-    
     property InactiveFont: TFont read FInactiveFont write SetInactiveFont;
-    
     property TextAlignment: TAlignment read FTextAlignment
       write SetTextAlignment;
-    
-    property ActiveTitleStartColor: TColor read FActiveTitleStartColor
-      write SetActiveTitleStartColor;
-    
-    property ActiveTitleEndColor: TColor read FActiveTitleEndColor
-      write SetActiveTitleEndColor;
-    
-    property InactiveTitleStartColor: TColor read FInactiveTitleStartColor
-      write SetInactiveTitleStartColor;
-    
-    property InactiveTitleEndColor: TColor read FInactiveTitleEndColor
-      write SetInactiveTitleEndColor;
-    
+    property ActiveTitleStartColor: TColor read FActiveTitleStartColor write SetActiveTitleStartColor;
+    property ActiveTitleEndColor: TColor read FActiveTitleEndColor write SetActiveTitleEndColor;
+    property InactiveTitleStartColor: TColor read FInactiveTitleStartColor write SetInactiveTitleStartColor;
+    property InactiveTitleEndColor: TColor read FInactiveTitleEndColor write SetInactiveTitleEndColor;
     property TextEllipsis: Boolean read FTextEllipsis write SetTextEllipsis;
-    
     property SystemInfo: Boolean read FSystemInfo write SetSystemInfo;
   end;
 
-  
   TJvDockVIDTabServerOption = class(TJvDockBasicTabServerOption)
   private
     FActiveFont: TFont;
@@ -110,7 +96,6 @@ type
     FInactiveFont: TFont;
     FInactiveSheetColor: TColor;
     FShowTabImages: Boolean;
-
     function GetActiveFont: TFont;
     function GetActiveSheetColor: TColor;
     function GetHotTrackColor: TColor;
@@ -124,9 +109,7 @@ type
     procedure SetInactiveSheetColor(const Value: TColor);
     procedure SetShowTabImages(const Value: Boolean);
   protected
-    
     procedure ResetDockControlOption; override;
-    
     procedure ResetTabPageControl(APage: TJvDockTabPageControl); override;
   public
     constructor Create(ADockStyle: TJvDockBasicStyle); override;
@@ -134,30 +117,22 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure SetTabPosition(const Value: TTabPosition); override;
   published
-    
     property ActiveSheetColor: TColor read GetActiveSheetColor write SetActiveSheetColor;
-    
     property InactiveSheetColor: TColor read GetInactiveSheetColor write SetInactiveSheetColor;
-    
     property ActiveFont: TFont read GetActiveFont write SetActiveFont;
-    
     property InactiveFont: TFont read GetInactiveFont write SetInactiveFont;
-    
     property HotTrackColor: TColor read GetHotTrackColor write SetHotTrackColor;
-    
     property ShowTabImages: Boolean read GetShowTabImages write SetShowTabImages;
   end;
 
-  
   TJvDockSystemInfoChange = procedure(Value: Boolean) of object;
 
   TJvDockVIDStyle = class(TJvDockAdvStyle)
   private
     FSystemInfoChange: TJvDockSystemInfoChange;
   protected
-    function DockClientWindowProc(DockClient: TJvDockClient; var Message: TMessage): Boolean; override;
-    procedure ParentFormWindowProc(var Message: TMessage); override;
-
+    function DockClientWindowProc(DockClient: TJvDockClient; var Msg: TMessage): Boolean; override;
+    procedure ParentFormWindowProc(var Msg: TMessage); override;
     procedure FormDockDrop(DockClient: TJvDockClient;
       Source: TJvDockDragDockObject; X, Y: Integer); override;
     procedure FormGetSiteInfo(Source: TJvDockDragDockObject; DockClient: TJvDockClient;
@@ -169,29 +144,23 @@ type
       var Source: TJvDockDragDockObject); override;
     procedure FormGetDockEdge(DockClient: TJvDockClient; Source: TJvDockDragDockObject;
       MousePos: TPoint; var DropAlign: TAlign); override;
-    
     procedure CreateConjoinServerOption(var Option: TJvDockBasicConjoinServerOption); override;
     procedure CreateTabServerOption(var Option: TJvDockBasicTabServerOption); override;
-    
     procedure AssignConjoinServerOption(APanel: TJvDockCustomPanel); override;
     procedure AssignTabServerOption(APage: TJvDockTabPageControl); override;
-    
     procedure DoSystemInfoChange(Value: Boolean);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-{$IFNDEF USEJVCL}
+    {$IFNDEF USEJVCL}
     function GetControlName: string; override;
-{$ENDIF}    
-    procedure SetDockBaseControl(IsCreate: Boolean;
-      DockBaseControl: TJvDockBaseControl); override;
+    {$ENDIF USEJVCL}
+    procedure SetDockBaseControl(IsCreate: Boolean; DockBaseControl: TJvDockBaseControl); override;
   published
     property SystemInfoChange: TJvDockSystemInfoChange read FSystemInfoChange
       write FSystemInfoChange;
     property ConjoinServerOption;
     property TabServerOption;
-    
   end;
 
   TJvDockVIDSplitter = class(TJvDockSplitter);
@@ -243,26 +212,19 @@ type
   private
     FDropOnZone: TJvDockZone;
     FLockDropDockSizeCount: Integer;
-    
     FCaptionLeftOffset: Integer;
-    
     FCaptionRightOffset: Integer;
-
     procedure LockDropDockSize;
     procedure UnlockDropDockSize;
     procedure SetCaptionLeftOffset(const Value: Integer);
     procedure SetCaptionRightOffset(const Value: Integer);
   protected
-    
     procedure InsertControlFromConjoinHost(Control: TControl;
       InsertAt: TAlign; DropCtl: TControl); virtual;
-    
     procedure IgnoreZoneInfor(Stream: TMemoryStream); virtual;
-    
     procedure AdjustDockRect(Control: TControl; var ARect: TRect); override;
-    procedure WindowProc(var Message: TMessage); override;
+    procedure WindowProc(var Msg: TMessage); override;
     procedure SplitterMouseUp; override;
-
     function GetTopGrabbersHTFlag(const MousePos: TPoint;
       out HTFlag: Integer; Zone: TJvDockZone): TJvDockZone; override;
     function GeTJvDockGrabbersPosition: TJvDockGrabbersPosition; override;
@@ -271,15 +233,13 @@ type
     procedure InsertControl(Control: TControl; InsertAt: TAlign;
       DropCtl: TControl); override;
     procedure InsertSibling(NewZone, SiblingZone: TJvDockZone;
-        InsertLast, Update: Boolean); override;
+      InsertLast, Update: Boolean); override;
     procedure InsertNewParent(NewZone, SiblingZone: TJvDockZone;
       ParentOrientation: TDockOrientation; InsertLast, Update: Boolean); override;
     procedure DrawDockGrabber(Control: TControl; const ARect: TRect); override;
     procedure DrawSplitterRect(const ARect: TRect); override;
-    
     procedure PaintDockGrabberRect(Canvas: TCanvas; Control: TControl;
       const ARect: TRect); virtual;
-    
     procedure DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone;
       Left, Top: Integer); virtual;
     procedure ResetBounds(Force: Boolean); override;
@@ -294,8 +254,7 @@ type
     property CaptionLeftOffset: Integer read FCaptionLeftOffset write SetCaptionLeftOffset;
     property CaptionRightOffset: Integer read FCaptionRightOffset write SetCaptionRightOffset;
   public
-    constructor Create(DockSite: TWinControl;
-      DockZoneClass: TJvDockZoneClass); override;
+    constructor Create(DockSite: TWinControl; DockZoneClass: TJvDockZoneClass); override;
     destructor Destroy; override;
   end;
 
@@ -307,7 +266,7 @@ type
     FShowTabWidth: Integer;
     FIsSourceDockClient: Boolean;
     procedure SetTabWidth(const Value: Integer);
-    procedure WMSETTEXT(var Message: TMessage); message WM_SETTEXT;
+    procedure WMSetText(var Msg: TMessage); message WM_SETTEXT;
     procedure SetSheetSort(CaptionStr: string);
   protected
     procedure SetPageControl(APageControl: TJvDockPageControl); override;
@@ -318,7 +277,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
   published
     property BorderWidth;
     property Caption;
@@ -357,24 +315,24 @@ type
   TJvDockTabPanel = class(TCustomControl)
   private
     FPage: TJvDockVIDTabPageControl;
-    FActiveSheetColor: TColor;     
-    FHotTrackColor: TColor;        
-    FActiveFont,                   
-    FInactiveFont: TFont;          
-    FTabLeftOffset: Integer;       
-    FTabRightOffset: Integer;      
-    FTabTopOffset: Integer;        
-    FTabBottomOffset: Integer;     
-    FCaptionLeftOffset: Integer;   
-    FCaptionRightOffset: Integer;  
-    FCaptionTopOffset: Integer;    
-    FTabSplitterWidth: Integer;    
-    FTabHeight: Integer;           
-    FSortList: TList;              
-    FActiveSheet: TJvDockVIDTabSheet;
-    FTempPages: TList;             
-    FSelectHotIndex: Integer;      
-    FShowTabImages: Boolean;       
+    FActiveSheetColor: TColor;
+    FHotTrackColor: TColor;
+    FActiveFont,
+      FInactiveFont: TFont;
+    FTabLeftOffset: Integer;
+    FTabRightOffset: Integer;
+    FTabTopOffset: Integer;
+    FTabBottomOffset: Integer;
+    FCaptionLeftOffset: Integer;
+    FCaptionRightOffset: Integer;
+    FCaptionTopOffset: Integer;
+    FTabSplitterWidth: Integer;
+    FTabHeight: Integer;
+    FSortList: TList;
+    FSelectSheet: TJvDockVIDTabSheet;
+    FTempPages: TList;
+    FSelectHotIndex: Integer;
+    FShowTabImages: Boolean;
     procedure SetPage(const Value: TJvDockVIDTabPageControl);
     function GetTotalTabWidth: Integer;
     procedure SetTotalTabWidth(const Value: Integer);
@@ -394,7 +352,7 @@ type
     procedure SetPanelHeight(const Value: Integer);
     function FindSheetWithPos(cX, cY, cTopOffset, cBottomOffset: Integer): Integer;
     function GetDockClientFromPageIndex(Index: Integer): TControl;
-    procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
+    procedure CMMouseLeave(var Msg: TMessage); message CM_MOUSELEAVE;
     procedure SetShowTabImages(const Value: Boolean);
     procedure SetTabHeight(const Value: Integer);
   protected
@@ -404,7 +362,6 @@ type
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
-
     function GetPageIndexFromMousePos(X, Y: Integer): Integer; virtual;
     procedure SetShowTabWidth;
     property TotalTabWidth: Integer read GetTotalTabWidth write SetTotalTabWidth;
@@ -428,7 +385,7 @@ type
     procedure Resize; override;
     procedure DeleteSorts(Sheet: TJvDockVIDTabSheet);
     property Page: TJvDockVIDTabPageControl read FPage write SetPage;
-    property ActiveSheet: TJvDockVIDTabSheet read FActiveSheet write FActiveSheet;
+    property SelectSheet: TJvDockVIDTabSheet read FSelectSheet write FSelectSheet;
     property ShowTabImages: Boolean read FShowTabImages write SetShowTabImages;
   end;
 
@@ -438,7 +395,7 @@ type
   private
     FTabPanelClass: TJvDockTabPanelClass;
     FPanel: TJvDockTabPanel;
-    FTemporarySheet: TJvDockVIDTabSheet;
+    FTempSheet: TJvDockVIDTabSheet;
     FTabImageList: TCustomImageList;
     procedure SetActiveSheetColor(const Value: TColor);
     procedure SetInactiveSheetColor(const Value: TColor);
@@ -457,7 +414,7 @@ type
     function GetActiveSheetColor: TColor;
     function GetActiveFont: TFont;
     function GetInactiveFont: TFont;
-    function GetVisibleSheetCount: Integer;
+    function GetVisibleTheetCount: Integer;
     function GetHotTrackColor: TColor;
     function GetShowTabImages: Boolean;
     procedure SetShowTabImages(const Value: Boolean);
@@ -497,12 +454,10 @@ type
     procedure Resize; override;
     property Pages[Index: Integer]: TJvDockVIDTabSheet read GetPage;
     property Panel: TJvDockTabPanel read FPanel;
-    property TemporarySheet: TJvDockVIDTabSheet read FTemporarySheet write FTemporarySheet;
-    property VisibleSheetCount: Integer read GetVisibleSheetCount;
+    property TempSheet: TJvDockVIDTabSheet read FTempSheet write FTempSheet;
+    property VisibleTheetCount: Integer read GetVisibleTheetCount;
   published
-    
     property ActiveSheetColor: TColor read GetActiveSheetColor write SetActiveSheetColor;
-    
     property InactiveSheetColor: TColor read GetInactiveSheetColor write SetInactiveSheetColor;
     property TabLeftOffset: Integer read GetTabLeftOffset write SetTabLeftOffset default 5;
     property TabRightOffset: Integer read GetTabRightOffset write SetTabRightOffset default 5;
@@ -567,19 +522,18 @@ type
 
   TJvDockVIDDragDockObject = class(TJvDockDragDockObject)
   private
-    FOldDropAlign: TAlign;          
-    FCurrentState,                     
-    FPreviousState: TDragState;          
-    FPreviousTarget: Pointer;            
+    FOldDropAlign: TAlign;
+    FCurrState: TDragState;
+    FOldState: TDragState;
+    FOldTarget: Pointer;
     FSourceDockClientList: TList;
     FDropTabControl: TJvDockVIDTabPageControl;
-
     FIsTabDockOver: Boolean;
     FErase: Boolean;
     function GetSourceDockClient(Index: Integer): TControl;
-    function GetCount: Integer;
-    procedure SetPreviousState(const Value: TDragState);
-    procedure SetCurrentState(const Value: TDragState);
+    function GetSourceDockClientCount: Integer;
+    procedure SetOldState(const Value: TDragState);
+    procedure SetCurrState(const Value: TDragState);
   protected
     procedure GetBrush_PenSize_DrawRect(
       var ABrush: TBrush; var PenSize: Integer; var DrawRect: TRect; Erase: Boolean); override;
@@ -592,104 +546,105 @@ type
     function DragFindWindow(const Pos: TPoint): HWND; override;
     function GetDropCtl: TControl; override;
     property SourceDockClients[Index: Integer]: TControl read GetSourceDockClient;
-    property Count: Integer read GetCount;
-    property CurrentState: TDragState read FCurrentState write SetCurrentState;
-    property PreviousState: TDragState read FPreviousState write SetPreviousState;
+    property SourceDockClientCount: Integer read GetSourceDockClientCount;
+    property CurrState: TDragState read FCurrState write SetCurrState;
+    property OldState: TDragState read FOldState write SetOldState;
   end;
 
-procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect;
-  StartColor, EndColor: TColor);
+procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect; StartColor, EndColor: TColor);
 
 implementation
 
-uses Forms, SysUtils, JvDockSupportProc, JvDockGlobals, Dialogs;
+uses
+  Forms, SysUtils,
+  JvDockSupportProc, JvDockGlobals;
 
 type
   TJvTempWinControl = class(TWinControl);
 
-var gi_DockRect: TRect;
-
+var
+  gi_DockRect: TRect;
 
 procedure PaintGradientBackground(Canvas: TCanvas; ARect: TRect;
   StartColor, EndColor: TColor);
-
 const
-  D = 256;  
+  D = 256;
 var
   X, C1, C2, R1, G1, B1, W: Integer;
   DR, DG, DB, DH: Real;
 
   procedure InitRGBValues(C1, C2: Integer);
-  
   begin
-    R1:= GetRValue(C1);  
-    G1:= GetGValue(C1);  
-    B1:= GetBValue(C1);  
-    DR:= (GetRValue(C2) - R1 ) / D;  
-    DG:= (GetGValue(C2) - G1 ) / D;  
-    DB:= (GetBValue(C2) - B1 ) / D;  
+    R1 := GetRValue(C1);
+    G1 := GetGValue(C1);
+    B1 := GetBValue(C1);
+    DR := (GetRValue(C2) - R1) / D;
+    DG := (GetGValue(C2) - G1) / D;
+    DB := (GetBValue(C2) - B1) / D;
   end;
-begin
-  With Canvas do begin
-    Lock;   
-    try
-      Brush.Style := bsSolid;  
 
-      if StartColor <> EndColor then begin  
+begin
+  with Canvas do
+  begin
+    Lock;
+    try
+      Brush.Style := bsSolid;
+
+      if StartColor <> EndColor then
+      begin
         C1 := StartColor;
         C2 := EndColor;
 
-        InitRGBValues(C1, C2);  
+        InitRGBValues(C1, C2);
 
-
-          DH := (ARect.Right - ARect.Left) / D;  
-        for X := 0 to 255 do begin  
-          Brush.Color := RGB(R1 + Round(DR*X), G1 + Round(DG*X),
-                             B1 + Round(DB*X));  
-          With ARect do
+        DH := (ARect.Right - ARect.Left) / D;
+        for X := 0 to 255 do
+        begin
+          Brush.Color := RGB(R1 + Round(DR * X), G1 + Round(DG * X),
+            B1 + Round(DB * X));
+          with ARect do
           begin
-
-              
-              If Right <= Left + Round((X+1)*DH) then  
-                W := Right  
-              else  
-                W := Left + Round((X+1)*DH) ;  
-
-              FillRect(Rect(Left + Round(X*DH), Top, W, Bottom))  
+            if Right <= Left + Round((X + 1) * DH) then
+              W := Right
+            else
+              W := Left + Round((X + 1) * DH);
+            FillRect(Rect(Left + Round(X * DH), Top, W, Bottom))
           end;
         end;
       end
-      else begin  
-        Brush.Color := StartColor;  
-        FillRect(ARect);  
+      else
+      begin
+        Brush.Color := StartColor;
+        FillRect(ARect);
       end;
     finally
-      Unlock;  
+      Unlock;
     end;
   end;
 end;
 
 procedure AssignList(FromList, ToList: TList);
-var i: Integer;
+var
+  I: Integer;
 begin
   ToList.Clear;
-  for i := 0 to FromList.Count - 1 do
-    ToList.Add(FromList[i]);
+  for I := 0 to FromList.Count - 1 do
+    ToList.Add(FromList[I]);
 end;
-
 
 function ComputeVIDDockingRect(Target, Control: TControl; var DockRect: TRect; MousePos: TPoint): TAlign;
 var
-  DockTopRect,
-  DockLeftRect,
-  DockBottomRect,
-  DockRightRect,
-  DockCenterRect,
+  DockTopRect: TRect;
+  DockLeftRect: TRect;
+  DockBottomRect: TRect;
+  DockRightRect: TRect;
+  DockCenterRect: TRect;
   DockTabRect: TRect;
 begin
   Result := alNone;
-  
-  if Target = nil then Exit;
+  if Target = nil then
+    Exit;
+
   with Target do
   begin
     DockLeftRect.TopLeft := Point(0, 0);
@@ -704,8 +659,9 @@ begin
     if Target is TJvDockCustomTabControl then
     begin
       DockBottomRect.TopLeft := Point(ClientWidth div 5, ClientWidth div 5 * 4);
-      DockBottomRect.BottomRight := Point(ClientWidth div 5 * 4, ClientHeight  -JvDockGetSysCaptionHeight);
-    end else
+      DockBottomRect.BottomRight := Point(ClientWidth div 5 * 4, ClientHeight - JvDockGetSysCaptionHeight);
+    end
+    else
     begin
       DockBottomRect.TopLeft := Point(0, ClientHeight div 5 * 4);
       DockBottomRect.BottomRight := Point(ClientWidth, ClientHeight);
@@ -718,205 +674,133 @@ begin
     begin
       DockTabRect.TopLeft := Point(0, ClientHeight - JvDockGetSysCaptionHeight);
       DockTabRect.BottomRight := Point(ClientWidth, ClientHeight);
-    end else DockTabRect := Rect(0, 0, 0, 0);
+    end
+    else
+      DockTabRect := Rect(0, 0, 0, 0);
 
-    
     if PtInRect(DockCenterRect, MousePos) or
       PtInRect(DockTabRect, MousePos) then
     begin
       Result := alClient;
       DockRect := DockCenterRect;
-
       DockRect.BottomRight := Point(ClientWidth, ClientHeight);
-    end else
+    end
+    else
     if PtInRect(DockLeftRect, MousePos) then
     begin
       Result := alLeft;
       DockRect := DockLeftRect;
       DockRect.Right := Min(ClientWidth div 2, Control.ClientWidth);
-    end else if PtInRect(DockTopRect, MousePos) then
+    end
+    else
+    if PtInRect(DockTopRect, MousePos) then
     begin
       Result := alTop;
       DockRect := DockTopRect;
       DockRect.Left := 0;
       DockRect.Right := ClientWidth;
       DockRect.Bottom := Min(ClientHeight div 2, Control.ClientHeight);
-    end else if PtInRect(DockRightRect, MousePos) then
+    end
+    else
+    if PtInRect(DockRightRect, MousePos) then
     begin
       Result := alRight;
       DockRect := DockRightRect;
       DockRect.Left := Max(ClientWidth div 2, ClientWidth - Control.ClientWidth);
-    end else if PtInRect(DockBottomRect, MousePos) then
+    end
+    else
+    if PtInRect(DockBottomRect, MousePos) then
     begin
       Result := alBottom;
       DockRect := DockBottomRect;
       DockRect.Top := Max(ClientHeight div 2, ClientHeight - Control.ClientHeight);
     end;
-    if Result = alNone then Exit;
+    if Result = alNone then
+      Exit;
 
-    
     DockRect.TopLeft := ClientToScreen(DockRect.TopLeft);
     DockRect.BottomRight := ClientToScreen(DockRect.BottomRight);
   end;
 end;
 
-
+(*  (ahuser) not used - make Delphi 5 happy
 procedure SetTabControlPreview(VIDSource: TJvDockVIDDragDockObject;
   TabControl: TJvDockVIDTabPageControl;
   State: TDragState; DropAlign: TAlign);
 
-var i: Integer;
+var I: Integer;
   Index: Integer;
 begin
   if TabControl <> nil then
   begin
-    if (DropAlign = alClient) then
+    if DropAlign = alClient then
     begin
-      
-      if (TabControl.FTemporarySheet = nil) then
+
+      if TabControl.FTempSheet = nil then
       begin
-        
-        for i := VIDSource.Count - 1 downto 0 do
+
+        for I := VIDSource.SourceDockClientCount - 1 downto 0 do
         begin
-          
-          TabControl.FTemporarySheet := TJvDockVIDTabSheet.Create(TabControl);
-          TabControl.FTemporarySheet.PageControl := TabControl;
-          
-          TabControl.FTemporarySheet.Caption := TJvTempWinControl(VIDSource.SourceDockClients[i]).Caption;
-          Index := TabControl.FTabImageList.AddIcon(TForm(VIDSource.SourceDockClients[i]).Icon);
+
+          TabControl.FTempSheet := TJvDockVIDTabSheet.Create(TabControl);
+          TabControl.FTempSheet.PageControl := TabControl;
+
+          TabControl.FTempSheet.Caption := TJvTempWinControl(VIDSource.SourceDockClients[I]).Caption;
+          Index := TabControl.FTabImageList.AddIcon(TForm(VIDSource.SourceDockClients[I]).Icon);
           if Index <> -1 then
-            TabControl.FTemporarySheet.ImageIndex := Index;
-          
-          TabControl.FTemporarySheet.FIsSourceDockClient := True;
+            TabControl.FTempSheet.ImageIndex := Index;
+
+          TabControl.FTempSheet.FIsSourceDockClient := True;
         end;
-        
-        TabControl.ActivePage := TabControl.FTemporarySheet;
-        TabControl.Panel.ActiveSheet := TabControl.FTemporarySheet;
-        
 
+        TabControl.ActivePage := TabControl.FTempSheet;
+        TabControl.Panel.SelectSheet := TabControl.FTempSheet;
 
-{$IFDEF COMPILER6_UP}
+        {$IFDEF COMPILER6_UP}
         TabControl.Panel.FTempPages.Assign(TabControl.PageSheets);
-{$ELSE}
-
-
+        {$ELSE}
         AssignList(TabControl.PageSheets, TabControl.Panel.FTempPages);
-{$ENDIF}
+        {$ENDIF COMPILER6_UP}
 
         TabControl.ActivePage.Invalidate;
 
       end;
     end;
 
-
-
-    if ((State = dsDragLeave) or (VIDSource.DropAlign <> alClient)) and (TabControl.FTemporarySheet <> nil) then
+    if ((State = dsDragLeave) or (VIDSource.DropAlign <> alClient)) and (TabControl.FTempSheet <> nil) then
     begin
-      
-      for i := TabControl.Count - 1 downto 0 do
+
+      for I := TabControl.PageCount - 1 downto 0 do
       begin
-        if TJvDockVIDTabSheet(TabControl.Pages[i]).FIsSourceDockClient then
+        if TJvDockVIDTabSheet(TabControl.Pages[I]).FIsSourceDockClient then
         begin
-          
-          Index := TabControl.Panel.FTempPages.IndexOf(TabControl.Pages[i]);
-          
+
+          Index := TabControl.Panel.FTempPages.IndexOf(TabControl.Pages[I]);
+
           if Index >= 0 then
           begin
             TabControl.Panel.FTempPages.Delete(Index);
             if TabControl.FTabImageList.Count > Index then
               TabControl.FTabImageList.Delete(Index);
           end;
-          
-          TabControl.Pages[i].Free;
+
+          TabControl.Pages[I].Free;
         end;
       end;
-      
-      TabControl.FTemporarySheet := nil;
 
+      TabControl.FTempSheet := nil;
 
     end;
-    
+
     TabControl.ParentForm.Caption := TabControl.ActivePage.Caption;
-    
+
     if TabControl.ParentForm.HostDockSite is TJvDockCustomPanel then
       TabControl.ParentForm.HostDockSite.Invalidate;
   end;
 end;
+*)
 
-
-
-
-procedure TJvDockVIDStyle.FormDockOver(DockClient: TJvDockClient; Source: TJvDockDragDockObject; X, Y: Integer;
-  State: TDragState; var Accept: Boolean);
-var
-  ARect: TRect;
-begin
-  with DockClient do
-  begin
-    
-    Accept := EnableDock and EachOtherDock and
-      IsDockable(ParentForm, Source.Control, Source.DropOnControl, Source.DropAlign);
-    if State = dsDragMove then
-    begin
-      
-      Source.DropAlign := ComputeVIDDockingRect(ParentForm, Source.Control, ARect, Point(X, Y));
-      if Accept and (Source.DropAlign <> alNone) then
-      begin
-        if Source.DropAlign = alClient then
-          
-          Inc(ARect.Top, JvDockGetSysCaptionHeightAndBorderWidth + 1);
-        
-        Source.DockRect := ARect;
-      end;
-      
-      gi_DockRect := ARect;
-    end else if State = dsDragLeave then
-      Source.DropAlign := alNone;
-    if Source is TJvDockVIDDragDockObject then
-    begin
-      TJvDockVIDDragDockObject(Source).PreviousState := TJvDockVIDDragDockObject(Source).CurrentState;
-      TJvDockVIDDragDockObject(Source).CurrentState := State;
-    end;
-  end;
-end;
-
-procedure TJvDockVIDStyle.FormGetSiteInfo(Source: TJvDockDragDockObject; DockClient: TJvDockClient;
-  Client: TControl; var InfluenceRect: TRect; MousePos: TPoint;
-  var CanDock: Boolean);
-const
-  DefExpandoRect = 20;
-var
-  CH_BW: Integer;
-  ARect: TRect;
-begin
-  with DockClient do
-  begin
-    
-    CanDock := IsDockable(ParentForm, Client, Source.DropOnControl, Source.DropAlign);
-    if CanDock then
-    begin
-      
-      GetWindowRect(ParentForm.Handle, InfluenceRect);
-      if ParentForm.HostDockSite is TJvDockCustomPanel then
-        
-        Dec(InfluenceRect.Top, TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.GrabberSize);
-      if PtInRect(InfluenceRect, MousePos) then
-      begin
-        ARect := InfluenceRect;
-        InflateRect(ARect, -DefExpandoRect, -DefExpandoRect);
-        
-        CH_BW := JvDockGetSysCaptionHeightAndBorderWidth;
-        Inc(ARect.Top, CH_BW + 1);
-        if PtInRect(ARect, MousePos) then
-        begin
-          
-          InfluenceRect := Rect(0, 0, 0, 0);
-          CanDock := False;
-        end;
-      end;
-    end;
-  end;
-end;
+//=== TJvDockVIDStyle ========================================================
 
 constructor TJvDockVIDStyle.Create(AOwner: TComponent);
 begin
@@ -933,45 +817,106 @@ begin
   TabServerOptionClass := TJvDockVIDTabServerOption;
 end;
 
+destructor TJvDockVIDStyle.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TJvDockVIDStyle.FormDockOver(DockClient: TJvDockClient; Source: TJvDockDragDockObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+var
+  ARect: TRect;
+begin
+  with DockClient do
+  begin
+    Accept := EnableDock and EachOtherDock and
+      IsDockable(ParentForm, Source.Control, Source.DropOnControl, Source.DropAlign);
+    if State = dsDragMove then
+    begin
+      Source.DropAlign := ComputeVIDDockingRect(ParentForm, Source.Control, ARect, Point(X, Y));
+      if Accept and (Source.DropAlign <> alNone) then
+      begin
+        if Source.DropAlign = alClient then
+          Inc(ARect.Top, JvDockGetSysCaptionHeightAndBorderWidth + 1);
+        Source.DockRect := ARect;
+      end;
+      gi_DockRect := ARect;
+    end
+    else
+    if State = dsDragLeave then
+      Source.DropAlign := alNone;
+    if Source is TJvDockVIDDragDockObject then
+    begin
+      TJvDockVIDDragDockObject(Source).OldState := TJvDockVIDDragDockObject(Source).CurrState;
+      TJvDockVIDDragDockObject(Source).CurrState := State;
+    end;
+  end;
+end;
+
+procedure TJvDockVIDStyle.FormGetSiteInfo(Source: TJvDockDragDockObject; DockClient: TJvDockClient;
+  Client: TControl; var InfluenceRect: TRect; MousePos: TPoint;
+  var CanDock: Boolean);
+const
+  DefExpandoRect = 20;
+var
+  CH_BW: Integer;
+  ARect: TRect;
+begin
+  with DockClient do
+  begin
+    CanDock := IsDockable(ParentForm, Client, Source.DropOnControl, Source.DropAlign);
+    if CanDock then
+    begin
+      GetWindowRect(ParentForm.Handle, InfluenceRect);
+      if ParentForm.HostDockSite is TJvDockCustomPanel then
+        Dec(InfluenceRect.Top, TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.GrabberSize);
+      if PtInRect(InfluenceRect, MousePos) then
+      begin
+        ARect := InfluenceRect;
+        InflateRect(ARect, -DefExpandoRect, -DefExpandoRect);
+        CH_BW := JvDockGetSysCaptionHeightAndBorderWidth;
+        Inc(ARect.Top, CH_BW + 1);
+        if PtInRect(ARect, MousePos) then
+        begin
+          InfluenceRect := Rect(0, 0, 0, 0);
+          CanDock := False;
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TJvDockVIDStyle.FormDockDrop(DockClient: TJvDockClient;
   Source: TJvDockDragDockObject; X, Y: Integer);
 var
-  ARect,DRect: TRect;
+  ARect, DRect: TRect;
   DockType: TAlign;
   Host: TJvDockableForm;
   APanelDock: TWinControl;
   VIDSource: TJvDockVIDDragDockObject;
-  i: Integer;
+  I: Integer;
 begin
   if Source is TJvDockVIDDragDockObject then
   begin
-    TJvDockVIDDragDockObject(Source).CurrentState := dsDragEnter;
-    TJvDockVIDDragDockObject(Source).PreviousState := dsDragEnter;
+    TJvDockVIDDragDockObject(Source).CurrState := dsDragEnter;
+    TJvDockVIDDragDockObject(Source).OldState := dsDragEnter;
   end;
 
   if IsDockable(DockClient.ParentForm, Source.Control, Source.DropOnControl, Source.DropAlign) then
   begin
     Host := nil;
-    
     if not JvGlobalDockIsLoading then
       JvDockLockWindow(nil);
     try
       with DockClient do
       begin
-        
         DockType := ComputeVIDDockingRect(DockClient.ParentForm, Source.Control, ARect, Point(X, Y));
-
-        if (ParentForm.HostDockSite is TJvDockPanel) then
+        if ParentForm.HostDockSite is TJvDockPanel then
         begin
-          
           if DockType = alClient then
           begin
-            
             if Source.Control is TJvDockTabHostForm then
             begin
-              
-              
-              
               APanelDock := ParentForm.HostDockSite;
               ARect := ParentForm.BoundsRect;
               ParentForm.ManualDock(TJvDockTabHostForm(Source.Control).PageControl, nil, alClient);
@@ -980,11 +925,9 @@ begin
               Source.Control.ManualDock(APanelDock, nil, alClient);
               if ParentForm.FormStyle = fsStayOnTop then
                 TForm(Source.Control).FormStyle := fsStayOnTop;
-            end else
+            end
+            else
             begin
-              
-              
-              
               APanelDock := ParentForm.HostDockSite;
               DRect.TopLeft := ParentForm.HostDockSite.ClientToScreen(Point(0, 0));
               Host := CreateTabHostAndDockControl(ParentForm, Source.Control);
@@ -998,8 +941,6 @@ begin
           end
           else
           begin
-            
-            
             DRect := ParentForm.HostDockSite.BoundsRect;
             Source.Control.ManualDock(ParentForm.HostDockSite, nil, DockType);
             ParentForm.HostDockSite.BoundsRect := DRect;
@@ -1008,14 +949,10 @@ begin
           Exit;
         end;
 
-        
         if DockType = alClient then
         begin
           if Source.Control is TJvDockTabHostForm then
           begin
-            
-            
-            
             APanelDock := ParentForm.HostDockSite;
             ARect := ParentForm.BoundsRect;
             ParentForm.ManualDock(TJvDockTabHostForm(Source.Control).PageControl, nil, alClient);
@@ -1025,28 +962,29 @@ begin
             if ParentForm.FormStyle = fsStayOnTop then
               TForm(Source.Control).FormStyle := fsStayOnTop;
             Exit;
-          end else
+          end
+          else
           begin
             if Source is TJvDockVIDDragDockObject then
             begin
               VIDSource := TJvDockVIDDragDockObject(Source);
               DoFloatForm(Source.Control);
               FreeAllDockableForm;
-              for i := 0 to VIDSource.Count - 1 do
+              for I := 0 to VIDSource.SourceDockClientCount - 1 do
               begin
-                VIDSource.Control := VIDSource.SourceDockClients[i];
+                VIDSource.Control := VIDSource.SourceDockClients[I];
                 if Host = nil then
                   Host := DockClient.CreateTabHostAndDockControl(DockClient.ParentForm, Source.Control)
-                else Source.Control.ManualDock(TJvDockTabHostForm(Host).PageControl, nil, alClient);
+                else
+                  Source.Control.ManualDock(TJvDockTabHostForm(Host).PageControl, nil, alClient);
               end;
               Host.Visible := True;
-  
             end;
           end;
         end
-        else if DockType <> alNone then
+        else
+        if DockType <> alNone then
         begin
-          
           Host := CreateConjoinHostAndDockControl(ParentForm, Source.Control, DockType);
           SetDockSite(ParentForm, False);
           SetDockSite(TWinControl(Source.Control), False);
@@ -1060,7 +998,6 @@ begin
         end;
       end;
     finally
-      
       if not JvGlobalDockIsLoading then
         JvDockUnLockWindow;
     end;
@@ -1069,7 +1006,8 @@ end;
 
 procedure TJvDockVIDStyle.SetDockBaseControl(IsCreate: Boolean;
   DockBaseControl: TJvDockBaseControl);
-var ADockClient: TJvDockClient;
+var
+  ADockClient: TJvDockClient;
 begin
   if DockBaseControl is TJvDockClient then
   begin
@@ -1083,22 +1021,21 @@ procedure TJvDockVIDStyle.FormStartDock(DockClient: TJvDockClient;
   var Source: TJvDockDragDockObject);
 begin
   inherited FormStartDock(DockClient, Source);
-  
   Source := TJvDockVIDDragDockObject.Create(DockClient.ParentForm);
 end;
 
 procedure TJvDockVIDStyle.FormGetDockEdge(DockClient: TJvDockClient;
   Source: TJvDockDragDockObject; MousePos: TPoint; var DropAlign: TAlign);
-var ARect: TRect;
+var
+  ARect: TRect;
 begin
-  
   DropAlign := ComputeVIDDockingRect(DockClient.ParentForm, Source.Control, ARect, MousePos);
 end;
 
 function TJvDockVIDStyle.DockClientWindowProc(DockClient: TJvDockClient;
-  var Message: TMessage): Boolean;
+  var Msg: TMessage): Boolean;
 begin
-  Result := inherited DockClientWindowProc(DockClient, Message);
+  Result := inherited DockClientWindowProc(DockClient, Msg);
 end;
 
 procedure TJvDockVIDStyle.CreateConjoinServerOption(
@@ -1107,20 +1044,19 @@ begin
   Option := TJvDockVIDConjoinServerOption.Create(Self);
 end;
 
-procedure TJvDockVIDStyle.CreateTabServerOption(
-  var Option: TJvDockBasicTabServerOption);
+procedure TJvDockVIDStyle.CreateTabServerOption(var Option: TJvDockBasicTabServerOption);
 begin
   Option := TJvDockVIDTabServerOption.Create(Self);
 end;
-  
-procedure TJvDockVIDStyle.AssignConjoinServerOption(
-  APanel: TJvDockCustomPanel);
+
+procedure TJvDockVIDStyle.AssignConjoinServerOption(APanel: TJvDockCustomPanel);
 begin
   inherited AssignConjoinServerOption(APanel);
 end;
 
 procedure TJvDockVIDStyle.AssignTabServerOption(APage: TJvDockTabPageControl);
-var TmpPage: TJvDockVIDTabPageControl;
+var
+  TmpPage: TJvDockVIDTabPageControl;
   TmpOption: TJvDockVIDTabServerOption;
 begin
   inherited AssignTabServerOption(APage);
@@ -1137,25 +1073,16 @@ begin
   end;
 end;
 
-procedure TJvDockVIDStyle.ParentFormWindowProc(var Message: TMessage);
+procedure TJvDockVIDStyle.ParentFormWindowProc(var Msg: TMessage);
 begin
-  inherited ParentFormWindowProc(Message);
-  if (Message.Msg = WM_SETTINGCHANGE) or (Message.Msg = WM_SYSCOLORCHANGE) then
+  inherited ParentFormWindowProc(Msg);
+  if (Msg.Msg = WM_SETTINGCHANGE) or (Msg.Msg = WM_SYSCOLORCHANGE) then
   begin
     ParentForm.Caption := '';
-    
-    if (ConjoinServerOption is TJvDockVIDConjoinServerOption) then
-    begin
+    if ConjoinServerOption is TJvDockVIDConjoinServerOption then
       if TJvDockVIDConjoinServerOption(ConjoinServerOption).SystemInfo then
         TJvDockVIDConjoinServerOption(ConjoinServerOption).SetDefaultSystemCaptionInfo;
-    end;
   end;
-end;
-
-destructor TJvDockVIDStyle.Destroy;
-begin
-  inherited;
-
 end;
 
 procedure TJvDockVIDStyle.DoSystemInfoChange(Value: Boolean);
@@ -1164,7 +1091,7 @@ begin
     FSystemInfoChange(Value);
 end;
 
-
+//=== TJvDockVIDPanel ========================================================
 
 constructor TJvDockVIDPanel.Create(AOwner: TComponent);
 begin
@@ -1172,7 +1099,8 @@ begin
 end;
 
 function TJvDockVIDPanel.CreateDockManager: IDockManager;
-var Option: TJvDockVIDConjoinServerOption;
+var
+  Option: TJvDockVIDConjoinServerOption;
 begin
   Result := inherited CreateDockManager;
   if (DockServer <> nil) and (Result <> nil) then
@@ -1183,59 +1111,43 @@ begin
 end;
 
 procedure TJvDockVIDPanel.CustomDockDrop(Source: TJvDockDragDockObject; X, Y: Integer);
-
-
 begin
-
   if Source.Control is TJvDockableForm then
-    
     ShowDockPanel(True, Source.Control);
   if not ((Source.Control.HostDockSite <> nil) and
     (Source.DropOnControl = Source.Control.HostDockSite.Parent) and
     (Source.DropAlign = alClient)) then
   begin
     inherited CustomDockDrop(Source, X, Y);
-    
     JvDockManager.ActiveControl := Source.Control;
-    
     if (Source.Control is TWinControl) and TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
   end;
 end;
 
-procedure TJvDockVIDPanel.CustomDockOver(Source: TJvDockDragDockObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-var DropAlign: TAlign;
-
-
+procedure TJvDockVIDPanel.CustomDockOver(Source: TJvDockDragDockObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  DropAlign: TAlign;
 begin
-  
   inherited CustomDockOver(Source, X, Y, State, Accept);
   if Accept and (Source is TJvDockVIDDragDockObject) then
-  begin
-
     if State = dsDragMove then
     begin
       DropAlign := Source.DropAlign;
-      
       JvDockManager.GetDockEdge(Source.DockRect, Source.DragPos, DropAlign, Source.Control);
     end;
-
-
-  end;
 end;
 
 procedure TJvDockVIDPanel.CustomGetDockEdge(Source: TJvDockDragDockObject;
   MousePos: TPoint; var DropAlign: TAlign);
 begin
-
 end;
 
 procedure TJvDockVIDPanel.CustomGetSiteInfo(Source: TJvDockDragDockObject;
   Client: TControl; var InfluenceRect: TRect; MousePos: TPoint;
   var CanDock: Boolean);
 begin
-  
   if VisibleDockClientCount = 0 then
     inherited CustomGetSiteInfo(Source, Client, InfluenceRect, MousePos, CanDock)
   else
@@ -1253,33 +1165,32 @@ end;
 
 procedure TJvDockVIDPanel.DockDrop(Source: TDragDockObject; X, Y: Integer);
 begin
-  inherited;
-
+  inherited DockDrop(Source, X, Y);
 end;
 
 procedure TJvDockVIDPanel.UpdateCaption(Exclude: TControl);
 begin
-  inherited;
+  inherited UpdateCaption(Exclude);
   Invalidate;
 end;
 
-
+//=== TJvDockVIDTree =========================================================
 
 constructor TJvDockVIDTree.Create(DockSite: TWinControl;
   DockZoneClass: TJvDockZoneClass);
 begin
   inherited Create(DockSite, DockZoneClass);
   FDropOnZone := nil;
-  GrabberSize     := 18;
-  ButtonHeight    := 11;
-  ButtonWidth     := 13;
-  LeftOffset      := 2;
-  RightOffset     := 2;
-  TopOffset       := 4;
-  BottomOffset    := 3;
-  ButtonSplitter  := 2;
-  BorderWidth     := 0;
-  MinSize         := 20;  
+  GrabberSize := 18;
+  ButtonHeight := 11;
+  ButtonWidth := 13;
+  LeftOffset := 2;
+  RightOffset := 2;
+  TopOffset := 4;
+  BottomOffset := 3;
+  ButtonSplitter := 2;
+  BorderWidth := 0;
+  MinSize := 20;
   CaptionLeftOffset := 0;
   CaptionRightOffset := 0;
 end;
@@ -1291,7 +1202,6 @@ end;
 
 function TJvDockVIDTree.GeTJvDockGrabbersPosition: TJvDockGrabbersPosition;
 begin
-  
   Result := gpTop;
 end;
 
@@ -1310,21 +1220,31 @@ begin
         Left + Width - RightOffset,
         Top - GrabberSize + TopOffset + ButtonHeight), MousePos) then
         HTFlag := HTCLOSE
-      else HTFlag := HTCAPTION;
+      else
+        HTFlag := HTCAPTION;
     end;
-  end else Result := nil;
+  end
+  else
+    Result := nil;
 end;
 
 procedure TJvDockVIDTree.InsertControl(Control: TControl; InsertAt: TAlign;
   DropCtl: TControl);
+var
+  I: Integer;
+  Host: TJvDockTabHostForm;
+  ChildCount: Integer;
+  VIDSource: TJvDockVIDDragDockObject;
+  TempControl: TControl;
+  ARect: TRect;
+  AZone: TJvDockZone;
 
-  
   function CreateDockPageControl(Client: TControl): TJvDockTabHostForm;
   var
-    Zone: TJvDockZone;          
-    TempCtl: TControl;          
-    TempPanel: TJvDockConjoinPanel; 
-    DockClient: TJvDockClient;  
+    Zone: TJvDockZone;
+    TempCtl: TControl;
+    TempPanel: TJvDockConjoinPanel;
+    DockClient: TJvDockClient;
     APoint: TPoint;
   begin
     Result := nil;
@@ -1333,56 +1253,58 @@ procedure TJvDockVIDTree.InsertControl(Control: TControl; InsertAt: TAlign;
     if (DockClient <> nil) and (Zone <> nil) then
     begin
       TempCtl := DropCtl;
-      
+
       if Zone.ParentZone.Orientation = doHorizontal then
       begin
-        if (Zone.PrevSibling = nil) then
+        if Zone.PrevSibling = nil then
         begin
           if Zone.NextSibling <> nil then
             DropCtl := Zone.NextSibling.ChildControl;
           InsertAt := alTop;
-        end else 
+        end
+        else
         begin
           DropCtl := Zone.PrevSibling.ChildControl;
           InsertAt := alBottom;
         end;
-      end else if Zone.ParentZone.Orientation = doVertical then
+      end
+      else
+      if Zone.ParentZone.Orientation = doVertical then
       begin
-        if (Zone.PrevSibling = nil) then
+        if Zone.PrevSibling = nil then
         begin
           if Zone.NextSibling <> nil then
             DropCtl := Zone.NextSibling.ChildControl;
           InsertAt := alLeft;
-        end else 
+        end
+        else
         begin
           DropCtl := Zone.PrevSibling.ChildControl;
           InsertAt := alRight;
         end;
       end;
 
-      
-
       if TempCtl.HostDockSite is TJvDockConjoinPanel then
         TempPanel := TJvDockConjoinPanel(TempCtl.HostDockSite)
-      else TempPanel := nil;
+      else
+        TempPanel := nil;
 
-      
       Result := DockClient.CreateTabHostAndDockControl(TempCtl, Client);
       if TempPanel <> nil then
-        
+
         TempPanel.ParentForm.UnDockControl := Result;
 
-      
       SetDockSite(TWinControl(TempCtl), False);
       SetDockSite(TWinControl(Client), False);
 
-      
       if DockSite.Align = alBottom then
         APoint := Point(0, -TempCtl.TBDockHeight)
-      else if DockSite.Align = alRight then
+      else
+      if DockSite.Align = alRight then
         APoint := Point(-TempCtl.LRDockWidth, 0)
-      else APoint := Point(0, 0);
-      APoint :=  DockSite.ClientToScreen(APoint);
+      else
+        APoint := Point(0, 0);
+      APoint := DockSite.ClientToScreen(APoint);
       Result.Left := APoint.x;
       Result.Top := APoint.y;
       Result.UndockWidth := TempCtl.UndockWidth;
@@ -1390,41 +1312,28 @@ procedure TJvDockVIDTree.InsertControl(Control: TControl; InsertAt: TAlign;
       Result.LRDockWidth := TempCtl.LRDockWidth;
       Result.TBDockHeight := TempCtl.TBDockHeight + GrabberSize;
 
-      
       Result.Visible := True;
     end;
   end;
 
-var i: Integer;
-  Host: TJvDockTabHostForm;
-  ChildCount: Integer;
-  VIDSource: TJvDockVIDDragDockObject;
-  TempControl: TControl;
-  ARect: TRect;
-  AZone: TJvDockZone;
 begin
-  
   if not JvGlobalDockIsLoading then
     JvDockLockWindow(nil);
   try
     VIDSource := nil;
-    if (Control is TJvDockableForm)then
+    if Control is TJvDockableForm then
     begin
-      
       if InsertAt in [alClient] then
       begin
-        
         if DropCtl is TJvDockTabHostForm then
         begin
-
-          
           try
             VIDSource := TJvDockVIDDragDockObject.Create(Control);
             DoFloatForm(Control);
             FreeAllDockableForm;
-            for i := VIDSource.Count - 1 downto 0 do
+            for I := VIDSource.SourceDockClientCount - 1 downto 0 do
             begin
-              TempControl := VIDSource.SourceDockClients[i];
+              TempControl := VIDSource.SourceDockClients[I];
               TempControl.ManualDock(TJvDockTabHostForm(DropCtl).PageControl);
               if TempControl is TForm then
               begin
@@ -1433,28 +1342,25 @@ begin
               end;
             end;
           finally
-
-
             VIDSource.Free;
             JvGlobalDockManager.DragObject.Control := nil;
           end;
-        end else
+        end
+        else
         begin
           if (DockSite is TJvDockCustomPanel) and (DockSite.VisibleDockClientCount > 1) and (DropCtl <> nil) then
           begin
-
             try
               VIDSource := TJvDockVIDDragDockObject.Create(Control);
               DoFloatForm(Control);
               FreeAllDockableForm;
-              
+
               Host := CreateDockPageControl(VIDSource.SourceDockClients[0]);
               if Host <> nil then
               begin
-                
-                for i := VIDSource.Count - 1 downto 1 do
+                for I := VIDSource.SourceDockClientCount - 1 downto 1 do
                 begin
-                  TempControl := VIDSource.SourceDockClients[i];
+                  TempControl := VIDSource.SourceDockClients[I];
                   TempControl.ManualDock(Host.PageControl);
                   if TempControl is TForm then
                   begin
@@ -1462,95 +1368,86 @@ begin
                     SetDockSite(TForm(TempControl), False);
                   end;
                 end;
-                
+
                 Host.ManualDock(DockSite, nil, InsertAt);
               end;
             finally
-
-
               VIDSource.Free;
               JvGlobalDockManager.DragObject.Control := nil;
             end;
-          end else
-            
+          end
+          else
             inherited InsertControl(Control, InsertAt, DropCtl);
         end;
-      end else if Control is TJvDockConjoinHostForm then
+      end
+      else
+      if Control is TJvDockConjoinHostForm then
       begin
-        
         TJvTempWinControl(TJvDockableForm(Control).DockableControl).DockManager.ResetBounds(True);
         InsertControlFromConjoinHost(Control, InsertAt, DropCtl);
-      end else
-        
+      end
+      else
         inherited InsertControl(Control, InsertAt, DropCtl);
-    end else
+    end
+    else
     begin
-      
       if InsertAt in [alLeft, alTop] then
-        
         DropDockSize := DropDockSize + SplitterWidth div 2;
       if InsertAt in [alClient] then
       begin
-        
         if DropCtl is TJvDockTabHostForm then
+          Control.ManualDock(TJvDockTabHostForm(DropCtl).PageControl, nil, alClient)
+        else
+        if TopZone.ChildZones <> nil then
         begin
-          
-          Control.ManualDock(TJvDockTabHostForm(DropCtl).PageControl, nil, alClient);
-        end
-        else if TopZone.ChildZones <> nil then
-        begin
-          
           ChildCount := TopZone.ChildCount;
           if DropCtl <> nil then
           begin
             ARect := DropCtl.BoundsRect;
             AZone := FindControlZone(DropCtl);
-            
+
             if DropCtl.DockOrientation = doHorizontal then
             begin
               if ((AZone <> nil) and (AZone.ZoneLimit <> DockSite.Height)) then
                 ARect.Bottom := ARect.Bottom + SplitterWidth;
-            end else
+            end
+            else
             begin
               if ((AZone <> nil) and (AZone.ZoneLimit <> DockSite.Width)) then
                 ARect.Right := ARect.Right + SplitterWidth;
             end;
             DockRect := ARect;
           end
-          else DockRect := Rect(0, 0, TopZone.Width, TopZone.Height);
-          
+          else
+            DockRect := Rect(0, 0, TopZone.Width, TopZone.Height);
+
           Host := CreateDockPageControl(Control);
           if Host <> nil then
-          begin
             if (ChildCount >= 2) or (DockSite is TJvDockPanel) then
             begin
-              
               if InsertAt in [alLeft, alRight] then
                 DropDockSize := DockRect.Right - DockRect.Left
-              else DropDockSize := DockRect.Bottom - DockRect.Top + GrabberSize;
-              
+              else
+                DropDockSize := DockRect.Bottom - DockRect.Top + GrabberSize;
+
               LockDropDockSize;
               Host.ManualDock(DockSite, DropCtl, InsertAt);
-              
-              UnlockDropDockSize;
 
-            end else
-            begin
-              
+              UnlockDropDockSize;
+            end
+            else
               Host.BoundsRect := DockSite.Parent.BoundsRect;
-            end;
-          end;
         end
-        else inherited InsertControl(Control, InsertAt, DropCtl);
-      end else
-      
-      inherited InsertControl(Control, InsertAt, DropCtl);
-      
+        else
+          inherited InsertControl(Control, InsertAt, DropCtl);
+      end
+      else
+        inherited InsertControl(Control, InsertAt, DropCtl);
+
       DockRect := gi_DockRect;
     end;
     ForEachAt(nil, UpdateZone);
   finally
-    
     if not JvGlobalDockIsLoading then
       JvDockUnLockWindow;
   end;
@@ -1559,61 +1456,50 @@ end;
 procedure TJvDockVIDTree.InsertControlFromConjoinHost(Control: TControl;
   InsertAt: TAlign; DropCtl: TControl);
 const
-
-{$IFDEF COMPILER6_UP}
-  OrientArray: array[TAlign] of TDockOrientation = (doNoOrient, doHorizontal,
-    doHorizontal, doVertical, doVertical, doNoOrient, doNoOrient); 
-  MakeLast: array[TAlign] of Boolean = (False, False, True, False, True, False, False);  
-  ReverseAt: array[TAlign] of TAlign = (alClient, alBottom, alTop, alRight, alLeft, alNone, alCustom); 
-{$ELSE}
-
-  OrientArray: array[TAlign] of TDockOrientation = (doNoOrient, doHorizontal,
-    doHorizontal, doVertical, doVertical, doNoOrient);
-  MakeLast: array[TAlign] of Boolean = (False, False, True, False, True, False);
-  ReverseAt: array[TAlign] of TAlign = (alClient, alBottom, alTop, alRight, alLeft, alNone);
-{$ENDIF}
-
+  {$IFDEF COMPILER6_UP}
+  OrientArray: array [TAlign] of TDockOrientation =
+    (doNoOrient, doHorizontal, doHorizontal, doVertical, doVertical, doNoOrient, doNoOrient);
+  MakeLast: array [TAlign] of Boolean =
+    (False, False, True, False, True, False, False);
+  ReverseAt: array [TAlign] of TAlign =
+    (alClient, alBottom, alTop, alRight, alLeft, alNone, alCustom);
+  {$ELSE}
+  OrientArray: array [TAlign] of TDockOrientation =
+    (doNoOrient, doHorizontal, doHorizontal, doVertical, doVertical, doNoOrient);
+  MakeLast: array [TAlign] of Boolean =
+    (False, False, True, False, True, False);
+  ReverseAt: array [TAlign] of TAlign =
+    (alClient, alBottom, alTop, alRight, alLeft, alNone);
+  {$ENDIF COMPILER6_UP}
 var
   Stream: TMemoryStream;
-
-  TopOrientation,                       
-  InsertOrientation,                    
-  CurrentOrientation: TDockOrientation; 
+  TopOrientation: TDockOrientation;
+  InsertOrientation: TDockOrientation;
+  CurrentOrientation: TDockOrientation;
   ZoneLimit: Integer;
-
   Level, LastLevel, I: Integer;
   Zone, NextZone: TJvDockZone;
   DropCtlZone, LastZone: TJvDockZone;
+  OffsetXYLimitArr: array [TDockOrientation] of Integer;
+  ControlXYLimitArr: array [TDockOrientation] of Integer;
 
-  OffsetXYLimitArr: array[TDockOrientation] of Integer;  
-  ControlXYLimitArr: array[TDockOrientation] of Integer; 
-
-  
-
-
-  
   procedure ReadZone(SetZone: Boolean);
-  var I: Integer;
+  var
+    I: Integer;
   begin
-    
     with Stream do
     begin
-      
       Read(Level, SizeOf(Level));
-      if Level = TreeStreamEndFlag then Exit;
-      
+      if Level = TreeStreamEndFlag then
+        Exit;
       Zone := DockZoneClass.Create(Self);
-      
       CustomLoadZone(Stream, Zone);
-      
       ZoneLimit := Zone.ZoneLimit;
     end;
     if SetZone then
     begin
-      
       if Level = LastLevel then
       begin
-        
         Zone.NextSibling := LastZone.NextSibling;
         if LastZone.NextSibling <> nil then
           LastZone.NextSibling.PrevSibling := Zone;
@@ -1621,16 +1507,16 @@ var
         Zone.PrevSibling := LastZone;
         Zone.ParentZone := LastZone.ParentZone;
       end
-      else if Level > LastLevel then
+      else
+      if Level > LastLevel then
       begin
-        
         LastZone.ChildZones := Zone;
         Zone.ParentZone := LastZone;
         InsertOrientation := LastZone.Orientation;
       end
-      else if Level < LastLevel then
+      else
+      if Level < LastLevel then
       begin
-        
         NextZone := LastZone;
         for I := 1 to LastLevel - Level do
           NextZone := NextZone.ParentZone;
@@ -1642,59 +1528,43 @@ var
         Zone.ParentZone := NextZone.ParentZone;
         InsertOrientation := Zone.ParentZone.Orientation;
       end;
-      
       Zone.ZoneLimit := OffsetXYLimitArr[InsertOrientation] + ZoneLimit;
     end;
-    
     LastLevel := Level;
     LastZone := Zone;
   end;
 
 begin
-  
   ControlXYLimitArr[doNoOrient] := 0;
-  ControlXYLimitArr[doHorizontal] := DockRect.Bottom - DockRect.Top ;
+  ControlXYLimitArr[doHorizontal] := DockRect.Bottom - DockRect.Top;
   ControlXYLimitArr[doVertical] := DockRect.Right - DockRect.Left;
 
-  
   Stream := TMemoryStream.Create;
   if Control is TJvDockConjoinHostForm then
     TJvDockConjoinHostForm(Control).Panel.JvDockManager.SaveToStream(Stream);
   Stream.Position := 0;
-  
+
   BeginUpdate;
   try
-    
     Stream.Read(I, SizeOf(I));
-    
     Stream.Position := Stream.Position + 8;
-
-    
     Stream.Read(TopOrientation, SizeOf(TopOrientation));
-    
     Stream.Read(ZoneLimit, SizeOf(ZoneLimit));
-    
     IgnoreZoneInfor(Stream);
-
     if (DropCtl = nil) and (TopZone.ChildCount = 1) then
-      
       DropCtl := TopZone.ChildZones.ChildControl;
-    
     DropCtlZone := FindControlZone(DropCtl);
-    
-    if InsertAt in [alClient, alNone] then InsertAt := alRight;
+    if InsertAt in [alClient, alNone] then
+      InsertAt := alRight;
     InsertOrientation := OrientArray[InsertAt];
-
     if TopZone.ChildCount = 0 then
     begin
-      
       TopZone.Orientation := TopOrientation;
       InsertOrientation := TopOrientation;
     end
-    else if TopZone.ChildCount = 1 then
+    else
+    if TopZone.ChildCount = 1 then
     begin
-      
-      
       TopZone.Orientation := InsertOrientation;
       case InsertOrientation of
         doHorizontal:
@@ -1710,72 +1580,60 @@ begin
       end;
     end;
 
-    
     if DropCtlZone <> nil then
       CurrentOrientation := DropCtlZone.ParentZone.Orientation
     else
       CurrentOrientation := TopZone.Orientation;
 
-    
     if InsertOrientation = doHorizontal then
       DropDockSize := DockRect.Bottom - DockRect.Top
-    else if InsertOrientation = doVertical then
+    else
+    if InsertOrientation = doVertical then
       DropDockSize := DockRect.Right - DockRect.Left
-    else DropDockSize := 0;
+    else
+      DropDockSize := 0;
 
-    
     OffsetXYLimitArr[doNoOrient] := 0;
     if DropCtlZone <> nil then
     begin
-      
       OffsetXYLimitArr[doHorizontal] := DropCtlZone.TopLeft[doHorizontal] +
         Integer(MakeLast[InsertAt]) * (DropCtlZone.HeightWidth[doHorizontal] - ControlXYLimitArr[doHorizontal]);
-      
       if (FDropOnZone <> nil) and (InsertOrientation = doHorizontal) then
         OffsetXYLimitArr[doHorizontal] := FDropOnZone.ZoneLimit - Round((FDropOnZone.ZoneLimit -
-          FDropOnZone.ParentZone.ChildZones.LimitBegin) * (DropDockSize + BorderWidth) / (FDropOnZone.ParentZone.Height));
-
-      
+          FDropOnZone.ParentZone.ChildZones.LimitBegin) * (DropDockSize + BorderWidth) /
+            (FDropOnZone.ParentZone.Height));
       OffsetXYLimitArr[doVertical] := DropCtlZone.TopLeft[doVertical] +
         Integer(MakeLast[InsertAt]) * (DropCtlZone.HeightWidth[doVertical] - ControlXYLimitArr[doVertical]);
-      
       if (FDropOnZone <> nil) and (InsertOrientation = doVertical) then
         OffsetXYLimitArr[doVertical] := FDropOnZone.ZoneLimit - Round((FDropOnZone.ZoneLimit -
-          FDropOnZone.ParentZone.ChildZones.LimitBegin) * (DropDockSize + BorderWidth) / (FDropOnZone.ParentZone.Width));
-
-    end else
+          FDropOnZone.ParentZone.ChildZones.LimitBegin) * (DropDockSize + BorderWidth) /
+            (FDropOnZone.ParentZone.Width));
+    end
+    else
     begin
-      
       if TopZone.VisibleChildCount = 0 then
-
       begin
         OffsetXYLimitArr[doHorizontal] := 0;
-        OffsetXYLimitArr[doVertical]   := 0;
-      end else
+        OffsetXYLimitArr[doVertical] := 0;
+      end
+      else
       begin
         OffsetXYLimitArr[doHorizontal] := Integer(MakeLast[InsertAt]) * ControlXYLimitArr[doHorizontal];
-
         OffsetXYLimitArr[doVertical] := Integer(MakeLast[InsertAt]) * ControlXYLimitArr[doVertical];
       end;
     end;
 
     if TopOrientation <> InsertOrientation then
     begin
-      
       LastZone := DockZoneClass.Create(Self);
       if InsertOrientation <> CurrentOrientation then
-        
         InsertNewParent(LastZone, DropCtlZone, InsertOrientation, MakeLast[InsertAt], True)
       else
-        
         InsertSibling(LastZone, DropCtlZone, MakeLast[InsertAt], True);
-      
-
-      
       LastZone.Orientation := TopOrientation;
-      
       LastLevel := 0;
-    end else
+    end
+    else
     begin
       LastLevel := 1;
       if TopZone.ChildCount > 0 then
@@ -1783,42 +1641,42 @@ begin
         ReadZone(False);
         if InsertOrientation <> CurrentOrientation then
           InsertNewParent(LastZone, DropCtlZone, InsertOrientation, MakeLast[InsertAt], True)
-        else InsertSibling(LastZone, DropCtlZone, MakeLast[InsertAt], True);
+        else
+          InsertSibling(LastZone, DropCtlZone, MakeLast[InsertAt], True);
         LastZone.ZoneLimit := ZoneLimit + OffsetXYLimitArr[InsertOrientation];
-      end else
+      end
+      else
       begin
         LastLevel := 0;
         LastZone := TopZone;
       end;
-      
-
     end;
 
-    
     OffsetXYLimitArr[doHorizontal] := LastZone.TopLeft[doHorizontal];
     OffsetXYLimitArr[doVertical] := LastZone.TopLeft[doVertical];
 
-
-
-    
     while True do
     begin
       ReadZone(True);
-      
       if Level = TreeStreamEndFlag then
-        break;
+        Break;
     end;
   finally
     Stream.Free;
     EndUpdate;
   end;
-  
   SetNewBounds(nil);
 end;
 
 procedure TJvDockVIDTree.DrawDockGrabber(Control: TControl; const ARect: TRect);
-
-var Option: TJvDockVIDConjoinServerOption;
+const
+  TextAlignment: array [TAlignment] of UINT =
+    (DT_LEFT, DT_RIGHT, DT_CENTER);
+var
+  Option: TJvDockVIDConjoinServerOption;
+  DrawRect: TRect;
+  uFormat: UINT;
+  ActiveControl: TControl;
 
   procedure DrawGrabberLine(Left, Top, Right, Bottom: Integer);
   begin
@@ -1830,29 +1688,27 @@ var Option: TJvDockVIDConjoinServerOption;
       LineTo(Left, Bottom);
       Pen.Color := clBtnShadow;
       LineTo(Right, Bottom);
-      LineTo(Right, Top-1);
+      LineTo(Right, Top - 1);
     end;
   end;
 
-var DrawRect: TRect;
-  uFormat: UINT;
-  ActiveControl: TControl;
-const
-  TextAlignment: array[TAlignment] of UINT = (DT_LEFT, DT_RIGHT, DT_CENTER);
 begin
   with ARect do
     if GrabbersPosition = gpLeft then
     begin
     end
-    else if GrabbersPosition = gpTop then
+    else
+    if GrabbersPosition = gpTop then
     begin
       if DockSite is TJvDockPanel then
         Option := TJvDockVIDConjoinServerOption(TJvDockPanel(DockSite).DockServer.DockStyle.ConjoinServerOption)
-      else if DockSite is TJvDockConjoinPanel then
-        Option := TJvDockVIDConjoinServerOption(TJvDockConjoinHostForm(TJvDockConjoinPanel(DockSite).ParentForm).DockClient.DockStyle.ConjoinServerOption)
+      else
+      if DockSite is TJvDockConjoinPanel then
+        Option :=
+          TJvDockVIDConjoinServerOption(TJvDockConjoinHostForm(TJvDockConjoinPanel(DockSite).ParentForm).DockClient.DockStyle.ConjoinServerOption)
       else
         Option := nil;
-      
+
       ActiveControl := GetActiveControl;
       DrawRect := ARect;
       Inc(DrawRect.Top, 2);
@@ -1865,24 +1721,25 @@ begin
           PaintGradientBackground(Canvas, DrawRect, Option.InactiveTitleStartColor, Option.InactiveTitleEndColor);
       end;
       PaintDockGrabberRect(Canvas, Control, DrawRect);
-      
+
       if ActiveControl = Control then
         Canvas.Font.Assign(Option.ActiveFont)
-      else Canvas.Font.Assign(Option.InactiveFont);
+      else
+        Canvas.Font.Assign(Option.InactiveFont);
       Canvas.Brush.Style := bsClear;
       DrawRect := ARect;
       GetCaptionRect(DrawRect);
       uFormat := DT_SINGLELINE or (UINT(Option.TextEllipsis) * DT_END_ELLIPSIS) or TextAlignment[Option.TextAlignment];
       DrawText(Canvas.Handle, PChar(TForm(Control).Caption), -1, DrawRect, uFormat);
-      DrawCloseButton(Canvas, FindControlZone(Control), Right-RightOffset-ButtonWidth, Top+TopOffset);
+      DrawCloseButton(Canvas, FindControlZone(Control), Right - RightOffset - ButtonWidth, Top + TopOffset);
     end
-    else if GrabbersPosition = gpBottom then
+    else
+    if GrabbersPosition = gpBottom then
     begin
-
     end
-    else if GrabbersPosition = gpRight then
+    else
+    if GrabbersPosition = gpRight then
     begin
-
     end;
 end;
 
@@ -1890,15 +1747,13 @@ procedure TJvDockVIDTree.ResetBounds(Force: Boolean);
 var
   R: TRect;
 begin
-  
   if not (csLoading in DockSite.ComponentState) and
     (TopZone <> nil) and (DockSite.DockClientCount > 0) then
   begin
     R := DockSite.ClientRect;
     if DockSite is TJvDockConjoinPanel then
     begin
-      
-      if (R.Right = R.Left) then
+      if R.Right = R.Left then
         Inc(R.Right, DockSite.Parent.UndockWidth);
       if R.Bottom = R.Top then
         Inc(R.Bottom, DockSite.Parent.UndockHeight);
@@ -1923,35 +1778,33 @@ begin
       end;
       if DockSite.DockClientCount > 0 then
       begin
-        
         if not JvGlobalDockIsLoading then
         begin
-          
-          if (R.Bottom - R.Top > 0 ) and (PreviousRect.Bottom - PreviousRect.Top > 0) then
+          if (R.Bottom - R.Top > 0) and (PreviousRect.Bottom - PreviousRect.Top > 0) then
             ScaleBy := (R.Bottom - R.Top) / (PreviousRect.Bottom - PreviousRect.Top)
-          else ScaleBy := 1;
+          else
+            ScaleBy := 1;
 
           ShiftScaleOrientation := doHorizontal;
-                             
-          
+
           if (UpdateCount = 0) and (ScaleBy <> 1) then
             ForEachAt(nil, ScaleZone, tskForward);
 
-          
           if (R.Right - R.Left > 0) and (PreviousRect.Right - PreviousRect.Left > 0) then
             ScaleBy := (R.Right - R.Left) / (PreviousRect.Right - PreviousRect.Left)
-          else ScaleBy := 1;
+          else
+            ScaleBy := 1;
 
           ShiftScaleOrientation := doVertical;
 
-          
           if (UpdateCount = 0) and (ScaleBy <> 1) then
             ForEachAt(nil, ScaleZone, tskForward);
         end;
 
         SetNewBounds(nil);
-        if UpdateCount = 0 then ForEachAt(nil, UpdateZone, tskForward);
-        
+        if UpdateCount = 0 then
+          ForEachAt(nil, UpdateZone, tskForward);
+
         PreviousRect := R;
       end;
     end;
@@ -1960,8 +1813,7 @@ end;
 
 procedure TJvDockVIDTree.DrawSplitterRect(const ARect: TRect);
 begin
-  inherited;
-  
+  inherited DrawSplitterRect(ARect);
 end;
 
 procedure TJvDockVIDTree.SetActiveControl(const Value: TControl);
@@ -1973,21 +1825,22 @@ begin
   end;
 end;
 
-procedure TJvDockVIDTree.WindowProc(var Message: TMessage);
-var AAlign: TAlign;
+procedure TJvDockVIDTree.WindowProc(var Msg: TMessage);
+var
+  Align: TAlign;
 begin
-  if Message.Msg = CM_DOCKCLIENT then
+  if Msg.Msg = CM_DOCKCLIENT then
   begin
-    
-    AAlign := TCMDockClient(Message).DockSource.DropAlign;
-    TCMDockClient(Message).DockSource.DockRect := gi_DockRect;
-    GetDockEdge(gi_DockRect, TCMDockClient(Message).DockSource.DragPos, AAlign, TCMDockClient(Message).DockSource.Control);
+    Align := TCMDockClient(Msg).DockSource.DropAlign;
+    TCMDockClient(Msg).DockSource.DockRect := gi_DockRect;
+    GetDockEdge(gi_DockRect, TCMDockClient(Msg).DockSource.DragPos, Align, TCMDockClient(Msg).DockSource.Control);
   end;
-  inherited WindowProc(Message);
+  inherited WindowProc(Msg);
 end;
 
 procedure TJvDockVIDTree.SplitterMouseUp;
-var OldLimit: Integer;
+var
+  OldLimit: Integer;
   Zone: TJvDockZone;
 begin
   Mouse.Capture := 0;
@@ -1995,7 +1848,7 @@ begin
   ReleaseDC(SizingWnd, SizingDC);
 
   OldLimit := SizingZone.ZoneLimit;
-  
+
   ShiftScaleOrientation := SizingZone.ParentZone.Orientation;
   if SizingZone.ParentZone.Orientation = doHorizontal then
     SizingZone.ZoneLimit := SizePos.y + (SplitterWidth div 2)
@@ -2005,8 +1858,9 @@ begin
   ParentLimit := SizingZone.LimitBegin;
   if OldLimit - ParentLimit > 0 then
     ScaleBy := (SizingZone.ZoneLimit - ParentLimit) / (OldLimit - ParentLimit)
-  else ScaleBy := 1;
-  
+  else
+    ScaleBy := 1;
+
   if SizingZone.ChildZones <> nil then
     ForEachAt(SizingZone.ChildZones, ScaleChildZone, tskForward);
 
@@ -2019,12 +1873,13 @@ begin
 
   if SizingZone.NextSibling <> nil then
   begin
-    
     if SizingZone.NextSibling.ZoneLimit - OldLimit > 0 then
-      ScaleBy := (SizingZone.NextSibling.ZoneLimit - SizingZone.ZoneLimit) / (SizingZone.NextSibling.ZoneLimit - OldLimit)
-    else ScaleBy := 1;
+      ScaleBy := (SizingZone.NextSibling.ZoneLimit - SizingZone.ZoneLimit) / (SizingZone.NextSibling.ZoneLimit -
+        OldLimit)
+    else
+      ScaleBy := 1;
     ParentLimit := SizingZone.NextSibling.ZoneLimit;
-    
+
     if SizingZone.NextSibling.ChildZones <> nil then
       ForEachAt(SizingZone.NextSibling.ChildZones, ScaleSiblingZone, tskForward);
   end;
@@ -2032,29 +1887,26 @@ begin
   SetNewBounds(SizingZone.ParentZone);
   ForEachAt(SizingZone.ParentZone, UpdateZone, tskForward);
   SizingZone := nil;
-
 end;
 
 procedure TJvDockVIDTree.DrawDockSiteRect;
 begin
-
-
 end;
 
 procedure TJvDockVIDTree.InsertSibling(NewZone, SiblingZone: TJvDockZone;
   InsertLast, Update: Boolean);
 begin
-  if (FDropOnZone <> nil) then
+  if FDropOnZone <> nil then
     SiblingZone := FDropOnZone;
-  inherited;
+  inherited InsertSibling(NewZone, SiblingZone, InsertLast, Update);
 end;
 
 procedure TJvDockVIDTree.PositionDockRect(Client, DropCtl: TControl;
   DropAlign: TAlign; var DockRect: TRect);
-
+label
+  LBDropCtlExist;
 var
-  VisibleClients,
-  NewX, NewY, NewWidth, NewHeight: Integer;
+  VisibleClients, NewX, NewY, NewWidth, NewHeight: Integer;
   Zone: TJvDockZone;
   HTFlag: Integer;
   MousePos: TPoint;
@@ -2069,31 +1921,31 @@ var
     NewHeight := Zone.ParentZone.Height;
     case Zone.ParentZone.Orientation of
       doHorizontal:
-      begin
-        Scale := (Zone.ZoneLimit - Zone.ParentZone.ChildZones.LimitBegin) / NewHeight;
-        NewHeight := Min(NewHeight div 2, Client.ClientHeight);
-        NewY := Zone.ZoneLimit - Round(NewHeight * Scale);
-      end;
+        begin
+          Scale := (Zone.ZoneLimit - Zone.ParentZone.ChildZones.LimitBegin) / NewHeight;
+          NewHeight := Min(NewHeight div 2, Client.ClientHeight);
+          NewY := Zone.ZoneLimit - Round(NewHeight * Scale);
+        end;
       doVertical:
-      begin
-        Scale := (Zone.ZoneLimit - Zone.ParentZone.ChildZones.LimitBegin) / NewWidth;
-        NewWidth := Min(NewWidth div 2, Client.ClientWidth);
-        NewX := Zone.ZoneLimit - Round(NewWidth * Scale);
-      end;
+        begin
+          Scale := (Zone.ZoneLimit - Zone.ParentZone.ChildZones.LimitBegin) / NewWidth;
+          NewWidth := Min(NewWidth div 2, Client.ClientWidth);
+          NewX := Zone.ZoneLimit - Round(NewWidth * Scale);
+        end;
     end;
     DockRect := Bounds(NewX, NewY, NewWidth, NewHeight);
     if Zone.Visibled then
     begin
       if Zone.ParentZone.Orientation = doHorizontal then
         JvGlobalDockManager.DragObject.DropAlign := alBottom
-      else if Zone.ParentZone.Orientation = doVertical then
+      else
+      if Zone.ParentZone.Orientation = doVertical then
         JvGlobalDockManager.DragObject.DropAlign := alRight;
       JvGlobalDockManager.DragObject.DropOnControl := Zone.ChildControl;
       FDropOnZone := Zone;
     end;
   end;
 
-Label LBDropCtlExist;
 begin
   if DropAlign = alNone then
     DropAlign := alClient;
@@ -2104,9 +1956,7 @@ begin
   MapWindowPoints(0, DockSite.Handle, MousePos, 2);
   Zone := InternalHitTest(MousePos, HTFlag);
   if Zone <> nil then
-  begin
     if Zone.ChildControl <> nil then
-    begin
       if (HTFlag = HTCaption) or (HTFlag = HTClose) then
       begin
         DockRect := Zone.ChildControl.BoundsRect;
@@ -2115,58 +1965,68 @@ begin
         begin
           if JvGlobalDockManager.DragObject is TJvDockVIDDragDockObject then
             TJvDockVIDDragDockObject(JvGlobalDockManager.DragObject).FDropTabControl :=
-            TJvDockVIDTabPageControl(TJvDockTabHostForm(Zone.ChildControl).PageControl);
-        end else
+              TJvDockVIDTabPageControl(TJvDockTabHostForm(Zone.ChildControl).PageControl);
+        end
+        else
         begin
           if JvGlobalDockManager.DragObject is TJvDockVIDDragDockObject then
             TJvDockVIDDragDockObject(JvGlobalDockManager.DragObject).FDropTabControl := nil;
         end;
       end;
-    end;
-  end;
-  
-  if (DropCtl = nil)then
+
+  if DropCtl = nil then
   begin
     if Zone <> nil then
     begin
       if Zone.ChildControl <> nil then
       begin
         if (HTFlag = HTCaption) or (HTFlag = HTClose) then
-        begin
-          JvGlobalDockManager.DragObject.DropOnControl := Zone.ChildControl;
-        end else if HTFlag = HTClient then
+          JvGlobalDockManager.DragObject.DropOnControl := Zone.ChildControl
+        else
+        if HTFlag = HTClient then
         begin
           DropCtl := Zone.ChildControl;
           goto LBDropCtlExist;
-        end else if HTFlag = HTSplitter then
+        end
+        else
+        if HTFlag = HTSplitter then
           DockOverSplitter;
-      end else if HTFlag = HTSplitter then
+      end
+      else
+      if HTFlag = HTSplitter then
       begin
         DockOverSplitter;
-      end else Exit;
-    end else
+      end
+      else
+        Exit;
+    end
+    else
     begin
       DockRect := Rect(0, 0, DockSite.ClientWidth, DockSite.ClientHeight);
-      
+
       if VisibleClients > 0 then
-      with DockRect do
-        case DropAlign of
-          alLeft: Right := Right div 2;
-          alRight: Left := Right div 2;
-          alTop: Bottom := Bottom div 2;
-          alBottom: Top := Bottom div 2;
-        end;
+        with DockRect do
+          case DropAlign of
+            alLeft:
+              Right := Right div 2;
+            alRight:
+              Left := Right div 2;
+            alTop:
+              Bottom := Bottom div 2;
+            alBottom:
+              Top := Bottom div 2;
+          end;
     end;
   end
-  else begin
-LBDropCtlExist:
-    
+  else
+  begin
+
+  LBDropCtlExist:
     Zone := FindControlZone(DropCtl);
     CtrlRect := DockRect;
     MapWindowPoints(0, DockSite.Handle, CtrlRect, 2);
     if Zone <> nil then
     begin
-      
       if Zone.ParentZone.Orientation = doVertical then
       begin
         if (DropAlign = alRight) and (Zone.NextSibling <> nil) then
@@ -2174,65 +2034,79 @@ LBDropCtlExist:
           DockOverSplitter;
           MapWindowPoints(DockSite.Handle, 0, DockRect, 2);
           Exit;
-        end else if (DropAlign = alLeft) and (Zone.PrevSibling <> nil) then
+        end
+        else
+        if (DropAlign = alLeft) and (Zone.PrevSibling <> nil) then
         begin
           Zone := Zone.PrevSibling;
           DockOverSplitter;
           MapWindowPoints(DockSite.Handle, 0, DockRect, 2);
           Exit;
-        end else
+        end
+        else
         begin
           if DropAlign in [alLeft, alRight] then
             CtrlRect := Bounds(Zone.ParentZone.Left, Zone.ParentZone.Top, Zone.ParentZone.Width, Zone.ParentZone.Height)
-          else if (DropAlign in [alTop, alBottom, alClient]) then
+          else
+          if DropAlign in [alTop, alBottom, alClient] then
           begin
             CtrlRect := DropCtl.BoundsRect;
             Dec(CtrlRect.Top, GrabberSize);
           end;
           OffsetRect(CtrlRect, 0, GrabberSize);
         end;
-      end else if Zone.ParentZone.Orientation = doHorizontal then
+      end
+      else
+      if Zone.ParentZone.Orientation = doHorizontal then
       begin
         if (DropAlign = alBottom) and (Zone.NextSibling <> nil) then
         begin
           DockOverSplitter;
           MapWindowPoints(DockSite.Handle, 0, DockRect, 2);
           Exit;
-        end else if (DropAlign = alTop) and (Zone.PrevSibling <> nil) then
+        end
+        else
+        if (DropAlign = alTop) and (Zone.PrevSibling <> nil) then
         begin
           Zone := Zone.PrevSibling;
           DockOverSplitter;
           MapWindowPoints(DockSite.Handle, 0, DockRect, 2);
           Exit;
-        end else
+        end
+        else
         begin
           if DropAlign in [alTop, alBottom] then
             CtrlRect := Bounds(Zone.ParentZone.Left, Zone.ParentZone.Top, Zone.ParentZone.Width, Zone.ParentZone.Height)
-          else if (DropAlign in [alLeft, alRight, alClient]) then 
+          else
+          if DropAlign in [alLeft, alRight, alClient] then
           begin
             CtrlRect := DropCtl.BoundsRect;
             Dec(CtrlRect.Top, GrabberSize);
           end;
           OffsetRect(CtrlRect, 0, GrabberSize);
         end;
-      end else
+      end
+      else
       begin
         CtrlRect := DropCtl.BoundsRect;
         Dec(CtrlRect.Top, GrabberSize);
         OffsetRect(CtrlRect, 0, GrabberSize);
       end;
-      
+
       NewX := CtrlRect.Left;
       NewY := CtrlRect.Top - GrabberSize;
       NewWidth := CtrlRect.Right - CtrlRect.Left;
       NewHeight := CtrlRect.Bottom - CtrlRect.Top;
       if DropAlign in [alLeft, alRight] then
         NewWidth := Min(Client.UndockWidth, NewWidth div 2)
-      else if DropAlign in [alTop, alBottom] then
+      else
+      if DropAlign in [alTop, alBottom] then
         NewHeight := Min(Client.UndockHeight, NewHeight div 2);
       case DropAlign of
-        alRight: Inc(NewX, CtrlRect.Right - CtrlRect.Left - NewWidth);
-        alBottom: Inc(NewY, CtrlRect.Bottom - CtrlRect.Top - NewHeight);
+        alRight:
+          Inc(NewX, CtrlRect.Right - CtrlRect.Left - NewWidth);
+        alBottom:
+          Inc(NewY, CtrlRect.Bottom - CtrlRect.Top - NewHeight);
       end;
       DockRect := Bounds(NewX, NewY, NewWidth, NewHeight);
       if DropAlign = alClient then
@@ -2251,12 +2125,13 @@ begin
   Result := inherited GetDockEdge(DockRect, MousePos, DropAlign, Control);
   if FLockDropDockSizeCount = 0 then
   begin
-    
     if DropAlign in [alLeft, alRight] then
       DropDockSize := DockRect.Right - DockRect.Left
-    else if DropAlign in [alTop, alBottom] then
+    else
+    if DropAlign in [alTop, alBottom] then
       DropDockSize := DockRect.Bottom - DockRect.Top
-    else DropDockSize := 0;
+    else
+      DropDockSize := 0;
     Self.DockRect := DockRect;
   end;
 end;
@@ -2268,8 +2143,10 @@ begin
   begin
     SiblingZone := FDropOnZone;
     InsertSibling(NewZone, SiblingZone, InsertLast, Update);
-  end else
-    inherited;
+  end
+  else
+    inherited InsertNewParent(NewZone, SiblingZone, ParentOrientation,
+      InsertLast, Update);
 end;
 
 procedure TJvDockVIDTree.RemoveZone(Zone: TJvDockZone; Hide: Boolean);
@@ -2277,17 +2154,17 @@ begin
   if (FDropOnZone <> nil) and
     ((FDropOnZone.NextSibling = Zone) or (FDropOnZone = Zone)) then
     FDropOnZone := nil;
-  inherited;
+  inherited RemoveZone(Zone, Hide);
 end;
 
 procedure TJvDockVIDTree.GetSiteInfo(Client: TControl;
   var InfluenceRect: TRect; MousePos: TPoint; var CanDock: Boolean);
-var Zone: TJvDockZone;
+var
+  Zone: TJvDockZone;
   HTFlag: Integer;
   Pos: TPoint;
   Align: TAlign;
 begin
-  
   Pos := DockSite.ScreenToClient(MousePos);
   Zone := InternalHitTest(Pos, HTFlag);
   if Zone <> nil then
@@ -2296,7 +2173,8 @@ begin
     begin
       InfluenceRect := GetSplitterRect(Zone);
       MapWindowPoints(DockSite.Handle, 0, InfluenceRect, 2);
-    end else
+    end
+    else
     begin
       Pos := MousePos;
       if Zone.ChildControl <> nil then
@@ -2306,38 +2184,49 @@ begin
       begin
         InfluenceRect := Rect(0, 0, 0, 0);
         CanDock := False;
-      end else
+      end
+      else
       begin
         if Zone.ParentZone.Orientation = doVertical then
         begin
-          if (Align = alRight) and (Zone.NextSibling <> nil) and (Zone.NextSibling.Visibled)  then
+          if (Align = alRight) and (Zone.NextSibling <> nil) and (Zone.NextSibling.Visibled) then
           begin
             InfluenceRect := GetSplitterRect(Zone);
             InflateRect(InfluenceRect, DefExpandoRect, 0);
-          end else if (Align = alLeft) and (Zone.PrevSibling <> nil) and (Zone.PrevSibling.Visibled) then
+          end
+          else
+          if (Align = alLeft) and (Zone.PrevSibling <> nil) and (Zone.PrevSibling.Visibled) then
           begin
             InfluenceRect := GetSplitterRect(Zone.PrevSibling);
             InflateRect(InfluenceRect, DefExpandoRect, 0);
-          end else
+          end
+          else
             Exit;
-        end else if Zone.ParentZone.Orientation = doHorizontal then
+        end
+        else
+        if Zone.ParentZone.Orientation = doHorizontal then
         begin
           if (Align = alBottom) and (Zone.NextSibling <> nil) and (Zone.NextSibling.Visibled) then
           begin
             InfluenceRect := GetSplitterRect(Zone);
             InflateRect(InfluenceRect, 0, DefExpandoRect);
-          end else if (Align = alTop) and (Zone.PrevSibling <> nil) and (Zone.PrevSibling.Visibled) then
+          end
+          else
+          if (Align = alTop) and (Zone.PrevSibling <> nil) and (Zone.PrevSibling.Visibled) then
           begin
             InfluenceRect := GetSplitterRect(Zone.PrevSibling);
             InflateRect(InfluenceRect, 0, DefExpandoRect);
-          end else
+          end
+          else
             Exit;
-        end else
+        end
+        else
           Exit;
       end;
       MapWindowPoints(DockSite.Handle, 0, InfluenceRect, 2);
     end;
-  end else
+  end
+  else
   begin
     InfluenceRect := Rect(0, 0, 0, 0);
     CanDock := False;
@@ -2359,7 +2248,6 @@ end;
 procedure TJvDockVIDTree.PaintDockGrabberRect(Canvas: TCanvas;
   Control: TControl; const ARect: TRect);
 begin
-  
 end;
 
 procedure TJvDockVIDTree.SetCaptionLeftOffset(const Value: Integer);
@@ -2373,17 +2261,18 @@ begin
 end;
 
 procedure TJvDockVIDTree.DrawCloseButton(Canvas: TCanvas; Zone: TJvDockZone; Left, Top: Integer);
-var AZone: TJvDockAdvZone;
+var
+  AZone: TJvDockAdvZone;
   ADockClient: TJvDockClient;
 begin
   AZone := TJvDockAdvZone(Zone);
   if AZone <> nil then
   begin
-    
     ADockClient := FindDockClient(Zone.ChildControl);
-    if (ADockClient <> nil) and (not ADockClient.EnableCloseButton) then Exit;
-    DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left+ButtonWidth,
-      Top+ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(AZone.CloseBtnDown) * DFCS_PUSHED)
+    if (ADockClient <> nil) and not ADockClient.EnableCloseButton then
+      Exit;
+    DrawFrameControl(Canvas.Handle, Rect(Left, Top, Left + ButtonWidth,
+      Top + ButtonHeight), DFC_CAPTION, DFCS_CAPTIONCLOSE or Integer(AZone.CloseBtnDown) * DFCS_PUSHED)
   end;
 end;
 
@@ -2399,22 +2288,22 @@ procedure TJvDockVIDTree.AdjustDockRect(Control: TControl;
   var ARect: TRect);
 begin
   if (DockSite.Align <> alClient) or (TopZone.VisibleChildTotal > 1) then
-    inherited;
+    inherited AdjustDockRect(Control, ARect);
 end;
 
 procedure TJvDockVIDTree.IgnoreZoneInfor(Stream: TMemoryStream);
-var CompName: string;
+var
+  CompName: string;
 begin
-  
   Stream.Position := Stream.Position + 6;
-  
   ReadControlName(Stream, CompName);
 end;
 
-
+//=== TJvDockVIDConjoinPanel =================================================
 
 function TJvDockVIDConjoinPanel.CreateDockManager: IDockManager;
-var Option: TJvDockVIDConjoinServerOption;
+var
+  Option: TJvDockVIDConjoinServerOption;
 begin
   Result := inherited CreateDockManager;
   if (ParentForm <> nil) and (ParentForm.DockClient.DockStyle <> nil) and (Result <> nil) then
@@ -2424,12 +2313,9 @@ begin
   end;
 end;
 
-procedure TJvDockVIDConjoinPanel.CustomDockDrop(Source: TJvDockDragDockObject; X,
-  Y: Integer);
-
-
+procedure TJvDockVIDConjoinPanel.CustomDockDrop(Source: TJvDockDragDockObject;
+  X, Y: Integer);
 begin
-
   if not ((Source.Control.HostDockSite <> nil) and
     (Source.DropOnControl = Source.Control.HostDockSite.Parent) and
     (Source.DropAlign = alClient)) then
@@ -2438,31 +2324,24 @@ begin
     ParentForm.Caption := '';
     if JvDockManager <> nil then
       JvDockManager.ActiveControl := Source.Control;
-    if (Source.Control is TWinControl) and (Source.Control.Visible)
-      and TWinControl(Source.Control).CanFocus then
+    if (Source.Control is TWinControl) and Source.Control.Visible and
+      TWinControl(Source.Control).CanFocus then
       TWinControl(Source.Control).SetFocus;
   end;
 end;
 
-
 procedure TJvDockVIDConjoinPanel.CustomDockOver(Source: TJvDockDragDockObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
-var DropAlign: TAlign;
-
-
+var
+  DropAlign: TAlign;
 begin
   inherited CustomDockOver(Source, X, Y, State, Accept);
   if Accept and (Source is TJvDockVIDDragDockObject) then
-  begin
-
     if State = dsDragMove then
     begin
       DropAlign := Source.DropAlign;
       JvDockManager.GetDockEdge(Source.EraseDockRect, Source.DragPos, DropAlign, Source.Control);
     end;
-
-
-  end;
 end;
 
 procedure TJvDockVIDConjoinPanel.CustomGetDockEdge(Source: TJvDockDragDockObject;
@@ -2483,8 +2362,8 @@ begin
   Result := inherited CustomUnDock(Source, NewTarget, Client);
 end;
 
-procedure TJvDockVIDConjoinPanel.DockDrop(Source: TDragDockObject; X,
-  Y: Integer);
+procedure TJvDockVIDConjoinPanel.DockDrop(Source: TDragDockObject;
+  X, Y: Integer);
 begin
   inherited DockDrop(Source, X, Y);
 end;
@@ -2498,12 +2377,81 @@ begin
   Invalidate;
 end;
 
+// TJvDockVIDTabPageControl ==================================================
 
+constructor TJvDockVIDTabPageControl.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  FPanel := nil;
+  TabWidth := 1;
+  MultiLine := True;
+  TabSheetClass := TJvDockVIDTabSheet;
+  TabPanelClass := TJvDockTabPanel;
+  FTempSheet := nil;
+  TabPosition := tpBottom;
+  FTabImageList := nil;
+  Images := nil;
+  if AOwner is TJvDockTabHostForm then
+  begin
+    FTabImageList := TCustomImageList.Create(AOwner);
+    Images := FTabImageList;
+  end;
+end;
 
-procedure TJvDockVIDTabPageControl.CustomDockDrop(Source: TJvDockDragDockObject; X,
-  Y: Integer);
-var ARect: TRect;
-  i: Integer;
+destructor TJvDockVIDTabPageControl.Destroy;
+begin
+  if FTabImageList <> nil then
+  begin
+    FTabImageList.Free;
+    FTabImageList := nil;
+  end;
+  if FPanel <> nil then
+  begin
+    FPanel.Free;
+    FPanel := nil;
+  end;
+  inherited Destroy;
+end;
+
+procedure TJvDockVIDTabPageControl.AfterConstruction;
+begin
+  inherited AfterConstruction;
+  CreatePanel;
+end;
+
+procedure TJvDockVIDTabPageControl.Loaded;
+begin
+  inherited Loaded;
+  CreatePanel;
+end;
+
+procedure TJvDockVIDTabPageControl.CreatePanel;
+begin
+  if FPanel = nil then
+  begin
+    FPanel := TabPanelClass.Create(Self);
+    FPanel.Page := Self;
+    FPanel.Parent := Self;
+    FPanel.TabLeftOffset := 5;
+    FPanel.TabRightOffset := 5;
+    FPanel.TabTopOffset := 3;
+    FPanel.TabBottomOffset := 3;
+    ActiveSheetColor := clBtnFace;
+    InactiveSheetColor := clBtnShadow;
+  end;
+  Resize;
+end;
+
+procedure TJvDockVIDTabPageControl.CreateWnd;
+begin
+  inherited CreateWnd;
+end;
+
+procedure TJvDockVIDTabPageControl.CustomDockDrop(Source: TJvDockDragDockObject;
+  X, Y: Integer);
+var
+  ARect: TRect;
+  I: Integer;
   VIDSource: TJvDockVIDDragDockObject;
   DockClient: TJvDockClient;
   Host: TJvDockConjoinHostForm;
@@ -2519,20 +2467,18 @@ begin
         DoFloatForm(Source.Control);
         FreeAllDockableForm;
         VIDSource := TJvDockVIDDragDockObject(Source);
-        
-        for i := 0 to VIDSource.Count - 1 do
+
+        for I := 0 to VIDSource.SourceDockClientCount - 1 do
         begin
-          Source.Control := VIDSource.SourceDockClients[i];
+          Source.Control := VIDSource.SourceDockClients[I];
           inherited CustomDockDrop(Source, X, Y);
           if Source.Control is TCustomForm then
-          begin
             if FTabImageList <> nil then
             begin
               Index := FTabImageList.AddIcon(TForm(Source.Control).Icon);
               if Index <> -1 then
                 ActivePage.ImageIndex := Index;
             end;
-          end;
         end;
       finally
         JvGlobalDockIsLoading := False;
@@ -2541,9 +2487,9 @@ begin
         JvGlobalDockManager.DragObject.Control := nil;
       end;
     end;
-  end else
+  end
+  else
   begin
-    
     DockClient := FindDockClient(ParentForm);
     if DockClient <> nil then
     begin
@@ -2555,16 +2501,15 @@ begin
       Host.Visible := True;
     end;
   end;
-  FPanel.ActiveSheet := nil;
+  FPanel.SelectSheet := nil;
   ParentForm.Caption := ActivePage.Caption;
 end;
 
-procedure TJvDockVIDTabPageControl.CustomDockOver(Source: TJvDockDragDockObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-var ARect: TRect;
-
+procedure TJvDockVIDTabPageControl.CustomDockOver(Source: TJvDockDragDockObject;
+  X, Y: Integer; State: TDragState; var Accept: Boolean);
+var
+  ARect: TRect;
 begin
-  
   Accept := IsDockable(Self, Source.Control, Source.DropOnControl, Source.DropAlign);
   if Accept then
   begin
@@ -2579,12 +2524,14 @@ begin
         Source.DockRect := ARect;
         gi_DockRect := ARect;
       end;
-    end else
+    end
+    else
     begin
       if ParentForm.HostDockSite is TJvDockCustomPanel then
       begin
         ARect := Source.DockRect;
-        TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.PositionDockRect(Source.Control, Source.DropOnControl, Source.DropAlign, ARect);
+        TJvDockCustomPanel(ParentForm.HostDockSite).JvDockManager.PositionDockRect(Source.Control, Source.DropOnControl,
+          Source.DropAlign, ARect);
         Source.DockRect := ARect;
       end;
     end;
@@ -2604,13 +2551,12 @@ begin
     CanDock := False;
   if CanDock then
   begin
-    
     GetWindowRect(Parent.Handle, InfluenceRect);
     if PtInRect(InfluenceRect, MousePos) then
     begin
       ARect := InfluenceRect;
       InflateRect(ARect, -DefExpandoRect, -DefExpandoRect);
-      
+
       CH_BW := JvDockGetSysCaptionHeightAndBorderWidth;
       Inc(ARect.Top, CH_BW + 1);
       Dec(ARect.Bottom, TabHeight);
@@ -2622,39 +2568,39 @@ end;
 
 procedure TJvDockVIDTabPageControl.Change;
 begin
-  
   inherited Change;
   ParentForm.Caption := ActivePage.Caption;
   if ParentForm.HostDockSite is TJvDockCustomPanel then
   begin
-    
     if ParentForm.Visible and ParentForm.CanFocus then
       ParentForm.SetFocus;
     ParentForm.HostDockSite.Invalidate;
   end;
   if (ActivePage <> nil) and (ActivePage.Visible) and (ActivePage.CanFocus) then
-  begin
     if ParentForm.Visible and ParentForm.CanFocus then
       ActivePage.SetFocus;
-  end;
 end;
 
 procedure TJvDockVIDTabPageControl.AdjustClientRect(var Rect: TRect);
 begin
-  
   Rect := ClientRect;
-  if (Parent is TJvDockTabHostForm) and (VisibleDockClientCount = 1) then Exit;
+  if (Parent is TJvDockTabHostForm) and (VisibleDockClientCount = 1) then
+    Exit;
   case TabPosition of
-    tpTop:    Inc(Rect.Top, Panel.FTabHeight - 1);
-    tpBottom: Dec(Rect.Bottom, Panel.FTabHeight - 1);
-    tpLeft:   Inc(Rect.Left, Panel.FTabHeight - 1);
-    tpRight:  Dec(Rect.Right, Panel.FTabHeight - 1);
+    tpTop:
+      Inc(Rect.Top, Panel.FTabHeight - 1);
+    tpBottom:
+      Dec(Rect.Bottom, Panel.FTabHeight - 1);
+    tpLeft:
+      Inc(Rect.Left, Panel.FTabHeight - 1);
+    tpRight:
+      Dec(Rect.Right, Panel.FTabHeight - 1);
   end;
 end;
 
 procedure TJvDockVIDTabPageControl.CreateParams(var Params: TCreateParams);
 begin
-  inherited;
+  inherited CreateParams(Params);
 end;
 
 procedure TJvDockVIDTabPageControl.DrawTab(TabIndex: Integer;
@@ -2710,42 +2656,38 @@ end;
 
 procedure TJvDockVIDTabPageControl.Resize;
 begin
-  
   inherited Resize;
-  if Fpanel = nil then Exit;
+  if FPanel = nil then
+    Exit;
   case TabPosition of
     tpLeft:
-    begin
-      
-      FPanel.Left := 0;
-      FPanel.Width := Panel.FTabHeight;
-      FPanel.Top := 0;
-      FPanel.Height := Height;
-    end;
+      begin
+        FPanel.Left := 0;
+        FPanel.Width := Panel.FTabHeight;
+        FPanel.Top := 0;
+        FPanel.Height := Height;
+      end;
     tpRight:
-    begin
-      
-      FPanel.Left := Width - Panel.FTabHeight;
-      FPanel.Top := 0;
-      FPanel.Width := Panel.FTabHeight;
-      FPanel.Height := Height;
-    end;
+      begin
+        FPanel.Left := Width - Panel.FTabHeight;
+        FPanel.Top := 0;
+        FPanel.Width := Panel.FTabHeight;
+        FPanel.Height := Height;
+      end;
     tpTop:
-    begin
-      
-      FPanel.Left := 0;
-      FPanel.Top := 0;
-      FPanel.Width := Width;
-      FPanel.Height := Panel.FTabHeight;
-    end;
+      begin
+        FPanel.Left := 0;
+        FPanel.Top := 0;
+        FPanel.Width := Width;
+        FPanel.Height := Panel.FTabHeight;
+      end;
     tpBottom:
-    begin
-      
-      FPanel.Left := 0;
-      FPanel.Top := Height - Panel.FTabHeight;
-      FPanel.Width := Width;
-      FPanel.Height := Panel.FTabHeight;
-    end;
+      begin
+        FPanel.Left := 0;
+        FPanel.Top := Height - Panel.FTabHeight;
+        FPanel.Width := Width;
+        FPanel.Height := Panel.FTabHeight;
+      end;
   end;
 end;
 
@@ -2764,12 +2706,13 @@ begin
 end;
 
 procedure TJvDockVIDTabPageControl.SetInactiveFont(const Value: TFont);
-var i: Integer;
+var
+  I: Integer;
 begin
   FPanel.FInactiveFont.Assign(Value);
-  for i := 0 to Count - 1 do
-    if Pages[i] <> ActivePage then
-      TJvDockVIDTabSheet(Pages[i]).SetSheetSort(Pages[i].Caption);
+  for I := 0 to Count - 1 do
+    if Pages[I] <> ActivePage then
+      TJvDockVIDTabSheet(Pages[I]).SetSheetSort(Pages[I].Caption);
   FPanel.Invalidate;
 end;
 
@@ -2835,80 +2778,19 @@ begin
   end;
 end;
 
-constructor TJvDockVIDTabPageControl.Create(AOwner: TComponent);
-begin
-  inherited Create(AOwner);
-  FPanel := nil;
-  TabWidth := 1;
-  MultiLine := True;
-  TabSheetClass := TJvDockVIDTabSheet;
-  TabPanelClass := TJvDockTabPanel;
-  FTemporarySheet := nil;
-  TabPosition := tpBottom;
-  FTabImageList := nil;
-  Images := nil;
-  if AOwner is TJvDockTabHostForm then
-  begin
-    FTabImageList := TCustomImageList.Create(AOwner);
-    Images := FTabImageList;
-  end;
-end;
-
-destructor TJvDockVIDTabPageControl.Destroy;
-begin
-  if FTabImageList <> nil then
-  begin
-    FTabImageList.Free;
-    FTabImageList := nil;
-  end;
-  if FPanel <> nil then
-  begin
-    FPanel.Free;
-    FPanel := nil;
-  end;
-  inherited;
-end;
-
-procedure TJvDockVIDTabPageControl.Loaded;
-begin
-  inherited;
-  CreatePanel;
-end;
-
-procedure TJvDockVIDTabPageControl.CreatePanel;
-begin
-  if FPanel = nil then
-  begin
-    FPanel := TabPanelClass.Create(Self);
-    FPanel.Page := Self;
-    FPanel.Parent := Self;
-    FPanel.TabLeftOffset := 5;
-    FPanel.TabRightOffset := 5;
-    FPanel.TabTopOffset := 3;
-    FPanel.TabBottomOffset := 3;
-    ActiveSheetColor := clBtnFace;
-    InactiveSheetColor := clBtnShadow;
-  end;
-  Resize;
-end;
-
-procedure TJvDockVIDTabPageControl.CreateWnd;
-begin
-  inherited;
-end;
-
 procedure TJvDockVIDTabPageControl.SetActivePage(Page: TJvDockTabSheet);
 begin
   inherited SetActivePage(Page);
   FPanel.Invalidate;
 end;
 
-procedure TJvDockVIDTabPageControl.DockDrop(Source: TDragDockObject; X,
-  Y: Integer);
-var Index: Integer;
+procedure TJvDockVIDTabPageControl.DockDrop(Source: TDragDockObject;
+  X, Y: Integer);
+var
+  Index: Integer;
 begin
   inherited DockDrop(Source, X, Y);
-  FPanel.ActiveSheet := nil;
+  FPanel.SelectSheet := nil;
   ParentForm.Caption := ActivePage.Caption;
   if Source.Control is TCustomForm then
   begin
@@ -2923,43 +2805,46 @@ begin
   end;
 end;
 
-function TJvDockVIDTabPageControl.GetDockClientFromMousePos(
-  MousePos: TPoint): TControl;
-var PageIndex: Integer;
+function TJvDockVIDTabPageControl.GetDockClientFromMousePos(MousePos: TPoint): TControl;
+var
+  PageIndex: Integer;
 begin
   Result := nil;
   case TabPosition of
-  tpTop:
-    PageIndex := Panel.FindSheetWithPos(MousePos.X, MousePos.y, 0, Panel.Height - TabBottomOffset);
-  tpBottom:
-    PageIndex := Panel.FindSheetWithPos(MousePos.x, MousePos.y, TabBottomOffset, Panel.Height);
-  tpLeft:
-    PageIndex := Panel.FindSheetWithPos(MousePos.y, MousePos.x, 0, Panel.Height - TabBottomOffset);
-  tpRight:
-    PageIndex := Panel.FindSheetWithPos(MousePos.y, MousePos.x, TabBottomOffset, Panel.Height);
+    tpTop:
+      PageIndex := Panel.FindSheetWithPos(MousePos.X, MousePos.Y, 0, Panel.Height - TabBottomOffset);
+    tpBottom:
+      PageIndex := Panel.FindSheetWithPos(MousePos.X, MousePos.Y, TabBottomOffset, Panel.Height);
+    tpLeft:
+      PageIndex := Panel.FindSheetWithPos(MousePos.Y, MousePos.X, 0, Panel.Height - TabBottomOffset);
+    tpRight:
+      PageIndex := Panel.FindSheetWithPos(MousePos.Y, MousePos.X, TabBottomOffset, Panel.Height);
   else
     PageIndex := -1;
   end;
   if PageIndex >= 0 then
   begin
     Result := Pages[PageIndex].Controls[0];
-    if Result.HostDockSite <> Self then Result := nil;
+    if Result.HostDockSite <> Self then
+      Result := nil;
   end;
 end;
 
 procedure TJvDockVIDTabPageControl.CustomGetDockEdge(Source: TJvDockDragDockObject;
   MousePos: TPoint; var DropAlign: TAlign);
-var ARect: TRect;
+var
+  ARect: TRect;
 begin
   DropAlign := ComputeVIDDockingRect(Self, Source.Control, ARect, MousePos);
 end;
 
-function TJvDockVIDTabPageControl.GetVisibleSheetCount: Integer;
-var i: Integer;
+function TJvDockVIDTabPageControl.GetVisibleTheetCount: Integer;
+var
+  I: Integer;
 begin
   Result := 0;
-  for i := 0 to Count - 1 do
-    if Pages[i].TabVisible then
+  for I := 0 to Count - 1 do
+    if Pages[I].TabVisible then
       Inc(Result);
 end;
 
@@ -2970,14 +2855,13 @@ begin
   begin
     Parent.Invalidate;
     if Parent.HostDockSite <> nil then
-    Parent.HostDockSite.Invalidate;
+      Parent.HostDockSite.Invalidate;
   end;
 end;
 
 procedure TJvDockVIDTabPageControl.SetHotTrack(Value: Boolean);
 begin
   inherited SetHotTrack(Value);
-
 end;
 
 procedure TJvDockVIDTabPageControl.SetImages(Value: TCustomImageList);
@@ -3016,33 +2900,30 @@ end;
 
 function TJvDockVIDTabPageControl.CustomUnDock(Source: TJvDockDragDockObject;
   NewTarget: TWinControl; Client: TControl): Boolean;
-var CurrPage: TJvDockTabSheet;
-  i: Integer;
+var
+  CurrPage: TJvDockTabSheet;
+  I: Integer;
 begin
   if not ((Source.Control.HostDockSite <> nil) and
     (Source.DropOnControl = Source.Control.HostDockSite.Parent) and
     (Source.DropAlign = alClient)) then
   begin
     CurrPage := GetPageFromDockClient(Client);
-    if (CurrPage <> nil) then
+    if CurrPage <> nil then
     begin
       if (FTabImageList <> nil) and ShowTabImages and
         (FTabImageList.Count > CurrPage.ImageIndex) then
       begin
         FTabImageList.Delete(CurrPage.ImageIndex);
-        for i := 0 to Count - 1 do
-          if Pages[i].ImageIndex > CurrPage.ImageIndex then
-            Pages[i].ImageIndex := Pages[i].ImageIndex - 1;
+        for I := 0 to Count - 1 do
+          if Pages[I].ImageIndex > CurrPage.ImageIndex then
+            Pages[I].ImageIndex := Pages[I].ImageIndex - 1;
       end;
     end;
     Result := inherited CustomUnDock(Source, NewTarget, Client);
-  end else Result := True;
-end;
-
-procedure TJvDockVIDTabPageControl.AfterConstruction;
-begin
-  inherited;
-  CreatePanel;
+  end
+  else
+    Result := True;
 end;
 
 function TJvDockVIDTabPageControl.GetPage(Index: Integer): TJvDockVIDTabSheet;
@@ -3055,13 +2936,12 @@ begin
   Result := TJvDockVIDTabSheet(inherited ActivePage);
 end;
 
-procedure TJvDockVIDTabPageControl.SetActiveVIDPage(
-  const Value: TJvDockVIDTabSheet);
+procedure TJvDockVIDTabPageControl.SetActiveVIDPage(const Value: TJvDockVIDTabSheet);
 begin
   ActivePage := Value;
 end;
 
-
+//=== TJvDockTabPanel ========================================================
 
 constructor TJvDockTabPanel.Create(AOwner: TComponent);
 begin
@@ -3082,11 +2962,21 @@ begin
   FTempPages := TList.Create;
   FSelectHotIndex := -1;
   FShowTabImages := False;
-  FActiveSheet := nil;
+  FSelectSheet := nil;
+end;
+
+destructor TJvDockTabPanel.Destroy;
+begin
+  FActiveFont.Free;
+  FInactiveFont.Free;
+  FSortList.Free;
+  FTempPages.Free;
+  inherited Destroy;
 end;
 
 procedure TJvDockTabPanel.DeleteSorts(Sheet: TJvDockVIDTabSheet);
-var SheetIndex: Integer;
+var
+  SheetIndex: Integer;
 begin
   SheetIndex := FSortList.IndexOf(Sheet);
   if SheetIndex >= 0 then
@@ -3097,33 +2987,29 @@ begin
   Page.Invalidate;
 end;
 
-destructor TJvDockTabPanel.Destroy;
-begin
-  FActiveFont.Free;
-  FInactiveFont.Free;
-  FSortList.Free;
-  FTempPages.Free;
-  inherited;
-end;
-
 function TJvDockTabPanel.FindSheetWithPos(cX, cY, cTopOffset, cBottomOffset: Integer): Integer;
-var i: Integer;
+var
+  I: Integer;
   CompleteWidth, CurrTabWidth: Integer;
   Pages: TList;
 begin
   Result := -1;
-  if (cY > cBottomOffset) or (cY < cTopOffset) then Exit;
+  if (cY > cBottomOffset) or (cY < cTopOffset) then
+    Exit;
   CompleteWidth := 0;
-  if FActiveSheet = nil then
+  if FSelectSheet = nil then
     Pages := Page.PageSheets
-  else Pages := FTempPages;
-  for i := 0 to Pages.Count - 1 do
+  else
+    Pages := FTempPages;
+  for I := 0 to Pages.Count - 1 do
   begin
-    if not TJvDockVIDTabSheet(Pages[i]).TabVisible then Continue;
-    CurrTabWidth := TJvDockVIDTabSheet(Pages[i]).ShowTabWidth;
-    if (cX >= FTabLeftOffset + CompleteWidth) and (cX <= FTabLeftOffset + CurrTabWidth + CompleteWidth + FTabSplitterWidth) then
+    if not TJvDockVIDTabSheet(Pages[I]).TabVisible then
+      Continue;
+    CurrTabWidth := TJvDockVIDTabSheet(Pages[I]).ShowTabWidth;
+    if (cX >= FTabLeftOffset + CompleteWidth) and (cX <= FTabLeftOffset + CurrTabWidth + CompleteWidth +
+      FTabSplitterWidth) then
     begin
-      Result := i;
+      Result := I;
       Exit;
     end;
     Inc(CompleteWidth, CurrTabWidth + FTabSplitterWidth);
@@ -3134,47 +3020,50 @@ function TJvDockTabPanel.GetPageIndexFromMousePos(X, Y: Integer): Integer;
 begin
   Result := -1;
   case Page.TabPosition of
-  tpTop:
-    Result := FindSheetWithPos(x, y, 0, Height - TabBottomOffset);
-  tpBottom:
-    Result := FindSheetWithPos(x, y, TabBottomOffset, Height);
-  tpLeft:
-    Result := FindSheetWithPos(y, x, 0, Height - TabBottomOffset);
-  tpRight:
-    Result := FindSheetWithPos(y, x, TabBottomOffset, Height);
+    tpTop:
+      Result := FindSheetWithPos(x, y, 0, Height - TabBottomOffset);
+    tpBottom:
+      Result := FindSheetWithPos(x, y, TabBottomOffset, Height);
+    tpLeft:
+      Result := FindSheetWithPos(y, x, 0, Height - TabBottomOffset);
+    tpRight:
+      Result := FindSheetWithPos(y, x, TabBottomOffset, Height);
   end;
 end;
 
 function TJvDockTabPanel.GetMaxTabWidth: TJvDockTabSheet;
-var i: Integer;
+var
+  I: Integer;
   MaxWidth, CurrWidth: Integer;
 begin
   Result := nil;
   MaxWidth := 0;
-  if Page = nil then Exit;
-  for i := 0 to Page.Count - 1 do
+  if Page = nil then
+    Exit;
+  for I := 0 to Page.Count - 1 do
   begin
-    CurrWidth := Canvas.TextWidth(Page.Tabs[i]);
+    CurrWidth := Canvas.TextWidth(Page.Tabs[I]);
     if MaxWidth < CurrWidth then
     begin
-      Result := Page.Pages[i];
+      Result := Page.Pages[I];
       MaxWidth := CurrWidth;
     end;
   end;
 end;
 
 function TJvDockTabPanel.GetMinTabWidth: TJvDockTabSheet;
-var i: Integer;
+var
+  I: Integer;
   MinWidth, CurrWidth: Integer;
 begin
   Result := nil;
   MinWidth := 0;
-  for i := 0 to Page.Count - 1 do
+  for I := 0 to Page.Count - 1 do
   begin
-    CurrWidth := Canvas.TextWidth(Page.Tabs[i]);
+    CurrWidth := Canvas.TextWidth(Page.Tabs[I]);
     if MinWidth > CurrWidth then
     begin
-      Result := Page.Pages[i];
+      Result := Page.Pages[I];
       MinWidth := CurrWidth;
     end;
   end;
@@ -3182,23 +3071,25 @@ end;
 
 function TJvDockTabPanel.GetPanelHeight: Integer;
 begin
-  Result := 0;
   case Page.TabPosition of
     tpLeft, tpRight:
       Result := Width;
     tpTop, tpBottom:
       Result := Height;
+  else
+    Result := 0;
   end;
 end;
 
 function TJvDockTabPanel.GetPanelWidth: Integer;
 begin
-  Result := 0;
   case Page.TabPosition of
     tpLeft, tpRight:
       Result := Height;
     tpTop, tpBottom:
       Result := Width;
+  else
+    Result := 0;
   end;
 end;
 
@@ -3208,26 +3099,30 @@ begin
 end;
 
 function TJvDockTabPanel.GetTotalTabWidth: Integer;
-var i: Integer;
+var
+  I: Integer;
 begin
   Result := 0;
-  if FSortList = nil then Exit;
-  for i := 0 to FSortList.Count - 1 do
-    Inc(Result, Sorts[i].TabWidth + Integer(i <> FSortList.Count - 1) * FTabSplitterWidth);
+  if FSortList = nil then
+    Exit;
+  for I := 0 to FSortList.Count - 1 do
+    Inc(Result, Sorts[I].TabWidth + Integer(I <> FSortList.Count - 1) * FTabSplitterWidth);
 end;
 
 procedure TJvDockTabPanel.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
-var Ctrl: TControl;
+var
+  Ctrl: TControl;
   Index: Integer;
   Msg: TWMMouse;
   Sheet: TJvDockVIDTabSheet;
 begin
   inherited MouseDown(Button, Shift, X, Y);
-  if Page = nil then Exit;
-  
+  if Page = nil then
+    Exit;
+
   Index := GetPageIndexFromMousePos(X, Y);
-  if (Index >= 0) then
+  if Index >= 0 then
   begin
     if Index <> Page.ActivePageIndex then
     begin
@@ -3241,35 +3136,27 @@ begin
 
     if Button = mbLeft then
     begin
-      
-      FActiveSheet := TJvDockVIDTabSheet(Page.ActivePage);
-      
+      FSelectSheet := TJvDockVIDTabSheet(Page.ActivePage);
       {$IFDEF COMPILER6_UP}
       FTempPages.Assign(Page.PageSheets);
       {$ELSE}
-      
       AssignList(Page.PageSheets, FTempPages);
-      {$ENDIF}
-
+      {$ENDIF COMPILER6_UP}
     end;
 
     Ctrl := GetDockClientFromPageIndex(Index);
     if Ctrl <> nil then
     begin
-      
       JvGlobalDockClient := FindDockClient(Ctrl);
-
       if JvGlobalDockClient <> nil then
       begin
         Msg.Msg := WM_NCLBUTTONDOWN + Integer(Button) * 3 + Integer(ssDouble in Shift) * 2;
         Msg.Pos.x := X;
         Msg.Pos.y := Y;
         if not (ssDouble in Shift) then
-          
           JvGlobalDockClient.DoNCButtonDown(Page.DoMouseEvent(Msg, Page), Button, msTabPage)
         else
         begin
-          
           JvGlobalDockClient.DoNCButtonDblClk(Page.DoMouseEvent(Msg, Page), Button, msTabPage);
           if (Button = mbLeft) and JvGlobalDockClient.CanFloat then
             Ctrl.ManualDock(nil, nil, alNone);
@@ -3280,265 +3167,273 @@ begin
 end;
 
 procedure TJvDockTabPanel.MouseMove(Shift: TShiftState; X, Y: Integer);
-var Index: Integer;
+var
+  Index: Integer;
   Ctrl: TControl;
   ARect: TRect;
 begin
   inherited MouseMove(Shift, X, Y);
-
   Index := GetPageIndexFromMousePos(X, Y);
-
   if Page.HotTrack and (Index <> FSelectHotIndex) then
   begin
     FSelectHotIndex := Index;
     Invalidate;
   end;
 
-  if Assigned(FActiveSheet) then
+  if Assigned(FSelectSheet) then
   begin
     Index := GetPageIndexFromMousePos(X, Y);
     if Index >= 0 then
     begin
       if (Index <> Page.ActivePageIndex) and (Page.Count > Index) then
       begin
-        FActiveSheet.PageIndex := Index;
+        FSelectSheet.PageIndex := Index;
         Invalidate;
       end;
-    end else
+    end
+    else
     begin
       case Page.TabPosition of
-      tpTop:
-        ARect := Rect(0, 0, Width, Height - FTabBottomOffset);
-      tpBottom:
-        ARect := Rect(0, FTabBottomOffset, Width, Height);
-      tpLeft:
-        ARect := Rect(0, 0, Width - FTabBottomOffset, Height);
-      tpRight:
-        ARect := Rect(FTabBottomOffset, 0, Width, Height);
+        tpTop:
+          ARect := Rect(0, 0, Width, Height - FTabBottomOffset);
+        tpBottom:
+          ARect := Rect(0, FTabBottomOffset, Width, Height);
+        tpLeft:
+          ARect := Rect(0, 0, Width - FTabBottomOffset, Height);
+        tpRight:
+          ARect := Rect(FTabBottomOffset, 0, Width, Height);
       else
         ARect := Rect(0, 0, 0, 0);
       end;
-      if PtInRect(ARect, Point(X, Y)) then Exit;
-      if Page.FTemporarySheet = nil then
+      if PtInRect(ARect, Point(X, Y)) then
+        Exit;
+      if Page.FTempSheet = nil then
       begin
-        Ctrl := GetDockClientFromPageIndex(FActiveSheet.PageIndex);
+        Ctrl := GetDockClientFromPageIndex(FSelectSheet.PageIndex);
         if Ctrl <> nil then
-          
           JvGlobalDockManager.BeginDrag(Ctrl, False, 1);
       end;
     end;
   end;
 end;
 
-procedure TJvDockTabPanel.MouseUp(Button: TMouseButton; Shift: TShiftState; X,
-  Y: Integer);
-var Ctrl: TControl;
+procedure TJvDockTabPanel.MouseUp(Button: TMouseButton; Shift: TShiftState;
+  X, Y: Integer);
+var
+  Ctrl: TControl;
   Index: Integer;
   Msg: TWMMouse;
 begin
-  inherited;
-  FActiveSheet := nil;
-  if Page = nil then Exit;
-  
+  inherited MouseUp(Button, Shift, X, Y);
+  FSelectSheet := nil;
+  if Page = nil then
+    Exit;
+
   Index := GetPageIndexFromMousePos(X, Y);
   Ctrl := GetDockClientFromPageIndex(Index);
   if Ctrl <> nil then
   begin
-    
     JvGlobalDockClient := FindDockClient(Ctrl);
-
-    if (JvGlobalDockClient <> nil) then
+    if JvGlobalDockClient <> nil then
     begin
       Msg.Msg := WM_NCLBUTTONUP + Integer(Button) * 3 + Integer(ssDouble in Shift) * 2;
       Msg.Pos := PointToSmallPoint(Page.ScreenToClient(ClientToScreen(Point(X, Y))));
       if not (ssDouble in Shift) then
-        
         JvGlobalDockClient.DoNCButtonUp(Page.DoMouseEvent(Msg, Page), Button, msTabPage);
     end;
   end;
 end;
 
 procedure TJvDockTabPanel.Paint;
-var ARect: TRect;
+var
+  ARect: TRect;
   CurrTabWidth: Integer;
-  i, CompleteWidth: Integer;
+  I, CompleteWidth: Integer;
   ImageWidth: Integer;
   CaptionString: string;
-
 begin
   inherited Paint;
-  if Page = nil then Exit;
+  if Page = nil then
+    Exit;
 
   if (Page.Images <> nil) and (Page.ShowTabImages) then
     ImageWidth := Page.Images.Width
-  else ImageWidth := 0;
+  else
+    ImageWidth := 0;
 
-  
   Canvas.Brush.Color := Page.ActiveSheetColor;
   case Page.TabPosition of
-    tpLeft:   Canvas.FillRect(Rect(PanelHeight - FTabBottomOffset, 0, PanelHeight, PanelWidth));
-    tpRight:  Canvas.FillRect(Rect(0, 0, FTabBottomOffset, PanelWidth));
-    tpTop:    Canvas.FillRect(Rect(0, PanelHeight - FTabBottomOffset, PanelWidth, PanelHeight));
-    tpBottom: Canvas.FillRect(Rect(0, 0, PanelWidth, FTabBottomOffset));
+    tpLeft:
+      Canvas.FillRect(Rect(PanelHeight - FTabBottomOffset, 0, PanelHeight, PanelWidth));
+    tpRight:
+      Canvas.FillRect(Rect(0, 0, FTabBottomOffset, PanelWidth));
+    tpTop:
+      Canvas.FillRect(Rect(0, PanelHeight - FTabBottomOffset, PanelWidth, PanelHeight));
+    tpBottom:
+      Canvas.FillRect(Rect(0, 0, PanelWidth, FTabBottomOffset));
   end;
 
-  
   case Page.TabPosition of
-    tpTop, tpLeft: Canvas.Pen.Color := clWhite;
-    tpBottom, tpRight: Canvas.Pen.Color := clBlack;
+    tpTop, tpLeft:
+      Canvas.Pen.Color := clWhite;
+    tpBottom, tpRight:
+      Canvas.Pen.Color := clBlack;
   end;
 
   case Page.TabPosition of
     tpLeft:
-    begin
-      Canvas.MoveTo(PanelHeight - FTabBottomOffset, 0);
-      Canvas.LineTo(PanelHeight - FTabBottomOffset, PanelWidth);
-    end;
+      begin
+        Canvas.MoveTo(PanelHeight - FTabBottomOffset, 0);
+        Canvas.LineTo(PanelHeight - FTabBottomOffset, PanelWidth);
+      end;
     tpRight:
-    begin
-      Canvas.MoveTo(FTabBottomOffset, 0);
-      Canvas.LineTo(FTabBottomOffset, PanelWidth);
-    end;
+      begin
+        Canvas.MoveTo(FTabBottomOffset, 0);
+        Canvas.LineTo(FTabBottomOffset, PanelWidth);
+      end;
     tpTop:
-    begin
-      Canvas.MoveTo(0, PanelHeight - FTabBottomOffset);
-      Canvas.LineTo(PanelWidth, PanelHeight - FTabBottomOffset);
-    end;
+      begin
+        Canvas.MoveTo(0, PanelHeight - FTabBottomOffset);
+        Canvas.LineTo(PanelWidth, PanelHeight - FTabBottomOffset);
+      end;
     tpBottom:
-    begin
-      Canvas.MoveTo(0, FTabBottomOffset);
-      Canvas.LineTo(PanelWidth, FTabBottomOffset);
-    end;
+      begin
+        Canvas.MoveTo(0, FTabBottomOffset);
+        Canvas.LineTo(PanelWidth, FTabBottomOffset);
+      end;
   end;
 
   CompleteWidth := 0;
 
   Canvas.Brush.Style := bsClear;
 
-  for i := 0 to Page.Count - 1 do
+  for I := 0 to Page.Count - 1 do
   begin
-    if not Page.Pages[i].TabVisible then Continue;
+    if not Page.Pages[I].TabVisible then
+      Continue;
 
-    
-    CurrTabWidth := TJvDockVIDTabSheet(Page.Pages[i]).ShowTabWidth;
+    CurrTabWidth := TJvDockVIDTabSheet(Page.Pages[I]).ShowTabWidth;
 
-    if Page.ActivePageIndex = i then
+    if Page.ActivePageIndex = I then
     begin
-      
       Canvas.Brush.Color := Page.ActiveSheetColor;
       case Page.TabPosition of
-        tpLeft:   Canvas.FillRect(Rect(FTabTopOffset, CompleteWidth + FTabLeftOffset,
-                    PanelHeight, CompleteWidth + FTabLeftOffset + CurrTabWidth));
-        tpRight:  Canvas.FillRect(Rect(FTabBottomOffset, CompleteWidth + FTabLeftOffset,
-                    PanelHeight - FTabTopOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth));
-        tpTop:    Canvas.FillRect(Rect(CompleteWidth + FTabLeftOffset, FTabTopOffset,
-                    CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight));
-        tpBottom: Canvas.FillRect(Rect(CompleteWidth + FTabLeftOffset, FTabBottomOffset,
-                    CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight - FTabTopOffset));
+        tpLeft:
+          Canvas.FillRect(Rect(FTabTopOffset, CompleteWidth + FTabLeftOffset,
+            PanelHeight, CompleteWidth + FTabLeftOffset + CurrTabWidth));
+        tpRight:
+          Canvas.FillRect(Rect(FTabBottomOffset, CompleteWidth + FTabLeftOffset,
+            PanelHeight - FTabTopOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth));
+        tpTop:
+          Canvas.FillRect(Rect(CompleteWidth + FTabLeftOffset, FTabTopOffset,
+            CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight));
+        tpBottom:
+          Canvas.FillRect(Rect(CompleteWidth + FTabLeftOffset, FTabBottomOffset,
+            CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight - FTabTopOffset));
       end;
 
-      
       Canvas.Pen.Color := clWhite;
       case Page.TabPosition of
         tpLeft:
-        begin
-          Canvas.MoveTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset);
-          Canvas.LineTo(FTabTopOffset, CompleteWidth + FTabLeftOffset);
-          Canvas.LineTo(FTabTopOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
-          Canvas.Pen.Color := clBlack;
-          Canvas.LineTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
-        end;
+          begin
+            Canvas.MoveTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset);
+            Canvas.LineTo(FTabTopOffset, CompleteWidth + FTabLeftOffset);
+            Canvas.LineTo(FTabTopOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
+            Canvas.Pen.Color := clBlack;
+            Canvas.LineTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
+          end;
         tpRight:
-        begin
-          Canvas.MoveTo(FTabTopOffset, CompleteWidth + FTabLeftOffset);
-          Canvas.LineTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset);
-          Canvas.Pen.Color := clBlack;
-          Canvas.LineTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
-          Canvas.LineTo(FTabTopOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
-        end;
+          begin
+            Canvas.MoveTo(FTabTopOffset, CompleteWidth + FTabLeftOffset);
+            Canvas.LineTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset);
+            Canvas.Pen.Color := clBlack;
+            Canvas.LineTo(PanelHeight - FTabBottomOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
+            Canvas.LineTo(FTabTopOffset, CompleteWidth + FTabLeftOffset + CurrTabWidth);
+          end;
         tpTop:
-        begin
-          Canvas.MoveTo(CompleteWidth + FTabLeftOffset, PanelHeight - FTabBottomOffset);
-          Canvas.LineTo(CompleteWidth + FTabLeftOffset, FTabTopOffset);
-          Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, FTabTopOffset);
-          Canvas.Pen.Color := clBlack;
-          Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight - FTabTopOffset);
-        end;
+          begin
+            Canvas.MoveTo(CompleteWidth + FTabLeftOffset, PanelHeight - FTabBottomOffset);
+            Canvas.LineTo(CompleteWidth + FTabLeftOffset, FTabTopOffset);
+            Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, FTabTopOffset);
+            Canvas.Pen.Color := clBlack;
+            Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight - FTabTopOffset);
+          end;
         tpBottom:
-        begin
-          Canvas.MoveTo(CompleteWidth + FTabLeftOffset, FTabBottomOffset);
-          Canvas.LineTo(CompleteWidth + FTabLeftOffset, PanelHeight - FTabTopOffset);
-          Canvas.Pen.Color := clBlack;
-          Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight - FTabTopOffset);
-          Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, FTabBottomOffset);
-        end;
+          begin
+            Canvas.MoveTo(CompleteWidth + FTabLeftOffset, FTabBottomOffset);
+            Canvas.LineTo(CompleteWidth + FTabLeftOffset, PanelHeight - FTabTopOffset);
+            Canvas.Pen.Color := clBlack;
+            Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight - FTabTopOffset);
+            Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, FTabBottomOffset);
+          end;
       end;
 
-      
       Canvas.Font.Assign(FActiveFont);
-    end else
+    end
+    else
     begin
-      
-      if (i < Page.ActivePageIndex - 1) or (i > Page.ActivePageIndex) then
+      if (I < Page.ActivePageIndex - 1) or (I > Page.ActivePageIndex) then
       begin
         Canvas.Pen.Color := Page.InactiveFont.Color;
         case Page.TabPosition of
           tpLeft, tpRight:
-          begin
-            Canvas.MoveTo(PanelHeight - FTabBottomOffset - 3, CompleteWidth + FTabLeftOffset + CurrTabWidth);
-            Canvas.LineTo(FTabTopOffset + 2, CompleteWidth + FTabLeftOffset + CurrTabWidth);
-          end;
+            begin
+              Canvas.MoveTo(PanelHeight - FTabBottomOffset - 3, CompleteWidth + FTabLeftOffset + CurrTabWidth);
+              Canvas.LineTo(FTabTopOffset + 2, CompleteWidth + FTabLeftOffset + CurrTabWidth);
+            end;
           tpTop, tpBottom:
-          begin
-            Canvas.MoveTo(CompleteWidth + FTabLeftOffset + CurrTabWidth , PanelHeight - FTabBottomOffset - 3);
-            Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth , FTabTopOffset + 2);
-          end;
+            begin
+              Canvas.MoveTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, PanelHeight - FTabBottomOffset - 3);
+              Canvas.LineTo(CompleteWidth + FTabLeftOffset + CurrTabWidth, FTabTopOffset + 2);
+            end;
         end;
       end;
       Canvas.Brush.Color := Page.InactiveSheetColor;
-      
       Canvas.Font.Assign(FInactiveFont);
     end;
 
-    if FSelectHotIndex = i then
+    if FSelectHotIndex = I then
       Canvas.Font.Color := FHotTrackColor;
 
     case Page.TabPosition of
-      tpLeft:   ARect := Rect(FTabTopOffset + FCaptionTopOffset + 1,
-                  CompleteWidth + FTabLeftOffset + FCaptionLeftOffset,
-                  PanelHeight,
-                  CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset);
+      tpLeft:
+        ARect := Rect(FTabTopOffset + FCaptionTopOffset + 1,
+          CompleteWidth + FTabLeftOffset + FCaptionLeftOffset,
+          PanelHeight,
+          CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset);
 
-      tpRight:  ARect := Rect(FTabBottomOffset + FCaptionTopOffset + 1,
-                  CompleteWidth + FTabLeftOffset + FCaptionLeftOffset,
-                  PanelHeight,
-                  CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset);
+      tpRight:
+        ARect := Rect(FTabBottomOffset + FCaptionTopOffset + 1,
+          CompleteWidth + FTabLeftOffset + FCaptionLeftOffset,
+          PanelHeight,
+          CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset);
 
-      tpTop:    ARect := Rect(CompleteWidth + FTabLeftOffset + FCaptionLeftOffset + Integer(FShowTabImages) * (ImageWidth + FCaptionLeftOffset),
-                  FTabTopOffset + FCaptionTopOffset + 1,
-                  CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset,
-                  PanelHeight);
+      tpTop:
+        ARect := Rect(CompleteWidth + FTabLeftOffset + FCaptionLeftOffset +
+          Integer(FShowTabImages) * (ImageWidth + FCaptionLeftOffset),
+          FTabTopOffset + FCaptionTopOffset + 1,
+          CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset,
+          PanelHeight);
 
-      tpBottom: ARect := Rect(CompleteWidth + FTabLeftOffset + FCaptionLeftOffset + Integer(FShowTabImages) * (ImageWidth + FCaptionLeftOffset),
-                  FTabBottomOffset + FCaptionTopOffset + 1,
-                  CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset,
-                  PanelHeight);
+      tpBottom:
+        ARect := Rect(CompleteWidth + FTabLeftOffset + FCaptionLeftOffset +
+          Integer(FShowTabImages) * (ImageWidth + FCaptionLeftOffset),
+          FTabBottomOffset + FCaptionTopOffset + 1,
+          CompleteWidth + FTabLeftOffset + CurrTabWidth - FCaptionRightOffset,
+          PanelHeight);
     end;
 
-    CaptionString := Page.Pages[i].Caption;
-
-    
+    CaptionString := Page.Pages[I].Caption;
     DrawText(Canvas.Handle, PChar(CaptionString), Length(CaptionString),
-        ARect, DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS);
-    
+      ARect, DT_LEFT or DT_SINGLELINE or DT_END_ELLIPSIS);
+
     if FShowTabImages and (Page.Images <> nil) and (CurrTabWidth > ImageWidth + 2 * FCaptionLeftOffset) then
       Page.Images.Draw(Canvas, CompleteWidth + FTabLeftOffset + FCaptionLeftOffset,
-        FTabBottomOffset + FCaptionTopOffset + 1, Page.Pages[i].ImageIndex, True);
+        FTabBottomOffset + FCaptionTopOffset + 1, Page.Pages[I].ImageIndex, True);
 
     Inc(CompleteWidth, CurrTabWidth + FTabSplitterWidth);
   end;
 
-  
   Canvas.Brush.Color := Page.ActiveSheetColor;
   ARect := ClientRect;
   Canvas.FrameRect(ARect);
@@ -3587,8 +3482,10 @@ begin
   if PanelHeight <> Value then
   begin
     case Page.TabPosition of
-      tpLeft, tpRight: Width := Value;
-      tpTop, tpBottom: Height := Value;
+      tpLeft, tpRight:
+        Width := Value;
+      tpTop, tpBottom:
+        Height := Value;
     end;
     SetShowTabWidth;
   end;
@@ -3647,55 +3544,53 @@ function TJvDockTabPanel.GetDockClientFromPageIndex(Index: Integer): TControl;
 begin
   Result := nil;
   if Index >= 0 then
-  begin
     if Page.Pages[Index].ControlCount = 1 then
     begin
       Result := Page.Pages[Index].Controls[0];
-      if Result.HostDockSite <> Page then Result := nil;
+      if Result.HostDockSite <> Page then
+        Result := nil;
     end;
-  end;
 end;
 
 procedure TJvDockTabPanel.SetShowTabWidth;
-var i, j, TempWidth: Integer;
+var
+  I, J, TempWidth: Integer;
   PanelWidth, VisibleCount: Integer;
   ImageWidth: Integer;
 begin
-  if Page = nil then Exit;
-  if FSortList = nil then Exit;
+  if Page = nil then
+    Exit;
+  if FSortList = nil then
+    Exit;
   PanelWidth := 0;
   case Page.TabPosition of
-  tpTop, tpBottom:
-    PanelWidth := Width;
-  tpLeft, tpRight:
-    PanelWidth := Height;
+    tpTop, tpBottom:
+      PanelWidth := Width;
+    tpLeft, tpRight:
+      PanelWidth := Height;
   end;
-  
+
   TempWidth := PanelWidth - FCaptionLeftOffset - FCaptionRightOffset;
   if Page.ShowTabImages then
     ImageWidth := Page.Images.Width + FCaptionLeftOffset
-  else ImageWidth := 0;
-  VisibleCount := Page.VisibleSheetCount;
-  j := 0;
-  for i := 0 to FSortList.Count - 1 do
+  else
+    ImageWidth := 0;
+  VisibleCount := Page.VisibleTheetCount;
+  J := 0;
+  for I := 0 to FSortList.Count - 1 do
   begin
-    
-    if not Sorts[i].TabVisible then Continue;
-    
-    
-    if (VisibleCount - j) * (Sorts[i].TabWidth + FTabSplitterWidth + ImageWidth) > TempWidth then
-    begin
-      Sorts[i].FShowTabWidth := TempWidth div (VisibleCount - j) - FTabSplitterWidth;
-    end else
-      Sorts[i].FShowTabWidth := Sorts[i].TabWidth + ImageWidth;
-    
-    Dec(TempWidth, Sorts[i].FShowTabWidth + FTabSplitterWidth);
-    
-    Inc(j);
+    if not Sorts[I].TabVisible then
+      Continue;
+    if (VisibleCount - J) * (Sorts[I].TabWidth + FTabSplitterWidth + ImageWidth) > TempWidth then
+      Sorts[I].FShowTabWidth := TempWidth div (VisibleCount - J) - FTabSplitterWidth
+    else
+      Sorts[I].FShowTabWidth := Sorts[I].TabWidth + ImageWidth;
+    Dec(TempWidth, Sorts[I].FShowTabWidth + FTabSplitterWidth);
+    Inc(J);
   end;
 end;
 
-procedure TJvDockTabPanel.CMMouseLeave(var Message: TMessage);
+procedure TJvDockTabPanel.CMMouseLeave(var Msg: TMessage);
 begin
   inherited;
   if FSelectHotIndex <> -1 then
@@ -3721,7 +3616,7 @@ begin
   Height := FTabHeight + FTabTopOffset + FTabBottomOffset;
 end;
 
-
+//=== TJvDockVIDTabSheet =====================================================
 
 constructor TJvDockVIDTabSheet.Create(AOwner: TComponent);
 begin
@@ -3738,36 +3633,33 @@ end;
 
 procedure TJvDockVIDTabSheet.Loaded;
 begin
-  inherited;
+  inherited Loaded;
   SetSheetSort(Caption);
 end;
 
-procedure TJvDockVIDTabSheet.SetPageControl(
-  APageControl: TJvDockPageControl);
+procedure TJvDockVIDTabSheet.SetPageControl(APageControl: TJvDockPageControl);
 begin
-  inherited;
-
+  inherited SetPageControl(APageControl);
 end;
 
 procedure TJvDockVIDTabSheet.SetSheetSort(CaptionStr: string);
-var TempWidth: Integer;
+var
+  TabPanel: TJvDockTabPanel;
+  TempWidth: Integer;
 
   procedure DoSetSheetSort;
-  var i: Integer;
+  var
+    I: Integer;
   begin
     TJvDockVIDTabPageControl(PageControl).Panel.FSortList.Remove(Self);
-    for i := 0 to TJvDockVIDTabPageControl(PageControl).Panel.FSortList.Count - 1 do
-    begin
-      if TJvDockVIDTabPageControl(PageControl).Panel.Sorts[i].TabWidth > TempWidth then
+    for I := 0 to TJvDockVIDTabPageControl(PageControl).Panel.FSortList.Count - 1 do
+      if TJvDockVIDTabPageControl(PageControl).Panel.Sorts[I].TabWidth > TempWidth then
       begin
-        TJvDockVIDTabPageControl(PageControl).Panel.FSortList.Insert(i, Self);
+        TJvDockVIDTabPageControl(PageControl).Panel.FSortList.Insert(I, Self);
         Exit;
       end;
-    end;
     TJvDockVIDTabPageControl(PageControl).Panel.FSortList.Add(Self);
   end;
-
-var TabPanel: TJvDockTabPanel;
 
 begin
   if (PageControl is TJvDockVIDTabPageControl) and (PageControl <> nil) then
@@ -3775,7 +3667,8 @@ begin
     TabPanel := TJvDockVIDTabPageControl(PageControl).Panel;
     if PageControl.ActivePage = Self then
       TabPanel.Canvas.Font.Assign(TabPanel.Page.ActiveFont)
-    else TabPanel.Canvas.Font.Assign(TabPanel.Page.InactiveFont);
+    else
+      TabPanel.Canvas.Font.Assign(TabPanel.Page.InactiveFont);
     TempWidth := TabPanel.Canvas.TextWidth(
       CaptionStr) + TabPanel.CaptionLeftOffset + TabPanel.CaptionRightOffset;
     if TempWidth <> FTabWidth then
@@ -3799,35 +3692,35 @@ begin
   TJvDockVIDTabPageControl(PageControl).Panel.SetShowTabWidth;
 end;
 
-procedure TJvDockVIDTabSheet.WMSETTEXT(var Message: TMessage);
+procedure TJvDockVIDTabSheet.WMSetText(var Msg: TMessage);
 begin
   inherited;
-  SetSheetSort(PChar(Message.LParam));
+  SetSheetSort(PChar(Msg.LParam));
 end;
+
 {$IFNDEF USEJVCL}
 function TJvDockVIDStyle.GetControlName: string;
 begin
   Result := Format(RsDockLikeVIDStyle, [inherited GetControlName]);
 end;
-{$ENDIF}
+{$ENDIF USEJVCL}
 
-
+//=== TJvDockVIDDragDockObject ===============================================
 
 constructor TJvDockVIDDragDockObject.Create(AControl: TControl);
 
   procedure DoGetSourceDockClients(Control: TControl);
-  var i: Integer;
+  var
+    I: Integer;
     DockableControl: TWinControl;
   begin
-    if (Control is TJvDockableForm) then
+    if Control is TJvDockableForm then
     begin
       DockableControl := TJvDockableForm(Control).DockableControl;
-      for i := 0 to DockableControl.DockClientCount - 1 do
-      begin
-
-        DoGetSourceDockClients(DockableControl.DockClients[i]);
-      end;
-    end else
+      for I := 0 to DockableControl.DockClientCount - 1 do
+        DoGetSourceDockClients(DockableControl.DockClients[I]);
+    end
+    else
       FSourceDockClientList.Add(Control);
   end;
 
@@ -3837,23 +3730,34 @@ begin
   DoGetSourceDockClients(AControl);
   FDropTabControl := nil;
   FIsTabDockOver := False;
-  CurrentState := dsDragEnter;
-  PreviousState := CurrentState;
+  CurrState := dsDragEnter;
+  OldState := CurrState;
 end;
 
-procedure TJvDockVIDDragDockObject.GetBrush_PenSize_DrawRect(
-  var ABrush: TBrush; var PenSize: Integer; var DrawRect: TRect; Erase: Boolean);
+destructor TJvDockVIDDragDockObject.Destroy;
 begin
-  if DragTarget = nil then DropAlign := alNone;
+  FDropTabControl := nil;
+  FSourceDockClientList.Free;
+  inherited Destroy;
+end;
+
+procedure TJvDockVIDDragDockObject.GetBrush_PenSize_DrawRect(var ABrush: TBrush;
+  var PenSize: Integer; var DrawRect: TRect; Erase: Boolean);
+begin
+  if DragTarget = nil then
+    DropAlign := alNone;
   inherited GetBrush_PenSize_DrawRect(ABrush, PenSize, DrawRect, Erase);
   FIsTabDockOver := ((FOldDropAlign = alClient) and FErase) or
     ((DropAlign = alClient) and not FErase);
   FOldDropAlign := DropAlign;
-  FPreviousTarget := DragTarget;
+  FOldTarget := DragTarget;
 end;
 
-{$J+}
+// (rom) unused writeable const option removed
+
 procedure TJvDockVIDDragDockObject.DefaultDockImage(Erase: Boolean);
+const
+  LeftOffset = 4;
 var
   DesktopWindow: HWND;
   DC: HDC;
@@ -3861,12 +3765,8 @@ var
   DrawRect: TRect;
   PenSize: Integer;
   ABrush: TBrush;
-
   ButtomOffset: Integer;
   MaxTabWidth: Integer;
-
-const
-  LeftOffset = 4;
 
   procedure DoDrawDefaultImage;
   begin
@@ -3895,18 +3795,19 @@ const
       if DrawRect.Bottom - DrawRect.Top - 2 * PenSize < 2 * ButtomOffset then
         ButtomOffset := Max((DrawRect.Bottom - DrawRect.Top - 2 * PenSize) div 2, 0);
 
-      PatBlt(DC, Left, Bottom - PenSize - ButtomOffset, 2*PenSize + LeftOffset, PenSize, PATINVERT);
+      PatBlt(DC, Left, Bottom - PenSize - ButtomOffset, 2 * PenSize + LeftOffset, PenSize, PATINVERT);
       PatBlt(DC, Left + PenSize + LeftOffset, Bottom - ButtomOffset, PenSize, ButtomOffset, PATINVERT);
-      PatBlt(DC, Left + 2*PenSize + LeftOffset, Bottom - PenSize, MaxTabWidth, PenSize, PATINVERT);
-      PatBlt(DC, Left + 2*PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, PenSize, PenSize + ButtomOffset, PATINVERT);
-      PatBlt(DC, Left + 3*PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, Right - Left - 3*PenSize - LeftOffset - MaxTabWidth, PenSize, PATINVERT);
+      PatBlt(DC, Left + 2 * PenSize + LeftOffset, Bottom - PenSize, MaxTabWidth, PenSize, PATINVERT);
+      PatBlt(DC, Left + 2 * PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, PenSize, PenSize +
+        ButtomOffset, PATINVERT);
+      PatBlt(DC, Left + 3 * PenSize + LeftOffset + MaxTabWidth, Bottom - PenSize - ButtomOffset, Right - Left - 3 *
+        PenSize - LeftOffset - MaxTabWidth, PenSize, PATINVERT);
 
       PatBlt(DC, Left, Top, PenSize, Bottom - Top - PenSize - ButtomOffset, PATINVERT);
     end;
   end;
 
 begin
-  
   FErase := Erase;
   GetBrush_PenSize_DrawRect(ABrush, PenSize, DrawRect, Erase);
 
@@ -3916,19 +3817,12 @@ begin
     OldBrush := SelectObject(DC, ABrush.Handle);
     if not FIsTabDockOver then
       DoDrawDefaultImage
-    else DoDrawTabImage;
+    else
+      DoDrawTabImage;
     SelectObject(DC, OldBrush);
   finally
     ReleaseDC(DesktopWindow, DC);
   end;
-end;
-{$J-}
-
-destructor TJvDockVIDDragDockObject.Destroy;
-begin
-  FDropTabControl := nil;
-  FSourceDockClientList.Free;
-  inherited Destroy;
 end;
 
 function TJvDockVIDDragDockObject.DragFindWindow(const Pos: TPoint): HWND;
@@ -3937,75 +3831,69 @@ begin
 end;
 
 function TJvDockVIDDragDockObject.GetDropCtl: TControl;
-var ARect: TRect;
-  i: Integer;
+var
+  ARect: TRect;
+  I: Integer;
 begin
   Result := inherited GetDropCtl;
   if (Result = nil) and (TargetControl is TJvDockCustomPanel) then
-  begin
-    for i := 0 to TargetControl.DockClientCount - 1 do
-    begin
-      if TargetControl.DockClients[i].Visible then
+    for I := 0 to TargetControl.DockClientCount - 1 do
+      if TargetControl.DockClients[I].Visible then
       begin
-        ARect := TJvDockCustomPanel(DragTarget).JvDockManager.GetFrameRectEx(TargetControl.DockClients[i]);
+        ARect := TJvDockCustomPanel(DragTarget).JvDockManager.GetFrameRectEx(TargetControl.DockClients[I]);
         if PtInRect(ARect, DragPos) then
         begin
-          Result := TargetControl.DockClients[i];
+          Result := TargetControl.DockClients[I];
           Exit;
         end;
       end;
-    end;
-  end;
 end;
 
-function TJvDockVIDDragDockObject.GetSourceDockClient(
-  Index: Integer): TControl;
+function TJvDockVIDDragDockObject.GetSourceDockClient(Index: Integer): TControl;
 begin
   Result := TControl(FSourceDockClientList[Index]);
 end;
 
-function TJvDockVIDDragDockObject.GetCount: Integer;
+function TJvDockVIDDragDockObject.GetSourceDockClientCount: Integer;
 begin
   Result := FSourceDockClientList.Count;
 end;
 
 procedure TJvDockVIDDragDockObject.MouseMsg(var Msg: TMessage);
-var APos: TPoint;
+var
+  APos: TPoint;
   Page: TJvDockVIDTabPageControl;
 begin
   inherited MouseMsg(Msg);
   case Msg.Msg of
     WM_CAPTURECHANGED:
-    begin
       if JvGlobalDockClient.ParentForm.HostDockSite is TJvDockVIDTabPageControl then
         TJvDockVIDTabPageControl(JvGlobalDockClient.ParentForm.HostDockSite).Panel.MouseUp(mbLeft, [], 0, 0)
-      else if TWinControl(JvGlobalDockManager.DragObject.DragTarget) is TJvDockVIDTabPageControl then
+      else
+      if TWinControl(JvGlobalDockManager.DragObject.DragTarget) is TJvDockVIDTabPageControl then
         TJvDockVIDTabPageControl(JvGlobalDockManager.DragObject.TargetControl).Panel.MouseUp(mbLeft, [], 0, 0);
-    end;
     WM_MOUSEMOVE:
-    begin
       if JvGlobalDockManager.DragObject.TargetControl is TJvDockVIDTabPageControl then
       begin
         Page := TJvDockVIDTabPageControl(JvGlobalDockManager.DragObject.TargetControl);
-        if Page.FTemporarySheet <> nil then
+        if Page.FTempSheet <> nil then
         begin
           APos := Point(TWMMouse(Msg).XPos, TWMMouse(Msg).YPos);
           APos := Page.Panel.ScreenToClient(APos);
           Page.Panel.MouseMove([], APos.X, APos.Y);
         end;
       end;
-    end;
   end;
 end;
 
-procedure TJvDockVIDDragDockObject.SetPreviousState(const Value: TDragState);
+procedure TJvDockVIDDragDockObject.SetOldState(const Value: TDragState);
 begin
-  FPreviousState := Value;
+  FOldState := Value;
 end;
 
-procedure TJvDockVIDDragDockObject.SetCurrentState(const Value: TDragState);
+procedure TJvDockVIDDragDockObject.SetCurrState(const Value: TDragState);
 begin
-  FCurrentState := Value;
+  FCurrState := Value;
 end;
 
 function TJvDockVIDDragDockObject.CanLeave(NewTarget: TWinControl): Boolean;
@@ -4013,30 +3901,30 @@ begin
   Result := inherited CanLeave(NewTarget);
 end;
 
-
-
-
+//=== TJvDockVIDZone =========================================================
 
 destructor TJvDockVIDZone.Destroy;
 begin
-  inherited;
+  inherited Destroy;
 end;
 
 function TJvDockVIDZone.GetSplitterLimit(IsMin: Boolean): Integer;
 begin
   if IsMin then
     Result := ZoneLimit
-  else Result := LimitBegin;
+  else
+    Result := LimitBegin;
 end;
 
 procedure TJvDockVIDZone.Insert(DockSize: Integer; Hide: Boolean);
-var PrevShift,
-    NextShift: Integer;
-    TempSize: Integer;
-    BorderSize: Integer;
-    BeforeVisibleZone,
-    AfterVisibleZone: TJvDockZone;
-    BeginSize: Integer;
+var
+  PrevShift: Integer;
+  NextShift: Integer;
+  TempSize: Integer;
+  BorderSize: Integer;
+  BeforeVisibleZone: TJvDockZone;
+  AfterVisibleZone: TJvDockZone;
+  BeginSize: Integer;
 begin
   if (ParentZone <> nil) and (ParentZone.VisibleChildCount = 0) then
     ParentZone.Insert(ParentZone.VisibleSize, Hide);
@@ -4049,15 +3937,14 @@ begin
 
   if (ParentZone <> nil) and (ParentZone.ChildZones <> nil) then
     BeginSize := ParentZone.ChildZones.LimitBegin
-  else BeginSize := 0;
+  else
+    BeginSize := 0;
 
   BeforeVisibleZone := BeforeClosestVisibleZone;
-  AfterVisibleZone  := AfterClosestVisibleZone;
+  AfterVisibleZone := AfterClosestVisibleZone;
 
   BorderSize := TJvDockVIDTree(Tree).BorderWidth * Integer(AfterClosestVisibleZone <> nil) div 2;
-
   TempSize := ParentZone.HeightWidth[ParentZone.Orientation] + BorderSize;
-
   Visibled := False;
 
   if DockSize >= TempSize - (ParentZone.VisibleChildCount) * TJvDockVIDTree(Tree).MinSize then
@@ -4071,18 +3958,19 @@ begin
     PrevShift := 0;
     NextShift := 0;
     ZoneLimit := TempSize + BeginSize;
-  end else
+  end
+  else
   if BeforeVisibleZone = nil then
   begin
-    
     PrevShift := 0;
     NextShift := DockSize + BorderSize;
     ZoneLimit := DockSize + LimitBegin + BorderSize;
     if ParentZone.VisibleChildCount = 1 then
       AfterVisibleZone.ZoneLimit := TempSize + BeginSize;
-  end else if AfterVisibleZone = nil then
+  end
+  else
+  if AfterVisibleZone = nil then
   begin
-    
     PrevShift := DockSize + BorderSize;
     NextShift := 0;
     if (ParentZone.VisibleChildCount = 1) and (ParentZone = Tree.TopZone) then
@@ -4090,9 +3978,9 @@ begin
     else
       BeforeVisibleZone.ZoneLimit := BeforeVisibleZone.ZoneLimit - PrevShift;
     ZoneLimit := TempSize + BeginSize;
-  end else
+  end
+  else
   begin
-    
     PrevShift := Round((BeforeVisibleZone.ZoneLimit - BeginSize) * (DockSize + BorderSize) / TempSize);
     NextShift := DockSize - PrevShift;
     if (ParentZone.VisibleChildCount = 1) and (ParentZone = Tree.TopZone) then
@@ -4102,17 +3990,16 @@ begin
     ZoneLimit := BeforeVisibleZone.ZoneLimit + DockSize;
   end;
 
-  
   if PrevShift <> 0 then
   begin
     with TJvDockVIDTree(Tree) do
     begin
-      
       ReplacementZone := BeforeVisibleZone;
       try
         if (BeforeVisibleZone.ZoneLimit - BeginSize) * (BeforeVisibleZone.ZoneLimit - BeginSize + PrevShift) <> 0 then
           ScaleBy := (BeforeVisibleZone.ZoneLimit - BeginSize) / (BeforeVisibleZone.ZoneLimit - BeginSize + PrevShift)
-        else ScaleBy := 1;
+        else
+          ScaleBy := 1;
         ParentLimit := BeginSize;
         ShiftScaleOrientation := ParentZone.Orientation;
         if ScaleBy <> 1 then
@@ -4121,37 +4008,35 @@ begin
         ReplacementZone := nil;
       end;
     end;
-    
+
     if BeforeVisibleZone.LimitSize < TJvDockVIDTree(Tree).MinSize then
       BeforeVisibleZone.ZoneLimit := BeforeVisibleZone.LimitBegin + TJvDockVIDTree(Tree).MinSize;
   end;
 
-
-  
   if NextShift <> 0 then
-  begin
     with TJvDockVIDTree(Tree) do
     begin
       if (TempSize + BeginSize - LimitBegin - NextShift) * (TempSize + BeginSize - LimitBegin) <> 0 then
         ScaleBy := (TempSize + BeginSize - LimitBegin - NextShift) / (TempSize + BeginSize - LimitBegin)
-      else ScaleBy := 1;
+      else
+        ScaleBy := 1;
       ParentLimit := TempSize + BeginSize;
       ShiftScaleOrientation := ParentZone.Orientation;
       if ScaleBy <> 1 then
         ForEachAt(AfterVisibleZone, ScaleSiblingZone, tskForward);
     end;
-  end;
   Visibled := True;
 end;
 
 procedure TJvDockVIDZone.Remove(DockSize: Integer; Hide: Boolean);
-var PrevShift,
-    NextShift: Integer;
-    TempSize: Integer;
-    BorderSize: Integer;
-    BeforeVisibleZone,
-    AfterVisibleZone: TJvDockZone;
-    BeginSize: Integer;
+var
+  PrevShift: Integer;
+  NextShift: Integer;
+  TempSize: Integer;
+  BorderSize: Integer;
+  BeforeVisibleZone: TJvDockZone;
+  AfterVisibleZone: TJvDockZone;
+  BeginSize: Integer;
 begin
   if (ParentZone <> nil) and (ParentZone.VisibleChildCount = 1) and (ParentZone <> Tree.TopZone) then
     ParentZone.Remove(ParentZone.LimitSize, Hide);
@@ -4164,59 +4049,57 @@ begin
 
   if (ParentZone <> nil) and (ParentZone.ChildZones <> nil) then
     BeginSize := ParentZone.ChildZones.LimitBegin
-  else BeginSize := 0;
+  else
+    BeginSize := 0;
 
   BeforeVisibleZone := BeforeClosestVisibleZone;
-  AfterVisibleZone  := AfterClosestVisibleZone;
+  AfterVisibleZone := AfterClosestVisibleZone;
 
   BorderSize := TJvDockVIDTree(Tree).BorderWidth * Integer(AfterClosestVisibleZone <> nil) div 2;
-
   TempSize := ParentZone.HeightWidth[ParentZone.Orientation] + BorderSize;
 
-  if DockSize > TempSize - (ParentZone.VisibleChildCount-1) * TJvDockVIDTree(Tree).MinSize then
-    DockSize := TempSize - (ParentZone.VisibleChildCount-1) * TJvDockVIDTree(Tree).MinSize;
-
+  if DockSize > TempSize - (ParentZone.VisibleChildCount - 1) * TJvDockVIDTree(Tree).MinSize then
+    DockSize := TempSize - (ParentZone.VisibleChildCount - 1) * TJvDockVIDTree(Tree).MinSize;
   if DockSize = 0 then
     DockSize := TempSize div 2;
 
   Visibled := False;
-
   if (BeforeVisibleZone = nil) and (AfterVisibleZone = nil) then
     Exit;
 
   if BeforeVisibleZone = nil then
   begin
-    
     PrevShift := 0;
     NextShift := -DockSize + BorderSize;
     ZoneLimit := -DockSize + BorderSize + BeginSize;
-  end else if AfterVisibleZone = nil then
+  end
+  else
+  if AfterVisibleZone = nil then
   begin
-    
     PrevShift := -DockSize + BorderSize;
     NextShift := 0;
     BeforeVisibleZone.ZoneLimit := BeforeVisibleZone.ZoneLimit - PrevShift;
     ZoneLimit := TempSize + BeginSize;
-  end else
+  end
+  else
   begin
-    
-    PrevShift := -Round((BeforeVisibleZone.ZoneLimit - BeginSize) * (DockSize + BorderSize) / (TempSize - (DockSize + BorderSize)));
+    PrevShift := -Round((BeforeVisibleZone.ZoneLimit - BeginSize) * (DockSize + BorderSize) / (TempSize - (DockSize +
+      BorderSize)));
     NextShift := -DockSize - PrevShift;
     BeforeVisibleZone.ZoneLimit := BeforeVisibleZone.ZoneLimit - PrevShift;
     ZoneLimit := BeforeVisibleZone.ZoneLimit;
   end;
 
-  
   if PrevShift <> 0 then
   begin
     with TJvDockVIDTree(Tree) do
     begin
-      
       ReplacementZone := BeforeVisibleZone;
       try
-        if (BeforeVisibleZone.ZoneLimit - BeginSize)*(BeforeVisibleZone.ZoneLimit - BeginSize + PrevShift) <> 0 then
+        if (BeforeVisibleZone.ZoneLimit - BeginSize) * (BeforeVisibleZone.ZoneLimit - BeginSize + PrevShift) <> 0 then
           ScaleBy := (BeforeVisibleZone.ZoneLimit - BeginSize) / (BeforeVisibleZone.ZoneLimit - BeginSize + PrevShift)
-        else ScaleBy := 1;
+        else
+          ScaleBy := 1;
         ParentLimit := BeginSize;
         ShiftScaleOrientation := ParentZone.Orientation;
         if ScaleBy <> 1 then
@@ -4225,43 +4108,26 @@ begin
         ReplacementZone := nil;
       end;
     end;
-    
+
     if BeforeVisibleZone.LimitSize < TJvDockVIDTree(Tree).MinSize then
       BeforeVisibleZone.ZoneLimit := BeforeVisibleZone.LimitBegin + TJvDockVIDTree(Tree).MinSize;
   end;
 
-
-  
   if NextShift <> 0 then
-  begin
     with TJvDockVIDTree(Tree) do
     begin
       if (TempSize + BeginSize - LimitBegin) * (TempSize + BeginSize - LimitBegin + NextShift) <> 0 then
         ScaleBy := (TempSize + BeginSize - LimitBegin) / (TempSize + BeginSize - LimitBegin + NextShift)
-      else ScaleBy := 1;
+      else
+        ScaleBy := 1;
       ParentLimit := TempSize + BeginSize;
       ShiftScaleOrientation := ParentZone.Orientation;
       if ScaleBy <> 1 then
         ForEachAt(AfterVisibleZone, ScaleSiblingZone, tskForward);
     end;
-  end;
 end;
 
-
-
-procedure TJvDockVIDTabServerOption.Assign(Source: TPersistent);
-begin
-  if Source is TJvDockVIDTabServerOption then
-  begin
-    FActiveFont.Assign(TJvDockVIDTabServerOption(Source).FActiveFont);
-    FActiveSheetColor := TJvDockVIDTabServerOption(Source).FActiveSheetColor;
-    FHotTrackColor := TJvDockVIDTabServerOption(Source).FHotTrackColor;
-    FInactiveFont.Assign(TJvDockVIDTabServerOption(Source).FInactiveFont);
-    FInactiveSheetColor := TJvDockVIDTabServerOption(Source).FInactiveSheetColor;
-    FShowTabImages := TJvDockVIDTabServerOption(Source).FShowTabImages;
-  end;
-  inherited Assign(Source);
-end;
+//=== TJvDockVIDTabServerOption ==============================================
 
 constructor TJvDockVIDTabServerOption.Create(ADockStyle: TJvDockBasicStyle);
 begin
@@ -4280,7 +4146,21 @@ destructor TJvDockVIDTabServerOption.Destroy;
 begin
   FActiveFont.Free;
   FInactiveFont.Free;
-  inherited;
+  inherited Destroy;
+end;
+
+procedure TJvDockVIDTabServerOption.Assign(Source: TPersistent);
+begin
+  if Source is TJvDockVIDTabServerOption then
+  begin
+    FActiveFont.Assign(TJvDockVIDTabServerOption(Source).FActiveFont);
+    FActiveSheetColor := TJvDockVIDTabServerOption(Source).FActiveSheetColor;
+    FHotTrackColor := TJvDockVIDTabServerOption(Source).FHotTrackColor;
+    FInactiveFont.Assign(TJvDockVIDTabServerOption(Source).FInactiveFont);
+    FInactiveSheetColor := TJvDockVIDTabServerOption(Source).FInactiveSheetColor;
+    FShowTabImages := TJvDockVIDTabServerOption(Source).FShowTabImages;
+  end;
+  inherited Assign(Source);
 end;
 
 function TJvDockVIDTabServerOption.GetActiveFont: TFont;
@@ -4315,14 +4195,12 @@ end;
 
 procedure TJvDockVIDTabServerOption.ResetDockControlOption;
 begin
-  inherited;
-
+  inherited ResetDockControlOption;
 end;
 
-procedure TJvDockVIDTabServerOption.ResetTabPageControl(
-  APage: TJvDockTabPageControl);
+procedure TJvDockVIDTabServerOption.ResetTabPageControl(APage: TJvDockTabPageControl);
 begin
-  inherited;
+  inherited ResetTabPageControl(APage);
   if APage is TJvDockVIDTabPageControl then
   begin
     TJvDockVIDTabPageControl(APage).ActiveFont := ActiveFont;
@@ -4391,7 +4269,23 @@ begin
     raise Exception.Create(RsDockTabPositionMustBetpBottom);
 end;
 
+///=== TJvDockVIDConjoinServerOption =========================================
 
+constructor TJvDockVIDConjoinServerOption.Create(ADockStyle: TJvDockBasicStyle);
+begin
+  inherited Create(ADockStyle);
+  GrabbersSize := 18;
+  FActiveFont := TFont.Create;
+  FInactiveFont := TFont.Create;
+  SystemInfo := True;
+end;
+
+destructor TJvDockVIDConjoinServerOption.Destroy;
+begin
+  FActiveFont.Free;
+  FInactiveFont.Free;
+  inherited Destroy;
+end;
 
 procedure TJvDockVIDConjoinServerOption.Assign(Source: TPersistent);
 begin
@@ -4410,25 +4304,7 @@ begin
   inherited Assign(Source);
 end;
 
-constructor TJvDockVIDConjoinServerOption.Create(
-  ADockStyle: TJvDockBasicStyle);
-begin
-  inherited Create(ADockStyle);
-  GrabbersSize := 18;
-  FActiveFont := TFont.Create;
-  FInactiveFont := TFont.Create;
-  SystemInfo := True;
-end;
-
-destructor TJvDockVIDConjoinServerOption.Destroy;
-begin
-  FActiveFont.Free;
-  FInactiveFont.Free;
-  inherited;
-end;
-
-procedure TJvDockVIDConjoinServerOption.SetActiveTitleEndColor(
-  const Value: TColor);
+procedure TJvDockVIDConjoinServerOption.SetActiveTitleEndColor(const Value: TColor);
 begin
   if FActiveTitleEndColor <> Value then
   begin
@@ -4438,8 +4314,7 @@ begin
   end;
 end;
 
-procedure TJvDockVIDConjoinServerOption.SetActiveTitleStartColor(
-  const Value: TColor);
+procedure TJvDockVIDConjoinServerOption.SetActiveTitleStartColor(const Value: TColor);
 begin
   if FActiveTitleStartColor <> Value then
   begin
@@ -4449,8 +4324,7 @@ begin
   end;
 end;
 
-procedure TJvDockVIDConjoinServerOption.SetInactiveTitleEndColor(
-  const Value: TColor);
+procedure TJvDockVIDConjoinServerOption.SetInactiveTitleEndColor(const Value: TColor);
 begin
   if FInactiveTitleEndColor <> Value then
   begin
@@ -4460,8 +4334,7 @@ begin
   end;
 end;
 
-procedure TJvDockVIDConjoinServerOption.SetInactiveTitleStartColor(
-  const Value: TColor);
+procedure TJvDockVIDConjoinServerOption.SetInactiveTitleStartColor(const Value: TColor);
 begin
   if FInactiveTitleStartColor <> Value then
   begin
@@ -4478,7 +4351,6 @@ begin
     FSystemInfo := Value;
     if FSystemInfo then
       SetDefaultSystemCaptionInfo;
-
     ResetDockControlOption;
   end;
 end;
@@ -4506,19 +4378,19 @@ end;
 
 procedure TJvDockVIDConjoinServerOption.SetDefaultSystemCaptionInfo;
 begin
-  FActiveTitleStartColor    := JvDockGetActiveTitleBeginColor;
-  FActiveTitleEndColor      := JvDockGetActiveTitleEndColor;
-  FInactiveTitleStartColor  := JvDockGetInactiveTitleBeginColor;
-  FInactiveTitleEndColor    := JvDockGetInactiveTitleEndColor;
-  FTextAlignment            := taLeftJustify;
-  FTextEllipsis             := True;
+  FActiveTitleStartColor := JvDockGetActiveTitleBeginColor;
+  FActiveTitleEndColor := JvDockGetActiveTitleEndColor;
+  FInactiveTitleStartColor := JvDockGetInactiveTitleBeginColor;
+  FInactiveTitleEndColor := JvDockGetInactiveTitleEndColor;
+  FTextAlignment := taLeftJustify;
+  FTextEllipsis := True;
   FActiveFont.Assign(JvDockGetTitleFont);
-  FActiveFont.Style         := FActiveFont.Style + [fsBold];
+  FActiveFont.Style := FActiveFont.Style + [fsBold];
   FInactiveFont.Assign(FActiveFont);
-  FActiveFont.Color         := JvDockGetActiveTitleFontColor;
-  FInactiveFont.Color       := JvDockGetInactiveTitleFontColor;
-  GrabbersSize              := VIDDefaulTJvDockGrabbersSize;
-  SplitterWidth             := VIDDefaulTJvDockSplitterWidth;
+  FActiveFont.Color := JvDockGetActiveTitleFontColor;
+  FInactiveFont.Color := JvDockGetInactiveTitleFontColor;
+  GrabbersSize := VIDDefaulTJvDockGrabbersSize;
+  SplitterWidth := VIDDefaulTJvDockSplitterWidth;
 end;
 
 procedure TJvDockVIDConjoinServerOption.SetActiveFont(const Value: TFont);
@@ -4539,7 +4411,7 @@ procedure TJvDockVIDConjoinServerOption.ResetDockControlOption;
 begin
   inherited ResetDockControlOption;
   FSystemInfo := FSystemInfo and (GrabbersSize = VIDDefaulTJvDockGrabbersSize)
-                  and (SplitterWidth = VIDDefaulTJvDockSplitterWidth);
+    and (SplitterWidth = VIDDefaulTJvDockSplitterWidth);
   TJvDockVIDStyle(DockStyle).DoSystemInfoChange(FSystemInfo);
 end;
 
@@ -4579,14 +4451,12 @@ begin
   FInactiveTitleStartColor := Value;
 end;
 
-procedure TJvDockVIDConjoinServerOption.SetTextAlignment_WithoutChangeSystemInfo(
-  const Value: TAlignment);
+procedure TJvDockVIDConjoinServerOption.SetTextAlignment_WithoutChangeSystemInfo(const Value: TAlignment);
 begin
   FTextAlignment := Value;
 end;
 
-procedure TJvDockVIDConjoinServerOption.SetTextEllipsis_WithoutChangeSystemInfo(
-  const Value: Boolean);
+procedure TJvDockVIDConjoinServerOption.SetTextEllipsis_WithoutChangeSystemInfo(const Value: Boolean);
 begin
   FTextEllipsis := Value;
 end;

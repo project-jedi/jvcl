@@ -47,11 +47,11 @@ uses
   Windows, 
   {$IFDEF COMPILER6_UP}
   Variants,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Messages, Classes, Controls, Forms, Grids, Graphics, Buttons, Menus,
-  StdCtrls, Mask, IniFiles, DB, DBGrids,
-  JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement, JvJCLUtils, DBCtrls,
-  JvMaskEdit, JvBaseEdits;
+  StdCtrls, Mask, IniFiles, DB, DBGrids, DBCtrls,
+  JvAppStorage, JvSecretPanel, JvLabel, JvToolEdit, JvFormPlacement,
+  JvJCLUtils, JvMaskEdit, JvBaseEdits;
 
 { TJvDBGrid }
 
@@ -59,9 +59,9 @@ const
   DefJvGridOptions = [dgEditing, dgTitles, dgIndicator, dgColumnResize,
     dgColLines, dgRowLines, dgConfirmDelete, dgCancelOnExit];
 
-  {$IFDEF BCB}
-  {$NODEFINE DefJvGridOptions}
-  {$ENDIF BCB}
+{$IFDEF BCB}
+{$NODEFINE DefJvGridOptions}
+{$ENDIF BCB}
 
 type
   { NEW VALIDATION EVENT }
@@ -94,7 +94,7 @@ type
     FCanvas: TControlCanvas;
     FAlignment: TAlignment;
     FFocused: Boolean;
-    FBeepOnError : Boolean; { allows us to get rid of the standard beep on error yuckiness if we want}
+    FBeepOnError: Boolean; { allows us to get rid of the standard beep on error yuckiness if we want}
 
     {new: Specific to this component}
       // value of text in the edit control at the time

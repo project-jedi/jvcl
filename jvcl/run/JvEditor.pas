@@ -218,11 +218,11 @@ const
   {max symbols per row for scrollbar}
   GutterRightMargin = 2;
 
-{$IFDEF VCL}
+  {$IFDEF VCL}
   WM_EDITCOMMAND = WM_USER + $101;
-{$ELSE}
+  {$ELSE}
   WM_EDITCOMMAND = CM_BASE + $101;
-{$ENDIF}
+  {$ENDIF VCL}
 
 type
   TCellRect = record
@@ -568,7 +568,7 @@ type
     procedure WMPaste(var Msg: TMessage); message WM_PASTE;
     procedure WMUndo(var Msg: TMessage); message WM_UNDO;
 
-{$IFDEF VCL}
+    {$IFDEF VCL}
     // (p3) added to be compatible with JvFixedEditPopup
     procedure WMClear(var Msg: TMessage); message WM_CLEAR;
     procedure EMSetReadOnly(var Msg: TMessage); message EM_SETREADONLY;
@@ -577,7 +577,7 @@ type
     procedure EMCanUndo(var Msg: TMessage); message EM_CANUNDO;
     procedure WMGetTextLength(var Msg: TMessage); message WM_GETTEXTLENGTH;
     procedure WMGetText(var Msg: TWMGetText); message WM_GETTEXT;
-{$ENDIF}
+    {$ENDIF VCL}
 
     procedure UpdateEditorSize;
     procedure DoCompletionIdentifier(var Cancel: Boolean);
@@ -627,7 +627,7 @@ type
     function EventFilter(Sender: QObjectH; Event: QEventH): Boolean; override;
     function DoMouseWheel(Shift: TShiftState; WheelDelta: Integer;
       const MousePos: TPoint): Boolean; override;
-    {$ENDIF}
+    {$ENDIF VisualCLX}
     procedure Paint; override;
     procedure ScrollBarScroll(Sender: TObject; ScrollCode: TScrollCode; var
       ScrollPos: Integer);
@@ -2017,9 +2017,9 @@ procedure TJvCustomEditor.CursorChanged;
 var
   P: TPoint;
 begin
-{$IFDEF VisualCLX}
-  inherited;
-{$ENDIF}
+  {$IFDEF VisualCLX}
+  inherited CursorChanged;
+  {$ENDIF VisualCLX}
   GetCursorPos(P);
   P := ScreenToClient(P);
   if (P.X < GutterWidth) and (Cursor = crIBeam) then
@@ -2028,9 +2028,9 @@ end;
 
 procedure TJvCustomEditor.FontChanged;
 begin
-{$IFDEF VisualCLX}
-  inherited;
-{$ENDIF}
+  {$IFDEF VisualCLX}
+  inherited FontChanged;
+  {$ENDIF VisualCLX}
   if HandleAllocated then
     UpdateEditorSize;
 end;
@@ -2397,6 +2397,7 @@ begin
 end;
 
 {$IFDEF VisualCLX}
+
 function TJvCustomEditor.EventFilter(Sender: QObjectH; Event: QEventH): Boolean;
 begin
 {  case QEvent_type(Event) of
@@ -2411,7 +2412,8 @@ begin
   MouseWheel(Shift, WheelDelta, MousePos);
   Result := inherited DoMouseWheel(Shift, WheelDelta, MousePos);
 end;
-{$ENDIF}
+
+{$ENDIF VisualCLX}
 
 procedure TJvCustomEditor.ScrollBarScroll(Sender: TObject; ScrollCode:
   TScrollCode; var ScrollPos: Integer);
@@ -2440,9 +2442,8 @@ begin
       { it is optimized [translated] }
       OldFTopRow := FTopRow;
       FTopRow := ScrollPos;
-{$IFDEF VCL}
-      if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < EditorClient.Height
-        then
+      {$IFDEF VCL}
+      if Abs((OldFTopRow - ScrollPos) * FCellRect.Height) < EditorClient.Height then
       begin
         R := EditorClient.ClientRect;
         R.Bottom := R.Top + CellRect.Height * (FVisibleRowCount + 1); {??}
@@ -2460,7 +2461,7 @@ begin
         InvalidateRect(Handle, @RUpdate, False);
       end
       else
-{$ENDIF}
+      {$ENDIF VCL}
         Invalidate;
       Update;
     end
@@ -2469,7 +2470,7 @@ begin
       { it is not optimized [translated] }
       OldFLeftCol := FLeftCol;
       FLeftCol := ScrollPos;
-{$IFDEF VCL}
+      {$IFDEF VCL}
       if Abs((OldFLeftCol - ScrollPos) * FCellRect.Width) < EditorClient.Width then
       begin
         R := EditorClient.ClientRect;
@@ -2488,7 +2489,7 @@ begin
         InvalidateRect(Handle, @RUpdate, False);
       end
       else
-{$ENDIF}
+      {$ENDIF VCL}
         Invalidate;
       Update;
     end;

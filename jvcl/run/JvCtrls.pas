@@ -368,7 +368,7 @@ begin
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
       Repaint;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 end;
 
@@ -383,7 +383,7 @@ begin
     {$IFDEF JVCLThemesEnabled}
     if ThemeServices.ThemesEnabled then
       Repaint;
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
   end;
 end;
 
@@ -430,7 +430,7 @@ var
   {$IFDEF JVCLThemesEnabled}
   Details: TThemedElementDetails;
   Button: TThemedButton;
-  {$ENDIF}
+  {$ENDIF JVCLThemesEnabled}
 begin
   if csDestroying in ComponentState then
     Exit;
@@ -558,7 +558,7 @@ begin
     if ThemeServices.ThemesEnabled then
       OffsetRect(R, 1, 0)
     else
-    {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
       OffsetRect(R, 1, 1);
   end;
 

@@ -21,17 +21,15 @@ Last Modified: 2002-07-04
 You may retrieve the latest version of this file at the Project JEDI's JVCL home page,
 located at http://jvcl.sourceforge.net
 
-components  : TJvDBLookupTreeView,
-              TJvDBLookupTreeViewCombo
-description : db-aware lookup TreeView
+Components:
+  TJvDBLookupTreeView,
+  TJvDBLookupTreeViewCombo
 
-Known Issues:
------------------------------------------------------------------------------}
+Description:
+  db-aware lookup TreeView
 
-{$I jvcl.inc}
-
-{ history
- (JVCL Library versions) :
+History:
+ (JVCL Library versions):
   1.20:
     - first release;
   1.61:
@@ -39,7 +37,11 @@ Known Issues:
   2.01:
     - support for BiDi mode
      (thanks to Oussama Al-Rifai);
-}
+
+Known Issues:
+-----------------------------------------------------------------------------}
+
+{$I jvcl.inc}
 
 unit JvDBLookupTreeView;
 
@@ -48,7 +50,7 @@ interface
 uses
   {$IFDEF COMPILER6_UP}
   Variants, VDBConsts,
-  {$ENDIF}
+  {$ENDIF COMPILER6_UP}
   Windows, Messages, SysUtils, Classes, Controls, Forms, Graphics,
   CommCtrl, ComCtrls, Db,
   JvDBTreeView, JvToolEdit;

@@ -39,7 +39,7 @@ uses
 type
   TJvDiceValue = 1..6;
 
-  TJvDice = class(TJvCustomControl{, IJvDenySubClassing})
+  TJvDice = class(TJvCustomControl) // , IJvDenySubClassing
   private
     FActive: Boolean;
     FBitmap: array [TJvDiceValue] of TBitmap;
@@ -127,7 +127,7 @@ implementation
 uses
   ImgList;
 
-{$R ..\resources\JvDice.res}
+{$R ..\Resources\JvDice.res}
 
 constructor TJvDice.Create(AOwner: TComponent);
 var

@@ -30,8 +30,8 @@ unit JvSwitch;
 interface
 
 uses
-  Windows,
-  SysUtils, Messages, Classes, Graphics, Controls, Forms, Menus, JvComponent;
+  Windows, SysUtils, Messages, Classes, Graphics, Controls, Forms, Menus,
+  JvComponent;
 
 type
   TTextPos = (tpNone, tpLeft, tpRight, tpAbove, tpBelow);
@@ -58,7 +58,7 @@ type
     procedure SetSwitchGlyph(Index: Integer; Value: TBitmap);
     function StoreBitmap(Index: Integer): Boolean;
     procedure SetShowFocus(Value: Boolean);
-    procedure CreateDisabled(Index: Integer);
+    procedure CreateDisabled(Index: Boolean);
     procedure ReadBinaryData(Stream: TStream);
     procedure WriteBinaryData(Stream: TStream);
     procedure CMFocusChanged(var Msg: TCMFocusChanged); message CM_FOCUSCHANGED;
@@ -82,12 +82,11 @@ type
     destructor Destroy; override;
     procedure ToggleSwitch;
   published
-  {$IFDEF JVCLThemesEnabled}
+    {$IFDEF JVCLThemesEnabled}
     property ParentBackground default True;
-  {$ENDIF}
+    {$ENDIF JVCLThemesEnabled}
     property Align;
-    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle
-      default bsNone;
+    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
     property Caption;
     property Color;
     property Cursor;
@@ -95,23 +94,19 @@ type
     property DragCursor;
     property Enabled;
     property Font;
-    property GlyphOff: TBitmap index 0 read GetSwitchGlyph write SetSwitchGlyph
-      stored StoreBitmap;
-    property GlyphOn: TBitmap index 1 read GetSwitchGlyph write SetSwitchGlyph
-      stored StoreBitmap;
+    property GlyphOff: TBitmap index 0 read GetSwitchGlyph write SetSwitchGlyph stored StoreBitmap;
+    property GlyphOn: TBitmap index 1 read GetSwitchGlyph write SetSwitchGlyph stored StoreBitmap;
     property ParentColor;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
     property ShowFocus: Boolean read FShowFocus write SetShowFocus default True;
-    property ToggleKey: TShortCut read FToggleKey write FToggleKey
-      default VK_SPACE;
+    property ToggleKey: TShortCut read FToggleKey write FToggleKey default Ord(' ');
     property ShowHint;
     property StateOn: Boolean read FStateOn write SetStateOn default False;
     property TabOrder;
     property TabStop default True;
-    property TextPosition: TTextPos read FTextPosition write SetTextPosition
-      default tpNone;
+    property TextPosition: TTextPos read FTextPosition write SetTextPosition default tpNone;
     property Anchors;
     property Constraints;
     property DragKind;
@@ -142,7 +137,7 @@ implementation
 uses
   JvJVCLUtils, JvThemes;
 
-{$R ..\resources\JvSwitch.res}
+{$R ..\Resources\JvSwitch.res}
 
 const
   ResName: array [Boolean] of PChar = ('JV_SWITCH_OFF', 'JV_SWITCH_ON');
@@ -150,7 +145,7 @@ const
 
 constructor TJvSwitch.Create(AOwner: TComponent);
 var
-  I: Byte;
+  I: Boolean;
 begin
   inherited Create(AOwner);
   ControlStyle := [csClickEvents, csSetCaption, csCaptureMouse,
@@ -158,30 +153,30 @@ begin
   IncludeThemeStyle(Self, [csParentBackground]);
   Width := 50;
   Height := 60;
-  for I := 0 to 1 do
+  for I := False to True do
   begin
-    FBitmaps[Boolean(I)] := TBitmap.Create;
-    SetSwitchGlyph(I, nil);
-    FBitmaps[Boolean(I)].OnChange := GlyphChanged;
+    FBitmaps[I] := TBitmap.Create;
+    SetSwitchGlyph(Ord(I), nil);
+    FBitmaps[I].OnChange := GlyphChanged;
   end;
   FUserBitmaps := [];
   FShowFocus := True;
   FStateOn := False;
   FTextPosition := tpNone;
   FBorderStyle := bsNone;
-  FToggleKey := VK_SPACE;
+  FToggleKey := Ord(' ');
   TabStop := True;
 end;
 
 destructor TJvSwitch.Destroy;
 var
-  I: Byte;
+  I: Boolean;
 begin
-  for I := 0 to 1 do
+  for I := False to True do
   begin
-    FBitmaps[Boolean(I)].OnChange := nil;
-    FDisableBitmaps[Boolean(I)].Free;
-    FBitmaps[Boolean(I)].Free;
+    FBitmaps[I].OnChange := nil;
+    FDisableBitmaps[I].Free;
+    FBitmaps[I].Free;
   end;
   inherited Destroy;
 end;
@@ -231,7 +226,6 @@ end;
 
 function TJvSwitch.StoreBitmap(Index: Integer): Boolean;
 begin
-  // (rom) this is using Pascal to the full!
   Result := (Index <> 0) in FUserBitmaps;
 end;
 
@@ -242,17 +236,11 @@ begin
   Result := FBitmaps[Index <> 0];
 end;
 
-procedure TJvSwitch.CreateDisabled(Index: Integer);
+procedure TJvSwitch.CreateDisabled(Index: Boolean);
 begin
-  if FDisableBitmaps[Index <> 0] <> nil then
-    FDisableBitmaps[Index <> 0].Free;
-  try
-    FDisableBitmaps[Index <> 0] :=
-      CreateDisabledBitmap(FBitmaps[Index <> 0], clBlack);
-  except
-    FDisableBitmaps[Index <> 0] := nil;
-    raise;
-  end;
+  FreeAndNil(FDisableBitmaps[Index]);
+  FDisableBitmaps[Index] :=
+    CreateDisabledBitmap(FBitmaps[Index], clBlack);
 end;
 
 procedure TJvSwitch.GlyphChanged(Sender: TObject);
@@ -261,9 +249,7 @@ var
 begin
   for I := False to True do
     if Sender = FBitmaps[I] then
-    begin
-      CreateDisabled(Ord(I));
-    end;
+      CreateDisabled(I);
   Invalidate;
 end;
 
@@ -276,8 +262,7 @@ begin
   end
   else
   begin
-    FBitmaps[Index <> 0].Handle := LoadBitmap(HInstance,
-      ResName[Index <> 0]);
+    FBitmaps[Index <> 0].Handle := LoadBitmap(HInstance, ResName[Index <> 0]);
     Exclude(FUserBitmaps, Index <> 0);
   end;
 end;
@@ -417,8 +402,8 @@ begin
         Bottom := Top + FontHeight;
       end;
       StrPCopy(Text, Caption);
-      DrawText(Handle, Text, StrLen(Text), ARect, DT_EXPANDTABS or
-        DT_VCENTER or DT_CENTER);
+      DrawText(Handle, Text, StrLen(Text), ARect,
+        DT_EXPANDTABS or DT_VCENTER or DT_CENTER);
     end;
   end;
 end;
