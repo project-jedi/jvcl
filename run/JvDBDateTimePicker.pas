@@ -90,7 +90,7 @@ uses
   {$IFDEF HAS_UNIT_VARIANTS}
   Variants,
   {$ENDIF HAS_UNIT_VARIANTS}
-  SysUtils, ComCtrls,
+  SysUtils, ComCtrls, Controls,
   JvConsts;
 
 ///////////////////////////////////////////////////////////////////////////
@@ -106,6 +106,7 @@ constructor TJvDBDateTimePicker.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FIsReadOnly := True;
+  ControlStyle := ControlStyle + [csReplicatable];
   FDataLink := TFieldDataLink.Create;
   FDataLink.Control := Self;
   FDataLink.OnDataChange := DataChange;
@@ -246,6 +247,8 @@ procedure TJvDBDateTimePicker.KeyDown(var Key: Word; Shift: TShiftState);
 begin
   if FIsReadOnly and not FDataLink.CanModify then
   begin
+    if BeepOnError then
+      Beep;
     Key := 0;
     Exit;
   end;
@@ -300,6 +303,8 @@ procedure TJvDBDateTimePicker.KeyPress(var Key: Char);
 begin
   if FIsReadOnly and not FDataLink.CanModify then
   begin
+    if BeepOnError then
+      Beep;
     Key := #0;
     Exit;
   end;
