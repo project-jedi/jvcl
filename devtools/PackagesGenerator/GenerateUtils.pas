@@ -267,7 +267,8 @@ begin
   incFileName := fileNode.Properties.ItemNamed['Name'].Value;
 
   unitname := GetUnitName(incFileName);
-  punitname := StrProper(unitname);
+  punitname := StrLower(unitname);
+  punitname[1] := CharUpper(punitname[1]);
   formpathname := StrEnsureSuffix(PathSeparator, ExtractFilePath(incFileName))+GetUnitName(incFileName);
 
   EnsureProperSeparator(formpathname, target);
@@ -410,7 +411,7 @@ function ApplyTemplateAndSave(path, target, package, extension, prefix, format :
 var
   OutFileName : string;
   packSuffix : string;
-  NameSuffix : string;
+  oneLetterType : string;
   reqPackName : string;
   incFileName : string;
   rootNode : TJvSimpleXmlElemClassic;
@@ -441,9 +442,15 @@ begin
     rootNode := xml.Root;
     OutFileName := rootNode.Properties.ItemNamed['Name'].Value;
     if rootNode.Properties.ItemNamed['Design'].BoolValue then
-      OutFileName := OutFileName + '-D'
+    begin
+      OutFileName := OutFileName + '-D';
+      oneLetterType := 'd';
+    end
     else
+    begin
       OutFileName := OutFileName + '-R';
+      oneLetterType := 'r';
+    end;
 
     OutFileName := path + target + PathSeparator +
                    ExpandPackageName(OutFileName, target, prefix, format)+
@@ -624,7 +631,7 @@ begin
           StrReplace(curLine, '%DATETIME%',
                       FormatDateTime('dd-mm-yyyy  hh:nn:ss', NowUTC) + ' UTC',
                       [rfReplaceAll]);
-          StrReplace(curLine, '%type%', StrLower(NameSuffix), [rfReplaceAll]);
+          StrReplace(curLine, '%type%', OneLetterType, [rfReplaceAll]);
           outFile.Add(curLine);
         end;
         Inc(i);
