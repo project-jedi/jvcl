@@ -63,6 +63,7 @@
     <RESDEPEN value="$(RESFILES)
     "/>
     <LIBFILES value="
+    wininet.lib
     "/>
     <LIBRARIES value=""/>
     <SPARELIBS value=""/>
@@ -123,6 +124,7 @@
       <FILE FILENAME="vcljpg.bpi" FORMNAME="" UNITNAME="vcljpg" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbsmp.bpi" FORMNAME="" UNITNAME="bcbsmp" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="bcbie.bpi" FORMNAME="" UNITNAME="bcbie" CONTAINERID="BPITool" DESIGNCLASS="" LOCALCOMMAND=""/>
+      <FILE FILENAME="wininet.lib" FORMNAME="" UNITNAME="wininet" CONTAINERID="LibTool" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvXmlDatabase.pas" FORMNAME="" UNITNAME="JvXmlDatabase" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvAppInst.pas" FORMNAME="" UNITNAME="JvAppInst" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
       <FILE FILENAME="..\..\run\JvChangeNotify.pas" FORMNAME="" UNITNAME="JvChangeNotify" CONTAINERID="PascalCompiler" DESIGNCLASS="" LOCALCOMMAND=""/>
