@@ -38,7 +38,8 @@ interface
 
 
 uses
-  Classes, QControls, Types, QGraphics, QForms, Qt, QWindows, JvQComponent;
+  Classes, QControls, Types, QGraphics, QForms, Qt, QWindows,
+  JvQComponent;
 
 
 const
@@ -130,19 +131,19 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   end;
+  
 
-
-
+  
   TJvXPWinControl = class(TJvWinControl)
+  
   published
     property Color;
   end;
-
   { baseclass for focusable control descendants. }
 
-
+  
   TJvXPCustomControl = class(TJvCustomControl)
-
+  
   private
     FClicking: Boolean;
     FDrawState: TJvXPDrawState;
@@ -152,7 +153,7 @@ type
     FOnMouseLeave: TNotifyEvent;
     FOnMouseEnter: TNotifyEvent;
     
-
+    
   protected
     ExControlStyle: TJvXPControlStyle;
     procedure InternalRedraw; dynamic;
@@ -172,7 +173,7 @@ type
     procedure BeginUpdate; dynamic;
     procedure EndUpdate; dynamic;
     procedure LockedInvalidate; dynamic;
-
+    
     procedure AdjustSize; override;
     procedure BorderChanged; dynamic;
     procedure EnabledChanged; override;
@@ -184,9 +185,9 @@ type
     procedure MouseEnter(AControl: TControl); override;
     procedure MouseLeave(AControl: TControl); override;
     function WantKey(Key: Integer; Shift: TShiftState; const KeyText: WideString): Boolean; override;
-    function WidgetFlags: integer; override;
+//    function WidgetFlags: integer; override;
     procedure Loaded; override;
-
+    
     procedure MouseDown(Button:TMouseButton; Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X, Y: Integer); override;
     procedure Click; override;
@@ -347,6 +348,9 @@ uses
 
 {$R ../Resources/JvXPCore.res}
 
+
+
+
 //=== TJvXPCustomComponent ===================================================
 
 constructor TJvXPCustomComponent.Create(AOwner: TComponent);
@@ -363,7 +367,7 @@ constructor TJvXPCustomControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  
+  DoubleBuffered := True;
   ExControlStyle := [csRedrawEnabledChanged, csRedrawFocusedChanged,
     csRedrawMouseDown, csRedrawMouseEnter, csRedrawMouseLeave, csRedrawMouseUp,
     csRedrawParentColorChanged, csRedrawCaptionChanged];
@@ -372,6 +376,7 @@ begin
   FIsLocked := False;
   FIsSibling := False;
   FModalResult := 0;
+  
 end;
 
 
@@ -412,10 +417,12 @@ begin
     Result := inherited WantKey(Key, Shift, KeyText);
 end;
 
+(*
 function TJvXPCustomControl.WidgetFlags: integer;
 begin
   Result := Inherited WidgetFlags or Integer(WidgetFlags_WRepaintNoErase);
 end;
+*)
 
 procedure TJvXPCustomControl.Loaded;
 begin
@@ -764,7 +771,6 @@ begin
   inherited Create(AOwner);
   FStyle := TJvXPStyle.Create(Self);
   FStyleManager := nil;
-  DoubleBuffered := true;
 end;
 
 destructor TJvXPCustomStyleControl.Destroy;
