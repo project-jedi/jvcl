@@ -973,8 +973,8 @@ const
 begin
   with JvInterpreterAdapter do
   begin
-    AddFun(cJvUtils, 'ReplaceAllSokr', JvInterpreter_ReplaceAllStrings, 3, [varString, varObject, varObject], varEmpty);
-    AddFun(cJvUtils, 'ReplaceSokr', JvInterpreter_ReplaceStrings, 6, [varString, varInteger, varInteger, varObject,
+    AddFun(cJvUtils, 'ReplaceAllStrings', JvInterpreter_ReplaceAllStrings, 3, [varString, varObject, varObject], varEmpty);
+    AddFun(cJvUtils, 'ReplaceStrings', JvInterpreter_ReplaceStrings, 6, [varString, varInteger, varInteger, varObject,
       varObject, varInteger or varByRef], varEmpty);
     AddFun(cJvUtils, 'CountOfLines', JvInterpreter_CountOfLines, 1, [varString], varEmpty);
     AddFun(cJvUtils, 'DeleteEmptyLines', JvInterpreter_DeleteEmptyLines, 1, [varObject], varEmpty);

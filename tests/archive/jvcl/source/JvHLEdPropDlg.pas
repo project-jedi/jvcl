@@ -48,7 +48,7 @@ type
     bOK: TButton;
     tsEditor: TTabSheet;
     lblEditorSpeedSettings: TLabel;
-    cbKeyboardLayot: TComboBox;
+    cbKeyboardLayout: TComboBox;
     gbEditor: TGroupBox;
     cbUndoAfterSave: TCheckBox;
     cbDoubleClickLine: TCheckBox;
@@ -559,7 +559,7 @@ begin
   RAHLEditor1.Parent := tsColors;
   RAHLEditor1.SetBounds(8, 176, 396, 110);
   RAHLEditor1.TabStop := False;
-  cbKeyboardLayot.ItemIndex := 0;
+  cbKeyboardLayout.ItemIndex := 0;
   cbColorSettings.ItemIndex := 0;
   lbElements.ItemIndex := 0;
   lbElementsClick(nil);
@@ -862,7 +862,7 @@ begin
   tsEditor.Caption := SHLEdPropDlg_tsEditor;
   tsColors.Caption := SHLEdPropDlg_tsColors;
   lblEditorSpeedSettings.Caption := SHLEdPropDlg_lblEditorSpeedSettings;
-  cbKeyboardLayot.Items[0] := SHLEdPropDlg_cbKeyboardLayotDefault;
+  cbKeyboardLayout.Items[0] := SHLEdPropDlg_cbKeyboardLayoutDefault;
   gbEditor.Caption := SHLEdPropDlg_gbEditor;
   cbAutoIndent.Caption := SHLEdPropDlg_cbAutoIndent;
   cbSmartTab.Caption := SHLEdPropDlg_cbSmartTab;

@@ -74,11 +74,11 @@ begin
   TJvKeyboard(Args.Obj).Clear;
 end;
 
-{ procedure SetDefLayot; }
+{ procedure SetDefLayout; }
 
-procedure TKeyboard_SetDefLayot(var Value: Variant; Args: TJvInterpreterArgs);
+procedure TKeyboard_SetDefLayout(var Value: Variant; Args: TJvInterpreterArgs);
 begin
-  TJvKeyboard(Args.Obj).SetDefLayot;
+  TJvKeyboard(Args.Obj).SetDefLayout;
 end;
 
 { EJvEditorError  }
@@ -504,12 +504,12 @@ begin
     AddGet(TJvKeyboard, 'Add', TKeyboard_Add, 3, [varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvKeyboard, 'Add2', TKeyboard_Add2, 5, [varEmpty, varEmpty, varEmpty, varEmpty, varEmpty], varEmpty);
     AddGet(TJvKeyboard, 'Clear', TKeyboard_Clear, 0, [0], varEmpty);
-    AddGet(TJvKeyboard, 'SetDefLayot', TKeyboard_SetDefLayot, 0, [0], varEmpty);
+    AddGet(TJvKeyboard, 'SetDefLayout', TKeyboard_SetDefLayout, 0, [0], varEmpty);
     { EJvEditorError  }
     AddClass(cJvEditor, EJvEditorError, 'EJvEditorError ');
     { TTabStop }
-    AddConst(cJvEditor, 'tsTabStop', tsTabStop);
-    AddConst(cJvEditor, 'tsAutoIndent', tsAutoIndent);
+//    AddConst(cJvEditor, 'tsTabStop', tsTabStop);
+//    AddConst(cJvEditor, 'tsAutoIndent', tsAutoIndent);
     { TJvCustomEditor }
     AddClass(cJvEditor, TJvCustomEditor, 'TJvCustomEditor');
     AddGet(TJvCustomEditor, 'Create', TRACustomEditor_Create, 1, [varEmpty], varEmpty);

@@ -92,7 +92,7 @@ const
   SHLEdPropDlg_tsEditor = 'Editor';
   SHLEdPropDlg_tsColors = 'Colors';
   SHLEdPropDlg_lblEditorSpeedSettings = 'Editor SpeedSettings';
-  SHLEdPropDlg_cbKeyboardLayotDefault = 'Default keymapping';
+  SHLEdPropDlg_cbKeyboardLayoutDefault = 'Default keymapping';
   SHLEdPropDlg_gbEditor = 'Editor options:';
   SHLEdPropDlg_cbAutoIndent = '&Auto indent mode';
   SHLEdPropDlg_cbSmartTab = 'S&mart tab';

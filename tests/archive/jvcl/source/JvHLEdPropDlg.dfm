@@ -42,7 +42,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Alignment = taRightJustify
         Caption = '&Tab stops:'
       end
-      object cbKeyboardLayot: TComboBox
+      object cbKeyboardLayout: TComboBox
         Left = 136
         Top = 6
         Width = 267
@@ -217,7 +217,6 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
         Top = 48
         Width = 153
         Height = 121
-        Style = lbOwnerDrawFixed
         ExtendedSelect = False
         ItemHeight = 13
         Items.Strings = (
@@ -235,6 +234,7 @@ object JvHLEditorParamsForm: TJvHLEditorParamsForm
           'Plain text'
           'Marked block'
           'Right margin')
+        Style = lbOwnerDrawFixed
         TabOrder = 1
         OnClick = lbElementsClick
         OnDrawItem = lbElementsDrawItem

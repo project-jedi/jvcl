@@ -188,11 +188,11 @@ Known Issues:
 }
 
 {$IFDEF COMPLIB_VCL}
-  {$DEFINE VCL}
+ {$DEFINE VCL}
 {$ENDIF}
 {$IFDEF LINUX}
-  {$UNDEF VCL}
-  {$DEFINE VisualCLX}
+ {$UNDEF VCL}
+ {$DEFINE VisualCLX}
 {$ENDIF}
 
 {$IFDEF VisualCLX}
@@ -1198,17 +1198,16 @@ type
 
 var
   BlockTypeFormat: Integer;
-
-procedure Err;
-begin
-  MessageBeep(0);
-end;
-
 {$IFNDEF COMPILER6_UP}
 type
   TValueSign = -1..1;
 
-function Sign(const AValue: Integer): TValueSign;
+const
+  NegativeValue = Low(TValueSign);
+  ZeroValue = 0;
+  PositiveValue = High(TValueSign);
+
+function Sign(const AValue: Integer): TValueSign; overload;
 begin
   Result := ZeroValue;
   if AValue < 0 then
@@ -1216,7 +1215,13 @@ begin
   else if AValue > 0 then
     Result := PositiveValue;
 end;
+
 {$ENDIF}
+
+procedure Err;
+begin
+  MessageBeep(0);
+end;
 
 function KeyPressed(VK: Integer): Boolean;
 begin
