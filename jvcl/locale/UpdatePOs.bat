@@ -1,7 +1,7 @@
 @echo off
 
 : The languages that are known to the JVCL
-set LANGUAGES=fr sv es de
+set LANGUAGES=fr sv es de it ru
 
 echo Update JVCL PO template file and the translations derived from it
 echo Current languages: %LANGUAGES%
