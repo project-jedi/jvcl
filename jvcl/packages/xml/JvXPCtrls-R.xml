@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvXPCtrls" Design="0">
   <Description>JVCL XP Controls Runtime Package</Description>
+  <ClxDescription>JVCLX XP Controls Runtime Package</ClxDescription>
   <C5PFlags/>
   <C6PFlags/>
   <C5Libs/>

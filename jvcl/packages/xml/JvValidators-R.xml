@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvValidators" Design="0">
   <Description>JVCL Validators and Error Indicator Components</Description>
+  <ClxDescription>JVCLX Validators and Error Indicator Components</ClxDescription>
   <C5PFlags>-LUvcl50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
   <C6Libs/>
   <Requires>
-    <Package Name="JvCore-R" Targets="allbutclx" Condition=""/>
+    <Package Name="JvCore-R" Targets="all" Condition=""/>
     <Package Name="vcl50" Targets="C5,D5,D5s" Condition=""/>
     <Package Name="CJCL50" Targets="C5" Condition=""/>
     <Package Name="rtl" Targets="C6,C6p,D6,D6p,D7,D7p" Condition=""/>
@@ -16,7 +17,7 @@
     <Package Name="vclx50" Targets="D5,D5s" Condition=""/>
   </Requires>
   <Contains>
-    <File Name="..\..\run\JvValidators.pas" Targets="allbutclx" Formname="" Condition=""/>
-    <File Name="..\..\run\JvErrorIndicator.pas" Targets="allbutclx" Formname="" Condition=""/>
+    <File Name="..\..\run\JvValidators.pas" Targets="all" Formname="" Condition=""/>
+    <File Name="..\..\run\JvErrorIndicator.pas" Targets="all" Formname="" Condition=""/>
   </Contains>
 </Package>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvCtrls" Design="0">
   <Description>JVCL Controls Runtime Package</Description>
+  <ClxDescription>JVCLX Controls Runtime Package</ClxDescription>
   <C5PFlags>-LUCJcl50</C5PFlags>
   <C6PFlags>-LUCJcl</C6PFlags>
   <C5Libs/>
@@ -51,6 +52,7 @@
     <File Name="..\..\run\JvSpacer.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbar.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSpeedbarSetupForm.pas" Targets="allbutclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
+    <File Name="..\..\qrun\JvQSpeedbarSetupForm.pas" Targets="allclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
     <File Name="..\..\run\JvSplit.pas" Targets="allbutclx" Formname="" Condition=""/>
     <File Name="..\..\run\JvSplitter.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvSwitch.pas" Targets="all" Formname="" Condition=""/>
@@ -69,6 +71,5 @@
     <File Name="..\..\run\JvOfficeColorPanel.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvOfficeColorForm.pas" Targets="all" Formname="" Condition=""/>
     <File Name="..\..\run\JvNetscapeSplitter.pas" Targets="all" Formname="" Condition=""/>
-    <File Name="..\..\qrun\JvQSpeedbarSetupForm.pas" Targets="allclx" Formname="JvSpeedbarSetupWindow" Condition=""/>
   </Contains>
 </Package>

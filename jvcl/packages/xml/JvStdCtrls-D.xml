@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvStdCtrls" Design="-1">
   <Description>JVCL Standard Controls</Description>
+  <ClxDescription>JVCLX Standard Controls</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUdclstd.dcp -LUCJcl -LUCJclVcl</C6PFlags>
   <C5Libs/>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvUIB" Design="0">
   <Description>UIB - Unified Interbase Components</Description>
+  <ClxDescription>JVCLX Unified Interbase Components Runtime</ClxDescription>
   <C5PFlags>-LUvcl50 -LUCJcl50(USEJVCL)</C5PFlags>
   <C6PFlags>-LUCJcl(USEJVCL)</C6PFlags>
   <C5Libs/>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 <Package Name="JvEDI" Design="-1">
   <Description>JVCL EDI Components Designtime Package</Description>
+  <ClxDescription>JVCLX EDI Components Designtime Package</ClxDescription>
   <C5PFlags>-LUvcl50 -LUdclstd50 -LUdsnide50 -LUCJcl50</C5PFlags>
   <C6PFlags>-LUDesignIde -LUCJcl</C6PFlags>
   <C5Libs/>
